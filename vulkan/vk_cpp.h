@@ -46,82 +46,87 @@ namespace vk
       : m_mask(0)
     {
     }
-  
+
     Flags(BitType bit)
       : m_mask(static_cast<uint32_t>(bit))
     {
     }
-  
+
     Flags(Flags<BitType> const& rhs)
       : m_mask(rhs.m_mask)
     {
     }
-  
+
     Flags<BitType> & operator=(Flags<BitType> const& rhs)
     {
       m_mask = rhs.m_mask;
       return *this;
     }
-  
+
     Flags<BitType> & operator|=(Flags<BitType> const& rhs)
     {
       m_mask |= rhs.m_mask;
       return *this;
     }
-  
+
     Flags<BitType> & operator&=(Flags<BitType> const& rhs)
     {
       m_mask &= rhs.m_mask;
       return *this;
     }
-  
+
     Flags<BitType> & operator^=(Flags<BitType> const& rhs)
     {
       m_mask ^= rhs.m_mask;
       return *this;
     }
-  
+
     Flags<BitType> operator|(Flags<BitType> const& rhs) const
     {
       Flags<BitType> result(*this);
       result |= rhs;
       return result;
     }
-  
+
     Flags<BitType> operator&(Flags<BitType> const& rhs) const
     {
       Flags<BitType> result(*this);
       result &= rhs;
       return result;
     }
-  
+
     Flags<BitType> operator^(Flags<BitType> const& rhs) const
     {
       Flags<BitType> result(*this);
       result ^= rhs;
       return result;
     }
-  
+
     bool operator!() const
     {
       return !m_mask;
     }
-  
+
     bool operator==(Flags<BitType> const& rhs) const
     {
       return m_mask == rhs.m_mask;
     }
-  
+
     bool operator!=(Flags<BitType> const& rhs) const
     {
       return m_mask != rhs.m_mask;
     }
-  
+
     operator bool() const
     {
       return !!m_mask;
     }
-  
+
+    explicit operator MaskType() const
+    {
+        return m_mask;
+    }
+
   private:
     MaskType  m_mask;
   };
@@ -2691,7 +2696,7 @@ namespace vk
     eFrontAndBack = VK_CULL_MODE_FRONT_AND_BACK
   };
 
-  typedef Flags<CullModeFlagBits> CullModeFlags;
+  typedef Flags<CullModeFlagBits, VkCullModeFlags> CullModeFlags;
 
   inline CullModeFlags operator|( CullModeFlagBits bit0, CullModeFlagBits bit1 )
   {
@@ -6079,7 +6084,7 @@ namespace vk
     eSparseBinding = VK_QUEUE_SPARSE_BINDING_BIT
   };
 
-  typedef Flags<QueueFlagBits> QueueFlags;
+  typedef Flags<QueueFlagBits, VkQueueFlags> QueueFlags;
 
   inline QueueFlags operator|( QueueFlagBits bit0, QueueFlagBits bit1 )
   {
@@ -6127,7 +6132,7 @@ namespace vk
     eLazilyAllocated = VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT
   };
 
-  typedef Flags<MemoryPropertyFlagBits> MemoryPropertyFlags;
+  typedef Flags<MemoryPropertyFlagBits, VkMemoryPropertyFlags> MemoryPropertyFlags;
 
   inline MemoryPropertyFlags operator|( MemoryPropertyFlagBits bit0, MemoryPropertyFlagBits bit1 )
   {
@@ -6161,7 +6166,7 @@ namespace vk
     eDeviceLocal = VK_MEMORY_HEAP_DEVICE_LOCAL_BIT
   };
 
-  typedef Flags<MemoryHeapFlagBits> MemoryHeapFlags;
+  typedef Flags<MemoryHeapFlagBits, VkMemoryHeapFlags> MemoryHeapFlags;
 
   inline MemoryHeapFlags operator|( MemoryHeapFlagBits bit0, MemoryHeapFlagBits bit1 )
   {
@@ -6243,7 +6248,7 @@ namespace vk
     eMemoryWrite = VK_ACCESS_MEMORY_WRITE_BIT
   };
 
-  typedef Flags<AccessFlagBits> AccessFlags;
+  typedef Flags<AccessFlagBits, VkAccessFlags> AccessFlags;
 
   inline AccessFlags operator|( AccessFlagBits bit0, AccessFlagBits bit1 )
   {
@@ -6459,7 +6464,7 @@ namespace vk
     eIndirectBuffer = VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT
   };
 
-  typedef Flags<BufferUsageFlagBits> BufferUsageFlags;
+  typedef Flags<BufferUsageFlagBits, VkBufferUsageFlags> BufferUsageFlags;
 
   inline BufferUsageFlags operator|( BufferUsageFlagBits bit0, BufferUsageFlagBits bit1 )
   {
@@ -6473,7 +6478,7 @@ namespace vk
     eSparseAliased = VK_BUFFER_CREATE_SPARSE_ALIASED_BIT
   };
 
-  typedef Flags<BufferCreateFlagBits> BufferCreateFlags;
+  typedef Flags<BufferCreateFlagBits, VkBufferCreateFlags> BufferCreateFlags;
 
   inline BufferCreateFlags operator|( BufferCreateFlagBits bit0, BufferCreateFlagBits bit1 )
   {
@@ -6608,7 +6613,7 @@ namespace vk
     eAll = VK_SHADER_STAGE_ALL
   };
 
-  typedef Flags<ShaderStageFlagBits> ShaderStageFlags;
+  typedef Flags<ShaderStageFlagBits, VkShaderStageFlags> ShaderStageFlags;
 
   inline ShaderStageFlags operator|( ShaderStageFlagBits bit0, ShaderStageFlagBits bit1 )
   {
@@ -7051,7 +7056,7 @@ namespace vk
     eInputAttachment = VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT
   };
 
-  typedef Flags<ImageUsageFlagBits> ImageUsageFlags;
+  typedef Flags<ImageUsageFlagBits, VkImageUsageFlags> ImageUsageFlags;
 
   inline ImageUsageFlags operator|( ImageUsageFlagBits bit0, ImageUsageFlagBits bit1 )
   {
@@ -7067,7 +7072,7 @@ namespace vk
     eCubeCompatible = VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT
   };
 
-  typedef Flags<ImageCreateFlagBits> ImageCreateFlags;
+  typedef Flags<ImageCreateFlagBits, VkImageCreateFlags> ImageCreateFlags;
 
   inline ImageCreateFlags operator|( ImageCreateFlagBits bit0, ImageCreateFlagBits bit1 )
   {
@@ -7081,7 +7086,7 @@ namespace vk
     eDerivative = VK_PIPELINE_CREATE_DERIVATIVE_BIT
   };
 
-  typedef Flags<PipelineCreateFlagBits> PipelineCreateFlags;
+  typedef Flags<PipelineCreateFlagBits, VkPipelineCreateFlags> PipelineCreateFlags;
 
   inline PipelineCreateFlags operator|( PipelineCreateFlagBits bit0, PipelineCreateFlagBits bit1 )
   {
@@ -7200,7 +7205,7 @@ namespace vk
     eA = VK_COLOR_COMPONENT_A_BIT
   };
 
-  typedef Flags<ColorComponentFlagBits> ColorComponentFlags;
+  typedef Flags<ColorComponentFlagBits, VkColorComponentFlags> ColorComponentFlags;
 
   inline ColorComponentFlags operator|( ColorComponentFlagBits bit0, ColorComponentFlagBits bit1 )
   {
@@ -7444,7 +7449,7 @@ namespace vk
     eSignaled = VK_FENCE_CREATE_SIGNALED_BIT
   };
 
-  typedef Flags<FenceCreateFlagBits> FenceCreateFlags;
+  typedef Flags<FenceCreateFlagBits, VkFenceCreateFlags> FenceCreateFlags;
 
   inline FenceCreateFlags operator|( FenceCreateFlagBits bit0, FenceCreateFlagBits bit1 )
   {
@@ -7524,7 +7529,7 @@ namespace vk
     eSampledImageFilterLinear = VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT
   };
 
-  typedef Flags<FormatFeatureFlagBits> FormatFeatureFlags;
+  typedef Flags<FormatFeatureFlagBits, VkFormatFeatureFlags> FormatFeatureFlags;
 
   inline FormatFeatureFlags operator|( FormatFeatureFlagBits bit0, FormatFeatureFlagBits bit1 )
   {
@@ -7563,7 +7568,7 @@ namespace vk
     ePrecise = VK_QUERY_CONTROL_PRECISE_BIT
   };
 
-  typedef Flags<QueryControlFlagBits> QueryControlFlags;
+  typedef Flags<QueryControlFlagBits, VkQueryControlFlags> QueryControlFlags;
 
   inline QueryControlFlags operator|( QueryControlFlagBits bit0, QueryControlFlagBits bit1 )
   {
@@ -7578,7 +7583,7 @@ namespace vk
     ePartial = VK_QUERY_RESULT_PARTIAL_BIT
   };
 
-  typedef Flags<QueryResultFlagBits> QueryResultFlags;
+  typedef Flags<QueryResultFlagBits, VkQueryResultFlags> QueryResultFlags;
 
   inline QueryResultFlags operator|( QueryResultFlagBits bit0, QueryResultFlagBits bit1 )
   {
@@ -7592,7 +7597,7 @@ namespace vk
     eSimultaneousUse = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT
   };
 
-  typedef Flags<CommandBufferUsageFlagBits> CommandBufferUsageFlags;
+  typedef Flags<CommandBufferUsageFlagBits, VkCommandBufferUsageFlags> CommandBufferUsageFlags;
 
   inline CommandBufferUsageFlags operator|( CommandBufferUsageFlagBits bit0, CommandBufferUsageFlagBits bit1 )
   {
@@ -7614,7 +7619,7 @@ namespace vk
     eComputeShaderInvocations = VK_QUERY_PIPELINE_STATISTIC_COMPUTE_SHADER_INVOCATIONS_BIT
   };
 
-  typedef Flags<QueryPipelineStatisticFlagBits> QueryPipelineStatisticFlags;
+  typedef Flags<QueryPipelineStatisticFlagBits, VkQueryPipelineStatisticFlags> QueryPipelineStatisticFlags;
 
   inline QueryPipelineStatisticFlags operator|( QueryPipelineStatisticFlagBits bit0, QueryPipelineStatisticFlagBits bit1 )
   {
@@ -7905,7 +7910,7 @@ namespace vk
     eMetadata = VK_IMAGE_ASPECT_METADATA_BIT
   };
 
-  typedef Flags<ImageAspectFlagBits> ImageAspectFlags;
+  typedef Flags<ImageAspectFlagBits, VkImageAspectFlags> ImageAspectFlags;
 
   inline ImageAspectFlags operator|( ImageAspectFlagBits bit0, ImageAspectFlagBits bit1 )
   {
@@ -8755,7 +8760,7 @@ namespace vk
     eNonstandardBlockSize = VK_SPARSE_IMAGE_FORMAT_NONSTANDARD_BLOCK_SIZE_BIT
   };
 
-  typedef Flags<SparseImageFormatFlagBits> SparseImageFormatFlags;
+  typedef Flags<SparseImageFormatFlagBits, VkSparseImageFormatFlags> SparseImageFormatFlags;
 
   inline SparseImageFormatFlags operator|( SparseImageFormatFlagBits bit0, SparseImageFormatFlagBits bit1 )
   {
@@ -8831,7 +8836,7 @@ namespace vk
     eMetadata = VK_SPARSE_MEMORY_BIND_METADATA_BIT
   };
 
-  typedef Flags<SparseMemoryBindFlagBits> SparseMemoryBindFlags;
+  typedef Flags<SparseMemoryBindFlagBits, VkSparseMemoryBindFlags> SparseMemoryBindFlags;
 
   inline SparseMemoryBindFlags operator|( SparseMemoryBindFlagBits bit0, SparseMemoryBindFlagBits bit1 )
   {
@@ -9363,7 +9368,7 @@ namespace vk
     eAllCommands = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT
   };
 
-  typedef Flags<PipelineStageFlagBits> PipelineStageFlags;
+  typedef Flags<PipelineStageFlagBits, VkPipelineStageFlags> PipelineStageFlags;
 
   inline PipelineStageFlags operator|( PipelineStageFlagBits bit0, PipelineStageFlagBits bit1 )
   {
@@ -9504,7 +9509,7 @@ namespace vk
     eResetCommandBuffer = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT
   };
 
-  typedef Flags<CommandPoolCreateFlagBits> CommandPoolCreateFlags;
+  typedef Flags<CommandPoolCreateFlagBits, VkCommandPoolCreateFlags> CommandPoolCreateFlags;
 
   inline CommandPoolCreateFlags operator|( CommandPoolCreateFlagBits bit0, CommandPoolCreateFlagBits bit1 )
   {
@@ -9584,7 +9589,7 @@ namespace vk
     eReleaseResources = VK_COMMAND_POOL_RESET_RELEASE_RESOURCES_BIT
   };
 
-  typedef Flags<CommandPoolResetFlagBits> CommandPoolResetFlags;
+  typedef Flags<CommandPoolResetFlagBits, VkCommandPoolResetFlags> CommandPoolResetFlags;
 
   inline CommandPoolResetFlags operator|( CommandPoolResetFlagBits bit0, CommandPoolResetFlagBits bit1 )
   {
@@ -9596,7 +9601,7 @@ namespace vk
     eReleaseResources = VK_COMMAND_BUFFER_RESET_RELEASE_RESOURCES_BIT
   };
 
-  typedef Flags<CommandBufferResetFlagBits> CommandBufferResetFlags;
+  typedef Flags<CommandBufferResetFlagBits, VkCommandBufferResetFlags> CommandBufferResetFlags;
 
   inline CommandBufferResetFlags operator|( CommandBufferResetFlagBits bit0, CommandBufferResetFlagBits bit1 )
   {
@@ -9614,7 +9619,7 @@ namespace vk
     e64 = VK_SAMPLE_COUNT_64_BIT
   };
 
-  typedef Flags<SampleCountFlagBits> SampleCountFlags;
+  typedef Flags<SampleCountFlagBits, VkSampleCountFlags> SampleCountFlags;
 
   inline SampleCountFlags operator|( SampleCountFlagBits bit0, SampleCountFlagBits bit1 )
   {
@@ -10838,7 +10843,7 @@ namespace vk
     eMayAlias = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT
   };
 
-  typedef Flags<AttachmentDescriptionFlagBits> AttachmentDescriptionFlags;
+  typedef Flags<AttachmentDescriptionFlagBits, VkAttachmentDescriptionFlags> AttachmentDescriptionFlags;
 
   inline AttachmentDescriptionFlags operator|( AttachmentDescriptionFlagBits bit0, AttachmentDescriptionFlagBits bit1 )
   {
@@ -10980,7 +10985,7 @@ namespace vk
     eVkStencilFrontAndBack = VK_STENCIL_FRONT_AND_BACK
   };
 
-  typedef Flags<StencilFaceFlagBits> StencilFaceFlags;
+  typedef Flags<StencilFaceFlagBits, VkStencilFaceFlags> StencilFaceFlags;
 
   inline StencilFaceFlags operator|( StencilFaceFlagBits bit0, StencilFaceFlagBits bit1 )
   {
@@ -10992,7 +10997,7 @@ namespace vk
     eFreeDescriptorSet = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT
   };
 
-  typedef Flags<DescriptorPoolCreateFlagBits> DescriptorPoolCreateFlags;
+  typedef Flags<DescriptorPoolCreateFlagBits, VkDescriptorPoolCreateFlags> DescriptorPoolCreateFlags;
 
   inline DescriptorPoolCreateFlags operator|( DescriptorPoolCreateFlagBits bit0, DescriptorPoolCreateFlagBits bit1 )
   {
@@ -11096,7 +11101,7 @@ namespace vk
     eByRegion = VK_DEPENDENCY_BY_REGION_BIT
   };
 
-  typedef Flags<DependencyFlagBits> DependencyFlags;
+  typedef Flags<DependencyFlagBits, VkDependencyFlags> DependencyFlags;
 
   inline DependencyFlags operator|( DependencyFlagBits bit0, DependencyFlagBits bit1 )
   {
@@ -11400,7 +11405,7 @@ namespace vk
     eInherit = VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR
   };
 
-  typedef Flags<CompositeAlphaFlagBitsKHR> CompositeAlphaFlagsKHR;
+  typedef Flags<CompositeAlphaFlagBitsKHR, VkCompositeAlphaFlagsKHR> CompositeAlphaFlagsKHR;
 
   inline CompositeAlphaFlagsKHR operator|( CompositeAlphaFlagBitsKHR bit0, CompositeAlphaFlagBitsKHR bit1 )
   {
@@ -11420,7 +11425,7 @@ namespace vk
     eInherit = VK_SURFACE_TRANSFORM_INHERIT_BIT_KHR
   };
 
-  typedef Flags<SurfaceTransformFlagBitsKHR> SurfaceTransformFlagsKHR;
+  typedef Flags<SurfaceTransformFlagBitsKHR, VkSurfaceTransformFlagsKHR> SurfaceTransformFlagsKHR;
 
   inline SurfaceTransformFlagsKHR operator|( SurfaceTransformFlagBitsKHR bit0, SurfaceTransformFlagBitsKHR bit1 )
   {
@@ -11812,7 +11817,7 @@ namespace vk
     eDebug = VK_DEBUG_REPORT_DEBUG_BIT_EXT
   };
 
-  typedef Flags<DebugReportFlagBitsEXT> DebugReportFlagsEXT;
+  typedef Flags<DebugReportFlagBitsEXT, VkDebugReportFlagsEXT> DebugReportFlagsEXT;
 
   inline DebugReportFlagsEXT operator|( DebugReportFlagBitsEXT bit0, DebugReportFlagBitsEXT bit1 )
   {
@@ -13672,7 +13677,7 @@ namespace vk
     ePerPixelPremultiplied = VK_DISPLAY_PLANE_ALPHA_PER_PIXEL_PREMULTIPLIED_BIT_KHR
   };
 
-  typedef Flags<DisplayPlaneAlphaFlagBitsKHR> DisplayPlaneAlphaFlagsKHR;
+  typedef Flags<DisplayPlaneAlphaFlagBitsKHR, VkDisplayPlaneAlphaFlagsKHR> DisplayPlaneAlphaFlagsKHR;
 
   inline DisplayPlaneAlphaFlagsKHR operator|( DisplayPlaneAlphaFlagBitsKHR bit0, DisplayPlaneAlphaFlagBitsKHR bit1 )
   {

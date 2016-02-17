@@ -320,7 +320,7 @@ void createDefaults( std::vector<DependencyData> const& dependencies, std::map<s
         defaultValues[it->name];
         break;
       case DependencyData::Category::HANDLE :       // handles are pointers
-        defaultValues[it->name] = "nullptr";
+        defaultValues[it->name] = it->name + "()";
         break;
       case DependencyData::Category::REQUIRED :     // all required default to "0"
       case DependencyData::Category::SCALAR :       // all scalars default to "0"

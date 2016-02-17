@@ -28,42 +28,34 @@ cmake_minimum_required(VERSION 3.2)
 
 project(VkCppGenerator)
 
-if(NOT EXISTS "${CMAKE_SOURCE_DIR}/tinyxml/tinyxml.cpp")
-  message(FATAL_ERROR, "TinyXML is missing. Please download the latest version from http://www.grinninglizard.com/tinyxml/index.html and put the sources in a folder named 'tinyxml'")
-endif()
-
 set(HEADERS
 )
 
 set(SOURCES
-  main.cpp
+  VkCppGenerator.cpp
 )
 
-set(TINYXML_SOURCES
-  tinyxml/tinyxml.cpp
-  tinyxml/tinyxmlerror.cpp
-  tinyxml/tinyxmlparser.cpp
-  tinyxml/tinystr.cpp
+set(TINYXML2_SOURCES
+  tinyxml2/tinyxml2.cpp
 )
 
-set(TINYXML_HEADERS
-  tinyxml/tinyxml.h
-  tinyxml/tinystr.h
+set(TINYXML2_HEADERS
+  tinyxml2/tinyxml2.h
 )
 
 source_group(headers FILES ${HEADERS})
 source_group(sources FILES ${SOURCES})
 
-source_group(TinyXML\\headers FILES ${TINYXML_HEADERS})
-source_group(TinyXML\\sources FILES ${TINYXML_SOURCES})
+source_group(TinyXML2\\headers FILES ${TINYXML2_HEADERS})
+source_group(TinyXML2\\sources FILES ${TINYXML2_SOURCES})
 
 add_executable(VkCppGenerator
   ${HEADERS}
   ${SOURCES}
-  ${TINYXML_SOURCES}
-  ${TINYXML_HEADERS}
+  ${TINYXML2_SOURCES}
+  ${TINYXML2_HEADERS}
 )
 
 set_property(TARGET VkCppGenerator PROPERTY CXX_STANDARD 11)
 
-target_include_directories(VkCppGenerator PRIVATE "${CMAKE_SOURCE_DIR}/tinyxml")
+target_include_directories(VkCppGenerator PRIVATE "${CMAKE_SOURCE_DIR}/tinyxml2")

@@ -24,8 +24,11 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+
+#pragma once
 #include <array>
-#include <stdint.h>
+#include <cstdint>
+#include <cstring>
 #include <vulkan/vulkan.h>
 #ifdef VKCPP_ENHANCED_MODE
 # include <vector>

@@ -1867,6 +1867,8 @@ int main( int argc, char **argv )
   std::ofstream ofs( "vk_cpp.h" );
   ofs << licenseHeader << std::endl;
 
+  ofs << std::endl << "#pragma once" << std::endl;
+
   ofs << "#include <array>" << std::endl
       << "#include <cstdint>" << std::endl
       << "#include <cstring>" << std::endl

@@ -24,8 +24,10 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include <assert.h>
+#include <cassert>
+#include <algorithm>
 #include <fstream>
+#include <functional>
 #include <iostream>
 #include <list>
 #include <map>
@@ -34,7 +36,7 @@
 #include <string>
 #include <vector>
 
-#include <tinyxml.h>
+#include <tinyxml2.h>
 
 #define VK_PROTOTYPES
 
@@ -175,6 +177,14 @@ const std::string flagsHeader(
 "\n"
 );
 
+// trim from end
+std::string trimEnd(std::string const& input)
+{
+  std::string result = input;
+  result.erase(std::find_if(result.rbegin(), result.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), result.end());
+  return result;
+}
+
 struct MemberData
 {
   std::string type;
@@ -246,25 +256,25 @@ size_t findComplexIndex(CommandData const& commandData, std::vector<std::pair<si
 size_t findReturnIndex(CommandData const& commandData, std::vector<std::pair<size_t, size_t>> const& lenParameters);
 std::vector<std::pair<size_t, size_t>> getLenParameters(CommandData const& commandData);
 bool noDependencies(std::set<std::string> const& dependencies, std::map<std::string, std::string> & listedTypes);
-void readCommandParam( TiXmlElement * element, DependencyData & typeData, std::vector<MemberData> & arguments );
-CommandData & readCommandProto( TiXmlElement * element, std::list<DependencyData> & dependencies, std::map<std::string,CommandData> & commands );
-void readCommands( TiXmlElement * element, std::list<DependencyData> & dependencies, std::map<std::string,CommandData> & commands );
-void readCommandsCommand( TiXmlElement * element, std::list<DependencyData> & dependencies, std::map<std::string,CommandData> & commands );
-void readEnums( TiXmlElement * element, std::list<DependencyData> & dependencies, std::map<std::string,EnumData> & enums, std::set<std::string> & vkTypes );
-void readEnumsEnum( TiXmlElement * element, std::string const& prefix, std::string const& postfix, EnumData & enumData );
-void readExtensionRequire( TiXmlElement * element, std::vector<std::string> & elements );
-void readExtensions( TiXmlElement * element, std::vector<ExtensionData> & extensions );
-void readExtensionsExtension( TiXmlElement * element, std::vector<ExtensionData> & extensions );
-void readTypeBasetype( TiXmlElement * element, std::list<DependencyData> & dependencies );
-void readTypeBitmask( TiXmlElement * element, std::list<DependencyData> & dependencies, std::set<std::string> & flags, std::set<std::string> & vkTypes );
-void readTypeDefine( TiXmlElement * element, std::string & version );
-void readTypeFuncpointer( TiXmlElement * element, std::list<DependencyData> & dependencies );
-void readTypeHandle( TiXmlElement * element, std::list<DependencyData> & dependencies );
-void readTypeStruct( TiXmlElement * element, std::list<DependencyData> & dependencies, std::map<std::string,StructData> & structs, std::set<std::string> & vkTypes );
-void readTypeStructMember( TiXmlElement * element, std::vector<MemberData> & members, std::set<std::string> & dependencies );
-void readTypeUnion( TiXmlElement * element, std::list<DependencyData> & dependencies, std::map<std::string,StructData> & structs, std::set<std::string> & vkTypes );
-void readTypeUnionMember( TiXmlElement * element, std::vector<MemberData> & members, std::set<std::string> & dependencies );
-void readTypes( TiXmlElement * element, std::string & version, std::list<DependencyData> & dependencies, std::set<std::string> & flags, std::map<std::string,StructData> & structs, std::set<std::string> & vkTypes );
+void readCommandParam( tinyxml2::XMLElement * element, DependencyData & typeData, std::vector<MemberData> & arguments );
+CommandData & readCommandProto( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,CommandData> & commands );
+void readCommands( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,CommandData> & commands );
+void readCommandsCommand( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,CommandData> & commands );
+void readEnums( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,EnumData> & enums, std::set<std::string> & vkTypes );
+void readEnumsEnum( tinyxml2::XMLElement * element, std::string const& prefix, std::string const& postfix, EnumData & enumData );
+void readExtensionRequire( tinyxml2::XMLElement * element, std::vector<std::string> & elements );
+void readExtensions( tinyxml2::XMLElement * element, std::vector<ExtensionData> & extensions );
+void readExtensionsExtension( tinyxml2::XMLElement * element, std::vector<ExtensionData> & extensions );
+void readTypeBasetype( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies );
+void readTypeBitmask( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::set<std::string> & flags, std::set<std::string> & vkTypes );
+void readTypeDefine( tinyxml2::XMLElement * element, std::string & version );
+void readTypeFuncpointer( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies );
+void readTypeHandle( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies );
+void readTypeStruct( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,StructData> & structs, std::set<std::string> & vkTypes );
+void readTypeStructMember( tinyxml2::XMLElement * element, std::vector<MemberData> & members, std::set<std::string> & dependencies );
+void readTypeUnion( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,StructData> & structs, std::set<std::string> & vkTypes );
+void readTypeUnionMember( tinyxml2::XMLElement * element, std::vector<MemberData> & members, std::set<std::string> & dependencies );
+void readTypes( tinyxml2::XMLElement * element, std::string & version, std::list<DependencyData> & dependencies, std::set<std::string> & flags, std::map<std::string,StructData> & structs, std::set<std::string> & vkTypes );
 void sortDependencies( std::list<DependencyData> & dependencies, std::vector<ExtensionData> const& extensions, std::vector<std::vector<DependencyData>> & sortedDependencies );
 std::string reduceName(std::string const& name);
 std::string strip( std::string const& value, std::string const& prefix );
@@ -395,7 +405,7 @@ bool noDependencies(std::set<std::string> const& dependencies, std::set<std::str
   return( ok );
 }
 
-void readCommandParam( TiXmlElement * element, DependencyData & typeData, std::vector<MemberData> & arguments )
+void readCommandParam( tinyxml2::XMLElement * element, DependencyData & typeData, std::vector<MemberData> & arguments )
 {
   arguments.push_back( MemberData() );
   MemberData & arg = arguments.back();
@@ -405,17 +415,18 @@ void readCommandParam( TiXmlElement * element, DependencyData & typeData, std::v
     arg.len = element->Attribute("len");
   }
 
-  TiXmlNode * child = element->FirstChild();
+  tinyxml2::XMLNode * child = element->FirstChild();
   assert( child );
-  if ( child->Type() == TiXmlNode::TINYXML_TEXT )
+  if ( child->ToText() )
   {
-    assert( ( strcmp( child->Value(), "const" ) == 0 ) || ( strcmp( child->Value(), "struct" ) == 0 ) );
-    arg.type = std::string( child->Value() ) + " ";
+    std::string value = trimEnd(child->Value());
+    assert( (value == "const") || (value == "struct") );
+    arg.type = value + " ";
     child = child->NextSibling();
     assert( child );
   }
 
-  assert( child->Type() == TiXmlNode::TINYXML_ELEMENT );
+  assert( child->ToElement() );
   assert( ( strcmp( child->Value(), "type" ) == 0 ) && child->ToElement() && child->ToElement()->GetText() );
   std::string type = strip( child->ToElement()->GetText(), "Vk" );
   typeData.dependencies.insert( type );
@@ -424,15 +435,15 @@ void readCommandParam( TiXmlElement * element, DependencyData & typeData, std::v
 
   child = child->NextSibling();
   assert( child );
-  if ( child->Type() == TiXmlNode::TINYXML_TEXT )
+  if ( child->ToText() )
   {
-    std::string value = child->Value();
+    std::string value = trimEnd(child->Value());
     assert( ( value == "*" ) || ( value == "**" ) || ( value == "* const*" ) );
     arg.type += value;
     child = child->NextSibling();
   }
 
-  assert( ( child->Type() == TiXmlNode::TINYXML_ELEMENT ) && ( strcmp( child->Value(), "name" ) == 0 ) && child->ToElement() );
+  assert( child->ToElement() && ( strcmp( child->Value(), "name" ) == 0 ) );
   arg.name = child->ToElement()->GetText();
 
   if ( arg.name.back() == ']' )
@@ -447,18 +458,18 @@ void readCommandParam( TiXmlElement * element, DependencyData & typeData, std::v
   child = child->NextSibling();
   if ( child )
   {
-    if ( child->Type() == TiXmlNode::TINYXML_TEXT )
+    if ( child->ToText() )
     {
       std::string value = child->Value();
       if ( value == "[" )
       {
         child = child->NextSibling();
         assert( child );
-        assert( ( child->Type() == TiXmlNode::TINYXML_ELEMENT ) && ( strcmp( child->Value(), "enum" ) == 0 ) );
+        assert( child->ToElement() && ( strcmp( child->Value(), "enum" ) == 0 ) );
         arg.arraySize = child->ToElement()->GetText();
         child = child->NextSibling();
         assert( child );
-        assert( child->Type() == TiXmlNode::TINYXML_TEXT );
+        assert( child->ToText() );
         assert( strcmp( child->Value(), "]" ) == 0 );
         assert( !child->NextSibling() );
       }
@@ -472,11 +483,11 @@ void readCommandParam( TiXmlElement * element, DependencyData & typeData, std::v
   }
 }
 
-CommandData & readCommandProto( TiXmlElement * element, std::list<DependencyData> & dependencies, std::map<std::string,CommandData> & commands )
+CommandData & readCommandProto( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,CommandData> & commands )
 {
-  TiXmlElement * typeElement = element->FirstChildElement();
+  tinyxml2::XMLElement * typeElement = element->FirstChildElement();
   assert( typeElement && ( strcmp( typeElement->Value(), "type" ) == 0 ) );
-  TiXmlElement * nameElement = typeElement->NextSiblingElement();
+  tinyxml2::XMLElement * nameElement = typeElement->NextSiblingElement();
   assert( nameElement && ( strcmp( nameElement->Value(), "name" ) == 0 ) );
   assert( !nameElement->NextSiblingElement() );
 
@@ -494,9 +505,9 @@ CommandData & readCommandProto( TiXmlElement * element, std::list<DependencyData
   return it->second;
 }
 
-void readCommands( TiXmlElement * element, std::list<DependencyData> & dependencies, std::map<std::string,CommandData> & commands )
+void readCommands( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,CommandData> & commands )
 {
-  TiXmlElement * child = element->FirstChildElement();
+  tinyxml2::XMLElement * child = element->FirstChildElement();
   assert( child );
   do
   {
@@ -505,9 +516,9 @@ void readCommands( TiXmlElement * element, std::list<DependencyData> & dependenc
   } while ( child = child->NextSiblingElement() );
 }
 
-void readCommandsCommand( TiXmlElement * element, std::list<DependencyData> & dependencies, std::map<std::string,CommandData> & commands )
+void readCommandsCommand( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,CommandData> & commands )
 {
-  TiXmlElement * child = element->FirstChildElement();
+  tinyxml2::XMLElement * child = element->FirstChildElement();
   assert( child && ( strcmp( child->Value(), "proto" ) == 0 ) );
 
   CommandData & commandData = readCommandProto( child, dependencies, commands );
@@ -526,7 +537,7 @@ void readCommandsCommand( TiXmlElement * element, std::list<DependencyData> & de
   }
 }
 
-void readEnums( TiXmlElement * element, std::list<DependencyData> & dependencies, std::map<std::string,EnumData> & enums, std::set<std::string> & vkTypes )
+void readEnums( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,EnumData> & enums, std::set<std::string> & vkTypes )
 {
   assert( element->Attribute( "name" ) );
   std::string name = strip( element->Attribute( "name" ), "Vk" );
@@ -559,9 +570,9 @@ void readEnums( TiXmlElement * element, std::list<DependencyData> & dependencies
   }
 }
 
-void readEnumsEnum( TiXmlElement * element, std::string const& prefix, std::string const& postfix, EnumData & enumData )
+void readEnumsEnum( tinyxml2::XMLElement * element, std::string const& prefix, std::string const& postfix, EnumData & enumData )
 {
-  TiXmlElement * child = element->FirstChildElement();
+  tinyxml2::XMLElement * child = element->FirstChildElement();
   do
   {
     if ( child->Attribute( "name" ) )
@@ -581,9 +592,9 @@ void readEnumsEnum( TiXmlElement * element, std::string const& prefix, std::stri
   } while ( child = child->NextSiblingElement() );
 }
 
-void readExtensionRequire( TiXmlElement * element, std::vector<std::string> & elements )
+void readExtensionRequire( tinyxml2::XMLElement * element, std::vector<std::string> & elements )
 {
-  TiXmlElement * child = element->FirstChildElement();
+  tinyxml2::XMLElement * child = element->FirstChildElement();
   do
   {
     std::string value = child->Value();
@@ -605,9 +616,9 @@ void readExtensionRequire( TiXmlElement * element, std::vector<std::string> & el
   } while ( child = child->NextSiblingElement() );
 }
 
-void readExtensions( TiXmlElement * element, std::vector<ExtensionData> & extensions )
+void readExtensions( tinyxml2::XMLElement * element, std::vector<ExtensionData> & extensions )
 {
-  TiXmlElement * child = element->FirstChildElement();
+  tinyxml2::XMLElement * child = element->FirstChildElement();
   assert( child );
   do
   {
@@ -616,7 +627,7 @@ void readExtensions( TiXmlElement * element, std::vector<ExtensionData> & extens
   } while ( child = child->NextSiblingElement() );
 }
 
-void readExtensionsExtension( TiXmlElement * element, std::vector<ExtensionData> & extensions )
+void readExtensionsExtension( tinyxml2::XMLElement * element, std::vector<ExtensionData> & extensions )
 {
   extensions.push_back( ExtensionData() );
   ExtensionData & ext = extensions.back();
@@ -628,19 +639,19 @@ void readExtensionsExtension( TiXmlElement * element, std::vector<ExtensionData>
     ext.protect = element->Attribute( "protect" );
   }
 
-  TiXmlElement * child = element->FirstChildElement();
+  tinyxml2::XMLElement * child = element->FirstChildElement();
   assert( child && ( strcmp( child->Value(), "require" ) == 0 ) && !child->NextSiblingElement() );
   readExtensionRequire( child, ext.elements );
 }
 
-void readTypeBasetype( TiXmlElement * element, std::list<DependencyData> & dependencies )
+void readTypeBasetype( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies )
 {
-  TiXmlElement * typeElement = element->FirstChildElement();
+  tinyxml2::XMLElement * typeElement = element->FirstChildElement();
   assert( typeElement && ( strcmp( typeElement->Value(), "type" ) == 0 ) && typeElement->GetText() );
   std::string type = typeElement->GetText();
   assert( ( type == "uint32_t" ) || ( type == "uint64_t" ) );
 
-  TiXmlElement * nameElement = typeElement->NextSiblingElement();
+  tinyxml2::XMLElement * nameElement = typeElement->NextSiblingElement();
   assert( nameElement && ( strcmp( nameElement->Value(), "name" ) == 0 ) && nameElement->GetText() );
   std::string name = strip( nameElement->GetText(), "Vk" );
 
@@ -656,13 +667,13 @@ void readTypeBasetype( TiXmlElement * element, std::list<DependencyData> & depen
   }
 }
 
-void readTypeBitmask( TiXmlElement * element, std::list<DependencyData> & dependencies, std::set<std::string> & flags, std::set<std::string> & vkTypes )
+void readTypeBitmask( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::set<std::string> & flags, std::set<std::string> & vkTypes )
 {
-  TiXmlElement * typeElement = element->FirstChildElement();
+  tinyxml2::XMLElement * typeElement = element->FirstChildElement();
   assert( typeElement && ( strcmp( typeElement->Value(), "type" ) == 0 ) && typeElement->GetText() && ( strcmp( typeElement->GetText(), "VkFlags" ) == 0 ) );
   std::string type = typeElement->GetText();
 
-  TiXmlElement * nameElement = typeElement->NextSiblingElement();
+  tinyxml2::XMLElement * nameElement = typeElement->NextSiblingElement();
   assert( nameElement && ( strcmp( nameElement->Value(), "name" ) == 0 ) && nameElement->GetText() );
   std::string name = strip( nameElement->GetText(), "Vk" );
 
@@ -685,54 +696,55 @@ void readTypeBitmask( TiXmlElement * element, std::list<DependencyData> & depend
   }
 }
 
-void readTypeDefine( TiXmlElement * element, std::string & version )
+void readTypeDefine( tinyxml2::XMLElement * element, std::string & version )
 {
-  TiXmlElement * child = element->FirstChildElement();
+  tinyxml2::XMLElement * child = element->FirstChildElement();
   if ( child && ( strcmp( child->GetText(), "VK_API_VERSION" ) == 0 ) )
   {
     version = element->LastChild()->ToText()->Value();
   }
 }
 
-void readTypeFuncpointer( TiXmlElement * element, std::list<DependencyData> & dependencies )
+void readTypeFuncpointer( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies )
 {
-  TiXmlElement * child = element->FirstChildElement();
+  tinyxml2::XMLElement * child = element->FirstChildElement();
   assert( child && ( strcmp( child->Value(), "name" ) == 0 ) && child->GetText() );
   dependencies.push_back( DependencyData( DependencyData::Category::FUNC_POINTER, child->GetText() ) );
 }
 
-void readTypeHandle( TiXmlElement * element, std::list<DependencyData> & dependencies )
+void readTypeHandle( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies )
 {
-  TiXmlElement * typeElement = element->FirstChildElement();
+  tinyxml2::XMLElement * typeElement = element->FirstChildElement();
   assert( typeElement && ( strcmp( typeElement->Value(), "type" ) == 0 ) && typeElement->GetText() );
 #if !defined(NDEBUG)
   std::string type = typeElement->GetText();
   assert( type.find( "VK_DEFINE" ) == 0 );
 #endif
 
-  TiXmlElement * nameElement = typeElement->NextSiblingElement();
+  tinyxml2::XMLElement * nameElement = typeElement->NextSiblingElement();
   assert( nameElement && ( strcmp( nameElement->Value(), "name" ) == 0 ) && nameElement->GetText() );
   std::string name = strip( nameElement->GetText(), "Vk" );
 
   dependencies.push_back( DependencyData( DependencyData::Category::HANDLE, name ) );
 }
 
-void readTypeStructMember( TiXmlElement * element, std::vector<MemberData> & members, std::set<std::string> & dependencies )
+void readTypeStructMember( tinyxml2::XMLElement * element, std::vector<MemberData> & members, std::set<std::string> & dependencies )
 {
   members.push_back( MemberData() );
   MemberData & member = members.back();
 
-  TiXmlNode * child = element->FirstChild();
+  tinyxml2::XMLNode * child = element->FirstChild();
   assert( child );
-  if ( child->Type() == TiXmlNode::TINYXML_TEXT )
+  if ( child->ToText())
   {
-    assert( ( strcmp( child->Value(), "const" ) == 0 ) || ( strcmp( child->Value(), "struct" ) == 0 ) );
-    member.type = std::string( child->Value() ) + " ";
+    std::string value = trimEnd(child->Value());
+    assert( (value == "const") || (value == "struct") );
+    member.type = value + " ";
     child = child->NextSibling();
     assert( child );
   }
 
-  assert( child->Type() == TiXmlNode::TINYXML_ELEMENT );
+  assert( child->ToElement() );
   assert( ( strcmp( child->Value(), "type" ) == 0 ) && child->ToElement() && child->ToElement()->GetText() );
   std::string type = strip( child->ToElement()->GetText(), "Vk" );
   dependencies.insert( type );
@@ -741,15 +753,15 @@ void readTypeStructMember( TiXmlElement * element, std::vector<MemberData> & mem
 
   child = child->NextSibling();
   assert( child );
-  if ( child->Type() == TiXmlNode::TINYXML_TEXT )
+  if ( child->ToText())
   {
-    std::string value = child->Value();
+    std::string value = trimEnd(child->Value());
     assert( ( value == "*" ) || ( value == "**" ) || ( value == "* const*" ) );
     member.type += value;
     child = child->NextSibling();
   }
 
-  assert( ( child->Type() == TiXmlNode::TINYXML_ELEMENT ) && ( strcmp( child->Value(), "name" ) == 0 ) && child->ToElement() );
+  assert( ( child->ToElement() && strcmp( child->Value(), "name" ) == 0 ));
   member.name = child->ToElement()->GetText();
 
   if ( member.name.back() == ']' )
@@ -765,18 +777,18 @@ void readTypeStructMember( TiXmlElement * element, std::vector<MemberData> & mem
   if ( child )
   {
     assert( member.arraySize.empty() );
-    if ( child->Type() == TiXmlNode::TINYXML_TEXT )
+    if ( child->ToText() )
     {
       std::string value = child->Value();
       if ( value == "[" )
       {
         child = child->NextSibling();
         assert( child );
-        assert( ( child->Type() == TiXmlNode::TINYXML_ELEMENT ) && ( strcmp( child->Value(), "enum" ) == 0 ) );
+        assert( child->ToElement() && ( strcmp( child->Value(), "enum" ) == 0 ) );
         member.arraySize = child->ToElement()->GetText();
         child = child->NextSibling();
         assert( child );
-        assert( child->Type() == TiXmlNode::TINYXML_TEXT );
+        assert( child->ToText() );
         assert( strcmp( child->Value(), "]" ) == 0 );
         assert( !child->NextSibling() );
       }
@@ -790,7 +802,7 @@ void readTypeStructMember( TiXmlElement * element, std::vector<MemberData> & mem
   }
 }
 
-void readTypeStruct( TiXmlElement * element, std::list<DependencyData> & dependencies, std::map<std::string,StructData> & structs, std::set<std::string> & vkTypes )
+void readTypeStruct( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,StructData> & structs, std::set<std::string> & vkTypes )
 {
   assert( !element->Attribute( "returnedonly" ) || ( strcmp( element->Attribute( "returnedonly" ), "true" ) == 0 ) );
 
@@ -808,7 +820,7 @@ void readTypeStruct( TiXmlElement * element, std::list<DependencyData> & depende
   std::map<std::string,StructData>::iterator it = structs.insert( std::make_pair( name, StructData() ) ).first;
   it->second.returnedOnly = !!element->Attribute( "returnedonly" );
 
-  TiXmlElement * child = element->FirstChildElement();
+  tinyxml2::XMLElement * child = element->FirstChildElement();
   do
   {
     assert( child->Value() );
@@ -827,14 +839,14 @@ void readTypeStruct( TiXmlElement * element, std::list<DependencyData> & depende
   vkTypes.insert( name );
 }
 
-void readTypeUnionMember( TiXmlElement * element, std::vector<MemberData> & members, std::set<std::string> & dependencies )
+void readTypeUnionMember( tinyxml2::XMLElement * element, std::vector<MemberData> & members, std::set<std::string> & dependencies )
 {
   members.push_back( MemberData() );
   MemberData & member = members.back();
 
-  TiXmlNode * child = element->FirstChild();
+  tinyxml2::XMLNode * child = element->FirstChild();
   assert( child );
-  if ( child->Type() == TiXmlNode::TINYXML_TEXT )
+  if ( child->ToText() )
   {
     assert( ( strcmp( child->Value(), "const" ) == 0 ) || ( strcmp( child->Value(), "struct" ) == 0 ) );
     member.type = std::string( child->Value() ) + " ";
@@ -842,7 +854,7 @@ void readTypeUnionMember( TiXmlElement * element, std::vector<MemberData> & memb
     assert( child );
   }
 
-  assert( child->Type() == TiXmlNode::TINYXML_ELEMENT );
+  assert( child->ToElement() );
   assert( ( strcmp( child->Value(), "type" ) == 0 ) && child->ToElement() && child->ToElement()->GetText() );
   std::string type = strip( child->ToElement()->GetText(), "Vk" );
   dependencies.insert( type );
@@ -851,7 +863,7 @@ void readTypeUnionMember( TiXmlElement * element, std::vector<MemberData> & memb
 
   child = child->NextSibling();
   assert( child );
-  if ( child->Type() == TiXmlNode::TINYXML_TEXT )
+  if ( child->ToText() )
   {
     std::string value = child->Value();
     assert( ( value == "*" ) || ( value == "**" ) || ( value == "* const*" ) );
@@ -859,7 +871,7 @@ void readTypeUnionMember( TiXmlElement * element, std::vector<MemberData> & memb
     child = child->NextSibling();
   }
 
-  assert( ( child->Type() == TiXmlNode::TINYXML_ELEMENT ) && ( strcmp( child->Value(), "name" ) == 0 ) && child->ToElement() );
+  assert( child->ToElement() && ( strcmp( child->Value(), "name" ) == 0 ) );
   member.name = child->ToElement()->GetText();
 
   if ( member.name.back() == ']' )
@@ -874,18 +886,18 @@ void readTypeUnionMember( TiXmlElement * element, std::vector<MemberData> & memb
   child = child->NextSibling();
   if ( child )
   {
-    if ( child->Type() == TiXmlNode::TINYXML_TEXT )
+    if ( child->ToText() )
     {
       std::string value = child->Value();
       if ( value == "[" )
       {
         child = child->NextSibling();
         assert( child );
-        assert( ( child->Type() == TiXmlNode::TINYXML_ELEMENT ) && ( strcmp( child->Value(), "enum" ) == 0 ) );
+        assert( child->ToElement() && ( strcmp( child->Value(), "enum" ) == 0 ) );
         member.arraySize = child->ToElement()->GetText();
         child = child->NextSibling();
         assert( child );
-        assert( child->Type() == TiXmlNode::TINYXML_TEXT );
+        assert( child->ToText() );
         assert( strcmp( child->Value(), "]" ) == 0 );
         assert( !child->NextSibling() );
       }
@@ -899,7 +911,7 @@ void readTypeUnionMember( TiXmlElement * element, std::vector<MemberData> & memb
   }
 }
 
-void readTypeUnion( TiXmlElement * element, std::list<DependencyData> & dependencies, std::map<std::string,StructData> & structs, std::set<std::string> & vkTypes )
+void readTypeUnion( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,StructData> & structs, std::set<std::string> & vkTypes )
 {
   assert( element->Attribute( "name" ) );
   std::string name = strip( element->Attribute( "name" ), "Vk" );
@@ -909,7 +921,7 @@ void readTypeUnion( TiXmlElement * element, std::list<DependencyData> & dependen
   assert( structs.find( name ) == structs.end() );
   std::map<std::string,StructData>::iterator it = structs.insert( std::make_pair( name, StructData() ) ).first;
 
-  TiXmlElement * child = element->FirstChildElement();
+  tinyxml2::XMLElement * child = element->FirstChildElement();
   do
   {
     assert( strcmp( child->Value(), "member" ) == 0 );
@@ -920,9 +932,9 @@ void readTypeUnion( TiXmlElement * element, std::list<DependencyData> & dependen
   vkTypes.insert( name );
 }
 
-void readTypes( TiXmlElement * element, std::string & version, std::list<DependencyData> & dependencies, std::set<std::string> & flags, std::map<std::string,StructData> & structs, std::set<std::string> & vkTypes )
+void readTypes( tinyxml2::XMLElement * element, std::string & version, std::list<DependencyData> & dependencies, std::set<std::string> & flags, std::map<std::string,StructData> & structs, std::set<std::string> & vkTypes )
 {
-  TiXmlElement * child = element->FirstChildElement();
+  tinyxml2::XMLElement * child = element->FirstChildElement();
   do
   {
     assert( strcmp( child->Value(), "type" ) == 0 );
@@ -1794,15 +1806,16 @@ void writeVersionCheck( std::ofstream & ofs, std::string const& version )
 
 int main( int argc, char **argv )
 {
-  TiXmlDocument doc;
+  tinyxml2::XMLDocument doc;
 
-  if ( !doc.LoadFile( argv[1] ) )
+  tinyxml2::XMLError error = doc.LoadFile( argv[1] );
+  if (error != tinyxml2::XML_SUCCESS)
   {
-    std::cout << "VkGenerate: failed to load file " << argv[1] << std::endl;
+    std::cout << "VkGenerate: failed to load file " << argv[1] << " . Error code: " << error << std::endl;
     return -1;
   }
 
-  TiXmlElement * registryElement = doc.FirstChildElement();
+  tinyxml2::XMLElement * registryElement = doc.FirstChildElement();
   assert( strcmp( registryElement->Value(), "registry" ) == 0 );
   assert( !registryElement->NextSiblingElement() );
 
@@ -1815,7 +1828,7 @@ int main( int argc, char **argv )
   std::map<std::string,CommandData> commands;
   std::set<std::string>             vkTypes;
 
-  TiXmlElement * child = registryElement->FirstChildElement();
+  tinyxml2::XMLElement * child = registryElement->FirstChildElement();
   do
   {
     assert( child->Value() );

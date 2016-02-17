@@ -185,7 +185,7 @@ before this line:
 
 # Build instructions for VkCppGenerator
 
-* Clone the repository
-* Download tinyxml from http://www.grinninglizard.com/tinyxml/index.html and extract it in the source folder
+* Clone the repository: git clone https://github.com/nvpro-pipeline/vkcpp.git
+* Update submodules: git submodule update --init --recursive
 * Use CMake to generate a solution or makefile for your favourite build environment
 * Launch the build

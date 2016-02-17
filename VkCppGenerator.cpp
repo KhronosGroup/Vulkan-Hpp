@@ -1875,6 +1875,7 @@ int main( int argc, char **argv )
   ofs << std::endl << "#pragma once" << std::endl;
 
   ofs << "#include <array>" << std::endl
+      << "#include <cassert>" << std::endl
       << "#include <cstdint>" << std::endl
       << "#include <cstring>" << std::endl
       << "#include <vulkan/vulkan.h>" << std::endl

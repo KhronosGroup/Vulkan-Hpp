@@ -773,7 +773,7 @@ namespace vk
   {
   public:
     DescriptorBufferInfo()
-      : DescriptorBufferInfo( nullptr, 0, 0 )
+      : DescriptorBufferInfo( Buffer(), 0, 0 )
     {}
 
     DescriptorBufferInfo( Buffer buffer, DeviceSize offset, DeviceSize range)
@@ -2171,7 +2171,7 @@ namespace vk
   {
   public:
     DescriptorImageInfo()
-      : DescriptorImageInfo( nullptr, nullptr, ImageLayout::eUndefined )
+      : DescriptorImageInfo( Sampler(), ImageView(), ImageLayout::eUndefined )
     {}
 
     DescriptorImageInfo( Sampler sampler, ImageView imageView, ImageLayout imageLayout)
@@ -3791,7 +3791,7 @@ namespace vk
   {
   public:
     MappedMemoryRange()
-      : MappedMemoryRange( nullptr, 0, 0 )
+      : MappedMemoryRange( DeviceMemory(), 0, 0 )
     {}
 
     MappedMemoryRange( DeviceMemory memory, DeviceSize offset, DeviceSize size)
@@ -3871,7 +3871,7 @@ namespace vk
   {
   public:
     WriteDescriptorSet()
-      : WriteDescriptorSet( nullptr, 0, 0, 0, DescriptorType::eSampler, nullptr, nullptr, nullptr )
+      : WriteDescriptorSet( DescriptorSet(), 0, 0, 0, DescriptorType::eSampler, nullptr, nullptr, nullptr )
     {}
 
     WriteDescriptorSet( DescriptorSet dstSet, uint32_t dstBinding, uint32_t dstArrayElement, uint32_t descriptorCount, DescriptorType descriptorType, const DescriptorImageInfo* pImageInfo, const DescriptorBufferInfo* pBufferInfo, const BufferView* pTexelBufferView)
@@ -4011,7 +4011,7 @@ namespace vk
   {
   public:
     CopyDescriptorSet()
-      : CopyDescriptorSet( nullptr, 0, 0, nullptr, 0, 0, 0 )
+      : CopyDescriptorSet( DescriptorSet(), 0, 0, DescriptorSet(), 0, 0, 0 )
     {}
 
     CopyDescriptorSet( DescriptorSet srcSet, uint32_t srcBinding, uint32_t srcArrayElement, DescriptorSet dstSet, uint32_t dstBinding, uint32_t dstArrayElement, uint32_t descriptorCount)
@@ -4139,7 +4139,7 @@ namespace vk
   {
   public:
     BufferViewCreateInfo()
-      : BufferViewCreateInfo( 0, nullptr, Format::eUndefined, 0, 0 )
+      : BufferViewCreateInfo( 0, Buffer(), Format::eUndefined, 0, 0 )
     {}
 
     BufferViewCreateInfo( BufferViewCreateFlags flags, Buffer buffer, Format format, DeviceSize offset, DeviceSize range)
@@ -4323,7 +4323,7 @@ namespace vk
   {
   public:
     DescriptorSetAllocateInfo()
-      : DescriptorSetAllocateInfo( nullptr, 0, nullptr )
+      : DescriptorSetAllocateInfo( DescriptorPool(), 0, nullptr )
     {}
 
     DescriptorSetAllocateInfo( DescriptorPool descriptorPool, uint32_t descriptorSetCount, const DescriptorSetLayout* pSetLayouts)
@@ -5415,7 +5415,7 @@ namespace vk
   {
   public:
     CommandBufferAllocateInfo()
-      : CommandBufferAllocateInfo( nullptr, CommandBufferLevel::ePrimary, 0 )
+      : CommandBufferAllocateInfo( CommandPool(), CommandBufferLevel::ePrimary, 0 )
     {}
 
     CommandBufferAllocateInfo( CommandPool commandPool, CommandBufferLevel level, uint32_t commandBufferCount)
@@ -5495,7 +5495,7 @@ namespace vk
   {
   public:
     RenderPassBeginInfo()
-      : RenderPassBeginInfo( nullptr, nullptr, Rect2D(), 0, nullptr )
+      : RenderPassBeginInfo( RenderPass(), Framebuffer(), Rect2D(), 0, nullptr )
     {}
 
     RenderPassBeginInfo( RenderPass renderPass, Framebuffer framebuffer, Rect2D renderArea, uint32_t clearValueCount, const ClearValue* pClearValues)
@@ -5711,7 +5711,7 @@ namespace vk
   {
   public:
     FramebufferCreateInfo()
-      : FramebufferCreateInfo( 0, nullptr, 0, nullptr, 0, 0, 0 )
+      : FramebufferCreateInfo( 0, RenderPass(), 0, nullptr, 0, 0, 0 )
     {}
 
     FramebufferCreateInfo( FramebufferCreateFlags flags, RenderPass renderPass, uint32_t attachmentCount, const ImageView* pAttachments, uint32_t width, uint32_t height, uint32_t layers)
@@ -6322,7 +6322,7 @@ namespace vk
   {
   public:
     BufferMemoryBarrier()
-      : BufferMemoryBarrier( AccessFlags(), AccessFlags(), 0, 0, nullptr, 0, 0 )
+      : BufferMemoryBarrier( AccessFlags(), AccessFlags(), 0, 0, Buffer(), 0, 0 )
     {}
 
     BufferMemoryBarrier( AccessFlags srcAccessMask, AccessFlags dstAccessMask, uint32_t srcQueueFamilyIndex, uint32_t dstQueueFamilyIndex, Buffer buffer, DeviceSize offset, DeviceSize size)
@@ -6779,7 +6779,7 @@ namespace vk
   {
   public:
     PipelineShaderStageCreateInfo()
-      : PipelineShaderStageCreateInfo( 0, ShaderStageFlagBits::eVertex, nullptr, nullptr, nullptr )
+      : PipelineShaderStageCreateInfo( 0, ShaderStageFlagBits::eVertex, ShaderModule(), nullptr, nullptr )
     {}
 
     PipelineShaderStageCreateInfo( PipelineShaderStageCreateFlags flags, ShaderStageFlagBits stage, ShaderModule module, const char* pName, const SpecializationInfo* pSpecializationInfo)
@@ -7092,7 +7092,7 @@ namespace vk
   {
   public:
     ComputePipelineCreateInfo()
-      : ComputePipelineCreateInfo( PipelineCreateFlags(), PipelineShaderStageCreateInfo(), nullptr, nullptr, 0 )
+      : ComputePipelineCreateInfo( PipelineCreateFlags(), PipelineShaderStageCreateInfo(), PipelineLayout(), Pipeline(), 0 )
     {}
 
     ComputePipelineCreateInfo( PipelineCreateFlags flags, PipelineShaderStageCreateInfo stage, PipelineLayout layout, Pipeline basePipelineHandle, int32_t basePipelineIndex)
@@ -7625,7 +7625,7 @@ namespace vk
   {
   public:
     CommandBufferInheritanceInfo()
-      : CommandBufferInheritanceInfo( nullptr, 0, nullptr, 0, QueryControlFlags(), QueryPipelineStatisticFlags() )
+      : CommandBufferInheritanceInfo( RenderPass(), 0, Framebuffer(), 0, QueryControlFlags(), QueryPipelineStatisticFlags() )
     {}
 
     CommandBufferInheritanceInfo( RenderPass renderPass, uint32_t subpass, Framebuffer framebuffer, Bool32 occlusionQueryEnable, QueryControlFlags queryFlags, QueryPipelineStatisticFlags pipelineStatistics)
@@ -8120,7 +8120,7 @@ namespace vk
   {
   public:
     ImageMemoryBarrier()
-      : ImageMemoryBarrier( AccessFlags(), AccessFlags(), ImageLayout::eUndefined, ImageLayout::eUndefined, 0, 0, nullptr, ImageSubresourceRange() )
+      : ImageMemoryBarrier( AccessFlags(), AccessFlags(), ImageLayout::eUndefined, ImageLayout::eUndefined, 0, 0, Image(), ImageSubresourceRange() )
     {}
 
     ImageMemoryBarrier( AccessFlags srcAccessMask, AccessFlags dstAccessMask, ImageLayout oldLayout, ImageLayout newLayout, uint32_t srcQueueFamilyIndex, uint32_t dstQueueFamilyIndex, Image image, ImageSubresourceRange subresourceRange)
@@ -8260,7 +8260,7 @@ namespace vk
   {
   public:
     ImageViewCreateInfo()
-      : ImageViewCreateInfo( 0, nullptr, ImageViewType::e1D, Format::eUndefined, ComponentMapping(), ImageSubresourceRange() )
+      : ImageViewCreateInfo( 0, Image(), ImageViewType::e1D, Format::eUndefined, ComponentMapping(), ImageSubresourceRange() )
     {}
 
     ImageViewCreateInfo( ImageViewCreateFlags flags, Image image, ImageViewType viewType, Format format, ComponentMapping components, ImageSubresourceRange subresourceRange)
@@ -8842,7 +8842,7 @@ namespace vk
   {
   public:
     SparseMemoryBind()
-      : SparseMemoryBind( 0, 0, nullptr, 0, SparseMemoryBindFlags() )
+      : SparseMemoryBind( 0, 0, DeviceMemory(), 0, SparseMemoryBindFlags() )
     {}
 
     SparseMemoryBind( DeviceSize resourceOffset, DeviceSize size, DeviceMemory memory, DeviceSize memoryOffset, SparseMemoryBindFlags flags)
@@ -8922,7 +8922,7 @@ namespace vk
   {
   public:
     SparseImageMemoryBind()
-      : SparseImageMemoryBind( ImageSubresource(), Offset3D(), Extent3D(), nullptr, 0, SparseMemoryBindFlags() )
+      : SparseImageMemoryBind( ImageSubresource(), Offset3D(), Extent3D(), DeviceMemory(), 0, SparseMemoryBindFlags() )
     {}
 
     SparseImageMemoryBind( ImageSubresource subresource, Offset3D offset, Extent3D extent, DeviceMemory memory, DeviceSize memoryOffset, SparseMemoryBindFlags flags)
@@ -9014,7 +9014,7 @@ namespace vk
   {
   public:
     SparseBufferMemoryBindInfo()
-      : SparseBufferMemoryBindInfo( nullptr, 0, nullptr )
+      : SparseBufferMemoryBindInfo( Buffer(), 0, nullptr )
     {}
 
     SparseBufferMemoryBindInfo( Buffer buffer, uint32_t bindCount, const SparseMemoryBind* pBinds)
@@ -9070,7 +9070,7 @@ namespace vk
   {
   public:
     SparseImageOpaqueMemoryBindInfo()
-      : SparseImageOpaqueMemoryBindInfo( nullptr, 0, nullptr )
+      : SparseImageOpaqueMemoryBindInfo( Image(), 0, nullptr )
     {}
 
     SparseImageOpaqueMemoryBindInfo( Image image, uint32_t bindCount, const SparseMemoryBind* pBinds)
@@ -9126,7 +9126,7 @@ namespace vk
   {
   public:
     SparseImageMemoryBindInfo()
-      : SparseImageMemoryBindInfo( nullptr, 0, nullptr )
+      : SparseImageMemoryBindInfo( Image(), 0, nullptr )
     {}
 
     SparseImageMemoryBindInfo( Image image, uint32_t bindCount, const SparseImageMemoryBind* pBinds)
@@ -9990,7 +9990,7 @@ namespace vk
   {
   public:
     GraphicsPipelineCreateInfo()
-      : GraphicsPipelineCreateInfo( PipelineCreateFlags(), 0, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, 0, nullptr, 0 )
+      : GraphicsPipelineCreateInfo( PipelineCreateFlags(), 0, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, PipelineLayout(), RenderPass(), 0, Pipeline(), 0 )
     {}
 
     GraphicsPipelineCreateInfo( PipelineCreateFlags flags, uint32_t stageCount, const PipelineShaderStageCreateInfo* pStages, const PipelineVertexInputStateCreateInfo* pVertexInputState, const PipelineInputAssemblyStateCreateInfo* pInputAssemblyState, const PipelineTessellationStateCreateInfo* pTessellationState, const PipelineViewportStateCreateInfo* pViewportState, const PipelineRasterizationStateCreateInfo* pRasterizationState, const PipelineMultisampleStateCreateInfo* pMultisampleState, const PipelineDepthStencilStateCreateInfo* pDepthStencilState, const PipelineColorBlendStateCreateInfo* pColorBlendState, const PipelineDynamicStateCreateInfo* pDynamicState, PipelineLayout layout, RenderPass renderPass, uint32_t subpass, Pipeline basePipelineHandle, int32_t basePipelineIndex)
@@ -11571,7 +11571,7 @@ namespace vk
   {
   public:
     SwapchainCreateInfoKHR()
-      : SwapchainCreateInfoKHR( 0, nullptr, 0, Format::eUndefined, ColorSpaceKHR::eVkColorspaceSrgbNonlinearKhr, Extent2D(), 0, ImageUsageFlags(), SharingMode::eExclusive, 0, nullptr, SurfaceTransformFlagBitsKHR::eIdentity, CompositeAlphaFlagBitsKHR::eOpaque, PresentModeKHR::eVkPresentModeImmediateKhr, 0, nullptr )
+      : SwapchainCreateInfoKHR( 0, SurfaceKHR(), 0, Format::eUndefined, ColorSpaceKHR::eVkColorspaceSrgbNonlinearKhr, Extent2D(), 0, ImageUsageFlags(), SharingMode::eExclusive, 0, nullptr, SurfaceTransformFlagBitsKHR::eIdentity, CompositeAlphaFlagBitsKHR::eOpaque, PresentModeKHR::eVkPresentModeImmediateKhr, 0, SwapchainKHR() )
     {}
 
     SwapchainCreateInfoKHR( SwapchainCreateFlagsKHR flags, SurfaceKHR surface, uint32_t minImageCount, Format imageFormat, ColorSpaceKHR imageColorSpace, Extent2D imageExtent, uint32_t imageArrayLayers, ImageUsageFlags imageUsage, SharingMode imageSharingMode, uint32_t queueFamilyIndexCount, const uint32_t* pQueueFamilyIndices, SurfaceTransformFlagBitsKHR preTransform, CompositeAlphaFlagBitsKHR compositeAlpha, PresentModeKHR presentMode, Bool32 clipped, SwapchainKHR oldSwapchain)
@@ -13468,7 +13468,7 @@ namespace vk
   {
   public:
     DisplayPlanePropertiesKHR()
-      : DisplayPlanePropertiesKHR( nullptr, 0 )
+      : DisplayPlanePropertiesKHR( DisplayKHR(), 0 )
     {}
 
     DisplayPlanePropertiesKHR( DisplayKHR currentDisplay, uint32_t currentStackIndex)
@@ -13556,7 +13556,7 @@ namespace vk
   {
   public:
     DisplayModePropertiesKHR()
-      : DisplayModePropertiesKHR( nullptr, DisplayModeParametersKHR() )
+      : DisplayModePropertiesKHR( DisplayModeKHR(), DisplayModeParametersKHR() )
     {}
 
     DisplayModePropertiesKHR( DisplayModeKHR displayMode, DisplayModeParametersKHR parameters)
@@ -13811,7 +13811,7 @@ namespace vk
   {
   public:
     DisplayPropertiesKHR()
-      : DisplayPropertiesKHR( nullptr, nullptr, Extent2D(), Extent2D(), SurfaceTransformFlagsKHR(), 0, 0 )
+      : DisplayPropertiesKHR( DisplayKHR(), nullptr, Extent2D(), Extent2D(), SurfaceTransformFlagsKHR(), 0, 0 )
     {}
 
     DisplayPropertiesKHR( DisplayKHR display, const char* displayName, Extent2D physicalDimensions, Extent2D physicalResolution, SurfaceTransformFlagsKHR supportedTransforms, Bool32 planeReorderPossible, Bool32 persistentContent)
@@ -13915,7 +13915,7 @@ namespace vk
   {
   public:
     DisplaySurfaceCreateInfoKHR()
-      : DisplaySurfaceCreateInfoKHR( 0, nullptr, 0, 0, SurfaceTransformFlagBitsKHR::eIdentity, 0, DisplayPlaneAlphaFlagBitsKHR::eOpaque, Extent2D() )
+      : DisplaySurfaceCreateInfoKHR( 0, DisplayModeKHR(), 0, 0, SurfaceTransformFlagBitsKHR::eIdentity, 0, DisplayPlaneAlphaFlagBitsKHR::eOpaque, Extent2D() )
     {}
 
     DisplaySurfaceCreateInfoKHR( DisplaySurfaceCreateFlagsKHR flags, DisplayModeKHR displayMode, uint32_t planeIndex, uint32_t planeStackIndex, SurfaceTransformFlagBitsKHR transform, float globalAlpha, DisplayPlaneAlphaFlagBitsKHR alphaMode, Extent2D imageExtent)

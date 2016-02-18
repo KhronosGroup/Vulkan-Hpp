@@ -214,7 +214,11 @@ struct NameValue
 struct EnumData
 {
   bool                    bitmask;
+  std::string             prefix;
+  std::string             postfix;
   std::vector<NameValue>  members;
+
+  void addEnum(std::string const & name);
 };
 
 struct CommandData
@@ -259,6 +263,7 @@ struct DependencyData
 void createDefaults( std::vector<DependencyData> const& dependencies, std::map<std::string,EnumData> const& enums, std::map<std::string,std::string> & defaultValues );
 size_t findComplexIndex(CommandData const& commandData, std::vector<std::pair<size_t, size_t>> const& lenParameters);
 size_t findReturnIndex(CommandData const& commandData, std::vector<std::pair<size_t, size_t>> const& lenParameters);
+std::string getEnumName(std::string const& name); // get vkcpp enum name from vk enum name
 std::vector<std::pair<size_t, size_t>> getLenParameters(CommandData const& commandData);
 bool noDependencies(std::set<std::string> const& dependencies, std::map<std::string, std::string> & listedTypes);
 void readCommandParam( tinyxml2::XMLElement * element, DependencyData & typeData, std::vector<MemberData> & arguments );
@@ -266,10 +271,10 @@ CommandData & readCommandProto( tinyxml2::XMLElement * element, std::list<Depend
 void readCommands( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,CommandData> & commands );
 void readCommandsCommand( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,CommandData> & commands );
 void readEnums( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,EnumData> & enums, std::set<std::string> & vkTypes );
-void readEnumsEnum( tinyxml2::XMLElement * element, std::string const& prefix, std::string const& postfix, EnumData & enumData );
-void readExtensionRequire( tinyxml2::XMLElement * element, std::vector<std::string> & elements );
-void readExtensions( tinyxml2::XMLElement * element, std::vector<ExtensionData> & extensions );
-void readExtensionsExtension( tinyxml2::XMLElement * element, std::vector<ExtensionData> & extensions );
+void readEnumsEnum( tinyxml2::XMLElement * element, EnumData & enumData );
+void readExtensionRequire( tinyxml2::XMLElement * element, std::vector<std::string> & elements, std::map<std::string, EnumData> & enums );
+void readExtensions( tinyxml2::XMLElement * element, std::vector<ExtensionData> & extensions, std::map<std::string, EnumData> & enums );
+void readExtensionsExtension(tinyxml2::XMLElement * element, std::vector<ExtensionData> & extensions, std::map<std::string, EnumData> & enums);
 void readTypeBasetype( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies );
 void readTypeBitmask( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::set<std::string> & flags, std::set<std::string> & vkTypes );
 void readTypeDefine( tinyxml2::XMLElement * element, std::string & version );
@@ -302,6 +307,21 @@ void writeTypeStruct( std::ofstream & ofs, DependencyData const& dependencyData,
 void writeTypeUnion( std::ofstream & ofs, DependencyData const& dependencyData, StructData const& unionData, std::set<std::string> const& vkTypes, std::map<std::string,StructData> const& structs, std::map<std::string,std::string> const& defaultValues );
 void writeTypes( std::ofstream & ofs, std::vector<DependencyData> const& dependencies, std::map<std::string,CommandData> const& commands, std::map<std::string,EnumData> const& enums, std::map<std::string,StructData> const& structs, std::map<std::string,std::string> const& defaultValues, std::set<std::string> const& vkTypes );
 void writeVersionCheck( std::ofstream & ofs, std::string const& version );
+
+void EnumData::addEnum(std::string const & name)
+{
+  members.push_back(NameValue());
+  members.back().name = "e" + toCamelCase(strip(name, prefix));
+  members.back().value = name;
+  if (!postfix.empty())
+  {
+    size_t pos = members.back().name.find(postfix);
+    if (pos != std::string::npos)
+    {
+        members.back().name.erase(pos);
+    }
+  }
+}
 
 void createDefaults( std::vector<DependencyData> const& dependencies, std::map<std::string,EnumData> const& enums, std::map<std::string,std::string> & defaultValues )
 {
@@ -372,6 +392,11 @@ size_t findReturnIndex(CommandData const& commandData, std::vector<std::pair<siz
     }
   }
   return ~0;
+}
+
+std::string getEnumName(std::string const& name) // get vkcpp enum name from vk enum name
+{
+  return strip(name, "Vk");
 }
 
 std::vector<std::pair<size_t, size_t>> getLenParameters(CommandData const& commandData)
@@ -545,7 +570,7 @@ void readCommandsCommand( tinyxml2::XMLElement * element, std::list<DependencyDa
 void readEnums( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,EnumData> & enums, std::set<std::string> & vkTypes )
 {
   assert( element->Attribute( "name" ) );
-  std::string name = strip( element->Attribute( "name" ), "Vk" );
+  std::string name = getEnumName(element->Attribute("name"));
   if ( name != "API Constants" )
   {
     dependencies.push_back( DependencyData( DependencyData::Category::ENUM, name ) );
@@ -560,50 +585,41 @@ void readEnums( tinyxml2::XMLElement * element, std::list<DependencyData> & depe
     {
       size_t pos = name.find( "FlagBits" );
       assert( pos != std::string::npos );
-      prefix = "VK" + toUpperCase( name.substr( 0, pos ) ) + "_";
-      postfix = "Bit";
+      it->second.prefix = "VK" + toUpperCase( name.substr( 0, pos ) ) + "_";
+      it->second.postfix = "Bit";
     }
     else
     {
-      prefix = "VK" + toUpperCase( name ) + "_";
+      it->second.prefix = "VK" + toUpperCase( name ) + "_";
     }
 
-    readEnumsEnum( element, prefix, postfix, it->second );
+    readEnumsEnum( element, it->second );
 
     assert( vkTypes.find( name ) == vkTypes.end() );
     vkTypes.insert( name );
   }
 }
 
-void readEnumsEnum( tinyxml2::XMLElement * element, std::string const& prefix, std::string const& postfix, EnumData & enumData )
+void readEnumsEnum( tinyxml2::XMLElement * element, EnumData & enumData )
 {
   tinyxml2::XMLElement * child = element->FirstChildElement();
   do
   {
     if ( child->Attribute( "name" ) )
     {
-      enumData.members.push_back( NameValue() );
-      enumData.members.back().name = "e" + toCamelCase( strip( child->Attribute( "name" ), prefix ) );
-      enumData.members.back().value = child->Attribute( "name" );
-      if ( !postfix.empty() )
-      {
-        size_t pos = enumData.members.back().name.find( postfix );
-        if ( pos != std::string::npos )
-        {
-          enumData.members.back().name.erase( pos );
-        }
-      }
+      enumData.addEnum(child->Attribute("name"));
     }
   } while ( child = child->NextSiblingElement() );
 }
 
-void readExtensionRequire( tinyxml2::XMLElement * element, std::vector<std::string> & elements )
+void readExtensionRequire(tinyxml2::XMLElement * element, std::vector<std::string> & elements, std::map<std::string, EnumData> & enums)
 {
   tinyxml2::XMLElement * child = element->FirstChildElement();
   do
   {
     std::string value = child->Value();
     assert( child->Attribute( "name" ) );
+
     if ( value == "command" )
     {
       elements.push_back( strip( child->Attribute( "name" ), "vk" ) );
@@ -614,31 +630,47 @@ void readExtensionRequire( tinyxml2::XMLElement * element, std::vector<std::stri
     {
       elements.push_back( strip( child->Attribute( "name" ), "Vk" ) );
     }
+    else if ( value == "enum")
+    {
+      // TODO process enums which don't extend existing enums
+      if (child->Attribute("extends"))
+      {
+        assert(enums.find(getEnumName(child->Attribute("extends"))) != enums.end());
+        enums[getEnumName(child->Attribute("extends"))].addEnum(child->Attribute("name"));
+      }
+    }
     else
     {
-      assert( value == "enum" );
+        assert("unknown attribute, check me");
     }
   } while ( child = child->NextSiblingElement() );
 }
 
-void readExtensions( tinyxml2::XMLElement * element, std::vector<ExtensionData> & extensions )
+void readExtensions(tinyxml2::XMLElement * element, std::vector<ExtensionData> & extensions, std::map<std::string, EnumData> & enums)
 {
   tinyxml2::XMLElement * child = element->FirstChildElement();
   assert( child );
   do
   {
     assert( strcmp( child->Value(), "extension" ) == 0 );
-    readExtensionsExtension( child, extensions );
+    readExtensionsExtension( child, extensions, enums );
   } while ( child = child->NextSiblingElement() );
 }
 
-void readExtensionsExtension( tinyxml2::XMLElement * element, std::vector<ExtensionData> & extensions )
+void readExtensionsExtension(tinyxml2::XMLElement * element, std::vector<ExtensionData> & extensions, std::map<std::string, EnumData> & enums )
 {
   extensions.push_back( ExtensionData() );
   ExtensionData & ext = extensions.back();
 
   assert( element->Attribute( "name" ) );
   ext.name = element->Attribute( "name" );
+
+  // don't parse disabled extensions
+  if (strcmp(element->Attribute("supported"), "disabled") == 0)
+  {
+    return;
+  }
+
   if ( element->Attribute( "protect" ) )
   {
     ext.protect = element->Attribute( "protect" );
@@ -646,7 +678,7 @@ void readExtensionsExtension( tinyxml2::XMLElement * element, std::vector<Extens
 
   tinyxml2::XMLElement * child = element->FirstChildElement();
   assert( child && ( strcmp( child->Value(), "require" ) == 0 ) && !child->NextSiblingElement() );
-  readExtensionRequire( child, ext.elements );
+  readExtensionRequire( child, ext.elements, enums);
 }
 
 void readTypeBasetype( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies )
@@ -1848,7 +1880,7 @@ int main( int argc, char **argv )
     }
     else if ( value == "extensions" )
     {
-      readExtensions( child, extensions );
+      readExtensions( child, extensions, enums );
     }
     else if ( value == "types" )
     {

@@ -2170,7 +2170,8 @@ namespace vk
     eShaderReadOnlyOptimal = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
     eTransferSrcOptimal = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
     eTransferDstOptimal = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-    ePreinitialized = VK_IMAGE_LAYOUT_PREINITIALIZED
+    ePreinitialized = VK_IMAGE_LAYOUT_PREINITIALIZED,
+    ePresentSrcKhr = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR
   };
 
   class DescriptorImageInfo
@@ -3270,7 +3271,19 @@ namespace vk
     eImageMemoryBarrier = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
     eMemoryBarrier = VK_STRUCTURE_TYPE_MEMORY_BARRIER,
     eLoaderInstanceCreateInfo = VK_STRUCTURE_TYPE_LOADER_INSTANCE_CREATE_INFO,
-    eLoaderDeviceCreateInfo = VK_STRUCTURE_TYPE_LOADER_DEVICE_CREATE_INFO
+    eLoaderDeviceCreateInfo = VK_STRUCTURE_TYPE_LOADER_DEVICE_CREATE_INFO,
+    eSwapchainCreateInfoKhr = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
+    ePresentInfoKhr = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
+    eDisplayModeCreateInfoKhr = VK_STRUCTURE_TYPE_DISPLAY_MODE_CREATE_INFO_KHR,
+    eDisplaySurfaceCreateInfoKhr = VK_STRUCTURE_TYPE_DISPLAY_SURFACE_CREATE_INFO_KHR,
+    eDisplayPresentInfoKhr = VK_STRUCTURE_TYPE_DISPLAY_PRESENT_INFO_KHR,
+    eXlibSurfaceCreateInfoKhr = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR,
+    eXcbSurfaceCreateInfoKhr = VK_STRUCTURE_TYPE_XCB_SURFACE_CREATE_INFO_KHR,
+    eWaylandSurfaceCreateInfoKhr = VK_STRUCTURE_TYPE_WAYLAND_SURFACE_CREATE_INFO_KHR,
+    eMirSurfaceCreateInfoKhr = VK_STRUCTURE_TYPE_MIR_SURFACE_CREATE_INFO_KHR,
+    eAndroidSurfaceCreateInfoKhr = VK_STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR,
+    eWin32SurfaceCreateInfoKhr = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR,
+    eDebugReportCreateInfoExt = VK_STRUCTURE_TYPE_DEBUG_REPORT_CREATE_INFO_EXT
   };
 
   class ApplicationInfo
@@ -5865,7 +5878,13 @@ namespace vk
     eVkErrorFeatureNotPresent = VK_ERROR_FEATURE_NOT_PRESENT,
     eVkErrorIncompatibleDriver = VK_ERROR_INCOMPATIBLE_DRIVER,
     eVkErrorTooManyObjects = VK_ERROR_TOO_MANY_OBJECTS,
-    eVkErrorFormatNotSupported = VK_ERROR_FORMAT_NOT_SUPPORTED
+    eVkErrorFormatNotSupported = VK_ERROR_FORMAT_NOT_SUPPORTED,
+    eVkErrorSurfaceLostKhr = VK_ERROR_SURFACE_LOST_KHR,
+    eVkErrorNativeWindowInUseKhr = VK_ERROR_NATIVE_WINDOW_IN_USE_KHR,
+    eVkSuboptimalKhr = VK_SUBOPTIMAL_KHR,
+    eVkErrorOutOfDateKhr = VK_ERROR_OUT_OF_DATE_KHR,
+    eVkErrorIncompatibleDisplayKhr = VK_ERROR_INCOMPATIBLE_DISPLAY_KHR,
+    eVkErrorValidationFailedExt = VK_ERROR_VALIDATION_FAILED_EXT
   };
 
   class PresentInfoKHR

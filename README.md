@@ -109,6 +109,12 @@ vk::ImageCreateInfo ci(
 </code>
 </pre>
 
+# String conversions
+
+At development time it can be quite handy to have a utility function that can convert an enum or flags to a string for debugging purposes. To achieve this,
+we have implemented <code>getString(type)</code> functions for all enums and flags. Calling <code>getString(vk::SharingMode::eExclusive)</code> will return 'Exclusive' and calling
+<code>getString(vk::QueueFlagBits::eGraphics | vk::QueueFlagBits::eCompute)</code> will return the concatenated string 'Graphics | Compute'.
+
 # Alternative Initialization of Structs
 
 Another nice feature of those constructors is that sType is being initialized internally and thus is always correct.

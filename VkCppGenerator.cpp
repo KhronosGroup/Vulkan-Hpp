@@ -1655,6 +1655,55 @@ void writeTypeEnum( std::ofstream & ofs, DependencyData const& dependencyData, E
       << std::endl;
 }
 
+void writeEnumToString(std::ofstream & ofs, DependencyData const& dependencyData, EnumData const& enumData)
+{
+  ofs << "  static const char * getString(" << dependencyData.name << " value)" << std::endl
+      << "  {" << std::endl
+      << "    switch (value)" << std::endl
+      << "    {" << std::endl;
+  for (auto itMember = enumData.members.begin(); itMember != enumData.members.end(); ++itMember)
+  {
+    ofs << "    case " << dependencyData.name << "::" << itMember->name << ": return \"" << itMember->name.substr(1) << "\";" << std::endl;
+  }
+  ofs << "    default: return \"unknown\";" << std::endl
+      << "    }" << std::endl
+      << "  }" << std::endl
+      << std::endl;
+}
+
+void writeFlagsTostring(std::ofstream & ofs, DependencyData const& dependencyData, EnumData const &enumData)
+{
+  std::string enumPrefix = "vk::" + *dependencyData.dependencies.begin() + "::";
+  ofs << "  static std::string getString(" << dependencyData.name << " value)" << std::endl
+      << "  {" << std::endl
+      << "    if (!value) return std::string();" << std::endl
+      << "    std::string result;" << std::endl;
+ 
+  for (auto itMember = enumData.members.begin(); itMember != enumData.members.end(); ++itMember)
+  {
+    ofs << "    if (value & " << enumPrefix + itMember->name << ") result += \"" << itMember->name.substr(1) << " | \";" << std::endl;
+  }
+  ofs << "    return result.substr(0, result.size() - 3);" << std::endl
+      << "  }" << std::endl;
+}
+
+void writeEnumsToString(std::ofstream & ofs, std::vector<DependencyData> const& dependencyData, std::map<std::string, EnumData> const& enums)
+{
+  for (auto it = dependencyData.begin(); it != dependencyData.end(); ++it)
+  {
+    switch (it->category)
+    {
+    case DependencyData::Category::ENUM:
+      assert(enums.find(it->name) != enums.end());
+      writeEnumToString(ofs, *it, enums.find(it->name)->second);
+      break;
+    case DependencyData::Category::FLAGS:
+      writeFlagsTostring(ofs, *it, enums.find(*it->dependencies.begin())->second);
+      break;
+    }
+  }
+}
+
 void writeTypeFlags( std::ofstream & ofs, DependencyData const& dependencyData )
 {
   assert( dependencyData.dependencies.size() == 1 );
@@ -1934,6 +1983,11 @@ int main( int argc, char **argv )
       ofs << "#endif /* " << extensions[i-1].protect << " */" << std::endl
           << std::endl;
     }
+  }
+
+  for (size_t i = 0; i < sortedDependencies.size(); i++)
+  {
+    writeEnumsToString(ofs, sortedDependencies[i], enums);
   }
 
   ofs << "}" << std::endl;

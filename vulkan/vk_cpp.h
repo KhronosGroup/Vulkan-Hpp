@@ -14979,4 +14979,1601 @@ namespace vk
   }
 #endif    // VKCPP_ENHANCED_MODE
 
+  static const char * getString(ImageLayout value)
+  {
+    switch (value)
+    {
+    case ImageLayout::eUndefined: return "Undefined";
+    case ImageLayout::eGeneral: return "General";
+    case ImageLayout::eColorAttachmentOptimal: return "ColorAttachmentOptimal";
+    case ImageLayout::eDepthStencilAttachmentOptimal: return "DepthStencilAttachmentOptimal";
+    case ImageLayout::eDepthStencilReadOnlyOptimal: return "DepthStencilReadOnlyOptimal";
+    case ImageLayout::eShaderReadOnlyOptimal: return "ShaderReadOnlyOptimal";
+    case ImageLayout::eTransferSrcOptimal: return "TransferSrcOptimal";
+    case ImageLayout::eTransferDstOptimal: return "TransferDstOptimal";
+    case ImageLayout::ePreinitialized: return "Preinitialized";
+    case ImageLayout::ePresentSrcKhr: return "PresentSrcKhr";
+    default: return "unknown";
+    }
+  }
+
+  static const char * getString(AttachmentLoadOp value)
+  {
+    switch (value)
+    {
+    case AttachmentLoadOp::eLoad: return "Load";
+    case AttachmentLoadOp::eClear: return "Clear";
+    case AttachmentLoadOp::eDontCare: return "DontCare";
+    default: return "unknown";
+    }
+  }
+
+  static const char * getString(AttachmentStoreOp value)
+  {
+    switch (value)
+    {
+    case AttachmentStoreOp::eStore: return "Store";
+    case AttachmentStoreOp::eDontCare: return "DontCare";
+    default: return "unknown";
+    }
+  }
+
+  static const char * getString(ImageType value)
+  {
+    switch (value)
+    {
+    case ImageType::e1D: return "1D";
+    case ImageType::e2D: return "2D";
+    case ImageType::e3D: return "3D";
+    default: return "unknown";
+    }
+  }
+
+  static const char * getString(ImageTiling value)
+  {
+    switch (value)
+    {
+    case ImageTiling::eOptimal: return "Optimal";
+    case ImageTiling::eLinear: return "Linear";
+    default: return "unknown";
+    }
+  }
+
+  static const char * getString(ImageViewType value)
+  {
+    switch (value)
+    {
+    case ImageViewType::e1D: return "1D";
+    case ImageViewType::e2D: return "2D";
+    case ImageViewType::e3D: return "3D";
+    case ImageViewType::eCube: return "Cube";
+    case ImageViewType::e1DArray: return "1DArray";
+    case ImageViewType::e2DArray: return "2DArray";
+    case ImageViewType::eCubeArray: return "CubeArray";
+    default: return "unknown";
+    }
+  }
+
+  static const char * getString(CommandBufferLevel value)
+  {
+    switch (value)
+    {
+    case CommandBufferLevel::ePrimary: return "Primary";
+    case CommandBufferLevel::eSecondary: return "Secondary";
+    default: return "unknown";
+    }
+  }
+
+  static const char * getString(ComponentSwizzle value)
+  {
+    switch (value)
+    {
+    case ComponentSwizzle::eIdentity: return "Identity";
+    case ComponentSwizzle::eZero: return "Zero";
+    case ComponentSwizzle::eOne: return "One";
+    case ComponentSwizzle::eR: return "R";
+    case ComponentSwizzle::eG: return "G";
+    case ComponentSwizzle::eB: return "B";
+    case ComponentSwizzle::eA: return "A";
+    default: return "unknown";
+    }
+  }
+
+  static const char * getString(DescriptorType value)
+  {
+    switch (value)
+    {
+    case DescriptorType::eSampler: return "Sampler";
+    case DescriptorType::eCombinedImageSampler: return "CombinedImageSampler";
+    case DescriptorType::eSampledImage: return "SampledImage";
+    case DescriptorType::eStorageImage: return "StorageImage";
+    case DescriptorType::eUniformTexelBuffer: return "UniformTexelBuffer";
+    case DescriptorType::eStorageTexelBuffer: return "StorageTexelBuffer";
+    case DescriptorType::eUniformBuffer: return "UniformBuffer";
+    case DescriptorType::eStorageBuffer: return "StorageBuffer";
+    case DescriptorType::eUniformBufferDynamic: return "UniformBufferDynamic";
+    case DescriptorType::eStorageBufferDynamic: return "StorageBufferDynamic";
+    case DescriptorType::eInputAttachment: return "InputAttachment";
+    default: return "unknown";
+    }
+  }
+
+  static const char * getString(QueryType value)
+  {
+    switch (value)
+    {
+    case QueryType::eOcclusion: return "Occlusion";
+    case QueryType::ePipelineStatistics: return "PipelineStatistics";
+    case QueryType::eTimestamp: return "Timestamp";
+    default: return "unknown";
+    }
+  }
+
+  static const char * getString(BorderColor value)
+  {
+    switch (value)
+    {
+    case BorderColor::eFloatTransparentBlack: return "FloatTransparentBlack";
+    case BorderColor::eIntTransparentBlack: return "IntTransparentBlack";
+    case BorderColor::eFloatOpaqueBlack: return "FloatOpaqueBlack";
+    case BorderColor::eIntOpaqueBlack: return "IntOpaqueBlack";
+    case BorderColor::eFloatOpaqueWhite: return "FloatOpaqueWhite";
+    case BorderColor::eIntOpaqueWhite: return "IntOpaqueWhite";
+    default: return "unknown";
+    }
+  }
+
+  static const char * getString(PipelineBindPoint value)
+  {
+    switch (value)
+    {
+    case PipelineBindPoint::eGraphics: return "Graphics";
+    case PipelineBindPoint::eCompute: return "Compute";
+    default: return "unknown";
+    }
+  }
+
+  static const char * getString(PipelineCacheHeaderVersion value)
+  {
+    switch (value)
+    {
+    case PipelineCacheHeaderVersion::eOne: return "One";
+    default: return "unknown";
+    }
+  }
+
+  static const char * getString(PrimitiveTopology value)
+  {
+    switch (value)
+    {
+    case PrimitiveTopology::ePointList: return "PointList";
+    case PrimitiveTopology::eLineList: return "LineList";
+    case PrimitiveTopology::eLineStrip: return "LineStrip";
+    case PrimitiveTopology::eTriangleList: return "TriangleList";
+    case PrimitiveTopology::eTriangleStrip: return "TriangleStrip";
+    case PrimitiveTopology::eTriangleFan: return "TriangleFan";
+    case PrimitiveTopology::eLineListWithAdjacency: return "LineListWithAdjacency";
+    case PrimitiveTopology::eLineStripWithAdjacency: return "LineStripWithAdjacency";
+    case PrimitiveTopology::eTriangleListWithAdjacency: return "TriangleListWithAdjacency";
+    case PrimitiveTopology::eTriangleStripWithAdjacency: return "TriangleStripWithAdjacency";
+    case PrimitiveTopology::ePatchList: return "PatchList";
+    default: return "unknown";
+    }
+  }
+
+  static const char * getString(SharingMode value)
+  {
+    switch (value)
+    {
+    case SharingMode::eExclusive: return "Exclusive";
+    case SharingMode::eConcurrent: return "Concurrent";
+    default: return "unknown";
+    }
+  }
+
+  static const char * getString(IndexType value)
+  {
+    switch (value)
+    {
+    case IndexType::eUint16: return "Uint16";
+    case IndexType::eUint32: return "Uint32";
+    default: return "unknown";
+    }
+  }
+
+  static const char * getString(Filter value)
+  {
+    switch (value)
+    {
+    case Filter::eNearest: return "Nearest";
+    case Filter::eLinear: return "Linear";
+    default: return "unknown";
+    }
+  }
+
+  static const char * getString(SamplerMipmapMode value)
+  {
+    switch (value)
+    {
+    case SamplerMipmapMode::eNearest: return "Nearest";
+    case SamplerMipmapMode::eLinear: return "Linear";
+    default: return "unknown";
+    }
+  }
+
+  static const char * getString(SamplerAddressMode value)
+  {
+    switch (value)
+    {
+    case SamplerAddressMode::eRepeat: return "Repeat";
+    case SamplerAddressMode::eMirroredRepeat: return "MirroredRepeat";
+    case SamplerAddressMode::eClampToEdge: return "ClampToEdge";
+    case SamplerAddressMode::eClampToBorder: return "ClampToBorder";
+    case SamplerAddressMode::eMirrorClampToEdge: return "MirrorClampToEdge";
+    default: return "unknown";
+    }
+  }
+
+  static const char * getString(CompareOp value)
+  {
+    switch (value)
+    {
+    case CompareOp::eNever: return "Never";
+    case CompareOp::eLess: return "Less";
+    case CompareOp::eEqual: return "Equal";
+    case CompareOp::eLessOrEqual: return "LessOrEqual";
+    case CompareOp::eGreater: return "Greater";
+    case CompareOp::eNotEqual: return "NotEqual";
+    case CompareOp::eGreaterOrEqual: return "GreaterOrEqual";
+    case CompareOp::eAlways: return "Always";
+    default: return "unknown";
+    }
+  }
+
+  static const char * getString(PolygonMode value)
+  {
+    switch (value)
+    {
+    case PolygonMode::eFill: return "Fill";
+    case PolygonMode::eLine: return "Line";
+    case PolygonMode::ePoint: return "Point";
+    default: return "unknown";
+    }
+  }
+
+  static const char * getString(CullModeFlagBits value)
+  {
+    switch (value)
+    {
+    case CullModeFlagBits::eNone: return "None";
+    case CullModeFlagBits::eFront: return "Front";
+    case CullModeFlagBits::eBack: return "Back";
+    case CullModeFlagBits::eFrontAndBack: return "FrontAndBack";
+    default: return "unknown";
+    }
+  }
+
+  static std::string getString(CullModeFlags value)
+  {
+    if (!value) return std::string();
+    std::string result;
+    if (value & vk::CullModeFlagBits::eNone) result += "None | ";
+    if (value & vk::CullModeFlagBits::eFront) result += "Front | ";
+    if (value & vk::CullModeFlagBits::eBack) result += "Back | ";
+    if (value & vk::CullModeFlagBits::eFrontAndBack) result += "FrontAndBack | ";
+    return result.substr(0, result.size() - 3);
+  }
+  static const char * getString(FrontFace value)
+  {
+    switch (value)
+    {
+    case FrontFace::eCounterClockwise: return "CounterClockwise";
+    case FrontFace::eClockwise: return "Clockwise";
+    default: return "unknown";
+    }
+  }
+
+  static const char * getString(BlendFactor value)
+  {
+    switch (value)
+    {
+    case BlendFactor::eZero: return "Zero";
+    case BlendFactor::eOne: return "One";
+    case BlendFactor::eSrcColor: return "SrcColor";
+    case BlendFactor::eOneMinusSrcColor: return "OneMinusSrcColor";
+    case BlendFactor::eDstColor: return "DstColor";
+    case BlendFactor::eOneMinusDstColor: return "OneMinusDstColor";
+    case BlendFactor::eSrcAlpha: return "SrcAlpha";
+    case BlendFactor::eOneMinusSrcAlpha: return "OneMinusSrcAlpha";
+    case BlendFactor::eDstAlpha: return "DstAlpha";
+    case BlendFactor::eOneMinusDstAlpha: return "OneMinusDstAlpha";
+    case BlendFactor::eConstantColor: return "ConstantColor";
+    case BlendFactor::eOneMinusConstantColor: return "OneMinusConstantColor";
+    case BlendFactor::eConstantAlpha: return "ConstantAlpha";
+    case BlendFactor::eOneMinusConstantAlpha: return "OneMinusConstantAlpha";
+    case BlendFactor::eSrcAlphaSaturate: return "SrcAlphaSaturate";
+    case BlendFactor::eSrc1Color: return "Src1Color";
+    case BlendFactor::eOneMinusSrc1Color: return "OneMinusSrc1Color";
+    case BlendFactor::eSrc1Alpha: return "Src1Alpha";
+    case BlendFactor::eOneMinusSrc1Alpha: return "OneMinusSrc1Alpha";
+    default: return "unknown";
+    }
+  }
+
+  static const char * getString(BlendOp value)
+  {
+    switch (value)
+    {
+    case BlendOp::eAdd: return "Add";
+    case BlendOp::eSubtract: return "Subtract";
+    case BlendOp::eReverseSubtract: return "ReverseSubtract";
+    case BlendOp::eMin: return "Min";
+    case BlendOp::eMax: return "Max";
+    default: return "unknown";
+    }
+  }
+
+  static const char * getString(StencilOp value)
+  {
+    switch (value)
+    {
+    case StencilOp::eKeep: return "Keep";
+    case StencilOp::eZero: return "Zero";
+    case StencilOp::eReplace: return "Replace";
+    case StencilOp::eIncrementAndClamp: return "IncrementAndClamp";
+    case StencilOp::eDecrementAndClamp: return "DecrementAndClamp";
+    case StencilOp::eInvert: return "Invert";
+    case StencilOp::eIncrementAndWrap: return "IncrementAndWrap";
+    case StencilOp::eDecrementAndWrap: return "DecrementAndWrap";
+    default: return "unknown";
+    }
+  }
+
+  static const char * getString(LogicOp value)
+  {
+    switch (value)
+    {
+    case LogicOp::eClear: return "Clear";
+    case LogicOp::eAnd: return "And";
+    case LogicOp::eAndReverse: return "AndReverse";
+    case LogicOp::eCopy: return "Copy";
+    case LogicOp::eAndInverted: return "AndInverted";
+    case LogicOp::eNoOp: return "NoOp";
+    case LogicOp::eXor: return "Xor";
+    case LogicOp::eOr: return "Or";
+    case LogicOp::eNor: return "Nor";
+    case LogicOp::eEquivalent: return "Equivalent";
+    case LogicOp::eInvert: return "Invert";
+    case LogicOp::eOrReverse: return "OrReverse";
+    case LogicOp::eCopyInverted: return "CopyInverted";
+    case LogicOp::eOrInverted: return "OrInverted";
+    case LogicOp::eNand: return "Nand";
+    case LogicOp::eSet: return "Set";
+    default: return "unknown";
+    }
+  }
+
+  static const char * getString(InternalAllocationType value)
+  {
+    switch (value)
+    {
+    case InternalAllocationType::eExecutable: return "Executable";
+    default: return "unknown";
+    }
+  }
+
+  static const char * getString(SystemAllocationScope value)
+  {
+    switch (value)
+    {
+    case SystemAllocationScope::eCommand: return "Command";
+    case SystemAllocationScope::eObject: return "Object";
+    case SystemAllocationScope::eCache: return "Cache";
+    case SystemAllocationScope::eDevice: return "Device";
+    case SystemAllocationScope::eInstance: return "Instance";
+    default: return "unknown";
+    }
+  }
+
+  static const char * getString(PhysicalDeviceType value)
+  {
+    switch (value)
+    {
+    case PhysicalDeviceType::eOther: return "Other";
+    case PhysicalDeviceType::eIntegratedGpu: return "IntegratedGpu";
+    case PhysicalDeviceType::eDiscreteGpu: return "DiscreteGpu";
+    case PhysicalDeviceType::eVirtualGpu: return "VirtualGpu";
+    case PhysicalDeviceType::eCpu: return "Cpu";
+    default: return "unknown";
+    }
+  }
+
+  static const char * getString(VertexInputRate value)
+  {
+    switch (value)
+    {
+    case VertexInputRate::eVertex: return "Vertex";
+    case VertexInputRate::eInstance: return "Instance";
+    default: return "unknown";
+    }
+  }
+
+  static const char * getString(Format value)
+  {
+    switch (value)
+    {
+    case Format::eUndefined: return "Undefined";
+    case Format::eR4G4UnormPack8: return "R4G4UnormPack8";
+    case Format::eR4G4B4A4UnormPack16: return "R4G4B4A4UnormPack16";
+    case Format::eB4G4R4A4UnormPack16: return "B4G4R4A4UnormPack16";
+    case Format::eR5G6B5UnormPack16: return "R5G6B5UnormPack16";
+    case Format::eB5G6R5UnormPack16: return "B5G6R5UnormPack16";
+    case Format::eR5G5B5A1UnormPack16: return "R5G5B5A1UnormPack16";
+    case Format::eB5G5R5A1UnormPack16: return "B5G5R5A1UnormPack16";
+    case Format::eA1R5G5B5UnormPack16: return "A1R5G5B5UnormPack16";
+    case Format::eR8Unorm: return "R8Unorm";
+    case Format::eR8Snorm: return "R8Snorm";
+    case Format::eR8Uscaled: return "R8Uscaled";
+    case Format::eR8Sscaled: return "R8Sscaled";
+    case Format::eR8Uint: return "R8Uint";
+    case Format::eR8Sint: return "R8Sint";
+    case Format::eR8Srgb: return "R8Srgb";
+    case Format::eR8G8Unorm: return "R8G8Unorm";
+    case Format::eR8G8Snorm: return "R8G8Snorm";
+    case Format::eR8G8Uscaled: return "R8G8Uscaled";
+    case Format::eR8G8Sscaled: return "R8G8Sscaled";
+    case Format::eR8G8Uint: return "R8G8Uint";
+    case Format::eR8G8Sint: return "R8G8Sint";
+    case Format::eR8G8Srgb: return "R8G8Srgb";
+    case Format::eR8G8B8Unorm: return "R8G8B8Unorm";
+    case Format::eR8G8B8Snorm: return "R8G8B8Snorm";
+    case Format::eR8G8B8Uscaled: return "R8G8B8Uscaled";
+    case Format::eR8G8B8Sscaled: return "R8G8B8Sscaled";
+    case Format::eR8G8B8Uint: return "R8G8B8Uint";
+    case Format::eR8G8B8Sint: return "R8G8B8Sint";
+    case Format::eR8G8B8Srgb: return "R8G8B8Srgb";
+    case Format::eB8G8R8Unorm: return "B8G8R8Unorm";
+    case Format::eB8G8R8Snorm: return "B8G8R8Snorm";
+    case Format::eB8G8R8Uscaled: return "B8G8R8Uscaled";
+    case Format::eB8G8R8Sscaled: return "B8G8R8Sscaled";
+    case Format::eB8G8R8Uint: return "B8G8R8Uint";
+    case Format::eB8G8R8Sint: return "B8G8R8Sint";
+    case Format::eB8G8R8Srgb: return "B8G8R8Srgb";
+    case Format::eR8G8B8A8Unorm: return "R8G8B8A8Unorm";
+    case Format::eR8G8B8A8Snorm: return "R8G8B8A8Snorm";
+    case Format::eR8G8B8A8Uscaled: return "R8G8B8A8Uscaled";
+    case Format::eR8G8B8A8Sscaled: return "R8G8B8A8Sscaled";
+    case Format::eR8G8B8A8Uint: return "R8G8B8A8Uint";
+    case Format::eR8G8B8A8Sint: return "R8G8B8A8Sint";
+    case Format::eR8G8B8A8Srgb: return "R8G8B8A8Srgb";
+    case Format::eB8G8R8A8Unorm: return "B8G8R8A8Unorm";
+    case Format::eB8G8R8A8Snorm: return "B8G8R8A8Snorm";
+    case Format::eB8G8R8A8Uscaled: return "B8G8R8A8Uscaled";
+    case Format::eB8G8R8A8Sscaled: return "B8G8R8A8Sscaled";
+    case Format::eB8G8R8A8Uint: return "B8G8R8A8Uint";
+    case Format::eB8G8R8A8Sint: return "B8G8R8A8Sint";
+    case Format::eB8G8R8A8Srgb: return "B8G8R8A8Srgb";
+    case Format::eA8B8G8R8UnormPack32: return "A8B8G8R8UnormPack32";
+    case Format::eA8B8G8R8SnormPack32: return "A8B8G8R8SnormPack32";
+    case Format::eA8B8G8R8UscaledPack32: return "A8B8G8R8UscaledPack32";
+    case Format::eA8B8G8R8SscaledPack32: return "A8B8G8R8SscaledPack32";
+    case Format::eA8B8G8R8UintPack32: return "A8B8G8R8UintPack32";
+    case Format::eA8B8G8R8SintPack32: return "A8B8G8R8SintPack32";
+    case Format::eA8B8G8R8SrgbPack32: return "A8B8G8R8SrgbPack32";
+    case Format::eA2R10G10B10UnormPack32: return "A2R10G10B10UnormPack32";
+    case Format::eA2R10G10B10SnormPack32: return "A2R10G10B10SnormPack32";
+    case Format::eA2R10G10B10UscaledPack32: return "A2R10G10B10UscaledPack32";
+    case Format::eA2R10G10B10SscaledPack32: return "A2R10G10B10SscaledPack32";
+    case Format::eA2R10G10B10UintPack32: return "A2R10G10B10UintPack32";
+    case Format::eA2R10G10B10SintPack32: return "A2R10G10B10SintPack32";
+    case Format::eA2B10G10R10UnormPack32: return "A2B10G10R10UnormPack32";
+    case Format::eA2B10G10R10SnormPack32: return "A2B10G10R10SnormPack32";
+    case Format::eA2B10G10R10UscaledPack32: return "A2B10G10R10UscaledPack32";
+    case Format::eA2B10G10R10SscaledPack32: return "A2B10G10R10SscaledPack32";
+    case Format::eA2B10G10R10UintPack32: return "A2B10G10R10UintPack32";
+    case Format::eA2B10G10R10SintPack32: return "A2B10G10R10SintPack32";
+    case Format::eR16Unorm: return "R16Unorm";
+    case Format::eR16Snorm: return "R16Snorm";
+    case Format::eR16Uscaled: return "R16Uscaled";
+    case Format::eR16Sscaled: return "R16Sscaled";
+    case Format::eR16Uint: return "R16Uint";
+    case Format::eR16Sint: return "R16Sint";
+    case Format::eR16Sfloat: return "R16Sfloat";
+    case Format::eR16G16Unorm: return "R16G16Unorm";
+    case Format::eR16G16Snorm: return "R16G16Snorm";
+    case Format::eR16G16Uscaled: return "R16G16Uscaled";
+    case Format::eR16G16Sscaled: return "R16G16Sscaled";
+    case Format::eR16G16Uint: return "R16G16Uint";
+    case Format::eR16G16Sint: return "R16G16Sint";
+    case Format::eR16G16Sfloat: return "R16G16Sfloat";
+    case Format::eR16G16B16Unorm: return "R16G16B16Unorm";
+    case Format::eR16G16B16Snorm: return "R16G16B16Snorm";
+    case Format::eR16G16B16Uscaled: return "R16G16B16Uscaled";
+    case Format::eR16G16B16Sscaled: return "R16G16B16Sscaled";
+    case Format::eR16G16B16Uint: return "R16G16B16Uint";
+    case Format::eR16G16B16Sint: return "R16G16B16Sint";
+    case Format::eR16G16B16Sfloat: return "R16G16B16Sfloat";
+    case Format::eR16G16B16A16Unorm: return "R16G16B16A16Unorm";
+    case Format::eR16G16B16A16Snorm: return "R16G16B16A16Snorm";
+    case Format::eR16G16B16A16Uscaled: return "R16G16B16A16Uscaled";
+    case Format::eR16G16B16A16Sscaled: return "R16G16B16A16Sscaled";
+    case Format::eR16G16B16A16Uint: return "R16G16B16A16Uint";
+    case Format::eR16G16B16A16Sint: return "R16G16B16A16Sint";
+    case Format::eR16G16B16A16Sfloat: return "R16G16B16A16Sfloat";
+    case Format::eR32Uint: return "R32Uint";
+    case Format::eR32Sint: return "R32Sint";
+    case Format::eR32Sfloat: return "R32Sfloat";
+    case Format::eR32G32Uint: return "R32G32Uint";
+    case Format::eR32G32Sint: return "R32G32Sint";
+    case Format::eR32G32Sfloat: return "R32G32Sfloat";
+    case Format::eR32G32B32Uint: return "R32G32B32Uint";
+    case Format::eR32G32B32Sint: return "R32G32B32Sint";
+    case Format::eR32G32B32Sfloat: return "R32G32B32Sfloat";
+    case Format::eR32G32B32A32Uint: return "R32G32B32A32Uint";
+    case Format::eR32G32B32A32Sint: return "R32G32B32A32Sint";
+    case Format::eR32G32B32A32Sfloat: return "R32G32B32A32Sfloat";
+    case Format::eR64Uint: return "R64Uint";
+    case Format::eR64Sint: return "R64Sint";
+    case Format::eR64Sfloat: return "R64Sfloat";
+    case Format::eR64G64Uint: return "R64G64Uint";
+    case Format::eR64G64Sint: return "R64G64Sint";
+    case Format::eR64G64Sfloat: return "R64G64Sfloat";
+    case Format::eR64G64B64Uint: return "R64G64B64Uint";
+    case Format::eR64G64B64Sint: return "R64G64B64Sint";
+    case Format::eR64G64B64Sfloat: return "R64G64B64Sfloat";
+    case Format::eR64G64B64A64Uint: return "R64G64B64A64Uint";
+    case Format::eR64G64B64A64Sint: return "R64G64B64A64Sint";
+    case Format::eR64G64B64A64Sfloat: return "R64G64B64A64Sfloat";
+    case Format::eB10G11R11UfloatPack32: return "B10G11R11UfloatPack32";
+    case Format::eE5B9G9R9UfloatPack32: return "E5B9G9R9UfloatPack32";
+    case Format::eD16Unorm: return "D16Unorm";
+    case Format::eX8D24UnormPack32: return "X8D24UnormPack32";
+    case Format::eD32Sfloat: return "D32Sfloat";
+    case Format::eS8Uint: return "S8Uint";
+    case Format::eD16UnormS8Uint: return "D16UnormS8Uint";
+    case Format::eD24UnormS8Uint: return "D24UnormS8Uint";
+    case Format::eD32SfloatS8Uint: return "D32SfloatS8Uint";
+    case Format::eBc1RgbUnormBlock: return "Bc1RgbUnormBlock";
+    case Format::eBc1RgbSrgbBlock: return "Bc1RgbSrgbBlock";
+    case Format::eBc1RgbaUnormBlock: return "Bc1RgbaUnormBlock";
+    case Format::eBc1RgbaSrgbBlock: return "Bc1RgbaSrgbBlock";
+    case Format::eBc2UnormBlock: return "Bc2UnormBlock";
+    case Format::eBc2SrgbBlock: return "Bc2SrgbBlock";
+    case Format::eBc3UnormBlock: return "Bc3UnormBlock";
+    case Format::eBc3SrgbBlock: return "Bc3SrgbBlock";
+    case Format::eBc4UnormBlock: return "Bc4UnormBlock";
+    case Format::eBc4SnormBlock: return "Bc4SnormBlock";
+    case Format::eBc5UnormBlock: return "Bc5UnormBlock";
+    case Format::eBc5SnormBlock: return "Bc5SnormBlock";
+    case Format::eBc6HUfloatBlock: return "Bc6HUfloatBlock";
+    case Format::eBc6HSfloatBlock: return "Bc6HSfloatBlock";
+    case Format::eBc7UnormBlock: return "Bc7UnormBlock";
+    case Format::eBc7SrgbBlock: return "Bc7SrgbBlock";
+    case Format::eEtc2R8G8B8UnormBlock: return "Etc2R8G8B8UnormBlock";
+    case Format::eEtc2R8G8B8SrgbBlock: return "Etc2R8G8B8SrgbBlock";
+    case Format::eEtc2R8G8B8A1UnormBlock: return "Etc2R8G8B8A1UnormBlock";
+    case Format::eEtc2R8G8B8A1SrgbBlock: return "Etc2R8G8B8A1SrgbBlock";
+    case Format::eEtc2R8G8B8A8UnormBlock: return "Etc2R8G8B8A8UnormBlock";
+    case Format::eEtc2R8G8B8A8SrgbBlock: return "Etc2R8G8B8A8SrgbBlock";
+    case Format::eEacR11UnormBlock: return "EacR11UnormBlock";
+    case Format::eEacR11SnormBlock: return "EacR11SnormBlock";
+    case Format::eEacR11G11UnormBlock: return "EacR11G11UnormBlock";
+    case Format::eEacR11G11SnormBlock: return "EacR11G11SnormBlock";
+    case Format::eAstc4x4UnormBlock: return "Astc4x4UnormBlock";
+    case Format::eAstc4x4SrgbBlock: return "Astc4x4SrgbBlock";
+    case Format::eAstc5x4UnormBlock: return "Astc5x4UnormBlock";
+    case Format::eAstc5x4SrgbBlock: return "Astc5x4SrgbBlock";
+    case Format::eAstc5x5UnormBlock: return "Astc5x5UnormBlock";
+    case Format::eAstc5x5SrgbBlock: return "Astc5x5SrgbBlock";
+    case Format::eAstc6x5UnormBlock: return "Astc6x5UnormBlock";
+    case Format::eAstc6x5SrgbBlock: return "Astc6x5SrgbBlock";
+    case Format::eAstc6x6UnormBlock: return "Astc6x6UnormBlock";
+    case Format::eAstc6x6SrgbBlock: return "Astc6x6SrgbBlock";
+    case Format::eAstc8x5UnormBlock: return "Astc8x5UnormBlock";
+    case Format::eAstc8x5SrgbBlock: return "Astc8x5SrgbBlock";
+    case Format::eAstc8x6UnormBlock: return "Astc8x6UnormBlock";
+    case Format::eAstc8x6SrgbBlock: return "Astc8x6SrgbBlock";
+    case Format::eAstc8x8UnormBlock: return "Astc8x8UnormBlock";
+    case Format::eAstc8x8SrgbBlock: return "Astc8x8SrgbBlock";
+    case Format::eAstc10x5UnormBlock: return "Astc10x5UnormBlock";
+    case Format::eAstc10x5SrgbBlock: return "Astc10x5SrgbBlock";
+    case Format::eAstc10x6UnormBlock: return "Astc10x6UnormBlock";
+    case Format::eAstc10x6SrgbBlock: return "Astc10x6SrgbBlock";
+    case Format::eAstc10x8UnormBlock: return "Astc10x8UnormBlock";
+    case Format::eAstc10x8SrgbBlock: return "Astc10x8SrgbBlock";
+    case Format::eAstc10x10UnormBlock: return "Astc10x10UnormBlock";
+    case Format::eAstc10x10SrgbBlock: return "Astc10x10SrgbBlock";
+    case Format::eAstc12x10UnormBlock: return "Astc12x10UnormBlock";
+    case Format::eAstc12x10SrgbBlock: return "Astc12x10SrgbBlock";
+    case Format::eAstc12x12UnormBlock: return "Astc12x12UnormBlock";
+    case Format::eAstc12x12SrgbBlock: return "Astc12x12SrgbBlock";
+    default: return "unknown";
+    }
+  }
+
+  static const char * getString(StructureType value)
+  {
+    switch (value)
+    {
+    case StructureType::eApplicationInfo: return "ApplicationInfo";
+    case StructureType::eInstanceCreateInfo: return "InstanceCreateInfo";
+    case StructureType::eDeviceQueueCreateInfo: return "DeviceQueueCreateInfo";
+    case StructureType::eDeviceCreateInfo: return "DeviceCreateInfo";
+    case StructureType::eSubmitInfo: return "SubmitInfo";
+    case StructureType::eMemoryAllocateInfo: return "MemoryAllocateInfo";
+    case StructureType::eMappedMemoryRange: return "MappedMemoryRange";
+    case StructureType::eBindSparseInfo: return "BindSparseInfo";
+    case StructureType::eFenceCreateInfo: return "FenceCreateInfo";
+    case StructureType::eSemaphoreCreateInfo: return "SemaphoreCreateInfo";
+    case StructureType::eEventCreateInfo: return "EventCreateInfo";
+    case StructureType::eQueryPoolCreateInfo: return "QueryPoolCreateInfo";
+    case StructureType::eBufferCreateInfo: return "BufferCreateInfo";
+    case StructureType::eBufferViewCreateInfo: return "BufferViewCreateInfo";
+    case StructureType::eImageCreateInfo: return "ImageCreateInfo";
+    case StructureType::eImageViewCreateInfo: return "ImageViewCreateInfo";
+    case StructureType::eShaderModuleCreateInfo: return "ShaderModuleCreateInfo";
+    case StructureType::ePipelineCacheCreateInfo: return "PipelineCacheCreateInfo";
+    case StructureType::ePipelineShaderStageCreateInfo: return "PipelineShaderStageCreateInfo";
+    case StructureType::ePipelineVertexInputStateCreateInfo: return "PipelineVertexInputStateCreateInfo";
+    case StructureType::ePipelineInputAssemblyStateCreateInfo: return "PipelineInputAssemblyStateCreateInfo";
+    case StructureType::ePipelineTessellationStateCreateInfo: return "PipelineTessellationStateCreateInfo";
+    case StructureType::ePipelineViewportStateCreateInfo: return "PipelineViewportStateCreateInfo";
+    case StructureType::ePipelineRasterizationStateCreateInfo: return "PipelineRasterizationStateCreateInfo";
+    case StructureType::ePipelineMultisampleStateCreateInfo: return "PipelineMultisampleStateCreateInfo";
+    case StructureType::ePipelineDepthStencilStateCreateInfo: return "PipelineDepthStencilStateCreateInfo";
+    case StructureType::ePipelineColorBlendStateCreateInfo: return "PipelineColorBlendStateCreateInfo";
+    case StructureType::ePipelineDynamicStateCreateInfo: return "PipelineDynamicStateCreateInfo";
+    case StructureType::eGraphicsPipelineCreateInfo: return "GraphicsPipelineCreateInfo";
+    case StructureType::eComputePipelineCreateInfo: return "ComputePipelineCreateInfo";
+    case StructureType::ePipelineLayoutCreateInfo: return "PipelineLayoutCreateInfo";
+    case StructureType::eSamplerCreateInfo: return "SamplerCreateInfo";
+    case StructureType::eDescriptorSetLayoutCreateInfo: return "DescriptorSetLayoutCreateInfo";
+    case StructureType::eDescriptorPoolCreateInfo: return "DescriptorPoolCreateInfo";
+    case StructureType::eDescriptorSetAllocateInfo: return "DescriptorSetAllocateInfo";
+    case StructureType::eWriteDescriptorSet: return "WriteDescriptorSet";
+    case StructureType::eCopyDescriptorSet: return "CopyDescriptorSet";
+    case StructureType::eFramebufferCreateInfo: return "FramebufferCreateInfo";
+    case StructureType::eRenderPassCreateInfo: return "RenderPassCreateInfo";
+    case StructureType::eCommandPoolCreateInfo: return "CommandPoolCreateInfo";
+    case StructureType::eCommandBufferAllocateInfo: return "CommandBufferAllocateInfo";
+    case StructureType::eCommandBufferInheritanceInfo: return "CommandBufferInheritanceInfo";
+    case StructureType::eCommandBufferBeginInfo: return "CommandBufferBeginInfo";
+    case StructureType::eRenderPassBeginInfo: return "RenderPassBeginInfo";
+    case StructureType::eBufferMemoryBarrier: return "BufferMemoryBarrier";
+    case StructureType::eImageMemoryBarrier: return "ImageMemoryBarrier";
+    case StructureType::eMemoryBarrier: return "MemoryBarrier";
+    case StructureType::eLoaderInstanceCreateInfo: return "LoaderInstanceCreateInfo";
+    case StructureType::eLoaderDeviceCreateInfo: return "LoaderDeviceCreateInfo";
+    case StructureType::eSwapchainCreateInfoKhr: return "SwapchainCreateInfoKhr";
+    case StructureType::ePresentInfoKhr: return "PresentInfoKhr";
+    case StructureType::eDisplayModeCreateInfoKhr: return "DisplayModeCreateInfoKhr";
+    case StructureType::eDisplaySurfaceCreateInfoKhr: return "DisplaySurfaceCreateInfoKhr";
+    case StructureType::eDisplayPresentInfoKhr: return "DisplayPresentInfoKhr";
+    case StructureType::eXlibSurfaceCreateInfoKhr: return "XlibSurfaceCreateInfoKhr";
+    case StructureType::eXcbSurfaceCreateInfoKhr: return "XcbSurfaceCreateInfoKhr";
+    case StructureType::eWaylandSurfaceCreateInfoKhr: return "WaylandSurfaceCreateInfoKhr";
+    case StructureType::eMirSurfaceCreateInfoKhr: return "MirSurfaceCreateInfoKhr";
+    case StructureType::eAndroidSurfaceCreateInfoKhr: return "AndroidSurfaceCreateInfoKhr";
+    case StructureType::eWin32SurfaceCreateInfoKhr: return "Win32SurfaceCreateInfoKhr";
+    case StructureType::eDebugReportCreateInfoExt: return "DebugReportCreateInfoExt";
+    default: return "unknown";
+    }
+  }
+
+  static const char * getString(SubpassContents value)
+  {
+    switch (value)
+    {
+    case SubpassContents::eInline: return "Inline";
+    case SubpassContents::eSecondaryCommandBuffers: return "SecondaryCommandBuffers";
+    default: return "unknown";
+    }
+  }
+
+  static const char * getString(Result value)
+  {
+    switch (value)
+    {
+    case Result::eVkSuccess: return "VkSuccess";
+    case Result::eVkNotReady: return "VkNotReady";
+    case Result::eVkTimeout: return "VkTimeout";
+    case Result::eVkEventSet: return "VkEventSet";
+    case Result::eVkEventReset: return "VkEventReset";
+    case Result::eVkIncomplete: return "VkIncomplete";
+    case Result::eVkErrorOutOfHostMemory: return "VkErrorOutOfHostMemory";
+    case Result::eVkErrorOutOfDeviceMemory: return "VkErrorOutOfDeviceMemory";
+    case Result::eVkErrorInitializationFailed: return "VkErrorInitializationFailed";
+    case Result::eVkErrorDeviceLost: return "VkErrorDeviceLost";
+    case Result::eVkErrorMemoryMapFailed: return "VkErrorMemoryMapFailed";
+    case Result::eVkErrorLayerNotPresent: return "VkErrorLayerNotPresent";
+    case Result::eVkErrorExtensionNotPresent: return "VkErrorExtensionNotPresent";
+    case Result::eVkErrorFeatureNotPresent: return "VkErrorFeatureNotPresent";
+    case Result::eVkErrorIncompatibleDriver: return "VkErrorIncompatibleDriver";
+    case Result::eVkErrorTooManyObjects: return "VkErrorTooManyObjects";
+    case Result::eVkErrorFormatNotSupported: return "VkErrorFormatNotSupported";
+    case Result::eVkErrorSurfaceLostKhr: return "VkErrorSurfaceLostKhr";
+    case Result::eVkErrorNativeWindowInUseKhr: return "VkErrorNativeWindowInUseKhr";
+    case Result::eVkSuboptimalKhr: return "VkSuboptimalKhr";
+    case Result::eVkErrorOutOfDateKhr: return "VkErrorOutOfDateKhr";
+    case Result::eVkErrorIncompatibleDisplayKhr: return "VkErrorIncompatibleDisplayKhr";
+    case Result::eVkErrorValidationFailedExt: return "VkErrorValidationFailedExt";
+    default: return "unknown";
+    }
+  }
+
+  static const char * getString(DynamicState value)
+  {
+    switch (value)
+    {
+    case DynamicState::eViewport: return "Viewport";
+    case DynamicState::eScissor: return "Scissor";
+    case DynamicState::eLineWidth: return "LineWidth";
+    case DynamicState::eDepthBias: return "DepthBias";
+    case DynamicState::eBlendConstants: return "BlendConstants";
+    case DynamicState::eDepthBounds: return "DepthBounds";
+    case DynamicState::eStencilCompareMask: return "StencilCompareMask";
+    case DynamicState::eStencilWriteMask: return "StencilWriteMask";
+    case DynamicState::eStencilReference: return "StencilReference";
+    default: return "unknown";
+    }
+  }
+
+  static const char * getString(QueueFlagBits value)
+  {
+    switch (value)
+    {
+    case QueueFlagBits::eGraphics: return "Graphics";
+    case QueueFlagBits::eCompute: return "Compute";
+    case QueueFlagBits::eTransfer: return "Transfer";
+    case QueueFlagBits::eSparseBinding: return "SparseBinding";
+    default: return "unknown";
+    }
+  }
+
+  static std::string getString(QueueFlags value)
+  {
+    if (!value) return std::string();
+    std::string result;
+    if (value & vk::QueueFlagBits::eGraphics) result += "Graphics | ";
+    if (value & vk::QueueFlagBits::eCompute) result += "Compute | ";
+    if (value & vk::QueueFlagBits::eTransfer) result += "Transfer | ";
+    if (value & vk::QueueFlagBits::eSparseBinding) result += "SparseBinding | ";
+    return result.substr(0, result.size() - 3);
+  }
+  static const char * getString(MemoryPropertyFlagBits value)
+  {
+    switch (value)
+    {
+    case MemoryPropertyFlagBits::eDeviceLocal: return "DeviceLocal";
+    case MemoryPropertyFlagBits::eHostVisible: return "HostVisible";
+    case MemoryPropertyFlagBits::eHostCoherent: return "HostCoherent";
+    case MemoryPropertyFlagBits::eHostCached: return "HostCached";
+    case MemoryPropertyFlagBits::eLazilyAllocated: return "LazilyAllocated";
+    default: return "unknown";
+    }
+  }
+
+  static std::string getString(MemoryPropertyFlags value)
+  {
+    if (!value) return std::string();
+    std::string result;
+    if (value & vk::MemoryPropertyFlagBits::eDeviceLocal) result += "DeviceLocal | ";
+    if (value & vk::MemoryPropertyFlagBits::eHostVisible) result += "HostVisible | ";
+    if (value & vk::MemoryPropertyFlagBits::eHostCoherent) result += "HostCoherent | ";
+    if (value & vk::MemoryPropertyFlagBits::eHostCached) result += "HostCached | ";
+    if (value & vk::MemoryPropertyFlagBits::eLazilyAllocated) result += "LazilyAllocated | ";
+    return result.substr(0, result.size() - 3);
+  }
+  static const char * getString(MemoryHeapFlagBits value)
+  {
+    switch (value)
+    {
+    case MemoryHeapFlagBits::eDeviceLocal: return "DeviceLocal";
+    default: return "unknown";
+    }
+  }
+
+  static std::string getString(MemoryHeapFlags value)
+  {
+    if (!value) return std::string();
+    std::string result;
+    if (value & vk::MemoryHeapFlagBits::eDeviceLocal) result += "DeviceLocal | ";
+    return result.substr(0, result.size() - 3);
+  }
+  static const char * getString(AccessFlagBits value)
+  {
+    switch (value)
+    {
+    case AccessFlagBits::eIndirectCommandRead: return "IndirectCommandRead";
+    case AccessFlagBits::eIndexRead: return "IndexRead";
+    case AccessFlagBits::eVertexAttributeRead: return "VertexAttributeRead";
+    case AccessFlagBits::eUniformRead: return "UniformRead";
+    case AccessFlagBits::eInputAttachmentRead: return "InputAttachmentRead";
+    case AccessFlagBits::eShaderRead: return "ShaderRead";
+    case AccessFlagBits::eShaderWrite: return "ShaderWrite";
+    case AccessFlagBits::eColorAttachmentRead: return "ColorAttachmentRead";
+    case AccessFlagBits::eColorAttachmentWrite: return "ColorAttachmentWrite";
+    case AccessFlagBits::eDepthStencilAttachmentRead: return "DepthStencilAttachmentRead";
+    case AccessFlagBits::eDepthStencilAttachmentWrite: return "DepthStencilAttachmentWrite";
+    case AccessFlagBits::eTransferRead: return "TransferRead";
+    case AccessFlagBits::eTransferWrite: return "TransferWrite";
+    case AccessFlagBits::eHostRead: return "HostRead";
+    case AccessFlagBits::eHostWrite: return "HostWrite";
+    case AccessFlagBits::eMemoryRead: return "MemoryRead";
+    case AccessFlagBits::eMemoryWrite: return "MemoryWrite";
+    default: return "unknown";
+    }
+  }
+
+  static std::string getString(AccessFlags value)
+  {
+    if (!value) return std::string();
+    std::string result;
+    if (value & vk::AccessFlagBits::eIndirectCommandRead) result += "IndirectCommandRead | ";
+    if (value & vk::AccessFlagBits::eIndexRead) result += "IndexRead | ";
+    if (value & vk::AccessFlagBits::eVertexAttributeRead) result += "VertexAttributeRead | ";
+    if (value & vk::AccessFlagBits::eUniformRead) result += "UniformRead | ";
+    if (value & vk::AccessFlagBits::eInputAttachmentRead) result += "InputAttachmentRead | ";
+    if (value & vk::AccessFlagBits::eShaderRead) result += "ShaderRead | ";
+    if (value & vk::AccessFlagBits::eShaderWrite) result += "ShaderWrite | ";
+    if (value & vk::AccessFlagBits::eColorAttachmentRead) result += "ColorAttachmentRead | ";
+    if (value & vk::AccessFlagBits::eColorAttachmentWrite) result += "ColorAttachmentWrite | ";
+    if (value & vk::AccessFlagBits::eDepthStencilAttachmentRead) result += "DepthStencilAttachmentRead | ";
+    if (value & vk::AccessFlagBits::eDepthStencilAttachmentWrite) result += "DepthStencilAttachmentWrite | ";
+    if (value & vk::AccessFlagBits::eTransferRead) result += "TransferRead | ";
+    if (value & vk::AccessFlagBits::eTransferWrite) result += "TransferWrite | ";
+    if (value & vk::AccessFlagBits::eHostRead) result += "HostRead | ";
+    if (value & vk::AccessFlagBits::eHostWrite) result += "HostWrite | ";
+    if (value & vk::AccessFlagBits::eMemoryRead) result += "MemoryRead | ";
+    if (value & vk::AccessFlagBits::eMemoryWrite) result += "MemoryWrite | ";
+    return result.substr(0, result.size() - 3);
+  }
+  static const char * getString(BufferUsageFlagBits value)
+  {
+    switch (value)
+    {
+    case BufferUsageFlagBits::eTransferSrc: return "TransferSrc";
+    case BufferUsageFlagBits::eTransferDst: return "TransferDst";
+    case BufferUsageFlagBits::eUniformTexelBuffer: return "UniformTexelBuffer";
+    case BufferUsageFlagBits::eStorageTexelBuffer: return "StorageTexelBuffer";
+    case BufferUsageFlagBits::eUniformBuffer: return "UniformBuffer";
+    case BufferUsageFlagBits::eStorageBuffer: return "StorageBuffer";
+    case BufferUsageFlagBits::eIndexBuffer: return "IndexBuffer";
+    case BufferUsageFlagBits::eVertexBuffer: return "VertexBuffer";
+    case BufferUsageFlagBits::eIndirectBuffer: return "IndirectBuffer";
+    default: return "unknown";
+    }
+  }
+
+  static std::string getString(BufferUsageFlags value)
+  {
+    if (!value) return std::string();
+    std::string result;
+    if (value & vk::BufferUsageFlagBits::eTransferSrc) result += "TransferSrc | ";
+    if (value & vk::BufferUsageFlagBits::eTransferDst) result += "TransferDst | ";
+    if (value & vk::BufferUsageFlagBits::eUniformTexelBuffer) result += "UniformTexelBuffer | ";
+    if (value & vk::BufferUsageFlagBits::eStorageTexelBuffer) result += "StorageTexelBuffer | ";
+    if (value & vk::BufferUsageFlagBits::eUniformBuffer) result += "UniformBuffer | ";
+    if (value & vk::BufferUsageFlagBits::eStorageBuffer) result += "StorageBuffer | ";
+    if (value & vk::BufferUsageFlagBits::eIndexBuffer) result += "IndexBuffer | ";
+    if (value & vk::BufferUsageFlagBits::eVertexBuffer) result += "VertexBuffer | ";
+    if (value & vk::BufferUsageFlagBits::eIndirectBuffer) result += "IndirectBuffer | ";
+    return result.substr(0, result.size() - 3);
+  }
+  static const char * getString(BufferCreateFlagBits value)
+  {
+    switch (value)
+    {
+    case BufferCreateFlagBits::eSparseBinding: return "SparseBinding";
+    case BufferCreateFlagBits::eSparseResidency: return "SparseResidency";
+    case BufferCreateFlagBits::eSparseAliased: return "SparseAliased";
+    default: return "unknown";
+    }
+  }
+
+  static std::string getString(BufferCreateFlags value)
+  {
+    if (!value) return std::string();
+    std::string result;
+    if (value & vk::BufferCreateFlagBits::eSparseBinding) result += "SparseBinding | ";
+    if (value & vk::BufferCreateFlagBits::eSparseResidency) result += "SparseResidency | ";
+    if (value & vk::BufferCreateFlagBits::eSparseAliased) result += "SparseAliased | ";
+    return result.substr(0, result.size() - 3);
+  }
+  static const char * getString(ShaderStageFlagBits value)
+  {
+    switch (value)
+    {
+    case ShaderStageFlagBits::eVertex: return "Vertex";
+    case ShaderStageFlagBits::eTessellationControl: return "TessellationControl";
+    case ShaderStageFlagBits::eTessellationEvaluation: return "TessellationEvaluation";
+    case ShaderStageFlagBits::eGeometry: return "Geometry";
+    case ShaderStageFlagBits::eFragment: return "Fragment";
+    case ShaderStageFlagBits::eCompute: return "Compute";
+    case ShaderStageFlagBits::eAllGraphics: return "AllGraphics";
+    case ShaderStageFlagBits::eAll: return "All";
+    default: return "unknown";
+    }
+  }
+
+  static std::string getString(ShaderStageFlags value)
+  {
+    if (!value) return std::string();
+    std::string result;
+    if (value & vk::ShaderStageFlagBits::eVertex) result += "Vertex | ";
+    if (value & vk::ShaderStageFlagBits::eTessellationControl) result += "TessellationControl | ";
+    if (value & vk::ShaderStageFlagBits::eTessellationEvaluation) result += "TessellationEvaluation | ";
+    if (value & vk::ShaderStageFlagBits::eGeometry) result += "Geometry | ";
+    if (value & vk::ShaderStageFlagBits::eFragment) result += "Fragment | ";
+    if (value & vk::ShaderStageFlagBits::eCompute) result += "Compute | ";
+    if (value & vk::ShaderStageFlagBits::eAllGraphics) result += "AllGraphics | ";
+    if (value & vk::ShaderStageFlagBits::eAll) result += "All | ";
+    return result.substr(0, result.size() - 3);
+  }
+  static const char * getString(ImageUsageFlagBits value)
+  {
+    switch (value)
+    {
+    case ImageUsageFlagBits::eTransferSrc: return "TransferSrc";
+    case ImageUsageFlagBits::eTransferDst: return "TransferDst";
+    case ImageUsageFlagBits::eSampled: return "Sampled";
+    case ImageUsageFlagBits::eStorage: return "Storage";
+    case ImageUsageFlagBits::eColorAttachment: return "ColorAttachment";
+    case ImageUsageFlagBits::eDepthStencilAttachment: return "DepthStencilAttachment";
+    case ImageUsageFlagBits::eTransientAttachment: return "TransientAttachment";
+    case ImageUsageFlagBits::eInputAttachment: return "InputAttachment";
+    default: return "unknown";
+    }
+  }
+
+  static std::string getString(ImageUsageFlags value)
+  {
+    if (!value) return std::string();
+    std::string result;
+    if (value & vk::ImageUsageFlagBits::eTransferSrc) result += "TransferSrc | ";
+    if (value & vk::ImageUsageFlagBits::eTransferDst) result += "TransferDst | ";
+    if (value & vk::ImageUsageFlagBits::eSampled) result += "Sampled | ";
+    if (value & vk::ImageUsageFlagBits::eStorage) result += "Storage | ";
+    if (value & vk::ImageUsageFlagBits::eColorAttachment) result += "ColorAttachment | ";
+    if (value & vk::ImageUsageFlagBits::eDepthStencilAttachment) result += "DepthStencilAttachment | ";
+    if (value & vk::ImageUsageFlagBits::eTransientAttachment) result += "TransientAttachment | ";
+    if (value & vk::ImageUsageFlagBits::eInputAttachment) result += "InputAttachment | ";
+    return result.substr(0, result.size() - 3);
+  }
+  static const char * getString(ImageCreateFlagBits value)
+  {
+    switch (value)
+    {
+    case ImageCreateFlagBits::eSparseBinding: return "SparseBinding";
+    case ImageCreateFlagBits::eSparseResidency: return "SparseResidency";
+    case ImageCreateFlagBits::eSparseAliased: return "SparseAliased";
+    case ImageCreateFlagBits::eMutableFormat: return "MutableFormat";
+    case ImageCreateFlagBits::eCubeCompatible: return "CubeCompatible";
+    default: return "unknown";
+    }
+  }
+
+  static std::string getString(ImageCreateFlags value)
+  {
+    if (!value) return std::string();
+    std::string result;
+    if (value & vk::ImageCreateFlagBits::eSparseBinding) result += "SparseBinding | ";
+    if (value & vk::ImageCreateFlagBits::eSparseResidency) result += "SparseResidency | ";
+    if (value & vk::ImageCreateFlagBits::eSparseAliased) result += "SparseAliased | ";
+    if (value & vk::ImageCreateFlagBits::eMutableFormat) result += "MutableFormat | ";
+    if (value & vk::ImageCreateFlagBits::eCubeCompatible) result += "CubeCompatible | ";
+    return result.substr(0, result.size() - 3);
+  }
+  static const char * getString(PipelineCreateFlagBits value)
+  {
+    switch (value)
+    {
+    case PipelineCreateFlagBits::eDisableOptimization: return "DisableOptimization";
+    case PipelineCreateFlagBits::eAllowDerivatives: return "AllowDerivatives";
+    case PipelineCreateFlagBits::eDerivative: return "Derivative";
+    default: return "unknown";
+    }
+  }
+
+  static std::string getString(PipelineCreateFlags value)
+  {
+    if (!value) return std::string();
+    std::string result;
+    if (value & vk::PipelineCreateFlagBits::eDisableOptimization) result += "DisableOptimization | ";
+    if (value & vk::PipelineCreateFlagBits::eAllowDerivatives) result += "AllowDerivatives | ";
+    if (value & vk::PipelineCreateFlagBits::eDerivative) result += "Derivative | ";
+    return result.substr(0, result.size() - 3);
+  }
+  static const char * getString(ColorComponentFlagBits value)
+  {
+    switch (value)
+    {
+    case ColorComponentFlagBits::eR: return "R";
+    case ColorComponentFlagBits::eG: return "G";
+    case ColorComponentFlagBits::eB: return "B";
+    case ColorComponentFlagBits::eA: return "A";
+    default: return "unknown";
+    }
+  }
+
+  static std::string getString(ColorComponentFlags value)
+  {
+    if (!value) return std::string();
+    std::string result;
+    if (value & vk::ColorComponentFlagBits::eR) result += "R | ";
+    if (value & vk::ColorComponentFlagBits::eG) result += "G | ";
+    if (value & vk::ColorComponentFlagBits::eB) result += "B | ";
+    if (value & vk::ColorComponentFlagBits::eA) result += "A | ";
+    return result.substr(0, result.size() - 3);
+  }
+  static const char * getString(FenceCreateFlagBits value)
+  {
+    switch (value)
+    {
+    case FenceCreateFlagBits::eSignaled: return "Signaled";
+    default: return "unknown";
+    }
+  }
+
+  static std::string getString(FenceCreateFlags value)
+  {
+    if (!value) return std::string();
+    std::string result;
+    if (value & vk::FenceCreateFlagBits::eSignaled) result += "Signaled | ";
+    return result.substr(0, result.size() - 3);
+  }
+  static const char * getString(FormatFeatureFlagBits value)
+  {
+    switch (value)
+    {
+    case FormatFeatureFlagBits::eSampledImage: return "SampledImage";
+    case FormatFeatureFlagBits::eStorageImage: return "StorageImage";
+    case FormatFeatureFlagBits::eStorageImageAtomic: return "StorageImageAtomic";
+    case FormatFeatureFlagBits::eUniformTexelBuffer: return "UniformTexelBuffer";
+    case FormatFeatureFlagBits::eStorageTexelBuffer: return "StorageTexelBuffer";
+    case FormatFeatureFlagBits::eStorageTexelBufferAtomic: return "StorageTexelBufferAtomic";
+    case FormatFeatureFlagBits::eVertexBuffer: return "VertexBuffer";
+    case FormatFeatureFlagBits::eColorAttachment: return "ColorAttachment";
+    case FormatFeatureFlagBits::eColorAttachmentBlend: return "ColorAttachmentBlend";
+    case FormatFeatureFlagBits::eDepthStencilAttachment: return "DepthStencilAttachment";
+    case FormatFeatureFlagBits::eBlitSrc: return "BlitSrc";
+    case FormatFeatureFlagBits::eBlitDst: return "BlitDst";
+    case FormatFeatureFlagBits::eSampledImageFilterLinear: return "SampledImageFilterLinear";
+    default: return "unknown";
+    }
+  }
+
+  static std::string getString(FormatFeatureFlags value)
+  {
+    if (!value) return std::string();
+    std::string result;
+    if (value & vk::FormatFeatureFlagBits::eSampledImage) result += "SampledImage | ";
+    if (value & vk::FormatFeatureFlagBits::eStorageImage) result += "StorageImage | ";
+    if (value & vk::FormatFeatureFlagBits::eStorageImageAtomic) result += "StorageImageAtomic | ";
+    if (value & vk::FormatFeatureFlagBits::eUniformTexelBuffer) result += "UniformTexelBuffer | ";
+    if (value & vk::FormatFeatureFlagBits::eStorageTexelBuffer) result += "StorageTexelBuffer | ";
+    if (value & vk::FormatFeatureFlagBits::eStorageTexelBufferAtomic) result += "StorageTexelBufferAtomic | ";
+    if (value & vk::FormatFeatureFlagBits::eVertexBuffer) result += "VertexBuffer | ";
+    if (value & vk::FormatFeatureFlagBits::eColorAttachment) result += "ColorAttachment | ";
+    if (value & vk::FormatFeatureFlagBits::eColorAttachmentBlend) result += "ColorAttachmentBlend | ";
+    if (value & vk::FormatFeatureFlagBits::eDepthStencilAttachment) result += "DepthStencilAttachment | ";
+    if (value & vk::FormatFeatureFlagBits::eBlitSrc) result += "BlitSrc | ";
+    if (value & vk::FormatFeatureFlagBits::eBlitDst) result += "BlitDst | ";
+    if (value & vk::FormatFeatureFlagBits::eSampledImageFilterLinear) result += "SampledImageFilterLinear | ";
+    return result.substr(0, result.size() - 3);
+  }
+  static const char * getString(QueryControlFlagBits value)
+  {
+    switch (value)
+    {
+    case QueryControlFlagBits::ePrecise: return "Precise";
+    default: return "unknown";
+    }
+  }
+
+  static std::string getString(QueryControlFlags value)
+  {
+    if (!value) return std::string();
+    std::string result;
+    if (value & vk::QueryControlFlagBits::ePrecise) result += "Precise | ";
+    return result.substr(0, result.size() - 3);
+  }
+  static const char * getString(QueryResultFlagBits value)
+  {
+    switch (value)
+    {
+    case QueryResultFlagBits::e64: return "64";
+    case QueryResultFlagBits::eWait: return "Wait";
+    case QueryResultFlagBits::eWithAvailability: return "WithAvailability";
+    case QueryResultFlagBits::ePartial: return "Partial";
+    default: return "unknown";
+    }
+  }
+
+  static std::string getString(QueryResultFlags value)
+  {
+    if (!value) return std::string();
+    std::string result;
+    if (value & vk::QueryResultFlagBits::e64) result += "64 | ";
+    if (value & vk::QueryResultFlagBits::eWait) result += "Wait | ";
+    if (value & vk::QueryResultFlagBits::eWithAvailability) result += "WithAvailability | ";
+    if (value & vk::QueryResultFlagBits::ePartial) result += "Partial | ";
+    return result.substr(0, result.size() - 3);
+  }
+  static const char * getString(CommandBufferUsageFlagBits value)
+  {
+    switch (value)
+    {
+    case CommandBufferUsageFlagBits::eOneTimeSubmit: return "OneTimeSubmit";
+    case CommandBufferUsageFlagBits::eRenderPassContinue: return "RenderPassContinue";
+    case CommandBufferUsageFlagBits::eSimultaneousUse: return "SimultaneousUse";
+    default: return "unknown";
+    }
+  }
+
+  static std::string getString(CommandBufferUsageFlags value)
+  {
+    if (!value) return std::string();
+    std::string result;
+    if (value & vk::CommandBufferUsageFlagBits::eOneTimeSubmit) result += "OneTimeSubmit | ";
+    if (value & vk::CommandBufferUsageFlagBits::eRenderPassContinue) result += "RenderPassContinue | ";
+    if (value & vk::CommandBufferUsageFlagBits::eSimultaneousUse) result += "SimultaneousUse | ";
+    return result.substr(0, result.size() - 3);
+  }
+  static const char * getString(QueryPipelineStatisticFlagBits value)
+  {
+    switch (value)
+    {
+    case QueryPipelineStatisticFlagBits::eInputAssemblyVertices: return "InputAssemblyVertices";
+    case QueryPipelineStatisticFlagBits::eInputAssemblyPrimitives: return "InputAssemblyPrimitives";
+    case QueryPipelineStatisticFlagBits::eVertexShaderInvocations: return "VertexShaderInvocations";
+    case QueryPipelineStatisticFlagBits::eGeometryShaderInvocations: return "GeometryShaderInvocations";
+    case QueryPipelineStatisticFlagBits::eGeometryShaderPrimitives: return "GeometryShaderPrimitives";
+    case QueryPipelineStatisticFlagBits::eClippingInvocations: return "ClippingInvocations";
+    case QueryPipelineStatisticFlagBits::eClippingPrimitives: return "ClippingPrimitives";
+    case QueryPipelineStatisticFlagBits::eFragmentShaderInvocations: return "FragmentShaderInvocations";
+    case QueryPipelineStatisticFlagBits::eTessellationControlShaderPatches: return "TessellationControlShaderPatches";
+    case QueryPipelineStatisticFlagBits::eTessellationEvaluationShaderInvocations: return "TessellationEvaluationShaderInvocations";
+    case QueryPipelineStatisticFlagBits::eComputeShaderInvocations: return "ComputeShaderInvocations";
+    default: return "unknown";
+    }
+  }
+
+  static std::string getString(QueryPipelineStatisticFlags value)
+  {
+    if (!value) return std::string();
+    std::string result;
+    if (value & vk::QueryPipelineStatisticFlagBits::eInputAssemblyVertices) result += "InputAssemblyVertices | ";
+    if (value & vk::QueryPipelineStatisticFlagBits::eInputAssemblyPrimitives) result += "InputAssemblyPrimitives | ";
+    if (value & vk::QueryPipelineStatisticFlagBits::eVertexShaderInvocations) result += "VertexShaderInvocations | ";
+    if (value & vk::QueryPipelineStatisticFlagBits::eGeometryShaderInvocations) result += "GeometryShaderInvocations | ";
+    if (value & vk::QueryPipelineStatisticFlagBits::eGeometryShaderPrimitives) result += "GeometryShaderPrimitives | ";
+    if (value & vk::QueryPipelineStatisticFlagBits::eClippingInvocations) result += "ClippingInvocations | ";
+    if (value & vk::QueryPipelineStatisticFlagBits::eClippingPrimitives) result += "ClippingPrimitives | ";
+    if (value & vk::QueryPipelineStatisticFlagBits::eFragmentShaderInvocations) result += "FragmentShaderInvocations | ";
+    if (value & vk::QueryPipelineStatisticFlagBits::eTessellationControlShaderPatches) result += "TessellationControlShaderPatches | ";
+    if (value & vk::QueryPipelineStatisticFlagBits::eTessellationEvaluationShaderInvocations) result += "TessellationEvaluationShaderInvocations | ";
+    if (value & vk::QueryPipelineStatisticFlagBits::eComputeShaderInvocations) result += "ComputeShaderInvocations | ";
+    return result.substr(0, result.size() - 3);
+  }
+  static const char * getString(ImageAspectFlagBits value)
+  {
+    switch (value)
+    {
+    case ImageAspectFlagBits::eColor: return "Color";
+    case ImageAspectFlagBits::eDepth: return "Depth";
+    case ImageAspectFlagBits::eStencil: return "Stencil";
+    case ImageAspectFlagBits::eMetadata: return "Metadata";
+    default: return "unknown";
+    }
+  }
+
+  static std::string getString(ImageAspectFlags value)
+  {
+    if (!value) return std::string();
+    std::string result;
+    if (value & vk::ImageAspectFlagBits::eColor) result += "Color | ";
+    if (value & vk::ImageAspectFlagBits::eDepth) result += "Depth | ";
+    if (value & vk::ImageAspectFlagBits::eStencil) result += "Stencil | ";
+    if (value & vk::ImageAspectFlagBits::eMetadata) result += "Metadata | ";
+    return result.substr(0, result.size() - 3);
+  }
+  static const char * getString(SparseImageFormatFlagBits value)
+  {
+    switch (value)
+    {
+    case SparseImageFormatFlagBits::eSingleMiptail: return "SingleMiptail";
+    case SparseImageFormatFlagBits::eAlignedMipSize: return "AlignedMipSize";
+    case SparseImageFormatFlagBits::eNonstandardBlockSize: return "NonstandardBlockSize";
+    default: return "unknown";
+    }
+  }
+
+  static std::string getString(SparseImageFormatFlags value)
+  {
+    if (!value) return std::string();
+    std::string result;
+    if (value & vk::SparseImageFormatFlagBits::eSingleMiptail) result += "SingleMiptail | ";
+    if (value & vk::SparseImageFormatFlagBits::eAlignedMipSize) result += "AlignedMipSize | ";
+    if (value & vk::SparseImageFormatFlagBits::eNonstandardBlockSize) result += "NonstandardBlockSize | ";
+    return result.substr(0, result.size() - 3);
+  }
+  static const char * getString(SparseMemoryBindFlagBits value)
+  {
+    switch (value)
+    {
+    case SparseMemoryBindFlagBits::eMetadata: return "Metadata";
+    default: return "unknown";
+    }
+  }
+
+  static std::string getString(SparseMemoryBindFlags value)
+  {
+    if (!value) return std::string();
+    std::string result;
+    if (value & vk::SparseMemoryBindFlagBits::eMetadata) result += "Metadata | ";
+    return result.substr(0, result.size() - 3);
+  }
+  static const char * getString(PipelineStageFlagBits value)
+  {
+    switch (value)
+    {
+    case PipelineStageFlagBits::eTopOfPipe: return "TopOfPipe";
+    case PipelineStageFlagBits::eDrawIndirect: return "DrawIndirect";
+    case PipelineStageFlagBits::eVertexInput: return "VertexInput";
+    case PipelineStageFlagBits::eVertexShader: return "VertexShader";
+    case PipelineStageFlagBits::eTessellationControlShader: return "TessellationControlShader";
+    case PipelineStageFlagBits::eTessellationEvaluationShader: return "TessellationEvaluationShader";
+    case PipelineStageFlagBits::eGeometryShader: return "GeometryShader";
+    case PipelineStageFlagBits::eFragmentShader: return "FragmentShader";
+    case PipelineStageFlagBits::eEarlyFragmentTests: return "EarlyFragmentTests";
+    case PipelineStageFlagBits::eLateFragmentTests: return "LateFragmentTests";
+    case PipelineStageFlagBits::eColorAttachmentOutput: return "ColorAttachmentOutput";
+    case PipelineStageFlagBits::eComputeShader: return "ComputeShader";
+    case PipelineStageFlagBits::eTransfer: return "Transfer";
+    case PipelineStageFlagBits::eBottomOfPipe: return "BottomOfPipe";
+    case PipelineStageFlagBits::eHost: return "Host";
+    case PipelineStageFlagBits::eAllGraphics: return "AllGraphics";
+    case PipelineStageFlagBits::eAllCommands: return "AllCommands";
+    default: return "unknown";
+    }
+  }
+
+  static std::string getString(PipelineStageFlags value)
+  {
+    if (!value) return std::string();
+    std::string result;
+    if (value & vk::PipelineStageFlagBits::eTopOfPipe) result += "TopOfPipe | ";
+    if (value & vk::PipelineStageFlagBits::eDrawIndirect) result += "DrawIndirect | ";
+    if (value & vk::PipelineStageFlagBits::eVertexInput) result += "VertexInput | ";
+    if (value & vk::PipelineStageFlagBits::eVertexShader) result += "VertexShader | ";
+    if (value & vk::PipelineStageFlagBits::eTessellationControlShader) result += "TessellationControlShader | ";
+    if (value & vk::PipelineStageFlagBits::eTessellationEvaluationShader) result += "TessellationEvaluationShader | ";
+    if (value & vk::PipelineStageFlagBits::eGeometryShader) result += "GeometryShader | ";
+    if (value & vk::PipelineStageFlagBits::eFragmentShader) result += "FragmentShader | ";
+    if (value & vk::PipelineStageFlagBits::eEarlyFragmentTests) result += "EarlyFragmentTests | ";
+    if (value & vk::PipelineStageFlagBits::eLateFragmentTests) result += "LateFragmentTests | ";
+    if (value & vk::PipelineStageFlagBits::eColorAttachmentOutput) result += "ColorAttachmentOutput | ";
+    if (value & vk::PipelineStageFlagBits::eComputeShader) result += "ComputeShader | ";
+    if (value & vk::PipelineStageFlagBits::eTransfer) result += "Transfer | ";
+    if (value & vk::PipelineStageFlagBits::eBottomOfPipe) result += "BottomOfPipe | ";
+    if (value & vk::PipelineStageFlagBits::eHost) result += "Host | ";
+    if (value & vk::PipelineStageFlagBits::eAllGraphics) result += "AllGraphics | ";
+    if (value & vk::PipelineStageFlagBits::eAllCommands) result += "AllCommands | ";
+    return result.substr(0, result.size() - 3);
+  }
+  static const char * getString(CommandPoolCreateFlagBits value)
+  {
+    switch (value)
+    {
+    case CommandPoolCreateFlagBits::eTransient: return "Transient";
+    case CommandPoolCreateFlagBits::eResetCommandBuffer: return "ResetCommandBuffer";
+    default: return "unknown";
+    }
+  }
+
+  static std::string getString(CommandPoolCreateFlags value)
+  {
+    if (!value) return std::string();
+    std::string result;
+    if (value & vk::CommandPoolCreateFlagBits::eTransient) result += "Transient | ";
+    if (value & vk::CommandPoolCreateFlagBits::eResetCommandBuffer) result += "ResetCommandBuffer | ";
+    return result.substr(0, result.size() - 3);
+  }
+  static const char * getString(CommandPoolResetFlagBits value)
+  {
+    switch (value)
+    {
+    case CommandPoolResetFlagBits::eReleaseResources: return "ReleaseResources";
+    default: return "unknown";
+    }
+  }
+
+  static std::string getString(CommandPoolResetFlags value)
+  {
+    if (!value) return std::string();
+    std::string result;
+    if (value & vk::CommandPoolResetFlagBits::eReleaseResources) result += "ReleaseResources | ";
+    return result.substr(0, result.size() - 3);
+  }
+  static const char * getString(CommandBufferResetFlagBits value)
+  {
+    switch (value)
+    {
+    case CommandBufferResetFlagBits::eReleaseResources: return "ReleaseResources";
+    default: return "unknown";
+    }
+  }
+
+  static std::string getString(CommandBufferResetFlags value)
+  {
+    if (!value) return std::string();
+    std::string result;
+    if (value & vk::CommandBufferResetFlagBits::eReleaseResources) result += "ReleaseResources | ";
+    return result.substr(0, result.size() - 3);
+  }
+  static const char * getString(SampleCountFlagBits value)
+  {
+    switch (value)
+    {
+    case SampleCountFlagBits::e1: return "1";
+    case SampleCountFlagBits::e2: return "2";
+    case SampleCountFlagBits::e4: return "4";
+    case SampleCountFlagBits::e8: return "8";
+    case SampleCountFlagBits::e16: return "16";
+    case SampleCountFlagBits::e32: return "32";
+    case SampleCountFlagBits::e64: return "64";
+    default: return "unknown";
+    }
+  }
+
+  static std::string getString(SampleCountFlags value)
+  {
+    if (!value) return std::string();
+    std::string result;
+    if (value & vk::SampleCountFlagBits::e1) result += "1 | ";
+    if (value & vk::SampleCountFlagBits::e2) result += "2 | ";
+    if (value & vk::SampleCountFlagBits::e4) result += "4 | ";
+    if (value & vk::SampleCountFlagBits::e8) result += "8 | ";
+    if (value & vk::SampleCountFlagBits::e16) result += "16 | ";
+    if (value & vk::SampleCountFlagBits::e32) result += "32 | ";
+    if (value & vk::SampleCountFlagBits::e64) result += "64 | ";
+    return result.substr(0, result.size() - 3);
+  }
+  static const char * getString(AttachmentDescriptionFlagBits value)
+  {
+    switch (value)
+    {
+    case AttachmentDescriptionFlagBits::eMayAlias: return "MayAlias";
+    default: return "unknown";
+    }
+  }
+
+  static std::string getString(AttachmentDescriptionFlags value)
+  {
+    if (!value) return std::string();
+    std::string result;
+    if (value & vk::AttachmentDescriptionFlagBits::eMayAlias) result += "MayAlias | ";
+    return result.substr(0, result.size() - 3);
+  }
+  static const char * getString(StencilFaceFlagBits value)
+  {
+    switch (value)
+    {
+    case StencilFaceFlagBits::eFront: return "Front";
+    case StencilFaceFlagBits::eBack: return "Back";
+    case StencilFaceFlagBits::eVkStencilFrontAndBack: return "VkStencilFrontAndBack";
+    default: return "unknown";
+    }
+  }
+
+  static std::string getString(StencilFaceFlags value)
+  {
+    if (!value) return std::string();
+    std::string result;
+    if (value & vk::StencilFaceFlagBits::eFront) result += "Front | ";
+    if (value & vk::StencilFaceFlagBits::eBack) result += "Back | ";
+    if (value & vk::StencilFaceFlagBits::eVkStencilFrontAndBack) result += "VkStencilFrontAndBack | ";
+    return result.substr(0, result.size() - 3);
+  }
+  static const char * getString(DescriptorPoolCreateFlagBits value)
+  {
+    switch (value)
+    {
+    case DescriptorPoolCreateFlagBits::eFreeDescriptorSet: return "FreeDescriptorSet";
+    default: return "unknown";
+    }
+  }
+
+  static std::string getString(DescriptorPoolCreateFlags value)
+  {
+    if (!value) return std::string();
+    std::string result;
+    if (value & vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet) result += "FreeDescriptorSet | ";
+    return result.substr(0, result.size() - 3);
+  }
+  static const char * getString(DependencyFlagBits value)
+  {
+    switch (value)
+    {
+    case DependencyFlagBits::eByRegion: return "ByRegion";
+    default: return "unknown";
+    }
+  }
+
+  static std::string getString(DependencyFlags value)
+  {
+    if (!value) return std::string();
+    std::string result;
+    if (value & vk::DependencyFlagBits::eByRegion) result += "ByRegion | ";
+    return result.substr(0, result.size() - 3);
+  }
+  static const char * getString(PresentModeKHR value)
+  {
+    switch (value)
+    {
+    case PresentModeKHR::eVkPresentModeImmediateKhr: return "VkPresentModeImmediateKhr";
+    case PresentModeKHR::eVkPresentModeMailboxKhr: return "VkPresentModeMailboxKhr";
+    case PresentModeKHR::eVkPresentModeFifoKhr: return "VkPresentModeFifoKhr";
+    case PresentModeKHR::eVkPresentModeFifoRelaxedKhr: return "VkPresentModeFifoRelaxedKhr";
+    default: return "unknown";
+    }
+  }
+
+  static const char * getString(ColorSpaceKHR value)
+  {
+    switch (value)
+    {
+    case ColorSpaceKHR::eVkColorspaceSrgbNonlinearKhr: return "VkColorspaceSrgbNonlinearKhr";
+    default: return "unknown";
+    }
+  }
+
+  static const char * getString(CompositeAlphaFlagBitsKHR value)
+  {
+    switch (value)
+    {
+    case CompositeAlphaFlagBitsKHR::eOpaque: return "Opaque";
+    case CompositeAlphaFlagBitsKHR::ePreMultiplied: return "PreMultiplied";
+    case CompositeAlphaFlagBitsKHR::ePostMultiplied: return "PostMultiplied";
+    case CompositeAlphaFlagBitsKHR::eInherit: return "Inherit";
+    default: return "unknown";
+    }
+  }
+
+  static std::string getString(CompositeAlphaFlagsKHR value)
+  {
+    if (!value) return std::string();
+    std::string result;
+    if (value & vk::CompositeAlphaFlagBitsKHR::eOpaque) result += "Opaque | ";
+    if (value & vk::CompositeAlphaFlagBitsKHR::ePreMultiplied) result += "PreMultiplied | ";
+    if (value & vk::CompositeAlphaFlagBitsKHR::ePostMultiplied) result += "PostMultiplied | ";
+    if (value & vk::CompositeAlphaFlagBitsKHR::eInherit) result += "Inherit | ";
+    return result.substr(0, result.size() - 3);
+  }
+  static const char * getString(SurfaceTransformFlagBitsKHR value)
+  {
+    switch (value)
+    {
+    case SurfaceTransformFlagBitsKHR::eIdentity: return "Identity";
+    case SurfaceTransformFlagBitsKHR::eRotate90: return "Rotate90";
+    case SurfaceTransformFlagBitsKHR::eRotate180: return "Rotate180";
+    case SurfaceTransformFlagBitsKHR::eRotate270: return "Rotate270";
+    case SurfaceTransformFlagBitsKHR::eHorizontalMirror: return "HorizontalMirror";
+    case SurfaceTransformFlagBitsKHR::eHorizontalMirrorRotate90: return "HorizontalMirrorRotate90";
+    case SurfaceTransformFlagBitsKHR::eHorizontalMirrorRotate180: return "HorizontalMirrorRotate180";
+    case SurfaceTransformFlagBitsKHR::eHorizontalMirrorRotate270: return "HorizontalMirrorRotate270";
+    case SurfaceTransformFlagBitsKHR::eInherit: return "Inherit";
+    default: return "unknown";
+    }
+  }
+
+  static std::string getString(SurfaceTransformFlagsKHR value)
+  {
+    if (!value) return std::string();
+    std::string result;
+    if (value & vk::SurfaceTransformFlagBitsKHR::eIdentity) result += "Identity | ";
+    if (value & vk::SurfaceTransformFlagBitsKHR::eRotate90) result += "Rotate90 | ";
+    if (value & vk::SurfaceTransformFlagBitsKHR::eRotate180) result += "Rotate180 | ";
+    if (value & vk::SurfaceTransformFlagBitsKHR::eRotate270) result += "Rotate270 | ";
+    if (value & vk::SurfaceTransformFlagBitsKHR::eHorizontalMirror) result += "HorizontalMirror | ";
+    if (value & vk::SurfaceTransformFlagBitsKHR::eHorizontalMirrorRotate90) result += "HorizontalMirrorRotate90 | ";
+    if (value & vk::SurfaceTransformFlagBitsKHR::eHorizontalMirrorRotate180) result += "HorizontalMirrorRotate180 | ";
+    if (value & vk::SurfaceTransformFlagBitsKHR::eHorizontalMirrorRotate270) result += "HorizontalMirrorRotate270 | ";
+    if (value & vk::SurfaceTransformFlagBitsKHR::eInherit) result += "Inherit | ";
+    return result.substr(0, result.size() - 3);
+  }
+  static const char * getString(DebugReportFlagBitsEXT value)
+  {
+    switch (value)
+    {
+    case DebugReportFlagBitsEXT::eInformation: return "Information";
+    case DebugReportFlagBitsEXT::eWarning: return "Warning";
+    case DebugReportFlagBitsEXT::ePerformanceWarning: return "PerformanceWarning";
+    case DebugReportFlagBitsEXT::eError: return "Error";
+    case DebugReportFlagBitsEXT::eDebug: return "Debug";
+    default: return "unknown";
+    }
+  }
+
+  static std::string getString(DebugReportFlagsEXT value)
+  {
+    if (!value) return std::string();
+    std::string result;
+    if (value & vk::DebugReportFlagBitsEXT::eInformation) result += "Information | ";
+    if (value & vk::DebugReportFlagBitsEXT::eWarning) result += "Warning | ";
+    if (value & vk::DebugReportFlagBitsEXT::ePerformanceWarning) result += "PerformanceWarning | ";
+    if (value & vk::DebugReportFlagBitsEXT::eError) result += "Error | ";
+    if (value & vk::DebugReportFlagBitsEXT::eDebug) result += "Debug | ";
+    return result.substr(0, result.size() - 3);
+  }
+  static const char * getString(DisplayPlaneAlphaFlagBitsKHR value)
+  {
+    switch (value)
+    {
+    case DisplayPlaneAlphaFlagBitsKHR::eOpaque: return "Opaque";
+    case DisplayPlaneAlphaFlagBitsKHR::eGlobal: return "Global";
+    case DisplayPlaneAlphaFlagBitsKHR::ePerPixel: return "PerPixel";
+    case DisplayPlaneAlphaFlagBitsKHR::ePerPixelPremultiplied: return "PerPixelPremultiplied";
+    default: return "unknown";
+    }
+  }
+
+  static std::string getString(DisplayPlaneAlphaFlagsKHR value)
+  {
+    if (!value) return std::string();
+    std::string result;
+    if (value & vk::DisplayPlaneAlphaFlagBitsKHR::eOpaque) result += "Opaque | ";
+    if (value & vk::DisplayPlaneAlphaFlagBitsKHR::eGlobal) result += "Global | ";
+    if (value & vk::DisplayPlaneAlphaFlagBitsKHR::ePerPixel) result += "PerPixel | ";
+    if (value & vk::DisplayPlaneAlphaFlagBitsKHR::ePerPixelPremultiplied) result += "PerPixelPremultiplied | ";
+    return result.substr(0, result.size() - 3);
+  }
+  static const char * getString(DebugReportObjectTypeEXT value)
+  {
+    switch (value)
+    {
+    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeUnknownExt: return "VkDebugReportObjectTypeUnknownExt";
+    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeInstanceExt: return "VkDebugReportObjectTypeInstanceExt";
+    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypePhysicalDeviceExt: return "VkDebugReportObjectTypePhysicalDeviceExt";
+    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeDeviceExt: return "VkDebugReportObjectTypeDeviceExt";
+    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeQueueExt: return "VkDebugReportObjectTypeQueueExt";
+    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeSemaphoreExt: return "VkDebugReportObjectTypeSemaphoreExt";
+    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeCommandBufferExt: return "VkDebugReportObjectTypeCommandBufferExt";
+    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeFenceExt: return "VkDebugReportObjectTypeFenceExt";
+    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeDeviceMemoryExt: return "VkDebugReportObjectTypeDeviceMemoryExt";
+    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeBufferExt: return "VkDebugReportObjectTypeBufferExt";
+    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeImageExt: return "VkDebugReportObjectTypeImageExt";
+    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeEventExt: return "VkDebugReportObjectTypeEventExt";
+    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeQueryPoolExt: return "VkDebugReportObjectTypeQueryPoolExt";
+    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeBufferViewExt: return "VkDebugReportObjectTypeBufferViewExt";
+    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeImageViewExt: return "VkDebugReportObjectTypeImageViewExt";
+    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeShaderModuleExt: return "VkDebugReportObjectTypeShaderModuleExt";
+    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypePipelineCacheExt: return "VkDebugReportObjectTypePipelineCacheExt";
+    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypePipelineLayoutExt: return "VkDebugReportObjectTypePipelineLayoutExt";
+    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeRenderPassExt: return "VkDebugReportObjectTypeRenderPassExt";
+    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypePipelineExt: return "VkDebugReportObjectTypePipelineExt";
+    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeDescriptorSetLayoutExt: return "VkDebugReportObjectTypeDescriptorSetLayoutExt";
+    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeSamplerExt: return "VkDebugReportObjectTypeSamplerExt";
+    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeDescriptorPoolExt: return "VkDebugReportObjectTypeDescriptorPoolExt";
+    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeDescriptorSetExt: return "VkDebugReportObjectTypeDescriptorSetExt";
+    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeFramebufferExt: return "VkDebugReportObjectTypeFramebufferExt";
+    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeCommandPoolExt: return "VkDebugReportObjectTypeCommandPoolExt";
+    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeSurfaceKhrExt: return "VkDebugReportObjectTypeSurfaceKhrExt";
+    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeSwapchainKhrExt: return "VkDebugReportObjectTypeSwapchainKhrExt";
+    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeDebugReportExt: return "VkDebugReportObjectTypeDebugReportExt";
+    default: return "unknown";
+    }
+  }
+
+  static const char * getString(DebugReportErrorEXT value)
+  {
+    switch (value)
+    {
+    case DebugReportErrorEXT::eVkDebugReportErrorNoneExt: return "VkDebugReportErrorNoneExt";
+    case DebugReportErrorEXT::eVkDebugReportErrorCallbackRefExt: return "VkDebugReportErrorCallbackRefExt";
+    default: return "unknown";
+    }
+  }
+
 }

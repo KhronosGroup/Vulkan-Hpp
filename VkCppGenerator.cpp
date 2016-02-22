@@ -38,8 +38,6 @@
 
 #include <tinyxml2.h>
 
-#define VK_PROTOTYPES
-
 const std::string licenseHeader(
 "// Copyright(c) 2015-2016, NVIDIA CORPORATION. All rights reserved.\n"
 "//\n"
@@ -67,6 +65,23 @@ const std::string licenseHeader(
 "// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE\n"
 "// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n"
 );
+
+const std::string exceptionHeader(
+  "  enum class Result;\n"
+  "\n"
+  "  class Exception : public std::runtime_error\n"
+  "  {\n"
+  "  public:\n"
+  "    Exception(Result result, std::string const& what)\n"
+  "      : std::runtime_error(what)\n"
+  "      , m_error(result)\n"
+  "    {}\n"
+  "\n"
+  "  private:\n"
+  "    Result m_error;\n"
+  "  };\n"
+  "\n"
+  );
 
 const std::string flagsHeader(
 "  template <typename BitType, typename MaskType = uint32_t>\n"
@@ -203,6 +218,7 @@ struct StructData
 {
   bool                    returnedOnly;
   std::vector<MemberData> members;
+  std::string             protect;
 };
 
 struct NameValue
@@ -217,21 +233,39 @@ struct EnumData
   std::string             prefix;
   std::string             postfix;
   std::vector<NameValue>  members;
+  std::string             protect;
 
   void addEnum(std::string const & name);
 };
 
 struct CommandData
 {
-  std::string             returnType;
-  std::vector<MemberData> arguments;
+  CommandData()
+    : handleCommand(false)
+    , twoStep(false)
+  {}
+
+  std::string               returnType;
+  std::vector<MemberData>   arguments;
+  std::vector<std::string>  successCodes;
+  std::string               protect;
+  bool                      handleCommand;
+  bool                      twoStep;
 };
 
-struct ExtensionData
+struct HandleData
 {
-  std::string               name;
-  std::string               protect;
-  std::vector<std::string>  elements;
+  std::vector<std::string>  commands;
+};
+
+struct FlagData
+{
+  std::string protect;
+};
+
+struct ScalarData
+{
+  std::string protect;
 };
 
 struct DependencyData
@@ -257,56 +291,70 @@ struct DependencyData
   Category              category;
   std::string           name;
   std::set<std::string> dependencies;
-  size_t                extension;
 };
 
 void createDefaults( std::vector<DependencyData> const& dependencies, std::map<std::string,EnumData> const& enums, std::map<std::string,std::string> & defaultValues );
-size_t findComplexIndex(CommandData const& commandData, std::vector<std::pair<size_t, size_t>> const& lenParameters);
-size_t findReturnIndex(CommandData const& commandData, std::vector<std::pair<size_t, size_t>> const& lenParameters);
-std::string getEnumName(std::string const& name); // get vkcpp enum name from vk enum name
-std::vector<std::pair<size_t, size_t>> getLenParameters(CommandData const& commandData);
+std::string determineFunctionName(std::string const& name, CommandData const& commandData);
+std::string determineReturnType(CommandData const& commandData, size_t returnIndex, bool isVector = false);
+void enterProtect(std::ofstream &ofs, std::string const& protect);
+size_t findComplexIndex(CommandData const& commandData, std::map<size_t, size_t> const& vectorParameters);
+DependencyData const& findDependency(std::string const& name, std::vector<DependencyData> const& dependencies);
+size_t findReturnIndex(CommandData const& commandDatam, std::map<size_t,size_t> const& vectorParameters);
+std::string generateEnumNameForFlags(std::string const& name);
+std::map<size_t, size_t> getVectorParameters(CommandData const& commandData);
+bool hasPointerArguments(CommandData const& commandData);
+bool isVectorSizeParameter(std::map<size_t, size_t> const& vectorParameters, size_t idx);
+void leaveProtect(std::ofstream &ofs, std::string const& protect);
 bool noDependencies(std::set<std::string> const& dependencies, std::map<std::string, std::string> & listedTypes);
-void readCommandParam( tinyxml2::XMLElement * element, DependencyData & typeData, std::vector<MemberData> & arguments );
-CommandData & readCommandProto( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,CommandData> & commands );
-void readCommands( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,CommandData> & commands );
-void readCommandsCommand( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,CommandData> & commands );
+bool readCommandParam( tinyxml2::XMLElement * element, DependencyData & typeData, std::vector<MemberData> & arguments );
+std::map<std::string, CommandData>::iterator readCommandProto(tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string, CommandData> & commands);
+void readCommands( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,CommandData> & commands, std::map<std::string,HandleData> & handles );
+void readCommandsCommand(tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string, CommandData> & commands, std::map<std::string, HandleData> & handles);
 void readEnums( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,EnumData> & enums, std::set<std::string> & vkTypes );
 void readEnumsEnum( tinyxml2::XMLElement * element, EnumData & enumData );
-void readExtensionRequire( tinyxml2::XMLElement * element, std::vector<std::string> & elements, std::map<std::string, EnumData> & enums );
-void readExtensions( tinyxml2::XMLElement * element, std::vector<ExtensionData> & extensions, std::map<std::string, EnumData> & enums );
-void readExtensionsExtension(tinyxml2::XMLElement * element, std::vector<ExtensionData> & extensions, std::map<std::string, EnumData> & enums);
+void readExtensionRequire(tinyxml2::XMLElement * element, std::string const& protect, std::map<std::string, CommandData> & commands, std::map<std::string, EnumData> & enums, std::map<std::string, FlagData> & flags, std::map<std::string, ScalarData> & scalars, std::map<std::string, StructData> & structs);
+void readExtensions( tinyxml2::XMLElement * element, std::map<std::string,CommandData> & commands, std::map<std::string,EnumData> & enums, std::map<std::string,FlagData> & flags, std::map<std::string,ScalarData> & scalars, std::map<std::string,StructData> & structs );
+void readExtensionsExtension(tinyxml2::XMLElement * element, std::map<std::string, CommandData> & commands, std::map<std::string, EnumData> & enums, std::map<std::string, FlagData> & flags, std::map<std::string, ScalarData> & scalars, std::map<std::string, StructData> & structs);
 void readTypeBasetype( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies );
-void readTypeBitmask( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::set<std::string> & flags, std::set<std::string> & vkTypes, std::map<std::string, EnumData> & enums);
+void readTypeBitmask( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,FlagData> & flags, std::map<std::string,ScalarData> & scalars, std::set<std::string> & vkTypes, std::map<std::string, EnumData> & enums );
 void readTypeDefine( tinyxml2::XMLElement * element, std::string & version );
 void readTypeFuncpointer( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies );
-void readTypeHandle( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies );
+void readTypeHandle(tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::set<std::string> & vkTypes, std::map<std::string,HandleData> & handles);
 void readTypeStruct( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,StructData> & structs, std::set<std::string> & vkTypes );
 void readTypeStructMember( tinyxml2::XMLElement * element, std::vector<MemberData> & members, std::set<std::string> & dependencies );
 void readTypeUnion( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,StructData> & structs, std::set<std::string> & vkTypes );
 void readTypeUnionMember( tinyxml2::XMLElement * element, std::vector<MemberData> & members, std::set<std::string> & dependencies );
-void readTypes( tinyxml2::XMLElement * element, std::string & version, std::list<DependencyData> & dependencies, std::set<std::string> & flags, std::map<std::string,StructData> & structs, std::set<std::string> & vkTypes, std::map<std::string, EnumData> & enums);
-void sortDependencies( std::list<DependencyData> & dependencies, std::vector<ExtensionData> const& extensions, std::vector<std::vector<DependencyData>> & sortedDependencies );
+void readTypes(tinyxml2::XMLElement * element, std::string & version, std::list<DependencyData> & dependencies, std::map<std::string, FlagData> & flags, std::map<std::string, ScalarData> & scalars, std::map<std::string, StructData> & structs, std::set<std::string> & vkTypes, std::map<std::string, HandleData> & handles, std::map<std::string, EnumData> & enums);
+void sortDependencies( std::list<DependencyData> & dependencies, std::vector<DependencyData> & sortedDependencies );
 std::string reduceName(std::string const& name);
-std::string strip( std::string const& value, std::string const& prefix );
+std::string strip(std::string const& value, std::string const& prefix);
+std::string stripCommand(std::string const& value);
 std::string toCamelCase(std::string const& value);
 std::string toUpperCase(std::string const& name);
+void writeCall(std::ofstream & ofs, std::string const& name, CommandData const& commandData, std::set<std::string> const& vkTypes, std::map<size_t, size_t> const& vectorParameters = std::map<size_t, size_t>(), size_t specialIndex = ~0, std::string const& specialArgument = "");
+void writeExceptionCheck(std::ofstream & ofs, std::string const& indentation, std::string const& className, std::string const& functionName, std::vector<std::string> const& successCodes);
+void writeFunctionHeader(std::ofstream & ofs, std::string const& indentation, std::string const& returnType, std::string const& name, CommandData const& commandData, size_t returnIndex, std::map<size_t, size_t> const& vectorParameters);
 void writeMemberData(std::ofstream & ofs, MemberData const& memberData, std::set<std::string> const& vkTypes);
 void writeStructConstructor( std::ofstream & ofs, std::string const& name, std::string const& memberName, StructData const& structData, std::set<std::string> const& vkTypes, std::map<std::string,std::string> const& defaultValues );
 void writeStructGetter( std::ofstream & ofs, MemberData const& memberData, std::string const& memberName, std::set<std::string> const& vkTypes );
 void writeStructSetter( std::ofstream & ofs, std::string const& name, MemberData const& memberData, std::string const& memberName, std::set<std::string> const& vkTypes, std::map<std::string,StructData> const& structs );
 void writeTypeCommand( std::ofstream & ofs, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes );
-void writeTypeCommandEnhanced(std::ofstream & ofs, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes);
+void writeTypeCommandEnhanced(std::ofstream & ofs, std::string const& indentation, std::string const& className, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes);
+void writeTypeCommandEnhanced(std::ofstream & ofs, std::string const& indentation, std::string const& className, std::string const& functionName, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes, std::map<size_t, size_t> const& vectorParameters);
+void writeTypeCommandEnhancedSingleStep(std::ofstream & ofs, std::string const& indentation, std::string const& className, std::string const& functionName, std::string const& returnType, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes, size_t returnIndex, std::map<size_t, size_t> const& vectorParameters);
+void writeTypeCommandEnhancedTwoStep(std::ofstream & ofs, std::string const& indentation, std::string const& className, std::string const& functionName, std::string const& returnType, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes, size_t returnIndex, std::map<size_t, size_t> const& vectorParameters);
+void writeTypeCommandEnhancedReplaceReturn(std::ofstream & ofs, std::string const& indentation, std::string const& className, std::string const& functionName, std::string const& returnType, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes, size_t returnIndex, std::map<size_t, size_t> const& vectorParameters);
 void writeTypeCommandStandard(std::ofstream & ofs, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes);
-void writeTypeCommandComplexBody(std::ofstream & ofs, DependencyData const& dependencyData, CommandData const& commandData, std::map<std::string,std::string> const& nameMap, std::vector<std::pair<size_t, size_t>> const& lenParameters, std::set<size_t> const& argIndices, size_t complexIndex, size_t returnIndex);
-void writeTypeCommandSimpleBody(std::ofstream & ofs, DependencyData const& dependencyData, CommandData const& commandData, std::map<std::string,std::string> const& nameMap, std::set<size_t> const& argIndices, std::map<size_t,std::vector<size_t>> const& sizeIndices);
+void writeTypeCommandComplexBody(std::ofstream & ofs, DependencyData const& dependencyData, CommandData const& commandData, std::map<std::string,std::string> const& nameMap, std::map<size_t, size_t> const& vectorParameters, std::set<size_t> const& argIndices, size_t complexIndex, size_t returnIndex);
+void writeTypeCommandSimpleBody(std::ofstream & ofs, DependencyData const& dependencyData, CommandData const& commandData, std::map<std::string, std::string> const& nameMap, std::map<size_t, size_t> const& vectorParameters, std::set<size_t> const& argIndices, std::map<size_t, std::vector<size_t>> const& sizeIndices, size_t returnIndex);
 void writeTypeEnum(std::ofstream & ofs, DependencyData const& dependencyData, EnumData const& enumData);
-void writeTypeFlags( std::ofstream & ofs, DependencyData const& dependencyData );
-void writeTypeHandle( std::ofstream & ofs, DependencyData const& dependencyData );
+void writeTypeFlags( std::ofstream & ofs, DependencyData const& dependencyData, FlagData const& flagData );
+void writeTypeHandle(std::ofstream & ofs, DependencyData const& dependencyData, HandleData const& handle, std::map<std::string, CommandData> const& commands, std::vector<DependencyData> const& dependencies, std::set<std::string> const& vkTypes);
 void writeTypeScalar( std::ofstream & ofs, DependencyData const& dependencyData );
 void writeTypeStruct( std::ofstream & ofs, DependencyData const& dependencyData, std::set<std::string> const& vkTypes, std::map<std::string,StructData> const& structs, std::map<std::string,std::string> const& defaultValues );
 void writeTypeUnion( std::ofstream & ofs, DependencyData const& dependencyData, StructData const& unionData, std::set<std::string> const& vkTypes, std::map<std::string,StructData> const& structs, std::map<std::string,std::string> const& defaultValues );
-void writeTypes( std::ofstream & ofs, std::vector<DependencyData> const& dependencies, std::map<std::string,CommandData> const& commands, std::map<std::string,EnumData> const& enums, std::map<std::string,StructData> const& structs, std::map<std::string,std::string> const& defaultValues, std::set<std::string> const& vkTypes );
-void writeVersionCheck( std::ofstream & ofs, std::string const& version );
+void writeTypes(std::ofstream & ofs, std::vector<DependencyData> const& dependencies, std::map<std::string, CommandData> const& commands, std::map<std::string, EnumData> const& enums, std::map<std::string, FlagData> const& flags, std::map<std::string, HandleData> const& handles, std::map<std::string, StructData> const& structs, std::map<std::string, std::string> const& defaultValues, std::set<std::string> const& vkTypes);
+void writeVersionCheck(std::ofstream & ofs, std::string const& version);
 
 void EnumData::addEnum(std::string const & name)
 {
@@ -347,15 +395,13 @@ void createDefaults( std::vector<DependencyData> const& dependencies, std::map<s
         }
         break;
       case DependencyData::Category::FLAGS :
-      case DependencyData::Category::STRUCT :
+      case DependencyData::Category::HANDLE:
+      case DependencyData::Category::STRUCT:
       case DependencyData::Category::UNION :        // just call the default constructor for flags, structs, and structs (which are mapped to classes)
         defaultValues[it->name] = it->name + "()";
         break;
       case DependencyData::Category::FUNC_POINTER : // func_pointers explicitly have no default!
         defaultValues[it->name];
-        break;
-      case DependencyData::Category::HANDLE :       // handles are pointers
-        defaultValues[it->name] = it->name + "()";
         break;
       case DependencyData::Category::REQUIRED :     // all required default to "0"
       case DependencyData::Category::SCALAR :       // all scalars default to "0"
@@ -368,34 +414,127 @@ void createDefaults( std::vector<DependencyData> const& dependencies, std::map<s
   }
 }
 
-size_t findComplexIndex(CommandData const& commandData, std::vector<std::pair<size_t, size_t>> const& lenParameters)
+std::string determineFunctionName(std::string const& name, CommandData const& commandData)
 {
-  for (size_t i = 0; i < lenParameters.size(); i++)
+  if (commandData.handleCommand)
   {
-    if ((lenParameters[i].second != ~0) && (commandData.arguments[lenParameters[i].second].type.find("*") != std::string::npos))
+    std::string strippedName = name;
+    std::string searchName = commandData.arguments[0].pureType;
+    size_t pos = name.find(searchName);
+    if (pos == std::string::npos)
+    {
+      assert(isupper(searchName[0]));
+      searchName[0] = tolower(searchName[0]);
+      pos = name.find(searchName);
+    }
+    if (pos != std::string::npos)
+    {
+      strippedName.erase(pos, commandData.arguments[0].pureType.length());
+    }
+    else if ((commandData.arguments[0].pureType == "CommandBuffer") && (name.find("cmd") == 0))
+    {
+      strippedName.erase(0, 3);
+      pos = 0;
+    }
+    if (pos == 0)
+    {
+      assert(isupper(strippedName[0]));
+      strippedName[0] = tolower(strippedName[0]);
+    }
+    return strippedName;
+  }
+  return name;
+}
+
+std::string determineReturnType(CommandData const& commandData, size_t returnIndex, bool isVector)
+{
+  std::string returnType;
+  if (returnIndex != ~0)
+  {
+    if ((commandData.returnType == "Result") && (1 < commandData.successCodes.size()))
+    {
+      return("Result");
+    }
+    else if (isVector)
+    {
+      if (commandData.arguments[returnIndex].pureType == "void")
+      {
+        returnType = "std::vector<uint8_t>";
+      }
+      else
+      {
+        returnType = "std::vector<" + commandData.arguments[returnIndex].pureType + ">";
+      }
+    }
+    else
+    {
+      assert(commandData.arguments[returnIndex].type.back() == '*');
+      assert(commandData.arguments[returnIndex].type.find("const") == std::string::npos);
+      returnType = commandData.arguments[returnIndex].type;
+      returnType.pop_back();
+    }
+  }
+  else if ((commandData.returnType == "Result") && (commandData.successCodes.size() < 2))
+  {
+    returnType = "void";
+  }
+  else
+  {
+    returnType = commandData.returnType;
+  }
+  return std::move(returnType);
+}
+
+void enterProtect(std::ofstream &ofs, std::string const& protect)
+{
+  if (!protect.empty())
+  {
+    ofs << "#ifdef " << protect << std::endl;
+  }
+}
+
+size_t findComplexIndex(CommandData const& commandData, std::map<size_t, size_t> const& vectorParameters)
+{
+  for (std::map<size_t, size_t>::const_iterator it = vectorParameters.begin(); it != vectorParameters.end(); ++it )
+  {
+    if ((it->second != ~0) && (commandData.arguments[it->second].type.find('*') != std::string::npos))
     {
 #if !defined(NDEBUG)
-      for (size_t j = i + 1; j < lenParameters.size(); j++)
+      std::map<size_t, size_t>::const_iterator jt = it;
+      for (++jt; jt != vectorParameters.end(); ++jt)
       {
-        assert((lenParameters[i].second == ~0) || (commandData.arguments[lenParameters[i].second].type.find("*") == std::string::npos));
+        assert((jt->second == ~0) || (commandData.arguments[jt->second].type.find('*') == std::string::npos));
       }
 #endif
-      return i;
+      return it->first;
     }
   }
   return ~0;
 }
 
-size_t findReturnIndex(CommandData const& commandData, std::vector<std::pair<size_t, size_t>> const& lenParameters)
+DependencyData const& findDependency(std::string const& name, std::vector<DependencyData> const& dependencies)
 {
-  for (size_t i = 0; i < lenParameters.size(); i++)
+  for (std::vector<DependencyData>::const_iterator it = dependencies.begin(); it != dependencies.end(); ++it)
   {
-    if (commandData.arguments[lenParameters[i].first].type.find("const") == std::string::npos)
+    if (it->name == name)
+    {
+      return *it;
+    }
+  }
+  assert(false);
+  return *dependencies.begin();
+}
+
+size_t findReturnIndex(CommandData const& commandData, std::map<size_t,size_t> const& vectorParameters)
+{
+  for (size_t i = 0; i < commandData.arguments.size(); i++)
+  {
+    if ((commandData.arguments[i].type.find('*') != std::string::npos) && (commandData.arguments[i].type.find("const") == std::string::npos) && !isVectorSizeParameter(vectorParameters, i))
     {
 #if !defined(NDEBUG)
-      for (size_t j = i + 1; j < lenParameters.size(); j++)
+      for (size_t j = i + 1; j < commandData.arguments.size(); j++)
       {
-        assert(commandData.arguments[lenParameters[j].first].type.find("const") == 0);
+        assert((commandData.arguments[j].type.find('*') == std::string::npos) || (commandData.arguments[j].type.find("const") != std::string::npos));
       }
 #endif
       return i;
@@ -409,30 +548,72 @@ std::string getEnumName(std::string const& name) // get vkcpp enum name from vk 
   return strip(name, "Vk");
 }
 
-std::vector<std::pair<size_t, size_t>> getLenParameters(CommandData const& commandData)
+bool hasPointerArguments(CommandData const& commandData)
 {
-  std::vector<std::pair<size_t,size_t>> lenParameters;
+  for (size_t i = 0; i < commandData.arguments.size(); i++)
+  {
+    size_t pos = commandData.arguments[i].type.find('*');
+    if ((pos != std::string::npos) && (commandData.arguments[i].type.find('*', pos + 1) == std::string::npos))
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
+std::string generateEnumNameForFlags(std::string const& name)
+{
+  std::string generatedName = name;
+  size_t pos = generatedName.rfind("Flags");
+  assert(pos != std::string::npos);
+  generatedName.replace(pos, 5, "FlagBits");
+  return generatedName;
+}
+
+std::map<size_t, size_t> getVectorParameters(CommandData const& commandData)
+{
+  std::map<size_t,size_t> lenParameters;
   for (size_t i = 0; i < commandData.arguments.size(); i++)
   {
     if (!commandData.arguments[i].len.empty())
     {
-      lenParameters.push_back(std::make_pair(i, ~0));
+      lenParameters.insert(std::make_pair(i, ~0));
       for (size_t j = 0; j < commandData.arguments.size(); j++)
       {
         if (commandData.arguments[i].len == commandData.arguments[j].name)
         {
-          lenParameters.back().second = j;
+          lenParameters[i] = j;
         }
       }
-      assert(   (lenParameters.back().second != ~0)
+      assert(   (lenParameters[i] != ~0)
              || (commandData.arguments[i].len == "dataSize/4")
              || (commandData.arguments[i].len == "null-terminated")
              || (commandData.arguments[i].len == "pAllocateInfo->descriptorSetCount")
              || (commandData.arguments[i].len == "pAllocateInfo->commandBufferCount"));
-      assert((lenParameters.back().second == ~0) || (lenParameters.back().second < lenParameters.back().first));
+      assert((lenParameters[i] == ~0) || (lenParameters[i] < i));
     }
   }
   return std::move(lenParameters);
+}
+
+bool isVectorSizeParameter(std::map<size_t, size_t> const& vectorParameters, size_t idx)
+{
+  for (std::map<size_t, size_t>::const_iterator it = vectorParameters.begin(); it != vectorParameters.end(); ++it)
+  {
+    if (it->second == idx)
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
+void leaveProtect(std::ofstream &ofs, std::string const& protect)
+{
+  if (!protect.empty())
+  {
+    ofs << "#endif /*" << protect << "*/" << std::endl;
+  }
 }
 
 bool noDependencies(std::set<std::string> const& dependencies, std::set<std::string> & listedTypes)
@@ -445,7 +626,7 @@ bool noDependencies(std::set<std::string> const& dependencies, std::set<std::str
   return( ok );
 }
 
-void readCommandParam( tinyxml2::XMLElement * element, DependencyData & typeData, std::vector<MemberData> & arguments )
+bool readCommandParam( tinyxml2::XMLElement * element, DependencyData & typeData, std::vector<MemberData> & arguments )
 {
   arguments.push_back( MemberData() );
   MemberData & arg = arguments.back();
@@ -521,9 +702,11 @@ void readCommandParam( tinyxml2::XMLElement * element, DependencyData & typeData
       }
     }
   }
+
+  return element->Attribute("optional") && (strcmp(element->Attribute("optional"), "false,true") == 0);
 }
 
-CommandData & readCommandProto( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,CommandData> & commands )
+std::map<std::string, CommandData>::iterator readCommandProto(tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string, CommandData> & commands)
 {
   tinyxml2::XMLElement * typeElement = element->FirstChildElement();
   assert( typeElement && ( strcmp( typeElement->Value(), "type" ) == 0 ) );
@@ -532,47 +715,86 @@ CommandData & readCommandProto( tinyxml2::XMLElement * element, std::list<Depend
   assert( !nameElement->NextSiblingElement() );
 
   std::string type = strip( typeElement->GetText(), "Vk" );
-
-  std::string name = strip( nameElement->GetText(), "vk" );
-  assert( isupper( name[0] ) );
-  name[0] = tolower( name[0] );
+  std::string name = stripCommand( nameElement->GetText() );
 
   dependencies.push_back( DependencyData( DependencyData::Category::COMMAND, name ) );
   assert( commands.find( name ) == commands.end() );
   std::map<std::string,CommandData>::iterator it = commands.insert( std::make_pair( name, CommandData() ) ).first;
   it->second.returnType = type;
 
-  return it->second;
+  return it;
 }
 
-void readCommands( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,CommandData> & commands )
+void readCommands(tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string, CommandData> & commands, std::map<std::string, HandleData> & handles)
 {
   tinyxml2::XMLElement * child = element->FirstChildElement();
   assert( child );
   do
   {
     assert( strcmp( child->Value(), "command" ) == 0 );
-    readCommandsCommand( child, dependencies, commands );
+    readCommandsCommand( child, dependencies, commands, handles );
   } while ( child = child->NextSiblingElement() );
 }
 
-void readCommandsCommand( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,CommandData> & commands )
+void readCommandsCommand(tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string, CommandData> & commands, std::map<std::string, HandleData> & handles)
 {
   tinyxml2::XMLElement * child = element->FirstChildElement();
   assert( child && ( strcmp( child->Value(), "proto" ) == 0 ) );
 
-  CommandData & commandData = readCommandProto( child, dependencies, commands );
+  std::map<std::string, CommandData>::iterator it = readCommandProto(child, dependencies, commands);
+
+  if (element->Attribute("successcodes"))
+  {
+    std::string successCodes = element->Attribute("successcodes");
+    size_t start = 0, end;
+    do
+    {
+      end = successCodes.find(',', start);
+      it->second.successCodes.push_back(successCodes.substr(start, end - start));
+      start = end + 1;
+    } while (end != std::string::npos);
+  }
+
+  // HACK: the current vk.xml misses to specify successcodes on command vkCreateDebugReportCallbackEXT!
+  if (it->first == "createDebugReportCallbackEXT")
+  {
+    it->second.successCodes.clear();
+    it->second.successCodes.push_back("VK_SUCCESS");
+  }
 
   while ( child = child->NextSiblingElement() )
   {
     std::string value = child->Value();
     if ( value == "param" )
     {
-      readCommandParam(child, dependencies.back(), commandData.arguments);
+      it->second.twoStep |= readCommandParam(child, dependencies.back(), it->second.arguments);
     }
     else
     {
       assert( ( value == "implicitexternsyncparams" ) || ( value == "validity" ) );
+    }
+  }
+
+  // HACK: the current vk.xml misses to specify <optional="false,true"> on param pSparseMemoryRequirementCount on command vkGetImageSparseMemoryRequirements!
+  if (it->first == "getImageSparseMemoryRequirements")
+  {
+    it->second.twoStep = true;
+  }
+
+  assert(!it->second.arguments.empty());
+  std::map<std::string, HandleData>::iterator hit = handles.find(it->second.arguments[0].pureType);
+  if (hit != handles.end())
+  {
+    hit->second.commands.push_back(it->first);
+    it->second.handleCommand = true;
+    DependencyData const& dep = dependencies.back();
+    std::list<DependencyData>::iterator dit = std::find_if(dependencies.begin(), dependencies.end(), [hit](DependencyData const& dd) { return dd.name == hit->first; });
+    for (std::set<std::string>::const_iterator depit = dep.dependencies.begin(); depit != dep.dependencies.end(); ++depit)
+    {
+      if (*depit != hit->first)
+      {
+        dit->dependencies.insert(*depit);
+      }
     }
   }
 }
@@ -622,7 +844,7 @@ void readEnumsEnum( tinyxml2::XMLElement * element, EnumData & enumData )
   } while ( child = child->NextSiblingElement() );
 }
 
-void readExtensionRequire(tinyxml2::XMLElement * element, std::vector<std::string> & elements, std::map<std::string, EnumData> & enums)
+void readExtensionRequire(tinyxml2::XMLElement * element, std::string const& protect, std::map<std::string, CommandData> & commands, std::map<std::string, EnumData> & enums, std::map<std::string, FlagData> & flags, std::map<std::string, ScalarData> & scalars, std::map<std::string, StructData> & structs)
 {
   tinyxml2::XMLElement * child = element->FirstChildElement();
   do
@@ -632,13 +854,50 @@ void readExtensionRequire(tinyxml2::XMLElement * element, std::vector<std::strin
 
     if ( value == "command" )
     {
-      elements.push_back( strip( child->Attribute( "name" ), "vk" ) );
-      assert( isupper( elements.back()[0] ) );
-      elements.back()[0] = tolower( elements.back()[0] );
+      std::string name = stripCommand(child->Attribute("name"));
+      std::map<std::string, CommandData>::iterator cit = commands.find(name);
+      assert(cit != commands.end());
+      cit->second.protect = protect;
     }
-    else if ( value == "type" )
+    else if (value == "type")
     {
-      elements.push_back( strip( child->Attribute( "name" ), "Vk" ) );
+      std::string name = strip(child->Attribute("name"), "Vk");
+      std::map<std::string, EnumData>::iterator eit = enums.find(name);
+      if (eit != enums.end())
+      {
+        eit->second.protect = protect;
+      }
+      else
+      {
+        std::map<std::string, FlagData>::iterator fit = flags.find(name);
+        if (fit != flags.end())
+        {
+          fit->second.protect = protect;
+
+          // if the enum of this flags is auto-generated, protect it as well
+          std::string enumName = generateEnumNameForFlags(name);
+          std::map<std::string, EnumData>::iterator eit = enums.find(enumName);
+          assert(eit != enums.end());
+          if (eit->second.members.empty())
+          {
+            eit->second.protect = protect;
+          }
+        }
+        else
+        {
+          std::map<std::string, ScalarData>::iterator scit = scalars.find(name);
+          if (scit != scalars.end())
+          {
+            scit->second.protect = protect;
+          }
+          else
+          {
+            std::map<std::string, StructData>::iterator stit = structs.find(name);
+            assert(stit != structs.end() && stit->second.protect.empty());
+            stit->second.protect = protect;
+          }
+        }
+      }
     }
     else if ( value == "enum")
     {
@@ -656,24 +915,20 @@ void readExtensionRequire(tinyxml2::XMLElement * element, std::vector<std::strin
   } while ( child = child->NextSiblingElement() );
 }
 
-void readExtensions(tinyxml2::XMLElement * element, std::vector<ExtensionData> & extensions, std::map<std::string, EnumData> & enums)
+void readExtensions(tinyxml2::XMLElement * element, std::map<std::string, CommandData> & commands, std::map<std::string, EnumData> &enums, std::map<std::string, FlagData> & flags, std::map<std::string, ScalarData> & scalars, std::map<std::string, StructData> & structs)
 {
   tinyxml2::XMLElement * child = element->FirstChildElement();
   assert( child );
   do
   {
     assert( strcmp( child->Value(), "extension" ) == 0 );
-    readExtensionsExtension( child, extensions, enums );
+    readExtensionsExtension( child, commands, enums, flags, scalars, structs );
   } while ( child = child->NextSiblingElement() );
 }
 
-void readExtensionsExtension(tinyxml2::XMLElement * element, std::vector<ExtensionData> & extensions, std::map<std::string, EnumData> & enums )
+void readExtensionsExtension(tinyxml2::XMLElement * element, std::map<std::string, CommandData> & commands, std::map<std::string, EnumData> & enums, std::map<std::string, FlagData> & flags, std::map<std::string, ScalarData> & scalars, std::map<std::string, StructData> & structs)
 {
-  extensions.push_back( ExtensionData() );
-  ExtensionData & ext = extensions.back();
-
   assert( element->Attribute( "name" ) );
-  ext.name = element->Attribute( "name" );
 
   // don't parse disabled extensions
   if (strcmp(element->Attribute("supported"), "disabled") == 0)
@@ -681,14 +936,15 @@ void readExtensionsExtension(tinyxml2::XMLElement * element, std::vector<Extensi
     return;
   }
 
-  if ( element->Attribute( "protect" ) )
+  std::string protect;
+  if (element->Attribute("protect"))
   {
-    ext.protect = element->Attribute( "protect" );
+    protect = element->Attribute( "protect" );
   }
 
   tinyxml2::XMLElement * child = element->FirstChildElement();
   assert( child && ( strcmp( child->Value(), "require" ) == 0 ) && !child->NextSiblingElement() );
-  readExtensionRequire( child, ext.elements, enums);
+  readExtensionRequire( child, protect, commands, enums, flags, scalars, structs );
 }
 
 void readTypeBasetype( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies )
@@ -714,7 +970,7 @@ void readTypeBasetype( tinyxml2::XMLElement * element, std::list<DependencyData>
   }
 }
 
-void readTypeBitmask( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::set<std::string> & flags, std::set<std::string> & vkTypes, std::map<std::string, EnumData> & enums)
+void readTypeBitmask(tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string, FlagData> & flags, std::map<std::string, ScalarData> & scalars, std::set<std::string> & vkTypes, std::map<std::string, EnumData> & enums)
 {
   tinyxml2::XMLElement * typeElement = element->FirstChildElement();
   assert( typeElement && ( strcmp( typeElement->Value(), "type" ) == 0 ) && typeElement->GetText() && ( strcmp( typeElement->GetText(), "VkFlags" ) == 0 ) );
@@ -733,11 +989,7 @@ void readTypeBitmask( tinyxml2::XMLElement * element, std::list<DependencyData> 
   }
   else {
     // Generate FlagBits name
-    requires = name;
-    size_t pos = requires.find_last_of("Flags");
-    assert(pos != std::string::npos);
-    requires.replace(pos, 5, "FlagBits");
-
+    requires = generateEnumNameForFlags(name);
     dependencies.push_back(DependencyData(DependencyData::Category::ENUM, requires));
     std::map<std::string, EnumData>::iterator it = enums.insert(std::make_pair(requires, EnumData())).first;
     it->second.bitmask = true;
@@ -746,7 +998,7 @@ void readTypeBitmask( tinyxml2::XMLElement * element, std::list<DependencyData> 
 
   dependencies.push_back( DependencyData( DependencyData::Category::FLAGS, name ) );
   dependencies.back().dependencies.insert( requires );
-  flags.insert( name );
+  flags.insert(std::make_pair(name, FlagData()));
 
   assert( vkTypes.find( name ) == vkTypes.end() );
   vkTypes.insert( name );
@@ -768,7 +1020,7 @@ void readTypeFuncpointer( tinyxml2::XMLElement * element, std::list<DependencyDa
   dependencies.push_back( DependencyData( DependencyData::Category::FUNC_POINTER, child->GetText() ) );
 }
 
-void readTypeHandle( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies )
+void readTypeHandle(tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::set<std::string> & vkTypes, std::map<std::string,HandleData> & handles)
 {
   tinyxml2::XMLElement * typeElement = element->FirstChildElement();
   assert( typeElement && ( strcmp( typeElement->Value(), "type" ) == 0 ) && typeElement->GetText() );
@@ -782,6 +1034,11 @@ void readTypeHandle( tinyxml2::XMLElement * element, std::list<DependencyData> &
   std::string name = strip( nameElement->GetText(), "Vk" );
 
   dependencies.push_back( DependencyData( DependencyData::Category::HANDLE, name ) );
+
+  assert(vkTypes.find(name) == vkTypes.end());
+  vkTypes.insert(name);
+  assert(handles.find(name) == handles.end());
+  handles[name];    // add this to the handles map
 }
 
 void readTypeStructMember( tinyxml2::XMLElement * element, std::vector<MemberData> & members, std::set<std::string> & dependencies )
@@ -988,7 +1245,7 @@ void readTypeUnion( tinyxml2::XMLElement * element, std::list<DependencyData> & 
   vkTypes.insert( name );
 }
 
-void readTypes( tinyxml2::XMLElement * element, std::string & version, std::list<DependencyData> & dependencies, std::set<std::string> & flags, std::map<std::string,StructData> & structs, std::set<std::string> & vkTypes, std::map<std::string, EnumData> & enums)
+void readTypes(tinyxml2::XMLElement * element, std::string & version, std::list<DependencyData> & dependencies, std::map<std::string, FlagData> & flags, std::map<std::string, ScalarData> & scalars, std::map<std::string, StructData> & structs, std::set<std::string> & vkTypes, std::map<std::string, HandleData> & handles, std::map<std::string, EnumData> & enums)
 {
   tinyxml2::XMLElement * child = element->FirstChildElement();
   do
@@ -1005,7 +1262,7 @@ void readTypes( tinyxml2::XMLElement * element, std::string & version, std::list
       }
       else if ( category == "bitmask" )
       {
-        readTypeBitmask( child, dependencies, flags, vkTypes, enums );
+        readTypeBitmask( child, dependencies, flags, scalars, vkTypes, enums );
       }
       else if ( category == "define" )
       {
@@ -1017,7 +1274,7 @@ void readTypes( tinyxml2::XMLElement * element, std::string & version, std::list
       }
       else if ( category == "handle" )
       {
-        readTypeHandle( child, dependencies );
+        readTypeHandle( child, dependencies, vkTypes, handles );
       }
       else if ( category == "struct" )
       {
@@ -1040,21 +1297,11 @@ void readTypes( tinyxml2::XMLElement * element, std::string & version, std::list
   } while ( child = child->NextSiblingElement() );
 }
 
-void sortDependencies( std::list<DependencyData> & dependencies, std::vector<ExtensionData> const& extensions, std::vector<std::vector<DependencyData>> & sortedDependencies )
+void sortDependencies( std::list<DependencyData> & dependencies, std::vector<DependencyData> & sortedDependencies )
 {
   std::set<std::string> listedTypes = { "VkFlags" };
 
-  std::map<std::string,size_t> extensionMap;
-  for ( size_t i=0 ; i<extensions.size() ; i++ )
-  {
-    for ( size_t j=0 ; j<extensions[i].elements.size() ; j++ )
-    {
-      assert( extensionMap.find( extensions[i].elements[j] ) == extensionMap.end() );
-      extensionMap[extensions[i].elements[j]] = i + 1;
-    }
-  }
-
-  sortedDependencies.resize( extensions.size() + 1 );
+  sortedDependencies.reserve( dependencies.size() );
 
   while ( !dependencies.empty() )
   {
@@ -1065,9 +1312,7 @@ void sortDependencies( std::list<DependencyData> & dependencies, std::vector<Ext
     {
       if ( noDependencies( it->dependencies, listedTypes ) )
       {
-        std::map<std::string,size_t>::iterator extMapIt = extensionMap.find( it->name );
-        size_t idx = ( extMapIt != extensionMap.end() ) ? extMapIt->second : 0;
-        sortedDependencies[idx].push_back( *it );
+        sortedDependencies.push_back( *it );
         listedTypes.insert( it->name );
         dependencies.erase( it );
 #if !defined(NDEBUG)
@@ -1082,19 +1327,31 @@ void sortDependencies( std::list<DependencyData> & dependencies, std::vector<Ext
 
 std::string reduceName(std::string const& name)
 {
-  assert((1 < name.length()) && (name[0] == 'p') && (isupper(name[1])));
-  std::string reducedName = strip(name, "p");
-  reducedName[0] = tolower(reducedName[0]);
-  return reducedName;
+  assert(1 < name.length());
+  if ((name[0] == 'p') && (isupper(name[1]) || name[1] == 'p'))
+  {
+    std::string reducedName = strip(name, "p");
+    reducedName[0] = tolower(reducedName[0]);
+    return reducedName;
+  }
+  return name;
 }
 
-std::string strip( std::string const& value, std::string const& prefix )
+std::string strip(std::string const& value, std::string const& prefix)
 {
   if ( value.find( prefix ) == 0 )
   {
     return value.substr( prefix.length() );
   }
   return value;
+}
+
+std::string stripCommand(std::string const& value)
+{
+  std::string stripped = strip(value, "vk");
+  assert(isupper(stripped[0]));
+  stripped[0] = tolower(stripped[0]);
+  return stripped;
 }
 
 std::string toCamelCase(std::string const& value)
@@ -1136,6 +1393,225 @@ std::string toUpperCase(std::string const& name)
   return convertedName;
 }
 
+void writeCall(std::ofstream & ofs, std::string const& name, CommandData const& commandData, std::set<std::string> const& vkTypes, std::map<size_t, size_t> const& vectorParameters, size_t specialIndex, std::string const& specialArgument)
+{
+  std::map<size_t,size_t> countIndices;
+  for (std::map<size_t, size_t>::const_iterator it = vectorParameters.begin(); it != vectorParameters.end(); ++it)
+  {
+    countIndices.insert(std::make_pair(it->second, it->first));
+  }
+  if ((vectorParameters.size() == 1) && (commandData.arguments[vectorParameters.begin()->first].len == "dataSize/4"))
+  {
+    assert(commandData.arguments[3].name == "dataSize");
+    countIndices.insert(std::make_pair(3, vectorParameters.begin()->first));
+  }
+
+  assert(islower(name[0]));
+  ofs << "vk" << static_cast<char>(toupper(name[0])) << name.substr(1) << "( ";
+  size_t i = 0;
+  if (commandData.handleCommand)
+  {
+    ofs << "m_" << commandData.arguments[0].name;
+    i++;
+  }
+  for (; i < commandData.arguments.size(); i++)
+  {
+    if (0 < i)
+    {
+      ofs << ", ";
+    }
+    std::map<size_t, size_t>::const_iterator it = countIndices.find(i);
+    if (it != countIndices.end())
+    {
+      if (specialIndex == it->second)
+      {
+        ofs << "&" << reduceName(commandData.arguments[it->first].name);
+      }
+      else
+      {
+        ofs << "static_cast<" << commandData.arguments[it->first].pureType << ">( " << reduceName(commandData.arguments[it->second].name) << ".size() )";
+        if (commandData.arguments[it->second].len == "dataSize/4")
+        {
+          ofs << " * 4";
+        }
+      }
+    }
+    else
+    {
+      it = vectorParameters.find(i);
+      if (it != vectorParameters.end())
+      {
+        assert(commandData.arguments[it->first].type.back() == '*');
+        if (vkTypes.find(commandData.arguments[it->first].pureType) != vkTypes.end())
+        {
+          if (commandData.arguments[it->first].type.find("const") != std::string::npos)
+          {
+            ofs << "reinterpret_cast<const Vk" << commandData.arguments[it->first].pureType << "*>( " << reduceName(commandData.arguments[it->first].name) << ".data() )";
+          }
+          else
+          {
+            ofs << "reinterpret_cast<Vk" << commandData.arguments[it->first].pureType << "*>( " << reduceName(commandData.arguments[it->first].name) << ".data() )";
+          }
+        }
+        else
+        {
+          ofs << reduceName(commandData.arguments[it->first].name) << ".data()";
+        }
+      }
+      else if (vkTypes.find(commandData.arguments[i].pureType) != vkTypes.end())
+      {
+        if (commandData.arguments[i].type.back() == '*')
+        {
+          if (commandData.arguments[i].type.find("const") != std::string::npos)
+          {
+            ofs << "reinterpret_cast<const Vk" << commandData.arguments[i].pureType << "*>( &" << reduceName(commandData.arguments[i].name) << " )";
+          }
+          else
+          {
+            ofs << "reinterpret_cast<Vk" << commandData.arguments[i].pureType << "*>( &" << reduceName(commandData.arguments[i].name) << " )";
+          }
+        }
+        else
+        {
+          ofs << "static_cast<Vk" << commandData.arguments[i].pureType << ">( " << commandData.arguments[i].name << " )";
+        }
+      }
+      else
+      {
+        if (commandData.arguments[i].type.back() == '*')
+        {
+          if (commandData.arguments[i].type.find("const") != std::string::npos)
+          {
+            assert(commandData.arguments[i].type.find("char") != std::string::npos);
+            ofs << reduceName(commandData.arguments[i].name) << ".c_str()";
+          }
+          else
+          {
+            assert(commandData.arguments[i].type.find("char") == std::string::npos);
+            ofs << "&" << reduceName(commandData.arguments[i].name);
+          }
+        }
+        else
+        {
+          ofs << commandData.arguments[i].name;
+        }
+      }
+    }
+  }
+  ofs << " )";
+}
+
+void writeExceptionCheck(std::ofstream & ofs, std::string const& indentation, std::string const& className, std::string const& functionName, std::vector<std::string> const& successCodes)
+{
+  if (successCodes.size() == 1)
+  {
+    assert(successCodes.front() == "VK_SUCCESS");
+    ofs << indentation << "  if ( result != Result::eVkSuccess )" << std::endl;
+  }
+  else
+  {
+    assert(successCodes.size() == 2);
+    ofs << indentation << "  if ( ( result != Result::e" << toCamelCase(successCodes[0]) << " ) && ( result != Result::e" << toCamelCase(successCodes[1]) << " ) )" << std::endl;
+  }
+  ofs << indentation << "  {" << std::endl
+    << indentation << "    throw Exception( result, \"vk::";
+  if (!className.empty())
+  {
+    ofs << className << "::";
+  }
+  ofs << functionName << "\" );" << std::endl
+      << indentation << "  }" << std::endl;
+}
+
+void writeFunctionHeader(std::ofstream & ofs, std::string const& indentation, std::string const& returnType, std::string const& name, CommandData const& commandData, size_t returnIndex, std::map<size_t, size_t> const& vectorParameters)
+{
+  std::set<size_t> skippedArguments;
+  for (std::map<size_t, size_t>::const_iterator it = vectorParameters.begin(); it != vectorParameters.end(); ++it)
+  {
+    skippedArguments.insert(it->second);
+  }
+  if ((vectorParameters.size() == 1) && (commandData.arguments[vectorParameters.begin()->first].len == "dataSize/4"))
+  {
+    assert(commandData.arguments[3].name == "dataSize");
+    skippedArguments.insert(3);
+  }
+  if (commandData.successCodes.size() < 2)
+  {
+    skippedArguments.insert(returnIndex);
+  }
+
+  ofs << indentation;
+  if (!commandData.handleCommand)
+  {
+    ofs << "inline ";
+  }
+  ofs << returnType << " " << name << "( ";
+  bool argEncountered = false;
+  for (size_t i = commandData.handleCommand ? 1 : 0; i < commandData.arguments.size(); i++)
+  {
+    if (skippedArguments.find(i) == skippedArguments.end())
+    {
+      if (argEncountered)
+      {
+        ofs << ", ";
+      }
+      if (vectorParameters.find(i) == vectorParameters.end())
+      {
+        size_t pos = commandData.arguments[i].type.find('*');
+        if (pos == std::string::npos)
+        {
+          ofs << commandData.arguments[i].type << " " << commandData.arguments[i].name;
+          if (!commandData.arguments[i].arraySize.empty())
+          {
+            ofs << "[" << commandData.arguments[i].arraySize << "]";
+          }
+        }
+        else
+        {
+          std::string type = commandData.arguments[i].type;
+          if (type.find("char") != std::string::npos)
+          {
+            type = "std::string const&";
+          }
+          else
+          {
+            assert(type[pos] == '*');
+            type[pos] = '&';
+          }
+          ofs << type << " " << reduceName(commandData.arguments[i].name);
+        }
+      }
+      else
+      {
+        if (commandData.arguments[i].pureType == "char")
+        {
+          ofs << "std::string ";
+        }
+        else if (commandData.arguments[i].pureType == "void")
+        {
+          ofs << "std::vector<uint8_t> ";
+        }
+        else
+        {
+          ofs << "std::vector<" << commandData.arguments[i].pureType << "> ";
+        }
+        if (commandData.arguments[i].type.find("const") != std::string::npos)
+        {
+          ofs << "const";
+        }
+        ofs << "& " << reduceName(commandData.arguments[i].name);
+      }
+      argEncountered = true;
+    }
+  }
+  ofs << " )";
+  if (commandData.handleCommand)
+  {
+    ofs << " const";
+  }
+  ofs << std::endl;
+}
+
 void writeMemberData(std::ofstream & ofs, MemberData const& memberData, std::set<std::string> const& vkTypes)
 {
   if ( vkTypes.find( memberData.pureType ) != vkTypes.end() )
@@ -1147,7 +1623,7 @@ void writeMemberData(std::ofstream & ofs, MemberData const& memberData, std::set
       {
         ofs << "const ";
       }
-      ofs << "Vk" << memberData.pureType << "*";
+      ofs << "Vk" << memberData.pureType << '*';
     }
     else
     {
@@ -1254,7 +1730,7 @@ void writeStructConstructor( std::ofstream & ofs, std::string const& name, std::
       }
       else if ( structData.members[i].name == "sType" )
       {
-        // HACK we need to read <enum extends="VkStructureType"> here for the correct name. In this case the 'generic' rule to create the enums doesn't work
+        // HACK: we need to read <enum extends="VkStructureType"> here for the correct name. In this case the 'generic' rule to create the enums doesn't work
         if (name == "DebugReportCallbackCreateInfoEXT")
         {
           ofs << "VK_STRUCTURE_TYPE_DEBUG_REPORT_CREATE_INFO_EXT";
@@ -1288,7 +1764,7 @@ void writeStructGetter( std::ofstream & ofs, MemberData const& memberData, std::
   }
   else
   {
-    ofs << "const " << memberData.type << ( memberData.arraySize.empty() ? "&" : "*" );
+    ofs << "const " << memberData.type << ( memberData.arraySize.empty() ? '&' : '*' );
   }
 
   ofs << " " << memberData.name << "() const" << std::endl
@@ -1345,123 +1821,226 @@ void writeStructSetter( std::ofstream & ofs, std::string const& name, MemberData
 
 void writeTypeCommand( std::ofstream & ofs, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes )
 {
+  enterProtect(ofs, commandData.protect);
   writeTypeCommandStandard(ofs, dependencyData, commandData, vkTypes);
-  writeTypeCommandEnhanced(ofs, dependencyData, commandData, vkTypes);
+  leaveProtect(ofs, commandData.protect);
+  if (!commandData.handleCommand)
+  {
+    ofs << "#ifdef VKCPP_ENHANCED_MODE" << std::endl;
+    writeTypeCommandEnhanced(ofs, "  ", "", dependencyData, commandData, vkTypes);
+    ofs << "#endif /*VKCPP_ENHANCED_MODE*/" << std::endl;
+  }
+  ofs << std::endl;
 }
 
-bool hasPointerArguments(CommandData const& commandData)
+void writeTypeCommandEnhanced(std::ofstream & ofs, std::string const& indentation, std::string const& className, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes)
 {
-  for (size_t i = 0; i < commandData.arguments.size(); i++)
+  enterProtect(ofs, commandData.protect);
+  std::map<size_t, size_t> vectorParameters = getVectorParameters(commandData);
+  size_t returnIndex = findReturnIndex(commandData, vectorParameters);
+  std::map<size_t, size_t>::const_iterator returnVector = vectorParameters.find(returnIndex);
+  std::string returnType = determineReturnType(commandData, returnIndex, returnVector != vectorParameters.end());
+  std::string functionName = determineFunctionName(dependencyData.name, commandData);
+
+  writeFunctionHeader(ofs, indentation, returnType, functionName, commandData, returnIndex, vectorParameters);
+
+  if (commandData.twoStep)
   {
-    size_t pos = commandData.arguments[i].type.find('*');
-    if ((pos != std::string::npos) && (commandData.arguments[i].type.find('*', pos + 1) == std::string::npos))
+    writeTypeCommandEnhancedTwoStep(ofs, indentation, className, functionName, returnType, dependencyData, commandData, vkTypes, returnIndex, vectorParameters);
+  }
+  else
+  {
+    writeTypeCommandEnhancedSingleStep(ofs, indentation, className, functionName, returnType, dependencyData, commandData, vkTypes, returnIndex, vectorParameters);
+  }
+  leaveProtect(ofs, commandData.protect);
+}
+
+void writeTypeCommandEnhanced(std::ofstream & ofs, std::string const& indentation, std::string const& className, std::string const& functionName, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes, std::map<size_t, size_t> const& vectorParameters)
+{
+  ofs << indentation << "{" << std::endl;
+  if (vectorParameters.size() == 2)
+  {
+    std::map<size_t, size_t>::const_iterator it1 = vectorParameters.begin();
+    std::map<size_t, size_t>::const_iterator it0 = it1++;
+    if ( it0->second == it1->second )
     {
-      return true;
+      ofs << indentation << "  if ( " << reduceName(commandData.arguments[it0->first].name) << ".size() != " << reduceName(commandData.arguments[it1->first].name) << ".size() )" << std::endl
+          << indentation << "  {" << std::endl
+          << indentation << "    throw std::logic_error( \"vk::" << className << "::" << functionName << ": " << reduceName(commandData.arguments[it0->first].name) << ".size() != " << reduceName(commandData.arguments[it1->first].name) << ".size()\" );" << std::endl
+          << indentation << "  }" << std::endl;
     }
   }
-  return false;
+  ofs << indentation << "  ";
+  if (commandData.returnType == "Result")
+  {
+    ofs << "Result result = static_cast<Result>( ";
+  }
+  else if (commandData.returnType != "void")
+  {
+    ofs << "return ";
+  }
+  writeCall(ofs, dependencyData.name, commandData, vkTypes, vectorParameters);
+  if (commandData.returnType == "Result")
+  {
+    ofs << " );" << std::endl;
+    writeExceptionCheck(ofs, indentation, className, functionName, commandData.successCodes);
+    if (1 < commandData.successCodes.size())
+    {
+      ofs << indentation << "  return result;" << std::endl;
+    }
+  }
+  else
+  {
+    ofs << ";" << std::endl;
+  }
+  ofs << indentation << "}" << std::endl;
 }
 
-void writeTypeCommandEnhanced(std::ofstream & ofs, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes)
+void writeTypeCommandEnhancedSingleStep(std::ofstream & ofs, std::string const& indentation, std::string const& className, std::string const& functionName, std::string const& returnType, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes, size_t returnIndex, std::map<size_t, size_t> const& vectorParameters)
 {
-  if (hasPointerArguments( commandData ))
+  if (1 < commandData.successCodes.size())
   {
-    std::vector<std::pair<size_t, size_t>> lenParameters = getLenParameters(commandData);
-    ofs << "#ifdef VKCPP_ENHANCED_MODE" << std::endl
-        << "  inline ";
-    size_t returnIndex = (commandData.returnType == "void") ? findReturnIndex(commandData, lenParameters) : ~0;
+    returnIndex = ~0;
+  }
+  if ((commandData.returnType == "Result") || (commandData.returnType == "void"))
+  {
+    // is allowed to return some input parameter
     if (returnIndex == ~0)
     {
-      ofs << commandData.returnType;
+      //if ((commandData.returnType == "Result") || hasPointerArguments(commandData))
+      {
+        writeTypeCommandEnhanced(ofs, indentation, className, functionName, dependencyData, commandData, vkTypes, vectorParameters);
+      }
     }
     else
     {
-      ofs << "std::vector<" << commandData.arguments[lenParameters[returnIndex].first].pureType << ">";
-      ofs << std::flush;
-    }
-    ofs << " " << dependencyData.name << "( ";
-
-    std::set<size_t> argIndices;
-    std::map<size_t, std::vector<size_t>> sizeIndices;
-    for (size_t i = 0; i < lenParameters.size(); i++)
-    {
-      argIndices.insert(lenParameters[i].first);
-      if (lenParameters[i].second != ~0)
+      std::map<size_t, size_t>::const_iterator it = vectorParameters.find(returnIndex);
+      if (it == vectorParameters.end() || (it->second == ~0) || ((vectorParameters.size() == 2) && (vectorParameters.begin()->second == (++vectorParameters.begin())->second)))
       {
-        sizeIndices[lenParameters[i].second].push_back( lenParameters[i].first );
-      }
-    }
-
-    bool argEncounterd = false;
-    std::map<std::string, std::string> nameMap;
-    for (size_t i = 0; i < commandData.arguments.size(); i++)
-    {
-      nameMap[commandData.arguments[i].name] = commandData.arguments[i].name;
-
-      if ((sizeIndices.find(i) != sizeIndices.end()) || ((returnIndex != ~0) && (i == lenParameters[returnIndex].first)))
-      {
-        // skip size arguments and the returning arguments
+        writeTypeCommandEnhancedReplaceReturn(ofs, indentation, className, functionName, returnType, dependencyData, commandData, vkTypes, returnIndex, vectorParameters);
       }
       else
       {
-        if (argEncounterd)
-        {
-          ofs << ", ";
-        }
-        if (argIndices.find(i) != argIndices.end())
-        {
-          // take a vector or a string here
-          if (commandData.arguments[i].len == "null-terminated")
-          {
-            assert(commandData.arguments[i].pureType == "char");
-            ofs << "std::string const& ";
-          }
-          else
-          {
-            std::string dataType = (commandData.arguments[i].pureType == "void") ? "uint8_t" : commandData.arguments[i].pureType;
-            ofs << "std::vector<" << dataType << "> ";
-            if (commandData.arguments[i].type.find("const") == 0)
-            {
-              ofs << "const";
-            }
-            ofs << "&";
-          }
-          nameMap[commandData.arguments[i].name] = reduceName(commandData.arguments[i].name);
-        }
-        else
-        {
-          assert(commandData.arguments[i].arraySize.empty());
-          std::string type = commandData.arguments[i].type;
-          size_t pos = type.find('*');
-          if ((pos != std::string::npos) && (type.find('*', pos + 1) == std::string::npos) && (commandData.arguments[i].name[0] == 'p') && (isupper(commandData.arguments[i].name[1])))
-          {
-            type[pos] = '&';
-            assert(type.find('*') == std::string::npos);
-            nameMap[commandData.arguments[i].name] = reduceName(commandData.arguments[i].name);
-          }
-          ofs << type;
-        }
-        ofs << " " << nameMap[commandData.arguments[i].name];
-        argEncounterd = true;
+        assert(false);
       }
     }
-    ofs << " )" << std::endl
-      << "  {" << std::endl;
+  }
+  else
+  {
+    writeTypeCommandEnhanced(ofs, indentation, className, functionName, dependencyData, commandData, vkTypes, std::map<size_t, size_t>());
+  }
+}
 
-    size_t complexIndex = findComplexIndex(commandData, lenParameters);
-    if (complexIndex == ~0)
+void writeTypeCommandEnhancedTwoStep(std::ofstream & ofs, std::string const& indentation, std::string const& className, std::string const& functionName, std::string const& returnType, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes, size_t returnIndex, std::map<size_t, size_t> const& vectorParameters)
+{
+  assert(returnIndex != ~0);
+  std::map<size_t, size_t>::const_iterator it = vectorParameters.find(returnIndex);
+  assert((it != vectorParameters.end()) && (it->second != ~0));
+
+  ofs << indentation << "{" << std::endl;
+  if (commandData.successCodes.size() < 2)
+  {
+    ofs << indentation << "  " << returnType << " " << reduceName(commandData.arguments[it->first].name) << ";" << std::endl;
+  }
+  ofs << indentation << "  " << commandData.arguments[it->second].pureType << " " << reduceName(commandData.arguments[it->second].name) << ";" << std::endl
+      << indentation << "  ";
+  if (commandData.returnType == "Result")
+  {
+    ofs << "Result result = static_cast<Result>( ";
+    writeCall(ofs, dependencyData.name, commandData, vkTypes, vectorParameters, returnIndex, "nullptr");
+    ofs << " );" << std::endl;
+    writeExceptionCheck(ofs, indentation, className, functionName, commandData.successCodes);
+  }
+  else
+  {
+    writeCall(ofs, dependencyData.name, commandData, vkTypes, vectorParameters, returnIndex, "nullptr");
+    ofs << ";" << std::endl;
+  }
+  ofs << indentation << "  " << reduceName(commandData.arguments[it->first].name) << ".resize( " << reduceName(commandData.arguments[it->second].name) << " );" << std::endl
+      << indentation << "  ";
+  if (commandData.returnType == "Result")
+  {
+    ofs << "result = static_cast<Result>( ";
+    writeCall(ofs, dependencyData.name, commandData, vkTypes, vectorParameters, returnIndex, reduceName(commandData.arguments[returnIndex].name) + ".data()");
+    ofs << " );" << std::endl;
+    writeExceptionCheck(ofs, indentation, className, functionName, commandData.successCodes);
+  }
+  else
+  {
+    writeCall(ofs, dependencyData.name, commandData, vkTypes, vectorParameters, returnIndex, reduceName(commandData.arguments[returnIndex].name) + ".data()");
+    ofs << ";" << std::endl;
+  }
+  if (commandData.successCodes.size() < 2)
+  {
+    ofs << indentation << "  return std::move( " << reduceName(commandData.arguments[returnIndex].name) << " );" << std::endl;
+  }
+  else if (commandData.returnType == "Result")
+  {
+    ofs << indentation << "  return result;" << std::endl;
+  }
+  ofs << indentation << "}" << std::endl;
+}
+
+void writeTypeCommandEnhancedReplaceReturn(std::ofstream & ofs, std::string const& indentation, std::string const& className, std::string const& functionName, std::string const& returnType, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes, size_t returnIndex, std::map<size_t, size_t> const& vectorParameters)
+{
+  assert(returnIndex < commandData.arguments.size());
+
+  ofs << indentation << "{" << std::endl
+      << indentation << "  " << returnType << " " << reduceName(commandData.arguments[returnIndex].name);
+  std::map<size_t, size_t>::const_iterator it = vectorParameters.find(returnIndex);
+  if (it != vectorParameters.end())
+  {
+    std::string size;
+    if ((it->second == ~0) && !commandData.arguments[returnIndex].len.empty())
     {
-      writeTypeCommandSimpleBody(ofs, dependencyData, commandData, nameMap, argIndices, sizeIndices);
+      size = reduceName(commandData.arguments[returnIndex].len);
+      size_t pos = size.find("->");
+      assert(pos != std::string::npos);
+      size.replace(pos, 2, ".");
+      size += "()";
     }
     else
     {
-      writeTypeCommandComplexBody(ofs, dependencyData, commandData, nameMap, lenParameters, argIndices, complexIndex, returnIndex);
+      for (std::map<size_t, size_t>::const_iterator sit = vectorParameters.begin(); sit != vectorParameters.end(); ++sit)
+      {
+        if ((sit->first != returnIndex) && (sit->second == it->second))
+        {
+          size = reduceName(commandData.arguments[sit->first].name) + ".size()";
+          break;
+        }
+      }
     }
-
-    ofs << "  }" << std::endl
-      << "#endif    // VKCPP_ENHANCED_MODE" << std::endl
-      << std::endl;
+    assert(!size.empty());
+    ofs << "( " << size << " )";
   }
+  ofs << ";" << std::endl
+      << indentation << "  ";
+  if (commandData.returnType == "Result")
+  {
+    ofs << "Result result = static_cast<Result>( ";
+  }
+  writeCall(ofs, dependencyData.name, commandData, vkTypes, vectorParameters);
+  if (commandData.returnType == "Result")
+  {
+    ofs << " )";
+  }
+  ofs << ";" << std::endl;
+  if (commandData.returnType == "Result")
+  {
+    writeExceptionCheck(ofs, indentation, className, functionName, commandData.successCodes);
+  }
+  ofs << indentation << "  return ";
+  if (it != vectorParameters.end())
+  {
+    ofs << "std::move( ";
+  }
+  ofs << reduceName(commandData.arguments[returnIndex].name);
+  if (it != vectorParameters.end())
+  {
+    ofs << " )";
+  }
+  ofs << ";" << std::endl
+      << indentation << "}" << std::endl;
 }
 
 void writeTypeCommandStandard(std::ofstream & ofs, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes)
@@ -1516,11 +2095,19 @@ void writeTypeCommandStandard(std::ofstream & ofs, DependencyData const& depende
     << std::endl;
 }
 
-void writeTypeCommandComplexBody(std::ofstream & ofs, DependencyData const& dependencyData, CommandData const& commandData, std::map<std::string,std::string> const& nameMap, std::vector<std::pair<size_t, size_t>> const& lenParameters, std::set<size_t> const& argIndices, size_t complexIndex, size_t returnIndex)
+void writeTypeCommandComplexBody(std::ofstream & ofs, DependencyData const& dependencyData, CommandData const& commandData, std::map<std::string,std::string> const& nameMap, std::map<size_t, size_t> const& vectorParameters, std::set<size_t> const& argIndices, size_t complexIndex, size_t returnIndex)
 {
-  assert(lenParameters[complexIndex].second != ~0);
-  ofs << "    " << commandData.arguments[lenParameters[complexIndex].second].pureType << " " << nameMap.find(commandData.arguments[lenParameters[complexIndex].second].name)->second << " = 0;" << std::endl;
+  if (returnIndex != ~0)
+  {
+    assert(vectorParameters.find(returnIndex) != vectorParameters.end());
+    ofs << "    std::vector<" << commandData.arguments[returnIndex].pureType << "> " << reduceName(commandData.arguments[returnIndex].name) << ";" << std::endl;
+  }
+
+  std::map<size_t, size_t>::const_iterator vpit = vectorParameters.find(complexIndex);
+  assert((vpit != vectorParameters.end()) && (vpit->second != ~0));
+  ofs << "    " << commandData.arguments[vpit->second].pureType << " " << nameMap.find(commandData.arguments[vpit->second].name)->second << " = 0;" << std::endl;
   ofs << "    ";
+
   assert((commandData.returnType == "void") || (commandData.returnType == "Result"));
   if (commandData.returnType == "Result")
   {
@@ -1534,13 +2121,13 @@ void writeTypeCommandComplexBody(std::ofstream & ofs, DependencyData const& depe
     {
       ofs << ", ";
     }
-    if (i == lenParameters[complexIndex].first)
+    if (i == vpit->first)
     {
       ofs << "nullptr";
     }
-    else if (i == lenParameters[complexIndex].second)
+    else if (i == vpit->second)
     {
-      ofs << "&" << argit->second;
+      ofs << '&' << argit->second;
     }
     else if (argIndices.find(i) != argIndices.end())
     {
@@ -1561,11 +2148,11 @@ void writeTypeCommandComplexBody(std::ofstream & ofs, DependencyData const& depe
   ofs << "    ";
   if (returnIndex == ~0)
   {
-    ofs << nameMap.find(commandData.arguments[lenParameters[complexIndex].first].name)->second << ".resize( " << nameMap.find(commandData.arguments[lenParameters[complexIndex].second].name)->second << " );" << std::endl;
+    ofs << nameMap.find(commandData.arguments[vpit->first].name)->second << ".resize( " << nameMap.find(commandData.arguments[vpit->second].name)->second << " );" << std::endl;
   }
   else
   {
-    ofs << "std::vector<" << commandData.arguments[lenParameters[returnIndex].first].pureType << "> " << nameMap.find(commandData.arguments[lenParameters[returnIndex].first].name)->second << "( " << nameMap.find(commandData.arguments[lenParameters[returnIndex].second].name)->second << " );" << std::endl;
+    ofs << "std::vector<" << commandData.arguments[vpit->first].pureType << "> " << nameMap.find(commandData.arguments[vpit->first].name)->second << "( " << nameMap.find(commandData.arguments[vpit->second].name)->second << " );" << std::endl;
   }
   ofs << "    ";
   if (commandData.returnType == "Result")
@@ -1580,13 +2167,13 @@ void writeTypeCommandComplexBody(std::ofstream & ofs, DependencyData const& depe
     {
       ofs << ", ";
     }
-    if (i == lenParameters[complexIndex].first)
+    if (i == vpit->first)
     {
       ofs << argit->second << ".data()";
     }
-    else if (i == lenParameters[complexIndex].second)
+    else if (i == vpit->second)
     {
-      ofs << "&" << argit->second;
+      ofs << '&' << argit->second;
     }
     else if (argIndices.find(i) != argIndices.end())
     {
@@ -1598,19 +2185,19 @@ void writeTypeCommandComplexBody(std::ofstream & ofs, DependencyData const& depe
     }
   }
   ofs << " );" << std::endl;
-  if (commandData.returnType == "Result")
+  if (returnIndex != ~0)
   {
-    assert(returnIndex == ~0);
+    ofs << "    }" << std::endl
+        << "    return std::move( " << nameMap.find(commandData.arguments[vpit->first].name)->second << " );" << std::endl;
+  }
+  else if (commandData.returnType == "Result")
+  {
     ofs << "    }" << std::endl
       << "    return result;" << std::endl;
   }
-  else if (returnIndex != ~0)
-  {
-    ofs << "    return std::move( " << nameMap.find(commandData.arguments[lenParameters[returnIndex].first].name)->second << " );" << std::endl;
-  }
 }
 
-void writeTypeCommandSimpleBody(std::ofstream & ofs, DependencyData const& dependencyData, CommandData const& commandData, std::map<std::string,std::string> const& nameMap, std::set<size_t> const& argIndices, std::map<size_t, std::vector<size_t>> const& sizeIndices)
+void writeTypeCommandSimpleBody(std::ofstream & ofs, DependencyData const& dependencyData, CommandData const& commandData, std::map<std::string, std::string> const& nameMap, std::map<size_t, size_t> const& vectorParameters, std::set<size_t> const& argIndices, std::map<size_t, std::vector<size_t>> const& sizeIndices, size_t returnIndex)
 {
   for (std::map<size_t, std::vector<size_t>>::const_iterator it = sizeIndices.begin(); it != sizeIndices.end(); ++it)
   {
@@ -1620,6 +2207,13 @@ void writeTypeCommandSimpleBody(std::ofstream & ofs, DependencyData const& depen
       ofs << "    assert( " << nameMap.find(commandData.arguments[it->second[0]].name)->second << ".size() <= " << nameMap.find(commandData.arguments[it->second[1]].name)->second << ".size() );" << std::endl;
     }
   }
+
+  if (returnIndex != ~0)
+  {
+    assert(vectorParameters.find(returnIndex) == vectorParameters.end());
+    ofs << "    " << commandData.arguments[returnIndex].pureType << " " << reduceName(commandData.arguments[returnIndex].name) << ";" << std::endl;
+  }
+
   ofs << "    ";
   if (commandData.returnType != "void")
   {
@@ -1646,7 +2240,7 @@ void writeTypeCommandSimpleBody(std::ofstream & ofs, DependencyData const& depen
       }
       else if (nameMap.find(commandData.arguments[i].name)->second != commandData.arguments[i].name)
       {
-        ofs << "&" << argit->second;
+        ofs << '&' << argit->second;
       }
       else
       {
@@ -1659,6 +2253,7 @@ void writeTypeCommandSimpleBody(std::ofstream & ofs, DependencyData const& depen
 
 void writeTypeEnum( std::ofstream & ofs, DependencyData const& dependencyData, EnumData const& enumData )
 {
+  enterProtect(ofs, enumData.protect);
   ofs << "  enum class " << dependencyData.name << std::endl
       << "  {" << std::endl;
   for ( size_t i=0 ; i<enumData.members.size() ; i++ )
@@ -1670,28 +2265,39 @@ void writeTypeEnum( std::ofstream & ofs, DependencyData const& dependencyData, E
     }
     ofs << std::endl;
   }
-  ofs << "  };" << std::endl
-      << std::endl;
+  ofs << "  };" << std::endl;
+  leaveProtect(ofs, enumData.protect);
+  ofs << std::endl;
 }
 
 void writeEnumToString(std::ofstream & ofs, DependencyData const& dependencyData, EnumData const& enumData)
 {
+  enterProtect(ofs, enumData.protect);
   ofs << "  static const char * getString(" << dependencyData.name << " value)" << std::endl
-      << "  {" << std::endl
-      << "    switch (value)" << std::endl
-      << "    {" << std::endl;
-  for (auto itMember = enumData.members.begin(); itMember != enumData.members.end(); ++itMember)
+      << "  {" << std::endl;
+  if (enumData.members.empty())
   {
-    ofs << "    case " << dependencyData.name << "::" << itMember->name << ": return \"" << itMember->name.substr(1) << "\";" << std::endl;
+    ofs << "    return \"\";" << std::endl;
   }
-  ofs << "    default: return \"unknown\";" << std::endl
-      << "    }" << std::endl
-      << "  }" << std::endl
-      << std::endl;
+  else
+  {
+    ofs << "    switch (value)" << std::endl
+        << "    {" << std::endl;
+    for (auto itMember = enumData.members.begin(); itMember != enumData.members.end(); ++itMember)
+    {
+      ofs << "    case " << dependencyData.name << "::" << itMember->name << ": return \"" << itMember->name.substr(1) << "\";" << std::endl;
+    }
+    ofs << "    default: return \"unknown\";" << std::endl
+        << "    }" << std::endl;
+  }
+  ofs << "  }" << std::endl;
+  leaveProtect(ofs, enumData.protect);
+  ofs << std::endl;
 }
 
 void writeFlagsTostring(std::ofstream & ofs, DependencyData const& dependencyData, EnumData const &enumData)
 {
+  enterProtect(ofs, enumData.protect);
   std::string enumPrefix = "vk::" + *dependencyData.dependencies.begin() + "::";
   ofs << "  static std::string getString(" << dependencyData.name << " value)" << std::endl
       << "  {" << std::endl
@@ -1704,6 +2310,8 @@ void writeFlagsTostring(std::ofstream & ofs, DependencyData const& dependencyDat
   }
   ofs << "    return result.substr(0, result.size() - 3);" << std::endl
       << "  }" << std::endl;
+  leaveProtect(ofs, enumData.protect);
+  ofs << std::endl;
 }
 
 void writeEnumsToString(std::ofstream & ofs, std::vector<DependencyData> const& dependencyData, std::map<std::string, EnumData> const& enums)
@@ -1723,22 +2331,64 @@ void writeEnumsToString(std::ofstream & ofs, std::vector<DependencyData> const& 
   }
 }
 
-void writeTypeFlags( std::ofstream & ofs, DependencyData const& dependencyData )
+void writeTypeFlags( std::ofstream & ofs, DependencyData const& dependencyData, FlagData const& flagData )
 {
   assert( dependencyData.dependencies.size() == 1 );
+  enterProtect(ofs, flagData.protect);
   ofs << "  typedef Flags<" << *dependencyData.dependencies.begin() << ", Vk" << dependencyData.name << "> " << dependencyData.name << ";" << std::endl
       << std::endl
       << "  inline " << dependencyData.name << " operator|( " << *dependencyData.dependencies.begin() << " bit0, " << *dependencyData.dependencies.begin() << " bit1 )" << std::endl
       << "  {" << std::endl
       << "    return " << dependencyData.name << "( bit0 ) | bit1;" << std::endl
-      << "  }" << std::endl
-      << std::endl;
+      << "  }" << std::endl;
+  leaveProtect(ofs, flagData.protect);
+  ofs << std::endl;
 }
 
-void writeTypeHandle( std::ofstream & ofs, DependencyData const& dependencyData )
+void writeTypeHandle(std::ofstream & ofs, DependencyData const& dependencyData, HandleData const& handle, std::map<std::string, CommandData> const& commands, std::vector<DependencyData> const& dependencies, std::set<std::string> const& vkTypes)
 {
-  assert( dependencyData.dependencies.empty() );
-  ofs << "  typedef Vk" << dependencyData.name << " " << dependencyData.name << ";" << std::endl;
+  std::string memberName = dependencyData.name;
+  assert(isupper(memberName[0]));
+  memberName[0] = tolower(memberName[0]);
+
+  ofs << "  class " << dependencyData.name << std::endl
+      << "  {" << std::endl
+      << "  public:" << std::endl
+      << "    " << dependencyData.name << "()" << std::endl
+      << "      : m_" << memberName << "(nullptr)" << std::endl
+      << "    {}" << std::endl
+      << std::endl;
+  if (!handle.commands.empty())
+  {
+    ofs << "#ifdef VKCPP_ENHANCED_MODE" << std::endl;
+    for (size_t i = 0; i < handle.commands.size(); i++)
+    {
+      std::string commandName = handle.commands[i];
+      std::map<std::string, CommandData>::const_iterator cit = commands.find(commandName);
+      assert((cit != commands.end()) && cit->second.handleCommand);
+      std::vector<DependencyData>::const_iterator dep = std::find_if(dependencies.begin(), dependencies.end(), [commandName](DependencyData const& dd) { return dd.name == commandName; });
+      assert(dep != dependencies.end());
+      writeTypeCommandEnhanced(ofs, "    ", dependencyData.name, *dep, cit->second, vkTypes);
+      if (i < handle.commands.size() - 1)
+      {
+        ofs << std::endl;
+      }
+    }
+    ofs << "#endif /*VKCPP_ENHANCED_MODE*/" << std::endl
+        << std::endl;
+  }
+  ofs << "    explicit operator Vk" << dependencyData.name << "() const" << std::endl
+      << "    {" << std::endl
+      << "      return m_" << memberName << ";" << std::endl
+      << "    }" << std::endl
+      << std::endl
+      << "  private:" << std::endl
+      << "    Vk" << dependencyData.name << " m_" << memberName << ";" << std::endl
+      << "  };" << std::endl
+#if 1
+      << "  static_assert( sizeof( " << dependencyData.name << " ) == sizeof( Vk" << dependencyData.name << " ), \"handle and wrapper have different size!\" );" << std::endl
+#endif
+      << std::endl;
 }
 
 void writeTypeScalar( std::ofstream & ofs, DependencyData const& dependencyData )
@@ -1752,6 +2402,7 @@ void writeTypeStruct( std::ofstream & ofs, DependencyData const& dependencyData,
   std::map<std::string,StructData>::const_iterator it = structs.find( dependencyData.name );
   assert( it != structs.end() );
 
+  enterProtect(ofs, it->second.protect);
   ofs << "  class " << dependencyData.name << std::endl
       << "  {" << std::endl
       << "  public:" << std::endl;
@@ -1785,11 +2436,12 @@ void writeTypeStruct( std::ofstream & ofs, DependencyData const& dependencyData,
       << std::endl
       << "  private:" << std::endl
       << "    Vk" << dependencyData.name << " " << memberName << ";" << std::endl
-      << "  };" << std::endl
-#if 0
-      << "  static_assert( sizeof( " << dependencyData.name << " ) == sizeof( Vk" << dependencyData.name << " ), \"struct and wrapper have different size!\" );" << std::endl
+      << "  };" << std::endl;
+#if 1
+  ofs << "  static_assert( sizeof( " << dependencyData.name << " ) == sizeof( Vk" << dependencyData.name << " ), \"struct and wrapper have different size!\" );" << std::endl;
 #endif
-      << std::endl;
+  leaveProtect(ofs, it->second.protect);
+  ofs << std::endl;
 }
 
 void writeTypeUnion( std::ofstream & ofs, DependencyData const& dependencyData, StructData const& unionData, std::set<std::string> const& vkTypes, std::map<std::string,StructData> const& structs, std::map<std::string,std::string> const& defaultValues )
@@ -1862,7 +2514,7 @@ void writeTypeUnion( std::ofstream & ofs, DependencyData const& dependencyData, 
       << std::endl;
 }
 
-void writeTypes( std::ofstream & ofs, std::vector<DependencyData> const& dependencies, std::map<std::string,CommandData> const& commands, std::map<std::string,EnumData> const& enums, std::map<std::string,StructData> const& structs, std::map<std::string,std::string> const& defaultValues, std::set<std::string> const& vkTypes )
+void writeTypes(std::ofstream & ofs, std::vector<DependencyData> const& dependencies, std::map<std::string, CommandData> const& commands, std::map<std::string, EnumData> const& enums, std::map<std::string, FlagData> const& flags, std::map<std::string, HandleData> const& handles, std::map<std::string, StructData> const& structs, std::map<std::string, std::string> const& defaultValues, std::set<std::string> const& vkTypes)
 {
   for ( std::vector<DependencyData>::const_iterator it = dependencies.begin() ; it != dependencies.end() ; ++it )
   {
@@ -1877,14 +2529,16 @@ void writeTypes( std::ofstream & ofs, std::vector<DependencyData> const& depende
         writeTypeEnum( ofs, *it, enums.find( it->name )->second );
         break;
       case DependencyData::Category::FLAGS :
-        writeTypeFlags( ofs, *it );
+        assert(flags.find(it->name) != flags.end());
+        writeTypeFlags( ofs, *it, flags.find( it->name)->second );
         break;
       case DependencyData::Category::FUNC_POINTER :
       case DependencyData::Category::REQUIRED :
         // skip FUNC_POINTER and REQUIRED, they just needed to be in the dependencies list to resolve dependencies
         break;
       case DependencyData::Category::HANDLE :
-        writeTypeHandle( ofs, *it );
+        assert(handles.find(it->name) != handles.end());
+        writeTypeHandle( ofs, *it, handles.find( it->name )->second, commands, dependencies, vkTypes );
         break;
       case DependencyData::Category::SCALAR :
         writeTypeScalar( ofs, *it );
@@ -1903,7 +2557,7 @@ void writeTypes( std::ofstream & ofs, std::vector<DependencyData> const& depende
   }
 }
 
-void writeVersionCheck( std::ofstream & ofs, std::string const& version )
+void writeVersionCheck(std::ofstream & ofs, std::string const& version)
 {
   ofs << "static_assert( VK_MAKE_VERSION" << version << " == VK_API_VERSION, \"Wrong VK_API_VERSION!\" );" << std::endl
       << std::endl;
@@ -1924,14 +2578,15 @@ int main( int argc, char **argv )
   assert( strcmp( registryElement->Value(), "registry" ) == 0 );
   assert( !registryElement->NextSiblingElement() );
 
-  std::string                       version;
-  std::list<DependencyData>         dependencies;
-  std::map<std::string,EnumData>    enums;
-  std::vector<ExtensionData>        extensions;
-  std::set<std::string>             flags;
-  std::map<std::string,StructData>  structs;
-  std::map<std::string,CommandData> commands;
-  std::set<std::string>             vkTypes;
+  std::string                         version;
+  std::list<DependencyData>           dependencies;
+  std::map<std::string, CommandData>  commands;
+  std::map<std::string, EnumData>     enums;
+  std::map<std::string, FlagData>     flags;
+  std::map<std::string, HandleData>   handles;
+  std::map<std::string, ScalarData>   scalars;
+  std::map<std::string, StructData>   structs;
+  std::set<std::string>               vkTypes;
 
   tinyxml2::XMLElement * child = registryElement->FirstChildElement();
   do
@@ -1940,7 +2595,7 @@ int main( int argc, char **argv )
     const std::string value = child->Value();
     if ( value == "commands" )
     {
-      readCommands( child, dependencies, commands );
+      readCommands( child, dependencies, commands, handles );
     }
     else if ( value == "enums" )
     {
@@ -1948,11 +2603,11 @@ int main( int argc, char **argv )
     }
     else if ( value == "extensions" )
     {
-      readExtensions( child, extensions, enums );
+      readExtensions( child, commands, enums, flags, scalars, structs );
     }
     else if ( value == "types" )
     {
-      readTypes( child, version, dependencies, flags, structs, vkTypes, enums );
+      readTypes( child, version, dependencies, flags, scalars, structs, vkTypes, handles, enums );
     }
     else
     {
@@ -1960,19 +2615,18 @@ int main( int argc, char **argv )
     }
   } while ( child = child->NextSiblingElement() );
 
-  std::vector<std::vector<DependencyData>> sortedDependencies;
-  sortDependencies( dependencies, extensions, sortedDependencies );
+  std::vector<DependencyData> sortedDependencies;
+  sortDependencies( dependencies, sortedDependencies );
 
   std::map<std::string,std::string> defaultValues;
-  for ( size_t i=0 ; i<sortedDependencies.size() ; i++ )
-  {
-    createDefaults( sortedDependencies[i], enums, defaultValues );
-  }
+  createDefaults( sortedDependencies, enums, defaultValues );
 
   std::ofstream ofs( "vk_cpp.h" );
   ofs << licenseHeader << std::endl;
 
-  ofs << std::endl << "#pragma once" << std::endl;
+  ofs << std::endl << "#ifndef VK_CPP_H_" << std::endl
+                   << "#define VK_CPP_H_" << std::endl
+                   << std::endl;
 
   ofs << "#include <array>" << std::endl
       << "#include <cassert>" << std::endl
@@ -1981,30 +2635,19 @@ int main( int argc, char **argv )
       << "#include <vulkan/vulkan.h>" << std::endl
       << "#ifdef VKCPP_ENHANCED_MODE" << std::endl
       << "# include <vector>" << std::endl
-      << "#endif    // VKCPP_ENHANCED_MODE" << std::endl
+      << "#endif /*VKCPP_ENHANCED_MODE*/" << std::endl
       << std::endl;
   writeVersionCheck( ofs, version );
   ofs << "namespace vk" << std::endl
       << "{" << std::endl;
 
+  ofs << exceptionHeader;
   ofs << flagsHeader;
 
-  for ( size_t i=0 ; i<sortedDependencies.size() ; i++ )
-  {
-    if ( ( 0 < i ) && !extensions[i-1].protect.empty() )
-    {
-      ofs << "#ifdef " << extensions[i-1].protect << std::endl
-          << std::endl;
-    }
-    writeTypes( ofs, sortedDependencies[i], commands, enums, structs, defaultValues, vkTypes );
-    writeEnumsToString(ofs, sortedDependencies[i], enums);
+  writeTypes( ofs, sortedDependencies, commands, enums, flags, handles, structs, defaultValues, vkTypes );
+  writeEnumsToString(ofs, sortedDependencies, enums);
 
-    if ( ( 0 < i ) && !extensions[i-1].protect.empty() )
-    {
-      ofs << "#endif /* " << extensions[i-1].protect << " */" << std::endl
-          << std::endl;
-    }
-  }
-
-  ofs << "}" << std::endl;
+  ofs << "} // namespace vk" << std::endl
+      << std::endl
+      << "#endif" << std::endl;
 }

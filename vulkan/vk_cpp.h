@@ -12844,9 +12844,11 @@ namespace vk
       vkCmdCopyImageToBuffer( m_commandBuffer, static_cast<VkImage>( srcImage ), static_cast<VkImageLayout>( srcImageLayout ), static_cast<VkBuffer>( dstBuffer ), static_cast<uint32_t>( regions.size() ), reinterpret_cast<const VkBufferImageCopy*>( regions.data() ) );
     }
 
-    void updateBuffer( Buffer dstBuffer, DeviceSize dstOffset, std::vector<uint32_t> const& data ) const
+    template <typename T>
+    void updateBuffer( Buffer dstBuffer, DeviceSize dstOffset, std::vector<T> const& data ) const
     {
-      vkCmdUpdateBuffer( m_commandBuffer, static_cast<VkBuffer>( dstBuffer ), dstOffset, static_cast<DeviceSize>( data.size() ) * 4, data.data() );
+      static_assert( sizeof( T ) % sizeof( uint32_t ) == 0, "wrong size of template type T" );
+      vkCmdUpdateBuffer( m_commandBuffer, static_cast<VkBuffer>( dstBuffer ), dstOffset, static_cast<DeviceSize>( data.size() * sizeof( T ) ), reinterpret_cast<const uint32_t*>( data.data() ) );
     }
 
     void fillBuffer( Buffer dstBuffer, DeviceSize dstOffset, DeviceSize size, uint32_t data ) const
@@ -14489,9 +14491,10 @@ namespace vk
       vkDestroyQueryPool( m_device, static_cast<VkQueryPool>( queryPool ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ) );
     }
 
-    Result getQueryPoolResults( QueryPool queryPool, uint32_t firstQuery, uint32_t queryCount, std::vector<uint8_t> & data, DeviceSize stride, QueryResultFlags flags ) const
+    template <typename T>
+    Result getQueryPoolResults( QueryPool queryPool, uint32_t firstQuery, uint32_t queryCount, std::vector<T> & data, DeviceSize stride, QueryResultFlags flags ) const
     {
-      Result result = static_cast<Result>( vkGetQueryPoolResults( m_device, static_cast<VkQueryPool>( queryPool ), firstQuery, queryCount, static_cast<size_t>( data.size() ), data.data(), stride, static_cast<VkQueryResultFlags>( flags ) ) );
+      Result result = static_cast<Result>( vkGetQueryPoolResults( m_device, static_cast<VkQueryPool>( queryPool ), firstQuery, queryCount, static_cast<size_t>( data.size() * sizeof( T ) ), reinterpret_cast<void*>( data.data() ), stride, static_cast<VkQueryResultFlags>( flags ) ) );
       if ( ( result != Result::eVkSuccess ) && ( result != Result::eVkNotReady ) )
       {
         throw Exception( result, "vk::Device::getQueryPoolResults" );
@@ -14606,13 +14609,13 @@ namespace vk
     {
       std::vector<uint8_t> data;
       size_t dataSize;
-      Result result = static_cast<Result>( vkGetPipelineCacheData( m_device, static_cast<VkPipelineCache>( pipelineCache ), &dataSize, data.data() ) );
+      Result result = static_cast<Result>( vkGetPipelineCacheData( m_device, static_cast<VkPipelineCache>( pipelineCache ), &dataSize, reinterpret_cast<void*>( data.data() ) ) );
       if ( result != Result::eVkSuccess )
       {
         throw Exception( result, "vk::Device::getPipelineCacheData" );
       }
       data.resize( dataSize );
-      result = static_cast<Result>( vkGetPipelineCacheData( m_device, static_cast<VkPipelineCache>( pipelineCache ), &dataSize, data.data() ) );
+      result = static_cast<Result>( vkGetPipelineCacheData( m_device, static_cast<VkPipelineCache>( pipelineCache ), &dataSize, reinterpret_cast<void*>( data.data() ) ) );
       if ( result != Result::eVkSuccess )
       {
         throw Exception( result, "vk::Device::getPipelineCacheData" );

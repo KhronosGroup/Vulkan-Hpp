@@ -143,33 +143,32 @@ vk::createImage(device, &ci, allocator, &image));
 
 
 # Enhancements beyond the API
-While mapping the Vulkan API to C++ without adding new functions is already a big help, one can do even more by adding new functionality. For example several C++ developers tend to use std::string and std::vector in their code, therefore we have added some more optional convenience features:
+To provide a more object oriented feeling we're providing classes for each handle which include all Vulkan functions where the first 
+parameter matches the handle. In addition to this we made a few changes to the signatures of the member functions
+* <code>(count, T*)</code> has been replaced by <code>std::vector&lt;T&gt;</code>
+* <code>const char *</code> has been replaced by <std::string> 
+* vk::Result return values have been replaced by exceptions.
+* Functions with a single output value do return this value instead
 
-* Use <code>std::string</code> instead of <code>const char *</code> for strings
-* Use <code>std::vector</code> instead of <code>(count, ptr)</code> for sized arrays
-* Throw exceptions instead of error return values (in progress)
-* Return handles/vectors where applicable, i.e. for the create* functions
-
-As example let's examine the device extension property enumeration in Vulkan:
-
+Here are a few code examples:
 <pre>
 <code>
-    uint32_t count;
-    VK_VERIFY(vk::enumerateDeviceExtensionProperties(physicalDevice, layerName.c_str(), &count, nullptr));
+  try {
+    vk::Instance i = ...;
+    std::vector<vk::PhysicalDevice> physicalDevices = i.enumeratePhysicalDevices();
+    vk::FormatProperties formatProperties = physicalDevices[0].getFormatProperties(vk::Format::eR8G8B8A8Unorm);
 
-    std::vector<vk::ExtensionProperties> properties(count);
-    VK_VERIFY(vk::enumerateDeviceExtensionProperties(physicalDevice, layerName.c_str(), &count, properties.data()));
+    vk::CommandBuffer commandBuffer = ...;
+    vk::Buffer buffer = ...;
+    commandBuffer.updateBuffer(buffer, 0, {some values}); // update buffer with std::vector
+  }
+  catch (vk::Exception e)
+  {
+    std::cerr << "Vulkan failure: " << e.what() << std::endl;
+  }
 </code>
 </pre>
     
-Luckily the official Khronos-provided vk.xml has enough information to figure out which pair of values represents a sized array or strings, so that it is possible to generate a function which allows you to write the following line of code instead:
-
-<pre>
-<code>
-    std::vector&lt;ExtensionProperties&gt; properties = vk::enumerateDeviceExtensionProperties(physicalDevice, layerName);
-</code>
-</pre>
-
 # Usage
 To start with the C++ version of the Vulkan API download header from GIT, put it in a vulkan subdirectory and add
 <code>#include &lt;vulkan/vk_cpp.h&gt;</code> to your source code.
@@ -195,3 +194,14 @@ before this line:
 * Update submodules: git submodule update --init --recursive
 * Use CMake to generate a solution or makefile for your favourite build environment
 * Launch the build
+
+# Providing Pull Requests
+
+NVIDIA is happy to review and consider pull requests for merging into the main tree of vkcpp for bug fixes and features. Before providing a pull request to NVIDIA, please note the following:
+
+* A pull request provided to this repo by a developer constitutes permission from the developer for NVIDIA to merge the provided
+  changes or any NVIDIA modified version of these changes to the repo. NVIDIA may remove or change the code at any time and in any
+  way deemed appropriate. Due to the required paperwork please refrain from providing pull requests for simple changes and file an issue
+  describing a bug or the desired change instead.
+* Not all pull requests can be or will be accepted. NVIDIA will close pull requests that it does not intend to merge.
+* The modified files and any new files must include the unmodified NVIDIA copyright header seen at the top of all shipping files.

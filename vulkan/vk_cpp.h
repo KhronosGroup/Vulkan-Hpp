@@ -3139,7 +3139,7 @@ namespace vk
     eTransferSrcOptimal = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
     eTransferDstOptimal = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
     ePreinitialized = VK_IMAGE_LAYOUT_PREINITIALIZED,
-    ePresentSrcKhr = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR
+    ePresentSrcKHR = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR
   };
 
   class DescriptorImageInfo
@@ -4248,18 +4248,18 @@ namespace vk
     eMemoryBarrier = VK_STRUCTURE_TYPE_MEMORY_BARRIER,
     eLoaderInstanceCreateInfo = VK_STRUCTURE_TYPE_LOADER_INSTANCE_CREATE_INFO,
     eLoaderDeviceCreateInfo = VK_STRUCTURE_TYPE_LOADER_DEVICE_CREATE_INFO,
-    eSwapchainCreateInfoKhr = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
-    ePresentInfoKhr = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
-    eDisplayModeCreateInfoKhr = VK_STRUCTURE_TYPE_DISPLAY_MODE_CREATE_INFO_KHR,
-    eDisplaySurfaceCreateInfoKhr = VK_STRUCTURE_TYPE_DISPLAY_SURFACE_CREATE_INFO_KHR,
-    eDisplayPresentInfoKhr = VK_STRUCTURE_TYPE_DISPLAY_PRESENT_INFO_KHR,
-    eXlibSurfaceCreateInfoKhr = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR,
-    eXcbSurfaceCreateInfoKhr = VK_STRUCTURE_TYPE_XCB_SURFACE_CREATE_INFO_KHR,
-    eWaylandSurfaceCreateInfoKhr = VK_STRUCTURE_TYPE_WAYLAND_SURFACE_CREATE_INFO_KHR,
-    eMirSurfaceCreateInfoKhr = VK_STRUCTURE_TYPE_MIR_SURFACE_CREATE_INFO_KHR,
-    eAndroidSurfaceCreateInfoKhr = VK_STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR,
-    eWin32SurfaceCreateInfoKhr = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR,
-    eDebugReportCreateInfoExt = VK_STRUCTURE_TYPE_DEBUG_REPORT_CREATE_INFO_EXT
+    eSwapchainCreateInfoKHR = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
+    ePresentInfoKHR = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
+    eDisplayModeCreateInfoKHR = VK_STRUCTURE_TYPE_DISPLAY_MODE_CREATE_INFO_KHR,
+    eDisplaySurfaceCreateInfoKHR = VK_STRUCTURE_TYPE_DISPLAY_SURFACE_CREATE_INFO_KHR,
+    eDisplayPresentInfoKHR = VK_STRUCTURE_TYPE_DISPLAY_PRESENT_INFO_KHR,
+    eXlibSurfaceCreateInfoKHR = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR,
+    eXcbSurfaceCreateInfoKHR = VK_STRUCTURE_TYPE_XCB_SURFACE_CREATE_INFO_KHR,
+    eWaylandSurfaceCreateInfoKHR = VK_STRUCTURE_TYPE_WAYLAND_SURFACE_CREATE_INFO_KHR,
+    eMirSurfaceCreateInfoKHR = VK_STRUCTURE_TYPE_MIR_SURFACE_CREATE_INFO_KHR,
+    eAndroidSurfaceCreateInfoKHR = VK_STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR,
+    eWin32SurfaceCreateInfoKHR = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR,
+    eDebugReportCreateInfoEXT = VK_STRUCTURE_TYPE_DEBUG_REPORT_CREATE_INFO_EXT
   };
 
   class ApplicationInfo
@@ -7498,29 +7498,29 @@ namespace vk
 
   enum class Result
   {
-    eVkSuccess = VK_SUCCESS,
-    eVkNotReady = VK_NOT_READY,
-    eVkTimeout = VK_TIMEOUT,
-    eVkEventSet = VK_EVENT_SET,
-    eVkEventReset = VK_EVENT_RESET,
-    eVkIncomplete = VK_INCOMPLETE,
-    eVkErrorOutOfHostMemory = VK_ERROR_OUT_OF_HOST_MEMORY,
-    eVkErrorOutOfDeviceMemory = VK_ERROR_OUT_OF_DEVICE_MEMORY,
-    eVkErrorInitializationFailed = VK_ERROR_INITIALIZATION_FAILED,
-    eVkErrorDeviceLost = VK_ERROR_DEVICE_LOST,
-    eVkErrorMemoryMapFailed = VK_ERROR_MEMORY_MAP_FAILED,
-    eVkErrorLayerNotPresent = VK_ERROR_LAYER_NOT_PRESENT,
-    eVkErrorExtensionNotPresent = VK_ERROR_EXTENSION_NOT_PRESENT,
-    eVkErrorFeatureNotPresent = VK_ERROR_FEATURE_NOT_PRESENT,
-    eVkErrorIncompatibleDriver = VK_ERROR_INCOMPATIBLE_DRIVER,
-    eVkErrorTooManyObjects = VK_ERROR_TOO_MANY_OBJECTS,
-    eVkErrorFormatNotSupported = VK_ERROR_FORMAT_NOT_SUPPORTED,
-    eVkErrorSurfaceLostKhr = VK_ERROR_SURFACE_LOST_KHR,
-    eVkErrorNativeWindowInUseKhr = VK_ERROR_NATIVE_WINDOW_IN_USE_KHR,
-    eVkSuboptimalKhr = VK_SUBOPTIMAL_KHR,
-    eVkErrorOutOfDateKhr = VK_ERROR_OUT_OF_DATE_KHR,
-    eVkErrorIncompatibleDisplayKhr = VK_ERROR_INCOMPATIBLE_DISPLAY_KHR,
-    eVkErrorValidationFailedExt = VK_ERROR_VALIDATION_FAILED_EXT
+    eSuccess = VK_SUCCESS,
+    eNotReady = VK_NOT_READY,
+    eTimeout = VK_TIMEOUT,
+    eEventSet = VK_EVENT_SET,
+    eEventReset = VK_EVENT_RESET,
+    eIncomplete = VK_INCOMPLETE,
+    eErrorOutOfHostMemory = VK_ERROR_OUT_OF_HOST_MEMORY,
+    eErrorOutOfDeviceMemory = VK_ERROR_OUT_OF_DEVICE_MEMORY,
+    eErrorInitializationFailed = VK_ERROR_INITIALIZATION_FAILED,
+    eErrorDeviceLost = VK_ERROR_DEVICE_LOST,
+    eErrorMemoryMapFailed = VK_ERROR_MEMORY_MAP_FAILED,
+    eErrorLayerNotPresent = VK_ERROR_LAYER_NOT_PRESENT,
+    eErrorExtensionNotPresent = VK_ERROR_EXTENSION_NOT_PRESENT,
+    eErrorFeatureNotPresent = VK_ERROR_FEATURE_NOT_PRESENT,
+    eErrorIncompatibleDriver = VK_ERROR_INCOMPATIBLE_DRIVER,
+    eErrorTooManyObjects = VK_ERROR_TOO_MANY_OBJECTS,
+    eErrorFormatNotSupported = VK_ERROR_FORMAT_NOT_SUPPORTED,
+    eErrorSurfaceLostKHR = VK_ERROR_SURFACE_LOST_KHR,
+    eErrorNativeWindowInUseKHR = VK_ERROR_NATIVE_WINDOW_IN_USE_KHR,
+    eSuboptimalKHR = VK_SUBOPTIMAL_KHR,
+    eErrorOutOfDateKHR = VK_ERROR_OUT_OF_DATE_KHR,
+    eErrorIncompatibleDisplayKHR = VK_ERROR_INCOMPATIBLE_DISPLAY_KHR,
+    eErrorValidationFailedEXT = VK_ERROR_VALIDATION_FAILED_EXT
   };
 
   class PresentInfoKHR
@@ -12696,7 +12696,7 @@ namespace vk
     void begin( const CommandBufferBeginInfo& beginInfo ) const
     {
       Result result = static_cast<Result>( vkBeginCommandBuffer( m_commandBuffer, reinterpret_cast<const VkCommandBufferBeginInfo*>( &beginInfo ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::CommandBuffer::begin" );
       }
@@ -12705,7 +12705,7 @@ namespace vk
     void end(  ) const
     {
       Result result = static_cast<Result>( vkEndCommandBuffer( m_commandBuffer ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::CommandBuffer::end" );
       }
@@ -12714,7 +12714,7 @@ namespace vk
     void reset( CommandBufferResetFlags flags ) const
     {
       Result result = static_cast<Result>( vkResetCommandBuffer( m_commandBuffer, static_cast<VkCommandBufferResetFlags>( flags ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::CommandBuffer::reset" );
       }
@@ -13331,7 +13331,7 @@ namespace vk
     void submit( std::vector<SubmitInfo> const& submits, Fence fence ) const
     {
       Result result = static_cast<Result>( vkQueueSubmit( m_queue, static_cast<uint32_t>( submits.size() ), reinterpret_cast<const VkSubmitInfo*>( submits.data() ), static_cast<VkFence>( fence ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Queue::submit" );
       }
@@ -13340,7 +13340,7 @@ namespace vk
     void waitIdle(  ) const
     {
       Result result = static_cast<Result>( vkQueueWaitIdle( m_queue ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Queue::waitIdle" );
       }
@@ -13349,7 +13349,7 @@ namespace vk
     void bindSparse( std::vector<BindSparseInfo> const& bindInfo, Fence fence ) const
     {
       Result result = static_cast<Result>( vkQueueBindSparse( m_queue, static_cast<uint32_t>( bindInfo.size() ), reinterpret_cast<const VkBindSparseInfo*>( bindInfo.data() ), static_cast<VkFence>( fence ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Queue::bindSparse" );
       }
@@ -13358,7 +13358,7 @@ namespace vk
     Result presentKHR( const PresentInfoKHR& presentInfo ) const
     {
       Result result = static_cast<Result>( vkQueuePresentKHR( m_queue, reinterpret_cast<const VkPresentInfoKHR*>( &presentInfo ) ) );
-      if ( ( result != Result::eVkSuccess ) && ( result != Result::eVkSuboptimalKhr ) )
+      if ( ( result != Result::eSuccess ) && ( result != Result::eSuboptimalKHR ) )
       {
         throw Exception( result, "vk::Queue::presentKHR" );
       }
@@ -13378,22 +13378,22 @@ namespace vk
 
   enum class PresentModeKHR
   {
-    eVkPresentModeImmediateKhr = VK_PRESENT_MODE_IMMEDIATE_KHR,
-    eVkPresentModeMailboxKhr = VK_PRESENT_MODE_MAILBOX_KHR,
-    eVkPresentModeFifoKhr = VK_PRESENT_MODE_FIFO_KHR,
-    eVkPresentModeFifoRelaxedKhr = VK_PRESENT_MODE_FIFO_RELAXED_KHR
+    eImmediateKHR = VK_PRESENT_MODE_IMMEDIATE_KHR,
+    eMailboxKHR = VK_PRESENT_MODE_MAILBOX_KHR,
+    eFifoKHR = VK_PRESENT_MODE_FIFO_KHR,
+    eFifoRelaxedKHR = VK_PRESENT_MODE_FIFO_RELAXED_KHR
   };
 
   enum class ColorSpaceKHR
   {
-    eVkColorspaceSrgbNonlinearKhr = VK_COLORSPACE_SRGB_NONLINEAR_KHR
+    eVkColorspaceSrgbNonlinearKHR = VK_COLORSPACE_SRGB_NONLINEAR_KHR
   };
 
   class SurfaceFormatKHR
   {
   public:
     SurfaceFormatKHR()
-      : SurfaceFormatKHR( Format::eUndefined, ColorSpaceKHR::eVkColorspaceSrgbNonlinearKhr )
+      : SurfaceFormatKHR( Format::eUndefined, ColorSpaceKHR::eVkColorspaceSrgbNonlinearKHR )
     {}
 
     SurfaceFormatKHR( Format format, ColorSpaceKHR colorSpace)
@@ -14004,7 +14004,7 @@ namespace vk
   {
   public:
     SwapchainCreateInfoKHR()
-      : SwapchainCreateInfoKHR( SwapchainCreateFlagsKHR(), SurfaceKHR(), 0, Format::eUndefined, ColorSpaceKHR::eVkColorspaceSrgbNonlinearKhr, Extent2D(), 0, ImageUsageFlags(), SharingMode::eExclusive, 0, nullptr, SurfaceTransformFlagBitsKHR::eIdentity, CompositeAlphaFlagBitsKHR::eOpaque, PresentModeKHR::eVkPresentModeImmediateKhr, 0, SwapchainKHR() )
+      : SwapchainCreateInfoKHR( SwapchainCreateFlagsKHR(), SurfaceKHR(), 0, Format::eUndefined, ColorSpaceKHR::eVkColorspaceSrgbNonlinearKHR, Extent2D(), 0, ImageUsageFlags(), SharingMode::eExclusive, 0, nullptr, SurfaceTransformFlagBitsKHR::eIdentity, CompositeAlphaFlagBitsKHR::eOpaque, PresentModeKHR::eImmediateKHR, 0, SwapchainKHR() )
     {}
 
     SwapchainCreateInfoKHR( SwapchainCreateFlagsKHR flags, SurfaceKHR surface, uint32_t minImageCount, Format imageFormat, ColorSpaceKHR imageColorSpace, Extent2D imageExtent, uint32_t imageArrayLayers, ImageUsageFlags imageUsage, SharingMode imageSharingMode, uint32_t queueFamilyIndexCount, const uint32_t* pQueueFamilyIndices, SurfaceTransformFlagBitsKHR preTransform, CompositeAlphaFlagBitsKHR compositeAlpha, PresentModeKHR presentMode, Bool32 clipped, SwapchainKHR oldSwapchain)
@@ -14265,7 +14265,7 @@ namespace vk
     void waitIdle(  ) const
     {
       Result result = static_cast<Result>( vkDeviceWaitIdle( m_device ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Device::waitIdle" );
       }
@@ -14275,7 +14275,7 @@ namespace vk
     {
       DeviceMemory memory;
       Result result = static_cast<Result>( vkAllocateMemory( m_device, reinterpret_cast<const VkMemoryAllocateInfo*>( &allocateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkDeviceMemory*>( &memory ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Device::allocateMemory" );
       }
@@ -14291,7 +14291,7 @@ namespace vk
     {
       void* pData;
       Result result = static_cast<Result>( vkMapMemory( m_device, static_cast<VkDeviceMemory>( memory ), offset, size, static_cast<VkMemoryMapFlags>( flags ), &pData ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Device::mapMemory" );
       }
@@ -14306,7 +14306,7 @@ namespace vk
     void flushMappedMemoryRanges( std::vector<MappedMemoryRange> const& memoryRanges ) const
     {
       Result result = static_cast<Result>( vkFlushMappedMemoryRanges( m_device, static_cast<uint32_t>( memoryRanges.size() ), reinterpret_cast<const VkMappedMemoryRange*>( memoryRanges.data() ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Device::flushMappedMemoryRanges" );
       }
@@ -14315,7 +14315,7 @@ namespace vk
     void invalidateMappedMemoryRanges( std::vector<MappedMemoryRange> const& memoryRanges ) const
     {
       Result result = static_cast<Result>( vkInvalidateMappedMemoryRanges( m_device, static_cast<uint32_t>( memoryRanges.size() ), reinterpret_cast<const VkMappedMemoryRange*>( memoryRanges.data() ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Device::invalidateMappedMemoryRanges" );
       }
@@ -14338,7 +14338,7 @@ namespace vk
     void bindBufferMemory( Buffer buffer, DeviceMemory memory, DeviceSize memoryOffset ) const
     {
       Result result = static_cast<Result>( vkBindBufferMemory( m_device, static_cast<VkBuffer>( buffer ), static_cast<VkDeviceMemory>( memory ), memoryOffset ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Device::bindBufferMemory" );
       }
@@ -14354,7 +14354,7 @@ namespace vk
     void bindImageMemory( Image image, DeviceMemory memory, DeviceSize memoryOffset ) const
     {
       Result result = static_cast<Result>( vkBindImageMemory( m_device, static_cast<VkImage>( image ), static_cast<VkDeviceMemory>( memory ), memoryOffset ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Device::bindImageMemory" );
       }
@@ -14374,7 +14374,7 @@ namespace vk
     {
       Fence fence;
       Result result = static_cast<Result>( vkCreateFence( m_device, reinterpret_cast<const VkFenceCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkFence*>( &fence ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Device::createFence" );
       }
@@ -14389,7 +14389,7 @@ namespace vk
     void resetFences( std::vector<Fence> const& fences ) const
     {
       Result result = static_cast<Result>( vkResetFences( m_device, static_cast<uint32_t>( fences.size() ), reinterpret_cast<const VkFence*>( fences.data() ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Device::resetFences" );
       }
@@ -14398,7 +14398,7 @@ namespace vk
     Result getFenceStatus( Fence fence ) const
     {
       Result result = static_cast<Result>( vkGetFenceStatus( m_device, static_cast<VkFence>( fence ) ) );
-      if ( ( result != Result::eVkSuccess ) && ( result != Result::eVkNotReady ) )
+      if ( ( result != Result::eSuccess ) && ( result != Result::eNotReady ) )
       {
         throw Exception( result, "vk::Device::getFenceStatus" );
       }
@@ -14408,7 +14408,7 @@ namespace vk
     Result waitForFences( std::vector<Fence> const& fences, Bool32 waitAll, uint64_t timeout ) const
     {
       Result result = static_cast<Result>( vkWaitForFences( m_device, static_cast<uint32_t>( fences.size() ), reinterpret_cast<const VkFence*>( fences.data() ), waitAll, timeout ) );
-      if ( ( result != Result::eVkSuccess ) && ( result != Result::eVkTimeout ) )
+      if ( ( result != Result::eSuccess ) && ( result != Result::eTimeout ) )
       {
         throw Exception( result, "vk::Device::waitForFences" );
       }
@@ -14419,7 +14419,7 @@ namespace vk
     {
       Semaphore semaphore;
       Result result = static_cast<Result>( vkCreateSemaphore( m_device, reinterpret_cast<const VkSemaphoreCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkSemaphore*>( &semaphore ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Device::createSemaphore" );
       }
@@ -14435,7 +14435,7 @@ namespace vk
     {
       Event event;
       Result result = static_cast<Result>( vkCreateEvent( m_device, reinterpret_cast<const VkEventCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkEvent*>( &event ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Device::createEvent" );
       }
@@ -14450,7 +14450,7 @@ namespace vk
     Result getEventStatus( Event event ) const
     {
       Result result = static_cast<Result>( vkGetEventStatus( m_device, static_cast<VkEvent>( event ) ) );
-      if ( ( result != Result::eVkEventSet ) && ( result != Result::eVkEventReset ) )
+      if ( ( result != Result::eEventSet ) && ( result != Result::eEventReset ) )
       {
         throw Exception( result, "vk::Device::getEventStatus" );
       }
@@ -14460,7 +14460,7 @@ namespace vk
     void setEvent( Event event ) const
     {
       Result result = static_cast<Result>( vkSetEvent( m_device, static_cast<VkEvent>( event ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Device::setEvent" );
       }
@@ -14469,7 +14469,7 @@ namespace vk
     void resetEvent( Event event ) const
     {
       Result result = static_cast<Result>( vkResetEvent( m_device, static_cast<VkEvent>( event ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Device::resetEvent" );
       }
@@ -14479,7 +14479,7 @@ namespace vk
     {
       QueryPool queryPool;
       Result result = static_cast<Result>( vkCreateQueryPool( m_device, reinterpret_cast<const VkQueryPoolCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkQueryPool*>( &queryPool ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Device::createQueryPool" );
       }
@@ -14495,7 +14495,7 @@ namespace vk
     Result getQueryPoolResults( QueryPool queryPool, uint32_t firstQuery, uint32_t queryCount, std::vector<T> & data, DeviceSize stride, QueryResultFlags flags ) const
     {
       Result result = static_cast<Result>( vkGetQueryPoolResults( m_device, static_cast<VkQueryPool>( queryPool ), firstQuery, queryCount, static_cast<size_t>( data.size() * sizeof( T ) ), reinterpret_cast<void*>( data.data() ), stride, static_cast<VkQueryResultFlags>( flags ) ) );
-      if ( ( result != Result::eVkSuccess ) && ( result != Result::eVkNotReady ) )
+      if ( ( result != Result::eSuccess ) && ( result != Result::eNotReady ) )
       {
         throw Exception( result, "vk::Device::getQueryPoolResults" );
       }
@@ -14506,7 +14506,7 @@ namespace vk
     {
       Buffer buffer;
       Result result = static_cast<Result>( vkCreateBuffer( m_device, reinterpret_cast<const VkBufferCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkBuffer*>( &buffer ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Device::createBuffer" );
       }
@@ -14522,7 +14522,7 @@ namespace vk
     {
       BufferView view;
       Result result = static_cast<Result>( vkCreateBufferView( m_device, reinterpret_cast<const VkBufferViewCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkBufferView*>( &view ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Device::createBufferView" );
       }
@@ -14538,7 +14538,7 @@ namespace vk
     {
       Image image;
       Result result = static_cast<Result>( vkCreateImage( m_device, reinterpret_cast<const VkImageCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkImage*>( &image ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Device::createImage" );
       }
@@ -14561,7 +14561,7 @@ namespace vk
     {
       ImageView view;
       Result result = static_cast<Result>( vkCreateImageView( m_device, reinterpret_cast<const VkImageViewCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkImageView*>( &view ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Device::createImageView" );
       }
@@ -14577,7 +14577,7 @@ namespace vk
     {
       ShaderModule shaderModule;
       Result result = static_cast<Result>( vkCreateShaderModule( m_device, reinterpret_cast<const VkShaderModuleCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkShaderModule*>( &shaderModule ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Device::createShaderModule" );
       }
@@ -14593,7 +14593,7 @@ namespace vk
     {
       PipelineCache pipelineCache;
       Result result = static_cast<Result>( vkCreatePipelineCache( m_device, reinterpret_cast<const VkPipelineCacheCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkPipelineCache*>( &pipelineCache ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Device::createPipelineCache" );
       }
@@ -14610,13 +14610,13 @@ namespace vk
       std::vector<uint8_t> data;
       size_t dataSize;
       Result result = static_cast<Result>( vkGetPipelineCacheData( m_device, static_cast<VkPipelineCache>( pipelineCache ), &dataSize, reinterpret_cast<void*>( data.data() ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Device::getPipelineCacheData" );
       }
       data.resize( dataSize );
       result = static_cast<Result>( vkGetPipelineCacheData( m_device, static_cast<VkPipelineCache>( pipelineCache ), &dataSize, reinterpret_cast<void*>( data.data() ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Device::getPipelineCacheData" );
       }
@@ -14626,7 +14626,7 @@ namespace vk
     void mergePipelineCaches( PipelineCache dstCache, std::vector<PipelineCache> const& srcCaches ) const
     {
       Result result = static_cast<Result>( vkMergePipelineCaches( m_device, static_cast<VkPipelineCache>( dstCache ), static_cast<uint32_t>( srcCaches.size() ), reinterpret_cast<const VkPipelineCache*>( srcCaches.data() ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Device::mergePipelineCaches" );
       }
@@ -14636,7 +14636,7 @@ namespace vk
     {
       std::vector<Pipeline> pipelines( createInfos.size() );
       Result result = static_cast<Result>( vkCreateGraphicsPipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), static_cast<uint32_t>( createInfos.size() ), reinterpret_cast<const VkGraphicsPipelineCreateInfo*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkPipeline*>( pipelines.data() ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Device::createGraphicsPipelines" );
       }
@@ -14647,7 +14647,7 @@ namespace vk
     {
       std::vector<Pipeline> pipelines( createInfos.size() );
       Result result = static_cast<Result>( vkCreateComputePipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), static_cast<uint32_t>( createInfos.size() ), reinterpret_cast<const VkComputePipelineCreateInfo*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkPipeline*>( pipelines.data() ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Device::createComputePipelines" );
       }
@@ -14663,7 +14663,7 @@ namespace vk
     {
       PipelineLayout pipelineLayout;
       Result result = static_cast<Result>( vkCreatePipelineLayout( m_device, reinterpret_cast<const VkPipelineLayoutCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkPipelineLayout*>( &pipelineLayout ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Device::createPipelineLayout" );
       }
@@ -14679,7 +14679,7 @@ namespace vk
     {
       Sampler sampler;
       Result result = static_cast<Result>( vkCreateSampler( m_device, reinterpret_cast<const VkSamplerCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkSampler*>( &sampler ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Device::createSampler" );
       }
@@ -14695,7 +14695,7 @@ namespace vk
     {
       DescriptorSetLayout setLayout;
       Result result = static_cast<Result>( vkCreateDescriptorSetLayout( m_device, reinterpret_cast<const VkDescriptorSetLayoutCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkDescriptorSetLayout*>( &setLayout ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Device::createDescriptorSetLayout" );
       }
@@ -14711,7 +14711,7 @@ namespace vk
     {
       DescriptorPool descriptorPool;
       Result result = static_cast<Result>( vkCreateDescriptorPool( m_device, reinterpret_cast<const VkDescriptorPoolCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkDescriptorPool*>( &descriptorPool ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Device::createDescriptorPool" );
       }
@@ -14726,7 +14726,7 @@ namespace vk
     void resetDescriptorPool( DescriptorPool descriptorPool, DescriptorPoolResetFlags flags ) const
     {
       Result result = static_cast<Result>( vkResetDescriptorPool( m_device, static_cast<VkDescriptorPool>( descriptorPool ), static_cast<VkDescriptorPoolResetFlags>( flags ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Device::resetDescriptorPool" );
       }
@@ -14736,7 +14736,7 @@ namespace vk
     {
       std::vector<DescriptorSet> descriptorSets( allocateInfo.descriptorSetCount() );
       Result result = static_cast<Result>( vkAllocateDescriptorSets( m_device, reinterpret_cast<const VkDescriptorSetAllocateInfo*>( &allocateInfo ), reinterpret_cast<VkDescriptorSet*>( descriptorSets.data() ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Device::allocateDescriptorSets" );
       }
@@ -14746,7 +14746,7 @@ namespace vk
     void freeDescriptorSets( DescriptorPool descriptorPool, std::vector<DescriptorSet> const& descriptorSets ) const
     {
       Result result = static_cast<Result>( vkFreeDescriptorSets( m_device, static_cast<VkDescriptorPool>( descriptorPool ), static_cast<uint32_t>( descriptorSets.size() ), reinterpret_cast<const VkDescriptorSet*>( descriptorSets.data() ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Device::freeDescriptorSets" );
       }
@@ -14761,7 +14761,7 @@ namespace vk
     {
       Framebuffer framebuffer;
       Result result = static_cast<Result>( vkCreateFramebuffer( m_device, reinterpret_cast<const VkFramebufferCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkFramebuffer*>( &framebuffer ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Device::createFramebuffer" );
       }
@@ -14777,7 +14777,7 @@ namespace vk
     {
       RenderPass renderPass;
       Result result = static_cast<Result>( vkCreateRenderPass( m_device, reinterpret_cast<const VkRenderPassCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkRenderPass*>( &renderPass ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Device::createRenderPass" );
       }
@@ -14800,7 +14800,7 @@ namespace vk
     {
       CommandPool commandPool;
       Result result = static_cast<Result>( vkCreateCommandPool( m_device, reinterpret_cast<const VkCommandPoolCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkCommandPool*>( &commandPool ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Device::createCommandPool" );
       }
@@ -14815,7 +14815,7 @@ namespace vk
     void resetCommandPool( CommandPool commandPool, CommandPoolResetFlags flags ) const
     {
       Result result = static_cast<Result>( vkResetCommandPool( m_device, static_cast<VkCommandPool>( commandPool ), static_cast<VkCommandPoolResetFlags>( flags ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Device::resetCommandPool" );
       }
@@ -14825,7 +14825,7 @@ namespace vk
     {
       std::vector<CommandBuffer> commandBuffers( allocateInfo.commandBufferCount() );
       Result result = static_cast<Result>( vkAllocateCommandBuffers( m_device, reinterpret_cast<const VkCommandBufferAllocateInfo*>( &allocateInfo ), reinterpret_cast<VkCommandBuffer*>( commandBuffers.data() ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Device::allocateCommandBuffers" );
       }
@@ -14841,7 +14841,7 @@ namespace vk
     {
       std::vector<SwapchainKHR> swapchains( createInfos.size() );
       Result result = static_cast<Result>( vkCreateSharedSwapchainsKHR( m_device, static_cast<uint32_t>( createInfos.size() ), reinterpret_cast<const VkSwapchainCreateInfoKHR*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkSwapchainKHR*>( swapchains.data() ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Device::createSharedSwapchainsKHR" );
       }
@@ -14852,7 +14852,7 @@ namespace vk
     {
       SwapchainKHR swapchain;
       Result result = static_cast<Result>( vkCreateSwapchainKHR( m_device, reinterpret_cast<const VkSwapchainCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkSwapchainKHR*>( &swapchain ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Device::createSwapchainKHR" );
       }
@@ -14868,13 +14868,13 @@ namespace vk
     {
       uint32_t swapchainImageCount;
       Result result = static_cast<Result>( vkGetSwapchainImagesKHR( m_device, static_cast<VkSwapchainKHR>( swapchain ), &swapchainImageCount, reinterpret_cast<VkImage*>( swapchainImages.data() ) ) );
-      if ( ( result != Result::eVkSuccess ) && ( result != Result::eVkIncomplete ) )
+      if ( ( result != Result::eSuccess ) && ( result != Result::eIncomplete ) )
       {
         throw Exception( result, "vk::Device::getSwapchainImagesKHR" );
       }
       swapchainImages.resize( swapchainImageCount );
       result = static_cast<Result>( vkGetSwapchainImagesKHR( m_device, static_cast<VkSwapchainKHR>( swapchain ), &swapchainImageCount, reinterpret_cast<VkImage*>( swapchainImages.data() ) ) );
-      if ( ( result != Result::eVkSuccess ) && ( result != Result::eVkIncomplete ) )
+      if ( ( result != Result::eSuccess ) && ( result != Result::eIncomplete ) )
       {
         throw Exception( result, "vk::Device::getSwapchainImagesKHR" );
       }
@@ -14884,7 +14884,7 @@ namespace vk
     Result acquireNextImageKHR( SwapchainKHR swapchain, uint64_t timeout, Semaphore semaphore, Fence fence, uint32_t& imageIndex ) const
     {
       Result result = static_cast<Result>( vkAcquireNextImageKHR( m_device, static_cast<VkSwapchainKHR>( swapchain ), timeout, static_cast<VkSemaphore>( semaphore ), static_cast<VkFence>( fence ), &imageIndex ) );
-      if ( ( result != Result::eVkSuccess ) && ( result != Result::eVkSuboptimalKhr ) )
+      if ( ( result != Result::eSuccess ) && ( result != Result::eSuboptimalKHR ) )
       {
         throw Exception( result, "vk::Device::acquireNextImageKHR" );
       }
@@ -14952,7 +14952,7 @@ namespace vk
     {
       ImageFormatProperties imageFormatProperties;
       Result result = static_cast<Result>( vkGetPhysicalDeviceImageFormatProperties( m_physicalDevice, static_cast<VkFormat>( format ), static_cast<VkImageType>( type ), static_cast<VkImageTiling>( tiling ), static_cast<VkImageUsageFlags>( usage ), static_cast<VkImageCreateFlags>( flags ), reinterpret_cast<VkImageFormatProperties*>( &imageFormatProperties ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::PhysicalDevice::getImageFormatProperties" );
       }
@@ -14963,7 +14963,7 @@ namespace vk
     {
       Device device;
       Result result = static_cast<Result>( vkCreateDevice( m_physicalDevice, reinterpret_cast<const VkDeviceCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkDevice*>( &device ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::PhysicalDevice::createDevice" );
       }
@@ -14974,13 +14974,13 @@ namespace vk
     {
       uint32_t propertyCount;
       Result result = static_cast<Result>( vkEnumerateDeviceLayerProperties( m_physicalDevice, &propertyCount, reinterpret_cast<VkLayerProperties*>( properties.data() ) ) );
-      if ( ( result != Result::eVkSuccess ) && ( result != Result::eVkIncomplete ) )
+      if ( ( result != Result::eSuccess ) && ( result != Result::eIncomplete ) )
       {
         throw Exception( result, "vk::PhysicalDevice::enumerateDeviceLayerProperties" );
       }
       properties.resize( propertyCount );
       result = static_cast<Result>( vkEnumerateDeviceLayerProperties( m_physicalDevice, &propertyCount, reinterpret_cast<VkLayerProperties*>( properties.data() ) ) );
-      if ( ( result != Result::eVkSuccess ) && ( result != Result::eVkIncomplete ) )
+      if ( ( result != Result::eSuccess ) && ( result != Result::eIncomplete ) )
       {
         throw Exception( result, "vk::PhysicalDevice::enumerateDeviceLayerProperties" );
       }
@@ -14991,13 +14991,13 @@ namespace vk
     {
       uint32_t propertyCount;
       Result result = static_cast<Result>( vkEnumerateDeviceExtensionProperties( m_physicalDevice, layerName.data(), &propertyCount, reinterpret_cast<VkExtensionProperties*>( properties.data() ) ) );
-      if ( ( result != Result::eVkSuccess ) && ( result != Result::eVkIncomplete ) )
+      if ( ( result != Result::eSuccess ) && ( result != Result::eIncomplete ) )
       {
         throw Exception( result, "vk::PhysicalDevice::enumerateDeviceExtensionProperties" );
       }
       properties.resize( propertyCount );
       result = static_cast<Result>( vkEnumerateDeviceExtensionProperties( m_physicalDevice, layerName.data(), &propertyCount, reinterpret_cast<VkExtensionProperties*>( properties.data() ) ) );
-      if ( ( result != Result::eVkSuccess ) && ( result != Result::eVkIncomplete ) )
+      if ( ( result != Result::eSuccess ) && ( result != Result::eIncomplete ) )
       {
         throw Exception( result, "vk::PhysicalDevice::enumerateDeviceExtensionProperties" );
       }
@@ -15018,13 +15018,13 @@ namespace vk
     {
       uint32_t propertyCount;
       Result result = static_cast<Result>( vkGetPhysicalDeviceDisplayPropertiesKHR( m_physicalDevice, &propertyCount, reinterpret_cast<VkDisplayPropertiesKHR*>( properties.data() ) ) );
-      if ( ( result != Result::eVkSuccess ) && ( result != Result::eVkIncomplete ) )
+      if ( ( result != Result::eSuccess ) && ( result != Result::eIncomplete ) )
       {
         throw Exception( result, "vk::PhysicalDevice::getDisplayPropertiesKHR" );
       }
       properties.resize( propertyCount );
       result = static_cast<Result>( vkGetPhysicalDeviceDisplayPropertiesKHR( m_physicalDevice, &propertyCount, reinterpret_cast<VkDisplayPropertiesKHR*>( properties.data() ) ) );
-      if ( ( result != Result::eVkSuccess ) && ( result != Result::eVkIncomplete ) )
+      if ( ( result != Result::eSuccess ) && ( result != Result::eIncomplete ) )
       {
         throw Exception( result, "vk::PhysicalDevice::getDisplayPropertiesKHR" );
       }
@@ -15035,13 +15035,13 @@ namespace vk
     {
       uint32_t propertyCount;
       Result result = static_cast<Result>( vkGetPhysicalDeviceDisplayPlanePropertiesKHR( m_physicalDevice, &propertyCount, reinterpret_cast<VkDisplayPlanePropertiesKHR*>( properties.data() ) ) );
-      if ( ( result != Result::eVkSuccess ) && ( result != Result::eVkIncomplete ) )
+      if ( ( result != Result::eSuccess ) && ( result != Result::eIncomplete ) )
       {
         throw Exception( result, "vk::PhysicalDevice::getDisplayPlanePropertiesKHR" );
       }
       properties.resize( propertyCount );
       result = static_cast<Result>( vkGetPhysicalDeviceDisplayPlanePropertiesKHR( m_physicalDevice, &propertyCount, reinterpret_cast<VkDisplayPlanePropertiesKHR*>( properties.data() ) ) );
-      if ( ( result != Result::eVkSuccess ) && ( result != Result::eVkIncomplete ) )
+      if ( ( result != Result::eSuccess ) && ( result != Result::eIncomplete ) )
       {
         throw Exception( result, "vk::PhysicalDevice::getDisplayPlanePropertiesKHR" );
       }
@@ -15052,13 +15052,13 @@ namespace vk
     {
       uint32_t displayCount;
       Result result = static_cast<Result>( vkGetDisplayPlaneSupportedDisplaysKHR( m_physicalDevice, planeIndex, &displayCount, reinterpret_cast<VkDisplayKHR*>( displays.data() ) ) );
-      if ( ( result != Result::eVkSuccess ) && ( result != Result::eVkIncomplete ) )
+      if ( ( result != Result::eSuccess ) && ( result != Result::eIncomplete ) )
       {
         throw Exception( result, "vk::PhysicalDevice::getDisplayPlaneSupportedDisplaysKHR" );
       }
       displays.resize( displayCount );
       result = static_cast<Result>( vkGetDisplayPlaneSupportedDisplaysKHR( m_physicalDevice, planeIndex, &displayCount, reinterpret_cast<VkDisplayKHR*>( displays.data() ) ) );
-      if ( ( result != Result::eVkSuccess ) && ( result != Result::eVkIncomplete ) )
+      if ( ( result != Result::eSuccess ) && ( result != Result::eIncomplete ) )
       {
         throw Exception( result, "vk::PhysicalDevice::getDisplayPlaneSupportedDisplaysKHR" );
       }
@@ -15069,13 +15069,13 @@ namespace vk
     {
       uint32_t propertyCount;
       Result result = static_cast<Result>( vkGetDisplayModePropertiesKHR( m_physicalDevice, static_cast<VkDisplayKHR>( display ), &propertyCount, reinterpret_cast<VkDisplayModePropertiesKHR*>( properties.data() ) ) );
-      if ( ( result != Result::eVkSuccess ) && ( result != Result::eVkIncomplete ) )
+      if ( ( result != Result::eSuccess ) && ( result != Result::eIncomplete ) )
       {
         throw Exception( result, "vk::PhysicalDevice::getDisplayModePropertiesKHR" );
       }
       properties.resize( propertyCount );
       result = static_cast<Result>( vkGetDisplayModePropertiesKHR( m_physicalDevice, static_cast<VkDisplayKHR>( display ), &propertyCount, reinterpret_cast<VkDisplayModePropertiesKHR*>( properties.data() ) ) );
-      if ( ( result != Result::eVkSuccess ) && ( result != Result::eVkIncomplete ) )
+      if ( ( result != Result::eSuccess ) && ( result != Result::eIncomplete ) )
       {
         throw Exception( result, "vk::PhysicalDevice::getDisplayModePropertiesKHR" );
       }
@@ -15086,7 +15086,7 @@ namespace vk
     {
       DisplayModeKHR mode;
       Result result = static_cast<Result>( vkCreateDisplayModeKHR( m_physicalDevice, static_cast<VkDisplayKHR>( display ), reinterpret_cast<const VkDisplayModeCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkDisplayModeKHR*>( &mode ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::PhysicalDevice::createDisplayModeKHR" );
       }
@@ -15097,7 +15097,7 @@ namespace vk
     {
       DisplayPlaneCapabilitiesKHR capabilities;
       Result result = static_cast<Result>( vkGetDisplayPlaneCapabilitiesKHR( m_physicalDevice, static_cast<VkDisplayModeKHR>( mode ), planeIndex, reinterpret_cast<VkDisplayPlaneCapabilitiesKHR*>( &capabilities ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::PhysicalDevice::getDisplayPlaneCapabilitiesKHR" );
       }
@@ -15115,7 +15115,7 @@ namespace vk
     {
       Bool32 supported;
       Result result = static_cast<Result>( vkGetPhysicalDeviceSurfaceSupportKHR( m_physicalDevice, queueFamilyIndex, static_cast<VkSurfaceKHR>( surface ), &supported ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::PhysicalDevice::getSurfaceSupportKHR" );
       }
@@ -15125,7 +15125,7 @@ namespace vk
     Result getSurfaceCapabilitiesKHR( SurfaceKHR surface, SurfaceCapabilitiesKHR& surfaceCapabilities ) const
     {
       Result result = static_cast<Result>( vkGetPhysicalDeviceSurfaceCapabilitiesKHR( m_physicalDevice, static_cast<VkSurfaceKHR>( surface ), reinterpret_cast<VkSurfaceCapabilitiesKHR*>( &surfaceCapabilities ) ) );
-      if ( ( result != Result::eVkSuccess ) && ( result != Result::eVkIncomplete ) )
+      if ( ( result != Result::eSuccess ) && ( result != Result::eIncomplete ) )
       {
         throw Exception( result, "vk::PhysicalDevice::getSurfaceCapabilitiesKHR" );
       }
@@ -15136,13 +15136,13 @@ namespace vk
     {
       uint32_t surfaceFormatCount;
       Result result = static_cast<Result>( vkGetPhysicalDeviceSurfaceFormatsKHR( m_physicalDevice, static_cast<VkSurfaceKHR>( surface ), &surfaceFormatCount, reinterpret_cast<VkSurfaceFormatKHR*>( surfaceFormats.data() ) ) );
-      if ( ( result != Result::eVkSuccess ) && ( result != Result::eVkIncomplete ) )
+      if ( ( result != Result::eSuccess ) && ( result != Result::eIncomplete ) )
       {
         throw Exception( result, "vk::PhysicalDevice::getSurfaceFormatsKHR" );
       }
       surfaceFormats.resize( surfaceFormatCount );
       result = static_cast<Result>( vkGetPhysicalDeviceSurfaceFormatsKHR( m_physicalDevice, static_cast<VkSurfaceKHR>( surface ), &surfaceFormatCount, reinterpret_cast<VkSurfaceFormatKHR*>( surfaceFormats.data() ) ) );
-      if ( ( result != Result::eVkSuccess ) && ( result != Result::eVkIncomplete ) )
+      if ( ( result != Result::eSuccess ) && ( result != Result::eIncomplete ) )
       {
         throw Exception( result, "vk::PhysicalDevice::getSurfaceFormatsKHR" );
       }
@@ -15153,13 +15153,13 @@ namespace vk
     {
       uint32_t presentModeCount;
       Result result = static_cast<Result>( vkGetPhysicalDeviceSurfacePresentModesKHR( m_physicalDevice, static_cast<VkSurfaceKHR>( surface ), &presentModeCount, reinterpret_cast<VkPresentModeKHR*>( presentModes.data() ) ) );
-      if ( ( result != Result::eVkSuccess ) && ( result != Result::eVkIncomplete ) )
+      if ( ( result != Result::eSuccess ) && ( result != Result::eIncomplete ) )
       {
         throw Exception( result, "vk::PhysicalDevice::getSurfacePresentModesKHR" );
       }
       presentModes.resize( presentModeCount );
       result = static_cast<Result>( vkGetPhysicalDeviceSurfacePresentModesKHR( m_physicalDevice, static_cast<VkSurfaceKHR>( surface ), &presentModeCount, reinterpret_cast<VkPresentModeKHR*>( presentModes.data() ) ) );
-      if ( ( result != Result::eVkSuccess ) && ( result != Result::eVkIncomplete ) )
+      if ( ( result != Result::eSuccess ) && ( result != Result::eIncomplete ) )
       {
         throw Exception( result, "vk::PhysicalDevice::getSurfacePresentModesKHR" );
       }
@@ -15300,35 +15300,35 @@ namespace vk
 
   enum class DebugReportObjectTypeEXT
   {
-    eVkDebugReportObjectTypeUnknownExt = VK_DEBUG_REPORT_OBJECT_TYPE_UNKNOWN_EXT,
-    eVkDebugReportObjectTypeInstanceExt = VK_DEBUG_REPORT_OBJECT_TYPE_INSTANCE_EXT,
-    eVkDebugReportObjectTypePhysicalDeviceExt = VK_DEBUG_REPORT_OBJECT_TYPE_PHYSICAL_DEVICE_EXT,
-    eVkDebugReportObjectTypeDeviceExt = VK_DEBUG_REPORT_OBJECT_TYPE_DEVICE_EXT,
-    eVkDebugReportObjectTypeQueueExt = VK_DEBUG_REPORT_OBJECT_TYPE_QUEUE_EXT,
-    eVkDebugReportObjectTypeSemaphoreExt = VK_DEBUG_REPORT_OBJECT_TYPE_SEMAPHORE_EXT,
-    eVkDebugReportObjectTypeCommandBufferExt = VK_DEBUG_REPORT_OBJECT_TYPE_COMMAND_BUFFER_EXT,
-    eVkDebugReportObjectTypeFenceExt = VK_DEBUG_REPORT_OBJECT_TYPE_FENCE_EXT,
-    eVkDebugReportObjectTypeDeviceMemoryExt = VK_DEBUG_REPORT_OBJECT_TYPE_DEVICE_MEMORY_EXT,
-    eVkDebugReportObjectTypeBufferExt = VK_DEBUG_REPORT_OBJECT_TYPE_BUFFER_EXT,
-    eVkDebugReportObjectTypeImageExt = VK_DEBUG_REPORT_OBJECT_TYPE_IMAGE_EXT,
-    eVkDebugReportObjectTypeEventExt = VK_DEBUG_REPORT_OBJECT_TYPE_EVENT_EXT,
-    eVkDebugReportObjectTypeQueryPoolExt = VK_DEBUG_REPORT_OBJECT_TYPE_QUERY_POOL_EXT,
-    eVkDebugReportObjectTypeBufferViewExt = VK_DEBUG_REPORT_OBJECT_TYPE_BUFFER_VIEW_EXT,
-    eVkDebugReportObjectTypeImageViewExt = VK_DEBUG_REPORT_OBJECT_TYPE_IMAGE_VIEW_EXT,
-    eVkDebugReportObjectTypeShaderModuleExt = VK_DEBUG_REPORT_OBJECT_TYPE_SHADER_MODULE_EXT,
-    eVkDebugReportObjectTypePipelineCacheExt = VK_DEBUG_REPORT_OBJECT_TYPE_PIPELINE_CACHE_EXT,
-    eVkDebugReportObjectTypePipelineLayoutExt = VK_DEBUG_REPORT_OBJECT_TYPE_PIPELINE_LAYOUT_EXT,
-    eVkDebugReportObjectTypeRenderPassExt = VK_DEBUG_REPORT_OBJECT_TYPE_RENDER_PASS_EXT,
-    eVkDebugReportObjectTypePipelineExt = VK_DEBUG_REPORT_OBJECT_TYPE_PIPELINE_EXT,
-    eVkDebugReportObjectTypeDescriptorSetLayoutExt = VK_DEBUG_REPORT_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT_EXT,
-    eVkDebugReportObjectTypeSamplerExt = VK_DEBUG_REPORT_OBJECT_TYPE_SAMPLER_EXT,
-    eVkDebugReportObjectTypeDescriptorPoolExt = VK_DEBUG_REPORT_OBJECT_TYPE_DESCRIPTOR_POOL_EXT,
-    eVkDebugReportObjectTypeDescriptorSetExt = VK_DEBUG_REPORT_OBJECT_TYPE_DESCRIPTOR_SET_EXT,
-    eVkDebugReportObjectTypeFramebufferExt = VK_DEBUG_REPORT_OBJECT_TYPE_FRAMEBUFFER_EXT,
-    eVkDebugReportObjectTypeCommandPoolExt = VK_DEBUG_REPORT_OBJECT_TYPE_COMMAND_POOL_EXT,
-    eVkDebugReportObjectTypeSurfaceKhrExt = VK_DEBUG_REPORT_OBJECT_TYPE_SURFACE_KHR_EXT,
-    eVkDebugReportObjectTypeSwapchainKhrExt = VK_DEBUG_REPORT_OBJECT_TYPE_SWAPCHAIN_KHR_EXT,
-    eVkDebugReportObjectTypeDebugReportExt = VK_DEBUG_REPORT_OBJECT_TYPE_DEBUG_REPORT_EXT
+    eUnknownEXT = VK_DEBUG_REPORT_OBJECT_TYPE_UNKNOWN_EXT,
+    eInstanceEXT = VK_DEBUG_REPORT_OBJECT_TYPE_INSTANCE_EXT,
+    ePhysicalDeviceEXT = VK_DEBUG_REPORT_OBJECT_TYPE_PHYSICAL_DEVICE_EXT,
+    eDeviceEXT = VK_DEBUG_REPORT_OBJECT_TYPE_DEVICE_EXT,
+    eQueueEXT = VK_DEBUG_REPORT_OBJECT_TYPE_QUEUE_EXT,
+    eSemaphoreEXT = VK_DEBUG_REPORT_OBJECT_TYPE_SEMAPHORE_EXT,
+    eCommandBufferEXT = VK_DEBUG_REPORT_OBJECT_TYPE_COMMAND_BUFFER_EXT,
+    eFenceEXT = VK_DEBUG_REPORT_OBJECT_TYPE_FENCE_EXT,
+    eDeviceMemoryEXT = VK_DEBUG_REPORT_OBJECT_TYPE_DEVICE_MEMORY_EXT,
+    eBufferEXT = VK_DEBUG_REPORT_OBJECT_TYPE_BUFFER_EXT,
+    eImageEXT = VK_DEBUG_REPORT_OBJECT_TYPE_IMAGE_EXT,
+    eEventEXT = VK_DEBUG_REPORT_OBJECT_TYPE_EVENT_EXT,
+    eQueryPoolEXT = VK_DEBUG_REPORT_OBJECT_TYPE_QUERY_POOL_EXT,
+    eBufferViewEXT = VK_DEBUG_REPORT_OBJECT_TYPE_BUFFER_VIEW_EXT,
+    eImageViewEXT = VK_DEBUG_REPORT_OBJECT_TYPE_IMAGE_VIEW_EXT,
+    eShaderModuleEXT = VK_DEBUG_REPORT_OBJECT_TYPE_SHADER_MODULE_EXT,
+    ePipelineCacheEXT = VK_DEBUG_REPORT_OBJECT_TYPE_PIPELINE_CACHE_EXT,
+    ePipelineLayoutEXT = VK_DEBUG_REPORT_OBJECT_TYPE_PIPELINE_LAYOUT_EXT,
+    eRenderPassEXT = VK_DEBUG_REPORT_OBJECT_TYPE_RENDER_PASS_EXT,
+    ePipelineEXT = VK_DEBUG_REPORT_OBJECT_TYPE_PIPELINE_EXT,
+    eDescriptorSetLayoutEXT = VK_DEBUG_REPORT_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT_EXT,
+    eSamplerEXT = VK_DEBUG_REPORT_OBJECT_TYPE_SAMPLER_EXT,
+    eDescriptorPoolEXT = VK_DEBUG_REPORT_OBJECT_TYPE_DESCRIPTOR_POOL_EXT,
+    eDescriptorSetEXT = VK_DEBUG_REPORT_OBJECT_TYPE_DESCRIPTOR_SET_EXT,
+    eFramebufferEXT = VK_DEBUG_REPORT_OBJECT_TYPE_FRAMEBUFFER_EXT,
+    eCommandPoolEXT = VK_DEBUG_REPORT_OBJECT_TYPE_COMMAND_POOL_EXT,
+    eSurfaceKhrEXT = VK_DEBUG_REPORT_OBJECT_TYPE_SURFACE_KHR_EXT,
+    eSwapchainKhrEXT = VK_DEBUG_REPORT_OBJECT_TYPE_SWAPCHAIN_KHR_EXT,
+    eDebugReportEXT = VK_DEBUG_REPORT_OBJECT_TYPE_DEBUG_REPORT_EXT
   };
 
   class Instance
@@ -15349,13 +15349,13 @@ namespace vk
       std::vector<PhysicalDevice> physicalDevices;
       uint32_t physicalDeviceCount;
       Result result = static_cast<Result>( vkEnumeratePhysicalDevices( m_instance, &physicalDeviceCount, reinterpret_cast<VkPhysicalDevice*>( physicalDevices.data() ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Instance::enumeratePhysicalDevices" );
       }
       physicalDevices.resize( physicalDeviceCount );
       result = static_cast<Result>( vkEnumeratePhysicalDevices( m_instance, &physicalDeviceCount, reinterpret_cast<VkPhysicalDevice*>( physicalDevices.data() ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Instance::enumeratePhysicalDevices" );
       }
@@ -15372,7 +15372,7 @@ namespace vk
     {
       SurfaceKHR surface;
       Result result = static_cast<Result>( vkCreateAndroidSurfaceKHR( m_instance, reinterpret_cast<const VkAndroidSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Instance::createAndroidSurfaceKHR" );
       }
@@ -15384,7 +15384,7 @@ namespace vk
     {
       SurfaceKHR surface;
       Result result = static_cast<Result>( vkCreateDisplayPlaneSurfaceKHR( m_instance, reinterpret_cast<const VkDisplaySurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Instance::createDisplayPlaneSurfaceKHR" );
       }
@@ -15396,7 +15396,7 @@ namespace vk
     {
       SurfaceKHR surface;
       Result result = static_cast<Result>( vkCreateMirSurfaceKHR( m_instance, reinterpret_cast<const VkMirSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Instance::createMirSurfaceKHR" );
       }
@@ -15414,7 +15414,7 @@ namespace vk
     {
       SurfaceKHR surface;
       Result result = static_cast<Result>( vkCreateWaylandSurfaceKHR( m_instance, reinterpret_cast<const VkWaylandSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Instance::createWaylandSurfaceKHR" );
       }
@@ -15427,7 +15427,7 @@ namespace vk
     {
       SurfaceKHR surface;
       Result result = static_cast<Result>( vkCreateWin32SurfaceKHR( m_instance, reinterpret_cast<const VkWin32SurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Instance::createWin32SurfaceKHR" );
       }
@@ -15440,7 +15440,7 @@ namespace vk
     {
       SurfaceKHR surface;
       Result result = static_cast<Result>( vkCreateXlibSurfaceKHR( m_instance, reinterpret_cast<const VkXlibSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Instance::createXlibSurfaceKHR" );
       }
@@ -15453,7 +15453,7 @@ namespace vk
     {
       SurfaceKHR surface;
       Result result = static_cast<Result>( vkCreateXcbSurfaceKHR( m_instance, reinterpret_cast<const VkXcbSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Instance::createXcbSurfaceKHR" );
       }
@@ -15465,7 +15465,7 @@ namespace vk
     {
       DebugReportCallbackEXT callback;
       Result result = static_cast<Result>( vkCreateDebugReportCallbackEXT( m_instance, reinterpret_cast<const VkDebugReportCallbackCreateInfoEXT*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkDebugReportCallbackEXT*>( &callback ) ) );
-      if ( result != Result::eVkSuccess )
+      if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Instance::createDebugReportCallbackEXT" );
       }
@@ -15495,8 +15495,8 @@ namespace vk
 
   enum class DebugReportErrorEXT
   {
-    eVkDebugReportErrorNoneExt = VK_DEBUG_REPORT_ERROR_NONE_EXT,
-    eVkDebugReportErrorCallbackRefExt = VK_DEBUG_REPORT_ERROR_CALLBACK_REF_EXT
+    eNoneEXT = VK_DEBUG_REPORT_ERROR_NONE_EXT,
+    eCallbackRefEXT = VK_DEBUG_REPORT_ERROR_CALLBACK_REF_EXT
   };
 
   inline Result createInstance( const InstanceCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, Instance* pInstance )
@@ -15509,7 +15509,7 @@ namespace vk
   {
     Instance instance;
     Result result = static_cast<Result>( vkCreateInstance( reinterpret_cast<const VkInstanceCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkInstance*>( &instance ) ) );
-    if ( result != Result::eVkSuccess )
+    if ( result != Result::eSuccess )
     {
       throw Exception( result, "vk::createInstance" );
     }
@@ -15599,13 +15599,13 @@ namespace vk
   {
     uint32_t propertyCount;
     Result result = static_cast<Result>( vkEnumerateInstanceLayerProperties( &propertyCount, reinterpret_cast<VkLayerProperties*>( properties.data() ) ) );
-    if ( ( result != Result::eVkSuccess ) && ( result != Result::eVkIncomplete ) )
+    if ( ( result != Result::eSuccess ) && ( result != Result::eIncomplete ) )
     {
       throw Exception( result, "vk::enumerateInstanceLayerProperties" );
     }
     properties.resize( propertyCount );
     result = static_cast<Result>( vkEnumerateInstanceLayerProperties( &propertyCount, reinterpret_cast<VkLayerProperties*>( properties.data() ) ) );
-    if ( ( result != Result::eVkSuccess ) && ( result != Result::eVkIncomplete ) )
+    if ( ( result != Result::eSuccess ) && ( result != Result::eIncomplete ) )
     {
       throw Exception( result, "vk::enumerateInstanceLayerProperties" );
     }
@@ -15623,13 +15623,13 @@ namespace vk
   {
     uint32_t propertyCount;
     Result result = static_cast<Result>( vkEnumerateInstanceExtensionProperties( layerName.data(), &propertyCount, reinterpret_cast<VkExtensionProperties*>( properties.data() ) ) );
-    if ( ( result != Result::eVkSuccess ) && ( result != Result::eVkIncomplete ) )
+    if ( ( result != Result::eSuccess ) && ( result != Result::eIncomplete ) )
     {
       throw Exception( result, "vk::enumerateInstanceExtensionProperties" );
     }
     properties.resize( propertyCount );
     result = static_cast<Result>( vkEnumerateInstanceExtensionProperties( layerName.data(), &propertyCount, reinterpret_cast<VkExtensionProperties*>( properties.data() ) ) );
-    if ( ( result != Result::eVkSuccess ) && ( result != Result::eVkIncomplete ) )
+    if ( ( result != Result::eSuccess ) && ( result != Result::eIncomplete ) )
     {
       throw Exception( result, "vk::enumerateInstanceExtensionProperties" );
     }
@@ -17064,7 +17064,7 @@ namespace vk
     case ImageLayout::eTransferSrcOptimal: return "TransferSrcOptimal";
     case ImageLayout::eTransferDstOptimal: return "TransferDstOptimal";
     case ImageLayout::ePreinitialized: return "Preinitialized";
-    case ImageLayout::ePresentSrcKhr: return "PresentSrcKhr";
+    case ImageLayout::ePresentSrcKHR: return "PresentSrcKHR";
     default: return "unknown";
     }
   }
@@ -17717,18 +17717,18 @@ namespace vk
     case StructureType::eMemoryBarrier: return "MemoryBarrier";
     case StructureType::eLoaderInstanceCreateInfo: return "LoaderInstanceCreateInfo";
     case StructureType::eLoaderDeviceCreateInfo: return "LoaderDeviceCreateInfo";
-    case StructureType::eSwapchainCreateInfoKhr: return "SwapchainCreateInfoKhr";
-    case StructureType::ePresentInfoKhr: return "PresentInfoKhr";
-    case StructureType::eDisplayModeCreateInfoKhr: return "DisplayModeCreateInfoKhr";
-    case StructureType::eDisplaySurfaceCreateInfoKhr: return "DisplaySurfaceCreateInfoKhr";
-    case StructureType::eDisplayPresentInfoKhr: return "DisplayPresentInfoKhr";
-    case StructureType::eXlibSurfaceCreateInfoKhr: return "XlibSurfaceCreateInfoKhr";
-    case StructureType::eXcbSurfaceCreateInfoKhr: return "XcbSurfaceCreateInfoKhr";
-    case StructureType::eWaylandSurfaceCreateInfoKhr: return "WaylandSurfaceCreateInfoKhr";
-    case StructureType::eMirSurfaceCreateInfoKhr: return "MirSurfaceCreateInfoKhr";
-    case StructureType::eAndroidSurfaceCreateInfoKhr: return "AndroidSurfaceCreateInfoKhr";
-    case StructureType::eWin32SurfaceCreateInfoKhr: return "Win32SurfaceCreateInfoKhr";
-    case StructureType::eDebugReportCreateInfoExt: return "DebugReportCreateInfoExt";
+    case StructureType::eSwapchainCreateInfoKHR: return "SwapchainCreateInfoKHR";
+    case StructureType::ePresentInfoKHR: return "PresentInfoKHR";
+    case StructureType::eDisplayModeCreateInfoKHR: return "DisplayModeCreateInfoKHR";
+    case StructureType::eDisplaySurfaceCreateInfoKHR: return "DisplaySurfaceCreateInfoKHR";
+    case StructureType::eDisplayPresentInfoKHR: return "DisplayPresentInfoKHR";
+    case StructureType::eXlibSurfaceCreateInfoKHR: return "XlibSurfaceCreateInfoKHR";
+    case StructureType::eXcbSurfaceCreateInfoKHR: return "XcbSurfaceCreateInfoKHR";
+    case StructureType::eWaylandSurfaceCreateInfoKHR: return "WaylandSurfaceCreateInfoKHR";
+    case StructureType::eMirSurfaceCreateInfoKHR: return "MirSurfaceCreateInfoKHR";
+    case StructureType::eAndroidSurfaceCreateInfoKHR: return "AndroidSurfaceCreateInfoKHR";
+    case StructureType::eWin32SurfaceCreateInfoKHR: return "Win32SurfaceCreateInfoKHR";
+    case StructureType::eDebugReportCreateInfoEXT: return "DebugReportCreateInfoEXT";
     default: return "unknown";
     }
   }
@@ -17747,29 +17747,29 @@ namespace vk
   {
     switch (value)
     {
-    case Result::eVkSuccess: return "VkSuccess";
-    case Result::eVkNotReady: return "VkNotReady";
-    case Result::eVkTimeout: return "VkTimeout";
-    case Result::eVkEventSet: return "VkEventSet";
-    case Result::eVkEventReset: return "VkEventReset";
-    case Result::eVkIncomplete: return "VkIncomplete";
-    case Result::eVkErrorOutOfHostMemory: return "VkErrorOutOfHostMemory";
-    case Result::eVkErrorOutOfDeviceMemory: return "VkErrorOutOfDeviceMemory";
-    case Result::eVkErrorInitializationFailed: return "VkErrorInitializationFailed";
-    case Result::eVkErrorDeviceLost: return "VkErrorDeviceLost";
-    case Result::eVkErrorMemoryMapFailed: return "VkErrorMemoryMapFailed";
-    case Result::eVkErrorLayerNotPresent: return "VkErrorLayerNotPresent";
-    case Result::eVkErrorExtensionNotPresent: return "VkErrorExtensionNotPresent";
-    case Result::eVkErrorFeatureNotPresent: return "VkErrorFeatureNotPresent";
-    case Result::eVkErrorIncompatibleDriver: return "VkErrorIncompatibleDriver";
-    case Result::eVkErrorTooManyObjects: return "VkErrorTooManyObjects";
-    case Result::eVkErrorFormatNotSupported: return "VkErrorFormatNotSupported";
-    case Result::eVkErrorSurfaceLostKhr: return "VkErrorSurfaceLostKhr";
-    case Result::eVkErrorNativeWindowInUseKhr: return "VkErrorNativeWindowInUseKhr";
-    case Result::eVkSuboptimalKhr: return "VkSuboptimalKhr";
-    case Result::eVkErrorOutOfDateKhr: return "VkErrorOutOfDateKhr";
-    case Result::eVkErrorIncompatibleDisplayKhr: return "VkErrorIncompatibleDisplayKhr";
-    case Result::eVkErrorValidationFailedExt: return "VkErrorValidationFailedExt";
+    case Result::eSuccess: return "Success";
+    case Result::eNotReady: return "NotReady";
+    case Result::eTimeout: return "Timeout";
+    case Result::eEventSet: return "EventSet";
+    case Result::eEventReset: return "EventReset";
+    case Result::eIncomplete: return "Incomplete";
+    case Result::eErrorOutOfHostMemory: return "ErrorOutOfHostMemory";
+    case Result::eErrorOutOfDeviceMemory: return "ErrorOutOfDeviceMemory";
+    case Result::eErrorInitializationFailed: return "ErrorInitializationFailed";
+    case Result::eErrorDeviceLost: return "ErrorDeviceLost";
+    case Result::eErrorMemoryMapFailed: return "ErrorMemoryMapFailed";
+    case Result::eErrorLayerNotPresent: return "ErrorLayerNotPresent";
+    case Result::eErrorExtensionNotPresent: return "ErrorExtensionNotPresent";
+    case Result::eErrorFeatureNotPresent: return "ErrorFeatureNotPresent";
+    case Result::eErrorIncompatibleDriver: return "ErrorIncompatibleDriver";
+    case Result::eErrorTooManyObjects: return "ErrorTooManyObjects";
+    case Result::eErrorFormatNotSupported: return "ErrorFormatNotSupported";
+    case Result::eErrorSurfaceLostKHR: return "ErrorSurfaceLostKHR";
+    case Result::eErrorNativeWindowInUseKHR: return "ErrorNativeWindowInUseKHR";
+    case Result::eSuboptimalKHR: return "SuboptimalKHR";
+    case Result::eErrorOutOfDateKHR: return "ErrorOutOfDateKHR";
+    case Result::eErrorIncompatibleDisplayKHR: return "ErrorIncompatibleDisplayKHR";
+    case Result::eErrorValidationFailedEXT: return "ErrorValidationFailedEXT";
     default: return "unknown";
     }
   }
@@ -18514,10 +18514,10 @@ namespace vk
   {
     switch (value)
     {
-    case PresentModeKHR::eVkPresentModeImmediateKhr: return "VkPresentModeImmediateKhr";
-    case PresentModeKHR::eVkPresentModeMailboxKhr: return "VkPresentModeMailboxKhr";
-    case PresentModeKHR::eVkPresentModeFifoKhr: return "VkPresentModeFifoKhr";
-    case PresentModeKHR::eVkPresentModeFifoRelaxedKhr: return "VkPresentModeFifoRelaxedKhr";
+    case PresentModeKHR::eImmediateKHR: return "ImmediateKHR";
+    case PresentModeKHR::eMailboxKHR: return "MailboxKHR";
+    case PresentModeKHR::eFifoKHR: return "FifoKHR";
+    case PresentModeKHR::eFifoRelaxedKHR: return "FifoRelaxedKHR";
     default: return "unknown";
     }
   }
@@ -18526,7 +18526,7 @@ namespace vk
   {
     switch (value)
     {
-    case ColorSpaceKHR::eVkColorspaceSrgbNonlinearKhr: return "VkColorspaceSrgbNonlinearKhr";
+    case ColorSpaceKHR::eVkColorspaceSrgbNonlinearKHR: return "VkColorspaceSrgbNonlinearKHR";
     default: return "unknown";
     }
   }
@@ -18639,35 +18639,35 @@ namespace vk
   {
     switch (value)
     {
-    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeUnknownExt: return "VkDebugReportObjectTypeUnknownExt";
-    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeInstanceExt: return "VkDebugReportObjectTypeInstanceExt";
-    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypePhysicalDeviceExt: return "VkDebugReportObjectTypePhysicalDeviceExt";
-    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeDeviceExt: return "VkDebugReportObjectTypeDeviceExt";
-    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeQueueExt: return "VkDebugReportObjectTypeQueueExt";
-    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeSemaphoreExt: return "VkDebugReportObjectTypeSemaphoreExt";
-    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeCommandBufferExt: return "VkDebugReportObjectTypeCommandBufferExt";
-    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeFenceExt: return "VkDebugReportObjectTypeFenceExt";
-    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeDeviceMemoryExt: return "VkDebugReportObjectTypeDeviceMemoryExt";
-    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeBufferExt: return "VkDebugReportObjectTypeBufferExt";
-    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeImageExt: return "VkDebugReportObjectTypeImageExt";
-    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeEventExt: return "VkDebugReportObjectTypeEventExt";
-    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeQueryPoolExt: return "VkDebugReportObjectTypeQueryPoolExt";
-    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeBufferViewExt: return "VkDebugReportObjectTypeBufferViewExt";
-    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeImageViewExt: return "VkDebugReportObjectTypeImageViewExt";
-    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeShaderModuleExt: return "VkDebugReportObjectTypeShaderModuleExt";
-    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypePipelineCacheExt: return "VkDebugReportObjectTypePipelineCacheExt";
-    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypePipelineLayoutExt: return "VkDebugReportObjectTypePipelineLayoutExt";
-    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeRenderPassExt: return "VkDebugReportObjectTypeRenderPassExt";
-    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypePipelineExt: return "VkDebugReportObjectTypePipelineExt";
-    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeDescriptorSetLayoutExt: return "VkDebugReportObjectTypeDescriptorSetLayoutExt";
-    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeSamplerExt: return "VkDebugReportObjectTypeSamplerExt";
-    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeDescriptorPoolExt: return "VkDebugReportObjectTypeDescriptorPoolExt";
-    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeDescriptorSetExt: return "VkDebugReportObjectTypeDescriptorSetExt";
-    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeFramebufferExt: return "VkDebugReportObjectTypeFramebufferExt";
-    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeCommandPoolExt: return "VkDebugReportObjectTypeCommandPoolExt";
-    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeSurfaceKhrExt: return "VkDebugReportObjectTypeSurfaceKhrExt";
-    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeSwapchainKhrExt: return "VkDebugReportObjectTypeSwapchainKhrExt";
-    case DebugReportObjectTypeEXT::eVkDebugReportObjectTypeDebugReportExt: return "VkDebugReportObjectTypeDebugReportExt";
+    case DebugReportObjectTypeEXT::eUnknownEXT: return "UnknownEXT";
+    case DebugReportObjectTypeEXT::eInstanceEXT: return "InstanceEXT";
+    case DebugReportObjectTypeEXT::ePhysicalDeviceEXT: return "PhysicalDeviceEXT";
+    case DebugReportObjectTypeEXT::eDeviceEXT: return "DeviceEXT";
+    case DebugReportObjectTypeEXT::eQueueEXT: return "QueueEXT";
+    case DebugReportObjectTypeEXT::eSemaphoreEXT: return "SemaphoreEXT";
+    case DebugReportObjectTypeEXT::eCommandBufferEXT: return "CommandBufferEXT";
+    case DebugReportObjectTypeEXT::eFenceEXT: return "FenceEXT";
+    case DebugReportObjectTypeEXT::eDeviceMemoryEXT: return "DeviceMemoryEXT";
+    case DebugReportObjectTypeEXT::eBufferEXT: return "BufferEXT";
+    case DebugReportObjectTypeEXT::eImageEXT: return "ImageEXT";
+    case DebugReportObjectTypeEXT::eEventEXT: return "EventEXT";
+    case DebugReportObjectTypeEXT::eQueryPoolEXT: return "QueryPoolEXT";
+    case DebugReportObjectTypeEXT::eBufferViewEXT: return "BufferViewEXT";
+    case DebugReportObjectTypeEXT::eImageViewEXT: return "ImageViewEXT";
+    case DebugReportObjectTypeEXT::eShaderModuleEXT: return "ShaderModuleEXT";
+    case DebugReportObjectTypeEXT::ePipelineCacheEXT: return "PipelineCacheEXT";
+    case DebugReportObjectTypeEXT::ePipelineLayoutEXT: return "PipelineLayoutEXT";
+    case DebugReportObjectTypeEXT::eRenderPassEXT: return "RenderPassEXT";
+    case DebugReportObjectTypeEXT::ePipelineEXT: return "PipelineEXT";
+    case DebugReportObjectTypeEXT::eDescriptorSetLayoutEXT: return "DescriptorSetLayoutEXT";
+    case DebugReportObjectTypeEXT::eSamplerEXT: return "SamplerEXT";
+    case DebugReportObjectTypeEXT::eDescriptorPoolEXT: return "DescriptorPoolEXT";
+    case DebugReportObjectTypeEXT::eDescriptorSetEXT: return "DescriptorSetEXT";
+    case DebugReportObjectTypeEXT::eFramebufferEXT: return "FramebufferEXT";
+    case DebugReportObjectTypeEXT::eCommandPoolEXT: return "CommandPoolEXT";
+    case DebugReportObjectTypeEXT::eSurfaceKhrEXT: return "SurfaceKhrEXT";
+    case DebugReportObjectTypeEXT::eSwapchainKhrEXT: return "SwapchainKhrEXT";
+    case DebugReportObjectTypeEXT::eDebugReportEXT: return "DebugReportEXT";
     default: return "unknown";
     }
   }
@@ -18676,8 +18676,8 @@ namespace vk
   {
     switch (value)
     {
-    case DebugReportErrorEXT::eVkDebugReportErrorNoneExt: return "VkDebugReportErrorNoneExt";
-    case DebugReportErrorEXT::eVkDebugReportErrorCallbackRefExt: return "VkDebugReportErrorCallbackRefExt";
+    case DebugReportErrorEXT::eNoneEXT: return "NoneEXT";
+    case DebugReportErrorEXT::eCallbackRefEXT: return "CallbackRefEXT";
     default: return "unknown";
     }
   }

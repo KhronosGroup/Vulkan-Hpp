@@ -154,12 +154,25 @@ Here are a few code examples:
 <pre>
 <code>
   try {
-    vk::Instance i = ...;
+    VkInstance nativeInstance = nullptr; // Fetch the instance from a favorite toolkit
+
+    // create a vkcpp handle from a native handle
+    vk::Instance i(nativeInstance);
+
+    // operator=(VkInstance const &) is also supported
+    i = nativeInstance;
+
+    // Get VkInstance from vk::Instance 
+    nativeInstance = i;
+
+    // Get an std::vector as result of an enumeration call.
     std::vector<vk::PhysicalDevice> physicalDevices = i.enumeratePhysicalDevices();
     vk::FormatProperties formatProperties = physicalDevices[0].getFormatProperties(vk::Format::eR8G8B8A8Unorm);
 
     vk::CommandBuffer commandBuffer = ...;
     vk::Buffer buffer = ...;
+
+    // Accept std::vector as source for updateBuffer
     commandBuffer.updateBuffer(buffer, 0, {some values}); // update buffer with std::vector
   }
   catch (vk::Exception e)

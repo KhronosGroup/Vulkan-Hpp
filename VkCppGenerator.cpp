@@ -235,7 +235,7 @@ struct EnumData
   std::vector<NameValue>  members;
   std::string             protect;
 
-  void addEnum(std::string const & name);
+  void addEnum(std::string const & name, std::string const& tag);
 };
 
 struct CommandData
@@ -297,9 +297,9 @@ void createDefaults( std::vector<DependencyData> const& dependencies, std::map<s
 std::string determineFunctionName(std::string const& name, CommandData const& commandData);
 std::string determineReturnType(CommandData const& commandData, size_t returnIndex, bool isVector = false);
 void enterProtect(std::ofstream &ofs, std::string const& protect);
-size_t findComplexIndex(CommandData const& commandData, std::map<size_t, size_t> const& vectorParameters);
-DependencyData const& findDependency(std::string const& name, std::vector<DependencyData> const& dependencies);
+std::string extractTag(std::string const& name);
 size_t findReturnIndex(CommandData const& commandData, std::map<size_t,size_t> const& vectorParameters);
+std::string findTag(std::string const& name, std::set<std::string> const& tags);
 size_t findTemplateIndex(CommandData const& commandData, std::map<size_t, size_t> const& vectorParameters);
 std::string generateEnumNameForFlags(std::string const& name);
 std::map<size_t, size_t> getVectorParameters(CommandData const& commandData);
@@ -309,13 +309,13 @@ void leaveProtect(std::ofstream &ofs, std::string const& protect);
 bool noDependencies(std::set<std::string> const& dependencies, std::map<std::string, std::string> & listedTypes);
 bool readCommandParam( tinyxml2::XMLElement * element, DependencyData & typeData, std::vector<MemberData> & arguments );
 std::map<std::string, CommandData>::iterator readCommandProto(tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string, CommandData> & commands);
-void readCommands( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,CommandData> & commands, std::map<std::string,HandleData> & handles );
-void readCommandsCommand(tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string, CommandData> & commands, std::map<std::string, HandleData> & handles);
-void readEnums( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,EnumData> & enums, std::set<std::string> & vkTypes );
-void readEnumsEnum( tinyxml2::XMLElement * element, EnumData & enumData );
-void readExtensionRequire(tinyxml2::XMLElement * element, std::string const& protect, std::map<std::string, CommandData> & commands, std::map<std::string, EnumData> & enums, std::map<std::string, FlagData> & flags, std::map<std::string, ScalarData> & scalars, std::map<std::string, StructData> & structs);
-void readExtensions( tinyxml2::XMLElement * element, std::map<std::string,CommandData> & commands, std::map<std::string,EnumData> & enums, std::map<std::string,FlagData> & flags, std::map<std::string,ScalarData> & scalars, std::map<std::string,StructData> & structs );
-void readExtensionsExtension(tinyxml2::XMLElement * element, std::map<std::string, CommandData> & commands, std::map<std::string, EnumData> & enums, std::map<std::string, FlagData> & flags, std::map<std::string, ScalarData> & scalars, std::map<std::string, StructData> & structs);
+void readCommands( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,CommandData> & commands, std::map<std::string,HandleData> & handles, std::set<std::string> const& tags );
+void readCommandsCommand(tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string, CommandData> & commands, std::map<std::string, HandleData> & handles, std::set<std::string> const& tags);
+void readEnums( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,EnumData> & enums, std::set<std::string> const& tags, std::set<std::string> & vkTypes );
+void readEnumsEnum( tinyxml2::XMLElement * element, EnumData & enumData, std::string const& tag );
+void readExtensionRequire(tinyxml2::XMLElement * element, std::string const& protect, std::string const& tag, std::map<std::string, CommandData> & commands, std::map<std::string, EnumData> & enums, std::map<std::string, FlagData> & flags, std::map<std::string, ScalarData> & scalars, std::map<std::string, StructData> & structs);
+void readExtensions( tinyxml2::XMLElement * element, std::map<std::string,CommandData> & commands, std::map<std::string,EnumData> & enums, std::map<std::string,FlagData> & flags, std::map<std::string,ScalarData> & scalars, std::map<std::string,StructData> & structs, std::set<std::string> const& tags );
+void readExtensionsExtension(tinyxml2::XMLElement * element, std::map<std::string, CommandData> & commands, std::map<std::string, EnumData> & enums, std::map<std::string, FlagData> & flags, std::map<std::string, ScalarData> & scalars, std::map<std::string, StructData> & structs, std::set<std::string> const& tags);
 void readTypeBasetype( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies );
 void readTypeBitmask( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,FlagData> & flags, std::map<std::string,ScalarData> & scalars, std::set<std::string> & vkTypes, std::map<std::string, EnumData> & enums );
 void readTypeDefine( tinyxml2::XMLElement * element, std::string & version );
@@ -325,10 +325,11 @@ void readTypeStruct( tinyxml2::XMLElement * element, std::list<DependencyData> &
 void readTypeStructMember( tinyxml2::XMLElement * element, std::vector<MemberData> & members, std::set<std::string> & dependencies );
 void readTypeUnion( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,StructData> & structs, std::set<std::string> & vkTypes );
 void readTypeUnionMember( tinyxml2::XMLElement * element, std::vector<MemberData> & members, std::set<std::string> & dependencies );
+void readTags(tinyxml2::XMLElement * element, std::set<std::string> & tags);
 void readTypes(tinyxml2::XMLElement * element, std::string & version, std::list<DependencyData> & dependencies, std::map<std::string, FlagData> & flags, std::map<std::string, ScalarData> & scalars, std::map<std::string, StructData> & structs, std::set<std::string> & vkTypes, std::map<std::string, HandleData> & handles, std::map<std::string, EnumData> & enums);
 void sortDependencies( std::list<DependencyData> & dependencies, std::vector<DependencyData> & sortedDependencies );
 std::string reduceName(std::string const& name);
-std::string strip(std::string const& value, std::string const& prefix);
+std::string strip(std::string const& value, std::string const& prefix, std::string const& tag = std::string());
 std::string stripCommand(std::string const& value);
 std::string toCamelCase(std::string const& value);
 std::string toUpperCase(std::string const& name);
@@ -357,18 +358,23 @@ void writeTypeUnion( std::ofstream & ofs, DependencyData const& dependencyData, 
 void writeTypes(std::ofstream & ofs, std::vector<DependencyData> const& dependencies, std::map<std::string, CommandData> const& commands, std::map<std::string, EnumData> const& enums, std::map<std::string, FlagData> const& flags, std::map<std::string, HandleData> const& handles, std::map<std::string, StructData> const& structs, std::map<std::string, std::string> const& defaultValues, std::set<std::string> const& vkTypes);
 void writeVersionCheck(std::ofstream & ofs, std::string const& version);
 
-void EnumData::addEnum(std::string const & name)
+void EnumData::addEnum(std::string const & name, std::string const& tag)
 {
+  assert(tag.empty() || (name.find(tag) != std::string::npos));
   members.push_back(NameValue());
-  members.back().name = "e" + toCamelCase(strip(name, prefix));
+  members.back().name = "e" + toCamelCase(strip(name, prefix, tag));
   members.back().value = name;
   if (!postfix.empty())
   {
     size_t pos = members.back().name.find(postfix);
     if (pos != std::string::npos)
     {
-        members.back().name.erase(pos);
+      members.back().name.erase(pos);
     }
+  }
+  if (!tag.empty())
+  {
+    members.back().name += tag;
   }
 }
 
@@ -494,36 +500,14 @@ void enterProtect(std::ofstream &ofs, std::string const& protect)
   }
 }
 
-size_t findComplexIndex(CommandData const& commandData, std::map<size_t, size_t> const& vectorParameters)
+std::string extractTag(std::string const& name)
 {
-  for (std::map<size_t, size_t>::const_iterator it = vectorParameters.begin(); it != vectorParameters.end(); ++it )
-  {
-    if ((it->second != ~0) && (commandData.arguments[it->second].type.find('*') != std::string::npos))
-    {
-#if !defined(NDEBUG)
-      std::map<size_t, size_t>::const_iterator jt = it;
-      for (++jt; jt != vectorParameters.end(); ++jt)
-      {
-        assert((jt->second == ~0) || (commandData.arguments[jt->second].type.find('*') == std::string::npos));
-      }
-#endif
-      return it->first;
-    }
-  }
-  return ~0;
-}
-
-DependencyData const& findDependency(std::string const& name, std::vector<DependencyData> const& dependencies)
-{
-  for (std::vector<DependencyData>::const_iterator it = dependencies.begin(); it != dependencies.end(); ++it)
-  {
-    if (it->name == name)
-    {
-      return *it;
-    }
-  }
-  assert(false);
-  return *dependencies.begin();
+  // the name is supposed to look like: VK_<tag>_<other>
+  size_t start = name.find('_');
+  assert(start != std::string::npos);
+  size_t end = name.find('_', start + 1);
+  assert(end != std::string::npos);
+  return name.substr(start + 1, end - start - 1);
 }
 
 size_t findReturnIndex(CommandData const& commandData, std::map<size_t,size_t> const& vectorParameters)
@@ -542,6 +526,19 @@ size_t findReturnIndex(CommandData const& commandData, std::map<size_t,size_t> c
     }
   }
   return ~0;
+}
+
+std::string findTag(std::string const& name, std::set<std::string> const& tags)
+{
+  for (std::set<std::string>::const_iterator it = tags.begin(); it != tags.end(); ++it)
+  {
+    size_t pos = name.find(*it);
+    if ((pos != std::string::npos) && (pos == name.length() - it->length()))
+    {
+      return *it;
+    }
+  }
+  return "";
 }
 
 size_t findTemplateIndex(CommandData const& commandData, std::map<size_t, size_t> const& vectorParameters)
@@ -739,18 +736,18 @@ std::map<std::string, CommandData>::iterator readCommandProto(tinyxml2::XMLEleme
   return it;
 }
 
-void readCommands(tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string, CommandData> & commands, std::map<std::string, HandleData> & handles)
+void readCommands(tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string, CommandData> & commands, std::map<std::string, HandleData> & handles, std::set<std::string> const& tags)
 {
   tinyxml2::XMLElement * child = element->FirstChildElement();
   assert( child );
   do
   {
     assert( strcmp( child->Value(), "command" ) == 0 );
-    readCommandsCommand( child, dependencies, commands, handles );
+    readCommandsCommand( child, dependencies, commands, handles, tags );
   } while ( child = child->NextSiblingElement() );
 }
 
-void readCommandsCommand(tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string, CommandData> & commands, std::map<std::string, HandleData> & handles)
+void readCommandsCommand(tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string, CommandData> & commands, std::map<std::string, HandleData> & handles, std::set<std::string> const& tags)
 {
   tinyxml2::XMLElement * child = element->FirstChildElement();
   assert( child && ( strcmp( child->Value(), "proto" ) == 0 ) );
@@ -764,7 +761,9 @@ void readCommandsCommand(tinyxml2::XMLElement * element, std::list<DependencyDat
     do
     {
       end = successCodes.find(',', start);
-      it->second.successCodes.push_back(successCodes.substr(start, end - start));
+      std::string code = successCodes.substr(start, end - start);
+      std::string tag = findTag(code, tags);
+      it->second.successCodes.push_back("e" + toCamelCase(strip(code, "VK_", tag)) + tag);
       start = end + 1;
     } while (end != std::string::npos);
   }
@@ -773,7 +772,7 @@ void readCommandsCommand(tinyxml2::XMLElement * element, std::list<DependencyDat
   if (it->first == "createDebugReportCallbackEXT")
   {
     it->second.successCodes.clear();
-    it->second.successCodes.push_back("VK_SUCCESS");
+    it->second.successCodes.push_back("eSuccess");
   }
 
   while ( child = child->NextSiblingElement() )
@@ -813,7 +812,7 @@ void readCommandsCommand(tinyxml2::XMLElement * element, std::list<DependencyDat
   }
 }
 
-void readEnums( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,EnumData> & enums, std::set<std::string> & vkTypes )
+void readEnums( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,EnumData> & enums, std::set<std::string> const& tags, std::set<std::string> & vkTypes )
 {
   assert( element->Attribute( "name" ) );
   std::string name = getEnumName(element->Attribute("name"));
@@ -821,44 +820,65 @@ void readEnums( tinyxml2::XMLElement * element, std::list<DependencyData> & depe
   {
     dependencies.push_back( DependencyData( DependencyData::Category::ENUM, name ) );
     std::map<std::string,EnumData>::iterator it = enums.insert( std::make_pair( name, EnumData() ) ).first;
+    std::string tag;
 
-    assert( element->Attribute( "type" ) );
-    std::string type = element->Attribute( "type" );
-    assert( ( type == "bitmask" ) || ( type == "enum" ) );
-    it->second.bitmask = ( type == "bitmask" );
-    std::string prefix, postfix;
-    if ( it->second.bitmask )
+    if (name == "Result")
     {
-      size_t pos = name.find( "FlagBits" );
-      assert( pos != std::string::npos );
-      it->second.prefix = "VK" + toUpperCase( name.substr( 0, pos ) ) + "_";
-      it->second.postfix = "Bit";
+      // special handling for VKResult, as its enums just have VK_ in common
+      it->second.prefix = "VK_";
     }
     else
     {
-      it->second.prefix = "VK" + toUpperCase( name ) + "_";
+      assert(element->Attribute("type"));
+      std::string type = element->Attribute("type");
+      assert((type == "bitmask") || (type == "enum"));
+      it->second.bitmask = (type == "bitmask");
+      std::string prefix, postfix;
+      if (it->second.bitmask)
+      {
+        size_t pos = name.find("FlagBits");
+        assert(pos != std::string::npos);
+        it->second.prefix = "VK" + toUpperCase(name.substr(0, pos)) + "_";
+        it->second.postfix = "Bit";
+      }
+      else
+      {
+        it->second.prefix = "VK" + toUpperCase(name) + "_";
+      }
+
+      // if the enum name contains a tag remove it from the prefix to generate correct enum value names.
+      for (std::set<std::string>::const_iterator tit = tags.begin(); tit != tags.end(); ++tit)
+      {
+        size_t pos = it->second.prefix.find(*tit);
+        if ((pos != std::string::npos) && (pos == it->second.prefix.length() - tit->length() - 1))
+        {
+          it->second.prefix.erase(pos);
+          tag = *tit;
+          break;
+        }
+      }
     }
 
-    readEnumsEnum( element, it->second );
+    readEnumsEnum( element, it->second, tag );
 
     assert( vkTypes.find( name ) == vkTypes.end() );
     vkTypes.insert( name );
   }
 }
 
-void readEnumsEnum( tinyxml2::XMLElement * element, EnumData & enumData )
+void readEnumsEnum( tinyxml2::XMLElement * element, EnumData & enumData, std::string const& tag )
 {
   tinyxml2::XMLElement * child = element->FirstChildElement();
   do
   {
     if ( child->Attribute( "name" ) )
     {
-      enumData.addEnum(child->Attribute("name"));
+      enumData.addEnum(child->Attribute("name"), tag);
     }
   } while ( child = child->NextSiblingElement() );
 }
 
-void readExtensionRequire(tinyxml2::XMLElement * element, std::string const& protect, std::map<std::string, CommandData> & commands, std::map<std::string, EnumData> & enums, std::map<std::string, FlagData> & flags, std::map<std::string, ScalarData> & scalars, std::map<std::string, StructData> & structs)
+void readExtensionRequire(tinyxml2::XMLElement * element, std::string const& protect, std::string const& tag, std::map<std::string, CommandData> & commands, std::map<std::string, EnumData> & enums, std::map<std::string, FlagData> & flags, std::map<std::string, ScalarData> & scalars, std::map<std::string, StructData> & structs)
 {
   tinyxml2::XMLElement * child = element->FirstChildElement();
   do
@@ -919,7 +939,7 @@ void readExtensionRequire(tinyxml2::XMLElement * element, std::string const& pro
       if (child->Attribute("extends"))
       {
         assert(enums.find(getEnumName(child->Attribute("extends"))) != enums.end());
-        enums[getEnumName(child->Attribute("extends"))].addEnum(child->Attribute("name"));
+        enums[getEnumName(child->Attribute("extends"))].addEnum(child->Attribute("name"), tag);
       }
     }
     else
@@ -929,20 +949,22 @@ void readExtensionRequire(tinyxml2::XMLElement * element, std::string const& pro
   } while ( child = child->NextSiblingElement() );
 }
 
-void readExtensions(tinyxml2::XMLElement * element, std::map<std::string, CommandData> & commands, std::map<std::string, EnumData> &enums, std::map<std::string, FlagData> & flags, std::map<std::string, ScalarData> & scalars, std::map<std::string, StructData> & structs)
+void readExtensions(tinyxml2::XMLElement * element, std::map<std::string, CommandData> & commands, std::map<std::string, EnumData> &enums, std::map<std::string, FlagData> & flags, std::map<std::string, ScalarData> & scalars, std::map<std::string, StructData> & structs, std::set<std::string> const& tags)
 {
   tinyxml2::XMLElement * child = element->FirstChildElement();
   assert( child );
   do
   {
     assert( strcmp( child->Value(), "extension" ) == 0 );
-    readExtensionsExtension( child, commands, enums, flags, scalars, structs );
+    readExtensionsExtension( child, commands, enums, flags, scalars, structs, tags );
   } while ( child = child->NextSiblingElement() );
 }
 
-void readExtensionsExtension(tinyxml2::XMLElement * element, std::map<std::string, CommandData> & commands, std::map<std::string, EnumData> & enums, std::map<std::string, FlagData> & flags, std::map<std::string, ScalarData> & scalars, std::map<std::string, StructData> & structs)
+void readExtensionsExtension(tinyxml2::XMLElement * element, std::map<std::string, CommandData> & commands, std::map<std::string, EnumData> & enums, std::map<std::string, FlagData> & flags, std::map<std::string, ScalarData> & scalars, std::map<std::string, StructData> & structs, std::set<std::string> const& tags)
 {
   assert( element->Attribute( "name" ) );
+  std::string tag = extractTag(element->Attribute("name"));
+  assert(tags.find(tag) != tags.end());
 
   // don't parse disabled extensions
   if (strcmp(element->Attribute("supported"), "disabled") == 0)
@@ -958,7 +980,7 @@ void readExtensionsExtension(tinyxml2::XMLElement * element, std::map<std::strin
 
   tinyxml2::XMLElement * child = element->FirstChildElement();
   assert( child && ( strcmp( child->Value(), "require" ) == 0 ) && !child->NextSiblingElement() );
-  readExtensionRequire( child, protect, commands, enums, flags, scalars, structs );
+  readExtensionRequire( child, protect, tag, commands, enums, flags, scalars, structs );
 }
 
 void readTypeBasetype( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies )
@@ -1259,6 +1281,18 @@ void readTypeUnion( tinyxml2::XMLElement * element, std::list<DependencyData> & 
   vkTypes.insert( name );
 }
 
+void readTags(tinyxml2::XMLElement * element, std::set<std::string> & tags)
+{
+  tags.insert("EXT");
+  tags.insert("KHR");
+  tinyxml2::XMLElement * child = element->FirstChildElement();
+  do
+  {
+    assert(child->Attribute("name"));
+    tags.insert(child->Attribute("name"));
+  } while (child = child->NextSiblingElement());
+}
+
 void readTypes(tinyxml2::XMLElement * element, std::string & version, std::list<DependencyData> & dependencies, std::map<std::string, FlagData> & flags, std::map<std::string, ScalarData> & scalars, std::map<std::string, StructData> & structs, std::set<std::string> & vkTypes, std::map<std::string, HandleData> & handles, std::map<std::string, EnumData> & enums)
 {
   tinyxml2::XMLElement * child = element->FirstChildElement();
@@ -1351,13 +1385,20 @@ std::string reduceName(std::string const& name)
   return name;
 }
 
-std::string strip(std::string const& value, std::string const& prefix)
+std::string strip(std::string const& value, std::string const& prefix, std::string const& postfix)
 {
-  if ( value.find( prefix ) == 0 )
+  std::string strippedValue = value;
+  if (strippedValue.find(prefix) == 0)
   {
-    return value.substr( prefix.length() );
+    strippedValue.erase(0, prefix.length());
   }
-  return value;
+  if (!postfix.empty())
+  {
+    size_t pos = strippedValue.find(postfix);
+    assert(pos != std::string::npos);
+    strippedValue.erase(pos);
+  }
+  return strippedValue;
 }
 
 std::string stripCommand(std::string const& value)
@@ -1523,13 +1564,13 @@ void writeExceptionCheck(std::ofstream & ofs, std::string const& indentation, st
 {
   if (successCodes.size() == 1)
   {
-    assert(successCodes.front() == "VK_SUCCESS");
-    ofs << indentation << "  if ( result != Result::eVkSuccess )" << std::endl;
+    assert(successCodes.front() == "eSuccess");
+    ofs << indentation << "  if ( result != Result::eSuccess )" << std::endl;
   }
   else
   {
     assert(successCodes.size() == 2);
-    ofs << indentation << "  if ( ( result != Result::e" << toCamelCase(successCodes[0]) << " ) && ( result != Result::e" << toCamelCase(successCodes[1]) << " ) )" << std::endl;
+    ofs << indentation << "  if ( ( result != Result::" << successCodes[0] << " ) && ( result != Result::" << successCodes[1] << " ) )" << std::endl;
   }
   ofs << indentation << "  {" << std::endl
     << indentation << "    throw Exception( result, \"vk::";
@@ -2170,9 +2211,9 @@ void writeTypeCommandComplexBody(std::ofstream & ofs, DependencyData const& depe
   ofs << " );" << std::endl;
   if (commandData.returnType == "Result")
   {
-    ofs << "    if ( result == Result::eVkSuccess )" << std::endl
-      << "    {" << std::endl
-      << "  ";
+    ofs << "    if ( result == Result::eSuccess )" << std::endl
+        << "    {" << std::endl
+        << "  ";
   }
   ofs << "    ";
   if (returnIndex == ~0)
@@ -2615,6 +2656,7 @@ int main( int argc, char **argv )
   std::map<std::string, HandleData>   handles;
   std::map<std::string, ScalarData>   scalars;
   std::map<std::string, StructData>   structs;
+  std::set<std::string>               tags;
   std::set<std::string>               vkTypes;
 
   tinyxml2::XMLElement * child = registryElement->FirstChildElement();
@@ -2624,15 +2666,19 @@ int main( int argc, char **argv )
     const std::string value = child->Value();
     if ( value == "commands" )
     {
-      readCommands( child, dependencies, commands, handles );
+      readCommands( child, dependencies, commands, handles, tags );
     }
     else if ( value == "enums" )
     {
-      readEnums( child, dependencies, enums, vkTypes );
+      readEnums( child, dependencies, enums, tags, vkTypes );
     }
     else if ( value == "extensions" )
     {
-      readExtensions( child, commands, enums, flags, scalars, structs );
+      readExtensions( child, commands, enums, flags, scalars, structs, tags );
+    }
+    else if (value == "tags")
+    {
+      readTags(child, tags);
     }
     else if ( value == "types" )
     {
@@ -2640,7 +2686,7 @@ int main( int argc, char **argv )
     }
     else
     {
-      assert( ( value == "comment" ) || ( value == "feature" ) || ( value == "tags" ) || ( value == "vendorids" ) );
+      assert( ( value == "comment" ) || ( value == "feature" ) || ( value == "vendorids" ) );
     }
   } while ( child = child->NextSiblingElement() );
 

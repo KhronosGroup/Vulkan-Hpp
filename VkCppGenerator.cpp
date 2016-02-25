@@ -318,7 +318,7 @@ void readExtensions( tinyxml2::XMLElement * element, std::map<std::string,Comman
 void readExtensionsExtension(tinyxml2::XMLElement * element, std::map<std::string, CommandData> & commands, std::map<std::string, EnumData> & enums, std::map<std::string, FlagData> & flags, std::map<std::string, ScalarData> & scalars, std::map<std::string, StructData> & structs, std::set<std::string> const& tags);
 void readTypeBasetype( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies );
 void readTypeBitmask( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,FlagData> & flags, std::map<std::string,ScalarData> & scalars, std::set<std::string> & vkTypes, std::map<std::string, EnumData> & enums );
-void readTypeDefine( tinyxml2::XMLElement * element, std::string & version );
+void readTypeDefine( tinyxml2::XMLElement * element, std::string & version, std::string & typesafeCheck );
 void readTypeFuncpointer( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies );
 void readTypeHandle(tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::set<std::string> & vkTypes, std::map<std::string,HandleData> & handles);
 void readTypeStruct( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,StructData> & structs, std::set<std::string> & vkTypes );
@@ -326,7 +326,7 @@ void readTypeStructMember( tinyxml2::XMLElement * element, std::vector<MemberDat
 void readTypeUnion( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,StructData> & structs, std::set<std::string> & vkTypes );
 void readTypeUnionMember( tinyxml2::XMLElement * element, std::vector<MemberData> & members, std::set<std::string> & dependencies );
 void readTags(tinyxml2::XMLElement * element, std::set<std::string> & tags);
-void readTypes(tinyxml2::XMLElement * element, std::string & version, std::list<DependencyData> & dependencies, std::map<std::string, FlagData> & flags, std::map<std::string, ScalarData> & scalars, std::map<std::string, StructData> & structs, std::set<std::string> & vkTypes, std::map<std::string, HandleData> & handles, std::map<std::string, EnumData> & enums);
+void readTypes(tinyxml2::XMLElement * element, std::string & version, std::string & typesafeCheck, std::list<DependencyData> & dependencies, std::map<std::string, FlagData> & flags, std::map<std::string, ScalarData> & scalars, std::map<std::string, StructData> & structs, std::set<std::string> & vkTypes, std::map<std::string, HandleData> & handles, std::map<std::string, EnumData> & enums);
 void sortDependencies( std::list<DependencyData> & dependencies, std::vector<DependencyData> & sortedDependencies );
 std::string reduceName(std::string const& name);
 std::string strip(std::string const& value, std::string const& prefix, std::string const& tag = std::string());
@@ -357,6 +357,7 @@ void writeTypeStruct( std::ofstream & ofs, DependencyData const& dependencyData,
 void writeTypeUnion( std::ofstream & ofs, DependencyData const& dependencyData, StructData const& unionData, std::set<std::string> const& vkTypes, std::map<std::string,StructData> const& structs, std::map<std::string,std::string> const& defaultValues );
 void writeTypes(std::ofstream & ofs, std::vector<DependencyData> const& dependencies, std::map<std::string, CommandData> const& commands, std::map<std::string, EnumData> const& enums, std::map<std::string, FlagData> const& flags, std::map<std::string, HandleData> const& handles, std::map<std::string, StructData> const& structs, std::map<std::string, std::string> const& defaultValues, std::set<std::string> const& vkTypes);
 void writeVersionCheck(std::ofstream & ofs, std::string const& version);
+void writeTypesafeCheck(std::ofstream & ofs, std::string const& typesafeCheck);
 
 void EnumData::addEnum(std::string const & name, std::string const& tag)
 {
@@ -1040,12 +1041,19 @@ void readTypeBitmask(tinyxml2::XMLElement * element, std::list<DependencyData> &
   vkTypes.insert( name );
 }
 
-void readTypeDefine( tinyxml2::XMLElement * element, std::string & version )
+void readTypeDefine( tinyxml2::XMLElement * element, std::string & version, std::string & typedefCheck )
 {
   tinyxml2::XMLElement * child = element->FirstChildElement();
-  if ( child && ( strcmp( child->GetText(), "VK_API_VERSION" ) == 0 ) )
+  if (child && (strcmp(child->GetText(), "VK_API_VERSION") == 0))
   {
     version = element->LastChild()->ToText()->Value();
+  }
+  else if (element->Attribute("name") && strcmp(element->Attribute("name"), "VK_DEFINE_NON_DISPATCHABLE_HANDLE") == 0)
+  {
+    std::string text = element->LastChild()->ToText()->Value();
+    size_t start = text.find('#');
+    size_t end = text.find_first_of("\r\n", start + 1);
+    typedefCheck = text.substr(start, end - start);
   }
 }
 
@@ -1293,7 +1301,7 @@ void readTags(tinyxml2::XMLElement * element, std::set<std::string> & tags)
   } while (child = child->NextSiblingElement());
 }
 
-void readTypes(tinyxml2::XMLElement * element, std::string & version, std::list<DependencyData> & dependencies, std::map<std::string, FlagData> & flags, std::map<std::string, ScalarData> & scalars, std::map<std::string, StructData> & structs, std::set<std::string> & vkTypes, std::map<std::string, HandleData> & handles, std::map<std::string, EnumData> & enums)
+void readTypes(tinyxml2::XMLElement * element, std::string & version, std::string & typedefCheck, std::list<DependencyData> & dependencies, std::map<std::string, FlagData> & flags, std::map<std::string, ScalarData> & scalars, std::map<std::string, StructData> & structs, std::set<std::string> & vkTypes, std::map<std::string, HandleData> & handles, std::map<std::string, EnumData> & enums)
 {
   tinyxml2::XMLElement * child = element->FirstChildElement();
   do
@@ -1314,7 +1322,7 @@ void readTypes(tinyxml2::XMLElement * element, std::string & version, std::list<
       }
       else if ( category == "define" )
       {
-        readTypeDefine( child, version );
+        readTypeDefine( child, version, typedefCheck );
       }
       else if ( category == "funcpointer" )
       {
@@ -1817,6 +1825,22 @@ void writeStructConstructor( std::ofstream & ofs, std::string const& name, std::
   }
   ofs << "    }" << std::endl
       << std::endl;
+
+  // now write the copy constructor
+  ofs << "    " << name << "(Vk" << name << " const & rhs)" << std::endl
+      << "      : " << memberName << "(rhs)" << std::endl
+      << "    {" << std::endl
+      << "    }" << std::endl
+      << std::endl;
+
+  // now write the assignment operator
+  ofs << "    " << name << "& operator=(Vk" << name << " const & rhs)" << std::endl
+    << "    {" << std::endl
+    << "      " << memberName << " = rhs;" << std::endl
+    << "      return *this;" << std::endl
+    << "    }" << std::endl
+    << std::endl;
+
 }
 
 void writeStructGetter( std::ofstream & ofs, MemberData const& memberData, std::string const& memberName, std::set<std::string> const& vkTypes )
@@ -2425,8 +2449,21 @@ void writeTypeHandle(std::ofstream & ofs, DependencyData const& dependencyData, 
       << "  {" << std::endl
       << "  public:" << std::endl
       << "    " << dependencyData.name << "()" << std::endl
-      << "      : m_" << memberName << "(nullptr)" << std::endl
+      << "      : m_" << memberName << "(0)" << std::endl // nullptr won't work for 32-bit vulkan since the handletype is uint64_t
       << "    {}" << std::endl
+      << std::endl
+      << "#if defined(VK_CPP_TYPESAFE_CONVERSION)" << std::endl
+      // construct from native handle
+      << "    " << dependencyData.name << "(Vk" << dependencyData.name << " " << memberName << ")" << std::endl
+      << "       : m_" << memberName << "("  << memberName << ")" << std::endl
+      << "    {}" << std::endl
+      << std::endl
+      << "    " << dependencyData.name << "& operator=(Vk" << dependencyData.name << " " << memberName << ")" << std::endl
+      << "    {" << std::endl
+      << "      m_" << memberName << " = " << memberName << ";" << std::endl
+      << "      return *this;" << std::endl
+      << "    }" << std::endl
+      << "#endif\n"
       << std::endl;
   if (!handle.commands.empty())
   {
@@ -2447,7 +2484,10 @@ void writeTypeHandle(std::ofstream & ofs, DependencyData const& dependencyData, 
     ofs << "#endif /*VKCPP_ENHANCED_MODE*/" << std::endl
         << std::endl;
   }
-  ofs << "    explicit operator Vk" << dependencyData.name << "() const" << std::endl
+  ofs << "#if !defined(VK_CPP_TYPESAFE_CONVERSION)" << std::endl
+      << "    explicit" << std::endl
+      << "#endif" << std::endl
+      << "    operator Vk" << dependencyData.name << "() const" << std::endl
       << "    {" << std::endl
       << "      return m_" << memberName << ";" << std::endl
       << "    }" << std::endl
@@ -2633,6 +2673,16 @@ void writeVersionCheck(std::ofstream & ofs, std::string const& version)
       << std::endl;
 }
 
+void writeTypesafeCheck(std::ofstream & ofs, std::string const& typesafeCheck)
+{
+  ofs << "// 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default." << std::endl
+      << "// To enable this feature on 32-bit platforms please define VK_CPP_TYPESAFE_CONVERSION" << std::endl
+      << typesafeCheck << std::endl
+      << "#define VK_CPP_TYPESAFE_CONVERSION 1" << std::endl
+      << "#endif" << std::endl
+      << std::endl;
+}
+
 int main( int argc, char **argv )
 {
   tinyxml2::XMLDocument doc;
@@ -2649,6 +2699,7 @@ int main( int argc, char **argv )
   assert( !registryElement->NextSiblingElement() );
 
   std::string                         version;
+  std::string                         typesafeCheck;
   std::list<DependencyData>           dependencies;
   std::map<std::string, CommandData>  commands;
   std::map<std::string, EnumData>     enums;
@@ -2682,7 +2733,7 @@ int main( int argc, char **argv )
     }
     else if ( value == "types" )
     {
-      readTypes( child, version, dependencies, flags, scalars, structs, vkTypes, handles, enums );
+      readTypes( child, version, typesafeCheck, dependencies, flags, scalars, structs, vkTypes, handles, enums );
     }
     else
     {
@@ -2713,6 +2764,7 @@ int main( int argc, char **argv )
       << "#endif /*VKCPP_ENHANCED_MODE*/" << std::endl
       << std::endl;
   writeVersionCheck( ofs, version );
+  writeTypesafeCheck(ofs, typesafeCheck );
   ofs << "namespace vk" << std::endl
       << "{" << std::endl;
 

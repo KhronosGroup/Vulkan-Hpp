@@ -24,6 +24,12 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+// 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
+// To enable this feature on 32-bit platforms please define VK_CPP_TYPESAFE_CONVERSION
+#if defined(__LP64__) || defined(_WIN64) || defined(__x86_64__) || defined(_M_X64) || defined(__ia64) || defined (_M_IA64) || defined(__aarch64__) || defined(__powerpc64__)
+#define VK_CPP_TYPESAFE_CONVERSION 1
+#endif
+
 
 #ifndef VK_CPP_H_
 #define VK_CPP_H_
@@ -604,10 +610,25 @@ namespace vk
   {
   public:
     DeviceMemory()
-      : m_deviceMemory(nullptr)
+      : m_deviceMemory(0)
     {}
 
-    explicit operator VkDeviceMemory() const
+#if defined(VK_CPP_TYPESAFE_CONVERSION)
+    DeviceMemory(VkDeviceMemory deviceMemory)
+       : m_deviceMemory(deviceMemory)
+    {}
+
+    DeviceMemory& operator=(VkDeviceMemory deviceMemory)
+    {
+      m_deviceMemory = deviceMemory;
+      return *this;
+    }
+#endif
+
+#if !defined(VK_CPP_TYPESAFE_CONVERSION)
+    explicit
+#endif
+    operator VkDeviceMemory() const
     {
       return m_deviceMemory;
     }
@@ -621,10 +642,25 @@ namespace vk
   {
   public:
     CommandPool()
-      : m_commandPool(nullptr)
+      : m_commandPool(0)
     {}
 
-    explicit operator VkCommandPool() const
+#if defined(VK_CPP_TYPESAFE_CONVERSION)
+    CommandPool(VkCommandPool commandPool)
+       : m_commandPool(commandPool)
+    {}
+
+    CommandPool& operator=(VkCommandPool commandPool)
+    {
+      m_commandPool = commandPool;
+      return *this;
+    }
+#endif
+
+#if !defined(VK_CPP_TYPESAFE_CONVERSION)
+    explicit
+#endif
+    operator VkCommandPool() const
     {
       return m_commandPool;
     }
@@ -638,10 +674,25 @@ namespace vk
   {
   public:
     Buffer()
-      : m_buffer(nullptr)
+      : m_buffer(0)
     {}
 
-    explicit operator VkBuffer() const
+#if defined(VK_CPP_TYPESAFE_CONVERSION)
+    Buffer(VkBuffer buffer)
+       : m_buffer(buffer)
+    {}
+
+    Buffer& operator=(VkBuffer buffer)
+    {
+      m_buffer = buffer;
+      return *this;
+    }
+#endif
+
+#if !defined(VK_CPP_TYPESAFE_CONVERSION)
+    explicit
+#endif
+    operator VkBuffer() const
     {
       return m_buffer;
     }
@@ -655,10 +706,25 @@ namespace vk
   {
   public:
     BufferView()
-      : m_bufferView(nullptr)
+      : m_bufferView(0)
     {}
 
-    explicit operator VkBufferView() const
+#if defined(VK_CPP_TYPESAFE_CONVERSION)
+    BufferView(VkBufferView bufferView)
+       : m_bufferView(bufferView)
+    {}
+
+    BufferView& operator=(VkBufferView bufferView)
+    {
+      m_bufferView = bufferView;
+      return *this;
+    }
+#endif
+
+#if !defined(VK_CPP_TYPESAFE_CONVERSION)
+    explicit
+#endif
+    operator VkBufferView() const
     {
       return m_bufferView;
     }
@@ -672,10 +738,25 @@ namespace vk
   {
   public:
     Image()
-      : m_image(nullptr)
+      : m_image(0)
     {}
 
-    explicit operator VkImage() const
+#if defined(VK_CPP_TYPESAFE_CONVERSION)
+    Image(VkImage image)
+       : m_image(image)
+    {}
+
+    Image& operator=(VkImage image)
+    {
+      m_image = image;
+      return *this;
+    }
+#endif
+
+#if !defined(VK_CPP_TYPESAFE_CONVERSION)
+    explicit
+#endif
+    operator VkImage() const
     {
       return m_image;
     }
@@ -689,10 +770,25 @@ namespace vk
   {
   public:
     ImageView()
-      : m_imageView(nullptr)
+      : m_imageView(0)
     {}
 
-    explicit operator VkImageView() const
+#if defined(VK_CPP_TYPESAFE_CONVERSION)
+    ImageView(VkImageView imageView)
+       : m_imageView(imageView)
+    {}
+
+    ImageView& operator=(VkImageView imageView)
+    {
+      m_imageView = imageView;
+      return *this;
+    }
+#endif
+
+#if !defined(VK_CPP_TYPESAFE_CONVERSION)
+    explicit
+#endif
+    operator VkImageView() const
     {
       return m_imageView;
     }
@@ -706,10 +802,25 @@ namespace vk
   {
   public:
     ShaderModule()
-      : m_shaderModule(nullptr)
+      : m_shaderModule(0)
     {}
 
-    explicit operator VkShaderModule() const
+#if defined(VK_CPP_TYPESAFE_CONVERSION)
+    ShaderModule(VkShaderModule shaderModule)
+       : m_shaderModule(shaderModule)
+    {}
+
+    ShaderModule& operator=(VkShaderModule shaderModule)
+    {
+      m_shaderModule = shaderModule;
+      return *this;
+    }
+#endif
+
+#if !defined(VK_CPP_TYPESAFE_CONVERSION)
+    explicit
+#endif
+    operator VkShaderModule() const
     {
       return m_shaderModule;
     }
@@ -723,10 +834,25 @@ namespace vk
   {
   public:
     Pipeline()
-      : m_pipeline(nullptr)
+      : m_pipeline(0)
     {}
 
-    explicit operator VkPipeline() const
+#if defined(VK_CPP_TYPESAFE_CONVERSION)
+    Pipeline(VkPipeline pipeline)
+       : m_pipeline(pipeline)
+    {}
+
+    Pipeline& operator=(VkPipeline pipeline)
+    {
+      m_pipeline = pipeline;
+      return *this;
+    }
+#endif
+
+#if !defined(VK_CPP_TYPESAFE_CONVERSION)
+    explicit
+#endif
+    operator VkPipeline() const
     {
       return m_pipeline;
     }
@@ -740,10 +866,25 @@ namespace vk
   {
   public:
     PipelineLayout()
-      : m_pipelineLayout(nullptr)
+      : m_pipelineLayout(0)
     {}
 
-    explicit operator VkPipelineLayout() const
+#if defined(VK_CPP_TYPESAFE_CONVERSION)
+    PipelineLayout(VkPipelineLayout pipelineLayout)
+       : m_pipelineLayout(pipelineLayout)
+    {}
+
+    PipelineLayout& operator=(VkPipelineLayout pipelineLayout)
+    {
+      m_pipelineLayout = pipelineLayout;
+      return *this;
+    }
+#endif
+
+#if !defined(VK_CPP_TYPESAFE_CONVERSION)
+    explicit
+#endif
+    operator VkPipelineLayout() const
     {
       return m_pipelineLayout;
     }
@@ -757,10 +898,25 @@ namespace vk
   {
   public:
     Sampler()
-      : m_sampler(nullptr)
+      : m_sampler(0)
     {}
 
-    explicit operator VkSampler() const
+#if defined(VK_CPP_TYPESAFE_CONVERSION)
+    Sampler(VkSampler sampler)
+       : m_sampler(sampler)
+    {}
+
+    Sampler& operator=(VkSampler sampler)
+    {
+      m_sampler = sampler;
+      return *this;
+    }
+#endif
+
+#if !defined(VK_CPP_TYPESAFE_CONVERSION)
+    explicit
+#endif
+    operator VkSampler() const
     {
       return m_sampler;
     }
@@ -774,10 +930,25 @@ namespace vk
   {
   public:
     DescriptorSet()
-      : m_descriptorSet(nullptr)
+      : m_descriptorSet(0)
     {}
 
-    explicit operator VkDescriptorSet() const
+#if defined(VK_CPP_TYPESAFE_CONVERSION)
+    DescriptorSet(VkDescriptorSet descriptorSet)
+       : m_descriptorSet(descriptorSet)
+    {}
+
+    DescriptorSet& operator=(VkDescriptorSet descriptorSet)
+    {
+      m_descriptorSet = descriptorSet;
+      return *this;
+    }
+#endif
+
+#if !defined(VK_CPP_TYPESAFE_CONVERSION)
+    explicit
+#endif
+    operator VkDescriptorSet() const
     {
       return m_descriptorSet;
     }
@@ -791,10 +962,25 @@ namespace vk
   {
   public:
     DescriptorSetLayout()
-      : m_descriptorSetLayout(nullptr)
+      : m_descriptorSetLayout(0)
     {}
 
-    explicit operator VkDescriptorSetLayout() const
+#if defined(VK_CPP_TYPESAFE_CONVERSION)
+    DescriptorSetLayout(VkDescriptorSetLayout descriptorSetLayout)
+       : m_descriptorSetLayout(descriptorSetLayout)
+    {}
+
+    DescriptorSetLayout& operator=(VkDescriptorSetLayout descriptorSetLayout)
+    {
+      m_descriptorSetLayout = descriptorSetLayout;
+      return *this;
+    }
+#endif
+
+#if !defined(VK_CPP_TYPESAFE_CONVERSION)
+    explicit
+#endif
+    operator VkDescriptorSetLayout() const
     {
       return m_descriptorSetLayout;
     }
@@ -808,10 +994,25 @@ namespace vk
   {
   public:
     DescriptorPool()
-      : m_descriptorPool(nullptr)
+      : m_descriptorPool(0)
     {}
 
-    explicit operator VkDescriptorPool() const
+#if defined(VK_CPP_TYPESAFE_CONVERSION)
+    DescriptorPool(VkDescriptorPool descriptorPool)
+       : m_descriptorPool(descriptorPool)
+    {}
+
+    DescriptorPool& operator=(VkDescriptorPool descriptorPool)
+    {
+      m_descriptorPool = descriptorPool;
+      return *this;
+    }
+#endif
+
+#if !defined(VK_CPP_TYPESAFE_CONVERSION)
+    explicit
+#endif
+    operator VkDescriptorPool() const
     {
       return m_descriptorPool;
     }
@@ -825,10 +1026,25 @@ namespace vk
   {
   public:
     Fence()
-      : m_fence(nullptr)
+      : m_fence(0)
     {}
 
-    explicit operator VkFence() const
+#if defined(VK_CPP_TYPESAFE_CONVERSION)
+    Fence(VkFence fence)
+       : m_fence(fence)
+    {}
+
+    Fence& operator=(VkFence fence)
+    {
+      m_fence = fence;
+      return *this;
+    }
+#endif
+
+#if !defined(VK_CPP_TYPESAFE_CONVERSION)
+    explicit
+#endif
+    operator VkFence() const
     {
       return m_fence;
     }
@@ -842,10 +1058,25 @@ namespace vk
   {
   public:
     Semaphore()
-      : m_semaphore(nullptr)
+      : m_semaphore(0)
     {}
 
-    explicit operator VkSemaphore() const
+#if defined(VK_CPP_TYPESAFE_CONVERSION)
+    Semaphore(VkSemaphore semaphore)
+       : m_semaphore(semaphore)
+    {}
+
+    Semaphore& operator=(VkSemaphore semaphore)
+    {
+      m_semaphore = semaphore;
+      return *this;
+    }
+#endif
+
+#if !defined(VK_CPP_TYPESAFE_CONVERSION)
+    explicit
+#endif
+    operator VkSemaphore() const
     {
       return m_semaphore;
     }
@@ -859,10 +1090,25 @@ namespace vk
   {
   public:
     Event()
-      : m_event(nullptr)
+      : m_event(0)
     {}
 
-    explicit operator VkEvent() const
+#if defined(VK_CPP_TYPESAFE_CONVERSION)
+    Event(VkEvent event)
+       : m_event(event)
+    {}
+
+    Event& operator=(VkEvent event)
+    {
+      m_event = event;
+      return *this;
+    }
+#endif
+
+#if !defined(VK_CPP_TYPESAFE_CONVERSION)
+    explicit
+#endif
+    operator VkEvent() const
     {
       return m_event;
     }
@@ -876,10 +1122,25 @@ namespace vk
   {
   public:
     QueryPool()
-      : m_queryPool(nullptr)
+      : m_queryPool(0)
     {}
 
-    explicit operator VkQueryPool() const
+#if defined(VK_CPP_TYPESAFE_CONVERSION)
+    QueryPool(VkQueryPool queryPool)
+       : m_queryPool(queryPool)
+    {}
+
+    QueryPool& operator=(VkQueryPool queryPool)
+    {
+      m_queryPool = queryPool;
+      return *this;
+    }
+#endif
+
+#if !defined(VK_CPP_TYPESAFE_CONVERSION)
+    explicit
+#endif
+    operator VkQueryPool() const
     {
       return m_queryPool;
     }
@@ -893,10 +1154,25 @@ namespace vk
   {
   public:
     Framebuffer()
-      : m_framebuffer(nullptr)
+      : m_framebuffer(0)
     {}
 
-    explicit operator VkFramebuffer() const
+#if defined(VK_CPP_TYPESAFE_CONVERSION)
+    Framebuffer(VkFramebuffer framebuffer)
+       : m_framebuffer(framebuffer)
+    {}
+
+    Framebuffer& operator=(VkFramebuffer framebuffer)
+    {
+      m_framebuffer = framebuffer;
+      return *this;
+    }
+#endif
+
+#if !defined(VK_CPP_TYPESAFE_CONVERSION)
+    explicit
+#endif
+    operator VkFramebuffer() const
     {
       return m_framebuffer;
     }
@@ -910,10 +1186,25 @@ namespace vk
   {
   public:
     RenderPass()
-      : m_renderPass(nullptr)
+      : m_renderPass(0)
     {}
 
-    explicit operator VkRenderPass() const
+#if defined(VK_CPP_TYPESAFE_CONVERSION)
+    RenderPass(VkRenderPass renderPass)
+       : m_renderPass(renderPass)
+    {}
+
+    RenderPass& operator=(VkRenderPass renderPass)
+    {
+      m_renderPass = renderPass;
+      return *this;
+    }
+#endif
+
+#if !defined(VK_CPP_TYPESAFE_CONVERSION)
+    explicit
+#endif
+    operator VkRenderPass() const
     {
       return m_renderPass;
     }
@@ -927,10 +1218,25 @@ namespace vk
   {
   public:
     PipelineCache()
-      : m_pipelineCache(nullptr)
+      : m_pipelineCache(0)
     {}
 
-    explicit operator VkPipelineCache() const
+#if defined(VK_CPP_TYPESAFE_CONVERSION)
+    PipelineCache(VkPipelineCache pipelineCache)
+       : m_pipelineCache(pipelineCache)
+    {}
+
+    PipelineCache& operator=(VkPipelineCache pipelineCache)
+    {
+      m_pipelineCache = pipelineCache;
+      return *this;
+    }
+#endif
+
+#if !defined(VK_CPP_TYPESAFE_CONVERSION)
+    explicit
+#endif
+    operator VkPipelineCache() const
     {
       return m_pipelineCache;
     }
@@ -944,10 +1250,25 @@ namespace vk
   {
   public:
     DisplayKHR()
-      : m_displayKHR(nullptr)
+      : m_displayKHR(0)
     {}
 
-    explicit operator VkDisplayKHR() const
+#if defined(VK_CPP_TYPESAFE_CONVERSION)
+    DisplayKHR(VkDisplayKHR displayKHR)
+       : m_displayKHR(displayKHR)
+    {}
+
+    DisplayKHR& operator=(VkDisplayKHR displayKHR)
+    {
+      m_displayKHR = displayKHR;
+      return *this;
+    }
+#endif
+
+#if !defined(VK_CPP_TYPESAFE_CONVERSION)
+    explicit
+#endif
+    operator VkDisplayKHR() const
     {
       return m_displayKHR;
     }
@@ -961,10 +1282,25 @@ namespace vk
   {
   public:
     DisplayModeKHR()
-      : m_displayModeKHR(nullptr)
+      : m_displayModeKHR(0)
     {}
 
-    explicit operator VkDisplayModeKHR() const
+#if defined(VK_CPP_TYPESAFE_CONVERSION)
+    DisplayModeKHR(VkDisplayModeKHR displayModeKHR)
+       : m_displayModeKHR(displayModeKHR)
+    {}
+
+    DisplayModeKHR& operator=(VkDisplayModeKHR displayModeKHR)
+    {
+      m_displayModeKHR = displayModeKHR;
+      return *this;
+    }
+#endif
+
+#if !defined(VK_CPP_TYPESAFE_CONVERSION)
+    explicit
+#endif
+    operator VkDisplayModeKHR() const
     {
       return m_displayModeKHR;
     }
@@ -978,10 +1314,25 @@ namespace vk
   {
   public:
     SurfaceKHR()
-      : m_surfaceKHR(nullptr)
+      : m_surfaceKHR(0)
     {}
 
-    explicit operator VkSurfaceKHR() const
+#if defined(VK_CPP_TYPESAFE_CONVERSION)
+    SurfaceKHR(VkSurfaceKHR surfaceKHR)
+       : m_surfaceKHR(surfaceKHR)
+    {}
+
+    SurfaceKHR& operator=(VkSurfaceKHR surfaceKHR)
+    {
+      m_surfaceKHR = surfaceKHR;
+      return *this;
+    }
+#endif
+
+#if !defined(VK_CPP_TYPESAFE_CONVERSION)
+    explicit
+#endif
+    operator VkSurfaceKHR() const
     {
       return m_surfaceKHR;
     }
@@ -995,10 +1346,25 @@ namespace vk
   {
   public:
     SwapchainKHR()
-      : m_swapchainKHR(nullptr)
+      : m_swapchainKHR(0)
     {}
 
-    explicit operator VkSwapchainKHR() const
+#if defined(VK_CPP_TYPESAFE_CONVERSION)
+    SwapchainKHR(VkSwapchainKHR swapchainKHR)
+       : m_swapchainKHR(swapchainKHR)
+    {}
+
+    SwapchainKHR& operator=(VkSwapchainKHR swapchainKHR)
+    {
+      m_swapchainKHR = swapchainKHR;
+      return *this;
+    }
+#endif
+
+#if !defined(VK_CPP_TYPESAFE_CONVERSION)
+    explicit
+#endif
+    operator VkSwapchainKHR() const
     {
       return m_swapchainKHR;
     }
@@ -1012,10 +1378,25 @@ namespace vk
   {
   public:
     DebugReportCallbackEXT()
-      : m_debugReportCallbackEXT(nullptr)
+      : m_debugReportCallbackEXT(0)
     {}
 
-    explicit operator VkDebugReportCallbackEXT() const
+#if defined(VK_CPP_TYPESAFE_CONVERSION)
+    DebugReportCallbackEXT(VkDebugReportCallbackEXT debugReportCallbackEXT)
+       : m_debugReportCallbackEXT(debugReportCallbackEXT)
+    {}
+
+    DebugReportCallbackEXT& operator=(VkDebugReportCallbackEXT debugReportCallbackEXT)
+    {
+      m_debugReportCallbackEXT = debugReportCallbackEXT;
+      return *this;
+    }
+#endif
+
+#if !defined(VK_CPP_TYPESAFE_CONVERSION)
+    explicit
+#endif
+    operator VkDebugReportCallbackEXT() const
     {
       return m_debugReportCallbackEXT;
     }
@@ -1036,6 +1417,17 @@ namespace vk
     {
       m_offset2D.x = x;
       m_offset2D.y = y;
+    }
+
+    Offset2D(VkOffset2D const & rhs)
+      : m_offset2D(rhs)
+    {
+    }
+
+    Offset2D& operator=(VkOffset2D const & rhs)
+    {
+      m_offset2D = rhs;
+      return *this;
     }
 
     const int32_t& x() const
@@ -1082,6 +1474,17 @@ namespace vk
       m_offset3D.x = x;
       m_offset3D.y = y;
       m_offset3D.z = z;
+    }
+
+    Offset3D(VkOffset3D const & rhs)
+      : m_offset3D(rhs)
+    {
+    }
+
+    Offset3D& operator=(VkOffset3D const & rhs)
+    {
+      m_offset3D = rhs;
+      return *this;
     }
 
     const int32_t& x() const
@@ -1140,6 +1543,17 @@ namespace vk
       m_extent2D.height = height;
     }
 
+    Extent2D(VkExtent2D const & rhs)
+      : m_extent2D(rhs)
+    {
+    }
+
+    Extent2D& operator=(VkExtent2D const & rhs)
+    {
+      m_extent2D = rhs;
+      return *this;
+    }
+
     const uint32_t& width() const
     {
       return m_extent2D.width;
@@ -1184,6 +1598,17 @@ namespace vk
       m_extent3D.width = width;
       m_extent3D.height = height;
       m_extent3D.depth = depth;
+    }
+
+    Extent3D(VkExtent3D const & rhs)
+      : m_extent3D(rhs)
+    {
+    }
+
+    Extent3D& operator=(VkExtent3D const & rhs)
+    {
+      m_extent3D = rhs;
+      return *this;
     }
 
     const uint32_t& width() const
@@ -1244,6 +1669,17 @@ namespace vk
       m_viewport.height = height;
       m_viewport.minDepth = minDepth;
       m_viewport.maxDepth = maxDepth;
+    }
+
+    Viewport(VkViewport const & rhs)
+      : m_viewport(rhs)
+    {
+    }
+
+    Viewport& operator=(VkViewport const & rhs)
+    {
+      m_viewport = rhs;
+      return *this;
     }
 
     const float& x() const
@@ -1335,6 +1771,17 @@ namespace vk
       m_rect2D.extent = static_cast<VkExtent2D>( extent );
     }
 
+    Rect2D(VkRect2D const & rhs)
+      : m_rect2D(rhs)
+    {
+    }
+
+    Rect2D& operator=(VkRect2D const & rhs)
+    {
+      m_rect2D = rhs;
+      return *this;
+    }
+
     const Offset2D& offset() const
     {
       return reinterpret_cast<const Offset2D&>( m_rect2D.offset );
@@ -1379,6 +1826,17 @@ namespace vk
       m_clearRect.rect = static_cast<VkRect2D>( rect );
       m_clearRect.baseArrayLayer = baseArrayLayer;
       m_clearRect.layerCount = layerCount;
+    }
+
+    ClearRect(VkClearRect const & rhs)
+      : m_clearRect(rhs)
+    {
+    }
+
+    ClearRect& operator=(VkClearRect const & rhs)
+    {
+      m_clearRect = rhs;
+      return *this;
     }
 
     const Rect2D& rect() const
@@ -1491,6 +1949,17 @@ namespace vk
       m_allocationCallbacks.pfnFree = pfnFree;
       m_allocationCallbacks.pfnInternalAllocation = pfnInternalAllocation;
       m_allocationCallbacks.pfnInternalFree = pfnInternalFree;
+    }
+
+    AllocationCallbacks(VkAllocationCallbacks const & rhs)
+      : m_allocationCallbacks(rhs)
+    {
+    }
+
+    AllocationCallbacks& operator=(VkAllocationCallbacks const & rhs)
+    {
+      m_allocationCallbacks = rhs;
+      return *this;
     }
 
     const void* pUserData() const
@@ -1611,6 +2080,17 @@ namespace vk
       m_descriptorBufferInfo.range = range;
     }
 
+    DescriptorBufferInfo(VkDescriptorBufferInfo const & rhs)
+      : m_descriptorBufferInfo(rhs)
+    {
+    }
+
+    DescriptorBufferInfo& operator=(VkDescriptorBufferInfo const & rhs)
+    {
+      m_descriptorBufferInfo = rhs;
+      return *this;
+    }
+
     const Buffer& buffer() const
     {
       return reinterpret_cast<const Buffer&>( m_descriptorBufferInfo.buffer );
@@ -1668,6 +2148,17 @@ namespace vk
       m_subresourceLayout.rowPitch = rowPitch;
       m_subresourceLayout.arrayPitch = arrayPitch;
       m_subresourceLayout.depthPitch = depthPitch;
+    }
+
+    SubresourceLayout(VkSubresourceLayout const & rhs)
+      : m_subresourceLayout(rhs)
+    {
+    }
+
+    SubresourceLayout& operator=(VkSubresourceLayout const & rhs)
+    {
+      m_subresourceLayout = rhs;
+      return *this;
     }
 
     const DeviceSize& offset() const
@@ -1749,6 +2240,17 @@ namespace vk
       m_bufferCopy.size = size;
     }
 
+    BufferCopy(VkBufferCopy const & rhs)
+      : m_bufferCopy(rhs)
+    {
+    }
+
+    BufferCopy& operator=(VkBufferCopy const & rhs)
+    {
+      m_bufferCopy = rhs;
+      return *this;
+    }
+
     const DeviceSize& srcOffset() const
     {
       return m_bufferCopy.srcOffset;
@@ -1804,6 +2306,17 @@ namespace vk
       m_specializationMapEntry.constantID = constantID;
       m_specializationMapEntry.offset = offset;
       m_specializationMapEntry.size = size;
+    }
+
+    SpecializationMapEntry(VkSpecializationMapEntry const & rhs)
+      : m_specializationMapEntry(rhs)
+    {
+    }
+
+    SpecializationMapEntry& operator=(VkSpecializationMapEntry const & rhs)
+    {
+      m_specializationMapEntry = rhs;
+      return *this;
     }
 
     const uint32_t& constantID() const
@@ -1862,6 +2375,17 @@ namespace vk
       m_specializationInfo.pMapEntries = reinterpret_cast<const VkSpecializationMapEntry*>( pMapEntries );
       m_specializationInfo.dataSize = dataSize;
       m_specializationInfo.pData = pData;
+    }
+
+    SpecializationInfo(VkSpecializationInfo const & rhs)
+      : m_specializationInfo(rhs)
+    {
+    }
+
+    SpecializationInfo& operator=(VkSpecializationInfo const & rhs)
+    {
+      m_specializationInfo = rhs;
+      return *this;
     }
 
     const uint32_t& mapEntryCount() const
@@ -1989,6 +2513,17 @@ namespace vk
     {
       m_clearDepthStencilValue.depth = depth;
       m_clearDepthStencilValue.stencil = stencil;
+    }
+
+    ClearDepthStencilValue(VkClearDepthStencilValue const & rhs)
+      : m_clearDepthStencilValue(rhs)
+    {
+    }
+
+    ClearDepthStencilValue& operator=(VkClearDepthStencilValue const & rhs)
+    {
+      m_clearDepthStencilValue = rhs;
+      return *this;
     }
 
     const float& depth() const
@@ -2131,6 +2666,17 @@ namespace vk
       m_physicalDeviceFeatures.sparseResidencyAliased = sparseResidencyAliased;
       m_physicalDeviceFeatures.variableMultisampleRate = variableMultisampleRate;
       m_physicalDeviceFeatures.inheritedQueries = inheritedQueries;
+    }
+
+    PhysicalDeviceFeatures(VkPhysicalDeviceFeatures const & rhs)
+      : m_physicalDeviceFeatures(rhs)
+    {
+    }
+
+    PhysicalDeviceFeatures& operator=(VkPhysicalDeviceFeatures const & rhs)
+    {
+      m_physicalDeviceFeatures = rhs;
+      return *this;
     }
 
     const Bool32& robustBufferAccess() const
@@ -2801,6 +3347,17 @@ namespace vk
       m_drawIndirectCommand.firstInstance = firstInstance;
     }
 
+    DrawIndirectCommand(VkDrawIndirectCommand const & rhs)
+      : m_drawIndirectCommand(rhs)
+    {
+    }
+
+    DrawIndirectCommand& operator=(VkDrawIndirectCommand const & rhs)
+    {
+      m_drawIndirectCommand = rhs;
+      return *this;
+    }
+
     const uint32_t& vertexCount() const
     {
       return m_drawIndirectCommand.vertexCount;
@@ -2869,6 +3426,17 @@ namespace vk
       m_drawIndexedIndirectCommand.firstIndex = firstIndex;
       m_drawIndexedIndirectCommand.vertexOffset = vertexOffset;
       m_drawIndexedIndirectCommand.firstInstance = firstInstance;
+    }
+
+    DrawIndexedIndirectCommand(VkDrawIndexedIndirectCommand const & rhs)
+      : m_drawIndexedIndirectCommand(rhs)
+    {
+    }
+
+    DrawIndexedIndirectCommand& operator=(VkDrawIndexedIndirectCommand const & rhs)
+    {
+      m_drawIndexedIndirectCommand = rhs;
+      return *this;
     }
 
     const uint32_t& indexCount() const
@@ -2950,6 +3518,17 @@ namespace vk
       m_dispatchIndirectCommand.z = z;
     }
 
+    DispatchIndirectCommand(VkDispatchIndirectCommand const & rhs)
+      : m_dispatchIndirectCommand(rhs)
+    {
+    }
+
+    DispatchIndirectCommand& operator=(VkDispatchIndirectCommand const & rhs)
+    {
+      m_dispatchIndirectCommand = rhs;
+      return *this;
+    }
+
     const uint32_t& x() const
     {
       return m_dispatchIndirectCommand.x;
@@ -3006,6 +3585,17 @@ namespace vk
       m_displayPlanePropertiesKHR.currentStackIndex = currentStackIndex;
     }
 
+    DisplayPlanePropertiesKHR(VkDisplayPlanePropertiesKHR const & rhs)
+      : m_displayPlanePropertiesKHR(rhs)
+    {
+    }
+
+    DisplayPlanePropertiesKHR& operator=(VkDisplayPlanePropertiesKHR const & rhs)
+    {
+      m_displayPlanePropertiesKHR = rhs;
+      return *this;
+    }
+
     const DisplayKHR& currentDisplay() const
     {
       return reinterpret_cast<const DisplayKHR&>( m_displayPlanePropertiesKHR.currentDisplay );
@@ -3051,6 +3641,17 @@ namespace vk
       m_displayModeParametersKHR.refreshRate = refreshRate;
     }
 
+    DisplayModeParametersKHR(VkDisplayModeParametersKHR const & rhs)
+      : m_displayModeParametersKHR(rhs)
+    {
+    }
+
+    DisplayModeParametersKHR& operator=(VkDisplayModeParametersKHR const & rhs)
+    {
+      m_displayModeParametersKHR = rhs;
+      return *this;
+    }
+
     const Extent2D& visibleRegion() const
     {
       return reinterpret_cast<const Extent2D&>( m_displayModeParametersKHR.visibleRegion );
@@ -3094,6 +3695,17 @@ namespace vk
     {
       m_displayModePropertiesKHR.displayMode = static_cast<VkDisplayModeKHR>( displayMode );
       m_displayModePropertiesKHR.parameters = static_cast<VkDisplayModeParametersKHR>( parameters );
+    }
+
+    DisplayModePropertiesKHR(VkDisplayModePropertiesKHR const & rhs)
+      : m_displayModePropertiesKHR(rhs)
+    {
+    }
+
+    DisplayModePropertiesKHR& operator=(VkDisplayModePropertiesKHR const & rhs)
+    {
+      m_displayModePropertiesKHR = rhs;
+      return *this;
     }
 
     const DisplayModeKHR& displayMode() const
@@ -3156,6 +3768,17 @@ namespace vk
       m_descriptorImageInfo.imageLayout = static_cast<VkImageLayout>( imageLayout );
     }
 
+    DescriptorImageInfo(VkDescriptorImageInfo const & rhs)
+      : m_descriptorImageInfo(rhs)
+    {
+    }
+
+    DescriptorImageInfo& operator=(VkDescriptorImageInfo const & rhs)
+    {
+      m_descriptorImageInfo = rhs;
+      return *this;
+    }
+
     const Sampler& sampler() const
     {
       return reinterpret_cast<const Sampler&>( m_descriptorImageInfo.sampler );
@@ -3210,6 +3833,17 @@ namespace vk
     {
       m_attachmentReference.attachment = attachment;
       m_attachmentReference.layout = static_cast<VkImageLayout>( layout );
+    }
+
+    AttachmentReference(VkAttachmentReference const & rhs)
+      : m_attachmentReference(rhs)
+    {
+    }
+
+    AttachmentReference& operator=(VkAttachmentReference const & rhs)
+    {
+      m_attachmentReference = rhs;
+      return *this;
     }
 
     const uint32_t& attachment() const
@@ -3313,6 +3947,17 @@ namespace vk
       m_componentMapping.a = static_cast<VkComponentSwizzle>( a );
     }
 
+    ComponentMapping(VkComponentMapping const & rhs)
+      : m_componentMapping(rhs)
+    {
+    }
+
+    ComponentMapping& operator=(VkComponentMapping const & rhs)
+    {
+      m_componentMapping = rhs;
+      return *this;
+    }
+
     const ComponentSwizzle& r() const
     {
       return reinterpret_cast<const ComponentSwizzle&>( m_componentMapping.r );
@@ -3395,6 +4040,17 @@ namespace vk
       m_descriptorPoolSize.descriptorCount = descriptorCount;
     }
 
+    DescriptorPoolSize(VkDescriptorPoolSize const & rhs)
+      : m_descriptorPoolSize(rhs)
+    {
+    }
+
+    DescriptorPoolSize& operator=(VkDescriptorPoolSize const & rhs)
+    {
+      m_descriptorPoolSize = rhs;
+      return *this;
+    }
+
     const DescriptorType& type() const
     {
       return reinterpret_cast<const DescriptorType&>( m_descriptorPoolSize.type );
@@ -3469,6 +4125,17 @@ namespace vk
       m_subpassDescription.pDepthStencilAttachment = reinterpret_cast<const VkAttachmentReference*>( pDepthStencilAttachment );
       m_subpassDescription.preserveAttachmentCount = preserveAttachmentCount;
       m_subpassDescription.pPreserveAttachments = pPreserveAttachments;
+    }
+
+    SubpassDescription(VkSubpassDescription const & rhs)
+      : m_subpassDescription(rhs)
+    {
+    }
+
+    SubpassDescription& operator=(VkSubpassDescription const & rhs)
+    {
+      m_subpassDescription = rhs;
+      return *this;
     }
 
     const SubpassDescriptionFlags& flags() const
@@ -3746,6 +4413,17 @@ namespace vk
       m_stencilOpState.reference = reference;
     }
 
+    StencilOpState(VkStencilOpState const & rhs)
+      : m_stencilOpState(rhs)
+    {
+    }
+
+    StencilOpState& operator=(VkStencilOpState const & rhs)
+    {
+      m_stencilOpState = rhs;
+      return *this;
+    }
+
     const StencilOp& failOp() const
     {
       return reinterpret_cast<const StencilOp&>( m_stencilOpState.failOp );
@@ -3894,6 +4572,17 @@ namespace vk
       m_vertexInputBindingDescription.binding = binding;
       m_vertexInputBindingDescription.stride = stride;
       m_vertexInputBindingDescription.inputRate = static_cast<VkVertexInputRate>( inputRate );
+    }
+
+    VertexInputBindingDescription(VkVertexInputBindingDescription const & rhs)
+      : m_vertexInputBindingDescription(rhs)
+    {
+    }
+
+    VertexInputBindingDescription& operator=(VkVertexInputBindingDescription const & rhs)
+    {
+      m_vertexInputBindingDescription = rhs;
+      return *this;
     }
 
     const uint32_t& binding() const
@@ -4143,6 +4832,17 @@ namespace vk
       m_vertexInputAttributeDescription.offset = offset;
     }
 
+    VertexInputAttributeDescription(VkVertexInputAttributeDescription const & rhs)
+      : m_vertexInputAttributeDescription(rhs)
+    {
+    }
+
+    VertexInputAttributeDescription& operator=(VkVertexInputAttributeDescription const & rhs)
+    {
+      m_vertexInputAttributeDescription = rhs;
+      return *this;
+    }
+
     const uint32_t& location() const
     {
       return m_vertexInputAttributeDescription.location;
@@ -4280,6 +4980,17 @@ namespace vk
       m_applicationInfo.apiVersion = apiVersion;
     }
 
+    ApplicationInfo(VkApplicationInfo const & rhs)
+      : m_applicationInfo(rhs)
+    {
+    }
+
+    ApplicationInfo& operator=(VkApplicationInfo const & rhs)
+    {
+      m_applicationInfo = rhs;
+      return *this;
+    }
+
     const StructureType& sType() const
     {
       return reinterpret_cast<const StructureType&>( m_applicationInfo.sType );
@@ -4384,6 +5095,17 @@ namespace vk
       m_deviceQueueCreateInfo.pQueuePriorities = pQueuePriorities;
     }
 
+    DeviceQueueCreateInfo(VkDeviceQueueCreateInfo const & rhs)
+      : m_deviceQueueCreateInfo(rhs)
+    {
+    }
+
+    DeviceQueueCreateInfo& operator=(VkDeviceQueueCreateInfo const & rhs)
+    {
+      m_deviceQueueCreateInfo = rhs;
+      return *this;
+    }
+
     const StructureType& sType() const
     {
       return reinterpret_cast<const StructureType&>( m_deviceQueueCreateInfo.sType );
@@ -4479,6 +5201,17 @@ namespace vk
       m_deviceCreateInfo.enabledExtensionCount = enabledExtensionCount;
       m_deviceCreateInfo.ppEnabledExtensionNames = ppEnabledExtensionNames;
       m_deviceCreateInfo.pEnabledFeatures = reinterpret_cast<const VkPhysicalDeviceFeatures*>( pEnabledFeatures );
+    }
+
+    DeviceCreateInfo(VkDeviceCreateInfo const & rhs)
+      : m_deviceCreateInfo(rhs)
+    {
+    }
+
+    DeviceCreateInfo& operator=(VkDeviceCreateInfo const & rhs)
+    {
+      m_deviceCreateInfo = rhs;
+      return *this;
     }
 
     const StructureType& sType() const
@@ -4620,6 +5353,17 @@ namespace vk
       m_instanceCreateInfo.ppEnabledExtensionNames = ppEnabledExtensionNames;
     }
 
+    InstanceCreateInfo(VkInstanceCreateInfo const & rhs)
+      : m_instanceCreateInfo(rhs)
+    {
+    }
+
+    InstanceCreateInfo& operator=(VkInstanceCreateInfo const & rhs)
+    {
+      m_instanceCreateInfo = rhs;
+      return *this;
+    }
+
     const StructureType& sType() const
     {
       return reinterpret_cast<const StructureType&>( m_instanceCreateInfo.sType );
@@ -4733,6 +5477,17 @@ namespace vk
       m_memoryAllocateInfo.memoryTypeIndex = memoryTypeIndex;
     }
 
+    MemoryAllocateInfo(VkMemoryAllocateInfo const & rhs)
+      : m_memoryAllocateInfo(rhs)
+    {
+    }
+
+    MemoryAllocateInfo& operator=(VkMemoryAllocateInfo const & rhs)
+    {
+      m_memoryAllocateInfo = rhs;
+      return *this;
+    }
+
     const StructureType& sType() const
     {
       return reinterpret_cast<const StructureType&>( m_memoryAllocateInfo.sType );
@@ -4801,6 +5556,17 @@ namespace vk
       m_mappedMemoryRange.memory = static_cast<VkDeviceMemory>( memory );
       m_mappedMemoryRange.offset = offset;
       m_mappedMemoryRange.size = size;
+    }
+
+    MappedMemoryRange(VkMappedMemoryRange const & rhs)
+      : m_mappedMemoryRange(rhs)
+    {
+    }
+
+    MappedMemoryRange& operator=(VkMappedMemoryRange const & rhs)
+    {
+      m_mappedMemoryRange = rhs;
+      return *this;
     }
 
     const StructureType& sType() const
@@ -4887,6 +5653,17 @@ namespace vk
       m_writeDescriptorSet.pImageInfo = reinterpret_cast<const VkDescriptorImageInfo*>( pImageInfo );
       m_writeDescriptorSet.pBufferInfo = reinterpret_cast<const VkDescriptorBufferInfo*>( pBufferInfo );
       m_writeDescriptorSet.pTexelBufferView = reinterpret_cast<const VkBufferView*>( pTexelBufferView );
+    }
+
+    WriteDescriptorSet(VkWriteDescriptorSet const & rhs)
+      : m_writeDescriptorSet(rhs)
+    {
+    }
+
+    WriteDescriptorSet& operator=(VkWriteDescriptorSet const & rhs)
+    {
+      m_writeDescriptorSet = rhs;
+      return *this;
     }
 
     const StructureType& sType() const
@@ -5029,6 +5806,17 @@ namespace vk
       m_copyDescriptorSet.descriptorCount = descriptorCount;
     }
 
+    CopyDescriptorSet(VkCopyDescriptorSet const & rhs)
+      : m_copyDescriptorSet(rhs)
+    {
+    }
+
+    CopyDescriptorSet& operator=(VkCopyDescriptorSet const & rhs)
+    {
+      m_copyDescriptorSet = rhs;
+      return *this;
+    }
+
     const StructureType& sType() const
     {
       return reinterpret_cast<const StructureType&>( m_copyDescriptorSet.sType );
@@ -5156,6 +5944,17 @@ namespace vk
       m_bufferViewCreateInfo.range = range;
     }
 
+    BufferViewCreateInfo(VkBufferViewCreateInfo const & rhs)
+      : m_bufferViewCreateInfo(rhs)
+    {
+    }
+
+    BufferViewCreateInfo& operator=(VkBufferViewCreateInfo const & rhs)
+    {
+      m_bufferViewCreateInfo = rhs;
+      return *this;
+    }
+
     const StructureType& sType() const
     {
       return reinterpret_cast<const StructureType&>( m_bufferViewCreateInfo.sType );
@@ -5259,6 +6058,17 @@ namespace vk
       m_shaderModuleCreateInfo.pCode = pCode;
     }
 
+    ShaderModuleCreateInfo(VkShaderModuleCreateInfo const & rhs)
+      : m_shaderModuleCreateInfo(rhs)
+    {
+    }
+
+    ShaderModuleCreateInfo& operator=(VkShaderModuleCreateInfo const & rhs)
+    {
+      m_shaderModuleCreateInfo = rhs;
+      return *this;
+    }
+
     const StructureType& sType() const
     {
       return reinterpret_cast<const StructureType&>( m_shaderModuleCreateInfo.sType );
@@ -5338,6 +6148,17 @@ namespace vk
       m_descriptorSetAllocateInfo.descriptorPool = static_cast<VkDescriptorPool>( descriptorPool );
       m_descriptorSetAllocateInfo.descriptorSetCount = descriptorSetCount;
       m_descriptorSetAllocateInfo.pSetLayouts = reinterpret_cast<const VkDescriptorSetLayout*>( pSetLayouts );
+    }
+
+    DescriptorSetAllocateInfo(VkDescriptorSetAllocateInfo const & rhs)
+      : m_descriptorSetAllocateInfo(rhs)
+    {
+    }
+
+    DescriptorSetAllocateInfo& operator=(VkDescriptorSetAllocateInfo const & rhs)
+    {
+      m_descriptorSetAllocateInfo = rhs;
+      return *this;
     }
 
     const StructureType& sType() const
@@ -5421,6 +6242,17 @@ namespace vk
       m_pipelineVertexInputStateCreateInfo.pVertexBindingDescriptions = reinterpret_cast<const VkVertexInputBindingDescription*>( pVertexBindingDescriptions );
       m_pipelineVertexInputStateCreateInfo.vertexAttributeDescriptionCount = vertexAttributeDescriptionCount;
       m_pipelineVertexInputStateCreateInfo.pVertexAttributeDescriptions = reinterpret_cast<const VkVertexInputAttributeDescription*>( pVertexAttributeDescriptions );
+    }
+
+    PipelineVertexInputStateCreateInfo(VkPipelineVertexInputStateCreateInfo const & rhs)
+      : m_pipelineVertexInputStateCreateInfo(rhs)
+    {
+    }
+
+    PipelineVertexInputStateCreateInfo& operator=(VkPipelineVertexInputStateCreateInfo const & rhs)
+    {
+      m_pipelineVertexInputStateCreateInfo = rhs;
+      return *this;
     }
 
     const StructureType& sType() const
@@ -5526,6 +6358,17 @@ namespace vk
       m_pipelineInputAssemblyStateCreateInfo.primitiveRestartEnable = primitiveRestartEnable;
     }
 
+    PipelineInputAssemblyStateCreateInfo(VkPipelineInputAssemblyStateCreateInfo const & rhs)
+      : m_pipelineInputAssemblyStateCreateInfo(rhs)
+    {
+    }
+
+    PipelineInputAssemblyStateCreateInfo& operator=(VkPipelineInputAssemblyStateCreateInfo const & rhs)
+    {
+      m_pipelineInputAssemblyStateCreateInfo = rhs;
+      return *this;
+    }
+
     const StructureType& sType() const
     {
       return reinterpret_cast<const StructureType&>( m_pipelineInputAssemblyStateCreateInfo.sType );
@@ -5606,6 +6449,17 @@ namespace vk
       m_pipelineTessellationStateCreateInfo.patchControlPoints = patchControlPoints;
     }
 
+    PipelineTessellationStateCreateInfo(VkPipelineTessellationStateCreateInfo const & rhs)
+      : m_pipelineTessellationStateCreateInfo(rhs)
+    {
+    }
+
+    PipelineTessellationStateCreateInfo& operator=(VkPipelineTessellationStateCreateInfo const & rhs)
+    {
+      m_pipelineTessellationStateCreateInfo = rhs;
+      return *this;
+    }
+
     const StructureType& sType() const
     {
       return reinterpret_cast<const StructureType&>( m_pipelineTessellationStateCreateInfo.sType );
@@ -5676,6 +6530,17 @@ namespace vk
       m_pipelineViewportStateCreateInfo.pViewports = reinterpret_cast<const VkViewport*>( pViewports );
       m_pipelineViewportStateCreateInfo.scissorCount = scissorCount;
       m_pipelineViewportStateCreateInfo.pScissors = reinterpret_cast<const VkRect2D*>( pScissors );
+    }
+
+    PipelineViewportStateCreateInfo(VkPipelineViewportStateCreateInfo const & rhs)
+      : m_pipelineViewportStateCreateInfo(rhs)
+    {
+    }
+
+    PipelineViewportStateCreateInfo& operator=(VkPipelineViewportStateCreateInfo const & rhs)
+    {
+      m_pipelineViewportStateCreateInfo = rhs;
+      return *this;
     }
 
     const StructureType& sType() const
@@ -5787,6 +6652,17 @@ namespace vk
       m_pipelineRasterizationStateCreateInfo.depthBiasClamp = depthBiasClamp;
       m_pipelineRasterizationStateCreateInfo.depthBiasSlopeFactor = depthBiasSlopeFactor;
       m_pipelineRasterizationStateCreateInfo.lineWidth = lineWidth;
+    }
+
+    PipelineRasterizationStateCreateInfo(VkPipelineRasterizationStateCreateInfo const & rhs)
+      : m_pipelineRasterizationStateCreateInfo(rhs)
+    {
+    }
+
+    PipelineRasterizationStateCreateInfo& operator=(VkPipelineRasterizationStateCreateInfo const & rhs)
+    {
+      m_pipelineRasterizationStateCreateInfo = rhs;
+      return *this;
     }
 
     const StructureType& sType() const
@@ -5965,6 +6841,17 @@ namespace vk
       m_pipelineDepthStencilStateCreateInfo.maxDepthBounds = maxDepthBounds;
     }
 
+    PipelineDepthStencilStateCreateInfo(VkPipelineDepthStencilStateCreateInfo const & rhs)
+      : m_pipelineDepthStencilStateCreateInfo(rhs)
+    {
+    }
+
+    PipelineDepthStencilStateCreateInfo& operator=(VkPipelineDepthStencilStateCreateInfo const & rhs)
+    {
+      m_pipelineDepthStencilStateCreateInfo = rhs;
+      return *this;
+    }
+
     const StructureType& sType() const
     {
       return reinterpret_cast<const StructureType&>( m_pipelineDepthStencilStateCreateInfo.sType );
@@ -6123,6 +7010,17 @@ namespace vk
       m_pipelineCacheCreateInfo.pInitialData = pInitialData;
     }
 
+    PipelineCacheCreateInfo(VkPipelineCacheCreateInfo const & rhs)
+      : m_pipelineCacheCreateInfo(rhs)
+    {
+    }
+
+    PipelineCacheCreateInfo& operator=(VkPipelineCacheCreateInfo const & rhs)
+    {
+      m_pipelineCacheCreateInfo = rhs;
+      return *this;
+    }
+
     const StructureType& sType() const
     {
       return reinterpret_cast<const StructureType&>( m_pipelineCacheCreateInfo.sType );
@@ -6215,6 +7113,17 @@ namespace vk
       m_samplerCreateInfo.maxLod = maxLod;
       m_samplerCreateInfo.borderColor = static_cast<VkBorderColor>( borderColor );
       m_samplerCreateInfo.unnormalizedCoordinates = unnormalizedCoordinates;
+    }
+
+    SamplerCreateInfo(VkSamplerCreateInfo const & rhs)
+      : m_samplerCreateInfo(rhs)
+    {
+    }
+
+    SamplerCreateInfo& operator=(VkSamplerCreateInfo const & rhs)
+    {
+      m_samplerCreateInfo = rhs;
+      return *this;
     }
 
     const StructureType& sType() const
@@ -6441,6 +7350,17 @@ namespace vk
       m_commandBufferAllocateInfo.commandBufferCount = commandBufferCount;
     }
 
+    CommandBufferAllocateInfo(VkCommandBufferAllocateInfo const & rhs)
+      : m_commandBufferAllocateInfo(rhs)
+    {
+    }
+
+    CommandBufferAllocateInfo& operator=(VkCommandBufferAllocateInfo const & rhs)
+    {
+      m_commandBufferAllocateInfo = rhs;
+      return *this;
+    }
+
     const StructureType& sType() const
     {
       return reinterpret_cast<const StructureType&>( m_commandBufferAllocateInfo.sType );
@@ -6522,6 +7442,17 @@ namespace vk
       m_renderPassBeginInfo.renderArea = static_cast<VkRect2D>( renderArea );
       m_renderPassBeginInfo.clearValueCount = clearValueCount;
       m_renderPassBeginInfo.pClearValues = reinterpret_cast<const VkClearValue*>( pClearValues );
+    }
+
+    RenderPassBeginInfo(VkRenderPassBeginInfo const & rhs)
+      : m_renderPassBeginInfo(rhs)
+    {
+    }
+
+    RenderPassBeginInfo& operator=(VkRenderPassBeginInfo const & rhs)
+    {
+      m_renderPassBeginInfo = rhs;
+      return *this;
     }
 
     const StructureType& sType() const
@@ -6625,6 +7556,17 @@ namespace vk
       m_eventCreateInfo.flags = static_cast<VkEventCreateFlags>( flags );
     }
 
+    EventCreateInfo(VkEventCreateInfo const & rhs)
+      : m_eventCreateInfo(rhs)
+    {
+    }
+
+    EventCreateInfo& operator=(VkEventCreateInfo const & rhs)
+    {
+      m_eventCreateInfo = rhs;
+      return *this;
+    }
+
     const StructureType& sType() const
     {
       return reinterpret_cast<const StructureType&>( m_eventCreateInfo.sType );
@@ -6680,6 +7622,17 @@ namespace vk
       m_semaphoreCreateInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
       m_semaphoreCreateInfo.pNext = nullptr;
       m_semaphoreCreateInfo.flags = static_cast<VkSemaphoreCreateFlags>( flags );
+    }
+
+    SemaphoreCreateInfo(VkSemaphoreCreateInfo const & rhs)
+      : m_semaphoreCreateInfo(rhs)
+    {
+    }
+
+    SemaphoreCreateInfo& operator=(VkSemaphoreCreateInfo const & rhs)
+    {
+      m_semaphoreCreateInfo = rhs;
+      return *this;
     }
 
     const StructureType& sType() const
@@ -6743,6 +7696,17 @@ namespace vk
       m_framebufferCreateInfo.width = width;
       m_framebufferCreateInfo.height = height;
       m_framebufferCreateInfo.layers = layers;
+    }
+
+    FramebufferCreateInfo(VkFramebufferCreateInfo const & rhs)
+      : m_framebufferCreateInfo(rhs)
+    {
+    }
+
+    FramebufferCreateInfo& operator=(VkFramebufferCreateInfo const & rhs)
+    {
+      m_framebufferCreateInfo = rhs;
+      return *this;
     }
 
     const StructureType& sType() const
@@ -6869,6 +7833,17 @@ namespace vk
       m_displayModeCreateInfoKHR.parameters = static_cast<VkDisplayModeParametersKHR>( parameters );
     }
 
+    DisplayModeCreateInfoKHR(VkDisplayModeCreateInfoKHR const & rhs)
+      : m_displayModeCreateInfoKHR(rhs)
+    {
+    }
+
+    DisplayModeCreateInfoKHR& operator=(VkDisplayModeCreateInfoKHR const & rhs)
+    {
+      m_displayModeCreateInfoKHR = rhs;
+      return *this;
+    }
+
     const StructureType& sType() const
     {
       return reinterpret_cast<const StructureType&>( m_displayModeCreateInfoKHR.sType );
@@ -6937,6 +7912,17 @@ namespace vk
       m_displayPresentInfoKHR.srcRect = static_cast<VkRect2D>( srcRect );
       m_displayPresentInfoKHR.dstRect = static_cast<VkRect2D>( dstRect );
       m_displayPresentInfoKHR.persistent = persistent;
+    }
+
+    DisplayPresentInfoKHR(VkDisplayPresentInfoKHR const & rhs)
+      : m_displayPresentInfoKHR(rhs)
+    {
+    }
+
+    DisplayPresentInfoKHR& operator=(VkDisplayPresentInfoKHR const & rhs)
+    {
+      m_displayPresentInfoKHR = rhs;
+      return *this;
     }
 
     const StructureType& sType() const
@@ -7020,6 +8006,17 @@ namespace vk
       m_androidSurfaceCreateInfoKHR.window = window;
     }
 
+    AndroidSurfaceCreateInfoKHR(VkAndroidSurfaceCreateInfoKHR const & rhs)
+      : m_androidSurfaceCreateInfoKHR(rhs)
+    {
+    }
+
+    AndroidSurfaceCreateInfoKHR& operator=(VkAndroidSurfaceCreateInfoKHR const & rhs)
+    {
+      m_androidSurfaceCreateInfoKHR = rhs;
+      return *this;
+    }
+
     const StructureType& sType() const
     {
       return reinterpret_cast<const StructureType&>( m_androidSurfaceCreateInfoKHR.sType );
@@ -7090,6 +8087,17 @@ namespace vk
       m_mirSurfaceCreateInfoKHR.flags = static_cast<VkMirSurfaceCreateFlagsKHR>( flags );
       m_mirSurfaceCreateInfoKHR.connection = connection;
       m_mirSurfaceCreateInfoKHR.mirSurface = mirSurface;
+    }
+
+    MirSurfaceCreateInfoKHR(VkMirSurfaceCreateInfoKHR const & rhs)
+      : m_mirSurfaceCreateInfoKHR(rhs)
+    {
+    }
+
+    MirSurfaceCreateInfoKHR& operator=(VkMirSurfaceCreateInfoKHR const & rhs)
+    {
+      m_mirSurfaceCreateInfoKHR = rhs;
+      return *this;
     }
 
     const StructureType& sType() const
@@ -7175,6 +8183,17 @@ namespace vk
       m_waylandSurfaceCreateInfoKHR.surface = surface;
     }
 
+    WaylandSurfaceCreateInfoKHR(VkWaylandSurfaceCreateInfoKHR const & rhs)
+      : m_waylandSurfaceCreateInfoKHR(rhs)
+    {
+    }
+
+    WaylandSurfaceCreateInfoKHR& operator=(VkWaylandSurfaceCreateInfoKHR const & rhs)
+    {
+      m_waylandSurfaceCreateInfoKHR = rhs;
+      return *this;
+    }
+
     const StructureType& sType() const
     {
       return reinterpret_cast<const StructureType&>( m_waylandSurfaceCreateInfoKHR.sType );
@@ -7256,6 +8275,17 @@ namespace vk
       m_win32SurfaceCreateInfoKHR.flags = static_cast<VkWin32SurfaceCreateFlagsKHR>( flags );
       m_win32SurfaceCreateInfoKHR.hinstance = hinstance;
       m_win32SurfaceCreateInfoKHR.hwnd = hwnd;
+    }
+
+    Win32SurfaceCreateInfoKHR(VkWin32SurfaceCreateInfoKHR const & rhs)
+      : m_win32SurfaceCreateInfoKHR(rhs)
+    {
+    }
+
+    Win32SurfaceCreateInfoKHR& operator=(VkWin32SurfaceCreateInfoKHR const & rhs)
+    {
+      m_win32SurfaceCreateInfoKHR = rhs;
+      return *this;
     }
 
     const StructureType& sType() const
@@ -7341,6 +8371,17 @@ namespace vk
       m_xlibSurfaceCreateInfoKHR.window = window;
     }
 
+    XlibSurfaceCreateInfoKHR(VkXlibSurfaceCreateInfoKHR const & rhs)
+      : m_xlibSurfaceCreateInfoKHR(rhs)
+    {
+    }
+
+    XlibSurfaceCreateInfoKHR& operator=(VkXlibSurfaceCreateInfoKHR const & rhs)
+    {
+      m_xlibSurfaceCreateInfoKHR = rhs;
+      return *this;
+    }
+
     const StructureType& sType() const
     {
       return reinterpret_cast<const StructureType&>( m_xlibSurfaceCreateInfoKHR.sType );
@@ -7422,6 +8463,17 @@ namespace vk
       m_xcbSurfaceCreateInfoKHR.flags = static_cast<VkXcbSurfaceCreateFlagsKHR>( flags );
       m_xcbSurfaceCreateInfoKHR.connection = connection;
       m_xcbSurfaceCreateInfoKHR.window = window;
+    }
+
+    XcbSurfaceCreateInfoKHR(VkXcbSurfaceCreateInfoKHR const & rhs)
+      : m_xcbSurfaceCreateInfoKHR(rhs)
+    {
+    }
+
+    XcbSurfaceCreateInfoKHR& operator=(VkXcbSurfaceCreateInfoKHR const & rhs)
+    {
+      m_xcbSurfaceCreateInfoKHR = rhs;
+      return *this;
     }
 
     const StructureType& sType() const
@@ -7540,6 +8592,17 @@ namespace vk
       m_presentInfoKHR.pSwapchains = reinterpret_cast<const VkSwapchainKHR*>( pSwapchains );
       m_presentInfoKHR.pImageIndices = pImageIndices;
       m_presentInfoKHR.pResults = reinterpret_cast<VkResult*>( pResults );
+    }
+
+    PresentInfoKHR(VkPresentInfoKHR const & rhs)
+      : m_presentInfoKHR(rhs)
+    {
+    }
+
+    PresentInfoKHR& operator=(VkPresentInfoKHR const & rhs)
+    {
+      m_presentInfoKHR = rhs;
+      return *this;
     }
 
     const StructureType& sType() const
@@ -7667,6 +8730,17 @@ namespace vk
       m_pipelineDynamicStateCreateInfo.flags = static_cast<VkPipelineDynamicStateCreateFlags>( flags );
       m_pipelineDynamicStateCreateInfo.dynamicStateCount = dynamicStateCount;
       m_pipelineDynamicStateCreateInfo.pDynamicStates = reinterpret_cast<const VkDynamicState*>( pDynamicStates );
+    }
+
+    PipelineDynamicStateCreateInfo(VkPipelineDynamicStateCreateInfo const & rhs)
+      : m_pipelineDynamicStateCreateInfo(rhs)
+    {
+    }
+
+    PipelineDynamicStateCreateInfo& operator=(VkPipelineDynamicStateCreateInfo const & rhs)
+    {
+      m_pipelineDynamicStateCreateInfo = rhs;
+      return *this;
     }
 
     const StructureType& sType() const
@@ -7932,6 +9006,17 @@ namespace vk
       m_memoryBarrier.dstAccessMask = static_cast<VkAccessFlags>( dstAccessMask );
     }
 
+    MemoryBarrier(VkMemoryBarrier const & rhs)
+      : m_memoryBarrier(rhs)
+    {
+    }
+
+    MemoryBarrier& operator=(VkMemoryBarrier const & rhs)
+    {
+      m_memoryBarrier = rhs;
+      return *this;
+    }
+
     const StructureType& sType() const
     {
       return reinterpret_cast<const StructureType&>( m_memoryBarrier.sType );
@@ -8004,6 +9089,17 @@ namespace vk
       m_bufferMemoryBarrier.buffer = static_cast<VkBuffer>( buffer );
       m_bufferMemoryBarrier.offset = offset;
       m_bufferMemoryBarrier.size = size;
+    }
+
+    BufferMemoryBarrier(VkBufferMemoryBarrier const & rhs)
+      : m_bufferMemoryBarrier(rhs)
+    {
+    }
+
+    BufferMemoryBarrier& operator=(VkBufferMemoryBarrier const & rhs)
+    {
+      m_bufferMemoryBarrier = rhs;
+      return *this;
     }
 
     const StructureType& sType() const
@@ -8168,6 +9264,17 @@ namespace vk
       m_bufferCreateInfo.pQueueFamilyIndices = pQueueFamilyIndices;
     }
 
+    BufferCreateInfo(VkBufferCreateInfo const & rhs)
+      : m_bufferCreateInfo(rhs)
+    {
+    }
+
+    BufferCreateInfo& operator=(VkBufferCreateInfo const & rhs)
+    {
+      m_bufferCreateInfo = rhs;
+      return *this;
+    }
+
     const StructureType& sType() const
     {
       return reinterpret_cast<const StructureType&>( m_bufferCreateInfo.sType );
@@ -8301,6 +9408,17 @@ namespace vk
       m_descriptorSetLayoutBinding.pImmutableSamplers = reinterpret_cast<const VkSampler*>( pImmutableSamplers );
     }
 
+    DescriptorSetLayoutBinding(VkDescriptorSetLayoutBinding const & rhs)
+      : m_descriptorSetLayoutBinding(rhs)
+    {
+    }
+
+    DescriptorSetLayoutBinding& operator=(VkDescriptorSetLayoutBinding const & rhs)
+    {
+      m_descriptorSetLayoutBinding = rhs;
+      return *this;
+    }
+
     const uint32_t& binding() const
     {
       return m_descriptorSetLayoutBinding.binding;
@@ -8380,6 +9498,17 @@ namespace vk
       m_descriptorSetLayoutCreateInfo.flags = static_cast<VkDescriptorSetLayoutCreateFlags>( flags );
       m_descriptorSetLayoutCreateInfo.bindingCount = bindingCount;
       m_descriptorSetLayoutCreateInfo.pBindings = reinterpret_cast<const VkDescriptorSetLayoutBinding*>( pBindings );
+    }
+
+    DescriptorSetLayoutCreateInfo(VkDescriptorSetLayoutCreateInfo const & rhs)
+      : m_descriptorSetLayoutCreateInfo(rhs)
+    {
+    }
+
+    DescriptorSetLayoutCreateInfo& operator=(VkDescriptorSetLayoutCreateInfo const & rhs)
+    {
+      m_descriptorSetLayoutCreateInfo = rhs;
+      return *this;
     }
 
     const StructureType& sType() const
@@ -8463,6 +9592,17 @@ namespace vk
       m_pipelineShaderStageCreateInfo.module = static_cast<VkShaderModule>( module );
       m_pipelineShaderStageCreateInfo.pName = pName;
       m_pipelineShaderStageCreateInfo.pSpecializationInfo = reinterpret_cast<const VkSpecializationInfo*>( pSpecializationInfo );
+    }
+
+    PipelineShaderStageCreateInfo(VkPipelineShaderStageCreateInfo const & rhs)
+      : m_pipelineShaderStageCreateInfo(rhs)
+    {
+    }
+
+    PipelineShaderStageCreateInfo& operator=(VkPipelineShaderStageCreateInfo const & rhs)
+    {
+      m_pipelineShaderStageCreateInfo = rhs;
+      return *this;
     }
 
     const StructureType& sType() const
@@ -8566,6 +9706,17 @@ namespace vk
       m_pushConstantRange.size = size;
     }
 
+    PushConstantRange(VkPushConstantRange const & rhs)
+      : m_pushConstantRange(rhs)
+    {
+    }
+
+    PushConstantRange& operator=(VkPushConstantRange const & rhs)
+    {
+      m_pushConstantRange = rhs;
+      return *this;
+    }
+
     const ShaderStageFlags& stageFlags() const
     {
       return reinterpret_cast<const ShaderStageFlags&>( m_pushConstantRange.stageFlags );
@@ -8625,6 +9776,17 @@ namespace vk
       m_pipelineLayoutCreateInfo.pSetLayouts = reinterpret_cast<const VkDescriptorSetLayout*>( pSetLayouts );
       m_pipelineLayoutCreateInfo.pushConstantRangeCount = pushConstantRangeCount;
       m_pipelineLayoutCreateInfo.pPushConstantRanges = reinterpret_cast<const VkPushConstantRange*>( pPushConstantRanges );
+    }
+
+    PipelineLayoutCreateInfo(VkPipelineLayoutCreateInfo const & rhs)
+      : m_pipelineLayoutCreateInfo(rhs)
+    {
+    }
+
+    PipelineLayoutCreateInfo& operator=(VkPipelineLayoutCreateInfo const & rhs)
+    {
+      m_pipelineLayoutCreateInfo = rhs;
+      return *this;
     }
 
     const StructureType& sType() const
@@ -8781,6 +9943,17 @@ namespace vk
       m_computePipelineCreateInfo.basePipelineIndex = basePipelineIndex;
     }
 
+    ComputePipelineCreateInfo(VkComputePipelineCreateInfo const & rhs)
+      : m_computePipelineCreateInfo(rhs)
+    {
+    }
+
+    ComputePipelineCreateInfo& operator=(VkComputePipelineCreateInfo const & rhs)
+    {
+      m_computePipelineCreateInfo = rhs;
+      return *this;
+    }
+
     const StructureType& sType() const
     {
       return reinterpret_cast<const StructureType&>( m_computePipelineCreateInfo.sType );
@@ -8902,6 +10075,17 @@ namespace vk
       m_pipelineColorBlendAttachmentState.colorWriteMask = static_cast<VkColorComponentFlags>( colorWriteMask );
     }
 
+    PipelineColorBlendAttachmentState(VkPipelineColorBlendAttachmentState const & rhs)
+      : m_pipelineColorBlendAttachmentState(rhs)
+    {
+    }
+
+    PipelineColorBlendAttachmentState& operator=(VkPipelineColorBlendAttachmentState const & rhs)
+    {
+      m_pipelineColorBlendAttachmentState = rhs;
+      return *this;
+    }
+
     const Bool32& blendEnable() const
     {
       return m_pipelineColorBlendAttachmentState.blendEnable;
@@ -9017,6 +10201,17 @@ namespace vk
       m_pipelineColorBlendStateCreateInfo.attachmentCount = attachmentCount;
       m_pipelineColorBlendStateCreateInfo.pAttachments = reinterpret_cast<const VkPipelineColorBlendAttachmentState*>( pAttachments );
       memcpy( &m_pipelineColorBlendStateCreateInfo.blendConstants, blendConstants.data(), 4 * sizeof( float ) );
+    }
+
+    PipelineColorBlendStateCreateInfo(VkPipelineColorBlendStateCreateInfo const & rhs)
+      : m_pipelineColorBlendStateCreateInfo(rhs)
+    {
+    }
+
+    PipelineColorBlendStateCreateInfo& operator=(VkPipelineColorBlendStateCreateInfo const & rhs)
+    {
+      m_pipelineColorBlendStateCreateInfo = rhs;
+      return *this;
     }
 
     const StructureType& sType() const
@@ -9141,6 +10336,17 @@ namespace vk
       m_fenceCreateInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
       m_fenceCreateInfo.pNext = nullptr;
       m_fenceCreateInfo.flags = static_cast<VkFenceCreateFlags>( flags );
+    }
+
+    FenceCreateInfo(VkFenceCreateInfo const & rhs)
+      : m_fenceCreateInfo(rhs)
+    {
+    }
+
+    FenceCreateInfo& operator=(VkFenceCreateInfo const & rhs)
+    {
+      m_fenceCreateInfo = rhs;
+      return *this;
     }
 
     const StructureType& sType() const
@@ -9320,6 +10526,17 @@ namespace vk
       m_commandBufferInheritanceInfo.pipelineStatistics = static_cast<VkQueryPipelineStatisticFlags>( pipelineStatistics );
     }
 
+    CommandBufferInheritanceInfo(VkCommandBufferInheritanceInfo const & rhs)
+      : m_commandBufferInheritanceInfo(rhs)
+    {
+    }
+
+    CommandBufferInheritanceInfo& operator=(VkCommandBufferInheritanceInfo const & rhs)
+    {
+      m_commandBufferInheritanceInfo = rhs;
+      return *this;
+    }
+
     const StructureType& sType() const
     {
       return reinterpret_cast<const StructureType&>( m_commandBufferInheritanceInfo.sType );
@@ -9433,6 +10650,17 @@ namespace vk
       m_commandBufferBeginInfo.pInheritanceInfo = reinterpret_cast<const VkCommandBufferInheritanceInfo*>( pInheritanceInfo );
     }
 
+    CommandBufferBeginInfo(VkCommandBufferBeginInfo const & rhs)
+      : m_commandBufferBeginInfo(rhs)
+    {
+    }
+
+    CommandBufferBeginInfo& operator=(VkCommandBufferBeginInfo const & rhs)
+    {
+      m_commandBufferBeginInfo = rhs;
+      return *this;
+    }
+
     const StructureType& sType() const
     {
       return reinterpret_cast<const StructureType&>( m_commandBufferBeginInfo.sType );
@@ -9502,6 +10730,17 @@ namespace vk
       m_queryPoolCreateInfo.queryType = static_cast<VkQueryType>( queryType );
       m_queryPoolCreateInfo.queryCount = queryCount;
       m_queryPoolCreateInfo.pipelineStatistics = static_cast<VkQueryPipelineStatisticFlags>( pipelineStatistics );
+    }
+
+    QueryPoolCreateInfo(VkQueryPoolCreateInfo const & rhs)
+      : m_queryPoolCreateInfo(rhs)
+    {
+    }
+
+    QueryPoolCreateInfo& operator=(VkQueryPoolCreateInfo const & rhs)
+    {
+      m_queryPoolCreateInfo = rhs;
+      return *this;
     }
 
     const StructureType& sType() const
@@ -9609,6 +10848,17 @@ namespace vk
       m_imageSubresource.arrayLayer = arrayLayer;
     }
 
+    ImageSubresource(VkImageSubresource const & rhs)
+      : m_imageSubresource(rhs)
+    {
+    }
+
+    ImageSubresource& operator=(VkImageSubresource const & rhs)
+    {
+      m_imageSubresource = rhs;
+      return *this;
+    }
+
     const ImageAspectFlags& aspectMask() const
     {
       return reinterpret_cast<const ImageAspectFlags&>( m_imageSubresource.aspectMask );
@@ -9665,6 +10915,17 @@ namespace vk
       m_imageSubresourceLayers.mipLevel = mipLevel;
       m_imageSubresourceLayers.baseArrayLayer = baseArrayLayer;
       m_imageSubresourceLayers.layerCount = layerCount;
+    }
+
+    ImageSubresourceLayers(VkImageSubresourceLayers const & rhs)
+      : m_imageSubresourceLayers(rhs)
+    {
+    }
+
+    ImageSubresourceLayers& operator=(VkImageSubresourceLayers const & rhs)
+    {
+      m_imageSubresourceLayers = rhs;
+      return *this;
     }
 
     const ImageAspectFlags& aspectMask() const
@@ -9735,6 +10996,17 @@ namespace vk
       m_imageSubresourceRange.levelCount = levelCount;
       m_imageSubresourceRange.baseArrayLayer = baseArrayLayer;
       m_imageSubresourceRange.layerCount = layerCount;
+    }
+
+    ImageSubresourceRange(VkImageSubresourceRange const & rhs)
+      : m_imageSubresourceRange(rhs)
+    {
+    }
+
+    ImageSubresourceRange& operator=(VkImageSubresourceRange const & rhs)
+    {
+      m_imageSubresourceRange = rhs;
+      return *this;
     }
 
     const ImageAspectFlags& aspectMask() const
@@ -9821,6 +11093,17 @@ namespace vk
       m_imageMemoryBarrier.dstQueueFamilyIndex = dstQueueFamilyIndex;
       m_imageMemoryBarrier.image = static_cast<VkImage>( image );
       m_imageMemoryBarrier.subresourceRange = static_cast<VkImageSubresourceRange>( subresourceRange );
+    }
+
+    ImageMemoryBarrier(VkImageMemoryBarrier const & rhs)
+      : m_imageMemoryBarrier(rhs)
+    {
+    }
+
+    ImageMemoryBarrier& operator=(VkImageMemoryBarrier const & rhs)
+    {
+      m_imageMemoryBarrier = rhs;
+      return *this;
     }
 
     const StructureType& sType() const
@@ -9962,6 +11245,17 @@ namespace vk
       m_imageViewCreateInfo.subresourceRange = static_cast<VkImageSubresourceRange>( subresourceRange );
     }
 
+    ImageViewCreateInfo(VkImageViewCreateInfo const & rhs)
+      : m_imageViewCreateInfo(rhs)
+    {
+    }
+
+    ImageViewCreateInfo& operator=(VkImageViewCreateInfo const & rhs)
+    {
+      m_imageViewCreateInfo = rhs;
+      return *this;
+    }
+
     const StructureType& sType() const
     {
       return reinterpret_cast<const StructureType&>( m_imageViewCreateInfo.sType );
@@ -10076,6 +11370,17 @@ namespace vk
       m_imageCopy.extent = static_cast<VkExtent3D>( extent );
     }
 
+    ImageCopy(VkImageCopy const & rhs)
+      : m_imageCopy(rhs)
+    {
+    }
+
+    ImageCopy& operator=(VkImageCopy const & rhs)
+    {
+      m_imageCopy = rhs;
+      return *this;
+    }
+
     const ImageSubresourceLayers& srcSubresource() const
     {
       return reinterpret_cast<const ImageSubresourceLayers&>( m_imageCopy.srcSubresource );
@@ -10156,6 +11461,17 @@ namespace vk
       memcpy( &m_imageBlit.dstOffsets, dstOffsets.data(), 2 * sizeof( Offset3D ) );
     }
 
+    ImageBlit(VkImageBlit const & rhs)
+      : m_imageBlit(rhs)
+    {
+    }
+
+    ImageBlit& operator=(VkImageBlit const & rhs)
+    {
+      m_imageBlit = rhs;
+      return *this;
+    }
+
     const ImageSubresourceLayers& srcSubresource() const
     {
       return reinterpret_cast<const ImageSubresourceLayers&>( m_imageBlit.srcSubresource );
@@ -10225,6 +11541,17 @@ namespace vk
       m_bufferImageCopy.imageSubresource = static_cast<VkImageSubresourceLayers>( imageSubresource );
       m_bufferImageCopy.imageOffset = static_cast<VkOffset3D>( imageOffset );
       m_bufferImageCopy.imageExtent = static_cast<VkExtent3D>( imageExtent );
+    }
+
+    BufferImageCopy(VkBufferImageCopy const & rhs)
+      : m_bufferImageCopy(rhs)
+    {
+    }
+
+    BufferImageCopy& operator=(VkBufferImageCopy const & rhs)
+    {
+      m_bufferImageCopy = rhs;
+      return *this;
     }
 
     const DeviceSize& bufferOffset() const
@@ -10319,6 +11646,17 @@ namespace vk
       m_imageResolve.extent = static_cast<VkExtent3D>( extent );
     }
 
+    ImageResolve(VkImageResolve const & rhs)
+      : m_imageResolve(rhs)
+    {
+    }
+
+    ImageResolve& operator=(VkImageResolve const & rhs)
+    {
+      m_imageResolve = rhs;
+      return *this;
+    }
+
     const ImageSubresourceLayers& srcSubresource() const
     {
       return reinterpret_cast<const ImageSubresourceLayers&>( m_imageResolve.srcSubresource );
@@ -10396,6 +11734,17 @@ namespace vk
       m_clearAttachment.aspectMask = static_cast<VkImageAspectFlags>( aspectMask );
       m_clearAttachment.colorAttachment = colorAttachment;
       m_clearAttachment.clearValue = static_cast<VkClearValue>( clearValue );
+    }
+
+    ClearAttachment(VkClearAttachment const & rhs)
+      : m_clearAttachment(rhs)
+    {
+    }
+
+    ClearAttachment& operator=(VkClearAttachment const & rhs)
+    {
+      m_clearAttachment = rhs;
+      return *this;
     }
 
     const ImageAspectFlags& aspectMask() const
@@ -10549,6 +11898,17 @@ namespace vk
       m_sparseMemoryBind.flags = static_cast<VkSparseMemoryBindFlags>( flags );
     }
 
+    SparseMemoryBind(VkSparseMemoryBind const & rhs)
+      : m_sparseMemoryBind(rhs)
+    {
+    }
+
+    SparseMemoryBind& operator=(VkSparseMemoryBind const & rhs)
+    {
+      m_sparseMemoryBind = rhs;
+      return *this;
+    }
+
     const DeviceSize& resourceOffset() const
     {
       return m_sparseMemoryBind.resourceOffset;
@@ -10629,6 +11989,17 @@ namespace vk
       m_sparseImageMemoryBind.memory = static_cast<VkDeviceMemory>( memory );
       m_sparseImageMemoryBind.memoryOffset = memoryOffset;
       m_sparseImageMemoryBind.flags = static_cast<VkSparseMemoryBindFlags>( flags );
+    }
+
+    SparseImageMemoryBind(VkSparseImageMemoryBind const & rhs)
+      : m_sparseImageMemoryBind(rhs)
+    {
+    }
+
+    SparseImageMemoryBind& operator=(VkSparseImageMemoryBind const & rhs)
+    {
+      m_sparseImageMemoryBind = rhs;
+      return *this;
     }
 
     const ImageSubresource& subresource() const
@@ -10721,6 +12092,17 @@ namespace vk
       m_sparseBufferMemoryBindInfo.pBinds = reinterpret_cast<const VkSparseMemoryBind*>( pBinds );
     }
 
+    SparseBufferMemoryBindInfo(VkSparseBufferMemoryBindInfo const & rhs)
+      : m_sparseBufferMemoryBindInfo(rhs)
+    {
+    }
+
+    SparseBufferMemoryBindInfo& operator=(VkSparseBufferMemoryBindInfo const & rhs)
+    {
+      m_sparseBufferMemoryBindInfo = rhs;
+      return *this;
+    }
+
     const Buffer& buffer() const
     {
       return reinterpret_cast<const Buffer&>( m_sparseBufferMemoryBindInfo.buffer );
@@ -10778,6 +12160,17 @@ namespace vk
       m_sparseImageOpaqueMemoryBindInfo.pBinds = reinterpret_cast<const VkSparseMemoryBind*>( pBinds );
     }
 
+    SparseImageOpaqueMemoryBindInfo(VkSparseImageOpaqueMemoryBindInfo const & rhs)
+      : m_sparseImageOpaqueMemoryBindInfo(rhs)
+    {
+    }
+
+    SparseImageOpaqueMemoryBindInfo& operator=(VkSparseImageOpaqueMemoryBindInfo const & rhs)
+    {
+      m_sparseImageOpaqueMemoryBindInfo = rhs;
+      return *this;
+    }
+
     const Image& image() const
     {
       return reinterpret_cast<const Image&>( m_sparseImageOpaqueMemoryBindInfo.image );
@@ -10833,6 +12226,17 @@ namespace vk
       m_sparseImageMemoryBindInfo.image = static_cast<VkImage>( image );
       m_sparseImageMemoryBindInfo.bindCount = bindCount;
       m_sparseImageMemoryBindInfo.pBinds = reinterpret_cast<const VkSparseImageMemoryBind*>( pBinds );
+    }
+
+    SparseImageMemoryBindInfo(VkSparseImageMemoryBindInfo const & rhs)
+      : m_sparseImageMemoryBindInfo(rhs)
+    {
+    }
+
+    SparseImageMemoryBindInfo& operator=(VkSparseImageMemoryBindInfo const & rhs)
+    {
+      m_sparseImageMemoryBindInfo = rhs;
+      return *this;
     }
 
     const Image& image() const
@@ -10899,6 +12303,17 @@ namespace vk
       m_bindSparseInfo.pImageBinds = reinterpret_cast<const VkSparseImageMemoryBindInfo*>( pImageBinds );
       m_bindSparseInfo.signalSemaphoreCount = signalSemaphoreCount;
       m_bindSparseInfo.pSignalSemaphores = reinterpret_cast<const VkSemaphore*>( pSignalSemaphores );
+    }
+
+    BindSparseInfo(VkBindSparseInfo const & rhs)
+      : m_bindSparseInfo(rhs)
+    {
+    }
+
+    BindSparseInfo& operator=(VkBindSparseInfo const & rhs)
+    {
+      m_bindSparseInfo = rhs;
+      return *this;
     }
 
     const StructureType& sType() const
@@ -11099,6 +12514,17 @@ namespace vk
       m_commandPoolCreateInfo.queueFamilyIndex = queueFamilyIndex;
     }
 
+    CommandPoolCreateInfo(VkCommandPoolCreateInfo const & rhs)
+      : m_commandPoolCreateInfo(rhs)
+    {
+    }
+
+    CommandPoolCreateInfo& operator=(VkCommandPoolCreateInfo const & rhs)
+    {
+      m_commandPoolCreateInfo = rhs;
+      return *this;
+    }
+
     const StructureType& sType() const
     {
       return reinterpret_cast<const StructureType&>( m_commandPoolCreateInfo.sType );
@@ -11257,6 +12683,17 @@ namespace vk
       m_imageCreateInfo.queueFamilyIndexCount = queueFamilyIndexCount;
       m_imageCreateInfo.pQueueFamilyIndices = pQueueFamilyIndices;
       m_imageCreateInfo.initialLayout = static_cast<VkImageLayout>( initialLayout );
+    }
+
+    ImageCreateInfo(VkImageCreateInfo const & rhs)
+      : m_imageCreateInfo(rhs)
+    {
+    }
+
+    ImageCreateInfo& operator=(VkImageCreateInfo const & rhs)
+    {
+      m_imageCreateInfo = rhs;
+      return *this;
     }
 
     const StructureType& sType() const
@@ -11454,6 +12891,17 @@ namespace vk
       m_pipelineMultisampleStateCreateInfo.alphaToOneEnable = alphaToOneEnable;
     }
 
+    PipelineMultisampleStateCreateInfo(VkPipelineMultisampleStateCreateInfo const & rhs)
+      : m_pipelineMultisampleStateCreateInfo(rhs)
+    {
+    }
+
+    PipelineMultisampleStateCreateInfo& operator=(VkPipelineMultisampleStateCreateInfo const & rhs)
+    {
+      m_pipelineMultisampleStateCreateInfo = rhs;
+      return *this;
+    }
+
     const StructureType& sType() const
     {
       return reinterpret_cast<const StructureType&>( m_pipelineMultisampleStateCreateInfo.sType );
@@ -11591,6 +13039,17 @@ namespace vk
       m_graphicsPipelineCreateInfo.subpass = subpass;
       m_graphicsPipelineCreateInfo.basePipelineHandle = static_cast<VkPipeline>( basePipelineHandle );
       m_graphicsPipelineCreateInfo.basePipelineIndex = basePipelineIndex;
+    }
+
+    GraphicsPipelineCreateInfo(VkGraphicsPipelineCreateInfo const & rhs)
+      : m_graphicsPipelineCreateInfo(rhs)
+    {
+    }
+
+    GraphicsPipelineCreateInfo& operator=(VkGraphicsPipelineCreateInfo const & rhs)
+    {
+      m_graphicsPipelineCreateInfo = rhs;
+      return *this;
     }
 
     const StructureType& sType() const
@@ -12445,6 +13904,17 @@ namespace vk
       m_attachmentDescription.finalLayout = static_cast<VkImageLayout>( finalLayout );
     }
 
+    AttachmentDescription(VkAttachmentDescription const & rhs)
+      : m_attachmentDescription(rhs)
+    {
+    }
+
+    AttachmentDescription& operator=(VkAttachmentDescription const & rhs)
+    {
+      m_attachmentDescription = rhs;
+      return *this;
+    }
+
     const AttachmentDescriptionFlags& flags() const
     {
       return reinterpret_cast<const AttachmentDescriptionFlags&>( m_attachmentDescription.flags );
@@ -12597,6 +14067,17 @@ namespace vk
       m_descriptorPoolCreateInfo.pPoolSizes = reinterpret_cast<const VkDescriptorPoolSize*>( pPoolSizes );
     }
 
+    DescriptorPoolCreateInfo(VkDescriptorPoolCreateInfo const & rhs)
+      : m_descriptorPoolCreateInfo(rhs)
+    {
+    }
+
+    DescriptorPoolCreateInfo& operator=(VkDescriptorPoolCreateInfo const & rhs)
+    {
+      m_descriptorPoolCreateInfo = rhs;
+      return *this;
+    }
+
     const StructureType& sType() const
     {
       return reinterpret_cast<const StructureType&>( m_descriptorPoolCreateInfo.sType );
@@ -12689,8 +14170,20 @@ namespace vk
   {
   public:
     CommandBuffer()
-      : m_commandBuffer(nullptr)
+      : m_commandBuffer(0)
     {}
+
+#if defined(VK_CPP_TYPESAFE_CONVERSION)
+    CommandBuffer(VkCommandBuffer commandBuffer)
+       : m_commandBuffer(commandBuffer)
+    {}
+
+    CommandBuffer& operator=(VkCommandBuffer commandBuffer)
+    {
+      m_commandBuffer = commandBuffer;
+      return *this;
+    }
+#endif
 
 #ifdef VKCPP_ENHANCED_MODE
     void begin( const CommandBufferBeginInfo& beginInfo ) const
@@ -12947,7 +14440,10 @@ namespace vk
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
-    explicit operator VkCommandBuffer() const
+#if !defined(VK_CPP_TYPESAFE_CONVERSION)
+    explicit
+#endif
+    operator VkCommandBuffer() const
     {
       return m_commandBuffer;
     }
@@ -12973,6 +14469,17 @@ namespace vk
       m_subpassDependency.srcAccessMask = static_cast<VkAccessFlags>( srcAccessMask );
       m_subpassDependency.dstAccessMask = static_cast<VkAccessFlags>( dstAccessMask );
       m_subpassDependency.dependencyFlags = static_cast<VkDependencyFlags>( dependencyFlags );
+    }
+
+    SubpassDependency(VkSubpassDependency const & rhs)
+      : m_subpassDependency(rhs)
+    {
+    }
+
+    SubpassDependency& operator=(VkSubpassDependency const & rhs)
+    {
+      m_subpassDependency = rhs;
+      return *this;
     }
 
     const uint32_t& srcSubpass() const
@@ -13080,6 +14587,17 @@ namespace vk
       m_renderPassCreateInfo.pSubpasses = reinterpret_cast<const VkSubpassDescription*>( pSubpasses );
       m_renderPassCreateInfo.dependencyCount = dependencyCount;
       m_renderPassCreateInfo.pDependencies = reinterpret_cast<const VkSubpassDependency*>( pDependencies );
+    }
+
+    RenderPassCreateInfo(VkRenderPassCreateInfo const & rhs)
+      : m_renderPassCreateInfo(rhs)
+    {
+    }
+
+    RenderPassCreateInfo& operator=(VkRenderPassCreateInfo const & rhs)
+    {
+      m_renderPassCreateInfo = rhs;
+      return *this;
     }
 
     const StructureType& sType() const
@@ -13211,6 +14729,17 @@ namespace vk
       m_submitInfo.pSignalSemaphores = reinterpret_cast<const VkSemaphore*>( pSignalSemaphores );
     }
 
+    SubmitInfo(VkSubmitInfo const & rhs)
+      : m_submitInfo(rhs)
+    {
+    }
+
+    SubmitInfo& operator=(VkSubmitInfo const & rhs)
+    {
+      m_submitInfo = rhs;
+      return *this;
+    }
+
     const StructureType& sType() const
     {
       return reinterpret_cast<const StructureType&>( m_submitInfo.sType );
@@ -13324,8 +14853,20 @@ namespace vk
   {
   public:
     Queue()
-      : m_queue(nullptr)
+      : m_queue(0)
     {}
+
+#if defined(VK_CPP_TYPESAFE_CONVERSION)
+    Queue(VkQueue queue)
+       : m_queue(queue)
+    {}
+
+    Queue& operator=(VkQueue queue)
+    {
+      m_queue = queue;
+      return *this;
+    }
+#endif
 
 #ifdef VKCPP_ENHANCED_MODE
     void submit( std::vector<SubmitInfo> const& submits, Fence fence ) const
@@ -13366,7 +14907,10 @@ namespace vk
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
-    explicit operator VkQueue() const
+#if !defined(VK_CPP_TYPESAFE_CONVERSION)
+    explicit
+#endif
+    operator VkQueue() const
     {
       return m_queue;
     }
@@ -13400,6 +14944,17 @@ namespace vk
     {
       m_surfaceFormatKHR.format = static_cast<VkFormat>( format );
       m_surfaceFormatKHR.colorSpace = static_cast<VkColorSpaceKHR>( colorSpace );
+    }
+
+    SurfaceFormatKHR(VkSurfaceFormatKHR const & rhs)
+      : m_surfaceFormatKHR(rhs)
+    {
+    }
+
+    SurfaceFormatKHR& operator=(VkSurfaceFormatKHR const & rhs)
+    {
+      m_surfaceFormatKHR = rhs;
+      return *this;
     }
 
     const Format& format() const
@@ -13467,6 +15022,17 @@ namespace vk
       m_displayPlaneCapabilitiesKHR.maxDstPosition = static_cast<VkOffset2D>( maxDstPosition );
       m_displayPlaneCapabilitiesKHR.minDstExtent = static_cast<VkExtent2D>( minDstExtent );
       m_displayPlaneCapabilitiesKHR.maxDstExtent = static_cast<VkExtent2D>( maxDstExtent );
+    }
+
+    DisplayPlaneCapabilitiesKHR(VkDisplayPlaneCapabilitiesKHR const & rhs)
+      : m_displayPlaneCapabilitiesKHR(rhs)
+    {
+    }
+
+    DisplayPlaneCapabilitiesKHR& operator=(VkDisplayPlaneCapabilitiesKHR const & rhs)
+    {
+      m_displayPlaneCapabilitiesKHR = rhs;
+      return *this;
     }
 
     const DisplayPlaneAlphaFlagsKHR& supportedAlpha() const
@@ -13631,6 +15197,17 @@ namespace vk
       m_displayPropertiesKHR.persistentContent = persistentContent;
     }
 
+    DisplayPropertiesKHR(VkDisplayPropertiesKHR const & rhs)
+      : m_displayPropertiesKHR(rhs)
+    {
+    }
+
+    DisplayPropertiesKHR& operator=(VkDisplayPropertiesKHR const & rhs)
+    {
+      m_displayPropertiesKHR = rhs;
+      return *this;
+    }
+
     const DisplayKHR& display() const
     {
       return reinterpret_cast<const DisplayKHR&>( m_displayPropertiesKHR.display );
@@ -13737,6 +15314,17 @@ namespace vk
       m_displaySurfaceCreateInfoKHR.globalAlpha = globalAlpha;
       m_displaySurfaceCreateInfoKHR.alphaMode = static_cast<VkDisplayPlaneAlphaFlagBitsKHR>( alphaMode );
       m_displaySurfaceCreateInfoKHR.imageExtent = static_cast<VkExtent2D>( imageExtent );
+    }
+
+    DisplaySurfaceCreateInfoKHR(VkDisplaySurfaceCreateInfoKHR const & rhs)
+      : m_displaySurfaceCreateInfoKHR(rhs)
+    {
+    }
+
+    DisplaySurfaceCreateInfoKHR& operator=(VkDisplaySurfaceCreateInfoKHR const & rhs)
+    {
+      m_displaySurfaceCreateInfoKHR = rhs;
+      return *this;
     }
 
     const StructureType& sType() const
@@ -13878,6 +15466,17 @@ namespace vk
       m_surfaceCapabilitiesKHR.currentTransform = static_cast<VkSurfaceTransformFlagBitsKHR>( currentTransform );
       m_surfaceCapabilitiesKHR.supportedCompositeAlpha = static_cast<VkCompositeAlphaFlagsKHR>( supportedCompositeAlpha );
       m_surfaceCapabilitiesKHR.supportedUsageFlags = static_cast<VkImageUsageFlags>( supportedUsageFlags );
+    }
+
+    SurfaceCapabilitiesKHR(VkSurfaceCapabilitiesKHR const & rhs)
+      : m_surfaceCapabilitiesKHR(rhs)
+    {
+    }
+
+    SurfaceCapabilitiesKHR& operator=(VkSurfaceCapabilitiesKHR const & rhs)
+    {
+      m_surfaceCapabilitiesKHR = rhs;
+      return *this;
     }
 
     const uint32_t& minImageCount() const
@@ -14027,6 +15626,17 @@ namespace vk
       m_swapchainCreateInfoKHR.presentMode = static_cast<VkPresentModeKHR>( presentMode );
       m_swapchainCreateInfoKHR.clipped = clipped;
       m_swapchainCreateInfoKHR.oldSwapchain = static_cast<VkSwapchainKHR>( oldSwapchain );
+    }
+
+    SwapchainCreateInfoKHR(VkSwapchainCreateInfoKHR const & rhs)
+      : m_swapchainCreateInfoKHR(rhs)
+    {
+    }
+
+    SwapchainCreateInfoKHR& operator=(VkSwapchainCreateInfoKHR const & rhs)
+    {
+      m_swapchainCreateInfoKHR = rhs;
+      return *this;
     }
 
     const StructureType& sType() const
@@ -14241,8 +15851,20 @@ namespace vk
   {
   public:
     Device()
-      : m_device(nullptr)
+      : m_device(0)
     {}
+
+#if defined(VK_CPP_TYPESAFE_CONVERSION)
+    Device(VkDevice device)
+       : m_device(device)
+    {}
+
+    Device& operator=(VkDevice device)
+    {
+      m_device = device;
+      return *this;
+    }
+#endif
 
 #ifdef VKCPP_ENHANCED_MODE
     PFN_vkVoidFunction getProcAddr( std::string const& name ) const
@@ -14892,7 +16514,10 @@ namespace vk
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
-    explicit operator VkDevice() const
+#if !defined(VK_CPP_TYPESAFE_CONVERSION)
+    explicit
+#endif
+    operator VkDevice() const
     {
       return m_device;
     }
@@ -14906,8 +16531,20 @@ namespace vk
   {
   public:
     PhysicalDevice()
-      : m_physicalDevice(nullptr)
+      : m_physicalDevice(0)
     {}
+
+#if defined(VK_CPP_TYPESAFE_CONVERSION)
+    PhysicalDevice(VkPhysicalDevice physicalDevice)
+       : m_physicalDevice(physicalDevice)
+    {}
+
+    PhysicalDevice& operator=(VkPhysicalDevice physicalDevice)
+    {
+      m_physicalDevice = physicalDevice;
+      return *this;
+    }
+#endif
 
 #ifdef VKCPP_ENHANCED_MODE
     PhysicalDeviceProperties getProperties(  ) const
@@ -15195,7 +16832,10 @@ namespace vk
 #endif /*VK_USE_PLATFORM_XCB_KHR*/
 #endif /*VKCPP_ENHANCED_MODE*/
 
-    explicit operator VkPhysicalDevice() const
+#if !defined(VK_CPP_TYPESAFE_CONVERSION)
+    explicit
+#endif
+    operator VkPhysicalDevice() const
     {
       return m_physicalDevice;
     }
@@ -15231,6 +16871,17 @@ namespace vk
       m_debugReportCallbackCreateInfoEXT.flags = static_cast<VkDebugReportFlagsEXT>( flags );
       m_debugReportCallbackCreateInfoEXT.pfnCallback = pfnCallback;
       m_debugReportCallbackCreateInfoEXT.pUserData = pUserData;
+    }
+
+    DebugReportCallbackCreateInfoEXT(VkDebugReportCallbackCreateInfoEXT const & rhs)
+      : m_debugReportCallbackCreateInfoEXT(rhs)
+    {
+    }
+
+    DebugReportCallbackCreateInfoEXT& operator=(VkDebugReportCallbackCreateInfoEXT const & rhs)
+    {
+      m_debugReportCallbackCreateInfoEXT = rhs;
+      return *this;
     }
 
     const StructureType& sType() const
@@ -15335,8 +16986,20 @@ namespace vk
   {
   public:
     Instance()
-      : m_instance(nullptr)
+      : m_instance(0)
     {}
+
+#if defined(VK_CPP_TYPESAFE_CONVERSION)
+    Instance(VkInstance instance)
+       : m_instance(instance)
+    {}
+
+    Instance& operator=(VkInstance instance)
+    {
+      m_instance = instance;
+      return *this;
+    }
+#endif
 
 #ifdef VKCPP_ENHANCED_MODE
     void destroy( const AllocationCallbacks& allocator ) const
@@ -15483,7 +17146,10 @@ namespace vk
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
-    explicit operator VkInstance() const
+#if !defined(VK_CPP_TYPESAFE_CONVERSION)
+    explicit
+#endif
+    operator VkInstance() const
     {
       return m_instance;
     }

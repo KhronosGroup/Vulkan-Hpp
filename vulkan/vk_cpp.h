@@ -24,12 +24,6 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-// 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
-// To enable this feature on 32-bit platforms please define VK_CPP_TYPESAFE_CONVERSION
-#if defined(__LP64__) || defined(_WIN64) || defined(__x86_64__) || defined(_M_X64) || defined(__ia64) || defined (_M_IA64) || defined(__aarch64__) || defined(__powerpc64__)
-#define VK_CPP_TYPESAFE_CONVERSION 1
-#endif
-
 
 #ifndef VK_CPP_H_
 #define VK_CPP_H_
@@ -44,6 +38,12 @@
 #endif /*VKCPP_ENHANCED_MODE*/
 
 static_assert( VK_MAKE_VERSION(1, 0, 3) == VK_API_VERSION, "Wrong VK_API_VERSION!" );
+
+// 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
+// To enable this feature on 32-bit platforms please define VK_CPP_TYPESAFE_CONVERSION
+#if defined(__LP64__) || defined(_WIN64) || defined(__x86_64__) || defined(_M_X64) || defined(__ia64) || defined (_M_IA64) || defined(__aarch64__) || defined(__powerpc64__)
+#define VK_CPP_TYPESAFE_CONVERSION 1
+#endif
 
 namespace vk
 {
@@ -610,7 +610,7 @@ namespace vk
   {
   public:
     DeviceMemory()
-      : m_deviceMemory(0)
+      : m_deviceMemory(VK_NULL_HANDLE)
     {}
 
 #if defined(VK_CPP_TYPESAFE_CONVERSION)
@@ -633,6 +633,16 @@ namespace vk
       return m_deviceMemory;
     }
 
+    explicit operator bool() const
+    {
+      return m_deviceMemory != VK_NULL_HANDLE;
+    }
+
+    bool operator!() const
+    {
+      return m_deviceMemory == VK_NULL_HANDLE;
+    }
+
   private:
     VkDeviceMemory m_deviceMemory;
   };
@@ -642,7 +652,7 @@ namespace vk
   {
   public:
     CommandPool()
-      : m_commandPool(0)
+      : m_commandPool(VK_NULL_HANDLE)
     {}
 
 #if defined(VK_CPP_TYPESAFE_CONVERSION)
@@ -665,6 +675,16 @@ namespace vk
       return m_commandPool;
     }
 
+    explicit operator bool() const
+    {
+      return m_commandPool != VK_NULL_HANDLE;
+    }
+
+    bool operator!() const
+    {
+      return m_commandPool == VK_NULL_HANDLE;
+    }
+
   private:
     VkCommandPool m_commandPool;
   };
@@ -674,7 +694,7 @@ namespace vk
   {
   public:
     Buffer()
-      : m_buffer(0)
+      : m_buffer(VK_NULL_HANDLE)
     {}
 
 #if defined(VK_CPP_TYPESAFE_CONVERSION)
@@ -697,6 +717,16 @@ namespace vk
       return m_buffer;
     }
 
+    explicit operator bool() const
+    {
+      return m_buffer != VK_NULL_HANDLE;
+    }
+
+    bool operator!() const
+    {
+      return m_buffer == VK_NULL_HANDLE;
+    }
+
   private:
     VkBuffer m_buffer;
   };
@@ -706,7 +736,7 @@ namespace vk
   {
   public:
     BufferView()
-      : m_bufferView(0)
+      : m_bufferView(VK_NULL_HANDLE)
     {}
 
 #if defined(VK_CPP_TYPESAFE_CONVERSION)
@@ -729,6 +759,16 @@ namespace vk
       return m_bufferView;
     }
 
+    explicit operator bool() const
+    {
+      return m_bufferView != VK_NULL_HANDLE;
+    }
+
+    bool operator!() const
+    {
+      return m_bufferView == VK_NULL_HANDLE;
+    }
+
   private:
     VkBufferView m_bufferView;
   };
@@ -738,7 +778,7 @@ namespace vk
   {
   public:
     Image()
-      : m_image(0)
+      : m_image(VK_NULL_HANDLE)
     {}
 
 #if defined(VK_CPP_TYPESAFE_CONVERSION)
@@ -761,6 +801,16 @@ namespace vk
       return m_image;
     }
 
+    explicit operator bool() const
+    {
+      return m_image != VK_NULL_HANDLE;
+    }
+
+    bool operator!() const
+    {
+      return m_image == VK_NULL_HANDLE;
+    }
+
   private:
     VkImage m_image;
   };
@@ -770,7 +820,7 @@ namespace vk
   {
   public:
     ImageView()
-      : m_imageView(0)
+      : m_imageView(VK_NULL_HANDLE)
     {}
 
 #if defined(VK_CPP_TYPESAFE_CONVERSION)
@@ -793,6 +843,16 @@ namespace vk
       return m_imageView;
     }
 
+    explicit operator bool() const
+    {
+      return m_imageView != VK_NULL_HANDLE;
+    }
+
+    bool operator!() const
+    {
+      return m_imageView == VK_NULL_HANDLE;
+    }
+
   private:
     VkImageView m_imageView;
   };
@@ -802,7 +862,7 @@ namespace vk
   {
   public:
     ShaderModule()
-      : m_shaderModule(0)
+      : m_shaderModule(VK_NULL_HANDLE)
     {}
 
 #if defined(VK_CPP_TYPESAFE_CONVERSION)
@@ -825,6 +885,16 @@ namespace vk
       return m_shaderModule;
     }
 
+    explicit operator bool() const
+    {
+      return m_shaderModule != VK_NULL_HANDLE;
+    }
+
+    bool operator!() const
+    {
+      return m_shaderModule == VK_NULL_HANDLE;
+    }
+
   private:
     VkShaderModule m_shaderModule;
   };
@@ -834,7 +904,7 @@ namespace vk
   {
   public:
     Pipeline()
-      : m_pipeline(0)
+      : m_pipeline(VK_NULL_HANDLE)
     {}
 
 #if defined(VK_CPP_TYPESAFE_CONVERSION)
@@ -857,6 +927,16 @@ namespace vk
       return m_pipeline;
     }
 
+    explicit operator bool() const
+    {
+      return m_pipeline != VK_NULL_HANDLE;
+    }
+
+    bool operator!() const
+    {
+      return m_pipeline == VK_NULL_HANDLE;
+    }
+
   private:
     VkPipeline m_pipeline;
   };
@@ -866,7 +946,7 @@ namespace vk
   {
   public:
     PipelineLayout()
-      : m_pipelineLayout(0)
+      : m_pipelineLayout(VK_NULL_HANDLE)
     {}
 
 #if defined(VK_CPP_TYPESAFE_CONVERSION)
@@ -889,6 +969,16 @@ namespace vk
       return m_pipelineLayout;
     }
 
+    explicit operator bool() const
+    {
+      return m_pipelineLayout != VK_NULL_HANDLE;
+    }
+
+    bool operator!() const
+    {
+      return m_pipelineLayout == VK_NULL_HANDLE;
+    }
+
   private:
     VkPipelineLayout m_pipelineLayout;
   };
@@ -898,7 +988,7 @@ namespace vk
   {
   public:
     Sampler()
-      : m_sampler(0)
+      : m_sampler(VK_NULL_HANDLE)
     {}
 
 #if defined(VK_CPP_TYPESAFE_CONVERSION)
@@ -921,6 +1011,16 @@ namespace vk
       return m_sampler;
     }
 
+    explicit operator bool() const
+    {
+      return m_sampler != VK_NULL_HANDLE;
+    }
+
+    bool operator!() const
+    {
+      return m_sampler == VK_NULL_HANDLE;
+    }
+
   private:
     VkSampler m_sampler;
   };
@@ -930,7 +1030,7 @@ namespace vk
   {
   public:
     DescriptorSet()
-      : m_descriptorSet(0)
+      : m_descriptorSet(VK_NULL_HANDLE)
     {}
 
 #if defined(VK_CPP_TYPESAFE_CONVERSION)
@@ -953,6 +1053,16 @@ namespace vk
       return m_descriptorSet;
     }
 
+    explicit operator bool() const
+    {
+      return m_descriptorSet != VK_NULL_HANDLE;
+    }
+
+    bool operator!() const
+    {
+      return m_descriptorSet == VK_NULL_HANDLE;
+    }
+
   private:
     VkDescriptorSet m_descriptorSet;
   };
@@ -962,7 +1072,7 @@ namespace vk
   {
   public:
     DescriptorSetLayout()
-      : m_descriptorSetLayout(0)
+      : m_descriptorSetLayout(VK_NULL_HANDLE)
     {}
 
 #if defined(VK_CPP_TYPESAFE_CONVERSION)
@@ -985,6 +1095,16 @@ namespace vk
       return m_descriptorSetLayout;
     }
 
+    explicit operator bool() const
+    {
+      return m_descriptorSetLayout != VK_NULL_HANDLE;
+    }
+
+    bool operator!() const
+    {
+      return m_descriptorSetLayout == VK_NULL_HANDLE;
+    }
+
   private:
     VkDescriptorSetLayout m_descriptorSetLayout;
   };
@@ -994,7 +1114,7 @@ namespace vk
   {
   public:
     DescriptorPool()
-      : m_descriptorPool(0)
+      : m_descriptorPool(VK_NULL_HANDLE)
     {}
 
 #if defined(VK_CPP_TYPESAFE_CONVERSION)
@@ -1017,6 +1137,16 @@ namespace vk
       return m_descriptorPool;
     }
 
+    explicit operator bool() const
+    {
+      return m_descriptorPool != VK_NULL_HANDLE;
+    }
+
+    bool operator!() const
+    {
+      return m_descriptorPool == VK_NULL_HANDLE;
+    }
+
   private:
     VkDescriptorPool m_descriptorPool;
   };
@@ -1026,7 +1156,7 @@ namespace vk
   {
   public:
     Fence()
-      : m_fence(0)
+      : m_fence(VK_NULL_HANDLE)
     {}
 
 #if defined(VK_CPP_TYPESAFE_CONVERSION)
@@ -1049,6 +1179,16 @@ namespace vk
       return m_fence;
     }
 
+    explicit operator bool() const
+    {
+      return m_fence != VK_NULL_HANDLE;
+    }
+
+    bool operator!() const
+    {
+      return m_fence == VK_NULL_HANDLE;
+    }
+
   private:
     VkFence m_fence;
   };
@@ -1058,7 +1198,7 @@ namespace vk
   {
   public:
     Semaphore()
-      : m_semaphore(0)
+      : m_semaphore(VK_NULL_HANDLE)
     {}
 
 #if defined(VK_CPP_TYPESAFE_CONVERSION)
@@ -1081,6 +1221,16 @@ namespace vk
       return m_semaphore;
     }
 
+    explicit operator bool() const
+    {
+      return m_semaphore != VK_NULL_HANDLE;
+    }
+
+    bool operator!() const
+    {
+      return m_semaphore == VK_NULL_HANDLE;
+    }
+
   private:
     VkSemaphore m_semaphore;
   };
@@ -1090,7 +1240,7 @@ namespace vk
   {
   public:
     Event()
-      : m_event(0)
+      : m_event(VK_NULL_HANDLE)
     {}
 
 #if defined(VK_CPP_TYPESAFE_CONVERSION)
@@ -1113,6 +1263,16 @@ namespace vk
       return m_event;
     }
 
+    explicit operator bool() const
+    {
+      return m_event != VK_NULL_HANDLE;
+    }
+
+    bool operator!() const
+    {
+      return m_event == VK_NULL_HANDLE;
+    }
+
   private:
     VkEvent m_event;
   };
@@ -1122,7 +1282,7 @@ namespace vk
   {
   public:
     QueryPool()
-      : m_queryPool(0)
+      : m_queryPool(VK_NULL_HANDLE)
     {}
 
 #if defined(VK_CPP_TYPESAFE_CONVERSION)
@@ -1145,6 +1305,16 @@ namespace vk
       return m_queryPool;
     }
 
+    explicit operator bool() const
+    {
+      return m_queryPool != VK_NULL_HANDLE;
+    }
+
+    bool operator!() const
+    {
+      return m_queryPool == VK_NULL_HANDLE;
+    }
+
   private:
     VkQueryPool m_queryPool;
   };
@@ -1154,7 +1324,7 @@ namespace vk
   {
   public:
     Framebuffer()
-      : m_framebuffer(0)
+      : m_framebuffer(VK_NULL_HANDLE)
     {}
 
 #if defined(VK_CPP_TYPESAFE_CONVERSION)
@@ -1177,6 +1347,16 @@ namespace vk
       return m_framebuffer;
     }
 
+    explicit operator bool() const
+    {
+      return m_framebuffer != VK_NULL_HANDLE;
+    }
+
+    bool operator!() const
+    {
+      return m_framebuffer == VK_NULL_HANDLE;
+    }
+
   private:
     VkFramebuffer m_framebuffer;
   };
@@ -1186,7 +1366,7 @@ namespace vk
   {
   public:
     RenderPass()
-      : m_renderPass(0)
+      : m_renderPass(VK_NULL_HANDLE)
     {}
 
 #if defined(VK_CPP_TYPESAFE_CONVERSION)
@@ -1209,6 +1389,16 @@ namespace vk
       return m_renderPass;
     }
 
+    explicit operator bool() const
+    {
+      return m_renderPass != VK_NULL_HANDLE;
+    }
+
+    bool operator!() const
+    {
+      return m_renderPass == VK_NULL_HANDLE;
+    }
+
   private:
     VkRenderPass m_renderPass;
   };
@@ -1218,7 +1408,7 @@ namespace vk
   {
   public:
     PipelineCache()
-      : m_pipelineCache(0)
+      : m_pipelineCache(VK_NULL_HANDLE)
     {}
 
 #if defined(VK_CPP_TYPESAFE_CONVERSION)
@@ -1241,6 +1431,16 @@ namespace vk
       return m_pipelineCache;
     }
 
+    explicit operator bool() const
+    {
+      return m_pipelineCache != VK_NULL_HANDLE;
+    }
+
+    bool operator!() const
+    {
+      return m_pipelineCache == VK_NULL_HANDLE;
+    }
+
   private:
     VkPipelineCache m_pipelineCache;
   };
@@ -1250,7 +1450,7 @@ namespace vk
   {
   public:
     DisplayKHR()
-      : m_displayKHR(0)
+      : m_displayKHR(VK_NULL_HANDLE)
     {}
 
 #if defined(VK_CPP_TYPESAFE_CONVERSION)
@@ -1273,6 +1473,16 @@ namespace vk
       return m_displayKHR;
     }
 
+    explicit operator bool() const
+    {
+      return m_displayKHR != VK_NULL_HANDLE;
+    }
+
+    bool operator!() const
+    {
+      return m_displayKHR == VK_NULL_HANDLE;
+    }
+
   private:
     VkDisplayKHR m_displayKHR;
   };
@@ -1282,7 +1492,7 @@ namespace vk
   {
   public:
     DisplayModeKHR()
-      : m_displayModeKHR(0)
+      : m_displayModeKHR(VK_NULL_HANDLE)
     {}
 
 #if defined(VK_CPP_TYPESAFE_CONVERSION)
@@ -1305,6 +1515,16 @@ namespace vk
       return m_displayModeKHR;
     }
 
+    explicit operator bool() const
+    {
+      return m_displayModeKHR != VK_NULL_HANDLE;
+    }
+
+    bool operator!() const
+    {
+      return m_displayModeKHR == VK_NULL_HANDLE;
+    }
+
   private:
     VkDisplayModeKHR m_displayModeKHR;
   };
@@ -1314,7 +1534,7 @@ namespace vk
   {
   public:
     SurfaceKHR()
-      : m_surfaceKHR(0)
+      : m_surfaceKHR(VK_NULL_HANDLE)
     {}
 
 #if defined(VK_CPP_TYPESAFE_CONVERSION)
@@ -1337,6 +1557,16 @@ namespace vk
       return m_surfaceKHR;
     }
 
+    explicit operator bool() const
+    {
+      return m_surfaceKHR != VK_NULL_HANDLE;
+    }
+
+    bool operator!() const
+    {
+      return m_surfaceKHR == VK_NULL_HANDLE;
+    }
+
   private:
     VkSurfaceKHR m_surfaceKHR;
   };
@@ -1346,7 +1576,7 @@ namespace vk
   {
   public:
     SwapchainKHR()
-      : m_swapchainKHR(0)
+      : m_swapchainKHR(VK_NULL_HANDLE)
     {}
 
 #if defined(VK_CPP_TYPESAFE_CONVERSION)
@@ -1369,6 +1599,16 @@ namespace vk
       return m_swapchainKHR;
     }
 
+    explicit operator bool() const
+    {
+      return m_swapchainKHR != VK_NULL_HANDLE;
+    }
+
+    bool operator!() const
+    {
+      return m_swapchainKHR == VK_NULL_HANDLE;
+    }
+
   private:
     VkSwapchainKHR m_swapchainKHR;
   };
@@ -1378,7 +1618,7 @@ namespace vk
   {
   public:
     DebugReportCallbackEXT()
-      : m_debugReportCallbackEXT(0)
+      : m_debugReportCallbackEXT(VK_NULL_HANDLE)
     {}
 
 #if defined(VK_CPP_TYPESAFE_CONVERSION)
@@ -1399,6 +1639,16 @@ namespace vk
     operator VkDebugReportCallbackEXT() const
     {
       return m_debugReportCallbackEXT;
+    }
+
+    explicit operator bool() const
+    {
+      return m_debugReportCallbackEXT != VK_NULL_HANDLE;
+    }
+
+    bool operator!() const
+    {
+      return m_debugReportCallbackEXT == VK_NULL_HANDLE;
     }
 
   private:
@@ -14170,7 +14420,7 @@ namespace vk
   {
   public:
     CommandBuffer()
-      : m_commandBuffer(0)
+      : m_commandBuffer(VK_NULL_HANDLE)
     {}
 
 #if defined(VK_CPP_TYPESAFE_CONVERSION)
@@ -14446,6 +14696,16 @@ namespace vk
     operator VkCommandBuffer() const
     {
       return m_commandBuffer;
+    }
+
+    explicit operator bool() const
+    {
+      return m_commandBuffer != VK_NULL_HANDLE;
+    }
+
+    bool operator!() const
+    {
+      return m_commandBuffer == VK_NULL_HANDLE;
     }
 
   private:
@@ -14853,7 +15113,7 @@ namespace vk
   {
   public:
     Queue()
-      : m_queue(0)
+      : m_queue(VK_NULL_HANDLE)
     {}
 
 #if defined(VK_CPP_TYPESAFE_CONVERSION)
@@ -14913,6 +15173,16 @@ namespace vk
     operator VkQueue() const
     {
       return m_queue;
+    }
+
+    explicit operator bool() const
+    {
+      return m_queue != VK_NULL_HANDLE;
+    }
+
+    bool operator!() const
+    {
+      return m_queue == VK_NULL_HANDLE;
     }
 
   private:
@@ -15851,7 +16121,7 @@ namespace vk
   {
   public:
     Device()
-      : m_device(0)
+      : m_device(VK_NULL_HANDLE)
     {}
 
 #if defined(VK_CPP_TYPESAFE_CONVERSION)
@@ -16522,6 +16792,16 @@ namespace vk
       return m_device;
     }
 
+    explicit operator bool() const
+    {
+      return m_device != VK_NULL_HANDLE;
+    }
+
+    bool operator!() const
+    {
+      return m_device == VK_NULL_HANDLE;
+    }
+
   private:
     VkDevice m_device;
   };
@@ -16531,7 +16811,7 @@ namespace vk
   {
   public:
     PhysicalDevice()
-      : m_physicalDevice(0)
+      : m_physicalDevice(VK_NULL_HANDLE)
     {}
 
 #if defined(VK_CPP_TYPESAFE_CONVERSION)
@@ -16840,6 +17120,16 @@ namespace vk
       return m_physicalDevice;
     }
 
+    explicit operator bool() const
+    {
+      return m_physicalDevice != VK_NULL_HANDLE;
+    }
+
+    bool operator!() const
+    {
+      return m_physicalDevice == VK_NULL_HANDLE;
+    }
+
   private:
     VkPhysicalDevice m_physicalDevice;
   };
@@ -16986,7 +17276,7 @@ namespace vk
   {
   public:
     Instance()
-      : m_instance(0)
+      : m_instance(VK_NULL_HANDLE)
     {}
 
 #if defined(VK_CPP_TYPESAFE_CONVERSION)
@@ -17152,6 +17442,16 @@ namespace vk
     operator VkInstance() const
     {
       return m_instance;
+    }
+
+    explicit operator bool() const
+    {
+      return m_instance != VK_NULL_HANDLE;
+    }
+
+    bool operator!() const
+    {
+      return m_instance == VK_NULL_HANDLE;
     }
 
   private:

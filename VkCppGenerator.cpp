@@ -2449,7 +2449,7 @@ void writeTypeHandle(std::ofstream & ofs, DependencyData const& dependencyData, 
       << "  {" << std::endl
       << "  public:" << std::endl
       << "    " << dependencyData.name << "()" << std::endl
-      << "      : m_" << memberName << "(0)" << std::endl // nullptr won't work for 32-bit vulkan since the handletype is uint64_t
+      << "      : m_" << memberName << "(VK_NULL_HANDLE)" << std::endl
       << "    {}" << std::endl
       << std::endl
       << "#if defined(VK_CPP_TYPESAFE_CONVERSION)" << std::endl
@@ -2490,6 +2490,16 @@ void writeTypeHandle(std::ofstream & ofs, DependencyData const& dependencyData, 
       << "    operator Vk" << dependencyData.name << "() const" << std::endl
       << "    {" << std::endl
       << "      return m_" << memberName << ";" << std::endl
+      << "    }" << std::endl
+      << std::endl
+      << "    explicit operator bool() const" << std::endl
+      << "    {" << std::endl
+      << "      return m_" << memberName << " != VK_NULL_HANDLE;" << std::endl
+      << "    }" << std::endl
+      << std::endl
+      << "    bool operator!() const" << std::endl
+      << "    {" << std::endl
+      << "      return m_" << memberName << " == VK_NULL_HANDLE;" << std::endl
       << "    }" << std::endl
       << std::endl
       << "  private:" << std::endl

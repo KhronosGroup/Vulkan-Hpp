@@ -2555,6 +2555,13 @@ void writeTypeStruct( std::ofstream & ofs, DependencyData const& dependencyData,
     }
   }
 
+  // null handle
+  ofs << "    static " << dependencyData.name << "& null()" << std::endl
+      << "    {" << std::endl
+      << "      return *((" << dependencyData.name << "*)(nullptr));" << std::endl
+      << "    }" << std::endl
+      << std::endl;
+
   // the cast-operator to the wrapped struct, and the struct itself as a private member variable
   ofs << "    operator const Vk" << dependencyData.name << "&() const" << std::endl
       << "    {" << std::endl

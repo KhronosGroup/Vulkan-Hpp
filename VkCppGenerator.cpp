@@ -216,6 +216,10 @@ struct MemberData
 
 struct StructData
 {
+  StructData()
+    : returnedOnly(false)
+  {}
+
   bool                    returnedOnly;
   std::vector<MemberData> members;
   std::string             protect;
@@ -338,7 +342,7 @@ void writeExceptionCheck(std::ofstream & ofs, std::string const& indentation, st
 void writeFunctionHeader(std::ofstream & ofs, std::string const& indentation, std::string const& returnType, std::string const& name, CommandData const& commandData, size_t returnIndex, size_t templateIndex, std::map<size_t, size_t> const& vectorParameters);
 void writeMemberData(std::ofstream & ofs, MemberData const& memberData, std::set<std::string> const& vkTypes);
 void writeStructConstructor( std::ofstream & ofs, std::string const& name, std::string const& memberName, StructData const& structData, std::set<std::string> const& vkTypes, std::map<std::string,std::string> const& defaultValues );
-void writeStructGetter( std::ofstream & ofs, MemberData const& memberData, std::string const& memberName, std::set<std::string> const& vkTypes );
+void writeStructGetter( std::ofstream & ofs, MemberData const& memberData, std::string const& memberName, std::set<std::string> const& vkTypes, bool constVersion );
 void writeStructSetter( std::ofstream & ofs, std::string const& name, MemberData const& memberData, std::string const& memberName, std::set<std::string> const& vkTypes, std::map<std::string,StructData> const& structs );
 void writeTypeCommand( std::ofstream & ofs, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes );
 void writeTypeCommandEnhanced(std::ofstream & ofs, std::string const& indentation, std::string const& className, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes);
@@ -1843,12 +1847,12 @@ void writeStructConstructor( std::ofstream & ofs, std::string const& name, std::
 
 }
 
-void writeStructGetter( std::ofstream & ofs, MemberData const& memberData, std::string const& memberName, std::set<std::string> const& vkTypes )
+void writeStructGetter( std::ofstream & ofs, MemberData const& memberData, std::string const& memberName, std::set<std::string> const& vkTypes, bool constVersion )
 {
   ofs << "    ";
   if ( memberData.type.back() == '*' )
   {
-    if ( memberData.type.find( "const" ) != 0 )
+    if ( constVersion && ( memberData.type.find( "const" ) != 0 ) )
     {
       ofs << "const ";
     }
@@ -1856,23 +1860,47 @@ void writeStructGetter( std::ofstream & ofs, MemberData const& memberData, std::
   }
   else
   {
-    ofs << "const " << memberData.type << ( memberData.arraySize.empty() ? '&' : '*' );
+    if (constVersion)
+    {
+      ofs << "const ";
+    }
+    ofs << memberData.type << ( memberData.arraySize.empty() ? '&' : '*' );
   }
 
-  ofs << " " << memberData.name << "() const" << std::endl
+  ofs << " " << memberData.name << "()";
+  if (constVersion)
+  {
+    ofs << " const";
+  }
+  ofs << std::endl
       << "    {" << std::endl
       << "      return ";
   if ( ! memberData.arraySize.empty() )
   {
-    ofs << "reinterpret_cast<const " << memberData.type << "*>( " << memberName << "." << memberData.name << " )";
+    ofs << "reinterpret_cast<";
+    if (constVersion)
+    {
+      ofs << "const ";
+    }
+    ofs << memberData.type << "*>( " << memberName << "." << memberData.name << " )";
   }
   else if ( memberData.type.back() == '*' )
   {
-    ofs << "reinterpret_cast<" << memberData.type << ">( " << memberName << "." << memberData.name << " )";
+    ofs << "reinterpret_cast<";
+    if (constVersion && (memberData.type.find("const") != 0))
+    {
+      ofs << "const ";
+    }
+    ofs << memberData.type << ">( " << memberName << "." << memberData.name << " )";
   }
   else if ( vkTypes.find( memberData.pureType ) != vkTypes.end() )
   {
-    ofs << "reinterpret_cast<const " << memberData.pureType << "&>( " << memberName << "." << memberData.name << " )";
+    ofs << "reinterpret_cast<";
+    if (constVersion)
+    {
+      ofs << "const ";
+    }
+    ofs << memberData.pureType << "&>( " << memberName << "." << memberData.name << " )";
   }
   else
   {
@@ -2548,9 +2576,10 @@ void writeTypeStruct( std::ofstream & ofs, DependencyData const& dependencyData,
   // create the getters and setters
   for ( size_t i=0 ; i<it->second.members.size() ; i++ )
   {
-    writeStructGetter( ofs, it->second.members[i], memberName, vkTypes );
-    if ( !it->second.returnedOnly )
+    writeStructGetter(ofs, it->second.members[i], memberName, vkTypes, true);
+    if (!it->second.returnedOnly)
     {
+      writeStructGetter(ofs, it->second.members[i], memberName, vkTypes, false);
       writeStructSetter( ofs, dependencyData.name, it->second.members[i], memberName, vkTypes );
     }
   }
@@ -2634,8 +2663,11 @@ void writeTypeUnion( std::ofstream & ofs, DependencyData const& dependencyData, 
         << std::endl;
 
     // one getter/setter per union element
-    writeStructGetter( ofs, unionData.members[i], memberName, vkTypes );
-    writeStructSetter( ofs, dependencyData.name, unionData.members[i], memberName, vkTypes );
+    writeStructGetter(ofs, unionData.members[i], memberName, vkTypes, true);
+
+    assert(!unionData.returnedOnly);
+    writeStructGetter(ofs, unionData.members[i], memberName, vkTypes, false);
+    writeStructSetter(ofs, dependencyData.name, unionData.members[i], memberName, vkTypes);
   }
   ofs << "    operator Vk" << dependencyData.name << " const& () const" << std::endl
       << "    {" << std::endl

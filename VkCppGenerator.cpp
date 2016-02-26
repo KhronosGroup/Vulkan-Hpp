@@ -2364,14 +2364,14 @@ void writeTypeEnum( std::ofstream & ofs, DependencyData const& dependencyData, E
   ofs << std::endl;
 }
 
-void writeEnumToString(std::ofstream & ofs, DependencyData const& dependencyData, EnumData const& enumData)
+void writeEnumGetString(std::ofstream & ofs, DependencyData const& dependencyData, EnumData const& enumData)
 {
   enterProtect(ofs, enumData.protect);
-  ofs << "  static const char * getString(" << dependencyData.name << " value)" << std::endl
+  ofs << "  inline std::string getString(" << dependencyData.name << (enumData.members.empty() ? ")" : " value)") << std::endl
       << "  {" << std::endl;
   if (enumData.members.empty())
   {
-    ofs << "    return \"\";" << std::endl;
+    ofs << "    return std::string();" << std::endl;
   }
   else
   {
@@ -2389,21 +2389,28 @@ void writeEnumToString(std::ofstream & ofs, DependencyData const& dependencyData
   ofs << std::endl;
 }
 
-void writeFlagsTostring(std::ofstream & ofs, DependencyData const& dependencyData, EnumData const &enumData)
+void writeFlagsGetString(std::ofstream & ofs, DependencyData const& dependencyData, EnumData const &enumData)
 {
   enterProtect(ofs, enumData.protect);
   std::string enumPrefix = "vk::" + *dependencyData.dependencies.begin() + "::";
-  ofs << "  static std::string getString(" << dependencyData.name << " value)" << std::endl
-      << "  {" << std::endl
-      << "    if (!value) return std::string();" << std::endl
-      << "    std::string result;" << std::endl;
- 
-  for (auto itMember = enumData.members.begin(); itMember != enumData.members.end(); ++itMember)
+  ofs << "  inline std::string getString(" << dependencyData.name << (enumData.members.empty() ? ")" : " value)") << std::endl
+      << "  {" << std::endl;
+  if (enumData.members.empty())
   {
-    ofs << "    if (value & " << enumPrefix + itMember->name << ") result += \"" << itMember->name.substr(1) << " | \";" << std::endl;
+    ofs << "    return std::string();" << std::endl;
   }
-  ofs << "    return result.substr(0, result.size() - 3);" << std::endl
-      << "  }" << std::endl;
+  else
+  {
+    ofs << "    if (!value) return std::string();" << std::endl
+        << "    std::string result;" << std::endl;
+
+    for (auto itMember = enumData.members.begin(); itMember != enumData.members.end(); ++itMember)
+    {
+      ofs << "    if (value & " << enumPrefix + itMember->name << ") result += \"" << itMember->name.substr(1) << " | \";" << std::endl;
+    }
+    ofs << "    return result.substr(0, result.size() - 3);" << std::endl;
+  }
+  ofs << "  }" << std::endl;
   leaveProtect(ofs, enumData.protect);
   ofs << std::endl;
 }
@@ -2416,10 +2423,10 @@ void writeEnumsToString(std::ofstream & ofs, std::vector<DependencyData> const& 
     {
     case DependencyData::Category::ENUM:
       assert(enums.find(it->name) != enums.end());
-      writeEnumToString(ofs, *it, enums.find(it->name)->second);
+      writeEnumGetString(ofs, *it, enums.find(it->name)->second);
       break;
     case DependencyData::Category::FLAGS:
-      writeFlagsTostring(ofs, *it, enums.find(*it->dependencies.begin())->second);
+        writeFlagsGetString(ofs, *it, enums.find(*it->dependencies.begin())->second);
       break;
     }
   }

@@ -174,6 +174,10 @@ Here are a few code examples:
 
     // Accept std::vector as source for updateBuffer
     commandBuffer.updateBuffer(buffer, 0, {some values}); // update buffer with std::vector
+
+    // Sometimes it's necessary to pass a nullptr to a struct. For this case we've added T& null() to all structs T as replacement for nullptr.
+    device.allocateMemory(allocateInfo, vk::AllocationCallbacks::null());
+
   }
   catch (vk::Exception e)
   {

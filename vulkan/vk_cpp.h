@@ -21162,7 +21162,7 @@ namespace vk
     }
 
 #ifdef VK_USE_PLATFORM_MIR_KHR
-    MirConnection getMirPresentationSupportKHR( uint32_t queueFamilyIndex ) const
+    Bool32 getMirPresentationSupportKHR( uint32_t queueFamilyIndex, MirConnection& connection ) const
     {
       return vkGetPhysicalDeviceMirPresentationSupportKHR( m_physicalDevice, queueFamilyIndex, &connection );
     }
@@ -21224,7 +21224,7 @@ namespace vk
     }
 
 #ifdef VK_USE_PLATFORM_WAYLAND_KHR
-    struct wl_display getWaylandPresentationSupportKHR( uint32_t queueFamilyIndex ) const
+    Bool32 getWaylandPresentationSupportKHR( uint32_t queueFamilyIndex, struct wl_display& display ) const
     {
       return vkGetPhysicalDeviceWaylandPresentationSupportKHR( m_physicalDevice, queueFamilyIndex, &display );
     }
@@ -21238,14 +21238,14 @@ namespace vk
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
 #ifdef VK_USE_PLATFORM_XLIB_KHR
-    Display getXlibPresentationSupportKHR( uint32_t queueFamilyIndex, VisualID visualID ) const
+    Bool32 getXlibPresentationSupportKHR( uint32_t queueFamilyIndex, Display& dpy, VisualID visualID ) const
     {
       return vkGetPhysicalDeviceXlibPresentationSupportKHR( m_physicalDevice, queueFamilyIndex, &dpy, visualID );
     }
 #endif /*VK_USE_PLATFORM_XLIB_KHR*/
 
 #ifdef VK_USE_PLATFORM_XCB_KHR
-    xcb_connection_t getXcbPresentationSupportKHR( uint32_t queueFamilyIndex, xcb_visualid_t visual_id ) const
+    Bool32 getXcbPresentationSupportKHR( uint32_t queueFamilyIndex, xcb_connection_t& connection, xcb_visualid_t visual_id ) const
     {
       return vkGetPhysicalDeviceXcbPresentationSupportKHR( m_physicalDevice, queueFamilyIndex, &connection, visual_id );
     }
@@ -21639,7 +21639,6 @@ namespace vk
   {
     return static_cast<Result>( vkCreateInstance( reinterpret_cast<const VkInstanceCreateInfo*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkInstance*>( pInstance ) ) );
   }
-
 #ifdef VKCPP_ENHANCED_MODE
   inline Instance createInstance( const InstanceCreateInfo& createInfo, const AllocationCallbacks& allocator )
   {
@@ -21658,78 +21657,65 @@ namespace vk
     vkDestroyInstance( static_cast<VkInstance>( instance ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ) );
   }
 
-
   inline Result enumeratePhysicalDevices( Instance instance, uint32_t* pPhysicalDeviceCount, PhysicalDevice* pPhysicalDevices )
   {
     return static_cast<Result>( vkEnumeratePhysicalDevices( static_cast<VkInstance>( instance ), pPhysicalDeviceCount, reinterpret_cast<VkPhysicalDevice*>( pPhysicalDevices ) ) );
   }
-
 
   inline PFN_vkVoidFunction getDeviceProcAddr( Device device, const char* pName )
   {
     return vkGetDeviceProcAddr( static_cast<VkDevice>( device ), pName );
   }
 
-
   inline PFN_vkVoidFunction getInstanceProcAddr( Instance instance, const char* pName )
   {
     return vkGetInstanceProcAddr( static_cast<VkInstance>( instance ), pName );
   }
-
 
   inline void getPhysicalDeviceProperties( PhysicalDevice physicalDevice, PhysicalDeviceProperties* pProperties )
   {
     vkGetPhysicalDeviceProperties( static_cast<VkPhysicalDevice>( physicalDevice ), reinterpret_cast<VkPhysicalDeviceProperties*>( pProperties ) );
   }
 
-
   inline void getPhysicalDeviceQueueFamilyProperties( PhysicalDevice physicalDevice, uint32_t* pQueueFamilyPropertyCount, QueueFamilyProperties* pQueueFamilyProperties )
   {
     vkGetPhysicalDeviceQueueFamilyProperties( static_cast<VkPhysicalDevice>( physicalDevice ), pQueueFamilyPropertyCount, reinterpret_cast<VkQueueFamilyProperties*>( pQueueFamilyProperties ) );
   }
-
 
   inline void getPhysicalDeviceMemoryProperties( PhysicalDevice physicalDevice, PhysicalDeviceMemoryProperties* pMemoryProperties )
   {
     vkGetPhysicalDeviceMemoryProperties( static_cast<VkPhysicalDevice>( physicalDevice ), reinterpret_cast<VkPhysicalDeviceMemoryProperties*>( pMemoryProperties ) );
   }
 
-
   inline void getPhysicalDeviceFeatures( PhysicalDevice physicalDevice, PhysicalDeviceFeatures* pFeatures )
   {
     vkGetPhysicalDeviceFeatures( static_cast<VkPhysicalDevice>( physicalDevice ), reinterpret_cast<VkPhysicalDeviceFeatures*>( pFeatures ) );
   }
-
 
   inline void getPhysicalDeviceFormatProperties( PhysicalDevice physicalDevice, Format format, FormatProperties* pFormatProperties )
   {
     vkGetPhysicalDeviceFormatProperties( static_cast<VkPhysicalDevice>( physicalDevice ), static_cast<VkFormat>( format ), reinterpret_cast<VkFormatProperties*>( pFormatProperties ) );
   }
 
-
   inline Result getPhysicalDeviceImageFormatProperties( PhysicalDevice physicalDevice, Format format, ImageType type, ImageTiling tiling, ImageUsageFlags usage, ImageCreateFlags flags, ImageFormatProperties* pImageFormatProperties )
   {
     return static_cast<Result>( vkGetPhysicalDeviceImageFormatProperties( static_cast<VkPhysicalDevice>( physicalDevice ), static_cast<VkFormat>( format ), static_cast<VkImageType>( type ), static_cast<VkImageTiling>( tiling ), static_cast<VkImageUsageFlags>( usage ), static_cast<VkImageCreateFlags>( flags ), reinterpret_cast<VkImageFormatProperties*>( pImageFormatProperties ) ) );
   }
-
 
   inline Result createDevice( PhysicalDevice physicalDevice, const DeviceCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, Device* pDevice )
   {
     return static_cast<Result>( vkCreateDevice( static_cast<VkPhysicalDevice>( physicalDevice ), reinterpret_cast<const VkDeviceCreateInfo*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkDevice*>( pDevice ) ) );
   }
 
-
   inline void destroyDevice( Device device, const AllocationCallbacks* pAllocator )
   {
     vkDestroyDevice( static_cast<VkDevice>( device ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ) );
   }
 
-
   inline Result enumerateInstanceLayerProperties( uint32_t* pPropertyCount, LayerProperties* pProperties )
   {
     return static_cast<Result>( vkEnumerateInstanceLayerProperties( pPropertyCount, reinterpret_cast<VkLayerProperties*>( pProperties ) ) );
   }
-
 #ifdef VKCPP_ENHANCED_MODE
   inline Result enumerateInstanceLayerProperties( std::vector<LayerProperties> & properties )
   {
@@ -21753,7 +21739,6 @@ namespace vk
   {
     return static_cast<Result>( vkEnumerateInstanceExtensionProperties( pLayerName, pPropertyCount, reinterpret_cast<VkExtensionProperties*>( pProperties ) ) );
   }
-
 #ifdef VKCPP_ENHANCED_MODE
   inline Result enumerateInstanceExtensionProperties( std::string const& layerName, std::vector<ExtensionProperties> & properties )
   {
@@ -21778,739 +21763,616 @@ namespace vk
     return static_cast<Result>( vkEnumerateDeviceLayerProperties( static_cast<VkPhysicalDevice>( physicalDevice ), pPropertyCount, reinterpret_cast<VkLayerProperties*>( pProperties ) ) );
   }
 
-
   inline Result enumerateDeviceExtensionProperties( PhysicalDevice physicalDevice, const char* pLayerName, uint32_t* pPropertyCount, ExtensionProperties* pProperties )
   {
     return static_cast<Result>( vkEnumerateDeviceExtensionProperties( static_cast<VkPhysicalDevice>( physicalDevice ), pLayerName, pPropertyCount, reinterpret_cast<VkExtensionProperties*>( pProperties ) ) );
   }
-
 
   inline void getDeviceQueue( Device device, uint32_t queueFamilyIndex, uint32_t queueIndex, Queue* pQueue )
   {
     vkGetDeviceQueue( static_cast<VkDevice>( device ), queueFamilyIndex, queueIndex, reinterpret_cast<VkQueue*>( pQueue ) );
   }
 
-
   inline Result queueSubmit( Queue queue, uint32_t submitCount, const SubmitInfo* pSubmits, Fence fence )
   {
     return static_cast<Result>( vkQueueSubmit( static_cast<VkQueue>( queue ), submitCount, reinterpret_cast<const VkSubmitInfo*>( pSubmits ), static_cast<VkFence>( fence ) ) );
   }
-
 
   inline Result queueWaitIdle( Queue queue )
   {
     return static_cast<Result>( vkQueueWaitIdle( static_cast<VkQueue>( queue ) ) );
   }
 
-
   inline Result deviceWaitIdle( Device device )
   {
     return static_cast<Result>( vkDeviceWaitIdle( static_cast<VkDevice>( device ) ) );
   }
-
 
   inline Result allocateMemory( Device device, const MemoryAllocateInfo* pAllocateInfo, const AllocationCallbacks* pAllocator, DeviceMemory* pMemory )
   {
     return static_cast<Result>( vkAllocateMemory( static_cast<VkDevice>( device ), reinterpret_cast<const VkMemoryAllocateInfo*>( pAllocateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkDeviceMemory*>( pMemory ) ) );
   }
 
-
   inline void freeMemory( Device device, DeviceMemory memory, const AllocationCallbacks* pAllocator )
   {
     vkFreeMemory( static_cast<VkDevice>( device ), static_cast<VkDeviceMemory>( memory ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ) );
   }
-
 
   inline Result mapMemory( Device device, DeviceMemory memory, DeviceSize offset, DeviceSize size, MemoryMapFlags flags, void** ppData )
   {
     return static_cast<Result>( vkMapMemory( static_cast<VkDevice>( device ), static_cast<VkDeviceMemory>( memory ), offset, size, static_cast<VkMemoryMapFlags>( flags ), ppData ) );
   }
 
-
   inline void unmapMemory( Device device, DeviceMemory memory )
   {
     vkUnmapMemory( static_cast<VkDevice>( device ), static_cast<VkDeviceMemory>( memory ) );
   }
-
 
   inline Result flushMappedMemoryRanges( Device device, uint32_t memoryRangeCount, const MappedMemoryRange* pMemoryRanges )
   {
     return static_cast<Result>( vkFlushMappedMemoryRanges( static_cast<VkDevice>( device ), memoryRangeCount, reinterpret_cast<const VkMappedMemoryRange*>( pMemoryRanges ) ) );
   }
 
-
   inline Result invalidateMappedMemoryRanges( Device device, uint32_t memoryRangeCount, const MappedMemoryRange* pMemoryRanges )
   {
     return static_cast<Result>( vkInvalidateMappedMemoryRanges( static_cast<VkDevice>( device ), memoryRangeCount, reinterpret_cast<const VkMappedMemoryRange*>( pMemoryRanges ) ) );
   }
-
 
   inline void getDeviceMemoryCommitment( Device device, DeviceMemory memory, DeviceSize* pCommittedMemoryInBytes )
   {
     vkGetDeviceMemoryCommitment( static_cast<VkDevice>( device ), static_cast<VkDeviceMemory>( memory ), pCommittedMemoryInBytes );
   }
 
-
   inline void getBufferMemoryRequirements( Device device, Buffer buffer, MemoryRequirements* pMemoryRequirements )
   {
     vkGetBufferMemoryRequirements( static_cast<VkDevice>( device ), static_cast<VkBuffer>( buffer ), reinterpret_cast<VkMemoryRequirements*>( pMemoryRequirements ) );
   }
-
 
   inline Result bindBufferMemory( Device device, Buffer buffer, DeviceMemory memory, DeviceSize memoryOffset )
   {
     return static_cast<Result>( vkBindBufferMemory( static_cast<VkDevice>( device ), static_cast<VkBuffer>( buffer ), static_cast<VkDeviceMemory>( memory ), memoryOffset ) );
   }
 
-
   inline void getImageMemoryRequirements( Device device, Image image, MemoryRequirements* pMemoryRequirements )
   {
     vkGetImageMemoryRequirements( static_cast<VkDevice>( device ), static_cast<VkImage>( image ), reinterpret_cast<VkMemoryRequirements*>( pMemoryRequirements ) );
   }
-
 
   inline Result bindImageMemory( Device device, Image image, DeviceMemory memory, DeviceSize memoryOffset )
   {
     return static_cast<Result>( vkBindImageMemory( static_cast<VkDevice>( device ), static_cast<VkImage>( image ), static_cast<VkDeviceMemory>( memory ), memoryOffset ) );
   }
 
-
   inline void getImageSparseMemoryRequirements( Device device, Image image, uint32_t* pSparseMemoryRequirementCount, SparseImageMemoryRequirements* pSparseMemoryRequirements )
   {
     vkGetImageSparseMemoryRequirements( static_cast<VkDevice>( device ), static_cast<VkImage>( image ), pSparseMemoryRequirementCount, reinterpret_cast<VkSparseImageMemoryRequirements*>( pSparseMemoryRequirements ) );
   }
-
 
   inline void getPhysicalDeviceSparseImageFormatProperties( PhysicalDevice physicalDevice, Format format, ImageType type, SampleCountFlagBits samples, ImageUsageFlags usage, ImageTiling tiling, uint32_t* pPropertyCount, SparseImageFormatProperties* pProperties )
   {
     vkGetPhysicalDeviceSparseImageFormatProperties( static_cast<VkPhysicalDevice>( physicalDevice ), static_cast<VkFormat>( format ), static_cast<VkImageType>( type ), static_cast<VkSampleCountFlagBits>( samples ), static_cast<VkImageUsageFlags>( usage ), static_cast<VkImageTiling>( tiling ), pPropertyCount, reinterpret_cast<VkSparseImageFormatProperties*>( pProperties ) );
   }
 
-
   inline Result queueBindSparse( Queue queue, uint32_t bindInfoCount, const BindSparseInfo* pBindInfo, Fence fence )
   {
     return static_cast<Result>( vkQueueBindSparse( static_cast<VkQueue>( queue ), bindInfoCount, reinterpret_cast<const VkBindSparseInfo*>( pBindInfo ), static_cast<VkFence>( fence ) ) );
   }
-
 
   inline Result createFence( Device device, const FenceCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, Fence* pFence )
   {
     return static_cast<Result>( vkCreateFence( static_cast<VkDevice>( device ), reinterpret_cast<const VkFenceCreateInfo*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkFence*>( pFence ) ) );
   }
 
-
   inline void destroyFence( Device device, Fence fence, const AllocationCallbacks* pAllocator )
   {
     vkDestroyFence( static_cast<VkDevice>( device ), static_cast<VkFence>( fence ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ) );
   }
-
 
   inline Result resetFences( Device device, uint32_t fenceCount, const Fence* pFences )
   {
     return static_cast<Result>( vkResetFences( static_cast<VkDevice>( device ), fenceCount, reinterpret_cast<const VkFence*>( pFences ) ) );
   }
 
-
   inline Result getFenceStatus( Device device, Fence fence )
   {
     return static_cast<Result>( vkGetFenceStatus( static_cast<VkDevice>( device ), static_cast<VkFence>( fence ) ) );
   }
-
 
   inline Result waitForFences( Device device, uint32_t fenceCount, const Fence* pFences, Bool32 waitAll, uint64_t timeout )
   {
     return static_cast<Result>( vkWaitForFences( static_cast<VkDevice>( device ), fenceCount, reinterpret_cast<const VkFence*>( pFences ), waitAll, timeout ) );
   }
 
-
   inline Result createSemaphore( Device device, const SemaphoreCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, Semaphore* pSemaphore )
   {
     return static_cast<Result>( vkCreateSemaphore( static_cast<VkDevice>( device ), reinterpret_cast<const VkSemaphoreCreateInfo*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkSemaphore*>( pSemaphore ) ) );
   }
-
 
   inline void destroySemaphore( Device device, Semaphore semaphore, const AllocationCallbacks* pAllocator )
   {
     vkDestroySemaphore( static_cast<VkDevice>( device ), static_cast<VkSemaphore>( semaphore ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ) );
   }
 
-
   inline Result createEvent( Device device, const EventCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, Event* pEvent )
   {
     return static_cast<Result>( vkCreateEvent( static_cast<VkDevice>( device ), reinterpret_cast<const VkEventCreateInfo*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkEvent*>( pEvent ) ) );
   }
-
 
   inline void destroyEvent( Device device, Event event, const AllocationCallbacks* pAllocator )
   {
     vkDestroyEvent( static_cast<VkDevice>( device ), static_cast<VkEvent>( event ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ) );
   }
 
-
   inline Result getEventStatus( Device device, Event event )
   {
     return static_cast<Result>( vkGetEventStatus( static_cast<VkDevice>( device ), static_cast<VkEvent>( event ) ) );
   }
-
 
   inline Result setEvent( Device device, Event event )
   {
     return static_cast<Result>( vkSetEvent( static_cast<VkDevice>( device ), static_cast<VkEvent>( event ) ) );
   }
 
-
   inline Result resetEvent( Device device, Event event )
   {
     return static_cast<Result>( vkResetEvent( static_cast<VkDevice>( device ), static_cast<VkEvent>( event ) ) );
   }
-
 
   inline Result createQueryPool( Device device, const QueryPoolCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, QueryPool* pQueryPool )
   {
     return static_cast<Result>( vkCreateQueryPool( static_cast<VkDevice>( device ), reinterpret_cast<const VkQueryPoolCreateInfo*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkQueryPool*>( pQueryPool ) ) );
   }
 
-
   inline void destroyQueryPool( Device device, QueryPool queryPool, const AllocationCallbacks* pAllocator )
   {
     vkDestroyQueryPool( static_cast<VkDevice>( device ), static_cast<VkQueryPool>( queryPool ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ) );
   }
-
 
   inline Result getQueryPoolResults( Device device, QueryPool queryPool, uint32_t firstQuery, uint32_t queryCount, size_t dataSize, void* pData, DeviceSize stride, QueryResultFlags flags )
   {
     return static_cast<Result>( vkGetQueryPoolResults( static_cast<VkDevice>( device ), static_cast<VkQueryPool>( queryPool ), firstQuery, queryCount, dataSize, pData, stride, static_cast<VkQueryResultFlags>( flags ) ) );
   }
 
-
   inline Result createBuffer( Device device, const BufferCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, Buffer* pBuffer )
   {
     return static_cast<Result>( vkCreateBuffer( static_cast<VkDevice>( device ), reinterpret_cast<const VkBufferCreateInfo*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkBuffer*>( pBuffer ) ) );
   }
-
 
   inline void destroyBuffer( Device device, Buffer buffer, const AllocationCallbacks* pAllocator )
   {
     vkDestroyBuffer( static_cast<VkDevice>( device ), static_cast<VkBuffer>( buffer ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ) );
   }
 
-
   inline Result createBufferView( Device device, const BufferViewCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, BufferView* pView )
   {
     return static_cast<Result>( vkCreateBufferView( static_cast<VkDevice>( device ), reinterpret_cast<const VkBufferViewCreateInfo*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkBufferView*>( pView ) ) );
   }
-
 
   inline void destroyBufferView( Device device, BufferView bufferView, const AllocationCallbacks* pAllocator )
   {
     vkDestroyBufferView( static_cast<VkDevice>( device ), static_cast<VkBufferView>( bufferView ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ) );
   }
 
-
   inline Result createImage( Device device, const ImageCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, Image* pImage )
   {
     return static_cast<Result>( vkCreateImage( static_cast<VkDevice>( device ), reinterpret_cast<const VkImageCreateInfo*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkImage*>( pImage ) ) );
   }
-
 
   inline void destroyImage( Device device, Image image, const AllocationCallbacks* pAllocator )
   {
     vkDestroyImage( static_cast<VkDevice>( device ), static_cast<VkImage>( image ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ) );
   }
 
-
   inline void getImageSubresourceLayout( Device device, Image image, const ImageSubresource* pSubresource, SubresourceLayout* pLayout )
   {
     vkGetImageSubresourceLayout( static_cast<VkDevice>( device ), static_cast<VkImage>( image ), reinterpret_cast<const VkImageSubresource*>( pSubresource ), reinterpret_cast<VkSubresourceLayout*>( pLayout ) );
   }
-
 
   inline Result createImageView( Device device, const ImageViewCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, ImageView* pView )
   {
     return static_cast<Result>( vkCreateImageView( static_cast<VkDevice>( device ), reinterpret_cast<const VkImageViewCreateInfo*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkImageView*>( pView ) ) );
   }
 
-
   inline void destroyImageView( Device device, ImageView imageView, const AllocationCallbacks* pAllocator )
   {
     vkDestroyImageView( static_cast<VkDevice>( device ), static_cast<VkImageView>( imageView ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ) );
   }
-
 
   inline Result createShaderModule( Device device, const ShaderModuleCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, ShaderModule* pShaderModule )
   {
     return static_cast<Result>( vkCreateShaderModule( static_cast<VkDevice>( device ), reinterpret_cast<const VkShaderModuleCreateInfo*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkShaderModule*>( pShaderModule ) ) );
   }
 
-
   inline void destroyShaderModule( Device device, ShaderModule shaderModule, const AllocationCallbacks* pAllocator )
   {
     vkDestroyShaderModule( static_cast<VkDevice>( device ), static_cast<VkShaderModule>( shaderModule ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ) );
   }
-
 
   inline Result createPipelineCache( Device device, const PipelineCacheCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, PipelineCache* pPipelineCache )
   {
     return static_cast<Result>( vkCreatePipelineCache( static_cast<VkDevice>( device ), reinterpret_cast<const VkPipelineCacheCreateInfo*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkPipelineCache*>( pPipelineCache ) ) );
   }
 
-
   inline void destroyPipelineCache( Device device, PipelineCache pipelineCache, const AllocationCallbacks* pAllocator )
   {
     vkDestroyPipelineCache( static_cast<VkDevice>( device ), static_cast<VkPipelineCache>( pipelineCache ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ) );
   }
-
 
   inline Result getPipelineCacheData( Device device, PipelineCache pipelineCache, size_t* pDataSize, void* pData )
   {
     return static_cast<Result>( vkGetPipelineCacheData( static_cast<VkDevice>( device ), static_cast<VkPipelineCache>( pipelineCache ), pDataSize, pData ) );
   }
 
-
   inline Result mergePipelineCaches( Device device, PipelineCache dstCache, uint32_t srcCacheCount, const PipelineCache* pSrcCaches )
   {
     return static_cast<Result>( vkMergePipelineCaches( static_cast<VkDevice>( device ), static_cast<VkPipelineCache>( dstCache ), srcCacheCount, reinterpret_cast<const VkPipelineCache*>( pSrcCaches ) ) );
   }
-
 
   inline Result createGraphicsPipelines( Device device, PipelineCache pipelineCache, uint32_t createInfoCount, const GraphicsPipelineCreateInfo* pCreateInfos, const AllocationCallbacks* pAllocator, Pipeline* pPipelines )
   {
     return static_cast<Result>( vkCreateGraphicsPipelines( static_cast<VkDevice>( device ), static_cast<VkPipelineCache>( pipelineCache ), createInfoCount, reinterpret_cast<const VkGraphicsPipelineCreateInfo*>( pCreateInfos ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkPipeline*>( pPipelines ) ) );
   }
 
-
   inline Result createComputePipelines( Device device, PipelineCache pipelineCache, uint32_t createInfoCount, const ComputePipelineCreateInfo* pCreateInfos, const AllocationCallbacks* pAllocator, Pipeline* pPipelines )
   {
     return static_cast<Result>( vkCreateComputePipelines( static_cast<VkDevice>( device ), static_cast<VkPipelineCache>( pipelineCache ), createInfoCount, reinterpret_cast<const VkComputePipelineCreateInfo*>( pCreateInfos ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkPipeline*>( pPipelines ) ) );
   }
-
 
   inline void destroyPipeline( Device device, Pipeline pipeline, const AllocationCallbacks* pAllocator )
   {
     vkDestroyPipeline( static_cast<VkDevice>( device ), static_cast<VkPipeline>( pipeline ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ) );
   }
 
-
   inline Result createPipelineLayout( Device device, const PipelineLayoutCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, PipelineLayout* pPipelineLayout )
   {
     return static_cast<Result>( vkCreatePipelineLayout( static_cast<VkDevice>( device ), reinterpret_cast<const VkPipelineLayoutCreateInfo*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkPipelineLayout*>( pPipelineLayout ) ) );
   }
-
 
   inline void destroyPipelineLayout( Device device, PipelineLayout pipelineLayout, const AllocationCallbacks* pAllocator )
   {
     vkDestroyPipelineLayout( static_cast<VkDevice>( device ), static_cast<VkPipelineLayout>( pipelineLayout ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ) );
   }
 
-
   inline Result createSampler( Device device, const SamplerCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, Sampler* pSampler )
   {
     return static_cast<Result>( vkCreateSampler( static_cast<VkDevice>( device ), reinterpret_cast<const VkSamplerCreateInfo*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkSampler*>( pSampler ) ) );
   }
-
 
   inline void destroySampler( Device device, Sampler sampler, const AllocationCallbacks* pAllocator )
   {
     vkDestroySampler( static_cast<VkDevice>( device ), static_cast<VkSampler>( sampler ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ) );
   }
 
-
   inline Result createDescriptorSetLayout( Device device, const DescriptorSetLayoutCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, DescriptorSetLayout* pSetLayout )
   {
     return static_cast<Result>( vkCreateDescriptorSetLayout( static_cast<VkDevice>( device ), reinterpret_cast<const VkDescriptorSetLayoutCreateInfo*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkDescriptorSetLayout*>( pSetLayout ) ) );
   }
-
 
   inline void destroyDescriptorSetLayout( Device device, DescriptorSetLayout descriptorSetLayout, const AllocationCallbacks* pAllocator )
   {
     vkDestroyDescriptorSetLayout( static_cast<VkDevice>( device ), static_cast<VkDescriptorSetLayout>( descriptorSetLayout ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ) );
   }
 
-
   inline Result createDescriptorPool( Device device, const DescriptorPoolCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, DescriptorPool* pDescriptorPool )
   {
     return static_cast<Result>( vkCreateDescriptorPool( static_cast<VkDevice>( device ), reinterpret_cast<const VkDescriptorPoolCreateInfo*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkDescriptorPool*>( pDescriptorPool ) ) );
   }
-
 
   inline void destroyDescriptorPool( Device device, DescriptorPool descriptorPool, const AllocationCallbacks* pAllocator )
   {
     vkDestroyDescriptorPool( static_cast<VkDevice>( device ), static_cast<VkDescriptorPool>( descriptorPool ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ) );
   }
 
-
   inline Result resetDescriptorPool( Device device, DescriptorPool descriptorPool, DescriptorPoolResetFlags flags )
   {
     return static_cast<Result>( vkResetDescriptorPool( static_cast<VkDevice>( device ), static_cast<VkDescriptorPool>( descriptorPool ), static_cast<VkDescriptorPoolResetFlags>( flags ) ) );
   }
-
 
   inline Result allocateDescriptorSets( Device device, const DescriptorSetAllocateInfo* pAllocateInfo, DescriptorSet* pDescriptorSets )
   {
     return static_cast<Result>( vkAllocateDescriptorSets( static_cast<VkDevice>( device ), reinterpret_cast<const VkDescriptorSetAllocateInfo*>( pAllocateInfo ), reinterpret_cast<VkDescriptorSet*>( pDescriptorSets ) ) );
   }
 
-
   inline Result freeDescriptorSets( Device device, DescriptorPool descriptorPool, uint32_t descriptorSetCount, const DescriptorSet* pDescriptorSets )
   {
     return static_cast<Result>( vkFreeDescriptorSets( static_cast<VkDevice>( device ), static_cast<VkDescriptorPool>( descriptorPool ), descriptorSetCount, reinterpret_cast<const VkDescriptorSet*>( pDescriptorSets ) ) );
   }
-
 
   inline void updateDescriptorSets( Device device, uint32_t descriptorWriteCount, const WriteDescriptorSet* pDescriptorWrites, uint32_t descriptorCopyCount, const CopyDescriptorSet* pDescriptorCopies )
   {
     vkUpdateDescriptorSets( static_cast<VkDevice>( device ), descriptorWriteCount, reinterpret_cast<const VkWriteDescriptorSet*>( pDescriptorWrites ), descriptorCopyCount, reinterpret_cast<const VkCopyDescriptorSet*>( pDescriptorCopies ) );
   }
 
-
   inline Result createFramebuffer( Device device, const FramebufferCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, Framebuffer* pFramebuffer )
   {
     return static_cast<Result>( vkCreateFramebuffer( static_cast<VkDevice>( device ), reinterpret_cast<const VkFramebufferCreateInfo*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkFramebuffer*>( pFramebuffer ) ) );
   }
-
 
   inline void destroyFramebuffer( Device device, Framebuffer framebuffer, const AllocationCallbacks* pAllocator )
   {
     vkDestroyFramebuffer( static_cast<VkDevice>( device ), static_cast<VkFramebuffer>( framebuffer ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ) );
   }
 
-
   inline Result createRenderPass( Device device, const RenderPassCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, RenderPass* pRenderPass )
   {
     return static_cast<Result>( vkCreateRenderPass( static_cast<VkDevice>( device ), reinterpret_cast<const VkRenderPassCreateInfo*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkRenderPass*>( pRenderPass ) ) );
   }
-
 
   inline void destroyRenderPass( Device device, RenderPass renderPass, const AllocationCallbacks* pAllocator )
   {
     vkDestroyRenderPass( static_cast<VkDevice>( device ), static_cast<VkRenderPass>( renderPass ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ) );
   }
 
-
   inline void getRenderAreaGranularity( Device device, RenderPass renderPass, Extent2D* pGranularity )
   {
     vkGetRenderAreaGranularity( static_cast<VkDevice>( device ), static_cast<VkRenderPass>( renderPass ), reinterpret_cast<VkExtent2D*>( pGranularity ) );
   }
-
 
   inline Result createCommandPool( Device device, const CommandPoolCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, CommandPool* pCommandPool )
   {
     return static_cast<Result>( vkCreateCommandPool( static_cast<VkDevice>( device ), reinterpret_cast<const VkCommandPoolCreateInfo*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkCommandPool*>( pCommandPool ) ) );
   }
 
-
   inline void destroyCommandPool( Device device, CommandPool commandPool, const AllocationCallbacks* pAllocator )
   {
     vkDestroyCommandPool( static_cast<VkDevice>( device ), static_cast<VkCommandPool>( commandPool ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ) );
   }
-
 
   inline Result resetCommandPool( Device device, CommandPool commandPool, CommandPoolResetFlags flags )
   {
     return static_cast<Result>( vkResetCommandPool( static_cast<VkDevice>( device ), static_cast<VkCommandPool>( commandPool ), static_cast<VkCommandPoolResetFlags>( flags ) ) );
   }
 
-
   inline Result allocateCommandBuffers( Device device, const CommandBufferAllocateInfo* pAllocateInfo, CommandBuffer* pCommandBuffers )
   {
     return static_cast<Result>( vkAllocateCommandBuffers( static_cast<VkDevice>( device ), reinterpret_cast<const VkCommandBufferAllocateInfo*>( pAllocateInfo ), reinterpret_cast<VkCommandBuffer*>( pCommandBuffers ) ) );
   }
-
 
   inline void freeCommandBuffers( Device device, CommandPool commandPool, uint32_t commandBufferCount, const CommandBuffer* pCommandBuffers )
   {
     vkFreeCommandBuffers( static_cast<VkDevice>( device ), static_cast<VkCommandPool>( commandPool ), commandBufferCount, reinterpret_cast<const VkCommandBuffer*>( pCommandBuffers ) );
   }
 
-
   inline Result beginCommandBuffer( CommandBuffer commandBuffer, const CommandBufferBeginInfo* pBeginInfo )
   {
     return static_cast<Result>( vkBeginCommandBuffer( static_cast<VkCommandBuffer>( commandBuffer ), reinterpret_cast<const VkCommandBufferBeginInfo*>( pBeginInfo ) ) );
   }
-
 
   inline Result endCommandBuffer( CommandBuffer commandBuffer )
   {
     return static_cast<Result>( vkEndCommandBuffer( static_cast<VkCommandBuffer>( commandBuffer ) ) );
   }
 
-
   inline Result resetCommandBuffer( CommandBuffer commandBuffer, CommandBufferResetFlags flags )
   {
     return static_cast<Result>( vkResetCommandBuffer( static_cast<VkCommandBuffer>( commandBuffer ), static_cast<VkCommandBufferResetFlags>( flags ) ) );
   }
-
 
   inline void cmdBindPipeline( CommandBuffer commandBuffer, PipelineBindPoint pipelineBindPoint, Pipeline pipeline )
   {
     vkCmdBindPipeline( static_cast<VkCommandBuffer>( commandBuffer ), static_cast<VkPipelineBindPoint>( pipelineBindPoint ), static_cast<VkPipeline>( pipeline ) );
   }
 
-
   inline void cmdSetViewport( CommandBuffer commandBuffer, uint32_t firstViewport, uint32_t viewportCount, const Viewport* pViewports )
   {
     vkCmdSetViewport( static_cast<VkCommandBuffer>( commandBuffer ), firstViewport, viewportCount, reinterpret_cast<const VkViewport*>( pViewports ) );
   }
-
 
   inline void cmdSetScissor( CommandBuffer commandBuffer, uint32_t firstScissor, uint32_t scissorCount, const Rect2D* pScissors )
   {
     vkCmdSetScissor( static_cast<VkCommandBuffer>( commandBuffer ), firstScissor, scissorCount, reinterpret_cast<const VkRect2D*>( pScissors ) );
   }
 
-
   inline void cmdSetLineWidth( CommandBuffer commandBuffer, float lineWidth )
   {
     vkCmdSetLineWidth( static_cast<VkCommandBuffer>( commandBuffer ), lineWidth );
   }
-
 
   inline void cmdSetDepthBias( CommandBuffer commandBuffer, float depthBiasConstantFactor, float depthBiasClamp, float depthBiasSlopeFactor )
   {
     vkCmdSetDepthBias( static_cast<VkCommandBuffer>( commandBuffer ), depthBiasConstantFactor, depthBiasClamp, depthBiasSlopeFactor );
   }
 
-
   inline void cmdSetBlendConstants( CommandBuffer commandBuffer, const float blendConstants[4] )
   {
     vkCmdSetBlendConstants( static_cast<VkCommandBuffer>( commandBuffer ), blendConstants );
   }
-
 
   inline void cmdSetDepthBounds( CommandBuffer commandBuffer, float minDepthBounds, float maxDepthBounds )
   {
     vkCmdSetDepthBounds( static_cast<VkCommandBuffer>( commandBuffer ), minDepthBounds, maxDepthBounds );
   }
 
-
   inline void cmdSetStencilCompareMask( CommandBuffer commandBuffer, StencilFaceFlags faceMask, uint32_t compareMask )
   {
     vkCmdSetStencilCompareMask( static_cast<VkCommandBuffer>( commandBuffer ), static_cast<VkStencilFaceFlags>( faceMask ), compareMask );
   }
-
 
   inline void cmdSetStencilWriteMask( CommandBuffer commandBuffer, StencilFaceFlags faceMask, uint32_t writeMask )
   {
     vkCmdSetStencilWriteMask( static_cast<VkCommandBuffer>( commandBuffer ), static_cast<VkStencilFaceFlags>( faceMask ), writeMask );
   }
 
-
   inline void cmdSetStencilReference( CommandBuffer commandBuffer, StencilFaceFlags faceMask, uint32_t reference )
   {
     vkCmdSetStencilReference( static_cast<VkCommandBuffer>( commandBuffer ), static_cast<VkStencilFaceFlags>( faceMask ), reference );
   }
-
 
   inline void cmdBindDescriptorSets( CommandBuffer commandBuffer, PipelineBindPoint pipelineBindPoint, PipelineLayout layout, uint32_t firstSet, uint32_t descriptorSetCount, const DescriptorSet* pDescriptorSets, uint32_t dynamicOffsetCount, const uint32_t* pDynamicOffsets )
   {
     vkCmdBindDescriptorSets( static_cast<VkCommandBuffer>( commandBuffer ), static_cast<VkPipelineBindPoint>( pipelineBindPoint ), static_cast<VkPipelineLayout>( layout ), firstSet, descriptorSetCount, reinterpret_cast<const VkDescriptorSet*>( pDescriptorSets ), dynamicOffsetCount, pDynamicOffsets );
   }
 
-
   inline void cmdBindIndexBuffer( CommandBuffer commandBuffer, Buffer buffer, DeviceSize offset, IndexType indexType )
   {
     vkCmdBindIndexBuffer( static_cast<VkCommandBuffer>( commandBuffer ), static_cast<VkBuffer>( buffer ), offset, static_cast<VkIndexType>( indexType ) );
   }
-
 
   inline void cmdBindVertexBuffers( CommandBuffer commandBuffer, uint32_t firstBinding, uint32_t bindingCount, const Buffer* pBuffers, const DeviceSize* pOffsets )
   {
     vkCmdBindVertexBuffers( static_cast<VkCommandBuffer>( commandBuffer ), firstBinding, bindingCount, reinterpret_cast<const VkBuffer*>( pBuffers ), pOffsets );
   }
 
-
   inline void cmdDraw( CommandBuffer commandBuffer, uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex, uint32_t firstInstance )
   {
     vkCmdDraw( static_cast<VkCommandBuffer>( commandBuffer ), vertexCount, instanceCount, firstVertex, firstInstance );
   }
-
 
   inline void cmdDrawIndexed( CommandBuffer commandBuffer, uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex, int32_t vertexOffset, uint32_t firstInstance )
   {
     vkCmdDrawIndexed( static_cast<VkCommandBuffer>( commandBuffer ), indexCount, instanceCount, firstIndex, vertexOffset, firstInstance );
   }
 
-
   inline void cmdDrawIndirect( CommandBuffer commandBuffer, Buffer buffer, DeviceSize offset, uint32_t drawCount, uint32_t stride )
   {
     vkCmdDrawIndirect( static_cast<VkCommandBuffer>( commandBuffer ), static_cast<VkBuffer>( buffer ), offset, drawCount, stride );
   }
-
 
   inline void cmdDrawIndexedIndirect( CommandBuffer commandBuffer, Buffer buffer, DeviceSize offset, uint32_t drawCount, uint32_t stride )
   {
     vkCmdDrawIndexedIndirect( static_cast<VkCommandBuffer>( commandBuffer ), static_cast<VkBuffer>( buffer ), offset, drawCount, stride );
   }
 
-
   inline void cmdDispatch( CommandBuffer commandBuffer, uint32_t x, uint32_t y, uint32_t z )
   {
     vkCmdDispatch( static_cast<VkCommandBuffer>( commandBuffer ), x, y, z );
   }
-
 
   inline void cmdDispatchIndirect( CommandBuffer commandBuffer, Buffer buffer, DeviceSize offset )
   {
     vkCmdDispatchIndirect( static_cast<VkCommandBuffer>( commandBuffer ), static_cast<VkBuffer>( buffer ), offset );
   }
 
-
   inline void cmdCopyBuffer( CommandBuffer commandBuffer, Buffer srcBuffer, Buffer dstBuffer, uint32_t regionCount, const BufferCopy* pRegions )
   {
     vkCmdCopyBuffer( static_cast<VkCommandBuffer>( commandBuffer ), static_cast<VkBuffer>( srcBuffer ), static_cast<VkBuffer>( dstBuffer ), regionCount, reinterpret_cast<const VkBufferCopy*>( pRegions ) );
   }
-
 
   inline void cmdCopyImage( CommandBuffer commandBuffer, Image srcImage, ImageLayout srcImageLayout, Image dstImage, ImageLayout dstImageLayout, uint32_t regionCount, const ImageCopy* pRegions )
   {
     vkCmdCopyImage( static_cast<VkCommandBuffer>( commandBuffer ), static_cast<VkImage>( srcImage ), static_cast<VkImageLayout>( srcImageLayout ), static_cast<VkImage>( dstImage ), static_cast<VkImageLayout>( dstImageLayout ), regionCount, reinterpret_cast<const VkImageCopy*>( pRegions ) );
   }
 
-
   inline void cmdBlitImage( CommandBuffer commandBuffer, Image srcImage, ImageLayout srcImageLayout, Image dstImage, ImageLayout dstImageLayout, uint32_t regionCount, const ImageBlit* pRegions, Filter filter )
   {
     vkCmdBlitImage( static_cast<VkCommandBuffer>( commandBuffer ), static_cast<VkImage>( srcImage ), static_cast<VkImageLayout>( srcImageLayout ), static_cast<VkImage>( dstImage ), static_cast<VkImageLayout>( dstImageLayout ), regionCount, reinterpret_cast<const VkImageBlit*>( pRegions ), static_cast<VkFilter>( filter ) );
   }
-
 
   inline void cmdCopyBufferToImage( CommandBuffer commandBuffer, Buffer srcBuffer, Image dstImage, ImageLayout dstImageLayout, uint32_t regionCount, const BufferImageCopy* pRegions )
   {
     vkCmdCopyBufferToImage( static_cast<VkCommandBuffer>( commandBuffer ), static_cast<VkBuffer>( srcBuffer ), static_cast<VkImage>( dstImage ), static_cast<VkImageLayout>( dstImageLayout ), regionCount, reinterpret_cast<const VkBufferImageCopy*>( pRegions ) );
   }
 
-
   inline void cmdCopyImageToBuffer( CommandBuffer commandBuffer, Image srcImage, ImageLayout srcImageLayout, Buffer dstBuffer, uint32_t regionCount, const BufferImageCopy* pRegions )
   {
     vkCmdCopyImageToBuffer( static_cast<VkCommandBuffer>( commandBuffer ), static_cast<VkImage>( srcImage ), static_cast<VkImageLayout>( srcImageLayout ), static_cast<VkBuffer>( dstBuffer ), regionCount, reinterpret_cast<const VkBufferImageCopy*>( pRegions ) );
   }
-
 
   inline void cmdUpdateBuffer( CommandBuffer commandBuffer, Buffer dstBuffer, DeviceSize dstOffset, DeviceSize dataSize, const uint32_t* pData )
   {
     vkCmdUpdateBuffer( static_cast<VkCommandBuffer>( commandBuffer ), static_cast<VkBuffer>( dstBuffer ), dstOffset, dataSize, pData );
   }
 
-
   inline void cmdFillBuffer( CommandBuffer commandBuffer, Buffer dstBuffer, DeviceSize dstOffset, DeviceSize size, uint32_t data )
   {
     vkCmdFillBuffer( static_cast<VkCommandBuffer>( commandBuffer ), static_cast<VkBuffer>( dstBuffer ), dstOffset, size, data );
   }
-
 
   inline void cmdClearColorImage( CommandBuffer commandBuffer, Image image, ImageLayout imageLayout, const ClearColorValue* pColor, uint32_t rangeCount, const ImageSubresourceRange* pRanges )
   {
     vkCmdClearColorImage( static_cast<VkCommandBuffer>( commandBuffer ), static_cast<VkImage>( image ), static_cast<VkImageLayout>( imageLayout ), reinterpret_cast<const VkClearColorValue*>( pColor ), rangeCount, reinterpret_cast<const VkImageSubresourceRange*>( pRanges ) );
   }
 
-
   inline void cmdClearDepthStencilImage( CommandBuffer commandBuffer, Image image, ImageLayout imageLayout, const ClearDepthStencilValue* pDepthStencil, uint32_t rangeCount, const ImageSubresourceRange* pRanges )
   {
     vkCmdClearDepthStencilImage( static_cast<VkCommandBuffer>( commandBuffer ), static_cast<VkImage>( image ), static_cast<VkImageLayout>( imageLayout ), reinterpret_cast<const VkClearDepthStencilValue*>( pDepthStencil ), rangeCount, reinterpret_cast<const VkImageSubresourceRange*>( pRanges ) );
   }
-
 
   inline void cmdClearAttachments( CommandBuffer commandBuffer, uint32_t attachmentCount, const ClearAttachment* pAttachments, uint32_t rectCount, const ClearRect* pRects )
   {
     vkCmdClearAttachments( static_cast<VkCommandBuffer>( commandBuffer ), attachmentCount, reinterpret_cast<const VkClearAttachment*>( pAttachments ), rectCount, reinterpret_cast<const VkClearRect*>( pRects ) );
   }
 
-
   inline void cmdResolveImage( CommandBuffer commandBuffer, Image srcImage, ImageLayout srcImageLayout, Image dstImage, ImageLayout dstImageLayout, uint32_t regionCount, const ImageResolve* pRegions )
   {
     vkCmdResolveImage( static_cast<VkCommandBuffer>( commandBuffer ), static_cast<VkImage>( srcImage ), static_cast<VkImageLayout>( srcImageLayout ), static_cast<VkImage>( dstImage ), static_cast<VkImageLayout>( dstImageLayout ), regionCount, reinterpret_cast<const VkImageResolve*>( pRegions ) );
   }
-
 
   inline void cmdSetEvent( CommandBuffer commandBuffer, Event event, PipelineStageFlags stageMask )
   {
     vkCmdSetEvent( static_cast<VkCommandBuffer>( commandBuffer ), static_cast<VkEvent>( event ), static_cast<VkPipelineStageFlags>( stageMask ) );
   }
 
-
   inline void cmdResetEvent( CommandBuffer commandBuffer, Event event, PipelineStageFlags stageMask )
   {
     vkCmdResetEvent( static_cast<VkCommandBuffer>( commandBuffer ), static_cast<VkEvent>( event ), static_cast<VkPipelineStageFlags>( stageMask ) );
   }
-
 
   inline void cmdWaitEvents( CommandBuffer commandBuffer, uint32_t eventCount, const Event* pEvents, PipelineStageFlags srcStageMask, PipelineStageFlags dstStageMask, uint32_t memoryBarrierCount, const MemoryBarrier* pMemoryBarriers, uint32_t bufferMemoryBarrierCount, const BufferMemoryBarrier* pBufferMemoryBarriers, uint32_t imageMemoryBarrierCount, const ImageMemoryBarrier* pImageMemoryBarriers )
   {
     vkCmdWaitEvents( static_cast<VkCommandBuffer>( commandBuffer ), eventCount, reinterpret_cast<const VkEvent*>( pEvents ), static_cast<VkPipelineStageFlags>( srcStageMask ), static_cast<VkPipelineStageFlags>( dstStageMask ), memoryBarrierCount, reinterpret_cast<const VkMemoryBarrier*>( pMemoryBarriers ), bufferMemoryBarrierCount, reinterpret_cast<const VkBufferMemoryBarrier*>( pBufferMemoryBarriers ), imageMemoryBarrierCount, reinterpret_cast<const VkImageMemoryBarrier*>( pImageMemoryBarriers ) );
   }
 
-
   inline void cmdPipelineBarrier( CommandBuffer commandBuffer, PipelineStageFlags srcStageMask, PipelineStageFlags dstStageMask, DependencyFlags dependencyFlags, uint32_t memoryBarrierCount, const MemoryBarrier* pMemoryBarriers, uint32_t bufferMemoryBarrierCount, const BufferMemoryBarrier* pBufferMemoryBarriers, uint32_t imageMemoryBarrierCount, const ImageMemoryBarrier* pImageMemoryBarriers )
   {
     vkCmdPipelineBarrier( static_cast<VkCommandBuffer>( commandBuffer ), static_cast<VkPipelineStageFlags>( srcStageMask ), static_cast<VkPipelineStageFlags>( dstStageMask ), static_cast<VkDependencyFlags>( dependencyFlags ), memoryBarrierCount, reinterpret_cast<const VkMemoryBarrier*>( pMemoryBarriers ), bufferMemoryBarrierCount, reinterpret_cast<const VkBufferMemoryBarrier*>( pBufferMemoryBarriers ), imageMemoryBarrierCount, reinterpret_cast<const VkImageMemoryBarrier*>( pImageMemoryBarriers ) );
   }
-
 
   inline void cmdBeginQuery( CommandBuffer commandBuffer, QueryPool queryPool, uint32_t query, QueryControlFlags flags )
   {
     vkCmdBeginQuery( static_cast<VkCommandBuffer>( commandBuffer ), static_cast<VkQueryPool>( queryPool ), query, static_cast<VkQueryControlFlags>( flags ) );
   }
 
-
   inline void cmdEndQuery( CommandBuffer commandBuffer, QueryPool queryPool, uint32_t query )
   {
     vkCmdEndQuery( static_cast<VkCommandBuffer>( commandBuffer ), static_cast<VkQueryPool>( queryPool ), query );
   }
-
 
   inline void cmdResetQueryPool( CommandBuffer commandBuffer, QueryPool queryPool, uint32_t firstQuery, uint32_t queryCount )
   {
     vkCmdResetQueryPool( static_cast<VkCommandBuffer>( commandBuffer ), static_cast<VkQueryPool>( queryPool ), firstQuery, queryCount );
   }
 
-
   inline void cmdWriteTimestamp( CommandBuffer commandBuffer, PipelineStageFlagBits pipelineStage, QueryPool queryPool, uint32_t query )
   {
     vkCmdWriteTimestamp( static_cast<VkCommandBuffer>( commandBuffer ), static_cast<VkPipelineStageFlagBits>( pipelineStage ), static_cast<VkQueryPool>( queryPool ), query );
   }
-
 
   inline void cmdCopyQueryPoolResults( CommandBuffer commandBuffer, QueryPool queryPool, uint32_t firstQuery, uint32_t queryCount, Buffer dstBuffer, DeviceSize dstOffset, DeviceSize stride, QueryResultFlags flags )
   {
     vkCmdCopyQueryPoolResults( static_cast<VkCommandBuffer>( commandBuffer ), static_cast<VkQueryPool>( queryPool ), firstQuery, queryCount, static_cast<VkBuffer>( dstBuffer ), dstOffset, stride, static_cast<VkQueryResultFlags>( flags ) );
   }
 
-
   inline void cmdPushConstants( CommandBuffer commandBuffer, PipelineLayout layout, ShaderStageFlags stageFlags, uint32_t offset, uint32_t size, const void* pValues )
   {
     vkCmdPushConstants( static_cast<VkCommandBuffer>( commandBuffer ), static_cast<VkPipelineLayout>( layout ), static_cast<VkShaderStageFlags>( stageFlags ), offset, size, pValues );
   }
-
 
   inline void cmdBeginRenderPass( CommandBuffer commandBuffer, const RenderPassBeginInfo* pRenderPassBegin, SubpassContents contents )
   {
     vkCmdBeginRenderPass( static_cast<VkCommandBuffer>( commandBuffer ), reinterpret_cast<const VkRenderPassBeginInfo*>( pRenderPassBegin ), static_cast<VkSubpassContents>( contents ) );
   }
 
-
   inline void cmdNextSubpass( CommandBuffer commandBuffer, SubpassContents contents )
   {
     vkCmdNextSubpass( static_cast<VkCommandBuffer>( commandBuffer ), static_cast<VkSubpassContents>( contents ) );
   }
-
 
   inline void cmdEndRenderPass( CommandBuffer commandBuffer )
   {
     vkCmdEndRenderPass( static_cast<VkCommandBuffer>( commandBuffer ) );
   }
 
-
   inline void cmdExecuteCommands( CommandBuffer commandBuffer, uint32_t commandBufferCount, const CommandBuffer* pCommandBuffers )
   {
     vkCmdExecuteCommands( static_cast<VkCommandBuffer>( commandBuffer ), commandBufferCount, reinterpret_cast<const VkCommandBuffer*>( pCommandBuffers ) );
   }
-
 
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
   inline Result createAndroidSurfaceKHR( Instance instance, const AndroidSurfaceCreateInfoKHR* pCreateInfo, const AllocationCallbacks* pAllocator, SurfaceKHR* pSurface )
   {
     return static_cast<Result>( vkCreateAndroidSurfaceKHR( static_cast<VkInstance>( instance ), reinterpret_cast<const VkAndroidSurfaceCreateInfoKHR*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkSurfaceKHR*>( pSurface ) ) );
   }
-
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
   inline Result getPhysicalDeviceDisplayPropertiesKHR( PhysicalDevice physicalDevice, uint32_t* pPropertyCount, DisplayPropertiesKHR* pProperties )
@@ -22518,55 +22380,46 @@ namespace vk
     return static_cast<Result>( vkGetPhysicalDeviceDisplayPropertiesKHR( static_cast<VkPhysicalDevice>( physicalDevice ), pPropertyCount, reinterpret_cast<VkDisplayPropertiesKHR*>( pProperties ) ) );
   }
 
-
   inline Result getPhysicalDeviceDisplayPlanePropertiesKHR( PhysicalDevice physicalDevice, uint32_t* pPropertyCount, DisplayPlanePropertiesKHR* pProperties )
   {
     return static_cast<Result>( vkGetPhysicalDeviceDisplayPlanePropertiesKHR( static_cast<VkPhysicalDevice>( physicalDevice ), pPropertyCount, reinterpret_cast<VkDisplayPlanePropertiesKHR*>( pProperties ) ) );
   }
-
 
   inline Result getDisplayPlaneSupportedDisplaysKHR( PhysicalDevice physicalDevice, uint32_t planeIndex, uint32_t* pDisplayCount, DisplayKHR* pDisplays )
   {
     return static_cast<Result>( vkGetDisplayPlaneSupportedDisplaysKHR( static_cast<VkPhysicalDevice>( physicalDevice ), planeIndex, pDisplayCount, reinterpret_cast<VkDisplayKHR*>( pDisplays ) ) );
   }
 
-
   inline Result getDisplayModePropertiesKHR( PhysicalDevice physicalDevice, DisplayKHR display, uint32_t* pPropertyCount, DisplayModePropertiesKHR* pProperties )
   {
     return static_cast<Result>( vkGetDisplayModePropertiesKHR( static_cast<VkPhysicalDevice>( physicalDevice ), static_cast<VkDisplayKHR>( display ), pPropertyCount, reinterpret_cast<VkDisplayModePropertiesKHR*>( pProperties ) ) );
   }
-
 
   inline Result createDisplayModeKHR( PhysicalDevice physicalDevice, DisplayKHR display, const DisplayModeCreateInfoKHR* pCreateInfo, const AllocationCallbacks* pAllocator, DisplayModeKHR* pMode )
   {
     return static_cast<Result>( vkCreateDisplayModeKHR( static_cast<VkPhysicalDevice>( physicalDevice ), static_cast<VkDisplayKHR>( display ), reinterpret_cast<const VkDisplayModeCreateInfoKHR*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkDisplayModeKHR*>( pMode ) ) );
   }
 
-
   inline Result getDisplayPlaneCapabilitiesKHR( PhysicalDevice physicalDevice, DisplayModeKHR mode, uint32_t planeIndex, DisplayPlaneCapabilitiesKHR* pCapabilities )
   {
     return static_cast<Result>( vkGetDisplayPlaneCapabilitiesKHR( static_cast<VkPhysicalDevice>( physicalDevice ), static_cast<VkDisplayModeKHR>( mode ), planeIndex, reinterpret_cast<VkDisplayPlaneCapabilitiesKHR*>( pCapabilities ) ) );
   }
-
 
   inline Result createDisplayPlaneSurfaceKHR( Instance instance, const DisplaySurfaceCreateInfoKHR* pCreateInfo, const AllocationCallbacks* pAllocator, SurfaceKHR* pSurface )
   {
     return static_cast<Result>( vkCreateDisplayPlaneSurfaceKHR( static_cast<VkInstance>( instance ), reinterpret_cast<const VkDisplaySurfaceCreateInfoKHR*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkSurfaceKHR*>( pSurface ) ) );
   }
 
-
   inline Result createSharedSwapchainsKHR( Device device, uint32_t swapchainCount, const SwapchainCreateInfoKHR* pCreateInfos, const AllocationCallbacks* pAllocator, SwapchainKHR* pSwapchains )
   {
     return static_cast<Result>( vkCreateSharedSwapchainsKHR( static_cast<VkDevice>( device ), swapchainCount, reinterpret_cast<const VkSwapchainCreateInfoKHR*>( pCreateInfos ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkSwapchainKHR*>( pSwapchains ) ) );
   }
-
 
 #ifdef VK_USE_PLATFORM_MIR_KHR
   inline Result createMirSurfaceKHR( Instance instance, const MirSurfaceCreateInfoKHR* pCreateInfo, const AllocationCallbacks* pAllocator, SurfaceKHR* pSurface )
   {
     return static_cast<Result>( vkCreateMirSurfaceKHR( static_cast<VkInstance>( instance ), reinterpret_cast<const VkMirSurfaceCreateInfoKHR*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkSurfaceKHR*>( pSurface ) ) );
   }
-
 #endif /*VK_USE_PLATFORM_MIR_KHR*/
 
 #ifdef VK_USE_PLATFORM_MIR_KHR
@@ -22574,7 +22427,6 @@ namespace vk
   {
     return vkGetPhysicalDeviceMirPresentationSupportKHR( static_cast<VkPhysicalDevice>( physicalDevice ), queueFamilyIndex, connection );
   }
-
 #endif /*VK_USE_PLATFORM_MIR_KHR*/
 
   inline void destroySurfaceKHR( Instance instance, SurfaceKHR surface, const AllocationCallbacks* pAllocator )
@@ -22582,67 +22434,56 @@ namespace vk
     vkDestroySurfaceKHR( static_cast<VkInstance>( instance ), static_cast<VkSurfaceKHR>( surface ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ) );
   }
 
-
   inline Result getPhysicalDeviceSurfaceSupportKHR( PhysicalDevice physicalDevice, uint32_t queueFamilyIndex, SurfaceKHR surface, Bool32* pSupported )
   {
     return static_cast<Result>( vkGetPhysicalDeviceSurfaceSupportKHR( static_cast<VkPhysicalDevice>( physicalDevice ), queueFamilyIndex, static_cast<VkSurfaceKHR>( surface ), pSupported ) );
   }
-
 
   inline Result getPhysicalDeviceSurfaceCapabilitiesKHR( PhysicalDevice physicalDevice, SurfaceKHR surface, SurfaceCapabilitiesKHR* pSurfaceCapabilities )
   {
     return static_cast<Result>( vkGetPhysicalDeviceSurfaceCapabilitiesKHR( static_cast<VkPhysicalDevice>( physicalDevice ), static_cast<VkSurfaceKHR>( surface ), reinterpret_cast<VkSurfaceCapabilitiesKHR*>( pSurfaceCapabilities ) ) );
   }
 
-
   inline Result getPhysicalDeviceSurfaceFormatsKHR( PhysicalDevice physicalDevice, SurfaceKHR surface, uint32_t* pSurfaceFormatCount, SurfaceFormatKHR* pSurfaceFormats )
   {
     return static_cast<Result>( vkGetPhysicalDeviceSurfaceFormatsKHR( static_cast<VkPhysicalDevice>( physicalDevice ), static_cast<VkSurfaceKHR>( surface ), pSurfaceFormatCount, reinterpret_cast<VkSurfaceFormatKHR*>( pSurfaceFormats ) ) );
   }
-
 
   inline Result getPhysicalDeviceSurfacePresentModesKHR( PhysicalDevice physicalDevice, SurfaceKHR surface, uint32_t* pPresentModeCount, PresentModeKHR* pPresentModes )
   {
     return static_cast<Result>( vkGetPhysicalDeviceSurfacePresentModesKHR( static_cast<VkPhysicalDevice>( physicalDevice ), static_cast<VkSurfaceKHR>( surface ), pPresentModeCount, reinterpret_cast<VkPresentModeKHR*>( pPresentModes ) ) );
   }
 
-
   inline Result createSwapchainKHR( Device device, const SwapchainCreateInfoKHR* pCreateInfo, const AllocationCallbacks* pAllocator, SwapchainKHR* pSwapchain )
   {
     return static_cast<Result>( vkCreateSwapchainKHR( static_cast<VkDevice>( device ), reinterpret_cast<const VkSwapchainCreateInfoKHR*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkSwapchainKHR*>( pSwapchain ) ) );
   }
-
 
   inline void destroySwapchainKHR( Device device, SwapchainKHR swapchain, const AllocationCallbacks* pAllocator )
   {
     vkDestroySwapchainKHR( static_cast<VkDevice>( device ), static_cast<VkSwapchainKHR>( swapchain ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ) );
   }
 
-
   inline Result getSwapchainImagesKHR( Device device, SwapchainKHR swapchain, uint32_t* pSwapchainImageCount, Image* pSwapchainImages )
   {
     return static_cast<Result>( vkGetSwapchainImagesKHR( static_cast<VkDevice>( device ), static_cast<VkSwapchainKHR>( swapchain ), pSwapchainImageCount, reinterpret_cast<VkImage*>( pSwapchainImages ) ) );
   }
-
 
   inline Result acquireNextImageKHR( Device device, SwapchainKHR swapchain, uint64_t timeout, Semaphore semaphore, Fence fence, uint32_t* pImageIndex )
   {
     return static_cast<Result>( vkAcquireNextImageKHR( static_cast<VkDevice>( device ), static_cast<VkSwapchainKHR>( swapchain ), timeout, static_cast<VkSemaphore>( semaphore ), static_cast<VkFence>( fence ), pImageIndex ) );
   }
 
-
   inline Result queuePresentKHR( Queue queue, const PresentInfoKHR* pPresentInfo )
   {
     return static_cast<Result>( vkQueuePresentKHR( static_cast<VkQueue>( queue ), reinterpret_cast<const VkPresentInfoKHR*>( pPresentInfo ) ) );
   }
-
 
 #ifdef VK_USE_PLATFORM_WAYLAND_KHR
   inline Result createWaylandSurfaceKHR( Instance instance, const WaylandSurfaceCreateInfoKHR* pCreateInfo, const AllocationCallbacks* pAllocator, SurfaceKHR* pSurface )
   {
     return static_cast<Result>( vkCreateWaylandSurfaceKHR( static_cast<VkInstance>( instance ), reinterpret_cast<const VkWaylandSurfaceCreateInfoKHR*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkSurfaceKHR*>( pSurface ) ) );
   }
-
 #endif /*VK_USE_PLATFORM_WAYLAND_KHR*/
 
 #ifdef VK_USE_PLATFORM_WAYLAND_KHR
@@ -22650,7 +22491,6 @@ namespace vk
   {
     return vkGetPhysicalDeviceWaylandPresentationSupportKHR( static_cast<VkPhysicalDevice>( physicalDevice ), queueFamilyIndex, display );
   }
-
 #endif /*VK_USE_PLATFORM_WAYLAND_KHR*/
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
@@ -22658,7 +22498,6 @@ namespace vk
   {
     return static_cast<Result>( vkCreateWin32SurfaceKHR( static_cast<VkInstance>( instance ), reinterpret_cast<const VkWin32SurfaceCreateInfoKHR*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkSurfaceKHR*>( pSurface ) ) );
   }
-
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
@@ -22666,7 +22505,6 @@ namespace vk
   {
     return vkGetPhysicalDeviceWin32PresentationSupportKHR( static_cast<VkPhysicalDevice>( physicalDevice ), queueFamilyIndex );
   }
-
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
 #ifdef VK_USE_PLATFORM_XLIB_KHR
@@ -22674,7 +22512,6 @@ namespace vk
   {
     return static_cast<Result>( vkCreateXlibSurfaceKHR( static_cast<VkInstance>( instance ), reinterpret_cast<const VkXlibSurfaceCreateInfoKHR*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkSurfaceKHR*>( pSurface ) ) );
   }
-
 #endif /*VK_USE_PLATFORM_XLIB_KHR*/
 
 #ifdef VK_USE_PLATFORM_XLIB_KHR
@@ -22682,7 +22519,6 @@ namespace vk
   {
     return vkGetPhysicalDeviceXlibPresentationSupportKHR( static_cast<VkPhysicalDevice>( physicalDevice ), queueFamilyIndex, dpy, visualID );
   }
-
 #endif /*VK_USE_PLATFORM_XLIB_KHR*/
 
 #ifdef VK_USE_PLATFORM_XCB_KHR
@@ -22690,7 +22526,6 @@ namespace vk
   {
     return static_cast<Result>( vkCreateXcbSurfaceKHR( static_cast<VkInstance>( instance ), reinterpret_cast<const VkXcbSurfaceCreateInfoKHR*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkSurfaceKHR*>( pSurface ) ) );
   }
-
 #endif /*VK_USE_PLATFORM_XCB_KHR*/
 
 #ifdef VK_USE_PLATFORM_XCB_KHR
@@ -22698,7 +22533,6 @@ namespace vk
   {
     return vkGetPhysicalDeviceXcbPresentationSupportKHR( static_cast<VkPhysicalDevice>( physicalDevice ), queueFamilyIndex, connection, visual_id );
   }
-
 #endif /*VK_USE_PLATFORM_XCB_KHR*/
 
   inline Result createDebugReportCallbackEXT( Instance instance, const DebugReportCallbackCreateInfoEXT* pCreateInfo, const AllocationCallbacks* pAllocator, DebugReportCallbackEXT* pCallback )
@@ -22706,18 +22540,15 @@ namespace vk
     return static_cast<Result>( vkCreateDebugReportCallbackEXT( static_cast<VkInstance>( instance ), reinterpret_cast<const VkDebugReportCallbackCreateInfoEXT*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkDebugReportCallbackEXT*>( pCallback ) ) );
   }
 
-
   inline void destroyDebugReportCallbackEXT( Instance instance, DebugReportCallbackEXT callback, const AllocationCallbacks* pAllocator )
   {
     vkDestroyDebugReportCallbackEXT( static_cast<VkInstance>( instance ), static_cast<VkDebugReportCallbackEXT>( callback ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ) );
   }
 
-
   inline void debugReportMessageEXT( Instance instance, DebugReportFlagsEXT flags, DebugReportObjectTypeEXT objectType, uint64_t object, size_t location, int32_t messageCode, const char* pLayerPrefix, const char* pMessage )
   {
     vkDebugReportMessageEXT( static_cast<VkInstance>( instance ), static_cast<VkDebugReportFlagsEXT>( flags ), static_cast<VkDebugReportObjectTypeEXT>( objectType ), object, location, messageCode, pLayerPrefix, pMessage );
   }
-
 
   inline std::string getString(FramebufferCreateFlagBits)
   {

@@ -603,6 +603,7 @@ std::map<size_t, size_t> getVectorParameters(CommandData const& commandData)
       }
       assert(   (lenParameters[i] != ~0)
              || (commandData.arguments[i].len == "dataSize/4")
+             || (commandData.arguments[i].len == "latexmath:[$dataSize \\over 4$]")
              || (commandData.arguments[i].len == "null-terminated")
              || (commandData.arguments[i].len == "pAllocateInfo->descriptorSetCount")
              || (commandData.arguments[i].len == "pAllocateInfo->commandBufferCount"));
@@ -944,7 +945,8 @@ void readExtensionRequire(tinyxml2::XMLElement * element, std::string const& pro
       if (child->Attribute("extends"))
       {
         assert(enums.find(getEnumName(child->Attribute("extends"))) != enums.end());
-        enums[getEnumName(child->Attribute("extends"))].addEnum(child->Attribute("name"), tag);
+        assert(!!child->Attribute("offset") ^ !!child->Attribute("value"));   // either offset or value has to be defined; no both of them!
+        enums[getEnumName(child->Attribute("extends"))].addEnum(child->Attribute("name"), child->Attribute("offset") ? tag : "" );
       }
     }
     else
@@ -1467,7 +1469,8 @@ void writeCall(std::ofstream & ofs, std::string const& name, size_t templateInde
   {
     countIndices.insert(std::make_pair(it->second, it->first));
   }
-  if ((vectorParameters.size() == 1) && (commandData.arguments[vectorParameters.begin()->first].len == "dataSize/4"))
+  if ((vectorParameters.size() == 1)
+      && ((commandData.arguments[vectorParameters.begin()->first].len == "dataSize/4") || (commandData.arguments[vectorParameters.begin()->first].len == "latexmath:[$dataSize \\over 4$]")))
   {
     assert(commandData.arguments[3].name == "dataSize");
     countIndices.insert(std::make_pair(3, vectorParameters.begin()->first));
@@ -1601,7 +1604,8 @@ void writeFunctionHeader(std::ofstream & ofs, std::string const& indentation, st
   {
     skippedArguments.insert(it->second);
   }
-  if ((vectorParameters.size() == 1) && (commandData.arguments[vectorParameters.begin()->first].len == "dataSize/4"))
+  if ((vectorParameters.size() == 1)
+      && ((commandData.arguments[vectorParameters.begin()->first].len == "dataSize/4") || (commandData.arguments[vectorParameters.begin()->first].len == "latexmath:[$dataSize \\over 4$]")))
   {
     assert(commandData.arguments[3].name == "dataSize");
     skippedArguments.insert(3);

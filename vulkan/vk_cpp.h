@@ -37,7 +37,7 @@
 # include <vector>
 #endif /*VKCPP_ENHANCED_MODE*/
 
-static_assert( VK_MAKE_VERSION(1, 0, 3) == VK_API_VERSION, "Wrong VK_API_VERSION!" );
+static_assert( VK_MAKE_VERSION(1, 0, 4) == VK_API_VERSION, "Wrong VK_API_VERSION!" );
 
 // 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VK_CPP_TYPESAFE_CONVERSION
@@ -6174,7 +6174,7 @@ namespace vk
     eMirSurfaceCreateInfoKHR = VK_STRUCTURE_TYPE_MIR_SURFACE_CREATE_INFO_KHR,
     eAndroidSurfaceCreateInfoKHR = VK_STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR,
     eWin32SurfaceCreateInfoKHR = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR,
-    eDebugReportCreateInfoEXT = VK_STRUCTURE_TYPE_DEBUG_REPORT_CREATE_INFO_EXT
+    eDebugReportCallbackCreateInfoEXT = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT
   };
 
   class ApplicationInfo
@@ -23790,7 +23790,7 @@ namespace vk
     case StructureType::eMirSurfaceCreateInfoKHR: return "MirSurfaceCreateInfoKHR";
     case StructureType::eAndroidSurfaceCreateInfoKHR: return "AndroidSurfaceCreateInfoKHR";
     case StructureType::eWin32SurfaceCreateInfoKHR: return "Win32SurfaceCreateInfoKHR";
-    case StructureType::eDebugReportCreateInfoEXT: return "DebugReportCreateInfoEXT";
+    case StructureType::eDebugReportCallbackCreateInfoEXT: return "DebugReportCallbackCreateInfoEXT";
     default: return "unknown";
     }
   }

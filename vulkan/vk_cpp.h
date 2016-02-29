@@ -20925,7 +20925,7 @@ namespace vk
     {
       std::vector<SparseImageMemoryRequirements> sparseMemoryRequirements;
       uint32_t sparseMemoryRequirementCount;
-      vkGetImageSparseMemoryRequirements( m_device, static_cast<VkImage>( image ), &sparseMemoryRequirementCount, reinterpret_cast<VkSparseImageMemoryRequirements*>( sparseMemoryRequirements.data() ) );
+      vkGetImageSparseMemoryRequirements( m_device, static_cast<VkImage>( image ), &sparseMemoryRequirementCount, nullptr );
       sparseMemoryRequirements.resize( sparseMemoryRequirementCount );
       vkGetImageSparseMemoryRequirements( m_device, static_cast<VkImage>( image ), &sparseMemoryRequirementCount, reinterpret_cast<VkSparseImageMemoryRequirements*>( sparseMemoryRequirements.data() ) );
       return std::move( sparseMemoryRequirements );
@@ -21381,7 +21381,7 @@ namespace vk
     {
       std::vector<uint8_t> data;
       size_t dataSize;
-      Result result = static_cast<Result>( vkGetPipelineCacheData( m_device, static_cast<VkPipelineCache>( pipelineCache ), &dataSize, reinterpret_cast<void*>( data.data() ) ) );
+      Result result = static_cast<Result>( vkGetPipelineCacheData( m_device, static_cast<VkPipelineCache>( pipelineCache ), &dataSize, nullptr ) );
       if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Device::getPipelineCacheData" );
@@ -21853,7 +21853,7 @@ namespace vk
     Result getSwapchainImagesKHR( SwapchainKHR swapchain, std::vector<Image> & swapchainImages ) const
     {
       uint32_t swapchainImageCount;
-      Result result = static_cast<Result>( vkGetSwapchainImagesKHR( m_device, static_cast<VkSwapchainKHR>( swapchain ), &swapchainImageCount, reinterpret_cast<VkImage*>( swapchainImages.data() ) ) );
+      Result result = static_cast<Result>( vkGetSwapchainImagesKHR( m_device, static_cast<VkSwapchainKHR>( swapchain ), &swapchainImageCount, nullptr ) );
       if ( ( result != Result::eSuccess ) && ( result != Result::eIncomplete ) )
       {
         throw Exception( result, "vk::Device::getSwapchainImagesKHR" );
@@ -21951,7 +21951,7 @@ namespace vk
     {
       std::vector<QueueFamilyProperties> queueFamilyProperties;
       uint32_t queueFamilyPropertyCount;
-      vkGetPhysicalDeviceQueueFamilyProperties( m_physicalDevice, &queueFamilyPropertyCount, reinterpret_cast<VkQueueFamilyProperties*>( queueFamilyProperties.data() ) );
+      vkGetPhysicalDeviceQueueFamilyProperties( m_physicalDevice, &queueFamilyPropertyCount, nullptr );
       queueFamilyProperties.resize( queueFamilyPropertyCount );
       vkGetPhysicalDeviceQueueFamilyProperties( m_physicalDevice, &queueFamilyPropertyCount, reinterpret_cast<VkQueueFamilyProperties*>( queueFamilyProperties.data() ) );
       return std::move( queueFamilyProperties );
@@ -22045,7 +22045,7 @@ namespace vk
     Result enumerateDeviceLayerProperties( std::vector<LayerProperties> & properties ) const
     {
       uint32_t propertyCount;
-      Result result = static_cast<Result>( vkEnumerateDeviceLayerProperties( m_physicalDevice, &propertyCount, reinterpret_cast<VkLayerProperties*>( properties.data() ) ) );
+      Result result = static_cast<Result>( vkEnumerateDeviceLayerProperties( m_physicalDevice, &propertyCount, nullptr ) );
       if ( ( result != Result::eSuccess ) && ( result != Result::eIncomplete ) )
       {
         throw Exception( result, "vk::PhysicalDevice::enumerateDeviceLayerProperties" );
@@ -22069,13 +22069,13 @@ namespace vk
     Result enumerateDeviceExtensionProperties( std::string const& layerName, std::vector<ExtensionProperties> & properties ) const
     {
       uint32_t propertyCount;
-      Result result = static_cast<Result>( vkEnumerateDeviceExtensionProperties( m_physicalDevice, layerName.data(), &propertyCount, reinterpret_cast<VkExtensionProperties*>( properties.data() ) ) );
+      Result result = static_cast<Result>( vkEnumerateDeviceExtensionProperties( m_physicalDevice, layerName.c_str(), &propertyCount, nullptr ) );
       if ( ( result != Result::eSuccess ) && ( result != Result::eIncomplete ) )
       {
         throw Exception( result, "vk::PhysicalDevice::enumerateDeviceExtensionProperties" );
       }
       properties.resize( propertyCount );
-      result = static_cast<Result>( vkEnumerateDeviceExtensionProperties( m_physicalDevice, layerName.data(), &propertyCount, reinterpret_cast<VkExtensionProperties*>( properties.data() ) ) );
+      result = static_cast<Result>( vkEnumerateDeviceExtensionProperties( m_physicalDevice, layerName.c_str(), &propertyCount, reinterpret_cast<VkExtensionProperties*>( properties.data() ) ) );
       if ( ( result != Result::eSuccess ) && ( result != Result::eIncomplete ) )
       {
         throw Exception( result, "vk::PhysicalDevice::enumerateDeviceExtensionProperties" );
@@ -22094,7 +22094,7 @@ namespace vk
     {
       std::vector<SparseImageFormatProperties> properties;
       uint32_t propertyCount;
-      vkGetPhysicalDeviceSparseImageFormatProperties( m_physicalDevice, static_cast<VkFormat>( format ), static_cast<VkImageType>( type ), static_cast<VkSampleCountFlagBits>( samples ), static_cast<VkImageUsageFlags>( usage ), static_cast<VkImageTiling>( tiling ), &propertyCount, reinterpret_cast<VkSparseImageFormatProperties*>( properties.data() ) );
+      vkGetPhysicalDeviceSparseImageFormatProperties( m_physicalDevice, static_cast<VkFormat>( format ), static_cast<VkImageType>( type ), static_cast<VkSampleCountFlagBits>( samples ), static_cast<VkImageUsageFlags>( usage ), static_cast<VkImageTiling>( tiling ), &propertyCount, nullptr );
       properties.resize( propertyCount );
       vkGetPhysicalDeviceSparseImageFormatProperties( m_physicalDevice, static_cast<VkFormat>( format ), static_cast<VkImageType>( type ), static_cast<VkSampleCountFlagBits>( samples ), static_cast<VkImageUsageFlags>( usage ), static_cast<VkImageTiling>( tiling ), &propertyCount, reinterpret_cast<VkSparseImageFormatProperties*>( properties.data() ) );
       return std::move( properties );
@@ -22110,7 +22110,7 @@ namespace vk
     Result getDisplayPropertiesKHR( std::vector<DisplayPropertiesKHR> & properties ) const
     {
       uint32_t propertyCount;
-      Result result = static_cast<Result>( vkGetPhysicalDeviceDisplayPropertiesKHR( m_physicalDevice, &propertyCount, reinterpret_cast<VkDisplayPropertiesKHR*>( properties.data() ) ) );
+      Result result = static_cast<Result>( vkGetPhysicalDeviceDisplayPropertiesKHR( m_physicalDevice, &propertyCount, nullptr ) );
       if ( ( result != Result::eSuccess ) && ( result != Result::eIncomplete ) )
       {
         throw Exception( result, "vk::PhysicalDevice::getDisplayPropertiesKHR" );
@@ -22134,7 +22134,7 @@ namespace vk
     Result getDisplayPlanePropertiesKHR( std::vector<DisplayPlanePropertiesKHR> & properties ) const
     {
       uint32_t propertyCount;
-      Result result = static_cast<Result>( vkGetPhysicalDeviceDisplayPlanePropertiesKHR( m_physicalDevice, &propertyCount, reinterpret_cast<VkDisplayPlanePropertiesKHR*>( properties.data() ) ) );
+      Result result = static_cast<Result>( vkGetPhysicalDeviceDisplayPlanePropertiesKHR( m_physicalDevice, &propertyCount, nullptr ) );
       if ( ( result != Result::eSuccess ) && ( result != Result::eIncomplete ) )
       {
         throw Exception( result, "vk::PhysicalDevice::getDisplayPlanePropertiesKHR" );
@@ -22158,7 +22158,7 @@ namespace vk
     Result getDisplayPlaneSupportedDisplaysKHR( uint32_t planeIndex, std::vector<DisplayKHR> & displays ) const
     {
       uint32_t displayCount;
-      Result result = static_cast<Result>( vkGetDisplayPlaneSupportedDisplaysKHR( m_physicalDevice, planeIndex, &displayCount, reinterpret_cast<VkDisplayKHR*>( displays.data() ) ) );
+      Result result = static_cast<Result>( vkGetDisplayPlaneSupportedDisplaysKHR( m_physicalDevice, planeIndex, &displayCount, nullptr ) );
       if ( ( result != Result::eSuccess ) && ( result != Result::eIncomplete ) )
       {
         throw Exception( result, "vk::PhysicalDevice::getDisplayPlaneSupportedDisplaysKHR" );
@@ -22182,7 +22182,7 @@ namespace vk
     Result getDisplayModePropertiesKHR( DisplayKHR display, std::vector<DisplayModePropertiesKHR> & properties ) const
     {
       uint32_t propertyCount;
-      Result result = static_cast<Result>( vkGetDisplayModePropertiesKHR( m_physicalDevice, static_cast<VkDisplayKHR>( display ), &propertyCount, reinterpret_cast<VkDisplayModePropertiesKHR*>( properties.data() ) ) );
+      Result result = static_cast<Result>( vkGetDisplayModePropertiesKHR( m_physicalDevice, static_cast<VkDisplayKHR>( display ), &propertyCount, nullptr ) );
       if ( ( result != Result::eSuccess ) && ( result != Result::eIncomplete ) )
       {
         throw Exception( result, "vk::PhysicalDevice::getDisplayModePropertiesKHR" );
@@ -22293,7 +22293,7 @@ namespace vk
     Result getSurfaceFormatsKHR( SurfaceKHR surface, std::vector<SurfaceFormatKHR> & surfaceFormats ) const
     {
       uint32_t surfaceFormatCount;
-      Result result = static_cast<Result>( vkGetPhysicalDeviceSurfaceFormatsKHR( m_physicalDevice, static_cast<VkSurfaceKHR>( surface ), &surfaceFormatCount, reinterpret_cast<VkSurfaceFormatKHR*>( surfaceFormats.data() ) ) );
+      Result result = static_cast<Result>( vkGetPhysicalDeviceSurfaceFormatsKHR( m_physicalDevice, static_cast<VkSurfaceKHR>( surface ), &surfaceFormatCount, nullptr ) );
       if ( ( result != Result::eSuccess ) && ( result != Result::eIncomplete ) )
       {
         throw Exception( result, "vk::PhysicalDevice::getSurfaceFormatsKHR" );
@@ -22317,7 +22317,7 @@ namespace vk
     Result getSurfacePresentModesKHR( SurfaceKHR surface, std::vector<PresentModeKHR> & presentModes ) const
     {
       uint32_t presentModeCount;
-      Result result = static_cast<Result>( vkGetPhysicalDeviceSurfacePresentModesKHR( m_physicalDevice, static_cast<VkSurfaceKHR>( surface ), &presentModeCount, reinterpret_cast<VkPresentModeKHR*>( presentModes.data() ) ) );
+      Result result = static_cast<Result>( vkGetPhysicalDeviceSurfacePresentModesKHR( m_physicalDevice, static_cast<VkSurfaceKHR>( surface ), &presentModeCount, nullptr ) );
       if ( ( result != Result::eSuccess ) && ( result != Result::eIncomplete ) )
       {
         throw Exception( result, "vk::PhysicalDevice::getSurfacePresentModesKHR" );
@@ -22629,7 +22629,7 @@ namespace vk
     {
       std::vector<PhysicalDevice> physicalDevices;
       uint32_t physicalDeviceCount;
-      Result result = static_cast<Result>( vkEnumeratePhysicalDevices( m_instance, &physicalDeviceCount, reinterpret_cast<VkPhysicalDevice*>( physicalDevices.data() ) ) );
+      Result result = static_cast<Result>( vkEnumeratePhysicalDevices( m_instance, &physicalDeviceCount, nullptr ) );
       if ( result != Result::eSuccess )
       {
         throw Exception( result, "vk::Instance::enumeratePhysicalDevices" );
@@ -22916,7 +22916,7 @@ namespace vk
   inline Result enumerateInstanceLayerProperties( std::vector<LayerProperties> & properties )
   {
     uint32_t propertyCount;
-    Result result = static_cast<Result>( vkEnumerateInstanceLayerProperties( &propertyCount, reinterpret_cast<VkLayerProperties*>( properties.data() ) ) );
+    Result result = static_cast<Result>( vkEnumerateInstanceLayerProperties( &propertyCount, nullptr ) );
     if ( ( result != Result::eSuccess ) && ( result != Result::eIncomplete ) )
     {
       throw Exception( result, "vk::enumerateInstanceLayerProperties" );
@@ -22940,13 +22940,13 @@ namespace vk
   inline Result enumerateInstanceExtensionProperties( std::string const& layerName, std::vector<ExtensionProperties> & properties )
   {
     uint32_t propertyCount;
-    Result result = static_cast<Result>( vkEnumerateInstanceExtensionProperties( layerName.data(), &propertyCount, reinterpret_cast<VkExtensionProperties*>( properties.data() ) ) );
+    Result result = static_cast<Result>( vkEnumerateInstanceExtensionProperties( layerName.c_str(), &propertyCount, nullptr ) );
     if ( ( result != Result::eSuccess ) && ( result != Result::eIncomplete ) )
     {
       throw Exception( result, "vk::enumerateInstanceExtensionProperties" );
     }
     properties.resize( propertyCount );
-    result = static_cast<Result>( vkEnumerateInstanceExtensionProperties( layerName.data(), &propertyCount, reinterpret_cast<VkExtensionProperties*>( properties.data() ) ) );
+    result = static_cast<Result>( vkEnumerateInstanceExtensionProperties( layerName.c_str(), &propertyCount, reinterpret_cast<VkExtensionProperties*>( properties.data() ) ) );
     if ( ( result != Result::eSuccess ) && ( result != Result::eIncomplete ) )
     {
       throw Exception( result, "vk::enumerateInstanceExtensionProperties" );

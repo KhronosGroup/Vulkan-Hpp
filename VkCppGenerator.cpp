@@ -345,12 +345,12 @@ void writeStructConstructor( std::ofstream & ofs, std::string const& name, std::
 void writeStructGetter( std::ofstream & ofs, MemberData const& memberData, std::string const& memberName, std::set<std::string> const& vkTypes, bool constVersion );
 void writeStructSetter( std::ofstream & ofs, std::string const& name, MemberData const& memberData, std::string const& memberName, std::set<std::string> const& vkTypes, std::map<std::string,StructData> const& structs );
 void writeTypeCommand( std::ofstream & ofs, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes );
-void writeTypeCommandEnhanced(std::ofstream & ofs, std::string const& indentation, std::string const& className, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes);
+void writeTypeCommandEnhanced(std::ofstream & ofs, std::string const& indentation, std::string const& className, std::string const& functionName, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes);
 void writeTypeCommandEnhanced(std::ofstream & ofs, std::string const& indentation, std::string const& className, std::string const& functionName, size_t templateIndex, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes, std::map<size_t, size_t> const& vectorParameters);
 void writeTypeCommandEnhancedSingleStep(std::ofstream & ofs, std::string const& indentation, std::string const& className, std::string const& functionName, std::string const& returnType, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes, size_t returnIndex, size_t templateIndex, std::map<size_t, size_t> const& vectorParameters);
 void writeTypeCommandEnhancedTwoStep(std::ofstream & ofs, std::string const& indentation, std::string const& className, std::string const& functionName, std::string const& returnType, size_t templateIndex, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes, std::map<size_t, size_t> const& vectorParameters);
 void writeTypeCommandEnhancedReplaceReturn(std::ofstream & ofs, std::string const& indentation, std::string const& className, std::string const& functionName, std::string const& returnType, size_t templateIndex, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes, size_t returnIndex, std::map<size_t, size_t> const& vectorParameters);
-void writeTypeCommandStandard(std::ofstream & ofs, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes);
+void writeTypeCommandStandard(std::ofstream & ofs, std::string const& indentation, std::string const& functionName, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes);
 void writeTypeCommandComplexBody(std::ofstream & ofs, DependencyData const& dependencyData, CommandData const& commandData, std::map<std::string,std::string> const& nameMap, std::map<size_t, size_t> const& vectorParameters, std::set<size_t> const& argIndices, size_t complexIndex, size_t returnIndex);
 void writeTypeCommandSimpleBody(std::ofstream & ofs, DependencyData const& dependencyData, CommandData const& commandData, std::map<std::string, std::string> const& nameMap, std::map<size_t, size_t> const& vectorParameters, std::set<size_t> const& argIndices, std::map<size_t, std::vector<size_t>> const& sizeIndices, size_t returnIndex);
 void writeTypeEnum(std::ofstream & ofs, DependencyData const& dependencyData, EnumData const& enumData);
@@ -1947,19 +1947,19 @@ void writeStructSetter( std::ofstream & ofs, std::string const& name, MemberData
 
 void writeTypeCommand( std::ofstream & ofs, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes )
 {
-  enterProtect(ofs, commandData.protect);
-  writeTypeCommandStandard(ofs, dependencyData, commandData, vkTypes);
-  leaveProtect(ofs, commandData.protect);
   if (!commandData.handleCommand)
   {
-    ofs << "#ifdef VKCPP_ENHANCED_MODE" << std::endl;
-    writeTypeCommandEnhanced(ofs, "  ", "", dependencyData, commandData, vkTypes);
-    ofs << "#endif /*VKCPP_ENHANCED_MODE*/" << std::endl;
+    writeTypeCommandStandard(ofs, "  ", dependencyData.name, dependencyData, commandData, vkTypes);
+
+    ofs << std::endl
+        << "#ifdef VKCPP_ENHANCED_MODE" << std::endl;
+    writeTypeCommandEnhanced(ofs, "  ", "", dependencyData.name, dependencyData, commandData, vkTypes);
+    ofs << "#endif /*VKCPP_ENHANCED_MODE*/" << std::endl
+        << std::endl;
   }
-  ofs << std::endl;
 }
 
-void writeTypeCommandEnhanced(std::ofstream & ofs, std::string const& indentation, std::string const& className, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes)
+void writeTypeCommandEnhanced(std::ofstream & ofs, std::string const& indentation, std::string const& className, std::string const& functionName, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes)
 {
   enterProtect(ofs, commandData.protect);
   std::map<size_t, size_t> vectorParameters = getVectorParameters(commandData);
@@ -1967,7 +1967,6 @@ void writeTypeCommandEnhanced(std::ofstream & ofs, std::string const& indentatio
   size_t templateIndex = findTemplateIndex(commandData, vectorParameters);
   std::map<size_t, size_t>::const_iterator returnVector = vectorParameters.find(returnIndex);
   std::string returnType = determineReturnType(commandData, returnIndex, returnVector != vectorParameters.end());
-  std::string functionName = determineFunctionName(dependencyData.name, commandData);
 
   writeFunctionHeader(ofs, indentation, returnType, functionName, commandData, returnIndex, templateIndex, vectorParameters);
 
@@ -2183,12 +2182,19 @@ void writeTypeCommandEnhancedReplaceReturn(std::ofstream & ofs, std::string cons
       << indentation << "}" << std::endl;
 }
 
-void writeTypeCommandStandard(std::ofstream & ofs, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes)
+void writeTypeCommandStandard(std::ofstream & ofs, std::string const& indentation, std::string const& functionName, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes)
 {
-  ofs << "  inline " << commandData.returnType << " " << dependencyData.name << "( ";
-  for (size_t i = 0; i<commandData.arguments.size(); i++)
+  enterProtect(ofs, commandData.protect);
+  ofs << indentation;
+  if (!commandData.handleCommand)
   {
-    if (0 < i)
+    ofs << "inline ";
+  }
+  ofs << commandData.returnType << " " << functionName << "( ";
+  bool argEncountered = false;
+  for (size_t i = commandData.handleCommand ? 1 : 0; i < commandData.arguments.size(); i++)
+  {
+    if (argEncountered)
     {
       ofs << ", ";
     }
@@ -2197,10 +2203,11 @@ void writeTypeCommandStandard(std::ofstream & ofs, DependencyData const& depende
     {
       ofs << "[" << commandData.arguments[i].arraySize << "]";
     }
+    argEncountered = true;
   }
   ofs << " )" << std::endl
-    << "  {" << std::endl
-    << "    ";
+      << indentation << "{" << std::endl
+      << indentation << "  ";
   bool castReturn = false;
   if (commandData.returnType != "void")
   {
@@ -2217,7 +2224,12 @@ void writeTypeCommandStandard(std::ofstream & ofs, DependencyData const& depende
   callName[0] = toupper(callName[0]);
 
   ofs << "vk" << callName << "( ";
-  for (size_t i = 0; i<commandData.arguments.size(); i++)
+  if (commandData.handleCommand)
+  {
+    ofs << "m_" << commandData.arguments[0].name;
+  }
+  argEncountered = false;
+  for (size_t i = commandData.handleCommand ? 1 : 0; i < commandData.arguments.size(); i++)
   {
     if (0 < i)
     {
@@ -2231,7 +2243,8 @@ void writeTypeCommandStandard(std::ofstream & ofs, DependencyData const& depende
     ofs << " )";
   }
   ofs << ";" << std::endl
-    << "  }" << std::endl;
+      << indentation << "}" << std::endl;
+  leaveProtect(ofs, commandData.protect);
 }
 
 void writeTypeCommandComplexBody(std::ofstream & ofs, DependencyData const& dependencyData, CommandData const& commandData, std::map<std::string,std::string> const& nameMap, std::map<size_t, size_t> const& vectorParameters, std::set<size_t> const& argIndices, size_t complexIndex, size_t returnIndex)
@@ -2517,9 +2530,9 @@ void writeTypeHandle(std::ofstream & ofs, DependencyData const& dependencyData, 
       << "    }" << std::endl
       << "#endif\n"
       << std::endl;
+
   if (!handle.commands.empty())
   {
-    ofs << "#ifdef VKCPP_ENHANCED_MODE" << std::endl;
     for (size_t i = 0; i < handle.commands.size(); i++)
     {
       std::string commandName = handle.commands[i];
@@ -2527,14 +2540,22 @@ void writeTypeHandle(std::ofstream & ofs, DependencyData const& dependencyData, 
       assert((cit != commands.end()) && cit->second.handleCommand);
       std::vector<DependencyData>::const_iterator dep = std::find_if(dependencies.begin(), dependencies.end(), [commandName](DependencyData const& dd) { return dd.name == commandName; });
       assert(dep != dependencies.end());
-      writeTypeCommandEnhanced(ofs, "    ", dependencyData.name, *dep, cit->second, vkTypes);
+      std::string className = dependencyData.name;
+      std::string functionName = determineFunctionName(dep->name, cit->second);
+
+      writeTypeCommandStandard(ofs, "    ", functionName, *dep, cit->second, vkTypes);
+
+      ofs << std::endl
+          << "#ifdef VKCPP_ENHANCED_MODE" << std::endl;
+      writeTypeCommandEnhanced(ofs, "    ", className, functionName, *dep, cit->second, vkTypes);
+      ofs << "#endif /*VKCPP_ENHANCED_MODE*/" << std::endl;
+
       if (i < handle.commands.size() - 1)
       {
         ofs << std::endl;
       }
     }
-    ofs << "#endif /*VKCPP_ENHANCED_MODE*/" << std::endl
-        << std::endl;
+    ofs << std::endl;
   }
   ofs << "#if !defined(VK_CPP_TYPESAFE_CONVERSION)" << std::endl
       << "    explicit" << std::endl

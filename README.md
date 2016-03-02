@@ -39,10 +39,12 @@ to avoid incorrect or missing  initializations and introduces type-safety with s
 errors into compile errors. Following is a list of features and conventions introduced by our Vulkan C++ layer:
 
 * works along the official C version of the API
-* defines all symbols within the 'vk' namespace and to avoid redundancy the vk/Vk/VK_ prefixes have been removed from all symbols, i.e. <code>vk::commandBindPipeline</code> for vkCommandBindPipeline.
+* defines all symbols within the 'vk' namespace and to avoid redundancy the vk/Vk/VK_ prefixes have been removed from all symbols, i.e. <code>vk::ImageCreateInfo</code> for VkImageCreateInfo.
 * camel case syntax with an 'e' prefix has been introduced for all enums, i.e. <code>vk::ImageType::e2D</code> (the prefix was a compromise, more about that later) removes the 'BIT' suffix from all flag related enums, i.e. <code>vk::ImageUsage::eColorAttachment</code>.
 * introduces constructors for all structs, which by default set the appropriate <code>sType</code> and all other values to zero.
 * encapsulates member variables of the structs with getter and setter functions, i.e. <code>ci.imageType()</code> to get a value and <code>ci.imageType(vk::ImageType::e2D)</code> to set a value.
+* introduces wrapper classes around the vulkan handles, i.e. <code>vk::CommandBuffer</code> for VkCommandBuffer
+* introduces member functions of those wrapper classes, that map to vulkan functions getting the corresponding vulkan handle as its first argument. The type of that handle is stripped from the function name, i.e. <code>vk::Device::getProcAddr> for vkGetDeviceProcAddr. Note the special handling for the class CommandBuffer, where most of the vulkan functions would just include "Cmd", instead of "CommandBuffer", i.e. <code>vk::CommandBuffer::bindPipeline</code> for vkCmdBindPipeline.
 
 With those changes applied, the updated code snippet looks like this:
 
@@ -62,7 +64,7 @@ ci.sharingMode(vk::SharingMode::eExclusive);
   // ci.queueFamilyIndexCount(0)	// no need to set, already initialized
   // ci.pQueueFamilyIndices(0)	// no need to set, already initialized
 ci.initialLayout(vk::ImageLayout::eUndefined);
-vk::createImage(device, &ci, allocator, &image));
+device.createImage(&ci, allocator, &image);
 </code>
 </pre>
 
@@ -137,7 +139,7 @@ vk::ImageCreateInfo ci = vk::ImageCreateInfo()
   // .queueFamilyIndexCount(0)	// no need to set, already initialized
   // .pQueueFamilyIndices(0)	// no need to set, already initialized
   .initialLayout(vk::ImageLayout::eUndefined);
-vk::createImage(device, &ci, allocator, &image));
+device.createImage(&ci, allocator, &image);
 </code>
 </pre>
 
@@ -165,7 +167,7 @@ Here are a few code examples:
     // Get VkInstance from vk::Instance 
     nativeInstance = i;
 
-    // Get an std::vector as result of an enumeration call.
+    // Get a std::vector as result of an enumeration call.
     std::vector<vk::PhysicalDevice> physicalDevices = i.enumeratePhysicalDevices();
     vk::FormatProperties formatProperties = physicalDevices[0].getFormatProperties(vk::Format::eR8G8B8A8Unorm);
 
@@ -194,7 +196,7 @@ To build the header for a given vk.xml specification continue with the following
 
 * Build VkCppGenerator
 * Grab your favourite version vk.xml from Khronos
-* Version 1.0 of the API has a tiny bug. The <require> section of the VK_KHR_display extension is missing one symbol which
+* Up to Version 1.0.3 of the API there is a tiny bug in vk.xml. The <require> section of the VK_KHR_display extension is missing one symbol which
 can easily be fixed by adding the following line
 <pre>
                 &lt;type name="VkDisplayPlaneAlphaFlagsKHR"/&gt;

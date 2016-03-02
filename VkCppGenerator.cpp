@@ -2205,7 +2205,12 @@ void writeTypeCommandStandard(std::ofstream & ofs, std::string const& indentatio
     }
     argEncountered = true;
   }
-  ofs << " )" << std::endl
+  ofs << " )";
+  if (commandData.handleCommand)
+  {
+    ofs << " const";
+  }
+  ofs << std::endl
       << indentation << "{" << std::endl
       << indentation << "  ";
   bool castReturn = false;
@@ -2543,7 +2548,16 @@ void writeTypeHandle(std::ofstream & ofs, DependencyData const& dependencyData, 
       std::string className = dependencyData.name;
       std::string functionName = determineFunctionName(dep->name, cit->second);
 
+      bool hasPointers = hasPointerArguments(cit->second);
+      if (!hasPointers)
+      {
+        ofs << "#ifndef VKCPP_ENHANCED_MODE" << std::endl;
+      }
       writeTypeCommandStandard(ofs, "    ", functionName, *dep, cit->second, vkTypes);
+      if (!hasPointers)
+      {
+        ofs << "#endif /*!VKCPP_ENHANCED_MODE*/" << std::endl;
+      }
 
       ofs << std::endl
           << "#ifdef VKCPP_ENHANCED_MODE" << std::endl;

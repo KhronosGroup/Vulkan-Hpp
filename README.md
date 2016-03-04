@@ -44,7 +44,7 @@ errors into compile errors. Following is a list of features and conventions intr
 * introduces constructors for all structs, which by default set the appropriate <code>sType</code> and all other values to zero.
 * encapsulates member variables of the structs with getter and setter functions, i.e. <code>ci.imageType()</code> to get a value and <code>ci.imageType(vk::ImageType::e2D)</code> to set a value.
 * introduces wrapper classes around the vulkan handles, i.e. <code>vk::CommandBuffer</code> for VkCommandBuffer
-* introduces member functions of those wrapper classes, that map to vulkan functions getting the corresponding vulkan handle as its first argument. The type of that handle is stripped from the function name, i.e. <code>vk::Device::getProcAddr> for vkGetDeviceProcAddr. Note the special handling for the class CommandBuffer, where most of the vulkan functions would just include "Cmd", instead of "CommandBuffer", i.e. <code>vk::CommandBuffer::bindPipeline</code> for vkCmdBindPipeline.
+* introduces member functions of those wrapper classes, that map to vulkan functions getting the corresponding vulkan handle as its first argument. The type of that handle is stripped from the function name, i.e. <code>vk::Device::getProcAddr</code> for vkGetDeviceProcAddr. Note the special handling for the class CommandBuffer, where most of the vulkan functions would just include "Cmd", instead of "CommandBuffer", i.e. <code>vk::CommandBuffer::bindPipeline</code> for vkCmdBindPipeline.
 
 With those changes applied, the updated code snippet looks like this:
 

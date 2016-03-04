@@ -337,8 +337,9 @@ std::string strip(std::string const& value, std::string const& prefix, std::stri
 std::string stripCommand(std::string const& value);
 std::string toCamelCase(std::string const& value);
 std::string toUpperCase(std::string const& name);
-void writeCall(std::ofstream & ofs, std::string const& name, size_t templateIndex, CommandData const& commandData, std::set<std::string> const& vkTypes, std::map<size_t, size_t> const& vectorParameters = std::map<size_t, size_t>(), size_t specialIndex = ~0, std::string const& specialArgument = "");
+void writeCall(std::ofstream & ofs, std::string const& name, size_t templateIndex, CommandData const& commandData, std::set<std::string> const& vkTypes, std::map<size_t, size_t> const& vectorParameters, size_t returnIndex, bool firstCall);
 void writeExceptionCheck(std::ofstream & ofs, std::string const& indentation, std::string const& className, std::string const& functionName, std::vector<std::string> const& successCodes);
+void writeFunctionBody(std::ofstream & ofs, std::string const& indentation, std::string const& className, std::string const& functionName, std::string const& returnType, size_t templateIndex, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes, size_t returnIndex, std::map<size_t, size_t> const& vectorParameters);
 void writeFunctionHeader(std::ofstream & ofs, std::string const& indentation, std::string const& returnType, std::string const& name, CommandData const& commandData, size_t returnIndex, size_t templateIndex, std::map<size_t, size_t> const& vectorParameters);
 void writeMemberData(std::ofstream & ofs, MemberData const& memberData, std::set<std::string> const& vkTypes);
 void writeStructConstructor( std::ofstream & ofs, std::string const& name, std::string const& memberName, StructData const& structData, std::set<std::string> const& vkTypes, std::map<std::string,std::string> const& defaultValues );
@@ -346,13 +347,7 @@ void writeStructGetter( std::ofstream & ofs, MemberData const& memberData, std::
 void writeStructSetter( std::ofstream & ofs, std::string const& name, MemberData const& memberData, std::string const& memberName, std::set<std::string> const& vkTypes, std::map<std::string,StructData> const& structs );
 void writeTypeCommand( std::ofstream & ofs, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes );
 void writeTypeCommandEnhanced(std::ofstream & ofs, std::string const& indentation, std::string const& className, std::string const& functionName, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes);
-void writeTypeCommandEnhanced(std::ofstream & ofs, std::string const& indentation, std::string const& className, std::string const& functionName, size_t templateIndex, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes, std::map<size_t, size_t> const& vectorParameters);
-void writeTypeCommandEnhancedSingleStep(std::ofstream & ofs, std::string const& indentation, std::string const& className, std::string const& functionName, std::string const& returnType, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes, size_t returnIndex, size_t templateIndex, std::map<size_t, size_t> const& vectorParameters);
-void writeTypeCommandEnhancedTwoStep(std::ofstream & ofs, std::string const& indentation, std::string const& className, std::string const& functionName, std::string const& returnType, size_t templateIndex, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes, std::map<size_t, size_t> const& vectorParameters);
-void writeTypeCommandEnhancedReplaceReturn(std::ofstream & ofs, std::string const& indentation, std::string const& className, std::string const& functionName, std::string const& returnType, size_t templateIndex, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes, size_t returnIndex, std::map<size_t, size_t> const& vectorParameters);
 void writeTypeCommandStandard(std::ofstream & ofs, std::string const& indentation, std::string const& functionName, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes);
-void writeTypeCommandComplexBody(std::ofstream & ofs, DependencyData const& dependencyData, CommandData const& commandData, std::map<std::string,std::string> const& nameMap, std::map<size_t, size_t> const& vectorParameters, std::set<size_t> const& argIndices, size_t complexIndex, size_t returnIndex);
-void writeTypeCommandSimpleBody(std::ofstream & ofs, DependencyData const& dependencyData, CommandData const& commandData, std::map<std::string, std::string> const& nameMap, std::map<size_t, size_t> const& vectorParameters, std::set<size_t> const& argIndices, std::map<size_t, std::vector<size_t>> const& sizeIndices, size_t returnIndex);
 void writeTypeEnum(std::ofstream & ofs, DependencyData const& dependencyData, EnumData const& enumData);
 void writeTypeFlags( std::ofstream & ofs, DependencyData const& dependencyData, FlagData const& flagData );
 void writeTypeHandle(std::ofstream & ofs, DependencyData const& dependencyData, HandleData const& handle, std::map<std::string, CommandData> const& commands, std::vector<DependencyData> const& dependencies, std::set<std::string> const& vkTypes);
@@ -461,9 +456,8 @@ std::string determineFunctionName(std::string const& name, CommandData const& co
 std::string determineReturnType(CommandData const& commandData, size_t returnIndex, bool isVector)
 {
   std::string returnType;
-  if (returnIndex != ~0)
+  if ((returnIndex != ~0) && ((commandData.returnType == "void") || ((commandData.returnType == "Result") && (commandData.successCodes.size() < 2))))
   {
-    assert((commandData.returnType == "void") || ((commandData.returnType == "Result") && (commandData.successCodes.size() == 1)));
     if (isVector)
     {
       if (commandData.arguments[returnIndex].pureType == "void")
@@ -485,7 +479,7 @@ std::string determineReturnType(CommandData const& commandData, size_t returnInd
   }
   else if ((commandData.returnType == "Result") && (commandData.successCodes.size() == 1))
   {
-    // an original return of type "Result" with less just one successCode is change to void, errors throw an exception
+    // an original return of type "Result" with less just one successCode is changed to void, errors throw an exception
     returnType = "void";
   }
   else
@@ -516,20 +510,17 @@ std::string extractTag(std::string const& name)
 
 size_t findReturnIndex(CommandData const& commandData, std::map<size_t,size_t> const& vectorParameters)
 {
-  if ((commandData.returnType == "void") || ((commandData.returnType == "Result") && (commandData.successCodes.size() == 1)))
+  for (size_t i = 0; i < commandData.arguments.size(); i++)
   {
-    for (size_t i = 0; i < commandData.arguments.size(); i++)
+    if ((commandData.arguments[i].type.find('*') != std::string::npos) && (commandData.arguments[i].type.find("const") == std::string::npos) && !isVectorSizeParameter(vectorParameters, i))
     {
-      if ((commandData.arguments[i].type.find('*') != std::string::npos) && (commandData.arguments[i].type.find("const") == std::string::npos) && !isVectorSizeParameter(vectorParameters, i))
-      {
 #if !defined(NDEBUG)
-        for (size_t j = i + 1; j < commandData.arguments.size(); j++)
-        {
-          assert((commandData.arguments[j].type.find('*') == std::string::npos) || (commandData.arguments[j].type.find("const") != std::string::npos));
-        }
-#endif
-        return i;
+      for (size_t j = i + 1; j < commandData.arguments.size(); j++)
+      {
+        assert((commandData.arguments[j].type.find('*') == std::string::npos) || (commandData.arguments[j].type.find("const") != std::string::npos));
       }
+#endif
+      return i;
     }
   }
   return ~0;
@@ -566,19 +557,6 @@ std::string getEnumName(std::string const& name) // get vkcpp enum name from vk 
   return strip(name, "Vk");
 }
 
-bool hasPointerArguments(CommandData const& commandData)
-{
-  for (size_t i = 0; i < commandData.arguments.size(); i++)
-  {
-    size_t pos = commandData.arguments[i].type.find('*');
-    if ((pos != std::string::npos) && (commandData.arguments[i].type.find('*', pos + 1) == std::string::npos))
-    {
-      return true;
-    }
-  }
-  return false;
-}
-
 std::string generateEnumNameForFlags(std::string const& name)
 {
   std::string generatedName = name;
@@ -613,6 +591,19 @@ std::map<size_t, size_t> getVectorParameters(CommandData const& commandData)
     }
   }
   return std::move(lenParameters);
+}
+
+bool hasPointerArguments(CommandData const& commandData)
+{
+  for (size_t i = 0; i < commandData.arguments.size(); i++)
+  {
+    size_t pos = commandData.arguments[i].type.find('*');
+    if ((pos != std::string::npos) && (commandData.arguments[i].type.find('*', pos + 1) == std::string::npos))
+    {
+      return true;
+    }
+  }
+  return false;
 }
 
 bool isVectorSizeParameter(std::map<size_t, size_t> const& vectorParameters, size_t idx)
@@ -1464,7 +1455,7 @@ std::string toUpperCase(std::string const& name)
   return convertedName;
 }
 
-void writeCall(std::ofstream & ofs, std::string const& name, size_t templateIndex, CommandData const& commandData, std::set<std::string> const& vkTypes, std::map<size_t, size_t> const& vectorParameters, size_t specialIndex, std::string const& specialArgument)
+void writeCall(std::ofstream & ofs, std::string const& name, size_t templateIndex, CommandData const& commandData, std::set<std::string> const& vkTypes, std::map<size_t, size_t> const& vectorParameters, size_t returnIndex, bool firstCall)
 {
   std::map<size_t,size_t> countIndices;
   for (std::map<size_t, size_t>::const_iterator it = vectorParameters.begin(); it != vectorParameters.end(); ++it)
@@ -1495,7 +1486,7 @@ void writeCall(std::ofstream & ofs, std::string const& name, size_t templateInde
     std::map<size_t, size_t>::const_iterator it = countIndices.find(i);
     if (it != countIndices.end())
     {
-      if (specialIndex == it->second)
+      if ((returnIndex == it->second) && commandData.twoStep)
       {
         ofs << "&" << reduceName(commandData.arguments[it->first].name);
       }
@@ -1515,23 +1506,34 @@ void writeCall(std::ofstream & ofs, std::string const& name, size_t templateInde
       if (it != vectorParameters.end())
       {
         assert(commandData.arguments[it->first].type.back() == '*');
-        std::set<std::string>::const_iterator vkit = vkTypes.find(commandData.arguments[it->first].pureType);
-        if ((vkit != vkTypes.end()) || (it->first == templateIndex))
+        if ((returnIndex == it->first) && commandData.twoStep && firstCall)
         {
-          ofs << "reinterpret_cast<";
-          if (commandData.arguments[it->first].type.find("const") != std::string::npos)
-          {
-            ofs << "const ";
-          }
-          if (vkit != vkTypes.end())
-          {
-            ofs << "Vk";
-          }
-          ofs << commandData.arguments[it->first].pureType << "*>( " << reduceName(commandData.arguments[it->first].name) << ".data() )";
+          ofs << "nullptr";
         }
         else
         {
-          ofs << reduceName(commandData.arguments[it->first].name) << ".data()";
+          std::set<std::string>::const_iterator vkit = vkTypes.find(commandData.arguments[it->first].pureType);
+          if ((vkit != vkTypes.end()) || (it->first == templateIndex))
+          {
+            ofs << "reinterpret_cast<";
+            if (commandData.arguments[it->first].type.find("const") != std::string::npos)
+            {
+              ofs << "const ";
+            }
+            if (vkit != vkTypes.end())
+            {
+              ofs << "Vk";
+            }
+            ofs << commandData.arguments[it->first].pureType << "*>( " << reduceName(commandData.arguments[it->first].name) << ".data() )";
+          }
+          else if (commandData.arguments[it->first].pureType == "char")
+          {
+            ofs << reduceName(commandData.arguments[it->first].name) << ".c_str()";
+          }
+          else
+          {
+            ofs << reduceName(commandData.arguments[it->first].name) << ".data()";
+          }
         }
       }
       else if (vkTypes.find(commandData.arguments[i].pureType) != vkTypes.end())
@@ -1599,6 +1601,157 @@ void writeExceptionCheck(std::ofstream & ofs, std::string const& indentation, st
       << indentation << "  }" << std::endl;
 }
 
+void writeFunctionBody(std::ofstream & ofs, std::string const& indentation, std::string const& className, std::string const& functionName, std::string const& returnType, size_t templateIndex, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes, size_t returnIndex, std::map<size_t, size_t> const& vectorParameters)
+{
+  ofs << indentation << "{" << std::endl;
+
+  // add a static_assert if a type is templated and its size needs to be some multiple of the original size
+  if ((templateIndex != ~0) && (commandData.arguments[templateIndex].pureType != "void"))
+  {
+    ofs << indentation << "  static_assert( sizeof( T ) % sizeof( " << commandData.arguments[templateIndex].pureType << " ) == 0, \"wrong size of template type T\" );" << std::endl;
+  }
+
+  // add some error checks if multiple vectors need to have the same size
+  if (1 < vectorParameters.size())
+  {
+    for (std::map<size_t, size_t>::const_iterator it0 = vectorParameters.begin(); it0 != vectorParameters.end(); ++it0)
+    {
+      if (it0->first != returnIndex)
+      {
+        for (std::map<size_t, size_t>::const_iterator it1 = std::next(it0); it1 != vectorParameters.end(); ++it1)
+        {
+          if ((it1->first != returnIndex) && (it0->second == it1->second))
+          {
+            ofs << indentation << "  if ( " << reduceName(commandData.arguments[it0->first].name) << ".size() != " << reduceName(commandData.arguments[it1->first].name) << ".size() )" << std::endl
+                << indentation << "  {" << std::endl
+                << indentation << "    throw std::logic_error( \"vk::" << className << "::" << functionName << ": " << reduceName(commandData.arguments[it0->first].name) << ".size() != " << reduceName(commandData.arguments[it1->first].name) << ".size()\" );" << std::endl
+                << indentation << "  }" << std::endl;
+          }
+        }
+      }
+    }
+  }
+
+  // write the local variable to hold a returned value
+  if ((returnIndex != ~0) && (((commandData.returnType == "Result") && (commandData.successCodes.size() < 2)) || (commandData.returnType == "void")))
+  {
+    ofs << indentation << "  " << returnType << " " << reduceName(commandData.arguments[returnIndex].name);
+
+    std::map<size_t, size_t>::const_iterator it = vectorParameters.find(returnIndex);
+    if (it != vectorParameters.end() && !commandData.twoStep)
+    {
+      std::string size;
+      if ((it->second == ~0) && !commandData.arguments[returnIndex].len.empty())
+      {
+        size = reduceName(commandData.arguments[returnIndex].len);
+        size_t pos = size.find("->");
+        assert(pos != std::string::npos);
+        size.replace(pos, 2, ".");
+        size += "()";
+      }
+      else
+      {
+        for (std::map<size_t, size_t>::const_iterator sit = vectorParameters.begin(); sit != vectorParameters.end(); ++sit)
+        {
+          if ((sit->first != returnIndex) && (sit->second == it->second))
+          {
+            size = reduceName(commandData.arguments[sit->first].name) + ".size()";
+            break;
+          }
+        }
+      }
+      assert(!size.empty());
+      ofs << "( " << size << " )";
+    }
+    ofs << ";" << std::endl;
+  }
+
+  // local count variable to hold the size of the vector to fill
+  if (commandData.twoStep)
+  {
+    assert(returnIndex != ~0);
+
+    std::map<size_t, size_t>::const_iterator returnit = vectorParameters.find(returnIndex);
+    assert(returnit != vectorParameters.end() && (returnit->second != ~0));
+    assert((commandData.returnType == "Result") || (commandData.returnType == "void"));
+
+    ofs << indentation << "  " << commandData.arguments[returnit->second].pureType << " " << reduceName(commandData.arguments[returnit->second].name) << ";" << std::endl;
+  }
+
+  // write the function call
+  ofs << indentation << "  ";
+  if (commandData.returnType == "Result")
+  {
+    ofs << "Result result = static_cast<Result>( ";
+  }
+  else if (commandData.returnType != "void")
+  {
+    ofs << "return ";
+  }
+  writeCall(ofs, dependencyData.name, templateIndex, commandData, vkTypes, vectorParameters, returnIndex, true);
+  if (commandData.returnType == "Result")
+  {
+    ofs << " )";
+  }
+  ofs << ";" << std::endl;
+
+  // add an exception check
+  if ((commandData.returnType == "Result") || !commandData.successCodes.empty())
+  {
+    writeExceptionCheck(ofs, indentation, className, functionName, commandData.successCodes);
+  }
+
+  if (commandData.twoStep)
+  {
+    std::map<size_t, size_t>::const_iterator returnit = vectorParameters.find(returnIndex);
+
+    // resize the vector to hold the data according to the result from the first call
+    ofs << indentation << "  " << reduceName(commandData.arguments[returnit->first].name) << ".resize( " << reduceName(commandData.arguments[returnit->second].name) << " );" << std::endl;
+
+    // write the function call a second time
+    ofs << indentation << "  ";
+    if (commandData.returnType == "Result")
+    {
+      ofs << "result = static_cast<Result>( ";
+    }
+    writeCall(ofs, dependencyData.name, templateIndex, commandData, vkTypes, vectorParameters, returnIndex, false);
+    if (commandData.returnType == "Result")
+    {
+      ofs << " )";
+    }
+    ofs << ";" << std::endl;
+
+    // add a second exception check
+    if ((commandData.returnType == "Result") || !commandData.successCodes.empty())
+    {
+      writeExceptionCheck(ofs, indentation, className, functionName, commandData.successCodes);
+    }
+  }
+
+  // return the returned value
+  if ((returnIndex != ~0) && (((commandData.returnType == "Result") && (commandData.successCodes.size() < 2)) || (commandData.returnType == "void")))
+  {
+    ofs << indentation << "  return ";
+    if (vectorParameters.find(returnIndex) != vectorParameters.end())
+    {
+      ofs << "std::move( ";
+      ofs << reduceName(commandData.arguments[returnIndex].name);
+      ofs << " )";
+    }
+    else
+    {
+      ofs << reduceName(commandData.arguments[returnIndex].name);
+    }
+    ofs << ";" << std::endl;
+  }
+  else if (returnType == "Result")
+  {
+    ofs << indentation << "  return result;" << std::endl;
+  }
+
+  ofs << indentation << "}" << std::endl;
+}
+
 void writeFunctionHeader(std::ofstream & ofs, std::string const& indentation, std::string const& returnType, std::string const& name, CommandData const& commandData, size_t returnIndex, size_t templateIndex, std::map<size_t, size_t> const& vectorParameters)
 {
   std::set<size_t> skippedArguments;
@@ -1612,7 +1765,7 @@ void writeFunctionHeader(std::ofstream & ofs, std::string const& indentation, st
     assert(commandData.arguments[3].name == "dataSize");
     skippedArguments.insert(3);
   }
-  if (commandData.successCodes.size() < 2)
+  if ((returnIndex != ~0) && (((commandData.returnType == "Result") && (commandData.successCodes.size() < 2)) || (commandData.returnType == "void")))
   {
     skippedArguments.insert(returnIndex);
   }
@@ -1969,217 +2122,8 @@ void writeTypeCommandEnhanced(std::ofstream & ofs, std::string const& indentatio
   std::string returnType = determineReturnType(commandData, returnIndex, returnVector != vectorParameters.end());
 
   writeFunctionHeader(ofs, indentation, returnType, functionName, commandData, returnIndex, templateIndex, vectorParameters);
-
-  if (commandData.twoStep)
-  {
-    writeTypeCommandEnhancedTwoStep(ofs, indentation, className, functionName, returnType, templateIndex, dependencyData, commandData, vkTypes, vectorParameters);
-  }
-  else
-  {
-    writeTypeCommandEnhancedSingleStep(ofs, indentation, className, functionName, returnType, dependencyData, commandData, vkTypes, returnIndex, templateIndex, vectorParameters);
-  }
+  writeFunctionBody(ofs, indentation, className, functionName, returnType, templateIndex, dependencyData, commandData, vkTypes, returnIndex, vectorParameters);
   leaveProtect(ofs, commandData.protect);
-}
-
-void writeTypeCommandEnhanced(std::ofstream & ofs, std::string const& indentation, std::string const& className, std::string const& functionName, size_t templateIndex, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes, std::map<size_t, size_t> const& vectorParameters)
-{
-  ofs << indentation << "{" << std::endl;
-  if (vectorParameters.size() == 2)
-  {
-    std::map<size_t, size_t>::const_iterator it1 = vectorParameters.begin();
-    std::map<size_t, size_t>::const_iterator it0 = it1++;
-    if ( it0->second == it1->second )
-    {
-      ofs << indentation << "  if ( " << reduceName(commandData.arguments[it0->first].name) << ".size() != " << reduceName(commandData.arguments[it1->first].name) << ".size() )" << std::endl
-          << indentation << "  {" << std::endl
-          << indentation << "    throw std::logic_error( \"vk::" << className << "::" << functionName << ": " << reduceName(commandData.arguments[it0->first].name) << ".size() != " << reduceName(commandData.arguments[it1->first].name) << ".size()\" );" << std::endl
-          << indentation << "  }" << std::endl;
-    }
-  }
-  if ((templateIndex != ~0) && (commandData.arguments[templateIndex].pureType != "void"))
-  {
-    ofs << indentation << "  static_assert( sizeof( T ) % sizeof( " << commandData.arguments[templateIndex].pureType << " ) == 0, \"wrong size of template type T\" );" << std::endl;
-  }
-  ofs << indentation << "  ";
-  if (commandData.returnType == "Result")
-  {
-    ofs << "Result result = static_cast<Result>( ";
-  }
-  else if (commandData.returnType != "void")
-  {
-    ofs << "return ";
-  }
-  writeCall(ofs, dependencyData.name, templateIndex, commandData, vkTypes, vectorParameters);
-  if (commandData.returnType == "Result")
-  {
-    ofs << " );" << std::endl;
-    writeExceptionCheck(ofs, indentation, className, functionName, commandData.successCodes);
-    if (1 < commandData.successCodes.size())
-    {
-      ofs << indentation << "  return result;" << std::endl;
-    }
-  }
-  else
-  {
-    ofs << ";" << std::endl;
-  }
-  ofs << indentation << "}" << std::endl;
-}
-
-void writeTypeCommandEnhancedSingleStep(std::ofstream & ofs, std::string const& indentation, std::string const& className, std::string const& functionName, std::string const& returnType, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes, size_t returnIndex, size_t templateIndex, std::map<size_t, size_t> const& vectorParameters)
-{
-  if (1 < commandData.successCodes.size())
-  {
-    returnIndex = ~0;
-  }
-  if ((commandData.returnType == "Result") || (commandData.returnType == "void"))
-  {
-    // is allowed to return some input parameter
-    if (returnIndex == ~0)
-    {
-      writeTypeCommandEnhanced(ofs, indentation, className, functionName, templateIndex, dependencyData, commandData, vkTypes, vectorParameters);
-    }
-    else
-    {
-      std::map<size_t, size_t>::const_iterator it = vectorParameters.find(returnIndex);
-      if (it == vectorParameters.end() || (it->second == ~0) || ((vectorParameters.size() == 2) && (vectorParameters.begin()->second == (++vectorParameters.begin())->second)))
-      {
-        writeTypeCommandEnhancedReplaceReturn(ofs, indentation, className, functionName, returnType, templateIndex, dependencyData, commandData, vkTypes, returnIndex, vectorParameters);
-      }
-      else
-      {
-        assert(false);
-      }
-    }
-  }
-  else
-  {
-    writeTypeCommandEnhanced(ofs, indentation, className, functionName, templateIndex, dependencyData, commandData, vkTypes, std::map<size_t, size_t>());
-  }
-}
-
-void writeTypeCommandEnhancedTwoStep(std::ofstream & ofs, std::string const& indentation, std::string const& className, std::string const& functionName, std::string const& returnType, size_t templateIndex, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes, std::map<size_t, size_t> const& vectorParameters)
-{
-  std::map<size_t, size_t>::const_iterator it;
-  for (it = vectorParameters.begin(); it != vectorParameters.end(); ++it)
-  {
-    if (commandData.arguments[it->first].type.find("const") == std::string::npos)
-    {
-#if !defined(NDEBUG)
-      for (std::map<size_t, size_t>::const_iterator jt = std::next(it); jt != vectorParameters.end(); ++jt)
-      {
-        assert(commandData.arguments[jt->first].type.find("const") != std::string::npos);
-      }
-#endif
-      break;
-    }
-  }
-  assert(it != vectorParameters.end() && it->second != ~0);
-
-  ofs << indentation << "{" << std::endl;
-  if (commandData.successCodes.size() < 2)
-  {
-    ofs << indentation << "  " << returnType << " " << reduceName(commandData.arguments[it->first].name) << ";" << std::endl;
-  }
-  ofs << indentation << "  " << commandData.arguments[it->second].pureType << " " << reduceName(commandData.arguments[it->second].name) << ";" << std::endl
-      << indentation << "  ";
-  if (commandData.returnType == "Result")
-  {
-    ofs << "Result result = static_cast<Result>( ";
-    writeCall(ofs, dependencyData.name, templateIndex, commandData, vkTypes, vectorParameters, it->first, "nullptr");
-    ofs << " );" << std::endl;
-    writeExceptionCheck(ofs, indentation, className, functionName, commandData.successCodes);
-  }
-  else
-  {
-    writeCall(ofs, dependencyData.name, templateIndex, commandData, vkTypes, vectorParameters, it->first, "nullptr");
-    ofs << ";" << std::endl;
-  }
-  ofs << indentation << "  " << reduceName(commandData.arguments[it->first].name) << ".resize( " << reduceName(commandData.arguments[it->second].name) << " );" << std::endl
-      << indentation << "  ";
-  if (commandData.returnType == "Result")
-  {
-    ofs << "result = static_cast<Result>( ";
-    writeCall(ofs, dependencyData.name, templateIndex, commandData, vkTypes, vectorParameters, it->first, reduceName(commandData.arguments[it->first].name) + ".data()");
-    ofs << " );" << std::endl;
-    writeExceptionCheck(ofs, indentation, className, functionName, commandData.successCodes);
-  }
-  else
-  {
-    writeCall(ofs, dependencyData.name, templateIndex, commandData, vkTypes, vectorParameters, it->first, reduceName(commandData.arguments[it->first].name) + ".data()");
-    ofs << ";" << std::endl;
-  }
-  if (commandData.successCodes.size() < 2)
-  {
-    ofs << indentation << "  return std::move( " << reduceName(commandData.arguments[it->first].name) << " );" << std::endl;
-  }
-  else if (commandData.returnType == "Result")
-  {
-    ofs << indentation << "  return result;" << std::endl;
-  }
-  ofs << indentation << "}" << std::endl;
-}
-
-void writeTypeCommandEnhancedReplaceReturn(std::ofstream & ofs, std::string const& indentation, std::string const& className, std::string const& functionName, std::string const& returnType, size_t templateIndex, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes, size_t returnIndex, std::map<size_t, size_t> const& vectorParameters)
-{
-  assert(returnIndex < commandData.arguments.size());
-
-  ofs << indentation << "{" << std::endl
-      << indentation << "  " << returnType << " " << reduceName(commandData.arguments[returnIndex].name);
-  std::map<size_t, size_t>::const_iterator it = vectorParameters.find(returnIndex);
-  if (it != vectorParameters.end())
-  {
-    std::string size;
-    if ((it->second == ~0) && !commandData.arguments[returnIndex].len.empty())
-    {
-      size = reduceName(commandData.arguments[returnIndex].len);
-      size_t pos = size.find("->");
-      assert(pos != std::string::npos);
-      size.replace(pos, 2, ".");
-      size += "()";
-    }
-    else
-    {
-      for (std::map<size_t, size_t>::const_iterator sit = vectorParameters.begin(); sit != vectorParameters.end(); ++sit)
-      {
-        if ((sit->first != returnIndex) && (sit->second == it->second))
-        {
-          size = reduceName(commandData.arguments[sit->first].name) + ".size()";
-          break;
-        }
-      }
-    }
-    assert(!size.empty());
-    ofs << "( " << size << " )";
-  }
-  ofs << ";" << std::endl
-      << indentation << "  ";
-  if (commandData.returnType == "Result")
-  {
-    ofs << "Result result = static_cast<Result>( ";
-  }
-  writeCall(ofs, dependencyData.name, templateIndex, commandData, vkTypes, vectorParameters);
-  if (commandData.returnType == "Result")
-  {
-    ofs << " )";
-  }
-  ofs << ";" << std::endl;
-  if (commandData.returnType == "Result")
-  {
-    writeExceptionCheck(ofs, indentation, className, functionName, commandData.successCodes);
-  }
-  ofs << indentation << "  return ";
-  if (it != vectorParameters.end())
-  {
-    ofs << "std::move( ";
-  }
-  ofs << reduceName(commandData.arguments[returnIndex].name);
-  if (it != vectorParameters.end())
-  {
-    ofs << " )";
-  }
-  ofs << ";" << std::endl
-      << indentation << "}" << std::endl;
 }
 
 void writeTypeCommandStandard(std::ofstream & ofs, std::string const& indentation, std::string const& functionName, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes)
@@ -2250,162 +2194,6 @@ void writeTypeCommandStandard(std::ofstream & ofs, std::string const& indentatio
   ofs << ";" << std::endl
       << indentation << "}" << std::endl;
   leaveProtect(ofs, commandData.protect);
-}
-
-void writeTypeCommandComplexBody(std::ofstream & ofs, DependencyData const& dependencyData, CommandData const& commandData, std::map<std::string,std::string> const& nameMap, std::map<size_t, size_t> const& vectorParameters, std::set<size_t> const& argIndices, size_t complexIndex, size_t returnIndex)
-{
-  if (returnIndex != ~0)
-  {
-    assert(vectorParameters.find(returnIndex) != vectorParameters.end());
-    ofs << "    std::vector<" << commandData.arguments[returnIndex].pureType << "> " << reduceName(commandData.arguments[returnIndex].name) << ";" << std::endl;
-  }
-
-  std::map<size_t, size_t>::const_iterator vpit = vectorParameters.find(complexIndex);
-  assert((vpit != vectorParameters.end()) && (vpit->second != ~0));
-  ofs << "    " << commandData.arguments[vpit->second].pureType << " " << nameMap.find(commandData.arguments[vpit->second].name)->second << " = 0;" << std::endl;
-  ofs << "    ";
-
-  assert((commandData.returnType == "void") || (commandData.returnType == "Result"));
-  if (commandData.returnType == "Result")
-  {
-    ofs << commandData.returnType << " result = ";
-  }
-  ofs << dependencyData.name << "( ";
-  for (size_t i = 0; i<commandData.arguments.size(); i++)
-  {
-    auto argit = nameMap.find(commandData.arguments[i].name);
-    if (0 < i)
-    {
-      ofs << ", ";
-    }
-    if (i == vpit->first)
-    {
-      ofs << "nullptr";
-    }
-    else if (i == vpit->second)
-    {
-      ofs << '&' << argit->second;
-    }
-    else if (argIndices.find(i) != argIndices.end())
-    {
-      ofs << argit->second << ".data()";
-    }
-    else
-    {
-      ofs << argit->second;
-    }
-  }
-  ofs << " );" << std::endl;
-  if (commandData.returnType == "Result")
-  {
-    ofs << "    if ( result == Result::eSuccess )" << std::endl
-        << "    {" << std::endl
-        << "  ";
-  }
-  ofs << "    ";
-  if (returnIndex == ~0)
-  {
-    ofs << nameMap.find(commandData.arguments[vpit->first].name)->second << ".resize( " << nameMap.find(commandData.arguments[vpit->second].name)->second << " );" << std::endl;
-  }
-  else
-  {
-    ofs << "std::vector<" << commandData.arguments[vpit->first].pureType << "> " << nameMap.find(commandData.arguments[vpit->first].name)->second << "( " << nameMap.find(commandData.arguments[vpit->second].name)->second << " );" << std::endl;
-  }
-  ofs << "    ";
-  if (commandData.returnType == "Result")
-  {
-    ofs << "  result = ";
-  }
-  ofs << dependencyData.name << "( ";
-  for (size_t i = 0; i<commandData.arguments.size(); i++)
-  {
-    auto argit = nameMap.find(commandData.arguments[i].name);
-    if (0 < i)
-    {
-      ofs << ", ";
-    }
-    if (i == vpit->first)
-    {
-      ofs << argit->second << ".data()";
-    }
-    else if (i == vpit->second)
-    {
-      ofs << '&' << argit->second;
-    }
-    else if (argIndices.find(i) != argIndices.end())
-    {
-      ofs << argit->second << ".data()";
-    }
-    else
-    {
-      ofs << argit->second;
-    }
-  }
-  ofs << " );" << std::endl;
-  if (returnIndex != ~0)
-  {
-    ofs << "    }" << std::endl
-        << "    return std::move( " << nameMap.find(commandData.arguments[vpit->first].name)->second << " );" << std::endl;
-  }
-  else if (commandData.returnType == "Result")
-  {
-    ofs << "    }" << std::endl
-      << "    return result;" << std::endl;
-  }
-}
-
-void writeTypeCommandSimpleBody(std::ofstream & ofs, DependencyData const& dependencyData, CommandData const& commandData, std::map<std::string, std::string> const& nameMap, std::map<size_t, size_t> const& vectorParameters, std::set<size_t> const& argIndices, std::map<size_t, std::vector<size_t>> const& sizeIndices, size_t returnIndex)
-{
-  for (std::map<size_t, std::vector<size_t>>::const_iterator it = sizeIndices.begin(); it != sizeIndices.end(); ++it)
-  {
-    if (1 < it->second.size())
-    {
-      assert(it->second.size() == 2);
-      ofs << "    assert( " << nameMap.find(commandData.arguments[it->second[0]].name)->second << ".size() <= " << nameMap.find(commandData.arguments[it->second[1]].name)->second << ".size() );" << std::endl;
-    }
-  }
-
-  if (returnIndex != ~0)
-  {
-    assert(vectorParameters.find(returnIndex) == vectorParameters.end());
-    ofs << "    " << commandData.arguments[returnIndex].pureType << " " << reduceName(commandData.arguments[returnIndex].name) << ";" << std::endl;
-  }
-
-  ofs << "    ";
-  if (commandData.returnType != "void")
-  {
-    ofs << "return ";
-  }
-  ofs << dependencyData.name << "( ";
-  for (size_t i = 0; i < commandData.arguments.size(); i++)
-  {
-    auto argit = nameMap.find(commandData.arguments[i].name);
-    if (0 < i)
-    {
-      ofs << ", ";
-    }
-    if (argIndices.find(i) != argIndices.end())
-    {
-      ofs << argit->second << ".data()";
-    }
-    else
-    {
-      std::map<size_t, std::vector<size_t>>::const_iterator it = sizeIndices.find(i);
-      if (it != sizeIndices.end())
-      {
-        ofs << "static_cast<" << commandData.arguments[i].type << ">( " << nameMap.find(commandData.arguments[it->second.front()].name)->second << ".size() )";
-      }
-      else if (nameMap.find(commandData.arguments[i].name)->second != commandData.arguments[i].name)
-      {
-        ofs << '&' << argit->second;
-      }
-      else
-      {
-        ofs << argit->second;
-      }
-    }
-  }
-  ofs << " );" << std::endl;
 }
 
 void writeTypeEnum( std::ofstream & ofs, DependencyData const& dependencyData, EnumData const& enumData )

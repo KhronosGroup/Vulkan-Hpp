@@ -38,7 +38,7 @@
 
 #include <tinyxml2.h>
 
-const std::string licenseHeader(
+const std::string nvidiaLicenseHeader(
 "// Copyright(c) 2015-2016, NVIDIA CORPORATION. All rights reserved.\n"
 "//\n"
 "// Redistribution and use in source and binary forms, with or without\n"
@@ -315,6 +315,7 @@ bool readCommandParam( tinyxml2::XMLElement * element, DependencyData & typeData
 std::map<std::string, CommandData>::iterator readCommandProto(tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string, CommandData> & commands);
 void readCommands( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,CommandData> & commands, std::map<std::string,HandleData> & handles, std::set<std::string> const& tags );
 void readCommandsCommand(tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string, CommandData> & commands, std::map<std::string, HandleData> & handles, std::set<std::string> const& tags);
+void readComment(tinyxml2::XMLElement * element, std::string & header);
 void readEnums( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,EnumData> & enums, std::set<std::string> const& tags, std::set<std::string> & vkTypes );
 void readEnumsEnum( tinyxml2::XMLElement * element, EnumData & enumData, std::string const& tag );
 void readExtensionRequire(tinyxml2::XMLElement * element, std::string const& protect, std::string const& tag, std::map<std::string, CommandData> & commands, std::map<std::string, EnumData> & enums, std::map<std::string, FlagData> & flags, std::map<std::string, ScalarData> & scalars, std::map<std::string, StructData> & structs);
@@ -818,6 +819,25 @@ void readCommandsCommand(tinyxml2::XMLElement * element, std::list<DependencyDat
       }
     }
   }
+}
+
+void readComment(tinyxml2::XMLElement * element, std::string & header)
+{
+  assert(element->GetText());
+  assert(header.empty());
+  header = element->GetText();
+  assert(header.find("\nCopyright") == 0);
+
+  size_t pos = header.find("\n\n-----");
+  assert(pos != std::string::npos);
+  header.erase(pos);
+
+  for (size_t pos = header.find('\n'); pos != std::string::npos; pos = header.find('\n', pos + 1))
+  {
+    header.replace(pos, 1, "\n// ");
+  }
+
+  header += "\n\n// This header is generated from the Khronos Vulkan XML API Registry.";
 }
 
 void readEnums( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,EnumData> & enums, std::set<std::string> const& tags, std::set<std::string> & vkTypes )
@@ -2817,6 +2837,7 @@ int main( int argc, char **argv )
   std::map<std::string, StructData>   structs;
   std::set<std::string>               tags;
   std::set<std::string>               vkTypes;
+  std::string                         vulkanLicenseHeader;
 
   tinyxml2::XMLElement * child = registryElement->FirstChildElement();
   do
@@ -2826,6 +2847,10 @@ int main( int argc, char **argv )
     if ( value == "commands" )
     {
       readCommands( child, dependencies, commands, handles, tags );
+    }
+    else if (value == "comment")
+    {
+      readComment(child, vulkanLicenseHeader);
     }
     else if ( value == "enums" )
     {
@@ -2845,7 +2870,7 @@ int main( int argc, char **argv )
     }
     else
     {
-      assert( ( value == "comment" ) || ( value == "feature" ) || ( value == "vendorids" ) );
+      assert( ( value == "feature" ) || ( value == "vendorids" ) );
     }
   } while ( child = child->NextSiblingElement() );
 
@@ -2856,13 +2881,14 @@ int main( int argc, char **argv )
   createDefaults( sortedDependencies, enums, defaultValues );
 
   std::ofstream ofs( "vk_cpp.h" );
-  ofs << licenseHeader << std::endl;
-
-  ofs << std::endl << "#ifndef VK_CPP_H_" << std::endl
-                   << "#define VK_CPP_H_" << std::endl
-                   << std::endl;
-
-  ofs << "#include <array>" << std::endl
+  ofs << nvidiaLicenseHeader << std::endl
+      << vulkanLicenseHeader << std::endl
+      << std::endl
+      << std::endl
+      << "#ifndef VK_CPP_H_" << std::endl
+      << "#define VK_CPP_H_" << std::endl
+      << std::endl
+      << "#include <array>" << std::endl
       << "#include <cassert>" << std::endl
       << "#include <cstdint>" << std::endl
       << "#include <cstring>" << std::endl
@@ -2871,6 +2897,7 @@ int main( int argc, char **argv )
       << "# include <vector>" << std::endl
       << "#endif /*VKCPP_ENHANCED_MODE*/" << std::endl
       << std::endl;
+
   writeVersionCheck( ofs, version );
   writeTypesafeCheck(ofs, typesafeCheck );
   ofs << "namespace vk" << std::endl

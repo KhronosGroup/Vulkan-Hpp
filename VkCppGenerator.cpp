@@ -67,19 +67,36 @@ const std::string nvidiaLicenseHeader(
 );
 
 const std::string exceptionHeader(
-  "  enum class Result;\n"
+  "#if defined(_MSC_VER) && (_MSC_VER == 1800)\n"
+  "# define noexcept _NOEXCEPT\n"
+  "#endif\n"
   "\n"
-  "  class Exception : public std::runtime_error\n"
+  "  class ErrorCategoryImpl : public std::error_category\n"
   "  {\n"
-  "  public:\n"
-  "    Exception(Result result, std::string const& what)\n"
-  "      : std::runtime_error(what)\n"
-  "      , m_error(result)\n"
-  "    {}\n"
-  "\n"
-  "  private:\n"
-  "    Result m_error;\n"
+  "    public:\n"
+  "    virtual const char* name() const noexcept override { return \"vk::Result\"; }\n"
+  "    virtual std::string message(int ev) const override { return getString(static_cast<vk::Result>(ev)); }\n"
   "  };\n"
+  "\n"
+  "#if defined(_MSC_VER) && (_MSC_VER == 1800)\n"
+  "# undef noexcept\n"
+  "#endif\n"
+  "\n"
+  "  inline const std::error_category& errorCategory()\n"
+  "  {\n"
+  "    static ErrorCategoryImpl instance;\n"
+  "    return instance;\n"
+  "  }\n"
+  "\n"
+  "  inline std::error_code make_error_code(Result e)\n"
+  "  {\n"
+  "    return std::error_code(static_cast<int>(e), errorCategory());\n"
+  "  }\n"
+  "\n"
+  "  inline std::error_condition make_error_condition(Result e)\n"
+  "  {\n"
+  "    return std::error_condition(static_cast<int>(e), errorCategory());\n"
+  "  }\n"
   "\n"
   );
 
@@ -1612,7 +1629,7 @@ void writeExceptionCheck(std::ofstream & ofs, std::string const& indentation, st
     ofs << indentation << "  if ( ( result != Result::" << successCodes[0] << " ) && ( result != Result::" << successCodes[1] << " ) )" << std::endl;
   }
   ofs << indentation << "  {" << std::endl
-    << indentation << "    throw Exception( result, \"vk::";
+    << indentation << "    throw std::system_error( result, \"vk::";
   if (!className.empty())
   {
     ofs << className << "::";
@@ -2680,6 +2697,8 @@ int main( int argc, char **argv )
       << "#include <cassert>" << std::endl
       << "#include <cstdint>" << std::endl
       << "#include <cstring>" << std::endl
+      << "#include <string>" << std::endl
+      << "#include <system_error>" << std::endl
       << "#include <vulkan/vulkan.h>" << std::endl
       << "#ifdef VKCPP_ENHANCED_MODE" << std::endl
       << "# include <vector>" << std::endl
@@ -2689,10 +2708,28 @@ int main( int argc, char **argv )
   writeVersionCheck( ofs, version );
   writeTypesafeCheck(ofs, typesafeCheck );
   ofs << "namespace vk" << std::endl
-      << "{" << std::endl;
+      << "{" << std::endl
+      << flagsHeader;
 
+  // first of all, write out vk::Result and the exception handling stuff
+  std::vector<DependencyData>::const_iterator it = std::find_if(sortedDependencies.begin(), sortedDependencies.end(), [](DependencyData const& dp) { return dp.name == "Result"; });
+  assert(it != sortedDependencies.end());
+  writeTypeEnum(ofs, *it, enums.find(it->name)->second);
+  writeEnumGetString(ofs, *it, enums.find(it->name)->second);
+  sortedDependencies.erase(it);
   ofs << exceptionHeader;
-  ofs << flagsHeader;
+
+  ofs << "} // namespace vk" << std::endl
+      << std::endl
+      << "namespace std" << std::endl
+      << "{" << std::endl
+      << "  template <>" << std::endl
+      << "  struct is_error_code_enum<vk::Result> : public true_type" << std::endl
+      << "  {};" << std::endl
+      << "}" << std::endl
+      << std::endl
+      << "namespace vk" << std::endl
+      << "{" << std::endl;
 
   writeTypes( ofs, sortedDependencies, commands, enums, flags, handles, structs, defaultValues, vkTypes );
   writeEnumsToString(ofs, sortedDependencies, enums);

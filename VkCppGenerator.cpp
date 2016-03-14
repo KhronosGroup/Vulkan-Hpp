@@ -1438,7 +1438,7 @@ std::string strip(std::string const& value, std::string const& prefix, std::stri
   }
   if (!postfix.empty())
   {
-    size_t pos = strippedValue.find(postfix);
+    size_t pos = strippedValue.rfind(postfix);
     assert(pos != std::string::npos);
     strippedValue.erase(pos);
   }

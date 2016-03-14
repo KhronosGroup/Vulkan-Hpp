@@ -63,7 +63,7 @@
 # include <vector>
 #endif /*VKCPP_ENHANCED_MODE*/
 
-static_assert( VK_MAKE_VERSION(1, 0, 4) == VK_API_VERSION, "Wrong VK_API_VERSION!" );
+static_assert( VK_MAKE_VERSION(1, 0, 5) == VK_API_VERSION, "Wrong VK_API_VERSION!" );
 
 // 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VK_CPP_TYPESAFE_CONVERSION
@@ -208,7 +208,8 @@ namespace vk
     eSuboptimalKHR = VK_SUBOPTIMAL_KHR,
     eErrorOutOfDateKHR = VK_ERROR_OUT_OF_DATE_KHR,
     eErrorIncompatibleDisplayKHR = VK_ERROR_INCOMPATIBLE_DISPLAY_KHR,
-    eErrorValidationFailedEXT = VK_ERROR_VALIDATION_FAILED_EXT
+    eErrorValidationFailedEXT = VK_ERROR_VALIDATION_FAILED_EXT,
+    eErrorInvalidShaderNV = VK_ERROR_INVALID_SHADER_NV
   };
 
   inline std::string getString(Result value)
@@ -238,6 +239,7 @@ namespace vk
     case Result::eErrorOutOfDateKHR: return "ErrorOutOfDateKHR";
     case Result::eErrorIncompatibleDisplayKHR: return "ErrorIncompatibleDisplayKHR";
     case Result::eErrorValidationFailedEXT: return "ErrorValidationFailedEXT";
+    case Result::eErrorInvalidShaderNV: return "ErrorInvalidShaderNV";
     default: return "unknown";
     }
   }
@@ -2709,44 +2711,9 @@ namespace vk
   class SubresourceLayout
   {
   public:
-    SubresourceLayout()
-      : SubresourceLayout( 0, 0, 0, 0, 0 )
-    {}
-
-    SubresourceLayout( DeviceSize offset, DeviceSize size, DeviceSize rowPitch, DeviceSize arrayPitch, DeviceSize depthPitch)
-    {
-      m_subresourceLayout.offset = offset;
-      m_subresourceLayout.size = size;
-      m_subresourceLayout.rowPitch = rowPitch;
-      m_subresourceLayout.arrayPitch = arrayPitch;
-      m_subresourceLayout.depthPitch = depthPitch;
-    }
-
-    SubresourceLayout(VkSubresourceLayout const & rhs)
-      : m_subresourceLayout(rhs)
-    {
-    }
-
-    SubresourceLayout& operator=(VkSubresourceLayout const & rhs)
-    {
-      m_subresourceLayout = rhs;
-      return *this;
-    }
-
     const DeviceSize& offset() const
     {
       return m_subresourceLayout.offset;
-    }
-
-    DeviceSize& offset()
-    {
-      return m_subresourceLayout.offset;
-    }
-
-    SubresourceLayout& offset( DeviceSize offset )
-    {
-      m_subresourceLayout.offset = offset;
-      return *this;
     }
 
     const DeviceSize& size() const
@@ -2754,31 +2721,9 @@ namespace vk
       return m_subresourceLayout.size;
     }
 
-    DeviceSize& size()
-    {
-      return m_subresourceLayout.size;
-    }
-
-    SubresourceLayout& size( DeviceSize size )
-    {
-      m_subresourceLayout.size = size;
-      return *this;
-    }
-
     const DeviceSize& rowPitch() const
     {
       return m_subresourceLayout.rowPitch;
-    }
-
-    DeviceSize& rowPitch()
-    {
-      return m_subresourceLayout.rowPitch;
-    }
-
-    SubresourceLayout& rowPitch( DeviceSize rowPitch )
-    {
-      m_subresourceLayout.rowPitch = rowPitch;
-      return *this;
     }
 
     const DeviceSize& arrayPitch() const
@@ -2786,31 +2731,9 @@ namespace vk
       return m_subresourceLayout.arrayPitch;
     }
 
-    DeviceSize& arrayPitch()
-    {
-      return m_subresourceLayout.arrayPitch;
-    }
-
-    SubresourceLayout& arrayPitch( DeviceSize arrayPitch )
-    {
-      m_subresourceLayout.arrayPitch = arrayPitch;
-      return *this;
-    }
-
     const DeviceSize& depthPitch() const
     {
       return m_subresourceLayout.depthPitch;
-    }
-
-    DeviceSize& depthPitch()
-    {
-      return m_subresourceLayout.depthPitch;
-    }
-
-    SubresourceLayout& depthPitch( DeviceSize depthPitch )
-    {
-      m_subresourceLayout.depthPitch = depthPitch;
-      return *this;
     }
 
     static SubresourceLayout& null()
@@ -22710,22 +22633,21 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    std::vector<PhysicalDevice> enumeratePhysicalDevices(  ) const
+    Result enumeratePhysicalDevices( std::vector<PhysicalDevice> & physicalDevices ) const
     {
-      std::vector<PhysicalDevice> physicalDevices;
       uint32_t physicalDeviceCount;
       Result result = static_cast<Result>( vkEnumeratePhysicalDevices( m_instance, &physicalDeviceCount, nullptr ) );
-      if ( result != Result::eSuccess )
+      if ( ( result != Result::eSuccess ) && ( result != Result::eIncomplete ) )
       {
         throw std::system_error( result, "vk::Instance::enumeratePhysicalDevices" );
       }
       physicalDevices.resize( physicalDeviceCount );
       result = static_cast<Result>( vkEnumeratePhysicalDevices( m_instance, &physicalDeviceCount, reinterpret_cast<VkPhysicalDevice*>( physicalDevices.data() ) ) );
-      if ( result != Result::eSuccess )
+      if ( ( result != Result::eSuccess ) && ( result != Result::eIncomplete ) )
       {
         throw std::system_error( result, "vk::Instance::enumeratePhysicalDevices" );
       }
-      return std::move( physicalDevices );
+      return result;
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 

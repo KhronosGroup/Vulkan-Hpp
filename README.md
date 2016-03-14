@@ -4,8 +4,7 @@ Vulkan is a C API and as such inherits all common pitfalls of using a general C 
 
 Have a look at the following piece of code which creates a VkImage:
 
-<pre>
-<code>
+```c++
   VkImageCreateInfo ci;
   ci.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
   ci.pNext = nullptr;
@@ -23,14 +22,13 @@ Have a look at the following piece of code which creates a VkImage:
   ci.pQueueFamilyIndices = 0;
   ci.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
   vkCreateImage(device, &ci, allocator, &image));
-</code>
-</pre>
+```
 
 There may be some issues that can happen when filling the structure which cannot be caught at compile time:
 
-* initialization of <code>ci.sType</code> using wrong enum values
-* uninitialized data fields (e.g. missing initialization of <code>ci.mipLevels</code>) 
-* use of invalid bits for <code>ci.flags</code> (no type-safety for bits)
+* initialization of ```ci.sType``` using wrong enum values
+* uninitialized data fields (e.g. missing initialization of ```ci.mipLevels```) 
+* use of invalid bits for ```ci.flags``` (no type-safety for bits)
 * use of incorrect enums for fields (no type-safety for enums)
 
 These initializations will most likely show up as random runtime errors, which usually are nasty and time-consuming to debug.
@@ -39,17 +37,16 @@ to avoid incorrect or missing  initializations and introduces type-safety with s
 errors into compile errors. Following is a list of features and conventions introduced by our Vulkan C++ layer:
 
 * works along the official C version of the API
-* defines all symbols within the 'vk' namespace and to avoid redundancy the vk/Vk/VK_ prefixes have been removed from all symbols, i.e. <code>vk::ImageCreateInfo</code> for VkImageCreateInfo.
-* camel case syntax with an 'e' prefix has been introduced for all enums, i.e. <code>vk::ImageType::e2D</code> (the prefix was a compromise, more about that later) removes the 'BIT' suffix from all flag related enums, i.e. <code>vk::ImageUsage::eColorAttachment</code>.
-* introduces constructors for all structs, which by default set the appropriate <code>sType</code> and all other values to zero.
-* encapsulates member variables of the structs with getter and setter functions, i.e. <code>ci.imageType()</code> to get a value and <code>ci.imageType(vk::ImageType::e2D)</code> to set a value.
-* introduces wrapper classes around the vulkan handles, i.e. <code>vk::CommandBuffer</code> for VkCommandBuffer
-* introduces member functions of those wrapper classes, that map to vulkan functions getting the corresponding vulkan handle as its first argument. The type of that handle is stripped from the function name, i.e. <code>vk::Device::getProcAddr</code> for vkGetDeviceProcAddr. Note the special handling for the class CommandBuffer, where most of the vulkan functions would just include "Cmd", instead of "CommandBuffer", i.e. <code>vk::CommandBuffer::bindPipeline</code> for vkCmdBindPipeline.
-
+* defines all symbols within the 'vk' namespace and to avoid redundancy the vk/Vk/VK_ prefixes have been removed from all symbols, i.e. ```vk::ImageCreateInfo``` for VkImageCreateInfo.
+* camel case syntax with an 'e' prefix has been introduced for all enums, i.e. ```vk::ImageType::e2D``` (the prefix was a compromise, more about that later) removes the 'BIT' suffix from all flag related enums, i.e. ```vk::ImageUsage::eColorAttachment```.
+* introduces constructors for all structs, which by default set the appropriate ```sType``` and all other values to zero.
+* encapsulates member variables of the structs with getter and setter functions, i.e. ```ci.imageType()``` to get a value and ```ci.imageType(vk::ImageType::e2D)``` to set a value.
+* introduces wrapper classes around the vulkan handles, i.e. ```vk::CommandBuffer``` for VkCommandBuffer
+* introduces member functions of those wrapper classes, that map to vulkan functions getting the corresponding vulkan handle as its first argument. The type of that handle is stripped from the function name, i.e. ```vk::Device::getProcAddr``` for vkGetDeviceProcAddr. Note the special handling for the class CommandBuffer, where most of the vulkan functions would just include "Cmd", instead of "CommandBuffer", i.e. ```vk::CommandBuffer::bindPipeline``` for vkCmdBindPipeline.
 With those changes applied, the updated code snippet looks like this:
 
-<pre>
-<code>
+
+```c++
 vk::ImageCreateInfo ci;
 ci.flags(...some flags...);
 ci.imageType(vk::ImageType::e2D);
@@ -65,17 +62,16 @@ ci.sharingMode(vk::SharingMode::eExclusive);
   // ci.pQueueFamilyIndices(0)	// no need to set, already initialized
 ci.initialLayout(vk::ImageLayout::eUndefined);
 device.createImage(&ci, allocator, &image);
-</code>
-</pre>
+```
 
 Which is a total of 13 lines of code, versus 17 lines for the C version. In addition, this code is more robust as described above.
 
 # Type-safe Enums
 
 Splitting up the C enums into a namespace and scoped enums resulted in two compilation issues. 
-First some enums started with a digit like <code>vk::ImageType::1D</code> which resulted in a compilation error. 
-Second, there's the risk that upper symbols like <code>vk::CompositeAlphaFlagBitsKHR::OPAQUE</code> do clash with preprocessor defines.
-In the given example <code>OPAQUE</code> has been defined in win32gdi.h resulting a compilation error.
+First some enums started with a digit like ```vk::ImageType::1D``` which resulted in a compilation error. 
+Second, there's the risk that upper symbols like ```vk::CompositeAlphaFlagBitsKHR::OPAQUE``` do clash with preprocessor defines.
+In the given example ```OPAQUE``` has been defined in ```win32gdi.h``` resulting a compilation error.
 
 To overcome those two issues the symbols have been converted to camel case and the prefix 'e' has been added so that each enum starts with a letter.
 
@@ -85,37 +81,33 @@ After those changes the code might look more familiar to C++ developers, but the
  With C++ features available we replaced all Vulkan enums with scoped enums to achieve type safety which already uncovered
 a few small issues in our code. The good thing with scoped enums is that there is no implicit casts to integer types anymore.
 The downside is that OR'ing the bits for the flags does not work anymore without an explicit cast. As a solution to this problem
-we have introduced a new <code>vk::Flags&lt;T&gt;</code> template which is used for all flags. This class supports the standard
+we have introduced a new ```vk::Flags<T>``` template which is used for all flags. This class supports the standard
 operations one usually needs on bitmasks like &=, |=, & and |. Except for the initialization with 0, which is being replaced by
-the default constructor, the <code>vk::Flags&lt;T&gt;</code> class works exactly like a normal bitmask with the improvement that
+the default constructor, the ```vk::Flags<T>``` class works exactly like a normal bitmask with the improvement that
 it is impossible to set bits not specified by the corresponding enum. To generate a bit mask with two bits set write:
 
-<pre>
-<code>
+```c++
 ci.usage = vk::ImageUsage::eColorAttachment | vk::ImageUsage::eStorage;
-</code>
-</pre>
+```
 
-By adding the scoped enums and <code>vk::Flags&lt;T&gt;</code> the C++ API provides type safety for all enums and flags which is a
+By adding the scoped enums and ```vk::Flags<T>``` the C++ API provides type safety for all enums and flags which is a
 big improvement. This leaves the remaining issue that the compiler might not detect uninitialized fields in structs. As a solution
 we have added constructors to all structs which accept all values defined by the corresponding struct. 
 
-<pre>
-<code>
+```c++
 vk::ImageCreateInfo ci(
   ...some flags..., vk::ImageType::e2D, vk::Format::eR8G8B8A8Unorm,
   vk::Extent3D { width, height, 1 }, 1, 1,
   vk::SampleCount::e1, vk::ImageTiling::eOptimal,
   vk::ImageUsage::eColorAttachment, vk::SharingMode::eExclusive,
   0, 0, vk::ImageLayout::eUndefined);
-</code>
-</pre>
+```
 
 # String conversions
 
 At development time it can be quite handy to have a utility function that can convert an enum or flags to a string for debugging purposes. To achieve this,
-we have implemented <code>getString(type)</code> functions for all enums and flags. Calling <code>getString(vk::SharingMode::eExclusive)</code> will return 'Exclusive' and calling
-<code>getString(vk::QueueFlagBits::eGraphics | vk::QueueFlagBits::eCompute)</code> will return the concatenated string 'Graphics | Compute'.
+we have implemented ```getString(type)``` functions for all enums and flags. Calling ```getString(vk::SharingMode::eExclusive)``` will return 'Exclusive' and calling
+```getString(vk::QueueFlagBits::eGraphics | vk::QueueFlagBits::eCompute)``` will return the concatenated string 'Graphics | Compute'.
 
 # Alternative Initialization of Structs
 
@@ -123,8 +115,7 @@ Another nice feature of those constructors is that sType is being initialized in
 
 Finally, we have added a default constructor to each struct which initializes all values to 0 to allow setting the values with the named parameter idiom which is similar to the designated initializer list of C99.
 
-<pre>
-<code>
+```c++
 vk::ImageCreateInfo ci = vk::ImageCreateInfo()
   .flags(...some flags...)
   .imageType(vk::ImageType::e2D)
@@ -140,21 +131,21 @@ vk::ImageCreateInfo ci = vk::ImageCreateInfo()
   // .pQueueFamilyIndices(0)	// no need to set, already initialized
   .initialLayout(vk::ImageLayout::eUndefined);
 device.createImage(&ci, allocator, &image);
-</code>
-</pre>
+```
 
-
-# Enhancements beyond the API
+# Enhancements beyond native Vulkan
 To provide a more object oriented feeling we're providing classes for each handle which include all Vulkan functions where the first 
 parameter matches the handle. In addition to this we made a few changes to the signatures of the member functions
-* <code>(count, T*)</code> has been replaced by <code>std::vector&lt;T&gt;</code>
-* <code>const char *</code> has been replaced by <std::string> 
-* vk::Result return values have been replaced by exceptions.
-* Functions with a single output value do return this value instead
+* To enable the enhanced mode put ```#define VKCPP_ENHANCED_MODE``` before including ```vk_cpp.h```
+* ```(count, T*)``` has been replaced by ```std::vector<T>```
+* ```const char *``` has been replaced by ```std::string ```
+* ```T const*``` has been replaced by ```T const &``` to allow temporary objects. This is useful to pass small structures like ```vk::ClearColorValue``` or ```vk::Extent*```
+```commandBuffer.clearColorImage(image, layout, std::array<float, 4>{1.0f, 1.0f, 1.0f, 1.0f}, {...});```
+Optional parameters are being replaced by ```Optional<T> const &``` which accept a type of ```T const&```. To tell the wrapper that a nullptr should be passed use ```T::null()```.
+* The wrapper will throw a ```std::system_error``` if a ```vk::Result``` return value is not an success code. If there's only a single success code it's not returned at all. In this case functions with a single output value do return this output value instead.
 
 Here are a few code examples:
-<pre>
-<code>
+```c++
   try {
     VkInstance nativeInstance = nullptr; // Fetch the instance from a favorite toolkit
 
@@ -177,40 +168,30 @@ Here are a few code examples:
     // Accept std::vector as source for updateBuffer
     commandBuffer.updateBuffer(buffer, 0, {some values}); // update buffer with std::vector
 
-    // Sometimes it's necessary to pass a nullptr to a struct. For this case we've added T& null() to all structs T as replacement for nullptr.
+    // Sometimes it's necessary to pass a nullptr to a struct. For this case we've added Optional<T> T::null() to all structs T as replacement for the nullptr.
     device.allocateMemory(allocateInfo, vk::AllocationCallbacks::null());
 
   }
-  catch (vk::Exception e)
+  catch (std::system_error e)
   {
     std::cerr << "Vulkan failure: " << e.what() << std::endl;
   }
-</code>
-</pre>
+```
     
 # Usage
 To start with the C++ version of the Vulkan API download header from GIT, put it in a vulkan subdirectory and add
-<code>#include &lt;vulkan/vk_cpp.h&gt;</code> to your source code.
+```#include <vulkan/vk_cpp.h>``` to your source code.
 
 To build the header for a given vk.xml specification continue with the following steps:
 
 * Build VkCppGenerator
 * Grab your favourite version vk.xml from Khronos
-* Up to Version 1.0.3 of the API there is a tiny bug in vk.xml. The <require> section of the VK_KHR_display extension is missing one symbol which
-can easily be fixed by adding the following line
-<pre>
-                &lt;type name="VkDisplayPlaneAlphaFlagsKHR"/&gt;
-</pre>
-before this line:
-<pre>
-                &lt;type name="VkDisplayPlaneAlphaFlagBitsKHR"/&gt;
-</pre>
-* Excute VkCppGenerator &lt;vk.xml&gt; to generate vk_cpp.h in the current working directory.
+* Excute ```VkCppGenerator <vk.xml>``` to generate ```vk_cpp.h``` in the current working directory.
 
 # Build instructions for VkCppGenerator
 
-* Clone the repository: git clone https://github.com/nvpro-pipeline/vkcpp.git
-* Update submodules: git submodule update --init --recursive
+* Clone the repository: ```git clone https://github.com/nvpro-pipeline/vkcpp.git```
+* Update submodules: ```git submodule update --init --recursive```
 * Use CMake to generate a solution or makefile for your favourite build environment
 * Launch the build
 

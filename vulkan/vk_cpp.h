@@ -184,6 +184,20 @@ namespace vk
     return flags ^ bit;
   }
 
+  template <typename RefType>
+  class Optional
+  {
+  public:
+    Optional(RefType & reference) { m_ptr = &reference; }
+
+    operator RefType*() const { return m_ptr; }
+
+  private:
+    Optional(std::nullptr_t) { m_ptr = nullptr; }
+    friend typename RefType;
+    RefType *m_ptr;
+  };
+
   enum class Result
   {
     eSuccess = VK_SUCCESS,
@@ -1826,9 +1840,9 @@ namespace vk
       return *this;
     }
 
-    static Offset2D& null()
+    static Optional<const Offset2D> null()
     {
-      return *((Offset2D*)(nullptr));
+      return Optional<const Offset2D>(nullptr);
     }
 
     operator const VkOffset2D&() const
@@ -1914,9 +1928,9 @@ namespace vk
       return *this;
     }
 
-    static Offset3D& null()
+    static Optional<const Offset3D> null()
     {
-      return *((Offset3D*)(nullptr));
+      return Optional<const Offset3D>(nullptr);
     }
 
     operator const VkOffset3D&() const
@@ -1985,9 +1999,9 @@ namespace vk
       return *this;
     }
 
-    static Extent2D& null()
+    static Optional<const Extent2D> null()
     {
-      return *((Extent2D*)(nullptr));
+      return Optional<const Extent2D>(nullptr);
     }
 
     operator const VkExtent2D&() const
@@ -2073,9 +2087,9 @@ namespace vk
       return *this;
     }
 
-    static Extent3D& null()
+    static Optional<const Extent3D> null()
     {
-      return *((Extent3D*)(nullptr));
+      return Optional<const Extent3D>(nullptr);
     }
 
     operator const VkExtent3D&() const
@@ -2212,9 +2226,9 @@ namespace vk
       return *this;
     }
 
-    static Viewport& null()
+    static Optional<const Viewport> null()
     {
-      return *((Viewport*)(nullptr));
+      return Optional<const Viewport>(nullptr);
     }
 
     operator const VkViewport&() const
@@ -2283,9 +2297,9 @@ namespace vk
       return *this;
     }
 
-    static Rect2D& null()
+    static Optional<const Rect2D> null()
     {
-      return *((Rect2D*)(nullptr));
+      return Optional<const Rect2D>(nullptr);
     }
 
     operator const VkRect2D&() const
@@ -2371,9 +2385,9 @@ namespace vk
       return *this;
     }
 
-    static ClearRect& null()
+    static Optional<const ClearRect> null()
     {
-      return *((ClearRect*)(nullptr));
+      return Optional<const ClearRect>(nullptr);
     }
 
     operator const VkClearRect&() const
@@ -2399,9 +2413,9 @@ namespace vk
       return m_extensionProperties.specVersion;
     }
 
-    static ExtensionProperties& null()
+    static Optional<const ExtensionProperties> null()
     {
-      return *((ExtensionProperties*)(nullptr));
+      return Optional<const ExtensionProperties>(nullptr);
     }
 
     operator const VkExtensionProperties&() const
@@ -2437,9 +2451,9 @@ namespace vk
       return reinterpret_cast<const char*>( m_layerProperties.description );
     }
 
-    static LayerProperties& null()
+    static Optional<const LayerProperties> null()
     {
-      return *((LayerProperties*)(nullptr));
+      return Optional<const LayerProperties>(nullptr);
     }
 
     operator const VkLayerProperties&() const
@@ -2572,9 +2586,9 @@ namespace vk
       return *this;
     }
 
-    static AllocationCallbacks& null()
+    static Optional<const AllocationCallbacks> null()
     {
-      return *((AllocationCallbacks*)(nullptr));
+      return Optional<const AllocationCallbacks>(nullptr);
     }
 
     operator const VkAllocationCallbacks&() const
@@ -2605,9 +2619,9 @@ namespace vk
       return m_memoryRequirements.memoryTypeBits;
     }
 
-    static MemoryRequirements& null()
+    static Optional<const MemoryRequirements> null()
     {
-      return *((MemoryRequirements*)(nullptr));
+      return Optional<const MemoryRequirements>(nullptr);
     }
 
     operator const VkMemoryRequirements&() const
@@ -2693,9 +2707,9 @@ namespace vk
       return *this;
     }
 
-    static DescriptorBufferInfo& null()
+    static Optional<const DescriptorBufferInfo> null()
     {
-      return *((DescriptorBufferInfo*)(nullptr));
+      return Optional<const DescriptorBufferInfo>(nullptr);
     }
 
     operator const VkDescriptorBufferInfo&() const
@@ -2736,9 +2750,9 @@ namespace vk
       return m_subresourceLayout.depthPitch;
     }
 
-    static SubresourceLayout& null()
+    static Optional<const SubresourceLayout> null()
     {
-      return *((SubresourceLayout*)(nullptr));
+      return Optional<const SubresourceLayout>(nullptr);
     }
 
     operator const VkSubresourceLayout&() const
@@ -2824,9 +2838,9 @@ namespace vk
       return *this;
     }
 
-    static BufferCopy& null()
+    static Optional<const BufferCopy> null()
     {
-      return *((BufferCopy*)(nullptr));
+      return Optional<const BufferCopy>(nullptr);
     }
 
     operator const VkBufferCopy&() const
@@ -2912,9 +2926,9 @@ namespace vk
       return *this;
     }
 
-    static SpecializationMapEntry& null()
+    static Optional<const SpecializationMapEntry> null()
     {
-      return *((SpecializationMapEntry*)(nullptr));
+      return Optional<const SpecializationMapEntry>(nullptr);
     }
 
     operator const VkSpecializationMapEntry&() const
@@ -3017,9 +3031,9 @@ namespace vk
       return *this;
     }
 
-    static SpecializationInfo& null()
+    static Optional<const SpecializationInfo> null()
     {
-      return *((SpecializationInfo*)(nullptr));
+      return Optional<const SpecializationInfo>(nullptr);
     }
 
     operator const VkSpecializationInfo&() const
@@ -3163,9 +3177,9 @@ namespace vk
       return *this;
     }
 
-    static ClearDepthStencilValue& null()
+    static Optional<const ClearDepthStencilValue> null()
     {
-      return *((ClearDepthStencilValue*)(nullptr));
+      return Optional<const ClearDepthStencilValue>(nullptr);
     }
 
     operator const VkClearDepthStencilValue&() const
@@ -4189,9 +4203,9 @@ namespace vk
       return *this;
     }
 
-    static PhysicalDeviceFeatures& null()
+    static Optional<const PhysicalDeviceFeatures> null()
     {
-      return *((PhysicalDeviceFeatures*)(nullptr));
+      return Optional<const PhysicalDeviceFeatures>(nullptr);
     }
 
     operator const VkPhysicalDeviceFeatures&() const
@@ -4232,9 +4246,9 @@ namespace vk
       return m_physicalDeviceSparseProperties.residencyNonResidentStrict;
     }
 
-    static PhysicalDeviceSparseProperties& null()
+    static Optional<const PhysicalDeviceSparseProperties> null()
     {
-      return *((PhysicalDeviceSparseProperties*)(nullptr));
+      return Optional<const PhysicalDeviceSparseProperties>(nullptr);
     }
 
     operator const VkPhysicalDeviceSparseProperties&() const
@@ -4337,9 +4351,9 @@ namespace vk
       return *this;
     }
 
-    static DrawIndirectCommand& null()
+    static Optional<const DrawIndirectCommand> null()
     {
-      return *((DrawIndirectCommand*)(nullptr));
+      return Optional<const DrawIndirectCommand>(nullptr);
     }
 
     operator const VkDrawIndirectCommand&() const
@@ -4459,9 +4473,9 @@ namespace vk
       return *this;
     }
 
-    static DrawIndexedIndirectCommand& null()
+    static Optional<const DrawIndexedIndirectCommand> null()
     {
-      return *((DrawIndexedIndirectCommand*)(nullptr));
+      return Optional<const DrawIndexedIndirectCommand>(nullptr);
     }
 
     operator const VkDrawIndexedIndirectCommand&() const
@@ -4547,9 +4561,9 @@ namespace vk
       return *this;
     }
 
-    static DispatchIndirectCommand& null()
+    static Optional<const DispatchIndirectCommand> null()
     {
-      return *((DispatchIndirectCommand*)(nullptr));
+      return Optional<const DispatchIndirectCommand>(nullptr);
     }
 
     operator const VkDispatchIndirectCommand&() const
@@ -4618,9 +4632,9 @@ namespace vk
       return *this;
     }
 
-    static DisplayPlanePropertiesKHR& null()
+    static Optional<const DisplayPlanePropertiesKHR> null()
     {
-      return *((DisplayPlanePropertiesKHR*)(nullptr));
+      return Optional<const DisplayPlanePropertiesKHR>(nullptr);
     }
 
     operator const VkDisplayPlanePropertiesKHR&() const
@@ -4689,9 +4703,9 @@ namespace vk
       return *this;
     }
 
-    static DisplayModeParametersKHR& null()
+    static Optional<const DisplayModeParametersKHR> null()
     {
-      return *((DisplayModeParametersKHR*)(nullptr));
+      return Optional<const DisplayModeParametersKHR>(nullptr);
     }
 
     operator const VkDisplayModeParametersKHR&() const
@@ -4760,9 +4774,9 @@ namespace vk
       return *this;
     }
 
-    static DisplayModePropertiesKHR& null()
+    static Optional<const DisplayModePropertiesKHR> null()
     {
-      return *((DisplayModePropertiesKHR*)(nullptr));
+      return Optional<const DisplayModePropertiesKHR>(nullptr);
     }
 
     operator const VkDisplayModePropertiesKHR&() const
@@ -4862,9 +4876,9 @@ namespace vk
       return *this;
     }
 
-    static DescriptorImageInfo& null()
+    static Optional<const DescriptorImageInfo> null()
     {
-      return *((DescriptorImageInfo*)(nullptr));
+      return Optional<const DescriptorImageInfo>(nullptr);
     }
 
     operator const VkDescriptorImageInfo&() const
@@ -4933,9 +4947,9 @@ namespace vk
       return *this;
     }
 
-    static AttachmentReference& null()
+    static Optional<const AttachmentReference> null()
     {
-      return *((AttachmentReference*)(nullptr));
+      return Optional<const AttachmentReference>(nullptr);
     }
 
     operator const VkAttachmentReference&() const
@@ -5092,9 +5106,9 @@ namespace vk
       return *this;
     }
 
-    static ComponentMapping& null()
+    static Optional<const ComponentMapping> null()
     {
-      return *((ComponentMapping*)(nullptr));
+      return Optional<const ComponentMapping>(nullptr);
     }
 
     operator const VkComponentMapping&() const
@@ -5178,9 +5192,9 @@ namespace vk
       return *this;
     }
 
-    static DescriptorPoolSize& null()
+    static Optional<const DescriptorPoolSize> null()
     {
-      return *((DescriptorPoolSize*)(nullptr));
+      return Optional<const DescriptorPoolSize>(nullptr);
     }
 
     operator const VkDescriptorPoolSize&() const
@@ -5408,9 +5422,9 @@ namespace vk
       return *this;
     }
 
-    static SubpassDescription& null()
+    static Optional<const SubpassDescription> null()
     {
-      return *((SubpassDescription*)(nullptr));
+      return Optional<const SubpassDescription>(nullptr);
     }
 
     operator const VkSubpassDescription&() const
@@ -5701,9 +5715,9 @@ namespace vk
       return *this;
     }
 
-    static StencilOpState& null()
+    static Optional<const StencilOpState> null()
     {
-      return *((StencilOpState*)(nullptr));
+      return Optional<const StencilOpState>(nullptr);
     }
 
     operator const VkStencilOpState&() const
@@ -5838,9 +5852,9 @@ namespace vk
       return *this;
     }
 
-    static VertexInputBindingDescription& null()
+    static Optional<const VertexInputBindingDescription> null()
     {
-      return *((VertexInputBindingDescription*)(nullptr));
+      return Optional<const VertexInputBindingDescription>(nullptr);
     }
 
     operator const VkVertexInputBindingDescription&() const
@@ -6132,9 +6146,9 @@ namespace vk
       return *this;
     }
 
-    static VertexInputAttributeDescription& null()
+    static Optional<const VertexInputAttributeDescription> null()
     {
-      return *((VertexInputAttributeDescription*)(nullptr));
+      return Optional<const VertexInputAttributeDescription>(nullptr);
     }
 
     operator const VkVertexInputAttributeDescription&() const
@@ -6353,9 +6367,9 @@ namespace vk
       return *this;
     }
 
-    static ApplicationInfo& null()
+    static Optional<const ApplicationInfo> null()
     {
-      return *((ApplicationInfo*)(nullptr));
+      return Optional<const ApplicationInfo>(nullptr);
     }
 
     operator const VkApplicationInfo&() const
@@ -6492,9 +6506,9 @@ namespace vk
       return *this;
     }
 
-    static DeviceQueueCreateInfo& null()
+    static Optional<const DeviceQueueCreateInfo> null()
     {
-      return *((DeviceQueueCreateInfo*)(nullptr));
+      return Optional<const DeviceQueueCreateInfo>(nullptr);
     }
 
     operator const VkDeviceQueueCreateInfo&() const
@@ -6699,9 +6713,9 @@ namespace vk
       return *this;
     }
 
-    static DeviceCreateInfo& null()
+    static Optional<const DeviceCreateInfo> null()
     {
-      return *((DeviceCreateInfo*)(nullptr));
+      return Optional<const DeviceCreateInfo>(nullptr);
     }
 
     operator const VkDeviceCreateInfo&() const
@@ -6872,9 +6886,9 @@ namespace vk
       return *this;
     }
 
-    static InstanceCreateInfo& null()
+    static Optional<const InstanceCreateInfo> null()
     {
-      return *((InstanceCreateInfo*)(nullptr));
+      return Optional<const InstanceCreateInfo>(nullptr);
     }
 
     operator const VkInstanceCreateInfo&() const
@@ -6977,9 +6991,9 @@ namespace vk
       return *this;
     }
 
-    static MemoryAllocateInfo& null()
+    static Optional<const MemoryAllocateInfo> null()
     {
-      return *((MemoryAllocateInfo*)(nullptr));
+      return Optional<const MemoryAllocateInfo>(nullptr);
     }
 
     operator const VkMemoryAllocateInfo&() const
@@ -7099,9 +7113,9 @@ namespace vk
       return *this;
     }
 
-    static MappedMemoryRange& null()
+    static Optional<const MappedMemoryRange> null()
     {
-      return *((MappedMemoryRange*)(nullptr));
+      return Optional<const MappedMemoryRange>(nullptr);
     }
 
     operator const VkMappedMemoryRange&() const
@@ -7306,9 +7320,9 @@ namespace vk
       return *this;
     }
 
-    static WriteDescriptorSet& null()
+    static Optional<const WriteDescriptorSet> null()
     {
-      return *((WriteDescriptorSet*)(nullptr));
+      return Optional<const WriteDescriptorSet>(nullptr);
     }
 
     operator const VkWriteDescriptorSet&() const
@@ -7496,9 +7510,9 @@ namespace vk
       return *this;
     }
 
-    static CopyDescriptorSet& null()
+    static Optional<const CopyDescriptorSet> null()
     {
-      return *((CopyDescriptorSet*)(nullptr));
+      return Optional<const CopyDescriptorSet>(nullptr);
     }
 
     operator const VkCopyDescriptorSet&() const
@@ -7652,9 +7666,9 @@ namespace vk
       return *this;
     }
 
-    static BufferViewCreateInfo& null()
+    static Optional<const BufferViewCreateInfo> null()
     {
-      return *((BufferViewCreateInfo*)(nullptr));
+      return Optional<const BufferViewCreateInfo>(nullptr);
     }
 
     operator const VkBufferViewCreateInfo&() const
@@ -7774,9 +7788,9 @@ namespace vk
       return *this;
     }
 
-    static ShaderModuleCreateInfo& null()
+    static Optional<const ShaderModuleCreateInfo> null()
     {
-      return *((ShaderModuleCreateInfo*)(nullptr));
+      return Optional<const ShaderModuleCreateInfo>(nullptr);
     }
 
     operator const VkShaderModuleCreateInfo&() const
@@ -7896,9 +7910,9 @@ namespace vk
       return *this;
     }
 
-    static DescriptorSetAllocateInfo& null()
+    static Optional<const DescriptorSetAllocateInfo> null()
     {
-      return *((DescriptorSetAllocateInfo*)(nullptr));
+      return Optional<const DescriptorSetAllocateInfo>(nullptr);
     }
 
     operator const VkDescriptorSetAllocateInfo&() const
@@ -8052,9 +8066,9 @@ namespace vk
       return *this;
     }
 
-    static PipelineVertexInputStateCreateInfo& null()
+    static Optional<const PipelineVertexInputStateCreateInfo> null()
     {
-      return *((PipelineVertexInputStateCreateInfo*)(nullptr));
+      return Optional<const PipelineVertexInputStateCreateInfo>(nullptr);
     }
 
     operator const VkPipelineVertexInputStateCreateInfo&() const
@@ -8174,9 +8188,9 @@ namespace vk
       return *this;
     }
 
-    static PipelineInputAssemblyStateCreateInfo& null()
+    static Optional<const PipelineInputAssemblyStateCreateInfo> null()
     {
-      return *((PipelineInputAssemblyStateCreateInfo*)(nullptr));
+      return Optional<const PipelineInputAssemblyStateCreateInfo>(nullptr);
     }
 
     operator const VkPipelineInputAssemblyStateCreateInfo&() const
@@ -8279,9 +8293,9 @@ namespace vk
       return *this;
     }
 
-    static PipelineTessellationStateCreateInfo& null()
+    static Optional<const PipelineTessellationStateCreateInfo> null()
     {
-      return *((PipelineTessellationStateCreateInfo*)(nullptr));
+      return Optional<const PipelineTessellationStateCreateInfo>(nullptr);
     }
 
     operator const VkPipelineTessellationStateCreateInfo&() const
@@ -8435,9 +8449,9 @@ namespace vk
       return *this;
     }
 
-    static PipelineViewportStateCreateInfo& null()
+    static Optional<const PipelineViewportStateCreateInfo> null()
     {
-      return *((PipelineViewportStateCreateInfo*)(nullptr));
+      return Optional<const PipelineViewportStateCreateInfo>(nullptr);
     }
 
     operator const VkPipelineViewportStateCreateInfo&() const
@@ -8693,9 +8707,9 @@ namespace vk
       return *this;
     }
 
-    static PipelineRasterizationStateCreateInfo& null()
+    static Optional<const PipelineRasterizationStateCreateInfo> null()
     {
-      return *((PipelineRasterizationStateCreateInfo*)(nullptr));
+      return Optional<const PipelineRasterizationStateCreateInfo>(nullptr);
     }
 
     operator const VkPipelineRasterizationStateCreateInfo&() const
@@ -8934,9 +8948,9 @@ namespace vk
       return *this;
     }
 
-    static PipelineDepthStencilStateCreateInfo& null()
+    static Optional<const PipelineDepthStencilStateCreateInfo> null()
     {
-      return *((PipelineDepthStencilStateCreateInfo*)(nullptr));
+      return Optional<const PipelineDepthStencilStateCreateInfo>(nullptr);
     }
 
     operator const VkPipelineDepthStencilStateCreateInfo&() const
@@ -9056,9 +9070,9 @@ namespace vk
       return *this;
     }
 
-    static PipelineCacheCreateInfo& null()
+    static Optional<const PipelineCacheCreateInfo> null()
     {
-      return *((PipelineCacheCreateInfo*)(nullptr));
+      return Optional<const PipelineCacheCreateInfo>(nullptr);
     }
 
     operator const VkPipelineCacheCreateInfo&() const
@@ -9399,9 +9413,9 @@ namespace vk
       return *this;
     }
 
-    static SamplerCreateInfo& null()
+    static Optional<const SamplerCreateInfo> null()
     {
-      return *((SamplerCreateInfo*)(nullptr));
+      return Optional<const SamplerCreateInfo>(nullptr);
     }
 
     operator const VkSamplerCreateInfo&() const
@@ -9521,9 +9535,9 @@ namespace vk
       return *this;
     }
 
-    static CommandBufferAllocateInfo& null()
+    static Optional<const CommandBufferAllocateInfo> null()
     {
-      return *((CommandBufferAllocateInfo*)(nullptr));
+      return Optional<const CommandBufferAllocateInfo>(nullptr);
     }
 
     operator const VkCommandBufferAllocateInfo&() const
@@ -9677,9 +9691,9 @@ namespace vk
       return *this;
     }
 
-    static RenderPassBeginInfo& null()
+    static Optional<const RenderPassBeginInfo> null()
     {
-      return *((RenderPassBeginInfo*)(nullptr));
+      return Optional<const RenderPassBeginInfo>(nullptr);
     }
 
     operator const VkRenderPassBeginInfo&() const
@@ -9765,9 +9779,9 @@ namespace vk
       return *this;
     }
 
-    static EventCreateInfo& null()
+    static Optional<const EventCreateInfo> null()
     {
-      return *((EventCreateInfo*)(nullptr));
+      return Optional<const EventCreateInfo>(nullptr);
     }
 
     operator const VkEventCreateInfo&() const
@@ -9853,9 +9867,9 @@ namespace vk
       return *this;
     }
 
-    static SemaphoreCreateInfo& null()
+    static Optional<const SemaphoreCreateInfo> null()
     {
-      return *((SemaphoreCreateInfo*)(nullptr));
+      return Optional<const SemaphoreCreateInfo>(nullptr);
     }
 
     operator const VkSemaphoreCreateInfo&() const
@@ -10043,9 +10057,9 @@ namespace vk
       return *this;
     }
 
-    static FramebufferCreateInfo& null()
+    static Optional<const FramebufferCreateInfo> null()
     {
-      return *((FramebufferCreateInfo*)(nullptr));
+      return Optional<const FramebufferCreateInfo>(nullptr);
     }
 
     operator const VkFramebufferCreateInfo&() const
@@ -10148,9 +10162,9 @@ namespace vk
       return *this;
     }
 
-    static DisplayModeCreateInfoKHR& null()
+    static Optional<const DisplayModeCreateInfoKHR> null()
     {
-      return *((DisplayModeCreateInfoKHR*)(nullptr));
+      return Optional<const DisplayModeCreateInfoKHR>(nullptr);
     }
 
     operator const VkDisplayModeCreateInfoKHR&() const
@@ -10270,9 +10284,9 @@ namespace vk
       return *this;
     }
 
-    static DisplayPresentInfoKHR& null()
+    static Optional<const DisplayPresentInfoKHR> null()
     {
-      return *((DisplayPresentInfoKHR*)(nullptr));
+      return Optional<const DisplayPresentInfoKHR>(nullptr);
     }
 
     operator const VkDisplayPresentInfoKHR&() const
@@ -10376,9 +10390,9 @@ namespace vk
       return *this;
     }
 
-    static AndroidSurfaceCreateInfoKHR& null()
+    static Optional<const AndroidSurfaceCreateInfoKHR> null()
     {
-      return *((AndroidSurfaceCreateInfoKHR*)(nullptr));
+      return Optional<const AndroidSurfaceCreateInfoKHR>(nullptr);
     }
 
     operator const VkAndroidSurfaceCreateInfoKHR&() const
@@ -10500,9 +10514,9 @@ namespace vk
       return *this;
     }
 
-    static MirSurfaceCreateInfoKHR& null()
+    static Optional<const MirSurfaceCreateInfoKHR> null()
     {
-      return *((MirSurfaceCreateInfoKHR*)(nullptr));
+      return Optional<const MirSurfaceCreateInfoKHR>(nullptr);
     }
 
     operator const VkMirSurfaceCreateInfoKHR&() const
@@ -10624,9 +10638,9 @@ namespace vk
       return *this;
     }
 
-    static WaylandSurfaceCreateInfoKHR& null()
+    static Optional<const WaylandSurfaceCreateInfoKHR> null()
     {
-      return *((WaylandSurfaceCreateInfoKHR*)(nullptr));
+      return Optional<const WaylandSurfaceCreateInfoKHR>(nullptr);
     }
 
     operator const VkWaylandSurfaceCreateInfoKHR&() const
@@ -10748,9 +10762,9 @@ namespace vk
       return *this;
     }
 
-    static Win32SurfaceCreateInfoKHR& null()
+    static Optional<const Win32SurfaceCreateInfoKHR> null()
     {
-      return *((Win32SurfaceCreateInfoKHR*)(nullptr));
+      return Optional<const Win32SurfaceCreateInfoKHR>(nullptr);
     }
 
     operator const VkWin32SurfaceCreateInfoKHR&() const
@@ -10872,9 +10886,9 @@ namespace vk
       return *this;
     }
 
-    static XlibSurfaceCreateInfoKHR& null()
+    static Optional<const XlibSurfaceCreateInfoKHR> null()
     {
-      return *((XlibSurfaceCreateInfoKHR*)(nullptr));
+      return Optional<const XlibSurfaceCreateInfoKHR>(nullptr);
     }
 
     operator const VkXlibSurfaceCreateInfoKHR&() const
@@ -10996,9 +11010,9 @@ namespace vk
       return *this;
     }
 
-    static XcbSurfaceCreateInfoKHR& null()
+    static Optional<const XcbSurfaceCreateInfoKHR> null()
     {
-      return *((XcbSurfaceCreateInfoKHR*)(nullptr));
+      return Optional<const XcbSurfaceCreateInfoKHR>(nullptr);
     }
 
     operator const VkXcbSurfaceCreateInfoKHR&() const
@@ -11176,9 +11190,9 @@ namespace vk
       return *this;
     }
 
-    static PresentInfoKHR& null()
+    static Optional<const PresentInfoKHR> null()
     {
-      return *((PresentInfoKHR*)(nullptr));
+      return Optional<const PresentInfoKHR>(nullptr);
     }
 
     operator const VkPresentInfoKHR&() const
@@ -11311,9 +11325,9 @@ namespace vk
       return *this;
     }
 
-    static PipelineDynamicStateCreateInfo& null()
+    static Optional<const PipelineDynamicStateCreateInfo> null()
     {
-      return *((PipelineDynamicStateCreateInfo*)(nullptr));
+      return Optional<const PipelineDynamicStateCreateInfo>(nullptr);
     }
 
     operator const VkPipelineDynamicStateCreateInfo&() const
@@ -11364,9 +11378,9 @@ namespace vk
       return reinterpret_cast<const Extent3D&>( m_queueFamilyProperties.minImageTransferGranularity );
     }
 
-    static QueueFamilyProperties& null()
+    static Optional<const QueueFamilyProperties> null()
     {
-      return *((QueueFamilyProperties*)(nullptr));
+      return Optional<const QueueFamilyProperties>(nullptr);
     }
 
     operator const VkQueueFamilyProperties&() const
@@ -11408,9 +11422,9 @@ namespace vk
       return m_memoryType.heapIndex;
     }
 
-    static MemoryType& null()
+    static Optional<const MemoryType> null()
     {
-      return *((MemoryType*)(nullptr));
+      return Optional<const MemoryType>(nullptr);
     }
 
     operator const VkMemoryType&() const
@@ -11448,9 +11462,9 @@ namespace vk
       return reinterpret_cast<const MemoryHeapFlags&>( m_memoryHeap.flags );
     }
 
-    static MemoryHeap& null()
+    static Optional<const MemoryHeap> null()
     {
-      return *((MemoryHeap*)(nullptr));
+      return Optional<const MemoryHeap>(nullptr);
     }
 
     operator const VkMemoryHeap&() const
@@ -11486,9 +11500,9 @@ namespace vk
       return reinterpret_cast<const MemoryHeap*>( m_physicalDeviceMemoryProperties.memoryHeaps );
     }
 
-    static PhysicalDeviceMemoryProperties& null()
+    static Optional<const PhysicalDeviceMemoryProperties> null()
     {
-      return *((PhysicalDeviceMemoryProperties*)(nullptr));
+      return Optional<const PhysicalDeviceMemoryProperties>(nullptr);
     }
 
     operator const VkPhysicalDeviceMemoryProperties&() const
@@ -11619,9 +11633,9 @@ namespace vk
       return *this;
     }
 
-    static MemoryBarrier& null()
+    static Optional<const MemoryBarrier> null()
     {
-      return *((MemoryBarrier*)(nullptr));
+      return Optional<const MemoryBarrier>(nullptr);
     }
 
     operator const VkMemoryBarrier&() const
@@ -11809,9 +11823,9 @@ namespace vk
       return *this;
     }
 
-    static BufferMemoryBarrier& null()
+    static Optional<const BufferMemoryBarrier> null()
     {
-      return *((BufferMemoryBarrier*)(nullptr));
+      return Optional<const BufferMemoryBarrier>(nullptr);
     }
 
     operator const VkBufferMemoryBarrier&() const
@@ -12016,9 +12030,9 @@ namespace vk
       return *this;
     }
 
-    static BufferCreateInfo& null()
+    static Optional<const BufferCreateInfo> null()
     {
-      return *((BufferCreateInfo*)(nullptr));
+      return Optional<const BufferCreateInfo>(nullptr);
     }
 
     operator const VkBufferCreateInfo&() const
@@ -12157,9 +12171,9 @@ namespace vk
       return *this;
     }
 
-    static DescriptorSetLayoutBinding& null()
+    static Optional<const DescriptorSetLayoutBinding> null()
     {
-      return *((DescriptorSetLayoutBinding*)(nullptr));
+      return Optional<const DescriptorSetLayoutBinding>(nullptr);
     }
 
     operator const VkDescriptorSetLayoutBinding&() const
@@ -12279,9 +12293,9 @@ namespace vk
       return *this;
     }
 
-    static DescriptorSetLayoutCreateInfo& null()
+    static Optional<const DescriptorSetLayoutCreateInfo> null()
     {
-      return *((DescriptorSetLayoutCreateInfo*)(nullptr));
+      return Optional<const DescriptorSetLayoutCreateInfo>(nullptr);
     }
 
     operator const VkDescriptorSetLayoutCreateInfo&() const
@@ -12435,9 +12449,9 @@ namespace vk
       return *this;
     }
 
-    static PipelineShaderStageCreateInfo& null()
+    static Optional<const PipelineShaderStageCreateInfo> null()
     {
-      return *((PipelineShaderStageCreateInfo*)(nullptr));
+      return Optional<const PipelineShaderStageCreateInfo>(nullptr);
     }
 
     operator const VkPipelineShaderStageCreateInfo&() const
@@ -12523,9 +12537,9 @@ namespace vk
       return *this;
     }
 
-    static PushConstantRange& null()
+    static Optional<const PushConstantRange> null()
     {
-      return *((PushConstantRange*)(nullptr));
+      return Optional<const PushConstantRange>(nullptr);
     }
 
     operator const VkPushConstantRange&() const
@@ -12679,9 +12693,9 @@ namespace vk
       return *this;
     }
 
-    static PipelineLayoutCreateInfo& null()
+    static Optional<const PipelineLayoutCreateInfo> null()
     {
-      return *((PipelineLayoutCreateInfo*)(nullptr));
+      return Optional<const PipelineLayoutCreateInfo>(nullptr);
     }
 
     operator const VkPipelineLayoutCreateInfo&() const
@@ -12884,9 +12898,9 @@ namespace vk
       return *this;
     }
 
-    static ComputePipelineCreateInfo& null()
+    static Optional<const ComputePipelineCreateInfo> null()
     {
-      return *((ComputePipelineCreateInfo*)(nullptr));
+      return Optional<const ComputePipelineCreateInfo>(nullptr);
     }
 
     operator const VkComputePipelineCreateInfo&() const
@@ -13072,9 +13086,9 @@ namespace vk
       return *this;
     }
 
-    static PipelineColorBlendAttachmentState& null()
+    static Optional<const PipelineColorBlendAttachmentState> null()
     {
-      return *((PipelineColorBlendAttachmentState*)(nullptr));
+      return Optional<const PipelineColorBlendAttachmentState>(nullptr);
     }
 
     operator const VkPipelineColorBlendAttachmentState&() const
@@ -13245,9 +13259,9 @@ namespace vk
       return *this;
     }
 
-    static PipelineColorBlendStateCreateInfo& null()
+    static Optional<const PipelineColorBlendStateCreateInfo> null()
     {
-      return *((PipelineColorBlendStateCreateInfo*)(nullptr));
+      return Optional<const PipelineColorBlendStateCreateInfo>(nullptr);
     }
 
     operator const VkPipelineColorBlendStateCreateInfo&() const
@@ -13345,9 +13359,9 @@ namespace vk
       return *this;
     }
 
-    static FenceCreateInfo& null()
+    static Optional<const FenceCreateInfo> null()
     {
-      return *((FenceCreateInfo*)(nullptr));
+      return Optional<const FenceCreateInfo>(nullptr);
     }
 
     operator const VkFenceCreateInfo&() const
@@ -13402,9 +13416,9 @@ namespace vk
       return reinterpret_cast<const FormatFeatureFlags&>( m_formatProperties.bufferFeatures );
     }
 
-    static FormatProperties& null()
+    static Optional<const FormatProperties> null()
     {
-      return *((FormatProperties*)(nullptr));
+      return Optional<const FormatProperties>(nullptr);
     }
 
     operator const VkFormatProperties&() const
@@ -13638,9 +13652,9 @@ namespace vk
       return *this;
     }
 
-    static CommandBufferInheritanceInfo& null()
+    static Optional<const CommandBufferInheritanceInfo> null()
     {
-      return *((CommandBufferInheritanceInfo*)(nullptr));
+      return Optional<const CommandBufferInheritanceInfo>(nullptr);
     }
 
     operator const VkCommandBufferInheritanceInfo&() const
@@ -13743,9 +13757,9 @@ namespace vk
       return *this;
     }
 
-    static CommandBufferBeginInfo& null()
+    static Optional<const CommandBufferBeginInfo> null()
     {
-      return *((CommandBufferBeginInfo*)(nullptr));
+      return Optional<const CommandBufferBeginInfo>(nullptr);
     }
 
     operator const VkCommandBufferBeginInfo&() const
@@ -13882,9 +13896,9 @@ namespace vk
       return *this;
     }
 
-    static QueryPoolCreateInfo& null()
+    static Optional<const QueryPoolCreateInfo> null()
     {
-      return *((QueryPoolCreateInfo*)(nullptr));
+      return Optional<const QueryPoolCreateInfo>(nullptr);
     }
 
     operator const VkQueryPoolCreateInfo&() const
@@ -13985,9 +13999,9 @@ namespace vk
       return *this;
     }
 
-    static ImageSubresource& null()
+    static Optional<const ImageSubresource> null()
     {
-      return *((ImageSubresource*)(nullptr));
+      return Optional<const ImageSubresource>(nullptr);
     }
 
     operator const VkImageSubresource&() const
@@ -14090,9 +14104,9 @@ namespace vk
       return *this;
     }
 
-    static ImageSubresourceLayers& null()
+    static Optional<const ImageSubresourceLayers> null()
     {
-      return *((ImageSubresourceLayers*)(nullptr));
+      return Optional<const ImageSubresourceLayers>(nullptr);
     }
 
     operator const VkImageSubresourceLayers&() const
@@ -14212,9 +14226,9 @@ namespace vk
       return *this;
     }
 
-    static ImageSubresourceRange& null()
+    static Optional<const ImageSubresourceRange> null()
     {
-      return *((ImageSubresourceRange*)(nullptr));
+      return Optional<const ImageSubresourceRange>(nullptr);
     }
 
     operator const VkImageSubresourceRange&() const
@@ -14419,9 +14433,9 @@ namespace vk
       return *this;
     }
 
-    static ImageMemoryBarrier& null()
+    static Optional<const ImageMemoryBarrier> null()
     {
-      return *((ImageMemoryBarrier*)(nullptr));
+      return Optional<const ImageMemoryBarrier>(nullptr);
     }
 
     operator const VkImageMemoryBarrier&() const
@@ -14592,9 +14606,9 @@ namespace vk
       return *this;
     }
 
-    static ImageViewCreateInfo& null()
+    static Optional<const ImageViewCreateInfo> null()
     {
-      return *((ImageViewCreateInfo*)(nullptr));
+      return Optional<const ImageViewCreateInfo>(nullptr);
     }
 
     operator const VkImageViewCreateInfo&() const
@@ -14714,9 +14728,9 @@ namespace vk
       return *this;
     }
 
-    static ImageCopy& null()
+    static Optional<const ImageCopy> null()
     {
-      return *((ImageCopy*)(nullptr));
+      return Optional<const ImageCopy>(nullptr);
     }
 
     operator const VkImageCopy&() const
@@ -14819,9 +14833,9 @@ namespace vk
       return *this;
     }
 
-    static ImageBlit& null()
+    static Optional<const ImageBlit> null()
     {
-      return *((ImageBlit*)(nullptr));
+      return Optional<const ImageBlit>(nullptr);
     }
 
     operator const VkImageBlit&() const
@@ -14958,9 +14972,9 @@ namespace vk
       return *this;
     }
 
-    static BufferImageCopy& null()
+    static Optional<const BufferImageCopy> null()
     {
-      return *((BufferImageCopy*)(nullptr));
+      return Optional<const BufferImageCopy>(nullptr);
     }
 
     operator const VkBufferImageCopy&() const
@@ -15080,9 +15094,9 @@ namespace vk
       return *this;
     }
 
-    static ImageResolve& null()
+    static Optional<const ImageResolve> null()
     {
-      return *((ImageResolve*)(nullptr));
+      return Optional<const ImageResolve>(nullptr);
     }
 
     operator const VkImageResolve&() const
@@ -15168,9 +15182,9 @@ namespace vk
       return *this;
     }
 
-    static ClearAttachment& null()
+    static Optional<const ClearAttachment> null()
     {
-      return *((ClearAttachment*)(nullptr));
+      return Optional<const ClearAttachment>(nullptr);
     }
 
     operator const VkClearAttachment&() const
@@ -15215,9 +15229,9 @@ namespace vk
       return reinterpret_cast<const SparseImageFormatFlags&>( m_sparseImageFormatProperties.flags );
     }
 
-    static SparseImageFormatProperties& null()
+    static Optional<const SparseImageFormatProperties> null()
     {
-      return *((SparseImageFormatProperties*)(nullptr));
+      return Optional<const SparseImageFormatProperties>(nullptr);
     }
 
     operator const VkSparseImageFormatProperties&() const
@@ -15258,9 +15272,9 @@ namespace vk
       return m_sparseImageMemoryRequirements.imageMipTailStride;
     }
 
-    static SparseImageMemoryRequirements& null()
+    static Optional<const SparseImageMemoryRequirements> null()
     {
-      return *((SparseImageMemoryRequirements*)(nullptr));
+      return Optional<const SparseImageMemoryRequirements>(nullptr);
     }
 
     operator const VkSparseImageMemoryRequirements&() const
@@ -15392,9 +15406,9 @@ namespace vk
       return *this;
     }
 
-    static SparseMemoryBind& null()
+    static Optional<const SparseMemoryBind> null()
     {
-      return *((SparseMemoryBind*)(nullptr));
+      return Optional<const SparseMemoryBind>(nullptr);
     }
 
     operator const VkSparseMemoryBind&() const
@@ -15531,9 +15545,9 @@ namespace vk
       return *this;
     }
 
-    static SparseImageMemoryBind& null()
+    static Optional<const SparseImageMemoryBind> null()
     {
-      return *((SparseImageMemoryBind*)(nullptr));
+      return Optional<const SparseImageMemoryBind>(nullptr);
     }
 
     operator const VkSparseImageMemoryBind&() const
@@ -15619,9 +15633,9 @@ namespace vk
       return *this;
     }
 
-    static SparseBufferMemoryBindInfo& null()
+    static Optional<const SparseBufferMemoryBindInfo> null()
     {
-      return *((SparseBufferMemoryBindInfo*)(nullptr));
+      return Optional<const SparseBufferMemoryBindInfo>(nullptr);
     }
 
     operator const VkSparseBufferMemoryBindInfo&() const
@@ -15707,9 +15721,9 @@ namespace vk
       return *this;
     }
 
-    static SparseImageOpaqueMemoryBindInfo& null()
+    static Optional<const SparseImageOpaqueMemoryBindInfo> null()
     {
-      return *((SparseImageOpaqueMemoryBindInfo*)(nullptr));
+      return Optional<const SparseImageOpaqueMemoryBindInfo>(nullptr);
     }
 
     operator const VkSparseImageOpaqueMemoryBindInfo&() const
@@ -15795,9 +15809,9 @@ namespace vk
       return *this;
     }
 
-    static SparseImageMemoryBindInfo& null()
+    static Optional<const SparseImageMemoryBindInfo> null()
     {
-      return *((SparseImageMemoryBindInfo*)(nullptr));
+      return Optional<const SparseImageMemoryBindInfo>(nullptr);
     }
 
     operator const VkSparseImageMemoryBindInfo&() const
@@ -16036,9 +16050,9 @@ namespace vk
       return *this;
     }
 
-    static BindSparseInfo& null()
+    static Optional<const BindSparseInfo> null()
     {
-      return *((BindSparseInfo*)(nullptr));
+      return Optional<const BindSparseInfo>(nullptr);
     }
 
     operator const VkBindSparseInfo&() const
@@ -16182,9 +16196,9 @@ namespace vk
       return *this;
     }
 
-    static CommandPoolCreateInfo& null()
+    static Optional<const CommandPoolCreateInfo> null()
     {
-      return *((CommandPoolCreateInfo*)(nullptr));
+      return Optional<const CommandPoolCreateInfo>(nullptr);
     }
 
     operator const VkCommandPoolCreateInfo&() const
@@ -16267,9 +16281,9 @@ namespace vk
       return m_imageFormatProperties.maxResourceSize;
     }
 
-    static ImageFormatProperties& null()
+    static Optional<const ImageFormatProperties> null()
     {
-      return *((ImageFormatProperties*)(nullptr));
+      return Optional<const ImageFormatProperties>(nullptr);
     }
 
     operator const VkImageFormatProperties&() const
@@ -16559,9 +16573,9 @@ namespace vk
       return *this;
     }
 
-    static ImageCreateInfo& null()
+    static Optional<const ImageCreateInfo> null()
     {
-      return *((ImageCreateInfo*)(nullptr));
+      return Optional<const ImageCreateInfo>(nullptr);
     }
 
     operator const VkImageCreateInfo&() const
@@ -16749,9 +16763,9 @@ namespace vk
       return *this;
     }
 
-    static PipelineMultisampleStateCreateInfo& null()
+    static Optional<const PipelineMultisampleStateCreateInfo> null()
     {
-      return *((PipelineMultisampleStateCreateInfo*)(nullptr));
+      return Optional<const PipelineMultisampleStateCreateInfo>(nullptr);
     }
 
     operator const VkPipelineMultisampleStateCreateInfo&() const
@@ -17109,9 +17123,9 @@ namespace vk
       return *this;
     }
 
-    static GraphicsPipelineCreateInfo& null()
+    static Optional<const GraphicsPipelineCreateInfo> null()
     {
-      return *((GraphicsPipelineCreateInfo*)(nullptr));
+      return Optional<const GraphicsPipelineCreateInfo>(nullptr);
     }
 
     operator const VkGraphicsPipelineCreateInfo&() const
@@ -17657,9 +17671,9 @@ namespace vk
       return m_physicalDeviceLimits.nonCoherentAtomSize;
     }
 
-    static PhysicalDeviceLimits& null()
+    static Optional<const PhysicalDeviceLimits> null()
     {
-      return *((PhysicalDeviceLimits*)(nullptr));
+      return Optional<const PhysicalDeviceLimits>(nullptr);
     }
 
     operator const VkPhysicalDeviceLimits&() const
@@ -17720,9 +17734,9 @@ namespace vk
       return reinterpret_cast<const PhysicalDeviceSparseProperties&>( m_physicalDeviceProperties.sparseProperties );
     }
 
-    static PhysicalDeviceProperties& null()
+    static Optional<const PhysicalDeviceProperties> null()
     {
-      return *((PhysicalDeviceProperties*)(nullptr));
+      return Optional<const PhysicalDeviceProperties>(nullptr);
     }
 
     operator const VkPhysicalDeviceProperties&() const
@@ -17922,9 +17936,9 @@ namespace vk
       return *this;
     }
 
-    static AttachmentDescription& null()
+    static Optional<const AttachmentDescription> null()
     {
-      return *((AttachmentDescription*)(nullptr));
+      return Optional<const AttachmentDescription>(nullptr);
     }
 
     operator const VkAttachmentDescription&() const
@@ -18087,9 +18101,9 @@ namespace vk
       return *this;
     }
 
-    static DescriptorPoolCreateInfo& null()
+    static Optional<const DescriptorPoolCreateInfo> null()
     {
-      return *((DescriptorPoolCreateInfo*)(nullptr));
+      return Optional<const DescriptorPoolCreateInfo>(nullptr);
     }
 
     operator const VkDescriptorPoolCreateInfo&() const
@@ -18933,9 +18947,9 @@ namespace vk
       return *this;
     }
 
-    static SubpassDependency& null()
+    static Optional<const SubpassDependency> null()
     {
-      return *((SubpassDependency*)(nullptr));
+      return Optional<const SubpassDependency>(nullptr);
     }
 
     operator const VkSubpassDependency&() const
@@ -19123,9 +19137,9 @@ namespace vk
       return *this;
     }
 
-    static RenderPassCreateInfo& null()
+    static Optional<const RenderPassCreateInfo> null()
     {
-      return *((RenderPassCreateInfo*)(nullptr));
+      return Optional<const RenderPassCreateInfo>(nullptr);
     }
 
     operator const VkRenderPassCreateInfo&() const
@@ -19313,9 +19327,9 @@ namespace vk
       return *this;
     }
 
-    static SubmitInfo& null()
+    static Optional<const SubmitInfo> null()
     {
-      return *((SubmitInfo*)(nullptr));
+      return Optional<const SubmitInfo>(nullptr);
     }
 
     operator const VkSubmitInfo&() const
@@ -19506,9 +19520,9 @@ namespace vk
       return *this;
     }
 
-    static SurfaceFormatKHR& null()
+    static Optional<const SurfaceFormatKHR> null()
     {
-      return *((SurfaceFormatKHR*)(nullptr));
+      return Optional<const SurfaceFormatKHR>(nullptr);
     }
 
     operator const VkSurfaceFormatKHR&() const
@@ -19711,9 +19725,9 @@ namespace vk
       return *this;
     }
 
-    static DisplayPlaneCapabilitiesKHR& null()
+    static Optional<const DisplayPlaneCapabilitiesKHR> null()
     {
-      return *((DisplayPlaneCapabilitiesKHR*)(nullptr));
+      return Optional<const DisplayPlaneCapabilitiesKHR>(nullptr);
     }
 
     operator const VkDisplayPlaneCapabilitiesKHR&() const
@@ -19902,9 +19916,9 @@ namespace vk
       return *this;
     }
 
-    static DisplayPropertiesKHR& null()
+    static Optional<const DisplayPropertiesKHR> null()
     {
-      return *((DisplayPropertiesKHR*)(nullptr));
+      return Optional<const DisplayPropertiesKHR>(nullptr);
     }
 
     operator const VkDisplayPropertiesKHR&() const
@@ -20109,9 +20123,9 @@ namespace vk
       return *this;
     }
 
-    static DisplaySurfaceCreateInfoKHR& null()
+    static Optional<const DisplaySurfaceCreateInfoKHR> null()
     {
-      return *((DisplaySurfaceCreateInfoKHR*)(nullptr));
+      return Optional<const DisplaySurfaceCreateInfoKHR>(nullptr);
     }
 
     operator const VkDisplaySurfaceCreateInfoKHR&() const
@@ -20316,9 +20330,9 @@ namespace vk
       return *this;
     }
 
-    static SurfaceCapabilitiesKHR& null()
+    static Optional<const SurfaceCapabilitiesKHR> null()
     {
-      return *((SurfaceCapabilitiesKHR*)(nullptr));
+      return Optional<const SurfaceCapabilitiesKHR>(nullptr);
     }
 
     operator const VkSurfaceCapabilitiesKHR&() const
@@ -20659,9 +20673,9 @@ namespace vk
       return *this;
     }
 
-    static SwapchainCreateInfoKHR& null()
+    static Optional<const SwapchainCreateInfoKHR> null()
     {
-      return *((SwapchainCreateInfoKHR*)(nullptr));
+      return Optional<const SwapchainCreateInfoKHR>(nullptr);
     }
 
     operator const VkSwapchainCreateInfoKHR&() const
@@ -20711,9 +20725,9 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    void destroy( const AllocationCallbacks& allocator ) const
+    void destroy( vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
-      vkDestroyDevice( m_device, reinterpret_cast<const VkAllocationCallbacks*>( &allocator ) );
+      vkDestroyDevice( m_device, reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
@@ -20755,10 +20769,10 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    DeviceMemory allocateMemory( const MemoryAllocateInfo& allocateInfo, const AllocationCallbacks& allocator ) const
+    DeviceMemory allocateMemory( const MemoryAllocateInfo& allocateInfo, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
       DeviceMemory memory;
-      Result result = static_cast<Result>( vkAllocateMemory( m_device, reinterpret_cast<const VkMemoryAllocateInfo*>( &allocateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkDeviceMemory*>( &memory ) ) );
+      Result result = static_cast<Result>( vkAllocateMemory( m_device, reinterpret_cast<const VkMemoryAllocateInfo*>( &allocateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkDeviceMemory*>( &memory ) ) );
       if ( result != Result::eSuccess )
       {
         throw std::system_error( result, "vk::Device::allocateMemory" );
@@ -20773,9 +20787,9 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    void freeMemory( DeviceMemory memory, const AllocationCallbacks& allocator ) const
+    void freeMemory( DeviceMemory memory, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
-      vkFreeMemory( m_device, static_cast<VkDeviceMemory>( memory ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ) );
+      vkFreeMemory( m_device, static_cast<VkDeviceMemory>( memory ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
@@ -20946,10 +20960,10 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    Fence createFence( const FenceCreateInfo& createInfo, const AllocationCallbacks& allocator ) const
+    Fence createFence( const FenceCreateInfo& createInfo, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
       Fence fence;
-      Result result = static_cast<Result>( vkCreateFence( m_device, reinterpret_cast<const VkFenceCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkFence*>( &fence ) ) );
+      Result result = static_cast<Result>( vkCreateFence( m_device, reinterpret_cast<const VkFenceCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkFence*>( &fence ) ) );
       if ( result != Result::eSuccess )
       {
         throw std::system_error( result, "vk::Device::createFence" );
@@ -20964,9 +20978,9 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    void destroyFence( Fence fence, const AllocationCallbacks& allocator ) const
+    void destroyFence( Fence fence, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
-      vkDestroyFence( m_device, static_cast<VkFence>( fence ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ) );
+      vkDestroyFence( m_device, static_cast<VkFence>( fence ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
@@ -21028,10 +21042,10 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    Semaphore createSemaphore( const SemaphoreCreateInfo& createInfo, const AllocationCallbacks& allocator ) const
+    Semaphore createSemaphore( const SemaphoreCreateInfo& createInfo, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
       Semaphore semaphore;
-      Result result = static_cast<Result>( vkCreateSemaphore( m_device, reinterpret_cast<const VkSemaphoreCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkSemaphore*>( &semaphore ) ) );
+      Result result = static_cast<Result>( vkCreateSemaphore( m_device, reinterpret_cast<const VkSemaphoreCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkSemaphore*>( &semaphore ) ) );
       if ( result != Result::eSuccess )
       {
         throw std::system_error( result, "vk::Device::createSemaphore" );
@@ -21046,9 +21060,9 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    void destroySemaphore( Semaphore semaphore, const AllocationCallbacks& allocator ) const
+    void destroySemaphore( Semaphore semaphore, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
-      vkDestroySemaphore( m_device, static_cast<VkSemaphore>( semaphore ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ) );
+      vkDestroySemaphore( m_device, static_cast<VkSemaphore>( semaphore ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
@@ -21058,10 +21072,10 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    Event createEvent( const EventCreateInfo& createInfo, const AllocationCallbacks& allocator ) const
+    Event createEvent( const EventCreateInfo& createInfo, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
       Event event;
-      Result result = static_cast<Result>( vkCreateEvent( m_device, reinterpret_cast<const VkEventCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkEvent*>( &event ) ) );
+      Result result = static_cast<Result>( vkCreateEvent( m_device, reinterpret_cast<const VkEventCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkEvent*>( &event ) ) );
       if ( result != Result::eSuccess )
       {
         throw std::system_error( result, "vk::Device::createEvent" );
@@ -21076,9 +21090,9 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    void destroyEvent( Event event, const AllocationCallbacks& allocator ) const
+    void destroyEvent( Event event, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
-      vkDestroyEvent( m_device, static_cast<VkEvent>( event ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ) );
+      vkDestroyEvent( m_device, static_cast<VkEvent>( event ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
@@ -21143,10 +21157,10 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    QueryPool createQueryPool( const QueryPoolCreateInfo& createInfo, const AllocationCallbacks& allocator ) const
+    QueryPool createQueryPool( const QueryPoolCreateInfo& createInfo, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
       QueryPool queryPool;
-      Result result = static_cast<Result>( vkCreateQueryPool( m_device, reinterpret_cast<const VkQueryPoolCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkQueryPool*>( &queryPool ) ) );
+      Result result = static_cast<Result>( vkCreateQueryPool( m_device, reinterpret_cast<const VkQueryPoolCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkQueryPool*>( &queryPool ) ) );
       if ( result != Result::eSuccess )
       {
         throw std::system_error( result, "vk::Device::createQueryPool" );
@@ -21161,9 +21175,9 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    void destroyQueryPool( QueryPool queryPool, const AllocationCallbacks& allocator ) const
+    void destroyQueryPool( QueryPool queryPool, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
-      vkDestroyQueryPool( m_device, static_cast<VkQueryPool>( queryPool ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ) );
+      vkDestroyQueryPool( m_device, static_cast<VkQueryPool>( queryPool ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
@@ -21191,10 +21205,10 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    Buffer createBuffer( const BufferCreateInfo& createInfo, const AllocationCallbacks& allocator ) const
+    Buffer createBuffer( const BufferCreateInfo& createInfo, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
       Buffer buffer;
-      Result result = static_cast<Result>( vkCreateBuffer( m_device, reinterpret_cast<const VkBufferCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkBuffer*>( &buffer ) ) );
+      Result result = static_cast<Result>( vkCreateBuffer( m_device, reinterpret_cast<const VkBufferCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkBuffer*>( &buffer ) ) );
       if ( result != Result::eSuccess )
       {
         throw std::system_error( result, "vk::Device::createBuffer" );
@@ -21209,9 +21223,9 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    void destroyBuffer( Buffer buffer, const AllocationCallbacks& allocator ) const
+    void destroyBuffer( Buffer buffer, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
-      vkDestroyBuffer( m_device, static_cast<VkBuffer>( buffer ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ) );
+      vkDestroyBuffer( m_device, static_cast<VkBuffer>( buffer ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
@@ -21221,10 +21235,10 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    BufferView createBufferView( const BufferViewCreateInfo& createInfo, const AllocationCallbacks& allocator ) const
+    BufferView createBufferView( const BufferViewCreateInfo& createInfo, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
       BufferView view;
-      Result result = static_cast<Result>( vkCreateBufferView( m_device, reinterpret_cast<const VkBufferViewCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkBufferView*>( &view ) ) );
+      Result result = static_cast<Result>( vkCreateBufferView( m_device, reinterpret_cast<const VkBufferViewCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkBufferView*>( &view ) ) );
       if ( result != Result::eSuccess )
       {
         throw std::system_error( result, "vk::Device::createBufferView" );
@@ -21239,9 +21253,9 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    void destroyBufferView( BufferView bufferView, const AllocationCallbacks& allocator ) const
+    void destroyBufferView( BufferView bufferView, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
-      vkDestroyBufferView( m_device, static_cast<VkBufferView>( bufferView ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ) );
+      vkDestroyBufferView( m_device, static_cast<VkBufferView>( bufferView ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
@@ -21251,10 +21265,10 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    Image createImage( const ImageCreateInfo& createInfo, const AllocationCallbacks& allocator ) const
+    Image createImage( const ImageCreateInfo& createInfo, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
       Image image;
-      Result result = static_cast<Result>( vkCreateImage( m_device, reinterpret_cast<const VkImageCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkImage*>( &image ) ) );
+      Result result = static_cast<Result>( vkCreateImage( m_device, reinterpret_cast<const VkImageCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkImage*>( &image ) ) );
       if ( result != Result::eSuccess )
       {
         throw std::system_error( result, "vk::Device::createImage" );
@@ -21269,9 +21283,9 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    void destroyImage( Image image, const AllocationCallbacks& allocator ) const
+    void destroyImage( Image image, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
-      vkDestroyImage( m_device, static_cast<VkImage>( image ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ) );
+      vkDestroyImage( m_device, static_cast<VkImage>( image ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
@@ -21295,10 +21309,10 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    ImageView createImageView( const ImageViewCreateInfo& createInfo, const AllocationCallbacks& allocator ) const
+    ImageView createImageView( const ImageViewCreateInfo& createInfo, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
       ImageView view;
-      Result result = static_cast<Result>( vkCreateImageView( m_device, reinterpret_cast<const VkImageViewCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkImageView*>( &view ) ) );
+      Result result = static_cast<Result>( vkCreateImageView( m_device, reinterpret_cast<const VkImageViewCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkImageView*>( &view ) ) );
       if ( result != Result::eSuccess )
       {
         throw std::system_error( result, "vk::Device::createImageView" );
@@ -21313,9 +21327,9 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    void destroyImageView( ImageView imageView, const AllocationCallbacks& allocator ) const
+    void destroyImageView( ImageView imageView, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
-      vkDestroyImageView( m_device, static_cast<VkImageView>( imageView ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ) );
+      vkDestroyImageView( m_device, static_cast<VkImageView>( imageView ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
@@ -21325,10 +21339,10 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    ShaderModule createShaderModule( const ShaderModuleCreateInfo& createInfo, const AllocationCallbacks& allocator ) const
+    ShaderModule createShaderModule( const ShaderModuleCreateInfo& createInfo, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
       ShaderModule shaderModule;
-      Result result = static_cast<Result>( vkCreateShaderModule( m_device, reinterpret_cast<const VkShaderModuleCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkShaderModule*>( &shaderModule ) ) );
+      Result result = static_cast<Result>( vkCreateShaderModule( m_device, reinterpret_cast<const VkShaderModuleCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkShaderModule*>( &shaderModule ) ) );
       if ( result != Result::eSuccess )
       {
         throw std::system_error( result, "vk::Device::createShaderModule" );
@@ -21343,9 +21357,9 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    void destroyShaderModule( ShaderModule shaderModule, const AllocationCallbacks& allocator ) const
+    void destroyShaderModule( ShaderModule shaderModule, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
-      vkDestroyShaderModule( m_device, static_cast<VkShaderModule>( shaderModule ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ) );
+      vkDestroyShaderModule( m_device, static_cast<VkShaderModule>( shaderModule ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
@@ -21355,10 +21369,10 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    PipelineCache createPipelineCache( const PipelineCacheCreateInfo& createInfo, const AllocationCallbacks& allocator ) const
+    PipelineCache createPipelineCache( const PipelineCacheCreateInfo& createInfo, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
       PipelineCache pipelineCache;
-      Result result = static_cast<Result>( vkCreatePipelineCache( m_device, reinterpret_cast<const VkPipelineCacheCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkPipelineCache*>( &pipelineCache ) ) );
+      Result result = static_cast<Result>( vkCreatePipelineCache( m_device, reinterpret_cast<const VkPipelineCacheCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkPipelineCache*>( &pipelineCache ) ) );
       if ( result != Result::eSuccess )
       {
         throw std::system_error( result, "vk::Device::createPipelineCache" );
@@ -21373,9 +21387,9 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    void destroyPipelineCache( PipelineCache pipelineCache, const AllocationCallbacks& allocator ) const
+    void destroyPipelineCache( PipelineCache pipelineCache, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
-      vkDestroyPipelineCache( m_device, static_cast<VkPipelineCache>( pipelineCache ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ) );
+      vkDestroyPipelineCache( m_device, static_cast<VkPipelineCache>( pipelineCache ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
@@ -21426,10 +21440,10 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    std::vector<Pipeline> createGraphicsPipelines( PipelineCache pipelineCache, std::vector<GraphicsPipelineCreateInfo> const& createInfos, const AllocationCallbacks& allocator ) const
+    std::vector<Pipeline> createGraphicsPipelines( PipelineCache pipelineCache, std::vector<GraphicsPipelineCreateInfo> const& createInfos, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
       std::vector<Pipeline> pipelines( createInfos.size() );
-      Result result = static_cast<Result>( vkCreateGraphicsPipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), static_cast<uint32_t>( createInfos.size() ), reinterpret_cast<const VkGraphicsPipelineCreateInfo*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkPipeline*>( pipelines.data() ) ) );
+      Result result = static_cast<Result>( vkCreateGraphicsPipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), static_cast<uint32_t>( createInfos.size() ), reinterpret_cast<const VkGraphicsPipelineCreateInfo*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkPipeline*>( pipelines.data() ) ) );
       if ( result != Result::eSuccess )
       {
         throw std::system_error( result, "vk::Device::createGraphicsPipelines" );
@@ -21444,10 +21458,10 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    std::vector<Pipeline> createComputePipelines( PipelineCache pipelineCache, std::vector<ComputePipelineCreateInfo> const& createInfos, const AllocationCallbacks& allocator ) const
+    std::vector<Pipeline> createComputePipelines( PipelineCache pipelineCache, std::vector<ComputePipelineCreateInfo> const& createInfos, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
       std::vector<Pipeline> pipelines( createInfos.size() );
-      Result result = static_cast<Result>( vkCreateComputePipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), static_cast<uint32_t>( createInfos.size() ), reinterpret_cast<const VkComputePipelineCreateInfo*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkPipeline*>( pipelines.data() ) ) );
+      Result result = static_cast<Result>( vkCreateComputePipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), static_cast<uint32_t>( createInfos.size() ), reinterpret_cast<const VkComputePipelineCreateInfo*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkPipeline*>( pipelines.data() ) ) );
       if ( result != Result::eSuccess )
       {
         throw std::system_error( result, "vk::Device::createComputePipelines" );
@@ -21462,9 +21476,9 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    void destroyPipeline( Pipeline pipeline, const AllocationCallbacks& allocator ) const
+    void destroyPipeline( Pipeline pipeline, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
-      vkDestroyPipeline( m_device, static_cast<VkPipeline>( pipeline ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ) );
+      vkDestroyPipeline( m_device, static_cast<VkPipeline>( pipeline ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
@@ -21474,10 +21488,10 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    PipelineLayout createPipelineLayout( const PipelineLayoutCreateInfo& createInfo, const AllocationCallbacks& allocator ) const
+    PipelineLayout createPipelineLayout( const PipelineLayoutCreateInfo& createInfo, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
       PipelineLayout pipelineLayout;
-      Result result = static_cast<Result>( vkCreatePipelineLayout( m_device, reinterpret_cast<const VkPipelineLayoutCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkPipelineLayout*>( &pipelineLayout ) ) );
+      Result result = static_cast<Result>( vkCreatePipelineLayout( m_device, reinterpret_cast<const VkPipelineLayoutCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkPipelineLayout*>( &pipelineLayout ) ) );
       if ( result != Result::eSuccess )
       {
         throw std::system_error( result, "vk::Device::createPipelineLayout" );
@@ -21492,9 +21506,9 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    void destroyPipelineLayout( PipelineLayout pipelineLayout, const AllocationCallbacks& allocator ) const
+    void destroyPipelineLayout( PipelineLayout pipelineLayout, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
-      vkDestroyPipelineLayout( m_device, static_cast<VkPipelineLayout>( pipelineLayout ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ) );
+      vkDestroyPipelineLayout( m_device, static_cast<VkPipelineLayout>( pipelineLayout ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
@@ -21504,10 +21518,10 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    Sampler createSampler( const SamplerCreateInfo& createInfo, const AllocationCallbacks& allocator ) const
+    Sampler createSampler( const SamplerCreateInfo& createInfo, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
       Sampler sampler;
-      Result result = static_cast<Result>( vkCreateSampler( m_device, reinterpret_cast<const VkSamplerCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkSampler*>( &sampler ) ) );
+      Result result = static_cast<Result>( vkCreateSampler( m_device, reinterpret_cast<const VkSamplerCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkSampler*>( &sampler ) ) );
       if ( result != Result::eSuccess )
       {
         throw std::system_error( result, "vk::Device::createSampler" );
@@ -21522,9 +21536,9 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    void destroySampler( Sampler sampler, const AllocationCallbacks& allocator ) const
+    void destroySampler( Sampler sampler, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
-      vkDestroySampler( m_device, static_cast<VkSampler>( sampler ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ) );
+      vkDestroySampler( m_device, static_cast<VkSampler>( sampler ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
@@ -21534,10 +21548,10 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    DescriptorSetLayout createDescriptorSetLayout( const DescriptorSetLayoutCreateInfo& createInfo, const AllocationCallbacks& allocator ) const
+    DescriptorSetLayout createDescriptorSetLayout( const DescriptorSetLayoutCreateInfo& createInfo, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
       DescriptorSetLayout setLayout;
-      Result result = static_cast<Result>( vkCreateDescriptorSetLayout( m_device, reinterpret_cast<const VkDescriptorSetLayoutCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkDescriptorSetLayout*>( &setLayout ) ) );
+      Result result = static_cast<Result>( vkCreateDescriptorSetLayout( m_device, reinterpret_cast<const VkDescriptorSetLayoutCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkDescriptorSetLayout*>( &setLayout ) ) );
       if ( result != Result::eSuccess )
       {
         throw std::system_error( result, "vk::Device::createDescriptorSetLayout" );
@@ -21552,9 +21566,9 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    void destroyDescriptorSetLayout( DescriptorSetLayout descriptorSetLayout, const AllocationCallbacks& allocator ) const
+    void destroyDescriptorSetLayout( DescriptorSetLayout descriptorSetLayout, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
-      vkDestroyDescriptorSetLayout( m_device, static_cast<VkDescriptorSetLayout>( descriptorSetLayout ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ) );
+      vkDestroyDescriptorSetLayout( m_device, static_cast<VkDescriptorSetLayout>( descriptorSetLayout ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
@@ -21564,10 +21578,10 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    DescriptorPool createDescriptorPool( const DescriptorPoolCreateInfo& createInfo, const AllocationCallbacks& allocator ) const
+    DescriptorPool createDescriptorPool( const DescriptorPoolCreateInfo& createInfo, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
       DescriptorPool descriptorPool;
-      Result result = static_cast<Result>( vkCreateDescriptorPool( m_device, reinterpret_cast<const VkDescriptorPoolCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkDescriptorPool*>( &descriptorPool ) ) );
+      Result result = static_cast<Result>( vkCreateDescriptorPool( m_device, reinterpret_cast<const VkDescriptorPoolCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkDescriptorPool*>( &descriptorPool ) ) );
       if ( result != Result::eSuccess )
       {
         throw std::system_error( result, "vk::Device::createDescriptorPool" );
@@ -21582,9 +21596,9 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    void destroyDescriptorPool( DescriptorPool descriptorPool, const AllocationCallbacks& allocator ) const
+    void destroyDescriptorPool( DescriptorPool descriptorPool, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
-      vkDestroyDescriptorPool( m_device, static_cast<VkDescriptorPool>( descriptorPool ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ) );
+      vkDestroyDescriptorPool( m_device, static_cast<VkDescriptorPool>( descriptorPool ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
@@ -21658,10 +21672,10 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    Framebuffer createFramebuffer( const FramebufferCreateInfo& createInfo, const AllocationCallbacks& allocator ) const
+    Framebuffer createFramebuffer( const FramebufferCreateInfo& createInfo, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
       Framebuffer framebuffer;
-      Result result = static_cast<Result>( vkCreateFramebuffer( m_device, reinterpret_cast<const VkFramebufferCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkFramebuffer*>( &framebuffer ) ) );
+      Result result = static_cast<Result>( vkCreateFramebuffer( m_device, reinterpret_cast<const VkFramebufferCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkFramebuffer*>( &framebuffer ) ) );
       if ( result != Result::eSuccess )
       {
         throw std::system_error( result, "vk::Device::createFramebuffer" );
@@ -21676,9 +21690,9 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    void destroyFramebuffer( Framebuffer framebuffer, const AllocationCallbacks& allocator ) const
+    void destroyFramebuffer( Framebuffer framebuffer, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
-      vkDestroyFramebuffer( m_device, static_cast<VkFramebuffer>( framebuffer ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ) );
+      vkDestroyFramebuffer( m_device, static_cast<VkFramebuffer>( framebuffer ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
@@ -21688,10 +21702,10 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    RenderPass createRenderPass( const RenderPassCreateInfo& createInfo, const AllocationCallbacks& allocator ) const
+    RenderPass createRenderPass( const RenderPassCreateInfo& createInfo, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
       RenderPass renderPass;
-      Result result = static_cast<Result>( vkCreateRenderPass( m_device, reinterpret_cast<const VkRenderPassCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkRenderPass*>( &renderPass ) ) );
+      Result result = static_cast<Result>( vkCreateRenderPass( m_device, reinterpret_cast<const VkRenderPassCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkRenderPass*>( &renderPass ) ) );
       if ( result != Result::eSuccess )
       {
         throw std::system_error( result, "vk::Device::createRenderPass" );
@@ -21706,9 +21720,9 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    void destroyRenderPass( RenderPass renderPass, const AllocationCallbacks& allocator ) const
+    void destroyRenderPass( RenderPass renderPass, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
-      vkDestroyRenderPass( m_device, static_cast<VkRenderPass>( renderPass ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ) );
+      vkDestroyRenderPass( m_device, static_cast<VkRenderPass>( renderPass ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
@@ -21732,10 +21746,10 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    CommandPool createCommandPool( const CommandPoolCreateInfo& createInfo, const AllocationCallbacks& allocator ) const
+    CommandPool createCommandPool( const CommandPoolCreateInfo& createInfo, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
       CommandPool commandPool;
-      Result result = static_cast<Result>( vkCreateCommandPool( m_device, reinterpret_cast<const VkCommandPoolCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkCommandPool*>( &commandPool ) ) );
+      Result result = static_cast<Result>( vkCreateCommandPool( m_device, reinterpret_cast<const VkCommandPoolCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkCommandPool*>( &commandPool ) ) );
       if ( result != Result::eSuccess )
       {
         throw std::system_error( result, "vk::Device::createCommandPool" );
@@ -21750,9 +21764,9 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    void destroyCommandPool( CommandPool commandPool, const AllocationCallbacks& allocator ) const
+    void destroyCommandPool( CommandPool commandPool, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
-      vkDestroyCommandPool( m_device, static_cast<VkCommandPool>( commandPool ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ) );
+      vkDestroyCommandPool( m_device, static_cast<VkCommandPool>( commandPool ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
@@ -21810,10 +21824,10 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    std::vector<SwapchainKHR> createSharedSwapchainsKHR( std::vector<SwapchainCreateInfoKHR> const& createInfos, const AllocationCallbacks& allocator ) const
+    std::vector<SwapchainKHR> createSharedSwapchainsKHR( std::vector<SwapchainCreateInfoKHR> const& createInfos, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
       std::vector<SwapchainKHR> swapchains( createInfos.size() );
-      Result result = static_cast<Result>( vkCreateSharedSwapchainsKHR( m_device, static_cast<uint32_t>( createInfos.size() ), reinterpret_cast<const VkSwapchainCreateInfoKHR*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkSwapchainKHR*>( swapchains.data() ) ) );
+      Result result = static_cast<Result>( vkCreateSharedSwapchainsKHR( m_device, static_cast<uint32_t>( createInfos.size() ), reinterpret_cast<const VkSwapchainCreateInfoKHR*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkSwapchainKHR*>( swapchains.data() ) ) );
       if ( result != Result::eSuccess )
       {
         throw std::system_error( result, "vk::Device::createSharedSwapchainsKHR" );
@@ -21828,10 +21842,10 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    SwapchainKHR createSwapchainKHR( const SwapchainCreateInfoKHR& createInfo, const AllocationCallbacks& allocator ) const
+    SwapchainKHR createSwapchainKHR( const SwapchainCreateInfoKHR& createInfo, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
       SwapchainKHR swapchain;
-      Result result = static_cast<Result>( vkCreateSwapchainKHR( m_device, reinterpret_cast<const VkSwapchainCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkSwapchainKHR*>( &swapchain ) ) );
+      Result result = static_cast<Result>( vkCreateSwapchainKHR( m_device, reinterpret_cast<const VkSwapchainCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkSwapchainKHR*>( &swapchain ) ) );
       if ( result != Result::eSuccess )
       {
         throw std::system_error( result, "vk::Device::createSwapchainKHR" );
@@ -21846,9 +21860,9 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    void destroySwapchainKHR( SwapchainKHR swapchain, const AllocationCallbacks& allocator ) const
+    void destroySwapchainKHR( SwapchainKHR swapchain, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
-      vkDestroySwapchainKHR( m_device, static_cast<VkSwapchainKHR>( swapchain ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ) );
+      vkDestroySwapchainKHR( m_device, static_cast<VkSwapchainKHR>( swapchain ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
@@ -22032,10 +22046,10 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    Device createDevice( const DeviceCreateInfo& createInfo, const AllocationCallbacks& allocator ) const
+    Device createDevice( const DeviceCreateInfo& createInfo, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
       Device device;
-      Result result = static_cast<Result>( vkCreateDevice( m_physicalDevice, reinterpret_cast<const VkDeviceCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkDevice*>( &device ) ) );
+      Result result = static_cast<Result>( vkCreateDevice( m_physicalDevice, reinterpret_cast<const VkDeviceCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkDevice*>( &device ) ) );
       if ( result != Result::eSuccess )
       {
         throw std::system_error( result, "vk::PhysicalDevice::createDevice" );
@@ -22211,10 +22225,10 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    DisplayModeKHR createDisplayModeKHR( DisplayKHR display, const DisplayModeCreateInfoKHR& createInfo, const AllocationCallbacks& allocator ) const
+    DisplayModeKHR createDisplayModeKHR( DisplayKHR display, const DisplayModeCreateInfoKHR& createInfo, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
       DisplayModeKHR mode;
-      Result result = static_cast<Result>( vkCreateDisplayModeKHR( m_physicalDevice, static_cast<VkDisplayKHR>( display ), reinterpret_cast<const VkDisplayModeCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkDisplayModeKHR*>( &mode ) ) );
+      Result result = static_cast<Result>( vkCreateDisplayModeKHR( m_physicalDevice, static_cast<VkDisplayKHR>( display ), reinterpret_cast<const VkDisplayModeCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkDisplayModeKHR*>( &mode ) ) );
       if ( result != Result::eSuccess )
       {
         throw std::system_error( result, "vk::PhysicalDevice::createDisplayModeKHR" );
@@ -22548,9 +22562,9 @@ namespace vk
       return *this;
     }
 
-    static DebugReportCallbackCreateInfoEXT& null()
+    static Optional<const DebugReportCallbackCreateInfoEXT> null()
     {
-      return *((DebugReportCallbackCreateInfoEXT*)(nullptr));
+      return Optional<const DebugReportCallbackCreateInfoEXT>(nullptr);
     }
 
     operator const VkDebugReportCallbackCreateInfoEXT&() const
@@ -22621,9 +22635,9 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    void destroy( const AllocationCallbacks& allocator ) const
+    void destroy( vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
-      vkDestroyInstance( m_instance, reinterpret_cast<const VkAllocationCallbacks*>( &allocator ) );
+      vkDestroyInstance( m_instance, reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
@@ -22672,10 +22686,10 @@ namespace vk
 
 #ifdef VKCPP_ENHANCED_MODE
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
-    SurfaceKHR createAndroidSurfaceKHR( const AndroidSurfaceCreateInfoKHR& createInfo, const AllocationCallbacks& allocator ) const
+    SurfaceKHR createAndroidSurfaceKHR( const AndroidSurfaceCreateInfoKHR& createInfo, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
       SurfaceKHR surface;
-      Result result = static_cast<Result>( vkCreateAndroidSurfaceKHR( m_instance, reinterpret_cast<const VkAndroidSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
+      Result result = static_cast<Result>( vkCreateAndroidSurfaceKHR( m_instance, reinterpret_cast<const VkAndroidSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
       if ( result != Result::eSuccess )
       {
         throw std::system_error( result, "vk::Instance::createAndroidSurfaceKHR" );
@@ -22691,10 +22705,10 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    SurfaceKHR createDisplayPlaneSurfaceKHR( const DisplaySurfaceCreateInfoKHR& createInfo, const AllocationCallbacks& allocator ) const
+    SurfaceKHR createDisplayPlaneSurfaceKHR( const DisplaySurfaceCreateInfoKHR& createInfo, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
       SurfaceKHR surface;
-      Result result = static_cast<Result>( vkCreateDisplayPlaneSurfaceKHR( m_instance, reinterpret_cast<const VkDisplaySurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
+      Result result = static_cast<Result>( vkCreateDisplayPlaneSurfaceKHR( m_instance, reinterpret_cast<const VkDisplaySurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
       if ( result != Result::eSuccess )
       {
         throw std::system_error( result, "vk::Instance::createDisplayPlaneSurfaceKHR" );
@@ -22712,10 +22726,10 @@ namespace vk
 
 #ifdef VKCPP_ENHANCED_MODE
 #ifdef VK_USE_PLATFORM_MIR_KHR
-    SurfaceKHR createMirSurfaceKHR( const MirSurfaceCreateInfoKHR& createInfo, const AllocationCallbacks& allocator ) const
+    SurfaceKHR createMirSurfaceKHR( const MirSurfaceCreateInfoKHR& createInfo, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
       SurfaceKHR surface;
-      Result result = static_cast<Result>( vkCreateMirSurfaceKHR( m_instance, reinterpret_cast<const VkMirSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
+      Result result = static_cast<Result>( vkCreateMirSurfaceKHR( m_instance, reinterpret_cast<const VkMirSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
       if ( result != Result::eSuccess )
       {
         throw std::system_error( result, "vk::Instance::createMirSurfaceKHR" );
@@ -22731,9 +22745,9 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    void destroySurfaceKHR( SurfaceKHR surface, const AllocationCallbacks& allocator ) const
+    void destroySurfaceKHR( SurfaceKHR surface, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
-      vkDestroySurfaceKHR( m_instance, static_cast<VkSurfaceKHR>( surface ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ) );
+      vkDestroySurfaceKHR( m_instance, static_cast<VkSurfaceKHR>( surface ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
@@ -22746,10 +22760,10 @@ namespace vk
 
 #ifdef VKCPP_ENHANCED_MODE
 #ifdef VK_USE_PLATFORM_WAYLAND_KHR
-    SurfaceKHR createWaylandSurfaceKHR( const WaylandSurfaceCreateInfoKHR& createInfo, const AllocationCallbacks& allocator ) const
+    SurfaceKHR createWaylandSurfaceKHR( const WaylandSurfaceCreateInfoKHR& createInfo, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
       SurfaceKHR surface;
-      Result result = static_cast<Result>( vkCreateWaylandSurfaceKHR( m_instance, reinterpret_cast<const VkWaylandSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
+      Result result = static_cast<Result>( vkCreateWaylandSurfaceKHR( m_instance, reinterpret_cast<const VkWaylandSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
       if ( result != Result::eSuccess )
       {
         throw std::system_error( result, "vk::Instance::createWaylandSurfaceKHR" );
@@ -22768,10 +22782,10 @@ namespace vk
 
 #ifdef VKCPP_ENHANCED_MODE
 #ifdef VK_USE_PLATFORM_WIN32_KHR
-    SurfaceKHR createWin32SurfaceKHR( const Win32SurfaceCreateInfoKHR& createInfo, const AllocationCallbacks& allocator ) const
+    SurfaceKHR createWin32SurfaceKHR( const Win32SurfaceCreateInfoKHR& createInfo, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
       SurfaceKHR surface;
-      Result result = static_cast<Result>( vkCreateWin32SurfaceKHR( m_instance, reinterpret_cast<const VkWin32SurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
+      Result result = static_cast<Result>( vkCreateWin32SurfaceKHR( m_instance, reinterpret_cast<const VkWin32SurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
       if ( result != Result::eSuccess )
       {
         throw std::system_error( result, "vk::Instance::createWin32SurfaceKHR" );
@@ -22790,10 +22804,10 @@ namespace vk
 
 #ifdef VKCPP_ENHANCED_MODE
 #ifdef VK_USE_PLATFORM_XLIB_KHR
-    SurfaceKHR createXlibSurfaceKHR( const XlibSurfaceCreateInfoKHR& createInfo, const AllocationCallbacks& allocator ) const
+    SurfaceKHR createXlibSurfaceKHR( const XlibSurfaceCreateInfoKHR& createInfo, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
       SurfaceKHR surface;
-      Result result = static_cast<Result>( vkCreateXlibSurfaceKHR( m_instance, reinterpret_cast<const VkXlibSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
+      Result result = static_cast<Result>( vkCreateXlibSurfaceKHR( m_instance, reinterpret_cast<const VkXlibSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
       if ( result != Result::eSuccess )
       {
         throw std::system_error( result, "vk::Instance::createXlibSurfaceKHR" );
@@ -22812,10 +22826,10 @@ namespace vk
 
 #ifdef VKCPP_ENHANCED_MODE
 #ifdef VK_USE_PLATFORM_XCB_KHR
-    SurfaceKHR createXcbSurfaceKHR( const XcbSurfaceCreateInfoKHR& createInfo, const AllocationCallbacks& allocator ) const
+    SurfaceKHR createXcbSurfaceKHR( const XcbSurfaceCreateInfoKHR& createInfo, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
       SurfaceKHR surface;
-      Result result = static_cast<Result>( vkCreateXcbSurfaceKHR( m_instance, reinterpret_cast<const VkXcbSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
+      Result result = static_cast<Result>( vkCreateXcbSurfaceKHR( m_instance, reinterpret_cast<const VkXcbSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
       if ( result != Result::eSuccess )
       {
         throw std::system_error( result, "vk::Instance::createXcbSurfaceKHR" );
@@ -22831,10 +22845,10 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    DebugReportCallbackEXT createDebugReportCallbackEXT( const DebugReportCallbackCreateInfoEXT& createInfo, const AllocationCallbacks& allocator ) const
+    DebugReportCallbackEXT createDebugReportCallbackEXT( const DebugReportCallbackCreateInfoEXT& createInfo, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
       DebugReportCallbackEXT callback;
-      Result result = static_cast<Result>( vkCreateDebugReportCallbackEXT( m_instance, reinterpret_cast<const VkDebugReportCallbackCreateInfoEXT*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkDebugReportCallbackEXT*>( &callback ) ) );
+      Result result = static_cast<Result>( vkCreateDebugReportCallbackEXT( m_instance, reinterpret_cast<const VkDebugReportCallbackCreateInfoEXT*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkDebugReportCallbackEXT*>( &callback ) ) );
       if ( result != Result::eSuccess )
       {
         throw std::system_error( result, "vk::Instance::createDebugReportCallbackEXT" );
@@ -22849,9 +22863,9 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    void destroyDebugReportCallbackEXT( DebugReportCallbackEXT callback, const AllocationCallbacks& allocator ) const
+    void destroyDebugReportCallbackEXT( DebugReportCallbackEXT callback, vk::Optional<const AllocationCallbacks> const & allocator ) const
     {
-      vkDestroyDebugReportCallbackEXT( m_instance, static_cast<VkDebugReportCallbackEXT>( callback ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ) );
+      vkDestroyDebugReportCallbackEXT( m_instance, static_cast<VkDebugReportCallbackEXT>( callback ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
@@ -22902,10 +22916,10 @@ namespace vk
   }
 
 #ifdef VKCPP_ENHANCED_MODE
-  inline Instance createInstance( const InstanceCreateInfo& createInfo, const AllocationCallbacks& allocator )
+  inline Instance createInstance( const InstanceCreateInfo& createInfo, vk::Optional<const AllocationCallbacks> const & allocator )
   {
     Instance instance;
-    Result result = static_cast<Result>( vkCreateInstance( reinterpret_cast<const VkInstanceCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( &allocator ), reinterpret_cast<VkInstance*>( &instance ) ) );
+    Result result = static_cast<Result>( vkCreateInstance( reinterpret_cast<const VkInstanceCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkInstance*>( &instance ) ) );
     if ( result != Result::eSuccess )
     {
       throw std::system_error( result, "vk::createInstance" );

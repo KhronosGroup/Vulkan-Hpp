@@ -214,6 +214,23 @@ const std::string flagsHeader(
 "\n"
 );
 
+std::string const optionalClassHeader = (
+"  template <typename RefType>\n"
+"  class Optional\n"
+"  {\n"
+"  public:\n"
+"    Optional(RefType & reference) { m_ptr = &reference; }\n"
+"\n"
+"    operator RefType*() const { return m_ptr; }\n"
+"\n"
+"  private:\n"
+"    Optional(std::nullptr_t) { m_ptr = nullptr; }\n"
+"    friend typename RefType;\n"
+"    RefType *m_ptr;\n"
+"  };\n"
+"\n"
+);
+
 // trim from end
 std::string trimEnd(std::string const& input)
 {
@@ -229,6 +246,7 @@ struct MemberData
   std::string arraySize;
   std::string pureType;
   std::string len;
+  bool        optional;
 };
 
 struct StructData
@@ -730,6 +748,8 @@ bool readCommandParam( tinyxml2::XMLElement * element, DependencyData & typeData
       }
     }
   }
+
+  arg.optional = element->Attribute("optional") && (strcmp(element->Attribute("optional"), "true") == 0);
 
   return element->Attribute("optional") && (strcmp(element->Attribute("optional"), "false,true") == 0);
 }
@@ -1579,7 +1599,17 @@ void writeCall(std::ofstream & ofs, std::string const& name, size_t templateInde
         {
           if (commandData.arguments[i].type.find("const") != std::string::npos)
           {
-            ofs << "reinterpret_cast<const Vk" << commandData.arguments[i].pureType << "*>( &" << reduceName(commandData.arguments[i].name) << " )";
+            ofs << "reinterpret_cast<const Vk" << commandData.arguments[i].pureType << "*>( ";
+            if (commandData.arguments[i].optional)
+            {
+              ofs << "static_cast<const " << commandData.arguments[i].pureType << "*>( ";
+            }
+            else
+            {
+              ofs << "&";
+            }
+            ofs << reduceName(commandData.arguments[i].name)
+                << (commandData.arguments[i].optional ? "))" : " )");
           }
           else
           {
@@ -1848,7 +1878,15 @@ void writeFunctionHeader(std::ofstream & ofs, std::string const& indentation, st
           else
           {
             assert(type[pos] == '*');
-            type[pos] = '&';
+            if (commandData.arguments[i].optional)
+            {
+              type[pos] = ' ';
+              type = "vk::Optional<" + trimEnd(type) + "> const &";
+            }
+            else
+            {
+              type[pos] = '&';
+            }
           }
           ofs << type << " " << reduceName(commandData.arguments[i].name);
         }
@@ -2462,9 +2500,9 @@ void writeTypeStruct( std::ofstream & ofs, DependencyData const& dependencyData,
   }
 
   // null handle
-  ofs << "    static " << dependencyData.name << "& null()" << std::endl
+  ofs << "    static Optional<const " << dependencyData.name << "> null()" << std::endl
       << "    {" << std::endl
-      << "      return *((" << dependencyData.name << "*)(nullptr));" << std::endl
+      << "      return Optional<const " << dependencyData.name << ">(nullptr);" << std::endl
       << "    }" << std::endl
       << std::endl;
 
@@ -2709,7 +2747,8 @@ int main( int argc, char **argv )
   writeTypesafeCheck(ofs, typesafeCheck );
   ofs << "namespace vk" << std::endl
       << "{" << std::endl
-      << flagsHeader;
+      << flagsHeader
+      << optionalClassHeader;
 
   // first of all, write out vk::Result and the exception handling stuff
   std::vector<DependencyData>::const_iterator it = std::find_if(sortedDependencies.begin(), sortedDependencies.end(), [](DependencyData const& dp) { return dp.name == "Result"; });

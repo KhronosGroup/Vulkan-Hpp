@@ -249,15 +249,44 @@ struct MemberData
   bool        optional;
 };
 
-struct StructData
+struct CommandData
 {
-  StructData()
-    : returnedOnly(false)
+  CommandData()
+    : handleCommand(false)
+    , twoStep(false)
   {}
 
-  bool                    returnedOnly;
-  std::vector<MemberData> members;
-  std::string             protect;
+  std::string               returnType;
+  std::vector<MemberData>   arguments;
+  std::vector<std::string>  successCodes;
+  std::string               protect;
+  bool                      handleCommand;
+  bool                      twoStep;
+};
+
+struct DependencyData
+{
+  enum class Category
+  {
+    COMMAND,
+    ENUM,
+    FLAGS,
+    FUNC_POINTER,
+    HANDLE,
+    REQUIRED,
+    SCALAR,
+    STRUCT,
+    UNION
+  };
+
+  DependencyData(Category c, std::string const& n)
+    : category(c)
+    , name(n)
+  {}
+
+  Category              category;
+  std::string           name;
+  std::set<std::string> dependencies;
 };
 
 struct NameValue
@@ -277,19 +306,9 @@ struct EnumData
   void addEnum(std::string const & name, std::string const& tag);
 };
 
-struct CommandData
+struct FlagData
 {
-  CommandData()
-    : handleCommand(false)
-    , twoStep(false)
-  {}
-
-  std::string               returnType;
-  std::vector<MemberData>   arguments;
-  std::vector<std::string>  successCodes;
-  std::string               protect;
-  bool                      handleCommand;
-  bool                      twoStep;
+  std::string protect;
 };
 
 struct HandleData
@@ -297,42 +316,39 @@ struct HandleData
   std::vector<std::string>  commands;
 };
 
-struct FlagData
-{
-  std::string protect;
-};
-
 struct ScalarData
 {
   std::string protect;
 };
 
-struct DependencyData
+struct StructData
 {
-  enum class Category
-  {
-    COMMAND,
-    ENUM,
-    FLAGS,
-    FUNC_POINTER,
-    HANDLE,
-    REQUIRED,
-    SCALAR,
-    STRUCT,
-    UNION
-  };
-
-  DependencyData( Category c, std::string const& n )
-    : category(c)
-    , name(n)
+  StructData()
+    : returnedOnly(false)
   {}
 
-  Category              category;
-  std::string           name;
-  std::set<std::string> dependencies;
+  bool                    returnedOnly;
+  std::vector<MemberData> members;
+  std::string             protect;
 };
 
-void createDefaults( std::vector<DependencyData> const& dependencies, std::map<std::string,EnumData> const& enums, std::map<std::string,std::string> & defaultValues );
+struct VkData
+{
+  std::map<std::string, CommandData>  commands;
+  std::list<DependencyData>           dependencies;
+  std::map<std::string, EnumData>     enums;
+  std::map<std::string, FlagData>     flags;
+  std::map<std::string, HandleData>   handles;
+  std::map<std::string, ScalarData>   scalars;
+  std::map<std::string, StructData>   structs;
+  std::set<std::string>               tags;
+  std::string                         typesafeCheck;
+  std::string                         version;
+  std::set<std::string>               vkTypes;
+  std::string                         vulkanLicenseHeader;
+};
+
+void createDefaults( VkData const& vkData, std::map<std::string,std::string> & defaultValues );
 std::string determineFunctionName(std::string const& name, CommandData const& commandData);
 std::string determineReturnType(CommandData const& commandData, size_t returnIndex, bool isVector = false);
 void enterProtect(std::ofstream &ofs, std::string const& protect);
@@ -347,33 +363,34 @@ bool isVectorSizeParameter(std::map<size_t, size_t> const& vectorParameters, siz
 void leaveProtect(std::ofstream &ofs, std::string const& protect);
 bool noDependencies(std::set<std::string> const& dependencies, std::map<std::string, std::string> & listedTypes);
 bool readCommandParam( tinyxml2::XMLElement * element, DependencyData & typeData, std::vector<MemberData> & arguments );
-std::map<std::string, CommandData>::iterator readCommandProto(tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string, CommandData> & commands);
-void readCommands( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,CommandData> & commands, std::map<std::string,HandleData> & handles, std::set<std::string> const& tags );
-void readCommandsCommand(tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string, CommandData> & commands, std::map<std::string, HandleData> & handles, std::set<std::string> const& tags);
+std::map<std::string, CommandData>::iterator readCommandProto(tinyxml2::XMLElement * element, VkData & vkData);
+void readCommands( tinyxml2::XMLElement * element, VkData & vkData );
+void readCommandsCommand(tinyxml2::XMLElement * element, VkData & vkData);
 void readComment(tinyxml2::XMLElement * element, std::string & header);
-void readEnums( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,EnumData> & enums, std::set<std::string> const& tags, std::set<std::string> & vkTypes );
+void readEnums( tinyxml2::XMLElement * element, VkData & vkData );
 void readEnumsEnum( tinyxml2::XMLElement * element, EnumData & enumData, std::string const& tag );
-void readExtensionRequire(tinyxml2::XMLElement * element, std::string const& protect, std::string const& tag, std::map<std::string, CommandData> & commands, std::map<std::string, EnumData> & enums, std::map<std::string, FlagData> & flags, std::map<std::string, ScalarData> & scalars, std::map<std::string, StructData> & structs);
-void readExtensions( tinyxml2::XMLElement * element, std::map<std::string,CommandData> & commands, std::map<std::string,EnumData> & enums, std::map<std::string,FlagData> & flags, std::map<std::string,ScalarData> & scalars, std::map<std::string,StructData> & structs, std::set<std::string> const& tags );
-void readExtensionsExtension(tinyxml2::XMLElement * element, std::map<std::string, CommandData> & commands, std::map<std::string, EnumData> & enums, std::map<std::string, FlagData> & flags, std::map<std::string, ScalarData> & scalars, std::map<std::string, StructData> & structs, std::set<std::string> const& tags);
+void readExtensionRequire(tinyxml2::XMLElement * element, VkData & vkData, std::string const& protect, std::string const& tag);
+void readExtensions( tinyxml2::XMLElement * element, VkData & vkData );
+void readExtensionsExtension(tinyxml2::XMLElement * element, VkData & vkData);
 void readTypeBasetype( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies );
-void readTypeBitmask( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,FlagData> & flags, std::map<std::string,ScalarData> & scalars, std::set<std::string> & vkTypes, std::map<std::string, EnumData> & enums );
-void readTypeDefine( tinyxml2::XMLElement * element, std::string & version, std::string & typesafeCheck );
+void readTypeBitmask( tinyxml2::XMLElement * element, VkData & vkData);
+void readTypeDefine( tinyxml2::XMLElement * element, VkData & vkData );
 void readTypeFuncpointer( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies );
-void readTypeHandle(tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::set<std::string> & vkTypes, std::map<std::string,HandleData> & handles);
-void readTypeStruct( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,StructData> & structs, std::set<std::string> & vkTypes );
+void readTypeHandle(tinyxml2::XMLElement * element, VkData & vkData);
+void readTypeStruct( tinyxml2::XMLElement * element, VkData & vkData );
 void readTypeStructMember( tinyxml2::XMLElement * element, std::vector<MemberData> & members, std::set<std::string> & dependencies );
-void readTypeUnion( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,StructData> & structs, std::set<std::string> & vkTypes );
+void readTypeUnion( tinyxml2::XMLElement * element, VkData & vkData );
 void readTypeUnionMember( tinyxml2::XMLElement * element, std::vector<MemberData> & members, std::set<std::string> & dependencies );
 void readTags(tinyxml2::XMLElement * element, std::set<std::string> & tags);
-void readTypes(tinyxml2::XMLElement * element, std::string & version, std::string & typesafeCheck, std::list<DependencyData> & dependencies, std::map<std::string, FlagData> & flags, std::map<std::string, ScalarData> & scalars, std::map<std::string, StructData> & structs, std::set<std::string> & vkTypes, std::map<std::string, HandleData> & handles, std::map<std::string, EnumData> & enums);
-void sortDependencies( std::list<DependencyData> & dependencies, std::vector<DependencyData> & sortedDependencies );
+void readTypes(tinyxml2::XMLElement * element, VkData & vkData);
+void sortDependencies( std::list<DependencyData> & dependencies );
 std::string reduceName(std::string const& name);
 std::string strip(std::string const& value, std::string const& prefix, std::string const& tag = std::string());
 std::string stripCommand(std::string const& value);
 std::string toCamelCase(std::string const& value);
 std::string toUpperCase(std::string const& name);
 void writeCall(std::ofstream & ofs, std::string const& name, size_t templateIndex, CommandData const& commandData, std::set<std::string> const& vkTypes, std::map<size_t, size_t> const& vectorParameters, size_t returnIndex, bool firstCall);
+void writeEnumsToString(std::ofstream & ofs, VkData const& vkData);
 void writeExceptionCheck(std::ofstream & ofs, std::string const& indentation, std::string const& className, std::string const& functionName, std::vector<std::string> const& successCodes);
 void writeFunctionBody(std::ofstream & ofs, std::string const& indentation, std::string const& className, std::string const& functionName, std::string const& returnType, size_t templateIndex, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes, size_t returnIndex, std::map<size_t, size_t> const& vectorParameters);
 void writeFunctionHeader(std::ofstream & ofs, std::string const& indentation, std::string const& returnType, std::string const& name, CommandData const& commandData, size_t returnIndex, size_t templateIndex, std::map<size_t, size_t> const& vectorParameters);
@@ -386,11 +403,11 @@ void writeTypeCommandEnhanced(std::ofstream & ofs, std::string const& indentatio
 void writeTypeCommandStandard(std::ofstream & ofs, std::string const& indentation, std::string const& functionName, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes);
 void writeTypeEnum(std::ofstream & ofs, DependencyData const& dependencyData, EnumData const& enumData);
 void writeTypeFlags( std::ofstream & ofs, DependencyData const& dependencyData, FlagData const& flagData );
-void writeTypeHandle(std::ofstream & ofs, DependencyData const& dependencyData, HandleData const& handle, std::map<std::string, CommandData> const& commands, std::vector<DependencyData> const& dependencies, std::set<std::string> const& vkTypes);
+void writeTypeHandle(std::ofstream & ofs, VkData const& vkData, DependencyData const& dependencyData, HandleData const& handle, std::list<DependencyData> const& dependencies);
 void writeTypeScalar( std::ofstream & ofs, DependencyData const& dependencyData );
-void writeTypeStruct( std::ofstream & ofs, DependencyData const& dependencyData, std::set<std::string> const& vkTypes, std::map<std::string,StructData> const& structs, std::map<std::string,std::string> const& defaultValues );
-void writeTypeUnion( std::ofstream & ofs, DependencyData const& dependencyData, StructData const& unionData, std::set<std::string> const& vkTypes, std::map<std::string,StructData> const& structs, std::map<std::string,std::string> const& defaultValues );
-void writeTypes(std::ofstream & ofs, std::vector<DependencyData> const& dependencies, std::map<std::string, CommandData> const& commands, std::map<std::string, EnumData> const& enums, std::map<std::string, FlagData> const& flags, std::map<std::string, HandleData> const& handles, std::map<std::string, StructData> const& structs, std::map<std::string, std::string> const& defaultValues, std::set<std::string> const& vkTypes);
+void writeTypeStruct( std::ofstream & ofs, VkData const& vkData, DependencyData const& dependencyData, std::map<std::string,std::string> const& defaultValues );
+void writeTypeUnion( std::ofstream & ofs, VkData const& vkData, DependencyData const& dependencyData, StructData const& unionData, std::map<std::string,std::string> const& defaultValues );
+void writeTypes(std::ofstream & ofs, VkData const& vkData, std::map<std::string, std::string> const& defaultValues);
 void writeVersionCheck(std::ofstream & ofs, std::string const& version);
 void writeTypesafeCheck(std::ofstream & ofs, std::string const& typesafeCheck);
 
@@ -414,9 +431,9 @@ void EnumData::addEnum(std::string const & name, std::string const& tag)
   }
 }
 
-void createDefaults( std::vector<DependencyData> const& dependencies, std::map<std::string,EnumData> const& enums, std::map<std::string,std::string> & defaultValues )
+void createDefaults( VkData const& vkData, std::map<std::string,std::string> & defaultValues )
 {
-  for ( std::vector<DependencyData>::const_iterator it = dependencies.begin() ; it != dependencies.end() ; ++it )
+  for ( std::list<DependencyData>::const_iterator it = vkData.dependencies.begin() ; it != vkData.dependencies.end() ; ++it )
   {
     assert( defaultValues.find( it->name ) == defaultValues.end() );
     switch( it->category )
@@ -425,11 +442,11 @@ void createDefaults( std::vector<DependencyData> const& dependencies, std::map<s
         break;
       case DependencyData::Category::ENUM :
         {
-          assert(enums.find(it->name) != enums.end());
-          EnumData const & enumData = enums.find(it->name)->second;
+          assert(vkData.enums.find(it->name) != vkData.enums.end());
+          EnumData const & enumData = vkData.enums.find(it->name)->second;
           if (!enumData.members.empty())
           {
-            defaultValues[it->name] = it->name + "::" + enums.find(it->name)->second.members.front().name;
+            defaultValues[it->name] = it->name + "::" + vkData.enums.find(it->name)->second.members.front().name;
           }
           else
           {
@@ -754,7 +771,7 @@ bool readCommandParam( tinyxml2::XMLElement * element, DependencyData & typeData
   return element->Attribute("optional") && (strcmp(element->Attribute("optional"), "false,true") == 0);
 }
 
-std::map<std::string, CommandData>::iterator readCommandProto(tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string, CommandData> & commands)
+std::map<std::string, CommandData>::iterator readCommandProto(tinyxml2::XMLElement * element, VkData & vkData)
 {
   tinyxml2::XMLElement * typeElement = element->FirstChildElement();
   assert( typeElement && ( strcmp( typeElement->Value(), "type" ) == 0 ) );
@@ -765,31 +782,31 @@ std::map<std::string, CommandData>::iterator readCommandProto(tinyxml2::XMLEleme
   std::string type = strip( typeElement->GetText(), "Vk" );
   std::string name = stripCommand( nameElement->GetText() );
 
-  dependencies.push_back( DependencyData( DependencyData::Category::COMMAND, name ) );
-  assert( commands.find( name ) == commands.end() );
-  std::map<std::string,CommandData>::iterator it = commands.insert( std::make_pair( name, CommandData() ) ).first;
+  vkData.dependencies.push_back( DependencyData( DependencyData::Category::COMMAND, name ) );
+  assert( vkData.commands.find( name ) == vkData.commands.end() );
+  std::map<std::string,CommandData>::iterator it = vkData.commands.insert( std::make_pair( name, CommandData() ) ).first;
   it->second.returnType = type;
 
   return it;
 }
 
-void readCommands(tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string, CommandData> & commands, std::map<std::string, HandleData> & handles, std::set<std::string> const& tags)
+void readCommands(tinyxml2::XMLElement * element, VkData & vkData)
 {
   tinyxml2::XMLElement * child = element->FirstChildElement();
   assert( child );
   do
   {
     assert( strcmp( child->Value(), "command" ) == 0 );
-    readCommandsCommand( child, dependencies, commands, handles, tags );
+    readCommandsCommand( child, vkData );
   } while ( child = child->NextSiblingElement() );
 }
 
-void readCommandsCommand(tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string, CommandData> & commands, std::map<std::string, HandleData> & handles, std::set<std::string> const& tags)
+void readCommandsCommand(tinyxml2::XMLElement * element, VkData & vkData)
 {
   tinyxml2::XMLElement * child = element->FirstChildElement();
   assert( child && ( strcmp( child->Value(), "proto" ) == 0 ) );
 
-  std::map<std::string, CommandData>::iterator it = readCommandProto(child, dependencies, commands);
+  std::map<std::string, CommandData>::iterator it = readCommandProto(child, vkData);
 
   if (element->Attribute("successcodes"))
   {
@@ -799,7 +816,7 @@ void readCommandsCommand(tinyxml2::XMLElement * element, std::list<DependencyDat
     {
       end = successCodes.find(',', start);
       std::string code = successCodes.substr(start, end - start);
-      std::string tag = findTag(code, tags);
+      std::string tag = findTag(code, vkData.tags);
       it->second.successCodes.push_back("e" + toCamelCase(strip(code, "VK_", tag)) + tag);
       start = end + 1;
     } while (end != std::string::npos);
@@ -817,7 +834,7 @@ void readCommandsCommand(tinyxml2::XMLElement * element, std::list<DependencyDat
     std::string value = child->Value();
     if ( value == "param" )
     {
-      it->second.twoStep |= readCommandParam(child, dependencies.back(), it->second.arguments);
+      it->second.twoStep |= readCommandParam(child, vkData.dependencies.back(), it->second.arguments);
     }
     else
     {
@@ -832,13 +849,13 @@ void readCommandsCommand(tinyxml2::XMLElement * element, std::list<DependencyDat
   }
 
   assert(!it->second.arguments.empty());
-  std::map<std::string, HandleData>::iterator hit = handles.find(it->second.arguments[0].pureType);
-  if (hit != handles.end())
+  std::map<std::string, HandleData>::iterator hit = vkData.handles.find(it->second.arguments[0].pureType);
+  if (hit != vkData.handles.end())
   {
     hit->second.commands.push_back(it->first);
     it->second.handleCommand = true;
-    DependencyData const& dep = dependencies.back();
-    std::list<DependencyData>::iterator dit = std::find_if(dependencies.begin(), dependencies.end(), [hit](DependencyData const& dd) { return dd.name == hit->first; });
+    DependencyData const& dep = vkData.dependencies.back();
+    std::list<DependencyData>::iterator dit = std::find_if(vkData.dependencies.begin(), vkData.dependencies.end(), [hit](DependencyData const& dd) { return dd.name == hit->first; });
     for (std::set<std::string>::const_iterator depit = dep.dependencies.begin(); depit != dep.dependencies.end(); ++depit)
     {
       if (*depit != hit->first)
@@ -868,14 +885,14 @@ void readComment(tinyxml2::XMLElement * element, std::string & header)
   header += "\n\n// This header is generated from the Khronos Vulkan XML API Registry.";
 }
 
-void readEnums( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,EnumData> & enums, std::set<std::string> const& tags, std::set<std::string> & vkTypes )
+void readEnums( tinyxml2::XMLElement * element, VkData & vkData )
 {
   assert( element->Attribute( "name" ) );
   std::string name = getEnumName(element->Attribute("name"));
   if ( name != "API Constants" )
   {
-    dependencies.push_back( DependencyData( DependencyData::Category::ENUM, name ) );
-    std::map<std::string,EnumData>::iterator it = enums.insert( std::make_pair( name, EnumData() ) ).first;
+    vkData.dependencies.push_back( DependencyData( DependencyData::Category::ENUM, name ) );
+    std::map<std::string,EnumData>::iterator it = vkData.enums.insert( std::make_pair( name, EnumData() ) ).first;
     std::string tag;
 
     if (name == "Result")
@@ -903,7 +920,7 @@ void readEnums( tinyxml2::XMLElement * element, std::list<DependencyData> & depe
       }
 
       // if the enum name contains a tag remove it from the prefix to generate correct enum value names.
-      for (std::set<std::string>::const_iterator tit = tags.begin(); tit != tags.end(); ++tit)
+      for (std::set<std::string>::const_iterator tit = vkData.tags.begin(); tit != vkData.tags.end(); ++tit)
       {
         size_t pos = it->second.prefix.find(*tit);
         if ((pos != std::string::npos) && (pos == it->second.prefix.length() - tit->length() - 1))
@@ -917,8 +934,8 @@ void readEnums( tinyxml2::XMLElement * element, std::list<DependencyData> & depe
 
     readEnumsEnum( element, it->second, tag );
 
-    assert( vkTypes.find( name ) == vkTypes.end() );
-    vkTypes.insert( name );
+    assert( vkData.vkTypes.find( name ) == vkData.vkTypes.end() );
+    vkData.vkTypes.insert( name );
   }
 }
 
@@ -934,7 +951,7 @@ void readEnumsEnum( tinyxml2::XMLElement * element, EnumData & enumData, std::st
   } while ( child = child->NextSiblingElement() );
 }
 
-void readExtensionRequire(tinyxml2::XMLElement * element, std::string const& protect, std::string const& tag, std::map<std::string, CommandData> & commands, std::map<std::string, EnumData> & enums, std::map<std::string, FlagData> & flags, std::map<std::string, ScalarData> & scalars, std::map<std::string, StructData> & structs)
+void readExtensionRequire(tinyxml2::XMLElement * element, VkData & vkData, std::string const& protect, std::string const& tag)
 {
   tinyxml2::XMLElement * child = element->FirstChildElement();
   do
@@ -945,29 +962,29 @@ void readExtensionRequire(tinyxml2::XMLElement * element, std::string const& pro
     if ( value == "command" )
     {
       std::string name = stripCommand(child->Attribute("name"));
-      std::map<std::string, CommandData>::iterator cit = commands.find(name);
-      assert(cit != commands.end());
+      std::map<std::string, CommandData>::iterator cit = vkData.commands.find(name);
+      assert(cit != vkData.commands.end());
       cit->second.protect = protect;
     }
     else if (value == "type")
     {
       std::string name = strip(child->Attribute("name"), "Vk");
-      std::map<std::string, EnumData>::iterator eit = enums.find(name);
-      if (eit != enums.end())
+      std::map<std::string, EnumData>::iterator eit = vkData.enums.find(name);
+      if (eit != vkData.enums.end())
       {
         eit->second.protect = protect;
       }
       else
       {
-        std::map<std::string, FlagData>::iterator fit = flags.find(name);
-        if (fit != flags.end())
+        std::map<std::string, FlagData>::iterator fit = vkData.flags.find(name);
+        if (fit != vkData.flags.end())
         {
           fit->second.protect = protect;
 
           // if the enum of this flags is auto-generated, protect it as well
           std::string enumName = generateEnumNameForFlags(name);
-          std::map<std::string, EnumData>::iterator eit = enums.find(enumName);
-          assert(eit != enums.end());
+          std::map<std::string, EnumData>::iterator eit = vkData.enums.find(enumName);
+          assert(eit != vkData.enums.end());
           if (eit->second.members.empty())
           {
             eit->second.protect = protect;
@@ -975,15 +992,15 @@ void readExtensionRequire(tinyxml2::XMLElement * element, std::string const& pro
         }
         else
         {
-          std::map<std::string, ScalarData>::iterator scit = scalars.find(name);
-          if (scit != scalars.end())
+          std::map<std::string, ScalarData>::iterator scit = vkData.scalars.find(name);
+          if (scit != vkData.scalars.end())
           {
             scit->second.protect = protect;
           }
           else
           {
-            std::map<std::string, StructData>::iterator stit = structs.find(name);
-            assert(stit != structs.end() && stit->second.protect.empty());
+            std::map<std::string, StructData>::iterator stit = vkData.structs.find(name);
+            assert(stit != vkData.structs.end() && stit->second.protect.empty());
             stit->second.protect = protect;
           }
         }
@@ -994,9 +1011,9 @@ void readExtensionRequire(tinyxml2::XMLElement * element, std::string const& pro
       // TODO process enums which don't extend existing enums
       if (child->Attribute("extends"))
       {
-        assert(enums.find(getEnumName(child->Attribute("extends"))) != enums.end());
+        assert(vkData.enums.find(getEnumName(child->Attribute("extends"))) != vkData.enums.end());
         assert(!!child->Attribute("offset") ^ !!child->Attribute("value"));   // either offset or value has to be defined; no both of them!
-        enums[getEnumName(child->Attribute("extends"))].addEnum(child->Attribute("name"), child->Attribute("offset") ? tag : "" );
+        vkData.enums[getEnumName(child->Attribute("extends"))].addEnum(child->Attribute("name"), child->Attribute("offset") ? tag : "" );
       }
     }
     else
@@ -1006,22 +1023,22 @@ void readExtensionRequire(tinyxml2::XMLElement * element, std::string const& pro
   } while ( child = child->NextSiblingElement() );
 }
 
-void readExtensions(tinyxml2::XMLElement * element, std::map<std::string, CommandData> & commands, std::map<std::string, EnumData> &enums, std::map<std::string, FlagData> & flags, std::map<std::string, ScalarData> & scalars, std::map<std::string, StructData> & structs, std::set<std::string> const& tags)
+void readExtensions(tinyxml2::XMLElement * element, VkData & vkData)
 {
   tinyxml2::XMLElement * child = element->FirstChildElement();
   assert( child );
   do
   {
     assert( strcmp( child->Value(), "extension" ) == 0 );
-    readExtensionsExtension( child, commands, enums, flags, scalars, structs, tags );
+    readExtensionsExtension( child, vkData );
   } while ( child = child->NextSiblingElement() );
 }
 
-void readExtensionsExtension(tinyxml2::XMLElement * element, std::map<std::string, CommandData> & commands, std::map<std::string, EnumData> & enums, std::map<std::string, FlagData> & flags, std::map<std::string, ScalarData> & scalars, std::map<std::string, StructData> & structs, std::set<std::string> const& tags)
+void readExtensionsExtension(tinyxml2::XMLElement * element, VkData & vkData)
 {
   assert( element->Attribute( "name" ) );
   std::string tag = extractTag(element->Attribute("name"));
-  assert(tags.find(tag) != tags.end());
+  assert(vkData.tags.find(tag) != vkData.tags.end());
 
   // don't parse disabled extensions
   if (strcmp(element->Attribute("supported"), "disabled") == 0)
@@ -1037,7 +1054,7 @@ void readExtensionsExtension(tinyxml2::XMLElement * element, std::map<std::strin
 
   tinyxml2::XMLElement * child = element->FirstChildElement();
   assert( child && ( strcmp( child->Value(), "require" ) == 0 ) && !child->NextSiblingElement() );
-  readExtensionRequire( child, protect, tag, commands, enums, flags, scalars, structs );
+  readExtensionRequire( child, vkData, protect, tag );
 }
 
 void readTypeBasetype( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies )
@@ -1063,7 +1080,7 @@ void readTypeBasetype( tinyxml2::XMLElement * element, std::list<DependencyData>
   }
 }
 
-void readTypeBitmask(tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string, FlagData> & flags, std::map<std::string, ScalarData> & scalars, std::set<std::string> & vkTypes, std::map<std::string, EnumData> & enums)
+void readTypeBitmask(tinyxml2::XMLElement * element, VkData & vkData)
 {
   tinyxml2::XMLElement * typeElement = element->FirstChildElement();
   assert( typeElement && ( strcmp( typeElement->Value(), "type" ) == 0 ) && typeElement->GetText() && ( strcmp( typeElement->GetText(), "VkFlags" ) == 0 ) );
@@ -1083,33 +1100,33 @@ void readTypeBitmask(tinyxml2::XMLElement * element, std::list<DependencyData> &
   else {
     // Generate FlagBits name
     requires = generateEnumNameForFlags(name);
-    dependencies.push_back(DependencyData(DependencyData::Category::ENUM, requires));
-    std::map<std::string, EnumData>::iterator it = enums.insert(std::make_pair(requires, EnumData())).first;
+    vkData.dependencies.push_back(DependencyData(DependencyData::Category::ENUM, requires));
+    std::map<std::string, EnumData>::iterator it = vkData.enums.insert(std::make_pair(requires, EnumData())).first;
     it->second.bitmask = true;
-    vkTypes.insert(requires);
+    vkData.vkTypes.insert(requires);
   }
 
-  dependencies.push_back( DependencyData( DependencyData::Category::FLAGS, name ) );
-  dependencies.back().dependencies.insert( requires );
-  flags.insert(std::make_pair(name, FlagData()));
+  vkData.dependencies.push_back( DependencyData( DependencyData::Category::FLAGS, name ) );
+  vkData.dependencies.back().dependencies.insert( requires );
+  vkData.flags.insert(std::make_pair(name, FlagData()));
 
-  assert( vkTypes.find( name ) == vkTypes.end() );
-  vkTypes.insert( name );
+  assert( vkData.vkTypes.find( name ) == vkData.vkTypes.end() );
+  vkData.vkTypes.insert( name );
 }
 
-void readTypeDefine( tinyxml2::XMLElement * element, std::string & version, std::string & typedefCheck )
+void readTypeDefine( tinyxml2::XMLElement * element, VkData & vkData )
 {
   tinyxml2::XMLElement * child = element->FirstChildElement();
   if (child && (strcmp(child->GetText(), "VK_API_VERSION") == 0))
   {
-    version = element->LastChild()->ToText()->Value();
+    vkData.version = element->LastChild()->ToText()->Value();
   }
   else if (element->Attribute("name") && strcmp(element->Attribute("name"), "VK_DEFINE_NON_DISPATCHABLE_HANDLE") == 0)
   {
     std::string text = element->LastChild()->ToText()->Value();
     size_t start = text.find('#');
     size_t end = text.find_first_of("\r\n", start + 1);
-    typedefCheck = text.substr(start, end - start);
+    vkData.typesafeCheck = text.substr(start, end - start);
   }
 }
 
@@ -1120,7 +1137,7 @@ void readTypeFuncpointer( tinyxml2::XMLElement * element, std::list<DependencyDa
   dependencies.push_back( DependencyData( DependencyData::Category::FUNC_POINTER, child->GetText() ) );
 }
 
-void readTypeHandle(tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::set<std::string> & vkTypes, std::map<std::string,HandleData> & handles)
+void readTypeHandle(tinyxml2::XMLElement * element, VkData & vkData)
 {
   tinyxml2::XMLElement * typeElement = element->FirstChildElement();
   assert( typeElement && ( strcmp( typeElement->Value(), "type" ) == 0 ) && typeElement->GetText() );
@@ -1133,12 +1150,12 @@ void readTypeHandle(tinyxml2::XMLElement * element, std::list<DependencyData> & 
   assert( nameElement && ( strcmp( nameElement->Value(), "name" ) == 0 ) && nameElement->GetText() );
   std::string name = strip( nameElement->GetText(), "Vk" );
 
-  dependencies.push_back( DependencyData( DependencyData::Category::HANDLE, name ) );
+  vkData.dependencies.push_back( DependencyData( DependencyData::Category::HANDLE, name ) );
 
-  assert(vkTypes.find(name) == vkTypes.end());
-  vkTypes.insert(name);
-  assert(handles.find(name) == handles.end());
-  handles[name];    // add this to the handles map
+  assert(vkData.vkTypes.find(name) == vkData.vkTypes.end());
+  vkData.vkTypes.insert(name);
+  assert(vkData.handles.find(name) == vkData.handles.end());
+  vkData.handles[name];    // add this to the handles map
 }
 
 void readTypeStructMember( tinyxml2::XMLElement * element, std::vector<MemberData> & members, std::set<std::string> & dependencies )
@@ -1215,7 +1232,7 @@ void readTypeStructMember( tinyxml2::XMLElement * element, std::vector<MemberDat
   }
 }
 
-void readTypeStruct( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,StructData> & structs, std::set<std::string> & vkTypes )
+void readTypeStruct( tinyxml2::XMLElement * element, VkData & vkData )
 {
   assert( !element->Attribute( "returnedonly" ) || ( strcmp( element->Attribute( "returnedonly" ), "true" ) == 0 ) );
 
@@ -1227,10 +1244,10 @@ void readTypeStruct( tinyxml2::XMLElement * element, std::list<DependencyData> &
     return;
   }
 
-  dependencies.push_back( DependencyData( DependencyData::Category::STRUCT, name ) );
+  vkData.dependencies.push_back( DependencyData( DependencyData::Category::STRUCT, name ) );
 
-  assert( structs.find( name ) == structs.end() );
-  std::map<std::string,StructData>::iterator it = structs.insert( std::make_pair( name, StructData() ) ).first;
+  assert( vkData.structs.find( name ) == vkData.structs.end() );
+  std::map<std::string,StructData>::iterator it = vkData.structs.insert( std::make_pair( name, StructData() ) ).first;
   it->second.returnedOnly = !!element->Attribute( "returnedonly" );
 
   tinyxml2::XMLElement * child = element->FirstChildElement();
@@ -1240,7 +1257,7 @@ void readTypeStruct( tinyxml2::XMLElement * element, std::list<DependencyData> &
     std::string value = child->Value();
     if ( value == "member" )
     {
-      readTypeStructMember( child, it->second.members, dependencies.back().dependencies );
+      readTypeStructMember( child, it->second.members, vkData.dependencies.back().dependencies );
     }
     else
     {
@@ -1248,8 +1265,8 @@ void readTypeStruct( tinyxml2::XMLElement * element, std::list<DependencyData> &
     }
   } while ( child = child->NextSiblingElement() );
 
-  assert( vkTypes.find( name ) == vkTypes.end() );
-  vkTypes.insert( name );
+  assert( vkData.vkTypes.find( name ) == vkData.vkTypes.end() );
+  vkData.vkTypes.insert( name );
 }
 
 void readTypeUnionMember( tinyxml2::XMLElement * element, std::vector<MemberData> & members, std::set<std::string> & dependencies )
@@ -1324,25 +1341,25 @@ void readTypeUnionMember( tinyxml2::XMLElement * element, std::vector<MemberData
   }
 }
 
-void readTypeUnion( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies, std::map<std::string,StructData> & structs, std::set<std::string> & vkTypes )
+void readTypeUnion( tinyxml2::XMLElement * element, VkData & vkData )
 {
   assert( element->Attribute( "name" ) );
   std::string name = strip( element->Attribute( "name" ), "Vk" );
 
-  dependencies.push_back( DependencyData( DependencyData::Category::UNION, name ) );
+  vkData.dependencies.push_back( DependencyData( DependencyData::Category::UNION, name ) );
 
-  assert( structs.find( name ) == structs.end() );
-  std::map<std::string,StructData>::iterator it = structs.insert( std::make_pair( name, StructData() ) ).first;
+  assert( vkData.structs.find( name ) == vkData.structs.end() );
+  std::map<std::string,StructData>::iterator it = vkData.structs.insert( std::make_pair( name, StructData() ) ).first;
 
   tinyxml2::XMLElement * child = element->FirstChildElement();
   do
   {
     assert( strcmp( child->Value(), "member" ) == 0 );
-    readTypeUnionMember( child, it->second.members, dependencies.back().dependencies );
+    readTypeUnionMember( child, it->second.members, vkData.dependencies.back().dependencies );
   } while ( child = child->NextSiblingElement() );
 
-  assert( vkTypes.find( name ) == vkTypes.end() );
-  vkTypes.insert( name );
+  assert( vkData.vkTypes.find( name ) == vkData.vkTypes.end() );
+  vkData.vkTypes.insert( name );
 }
 
 void readTags(tinyxml2::XMLElement * element, std::set<std::string> & tags)
@@ -1357,7 +1374,7 @@ void readTags(tinyxml2::XMLElement * element, std::set<std::string> & tags)
   } while (child = child->NextSiblingElement());
 }
 
-void readTypes(tinyxml2::XMLElement * element, std::string & version, std::string & typedefCheck, std::list<DependencyData> & dependencies, std::map<std::string, FlagData> & flags, std::map<std::string, ScalarData> & scalars, std::map<std::string, StructData> & structs, std::set<std::string> & vkTypes, std::map<std::string, HandleData> & handles, std::map<std::string, EnumData> & enums)
+void readTypes(tinyxml2::XMLElement * element, VkData & vkData)
 {
   tinyxml2::XMLElement * child = element->FirstChildElement();
   do
@@ -1370,31 +1387,31 @@ void readTypes(tinyxml2::XMLElement * element, std::string & version, std::strin
       std::string category = child->Attribute( "category" );
       if ( category == "basetype" )
       {
-        readTypeBasetype( child, dependencies );
+        readTypeBasetype( child, vkData.dependencies );
       }
       else if ( category == "bitmask" )
       {
-        readTypeBitmask( child, dependencies, flags, scalars, vkTypes, enums );
+        readTypeBitmask( child, vkData);
       }
       else if ( category == "define" )
       {
-        readTypeDefine( child, version, typedefCheck );
+        readTypeDefine( child, vkData );
       }
       else if ( category == "funcpointer" )
       {
-        readTypeFuncpointer( child, dependencies );
+        readTypeFuncpointer( child, vkData.dependencies );
       }
       else if ( category == "handle" )
       {
-        readTypeHandle( child, dependencies, vkTypes, handles );
+        readTypeHandle( child, vkData );
       }
       else if ( category == "struct" )
       {
-        readTypeStruct( child, dependencies, structs, vkTypes );
+        readTypeStruct( child, vkData );
       }
       else if ( category == "union" )
       {
-        readTypeUnion( child, dependencies, structs, vkTypes );
+        readTypeUnion( child, vkData );
       }
       else
       {
@@ -1404,16 +1421,15 @@ void readTypes(tinyxml2::XMLElement * element, std::string & version, std::strin
     else
     {
       assert( child->Attribute( "requires" ) && child->Attribute( "name" ) );
-      dependencies.push_back( DependencyData( DependencyData::Category::REQUIRED, child->Attribute( "name" ) ) );
+      vkData.dependencies.push_back( DependencyData( DependencyData::Category::REQUIRED, child->Attribute( "name" ) ) );
     }
   } while ( child = child->NextSiblingElement() );
 }
 
-void sortDependencies( std::list<DependencyData> & dependencies, std::vector<DependencyData> & sortedDependencies )
+void sortDependencies( std::list<DependencyData> & dependencies )
 {
   std::set<std::string> listedTypes = { "VkFlags" };
-
-  sortedDependencies.reserve( dependencies.size() );
+  std::list<DependencyData> sortedDependencies;
 
   while ( !dependencies.empty() )
   {
@@ -1435,6 +1451,8 @@ void sortDependencies( std::list<DependencyData> & dependencies, std::vector<Dep
     }
     assert( ok );
   }
+
+  dependencies.swap(sortedDependencies);
 }
 
 std::string reduceName(std::string const& name)
@@ -2341,18 +2359,18 @@ void writeFlagsGetString(std::ofstream & ofs, DependencyData const& dependencyDa
   ofs << std::endl;
 }
 
-void writeEnumsToString(std::ofstream & ofs, std::vector<DependencyData> const& dependencyData, std::map<std::string, EnumData> const& enums)
+void writeEnumsToString(std::ofstream & ofs, VkData const& vkData)
 {
-  for (auto it = dependencyData.begin(); it != dependencyData.end(); ++it)
+  for (auto it = vkData.dependencies.begin(); it != vkData.dependencies.end(); ++it)
   {
     switch (it->category)
     {
     case DependencyData::Category::ENUM:
-      assert(enums.find(it->name) != enums.end());
-      writeEnumGetString(ofs, *it, enums.find(it->name)->second);
+      assert(vkData.enums.find(it->name) != vkData.enums.end());
+      writeEnumGetString(ofs, *it, vkData.enums.find(it->name)->second);
       break;
     case DependencyData::Category::FLAGS:
-        writeFlagsGetString(ofs, *it, enums.find(*it->dependencies.begin())->second);
+      writeFlagsGetString(ofs, *it, vkData.enums.find(*it->dependencies.begin())->second);
       break;
     }
   }
@@ -2372,7 +2390,7 @@ void writeTypeFlags( std::ofstream & ofs, DependencyData const& dependencyData, 
   ofs << std::endl;
 }
 
-void writeTypeHandle(std::ofstream & ofs, DependencyData const& dependencyData, HandleData const& handle, std::map<std::string, CommandData> const& commands, std::vector<DependencyData> const& dependencies, std::set<std::string> const& vkTypes)
+void writeTypeHandle(std::ofstream & ofs, VkData const& vkData, DependencyData const& dependencyData, HandleData const& handle, std::list<DependencyData> const& dependencies)
 {
   std::string memberName = dependencyData.name;
   assert(isupper(memberName[0]));
@@ -2404,9 +2422,9 @@ void writeTypeHandle(std::ofstream & ofs, DependencyData const& dependencyData, 
     for (size_t i = 0; i < handle.commands.size(); i++)
     {
       std::string commandName = handle.commands[i];
-      std::map<std::string, CommandData>::const_iterator cit = commands.find(commandName);
-      assert((cit != commands.end()) && cit->second.handleCommand);
-      std::vector<DependencyData>::const_iterator dep = std::find_if(dependencies.begin(), dependencies.end(), [commandName](DependencyData const& dd) { return dd.name == commandName; });
+      std::map<std::string, CommandData>::const_iterator cit = vkData.commands.find(commandName);
+      assert((cit != vkData.commands.end()) && cit->second.handleCommand);
+      std::list<DependencyData>::const_iterator dep = std::find_if(dependencies.begin(), dependencies.end(), [commandName](DependencyData const& dd) { return dd.name == commandName; });
       assert(dep != dependencies.end());
       std::string className = dependencyData.name;
       std::string functionName = determineFunctionName(dep->name, cit->second);
@@ -2416,7 +2434,7 @@ void writeTypeHandle(std::ofstream & ofs, DependencyData const& dependencyData, 
       {
         ofs << "#ifndef VKCPP_ENHANCED_MODE" << std::endl;
       }
-      writeTypeCommandStandard(ofs, "    ", functionName, *dep, cit->second, vkTypes);
+      writeTypeCommandStandard(ofs, "    ", functionName, *dep, cit->second, vkData.vkTypes);
       if (!hasPointers)
       {
         ofs << "#endif /*!VKCPP_ENHANCED_MODE*/" << std::endl;
@@ -2424,7 +2442,7 @@ void writeTypeHandle(std::ofstream & ofs, DependencyData const& dependencyData, 
 
       ofs << std::endl
           << "#ifdef VKCPP_ENHANCED_MODE" << std::endl;
-      writeTypeCommandEnhanced(ofs, "    ", className, functionName, *dep, cit->second, vkTypes);
+      writeTypeCommandEnhanced(ofs, "    ", className, functionName, *dep, cit->second, vkData.vkTypes);
       ofs << "#endif /*VKCPP_ENHANCED_MODE*/" << std::endl;
 
       if (i < handle.commands.size() - 1)
@@ -2467,10 +2485,10 @@ void writeTypeScalar( std::ofstream & ofs, DependencyData const& dependencyData 
   ofs << "  typedef " << *dependencyData.dependencies.begin() << " " << dependencyData.name << ";" << std::endl;
 }
 
-void writeTypeStruct( std::ofstream & ofs, DependencyData const& dependencyData, std::set<std::string> const& vkTypes, std::map<std::string,StructData> const& structs, std::map<std::string,std::string> const& defaultValues )
+void writeTypeStruct( std::ofstream & ofs, VkData const& vkData, DependencyData const& dependencyData, std::map<std::string,std::string> const& defaultValues )
 {
-  std::map<std::string,StructData>::const_iterator it = structs.find( dependencyData.name );
-  assert( it != structs.end() );
+  std::map<std::string,StructData>::const_iterator it = vkData.structs.find( dependencyData.name );
+  assert( it != vkData.structs.end() );
 
   enterProtect(ofs, it->second.protect);
   ofs << "  class " << dependencyData.name << std::endl
@@ -2485,17 +2503,17 @@ void writeTypeStruct( std::ofstream & ofs, DependencyData const& dependencyData,
   // only structs that are not returnedOnly get a constructor!
   if ( !it->second.returnedOnly )
   {
-    writeStructConstructor( ofs, dependencyData.name, memberName, it->second, vkTypes, defaultValues );
+    writeStructConstructor( ofs, dependencyData.name, memberName, it->second, vkData.vkTypes, defaultValues );
   }
 
   // create the getters and setters
   for ( size_t i=0 ; i<it->second.members.size() ; i++ )
   {
-    writeStructGetter(ofs, it->second.members[i], memberName, vkTypes, true);
+    writeStructGetter(ofs, it->second.members[i], memberName, vkData.vkTypes, true);
     if (!it->second.returnedOnly)
     {
-      writeStructGetter(ofs, it->second.members[i], memberName, vkTypes, false);
-      writeStructSetter( ofs, dependencyData.name, it->second.members[i], memberName, vkTypes );
+      writeStructGetter(ofs, it->second.members[i], memberName, vkData.vkTypes, false);
+      writeStructSetter( ofs, dependencyData.name, it->second.members[i], memberName, vkData.vkTypes );
     }
   }
 
@@ -2522,7 +2540,7 @@ void writeTypeStruct( std::ofstream & ofs, DependencyData const& dependencyData,
   ofs << std::endl;
 }
 
-void writeTypeUnion( std::ofstream & ofs, DependencyData const& dependencyData, StructData const& unionData, std::set<std::string> const& vkTypes, std::map<std::string,StructData> const& structs, std::map<std::string,std::string> const& defaultValues )
+void writeTypeUnion( std::ofstream & ofs, VkData const& vkData, DependencyData const& dependencyData, StructData const& unionData, std::map<std::string,std::string> const& defaultValues )
 {
   std::ostringstream oss;
   ofs << "  class " << dependencyData.name << std::endl
@@ -2578,11 +2596,11 @@ void writeTypeUnion( std::ofstream & ofs, DependencyData const& dependencyData, 
         << std::endl;
 
     // one getter/setter per union element
-    writeStructGetter(ofs, unionData.members[i], memberName, vkTypes, true);
+    writeStructGetter(ofs, unionData.members[i], memberName, vkData.vkTypes, true);
 
     assert(!unionData.returnedOnly);
-    writeStructGetter(ofs, unionData.members[i], memberName, vkTypes, false);
-    writeStructSetter(ofs, dependencyData.name, unionData.members[i], memberName, vkTypes);
+    writeStructGetter(ofs, unionData.members[i], memberName, vkData.vkTypes, false);
+    writeStructSetter(ofs, dependencyData.name, unionData.members[i], memberName, vkData.vkTypes);
   }
   ofs << "    operator Vk" << dependencyData.name << " const& () const" << std::endl
       << "    {" << std::endl
@@ -2595,41 +2613,41 @@ void writeTypeUnion( std::ofstream & ofs, DependencyData const& dependencyData, 
       << std::endl;
 }
 
-void writeTypes(std::ofstream & ofs, std::vector<DependencyData> const& dependencies, std::map<std::string, CommandData> const& commands, std::map<std::string, EnumData> const& enums, std::map<std::string, FlagData> const& flags, std::map<std::string, HandleData> const& handles, std::map<std::string, StructData> const& structs, std::map<std::string, std::string> const& defaultValues, std::set<std::string> const& vkTypes)
+void writeTypes(std::ofstream & ofs, VkData const& vkData, std::map<std::string, std::string> const& defaultValues)
 {
-  for ( std::vector<DependencyData>::const_iterator it = dependencies.begin() ; it != dependencies.end() ; ++it )
+  for ( std::list<DependencyData>::const_iterator it = vkData.dependencies.begin() ; it != vkData.dependencies.end() ; ++it )
   {
     switch( it->category )
     {
       case DependencyData::Category::COMMAND :
-        assert( commands.find( it->name ) != commands.end() );
-        writeTypeCommand( ofs, *it, commands.find( it->name )->second, vkTypes );
+        assert( vkData.commands.find( it->name ) != vkData.commands.end() );
+        writeTypeCommand( ofs, *it, vkData.commands.find( it->name )->second, vkData.vkTypes );
         break;
       case DependencyData::Category::ENUM :
-        assert( enums.find( it->name ) != enums.end() );
-        writeTypeEnum( ofs, *it, enums.find( it->name )->second );
+        assert( vkData.enums.find( it->name ) != vkData.enums.end() );
+        writeTypeEnum( ofs, *it, vkData.enums.find( it->name )->second );
         break;
       case DependencyData::Category::FLAGS :
-        assert(flags.find(it->name) != flags.end());
-        writeTypeFlags( ofs, *it, flags.find( it->name)->second );
+        assert(vkData.flags.find(it->name) != vkData.flags.end());
+        writeTypeFlags( ofs, *it, vkData.flags.find( it->name)->second );
         break;
       case DependencyData::Category::FUNC_POINTER :
       case DependencyData::Category::REQUIRED :
         // skip FUNC_POINTER and REQUIRED, they just needed to be in the dependencies list to resolve dependencies
         break;
       case DependencyData::Category::HANDLE :
-        assert(handles.find(it->name) != handles.end());
-        writeTypeHandle( ofs, *it, handles.find( it->name )->second, commands, dependencies, vkTypes );
+        assert(vkData.handles.find(it->name) != vkData.handles.end());
+        writeTypeHandle(ofs, vkData, *it, vkData.handles.find(it->name)->second, vkData.dependencies);
         break;
       case DependencyData::Category::SCALAR :
         writeTypeScalar( ofs, *it );
         break;
       case DependencyData::Category::STRUCT :
-        writeTypeStruct( ofs, *it, vkTypes, structs, defaultValues );
+        writeTypeStruct( ofs, vkData, *it, defaultValues );
         break;
       case DependencyData::Category::UNION :
-        assert( structs.find( it->name ) != structs.end() );
-        writeTypeUnion( ofs, *it, structs.find( it->name )->second, vkTypes, structs, defaultValues );
+        assert( vkData.structs.find( it->name ) != vkData.structs.end() );
+        writeTypeUnion( ofs, vkData, *it, vkData.structs.find( it->name )->second, defaultValues );
         break;
       default :
         assert( false );
@@ -2669,18 +2687,7 @@ int main( int argc, char **argv )
   assert( strcmp( registryElement->Value(), "registry" ) == 0 );
   assert( !registryElement->NextSiblingElement() );
 
-  std::string                         version;
-  std::string                         typesafeCheck;
-  std::list<DependencyData>           dependencies;
-  std::map<std::string, CommandData>  commands;
-  std::map<std::string, EnumData>     enums;
-  std::map<std::string, FlagData>     flags;
-  std::map<std::string, HandleData>   handles;
-  std::map<std::string, ScalarData>   scalars;
-  std::map<std::string, StructData>   structs;
-  std::set<std::string>               tags;
-  std::set<std::string>               vkTypes;
-  std::string                         vulkanLicenseHeader;
+  VkData vkData;
 
   tinyxml2::XMLElement * child = registryElement->FirstChildElement();
   do
@@ -2689,27 +2696,27 @@ int main( int argc, char **argv )
     const std::string value = child->Value();
     if ( value == "commands" )
     {
-      readCommands( child, dependencies, commands, handles, tags );
+      readCommands( child, vkData );
     }
     else if (value == "comment")
     {
-      readComment(child, vulkanLicenseHeader);
+      readComment(child, vkData.vulkanLicenseHeader);
     }
     else if ( value == "enums" )
     {
-      readEnums( child, dependencies, enums, tags, vkTypes );
+      readEnums( child, vkData );
     }
     else if ( value == "extensions" )
     {
-      readExtensions( child, commands, enums, flags, scalars, structs, tags );
+      readExtensions( child, vkData );
     }
     else if (value == "tags")
     {
-      readTags(child, tags);
+      readTags(child, vkData.tags);
     }
     else if ( value == "types" )
     {
-      readTypes( child, version, typesafeCheck, dependencies, flags, scalars, structs, vkTypes, handles, enums );
+      readTypes( child, vkData );
     }
     else
     {
@@ -2717,15 +2724,14 @@ int main( int argc, char **argv )
     }
   } while ( child = child->NextSiblingElement() );
 
-  std::vector<DependencyData> sortedDependencies;
-  sortDependencies( dependencies, sortedDependencies );
+  sortDependencies( vkData.dependencies );
 
   std::map<std::string,std::string> defaultValues;
-  createDefaults( sortedDependencies, enums, defaultValues );
+  createDefaults( vkData, defaultValues );
 
   std::ofstream ofs( "vk_cpp.h" );
   ofs << nvidiaLicenseHeader << std::endl
-      << vulkanLicenseHeader << std::endl
+      << vkData.vulkanLicenseHeader << std::endl
       << std::endl
       << std::endl
       << "#ifndef VK_CPP_H_" << std::endl
@@ -2743,19 +2749,19 @@ int main( int argc, char **argv )
       << "#endif /*VKCPP_ENHANCED_MODE*/" << std::endl
       << std::endl;
 
-  writeVersionCheck( ofs, version );
-  writeTypesafeCheck(ofs, typesafeCheck );
+  writeVersionCheck( ofs, vkData.version );
+  writeTypesafeCheck(ofs, vkData.typesafeCheck );
   ofs << "namespace vk" << std::endl
       << "{" << std::endl
       << flagsHeader
       << optionalClassHeader;
 
   // first of all, write out vk::Result and the exception handling stuff
-  std::vector<DependencyData>::const_iterator it = std::find_if(sortedDependencies.begin(), sortedDependencies.end(), [](DependencyData const& dp) { return dp.name == "Result"; });
-  assert(it != sortedDependencies.end());
-  writeTypeEnum(ofs, *it, enums.find(it->name)->second);
-  writeEnumGetString(ofs, *it, enums.find(it->name)->second);
-  sortedDependencies.erase(it);
+  std::list<DependencyData>::const_iterator it = std::find_if(vkData.dependencies.begin(), vkData.dependencies.end(), [](DependencyData const& dp) { return dp.name == "Result"; });
+  assert(it != vkData.dependencies.end());
+  writeTypeEnum(ofs, *it, vkData.enums.find(it->name)->second);
+  writeEnumGetString(ofs, *it, vkData.enums.find(it->name)->second);
+  vkData.dependencies.erase(it);
   ofs << exceptionHeader;
 
   ofs << "} // namespace vk" << std::endl
@@ -2770,8 +2776,8 @@ int main( int argc, char **argv )
       << "namespace vk" << std::endl
       << "{" << std::endl;
 
-  writeTypes( ofs, sortedDependencies, commands, enums, flags, handles, structs, defaultValues, vkTypes );
-  writeEnumsToString(ofs, sortedDependencies, enums);
+  writeTypes( ofs, vkData, defaultValues );
+  writeEnumsToString(ofs, vkData);
 
   ofs << "} // namespace vk" << std::endl
       << std::endl

@@ -75,7 +75,7 @@ const std::string exceptionHeader(
   "  {\n"
   "    public:\n"
   "    virtual const char* name() const noexcept override { return \"vk::Result\"; }\n"
-  "    virtual std::string message(int ev) const override { return getString(static_cast<vk::Result>(ev)); }\n"
+  "    virtual std::string message(int ev) const override { return to_string(static_cast<vk::Result>(ev)); }\n"
   "  };\n"
   "\n"
   "#if defined(_MSC_VER) && (_MSC_VER == 1800)\n"
@@ -225,7 +225,7 @@ std::string const optionalClassHeader = (
 "\n"
 "  private:\n"
 "    Optional(std::nullptr_t) { m_ptr = nullptr; }\n"
-"    friend typename RefType;\n"
+"    friend RefType;\n"
 "    RefType *m_ptr;\n"
 "  };\n"
 "\n"
@@ -540,7 +540,7 @@ std::string determineReturnType(CommandData const& commandData, size_t returnInd
     // the return type just stays the original return type
     returnType = commandData.returnType;
   }
-  return std::move(returnType);
+  return returnType;
 }
 
 void enterProtect(std::ofstream &ofs, std::string const& protect)
@@ -643,7 +643,7 @@ std::map<size_t, size_t> getVectorParameters(CommandData const& commandData)
       assert((lenParameters[i] == ~0) || (lenParameters[i] < i));
     }
   }
-  return std::move(lenParameters);
+  return lenParameters;
 }
 
 bool hasPointerArguments(CommandData const& commandData)
@@ -1816,18 +1816,7 @@ void writeFunctionBody(std::ofstream & ofs, std::string const& indentation, std:
   // return the returned value
   if ((returnIndex != ~0) && (((commandData.returnType == "Result") && (commandData.successCodes.size() < 2)) || (commandData.returnType == "void")))
   {
-    ofs << indentation << "  return ";
-    if (vectorParameters.find(returnIndex) != vectorParameters.end())
-    {
-      ofs << "std::move( ";
-      ofs << reduceName(commandData.arguments[returnIndex].name);
-      ofs << " )";
-    }
-    else
-    {
-      ofs << reduceName(commandData.arguments[returnIndex].name);
-    }
-    ofs << ";" << std::endl;
+    ofs << indentation << "  return " << reduceName(commandData.arguments[returnIndex].name) << ";" << std::endl;
   }
   else if (returnType == "Result")
   {
@@ -2308,10 +2297,10 @@ void writeTypeEnum( std::ofstream & ofs, DependencyData const& dependencyData, E
   ofs << std::endl;
 }
 
-void writeEnumGetString(std::ofstream & ofs, DependencyData const& dependencyData, EnumData const& enumData)
+void writeEnumsToString(std::ofstream & ofs, DependencyData const& dependencyData, EnumData const& enumData)
 {
   enterProtect(ofs, enumData.protect);
-  ofs << "  inline std::string getString(" << dependencyData.name << (enumData.members.empty() ? ")" : " value)") << std::endl
+  ofs << "  inline std::string to_string(" << dependencyData.name << (enumData.members.empty() ? ")" : " value)") << std::endl
       << "  {" << std::endl;
   if (enumData.members.empty())
   {
@@ -2333,11 +2322,11 @@ void writeEnumGetString(std::ofstream & ofs, DependencyData const& dependencyDat
   ofs << std::endl;
 }
 
-void writeFlagsGetString(std::ofstream & ofs, DependencyData const& dependencyData, EnumData const &enumData)
+void writeFlagsToString(std::ofstream & ofs, DependencyData const& dependencyData, EnumData const &enumData)
 {
   enterProtect(ofs, enumData.protect);
   std::string enumPrefix = "vk::" + *dependencyData.dependencies.begin() + "::";
-  ofs << "  inline std::string getString(" << dependencyData.name << (enumData.members.empty() ? ")" : " value)") << std::endl
+  ofs << "  inline std::string to_string(" << dependencyData.name << (enumData.members.empty() ? ")" : " value)") << std::endl
       << "  {" << std::endl;
   if (enumData.members.empty())
   {
@@ -2367,10 +2356,10 @@ void writeEnumsToString(std::ofstream & ofs, VkData const& vkData)
     {
     case DependencyData::Category::ENUM:
       assert(vkData.enums.find(it->name) != vkData.enums.end());
-      writeEnumGetString(ofs, *it, vkData.enums.find(it->name)->second);
+      writeEnumsToString(ofs, *it, vkData.enums.find(it->name)->second);
       break;
     case DependencyData::Category::FLAGS:
-      writeFlagsGetString(ofs, *it, vkData.enums.find(*it->dependencies.begin())->second);
+      writeFlagsToString(ofs, *it, vkData.enums.find(*it->dependencies.begin())->second);
       break;
     }
   }
@@ -2760,7 +2749,7 @@ int main( int argc, char **argv )
   std::list<DependencyData>::const_iterator it = std::find_if(vkData.dependencies.begin(), vkData.dependencies.end(), [](DependencyData const& dp) { return dp.name == "Result"; });
   assert(it != vkData.dependencies.end());
   writeTypeEnum(ofs, *it, vkData.enums.find(it->name)->second);
-  writeEnumGetString(ofs, *it, vkData.enums.find(it->name)->second);
+  writeEnumsToString(ofs, *it, vkData.enums.find(it->name)->second);
   vkData.dependencies.erase(it);
   ofs << exceptionHeader;
 

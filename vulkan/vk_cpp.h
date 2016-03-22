@@ -194,7 +194,7 @@ namespace vk
 
   private:
     Optional(std::nullptr_t) { m_ptr = nullptr; }
-    friend typename RefType;
+    friend RefType;
     RefType *m_ptr;
   };
 
@@ -226,7 +226,7 @@ namespace vk
     eErrorInvalidShaderNV = VK_ERROR_INVALID_SHADER_NV
   };
 
-  inline std::string getString(Result value)
+  inline std::string to_string(Result value)
   {
     switch (value)
     {
@@ -266,7 +266,7 @@ namespace vk
   {
     public:
     virtual const char* name() const noexcept override { return "vk::Result"; }
-    virtual std::string message(int ev) const override { return getString(static_cast<vk::Result>(ev)); }
+    virtual std::string message(int ev) const override { return to_string(static_cast<vk::Result>(ev)); }
   };
 
 #if defined(_MSC_VER) && (_MSC_VER == 1800)
@@ -20950,7 +20950,7 @@ namespace vk
       vkGetImageSparseMemoryRequirements( m_device, static_cast<VkImage>( image ), &sparseMemoryRequirementCount, nullptr );
       sparseMemoryRequirements.resize( sparseMemoryRequirementCount );
       vkGetImageSparseMemoryRequirements( m_device, static_cast<VkImage>( image ), &sparseMemoryRequirementCount, reinterpret_cast<VkSparseImageMemoryRequirements*>( sparseMemoryRequirements.data() ) );
-      return std::move( sparseMemoryRequirements );
+      return sparseMemoryRequirements;
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
@@ -21414,7 +21414,7 @@ namespace vk
       {
         throw std::system_error( result, "vk::Device::getPipelineCacheData" );
       }
-      return std::move( data );
+      return data;
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
@@ -21448,7 +21448,7 @@ namespace vk
       {
         throw std::system_error( result, "vk::Device::createGraphicsPipelines" );
       }
-      return std::move( pipelines );
+      return pipelines;
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
@@ -21466,7 +21466,7 @@ namespace vk
       {
         throw std::system_error( result, "vk::Device::createComputePipelines" );
       }
-      return std::move( pipelines );
+      return pipelines;
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
@@ -21634,7 +21634,7 @@ namespace vk
       {
         throw std::system_error( result, "vk::Device::allocateDescriptorSets" );
       }
-      return std::move( descriptorSets );
+      return descriptorSets;
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
@@ -21802,7 +21802,7 @@ namespace vk
       {
         throw std::system_error( result, "vk::Device::allocateCommandBuffers" );
       }
-      return std::move( commandBuffers );
+      return commandBuffers;
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
@@ -21832,7 +21832,7 @@ namespace vk
       {
         throw std::system_error( result, "vk::Device::createSharedSwapchainsKHR" );
       }
-      return std::move( swapchains );
+      return swapchains;
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
@@ -21976,7 +21976,7 @@ namespace vk
       vkGetPhysicalDeviceQueueFamilyProperties( m_physicalDevice, &queueFamilyPropertyCount, nullptr );
       queueFamilyProperties.resize( queueFamilyPropertyCount );
       vkGetPhysicalDeviceQueueFamilyProperties( m_physicalDevice, &queueFamilyPropertyCount, reinterpret_cast<VkQueueFamilyProperties*>( queueFamilyProperties.data() ) );
-      return std::move( queueFamilyProperties );
+      return queueFamilyProperties;
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
@@ -22119,7 +22119,7 @@ namespace vk
       vkGetPhysicalDeviceSparseImageFormatProperties( m_physicalDevice, static_cast<VkFormat>( format ), static_cast<VkImageType>( type ), static_cast<VkSampleCountFlagBits>( samples ), static_cast<VkImageUsageFlags>( usage ), static_cast<VkImageTiling>( tiling ), &propertyCount, nullptr );
       properties.resize( propertyCount );
       vkGetPhysicalDeviceSparseImageFormatProperties( m_physicalDevice, static_cast<VkFormat>( format ), static_cast<VkImageType>( type ), static_cast<VkSampleCountFlagBits>( samples ), static_cast<VkImageUsageFlags>( usage ), static_cast<VkImageTiling>( tiling ), &propertyCount, reinterpret_cast<VkSparseImageFormatProperties*>( properties.data() ) );
-      return std::move( properties );
+      return properties;
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
@@ -22976,401 +22976,401 @@ namespace vk
   }
 #endif /*VKCPP_ENHANCED_MODE*/
 
-  inline std::string getString(FramebufferCreateFlagBits)
+  inline std::string to_string(FramebufferCreateFlagBits)
   {
     return std::string();
   }
 
-  inline std::string getString(FramebufferCreateFlags)
+  inline std::string to_string(FramebufferCreateFlags)
   {
     return std::string();
   }
 
-  inline std::string getString(QueryPoolCreateFlagBits)
+  inline std::string to_string(QueryPoolCreateFlagBits)
   {
     return std::string();
   }
 
-  inline std::string getString(QueryPoolCreateFlags)
+  inline std::string to_string(QueryPoolCreateFlags)
   {
     return std::string();
   }
 
-  inline std::string getString(RenderPassCreateFlagBits)
+  inline std::string to_string(RenderPassCreateFlagBits)
   {
     return std::string();
   }
 
-  inline std::string getString(RenderPassCreateFlags)
+  inline std::string to_string(RenderPassCreateFlags)
   {
     return std::string();
   }
 
-  inline std::string getString(SamplerCreateFlagBits)
+  inline std::string to_string(SamplerCreateFlagBits)
   {
     return std::string();
   }
 
-  inline std::string getString(SamplerCreateFlags)
+  inline std::string to_string(SamplerCreateFlags)
   {
     return std::string();
   }
 
-  inline std::string getString(PipelineLayoutCreateFlagBits)
+  inline std::string to_string(PipelineLayoutCreateFlagBits)
   {
     return std::string();
   }
 
-  inline std::string getString(PipelineLayoutCreateFlags)
+  inline std::string to_string(PipelineLayoutCreateFlags)
   {
     return std::string();
   }
 
-  inline std::string getString(PipelineCacheCreateFlagBits)
+  inline std::string to_string(PipelineCacheCreateFlagBits)
   {
     return std::string();
   }
 
-  inline std::string getString(PipelineCacheCreateFlags)
+  inline std::string to_string(PipelineCacheCreateFlags)
   {
     return std::string();
   }
 
-  inline std::string getString(PipelineDepthStencilStateCreateFlagBits)
+  inline std::string to_string(PipelineDepthStencilStateCreateFlagBits)
   {
     return std::string();
   }
 
-  inline std::string getString(PipelineDepthStencilStateCreateFlags)
+  inline std::string to_string(PipelineDepthStencilStateCreateFlags)
   {
     return std::string();
   }
 
-  inline std::string getString(PipelineDynamicStateCreateFlagBits)
+  inline std::string to_string(PipelineDynamicStateCreateFlagBits)
   {
     return std::string();
   }
 
-  inline std::string getString(PipelineDynamicStateCreateFlags)
+  inline std::string to_string(PipelineDynamicStateCreateFlags)
   {
     return std::string();
   }
 
-  inline std::string getString(PipelineColorBlendStateCreateFlagBits)
+  inline std::string to_string(PipelineColorBlendStateCreateFlagBits)
   {
     return std::string();
   }
 
-  inline std::string getString(PipelineColorBlendStateCreateFlags)
+  inline std::string to_string(PipelineColorBlendStateCreateFlags)
   {
     return std::string();
   }
 
-  inline std::string getString(PipelineMultisampleStateCreateFlagBits)
+  inline std::string to_string(PipelineMultisampleStateCreateFlagBits)
   {
     return std::string();
   }
 
-  inline std::string getString(PipelineMultisampleStateCreateFlags)
+  inline std::string to_string(PipelineMultisampleStateCreateFlags)
   {
     return std::string();
   }
 
-  inline std::string getString(PipelineRasterizationStateCreateFlagBits)
+  inline std::string to_string(PipelineRasterizationStateCreateFlagBits)
   {
     return std::string();
   }
 
-  inline std::string getString(PipelineRasterizationStateCreateFlags)
+  inline std::string to_string(PipelineRasterizationStateCreateFlags)
   {
     return std::string();
   }
 
-  inline std::string getString(PipelineViewportStateCreateFlagBits)
+  inline std::string to_string(PipelineViewportStateCreateFlagBits)
   {
     return std::string();
   }
 
-  inline std::string getString(PipelineViewportStateCreateFlags)
+  inline std::string to_string(PipelineViewportStateCreateFlags)
   {
     return std::string();
   }
 
-  inline std::string getString(PipelineTessellationStateCreateFlagBits)
+  inline std::string to_string(PipelineTessellationStateCreateFlagBits)
   {
     return std::string();
   }
 
-  inline std::string getString(PipelineTessellationStateCreateFlags)
+  inline std::string to_string(PipelineTessellationStateCreateFlags)
   {
     return std::string();
   }
 
-  inline std::string getString(PipelineInputAssemblyStateCreateFlagBits)
+  inline std::string to_string(PipelineInputAssemblyStateCreateFlagBits)
   {
     return std::string();
   }
 
-  inline std::string getString(PipelineInputAssemblyStateCreateFlags)
+  inline std::string to_string(PipelineInputAssemblyStateCreateFlags)
   {
     return std::string();
   }
 
-  inline std::string getString(PipelineVertexInputStateCreateFlagBits)
+  inline std::string to_string(PipelineVertexInputStateCreateFlagBits)
   {
     return std::string();
   }
 
-  inline std::string getString(PipelineVertexInputStateCreateFlags)
+  inline std::string to_string(PipelineVertexInputStateCreateFlags)
   {
     return std::string();
   }
 
-  inline std::string getString(PipelineShaderStageCreateFlagBits)
+  inline std::string to_string(PipelineShaderStageCreateFlagBits)
   {
     return std::string();
   }
 
-  inline std::string getString(PipelineShaderStageCreateFlags)
+  inline std::string to_string(PipelineShaderStageCreateFlags)
   {
     return std::string();
   }
 
-  inline std::string getString(DescriptorSetLayoutCreateFlagBits)
+  inline std::string to_string(DescriptorSetLayoutCreateFlagBits)
   {
     return std::string();
   }
 
-  inline std::string getString(DescriptorSetLayoutCreateFlags)
+  inline std::string to_string(DescriptorSetLayoutCreateFlags)
   {
     return std::string();
   }
 
-  inline std::string getString(BufferViewCreateFlagBits)
+  inline std::string to_string(BufferViewCreateFlagBits)
   {
     return std::string();
   }
 
-  inline std::string getString(BufferViewCreateFlags)
+  inline std::string to_string(BufferViewCreateFlags)
   {
     return std::string();
   }
 
-  inline std::string getString(InstanceCreateFlagBits)
+  inline std::string to_string(InstanceCreateFlagBits)
   {
     return std::string();
   }
 
-  inline std::string getString(InstanceCreateFlags)
+  inline std::string to_string(InstanceCreateFlags)
   {
     return std::string();
   }
 
-  inline std::string getString(DeviceCreateFlagBits)
+  inline std::string to_string(DeviceCreateFlagBits)
   {
     return std::string();
   }
 
-  inline std::string getString(DeviceCreateFlags)
+  inline std::string to_string(DeviceCreateFlags)
   {
     return std::string();
   }
 
-  inline std::string getString(DeviceQueueCreateFlagBits)
+  inline std::string to_string(DeviceQueueCreateFlagBits)
   {
     return std::string();
   }
 
-  inline std::string getString(DeviceQueueCreateFlags)
+  inline std::string to_string(DeviceQueueCreateFlags)
   {
     return std::string();
   }
 
-  inline std::string getString(ImageViewCreateFlagBits)
+  inline std::string to_string(ImageViewCreateFlagBits)
   {
     return std::string();
   }
 
-  inline std::string getString(ImageViewCreateFlags)
+  inline std::string to_string(ImageViewCreateFlags)
   {
     return std::string();
   }
 
-  inline std::string getString(SemaphoreCreateFlagBits)
+  inline std::string to_string(SemaphoreCreateFlagBits)
   {
     return std::string();
   }
 
-  inline std::string getString(SemaphoreCreateFlags)
+  inline std::string to_string(SemaphoreCreateFlags)
   {
     return std::string();
   }
 
-  inline std::string getString(ShaderModuleCreateFlagBits)
+  inline std::string to_string(ShaderModuleCreateFlagBits)
   {
     return std::string();
   }
 
-  inline std::string getString(ShaderModuleCreateFlags)
+  inline std::string to_string(ShaderModuleCreateFlags)
   {
     return std::string();
   }
 
-  inline std::string getString(EventCreateFlagBits)
+  inline std::string to_string(EventCreateFlagBits)
   {
     return std::string();
   }
 
-  inline std::string getString(EventCreateFlags)
+  inline std::string to_string(EventCreateFlags)
   {
     return std::string();
   }
 
-  inline std::string getString(MemoryMapFlagBits)
+  inline std::string to_string(MemoryMapFlagBits)
   {
     return std::string();
   }
 
-  inline std::string getString(MemoryMapFlags)
+  inline std::string to_string(MemoryMapFlags)
   {
     return std::string();
   }
 
-  inline std::string getString(SubpassDescriptionFlagBits)
+  inline std::string to_string(SubpassDescriptionFlagBits)
   {
     return std::string();
   }
 
-  inline std::string getString(SubpassDescriptionFlags)
+  inline std::string to_string(SubpassDescriptionFlags)
   {
     return std::string();
   }
 
-  inline std::string getString(DescriptorPoolResetFlagBits)
+  inline std::string to_string(DescriptorPoolResetFlagBits)
   {
     return std::string();
   }
 
-  inline std::string getString(DescriptorPoolResetFlags)
+  inline std::string to_string(DescriptorPoolResetFlags)
   {
     return std::string();
   }
 
-  inline std::string getString(SwapchainCreateFlagBitsKHR)
+  inline std::string to_string(SwapchainCreateFlagBitsKHR)
   {
     return std::string();
   }
 
-  inline std::string getString(SwapchainCreateFlagsKHR)
+  inline std::string to_string(SwapchainCreateFlagsKHR)
   {
     return std::string();
   }
 
-  inline std::string getString(DisplayModeCreateFlagBitsKHR)
+  inline std::string to_string(DisplayModeCreateFlagBitsKHR)
   {
     return std::string();
   }
 
-  inline std::string getString(DisplayModeCreateFlagsKHR)
+  inline std::string to_string(DisplayModeCreateFlagsKHR)
   {
     return std::string();
   }
 
-  inline std::string getString(DisplaySurfaceCreateFlagBitsKHR)
+  inline std::string to_string(DisplaySurfaceCreateFlagBitsKHR)
   {
     return std::string();
   }
 
-  inline std::string getString(DisplaySurfaceCreateFlagsKHR)
+  inline std::string to_string(DisplaySurfaceCreateFlagsKHR)
   {
     return std::string();
   }
 
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
-  inline std::string getString(AndroidSurfaceCreateFlagBitsKHR)
+  inline std::string to_string(AndroidSurfaceCreateFlagBitsKHR)
   {
     return std::string();
   }
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
-  inline std::string getString(AndroidSurfaceCreateFlagsKHR)
+  inline std::string to_string(AndroidSurfaceCreateFlagsKHR)
   {
     return std::string();
   }
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
 #ifdef VK_USE_PLATFORM_MIR_KHR
-  inline std::string getString(MirSurfaceCreateFlagBitsKHR)
+  inline std::string to_string(MirSurfaceCreateFlagBitsKHR)
   {
     return std::string();
   }
 #endif /*VK_USE_PLATFORM_MIR_KHR*/
 
 #ifdef VK_USE_PLATFORM_MIR_KHR
-  inline std::string getString(MirSurfaceCreateFlagsKHR)
+  inline std::string to_string(MirSurfaceCreateFlagsKHR)
   {
     return std::string();
   }
 #endif /*VK_USE_PLATFORM_MIR_KHR*/
 
 #ifdef VK_USE_PLATFORM_WAYLAND_KHR
-  inline std::string getString(WaylandSurfaceCreateFlagBitsKHR)
+  inline std::string to_string(WaylandSurfaceCreateFlagBitsKHR)
   {
     return std::string();
   }
 #endif /*VK_USE_PLATFORM_WAYLAND_KHR*/
 
 #ifdef VK_USE_PLATFORM_WAYLAND_KHR
-  inline std::string getString(WaylandSurfaceCreateFlagsKHR)
+  inline std::string to_string(WaylandSurfaceCreateFlagsKHR)
   {
     return std::string();
   }
 #endif /*VK_USE_PLATFORM_WAYLAND_KHR*/
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
-  inline std::string getString(Win32SurfaceCreateFlagBitsKHR)
+  inline std::string to_string(Win32SurfaceCreateFlagBitsKHR)
   {
     return std::string();
   }
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
-  inline std::string getString(Win32SurfaceCreateFlagsKHR)
+  inline std::string to_string(Win32SurfaceCreateFlagsKHR)
   {
     return std::string();
   }
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
 #ifdef VK_USE_PLATFORM_XLIB_KHR
-  inline std::string getString(XlibSurfaceCreateFlagBitsKHR)
+  inline std::string to_string(XlibSurfaceCreateFlagBitsKHR)
   {
     return std::string();
   }
 #endif /*VK_USE_PLATFORM_XLIB_KHR*/
 
 #ifdef VK_USE_PLATFORM_XLIB_KHR
-  inline std::string getString(XlibSurfaceCreateFlagsKHR)
+  inline std::string to_string(XlibSurfaceCreateFlagsKHR)
   {
     return std::string();
   }
 #endif /*VK_USE_PLATFORM_XLIB_KHR*/
 
 #ifdef VK_USE_PLATFORM_XCB_KHR
-  inline std::string getString(XcbSurfaceCreateFlagBitsKHR)
+  inline std::string to_string(XcbSurfaceCreateFlagBitsKHR)
   {
     return std::string();
   }
 #endif /*VK_USE_PLATFORM_XCB_KHR*/
 
 #ifdef VK_USE_PLATFORM_XCB_KHR
-  inline std::string getString(XcbSurfaceCreateFlagsKHR)
+  inline std::string to_string(XcbSurfaceCreateFlagsKHR)
   {
     return std::string();
   }
 #endif /*VK_USE_PLATFORM_XCB_KHR*/
 
-  inline std::string getString(ImageLayout value)
+  inline std::string to_string(ImageLayout value)
   {
     switch (value)
     {
@@ -23388,7 +23388,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(AttachmentLoadOp value)
+  inline std::string to_string(AttachmentLoadOp value)
   {
     switch (value)
     {
@@ -23399,7 +23399,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(AttachmentStoreOp value)
+  inline std::string to_string(AttachmentStoreOp value)
   {
     switch (value)
     {
@@ -23409,7 +23409,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(ImageType value)
+  inline std::string to_string(ImageType value)
   {
     switch (value)
     {
@@ -23420,7 +23420,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(ImageTiling value)
+  inline std::string to_string(ImageTiling value)
   {
     switch (value)
     {
@@ -23430,7 +23430,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(ImageViewType value)
+  inline std::string to_string(ImageViewType value)
   {
     switch (value)
     {
@@ -23445,7 +23445,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(CommandBufferLevel value)
+  inline std::string to_string(CommandBufferLevel value)
   {
     switch (value)
     {
@@ -23455,7 +23455,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(ComponentSwizzle value)
+  inline std::string to_string(ComponentSwizzle value)
   {
     switch (value)
     {
@@ -23470,7 +23470,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(DescriptorType value)
+  inline std::string to_string(DescriptorType value)
   {
     switch (value)
     {
@@ -23489,7 +23489,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(QueryType value)
+  inline std::string to_string(QueryType value)
   {
     switch (value)
     {
@@ -23500,7 +23500,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(BorderColor value)
+  inline std::string to_string(BorderColor value)
   {
     switch (value)
     {
@@ -23514,7 +23514,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(PipelineBindPoint value)
+  inline std::string to_string(PipelineBindPoint value)
   {
     switch (value)
     {
@@ -23524,7 +23524,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(PipelineCacheHeaderVersion value)
+  inline std::string to_string(PipelineCacheHeaderVersion value)
   {
     switch (value)
     {
@@ -23533,7 +23533,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(PrimitiveTopology value)
+  inline std::string to_string(PrimitiveTopology value)
   {
     switch (value)
     {
@@ -23552,7 +23552,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(SharingMode value)
+  inline std::string to_string(SharingMode value)
   {
     switch (value)
     {
@@ -23562,7 +23562,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(IndexType value)
+  inline std::string to_string(IndexType value)
   {
     switch (value)
     {
@@ -23572,7 +23572,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(Filter value)
+  inline std::string to_string(Filter value)
   {
     switch (value)
     {
@@ -23582,7 +23582,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(SamplerMipmapMode value)
+  inline std::string to_string(SamplerMipmapMode value)
   {
     switch (value)
     {
@@ -23592,7 +23592,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(SamplerAddressMode value)
+  inline std::string to_string(SamplerAddressMode value)
   {
     switch (value)
     {
@@ -23605,7 +23605,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(CompareOp value)
+  inline std::string to_string(CompareOp value)
   {
     switch (value)
     {
@@ -23621,7 +23621,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(PolygonMode value)
+  inline std::string to_string(PolygonMode value)
   {
     switch (value)
     {
@@ -23632,7 +23632,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(CullModeFlagBits value)
+  inline std::string to_string(CullModeFlagBits value)
   {
     switch (value)
     {
@@ -23644,7 +23644,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(CullModeFlags value)
+  inline std::string to_string(CullModeFlags value)
   {
     if (!value) return std::string();
     std::string result;
@@ -23655,7 +23655,7 @@ namespace vk
     return result.substr(0, result.size() - 3);
   }
 
-  inline std::string getString(FrontFace value)
+  inline std::string to_string(FrontFace value)
   {
     switch (value)
     {
@@ -23665,7 +23665,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(BlendFactor value)
+  inline std::string to_string(BlendFactor value)
   {
     switch (value)
     {
@@ -23692,7 +23692,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(BlendOp value)
+  inline std::string to_string(BlendOp value)
   {
     switch (value)
     {
@@ -23705,7 +23705,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(StencilOp value)
+  inline std::string to_string(StencilOp value)
   {
     switch (value)
     {
@@ -23721,7 +23721,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(LogicOp value)
+  inline std::string to_string(LogicOp value)
   {
     switch (value)
     {
@@ -23745,7 +23745,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(InternalAllocationType value)
+  inline std::string to_string(InternalAllocationType value)
   {
     switch (value)
     {
@@ -23754,7 +23754,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(SystemAllocationScope value)
+  inline std::string to_string(SystemAllocationScope value)
   {
     switch (value)
     {
@@ -23767,7 +23767,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(PhysicalDeviceType value)
+  inline std::string to_string(PhysicalDeviceType value)
   {
     switch (value)
     {
@@ -23780,7 +23780,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(VertexInputRate value)
+  inline std::string to_string(VertexInputRate value)
   {
     switch (value)
     {
@@ -23790,7 +23790,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(Format value)
+  inline std::string to_string(Format value)
   {
     switch (value)
     {
@@ -23983,7 +23983,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(StructureType value)
+  inline std::string to_string(StructureType value)
   {
     switch (value)
     {
@@ -24052,7 +24052,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(SubpassContents value)
+  inline std::string to_string(SubpassContents value)
   {
     switch (value)
     {
@@ -24062,7 +24062,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(DynamicState value)
+  inline std::string to_string(DynamicState value)
   {
     switch (value)
     {
@@ -24079,7 +24079,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(QueueFlagBits value)
+  inline std::string to_string(QueueFlagBits value)
   {
     switch (value)
     {
@@ -24091,7 +24091,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(QueueFlags value)
+  inline std::string to_string(QueueFlags value)
   {
     if (!value) return std::string();
     std::string result;
@@ -24102,7 +24102,7 @@ namespace vk
     return result.substr(0, result.size() - 3);
   }
 
-  inline std::string getString(MemoryPropertyFlagBits value)
+  inline std::string to_string(MemoryPropertyFlagBits value)
   {
     switch (value)
     {
@@ -24115,7 +24115,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(MemoryPropertyFlags value)
+  inline std::string to_string(MemoryPropertyFlags value)
   {
     if (!value) return std::string();
     std::string result;
@@ -24127,7 +24127,7 @@ namespace vk
     return result.substr(0, result.size() - 3);
   }
 
-  inline std::string getString(MemoryHeapFlagBits value)
+  inline std::string to_string(MemoryHeapFlagBits value)
   {
     switch (value)
     {
@@ -24136,7 +24136,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(MemoryHeapFlags value)
+  inline std::string to_string(MemoryHeapFlags value)
   {
     if (!value) return std::string();
     std::string result;
@@ -24144,7 +24144,7 @@ namespace vk
     return result.substr(0, result.size() - 3);
   }
 
-  inline std::string getString(AccessFlagBits value)
+  inline std::string to_string(AccessFlagBits value)
   {
     switch (value)
     {
@@ -24169,7 +24169,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(AccessFlags value)
+  inline std::string to_string(AccessFlags value)
   {
     if (!value) return std::string();
     std::string result;
@@ -24193,7 +24193,7 @@ namespace vk
     return result.substr(0, result.size() - 3);
   }
 
-  inline std::string getString(BufferUsageFlagBits value)
+  inline std::string to_string(BufferUsageFlagBits value)
   {
     switch (value)
     {
@@ -24210,7 +24210,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(BufferUsageFlags value)
+  inline std::string to_string(BufferUsageFlags value)
   {
     if (!value) return std::string();
     std::string result;
@@ -24226,7 +24226,7 @@ namespace vk
     return result.substr(0, result.size() - 3);
   }
 
-  inline std::string getString(BufferCreateFlagBits value)
+  inline std::string to_string(BufferCreateFlagBits value)
   {
     switch (value)
     {
@@ -24237,7 +24237,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(BufferCreateFlags value)
+  inline std::string to_string(BufferCreateFlags value)
   {
     if (!value) return std::string();
     std::string result;
@@ -24247,7 +24247,7 @@ namespace vk
     return result.substr(0, result.size() - 3);
   }
 
-  inline std::string getString(ShaderStageFlagBits value)
+  inline std::string to_string(ShaderStageFlagBits value)
   {
     switch (value)
     {
@@ -24263,7 +24263,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(ShaderStageFlags value)
+  inline std::string to_string(ShaderStageFlags value)
   {
     if (!value) return std::string();
     std::string result;
@@ -24278,7 +24278,7 @@ namespace vk
     return result.substr(0, result.size() - 3);
   }
 
-  inline std::string getString(ImageUsageFlagBits value)
+  inline std::string to_string(ImageUsageFlagBits value)
   {
     switch (value)
     {
@@ -24294,7 +24294,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(ImageUsageFlags value)
+  inline std::string to_string(ImageUsageFlags value)
   {
     if (!value) return std::string();
     std::string result;
@@ -24309,7 +24309,7 @@ namespace vk
     return result.substr(0, result.size() - 3);
   }
 
-  inline std::string getString(ImageCreateFlagBits value)
+  inline std::string to_string(ImageCreateFlagBits value)
   {
     switch (value)
     {
@@ -24322,7 +24322,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(ImageCreateFlags value)
+  inline std::string to_string(ImageCreateFlags value)
   {
     if (!value) return std::string();
     std::string result;
@@ -24334,7 +24334,7 @@ namespace vk
     return result.substr(0, result.size() - 3);
   }
 
-  inline std::string getString(PipelineCreateFlagBits value)
+  inline std::string to_string(PipelineCreateFlagBits value)
   {
     switch (value)
     {
@@ -24345,7 +24345,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(PipelineCreateFlags value)
+  inline std::string to_string(PipelineCreateFlags value)
   {
     if (!value) return std::string();
     std::string result;
@@ -24355,7 +24355,7 @@ namespace vk
     return result.substr(0, result.size() - 3);
   }
 
-  inline std::string getString(ColorComponentFlagBits value)
+  inline std::string to_string(ColorComponentFlagBits value)
   {
     switch (value)
     {
@@ -24367,7 +24367,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(ColorComponentFlags value)
+  inline std::string to_string(ColorComponentFlags value)
   {
     if (!value) return std::string();
     std::string result;
@@ -24378,7 +24378,7 @@ namespace vk
     return result.substr(0, result.size() - 3);
   }
 
-  inline std::string getString(FenceCreateFlagBits value)
+  inline std::string to_string(FenceCreateFlagBits value)
   {
     switch (value)
     {
@@ -24387,7 +24387,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(FenceCreateFlags value)
+  inline std::string to_string(FenceCreateFlags value)
   {
     if (!value) return std::string();
     std::string result;
@@ -24395,7 +24395,7 @@ namespace vk
     return result.substr(0, result.size() - 3);
   }
 
-  inline std::string getString(FormatFeatureFlagBits value)
+  inline std::string to_string(FormatFeatureFlagBits value)
   {
     switch (value)
     {
@@ -24416,7 +24416,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(FormatFeatureFlags value)
+  inline std::string to_string(FormatFeatureFlags value)
   {
     if (!value) return std::string();
     std::string result;
@@ -24436,7 +24436,7 @@ namespace vk
     return result.substr(0, result.size() - 3);
   }
 
-  inline std::string getString(QueryControlFlagBits value)
+  inline std::string to_string(QueryControlFlagBits value)
   {
     switch (value)
     {
@@ -24445,7 +24445,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(QueryControlFlags value)
+  inline std::string to_string(QueryControlFlags value)
   {
     if (!value) return std::string();
     std::string result;
@@ -24453,7 +24453,7 @@ namespace vk
     return result.substr(0, result.size() - 3);
   }
 
-  inline std::string getString(QueryResultFlagBits value)
+  inline std::string to_string(QueryResultFlagBits value)
   {
     switch (value)
     {
@@ -24465,7 +24465,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(QueryResultFlags value)
+  inline std::string to_string(QueryResultFlags value)
   {
     if (!value) return std::string();
     std::string result;
@@ -24476,7 +24476,7 @@ namespace vk
     return result.substr(0, result.size() - 3);
   }
 
-  inline std::string getString(CommandBufferUsageFlagBits value)
+  inline std::string to_string(CommandBufferUsageFlagBits value)
   {
     switch (value)
     {
@@ -24487,7 +24487,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(CommandBufferUsageFlags value)
+  inline std::string to_string(CommandBufferUsageFlags value)
   {
     if (!value) return std::string();
     std::string result;
@@ -24497,7 +24497,7 @@ namespace vk
     return result.substr(0, result.size() - 3);
   }
 
-  inline std::string getString(QueryPipelineStatisticFlagBits value)
+  inline std::string to_string(QueryPipelineStatisticFlagBits value)
   {
     switch (value)
     {
@@ -24516,7 +24516,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(QueryPipelineStatisticFlags value)
+  inline std::string to_string(QueryPipelineStatisticFlags value)
   {
     if (!value) return std::string();
     std::string result;
@@ -24534,7 +24534,7 @@ namespace vk
     return result.substr(0, result.size() - 3);
   }
 
-  inline std::string getString(ImageAspectFlagBits value)
+  inline std::string to_string(ImageAspectFlagBits value)
   {
     switch (value)
     {
@@ -24546,7 +24546,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(ImageAspectFlags value)
+  inline std::string to_string(ImageAspectFlags value)
   {
     if (!value) return std::string();
     std::string result;
@@ -24557,7 +24557,7 @@ namespace vk
     return result.substr(0, result.size() - 3);
   }
 
-  inline std::string getString(SparseImageFormatFlagBits value)
+  inline std::string to_string(SparseImageFormatFlagBits value)
   {
     switch (value)
     {
@@ -24568,7 +24568,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(SparseImageFormatFlags value)
+  inline std::string to_string(SparseImageFormatFlags value)
   {
     if (!value) return std::string();
     std::string result;
@@ -24578,7 +24578,7 @@ namespace vk
     return result.substr(0, result.size() - 3);
   }
 
-  inline std::string getString(SparseMemoryBindFlagBits value)
+  inline std::string to_string(SparseMemoryBindFlagBits value)
   {
     switch (value)
     {
@@ -24587,7 +24587,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(SparseMemoryBindFlags value)
+  inline std::string to_string(SparseMemoryBindFlags value)
   {
     if (!value) return std::string();
     std::string result;
@@ -24595,7 +24595,7 @@ namespace vk
     return result.substr(0, result.size() - 3);
   }
 
-  inline std::string getString(PipelineStageFlagBits value)
+  inline std::string to_string(PipelineStageFlagBits value)
   {
     switch (value)
     {
@@ -24620,7 +24620,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(PipelineStageFlags value)
+  inline std::string to_string(PipelineStageFlags value)
   {
     if (!value) return std::string();
     std::string result;
@@ -24644,7 +24644,7 @@ namespace vk
     return result.substr(0, result.size() - 3);
   }
 
-  inline std::string getString(CommandPoolCreateFlagBits value)
+  inline std::string to_string(CommandPoolCreateFlagBits value)
   {
     switch (value)
     {
@@ -24654,7 +24654,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(CommandPoolCreateFlags value)
+  inline std::string to_string(CommandPoolCreateFlags value)
   {
     if (!value) return std::string();
     std::string result;
@@ -24663,7 +24663,7 @@ namespace vk
     return result.substr(0, result.size() - 3);
   }
 
-  inline std::string getString(CommandPoolResetFlagBits value)
+  inline std::string to_string(CommandPoolResetFlagBits value)
   {
     switch (value)
     {
@@ -24672,7 +24672,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(CommandPoolResetFlags value)
+  inline std::string to_string(CommandPoolResetFlags value)
   {
     if (!value) return std::string();
     std::string result;
@@ -24680,7 +24680,7 @@ namespace vk
     return result.substr(0, result.size() - 3);
   }
 
-  inline std::string getString(CommandBufferResetFlagBits value)
+  inline std::string to_string(CommandBufferResetFlagBits value)
   {
     switch (value)
     {
@@ -24689,7 +24689,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(CommandBufferResetFlags value)
+  inline std::string to_string(CommandBufferResetFlags value)
   {
     if (!value) return std::string();
     std::string result;
@@ -24697,7 +24697,7 @@ namespace vk
     return result.substr(0, result.size() - 3);
   }
 
-  inline std::string getString(SampleCountFlagBits value)
+  inline std::string to_string(SampleCountFlagBits value)
   {
     switch (value)
     {
@@ -24712,7 +24712,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(SampleCountFlags value)
+  inline std::string to_string(SampleCountFlags value)
   {
     if (!value) return std::string();
     std::string result;
@@ -24726,7 +24726,7 @@ namespace vk
     return result.substr(0, result.size() - 3);
   }
 
-  inline std::string getString(AttachmentDescriptionFlagBits value)
+  inline std::string to_string(AttachmentDescriptionFlagBits value)
   {
     switch (value)
     {
@@ -24735,7 +24735,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(AttachmentDescriptionFlags value)
+  inline std::string to_string(AttachmentDescriptionFlags value)
   {
     if (!value) return std::string();
     std::string result;
@@ -24743,7 +24743,7 @@ namespace vk
     return result.substr(0, result.size() - 3);
   }
 
-  inline std::string getString(StencilFaceFlagBits value)
+  inline std::string to_string(StencilFaceFlagBits value)
   {
     switch (value)
     {
@@ -24754,7 +24754,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(StencilFaceFlags value)
+  inline std::string to_string(StencilFaceFlags value)
   {
     if (!value) return std::string();
     std::string result;
@@ -24764,7 +24764,7 @@ namespace vk
     return result.substr(0, result.size() - 3);
   }
 
-  inline std::string getString(DescriptorPoolCreateFlagBits value)
+  inline std::string to_string(DescriptorPoolCreateFlagBits value)
   {
     switch (value)
     {
@@ -24773,7 +24773,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(DescriptorPoolCreateFlags value)
+  inline std::string to_string(DescriptorPoolCreateFlags value)
   {
     if (!value) return std::string();
     std::string result;
@@ -24781,7 +24781,7 @@ namespace vk
     return result.substr(0, result.size() - 3);
   }
 
-  inline std::string getString(DependencyFlagBits value)
+  inline std::string to_string(DependencyFlagBits value)
   {
     switch (value)
     {
@@ -24790,7 +24790,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(DependencyFlags value)
+  inline std::string to_string(DependencyFlags value)
   {
     if (!value) return std::string();
     std::string result;
@@ -24798,7 +24798,7 @@ namespace vk
     return result.substr(0, result.size() - 3);
   }
 
-  inline std::string getString(PresentModeKHR value)
+  inline std::string to_string(PresentModeKHR value)
   {
     switch (value)
     {
@@ -24810,7 +24810,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(ColorSpaceKHR value)
+  inline std::string to_string(ColorSpaceKHR value)
   {
     switch (value)
     {
@@ -24819,7 +24819,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(DisplayPlaneAlphaFlagBitsKHR value)
+  inline std::string to_string(DisplayPlaneAlphaFlagBitsKHR value)
   {
     switch (value)
     {
@@ -24831,7 +24831,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(DisplayPlaneAlphaFlagsKHR value)
+  inline std::string to_string(DisplayPlaneAlphaFlagsKHR value)
   {
     if (!value) return std::string();
     std::string result;
@@ -24842,7 +24842,7 @@ namespace vk
     return result.substr(0, result.size() - 3);
   }
 
-  inline std::string getString(CompositeAlphaFlagBitsKHR value)
+  inline std::string to_string(CompositeAlphaFlagBitsKHR value)
   {
     switch (value)
     {
@@ -24854,7 +24854,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(CompositeAlphaFlagsKHR value)
+  inline std::string to_string(CompositeAlphaFlagsKHR value)
   {
     if (!value) return std::string();
     std::string result;
@@ -24865,7 +24865,7 @@ namespace vk
     return result.substr(0, result.size() - 3);
   }
 
-  inline std::string getString(SurfaceTransformFlagBitsKHR value)
+  inline std::string to_string(SurfaceTransformFlagBitsKHR value)
   {
     switch (value)
     {
@@ -24882,7 +24882,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(SurfaceTransformFlagsKHR value)
+  inline std::string to_string(SurfaceTransformFlagsKHR value)
   {
     if (!value) return std::string();
     std::string result;
@@ -24898,7 +24898,7 @@ namespace vk
     return result.substr(0, result.size() - 3);
   }
 
-  inline std::string getString(DebugReportFlagBitsEXT value)
+  inline std::string to_string(DebugReportFlagBitsEXT value)
   {
     switch (value)
     {
@@ -24911,7 +24911,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(DebugReportFlagsEXT value)
+  inline std::string to_string(DebugReportFlagsEXT value)
   {
     if (!value) return std::string();
     std::string result;
@@ -24923,7 +24923,7 @@ namespace vk
     return result.substr(0, result.size() - 3);
   }
 
-  inline std::string getString(DebugReportObjectTypeEXT value)
+  inline std::string to_string(DebugReportObjectTypeEXT value)
   {
     switch (value)
     {
@@ -24960,7 +24960,7 @@ namespace vk
     }
   }
 
-  inline std::string getString(DebugReportErrorEXT value)
+  inline std::string to_string(DebugReportErrorEXT value)
   {
     switch (value)
     {

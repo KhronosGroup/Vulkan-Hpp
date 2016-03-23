@@ -106,8 +106,8 @@ vk::ImageCreateInfo ci(
 # String conversions
 
 At development time it can be quite handy to have a utility function that can convert an enum or flags to a string for debugging purposes. To achieve this,
-we have implemented ```getString(type)``` functions for all enums and flags. Calling ```getString(vk::SharingMode::eExclusive)``` will return 'Exclusive' and calling
-```getString(vk::QueueFlagBits::eGraphics | vk::QueueFlagBits::eCompute)``` will return the concatenated string 'Graphics | Compute'.
+we have implemented ```to_string(type)``` functions for all enums and flags. Calling ```to_string(vk::SharingMode::eExclusive)``` will return 'Exclusive' and calling
+```to_string(vk::QueueFlagBits::eGraphics | vk::QueueFlagBits::eCompute)``` will return the concatenated string 'Graphics | Compute'.
 
 # Alternative Initialization of Structs
 
@@ -141,7 +141,7 @@ parameter matches the handle. In addition to this we made a few changes to the s
 * ```const char *``` has been replaced by ```std::string ```
 * ```T const*``` has been replaced by ```T const &``` to allow temporary objects. This is useful to pass small structures like ```vk::ClearColorValue``` or ```vk::Extent*```
 ```commandBuffer.clearColorImage(image, layout, std::array<float, 4>{1.0f, 1.0f, 1.0f, 1.0f}, {...});```
-Optional parameters are being replaced by ```Optional<T> const &``` which accept a type of ```T const&```. To tell the wrapper that a nullptr should be passed use ```T::null()```.
+Optional parameters are being replaced by ```Optional<T> const &``` which accept a type of ```T const&```. ```nullptr``` can be used to initialize an empty ```Optional<T>```.
 * The wrapper will throw a ```std::system_error``` if a ```vk::Result``` return value is not an success code. If there's only a single success code it's not returned at all. In this case functions with a single output value do return this output value instead.
 
 Here are a few code examples:
@@ -168,8 +168,8 @@ Here are a few code examples:
     // Accept std::vector as source for updateBuffer
     commandBuffer.updateBuffer(buffer, 0, {some values}); // update buffer with std::vector
 
-    // Sometimes it's necessary to pass a nullptr to a struct. For this case we've added Optional<T> T::null() to all structs T as replacement for the nullptr.
-    device.allocateMemory(allocateInfo, vk::AllocationCallbacks::null());
+    // Sometimes it's necessary to pass a nullptr to a struct. For this case we've added Optional<T>(std::nullptr_t).
+    device.allocateMemory(allocateInfo, nullptr);
 
   }
   catch (std::system_error e)

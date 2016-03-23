@@ -193,7 +193,7 @@ namespace vk
 
     operator RefType*() const { return m_ptr; }
     RefType const* operator->() const { return m_ptr; }
-    explicit operator bool() const { return !m_ptr; }
+    explicit operator bool() const { return !!m_ptr; }
 
   private:
     RefType *m_ptr;

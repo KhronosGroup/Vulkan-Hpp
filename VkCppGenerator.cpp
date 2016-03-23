@@ -215,20 +215,21 @@ const std::string flagsHeader(
 );
 
 std::string const optionalClassHeader = (
-"  template <typename RefType>\n"
-"  class Optional\n"
-"  {\n"
-"  public:\n"
-"    Optional(RefType & reference) { m_ptr = &reference; }\n"
-"\n"
-"    operator RefType*() const { return m_ptr; }\n"
-"\n"
-"  private:\n"
-"    Optional(std::nullptr_t) { m_ptr = nullptr; }\n"
-"    friend RefType;\n"
-"    RefType *m_ptr;\n"
-"  };\n"
-"\n"
+  "  template <typename RefType>\n"
+  "  class Optional\n"
+  "  {\n"
+  "  public:\n"
+  "    Optional(RefType & reference) { m_ptr = &reference; }\n"
+  "    Optional(std::nullptr_t) { m_ptr = nullptr; }\n"
+  "\n"
+  "    operator RefType*() const { return m_ptr; }\n"
+  "    RefType const* operator->() const { return m_ptr; }\n"
+  "    explicit operator bool() const { return !m_ptr; }\n"
+  "\n"
+  "  private:\n"
+  "    RefType *m_ptr;\n"
+  "  };\n"
+  "\n"
 );
 
 // trim from end
@@ -1603,7 +1604,15 @@ void writeCall(std::ofstream & ofs, std::string const& name, size_t templateInde
           }
           else if (commandData.arguments[it->first].pureType == "char")
           {
-            ofs << reduceName(commandData.arguments[it->first].name) << ".c_str()";
+            ofs << reduceName(commandData.arguments[it->first].name);
+            if (commandData.arguments[it->first].optional)
+            {
+              ofs << " ? " << reduceName(commandData.arguments[it->first].name) << "->c_str() : nullptr";
+            }
+            else
+            {
+              ofs << ".c_str()";
+            }
           }
           else
           {
@@ -1626,11 +1635,11 @@ void writeCall(std::ofstream & ofs, std::string const& name, size_t templateInde
             {
               ofs << "&";
             }
-            ofs << reduceName(commandData.arguments[i].name)
-                << (commandData.arguments[i].optional ? "))" : " )");
+            ofs << reduceName(commandData.arguments[i].name) << (commandData.arguments[i].optional ? "))" : " )");
           }
           else
           {
+            assert(!commandData.arguments[i].optional);
             ofs << "reinterpret_cast<Vk" << commandData.arguments[i].pureType << "*>( &" << reduceName(commandData.arguments[i].name) << " )";
           }
         }
@@ -1646,7 +1655,15 @@ void writeCall(std::ofstream & ofs, std::string const& name, size_t templateInde
           if (commandData.arguments[i].type.find("const") != std::string::npos)
           {
             assert(commandData.arguments[i].type.find("char") != std::string::npos);
-            ofs << reduceName(commandData.arguments[i].name) << ".c_str()";
+            ofs << reduceName(commandData.arguments[i].name);
+            if (commandData.arguments[i].optional)
+            {
+              ofs << " ? " << reduceName(commandData.arguments[i].name) << "->c_str() : nullptr";
+            }
+            else
+            {
+              ofs << ".c_str()";
+            }
           }
           else
           {
@@ -1864,63 +1881,65 @@ void writeFunctionHeader(std::ofstream & ofs, std::string const& indentation, st
       {
         ofs << ", ";
       }
-      if (vectorParameters.find(i) == vectorParameters.end())
+
+      std::map<size_t,size_t>::const_iterator it = vectorParameters.find(i);
+      size_t pos = commandData.arguments[i].type.find('*');
+      if ((it == vectorParameters.end()) && (pos == std::string::npos))
       {
-        size_t pos = commandData.arguments[i].type.find('*');
-        if (pos == std::string::npos)
+        ofs << commandData.arguments[i].type << " " << commandData.arguments[i].name;
+        if (!commandData.arguments[i].arraySize.empty())
         {
-          ofs << commandData.arguments[i].type << " " << commandData.arguments[i].name;
-          if (!commandData.arguments[i].arraySize.empty())
-          {
-            ofs << "[" << commandData.arguments[i].arraySize << "]";
-          }
-        }
-        else
-        {
-          std::string type = commandData.arguments[i].type;
-          if (type.find("char") != std::string::npos)
-          {
-            type = "std::string const&";
-          }
-          else
-          {
-            assert(type[pos] == '*');
-            if (commandData.arguments[i].optional)
-            {
-              type[pos] = ' ';
-              type = "vk::Optional<" + trimEnd(type) + "> const &";
-            }
-            else
-            {
-              type[pos] = '&';
-            }
-          }
-          ofs << type << " " << reduceName(commandData.arguments[i].name);
+          ofs << "[" << commandData.arguments[i].arraySize << "]";
         }
       }
       else
       {
-        if (templateIndex == i)
+        bool optional = commandData.arguments[i].optional && ((it == vectorParameters.end()) || (it->second == ~0));
+        if (optional)
         {
-          ofs << "std::vector<T> ";
+          ofs << "vk::Optional<";
         }
-        else if (commandData.arguments[i].pureType == "char")
+        if (vectorParameters.find(i) == vectorParameters.end())
         {
-          ofs << "std::string ";
-        }
-        else if (commandData.arguments[i].pureType == "void")
-        {
-          ofs << "std::vector<uint8_t> ";
+          assert(pos != std::string::npos);
+          if (commandData.arguments[i].type.find("char") != std::string::npos)
+          {
+            ofs << "std::string const";
+          }
+          else
+          {
+            assert(commandData.arguments[i].type[pos] == '*');
+            ofs << trimEnd(commandData.arguments[i].type.substr(0, pos));
+          }
         }
         else
         {
-          ofs << "std::vector<" << commandData.arguments[i].pureType << "> ";
+          if (templateIndex == i)
+          {
+            ofs << "std::vector<T>";
+          }
+          else if (commandData.arguments[i].pureType == "char")
+          {
+            ofs << "std::string";
+          }
+          else if (commandData.arguments[i].pureType == "void")
+          {
+            ofs << "std::vector<uint8_t>";
+          }
+          else
+          {
+            ofs << "std::vector<" << commandData.arguments[i].pureType << ">";
+          }
+          if (commandData.arguments[i].type.find("const") != std::string::npos)
+          {
+            ofs << " const";
+          }
         }
-        if (commandData.arguments[i].type.find("const") != std::string::npos)
+        if (optional)
         {
-          ofs << "const";
+          ofs << "> const";
         }
-        ofs << "& " << reduceName(commandData.arguments[i].name);
+        ofs << " & " << reduceName(commandData.arguments[i].name);
       }
       argEncountered = true;
     }
@@ -2505,13 +2524,6 @@ void writeTypeStruct( std::ofstream & ofs, VkData const& vkData, DependencyData 
       writeStructSetter( ofs, dependencyData.name, it->second.members[i], memberName, vkData.vkTypes );
     }
   }
-
-  // null handle
-  ofs << "    static Optional<const " << dependencyData.name << "> null()" << std::endl
-      << "    {" << std::endl
-      << "      return Optional<const " << dependencyData.name << ">(nullptr);" << std::endl
-      << "    }" << std::endl
-      << std::endl;
 
   // the cast-operator to the wrapped struct, and the struct itself as a private member variable
   ofs << "    operator const Vk" << dependencyData.name << "&() const" << std::endl

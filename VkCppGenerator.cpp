@@ -224,7 +224,7 @@ std::string const optionalClassHeader = (
   "\n"
   "    operator RefType*() const { return m_ptr; }\n"
   "    RefType const* operator->() const { return m_ptr; }\n"
-  "    explicit operator bool() const { return !m_ptr; }\n"
+  "    explicit operator bool() const { return !!m_ptr; }\n"
   "\n"
   "  private:\n"
   "    RefType *m_ptr;\n"

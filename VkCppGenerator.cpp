@@ -510,7 +510,13 @@ std::string determineFunctionName(std::string const& name, CommandData const& co
 std::string determineReturnType(CommandData const& commandData, size_t returnIndex, bool isVector)
 {
   std::string returnType;
-  if ((returnIndex != ~0) && ((commandData.returnType == "void") || ((commandData.returnType == "Result") && (commandData.successCodes.size() < 2))))
+  if (    (returnIndex != ~0)
+      &&  (   (commandData.returnType == "void")
+          ||  (   (commandData.returnType == "Result")
+              &&  (   (commandData.successCodes.size() == 1)
+                  ||  (   (commandData.successCodes.size() == 2)
+                      &&  (commandData.successCodes[1] == "eIncomplete")
+                      &&  commandData.twoStep)))))
   {
     if (isVector)
     {
@@ -1735,7 +1741,7 @@ void writeFunctionBody(std::ofstream & ofs, std::string const& indentation, std:
   }
 
   // write the local variable to hold a returned value
-  if ((returnIndex != ~0) && (((commandData.returnType == "Result") && (commandData.successCodes.size() < 2)) || (commandData.returnType == "void")))
+  if ((returnIndex != ~0) && (commandData.returnType != returnType))
   {
     ofs << indentation << "  " << returnType << " " << reduceName(commandData.arguments[returnIndex].name);
 
@@ -1782,12 +1788,23 @@ void writeFunctionBody(std::ofstream & ofs, std::string const& indentation, std:
 
   // write the function call
   ofs << indentation << "  ";
+  std::string localIndentation = "  ";
   if (commandData.returnType == "Result")
   {
-    ofs << "Result result = static_cast<Result>( ";
+    ofs << "Result result";
+    if (commandData.twoStep && (1 < commandData.successCodes.size()))
+    {
+      ofs << ";" << std::endl
+          << indentation << "  do" << std::endl
+          << indentation << "  {" << std::endl
+          << indentation << "    result";
+      localIndentation += "  ";
+    }
+    ofs << " = static_cast<Result>( ";
   }
   else if (commandData.returnType != "void")
   {
+    assert(!commandData.twoStep);
     ofs << "return ";
   }
   writeCall(ofs, dependencyData.name, templateIndex, commandData, vkTypes, vectorParameters, returnIndex, true);
@@ -1797,24 +1814,32 @@ void writeFunctionBody(std::ofstream & ofs, std::string const& indentation, std:
   }
   ofs << ";" << std::endl;
 
-  // add an exception check
-  if ((commandData.returnType == "Result") || !commandData.successCodes.empty())
-  {
-    writeExceptionCheck(ofs, indentation, className, functionName, commandData.successCodes);
-  }
-
   if (commandData.twoStep)
   {
     std::map<size_t, size_t>::const_iterator returnit = vectorParameters.find(returnIndex);
 
-    // resize the vector to hold the data according to the result from the first call
-    ofs << indentation << "  " << reduceName(commandData.arguments[returnit->first].name) << ".resize( " << reduceName(commandData.arguments[returnit->second].name) << " );" << std::endl;
-
-    // write the function call a second time
-    ofs << indentation << "  ";
     if (commandData.returnType == "Result")
     {
-      ofs << "result = static_cast<Result>( ";
+      ofs << indentation << localIndentation << "if ( ( result == Result::eSuccess ) && " << reduceName(commandData.arguments[returnit->second].name) << " )" << std::endl
+          << indentation << localIndentation << "{" << std::endl
+          << indentation << localIndentation << "  ";
+    }
+    else
+    {
+      ofs << indentation << "  ";
+    }
+
+    // resize the vector to hold the data according to the result from the first call
+    ofs << reduceName(commandData.arguments[returnit->first].name) << ".resize( " << reduceName(commandData.arguments[returnit->second].name) << " );" << std::endl;
+
+    // write the function call a second time
+    if (commandData.returnType == "Result")
+    {
+      ofs << indentation << localIndentation << "  result = static_cast<Result>( ";
+    }
+    else
+    {
+      ofs << indentation << "  ";
     }
     writeCall(ofs, dependencyData.name, templateIndex, commandData, vkTypes, vectorParameters, returnIndex, false);
     if (commandData.returnType == "Result")
@@ -1822,16 +1847,23 @@ void writeFunctionBody(std::ofstream & ofs, std::string const& indentation, std:
       ofs << " )";
     }
     ofs << ";" << std::endl;
-
-    // add a second exception check
-    if ((commandData.returnType == "Result") || !commandData.successCodes.empty())
+    if (commandData.returnType == "Result")
     {
-      writeExceptionCheck(ofs, indentation, className, functionName, commandData.successCodes);
+      ofs << indentation << localIndentation << "}" << std::endl;
+      if (1 < commandData.successCodes.size())
+      {
+        ofs << indentation << "  } while ( result == Result::eIncomplete );" << std::endl;
+      }
+      writeExceptionCheck(ofs, indentation, className, functionName, {"eSuccess"});
     }
+  }
+  else if ((commandData.returnType == "Result") || !commandData.successCodes.empty())
+  {
+    writeExceptionCheck(ofs, indentation, className, functionName, commandData.successCodes);
   }
 
   // return the returned value
-  if ((returnIndex != ~0) && (((commandData.returnType == "Result") && (commandData.successCodes.size() < 2)) || (commandData.returnType == "void")))
+  if ((returnIndex != ~0) && (commandData.returnType != returnType))
   {
     ofs << indentation << "  return " << reduceName(commandData.arguments[returnIndex].name) << ";" << std::endl;
   }
@@ -1848,7 +1880,10 @@ void writeFunctionHeader(std::ofstream & ofs, std::string const& indentation, st
   std::set<size_t> skippedArguments;
   for (std::map<size_t, size_t>::const_iterator it = vectorParameters.begin(); it != vectorParameters.end(); ++it)
   {
-    skippedArguments.insert(it->second);
+    if (it->second != ~0)
+    {
+      skippedArguments.insert(it->second);
+    }
   }
   if ((vectorParameters.size() == 1)
       && ((commandData.arguments[vectorParameters.begin()->first].len == "dataSize/4") || (commandData.arguments[vectorParameters.begin()->first].len == "latexmath:[$dataSize \\over 4$]")))
@@ -1856,7 +1891,7 @@ void writeFunctionHeader(std::ofstream & ofs, std::string const& indentation, st
     assert(commandData.arguments[3].name == "dataSize");
     skippedArguments.insert(3);
   }
-  if ((returnIndex != ~0) && (((commandData.returnType == "Result") && (commandData.successCodes.size() < 2)) || (commandData.returnType == "void")))
+  if ((returnIndex != ~0) && (commandData.returnType != returnType))
   {
     skippedArguments.insert(returnIndex);
   }
@@ -1871,80 +1906,85 @@ void writeFunctionHeader(std::ofstream & ofs, std::string const& indentation, st
   {
     ofs << "inline ";
   }
-  ofs << returnType << " " << name << "( ";
-  bool argEncountered = false;
-  for (size_t i = commandData.handleCommand ? 1 : 0; i < commandData.arguments.size(); i++)
+  ofs << returnType << " " << name << "(";
+  if (skippedArguments.size() + (commandData.handleCommand ? 1 : 0) < commandData.arguments.size())
   {
-    if (skippedArguments.find(i) == skippedArguments.end())
+    ofs << " ";
+    bool argEncountered = false;
+    for (size_t i = commandData.handleCommand ? 1 : 0; i < commandData.arguments.size(); i++)
     {
-      if (argEncountered)
+      if (skippedArguments.find(i) == skippedArguments.end())
       {
-        ofs << ", ";
-      }
+        if (argEncountered)
+        {
+          ofs << ", ";
+        }
 
-      std::map<size_t,size_t>::const_iterator it = vectorParameters.find(i);
-      size_t pos = commandData.arguments[i].type.find('*');
-      if ((it == vectorParameters.end()) && (pos == std::string::npos))
-      {
-        ofs << commandData.arguments[i].type << " " << commandData.arguments[i].name;
-        if (!commandData.arguments[i].arraySize.empty())
+        std::map<size_t, size_t>::const_iterator it = vectorParameters.find(i);
+        size_t pos = commandData.arguments[i].type.find('*');
+        if ((it == vectorParameters.end()) && (pos == std::string::npos))
         {
-          ofs << "[" << commandData.arguments[i].arraySize << "]";
-        }
-      }
-      else
-      {
-        bool optional = commandData.arguments[i].optional && ((it == vectorParameters.end()) || (it->second == ~0));
-        if (optional)
-        {
-          ofs << "vk::Optional<";
-        }
-        if (vectorParameters.find(i) == vectorParameters.end())
-        {
-          assert(pos != std::string::npos);
-          if (commandData.arguments[i].type.find("char") != std::string::npos)
+          ofs << commandData.arguments[i].type << " " << commandData.arguments[i].name;
+          if (!commandData.arguments[i].arraySize.empty())
           {
-            ofs << "std::string const";
-          }
-          else
-          {
-            assert(commandData.arguments[i].type[pos] == '*');
-            ofs << trimEnd(commandData.arguments[i].type.substr(0, pos));
+            ofs << "[" << commandData.arguments[i].arraySize << "]";
           }
         }
         else
         {
-          if (templateIndex == i)
+          bool optional = commandData.arguments[i].optional && ((it == vectorParameters.end()) || (it->second == ~0));
+          if (optional)
           {
-            ofs << "std::vector<T>";
+            ofs << "vk::Optional<";
           }
-          else if (commandData.arguments[i].pureType == "char")
+          if (vectorParameters.find(i) == vectorParameters.end())
           {
-            ofs << "std::string";
-          }
-          else if (commandData.arguments[i].pureType == "void")
-          {
-            ofs << "std::vector<uint8_t>";
+            assert(pos != std::string::npos);
+            if (commandData.arguments[i].type.find("char") != std::string::npos)
+            {
+              ofs << "std::string const";
+            }
+            else
+            {
+              assert(commandData.arguments[i].type[pos] == '*');
+              ofs << trimEnd(commandData.arguments[i].type.substr(0, pos));
+            }
           }
           else
           {
-            ofs << "std::vector<" << commandData.arguments[i].pureType << ">";
+            if (templateIndex == i)
+            {
+              ofs << "std::vector<T>";
+            }
+            else if (commandData.arguments[i].pureType == "char")
+            {
+              ofs << "std::string";
+            }
+            else if (commandData.arguments[i].pureType == "void")
+            {
+              ofs << "std::vector<uint8_t>";
+            }
+            else
+            {
+              ofs << "std::vector<" << commandData.arguments[i].pureType << ">";
+            }
+            if (commandData.arguments[i].type.find("const") != std::string::npos)
+            {
+              ofs << " const";
+            }
           }
-          if (commandData.arguments[i].type.find("const") != std::string::npos)
+          if (optional)
           {
-            ofs << " const";
+            ofs << "> const";
           }
+          ofs << " & " << reduceName(commandData.arguments[i].name);
         }
-        if (optional)
-        {
-          ofs << "> const";
-        }
-        ofs << " & " << reduceName(commandData.arguments[i].name);
+        argEncountered = true;
       }
-      argEncountered = true;
     }
+    ofs << " ";
   }
-  ofs << " )";
+  ofs << ")";
   if (commandData.handleCommand)
   {
     ofs << " const";

@@ -964,10 +964,10 @@ void readExtensionRequire(tinyxml2::XMLElement * element, VkData & vkData, std::
   do
   {
     std::string value = child->Value();
-    assert( child->Attribute( "name" ) );
 
     if ( value == "command" )
     {
+      assert(child->Attribute("name"));
       std::string name = stripCommand(child->Attribute("name"));
       std::map<std::string, CommandData>::iterator cit = vkData.commands.find(name);
       assert(cit != vkData.commands.end());
@@ -975,6 +975,7 @@ void readExtensionRequire(tinyxml2::XMLElement * element, VkData & vkData, std::
     }
     else if (value == "type")
     {
+      assert(child->Attribute("name"));
       std::string name = strip(child->Attribute("name"), "Vk");
       std::map<std::string, EnumData>::iterator eit = vkData.enums.find(name);
       if (eit != vkData.enums.end())
@@ -1018,14 +1019,15 @@ void readExtensionRequire(tinyxml2::XMLElement * element, VkData & vkData, std::
       // TODO process enums which don't extend existing enums
       if (child->Attribute("extends"))
       {
+        assert(child->Attribute("name"));
         assert(vkData.enums.find(getEnumName(child->Attribute("extends"))) != vkData.enums.end());
-        assert(!!child->Attribute("offset") ^ !!child->Attribute("value"));   // either offset or value has to be defined; no both of them!
+        assert(!!child->Attribute("bitpos") + !!child->Attribute("offset") + !!child->Attribute("value") == 1);
         vkData.enums[getEnumName(child->Attribute("extends"))].addEnum(child->Attribute("name"), child->Attribute("offset") ? tag : "" );
       }
     }
     else
     {
-        assert("unknown attribute, check me");
+      assert(value=="usage");
     }
   } while ( child = child->NextSiblingElement() );
 }

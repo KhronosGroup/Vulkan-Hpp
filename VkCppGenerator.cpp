@@ -75,7 +75,7 @@ const std::string exceptionHeader(
   "  {\n"
   "    public:\n"
   "    virtual const char* name() const noexcept override { return \"vk::Result\"; }\n"
-  "    virtual std::string message(int ev) const override { return to_string(static_cast<vk::Result>(ev)); }\n"
+  "    virtual std::string message(int ev) const override { return to_string(static_cast<Result>(ev)); }\n"
   "  };\n"
   "\n"
   "#if defined(_MSC_VER) && (_MSC_VER == 1800)\n"
@@ -101,7 +101,7 @@ const std::string exceptionHeader(
   );
 
 const std::string flagsHeader(
-"  template <typename BitType, typename MaskType = uint32_t>\n"
+"  template <typename BitType, typename MaskType = VkFlags>\n"
 "  class Flags\n"
 "  {\n"
 "  public:\n"
@@ -180,7 +180,7 @@ const std::string flagsHeader(
 "      return m_mask != rhs.m_mask;\n"
 "    }\n"
 "\n"
-"    operator bool() const\n"
+"    explicit operator bool() const\n"
 "    {\n"
 "      return !!m_mask;\n"
 "    }\n"
@@ -1022,7 +1022,7 @@ void readExtensionRequire(tinyxml2::XMLElement * element, VkData & vkData, std::
         assert(child->Attribute("name"));
         assert(vkData.enums.find(getEnumName(child->Attribute("extends"))) != vkData.enums.end());
         assert(!!child->Attribute("bitpos") + !!child->Attribute("offset") + !!child->Attribute("value") == 1);
-        vkData.enums[getEnumName(child->Attribute("extends"))].addEnum(child->Attribute("name"), child->Attribute("offset") ? tag : "" );
+        vkData.enums[getEnumName(child->Attribute("extends"))].addEnum(child->Attribute("name"), child->Attribute("value") ? "" : tag );
       }
     }
     else
@@ -1911,6 +1911,16 @@ void writeFunctionHeader(std::ofstream & ofs, std::string const& indentation, st
   ofs << returnType << " " << name << "(";
   if (skippedArguments.size() + (commandData.handleCommand ? 1 : 0) < commandData.arguments.size())
   {
+    size_t lastArgument = ~0;
+    for (size_t i = commandData.arguments.size() - 1; i < commandData.arguments.size(); i--)
+    {
+      if (skippedArguments.find(i) == skippedArguments.end())
+      {
+        lastArgument = i;
+        break;
+      }
+    }
+
     ofs << " ";
     bool argEncountered = false;
     for (size_t i = commandData.handleCommand ? 1 : 0; i < commandData.arguments.size(); i++)
@@ -1937,7 +1947,7 @@ void writeFunctionHeader(std::ofstream & ofs, std::string const& indentation, st
           bool optional = commandData.arguments[i].optional && ((it == vectorParameters.end()) || (it->second == ~0));
           if (optional)
           {
-            ofs << "vk::Optional<";
+            ofs << "Optional<";
           }
           if (vectorParameters.find(i) == vectorParameters.end())
           {
@@ -1980,6 +1990,10 @@ void writeFunctionHeader(std::ofstream & ofs, std::string const& indentation, st
             ofs << "> const";
           }
           ofs << " & " << reduceName(commandData.arguments[i].name);
+          if (optional && (i == lastArgument))
+          {
+            ofs << " = nullptr";
+          }
         }
         argEncountered = true;
       }
@@ -2386,7 +2400,7 @@ void writeEnumsToString(std::ofstream & ofs, DependencyData const& dependencyDat
 void writeFlagsToString(std::ofstream & ofs, DependencyData const& dependencyData, EnumData const &enumData)
 {
   enterProtect(ofs, enumData.protect);
-  std::string enumPrefix = "vk::" + *dependencyData.dependencies.begin() + "::";
+  std::string enumPrefix = *dependencyData.dependencies.begin() + "::";
   ofs << "  inline std::string to_string(" << dependencyData.name << (enumData.members.empty() ? ")" : " value)") << std::endl
       << "  {" << std::endl;
   if (enumData.members.empty())

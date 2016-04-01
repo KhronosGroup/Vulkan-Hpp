@@ -18869,22 +18869,22 @@ namespace vk
 
   enum class PresentModeKHR
   {
-    eImmediateKHR = VK_PRESENT_MODE_IMMEDIATE_KHR,
-    eMailboxKHR = VK_PRESENT_MODE_MAILBOX_KHR,
-    eFifoKHR = VK_PRESENT_MODE_FIFO_KHR,
-    eFifoRelaxedKHR = VK_PRESENT_MODE_FIFO_RELAXED_KHR
+    eImmediate = VK_PRESENT_MODE_IMMEDIATE_KHR,
+    eMailbox = VK_PRESENT_MODE_MAILBOX_KHR,
+    eFifo = VK_PRESENT_MODE_FIFO_KHR,
+    eFifoRelaxed = VK_PRESENT_MODE_FIFO_RELAXED_KHR
   };
 
   enum class ColorSpaceKHR
   {
-    eVkColorspaceSrgbNonlinearKHR = VK_COLORSPACE_SRGB_NONLINEAR_KHR
+    eVkColorspaceSrgbNonlinear = VK_COLORSPACE_SRGB_NONLINEAR_KHR
   };
 
   class SurfaceFormatKHR
   {
   public:
     SurfaceFormatKHR()
-      : SurfaceFormatKHR( Format::eUndefined, ColorSpaceKHR::eVkColorspaceSrgbNonlinearKHR )
+      : SurfaceFormatKHR( Format::eUndefined, ColorSpaceKHR::eVkColorspaceSrgbNonlinear )
     {}
 
     SurfaceFormatKHR( Format format, ColorSpaceKHR colorSpace)
@@ -19740,7 +19740,7 @@ namespace vk
   {
   public:
     SwapchainCreateInfoKHR()
-      : SwapchainCreateInfoKHR( SwapchainCreateFlagsKHR(), SurfaceKHR(), 0, Format::eUndefined, ColorSpaceKHR::eVkColorspaceSrgbNonlinearKHR, Extent2D(), 0, ImageUsageFlags(), SharingMode::eExclusive, 0, nullptr, SurfaceTransformFlagBitsKHR::eIdentity, CompositeAlphaFlagBitsKHR::eOpaque, PresentModeKHR::eImmediateKHR, 0, SwapchainKHR() )
+      : SwapchainCreateInfoKHR( SwapchainCreateFlagsKHR(), SurfaceKHR(), 0, Format::eUndefined, ColorSpaceKHR::eVkColorspaceSrgbNonlinear, Extent2D(), 0, ImageUsageFlags(), SharingMode::eExclusive, 0, nullptr, SurfaceTransformFlagBitsKHR::eIdentity, CompositeAlphaFlagBitsKHR::eOpaque, PresentModeKHR::eImmediate, 0, SwapchainKHR() )
     {}
 
     SwapchainCreateInfoKHR( SwapchainCreateFlagsKHR flags, SurfaceKHR surface, uint32_t minImageCount, Format imageFormat, ColorSpaceKHR imageColorSpace, Extent2D imageExtent, uint32_t imageArrayLayers, ImageUsageFlags imageUsage, SharingMode imageSharingMode, uint32_t queueFamilyIndexCount, const uint32_t* pQueueFamilyIndices, SurfaceTransformFlagBitsKHR preTransform, CompositeAlphaFlagBitsKHR compositeAlpha, PresentModeKHR presentMode, Bool32 clipped, SwapchainKHR oldSwapchain)
@@ -21995,35 +21995,35 @@ namespace vk
 
   enum class DebugReportObjectTypeEXT
   {
-    eUnknownEXT = VK_DEBUG_REPORT_OBJECT_TYPE_UNKNOWN_EXT,
-    eInstanceEXT = VK_DEBUG_REPORT_OBJECT_TYPE_INSTANCE_EXT,
-    ePhysicalDeviceEXT = VK_DEBUG_REPORT_OBJECT_TYPE_PHYSICAL_DEVICE_EXT,
-    eDeviceEXT = VK_DEBUG_REPORT_OBJECT_TYPE_DEVICE_EXT,
-    eQueueEXT = VK_DEBUG_REPORT_OBJECT_TYPE_QUEUE_EXT,
-    eSemaphoreEXT = VK_DEBUG_REPORT_OBJECT_TYPE_SEMAPHORE_EXT,
-    eCommandBufferEXT = VK_DEBUG_REPORT_OBJECT_TYPE_COMMAND_BUFFER_EXT,
-    eFenceEXT = VK_DEBUG_REPORT_OBJECT_TYPE_FENCE_EXT,
-    eDeviceMemoryEXT = VK_DEBUG_REPORT_OBJECT_TYPE_DEVICE_MEMORY_EXT,
-    eBufferEXT = VK_DEBUG_REPORT_OBJECT_TYPE_BUFFER_EXT,
-    eImageEXT = VK_DEBUG_REPORT_OBJECT_TYPE_IMAGE_EXT,
-    eEventEXT = VK_DEBUG_REPORT_OBJECT_TYPE_EVENT_EXT,
-    eQueryPoolEXT = VK_DEBUG_REPORT_OBJECT_TYPE_QUERY_POOL_EXT,
-    eBufferViewEXT = VK_DEBUG_REPORT_OBJECT_TYPE_BUFFER_VIEW_EXT,
-    eImageViewEXT = VK_DEBUG_REPORT_OBJECT_TYPE_IMAGE_VIEW_EXT,
-    eShaderModuleEXT = VK_DEBUG_REPORT_OBJECT_TYPE_SHADER_MODULE_EXT,
-    ePipelineCacheEXT = VK_DEBUG_REPORT_OBJECT_TYPE_PIPELINE_CACHE_EXT,
-    ePipelineLayoutEXT = VK_DEBUG_REPORT_OBJECT_TYPE_PIPELINE_LAYOUT_EXT,
-    eRenderPassEXT = VK_DEBUG_REPORT_OBJECT_TYPE_RENDER_PASS_EXT,
-    ePipelineEXT = VK_DEBUG_REPORT_OBJECT_TYPE_PIPELINE_EXT,
-    eDescriptorSetLayoutEXT = VK_DEBUG_REPORT_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT_EXT,
-    eSamplerEXT = VK_DEBUG_REPORT_OBJECT_TYPE_SAMPLER_EXT,
-    eDescriptorPoolEXT = VK_DEBUG_REPORT_OBJECT_TYPE_DESCRIPTOR_POOL_EXT,
-    eDescriptorSetEXT = VK_DEBUG_REPORT_OBJECT_TYPE_DESCRIPTOR_SET_EXT,
-    eFramebufferEXT = VK_DEBUG_REPORT_OBJECT_TYPE_FRAMEBUFFER_EXT,
-    eCommandPoolEXT = VK_DEBUG_REPORT_OBJECT_TYPE_COMMAND_POOL_EXT,
-    eSurfaceKhrEXT = VK_DEBUG_REPORT_OBJECT_TYPE_SURFACE_KHR_EXT,
-    eSwapchainKhrEXT = VK_DEBUG_REPORT_OBJECT_TYPE_SWAPCHAIN_KHR_EXT,
-    eDebugReportEXT = VK_DEBUG_REPORT_OBJECT_TYPE_DEBUG_REPORT_EXT
+    eUnknown = VK_DEBUG_REPORT_OBJECT_TYPE_UNKNOWN_EXT,
+    eInstance = VK_DEBUG_REPORT_OBJECT_TYPE_INSTANCE_EXT,
+    ePhysicalDevice = VK_DEBUG_REPORT_OBJECT_TYPE_PHYSICAL_DEVICE_EXT,
+    eDevice = VK_DEBUG_REPORT_OBJECT_TYPE_DEVICE_EXT,
+    eQueue = VK_DEBUG_REPORT_OBJECT_TYPE_QUEUE_EXT,
+    eSemaphore = VK_DEBUG_REPORT_OBJECT_TYPE_SEMAPHORE_EXT,
+    eCommandBuffer = VK_DEBUG_REPORT_OBJECT_TYPE_COMMAND_BUFFER_EXT,
+    eFence = VK_DEBUG_REPORT_OBJECT_TYPE_FENCE_EXT,
+    eDeviceMemory = VK_DEBUG_REPORT_OBJECT_TYPE_DEVICE_MEMORY_EXT,
+    eBuffer = VK_DEBUG_REPORT_OBJECT_TYPE_BUFFER_EXT,
+    eImage = VK_DEBUG_REPORT_OBJECT_TYPE_IMAGE_EXT,
+    eEvent = VK_DEBUG_REPORT_OBJECT_TYPE_EVENT_EXT,
+    eQueryPool = VK_DEBUG_REPORT_OBJECT_TYPE_QUERY_POOL_EXT,
+    eBufferView = VK_DEBUG_REPORT_OBJECT_TYPE_BUFFER_VIEW_EXT,
+    eImageView = VK_DEBUG_REPORT_OBJECT_TYPE_IMAGE_VIEW_EXT,
+    eShaderModule = VK_DEBUG_REPORT_OBJECT_TYPE_SHADER_MODULE_EXT,
+    ePipelineCache = VK_DEBUG_REPORT_OBJECT_TYPE_PIPELINE_CACHE_EXT,
+    ePipelineLayout = VK_DEBUG_REPORT_OBJECT_TYPE_PIPELINE_LAYOUT_EXT,
+    eRenderPass = VK_DEBUG_REPORT_OBJECT_TYPE_RENDER_PASS_EXT,
+    ePipeline = VK_DEBUG_REPORT_OBJECT_TYPE_PIPELINE_EXT,
+    eDescriptorSetLayout = VK_DEBUG_REPORT_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT_EXT,
+    eSampler = VK_DEBUG_REPORT_OBJECT_TYPE_SAMPLER_EXT,
+    eDescriptorPool = VK_DEBUG_REPORT_OBJECT_TYPE_DESCRIPTOR_POOL_EXT,
+    eDescriptorSet = VK_DEBUG_REPORT_OBJECT_TYPE_DESCRIPTOR_SET_EXT,
+    eFramebuffer = VK_DEBUG_REPORT_OBJECT_TYPE_FRAMEBUFFER_EXT,
+    eCommandPool = VK_DEBUG_REPORT_OBJECT_TYPE_COMMAND_POOL_EXT,
+    eSurfaceKhr = VK_DEBUG_REPORT_OBJECT_TYPE_SURFACE_KHR_EXT,
+    eSwapchainKhr = VK_DEBUG_REPORT_OBJECT_TYPE_SWAPCHAIN_KHR_EXT,
+    eDebugReport = VK_DEBUG_REPORT_OBJECT_TYPE_DEBUG_REPORT_EXT
   };
 
   class Instance
@@ -22326,8 +22326,8 @@ namespace vk
 
   enum class DebugReportErrorEXT
   {
-    eNoneEXT = VK_DEBUG_REPORT_ERROR_NONE_EXT,
-    eCallbackRefEXT = VK_DEBUG_REPORT_ERROR_CALLBACK_REF_EXT
+    eNone = VK_DEBUG_REPORT_ERROR_NONE_EXT,
+    eCallbackRef = VK_DEBUG_REPORT_ERROR_CALLBACK_REF_EXT
   };
 
   inline Result createInstance( const InstanceCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, Instance* pInstance )
@@ -24230,10 +24230,10 @@ namespace vk
   {
     switch (value)
     {
-    case PresentModeKHR::eImmediateKHR: return "ImmediateKHR";
-    case PresentModeKHR::eMailboxKHR: return "MailboxKHR";
-    case PresentModeKHR::eFifoKHR: return "FifoKHR";
-    case PresentModeKHR::eFifoRelaxedKHR: return "FifoRelaxedKHR";
+    case PresentModeKHR::eImmediate: return "Immediate";
+    case PresentModeKHR::eMailbox: return "Mailbox";
+    case PresentModeKHR::eFifo: return "Fifo";
+    case PresentModeKHR::eFifoRelaxed: return "FifoRelaxed";
     default: return "unknown";
     }
   }
@@ -24242,7 +24242,7 @@ namespace vk
   {
     switch (value)
     {
-    case ColorSpaceKHR::eVkColorspaceSrgbNonlinearKHR: return "VkColorspaceSrgbNonlinearKHR";
+    case ColorSpaceKHR::eVkColorspaceSrgbNonlinear: return "VkColorspaceSrgbNonlinear";
     default: return "unknown";
     }
   }
@@ -24355,35 +24355,35 @@ namespace vk
   {
     switch (value)
     {
-    case DebugReportObjectTypeEXT::eUnknownEXT: return "UnknownEXT";
-    case DebugReportObjectTypeEXT::eInstanceEXT: return "InstanceEXT";
-    case DebugReportObjectTypeEXT::ePhysicalDeviceEXT: return "PhysicalDeviceEXT";
-    case DebugReportObjectTypeEXT::eDeviceEXT: return "DeviceEXT";
-    case DebugReportObjectTypeEXT::eQueueEXT: return "QueueEXT";
-    case DebugReportObjectTypeEXT::eSemaphoreEXT: return "SemaphoreEXT";
-    case DebugReportObjectTypeEXT::eCommandBufferEXT: return "CommandBufferEXT";
-    case DebugReportObjectTypeEXT::eFenceEXT: return "FenceEXT";
-    case DebugReportObjectTypeEXT::eDeviceMemoryEXT: return "DeviceMemoryEXT";
-    case DebugReportObjectTypeEXT::eBufferEXT: return "BufferEXT";
-    case DebugReportObjectTypeEXT::eImageEXT: return "ImageEXT";
-    case DebugReportObjectTypeEXT::eEventEXT: return "EventEXT";
-    case DebugReportObjectTypeEXT::eQueryPoolEXT: return "QueryPoolEXT";
-    case DebugReportObjectTypeEXT::eBufferViewEXT: return "BufferViewEXT";
-    case DebugReportObjectTypeEXT::eImageViewEXT: return "ImageViewEXT";
-    case DebugReportObjectTypeEXT::eShaderModuleEXT: return "ShaderModuleEXT";
-    case DebugReportObjectTypeEXT::ePipelineCacheEXT: return "PipelineCacheEXT";
-    case DebugReportObjectTypeEXT::ePipelineLayoutEXT: return "PipelineLayoutEXT";
-    case DebugReportObjectTypeEXT::eRenderPassEXT: return "RenderPassEXT";
-    case DebugReportObjectTypeEXT::ePipelineEXT: return "PipelineEXT";
-    case DebugReportObjectTypeEXT::eDescriptorSetLayoutEXT: return "DescriptorSetLayoutEXT";
-    case DebugReportObjectTypeEXT::eSamplerEXT: return "SamplerEXT";
-    case DebugReportObjectTypeEXT::eDescriptorPoolEXT: return "DescriptorPoolEXT";
-    case DebugReportObjectTypeEXT::eDescriptorSetEXT: return "DescriptorSetEXT";
-    case DebugReportObjectTypeEXT::eFramebufferEXT: return "FramebufferEXT";
-    case DebugReportObjectTypeEXT::eCommandPoolEXT: return "CommandPoolEXT";
-    case DebugReportObjectTypeEXT::eSurfaceKhrEXT: return "SurfaceKhrEXT";
-    case DebugReportObjectTypeEXT::eSwapchainKhrEXT: return "SwapchainKhrEXT";
-    case DebugReportObjectTypeEXT::eDebugReportEXT: return "DebugReportEXT";
+    case DebugReportObjectTypeEXT::eUnknown: return "Unknown";
+    case DebugReportObjectTypeEXT::eInstance: return "Instance";
+    case DebugReportObjectTypeEXT::ePhysicalDevice: return "PhysicalDevice";
+    case DebugReportObjectTypeEXT::eDevice: return "Device";
+    case DebugReportObjectTypeEXT::eQueue: return "Queue";
+    case DebugReportObjectTypeEXT::eSemaphore: return "Semaphore";
+    case DebugReportObjectTypeEXT::eCommandBuffer: return "CommandBuffer";
+    case DebugReportObjectTypeEXT::eFence: return "Fence";
+    case DebugReportObjectTypeEXT::eDeviceMemory: return "DeviceMemory";
+    case DebugReportObjectTypeEXT::eBuffer: return "Buffer";
+    case DebugReportObjectTypeEXT::eImage: return "Image";
+    case DebugReportObjectTypeEXT::eEvent: return "Event";
+    case DebugReportObjectTypeEXT::eQueryPool: return "QueryPool";
+    case DebugReportObjectTypeEXT::eBufferView: return "BufferView";
+    case DebugReportObjectTypeEXT::eImageView: return "ImageView";
+    case DebugReportObjectTypeEXT::eShaderModule: return "ShaderModule";
+    case DebugReportObjectTypeEXT::ePipelineCache: return "PipelineCache";
+    case DebugReportObjectTypeEXT::ePipelineLayout: return "PipelineLayout";
+    case DebugReportObjectTypeEXT::eRenderPass: return "RenderPass";
+    case DebugReportObjectTypeEXT::ePipeline: return "Pipeline";
+    case DebugReportObjectTypeEXT::eDescriptorSetLayout: return "DescriptorSetLayout";
+    case DebugReportObjectTypeEXT::eSampler: return "Sampler";
+    case DebugReportObjectTypeEXT::eDescriptorPool: return "DescriptorPool";
+    case DebugReportObjectTypeEXT::eDescriptorSet: return "DescriptorSet";
+    case DebugReportObjectTypeEXT::eFramebuffer: return "Framebuffer";
+    case DebugReportObjectTypeEXT::eCommandPool: return "CommandPool";
+    case DebugReportObjectTypeEXT::eSurfaceKhr: return "SurfaceKhr";
+    case DebugReportObjectTypeEXT::eSwapchainKhr: return "SwapchainKhr";
+    case DebugReportObjectTypeEXT::eDebugReport: return "DebugReport";
     default: return "unknown";
     }
   }
@@ -24392,8 +24392,8 @@ namespace vk
   {
     switch (value)
     {
-    case DebugReportErrorEXT::eNoneEXT: return "NoneEXT";
-    case DebugReportErrorEXT::eCallbackRefEXT: return "CallbackRefEXT";
+    case DebugReportErrorEXT::eNone: return "None";
+    case DebugReportErrorEXT::eCallbackRef: return "CallbackRef";
     default: return "unknown";
     }
   }

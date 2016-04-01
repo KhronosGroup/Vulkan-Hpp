@@ -17654,6 +17654,11 @@ namespace vk
     {
       vkCmdSetViewport( m_commandBuffer, firstViewport, static_cast<uint32_t>( viewports.size() ), reinterpret_cast<const VkViewport*>( viewports.data() ) );
     }
+
+    void setViewport( uint32_t firstViewport, Viewport const & viewport ) const
+    {
+      vkCmdSetViewport( m_commandBuffer, firstViewport, 1, reinterpret_cast<const VkViewport*>( &viewport ) );
+    }
 #endif /*VKCPP_ENHANCED_MODE*/
 
     void setScissor( uint32_t firstScissor, uint32_t scissorCount, const Rect2D* pScissors ) const
@@ -17665,6 +17670,11 @@ namespace vk
     void setScissor( uint32_t firstScissor, std::vector<Rect2D> const & scissors ) const
     {
       vkCmdSetScissor( m_commandBuffer, firstScissor, static_cast<uint32_t>( scissors.size() ), reinterpret_cast<const VkRect2D*>( scissors.data() ) );
+    }
+
+    void setScissor( uint32_t firstScissor, Rect2D const & scissor ) const
+    {
+      vkCmdSetScissor( m_commandBuffer, firstScissor, 1, reinterpret_cast<const VkRect2D*>( &scissor ) );
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
@@ -17776,6 +17786,11 @@ namespace vk
     {
       vkCmdBindDescriptorSets( m_commandBuffer, static_cast<VkPipelineBindPoint>( pipelineBindPoint ), static_cast<VkPipelineLayout>( layout ), firstSet, static_cast<uint32_t>( descriptorSets.size() ), reinterpret_cast<const VkDescriptorSet*>( descriptorSets.data() ), static_cast<uint32_t>( dynamicOffsets.size() ), dynamicOffsets.data() );
     }
+
+    void bindDescriptorSet( PipelineBindPoint pipelineBindPoint, PipelineLayout layout, uint32_t firstSet, DescriptorSet const & descriptorSet, uint32_t const & dynamicOffset ) const
+    {
+      vkCmdBindDescriptorSets( m_commandBuffer, static_cast<VkPipelineBindPoint>( pipelineBindPoint ), static_cast<VkPipelineLayout>( layout ), firstSet, 1, reinterpret_cast<const VkDescriptorSet*>( &descriptorSet ), 1, &dynamicOffset );
+    }
 #endif /*VKCPP_ENHANCED_MODE*/
 
 #ifndef VKCPP_ENHANCED_MODE
@@ -17805,6 +17820,11 @@ namespace vk
         throw std::logic_error( "vk::CommandBuffer::bindVertexBuffers: buffers.size() != offsets.size()" );
       }
       vkCmdBindVertexBuffers( m_commandBuffer, firstBinding, static_cast<uint32_t>( buffers.size() ), reinterpret_cast<const VkBuffer*>( buffers.data() ), offsets.data() );
+    }
+
+    void bindVertexBuffer( uint32_t firstBinding, Buffer const & buffer, DeviceSize const & offset ) const
+    {
+      vkCmdBindVertexBuffers( m_commandBuffer, firstBinding, 1, reinterpret_cast<const VkBuffer*>( &buffer ), &offset );
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
@@ -17902,6 +17922,11 @@ namespace vk
     {
       vkCmdCopyBuffer( m_commandBuffer, static_cast<VkBuffer>( srcBuffer ), static_cast<VkBuffer>( dstBuffer ), static_cast<uint32_t>( regions.size() ), reinterpret_cast<const VkBufferCopy*>( regions.data() ) );
     }
+
+    void copyBuffer( Buffer srcBuffer, Buffer dstBuffer, BufferCopy const & region ) const
+    {
+      vkCmdCopyBuffer( m_commandBuffer, static_cast<VkBuffer>( srcBuffer ), static_cast<VkBuffer>( dstBuffer ), 1, reinterpret_cast<const VkBufferCopy*>( &region ) );
+    }
 #endif /*VKCPP_ENHANCED_MODE*/
 
     void copyImage( Image srcImage, ImageLayout srcImageLayout, Image dstImage, ImageLayout dstImageLayout, uint32_t regionCount, const ImageCopy* pRegions ) const
@@ -17913,6 +17938,11 @@ namespace vk
     void copyImage( Image srcImage, ImageLayout srcImageLayout, Image dstImage, ImageLayout dstImageLayout, std::vector<ImageCopy> const & regions ) const
     {
       vkCmdCopyImage( m_commandBuffer, static_cast<VkImage>( srcImage ), static_cast<VkImageLayout>( srcImageLayout ), static_cast<VkImage>( dstImage ), static_cast<VkImageLayout>( dstImageLayout ), static_cast<uint32_t>( regions.size() ), reinterpret_cast<const VkImageCopy*>( regions.data() ) );
+    }
+
+    void copyImage( Image srcImage, ImageLayout srcImageLayout, Image dstImage, ImageLayout dstImageLayout, ImageCopy const & region ) const
+    {
+      vkCmdCopyImage( m_commandBuffer, static_cast<VkImage>( srcImage ), static_cast<VkImageLayout>( srcImageLayout ), static_cast<VkImage>( dstImage ), static_cast<VkImageLayout>( dstImageLayout ), 1, reinterpret_cast<const VkImageCopy*>( &region ) );
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
@@ -17926,6 +17956,11 @@ namespace vk
     {
       vkCmdBlitImage( m_commandBuffer, static_cast<VkImage>( srcImage ), static_cast<VkImageLayout>( srcImageLayout ), static_cast<VkImage>( dstImage ), static_cast<VkImageLayout>( dstImageLayout ), static_cast<uint32_t>( regions.size() ), reinterpret_cast<const VkImageBlit*>( regions.data() ), static_cast<VkFilter>( filter ) );
     }
+
+    void blitImage( Image srcImage, ImageLayout srcImageLayout, Image dstImage, ImageLayout dstImageLayout, ImageBlit const & region, Filter filter ) const
+    {
+      vkCmdBlitImage( m_commandBuffer, static_cast<VkImage>( srcImage ), static_cast<VkImageLayout>( srcImageLayout ), static_cast<VkImage>( dstImage ), static_cast<VkImageLayout>( dstImageLayout ), 1, reinterpret_cast<const VkImageBlit*>( &region ), static_cast<VkFilter>( filter ) );
+    }
 #endif /*VKCPP_ENHANCED_MODE*/
 
     void copyBufferToImage( Buffer srcBuffer, Image dstImage, ImageLayout dstImageLayout, uint32_t regionCount, const BufferImageCopy* pRegions ) const
@@ -17938,6 +17973,11 @@ namespace vk
     {
       vkCmdCopyBufferToImage( m_commandBuffer, static_cast<VkBuffer>( srcBuffer ), static_cast<VkImage>( dstImage ), static_cast<VkImageLayout>( dstImageLayout ), static_cast<uint32_t>( regions.size() ), reinterpret_cast<const VkBufferImageCopy*>( regions.data() ) );
     }
+
+    void copyBufferToImage( Buffer srcBuffer, Image dstImage, ImageLayout dstImageLayout, BufferImageCopy const & region ) const
+    {
+      vkCmdCopyBufferToImage( m_commandBuffer, static_cast<VkBuffer>( srcBuffer ), static_cast<VkImage>( dstImage ), static_cast<VkImageLayout>( dstImageLayout ), 1, reinterpret_cast<const VkBufferImageCopy*>( &region ) );
+    }
 #endif /*VKCPP_ENHANCED_MODE*/
 
     void copyImageToBuffer( Image srcImage, ImageLayout srcImageLayout, Buffer dstBuffer, uint32_t regionCount, const BufferImageCopy* pRegions ) const
@@ -17949,6 +17989,11 @@ namespace vk
     void copyImageToBuffer( Image srcImage, ImageLayout srcImageLayout, Buffer dstBuffer, std::vector<BufferImageCopy> const & regions ) const
     {
       vkCmdCopyImageToBuffer( m_commandBuffer, static_cast<VkImage>( srcImage ), static_cast<VkImageLayout>( srcImageLayout ), static_cast<VkBuffer>( dstBuffer ), static_cast<uint32_t>( regions.size() ), reinterpret_cast<const VkBufferImageCopy*>( regions.data() ) );
+    }
+
+    void copyImageToBuffer( Image srcImage, ImageLayout srcImageLayout, Buffer dstBuffer, BufferImageCopy const & region ) const
+    {
+      vkCmdCopyImageToBuffer( m_commandBuffer, static_cast<VkImage>( srcImage ), static_cast<VkImageLayout>( srcImageLayout ), static_cast<VkBuffer>( dstBuffer ), 1, reinterpret_cast<const VkBufferImageCopy*>( &region ) );
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
@@ -17990,6 +18035,11 @@ namespace vk
     {
       vkCmdClearColorImage( m_commandBuffer, static_cast<VkImage>( image ), static_cast<VkImageLayout>( imageLayout ), reinterpret_cast<const VkClearColorValue*>( &color ), static_cast<uint32_t>( ranges.size() ), reinterpret_cast<const VkImageSubresourceRange*>( ranges.data() ) );
     }
+
+    void clearColorImage( Image image, ImageLayout imageLayout, const ClearColorValue & color, ImageSubresourceRange const & range ) const
+    {
+      vkCmdClearColorImage( m_commandBuffer, static_cast<VkImage>( image ), static_cast<VkImageLayout>( imageLayout ), reinterpret_cast<const VkClearColorValue*>( &color ), 1, reinterpret_cast<const VkImageSubresourceRange*>( &range ) );
+    }
 #endif /*VKCPP_ENHANCED_MODE*/
 
     void clearDepthStencilImage( Image image, ImageLayout imageLayout, const ClearDepthStencilValue* pDepthStencil, uint32_t rangeCount, const ImageSubresourceRange* pRanges ) const
@@ -18001,6 +18051,11 @@ namespace vk
     void clearDepthStencilImage( Image image, ImageLayout imageLayout, const ClearDepthStencilValue & depthStencil, std::vector<ImageSubresourceRange> const & ranges ) const
     {
       vkCmdClearDepthStencilImage( m_commandBuffer, static_cast<VkImage>( image ), static_cast<VkImageLayout>( imageLayout ), reinterpret_cast<const VkClearDepthStencilValue*>( &depthStencil ), static_cast<uint32_t>( ranges.size() ), reinterpret_cast<const VkImageSubresourceRange*>( ranges.data() ) );
+    }
+
+    void clearDepthStencilImage( Image image, ImageLayout imageLayout, const ClearDepthStencilValue & depthStencil, ImageSubresourceRange const & range ) const
+    {
+      vkCmdClearDepthStencilImage( m_commandBuffer, static_cast<VkImage>( image ), static_cast<VkImageLayout>( imageLayout ), reinterpret_cast<const VkClearDepthStencilValue*>( &depthStencil ), 1, reinterpret_cast<const VkImageSubresourceRange*>( &range ) );
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
@@ -18014,6 +18069,11 @@ namespace vk
     {
       vkCmdClearAttachments( m_commandBuffer, static_cast<uint32_t>( attachments.size() ), reinterpret_cast<const VkClearAttachment*>( attachments.data() ), static_cast<uint32_t>( rects.size() ), reinterpret_cast<const VkClearRect*>( rects.data() ) );
     }
+
+    void clearAttachment( ClearAttachment const & attachment, ClearRect const & rect ) const
+    {
+      vkCmdClearAttachments( m_commandBuffer, 1, reinterpret_cast<const VkClearAttachment*>( &attachment ), 1, reinterpret_cast<const VkClearRect*>( &rect ) );
+    }
 #endif /*VKCPP_ENHANCED_MODE*/
 
     void resolveImage( Image srcImage, ImageLayout srcImageLayout, Image dstImage, ImageLayout dstImageLayout, uint32_t regionCount, const ImageResolve* pRegions ) const
@@ -18025,6 +18085,11 @@ namespace vk
     void resolveImage( Image srcImage, ImageLayout srcImageLayout, Image dstImage, ImageLayout dstImageLayout, std::vector<ImageResolve> const & regions ) const
     {
       vkCmdResolveImage( m_commandBuffer, static_cast<VkImage>( srcImage ), static_cast<VkImageLayout>( srcImageLayout ), static_cast<VkImage>( dstImage ), static_cast<VkImageLayout>( dstImageLayout ), static_cast<uint32_t>( regions.size() ), reinterpret_cast<const VkImageResolve*>( regions.data() ) );
+    }
+
+    void resolveImage( Image srcImage, ImageLayout srcImageLayout, Image dstImage, ImageLayout dstImageLayout, ImageResolve const & region ) const
+    {
+      vkCmdResolveImage( m_commandBuffer, static_cast<VkImage>( srcImage ), static_cast<VkImageLayout>( srcImageLayout ), static_cast<VkImage>( dstImage ), static_cast<VkImageLayout>( dstImageLayout ), 1, reinterpret_cast<const VkImageResolve*>( &region ) );
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
@@ -18066,6 +18131,11 @@ namespace vk
     {
       vkCmdWaitEvents( m_commandBuffer, static_cast<uint32_t>( events.size() ), reinterpret_cast<const VkEvent*>( events.data() ), static_cast<VkPipelineStageFlags>( srcStageMask ), static_cast<VkPipelineStageFlags>( dstStageMask ), static_cast<uint32_t>( memoryBarriers.size() ), reinterpret_cast<const VkMemoryBarrier*>( memoryBarriers.data() ), static_cast<uint32_t>( bufferMemoryBarriers.size() ), reinterpret_cast<const VkBufferMemoryBarrier*>( bufferMemoryBarriers.data() ), static_cast<uint32_t>( imageMemoryBarriers.size() ), reinterpret_cast<const VkImageMemoryBarrier*>( imageMemoryBarriers.data() ) );
     }
+
+    void waitEvent( Event const & event, PipelineStageFlags srcStageMask, PipelineStageFlags dstStageMask, MemoryBarrier const & memoryBarrier, BufferMemoryBarrier const & bufferMemoryBarrier, ImageMemoryBarrier const & imageMemoryBarrier ) const
+    {
+      vkCmdWaitEvents( m_commandBuffer, 1, reinterpret_cast<const VkEvent*>( &event ), static_cast<VkPipelineStageFlags>( srcStageMask ), static_cast<VkPipelineStageFlags>( dstStageMask ), 1, reinterpret_cast<const VkMemoryBarrier*>( &memoryBarrier ), 1, reinterpret_cast<const VkBufferMemoryBarrier*>( &bufferMemoryBarrier ), 1, reinterpret_cast<const VkImageMemoryBarrier*>( &imageMemoryBarrier ) );
+    }
 #endif /*VKCPP_ENHANCED_MODE*/
 
     void pipelineBarrier( PipelineStageFlags srcStageMask, PipelineStageFlags dstStageMask, DependencyFlags dependencyFlags, uint32_t memoryBarrierCount, const MemoryBarrier* pMemoryBarriers, uint32_t bufferMemoryBarrierCount, const BufferMemoryBarrier* pBufferMemoryBarriers, uint32_t imageMemoryBarrierCount, const ImageMemoryBarrier* pImageMemoryBarriers ) const
@@ -18077,6 +18147,11 @@ namespace vk
     void pipelineBarrier( PipelineStageFlags srcStageMask, PipelineStageFlags dstStageMask, DependencyFlags dependencyFlags, std::vector<MemoryBarrier> const & memoryBarriers, std::vector<BufferMemoryBarrier> const & bufferMemoryBarriers, std::vector<ImageMemoryBarrier> const & imageMemoryBarriers ) const
     {
       vkCmdPipelineBarrier( m_commandBuffer, static_cast<VkPipelineStageFlags>( srcStageMask ), static_cast<VkPipelineStageFlags>( dstStageMask ), static_cast<VkDependencyFlags>( dependencyFlags ), static_cast<uint32_t>( memoryBarriers.size() ), reinterpret_cast<const VkMemoryBarrier*>( memoryBarriers.data() ), static_cast<uint32_t>( bufferMemoryBarriers.size() ), reinterpret_cast<const VkBufferMemoryBarrier*>( bufferMemoryBarriers.data() ), static_cast<uint32_t>( imageMemoryBarriers.size() ), reinterpret_cast<const VkImageMemoryBarrier*>( imageMemoryBarriers.data() ) );
+    }
+
+    void pipelineBarrier( PipelineStageFlags srcStageMask, PipelineStageFlags dstStageMask, DependencyFlags dependencyFlags, MemoryBarrier const & memoryBarrier, BufferMemoryBarrier const & bufferMemoryBarrier, ImageMemoryBarrier const & imageMemoryBarrier ) const
+    {
+      vkCmdPipelineBarrier( m_commandBuffer, static_cast<VkPipelineStageFlags>( srcStageMask ), static_cast<VkPipelineStageFlags>( dstStageMask ), static_cast<VkDependencyFlags>( dependencyFlags ), 1, reinterpret_cast<const VkMemoryBarrier*>( &memoryBarrier ), 1, reinterpret_cast<const VkBufferMemoryBarrier*>( &bufferMemoryBarrier ), 1, reinterpret_cast<const VkImageMemoryBarrier*>( &imageMemoryBarrier ) );
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
@@ -18160,6 +18235,11 @@ namespace vk
     {
       vkCmdPushConstants( m_commandBuffer, static_cast<VkPipelineLayout>( layout ), static_cast<VkShaderStageFlags>( stageFlags ), offset, static_cast<uint32_t>( values.size() ), values.data() );
     }
+
+    void pushConstant( PipelineLayout layout, ShaderStageFlags stageFlags, uint32_t offset, std::vector<uint8_t> const & value ) const
+    {
+      vkCmdPushConstants( m_commandBuffer, static_cast<VkPipelineLayout>( layout ), static_cast<VkShaderStageFlags>( stageFlags ), offset, 1, &value );
+    }
 #endif /*VKCPP_ENHANCED_MODE*/
 
     void beginRenderPass( const RenderPassBeginInfo* pRenderPassBegin, SubpassContents contents ) const
@@ -18211,6 +18291,11 @@ namespace vk
     void executeCommands( std::vector<CommandBuffer> const & commandBuffers ) const
     {
       vkCmdExecuteCommands( m_commandBuffer, static_cast<uint32_t>( commandBuffers.size() ), reinterpret_cast<const VkCommandBuffer*>( commandBuffers.data() ) );
+    }
+
+    void executeCommand( CommandBuffer const & commandBuffer ) const
+    {
+      vkCmdExecuteCommands( m_commandBuffer, 1, reinterpret_cast<const VkCommandBuffer*>( &commandBuffer ) );
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
@@ -18791,6 +18876,15 @@ namespace vk
         throw std::system_error( result, "vk::Queue::submit" );
       }
     }
+
+    void submit( SubmitInfo const & submit, Fence fence ) const
+    {
+      Result result = static_cast<Result>( vkQueueSubmit( m_queue, 1, reinterpret_cast<const VkSubmitInfo*>( &submit ), static_cast<VkFence>( fence ) ) );
+      if ( result != Result::eSuccess )
+      {
+        throw std::system_error( result, "vk::Queue::submit" );
+      }
+    }
 #endif /*VKCPP_ENHANCED_MODE*/
 
 #ifndef VKCPP_ENHANCED_MODE
@@ -18820,6 +18914,15 @@ namespace vk
     void bindSparse( std::vector<BindSparseInfo> const & bindInfo, Fence fence ) const
     {
       Result result = static_cast<Result>( vkQueueBindSparse( m_queue, static_cast<uint32_t>( bindInfo.size() ), reinterpret_cast<const VkBindSparseInfo*>( bindInfo.data() ), static_cast<VkFence>( fence ) ) );
+      if ( result != Result::eSuccess )
+      {
+        throw std::system_error( result, "vk::Queue::bindSparse" );
+      }
+    }
+
+    void bindSparse( BindSparseInfo const & bindInfo, Fence fence ) const
+    {
+      Result result = static_cast<Result>( vkQueueBindSparse( m_queue, 1, reinterpret_cast<const VkBindSparseInfo*>( &bindInfo ), static_cast<VkFence>( fence ) ) );
       if ( result != Result::eSuccess )
       {
         throw std::system_error( result, "vk::Queue::bindSparse" );
@@ -20227,6 +20330,15 @@ namespace vk
         throw std::system_error( result, "vk::Device::flushMappedMemoryRanges" );
       }
     }
+
+    void flushMappedMemoryRange( MappedMemoryRange const & memoryRange ) const
+    {
+      Result result = static_cast<Result>( vkFlushMappedMemoryRanges( m_device, 1, reinterpret_cast<const VkMappedMemoryRange*>( &memoryRange ) ) );
+      if ( result != Result::eSuccess )
+      {
+        throw std::system_error( result, "vk::Device::flushMappedMemoryRanges" );
+      }
+    }
 #endif /*VKCPP_ENHANCED_MODE*/
 
     Result invalidateMappedMemoryRanges( uint32_t memoryRangeCount, const MappedMemoryRange* pMemoryRanges ) const
@@ -20238,6 +20350,15 @@ namespace vk
     void invalidateMappedMemoryRanges( std::vector<MappedMemoryRange> const & memoryRanges ) const
     {
       Result result = static_cast<Result>( vkInvalidateMappedMemoryRanges( m_device, static_cast<uint32_t>( memoryRanges.size() ), reinterpret_cast<const VkMappedMemoryRange*>( memoryRanges.data() ) ) );
+      if ( result != Result::eSuccess )
+      {
+        throw std::system_error( result, "vk::Device::invalidateMappedMemoryRanges" );
+      }
+    }
+
+    void invalidateMappedMemoryRange( MappedMemoryRange const & memoryRange ) const
+    {
+      Result result = static_cast<Result>( vkInvalidateMappedMemoryRanges( m_device, 1, reinterpret_cast<const VkMappedMemoryRange*>( &memoryRange ) ) );
       if ( result != Result::eSuccess )
       {
         throw std::system_error( result, "vk::Device::invalidateMappedMemoryRanges" );
@@ -20384,6 +20505,15 @@ namespace vk
         throw std::system_error( result, "vk::Device::resetFences" );
       }
     }
+
+    void resetFence( Fence const & fence ) const
+    {
+      Result result = static_cast<Result>( vkResetFences( m_device, 1, reinterpret_cast<const VkFence*>( &fence ) ) );
+      if ( result != Result::eSuccess )
+      {
+        throw std::system_error( result, "vk::Device::resetFences" );
+      }
+    }
 #endif /*VKCPP_ENHANCED_MODE*/
 
 #ifndef VKCPP_ENHANCED_MODE
@@ -20414,6 +20544,16 @@ namespace vk
     Result waitForFences( std::vector<Fence> const & fences, Bool32 waitAll, uint64_t timeout ) const
     {
       Result result = static_cast<Result>( vkWaitForFences( m_device, static_cast<uint32_t>( fences.size() ), reinterpret_cast<const VkFence*>( fences.data() ), waitAll, timeout ) );
+      if ( ( result != Result::eSuccess ) && ( result != Result::eTimeout ) )
+      {
+        throw std::system_error( result, "vk::Device::waitForFences" );
+      }
+      return result;
+    }
+
+    Result waitForFence( Fence const & fence, Bool32 waitAll, uint64_t timeout ) const
+    {
+      Result result = static_cast<Result>( vkWaitForFences( m_device, 1, reinterpret_cast<const VkFence*>( &fence ), waitAll, timeout ) );
       if ( ( result != Result::eSuccess ) && ( result != Result::eTimeout ) )
       {
         throw std::system_error( result, "vk::Device::waitForFences" );
@@ -20817,6 +20957,15 @@ namespace vk
         throw std::system_error( result, "vk::Device::mergePipelineCaches" );
       }
     }
+
+    void mergePipelineCache( PipelineCache dstCache, PipelineCache const & srcCache ) const
+    {
+      Result result = static_cast<Result>( vkMergePipelineCaches( m_device, static_cast<VkPipelineCache>( dstCache ), 1, reinterpret_cast<const VkPipelineCache*>( &srcCache ) ) );
+      if ( result != Result::eSuccess )
+      {
+        throw std::system_error( result, "vk::Device::mergePipelineCaches" );
+      }
+    }
 #endif /*VKCPP_ENHANCED_MODE*/
 
     Result createGraphicsPipelines( PipelineCache pipelineCache, uint32_t createInfoCount, const GraphicsPipelineCreateInfo* pCreateInfos, const AllocationCallbacks* pAllocator, Pipeline* pPipelines ) const
@@ -20835,6 +20984,17 @@ namespace vk
       }
       return pipelines;
     }
+
+    Pipeline createGraphicsPipeline( PipelineCache pipelineCache, GraphicsPipelineCreateInfo const & createInfo, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    {
+      Pipeline pipeline;
+      Result result = static_cast<Result>( vkCreateGraphicsPipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), 1, reinterpret_cast<const VkGraphicsPipelineCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkPipeline*>( &pipeline ) ) );
+      if ( result != Result::eSuccess )
+      {
+        throw std::system_error( result, "vk::Device::createGraphicsPipelines" );
+      }
+      return pipeline;
+    }
 #endif /*VKCPP_ENHANCED_MODE*/
 
     Result createComputePipelines( PipelineCache pipelineCache, uint32_t createInfoCount, const ComputePipelineCreateInfo* pCreateInfos, const AllocationCallbacks* pAllocator, Pipeline* pPipelines ) const
@@ -20852,6 +21012,17 @@ namespace vk
         throw std::system_error( result, "vk::Device::createComputePipelines" );
       }
       return pipelines;
+    }
+
+    Pipeline createComputePipeline( PipelineCache pipelineCache, ComputePipelineCreateInfo const & createInfo, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    {
+      Pipeline pipeline;
+      Result result = static_cast<Result>( vkCreateComputePipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), 1, reinterpret_cast<const VkComputePipelineCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkPipeline*>( &pipeline ) ) );
+      if ( result != Result::eSuccess )
+      {
+        throw std::system_error( result, "vk::Device::createComputePipelines" );
+      }
+      return pipeline;
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
@@ -21037,6 +21208,15 @@ namespace vk
         throw std::system_error( result, "vk::Device::freeDescriptorSets" );
       }
     }
+
+    void freeDescriptorSet( DescriptorPool descriptorPool, DescriptorSet const & descriptorSet ) const
+    {
+      Result result = static_cast<Result>( vkFreeDescriptorSets( m_device, static_cast<VkDescriptorPool>( descriptorPool ), 1, reinterpret_cast<const VkDescriptorSet*>( &descriptorSet ) ) );
+      if ( result != Result::eSuccess )
+      {
+        throw std::system_error( result, "vk::Device::freeDescriptorSets" );
+      }
+    }
 #endif /*VKCPP_ENHANCED_MODE*/
 
     void updateDescriptorSets( uint32_t descriptorWriteCount, const WriteDescriptorSet* pDescriptorWrites, uint32_t descriptorCopyCount, const CopyDescriptorSet* pDescriptorCopies ) const
@@ -21048,6 +21228,11 @@ namespace vk
     void updateDescriptorSets( std::vector<WriteDescriptorSet> const & descriptorWrites, std::vector<CopyDescriptorSet> const & descriptorCopies ) const
     {
       vkUpdateDescriptorSets( m_device, static_cast<uint32_t>( descriptorWrites.size() ), reinterpret_cast<const VkWriteDescriptorSet*>( descriptorWrites.data() ), static_cast<uint32_t>( descriptorCopies.size() ), reinterpret_cast<const VkCopyDescriptorSet*>( descriptorCopies.data() ) );
+    }
+
+    void updateDescriptorSet( WriteDescriptorSet const & descriptorWrite, CopyDescriptorSet const & descriptorCopie ) const
+    {
+      vkUpdateDescriptorSets( m_device, 1, reinterpret_cast<const VkWriteDescriptorSet*>( &descriptorWrite ), 1, reinterpret_cast<const VkCopyDescriptorSet*>( &descriptorCopie ) );
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 
@@ -21201,6 +21386,11 @@ namespace vk
     {
       vkFreeCommandBuffers( m_device, static_cast<VkCommandPool>( commandPool ), static_cast<uint32_t>( commandBuffers.size() ), reinterpret_cast<const VkCommandBuffer*>( commandBuffers.data() ) );
     }
+
+    void freeCommandBuffer( CommandPool commandPool, CommandBuffer const & commandBuffer ) const
+    {
+      vkFreeCommandBuffers( m_device, static_cast<VkCommandPool>( commandPool ), 1, reinterpret_cast<const VkCommandBuffer*>( &commandBuffer ) );
+    }
 #endif /*VKCPP_ENHANCED_MODE*/
 
     Result createSharedSwapchainsKHR( uint32_t swapchainCount, const SwapchainCreateInfoKHR* pCreateInfos, const AllocationCallbacks* pAllocator, SwapchainKHR* pSwapchains ) const
@@ -21218,6 +21408,17 @@ namespace vk
         throw std::system_error( result, "vk::Device::createSharedSwapchainsKHR" );
       }
       return swapchains;
+    }
+
+    SwapchainKHR createSharedSwapchainsKHR( SwapchainCreateInfoKHR const & createInfo, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    {
+      SwapchainKHR swapchain;
+      Result result = static_cast<Result>( vkCreateSharedSwapchainsKHR( m_device, 1, reinterpret_cast<const VkSwapchainCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkSwapchainKHR*>( &swapchain ) ) );
+      if ( result != Result::eSuccess )
+      {
+        throw std::system_error( result, "vk::Device::createSharedSwapchainsKHR" );
+      }
+      return swapchain;
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 

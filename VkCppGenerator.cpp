@@ -304,7 +304,7 @@ struct EnumData
   std::vector<NameValue>  members;
   std::string             protect;
 
-  void addEnum(std::string const & name, std::string const& tag);
+  void addEnum(std::string const & name, std::string const& tag, bool appendTag);
 };
 
 struct FlagData
@@ -412,7 +412,7 @@ void writeTypes(std::ofstream & ofs, VkData const& vkData, std::map<std::string,
 void writeVersionCheck(std::ofstream & ofs, std::string const& version);
 void writeTypesafeCheck(std::ofstream & ofs, std::string const& typesafeCheck);
 
-void EnumData::addEnum(std::string const & name, std::string const& tag)
+void EnumData::addEnum(std::string const & name, std::string const& tag, bool appendTag)
 {
   assert(tag.empty() || (name.find(tag) != std::string::npos));
   members.push_back(NameValue());
@@ -426,7 +426,7 @@ void EnumData::addEnum(std::string const & name, std::string const& tag)
       members.back().name.erase(pos);
     }
   }
-  if (!tag.empty())
+  if (appendTag && !tag.empty())
   {
     members.back().name += tag;
   }
@@ -953,7 +953,7 @@ void readEnumsEnum( tinyxml2::XMLElement * element, EnumData & enumData, std::st
   {
     if ( child->Attribute( "name" ) )
     {
-      enumData.addEnum(child->Attribute("name"), tag);
+      enumData.addEnum(child->Attribute("name"), tag, false);
     }
   } while ( child = child->NextSiblingElement() );
 }
@@ -1022,7 +1022,7 @@ void readExtensionRequire(tinyxml2::XMLElement * element, VkData & vkData, std::
         assert(child->Attribute("name"));
         assert(vkData.enums.find(getEnumName(child->Attribute("extends"))) != vkData.enums.end());
         assert(!!child->Attribute("bitpos") + !!child->Attribute("offset") + !!child->Attribute("value") == 1);
-        vkData.enums[getEnumName(child->Attribute("extends"))].addEnum(child->Attribute("name"), child->Attribute("value") ? "" : tag );
+        vkData.enums[getEnumName(child->Attribute("extends"))].addEnum(child->Attribute("name"), child->Attribute("value") ? "" : tag, true );
       }
     }
     else

@@ -603,7 +603,7 @@ size_t findTemplateIndex(CommandData const& commandData, std::map<size_t, size_t
 {
   for (size_t i = 0; i < commandData.arguments.size(); i++)
   {
-    if (commandData.arguments[i].name == "pData")
+    if ((commandData.arguments[i].name == "pData") || (commandData.arguments[i].name == "pValues"))
     {
       assert(vectorParameters.find(i) != vectorParameters.end());
       return i;

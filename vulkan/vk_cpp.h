@@ -18231,14 +18231,16 @@ namespace vk
     }
 
 #ifdef VKCPP_ENHANCED_MODE
-    void pushConstants( PipelineLayout layout, ShaderStageFlags stageFlags, uint32_t offset, std::vector<uint8_t> const & values ) const
+    template <typename T>
+    void pushConstants( PipelineLayout layout, ShaderStageFlags stageFlags, uint32_t offset, std::vector<T> const & values ) const
     {
-      vkCmdPushConstants( m_commandBuffer, static_cast<VkPipelineLayout>( layout ), static_cast<VkShaderStageFlags>( stageFlags ), offset, static_cast<uint32_t>( values.size() ), values.data() );
+      vkCmdPushConstants( m_commandBuffer, static_cast<VkPipelineLayout>( layout ), static_cast<VkShaderStageFlags>( stageFlags ), offset, static_cast<uint32_t>( values.size() * sizeof( T ) ), reinterpret_cast<const void*>( values.data() ) );
     }
 
-    void pushConstant( PipelineLayout layout, ShaderStageFlags stageFlags, uint32_t offset, std::vector<uint8_t> const & value ) const
+    template <typename T>
+    void pushConstant( PipelineLayout layout, ShaderStageFlags stageFlags, uint32_t offset, T const & value ) const
     {
-      vkCmdPushConstants( m_commandBuffer, static_cast<VkPipelineLayout>( layout ), static_cast<VkShaderStageFlags>( stageFlags ), offset, 1, &value );
+      vkCmdPushConstants( m_commandBuffer, static_cast<VkPipelineLayout>( layout ), static_cast<VkShaderStageFlags>( stageFlags ), offset, static_cast<uint32_t>( sizeof( T ) ), reinterpret_cast<const void*>( &value ) );
     }
 #endif /*VKCPP_ENHANCED_MODE*/
 

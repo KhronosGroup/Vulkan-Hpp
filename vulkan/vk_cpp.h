@@ -63,7 +63,7 @@
 # include <vector>
 #endif /*VKCPP_ENHANCED_MODE*/
 
-static_assert( VK_MAKE_VERSION(1, 0, 5) == VK_API_VERSION, "Wrong VK_API_VERSION!" );
+static_assert( VK_HEADER_VERSION ==  8 , "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VK_CPP_TYPESAFE_CONVERSION
@@ -5323,7 +5323,8 @@ namespace vk
   enum class Filter
   {
     eNearest = VK_FILTER_NEAREST,
-    eLinear = VK_FILTER_LINEAR
+    eLinear = VK_FILTER_LINEAR,
+    eCubicIMG = VK_FILTER_CUBIC_IMG
   };
 
   enum class SamplerMipmapMode
@@ -12974,7 +12975,8 @@ namespace vk
     eDepthStencilAttachment = VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT,
     eBlitSrc = VK_FORMAT_FEATURE_BLIT_SRC_BIT,
     eBlitDst = VK_FORMAT_FEATURE_BLIT_DST_BIT,
-    eSampledImageFilterLinear = VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT
+    eSampledImageFilterLinear = VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT,
+    eSampledImageFilterCubicIMG = VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_CUBIC_BIT_IMG
   };
 
   typedef Flags<FormatFeatureFlagBits, VkFormatFeatureFlags> FormatFeatureFlags;
@@ -23209,6 +23211,7 @@ namespace vk
     {
     case Filter::eNearest: return "Nearest";
     case Filter::eLinear: return "Linear";
+    case Filter::eCubicIMG: return "CubicIMG";
     default: return "unknown";
     }
   }
@@ -24043,6 +24046,7 @@ namespace vk
     case FormatFeatureFlagBits::eBlitSrc: return "BlitSrc";
     case FormatFeatureFlagBits::eBlitDst: return "BlitDst";
     case FormatFeatureFlagBits::eSampledImageFilterLinear: return "SampledImageFilterLinear";
+    case FormatFeatureFlagBits::eSampledImageFilterCubicIMG: return "SampledImageFilterCubicIMG";
     default: return "unknown";
     }
   }
@@ -24064,6 +24068,7 @@ namespace vk
     if (value & FormatFeatureFlagBits::eBlitSrc) result += "BlitSrc | ";
     if (value & FormatFeatureFlagBits::eBlitDst) result += "BlitDst | ";
     if (value & FormatFeatureFlagBits::eSampledImageFilterLinear) result += "SampledImageFilterLinear | ";
+    if (value & FormatFeatureFlagBits::eSampledImageFilterCubicIMG) result += "SampledImageFilterCubicIMG | ";
     return result.substr(0, result.size() - 3);
   }
 

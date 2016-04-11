@@ -1126,7 +1126,7 @@ void readTypeBitmask(tinyxml2::XMLElement * element, VkData & vkData)
 void readTypeDefine( tinyxml2::XMLElement * element, VkData & vkData )
 {
   tinyxml2::XMLElement * child = element->FirstChildElement();
-  if (child && (strcmp(child->GetText(), "VK_API_VERSION") == 0))
+  if (child && (strcmp(child->GetText(), "VK_HEADER_VERSION") == 0))
   {
     vkData.version = element->LastChild()->ToText()->Value();
   }
@@ -2782,7 +2782,7 @@ void writeTypes(std::ofstream & ofs, VkData const& vkData, std::map<std::string,
 
 void writeVersionCheck(std::ofstream & ofs, std::string const& version)
 {
-  ofs << "static_assert( VK_MAKE_VERSION" << version << " == VK_API_VERSION, \"Wrong VK_API_VERSION!\" );" << std::endl
+  ofs << "static_assert( VK_HEADER_VERSION == " << version << " , \"Wrong VK_HEADER_VERSION!\" );" << std::endl
       << std::endl;
 }
 

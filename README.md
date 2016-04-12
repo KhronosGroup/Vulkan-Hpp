@@ -136,7 +136,7 @@ device.createImage(&ci, allocator, &image);
 # Enhancements beyond native Vulkan
 To provide a more object oriented feeling we're providing classes for each handle which include all Vulkan functions where the first 
 parameter matches the handle. In addition to this we made a few changes to the signatures of the member functions
-* To enable the enhanced mode put ```#define VKCPP_ENHANCED_MODE``` before including ```vk_cpp.h```
+* To disable the enhanced mode put ```#define VKCPP_DISABLE_ENHANCED_MODE``` before including ```vk_cpp.h```
 * ```(count, T*)``` has been replaced by ```std::vector<T>```
 * ```const char *``` has been replaced by ```std::string ```
 * ```T const*``` has been replaced by ```T const &``` to allow temporary objects. This is useful to pass small structures like ```vk::ClearColorValue``` or ```vk::Extent*```

@@ -35,6 +35,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <exception>
 
 #include <tinyxml2.h>
 
@@ -2095,7 +2096,7 @@ void writeStructConstructor( std::ofstream & ofs, std::string const& name, std::
 
   if (!noDefault)
   {
-    // if there's a default for all memeber, provide a default constructor
+    // if there's a default for all member, provide a default constructor
     ofs << "    " << name << "()" << std::endl
       << "      : " << name << "( ";
     bool listedArgument = false;
@@ -2311,9 +2312,9 @@ void writeTypeCommand( std::ofstream & ofs, DependencyData const& dependencyData
     writeTypeCommandStandard(ofs, "  ", dependencyData.name, dependencyData, commandData, vkTypes);
 
     ofs << std::endl
-        << "#ifdef VKCPP_ENHANCED_MODE" << std::endl;
+        << "#ifndef VKCPP_DISABLE_ENHANCED_MODE" << std::endl;
     writeTypeCommandEnhanced(ofs, "  ", "", dependencyData.name, dependencyData, commandData, vkTypes);
-    ofs << "#endif /*VKCPP_ENHANCED_MODE*/" << std::endl
+    ofs << "#endif /*VKCPP_DISABLE_ENHANCED_MODE*/" << std::endl
         << std::endl;
   }
 }
@@ -2563,18 +2564,18 @@ void writeTypeHandle(std::ofstream & ofs, VkData const& vkData, DependencyData c
       bool hasPointers = hasPointerArguments(cit->second);
       if (!hasPointers)
       {
-        ofs << "#ifndef VKCPP_ENHANCED_MODE" << std::endl;
+        ofs << "#ifdef VKCPP_DISABLE_ENHANCED_MODE" << std::endl;
       }
       writeTypeCommandStandard(ofs, "    ", functionName, *dep, cit->second, vkData.vkTypes);
       if (!hasPointers)
       {
-        ofs << "#endif /*!VKCPP_ENHANCED_MODE*/" << std::endl;
+        ofs << "#endif /*!VKCPP_DISABLE_ENHANCED_MODE*/" << std::endl;
       }
 
       ofs << std::endl
-          << "#ifdef VKCPP_ENHANCED_MODE" << std::endl;
+          << "#ifndef VKCPP_DISABLE_ENHANCED_MODE" << std::endl;
       writeTypeCommandEnhanced(ofs, "    ", className, functionName, *dep, cit->second, vkData.vkTypes);
-      ofs << "#endif /*VKCPP_ENHANCED_MODE*/" << std::endl;
+      ofs << "#endif /*VKCPP_DISABLE_ENHANCED_MODE*/" << std::endl;
 
       if (i < handle.commands.size() - 1)
       {
@@ -2798,63 +2799,68 @@ void writeTypesafeCheck(std::ofstream & ofs, std::string const& typesafeCheck)
 
 int main( int argc, char **argv )
 {
-  tinyxml2::XMLDocument doc;
+  try {
+    tinyxml2::XMLDocument doc;
 
-  tinyxml2::XMLError error = doc.LoadFile( argv[1] );
-  if (error != tinyxml2::XML_SUCCESS)
-  {
-    std::cout << "VkGenerate: failed to load file " << argv[1] << " . Error code: " << error << std::endl;
-    return -1;
-  }
+    std::string filename = (argc == 1) ? VK_SPEC : argv[1];
+    std::cout << "Loading vk.xml from " << filename << std::endl;
+    std::cout << "Writing vk_cpp.hpp to " << VK_CPP << std::endl;
 
-  tinyxml2::XMLElement * registryElement = doc.FirstChildElement();
-  assert( strcmp( registryElement->Value(), "registry" ) == 0 );
-  assert( !registryElement->NextSiblingElement() );
+    tinyxml2::XMLError error = doc.LoadFile(filename.c_str());
+    if (error != tinyxml2::XML_SUCCESS)
+    {
+      std::cout << "VkGenerate: failed to load file " << argv[1] << " . Error code: " << error << std::endl;
+      return -1;
+    }
 
-  VkData vkData;
+    tinyxml2::XMLElement * registryElement = doc.FirstChildElement();
+    assert(strcmp(registryElement->Value(), "registry") == 0);
+    assert(!registryElement->NextSiblingElement());
 
-  tinyxml2::XMLElement * child = registryElement->FirstChildElement();
-  do
-  {
-    assert( child->Value() );
-    const std::string value = child->Value();
-    if ( value == "commands" )
-    {
-      readCommands( child, vkData );
-    }
-    else if (value == "comment")
-    {
-      readComment(child, vkData.vulkanLicenseHeader);
-    }
-    else if ( value == "enums" )
-    {
-      readEnums( child, vkData );
-    }
-    else if ( value == "extensions" )
-    {
-      readExtensions( child, vkData );
-    }
-    else if (value == "tags")
-    {
-      readTags(child, vkData.tags);
-    }
-    else if ( value == "types" )
-    {
-      readTypes( child, vkData );
-    }
-    else
-    {
-      assert( ( value == "feature" ) || ( value == "vendorids" ) );
-    }
-  } while ( child = child->NextSiblingElement() );
+    VkData vkData;
 
-  sortDependencies( vkData.dependencies );
+    tinyxml2::XMLElement * child = registryElement->FirstChildElement();
+    do
+    {
+      assert(child->Value());
+      const std::string value = child->Value();
+      if (value == "commands")
+      {
+        readCommands(child, vkData);
+      }
+      else if (value == "comment")
+      {
+        readComment(child, vkData.vulkanLicenseHeader);
+      }
+      else if (value == "enums")
+      {
+        readEnums(child, vkData);
+      }
+      else if (value == "extensions")
+      {
+        readExtensions(child, vkData);
+      }
+      else if (value == "tags")
+      {
+        readTags(child, vkData.tags);
+      }
+      else if (value == "types")
+      {
+        readTypes(child, vkData);
+      }
+      else
+      {
+        assert((value == "feature") || (value == "vendorids"));
+      }
+    } while (child = child->NextSiblingElement());
 
-  std::map<std::string,std::string> defaultValues;
-  createDefaults( vkData, defaultValues );
+    sortDependencies(vkData.dependencies);
 
-  std::ofstream ofs( "vk_cpp.h" );
-  ofs << nvidiaLicenseHeader << std::endl
+    std::map<std::string, std::string> defaultValues;
+    createDefaults(vkData, defaultValues);
+
+    std::ofstream ofs(VK_CPP);
+    ofs << nvidiaLicenseHeader << std::endl
       << vkData.vulkanLicenseHeader << std::endl
       << std::endl
       << std::endl
@@ -2868,27 +2874,27 @@ int main( int argc, char **argv )
       << "#include <string>" << std::endl
       << "#include <system_error>" << std::endl
       << "#include <vulkan/vulkan.h>" << std::endl
-      << "#ifdef VKCPP_ENHANCED_MODE" << std::endl
+      << "#ifndef VKCPP_DISABLE_ENHANCED_MODE" << std::endl
       << "# include <vector>" << std::endl
-      << "#endif /*VKCPP_ENHANCED_MODE*/" << std::endl
+      << "#endif /*VKCPP_DISABLE_ENHANCED_MODE*/" << std::endl
       << std::endl;
 
-  writeVersionCheck( ofs, vkData.version );
-  writeTypesafeCheck(ofs, vkData.typesafeCheck );
-  ofs << "namespace vk" << std::endl
+    writeVersionCheck(ofs, vkData.version);
+    writeTypesafeCheck(ofs, vkData.typesafeCheck);
+    ofs << "namespace vk" << std::endl
       << "{" << std::endl
       << flagsHeader
       << optionalClassHeader;
 
-  // first of all, write out vk::Result and the exception handling stuff
-  std::list<DependencyData>::const_iterator it = std::find_if(vkData.dependencies.begin(), vkData.dependencies.end(), [](DependencyData const& dp) { return dp.name == "Result"; });
-  assert(it != vkData.dependencies.end());
-  writeTypeEnum(ofs, *it, vkData.enums.find(it->name)->second);
-  writeEnumsToString(ofs, *it, vkData.enums.find(it->name)->second);
-  vkData.dependencies.erase(it);
-  ofs << exceptionHeader;
+    // first of all, write out vk::Result and the exception handling stuff
+    std::list<DependencyData>::const_iterator it = std::find_if(vkData.dependencies.begin(), vkData.dependencies.end(), [](DependencyData const& dp) { return dp.name == "Result"; });
+    assert(it != vkData.dependencies.end());
+    writeTypeEnum(ofs, *it, vkData.enums.find(it->name)->second);
+    writeEnumsToString(ofs, *it, vkData.enums.find(it->name)->second);
+    vkData.dependencies.erase(it);
+    ofs << exceptionHeader;
 
-  ofs << "} // namespace vk" << std::endl
+    ofs << "} // namespace vk" << std::endl
       << std::endl
       << "namespace std" << std::endl
       << "{" << std::endl
@@ -2900,10 +2906,19 @@ int main( int argc, char **argv )
       << "namespace vk" << std::endl
       << "{" << std::endl;
 
-  writeTypes( ofs, vkData, defaultValues );
-  writeEnumsToString(ofs, vkData);
+    writeTypes(ofs, vkData, defaultValues);
+    writeEnumsToString(ofs, vkData);
 
-  ofs << "} // namespace vk" << std::endl
+    ofs << "} // namespace vk" << std::endl
       << std::endl
       << "#endif" << std::endl;
+  }
+  catch (std::exception e)
+  {
+    std::cout << "caught exception: " << e.what() << std::endl;
+  }
+  catch (...)
+  {
+    std::cout << "caught unknown exception" << std::endl;
+  }
 }

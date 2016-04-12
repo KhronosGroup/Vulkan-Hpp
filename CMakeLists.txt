@@ -28,6 +28,14 @@ cmake_minimum_required(VERSION 3.2)
 
 project(VkCppGenerator)
 
+file(TO_NATIVE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/Vulkan-Docs/src/spec/vk.xml vk_spec)
+string(REPLACE "\\" "\\\\" vk_spec ${vk_spec})
+add_definitions(-DVK_SPEC="${vk_spec}")
+
+file(TO_NATIVE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/vulkan/vk_cpp.hpp vk_cpp)
+string(REPLACE "\\" "\\\\" vk_cpp ${vk_cpp})
+add_definitions(-DVK_CPP="${vk_cpp}")
+
 set(HEADERS
 )
 

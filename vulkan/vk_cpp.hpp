@@ -63,7 +63,7 @@
 # include <vector>
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
-static_assert( VK_HEADER_VERSION ==  8 , "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION ==  11 , "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VK_CPP_TYPESAFE_CONVERSION
@@ -21699,7 +21699,7 @@ namespace vk
     Result acquireNextImageKHR( SwapchainKHR swapchain, uint64_t timeout, Semaphore semaphore, Fence fence, uint32_t & imageIndex ) const
     {
       Result result = static_cast<Result>( vkAcquireNextImageKHR( m_device, static_cast<VkSwapchainKHR>( swapchain ), timeout, static_cast<VkSemaphore>( semaphore ), static_cast<VkFence>( fence ), &imageIndex ) );
-      if ( ( result != Result::eSuccess ) && ( result != Result::eSuboptimalKHR ) )
+      if ( ( result != Result::eSuccess ) && ( result != Result::eTimeout ) && ( result != Result::eNotReady ) && ( result != Result::eSuboptimalKHR ) )
       {
         throw std::system_error( result, "vk::Device::acquireNextImageKHR" );
       }

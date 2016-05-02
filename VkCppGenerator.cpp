@@ -1752,16 +1752,22 @@ void writeCall(std::ofstream & ofs, std::string const& name, size_t templateInde
 
 void writeExceptionCheck(std::ofstream & ofs, std::string const& indentation, std::string const& className, std::string const& functionName, std::vector<std::string> const& successCodes)
 {
+  assert(!successCodes.empty());
+  ofs << indentation << "  if (";
   if (successCodes.size() == 1)
   {
     assert(successCodes.front() == "eSuccess");
-    ofs << indentation << "  if ( result != Result::eSuccess )" << std::endl;
+    ofs << " result != Result::eSuccess";
   }
   else
   {
-    assert(successCodes.size() == 2);
-    ofs << indentation << "  if ( ( result != Result::" << successCodes[0] << " ) && ( result != Result::" << successCodes[1] << " ) )" << std::endl;
+    for (size_t i = 0; i < successCodes.size() - 1; i++)
+    {
+      ofs << " ( result != Result::" << successCodes[i] << " ) &&";
+    }
+    ofs << " ( result != Result::" << successCodes.back() << " )";
   }
+  ofs << " )" << std::endl;
   ofs << indentation << "  {" << std::endl
     << indentation << "    throw std::system_error( result, \"vk::";
   if (!className.empty())

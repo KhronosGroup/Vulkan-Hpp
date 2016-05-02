@@ -255,7 +255,7 @@ namespace vk
     case Result::eErrorIncompatibleDisplayKHR: return "ErrorIncompatibleDisplayKHR";
     case Result::eErrorValidationFailedEXT: return "ErrorValidationFailedEXT";
     case Result::eErrorInvalidShaderNV: return "ErrorInvalidShaderNV";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
@@ -301,14 +301,17 @@ namespace std
 
 namespace vk
 {
-  typedef uint32_t SampleMask;
-  typedef uint32_t Bool32;
-  typedef uint64_t DeviceSize;
+  using SampleMask = uint32_t;
+
+  using Bool32 = uint32_t;
+
+  using DeviceSize = uint64_t;
+
   enum class FramebufferCreateFlagBits
   {
   };
 
-  typedef Flags<FramebufferCreateFlagBits, VkFramebufferCreateFlags> FramebufferCreateFlags;
+  using FramebufferCreateFlags = Flags<FramebufferCreateFlagBits, VkFramebufferCreateFlags>;
 
   inline FramebufferCreateFlags operator|( FramebufferCreateFlagBits bit0, FramebufferCreateFlagBits bit1 )
   {
@@ -319,7 +322,7 @@ namespace vk
   {
   };
 
-  typedef Flags<QueryPoolCreateFlagBits, VkQueryPoolCreateFlags> QueryPoolCreateFlags;
+  using QueryPoolCreateFlags = Flags<QueryPoolCreateFlagBits, VkQueryPoolCreateFlags>;
 
   inline QueryPoolCreateFlags operator|( QueryPoolCreateFlagBits bit0, QueryPoolCreateFlagBits bit1 )
   {
@@ -330,7 +333,7 @@ namespace vk
   {
   };
 
-  typedef Flags<RenderPassCreateFlagBits, VkRenderPassCreateFlags> RenderPassCreateFlags;
+  using RenderPassCreateFlags = Flags<RenderPassCreateFlagBits, VkRenderPassCreateFlags>;
 
   inline RenderPassCreateFlags operator|( RenderPassCreateFlagBits bit0, RenderPassCreateFlagBits bit1 )
   {
@@ -341,7 +344,7 @@ namespace vk
   {
   };
 
-  typedef Flags<SamplerCreateFlagBits, VkSamplerCreateFlags> SamplerCreateFlags;
+  using SamplerCreateFlags = Flags<SamplerCreateFlagBits, VkSamplerCreateFlags>;
 
   inline SamplerCreateFlags operator|( SamplerCreateFlagBits bit0, SamplerCreateFlagBits bit1 )
   {
@@ -352,7 +355,7 @@ namespace vk
   {
   };
 
-  typedef Flags<PipelineLayoutCreateFlagBits, VkPipelineLayoutCreateFlags> PipelineLayoutCreateFlags;
+  using PipelineLayoutCreateFlags = Flags<PipelineLayoutCreateFlagBits, VkPipelineLayoutCreateFlags>;
 
   inline PipelineLayoutCreateFlags operator|( PipelineLayoutCreateFlagBits bit0, PipelineLayoutCreateFlagBits bit1 )
   {
@@ -363,7 +366,7 @@ namespace vk
   {
   };
 
-  typedef Flags<PipelineCacheCreateFlagBits, VkPipelineCacheCreateFlags> PipelineCacheCreateFlags;
+  using PipelineCacheCreateFlags = Flags<PipelineCacheCreateFlagBits, VkPipelineCacheCreateFlags>;
 
   inline PipelineCacheCreateFlags operator|( PipelineCacheCreateFlagBits bit0, PipelineCacheCreateFlagBits bit1 )
   {
@@ -374,7 +377,7 @@ namespace vk
   {
   };
 
-  typedef Flags<PipelineDepthStencilStateCreateFlagBits, VkPipelineDepthStencilStateCreateFlags> PipelineDepthStencilStateCreateFlags;
+  using PipelineDepthStencilStateCreateFlags = Flags<PipelineDepthStencilStateCreateFlagBits, VkPipelineDepthStencilStateCreateFlags>;
 
   inline PipelineDepthStencilStateCreateFlags operator|( PipelineDepthStencilStateCreateFlagBits bit0, PipelineDepthStencilStateCreateFlagBits bit1 )
   {
@@ -385,7 +388,7 @@ namespace vk
   {
   };
 
-  typedef Flags<PipelineDynamicStateCreateFlagBits, VkPipelineDynamicStateCreateFlags> PipelineDynamicStateCreateFlags;
+  using PipelineDynamicStateCreateFlags = Flags<PipelineDynamicStateCreateFlagBits, VkPipelineDynamicStateCreateFlags>;
 
   inline PipelineDynamicStateCreateFlags operator|( PipelineDynamicStateCreateFlagBits bit0, PipelineDynamicStateCreateFlagBits bit1 )
   {
@@ -396,7 +399,7 @@ namespace vk
   {
   };
 
-  typedef Flags<PipelineColorBlendStateCreateFlagBits, VkPipelineColorBlendStateCreateFlags> PipelineColorBlendStateCreateFlags;
+  using PipelineColorBlendStateCreateFlags = Flags<PipelineColorBlendStateCreateFlagBits, VkPipelineColorBlendStateCreateFlags>;
 
   inline PipelineColorBlendStateCreateFlags operator|( PipelineColorBlendStateCreateFlagBits bit0, PipelineColorBlendStateCreateFlagBits bit1 )
   {
@@ -407,7 +410,7 @@ namespace vk
   {
   };
 
-  typedef Flags<PipelineMultisampleStateCreateFlagBits, VkPipelineMultisampleStateCreateFlags> PipelineMultisampleStateCreateFlags;
+  using PipelineMultisampleStateCreateFlags = Flags<PipelineMultisampleStateCreateFlagBits, VkPipelineMultisampleStateCreateFlags>;
 
   inline PipelineMultisampleStateCreateFlags operator|( PipelineMultisampleStateCreateFlagBits bit0, PipelineMultisampleStateCreateFlagBits bit1 )
   {
@@ -418,7 +421,7 @@ namespace vk
   {
   };
 
-  typedef Flags<PipelineRasterizationStateCreateFlagBits, VkPipelineRasterizationStateCreateFlags> PipelineRasterizationStateCreateFlags;
+  using PipelineRasterizationStateCreateFlags = Flags<PipelineRasterizationStateCreateFlagBits, VkPipelineRasterizationStateCreateFlags>;
 
   inline PipelineRasterizationStateCreateFlags operator|( PipelineRasterizationStateCreateFlagBits bit0, PipelineRasterizationStateCreateFlagBits bit1 )
   {
@@ -429,7 +432,7 @@ namespace vk
   {
   };
 
-  typedef Flags<PipelineViewportStateCreateFlagBits, VkPipelineViewportStateCreateFlags> PipelineViewportStateCreateFlags;
+  using PipelineViewportStateCreateFlags = Flags<PipelineViewportStateCreateFlagBits, VkPipelineViewportStateCreateFlags>;
 
   inline PipelineViewportStateCreateFlags operator|( PipelineViewportStateCreateFlagBits bit0, PipelineViewportStateCreateFlagBits bit1 )
   {
@@ -440,7 +443,7 @@ namespace vk
   {
   };
 
-  typedef Flags<PipelineTessellationStateCreateFlagBits, VkPipelineTessellationStateCreateFlags> PipelineTessellationStateCreateFlags;
+  using PipelineTessellationStateCreateFlags = Flags<PipelineTessellationStateCreateFlagBits, VkPipelineTessellationStateCreateFlags>;
 
   inline PipelineTessellationStateCreateFlags operator|( PipelineTessellationStateCreateFlagBits bit0, PipelineTessellationStateCreateFlagBits bit1 )
   {
@@ -451,7 +454,7 @@ namespace vk
   {
   };
 
-  typedef Flags<PipelineInputAssemblyStateCreateFlagBits, VkPipelineInputAssemblyStateCreateFlags> PipelineInputAssemblyStateCreateFlags;
+  using PipelineInputAssemblyStateCreateFlags = Flags<PipelineInputAssemblyStateCreateFlagBits, VkPipelineInputAssemblyStateCreateFlags>;
 
   inline PipelineInputAssemblyStateCreateFlags operator|( PipelineInputAssemblyStateCreateFlagBits bit0, PipelineInputAssemblyStateCreateFlagBits bit1 )
   {
@@ -462,7 +465,7 @@ namespace vk
   {
   };
 
-  typedef Flags<PipelineVertexInputStateCreateFlagBits, VkPipelineVertexInputStateCreateFlags> PipelineVertexInputStateCreateFlags;
+  using PipelineVertexInputStateCreateFlags = Flags<PipelineVertexInputStateCreateFlagBits, VkPipelineVertexInputStateCreateFlags>;
 
   inline PipelineVertexInputStateCreateFlags operator|( PipelineVertexInputStateCreateFlagBits bit0, PipelineVertexInputStateCreateFlagBits bit1 )
   {
@@ -473,7 +476,7 @@ namespace vk
   {
   };
 
-  typedef Flags<PipelineShaderStageCreateFlagBits, VkPipelineShaderStageCreateFlags> PipelineShaderStageCreateFlags;
+  using PipelineShaderStageCreateFlags = Flags<PipelineShaderStageCreateFlagBits, VkPipelineShaderStageCreateFlags>;
 
   inline PipelineShaderStageCreateFlags operator|( PipelineShaderStageCreateFlagBits bit0, PipelineShaderStageCreateFlagBits bit1 )
   {
@@ -484,7 +487,7 @@ namespace vk
   {
   };
 
-  typedef Flags<DescriptorSetLayoutCreateFlagBits, VkDescriptorSetLayoutCreateFlags> DescriptorSetLayoutCreateFlags;
+  using DescriptorSetLayoutCreateFlags = Flags<DescriptorSetLayoutCreateFlagBits, VkDescriptorSetLayoutCreateFlags>;
 
   inline DescriptorSetLayoutCreateFlags operator|( DescriptorSetLayoutCreateFlagBits bit0, DescriptorSetLayoutCreateFlagBits bit1 )
   {
@@ -495,7 +498,7 @@ namespace vk
   {
   };
 
-  typedef Flags<BufferViewCreateFlagBits, VkBufferViewCreateFlags> BufferViewCreateFlags;
+  using BufferViewCreateFlags = Flags<BufferViewCreateFlagBits, VkBufferViewCreateFlags>;
 
   inline BufferViewCreateFlags operator|( BufferViewCreateFlagBits bit0, BufferViewCreateFlagBits bit1 )
   {
@@ -506,7 +509,7 @@ namespace vk
   {
   };
 
-  typedef Flags<InstanceCreateFlagBits, VkInstanceCreateFlags> InstanceCreateFlags;
+  using InstanceCreateFlags = Flags<InstanceCreateFlagBits, VkInstanceCreateFlags>;
 
   inline InstanceCreateFlags operator|( InstanceCreateFlagBits bit0, InstanceCreateFlagBits bit1 )
   {
@@ -517,7 +520,7 @@ namespace vk
   {
   };
 
-  typedef Flags<DeviceCreateFlagBits, VkDeviceCreateFlags> DeviceCreateFlags;
+  using DeviceCreateFlags = Flags<DeviceCreateFlagBits, VkDeviceCreateFlags>;
 
   inline DeviceCreateFlags operator|( DeviceCreateFlagBits bit0, DeviceCreateFlagBits bit1 )
   {
@@ -528,7 +531,7 @@ namespace vk
   {
   };
 
-  typedef Flags<DeviceQueueCreateFlagBits, VkDeviceQueueCreateFlags> DeviceQueueCreateFlags;
+  using DeviceQueueCreateFlags = Flags<DeviceQueueCreateFlagBits, VkDeviceQueueCreateFlags>;
 
   inline DeviceQueueCreateFlags operator|( DeviceQueueCreateFlagBits bit0, DeviceQueueCreateFlagBits bit1 )
   {
@@ -539,7 +542,7 @@ namespace vk
   {
   };
 
-  typedef Flags<ImageViewCreateFlagBits, VkImageViewCreateFlags> ImageViewCreateFlags;
+  using ImageViewCreateFlags = Flags<ImageViewCreateFlagBits, VkImageViewCreateFlags>;
 
   inline ImageViewCreateFlags operator|( ImageViewCreateFlagBits bit0, ImageViewCreateFlagBits bit1 )
   {
@@ -550,7 +553,7 @@ namespace vk
   {
   };
 
-  typedef Flags<SemaphoreCreateFlagBits, VkSemaphoreCreateFlags> SemaphoreCreateFlags;
+  using SemaphoreCreateFlags = Flags<SemaphoreCreateFlagBits, VkSemaphoreCreateFlags>;
 
   inline SemaphoreCreateFlags operator|( SemaphoreCreateFlagBits bit0, SemaphoreCreateFlagBits bit1 )
   {
@@ -561,7 +564,7 @@ namespace vk
   {
   };
 
-  typedef Flags<ShaderModuleCreateFlagBits, VkShaderModuleCreateFlags> ShaderModuleCreateFlags;
+  using ShaderModuleCreateFlags = Flags<ShaderModuleCreateFlagBits, VkShaderModuleCreateFlags>;
 
   inline ShaderModuleCreateFlags operator|( ShaderModuleCreateFlagBits bit0, ShaderModuleCreateFlagBits bit1 )
   {
@@ -572,7 +575,7 @@ namespace vk
   {
   };
 
-  typedef Flags<EventCreateFlagBits, VkEventCreateFlags> EventCreateFlags;
+  using EventCreateFlags = Flags<EventCreateFlagBits, VkEventCreateFlags>;
 
   inline EventCreateFlags operator|( EventCreateFlagBits bit0, EventCreateFlagBits bit1 )
   {
@@ -583,7 +586,7 @@ namespace vk
   {
   };
 
-  typedef Flags<MemoryMapFlagBits, VkMemoryMapFlags> MemoryMapFlags;
+  using MemoryMapFlags = Flags<MemoryMapFlagBits, VkMemoryMapFlags>;
 
   inline MemoryMapFlags operator|( MemoryMapFlagBits bit0, MemoryMapFlagBits bit1 )
   {
@@ -594,7 +597,7 @@ namespace vk
   {
   };
 
-  typedef Flags<SubpassDescriptionFlagBits, VkSubpassDescriptionFlags> SubpassDescriptionFlags;
+  using SubpassDescriptionFlags = Flags<SubpassDescriptionFlagBits, VkSubpassDescriptionFlags>;
 
   inline SubpassDescriptionFlags operator|( SubpassDescriptionFlagBits bit0, SubpassDescriptionFlagBits bit1 )
   {
@@ -605,7 +608,7 @@ namespace vk
   {
   };
 
-  typedef Flags<DescriptorPoolResetFlagBits, VkDescriptorPoolResetFlags> DescriptorPoolResetFlags;
+  using DescriptorPoolResetFlags = Flags<DescriptorPoolResetFlagBits, VkDescriptorPoolResetFlags>;
 
   inline DescriptorPoolResetFlags operator|( DescriptorPoolResetFlagBits bit0, DescriptorPoolResetFlagBits bit1 )
   {
@@ -616,7 +619,7 @@ namespace vk
   {
   };
 
-  typedef Flags<SwapchainCreateFlagBitsKHR, VkSwapchainCreateFlagsKHR> SwapchainCreateFlagsKHR;
+  using SwapchainCreateFlagsKHR = Flags<SwapchainCreateFlagBitsKHR, VkSwapchainCreateFlagsKHR>;
 
   inline SwapchainCreateFlagsKHR operator|( SwapchainCreateFlagBitsKHR bit0, SwapchainCreateFlagBitsKHR bit1 )
   {
@@ -627,7 +630,7 @@ namespace vk
   {
   };
 
-  typedef Flags<DisplayModeCreateFlagBitsKHR, VkDisplayModeCreateFlagsKHR> DisplayModeCreateFlagsKHR;
+  using DisplayModeCreateFlagsKHR = Flags<DisplayModeCreateFlagBitsKHR, VkDisplayModeCreateFlagsKHR>;
 
   inline DisplayModeCreateFlagsKHR operator|( DisplayModeCreateFlagBitsKHR bit0, DisplayModeCreateFlagBitsKHR bit1 )
   {
@@ -638,7 +641,7 @@ namespace vk
   {
   };
 
-  typedef Flags<DisplaySurfaceCreateFlagBitsKHR, VkDisplaySurfaceCreateFlagsKHR> DisplaySurfaceCreateFlagsKHR;
+  using DisplaySurfaceCreateFlagsKHR = Flags<DisplaySurfaceCreateFlagBitsKHR, VkDisplaySurfaceCreateFlagsKHR>;
 
   inline DisplaySurfaceCreateFlagsKHR operator|( DisplaySurfaceCreateFlagBitsKHR bit0, DisplaySurfaceCreateFlagBitsKHR bit1 )
   {
@@ -652,7 +655,7 @@ namespace vk
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
-  typedef Flags<AndroidSurfaceCreateFlagBitsKHR, VkAndroidSurfaceCreateFlagsKHR> AndroidSurfaceCreateFlagsKHR;
+  using AndroidSurfaceCreateFlagsKHR = Flags<AndroidSurfaceCreateFlagBitsKHR, VkAndroidSurfaceCreateFlagsKHR>;
 
   inline AndroidSurfaceCreateFlagsKHR operator|( AndroidSurfaceCreateFlagBitsKHR bit0, AndroidSurfaceCreateFlagBitsKHR bit1 )
   {
@@ -667,7 +670,7 @@ namespace vk
 #endif /*VK_USE_PLATFORM_MIR_KHR*/
 
 #ifdef VK_USE_PLATFORM_MIR_KHR
-  typedef Flags<MirSurfaceCreateFlagBitsKHR, VkMirSurfaceCreateFlagsKHR> MirSurfaceCreateFlagsKHR;
+  using MirSurfaceCreateFlagsKHR = Flags<MirSurfaceCreateFlagBitsKHR, VkMirSurfaceCreateFlagsKHR>;
 
   inline MirSurfaceCreateFlagsKHR operator|( MirSurfaceCreateFlagBitsKHR bit0, MirSurfaceCreateFlagBitsKHR bit1 )
   {
@@ -682,7 +685,7 @@ namespace vk
 #endif /*VK_USE_PLATFORM_WAYLAND_KHR*/
 
 #ifdef VK_USE_PLATFORM_WAYLAND_KHR
-  typedef Flags<WaylandSurfaceCreateFlagBitsKHR, VkWaylandSurfaceCreateFlagsKHR> WaylandSurfaceCreateFlagsKHR;
+  using WaylandSurfaceCreateFlagsKHR = Flags<WaylandSurfaceCreateFlagBitsKHR, VkWaylandSurfaceCreateFlagsKHR>;
 
   inline WaylandSurfaceCreateFlagsKHR operator|( WaylandSurfaceCreateFlagBitsKHR bit0, WaylandSurfaceCreateFlagBitsKHR bit1 )
   {
@@ -697,7 +700,7 @@ namespace vk
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
-  typedef Flags<Win32SurfaceCreateFlagBitsKHR, VkWin32SurfaceCreateFlagsKHR> Win32SurfaceCreateFlagsKHR;
+  using Win32SurfaceCreateFlagsKHR = Flags<Win32SurfaceCreateFlagBitsKHR, VkWin32SurfaceCreateFlagsKHR>;
 
   inline Win32SurfaceCreateFlagsKHR operator|( Win32SurfaceCreateFlagBitsKHR bit0, Win32SurfaceCreateFlagBitsKHR bit1 )
   {
@@ -712,7 +715,7 @@ namespace vk
 #endif /*VK_USE_PLATFORM_XLIB_KHR*/
 
 #ifdef VK_USE_PLATFORM_XLIB_KHR
-  typedef Flags<XlibSurfaceCreateFlagBitsKHR, VkXlibSurfaceCreateFlagsKHR> XlibSurfaceCreateFlagsKHR;
+  using XlibSurfaceCreateFlagsKHR = Flags<XlibSurfaceCreateFlagBitsKHR, VkXlibSurfaceCreateFlagsKHR>;
 
   inline XlibSurfaceCreateFlagsKHR operator|( XlibSurfaceCreateFlagBitsKHR bit0, XlibSurfaceCreateFlagBitsKHR bit1 )
   {
@@ -727,7 +730,7 @@ namespace vk
 #endif /*VK_USE_PLATFORM_XCB_KHR*/
 
 #ifdef VK_USE_PLATFORM_XCB_KHR
-  typedef Flags<XcbSurfaceCreateFlagBitsKHR, VkXcbSurfaceCreateFlagsKHR> XcbSurfaceCreateFlagsKHR;
+  using XcbSurfaceCreateFlagsKHR = Flags<XcbSurfaceCreateFlagBitsKHR, VkXcbSurfaceCreateFlagsKHR>;
 
   inline XcbSurfaceCreateFlagsKHR operator|( XcbSurfaceCreateFlagBitsKHR bit0, XcbSurfaceCreateFlagBitsKHR bit1 )
   {
@@ -5369,7 +5372,7 @@ namespace vk
     eFrontAndBack = VK_CULL_MODE_FRONT_AND_BACK
   };
 
-  typedef Flags<CullModeFlagBits, VkCullModeFlags> CullModeFlags;
+  using CullModeFlags = Flags<CullModeFlagBits, VkCullModeFlags>;
 
   inline CullModeFlags operator|( CullModeFlagBits bit0, CullModeFlagBits bit1 )
   {
@@ -11015,7 +11018,7 @@ namespace vk
     eSparseBinding = VK_QUEUE_SPARSE_BINDING_BIT
   };
 
-  typedef Flags<QueueFlagBits, VkQueueFlags> QueueFlags;
+  using QueueFlags = Flags<QueueFlagBits, VkQueueFlags>;
 
   inline QueueFlags operator|( QueueFlagBits bit0, QueueFlagBits bit1 )
   {
@@ -11064,7 +11067,7 @@ namespace vk
     eLazilyAllocated = VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT
   };
 
-  typedef Flags<MemoryPropertyFlagBits, VkMemoryPropertyFlags> MemoryPropertyFlags;
+  using MemoryPropertyFlags = Flags<MemoryPropertyFlagBits, VkMemoryPropertyFlags>;
 
   inline MemoryPropertyFlags operator|( MemoryPropertyFlagBits bit0, MemoryPropertyFlagBits bit1 )
   {
@@ -11099,7 +11102,7 @@ namespace vk
     eDeviceLocal = VK_MEMORY_HEAP_DEVICE_LOCAL_BIT
   };
 
-  typedef Flags<MemoryHeapFlagBits, VkMemoryHeapFlags> MemoryHeapFlags;
+  using MemoryHeapFlags = Flags<MemoryHeapFlagBits, VkMemoryHeapFlags>;
 
   inline MemoryHeapFlags operator|( MemoryHeapFlagBits bit0, MemoryHeapFlagBits bit1 )
   {
@@ -11183,7 +11186,7 @@ namespace vk
     eMemoryWrite = VK_ACCESS_MEMORY_WRITE_BIT
   };
 
-  typedef Flags<AccessFlagBits, VkAccessFlags> AccessFlags;
+  using AccessFlags = Flags<AccessFlagBits, VkAccessFlags>;
 
   inline AccessFlags operator|( AccessFlagBits bit0, AccessFlagBits bit1 )
   {
@@ -11488,7 +11491,7 @@ namespace vk
     eIndirectBuffer = VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT
   };
 
-  typedef Flags<BufferUsageFlagBits, VkBufferUsageFlags> BufferUsageFlags;
+  using BufferUsageFlags = Flags<BufferUsageFlagBits, VkBufferUsageFlags>;
 
   inline BufferUsageFlags operator|( BufferUsageFlagBits bit0, BufferUsageFlagBits bit1 )
   {
@@ -11502,7 +11505,7 @@ namespace vk
     eSparseAliased = VK_BUFFER_CREATE_SPARSE_ALIASED_BIT
   };
 
-  typedef Flags<BufferCreateFlagBits, VkBufferCreateFlags> BufferCreateFlags;
+  using BufferCreateFlags = Flags<BufferCreateFlagBits, VkBufferCreateFlags>;
 
   inline BufferCreateFlags operator|( BufferCreateFlagBits bit0, BufferCreateFlagBits bit1 )
   {
@@ -11689,7 +11692,7 @@ namespace vk
     eAll = VK_SHADER_STAGE_ALL
   };
 
-  typedef Flags<ShaderStageFlagBits, VkShaderStageFlags> ShaderStageFlags;
+  using ShaderStageFlags = Flags<ShaderStageFlagBits, VkShaderStageFlags>;
 
   inline ShaderStageFlags operator|( ShaderStageFlagBits bit0, ShaderStageFlagBits bit1 )
   {
@@ -12327,7 +12330,7 @@ namespace vk
     eInputAttachment = VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT
   };
 
-  typedef Flags<ImageUsageFlagBits, VkImageUsageFlags> ImageUsageFlags;
+  using ImageUsageFlags = Flags<ImageUsageFlagBits, VkImageUsageFlags>;
 
   inline ImageUsageFlags operator|( ImageUsageFlagBits bit0, ImageUsageFlagBits bit1 )
   {
@@ -12343,7 +12346,7 @@ namespace vk
     eCubeCompatible = VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT
   };
 
-  typedef Flags<ImageCreateFlagBits, VkImageCreateFlags> ImageCreateFlags;
+  using ImageCreateFlags = Flags<ImageCreateFlagBits, VkImageCreateFlags>;
 
   inline ImageCreateFlags operator|( ImageCreateFlagBits bit0, ImageCreateFlagBits bit1 )
   {
@@ -12357,7 +12360,7 @@ namespace vk
     eDerivative = VK_PIPELINE_CREATE_DERIVATIVE_BIT
   };
 
-  typedef Flags<PipelineCreateFlagBits, VkPipelineCreateFlags> PipelineCreateFlags;
+  using PipelineCreateFlags = Flags<PipelineCreateFlagBits, VkPipelineCreateFlags>;
 
   inline PipelineCreateFlags operator|( PipelineCreateFlagBits bit0, PipelineCreateFlagBits bit1 )
   {
@@ -12523,7 +12526,7 @@ namespace vk
     eA = VK_COLOR_COMPONENT_A_BIT
   };
 
-  typedef Flags<ColorComponentFlagBits, VkColorComponentFlags> ColorComponentFlags;
+  using ColorComponentFlags = Flags<ColorComponentFlagBits, VkColorComponentFlags>;
 
   inline ColorComponentFlags operator|( ColorComponentFlagBits bit0, ColorComponentFlagBits bit1 )
   {
@@ -12871,7 +12874,7 @@ namespace vk
     eSignaled = VK_FENCE_CREATE_SIGNALED_BIT
   };
 
-  typedef Flags<FenceCreateFlagBits, VkFenceCreateFlags> FenceCreateFlags;
+  using FenceCreateFlags = Flags<FenceCreateFlagBits, VkFenceCreateFlags>;
 
   inline FenceCreateFlags operator|( FenceCreateFlagBits bit0, FenceCreateFlagBits bit1 )
   {
@@ -12979,7 +12982,7 @@ namespace vk
     eSampledImageFilterCubicIMG = VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_CUBIC_BIT_IMG
   };
 
-  typedef Flags<FormatFeatureFlagBits, VkFormatFeatureFlags> FormatFeatureFlags;
+  using FormatFeatureFlags = Flags<FormatFeatureFlagBits, VkFormatFeatureFlags>;
 
   inline FormatFeatureFlags operator|( FormatFeatureFlagBits bit0, FormatFeatureFlagBits bit1 )
   {
@@ -13019,7 +13022,7 @@ namespace vk
     ePrecise = VK_QUERY_CONTROL_PRECISE_BIT
   };
 
-  typedef Flags<QueryControlFlagBits, VkQueryControlFlags> QueryControlFlags;
+  using QueryControlFlags = Flags<QueryControlFlagBits, VkQueryControlFlags>;
 
   inline QueryControlFlags operator|( QueryControlFlagBits bit0, QueryControlFlagBits bit1 )
   {
@@ -13034,7 +13037,7 @@ namespace vk
     ePartial = VK_QUERY_RESULT_PARTIAL_BIT
   };
 
-  typedef Flags<QueryResultFlagBits, VkQueryResultFlags> QueryResultFlags;
+  using QueryResultFlags = Flags<QueryResultFlagBits, VkQueryResultFlags>;
 
   inline QueryResultFlags operator|( QueryResultFlagBits bit0, QueryResultFlagBits bit1 )
   {
@@ -13048,7 +13051,7 @@ namespace vk
     eSimultaneousUse = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT
   };
 
-  typedef Flags<CommandBufferUsageFlagBits, VkCommandBufferUsageFlags> CommandBufferUsageFlags;
+  using CommandBufferUsageFlags = Flags<CommandBufferUsageFlagBits, VkCommandBufferUsageFlags>;
 
   inline CommandBufferUsageFlags operator|( CommandBufferUsageFlagBits bit0, CommandBufferUsageFlagBits bit1 )
   {
@@ -13070,7 +13073,7 @@ namespace vk
     eComputeShaderInvocations = VK_QUERY_PIPELINE_STATISTIC_COMPUTE_SHADER_INVOCATIONS_BIT
   };
 
-  typedef Flags<QueryPipelineStatisticFlagBits, VkQueryPipelineStatisticFlags> QueryPipelineStatisticFlags;
+  using QueryPipelineStatisticFlags = Flags<QueryPipelineStatisticFlagBits, VkQueryPipelineStatisticFlags>;
 
   inline QueryPipelineStatisticFlags operator|( QueryPipelineStatisticFlagBits bit0, QueryPipelineStatisticFlagBits bit1 )
   {
@@ -13487,7 +13490,7 @@ namespace vk
     eMetadata = VK_IMAGE_ASPECT_METADATA_BIT
   };
 
-  typedef Flags<ImageAspectFlagBits, VkImageAspectFlags> ImageAspectFlags;
+  using ImageAspectFlags = Flags<ImageAspectFlagBits, VkImageAspectFlags>;
 
   inline ImageAspectFlags operator|( ImageAspectFlagBits bit0, ImageAspectFlagBits bit1 )
   {
@@ -14722,7 +14725,7 @@ namespace vk
     eNonstandardBlockSize = VK_SPARSE_IMAGE_FORMAT_NONSTANDARD_BLOCK_SIZE_BIT
   };
 
-  typedef Flags<SparseImageFormatFlagBits, VkSparseImageFormatFlags> SparseImageFormatFlags;
+  using SparseImageFormatFlags = Flags<SparseImageFormatFlagBits, VkSparseImageFormatFlags>;
 
   inline SparseImageFormatFlags operator|( SparseImageFormatFlagBits bit0, SparseImageFormatFlagBits bit1 )
   {
@@ -14800,7 +14803,7 @@ namespace vk
     eMetadata = VK_SPARSE_MEMORY_BIND_METADATA_BIT
   };
 
-  typedef Flags<SparseMemoryBindFlagBits, VkSparseMemoryBindFlags> SparseMemoryBindFlags;
+  using SparseMemoryBindFlags = Flags<SparseMemoryBindFlagBits, VkSparseMemoryBindFlags>;
 
   inline SparseMemoryBindFlags operator|( SparseMemoryBindFlagBits bit0, SparseMemoryBindFlagBits bit1 )
   {
@@ -15564,7 +15567,7 @@ namespace vk
     eAllCommands = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT
   };
 
-  typedef Flags<PipelineStageFlagBits, VkPipelineStageFlags> PipelineStageFlags;
+  using PipelineStageFlags = Flags<PipelineStageFlagBits, VkPipelineStageFlags>;
 
   inline PipelineStageFlags operator|( PipelineStageFlagBits bit0, PipelineStageFlagBits bit1 )
   {
@@ -15577,7 +15580,7 @@ namespace vk
     eResetCommandBuffer = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT
   };
 
-  typedef Flags<CommandPoolCreateFlagBits, VkCommandPoolCreateFlags> CommandPoolCreateFlags;
+  using CommandPoolCreateFlags = Flags<CommandPoolCreateFlagBits, VkCommandPoolCreateFlags>;
 
   inline CommandPoolCreateFlags operator|( CommandPoolCreateFlagBits bit0, CommandPoolCreateFlagBits bit1 )
   {
@@ -15689,7 +15692,7 @@ namespace vk
     eReleaseResources = VK_COMMAND_POOL_RESET_RELEASE_RESOURCES_BIT
   };
 
-  typedef Flags<CommandPoolResetFlagBits, VkCommandPoolResetFlags> CommandPoolResetFlags;
+  using CommandPoolResetFlags = Flags<CommandPoolResetFlagBits, VkCommandPoolResetFlags>;
 
   inline CommandPoolResetFlags operator|( CommandPoolResetFlagBits bit0, CommandPoolResetFlagBits bit1 )
   {
@@ -15701,7 +15704,7 @@ namespace vk
     eReleaseResources = VK_COMMAND_BUFFER_RESET_RELEASE_RESOURCES_BIT
   };
 
-  typedef Flags<CommandBufferResetFlagBits, VkCommandBufferResetFlags> CommandBufferResetFlags;
+  using CommandBufferResetFlags = Flags<CommandBufferResetFlagBits, VkCommandBufferResetFlags>;
 
   inline CommandBufferResetFlags operator|( CommandBufferResetFlagBits bit0, CommandBufferResetFlagBits bit1 )
   {
@@ -15719,7 +15722,7 @@ namespace vk
     e64 = VK_SAMPLE_COUNT_64_BIT
   };
 
-  typedef Flags<SampleCountFlagBits, VkSampleCountFlags> SampleCountFlags;
+  using SampleCountFlags = Flags<SampleCountFlagBits, VkSampleCountFlags>;
 
   inline SampleCountFlags operator|( SampleCountFlagBits bit0, SampleCountFlagBits bit1 )
   {
@@ -17197,7 +17200,7 @@ namespace vk
     eMayAlias = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT
   };
 
-  typedef Flags<AttachmentDescriptionFlagBits, VkAttachmentDescriptionFlags> AttachmentDescriptionFlags;
+  using AttachmentDescriptionFlags = Flags<AttachmentDescriptionFlagBits, VkAttachmentDescriptionFlags>;
 
   inline AttachmentDescriptionFlags operator|( AttachmentDescriptionFlagBits bit0, AttachmentDescriptionFlagBits bit1 )
   {
@@ -17396,7 +17399,7 @@ namespace vk
     eVkStencilFrontAndBack = VK_STENCIL_FRONT_AND_BACK
   };
 
-  typedef Flags<StencilFaceFlagBits, VkStencilFaceFlags> StencilFaceFlags;
+  using StencilFaceFlags = Flags<StencilFaceFlagBits, VkStencilFaceFlags>;
 
   inline StencilFaceFlags operator|( StencilFaceFlagBits bit0, StencilFaceFlagBits bit1 )
   {
@@ -17408,7 +17411,7 @@ namespace vk
     eFreeDescriptorSet = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT
   };
 
-  typedef Flags<DescriptorPoolCreateFlagBits, VkDescriptorPoolCreateFlags> DescriptorPoolCreateFlags;
+  using DescriptorPoolCreateFlags = Flags<DescriptorPoolCreateFlagBits, VkDescriptorPoolCreateFlags>;
 
   inline DescriptorPoolCreateFlags operator|( DescriptorPoolCreateFlagBits bit0, DescriptorPoolCreateFlagBits bit1 )
   {
@@ -17554,7 +17557,7 @@ namespace vk
     eByRegion = VK_DEPENDENCY_BY_REGION_BIT
   };
 
-  typedef Flags<DependencyFlagBits, VkDependencyFlags> DependencyFlags;
+  using DependencyFlags = Flags<DependencyFlagBits, VkDependencyFlags>;
 
   inline DependencyFlags operator|( DependencyFlagBits bit0, DependencyFlagBits bit1 )
   {
@@ -19169,7 +19172,7 @@ namespace vk
     ePerPixelPremultiplied = VK_DISPLAY_PLANE_ALPHA_PER_PIXEL_PREMULTIPLIED_BIT_KHR
   };
 
-  typedef Flags<DisplayPlaneAlphaFlagBitsKHR, VkDisplayPlaneAlphaFlagsKHR> DisplayPlaneAlphaFlagsKHR;
+  using DisplayPlaneAlphaFlagsKHR = Flags<DisplayPlaneAlphaFlagBitsKHR, VkDisplayPlaneAlphaFlagsKHR>;
 
   inline DisplayPlaneAlphaFlagsKHR operator|( DisplayPlaneAlphaFlagBitsKHR bit0, DisplayPlaneAlphaFlagBitsKHR bit1 )
   {
@@ -19369,7 +19372,7 @@ namespace vk
     eInherit = VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR
   };
 
-  typedef Flags<CompositeAlphaFlagBitsKHR, VkCompositeAlphaFlagsKHR> CompositeAlphaFlagsKHR;
+  using CompositeAlphaFlagsKHR = Flags<CompositeAlphaFlagBitsKHR, VkCompositeAlphaFlagsKHR>;
 
   inline CompositeAlphaFlagsKHR operator|( CompositeAlphaFlagBitsKHR bit0, CompositeAlphaFlagBitsKHR bit1 )
   {
@@ -19389,7 +19392,7 @@ namespace vk
     eInherit = VK_SURFACE_TRANSFORM_INHERIT_BIT_KHR
   };
 
-  typedef Flags<SurfaceTransformFlagBitsKHR, VkSurfaceTransformFlagsKHR> SurfaceTransformFlagsKHR;
+  using SurfaceTransformFlagsKHR = Flags<SurfaceTransformFlagBitsKHR, VkSurfaceTransformFlagsKHR>;
 
   inline SurfaceTransformFlagsKHR operator|( SurfaceTransformFlagBitsKHR bit0, SurfaceTransformFlagBitsKHR bit1 )
   {
@@ -22284,7 +22287,7 @@ namespace vk
     eDebug = VK_DEBUG_REPORT_DEBUG_BIT_EXT
   };
 
-  typedef Flags<DebugReportFlagBitsEXT, VkDebugReportFlagsEXT> DebugReportFlagsEXT;
+  using DebugReportFlagsEXT = Flags<DebugReportFlagBitsEXT, VkDebugReportFlagsEXT>;
 
   inline DebugReportFlagsEXT operator|( DebugReportFlagBitsEXT bit0, DebugReportFlagBitsEXT bit1 )
   {
@@ -22817,395 +22820,395 @@ namespace vk
 
   inline std::string to_string(FramebufferCreateFlagBits)
   {
-    return std::string();
+    return "(void)";
   }
 
   inline std::string to_string(FramebufferCreateFlags)
   {
-    return std::string();
+    return "{}";
   }
 
   inline std::string to_string(QueryPoolCreateFlagBits)
   {
-    return std::string();
+    return "(void)";
   }
 
   inline std::string to_string(QueryPoolCreateFlags)
   {
-    return std::string();
+    return "{}";
   }
 
   inline std::string to_string(RenderPassCreateFlagBits)
   {
-    return std::string();
+    return "(void)";
   }
 
   inline std::string to_string(RenderPassCreateFlags)
   {
-    return std::string();
+    return "{}";
   }
 
   inline std::string to_string(SamplerCreateFlagBits)
   {
-    return std::string();
+    return "(void)";
   }
 
   inline std::string to_string(SamplerCreateFlags)
   {
-    return std::string();
+    return "{}";
   }
 
   inline std::string to_string(PipelineLayoutCreateFlagBits)
   {
-    return std::string();
+    return "(void)";
   }
 
   inline std::string to_string(PipelineLayoutCreateFlags)
   {
-    return std::string();
+    return "{}";
   }
 
   inline std::string to_string(PipelineCacheCreateFlagBits)
   {
-    return std::string();
+    return "(void)";
   }
 
   inline std::string to_string(PipelineCacheCreateFlags)
   {
-    return std::string();
+    return "{}";
   }
 
   inline std::string to_string(PipelineDepthStencilStateCreateFlagBits)
   {
-    return std::string();
+    return "(void)";
   }
 
   inline std::string to_string(PipelineDepthStencilStateCreateFlags)
   {
-    return std::string();
+    return "{}";
   }
 
   inline std::string to_string(PipelineDynamicStateCreateFlagBits)
   {
-    return std::string();
+    return "(void)";
   }
 
   inline std::string to_string(PipelineDynamicStateCreateFlags)
   {
-    return std::string();
+    return "{}";
   }
 
   inline std::string to_string(PipelineColorBlendStateCreateFlagBits)
   {
-    return std::string();
+    return "(void)";
   }
 
   inline std::string to_string(PipelineColorBlendStateCreateFlags)
   {
-    return std::string();
+    return "{}";
   }
 
   inline std::string to_string(PipelineMultisampleStateCreateFlagBits)
   {
-    return std::string();
+    return "(void)";
   }
 
   inline std::string to_string(PipelineMultisampleStateCreateFlags)
   {
-    return std::string();
+    return "{}";
   }
 
   inline std::string to_string(PipelineRasterizationStateCreateFlagBits)
   {
-    return std::string();
+    return "(void)";
   }
 
   inline std::string to_string(PipelineRasterizationStateCreateFlags)
   {
-    return std::string();
+    return "{}";
   }
 
   inline std::string to_string(PipelineViewportStateCreateFlagBits)
   {
-    return std::string();
+    return "(void)";
   }
 
   inline std::string to_string(PipelineViewportStateCreateFlags)
   {
-    return std::string();
+    return "{}";
   }
 
   inline std::string to_string(PipelineTessellationStateCreateFlagBits)
   {
-    return std::string();
+    return "(void)";
   }
 
   inline std::string to_string(PipelineTessellationStateCreateFlags)
   {
-    return std::string();
+    return "{}";
   }
 
   inline std::string to_string(PipelineInputAssemblyStateCreateFlagBits)
   {
-    return std::string();
+    return "(void)";
   }
 
   inline std::string to_string(PipelineInputAssemblyStateCreateFlags)
   {
-    return std::string();
+    return "{}";
   }
 
   inline std::string to_string(PipelineVertexInputStateCreateFlagBits)
   {
-    return std::string();
+    return "(void)";
   }
 
   inline std::string to_string(PipelineVertexInputStateCreateFlags)
   {
-    return std::string();
+    return "{}";
   }
 
   inline std::string to_string(PipelineShaderStageCreateFlagBits)
   {
-    return std::string();
+    return "(void)";
   }
 
   inline std::string to_string(PipelineShaderStageCreateFlags)
   {
-    return std::string();
+    return "{}";
   }
 
   inline std::string to_string(DescriptorSetLayoutCreateFlagBits)
   {
-    return std::string();
+    return "(void)";
   }
 
   inline std::string to_string(DescriptorSetLayoutCreateFlags)
   {
-    return std::string();
+    return "{}";
   }
 
   inline std::string to_string(BufferViewCreateFlagBits)
   {
-    return std::string();
+    return "(void)";
   }
 
   inline std::string to_string(BufferViewCreateFlags)
   {
-    return std::string();
+    return "{}";
   }
 
   inline std::string to_string(InstanceCreateFlagBits)
   {
-    return std::string();
+    return "(void)";
   }
 
   inline std::string to_string(InstanceCreateFlags)
   {
-    return std::string();
+    return "{}";
   }
 
   inline std::string to_string(DeviceCreateFlagBits)
   {
-    return std::string();
+    return "(void)";
   }
 
   inline std::string to_string(DeviceCreateFlags)
   {
-    return std::string();
+    return "{}";
   }
 
   inline std::string to_string(DeviceQueueCreateFlagBits)
   {
-    return std::string();
+    return "(void)";
   }
 
   inline std::string to_string(DeviceQueueCreateFlags)
   {
-    return std::string();
+    return "{}";
   }
 
   inline std::string to_string(ImageViewCreateFlagBits)
   {
-    return std::string();
+    return "(void)";
   }
 
   inline std::string to_string(ImageViewCreateFlags)
   {
-    return std::string();
+    return "{}";
   }
 
   inline std::string to_string(SemaphoreCreateFlagBits)
   {
-    return std::string();
+    return "(void)";
   }
 
   inline std::string to_string(SemaphoreCreateFlags)
   {
-    return std::string();
+    return "{}";
   }
 
   inline std::string to_string(ShaderModuleCreateFlagBits)
   {
-    return std::string();
+    return "(void)";
   }
 
   inline std::string to_string(ShaderModuleCreateFlags)
   {
-    return std::string();
+    return "{}";
   }
 
   inline std::string to_string(EventCreateFlagBits)
   {
-    return std::string();
+    return "(void)";
   }
 
   inline std::string to_string(EventCreateFlags)
   {
-    return std::string();
+    return "{}";
   }
 
   inline std::string to_string(MemoryMapFlagBits)
   {
-    return std::string();
+    return "(void)";
   }
 
   inline std::string to_string(MemoryMapFlags)
   {
-    return std::string();
+    return "{}";
   }
 
   inline std::string to_string(SubpassDescriptionFlagBits)
   {
-    return std::string();
+    return "(void)";
   }
 
   inline std::string to_string(SubpassDescriptionFlags)
   {
-    return std::string();
+    return "{}";
   }
 
   inline std::string to_string(DescriptorPoolResetFlagBits)
   {
-    return std::string();
+    return "(void)";
   }
 
   inline std::string to_string(DescriptorPoolResetFlags)
   {
-    return std::string();
+    return "{}";
   }
 
   inline std::string to_string(SwapchainCreateFlagBitsKHR)
   {
-    return std::string();
+    return "(void)";
   }
 
   inline std::string to_string(SwapchainCreateFlagsKHR)
   {
-    return std::string();
+    return "{}";
   }
 
   inline std::string to_string(DisplayModeCreateFlagBitsKHR)
   {
-    return std::string();
+    return "(void)";
   }
 
   inline std::string to_string(DisplayModeCreateFlagsKHR)
   {
-    return std::string();
+    return "{}";
   }
 
   inline std::string to_string(DisplaySurfaceCreateFlagBitsKHR)
   {
-    return std::string();
+    return "(void)";
   }
 
   inline std::string to_string(DisplaySurfaceCreateFlagsKHR)
   {
-    return std::string();
+    return "{}";
   }
 
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
   inline std::string to_string(AndroidSurfaceCreateFlagBitsKHR)
   {
-    return std::string();
+    return "(void)";
   }
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
   inline std::string to_string(AndroidSurfaceCreateFlagsKHR)
   {
-    return std::string();
+    return "{}";
   }
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
 #ifdef VK_USE_PLATFORM_MIR_KHR
   inline std::string to_string(MirSurfaceCreateFlagBitsKHR)
   {
-    return std::string();
+    return "(void)";
   }
 #endif /*VK_USE_PLATFORM_MIR_KHR*/
 
 #ifdef VK_USE_PLATFORM_MIR_KHR
   inline std::string to_string(MirSurfaceCreateFlagsKHR)
   {
-    return std::string();
+    return "{}";
   }
 #endif /*VK_USE_PLATFORM_MIR_KHR*/
 
 #ifdef VK_USE_PLATFORM_WAYLAND_KHR
   inline std::string to_string(WaylandSurfaceCreateFlagBitsKHR)
   {
-    return std::string();
+    return "(void)";
   }
 #endif /*VK_USE_PLATFORM_WAYLAND_KHR*/
 
 #ifdef VK_USE_PLATFORM_WAYLAND_KHR
   inline std::string to_string(WaylandSurfaceCreateFlagsKHR)
   {
-    return std::string();
+    return "{}";
   }
 #endif /*VK_USE_PLATFORM_WAYLAND_KHR*/
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
   inline std::string to_string(Win32SurfaceCreateFlagBitsKHR)
   {
-    return std::string();
+    return "(void)";
   }
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
   inline std::string to_string(Win32SurfaceCreateFlagsKHR)
   {
-    return std::string();
+    return "{}";
   }
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
 #ifdef VK_USE_PLATFORM_XLIB_KHR
   inline std::string to_string(XlibSurfaceCreateFlagBitsKHR)
   {
-    return std::string();
+    return "(void)";
   }
 #endif /*VK_USE_PLATFORM_XLIB_KHR*/
 
 #ifdef VK_USE_PLATFORM_XLIB_KHR
   inline std::string to_string(XlibSurfaceCreateFlagsKHR)
   {
-    return std::string();
+    return "{}";
   }
 #endif /*VK_USE_PLATFORM_XLIB_KHR*/
 
 #ifdef VK_USE_PLATFORM_XCB_KHR
   inline std::string to_string(XcbSurfaceCreateFlagBitsKHR)
   {
-    return std::string();
+    return "(void)";
   }
 #endif /*VK_USE_PLATFORM_XCB_KHR*/
 
 #ifdef VK_USE_PLATFORM_XCB_KHR
   inline std::string to_string(XcbSurfaceCreateFlagsKHR)
   {
-    return std::string();
+    return "{}";
   }
 #endif /*VK_USE_PLATFORM_XCB_KHR*/
 
@@ -23223,7 +23226,7 @@ namespace vk
     case ImageLayout::eTransferDstOptimal: return "TransferDstOptimal";
     case ImageLayout::ePreinitialized: return "Preinitialized";
     case ImageLayout::ePresentSrcKHR: return "PresentSrcKHR";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
@@ -23234,7 +23237,7 @@ namespace vk
     case AttachmentLoadOp::eLoad: return "Load";
     case AttachmentLoadOp::eClear: return "Clear";
     case AttachmentLoadOp::eDontCare: return "DontCare";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
@@ -23244,7 +23247,7 @@ namespace vk
     {
     case AttachmentStoreOp::eStore: return "Store";
     case AttachmentStoreOp::eDontCare: return "DontCare";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
@@ -23255,7 +23258,7 @@ namespace vk
     case ImageType::e1D: return "1D";
     case ImageType::e2D: return "2D";
     case ImageType::e3D: return "3D";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
@@ -23265,7 +23268,7 @@ namespace vk
     {
     case ImageTiling::eOptimal: return "Optimal";
     case ImageTiling::eLinear: return "Linear";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
@@ -23280,7 +23283,7 @@ namespace vk
     case ImageViewType::e1DArray: return "1DArray";
     case ImageViewType::e2DArray: return "2DArray";
     case ImageViewType::eCubeArray: return "CubeArray";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
@@ -23290,7 +23293,7 @@ namespace vk
     {
     case CommandBufferLevel::ePrimary: return "Primary";
     case CommandBufferLevel::eSecondary: return "Secondary";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
@@ -23305,7 +23308,7 @@ namespace vk
     case ComponentSwizzle::eG: return "G";
     case ComponentSwizzle::eB: return "B";
     case ComponentSwizzle::eA: return "A";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
@@ -23324,7 +23327,7 @@ namespace vk
     case DescriptorType::eUniformBufferDynamic: return "UniformBufferDynamic";
     case DescriptorType::eStorageBufferDynamic: return "StorageBufferDynamic";
     case DescriptorType::eInputAttachment: return "InputAttachment";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
@@ -23335,7 +23338,7 @@ namespace vk
     case QueryType::eOcclusion: return "Occlusion";
     case QueryType::ePipelineStatistics: return "PipelineStatistics";
     case QueryType::eTimestamp: return "Timestamp";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
@@ -23349,7 +23352,7 @@ namespace vk
     case BorderColor::eIntOpaqueBlack: return "IntOpaqueBlack";
     case BorderColor::eFloatOpaqueWhite: return "FloatOpaqueWhite";
     case BorderColor::eIntOpaqueWhite: return "IntOpaqueWhite";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
@@ -23359,7 +23362,7 @@ namespace vk
     {
     case PipelineBindPoint::eGraphics: return "Graphics";
     case PipelineBindPoint::eCompute: return "Compute";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
@@ -23368,7 +23371,7 @@ namespace vk
     switch (value)
     {
     case PipelineCacheHeaderVersion::eOne: return "One";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
@@ -23387,7 +23390,7 @@ namespace vk
     case PrimitiveTopology::eTriangleListWithAdjacency: return "TriangleListWithAdjacency";
     case PrimitiveTopology::eTriangleStripWithAdjacency: return "TriangleStripWithAdjacency";
     case PrimitiveTopology::ePatchList: return "PatchList";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
@@ -23397,7 +23400,7 @@ namespace vk
     {
     case SharingMode::eExclusive: return "Exclusive";
     case SharingMode::eConcurrent: return "Concurrent";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
@@ -23407,7 +23410,7 @@ namespace vk
     {
     case IndexType::eUint16: return "Uint16";
     case IndexType::eUint32: return "Uint32";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
@@ -23418,7 +23421,7 @@ namespace vk
     case Filter::eNearest: return "Nearest";
     case Filter::eLinear: return "Linear";
     case Filter::eCubicIMG: return "CubicIMG";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
@@ -23428,7 +23431,7 @@ namespace vk
     {
     case SamplerMipmapMode::eNearest: return "Nearest";
     case SamplerMipmapMode::eLinear: return "Linear";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
@@ -23441,7 +23444,7 @@ namespace vk
     case SamplerAddressMode::eClampToEdge: return "ClampToEdge";
     case SamplerAddressMode::eClampToBorder: return "ClampToBorder";
     case SamplerAddressMode::eMirrorClampToEdge: return "MirrorClampToEdge";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
@@ -23457,7 +23460,7 @@ namespace vk
     case CompareOp::eNotEqual: return "NotEqual";
     case CompareOp::eGreaterOrEqual: return "GreaterOrEqual";
     case CompareOp::eAlways: return "Always";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
@@ -23468,7 +23471,7 @@ namespace vk
     case PolygonMode::eFill: return "Fill";
     case PolygonMode::eLine: return "Line";
     case PolygonMode::ePoint: return "Point";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
@@ -23480,19 +23483,19 @@ namespace vk
     case CullModeFlagBits::eFront: return "Front";
     case CullModeFlagBits::eBack: return "Back";
     case CullModeFlagBits::eFrontAndBack: return "FrontAndBack";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
   inline std::string to_string(CullModeFlags value)
   {
-    if (!value) return std::string();
+    if (!value) return "{}";
     std::string result;
     if (value & CullModeFlagBits::eNone) result += "None | ";
     if (value & CullModeFlagBits::eFront) result += "Front | ";
     if (value & CullModeFlagBits::eBack) result += "Back | ";
     if (value & CullModeFlagBits::eFrontAndBack) result += "FrontAndBack | ";
-    return result.substr(0, result.size() - 3);
+    return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
   inline std::string to_string(FrontFace value)
@@ -23501,7 +23504,7 @@ namespace vk
     {
     case FrontFace::eCounterClockwise: return "CounterClockwise";
     case FrontFace::eClockwise: return "Clockwise";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
@@ -23528,7 +23531,7 @@ namespace vk
     case BlendFactor::eOneMinusSrc1Color: return "OneMinusSrc1Color";
     case BlendFactor::eSrc1Alpha: return "Src1Alpha";
     case BlendFactor::eOneMinusSrc1Alpha: return "OneMinusSrc1Alpha";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
@@ -23541,7 +23544,7 @@ namespace vk
     case BlendOp::eReverseSubtract: return "ReverseSubtract";
     case BlendOp::eMin: return "Min";
     case BlendOp::eMax: return "Max";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
@@ -23557,7 +23560,7 @@ namespace vk
     case StencilOp::eInvert: return "Invert";
     case StencilOp::eIncrementAndWrap: return "IncrementAndWrap";
     case StencilOp::eDecrementAndWrap: return "DecrementAndWrap";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
@@ -23581,7 +23584,7 @@ namespace vk
     case LogicOp::eOrInverted: return "OrInverted";
     case LogicOp::eNand: return "Nand";
     case LogicOp::eSet: return "Set";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
@@ -23590,7 +23593,7 @@ namespace vk
     switch (value)
     {
     case InternalAllocationType::eExecutable: return "Executable";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
@@ -23603,7 +23606,7 @@ namespace vk
     case SystemAllocationScope::eCache: return "Cache";
     case SystemAllocationScope::eDevice: return "Device";
     case SystemAllocationScope::eInstance: return "Instance";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
@@ -23616,7 +23619,7 @@ namespace vk
     case PhysicalDeviceType::eDiscreteGpu: return "DiscreteGpu";
     case PhysicalDeviceType::eVirtualGpu: return "VirtualGpu";
     case PhysicalDeviceType::eCpu: return "Cpu";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
@@ -23626,7 +23629,7 @@ namespace vk
     {
     case VertexInputRate::eVertex: return "Vertex";
     case VertexInputRate::eInstance: return "Instance";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
@@ -23819,7 +23822,7 @@ namespace vk
     case Format::eAstc12x10SrgbBlock: return "Astc12x10SrgbBlock";
     case Format::eAstc12x12UnormBlock: return "Astc12x12UnormBlock";
     case Format::eAstc12x12SrgbBlock: return "Astc12x12SrgbBlock";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
@@ -23888,7 +23891,7 @@ namespace vk
     case StructureType::eAndroidSurfaceCreateInfoKHR: return "AndroidSurfaceCreateInfoKHR";
     case StructureType::eWin32SurfaceCreateInfoKHR: return "Win32SurfaceCreateInfoKHR";
     case StructureType::eDebugReportCallbackCreateInfoEXT: return "DebugReportCallbackCreateInfoEXT";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
@@ -23898,7 +23901,7 @@ namespace vk
     {
     case SubpassContents::eInline: return "Inline";
     case SubpassContents::eSecondaryCommandBuffers: return "SecondaryCommandBuffers";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
@@ -23915,7 +23918,7 @@ namespace vk
     case DynamicState::eStencilCompareMask: return "StencilCompareMask";
     case DynamicState::eStencilWriteMask: return "StencilWriteMask";
     case DynamicState::eStencilReference: return "StencilReference";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
@@ -23927,19 +23930,19 @@ namespace vk
     case QueueFlagBits::eCompute: return "Compute";
     case QueueFlagBits::eTransfer: return "Transfer";
     case QueueFlagBits::eSparseBinding: return "SparseBinding";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
   inline std::string to_string(QueueFlags value)
   {
-    if (!value) return std::string();
+    if (!value) return "{}";
     std::string result;
     if (value & QueueFlagBits::eGraphics) result += "Graphics | ";
     if (value & QueueFlagBits::eCompute) result += "Compute | ";
     if (value & QueueFlagBits::eTransfer) result += "Transfer | ";
     if (value & QueueFlagBits::eSparseBinding) result += "SparseBinding | ";
-    return result.substr(0, result.size() - 3);
+    return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
   inline std::string to_string(MemoryPropertyFlagBits value)
@@ -23951,20 +23954,20 @@ namespace vk
     case MemoryPropertyFlagBits::eHostCoherent: return "HostCoherent";
     case MemoryPropertyFlagBits::eHostCached: return "HostCached";
     case MemoryPropertyFlagBits::eLazilyAllocated: return "LazilyAllocated";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
   inline std::string to_string(MemoryPropertyFlags value)
   {
-    if (!value) return std::string();
+    if (!value) return "{}";
     std::string result;
     if (value & MemoryPropertyFlagBits::eDeviceLocal) result += "DeviceLocal | ";
     if (value & MemoryPropertyFlagBits::eHostVisible) result += "HostVisible | ";
     if (value & MemoryPropertyFlagBits::eHostCoherent) result += "HostCoherent | ";
     if (value & MemoryPropertyFlagBits::eHostCached) result += "HostCached | ";
     if (value & MemoryPropertyFlagBits::eLazilyAllocated) result += "LazilyAllocated | ";
-    return result.substr(0, result.size() - 3);
+    return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
   inline std::string to_string(MemoryHeapFlagBits value)
@@ -23972,16 +23975,16 @@ namespace vk
     switch (value)
     {
     case MemoryHeapFlagBits::eDeviceLocal: return "DeviceLocal";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
   inline std::string to_string(MemoryHeapFlags value)
   {
-    if (!value) return std::string();
+    if (!value) return "{}";
     std::string result;
     if (value & MemoryHeapFlagBits::eDeviceLocal) result += "DeviceLocal | ";
-    return result.substr(0, result.size() - 3);
+    return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
   inline std::string to_string(AccessFlagBits value)
@@ -24005,13 +24008,13 @@ namespace vk
     case AccessFlagBits::eHostWrite: return "HostWrite";
     case AccessFlagBits::eMemoryRead: return "MemoryRead";
     case AccessFlagBits::eMemoryWrite: return "MemoryWrite";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
   inline std::string to_string(AccessFlags value)
   {
-    if (!value) return std::string();
+    if (!value) return "{}";
     std::string result;
     if (value & AccessFlagBits::eIndirectCommandRead) result += "IndirectCommandRead | ";
     if (value & AccessFlagBits::eIndexRead) result += "IndexRead | ";
@@ -24030,7 +24033,7 @@ namespace vk
     if (value & AccessFlagBits::eHostWrite) result += "HostWrite | ";
     if (value & AccessFlagBits::eMemoryRead) result += "MemoryRead | ";
     if (value & AccessFlagBits::eMemoryWrite) result += "MemoryWrite | ";
-    return result.substr(0, result.size() - 3);
+    return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
   inline std::string to_string(BufferUsageFlagBits value)
@@ -24046,13 +24049,13 @@ namespace vk
     case BufferUsageFlagBits::eIndexBuffer: return "IndexBuffer";
     case BufferUsageFlagBits::eVertexBuffer: return "VertexBuffer";
     case BufferUsageFlagBits::eIndirectBuffer: return "IndirectBuffer";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
   inline std::string to_string(BufferUsageFlags value)
   {
-    if (!value) return std::string();
+    if (!value) return "{}";
     std::string result;
     if (value & BufferUsageFlagBits::eTransferSrc) result += "TransferSrc | ";
     if (value & BufferUsageFlagBits::eTransferDst) result += "TransferDst | ";
@@ -24063,7 +24066,7 @@ namespace vk
     if (value & BufferUsageFlagBits::eIndexBuffer) result += "IndexBuffer | ";
     if (value & BufferUsageFlagBits::eVertexBuffer) result += "VertexBuffer | ";
     if (value & BufferUsageFlagBits::eIndirectBuffer) result += "IndirectBuffer | ";
-    return result.substr(0, result.size() - 3);
+    return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
   inline std::string to_string(BufferCreateFlagBits value)
@@ -24073,18 +24076,18 @@ namespace vk
     case BufferCreateFlagBits::eSparseBinding: return "SparseBinding";
     case BufferCreateFlagBits::eSparseResidency: return "SparseResidency";
     case BufferCreateFlagBits::eSparseAliased: return "SparseAliased";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
   inline std::string to_string(BufferCreateFlags value)
   {
-    if (!value) return std::string();
+    if (!value) return "{}";
     std::string result;
     if (value & BufferCreateFlagBits::eSparseBinding) result += "SparseBinding | ";
     if (value & BufferCreateFlagBits::eSparseResidency) result += "SparseResidency | ";
     if (value & BufferCreateFlagBits::eSparseAliased) result += "SparseAliased | ";
-    return result.substr(0, result.size() - 3);
+    return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
   inline std::string to_string(ShaderStageFlagBits value)
@@ -24099,13 +24102,13 @@ namespace vk
     case ShaderStageFlagBits::eCompute: return "Compute";
     case ShaderStageFlagBits::eAllGraphics: return "AllGraphics";
     case ShaderStageFlagBits::eAll: return "All";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
   inline std::string to_string(ShaderStageFlags value)
   {
-    if (!value) return std::string();
+    if (!value) return "{}";
     std::string result;
     if (value & ShaderStageFlagBits::eVertex) result += "Vertex | ";
     if (value & ShaderStageFlagBits::eTessellationControl) result += "TessellationControl | ";
@@ -24115,7 +24118,7 @@ namespace vk
     if (value & ShaderStageFlagBits::eCompute) result += "Compute | ";
     if (value & ShaderStageFlagBits::eAllGraphics) result += "AllGraphics | ";
     if (value & ShaderStageFlagBits::eAll) result += "All | ";
-    return result.substr(0, result.size() - 3);
+    return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
   inline std::string to_string(ImageUsageFlagBits value)
@@ -24130,13 +24133,13 @@ namespace vk
     case ImageUsageFlagBits::eDepthStencilAttachment: return "DepthStencilAttachment";
     case ImageUsageFlagBits::eTransientAttachment: return "TransientAttachment";
     case ImageUsageFlagBits::eInputAttachment: return "InputAttachment";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
   inline std::string to_string(ImageUsageFlags value)
   {
-    if (!value) return std::string();
+    if (!value) return "{}";
     std::string result;
     if (value & ImageUsageFlagBits::eTransferSrc) result += "TransferSrc | ";
     if (value & ImageUsageFlagBits::eTransferDst) result += "TransferDst | ";
@@ -24146,7 +24149,7 @@ namespace vk
     if (value & ImageUsageFlagBits::eDepthStencilAttachment) result += "DepthStencilAttachment | ";
     if (value & ImageUsageFlagBits::eTransientAttachment) result += "TransientAttachment | ";
     if (value & ImageUsageFlagBits::eInputAttachment) result += "InputAttachment | ";
-    return result.substr(0, result.size() - 3);
+    return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
   inline std::string to_string(ImageCreateFlagBits value)
@@ -24158,20 +24161,20 @@ namespace vk
     case ImageCreateFlagBits::eSparseAliased: return "SparseAliased";
     case ImageCreateFlagBits::eMutableFormat: return "MutableFormat";
     case ImageCreateFlagBits::eCubeCompatible: return "CubeCompatible";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
   inline std::string to_string(ImageCreateFlags value)
   {
-    if (!value) return std::string();
+    if (!value) return "{}";
     std::string result;
     if (value & ImageCreateFlagBits::eSparseBinding) result += "SparseBinding | ";
     if (value & ImageCreateFlagBits::eSparseResidency) result += "SparseResidency | ";
     if (value & ImageCreateFlagBits::eSparseAliased) result += "SparseAliased | ";
     if (value & ImageCreateFlagBits::eMutableFormat) result += "MutableFormat | ";
     if (value & ImageCreateFlagBits::eCubeCompatible) result += "CubeCompatible | ";
-    return result.substr(0, result.size() - 3);
+    return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
   inline std::string to_string(PipelineCreateFlagBits value)
@@ -24181,18 +24184,18 @@ namespace vk
     case PipelineCreateFlagBits::eDisableOptimization: return "DisableOptimization";
     case PipelineCreateFlagBits::eAllowDerivatives: return "AllowDerivatives";
     case PipelineCreateFlagBits::eDerivative: return "Derivative";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
   inline std::string to_string(PipelineCreateFlags value)
   {
-    if (!value) return std::string();
+    if (!value) return "{}";
     std::string result;
     if (value & PipelineCreateFlagBits::eDisableOptimization) result += "DisableOptimization | ";
     if (value & PipelineCreateFlagBits::eAllowDerivatives) result += "AllowDerivatives | ";
     if (value & PipelineCreateFlagBits::eDerivative) result += "Derivative | ";
-    return result.substr(0, result.size() - 3);
+    return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
   inline std::string to_string(ColorComponentFlagBits value)
@@ -24203,19 +24206,19 @@ namespace vk
     case ColorComponentFlagBits::eG: return "G";
     case ColorComponentFlagBits::eB: return "B";
     case ColorComponentFlagBits::eA: return "A";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
   inline std::string to_string(ColorComponentFlags value)
   {
-    if (!value) return std::string();
+    if (!value) return "{}";
     std::string result;
     if (value & ColorComponentFlagBits::eR) result += "R | ";
     if (value & ColorComponentFlagBits::eG) result += "G | ";
     if (value & ColorComponentFlagBits::eB) result += "B | ";
     if (value & ColorComponentFlagBits::eA) result += "A | ";
-    return result.substr(0, result.size() - 3);
+    return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
   inline std::string to_string(FenceCreateFlagBits value)
@@ -24223,16 +24226,16 @@ namespace vk
     switch (value)
     {
     case FenceCreateFlagBits::eSignaled: return "Signaled";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
   inline std::string to_string(FenceCreateFlags value)
   {
-    if (!value) return std::string();
+    if (!value) return "{}";
     std::string result;
     if (value & FenceCreateFlagBits::eSignaled) result += "Signaled | ";
-    return result.substr(0, result.size() - 3);
+    return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
   inline std::string to_string(FormatFeatureFlagBits value)
@@ -24253,13 +24256,13 @@ namespace vk
     case FormatFeatureFlagBits::eBlitDst: return "BlitDst";
     case FormatFeatureFlagBits::eSampledImageFilterLinear: return "SampledImageFilterLinear";
     case FormatFeatureFlagBits::eSampledImageFilterCubicIMG: return "SampledImageFilterCubicIMG";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
   inline std::string to_string(FormatFeatureFlags value)
   {
-    if (!value) return std::string();
+    if (!value) return "{}";
     std::string result;
     if (value & FormatFeatureFlagBits::eSampledImage) result += "SampledImage | ";
     if (value & FormatFeatureFlagBits::eStorageImage) result += "StorageImage | ";
@@ -24275,7 +24278,7 @@ namespace vk
     if (value & FormatFeatureFlagBits::eBlitDst) result += "BlitDst | ";
     if (value & FormatFeatureFlagBits::eSampledImageFilterLinear) result += "SampledImageFilterLinear | ";
     if (value & FormatFeatureFlagBits::eSampledImageFilterCubicIMG) result += "SampledImageFilterCubicIMG | ";
-    return result.substr(0, result.size() - 3);
+    return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
   inline std::string to_string(QueryControlFlagBits value)
@@ -24283,16 +24286,16 @@ namespace vk
     switch (value)
     {
     case QueryControlFlagBits::ePrecise: return "Precise";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
   inline std::string to_string(QueryControlFlags value)
   {
-    if (!value) return std::string();
+    if (!value) return "{}";
     std::string result;
     if (value & QueryControlFlagBits::ePrecise) result += "Precise | ";
-    return result.substr(0, result.size() - 3);
+    return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
   inline std::string to_string(QueryResultFlagBits value)
@@ -24303,19 +24306,19 @@ namespace vk
     case QueryResultFlagBits::eWait: return "Wait";
     case QueryResultFlagBits::eWithAvailability: return "WithAvailability";
     case QueryResultFlagBits::ePartial: return "Partial";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
   inline std::string to_string(QueryResultFlags value)
   {
-    if (!value) return std::string();
+    if (!value) return "{}";
     std::string result;
     if (value & QueryResultFlagBits::e64) result += "64 | ";
     if (value & QueryResultFlagBits::eWait) result += "Wait | ";
     if (value & QueryResultFlagBits::eWithAvailability) result += "WithAvailability | ";
     if (value & QueryResultFlagBits::ePartial) result += "Partial | ";
-    return result.substr(0, result.size() - 3);
+    return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
   inline std::string to_string(CommandBufferUsageFlagBits value)
@@ -24325,18 +24328,18 @@ namespace vk
     case CommandBufferUsageFlagBits::eOneTimeSubmit: return "OneTimeSubmit";
     case CommandBufferUsageFlagBits::eRenderPassContinue: return "RenderPassContinue";
     case CommandBufferUsageFlagBits::eSimultaneousUse: return "SimultaneousUse";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
   inline std::string to_string(CommandBufferUsageFlags value)
   {
-    if (!value) return std::string();
+    if (!value) return "{}";
     std::string result;
     if (value & CommandBufferUsageFlagBits::eOneTimeSubmit) result += "OneTimeSubmit | ";
     if (value & CommandBufferUsageFlagBits::eRenderPassContinue) result += "RenderPassContinue | ";
     if (value & CommandBufferUsageFlagBits::eSimultaneousUse) result += "SimultaneousUse | ";
-    return result.substr(0, result.size() - 3);
+    return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
   inline std::string to_string(QueryPipelineStatisticFlagBits value)
@@ -24354,13 +24357,13 @@ namespace vk
     case QueryPipelineStatisticFlagBits::eTessellationControlShaderPatches: return "TessellationControlShaderPatches";
     case QueryPipelineStatisticFlagBits::eTessellationEvaluationShaderInvocations: return "TessellationEvaluationShaderInvocations";
     case QueryPipelineStatisticFlagBits::eComputeShaderInvocations: return "ComputeShaderInvocations";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
   inline std::string to_string(QueryPipelineStatisticFlags value)
   {
-    if (!value) return std::string();
+    if (!value) return "{}";
     std::string result;
     if (value & QueryPipelineStatisticFlagBits::eInputAssemblyVertices) result += "InputAssemblyVertices | ";
     if (value & QueryPipelineStatisticFlagBits::eInputAssemblyPrimitives) result += "InputAssemblyPrimitives | ";
@@ -24373,7 +24376,7 @@ namespace vk
     if (value & QueryPipelineStatisticFlagBits::eTessellationControlShaderPatches) result += "TessellationControlShaderPatches | ";
     if (value & QueryPipelineStatisticFlagBits::eTessellationEvaluationShaderInvocations) result += "TessellationEvaluationShaderInvocations | ";
     if (value & QueryPipelineStatisticFlagBits::eComputeShaderInvocations) result += "ComputeShaderInvocations | ";
-    return result.substr(0, result.size() - 3);
+    return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
   inline std::string to_string(ImageAspectFlagBits value)
@@ -24384,19 +24387,19 @@ namespace vk
     case ImageAspectFlagBits::eDepth: return "Depth";
     case ImageAspectFlagBits::eStencil: return "Stencil";
     case ImageAspectFlagBits::eMetadata: return "Metadata";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
   inline std::string to_string(ImageAspectFlags value)
   {
-    if (!value) return std::string();
+    if (!value) return "{}";
     std::string result;
     if (value & ImageAspectFlagBits::eColor) result += "Color | ";
     if (value & ImageAspectFlagBits::eDepth) result += "Depth | ";
     if (value & ImageAspectFlagBits::eStencil) result += "Stencil | ";
     if (value & ImageAspectFlagBits::eMetadata) result += "Metadata | ";
-    return result.substr(0, result.size() - 3);
+    return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
   inline std::string to_string(SparseImageFormatFlagBits value)
@@ -24406,18 +24409,18 @@ namespace vk
     case SparseImageFormatFlagBits::eSingleMiptail: return "SingleMiptail";
     case SparseImageFormatFlagBits::eAlignedMipSize: return "AlignedMipSize";
     case SparseImageFormatFlagBits::eNonstandardBlockSize: return "NonstandardBlockSize";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
   inline std::string to_string(SparseImageFormatFlags value)
   {
-    if (!value) return std::string();
+    if (!value) return "{}";
     std::string result;
     if (value & SparseImageFormatFlagBits::eSingleMiptail) result += "SingleMiptail | ";
     if (value & SparseImageFormatFlagBits::eAlignedMipSize) result += "AlignedMipSize | ";
     if (value & SparseImageFormatFlagBits::eNonstandardBlockSize) result += "NonstandardBlockSize | ";
-    return result.substr(0, result.size() - 3);
+    return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
   inline std::string to_string(SparseMemoryBindFlagBits value)
@@ -24425,16 +24428,16 @@ namespace vk
     switch (value)
     {
     case SparseMemoryBindFlagBits::eMetadata: return "Metadata";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
   inline std::string to_string(SparseMemoryBindFlags value)
   {
-    if (!value) return std::string();
+    if (!value) return "{}";
     std::string result;
     if (value & SparseMemoryBindFlagBits::eMetadata) result += "Metadata | ";
-    return result.substr(0, result.size() - 3);
+    return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
   inline std::string to_string(PipelineStageFlagBits value)
@@ -24458,13 +24461,13 @@ namespace vk
     case PipelineStageFlagBits::eHost: return "Host";
     case PipelineStageFlagBits::eAllGraphics: return "AllGraphics";
     case PipelineStageFlagBits::eAllCommands: return "AllCommands";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
   inline std::string to_string(PipelineStageFlags value)
   {
-    if (!value) return std::string();
+    if (!value) return "{}";
     std::string result;
     if (value & PipelineStageFlagBits::eTopOfPipe) result += "TopOfPipe | ";
     if (value & PipelineStageFlagBits::eDrawIndirect) result += "DrawIndirect | ";
@@ -24483,7 +24486,7 @@ namespace vk
     if (value & PipelineStageFlagBits::eHost) result += "Host | ";
     if (value & PipelineStageFlagBits::eAllGraphics) result += "AllGraphics | ";
     if (value & PipelineStageFlagBits::eAllCommands) result += "AllCommands | ";
-    return result.substr(0, result.size() - 3);
+    return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
   inline std::string to_string(CommandPoolCreateFlagBits value)
@@ -24492,17 +24495,17 @@ namespace vk
     {
     case CommandPoolCreateFlagBits::eTransient: return "Transient";
     case CommandPoolCreateFlagBits::eResetCommandBuffer: return "ResetCommandBuffer";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
   inline std::string to_string(CommandPoolCreateFlags value)
   {
-    if (!value) return std::string();
+    if (!value) return "{}";
     std::string result;
     if (value & CommandPoolCreateFlagBits::eTransient) result += "Transient | ";
     if (value & CommandPoolCreateFlagBits::eResetCommandBuffer) result += "ResetCommandBuffer | ";
-    return result.substr(0, result.size() - 3);
+    return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
   inline std::string to_string(CommandPoolResetFlagBits value)
@@ -24510,16 +24513,16 @@ namespace vk
     switch (value)
     {
     case CommandPoolResetFlagBits::eReleaseResources: return "ReleaseResources";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
   inline std::string to_string(CommandPoolResetFlags value)
   {
-    if (!value) return std::string();
+    if (!value) return "{}";
     std::string result;
     if (value & CommandPoolResetFlagBits::eReleaseResources) result += "ReleaseResources | ";
-    return result.substr(0, result.size() - 3);
+    return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
   inline std::string to_string(CommandBufferResetFlagBits value)
@@ -24527,16 +24530,16 @@ namespace vk
     switch (value)
     {
     case CommandBufferResetFlagBits::eReleaseResources: return "ReleaseResources";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
   inline std::string to_string(CommandBufferResetFlags value)
   {
-    if (!value) return std::string();
+    if (!value) return "{}";
     std::string result;
     if (value & CommandBufferResetFlagBits::eReleaseResources) result += "ReleaseResources | ";
-    return result.substr(0, result.size() - 3);
+    return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
   inline std::string to_string(SampleCountFlagBits value)
@@ -24550,13 +24553,13 @@ namespace vk
     case SampleCountFlagBits::e16: return "16";
     case SampleCountFlagBits::e32: return "32";
     case SampleCountFlagBits::e64: return "64";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
   inline std::string to_string(SampleCountFlags value)
   {
-    if (!value) return std::string();
+    if (!value) return "{}";
     std::string result;
     if (value & SampleCountFlagBits::e1) result += "1 | ";
     if (value & SampleCountFlagBits::e2) result += "2 | ";
@@ -24565,7 +24568,7 @@ namespace vk
     if (value & SampleCountFlagBits::e16) result += "16 | ";
     if (value & SampleCountFlagBits::e32) result += "32 | ";
     if (value & SampleCountFlagBits::e64) result += "64 | ";
-    return result.substr(0, result.size() - 3);
+    return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
   inline std::string to_string(AttachmentDescriptionFlagBits value)
@@ -24573,16 +24576,16 @@ namespace vk
     switch (value)
     {
     case AttachmentDescriptionFlagBits::eMayAlias: return "MayAlias";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
   inline std::string to_string(AttachmentDescriptionFlags value)
   {
-    if (!value) return std::string();
+    if (!value) return "{}";
     std::string result;
     if (value & AttachmentDescriptionFlagBits::eMayAlias) result += "MayAlias | ";
-    return result.substr(0, result.size() - 3);
+    return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
   inline std::string to_string(StencilFaceFlagBits value)
@@ -24592,18 +24595,18 @@ namespace vk
     case StencilFaceFlagBits::eFront: return "Front";
     case StencilFaceFlagBits::eBack: return "Back";
     case StencilFaceFlagBits::eVkStencilFrontAndBack: return "VkStencilFrontAndBack";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
   inline std::string to_string(StencilFaceFlags value)
   {
-    if (!value) return std::string();
+    if (!value) return "{}";
     std::string result;
     if (value & StencilFaceFlagBits::eFront) result += "Front | ";
     if (value & StencilFaceFlagBits::eBack) result += "Back | ";
     if (value & StencilFaceFlagBits::eVkStencilFrontAndBack) result += "VkStencilFrontAndBack | ";
-    return result.substr(0, result.size() - 3);
+    return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
   inline std::string to_string(DescriptorPoolCreateFlagBits value)
@@ -24611,16 +24614,16 @@ namespace vk
     switch (value)
     {
     case DescriptorPoolCreateFlagBits::eFreeDescriptorSet: return "FreeDescriptorSet";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
   inline std::string to_string(DescriptorPoolCreateFlags value)
   {
-    if (!value) return std::string();
+    if (!value) return "{}";
     std::string result;
     if (value & DescriptorPoolCreateFlagBits::eFreeDescriptorSet) result += "FreeDescriptorSet | ";
-    return result.substr(0, result.size() - 3);
+    return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
   inline std::string to_string(DependencyFlagBits value)
@@ -24628,16 +24631,16 @@ namespace vk
     switch (value)
     {
     case DependencyFlagBits::eByRegion: return "ByRegion";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
   inline std::string to_string(DependencyFlags value)
   {
-    if (!value) return std::string();
+    if (!value) return "{}";
     std::string result;
     if (value & DependencyFlagBits::eByRegion) result += "ByRegion | ";
-    return result.substr(0, result.size() - 3);
+    return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
   inline std::string to_string(PresentModeKHR value)
@@ -24648,7 +24651,7 @@ namespace vk
     case PresentModeKHR::eMailbox: return "Mailbox";
     case PresentModeKHR::eFifo: return "Fifo";
     case PresentModeKHR::eFifoRelaxed: return "FifoRelaxed";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
@@ -24657,7 +24660,7 @@ namespace vk
     switch (value)
     {
     case ColorSpaceKHR::eVkColorspaceSrgbNonlinear: return "VkColorspaceSrgbNonlinear";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
@@ -24669,19 +24672,19 @@ namespace vk
     case DisplayPlaneAlphaFlagBitsKHR::eGlobal: return "Global";
     case DisplayPlaneAlphaFlagBitsKHR::ePerPixel: return "PerPixel";
     case DisplayPlaneAlphaFlagBitsKHR::ePerPixelPremultiplied: return "PerPixelPremultiplied";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
   inline std::string to_string(DisplayPlaneAlphaFlagsKHR value)
   {
-    if (!value) return std::string();
+    if (!value) return "{}";
     std::string result;
     if (value & DisplayPlaneAlphaFlagBitsKHR::eOpaque) result += "Opaque | ";
     if (value & DisplayPlaneAlphaFlagBitsKHR::eGlobal) result += "Global | ";
     if (value & DisplayPlaneAlphaFlagBitsKHR::ePerPixel) result += "PerPixel | ";
     if (value & DisplayPlaneAlphaFlagBitsKHR::ePerPixelPremultiplied) result += "PerPixelPremultiplied | ";
-    return result.substr(0, result.size() - 3);
+    return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
   inline std::string to_string(CompositeAlphaFlagBitsKHR value)
@@ -24692,19 +24695,19 @@ namespace vk
     case CompositeAlphaFlagBitsKHR::ePreMultiplied: return "PreMultiplied";
     case CompositeAlphaFlagBitsKHR::ePostMultiplied: return "PostMultiplied";
     case CompositeAlphaFlagBitsKHR::eInherit: return "Inherit";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
   inline std::string to_string(CompositeAlphaFlagsKHR value)
   {
-    if (!value) return std::string();
+    if (!value) return "{}";
     std::string result;
     if (value & CompositeAlphaFlagBitsKHR::eOpaque) result += "Opaque | ";
     if (value & CompositeAlphaFlagBitsKHR::ePreMultiplied) result += "PreMultiplied | ";
     if (value & CompositeAlphaFlagBitsKHR::ePostMultiplied) result += "PostMultiplied | ";
     if (value & CompositeAlphaFlagBitsKHR::eInherit) result += "Inherit | ";
-    return result.substr(0, result.size() - 3);
+    return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
   inline std::string to_string(SurfaceTransformFlagBitsKHR value)
@@ -24720,13 +24723,13 @@ namespace vk
     case SurfaceTransformFlagBitsKHR::eHorizontalMirrorRotate180: return "HorizontalMirrorRotate180";
     case SurfaceTransformFlagBitsKHR::eHorizontalMirrorRotate270: return "HorizontalMirrorRotate270";
     case SurfaceTransformFlagBitsKHR::eInherit: return "Inherit";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
   inline std::string to_string(SurfaceTransformFlagsKHR value)
   {
-    if (!value) return std::string();
+    if (!value) return "{}";
     std::string result;
     if (value & SurfaceTransformFlagBitsKHR::eIdentity) result += "Identity | ";
     if (value & SurfaceTransformFlagBitsKHR::eRotate90) result += "Rotate90 | ";
@@ -24737,7 +24740,7 @@ namespace vk
     if (value & SurfaceTransformFlagBitsKHR::eHorizontalMirrorRotate180) result += "HorizontalMirrorRotate180 | ";
     if (value & SurfaceTransformFlagBitsKHR::eHorizontalMirrorRotate270) result += "HorizontalMirrorRotate270 | ";
     if (value & SurfaceTransformFlagBitsKHR::eInherit) result += "Inherit | ";
-    return result.substr(0, result.size() - 3);
+    return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
   inline std::string to_string(DebugReportFlagBitsEXT value)
@@ -24749,20 +24752,20 @@ namespace vk
     case DebugReportFlagBitsEXT::ePerformanceWarning: return "PerformanceWarning";
     case DebugReportFlagBitsEXT::eError: return "Error";
     case DebugReportFlagBitsEXT::eDebug: return "Debug";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
   inline std::string to_string(DebugReportFlagsEXT value)
   {
-    if (!value) return std::string();
+    if (!value) return "{}";
     std::string result;
     if (value & DebugReportFlagBitsEXT::eInformation) result += "Information | ";
     if (value & DebugReportFlagBitsEXT::eWarning) result += "Warning | ";
     if (value & DebugReportFlagBitsEXT::ePerformanceWarning) result += "PerformanceWarning | ";
     if (value & DebugReportFlagBitsEXT::eError) result += "Error | ";
     if (value & DebugReportFlagBitsEXT::eDebug) result += "Debug | ";
-    return result.substr(0, result.size() - 3);
+    return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
   inline std::string to_string(DebugReportObjectTypeEXT value)
@@ -24798,7 +24801,7 @@ namespace vk
     case DebugReportObjectTypeEXT::eSurfaceKhr: return "SurfaceKhr";
     case DebugReportObjectTypeEXT::eSwapchainKhr: return "SwapchainKhr";
     case DebugReportObjectTypeEXT::eDebugReport: return "DebugReport";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 
@@ -24808,7 +24811,7 @@ namespace vk
     {
     case DebugReportErrorEXT::eNone: return "None";
     case DebugReportErrorEXT::eCallbackRef: return "CallbackRef";
-    default: return "unknown";
+    default: return "invalid";
     }
   }
 

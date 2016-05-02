@@ -2490,7 +2490,7 @@ void writeEnumsToString(std::ofstream & ofs, DependencyData const& dependencyDat
       << "  {" << std::endl;
   if (enumData.members.empty())
   {
-    ofs << "    return std::string();" << std::endl;
+    ofs << "    return \"(void)\";" << std::endl;
   }
   else
   {
@@ -2500,7 +2500,7 @@ void writeEnumsToString(std::ofstream & ofs, DependencyData const& dependencyDat
     {
       ofs << "    case " << dependencyData.name << "::" << itMember->name << ": return \"" << itMember->name.substr(1) << "\";" << std::endl;
     }
-    ofs << "    default: return \"unknown\";" << std::endl
+    ofs << "    default: return \"invalid\";" << std::endl
         << "    }" << std::endl;
   }
   ofs << "  }" << std::endl;
@@ -2516,18 +2516,18 @@ void writeFlagsToString(std::ofstream & ofs, DependencyData const& dependencyDat
       << "  {" << std::endl;
   if (enumData.members.empty())
   {
-    ofs << "    return std::string();" << std::endl;
+    ofs << "    return \"{}\";" << std::endl;
   }
   else
   {
-    ofs << "    if (!value) return std::string();" << std::endl
+    ofs << "    if (!value) return \"{}\";" << std::endl
         << "    std::string result;" << std::endl;
 
     for (auto itMember = enumData.members.begin(); itMember != enumData.members.end(); ++itMember)
     {
       ofs << "    if (value & " << enumPrefix + itMember->name << ") result += \"" << itMember->name.substr(1) << " | \";" << std::endl;
     }
-    ofs << "    return result.substr(0, result.size() - 3);" << std::endl;
+    ofs << "    return \"{\" + result.substr(0, result.size() - 3) + \"}\";" << std::endl;
   }
   ofs << "  }" << std::endl;
   leaveProtect(ofs, enumData.protect);
@@ -2555,7 +2555,7 @@ void writeTypeFlags( std::ofstream & ofs, DependencyData const& dependencyData, 
 {
   assert( dependencyData.dependencies.size() == 1 );
   enterProtect(ofs, flagData.protect);
-  ofs << "  typedef Flags<" << *dependencyData.dependencies.begin() << ", Vk" << dependencyData.name << "> " << dependencyData.name << ";" << std::endl
+  ofs << "  using " << dependencyData.name << " = Flags<" << *dependencyData.dependencies.begin() << ", Vk" << dependencyData.name << ">;" << std::endl
       << std::endl
       << "  inline " << dependencyData.name << " operator|( " << *dependencyData.dependencies.begin() << " bit0, " << *dependencyData.dependencies.begin() << " bit1 )" << std::endl
       << "  {" << std::endl
@@ -2584,6 +2584,7 @@ void writeTypeHandle(std::ofstream & ofs, VkData const& vkData, DependencyData c
       << "       : m_" << memberName << "("  << memberName << ")" << std::endl
       << "    {}" << std::endl
       << std::endl
+      // assignment from native handle
       << "    " << dependencyData.name << "& operator=(Vk" << dependencyData.name << " " << memberName << ")" << std::endl
       << "    {" << std::endl
       << "      m_" << memberName << " = " << memberName << ";" << std::endl
@@ -2657,7 +2658,8 @@ void writeTypeHandle(std::ofstream & ofs, VkData const& vkData, DependencyData c
 void writeTypeScalar( std::ofstream & ofs, DependencyData const& dependencyData )
 {
   assert( dependencyData.dependencies.size() == 1 );
-  ofs << "  typedef " << *dependencyData.dependencies.begin() << " " << dependencyData.name << ";" << std::endl;
+  ofs << "  using " << dependencyData.name << " = " << *dependencyData.dependencies.begin() << ";" << std::endl
+      << std::endl;
 }
 
 void writeTypeStruct( std::ofstream & ofs, VkData const& vkData, DependencyData const& dependencyData, std::map<std::string,std::string> const& defaultValues )

@@ -137,11 +137,11 @@ device.createImage(&ci, allocator, &image);
 To provide a more object oriented feeling we're providing classes for each handle which include all Vulkan functions where the first 
 parameter matches the handle. In addition to this we made a few changes to the signatures of the member functions
 * To disable the enhanced mode put ```#define VKCPP_DISABLE_ENHANCED_MODE``` before including ```vk_cpp.h```
-* ```(count, T*)``` has been replaced by ```std::vector<T>```
-* ```const char *``` has been replaced by ```std::string ```
-* ```T const*``` has been replaced by ```T const &``` to allow temporary objects. This is useful to pass small structures like ```vk::ClearColorValue``` or ```vk::Extent*```
+* ```(count, T*)``` has been replaced by ```vk::ArrayProxy<T>```, which can be created out of a single T, a (count, T*) pair, a std::array<T,N>, a vector<T>, or an initializer_list<T>.
+* ```const char *``` has been replaced by ```const std::string &```
+* ```const T *``` has been replaced by ```const T &``` to allow temporary objects. This is useful to pass small structures like ```vk::ClearColorValue``` or ```vk::Extent*```
 ```commandBuffer.clearColorImage(image, layout, std::array<float, 4>{1.0f, 1.0f, 1.0f, 1.0f}, {...});```
-Optional parameters are being replaced by ```Optional<T> const &``` which accept a type of ```T const&```. ```nullptr``` can be used to initialize an empty ```Optional<T>```.
+Optional parameters are being replaced by ```Optional<T>``` which accept a type of ```const T```, ```T```, or ```const std::string```. ```nullptr``` can be used to initialize an empty ```Optional<T>```.
 * The wrapper will throw a ```std::system_error``` if a ```vk::Result``` return value is not an success code. If there's only a single success code it's not returned at all. In this case functions with a single output value do return this output value instead.
 
 Here are a few code examples:

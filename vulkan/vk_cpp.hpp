@@ -199,6 +199,64 @@ namespace vk
     RefType *m_ptr;
   };
 
+  template <typename T>
+  class ArrayProxy
+  {
+  public:
+    ArrayProxy(T & ptr)
+      : m_count(1)
+      , m_ptr(&ptr)
+    {}
+
+    ArrayProxy(uint32_t count, T * ptr)
+      : m_count(count)
+      , m_ptr(ptr)
+    {}
+
+    template <size_t N>
+    ArrayProxy(std::array<typename std::remove_const<T>::type, N> & data)
+      : m_count(N)
+      , m_ptr(data.data())
+    {}
+
+    template <size_t N>
+    ArrayProxy(std::array<typename std::remove_const<T>::type, N> const& data)
+      : m_count(N)
+      , m_ptr(data.data())
+    {}
+
+    template <class Allocator = std::allocator<typename std::remove_const<T>::type>>
+    ArrayProxy(std::vector<typename std::remove_const<T>::type, Allocator> & data)
+      : m_count(static_cast<uint32_t>(data.size()))
+      , m_ptr(data.data())
+    {}
+
+    template <class Allocator = std::allocator<typename std::remove_const<T>::type>>
+    ArrayProxy(std::vector<typename std::remove_const<T>::type, Allocator> const& data)
+      : m_count(static_cast<uint32_t>(data.size()))
+      , m_ptr(data.data())
+    {}
+
+    ArrayProxy(std::initializer_list<T> const& data)
+      : m_count(static_cast<uint32_t>(data.end() - data.begin()))
+      , m_ptr(data.begin())
+    {}
+
+    uint32_t size() const
+    {
+      return m_count;
+    }
+
+    T * data() const
+    {
+      return m_ptr;
+    }
+
+  private:
+    uint32_t  m_count;
+    T *       m_ptr;
+  };
+
   enum class Result
   {
     eSuccess = VK_SUCCESS,
@@ -17655,19 +17713,9 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void setViewport( uint32_t firstViewport, std::vector<Viewport> const & viewports ) const
+    void setViewport( uint32_t firstViewport, ArrayProxy<const Viewport> viewports ) const
     {
-      vkCmdSetViewport( m_commandBuffer, firstViewport, static_cast<uint32_t>( viewports.size() ), reinterpret_cast<const VkViewport*>( viewports.data() ) );
-    }
-
-    void setViewport( uint32_t firstViewport, std::initializer_list<Viewport> const & viewports ) const
-    {
-      vkCmdSetViewport( m_commandBuffer, firstViewport, static_cast<uint32_t>( viewports.size() ), reinterpret_cast<const VkViewport*>( viewports.begin() ) );
-    }
-
-    void setViewport( uint32_t firstViewport, Viewport const & viewport ) const
-    {
-      vkCmdSetViewport( m_commandBuffer, firstViewport, 1, reinterpret_cast<const VkViewport*>( &viewport ) );
+      vkCmdSetViewport( m_commandBuffer, firstViewport, viewports.size() , reinterpret_cast<const VkViewport*>( viewports.data() ) );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -17677,19 +17725,9 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void setScissor( uint32_t firstScissor, std::vector<Rect2D> const & scissors ) const
+    void setScissor( uint32_t firstScissor, ArrayProxy<const Rect2D> scissors ) const
     {
-      vkCmdSetScissor( m_commandBuffer, firstScissor, static_cast<uint32_t>( scissors.size() ), reinterpret_cast<const VkRect2D*>( scissors.data() ) );
-    }
-
-    void setScissor( uint32_t firstScissor, std::initializer_list<Rect2D> const & scissors ) const
-    {
-      vkCmdSetScissor( m_commandBuffer, firstScissor, static_cast<uint32_t>( scissors.size() ), reinterpret_cast<const VkRect2D*>( scissors.begin() ) );
-    }
-
-    void setScissor( uint32_t firstScissor, Rect2D const & scissor ) const
-    {
-      vkCmdSetScissor( m_commandBuffer, firstScissor, 1, reinterpret_cast<const VkRect2D*>( &scissor ) );
+      vkCmdSetScissor( m_commandBuffer, firstScissor, scissors.size() , reinterpret_cast<const VkRect2D*>( scissors.data() ) );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -17797,19 +17835,9 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void bindDescriptorSets( PipelineBindPoint pipelineBindPoint, PipelineLayout layout, uint32_t firstSet, std::vector<DescriptorSet> const & descriptorSets, std::vector<uint32_t> const & dynamicOffsets ) const
+    void bindDescriptorSets( PipelineBindPoint pipelineBindPoint, PipelineLayout layout, uint32_t firstSet, ArrayProxy<const DescriptorSet> descriptorSets, ArrayProxy<const uint32_t> dynamicOffsets ) const
     {
-      vkCmdBindDescriptorSets( m_commandBuffer, static_cast<VkPipelineBindPoint>( pipelineBindPoint ), static_cast<VkPipelineLayout>( layout ), firstSet, static_cast<uint32_t>( descriptorSets.size() ), reinterpret_cast<const VkDescriptorSet*>( descriptorSets.data() ), static_cast<uint32_t>( dynamicOffsets.size() ), dynamicOffsets.data() );
-    }
-
-    void bindDescriptorSets( PipelineBindPoint pipelineBindPoint, PipelineLayout layout, uint32_t firstSet, std::initializer_list<DescriptorSet> const & descriptorSets, std::initializer_list<uint32_t> const & dynamicOffsets ) const
-    {
-      vkCmdBindDescriptorSets( m_commandBuffer, static_cast<VkPipelineBindPoint>( pipelineBindPoint ), static_cast<VkPipelineLayout>( layout ), firstSet, static_cast<uint32_t>( descriptorSets.size() ), reinterpret_cast<const VkDescriptorSet*>( descriptorSets.begin() ), static_cast<uint32_t>( dynamicOffsets.size() ), dynamicOffsets.begin() );
-    }
-
-    void bindDescriptorSet( PipelineBindPoint pipelineBindPoint, PipelineLayout layout, uint32_t firstSet, DescriptorSet const & descriptorSet, uint32_t const & dynamicOffset ) const
-    {
-      vkCmdBindDescriptorSets( m_commandBuffer, static_cast<VkPipelineBindPoint>( pipelineBindPoint ), static_cast<VkPipelineLayout>( layout ), firstSet, 1, reinterpret_cast<const VkDescriptorSet*>( &descriptorSet ), 1, &dynamicOffset );
+      vkCmdBindDescriptorSets( m_commandBuffer, static_cast<VkPipelineBindPoint>( pipelineBindPoint ), static_cast<VkPipelineLayout>( layout ), firstSet, descriptorSets.size() , reinterpret_cast<const VkDescriptorSet*>( descriptorSets.data() ), dynamicOffsets.size() , dynamicOffsets.data() );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -17833,27 +17861,13 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void bindVertexBuffers( uint32_t firstBinding, std::vector<Buffer> const & buffers, std::vector<DeviceSize> const & offsets ) const
+    void bindVertexBuffers( uint32_t firstBinding, ArrayProxy<const Buffer> buffers, ArrayProxy<const DeviceSize> offsets ) const
     {
       if ( buffers.size() != offsets.size() )
       {
         throw std::logic_error( "vk::CommandBuffer::bindVertexBuffers: buffers.size() != offsets.size()" );
       }
-      vkCmdBindVertexBuffers( m_commandBuffer, firstBinding, static_cast<uint32_t>( buffers.size() ), reinterpret_cast<const VkBuffer*>( buffers.data() ), offsets.data() );
-    }
-
-    void bindVertexBuffers( uint32_t firstBinding, std::initializer_list<Buffer> const & buffers, std::initializer_list<DeviceSize> const & offsets ) const
-    {
-      if ( buffers.size() != offsets.size() )
-      {
-        throw std::logic_error( "vk::CommandBuffer::bindVertexBuffers: buffers.size() != offsets.size()" );
-      }
-      vkCmdBindVertexBuffers( m_commandBuffer, firstBinding, static_cast<uint32_t>( buffers.size() ), reinterpret_cast<const VkBuffer*>( buffers.begin() ), offsets.begin() );
-    }
-
-    void bindVertexBuffer( uint32_t firstBinding, Buffer const & buffer, DeviceSize const & offset ) const
-    {
-      vkCmdBindVertexBuffers( m_commandBuffer, firstBinding, 1, reinterpret_cast<const VkBuffer*>( &buffer ), &offset );
+      vkCmdBindVertexBuffers( m_commandBuffer, firstBinding, buffers.size() , reinterpret_cast<const VkBuffer*>( buffers.data() ), offsets.data() );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -17947,19 +17961,9 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void copyBuffer( Buffer srcBuffer, Buffer dstBuffer, std::vector<BufferCopy> const & regions ) const
+    void copyBuffer( Buffer srcBuffer, Buffer dstBuffer, ArrayProxy<const BufferCopy> regions ) const
     {
-      vkCmdCopyBuffer( m_commandBuffer, static_cast<VkBuffer>( srcBuffer ), static_cast<VkBuffer>( dstBuffer ), static_cast<uint32_t>( regions.size() ), reinterpret_cast<const VkBufferCopy*>( regions.data() ) );
-    }
-
-    void copyBuffer( Buffer srcBuffer, Buffer dstBuffer, std::initializer_list<BufferCopy> const & regions ) const
-    {
-      vkCmdCopyBuffer( m_commandBuffer, static_cast<VkBuffer>( srcBuffer ), static_cast<VkBuffer>( dstBuffer ), static_cast<uint32_t>( regions.size() ), reinterpret_cast<const VkBufferCopy*>( regions.begin() ) );
-    }
-
-    void copyBuffer( Buffer srcBuffer, Buffer dstBuffer, BufferCopy const & region ) const
-    {
-      vkCmdCopyBuffer( m_commandBuffer, static_cast<VkBuffer>( srcBuffer ), static_cast<VkBuffer>( dstBuffer ), 1, reinterpret_cast<const VkBufferCopy*>( &region ) );
+      vkCmdCopyBuffer( m_commandBuffer, static_cast<VkBuffer>( srcBuffer ), static_cast<VkBuffer>( dstBuffer ), regions.size() , reinterpret_cast<const VkBufferCopy*>( regions.data() ) );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -17969,19 +17973,9 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void copyImage( Image srcImage, ImageLayout srcImageLayout, Image dstImage, ImageLayout dstImageLayout, std::vector<ImageCopy> const & regions ) const
+    void copyImage( Image srcImage, ImageLayout srcImageLayout, Image dstImage, ImageLayout dstImageLayout, ArrayProxy<const ImageCopy> regions ) const
     {
-      vkCmdCopyImage( m_commandBuffer, static_cast<VkImage>( srcImage ), static_cast<VkImageLayout>( srcImageLayout ), static_cast<VkImage>( dstImage ), static_cast<VkImageLayout>( dstImageLayout ), static_cast<uint32_t>( regions.size() ), reinterpret_cast<const VkImageCopy*>( regions.data() ) );
-    }
-
-    void copyImage( Image srcImage, ImageLayout srcImageLayout, Image dstImage, ImageLayout dstImageLayout, std::initializer_list<ImageCopy> const & regions ) const
-    {
-      vkCmdCopyImage( m_commandBuffer, static_cast<VkImage>( srcImage ), static_cast<VkImageLayout>( srcImageLayout ), static_cast<VkImage>( dstImage ), static_cast<VkImageLayout>( dstImageLayout ), static_cast<uint32_t>( regions.size() ), reinterpret_cast<const VkImageCopy*>( regions.begin() ) );
-    }
-
-    void copyImage( Image srcImage, ImageLayout srcImageLayout, Image dstImage, ImageLayout dstImageLayout, ImageCopy const & region ) const
-    {
-      vkCmdCopyImage( m_commandBuffer, static_cast<VkImage>( srcImage ), static_cast<VkImageLayout>( srcImageLayout ), static_cast<VkImage>( dstImage ), static_cast<VkImageLayout>( dstImageLayout ), 1, reinterpret_cast<const VkImageCopy*>( &region ) );
+      vkCmdCopyImage( m_commandBuffer, static_cast<VkImage>( srcImage ), static_cast<VkImageLayout>( srcImageLayout ), static_cast<VkImage>( dstImage ), static_cast<VkImageLayout>( dstImageLayout ), regions.size() , reinterpret_cast<const VkImageCopy*>( regions.data() ) );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -17991,19 +17985,9 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void blitImage( Image srcImage, ImageLayout srcImageLayout, Image dstImage, ImageLayout dstImageLayout, std::vector<ImageBlit> const & regions, Filter filter ) const
+    void blitImage( Image srcImage, ImageLayout srcImageLayout, Image dstImage, ImageLayout dstImageLayout, ArrayProxy<const ImageBlit> regions, Filter filter ) const
     {
-      vkCmdBlitImage( m_commandBuffer, static_cast<VkImage>( srcImage ), static_cast<VkImageLayout>( srcImageLayout ), static_cast<VkImage>( dstImage ), static_cast<VkImageLayout>( dstImageLayout ), static_cast<uint32_t>( regions.size() ), reinterpret_cast<const VkImageBlit*>( regions.data() ), static_cast<VkFilter>( filter ) );
-    }
-
-    void blitImage( Image srcImage, ImageLayout srcImageLayout, Image dstImage, ImageLayout dstImageLayout, std::initializer_list<ImageBlit> const & regions, Filter filter ) const
-    {
-      vkCmdBlitImage( m_commandBuffer, static_cast<VkImage>( srcImage ), static_cast<VkImageLayout>( srcImageLayout ), static_cast<VkImage>( dstImage ), static_cast<VkImageLayout>( dstImageLayout ), static_cast<uint32_t>( regions.size() ), reinterpret_cast<const VkImageBlit*>( regions.begin() ), static_cast<VkFilter>( filter ) );
-    }
-
-    void blitImage( Image srcImage, ImageLayout srcImageLayout, Image dstImage, ImageLayout dstImageLayout, ImageBlit const & region, Filter filter ) const
-    {
-      vkCmdBlitImage( m_commandBuffer, static_cast<VkImage>( srcImage ), static_cast<VkImageLayout>( srcImageLayout ), static_cast<VkImage>( dstImage ), static_cast<VkImageLayout>( dstImageLayout ), 1, reinterpret_cast<const VkImageBlit*>( &region ), static_cast<VkFilter>( filter ) );
+      vkCmdBlitImage( m_commandBuffer, static_cast<VkImage>( srcImage ), static_cast<VkImageLayout>( srcImageLayout ), static_cast<VkImage>( dstImage ), static_cast<VkImageLayout>( dstImageLayout ), regions.size() , reinterpret_cast<const VkImageBlit*>( regions.data() ), static_cast<VkFilter>( filter ) );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -18013,19 +17997,9 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void copyBufferToImage( Buffer srcBuffer, Image dstImage, ImageLayout dstImageLayout, std::vector<BufferImageCopy> const & regions ) const
+    void copyBufferToImage( Buffer srcBuffer, Image dstImage, ImageLayout dstImageLayout, ArrayProxy<const BufferImageCopy> regions ) const
     {
-      vkCmdCopyBufferToImage( m_commandBuffer, static_cast<VkBuffer>( srcBuffer ), static_cast<VkImage>( dstImage ), static_cast<VkImageLayout>( dstImageLayout ), static_cast<uint32_t>( regions.size() ), reinterpret_cast<const VkBufferImageCopy*>( regions.data() ) );
-    }
-
-    void copyBufferToImage( Buffer srcBuffer, Image dstImage, ImageLayout dstImageLayout, std::initializer_list<BufferImageCopy> const & regions ) const
-    {
-      vkCmdCopyBufferToImage( m_commandBuffer, static_cast<VkBuffer>( srcBuffer ), static_cast<VkImage>( dstImage ), static_cast<VkImageLayout>( dstImageLayout ), static_cast<uint32_t>( regions.size() ), reinterpret_cast<const VkBufferImageCopy*>( regions.begin() ) );
-    }
-
-    void copyBufferToImage( Buffer srcBuffer, Image dstImage, ImageLayout dstImageLayout, BufferImageCopy const & region ) const
-    {
-      vkCmdCopyBufferToImage( m_commandBuffer, static_cast<VkBuffer>( srcBuffer ), static_cast<VkImage>( dstImage ), static_cast<VkImageLayout>( dstImageLayout ), 1, reinterpret_cast<const VkBufferImageCopy*>( &region ) );
+      vkCmdCopyBufferToImage( m_commandBuffer, static_cast<VkBuffer>( srcBuffer ), static_cast<VkImage>( dstImage ), static_cast<VkImageLayout>( dstImageLayout ), regions.size() , reinterpret_cast<const VkBufferImageCopy*>( regions.data() ) );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -18035,19 +18009,9 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void copyImageToBuffer( Image srcImage, ImageLayout srcImageLayout, Buffer dstBuffer, std::vector<BufferImageCopy> const & regions ) const
+    void copyImageToBuffer( Image srcImage, ImageLayout srcImageLayout, Buffer dstBuffer, ArrayProxy<const BufferImageCopy> regions ) const
     {
-      vkCmdCopyImageToBuffer( m_commandBuffer, static_cast<VkImage>( srcImage ), static_cast<VkImageLayout>( srcImageLayout ), static_cast<VkBuffer>( dstBuffer ), static_cast<uint32_t>( regions.size() ), reinterpret_cast<const VkBufferImageCopy*>( regions.data() ) );
-    }
-
-    void copyImageToBuffer( Image srcImage, ImageLayout srcImageLayout, Buffer dstBuffer, std::initializer_list<BufferImageCopy> const & regions ) const
-    {
-      vkCmdCopyImageToBuffer( m_commandBuffer, static_cast<VkImage>( srcImage ), static_cast<VkImageLayout>( srcImageLayout ), static_cast<VkBuffer>( dstBuffer ), static_cast<uint32_t>( regions.size() ), reinterpret_cast<const VkBufferImageCopy*>( regions.begin() ) );
-    }
-
-    void copyImageToBuffer( Image srcImage, ImageLayout srcImageLayout, Buffer dstBuffer, BufferImageCopy const & region ) const
-    {
-      vkCmdCopyImageToBuffer( m_commandBuffer, static_cast<VkImage>( srcImage ), static_cast<VkImageLayout>( srcImageLayout ), static_cast<VkBuffer>( dstBuffer ), 1, reinterpret_cast<const VkBufferImageCopy*>( &region ) );
+      vkCmdCopyImageToBuffer( m_commandBuffer, static_cast<VkImage>( srcImage ), static_cast<VkImageLayout>( srcImageLayout ), static_cast<VkBuffer>( dstBuffer ), regions.size() , reinterpret_cast<const VkBufferImageCopy*>( regions.data() ) );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -18058,10 +18022,10 @@ namespace vk
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
     template <typename T>
-    void updateBuffer( Buffer dstBuffer, DeviceSize dstOffset, std::vector<T> const & data ) const
+    void updateBuffer( Buffer dstBuffer, DeviceSize dstOffset, ArrayProxy<const T> data ) const
     {
       static_assert( sizeof( T ) % sizeof( uint32_t ) == 0, "wrong size of template type T" );
-      vkCmdUpdateBuffer( m_commandBuffer, static_cast<VkBuffer>( dstBuffer ), dstOffset, static_cast<DeviceSize>( data.size() * sizeof( T ) ), reinterpret_cast<const uint32_t*>( data.data() ) );
+      vkCmdUpdateBuffer( m_commandBuffer, static_cast<VkBuffer>( dstBuffer ), dstOffset, data.size() * sizeof( T ) , reinterpret_cast<const uint32_t*>( data.data() ) );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -18085,19 +18049,9 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void clearColorImage( Image image, ImageLayout imageLayout, const ClearColorValue & color, std::vector<ImageSubresourceRange> const & ranges ) const
+    void clearColorImage( Image image, ImageLayout imageLayout, const ClearColorValue & color, ArrayProxy<const ImageSubresourceRange> ranges ) const
     {
-      vkCmdClearColorImage( m_commandBuffer, static_cast<VkImage>( image ), static_cast<VkImageLayout>( imageLayout ), reinterpret_cast<const VkClearColorValue*>( &color ), static_cast<uint32_t>( ranges.size() ), reinterpret_cast<const VkImageSubresourceRange*>( ranges.data() ) );
-    }
-
-    void clearColorImage( Image image, ImageLayout imageLayout, const ClearColorValue & color, std::initializer_list<ImageSubresourceRange> const & ranges ) const
-    {
-      vkCmdClearColorImage( m_commandBuffer, static_cast<VkImage>( image ), static_cast<VkImageLayout>( imageLayout ), reinterpret_cast<const VkClearColorValue*>( &color ), static_cast<uint32_t>( ranges.size() ), reinterpret_cast<const VkImageSubresourceRange*>( ranges.begin() ) );
-    }
-
-    void clearColorImage( Image image, ImageLayout imageLayout, const ClearColorValue & color, ImageSubresourceRange const & range ) const
-    {
-      vkCmdClearColorImage( m_commandBuffer, static_cast<VkImage>( image ), static_cast<VkImageLayout>( imageLayout ), reinterpret_cast<const VkClearColorValue*>( &color ), 1, reinterpret_cast<const VkImageSubresourceRange*>( &range ) );
+      vkCmdClearColorImage( m_commandBuffer, static_cast<VkImage>( image ), static_cast<VkImageLayout>( imageLayout ), reinterpret_cast<const VkClearColorValue*>( &color ), ranges.size() , reinterpret_cast<const VkImageSubresourceRange*>( ranges.data() ) );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -18107,19 +18061,9 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void clearDepthStencilImage( Image image, ImageLayout imageLayout, const ClearDepthStencilValue & depthStencil, std::vector<ImageSubresourceRange> const & ranges ) const
+    void clearDepthStencilImage( Image image, ImageLayout imageLayout, const ClearDepthStencilValue & depthStencil, ArrayProxy<const ImageSubresourceRange> ranges ) const
     {
-      vkCmdClearDepthStencilImage( m_commandBuffer, static_cast<VkImage>( image ), static_cast<VkImageLayout>( imageLayout ), reinterpret_cast<const VkClearDepthStencilValue*>( &depthStencil ), static_cast<uint32_t>( ranges.size() ), reinterpret_cast<const VkImageSubresourceRange*>( ranges.data() ) );
-    }
-
-    void clearDepthStencilImage( Image image, ImageLayout imageLayout, const ClearDepthStencilValue & depthStencil, std::initializer_list<ImageSubresourceRange> const & ranges ) const
-    {
-      vkCmdClearDepthStencilImage( m_commandBuffer, static_cast<VkImage>( image ), static_cast<VkImageLayout>( imageLayout ), reinterpret_cast<const VkClearDepthStencilValue*>( &depthStencil ), static_cast<uint32_t>( ranges.size() ), reinterpret_cast<const VkImageSubresourceRange*>( ranges.begin() ) );
-    }
-
-    void clearDepthStencilImage( Image image, ImageLayout imageLayout, const ClearDepthStencilValue & depthStencil, ImageSubresourceRange const & range ) const
-    {
-      vkCmdClearDepthStencilImage( m_commandBuffer, static_cast<VkImage>( image ), static_cast<VkImageLayout>( imageLayout ), reinterpret_cast<const VkClearDepthStencilValue*>( &depthStencil ), 1, reinterpret_cast<const VkImageSubresourceRange*>( &range ) );
+      vkCmdClearDepthStencilImage( m_commandBuffer, static_cast<VkImage>( image ), static_cast<VkImageLayout>( imageLayout ), reinterpret_cast<const VkClearDepthStencilValue*>( &depthStencil ), ranges.size() , reinterpret_cast<const VkImageSubresourceRange*>( ranges.data() ) );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -18129,19 +18073,9 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void clearAttachments( std::vector<ClearAttachment> const & attachments, std::vector<ClearRect> const & rects ) const
+    void clearAttachments( ArrayProxy<const ClearAttachment> attachments, ArrayProxy<const ClearRect> rects ) const
     {
-      vkCmdClearAttachments( m_commandBuffer, static_cast<uint32_t>( attachments.size() ), reinterpret_cast<const VkClearAttachment*>( attachments.data() ), static_cast<uint32_t>( rects.size() ), reinterpret_cast<const VkClearRect*>( rects.data() ) );
-    }
-
-    void clearAttachments( std::initializer_list<ClearAttachment> const & attachments, std::initializer_list<ClearRect> const & rects ) const
-    {
-      vkCmdClearAttachments( m_commandBuffer, static_cast<uint32_t>( attachments.size() ), reinterpret_cast<const VkClearAttachment*>( attachments.begin() ), static_cast<uint32_t>( rects.size() ), reinterpret_cast<const VkClearRect*>( rects.begin() ) );
-    }
-
-    void clearAttachment( ClearAttachment const & attachment, ClearRect const & rect ) const
-    {
-      vkCmdClearAttachments( m_commandBuffer, 1, reinterpret_cast<const VkClearAttachment*>( &attachment ), 1, reinterpret_cast<const VkClearRect*>( &rect ) );
+      vkCmdClearAttachments( m_commandBuffer, attachments.size() , reinterpret_cast<const VkClearAttachment*>( attachments.data() ), rects.size() , reinterpret_cast<const VkClearRect*>( rects.data() ) );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -18151,19 +18085,9 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void resolveImage( Image srcImage, ImageLayout srcImageLayout, Image dstImage, ImageLayout dstImageLayout, std::vector<ImageResolve> const & regions ) const
+    void resolveImage( Image srcImage, ImageLayout srcImageLayout, Image dstImage, ImageLayout dstImageLayout, ArrayProxy<const ImageResolve> regions ) const
     {
-      vkCmdResolveImage( m_commandBuffer, static_cast<VkImage>( srcImage ), static_cast<VkImageLayout>( srcImageLayout ), static_cast<VkImage>( dstImage ), static_cast<VkImageLayout>( dstImageLayout ), static_cast<uint32_t>( regions.size() ), reinterpret_cast<const VkImageResolve*>( regions.data() ) );
-    }
-
-    void resolveImage( Image srcImage, ImageLayout srcImageLayout, Image dstImage, ImageLayout dstImageLayout, std::initializer_list<ImageResolve> const & regions ) const
-    {
-      vkCmdResolveImage( m_commandBuffer, static_cast<VkImage>( srcImage ), static_cast<VkImageLayout>( srcImageLayout ), static_cast<VkImage>( dstImage ), static_cast<VkImageLayout>( dstImageLayout ), static_cast<uint32_t>( regions.size() ), reinterpret_cast<const VkImageResolve*>( regions.begin() ) );
-    }
-
-    void resolveImage( Image srcImage, ImageLayout srcImageLayout, Image dstImage, ImageLayout dstImageLayout, ImageResolve const & region ) const
-    {
-      vkCmdResolveImage( m_commandBuffer, static_cast<VkImage>( srcImage ), static_cast<VkImageLayout>( srcImageLayout ), static_cast<VkImage>( dstImage ), static_cast<VkImageLayout>( dstImageLayout ), 1, reinterpret_cast<const VkImageResolve*>( &region ) );
+      vkCmdResolveImage( m_commandBuffer, static_cast<VkImage>( srcImage ), static_cast<VkImageLayout>( srcImageLayout ), static_cast<VkImage>( dstImage ), static_cast<VkImageLayout>( dstImageLayout ), regions.size() , reinterpret_cast<const VkImageResolve*>( regions.data() ) );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -18201,19 +18125,9 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void waitEvents( std::vector<Event> const & events, PipelineStageFlags srcStageMask, PipelineStageFlags dstStageMask, std::vector<MemoryBarrier> const & memoryBarriers, std::vector<BufferMemoryBarrier> const & bufferMemoryBarriers, std::vector<ImageMemoryBarrier> const & imageMemoryBarriers ) const
+    void waitEvents( ArrayProxy<const Event> events, PipelineStageFlags srcStageMask, PipelineStageFlags dstStageMask, ArrayProxy<const MemoryBarrier> memoryBarriers, ArrayProxy<const BufferMemoryBarrier> bufferMemoryBarriers, ArrayProxy<const ImageMemoryBarrier> imageMemoryBarriers ) const
     {
-      vkCmdWaitEvents( m_commandBuffer, static_cast<uint32_t>( events.size() ), reinterpret_cast<const VkEvent*>( events.data() ), static_cast<VkPipelineStageFlags>( srcStageMask ), static_cast<VkPipelineStageFlags>( dstStageMask ), static_cast<uint32_t>( memoryBarriers.size() ), reinterpret_cast<const VkMemoryBarrier*>( memoryBarriers.data() ), static_cast<uint32_t>( bufferMemoryBarriers.size() ), reinterpret_cast<const VkBufferMemoryBarrier*>( bufferMemoryBarriers.data() ), static_cast<uint32_t>( imageMemoryBarriers.size() ), reinterpret_cast<const VkImageMemoryBarrier*>( imageMemoryBarriers.data() ) );
-    }
-
-    void waitEvents( std::initializer_list<Event> const & events, PipelineStageFlags srcStageMask, PipelineStageFlags dstStageMask, std::initializer_list<MemoryBarrier> const & memoryBarriers, std::initializer_list<BufferMemoryBarrier> const & bufferMemoryBarriers, std::initializer_list<ImageMemoryBarrier> const & imageMemoryBarriers ) const
-    {
-      vkCmdWaitEvents( m_commandBuffer, static_cast<uint32_t>( events.size() ), reinterpret_cast<const VkEvent*>( events.begin() ), static_cast<VkPipelineStageFlags>( srcStageMask ), static_cast<VkPipelineStageFlags>( dstStageMask ), static_cast<uint32_t>( memoryBarriers.size() ), reinterpret_cast<const VkMemoryBarrier*>( memoryBarriers.begin() ), static_cast<uint32_t>( bufferMemoryBarriers.size() ), reinterpret_cast<const VkBufferMemoryBarrier*>( bufferMemoryBarriers.begin() ), static_cast<uint32_t>( imageMemoryBarriers.size() ), reinterpret_cast<const VkImageMemoryBarrier*>( imageMemoryBarriers.begin() ) );
-    }
-
-    void waitEvent( Event const & event, PipelineStageFlags srcStageMask, PipelineStageFlags dstStageMask, MemoryBarrier const & memoryBarrier, BufferMemoryBarrier const & bufferMemoryBarrier, ImageMemoryBarrier const & imageMemoryBarrier ) const
-    {
-      vkCmdWaitEvents( m_commandBuffer, 1, reinterpret_cast<const VkEvent*>( &event ), static_cast<VkPipelineStageFlags>( srcStageMask ), static_cast<VkPipelineStageFlags>( dstStageMask ), 1, reinterpret_cast<const VkMemoryBarrier*>( &memoryBarrier ), 1, reinterpret_cast<const VkBufferMemoryBarrier*>( &bufferMemoryBarrier ), 1, reinterpret_cast<const VkImageMemoryBarrier*>( &imageMemoryBarrier ) );
+      vkCmdWaitEvents( m_commandBuffer, events.size() , reinterpret_cast<const VkEvent*>( events.data() ), static_cast<VkPipelineStageFlags>( srcStageMask ), static_cast<VkPipelineStageFlags>( dstStageMask ), memoryBarriers.size() , reinterpret_cast<const VkMemoryBarrier*>( memoryBarriers.data() ), bufferMemoryBarriers.size() , reinterpret_cast<const VkBufferMemoryBarrier*>( bufferMemoryBarriers.data() ), imageMemoryBarriers.size() , reinterpret_cast<const VkImageMemoryBarrier*>( imageMemoryBarriers.data() ) );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -18223,19 +18137,9 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void pipelineBarrier( PipelineStageFlags srcStageMask, PipelineStageFlags dstStageMask, DependencyFlags dependencyFlags, std::vector<MemoryBarrier> const & memoryBarriers, std::vector<BufferMemoryBarrier> const & bufferMemoryBarriers, std::vector<ImageMemoryBarrier> const & imageMemoryBarriers ) const
+    void pipelineBarrier( PipelineStageFlags srcStageMask, PipelineStageFlags dstStageMask, DependencyFlags dependencyFlags, ArrayProxy<const MemoryBarrier> memoryBarriers, ArrayProxy<const BufferMemoryBarrier> bufferMemoryBarriers, ArrayProxy<const ImageMemoryBarrier> imageMemoryBarriers ) const
     {
-      vkCmdPipelineBarrier( m_commandBuffer, static_cast<VkPipelineStageFlags>( srcStageMask ), static_cast<VkPipelineStageFlags>( dstStageMask ), static_cast<VkDependencyFlags>( dependencyFlags ), static_cast<uint32_t>( memoryBarriers.size() ), reinterpret_cast<const VkMemoryBarrier*>( memoryBarriers.data() ), static_cast<uint32_t>( bufferMemoryBarriers.size() ), reinterpret_cast<const VkBufferMemoryBarrier*>( bufferMemoryBarriers.data() ), static_cast<uint32_t>( imageMemoryBarriers.size() ), reinterpret_cast<const VkImageMemoryBarrier*>( imageMemoryBarriers.data() ) );
-    }
-
-    void pipelineBarrier( PipelineStageFlags srcStageMask, PipelineStageFlags dstStageMask, DependencyFlags dependencyFlags, std::initializer_list<MemoryBarrier> const & memoryBarriers, std::initializer_list<BufferMemoryBarrier> const & bufferMemoryBarriers, std::initializer_list<ImageMemoryBarrier> const & imageMemoryBarriers ) const
-    {
-      vkCmdPipelineBarrier( m_commandBuffer, static_cast<VkPipelineStageFlags>( srcStageMask ), static_cast<VkPipelineStageFlags>( dstStageMask ), static_cast<VkDependencyFlags>( dependencyFlags ), static_cast<uint32_t>( memoryBarriers.size() ), reinterpret_cast<const VkMemoryBarrier*>( memoryBarriers.begin() ), static_cast<uint32_t>( bufferMemoryBarriers.size() ), reinterpret_cast<const VkBufferMemoryBarrier*>( bufferMemoryBarriers.begin() ), static_cast<uint32_t>( imageMemoryBarriers.size() ), reinterpret_cast<const VkImageMemoryBarrier*>( imageMemoryBarriers.begin() ) );
-    }
-
-    void pipelineBarrier( PipelineStageFlags srcStageMask, PipelineStageFlags dstStageMask, DependencyFlags dependencyFlags, MemoryBarrier const & memoryBarrier, BufferMemoryBarrier const & bufferMemoryBarrier, ImageMemoryBarrier const & imageMemoryBarrier ) const
-    {
-      vkCmdPipelineBarrier( m_commandBuffer, static_cast<VkPipelineStageFlags>( srcStageMask ), static_cast<VkPipelineStageFlags>( dstStageMask ), static_cast<VkDependencyFlags>( dependencyFlags ), 1, reinterpret_cast<const VkMemoryBarrier*>( &memoryBarrier ), 1, reinterpret_cast<const VkBufferMemoryBarrier*>( &bufferMemoryBarrier ), 1, reinterpret_cast<const VkImageMemoryBarrier*>( &imageMemoryBarrier ) );
+      vkCmdPipelineBarrier( m_commandBuffer, static_cast<VkPipelineStageFlags>( srcStageMask ), static_cast<VkPipelineStageFlags>( dstStageMask ), static_cast<VkDependencyFlags>( dependencyFlags ), memoryBarriers.size() , reinterpret_cast<const VkMemoryBarrier*>( memoryBarriers.data() ), bufferMemoryBarriers.size() , reinterpret_cast<const VkBufferMemoryBarrier*>( bufferMemoryBarriers.data() ), imageMemoryBarriers.size() , reinterpret_cast<const VkImageMemoryBarrier*>( imageMemoryBarriers.data() ) );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -18316,21 +18220,9 @@ namespace vk
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
     template <typename T>
-    void pushConstants( PipelineLayout layout, ShaderStageFlags stageFlags, uint32_t offset, std::vector<T> const & values ) const
+    void pushConstants( PipelineLayout layout, ShaderStageFlags stageFlags, uint32_t offset, ArrayProxy<const T> values ) const
     {
-      vkCmdPushConstants( m_commandBuffer, static_cast<VkPipelineLayout>( layout ), static_cast<VkShaderStageFlags>( stageFlags ), offset, static_cast<uint32_t>( values.size() * sizeof( T ) ), reinterpret_cast<const void*>( values.data() ) );
-    }
-
-    template <typename T>
-    void pushConstants( PipelineLayout layout, ShaderStageFlags stageFlags, uint32_t offset, std::initializer_list<T> const & values ) const
-    {
-      vkCmdPushConstants( m_commandBuffer, static_cast<VkPipelineLayout>( layout ), static_cast<VkShaderStageFlags>( stageFlags ), offset, static_cast<uint32_t>( values.size() * sizeof( T ) ), reinterpret_cast<const void*>( values.begin() ) );
-    }
-
-    template <typename T>
-    void pushConstant( PipelineLayout layout, ShaderStageFlags stageFlags, uint32_t offset, T const & value ) const
-    {
-      vkCmdPushConstants( m_commandBuffer, static_cast<VkPipelineLayout>( layout ), static_cast<VkShaderStageFlags>( stageFlags ), offset, static_cast<uint32_t>( sizeof( T ) ), reinterpret_cast<const void*>( &value ) );
+      vkCmdPushConstants( m_commandBuffer, static_cast<VkPipelineLayout>( layout ), static_cast<VkShaderStageFlags>( stageFlags ), offset, values.size() * sizeof( T ) , reinterpret_cast<const void*>( values.data() ) );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -18380,19 +18272,9 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void executeCommands( std::vector<CommandBuffer> const & commandBuffers ) const
+    void executeCommands( ArrayProxy<const CommandBuffer> commandBuffers ) const
     {
-      vkCmdExecuteCommands( m_commandBuffer, static_cast<uint32_t>( commandBuffers.size() ), reinterpret_cast<const VkCommandBuffer*>( commandBuffers.data() ) );
-    }
-
-    void executeCommands( std::initializer_list<CommandBuffer> const & commandBuffers ) const
-    {
-      vkCmdExecuteCommands( m_commandBuffer, static_cast<uint32_t>( commandBuffers.size() ), reinterpret_cast<const VkCommandBuffer*>( commandBuffers.begin() ) );
-    }
-
-    void executeCommand( CommandBuffer const & commandBuffer ) const
-    {
-      vkCmdExecuteCommands( m_commandBuffer, 1, reinterpret_cast<const VkCommandBuffer*>( &commandBuffer ) );
+      vkCmdExecuteCommands( m_commandBuffer, commandBuffers.size() , reinterpret_cast<const VkCommandBuffer*>( commandBuffers.data() ) );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -18965,27 +18847,9 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void submit( std::vector<SubmitInfo> const & submits, Fence fence ) const
+    void submit( ArrayProxy<const SubmitInfo> submits, Fence fence ) const
     {
-      Result result = static_cast<Result>( vkQueueSubmit( m_queue, static_cast<uint32_t>( submits.size() ), reinterpret_cast<const VkSubmitInfo*>( submits.data() ), static_cast<VkFence>( fence ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Queue::submit" );
-      }
-    }
-
-    void submit( std::initializer_list<SubmitInfo> const & submits, Fence fence ) const
-    {
-      Result result = static_cast<Result>( vkQueueSubmit( m_queue, static_cast<uint32_t>( submits.size() ), reinterpret_cast<const VkSubmitInfo*>( submits.begin() ), static_cast<VkFence>( fence ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Queue::submit" );
-      }
-    }
-
-    void submit( SubmitInfo const & submit, Fence fence ) const
-    {
-      Result result = static_cast<Result>( vkQueueSubmit( m_queue, 1, reinterpret_cast<const VkSubmitInfo*>( &submit ), static_cast<VkFence>( fence ) ) );
+      Result result = static_cast<Result>( vkQueueSubmit( m_queue, submits.size() , reinterpret_cast<const VkSubmitInfo*>( submits.data() ), static_cast<VkFence>( fence ) ) );
       if ( result != Result::eSuccess )
       {
         throw std::system_error( result, "vk::Queue::submit" );
@@ -19017,27 +18881,9 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void bindSparse( std::vector<BindSparseInfo> const & bindInfo, Fence fence ) const
+    void bindSparse( ArrayProxy<const BindSparseInfo> bindInfo, Fence fence ) const
     {
-      Result result = static_cast<Result>( vkQueueBindSparse( m_queue, static_cast<uint32_t>( bindInfo.size() ), reinterpret_cast<const VkBindSparseInfo*>( bindInfo.data() ), static_cast<VkFence>( fence ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Queue::bindSparse" );
-      }
-    }
-
-    void bindSparse( std::initializer_list<BindSparseInfo> const & bindInfo, Fence fence ) const
-    {
-      Result result = static_cast<Result>( vkQueueBindSparse( m_queue, static_cast<uint32_t>( bindInfo.size() ), reinterpret_cast<const VkBindSparseInfo*>( bindInfo.begin() ), static_cast<VkFence>( fence ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Queue::bindSparse" );
-      }
-    }
-
-    void bindSparse( BindSparseInfo const & bindInfo, Fence fence ) const
-    {
-      Result result = static_cast<Result>( vkQueueBindSparse( m_queue, 1, reinterpret_cast<const VkBindSparseInfo*>( &bindInfo ), static_cast<VkFence>( fence ) ) );
+      Result result = static_cast<Result>( vkQueueBindSparse( m_queue, bindInfo.size() , reinterpret_cast<const VkBindSparseInfo*>( bindInfo.data() ), static_cast<VkFence>( fence ) ) );
       if ( result != Result::eSuccess )
       {
         throw std::system_error( result, "vk::Queue::bindSparse" );
@@ -20317,7 +20163,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    PFN_vkVoidFunction getProcAddr( std::string const & name ) const
+    PFN_vkVoidFunction getProcAddr( const std::string & name ) const
     {
       return vkGetDeviceProcAddr( m_device, name.c_str() );
     }
@@ -20329,7 +20175,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void destroy( Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    void destroy( Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       vkDestroyDevice( m_device, reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
@@ -20373,7 +20219,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    DeviceMemory allocateMemory( const MemoryAllocateInfo & allocateInfo, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    DeviceMemory allocateMemory( const MemoryAllocateInfo & allocateInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       DeviceMemory memory;
       Result result = static_cast<Result>( vkAllocateMemory( m_device, reinterpret_cast<const VkMemoryAllocateInfo*>( &allocateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkDeviceMemory*>( &memory ) ) );
@@ -20391,7 +20237,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void freeMemory( DeviceMemory memory, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    void freeMemory( DeviceMemory memory, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       vkFreeMemory( m_device, static_cast<VkDeviceMemory>( memory ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
@@ -20437,27 +20283,9 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void flushMappedMemoryRanges( std::vector<MappedMemoryRange> const & memoryRanges ) const
+    void flushMappedMemoryRanges( ArrayProxy<const MappedMemoryRange> memoryRanges ) const
     {
-      Result result = static_cast<Result>( vkFlushMappedMemoryRanges( m_device, static_cast<uint32_t>( memoryRanges.size() ), reinterpret_cast<const VkMappedMemoryRange*>( memoryRanges.data() ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::flushMappedMemoryRanges" );
-      }
-    }
-
-    void flushMappedMemoryRanges( std::initializer_list<MappedMemoryRange> const & memoryRanges ) const
-    {
-      Result result = static_cast<Result>( vkFlushMappedMemoryRanges( m_device, static_cast<uint32_t>( memoryRanges.size() ), reinterpret_cast<const VkMappedMemoryRange*>( memoryRanges.begin() ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::flushMappedMemoryRanges" );
-      }
-    }
-
-    void flushMappedMemoryRange( MappedMemoryRange const & memoryRange ) const
-    {
-      Result result = static_cast<Result>( vkFlushMappedMemoryRanges( m_device, 1, reinterpret_cast<const VkMappedMemoryRange*>( &memoryRange ) ) );
+      Result result = static_cast<Result>( vkFlushMappedMemoryRanges( m_device, memoryRanges.size() , reinterpret_cast<const VkMappedMemoryRange*>( memoryRanges.data() ) ) );
       if ( result != Result::eSuccess )
       {
         throw std::system_error( result, "vk::Device::flushMappedMemoryRanges" );
@@ -20471,27 +20299,9 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void invalidateMappedMemoryRanges( std::vector<MappedMemoryRange> const & memoryRanges ) const
+    void invalidateMappedMemoryRanges( ArrayProxy<const MappedMemoryRange> memoryRanges ) const
     {
-      Result result = static_cast<Result>( vkInvalidateMappedMemoryRanges( m_device, static_cast<uint32_t>( memoryRanges.size() ), reinterpret_cast<const VkMappedMemoryRange*>( memoryRanges.data() ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::invalidateMappedMemoryRanges" );
-      }
-    }
-
-    void invalidateMappedMemoryRanges( std::initializer_list<MappedMemoryRange> const & memoryRanges ) const
-    {
-      Result result = static_cast<Result>( vkInvalidateMappedMemoryRanges( m_device, static_cast<uint32_t>( memoryRanges.size() ), reinterpret_cast<const VkMappedMemoryRange*>( memoryRanges.begin() ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::invalidateMappedMemoryRanges" );
-      }
-    }
-
-    void invalidateMappedMemoryRange( MappedMemoryRange const & memoryRange ) const
-    {
-      Result result = static_cast<Result>( vkInvalidateMappedMemoryRanges( m_device, 1, reinterpret_cast<const VkMappedMemoryRange*>( &memoryRange ) ) );
+      Result result = static_cast<Result>( vkInvalidateMappedMemoryRanges( m_device, memoryRanges.size() , reinterpret_cast<const VkMappedMemoryRange*>( memoryRanges.data() ) ) );
       if ( result != Result::eSuccess )
       {
         throw std::system_error( result, "vk::Device::invalidateMappedMemoryRanges" );
@@ -20600,7 +20410,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    Fence createFence( const FenceCreateInfo & createInfo, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    Fence createFence( const FenceCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       Fence fence;
       Result result = static_cast<Result>( vkCreateFence( m_device, reinterpret_cast<const VkFenceCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkFence*>( &fence ) ) );
@@ -20618,7 +20428,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void destroyFence( Fence fence, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    void destroyFence( Fence fence, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       vkDestroyFence( m_device, static_cast<VkFence>( fence ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
@@ -20630,27 +20440,9 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void resetFences( std::vector<Fence> const & fences ) const
+    void resetFences( ArrayProxy<const Fence> fences ) const
     {
-      Result result = static_cast<Result>( vkResetFences( m_device, static_cast<uint32_t>( fences.size() ), reinterpret_cast<const VkFence*>( fences.data() ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::resetFences" );
-      }
-    }
-
-    void resetFences( std::initializer_list<Fence> const & fences ) const
-    {
-      Result result = static_cast<Result>( vkResetFences( m_device, static_cast<uint32_t>( fences.size() ), reinterpret_cast<const VkFence*>( fences.begin() ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::resetFences" );
-      }
-    }
-
-    void resetFence( Fence const & fence ) const
-    {
-      Result result = static_cast<Result>( vkResetFences( m_device, 1, reinterpret_cast<const VkFence*>( &fence ) ) );
+      Result result = static_cast<Result>( vkResetFences( m_device, fences.size() , reinterpret_cast<const VkFence*>( fences.data() ) ) );
       if ( result != Result::eSuccess )
       {
         throw std::system_error( result, "vk::Device::resetFences" );
@@ -20683,29 +20475,9 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    Result waitForFences( std::vector<Fence> const & fences, Bool32 waitAll, uint64_t timeout ) const
+    Result waitForFences( ArrayProxy<const Fence> fences, Bool32 waitAll, uint64_t timeout ) const
     {
-      Result result = static_cast<Result>( vkWaitForFences( m_device, static_cast<uint32_t>( fences.size() ), reinterpret_cast<const VkFence*>( fences.data() ), waitAll, timeout ) );
-      if ( ( result != Result::eSuccess ) && ( result != Result::eTimeout ) )
-      {
-        throw std::system_error( result, "vk::Device::waitForFences" );
-      }
-      return result;
-    }
-
-    Result waitForFences( std::initializer_list<Fence> const & fences, Bool32 waitAll, uint64_t timeout ) const
-    {
-      Result result = static_cast<Result>( vkWaitForFences( m_device, static_cast<uint32_t>( fences.size() ), reinterpret_cast<const VkFence*>( fences.begin() ), waitAll, timeout ) );
-      if ( ( result != Result::eSuccess ) && ( result != Result::eTimeout ) )
-      {
-        throw std::system_error( result, "vk::Device::waitForFences" );
-      }
-      return result;
-    }
-
-    Result waitForFence( Fence const & fence, Bool32 waitAll, uint64_t timeout ) const
-    {
-      Result result = static_cast<Result>( vkWaitForFences( m_device, 1, reinterpret_cast<const VkFence*>( &fence ), waitAll, timeout ) );
+      Result result = static_cast<Result>( vkWaitForFences( m_device, fences.size() , reinterpret_cast<const VkFence*>( fences.data() ), waitAll, timeout ) );
       if ( ( result != Result::eSuccess ) && ( result != Result::eTimeout ) )
       {
         throw std::system_error( result, "vk::Device::waitForFences" );
@@ -20720,7 +20492,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    Semaphore createSemaphore( const SemaphoreCreateInfo & createInfo, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    Semaphore createSemaphore( const SemaphoreCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       Semaphore semaphore;
       Result result = static_cast<Result>( vkCreateSemaphore( m_device, reinterpret_cast<const VkSemaphoreCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkSemaphore*>( &semaphore ) ) );
@@ -20738,7 +20510,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void destroySemaphore( Semaphore semaphore, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    void destroySemaphore( Semaphore semaphore, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       vkDestroySemaphore( m_device, static_cast<VkSemaphore>( semaphore ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
@@ -20750,7 +20522,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    Event createEvent( const EventCreateInfo & createInfo, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    Event createEvent( const EventCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       Event event;
       Result result = static_cast<Result>( vkCreateEvent( m_device, reinterpret_cast<const VkEventCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkEvent*>( &event ) ) );
@@ -20768,7 +20540,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void destroyEvent( Event event, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    void destroyEvent( Event event, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       vkDestroyEvent( m_device, static_cast<VkEvent>( event ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
@@ -20835,7 +20607,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    QueryPool createQueryPool( const QueryPoolCreateInfo & createInfo, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    QueryPool createQueryPool( const QueryPoolCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       QueryPool queryPool;
       Result result = static_cast<Result>( vkCreateQueryPool( m_device, reinterpret_cast<const VkQueryPoolCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkQueryPool*>( &queryPool ) ) );
@@ -20853,7 +20625,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void destroyQueryPool( QueryPool queryPool, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    void destroyQueryPool( QueryPool queryPool, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       vkDestroyQueryPool( m_device, static_cast<VkQueryPool>( queryPool ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
@@ -20866,9 +20638,9 @@ namespace vk
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
     template <typename T>
-    Result getQueryPoolResults( QueryPool queryPool, uint32_t firstQuery, uint32_t queryCount, std::vector<T> & data, DeviceSize stride, QueryResultFlags flags ) const
+    Result getQueryPoolResults( QueryPool queryPool, uint32_t firstQuery, uint32_t queryCount, ArrayProxy<T> data, DeviceSize stride, QueryResultFlags flags ) const
     {
-      Result result = static_cast<Result>( vkGetQueryPoolResults( m_device, static_cast<VkQueryPool>( queryPool ), firstQuery, queryCount, static_cast<size_t>( data.size() * sizeof( T ) ), reinterpret_cast<void*>( data.data() ), stride, static_cast<VkQueryResultFlags>( flags ) ) );
+      Result result = static_cast<Result>( vkGetQueryPoolResults( m_device, static_cast<VkQueryPool>( queryPool ), firstQuery, queryCount, data.size() * sizeof( T ) , reinterpret_cast<void*>( data.data() ), stride, static_cast<VkQueryResultFlags>( flags ) ) );
       if ( ( result != Result::eSuccess ) && ( result != Result::eNotReady ) )
       {
         throw std::system_error( result, "vk::Device::getQueryPoolResults" );
@@ -20883,7 +20655,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    Buffer createBuffer( const BufferCreateInfo & createInfo, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    Buffer createBuffer( const BufferCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       Buffer buffer;
       Result result = static_cast<Result>( vkCreateBuffer( m_device, reinterpret_cast<const VkBufferCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkBuffer*>( &buffer ) ) );
@@ -20901,7 +20673,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void destroyBuffer( Buffer buffer, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    void destroyBuffer( Buffer buffer, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       vkDestroyBuffer( m_device, static_cast<VkBuffer>( buffer ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
@@ -20913,7 +20685,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    BufferView createBufferView( const BufferViewCreateInfo & createInfo, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    BufferView createBufferView( const BufferViewCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       BufferView view;
       Result result = static_cast<Result>( vkCreateBufferView( m_device, reinterpret_cast<const VkBufferViewCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkBufferView*>( &view ) ) );
@@ -20931,7 +20703,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void destroyBufferView( BufferView bufferView, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    void destroyBufferView( BufferView bufferView, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       vkDestroyBufferView( m_device, static_cast<VkBufferView>( bufferView ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
@@ -20943,7 +20715,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    Image createImage( const ImageCreateInfo & createInfo, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    Image createImage( const ImageCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       Image image;
       Result result = static_cast<Result>( vkCreateImage( m_device, reinterpret_cast<const VkImageCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkImage*>( &image ) ) );
@@ -20961,7 +20733,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void destroyImage( Image image, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    void destroyImage( Image image, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       vkDestroyImage( m_device, static_cast<VkImage>( image ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
@@ -20987,7 +20759,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    ImageView createImageView( const ImageViewCreateInfo & createInfo, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    ImageView createImageView( const ImageViewCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       ImageView view;
       Result result = static_cast<Result>( vkCreateImageView( m_device, reinterpret_cast<const VkImageViewCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkImageView*>( &view ) ) );
@@ -21005,7 +20777,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void destroyImageView( ImageView imageView, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    void destroyImageView( ImageView imageView, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       vkDestroyImageView( m_device, static_cast<VkImageView>( imageView ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
@@ -21017,7 +20789,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    ShaderModule createShaderModule( const ShaderModuleCreateInfo & createInfo, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    ShaderModule createShaderModule( const ShaderModuleCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       ShaderModule shaderModule;
       Result result = static_cast<Result>( vkCreateShaderModule( m_device, reinterpret_cast<const VkShaderModuleCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkShaderModule*>( &shaderModule ) ) );
@@ -21035,7 +20807,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void destroyShaderModule( ShaderModule shaderModule, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    void destroyShaderModule( ShaderModule shaderModule, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       vkDestroyShaderModule( m_device, static_cast<VkShaderModule>( shaderModule ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
@@ -21047,7 +20819,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    PipelineCache createPipelineCache( const PipelineCacheCreateInfo & createInfo, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    PipelineCache createPipelineCache( const PipelineCacheCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       PipelineCache pipelineCache;
       Result result = static_cast<Result>( vkCreatePipelineCache( m_device, reinterpret_cast<const VkPipelineCacheCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkPipelineCache*>( &pipelineCache ) ) );
@@ -21065,7 +20837,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void destroyPipelineCache( PipelineCache pipelineCache, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    void destroyPipelineCache( PipelineCache pipelineCache, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       vkDestroyPipelineCache( m_device, static_cast<VkPipelineCache>( pipelineCache ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
@@ -21101,27 +20873,9 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void mergePipelineCaches( PipelineCache dstCache, std::vector<PipelineCache> const & srcCaches ) const
+    void mergePipelineCaches( PipelineCache dstCache, ArrayProxy<const PipelineCache> srcCaches ) const
     {
-      Result result = static_cast<Result>( vkMergePipelineCaches( m_device, static_cast<VkPipelineCache>( dstCache ), static_cast<uint32_t>( srcCaches.size() ), reinterpret_cast<const VkPipelineCache*>( srcCaches.data() ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::mergePipelineCaches" );
-      }
-    }
-
-    void mergePipelineCaches( PipelineCache dstCache, std::initializer_list<PipelineCache> const & srcCaches ) const
-    {
-      Result result = static_cast<Result>( vkMergePipelineCaches( m_device, static_cast<VkPipelineCache>( dstCache ), static_cast<uint32_t>( srcCaches.size() ), reinterpret_cast<const VkPipelineCache*>( srcCaches.begin() ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::mergePipelineCaches" );
-      }
-    }
-
-    void mergePipelineCache( PipelineCache dstCache, PipelineCache const & srcCache ) const
-    {
-      Result result = static_cast<Result>( vkMergePipelineCaches( m_device, static_cast<VkPipelineCache>( dstCache ), 1, reinterpret_cast<const VkPipelineCache*>( &srcCache ) ) );
+      Result result = static_cast<Result>( vkMergePipelineCaches( m_device, static_cast<VkPipelineCache>( dstCache ), srcCaches.size() , reinterpret_cast<const VkPipelineCache*>( srcCaches.data() ) ) );
       if ( result != Result::eSuccess )
       {
         throw std::system_error( result, "vk::Device::mergePipelineCaches" );
@@ -21135,37 +20889,15 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    std::vector<Pipeline> createGraphicsPipelines( PipelineCache pipelineCache, std::vector<GraphicsPipelineCreateInfo> const & createInfos, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    std::vector<Pipeline> createGraphicsPipelines( PipelineCache pipelineCache, ArrayProxy<const GraphicsPipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       std::vector<Pipeline> pipelines( createInfos.size() );
-      Result result = static_cast<Result>( vkCreateGraphicsPipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), static_cast<uint32_t>( createInfos.size() ), reinterpret_cast<const VkGraphicsPipelineCreateInfo*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkPipeline*>( pipelines.data() ) ) );
+      Result result = static_cast<Result>( vkCreateGraphicsPipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkGraphicsPipelineCreateInfo*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkPipeline*>( pipelines.data() ) ) );
       if ( result != Result::eSuccess )
       {
         throw std::system_error( result, "vk::Device::createGraphicsPipelines" );
       }
       return pipelines;
-    }
-
-    std::vector<Pipeline> createGraphicsPipelines( PipelineCache pipelineCache, std::initializer_list<GraphicsPipelineCreateInfo> const & createInfos, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
-    {
-      std::vector<Pipeline> pipelines( createInfos.size() );
-      Result result = static_cast<Result>( vkCreateGraphicsPipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), static_cast<uint32_t>( createInfos.size() ), reinterpret_cast<const VkGraphicsPipelineCreateInfo*>( createInfos.begin() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkPipeline*>( pipelines.data() ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::createGraphicsPipelines" );
-      }
-      return pipelines;
-    }
-
-    Pipeline createGraphicsPipeline( PipelineCache pipelineCache, GraphicsPipelineCreateInfo const & createInfo, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
-    {
-      Pipeline pipeline;
-      Result result = static_cast<Result>( vkCreateGraphicsPipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), 1, reinterpret_cast<const VkGraphicsPipelineCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkPipeline*>( &pipeline ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::createGraphicsPipelines" );
-      }
-      return pipeline;
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -21175,37 +20907,15 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    std::vector<Pipeline> createComputePipelines( PipelineCache pipelineCache, std::vector<ComputePipelineCreateInfo> const & createInfos, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    std::vector<Pipeline> createComputePipelines( PipelineCache pipelineCache, ArrayProxy<const ComputePipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       std::vector<Pipeline> pipelines( createInfos.size() );
-      Result result = static_cast<Result>( vkCreateComputePipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), static_cast<uint32_t>( createInfos.size() ), reinterpret_cast<const VkComputePipelineCreateInfo*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkPipeline*>( pipelines.data() ) ) );
+      Result result = static_cast<Result>( vkCreateComputePipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkComputePipelineCreateInfo*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkPipeline*>( pipelines.data() ) ) );
       if ( result != Result::eSuccess )
       {
         throw std::system_error( result, "vk::Device::createComputePipelines" );
       }
       return pipelines;
-    }
-
-    std::vector<Pipeline> createComputePipelines( PipelineCache pipelineCache, std::initializer_list<ComputePipelineCreateInfo> const & createInfos, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
-    {
-      std::vector<Pipeline> pipelines( createInfos.size() );
-      Result result = static_cast<Result>( vkCreateComputePipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), static_cast<uint32_t>( createInfos.size() ), reinterpret_cast<const VkComputePipelineCreateInfo*>( createInfos.begin() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkPipeline*>( pipelines.data() ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::createComputePipelines" );
-      }
-      return pipelines;
-    }
-
-    Pipeline createComputePipeline( PipelineCache pipelineCache, ComputePipelineCreateInfo const & createInfo, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
-    {
-      Pipeline pipeline;
-      Result result = static_cast<Result>( vkCreateComputePipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), 1, reinterpret_cast<const VkComputePipelineCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkPipeline*>( &pipeline ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::createComputePipelines" );
-      }
-      return pipeline;
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -21215,7 +20925,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void destroyPipeline( Pipeline pipeline, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    void destroyPipeline( Pipeline pipeline, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       vkDestroyPipeline( m_device, static_cast<VkPipeline>( pipeline ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
@@ -21227,7 +20937,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    PipelineLayout createPipelineLayout( const PipelineLayoutCreateInfo & createInfo, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    PipelineLayout createPipelineLayout( const PipelineLayoutCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       PipelineLayout pipelineLayout;
       Result result = static_cast<Result>( vkCreatePipelineLayout( m_device, reinterpret_cast<const VkPipelineLayoutCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkPipelineLayout*>( &pipelineLayout ) ) );
@@ -21245,7 +20955,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void destroyPipelineLayout( PipelineLayout pipelineLayout, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    void destroyPipelineLayout( PipelineLayout pipelineLayout, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       vkDestroyPipelineLayout( m_device, static_cast<VkPipelineLayout>( pipelineLayout ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
@@ -21257,7 +20967,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    Sampler createSampler( const SamplerCreateInfo & createInfo, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    Sampler createSampler( const SamplerCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       Sampler sampler;
       Result result = static_cast<Result>( vkCreateSampler( m_device, reinterpret_cast<const VkSamplerCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkSampler*>( &sampler ) ) );
@@ -21275,7 +20985,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void destroySampler( Sampler sampler, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    void destroySampler( Sampler sampler, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       vkDestroySampler( m_device, static_cast<VkSampler>( sampler ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
@@ -21287,7 +20997,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    DescriptorSetLayout createDescriptorSetLayout( const DescriptorSetLayoutCreateInfo & createInfo, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    DescriptorSetLayout createDescriptorSetLayout( const DescriptorSetLayoutCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       DescriptorSetLayout setLayout;
       Result result = static_cast<Result>( vkCreateDescriptorSetLayout( m_device, reinterpret_cast<const VkDescriptorSetLayoutCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkDescriptorSetLayout*>( &setLayout ) ) );
@@ -21305,7 +21015,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void destroyDescriptorSetLayout( DescriptorSetLayout descriptorSetLayout, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    void destroyDescriptorSetLayout( DescriptorSetLayout descriptorSetLayout, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       vkDestroyDescriptorSetLayout( m_device, static_cast<VkDescriptorSetLayout>( descriptorSetLayout ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
@@ -21317,7 +21027,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    DescriptorPool createDescriptorPool( const DescriptorPoolCreateInfo & createInfo, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    DescriptorPool createDescriptorPool( const DescriptorPoolCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       DescriptorPool descriptorPool;
       Result result = static_cast<Result>( vkCreateDescriptorPool( m_device, reinterpret_cast<const VkDescriptorPoolCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkDescriptorPool*>( &descriptorPool ) ) );
@@ -21335,7 +21045,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void destroyDescriptorPool( DescriptorPool descriptorPool, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    void destroyDescriptorPool( DescriptorPool descriptorPool, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       vkDestroyDescriptorPool( m_device, static_cast<VkDescriptorPool>( descriptorPool ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
@@ -21383,27 +21093,9 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void freeDescriptorSets( DescriptorPool descriptorPool, std::vector<DescriptorSet> const & descriptorSets ) const
+    void freeDescriptorSets( DescriptorPool descriptorPool, ArrayProxy<const DescriptorSet> descriptorSets ) const
     {
-      Result result = static_cast<Result>( vkFreeDescriptorSets( m_device, static_cast<VkDescriptorPool>( descriptorPool ), static_cast<uint32_t>( descriptorSets.size() ), reinterpret_cast<const VkDescriptorSet*>( descriptorSets.data() ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::freeDescriptorSets" );
-      }
-    }
-
-    void freeDescriptorSets( DescriptorPool descriptorPool, std::initializer_list<DescriptorSet> const & descriptorSets ) const
-    {
-      Result result = static_cast<Result>( vkFreeDescriptorSets( m_device, static_cast<VkDescriptorPool>( descriptorPool ), static_cast<uint32_t>( descriptorSets.size() ), reinterpret_cast<const VkDescriptorSet*>( descriptorSets.begin() ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::freeDescriptorSets" );
-      }
-    }
-
-    void freeDescriptorSet( DescriptorPool descriptorPool, DescriptorSet const & descriptorSet ) const
-    {
-      Result result = static_cast<Result>( vkFreeDescriptorSets( m_device, static_cast<VkDescriptorPool>( descriptorPool ), 1, reinterpret_cast<const VkDescriptorSet*>( &descriptorSet ) ) );
+      Result result = static_cast<Result>( vkFreeDescriptorSets( m_device, static_cast<VkDescriptorPool>( descriptorPool ), descriptorSets.size() , reinterpret_cast<const VkDescriptorSet*>( descriptorSets.data() ) ) );
       if ( result != Result::eSuccess )
       {
         throw std::system_error( result, "vk::Device::freeDescriptorSets" );
@@ -21417,19 +21109,9 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void updateDescriptorSets( std::vector<WriteDescriptorSet> const & descriptorWrites, std::vector<CopyDescriptorSet> const & descriptorCopies ) const
+    void updateDescriptorSets( ArrayProxy<const WriteDescriptorSet> descriptorWrites, ArrayProxy<const CopyDescriptorSet> descriptorCopies ) const
     {
-      vkUpdateDescriptorSets( m_device, static_cast<uint32_t>( descriptorWrites.size() ), reinterpret_cast<const VkWriteDescriptorSet*>( descriptorWrites.data() ), static_cast<uint32_t>( descriptorCopies.size() ), reinterpret_cast<const VkCopyDescriptorSet*>( descriptorCopies.data() ) );
-    }
-
-    void updateDescriptorSets( std::initializer_list<WriteDescriptorSet> const & descriptorWrites, std::initializer_list<CopyDescriptorSet> const & descriptorCopies ) const
-    {
-      vkUpdateDescriptorSets( m_device, static_cast<uint32_t>( descriptorWrites.size() ), reinterpret_cast<const VkWriteDescriptorSet*>( descriptorWrites.begin() ), static_cast<uint32_t>( descriptorCopies.size() ), reinterpret_cast<const VkCopyDescriptorSet*>( descriptorCopies.begin() ) );
-    }
-
-    void updateDescriptorSet( WriteDescriptorSet const & descriptorWrite, CopyDescriptorSet const & descriptorCopie ) const
-    {
-      vkUpdateDescriptorSets( m_device, 1, reinterpret_cast<const VkWriteDescriptorSet*>( &descriptorWrite ), 1, reinterpret_cast<const VkCopyDescriptorSet*>( &descriptorCopie ) );
+      vkUpdateDescriptorSets( m_device, descriptorWrites.size() , reinterpret_cast<const VkWriteDescriptorSet*>( descriptorWrites.data() ), descriptorCopies.size() , reinterpret_cast<const VkCopyDescriptorSet*>( descriptorCopies.data() ) );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -21439,7 +21121,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    Framebuffer createFramebuffer( const FramebufferCreateInfo & createInfo, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    Framebuffer createFramebuffer( const FramebufferCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       Framebuffer framebuffer;
       Result result = static_cast<Result>( vkCreateFramebuffer( m_device, reinterpret_cast<const VkFramebufferCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkFramebuffer*>( &framebuffer ) ) );
@@ -21457,7 +21139,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void destroyFramebuffer( Framebuffer framebuffer, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    void destroyFramebuffer( Framebuffer framebuffer, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       vkDestroyFramebuffer( m_device, static_cast<VkFramebuffer>( framebuffer ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
@@ -21469,7 +21151,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    RenderPass createRenderPass( const RenderPassCreateInfo & createInfo, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    RenderPass createRenderPass( const RenderPassCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       RenderPass renderPass;
       Result result = static_cast<Result>( vkCreateRenderPass( m_device, reinterpret_cast<const VkRenderPassCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkRenderPass*>( &renderPass ) ) );
@@ -21487,7 +21169,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void destroyRenderPass( RenderPass renderPass, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    void destroyRenderPass( RenderPass renderPass, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       vkDestroyRenderPass( m_device, static_cast<VkRenderPass>( renderPass ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
@@ -21513,7 +21195,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    CommandPool createCommandPool( const CommandPoolCreateInfo & createInfo, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    CommandPool createCommandPool( const CommandPoolCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       CommandPool commandPool;
       Result result = static_cast<Result>( vkCreateCommandPool( m_device, reinterpret_cast<const VkCommandPoolCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkCommandPool*>( &commandPool ) ) );
@@ -21531,7 +21213,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void destroyCommandPool( CommandPool commandPool, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    void destroyCommandPool( CommandPool commandPool, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       vkDestroyCommandPool( m_device, static_cast<VkCommandPool>( commandPool ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
@@ -21579,19 +21261,9 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void freeCommandBuffers( CommandPool commandPool, std::vector<CommandBuffer> const & commandBuffers ) const
+    void freeCommandBuffers( CommandPool commandPool, ArrayProxy<const CommandBuffer> commandBuffers ) const
     {
-      vkFreeCommandBuffers( m_device, static_cast<VkCommandPool>( commandPool ), static_cast<uint32_t>( commandBuffers.size() ), reinterpret_cast<const VkCommandBuffer*>( commandBuffers.data() ) );
-    }
-
-    void freeCommandBuffers( CommandPool commandPool, std::initializer_list<CommandBuffer> const & commandBuffers ) const
-    {
-      vkFreeCommandBuffers( m_device, static_cast<VkCommandPool>( commandPool ), static_cast<uint32_t>( commandBuffers.size() ), reinterpret_cast<const VkCommandBuffer*>( commandBuffers.begin() ) );
-    }
-
-    void freeCommandBuffer( CommandPool commandPool, CommandBuffer const & commandBuffer ) const
-    {
-      vkFreeCommandBuffers( m_device, static_cast<VkCommandPool>( commandPool ), 1, reinterpret_cast<const VkCommandBuffer*>( &commandBuffer ) );
+      vkFreeCommandBuffers( m_device, static_cast<VkCommandPool>( commandPool ), commandBuffers.size() , reinterpret_cast<const VkCommandBuffer*>( commandBuffers.data() ) );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -21601,37 +21273,15 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    std::vector<SwapchainKHR> createSharedSwapchainsKHR( std::vector<SwapchainCreateInfoKHR> const & createInfos, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    std::vector<SwapchainKHR> createSharedSwapchainsKHR( ArrayProxy<const SwapchainCreateInfoKHR> createInfos, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       std::vector<SwapchainKHR> swapchains( createInfos.size() );
-      Result result = static_cast<Result>( vkCreateSharedSwapchainsKHR( m_device, static_cast<uint32_t>( createInfos.size() ), reinterpret_cast<const VkSwapchainCreateInfoKHR*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkSwapchainKHR*>( swapchains.data() ) ) );
+      Result result = static_cast<Result>( vkCreateSharedSwapchainsKHR( m_device, createInfos.size() , reinterpret_cast<const VkSwapchainCreateInfoKHR*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkSwapchainKHR*>( swapchains.data() ) ) );
       if ( result != Result::eSuccess )
       {
         throw std::system_error( result, "vk::Device::createSharedSwapchainsKHR" );
       }
       return swapchains;
-    }
-
-    std::vector<SwapchainKHR> createSharedSwapchainsKHR( std::initializer_list<SwapchainCreateInfoKHR> const & createInfos, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
-    {
-      std::vector<SwapchainKHR> swapchains( createInfos.size() );
-      Result result = static_cast<Result>( vkCreateSharedSwapchainsKHR( m_device, static_cast<uint32_t>( createInfos.size() ), reinterpret_cast<const VkSwapchainCreateInfoKHR*>( createInfos.begin() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkSwapchainKHR*>( swapchains.data() ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::createSharedSwapchainsKHR" );
-      }
-      return swapchains;
-    }
-
-    SwapchainKHR createSharedSwapchainsKHR( SwapchainCreateInfoKHR const & createInfo, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
-    {
-      SwapchainKHR swapchain;
-      Result result = static_cast<Result>( vkCreateSharedSwapchainsKHR( m_device, 1, reinterpret_cast<const VkSwapchainCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkSwapchainKHR*>( &swapchain ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::createSharedSwapchainsKHR" );
-      }
-      return swapchain;
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -21641,7 +21291,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    SwapchainKHR createSwapchainKHR( const SwapchainCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    SwapchainKHR createSwapchainKHR( const SwapchainCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       SwapchainKHR swapchain;
       Result result = static_cast<Result>( vkCreateSwapchainKHR( m_device, reinterpret_cast<const VkSwapchainCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkSwapchainKHR*>( &swapchain ) ) );
@@ -21659,7 +21309,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void destroySwapchainKHR( SwapchainKHR swapchain, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    void destroySwapchainKHR( SwapchainKHR swapchain, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       vkDestroySwapchainKHR( m_device, static_cast<VkSwapchainKHR>( swapchain ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
@@ -21849,7 +21499,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    Device createDevice( const DeviceCreateInfo & createInfo, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    Device createDevice( const DeviceCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       Device device;
       Result result = static_cast<Result>( vkCreateDevice( m_physicalDevice, reinterpret_cast<const VkDeviceCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkDevice*>( &device ) ) );
@@ -21895,7 +21545,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    std::vector<ExtensionProperties> enumerateDeviceExtensionProperties( Optional<std::string const> const & layerName = nullptr ) const
+    std::vector<ExtensionProperties> enumerateDeviceExtensionProperties( Optional<const std::string> layerName = nullptr ) const
     {
       std::vector<ExtensionProperties> properties;
       uint32_t propertyCount;
@@ -22052,7 +21702,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    DisplayModeKHR createDisplayModeKHR( DisplayKHR display, const DisplayModeCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    DisplayModeKHR createDisplayModeKHR( DisplayKHR display, const DisplayModeCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       DisplayModeKHR mode;
       Result result = static_cast<Result>( vkCreateDisplayModeKHR( m_physicalDevice, static_cast<VkDisplayKHR>( display ), reinterpret_cast<const VkDisplayModeCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkDisplayModeKHR*>( &mode ) ) );
@@ -22465,7 +22115,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void destroy( Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    void destroy( Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       vkDestroyInstance( m_instance, reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
@@ -22505,7 +22155,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    PFN_vkVoidFunction getProcAddr( std::string const & name ) const
+    PFN_vkVoidFunction getProcAddr( const std::string & name ) const
     {
       return vkGetInstanceProcAddr( m_instance, name.c_str() );
     }
@@ -22520,7 +22170,7 @@ namespace vk
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
-    SurfaceKHR createAndroidSurfaceKHR( const AndroidSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    SurfaceKHR createAndroidSurfaceKHR( const AndroidSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       SurfaceKHR surface;
       Result result = static_cast<Result>( vkCreateAndroidSurfaceKHR( m_instance, reinterpret_cast<const VkAndroidSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
@@ -22539,7 +22189,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    SurfaceKHR createDisplayPlaneSurfaceKHR( const DisplaySurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    SurfaceKHR createDisplayPlaneSurfaceKHR( const DisplaySurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       SurfaceKHR surface;
       Result result = static_cast<Result>( vkCreateDisplayPlaneSurfaceKHR( m_instance, reinterpret_cast<const VkDisplaySurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
@@ -22560,7 +22210,7 @@ namespace vk
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
 #ifdef VK_USE_PLATFORM_MIR_KHR
-    SurfaceKHR createMirSurfaceKHR( const MirSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    SurfaceKHR createMirSurfaceKHR( const MirSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       SurfaceKHR surface;
       Result result = static_cast<Result>( vkCreateMirSurfaceKHR( m_instance, reinterpret_cast<const VkMirSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
@@ -22579,7 +22229,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void destroySurfaceKHR( SurfaceKHR surface, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    void destroySurfaceKHR( SurfaceKHR surface, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       vkDestroySurfaceKHR( m_instance, static_cast<VkSurfaceKHR>( surface ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
@@ -22594,7 +22244,7 @@ namespace vk
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
 #ifdef VK_USE_PLATFORM_WAYLAND_KHR
-    SurfaceKHR createWaylandSurfaceKHR( const WaylandSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    SurfaceKHR createWaylandSurfaceKHR( const WaylandSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       SurfaceKHR surface;
       Result result = static_cast<Result>( vkCreateWaylandSurfaceKHR( m_instance, reinterpret_cast<const VkWaylandSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
@@ -22616,7 +22266,7 @@ namespace vk
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
 #ifdef VK_USE_PLATFORM_WIN32_KHR
-    SurfaceKHR createWin32SurfaceKHR( const Win32SurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    SurfaceKHR createWin32SurfaceKHR( const Win32SurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       SurfaceKHR surface;
       Result result = static_cast<Result>( vkCreateWin32SurfaceKHR( m_instance, reinterpret_cast<const VkWin32SurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
@@ -22638,7 +22288,7 @@ namespace vk
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
 #ifdef VK_USE_PLATFORM_XLIB_KHR
-    SurfaceKHR createXlibSurfaceKHR( const XlibSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    SurfaceKHR createXlibSurfaceKHR( const XlibSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       SurfaceKHR surface;
       Result result = static_cast<Result>( vkCreateXlibSurfaceKHR( m_instance, reinterpret_cast<const VkXlibSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
@@ -22660,7 +22310,7 @@ namespace vk
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
 #ifdef VK_USE_PLATFORM_XCB_KHR
-    SurfaceKHR createXcbSurfaceKHR( const XcbSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    SurfaceKHR createXcbSurfaceKHR( const XcbSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       SurfaceKHR surface;
       Result result = static_cast<Result>( vkCreateXcbSurfaceKHR( m_instance, reinterpret_cast<const VkXcbSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
@@ -22679,7 +22329,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    DebugReportCallbackEXT createDebugReportCallbackEXT( const DebugReportCallbackCreateInfoEXT & createInfo, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    DebugReportCallbackEXT createDebugReportCallbackEXT( const DebugReportCallbackCreateInfoEXT & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       DebugReportCallbackEXT callback;
       Result result = static_cast<Result>( vkCreateDebugReportCallbackEXT( m_instance, reinterpret_cast<const VkDebugReportCallbackCreateInfoEXT*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkDebugReportCallbackEXT*>( &callback ) ) );
@@ -22697,7 +22347,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void destroyDebugReportCallbackEXT( DebugReportCallbackEXT callback, Optional<const AllocationCallbacks> const & allocator = nullptr ) const
+    void destroyDebugReportCallbackEXT( DebugReportCallbackEXT callback, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       vkDestroyDebugReportCallbackEXT( m_instance, static_cast<VkDebugReportCallbackEXT>( callback ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)) );
     }
@@ -22709,7 +22359,7 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void debugReportMessageEXT( DebugReportFlagsEXT flags, DebugReportObjectTypeEXT objectType, uint64_t object, size_t location, int32_t messageCode, std::string const & layerPrefix, std::string const & message ) const
+    void debugReportMessageEXT( DebugReportFlagsEXT flags, DebugReportObjectTypeEXT objectType, uint64_t object, size_t location, int32_t messageCode, const std::string & layerPrefix, const std::string & message ) const
     {
       vkDebugReportMessageEXT( m_instance, static_cast<VkDebugReportFlagsEXT>( flags ), static_cast<VkDebugReportObjectTypeEXT>( objectType ), object, location, messageCode, layerPrefix.c_str(), message.c_str() );
     }
@@ -22750,7 +22400,7 @@ namespace vk
   }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-  inline Instance createInstance( const InstanceCreateInfo & createInfo, Optional<const AllocationCallbacks> const & allocator = nullptr )
+  inline Instance createInstance( const InstanceCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr )
   {
     Instance instance;
     Result result = static_cast<Result>( vkCreateInstance( reinterpret_cast<const VkInstanceCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkInstance*>( &instance ) ) );
@@ -22796,7 +22446,7 @@ namespace vk
   }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-  inline std::vector<ExtensionProperties> enumerateInstanceExtensionProperties( Optional<std::string const> const & layerName = nullptr )
+  inline std::vector<ExtensionProperties> enumerateInstanceExtensionProperties( Optional<const std::string> layerName = nullptr )
   {
     std::vector<ExtensionProperties> properties;
     uint32_t propertyCount;

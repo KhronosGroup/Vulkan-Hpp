@@ -40,7 +40,6 @@ errors into compile errors. Following is a list of features and conventions intr
 * defines all symbols within the 'vk' namespace and to avoid redundancy the vk/Vk/VK_ prefixes have been removed from all symbols, i.e. ```vk::ImageCreateInfo``` for VkImageCreateInfo.
 * camel case syntax with an 'e' prefix has been introduced for all enums, i.e. ```vk::ImageType::e2D``` (the prefix was a compromise, more about that later) removes the 'BIT' suffix from all flag related enums, i.e. ```vk::ImageUsage::eColorAttachment```.
 * introduces constructors for all structs, which by default set the appropriate ```sType``` and all other values to zero.
-* encapsulates member variables of the structs with getter and setter functions, i.e. ```ci.imageType()``` to get a value and ```ci.imageType(vk::ImageType::e2D)``` to set a value.
 * introduces wrapper classes around the vulkan handles, i.e. ```vk::CommandBuffer``` for VkCommandBuffer
 * introduces member functions of those wrapper classes, that map to vulkan functions getting the corresponding vulkan handle as its first argument. The type of that handle is stripped from the function name, i.e. ```vk::Device::getProcAddr``` for vkGetDeviceProcAddr. Note the special handling for the class CommandBuffer, where most of the vulkan functions would just include "Cmd", instead of "CommandBuffer", i.e. ```vk::CommandBuffer::bindPipeline``` for vkCmdBindPipeline.
 With those changes applied, the updated code snippet looks like this:
@@ -48,19 +47,19 @@ With those changes applied, the updated code snippet looks like this:
 
 ```c++
 vk::ImageCreateInfo ci;
-ci.flags(...some flags...);
-ci.imageType(vk::ImageType::e2D);
-ci.format(vk::Format::eR8G8B8A8Unorm);
-ci.extent(vk::Extent3D { width, height, 1 });
-ci.mipLevels(1);
-ci.arrayLayers(1);
-ci.samples(1);
-ci.tiling(vk::ImageTiling::eOptimal);
-ci.usage(vk::ImageUsage::eColorAttachment);
-ci.sharingMode(vk::SharingMode::eExclusive);
-  // ci.queueFamilyIndexCount(0)	// no need to set, already initialized
-  // ci.pQueueFamilyIndices(0)	// no need to set, already initialized
-ci.initialLayout(vk::ImageLayout::eUndefined);
+ci.flags = ...some flags...;
+ci.imageType = vk::ImageType::e2D;
+ci.format = vk::Format::eR8G8B8A8Unorm;
+ci.extent = vk::Extent3D { width, height, 1 };
+ci.mipLevels = 1;
+ci.arrayLayers = 1;
+ci.samples = 1;
+ci.tiling = vk::ImageTiling::eOptimal;
+ci.usage = vk::ImageUsage::eColorAttachment;
+ci.sharingMode = vk::SharingMode::eExclusive;
+  // ci.queueFamilyIndexCount = 0	// no need to set, already initialized
+  // ci.pQueueFamilyIndices = 0	// no need to set, already initialized
+ci.initialLayout = vk::ImageLayout::eUndefined;
 device.createImage(&ci, allocator, &image);
 ```
 
@@ -113,23 +112,23 @@ we have implemented ```to_string(type)``` functions for all enums and flags. Cal
 
 Another nice feature of those constructors is that sType is being initialized internally and thus is always correct.
 
-Finally, we have added a default constructor to each struct which initializes all values to 0 to allow setting the values with the named parameter idiom which is similar to the designated initializer list of C99.
+Finally, we have added a default constructor to each struct which initializes all values to 0 to allow setting the values with a variant of the named parameter idiom which is similar to the designated initializer list of C99.
 
 ```c++
 vk::ImageCreateInfo ci = vk::ImageCreateInfo()
-  .flags(...some flags...)
-  .imageType(vk::ImageType::e2D)
-  .format(vk::Format::eR8G8B8A8Unorm)
-  .extent(vk::Extent3D { width, height, 1 })
-  .mipLevels(1)
-  .arrayLayers(1)
-  .samples(1)
-  .tiling(vk::ImageTiling::eOptimal)
-  .usage(vk::ImageUsage::eColorAttachment)
-  .sharingMode(vk::SharingMode::eExclusive)
-  // .queueFamilyIndexCount(0)	// no need to set, already initialized
-  // .pQueueFamilyIndices(0)	// no need to set, already initialized
-  .initialLayout(vk::ImageLayout::eUndefined);
+  .setFlags(...some flags...)
+  .setImageType(vk::ImageType::e2D)
+  .setFormat(vk::Format::eR8G8B8A8Unorm)
+  .setExtent(vk::Extent3D { width, height, 1 })
+  .setMipLevels(1)
+  .setArrayLayers(1)
+  .setSamples(1)
+  .setTiling(vk::ImageTiling::eOptimal)
+  .setUsage(vk::ImageUsage::eColorAttachment)
+  .setSharingMode(vk::SharingMode::eExclusive)
+  // .setQueueFamilyIndexCount(0)	// no need to set, already initialized
+  // .setPQueueFamilyIndices(0)	// no need to set, already initialized
+  .setInitialLayout(vk::ImageLayout::eUndefined);
 device.createImage(&ci, allocator, &image);
 ```
 

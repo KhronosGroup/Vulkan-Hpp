@@ -294,6 +294,26 @@ std::string const arrayProxyHeader = (
   "\n"
 );
 
+std::string const versionCheckHeader = (
+  "#if !defined(VK_CPP_HAS_UNRESTRICTED_UNIONS)\n"
+  "# if defined(__clang__)\n"
+  "#  if __has_feature(cxx_unrestricted_unions)\n"
+  "#   define VK_CPP_HAS_UNRESTRICTED_UNIONS\n"
+  "#  endif\n"
+  "# elif defined(__GNUC__)\n"
+  "#  define GCC_VERSION (__GNUC__ * 1000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)\n"
+  "#  if 40600 <= GCC_VERSION\n"
+  "#   define VK_CPP_HAS_UNRESTRICTED_UNIONS\n"
+  "#  endif\n"
+  "# elif defined(_MSC_VER)\n"
+  "#  if 1900 <= _MSC_VER\n"
+  "#   define VK_CPP_HAS_UNRESTRICTED_UNIONS\n"
+  "#  endif\n"
+  "# endif\n"
+  "#endif\n"
+  "\n"
+  );
+
 // trim from end
 std::string trimEnd(std::string const& input)
 {
@@ -458,9 +478,8 @@ void writeExceptionCheck(std::ofstream & ofs, std::string const& indentation, st
 void writeFunctionBody(std::ofstream & ofs, std::string const& indentation, std::string const& className, std::string const& functionName, std::string const& returnType, size_t templateIndex, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes, size_t returnIndex, std::map<size_t, size_t> const& vectorParameters);
 void writeFunctionHeader(std::ofstream & ofs, std::string const& indentation, std::string const& returnType, std::string const& name, CommandData const& commandData, size_t returnIndex, size_t templateIndex, std::map<size_t, size_t> const& vectorParameters);
 void writeMemberData(std::ofstream & ofs, MemberData const& memberData, std::set<std::string> const& vkTypes);
-void writeStructConstructor( std::ofstream & ofs, std::string const& name, std::string const& memberName, StructData const& structData, std::set<std::string> const& vkTypes, std::map<std::string,std::string> const& defaultValues );
-void writeStructGetter( std::ofstream & ofs, MemberData const& memberData, std::string const& memberName, std::set<std::string> const& vkTypes, bool constVersion );
-void writeStructSetter( std::ofstream & ofs, std::string const& name, MemberData const& memberData, std::string const& memberName, std::set<std::string> const& vkTypes, std::map<std::string,StructData> const& structs );
+void writeStructConstructor( std::ofstream & ofs, std::string const& name, StructData const& structData, std::set<std::string> const& vkTypes, std::map<std::string,std::string> const& defaultValues );
+void writeStructSetter( std::ofstream & ofs, std::string const& name, MemberData const& memberData, std::set<std::string> const& vkTypes, std::map<std::string,StructData> const& structs );
 void writeTypeCommand( std::ofstream & ofs, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes );
 void writeTypeCommandEnhanced(std::ofstream & ofs, std::string const& indentation, std::string const& className, std::string const& functionName, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes);
 void writeTypeCommandStandard(std::ofstream & ofs, std::string const& indentation, std::string const& functionName, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes);
@@ -1828,7 +1847,6 @@ void writeFunctionBody(std::ofstream & ofs, std::string const& indentation, std:
         size_t pos = size.find("->");
         assert(pos != std::string::npos);
         size.replace(pos, 2, ".");
-        size += "()";
       }
       else
       {
@@ -2093,7 +2111,7 @@ void writeMemberData(std::ofstream & ofs, MemberData const& memberData, std::set
   }
 }
 
-void writeStructConstructor( std::ofstream & ofs, std::string const& name, std::string const& memberName, StructData const& structData, std::set<std::string> const& vkTypes, std::map<std::string,std::string> const& defaultValues )
+void writeStructConstructor( std::ofstream & ofs, std::string const& name, StructData const& structData, std::set<std::string> const& vkTypes, std::map<std::string,std::string> const& defaultValues )
 {
   // check if there is a member element with no default available
   bool noDefault = false;
@@ -2158,47 +2176,39 @@ void writeStructConstructor( std::ofstream & ofs, std::string const& name, std::
     {
       if (structData.members[i].arraySize.empty())
       {
-        ofs << structData.members[i].type + " " + structData.members[i].name;
+        ofs << structData.members[i].type + " " + structData.members[i].name << "_";
       }
       else
       {
-        ofs << "std::array<" + structData.members[i].type + "," + structData.members[i].arraySize + "> const& " + structData.members[i].name;
+        ofs << "std::array<" + structData.members[i].type + "," + structData.members[i].arraySize + "> const& " + structData.members[i].name << "_";
       }
       listedArgument = true;
     }
   }
-  ofs << ")" << std::endl;
+  ofs << " )" << std::endl;
 
-  // now the body of the constructor, copying over data from argument list into wrapped struct
+  // the body of the constructor, copying over data from argument list into wrapped struct
   ofs << "    {" << std::endl;
   for ( size_t i=0 ; i<structData.members.size() ; i++ )
   {
     if ( !structData.members[i].arraySize.empty() )
     {
-      ofs << "      memcpy( &" << memberName << "." << structData.members[i].name << ", " << structData.members[i].name << ".data(), " << structData.members[i].arraySize << " * sizeof( " << structData.members[i].type << " ) )";
+      ofs << "      memcpy( &" << structData.members[i].name << ", " << structData.members[i].name << "_.data(), " << structData.members[i].arraySize << " * sizeof( " << structData.members[i].type << " ) )";
     }
     else
     {
-      ofs << "      " << memberName << "." << structData.members[i].name << " = ";
+      ofs << "      " << structData.members[i].name << " = ";
       if ( structData.members[i].name == "pNext" )
       {
         ofs << "nullptr";
       }
       else if ( structData.members[i].name == "sType" )
       {
-        // HACK: we need to read <enum extends="VkStructureType"> here for the correct name. In this case the 'generic' rule to create the enums doesn't work
-        if (name == "DebugReportCallbackCreateInfoEXT")
-        {
-          ofs << "VK_STRUCTURE_TYPE_DEBUG_REPORT_CREATE_INFO_EXT";
-        }
-        else
-        {
-          ofs << "VK_STRUCTURE_TYPE" << toUpperCase(name);
-        }
+        ofs << "StructureType::e" << name;
       }
       else
       {
-        writeMemberData( ofs, structData.members[i], vkTypes );
+        ofs << structData.members[i].name << "_";
       }
     }
     ofs << ";" << std::endl;
@@ -2206,90 +2216,25 @@ void writeStructConstructor( std::ofstream & ofs, std::string const& name, std::
   ofs << "    }" << std::endl
       << std::endl;
 
-  // now write the copy constructor
-  ofs << "    " << name << "(Vk" << name << " const & rhs)" << std::endl
-      << "      : " << memberName << "(rhs)" << std::endl
+  // the copy constructor from a native struct (Vk...)
+  ofs << "    " << name << "( Vk" << name << " const & rhs )" << std::endl
       << "    {" << std::endl
+      << "      memcpy( this, &rhs, sizeof(" << name << ") );" << std::endl
       << "    }" << std::endl
       << std::endl;
 
-  // now write the assignment operator
-  ofs << "    " << name << "& operator=(Vk" << name << " const & rhs)" << std::endl
+  // the assignment operator from a native sturct (Vk...)
+  ofs << "    " << name << "& operator=( Vk" << name << " const & rhs )" << std::endl
     << "    {" << std::endl
-    << "      " << memberName << " = rhs;" << std::endl
+    << "      memcpy( this, &rhs, sizeof(" << name << ") );" << std::endl
     << "      return *this;" << std::endl
     << "    }" << std::endl
     << std::endl;
-
 }
 
-void writeStructGetter( std::ofstream & ofs, MemberData const& memberData, std::string const& memberName, std::set<std::string> const& vkTypes, bool constVersion )
+void writeStructSetter( std::ofstream & ofs, std::string const& name, MemberData const& memberData, std::set<std::string> const& vkTypes )
 {
-  ofs << "    ";
-  if ( memberData.type.back() == '*' )
-  {
-    if ( constVersion && ( memberData.type.find( "const" ) != 0 ) )
-    {
-      ofs << "const ";
-    }
-    ofs << memberData.type;
-  }
-  else
-  {
-    if (constVersion)
-    {
-      ofs << "const ";
-    }
-    ofs << memberData.type << ( memberData.arraySize.empty() ? '&' : '*' );
-  }
-
-  ofs << " " << memberData.name << "()";
-  if (constVersion)
-  {
-    ofs << " const";
-  }
-  ofs << std::endl
-      << "    {" << std::endl
-      << "      return ";
-  if ( ! memberData.arraySize.empty() )
-  {
-    ofs << "reinterpret_cast<";
-    if (constVersion)
-    {
-      ofs << "const ";
-    }
-    ofs << memberData.type << "*>( " << memberName << "." << memberData.name << " )";
-  }
-  else if ( memberData.type.back() == '*' )
-  {
-    ofs << "reinterpret_cast<";
-    if (constVersion && (memberData.type.find("const") != 0))
-    {
-      ofs << "const ";
-    }
-    ofs << memberData.type << ">( " << memberName << "." << memberData.name << " )";
-  }
-  else if ( vkTypes.find( memberData.pureType ) != vkTypes.end() )
-  {
-    ofs << "reinterpret_cast<";
-    if (constVersion)
-    {
-      ofs << "const ";
-    }
-    ofs << memberData.pureType << "&>( " << memberName << "." << memberData.name << " )";
-  }
-  else
-  {
-    ofs << memberName << "." << memberData.name;
-  }
-  ofs << ";" << std::endl
-      << "    }" << std::endl
-      << std::endl;
-}
-
-void writeStructSetter( std::ofstream & ofs, std::string const& name, MemberData const& memberData, std::string const& memberName, std::set<std::string> const& vkTypes )
-{
-  ofs << "    " << name << "& " << memberData.name << "( ";
+  ofs << "    " << name << "& set" << static_cast<char>(toupper(memberData.name[0])) << memberData.name.substr(1) << "( ";
   if ( memberData.arraySize.empty() )
   {
     ofs << memberData.type << " ";
@@ -2298,16 +2243,15 @@ void writeStructSetter( std::ofstream & ofs, std::string const& name, MemberData
   {
     ofs << "std::array<" << memberData.type << "," << memberData.arraySize << "> ";
   }
-  ofs << memberData.name << " )" << std::endl
+  ofs << memberData.name << "_ )" << std::endl
       << "    {" << std::endl;
   if ( !memberData.arraySize.empty() )
   {
-    ofs << "      memcpy( &" << memberName << "." << memberData.name << ", " << memberData.name << ".data(), " << memberData.arraySize << " * sizeof( " << memberData.type << " ) )";
+    ofs << "      memcpy( &" << memberData.name << ", " << memberData.name << "_.data(), " << memberData.arraySize << " * sizeof( " << memberData.type << " ) )";
   }
   else
   {
-    ofs << "      " << memberName << "." << memberData.name << " = ";
-    writeMemberData( ofs, memberData, vkTypes );
+    ofs << "      " << memberData.name << " = " << memberData.name << "_";
   }
   ofs << ";" << std::endl
       << "      return *this;" << std::endl
@@ -2617,41 +2561,42 @@ void writeTypeStruct( std::ofstream & ofs, VkData const& vkData, DependencyData 
   assert( it != vkData.structs.end() );
 
   enterProtect(ofs, it->second.protect);
-  ofs << "  class " << dependencyData.name << std::endl
-      << "  {" << std::endl
-      << "  public:" << std::endl;
-
-  std::string memberName( dependencyData.name );
-  assert( isupper( memberName[0] ) );
-  memberName[0] = tolower( memberName[0] );
-  memberName = "m_" + memberName;
+  ofs << "  struct " << dependencyData.name << std::endl
+      << "  {" << std::endl;
 
   // only structs that are not returnedOnly get a constructor!
   if ( !it->second.returnedOnly )
   {
-    writeStructConstructor( ofs, dependencyData.name, memberName, it->second, vkData.vkTypes, defaultValues );
+    writeStructConstructor( ofs, dependencyData.name, it->second, vkData.vkTypes, defaultValues );
   }
 
-  // create the getters and setters
-  for ( size_t i=0 ; i<it->second.members.size() ; i++ )
+  // create the setters
+  if (!it->second.returnedOnly)
   {
-    writeStructGetter(ofs, it->second.members[i], memberName, vkData.vkTypes, true);
-    if (!it->second.returnedOnly)
+    for (size_t i = 0; i<it->second.members.size(); i++)
     {
-      writeStructGetter(ofs, it->second.members[i], memberName, vkData.vkTypes, false);
-      writeStructSetter( ofs, dependencyData.name, it->second.members[i], memberName, vkData.vkTypes );
+      writeStructSetter( ofs, dependencyData.name, it->second.members[i], vkData.vkTypes );
     }
   }
 
-  // the cast-operator to the wrapped struct, and the struct itself as a private member variable
+  // the cast-operator to the wrapped struct
   ofs << "    operator const Vk" << dependencyData.name << "&() const" << std::endl
       << "    {" << std::endl
-      << "      return " << memberName << ";" << std::endl
+      << "      return *reinterpret_cast<const Vk" << dependencyData.name << "*>(this);" << std::endl
       << "    }" << std::endl
-      << std::endl
-      << "  private:" << std::endl
-      << "    Vk" << dependencyData.name << " " << memberName << ";" << std::endl
-      << "  };" << std::endl;
+      << std::endl;
+
+  // the member variables
+  for (size_t i = 0; i < it->second.members.size(); i++)
+  {
+    ofs << "    " << it->second.members[i].type << " " << it->second.members[i].name;
+    if (!it->second.members[i].arraySize.empty())
+    {
+      ofs << "[" << it->second.members[i].arraySize << "]";
+    }
+    ofs << ";" << std::endl;
+  }
+  ofs << "  };" << std::endl;
 #if 1
   ofs << "  static_assert( sizeof( " << dependencyData.name << " ) == sizeof( Vk" << dependencyData.name << " ), \"struct and wrapper have different size!\" );" << std::endl;
 #endif
@@ -2662,14 +2607,8 @@ void writeTypeStruct( std::ofstream & ofs, VkData const& vkData, DependencyData 
 void writeTypeUnion( std::ofstream & ofs, VkData const& vkData, DependencyData const& dependencyData, StructData const& unionData, std::map<std::string,std::string> const& defaultValues )
 {
   std::ostringstream oss;
-  ofs << "  class " << dependencyData.name << std::endl
-      << "  {" << std::endl
-      << "  public:" << std::endl;
-
-  std::string memberName( dependencyData.name );
-  assert( isupper( memberName[0] ) );
-  memberName[0] = tolower( memberName[0] );
-  memberName = "m_" + memberName;
+  ofs << "  union " << dependencyData.name << std::endl
+      << "  {" << std::endl;
 
   for ( size_t i=0 ; i<unionData.members.size() ; i++ )
   {
@@ -2683,7 +2622,7 @@ void writeTypeUnion( std::ofstream & ofs, VkData const& vkData, DependencyData c
     {
       ofs << "const std::array<" << unionData.members[i].type << "," << unionData.members[i].arraySize << ">& ";
     }
-    ofs << unionData.members[i].name;
+    ofs << unionData.members[i].name << "_";
 
     // just the very first constructor gets default arguments
     if ( i == 0 )
@@ -2704,31 +2643,71 @@ void writeTypeUnion( std::ofstream & ofs, VkData const& vkData, DependencyData c
         << "      ";
     if ( unionData.members[i].arraySize.empty() )
     {
-      ofs << memberName << "." << unionData.members[i].name << " = " << unionData.members[i].name;
+      ofs << unionData.members[i].name << " = " << unionData.members[i].name << "_";
     }
     else
     {
-      ofs << "memcpy( &" << memberName << "." << unionData.members[i].name << ", " << unionData.members[i].name << ".data(), " << unionData.members[i].arraySize << " * sizeof( " << unionData.members[i].type << " ) )";
+      ofs << "memcpy( &" << unionData.members[i].name << ", " << unionData.members[i].name << "_.data(), " << unionData.members[i].arraySize << " * sizeof( " << unionData.members[i].type << " ) )";
     }
     ofs << ";" << std::endl
         << "    }" << std::endl
         << std::endl;
+    }
 
-    // one getter/setter per union element
-    writeStructGetter(ofs, unionData.members[i], memberName, vkData.vkTypes, true);
-
+  for (size_t i = 0; i<unionData.members.size(); i++)
+  {
+    // one setter per union element
     assert(!unionData.returnedOnly);
-    writeStructGetter(ofs, unionData.members[i], memberName, vkData.vkTypes, false);
-    writeStructSetter(ofs, dependencyData.name, unionData.members[i], memberName, vkData.vkTypes);
+    writeStructSetter(ofs, dependencyData.name, unionData.members[i], vkData.vkTypes);
   }
+
+  // the implicit cast operator to the native type
   ofs << "    operator Vk" << dependencyData.name << " const& () const" << std::endl
       << "    {" << std::endl
-      << "      return " << memberName << ";" << std::endl
+      << "      return *reinterpret_cast<const Vk" << dependencyData.name << "*>(this);" << std::endl
       << "    }" << std::endl
-      << std::endl
-      << "  private:" << std::endl
-      << "    Vk" << dependencyData.name << " " << memberName << ";" << std::endl
-      << "  };" << std::endl
+      << std::endl;
+
+  // the union member variables
+  // if there's at least one Vk... type in this union, check for unrestricted unions support
+  bool needsUnrestrictedUnions = false;
+  for (size_t i = 0; i < unionData.members.size() && !needsUnrestrictedUnions; i++)
+  {
+    needsUnrestrictedUnions = (vkData.vkTypes.find(unionData.members[i].type) != vkData.vkTypes.end());
+  }
+  if (needsUnrestrictedUnions)
+  {
+    ofs << "#ifdef VK_CPP_HAS_UNRESTRICTED_UNIONS" << std::endl;
+    for (size_t i = 0; i < unionData.members.size(); i++)
+    {
+      ofs << "    " << unionData.members[i].type << " " << unionData.members[i].name;
+      if (!unionData.members[i].arraySize.empty())
+      {
+        ofs << "[" << unionData.members[i].arraySize << "]";
+      }
+      ofs << ";" << std::endl;
+    }
+    ofs << "#else" << std::endl;
+  }
+  for (size_t i = 0; i < unionData.members.size(); i++)
+  {
+    ofs << "    ";
+    if (vkData.vkTypes.find(unionData.members[i].type) != vkData.vkTypes.end())
+    {
+      ofs << "Vk";
+    }
+    ofs << unionData.members[i].type << " " << unionData.members[i].name;
+    if (!unionData.members[i].arraySize.empty())
+    {
+      ofs << "[" << unionData.members[i].arraySize << "]";
+    }
+    ofs << ";" << std::endl;
+  }
+  if (needsUnrestrictedUnions)
+  {
+    ofs << "#endif  // VK_CPP_HAS_UNRESTRICTED_UNIONS" << std::endl;
+  }
+  ofs << "  };" << std::endl
       << std::endl;
 }
 
@@ -2875,11 +2854,12 @@ int main( int argc, char **argv )
 
     writeVersionCheck(ofs, vkData.version);
     writeTypesafeCheck(ofs, vkData.typesafeCheck);
-    ofs << "namespace vk" << std::endl
-      << "{" << std::endl
-      << flagsHeader
-      << optionalClassHeader
-      << arrayProxyHeader;
+    ofs << versionCheckHeader
+        << "namespace vk" << std::endl
+        << "{" << std::endl
+        << flagsHeader
+        << optionalClassHeader
+        << arrayProxyHeader;
 
     // first of all, write out vk::Result and the exception handling stuff
     std::list<DependencyData>::const_iterator it = std::find_if(vkData.dependencies.begin(), vkData.dependencies.end(), [](DependencyData const& dp) { return dp.name == "Result"; });

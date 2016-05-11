@@ -220,6 +220,11 @@ namespace vk
   class ArrayProxy
   {
   public:
+    ArrayProxy(std::nullptr_t)
+      : m_count(0)
+      , m_ptr(nullptr)
+    {}
+
     ArrayProxy(T & ptr)
       : m_count(1)
       , m_ptr(&ptr)

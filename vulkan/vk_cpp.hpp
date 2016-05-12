@@ -13097,9 +13097,10 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    std::vector<SparseImageMemoryRequirements> getImageSparseMemoryRequirements( Image image ) const
+    template <typename Allocator = std::allocator<SparseImageMemoryRequirements>>
+    std::vector<SparseImageMemoryRequirements,Allocator> getImageSparseMemoryRequirements( Image image ) const
     {
-      std::vector<SparseImageMemoryRequirements> sparseMemoryRequirements;
+      std::vector<SparseImageMemoryRequirements,Allocator> sparseMemoryRequirements;
       uint32_t sparseMemoryRequirementCount;
       vkGetImageSparseMemoryRequirements( m_device, static_cast<VkImage>( image ), &sparseMemoryRequirementCount, nullptr );
       sparseMemoryRequirements.resize( sparseMemoryRequirementCount );
@@ -13553,9 +13554,10 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    std::vector<uint8_t> getPipelineCacheData( PipelineCache pipelineCache ) const
+    template <typename Allocator = std::allocator<uint8_t>>
+    std::vector<uint8_t,Allocator> getPipelineCacheData( PipelineCache pipelineCache ) const
     {
-      std::vector<uint8_t> data;
+      std::vector<uint8_t,Allocator> data;
       size_t dataSize;
       Result result = static_cast<Result>( vkGetPipelineCacheData( m_device, static_cast<VkPipelineCache>( pipelineCache ), &dataSize, nullptr ) );
       if ( ( result == Result::eSuccess ) && dataSize )
@@ -13593,9 +13595,10 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    std::vector<Pipeline> createGraphicsPipelines( PipelineCache pipelineCache, ArrayProxy<const GraphicsPipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator = nullptr ) const
+    template <typename Allocator = std::allocator<Pipeline>>
+    std::vector<Pipeline,Allocator> createGraphicsPipelines( PipelineCache pipelineCache, ArrayProxy<const GraphicsPipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
-      std::vector<Pipeline> pipelines( createInfos.size() );
+      std::vector<Pipeline,Allocator> pipelines( createInfos.size() );
       Result result = static_cast<Result>( vkCreateGraphicsPipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkGraphicsPipelineCreateInfo*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkPipeline*>( pipelines.data() ) ) );
       if ( result != Result::eSuccess )
       {
@@ -13611,9 +13614,10 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    std::vector<Pipeline> createComputePipelines( PipelineCache pipelineCache, ArrayProxy<const ComputePipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator = nullptr ) const
+    template <typename Allocator = std::allocator<Pipeline>>
+    std::vector<Pipeline,Allocator> createComputePipelines( PipelineCache pipelineCache, ArrayProxy<const ComputePipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
-      std::vector<Pipeline> pipelines( createInfos.size() );
+      std::vector<Pipeline,Allocator> pipelines( createInfos.size() );
       Result result = static_cast<Result>( vkCreateComputePipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkComputePipelineCreateInfo*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkPipeline*>( pipelines.data() ) ) );
       if ( result != Result::eSuccess )
       {
@@ -13779,9 +13783,10 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    std::vector<DescriptorSet> allocateDescriptorSets( const DescriptorSetAllocateInfo & allocateInfo ) const
+    template <typename Allocator = std::allocator<DescriptorSet>>
+    std::vector<DescriptorSet,Allocator> allocateDescriptorSets( const DescriptorSetAllocateInfo & allocateInfo ) const
     {
-      std::vector<DescriptorSet> descriptorSets( allocateInfo.descriptorSetCount );
+      std::vector<DescriptorSet,Allocator> descriptorSets( allocateInfo.descriptorSetCount );
       Result result = static_cast<Result>( vkAllocateDescriptorSets( m_device, reinterpret_cast<const VkDescriptorSetAllocateInfo*>( &allocateInfo ), reinterpret_cast<VkDescriptorSet*>( descriptorSets.data() ) ) );
       if ( result != Result::eSuccess )
       {
@@ -13947,9 +13952,10 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    std::vector<CommandBuffer> allocateCommandBuffers( const CommandBufferAllocateInfo & allocateInfo ) const
+    template <typename Allocator = std::allocator<CommandBuffer>>
+    std::vector<CommandBuffer,Allocator> allocateCommandBuffers( const CommandBufferAllocateInfo & allocateInfo ) const
     {
-      std::vector<CommandBuffer> commandBuffers( allocateInfo.commandBufferCount );
+      std::vector<CommandBuffer,Allocator> commandBuffers( allocateInfo.commandBufferCount );
       Result result = static_cast<Result>( vkAllocateCommandBuffers( m_device, reinterpret_cast<const VkCommandBufferAllocateInfo*>( &allocateInfo ), reinterpret_cast<VkCommandBuffer*>( commandBuffers.data() ) ) );
       if ( result != Result::eSuccess )
       {
@@ -13977,9 +13983,10 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    std::vector<SwapchainKHR> createSharedSwapchainsKHR( ArrayProxy<const SwapchainCreateInfoKHR> createInfos, Optional<const AllocationCallbacks> allocator = nullptr ) const
+    template <typename Allocator = std::allocator<SwapchainKHR>>
+    std::vector<SwapchainKHR,Allocator> createSharedSwapchainsKHR( ArrayProxy<const SwapchainCreateInfoKHR> createInfos, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
-      std::vector<SwapchainKHR> swapchains( createInfos.size() );
+      std::vector<SwapchainKHR,Allocator> swapchains( createInfos.size() );
       Result result = static_cast<Result>( vkCreateSharedSwapchainsKHR( m_device, createInfos.size() , reinterpret_cast<const VkSwapchainCreateInfoKHR*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkSwapchainKHR*>( swapchains.data() ) ) );
       if ( result != Result::eSuccess )
       {
@@ -14025,9 +14032,10 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    std::vector<Image> getSwapchainImagesKHR( SwapchainKHR swapchain ) const
+    template <typename Allocator = std::allocator<Image>>
+    std::vector<Image,Allocator> getSwapchainImagesKHR( SwapchainKHR swapchain ) const
     {
-      std::vector<Image> swapchainImages;
+      std::vector<Image,Allocator> swapchainImages;
       uint32_t swapchainImageCount;
       Result result;
       do
@@ -14126,9 +14134,10 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    std::vector<QueueFamilyProperties> getQueueFamilyProperties() const
+    template <typename Allocator = std::allocator<QueueFamilyProperties>>
+    std::vector<QueueFamilyProperties,Allocator> getQueueFamilyProperties() const
     {
-      std::vector<QueueFamilyProperties> queueFamilyProperties;
+      std::vector<QueueFamilyProperties,Allocator> queueFamilyProperties;
       uint32_t queueFamilyPropertyCount;
       vkGetPhysicalDeviceQueueFamilyProperties( m_physicalDevice, &queueFamilyPropertyCount, nullptr );
       queueFamilyProperties.resize( queueFamilyPropertyCount );
@@ -14221,9 +14230,10 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    std::vector<LayerProperties> enumerateDeviceLayerProperties() const
+    template <typename Allocator = std::allocator<LayerProperties>>
+    std::vector<LayerProperties,Allocator> enumerateDeviceLayerProperties() const
     {
-      std::vector<LayerProperties> properties;
+      std::vector<LayerProperties,Allocator> properties;
       uint32_t propertyCount;
       Result result;
       do
@@ -14249,9 +14259,10 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    std::vector<ExtensionProperties> enumerateDeviceExtensionProperties( Optional<const std::string> layerName = nullptr ) const
+    template <typename Allocator = std::allocator<ExtensionProperties>>
+    std::vector<ExtensionProperties,Allocator> enumerateDeviceExtensionProperties( Optional<const std::string> layerName = nullptr ) const
     {
-      std::vector<ExtensionProperties> properties;
+      std::vector<ExtensionProperties,Allocator> properties;
       uint32_t propertyCount;
       Result result;
       do
@@ -14277,9 +14288,10 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    std::vector<SparseImageFormatProperties> getSparseImageFormatProperties( Format format, ImageType type, SampleCountFlagBits samples, ImageUsageFlags usage, ImageTiling tiling ) const
+    template <typename Allocator = std::allocator<SparseImageFormatProperties>>
+    std::vector<SparseImageFormatProperties,Allocator> getSparseImageFormatProperties( Format format, ImageType type, SampleCountFlagBits samples, ImageUsageFlags usage, ImageTiling tiling ) const
     {
-      std::vector<SparseImageFormatProperties> properties;
+      std::vector<SparseImageFormatProperties,Allocator> properties;
       uint32_t propertyCount;
       vkGetPhysicalDeviceSparseImageFormatProperties( m_physicalDevice, static_cast<VkFormat>( format ), static_cast<VkImageType>( type ), static_cast<VkSampleCountFlagBits>( samples ), static_cast<VkImageUsageFlags>( usage ), static_cast<VkImageTiling>( tiling ), &propertyCount, nullptr );
       properties.resize( propertyCount );
@@ -14294,9 +14306,10 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    std::vector<DisplayPropertiesKHR> getDisplayPropertiesKHR() const
+    template <typename Allocator = std::allocator<DisplayPropertiesKHR>>
+    std::vector<DisplayPropertiesKHR,Allocator> getDisplayPropertiesKHR() const
     {
-      std::vector<DisplayPropertiesKHR> properties;
+      std::vector<DisplayPropertiesKHR,Allocator> properties;
       uint32_t propertyCount;
       Result result;
       do
@@ -14322,9 +14335,10 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    std::vector<DisplayPlanePropertiesKHR> getDisplayPlanePropertiesKHR() const
+    template <typename Allocator = std::allocator<DisplayPlanePropertiesKHR>>
+    std::vector<DisplayPlanePropertiesKHR,Allocator> getDisplayPlanePropertiesKHR() const
     {
-      std::vector<DisplayPlanePropertiesKHR> properties;
+      std::vector<DisplayPlanePropertiesKHR,Allocator> properties;
       uint32_t propertyCount;
       Result result;
       do
@@ -14350,9 +14364,10 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    std::vector<DisplayKHR> getDisplayPlaneSupportedDisplaysKHR( uint32_t planeIndex ) const
+    template <typename Allocator = std::allocator<DisplayKHR>>
+    std::vector<DisplayKHR,Allocator> getDisplayPlaneSupportedDisplaysKHR( uint32_t planeIndex ) const
     {
-      std::vector<DisplayKHR> displays;
+      std::vector<DisplayKHR,Allocator> displays;
       uint32_t displayCount;
       Result result;
       do
@@ -14378,9 +14393,10 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    std::vector<DisplayModePropertiesKHR> getDisplayModePropertiesKHR( DisplayKHR display ) const
+    template <typename Allocator = std::allocator<DisplayModePropertiesKHR>>
+    std::vector<DisplayModePropertiesKHR,Allocator> getDisplayModePropertiesKHR( DisplayKHR display ) const
     {
-      std::vector<DisplayModePropertiesKHR> properties;
+      std::vector<DisplayModePropertiesKHR,Allocator> properties;
       uint32_t propertyCount;
       Result result;
       do
@@ -14493,9 +14509,10 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    std::vector<SurfaceFormatKHR> getSurfaceFormatsKHR( SurfaceKHR surface ) const
+    template <typename Allocator = std::allocator<SurfaceFormatKHR>>
+    std::vector<SurfaceFormatKHR,Allocator> getSurfaceFormatsKHR( SurfaceKHR surface ) const
     {
-      std::vector<SurfaceFormatKHR> surfaceFormats;
+      std::vector<SurfaceFormatKHR,Allocator> surfaceFormats;
       uint32_t surfaceFormatCount;
       Result result;
       do
@@ -14521,9 +14538,10 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    std::vector<PresentModeKHR> getSurfacePresentModesKHR( SurfaceKHR surface ) const
+    template <typename Allocator = std::allocator<PresentModeKHR>>
+    std::vector<PresentModeKHR,Allocator> getSurfacePresentModesKHR( SurfaceKHR surface ) const
     {
-      std::vector<PresentModeKHR> presentModes;
+      std::vector<PresentModeKHR,Allocator> presentModes;
       uint32_t presentModeCount;
       Result result;
       do
@@ -14783,9 +14801,10 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    std::vector<PhysicalDevice> enumeratePhysicalDevices() const
+    template <typename Allocator = std::allocator<PhysicalDevice>>
+    std::vector<PhysicalDevice,Allocator> enumeratePhysicalDevices() const
     {
-      std::vector<PhysicalDevice> physicalDevices;
+      std::vector<PhysicalDevice,Allocator> physicalDevices;
       uint32_t physicalDeviceCount;
       Result result;
       do
@@ -15074,9 +15093,10 @@ namespace vk
   }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-  inline std::vector<LayerProperties> enumerateInstanceLayerProperties()
+  template <typename Allocator = std::allocator<LayerProperties>>
+  std::vector<LayerProperties,Allocator> enumerateInstanceLayerProperties()
   {
-    std::vector<LayerProperties> properties;
+    std::vector<LayerProperties,Allocator> properties;
     uint32_t propertyCount;
     Result result;
     do
@@ -15102,9 +15122,10 @@ namespace vk
   }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-  inline std::vector<ExtensionProperties> enumerateInstanceExtensionProperties( Optional<const std::string> layerName = nullptr )
+  template <typename Allocator = std::allocator<ExtensionProperties>>
+  std::vector<ExtensionProperties,Allocator> enumerateInstanceExtensionProperties( Optional<const std::string> layerName = nullptr )
   {
-    std::vector<ExtensionProperties> properties;
+    std::vector<ExtensionProperties,Allocator> properties;
     uint32_t propertyCount;
     Result result;
     do

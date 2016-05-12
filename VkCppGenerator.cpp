@@ -608,11 +608,11 @@ std::string determineReturnType(CommandData const& commandData, size_t returnInd
     {
       if (commandData.arguments[returnIndex].pureType == "void")
       {
-        returnType = "std::vector<uint8_t>";
+        returnType = "std::vector<uint8_t,Allocator>";
       }
       else
       {
-        returnType = "std::vector<" + commandData.arguments[returnIndex].pureType + ">";
+        returnType = "std::vector<" + commandData.arguments[returnIndex].pureType + ",Allocator>";
       }
     }
     else
@@ -1995,7 +1995,14 @@ void writeFunctionHeader(std::ofstream & ofs, std::string const& indentation, st
   ofs << indentation;
   if ((templateIndex != ~0) && ((templateIndex != returnIndex) || (returnType == "Result")))
   {
+    assert(returnType.find("Allocator") == std::string::npos);
     ofs << "template <typename T>" << std::endl
+        << indentation;
+  }
+  else if (returnType.find("Allocator") != std::string::npos)
+  {
+    assert((returnType.substr(0, 12) == "std::vector<") && (returnType.find(',') != std::string::npos) && (12 < returnType.find(',')));
+    ofs << "template <typename Allocator = std::allocator<" << returnType.substr(12,returnType.find(',')-12) << ">>" << std::endl
         << indentation;
   }
   else if (!commandData.handleCommand)

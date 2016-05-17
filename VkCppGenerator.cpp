@@ -319,6 +319,99 @@ std::string const versionCheckHeader = (
   "\n"
   );
 
+std::string const resultValueHeader = (
+  "  template <typename T>\n"
+  "  struct ResultValue\n"
+  "  {\n"
+  "    ResultValue( Result r, T & v )\n"
+  "      : result( r )\n"
+  "      , value( v )\n"
+  "    {}\n"
+  "\n"
+  "    Result  result;\n"
+  "    T       value;\n"
+  "  };\n"
+  "\n"
+  "  template <typename T>\n"
+  "  struct ResultValueType\n"
+  "  {\n"
+  "#ifdef VK_CPP_NO_EXCEPTIONS\n"
+  "    typedef ResultValue<T>  type;\n"
+  "#else\n"
+  "    typedef T              type;\n"
+  "#endif\n"
+  "  };\n"
+  "\n"
+  "  template <>"
+  "  struct ResultValueType<void>\n"
+  "  {\n"
+  "#ifdef VK_CPP_NO_EXCEPTIONS\n"
+  "    typedef Result type;\n"
+  "#else\n"
+  "    typedef void   type;\n"
+  "#endif\n"
+  "  };\n"
+  "\n"
+  );
+
+std::string const createResultValueHeader = (
+  "  inline ResultValueType<void>::type createResultValue( Result result, char const * message )\n"
+  "  {\n"
+  "#ifdef VK_CPP_NO_EXCEPTIONS\n"
+  "    assert( result == Result::eSuccess );\n"
+  "    return result;\n"
+  "#else\n"
+  "    if ( result != Result::eSuccess )\n"
+  "    {\n"
+  "      throw std::system_error( result, message );\n"
+  "    }\n"
+  "#endif\n"
+  "  }\n"
+  "\n"
+  "  template <typename T>\n"
+  "  inline typename ResultValueType<T>::type createResultValue( Result result, T & data, char const * message )\n"
+  "  {\n"
+  "#ifdef VK_CPP_NO_EXCEPTIONS\n"
+  "    assert( result == Result::eSuccess );\n"
+  "    return ResultValue<T>( result, data );\n"
+  "#else\n"
+  "    if ( result != Result::eSuccess )\n"
+  "    {\n"
+  "      throw std::system_error( result, message );\n"
+  "    }\n"
+  "    return data;\n"
+  "#endif\n"
+  "  }\n"
+  "\n"
+  "  inline Result createResultValue( Result result, char const * message, std::initializer_list<Result> successCodes )\n"
+  "  {\n"
+  "#ifdef VK_CPP_NO_EXCEPTIONS\n"
+  "    assert( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );\n"
+  "#else\n"
+  "    if ( std::find( successCodes.begin(), successCodes.end(), result ) == successCodes.end() )\n"
+  "    {\n"
+  "      throw std::system_error( result, message );\n"
+  "    }\n"
+  "#endif\n"
+  "    return result;\n"
+  "  }\n"
+  "\n"
+  "  template <typename T>\n"
+  "  inline ResultValue<T> createResultValue( Result result, T & data, char const * message, std::initializer_list<Result> successCodes )\n"
+  "  {\n"
+  "#ifdef VK_CPP_NO_EXCEPTIONS\n"
+  "    assert( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );\n"
+  "#else\n"
+  "    if ( std::find( successCodes.begin(), successCodes.end(), result ) == successCodes.end() )\n"
+  "    {\n"
+  "      throw std::system_error( result, message );\n"
+  "    }\n"
+  "#endif\n"
+  "    return ResultValue<T>( result, data );\n"
+  "  }\n"
+  "\n"
+  );
+
 // trim from end
 std::string trimEnd(std::string const& input)
 {
@@ -656,17 +749,21 @@ std::string extractTag(std::string const& name)
 
 size_t findReturnIndex(CommandData const& commandData, std::map<size_t,size_t> const& vectorParameters)
 {
-  for (size_t i = 0; i < commandData.arguments.size(); i++)
+  if ((commandData.returnType == "Result") || (commandData.returnType == "void"))
   {
-    if ((commandData.arguments[i].type.find('*') != std::string::npos) && (commandData.arguments[i].type.find("const") == std::string::npos) && !isVectorSizeParameter(vectorParameters, i))
+    for (size_t i = 0; i < commandData.arguments.size(); i++)
     {
-#if !defined(NDEBUG)
-      for (size_t j = i + 1; j < commandData.arguments.size(); j++)
+      if ((commandData.arguments[i].type.find('*') != std::string::npos) && (commandData.arguments[i].type.find("const") == std::string::npos) && !isVectorSizeParameter(vectorParameters, i)
+          && ((vectorParameters.find(i) == vectorParameters.end()) || commandData.twoStep || (commandData.successCodes.size() == 1)))
       {
-        assert((commandData.arguments[j].type.find('*') == std::string::npos) || (commandData.arguments[j].type.find("const") != std::string::npos));
-      }
+#if !defined(NDEBUG)
+        for (size_t j = i + 1; j < commandData.arguments.size(); j++)
+        {
+          assert((commandData.arguments[j].type.find('*') == std::string::npos) || (commandData.arguments[j].type.find("const") != std::string::npos));
+        }
 #endif
-      return i;
+        return i;
+      }
     }
   }
   return ~0;
@@ -1827,10 +1924,14 @@ void writeFunctionBody(std::ofstream & ofs, std::string const& indentation, std:
         {
           if ((it1->first != returnIndex) && (it0->second == it1->second))
           {
-            ofs << indentation << "  if ( " << reduceName(commandData.arguments[it0->first].name) << ".size() != " << reduceName(commandData.arguments[it1->first].name) << ".size() )" << std::endl
+            ofs << "#ifdef VK_CPP_NO_EXCEPTIONS" << std::endl
+                << indentation << "  assert( " << reduceName(commandData.arguments[it0->first].name) << ".size() == " << reduceName(commandData.arguments[it1->first].name) << ".size() );" << std::endl
+                << "#else" << std::endl
+                << indentation << "  if ( " << reduceName(commandData.arguments[it0->first].name) << ".size() != " << reduceName(commandData.arguments[it1->first].name) << ".size() )" << std::endl
                 << indentation << "  {" << std::endl
                 << indentation << "    throw std::logic_error( \"vk::" << className << "::" << functionName << ": " << reduceName(commandData.arguments[it0->first].name) << ".size() != " << reduceName(commandData.arguments[it1->first].name) << ".size()\" );" << std::endl
-                << indentation << "  }" << std::endl;
+                << indentation << "  }" << std::endl
+                << "#endif  // VK_CPP_NO_EXCEPTIONS" << std::endl;
           }
         }
       }
@@ -1838,36 +1939,43 @@ void writeFunctionBody(std::ofstream & ofs, std::string const& indentation, std:
   }
 
   // write the local variable to hold a returned value
-  if ((returnIndex != ~0) && (commandData.returnType != returnType))
+  if (returnIndex != ~0)
   {
-    ofs << indentation << "  " << returnType << " " << reduceName(commandData.arguments[returnIndex].name);
-
-    std::map<size_t, size_t>::const_iterator it = vectorParameters.find(returnIndex);
-    if (it != vectorParameters.end() && !commandData.twoStep)
+    if (commandData.returnType != returnType)
     {
-      std::string size;
-      if ((it->second == ~0) && !commandData.arguments[returnIndex].len.empty())
+      ofs << indentation << "  " << returnType << " " << reduceName(commandData.arguments[returnIndex].name);
+
+      std::map<size_t, size_t>::const_iterator it = vectorParameters.find(returnIndex);
+      if (it != vectorParameters.end() && !commandData.twoStep)
       {
-        size = reduceName(commandData.arguments[returnIndex].len);
-        size_t pos = size.find("->");
-        assert(pos != std::string::npos);
-        size.replace(pos, 2, ".");
-      }
-      else
-      {
-        for (std::map<size_t, size_t>::const_iterator sit = vectorParameters.begin(); sit != vectorParameters.end(); ++sit)
+        std::string size;
+        if ((it->second == ~0) && !commandData.arguments[returnIndex].len.empty())
         {
-          if ((sit->first != returnIndex) && (sit->second == it->second))
+          size = reduceName(commandData.arguments[returnIndex].len);
+          size_t pos = size.find("->");
+          assert(pos != std::string::npos);
+          size.replace(pos, 2, ".");
+        }
+        else
+        {
+          for (std::map<size_t, size_t>::const_iterator sit = vectorParameters.begin(); sit != vectorParameters.end(); ++sit)
           {
-            size = reduceName(commandData.arguments[sit->first].name) + ".size()";
-            break;
+            if ((sit->first != returnIndex) && (sit->second == it->second))
+            {
+              size = reduceName(commandData.arguments[sit->first].name) + ".size()";
+              break;
+            }
           }
         }
+        assert(!size.empty());
+        ofs << "( " << size << " )";
       }
-      assert(!size.empty());
-      ofs << "( " << size << " )";
+      ofs << ";" << std::endl;
     }
-    ofs << ";" << std::endl;
+    else if (1 < commandData.successCodes.size())
+    {
+      ofs << indentation << "  " << commandData.arguments[returnIndex].pureType << " " << reduceName(commandData.arguments[returnIndex].name) << ";" << std::endl;
+    }
   }
 
   // local count variable to hold the size of the vector to fill
@@ -1950,22 +2058,31 @@ void writeFunctionBody(std::ofstream & ofs, std::string const& indentation, std:
       {
         ofs << indentation << "  } while ( result == Result::eIncomplete );" << std::endl;
       }
-      writeExceptionCheck(ofs, indentation, className, functionName, {"eSuccess"});
     }
   }
-  else if ((commandData.returnType == "Result") || !commandData.successCodes.empty())
+  
+  if ((commandData.returnType == "Result") || !commandData.successCodes.empty())
   {
-    writeExceptionCheck(ofs, indentation, className, functionName, commandData.successCodes);
+    ofs << indentation << "  return createResultValue( result, ";
+    if (returnIndex != ~0)
+    {
+      ofs << reduceName(commandData.arguments[returnIndex].name) << ", ";
+    }
+    ofs << "\"vk::" << (className.empty() ? "" : className + "::") << functionName << "\"";
+    if (1 < commandData.successCodes.size() && !commandData.twoStep)
+    {
+      ofs << ", { Result::" << commandData.successCodes[0];
+      for (size_t i = 1; i < commandData.successCodes.size(); i++)
+      {
+        ofs << ", Result::" << commandData.successCodes[i];
+      }
+      ofs << " }";
+    }
+    ofs << " );" << std::endl;
   }
-
-  // return the returned value
-  if ((returnIndex != ~0) && (commandData.returnType != returnType))
+  else if ((returnIndex != ~0) && (commandData.returnType != returnType))
   {
     ofs << indentation << "  return " << reduceName(commandData.arguments[returnIndex].name) << ";" << std::endl;
-  }
-  else if (returnType == "Result")
-  {
-    ofs << indentation << "  return result;" << std::endl;
   }
 
   ofs << indentation << "}" << std::endl;
@@ -1987,7 +2104,7 @@ void writeFunctionHeader(std::ofstream & ofs, std::string const& indentation, st
     assert(commandData.arguments[3].name == "dataSize");
     skippedArguments.insert(3);
   }
-  if ((returnIndex != ~0) && (commandData.returnType != returnType))
+  if (returnIndex != ~0)
   {
     skippedArguments.insert(returnIndex);
   }
@@ -2004,12 +2121,30 @@ void writeFunctionHeader(std::ofstream & ofs, std::string const& indentation, st
     assert((returnType.substr(0, 12) == "std::vector<") && (returnType.find(',') != std::string::npos) && (12 < returnType.find(',')));
     ofs << "template <typename Allocator = std::allocator<" << returnType.substr(12,returnType.find(',')-12) << ">>" << std::endl
         << indentation;
+    if ((returnType != commandData.returnType) && (commandData.returnType != "void"))
+    {
+      ofs << "typename ";
+    }
   }
   else if (!commandData.handleCommand)
   {
     ofs << "inline ";
   }
-  ofs << returnType << " " << reduceName(name) << "(";
+  if ((returnType != commandData.returnType) && (commandData.returnType != "void"))
+  {
+    assert(commandData.returnType == "Result");
+    ofs << "ResultValueType<" << returnType << ">::type ";
+  }
+  else if ((returnIndex != ~0) && (1 < commandData.successCodes.size()))
+  {
+    assert(commandData.returnType == "Result");
+    ofs << "ResultValue<" << commandData.arguments[returnIndex].pureType << "> ";
+  }
+  else
+  {
+    ofs << returnType << " ";
+  }
+  ofs << reduceName(name) << "(";
   if (skippedArguments.size() + (commandData.handleCommand ? 1 : 0) < commandData.arguments.size())
   {
     size_t lastArgument = ~0;
@@ -2891,7 +3026,9 @@ int main( int argc, char **argv )
       << "}" << std::endl
       << std::endl
       << "namespace vk" << std::endl
-      << "{" << std::endl;
+      << "{" << std::endl
+      << resultValueHeader
+      << createResultValueHeader;
 
     writeTypes(ofs, vkData, defaultValues);
     writeEnumsToString(ofs, vkData);

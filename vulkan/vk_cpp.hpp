@@ -381,6 +381,92 @@ namespace std
 
 namespace vk
 {
+  template <typename T>
+  struct ResultValue
+  {
+    ResultValue( Result r, T & v )
+      : result( r )
+      , value( v )
+    {}
+
+    Result  result;
+    T       value;
+  };
+
+  template <typename T>
+  struct ResultValueType
+  {
+#ifdef VK_CPP_NO_EXCEPTIONS
+    typedef ResultValue<T>  type;
+#else
+    typedef T              type;
+#endif
+  };
+
+  template <>  struct ResultValueType<void>
+  {
+#ifdef VK_CPP_NO_EXCEPTIONS
+    typedef Result type;
+#else
+    typedef void   type;
+#endif
+  };
+
+  inline ResultValueType<void>::type createResultValue( Result result, char const * message )
+  {
+#ifdef VK_CPP_NO_EXCEPTIONS
+    assert( result == Result::eSuccess );
+    return result;
+#else
+    if ( result != Result::eSuccess )
+    {
+      throw std::system_error( result, message );
+    }
+#endif
+  }
+
+  template <typename T>
+  inline typename ResultValueType<T>::type createResultValue( Result result, T & data, char const * message )
+  {
+#ifdef VK_CPP_NO_EXCEPTIONS
+    assert( result == Result::eSuccess );
+    return ResultValue<T>( result, data );
+#else
+    if ( result != Result::eSuccess )
+    {
+      throw std::system_error( result, message );
+    }
+    return data;
+#endif
+  }
+
+  inline Result createResultValue( Result result, char const * message, std::initializer_list<Result> successCodes )
+  {
+#ifdef VK_CPP_NO_EXCEPTIONS
+    assert( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );
+#else
+    if ( std::find( successCodes.begin(), successCodes.end(), result ) == successCodes.end() )
+    {
+      throw std::system_error( result, message );
+    }
+#endif
+    return result;
+  }
+
+  template <typename T>
+  inline ResultValue<T> createResultValue( Result result, T & data, char const * message, std::initializer_list<Result> successCodes )
+  {
+#ifdef VK_CPP_NO_EXCEPTIONS
+    assert( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );
+#else
+    if ( std::find( successCodes.begin(), successCodes.end(), result ) == successCodes.end() )
+    {
+      throw std::system_error( result, message );
+    }
+#endif
+    return ResultValue<T>( result, data );
+  }
+
   using SampleMask = uint32_t;
 
   using Bool32 = uint32_t;
@@ -11107,13 +11193,10 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void begin( const CommandBufferBeginInfo & beginInfo ) const
+    ResultValueType<void>::type begin( const CommandBufferBeginInfo & beginInfo ) const
     {
       Result result = static_cast<Result>( vkBeginCommandBuffer( m_commandBuffer, reinterpret_cast<const VkCommandBufferBeginInfo*>( &beginInfo ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::CommandBuffer::begin" );
-      }
+      return createResultValue( result, "vk::CommandBuffer::begin" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -11125,13 +11208,10 @@ namespace vk
 #endif /*!VKCPP_DISABLE_ENHANCED_MODE*/
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void end() const
+    ResultValueType<void>::type end() const
     {
       Result result = static_cast<Result>( vkEndCommandBuffer( m_commandBuffer ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::CommandBuffer::end" );
-      }
+      return createResultValue( result, "vk::CommandBuffer::end" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -11143,13 +11223,10 @@ namespace vk
 #endif /*!VKCPP_DISABLE_ENHANCED_MODE*/
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void reset( CommandBufferResetFlags flags ) const
+    ResultValueType<void>::type reset( CommandBufferResetFlags flags ) const
     {
       Result result = static_cast<Result>( vkResetCommandBuffer( m_commandBuffer, static_cast<VkCommandBufferResetFlags>( flags ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::CommandBuffer::reset" );
-      }
+      return createResultValue( result, "vk::CommandBuffer::reset" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -11323,10 +11400,14 @@ namespace vk
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
     void bindVertexBuffers( uint32_t firstBinding, ArrayProxy<const Buffer> buffers, ArrayProxy<const DeviceSize> offsets ) const
     {
+#ifdef VK_CPP_NO_EXCEPTIONS
+      assert( buffers.size() == offsets.size() );
+#else
       if ( buffers.size() != offsets.size() )
       {
         throw std::logic_error( "vk::CommandBuffer::bindVertexBuffers: buffers.size() != offsets.size()" );
       }
+#endif  // VK_CPP_NO_EXCEPTIONS
       vkCmdBindVertexBuffers( m_commandBuffer, firstBinding, buffers.size() , reinterpret_cast<const VkBuffer*>( buffers.data() ), offsets.data() );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
@@ -12073,13 +12154,10 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void submit( ArrayProxy<const SubmitInfo> submits, Fence fence ) const
+    ResultValueType<void>::type submit( ArrayProxy<const SubmitInfo> submits, Fence fence ) const
     {
       Result result = static_cast<Result>( vkQueueSubmit( m_queue, submits.size() , reinterpret_cast<const VkSubmitInfo*>( submits.data() ), static_cast<VkFence>( fence ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Queue::submit" );
-      }
+      return createResultValue( result, "vk::Queue::submit" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -12091,13 +12169,10 @@ namespace vk
 #endif /*!VKCPP_DISABLE_ENHANCED_MODE*/
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void waitIdle() const
+    ResultValueType<void>::type waitIdle() const
     {
       Result result = static_cast<Result>( vkQueueWaitIdle( m_queue ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Queue::waitIdle" );
-      }
+      return createResultValue( result, "vk::Queue::waitIdle" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -12107,13 +12182,10 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void bindSparse( ArrayProxy<const BindSparseInfo> bindInfo, Fence fence ) const
+    ResultValueType<void>::type bindSparse( ArrayProxy<const BindSparseInfo> bindInfo, Fence fence ) const
     {
       Result result = static_cast<Result>( vkQueueBindSparse( m_queue, bindInfo.size() , reinterpret_cast<const VkBindSparseInfo*>( bindInfo.data() ), static_cast<VkFence>( fence ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Queue::bindSparse" );
-      }
+      return createResultValue( result, "vk::Queue::bindSparse" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -12126,11 +12198,7 @@ namespace vk
     Result presentKHR( const PresentInfoKHR & presentInfo ) const
     {
       Result result = static_cast<Result>( vkQueuePresentKHR( m_queue, reinterpret_cast<const VkPresentInfoKHR*>( &presentInfo ) ) );
-      if ( ( result != Result::eSuccess ) && ( result != Result::eSuboptimalKHR ) )
-      {
-        throw std::system_error( result, "vk::Queue::presentKHR" );
-      }
-      return result;
+      return createResultValue( result, "vk::Queue::presentKHR", { Result::eSuccess, Result::eSuboptimalKHR } );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -12907,13 +12975,10 @@ namespace vk
 #endif /*!VKCPP_DISABLE_ENHANCED_MODE*/
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void waitIdle() const
+    ResultValueType<void>::type waitIdle() const
     {
       Result result = static_cast<Result>( vkDeviceWaitIdle( m_device ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::waitIdle" );
-      }
+      return createResultValue( result, "vk::Device::waitIdle" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -12923,15 +12988,11 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    DeviceMemory allocateMemory( const MemoryAllocateInfo & allocateInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
+    ResultValueType<DeviceMemory>::type allocateMemory( const MemoryAllocateInfo & allocateInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       DeviceMemory memory;
       Result result = static_cast<Result>( vkAllocateMemory( m_device, reinterpret_cast<const VkMemoryAllocateInfo*>( &allocateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkDeviceMemory*>( &memory ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::allocateMemory" );
-      }
-      return memory;
+      return createResultValue( result, memory, "vk::Device::allocateMemory" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -12955,15 +13016,11 @@ namespace vk
 #endif /*!VKCPP_DISABLE_ENHANCED_MODE*/
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void* mapMemory( DeviceMemory memory, DeviceSize offset, DeviceSize size, MemoryMapFlags flags ) const
+    ResultValueType<void*>::type mapMemory( DeviceMemory memory, DeviceSize offset, DeviceSize size, MemoryMapFlags flags ) const
     {
       void* pData;
       Result result = static_cast<Result>( vkMapMemory( m_device, static_cast<VkDeviceMemory>( memory ), offset, size, static_cast<VkMemoryMapFlags>( flags ), &pData ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::mapMemory" );
-      }
-      return pData;
+      return createResultValue( result, pData, "vk::Device::mapMemory" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -12987,13 +13044,10 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void flushMappedMemoryRanges( ArrayProxy<const MappedMemoryRange> memoryRanges ) const
+    ResultValueType<void>::type flushMappedMemoryRanges( ArrayProxy<const MappedMemoryRange> memoryRanges ) const
     {
       Result result = static_cast<Result>( vkFlushMappedMemoryRanges( m_device, memoryRanges.size() , reinterpret_cast<const VkMappedMemoryRange*>( memoryRanges.data() ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::flushMappedMemoryRanges" );
-      }
+      return createResultValue( result, "vk::Device::flushMappedMemoryRanges" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -13003,13 +13057,10 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void invalidateMappedMemoryRanges( ArrayProxy<const MappedMemoryRange> memoryRanges ) const
+    ResultValueType<void>::type invalidateMappedMemoryRanges( ArrayProxy<const MappedMemoryRange> memoryRanges ) const
     {
       Result result = static_cast<Result>( vkInvalidateMappedMemoryRanges( m_device, memoryRanges.size() , reinterpret_cast<const VkMappedMemoryRange*>( memoryRanges.data() ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::invalidateMappedMemoryRanges" );
-      }
+      return createResultValue( result, "vk::Device::invalidateMappedMemoryRanges" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -13049,13 +13100,10 @@ namespace vk
 #endif /*!VKCPP_DISABLE_ENHANCED_MODE*/
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void bindBufferMemory( Buffer buffer, DeviceMemory memory, DeviceSize memoryOffset ) const
+    ResultValueType<void>::type bindBufferMemory( Buffer buffer, DeviceMemory memory, DeviceSize memoryOffset ) const
     {
       Result result = static_cast<Result>( vkBindBufferMemory( m_device, static_cast<VkBuffer>( buffer ), static_cast<VkDeviceMemory>( memory ), memoryOffset ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::bindBufferMemory" );
-      }
+      return createResultValue( result, "vk::Device::bindBufferMemory" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -13081,13 +13129,10 @@ namespace vk
 #endif /*!VKCPP_DISABLE_ENHANCED_MODE*/
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void bindImageMemory( Image image, DeviceMemory memory, DeviceSize memoryOffset ) const
+    ResultValueType<void>::type bindImageMemory( Image image, DeviceMemory memory, DeviceSize memoryOffset ) const
     {
       Result result = static_cast<Result>( vkBindImageMemory( m_device, static_cast<VkImage>( image ), static_cast<VkDeviceMemory>( memory ), memoryOffset ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::bindImageMemory" );
-      }
+      return createResultValue( result, "vk::Device::bindImageMemory" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -13115,15 +13160,11 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    Fence createFence( const FenceCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
+    ResultValueType<Fence>::type createFence( const FenceCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       Fence fence;
       Result result = static_cast<Result>( vkCreateFence( m_device, reinterpret_cast<const VkFenceCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkFence*>( &fence ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::createFence" );
-      }
-      return fence;
+      return createResultValue( result, fence, "vk::Device::createFence" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -13145,13 +13186,10 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void resetFences( ArrayProxy<const Fence> fences ) const
+    ResultValueType<void>::type resetFences( ArrayProxy<const Fence> fences ) const
     {
       Result result = static_cast<Result>( vkResetFences( m_device, fences.size() , reinterpret_cast<const VkFence*>( fences.data() ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::resetFences" );
-      }
+      return createResultValue( result, "vk::Device::resetFences" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -13166,11 +13204,7 @@ namespace vk
     Result getFenceStatus( Fence fence ) const
     {
       Result result = static_cast<Result>( vkGetFenceStatus( m_device, static_cast<VkFence>( fence ) ) );
-      if ( ( result != Result::eSuccess ) && ( result != Result::eNotReady ) )
-      {
-        throw std::system_error( result, "vk::Device::getFenceStatus" );
-      }
-      return result;
+      return createResultValue( result, "vk::Device::getFenceStatus", { Result::eSuccess, Result::eNotReady } );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -13183,11 +13217,7 @@ namespace vk
     Result waitForFences( ArrayProxy<const Fence> fences, Bool32 waitAll, uint64_t timeout ) const
     {
       Result result = static_cast<Result>( vkWaitForFences( m_device, fences.size() , reinterpret_cast<const VkFence*>( fences.data() ), waitAll, timeout ) );
-      if ( ( result != Result::eSuccess ) && ( result != Result::eTimeout ) )
-      {
-        throw std::system_error( result, "vk::Device::waitForFences" );
-      }
-      return result;
+      return createResultValue( result, "vk::Device::waitForFences", { Result::eSuccess, Result::eTimeout } );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -13197,15 +13227,11 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    Semaphore createSemaphore( const SemaphoreCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
+    ResultValueType<Semaphore>::type createSemaphore( const SemaphoreCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       Semaphore semaphore;
       Result result = static_cast<Result>( vkCreateSemaphore( m_device, reinterpret_cast<const VkSemaphoreCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkSemaphore*>( &semaphore ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::createSemaphore" );
-      }
-      return semaphore;
+      return createResultValue( result, semaphore, "vk::Device::createSemaphore" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -13227,15 +13253,11 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    Event createEvent( const EventCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
+    ResultValueType<Event>::type createEvent( const EventCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       Event event;
       Result result = static_cast<Result>( vkCreateEvent( m_device, reinterpret_cast<const VkEventCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkEvent*>( &event ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::createEvent" );
-      }
-      return event;
+      return createResultValue( result, event, "vk::Device::createEvent" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -13262,11 +13284,7 @@ namespace vk
     Result getEventStatus( Event event ) const
     {
       Result result = static_cast<Result>( vkGetEventStatus( m_device, static_cast<VkEvent>( event ) ) );
-      if ( ( result != Result::eEventSet ) && ( result != Result::eEventReset ) )
-      {
-        throw std::system_error( result, "vk::Device::getEventStatus" );
-      }
-      return result;
+      return createResultValue( result, "vk::Device::getEventStatus", { Result::eEventSet, Result::eEventReset } );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -13278,13 +13296,10 @@ namespace vk
 #endif /*!VKCPP_DISABLE_ENHANCED_MODE*/
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void setEvent( Event event ) const
+    ResultValueType<void>::type setEvent( Event event ) const
     {
       Result result = static_cast<Result>( vkSetEvent( m_device, static_cast<VkEvent>( event ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::setEvent" );
-      }
+      return createResultValue( result, "vk::Device::setEvent" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -13296,13 +13311,10 @@ namespace vk
 #endif /*!VKCPP_DISABLE_ENHANCED_MODE*/
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void resetEvent( Event event ) const
+    ResultValueType<void>::type resetEvent( Event event ) const
     {
       Result result = static_cast<Result>( vkResetEvent( m_device, static_cast<VkEvent>( event ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::resetEvent" );
-      }
+      return createResultValue( result, "vk::Device::resetEvent" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -13312,15 +13324,11 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    QueryPool createQueryPool( const QueryPoolCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
+    ResultValueType<QueryPool>::type createQueryPool( const QueryPoolCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       QueryPool queryPool;
       Result result = static_cast<Result>( vkCreateQueryPool( m_device, reinterpret_cast<const VkQueryPoolCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkQueryPool*>( &queryPool ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::createQueryPool" );
-      }
-      return queryPool;
+      return createResultValue( result, queryPool, "vk::Device::createQueryPool" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -13346,11 +13354,7 @@ namespace vk
     Result getQueryPoolResults( QueryPool queryPool, uint32_t firstQuery, uint32_t queryCount, ArrayProxy<T> data, DeviceSize stride, QueryResultFlags flags ) const
     {
       Result result = static_cast<Result>( vkGetQueryPoolResults( m_device, static_cast<VkQueryPool>( queryPool ), firstQuery, queryCount, data.size() * sizeof( T ) , reinterpret_cast<void*>( data.data() ), stride, static_cast<VkQueryResultFlags>( flags ) ) );
-      if ( ( result != Result::eSuccess ) && ( result != Result::eNotReady ) )
-      {
-        throw std::system_error( result, "vk::Device::getQueryPoolResults" );
-      }
-      return result;
+      return createResultValue( result, "vk::Device::getQueryPoolResults", { Result::eSuccess, Result::eNotReady } );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -13360,15 +13364,11 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    Buffer createBuffer( const BufferCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
+    ResultValueType<Buffer>::type createBuffer( const BufferCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       Buffer buffer;
       Result result = static_cast<Result>( vkCreateBuffer( m_device, reinterpret_cast<const VkBufferCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkBuffer*>( &buffer ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::createBuffer" );
-      }
-      return buffer;
+      return createResultValue( result, buffer, "vk::Device::createBuffer" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -13390,15 +13390,11 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    BufferView createBufferView( const BufferViewCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
+    ResultValueType<BufferView>::type createBufferView( const BufferViewCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       BufferView view;
       Result result = static_cast<Result>( vkCreateBufferView( m_device, reinterpret_cast<const VkBufferViewCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkBufferView*>( &view ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::createBufferView" );
-      }
-      return view;
+      return createResultValue( result, view, "vk::Device::createBufferView" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -13420,15 +13416,11 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    Image createImage( const ImageCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
+    ResultValueType<Image>::type createImage( const ImageCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       Image image;
       Result result = static_cast<Result>( vkCreateImage( m_device, reinterpret_cast<const VkImageCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkImage*>( &image ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::createImage" );
-      }
-      return image;
+      return createResultValue( result, image, "vk::Device::createImage" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -13464,15 +13456,11 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    ImageView createImageView( const ImageViewCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
+    ResultValueType<ImageView>::type createImageView( const ImageViewCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       ImageView view;
       Result result = static_cast<Result>( vkCreateImageView( m_device, reinterpret_cast<const VkImageViewCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkImageView*>( &view ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::createImageView" );
-      }
-      return view;
+      return createResultValue( result, view, "vk::Device::createImageView" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -13494,15 +13482,11 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    ShaderModule createShaderModule( const ShaderModuleCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
+    ResultValueType<ShaderModule>::type createShaderModule( const ShaderModuleCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       ShaderModule shaderModule;
       Result result = static_cast<Result>( vkCreateShaderModule( m_device, reinterpret_cast<const VkShaderModuleCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkShaderModule*>( &shaderModule ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::createShaderModule" );
-      }
-      return shaderModule;
+      return createResultValue( result, shaderModule, "vk::Device::createShaderModule" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -13524,15 +13508,11 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    PipelineCache createPipelineCache( const PipelineCacheCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
+    ResultValueType<PipelineCache>::type createPipelineCache( const PipelineCacheCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       PipelineCache pipelineCache;
       Result result = static_cast<Result>( vkCreatePipelineCache( m_device, reinterpret_cast<const VkPipelineCacheCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkPipelineCache*>( &pipelineCache ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::createPipelineCache" );
-      }
-      return pipelineCache;
+      return createResultValue( result, pipelineCache, "vk::Device::createPipelineCache" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -13555,7 +13535,7 @@ namespace vk
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
     template <typename Allocator = std::allocator<uint8_t>>
-    std::vector<uint8_t,Allocator> getPipelineCacheData( PipelineCache pipelineCache ) const
+    typename ResultValueType<std::vector<uint8_t,Allocator>>::type getPipelineCacheData( PipelineCache pipelineCache ) const
     {
       std::vector<uint8_t,Allocator> data;
       size_t dataSize;
@@ -13565,11 +13545,7 @@ namespace vk
         data.resize( dataSize );
         result = static_cast<Result>( vkGetPipelineCacheData( m_device, static_cast<VkPipelineCache>( pipelineCache ), &dataSize, reinterpret_cast<void*>( data.data() ) ) );
       }
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::getPipelineCacheData" );
-      }
-      return data;
+      return createResultValue( result, data, "vk::Device::getPipelineCacheData" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -13579,13 +13555,10 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void mergePipelineCaches( PipelineCache dstCache, ArrayProxy<const PipelineCache> srcCaches ) const
+    ResultValueType<void>::type mergePipelineCaches( PipelineCache dstCache, ArrayProxy<const PipelineCache> srcCaches ) const
     {
       Result result = static_cast<Result>( vkMergePipelineCaches( m_device, static_cast<VkPipelineCache>( dstCache ), srcCaches.size() , reinterpret_cast<const VkPipelineCache*>( srcCaches.data() ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::mergePipelineCaches" );
-      }
+      return createResultValue( result, "vk::Device::mergePipelineCaches" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -13596,15 +13569,11 @@ namespace vk
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
     template <typename Allocator = std::allocator<Pipeline>>
-    std::vector<Pipeline,Allocator> createGraphicsPipelines( PipelineCache pipelineCache, ArrayProxy<const GraphicsPipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator = nullptr ) const
+    typename ResultValueType<std::vector<Pipeline,Allocator>>::type createGraphicsPipelines( PipelineCache pipelineCache, ArrayProxy<const GraphicsPipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       std::vector<Pipeline,Allocator> pipelines( createInfos.size() );
       Result result = static_cast<Result>( vkCreateGraphicsPipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkGraphicsPipelineCreateInfo*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkPipeline*>( pipelines.data() ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::createGraphicsPipelines" );
-      }
-      return pipelines;
+      return createResultValue( result, pipelines, "vk::Device::createGraphicsPipelines" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -13615,15 +13584,11 @@ namespace vk
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
     template <typename Allocator = std::allocator<Pipeline>>
-    std::vector<Pipeline,Allocator> createComputePipelines( PipelineCache pipelineCache, ArrayProxy<const ComputePipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator = nullptr ) const
+    typename ResultValueType<std::vector<Pipeline,Allocator>>::type createComputePipelines( PipelineCache pipelineCache, ArrayProxy<const ComputePipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       std::vector<Pipeline,Allocator> pipelines( createInfos.size() );
       Result result = static_cast<Result>( vkCreateComputePipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkComputePipelineCreateInfo*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkPipeline*>( pipelines.data() ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::createComputePipelines" );
-      }
-      return pipelines;
+      return createResultValue( result, pipelines, "vk::Device::createComputePipelines" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -13645,15 +13610,11 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    PipelineLayout createPipelineLayout( const PipelineLayoutCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
+    ResultValueType<PipelineLayout>::type createPipelineLayout( const PipelineLayoutCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       PipelineLayout pipelineLayout;
       Result result = static_cast<Result>( vkCreatePipelineLayout( m_device, reinterpret_cast<const VkPipelineLayoutCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkPipelineLayout*>( &pipelineLayout ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::createPipelineLayout" );
-      }
-      return pipelineLayout;
+      return createResultValue( result, pipelineLayout, "vk::Device::createPipelineLayout" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -13675,15 +13636,11 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    Sampler createSampler( const SamplerCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
+    ResultValueType<Sampler>::type createSampler( const SamplerCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       Sampler sampler;
       Result result = static_cast<Result>( vkCreateSampler( m_device, reinterpret_cast<const VkSamplerCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkSampler*>( &sampler ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::createSampler" );
-      }
-      return sampler;
+      return createResultValue( result, sampler, "vk::Device::createSampler" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -13705,15 +13662,11 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    DescriptorSetLayout createDescriptorSetLayout( const DescriptorSetLayoutCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
+    ResultValueType<DescriptorSetLayout>::type createDescriptorSetLayout( const DescriptorSetLayoutCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       DescriptorSetLayout setLayout;
       Result result = static_cast<Result>( vkCreateDescriptorSetLayout( m_device, reinterpret_cast<const VkDescriptorSetLayoutCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkDescriptorSetLayout*>( &setLayout ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::createDescriptorSetLayout" );
-      }
-      return setLayout;
+      return createResultValue( result, setLayout, "vk::Device::createDescriptorSetLayout" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -13735,15 +13688,11 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    DescriptorPool createDescriptorPool( const DescriptorPoolCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
+    ResultValueType<DescriptorPool>::type createDescriptorPool( const DescriptorPoolCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       DescriptorPool descriptorPool;
       Result result = static_cast<Result>( vkCreateDescriptorPool( m_device, reinterpret_cast<const VkDescriptorPoolCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkDescriptorPool*>( &descriptorPool ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::createDescriptorPool" );
-      }
-      return descriptorPool;
+      return createResultValue( result, descriptorPool, "vk::Device::createDescriptorPool" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -13767,13 +13716,10 @@ namespace vk
 #endif /*!VKCPP_DISABLE_ENHANCED_MODE*/
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void resetDescriptorPool( DescriptorPool descriptorPool, DescriptorPoolResetFlags flags ) const
+    ResultValueType<void>::type resetDescriptorPool( DescriptorPool descriptorPool, DescriptorPoolResetFlags flags ) const
     {
       Result result = static_cast<Result>( vkResetDescriptorPool( m_device, static_cast<VkDescriptorPool>( descriptorPool ), static_cast<VkDescriptorPoolResetFlags>( flags ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::resetDescriptorPool" );
-      }
+      return createResultValue( result, "vk::Device::resetDescriptorPool" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -13784,15 +13730,11 @@ namespace vk
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
     template <typename Allocator = std::allocator<DescriptorSet>>
-    std::vector<DescriptorSet,Allocator> allocateDescriptorSets( const DescriptorSetAllocateInfo & allocateInfo ) const
+    typename ResultValueType<std::vector<DescriptorSet,Allocator>>::type allocateDescriptorSets( const DescriptorSetAllocateInfo & allocateInfo ) const
     {
       std::vector<DescriptorSet,Allocator> descriptorSets( allocateInfo.descriptorSetCount );
       Result result = static_cast<Result>( vkAllocateDescriptorSets( m_device, reinterpret_cast<const VkDescriptorSetAllocateInfo*>( &allocateInfo ), reinterpret_cast<VkDescriptorSet*>( descriptorSets.data() ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::allocateDescriptorSets" );
-      }
-      return descriptorSets;
+      return createResultValue( result, descriptorSets, "vk::Device::allocateDescriptorSets" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -13802,13 +13744,10 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void freeDescriptorSets( DescriptorPool descriptorPool, ArrayProxy<const DescriptorSet> descriptorSets ) const
+    ResultValueType<void>::type freeDescriptorSets( DescriptorPool descriptorPool, ArrayProxy<const DescriptorSet> descriptorSets ) const
     {
       Result result = static_cast<Result>( vkFreeDescriptorSets( m_device, static_cast<VkDescriptorPool>( descriptorPool ), descriptorSets.size() , reinterpret_cast<const VkDescriptorSet*>( descriptorSets.data() ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::freeDescriptorSets" );
-      }
+      return createResultValue( result, "vk::Device::freeDescriptorSets" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -13830,15 +13769,11 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    Framebuffer createFramebuffer( const FramebufferCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
+    ResultValueType<Framebuffer>::type createFramebuffer( const FramebufferCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       Framebuffer framebuffer;
       Result result = static_cast<Result>( vkCreateFramebuffer( m_device, reinterpret_cast<const VkFramebufferCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkFramebuffer*>( &framebuffer ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::createFramebuffer" );
-      }
-      return framebuffer;
+      return createResultValue( result, framebuffer, "vk::Device::createFramebuffer" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -13860,15 +13795,11 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    RenderPass createRenderPass( const RenderPassCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
+    ResultValueType<RenderPass>::type createRenderPass( const RenderPassCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       RenderPass renderPass;
       Result result = static_cast<Result>( vkCreateRenderPass( m_device, reinterpret_cast<const VkRenderPassCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkRenderPass*>( &renderPass ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::createRenderPass" );
-      }
-      return renderPass;
+      return createResultValue( result, renderPass, "vk::Device::createRenderPass" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -13904,15 +13835,11 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    CommandPool createCommandPool( const CommandPoolCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
+    ResultValueType<CommandPool>::type createCommandPool( const CommandPoolCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       CommandPool commandPool;
       Result result = static_cast<Result>( vkCreateCommandPool( m_device, reinterpret_cast<const VkCommandPoolCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkCommandPool*>( &commandPool ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::createCommandPool" );
-      }
-      return commandPool;
+      return createResultValue( result, commandPool, "vk::Device::createCommandPool" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -13936,13 +13863,10 @@ namespace vk
 #endif /*!VKCPP_DISABLE_ENHANCED_MODE*/
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    void resetCommandPool( CommandPool commandPool, CommandPoolResetFlags flags ) const
+    ResultValueType<void>::type resetCommandPool( CommandPool commandPool, CommandPoolResetFlags flags ) const
     {
       Result result = static_cast<Result>( vkResetCommandPool( m_device, static_cast<VkCommandPool>( commandPool ), static_cast<VkCommandPoolResetFlags>( flags ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::resetCommandPool" );
-      }
+      return createResultValue( result, "vk::Device::resetCommandPool" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -13953,15 +13877,11 @@ namespace vk
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
     template <typename Allocator = std::allocator<CommandBuffer>>
-    std::vector<CommandBuffer,Allocator> allocateCommandBuffers( const CommandBufferAllocateInfo & allocateInfo ) const
+    typename ResultValueType<std::vector<CommandBuffer,Allocator>>::type allocateCommandBuffers( const CommandBufferAllocateInfo & allocateInfo ) const
     {
       std::vector<CommandBuffer,Allocator> commandBuffers( allocateInfo.commandBufferCount );
       Result result = static_cast<Result>( vkAllocateCommandBuffers( m_device, reinterpret_cast<const VkCommandBufferAllocateInfo*>( &allocateInfo ), reinterpret_cast<VkCommandBuffer*>( commandBuffers.data() ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::allocateCommandBuffers" );
-      }
-      return commandBuffers;
+      return createResultValue( result, commandBuffers, "vk::Device::allocateCommandBuffers" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -13984,15 +13904,11 @@ namespace vk
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
     template <typename Allocator = std::allocator<SwapchainKHR>>
-    std::vector<SwapchainKHR,Allocator> createSharedSwapchainsKHR( ArrayProxy<const SwapchainCreateInfoKHR> createInfos, Optional<const AllocationCallbacks> allocator = nullptr ) const
+    typename ResultValueType<std::vector<SwapchainKHR,Allocator>>::type createSharedSwapchainsKHR( ArrayProxy<const SwapchainCreateInfoKHR> createInfos, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       std::vector<SwapchainKHR,Allocator> swapchains( createInfos.size() );
       Result result = static_cast<Result>( vkCreateSharedSwapchainsKHR( m_device, createInfos.size() , reinterpret_cast<const VkSwapchainCreateInfoKHR*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkSwapchainKHR*>( swapchains.data() ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::createSharedSwapchainsKHR" );
-      }
-      return swapchains;
+      return createResultValue( result, swapchains, "vk::Device::createSharedSwapchainsKHR" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -14002,15 +13918,11 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    SwapchainKHR createSwapchainKHR( const SwapchainCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
+    ResultValueType<SwapchainKHR>::type createSwapchainKHR( const SwapchainCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       SwapchainKHR swapchain;
       Result result = static_cast<Result>( vkCreateSwapchainKHR( m_device, reinterpret_cast<const VkSwapchainCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkSwapchainKHR*>( &swapchain ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::createSwapchainKHR" );
-      }
-      return swapchain;
+      return createResultValue( result, swapchain, "vk::Device::createSwapchainKHR" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -14033,7 +13945,7 @@ namespace vk
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
     template <typename Allocator = std::allocator<Image>>
-    std::vector<Image,Allocator> getSwapchainImagesKHR( SwapchainKHR swapchain ) const
+    typename ResultValueType<std::vector<Image,Allocator>>::type getSwapchainImagesKHR( SwapchainKHR swapchain ) const
     {
       std::vector<Image,Allocator> swapchainImages;
       uint32_t swapchainImageCount;
@@ -14047,11 +13959,7 @@ namespace vk
           result = static_cast<Result>( vkGetSwapchainImagesKHR( m_device, static_cast<VkSwapchainKHR>( swapchain ), &swapchainImageCount, reinterpret_cast<VkImage*>( swapchainImages.data() ) ) );
         }
       } while ( result == Result::eIncomplete );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Device::getSwapchainImagesKHR" );
-      }
-      return swapchainImages;
+      return createResultValue( result, swapchainImages, "vk::Device::getSwapchainImagesKHR" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -14061,14 +13969,11 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    Result acquireNextImageKHR( SwapchainKHR swapchain, uint64_t timeout, Semaphore semaphore, Fence fence, uint32_t & imageIndex ) const
+    ResultValue<uint32_t> acquireNextImageKHR( SwapchainKHR swapchain, uint64_t timeout, Semaphore semaphore, Fence fence ) const
     {
+      uint32_t imageIndex;
       Result result = static_cast<Result>( vkAcquireNextImageKHR( m_device, static_cast<VkSwapchainKHR>( swapchain ), timeout, static_cast<VkSemaphore>( semaphore ), static_cast<VkFence>( fence ), &imageIndex ) );
-      if ( ( result != Result::eSuccess ) && ( result != Result::eTimeout ) && ( result != Result::eNotReady ) && ( result != Result::eSuboptimalKHR ) )
-      {
-        throw std::system_error( result, "vk::Device::acquireNextImageKHR" );
-      }
-      return result;
+      return createResultValue( result, imageIndex, "vk::Device::acquireNextImageKHR", { Result::eSuccess, Result::eTimeout, Result::eNotReady, Result::eSuboptimalKHR } );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -14194,15 +14099,11 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    ImageFormatProperties getImageFormatProperties( Format format, ImageType type, ImageTiling tiling, ImageUsageFlags usage, ImageCreateFlags flags ) const
+    ResultValueType<ImageFormatProperties>::type getImageFormatProperties( Format format, ImageType type, ImageTiling tiling, ImageUsageFlags usage, ImageCreateFlags flags ) const
     {
       ImageFormatProperties imageFormatProperties;
       Result result = static_cast<Result>( vkGetPhysicalDeviceImageFormatProperties( m_physicalDevice, static_cast<VkFormat>( format ), static_cast<VkImageType>( type ), static_cast<VkImageTiling>( tiling ), static_cast<VkImageUsageFlags>( usage ), static_cast<VkImageCreateFlags>( flags ), reinterpret_cast<VkImageFormatProperties*>( &imageFormatProperties ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::PhysicalDevice::getImageFormatProperties" );
-      }
-      return imageFormatProperties;
+      return createResultValue( result, imageFormatProperties, "vk::PhysicalDevice::getImageFormatProperties" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -14212,15 +14113,11 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    Device createDevice( const DeviceCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
+    ResultValueType<Device>::type createDevice( const DeviceCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       Device device;
       Result result = static_cast<Result>( vkCreateDevice( m_physicalDevice, reinterpret_cast<const VkDeviceCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkDevice*>( &device ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::PhysicalDevice::createDevice" );
-      }
-      return device;
+      return createResultValue( result, device, "vk::PhysicalDevice::createDevice" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -14231,7 +14128,7 @@ namespace vk
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
     template <typename Allocator = std::allocator<LayerProperties>>
-    std::vector<LayerProperties,Allocator> enumerateDeviceLayerProperties() const
+    typename ResultValueType<std::vector<LayerProperties,Allocator>>::type enumerateDeviceLayerProperties() const
     {
       std::vector<LayerProperties,Allocator> properties;
       uint32_t propertyCount;
@@ -14245,11 +14142,7 @@ namespace vk
           result = static_cast<Result>( vkEnumerateDeviceLayerProperties( m_physicalDevice, &propertyCount, reinterpret_cast<VkLayerProperties*>( properties.data() ) ) );
         }
       } while ( result == Result::eIncomplete );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::PhysicalDevice::enumerateDeviceLayerProperties" );
-      }
-      return properties;
+      return createResultValue( result, properties, "vk::PhysicalDevice::enumerateDeviceLayerProperties" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -14260,7 +14153,7 @@ namespace vk
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
     template <typename Allocator = std::allocator<ExtensionProperties>>
-    std::vector<ExtensionProperties,Allocator> enumerateDeviceExtensionProperties( Optional<const std::string> layerName = nullptr ) const
+    typename ResultValueType<std::vector<ExtensionProperties,Allocator>>::type enumerateDeviceExtensionProperties( Optional<const std::string> layerName = nullptr ) const
     {
       std::vector<ExtensionProperties,Allocator> properties;
       uint32_t propertyCount;
@@ -14274,11 +14167,7 @@ namespace vk
           result = static_cast<Result>( vkEnumerateDeviceExtensionProperties( m_physicalDevice, layerName ? layerName->c_str() : nullptr, &propertyCount, reinterpret_cast<VkExtensionProperties*>( properties.data() ) ) );
         }
       } while ( result == Result::eIncomplete );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::PhysicalDevice::enumerateDeviceExtensionProperties" );
-      }
-      return properties;
+      return createResultValue( result, properties, "vk::PhysicalDevice::enumerateDeviceExtensionProperties" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -14307,7 +14196,7 @@ namespace vk
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
     template <typename Allocator = std::allocator<DisplayPropertiesKHR>>
-    std::vector<DisplayPropertiesKHR,Allocator> getDisplayPropertiesKHR() const
+    typename ResultValueType<std::vector<DisplayPropertiesKHR,Allocator>>::type getDisplayPropertiesKHR() const
     {
       std::vector<DisplayPropertiesKHR,Allocator> properties;
       uint32_t propertyCount;
@@ -14321,11 +14210,7 @@ namespace vk
           result = static_cast<Result>( vkGetPhysicalDeviceDisplayPropertiesKHR( m_physicalDevice, &propertyCount, reinterpret_cast<VkDisplayPropertiesKHR*>( properties.data() ) ) );
         }
       } while ( result == Result::eIncomplete );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::PhysicalDevice::getDisplayPropertiesKHR" );
-      }
-      return properties;
+      return createResultValue( result, properties, "vk::PhysicalDevice::getDisplayPropertiesKHR" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -14336,7 +14221,7 @@ namespace vk
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
     template <typename Allocator = std::allocator<DisplayPlanePropertiesKHR>>
-    std::vector<DisplayPlanePropertiesKHR,Allocator> getDisplayPlanePropertiesKHR() const
+    typename ResultValueType<std::vector<DisplayPlanePropertiesKHR,Allocator>>::type getDisplayPlanePropertiesKHR() const
     {
       std::vector<DisplayPlanePropertiesKHR,Allocator> properties;
       uint32_t propertyCount;
@@ -14350,11 +14235,7 @@ namespace vk
           result = static_cast<Result>( vkGetPhysicalDeviceDisplayPlanePropertiesKHR( m_physicalDevice, &propertyCount, reinterpret_cast<VkDisplayPlanePropertiesKHR*>( properties.data() ) ) );
         }
       } while ( result == Result::eIncomplete );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::PhysicalDevice::getDisplayPlanePropertiesKHR" );
-      }
-      return properties;
+      return createResultValue( result, properties, "vk::PhysicalDevice::getDisplayPlanePropertiesKHR" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -14365,7 +14246,7 @@ namespace vk
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
     template <typename Allocator = std::allocator<DisplayKHR>>
-    std::vector<DisplayKHR,Allocator> getDisplayPlaneSupportedDisplaysKHR( uint32_t planeIndex ) const
+    typename ResultValueType<std::vector<DisplayKHR,Allocator>>::type getDisplayPlaneSupportedDisplaysKHR( uint32_t planeIndex ) const
     {
       std::vector<DisplayKHR,Allocator> displays;
       uint32_t displayCount;
@@ -14379,11 +14260,7 @@ namespace vk
           result = static_cast<Result>( vkGetDisplayPlaneSupportedDisplaysKHR( m_physicalDevice, planeIndex, &displayCount, reinterpret_cast<VkDisplayKHR*>( displays.data() ) ) );
         }
       } while ( result == Result::eIncomplete );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::PhysicalDevice::getDisplayPlaneSupportedDisplaysKHR" );
-      }
-      return displays;
+      return createResultValue( result, displays, "vk::PhysicalDevice::getDisplayPlaneSupportedDisplaysKHR" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -14394,7 +14271,7 @@ namespace vk
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
     template <typename Allocator = std::allocator<DisplayModePropertiesKHR>>
-    std::vector<DisplayModePropertiesKHR,Allocator> getDisplayModePropertiesKHR( DisplayKHR display ) const
+    typename ResultValueType<std::vector<DisplayModePropertiesKHR,Allocator>>::type getDisplayModePropertiesKHR( DisplayKHR display ) const
     {
       std::vector<DisplayModePropertiesKHR,Allocator> properties;
       uint32_t propertyCount;
@@ -14408,11 +14285,7 @@ namespace vk
           result = static_cast<Result>( vkGetDisplayModePropertiesKHR( m_physicalDevice, static_cast<VkDisplayKHR>( display ), &propertyCount, reinterpret_cast<VkDisplayModePropertiesKHR*>( properties.data() ) ) );
         }
       } while ( result == Result::eIncomplete );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::PhysicalDevice::getDisplayModePropertiesKHR" );
-      }
-      return properties;
+      return createResultValue( result, properties, "vk::PhysicalDevice::getDisplayModePropertiesKHR" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -14422,15 +14295,11 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    DisplayModeKHR createDisplayModeKHR( DisplayKHR display, const DisplayModeCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
+    ResultValueType<DisplayModeKHR>::type createDisplayModeKHR( DisplayKHR display, const DisplayModeCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       DisplayModeKHR mode;
       Result result = static_cast<Result>( vkCreateDisplayModeKHR( m_physicalDevice, static_cast<VkDisplayKHR>( display ), reinterpret_cast<const VkDisplayModeCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkDisplayModeKHR*>( &mode ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::PhysicalDevice::createDisplayModeKHR" );
-      }
-      return mode;
+      return createResultValue( result, mode, "vk::PhysicalDevice::createDisplayModeKHR" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -14440,15 +14309,11 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    DisplayPlaneCapabilitiesKHR getDisplayPlaneCapabilitiesKHR( DisplayModeKHR mode, uint32_t planeIndex ) const
+    ResultValueType<DisplayPlaneCapabilitiesKHR>::type getDisplayPlaneCapabilitiesKHR( DisplayModeKHR mode, uint32_t planeIndex ) const
     {
       DisplayPlaneCapabilitiesKHR capabilities;
       Result result = static_cast<Result>( vkGetDisplayPlaneCapabilitiesKHR( m_physicalDevice, static_cast<VkDisplayModeKHR>( mode ), planeIndex, reinterpret_cast<VkDisplayPlaneCapabilitiesKHR*>( &capabilities ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::PhysicalDevice::getDisplayPlaneCapabilitiesKHR" );
-      }
-      return capabilities;
+      return createResultValue( result, capabilities, "vk::PhysicalDevice::getDisplayPlaneCapabilitiesKHR" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -14474,15 +14339,11 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    Bool32 getSurfaceSupportKHR( uint32_t queueFamilyIndex, SurfaceKHR surface ) const
+    ResultValueType<Bool32>::type getSurfaceSupportKHR( uint32_t queueFamilyIndex, SurfaceKHR surface ) const
     {
       Bool32 supported;
       Result result = static_cast<Result>( vkGetPhysicalDeviceSurfaceSupportKHR( m_physicalDevice, queueFamilyIndex, static_cast<VkSurfaceKHR>( surface ), &supported ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::PhysicalDevice::getSurfaceSupportKHR" );
-      }
-      return supported;
+      return createResultValue( result, supported, "vk::PhysicalDevice::getSurfaceSupportKHR" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -14492,14 +14353,11 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    Result getSurfaceCapabilitiesKHR( SurfaceKHR surface, SurfaceCapabilitiesKHR & surfaceCapabilities ) const
+    ResultValue<SurfaceCapabilitiesKHR> getSurfaceCapabilitiesKHR( SurfaceKHR surface ) const
     {
+      SurfaceCapabilitiesKHR surfaceCapabilities;
       Result result = static_cast<Result>( vkGetPhysicalDeviceSurfaceCapabilitiesKHR( m_physicalDevice, static_cast<VkSurfaceKHR>( surface ), reinterpret_cast<VkSurfaceCapabilitiesKHR*>( &surfaceCapabilities ) ) );
-      if ( ( result != Result::eSuccess ) && ( result != Result::eIncomplete ) )
-      {
-        throw std::system_error( result, "vk::PhysicalDevice::getSurfaceCapabilitiesKHR" );
-      }
-      return result;
+      return createResultValue( result, surfaceCapabilities, "vk::PhysicalDevice::getSurfaceCapabilitiesKHR", { Result::eSuccess, Result::eIncomplete } );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -14510,7 +14368,7 @@ namespace vk
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
     template <typename Allocator = std::allocator<SurfaceFormatKHR>>
-    std::vector<SurfaceFormatKHR,Allocator> getSurfaceFormatsKHR( SurfaceKHR surface ) const
+    typename ResultValueType<std::vector<SurfaceFormatKHR,Allocator>>::type getSurfaceFormatsKHR( SurfaceKHR surface ) const
     {
       std::vector<SurfaceFormatKHR,Allocator> surfaceFormats;
       uint32_t surfaceFormatCount;
@@ -14524,11 +14382,7 @@ namespace vk
           result = static_cast<Result>( vkGetPhysicalDeviceSurfaceFormatsKHR( m_physicalDevice, static_cast<VkSurfaceKHR>( surface ), &surfaceFormatCount, reinterpret_cast<VkSurfaceFormatKHR*>( surfaceFormats.data() ) ) );
         }
       } while ( result == Result::eIncomplete );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::PhysicalDevice::getSurfaceFormatsKHR" );
-      }
-      return surfaceFormats;
+      return createResultValue( result, surfaceFormats, "vk::PhysicalDevice::getSurfaceFormatsKHR" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -14539,7 +14393,7 @@ namespace vk
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
     template <typename Allocator = std::allocator<PresentModeKHR>>
-    std::vector<PresentModeKHR,Allocator> getSurfacePresentModesKHR( SurfaceKHR surface ) const
+    typename ResultValueType<std::vector<PresentModeKHR,Allocator>>::type getSurfacePresentModesKHR( SurfaceKHR surface ) const
     {
       std::vector<PresentModeKHR,Allocator> presentModes;
       uint32_t presentModeCount;
@@ -14553,11 +14407,7 @@ namespace vk
           result = static_cast<Result>( vkGetPhysicalDeviceSurfacePresentModesKHR( m_physicalDevice, static_cast<VkSurfaceKHR>( surface ), &presentModeCount, reinterpret_cast<VkPresentModeKHR*>( presentModes.data() ) ) );
         }
       } while ( result == Result::eIncomplete );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::PhysicalDevice::getSurfacePresentModesKHR" );
-      }
-      return presentModes;
+      return createResultValue( result, presentModes, "vk::PhysicalDevice::getSurfacePresentModesKHR" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -14802,7 +14652,7 @@ namespace vk
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
     template <typename Allocator = std::allocator<PhysicalDevice>>
-    std::vector<PhysicalDevice,Allocator> enumeratePhysicalDevices() const
+    typename ResultValueType<std::vector<PhysicalDevice,Allocator>>::type enumeratePhysicalDevices() const
     {
       std::vector<PhysicalDevice,Allocator> physicalDevices;
       uint32_t physicalDeviceCount;
@@ -14816,11 +14666,7 @@ namespace vk
           result = static_cast<Result>( vkEnumeratePhysicalDevices( m_instance, &physicalDeviceCount, reinterpret_cast<VkPhysicalDevice*>( physicalDevices.data() ) ) );
         }
       } while ( result == Result::eIncomplete );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Instance::enumeratePhysicalDevices" );
-      }
-      return physicalDevices;
+      return createResultValue( result, physicalDevices, "vk::Instance::enumeratePhysicalDevices" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -14845,15 +14691,11 @@ namespace vk
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
-    SurfaceKHR createAndroidSurfaceKHR( const AndroidSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
+    ResultValueType<SurfaceKHR>::type createAndroidSurfaceKHR( const AndroidSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       SurfaceKHR surface;
       Result result = static_cast<Result>( vkCreateAndroidSurfaceKHR( m_instance, reinterpret_cast<const VkAndroidSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Instance::createAndroidSurfaceKHR" );
-      }
-      return surface;
+      return createResultValue( result, surface, "vk::Instance::createAndroidSurfaceKHR" );
     }
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
@@ -14864,15 +14706,11 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    SurfaceKHR createDisplayPlaneSurfaceKHR( const DisplaySurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
+    ResultValueType<SurfaceKHR>::type createDisplayPlaneSurfaceKHR( const DisplaySurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       SurfaceKHR surface;
       Result result = static_cast<Result>( vkCreateDisplayPlaneSurfaceKHR( m_instance, reinterpret_cast<const VkDisplaySurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Instance::createDisplayPlaneSurfaceKHR" );
-      }
-      return surface;
+      return createResultValue( result, surface, "vk::Instance::createDisplayPlaneSurfaceKHR" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -14885,15 +14723,11 @@ namespace vk
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
 #ifdef VK_USE_PLATFORM_MIR_KHR
-    SurfaceKHR createMirSurfaceKHR( const MirSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
+    ResultValueType<SurfaceKHR>::type createMirSurfaceKHR( const MirSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       SurfaceKHR surface;
       Result result = static_cast<Result>( vkCreateMirSurfaceKHR( m_instance, reinterpret_cast<const VkMirSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Instance::createMirSurfaceKHR" );
-      }
-      return surface;
+      return createResultValue( result, surface, "vk::Instance::createMirSurfaceKHR" );
     }
 #endif /*VK_USE_PLATFORM_MIR_KHR*/
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
@@ -14919,15 +14753,11 @@ namespace vk
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
 #ifdef VK_USE_PLATFORM_WAYLAND_KHR
-    SurfaceKHR createWaylandSurfaceKHR( const WaylandSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
+    ResultValueType<SurfaceKHR>::type createWaylandSurfaceKHR( const WaylandSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       SurfaceKHR surface;
       Result result = static_cast<Result>( vkCreateWaylandSurfaceKHR( m_instance, reinterpret_cast<const VkWaylandSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Instance::createWaylandSurfaceKHR" );
-      }
-      return surface;
+      return createResultValue( result, surface, "vk::Instance::createWaylandSurfaceKHR" );
     }
 #endif /*VK_USE_PLATFORM_WAYLAND_KHR*/
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
@@ -14941,15 +14771,11 @@ namespace vk
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
 #ifdef VK_USE_PLATFORM_WIN32_KHR
-    SurfaceKHR createWin32SurfaceKHR( const Win32SurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
+    ResultValueType<SurfaceKHR>::type createWin32SurfaceKHR( const Win32SurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       SurfaceKHR surface;
       Result result = static_cast<Result>( vkCreateWin32SurfaceKHR( m_instance, reinterpret_cast<const VkWin32SurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Instance::createWin32SurfaceKHR" );
-      }
-      return surface;
+      return createResultValue( result, surface, "vk::Instance::createWin32SurfaceKHR" );
     }
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
@@ -14963,15 +14789,11 @@ namespace vk
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
 #ifdef VK_USE_PLATFORM_XLIB_KHR
-    SurfaceKHR createXlibSurfaceKHR( const XlibSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
+    ResultValueType<SurfaceKHR>::type createXlibSurfaceKHR( const XlibSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       SurfaceKHR surface;
       Result result = static_cast<Result>( vkCreateXlibSurfaceKHR( m_instance, reinterpret_cast<const VkXlibSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Instance::createXlibSurfaceKHR" );
-      }
-      return surface;
+      return createResultValue( result, surface, "vk::Instance::createXlibSurfaceKHR" );
     }
 #endif /*VK_USE_PLATFORM_XLIB_KHR*/
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
@@ -14985,15 +14807,11 @@ namespace vk
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
 #ifdef VK_USE_PLATFORM_XCB_KHR
-    SurfaceKHR createXcbSurfaceKHR( const XcbSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
+    ResultValueType<SurfaceKHR>::type createXcbSurfaceKHR( const XcbSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       SurfaceKHR surface;
       Result result = static_cast<Result>( vkCreateXcbSurfaceKHR( m_instance, reinterpret_cast<const VkXcbSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Instance::createXcbSurfaceKHR" );
-      }
-      return surface;
+      return createResultValue( result, surface, "vk::Instance::createXcbSurfaceKHR" );
     }
 #endif /*VK_USE_PLATFORM_XCB_KHR*/
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
@@ -15004,15 +14822,11 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    DebugReportCallbackEXT createDebugReportCallbackEXT( const DebugReportCallbackCreateInfoEXT & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
+    ResultValueType<DebugReportCallbackEXT>::type createDebugReportCallbackEXT( const DebugReportCallbackCreateInfoEXT & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
     {
       DebugReportCallbackEXT callback;
       Result result = static_cast<Result>( vkCreateDebugReportCallbackEXT( m_instance, reinterpret_cast<const VkDebugReportCallbackCreateInfoEXT*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkDebugReportCallbackEXT*>( &callback ) ) );
-      if ( result != Result::eSuccess )
-      {
-        throw std::system_error( result, "vk::Instance::createDebugReportCallbackEXT" );
-      }
-      return callback;
+      return createResultValue( result, callback, "vk::Instance::createDebugReportCallbackEXT" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -15075,15 +14889,11 @@ namespace vk
   }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-  inline Instance createInstance( const InstanceCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr )
+  inline ResultValueType<Instance>::type createInstance( const InstanceCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr )
   {
     Instance instance;
     Result result = static_cast<Result>( vkCreateInstance( reinterpret_cast<const VkInstanceCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkInstance*>( &instance ) ) );
-    if ( result != Result::eSuccess )
-    {
-      throw std::system_error( result, "vk::createInstance" );
-    }
-    return instance;
+    return createResultValue( result, instance, "vk::createInstance" );
   }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -15094,7 +14904,7 @@ namespace vk
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
   template <typename Allocator = std::allocator<LayerProperties>>
-  std::vector<LayerProperties,Allocator> enumerateInstanceLayerProperties()
+  typename ResultValueType<std::vector<LayerProperties,Allocator>>::type enumerateInstanceLayerProperties()
   {
     std::vector<LayerProperties,Allocator> properties;
     uint32_t propertyCount;
@@ -15108,11 +14918,7 @@ namespace vk
         result = static_cast<Result>( vkEnumerateInstanceLayerProperties( &propertyCount, reinterpret_cast<VkLayerProperties*>( properties.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    if ( result != Result::eSuccess )
-    {
-      throw std::system_error( result, "vk::enumerateInstanceLayerProperties" );
-    }
-    return properties;
+    return createResultValue( result, properties, "vk::enumerateInstanceLayerProperties" );
   }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -15123,7 +14929,7 @@ namespace vk
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
   template <typename Allocator = std::allocator<ExtensionProperties>>
-  std::vector<ExtensionProperties,Allocator> enumerateInstanceExtensionProperties( Optional<const std::string> layerName = nullptr )
+  typename ResultValueType<std::vector<ExtensionProperties,Allocator>>::type enumerateInstanceExtensionProperties( Optional<const std::string> layerName = nullptr )
   {
     std::vector<ExtensionProperties,Allocator> properties;
     uint32_t propertyCount;
@@ -15137,11 +14943,7 @@ namespace vk
         result = static_cast<Result>( vkEnumerateInstanceExtensionProperties( layerName ? layerName->c_str() : nullptr, &propertyCount, reinterpret_cast<VkExtensionProperties*>( properties.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    if ( result != Result::eSuccess )
-    {
-      throw std::system_error( result, "vk::enumerateInstanceExtensionProperties" );
-    }
-    return properties;
+    return createResultValue( result, properties, "vk::enumerateInstanceExtensionProperties" );
   }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 

@@ -141,7 +141,6 @@ parameter matches the handle. In addition to this we made a few changes to the s
 * ```const T *``` has been replaced by ```const T &``` to allow temporary objects. This is useful to pass small structures like ```vk::ClearColorValue``` or ```vk::Extent*```
 ```commandBuffer.clearColorImage(image, layout, std::array<float, 4>{1.0f, 1.0f, 1.0f, 1.0f}, {...});```
 Optional parameters are being replaced by ```Optional<T>``` which accept a type of ```const T```, ```T```, or ```const std::string```. ```nullptr``` can be used to initialize an empty ```Optional<T>```.
-* The wrapper will throw a ```std::system_error``` if a ```vk::Result``` return value is not an success code. If there's only a single success code it's not returned at all. In this case functions with a single output value do return this output value instead.
 
 Here are a few code examples:
 ```c++
@@ -176,7 +175,25 @@ Here are a few code examples:
     std::cerr << "Vulkan failure: " << e.what() << std::endl;
   }
 ```
-    
+# Exceptions and return types
+The wrapper functions will throw a ```std::system_error``` if the result of the wrapped function is not a success code.
+By defining ```VK_CPP_NO_EXCEPTIONS``` before include vk_cpp.hpp, this can be disabled.
+Depending on exceptions being enabled or disabled, the return type of some functions change.
+
+With exceptions enabled (the default) there are four different cases on the return types:
+* Just one possible success code
+* * no output value -> return type is ```void```
+* * one output value -> return type is T, which is the type of the output value
+* Multiple possible success codes
+* * no output value -> return type is ```vk::Result```
+* * one output value -> return type is a structure ```vk::ResultValue<T>``` with a member ```result``` of type ```vk::Result``` holding the actual result code, and a member ```value``` of type T, which is the type of the output value, holding that output value.
+
+With exceptions disabled, the return type of those wrapper functions where the wrapped function has just one possible success code is different:
+* no output value -> return type is ```vk::Result```
+* one output value -> return type is ```vk::ResultValue<T>```, as described above.
+
+Note: With exceptions disabled, it is the user's responsibility to check for errors!    
+
 # Usage
 To start with the C++ version of the Vulkan API download header from GIT, put it in a vulkan subdirectory and add
 ```#include <vulkan/vk_cpp.h>``` to your source code.

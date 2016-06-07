@@ -211,6 +211,9 @@ To build the header for a given vk.xml specification continue with the following
 * Use CMake to generate a solution or makefile for your favourite build environment
 * Launch the build
 
+# Samples
+Brad Davis started to port Sascha Willems Samples to vkcpp. You can find his work in his [repository](https://github.com/jherico/Vulkan).
+
 # Providing Pull Requests
 
 NVIDIA is happy to review and consider pull requests for merging into the main tree of vkcpp for bug fixes and features. Before providing a pull request to NVIDIA, please note the following:

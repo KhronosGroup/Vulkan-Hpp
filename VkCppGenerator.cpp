@@ -2736,12 +2736,23 @@ void writeTypeStruct( std::ofstream & ofs, VkData const& vkData, DependencyData 
   // the member variables
   for (size_t i = 0; i < it->second.members.size(); i++)
   {
-    ofs << "    " << it->second.members[i].type << " " << it->second.members[i].name;
-    if (!it->second.members[i].arraySize.empty())
+    if (it->second.members[i].type == "StructureType")
     {
-      ofs << "[" << it->second.members[i].arraySize << "]";
+      assert((i == 0) && (it->second.members[i].name == "sType"));
+      ofs << "  private:" << std::endl
+          << "    StructureType sType;" << std::endl
+          << std::endl
+          << "  public:" << std::endl;
     }
-    ofs << ";" << std::endl;
+    else
+    {
+      ofs << "    " << it->second.members[i].type << " " << it->second.members[i].name;
+      if (!it->second.members[i].arraySize.empty())
+      {
+        ofs << "[" << it->second.members[i].arraySize << "]";
+      }
+      ofs << ";" << std::endl;
+    }
   }
   ofs << "  };" << std::endl;
 #if 1

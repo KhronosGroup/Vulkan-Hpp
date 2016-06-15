@@ -640,8 +640,8 @@ void createDefaults( VkData const& vkData, std::map<std::string,std::string> & d
       case DependencyData::Category::UNION :        // just call the default constructor for flags, structs, and structs (which are mapped to classes)
         defaultValues[it->name] = it->name + "()";
         break;
-      case DependencyData::Category::FUNC_POINTER : // func_pointers explicitly have no default!
-        defaultValues[it->name];
+      case DependencyData::Category::FUNC_POINTER : // func_pointers default to nullptr
+        defaultValues[it->name] = "nullptr";
         break;
       case DependencyData::Category::REQUIRED :     // all required default to "0"
       case DependencyData::Category::SCALAR :       // all scalars default to "0"
@@ -2260,58 +2260,8 @@ void writeMemberData(std::ofstream & ofs, MemberData const& memberData, std::set
 
 void writeStructConstructor( std::ofstream & ofs, std::string const& name, StructData const& structData, std::set<std::string> const& vkTypes, std::map<std::string,std::string> const& defaultValues )
 {
-  // check if there is a member element with no default available
-  bool noDefault = false;
-  for (size_t i = 0; i < structData.members.size() && !noDefault; i++)
-  {
-    std::map<std::string, std::string>::const_iterator it = defaultValues.find(structData.members[i].pureType);
-    assert(it != defaultValues.end());
-    noDefault = it->second.empty();
-  }
-
-  if (!noDefault)
-  {
-    // if there's a default for all member, provide a default constructor
-    ofs << "    " << name << "()" << std::endl
-      << "      : " << name << "( ";
-    bool listedArgument = false;
-    for (size_t i = 0; i < structData.members.size(); i++)
-    {
-      if (listedArgument)
-      {
-        ofs << ", ";
-      }
-      if ((structData.members[i].name != "pNext") && (structData.members[i].name != "sType"))
-      {
-        if (structData.members[i].type.back() == '*')
-        {
-          ofs << "nullptr";
-        }
-        else
-        {
-          std::map<std::string, std::string>::const_iterator it = defaultValues.find(structData.members[i].pureType);
-          assert((it != defaultValues.end()) && !it->second.empty());
-
-          if (structData.members[i].arraySize.empty())
-          {
-            ofs << it->second;
-          }
-          else
-          {
-            ofs << "{ " << it->second << " }";
-          }
-        }
-        listedArgument = true;
-      }
-    }
-    ofs << " )" << std::endl
-        << "    {}" << std::endl
-        << std::endl;
-  }
-
-  // the constructor with all the elements as arguments
+  // the constructor with all the elements as arguments, with defaults
   ofs << "    " << name << "( ";
-  std::vector<std::string> noDefaultArgs, defaultArgs;
   bool listedArgument = false;
   for (size_t i = 0; i<structData.members.size(); i++)
   {
@@ -2321,35 +2271,40 @@ void writeStructConstructor( std::ofstream & ofs, std::string const& name, Struc
     }
     if ((structData.members[i].name != "pNext") && (structData.members[i].name != "sType"))
     {
+      std::map<std::string, std::string>::const_iterator defaultIt = defaultValues.find(structData.members[i].pureType);
+      assert(defaultIt != defaultValues.end());
       if (structData.members[i].arraySize.empty())
       {
-        ofs << structData.members[i].type + " " + structData.members[i].name << "_";
+        ofs << structData.members[i].type + " " + structData.members[i].name << "_ = " << (structData.members[i].type.back() == '*' ? "nullptr" : defaultIt->second);
       }
       else
       {
-        ofs << "std::array<" + structData.members[i].type + "," + structData.members[i].arraySize + "> const& " + structData.members[i].name << "_";
+        ofs << "std::array<" + structData.members[i].type + "," + structData.members[i].arraySize + "> const& " + structData.members[i].name << "_ = { " << defaultIt->second;
+        size_t n = atoi(structData.members[i].arraySize.c_str());
+        assert(0 < n);
+        for (size_t j = 1; j < n; j++)
+        {
+          ofs << ", " << defaultIt->second;
+        }
+        ofs << " }";
       }
       listedArgument = true;
     }
   }
   ofs << " )" << std::endl;
 
-  // the body of the constructor, copying over data from argument list into wrapped struct
-  ofs << "    {" << std::endl;
-  for ( size_t i=0 ; i<structData.members.size() ; i++ )
+  // copy over the simple arguments
+  bool firstArgument = true;
+  for (size_t i = 0; i < structData.members.size(); i++)
   {
-    if ( !structData.members[i].arraySize.empty() )
+    if (structData.members[i].arraySize.empty())
     {
-      ofs << "      memcpy( &" << structData.members[i].name << ", " << structData.members[i].name << "_.data(), " << structData.members[i].arraySize << " * sizeof( " << structData.members[i].type << " ) )";
-    }
-    else
-    {
-      ofs << "      " << structData.members[i].name << " = ";
-      if ( structData.members[i].name == "pNext" )
+      ofs << "      " << (firstArgument ? ":" : ",") << " " << structData.members[i].name << "( ";
+      if (structData.members[i].name == "pNext")
       {
         ofs << "nullptr";
       }
-      else if ( structData.members[i].name == "sType" )
+      else if (structData.members[i].name == "sType")
       {
         ofs << "StructureType::e" << name;
       }
@@ -2357,8 +2312,19 @@ void writeStructConstructor( std::ofstream & ofs, std::string const& name, Struc
       {
         ofs << structData.members[i].name << "_";
       }
+      ofs << " )" << std::endl;
+      firstArgument = false;
     }
-    ofs << ";" << std::endl;
+  }
+
+  // the body of the constructor, copying over data from argument list into wrapped struct
+  ofs << "    {" << std::endl;
+  for ( size_t i=0 ; i<structData.members.size() ; i++ )
+  {
+    if ( !structData.members[i].arraySize.empty() )
+    {
+      ofs << "      memcpy( &" << structData.members[i].name << ", " << structData.members[i].name << "_.data(), " << structData.members[i].arraySize << " * sizeof( " << structData.members[i].type << " ) );" << std::endl;
+    }
   }
   ofs << "    }" << std::endl
       << std::endl;

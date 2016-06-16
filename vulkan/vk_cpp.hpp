@@ -4624,7 +4624,10 @@ namespace vk
       return *reinterpret_cast<const VkApplicationInfo*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     const char* pApplicationName;
     uint32_t applicationVersion;
@@ -4698,7 +4701,10 @@ namespace vk
       return *reinterpret_cast<const VkDeviceQueueCreateInfo*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     DeviceQueueCreateFlags flags;
     uint32_t queueFamilyIndex;
@@ -4799,7 +4805,10 @@ namespace vk
       return *reinterpret_cast<const VkDeviceCreateInfo*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     DeviceCreateFlags flags;
     uint32_t queueCreateInfoCount;
@@ -4890,7 +4899,10 @@ namespace vk
       return *reinterpret_cast<const VkInstanceCreateInfo*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     InstanceCreateFlags flags;
     const ApplicationInfo* pApplicationInfo;
@@ -4951,7 +4963,10 @@ namespace vk
       return *reinterpret_cast<const VkMemoryAllocateInfo*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     DeviceSize allocationSize;
     uint32_t memoryTypeIndex;
@@ -5015,7 +5030,10 @@ namespace vk
       return *reinterpret_cast<const VkMappedMemoryRange*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     DeviceMemory memory;
     DeviceSize offset;
@@ -5115,7 +5133,10 @@ namespace vk
       return *reinterpret_cast<const VkWriteDescriptorSet*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     DescriptorSet dstSet;
     uint32_t dstBinding;
@@ -5213,7 +5234,10 @@ namespace vk
       return *reinterpret_cast<const VkCopyDescriptorSet*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     DescriptorSet srcSet;
     uint32_t srcBinding;
@@ -5296,7 +5320,10 @@ namespace vk
       return *reinterpret_cast<const VkBufferViewCreateInfo*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     BufferViewCreateFlags flags;
     Buffer buffer;
@@ -5363,7 +5390,10 @@ namespace vk
       return *reinterpret_cast<const VkShaderModuleCreateInfo*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     ShaderModuleCreateFlags flags;
     size_t codeSize;
@@ -5428,7 +5458,10 @@ namespace vk
       return *reinterpret_cast<const VkDescriptorSetAllocateInfo*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     DescriptorPool descriptorPool;
     uint32_t descriptorSetCount;
@@ -5507,7 +5540,10 @@ namespace vk
       return *reinterpret_cast<const VkPipelineVertexInputStateCreateInfo*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     PipelineVertexInputStateCreateFlags flags;
     uint32_t vertexBindingDescriptionCount;
@@ -5574,7 +5610,10 @@ namespace vk
       return *reinterpret_cast<const VkPipelineInputAssemblyStateCreateInfo*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     PipelineInputAssemblyStateCreateFlags flags;
     PrimitiveTopology topology;
@@ -5632,7 +5671,10 @@ namespace vk
       return *reinterpret_cast<const VkPipelineTessellationStateCreateInfo*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     PipelineTessellationStateCreateFlags flags;
     uint32_t patchControlPoints;
@@ -5710,7 +5752,10 @@ namespace vk
       return *reinterpret_cast<const VkPipelineViewportStateCreateInfo*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     PipelineViewportStateCreateFlags flags;
     uint32_t viewportCount;
@@ -5833,7 +5878,10 @@ namespace vk
       return *reinterpret_cast<const VkPipelineRasterizationStateCreateInfo*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     PipelineRasterizationStateCreateFlags flags;
     Bool32 depthClampEnable;
@@ -5955,7 +6003,10 @@ namespace vk
       return *reinterpret_cast<const VkPipelineDepthStencilStateCreateInfo*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     PipelineDepthStencilStateCreateFlags flags;
     Bool32 depthTestEnable;
@@ -6027,7 +6078,10 @@ namespace vk
       return *reinterpret_cast<const VkPipelineCacheCreateInfo*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     PipelineCacheCreateFlags flags;
     size_t initialDataSize;
@@ -6183,7 +6237,10 @@ namespace vk
       return *reinterpret_cast<const VkSamplerCreateInfo*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     SamplerCreateFlags flags;
     Filter magFilter;
@@ -6261,7 +6318,10 @@ namespace vk
       return *reinterpret_cast<const VkCommandBufferAllocateInfo*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     CommandPool commandPool;
     CommandBufferLevel level;
@@ -6340,7 +6400,10 @@ namespace vk
       return *reinterpret_cast<const VkRenderPassBeginInfo*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     RenderPass renderPass;
     Framebuffer framebuffer;
@@ -6393,7 +6456,10 @@ namespace vk
       return *reinterpret_cast<const VkEventCreateInfo*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     EventCreateFlags flags;
   };
@@ -6442,7 +6508,10 @@ namespace vk
       return *reinterpret_cast<const VkSemaphoreCreateInfo*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     SemaphoreCreateFlags flags;
   };
@@ -6533,7 +6602,10 @@ namespace vk
       return *reinterpret_cast<const VkFramebufferCreateInfo*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     FramebufferCreateFlags flags;
     RenderPass renderPass;
@@ -6595,7 +6667,10 @@ namespace vk
       return *reinterpret_cast<const VkDisplayModeCreateInfoKHR*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     DisplayModeCreateFlagsKHR flags;
     DisplayModeParametersKHR parameters;
@@ -6659,7 +6734,10 @@ namespace vk
       return *reinterpret_cast<const VkDisplayPresentInfoKHR*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     Rect2D srcRect;
     Rect2D dstRect;
@@ -6718,7 +6796,10 @@ namespace vk
       return *reinterpret_cast<const VkAndroidSurfaceCreateInfoKHR*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     AndroidSurfaceCreateFlagsKHR flags;
     ANativeWindow* window;
@@ -6784,7 +6865,10 @@ namespace vk
       return *reinterpret_cast<const VkMirSurfaceCreateInfoKHR*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     MirSurfaceCreateFlagsKHR flags;
     MirConnection* connection;
@@ -6851,7 +6935,10 @@ namespace vk
       return *reinterpret_cast<const VkWaylandSurfaceCreateInfoKHR*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     WaylandSurfaceCreateFlagsKHR flags;
     struct wl_display* display;
@@ -6918,7 +7005,10 @@ namespace vk
       return *reinterpret_cast<const VkWin32SurfaceCreateInfoKHR*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     Win32SurfaceCreateFlagsKHR flags;
     HINSTANCE hinstance;
@@ -6985,7 +7075,10 @@ namespace vk
       return *reinterpret_cast<const VkXlibSurfaceCreateInfoKHR*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     XlibSurfaceCreateFlagsKHR flags;
     Display* dpy;
@@ -7052,7 +7145,10 @@ namespace vk
       return *reinterpret_cast<const VkXcbSurfaceCreateInfoKHR*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     XcbSurfaceCreateFlagsKHR flags;
     xcb_connection_t* connection;
@@ -7145,7 +7241,10 @@ namespace vk
       return *reinterpret_cast<const VkPresentInfoKHR*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     uint32_t waitSemaphoreCount;
     const Semaphore* pWaitSemaphores;
@@ -7226,7 +7325,10 @@ namespace vk
       return *reinterpret_cast<const VkPipelineDynamicStateCreateInfo*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     PipelineDynamicStateCreateFlags flags;
     uint32_t dynamicStateCount;
@@ -7407,7 +7509,10 @@ namespace vk
       return *reinterpret_cast<const VkMemoryBarrier*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     AccessFlags srcAccessMask;
     AccessFlags dstAccessMask;
@@ -7499,7 +7604,10 @@ namespace vk
       return *reinterpret_cast<const VkBufferMemoryBarrier*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     AccessFlags srcAccessMask;
     AccessFlags dstAccessMask;
@@ -7623,7 +7731,10 @@ namespace vk
       return *reinterpret_cast<const VkBufferCreateInfo*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     BufferCreateFlags flags;
     DeviceSize size;
@@ -7775,7 +7886,10 @@ namespace vk
       return *reinterpret_cast<const VkDescriptorSetLayoutCreateInfo*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     DescriptorSetLayoutCreateFlags flags;
     uint32_t bindingCount;
@@ -7854,7 +7968,10 @@ namespace vk
       return *reinterpret_cast<const VkPipelineShaderStageCreateInfo*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     PipelineShaderStageCreateFlags flags;
     ShaderStageFlagBits stage;
@@ -7984,7 +8101,10 @@ namespace vk
       return *reinterpret_cast<const VkPipelineLayoutCreateInfo*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     PipelineLayoutCreateFlags flags;
     uint32_t setLayoutCount;
@@ -8114,7 +8234,10 @@ namespace vk
       return *reinterpret_cast<const VkComputePipelineCreateInfo*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     PipelineCreateFlags flags;
     PipelineShaderStageCreateInfo stage;
@@ -8306,7 +8429,10 @@ namespace vk
       return *reinterpret_cast<const VkPipelineColorBlendStateCreateInfo*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     PipelineColorBlendStateCreateFlags flags;
     Bool32 logicOpEnable;
@@ -8372,7 +8498,10 @@ namespace vk
       return *reinterpret_cast<const VkFenceCreateInfo*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     FenceCreateFlags flags;
   };
@@ -8557,7 +8686,10 @@ namespace vk
       return *reinterpret_cast<const VkCommandBufferInheritanceInfo*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     RenderPass renderPass;
     uint32_t subpass;
@@ -8618,7 +8750,10 @@ namespace vk
       return *reinterpret_cast<const VkCommandBufferBeginInfo*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     CommandBufferUsageFlags flags;
     const CommandBufferInheritanceInfo* pInheritanceInfo;
@@ -8689,7 +8824,10 @@ namespace vk
       return *reinterpret_cast<const VkQueryPoolCreateInfo*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     QueryPoolCreateFlags flags;
     QueryType queryType;
@@ -8976,7 +9114,10 @@ namespace vk
       return *reinterpret_cast<const VkImageMemoryBarrier*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     AccessFlags srcAccessMask;
     AccessFlags dstAccessMask;
@@ -9067,7 +9208,10 @@ namespace vk
       return *reinterpret_cast<const VkImageViewCreateInfo*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     ImageViewCreateFlags flags;
     Image image;
@@ -9832,7 +9976,10 @@ namespace vk
       return *reinterpret_cast<const VkBindSparseInfo*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     uint32_t waitSemaphoreCount;
     const Semaphore* pWaitSemaphores;
@@ -9938,7 +10085,10 @@ namespace vk
       return *reinterpret_cast<const VkCommandPoolCreateInfo*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     CommandPoolCreateFlags flags;
     uint32_t queueFamilyIndex;
@@ -10129,7 +10279,10 @@ namespace vk
       return *reinterpret_cast<const VkImageCreateInfo*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     ImageCreateFlags flags;
     ImageType imageType;
@@ -10232,7 +10385,10 @@ namespace vk
       return *reinterpret_cast<const VkPipelineMultisampleStateCreateInfo*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     PipelineMultisampleStateCreateFlags flags;
     SampleCountFlagBits rasterizationSamples;
@@ -10399,7 +10555,10 @@ namespace vk
       return *reinterpret_cast<const VkGraphicsPipelineCreateInfo*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     PipelineCreateFlags flags;
     uint32_t stageCount;
@@ -10755,7 +10914,10 @@ namespace vk
       return *reinterpret_cast<const VkDescriptorPoolCreateInfo*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     DescriptorPoolCreateFlags flags;
     uint32_t maxSets;
@@ -11616,7 +11778,10 @@ namespace vk
       return *reinterpret_cast<const VkRenderPassCreateInfo*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     RenderPassCreateFlags flags;
     uint32_t attachmentCount;
@@ -11713,7 +11878,10 @@ namespace vk
       return *reinterpret_cast<const VkSubmitInfo*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     uint32_t waitSemaphoreCount;
     const Semaphore* pWaitSemaphores;
@@ -12195,7 +12363,10 @@ namespace vk
       return *reinterpret_cast<const VkDisplaySurfaceCreateInfoKHR*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     DisplaySurfaceCreateFlagsKHR flags;
     DisplayModeKHR displayMode;
@@ -12461,7 +12632,10 @@ namespace vk
       return *reinterpret_cast<const VkSwapchainCreateInfoKHR*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     SwapchainCreateFlagsKHR flags;
     SurfaceKHR surface;
@@ -14145,7 +14319,10 @@ namespace vk
       return *reinterpret_cast<const VkDebugReportCallbackCreateInfoEXT*>(this);
     }
 
+  private:
     StructureType sType;
+
+  public:
     const void* pNext;
     DebugReportFlagsEXT flags;
     PFN_vkDebugReportCallbackEXT pfnCallback;

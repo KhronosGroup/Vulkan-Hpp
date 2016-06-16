@@ -63,7 +63,7 @@
 # include <vector>
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
-static_assert( VK_HEADER_VERSION ==  11 , "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION ==  13 , "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VK_CPP_TYPESAFE_CONVERSION
@@ -4550,7 +4550,11 @@ namespace vk
     eMirSurfaceCreateInfoKHR = VK_STRUCTURE_TYPE_MIR_SURFACE_CREATE_INFO_KHR,
     eAndroidSurfaceCreateInfoKHR = VK_STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR,
     eWin32SurfaceCreateInfoKHR = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR,
-    eDebugReportCallbackCreateInfoEXT = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT
+    eDebugReportCallbackCreateInfoEXT = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT,
+    ePipelineRasterizationStateRasterizationOrderAMD = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_RASTERIZATION_ORDER_AMD,
+    eDebugMarkerObjectNameInfoEXT = VK_STRUCTURE_TYPE_DEBUG_MARKER_OBJECT_NAME_INFO_EXT,
+    eDebugMarkerObjectTagInfoEXT = VK_STRUCTURE_TYPE_DEBUG_MARKER_OBJECT_TAG_INFO_EXT,
+    eDebugMarkerMarkerInfoEXT = VK_STRUCTURE_TYPE_DEBUG_MARKER_MARKER_INFO_EXT
   };
 
   struct ApplicationInfo
@@ -7156,6 +7160,66 @@ namespace vk
   };
   static_assert( sizeof( XcbSurfaceCreateInfoKHR ) == sizeof( VkXcbSurfaceCreateInfoKHR ), "struct and wrapper have different size!" );
 #endif /*VK_USE_PLATFORM_XCB_KHR*/
+
+  struct DebugMarkerMarkerInfoEXT
+  {
+    DebugMarkerMarkerInfoEXT( const char* pMarkerName_ = nullptr, std::array<float,4> const& color_ = { 0, 0, 0, 0 } )
+      : sType( StructureType::eDebugMarkerMarkerInfoEXT )
+      , pNext( nullptr )
+      , pMarkerName( pMarkerName_ )
+    {
+      memcpy( &color, color_.data(), 4 * sizeof( float ) );
+    }
+
+    DebugMarkerMarkerInfoEXT( VkDebugMarkerMarkerInfoEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof(DebugMarkerMarkerInfoEXT) );
+    }
+
+    DebugMarkerMarkerInfoEXT& operator=( VkDebugMarkerMarkerInfoEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof(DebugMarkerMarkerInfoEXT) );
+      return *this;
+    }
+
+    DebugMarkerMarkerInfoEXT& setSType( StructureType sType_ )
+    {
+      sType = sType_;
+      return *this;
+    }
+
+    DebugMarkerMarkerInfoEXT& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    DebugMarkerMarkerInfoEXT& setPMarkerName( const char* pMarkerName_ )
+    {
+      pMarkerName = pMarkerName_;
+      return *this;
+    }
+
+    DebugMarkerMarkerInfoEXT& setColor( std::array<float,4> color_ )
+    {
+      memcpy( &color, color_.data(), 4 * sizeof( float ) );
+      return *this;
+    }
+
+    operator const VkDebugMarkerMarkerInfoEXT&() const
+    {
+      return *reinterpret_cast<const VkDebugMarkerMarkerInfoEXT*>(this);
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    const void* pNext;
+    const char* pMarkerName;
+    float color[4];
+  };
+  static_assert( sizeof( DebugMarkerMarkerInfoEXT ) == sizeof( VkDebugMarkerMarkerInfoEXT ), "struct and wrapper have different size!" );
 
   enum class SubpassContents
   {
@@ -11589,6 +11653,48 @@ namespace vk
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
+    void debugMarkerBeginEXT( DebugMarkerMarkerInfoEXT* pMarkerInfo ) const
+    {
+      vkCmdDebugMarkerBeginEXT( m_commandBuffer, reinterpret_cast<VkDebugMarkerMarkerInfoEXT*>( pMarkerInfo ) );
+    }
+
+#ifndef VKCPP_DISABLE_ENHANCED_MODE
+    DebugMarkerMarkerInfoEXT debugMarkerBeginEXT() const
+    {
+      DebugMarkerMarkerInfoEXT markerInfo;
+      vkCmdDebugMarkerBeginEXT( m_commandBuffer, reinterpret_cast<VkDebugMarkerMarkerInfoEXT*>( &markerInfo ) );
+      return markerInfo;
+    }
+#endif /*VKCPP_DISABLE_ENHANCED_MODE*/
+
+#ifdef VKCPP_DISABLE_ENHANCED_MODE
+    void debugMarkerEndEXT(  ) const
+    {
+      vkCmdDebugMarkerEndEXT( m_commandBuffer );
+    }
+#endif /*!VKCPP_DISABLE_ENHANCED_MODE*/
+
+#ifndef VKCPP_DISABLE_ENHANCED_MODE
+    void debugMarkerEndEXT() const
+    {
+      vkCmdDebugMarkerEndEXT( m_commandBuffer );
+    }
+#endif /*VKCPP_DISABLE_ENHANCED_MODE*/
+
+    void debugMarkerInsertEXT( DebugMarkerMarkerInfoEXT* pMarkerInfo ) const
+    {
+      vkCmdDebugMarkerInsertEXT( m_commandBuffer, reinterpret_cast<VkDebugMarkerMarkerInfoEXT*>( pMarkerInfo ) );
+    }
+
+#ifndef VKCPP_DISABLE_ENHANCED_MODE
+    DebugMarkerMarkerInfoEXT debugMarkerInsertEXT() const
+    {
+      DebugMarkerMarkerInfoEXT markerInfo;
+      vkCmdDebugMarkerInsertEXT( m_commandBuffer, reinterpret_cast<VkDebugMarkerMarkerInfoEXT*>( &markerInfo ) );
+      return markerInfo;
+    }
+#endif /*VKCPP_DISABLE_ENHANCED_MODE*/
+
 #if !defined(VK_CPP_TYPESAFE_CONVERSION)
     explicit
 #endif
@@ -11999,12 +12105,12 @@ namespace vk
 
   enum class ColorSpaceKHR
   {
-    eVkColorspaceSrgbNonlinear = VK_COLORSPACE_SRGB_NONLINEAR_KHR
+    eSrgbNonlinear = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR
   };
 
   struct SurfaceFormatKHR
   {
-    SurfaceFormatKHR( Format format_ = Format::eUndefined, ColorSpaceKHR colorSpace_ = ColorSpaceKHR::eVkColorspaceSrgbNonlinear )
+    SurfaceFormatKHR( Format format_ = Format::eUndefined, ColorSpaceKHR colorSpace_ = ColorSpaceKHR::eSrgbNonlinear )
       : format( format_ )
       , colorSpace( colorSpace_ )
     {
@@ -12486,7 +12592,7 @@ namespace vk
 
   struct SwapchainCreateInfoKHR
   {
-    SwapchainCreateInfoKHR( SwapchainCreateFlagsKHR flags_ = SwapchainCreateFlagsKHR(), SurfaceKHR surface_ = SurfaceKHR(), uint32_t minImageCount_ = 0, Format imageFormat_ = Format::eUndefined, ColorSpaceKHR imageColorSpace_ = ColorSpaceKHR::eVkColorspaceSrgbNonlinear, Extent2D imageExtent_ = Extent2D(), uint32_t imageArrayLayers_ = 0, ImageUsageFlags imageUsage_ = ImageUsageFlags(), SharingMode imageSharingMode_ = SharingMode::eExclusive, uint32_t queueFamilyIndexCount_ = 0, const uint32_t* pQueueFamilyIndices_ = nullptr, SurfaceTransformFlagBitsKHR preTransform_ = SurfaceTransformFlagBitsKHR::eIdentity, CompositeAlphaFlagBitsKHR compositeAlpha_ = CompositeAlphaFlagBitsKHR::eOpaque, PresentModeKHR presentMode_ = PresentModeKHR::eImmediate, Bool32 clipped_ = 0, SwapchainKHR oldSwapchain_ = SwapchainKHR() )
+    SwapchainCreateInfoKHR( SwapchainCreateFlagsKHR flags_ = SwapchainCreateFlagsKHR(), SurfaceKHR surface_ = SurfaceKHR(), uint32_t minImageCount_ = 0, Format imageFormat_ = Format::eUndefined, ColorSpaceKHR imageColorSpace_ = ColorSpaceKHR::eSrgbNonlinear, Extent2D imageExtent_ = Extent2D(), uint32_t imageArrayLayers_ = 0, ImageUsageFlags imageUsage_ = ImageUsageFlags(), SharingMode imageSharingMode_ = SharingMode::eExclusive, uint32_t queueFamilyIndexCount_ = 0, const uint32_t* pQueueFamilyIndices_ = nullptr, SurfaceTransformFlagBitsKHR preTransform_ = SurfaceTransformFlagBitsKHR::eIdentity, CompositeAlphaFlagBitsKHR compositeAlpha_ = CompositeAlphaFlagBitsKHR::eOpaque, PresentModeKHR presentMode_ = PresentModeKHR::eImmediate, Bool32 clipped_ = 0, SwapchainKHR oldSwapchain_ = SwapchainKHR() )
       : sType( StructureType::eSwapchainCreateInfoKHR )
       , pNext( nullptr )
       , flags( flags_ )
@@ -12655,6 +12761,275 @@ namespace vk
     SwapchainKHR oldSwapchain;
   };
   static_assert( sizeof( SwapchainCreateInfoKHR ) == sizeof( VkSwapchainCreateInfoKHR ), "struct and wrapper have different size!" );
+
+  enum class DebugReportFlagBitsEXT
+  {
+    eInformation = VK_DEBUG_REPORT_INFORMATION_BIT_EXT,
+    eWarning = VK_DEBUG_REPORT_WARNING_BIT_EXT,
+    ePerformanceWarning = VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT,
+    eError = VK_DEBUG_REPORT_ERROR_BIT_EXT,
+    eDebug = VK_DEBUG_REPORT_DEBUG_BIT_EXT
+  };
+
+  using DebugReportFlagsEXT = Flags<DebugReportFlagBitsEXT, VkDebugReportFlagsEXT>;
+
+  inline DebugReportFlagsEXT operator|( DebugReportFlagBitsEXT bit0, DebugReportFlagBitsEXT bit1 )
+  {
+    return DebugReportFlagsEXT( bit0 ) | bit1;
+  }
+
+  struct DebugReportCallbackCreateInfoEXT
+  {
+    DebugReportCallbackCreateInfoEXT( DebugReportFlagsEXT flags_ = DebugReportFlagsEXT(), PFN_vkDebugReportCallbackEXT pfnCallback_ = nullptr, void* pUserData_ = nullptr )
+      : sType( StructureType::eDebugReportCallbackCreateInfoEXT )
+      , pNext( nullptr )
+      , flags( flags_ )
+      , pfnCallback( pfnCallback_ )
+      , pUserData( pUserData_ )
+    {
+    }
+
+    DebugReportCallbackCreateInfoEXT( VkDebugReportCallbackCreateInfoEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof(DebugReportCallbackCreateInfoEXT) );
+    }
+
+    DebugReportCallbackCreateInfoEXT& operator=( VkDebugReportCallbackCreateInfoEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof(DebugReportCallbackCreateInfoEXT) );
+      return *this;
+    }
+
+    DebugReportCallbackCreateInfoEXT& setSType( StructureType sType_ )
+    {
+      sType = sType_;
+      return *this;
+    }
+
+    DebugReportCallbackCreateInfoEXT& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    DebugReportCallbackCreateInfoEXT& setFlags( DebugReportFlagsEXT flags_ )
+    {
+      flags = flags_;
+      return *this;
+    }
+
+    DebugReportCallbackCreateInfoEXT& setPfnCallback( PFN_vkDebugReportCallbackEXT pfnCallback_ )
+    {
+      pfnCallback = pfnCallback_;
+      return *this;
+    }
+
+    DebugReportCallbackCreateInfoEXT& setPUserData( void* pUserData_ )
+    {
+      pUserData = pUserData_;
+      return *this;
+    }
+
+    operator const VkDebugReportCallbackCreateInfoEXT&() const
+    {
+      return *reinterpret_cast<const VkDebugReportCallbackCreateInfoEXT*>(this);
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    const void* pNext;
+    DebugReportFlagsEXT flags;
+    PFN_vkDebugReportCallbackEXT pfnCallback;
+    void* pUserData;
+  };
+  static_assert( sizeof( DebugReportCallbackCreateInfoEXT ) == sizeof( VkDebugReportCallbackCreateInfoEXT ), "struct and wrapper have different size!" );
+
+  enum class DebugReportObjectTypeEXT
+  {
+    eUnknown = VK_DEBUG_REPORT_OBJECT_TYPE_UNKNOWN_EXT,
+    eInstance = VK_DEBUG_REPORT_OBJECT_TYPE_INSTANCE_EXT,
+    ePhysicalDevice = VK_DEBUG_REPORT_OBJECT_TYPE_PHYSICAL_DEVICE_EXT,
+    eDevice = VK_DEBUG_REPORT_OBJECT_TYPE_DEVICE_EXT,
+    eQueue = VK_DEBUG_REPORT_OBJECT_TYPE_QUEUE_EXT,
+    eSemaphore = VK_DEBUG_REPORT_OBJECT_TYPE_SEMAPHORE_EXT,
+    eCommandBuffer = VK_DEBUG_REPORT_OBJECT_TYPE_COMMAND_BUFFER_EXT,
+    eFence = VK_DEBUG_REPORT_OBJECT_TYPE_FENCE_EXT,
+    eDeviceMemory = VK_DEBUG_REPORT_OBJECT_TYPE_DEVICE_MEMORY_EXT,
+    eBuffer = VK_DEBUG_REPORT_OBJECT_TYPE_BUFFER_EXT,
+    eImage = VK_DEBUG_REPORT_OBJECT_TYPE_IMAGE_EXT,
+    eEvent = VK_DEBUG_REPORT_OBJECT_TYPE_EVENT_EXT,
+    eQueryPool = VK_DEBUG_REPORT_OBJECT_TYPE_QUERY_POOL_EXT,
+    eBufferView = VK_DEBUG_REPORT_OBJECT_TYPE_BUFFER_VIEW_EXT,
+    eImageView = VK_DEBUG_REPORT_OBJECT_TYPE_IMAGE_VIEW_EXT,
+    eShaderModule = VK_DEBUG_REPORT_OBJECT_TYPE_SHADER_MODULE_EXT,
+    ePipelineCache = VK_DEBUG_REPORT_OBJECT_TYPE_PIPELINE_CACHE_EXT,
+    ePipelineLayout = VK_DEBUG_REPORT_OBJECT_TYPE_PIPELINE_LAYOUT_EXT,
+    eRenderPass = VK_DEBUG_REPORT_OBJECT_TYPE_RENDER_PASS_EXT,
+    ePipeline = VK_DEBUG_REPORT_OBJECT_TYPE_PIPELINE_EXT,
+    eDescriptorSetLayout = VK_DEBUG_REPORT_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT_EXT,
+    eSampler = VK_DEBUG_REPORT_OBJECT_TYPE_SAMPLER_EXT,
+    eDescriptorPool = VK_DEBUG_REPORT_OBJECT_TYPE_DESCRIPTOR_POOL_EXT,
+    eDescriptorSet = VK_DEBUG_REPORT_OBJECT_TYPE_DESCRIPTOR_SET_EXT,
+    eFramebuffer = VK_DEBUG_REPORT_OBJECT_TYPE_FRAMEBUFFER_EXT,
+    eCommandPool = VK_DEBUG_REPORT_OBJECT_TYPE_COMMAND_POOL_EXT,
+    eSurfaceKhr = VK_DEBUG_REPORT_OBJECT_TYPE_SURFACE_KHR_EXT,
+    eSwapchainKhr = VK_DEBUG_REPORT_OBJECT_TYPE_SWAPCHAIN_KHR_EXT,
+    eDebugReport = VK_DEBUG_REPORT_OBJECT_TYPE_DEBUG_REPORT_EXT
+  };
+
+  struct DebugMarkerObjectNameInfoEXT
+  {
+    DebugMarkerObjectNameInfoEXT( DebugReportObjectTypeEXT objectType_ = DebugReportObjectTypeEXT::eUnknown, uint64_t object_ = 0, const char* pObjectName_ = nullptr )
+      : sType( StructureType::eDebugMarkerObjectNameInfoEXT )
+      , pNext( nullptr )
+      , objectType( objectType_ )
+      , object( object_ )
+      , pObjectName( pObjectName_ )
+    {
+    }
+
+    DebugMarkerObjectNameInfoEXT( VkDebugMarkerObjectNameInfoEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof(DebugMarkerObjectNameInfoEXT) );
+    }
+
+    DebugMarkerObjectNameInfoEXT& operator=( VkDebugMarkerObjectNameInfoEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof(DebugMarkerObjectNameInfoEXT) );
+      return *this;
+    }
+
+    DebugMarkerObjectNameInfoEXT& setSType( StructureType sType_ )
+    {
+      sType = sType_;
+      return *this;
+    }
+
+    DebugMarkerObjectNameInfoEXT& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    DebugMarkerObjectNameInfoEXT& setObjectType( DebugReportObjectTypeEXT objectType_ )
+    {
+      objectType = objectType_;
+      return *this;
+    }
+
+    DebugMarkerObjectNameInfoEXT& setObject( uint64_t object_ )
+    {
+      object = object_;
+      return *this;
+    }
+
+    DebugMarkerObjectNameInfoEXT& setPObjectName( const char* pObjectName_ )
+    {
+      pObjectName = pObjectName_;
+      return *this;
+    }
+
+    operator const VkDebugMarkerObjectNameInfoEXT&() const
+    {
+      return *reinterpret_cast<const VkDebugMarkerObjectNameInfoEXT*>(this);
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    const void* pNext;
+    DebugReportObjectTypeEXT objectType;
+    uint64_t object;
+    const char* pObjectName;
+  };
+  static_assert( sizeof( DebugMarkerObjectNameInfoEXT ) == sizeof( VkDebugMarkerObjectNameInfoEXT ), "struct and wrapper have different size!" );
+
+  struct DebugMarkerObjectTagInfoEXT
+  {
+    DebugMarkerObjectTagInfoEXT( DebugReportObjectTypeEXT objectType_ = DebugReportObjectTypeEXT::eUnknown, uint64_t object_ = 0, uint64_t tagName_ = 0, size_t tagSize_ = 0, const void* pTag_ = nullptr )
+      : sType( StructureType::eDebugMarkerObjectTagInfoEXT )
+      , pNext( nullptr )
+      , objectType( objectType_ )
+      , object( object_ )
+      , tagName( tagName_ )
+      , tagSize( tagSize_ )
+      , pTag( pTag_ )
+    {
+    }
+
+    DebugMarkerObjectTagInfoEXT( VkDebugMarkerObjectTagInfoEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof(DebugMarkerObjectTagInfoEXT) );
+    }
+
+    DebugMarkerObjectTagInfoEXT& operator=( VkDebugMarkerObjectTagInfoEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof(DebugMarkerObjectTagInfoEXT) );
+      return *this;
+    }
+
+    DebugMarkerObjectTagInfoEXT& setSType( StructureType sType_ )
+    {
+      sType = sType_;
+      return *this;
+    }
+
+    DebugMarkerObjectTagInfoEXT& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    DebugMarkerObjectTagInfoEXT& setObjectType( DebugReportObjectTypeEXT objectType_ )
+    {
+      objectType = objectType_;
+      return *this;
+    }
+
+    DebugMarkerObjectTagInfoEXT& setObject( uint64_t object_ )
+    {
+      object = object_;
+      return *this;
+    }
+
+    DebugMarkerObjectTagInfoEXT& setTagName( uint64_t tagName_ )
+    {
+      tagName = tagName_;
+      return *this;
+    }
+
+    DebugMarkerObjectTagInfoEXT& setTagSize( size_t tagSize_ )
+    {
+      tagSize = tagSize_;
+      return *this;
+    }
+
+    DebugMarkerObjectTagInfoEXT& setPTag( const void* pTag_ )
+    {
+      pTag = pTag_;
+      return *this;
+    }
+
+    operator const VkDebugMarkerObjectTagInfoEXT&() const
+    {
+      return *reinterpret_cast<const VkDebugMarkerObjectTagInfoEXT*>(this);
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    const void* pNext;
+    DebugReportObjectTypeEXT objectType;
+    uint64_t object;
+    uint64_t tagName;
+    size_t tagSize;
+    const void* pTag;
+  };
+  static_assert( sizeof( DebugMarkerObjectTagInfoEXT ) == sizeof( VkDebugMarkerObjectTagInfoEXT ), "struct and wrapper have different size!" );
 
   class Device
   {
@@ -13723,6 +14098,34 @@ namespace vk
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
+    Result debugMarkerSetObjectNameEXT( DebugMarkerObjectNameInfoEXT* pNameInfo ) const
+    {
+      return static_cast<Result>( vkDebugMarkerSetObjectNameEXT( m_device, reinterpret_cast<VkDebugMarkerObjectNameInfoEXT*>( pNameInfo ) ) );
+    }
+
+#ifndef VKCPP_DISABLE_ENHANCED_MODE
+    ResultValueType<DebugMarkerObjectNameInfoEXT>::type debugMarkerSetObjectNameEXT() const
+    {
+      DebugMarkerObjectNameInfoEXT nameInfo;
+      Result result = static_cast<Result>( vkDebugMarkerSetObjectNameEXT( m_device, reinterpret_cast<VkDebugMarkerObjectNameInfoEXT*>( &nameInfo ) ) );
+      return createResultValue( result, nameInfo, "vk::Device::debugMarkerSetObjectNameEXT" );
+    }
+#endif /*VKCPP_DISABLE_ENHANCED_MODE*/
+
+    Result debugMarkerSetObjectTagEXT( DebugMarkerObjectTagInfoEXT* pTagInfo ) const
+    {
+      return static_cast<Result>( vkDebugMarkerSetObjectTagEXT( m_device, reinterpret_cast<VkDebugMarkerObjectTagInfoEXT*>( pTagInfo ) ) );
+    }
+
+#ifndef VKCPP_DISABLE_ENHANCED_MODE
+    ResultValueType<DebugMarkerObjectTagInfoEXT>::type debugMarkerSetObjectTagEXT() const
+    {
+      DebugMarkerObjectTagInfoEXT tagInfo;
+      Result result = static_cast<Result>( vkDebugMarkerSetObjectTagEXT( m_device, reinterpret_cast<VkDebugMarkerObjectTagInfoEXT*>( &tagInfo ) ) );
+      return createResultValue( result, tagInfo, "vk::Device::debugMarkerSetObjectTagEXT" );
+    }
+#endif /*VKCPP_DISABLE_ENHANCED_MODE*/
+
 #if !defined(VK_CPP_TYPESAFE_CONVERSION)
     explicit
 #endif
@@ -14099,11 +14502,11 @@ namespace vk
     }
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    ResultValue<SurfaceCapabilitiesKHR> getSurfaceCapabilitiesKHR( SurfaceKHR surface ) const
+    ResultValueType<SurfaceCapabilitiesKHR>::type getSurfaceCapabilitiesKHR( SurfaceKHR surface ) const
     {
       SurfaceCapabilitiesKHR surfaceCapabilities;
       Result result = static_cast<Result>( vkGetPhysicalDeviceSurfaceCapabilitiesKHR( m_physicalDevice, static_cast<VkSurfaceKHR>( surface ), reinterpret_cast<VkSurfaceCapabilitiesKHR*>( &surfaceCapabilities ) ) );
-      return createResultValue( result, surfaceCapabilities, "vk::PhysicalDevice::getSurfaceCapabilitiesKHR", { Result::eSuccess, Result::eIncomplete } );
+      return createResultValue( result, surfaceCapabilities, "vk::PhysicalDevice::getSurfaceCapabilitiesKHR" );
     }
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
@@ -14245,123 +14648,6 @@ namespace vk
     VkPhysicalDevice m_physicalDevice;
   };
   static_assert( sizeof( PhysicalDevice ) == sizeof( VkPhysicalDevice ), "handle and wrapper have different size!" );
-
-  enum class DebugReportFlagBitsEXT
-  {
-    eInformation = VK_DEBUG_REPORT_INFORMATION_BIT_EXT,
-    eWarning = VK_DEBUG_REPORT_WARNING_BIT_EXT,
-    ePerformanceWarning = VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT,
-    eError = VK_DEBUG_REPORT_ERROR_BIT_EXT,
-    eDebug = VK_DEBUG_REPORT_DEBUG_BIT_EXT
-  };
-
-  using DebugReportFlagsEXT = Flags<DebugReportFlagBitsEXT, VkDebugReportFlagsEXT>;
-
-  inline DebugReportFlagsEXT operator|( DebugReportFlagBitsEXT bit0, DebugReportFlagBitsEXT bit1 )
-  {
-    return DebugReportFlagsEXT( bit0 ) | bit1;
-  }
-
-  struct DebugReportCallbackCreateInfoEXT
-  {
-    DebugReportCallbackCreateInfoEXT( DebugReportFlagsEXT flags_ = DebugReportFlagsEXT(), PFN_vkDebugReportCallbackEXT pfnCallback_ = nullptr, void* pUserData_ = nullptr )
-      : sType( StructureType::eDebugReportCallbackCreateInfoEXT )
-      , pNext( nullptr )
-      , flags( flags_ )
-      , pfnCallback( pfnCallback_ )
-      , pUserData( pUserData_ )
-    {
-    }
-
-    DebugReportCallbackCreateInfoEXT( VkDebugReportCallbackCreateInfoEXT const & rhs )
-    {
-      memcpy( this, &rhs, sizeof(DebugReportCallbackCreateInfoEXT) );
-    }
-
-    DebugReportCallbackCreateInfoEXT& operator=( VkDebugReportCallbackCreateInfoEXT const & rhs )
-    {
-      memcpy( this, &rhs, sizeof(DebugReportCallbackCreateInfoEXT) );
-      return *this;
-    }
-
-    DebugReportCallbackCreateInfoEXT& setSType( StructureType sType_ )
-    {
-      sType = sType_;
-      return *this;
-    }
-
-    DebugReportCallbackCreateInfoEXT& setPNext( const void* pNext_ )
-    {
-      pNext = pNext_;
-      return *this;
-    }
-
-    DebugReportCallbackCreateInfoEXT& setFlags( DebugReportFlagsEXT flags_ )
-    {
-      flags = flags_;
-      return *this;
-    }
-
-    DebugReportCallbackCreateInfoEXT& setPfnCallback( PFN_vkDebugReportCallbackEXT pfnCallback_ )
-    {
-      pfnCallback = pfnCallback_;
-      return *this;
-    }
-
-    DebugReportCallbackCreateInfoEXT& setPUserData( void* pUserData_ )
-    {
-      pUserData = pUserData_;
-      return *this;
-    }
-
-    operator const VkDebugReportCallbackCreateInfoEXT&() const
-    {
-      return *reinterpret_cast<const VkDebugReportCallbackCreateInfoEXT*>(this);
-    }
-
-  private:
-    StructureType sType;
-
-  public:
-    const void* pNext;
-    DebugReportFlagsEXT flags;
-    PFN_vkDebugReportCallbackEXT pfnCallback;
-    void* pUserData;
-  };
-  static_assert( sizeof( DebugReportCallbackCreateInfoEXT ) == sizeof( VkDebugReportCallbackCreateInfoEXT ), "struct and wrapper have different size!" );
-
-  enum class DebugReportObjectTypeEXT
-  {
-    eUnknown = VK_DEBUG_REPORT_OBJECT_TYPE_UNKNOWN_EXT,
-    eInstance = VK_DEBUG_REPORT_OBJECT_TYPE_INSTANCE_EXT,
-    ePhysicalDevice = VK_DEBUG_REPORT_OBJECT_TYPE_PHYSICAL_DEVICE_EXT,
-    eDevice = VK_DEBUG_REPORT_OBJECT_TYPE_DEVICE_EXT,
-    eQueue = VK_DEBUG_REPORT_OBJECT_TYPE_QUEUE_EXT,
-    eSemaphore = VK_DEBUG_REPORT_OBJECT_TYPE_SEMAPHORE_EXT,
-    eCommandBuffer = VK_DEBUG_REPORT_OBJECT_TYPE_COMMAND_BUFFER_EXT,
-    eFence = VK_DEBUG_REPORT_OBJECT_TYPE_FENCE_EXT,
-    eDeviceMemory = VK_DEBUG_REPORT_OBJECT_TYPE_DEVICE_MEMORY_EXT,
-    eBuffer = VK_DEBUG_REPORT_OBJECT_TYPE_BUFFER_EXT,
-    eImage = VK_DEBUG_REPORT_OBJECT_TYPE_IMAGE_EXT,
-    eEvent = VK_DEBUG_REPORT_OBJECT_TYPE_EVENT_EXT,
-    eQueryPool = VK_DEBUG_REPORT_OBJECT_TYPE_QUERY_POOL_EXT,
-    eBufferView = VK_DEBUG_REPORT_OBJECT_TYPE_BUFFER_VIEW_EXT,
-    eImageView = VK_DEBUG_REPORT_OBJECT_TYPE_IMAGE_VIEW_EXT,
-    eShaderModule = VK_DEBUG_REPORT_OBJECT_TYPE_SHADER_MODULE_EXT,
-    ePipelineCache = VK_DEBUG_REPORT_OBJECT_TYPE_PIPELINE_CACHE_EXT,
-    ePipelineLayout = VK_DEBUG_REPORT_OBJECT_TYPE_PIPELINE_LAYOUT_EXT,
-    eRenderPass = VK_DEBUG_REPORT_OBJECT_TYPE_RENDER_PASS_EXT,
-    ePipeline = VK_DEBUG_REPORT_OBJECT_TYPE_PIPELINE_EXT,
-    eDescriptorSetLayout = VK_DEBUG_REPORT_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT_EXT,
-    eSampler = VK_DEBUG_REPORT_OBJECT_TYPE_SAMPLER_EXT,
-    eDescriptorPool = VK_DEBUG_REPORT_OBJECT_TYPE_DESCRIPTOR_POOL_EXT,
-    eDescriptorSet = VK_DEBUG_REPORT_OBJECT_TYPE_DESCRIPTOR_SET_EXT,
-    eFramebuffer = VK_DEBUG_REPORT_OBJECT_TYPE_FRAMEBUFFER_EXT,
-    eCommandPool = VK_DEBUG_REPORT_OBJECT_TYPE_COMMAND_POOL_EXT,
-    eSurfaceKhr = VK_DEBUG_REPORT_OBJECT_TYPE_SURFACE_KHR_EXT,
-    eSwapchainKhr = VK_DEBUG_REPORT_OBJECT_TYPE_SWAPCHAIN_KHR_EXT,
-    eDebugReport = VK_DEBUG_REPORT_OBJECT_TYPE_DEBUG_REPORT_EXT
-  };
 
   class Instance
   {
@@ -14631,6 +14917,64 @@ namespace vk
     eNone = VK_DEBUG_REPORT_ERROR_NONE_EXT,
     eCallbackRef = VK_DEBUG_REPORT_ERROR_CALLBACK_REF_EXT
   };
+
+  enum class RasterizationOrderAMD
+  {
+    eStrict = VK_RASTERIZATION_ORDER_STRICT_AMD,
+    eRelaxed = VK_RASTERIZATION_ORDER_RELAXED_AMD
+  };
+
+  struct PipelineRasterizationStateRasterizationOrderAMD
+  {
+    PipelineRasterizationStateRasterizationOrderAMD( RasterizationOrderAMD rasterizationOrder_ = RasterizationOrderAMD::eStrict )
+      : sType( StructureType::ePipelineRasterizationStateRasterizationOrderAMD )
+      , pNext( nullptr )
+      , rasterizationOrder( rasterizationOrder_ )
+    {
+    }
+
+    PipelineRasterizationStateRasterizationOrderAMD( VkPipelineRasterizationStateRasterizationOrderAMD const & rhs )
+    {
+      memcpy( this, &rhs, sizeof(PipelineRasterizationStateRasterizationOrderAMD) );
+    }
+
+    PipelineRasterizationStateRasterizationOrderAMD& operator=( VkPipelineRasterizationStateRasterizationOrderAMD const & rhs )
+    {
+      memcpy( this, &rhs, sizeof(PipelineRasterizationStateRasterizationOrderAMD) );
+      return *this;
+    }
+
+    PipelineRasterizationStateRasterizationOrderAMD& setSType( StructureType sType_ )
+    {
+      sType = sType_;
+      return *this;
+    }
+
+    PipelineRasterizationStateRasterizationOrderAMD& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PipelineRasterizationStateRasterizationOrderAMD& setRasterizationOrder( RasterizationOrderAMD rasterizationOrder_ )
+    {
+      rasterizationOrder = rasterizationOrder_;
+      return *this;
+    }
+
+    operator const VkPipelineRasterizationStateRasterizationOrderAMD&() const
+    {
+      return *reinterpret_cast<const VkPipelineRasterizationStateRasterizationOrderAMD*>(this);
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    const void* pNext;
+    RasterizationOrderAMD rasterizationOrder;
+  };
+  static_assert( sizeof( PipelineRasterizationStateRasterizationOrderAMD ) == sizeof( VkPipelineRasterizationStateRasterizationOrderAMD ), "struct and wrapper have different size!" );
 
   inline Result createInstance( const InstanceCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, Instance* pInstance )
   {
@@ -15769,6 +16113,10 @@ namespace vk
     case StructureType::eAndroidSurfaceCreateInfoKHR: return "AndroidSurfaceCreateInfoKHR";
     case StructureType::eWin32SurfaceCreateInfoKHR: return "Win32SurfaceCreateInfoKHR";
     case StructureType::eDebugReportCallbackCreateInfoEXT: return "DebugReportCallbackCreateInfoEXT";
+    case StructureType::ePipelineRasterizationStateRasterizationOrderAMD: return "PipelineRasterizationStateRasterizationOrderAMD";
+    case StructureType::eDebugMarkerObjectNameInfoEXT: return "DebugMarkerObjectNameInfoEXT";
+    case StructureType::eDebugMarkerObjectTagInfoEXT: return "DebugMarkerObjectTagInfoEXT";
+    case StructureType::eDebugMarkerMarkerInfoEXT: return "DebugMarkerMarkerInfoEXT";
     default: return "invalid";
     }
   }
@@ -16537,7 +16885,7 @@ namespace vk
   {
     switch (value)
     {
-    case ColorSpaceKHR::eVkColorspaceSrgbNonlinear: return "VkColorspaceSrgbNonlinear";
+    case ColorSpaceKHR::eSrgbNonlinear: return "SrgbNonlinear";
     default: return "invalid";
     }
   }
@@ -16689,6 +17037,16 @@ namespace vk
     {
     case DebugReportErrorEXT::eNone: return "None";
     case DebugReportErrorEXT::eCallbackRef: return "CallbackRef";
+    default: return "invalid";
+    }
+  }
+
+  inline std::string to_string(RasterizationOrderAMD value)
+  {
+    switch (value)
+    {
+    case RasterizationOrderAMD::eStrict: return "Strict";
+    case RasterizationOrderAMD::eRelaxed: return "Relaxed";
     default: return "invalid";
     }
   }

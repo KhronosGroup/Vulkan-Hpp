@@ -1956,14 +1956,10 @@ namespace vk
 
   struct Offset2D
   {
-    Offset2D()
-      : Offset2D( 0, 0 )
-    {}
-
-    Offset2D( int32_t x_, int32_t y_ )
+    Offset2D( int32_t x_ = 0, int32_t y_ = 0 )
+      : x( x_ )
+      , y( y_ )
     {
-      x = x_;
-      y = y_;
     }
 
     Offset2D( VkOffset2D const & rhs )
@@ -2001,15 +1997,11 @@ namespace vk
 
   struct Offset3D
   {
-    Offset3D()
-      : Offset3D( 0, 0, 0 )
-    {}
-
-    Offset3D( int32_t x_, int32_t y_, int32_t z_ )
+    Offset3D( int32_t x_ = 0, int32_t y_ = 0, int32_t z_ = 0 )
+      : x( x_ )
+      , y( y_ )
+      , z( z_ )
     {
-      x = x_;
-      y = y_;
-      z = z_;
     }
 
     Offset3D( VkOffset3D const & rhs )
@@ -2054,14 +2046,10 @@ namespace vk
 
   struct Extent2D
   {
-    Extent2D()
-      : Extent2D( 0, 0 )
-    {}
-
-    Extent2D( uint32_t width_, uint32_t height_ )
+    Extent2D( uint32_t width_ = 0, uint32_t height_ = 0 )
+      : width( width_ )
+      , height( height_ )
     {
-      width = width_;
-      height = height_;
     }
 
     Extent2D( VkExtent2D const & rhs )
@@ -2099,15 +2087,11 @@ namespace vk
 
   struct Extent3D
   {
-    Extent3D()
-      : Extent3D( 0, 0, 0 )
-    {}
-
-    Extent3D( uint32_t width_, uint32_t height_, uint32_t depth_ )
+    Extent3D( uint32_t width_ = 0, uint32_t height_ = 0, uint32_t depth_ = 0 )
+      : width( width_ )
+      , height( height_ )
+      , depth( depth_ )
     {
-      width = width_;
-      height = height_;
-      depth = depth_;
     }
 
     Extent3D( VkExtent3D const & rhs )
@@ -2152,18 +2136,14 @@ namespace vk
 
   struct Viewport
   {
-    Viewport()
-      : Viewport( 0, 0, 0, 0, 0, 0 )
-    {}
-
-    Viewport( float x_, float y_, float width_, float height_, float minDepth_, float maxDepth_ )
+    Viewport( float x_ = 0, float y_ = 0, float width_ = 0, float height_ = 0, float minDepth_ = 0, float maxDepth_ = 0 )
+      : x( x_ )
+      , y( y_ )
+      , width( width_ )
+      , height( height_ )
+      , minDepth( minDepth_ )
+      , maxDepth( maxDepth_ )
     {
-      x = x_;
-      y = y_;
-      width = width_;
-      height = height_;
-      minDepth = minDepth_;
-      maxDepth = maxDepth_;
     }
 
     Viewport( VkViewport const & rhs )
@@ -2229,14 +2209,10 @@ namespace vk
 
   struct Rect2D
   {
-    Rect2D()
-      : Rect2D( Offset2D(), Extent2D() )
-    {}
-
-    Rect2D( Offset2D offset_, Extent2D extent_ )
+    Rect2D( Offset2D offset_ = Offset2D(), Extent2D extent_ = Extent2D() )
+      : offset( offset_ )
+      , extent( extent_ )
     {
-      offset = offset_;
-      extent = extent_;
     }
 
     Rect2D( VkRect2D const & rhs )
@@ -2274,15 +2250,11 @@ namespace vk
 
   struct ClearRect
   {
-    ClearRect()
-      : ClearRect( Rect2D(), 0, 0 )
-    {}
-
-    ClearRect( Rect2D rect_, uint32_t baseArrayLayer_, uint32_t layerCount_ )
+    ClearRect( Rect2D rect_ = Rect2D(), uint32_t baseArrayLayer_ = 0, uint32_t layerCount_ = 0 )
+      : rect( rect_ )
+      , baseArrayLayer( baseArrayLayer_ )
+      , layerCount( layerCount_ )
     {
-      rect = rect_;
-      baseArrayLayer = baseArrayLayer_;
-      layerCount = layerCount_;
     }
 
     ClearRect( VkClearRect const & rhs )
@@ -2353,14 +2325,14 @@ namespace vk
 
   struct AllocationCallbacks
   {
-    AllocationCallbacks( void* pUserData_, PFN_vkAllocationFunction pfnAllocation_, PFN_vkReallocationFunction pfnReallocation_, PFN_vkFreeFunction pfnFree_, PFN_vkInternalAllocationNotification pfnInternalAllocation_, PFN_vkInternalFreeNotification pfnInternalFree_ )
+    AllocationCallbacks( void* pUserData_ = nullptr, PFN_vkAllocationFunction pfnAllocation_ = nullptr, PFN_vkReallocationFunction pfnReallocation_ = nullptr, PFN_vkFreeFunction pfnFree_ = nullptr, PFN_vkInternalAllocationNotification pfnInternalAllocation_ = nullptr, PFN_vkInternalFreeNotification pfnInternalFree_ = nullptr )
+      : pUserData( pUserData_ )
+      , pfnAllocation( pfnAllocation_ )
+      , pfnReallocation( pfnReallocation_ )
+      , pfnFree( pfnFree_ )
+      , pfnInternalAllocation( pfnInternalAllocation_ )
+      , pfnInternalFree( pfnInternalFree_ )
     {
-      pUserData = pUserData_;
-      pfnAllocation = pfnAllocation_;
-      pfnReallocation = pfnReallocation_;
-      pfnFree = pfnFree_;
-      pfnInternalAllocation = pfnInternalAllocation_;
-      pfnInternalFree = pfnInternalFree_;
     }
 
     AllocationCallbacks( VkAllocationCallbacks const & rhs )
@@ -2439,15 +2411,11 @@ namespace vk
 
   struct DescriptorBufferInfo
   {
-    DescriptorBufferInfo()
-      : DescriptorBufferInfo( Buffer(), 0, 0 )
-    {}
-
-    DescriptorBufferInfo( Buffer buffer_, DeviceSize offset_, DeviceSize range_ )
+    DescriptorBufferInfo( Buffer buffer_ = Buffer(), DeviceSize offset_ = 0, DeviceSize range_ = 0 )
+      : buffer( buffer_ )
+      , offset( offset_ )
+      , range( range_ )
     {
-      buffer = buffer_;
-      offset = offset_;
-      range = range_;
     }
 
     DescriptorBufferInfo( VkDescriptorBufferInfo const & rhs )
@@ -2507,15 +2475,11 @@ namespace vk
 
   struct BufferCopy
   {
-    BufferCopy()
-      : BufferCopy( 0, 0, 0 )
-    {}
-
-    BufferCopy( DeviceSize srcOffset_, DeviceSize dstOffset_, DeviceSize size_ )
+    BufferCopy( DeviceSize srcOffset_ = 0, DeviceSize dstOffset_ = 0, DeviceSize size_ = 0 )
+      : srcOffset( srcOffset_ )
+      , dstOffset( dstOffset_ )
+      , size( size_ )
     {
-      srcOffset = srcOffset_;
-      dstOffset = dstOffset_;
-      size = size_;
     }
 
     BufferCopy( VkBufferCopy const & rhs )
@@ -2560,15 +2524,11 @@ namespace vk
 
   struct SpecializationMapEntry
   {
-    SpecializationMapEntry()
-      : SpecializationMapEntry( 0, 0, 0 )
-    {}
-
-    SpecializationMapEntry( uint32_t constantID_, uint32_t offset_, size_t size_ )
+    SpecializationMapEntry( uint32_t constantID_ = 0, uint32_t offset_ = 0, size_t size_ = 0 )
+      : constantID( constantID_ )
+      , offset( offset_ )
+      , size( size_ )
     {
-      constantID = constantID_;
-      offset = offset_;
-      size = size_;
     }
 
     SpecializationMapEntry( VkSpecializationMapEntry const & rhs )
@@ -2613,16 +2573,12 @@ namespace vk
 
   struct SpecializationInfo
   {
-    SpecializationInfo()
-      : SpecializationInfo( 0, nullptr, 0, nullptr )
-    {}
-
-    SpecializationInfo( uint32_t mapEntryCount_, const SpecializationMapEntry* pMapEntries_, size_t dataSize_, const void* pData_ )
+    SpecializationInfo( uint32_t mapEntryCount_ = 0, const SpecializationMapEntry* pMapEntries_ = nullptr, size_t dataSize_ = 0, const void* pData_ = nullptr )
+      : mapEntryCount( mapEntryCount_ )
+      , pMapEntries( pMapEntries_ )
+      , dataSize( dataSize_ )
+      , pData( pData_ )
     {
-      mapEntryCount = mapEntryCount_;
-      pMapEntries = pMapEntries_;
-      dataSize = dataSize_;
-      pData = pData_;
     }
 
     SpecializationInfo( VkSpecializationInfo const & rhs )
@@ -2719,14 +2675,10 @@ namespace vk
 
   struct ClearDepthStencilValue
   {
-    ClearDepthStencilValue()
-      : ClearDepthStencilValue( 0, 0 )
-    {}
-
-    ClearDepthStencilValue( float depth_, uint32_t stencil_ )
+    ClearDepthStencilValue( float depth_ = 0, uint32_t stencil_ = 0 )
+      : depth( depth_ )
+      , stencil( stencil_ )
     {
-      depth = depth_;
-      stencil = stencil_;
     }
 
     ClearDepthStencilValue( VkClearDepthStencilValue const & rhs )
@@ -2802,67 +2754,63 @@ namespace vk
 
   struct PhysicalDeviceFeatures
   {
-    PhysicalDeviceFeatures()
-      : PhysicalDeviceFeatures( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
-    {}
-
-    PhysicalDeviceFeatures( Bool32 robustBufferAccess_, Bool32 fullDrawIndexUint32_, Bool32 imageCubeArray_, Bool32 independentBlend_, Bool32 geometryShader_, Bool32 tessellationShader_, Bool32 sampleRateShading_, Bool32 dualSrcBlend_, Bool32 logicOp_, Bool32 multiDrawIndirect_, Bool32 drawIndirectFirstInstance_, Bool32 depthClamp_, Bool32 depthBiasClamp_, Bool32 fillModeNonSolid_, Bool32 depthBounds_, Bool32 wideLines_, Bool32 largePoints_, Bool32 alphaToOne_, Bool32 multiViewport_, Bool32 samplerAnisotropy_, Bool32 textureCompressionETC2_, Bool32 textureCompressionASTC_LDR_, Bool32 textureCompressionBC_, Bool32 occlusionQueryPrecise_, Bool32 pipelineStatisticsQuery_, Bool32 vertexPipelineStoresAndAtomics_, Bool32 fragmentStoresAndAtomics_, Bool32 shaderTessellationAndGeometryPointSize_, Bool32 shaderImageGatherExtended_, Bool32 shaderStorageImageExtendedFormats_, Bool32 shaderStorageImageMultisample_, Bool32 shaderStorageImageReadWithoutFormat_, Bool32 shaderStorageImageWriteWithoutFormat_, Bool32 shaderUniformBufferArrayDynamicIndexing_, Bool32 shaderSampledImageArrayDynamicIndexing_, Bool32 shaderStorageBufferArrayDynamicIndexing_, Bool32 shaderStorageImageArrayDynamicIndexing_, Bool32 shaderClipDistance_, Bool32 shaderCullDistance_, Bool32 shaderFloat64_, Bool32 shaderInt64_, Bool32 shaderInt16_, Bool32 shaderResourceResidency_, Bool32 shaderResourceMinLod_, Bool32 sparseBinding_, Bool32 sparseResidencyBuffer_, Bool32 sparseResidencyImage2D_, Bool32 sparseResidencyImage3D_, Bool32 sparseResidency2Samples_, Bool32 sparseResidency4Samples_, Bool32 sparseResidency8Samples_, Bool32 sparseResidency16Samples_, Bool32 sparseResidencyAliased_, Bool32 variableMultisampleRate_, Bool32 inheritedQueries_ )
+    PhysicalDeviceFeatures( Bool32 robustBufferAccess_ = 0, Bool32 fullDrawIndexUint32_ = 0, Bool32 imageCubeArray_ = 0, Bool32 independentBlend_ = 0, Bool32 geometryShader_ = 0, Bool32 tessellationShader_ = 0, Bool32 sampleRateShading_ = 0, Bool32 dualSrcBlend_ = 0, Bool32 logicOp_ = 0, Bool32 multiDrawIndirect_ = 0, Bool32 drawIndirectFirstInstance_ = 0, Bool32 depthClamp_ = 0, Bool32 depthBiasClamp_ = 0, Bool32 fillModeNonSolid_ = 0, Bool32 depthBounds_ = 0, Bool32 wideLines_ = 0, Bool32 largePoints_ = 0, Bool32 alphaToOne_ = 0, Bool32 multiViewport_ = 0, Bool32 samplerAnisotropy_ = 0, Bool32 textureCompressionETC2_ = 0, Bool32 textureCompressionASTC_LDR_ = 0, Bool32 textureCompressionBC_ = 0, Bool32 occlusionQueryPrecise_ = 0, Bool32 pipelineStatisticsQuery_ = 0, Bool32 vertexPipelineStoresAndAtomics_ = 0, Bool32 fragmentStoresAndAtomics_ = 0, Bool32 shaderTessellationAndGeometryPointSize_ = 0, Bool32 shaderImageGatherExtended_ = 0, Bool32 shaderStorageImageExtendedFormats_ = 0, Bool32 shaderStorageImageMultisample_ = 0, Bool32 shaderStorageImageReadWithoutFormat_ = 0, Bool32 shaderStorageImageWriteWithoutFormat_ = 0, Bool32 shaderUniformBufferArrayDynamicIndexing_ = 0, Bool32 shaderSampledImageArrayDynamicIndexing_ = 0, Bool32 shaderStorageBufferArrayDynamicIndexing_ = 0, Bool32 shaderStorageImageArrayDynamicIndexing_ = 0, Bool32 shaderClipDistance_ = 0, Bool32 shaderCullDistance_ = 0, Bool32 shaderFloat64_ = 0, Bool32 shaderInt64_ = 0, Bool32 shaderInt16_ = 0, Bool32 shaderResourceResidency_ = 0, Bool32 shaderResourceMinLod_ = 0, Bool32 sparseBinding_ = 0, Bool32 sparseResidencyBuffer_ = 0, Bool32 sparseResidencyImage2D_ = 0, Bool32 sparseResidencyImage3D_ = 0, Bool32 sparseResidency2Samples_ = 0, Bool32 sparseResidency4Samples_ = 0, Bool32 sparseResidency8Samples_ = 0, Bool32 sparseResidency16Samples_ = 0, Bool32 sparseResidencyAliased_ = 0, Bool32 variableMultisampleRate_ = 0, Bool32 inheritedQueries_ = 0 )
+      : robustBufferAccess( robustBufferAccess_ )
+      , fullDrawIndexUint32( fullDrawIndexUint32_ )
+      , imageCubeArray( imageCubeArray_ )
+      , independentBlend( independentBlend_ )
+      , geometryShader( geometryShader_ )
+      , tessellationShader( tessellationShader_ )
+      , sampleRateShading( sampleRateShading_ )
+      , dualSrcBlend( dualSrcBlend_ )
+      , logicOp( logicOp_ )
+      , multiDrawIndirect( multiDrawIndirect_ )
+      , drawIndirectFirstInstance( drawIndirectFirstInstance_ )
+      , depthClamp( depthClamp_ )
+      , depthBiasClamp( depthBiasClamp_ )
+      , fillModeNonSolid( fillModeNonSolid_ )
+      , depthBounds( depthBounds_ )
+      , wideLines( wideLines_ )
+      , largePoints( largePoints_ )
+      , alphaToOne( alphaToOne_ )
+      , multiViewport( multiViewport_ )
+      , samplerAnisotropy( samplerAnisotropy_ )
+      , textureCompressionETC2( textureCompressionETC2_ )
+      , textureCompressionASTC_LDR( textureCompressionASTC_LDR_ )
+      , textureCompressionBC( textureCompressionBC_ )
+      , occlusionQueryPrecise( occlusionQueryPrecise_ )
+      , pipelineStatisticsQuery( pipelineStatisticsQuery_ )
+      , vertexPipelineStoresAndAtomics( vertexPipelineStoresAndAtomics_ )
+      , fragmentStoresAndAtomics( fragmentStoresAndAtomics_ )
+      , shaderTessellationAndGeometryPointSize( shaderTessellationAndGeometryPointSize_ )
+      , shaderImageGatherExtended( shaderImageGatherExtended_ )
+      , shaderStorageImageExtendedFormats( shaderStorageImageExtendedFormats_ )
+      , shaderStorageImageMultisample( shaderStorageImageMultisample_ )
+      , shaderStorageImageReadWithoutFormat( shaderStorageImageReadWithoutFormat_ )
+      , shaderStorageImageWriteWithoutFormat( shaderStorageImageWriteWithoutFormat_ )
+      , shaderUniformBufferArrayDynamicIndexing( shaderUniformBufferArrayDynamicIndexing_ )
+      , shaderSampledImageArrayDynamicIndexing( shaderSampledImageArrayDynamicIndexing_ )
+      , shaderStorageBufferArrayDynamicIndexing( shaderStorageBufferArrayDynamicIndexing_ )
+      , shaderStorageImageArrayDynamicIndexing( shaderStorageImageArrayDynamicIndexing_ )
+      , shaderClipDistance( shaderClipDistance_ )
+      , shaderCullDistance( shaderCullDistance_ )
+      , shaderFloat64( shaderFloat64_ )
+      , shaderInt64( shaderInt64_ )
+      , shaderInt16( shaderInt16_ )
+      , shaderResourceResidency( shaderResourceResidency_ )
+      , shaderResourceMinLod( shaderResourceMinLod_ )
+      , sparseBinding( sparseBinding_ )
+      , sparseResidencyBuffer( sparseResidencyBuffer_ )
+      , sparseResidencyImage2D( sparseResidencyImage2D_ )
+      , sparseResidencyImage3D( sparseResidencyImage3D_ )
+      , sparseResidency2Samples( sparseResidency2Samples_ )
+      , sparseResidency4Samples( sparseResidency4Samples_ )
+      , sparseResidency8Samples( sparseResidency8Samples_ )
+      , sparseResidency16Samples( sparseResidency16Samples_ )
+      , sparseResidencyAliased( sparseResidencyAliased_ )
+      , variableMultisampleRate( variableMultisampleRate_ )
+      , inheritedQueries( inheritedQueries_ )
     {
-      robustBufferAccess = robustBufferAccess_;
-      fullDrawIndexUint32 = fullDrawIndexUint32_;
-      imageCubeArray = imageCubeArray_;
-      independentBlend = independentBlend_;
-      geometryShader = geometryShader_;
-      tessellationShader = tessellationShader_;
-      sampleRateShading = sampleRateShading_;
-      dualSrcBlend = dualSrcBlend_;
-      logicOp = logicOp_;
-      multiDrawIndirect = multiDrawIndirect_;
-      drawIndirectFirstInstance = drawIndirectFirstInstance_;
-      depthClamp = depthClamp_;
-      depthBiasClamp = depthBiasClamp_;
-      fillModeNonSolid = fillModeNonSolid_;
-      depthBounds = depthBounds_;
-      wideLines = wideLines_;
-      largePoints = largePoints_;
-      alphaToOne = alphaToOne_;
-      multiViewport = multiViewport_;
-      samplerAnisotropy = samplerAnisotropy_;
-      textureCompressionETC2 = textureCompressionETC2_;
-      textureCompressionASTC_LDR = textureCompressionASTC_LDR_;
-      textureCompressionBC = textureCompressionBC_;
-      occlusionQueryPrecise = occlusionQueryPrecise_;
-      pipelineStatisticsQuery = pipelineStatisticsQuery_;
-      vertexPipelineStoresAndAtomics = vertexPipelineStoresAndAtomics_;
-      fragmentStoresAndAtomics = fragmentStoresAndAtomics_;
-      shaderTessellationAndGeometryPointSize = shaderTessellationAndGeometryPointSize_;
-      shaderImageGatherExtended = shaderImageGatherExtended_;
-      shaderStorageImageExtendedFormats = shaderStorageImageExtendedFormats_;
-      shaderStorageImageMultisample = shaderStorageImageMultisample_;
-      shaderStorageImageReadWithoutFormat = shaderStorageImageReadWithoutFormat_;
-      shaderStorageImageWriteWithoutFormat = shaderStorageImageWriteWithoutFormat_;
-      shaderUniformBufferArrayDynamicIndexing = shaderUniformBufferArrayDynamicIndexing_;
-      shaderSampledImageArrayDynamicIndexing = shaderSampledImageArrayDynamicIndexing_;
-      shaderStorageBufferArrayDynamicIndexing = shaderStorageBufferArrayDynamicIndexing_;
-      shaderStorageImageArrayDynamicIndexing = shaderStorageImageArrayDynamicIndexing_;
-      shaderClipDistance = shaderClipDistance_;
-      shaderCullDistance = shaderCullDistance_;
-      shaderFloat64 = shaderFloat64_;
-      shaderInt64 = shaderInt64_;
-      shaderInt16 = shaderInt16_;
-      shaderResourceResidency = shaderResourceResidency_;
-      shaderResourceMinLod = shaderResourceMinLod_;
-      sparseBinding = sparseBinding_;
-      sparseResidencyBuffer = sparseResidencyBuffer_;
-      sparseResidencyImage2D = sparseResidencyImage2D_;
-      sparseResidencyImage3D = sparseResidencyImage3D_;
-      sparseResidency2Samples = sparseResidency2Samples_;
-      sparseResidency4Samples = sparseResidency4Samples_;
-      sparseResidency8Samples = sparseResidency8Samples_;
-      sparseResidency16Samples = sparseResidency16Samples_;
-      sparseResidencyAliased = sparseResidencyAliased_;
-      variableMultisampleRate = variableMultisampleRate_;
-      inheritedQueries = inheritedQueries_;
     }
 
     PhysicalDeviceFeatures( VkPhysicalDeviceFeatures const & rhs )
@@ -3286,16 +3234,12 @@ namespace vk
 
   struct DrawIndirectCommand
   {
-    DrawIndirectCommand()
-      : DrawIndirectCommand( 0, 0, 0, 0 )
-    {}
-
-    DrawIndirectCommand( uint32_t vertexCount_, uint32_t instanceCount_, uint32_t firstVertex_, uint32_t firstInstance_ )
+    DrawIndirectCommand( uint32_t vertexCount_ = 0, uint32_t instanceCount_ = 0, uint32_t firstVertex_ = 0, uint32_t firstInstance_ = 0 )
+      : vertexCount( vertexCount_ )
+      , instanceCount( instanceCount_ )
+      , firstVertex( firstVertex_ )
+      , firstInstance( firstInstance_ )
     {
-      vertexCount = vertexCount_;
-      instanceCount = instanceCount_;
-      firstVertex = firstVertex_;
-      firstInstance = firstInstance_;
     }
 
     DrawIndirectCommand( VkDrawIndirectCommand const & rhs )
@@ -3347,17 +3291,13 @@ namespace vk
 
   struct DrawIndexedIndirectCommand
   {
-    DrawIndexedIndirectCommand()
-      : DrawIndexedIndirectCommand( 0, 0, 0, 0, 0 )
-    {}
-
-    DrawIndexedIndirectCommand( uint32_t indexCount_, uint32_t instanceCount_, uint32_t firstIndex_, int32_t vertexOffset_, uint32_t firstInstance_ )
+    DrawIndexedIndirectCommand( uint32_t indexCount_ = 0, uint32_t instanceCount_ = 0, uint32_t firstIndex_ = 0, int32_t vertexOffset_ = 0, uint32_t firstInstance_ = 0 )
+      : indexCount( indexCount_ )
+      , instanceCount( instanceCount_ )
+      , firstIndex( firstIndex_ )
+      , vertexOffset( vertexOffset_ )
+      , firstInstance( firstInstance_ )
     {
-      indexCount = indexCount_;
-      instanceCount = instanceCount_;
-      firstIndex = firstIndex_;
-      vertexOffset = vertexOffset_;
-      firstInstance = firstInstance_;
     }
 
     DrawIndexedIndirectCommand( VkDrawIndexedIndirectCommand const & rhs )
@@ -3416,15 +3356,11 @@ namespace vk
 
   struct DispatchIndirectCommand
   {
-    DispatchIndirectCommand()
-      : DispatchIndirectCommand( 0, 0, 0 )
-    {}
-
-    DispatchIndirectCommand( uint32_t x_, uint32_t y_, uint32_t z_ )
+    DispatchIndirectCommand( uint32_t x_ = 0, uint32_t y_ = 0, uint32_t z_ = 0 )
+      : x( x_ )
+      , y( y_ )
+      , z( z_ )
     {
-      x = x_;
-      y = y_;
-      z = z_;
     }
 
     DispatchIndirectCommand( VkDispatchIndirectCommand const & rhs )
@@ -3469,14 +3405,10 @@ namespace vk
 
   struct DisplayPlanePropertiesKHR
   {
-    DisplayPlanePropertiesKHR()
-      : DisplayPlanePropertiesKHR( DisplayKHR(), 0 )
-    {}
-
-    DisplayPlanePropertiesKHR( DisplayKHR currentDisplay_, uint32_t currentStackIndex_ )
+    DisplayPlanePropertiesKHR( DisplayKHR currentDisplay_ = DisplayKHR(), uint32_t currentStackIndex_ = 0 )
+      : currentDisplay( currentDisplay_ )
+      , currentStackIndex( currentStackIndex_ )
     {
-      currentDisplay = currentDisplay_;
-      currentStackIndex = currentStackIndex_;
     }
 
     DisplayPlanePropertiesKHR( VkDisplayPlanePropertiesKHR const & rhs )
@@ -3514,14 +3446,10 @@ namespace vk
 
   struct DisplayModeParametersKHR
   {
-    DisplayModeParametersKHR()
-      : DisplayModeParametersKHR( Extent2D(), 0 )
-    {}
-
-    DisplayModeParametersKHR( Extent2D visibleRegion_, uint32_t refreshRate_ )
+    DisplayModeParametersKHR( Extent2D visibleRegion_ = Extent2D(), uint32_t refreshRate_ = 0 )
+      : visibleRegion( visibleRegion_ )
+      , refreshRate( refreshRate_ )
     {
-      visibleRegion = visibleRegion_;
-      refreshRate = refreshRate_;
     }
 
     DisplayModeParametersKHR( VkDisplayModeParametersKHR const & rhs )
@@ -3559,14 +3487,10 @@ namespace vk
 
   struct DisplayModePropertiesKHR
   {
-    DisplayModePropertiesKHR()
-      : DisplayModePropertiesKHR( DisplayModeKHR(), DisplayModeParametersKHR() )
-    {}
-
-    DisplayModePropertiesKHR( DisplayModeKHR displayMode_, DisplayModeParametersKHR parameters_ )
+    DisplayModePropertiesKHR( DisplayModeKHR displayMode_ = DisplayModeKHR(), DisplayModeParametersKHR parameters_ = DisplayModeParametersKHR() )
+      : displayMode( displayMode_ )
+      , parameters( parameters_ )
     {
-      displayMode = displayMode_;
-      parameters = parameters_;
     }
 
     DisplayModePropertiesKHR( VkDisplayModePropertiesKHR const & rhs )
@@ -3618,15 +3542,11 @@ namespace vk
 
   struct DescriptorImageInfo
   {
-    DescriptorImageInfo()
-      : DescriptorImageInfo( Sampler(), ImageView(), ImageLayout::eUndefined )
-    {}
-
-    DescriptorImageInfo( Sampler sampler_, ImageView imageView_, ImageLayout imageLayout_ )
+    DescriptorImageInfo( Sampler sampler_ = Sampler(), ImageView imageView_ = ImageView(), ImageLayout imageLayout_ = ImageLayout::eUndefined )
+      : sampler( sampler_ )
+      , imageView( imageView_ )
+      , imageLayout( imageLayout_ )
     {
-      sampler = sampler_;
-      imageView = imageView_;
-      imageLayout = imageLayout_;
     }
 
     DescriptorImageInfo( VkDescriptorImageInfo const & rhs )
@@ -3671,14 +3591,10 @@ namespace vk
 
   struct AttachmentReference
   {
-    AttachmentReference()
-      : AttachmentReference( 0, ImageLayout::eUndefined )
-    {}
-
-    AttachmentReference( uint32_t attachment_, ImageLayout layout_ )
+    AttachmentReference( uint32_t attachment_ = 0, ImageLayout layout_ = ImageLayout::eUndefined )
+      : attachment( attachment_ )
+      , layout( layout_ )
     {
-      attachment = attachment_;
-      layout = layout_;
     }
 
     AttachmentReference( VkAttachmentReference const & rhs )
@@ -3770,16 +3686,12 @@ namespace vk
 
   struct ComponentMapping
   {
-    ComponentMapping()
-      : ComponentMapping( ComponentSwizzle::eIdentity, ComponentSwizzle::eIdentity, ComponentSwizzle::eIdentity, ComponentSwizzle::eIdentity )
-    {}
-
-    ComponentMapping( ComponentSwizzle r_, ComponentSwizzle g_, ComponentSwizzle b_, ComponentSwizzle a_ )
+    ComponentMapping( ComponentSwizzle r_ = ComponentSwizzle::eIdentity, ComponentSwizzle g_ = ComponentSwizzle::eIdentity, ComponentSwizzle b_ = ComponentSwizzle::eIdentity, ComponentSwizzle a_ = ComponentSwizzle::eIdentity )
+      : r( r_ )
+      , g( g_ )
+      , b( b_ )
+      , a( a_ )
     {
-      r = r_;
-      g = g_;
-      b = b_;
-      a = a_;
     }
 
     ComponentMapping( VkComponentMapping const & rhs )
@@ -3846,14 +3758,10 @@ namespace vk
 
   struct DescriptorPoolSize
   {
-    DescriptorPoolSize()
-      : DescriptorPoolSize( DescriptorType::eSampler, 0 )
-    {}
-
-    DescriptorPoolSize( DescriptorType type_, uint32_t descriptorCount_ )
+    DescriptorPoolSize( DescriptorType type_ = DescriptorType::eSampler, uint32_t descriptorCount_ = 0 )
+      : type( type_ )
+      , descriptorCount( descriptorCount_ )
     {
-      type = type_;
-      descriptorCount = descriptorCount_;
     }
 
     DescriptorPoolSize( VkDescriptorPoolSize const & rhs )
@@ -3914,22 +3822,18 @@ namespace vk
 
   struct SubpassDescription
   {
-    SubpassDescription()
-      : SubpassDescription( SubpassDescriptionFlags(), PipelineBindPoint::eGraphics, 0, nullptr, 0, nullptr, nullptr, nullptr, 0, nullptr )
-    {}
-
-    SubpassDescription( SubpassDescriptionFlags flags_, PipelineBindPoint pipelineBindPoint_, uint32_t inputAttachmentCount_, const AttachmentReference* pInputAttachments_, uint32_t colorAttachmentCount_, const AttachmentReference* pColorAttachments_, const AttachmentReference* pResolveAttachments_, const AttachmentReference* pDepthStencilAttachment_, uint32_t preserveAttachmentCount_, const uint32_t* pPreserveAttachments_ )
+    SubpassDescription( SubpassDescriptionFlags flags_ = SubpassDescriptionFlags(), PipelineBindPoint pipelineBindPoint_ = PipelineBindPoint::eGraphics, uint32_t inputAttachmentCount_ = 0, const AttachmentReference* pInputAttachments_ = nullptr, uint32_t colorAttachmentCount_ = 0, const AttachmentReference* pColorAttachments_ = nullptr, const AttachmentReference* pResolveAttachments_ = nullptr, const AttachmentReference* pDepthStencilAttachment_ = nullptr, uint32_t preserveAttachmentCount_ = 0, const uint32_t* pPreserveAttachments_ = nullptr )
+      : flags( flags_ )
+      , pipelineBindPoint( pipelineBindPoint_ )
+      , inputAttachmentCount( inputAttachmentCount_ )
+      , pInputAttachments( pInputAttachments_ )
+      , colorAttachmentCount( colorAttachmentCount_ )
+      , pColorAttachments( pColorAttachments_ )
+      , pResolveAttachments( pResolveAttachments_ )
+      , pDepthStencilAttachment( pDepthStencilAttachment_ )
+      , preserveAttachmentCount( preserveAttachmentCount_ )
+      , pPreserveAttachments( pPreserveAttachments_ )
     {
-      flags = flags_;
-      pipelineBindPoint = pipelineBindPoint_;
-      inputAttachmentCount = inputAttachmentCount_;
-      pInputAttachments = pInputAttachments_;
-      colorAttachmentCount = colorAttachmentCount_;
-      pColorAttachments = pColorAttachments_;
-      pResolveAttachments = pResolveAttachments_;
-      pDepthStencilAttachment = pDepthStencilAttachment_;
-      preserveAttachmentCount = preserveAttachmentCount_;
-      pPreserveAttachments = pPreserveAttachments_;
     }
 
     SubpassDescription( VkSubpassDescription const & rhs )
@@ -4161,19 +4065,15 @@ namespace vk
 
   struct StencilOpState
   {
-    StencilOpState()
-      : StencilOpState( StencilOp::eKeep, StencilOp::eKeep, StencilOp::eKeep, CompareOp::eNever, 0, 0, 0 )
-    {}
-
-    StencilOpState( StencilOp failOp_, StencilOp passOp_, StencilOp depthFailOp_, CompareOp compareOp_, uint32_t compareMask_, uint32_t writeMask_, uint32_t reference_ )
+    StencilOpState( StencilOp failOp_ = StencilOp::eKeep, StencilOp passOp_ = StencilOp::eKeep, StencilOp depthFailOp_ = StencilOp::eKeep, CompareOp compareOp_ = CompareOp::eNever, uint32_t compareMask_ = 0, uint32_t writeMask_ = 0, uint32_t reference_ = 0 )
+      : failOp( failOp_ )
+      , passOp( passOp_ )
+      , depthFailOp( depthFailOp_ )
+      , compareOp( compareOp_ )
+      , compareMask( compareMask_ )
+      , writeMask( writeMask_ )
+      , reference( reference_ )
     {
-      failOp = failOp_;
-      passOp = passOp_;
-      depthFailOp = depthFailOp_;
-      compareOp = compareOp_;
-      compareMask = compareMask_;
-      writeMask = writeMask_;
-      reference = reference_;
     }
 
     StencilOpState( VkStencilOpState const & rhs )
@@ -4295,15 +4195,11 @@ namespace vk
 
   struct VertexInputBindingDescription
   {
-    VertexInputBindingDescription()
-      : VertexInputBindingDescription( 0, 0, VertexInputRate::eVertex )
-    {}
-
-    VertexInputBindingDescription( uint32_t binding_, uint32_t stride_, VertexInputRate inputRate_ )
+    VertexInputBindingDescription( uint32_t binding_ = 0, uint32_t stride_ = 0, VertexInputRate inputRate_ = VertexInputRate::eVertex )
+      : binding( binding_ )
+      , stride( stride_ )
+      , inputRate( inputRate_ )
     {
-      binding = binding_;
-      stride = stride_;
-      inputRate = inputRate_;
     }
 
     VertexInputBindingDescription( VkVertexInputBindingDescription const & rhs )
@@ -4537,16 +4433,12 @@ namespace vk
 
   struct VertexInputAttributeDescription
   {
-    VertexInputAttributeDescription()
-      : VertexInputAttributeDescription( 0, 0, Format::eUndefined, 0 )
-    {}
-
-    VertexInputAttributeDescription( uint32_t location_, uint32_t binding_, Format format_, uint32_t offset_ )
+    VertexInputAttributeDescription( uint32_t location_ = 0, uint32_t binding_ = 0, Format format_ = Format::eUndefined, uint32_t offset_ = 0 )
+      : location( location_ )
+      , binding( binding_ )
+      , format( format_ )
+      , offset( offset_ )
     {
-      location = location_;
-      binding = binding_;
-      format = format_;
-      offset = offset_;
     }
 
     VertexInputAttributeDescription( VkVertexInputAttributeDescription const & rhs )
@@ -4663,19 +4555,15 @@ namespace vk
 
   struct ApplicationInfo
   {
-    ApplicationInfo()
-      : ApplicationInfo( nullptr, 0, nullptr, 0, 0 )
-    {}
-
-    ApplicationInfo( const char* pApplicationName_, uint32_t applicationVersion_, const char* pEngineName_, uint32_t engineVersion_, uint32_t apiVersion_ )
+    ApplicationInfo( const char* pApplicationName_ = nullptr, uint32_t applicationVersion_ = 0, const char* pEngineName_ = nullptr, uint32_t engineVersion_ = 0, uint32_t apiVersion_ = 0 )
+      : sType( StructureType::eApplicationInfo )
+      , pNext( nullptr )
+      , pApplicationName( pApplicationName_ )
+      , applicationVersion( applicationVersion_ )
+      , pEngineName( pEngineName_ )
+      , engineVersion( engineVersion_ )
+      , apiVersion( apiVersion_ )
     {
-      sType = StructureType::eApplicationInfo;
-      pNext = nullptr;
-      pApplicationName = pApplicationName_;
-      applicationVersion = applicationVersion_;
-      pEngineName = pEngineName_;
-      engineVersion = engineVersion_;
-      apiVersion = apiVersion_;
     }
 
     ApplicationInfo( VkApplicationInfo const & rhs )
@@ -4748,18 +4636,14 @@ namespace vk
 
   struct DeviceQueueCreateInfo
   {
-    DeviceQueueCreateInfo()
-      : DeviceQueueCreateInfo( DeviceQueueCreateFlags(), 0, 0, nullptr )
-    {}
-
-    DeviceQueueCreateInfo( DeviceQueueCreateFlags flags_, uint32_t queueFamilyIndex_, uint32_t queueCount_, const float* pQueuePriorities_ )
+    DeviceQueueCreateInfo( DeviceQueueCreateFlags flags_ = DeviceQueueCreateFlags(), uint32_t queueFamilyIndex_ = 0, uint32_t queueCount_ = 0, const float* pQueuePriorities_ = nullptr )
+      : sType( StructureType::eDeviceQueueCreateInfo )
+      , pNext( nullptr )
+      , flags( flags_ )
+      , queueFamilyIndex( queueFamilyIndex_ )
+      , queueCount( queueCount_ )
+      , pQueuePriorities( pQueuePriorities_ )
     {
-      sType = StructureType::eDeviceQueueCreateInfo;
-      pNext = nullptr;
-      flags = flags_;
-      queueFamilyIndex = queueFamilyIndex_;
-      queueCount = queueCount_;
-      pQueuePriorities = pQueuePriorities_;
     }
 
     DeviceQueueCreateInfo( VkDeviceQueueCreateInfo const & rhs )
@@ -4825,22 +4709,18 @@ namespace vk
 
   struct DeviceCreateInfo
   {
-    DeviceCreateInfo()
-      : DeviceCreateInfo( DeviceCreateFlags(), 0, nullptr, 0, nullptr, 0, nullptr, nullptr )
-    {}
-
-    DeviceCreateInfo( DeviceCreateFlags flags_, uint32_t queueCreateInfoCount_, const DeviceQueueCreateInfo* pQueueCreateInfos_, uint32_t enabledLayerCount_, const char* const* ppEnabledLayerNames_, uint32_t enabledExtensionCount_, const char* const* ppEnabledExtensionNames_, const PhysicalDeviceFeatures* pEnabledFeatures_ )
+    DeviceCreateInfo( DeviceCreateFlags flags_ = DeviceCreateFlags(), uint32_t queueCreateInfoCount_ = 0, const DeviceQueueCreateInfo* pQueueCreateInfos_ = nullptr, uint32_t enabledLayerCount_ = 0, const char* const* ppEnabledLayerNames_ = nullptr, uint32_t enabledExtensionCount_ = 0, const char* const* ppEnabledExtensionNames_ = nullptr, const PhysicalDeviceFeatures* pEnabledFeatures_ = nullptr )
+      : sType( StructureType::eDeviceCreateInfo )
+      , pNext( nullptr )
+      , flags( flags_ )
+      , queueCreateInfoCount( queueCreateInfoCount_ )
+      , pQueueCreateInfos( pQueueCreateInfos_ )
+      , enabledLayerCount( enabledLayerCount_ )
+      , ppEnabledLayerNames( ppEnabledLayerNames_ )
+      , enabledExtensionCount( enabledExtensionCount_ )
+      , ppEnabledExtensionNames( ppEnabledExtensionNames_ )
+      , pEnabledFeatures( pEnabledFeatures_ )
     {
-      sType = StructureType::eDeviceCreateInfo;
-      pNext = nullptr;
-      flags = flags_;
-      queueCreateInfoCount = queueCreateInfoCount_;
-      pQueueCreateInfos = pQueueCreateInfos_;
-      enabledLayerCount = enabledLayerCount_;
-      ppEnabledLayerNames = ppEnabledLayerNames_;
-      enabledExtensionCount = enabledExtensionCount_;
-      ppEnabledExtensionNames = ppEnabledExtensionNames_;
-      pEnabledFeatures = pEnabledFeatures_;
     }
 
     DeviceCreateInfo( VkDeviceCreateInfo const & rhs )
@@ -4934,20 +4814,16 @@ namespace vk
 
   struct InstanceCreateInfo
   {
-    InstanceCreateInfo()
-      : InstanceCreateInfo( InstanceCreateFlags(), nullptr, 0, nullptr, 0, nullptr )
-    {}
-
-    InstanceCreateInfo( InstanceCreateFlags flags_, const ApplicationInfo* pApplicationInfo_, uint32_t enabledLayerCount_, const char* const* ppEnabledLayerNames_, uint32_t enabledExtensionCount_, const char* const* ppEnabledExtensionNames_ )
+    InstanceCreateInfo( InstanceCreateFlags flags_ = InstanceCreateFlags(), const ApplicationInfo* pApplicationInfo_ = nullptr, uint32_t enabledLayerCount_ = 0, const char* const* ppEnabledLayerNames_ = nullptr, uint32_t enabledExtensionCount_ = 0, const char* const* ppEnabledExtensionNames_ = nullptr )
+      : sType( StructureType::eInstanceCreateInfo )
+      , pNext( nullptr )
+      , flags( flags_ )
+      , pApplicationInfo( pApplicationInfo_ )
+      , enabledLayerCount( enabledLayerCount_ )
+      , ppEnabledLayerNames( ppEnabledLayerNames_ )
+      , enabledExtensionCount( enabledExtensionCount_ )
+      , ppEnabledExtensionNames( ppEnabledExtensionNames_ )
     {
-      sType = StructureType::eInstanceCreateInfo;
-      pNext = nullptr;
-      flags = flags_;
-      pApplicationInfo = pApplicationInfo_;
-      enabledLayerCount = enabledLayerCount_;
-      ppEnabledLayerNames = ppEnabledLayerNames_;
-      enabledExtensionCount = enabledExtensionCount_;
-      ppEnabledExtensionNames = ppEnabledExtensionNames_;
     }
 
     InstanceCreateInfo( VkInstanceCreateInfo const & rhs )
@@ -5027,16 +4903,12 @@ namespace vk
 
   struct MemoryAllocateInfo
   {
-    MemoryAllocateInfo()
-      : MemoryAllocateInfo( 0, 0 )
-    {}
-
-    MemoryAllocateInfo( DeviceSize allocationSize_, uint32_t memoryTypeIndex_ )
+    MemoryAllocateInfo( DeviceSize allocationSize_ = 0, uint32_t memoryTypeIndex_ = 0 )
+      : sType( StructureType::eMemoryAllocateInfo )
+      , pNext( nullptr )
+      , allocationSize( allocationSize_ )
+      , memoryTypeIndex( memoryTypeIndex_ )
     {
-      sType = StructureType::eMemoryAllocateInfo;
-      pNext = nullptr;
-      allocationSize = allocationSize_;
-      memoryTypeIndex = memoryTypeIndex_;
     }
 
     MemoryAllocateInfo( VkMemoryAllocateInfo const & rhs )
@@ -5088,17 +4960,13 @@ namespace vk
 
   struct MappedMemoryRange
   {
-    MappedMemoryRange()
-      : MappedMemoryRange( DeviceMemory(), 0, 0 )
-    {}
-
-    MappedMemoryRange( DeviceMemory memory_, DeviceSize offset_, DeviceSize size_ )
+    MappedMemoryRange( DeviceMemory memory_ = DeviceMemory(), DeviceSize offset_ = 0, DeviceSize size_ = 0 )
+      : sType( StructureType::eMappedMemoryRange )
+      , pNext( nullptr )
+      , memory( memory_ )
+      , offset( offset_ )
+      , size( size_ )
     {
-      sType = StructureType::eMappedMemoryRange;
-      pNext = nullptr;
-      memory = memory_;
-      offset = offset_;
-      size = size_;
     }
 
     MappedMemoryRange( VkMappedMemoryRange const & rhs )
@@ -5157,22 +5025,18 @@ namespace vk
 
   struct WriteDescriptorSet
   {
-    WriteDescriptorSet()
-      : WriteDescriptorSet( DescriptorSet(), 0, 0, 0, DescriptorType::eSampler, nullptr, nullptr, nullptr )
-    {}
-
-    WriteDescriptorSet( DescriptorSet dstSet_, uint32_t dstBinding_, uint32_t dstArrayElement_, uint32_t descriptorCount_, DescriptorType descriptorType_, const DescriptorImageInfo* pImageInfo_, const DescriptorBufferInfo* pBufferInfo_, const BufferView* pTexelBufferView_ )
+    WriteDescriptorSet( DescriptorSet dstSet_ = DescriptorSet(), uint32_t dstBinding_ = 0, uint32_t dstArrayElement_ = 0, uint32_t descriptorCount_ = 0, DescriptorType descriptorType_ = DescriptorType::eSampler, const DescriptorImageInfo* pImageInfo_ = nullptr, const DescriptorBufferInfo* pBufferInfo_ = nullptr, const BufferView* pTexelBufferView_ = nullptr )
+      : sType( StructureType::eWriteDescriptorSet )
+      , pNext( nullptr )
+      , dstSet( dstSet_ )
+      , dstBinding( dstBinding_ )
+      , dstArrayElement( dstArrayElement_ )
+      , descriptorCount( descriptorCount_ )
+      , descriptorType( descriptorType_ )
+      , pImageInfo( pImageInfo_ )
+      , pBufferInfo( pBufferInfo_ )
+      , pTexelBufferView( pTexelBufferView_ )
     {
-      sType = StructureType::eWriteDescriptorSet;
-      pNext = nullptr;
-      dstSet = dstSet_;
-      dstBinding = dstBinding_;
-      dstArrayElement = dstArrayElement_;
-      descriptorCount = descriptorCount_;
-      descriptorType = descriptorType_;
-      pImageInfo = pImageInfo_;
-      pBufferInfo = pBufferInfo_;
-      pTexelBufferView = pTexelBufferView_;
     }
 
     WriteDescriptorSet( VkWriteDescriptorSet const & rhs )
@@ -5266,21 +5130,17 @@ namespace vk
 
   struct CopyDescriptorSet
   {
-    CopyDescriptorSet()
-      : CopyDescriptorSet( DescriptorSet(), 0, 0, DescriptorSet(), 0, 0, 0 )
-    {}
-
-    CopyDescriptorSet( DescriptorSet srcSet_, uint32_t srcBinding_, uint32_t srcArrayElement_, DescriptorSet dstSet_, uint32_t dstBinding_, uint32_t dstArrayElement_, uint32_t descriptorCount_ )
+    CopyDescriptorSet( DescriptorSet srcSet_ = DescriptorSet(), uint32_t srcBinding_ = 0, uint32_t srcArrayElement_ = 0, DescriptorSet dstSet_ = DescriptorSet(), uint32_t dstBinding_ = 0, uint32_t dstArrayElement_ = 0, uint32_t descriptorCount_ = 0 )
+      : sType( StructureType::eCopyDescriptorSet )
+      , pNext( nullptr )
+      , srcSet( srcSet_ )
+      , srcBinding( srcBinding_ )
+      , srcArrayElement( srcArrayElement_ )
+      , dstSet( dstSet_ )
+      , dstBinding( dstBinding_ )
+      , dstArrayElement( dstArrayElement_ )
+      , descriptorCount( descriptorCount_ )
     {
-      sType = StructureType::eCopyDescriptorSet;
-      pNext = nullptr;
-      srcSet = srcSet_;
-      srcBinding = srcBinding_;
-      srcArrayElement = srcArrayElement_;
-      dstSet = dstSet_;
-      dstBinding = dstBinding_;
-      dstArrayElement = dstArrayElement_;
-      descriptorCount = descriptorCount_;
     }
 
     CopyDescriptorSet( VkCopyDescriptorSet const & rhs )
@@ -5367,19 +5227,15 @@ namespace vk
 
   struct BufferViewCreateInfo
   {
-    BufferViewCreateInfo()
-      : BufferViewCreateInfo( BufferViewCreateFlags(), Buffer(), Format::eUndefined, 0, 0 )
-    {}
-
-    BufferViewCreateInfo( BufferViewCreateFlags flags_, Buffer buffer_, Format format_, DeviceSize offset_, DeviceSize range_ )
+    BufferViewCreateInfo( BufferViewCreateFlags flags_ = BufferViewCreateFlags(), Buffer buffer_ = Buffer(), Format format_ = Format::eUndefined, DeviceSize offset_ = 0, DeviceSize range_ = 0 )
+      : sType( StructureType::eBufferViewCreateInfo )
+      , pNext( nullptr )
+      , flags( flags_ )
+      , buffer( buffer_ )
+      , format( format_ )
+      , offset( offset_ )
+      , range( range_ )
     {
-      sType = StructureType::eBufferViewCreateInfo;
-      pNext = nullptr;
-      flags = flags_;
-      buffer = buffer_;
-      format = format_;
-      offset = offset_;
-      range = range_;
     }
 
     BufferViewCreateInfo( VkBufferViewCreateInfo const & rhs )
@@ -5452,17 +5308,13 @@ namespace vk
 
   struct ShaderModuleCreateInfo
   {
-    ShaderModuleCreateInfo()
-      : ShaderModuleCreateInfo( ShaderModuleCreateFlags(), 0, nullptr )
-    {}
-
-    ShaderModuleCreateInfo( ShaderModuleCreateFlags flags_, size_t codeSize_, const uint32_t* pCode_ )
+    ShaderModuleCreateInfo( ShaderModuleCreateFlags flags_ = ShaderModuleCreateFlags(), size_t codeSize_ = 0, const uint32_t* pCode_ = nullptr )
+      : sType( StructureType::eShaderModuleCreateInfo )
+      , pNext( nullptr )
+      , flags( flags_ )
+      , codeSize( codeSize_ )
+      , pCode( pCode_ )
     {
-      sType = StructureType::eShaderModuleCreateInfo;
-      pNext = nullptr;
-      flags = flags_;
-      codeSize = codeSize_;
-      pCode = pCode_;
     }
 
     ShaderModuleCreateInfo( VkShaderModuleCreateInfo const & rhs )
@@ -5521,17 +5373,13 @@ namespace vk
 
   struct DescriptorSetAllocateInfo
   {
-    DescriptorSetAllocateInfo()
-      : DescriptorSetAllocateInfo( DescriptorPool(), 0, nullptr )
-    {}
-
-    DescriptorSetAllocateInfo( DescriptorPool descriptorPool_, uint32_t descriptorSetCount_, const DescriptorSetLayout* pSetLayouts_ )
+    DescriptorSetAllocateInfo( DescriptorPool descriptorPool_ = DescriptorPool(), uint32_t descriptorSetCount_ = 0, const DescriptorSetLayout* pSetLayouts_ = nullptr )
+      : sType( StructureType::eDescriptorSetAllocateInfo )
+      , pNext( nullptr )
+      , descriptorPool( descriptorPool_ )
+      , descriptorSetCount( descriptorSetCount_ )
+      , pSetLayouts( pSetLayouts_ )
     {
-      sType = StructureType::eDescriptorSetAllocateInfo;
-      pNext = nullptr;
-      descriptorPool = descriptorPool_;
-      descriptorSetCount = descriptorSetCount_;
-      pSetLayouts = pSetLayouts_;
     }
 
     DescriptorSetAllocateInfo( VkDescriptorSetAllocateInfo const & rhs )
@@ -5590,19 +5438,15 @@ namespace vk
 
   struct PipelineVertexInputStateCreateInfo
   {
-    PipelineVertexInputStateCreateInfo()
-      : PipelineVertexInputStateCreateInfo( PipelineVertexInputStateCreateFlags(), 0, nullptr, 0, nullptr )
-    {}
-
-    PipelineVertexInputStateCreateInfo( PipelineVertexInputStateCreateFlags flags_, uint32_t vertexBindingDescriptionCount_, const VertexInputBindingDescription* pVertexBindingDescriptions_, uint32_t vertexAttributeDescriptionCount_, const VertexInputAttributeDescription* pVertexAttributeDescriptions_ )
+    PipelineVertexInputStateCreateInfo( PipelineVertexInputStateCreateFlags flags_ = PipelineVertexInputStateCreateFlags(), uint32_t vertexBindingDescriptionCount_ = 0, const VertexInputBindingDescription* pVertexBindingDescriptions_ = nullptr, uint32_t vertexAttributeDescriptionCount_ = 0, const VertexInputAttributeDescription* pVertexAttributeDescriptions_ = nullptr )
+      : sType( StructureType::ePipelineVertexInputStateCreateInfo )
+      , pNext( nullptr )
+      , flags( flags_ )
+      , vertexBindingDescriptionCount( vertexBindingDescriptionCount_ )
+      , pVertexBindingDescriptions( pVertexBindingDescriptions_ )
+      , vertexAttributeDescriptionCount( vertexAttributeDescriptionCount_ )
+      , pVertexAttributeDescriptions( pVertexAttributeDescriptions_ )
     {
-      sType = StructureType::ePipelineVertexInputStateCreateInfo;
-      pNext = nullptr;
-      flags = flags_;
-      vertexBindingDescriptionCount = vertexBindingDescriptionCount_;
-      pVertexBindingDescriptions = pVertexBindingDescriptions_;
-      vertexAttributeDescriptionCount = vertexAttributeDescriptionCount_;
-      pVertexAttributeDescriptions = pVertexAttributeDescriptions_;
     }
 
     PipelineVertexInputStateCreateInfo( VkPipelineVertexInputStateCreateInfo const & rhs )
@@ -5675,17 +5519,13 @@ namespace vk
 
   struct PipelineInputAssemblyStateCreateInfo
   {
-    PipelineInputAssemblyStateCreateInfo()
-      : PipelineInputAssemblyStateCreateInfo( PipelineInputAssemblyStateCreateFlags(), PrimitiveTopology::ePointList, 0 )
-    {}
-
-    PipelineInputAssemblyStateCreateInfo( PipelineInputAssemblyStateCreateFlags flags_, PrimitiveTopology topology_, Bool32 primitiveRestartEnable_ )
+    PipelineInputAssemblyStateCreateInfo( PipelineInputAssemblyStateCreateFlags flags_ = PipelineInputAssemblyStateCreateFlags(), PrimitiveTopology topology_ = PrimitiveTopology::ePointList, Bool32 primitiveRestartEnable_ = 0 )
+      : sType( StructureType::ePipelineInputAssemblyStateCreateInfo )
+      , pNext( nullptr )
+      , flags( flags_ )
+      , topology( topology_ )
+      , primitiveRestartEnable( primitiveRestartEnable_ )
     {
-      sType = StructureType::ePipelineInputAssemblyStateCreateInfo;
-      pNext = nullptr;
-      flags = flags_;
-      topology = topology_;
-      primitiveRestartEnable = primitiveRestartEnable_;
     }
 
     PipelineInputAssemblyStateCreateInfo( VkPipelineInputAssemblyStateCreateInfo const & rhs )
@@ -5744,16 +5584,12 @@ namespace vk
 
   struct PipelineTessellationStateCreateInfo
   {
-    PipelineTessellationStateCreateInfo()
-      : PipelineTessellationStateCreateInfo( PipelineTessellationStateCreateFlags(), 0 )
-    {}
-
-    PipelineTessellationStateCreateInfo( PipelineTessellationStateCreateFlags flags_, uint32_t patchControlPoints_ )
+    PipelineTessellationStateCreateInfo( PipelineTessellationStateCreateFlags flags_ = PipelineTessellationStateCreateFlags(), uint32_t patchControlPoints_ = 0 )
+      : sType( StructureType::ePipelineTessellationStateCreateInfo )
+      , pNext( nullptr )
+      , flags( flags_ )
+      , patchControlPoints( patchControlPoints_ )
     {
-      sType = StructureType::ePipelineTessellationStateCreateInfo;
-      pNext = nullptr;
-      flags = flags_;
-      patchControlPoints = patchControlPoints_;
     }
 
     PipelineTessellationStateCreateInfo( VkPipelineTessellationStateCreateInfo const & rhs )
@@ -5805,19 +5641,15 @@ namespace vk
 
   struct PipelineViewportStateCreateInfo
   {
-    PipelineViewportStateCreateInfo()
-      : PipelineViewportStateCreateInfo( PipelineViewportStateCreateFlags(), 0, nullptr, 0, nullptr )
-    {}
-
-    PipelineViewportStateCreateInfo( PipelineViewportStateCreateFlags flags_, uint32_t viewportCount_, const Viewport* pViewports_, uint32_t scissorCount_, const Rect2D* pScissors_ )
+    PipelineViewportStateCreateInfo( PipelineViewportStateCreateFlags flags_ = PipelineViewportStateCreateFlags(), uint32_t viewportCount_ = 0, const Viewport* pViewports_ = nullptr, uint32_t scissorCount_ = 0, const Rect2D* pScissors_ = nullptr )
+      : sType( StructureType::ePipelineViewportStateCreateInfo )
+      , pNext( nullptr )
+      , flags( flags_ )
+      , viewportCount( viewportCount_ )
+      , pViewports( pViewports_ )
+      , scissorCount( scissorCount_ )
+      , pScissors( pScissors_ )
     {
-      sType = StructureType::ePipelineViewportStateCreateInfo;
-      pNext = nullptr;
-      flags = flags_;
-      viewportCount = viewportCount_;
-      pViewports = pViewports_;
-      scissorCount = scissorCount_;
-      pScissors = pScissors_;
     }
 
     PipelineViewportStateCreateInfo( VkPipelineViewportStateCreateInfo const & rhs )
@@ -5890,25 +5722,21 @@ namespace vk
 
   struct PipelineRasterizationStateCreateInfo
   {
-    PipelineRasterizationStateCreateInfo()
-      : PipelineRasterizationStateCreateInfo( PipelineRasterizationStateCreateFlags(), 0, 0, PolygonMode::eFill, CullModeFlags(), FrontFace::eCounterClockwise, 0, 0, 0, 0, 0 )
-    {}
-
-    PipelineRasterizationStateCreateInfo( PipelineRasterizationStateCreateFlags flags_, Bool32 depthClampEnable_, Bool32 rasterizerDiscardEnable_, PolygonMode polygonMode_, CullModeFlags cullMode_, FrontFace frontFace_, Bool32 depthBiasEnable_, float depthBiasConstantFactor_, float depthBiasClamp_, float depthBiasSlopeFactor_, float lineWidth_ )
+    PipelineRasterizationStateCreateInfo( PipelineRasterizationStateCreateFlags flags_ = PipelineRasterizationStateCreateFlags(), Bool32 depthClampEnable_ = 0, Bool32 rasterizerDiscardEnable_ = 0, PolygonMode polygonMode_ = PolygonMode::eFill, CullModeFlags cullMode_ = CullModeFlags(), FrontFace frontFace_ = FrontFace::eCounterClockwise, Bool32 depthBiasEnable_ = 0, float depthBiasConstantFactor_ = 0, float depthBiasClamp_ = 0, float depthBiasSlopeFactor_ = 0, float lineWidth_ = 0 )
+      : sType( StructureType::ePipelineRasterizationStateCreateInfo )
+      , pNext( nullptr )
+      , flags( flags_ )
+      , depthClampEnable( depthClampEnable_ )
+      , rasterizerDiscardEnable( rasterizerDiscardEnable_ )
+      , polygonMode( polygonMode_ )
+      , cullMode( cullMode_ )
+      , frontFace( frontFace_ )
+      , depthBiasEnable( depthBiasEnable_ )
+      , depthBiasConstantFactor( depthBiasConstantFactor_ )
+      , depthBiasClamp( depthBiasClamp_ )
+      , depthBiasSlopeFactor( depthBiasSlopeFactor_ )
+      , lineWidth( lineWidth_ )
     {
-      sType = StructureType::ePipelineRasterizationStateCreateInfo;
-      pNext = nullptr;
-      flags = flags_;
-      depthClampEnable = depthClampEnable_;
-      rasterizerDiscardEnable = rasterizerDiscardEnable_;
-      polygonMode = polygonMode_;
-      cullMode = cullMode_;
-      frontFace = frontFace_;
-      depthBiasEnable = depthBiasEnable_;
-      depthBiasConstantFactor = depthBiasConstantFactor_;
-      depthBiasClamp = depthBiasClamp_;
-      depthBiasSlopeFactor = depthBiasSlopeFactor_;
-      lineWidth = lineWidth_;
     }
 
     PipelineRasterizationStateCreateInfo( VkPipelineRasterizationStateCreateInfo const & rhs )
@@ -6023,24 +5851,20 @@ namespace vk
 
   struct PipelineDepthStencilStateCreateInfo
   {
-    PipelineDepthStencilStateCreateInfo()
-      : PipelineDepthStencilStateCreateInfo( PipelineDepthStencilStateCreateFlags(), 0, 0, CompareOp::eNever, 0, 0, StencilOpState(), StencilOpState(), 0, 0 )
-    {}
-
-    PipelineDepthStencilStateCreateInfo( PipelineDepthStencilStateCreateFlags flags_, Bool32 depthTestEnable_, Bool32 depthWriteEnable_, CompareOp depthCompareOp_, Bool32 depthBoundsTestEnable_, Bool32 stencilTestEnable_, StencilOpState front_, StencilOpState back_, float minDepthBounds_, float maxDepthBounds_ )
+    PipelineDepthStencilStateCreateInfo( PipelineDepthStencilStateCreateFlags flags_ = PipelineDepthStencilStateCreateFlags(), Bool32 depthTestEnable_ = 0, Bool32 depthWriteEnable_ = 0, CompareOp depthCompareOp_ = CompareOp::eNever, Bool32 depthBoundsTestEnable_ = 0, Bool32 stencilTestEnable_ = 0, StencilOpState front_ = StencilOpState(), StencilOpState back_ = StencilOpState(), float minDepthBounds_ = 0, float maxDepthBounds_ = 0 )
+      : sType( StructureType::ePipelineDepthStencilStateCreateInfo )
+      , pNext( nullptr )
+      , flags( flags_ )
+      , depthTestEnable( depthTestEnable_ )
+      , depthWriteEnable( depthWriteEnable_ )
+      , depthCompareOp( depthCompareOp_ )
+      , depthBoundsTestEnable( depthBoundsTestEnable_ )
+      , stencilTestEnable( stencilTestEnable_ )
+      , front( front_ )
+      , back( back_ )
+      , minDepthBounds( minDepthBounds_ )
+      , maxDepthBounds( maxDepthBounds_ )
     {
-      sType = StructureType::ePipelineDepthStencilStateCreateInfo;
-      pNext = nullptr;
-      flags = flags_;
-      depthTestEnable = depthTestEnable_;
-      depthWriteEnable = depthWriteEnable_;
-      depthCompareOp = depthCompareOp_;
-      depthBoundsTestEnable = depthBoundsTestEnable_;
-      stencilTestEnable = stencilTestEnable_;
-      front = front_;
-      back = back_;
-      minDepthBounds = minDepthBounds_;
-      maxDepthBounds = maxDepthBounds_;
     }
 
     PipelineDepthStencilStateCreateInfo( VkPipelineDepthStencilStateCreateInfo const & rhs )
@@ -6148,17 +5972,13 @@ namespace vk
 
   struct PipelineCacheCreateInfo
   {
-    PipelineCacheCreateInfo()
-      : PipelineCacheCreateInfo( PipelineCacheCreateFlags(), 0, nullptr )
-    {}
-
-    PipelineCacheCreateInfo( PipelineCacheCreateFlags flags_, size_t initialDataSize_, const void* pInitialData_ )
+    PipelineCacheCreateInfo( PipelineCacheCreateFlags flags_ = PipelineCacheCreateFlags(), size_t initialDataSize_ = 0, const void* pInitialData_ = nullptr )
+      : sType( StructureType::ePipelineCacheCreateInfo )
+      , pNext( nullptr )
+      , flags( flags_ )
+      , initialDataSize( initialDataSize_ )
+      , pInitialData( pInitialData_ )
     {
-      sType = StructureType::ePipelineCacheCreateInfo;
-      pNext = nullptr;
-      flags = flags_;
-      initialDataSize = initialDataSize_;
-      pInitialData = pInitialData_;
     }
 
     PipelineCacheCreateInfo( VkPipelineCacheCreateInfo const & rhs )
@@ -6217,30 +6037,26 @@ namespace vk
 
   struct SamplerCreateInfo
   {
-    SamplerCreateInfo()
-      : SamplerCreateInfo( SamplerCreateFlags(), Filter::eNearest, Filter::eNearest, SamplerMipmapMode::eNearest, SamplerAddressMode::eRepeat, SamplerAddressMode::eRepeat, SamplerAddressMode::eRepeat, 0, 0, 0, 0, CompareOp::eNever, 0, 0, BorderColor::eFloatTransparentBlack, 0 )
-    {}
-
-    SamplerCreateInfo( SamplerCreateFlags flags_, Filter magFilter_, Filter minFilter_, SamplerMipmapMode mipmapMode_, SamplerAddressMode addressModeU_, SamplerAddressMode addressModeV_, SamplerAddressMode addressModeW_, float mipLodBias_, Bool32 anisotropyEnable_, float maxAnisotropy_, Bool32 compareEnable_, CompareOp compareOp_, float minLod_, float maxLod_, BorderColor borderColor_, Bool32 unnormalizedCoordinates_ )
+    SamplerCreateInfo( SamplerCreateFlags flags_ = SamplerCreateFlags(), Filter magFilter_ = Filter::eNearest, Filter minFilter_ = Filter::eNearest, SamplerMipmapMode mipmapMode_ = SamplerMipmapMode::eNearest, SamplerAddressMode addressModeU_ = SamplerAddressMode::eRepeat, SamplerAddressMode addressModeV_ = SamplerAddressMode::eRepeat, SamplerAddressMode addressModeW_ = SamplerAddressMode::eRepeat, float mipLodBias_ = 0, Bool32 anisotropyEnable_ = 0, float maxAnisotropy_ = 0, Bool32 compareEnable_ = 0, CompareOp compareOp_ = CompareOp::eNever, float minLod_ = 0, float maxLod_ = 0, BorderColor borderColor_ = BorderColor::eFloatTransparentBlack, Bool32 unnormalizedCoordinates_ = 0 )
+      : sType( StructureType::eSamplerCreateInfo )
+      , pNext( nullptr )
+      , flags( flags_ )
+      , magFilter( magFilter_ )
+      , minFilter( minFilter_ )
+      , mipmapMode( mipmapMode_ )
+      , addressModeU( addressModeU_ )
+      , addressModeV( addressModeV_ )
+      , addressModeW( addressModeW_ )
+      , mipLodBias( mipLodBias_ )
+      , anisotropyEnable( anisotropyEnable_ )
+      , maxAnisotropy( maxAnisotropy_ )
+      , compareEnable( compareEnable_ )
+      , compareOp( compareOp_ )
+      , minLod( minLod_ )
+      , maxLod( maxLod_ )
+      , borderColor( borderColor_ )
+      , unnormalizedCoordinates( unnormalizedCoordinates_ )
     {
-      sType = StructureType::eSamplerCreateInfo;
-      pNext = nullptr;
-      flags = flags_;
-      magFilter = magFilter_;
-      minFilter = minFilter_;
-      mipmapMode = mipmapMode_;
-      addressModeU = addressModeU_;
-      addressModeV = addressModeV_;
-      addressModeW = addressModeW_;
-      mipLodBias = mipLodBias_;
-      anisotropyEnable = anisotropyEnable_;
-      maxAnisotropy = maxAnisotropy_;
-      compareEnable = compareEnable_;
-      compareOp = compareOp_;
-      minLod = minLod_;
-      maxLod = maxLod_;
-      borderColor = borderColor_;
-      unnormalizedCoordinates = unnormalizedCoordinates_;
     }
 
     SamplerCreateInfo( VkSamplerCreateInfo const & rhs )
@@ -6390,17 +6206,13 @@ namespace vk
 
   struct CommandBufferAllocateInfo
   {
-    CommandBufferAllocateInfo()
-      : CommandBufferAllocateInfo( CommandPool(), CommandBufferLevel::ePrimary, 0 )
-    {}
-
-    CommandBufferAllocateInfo( CommandPool commandPool_, CommandBufferLevel level_, uint32_t commandBufferCount_ )
+    CommandBufferAllocateInfo( CommandPool commandPool_ = CommandPool(), CommandBufferLevel level_ = CommandBufferLevel::ePrimary, uint32_t commandBufferCount_ = 0 )
+      : sType( StructureType::eCommandBufferAllocateInfo )
+      , pNext( nullptr )
+      , commandPool( commandPool_ )
+      , level( level_ )
+      , commandBufferCount( commandBufferCount_ )
     {
-      sType = StructureType::eCommandBufferAllocateInfo;
-      pNext = nullptr;
-      commandPool = commandPool_;
-      level = level_;
-      commandBufferCount = commandBufferCount_;
     }
 
     CommandBufferAllocateInfo( VkCommandBufferAllocateInfo const & rhs )
@@ -6459,19 +6271,15 @@ namespace vk
 
   struct RenderPassBeginInfo
   {
-    RenderPassBeginInfo()
-      : RenderPassBeginInfo( RenderPass(), Framebuffer(), Rect2D(), 0, nullptr )
-    {}
-
-    RenderPassBeginInfo( RenderPass renderPass_, Framebuffer framebuffer_, Rect2D renderArea_, uint32_t clearValueCount_, const ClearValue* pClearValues_ )
+    RenderPassBeginInfo( RenderPass renderPass_ = RenderPass(), Framebuffer framebuffer_ = Framebuffer(), Rect2D renderArea_ = Rect2D(), uint32_t clearValueCount_ = 0, const ClearValue* pClearValues_ = nullptr )
+      : sType( StructureType::eRenderPassBeginInfo )
+      , pNext( nullptr )
+      , renderPass( renderPass_ )
+      , framebuffer( framebuffer_ )
+      , renderArea( renderArea_ )
+      , clearValueCount( clearValueCount_ )
+      , pClearValues( pClearValues_ )
     {
-      sType = StructureType::eRenderPassBeginInfo;
-      pNext = nullptr;
-      renderPass = renderPass_;
-      framebuffer = framebuffer_;
-      renderArea = renderArea_;
-      clearValueCount = clearValueCount_;
-      pClearValues = pClearValues_;
     }
 
     RenderPassBeginInfo( VkRenderPassBeginInfo const & rhs )
@@ -6544,15 +6352,11 @@ namespace vk
 
   struct EventCreateInfo
   {
-    EventCreateInfo()
-      : EventCreateInfo( EventCreateFlags() )
-    {}
-
-    EventCreateInfo( EventCreateFlags flags_ )
+    EventCreateInfo( EventCreateFlags flags_ = EventCreateFlags() )
+      : sType( StructureType::eEventCreateInfo )
+      , pNext( nullptr )
+      , flags( flags_ )
     {
-      sType = StructureType::eEventCreateInfo;
-      pNext = nullptr;
-      flags = flags_;
     }
 
     EventCreateInfo( VkEventCreateInfo const & rhs )
@@ -6597,15 +6401,11 @@ namespace vk
 
   struct SemaphoreCreateInfo
   {
-    SemaphoreCreateInfo()
-      : SemaphoreCreateInfo( SemaphoreCreateFlags() )
-    {}
-
-    SemaphoreCreateInfo( SemaphoreCreateFlags flags_ )
+    SemaphoreCreateInfo( SemaphoreCreateFlags flags_ = SemaphoreCreateFlags() )
+      : sType( StructureType::eSemaphoreCreateInfo )
+      , pNext( nullptr )
+      , flags( flags_ )
     {
-      sType = StructureType::eSemaphoreCreateInfo;
-      pNext = nullptr;
-      flags = flags_;
     }
 
     SemaphoreCreateInfo( VkSemaphoreCreateInfo const & rhs )
@@ -6650,21 +6450,17 @@ namespace vk
 
   struct FramebufferCreateInfo
   {
-    FramebufferCreateInfo()
-      : FramebufferCreateInfo( FramebufferCreateFlags(), RenderPass(), 0, nullptr, 0, 0, 0 )
-    {}
-
-    FramebufferCreateInfo( FramebufferCreateFlags flags_, RenderPass renderPass_, uint32_t attachmentCount_, const ImageView* pAttachments_, uint32_t width_, uint32_t height_, uint32_t layers_ )
+    FramebufferCreateInfo( FramebufferCreateFlags flags_ = FramebufferCreateFlags(), RenderPass renderPass_ = RenderPass(), uint32_t attachmentCount_ = 0, const ImageView* pAttachments_ = nullptr, uint32_t width_ = 0, uint32_t height_ = 0, uint32_t layers_ = 0 )
+      : sType( StructureType::eFramebufferCreateInfo )
+      , pNext( nullptr )
+      , flags( flags_ )
+      , renderPass( renderPass_ )
+      , attachmentCount( attachmentCount_ )
+      , pAttachments( pAttachments_ )
+      , width( width_ )
+      , height( height_ )
+      , layers( layers_ )
     {
-      sType = StructureType::eFramebufferCreateInfo;
-      pNext = nullptr;
-      flags = flags_;
-      renderPass = renderPass_;
-      attachmentCount = attachmentCount_;
-      pAttachments = pAttachments_;
-      width = width_;
-      height = height_;
-      layers = layers_;
     }
 
     FramebufferCreateInfo( VkFramebufferCreateInfo const & rhs )
@@ -6751,16 +6547,12 @@ namespace vk
 
   struct DisplayModeCreateInfoKHR
   {
-    DisplayModeCreateInfoKHR()
-      : DisplayModeCreateInfoKHR( DisplayModeCreateFlagsKHR(), DisplayModeParametersKHR() )
-    {}
-
-    DisplayModeCreateInfoKHR( DisplayModeCreateFlagsKHR flags_, DisplayModeParametersKHR parameters_ )
+    DisplayModeCreateInfoKHR( DisplayModeCreateFlagsKHR flags_ = DisplayModeCreateFlagsKHR(), DisplayModeParametersKHR parameters_ = DisplayModeParametersKHR() )
+      : sType( StructureType::eDisplayModeCreateInfoKHR )
+      , pNext( nullptr )
+      , flags( flags_ )
+      , parameters( parameters_ )
     {
-      sType = StructureType::eDisplayModeCreateInfoKHR;
-      pNext = nullptr;
-      flags = flags_;
-      parameters = parameters_;
     }
 
     DisplayModeCreateInfoKHR( VkDisplayModeCreateInfoKHR const & rhs )
@@ -6812,17 +6604,13 @@ namespace vk
 
   struct DisplayPresentInfoKHR
   {
-    DisplayPresentInfoKHR()
-      : DisplayPresentInfoKHR( Rect2D(), Rect2D(), 0 )
-    {}
-
-    DisplayPresentInfoKHR( Rect2D srcRect_, Rect2D dstRect_, Bool32 persistent_ )
+    DisplayPresentInfoKHR( Rect2D srcRect_ = Rect2D(), Rect2D dstRect_ = Rect2D(), Bool32 persistent_ = 0 )
+      : sType( StructureType::eDisplayPresentInfoKHR )
+      , pNext( nullptr )
+      , srcRect( srcRect_ )
+      , dstRect( dstRect_ )
+      , persistent( persistent_ )
     {
-      sType = StructureType::eDisplayPresentInfoKHR;
-      pNext = nullptr;
-      srcRect = srcRect_;
-      dstRect = dstRect_;
-      persistent = persistent_;
     }
 
     DisplayPresentInfoKHR( VkDisplayPresentInfoKHR const & rhs )
@@ -6882,16 +6670,12 @@ namespace vk
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
   struct AndroidSurfaceCreateInfoKHR
   {
-    AndroidSurfaceCreateInfoKHR()
-      : AndroidSurfaceCreateInfoKHR( AndroidSurfaceCreateFlagsKHR(), nullptr )
-    {}
-
-    AndroidSurfaceCreateInfoKHR( AndroidSurfaceCreateFlagsKHR flags_, ANativeWindow* window_ )
+    AndroidSurfaceCreateInfoKHR( AndroidSurfaceCreateFlagsKHR flags_ = AndroidSurfaceCreateFlagsKHR(), ANativeWindow* window_ = nullptr )
+      : sType( StructureType::eAndroidSurfaceCreateInfoKHR )
+      , pNext( nullptr )
+      , flags( flags_ )
+      , window( window_ )
     {
-      sType = StructureType::eAndroidSurfaceCreateInfoKHR;
-      pNext = nullptr;
-      flags = flags_;
-      window = window_;
     }
 
     AndroidSurfaceCreateInfoKHR( VkAndroidSurfaceCreateInfoKHR const & rhs )
@@ -6945,17 +6729,13 @@ namespace vk
 #ifdef VK_USE_PLATFORM_MIR_KHR
   struct MirSurfaceCreateInfoKHR
   {
-    MirSurfaceCreateInfoKHR()
-      : MirSurfaceCreateInfoKHR( MirSurfaceCreateFlagsKHR(), nullptr, nullptr )
-    {}
-
-    MirSurfaceCreateInfoKHR( MirSurfaceCreateFlagsKHR flags_, MirConnection* connection_, MirSurface* mirSurface_ )
+    MirSurfaceCreateInfoKHR( MirSurfaceCreateFlagsKHR flags_ = MirSurfaceCreateFlagsKHR(), MirConnection* connection_ = nullptr, MirSurface* mirSurface_ = nullptr )
+      : sType( StructureType::eMirSurfaceCreateInfoKHR )
+      , pNext( nullptr )
+      , flags( flags_ )
+      , connection( connection_ )
+      , mirSurface( mirSurface_ )
     {
-      sType = StructureType::eMirSurfaceCreateInfoKHR;
-      pNext = nullptr;
-      flags = flags_;
-      connection = connection_;
-      mirSurface = mirSurface_;
     }
 
     MirSurfaceCreateInfoKHR( VkMirSurfaceCreateInfoKHR const & rhs )
@@ -7016,17 +6796,13 @@ namespace vk
 #ifdef VK_USE_PLATFORM_WAYLAND_KHR
   struct WaylandSurfaceCreateInfoKHR
   {
-    WaylandSurfaceCreateInfoKHR()
-      : WaylandSurfaceCreateInfoKHR( WaylandSurfaceCreateFlagsKHR(), nullptr, nullptr )
-    {}
-
-    WaylandSurfaceCreateInfoKHR( WaylandSurfaceCreateFlagsKHR flags_, struct wl_display* display_, struct wl_surface* surface_ )
+    WaylandSurfaceCreateInfoKHR( WaylandSurfaceCreateFlagsKHR flags_ = WaylandSurfaceCreateFlagsKHR(), struct wl_display* display_ = nullptr, struct wl_surface* surface_ = nullptr )
+      : sType( StructureType::eWaylandSurfaceCreateInfoKHR )
+      , pNext( nullptr )
+      , flags( flags_ )
+      , display( display_ )
+      , surface( surface_ )
     {
-      sType = StructureType::eWaylandSurfaceCreateInfoKHR;
-      pNext = nullptr;
-      flags = flags_;
-      display = display_;
-      surface = surface_;
     }
 
     WaylandSurfaceCreateInfoKHR( VkWaylandSurfaceCreateInfoKHR const & rhs )
@@ -7087,17 +6863,13 @@ namespace vk
 #ifdef VK_USE_PLATFORM_WIN32_KHR
   struct Win32SurfaceCreateInfoKHR
   {
-    Win32SurfaceCreateInfoKHR()
-      : Win32SurfaceCreateInfoKHR( Win32SurfaceCreateFlagsKHR(), 0, 0 )
-    {}
-
-    Win32SurfaceCreateInfoKHR( Win32SurfaceCreateFlagsKHR flags_, HINSTANCE hinstance_, HWND hwnd_ )
+    Win32SurfaceCreateInfoKHR( Win32SurfaceCreateFlagsKHR flags_ = Win32SurfaceCreateFlagsKHR(), HINSTANCE hinstance_ = 0, HWND hwnd_ = 0 )
+      : sType( StructureType::eWin32SurfaceCreateInfoKHR )
+      , pNext( nullptr )
+      , flags( flags_ )
+      , hinstance( hinstance_ )
+      , hwnd( hwnd_ )
     {
-      sType = StructureType::eWin32SurfaceCreateInfoKHR;
-      pNext = nullptr;
-      flags = flags_;
-      hinstance = hinstance_;
-      hwnd = hwnd_;
     }
 
     Win32SurfaceCreateInfoKHR( VkWin32SurfaceCreateInfoKHR const & rhs )
@@ -7158,17 +6930,13 @@ namespace vk
 #ifdef VK_USE_PLATFORM_XLIB_KHR
   struct XlibSurfaceCreateInfoKHR
   {
-    XlibSurfaceCreateInfoKHR()
-      : XlibSurfaceCreateInfoKHR( XlibSurfaceCreateFlagsKHR(), nullptr, 0 )
-    {}
-
-    XlibSurfaceCreateInfoKHR( XlibSurfaceCreateFlagsKHR flags_, Display* dpy_, Window window_ )
+    XlibSurfaceCreateInfoKHR( XlibSurfaceCreateFlagsKHR flags_ = XlibSurfaceCreateFlagsKHR(), Display* dpy_ = nullptr, Window window_ = 0 )
+      : sType( StructureType::eXlibSurfaceCreateInfoKHR )
+      , pNext( nullptr )
+      , flags( flags_ )
+      , dpy( dpy_ )
+      , window( window_ )
     {
-      sType = StructureType::eXlibSurfaceCreateInfoKHR;
-      pNext = nullptr;
-      flags = flags_;
-      dpy = dpy_;
-      window = window_;
     }
 
     XlibSurfaceCreateInfoKHR( VkXlibSurfaceCreateInfoKHR const & rhs )
@@ -7229,17 +6997,13 @@ namespace vk
 #ifdef VK_USE_PLATFORM_XCB_KHR
   struct XcbSurfaceCreateInfoKHR
   {
-    XcbSurfaceCreateInfoKHR()
-      : XcbSurfaceCreateInfoKHR( XcbSurfaceCreateFlagsKHR(), nullptr, 0 )
-    {}
-
-    XcbSurfaceCreateInfoKHR( XcbSurfaceCreateFlagsKHR flags_, xcb_connection_t* connection_, xcb_window_t window_ )
+    XcbSurfaceCreateInfoKHR( XcbSurfaceCreateFlagsKHR flags_ = XcbSurfaceCreateFlagsKHR(), xcb_connection_t* connection_ = nullptr, xcb_window_t window_ = 0 )
+      : sType( StructureType::eXcbSurfaceCreateInfoKHR )
+      , pNext( nullptr )
+      , flags( flags_ )
+      , connection( connection_ )
+      , window( window_ )
     {
-      sType = StructureType::eXcbSurfaceCreateInfoKHR;
-      pNext = nullptr;
-      flags = flags_;
-      connection = connection_;
-      window = window_;
     }
 
     XcbSurfaceCreateInfoKHR( VkXcbSurfaceCreateInfoKHR const & rhs )
@@ -7305,20 +7069,16 @@ namespace vk
 
   struct PresentInfoKHR
   {
-    PresentInfoKHR()
-      : PresentInfoKHR( 0, nullptr, 0, nullptr, nullptr, nullptr )
-    {}
-
-    PresentInfoKHR( uint32_t waitSemaphoreCount_, const Semaphore* pWaitSemaphores_, uint32_t swapchainCount_, const SwapchainKHR* pSwapchains_, const uint32_t* pImageIndices_, Result* pResults_ )
+    PresentInfoKHR( uint32_t waitSemaphoreCount_ = 0, const Semaphore* pWaitSemaphores_ = nullptr, uint32_t swapchainCount_ = 0, const SwapchainKHR* pSwapchains_ = nullptr, const uint32_t* pImageIndices_ = nullptr, Result* pResults_ = nullptr )
+      : sType( StructureType::ePresentInfoKHR )
+      , pNext( nullptr )
+      , waitSemaphoreCount( waitSemaphoreCount_ )
+      , pWaitSemaphores( pWaitSemaphores_ )
+      , swapchainCount( swapchainCount_ )
+      , pSwapchains( pSwapchains_ )
+      , pImageIndices( pImageIndices_ )
+      , pResults( pResults_ )
     {
-      sType = StructureType::ePresentInfoKHR;
-      pNext = nullptr;
-      waitSemaphoreCount = waitSemaphoreCount_;
-      pWaitSemaphores = pWaitSemaphores_;
-      swapchainCount = swapchainCount_;
-      pSwapchains = pSwapchains_;
-      pImageIndices = pImageIndices_;
-      pResults = pResults_;
     }
 
     PresentInfoKHR( VkPresentInfoKHR const & rhs )
@@ -7411,17 +7171,13 @@ namespace vk
 
   struct PipelineDynamicStateCreateInfo
   {
-    PipelineDynamicStateCreateInfo()
-      : PipelineDynamicStateCreateInfo( PipelineDynamicStateCreateFlags(), 0, nullptr )
-    {}
-
-    PipelineDynamicStateCreateInfo( PipelineDynamicStateCreateFlags flags_, uint32_t dynamicStateCount_, const DynamicState* pDynamicStates_ )
+    PipelineDynamicStateCreateInfo( PipelineDynamicStateCreateFlags flags_ = PipelineDynamicStateCreateFlags(), uint32_t dynamicStateCount_ = 0, const DynamicState* pDynamicStates_ = nullptr )
+      : sType( StructureType::ePipelineDynamicStateCreateInfo )
+      , pNext( nullptr )
+      , flags( flags_ )
+      , dynamicStateCount( dynamicStateCount_ )
+      , pDynamicStates( pDynamicStates_ )
     {
-      sType = StructureType::ePipelineDynamicStateCreateInfo;
-      pNext = nullptr;
-      flags = flags_;
-      dynamicStateCount = dynamicStateCount_;
-      pDynamicStates = pDynamicStates_;
     }
 
     PipelineDynamicStateCreateInfo( VkPipelineDynamicStateCreateInfo const & rhs )
@@ -7603,16 +7359,12 @@ namespace vk
 
   struct MemoryBarrier
   {
-    MemoryBarrier()
-      : MemoryBarrier( AccessFlags(), AccessFlags() )
-    {}
-
-    MemoryBarrier( AccessFlags srcAccessMask_, AccessFlags dstAccessMask_ )
+    MemoryBarrier( AccessFlags srcAccessMask_ = AccessFlags(), AccessFlags dstAccessMask_ = AccessFlags() )
+      : sType( StructureType::eMemoryBarrier )
+      , pNext( nullptr )
+      , srcAccessMask( srcAccessMask_ )
+      , dstAccessMask( dstAccessMask_ )
     {
-      sType = StructureType::eMemoryBarrier;
-      pNext = nullptr;
-      srcAccessMask = srcAccessMask_;
-      dstAccessMask = dstAccessMask_;
     }
 
     MemoryBarrier( VkMemoryBarrier const & rhs )
@@ -7664,21 +7416,17 @@ namespace vk
 
   struct BufferMemoryBarrier
   {
-    BufferMemoryBarrier()
-      : BufferMemoryBarrier( AccessFlags(), AccessFlags(), 0, 0, Buffer(), 0, 0 )
-    {}
-
-    BufferMemoryBarrier( AccessFlags srcAccessMask_, AccessFlags dstAccessMask_, uint32_t srcQueueFamilyIndex_, uint32_t dstQueueFamilyIndex_, Buffer buffer_, DeviceSize offset_, DeviceSize size_ )
+    BufferMemoryBarrier( AccessFlags srcAccessMask_ = AccessFlags(), AccessFlags dstAccessMask_ = AccessFlags(), uint32_t srcQueueFamilyIndex_ = 0, uint32_t dstQueueFamilyIndex_ = 0, Buffer buffer_ = Buffer(), DeviceSize offset_ = 0, DeviceSize size_ = 0 )
+      : sType( StructureType::eBufferMemoryBarrier )
+      , pNext( nullptr )
+      , srcAccessMask( srcAccessMask_ )
+      , dstAccessMask( dstAccessMask_ )
+      , srcQueueFamilyIndex( srcQueueFamilyIndex_ )
+      , dstQueueFamilyIndex( dstQueueFamilyIndex_ )
+      , buffer( buffer_ )
+      , offset( offset_ )
+      , size( size_ )
     {
-      sType = StructureType::eBufferMemoryBarrier;
-      pNext = nullptr;
-      srcAccessMask = srcAccessMask_;
-      dstAccessMask = dstAccessMask_;
-      srcQueueFamilyIndex = srcQueueFamilyIndex_;
-      dstQueueFamilyIndex = dstQueueFamilyIndex_;
-      buffer = buffer_;
-      offset = offset_;
-      size = size_;
     }
 
     BufferMemoryBarrier( VkBufferMemoryBarrier const & rhs )
@@ -7799,20 +7547,16 @@ namespace vk
 
   struct BufferCreateInfo
   {
-    BufferCreateInfo()
-      : BufferCreateInfo( BufferCreateFlags(), 0, BufferUsageFlags(), SharingMode::eExclusive, 0, nullptr )
-    {}
-
-    BufferCreateInfo( BufferCreateFlags flags_, DeviceSize size_, BufferUsageFlags usage_, SharingMode sharingMode_, uint32_t queueFamilyIndexCount_, const uint32_t* pQueueFamilyIndices_ )
+    BufferCreateInfo( BufferCreateFlags flags_ = BufferCreateFlags(), DeviceSize size_ = 0, BufferUsageFlags usage_ = BufferUsageFlags(), SharingMode sharingMode_ = SharingMode::eExclusive, uint32_t queueFamilyIndexCount_ = 0, const uint32_t* pQueueFamilyIndices_ = nullptr )
+      : sType( StructureType::eBufferCreateInfo )
+      , pNext( nullptr )
+      , flags( flags_ )
+      , size( size_ )
+      , usage( usage_ )
+      , sharingMode( sharingMode_ )
+      , queueFamilyIndexCount( queueFamilyIndexCount_ )
+      , pQueueFamilyIndices( pQueueFamilyIndices_ )
     {
-      sType = StructureType::eBufferCreateInfo;
-      pNext = nullptr;
-      flags = flags_;
-      size = size_;
-      usage = usage_;
-      sharingMode = sharingMode_;
-      queueFamilyIndexCount = queueFamilyIndexCount_;
-      pQueueFamilyIndices = pQueueFamilyIndices_;
     }
 
     BufferCreateInfo( VkBufferCreateInfo const & rhs )
@@ -7911,17 +7655,13 @@ namespace vk
 
   struct DescriptorSetLayoutBinding
   {
-    DescriptorSetLayoutBinding()
-      : DescriptorSetLayoutBinding( 0, DescriptorType::eSampler, 0, ShaderStageFlags(), nullptr )
-    {}
-
-    DescriptorSetLayoutBinding( uint32_t binding_, DescriptorType descriptorType_, uint32_t descriptorCount_, ShaderStageFlags stageFlags_, const Sampler* pImmutableSamplers_ )
+    DescriptorSetLayoutBinding( uint32_t binding_ = 0, DescriptorType descriptorType_ = DescriptorType::eSampler, uint32_t descriptorCount_ = 0, ShaderStageFlags stageFlags_ = ShaderStageFlags(), const Sampler* pImmutableSamplers_ = nullptr )
+      : binding( binding_ )
+      , descriptorType( descriptorType_ )
+      , descriptorCount( descriptorCount_ )
+      , stageFlags( stageFlags_ )
+      , pImmutableSamplers( pImmutableSamplers_ )
     {
-      binding = binding_;
-      descriptorType = descriptorType_;
-      descriptorCount = descriptorCount_;
-      stageFlags = stageFlags_;
-      pImmutableSamplers = pImmutableSamplers_;
     }
 
     DescriptorSetLayoutBinding( VkDescriptorSetLayoutBinding const & rhs )
@@ -7980,17 +7720,13 @@ namespace vk
 
   struct DescriptorSetLayoutCreateInfo
   {
-    DescriptorSetLayoutCreateInfo()
-      : DescriptorSetLayoutCreateInfo( DescriptorSetLayoutCreateFlags(), 0, nullptr )
-    {}
-
-    DescriptorSetLayoutCreateInfo( DescriptorSetLayoutCreateFlags flags_, uint32_t bindingCount_, const DescriptorSetLayoutBinding* pBindings_ )
+    DescriptorSetLayoutCreateInfo( DescriptorSetLayoutCreateFlags flags_ = DescriptorSetLayoutCreateFlags(), uint32_t bindingCount_ = 0, const DescriptorSetLayoutBinding* pBindings_ = nullptr )
+      : sType( StructureType::eDescriptorSetLayoutCreateInfo )
+      , pNext( nullptr )
+      , flags( flags_ )
+      , bindingCount( bindingCount_ )
+      , pBindings( pBindings_ )
     {
-      sType = StructureType::eDescriptorSetLayoutCreateInfo;
-      pNext = nullptr;
-      flags = flags_;
-      bindingCount = bindingCount_;
-      pBindings = pBindings_;
     }
 
     DescriptorSetLayoutCreateInfo( VkDescriptorSetLayoutCreateInfo const & rhs )
@@ -8049,19 +7785,15 @@ namespace vk
 
   struct PipelineShaderStageCreateInfo
   {
-    PipelineShaderStageCreateInfo()
-      : PipelineShaderStageCreateInfo( PipelineShaderStageCreateFlags(), ShaderStageFlagBits::eVertex, ShaderModule(), nullptr, nullptr )
-    {}
-
-    PipelineShaderStageCreateInfo( PipelineShaderStageCreateFlags flags_, ShaderStageFlagBits stage_, ShaderModule module_, const char* pName_, const SpecializationInfo* pSpecializationInfo_ )
+    PipelineShaderStageCreateInfo( PipelineShaderStageCreateFlags flags_ = PipelineShaderStageCreateFlags(), ShaderStageFlagBits stage_ = ShaderStageFlagBits::eVertex, ShaderModule module_ = ShaderModule(), const char* pName_ = nullptr, const SpecializationInfo* pSpecializationInfo_ = nullptr )
+      : sType( StructureType::ePipelineShaderStageCreateInfo )
+      , pNext( nullptr )
+      , flags( flags_ )
+      , stage( stage_ )
+      , module( module_ )
+      , pName( pName_ )
+      , pSpecializationInfo( pSpecializationInfo_ )
     {
-      sType = StructureType::ePipelineShaderStageCreateInfo;
-      pNext = nullptr;
-      flags = flags_;
-      stage = stage_;
-      module = module_;
-      pName = pName_;
-      pSpecializationInfo = pSpecializationInfo_;
     }
 
     PipelineShaderStageCreateInfo( VkPipelineShaderStageCreateInfo const & rhs )
@@ -8134,15 +7866,11 @@ namespace vk
 
   struct PushConstantRange
   {
-    PushConstantRange()
-      : PushConstantRange( ShaderStageFlags(), 0, 0 )
-    {}
-
-    PushConstantRange( ShaderStageFlags stageFlags_, uint32_t offset_, uint32_t size_ )
+    PushConstantRange( ShaderStageFlags stageFlags_ = ShaderStageFlags(), uint32_t offset_ = 0, uint32_t size_ = 0 )
+      : stageFlags( stageFlags_ )
+      , offset( offset_ )
+      , size( size_ )
     {
-      stageFlags = stageFlags_;
-      offset = offset_;
-      size = size_;
     }
 
     PushConstantRange( VkPushConstantRange const & rhs )
@@ -8187,19 +7915,15 @@ namespace vk
 
   struct PipelineLayoutCreateInfo
   {
-    PipelineLayoutCreateInfo()
-      : PipelineLayoutCreateInfo( PipelineLayoutCreateFlags(), 0, nullptr, 0, nullptr )
-    {}
-
-    PipelineLayoutCreateInfo( PipelineLayoutCreateFlags flags_, uint32_t setLayoutCount_, const DescriptorSetLayout* pSetLayouts_, uint32_t pushConstantRangeCount_, const PushConstantRange* pPushConstantRanges_ )
+    PipelineLayoutCreateInfo( PipelineLayoutCreateFlags flags_ = PipelineLayoutCreateFlags(), uint32_t setLayoutCount_ = 0, const DescriptorSetLayout* pSetLayouts_ = nullptr, uint32_t pushConstantRangeCount_ = 0, const PushConstantRange* pPushConstantRanges_ = nullptr )
+      : sType( StructureType::ePipelineLayoutCreateInfo )
+      , pNext( nullptr )
+      , flags( flags_ )
+      , setLayoutCount( setLayoutCount_ )
+      , pSetLayouts( pSetLayouts_ )
+      , pushConstantRangeCount( pushConstantRangeCount_ )
+      , pPushConstantRanges( pPushConstantRanges_ )
     {
-      sType = StructureType::ePipelineLayoutCreateInfo;
-      pNext = nullptr;
-      flags = flags_;
-      setLayoutCount = setLayoutCount_;
-      pSetLayouts = pSetLayouts_;
-      pushConstantRangeCount = pushConstantRangeCount_;
-      pPushConstantRanges = pPushConstantRanges_;
     }
 
     PipelineLayoutCreateInfo( VkPipelineLayoutCreateInfo const & rhs )
@@ -8321,19 +8045,15 @@ namespace vk
 
   struct ComputePipelineCreateInfo
   {
-    ComputePipelineCreateInfo()
-      : ComputePipelineCreateInfo( PipelineCreateFlags(), PipelineShaderStageCreateInfo(), PipelineLayout(), Pipeline(), 0 )
-    {}
-
-    ComputePipelineCreateInfo( PipelineCreateFlags flags_, PipelineShaderStageCreateInfo stage_, PipelineLayout layout_, Pipeline basePipelineHandle_, int32_t basePipelineIndex_ )
+    ComputePipelineCreateInfo( PipelineCreateFlags flags_ = PipelineCreateFlags(), PipelineShaderStageCreateInfo stage_ = PipelineShaderStageCreateInfo(), PipelineLayout layout_ = PipelineLayout(), Pipeline basePipelineHandle_ = Pipeline(), int32_t basePipelineIndex_ = 0 )
+      : sType( StructureType::eComputePipelineCreateInfo )
+      , pNext( nullptr )
+      , flags( flags_ )
+      , stage( stage_ )
+      , layout( layout_ )
+      , basePipelineHandle( basePipelineHandle_ )
+      , basePipelineIndex( basePipelineIndex_ )
     {
-      sType = StructureType::eComputePipelineCreateInfo;
-      pNext = nullptr;
-      flags = flags_;
-      stage = stage_;
-      layout = layout_;
-      basePipelineHandle = basePipelineHandle_;
-      basePipelineIndex = basePipelineIndex_;
     }
 
     ComputePipelineCreateInfo( VkComputePipelineCreateInfo const & rhs )
@@ -8421,20 +8141,16 @@ namespace vk
 
   struct PipelineColorBlendAttachmentState
   {
-    PipelineColorBlendAttachmentState()
-      : PipelineColorBlendAttachmentState( 0, BlendFactor::eZero, BlendFactor::eZero, BlendOp::eAdd, BlendFactor::eZero, BlendFactor::eZero, BlendOp::eAdd, ColorComponentFlags() )
-    {}
-
-    PipelineColorBlendAttachmentState( Bool32 blendEnable_, BlendFactor srcColorBlendFactor_, BlendFactor dstColorBlendFactor_, BlendOp colorBlendOp_, BlendFactor srcAlphaBlendFactor_, BlendFactor dstAlphaBlendFactor_, BlendOp alphaBlendOp_, ColorComponentFlags colorWriteMask_ )
+    PipelineColorBlendAttachmentState( Bool32 blendEnable_ = 0, BlendFactor srcColorBlendFactor_ = BlendFactor::eZero, BlendFactor dstColorBlendFactor_ = BlendFactor::eZero, BlendOp colorBlendOp_ = BlendOp::eAdd, BlendFactor srcAlphaBlendFactor_ = BlendFactor::eZero, BlendFactor dstAlphaBlendFactor_ = BlendFactor::eZero, BlendOp alphaBlendOp_ = BlendOp::eAdd, ColorComponentFlags colorWriteMask_ = ColorComponentFlags() )
+      : blendEnable( blendEnable_ )
+      , srcColorBlendFactor( srcColorBlendFactor_ )
+      , dstColorBlendFactor( dstColorBlendFactor_ )
+      , colorBlendOp( colorBlendOp_ )
+      , srcAlphaBlendFactor( srcAlphaBlendFactor_ )
+      , dstAlphaBlendFactor( dstAlphaBlendFactor_ )
+      , alphaBlendOp( alphaBlendOp_ )
+      , colorWriteMask( colorWriteMask_ )
     {
-      blendEnable = blendEnable_;
-      srcColorBlendFactor = srcColorBlendFactor_;
-      dstColorBlendFactor = dstColorBlendFactor_;
-      colorBlendOp = colorBlendOp_;
-      srcAlphaBlendFactor = srcAlphaBlendFactor_;
-      dstAlphaBlendFactor = dstAlphaBlendFactor_;
-      alphaBlendOp = alphaBlendOp_;
-      colorWriteMask = colorWriteMask_;
     }
 
     PipelineColorBlendAttachmentState( VkPipelineColorBlendAttachmentState const & rhs )
@@ -8514,19 +8230,15 @@ namespace vk
 
   struct PipelineColorBlendStateCreateInfo
   {
-    PipelineColorBlendStateCreateInfo()
-      : PipelineColorBlendStateCreateInfo( PipelineColorBlendStateCreateFlags(), 0, LogicOp::eClear, 0, nullptr, { 0 } )
-    {}
-
-    PipelineColorBlendStateCreateInfo( PipelineColorBlendStateCreateFlags flags_, Bool32 logicOpEnable_, LogicOp logicOp_, uint32_t attachmentCount_, const PipelineColorBlendAttachmentState* pAttachments_, std::array<float,4> const& blendConstants_ )
+    PipelineColorBlendStateCreateInfo( PipelineColorBlendStateCreateFlags flags_ = PipelineColorBlendStateCreateFlags(), Bool32 logicOpEnable_ = 0, LogicOp logicOp_ = LogicOp::eClear, uint32_t attachmentCount_ = 0, const PipelineColorBlendAttachmentState* pAttachments_ = nullptr, std::array<float,4> const& blendConstants_ = { 0, 0, 0, 0 } )
+      : sType( StructureType::ePipelineColorBlendStateCreateInfo )
+      , pNext( nullptr )
+      , flags( flags_ )
+      , logicOpEnable( logicOpEnable_ )
+      , logicOp( logicOp_ )
+      , attachmentCount( attachmentCount_ )
+      , pAttachments( pAttachments_ )
     {
-      sType = StructureType::ePipelineColorBlendStateCreateInfo;
-      pNext = nullptr;
-      flags = flags_;
-      logicOpEnable = logicOpEnable_;
-      logicOp = logicOp_;
-      attachmentCount = attachmentCount_;
-      pAttachments = pAttachments_;
       memcpy( &blendConstants, blendConstants_.data(), 4 * sizeof( float ) );
     }
 
@@ -8619,15 +8331,11 @@ namespace vk
 
   struct FenceCreateInfo
   {
-    FenceCreateInfo()
-      : FenceCreateInfo( FenceCreateFlags() )
-    {}
-
-    FenceCreateInfo( FenceCreateFlags flags_ )
+    FenceCreateInfo( FenceCreateFlags flags_ = FenceCreateFlags() )
+      : sType( StructureType::eFenceCreateInfo )
+      , pNext( nullptr )
+      , flags( flags_ )
     {
-      sType = StructureType::eFenceCreateInfo;
-      pNext = nullptr;
-      flags = flags_;
     }
 
     FenceCreateInfo( VkFenceCreateInfo const & rhs )
@@ -8773,20 +8481,16 @@ namespace vk
 
   struct CommandBufferInheritanceInfo
   {
-    CommandBufferInheritanceInfo()
-      : CommandBufferInheritanceInfo( RenderPass(), 0, Framebuffer(), 0, QueryControlFlags(), QueryPipelineStatisticFlags() )
-    {}
-
-    CommandBufferInheritanceInfo( RenderPass renderPass_, uint32_t subpass_, Framebuffer framebuffer_, Bool32 occlusionQueryEnable_, QueryControlFlags queryFlags_, QueryPipelineStatisticFlags pipelineStatistics_ )
+    CommandBufferInheritanceInfo( RenderPass renderPass_ = RenderPass(), uint32_t subpass_ = 0, Framebuffer framebuffer_ = Framebuffer(), Bool32 occlusionQueryEnable_ = 0, QueryControlFlags queryFlags_ = QueryControlFlags(), QueryPipelineStatisticFlags pipelineStatistics_ = QueryPipelineStatisticFlags() )
+      : sType( StructureType::eCommandBufferInheritanceInfo )
+      , pNext( nullptr )
+      , renderPass( renderPass_ )
+      , subpass( subpass_ )
+      , framebuffer( framebuffer_ )
+      , occlusionQueryEnable( occlusionQueryEnable_ )
+      , queryFlags( queryFlags_ )
+      , pipelineStatistics( pipelineStatistics_ )
     {
-      sType = StructureType::eCommandBufferInheritanceInfo;
-      pNext = nullptr;
-      renderPass = renderPass_;
-      subpass = subpass_;
-      framebuffer = framebuffer_;
-      occlusionQueryEnable = occlusionQueryEnable_;
-      queryFlags = queryFlags_;
-      pipelineStatistics = pipelineStatistics_;
     }
 
     CommandBufferInheritanceInfo( VkCommandBufferInheritanceInfo const & rhs )
@@ -8866,16 +8570,12 @@ namespace vk
 
   struct CommandBufferBeginInfo
   {
-    CommandBufferBeginInfo()
-      : CommandBufferBeginInfo( CommandBufferUsageFlags(), nullptr )
-    {}
-
-    CommandBufferBeginInfo( CommandBufferUsageFlags flags_, const CommandBufferInheritanceInfo* pInheritanceInfo_ )
+    CommandBufferBeginInfo( CommandBufferUsageFlags flags_ = CommandBufferUsageFlags(), const CommandBufferInheritanceInfo* pInheritanceInfo_ = nullptr )
+      : sType( StructureType::eCommandBufferBeginInfo )
+      , pNext( nullptr )
+      , flags( flags_ )
+      , pInheritanceInfo( pInheritanceInfo_ )
     {
-      sType = StructureType::eCommandBufferBeginInfo;
-      pNext = nullptr;
-      flags = flags_;
-      pInheritanceInfo = pInheritanceInfo_;
     }
 
     CommandBufferBeginInfo( VkCommandBufferBeginInfo const & rhs )
@@ -8927,18 +8627,14 @@ namespace vk
 
   struct QueryPoolCreateInfo
   {
-    QueryPoolCreateInfo()
-      : QueryPoolCreateInfo( QueryPoolCreateFlags(), QueryType::eOcclusion, 0, QueryPipelineStatisticFlags() )
-    {}
-
-    QueryPoolCreateInfo( QueryPoolCreateFlags flags_, QueryType queryType_, uint32_t queryCount_, QueryPipelineStatisticFlags pipelineStatistics_ )
+    QueryPoolCreateInfo( QueryPoolCreateFlags flags_ = QueryPoolCreateFlags(), QueryType queryType_ = QueryType::eOcclusion, uint32_t queryCount_ = 0, QueryPipelineStatisticFlags pipelineStatistics_ = QueryPipelineStatisticFlags() )
+      : sType( StructureType::eQueryPoolCreateInfo )
+      , pNext( nullptr )
+      , flags( flags_ )
+      , queryType( queryType_ )
+      , queryCount( queryCount_ )
+      , pipelineStatistics( pipelineStatistics_ )
     {
-      sType = StructureType::eQueryPoolCreateInfo;
-      pNext = nullptr;
-      flags = flags_;
-      queryType = queryType_;
-      queryCount = queryCount_;
-      pipelineStatistics = pipelineStatistics_;
     }
 
     QueryPoolCreateInfo( VkQueryPoolCreateInfo const & rhs )
@@ -9019,15 +8715,11 @@ namespace vk
 
   struct ImageSubresource
   {
-    ImageSubresource()
-      : ImageSubresource( ImageAspectFlags(), 0, 0 )
-    {}
-
-    ImageSubresource( ImageAspectFlags aspectMask_, uint32_t mipLevel_, uint32_t arrayLayer_ )
+    ImageSubresource( ImageAspectFlags aspectMask_ = ImageAspectFlags(), uint32_t mipLevel_ = 0, uint32_t arrayLayer_ = 0 )
+      : aspectMask( aspectMask_ )
+      , mipLevel( mipLevel_ )
+      , arrayLayer( arrayLayer_ )
     {
-      aspectMask = aspectMask_;
-      mipLevel = mipLevel_;
-      arrayLayer = arrayLayer_;
     }
 
     ImageSubresource( VkImageSubresource const & rhs )
@@ -9072,16 +8764,12 @@ namespace vk
 
   struct ImageSubresourceLayers
   {
-    ImageSubresourceLayers()
-      : ImageSubresourceLayers( ImageAspectFlags(), 0, 0, 0 )
-    {}
-
-    ImageSubresourceLayers( ImageAspectFlags aspectMask_, uint32_t mipLevel_, uint32_t baseArrayLayer_, uint32_t layerCount_ )
+    ImageSubresourceLayers( ImageAspectFlags aspectMask_ = ImageAspectFlags(), uint32_t mipLevel_ = 0, uint32_t baseArrayLayer_ = 0, uint32_t layerCount_ = 0 )
+      : aspectMask( aspectMask_ )
+      , mipLevel( mipLevel_ )
+      , baseArrayLayer( baseArrayLayer_ )
+      , layerCount( layerCount_ )
     {
-      aspectMask = aspectMask_;
-      mipLevel = mipLevel_;
-      baseArrayLayer = baseArrayLayer_;
-      layerCount = layerCount_;
     }
 
     ImageSubresourceLayers( VkImageSubresourceLayers const & rhs )
@@ -9133,17 +8821,13 @@ namespace vk
 
   struct ImageSubresourceRange
   {
-    ImageSubresourceRange()
-      : ImageSubresourceRange( ImageAspectFlags(), 0, 0, 0, 0 )
-    {}
-
-    ImageSubresourceRange( ImageAspectFlags aspectMask_, uint32_t baseMipLevel_, uint32_t levelCount_, uint32_t baseArrayLayer_, uint32_t layerCount_ )
+    ImageSubresourceRange( ImageAspectFlags aspectMask_ = ImageAspectFlags(), uint32_t baseMipLevel_ = 0, uint32_t levelCount_ = 0, uint32_t baseArrayLayer_ = 0, uint32_t layerCount_ = 0 )
+      : aspectMask( aspectMask_ )
+      , baseMipLevel( baseMipLevel_ )
+      , levelCount( levelCount_ )
+      , baseArrayLayer( baseArrayLayer_ )
+      , layerCount( layerCount_ )
     {
-      aspectMask = aspectMask_;
-      baseMipLevel = baseMipLevel_;
-      levelCount = levelCount_;
-      baseArrayLayer = baseArrayLayer_;
-      layerCount = layerCount_;
     }
 
     ImageSubresourceRange( VkImageSubresourceRange const & rhs )
@@ -9202,22 +8886,18 @@ namespace vk
 
   struct ImageMemoryBarrier
   {
-    ImageMemoryBarrier()
-      : ImageMemoryBarrier( AccessFlags(), AccessFlags(), ImageLayout::eUndefined, ImageLayout::eUndefined, 0, 0, Image(), ImageSubresourceRange() )
-    {}
-
-    ImageMemoryBarrier( AccessFlags srcAccessMask_, AccessFlags dstAccessMask_, ImageLayout oldLayout_, ImageLayout newLayout_, uint32_t srcQueueFamilyIndex_, uint32_t dstQueueFamilyIndex_, Image image_, ImageSubresourceRange subresourceRange_ )
+    ImageMemoryBarrier( AccessFlags srcAccessMask_ = AccessFlags(), AccessFlags dstAccessMask_ = AccessFlags(), ImageLayout oldLayout_ = ImageLayout::eUndefined, ImageLayout newLayout_ = ImageLayout::eUndefined, uint32_t srcQueueFamilyIndex_ = 0, uint32_t dstQueueFamilyIndex_ = 0, Image image_ = Image(), ImageSubresourceRange subresourceRange_ = ImageSubresourceRange() )
+      : sType( StructureType::eImageMemoryBarrier )
+      , pNext( nullptr )
+      , srcAccessMask( srcAccessMask_ )
+      , dstAccessMask( dstAccessMask_ )
+      , oldLayout( oldLayout_ )
+      , newLayout( newLayout_ )
+      , srcQueueFamilyIndex( srcQueueFamilyIndex_ )
+      , dstQueueFamilyIndex( dstQueueFamilyIndex_ )
+      , image( image_ )
+      , subresourceRange( subresourceRange_ )
     {
-      sType = StructureType::eImageMemoryBarrier;
-      pNext = nullptr;
-      srcAccessMask = srcAccessMask_;
-      dstAccessMask = dstAccessMask_;
-      oldLayout = oldLayout_;
-      newLayout = newLayout_;
-      srcQueueFamilyIndex = srcQueueFamilyIndex_;
-      dstQueueFamilyIndex = dstQueueFamilyIndex_;
-      image = image_;
-      subresourceRange = subresourceRange_;
     }
 
     ImageMemoryBarrier( VkImageMemoryBarrier const & rhs )
@@ -9311,20 +8991,16 @@ namespace vk
 
   struct ImageViewCreateInfo
   {
-    ImageViewCreateInfo()
-      : ImageViewCreateInfo( ImageViewCreateFlags(), Image(), ImageViewType::e1D, Format::eUndefined, ComponentMapping(), ImageSubresourceRange() )
-    {}
-
-    ImageViewCreateInfo( ImageViewCreateFlags flags_, Image image_, ImageViewType viewType_, Format format_, ComponentMapping components_, ImageSubresourceRange subresourceRange_ )
+    ImageViewCreateInfo( ImageViewCreateFlags flags_ = ImageViewCreateFlags(), Image image_ = Image(), ImageViewType viewType_ = ImageViewType::e1D, Format format_ = Format::eUndefined, ComponentMapping components_ = ComponentMapping(), ImageSubresourceRange subresourceRange_ = ImageSubresourceRange() )
+      : sType( StructureType::eImageViewCreateInfo )
+      , pNext( nullptr )
+      , flags( flags_ )
+      , image( image_ )
+      , viewType( viewType_ )
+      , format( format_ )
+      , components( components_ )
+      , subresourceRange( subresourceRange_ )
     {
-      sType = StructureType::eImageViewCreateInfo;
-      pNext = nullptr;
-      flags = flags_;
-      image = image_;
-      viewType = viewType_;
-      format = format_;
-      components = components_;
-      subresourceRange = subresourceRange_;
     }
 
     ImageViewCreateInfo( VkImageViewCreateInfo const & rhs )
@@ -9404,17 +9080,13 @@ namespace vk
 
   struct ImageCopy
   {
-    ImageCopy()
-      : ImageCopy( ImageSubresourceLayers(), Offset3D(), ImageSubresourceLayers(), Offset3D(), Extent3D() )
-    {}
-
-    ImageCopy( ImageSubresourceLayers srcSubresource_, Offset3D srcOffset_, ImageSubresourceLayers dstSubresource_, Offset3D dstOffset_, Extent3D extent_ )
+    ImageCopy( ImageSubresourceLayers srcSubresource_ = ImageSubresourceLayers(), Offset3D srcOffset_ = Offset3D(), ImageSubresourceLayers dstSubresource_ = ImageSubresourceLayers(), Offset3D dstOffset_ = Offset3D(), Extent3D extent_ = Extent3D() )
+      : srcSubresource( srcSubresource_ )
+      , srcOffset( srcOffset_ )
+      , dstSubresource( dstSubresource_ )
+      , dstOffset( dstOffset_ )
+      , extent( extent_ )
     {
-      srcSubresource = srcSubresource_;
-      srcOffset = srcOffset_;
-      dstSubresource = dstSubresource_;
-      dstOffset = dstOffset_;
-      extent = extent_;
     }
 
     ImageCopy( VkImageCopy const & rhs )
@@ -9473,15 +9145,11 @@ namespace vk
 
   struct ImageBlit
   {
-    ImageBlit()
-      : ImageBlit( ImageSubresourceLayers(), { Offset3D() }, ImageSubresourceLayers(), { Offset3D() } )
-    {}
-
-    ImageBlit( ImageSubresourceLayers srcSubresource_, std::array<Offset3D,2> const& srcOffsets_, ImageSubresourceLayers dstSubresource_, std::array<Offset3D,2> const& dstOffsets_ )
+    ImageBlit( ImageSubresourceLayers srcSubresource_ = ImageSubresourceLayers(), std::array<Offset3D,2> const& srcOffsets_ = { Offset3D(), Offset3D() }, ImageSubresourceLayers dstSubresource_ = ImageSubresourceLayers(), std::array<Offset3D,2> const& dstOffsets_ = { Offset3D(), Offset3D() } )
+      : srcSubresource( srcSubresource_ )
+      , dstSubresource( dstSubresource_ )
     {
-      srcSubresource = srcSubresource_;
       memcpy( &srcOffsets, srcOffsets_.data(), 2 * sizeof( Offset3D ) );
-      dstSubresource = dstSubresource_;
       memcpy( &dstOffsets, dstOffsets_.data(), 2 * sizeof( Offset3D ) );
     }
 
@@ -9534,18 +9202,14 @@ namespace vk
 
   struct BufferImageCopy
   {
-    BufferImageCopy()
-      : BufferImageCopy( 0, 0, 0, ImageSubresourceLayers(), Offset3D(), Extent3D() )
-    {}
-
-    BufferImageCopy( DeviceSize bufferOffset_, uint32_t bufferRowLength_, uint32_t bufferImageHeight_, ImageSubresourceLayers imageSubresource_, Offset3D imageOffset_, Extent3D imageExtent_ )
+    BufferImageCopy( DeviceSize bufferOffset_ = 0, uint32_t bufferRowLength_ = 0, uint32_t bufferImageHeight_ = 0, ImageSubresourceLayers imageSubresource_ = ImageSubresourceLayers(), Offset3D imageOffset_ = Offset3D(), Extent3D imageExtent_ = Extent3D() )
+      : bufferOffset( bufferOffset_ )
+      , bufferRowLength( bufferRowLength_ )
+      , bufferImageHeight( bufferImageHeight_ )
+      , imageSubresource( imageSubresource_ )
+      , imageOffset( imageOffset_ )
+      , imageExtent( imageExtent_ )
     {
-      bufferOffset = bufferOffset_;
-      bufferRowLength = bufferRowLength_;
-      bufferImageHeight = bufferImageHeight_;
-      imageSubresource = imageSubresource_;
-      imageOffset = imageOffset_;
-      imageExtent = imageExtent_;
     }
 
     BufferImageCopy( VkBufferImageCopy const & rhs )
@@ -9611,17 +9275,13 @@ namespace vk
 
   struct ImageResolve
   {
-    ImageResolve()
-      : ImageResolve( ImageSubresourceLayers(), Offset3D(), ImageSubresourceLayers(), Offset3D(), Extent3D() )
-    {}
-
-    ImageResolve( ImageSubresourceLayers srcSubresource_, Offset3D srcOffset_, ImageSubresourceLayers dstSubresource_, Offset3D dstOffset_, Extent3D extent_ )
+    ImageResolve( ImageSubresourceLayers srcSubresource_ = ImageSubresourceLayers(), Offset3D srcOffset_ = Offset3D(), ImageSubresourceLayers dstSubresource_ = ImageSubresourceLayers(), Offset3D dstOffset_ = Offset3D(), Extent3D extent_ = Extent3D() )
+      : srcSubresource( srcSubresource_ )
+      , srcOffset( srcOffset_ )
+      , dstSubresource( dstSubresource_ )
+      , dstOffset( dstOffset_ )
+      , extent( extent_ )
     {
-      srcSubresource = srcSubresource_;
-      srcOffset = srcOffset_;
-      dstSubresource = dstSubresource_;
-      dstOffset = dstOffset_;
-      extent = extent_;
     }
 
     ImageResolve( VkImageResolve const & rhs )
@@ -9680,15 +9340,11 @@ namespace vk
 
   struct ClearAttachment
   {
-    ClearAttachment()
-      : ClearAttachment( ImageAspectFlags(), 0, ClearValue() )
-    {}
-
-    ClearAttachment( ImageAspectFlags aspectMask_, uint32_t colorAttachment_, ClearValue clearValue_ )
+    ClearAttachment( ImageAspectFlags aspectMask_ = ImageAspectFlags(), uint32_t colorAttachment_ = 0, ClearValue clearValue_ = ClearValue() )
+      : aspectMask( aspectMask_ )
+      , colorAttachment( colorAttachment_ )
+      , clearValue( clearValue_ )
     {
-      aspectMask = aspectMask_;
-      colorAttachment = colorAttachment_;
-      clearValue = clearValue_;
     }
 
     ClearAttachment( VkClearAttachment const & rhs )
@@ -9787,17 +9443,13 @@ namespace vk
 
   struct SparseMemoryBind
   {
-    SparseMemoryBind()
-      : SparseMemoryBind( 0, 0, DeviceMemory(), 0, SparseMemoryBindFlags() )
-    {}
-
-    SparseMemoryBind( DeviceSize resourceOffset_, DeviceSize size_, DeviceMemory memory_, DeviceSize memoryOffset_, SparseMemoryBindFlags flags_ )
+    SparseMemoryBind( DeviceSize resourceOffset_ = 0, DeviceSize size_ = 0, DeviceMemory memory_ = DeviceMemory(), DeviceSize memoryOffset_ = 0, SparseMemoryBindFlags flags_ = SparseMemoryBindFlags() )
+      : resourceOffset( resourceOffset_ )
+      , size( size_ )
+      , memory( memory_ )
+      , memoryOffset( memoryOffset_ )
+      , flags( flags_ )
     {
-      resourceOffset = resourceOffset_;
-      size = size_;
-      memory = memory_;
-      memoryOffset = memoryOffset_;
-      flags = flags_;
     }
 
     SparseMemoryBind( VkSparseMemoryBind const & rhs )
@@ -9856,18 +9508,14 @@ namespace vk
 
   struct SparseImageMemoryBind
   {
-    SparseImageMemoryBind()
-      : SparseImageMemoryBind( ImageSubresource(), Offset3D(), Extent3D(), DeviceMemory(), 0, SparseMemoryBindFlags() )
-    {}
-
-    SparseImageMemoryBind( ImageSubresource subresource_, Offset3D offset_, Extent3D extent_, DeviceMemory memory_, DeviceSize memoryOffset_, SparseMemoryBindFlags flags_ )
+    SparseImageMemoryBind( ImageSubresource subresource_ = ImageSubresource(), Offset3D offset_ = Offset3D(), Extent3D extent_ = Extent3D(), DeviceMemory memory_ = DeviceMemory(), DeviceSize memoryOffset_ = 0, SparseMemoryBindFlags flags_ = SparseMemoryBindFlags() )
+      : subresource( subresource_ )
+      , offset( offset_ )
+      , extent( extent_ )
+      , memory( memory_ )
+      , memoryOffset( memoryOffset_ )
+      , flags( flags_ )
     {
-      subresource = subresource_;
-      offset = offset_;
-      extent = extent_;
-      memory = memory_;
-      memoryOffset = memoryOffset_;
-      flags = flags_;
     }
 
     SparseImageMemoryBind( VkSparseImageMemoryBind const & rhs )
@@ -9933,15 +9581,11 @@ namespace vk
 
   struct SparseBufferMemoryBindInfo
   {
-    SparseBufferMemoryBindInfo()
-      : SparseBufferMemoryBindInfo( Buffer(), 0, nullptr )
-    {}
-
-    SparseBufferMemoryBindInfo( Buffer buffer_, uint32_t bindCount_, const SparseMemoryBind* pBinds_ )
+    SparseBufferMemoryBindInfo( Buffer buffer_ = Buffer(), uint32_t bindCount_ = 0, const SparseMemoryBind* pBinds_ = nullptr )
+      : buffer( buffer_ )
+      , bindCount( bindCount_ )
+      , pBinds( pBinds_ )
     {
-      buffer = buffer_;
-      bindCount = bindCount_;
-      pBinds = pBinds_;
     }
 
     SparseBufferMemoryBindInfo( VkSparseBufferMemoryBindInfo const & rhs )
@@ -9986,15 +9630,11 @@ namespace vk
 
   struct SparseImageOpaqueMemoryBindInfo
   {
-    SparseImageOpaqueMemoryBindInfo()
-      : SparseImageOpaqueMemoryBindInfo( Image(), 0, nullptr )
-    {}
-
-    SparseImageOpaqueMemoryBindInfo( Image image_, uint32_t bindCount_, const SparseMemoryBind* pBinds_ )
+    SparseImageOpaqueMemoryBindInfo( Image image_ = Image(), uint32_t bindCount_ = 0, const SparseMemoryBind* pBinds_ = nullptr )
+      : image( image_ )
+      , bindCount( bindCount_ )
+      , pBinds( pBinds_ )
     {
-      image = image_;
-      bindCount = bindCount_;
-      pBinds = pBinds_;
     }
 
     SparseImageOpaqueMemoryBindInfo( VkSparseImageOpaqueMemoryBindInfo const & rhs )
@@ -10039,15 +9679,11 @@ namespace vk
 
   struct SparseImageMemoryBindInfo
   {
-    SparseImageMemoryBindInfo()
-      : SparseImageMemoryBindInfo( Image(), 0, nullptr )
-    {}
-
-    SparseImageMemoryBindInfo( Image image_, uint32_t bindCount_, const SparseImageMemoryBind* pBinds_ )
+    SparseImageMemoryBindInfo( Image image_ = Image(), uint32_t bindCount_ = 0, const SparseImageMemoryBind* pBinds_ = nullptr )
+      : image( image_ )
+      , bindCount( bindCount_ )
+      , pBinds( pBinds_ )
     {
-      image = image_;
-      bindCount = bindCount_;
-      pBinds = pBinds_;
     }
 
     SparseImageMemoryBindInfo( VkSparseImageMemoryBindInfo const & rhs )
@@ -10092,24 +9728,20 @@ namespace vk
 
   struct BindSparseInfo
   {
-    BindSparseInfo()
-      : BindSparseInfo( 0, nullptr, 0, nullptr, 0, nullptr, 0, nullptr, 0, nullptr )
-    {}
-
-    BindSparseInfo( uint32_t waitSemaphoreCount_, const Semaphore* pWaitSemaphores_, uint32_t bufferBindCount_, const SparseBufferMemoryBindInfo* pBufferBinds_, uint32_t imageOpaqueBindCount_, const SparseImageOpaqueMemoryBindInfo* pImageOpaqueBinds_, uint32_t imageBindCount_, const SparseImageMemoryBindInfo* pImageBinds_, uint32_t signalSemaphoreCount_, const Semaphore* pSignalSemaphores_ )
+    BindSparseInfo( uint32_t waitSemaphoreCount_ = 0, const Semaphore* pWaitSemaphores_ = nullptr, uint32_t bufferBindCount_ = 0, const SparseBufferMemoryBindInfo* pBufferBinds_ = nullptr, uint32_t imageOpaqueBindCount_ = 0, const SparseImageOpaqueMemoryBindInfo* pImageOpaqueBinds_ = nullptr, uint32_t imageBindCount_ = 0, const SparseImageMemoryBindInfo* pImageBinds_ = nullptr, uint32_t signalSemaphoreCount_ = 0, const Semaphore* pSignalSemaphores_ = nullptr )
+      : sType( StructureType::eBindSparseInfo )
+      , pNext( nullptr )
+      , waitSemaphoreCount( waitSemaphoreCount_ )
+      , pWaitSemaphores( pWaitSemaphores_ )
+      , bufferBindCount( bufferBindCount_ )
+      , pBufferBinds( pBufferBinds_ )
+      , imageOpaqueBindCount( imageOpaqueBindCount_ )
+      , pImageOpaqueBinds( pImageOpaqueBinds_ )
+      , imageBindCount( imageBindCount_ )
+      , pImageBinds( pImageBinds_ )
+      , signalSemaphoreCount( signalSemaphoreCount_ )
+      , pSignalSemaphores( pSignalSemaphores_ )
     {
-      sType = StructureType::eBindSparseInfo;
-      pNext = nullptr;
-      waitSemaphoreCount = waitSemaphoreCount_;
-      pWaitSemaphores = pWaitSemaphores_;
-      bufferBindCount = bufferBindCount_;
-      pBufferBinds = pBufferBinds_;
-      imageOpaqueBindCount = imageOpaqueBindCount_;
-      pImageOpaqueBinds = pImageOpaqueBinds_;
-      imageBindCount = imageBindCount_;
-      pImageBinds = pImageBinds_;
-      signalSemaphoreCount = signalSemaphoreCount_;
-      pSignalSemaphores = pSignalSemaphores_;
     }
 
     BindSparseInfo( VkBindSparseInfo const & rhs )
@@ -10258,16 +9890,12 @@ namespace vk
 
   struct CommandPoolCreateInfo
   {
-    CommandPoolCreateInfo()
-      : CommandPoolCreateInfo( CommandPoolCreateFlags(), 0 )
-    {}
-
-    CommandPoolCreateInfo( CommandPoolCreateFlags flags_, uint32_t queueFamilyIndex_ )
+    CommandPoolCreateInfo( CommandPoolCreateFlags flags_ = CommandPoolCreateFlags(), uint32_t queueFamilyIndex_ = 0 )
+      : sType( StructureType::eCommandPoolCreateInfo )
+      , pNext( nullptr )
+      , flags( flags_ )
+      , queueFamilyIndex( queueFamilyIndex_ )
     {
-      sType = StructureType::eCommandPoolCreateInfo;
-      pNext = nullptr;
-      flags = flags_;
-      queueFamilyIndex = queueFamilyIndex_;
     }
 
     CommandPoolCreateInfo( VkCommandPoolCreateInfo const & rhs )
@@ -10376,27 +10004,23 @@ namespace vk
 
   struct ImageCreateInfo
   {
-    ImageCreateInfo()
-      : ImageCreateInfo( ImageCreateFlags(), ImageType::e1D, Format::eUndefined, Extent3D(), 0, 0, SampleCountFlagBits::e1, ImageTiling::eOptimal, ImageUsageFlags(), SharingMode::eExclusive, 0, nullptr, ImageLayout::eUndefined )
-    {}
-
-    ImageCreateInfo( ImageCreateFlags flags_, ImageType imageType_, Format format_, Extent3D extent_, uint32_t mipLevels_, uint32_t arrayLayers_, SampleCountFlagBits samples_, ImageTiling tiling_, ImageUsageFlags usage_, SharingMode sharingMode_, uint32_t queueFamilyIndexCount_, const uint32_t* pQueueFamilyIndices_, ImageLayout initialLayout_ )
+    ImageCreateInfo( ImageCreateFlags flags_ = ImageCreateFlags(), ImageType imageType_ = ImageType::e1D, Format format_ = Format::eUndefined, Extent3D extent_ = Extent3D(), uint32_t mipLevels_ = 0, uint32_t arrayLayers_ = 0, SampleCountFlagBits samples_ = SampleCountFlagBits::e1, ImageTiling tiling_ = ImageTiling::eOptimal, ImageUsageFlags usage_ = ImageUsageFlags(), SharingMode sharingMode_ = SharingMode::eExclusive, uint32_t queueFamilyIndexCount_ = 0, const uint32_t* pQueueFamilyIndices_ = nullptr, ImageLayout initialLayout_ = ImageLayout::eUndefined )
+      : sType( StructureType::eImageCreateInfo )
+      , pNext( nullptr )
+      , flags( flags_ )
+      , imageType( imageType_ )
+      , format( format_ )
+      , extent( extent_ )
+      , mipLevels( mipLevels_ )
+      , arrayLayers( arrayLayers_ )
+      , samples( samples_ )
+      , tiling( tiling_ )
+      , usage( usage_ )
+      , sharingMode( sharingMode_ )
+      , queueFamilyIndexCount( queueFamilyIndexCount_ )
+      , pQueueFamilyIndices( pQueueFamilyIndices_ )
+      , initialLayout( initialLayout_ )
     {
-      sType = StructureType::eImageCreateInfo;
-      pNext = nullptr;
-      flags = flags_;
-      imageType = imageType_;
-      format = format_;
-      extent = extent_;
-      mipLevels = mipLevels_;
-      arrayLayers = arrayLayers_;
-      samples = samples_;
-      tiling = tiling_;
-      usage = usage_;
-      sharingMode = sharingMode_;
-      queueFamilyIndexCount = queueFamilyIndexCount_;
-      pQueueFamilyIndices = pQueueFamilyIndices_;
-      initialLayout = initialLayout_;
     }
 
     ImageCreateInfo( VkImageCreateInfo const & rhs )
@@ -10525,21 +10149,17 @@ namespace vk
 
   struct PipelineMultisampleStateCreateInfo
   {
-    PipelineMultisampleStateCreateInfo()
-      : PipelineMultisampleStateCreateInfo( PipelineMultisampleStateCreateFlags(), SampleCountFlagBits::e1, 0, 0, nullptr, 0, 0 )
-    {}
-
-    PipelineMultisampleStateCreateInfo( PipelineMultisampleStateCreateFlags flags_, SampleCountFlagBits rasterizationSamples_, Bool32 sampleShadingEnable_, float minSampleShading_, const SampleMask* pSampleMask_, Bool32 alphaToCoverageEnable_, Bool32 alphaToOneEnable_ )
+    PipelineMultisampleStateCreateInfo( PipelineMultisampleStateCreateFlags flags_ = PipelineMultisampleStateCreateFlags(), SampleCountFlagBits rasterizationSamples_ = SampleCountFlagBits::e1, Bool32 sampleShadingEnable_ = 0, float minSampleShading_ = 0, const SampleMask* pSampleMask_ = nullptr, Bool32 alphaToCoverageEnable_ = 0, Bool32 alphaToOneEnable_ = 0 )
+      : sType( StructureType::ePipelineMultisampleStateCreateInfo )
+      , pNext( nullptr )
+      , flags( flags_ )
+      , rasterizationSamples( rasterizationSamples_ )
+      , sampleShadingEnable( sampleShadingEnable_ )
+      , minSampleShading( minSampleShading_ )
+      , pSampleMask( pSampleMask_ )
+      , alphaToCoverageEnable( alphaToCoverageEnable_ )
+      , alphaToOneEnable( alphaToOneEnable_ )
     {
-      sType = StructureType::ePipelineMultisampleStateCreateInfo;
-      pNext = nullptr;
-      flags = flags_;
-      rasterizationSamples = rasterizationSamples_;
-      sampleShadingEnable = sampleShadingEnable_;
-      minSampleShading = minSampleShading_;
-      pSampleMask = pSampleMask_;
-      alphaToCoverageEnable = alphaToCoverageEnable_;
-      alphaToOneEnable = alphaToOneEnable_;
     }
 
     PipelineMultisampleStateCreateInfo( VkPipelineMultisampleStateCreateInfo const & rhs )
@@ -10626,31 +10246,27 @@ namespace vk
 
   struct GraphicsPipelineCreateInfo
   {
-    GraphicsPipelineCreateInfo()
-      : GraphicsPipelineCreateInfo( PipelineCreateFlags(), 0, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, PipelineLayout(), RenderPass(), 0, Pipeline(), 0 )
-    {}
-
-    GraphicsPipelineCreateInfo( PipelineCreateFlags flags_, uint32_t stageCount_, const PipelineShaderStageCreateInfo* pStages_, const PipelineVertexInputStateCreateInfo* pVertexInputState_, const PipelineInputAssemblyStateCreateInfo* pInputAssemblyState_, const PipelineTessellationStateCreateInfo* pTessellationState_, const PipelineViewportStateCreateInfo* pViewportState_, const PipelineRasterizationStateCreateInfo* pRasterizationState_, const PipelineMultisampleStateCreateInfo* pMultisampleState_, const PipelineDepthStencilStateCreateInfo* pDepthStencilState_, const PipelineColorBlendStateCreateInfo* pColorBlendState_, const PipelineDynamicStateCreateInfo* pDynamicState_, PipelineLayout layout_, RenderPass renderPass_, uint32_t subpass_, Pipeline basePipelineHandle_, int32_t basePipelineIndex_ )
+    GraphicsPipelineCreateInfo( PipelineCreateFlags flags_ = PipelineCreateFlags(), uint32_t stageCount_ = 0, const PipelineShaderStageCreateInfo* pStages_ = nullptr, const PipelineVertexInputStateCreateInfo* pVertexInputState_ = nullptr, const PipelineInputAssemblyStateCreateInfo* pInputAssemblyState_ = nullptr, const PipelineTessellationStateCreateInfo* pTessellationState_ = nullptr, const PipelineViewportStateCreateInfo* pViewportState_ = nullptr, const PipelineRasterizationStateCreateInfo* pRasterizationState_ = nullptr, const PipelineMultisampleStateCreateInfo* pMultisampleState_ = nullptr, const PipelineDepthStencilStateCreateInfo* pDepthStencilState_ = nullptr, const PipelineColorBlendStateCreateInfo* pColorBlendState_ = nullptr, const PipelineDynamicStateCreateInfo* pDynamicState_ = nullptr, PipelineLayout layout_ = PipelineLayout(), RenderPass renderPass_ = RenderPass(), uint32_t subpass_ = 0, Pipeline basePipelineHandle_ = Pipeline(), int32_t basePipelineIndex_ = 0 )
+      : sType( StructureType::eGraphicsPipelineCreateInfo )
+      , pNext( nullptr )
+      , flags( flags_ )
+      , stageCount( stageCount_ )
+      , pStages( pStages_ )
+      , pVertexInputState( pVertexInputState_ )
+      , pInputAssemblyState( pInputAssemblyState_ )
+      , pTessellationState( pTessellationState_ )
+      , pViewportState( pViewportState_ )
+      , pRasterizationState( pRasterizationState_ )
+      , pMultisampleState( pMultisampleState_ )
+      , pDepthStencilState( pDepthStencilState_ )
+      , pColorBlendState( pColorBlendState_ )
+      , pDynamicState( pDynamicState_ )
+      , layout( layout_ )
+      , renderPass( renderPass_ )
+      , subpass( subpass_ )
+      , basePipelineHandle( basePipelineHandle_ )
+      , basePipelineIndex( basePipelineIndex_ )
     {
-      sType = StructureType::eGraphicsPipelineCreateInfo;
-      pNext = nullptr;
-      flags = flags_;
-      stageCount = stageCount_;
-      pStages = pStages_;
-      pVertexInputState = pVertexInputState_;
-      pInputAssemblyState = pInputAssemblyState_;
-      pTessellationState = pTessellationState_;
-      pViewportState = pViewportState_;
-      pRasterizationState = pRasterizationState_;
-      pMultisampleState = pMultisampleState_;
-      pDepthStencilState = pDepthStencilState_;
-      pColorBlendState = pColorBlendState_;
-      pDynamicState = pDynamicState_;
-      layout = layout_;
-      renderPass = renderPass_;
-      subpass = subpass_;
-      basePipelineHandle = basePipelineHandle_;
-      basePipelineIndex = basePipelineIndex_;
     }
 
     GraphicsPipelineCreateInfo( VkGraphicsPipelineCreateInfo const & rhs )
@@ -10954,21 +10570,17 @@ namespace vk
 
   struct AttachmentDescription
   {
-    AttachmentDescription()
-      : AttachmentDescription( AttachmentDescriptionFlags(), Format::eUndefined, SampleCountFlagBits::e1, AttachmentLoadOp::eLoad, AttachmentStoreOp::eStore, AttachmentLoadOp::eLoad, AttachmentStoreOp::eStore, ImageLayout::eUndefined, ImageLayout::eUndefined )
-    {}
-
-    AttachmentDescription( AttachmentDescriptionFlags flags_, Format format_, SampleCountFlagBits samples_, AttachmentLoadOp loadOp_, AttachmentStoreOp storeOp_, AttachmentLoadOp stencilLoadOp_, AttachmentStoreOp stencilStoreOp_, ImageLayout initialLayout_, ImageLayout finalLayout_ )
+    AttachmentDescription( AttachmentDescriptionFlags flags_ = AttachmentDescriptionFlags(), Format format_ = Format::eUndefined, SampleCountFlagBits samples_ = SampleCountFlagBits::e1, AttachmentLoadOp loadOp_ = AttachmentLoadOp::eLoad, AttachmentStoreOp storeOp_ = AttachmentStoreOp::eStore, AttachmentLoadOp stencilLoadOp_ = AttachmentLoadOp::eLoad, AttachmentStoreOp stencilStoreOp_ = AttachmentStoreOp::eStore, ImageLayout initialLayout_ = ImageLayout::eUndefined, ImageLayout finalLayout_ = ImageLayout::eUndefined )
+      : flags( flags_ )
+      , format( format_ )
+      , samples( samples_ )
+      , loadOp( loadOp_ )
+      , storeOp( storeOp_ )
+      , stencilLoadOp( stencilLoadOp_ )
+      , stencilStoreOp( stencilStoreOp_ )
+      , initialLayout( initialLayout_ )
+      , finalLayout( finalLayout_ )
     {
-      flags = flags_;
-      format = format_;
-      samples = samples_;
-      loadOp = loadOp_;
-      storeOp = storeOp_;
-      stencilLoadOp = stencilLoadOp_;
-      stencilStoreOp = stencilStoreOp_;
-      initialLayout = initialLayout_;
-      finalLayout = finalLayout_;
     }
 
     AttachmentDescription( VkAttachmentDescription const & rhs )
@@ -11081,18 +10693,14 @@ namespace vk
 
   struct DescriptorPoolCreateInfo
   {
-    DescriptorPoolCreateInfo()
-      : DescriptorPoolCreateInfo( DescriptorPoolCreateFlags(), 0, 0, nullptr )
-    {}
-
-    DescriptorPoolCreateInfo( DescriptorPoolCreateFlags flags_, uint32_t maxSets_, uint32_t poolSizeCount_, const DescriptorPoolSize* pPoolSizes_ )
+    DescriptorPoolCreateInfo( DescriptorPoolCreateFlags flags_ = DescriptorPoolCreateFlags(), uint32_t maxSets_ = 0, uint32_t poolSizeCount_ = 0, const DescriptorPoolSize* pPoolSizes_ = nullptr )
+      : sType( StructureType::eDescriptorPoolCreateInfo )
+      , pNext( nullptr )
+      , flags( flags_ )
+      , maxSets( maxSets_ )
+      , poolSizeCount( poolSizeCount_ )
+      , pPoolSizes( pPoolSizes_ )
     {
-      sType = StructureType::eDescriptorPoolCreateInfo;
-      pNext = nullptr;
-      flags = flags_;
-      maxSets = maxSets_;
-      poolSizeCount = poolSizeCount_;
-      pPoolSizes = pPoolSizes_;
     }
 
     DescriptorPoolCreateInfo( VkDescriptorPoolCreateInfo const & rhs )
@@ -11844,19 +11452,15 @@ namespace vk
 
   struct SubpassDependency
   {
-    SubpassDependency()
-      : SubpassDependency( 0, 0, PipelineStageFlags(), PipelineStageFlags(), AccessFlags(), AccessFlags(), DependencyFlags() )
-    {}
-
-    SubpassDependency( uint32_t srcSubpass_, uint32_t dstSubpass_, PipelineStageFlags srcStageMask_, PipelineStageFlags dstStageMask_, AccessFlags srcAccessMask_, AccessFlags dstAccessMask_, DependencyFlags dependencyFlags_ )
+    SubpassDependency( uint32_t srcSubpass_ = 0, uint32_t dstSubpass_ = 0, PipelineStageFlags srcStageMask_ = PipelineStageFlags(), PipelineStageFlags dstStageMask_ = PipelineStageFlags(), AccessFlags srcAccessMask_ = AccessFlags(), AccessFlags dstAccessMask_ = AccessFlags(), DependencyFlags dependencyFlags_ = DependencyFlags() )
+      : srcSubpass( srcSubpass_ )
+      , dstSubpass( dstSubpass_ )
+      , srcStageMask( srcStageMask_ )
+      , dstStageMask( dstStageMask_ )
+      , srcAccessMask( srcAccessMask_ )
+      , dstAccessMask( dstAccessMask_ )
+      , dependencyFlags( dependencyFlags_ )
     {
-      srcSubpass = srcSubpass_;
-      dstSubpass = dstSubpass_;
-      srcStageMask = srcStageMask_;
-      dstStageMask = dstStageMask_;
-      srcAccessMask = srcAccessMask_;
-      dstAccessMask = dstAccessMask_;
-      dependencyFlags = dependencyFlags_;
     }
 
     SubpassDependency( VkSubpassDependency const & rhs )
@@ -11929,21 +11533,17 @@ namespace vk
 
   struct RenderPassCreateInfo
   {
-    RenderPassCreateInfo()
-      : RenderPassCreateInfo( RenderPassCreateFlags(), 0, nullptr, 0, nullptr, 0, nullptr )
-    {}
-
-    RenderPassCreateInfo( RenderPassCreateFlags flags_, uint32_t attachmentCount_, const AttachmentDescription* pAttachments_, uint32_t subpassCount_, const SubpassDescription* pSubpasses_, uint32_t dependencyCount_, const SubpassDependency* pDependencies_ )
+    RenderPassCreateInfo( RenderPassCreateFlags flags_ = RenderPassCreateFlags(), uint32_t attachmentCount_ = 0, const AttachmentDescription* pAttachments_ = nullptr, uint32_t subpassCount_ = 0, const SubpassDescription* pSubpasses_ = nullptr, uint32_t dependencyCount_ = 0, const SubpassDependency* pDependencies_ = nullptr )
+      : sType( StructureType::eRenderPassCreateInfo )
+      , pNext( nullptr )
+      , flags( flags_ )
+      , attachmentCount( attachmentCount_ )
+      , pAttachments( pAttachments_ )
+      , subpassCount( subpassCount_ )
+      , pSubpasses( pSubpasses_ )
+      , dependencyCount( dependencyCount_ )
+      , pDependencies( pDependencies_ )
     {
-      sType = StructureType::eRenderPassCreateInfo;
-      pNext = nullptr;
-      flags = flags_;
-      attachmentCount = attachmentCount_;
-      pAttachments = pAttachments_;
-      subpassCount = subpassCount_;
-      pSubpasses = pSubpasses_;
-      dependencyCount = dependencyCount_;
-      pDependencies = pDependencies_;
     }
 
     RenderPassCreateInfo( VkRenderPassCreateInfo const & rhs )
@@ -12030,21 +11630,17 @@ namespace vk
 
   struct SubmitInfo
   {
-    SubmitInfo()
-      : SubmitInfo( 0, nullptr, nullptr, 0, nullptr, 0, nullptr )
-    {}
-
-    SubmitInfo( uint32_t waitSemaphoreCount_, const Semaphore* pWaitSemaphores_, const PipelineStageFlags* pWaitDstStageMask_, uint32_t commandBufferCount_, const CommandBuffer* pCommandBuffers_, uint32_t signalSemaphoreCount_, const Semaphore* pSignalSemaphores_ )
+    SubmitInfo( uint32_t waitSemaphoreCount_ = 0, const Semaphore* pWaitSemaphores_ = nullptr, const PipelineStageFlags* pWaitDstStageMask_ = nullptr, uint32_t commandBufferCount_ = 0, const CommandBuffer* pCommandBuffers_ = nullptr, uint32_t signalSemaphoreCount_ = 0, const Semaphore* pSignalSemaphores_ = nullptr )
+      : sType( StructureType::eSubmitInfo )
+      , pNext( nullptr )
+      , waitSemaphoreCount( waitSemaphoreCount_ )
+      , pWaitSemaphores( pWaitSemaphores_ )
+      , pWaitDstStageMask( pWaitDstStageMask_ )
+      , commandBufferCount( commandBufferCount_ )
+      , pCommandBuffers( pCommandBuffers_ )
+      , signalSemaphoreCount( signalSemaphoreCount_ )
+      , pSignalSemaphores( pSignalSemaphores_ )
     {
-      sType = StructureType::eSubmitInfo;
-      pNext = nullptr;
-      waitSemaphoreCount = waitSemaphoreCount_;
-      pWaitSemaphores = pWaitSemaphores_;
-      pWaitDstStageMask = pWaitDstStageMask_;
-      commandBufferCount = commandBufferCount_;
-      pCommandBuffers = pCommandBuffers_;
-      signalSemaphoreCount = signalSemaphoreCount_;
-      pSignalSemaphores = pSignalSemaphores_;
     }
 
     SubmitInfo( VkSubmitInfo const & rhs )
@@ -12240,14 +11836,10 @@ namespace vk
 
   struct SurfaceFormatKHR
   {
-    SurfaceFormatKHR()
-      : SurfaceFormatKHR( Format::eUndefined, ColorSpaceKHR::eVkColorspaceSrgbNonlinear )
-    {}
-
-    SurfaceFormatKHR( Format format_, ColorSpaceKHR colorSpace_ )
+    SurfaceFormatKHR( Format format_ = Format::eUndefined, ColorSpaceKHR colorSpace_ = ColorSpaceKHR::eVkColorspaceSrgbNonlinear )
+      : format( format_ )
+      , colorSpace( colorSpace_ )
     {
-      format = format_;
-      colorSpace = colorSpace_;
     }
 
     SurfaceFormatKHR( VkSurfaceFormatKHR const & rhs )
@@ -12300,21 +11892,17 @@ namespace vk
 
   struct DisplayPlaneCapabilitiesKHR
   {
-    DisplayPlaneCapabilitiesKHR()
-      : DisplayPlaneCapabilitiesKHR( DisplayPlaneAlphaFlagsKHR(), Offset2D(), Offset2D(), Extent2D(), Extent2D(), Offset2D(), Offset2D(), Extent2D(), Extent2D() )
-    {}
-
-    DisplayPlaneCapabilitiesKHR( DisplayPlaneAlphaFlagsKHR supportedAlpha_, Offset2D minSrcPosition_, Offset2D maxSrcPosition_, Extent2D minSrcExtent_, Extent2D maxSrcExtent_, Offset2D minDstPosition_, Offset2D maxDstPosition_, Extent2D minDstExtent_, Extent2D maxDstExtent_ )
+    DisplayPlaneCapabilitiesKHR( DisplayPlaneAlphaFlagsKHR supportedAlpha_ = DisplayPlaneAlphaFlagsKHR(), Offset2D minSrcPosition_ = Offset2D(), Offset2D maxSrcPosition_ = Offset2D(), Extent2D minSrcExtent_ = Extent2D(), Extent2D maxSrcExtent_ = Extent2D(), Offset2D minDstPosition_ = Offset2D(), Offset2D maxDstPosition_ = Offset2D(), Extent2D minDstExtent_ = Extent2D(), Extent2D maxDstExtent_ = Extent2D() )
+      : supportedAlpha( supportedAlpha_ )
+      , minSrcPosition( minSrcPosition_ )
+      , maxSrcPosition( maxSrcPosition_ )
+      , minSrcExtent( minSrcExtent_ )
+      , maxSrcExtent( maxSrcExtent_ )
+      , minDstPosition( minDstPosition_ )
+      , maxDstPosition( maxDstPosition_ )
+      , minDstExtent( minDstExtent_ )
+      , maxDstExtent( maxDstExtent_ )
     {
-      supportedAlpha = supportedAlpha_;
-      minSrcPosition = minSrcPosition_;
-      maxSrcPosition = maxSrcPosition_;
-      minSrcExtent = minSrcExtent_;
-      maxSrcExtent = maxSrcExtent_;
-      minDstPosition = minDstPosition_;
-      maxDstPosition = maxDstPosition_;
-      minDstExtent = minDstExtent_;
-      maxDstExtent = maxDstExtent_;
     }
 
     DisplayPlaneCapabilitiesKHR( VkDisplayPlaneCapabilitiesKHR const & rhs )
@@ -12436,19 +12024,15 @@ namespace vk
 
   struct DisplayPropertiesKHR
   {
-    DisplayPropertiesKHR()
-      : DisplayPropertiesKHR( DisplayKHR(), nullptr, Extent2D(), Extent2D(), SurfaceTransformFlagsKHR(), 0, 0 )
-    {}
-
-    DisplayPropertiesKHR( DisplayKHR display_, const char* displayName_, Extent2D physicalDimensions_, Extent2D physicalResolution_, SurfaceTransformFlagsKHR supportedTransforms_, Bool32 planeReorderPossible_, Bool32 persistentContent_ )
+    DisplayPropertiesKHR( DisplayKHR display_ = DisplayKHR(), const char* displayName_ = nullptr, Extent2D physicalDimensions_ = Extent2D(), Extent2D physicalResolution_ = Extent2D(), SurfaceTransformFlagsKHR supportedTransforms_ = SurfaceTransformFlagsKHR(), Bool32 planeReorderPossible_ = 0, Bool32 persistentContent_ = 0 )
+      : display( display_ )
+      , displayName( displayName_ )
+      , physicalDimensions( physicalDimensions_ )
+      , physicalResolution( physicalResolution_ )
+      , supportedTransforms( supportedTransforms_ )
+      , planeReorderPossible( planeReorderPossible_ )
+      , persistentContent( persistentContent_ )
     {
-      display = display_;
-      displayName = displayName_;
-      physicalDimensions = physicalDimensions_;
-      physicalResolution = physicalResolution_;
-      supportedTransforms = supportedTransforms_;
-      planeReorderPossible = planeReorderPossible_;
-      persistentContent = persistentContent_;
     }
 
     DisplayPropertiesKHR( VkDisplayPropertiesKHR const & rhs )
@@ -12521,22 +12105,18 @@ namespace vk
 
   struct DisplaySurfaceCreateInfoKHR
   {
-    DisplaySurfaceCreateInfoKHR()
-      : DisplaySurfaceCreateInfoKHR( DisplaySurfaceCreateFlagsKHR(), DisplayModeKHR(), 0, 0, SurfaceTransformFlagBitsKHR::eIdentity, 0, DisplayPlaneAlphaFlagBitsKHR::eOpaque, Extent2D() )
-    {}
-
-    DisplaySurfaceCreateInfoKHR( DisplaySurfaceCreateFlagsKHR flags_, DisplayModeKHR displayMode_, uint32_t planeIndex_, uint32_t planeStackIndex_, SurfaceTransformFlagBitsKHR transform_, float globalAlpha_, DisplayPlaneAlphaFlagBitsKHR alphaMode_, Extent2D imageExtent_ )
+    DisplaySurfaceCreateInfoKHR( DisplaySurfaceCreateFlagsKHR flags_ = DisplaySurfaceCreateFlagsKHR(), DisplayModeKHR displayMode_ = DisplayModeKHR(), uint32_t planeIndex_ = 0, uint32_t planeStackIndex_ = 0, SurfaceTransformFlagBitsKHR transform_ = SurfaceTransformFlagBitsKHR::eIdentity, float globalAlpha_ = 0, DisplayPlaneAlphaFlagBitsKHR alphaMode_ = DisplayPlaneAlphaFlagBitsKHR::eOpaque, Extent2D imageExtent_ = Extent2D() )
+      : sType( StructureType::eDisplaySurfaceCreateInfoKHR )
+      , pNext( nullptr )
+      , flags( flags_ )
+      , displayMode( displayMode_ )
+      , planeIndex( planeIndex_ )
+      , planeStackIndex( planeStackIndex_ )
+      , transform( transform_ )
+      , globalAlpha( globalAlpha_ )
+      , alphaMode( alphaMode_ )
+      , imageExtent( imageExtent_ )
     {
-      sType = StructureType::eDisplaySurfaceCreateInfoKHR;
-      pNext = nullptr;
-      flags = flags_;
-      displayMode = displayMode_;
-      planeIndex = planeIndex_;
-      planeStackIndex = planeStackIndex_;
-      transform = transform_;
-      globalAlpha = globalAlpha_;
-      alphaMode = alphaMode_;
-      imageExtent = imageExtent_;
     }
 
     DisplaySurfaceCreateInfoKHR( VkDisplaySurfaceCreateInfoKHR const & rhs )
@@ -12630,22 +12210,18 @@ namespace vk
 
   struct SurfaceCapabilitiesKHR
   {
-    SurfaceCapabilitiesKHR()
-      : SurfaceCapabilitiesKHR( 0, 0, Extent2D(), Extent2D(), Extent2D(), 0, SurfaceTransformFlagsKHR(), SurfaceTransformFlagBitsKHR::eIdentity, CompositeAlphaFlagsKHR(), ImageUsageFlags() )
-    {}
-
-    SurfaceCapabilitiesKHR( uint32_t minImageCount_, uint32_t maxImageCount_, Extent2D currentExtent_, Extent2D minImageExtent_, Extent2D maxImageExtent_, uint32_t maxImageArrayLayers_, SurfaceTransformFlagsKHR supportedTransforms_, SurfaceTransformFlagBitsKHR currentTransform_, CompositeAlphaFlagsKHR supportedCompositeAlpha_, ImageUsageFlags supportedUsageFlags_ )
+    SurfaceCapabilitiesKHR( uint32_t minImageCount_ = 0, uint32_t maxImageCount_ = 0, Extent2D currentExtent_ = Extent2D(), Extent2D minImageExtent_ = Extent2D(), Extent2D maxImageExtent_ = Extent2D(), uint32_t maxImageArrayLayers_ = 0, SurfaceTransformFlagsKHR supportedTransforms_ = SurfaceTransformFlagsKHR(), SurfaceTransformFlagBitsKHR currentTransform_ = SurfaceTransformFlagBitsKHR::eIdentity, CompositeAlphaFlagsKHR supportedCompositeAlpha_ = CompositeAlphaFlagsKHR(), ImageUsageFlags supportedUsageFlags_ = ImageUsageFlags() )
+      : minImageCount( minImageCount_ )
+      , maxImageCount( maxImageCount_ )
+      , currentExtent( currentExtent_ )
+      , minImageExtent( minImageExtent_ )
+      , maxImageExtent( maxImageExtent_ )
+      , maxImageArrayLayers( maxImageArrayLayers_ )
+      , supportedTransforms( supportedTransforms_ )
+      , currentTransform( currentTransform_ )
+      , supportedCompositeAlpha( supportedCompositeAlpha_ )
+      , supportedUsageFlags( supportedUsageFlags_ )
     {
-      minImageCount = minImageCount_;
-      maxImageCount = maxImageCount_;
-      currentExtent = currentExtent_;
-      minImageExtent = minImageExtent_;
-      maxImageExtent = maxImageExtent_;
-      maxImageArrayLayers = maxImageArrayLayers_;
-      supportedTransforms = supportedTransforms_;
-      currentTransform = currentTransform_;
-      supportedCompositeAlpha = supportedCompositeAlpha_;
-      supportedUsageFlags = supportedUsageFlags_;
     }
 
     SurfaceCapabilitiesKHR( VkSurfaceCapabilitiesKHR const & rhs )
@@ -12739,30 +12315,26 @@ namespace vk
 
   struct SwapchainCreateInfoKHR
   {
-    SwapchainCreateInfoKHR()
-      : SwapchainCreateInfoKHR( SwapchainCreateFlagsKHR(), SurfaceKHR(), 0, Format::eUndefined, ColorSpaceKHR::eVkColorspaceSrgbNonlinear, Extent2D(), 0, ImageUsageFlags(), SharingMode::eExclusive, 0, nullptr, SurfaceTransformFlagBitsKHR::eIdentity, CompositeAlphaFlagBitsKHR::eOpaque, PresentModeKHR::eImmediate, 0, SwapchainKHR() )
-    {}
-
-    SwapchainCreateInfoKHR( SwapchainCreateFlagsKHR flags_, SurfaceKHR surface_, uint32_t minImageCount_, Format imageFormat_, ColorSpaceKHR imageColorSpace_, Extent2D imageExtent_, uint32_t imageArrayLayers_, ImageUsageFlags imageUsage_, SharingMode imageSharingMode_, uint32_t queueFamilyIndexCount_, const uint32_t* pQueueFamilyIndices_, SurfaceTransformFlagBitsKHR preTransform_, CompositeAlphaFlagBitsKHR compositeAlpha_, PresentModeKHR presentMode_, Bool32 clipped_, SwapchainKHR oldSwapchain_ )
+    SwapchainCreateInfoKHR( SwapchainCreateFlagsKHR flags_ = SwapchainCreateFlagsKHR(), SurfaceKHR surface_ = SurfaceKHR(), uint32_t minImageCount_ = 0, Format imageFormat_ = Format::eUndefined, ColorSpaceKHR imageColorSpace_ = ColorSpaceKHR::eVkColorspaceSrgbNonlinear, Extent2D imageExtent_ = Extent2D(), uint32_t imageArrayLayers_ = 0, ImageUsageFlags imageUsage_ = ImageUsageFlags(), SharingMode imageSharingMode_ = SharingMode::eExclusive, uint32_t queueFamilyIndexCount_ = 0, const uint32_t* pQueueFamilyIndices_ = nullptr, SurfaceTransformFlagBitsKHR preTransform_ = SurfaceTransformFlagBitsKHR::eIdentity, CompositeAlphaFlagBitsKHR compositeAlpha_ = CompositeAlphaFlagBitsKHR::eOpaque, PresentModeKHR presentMode_ = PresentModeKHR::eImmediate, Bool32 clipped_ = 0, SwapchainKHR oldSwapchain_ = SwapchainKHR() )
+      : sType( StructureType::eSwapchainCreateInfoKHR )
+      , pNext( nullptr )
+      , flags( flags_ )
+      , surface( surface_ )
+      , minImageCount( minImageCount_ )
+      , imageFormat( imageFormat_ )
+      , imageColorSpace( imageColorSpace_ )
+      , imageExtent( imageExtent_ )
+      , imageArrayLayers( imageArrayLayers_ )
+      , imageUsage( imageUsage_ )
+      , imageSharingMode( imageSharingMode_ )
+      , queueFamilyIndexCount( queueFamilyIndexCount_ )
+      , pQueueFamilyIndices( pQueueFamilyIndices_ )
+      , preTransform( preTransform_ )
+      , compositeAlpha( compositeAlpha_ )
+      , presentMode( presentMode_ )
+      , clipped( clipped_ )
+      , oldSwapchain( oldSwapchain_ )
     {
-      sType = StructureType::eSwapchainCreateInfoKHR;
-      pNext = nullptr;
-      flags = flags_;
-      surface = surface_;
-      minImageCount = minImageCount_;
-      imageFormat = imageFormat_;
-      imageColorSpace = imageColorSpace_;
-      imageExtent = imageExtent_;
-      imageArrayLayers = imageArrayLayers_;
-      imageUsage = imageUsage_;
-      imageSharingMode = imageSharingMode_;
-      queueFamilyIndexCount = queueFamilyIndexCount_;
-      pQueueFamilyIndices = pQueueFamilyIndices_;
-      preTransform = preTransform_;
-      compositeAlpha = compositeAlpha_;
-      presentMode = presentMode_;
-      clipped = clipped_;
-      oldSwapchain = oldSwapchain_;
     }
 
     SwapchainCreateInfoKHR( VkSwapchainCreateInfoKHR const & rhs )
@@ -14518,13 +14090,13 @@ namespace vk
 
   struct DebugReportCallbackCreateInfoEXT
   {
-    DebugReportCallbackCreateInfoEXT( DebugReportFlagsEXT flags_, PFN_vkDebugReportCallbackEXT pfnCallback_, void* pUserData_ )
+    DebugReportCallbackCreateInfoEXT( DebugReportFlagsEXT flags_ = DebugReportFlagsEXT(), PFN_vkDebugReportCallbackEXT pfnCallback_ = nullptr, void* pUserData_ = nullptr )
+      : sType( StructureType::eDebugReportCallbackCreateInfoEXT )
+      , pNext( nullptr )
+      , flags( flags_ )
+      , pfnCallback( pfnCallback_ )
+      , pUserData( pUserData_ )
     {
-      sType = StructureType::eDebugReportCallbackCreateInfoEXT;
-      pNext = nullptr;
-      flags = flags_;
-      pfnCallback = pfnCallback_;
-      pUserData = pUserData_;
     }
 
     DebugReportCallbackCreateInfoEXT( VkDebugReportCallbackCreateInfoEXT const & rhs )

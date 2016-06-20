@@ -13137,7 +13137,7 @@ namespace vk
 #endif /*!VKCPP_DISABLE_ENHANCED_MODE*/
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    ResultValueType<void*>::type mapMemory( DeviceMemory memory, DeviceSize offset, DeviceSize size, MemoryMapFlags flags ) const
+    ResultValueType<void*>::type mapMemory( DeviceMemory memory, DeviceSize offset, DeviceSize size, MemoryMapFlags flags = MemoryMapFlags() ) const
     {
       void* pData;
       Result result = static_cast<Result>( vkMapMemory( m_device, static_cast<VkDeviceMemory>( memory ), offset, size, static_cast<VkMemoryMapFlags>( flags ), &pData ) );
@@ -13837,7 +13837,7 @@ namespace vk
 #endif /*!VKCPP_DISABLE_ENHANCED_MODE*/
 
 #ifndef VKCPP_DISABLE_ENHANCED_MODE
-    ResultValueType<void>::type resetDescriptorPool( DescriptorPool descriptorPool, DescriptorPoolResetFlags flags ) const
+    ResultValueType<void>::type resetDescriptorPool( DescriptorPool descriptorPool, DescriptorPoolResetFlags flags = DescriptorPoolResetFlags() ) const
     {
       Result result = static_cast<Result>( vkResetDescriptorPool( m_device, static_cast<VkDescriptorPool>( descriptorPool ), static_cast<VkDescriptorPoolResetFlags>( flags ) ) );
       return createResultValue( result, "vk::Device::resetDescriptorPool" );

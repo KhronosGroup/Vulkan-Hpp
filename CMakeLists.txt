@@ -26,21 +26,21 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(VkCppGenerator)
+project(VulkanHppGenerator)
 
 file(TO_NATIVE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/Vulkan-Docs/src/spec/vk.xml vk_spec)
 string(REPLACE "\\" "\\\\" vk_spec ${vk_spec})
 add_definitions(-DVK_SPEC="${vk_spec}")
 
-file(TO_NATIVE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/vulkan/vk_cpp.hpp vk_cpp)
-string(REPLACE "\\" "\\\\" vk_cpp ${vk_cpp})
-add_definitions(-DVK_CPP="${vk_cpp}")
+file(TO_NATIVE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/vulkan/vulkan.hpp vulkan_hpp)
+string(REPLACE "\\" "\\\\" vulkan_hpp ${vulkan_hpp})
+add_definitions(-DVULKAN_HPP="${vulkan_hpp}")
 
 set(HEADERS
 )
 
 set(SOURCES
-  VkCppGenerator.cpp
+  VulkanHppGenerator.cpp
 )
 
 set(TINYXML2_SOURCES
@@ -57,13 +57,13 @@ source_group(sources FILES ${SOURCES})
 source_group(TinyXML2\\headers FILES ${TINYXML2_HEADERS})
 source_group(TinyXML2\\sources FILES ${TINYXML2_SOURCES})
 
-add_executable(VkCppGenerator
+add_executable(VulkanHppGenerator
   ${HEADERS}
   ${SOURCES}
   ${TINYXML2_SOURCES}
   ${TINYXML2_HEADERS}
 )
 
-set_property(TARGET VkCppGenerator PROPERTY CXX_STANDARD 11)
+set_property(TARGET VulkanHppGenerator PROPERTY CXX_STANDARD 11)
 
-target_include_directories(VkCppGenerator PRIVATE "${CMAKE_SOURCE_DIR}/tinyxml2")
+target_include_directories(VulkanHppGenerator PRIVATE "${CMAKE_SOURCE_DIR}/tinyxml2")

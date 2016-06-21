@@ -135,7 +135,7 @@ device.createImage(&ci, allocator, &image);
 # Enhancements beyond native Vulkan
 To provide a more object oriented feeling we're providing classes for each handle which include all Vulkan functions where the first 
 parameter matches the handle. In addition to this we made a few changes to the signatures of the member functions
-* To disable the enhanced mode put ```#define VKCPP_DISABLE_ENHANCED_MODE``` before including ```vk_cpp.h```
+* To disable the enhanced mode put ```#define VULKAN_HPP_DISABLE_ENHANCED_MODE``` before including ```vulkan.hpp```
 * ```(count, T*)``` has been replaced by ```vk::ArrayProxy<T>```, which can be created out of a single T, a (count, T*) pair, a std::array<T,N>, a vector<T>, or an initializer_list<T>.
 * ```const char *``` has been replaced by ```const std::string &```
 * ```const T *``` has been replaced by ```const T &``` to allow temporary objects. This is useful to pass small structures like ```vk::ClearColorValue``` or ```vk::Extent*```
@@ -147,7 +147,7 @@ Here are a few code examples:
   try {
     VkInstance nativeInstance = nullptr; // Fetch the instance from a favorite toolkit
 
-    // create a vkcpp handle from a native handle
+    // create a vk::Instance handle from a native handle
     vk::Instance i(nativeInstance);
 
     // operator=(VkInstance const &) is also supported
@@ -177,7 +177,7 @@ Here are a few code examples:
 ```
 # Exceptions and return types
 The wrapper functions will throw a ```std::system_error``` if the result of the wrapped function is not a success code.
-By defining ```VK_CPP_NO_EXCEPTIONS``` before include vk_cpp.hpp, this can be disabled.
+By defining ```VULKAN_HPP_NO_EXCEPTIONS``` before include vulkan.hpp, this can be disabled.
 Depending on exceptions being enabled or disabled, the return type of some functions change.
 
 With exceptions enabled (the default) there are four different cases on the return types:
@@ -196,27 +196,27 @@ Note: With exceptions disabled, it is the user's responsibility to check for err
 
 # Usage
 To start with the C++ version of the Vulkan API download header from GIT, put it in a vulkan subdirectory and add
-```#include <vulkan/vk_cpp.h>``` to your source code.
+```#include <vulkan/vulkan.hpp>``` to your source code.
 
 To build the header for a given vk.xml specification continue with the following steps:
 
-* Build VkCppGenerator
+* Build VulkanHppGenerator
 * Grab your favourite version vk.xml from Khronos
-* Excute ```VkCppGenerator <vk.xml>``` to generate ```vk_cpp.h``` in the current working directory.
+* Excute ```VulkanHppGenerator <vk.xml>``` to generate ```vulkan.hpp``` in the current working directory.
 
-# Build instructions for VkCppGenerator
+# Build instructions for VulkanHppGenerator
 
-* Clone the repository: ```git clone https://github.com/nvpro-pipeline/vkcpp.git```
+* Clone the repository: ```git clone https://github.com/KhronosGroup/vkcpp```
 * Update submodules: ```git submodule update --init --recursive```
 * Use CMake to generate a solution or makefile for your favourite build environment
 * Launch the build
 
 # Samples
-Brad Davis started to port Sascha Willems Samples to vkcpp. You can find his work in his [repository](https://github.com/jherico/Vulkan).
+Brad Davis started to port Sascha Willems Samples to vulkan.hpp. You can find his work in his [repository](https://github.com/jherico/Vulkan).
 
 # Providing Pull Requests
 
-NVIDIA is happy to review and consider pull requests for merging into the main tree of vkcpp for bug fixes and features. Before providing a pull request to NVIDIA, please note the following:
+NVIDIA is happy to review and consider pull requests for merging into the main tree of vulkan.hpp for bug fixes and features. Before providing a pull request to NVIDIA, please note the following:
 
 * A pull request provided to this repo by a developer constitutes permission from the developer for NVIDIA to merge the provided
   changes or any NVIDIA modified version of these changes to the repo. NVIDIA may remove or change the code at any time and in any

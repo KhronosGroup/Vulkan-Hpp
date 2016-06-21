@@ -300,19 +300,19 @@ std::string const arrayProxyHeader = (
 );
 
 std::string const versionCheckHeader = (
-  "#if !defined(VK_CPP_HAS_UNRESTRICTED_UNIONS)\n"
+  "#if !defined(VULKAN_HPP_HAS_UNRESTRICTED_UNIONS)\n"
   "# if defined(__clang__)\n"
   "#  if __has_feature(cxx_unrestricted_unions)\n"
-  "#   define VK_CPP_HAS_UNRESTRICTED_UNIONS\n"
+  "#   define VULKAN_HPP_HAS_UNRESTRICTED_UNIONS\n"
   "#  endif\n"
   "# elif defined(__GNUC__)\n"
   "#  define GCC_VERSION (__GNUC__ * 1000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)\n"
   "#  if 40600 <= GCC_VERSION\n"
-  "#   define VK_CPP_HAS_UNRESTRICTED_UNIONS\n"
+  "#   define VULKAN_HPP_HAS_UNRESTRICTED_UNIONS\n"
   "#  endif\n"
   "# elif defined(_MSC_VER)\n"
   "#  if 1900 <= _MSC_VER\n"
-  "#   define VK_CPP_HAS_UNRESTRICTED_UNIONS\n"
+  "#   define VULKAN_HPP_HAS_UNRESTRICTED_UNIONS\n"
   "#  endif\n"
   "# endif\n"
   "#endif\n"
@@ -335,7 +335,7 @@ std::string const resultValueHeader = (
   "  template <typename T>\n"
   "  struct ResultValueType\n"
   "  {\n"
-  "#ifdef VK_CPP_NO_EXCEPTIONS\n"
+  "#ifdef VULKAN_HPP_NO_EXCEPTIONS\n"
   "    typedef ResultValue<T>  type;\n"
   "#else\n"
   "    typedef T              type;\n"
@@ -345,7 +345,7 @@ std::string const resultValueHeader = (
   "  template <>"
   "  struct ResultValueType<void>\n"
   "  {\n"
-  "#ifdef VK_CPP_NO_EXCEPTIONS\n"
+  "#ifdef VULKAN_HPP_NO_EXCEPTIONS\n"
   "    typedef Result type;\n"
   "#else\n"
   "    typedef void   type;\n"
@@ -357,7 +357,7 @@ std::string const resultValueHeader = (
 std::string const createResultValueHeader = (
   "  inline ResultValueType<void>::type createResultValue( Result result, char const * message )\n"
   "  {\n"
-  "#ifdef VK_CPP_NO_EXCEPTIONS\n"
+  "#ifdef VULKAN_HPP_NO_EXCEPTIONS\n"
   "    assert( result == Result::eSuccess );\n"
   "    return result;\n"
   "#else\n"
@@ -371,7 +371,7 @@ std::string const createResultValueHeader = (
   "  template <typename T>\n"
   "  inline typename ResultValueType<T>::type createResultValue( Result result, T & data, char const * message )\n"
   "  {\n"
-  "#ifdef VK_CPP_NO_EXCEPTIONS\n"
+  "#ifdef VULKAN_HPP_NO_EXCEPTIONS\n"
   "    assert( result == Result::eSuccess );\n"
   "    return ResultValue<T>( result, data );\n"
   "#else\n"
@@ -385,7 +385,7 @@ std::string const createResultValueHeader = (
   "\n"
   "  inline Result createResultValue( Result result, char const * message, std::initializer_list<Result> successCodes )\n"
   "  {\n"
-  "#ifdef VK_CPP_NO_EXCEPTIONS\n"
+  "#ifdef VULKAN_HPP_NO_EXCEPTIONS\n"
   "    assert( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );\n"
   "#else\n"
   "    if ( std::find( successCodes.begin(), successCodes.end(), result ) == successCodes.end() )\n"
@@ -399,7 +399,7 @@ std::string const createResultValueHeader = (
   "  template <typename T>\n"
   "  inline ResultValue<T> createResultValue( Result result, T & data, char const * message, std::initializer_list<Result> successCodes )\n"
   "  {\n"
-  "#ifdef VK_CPP_NO_EXCEPTIONS\n"
+  "#ifdef VULKAN_HPP_NO_EXCEPTIONS\n"
   "    assert( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );\n"
   "#else\n"
   "    if ( std::find( successCodes.begin(), successCodes.end(), result ) == successCodes.end() )\n"
@@ -795,7 +795,7 @@ size_t findTemplateIndex(CommandData const& commandData, std::map<size_t, size_t
   return ~0;
 }
 
-std::string getEnumName(std::string const& name) // get vkcpp enum name from vk enum name
+std::string getEnumName(std::string const& name) // get vulkan.hpp enum name from vk enum name
 {
   return strip(name, "Vk");
 }
@@ -1924,14 +1924,14 @@ void writeFunctionBody(std::ofstream & ofs, std::string const& indentation, std:
         {
           if ((it1->first != returnIndex) && (it0->second == it1->second))
           {
-            ofs << "#ifdef VK_CPP_NO_EXCEPTIONS" << std::endl
+            ofs << "#ifdef VULKAN_HPP_NO_EXCEPTIONS" << std::endl
                 << indentation << "  assert( " << reduceName(commandData.arguments[it0->first].name) << ".size() == " << reduceName(commandData.arguments[it1->first].name) << ".size() );" << std::endl
                 << "#else" << std::endl
                 << indentation << "  if ( " << reduceName(commandData.arguments[it0->first].name) << ".size() != " << reduceName(commandData.arguments[it1->first].name) << ".size() )" << std::endl
                 << indentation << "  {" << std::endl
                 << indentation << "    throw std::logic_error( \"vk::" << className << "::" << functionName << ": " << reduceName(commandData.arguments[it0->first].name) << ".size() != " << reduceName(commandData.arguments[it1->first].name) << ".size()\" );" << std::endl
                 << indentation << "  }" << std::endl
-                << "#endif  // VK_CPP_NO_EXCEPTIONS" << std::endl;
+                << "#endif  // VULKAN_HPP_NO_EXCEPTIONS" << std::endl;
           }
         }
       }
@@ -2397,9 +2397,9 @@ void writeTypeCommand(std::ofstream & ofs, VkData const& vkData, DependencyData 
     writeTypeCommandStandard(ofs, "  ", dependencyData.name, dependencyData, commandData, vkData.vkTypes);
 
     ofs << std::endl
-        << "#ifndef VKCPP_DISABLE_ENHANCED_MODE" << std::endl;
+        << "#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE" << std::endl;
     writeTypeCommandEnhanced(ofs, vkData, "  ", "", dependencyData.name, dependencyData, commandData);
-    ofs << "#endif /*VKCPP_DISABLE_ENHANCED_MODE*/" << std::endl
+    ofs << "#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/" << std::endl
         << std::endl;
   }
 }
@@ -2602,7 +2602,7 @@ void writeTypeHandle(std::ofstream & ofs, VkData const& vkData, DependencyData c
       << "      : m_" << memberName << "(VK_NULL_HANDLE)" << std::endl
       << "    {}" << std::endl
       << std::endl
-      << "#if defined(VK_CPP_TYPESAFE_CONVERSION)" << std::endl
+      << "#if defined(VULKAN_HPP_TYPESAFE_CONVERSION)" << std::endl
       // construct from native handle
       << "    " << dependencyData.name << "(Vk" << dependencyData.name << " " << memberName << ")" << std::endl
       << "       : m_" << memberName << "("  << memberName << ")" << std::endl
@@ -2632,18 +2632,18 @@ void writeTypeHandle(std::ofstream & ofs, VkData const& vkData, DependencyData c
       bool hasPointers = hasPointerArguments(cit->second);
       if (!hasPointers)
       {
-        ofs << "#ifdef VKCPP_DISABLE_ENHANCED_MODE" << std::endl;
+        ofs << "#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE" << std::endl;
       }
       writeTypeCommandStandard(ofs, "    ", functionName, *dep, cit->second, vkData.vkTypes);
       if (!hasPointers)
       {
-        ofs << "#endif /*!VKCPP_DISABLE_ENHANCED_MODE*/" << std::endl;
+        ofs << "#endif /*!VULKAN_HPP_DISABLE_ENHANCED_MODE*/" << std::endl;
       }
 
       ofs << std::endl
-          << "#ifndef VKCPP_DISABLE_ENHANCED_MODE" << std::endl;
+          << "#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE" << std::endl;
       writeTypeCommandEnhanced(ofs, vkData, "    ", className, functionName, *dep, cit->second);
-      ofs << "#endif /*VKCPP_DISABLE_ENHANCED_MODE*/" << std::endl;
+      ofs << "#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/" << std::endl;
 
       if (i < handle.commands.size() - 1)
       {
@@ -2652,7 +2652,7 @@ void writeTypeHandle(std::ofstream & ofs, VkData const& vkData, DependencyData c
     }
     ofs << std::endl;
   }
-  ofs << "#if !defined(VK_CPP_TYPESAFE_CONVERSION)" << std::endl
+  ofs << "#if !defined(VULKAN_HPP_TYPESAFE_CONVERSION)" << std::endl
       << "    explicit" << std::endl
       << "#endif" << std::endl
       << "    operator Vk" << dependencyData.name << "() const" << std::endl
@@ -2819,7 +2819,7 @@ void writeTypeUnion( std::ofstream & ofs, VkData const& vkData, DependencyData c
   }
   if (needsUnrestrictedUnions)
   {
-    ofs << "#ifdef VK_CPP_HAS_UNRESTRICTED_UNIONS" << std::endl;
+    ofs << "#ifdef VULKAN_HPP_HAS_UNRESTRICTED_UNIONS" << std::endl;
     for (size_t i = 0; i < unionData.members.size(); i++)
     {
       ofs << "    " << unionData.members[i].type << " " << unionData.members[i].name;
@@ -2847,7 +2847,7 @@ void writeTypeUnion( std::ofstream & ofs, VkData const& vkData, DependencyData c
   }
   if (needsUnrestrictedUnions)
   {
-    ofs << "#endif  // VK_CPP_HAS_UNRESTRICTED_UNIONS" << std::endl;
+    ofs << "#endif  // VULKAN_HPP_HAS_UNRESTRICTED_UNIONS" << std::endl;
   }
   ofs << "  };" << std::endl
       << std::endl;
@@ -2904,9 +2904,9 @@ void writeVersionCheck(std::ofstream & ofs, std::string const& version)
 void writeTypesafeCheck(std::ofstream & ofs, std::string const& typesafeCheck)
 {
   ofs << "// 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default." << std::endl
-      << "// To enable this feature on 32-bit platforms please define VK_CPP_TYPESAFE_CONVERSION" << std::endl
+      << "// To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION" << std::endl
       << typesafeCheck << std::endl
-      << "#define VK_CPP_TYPESAFE_CONVERSION 1" << std::endl
+      << "#define VULKAN_HPP_TYPESAFE_CONVERSION 1" << std::endl
       << "#endif" << std::endl
       << std::endl;
 }
@@ -2918,7 +2918,7 @@ int main( int argc, char **argv )
 
     std::string filename = (argc == 1) ? VK_SPEC : argv[1];
     std::cout << "Loading vk.xml from " << filename << std::endl;
-    std::cout << "Writing vk_cpp.hpp to " << VK_CPP << std::endl;
+    std::cout << "Writing vulkan.hpp to " << VULKAN_HPP << std::endl;
 
     tinyxml2::XMLError error = doc.LoadFile(filename.c_str());
     if (error != tinyxml2::XML_SUCCESS)
@@ -2973,13 +2973,13 @@ int main( int argc, char **argv )
     std::map<std::string, std::string> defaultValues;
     createDefaults(vkData, defaultValues);
 
-    std::ofstream ofs(VK_CPP);
+    std::ofstream ofs(VULKAN_HPP);
     ofs << nvidiaLicenseHeader << std::endl
       << vkData.vulkanLicenseHeader << std::endl
       << std::endl
       << std::endl
-      << "#ifndef VK_CPP_H_" << std::endl
-      << "#define VK_CPP_H_" << std::endl
+      << "#ifndef VULKAN_HPP" << std::endl
+      << "#define VULKAN_HPP" << std::endl
       << std::endl
       << "#include <array>" << std::endl
       << "#include <cassert>" << std::endl
@@ -2988,9 +2988,9 @@ int main( int argc, char **argv )
       << "#include <string>" << std::endl
       << "#include <system_error>" << std::endl
       << "#include <vulkan/vulkan.h>" << std::endl
-      << "#ifndef VKCPP_DISABLE_ENHANCED_MODE" << std::endl
+      << "#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE" << std::endl
       << "# include <vector>" << std::endl
-      << "#endif /*VKCPP_DISABLE_ENHANCED_MODE*/" << std::endl
+      << "#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/" << std::endl
       << std::endl;
 
     writeVersionCheck(ofs, vkData.version);

@@ -1990,6 +1990,17 @@ namespace vk
       return *reinterpret_cast<const VkOffset2D*>(this);
     }
 
+    bool operator==( Offset2D const& rhs ) const
+    {
+      return ( x == rhs.x )
+          && ( y == rhs.y );
+    }
+
+    bool operator!=( Offset2D const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
     int32_t x;
     int32_t y;
   };
@@ -2038,6 +2049,18 @@ namespace vk
       return *reinterpret_cast<const VkOffset3D*>(this);
     }
 
+    bool operator==( Offset3D const& rhs ) const
+    {
+      return ( x == rhs.x )
+          && ( y == rhs.y )
+          && ( z == rhs.z );
+    }
+
+    bool operator!=( Offset3D const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
     int32_t x;
     int32_t y;
     int32_t z;
@@ -2078,6 +2101,17 @@ namespace vk
     operator const VkExtent2D&() const
     {
       return *reinterpret_cast<const VkExtent2D*>(this);
+    }
+
+    bool operator==( Extent2D const& rhs ) const
+    {
+      return ( width == rhs.width )
+          && ( height == rhs.height );
+    }
+
+    bool operator!=( Extent2D const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
     uint32_t width;
@@ -2126,6 +2160,18 @@ namespace vk
     operator const VkExtent3D&() const
     {
       return *reinterpret_cast<const VkExtent3D*>(this);
+    }
+
+    bool operator==( Extent3D const& rhs ) const
+    {
+      return ( width == rhs.width )
+          && ( height == rhs.height )
+          && ( depth == rhs.depth );
+    }
+
+    bool operator!=( Extent3D const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
     uint32_t width;
@@ -2198,6 +2244,21 @@ namespace vk
       return *reinterpret_cast<const VkViewport*>(this);
     }
 
+    bool operator==( Viewport const& rhs ) const
+    {
+      return ( x == rhs.x )
+          && ( y == rhs.y )
+          && ( width == rhs.width )
+          && ( height == rhs.height )
+          && ( minDepth == rhs.minDepth )
+          && ( maxDepth == rhs.maxDepth );
+    }
+
+    bool operator!=( Viewport const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
     float x;
     float y;
     float width;
@@ -2241,6 +2302,17 @@ namespace vk
     operator const VkRect2D&() const
     {
       return *reinterpret_cast<const VkRect2D*>(this);
+    }
+
+    bool operator==( Rect2D const& rhs ) const
+    {
+      return ( offset == rhs.offset )
+          && ( extent == rhs.extent );
+    }
+
+    bool operator!=( Rect2D const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
     Offset2D offset;
@@ -2291,6 +2363,18 @@ namespace vk
       return *reinterpret_cast<const VkClearRect*>(this);
     }
 
+    bool operator==( ClearRect const& rhs ) const
+    {
+      return ( rect == rhs.rect )
+          && ( baseArrayLayer == rhs.baseArrayLayer )
+          && ( layerCount == rhs.layerCount );
+    }
+
+    bool operator!=( ClearRect const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
     Rect2D rect;
     uint32_t baseArrayLayer;
     uint32_t layerCount;
@@ -2304,6 +2388,17 @@ namespace vk
       return *reinterpret_cast<const VkExtensionProperties*>(this);
     }
 
+    bool operator==( ExtensionProperties const& rhs ) const
+    {
+      return ( memcmp( extensionName, rhs.extensionName, VK_MAX_EXTENSION_NAME_SIZE * sizeof( char ) ) == 0 )
+          && ( specVersion == rhs.specVersion );
+    }
+
+    bool operator!=( ExtensionProperties const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
     char extensionName[VK_MAX_EXTENSION_NAME_SIZE];
     uint32_t specVersion;
   };
@@ -2314,6 +2409,19 @@ namespace vk
     operator const VkLayerProperties&() const
     {
       return *reinterpret_cast<const VkLayerProperties*>(this);
+    }
+
+    bool operator==( LayerProperties const& rhs ) const
+    {
+      return ( memcmp( layerName, rhs.layerName, VK_MAX_EXTENSION_NAME_SIZE * sizeof( char ) ) == 0 )
+          && ( specVersion == rhs.specVersion )
+          && ( implementationVersion == rhs.implementationVersion )
+          && ( memcmp( description, rhs.description, VK_MAX_DESCRIPTION_SIZE * sizeof( char ) ) == 0 );
+    }
+
+    bool operator!=( LayerProperties const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
     char layerName[VK_MAX_EXTENSION_NAME_SIZE];
@@ -2387,6 +2495,21 @@ namespace vk
       return *reinterpret_cast<const VkAllocationCallbacks*>(this);
     }
 
+    bool operator==( AllocationCallbacks const& rhs ) const
+    {
+      return ( pUserData == rhs.pUserData )
+          && ( pfnAllocation == rhs.pfnAllocation )
+          && ( pfnReallocation == rhs.pfnReallocation )
+          && ( pfnFree == rhs.pfnFree )
+          && ( pfnInternalAllocation == rhs.pfnInternalAllocation )
+          && ( pfnInternalFree == rhs.pfnInternalFree );
+    }
+
+    bool operator!=( AllocationCallbacks const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
     void* pUserData;
     PFN_vkAllocationFunction pfnAllocation;
     PFN_vkReallocationFunction pfnReallocation;
@@ -2401,6 +2524,18 @@ namespace vk
     operator const VkMemoryRequirements&() const
     {
       return *reinterpret_cast<const VkMemoryRequirements*>(this);
+    }
+
+    bool operator==( MemoryRequirements const& rhs ) const
+    {
+      return ( size == rhs.size )
+          && ( alignment == rhs.alignment )
+          && ( memoryTypeBits == rhs.memoryTypeBits );
+    }
+
+    bool operator!=( MemoryRequirements const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
     DeviceSize size;
@@ -2452,6 +2587,18 @@ namespace vk
       return *reinterpret_cast<const VkDescriptorBufferInfo*>(this);
     }
 
+    bool operator==( DescriptorBufferInfo const& rhs ) const
+    {
+      return ( buffer == rhs.buffer )
+          && ( offset == rhs.offset )
+          && ( range == rhs.range );
+    }
+
+    bool operator!=( DescriptorBufferInfo const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
     Buffer buffer;
     DeviceSize offset;
     DeviceSize range;
@@ -2463,6 +2610,20 @@ namespace vk
     operator const VkSubresourceLayout&() const
     {
       return *reinterpret_cast<const VkSubresourceLayout*>(this);
+    }
+
+    bool operator==( SubresourceLayout const& rhs ) const
+    {
+      return ( offset == rhs.offset )
+          && ( size == rhs.size )
+          && ( rowPitch == rhs.rowPitch )
+          && ( arrayPitch == rhs.arrayPitch )
+          && ( depthPitch == rhs.depthPitch );
+    }
+
+    bool operator!=( SubresourceLayout const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
     DeviceSize offset;
@@ -2516,6 +2677,18 @@ namespace vk
       return *reinterpret_cast<const VkBufferCopy*>(this);
     }
 
+    bool operator==( BufferCopy const& rhs ) const
+    {
+      return ( srcOffset == rhs.srcOffset )
+          && ( dstOffset == rhs.dstOffset )
+          && ( size == rhs.size );
+    }
+
+    bool operator!=( BufferCopy const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
     DeviceSize srcOffset;
     DeviceSize dstOffset;
     DeviceSize size;
@@ -2563,6 +2736,18 @@ namespace vk
     operator const VkSpecializationMapEntry&() const
     {
       return *reinterpret_cast<const VkSpecializationMapEntry*>(this);
+    }
+
+    bool operator==( SpecializationMapEntry const& rhs ) const
+    {
+      return ( constantID == rhs.constantID )
+          && ( offset == rhs.offset )
+          && ( size == rhs.size );
+    }
+
+    bool operator!=( SpecializationMapEntry const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
     uint32_t constantID;
@@ -2619,6 +2804,19 @@ namespace vk
     operator const VkSpecializationInfo&() const
     {
       return *reinterpret_cast<const VkSpecializationInfo*>(this);
+    }
+
+    bool operator==( SpecializationInfo const& rhs ) const
+    {
+      return ( mapEntryCount == rhs.mapEntryCount )
+          && ( pMapEntries == rhs.pMapEntries )
+          && ( dataSize == rhs.dataSize )
+          && ( pData == rhs.pData );
+    }
+
+    bool operator!=( SpecializationInfo const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
     uint32_t mapEntryCount;
@@ -2707,6 +2905,17 @@ namespace vk
     operator const VkClearDepthStencilValue&() const
     {
       return *reinterpret_cast<const VkClearDepthStencilValue*>(this);
+    }
+
+    bool operator==( ClearDepthStencilValue const& rhs ) const
+    {
+      return ( depth == rhs.depth )
+          && ( stencil == rhs.stencil );
+    }
+
+    bool operator!=( ClearDepthStencilValue const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
     float depth;
@@ -3159,6 +3368,70 @@ namespace vk
       return *reinterpret_cast<const VkPhysicalDeviceFeatures*>(this);
     }
 
+    bool operator==( PhysicalDeviceFeatures const& rhs ) const
+    {
+      return ( robustBufferAccess == rhs.robustBufferAccess )
+          && ( fullDrawIndexUint32 == rhs.fullDrawIndexUint32 )
+          && ( imageCubeArray == rhs.imageCubeArray )
+          && ( independentBlend == rhs.independentBlend )
+          && ( geometryShader == rhs.geometryShader )
+          && ( tessellationShader == rhs.tessellationShader )
+          && ( sampleRateShading == rhs.sampleRateShading )
+          && ( dualSrcBlend == rhs.dualSrcBlend )
+          && ( logicOp == rhs.logicOp )
+          && ( multiDrawIndirect == rhs.multiDrawIndirect )
+          && ( drawIndirectFirstInstance == rhs.drawIndirectFirstInstance )
+          && ( depthClamp == rhs.depthClamp )
+          && ( depthBiasClamp == rhs.depthBiasClamp )
+          && ( fillModeNonSolid == rhs.fillModeNonSolid )
+          && ( depthBounds == rhs.depthBounds )
+          && ( wideLines == rhs.wideLines )
+          && ( largePoints == rhs.largePoints )
+          && ( alphaToOne == rhs.alphaToOne )
+          && ( multiViewport == rhs.multiViewport )
+          && ( samplerAnisotropy == rhs.samplerAnisotropy )
+          && ( textureCompressionETC2 == rhs.textureCompressionETC2 )
+          && ( textureCompressionASTC_LDR == rhs.textureCompressionASTC_LDR )
+          && ( textureCompressionBC == rhs.textureCompressionBC )
+          && ( occlusionQueryPrecise == rhs.occlusionQueryPrecise )
+          && ( pipelineStatisticsQuery == rhs.pipelineStatisticsQuery )
+          && ( vertexPipelineStoresAndAtomics == rhs.vertexPipelineStoresAndAtomics )
+          && ( fragmentStoresAndAtomics == rhs.fragmentStoresAndAtomics )
+          && ( shaderTessellationAndGeometryPointSize == rhs.shaderTessellationAndGeometryPointSize )
+          && ( shaderImageGatherExtended == rhs.shaderImageGatherExtended )
+          && ( shaderStorageImageExtendedFormats == rhs.shaderStorageImageExtendedFormats )
+          && ( shaderStorageImageMultisample == rhs.shaderStorageImageMultisample )
+          && ( shaderStorageImageReadWithoutFormat == rhs.shaderStorageImageReadWithoutFormat )
+          && ( shaderStorageImageWriteWithoutFormat == rhs.shaderStorageImageWriteWithoutFormat )
+          && ( shaderUniformBufferArrayDynamicIndexing == rhs.shaderUniformBufferArrayDynamicIndexing )
+          && ( shaderSampledImageArrayDynamicIndexing == rhs.shaderSampledImageArrayDynamicIndexing )
+          && ( shaderStorageBufferArrayDynamicIndexing == rhs.shaderStorageBufferArrayDynamicIndexing )
+          && ( shaderStorageImageArrayDynamicIndexing == rhs.shaderStorageImageArrayDynamicIndexing )
+          && ( shaderClipDistance == rhs.shaderClipDistance )
+          && ( shaderCullDistance == rhs.shaderCullDistance )
+          && ( shaderFloat64 == rhs.shaderFloat64 )
+          && ( shaderInt64 == rhs.shaderInt64 )
+          && ( shaderInt16 == rhs.shaderInt16 )
+          && ( shaderResourceResidency == rhs.shaderResourceResidency )
+          && ( shaderResourceMinLod == rhs.shaderResourceMinLod )
+          && ( sparseBinding == rhs.sparseBinding )
+          && ( sparseResidencyBuffer == rhs.sparseResidencyBuffer )
+          && ( sparseResidencyImage2D == rhs.sparseResidencyImage2D )
+          && ( sparseResidencyImage3D == rhs.sparseResidencyImage3D )
+          && ( sparseResidency2Samples == rhs.sparseResidency2Samples )
+          && ( sparseResidency4Samples == rhs.sparseResidency4Samples )
+          && ( sparseResidency8Samples == rhs.sparseResidency8Samples )
+          && ( sparseResidency16Samples == rhs.sparseResidency16Samples )
+          && ( sparseResidencyAliased == rhs.sparseResidencyAliased )
+          && ( variableMultisampleRate == rhs.variableMultisampleRate )
+          && ( inheritedQueries == rhs.inheritedQueries );
+    }
+
+    bool operator!=( PhysicalDeviceFeatures const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
     Bool32 robustBufferAccess;
     Bool32 fullDrawIndexUint32;
     Bool32 imageCubeArray;
@@ -3224,6 +3497,20 @@ namespace vk
       return *reinterpret_cast<const VkPhysicalDeviceSparseProperties*>(this);
     }
 
+    bool operator==( PhysicalDeviceSparseProperties const& rhs ) const
+    {
+      return ( residencyStandard2DBlockShape == rhs.residencyStandard2DBlockShape )
+          && ( residencyStandard2DMultisampleBlockShape == rhs.residencyStandard2DMultisampleBlockShape )
+          && ( residencyStandard3DBlockShape == rhs.residencyStandard3DBlockShape )
+          && ( residencyAlignedMipSize == rhs.residencyAlignedMipSize )
+          && ( residencyNonResidentStrict == rhs.residencyNonResidentStrict );
+    }
+
+    bool operator!=( PhysicalDeviceSparseProperties const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
     Bool32 residencyStandard2DBlockShape;
     Bool32 residencyStandard2DMultisampleBlockShape;
     Bool32 residencyStandard3DBlockShape;
@@ -3280,6 +3567,19 @@ namespace vk
     operator const VkDrawIndirectCommand&() const
     {
       return *reinterpret_cast<const VkDrawIndirectCommand*>(this);
+    }
+
+    bool operator==( DrawIndirectCommand const& rhs ) const
+    {
+      return ( vertexCount == rhs.vertexCount )
+          && ( instanceCount == rhs.instanceCount )
+          && ( firstVertex == rhs.firstVertex )
+          && ( firstInstance == rhs.firstInstance );
+    }
+
+    bool operator!=( DrawIndirectCommand const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
     uint32_t vertexCount;
@@ -3346,6 +3646,20 @@ namespace vk
       return *reinterpret_cast<const VkDrawIndexedIndirectCommand*>(this);
     }
 
+    bool operator==( DrawIndexedIndirectCommand const& rhs ) const
+    {
+      return ( indexCount == rhs.indexCount )
+          && ( instanceCount == rhs.instanceCount )
+          && ( firstIndex == rhs.firstIndex )
+          && ( vertexOffset == rhs.vertexOffset )
+          && ( firstInstance == rhs.firstInstance );
+    }
+
+    bool operator!=( DrawIndexedIndirectCommand const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
     uint32_t indexCount;
     uint32_t instanceCount;
     uint32_t firstIndex;
@@ -3397,6 +3711,18 @@ namespace vk
       return *reinterpret_cast<const VkDispatchIndirectCommand*>(this);
     }
 
+    bool operator==( DispatchIndirectCommand const& rhs ) const
+    {
+      return ( x == rhs.x )
+          && ( y == rhs.y )
+          && ( z == rhs.z );
+    }
+
+    bool operator!=( DispatchIndirectCommand const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
     uint32_t x;
     uint32_t y;
     uint32_t z;
@@ -3437,6 +3763,17 @@ namespace vk
     operator const VkDisplayPlanePropertiesKHR&() const
     {
       return *reinterpret_cast<const VkDisplayPlanePropertiesKHR*>(this);
+    }
+
+    bool operator==( DisplayPlanePropertiesKHR const& rhs ) const
+    {
+      return ( currentDisplay == rhs.currentDisplay )
+          && ( currentStackIndex == rhs.currentStackIndex );
+    }
+
+    bool operator!=( DisplayPlanePropertiesKHR const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
     DisplayKHR currentDisplay;
@@ -3480,6 +3817,17 @@ namespace vk
       return *reinterpret_cast<const VkDisplayModeParametersKHR*>(this);
     }
 
+    bool operator==( DisplayModeParametersKHR const& rhs ) const
+    {
+      return ( visibleRegion == rhs.visibleRegion )
+          && ( refreshRate == rhs.refreshRate );
+    }
+
+    bool operator!=( DisplayModeParametersKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
     Extent2D visibleRegion;
     uint32_t refreshRate;
   };
@@ -3519,6 +3867,17 @@ namespace vk
     operator const VkDisplayModePropertiesKHR&() const
     {
       return *reinterpret_cast<const VkDisplayModePropertiesKHR*>(this);
+    }
+
+    bool operator==( DisplayModePropertiesKHR const& rhs ) const
+    {
+      return ( displayMode == rhs.displayMode )
+          && ( parameters == rhs.parameters );
+    }
+
+    bool operator!=( DisplayModePropertiesKHR const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
     DisplayModeKHR displayMode;
@@ -3583,6 +3942,18 @@ namespace vk
       return *reinterpret_cast<const VkDescriptorImageInfo*>(this);
     }
 
+    bool operator==( DescriptorImageInfo const& rhs ) const
+    {
+      return ( sampler == rhs.sampler )
+          && ( imageView == rhs.imageView )
+          && ( imageLayout == rhs.imageLayout );
+    }
+
+    bool operator!=( DescriptorImageInfo const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
     Sampler sampler;
     ImageView imageView;
     ImageLayout imageLayout;
@@ -3623,6 +3994,17 @@ namespace vk
     operator const VkAttachmentReference&() const
     {
       return *reinterpret_cast<const VkAttachmentReference*>(this);
+    }
+
+    bool operator==( AttachmentReference const& rhs ) const
+    {
+      return ( attachment == rhs.attachment )
+          && ( layout == rhs.layout );
+    }
+
+    bool operator!=( AttachmentReference const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
     uint32_t attachment;
@@ -3734,6 +4116,19 @@ namespace vk
       return *reinterpret_cast<const VkComponentMapping*>(this);
     }
 
+    bool operator==( ComponentMapping const& rhs ) const
+    {
+      return ( r == rhs.r )
+          && ( g == rhs.g )
+          && ( b == rhs.b )
+          && ( a == rhs.a );
+    }
+
+    bool operator!=( ComponentMapping const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
     ComponentSwizzle r;
     ComponentSwizzle g;
     ComponentSwizzle b;
@@ -3790,6 +4185,17 @@ namespace vk
     operator const VkDescriptorPoolSize&() const
     {
       return *reinterpret_cast<const VkDescriptorPoolSize*>(this);
+    }
+
+    bool operator==( DescriptorPoolSize const& rhs ) const
+    {
+      return ( type == rhs.type )
+          && ( descriptorCount == rhs.descriptorCount );
+    }
+
+    bool operator!=( DescriptorPoolSize const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
     DescriptorType type;
@@ -3910,6 +4316,25 @@ namespace vk
     operator const VkSubpassDescription&() const
     {
       return *reinterpret_cast<const VkSubpassDescription*>(this);
+    }
+
+    bool operator==( SubpassDescription const& rhs ) const
+    {
+      return ( flags == rhs.flags )
+          && ( pipelineBindPoint == rhs.pipelineBindPoint )
+          && ( inputAttachmentCount == rhs.inputAttachmentCount )
+          && ( pInputAttachments == rhs.pInputAttachments )
+          && ( colorAttachmentCount == rhs.colorAttachmentCount )
+          && ( pColorAttachments == rhs.pColorAttachments )
+          && ( pResolveAttachments == rhs.pResolveAttachments )
+          && ( pDepthStencilAttachment == rhs.pDepthStencilAttachment )
+          && ( preserveAttachmentCount == rhs.preserveAttachmentCount )
+          && ( pPreserveAttachments == rhs.pPreserveAttachments );
+    }
+
+    bool operator!=( SubpassDescription const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
     SubpassDescriptionFlags flags;
@@ -4134,6 +4559,22 @@ namespace vk
       return *reinterpret_cast<const VkStencilOpState*>(this);
     }
 
+    bool operator==( StencilOpState const& rhs ) const
+    {
+      return ( failOp == rhs.failOp )
+          && ( passOp == rhs.passOp )
+          && ( depthFailOp == rhs.depthFailOp )
+          && ( compareOp == rhs.compareOp )
+          && ( compareMask == rhs.compareMask )
+          && ( writeMask == rhs.writeMask )
+          && ( reference == rhs.reference );
+    }
+
+    bool operator!=( StencilOpState const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
     StencilOp failOp;
     StencilOp passOp;
     StencilOp depthFailOp;
@@ -4234,6 +4675,18 @@ namespace vk
     operator const VkVertexInputBindingDescription&() const
     {
       return *reinterpret_cast<const VkVertexInputBindingDescription*>(this);
+    }
+
+    bool operator==( VertexInputBindingDescription const& rhs ) const
+    {
+      return ( binding == rhs.binding )
+          && ( stride == rhs.stride )
+          && ( inputRate == rhs.inputRate );
+    }
+
+    bool operator!=( VertexInputBindingDescription const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
     uint32_t binding;
@@ -4481,6 +4934,19 @@ namespace vk
       return *reinterpret_cast<const VkVertexInputAttributeDescription*>(this);
     }
 
+    bool operator==( VertexInputAttributeDescription const& rhs ) const
+    {
+      return ( location == rhs.location )
+          && ( binding == rhs.binding )
+          && ( format == rhs.format )
+          && ( offset == rhs.offset );
+    }
+
+    bool operator!=( VertexInputAttributeDescription const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
     uint32_t location;
     uint32_t binding;
     Format format;
@@ -4628,6 +5094,22 @@ namespace vk
       return *reinterpret_cast<const VkApplicationInfo*>(this);
     }
 
+    bool operator==( ApplicationInfo const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( pApplicationName == rhs.pApplicationName )
+          && ( applicationVersion == rhs.applicationVersion )
+          && ( pEngineName == rhs.pEngineName )
+          && ( engineVersion == rhs.engineVersion )
+          && ( apiVersion == rhs.apiVersion );
+    }
+
+    bool operator!=( ApplicationInfo const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
   private:
     StructureType sType;
 
@@ -4703,6 +5185,21 @@ namespace vk
     operator const VkDeviceQueueCreateInfo&() const
     {
       return *reinterpret_cast<const VkDeviceQueueCreateInfo*>(this);
+    }
+
+    bool operator==( DeviceQueueCreateInfo const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( queueFamilyIndex == rhs.queueFamilyIndex )
+          && ( queueCount == rhs.queueCount )
+          && ( pQueuePriorities == rhs.pQueuePriorities );
+    }
+
+    bool operator!=( DeviceQueueCreateInfo const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
   private:
@@ -4809,6 +5306,25 @@ namespace vk
       return *reinterpret_cast<const VkDeviceCreateInfo*>(this);
     }
 
+    bool operator==( DeviceCreateInfo const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( queueCreateInfoCount == rhs.queueCreateInfoCount )
+          && ( pQueueCreateInfos == rhs.pQueueCreateInfos )
+          && ( enabledLayerCount == rhs.enabledLayerCount )
+          && ( ppEnabledLayerNames == rhs.ppEnabledLayerNames )
+          && ( enabledExtensionCount == rhs.enabledExtensionCount )
+          && ( ppEnabledExtensionNames == rhs.ppEnabledExtensionNames )
+          && ( pEnabledFeatures == rhs.pEnabledFeatures );
+    }
+
+    bool operator!=( DeviceCreateInfo const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
   private:
     StructureType sType;
 
@@ -4903,6 +5419,23 @@ namespace vk
       return *reinterpret_cast<const VkInstanceCreateInfo*>(this);
     }
 
+    bool operator==( InstanceCreateInfo const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( pApplicationInfo == rhs.pApplicationInfo )
+          && ( enabledLayerCount == rhs.enabledLayerCount )
+          && ( ppEnabledLayerNames == rhs.ppEnabledLayerNames )
+          && ( enabledExtensionCount == rhs.enabledExtensionCount )
+          && ( ppEnabledExtensionNames == rhs.ppEnabledExtensionNames );
+    }
+
+    bool operator!=( InstanceCreateInfo const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
   private:
     StructureType sType;
 
@@ -4965,6 +5498,19 @@ namespace vk
     operator const VkMemoryAllocateInfo&() const
     {
       return *reinterpret_cast<const VkMemoryAllocateInfo*>(this);
+    }
+
+    bool operator==( MemoryAllocateInfo const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( allocationSize == rhs.allocationSize )
+          && ( memoryTypeIndex == rhs.memoryTypeIndex );
+    }
+
+    bool operator!=( MemoryAllocateInfo const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
   private:
@@ -5032,6 +5578,20 @@ namespace vk
     operator const VkMappedMemoryRange&() const
     {
       return *reinterpret_cast<const VkMappedMemoryRange*>(this);
+    }
+
+    bool operator==( MappedMemoryRange const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( memory == rhs.memory )
+          && ( offset == rhs.offset )
+          && ( size == rhs.size );
+    }
+
+    bool operator!=( MappedMemoryRange const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
   private:
@@ -5137,6 +5697,25 @@ namespace vk
       return *reinterpret_cast<const VkWriteDescriptorSet*>(this);
     }
 
+    bool operator==( WriteDescriptorSet const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( dstSet == rhs.dstSet )
+          && ( dstBinding == rhs.dstBinding )
+          && ( dstArrayElement == rhs.dstArrayElement )
+          && ( descriptorCount == rhs.descriptorCount )
+          && ( descriptorType == rhs.descriptorType )
+          && ( pImageInfo == rhs.pImageInfo )
+          && ( pBufferInfo == rhs.pBufferInfo )
+          && ( pTexelBufferView == rhs.pTexelBufferView );
+    }
+
+    bool operator!=( WriteDescriptorSet const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
   private:
     StructureType sType;
 
@@ -5238,6 +5817,24 @@ namespace vk
       return *reinterpret_cast<const VkCopyDescriptorSet*>(this);
     }
 
+    bool operator==( CopyDescriptorSet const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( srcSet == rhs.srcSet )
+          && ( srcBinding == rhs.srcBinding )
+          && ( srcArrayElement == rhs.srcArrayElement )
+          && ( dstSet == rhs.dstSet )
+          && ( dstBinding == rhs.dstBinding )
+          && ( dstArrayElement == rhs.dstArrayElement )
+          && ( descriptorCount == rhs.descriptorCount );
+    }
+
+    bool operator!=( CopyDescriptorSet const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
   private:
     StructureType sType;
 
@@ -5324,6 +5921,22 @@ namespace vk
       return *reinterpret_cast<const VkBufferViewCreateInfo*>(this);
     }
 
+    bool operator==( BufferViewCreateInfo const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( buffer == rhs.buffer )
+          && ( format == rhs.format )
+          && ( offset == rhs.offset )
+          && ( range == rhs.range );
+    }
+
+    bool operator!=( BufferViewCreateInfo const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
   private:
     StructureType sType;
 
@@ -5394,6 +6007,20 @@ namespace vk
       return *reinterpret_cast<const VkShaderModuleCreateInfo*>(this);
     }
 
+    bool operator==( ShaderModuleCreateInfo const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( codeSize == rhs.codeSize )
+          && ( pCode == rhs.pCode );
+    }
+
+    bool operator!=( ShaderModuleCreateInfo const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
   private:
     StructureType sType;
 
@@ -5460,6 +6087,20 @@ namespace vk
     operator const VkDescriptorSetAllocateInfo&() const
     {
       return *reinterpret_cast<const VkDescriptorSetAllocateInfo*>(this);
+    }
+
+    bool operator==( DescriptorSetAllocateInfo const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( descriptorPool == rhs.descriptorPool )
+          && ( descriptorSetCount == rhs.descriptorSetCount )
+          && ( pSetLayouts == rhs.pSetLayouts );
+    }
+
+    bool operator!=( DescriptorSetAllocateInfo const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
   private:
@@ -5544,6 +6185,22 @@ namespace vk
       return *reinterpret_cast<const VkPipelineVertexInputStateCreateInfo*>(this);
     }
 
+    bool operator==( PipelineVertexInputStateCreateInfo const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( vertexBindingDescriptionCount == rhs.vertexBindingDescriptionCount )
+          && ( pVertexBindingDescriptions == rhs.pVertexBindingDescriptions )
+          && ( vertexAttributeDescriptionCount == rhs.vertexAttributeDescriptionCount )
+          && ( pVertexAttributeDescriptions == rhs.pVertexAttributeDescriptions );
+    }
+
+    bool operator!=( PipelineVertexInputStateCreateInfo const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
   private:
     StructureType sType;
 
@@ -5614,6 +6271,20 @@ namespace vk
       return *reinterpret_cast<const VkPipelineInputAssemblyStateCreateInfo*>(this);
     }
 
+    bool operator==( PipelineInputAssemblyStateCreateInfo const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( topology == rhs.topology )
+          && ( primitiveRestartEnable == rhs.primitiveRestartEnable );
+    }
+
+    bool operator!=( PipelineInputAssemblyStateCreateInfo const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
   private:
     StructureType sType;
 
@@ -5673,6 +6344,19 @@ namespace vk
     operator const VkPipelineTessellationStateCreateInfo&() const
     {
       return *reinterpret_cast<const VkPipelineTessellationStateCreateInfo*>(this);
+    }
+
+    bool operator==( PipelineTessellationStateCreateInfo const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( patchControlPoints == rhs.patchControlPoints );
+    }
+
+    bool operator!=( PipelineTessellationStateCreateInfo const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
   private:
@@ -5754,6 +6438,22 @@ namespace vk
     operator const VkPipelineViewportStateCreateInfo&() const
     {
       return *reinterpret_cast<const VkPipelineViewportStateCreateInfo*>(this);
+    }
+
+    bool operator==( PipelineViewportStateCreateInfo const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( viewportCount == rhs.viewportCount )
+          && ( pViewports == rhs.pViewports )
+          && ( scissorCount == rhs.scissorCount )
+          && ( pScissors == rhs.pScissors );
+    }
+
+    bool operator!=( PipelineViewportStateCreateInfo const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
   private:
@@ -5882,6 +6582,28 @@ namespace vk
       return *reinterpret_cast<const VkPipelineRasterizationStateCreateInfo*>(this);
     }
 
+    bool operator==( PipelineRasterizationStateCreateInfo const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( depthClampEnable == rhs.depthClampEnable )
+          && ( rasterizerDiscardEnable == rhs.rasterizerDiscardEnable )
+          && ( polygonMode == rhs.polygonMode )
+          && ( cullMode == rhs.cullMode )
+          && ( frontFace == rhs.frontFace )
+          && ( depthBiasEnable == rhs.depthBiasEnable )
+          && ( depthBiasConstantFactor == rhs.depthBiasConstantFactor )
+          && ( depthBiasClamp == rhs.depthBiasClamp )
+          && ( depthBiasSlopeFactor == rhs.depthBiasSlopeFactor )
+          && ( lineWidth == rhs.lineWidth );
+    }
+
+    bool operator!=( PipelineRasterizationStateCreateInfo const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
   private:
     StructureType sType;
 
@@ -6007,6 +6729,27 @@ namespace vk
       return *reinterpret_cast<const VkPipelineDepthStencilStateCreateInfo*>(this);
     }
 
+    bool operator==( PipelineDepthStencilStateCreateInfo const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( depthTestEnable == rhs.depthTestEnable )
+          && ( depthWriteEnable == rhs.depthWriteEnable )
+          && ( depthCompareOp == rhs.depthCompareOp )
+          && ( depthBoundsTestEnable == rhs.depthBoundsTestEnable )
+          && ( stencilTestEnable == rhs.stencilTestEnable )
+          && ( front == rhs.front )
+          && ( back == rhs.back )
+          && ( minDepthBounds == rhs.minDepthBounds )
+          && ( maxDepthBounds == rhs.maxDepthBounds );
+    }
+
+    bool operator!=( PipelineDepthStencilStateCreateInfo const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
   private:
     StructureType sType;
 
@@ -6080,6 +6823,20 @@ namespace vk
     operator const VkPipelineCacheCreateInfo&() const
     {
       return *reinterpret_cast<const VkPipelineCacheCreateInfo*>(this);
+    }
+
+    bool operator==( PipelineCacheCreateInfo const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( initialDataSize == rhs.initialDataSize )
+          && ( pInitialData == rhs.pInitialData );
+    }
+
+    bool operator!=( PipelineCacheCreateInfo const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
   private:
@@ -6241,6 +6998,33 @@ namespace vk
       return *reinterpret_cast<const VkSamplerCreateInfo*>(this);
     }
 
+    bool operator==( SamplerCreateInfo const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( magFilter == rhs.magFilter )
+          && ( minFilter == rhs.minFilter )
+          && ( mipmapMode == rhs.mipmapMode )
+          && ( addressModeU == rhs.addressModeU )
+          && ( addressModeV == rhs.addressModeV )
+          && ( addressModeW == rhs.addressModeW )
+          && ( mipLodBias == rhs.mipLodBias )
+          && ( anisotropyEnable == rhs.anisotropyEnable )
+          && ( maxAnisotropy == rhs.maxAnisotropy )
+          && ( compareEnable == rhs.compareEnable )
+          && ( compareOp == rhs.compareOp )
+          && ( minLod == rhs.minLod )
+          && ( maxLod == rhs.maxLod )
+          && ( borderColor == rhs.borderColor )
+          && ( unnormalizedCoordinates == rhs.unnormalizedCoordinates );
+    }
+
+    bool operator!=( SamplerCreateInfo const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
   private:
     StructureType sType;
 
@@ -6320,6 +7104,20 @@ namespace vk
     operator const VkCommandBufferAllocateInfo&() const
     {
       return *reinterpret_cast<const VkCommandBufferAllocateInfo*>(this);
+    }
+
+    bool operator==( CommandBufferAllocateInfo const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( commandPool == rhs.commandPool )
+          && ( level == rhs.level )
+          && ( commandBufferCount == rhs.commandBufferCount );
+    }
+
+    bool operator!=( CommandBufferAllocateInfo const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
   private:
@@ -6404,6 +7202,22 @@ namespace vk
       return *reinterpret_cast<const VkRenderPassBeginInfo*>(this);
     }
 
+    bool operator==( RenderPassBeginInfo const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( renderPass == rhs.renderPass )
+          && ( framebuffer == rhs.framebuffer )
+          && ( renderArea == rhs.renderArea )
+          && ( clearValueCount == rhs.clearValueCount )
+          && ( pClearValues == rhs.pClearValues );
+    }
+
+    bool operator!=( RenderPassBeginInfo const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
   private:
     StructureType sType;
 
@@ -6460,6 +7274,18 @@ namespace vk
       return *reinterpret_cast<const VkEventCreateInfo*>(this);
     }
 
+    bool operator==( EventCreateInfo const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags );
+    }
+
+    bool operator!=( EventCreateInfo const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
   private:
     StructureType sType;
 
@@ -6510,6 +7336,18 @@ namespace vk
     operator const VkSemaphoreCreateInfo&() const
     {
       return *reinterpret_cast<const VkSemaphoreCreateInfo*>(this);
+    }
+
+    bool operator==( SemaphoreCreateInfo const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags );
+    }
+
+    bool operator!=( SemaphoreCreateInfo const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
   private:
@@ -6606,6 +7444,24 @@ namespace vk
       return *reinterpret_cast<const VkFramebufferCreateInfo*>(this);
     }
 
+    bool operator==( FramebufferCreateInfo const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( renderPass == rhs.renderPass )
+          && ( attachmentCount == rhs.attachmentCount )
+          && ( pAttachments == rhs.pAttachments )
+          && ( width == rhs.width )
+          && ( height == rhs.height )
+          && ( layers == rhs.layers );
+    }
+
+    bool operator!=( FramebufferCreateInfo const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
   private:
     StructureType sType;
 
@@ -6669,6 +7525,19 @@ namespace vk
     operator const VkDisplayModeCreateInfoKHR&() const
     {
       return *reinterpret_cast<const VkDisplayModeCreateInfoKHR*>(this);
+    }
+
+    bool operator==( DisplayModeCreateInfoKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( parameters == rhs.parameters );
+    }
+
+    bool operator!=( DisplayModeCreateInfoKHR const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
   private:
@@ -6738,6 +7607,20 @@ namespace vk
       return *reinterpret_cast<const VkDisplayPresentInfoKHR*>(this);
     }
 
+    bool operator==( DisplayPresentInfoKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( srcRect == rhs.srcRect )
+          && ( dstRect == rhs.dstRect )
+          && ( persistent == rhs.persistent );
+    }
+
+    bool operator!=( DisplayPresentInfoKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
   private:
     StructureType sType;
 
@@ -6798,6 +7681,19 @@ namespace vk
     operator const VkAndroidSurfaceCreateInfoKHR&() const
     {
       return *reinterpret_cast<const VkAndroidSurfaceCreateInfoKHR*>(this);
+    }
+
+    bool operator==( AndroidSurfaceCreateInfoKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( window == rhs.window );
+    }
+
+    bool operator!=( AndroidSurfaceCreateInfoKHR const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
   private:
@@ -6867,6 +7763,20 @@ namespace vk
     operator const VkMirSurfaceCreateInfoKHR&() const
     {
       return *reinterpret_cast<const VkMirSurfaceCreateInfoKHR*>(this);
+    }
+
+    bool operator==( MirSurfaceCreateInfoKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( connection == rhs.connection )
+          && ( mirSurface == rhs.mirSurface );
+    }
+
+    bool operator!=( MirSurfaceCreateInfoKHR const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
   private:
@@ -6939,6 +7849,20 @@ namespace vk
       return *reinterpret_cast<const VkWaylandSurfaceCreateInfoKHR*>(this);
     }
 
+    bool operator==( WaylandSurfaceCreateInfoKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( display == rhs.display )
+          && ( surface == rhs.surface );
+    }
+
+    bool operator!=( WaylandSurfaceCreateInfoKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
   private:
     StructureType sType;
 
@@ -7007,6 +7931,20 @@ namespace vk
     operator const VkWin32SurfaceCreateInfoKHR&() const
     {
       return *reinterpret_cast<const VkWin32SurfaceCreateInfoKHR*>(this);
+    }
+
+    bool operator==( Win32SurfaceCreateInfoKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( hinstance == rhs.hinstance )
+          && ( hwnd == rhs.hwnd );
+    }
+
+    bool operator!=( Win32SurfaceCreateInfoKHR const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
   private:
@@ -7079,6 +8017,20 @@ namespace vk
       return *reinterpret_cast<const VkXlibSurfaceCreateInfoKHR*>(this);
     }
 
+    bool operator==( XlibSurfaceCreateInfoKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( dpy == rhs.dpy )
+          && ( window == rhs.window );
+    }
+
+    bool operator!=( XlibSurfaceCreateInfoKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
   private:
     StructureType sType;
 
@@ -7149,6 +8101,20 @@ namespace vk
       return *reinterpret_cast<const VkXcbSurfaceCreateInfoKHR*>(this);
     }
 
+    bool operator==( XcbSurfaceCreateInfoKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( connection == rhs.connection )
+          && ( window == rhs.window );
+    }
+
+    bool operator!=( XcbSurfaceCreateInfoKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
   private:
     StructureType sType;
 
@@ -7209,6 +8175,19 @@ namespace vk
     operator const VkDebugMarkerMarkerInfoEXT&() const
     {
       return *reinterpret_cast<const VkDebugMarkerMarkerInfoEXT*>(this);
+    }
+
+    bool operator==( DebugMarkerMarkerInfoEXT const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( pMarkerName == rhs.pMarkerName )
+          && ( memcmp( color, rhs.color, 4 * sizeof( float ) ) == 0 );
+    }
+
+    bool operator!=( DebugMarkerMarkerInfoEXT const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
   private:
@@ -7305,6 +8284,23 @@ namespace vk
       return *reinterpret_cast<const VkPresentInfoKHR*>(this);
     }
 
+    bool operator==( PresentInfoKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( waitSemaphoreCount == rhs.waitSemaphoreCount )
+          && ( pWaitSemaphores == rhs.pWaitSemaphores )
+          && ( swapchainCount == rhs.swapchainCount )
+          && ( pSwapchains == rhs.pSwapchains )
+          && ( pImageIndices == rhs.pImageIndices )
+          && ( pResults == rhs.pResults );
+    }
+
+    bool operator!=( PresentInfoKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
   private:
     StructureType sType;
 
@@ -7389,6 +8385,20 @@ namespace vk
       return *reinterpret_cast<const VkPipelineDynamicStateCreateInfo*>(this);
     }
 
+    bool operator==( PipelineDynamicStateCreateInfo const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( dynamicStateCount == rhs.dynamicStateCount )
+          && ( pDynamicStates == rhs.pDynamicStates );
+    }
+
+    bool operator!=( PipelineDynamicStateCreateInfo const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
   private:
     StructureType sType;
 
@@ -7422,6 +8432,19 @@ namespace vk
       return *reinterpret_cast<const VkQueueFamilyProperties*>(this);
     }
 
+    bool operator==( QueueFamilyProperties const& rhs ) const
+    {
+      return ( queueFlags == rhs.queueFlags )
+          && ( queueCount == rhs.queueCount )
+          && ( timestampValidBits == rhs.timestampValidBits )
+          && ( minImageTransferGranularity == rhs.minImageTransferGranularity );
+    }
+
+    bool operator!=( QueueFamilyProperties const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
     QueueFlags queueFlags;
     uint32_t queueCount;
     uint32_t timestampValidBits;
@@ -7452,6 +8475,17 @@ namespace vk
       return *reinterpret_cast<const VkMemoryType*>(this);
     }
 
+    bool operator==( MemoryType const& rhs ) const
+    {
+      return ( propertyFlags == rhs.propertyFlags )
+          && ( heapIndex == rhs.heapIndex );
+    }
+
+    bool operator!=( MemoryType const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
     MemoryPropertyFlags propertyFlags;
     uint32_t heapIndex;
   };
@@ -7476,6 +8510,17 @@ namespace vk
       return *reinterpret_cast<const VkMemoryHeap*>(this);
     }
 
+    bool operator==( MemoryHeap const& rhs ) const
+    {
+      return ( size == rhs.size )
+          && ( flags == rhs.flags );
+    }
+
+    bool operator!=( MemoryHeap const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
     DeviceSize size;
     MemoryHeapFlags flags;
   };
@@ -7486,6 +8531,19 @@ namespace vk
     operator const VkPhysicalDeviceMemoryProperties&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceMemoryProperties*>(this);
+    }
+
+    bool operator==( PhysicalDeviceMemoryProperties const& rhs ) const
+    {
+      return ( memoryTypeCount == rhs.memoryTypeCount )
+          && ( memcmp( memoryTypes, rhs.memoryTypes, VK_MAX_MEMORY_TYPES * sizeof( MemoryType ) ) == 0 )
+          && ( memoryHeapCount == rhs.memoryHeapCount )
+          && ( memcmp( memoryHeaps, rhs.memoryHeaps, VK_MAX_MEMORY_HEAPS * sizeof( MemoryHeap ) ) == 0 );
+    }
+
+    bool operator!=( PhysicalDeviceMemoryProperties const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
     uint32_t memoryTypeCount;
@@ -7571,6 +8629,19 @@ namespace vk
     operator const VkMemoryBarrier&() const
     {
       return *reinterpret_cast<const VkMemoryBarrier*>(this);
+    }
+
+    bool operator==( MemoryBarrier const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( srcAccessMask == rhs.srcAccessMask )
+          && ( dstAccessMask == rhs.dstAccessMask );
+    }
+
+    bool operator!=( MemoryBarrier const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
   private:
@@ -7666,6 +8737,24 @@ namespace vk
     operator const VkBufferMemoryBarrier&() const
     {
       return *reinterpret_cast<const VkBufferMemoryBarrier*>(this);
+    }
+
+    bool operator==( BufferMemoryBarrier const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( srcAccessMask == rhs.srcAccessMask )
+          && ( dstAccessMask == rhs.dstAccessMask )
+          && ( srcQueueFamilyIndex == rhs.srcQueueFamilyIndex )
+          && ( dstQueueFamilyIndex == rhs.dstQueueFamilyIndex )
+          && ( buffer == rhs.buffer )
+          && ( offset == rhs.offset )
+          && ( size == rhs.size );
+    }
+
+    bool operator!=( BufferMemoryBarrier const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
   private:
@@ -7795,6 +8884,23 @@ namespace vk
       return *reinterpret_cast<const VkBufferCreateInfo*>(this);
     }
 
+    bool operator==( BufferCreateInfo const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( size == rhs.size )
+          && ( usage == rhs.usage )
+          && ( sharingMode == rhs.sharingMode )
+          && ( queueFamilyIndexCount == rhs.queueFamilyIndexCount )
+          && ( pQueueFamilyIndices == rhs.pQueueFamilyIndices );
+    }
+
+    bool operator!=( BufferCreateInfo const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
   private:
     StructureType sType;
 
@@ -7885,6 +8991,20 @@ namespace vk
       return *reinterpret_cast<const VkDescriptorSetLayoutBinding*>(this);
     }
 
+    bool operator==( DescriptorSetLayoutBinding const& rhs ) const
+    {
+      return ( binding == rhs.binding )
+          && ( descriptorType == rhs.descriptorType )
+          && ( descriptorCount == rhs.descriptorCount )
+          && ( stageFlags == rhs.stageFlags )
+          && ( pImmutableSamplers == rhs.pImmutableSamplers );
+    }
+
+    bool operator!=( DescriptorSetLayoutBinding const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
     uint32_t binding;
     DescriptorType descriptorType;
     uint32_t descriptorCount;
@@ -7948,6 +9068,20 @@ namespace vk
     operator const VkDescriptorSetLayoutCreateInfo&() const
     {
       return *reinterpret_cast<const VkDescriptorSetLayoutCreateInfo*>(this);
+    }
+
+    bool operator==( DescriptorSetLayoutCreateInfo const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( bindingCount == rhs.bindingCount )
+          && ( pBindings == rhs.pBindings );
+    }
+
+    bool operator!=( DescriptorSetLayoutCreateInfo const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
   private:
@@ -8032,6 +9166,22 @@ namespace vk
       return *reinterpret_cast<const VkPipelineShaderStageCreateInfo*>(this);
     }
 
+    bool operator==( PipelineShaderStageCreateInfo const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( stage == rhs.stage )
+          && ( module == rhs.module )
+          && ( pName == rhs.pName )
+          && ( pSpecializationInfo == rhs.pSpecializationInfo );
+    }
+
+    bool operator!=( PipelineShaderStageCreateInfo const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
   private:
     StructureType sType;
 
@@ -8086,6 +9236,18 @@ namespace vk
     operator const VkPushConstantRange&() const
     {
       return *reinterpret_cast<const VkPushConstantRange*>(this);
+    }
+
+    bool operator==( PushConstantRange const& rhs ) const
+    {
+      return ( stageFlags == rhs.stageFlags )
+          && ( offset == rhs.offset )
+          && ( size == rhs.size );
+    }
+
+    bool operator!=( PushConstantRange const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
     ShaderStageFlags stageFlags;
@@ -8163,6 +9325,22 @@ namespace vk
     operator const VkPipelineLayoutCreateInfo&() const
     {
       return *reinterpret_cast<const VkPipelineLayoutCreateInfo*>(this);
+    }
+
+    bool operator==( PipelineLayoutCreateInfo const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( setLayoutCount == rhs.setLayoutCount )
+          && ( pSetLayouts == rhs.pSetLayouts )
+          && ( pushConstantRangeCount == rhs.pushConstantRangeCount )
+          && ( pPushConstantRanges == rhs.pPushConstantRanges );
+    }
+
+    bool operator!=( PipelineLayoutCreateInfo const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
   private:
@@ -8298,6 +9476,22 @@ namespace vk
       return *reinterpret_cast<const VkComputePipelineCreateInfo*>(this);
     }
 
+    bool operator==( ComputePipelineCreateInfo const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( stage == rhs.stage )
+          && ( layout == rhs.layout )
+          && ( basePipelineHandle == rhs.basePipelineHandle )
+          && ( basePipelineIndex == rhs.basePipelineIndex );
+    }
+
+    bool operator!=( ComputePipelineCreateInfo const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
   private:
     StructureType sType;
 
@@ -8404,6 +9598,23 @@ namespace vk
       return *reinterpret_cast<const VkPipelineColorBlendAttachmentState*>(this);
     }
 
+    bool operator==( PipelineColorBlendAttachmentState const& rhs ) const
+    {
+      return ( blendEnable == rhs.blendEnable )
+          && ( srcColorBlendFactor == rhs.srcColorBlendFactor )
+          && ( dstColorBlendFactor == rhs.dstColorBlendFactor )
+          && ( colorBlendOp == rhs.colorBlendOp )
+          && ( srcAlphaBlendFactor == rhs.srcAlphaBlendFactor )
+          && ( dstAlphaBlendFactor == rhs.dstAlphaBlendFactor )
+          && ( alphaBlendOp == rhs.alphaBlendOp )
+          && ( colorWriteMask == rhs.colorWriteMask );
+    }
+
+    bool operator!=( PipelineColorBlendAttachmentState const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
     Bool32 blendEnable;
     BlendFactor srcColorBlendFactor;
     BlendFactor dstColorBlendFactor;
@@ -8493,6 +9704,23 @@ namespace vk
       return *reinterpret_cast<const VkPipelineColorBlendStateCreateInfo*>(this);
     }
 
+    bool operator==( PipelineColorBlendStateCreateInfo const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( logicOpEnable == rhs.logicOpEnable )
+          && ( logicOp == rhs.logicOp )
+          && ( attachmentCount == rhs.attachmentCount )
+          && ( pAttachments == rhs.pAttachments )
+          && ( memcmp( blendConstants, rhs.blendConstants, 4 * sizeof( float ) ) == 0 );
+    }
+
+    bool operator!=( PipelineColorBlendStateCreateInfo const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
   private:
     StructureType sType;
 
@@ -8562,6 +9790,18 @@ namespace vk
       return *reinterpret_cast<const VkFenceCreateInfo*>(this);
     }
 
+    bool operator==( FenceCreateInfo const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags );
+    }
+
+    bool operator!=( FenceCreateInfo const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
   private:
     StructureType sType;
 
@@ -8601,6 +9841,18 @@ namespace vk
     operator const VkFormatProperties&() const
     {
       return *reinterpret_cast<const VkFormatProperties*>(this);
+    }
+
+    bool operator==( FormatProperties const& rhs ) const
+    {
+      return ( linearTilingFeatures == rhs.linearTilingFeatures )
+          && ( optimalTilingFeatures == rhs.optimalTilingFeatures )
+          && ( bufferFeatures == rhs.bufferFeatures );
+    }
+
+    bool operator!=( FormatProperties const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
     FormatFeatureFlags linearTilingFeatures;
@@ -8750,6 +10002,23 @@ namespace vk
       return *reinterpret_cast<const VkCommandBufferInheritanceInfo*>(this);
     }
 
+    bool operator==( CommandBufferInheritanceInfo const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( renderPass == rhs.renderPass )
+          && ( subpass == rhs.subpass )
+          && ( framebuffer == rhs.framebuffer )
+          && ( occlusionQueryEnable == rhs.occlusionQueryEnable )
+          && ( queryFlags == rhs.queryFlags )
+          && ( pipelineStatistics == rhs.pipelineStatistics );
+    }
+
+    bool operator!=( CommandBufferInheritanceInfo const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
   private:
     StructureType sType;
 
@@ -8812,6 +10081,19 @@ namespace vk
     operator const VkCommandBufferBeginInfo&() const
     {
       return *reinterpret_cast<const VkCommandBufferBeginInfo*>(this);
+    }
+
+    bool operator==( CommandBufferBeginInfo const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( pInheritanceInfo == rhs.pInheritanceInfo );
+    }
+
+    bool operator!=( CommandBufferBeginInfo const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
   private:
@@ -8888,6 +10170,21 @@ namespace vk
       return *reinterpret_cast<const VkQueryPoolCreateInfo*>(this);
     }
 
+    bool operator==( QueryPoolCreateInfo const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( queryType == rhs.queryType )
+          && ( queryCount == rhs.queryCount )
+          && ( pipelineStatistics == rhs.pipelineStatistics );
+    }
+
+    bool operator!=( QueryPoolCreateInfo const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
   private:
     StructureType sType;
 
@@ -8958,6 +10255,18 @@ namespace vk
       return *reinterpret_cast<const VkImageSubresource*>(this);
     }
 
+    bool operator==( ImageSubresource const& rhs ) const
+    {
+      return ( aspectMask == rhs.aspectMask )
+          && ( mipLevel == rhs.mipLevel )
+          && ( arrayLayer == rhs.arrayLayer );
+    }
+
+    bool operator!=( ImageSubresource const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
     ImageAspectFlags aspectMask;
     uint32_t mipLevel;
     uint32_t arrayLayer;
@@ -9012,6 +10321,19 @@ namespace vk
     operator const VkImageSubresourceLayers&() const
     {
       return *reinterpret_cast<const VkImageSubresourceLayers*>(this);
+    }
+
+    bool operator==( ImageSubresourceLayers const& rhs ) const
+    {
+      return ( aspectMask == rhs.aspectMask )
+          && ( mipLevel == rhs.mipLevel )
+          && ( baseArrayLayer == rhs.baseArrayLayer )
+          && ( layerCount == rhs.layerCount );
+    }
+
+    bool operator!=( ImageSubresourceLayers const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
     ImageAspectFlags aspectMask;
@@ -9076,6 +10398,20 @@ namespace vk
     operator const VkImageSubresourceRange&() const
     {
       return *reinterpret_cast<const VkImageSubresourceRange*>(this);
+    }
+
+    bool operator==( ImageSubresourceRange const& rhs ) const
+    {
+      return ( aspectMask == rhs.aspectMask )
+          && ( baseMipLevel == rhs.baseMipLevel )
+          && ( levelCount == rhs.levelCount )
+          && ( baseArrayLayer == rhs.baseArrayLayer )
+          && ( layerCount == rhs.layerCount );
+    }
+
+    bool operator!=( ImageSubresourceRange const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
     ImageAspectFlags aspectMask;
@@ -9178,6 +10514,25 @@ namespace vk
       return *reinterpret_cast<const VkImageMemoryBarrier*>(this);
     }
 
+    bool operator==( ImageMemoryBarrier const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( srcAccessMask == rhs.srcAccessMask )
+          && ( dstAccessMask == rhs.dstAccessMask )
+          && ( oldLayout == rhs.oldLayout )
+          && ( newLayout == rhs.newLayout )
+          && ( srcQueueFamilyIndex == rhs.srcQueueFamilyIndex )
+          && ( dstQueueFamilyIndex == rhs.dstQueueFamilyIndex )
+          && ( image == rhs.image )
+          && ( subresourceRange == rhs.subresourceRange );
+    }
+
+    bool operator!=( ImageMemoryBarrier const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
   private:
     StructureType sType;
 
@@ -9272,6 +10627,23 @@ namespace vk
       return *reinterpret_cast<const VkImageViewCreateInfo*>(this);
     }
 
+    bool operator==( ImageViewCreateInfo const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( image == rhs.image )
+          && ( viewType == rhs.viewType )
+          && ( format == rhs.format )
+          && ( components == rhs.components )
+          && ( subresourceRange == rhs.subresourceRange );
+    }
+
+    bool operator!=( ImageViewCreateInfo const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
   private:
     StructureType sType;
 
@@ -9343,6 +10715,20 @@ namespace vk
       return *reinterpret_cast<const VkImageCopy*>(this);
     }
 
+    bool operator==( ImageCopy const& rhs ) const
+    {
+      return ( srcSubresource == rhs.srcSubresource )
+          && ( srcOffset == rhs.srcOffset )
+          && ( dstSubresource == rhs.dstSubresource )
+          && ( dstOffset == rhs.dstOffset )
+          && ( extent == rhs.extent );
+    }
+
+    bool operator!=( ImageCopy const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
     ImageSubresourceLayers srcSubresource;
     Offset3D srcOffset;
     ImageSubresourceLayers dstSubresource;
@@ -9399,6 +10785,19 @@ namespace vk
     operator const VkImageBlit&() const
     {
       return *reinterpret_cast<const VkImageBlit*>(this);
+    }
+
+    bool operator==( ImageBlit const& rhs ) const
+    {
+      return ( srcSubresource == rhs.srcSubresource )
+          && ( memcmp( srcOffsets, rhs.srcOffsets, 2 * sizeof( Offset3D ) ) == 0 )
+          && ( dstSubresource == rhs.dstSubresource )
+          && ( memcmp( dstOffsets, rhs.dstOffsets, 2 * sizeof( Offset3D ) ) == 0 );
+    }
+
+    bool operator!=( ImageBlit const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
     ImageSubresourceLayers srcSubresource;
@@ -9472,6 +10871,21 @@ namespace vk
       return *reinterpret_cast<const VkBufferImageCopy*>(this);
     }
 
+    bool operator==( BufferImageCopy const& rhs ) const
+    {
+      return ( bufferOffset == rhs.bufferOffset )
+          && ( bufferRowLength == rhs.bufferRowLength )
+          && ( bufferImageHeight == rhs.bufferImageHeight )
+          && ( imageSubresource == rhs.imageSubresource )
+          && ( imageOffset == rhs.imageOffset )
+          && ( imageExtent == rhs.imageExtent );
+    }
+
+    bool operator!=( BufferImageCopy const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
     DeviceSize bufferOffset;
     uint32_t bufferRowLength;
     uint32_t bufferImageHeight;
@@ -9536,6 +10950,20 @@ namespace vk
     operator const VkImageResolve&() const
     {
       return *reinterpret_cast<const VkImageResolve*>(this);
+    }
+
+    bool operator==( ImageResolve const& rhs ) const
+    {
+      return ( srcSubresource == rhs.srcSubresource )
+          && ( srcOffset == rhs.srcOffset )
+          && ( dstSubresource == rhs.dstSubresource )
+          && ( dstOffset == rhs.dstOffset )
+          && ( extent == rhs.extent );
+    }
+
+    bool operator!=( ImageResolve const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
     ImageSubresourceLayers srcSubresource;
@@ -9616,6 +11044,18 @@ namespace vk
       return *reinterpret_cast<const VkSparseImageFormatProperties*>(this);
     }
 
+    bool operator==( SparseImageFormatProperties const& rhs ) const
+    {
+      return ( aspectMask == rhs.aspectMask )
+          && ( imageGranularity == rhs.imageGranularity )
+          && ( flags == rhs.flags );
+    }
+
+    bool operator!=( SparseImageFormatProperties const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
     ImageAspectFlags aspectMask;
     Extent3D imageGranularity;
     SparseImageFormatFlags flags;
@@ -9627,6 +11067,20 @@ namespace vk
     operator const VkSparseImageMemoryRequirements&() const
     {
       return *reinterpret_cast<const VkSparseImageMemoryRequirements*>(this);
+    }
+
+    bool operator==( SparseImageMemoryRequirements const& rhs ) const
+    {
+      return ( formatProperties == rhs.formatProperties )
+          && ( imageMipTailFirstLod == rhs.imageMipTailFirstLod )
+          && ( imageMipTailSize == rhs.imageMipTailSize )
+          && ( imageMipTailOffset == rhs.imageMipTailOffset )
+          && ( imageMipTailStride == rhs.imageMipTailStride );
+    }
+
+    bool operator!=( SparseImageMemoryRequirements const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
     SparseImageFormatProperties formatProperties;
@@ -9706,6 +11160,20 @@ namespace vk
       return *reinterpret_cast<const VkSparseMemoryBind*>(this);
     }
 
+    bool operator==( SparseMemoryBind const& rhs ) const
+    {
+      return ( resourceOffset == rhs.resourceOffset )
+          && ( size == rhs.size )
+          && ( memory == rhs.memory )
+          && ( memoryOffset == rhs.memoryOffset )
+          && ( flags == rhs.flags );
+    }
+
+    bool operator!=( SparseMemoryBind const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
     DeviceSize resourceOffset;
     DeviceSize size;
     DeviceMemory memory;
@@ -9778,6 +11246,21 @@ namespace vk
       return *reinterpret_cast<const VkSparseImageMemoryBind*>(this);
     }
 
+    bool operator==( SparseImageMemoryBind const& rhs ) const
+    {
+      return ( subresource == rhs.subresource )
+          && ( offset == rhs.offset )
+          && ( extent == rhs.extent )
+          && ( memory == rhs.memory )
+          && ( memoryOffset == rhs.memoryOffset )
+          && ( flags == rhs.flags );
+    }
+
+    bool operator!=( SparseImageMemoryBind const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
     ImageSubresource subresource;
     Offset3D offset;
     Extent3D extent;
@@ -9830,6 +11313,18 @@ namespace vk
       return *reinterpret_cast<const VkSparseBufferMemoryBindInfo*>(this);
     }
 
+    bool operator==( SparseBufferMemoryBindInfo const& rhs ) const
+    {
+      return ( buffer == rhs.buffer )
+          && ( bindCount == rhs.bindCount )
+          && ( pBinds == rhs.pBinds );
+    }
+
+    bool operator!=( SparseBufferMemoryBindInfo const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
     Buffer buffer;
     uint32_t bindCount;
     const SparseMemoryBind* pBinds;
@@ -9879,6 +11374,18 @@ namespace vk
       return *reinterpret_cast<const VkSparseImageOpaqueMemoryBindInfo*>(this);
     }
 
+    bool operator==( SparseImageOpaqueMemoryBindInfo const& rhs ) const
+    {
+      return ( image == rhs.image )
+          && ( bindCount == rhs.bindCount )
+          && ( pBinds == rhs.pBinds );
+    }
+
+    bool operator!=( SparseImageOpaqueMemoryBindInfo const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
     Image image;
     uint32_t bindCount;
     const SparseMemoryBind* pBinds;
@@ -9926,6 +11433,18 @@ namespace vk
     operator const VkSparseImageMemoryBindInfo&() const
     {
       return *reinterpret_cast<const VkSparseImageMemoryBindInfo*>(this);
+    }
+
+    bool operator==( SparseImageMemoryBindInfo const& rhs ) const
+    {
+      return ( image == rhs.image )
+          && ( bindCount == rhs.bindCount )
+          && ( pBinds == rhs.pBinds );
+    }
+
+    bool operator!=( SparseImageMemoryBindInfo const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
     Image image;
@@ -10040,6 +11559,27 @@ namespace vk
       return *reinterpret_cast<const VkBindSparseInfo*>(this);
     }
 
+    bool operator==( BindSparseInfo const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( waitSemaphoreCount == rhs.waitSemaphoreCount )
+          && ( pWaitSemaphores == rhs.pWaitSemaphores )
+          && ( bufferBindCount == rhs.bufferBindCount )
+          && ( pBufferBinds == rhs.pBufferBinds )
+          && ( imageOpaqueBindCount == rhs.imageOpaqueBindCount )
+          && ( pImageOpaqueBinds == rhs.pImageOpaqueBinds )
+          && ( imageBindCount == rhs.imageBindCount )
+          && ( pImageBinds == rhs.pImageBinds )
+          && ( signalSemaphoreCount == rhs.signalSemaphoreCount )
+          && ( pSignalSemaphores == rhs.pSignalSemaphores );
+    }
+
+    bool operator!=( BindSparseInfo const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
   private:
     StructureType sType;
 
@@ -10149,6 +11689,19 @@ namespace vk
       return *reinterpret_cast<const VkCommandPoolCreateInfo*>(this);
     }
 
+    bool operator==( CommandPoolCreateInfo const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( queueFamilyIndex == rhs.queueFamilyIndex );
+    }
+
+    bool operator!=( CommandPoolCreateInfo const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
   private:
     StructureType sType;
 
@@ -10206,6 +11759,20 @@ namespace vk
     operator const VkImageFormatProperties&() const
     {
       return *reinterpret_cast<const VkImageFormatProperties*>(this);
+    }
+
+    bool operator==( ImageFormatProperties const& rhs ) const
+    {
+      return ( maxExtent == rhs.maxExtent )
+          && ( maxMipLevels == rhs.maxMipLevels )
+          && ( maxArrayLayers == rhs.maxArrayLayers )
+          && ( sampleCounts == rhs.sampleCounts )
+          && ( maxResourceSize == rhs.maxResourceSize );
+    }
+
+    bool operator!=( ImageFormatProperties const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
     Extent3D maxExtent;
@@ -10343,6 +11910,30 @@ namespace vk
       return *reinterpret_cast<const VkImageCreateInfo*>(this);
     }
 
+    bool operator==( ImageCreateInfo const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( imageType == rhs.imageType )
+          && ( format == rhs.format )
+          && ( extent == rhs.extent )
+          && ( mipLevels == rhs.mipLevels )
+          && ( arrayLayers == rhs.arrayLayers )
+          && ( samples == rhs.samples )
+          && ( tiling == rhs.tiling )
+          && ( usage == rhs.usage )
+          && ( sharingMode == rhs.sharingMode )
+          && ( queueFamilyIndexCount == rhs.queueFamilyIndexCount )
+          && ( pQueueFamilyIndices == rhs.pQueueFamilyIndices )
+          && ( initialLayout == rhs.initialLayout );
+    }
+
+    bool operator!=( ImageCreateInfo const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
   private:
     StructureType sType;
 
@@ -10447,6 +12038,24 @@ namespace vk
     operator const VkPipelineMultisampleStateCreateInfo&() const
     {
       return *reinterpret_cast<const VkPipelineMultisampleStateCreateInfo*>(this);
+    }
+
+    bool operator==( PipelineMultisampleStateCreateInfo const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( rasterizationSamples == rhs.rasterizationSamples )
+          && ( sampleShadingEnable == rhs.sampleShadingEnable )
+          && ( minSampleShading == rhs.minSampleShading )
+          && ( pSampleMask == rhs.pSampleMask )
+          && ( alphaToCoverageEnable == rhs.alphaToCoverageEnable )
+          && ( alphaToOneEnable == rhs.alphaToOneEnable );
+    }
+
+    bool operator!=( PipelineMultisampleStateCreateInfo const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
   private:
@@ -10619,6 +12228,34 @@ namespace vk
       return *reinterpret_cast<const VkGraphicsPipelineCreateInfo*>(this);
     }
 
+    bool operator==( GraphicsPipelineCreateInfo const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( stageCount == rhs.stageCount )
+          && ( pStages == rhs.pStages )
+          && ( pVertexInputState == rhs.pVertexInputState )
+          && ( pInputAssemblyState == rhs.pInputAssemblyState )
+          && ( pTessellationState == rhs.pTessellationState )
+          && ( pViewportState == rhs.pViewportState )
+          && ( pRasterizationState == rhs.pRasterizationState )
+          && ( pMultisampleState == rhs.pMultisampleState )
+          && ( pDepthStencilState == rhs.pDepthStencilState )
+          && ( pColorBlendState == rhs.pColorBlendState )
+          && ( pDynamicState == rhs.pDynamicState )
+          && ( layout == rhs.layout )
+          && ( renderPass == rhs.renderPass )
+          && ( subpass == rhs.subpass )
+          && ( basePipelineHandle == rhs.basePipelineHandle )
+          && ( basePipelineIndex == rhs.basePipelineIndex );
+    }
+
+    bool operator!=( GraphicsPipelineCreateInfo const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
   private:
     StructureType sType;
 
@@ -10649,6 +12286,121 @@ namespace vk
     operator const VkPhysicalDeviceLimits&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceLimits*>(this);
+    }
+
+    bool operator==( PhysicalDeviceLimits const& rhs ) const
+    {
+      return ( maxImageDimension1D == rhs.maxImageDimension1D )
+          && ( maxImageDimension2D == rhs.maxImageDimension2D )
+          && ( maxImageDimension3D == rhs.maxImageDimension3D )
+          && ( maxImageDimensionCube == rhs.maxImageDimensionCube )
+          && ( maxImageArrayLayers == rhs.maxImageArrayLayers )
+          && ( maxTexelBufferElements == rhs.maxTexelBufferElements )
+          && ( maxUniformBufferRange == rhs.maxUniformBufferRange )
+          && ( maxStorageBufferRange == rhs.maxStorageBufferRange )
+          && ( maxPushConstantsSize == rhs.maxPushConstantsSize )
+          && ( maxMemoryAllocationCount == rhs.maxMemoryAllocationCount )
+          && ( maxSamplerAllocationCount == rhs.maxSamplerAllocationCount )
+          && ( bufferImageGranularity == rhs.bufferImageGranularity )
+          && ( sparseAddressSpaceSize == rhs.sparseAddressSpaceSize )
+          && ( maxBoundDescriptorSets == rhs.maxBoundDescriptorSets )
+          && ( maxPerStageDescriptorSamplers == rhs.maxPerStageDescriptorSamplers )
+          && ( maxPerStageDescriptorUniformBuffers == rhs.maxPerStageDescriptorUniformBuffers )
+          && ( maxPerStageDescriptorStorageBuffers == rhs.maxPerStageDescriptorStorageBuffers )
+          && ( maxPerStageDescriptorSampledImages == rhs.maxPerStageDescriptorSampledImages )
+          && ( maxPerStageDescriptorStorageImages == rhs.maxPerStageDescriptorStorageImages )
+          && ( maxPerStageDescriptorInputAttachments == rhs.maxPerStageDescriptorInputAttachments )
+          && ( maxPerStageResources == rhs.maxPerStageResources )
+          && ( maxDescriptorSetSamplers == rhs.maxDescriptorSetSamplers )
+          && ( maxDescriptorSetUniformBuffers == rhs.maxDescriptorSetUniformBuffers )
+          && ( maxDescriptorSetUniformBuffersDynamic == rhs.maxDescriptorSetUniformBuffersDynamic )
+          && ( maxDescriptorSetStorageBuffers == rhs.maxDescriptorSetStorageBuffers )
+          && ( maxDescriptorSetStorageBuffersDynamic == rhs.maxDescriptorSetStorageBuffersDynamic )
+          && ( maxDescriptorSetSampledImages == rhs.maxDescriptorSetSampledImages )
+          && ( maxDescriptorSetStorageImages == rhs.maxDescriptorSetStorageImages )
+          && ( maxDescriptorSetInputAttachments == rhs.maxDescriptorSetInputAttachments )
+          && ( maxVertexInputAttributes == rhs.maxVertexInputAttributes )
+          && ( maxVertexInputBindings == rhs.maxVertexInputBindings )
+          && ( maxVertexInputAttributeOffset == rhs.maxVertexInputAttributeOffset )
+          && ( maxVertexInputBindingStride == rhs.maxVertexInputBindingStride )
+          && ( maxVertexOutputComponents == rhs.maxVertexOutputComponents )
+          && ( maxTessellationGenerationLevel == rhs.maxTessellationGenerationLevel )
+          && ( maxTessellationPatchSize == rhs.maxTessellationPatchSize )
+          && ( maxTessellationControlPerVertexInputComponents == rhs.maxTessellationControlPerVertexInputComponents )
+          && ( maxTessellationControlPerVertexOutputComponents == rhs.maxTessellationControlPerVertexOutputComponents )
+          && ( maxTessellationControlPerPatchOutputComponents == rhs.maxTessellationControlPerPatchOutputComponents )
+          && ( maxTessellationControlTotalOutputComponents == rhs.maxTessellationControlTotalOutputComponents )
+          && ( maxTessellationEvaluationInputComponents == rhs.maxTessellationEvaluationInputComponents )
+          && ( maxTessellationEvaluationOutputComponents == rhs.maxTessellationEvaluationOutputComponents )
+          && ( maxGeometryShaderInvocations == rhs.maxGeometryShaderInvocations )
+          && ( maxGeometryInputComponents == rhs.maxGeometryInputComponents )
+          && ( maxGeometryOutputComponents == rhs.maxGeometryOutputComponents )
+          && ( maxGeometryOutputVertices == rhs.maxGeometryOutputVertices )
+          && ( maxGeometryTotalOutputComponents == rhs.maxGeometryTotalOutputComponents )
+          && ( maxFragmentInputComponents == rhs.maxFragmentInputComponents )
+          && ( maxFragmentOutputAttachments == rhs.maxFragmentOutputAttachments )
+          && ( maxFragmentDualSrcAttachments == rhs.maxFragmentDualSrcAttachments )
+          && ( maxFragmentCombinedOutputResources == rhs.maxFragmentCombinedOutputResources )
+          && ( maxComputeSharedMemorySize == rhs.maxComputeSharedMemorySize )
+          && ( memcmp( maxComputeWorkGroupCount, rhs.maxComputeWorkGroupCount, 3 * sizeof( uint32_t ) ) == 0 )
+          && ( maxComputeWorkGroupInvocations == rhs.maxComputeWorkGroupInvocations )
+          && ( memcmp( maxComputeWorkGroupSize, rhs.maxComputeWorkGroupSize, 3 * sizeof( uint32_t ) ) == 0 )
+          && ( subPixelPrecisionBits == rhs.subPixelPrecisionBits )
+          && ( subTexelPrecisionBits == rhs.subTexelPrecisionBits )
+          && ( mipmapPrecisionBits == rhs.mipmapPrecisionBits )
+          && ( maxDrawIndexedIndexValue == rhs.maxDrawIndexedIndexValue )
+          && ( maxDrawIndirectCount == rhs.maxDrawIndirectCount )
+          && ( maxSamplerLodBias == rhs.maxSamplerLodBias )
+          && ( maxSamplerAnisotropy == rhs.maxSamplerAnisotropy )
+          && ( maxViewports == rhs.maxViewports )
+          && ( memcmp( maxViewportDimensions, rhs.maxViewportDimensions, 2 * sizeof( uint32_t ) ) == 0 )
+          && ( memcmp( viewportBoundsRange, rhs.viewportBoundsRange, 2 * sizeof( float ) ) == 0 )
+          && ( viewportSubPixelBits == rhs.viewportSubPixelBits )
+          && ( minMemoryMapAlignment == rhs.minMemoryMapAlignment )
+          && ( minTexelBufferOffsetAlignment == rhs.minTexelBufferOffsetAlignment )
+          && ( minUniformBufferOffsetAlignment == rhs.minUniformBufferOffsetAlignment )
+          && ( minStorageBufferOffsetAlignment == rhs.minStorageBufferOffsetAlignment )
+          && ( minTexelOffset == rhs.minTexelOffset )
+          && ( maxTexelOffset == rhs.maxTexelOffset )
+          && ( minTexelGatherOffset == rhs.minTexelGatherOffset )
+          && ( maxTexelGatherOffset == rhs.maxTexelGatherOffset )
+          && ( minInterpolationOffset == rhs.minInterpolationOffset )
+          && ( maxInterpolationOffset == rhs.maxInterpolationOffset )
+          && ( subPixelInterpolationOffsetBits == rhs.subPixelInterpolationOffsetBits )
+          && ( maxFramebufferWidth == rhs.maxFramebufferWidth )
+          && ( maxFramebufferHeight == rhs.maxFramebufferHeight )
+          && ( maxFramebufferLayers == rhs.maxFramebufferLayers )
+          && ( framebufferColorSampleCounts == rhs.framebufferColorSampleCounts )
+          && ( framebufferDepthSampleCounts == rhs.framebufferDepthSampleCounts )
+          && ( framebufferStencilSampleCounts == rhs.framebufferStencilSampleCounts )
+          && ( framebufferNoAttachmentsSampleCounts == rhs.framebufferNoAttachmentsSampleCounts )
+          && ( maxColorAttachments == rhs.maxColorAttachments )
+          && ( sampledImageColorSampleCounts == rhs.sampledImageColorSampleCounts )
+          && ( sampledImageIntegerSampleCounts == rhs.sampledImageIntegerSampleCounts )
+          && ( sampledImageDepthSampleCounts == rhs.sampledImageDepthSampleCounts )
+          && ( sampledImageStencilSampleCounts == rhs.sampledImageStencilSampleCounts )
+          && ( storageImageSampleCounts == rhs.storageImageSampleCounts )
+          && ( maxSampleMaskWords == rhs.maxSampleMaskWords )
+          && ( timestampComputeAndGraphics == rhs.timestampComputeAndGraphics )
+          && ( timestampPeriod == rhs.timestampPeriod )
+          && ( maxClipDistances == rhs.maxClipDistances )
+          && ( maxCullDistances == rhs.maxCullDistances )
+          && ( maxCombinedClipAndCullDistances == rhs.maxCombinedClipAndCullDistances )
+          && ( discreteQueuePriorities == rhs.discreteQueuePriorities )
+          && ( memcmp( pointSizeRange, rhs.pointSizeRange, 2 * sizeof( float ) ) == 0 )
+          && ( memcmp( lineWidthRange, rhs.lineWidthRange, 2 * sizeof( float ) ) == 0 )
+          && ( pointSizeGranularity == rhs.pointSizeGranularity )
+          && ( lineWidthGranularity == rhs.lineWidthGranularity )
+          && ( strictLines == rhs.strictLines )
+          && ( standardSampleLocations == rhs.standardSampleLocations )
+          && ( optimalBufferCopyOffsetAlignment == rhs.optimalBufferCopyOffsetAlignment )
+          && ( optimalBufferCopyRowPitchAlignment == rhs.optimalBufferCopyRowPitchAlignment )
+          && ( nonCoherentAtomSize == rhs.nonCoherentAtomSize );
+    }
+
+    bool operator!=( PhysicalDeviceLimits const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
     uint32_t maxImageDimension1D;
@@ -10767,6 +12519,24 @@ namespace vk
       return *reinterpret_cast<const VkPhysicalDeviceProperties*>(this);
     }
 
+    bool operator==( PhysicalDeviceProperties const& rhs ) const
+    {
+      return ( apiVersion == rhs.apiVersion )
+          && ( driverVersion == rhs.driverVersion )
+          && ( vendorID == rhs.vendorID )
+          && ( deviceID == rhs.deviceID )
+          && ( deviceType == rhs.deviceType )
+          && ( memcmp( deviceName, rhs.deviceName, VK_MAX_PHYSICAL_DEVICE_NAME_SIZE * sizeof( char ) ) == 0 )
+          && ( memcmp( pipelineCacheUUID, rhs.pipelineCacheUUID, VK_UUID_SIZE * sizeof( uint8_t ) ) == 0 )
+          && ( limits == rhs.limits )
+          && ( sparseProperties == rhs.sparseProperties );
+    }
+
+    bool operator!=( PhysicalDeviceProperties const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
     uint32_t apiVersion;
     uint32_t driverVersion;
     uint32_t vendorID;
@@ -10876,6 +12646,24 @@ namespace vk
       return *reinterpret_cast<const VkAttachmentDescription*>(this);
     }
 
+    bool operator==( AttachmentDescription const& rhs ) const
+    {
+      return ( flags == rhs.flags )
+          && ( format == rhs.format )
+          && ( samples == rhs.samples )
+          && ( loadOp == rhs.loadOp )
+          && ( storeOp == rhs.storeOp )
+          && ( stencilLoadOp == rhs.stencilLoadOp )
+          && ( stencilStoreOp == rhs.stencilStoreOp )
+          && ( initialLayout == rhs.initialLayout )
+          && ( finalLayout == rhs.finalLayout );
+    }
+
+    bool operator!=( AttachmentDescription const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
     AttachmentDescriptionFlags flags;
     Format format;
     SampleCountFlagBits samples;
@@ -10976,6 +12764,21 @@ namespace vk
     operator const VkDescriptorPoolCreateInfo&() const
     {
       return *reinterpret_cast<const VkDescriptorPoolCreateInfo*>(this);
+    }
+
+    bool operator==( DescriptorPoolCreateInfo const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( maxSets == rhs.maxSets )
+          && ( poolSizeCount == rhs.poolSizeCount )
+          && ( pPoolSizes == rhs.pPoolSizes );
+    }
+
+    bool operator!=( DescriptorPoolCreateInfo const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
   private:
@@ -11789,6 +13592,22 @@ namespace vk
       return *reinterpret_cast<const VkSubpassDependency*>(this);
     }
 
+    bool operator==( SubpassDependency const& rhs ) const
+    {
+      return ( srcSubpass == rhs.srcSubpass )
+          && ( dstSubpass == rhs.dstSubpass )
+          && ( srcStageMask == rhs.srcStageMask )
+          && ( dstStageMask == rhs.dstStageMask )
+          && ( srcAccessMask == rhs.srcAccessMask )
+          && ( dstAccessMask == rhs.dstAccessMask )
+          && ( dependencyFlags == rhs.dependencyFlags );
+    }
+
+    bool operator!=( SubpassDependency const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
     uint32_t srcSubpass;
     uint32_t dstSubpass;
     PipelineStageFlags srcStageMask;
@@ -11882,6 +13701,24 @@ namespace vk
     operator const VkRenderPassCreateInfo&() const
     {
       return *reinterpret_cast<const VkRenderPassCreateInfo*>(this);
+    }
+
+    bool operator==( RenderPassCreateInfo const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( attachmentCount == rhs.attachmentCount )
+          && ( pAttachments == rhs.pAttachments )
+          && ( subpassCount == rhs.subpassCount )
+          && ( pSubpasses == rhs.pSubpasses )
+          && ( dependencyCount == rhs.dependencyCount )
+          && ( pDependencies == rhs.pDependencies );
+    }
+
+    bool operator!=( RenderPassCreateInfo const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
   private:
@@ -11982,6 +13819,24 @@ namespace vk
     operator const VkSubmitInfo&() const
     {
       return *reinterpret_cast<const VkSubmitInfo*>(this);
+    }
+
+    bool operator==( SubmitInfo const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( waitSemaphoreCount == rhs.waitSemaphoreCount )
+          && ( pWaitSemaphores == rhs.pWaitSemaphores )
+          && ( pWaitDstStageMask == rhs.pWaitDstStageMask )
+          && ( commandBufferCount == rhs.commandBufferCount )
+          && ( pCommandBuffers == rhs.pCommandBuffers )
+          && ( signalSemaphoreCount == rhs.signalSemaphoreCount )
+          && ( pSignalSemaphores == rhs.pSignalSemaphores );
+    }
+
+    bool operator!=( SubmitInfo const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
   private:
@@ -12144,6 +13999,17 @@ namespace vk
       return *reinterpret_cast<const VkSurfaceFormatKHR*>(this);
     }
 
+    bool operator==( SurfaceFormatKHR const& rhs ) const
+    {
+      return ( format == rhs.format )
+          && ( colorSpace == rhs.colorSpace );
+    }
+
+    bool operator!=( SurfaceFormatKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
     Format format;
     ColorSpaceKHR colorSpace;
   };
@@ -12247,6 +14113,24 @@ namespace vk
     operator const VkDisplayPlaneCapabilitiesKHR&() const
     {
       return *reinterpret_cast<const VkDisplayPlaneCapabilitiesKHR*>(this);
+    }
+
+    bool operator==( DisplayPlaneCapabilitiesKHR const& rhs ) const
+    {
+      return ( supportedAlpha == rhs.supportedAlpha )
+          && ( minSrcPosition == rhs.minSrcPosition )
+          && ( maxSrcPosition == rhs.maxSrcPosition )
+          && ( minSrcExtent == rhs.minSrcExtent )
+          && ( maxSrcExtent == rhs.maxSrcExtent )
+          && ( minDstPosition == rhs.minDstPosition )
+          && ( maxDstPosition == rhs.maxDstPosition )
+          && ( minDstExtent == rhs.minDstExtent )
+          && ( maxDstExtent == rhs.maxDstExtent );
+    }
+
+    bool operator!=( DisplayPlaneCapabilitiesKHR const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
     DisplayPlaneAlphaFlagsKHR supportedAlpha;
@@ -12367,6 +14251,22 @@ namespace vk
       return *reinterpret_cast<const VkDisplayPropertiesKHR*>(this);
     }
 
+    bool operator==( DisplayPropertiesKHR const& rhs ) const
+    {
+      return ( display == rhs.display )
+          && ( displayName == rhs.displayName )
+          && ( physicalDimensions == rhs.physicalDimensions )
+          && ( physicalResolution == rhs.physicalResolution )
+          && ( supportedTransforms == rhs.supportedTransforms )
+          && ( planeReorderPossible == rhs.planeReorderPossible )
+          && ( persistentContent == rhs.persistentContent );
+    }
+
+    bool operator!=( DisplayPropertiesKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
     DisplayKHR display;
     const char* displayName;
     Extent2D physicalDimensions;
@@ -12467,6 +14367,25 @@ namespace vk
     operator const VkDisplaySurfaceCreateInfoKHR&() const
     {
       return *reinterpret_cast<const VkDisplaySurfaceCreateInfoKHR*>(this);
+    }
+
+    bool operator==( DisplaySurfaceCreateInfoKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( displayMode == rhs.displayMode )
+          && ( planeIndex == rhs.planeIndex )
+          && ( planeStackIndex == rhs.planeStackIndex )
+          && ( transform == rhs.transform )
+          && ( globalAlpha == rhs.globalAlpha )
+          && ( alphaMode == rhs.alphaMode )
+          && ( imageExtent == rhs.imageExtent );
+    }
+
+    bool operator!=( DisplaySurfaceCreateInfoKHR const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
   private:
@@ -12575,6 +14494,25 @@ namespace vk
     operator const VkSurfaceCapabilitiesKHR&() const
     {
       return *reinterpret_cast<const VkSurfaceCapabilitiesKHR*>(this);
+    }
+
+    bool operator==( SurfaceCapabilitiesKHR const& rhs ) const
+    {
+      return ( minImageCount == rhs.minImageCount )
+          && ( maxImageCount == rhs.maxImageCount )
+          && ( currentExtent == rhs.currentExtent )
+          && ( minImageExtent == rhs.minImageExtent )
+          && ( maxImageExtent == rhs.maxImageExtent )
+          && ( maxImageArrayLayers == rhs.maxImageArrayLayers )
+          && ( supportedTransforms == rhs.supportedTransforms )
+          && ( currentTransform == rhs.currentTransform )
+          && ( supportedCompositeAlpha == rhs.supportedCompositeAlpha )
+          && ( supportedUsageFlags == rhs.supportedUsageFlags );
+    }
+
+    bool operator!=( SurfaceCapabilitiesKHR const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
     uint32_t minImageCount;
@@ -12738,6 +14676,33 @@ namespace vk
       return *reinterpret_cast<const VkSwapchainCreateInfoKHR*>(this);
     }
 
+    bool operator==( SwapchainCreateInfoKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( surface == rhs.surface )
+          && ( minImageCount == rhs.minImageCount )
+          && ( imageFormat == rhs.imageFormat )
+          && ( imageColorSpace == rhs.imageColorSpace )
+          && ( imageExtent == rhs.imageExtent )
+          && ( imageArrayLayers == rhs.imageArrayLayers )
+          && ( imageUsage == rhs.imageUsage )
+          && ( imageSharingMode == rhs.imageSharingMode )
+          && ( queueFamilyIndexCount == rhs.queueFamilyIndexCount )
+          && ( pQueueFamilyIndices == rhs.pQueueFamilyIndices )
+          && ( preTransform == rhs.preTransform )
+          && ( compositeAlpha == rhs.compositeAlpha )
+          && ( presentMode == rhs.presentMode )
+          && ( clipped == rhs.clipped )
+          && ( oldSwapchain == rhs.oldSwapchain );
+    }
+
+    bool operator!=( SwapchainCreateInfoKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
   private:
     StructureType sType;
 
@@ -12833,6 +14798,20 @@ namespace vk
     operator const VkDebugReportCallbackCreateInfoEXT&() const
     {
       return *reinterpret_cast<const VkDebugReportCallbackCreateInfoEXT*>(this);
+    }
+
+    bool operator==( DebugReportCallbackCreateInfoEXT const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( pfnCallback == rhs.pfnCallback )
+          && ( pUserData == rhs.pUserData );
+    }
+
+    bool operator!=( DebugReportCallbackCreateInfoEXT const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
   private:
@@ -12936,6 +14915,20 @@ namespace vk
       return *reinterpret_cast<const VkDebugMarkerObjectNameInfoEXT*>(this);
     }
 
+    bool operator==( DebugMarkerObjectNameInfoEXT const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( objectType == rhs.objectType )
+          && ( object == rhs.object )
+          && ( pObjectName == rhs.pObjectName );
+    }
+
+    bool operator!=( DebugMarkerObjectNameInfoEXT const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
   private:
     StructureType sType;
 
@@ -13016,6 +15009,22 @@ namespace vk
     operator const VkDebugMarkerObjectTagInfoEXT&() const
     {
       return *reinterpret_cast<const VkDebugMarkerObjectTagInfoEXT*>(this);
+    }
+
+    bool operator==( DebugMarkerObjectTagInfoEXT const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( objectType == rhs.objectType )
+          && ( object == rhs.object )
+          && ( tagName == rhs.tagName )
+          && ( tagSize == rhs.tagSize )
+          && ( pTag == rhs.pTag );
+    }
+
+    bool operator!=( DebugMarkerObjectTagInfoEXT const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
   private:
@@ -14986,6 +16995,18 @@ namespace vk
     operator const VkPipelineRasterizationStateRasterizationOrderAMD&() const
     {
       return *reinterpret_cast<const VkPipelineRasterizationStateRasterizationOrderAMD*>(this);
+    }
+
+    bool operator==( PipelineRasterizationStateRasterizationOrderAMD const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( rasterizationOrder == rhs.rasterizationOrder );
+    }
+
+    bool operator!=( PipelineRasterizationStateRasterizationOrderAMD const& rhs ) const
+    {
+      return !operator==( rhs );
     }
 
   private:

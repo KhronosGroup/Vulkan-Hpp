@@ -170,7 +170,7 @@ Here are a few code examples:
     device.allocateMemory(allocateInfo, nullptr);
 
   }
-  catch (std::system_error e)
+  catch (const std::exception &e)
   {
     std::cerr << "Vulkan failure: " << e.what() << std::endl;
   }

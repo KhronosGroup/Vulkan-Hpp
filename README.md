@@ -182,11 +182,11 @@ Depending on exceptions being enabled or disabled, the return type of some funct
 
 With exceptions enabled (the default) there are four different cases on the return types:
 * Just one possible success code
-* * no output value -> return type is ```void```
-* * one output value -> return type is T, which is the type of the output value
+  * no output value -> return type is ```void```
+  * one output value -> return type is T, which is the type of the output value
 * Multiple possible success codes
-* * no output value -> return type is ```vk::Result```
-* * one output value -> return type is a structure ```vk::ResultValue<T>``` with a member ```result``` of type ```vk::Result``` holding the actual result code, and a member ```value``` of type T, which is the type of the output value, holding that output value.
+  * no output value -> return type is ```vk::Result```
+  * one output value -> return type is a structure ```vk::ResultValue<T>``` with a member ```result``` of type ```vk::Result``` holding the actual result code, and a member ```value``` of type T, which is the type of the output value, holding that output value.
 
 With exceptions disabled, the return type of those wrapper functions where the wrapped function has just one possible success code is different:
 * no output value -> return type is ```vk::Result```

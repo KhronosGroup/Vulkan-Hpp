@@ -524,6 +524,7 @@ struct StructData
   {}
 
   bool                    returnedOnly;
+  bool                    isUnion;
   std::vector<MemberData> members;
   std::string             protect;
 };
@@ -1456,6 +1457,7 @@ void readTypeStruct( tinyxml2::XMLElement * element, VkData & vkData )
   assert( vkData.structs.find( name ) == vkData.structs.end() );
   std::map<std::string,StructData>::iterator it = vkData.structs.insert( std::make_pair( name, StructData() ) ).first;
   it->second.returnedOnly = !!element->Attribute( "returnedonly" );
+  it->second.isUnion = false;
 
   tinyxml2::XMLElement * child = element->FirstChildElement();
   do
@@ -1557,6 +1559,7 @@ void readTypeUnion( tinyxml2::XMLElement * element, VkData & vkData )
 
   assert( vkData.structs.find( name ) == vkData.structs.end() );
   std::map<std::string,StructData>::iterator it = vkData.structs.insert( std::make_pair( name, StructData() ) ).first;
+  it->second.isUnion = true;
 
   tinyxml2::XMLElement * child = element->FirstChildElement();
   do
@@ -2733,6 +2736,21 @@ void writeTypeScalar( std::ofstream & ofs, DependencyData const& dependencyData 
       << std::endl;
 }
 
+bool containsUnion(std::string const& type, std::map<std::string, StructData> const& structs)
+{
+  std::map<std::string, StructData>::const_iterator sit = structs.find(type);
+  bool found = (sit != structs.end());
+  if (found)
+  {
+    found = sit->second.isUnion;
+    for (std::vector<MemberData>::const_iterator mit = sit->second.members.begin(); mit != sit->second.members.end() && !found; ++mit)
+    {
+      found = (mit->type == mit->pureType) && containsUnion(mit->type, structs);
+    }
+  }
+  return found;
+}
+
 void writeTypeStruct( std::ofstream & ofs, VkData const& vkData, DependencyData const& dependencyData, std::map<std::string,std::string> const& defaultValues )
 {
   std::map<std::string,StructData>::const_iterator it = vkData.structs.find( dependencyData.name );
@@ -2764,6 +2782,42 @@ void writeTypeStruct( std::ofstream & ofs, VkData const& vkData, DependencyData 
       << "    }" << std::endl
       << std::endl;
 
+  // operator==() and operator!=()
+  // only structs without a union as a member can have a meaningfull == and != operation; we filter them out
+  if (!containsUnion(dependencyData.name, vkData.structs))
+  {
+    ofs << "    bool operator==( " << dependencyData.name << " const& rhs ) const" << std::endl
+        << "    {" << std::endl
+        << "      return ";
+    for (size_t i = 0; i < it->second.members.size(); i++)
+    {
+      if (i != 0)
+      {
+        ofs << std::endl << "          && ";
+      }
+      if (!it->second.members[i].arraySize.empty())
+      {
+        ofs << "( memcmp( " << it->second.members[i].name << ", rhs." << it->second.members[i].name << ", " << it->second.members[i].arraySize << " * sizeof( " << it->second.members[i].type << " ) ) == 0 )";
+      }
+      else
+      {
+        ofs << "( " << it->second.members[i].name << " == rhs." << it->second.members[i].name << " )";
+      }
+    }
+    ofs << ";" << std::endl
+        << "    }" << std::endl
+        << std::endl
+        << "    bool operator!=( " << dependencyData.name << " const& rhs ) const" << std::endl
+        << "    {" << std::endl
+        << "      return !operator==( rhs );" << std::endl
+        << "    }" << std::endl
+        << std::endl;
+  }
+  else
+  {
+    int a = 0;
+  }
+
   // the member variables
   for (size_t i = 0; i < it->second.members.size(); i++)
   {
@@ -2785,10 +2839,9 @@ void writeTypeStruct( std::ofstream & ofs, VkData const& vkData, DependencyData 
       ofs << ";" << std::endl;
     }
   }
-  ofs << "  };" << std::endl;
-#if 1
-  ofs << "  static_assert( sizeof( " << dependencyData.name << " ) == sizeof( Vk" << dependencyData.name << " ), \"struct and wrapper have different size!\" );" << std::endl;
-#endif
+  ofs << "  };" << std::endl
+      << "  static_assert( sizeof( " << dependencyData.name << " ) == sizeof( Vk" << dependencyData.name << " ), \"struct and wrapper have different size!\" );" << std::endl;
+
   leaveProtect(ofs, it->second.protect);
   ofs << std::endl;
 }

@@ -264,6 +264,33 @@ namespace vk
       , m_ptr(data.begin())
     {}
 
+    const T * begin() const
+    {
+      return m_ptr;
+    }
+
+    const T * end() const
+    {
+      return m_ptr + m_count;
+    }
+
+    const T & front() const
+    {
+      assert(m_count && m_ptr);
+      return *m_ptr;
+    }
+
+    const T & back() const
+    {
+      assert(m_count && m_ptr);
+      return *(m_ptr + m_count - 1);
+    }
+
+    bool empty() const
+    {
+      return (m_count == 0);
+    }
+
     uint32_t size() const
     {
       return m_count;

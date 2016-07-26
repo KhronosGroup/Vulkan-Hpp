@@ -52,14 +52,18 @@
 #ifndef VULKAN_HPP
 #define VULKAN_HPP
 
+#include <algorithm>
 #include <array>
 #include <cassert>
 #include <cstdint>
 #include <cstring>
+#include <initializer_list>
 #include <string>
 #include <system_error>
+#include <type_traits>
 #include <vulkan/vulkan.h>
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+# include <memory>
 # include <vector>
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -216,6 +220,7 @@ namespace vk
     RefType *m_ptr;
   };
 
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename T>
   class ArrayProxy
   {
@@ -305,6 +310,7 @@ namespace vk
     uint32_t  m_count;
     T *       m_ptr;
   };
+#endif
 
   enum class Result
   {
@@ -2855,7 +2861,7 @@ namespace vk
 
   union ClearColorValue
   {
-    ClearColorValue( const std::array<float,4>& float32_ = { 0 } )
+    ClearColorValue( const std::array<float,4>& float32_ = { {0} } )
     {
       memcpy( &float32, float32_.data(), 4 * sizeof( float ) );
     }
@@ -8156,7 +8162,7 @@ namespace vk
 
   struct DebugMarkerMarkerInfoEXT
   {
-    DebugMarkerMarkerInfoEXT( const char* pMarkerName_ = nullptr, std::array<float,4> const& color_ = { 0, 0, 0, 0 } )
+    DebugMarkerMarkerInfoEXT( const char* pMarkerName_ = nullptr, std::array<float,4> const& color_ = { { 0, 0, 0, 0 } } )
       : sType( StructureType::eDebugMarkerMarkerInfoEXT )
       , pNext( nullptr )
       , pMarkerName( pMarkerName_ )
@@ -9655,7 +9661,7 @@ namespace vk
 
   struct PipelineColorBlendStateCreateInfo
   {
-    PipelineColorBlendStateCreateInfo( PipelineColorBlendStateCreateFlags flags_ = PipelineColorBlendStateCreateFlags(), Bool32 logicOpEnable_ = 0, LogicOp logicOp_ = LogicOp::eClear, uint32_t attachmentCount_ = 0, const PipelineColorBlendAttachmentState* pAttachments_ = nullptr, std::array<float,4> const& blendConstants_ = { 0, 0, 0, 0 } )
+    PipelineColorBlendStateCreateInfo( PipelineColorBlendStateCreateFlags flags_ = PipelineColorBlendStateCreateFlags(), Bool32 logicOpEnable_ = 0, LogicOp logicOp_ = LogicOp::eClear, uint32_t attachmentCount_ = 0, const PipelineColorBlendAttachmentState* pAttachments_ = nullptr, std::array<float,4> const& blendConstants_ = { { 0, 0, 0, 0 } } )
       : sType( StructureType::ePipelineColorBlendStateCreateInfo )
       , pNext( nullptr )
       , flags( flags_ )
@@ -10766,7 +10772,7 @@ namespace vk
 
   struct ImageBlit
   {
-    ImageBlit( ImageSubresourceLayers srcSubresource_ = ImageSubresourceLayers(), std::array<Offset3D,2> const& srcOffsets_ = { Offset3D(), Offset3D() }, ImageSubresourceLayers dstSubresource_ = ImageSubresourceLayers(), std::array<Offset3D,2> const& dstOffsets_ = { Offset3D(), Offset3D() } )
+    ImageBlit( ImageSubresourceLayers srcSubresource_ = ImageSubresourceLayers(), std::array<Offset3D,2> const& srcOffsets_ = { { Offset3D(), Offset3D() } }, ImageSubresourceLayers dstSubresource_ = ImageSubresourceLayers(), std::array<Offset3D,2> const& dstOffsets_ = { { Offset3D(), Offset3D() } } )
       : srcSubresource( srcSubresource_ )
       , dstSubresource( dstSubresource_ )
     {

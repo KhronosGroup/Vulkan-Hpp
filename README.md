@@ -182,11 +182,11 @@ Depending on exceptions being enabled or disabled, the return type of some funct
 
 With exceptions enabled (the default) there are four different cases on the return types:
 * Just one possible success code
-* * no output value -> return type is ```void```
-* * one output value -> return type is T, which is the type of the output value
+  * no output value -> return type is ```void```
+  * one output value -> return type is T, which is the type of the output value
 * Multiple possible success codes
-* * no output value -> return type is ```vk::Result```
-* * one output value -> return type is a structure ```vk::ResultValue<T>``` with a member ```result``` of type ```vk::Result``` holding the actual result code, and a member ```value``` of type T, which is the type of the output value, holding that output value.
+  * no output value -> return type is ```vk::Result```
+  * one output value -> return type is a structure ```vk::ResultValue<T>``` with a member ```result``` of type ```vk::Result``` holding the actual result code, and a member ```value``` of type T, which is the type of the output value, holding that output value.
 
 With exceptions disabled, the return type of those wrapper functions where the wrapped function has just one possible success code is different:
 * no output value -> return type is ```vk::Result```
@@ -213,14 +213,3 @@ To build the header for a given vk.xml specification continue with the following
 
 # Samples
 Brad Davis started to port Sascha Willems Samples to vulkan.hpp. You can find his work in his [repository](https://github.com/jherico/Vulkan).
-
-# Providing Pull Requests
-
-NVIDIA is happy to review and consider pull requests for merging into the main tree of vulkan.hpp for bug fixes and features. Before providing a pull request to NVIDIA, please note the following:
-
-* A pull request provided to this repo by a developer constitutes permission from the developer for NVIDIA to merge the provided
-  changes or any NVIDIA modified version of these changes to the repo. NVIDIA may remove or change the code at any time and in any
-  way deemed appropriate. Due to the required paperwork please refrain from providing pull requests for simple changes and file an issue
-  describing a bug or the desired change instead.
-* Not all pull requests can be or will be accepted. NVIDIA will close pull requests that it does not intend to merge.
-* The modified files and any new files must include the unmodified NVIDIA copyright header seen at the top of all shipping files.

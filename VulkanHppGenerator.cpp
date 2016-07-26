@@ -27,34 +27,6 @@
 
 #include <tinyxml2.h>
 
-const std::string nvidiaLicenseHeader(
-"// Copyright(c) 2015-2016, NVIDIA CORPORATION. All rights reserved.\n"
-"//\n"
-"// Redistribution and use in source and binary forms, with or without\n"
-"// modification, are permitted provided that the following conditions\n"
-"// are met:\n"
-"//  * Redistributions of source code must retain the above copyright\n"
-"//    notice, this list of conditions and the following disclaimer.\n"
-"//  * Redistributions in binary form must reproduce the above copyright\n"
-"//    notice, this list of conditions and the following disclaimer in the\n"
-"//    documentation and/or other materials provided with the distribution.\n"
-"//  * Neither the name of NVIDIA CORPORATION nor the names of its\n"
-"//    contributors may be used to endorse or promote products derived\n"
-"//    from this software without specific prior written permission.\n"
-"//\n"
-"// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS ``AS IS'' AND ANY\n"
-"// EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE\n"
-"// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR\n"
-"// PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR\n"
-"// CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,\n"
-"// EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,\n"
-"// PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR\n"
-"// PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY\n"
-"// OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n"
-"// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE\n"
-"// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n"
-);
-
 const std::string exceptionHeader(
   "#if defined(_MSC_VER) && (_MSC_VER == 1800)\n"
   "# define noexcept _NOEXCEPT\n"
@@ -428,6 +400,14 @@ std::string const createResultValueHeader = (
   "  }\n"
   "\n"
   );
+
+// trim from start
+std::string trim(std::string const& input)
+{
+  std::string result = input;
+  result.erase(result.begin(), std::find_if(result.begin(), result.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
+  return result;
+}
 
 // trim from end
 std::string trimEnd(std::string const& input)
@@ -3043,6 +3023,7 @@ int main( int argc, char **argv )
       else if (value == "comment")
       {
         readComment(child, vkData.vulkanLicenseHeader);
+        vkData.vulkanLicenseHeader = trim(vkData.vulkanLicenseHeader);
       }
       else if (value == "enums")
       {
@@ -3072,8 +3053,7 @@ int main( int argc, char **argv )
     createDefaults(vkData, defaultValues);
 
     std::ofstream ofs(VULKAN_HPP);
-    ofs << nvidiaLicenseHeader << std::endl
-      << vkData.vulkanLicenseHeader << std::endl
+    ofs << vkData.vulkanLicenseHeader << std::endl
       << std::endl
       << std::endl
       << "#ifndef VULKAN_HPP" << std::endl

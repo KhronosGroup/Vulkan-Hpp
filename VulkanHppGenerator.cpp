@@ -222,6 +222,7 @@ std::string const optionalClassHeader = (
 );
 
 std::string const arrayProxyHeader = (
+  "#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE\n"
   "  template <typename T>\n"
   "  class ArrayProxy\n"
   "  {\n"
@@ -311,6 +312,7 @@ std::string const arrayProxyHeader = (
   "    uint32_t  m_count;\n"
   "    T *       m_ptr;\n"
   "  };\n"
+  "#endif\n"
   "\n"
 );
 
@@ -2337,14 +2339,14 @@ void writeStructConstructor( std::ofstream & ofs, std::string const& name, Struc
       }
       else
       {
-        ofs << "std::array<" + structData.members[i].type + "," + structData.members[i].arraySize + "> const& " + structData.members[i].name << "_ = { " << defaultIt->second;
+        ofs << "std::array<" + structData.members[i].type + "," + structData.members[i].arraySize + "> const& " + structData.members[i].name << "_ = { { " << defaultIt->second;
         size_t n = atoi(structData.members[i].arraySize.c_str());
         assert(0 < n);
         for (size_t j = 1; j < n; j++)
         {
           ofs << ", " << defaultIt->second;
         }
-        ofs << " }";
+        ofs << " } }";
       }
       listedArgument = true;
     }
@@ -2813,10 +2815,6 @@ void writeTypeStruct( std::ofstream & ofs, VkData const& vkData, DependencyData 
         << "    }" << std::endl
         << std::endl;
   }
-  else
-  {
-    int a = 0;
-  }
 
   // the member variables
   for (size_t i = 0; i < it->second.members.size(); i++)
@@ -2877,7 +2875,7 @@ void writeTypeUnion( std::ofstream & ofs, VkData const& vkData, DependencyData c
       }
       else
       {
-        ofs << " = { " << it->second << " }";
+        ofs << " = { {" << it->second << "} }";
       }
     }
     ofs << " )" << std::endl
@@ -3081,14 +3079,18 @@ int main( int argc, char **argv )
       << "#ifndef VULKAN_HPP" << std::endl
       << "#define VULKAN_HPP" << std::endl
       << std::endl
+      << "#include <algorithm>" << std::endl
       << "#include <array>" << std::endl
       << "#include <cassert>" << std::endl
       << "#include <cstdint>" << std::endl
       << "#include <cstring>" << std::endl
+      << "#include <initializer_list>" << std::endl
       << "#include <string>" << std::endl
       << "#include <system_error>" << std::endl
+      << "#include <type_traits>" << std::endl
       << "#include <vulkan/vulkan.h>" << std::endl
       << "#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE" << std::endl
+      << "# include <memory>" << std::endl
       << "# include <vector>" << std::endl
       << "#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/" << std::endl
       << std::endl;
@@ -3131,12 +3133,14 @@ int main( int argc, char **argv )
       << std::endl
       << "#endif" << std::endl;
   }
-  catch (std::exception e)
+  catch (std::exception const& e)
   {
     std::cout << "caught exception: " << e.what() << std::endl;
+    return -1;
   }
   catch (...)
   {
     std::cout << "caught unknown exception" << std::endl;
+    return -1;
   }
 }

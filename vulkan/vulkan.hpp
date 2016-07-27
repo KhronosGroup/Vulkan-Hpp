@@ -77,7 +77,7 @@ namespace vk
     }
 
     Flags(BitType bit)
-      : m_mask(static_cast<uint32_t>(bit))
+      : m_mask(static_cast<MaskType>(bit))
     {
     }
 

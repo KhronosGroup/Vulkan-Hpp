@@ -40,7 +40,7 @@
 # include <vector>
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-static_assert( VK_HEADER_VERSION ==  17 , "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION ==  21 , "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -5026,7 +5026,10 @@ namespace vk
     ePipelineRasterizationStateRasterizationOrderAMD = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_RASTERIZATION_ORDER_AMD,
     eDebugMarkerObjectNameInfoEXT = VK_STRUCTURE_TYPE_DEBUG_MARKER_OBJECT_NAME_INFO_EXT,
     eDebugMarkerObjectTagInfoEXT = VK_STRUCTURE_TYPE_DEBUG_MARKER_OBJECT_TAG_INFO_EXT,
-    eDebugMarkerMarkerInfoEXT = VK_STRUCTURE_TYPE_DEBUG_MARKER_MARKER_INFO_EXT
+    eDebugMarkerMarkerInfoEXT = VK_STRUCTURE_TYPE_DEBUG_MARKER_MARKER_INFO_EXT,
+    eDedicatedAllocationImageCreateInfoNV = VK_STRUCTURE_TYPE_DEDICATED_ALLOCATION_IMAGE_CREATE_INFO_NV,
+    eDedicatedAllocationBufferCreateInfoNV = VK_STRUCTURE_TYPE_DEDICATED_ALLOCATION_BUFFER_CREATE_INFO_NV,
+    eDedicatedAllocationMemoryAllocateInfoNV = VK_STRUCTURE_TYPE_DEDICATED_ALLOCATION_MEMORY_ALLOCATE_INFO_NV
   };
 
   struct ApplicationInfo
@@ -8205,6 +8208,207 @@ namespace vk
     float color[4];
   };
   static_assert( sizeof( DebugMarkerMarkerInfoEXT ) == sizeof( VkDebugMarkerMarkerInfoEXT ), "struct and wrapper have different size!" );
+
+  struct DedicatedAllocationImageCreateInfoNV
+  {
+    DedicatedAllocationImageCreateInfoNV( Bool32 dedicatedAllocation_ = 0 )
+      : sType( StructureType::eDedicatedAllocationImageCreateInfoNV )
+      , pNext( nullptr )
+      , dedicatedAllocation( dedicatedAllocation_ )
+    {
+    }
+
+    DedicatedAllocationImageCreateInfoNV( VkDedicatedAllocationImageCreateInfoNV const & rhs )
+    {
+      memcpy( this, &rhs, sizeof(DedicatedAllocationImageCreateInfoNV) );
+    }
+
+    DedicatedAllocationImageCreateInfoNV& operator=( VkDedicatedAllocationImageCreateInfoNV const & rhs )
+    {
+      memcpy( this, &rhs, sizeof(DedicatedAllocationImageCreateInfoNV) );
+      return *this;
+    }
+
+    DedicatedAllocationImageCreateInfoNV& setSType( StructureType sType_ )
+    {
+      sType = sType_;
+      return *this;
+    }
+
+    DedicatedAllocationImageCreateInfoNV& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    DedicatedAllocationImageCreateInfoNV& setDedicatedAllocation( Bool32 dedicatedAllocation_ )
+    {
+      dedicatedAllocation = dedicatedAllocation_;
+      return *this;
+    }
+
+    operator const VkDedicatedAllocationImageCreateInfoNV&() const
+    {
+      return *reinterpret_cast<const VkDedicatedAllocationImageCreateInfoNV*>(this);
+    }
+
+    bool operator==( DedicatedAllocationImageCreateInfoNV const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( dedicatedAllocation == rhs.dedicatedAllocation );
+    }
+
+    bool operator!=( DedicatedAllocationImageCreateInfoNV const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    const void* pNext;
+    Bool32 dedicatedAllocation;
+  };
+  static_assert( sizeof( DedicatedAllocationImageCreateInfoNV ) == sizeof( VkDedicatedAllocationImageCreateInfoNV ), "struct and wrapper have different size!" );
+
+  struct DedicatedAllocationBufferCreateInfoNV
+  {
+    DedicatedAllocationBufferCreateInfoNV( Bool32 dedicatedAllocation_ = 0 )
+      : sType( StructureType::eDedicatedAllocationBufferCreateInfoNV )
+      , pNext( nullptr )
+      , dedicatedAllocation( dedicatedAllocation_ )
+    {
+    }
+
+    DedicatedAllocationBufferCreateInfoNV( VkDedicatedAllocationBufferCreateInfoNV const & rhs )
+    {
+      memcpy( this, &rhs, sizeof(DedicatedAllocationBufferCreateInfoNV) );
+    }
+
+    DedicatedAllocationBufferCreateInfoNV& operator=( VkDedicatedAllocationBufferCreateInfoNV const & rhs )
+    {
+      memcpy( this, &rhs, sizeof(DedicatedAllocationBufferCreateInfoNV) );
+      return *this;
+    }
+
+    DedicatedAllocationBufferCreateInfoNV& setSType( StructureType sType_ )
+    {
+      sType = sType_;
+      return *this;
+    }
+
+    DedicatedAllocationBufferCreateInfoNV& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    DedicatedAllocationBufferCreateInfoNV& setDedicatedAllocation( Bool32 dedicatedAllocation_ )
+    {
+      dedicatedAllocation = dedicatedAllocation_;
+      return *this;
+    }
+
+    operator const VkDedicatedAllocationBufferCreateInfoNV&() const
+    {
+      return *reinterpret_cast<const VkDedicatedAllocationBufferCreateInfoNV*>(this);
+    }
+
+    bool operator==( DedicatedAllocationBufferCreateInfoNV const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( dedicatedAllocation == rhs.dedicatedAllocation );
+    }
+
+    bool operator!=( DedicatedAllocationBufferCreateInfoNV const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    const void* pNext;
+    Bool32 dedicatedAllocation;
+  };
+  static_assert( sizeof( DedicatedAllocationBufferCreateInfoNV ) == sizeof( VkDedicatedAllocationBufferCreateInfoNV ), "struct and wrapper have different size!" );
+
+  struct DedicatedAllocationMemoryAllocateInfoNV
+  {
+    DedicatedAllocationMemoryAllocateInfoNV( Image image_ = Image(), Buffer buffer_ = Buffer() )
+      : sType( StructureType::eDedicatedAllocationMemoryAllocateInfoNV )
+      , pNext( nullptr )
+      , image( image_ )
+      , buffer( buffer_ )
+    {
+    }
+
+    DedicatedAllocationMemoryAllocateInfoNV( VkDedicatedAllocationMemoryAllocateInfoNV const & rhs )
+    {
+      memcpy( this, &rhs, sizeof(DedicatedAllocationMemoryAllocateInfoNV) );
+    }
+
+    DedicatedAllocationMemoryAllocateInfoNV& operator=( VkDedicatedAllocationMemoryAllocateInfoNV const & rhs )
+    {
+      memcpy( this, &rhs, sizeof(DedicatedAllocationMemoryAllocateInfoNV) );
+      return *this;
+    }
+
+    DedicatedAllocationMemoryAllocateInfoNV& setSType( StructureType sType_ )
+    {
+      sType = sType_;
+      return *this;
+    }
+
+    DedicatedAllocationMemoryAllocateInfoNV& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    DedicatedAllocationMemoryAllocateInfoNV& setImage( Image image_ )
+    {
+      image = image_;
+      return *this;
+    }
+
+    DedicatedAllocationMemoryAllocateInfoNV& setBuffer( Buffer buffer_ )
+    {
+      buffer = buffer_;
+      return *this;
+    }
+
+    operator const VkDedicatedAllocationMemoryAllocateInfoNV&() const
+    {
+      return *reinterpret_cast<const VkDedicatedAllocationMemoryAllocateInfoNV*>(this);
+    }
+
+    bool operator==( DedicatedAllocationMemoryAllocateInfoNV const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( image == rhs.image )
+          && ( buffer == rhs.buffer );
+    }
+
+    bool operator!=( DedicatedAllocationMemoryAllocateInfoNV const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    const void* pNext;
+    Image image;
+    Buffer buffer;
+  };
+  static_assert( sizeof( DedicatedAllocationMemoryAllocateInfoNV ) == sizeof( VkDedicatedAllocationMemoryAllocateInfoNV ), "struct and wrapper have different size!" );
 
   enum class SubpassContents
   {
@@ -13199,7 +13403,7 @@ namespace vk
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-    void updateBuffer( Buffer dstBuffer, DeviceSize dstOffset, DeviceSize dataSize, const uint32_t* pData ) const
+    void updateBuffer( Buffer dstBuffer, DeviceSize dstOffset, DeviceSize dataSize, const void* pData ) const
     {
       vkCmdUpdateBuffer( m_commandBuffer, static_cast<VkBuffer>( dstBuffer ), dstOffset, dataSize, pData );
     }
@@ -13208,8 +13412,7 @@ namespace vk
     template <typename T>
     void updateBuffer( Buffer dstBuffer, DeviceSize dstOffset, ArrayProxy<const T> data ) const
     {
-      static_assert( sizeof( T ) % sizeof( uint32_t ) == 0, "wrong size of template type T" );
-      vkCmdUpdateBuffer( m_commandBuffer, static_cast<VkBuffer>( dstBuffer ), dstOffset, data.size() * sizeof( T ) , reinterpret_cast<const uint32_t*>( data.data() ) );
+      vkCmdUpdateBuffer( m_commandBuffer, static_cast<VkBuffer>( dstBuffer ), dstOffset, data.size() * sizeof( T ) , reinterpret_cast<const void*>( data.data() ) );
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -15675,12 +15878,16 @@ namespace vk
     {
       std::vector<uint8_t,Allocator> data;
       size_t dataSize;
-      Result result = static_cast<Result>( vkGetPipelineCacheData( m_device, static_cast<VkPipelineCache>( pipelineCache ), &dataSize, nullptr ) );
-      if ( ( result == Result::eSuccess ) && dataSize )
+      Result result;
+      do
       {
-        data.resize( dataSize );
-        result = static_cast<Result>( vkGetPipelineCacheData( m_device, static_cast<VkPipelineCache>( pipelineCache ), &dataSize, reinterpret_cast<void*>( data.data() ) ) );
-      }
+        result = static_cast<Result>( vkGetPipelineCacheData( m_device, static_cast<VkPipelineCache>( pipelineCache ), &dataSize, nullptr ) );
+        if ( ( result == Result::eSuccess ) && dataSize )
+        {
+          data.resize( dataSize );
+          result = static_cast<Result>( vkGetPipelineCacheData( m_device, static_cast<VkPipelineCache>( pipelineCache ), &dataSize, reinterpret_cast<void*>( data.data() ) ) );
+        }
+      } while ( result == Result::eIncomplete );
       return createResultValue( result, data, "vk::Device::getPipelineCacheData" );
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -18165,6 +18372,9 @@ namespace vk
     case StructureType::eDebugMarkerObjectNameInfoEXT: return "DebugMarkerObjectNameInfoEXT";
     case StructureType::eDebugMarkerObjectTagInfoEXT: return "DebugMarkerObjectTagInfoEXT";
     case StructureType::eDebugMarkerMarkerInfoEXT: return "DebugMarkerMarkerInfoEXT";
+    case StructureType::eDedicatedAllocationImageCreateInfoNV: return "DedicatedAllocationImageCreateInfoNV";
+    case StructureType::eDedicatedAllocationBufferCreateInfoNV: return "DedicatedAllocationBufferCreateInfoNV";
+    case StructureType::eDedicatedAllocationMemoryAllocateInfoNV: return "DedicatedAllocationMemoryAllocateInfoNV";
     default: return "invalid";
     }
   }

@@ -72,7 +72,7 @@ const std::string flagsHeader(
 "    }\n"
 "\n"
 "    Flags(BitType bit)\n"
-"      : m_mask(static_cast<uint32_t>(bit))\n"
+"      : m_mask(static_cast<MaskType>(bit))\n"
 "    {\n"
 "    }\n"
 "\n"

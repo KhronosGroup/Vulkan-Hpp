@@ -2073,7 +2073,9 @@ void writeFunctionBody(std::ofstream & ofs, std::string const& indentation, std:
       ofs << indentation << localIndentation << "}" << std::endl;
       if (1 < commandData.successCodes.size())
       {
-        ofs << indentation << "  } while ( result == Result::eIncomplete );" << std::endl;
+        ofs << indentation << "  } while ( result == Result::eIncomplete );" << std::endl
+            << indentation << "  assert( " << reduceName(commandData.arguments[returnit->second].name) << " <= " << reduceName(commandData.arguments[returnit->first].name) << ".size() ); " << std::endl
+            << indentation << "  " << reduceName(commandData.arguments[returnit->first].name) << ".resize( " << reduceName(commandData.arguments[returnit->second].name) << " ); " << std::endl;
       }
     }
   }

@@ -15888,6 +15888,8 @@ namespace vk
           result = static_cast<Result>( vkGetPipelineCacheData( m_device, static_cast<VkPipelineCache>( pipelineCache ), &dataSize, reinterpret_cast<void*>( data.data() ) ) );
         }
       } while ( result == Result::eIncomplete );
+      assert( dataSize <= data.size() ); 
+      data.resize( dataSize ); 
       return createResultValue( result, data, "vk::Device::getPipelineCacheData" );
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -16323,6 +16325,8 @@ namespace vk
           result = static_cast<Result>( vkGetSwapchainImagesKHR( m_device, static_cast<VkSwapchainKHR>( swapchain ), &swapchainImageCount, reinterpret_cast<VkImage*>( swapchainImages.data() ) ) );
         }
       } while ( result == Result::eIncomplete );
+      assert( swapchainImageCount <= swapchainImages.size() ); 
+      swapchainImages.resize( swapchainImageCount ); 
       return createResultValue( result, swapchainImages, "vk::Device::getSwapchainImagesKHR" );
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -16534,6 +16538,8 @@ namespace vk
           result = static_cast<Result>( vkEnumerateDeviceLayerProperties( m_physicalDevice, &propertyCount, reinterpret_cast<VkLayerProperties*>( properties.data() ) ) );
         }
       } while ( result == Result::eIncomplete );
+      assert( propertyCount <= properties.size() ); 
+      properties.resize( propertyCount ); 
       return createResultValue( result, properties, "vk::PhysicalDevice::enumerateDeviceLayerProperties" );
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -16559,6 +16565,8 @@ namespace vk
           result = static_cast<Result>( vkEnumerateDeviceExtensionProperties( m_physicalDevice, layerName ? layerName->c_str() : nullptr, &propertyCount, reinterpret_cast<VkExtensionProperties*>( properties.data() ) ) );
         }
       } while ( result == Result::eIncomplete );
+      assert( propertyCount <= properties.size() ); 
+      properties.resize( propertyCount ); 
       return createResultValue( result, properties, "vk::PhysicalDevice::enumerateDeviceExtensionProperties" );
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -16602,6 +16610,8 @@ namespace vk
           result = static_cast<Result>( vkGetPhysicalDeviceDisplayPropertiesKHR( m_physicalDevice, &propertyCount, reinterpret_cast<VkDisplayPropertiesKHR*>( properties.data() ) ) );
         }
       } while ( result == Result::eIncomplete );
+      assert( propertyCount <= properties.size() ); 
+      properties.resize( propertyCount ); 
       return createResultValue( result, properties, "vk::PhysicalDevice::getDisplayPropertiesKHR" );
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -16627,6 +16637,8 @@ namespace vk
           result = static_cast<Result>( vkGetPhysicalDeviceDisplayPlanePropertiesKHR( m_physicalDevice, &propertyCount, reinterpret_cast<VkDisplayPlanePropertiesKHR*>( properties.data() ) ) );
         }
       } while ( result == Result::eIncomplete );
+      assert( propertyCount <= properties.size() ); 
+      properties.resize( propertyCount ); 
       return createResultValue( result, properties, "vk::PhysicalDevice::getDisplayPlanePropertiesKHR" );
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -16652,6 +16664,8 @@ namespace vk
           result = static_cast<Result>( vkGetDisplayPlaneSupportedDisplaysKHR( m_physicalDevice, planeIndex, &displayCount, reinterpret_cast<VkDisplayKHR*>( displays.data() ) ) );
         }
       } while ( result == Result::eIncomplete );
+      assert( displayCount <= displays.size() ); 
+      displays.resize( displayCount ); 
       return createResultValue( result, displays, "vk::PhysicalDevice::getDisplayPlaneSupportedDisplaysKHR" );
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -16677,6 +16691,8 @@ namespace vk
           result = static_cast<Result>( vkGetDisplayModePropertiesKHR( m_physicalDevice, static_cast<VkDisplayKHR>( display ), &propertyCount, reinterpret_cast<VkDisplayModePropertiesKHR*>( properties.data() ) ) );
         }
       } while ( result == Result::eIncomplete );
+      assert( propertyCount <= properties.size() ); 
+      properties.resize( propertyCount ); 
       return createResultValue( result, properties, "vk::PhysicalDevice::getDisplayModePropertiesKHR" );
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -16774,6 +16790,8 @@ namespace vk
           result = static_cast<Result>( vkGetPhysicalDeviceSurfaceFormatsKHR( m_physicalDevice, static_cast<VkSurfaceKHR>( surface ), &surfaceFormatCount, reinterpret_cast<VkSurfaceFormatKHR*>( surfaceFormats.data() ) ) );
         }
       } while ( result == Result::eIncomplete );
+      assert( surfaceFormatCount <= surfaceFormats.size() ); 
+      surfaceFormats.resize( surfaceFormatCount ); 
       return createResultValue( result, surfaceFormats, "vk::PhysicalDevice::getSurfaceFormatsKHR" );
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -16799,6 +16817,8 @@ namespace vk
           result = static_cast<Result>( vkGetPhysicalDeviceSurfacePresentModesKHR( m_physicalDevice, static_cast<VkSurfaceKHR>( surface ), &presentModeCount, reinterpret_cast<VkPresentModeKHR*>( presentModes.data() ) ) );
         }
       } while ( result == Result::eIncomplete );
+      assert( presentModeCount <= presentModes.size() ); 
+      presentModes.resize( presentModeCount ); 
       return createResultValue( result, presentModes, "vk::PhysicalDevice::getSurfacePresentModesKHR" );
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -16944,6 +16964,8 @@ namespace vk
           result = static_cast<Result>( vkEnumeratePhysicalDevices( m_instance, &physicalDeviceCount, reinterpret_cast<VkPhysicalDevice*>( physicalDevices.data() ) ) );
         }
       } while ( result == Result::eIncomplete );
+      assert( physicalDeviceCount <= physicalDevices.size() ); 
+      physicalDevices.resize( physicalDeviceCount ); 
       return createResultValue( result, physicalDevices, "vk::Instance::enumeratePhysicalDevices" );
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -17266,6 +17288,8 @@ namespace vk
         result = static_cast<Result>( vkEnumerateInstanceLayerProperties( &propertyCount, reinterpret_cast<VkLayerProperties*>( properties.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
+    assert( propertyCount <= properties.size() ); 
+    properties.resize( propertyCount ); 
     return createResultValue( result, properties, "vk::enumerateInstanceLayerProperties" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -17291,6 +17315,8 @@ namespace vk
         result = static_cast<Result>( vkEnumerateInstanceExtensionProperties( layerName ? layerName->c_str() : nullptr, &propertyCount, reinterpret_cast<VkExtensionProperties*>( properties.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
+    assert( propertyCount <= properties.size() ); 
+    properties.resize( propertyCount ); 
     return createResultValue( result, properties, "vk::enumerateInstanceExtensionProperties" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/

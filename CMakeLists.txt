@@ -30,7 +30,7 @@ project(VulkanHppGenerator)
 
 # If you wish to target a specific version of the spec, override this value like so 
 # cmake -DVK_SPEC_URL:STRING=https://example.com/some/other/url/vk.xml
-set(VK_SPEC_URL "https://raw.githubusercontent.com/KhronosGroup/Vulkan-Docs/1.0/src/spec/vk.xml" CACHE STRING "URL from which to fetch the Vulkan Spec XML")
+set(VK_SPEC_URL "https://raw.githubusercontent.com/KhronosGroup/Vulkan-Docs/f4c4113d070c0c9b55b4482055be054dd6466c96/src/spec/vk.xml" CACHE STRING "URL from which to fetch the Vulkan Spec XML")
 
 # Download the request URL specification
 file(DOWNLOAD ${VK_SPEC_URL} ${CMAKE_CURRENT_BINARY_DIR}/vk.xml )

@@ -2595,7 +2595,7 @@ namespace vk
 
     bool operator==( DescriptorBufferInfo const& rhs ) const
     {
-      return ( buffer == rhs.buffer )
+      return ( static_cast<VkBuffer>( buffer ) == static_cast<VkBuffer>( rhs.buffer ) )
           && ( offset == rhs.offset )
           && ( range == rhs.range );
     }
@@ -3773,7 +3773,7 @@ namespace vk
 
     bool operator==( DisplayPlanePropertiesKHR const& rhs ) const
     {
-      return ( currentDisplay == rhs.currentDisplay )
+      return ( static_cast<VkDisplayKHR>( currentDisplay ) == static_cast<VkDisplayKHR>( rhs.currentDisplay ) )
           && ( currentStackIndex == rhs.currentStackIndex );
     }
 
@@ -3877,7 +3877,7 @@ namespace vk
 
     bool operator==( DisplayModePropertiesKHR const& rhs ) const
     {
-      return ( displayMode == rhs.displayMode )
+      return ( static_cast<VkDisplayModeKHR>( displayMode ) == static_cast<VkDisplayModeKHR>( rhs.displayMode ) )
           && ( parameters == rhs.parameters );
     }
 
@@ -3950,8 +3950,8 @@ namespace vk
 
     bool operator==( DescriptorImageInfo const& rhs ) const
     {
-      return ( sampler == rhs.sampler )
-          && ( imageView == rhs.imageView )
+      return ( static_cast<VkSampler>( sampler ) == static_cast<VkSampler>( rhs.sampler ) )
+          && ( static_cast<VkImageView>( imageView ) == static_cast<VkImageView>( rhs.imageView ) )
           && ( imageLayout == rhs.imageLayout );
     }
 
@@ -5593,7 +5593,7 @@ namespace vk
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
-          && ( memory == rhs.memory )
+          && ( static_cast<VkDeviceMemory>( memory ) == static_cast<VkDeviceMemory>( rhs.memory ) )
           && ( offset == rhs.offset )
           && ( size == rhs.size );
     }
@@ -5710,7 +5710,7 @@ namespace vk
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
-          && ( dstSet == rhs.dstSet )
+          && ( static_cast<VkDescriptorSet>( dstSet ) == static_cast<VkDescriptorSet>( rhs.dstSet ) )
           && ( dstBinding == rhs.dstBinding )
           && ( dstArrayElement == rhs.dstArrayElement )
           && ( descriptorCount == rhs.descriptorCount )
@@ -5830,10 +5830,10 @@ namespace vk
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
-          && ( srcSet == rhs.srcSet )
+          && ( static_cast<VkDescriptorSet>( srcSet ) == static_cast<VkDescriptorSet>( rhs.srcSet ) )
           && ( srcBinding == rhs.srcBinding )
           && ( srcArrayElement == rhs.srcArrayElement )
-          && ( dstSet == rhs.dstSet )
+          && ( static_cast<VkDescriptorSet>( dstSet ) == static_cast<VkDescriptorSet>( rhs.dstSet ) )
           && ( dstBinding == rhs.dstBinding )
           && ( dstArrayElement == rhs.dstArrayElement )
           && ( descriptorCount == rhs.descriptorCount );
@@ -5935,7 +5935,7 @@ namespace vk
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( flags == rhs.flags )
-          && ( buffer == rhs.buffer )
+          && ( static_cast<VkBuffer>( buffer ) == static_cast<VkBuffer>( rhs.buffer ) )
           && ( format == rhs.format )
           && ( offset == rhs.offset )
           && ( range == rhs.range );
@@ -6102,7 +6102,7 @@ namespace vk
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
-          && ( descriptorPool == rhs.descriptorPool )
+          && ( static_cast<VkDescriptorPool>( descriptorPool ) == static_cast<VkDescriptorPool>( rhs.descriptorPool ) )
           && ( descriptorSetCount == rhs.descriptorSetCount )
           && ( pSetLayouts == rhs.pSetLayouts );
     }
@@ -7119,7 +7119,7 @@ namespace vk
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
-          && ( commandPool == rhs.commandPool )
+          && ( static_cast<VkCommandPool>( commandPool ) == static_cast<VkCommandPool>( rhs.commandPool ) )
           && ( level == rhs.level )
           && ( commandBufferCount == rhs.commandBufferCount );
     }
@@ -7215,8 +7215,8 @@ namespace vk
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
-          && ( renderPass == rhs.renderPass )
-          && ( framebuffer == rhs.framebuffer )
+          && ( static_cast<VkRenderPass>( renderPass ) == static_cast<VkRenderPass>( rhs.renderPass ) )
+          && ( static_cast<VkFramebuffer>( framebuffer ) == static_cast<VkFramebuffer>( rhs.framebuffer ) )
           && ( renderArea == rhs.renderArea )
           && ( clearValueCount == rhs.clearValueCount )
           && ( pClearValues == rhs.pClearValues );
@@ -7458,7 +7458,7 @@ namespace vk
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( flags == rhs.flags )
-          && ( renderPass == rhs.renderPass )
+          && ( static_cast<VkRenderPass>( renderPass ) == static_cast<VkRenderPass>( rhs.renderPass ) )
           && ( attachmentCount == rhs.attachmentCount )
           && ( pAttachments == rhs.pAttachments )
           && ( width == rhs.width )
@@ -8391,8 +8391,8 @@ namespace vk
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
-          && ( image == rhs.image )
-          && ( buffer == rhs.buffer );
+          && ( static_cast<VkImage>( image ) == static_cast<VkImage>( rhs.image ) )
+          && ( static_cast<VkBuffer>( buffer ) == static_cast<VkBuffer>( rhs.buffer ) );
     }
 
     bool operator!=( DedicatedAllocationMemoryAllocateInfoNV const& rhs ) const
@@ -8957,7 +8957,7 @@ namespace vk
           && ( dstAccessMask == rhs.dstAccessMask )
           && ( srcQueueFamilyIndex == rhs.srcQueueFamilyIndex )
           && ( dstQueueFamilyIndex == rhs.dstQueueFamilyIndex )
-          && ( buffer == rhs.buffer )
+          && ( static_cast<VkBuffer>( buffer ) == static_cast<VkBuffer>( rhs.buffer ) )
           && ( offset == rhs.offset )
           && ( size == rhs.size );
     }
@@ -9382,7 +9382,7 @@ namespace vk
           && ( pNext == rhs.pNext )
           && ( flags == rhs.flags )
           && ( stage == rhs.stage )
-          && ( module == rhs.module )
+          && ( static_cast<VkShaderModule>( module ) == static_cast<VkShaderModule>( rhs.module ) )
           && ( pName == rhs.pName )
           && ( pSpecializationInfo == rhs.pSpecializationInfo );
     }
@@ -9692,8 +9692,8 @@ namespace vk
           && ( pNext == rhs.pNext )
           && ( flags == rhs.flags )
           && ( stage == rhs.stage )
-          && ( layout == rhs.layout )
-          && ( basePipelineHandle == rhs.basePipelineHandle )
+          && ( static_cast<VkPipelineLayout>( layout ) == static_cast<VkPipelineLayout>( rhs.layout ) )
+          && ( static_cast<VkPipeline>( basePipelineHandle ) == static_cast<VkPipeline>( rhs.basePipelineHandle ) )
           && ( basePipelineIndex == rhs.basePipelineIndex );
     }
 
@@ -10216,9 +10216,9 @@ namespace vk
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
-          && ( renderPass == rhs.renderPass )
+          && ( static_cast<VkRenderPass>( renderPass ) == static_cast<VkRenderPass>( rhs.renderPass ) )
           && ( subpass == rhs.subpass )
-          && ( framebuffer == rhs.framebuffer )
+          && ( static_cast<VkFramebuffer>( framebuffer ) == static_cast<VkFramebuffer>( rhs.framebuffer ) )
           && ( occlusionQueryEnable == rhs.occlusionQueryEnable )
           && ( queryFlags == rhs.queryFlags )
           && ( pipelineStatistics == rhs.pipelineStatistics );
@@ -10734,7 +10734,7 @@ namespace vk
           && ( newLayout == rhs.newLayout )
           && ( srcQueueFamilyIndex == rhs.srcQueueFamilyIndex )
           && ( dstQueueFamilyIndex == rhs.dstQueueFamilyIndex )
-          && ( image == rhs.image )
+          && ( static_cast<VkImage>( image ) == static_cast<VkImage>( rhs.image ) )
           && ( subresourceRange == rhs.subresourceRange );
     }
 
@@ -10842,7 +10842,7 @@ namespace vk
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( flags == rhs.flags )
-          && ( image == rhs.image )
+          && ( static_cast<VkImage>( image ) == static_cast<VkImage>( rhs.image ) )
           && ( viewType == rhs.viewType )
           && ( format == rhs.format )
           && ( components == rhs.components )
@@ -11374,7 +11374,7 @@ namespace vk
     {
       return ( resourceOffset == rhs.resourceOffset )
           && ( size == rhs.size )
-          && ( memory == rhs.memory )
+          && ( static_cast<VkDeviceMemory>( memory ) == static_cast<VkDeviceMemory>( rhs.memory ) )
           && ( memoryOffset == rhs.memoryOffset )
           && ( flags == rhs.flags );
     }
@@ -11461,7 +11461,7 @@ namespace vk
       return ( subresource == rhs.subresource )
           && ( offset == rhs.offset )
           && ( extent == rhs.extent )
-          && ( memory == rhs.memory )
+          && ( static_cast<VkDeviceMemory>( memory ) == static_cast<VkDeviceMemory>( rhs.memory ) )
           && ( memoryOffset == rhs.memoryOffset )
           && ( flags == rhs.flags );
     }
@@ -11525,7 +11525,7 @@ namespace vk
 
     bool operator==( SparseBufferMemoryBindInfo const& rhs ) const
     {
-      return ( buffer == rhs.buffer )
+      return ( static_cast<VkBuffer>( buffer ) == static_cast<VkBuffer>( rhs.buffer ) )
           && ( bindCount == rhs.bindCount )
           && ( pBinds == rhs.pBinds );
     }
@@ -11586,7 +11586,7 @@ namespace vk
 
     bool operator==( SparseImageOpaqueMemoryBindInfo const& rhs ) const
     {
-      return ( image == rhs.image )
+      return ( static_cast<VkImage>( image ) == static_cast<VkImage>( rhs.image ) )
           && ( bindCount == rhs.bindCount )
           && ( pBinds == rhs.pBinds );
     }
@@ -11647,7 +11647,7 @@ namespace vk
 
     bool operator==( SparseImageMemoryBindInfo const& rhs ) const
     {
-      return ( image == rhs.image )
+      return ( static_cast<VkImage>( image ) == static_cast<VkImage>( rhs.image ) )
           && ( bindCount == rhs.bindCount )
           && ( pBinds == rhs.pBinds );
     }
@@ -12454,10 +12454,10 @@ namespace vk
           && ( pDepthStencilState == rhs.pDepthStencilState )
           && ( pColorBlendState == rhs.pColorBlendState )
           && ( pDynamicState == rhs.pDynamicState )
-          && ( layout == rhs.layout )
-          && ( renderPass == rhs.renderPass )
+          && ( static_cast<VkPipelineLayout>( layout ) == static_cast<VkPipelineLayout>( rhs.layout ) )
+          && ( static_cast<VkRenderPass>( renderPass ) == static_cast<VkRenderPass>( rhs.renderPass ) )
           && ( subpass == rhs.subpass )
-          && ( basePipelineHandle == rhs.basePipelineHandle )
+          && ( static_cast<VkPipeline>( basePipelineHandle ) == static_cast<VkPipeline>( rhs.basePipelineHandle ) )
           && ( basePipelineIndex == rhs.basePipelineIndex );
     }
 
@@ -14462,7 +14462,7 @@ namespace vk
 
     bool operator==( DisplayPropertiesKHR const& rhs ) const
     {
-      return ( display == rhs.display )
+      return ( static_cast<VkDisplayKHR>( display ) == static_cast<VkDisplayKHR>( rhs.display ) )
           && ( displayName == rhs.displayName )
           && ( physicalDimensions == rhs.physicalDimensions )
           && ( physicalResolution == rhs.physicalResolution )
@@ -14583,7 +14583,7 @@ namespace vk
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( flags == rhs.flags )
-          && ( displayMode == rhs.displayMode )
+          && ( static_cast<VkDisplayModeKHR>( displayMode ) == static_cast<VkDisplayModeKHR>( rhs.displayMode ) )
           && ( planeIndex == rhs.planeIndex )
           && ( planeStackIndex == rhs.planeStackIndex )
           && ( transform == rhs.transform )
@@ -14890,7 +14890,7 @@ namespace vk
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( flags == rhs.flags )
-          && ( surface == rhs.surface )
+          && ( static_cast<VkSurfaceKHR>( surface ) == static_cast<VkSurfaceKHR>( rhs.surface ) )
           && ( minImageCount == rhs.minImageCount )
           && ( imageFormat == rhs.imageFormat )
           && ( imageColorSpace == rhs.imageColorSpace )
@@ -14904,7 +14904,7 @@ namespace vk
           && ( compositeAlpha == rhs.compositeAlpha )
           && ( presentMode == rhs.presentMode )
           && ( clipped == rhs.clipped )
-          && ( oldSwapchain == rhs.oldSwapchain );
+          && ( static_cast<VkSwapchainKHR>( oldSwapchain ) == static_cast<VkSwapchainKHR>( rhs.oldSwapchain ) );
     }
 
     bool operator!=( SwapchainCreateInfoKHR const& rhs ) const

@@ -2783,6 +2783,10 @@ void writeTypeStruct( std::ofstream & ofs, VkData const& vkData, DependencyData 
       {
         ofs << "( memcmp( " << it->second.members[i].name << ", rhs." << it->second.members[i].name << ", " << it->second.members[i].arraySize << " * sizeof( " << it->second.members[i].type << " ) ) == 0 )";
       }
+      else if (vkData.handles.find(it->second.members[i].type) != vkData.handles.end())
+      {
+        ofs << "( static_cast<Vk" << it->second.members[i].type << ">( " << it->second.members[i].name << " ) == static_cast<Vk" << it->second.members[i].type << ">( rhs." << it->second.members[i].name << " ) )";
+      }
       else
       {
         ofs << "( " << it->second.members[i].name << " == rhs." << it->second.members[i].name << " )";

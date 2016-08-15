@@ -929,6 +929,16 @@ namespace vk
     }
 #endif
 
+    bool operator==(DeviceMemory const &rhs) const
+    {
+        return m_deviceMemory == rhs.m_deviceMemory;
+    }
+
+    bool operator!=(DeviceMemory const &rhs) const
+    {
+        return m_deviceMemory != rhs.m_deviceMemory;
+    }
+
 #if !defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     explicit
 #endif
@@ -970,6 +980,16 @@ namespace vk
       return *this;
     }
 #endif
+
+    bool operator==(CommandPool const &rhs) const
+    {
+        return m_commandPool == rhs.m_commandPool;
+    }
+
+    bool operator!=(CommandPool const &rhs) const
+    {
+        return m_commandPool != rhs.m_commandPool;
+    }
 
 #if !defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     explicit
@@ -1013,6 +1033,16 @@ namespace vk
     }
 #endif
 
+    bool operator==(Buffer const &rhs) const
+    {
+        return m_buffer == rhs.m_buffer;
+    }
+
+    bool operator!=(Buffer const &rhs) const
+    {
+        return m_buffer != rhs.m_buffer;
+    }
+
 #if !defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     explicit
 #endif
@@ -1054,6 +1084,16 @@ namespace vk
       return *this;
     }
 #endif
+
+    bool operator==(BufferView const &rhs) const
+    {
+        return m_bufferView == rhs.m_bufferView;
+    }
+
+    bool operator!=(BufferView const &rhs) const
+    {
+        return m_bufferView != rhs.m_bufferView;
+    }
 
 #if !defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     explicit
@@ -1097,6 +1137,16 @@ namespace vk
     }
 #endif
 
+    bool operator==(Image const &rhs) const
+    {
+        return m_image == rhs.m_image;
+    }
+
+    bool operator!=(Image const &rhs) const
+    {
+        return m_image != rhs.m_image;
+    }
+
 #if !defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     explicit
 #endif
@@ -1138,6 +1188,16 @@ namespace vk
       return *this;
     }
 #endif
+
+    bool operator==(ImageView const &rhs) const
+    {
+        return m_imageView == rhs.m_imageView;
+    }
+
+    bool operator!=(ImageView const &rhs) const
+    {
+        return m_imageView != rhs.m_imageView;
+    }
 
 #if !defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     explicit
@@ -1181,6 +1241,16 @@ namespace vk
     }
 #endif
 
+    bool operator==(ShaderModule const &rhs) const
+    {
+        return m_shaderModule == rhs.m_shaderModule;
+    }
+
+    bool operator!=(ShaderModule const &rhs) const
+    {
+        return m_shaderModule != rhs.m_shaderModule;
+    }
+
 #if !defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     explicit
 #endif
@@ -1222,6 +1292,16 @@ namespace vk
       return *this;
     }
 #endif
+
+    bool operator==(Pipeline const &rhs) const
+    {
+        return m_pipeline == rhs.m_pipeline;
+    }
+
+    bool operator!=(Pipeline const &rhs) const
+    {
+        return m_pipeline != rhs.m_pipeline;
+    }
 
 #if !defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     explicit
@@ -1265,6 +1345,16 @@ namespace vk
     }
 #endif
 
+    bool operator==(PipelineLayout const &rhs) const
+    {
+        return m_pipelineLayout == rhs.m_pipelineLayout;
+    }
+
+    bool operator!=(PipelineLayout const &rhs) const
+    {
+        return m_pipelineLayout != rhs.m_pipelineLayout;
+    }
+
 #if !defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     explicit
 #endif
@@ -1306,6 +1396,16 @@ namespace vk
       return *this;
     }
 #endif
+
+    bool operator==(Sampler const &rhs) const
+    {
+        return m_sampler == rhs.m_sampler;
+    }
+
+    bool operator!=(Sampler const &rhs) const
+    {
+        return m_sampler != rhs.m_sampler;
+    }
 
 #if !defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     explicit
@@ -1349,6 +1449,16 @@ namespace vk
     }
 #endif
 
+    bool operator==(DescriptorSet const &rhs) const
+    {
+        return m_descriptorSet == rhs.m_descriptorSet;
+    }
+
+    bool operator!=(DescriptorSet const &rhs) const
+    {
+        return m_descriptorSet != rhs.m_descriptorSet;
+    }
+
 #if !defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     explicit
 #endif
@@ -1390,6 +1500,16 @@ namespace vk
       return *this;
     }
 #endif
+
+    bool operator==(DescriptorSetLayout const &rhs) const
+    {
+        return m_descriptorSetLayout == rhs.m_descriptorSetLayout;
+    }
+
+    bool operator!=(DescriptorSetLayout const &rhs) const
+    {
+        return m_descriptorSetLayout != rhs.m_descriptorSetLayout;
+    }
 
 #if !defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     explicit
@@ -1433,6 +1553,16 @@ namespace vk
     }
 #endif
 
+    bool operator==(DescriptorPool const &rhs) const
+    {
+        return m_descriptorPool == rhs.m_descriptorPool;
+    }
+
+    bool operator!=(DescriptorPool const &rhs) const
+    {
+        return m_descriptorPool != rhs.m_descriptorPool;
+    }
+
 #if !defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     explicit
 #endif
@@ -1474,6 +1604,16 @@ namespace vk
       return *this;
     }
 #endif
+
+    bool operator==(Fence const &rhs) const
+    {
+        return m_fence == rhs.m_fence;
+    }
+
+    bool operator!=(Fence const &rhs) const
+    {
+        return m_fence != rhs.m_fence;
+    }
 
 #if !defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     explicit
@@ -1517,6 +1657,16 @@ namespace vk
     }
 #endif
 
+    bool operator==(Semaphore const &rhs) const
+    {
+        return m_semaphore == rhs.m_semaphore;
+    }
+
+    bool operator!=(Semaphore const &rhs) const
+    {
+        return m_semaphore != rhs.m_semaphore;
+    }
+
 #if !defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     explicit
 #endif
@@ -1558,6 +1708,16 @@ namespace vk
       return *this;
     }
 #endif
+
+    bool operator==(Event const &rhs) const
+    {
+        return m_event == rhs.m_event;
+    }
+
+    bool operator!=(Event const &rhs) const
+    {
+        return m_event != rhs.m_event;
+    }
 
 #if !defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     explicit
@@ -1601,6 +1761,16 @@ namespace vk
     }
 #endif
 
+    bool operator==(QueryPool const &rhs) const
+    {
+        return m_queryPool == rhs.m_queryPool;
+    }
+
+    bool operator!=(QueryPool const &rhs) const
+    {
+        return m_queryPool != rhs.m_queryPool;
+    }
+
 #if !defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     explicit
 #endif
@@ -1642,6 +1812,16 @@ namespace vk
       return *this;
     }
 #endif
+
+    bool operator==(Framebuffer const &rhs) const
+    {
+        return m_framebuffer == rhs.m_framebuffer;
+    }
+
+    bool operator!=(Framebuffer const &rhs) const
+    {
+        return m_framebuffer != rhs.m_framebuffer;
+    }
 
 #if !defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     explicit
@@ -1685,6 +1865,16 @@ namespace vk
     }
 #endif
 
+    bool operator==(RenderPass const &rhs) const
+    {
+        return m_renderPass == rhs.m_renderPass;
+    }
+
+    bool operator!=(RenderPass const &rhs) const
+    {
+        return m_renderPass != rhs.m_renderPass;
+    }
+
 #if !defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     explicit
 #endif
@@ -1726,6 +1916,16 @@ namespace vk
       return *this;
     }
 #endif
+
+    bool operator==(PipelineCache const &rhs) const
+    {
+        return m_pipelineCache == rhs.m_pipelineCache;
+    }
+
+    bool operator!=(PipelineCache const &rhs) const
+    {
+        return m_pipelineCache != rhs.m_pipelineCache;
+    }
 
 #if !defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     explicit
@@ -1769,6 +1969,16 @@ namespace vk
     }
 #endif
 
+    bool operator==(DisplayKHR const &rhs) const
+    {
+        return m_displayKHR == rhs.m_displayKHR;
+    }
+
+    bool operator!=(DisplayKHR const &rhs) const
+    {
+        return m_displayKHR != rhs.m_displayKHR;
+    }
+
 #if !defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     explicit
 #endif
@@ -1810,6 +2020,16 @@ namespace vk
       return *this;
     }
 #endif
+
+    bool operator==(DisplayModeKHR const &rhs) const
+    {
+        return m_displayModeKHR == rhs.m_displayModeKHR;
+    }
+
+    bool operator!=(DisplayModeKHR const &rhs) const
+    {
+        return m_displayModeKHR != rhs.m_displayModeKHR;
+    }
 
 #if !defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     explicit
@@ -1853,6 +2073,16 @@ namespace vk
     }
 #endif
 
+    bool operator==(SurfaceKHR const &rhs) const
+    {
+        return m_surfaceKHR == rhs.m_surfaceKHR;
+    }
+
+    bool operator!=(SurfaceKHR const &rhs) const
+    {
+        return m_surfaceKHR != rhs.m_surfaceKHR;
+    }
+
 #if !defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     explicit
 #endif
@@ -1895,6 +2125,16 @@ namespace vk
     }
 #endif
 
+    bool operator==(SwapchainKHR const &rhs) const
+    {
+        return m_swapchainKHR == rhs.m_swapchainKHR;
+    }
+
+    bool operator!=(SwapchainKHR const &rhs) const
+    {
+        return m_swapchainKHR != rhs.m_swapchainKHR;
+    }
+
 #if !defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     explicit
 #endif
@@ -1936,6 +2176,16 @@ namespace vk
       return *this;
     }
 #endif
+
+    bool operator==(DebugReportCallbackEXT const &rhs) const
+    {
+        return m_debugReportCallbackEXT == rhs.m_debugReportCallbackEXT;
+    }
+
+    bool operator!=(DebugReportCallbackEXT const &rhs) const
+    {
+        return m_debugReportCallbackEXT != rhs.m_debugReportCallbackEXT;
+    }
 
 #if !defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     explicit
@@ -13034,6 +13284,16 @@ namespace vk
     }
 #endif
 
+    bool operator==(CommandBuffer const &rhs) const
+    {
+        return m_commandBuffer == rhs.m_commandBuffer;
+    }
+
+    bool operator!=(CommandBuffer const &rhs) const
+    {
+        return m_commandBuffer != rhs.m_commandBuffer;
+    }
+
     Result begin( const CommandBufferBeginInfo* pBeginInfo ) const
     {
       return static_cast<Result>( vkBeginCommandBuffer( m_commandBuffer, reinterpret_cast<const VkCommandBufferBeginInfo*>( pBeginInfo ) ) );
@@ -14081,6 +14341,16 @@ namespace vk
       return *this;
     }
 #endif
+
+    bool operator==(Queue const &rhs) const
+    {
+        return m_queue == rhs.m_queue;
+    }
+
+    bool operator!=(Queue const &rhs) const
+    {
+        return m_queue != rhs.m_queue;
+    }
 
     Result submit( uint32_t submitCount, const SubmitInfo* pSubmits, Fence fence ) const
     {
@@ -15268,6 +15538,16 @@ namespace vk
     }
 #endif
 
+    bool operator==(Device const &rhs) const
+    {
+        return m_device == rhs.m_device;
+    }
+
+    bool operator!=(Device const &rhs) const
+    {
+        return m_device != rhs.m_device;
+    }
+
     PFN_vkVoidFunction getProcAddr( const char* pName ) const
     {
       return vkGetDeviceProcAddr( m_device, pName );
@@ -16415,6 +16695,16 @@ namespace vk
     }
 #endif
 
+    bool operator==(PhysicalDevice const &rhs) const
+    {
+        return m_physicalDevice == rhs.m_physicalDevice;
+    }
+
+    bool operator!=(PhysicalDevice const &rhs) const
+    {
+        return m_physicalDevice != rhs.m_physicalDevice;
+    }
+
     void getProperties( PhysicalDeviceProperties* pProperties ) const
     {
       vkGetPhysicalDeviceProperties( m_physicalDevice, reinterpret_cast<VkPhysicalDeviceProperties*>( pProperties ) );
@@ -16930,6 +17220,16 @@ namespace vk
       return *this;
     }
 #endif
+
+    bool operator==(Instance const &rhs) const
+    {
+        return m_instance == rhs.m_instance;
+    }
+
+    bool operator!=(Instance const &rhs) const
+    {
+        return m_instance != rhs.m_instance;
+    }
 
     void destroy( const AllocationCallbacks* pAllocator ) const
     {

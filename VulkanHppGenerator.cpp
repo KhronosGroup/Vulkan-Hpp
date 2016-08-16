@@ -2653,13 +2653,19 @@ void writeTypeHandle(std::ofstream & ofs, VkData const& vkData, DependencyData c
       // operator==
       << "    bool operator==" << "(" << dependencyData.name << " const &rhs) const" << std::endl
       << "    {" << std::endl
-      << "        return m_" << memberName << " == rhs.m_" << memberName << ";" << std::endl
+      << "      return m_" << memberName << " == rhs.m_" << memberName << ";" << std::endl
       << "    }" << std::endl
       << std::endl
       // operator!=
       << "    bool operator!=" << "(" << dependencyData.name << " const &rhs) const" << std::endl
       << "    {" << std::endl
-      << "        return m_" << memberName << " != rhs.m_" << memberName << ";" << std::endl
+      << "      return m_" << memberName << " != rhs.m_" << memberName << ";" << std::endl
+      << "    }" << std::endl
+      << std::endl
+      // operator<
+      << "    bool operator<" << "(" << dependencyData.name << " const &rhs) const" << std::endl
+      << "    {" << std::endl
+      << "      return m_" << memberName << " < rhs.m_" << memberName << ";" << std::endl
       << "    }" << std::endl
       << std::endl;
 

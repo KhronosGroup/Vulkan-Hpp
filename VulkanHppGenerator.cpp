@@ -1075,7 +1075,11 @@ void readComment(tinyxml2::XMLElement * element, std::string & header)
 
 void readEnums( tinyxml2::XMLElement * element, VkData & vkData )
 {
-  assert( element->Attribute( "name" ) );
+  if (!element->Attribute("name"))
+  {
+    throw std::runtime_error(std::string("spec error: enums element is missing the name attribute"));
+  }
+
   std::string name = getEnumName(element->Attribute("name"));
   if ( name != "API Constants" )
   {
@@ -1090,9 +1094,18 @@ void readEnums( tinyxml2::XMLElement * element, VkData & vkData )
     }
     else
     {
-      assert(element->Attribute("type"));
+      if (!element->Attribute("type"))
+      {
+        throw std::runtime_error(std::string("spec error: enums name=\"" + name + "\" is missing the type attribute"));
+      }
+
       std::string type = element->Attribute("type");
-      assert((type == "bitmask") || (type == "enum"));
+
+      if (type != "bitmask" && type != "enum")
+      {
+        throw std::runtime_error(std::string("spec error: enums name=\"" + name + "\" has unknown type " + type));
+      }
+
       it->second.bitmask = (type == "bitmask");
       std::string prefix, postfix;
       if (it->second.bitmask)

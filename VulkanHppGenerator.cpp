@@ -295,7 +295,7 @@ std::string const versionCheckHeader = (
   "#   define VULKAN_HPP_HAS_UNRESTRICTED_UNIONS\n"
   "#  endif\n"
   "# elif defined(__GNUC__)\n"
-  "#  define GCC_VERSION (__GNUC__ * 1000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)\n"
+  "#  define GCC_VERSION (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)\n"
   "#  if 40600 <= GCC_VERSION\n"
   "#   define VULKAN_HPP_HAS_UNRESTRICTED_UNIONS\n"
   "#  endif\n"

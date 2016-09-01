@@ -1327,7 +1327,7 @@ void readTypeDefine( tinyxml2::XMLElement * element, VkData & vkData )
   else if (element->Attribute("name") && strcmp(element->Attribute("name"), "VK_DEFINE_NON_DISPATCHABLE_HANDLE") == 0)
   {
     std::string text = element->LastChild()->ToText()->Value();
-    size_t start = text.find('#');
+    size_t start = text.find("#if defined(__LP64__)");
     size_t end = text.find_first_of("\r\n", start + 1);
     vkData.typesafeCheck = text.substr(start, end - start);
   }

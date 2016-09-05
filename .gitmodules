@@ -1,6 +1,0 @@
-[submodule "tinyxml2"]
-	path = tinyxml2
-	url = https://github.com/leethomason/tinyxml2.git
-[submodule "Vulkan-Docs"]
-	path = Vulkan-Docs
-	url = https://github.com/KhronosGroup/Vulkan-Docs.git

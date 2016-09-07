@@ -936,15 +936,17 @@ namespace vk
 		std::function<void(T object)> delete_func;
 
 #ifndef	VULKAN_HPP_DISABLE_ENHANCED_MODE
-		bool released = false;
+		bool released = false, auto_release_copies = false;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
 		using INS = vk::Instance; using DEV = vk::Device;
 	public:
 
 		scoped_handle(const scoped_handle<T>& s) {
+			std::cout << "copy constructor" << std::endl;
 			this->object = s.object;
 			this->delete_func = s.delete_func;
+			this->released = s.auto_release_copies;
 		}
 
 		template<typename Fnc, typename alloc>
@@ -1054,11 +1056,12 @@ namespace vk
 		}
 
 		void destroy() {
-			if(released){
-				if (this->object) 
-					this->delete_func(this->object);
-				this->object = VK_NULL_HANDLE;
+			if (this->object && released) {
+				std::cout << "Deleting object of type " << typeid(object).name() << std::endl;
+				this->delete_func(this->object);
 			}
+
+			this->object = VK_NULL_HANDLE;
 		}
 #endif
 		bool isEmpty() {

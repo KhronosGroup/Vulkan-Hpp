@@ -40,11 +40,11 @@
 # include <vector>
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-static_assert( VK_HEADER_VERSION ==  21 , "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION ==  29 , "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
-#if defined(__LP64__) || defined(_WIN64) || defined(__x86_64__) || defined(_M_X64) || defined(__ia64) || defined (_M_IA64) || defined(__aarch64__) || defined(__powerpc64__)
+#if defined(__LP64__) || defined(_WIN64) || (defined(__x86_64__) && !defined(__ILP32__) ) || defined(_M_X64) || defined(__ia64) || defined (_M_IA64) || defined(__aarch64__) || defined(__powerpc64__)
 #define VULKAN_HPP_TYPESAFE_CONVERSION 1
 #endif
 
@@ -54,7 +54,7 @@ static_assert( VK_HEADER_VERSION ==  21 , "Wrong VK_HEADER_VERSION!" );
 #   define VULKAN_HPP_HAS_UNRESTRICTED_UNIONS
 #  endif
 # elif defined(__GNUC__)
-#  define GCC_VERSION (__GNUC__ * 1000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)
+#  define GCC_VERSION (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)
 #  if 40600 <= GCC_VERSION
 #   define VULKAN_HPP_HAS_UNRESTRICTED_UNIONS
 #  endif
@@ -304,6 +304,7 @@ namespace vk
     eErrorIncompatibleDriver = VK_ERROR_INCOMPATIBLE_DRIVER,
     eErrorTooManyObjects = VK_ERROR_TOO_MANY_OBJECTS,
     eErrorFormatNotSupported = VK_ERROR_FORMAT_NOT_SUPPORTED,
+    eErrorFragmentedPool = VK_ERROR_FRAGMENTED_POOL,
     eErrorSurfaceLostKHR = VK_ERROR_SURFACE_LOST_KHR,
     eErrorNativeWindowInUseKHR = VK_ERROR_NATIVE_WINDOW_IN_USE_KHR,
     eSuboptimalKHR = VK_SUBOPTIMAL_KHR,
@@ -334,6 +335,7 @@ namespace vk
     case Result::eErrorIncompatibleDriver: return "ErrorIncompatibleDriver";
     case Result::eErrorTooManyObjects: return "ErrorTooManyObjects";
     case Result::eErrorFormatNotSupported: return "ErrorFormatNotSupported";
+    case Result::eErrorFragmentedPool: return "ErrorFragmentedPool";
     case Result::eErrorSurfaceLostKHR: return "ErrorSurfaceLostKHR";
     case Result::eErrorNativeWindowInUseKHR: return "ErrorNativeWindowInUseKHR";
     case Result::eSuboptimalKHR: return "SuboptimalKHR";
@@ -4112,35 +4114,6 @@ namespace vk
 
   struct DisplayPlanePropertiesKHR
   {
-    DisplayPlanePropertiesKHR( DisplayKHR currentDisplay_ = DisplayKHR(), uint32_t currentStackIndex_ = 0 )
-      : currentDisplay( currentDisplay_ )
-      , currentStackIndex( currentStackIndex_ )
-    {
-    }
-
-    DisplayPlanePropertiesKHR( VkDisplayPlanePropertiesKHR const & rhs )
-    {
-      memcpy( this, &rhs, sizeof(DisplayPlanePropertiesKHR) );
-    }
-
-    DisplayPlanePropertiesKHR& operator=( VkDisplayPlanePropertiesKHR const & rhs )
-    {
-      memcpy( this, &rhs, sizeof(DisplayPlanePropertiesKHR) );
-      return *this;
-    }
-
-    DisplayPlanePropertiesKHR& setCurrentDisplay( DisplayKHR currentDisplay_ )
-    {
-      currentDisplay = currentDisplay_;
-      return *this;
-    }
-
-    DisplayPlanePropertiesKHR& setCurrentStackIndex( uint32_t currentStackIndex_ )
-    {
-      currentStackIndex = currentStackIndex_;
-      return *this;
-    }
-
     operator const VkDisplayPlanePropertiesKHR&() const
     {
       return *reinterpret_cast<const VkDisplayPlanePropertiesKHR*>(this);
@@ -4216,35 +4189,6 @@ namespace vk
 
   struct DisplayModePropertiesKHR
   {
-    DisplayModePropertiesKHR( DisplayModeKHR displayMode_ = DisplayModeKHR(), DisplayModeParametersKHR parameters_ = DisplayModeParametersKHR() )
-      : displayMode( displayMode_ )
-      , parameters( parameters_ )
-    {
-    }
-
-    DisplayModePropertiesKHR( VkDisplayModePropertiesKHR const & rhs )
-    {
-      memcpy( this, &rhs, sizeof(DisplayModePropertiesKHR) );
-    }
-
-    DisplayModePropertiesKHR& operator=( VkDisplayModePropertiesKHR const & rhs )
-    {
-      memcpy( this, &rhs, sizeof(DisplayModePropertiesKHR) );
-      return *this;
-    }
-
-    DisplayModePropertiesKHR& setDisplayMode( DisplayModeKHR displayMode_ )
-    {
-      displayMode = displayMode_;
-      return *this;
-    }
-
-    DisplayModePropertiesKHR& setParameters( DisplayModeParametersKHR parameters_ )
-    {
-      parameters = parameters_;
-      return *this;
-    }
-
     operator const VkDisplayModePropertiesKHR&() const
     {
       return *reinterpret_cast<const VkDisplayModePropertiesKHR*>(this);
@@ -5262,7 +5206,15 @@ namespace vk
     eAstc12x10UnormBlock = VK_FORMAT_ASTC_12x10_UNORM_BLOCK,
     eAstc12x10SrgbBlock = VK_FORMAT_ASTC_12x10_SRGB_BLOCK,
     eAstc12x12UnormBlock = VK_FORMAT_ASTC_12x12_UNORM_BLOCK,
-    eAstc12x12SrgbBlock = VK_FORMAT_ASTC_12x12_SRGB_BLOCK
+    eAstc12x12SrgbBlock = VK_FORMAT_ASTC_12x12_SRGB_BLOCK,
+    ePvrtc12BppUnormBlockIMG = VK_FORMAT_PVRTC1_2BPP_UNORM_BLOCK_IMG,
+    ePvrtc14BppUnormBlockIMG = VK_FORMAT_PVRTC1_4BPP_UNORM_BLOCK_IMG,
+    ePvrtc22BppUnormBlockIMG = VK_FORMAT_PVRTC2_2BPP_UNORM_BLOCK_IMG,
+    ePvrtc24BppUnormBlockIMG = VK_FORMAT_PVRTC2_4BPP_UNORM_BLOCK_IMG,
+    ePvrtc12BppSrgbBlockIMG = VK_FORMAT_PVRTC1_2BPP_SRGB_BLOCK_IMG,
+    ePvrtc14BppSrgbBlockIMG = VK_FORMAT_PVRTC1_4BPP_SRGB_BLOCK_IMG,
+    ePvrtc22BppSrgbBlockIMG = VK_FORMAT_PVRTC2_2BPP_SRGB_BLOCK_IMG,
+    ePvrtc24BppSrgbBlockIMG = VK_FORMAT_PVRTC2_4BPP_SRGB_BLOCK_IMG
   };
 
   struct VertexInputAttributeDescription
@@ -5404,7 +5356,13 @@ namespace vk
     eDebugMarkerMarkerInfoEXT = VK_STRUCTURE_TYPE_DEBUG_MARKER_MARKER_INFO_EXT,
     eDedicatedAllocationImageCreateInfoNV = VK_STRUCTURE_TYPE_DEDICATED_ALLOCATION_IMAGE_CREATE_INFO_NV,
     eDedicatedAllocationBufferCreateInfoNV = VK_STRUCTURE_TYPE_DEDICATED_ALLOCATION_BUFFER_CREATE_INFO_NV,
-    eDedicatedAllocationMemoryAllocateInfoNV = VK_STRUCTURE_TYPE_DEDICATED_ALLOCATION_MEMORY_ALLOCATE_INFO_NV
+    eDedicatedAllocationMemoryAllocateInfoNV = VK_STRUCTURE_TYPE_DEDICATED_ALLOCATION_MEMORY_ALLOCATE_INFO_NV,
+    eExternalMemoryImageCreateInfoNV = VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_IMAGE_CREATE_INFO_NV,
+    eExportMemoryAllocateInfoNV = VK_STRUCTURE_TYPE_EXPORT_MEMORY_ALLOCATE_INFO_NV,
+    eImportMemoryWin32HandleInfoNV = VK_STRUCTURE_TYPE_IMPORT_MEMORY_WIN32_HANDLE_INFO_NV,
+    eExportMemoryWin32HandleInfoNV = VK_STRUCTURE_TYPE_EXPORT_MEMORY_WIN32_HANDLE_INFO_NV,
+    eWin32KeyedMutexAcquireReleaseInfoNV = VK_STRUCTURE_TYPE_WIN32_KEYED_MUTEX_ACQUIRE_RELEASE_INFO_NV,
+    eValidationFlagsEXT = VK_STRUCTURE_TYPE_VALIDATION_FLAGS_EXT
   };
 
   struct ApplicationInfo
@@ -8784,6 +8742,201 @@ namespace vk
     Buffer buffer;
   };
   static_assert( sizeof( DedicatedAllocationMemoryAllocateInfoNV ) == sizeof( VkDedicatedAllocationMemoryAllocateInfoNV ), "struct and wrapper have different size!" );
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  struct ExportMemoryWin32HandleInfoNV
+  {
+    ExportMemoryWin32HandleInfoNV( const SECURITY_ATTRIBUTES* pAttributes_ = nullptr, DWORD dwAccess_ = 0 )
+      : sType( StructureType::eExportMemoryWin32HandleInfoNV )
+      , pNext( nullptr )
+      , pAttributes( pAttributes_ )
+      , dwAccess( dwAccess_ )
+    {
+    }
+
+    ExportMemoryWin32HandleInfoNV( VkExportMemoryWin32HandleInfoNV const & rhs )
+    {
+      memcpy( this, &rhs, sizeof(ExportMemoryWin32HandleInfoNV) );
+    }
+
+    ExportMemoryWin32HandleInfoNV& operator=( VkExportMemoryWin32HandleInfoNV const & rhs )
+    {
+      memcpy( this, &rhs, sizeof(ExportMemoryWin32HandleInfoNV) );
+      return *this;
+    }
+
+    ExportMemoryWin32HandleInfoNV& setSType( StructureType sType_ )
+    {
+      sType = sType_;
+      return *this;
+    }
+
+    ExportMemoryWin32HandleInfoNV& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    ExportMemoryWin32HandleInfoNV& setPAttributes( const SECURITY_ATTRIBUTES* pAttributes_ )
+    {
+      pAttributes = pAttributes_;
+      return *this;
+    }
+
+    ExportMemoryWin32HandleInfoNV& setDwAccess( DWORD dwAccess_ )
+    {
+      dwAccess = dwAccess_;
+      return *this;
+    }
+
+    operator const VkExportMemoryWin32HandleInfoNV&() const
+    {
+      return *reinterpret_cast<const VkExportMemoryWin32HandleInfoNV*>(this);
+    }
+
+    bool operator==( ExportMemoryWin32HandleInfoNV const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( pAttributes == rhs.pAttributes )
+          && ( dwAccess == rhs.dwAccess );
+    }
+
+    bool operator!=( ExportMemoryWin32HandleInfoNV const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    const void* pNext;
+    const SECURITY_ATTRIBUTES* pAttributes;
+    DWORD dwAccess;
+  };
+  static_assert( sizeof( ExportMemoryWin32HandleInfoNV ) == sizeof( VkExportMemoryWin32HandleInfoNV ), "struct and wrapper have different size!" );
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  struct Win32KeyedMutexAcquireReleaseInfoNV
+  {
+    Win32KeyedMutexAcquireReleaseInfoNV( uint32_t acquireCount_ = 0, const DeviceMemory* pAcquireSyncs_ = nullptr, const uint64_t* pAcquireKeys_ = nullptr, const uint32_t* pAcquireTimeoutMilliseconds_ = nullptr, uint32_t releaseCount_ = 0, const DeviceMemory* pReleaseSyncs_ = nullptr, const uint64_t* pReleaseKeys_ = nullptr )
+      : sType( StructureType::eWin32KeyedMutexAcquireReleaseInfoNV )
+      , pNext( nullptr )
+      , acquireCount( acquireCount_ )
+      , pAcquireSyncs( pAcquireSyncs_ )
+      , pAcquireKeys( pAcquireKeys_ )
+      , pAcquireTimeoutMilliseconds( pAcquireTimeoutMilliseconds_ )
+      , releaseCount( releaseCount_ )
+      , pReleaseSyncs( pReleaseSyncs_ )
+      , pReleaseKeys( pReleaseKeys_ )
+    {
+    }
+
+    Win32KeyedMutexAcquireReleaseInfoNV( VkWin32KeyedMutexAcquireReleaseInfoNV const & rhs )
+    {
+      memcpy( this, &rhs, sizeof(Win32KeyedMutexAcquireReleaseInfoNV) );
+    }
+
+    Win32KeyedMutexAcquireReleaseInfoNV& operator=( VkWin32KeyedMutexAcquireReleaseInfoNV const & rhs )
+    {
+      memcpy( this, &rhs, sizeof(Win32KeyedMutexAcquireReleaseInfoNV) );
+      return *this;
+    }
+
+    Win32KeyedMutexAcquireReleaseInfoNV& setSType( StructureType sType_ )
+    {
+      sType = sType_;
+      return *this;
+    }
+
+    Win32KeyedMutexAcquireReleaseInfoNV& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    Win32KeyedMutexAcquireReleaseInfoNV& setAcquireCount( uint32_t acquireCount_ )
+    {
+      acquireCount = acquireCount_;
+      return *this;
+    }
+
+    Win32KeyedMutexAcquireReleaseInfoNV& setPAcquireSyncs( const DeviceMemory* pAcquireSyncs_ )
+    {
+      pAcquireSyncs = pAcquireSyncs_;
+      return *this;
+    }
+
+    Win32KeyedMutexAcquireReleaseInfoNV& setPAcquireKeys( const uint64_t* pAcquireKeys_ )
+    {
+      pAcquireKeys = pAcquireKeys_;
+      return *this;
+    }
+
+    Win32KeyedMutexAcquireReleaseInfoNV& setPAcquireTimeoutMilliseconds( const uint32_t* pAcquireTimeoutMilliseconds_ )
+    {
+      pAcquireTimeoutMilliseconds = pAcquireTimeoutMilliseconds_;
+      return *this;
+    }
+
+    Win32KeyedMutexAcquireReleaseInfoNV& setReleaseCount( uint32_t releaseCount_ )
+    {
+      releaseCount = releaseCount_;
+      return *this;
+    }
+
+    Win32KeyedMutexAcquireReleaseInfoNV& setPReleaseSyncs( const DeviceMemory* pReleaseSyncs_ )
+    {
+      pReleaseSyncs = pReleaseSyncs_;
+      return *this;
+    }
+
+    Win32KeyedMutexAcquireReleaseInfoNV& setPReleaseKeys( const uint64_t* pReleaseKeys_ )
+    {
+      pReleaseKeys = pReleaseKeys_;
+      return *this;
+    }
+
+    operator const VkWin32KeyedMutexAcquireReleaseInfoNV&() const
+    {
+      return *reinterpret_cast<const VkWin32KeyedMutexAcquireReleaseInfoNV*>(this);
+    }
+
+    bool operator==( Win32KeyedMutexAcquireReleaseInfoNV const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( acquireCount == rhs.acquireCount )
+          && ( pAcquireSyncs == rhs.pAcquireSyncs )
+          && ( pAcquireKeys == rhs.pAcquireKeys )
+          && ( pAcquireTimeoutMilliseconds == rhs.pAcquireTimeoutMilliseconds )
+          && ( releaseCount == rhs.releaseCount )
+          && ( pReleaseSyncs == rhs.pReleaseSyncs )
+          && ( pReleaseKeys == rhs.pReleaseKeys );
+    }
+
+    bool operator!=( Win32KeyedMutexAcquireReleaseInfoNV const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    const void* pNext;
+    uint32_t acquireCount;
+    const DeviceMemory* pAcquireSyncs;
+    const uint64_t* pAcquireKeys;
+    const uint32_t* pAcquireTimeoutMilliseconds;
+    uint32_t releaseCount;
+    const DeviceMemory* pReleaseSyncs;
+    const uint64_t* pReleaseKeys;
+  };
+  static_assert( sizeof( Win32KeyedMutexAcquireReleaseInfoNV ) == sizeof( VkWin32KeyedMutexAcquireReleaseInfoNV ), "struct and wrapper have different size!" );
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
   enum class SubpassContents
   {
@@ -14097,6 +14250,34 @@ namespace vk
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
+#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    void drawIndirectCountAMD( Buffer buffer, DeviceSize offset, Buffer countBuffer, DeviceSize countBufferOffset, uint32_t maxDrawCount, uint32_t stride ) const
+    {
+      vkCmdDrawIndirectCountAMD( m_commandBuffer, static_cast<VkBuffer>( buffer ), offset, static_cast<VkBuffer>( countBuffer ), countBufferOffset, maxDrawCount, stride );
+    }
+#endif /*!VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    void drawIndirectCountAMD( Buffer buffer, DeviceSize offset, Buffer countBuffer, DeviceSize countBufferOffset, uint32_t maxDrawCount, uint32_t stride ) const
+    {
+      vkCmdDrawIndirectCountAMD( m_commandBuffer, static_cast<VkBuffer>( buffer ), offset, static_cast<VkBuffer>( countBuffer ), countBufferOffset, maxDrawCount, stride );
+    }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    void drawIndexedIndirectCountAMD( Buffer buffer, DeviceSize offset, Buffer countBuffer, DeviceSize countBufferOffset, uint32_t maxDrawCount, uint32_t stride ) const
+    {
+      vkCmdDrawIndexedIndirectCountAMD( m_commandBuffer, static_cast<VkBuffer>( buffer ), offset, static_cast<VkBuffer>( countBuffer ), countBufferOffset, maxDrawCount, stride );
+    }
+#endif /*!VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    void drawIndexedIndirectCountAMD( Buffer buffer, DeviceSize offset, Buffer countBuffer, DeviceSize countBufferOffset, uint32_t maxDrawCount, uint32_t stride ) const
+    {
+      vkCmdDrawIndexedIndirectCountAMD( m_commandBuffer, static_cast<VkBuffer>( buffer ), offset, static_cast<VkBuffer>( countBuffer ), countBufferOffset, maxDrawCount, stride );
+    }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
 #if !defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     explicit
 #endif
@@ -14579,35 +14760,6 @@ namespace vk
 
   struct SurfaceFormatKHR
   {
-    SurfaceFormatKHR( Format format_ = Format::eUndefined, ColorSpaceKHR colorSpace_ = ColorSpaceKHR::eSrgbNonlinear )
-      : format( format_ )
-      , colorSpace( colorSpace_ )
-    {
-    }
-
-    SurfaceFormatKHR( VkSurfaceFormatKHR const & rhs )
-    {
-      memcpy( this, &rhs, sizeof(SurfaceFormatKHR) );
-    }
-
-    SurfaceFormatKHR& operator=( VkSurfaceFormatKHR const & rhs )
-    {
-      memcpy( this, &rhs, sizeof(SurfaceFormatKHR) );
-      return *this;
-    }
-
-    SurfaceFormatKHR& setFormat( Format format_ )
-    {
-      format = format_;
-      return *this;
-    }
-
-    SurfaceFormatKHR& setColorSpace( ColorSpaceKHR colorSpace_ )
-    {
-      colorSpace = colorSpace_;
-      return *this;
-    }
-
     operator const VkSurfaceFormatKHR&() const
     {
       return *reinterpret_cast<const VkSurfaceFormatKHR*>(this);
@@ -14646,84 +14798,6 @@ namespace vk
 
   struct DisplayPlaneCapabilitiesKHR
   {
-    DisplayPlaneCapabilitiesKHR( DisplayPlaneAlphaFlagsKHR supportedAlpha_ = DisplayPlaneAlphaFlagsKHR(), Offset2D minSrcPosition_ = Offset2D(), Offset2D maxSrcPosition_ = Offset2D(), Extent2D minSrcExtent_ = Extent2D(), Extent2D maxSrcExtent_ = Extent2D(), Offset2D minDstPosition_ = Offset2D(), Offset2D maxDstPosition_ = Offset2D(), Extent2D minDstExtent_ = Extent2D(), Extent2D maxDstExtent_ = Extent2D() )
-      : supportedAlpha( supportedAlpha_ )
-      , minSrcPosition( minSrcPosition_ )
-      , maxSrcPosition( maxSrcPosition_ )
-      , minSrcExtent( minSrcExtent_ )
-      , maxSrcExtent( maxSrcExtent_ )
-      , minDstPosition( minDstPosition_ )
-      , maxDstPosition( maxDstPosition_ )
-      , minDstExtent( minDstExtent_ )
-      , maxDstExtent( maxDstExtent_ )
-    {
-    }
-
-    DisplayPlaneCapabilitiesKHR( VkDisplayPlaneCapabilitiesKHR const & rhs )
-    {
-      memcpy( this, &rhs, sizeof(DisplayPlaneCapabilitiesKHR) );
-    }
-
-    DisplayPlaneCapabilitiesKHR& operator=( VkDisplayPlaneCapabilitiesKHR const & rhs )
-    {
-      memcpy( this, &rhs, sizeof(DisplayPlaneCapabilitiesKHR) );
-      return *this;
-    }
-
-    DisplayPlaneCapabilitiesKHR& setSupportedAlpha( DisplayPlaneAlphaFlagsKHR supportedAlpha_ )
-    {
-      supportedAlpha = supportedAlpha_;
-      return *this;
-    }
-
-    DisplayPlaneCapabilitiesKHR& setMinSrcPosition( Offset2D minSrcPosition_ )
-    {
-      minSrcPosition = minSrcPosition_;
-      return *this;
-    }
-
-    DisplayPlaneCapabilitiesKHR& setMaxSrcPosition( Offset2D maxSrcPosition_ )
-    {
-      maxSrcPosition = maxSrcPosition_;
-      return *this;
-    }
-
-    DisplayPlaneCapabilitiesKHR& setMinSrcExtent( Extent2D minSrcExtent_ )
-    {
-      minSrcExtent = minSrcExtent_;
-      return *this;
-    }
-
-    DisplayPlaneCapabilitiesKHR& setMaxSrcExtent( Extent2D maxSrcExtent_ )
-    {
-      maxSrcExtent = maxSrcExtent_;
-      return *this;
-    }
-
-    DisplayPlaneCapabilitiesKHR& setMinDstPosition( Offset2D minDstPosition_ )
-    {
-      minDstPosition = minDstPosition_;
-      return *this;
-    }
-
-    DisplayPlaneCapabilitiesKHR& setMaxDstPosition( Offset2D maxDstPosition_ )
-    {
-      maxDstPosition = maxDstPosition_;
-      return *this;
-    }
-
-    DisplayPlaneCapabilitiesKHR& setMinDstExtent( Extent2D minDstExtent_ )
-    {
-      minDstExtent = minDstExtent_;
-      return *this;
-    }
-
-    DisplayPlaneCapabilitiesKHR& setMaxDstExtent( Extent2D maxDstExtent_ )
-    {
-      maxDstExtent = maxDstExtent_;
-      return *this;
-    }
-
     operator const VkDisplayPlaneCapabilitiesKHR&() const
     {
       return *reinterpret_cast<const VkDisplayPlaneCapabilitiesKHR*>(this);
@@ -14796,70 +14870,6 @@ namespace vk
 
   struct DisplayPropertiesKHR
   {
-    DisplayPropertiesKHR( DisplayKHR display_ = DisplayKHR(), const char* displayName_ = nullptr, Extent2D physicalDimensions_ = Extent2D(), Extent2D physicalResolution_ = Extent2D(), SurfaceTransformFlagsKHR supportedTransforms_ = SurfaceTransformFlagsKHR(), Bool32 planeReorderPossible_ = 0, Bool32 persistentContent_ = 0 )
-      : display( display_ )
-      , displayName( displayName_ )
-      , physicalDimensions( physicalDimensions_ )
-      , physicalResolution( physicalResolution_ )
-      , supportedTransforms( supportedTransforms_ )
-      , planeReorderPossible( planeReorderPossible_ )
-      , persistentContent( persistentContent_ )
-    {
-    }
-
-    DisplayPropertiesKHR( VkDisplayPropertiesKHR const & rhs )
-    {
-      memcpy( this, &rhs, sizeof(DisplayPropertiesKHR) );
-    }
-
-    DisplayPropertiesKHR& operator=( VkDisplayPropertiesKHR const & rhs )
-    {
-      memcpy( this, &rhs, sizeof(DisplayPropertiesKHR) );
-      return *this;
-    }
-
-    DisplayPropertiesKHR& setDisplay( DisplayKHR display_ )
-    {
-      display = display_;
-      return *this;
-    }
-
-    DisplayPropertiesKHR& setDisplayName( const char* displayName_ )
-    {
-      displayName = displayName_;
-      return *this;
-    }
-
-    DisplayPropertiesKHR& setPhysicalDimensions( Extent2D physicalDimensions_ )
-    {
-      physicalDimensions = physicalDimensions_;
-      return *this;
-    }
-
-    DisplayPropertiesKHR& setPhysicalResolution( Extent2D physicalResolution_ )
-    {
-      physicalResolution = physicalResolution_;
-      return *this;
-    }
-
-    DisplayPropertiesKHR& setSupportedTransforms( SurfaceTransformFlagsKHR supportedTransforms_ )
-    {
-      supportedTransforms = supportedTransforms_;
-      return *this;
-    }
-
-    DisplayPropertiesKHR& setPlaneReorderPossible( Bool32 planeReorderPossible_ )
-    {
-      planeReorderPossible = planeReorderPossible_;
-      return *this;
-    }
-
-    DisplayPropertiesKHR& setPersistentContent( Bool32 persistentContent_ )
-    {
-      persistentContent = persistentContent_;
-      return *this;
-    }
-
     operator const VkDisplayPropertiesKHR&() const
     {
       return *reinterpret_cast<const VkDisplayPropertiesKHR*>(this);
@@ -15020,91 +15030,6 @@ namespace vk
 
   struct SurfaceCapabilitiesKHR
   {
-    SurfaceCapabilitiesKHR( uint32_t minImageCount_ = 0, uint32_t maxImageCount_ = 0, Extent2D currentExtent_ = Extent2D(), Extent2D minImageExtent_ = Extent2D(), Extent2D maxImageExtent_ = Extent2D(), uint32_t maxImageArrayLayers_ = 0, SurfaceTransformFlagsKHR supportedTransforms_ = SurfaceTransformFlagsKHR(), SurfaceTransformFlagBitsKHR currentTransform_ = SurfaceTransformFlagBitsKHR::eIdentity, CompositeAlphaFlagsKHR supportedCompositeAlpha_ = CompositeAlphaFlagsKHR(), ImageUsageFlags supportedUsageFlags_ = ImageUsageFlags() )
-      : minImageCount( minImageCount_ )
-      , maxImageCount( maxImageCount_ )
-      , currentExtent( currentExtent_ )
-      , minImageExtent( minImageExtent_ )
-      , maxImageExtent( maxImageExtent_ )
-      , maxImageArrayLayers( maxImageArrayLayers_ )
-      , supportedTransforms( supportedTransforms_ )
-      , currentTransform( currentTransform_ )
-      , supportedCompositeAlpha( supportedCompositeAlpha_ )
-      , supportedUsageFlags( supportedUsageFlags_ )
-    {
-    }
-
-    SurfaceCapabilitiesKHR( VkSurfaceCapabilitiesKHR const & rhs )
-    {
-      memcpy( this, &rhs, sizeof(SurfaceCapabilitiesKHR) );
-    }
-
-    SurfaceCapabilitiesKHR& operator=( VkSurfaceCapabilitiesKHR const & rhs )
-    {
-      memcpy( this, &rhs, sizeof(SurfaceCapabilitiesKHR) );
-      return *this;
-    }
-
-    SurfaceCapabilitiesKHR& setMinImageCount( uint32_t minImageCount_ )
-    {
-      minImageCount = minImageCount_;
-      return *this;
-    }
-
-    SurfaceCapabilitiesKHR& setMaxImageCount( uint32_t maxImageCount_ )
-    {
-      maxImageCount = maxImageCount_;
-      return *this;
-    }
-
-    SurfaceCapabilitiesKHR& setCurrentExtent( Extent2D currentExtent_ )
-    {
-      currentExtent = currentExtent_;
-      return *this;
-    }
-
-    SurfaceCapabilitiesKHR& setMinImageExtent( Extent2D minImageExtent_ )
-    {
-      minImageExtent = minImageExtent_;
-      return *this;
-    }
-
-    SurfaceCapabilitiesKHR& setMaxImageExtent( Extent2D maxImageExtent_ )
-    {
-      maxImageExtent = maxImageExtent_;
-      return *this;
-    }
-
-    SurfaceCapabilitiesKHR& setMaxImageArrayLayers( uint32_t maxImageArrayLayers_ )
-    {
-      maxImageArrayLayers = maxImageArrayLayers_;
-      return *this;
-    }
-
-    SurfaceCapabilitiesKHR& setSupportedTransforms( SurfaceTransformFlagsKHR supportedTransforms_ )
-    {
-      supportedTransforms = supportedTransforms_;
-      return *this;
-    }
-
-    SurfaceCapabilitiesKHR& setCurrentTransform( SurfaceTransformFlagBitsKHR currentTransform_ )
-    {
-      currentTransform = currentTransform_;
-      return *this;
-    }
-
-    SurfaceCapabilitiesKHR& setSupportedCompositeAlpha( CompositeAlphaFlagsKHR supportedCompositeAlpha_ )
-    {
-      supportedCompositeAlpha = supportedCompositeAlpha_;
-      return *this;
-    }
-
-    SurfaceCapabilitiesKHR& setSupportedUsageFlags( ImageUsageFlags supportedUsageFlags_ )
-    {
-      supportedUsageFlags = supportedUsageFlags_;
-      return *this;
-    }
-
     operator const VkSurfaceCapabilitiesKHR&() const
     {
       return *reinterpret_cast<const VkSurfaceCapabilitiesKHR*>(this);
@@ -15653,6 +15578,97 @@ namespace vk
     const void* pTag;
   };
   static_assert( sizeof( DebugMarkerObjectTagInfoEXT ) == sizeof( VkDebugMarkerObjectTagInfoEXT ), "struct and wrapper have different size!" );
+
+  enum class DebugReportErrorEXT
+  {
+    eNone = VK_DEBUG_REPORT_ERROR_NONE_EXT,
+    eCallbackRef = VK_DEBUG_REPORT_ERROR_CALLBACK_REF_EXT
+  };
+
+  enum class RasterizationOrderAMD
+  {
+    eStrict = VK_RASTERIZATION_ORDER_STRICT_AMD,
+    eRelaxed = VK_RASTERIZATION_ORDER_RELAXED_AMD
+  };
+
+  struct PipelineRasterizationStateRasterizationOrderAMD
+  {
+    PipelineRasterizationStateRasterizationOrderAMD( RasterizationOrderAMD rasterizationOrder_ = RasterizationOrderAMD::eStrict )
+      : sType( StructureType::ePipelineRasterizationStateRasterizationOrderAMD )
+      , pNext( nullptr )
+      , rasterizationOrder( rasterizationOrder_ )
+    {
+    }
+
+    PipelineRasterizationStateRasterizationOrderAMD( VkPipelineRasterizationStateRasterizationOrderAMD const & rhs )
+    {
+      memcpy( this, &rhs, sizeof(PipelineRasterizationStateRasterizationOrderAMD) );
+    }
+
+    PipelineRasterizationStateRasterizationOrderAMD& operator=( VkPipelineRasterizationStateRasterizationOrderAMD const & rhs )
+    {
+      memcpy( this, &rhs, sizeof(PipelineRasterizationStateRasterizationOrderAMD) );
+      return *this;
+    }
+
+    PipelineRasterizationStateRasterizationOrderAMD& setSType( StructureType sType_ )
+    {
+      sType = sType_;
+      return *this;
+    }
+
+    PipelineRasterizationStateRasterizationOrderAMD& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PipelineRasterizationStateRasterizationOrderAMD& setRasterizationOrder( RasterizationOrderAMD rasterizationOrder_ )
+    {
+      rasterizationOrder = rasterizationOrder_;
+      return *this;
+    }
+
+    operator const VkPipelineRasterizationStateRasterizationOrderAMD&() const
+    {
+      return *reinterpret_cast<const VkPipelineRasterizationStateRasterizationOrderAMD*>(this);
+    }
+
+    bool operator==( PipelineRasterizationStateRasterizationOrderAMD const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( rasterizationOrder == rhs.rasterizationOrder );
+    }
+
+    bool operator!=( PipelineRasterizationStateRasterizationOrderAMD const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    const void* pNext;
+    RasterizationOrderAMD rasterizationOrder;
+  };
+  static_assert( sizeof( PipelineRasterizationStateRasterizationOrderAMD ) == sizeof( VkPipelineRasterizationStateRasterizationOrderAMD ), "struct and wrapper have different size!" );
+
+  enum class ExternalMemoryHandleTypeFlagBitsNV
+  {
+    eOpaqueWin32 = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_BIT_NV,
+    eOpaqueWin32Kmt = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT_NV,
+    eD3D11Image = VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D11_IMAGE_BIT_NV,
+    eD3D11ImageKmt = VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D11_IMAGE_KMT_BIT_NV
+  };
+
+  using ExternalMemoryHandleTypeFlagsNV = Flags<ExternalMemoryHandleTypeFlagBitsNV, VkExternalMemoryHandleTypeFlagsNV>;
+
+  inline ExternalMemoryHandleTypeFlagsNV operator|( ExternalMemoryHandleTypeFlagBitsNV bit0, ExternalMemoryHandleTypeFlagBitsNV bit1 )
+  {
+    return ExternalMemoryHandleTypeFlagsNV( bit0 ) | bit1;
+  }
 
   class Device
   {
@@ -16793,6 +16809,24 @@ namespace vk
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+    Result getMemoryWin32HandleNV( DeviceMemory memory, ExternalMemoryHandleTypeFlagsNV handleType, HANDLE* pHandle ) const
+    {
+      return static_cast<Result>( vkGetMemoryWin32HandleNV( m_device, static_cast<VkDeviceMemory>( memory ), static_cast<VkExternalMemoryHandleTypeFlagsNV>( handleType ), pHandle ) );
+    }
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+    ResultValueType<HANDLE>::type getMemoryWin32HandleNV( DeviceMemory memory, ExternalMemoryHandleTypeFlagsNV handleType ) const
+    {
+      HANDLE handle;
+      Result result = static_cast<Result>( vkGetMemoryWin32HandleNV( m_device, static_cast<VkDeviceMemory>( memory ), static_cast<VkExternalMemoryHandleTypeFlagsNV>( handleType ), &handle ) );
+      return createResultValue( result, handle, "vk::Device::getMemoryWin32HandleNV" );
+    }
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
 #if !defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     explicit
 #endif
@@ -16815,6 +16849,293 @@ namespace vk
     VkDevice m_device;
   };
   static_assert( sizeof( Device ) == sizeof( VkDevice ), "handle and wrapper have different size!" );
+
+  struct ExternalMemoryImageCreateInfoNV
+  {
+    ExternalMemoryImageCreateInfoNV( ExternalMemoryHandleTypeFlagsNV handleTypes_ = ExternalMemoryHandleTypeFlagsNV() )
+      : sType( StructureType::eExternalMemoryImageCreateInfoNV )
+      , pNext( nullptr )
+      , handleTypes( handleTypes_ )
+    {
+    }
+
+    ExternalMemoryImageCreateInfoNV( VkExternalMemoryImageCreateInfoNV const & rhs )
+    {
+      memcpy( this, &rhs, sizeof(ExternalMemoryImageCreateInfoNV) );
+    }
+
+    ExternalMemoryImageCreateInfoNV& operator=( VkExternalMemoryImageCreateInfoNV const & rhs )
+    {
+      memcpy( this, &rhs, sizeof(ExternalMemoryImageCreateInfoNV) );
+      return *this;
+    }
+
+    ExternalMemoryImageCreateInfoNV& setSType( StructureType sType_ )
+    {
+      sType = sType_;
+      return *this;
+    }
+
+    ExternalMemoryImageCreateInfoNV& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    ExternalMemoryImageCreateInfoNV& setHandleTypes( ExternalMemoryHandleTypeFlagsNV handleTypes_ )
+    {
+      handleTypes = handleTypes_;
+      return *this;
+    }
+
+    operator const VkExternalMemoryImageCreateInfoNV&() const
+    {
+      return *reinterpret_cast<const VkExternalMemoryImageCreateInfoNV*>(this);
+    }
+
+    bool operator==( ExternalMemoryImageCreateInfoNV const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( handleTypes == rhs.handleTypes );
+    }
+
+    bool operator!=( ExternalMemoryImageCreateInfoNV const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    const void* pNext;
+    ExternalMemoryHandleTypeFlagsNV handleTypes;
+  };
+  static_assert( sizeof( ExternalMemoryImageCreateInfoNV ) == sizeof( VkExternalMemoryImageCreateInfoNV ), "struct and wrapper have different size!" );
+
+  struct ExportMemoryAllocateInfoNV
+  {
+    ExportMemoryAllocateInfoNV( ExternalMemoryHandleTypeFlagsNV handleTypes_ = ExternalMemoryHandleTypeFlagsNV() )
+      : sType( StructureType::eExportMemoryAllocateInfoNV )
+      , pNext( nullptr )
+      , handleTypes( handleTypes_ )
+    {
+    }
+
+    ExportMemoryAllocateInfoNV( VkExportMemoryAllocateInfoNV const & rhs )
+    {
+      memcpy( this, &rhs, sizeof(ExportMemoryAllocateInfoNV) );
+    }
+
+    ExportMemoryAllocateInfoNV& operator=( VkExportMemoryAllocateInfoNV const & rhs )
+    {
+      memcpy( this, &rhs, sizeof(ExportMemoryAllocateInfoNV) );
+      return *this;
+    }
+
+    ExportMemoryAllocateInfoNV& setSType( StructureType sType_ )
+    {
+      sType = sType_;
+      return *this;
+    }
+
+    ExportMemoryAllocateInfoNV& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    ExportMemoryAllocateInfoNV& setHandleTypes( ExternalMemoryHandleTypeFlagsNV handleTypes_ )
+    {
+      handleTypes = handleTypes_;
+      return *this;
+    }
+
+    operator const VkExportMemoryAllocateInfoNV&() const
+    {
+      return *reinterpret_cast<const VkExportMemoryAllocateInfoNV*>(this);
+    }
+
+    bool operator==( ExportMemoryAllocateInfoNV const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( handleTypes == rhs.handleTypes );
+    }
+
+    bool operator!=( ExportMemoryAllocateInfoNV const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    const void* pNext;
+    ExternalMemoryHandleTypeFlagsNV handleTypes;
+  };
+  static_assert( sizeof( ExportMemoryAllocateInfoNV ) == sizeof( VkExportMemoryAllocateInfoNV ), "struct and wrapper have different size!" );
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  struct ImportMemoryWin32HandleInfoNV
+  {
+    ImportMemoryWin32HandleInfoNV( ExternalMemoryHandleTypeFlagsNV handleType_ = ExternalMemoryHandleTypeFlagsNV(), HANDLE handle_ = 0 )
+      : sType( StructureType::eImportMemoryWin32HandleInfoNV )
+      , pNext( nullptr )
+      , handleType( handleType_ )
+      , handle( handle_ )
+    {
+    }
+
+    ImportMemoryWin32HandleInfoNV( VkImportMemoryWin32HandleInfoNV const & rhs )
+    {
+      memcpy( this, &rhs, sizeof(ImportMemoryWin32HandleInfoNV) );
+    }
+
+    ImportMemoryWin32HandleInfoNV& operator=( VkImportMemoryWin32HandleInfoNV const & rhs )
+    {
+      memcpy( this, &rhs, sizeof(ImportMemoryWin32HandleInfoNV) );
+      return *this;
+    }
+
+    ImportMemoryWin32HandleInfoNV& setSType( StructureType sType_ )
+    {
+      sType = sType_;
+      return *this;
+    }
+
+    ImportMemoryWin32HandleInfoNV& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    ImportMemoryWin32HandleInfoNV& setHandleType( ExternalMemoryHandleTypeFlagsNV handleType_ )
+    {
+      handleType = handleType_;
+      return *this;
+    }
+
+    ImportMemoryWin32HandleInfoNV& setHandle( HANDLE handle_ )
+    {
+      handle = handle_;
+      return *this;
+    }
+
+    operator const VkImportMemoryWin32HandleInfoNV&() const
+    {
+      return *reinterpret_cast<const VkImportMemoryWin32HandleInfoNV*>(this);
+    }
+
+    bool operator==( ImportMemoryWin32HandleInfoNV const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( handleType == rhs.handleType )
+          && ( handle == rhs.handle );
+    }
+
+    bool operator!=( ImportMemoryWin32HandleInfoNV const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    const void* pNext;
+    ExternalMemoryHandleTypeFlagsNV handleType;
+    HANDLE handle;
+  };
+  static_assert( sizeof( ImportMemoryWin32HandleInfoNV ) == sizeof( VkImportMemoryWin32HandleInfoNV ), "struct and wrapper have different size!" );
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
+  enum class ExternalMemoryFeatureFlagBitsNV
+  {
+    eDedicatedOnly = VK_EXTERNAL_MEMORY_FEATURE_DEDICATED_ONLY_BIT_NV,
+    eExportable = VK_EXTERNAL_MEMORY_FEATURE_EXPORTABLE_BIT_NV,
+    eImportable = VK_EXTERNAL_MEMORY_FEATURE_IMPORTABLE_BIT_NV
+  };
+
+  using ExternalMemoryFeatureFlagsNV = Flags<ExternalMemoryFeatureFlagBitsNV, VkExternalMemoryFeatureFlagsNV>;
+
+  inline ExternalMemoryFeatureFlagsNV operator|( ExternalMemoryFeatureFlagBitsNV bit0, ExternalMemoryFeatureFlagBitsNV bit1 )
+  {
+    return ExternalMemoryFeatureFlagsNV( bit0 ) | bit1;
+  }
+
+  struct ExternalImageFormatPropertiesNV
+  {
+    ExternalImageFormatPropertiesNV( ImageFormatProperties imageFormatProperties_ = ImageFormatProperties(), ExternalMemoryFeatureFlagsNV externalMemoryFeatures_ = ExternalMemoryFeatureFlagsNV(), ExternalMemoryHandleTypeFlagsNV exportFromImportedHandleTypes_ = ExternalMemoryHandleTypeFlagsNV(), ExternalMemoryHandleTypeFlagsNV compatibleHandleTypes_ = ExternalMemoryHandleTypeFlagsNV() )
+      : imageFormatProperties( imageFormatProperties_ )
+      , externalMemoryFeatures( externalMemoryFeatures_ )
+      , exportFromImportedHandleTypes( exportFromImportedHandleTypes_ )
+      , compatibleHandleTypes( compatibleHandleTypes_ )
+    {
+    }
+
+    ExternalImageFormatPropertiesNV( VkExternalImageFormatPropertiesNV const & rhs )
+    {
+      memcpy( this, &rhs, sizeof(ExternalImageFormatPropertiesNV) );
+    }
+
+    ExternalImageFormatPropertiesNV& operator=( VkExternalImageFormatPropertiesNV const & rhs )
+    {
+      memcpy( this, &rhs, sizeof(ExternalImageFormatPropertiesNV) );
+      return *this;
+    }
+
+    ExternalImageFormatPropertiesNV& setImageFormatProperties( ImageFormatProperties imageFormatProperties_ )
+    {
+      imageFormatProperties = imageFormatProperties_;
+      return *this;
+    }
+
+    ExternalImageFormatPropertiesNV& setExternalMemoryFeatures( ExternalMemoryFeatureFlagsNV externalMemoryFeatures_ )
+    {
+      externalMemoryFeatures = externalMemoryFeatures_;
+      return *this;
+    }
+
+    ExternalImageFormatPropertiesNV& setExportFromImportedHandleTypes( ExternalMemoryHandleTypeFlagsNV exportFromImportedHandleTypes_ )
+    {
+      exportFromImportedHandleTypes = exportFromImportedHandleTypes_;
+      return *this;
+    }
+
+    ExternalImageFormatPropertiesNV& setCompatibleHandleTypes( ExternalMemoryHandleTypeFlagsNV compatibleHandleTypes_ )
+    {
+      compatibleHandleTypes = compatibleHandleTypes_;
+      return *this;
+    }
+
+    operator const VkExternalImageFormatPropertiesNV&() const
+    {
+      return *reinterpret_cast<const VkExternalImageFormatPropertiesNV*>(this);
+    }
+
+    bool operator==( ExternalImageFormatPropertiesNV const& rhs ) const
+    {
+      return ( imageFormatProperties == rhs.imageFormatProperties )
+          && ( externalMemoryFeatures == rhs.externalMemoryFeatures )
+          && ( exportFromImportedHandleTypes == rhs.exportFromImportedHandleTypes )
+          && ( compatibleHandleTypes == rhs.compatibleHandleTypes );
+    }
+
+    bool operator!=( ExternalImageFormatPropertiesNV const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+    ImageFormatProperties imageFormatProperties;
+    ExternalMemoryFeatureFlagsNV externalMemoryFeatures;
+    ExternalMemoryHandleTypeFlagsNV exportFromImportedHandleTypes;
+    ExternalMemoryHandleTypeFlagsNV compatibleHandleTypes;
+  };
+  static_assert( sizeof( ExternalImageFormatPropertiesNV ) == sizeof( VkExternalImageFormatPropertiesNV ), "struct and wrapper have different size!" );
 
   class PhysicalDevice
   {
@@ -17324,6 +17645,20 @@ namespace vk
 #endif /*VK_USE_PLATFORM_XCB_KHR*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
+    Result getExternalImageFormatPropertiesNV( Format format, ImageType type, ImageTiling tiling, ImageUsageFlags usage, ImageCreateFlags flags, ExternalMemoryHandleTypeFlagsNV externalHandleType, ExternalImageFormatPropertiesNV* pExternalImageFormatProperties ) const
+    {
+      return static_cast<Result>( vkGetPhysicalDeviceExternalImageFormatPropertiesNV( m_physicalDevice, static_cast<VkFormat>( format ), static_cast<VkImageType>( type ), static_cast<VkImageTiling>( tiling ), static_cast<VkImageUsageFlags>( usage ), static_cast<VkImageCreateFlags>( flags ), static_cast<VkExternalMemoryHandleTypeFlagsNV>( externalHandleType ), reinterpret_cast<VkExternalImageFormatPropertiesNV*>( pExternalImageFormatProperties ) ) );
+    }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    ResultValueType<ExternalImageFormatPropertiesNV>::type getExternalImageFormatPropertiesNV( Format format, ImageType type, ImageTiling tiling, ImageUsageFlags usage, ImageCreateFlags flags, ExternalMemoryHandleTypeFlagsNV externalHandleType ) const
+    {
+      ExternalImageFormatPropertiesNV externalImageFormatProperties;
+      Result result = static_cast<Result>( vkGetPhysicalDeviceExternalImageFormatPropertiesNV( m_physicalDevice, static_cast<VkFormat>( format ), static_cast<VkImageType>( type ), static_cast<VkImageTiling>( tiling ), static_cast<VkImageUsageFlags>( usage ), static_cast<VkImageCreateFlags>( flags ), static_cast<VkExternalMemoryHandleTypeFlagsNV>( externalHandleType ), reinterpret_cast<VkExternalImageFormatPropertiesNV*>( &externalImageFormatProperties ) ) );
+      return createResultValue( result, externalImageFormatProperties, "vk::PhysicalDevice::getExternalImageFormatPropertiesNV" );
+    }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
 #if !defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     explicit
 #endif
@@ -17627,69 +17962,70 @@ namespace vk
   };
   static_assert( sizeof( Instance ) == sizeof( VkInstance ), "handle and wrapper have different size!" );
 
-  enum class DebugReportErrorEXT
+  enum class ValidationCheckEXT
   {
-    eNone = VK_DEBUG_REPORT_ERROR_NONE_EXT,
-    eCallbackRef = VK_DEBUG_REPORT_ERROR_CALLBACK_REF_EXT
+    eAll = VK_VALIDATION_CHECK_ALL_EXT
   };
 
-  enum class RasterizationOrderAMD
+  struct ValidationFlagsEXT
   {
-    eStrict = VK_RASTERIZATION_ORDER_STRICT_AMD,
-    eRelaxed = VK_RASTERIZATION_ORDER_RELAXED_AMD
-  };
-
-  struct PipelineRasterizationStateRasterizationOrderAMD
-  {
-    PipelineRasterizationStateRasterizationOrderAMD( RasterizationOrderAMD rasterizationOrder_ = RasterizationOrderAMD::eStrict )
-      : sType( StructureType::ePipelineRasterizationStateRasterizationOrderAMD )
+    ValidationFlagsEXT( uint32_t disabledValidationCheckCount_ = 0, ValidationCheckEXT* pDisabledValidationChecks_ = nullptr )
+      : sType( StructureType::eValidationFlagsEXT )
       , pNext( nullptr )
-      , rasterizationOrder( rasterizationOrder_ )
+      , disabledValidationCheckCount( disabledValidationCheckCount_ )
+      , pDisabledValidationChecks( pDisabledValidationChecks_ )
     {
     }
 
-    PipelineRasterizationStateRasterizationOrderAMD( VkPipelineRasterizationStateRasterizationOrderAMD const & rhs )
+    ValidationFlagsEXT( VkValidationFlagsEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof(PipelineRasterizationStateRasterizationOrderAMD) );
+      memcpy( this, &rhs, sizeof(ValidationFlagsEXT) );
     }
 
-    PipelineRasterizationStateRasterizationOrderAMD& operator=( VkPipelineRasterizationStateRasterizationOrderAMD const & rhs )
+    ValidationFlagsEXT& operator=( VkValidationFlagsEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof(PipelineRasterizationStateRasterizationOrderAMD) );
+      memcpy( this, &rhs, sizeof(ValidationFlagsEXT) );
       return *this;
     }
 
-    PipelineRasterizationStateRasterizationOrderAMD& setSType( StructureType sType_ )
+    ValidationFlagsEXT& setSType( StructureType sType_ )
     {
       sType = sType_;
       return *this;
     }
 
-    PipelineRasterizationStateRasterizationOrderAMD& setPNext( const void* pNext_ )
+    ValidationFlagsEXT& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
       return *this;
     }
 
-    PipelineRasterizationStateRasterizationOrderAMD& setRasterizationOrder( RasterizationOrderAMD rasterizationOrder_ )
+    ValidationFlagsEXT& setDisabledValidationCheckCount( uint32_t disabledValidationCheckCount_ )
     {
-      rasterizationOrder = rasterizationOrder_;
+      disabledValidationCheckCount = disabledValidationCheckCount_;
       return *this;
     }
 
-    operator const VkPipelineRasterizationStateRasterizationOrderAMD&() const
+    ValidationFlagsEXT& setPDisabledValidationChecks( ValidationCheckEXT* pDisabledValidationChecks_ )
     {
-      return *reinterpret_cast<const VkPipelineRasterizationStateRasterizationOrderAMD*>(this);
+      pDisabledValidationChecks = pDisabledValidationChecks_;
+      return *this;
     }
 
-    bool operator==( PipelineRasterizationStateRasterizationOrderAMD const& rhs ) const
+    operator const VkValidationFlagsEXT&() const
+    {
+      return *reinterpret_cast<const VkValidationFlagsEXT*>(this);
+    }
+
+    bool operator==( ValidationFlagsEXT const& rhs ) const
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
-          && ( rasterizationOrder == rhs.rasterizationOrder );
+          && ( disabledValidationCheckCount == rhs.disabledValidationCheckCount )
+          && ( pDisabledValidationChecks == rhs.pDisabledValidationChecks );
     }
 
-    bool operator!=( PipelineRasterizationStateRasterizationOrderAMD const& rhs ) const
+    bool operator!=( ValidationFlagsEXT const& rhs ) const
     {
       return !operator==( rhs );
     }
@@ -17699,9 +18035,10 @@ namespace vk
 
   public:
     const void* pNext;
-    RasterizationOrderAMD rasterizationOrder;
+    uint32_t disabledValidationCheckCount;
+    ValidationCheckEXT* pDisabledValidationChecks;
   };
-  static_assert( sizeof( PipelineRasterizationStateRasterizationOrderAMD ) == sizeof( VkPipelineRasterizationStateRasterizationOrderAMD ), "struct and wrapper have different size!" );
+  static_assert( sizeof( ValidationFlagsEXT ) == sizeof( VkValidationFlagsEXT ), "struct and wrapper have different size!" );
 
   inline Result createInstance( const InstanceCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, Instance* pInstance )
   {
@@ -18775,6 +19112,14 @@ namespace vk
     case Format::eAstc12x10SrgbBlock: return "Astc12x10SrgbBlock";
     case Format::eAstc12x12UnormBlock: return "Astc12x12UnormBlock";
     case Format::eAstc12x12SrgbBlock: return "Astc12x12SrgbBlock";
+    case Format::ePvrtc12BppUnormBlockIMG: return "Pvrtc12BppUnormBlockIMG";
+    case Format::ePvrtc14BppUnormBlockIMG: return "Pvrtc14BppUnormBlockIMG";
+    case Format::ePvrtc22BppUnormBlockIMG: return "Pvrtc22BppUnormBlockIMG";
+    case Format::ePvrtc24BppUnormBlockIMG: return "Pvrtc24BppUnormBlockIMG";
+    case Format::ePvrtc12BppSrgbBlockIMG: return "Pvrtc12BppSrgbBlockIMG";
+    case Format::ePvrtc14BppSrgbBlockIMG: return "Pvrtc14BppSrgbBlockIMG";
+    case Format::ePvrtc22BppSrgbBlockIMG: return "Pvrtc22BppSrgbBlockIMG";
+    case Format::ePvrtc24BppSrgbBlockIMG: return "Pvrtc24BppSrgbBlockIMG";
     default: return "invalid";
     }
   }
@@ -18851,6 +19196,12 @@ namespace vk
     case StructureType::eDedicatedAllocationImageCreateInfoNV: return "DedicatedAllocationImageCreateInfoNV";
     case StructureType::eDedicatedAllocationBufferCreateInfoNV: return "DedicatedAllocationBufferCreateInfoNV";
     case StructureType::eDedicatedAllocationMemoryAllocateInfoNV: return "DedicatedAllocationMemoryAllocateInfoNV";
+    case StructureType::eExternalMemoryImageCreateInfoNV: return "ExternalMemoryImageCreateInfoNV";
+    case StructureType::eExportMemoryAllocateInfoNV: return "ExportMemoryAllocateInfoNV";
+    case StructureType::eImportMemoryWin32HandleInfoNV: return "ImportMemoryWin32HandleInfoNV";
+    case StructureType::eExportMemoryWin32HandleInfoNV: return "ExportMemoryWin32HandleInfoNV";
+    case StructureType::eWin32KeyedMutexAcquireReleaseInfoNV: return "Win32KeyedMutexAcquireReleaseInfoNV";
+    case StructureType::eValidationFlagsEXT: return "ValidationFlagsEXT";
     default: return "invalid";
     }
   }
@@ -19781,6 +20132,59 @@ namespace vk
     {
     case RasterizationOrderAMD::eStrict: return "Strict";
     case RasterizationOrderAMD::eRelaxed: return "Relaxed";
+    default: return "invalid";
+    }
+  }
+
+  inline std::string to_string(ExternalMemoryHandleTypeFlagBitsNV value)
+  {
+    switch (value)
+    {
+    case ExternalMemoryHandleTypeFlagBitsNV::eOpaqueWin32: return "OpaqueWin32";
+    case ExternalMemoryHandleTypeFlagBitsNV::eOpaqueWin32Kmt: return "OpaqueWin32Kmt";
+    case ExternalMemoryHandleTypeFlagBitsNV::eD3D11Image: return "D3D11Image";
+    case ExternalMemoryHandleTypeFlagBitsNV::eD3D11ImageKmt: return "D3D11ImageKmt";
+    default: return "invalid";
+    }
+  }
+
+  inline std::string to_string(ExternalMemoryHandleTypeFlagsNV value)
+  {
+    if (!value) return "{}";
+    std::string result;
+    if (value & ExternalMemoryHandleTypeFlagBitsNV::eOpaqueWin32) result += "OpaqueWin32 | ";
+    if (value & ExternalMemoryHandleTypeFlagBitsNV::eOpaqueWin32Kmt) result += "OpaqueWin32Kmt | ";
+    if (value & ExternalMemoryHandleTypeFlagBitsNV::eD3D11Image) result += "D3D11Image | ";
+    if (value & ExternalMemoryHandleTypeFlagBitsNV::eD3D11ImageKmt) result += "D3D11ImageKmt | ";
+    return "{" + result.substr(0, result.size() - 3) + "}";
+  }
+
+  inline std::string to_string(ExternalMemoryFeatureFlagBitsNV value)
+  {
+    switch (value)
+    {
+    case ExternalMemoryFeatureFlagBitsNV::eDedicatedOnly: return "DedicatedOnly";
+    case ExternalMemoryFeatureFlagBitsNV::eExportable: return "Exportable";
+    case ExternalMemoryFeatureFlagBitsNV::eImportable: return "Importable";
+    default: return "invalid";
+    }
+  }
+
+  inline std::string to_string(ExternalMemoryFeatureFlagsNV value)
+  {
+    if (!value) return "{}";
+    std::string result;
+    if (value & ExternalMemoryFeatureFlagBitsNV::eDedicatedOnly) result += "DedicatedOnly | ";
+    if (value & ExternalMemoryFeatureFlagBitsNV::eExportable) result += "Exportable | ";
+    if (value & ExternalMemoryFeatureFlagBitsNV::eImportable) result += "Importable | ";
+    return "{" + result.substr(0, result.size() - 3) + "}";
+  }
+
+  inline std::string to_string(ValidationCheckEXT value)
+  {
+    switch (value)
+    {
+    case ValidationCheckEXT::eAll: return "All";
     default: return "invalid";
     }
   }

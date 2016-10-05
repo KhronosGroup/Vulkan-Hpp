@@ -827,8 +827,10 @@ std::map<size_t, size_t> getVectorParameters(CommandData const& commandData)
              || (commandData.arguments[i].len == "latexmath:[$dataSize \\over 4$]")
              || (commandData.arguments[i].len == "null-terminated")
              || (commandData.arguments[i].len == "pAllocateInfo->descriptorSetCount")
-             || (commandData.arguments[i].len == "pAllocateInfo->commandBufferCount"));
-      assert((lenParameters[i] == ~0) || (lenParameters[i] < i));
+             || (commandData.arguments[i].len == "pAllocateInfo->commandBufferCount")
+             || (commandData.arguments[i].len == "pAllocateInfo::descriptorSetCount")
+             || (commandData.arguments[i].len == "pAllocateInfo::commandBufferCount"));
+        assert((lenParameters[i] == ~0) || (lenParameters[i] < i));
     }
   }
   return lenParameters;
@@ -1981,6 +1983,10 @@ void writeFunctionBody(std::ofstream & ofs, std::string const& indentation, std:
           {
             size = reduceName(commandData.arguments[returnIndex].len);
             size_t pos = size.find("->");
+            if (pos == std::string::npos)
+            {
+              pos = size.find("::");
+            }
             assert(pos != std::string::npos);
             size.replace(pos, 2, ".");
           }

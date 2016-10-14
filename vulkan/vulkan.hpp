@@ -33,6 +33,7 @@
 #include <initializer_list>
 #include <string>
 #include <system_error>
+#include <tuple>
 #include <type_traits>
 #include <vulkan/vulkan.h>
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
@@ -399,6 +400,8 @@ namespace vk
 
     Result  result;
     T       value;
+
+    operator std::tuple<Result&, T&>() { return std::tuple<Result&, T&>(result, value); }
   };
 
   template <typename T>

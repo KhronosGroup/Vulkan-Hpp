@@ -319,6 +319,8 @@ std::string const resultValueHeader = (
   "\n"
   "    Result  result;\n"
   "    T       value;\n"
+  "\n"
+  "    operator std::tuple<Result&, T&>() { return std::tuple<Result&, T&>(result, value); }\n"
   "  };\n"
   "\n"
   "  template <typename T>\n"
@@ -3106,6 +3108,7 @@ int main( int argc, char **argv )
       << "#include <initializer_list>" << std::endl
       << "#include <string>" << std::endl
       << "#include <system_error>" << std::endl
+      << "#include <tuple>" << std::endl
       << "#include <type_traits>" << std::endl
       << "#include <vulkan/vulkan.h>" << std::endl
       << "#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE" << std::endl

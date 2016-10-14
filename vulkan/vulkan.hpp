@@ -66,6 +66,23 @@ static_assert( VK_HEADER_VERSION ==  31 , "Wrong VK_HEADER_VERSION!" );
 # endif
 #endif
 
+
+#if !defined(VULKAN_HPP_INLINE)
+# if defined(__clang___)
+#  if __has_attribute(always_inline)
+#   define VULKAN_HPP_INLINE __attribute__((always_inline)) __inline__
+#  else
+#    define VULKAN_HPP_INLINE inline
+#  endif
+# elif defined(__GNUC__)
+#  define VULKAN_HPP_INLINE __attribute__((always_inline)) __inline__
+# elif defined(_MSC_VER)
+#  define VULKAN_HPP_INLINE __forceinline
+# else
+#  define VULKAN_HPP_INLINE inline
+# endif
+#endif
+
 namespace vk
 {
   template <typename BitType, typename MaskType = VkFlags>
@@ -315,7 +332,7 @@ namespace vk
     eErrorInvalidShaderNV = VK_ERROR_INVALID_SHADER_NV
   };
 
-  inline std::string to_string(Result value)
+  VULKAN_HPP_INLINE std::string to_string(Result value)
   {
     switch (value)
     {
@@ -363,18 +380,18 @@ namespace vk
 # undef noexcept
 #endif
 
-  inline const std::error_category& errorCategory()
+  VULKAN_HPP_INLINE const std::error_category& errorCategory()
   {
     static ErrorCategoryImpl instance;
     return instance;
   }
 
-  inline std::error_code make_error_code(Result e)
+  VULKAN_HPP_INLINE std::error_code make_error_code(Result e)
   {
     return std::error_code(static_cast<int>(e), errorCategory());
   }
 
-  inline std::error_condition make_error_condition(Result e)
+  VULKAN_HPP_INLINE std::error_condition make_error_condition(Result e)
   {
     return std::error_condition(static_cast<int>(e), errorCategory());
   }
@@ -423,7 +440,7 @@ namespace vk
 #endif
   };
 
-  inline ResultValueType<void>::type createResultValue( Result result, char const * message )
+  VULKAN_HPP_INLINE ResultValueType<void>::type createResultValue( Result result, char const * message )
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
     assert( result == Result::eSuccess );
@@ -437,7 +454,7 @@ namespace vk
   }
 
   template <typename T>
-  inline typename ResultValueType<T>::type createResultValue( Result result, T & data, char const * message )
+  VULKAN_HPP_INLINE typename ResultValueType<T>::type createResultValue( Result result, T & data, char const * message )
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
     assert( result == Result::eSuccess );
@@ -451,7 +468,7 @@ namespace vk
 #endif
   }
 
-  inline Result createResultValue( Result result, char const * message, std::initializer_list<Result> successCodes )
+  VULKAN_HPP_INLINE Result createResultValue( Result result, char const * message, std::initializer_list<Result> successCodes )
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
     assert( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );
@@ -465,7 +482,7 @@ namespace vk
   }
 
   template <typename T>
-  inline ResultValue<T> createResultValue( Result result, T & data, char const * message, std::initializer_list<Result> successCodes )
+  VULKAN_HPP_INLINE ResultValue<T> createResultValue( Result result, T & data, char const * message, std::initializer_list<Result> successCodes )
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
     assert( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );
@@ -490,7 +507,7 @@ namespace vk
 
   using FramebufferCreateFlags = Flags<FramebufferCreateFlagBits, VkFramebufferCreateFlags>;
 
-  inline FramebufferCreateFlags operator|( FramebufferCreateFlagBits bit0, FramebufferCreateFlagBits bit1 )
+  VULKAN_HPP_INLINE FramebufferCreateFlags operator|( FramebufferCreateFlagBits bit0, FramebufferCreateFlagBits bit1 )
   {
     return FramebufferCreateFlags( bit0 ) | bit1;
   }
@@ -501,7 +518,7 @@ namespace vk
 
   using QueryPoolCreateFlags = Flags<QueryPoolCreateFlagBits, VkQueryPoolCreateFlags>;
 
-  inline QueryPoolCreateFlags operator|( QueryPoolCreateFlagBits bit0, QueryPoolCreateFlagBits bit1 )
+  VULKAN_HPP_INLINE QueryPoolCreateFlags operator|( QueryPoolCreateFlagBits bit0, QueryPoolCreateFlagBits bit1 )
   {
     return QueryPoolCreateFlags( bit0 ) | bit1;
   }
@@ -512,7 +529,7 @@ namespace vk
 
   using RenderPassCreateFlags = Flags<RenderPassCreateFlagBits, VkRenderPassCreateFlags>;
 
-  inline RenderPassCreateFlags operator|( RenderPassCreateFlagBits bit0, RenderPassCreateFlagBits bit1 )
+  VULKAN_HPP_INLINE RenderPassCreateFlags operator|( RenderPassCreateFlagBits bit0, RenderPassCreateFlagBits bit1 )
   {
     return RenderPassCreateFlags( bit0 ) | bit1;
   }
@@ -523,7 +540,7 @@ namespace vk
 
   using SamplerCreateFlags = Flags<SamplerCreateFlagBits, VkSamplerCreateFlags>;
 
-  inline SamplerCreateFlags operator|( SamplerCreateFlagBits bit0, SamplerCreateFlagBits bit1 )
+  VULKAN_HPP_INLINE SamplerCreateFlags operator|( SamplerCreateFlagBits bit0, SamplerCreateFlagBits bit1 )
   {
     return SamplerCreateFlags( bit0 ) | bit1;
   }
@@ -534,7 +551,7 @@ namespace vk
 
   using PipelineLayoutCreateFlags = Flags<PipelineLayoutCreateFlagBits, VkPipelineLayoutCreateFlags>;
 
-  inline PipelineLayoutCreateFlags operator|( PipelineLayoutCreateFlagBits bit0, PipelineLayoutCreateFlagBits bit1 )
+  VULKAN_HPP_INLINE PipelineLayoutCreateFlags operator|( PipelineLayoutCreateFlagBits bit0, PipelineLayoutCreateFlagBits bit1 )
   {
     return PipelineLayoutCreateFlags( bit0 ) | bit1;
   }
@@ -545,7 +562,7 @@ namespace vk
 
   using PipelineCacheCreateFlags = Flags<PipelineCacheCreateFlagBits, VkPipelineCacheCreateFlags>;
 
-  inline PipelineCacheCreateFlags operator|( PipelineCacheCreateFlagBits bit0, PipelineCacheCreateFlagBits bit1 )
+  VULKAN_HPP_INLINE PipelineCacheCreateFlags operator|( PipelineCacheCreateFlagBits bit0, PipelineCacheCreateFlagBits bit1 )
   {
     return PipelineCacheCreateFlags( bit0 ) | bit1;
   }
@@ -556,7 +573,7 @@ namespace vk
 
   using PipelineDepthStencilStateCreateFlags = Flags<PipelineDepthStencilStateCreateFlagBits, VkPipelineDepthStencilStateCreateFlags>;
 
-  inline PipelineDepthStencilStateCreateFlags operator|( PipelineDepthStencilStateCreateFlagBits bit0, PipelineDepthStencilStateCreateFlagBits bit1 )
+  VULKAN_HPP_INLINE PipelineDepthStencilStateCreateFlags operator|( PipelineDepthStencilStateCreateFlagBits bit0, PipelineDepthStencilStateCreateFlagBits bit1 )
   {
     return PipelineDepthStencilStateCreateFlags( bit0 ) | bit1;
   }
@@ -567,7 +584,7 @@ namespace vk
 
   using PipelineDynamicStateCreateFlags = Flags<PipelineDynamicStateCreateFlagBits, VkPipelineDynamicStateCreateFlags>;
 
-  inline PipelineDynamicStateCreateFlags operator|( PipelineDynamicStateCreateFlagBits bit0, PipelineDynamicStateCreateFlagBits bit1 )
+  VULKAN_HPP_INLINE PipelineDynamicStateCreateFlags operator|( PipelineDynamicStateCreateFlagBits bit0, PipelineDynamicStateCreateFlagBits bit1 )
   {
     return PipelineDynamicStateCreateFlags( bit0 ) | bit1;
   }
@@ -578,7 +595,7 @@ namespace vk
 
   using PipelineColorBlendStateCreateFlags = Flags<PipelineColorBlendStateCreateFlagBits, VkPipelineColorBlendStateCreateFlags>;
 
-  inline PipelineColorBlendStateCreateFlags operator|( PipelineColorBlendStateCreateFlagBits bit0, PipelineColorBlendStateCreateFlagBits bit1 )
+  VULKAN_HPP_INLINE PipelineColorBlendStateCreateFlags operator|( PipelineColorBlendStateCreateFlagBits bit0, PipelineColorBlendStateCreateFlagBits bit1 )
   {
     return PipelineColorBlendStateCreateFlags( bit0 ) | bit1;
   }
@@ -589,7 +606,7 @@ namespace vk
 
   using PipelineMultisampleStateCreateFlags = Flags<PipelineMultisampleStateCreateFlagBits, VkPipelineMultisampleStateCreateFlags>;
 
-  inline PipelineMultisampleStateCreateFlags operator|( PipelineMultisampleStateCreateFlagBits bit0, PipelineMultisampleStateCreateFlagBits bit1 )
+  VULKAN_HPP_INLINE PipelineMultisampleStateCreateFlags operator|( PipelineMultisampleStateCreateFlagBits bit0, PipelineMultisampleStateCreateFlagBits bit1 )
   {
     return PipelineMultisampleStateCreateFlags( bit0 ) | bit1;
   }
@@ -600,7 +617,7 @@ namespace vk
 
   using PipelineRasterizationStateCreateFlags = Flags<PipelineRasterizationStateCreateFlagBits, VkPipelineRasterizationStateCreateFlags>;
 
-  inline PipelineRasterizationStateCreateFlags operator|( PipelineRasterizationStateCreateFlagBits bit0, PipelineRasterizationStateCreateFlagBits bit1 )
+  VULKAN_HPP_INLINE PipelineRasterizationStateCreateFlags operator|( PipelineRasterizationStateCreateFlagBits bit0, PipelineRasterizationStateCreateFlagBits bit1 )
   {
     return PipelineRasterizationStateCreateFlags( bit0 ) | bit1;
   }
@@ -611,7 +628,7 @@ namespace vk
 
   using PipelineViewportStateCreateFlags = Flags<PipelineViewportStateCreateFlagBits, VkPipelineViewportStateCreateFlags>;
 
-  inline PipelineViewportStateCreateFlags operator|( PipelineViewportStateCreateFlagBits bit0, PipelineViewportStateCreateFlagBits bit1 )
+  VULKAN_HPP_INLINE PipelineViewportStateCreateFlags operator|( PipelineViewportStateCreateFlagBits bit0, PipelineViewportStateCreateFlagBits bit1 )
   {
     return PipelineViewportStateCreateFlags( bit0 ) | bit1;
   }
@@ -622,7 +639,7 @@ namespace vk
 
   using PipelineTessellationStateCreateFlags = Flags<PipelineTessellationStateCreateFlagBits, VkPipelineTessellationStateCreateFlags>;
 
-  inline PipelineTessellationStateCreateFlags operator|( PipelineTessellationStateCreateFlagBits bit0, PipelineTessellationStateCreateFlagBits bit1 )
+  VULKAN_HPP_INLINE PipelineTessellationStateCreateFlags operator|( PipelineTessellationStateCreateFlagBits bit0, PipelineTessellationStateCreateFlagBits bit1 )
   {
     return PipelineTessellationStateCreateFlags( bit0 ) | bit1;
   }
@@ -633,7 +650,7 @@ namespace vk
 
   using PipelineInputAssemblyStateCreateFlags = Flags<PipelineInputAssemblyStateCreateFlagBits, VkPipelineInputAssemblyStateCreateFlags>;
 
-  inline PipelineInputAssemblyStateCreateFlags operator|( PipelineInputAssemblyStateCreateFlagBits bit0, PipelineInputAssemblyStateCreateFlagBits bit1 )
+  VULKAN_HPP_INLINE PipelineInputAssemblyStateCreateFlags operator|( PipelineInputAssemblyStateCreateFlagBits bit0, PipelineInputAssemblyStateCreateFlagBits bit1 )
   {
     return PipelineInputAssemblyStateCreateFlags( bit0 ) | bit1;
   }
@@ -644,7 +661,7 @@ namespace vk
 
   using PipelineVertexInputStateCreateFlags = Flags<PipelineVertexInputStateCreateFlagBits, VkPipelineVertexInputStateCreateFlags>;
 
-  inline PipelineVertexInputStateCreateFlags operator|( PipelineVertexInputStateCreateFlagBits bit0, PipelineVertexInputStateCreateFlagBits bit1 )
+  VULKAN_HPP_INLINE PipelineVertexInputStateCreateFlags operator|( PipelineVertexInputStateCreateFlagBits bit0, PipelineVertexInputStateCreateFlagBits bit1 )
   {
     return PipelineVertexInputStateCreateFlags( bit0 ) | bit1;
   }
@@ -655,7 +672,7 @@ namespace vk
 
   using PipelineShaderStageCreateFlags = Flags<PipelineShaderStageCreateFlagBits, VkPipelineShaderStageCreateFlags>;
 
-  inline PipelineShaderStageCreateFlags operator|( PipelineShaderStageCreateFlagBits bit0, PipelineShaderStageCreateFlagBits bit1 )
+  VULKAN_HPP_INLINE PipelineShaderStageCreateFlags operator|( PipelineShaderStageCreateFlagBits bit0, PipelineShaderStageCreateFlagBits bit1 )
   {
     return PipelineShaderStageCreateFlags( bit0 ) | bit1;
   }
@@ -666,7 +683,7 @@ namespace vk
 
   using DescriptorSetLayoutCreateFlags = Flags<DescriptorSetLayoutCreateFlagBits, VkDescriptorSetLayoutCreateFlags>;
 
-  inline DescriptorSetLayoutCreateFlags operator|( DescriptorSetLayoutCreateFlagBits bit0, DescriptorSetLayoutCreateFlagBits bit1 )
+  VULKAN_HPP_INLINE DescriptorSetLayoutCreateFlags operator|( DescriptorSetLayoutCreateFlagBits bit0, DescriptorSetLayoutCreateFlagBits bit1 )
   {
     return DescriptorSetLayoutCreateFlags( bit0 ) | bit1;
   }
@@ -677,7 +694,7 @@ namespace vk
 
   using BufferViewCreateFlags = Flags<BufferViewCreateFlagBits, VkBufferViewCreateFlags>;
 
-  inline BufferViewCreateFlags operator|( BufferViewCreateFlagBits bit0, BufferViewCreateFlagBits bit1 )
+  VULKAN_HPP_INLINE BufferViewCreateFlags operator|( BufferViewCreateFlagBits bit0, BufferViewCreateFlagBits bit1 )
   {
     return BufferViewCreateFlags( bit0 ) | bit1;
   }
@@ -688,7 +705,7 @@ namespace vk
 
   using InstanceCreateFlags = Flags<InstanceCreateFlagBits, VkInstanceCreateFlags>;
 
-  inline InstanceCreateFlags operator|( InstanceCreateFlagBits bit0, InstanceCreateFlagBits bit1 )
+  VULKAN_HPP_INLINE InstanceCreateFlags operator|( InstanceCreateFlagBits bit0, InstanceCreateFlagBits bit1 )
   {
     return InstanceCreateFlags( bit0 ) | bit1;
   }
@@ -699,7 +716,7 @@ namespace vk
 
   using DeviceCreateFlags = Flags<DeviceCreateFlagBits, VkDeviceCreateFlags>;
 
-  inline DeviceCreateFlags operator|( DeviceCreateFlagBits bit0, DeviceCreateFlagBits bit1 )
+  VULKAN_HPP_INLINE DeviceCreateFlags operator|( DeviceCreateFlagBits bit0, DeviceCreateFlagBits bit1 )
   {
     return DeviceCreateFlags( bit0 ) | bit1;
   }
@@ -710,7 +727,7 @@ namespace vk
 
   using DeviceQueueCreateFlags = Flags<DeviceQueueCreateFlagBits, VkDeviceQueueCreateFlags>;
 
-  inline DeviceQueueCreateFlags operator|( DeviceQueueCreateFlagBits bit0, DeviceQueueCreateFlagBits bit1 )
+  VULKAN_HPP_INLINE DeviceQueueCreateFlags operator|( DeviceQueueCreateFlagBits bit0, DeviceQueueCreateFlagBits bit1 )
   {
     return DeviceQueueCreateFlags( bit0 ) | bit1;
   }
@@ -721,7 +738,7 @@ namespace vk
 
   using ImageViewCreateFlags = Flags<ImageViewCreateFlagBits, VkImageViewCreateFlags>;
 
-  inline ImageViewCreateFlags operator|( ImageViewCreateFlagBits bit0, ImageViewCreateFlagBits bit1 )
+  VULKAN_HPP_INLINE ImageViewCreateFlags operator|( ImageViewCreateFlagBits bit0, ImageViewCreateFlagBits bit1 )
   {
     return ImageViewCreateFlags( bit0 ) | bit1;
   }
@@ -732,7 +749,7 @@ namespace vk
 
   using SemaphoreCreateFlags = Flags<SemaphoreCreateFlagBits, VkSemaphoreCreateFlags>;
 
-  inline SemaphoreCreateFlags operator|( SemaphoreCreateFlagBits bit0, SemaphoreCreateFlagBits bit1 )
+  VULKAN_HPP_INLINE SemaphoreCreateFlags operator|( SemaphoreCreateFlagBits bit0, SemaphoreCreateFlagBits bit1 )
   {
     return SemaphoreCreateFlags( bit0 ) | bit1;
   }
@@ -743,7 +760,7 @@ namespace vk
 
   using ShaderModuleCreateFlags = Flags<ShaderModuleCreateFlagBits, VkShaderModuleCreateFlags>;
 
-  inline ShaderModuleCreateFlags operator|( ShaderModuleCreateFlagBits bit0, ShaderModuleCreateFlagBits bit1 )
+  VULKAN_HPP_INLINE ShaderModuleCreateFlags operator|( ShaderModuleCreateFlagBits bit0, ShaderModuleCreateFlagBits bit1 )
   {
     return ShaderModuleCreateFlags( bit0 ) | bit1;
   }
@@ -754,7 +771,7 @@ namespace vk
 
   using EventCreateFlags = Flags<EventCreateFlagBits, VkEventCreateFlags>;
 
-  inline EventCreateFlags operator|( EventCreateFlagBits bit0, EventCreateFlagBits bit1 )
+  VULKAN_HPP_INLINE EventCreateFlags operator|( EventCreateFlagBits bit0, EventCreateFlagBits bit1 )
   {
     return EventCreateFlags( bit0 ) | bit1;
   }
@@ -765,7 +782,7 @@ namespace vk
 
   using MemoryMapFlags = Flags<MemoryMapFlagBits, VkMemoryMapFlags>;
 
-  inline MemoryMapFlags operator|( MemoryMapFlagBits bit0, MemoryMapFlagBits bit1 )
+  VULKAN_HPP_INLINE MemoryMapFlags operator|( MemoryMapFlagBits bit0, MemoryMapFlagBits bit1 )
   {
     return MemoryMapFlags( bit0 ) | bit1;
   }
@@ -776,7 +793,7 @@ namespace vk
 
   using SubpassDescriptionFlags = Flags<SubpassDescriptionFlagBits, VkSubpassDescriptionFlags>;
 
-  inline SubpassDescriptionFlags operator|( SubpassDescriptionFlagBits bit0, SubpassDescriptionFlagBits bit1 )
+  VULKAN_HPP_INLINE SubpassDescriptionFlags operator|( SubpassDescriptionFlagBits bit0, SubpassDescriptionFlagBits bit1 )
   {
     return SubpassDescriptionFlags( bit0 ) | bit1;
   }
@@ -787,7 +804,7 @@ namespace vk
 
   using DescriptorPoolResetFlags = Flags<DescriptorPoolResetFlagBits, VkDescriptorPoolResetFlags>;
 
-  inline DescriptorPoolResetFlags operator|( DescriptorPoolResetFlagBits bit0, DescriptorPoolResetFlagBits bit1 )
+  VULKAN_HPP_INLINE DescriptorPoolResetFlags operator|( DescriptorPoolResetFlagBits bit0, DescriptorPoolResetFlagBits bit1 )
   {
     return DescriptorPoolResetFlags( bit0 ) | bit1;
   }
@@ -798,7 +815,7 @@ namespace vk
 
   using SwapchainCreateFlagsKHR = Flags<SwapchainCreateFlagBitsKHR, VkSwapchainCreateFlagsKHR>;
 
-  inline SwapchainCreateFlagsKHR operator|( SwapchainCreateFlagBitsKHR bit0, SwapchainCreateFlagBitsKHR bit1 )
+  VULKAN_HPP_INLINE SwapchainCreateFlagsKHR operator|( SwapchainCreateFlagBitsKHR bit0, SwapchainCreateFlagBitsKHR bit1 )
   {
     return SwapchainCreateFlagsKHR( bit0 ) | bit1;
   }
@@ -809,7 +826,7 @@ namespace vk
 
   using DisplayModeCreateFlagsKHR = Flags<DisplayModeCreateFlagBitsKHR, VkDisplayModeCreateFlagsKHR>;
 
-  inline DisplayModeCreateFlagsKHR operator|( DisplayModeCreateFlagBitsKHR bit0, DisplayModeCreateFlagBitsKHR bit1 )
+  VULKAN_HPP_INLINE DisplayModeCreateFlagsKHR operator|( DisplayModeCreateFlagBitsKHR bit0, DisplayModeCreateFlagBitsKHR bit1 )
   {
     return DisplayModeCreateFlagsKHR( bit0 ) | bit1;
   }
@@ -820,7 +837,7 @@ namespace vk
 
   using DisplaySurfaceCreateFlagsKHR = Flags<DisplaySurfaceCreateFlagBitsKHR, VkDisplaySurfaceCreateFlagsKHR>;
 
-  inline DisplaySurfaceCreateFlagsKHR operator|( DisplaySurfaceCreateFlagBitsKHR bit0, DisplaySurfaceCreateFlagBitsKHR bit1 )
+  VULKAN_HPP_INLINE DisplaySurfaceCreateFlagsKHR operator|( DisplaySurfaceCreateFlagBitsKHR bit0, DisplaySurfaceCreateFlagBitsKHR bit1 )
   {
     return DisplaySurfaceCreateFlagsKHR( bit0 ) | bit1;
   }
@@ -834,7 +851,7 @@ namespace vk
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
   using AndroidSurfaceCreateFlagsKHR = Flags<AndroidSurfaceCreateFlagBitsKHR, VkAndroidSurfaceCreateFlagsKHR>;
 
-  inline AndroidSurfaceCreateFlagsKHR operator|( AndroidSurfaceCreateFlagBitsKHR bit0, AndroidSurfaceCreateFlagBitsKHR bit1 )
+  VULKAN_HPP_INLINE AndroidSurfaceCreateFlagsKHR operator|( AndroidSurfaceCreateFlagBitsKHR bit0, AndroidSurfaceCreateFlagBitsKHR bit1 )
   {
     return AndroidSurfaceCreateFlagsKHR( bit0 ) | bit1;
   }
@@ -849,7 +866,7 @@ namespace vk
 #ifdef VK_USE_PLATFORM_MIR_KHR
   using MirSurfaceCreateFlagsKHR = Flags<MirSurfaceCreateFlagBitsKHR, VkMirSurfaceCreateFlagsKHR>;
 
-  inline MirSurfaceCreateFlagsKHR operator|( MirSurfaceCreateFlagBitsKHR bit0, MirSurfaceCreateFlagBitsKHR bit1 )
+  VULKAN_HPP_INLINE MirSurfaceCreateFlagsKHR operator|( MirSurfaceCreateFlagBitsKHR bit0, MirSurfaceCreateFlagBitsKHR bit1 )
   {
     return MirSurfaceCreateFlagsKHR( bit0 ) | bit1;
   }
@@ -864,7 +881,7 @@ namespace vk
 #ifdef VK_USE_PLATFORM_WAYLAND_KHR
   using WaylandSurfaceCreateFlagsKHR = Flags<WaylandSurfaceCreateFlagBitsKHR, VkWaylandSurfaceCreateFlagsKHR>;
 
-  inline WaylandSurfaceCreateFlagsKHR operator|( WaylandSurfaceCreateFlagBitsKHR bit0, WaylandSurfaceCreateFlagBitsKHR bit1 )
+  VULKAN_HPP_INLINE WaylandSurfaceCreateFlagsKHR operator|( WaylandSurfaceCreateFlagBitsKHR bit0, WaylandSurfaceCreateFlagBitsKHR bit1 )
   {
     return WaylandSurfaceCreateFlagsKHR( bit0 ) | bit1;
   }
@@ -879,7 +896,7 @@ namespace vk
 #ifdef VK_USE_PLATFORM_WIN32_KHR
   using Win32SurfaceCreateFlagsKHR = Flags<Win32SurfaceCreateFlagBitsKHR, VkWin32SurfaceCreateFlagsKHR>;
 
-  inline Win32SurfaceCreateFlagsKHR operator|( Win32SurfaceCreateFlagBitsKHR bit0, Win32SurfaceCreateFlagBitsKHR bit1 )
+  VULKAN_HPP_INLINE Win32SurfaceCreateFlagsKHR operator|( Win32SurfaceCreateFlagBitsKHR bit0, Win32SurfaceCreateFlagBitsKHR bit1 )
   {
     return Win32SurfaceCreateFlagsKHR( bit0 ) | bit1;
   }
@@ -894,7 +911,7 @@ namespace vk
 #ifdef VK_USE_PLATFORM_XLIB_KHR
   using XlibSurfaceCreateFlagsKHR = Flags<XlibSurfaceCreateFlagBitsKHR, VkXlibSurfaceCreateFlagsKHR>;
 
-  inline XlibSurfaceCreateFlagsKHR operator|( XlibSurfaceCreateFlagBitsKHR bit0, XlibSurfaceCreateFlagBitsKHR bit1 )
+  VULKAN_HPP_INLINE XlibSurfaceCreateFlagsKHR operator|( XlibSurfaceCreateFlagBitsKHR bit0, XlibSurfaceCreateFlagBitsKHR bit1 )
   {
     return XlibSurfaceCreateFlagsKHR( bit0 ) | bit1;
   }
@@ -909,7 +926,7 @@ namespace vk
 #ifdef VK_USE_PLATFORM_XCB_KHR
   using XcbSurfaceCreateFlagsKHR = Flags<XcbSurfaceCreateFlagBitsKHR, VkXcbSurfaceCreateFlagsKHR>;
 
-  inline XcbSurfaceCreateFlagsKHR operator|( XcbSurfaceCreateFlagBitsKHR bit0, XcbSurfaceCreateFlagBitsKHR bit1 )
+  VULKAN_HPP_INLINE XcbSurfaceCreateFlagsKHR operator|( XcbSurfaceCreateFlagBitsKHR bit0, XcbSurfaceCreateFlagBitsKHR bit1 )
   {
     return XcbSurfaceCreateFlagsKHR( bit0 ) | bit1;
   }
@@ -4761,7 +4778,7 @@ namespace vk
 
   using CullModeFlags = Flags<CullModeFlagBits, VkCullModeFlags>;
 
-  inline CullModeFlags operator|( CullModeFlagBits bit0, CullModeFlagBits bit1 )
+  VULKAN_HPP_INLINE CullModeFlags operator|( CullModeFlagBits bit0, CullModeFlagBits bit1 )
   {
     return CullModeFlags( bit0 ) | bit1;
   }
@@ -9161,7 +9178,7 @@ namespace vk
 
   using QueueFlags = Flags<QueueFlagBits, VkQueueFlags>;
 
-  inline QueueFlags operator|( QueueFlagBits bit0, QueueFlagBits bit1 )
+  VULKAN_HPP_INLINE QueueFlags operator|( QueueFlagBits bit0, QueueFlagBits bit1 )
   {
     return QueueFlags( bit0 ) | bit1;
   }
@@ -9204,7 +9221,7 @@ namespace vk
 
   using MemoryPropertyFlags = Flags<MemoryPropertyFlagBits, VkMemoryPropertyFlags>;
 
-  inline MemoryPropertyFlags operator|( MemoryPropertyFlagBits bit0, MemoryPropertyFlagBits bit1 )
+  VULKAN_HPP_INLINE MemoryPropertyFlags operator|( MemoryPropertyFlagBits bit0, MemoryPropertyFlagBits bit1 )
   {
     return MemoryPropertyFlags( bit0 ) | bit1;
   }
@@ -9239,7 +9256,7 @@ namespace vk
 
   using MemoryHeapFlags = Flags<MemoryHeapFlagBits, VkMemoryHeapFlags>;
 
-  inline MemoryHeapFlags operator|( MemoryHeapFlagBits bit0, MemoryHeapFlagBits bit1 )
+  VULKAN_HPP_INLINE MemoryHeapFlags operator|( MemoryHeapFlagBits bit0, MemoryHeapFlagBits bit1 )
   {
     return MemoryHeapFlags( bit0 ) | bit1;
   }
@@ -9317,7 +9334,7 @@ namespace vk
 
   using AccessFlags = Flags<AccessFlagBits, VkAccessFlags>;
 
-  inline AccessFlags operator|( AccessFlagBits bit0, AccessFlagBits bit1 )
+  VULKAN_HPP_INLINE AccessFlags operator|( AccessFlagBits bit0, AccessFlagBits bit1 )
   {
     return AccessFlags( bit0 ) | bit1;
   }
@@ -9528,7 +9545,7 @@ namespace vk
 
   using BufferUsageFlags = Flags<BufferUsageFlagBits, VkBufferUsageFlags>;
 
-  inline BufferUsageFlags operator|( BufferUsageFlagBits bit0, BufferUsageFlagBits bit1 )
+  VULKAN_HPP_INLINE BufferUsageFlags operator|( BufferUsageFlagBits bit0, BufferUsageFlagBits bit1 )
   {
     return BufferUsageFlags( bit0 ) | bit1;
   }
@@ -9542,7 +9559,7 @@ namespace vk
 
   using BufferCreateFlags = Flags<BufferCreateFlagBits, VkBufferCreateFlags>;
 
-  inline BufferCreateFlags operator|( BufferCreateFlagBits bit0, BufferCreateFlagBits bit1 )
+  VULKAN_HPP_INLINE BufferCreateFlags operator|( BufferCreateFlagBits bit0, BufferCreateFlagBits bit1 )
   {
     return BufferCreateFlags( bit0 ) | bit1;
   }
@@ -9670,7 +9687,7 @@ namespace vk
 
   using ShaderStageFlags = Flags<ShaderStageFlagBits, VkShaderStageFlags>;
 
-  inline ShaderStageFlags operator|( ShaderStageFlagBits bit0, ShaderStageFlagBits bit1 )
+  VULKAN_HPP_INLINE ShaderStageFlags operator|( ShaderStageFlagBits bit0, ShaderStageFlagBits bit1 )
   {
     return ShaderStageFlags( bit0 ) | bit1;
   }
@@ -10111,7 +10128,7 @@ namespace vk
 
   using ImageUsageFlags = Flags<ImageUsageFlagBits, VkImageUsageFlags>;
 
-  inline ImageUsageFlags operator|( ImageUsageFlagBits bit0, ImageUsageFlagBits bit1 )
+  VULKAN_HPP_INLINE ImageUsageFlags operator|( ImageUsageFlagBits bit0, ImageUsageFlagBits bit1 )
   {
     return ImageUsageFlags( bit0 ) | bit1;
   }
@@ -10127,7 +10144,7 @@ namespace vk
 
   using ImageCreateFlags = Flags<ImageCreateFlagBits, VkImageCreateFlags>;
 
-  inline ImageCreateFlags operator|( ImageCreateFlagBits bit0, ImageCreateFlagBits bit1 )
+  VULKAN_HPP_INLINE ImageCreateFlags operator|( ImageCreateFlagBits bit0, ImageCreateFlagBits bit1 )
   {
     return ImageCreateFlags( bit0 ) | bit1;
   }
@@ -10141,7 +10158,7 @@ namespace vk
 
   using PipelineCreateFlags = Flags<PipelineCreateFlagBits, VkPipelineCreateFlags>;
 
-  inline PipelineCreateFlags operator|( PipelineCreateFlagBits bit0, PipelineCreateFlagBits bit1 )
+  VULKAN_HPP_INLINE PipelineCreateFlags operator|( PipelineCreateFlagBits bit0, PipelineCreateFlagBits bit1 )
   {
     return PipelineCreateFlags( bit0 ) | bit1;
   }
@@ -10256,7 +10273,7 @@ namespace vk
 
   using ColorComponentFlags = Flags<ColorComponentFlagBits, VkColorComponentFlags>;
 
-  inline ColorComponentFlags operator|( ColorComponentFlagBits bit0, ColorComponentFlagBits bit1 )
+  VULKAN_HPP_INLINE ColorComponentFlags operator|( ColorComponentFlagBits bit0, ColorComponentFlagBits bit1 )
   {
     return ColorComponentFlags( bit0 ) | bit1;
   }
@@ -10483,7 +10500,7 @@ namespace vk
 
   using FenceCreateFlags = Flags<FenceCreateFlagBits, VkFenceCreateFlags>;
 
-  inline FenceCreateFlags operator|( FenceCreateFlagBits bit0, FenceCreateFlagBits bit1 )
+  VULKAN_HPP_INLINE FenceCreateFlags operator|( FenceCreateFlagBits bit0, FenceCreateFlagBits bit1 )
   {
     return FenceCreateFlags( bit0 ) | bit1;
   }
@@ -10572,7 +10589,7 @@ namespace vk
 
   using FormatFeatureFlags = Flags<FormatFeatureFlagBits, VkFormatFeatureFlags>;
 
-  inline FormatFeatureFlags operator|( FormatFeatureFlagBits bit0, FormatFeatureFlagBits bit1 )
+  VULKAN_HPP_INLINE FormatFeatureFlags operator|( FormatFeatureFlagBits bit0, FormatFeatureFlagBits bit1 )
   {
     return FormatFeatureFlags( bit0 ) | bit1;
   }
@@ -10609,7 +10626,7 @@ namespace vk
 
   using QueryControlFlags = Flags<QueryControlFlagBits, VkQueryControlFlags>;
 
-  inline QueryControlFlags operator|( QueryControlFlagBits bit0, QueryControlFlagBits bit1 )
+  VULKAN_HPP_INLINE QueryControlFlags operator|( QueryControlFlagBits bit0, QueryControlFlagBits bit1 )
   {
     return QueryControlFlags( bit0 ) | bit1;
   }
@@ -10624,7 +10641,7 @@ namespace vk
 
   using QueryResultFlags = Flags<QueryResultFlagBits, VkQueryResultFlags>;
 
-  inline QueryResultFlags operator|( QueryResultFlagBits bit0, QueryResultFlagBits bit1 )
+  VULKAN_HPP_INLINE QueryResultFlags operator|( QueryResultFlagBits bit0, QueryResultFlagBits bit1 )
   {
     return QueryResultFlags( bit0 ) | bit1;
   }
@@ -10638,7 +10655,7 @@ namespace vk
 
   using CommandBufferUsageFlags = Flags<CommandBufferUsageFlagBits, VkCommandBufferUsageFlags>;
 
-  inline CommandBufferUsageFlags operator|( CommandBufferUsageFlagBits bit0, CommandBufferUsageFlagBits bit1 )
+  VULKAN_HPP_INLINE CommandBufferUsageFlags operator|( CommandBufferUsageFlagBits bit0, CommandBufferUsageFlagBits bit1 )
   {
     return CommandBufferUsageFlags( bit0 ) | bit1;
   }
@@ -10660,7 +10677,7 @@ namespace vk
 
   using QueryPipelineStatisticFlags = Flags<QueryPipelineStatisticFlagBits, VkQueryPipelineStatisticFlags>;
 
-  inline QueryPipelineStatisticFlags operator|( QueryPipelineStatisticFlagBits bit0, QueryPipelineStatisticFlagBits bit1 )
+  VULKAN_HPP_INLINE QueryPipelineStatisticFlags operator|( QueryPipelineStatisticFlagBits bit0, QueryPipelineStatisticFlagBits bit1 )
   {
     return QueryPipelineStatisticFlags( bit0 ) | bit1;
   }
@@ -10948,7 +10965,7 @@ namespace vk
 
   using ImageAspectFlags = Flags<ImageAspectFlagBits, VkImageAspectFlags>;
 
-  inline ImageAspectFlags operator|( ImageAspectFlagBits bit0, ImageAspectFlagBits bit1 )
+  VULKAN_HPP_INLINE ImageAspectFlags operator|( ImageAspectFlagBits bit0, ImageAspectFlagBits bit1 )
   {
     return ImageAspectFlags( bit0 ) | bit1;
   }
@@ -11773,7 +11790,7 @@ namespace vk
 
   using SparseImageFormatFlags = Flags<SparseImageFormatFlagBits, VkSparseImageFormatFlags>;
 
-  inline SparseImageFormatFlags operator|( SparseImageFormatFlagBits bit0, SparseImageFormatFlagBits bit1 )
+  VULKAN_HPP_INLINE SparseImageFormatFlags operator|( SparseImageFormatFlagBits bit0, SparseImageFormatFlagBits bit1 )
   {
     return SparseImageFormatFlags( bit0 ) | bit1;
   }
@@ -11839,7 +11856,7 @@ namespace vk
 
   using SparseMemoryBindFlags = Flags<SparseMemoryBindFlagBits, VkSparseMemoryBindFlags>;
 
-  inline SparseMemoryBindFlags operator|( SparseMemoryBindFlagBits bit0, SparseMemoryBindFlagBits bit1 )
+  VULKAN_HPP_INLINE SparseMemoryBindFlags operator|( SparseMemoryBindFlagBits bit0, SparseMemoryBindFlagBits bit1 )
   {
     return SparseMemoryBindFlags( bit0 ) | bit1;
   }
@@ -12362,7 +12379,7 @@ namespace vk
 
   using PipelineStageFlags = Flags<PipelineStageFlagBits, VkPipelineStageFlags>;
 
-  inline PipelineStageFlags operator|( PipelineStageFlagBits bit0, PipelineStageFlagBits bit1 )
+  VULKAN_HPP_INLINE PipelineStageFlags operator|( PipelineStageFlagBits bit0, PipelineStageFlagBits bit1 )
   {
     return PipelineStageFlags( bit0 ) | bit1;
   }
@@ -12375,7 +12392,7 @@ namespace vk
 
   using CommandPoolCreateFlags = Flags<CommandPoolCreateFlagBits, VkCommandPoolCreateFlags>;
 
-  inline CommandPoolCreateFlags operator|( CommandPoolCreateFlagBits bit0, CommandPoolCreateFlagBits bit1 )
+  VULKAN_HPP_INLINE CommandPoolCreateFlags operator|( CommandPoolCreateFlagBits bit0, CommandPoolCreateFlagBits bit1 )
   {
     return CommandPoolCreateFlags( bit0 ) | bit1;
   }
@@ -12460,7 +12477,7 @@ namespace vk
 
   using CommandPoolResetFlags = Flags<CommandPoolResetFlagBits, VkCommandPoolResetFlags>;
 
-  inline CommandPoolResetFlags operator|( CommandPoolResetFlagBits bit0, CommandPoolResetFlagBits bit1 )
+  VULKAN_HPP_INLINE CommandPoolResetFlags operator|( CommandPoolResetFlagBits bit0, CommandPoolResetFlagBits bit1 )
   {
     return CommandPoolResetFlags( bit0 ) | bit1;
   }
@@ -12472,7 +12489,7 @@ namespace vk
 
   using CommandBufferResetFlags = Flags<CommandBufferResetFlagBits, VkCommandBufferResetFlags>;
 
-  inline CommandBufferResetFlags operator|( CommandBufferResetFlagBits bit0, CommandBufferResetFlagBits bit1 )
+  VULKAN_HPP_INLINE CommandBufferResetFlags operator|( CommandBufferResetFlagBits bit0, CommandBufferResetFlagBits bit1 )
   {
     return CommandBufferResetFlags( bit0 ) | bit1;
   }
@@ -12490,7 +12507,7 @@ namespace vk
 
   using SampleCountFlags = Flags<SampleCountFlagBits, VkSampleCountFlags>;
 
-  inline SampleCountFlags operator|( SampleCountFlagBits bit0, SampleCountFlagBits bit1 )
+  VULKAN_HPP_INLINE SampleCountFlags operator|( SampleCountFlagBits bit0, SampleCountFlagBits bit1 )
   {
     return SampleCountFlags( bit0 ) | bit1;
   }
@@ -13297,7 +13314,7 @@ namespace vk
 
   using AttachmentDescriptionFlags = Flags<AttachmentDescriptionFlagBits, VkAttachmentDescriptionFlags>;
 
-  inline AttachmentDescriptionFlags operator|( AttachmentDescriptionFlagBits bit0, AttachmentDescriptionFlagBits bit1 )
+  VULKAN_HPP_INLINE AttachmentDescriptionFlags operator|( AttachmentDescriptionFlagBits bit0, AttachmentDescriptionFlagBits bit1 )
   {
     return AttachmentDescriptionFlags( bit0 ) | bit1;
   }
@@ -13426,7 +13443,7 @@ namespace vk
 
   using StencilFaceFlags = Flags<StencilFaceFlagBits, VkStencilFaceFlags>;
 
-  inline StencilFaceFlags operator|( StencilFaceFlagBits bit0, StencilFaceFlagBits bit1 )
+  VULKAN_HPP_INLINE StencilFaceFlags operator|( StencilFaceFlagBits bit0, StencilFaceFlagBits bit1 )
   {
     return StencilFaceFlags( bit0 ) | bit1;
   }
@@ -13438,7 +13455,7 @@ namespace vk
 
   using DescriptorPoolCreateFlags = Flags<DescriptorPoolCreateFlagBits, VkDescriptorPoolCreateFlags>;
 
-  inline DescriptorPoolCreateFlags operator|( DescriptorPoolCreateFlagBits bit0, DescriptorPoolCreateFlagBits bit1 )
+  VULKAN_HPP_INLINE DescriptorPoolCreateFlags operator|( DescriptorPoolCreateFlagBits bit0, DescriptorPoolCreateFlagBits bit1 )
   {
     return DescriptorPoolCreateFlags( bit0 ) | bit1;
   }
@@ -13541,7 +13558,7 @@ namespace vk
 
   using DependencyFlags = Flags<DependencyFlagBits, VkDependencyFlags>;
 
-  inline DependencyFlags operator|( DependencyFlagBits bit0, DependencyFlagBits bit1 )
+  VULKAN_HPP_INLINE DependencyFlags operator|( DependencyFlagBits bit0, DependencyFlagBits bit1 )
   {
     return DependencyFlags( bit0 ) | bit1;
   }
@@ -14794,7 +14811,7 @@ namespace vk
 
   using DisplayPlaneAlphaFlagsKHR = Flags<DisplayPlaneAlphaFlagBitsKHR, VkDisplayPlaneAlphaFlagsKHR>;
 
-  inline DisplayPlaneAlphaFlagsKHR operator|( DisplayPlaneAlphaFlagBitsKHR bit0, DisplayPlaneAlphaFlagBitsKHR bit1 )
+  VULKAN_HPP_INLINE DisplayPlaneAlphaFlagsKHR operator|( DisplayPlaneAlphaFlagBitsKHR bit0, DisplayPlaneAlphaFlagBitsKHR bit1 )
   {
     return DisplayPlaneAlphaFlagsKHR( bit0 ) | bit1;
   }
@@ -14846,7 +14863,7 @@ namespace vk
 
   using CompositeAlphaFlagsKHR = Flags<CompositeAlphaFlagBitsKHR, VkCompositeAlphaFlagsKHR>;
 
-  inline CompositeAlphaFlagsKHR operator|( CompositeAlphaFlagBitsKHR bit0, CompositeAlphaFlagBitsKHR bit1 )
+  VULKAN_HPP_INLINE CompositeAlphaFlagsKHR operator|( CompositeAlphaFlagBitsKHR bit0, CompositeAlphaFlagBitsKHR bit1 )
   {
     return CompositeAlphaFlagsKHR( bit0 ) | bit1;
   }
@@ -14866,7 +14883,7 @@ namespace vk
 
   using SurfaceTransformFlagsKHR = Flags<SurfaceTransformFlagBitsKHR, VkSurfaceTransformFlagsKHR>;
 
-  inline SurfaceTransformFlagsKHR operator|( SurfaceTransformFlagBitsKHR bit0, SurfaceTransformFlagBitsKHR bit1 )
+  VULKAN_HPP_INLINE SurfaceTransformFlagsKHR operator|( SurfaceTransformFlagBitsKHR bit0, SurfaceTransformFlagBitsKHR bit1 )
   {
     return SurfaceTransformFlagsKHR( bit0 ) | bit1;
   }
@@ -15280,7 +15297,7 @@ namespace vk
 
   using DebugReportFlagsEXT = Flags<DebugReportFlagBitsEXT, VkDebugReportFlagsEXT>;
 
-  inline DebugReportFlagsEXT operator|( DebugReportFlagBitsEXT bit0, DebugReportFlagBitsEXT bit1 )
+  VULKAN_HPP_INLINE DebugReportFlagsEXT operator|( DebugReportFlagBitsEXT bit0, DebugReportFlagBitsEXT bit1 )
   {
     return DebugReportFlagsEXT( bit0 ) | bit1;
   }
@@ -15668,7 +15685,7 @@ namespace vk
 
   using ExternalMemoryHandleTypeFlagsNV = Flags<ExternalMemoryHandleTypeFlagBitsNV, VkExternalMemoryHandleTypeFlagsNV>;
 
-  inline ExternalMemoryHandleTypeFlagsNV operator|( ExternalMemoryHandleTypeFlagBitsNV bit0, ExternalMemoryHandleTypeFlagBitsNV bit1 )
+  VULKAN_HPP_INLINE ExternalMemoryHandleTypeFlagsNV operator|( ExternalMemoryHandleTypeFlagBitsNV bit0, ExternalMemoryHandleTypeFlagBitsNV bit1 )
   {
     return ExternalMemoryHandleTypeFlagsNV( bit0 ) | bit1;
   }
@@ -17065,7 +17082,7 @@ namespace vk
 
   using ExternalMemoryFeatureFlagsNV = Flags<ExternalMemoryFeatureFlagBitsNV, VkExternalMemoryFeatureFlagsNV>;
 
-  inline ExternalMemoryFeatureFlagsNV operator|( ExternalMemoryFeatureFlagBitsNV bit0, ExternalMemoryFeatureFlagBitsNV bit1 )
+  VULKAN_HPP_INLINE ExternalMemoryFeatureFlagsNV operator|( ExternalMemoryFeatureFlagBitsNV bit0, ExternalMemoryFeatureFlagBitsNV bit1 )
   {
     return ExternalMemoryFeatureFlagsNV( bit0 ) | bit1;
   }
@@ -18043,13 +18060,13 @@ namespace vk
   };
   static_assert( sizeof( ValidationFlagsEXT ) == sizeof( VkValidationFlagsEXT ), "struct and wrapper have different size!" );
 
-  inline Result createInstance( const InstanceCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, Instance* pInstance )
+  VULKAN_HPP_INLINE Result createInstance( const InstanceCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, Instance* pInstance )
   {
     return static_cast<Result>( vkCreateInstance( reinterpret_cast<const VkInstanceCreateInfo*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkInstance*>( pInstance ) ) );
   }
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-  inline ResultValueType<Instance>::type createInstance( const InstanceCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr )
+  VULKAN_HPP_INLINE ResultValueType<Instance>::type createInstance( const InstanceCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr )
   {
     Instance instance;
     Result result = static_cast<Result>( vkCreateInstance( reinterpret_cast<const VkInstanceCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkInstance*>( &instance ) ) );
@@ -18057,7 +18074,7 @@ namespace vk
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-  inline Result enumerateInstanceLayerProperties( uint32_t* pPropertyCount, LayerProperties* pProperties )
+  VULKAN_HPP_INLINE Result enumerateInstanceLayerProperties( uint32_t* pPropertyCount, LayerProperties* pProperties )
   {
     return static_cast<Result>( vkEnumerateInstanceLayerProperties( pPropertyCount, reinterpret_cast<VkLayerProperties*>( pProperties ) ) );
   }
@@ -18084,7 +18101,7 @@ namespace vk
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-  inline Result enumerateInstanceExtensionProperties( const char* pLayerName, uint32_t* pPropertyCount, ExtensionProperties* pProperties )
+  VULKAN_HPP_INLINE Result enumerateInstanceExtensionProperties( const char* pLayerName, uint32_t* pPropertyCount, ExtensionProperties* pProperties )
   {
     return static_cast<Result>( vkEnumerateInstanceExtensionProperties( pLayerName, pPropertyCount, reinterpret_cast<VkExtensionProperties*>( pProperties ) ) );
   }
@@ -18111,401 +18128,401 @@ namespace vk
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-  inline std::string to_string(FramebufferCreateFlagBits)
+  VULKAN_HPP_INLINE std::string to_string(FramebufferCreateFlagBits)
   {
     return "(void)";
   }
 
-  inline std::string to_string(FramebufferCreateFlags)
+  VULKAN_HPP_INLINE std::string to_string(FramebufferCreateFlags)
   {
     return "{}";
   }
 
-  inline std::string to_string(QueryPoolCreateFlagBits)
+  VULKAN_HPP_INLINE std::string to_string(QueryPoolCreateFlagBits)
   {
     return "(void)";
   }
 
-  inline std::string to_string(QueryPoolCreateFlags)
+  VULKAN_HPP_INLINE std::string to_string(QueryPoolCreateFlags)
   {
     return "{}";
   }
 
-  inline std::string to_string(RenderPassCreateFlagBits)
+  VULKAN_HPP_INLINE std::string to_string(RenderPassCreateFlagBits)
   {
     return "(void)";
   }
 
-  inline std::string to_string(RenderPassCreateFlags)
+  VULKAN_HPP_INLINE std::string to_string(RenderPassCreateFlags)
   {
     return "{}";
   }
 
-  inline std::string to_string(SamplerCreateFlagBits)
+  VULKAN_HPP_INLINE std::string to_string(SamplerCreateFlagBits)
   {
     return "(void)";
   }
 
-  inline std::string to_string(SamplerCreateFlags)
+  VULKAN_HPP_INLINE std::string to_string(SamplerCreateFlags)
   {
     return "{}";
   }
 
-  inline std::string to_string(PipelineLayoutCreateFlagBits)
+  VULKAN_HPP_INLINE std::string to_string(PipelineLayoutCreateFlagBits)
   {
     return "(void)";
   }
 
-  inline std::string to_string(PipelineLayoutCreateFlags)
+  VULKAN_HPP_INLINE std::string to_string(PipelineLayoutCreateFlags)
   {
     return "{}";
   }
 
-  inline std::string to_string(PipelineCacheCreateFlagBits)
+  VULKAN_HPP_INLINE std::string to_string(PipelineCacheCreateFlagBits)
   {
     return "(void)";
   }
 
-  inline std::string to_string(PipelineCacheCreateFlags)
+  VULKAN_HPP_INLINE std::string to_string(PipelineCacheCreateFlags)
   {
     return "{}";
   }
 
-  inline std::string to_string(PipelineDepthStencilStateCreateFlagBits)
+  VULKAN_HPP_INLINE std::string to_string(PipelineDepthStencilStateCreateFlagBits)
   {
     return "(void)";
   }
 
-  inline std::string to_string(PipelineDepthStencilStateCreateFlags)
+  VULKAN_HPP_INLINE std::string to_string(PipelineDepthStencilStateCreateFlags)
   {
     return "{}";
   }
 
-  inline std::string to_string(PipelineDynamicStateCreateFlagBits)
+  VULKAN_HPP_INLINE std::string to_string(PipelineDynamicStateCreateFlagBits)
   {
     return "(void)";
   }
 
-  inline std::string to_string(PipelineDynamicStateCreateFlags)
+  VULKAN_HPP_INLINE std::string to_string(PipelineDynamicStateCreateFlags)
   {
     return "{}";
   }
 
-  inline std::string to_string(PipelineColorBlendStateCreateFlagBits)
+  VULKAN_HPP_INLINE std::string to_string(PipelineColorBlendStateCreateFlagBits)
   {
     return "(void)";
   }
 
-  inline std::string to_string(PipelineColorBlendStateCreateFlags)
+  VULKAN_HPP_INLINE std::string to_string(PipelineColorBlendStateCreateFlags)
   {
     return "{}";
   }
 
-  inline std::string to_string(PipelineMultisampleStateCreateFlagBits)
+  VULKAN_HPP_INLINE std::string to_string(PipelineMultisampleStateCreateFlagBits)
   {
     return "(void)";
   }
 
-  inline std::string to_string(PipelineMultisampleStateCreateFlags)
+  VULKAN_HPP_INLINE std::string to_string(PipelineMultisampleStateCreateFlags)
   {
     return "{}";
   }
 
-  inline std::string to_string(PipelineRasterizationStateCreateFlagBits)
+  VULKAN_HPP_INLINE std::string to_string(PipelineRasterizationStateCreateFlagBits)
   {
     return "(void)";
   }
 
-  inline std::string to_string(PipelineRasterizationStateCreateFlags)
+  VULKAN_HPP_INLINE std::string to_string(PipelineRasterizationStateCreateFlags)
   {
     return "{}";
   }
 
-  inline std::string to_string(PipelineViewportStateCreateFlagBits)
+  VULKAN_HPP_INLINE std::string to_string(PipelineViewportStateCreateFlagBits)
   {
     return "(void)";
   }
 
-  inline std::string to_string(PipelineViewportStateCreateFlags)
+  VULKAN_HPP_INLINE std::string to_string(PipelineViewportStateCreateFlags)
   {
     return "{}";
   }
 
-  inline std::string to_string(PipelineTessellationStateCreateFlagBits)
+  VULKAN_HPP_INLINE std::string to_string(PipelineTessellationStateCreateFlagBits)
   {
     return "(void)";
   }
 
-  inline std::string to_string(PipelineTessellationStateCreateFlags)
+  VULKAN_HPP_INLINE std::string to_string(PipelineTessellationStateCreateFlags)
   {
     return "{}";
   }
 
-  inline std::string to_string(PipelineInputAssemblyStateCreateFlagBits)
+  VULKAN_HPP_INLINE std::string to_string(PipelineInputAssemblyStateCreateFlagBits)
   {
     return "(void)";
   }
 
-  inline std::string to_string(PipelineInputAssemblyStateCreateFlags)
+  VULKAN_HPP_INLINE std::string to_string(PipelineInputAssemblyStateCreateFlags)
   {
     return "{}";
   }
 
-  inline std::string to_string(PipelineVertexInputStateCreateFlagBits)
+  VULKAN_HPP_INLINE std::string to_string(PipelineVertexInputStateCreateFlagBits)
   {
     return "(void)";
   }
 
-  inline std::string to_string(PipelineVertexInputStateCreateFlags)
+  VULKAN_HPP_INLINE std::string to_string(PipelineVertexInputStateCreateFlags)
   {
     return "{}";
   }
 
-  inline std::string to_string(PipelineShaderStageCreateFlagBits)
+  VULKAN_HPP_INLINE std::string to_string(PipelineShaderStageCreateFlagBits)
   {
     return "(void)";
   }
 
-  inline std::string to_string(PipelineShaderStageCreateFlags)
+  VULKAN_HPP_INLINE std::string to_string(PipelineShaderStageCreateFlags)
   {
     return "{}";
   }
 
-  inline std::string to_string(DescriptorSetLayoutCreateFlagBits)
+  VULKAN_HPP_INLINE std::string to_string(DescriptorSetLayoutCreateFlagBits)
   {
     return "(void)";
   }
 
-  inline std::string to_string(DescriptorSetLayoutCreateFlags)
+  VULKAN_HPP_INLINE std::string to_string(DescriptorSetLayoutCreateFlags)
   {
     return "{}";
   }
 
-  inline std::string to_string(BufferViewCreateFlagBits)
+  VULKAN_HPP_INLINE std::string to_string(BufferViewCreateFlagBits)
   {
     return "(void)";
   }
 
-  inline std::string to_string(BufferViewCreateFlags)
+  VULKAN_HPP_INLINE std::string to_string(BufferViewCreateFlags)
   {
     return "{}";
   }
 
-  inline std::string to_string(InstanceCreateFlagBits)
+  VULKAN_HPP_INLINE std::string to_string(InstanceCreateFlagBits)
   {
     return "(void)";
   }
 
-  inline std::string to_string(InstanceCreateFlags)
+  VULKAN_HPP_INLINE std::string to_string(InstanceCreateFlags)
   {
     return "{}";
   }
 
-  inline std::string to_string(DeviceCreateFlagBits)
+  VULKAN_HPP_INLINE std::string to_string(DeviceCreateFlagBits)
   {
     return "(void)";
   }
 
-  inline std::string to_string(DeviceCreateFlags)
+  VULKAN_HPP_INLINE std::string to_string(DeviceCreateFlags)
   {
     return "{}";
   }
 
-  inline std::string to_string(DeviceQueueCreateFlagBits)
+  VULKAN_HPP_INLINE std::string to_string(DeviceQueueCreateFlagBits)
   {
     return "(void)";
   }
 
-  inline std::string to_string(DeviceQueueCreateFlags)
+  VULKAN_HPP_INLINE std::string to_string(DeviceQueueCreateFlags)
   {
     return "{}";
   }
 
-  inline std::string to_string(ImageViewCreateFlagBits)
+  VULKAN_HPP_INLINE std::string to_string(ImageViewCreateFlagBits)
   {
     return "(void)";
   }
 
-  inline std::string to_string(ImageViewCreateFlags)
+  VULKAN_HPP_INLINE std::string to_string(ImageViewCreateFlags)
   {
     return "{}";
   }
 
-  inline std::string to_string(SemaphoreCreateFlagBits)
+  VULKAN_HPP_INLINE std::string to_string(SemaphoreCreateFlagBits)
   {
     return "(void)";
   }
 
-  inline std::string to_string(SemaphoreCreateFlags)
+  VULKAN_HPP_INLINE std::string to_string(SemaphoreCreateFlags)
   {
     return "{}";
   }
 
-  inline std::string to_string(ShaderModuleCreateFlagBits)
+  VULKAN_HPP_INLINE std::string to_string(ShaderModuleCreateFlagBits)
   {
     return "(void)";
   }
 
-  inline std::string to_string(ShaderModuleCreateFlags)
+  VULKAN_HPP_INLINE std::string to_string(ShaderModuleCreateFlags)
   {
     return "{}";
   }
 
-  inline std::string to_string(EventCreateFlagBits)
+  VULKAN_HPP_INLINE std::string to_string(EventCreateFlagBits)
   {
     return "(void)";
   }
 
-  inline std::string to_string(EventCreateFlags)
+  VULKAN_HPP_INLINE std::string to_string(EventCreateFlags)
   {
     return "{}";
   }
 
-  inline std::string to_string(MemoryMapFlagBits)
+  VULKAN_HPP_INLINE std::string to_string(MemoryMapFlagBits)
   {
     return "(void)";
   }
 
-  inline std::string to_string(MemoryMapFlags)
+  VULKAN_HPP_INLINE std::string to_string(MemoryMapFlags)
   {
     return "{}";
   }
 
-  inline std::string to_string(SubpassDescriptionFlagBits)
+  VULKAN_HPP_INLINE std::string to_string(SubpassDescriptionFlagBits)
   {
     return "(void)";
   }
 
-  inline std::string to_string(SubpassDescriptionFlags)
+  VULKAN_HPP_INLINE std::string to_string(SubpassDescriptionFlags)
   {
     return "{}";
   }
 
-  inline std::string to_string(DescriptorPoolResetFlagBits)
+  VULKAN_HPP_INLINE std::string to_string(DescriptorPoolResetFlagBits)
   {
     return "(void)";
   }
 
-  inline std::string to_string(DescriptorPoolResetFlags)
+  VULKAN_HPP_INLINE std::string to_string(DescriptorPoolResetFlags)
   {
     return "{}";
   }
 
-  inline std::string to_string(SwapchainCreateFlagBitsKHR)
+  VULKAN_HPP_INLINE std::string to_string(SwapchainCreateFlagBitsKHR)
   {
     return "(void)";
   }
 
-  inline std::string to_string(SwapchainCreateFlagsKHR)
+  VULKAN_HPP_INLINE std::string to_string(SwapchainCreateFlagsKHR)
   {
     return "{}";
   }
 
-  inline std::string to_string(DisplayModeCreateFlagBitsKHR)
+  VULKAN_HPP_INLINE std::string to_string(DisplayModeCreateFlagBitsKHR)
   {
     return "(void)";
   }
 
-  inline std::string to_string(DisplayModeCreateFlagsKHR)
+  VULKAN_HPP_INLINE std::string to_string(DisplayModeCreateFlagsKHR)
   {
     return "{}";
   }
 
-  inline std::string to_string(DisplaySurfaceCreateFlagBitsKHR)
+  VULKAN_HPP_INLINE std::string to_string(DisplaySurfaceCreateFlagBitsKHR)
   {
     return "(void)";
   }
 
-  inline std::string to_string(DisplaySurfaceCreateFlagsKHR)
+  VULKAN_HPP_INLINE std::string to_string(DisplaySurfaceCreateFlagsKHR)
   {
     return "{}";
   }
 
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
-  inline std::string to_string(AndroidSurfaceCreateFlagBitsKHR)
+  VULKAN_HPP_INLINE std::string to_string(AndroidSurfaceCreateFlagBitsKHR)
   {
     return "(void)";
   }
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
-  inline std::string to_string(AndroidSurfaceCreateFlagsKHR)
+  VULKAN_HPP_INLINE std::string to_string(AndroidSurfaceCreateFlagsKHR)
   {
     return "{}";
   }
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
 #ifdef VK_USE_PLATFORM_MIR_KHR
-  inline std::string to_string(MirSurfaceCreateFlagBitsKHR)
+  VULKAN_HPP_INLINE std::string to_string(MirSurfaceCreateFlagBitsKHR)
   {
     return "(void)";
   }
 #endif /*VK_USE_PLATFORM_MIR_KHR*/
 
 #ifdef VK_USE_PLATFORM_MIR_KHR
-  inline std::string to_string(MirSurfaceCreateFlagsKHR)
+  VULKAN_HPP_INLINE std::string to_string(MirSurfaceCreateFlagsKHR)
   {
     return "{}";
   }
 #endif /*VK_USE_PLATFORM_MIR_KHR*/
 
 #ifdef VK_USE_PLATFORM_WAYLAND_KHR
-  inline std::string to_string(WaylandSurfaceCreateFlagBitsKHR)
+  VULKAN_HPP_INLINE std::string to_string(WaylandSurfaceCreateFlagBitsKHR)
   {
     return "(void)";
   }
 #endif /*VK_USE_PLATFORM_WAYLAND_KHR*/
 
 #ifdef VK_USE_PLATFORM_WAYLAND_KHR
-  inline std::string to_string(WaylandSurfaceCreateFlagsKHR)
+  VULKAN_HPP_INLINE std::string to_string(WaylandSurfaceCreateFlagsKHR)
   {
     return "{}";
   }
 #endif /*VK_USE_PLATFORM_WAYLAND_KHR*/
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
-  inline std::string to_string(Win32SurfaceCreateFlagBitsKHR)
+  VULKAN_HPP_INLINE std::string to_string(Win32SurfaceCreateFlagBitsKHR)
   {
     return "(void)";
   }
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
-  inline std::string to_string(Win32SurfaceCreateFlagsKHR)
+  VULKAN_HPP_INLINE std::string to_string(Win32SurfaceCreateFlagsKHR)
   {
     return "{}";
   }
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
 #ifdef VK_USE_PLATFORM_XLIB_KHR
-  inline std::string to_string(XlibSurfaceCreateFlagBitsKHR)
+  VULKAN_HPP_INLINE std::string to_string(XlibSurfaceCreateFlagBitsKHR)
   {
     return "(void)";
   }
 #endif /*VK_USE_PLATFORM_XLIB_KHR*/
 
 #ifdef VK_USE_PLATFORM_XLIB_KHR
-  inline std::string to_string(XlibSurfaceCreateFlagsKHR)
+  VULKAN_HPP_INLINE std::string to_string(XlibSurfaceCreateFlagsKHR)
   {
     return "{}";
   }
 #endif /*VK_USE_PLATFORM_XLIB_KHR*/
 
 #ifdef VK_USE_PLATFORM_XCB_KHR
-  inline std::string to_string(XcbSurfaceCreateFlagBitsKHR)
+  VULKAN_HPP_INLINE std::string to_string(XcbSurfaceCreateFlagBitsKHR)
   {
     return "(void)";
   }
 #endif /*VK_USE_PLATFORM_XCB_KHR*/
 
 #ifdef VK_USE_PLATFORM_XCB_KHR
-  inline std::string to_string(XcbSurfaceCreateFlagsKHR)
+  VULKAN_HPP_INLINE std::string to_string(XcbSurfaceCreateFlagsKHR)
   {
     return "{}";
   }
 #endif /*VK_USE_PLATFORM_XCB_KHR*/
 
-  inline std::string to_string(ImageLayout value)
+  VULKAN_HPP_INLINE std::string to_string(ImageLayout value)
   {
     switch (value)
     {
@@ -18523,7 +18540,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(AttachmentLoadOp value)
+  VULKAN_HPP_INLINE std::string to_string(AttachmentLoadOp value)
   {
     switch (value)
     {
@@ -18534,7 +18551,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(AttachmentStoreOp value)
+  VULKAN_HPP_INLINE std::string to_string(AttachmentStoreOp value)
   {
     switch (value)
     {
@@ -18544,7 +18561,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(ImageType value)
+  VULKAN_HPP_INLINE std::string to_string(ImageType value)
   {
     switch (value)
     {
@@ -18555,7 +18572,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(ImageTiling value)
+  VULKAN_HPP_INLINE std::string to_string(ImageTiling value)
   {
     switch (value)
     {
@@ -18565,7 +18582,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(ImageViewType value)
+  VULKAN_HPP_INLINE std::string to_string(ImageViewType value)
   {
     switch (value)
     {
@@ -18580,7 +18597,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(CommandBufferLevel value)
+  VULKAN_HPP_INLINE std::string to_string(CommandBufferLevel value)
   {
     switch (value)
     {
@@ -18590,7 +18607,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(ComponentSwizzle value)
+  VULKAN_HPP_INLINE std::string to_string(ComponentSwizzle value)
   {
     switch (value)
     {
@@ -18605,7 +18622,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(DescriptorType value)
+  VULKAN_HPP_INLINE std::string to_string(DescriptorType value)
   {
     switch (value)
     {
@@ -18624,7 +18641,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(QueryType value)
+  VULKAN_HPP_INLINE std::string to_string(QueryType value)
   {
     switch (value)
     {
@@ -18635,7 +18652,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(BorderColor value)
+  VULKAN_HPP_INLINE std::string to_string(BorderColor value)
   {
     switch (value)
     {
@@ -18649,7 +18666,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(PipelineBindPoint value)
+  VULKAN_HPP_INLINE std::string to_string(PipelineBindPoint value)
   {
     switch (value)
     {
@@ -18659,7 +18676,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(PipelineCacheHeaderVersion value)
+  VULKAN_HPP_INLINE std::string to_string(PipelineCacheHeaderVersion value)
   {
     switch (value)
     {
@@ -18668,7 +18685,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(PrimitiveTopology value)
+  VULKAN_HPP_INLINE std::string to_string(PrimitiveTopology value)
   {
     switch (value)
     {
@@ -18687,7 +18704,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(SharingMode value)
+  VULKAN_HPP_INLINE std::string to_string(SharingMode value)
   {
     switch (value)
     {
@@ -18697,7 +18714,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(IndexType value)
+  VULKAN_HPP_INLINE std::string to_string(IndexType value)
   {
     switch (value)
     {
@@ -18707,7 +18724,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(Filter value)
+  VULKAN_HPP_INLINE std::string to_string(Filter value)
   {
     switch (value)
     {
@@ -18718,7 +18735,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(SamplerMipmapMode value)
+  VULKAN_HPP_INLINE std::string to_string(SamplerMipmapMode value)
   {
     switch (value)
     {
@@ -18728,7 +18745,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(SamplerAddressMode value)
+  VULKAN_HPP_INLINE std::string to_string(SamplerAddressMode value)
   {
     switch (value)
     {
@@ -18741,7 +18758,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(CompareOp value)
+  VULKAN_HPP_INLINE std::string to_string(CompareOp value)
   {
     switch (value)
     {
@@ -18757,7 +18774,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(PolygonMode value)
+  VULKAN_HPP_INLINE std::string to_string(PolygonMode value)
   {
     switch (value)
     {
@@ -18768,7 +18785,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(CullModeFlagBits value)
+  VULKAN_HPP_INLINE std::string to_string(CullModeFlagBits value)
   {
     switch (value)
     {
@@ -18780,7 +18797,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(CullModeFlags value)
+  VULKAN_HPP_INLINE std::string to_string(CullModeFlags value)
   {
     if (!value) return "{}";
     std::string result;
@@ -18791,7 +18808,7 @@ namespace vk
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
-  inline std::string to_string(FrontFace value)
+  VULKAN_HPP_INLINE std::string to_string(FrontFace value)
   {
     switch (value)
     {
@@ -18801,7 +18818,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(BlendFactor value)
+  VULKAN_HPP_INLINE std::string to_string(BlendFactor value)
   {
     switch (value)
     {
@@ -18828,7 +18845,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(BlendOp value)
+  VULKAN_HPP_INLINE std::string to_string(BlendOp value)
   {
     switch (value)
     {
@@ -18841,7 +18858,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(StencilOp value)
+  VULKAN_HPP_INLINE std::string to_string(StencilOp value)
   {
     switch (value)
     {
@@ -18857,7 +18874,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(LogicOp value)
+  VULKAN_HPP_INLINE std::string to_string(LogicOp value)
   {
     switch (value)
     {
@@ -18881,7 +18898,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(InternalAllocationType value)
+  VULKAN_HPP_INLINE std::string to_string(InternalAllocationType value)
   {
     switch (value)
     {
@@ -18890,7 +18907,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(SystemAllocationScope value)
+  VULKAN_HPP_INLINE std::string to_string(SystemAllocationScope value)
   {
     switch (value)
     {
@@ -18903,7 +18920,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(PhysicalDeviceType value)
+  VULKAN_HPP_INLINE std::string to_string(PhysicalDeviceType value)
   {
     switch (value)
     {
@@ -18916,7 +18933,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(VertexInputRate value)
+  VULKAN_HPP_INLINE std::string to_string(VertexInputRate value)
   {
     switch (value)
     {
@@ -18926,7 +18943,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(Format value)
+  VULKAN_HPP_INLINE std::string to_string(Format value)
   {
     switch (value)
     {
@@ -19127,7 +19144,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(StructureType value)
+  VULKAN_HPP_INLINE std::string to_string(StructureType value)
   {
     switch (value)
     {
@@ -19209,7 +19226,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(SubpassContents value)
+  VULKAN_HPP_INLINE std::string to_string(SubpassContents value)
   {
     switch (value)
     {
@@ -19219,7 +19236,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(DynamicState value)
+  VULKAN_HPP_INLINE std::string to_string(DynamicState value)
   {
     switch (value)
     {
@@ -19236,7 +19253,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(QueueFlagBits value)
+  VULKAN_HPP_INLINE std::string to_string(QueueFlagBits value)
   {
     switch (value)
     {
@@ -19248,7 +19265,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(QueueFlags value)
+  VULKAN_HPP_INLINE std::string to_string(QueueFlags value)
   {
     if (!value) return "{}";
     std::string result;
@@ -19259,7 +19276,7 @@ namespace vk
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
-  inline std::string to_string(MemoryPropertyFlagBits value)
+  VULKAN_HPP_INLINE std::string to_string(MemoryPropertyFlagBits value)
   {
     switch (value)
     {
@@ -19272,7 +19289,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(MemoryPropertyFlags value)
+  VULKAN_HPP_INLINE std::string to_string(MemoryPropertyFlags value)
   {
     if (!value) return "{}";
     std::string result;
@@ -19284,7 +19301,7 @@ namespace vk
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
-  inline std::string to_string(MemoryHeapFlagBits value)
+  VULKAN_HPP_INLINE std::string to_string(MemoryHeapFlagBits value)
   {
     switch (value)
     {
@@ -19293,7 +19310,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(MemoryHeapFlags value)
+  VULKAN_HPP_INLINE std::string to_string(MemoryHeapFlags value)
   {
     if (!value) return "{}";
     std::string result;
@@ -19301,7 +19318,7 @@ namespace vk
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
-  inline std::string to_string(AccessFlagBits value)
+  VULKAN_HPP_INLINE std::string to_string(AccessFlagBits value)
   {
     switch (value)
     {
@@ -19326,7 +19343,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(AccessFlags value)
+  VULKAN_HPP_INLINE std::string to_string(AccessFlags value)
   {
     if (!value) return "{}";
     std::string result;
@@ -19350,7 +19367,7 @@ namespace vk
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
-  inline std::string to_string(BufferUsageFlagBits value)
+  VULKAN_HPP_INLINE std::string to_string(BufferUsageFlagBits value)
   {
     switch (value)
     {
@@ -19367,7 +19384,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(BufferUsageFlags value)
+  VULKAN_HPP_INLINE std::string to_string(BufferUsageFlags value)
   {
     if (!value) return "{}";
     std::string result;
@@ -19383,7 +19400,7 @@ namespace vk
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
-  inline std::string to_string(BufferCreateFlagBits value)
+  VULKAN_HPP_INLINE std::string to_string(BufferCreateFlagBits value)
   {
     switch (value)
     {
@@ -19394,7 +19411,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(BufferCreateFlags value)
+  VULKAN_HPP_INLINE std::string to_string(BufferCreateFlags value)
   {
     if (!value) return "{}";
     std::string result;
@@ -19404,7 +19421,7 @@ namespace vk
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
-  inline std::string to_string(ShaderStageFlagBits value)
+  VULKAN_HPP_INLINE std::string to_string(ShaderStageFlagBits value)
   {
     switch (value)
     {
@@ -19420,7 +19437,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(ShaderStageFlags value)
+  VULKAN_HPP_INLINE std::string to_string(ShaderStageFlags value)
   {
     if (!value) return "{}";
     std::string result;
@@ -19435,7 +19452,7 @@ namespace vk
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
-  inline std::string to_string(ImageUsageFlagBits value)
+  VULKAN_HPP_INLINE std::string to_string(ImageUsageFlagBits value)
   {
     switch (value)
     {
@@ -19451,7 +19468,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(ImageUsageFlags value)
+  VULKAN_HPP_INLINE std::string to_string(ImageUsageFlags value)
   {
     if (!value) return "{}";
     std::string result;
@@ -19466,7 +19483,7 @@ namespace vk
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
-  inline std::string to_string(ImageCreateFlagBits value)
+  VULKAN_HPP_INLINE std::string to_string(ImageCreateFlagBits value)
   {
     switch (value)
     {
@@ -19479,7 +19496,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(ImageCreateFlags value)
+  VULKAN_HPP_INLINE std::string to_string(ImageCreateFlags value)
   {
     if (!value) return "{}";
     std::string result;
@@ -19491,7 +19508,7 @@ namespace vk
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
-  inline std::string to_string(PipelineCreateFlagBits value)
+  VULKAN_HPP_INLINE std::string to_string(PipelineCreateFlagBits value)
   {
     switch (value)
     {
@@ -19502,7 +19519,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(PipelineCreateFlags value)
+  VULKAN_HPP_INLINE std::string to_string(PipelineCreateFlags value)
   {
     if (!value) return "{}";
     std::string result;
@@ -19512,7 +19529,7 @@ namespace vk
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
-  inline std::string to_string(ColorComponentFlagBits value)
+  VULKAN_HPP_INLINE std::string to_string(ColorComponentFlagBits value)
   {
     switch (value)
     {
@@ -19524,7 +19541,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(ColorComponentFlags value)
+  VULKAN_HPP_INLINE std::string to_string(ColorComponentFlags value)
   {
     if (!value) return "{}";
     std::string result;
@@ -19535,7 +19552,7 @@ namespace vk
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
-  inline std::string to_string(FenceCreateFlagBits value)
+  VULKAN_HPP_INLINE std::string to_string(FenceCreateFlagBits value)
   {
     switch (value)
     {
@@ -19544,7 +19561,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(FenceCreateFlags value)
+  VULKAN_HPP_INLINE std::string to_string(FenceCreateFlags value)
   {
     if (!value) return "{}";
     std::string result;
@@ -19552,7 +19569,7 @@ namespace vk
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
-  inline std::string to_string(FormatFeatureFlagBits value)
+  VULKAN_HPP_INLINE std::string to_string(FormatFeatureFlagBits value)
   {
     switch (value)
     {
@@ -19574,7 +19591,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(FormatFeatureFlags value)
+  VULKAN_HPP_INLINE std::string to_string(FormatFeatureFlags value)
   {
     if (!value) return "{}";
     std::string result;
@@ -19595,7 +19612,7 @@ namespace vk
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
-  inline std::string to_string(QueryControlFlagBits value)
+  VULKAN_HPP_INLINE std::string to_string(QueryControlFlagBits value)
   {
     switch (value)
     {
@@ -19604,7 +19621,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(QueryControlFlags value)
+  VULKAN_HPP_INLINE std::string to_string(QueryControlFlags value)
   {
     if (!value) return "{}";
     std::string result;
@@ -19612,7 +19629,7 @@ namespace vk
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
-  inline std::string to_string(QueryResultFlagBits value)
+  VULKAN_HPP_INLINE std::string to_string(QueryResultFlagBits value)
   {
     switch (value)
     {
@@ -19624,7 +19641,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(QueryResultFlags value)
+  VULKAN_HPP_INLINE std::string to_string(QueryResultFlags value)
   {
     if (!value) return "{}";
     std::string result;
@@ -19635,7 +19652,7 @@ namespace vk
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
-  inline std::string to_string(CommandBufferUsageFlagBits value)
+  VULKAN_HPP_INLINE std::string to_string(CommandBufferUsageFlagBits value)
   {
     switch (value)
     {
@@ -19646,7 +19663,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(CommandBufferUsageFlags value)
+  VULKAN_HPP_INLINE std::string to_string(CommandBufferUsageFlags value)
   {
     if (!value) return "{}";
     std::string result;
@@ -19656,7 +19673,7 @@ namespace vk
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
-  inline std::string to_string(QueryPipelineStatisticFlagBits value)
+  VULKAN_HPP_INLINE std::string to_string(QueryPipelineStatisticFlagBits value)
   {
     switch (value)
     {
@@ -19675,7 +19692,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(QueryPipelineStatisticFlags value)
+  VULKAN_HPP_INLINE std::string to_string(QueryPipelineStatisticFlags value)
   {
     if (!value) return "{}";
     std::string result;
@@ -19693,7 +19710,7 @@ namespace vk
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
-  inline std::string to_string(ImageAspectFlagBits value)
+  VULKAN_HPP_INLINE std::string to_string(ImageAspectFlagBits value)
   {
     switch (value)
     {
@@ -19705,7 +19722,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(ImageAspectFlags value)
+  VULKAN_HPP_INLINE std::string to_string(ImageAspectFlags value)
   {
     if (!value) return "{}";
     std::string result;
@@ -19716,7 +19733,7 @@ namespace vk
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
-  inline std::string to_string(SparseImageFormatFlagBits value)
+  VULKAN_HPP_INLINE std::string to_string(SparseImageFormatFlagBits value)
   {
     switch (value)
     {
@@ -19727,7 +19744,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(SparseImageFormatFlags value)
+  VULKAN_HPP_INLINE std::string to_string(SparseImageFormatFlags value)
   {
     if (!value) return "{}";
     std::string result;
@@ -19737,7 +19754,7 @@ namespace vk
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
-  inline std::string to_string(SparseMemoryBindFlagBits value)
+  VULKAN_HPP_INLINE std::string to_string(SparseMemoryBindFlagBits value)
   {
     switch (value)
     {
@@ -19746,7 +19763,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(SparseMemoryBindFlags value)
+  VULKAN_HPP_INLINE std::string to_string(SparseMemoryBindFlags value)
   {
     if (!value) return "{}";
     std::string result;
@@ -19754,7 +19771,7 @@ namespace vk
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
-  inline std::string to_string(PipelineStageFlagBits value)
+  VULKAN_HPP_INLINE std::string to_string(PipelineStageFlagBits value)
   {
     switch (value)
     {
@@ -19779,7 +19796,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(PipelineStageFlags value)
+  VULKAN_HPP_INLINE std::string to_string(PipelineStageFlags value)
   {
     if (!value) return "{}";
     std::string result;
@@ -19803,7 +19820,7 @@ namespace vk
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
-  inline std::string to_string(CommandPoolCreateFlagBits value)
+  VULKAN_HPP_INLINE std::string to_string(CommandPoolCreateFlagBits value)
   {
     switch (value)
     {
@@ -19813,7 +19830,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(CommandPoolCreateFlags value)
+  VULKAN_HPP_INLINE std::string to_string(CommandPoolCreateFlags value)
   {
     if (!value) return "{}";
     std::string result;
@@ -19822,7 +19839,7 @@ namespace vk
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
-  inline std::string to_string(CommandPoolResetFlagBits value)
+  VULKAN_HPP_INLINE std::string to_string(CommandPoolResetFlagBits value)
   {
     switch (value)
     {
@@ -19831,7 +19848,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(CommandPoolResetFlags value)
+  VULKAN_HPP_INLINE std::string to_string(CommandPoolResetFlags value)
   {
     if (!value) return "{}";
     std::string result;
@@ -19839,7 +19856,7 @@ namespace vk
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
-  inline std::string to_string(CommandBufferResetFlagBits value)
+  VULKAN_HPP_INLINE std::string to_string(CommandBufferResetFlagBits value)
   {
     switch (value)
     {
@@ -19848,7 +19865,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(CommandBufferResetFlags value)
+  VULKAN_HPP_INLINE std::string to_string(CommandBufferResetFlags value)
   {
     if (!value) return "{}";
     std::string result;
@@ -19856,7 +19873,7 @@ namespace vk
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
-  inline std::string to_string(SampleCountFlagBits value)
+  VULKAN_HPP_INLINE std::string to_string(SampleCountFlagBits value)
   {
     switch (value)
     {
@@ -19871,7 +19888,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(SampleCountFlags value)
+  VULKAN_HPP_INLINE std::string to_string(SampleCountFlags value)
   {
     if (!value) return "{}";
     std::string result;
@@ -19885,7 +19902,7 @@ namespace vk
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
-  inline std::string to_string(AttachmentDescriptionFlagBits value)
+  VULKAN_HPP_INLINE std::string to_string(AttachmentDescriptionFlagBits value)
   {
     switch (value)
     {
@@ -19894,7 +19911,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(AttachmentDescriptionFlags value)
+  VULKAN_HPP_INLINE std::string to_string(AttachmentDescriptionFlags value)
   {
     if (!value) return "{}";
     std::string result;
@@ -19902,7 +19919,7 @@ namespace vk
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
-  inline std::string to_string(StencilFaceFlagBits value)
+  VULKAN_HPP_INLINE std::string to_string(StencilFaceFlagBits value)
   {
     switch (value)
     {
@@ -19913,7 +19930,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(StencilFaceFlags value)
+  VULKAN_HPP_INLINE std::string to_string(StencilFaceFlags value)
   {
     if (!value) return "{}";
     std::string result;
@@ -19923,7 +19940,7 @@ namespace vk
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
-  inline std::string to_string(DescriptorPoolCreateFlagBits value)
+  VULKAN_HPP_INLINE std::string to_string(DescriptorPoolCreateFlagBits value)
   {
     switch (value)
     {
@@ -19932,7 +19949,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(DescriptorPoolCreateFlags value)
+  VULKAN_HPP_INLINE std::string to_string(DescriptorPoolCreateFlags value)
   {
     if (!value) return "{}";
     std::string result;
@@ -19940,7 +19957,7 @@ namespace vk
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
-  inline std::string to_string(DependencyFlagBits value)
+  VULKAN_HPP_INLINE std::string to_string(DependencyFlagBits value)
   {
     switch (value)
     {
@@ -19949,7 +19966,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(DependencyFlags value)
+  VULKAN_HPP_INLINE std::string to_string(DependencyFlags value)
   {
     if (!value) return "{}";
     std::string result;
@@ -19957,7 +19974,7 @@ namespace vk
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
-  inline std::string to_string(PresentModeKHR value)
+  VULKAN_HPP_INLINE std::string to_string(PresentModeKHR value)
   {
     switch (value)
     {
@@ -19969,7 +19986,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(ColorSpaceKHR value)
+  VULKAN_HPP_INLINE std::string to_string(ColorSpaceKHR value)
   {
     switch (value)
     {
@@ -19978,7 +19995,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(DisplayPlaneAlphaFlagBitsKHR value)
+  VULKAN_HPP_INLINE std::string to_string(DisplayPlaneAlphaFlagBitsKHR value)
   {
     switch (value)
     {
@@ -19990,7 +20007,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(DisplayPlaneAlphaFlagsKHR value)
+  VULKAN_HPP_INLINE std::string to_string(DisplayPlaneAlphaFlagsKHR value)
   {
     if (!value) return "{}";
     std::string result;
@@ -20001,7 +20018,7 @@ namespace vk
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
-  inline std::string to_string(CompositeAlphaFlagBitsKHR value)
+  VULKAN_HPP_INLINE std::string to_string(CompositeAlphaFlagBitsKHR value)
   {
     switch (value)
     {
@@ -20013,7 +20030,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(CompositeAlphaFlagsKHR value)
+  VULKAN_HPP_INLINE std::string to_string(CompositeAlphaFlagsKHR value)
   {
     if (!value) return "{}";
     std::string result;
@@ -20024,7 +20041,7 @@ namespace vk
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
-  inline std::string to_string(SurfaceTransformFlagBitsKHR value)
+  VULKAN_HPP_INLINE std::string to_string(SurfaceTransformFlagBitsKHR value)
   {
     switch (value)
     {
@@ -20041,7 +20058,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(SurfaceTransformFlagsKHR value)
+  VULKAN_HPP_INLINE std::string to_string(SurfaceTransformFlagsKHR value)
   {
     if (!value) return "{}";
     std::string result;
@@ -20057,7 +20074,7 @@ namespace vk
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
-  inline std::string to_string(DebugReportFlagBitsEXT value)
+  VULKAN_HPP_INLINE std::string to_string(DebugReportFlagBitsEXT value)
   {
     switch (value)
     {
@@ -20070,7 +20087,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(DebugReportFlagsEXT value)
+  VULKAN_HPP_INLINE std::string to_string(DebugReportFlagsEXT value)
   {
     if (!value) return "{}";
     std::string result;
@@ -20082,7 +20099,7 @@ namespace vk
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
-  inline std::string to_string(DebugReportObjectTypeEXT value)
+  VULKAN_HPP_INLINE std::string to_string(DebugReportObjectTypeEXT value)
   {
     switch (value)
     {
@@ -20119,7 +20136,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(DebugReportErrorEXT value)
+  VULKAN_HPP_INLINE std::string to_string(DebugReportErrorEXT value)
   {
     switch (value)
     {
@@ -20129,7 +20146,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(RasterizationOrderAMD value)
+  VULKAN_HPP_INLINE std::string to_string(RasterizationOrderAMD value)
   {
     switch (value)
     {
@@ -20139,7 +20156,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(ExternalMemoryHandleTypeFlagBitsNV value)
+  VULKAN_HPP_INLINE std::string to_string(ExternalMemoryHandleTypeFlagBitsNV value)
   {
     switch (value)
     {
@@ -20151,7 +20168,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(ExternalMemoryHandleTypeFlagsNV value)
+  VULKAN_HPP_INLINE std::string to_string(ExternalMemoryHandleTypeFlagsNV value)
   {
     if (!value) return "{}";
     std::string result;
@@ -20162,7 +20179,7 @@ namespace vk
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
-  inline std::string to_string(ExternalMemoryFeatureFlagBitsNV value)
+  VULKAN_HPP_INLINE std::string to_string(ExternalMemoryFeatureFlagBitsNV value)
   {
     switch (value)
     {
@@ -20173,7 +20190,7 @@ namespace vk
     }
   }
 
-  inline std::string to_string(ExternalMemoryFeatureFlagsNV value)
+  VULKAN_HPP_INLINE std::string to_string(ExternalMemoryFeatureFlagsNV value)
   {
     if (!value) return "{}";
     std::string result;
@@ -20183,7 +20200,7 @@ namespace vk
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
-  inline std::string to_string(ValidationCheckEXT value)
+  VULKAN_HPP_INLINE std::string to_string(ValidationCheckEXT value)
   {
     switch (value)
     {

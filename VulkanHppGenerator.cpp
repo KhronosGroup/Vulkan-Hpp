@@ -43,18 +43,18 @@ const std::string exceptionHeader(
   "# undef noexcept\n"
   "#endif\n"
   "\n"
-  "  inline const std::error_category& errorCategory()\n"
+  "  VULKAN_HPP_INLINE const std::error_category& errorCategory()\n"
   "  {\n"
   "    static ErrorCategoryImpl instance;\n"
   "    return instance;\n"
   "  }\n"
   "\n"
-  "  inline std::error_code make_error_code(Result e)\n"
+  "  VULKAN_HPP_INLINE std::error_code make_error_code(Result e)\n"
   "  {\n"
   "    return std::error_code(static_cast<int>(e), errorCategory());\n"
   "  }\n"
   "\n"
-  "  inline std::error_condition make_error_condition(Result e)\n"
+  "  VULKAN_HPP_INLINE std::error_condition make_error_condition(Result e)\n"
   "  {\n"
   "    return std::error_condition(static_cast<int>(e), errorCategory());\n"
   "  }\n"
@@ -308,6 +308,26 @@ std::string const versionCheckHeader = (
   "\n"
   );
 
+std::string const inlineHeader = {R"(
+#if !defined(VULKAN_HPP_INLINE)
+# if defined(__clang___)
+#  if __has_attribute(always_inline)
+#   define VULKAN_HPP_INLINE __attribute__((always_inline)) __inline__
+#  else
+#    define VULKAN_HPP_INLINE inline
+#  endif
+# elif defined(__GNUC__)
+#  define VULKAN_HPP_INLINE __attribute__((always_inline)) __inline__
+# elif defined(_MSC_VER)
+#  define VULKAN_HPP_INLINE __forceinline
+# else
+#  define VULKAN_HPP_INLINE inline
+# endif
+#endif
+
+)"
+};
+
 std::string const resultValueHeader = (
   "  template <typename T>\n"
   "  struct ResultValue\n"
@@ -346,7 +366,7 @@ std::string const resultValueHeader = (
   );
 
 std::string const createResultValueHeader = (
-  "  inline ResultValueType<void>::type createResultValue( Result result, char const * message )\n"
+  "  VULKAN_HPP_INLINE ResultValueType<void>::type createResultValue( Result result, char const * message )\n"
   "  {\n"
   "#ifdef VULKAN_HPP_NO_EXCEPTIONS\n"
   "    assert( result == Result::eSuccess );\n"
@@ -360,7 +380,7 @@ std::string const createResultValueHeader = (
   "  }\n"
   "\n"
   "  template <typename T>\n"
-  "  inline typename ResultValueType<T>::type createResultValue( Result result, T & data, char const * message )\n"
+  "  VULKAN_HPP_INLINE typename ResultValueType<T>::type createResultValue( Result result, T & data, char const * message )\n"
   "  {\n"
   "#ifdef VULKAN_HPP_NO_EXCEPTIONS\n"
   "    assert( result == Result::eSuccess );\n"
@@ -374,7 +394,7 @@ std::string const createResultValueHeader = (
   "#endif\n"
   "  }\n"
   "\n"
-  "  inline Result createResultValue( Result result, char const * message, std::initializer_list<Result> successCodes )\n"
+  "  VULKAN_HPP_INLINE Result createResultValue( Result result, char const * message, std::initializer_list<Result> successCodes )\n"
   "  {\n"
   "#ifdef VULKAN_HPP_NO_EXCEPTIONS\n"
   "    assert( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );\n"
@@ -388,7 +408,7 @@ std::string const createResultValueHeader = (
   "  }\n"
   "\n"
   "  template <typename T>\n"
-  "  inline ResultValue<T> createResultValue( Result result, T & data, char const * message, std::initializer_list<Result> successCodes )\n"
+  "  VULKAN_HPP_INLINE ResultValue<T> createResultValue( Result result, T & data, char const * message, std::initializer_list<Result> successCodes )\n"
   "  {\n"
   "#ifdef VULKAN_HPP_NO_EXCEPTIONS\n"
   "    assert( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );\n"
@@ -2168,7 +2188,7 @@ void writeFunctionHeader(std::ofstream & ofs, VkData const& vkData, std::string 
   }
   else if (!commandData.handleCommand)
   {
-    ofs << "inline ";
+    ofs << "VULKAN_HPP_INLINE ";
   }
   if ((returnType != commandData.returnType) && (commandData.returnType != "void"))
   {
@@ -2479,7 +2499,7 @@ void writeTypeCommandStandard(std::ofstream & ofs, std::string const& indentatio
   ofs << indentation;
   if (!commandData.handleCommand)
   {
-    ofs << "inline ";
+    ofs << "VULKAN_HPP_INLINE ";
   }
   ofs << commandData.returnType << " " << functionName << "( ";
   bool argEncountered = false;
@@ -2565,7 +2585,7 @@ void writeTypeEnum( std::ofstream & ofs, DependencyData const& dependencyData, E
 void writeEnumsToString(std::ofstream & ofs, DependencyData const& dependencyData, EnumData const& enumData)
 {
   enterProtect(ofs, enumData.protect);
-  ofs << "  inline std::string to_string(" << dependencyData.name << (enumData.members.empty() ? ")" : " value)") << std::endl
+  ofs << "  VULKAN_HPP_INLINE std::string to_string(" << dependencyData.name << (enumData.members.empty() ? ")" : " value)") << std::endl
       << "  {" << std::endl;
   if (enumData.members.empty())
   {
@@ -2591,7 +2611,7 @@ void writeFlagsToString(std::ofstream & ofs, DependencyData const& dependencyDat
 {
   enterProtect(ofs, enumData.protect);
   std::string enumPrefix = *dependencyData.dependencies.begin() + "::";
-  ofs << "  inline std::string to_string(" << dependencyData.name << (enumData.members.empty() ? ")" : " value)") << std::endl
+  ofs << "  VULKAN_HPP_INLINE std::string to_string(" << dependencyData.name << (enumData.members.empty() ? ")" : " value)") << std::endl
       << "  {" << std::endl;
   if (enumData.members.empty())
   {
@@ -2636,7 +2656,7 @@ void writeTypeFlags( std::ofstream & ofs, DependencyData const& dependencyData, 
   enterProtect(ofs, flagData.protect);
   ofs << "  using " << dependencyData.name << " = Flags<" << *dependencyData.dependencies.begin() << ", Vk" << dependencyData.name << ">;" << std::endl
       << std::endl
-      << "  inline " << dependencyData.name << " operator|( " << *dependencyData.dependencies.begin() << " bit0, " << *dependencyData.dependencies.begin() << " bit1 )" << std::endl
+      << "  VULKAN_HPP_INLINE " << dependencyData.name << " operator|( " << *dependencyData.dependencies.begin() << " bit0, " << *dependencyData.dependencies.begin() << " bit1 )" << std::endl
       << "  {" << std::endl
       << "    return " << dependencyData.name << "( bit0 ) | bit1;" << std::endl
       << "  }" << std::endl;
@@ -3120,6 +3140,7 @@ int main( int argc, char **argv )
     writeVersionCheck(ofs, vkData.version);
     writeTypesafeCheck(ofs, vkData.typesafeCheck);
     ofs << versionCheckHeader
+        << inlineHeader
         << "namespace vk" << std::endl
         << "{" << std::endl
         << flagsHeader

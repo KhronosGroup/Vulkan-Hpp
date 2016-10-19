@@ -1,11 +1,58 @@
-# Open-Source Vulkan C++ API
+# Vulkan-Hpp: C++ Bindings for Vulkan
 
-Vulkan is a C API and as such inherits all common pitfalls of using a general C programming library. The motivation of a low-level Vulkan C++ API is to avoid these common pitfalls by applying commonly known C++ features while keeping the overall structure of a Vulkan program and preserving the full freedom it provides as low-level graphics API. An additional guideline we followed was not to introduce additional runtime overhead by providing a header-only library with inline functions.
+The goal of the Vulkan-Hpp is to provide header only C++ bindings for the Vulkan C API to improve the developers Vulkan experience without introducing CPU runtime cost. It adds features like type safety for enums and bitfields, STL container support, exceptions and simple enumerations.
 
-Have a look at the following piece of code which creates a VkImage:
+# Getting Started
+Vulkan-Hpp is part of the LunarG Vulkan SDK since version 1.0.24. Just include ```<vulkan.hpp>``` and you're ready to use the C++ bindings. If you're using a Vulkan version not yet supported by the Vulkan SDK you can find the latest version of the header [here](https://github.com/KhronosGroup/Vulkan-Hpp/blob/master/vulkan/vulkan.hpp).
+
+# Minimum Requirements
+Vulkan-Hpp requires a C++11 capable compiler to compile. The following compilers are known to work:
+* Visual Studio >=2013
+* GCC >= 4.8.2 (earlier version might work, but are untested)
+* Clang >= 3.3
+
+# namespace vk
+To avoid name collisions with the Vulkan C API the C++ bindings reside in the vk namespace. The following rules apply to the new naming
+* All functions, enums and structs have the Vk prefix removed.
+  * ```vkCreateImage``` can be accessed as ```vk::CreateImage```
+  * ```VkImageTiling``` can be accessed as ```vk::ImageTiling```
+  * ```VkImageCreateInfo``` can be accessed as ```vk::ImageCreateInfo```
+* Enums are mapped to scoped enums to provide compile time type safety. The names have been changed to 'e' + CamelCase with the VK_ prefix and type infix removed. In case the enum type is an extension the extension suffix has been removed from the enum values.
+ In all other cases the extension suffix has not been removed.
+  * ```VK_IMAGETYPE_2D``` is now ```vk::ImageType::e2D```.
+  * ```VK_COLOR_SPACE_SRGB_NONLINEAR_KHR``` is now ```vk::ColorSpaceKHR::eSrgbNonlinear```.
+  *  ```VK_STRUCTURE_TYPE_PRESENT_INFO_KHR``` is now ```vk::StructureType::ePresentInfoKHR```.
+*  Flag bits are handled like scoped enums with the addition that the _BIT suffix has also been removed.
+
+# Handles
+Vulkan-Hpp declares a class for all handles to ensure full type safety and to add support for member functions on handles. A member function has been added to a handle class for each
+ function which accepts the corresponding handle as first parameter. Instead of ```vkBindBufferMemory(device, ...)``` one can write ```device.bindBufferMemory(...)``` or ```vk::bindBufferMemory(device, ...)```.
+
+# C/C++ Interop for Handles
+On 64-bit platforms Vulkan-Hpp supports implicit conversions between C++ Vulkan handles and C Vulkan handles. On 32-bit platforms all non-dispatchable handles are defined as ```uint64_t```, 
+thus preventing type-conversion checks at compile time which would catch assignments between incompatible handle types.. 
+Due to that Vulkan-Hpp does not enable implicit conversion for 32-bit platforms by default and it is recommended to use a static_cast for the conversion like this: ```VkDevice = static_cast<VkDevice>(cppDevice)```
+to prevent converting some arbitrary int to a handle or vice versa by accident. If you're developing your code on a 64-bit platform, but want compile your code for a 32-bit platform without adding the explicit casts
+you can define ```VULKAN_HPP_TYPESAFE_CONVERSION``` to 1 in your build system or before including ```vulkan.hpp```. On 64-bit platforms this define is set to 1 by default and can be set to 0 to disable implicit conversions.
+
+# Flags
+The scoped enum feature adds type safety to the flags, but also prevents using the flag bits as input for bitwise operations like & and |. 
+As solution Vulkan-Hpp provides a template class ```vk::Flags``` which brings the standard operations like &=, |=, & and | to our scoped enums. Except for the initialization with 0 this class behaves exactly like a normal bitmask
+ with the improvement that it is impossible to set bits not specified by the corresponding enum by accident. Here are a few examples for the bitmask handling:
 
 ```c++
-  VkImageCreateInfo ci;
+vk::ImageUsage iu1; // initialize a bitmask with no bit set
+vk::ImageUsage iu2 = {}; // initialize a bitmask with no bit set
+vk::ImageUsage iu3 = vk::ImageUsage::eColorAttachment; // initialize with a single value
+vk::ImageUsage iu4 = vk::ImageUsage::eColorAttachment | vk::ImageUsage::eStorage; // or two bits to get a bitmask
+PipelineShaderStageCreateInfo ci( {} /* pass a flag without any bits set, ...);
+```
+
+# CreateInfo structs
+When constructing a handle in Vulkan one usually has to create some ```CreateInfo``` struct which describes the new handle. This can result in quite lengthy code as can be seen in the following Vulkan C example:
+
+```c++
+ VkImageCreateInfo ci;
   ci.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
   ci.pNext = nullptr;
   ci.flags = ...some flags...;
@@ -24,192 +71,200 @@ Have a look at the following piece of code which creates a VkImage:
   vkCreateImage(device, &ci, allocator, &image));
 ```
 
-There may be some issues that can happen when filling the structure which cannot be caught at compile time:
+There are two typical issues Vulkan developers encounter when filling out a CreateInfo struct field by field
+* One or more fields are left uninitialized.
+* sType is incorrect.
 
-* initialization of ```ci.sType``` using wrong enum values
-* uninitialized data fields (e.g. missing initialization of ```ci.mipLevels```) 
-* use of invalid bits for ```ci.flags``` (no type-safety for bits)
-* use of incorrect enums for fields (no type-safety for enums)
+Especially the first one is hard to detect.
 
-These initializations will most likely show up as random runtime errors, which usually are nasty and time-consuming to debug.
-Our auto-generated, C++ 11-conform layer uses commonly known C++ features like implicit initialization through constructors
-to avoid incorrect or missing  initializations and introduces type-safety with scoped enums to turn explicit initialization
-errors into compile errors. Following is a list of features and conventions introduced by our Vulkan C++ layer:
-
-* works along the official C version of the API
-* defines all symbols within the 'vk' namespace and to avoid redundancy the vk/Vk/VK_ prefixes have been removed from all symbols, i.e. ```vk::ImageCreateInfo``` for VkImageCreateInfo.
-* camel case syntax with an 'e' prefix has been introduced for all enums, i.e. ```vk::ImageType::e2D``` (the prefix was a compromise, more about that later) removes the 'BIT' suffix from all flag related enums, i.e. ```vk::ImageUsage::eColorAttachment```.
-* introduces constructors for all structs, which by default set the appropriate ```sType``` and all other values to zero.
-* introduces wrapper classes around the vulkan handles, i.e. ```vk::CommandBuffer``` for VkCommandBuffer
-* introduces member functions of those wrapper classes, that map to vulkan functions getting the corresponding vulkan handle as its first argument. The type of that handle is stripped from the function name, i.e. ```vk::Device::getProcAddr``` for vkGetDeviceProcAddr. Note the special handling for the class CommandBuffer, where most of the vulkan functions would just include "Cmd", instead of "CommandBuffer", i.e. ```vk::CommandBuffer::bindPipeline``` for vkCmdBindPipeline.
-With those changes applied, the updated code snippet looks like this:
-
+Vulkan-Hpp provides constructors for all CreateInfo objects which accept one parameter for each member variable. This way the compiler throws a compiler error if a value has been forgotten. In addition to this sType is automatically
+ filled with the correct value and pNext set to a nullptr by default. Here's how the same code looks with a constructor:
 
 ```c++
-vk::ImageCreateInfo ci;
-ci.flags = ...some flags...;
-ci.imageType = vk::ImageType::e2D;
-ci.format = vk::Format::eR8G8B8A8Unorm;
-ci.extent = vk::Extent3D { width, height, 1 };
-ci.mipLevels = 1;
-ci.arrayLayers = 1;
-ci.samples = 1;
-ci.tiling = vk::ImageTiling::eOptimal;
-ci.usage = vk::ImageUsage::eColorAttachment;
-ci.sharingMode = vk::SharingMode::eExclusive;
-  // ci.queueFamilyIndexCount = 0	// no need to set, already initialized
-  // ci.pQueueFamilyIndices = 0	// no need to set, already initialized
-ci.initialLayout = vk::ImageLayout::eUndefined;
-device.createImage(&ci, allocator, &image);
+ vk::ImageCreateInfo ci({}, vk::ImageType::e2D, vk::format::eR8G8B8A8Unorm,
+                        { width, height, 1 },
+                        1, 1, vk::SampleCount::e1, 
+                        vk::ImageTiling::eOptimal, vk::ImageUsage:eColorAttachment,
+                        vk::SharingMode::eExclusive, 0, 0, vk::Imagelayout::eUndefined);
 ```
 
-Which is a total of 13 lines of code, versus 17 lines for the C version. In addition, this code is more robust as described above.
-
-# Type-safe Enums
-
-Splitting up the C enums into a namespace and scoped enums resulted in two compilation issues. 
-First some enums started with a digit like ```vk::ImageType::1D``` which resulted in a compilation error. 
-Second, there's the risk that upper symbols like ```vk::CompositeAlphaFlagBitsKHR::OPAQUE``` do clash with preprocessor defines.
-In the given example ```OPAQUE``` has been defined in ```win32gdi.h``` resulting a compilation error.
-
-To overcome those two issues the symbols have been converted to camel case and the prefix 'e' has been added so that each enum starts with a letter.
-
-# Improvements to Bit Flags
-
-After those changes the code might look more familiar to C++ developers, but there is still no gain with regards to safety.
- With C++ features available we replaced all Vulkan enums with scoped enums to achieve type safety which already uncovered
-a few small issues in our code. The good thing with scoped enums is that there is no implicit casts to integer types anymore.
-The downside is that OR'ing the bits for the flags does not work anymore without an explicit cast. As a solution to this problem
-we have introduced a new ```vk::Flags<T>``` template which is used for all flags. This class supports the standard
-operations one usually needs on bitmasks like &=, |=, & and |. Except for the initialization with 0, which is being replaced by
-the default constructor, the ```vk::Flags<T>``` class works exactly like a normal bitmask with the improvement that
-it is impossible to set bits not specified by the corresponding enum. To generate a bit mask with two bits set write:
-
+With constructors for CreateInfo structures one can also pass temporaries to Vulkan functions like this:
 ```c++
-ci.usage = vk::ImageUsage::eColorAttachment | vk::ImageUsage::eStorage;
+  vk::Image image = device.createImage({{}, vk::ImageType::e2D, vk::format::eR8G8B8A8Unorm, 
+                                       { width, height, 1 },
+                                       1, 1, vk::SampleCount::e1, 
+                                       vk::ImageTiling::eOptimal, vk::ImageUsage:eColorAttachment,
+                                       vk::SharingMode::eExclusive, 0, 0, vk::Imagelayout::eUndefined});
 ```
 
-By adding the scoped enums and ```vk::Flags<T>``` the C++ API provides type safety for all enums and flags which is a
-big improvement. This leaves the remaining issue that the compiler might not detect uninitialized fields in structs. As a solution
-we have added constructors to all structs which accept all values defined by the corresponding struct. 
+# Passing Arrays to Functions: The ArrayProxy
+The Vulkan API has several places where which require (count,pointer) as two function arguments and C++ has a few containers which map perfectly to this pair. To simplify development the Vulkan-Hpp bindings have replaced those argument pairs
+with the ArrayProxy template class which accepts empty arrays and a single value as well as STL containers std::initializer_list, std::array and std::vector as argument for construction. This way a single generated Vulkan version can accept
+a variety of inputs without having the combinatoric explosion which would occur when creating a function for each container type.
+
+Here are some code samples on how to use the ArrayProxy:
 
 ```c++
-vk::ImageCreateInfo ci(
-  ...some flags..., vk::ImageType::e2D, vk::Format::eR8G8B8A8Unorm,
-  vk::Extent3D { width, height, 1 }, 1, 1,
-  vk::SampleCount::e1, vk::ImageTiling::eOptimal,
-  vk::ImageUsage::eColorAttachment, vk::SharingMode::eExclusive,
-  0, 0, vk::ImageLayout::eUndefined);
+vk::CommandBuffer c;
+
+// pass an empty array
+c.setScissor(0, nullptr);
+
+// pass a single value. Value is passed as reference
+vk::Rect2D scissorRect = { {0, 0}, {640, 480} };
+c.setScissor(0, scissorRect);
+
+// pass a temporary value.
+c.setScissor(0, { { 0, 0 },{ 640, 480 } });
+
+// generate a std::initializer_list using two rectangles from the stack. This might generate a copy of the rectangles.
+vk::Rect2D scissorRect1 = { { 0, 0 },{ 320, 240 } };
+vk::Rect2D scissorRect2 = { { 320, 240 },{ 320, 240 } };
+c.setScissor(0, { scissorRect, scissorRect2 });
+
+// construct a std::initializer_list using two temporary rectangles.
+c.setScissor(0, { { {   0,   0 },{ 320, 240 } },
+                { { 320, 240 },{ 320, 240 } }
+}
+);
+
+// pass a std::array
+std::array<vk::Rect2D, 2> arr{ scissorRect1, scissorRect2 };
+c.setScissor(0, arr);
+
+// pass a std::vector of dynamic size
+std::vector<vk::Rect2D> vec;
+vec.push_back(scissorRect1);
+vec.push_back(scissorRect2);
+c.setScissor(0, vec);
 ```
 
-# String conversions
+# Passing Structs to Functions
+Vulkan-Hpp generates references for pointers to structs. This conversion allows passing temporary structs to functions which can result in shorter code. In case the input is optional and thus accepting a null pointer the parameter type will be
+a ```vk::Optional<T> const&``` type. This type accepts either a reference to ```T``` or nullptr as input and thus allows optional temporary structs.
 
-At development time it can be quite handy to have a utility function that can convert an enum or flags to a string for debugging purposes. To achieve this,
-we have implemented ```to_string(type)``` functions for all enums and flags. Calling ```to_string(vk::SharingMode::eExclusive)``` will return 'Exclusive' and calling
-```to_string(vk::QueueFlagBits::eGraphics | vk::QueueFlagBits::eCompute)``` will return the concatenated string 'Graphics | Compute'.
+````c++
+// C
+ImageSubResource subResource;
+subResource.aspectMask = 0;
+subResource.mipLevel = 0;
+subResource.arrayLayer = 0;
+vkSubresourceLayout layout = vkGetImageSubResourceLayout(image, subresource);
 
-# Alternative Initialization of Structs
-
-Another nice feature of those constructors is that sType is being initialized internally and thus is always correct.
-
-Finally, we have added a default constructor to each struct which initializes all values to 0 to allow setting the values with a variant of the named parameter idiom which is similar to the designated initializer list of C99.
-
-```c++
-vk::ImageCreateInfo ci = vk::ImageCreateInfo()
-  .setFlags(...some flags...)
-  .setImageType(vk::ImageType::e2D)
-  .setFormat(vk::Format::eR8G8B8A8Unorm)
-  .setExtent(vk::Extent3D { width, height, 1 })
-  .setMipLevels(1)
-  .setArrayLayers(1)
-  .setSamples(1)
-  .setTiling(vk::ImageTiling::eOptimal)
-  .setUsage(vk::ImageUsage::eColorAttachment)
-  .setSharingMode(vk::SharingMode::eExclusive)
-  // .setQueueFamilyIndexCount(0)	// no need to set, already initialized
-  // .setPQueueFamilyIndices(0)	// no need to set, already initialized
-  .setInitialLayout(vk::ImageLayout::eUndefined);
-device.createImage(&ci, allocator, &image);
+// C++
+auto layout = device.getImageSubResourceLayout(image, { {} /* flags*/, 0 /* miplevel */, 0 /* layout */ }); 
 ```
 
-# Enhancements beyond native Vulkan
-To provide a more object oriented feeling we're providing classes for each handle which include all Vulkan functions where the first 
-parameter matches the handle. In addition to this we made a few changes to the signatures of the member functions
-* To disable the enhanced mode put ```#define VULKAN_HPP_DISABLE_ENHANCED_MODE``` before including ```vulkan.hpp```
-* ```(count, T*)``` has been replaced by ```vk::ArrayProxy<T>```, which can be created out of a single T, a (count, T*) pair, a std::array<T,N>, a vector<T>, or an initializer_list<T>.
-* ```const char *``` has been replaced by ```const std::string &```
-* ```const T *``` has been replaced by ```const T &``` to allow temporary objects. This is useful to pass small structures like ```vk::ClearColorValue``` or ```vk::Extent*```
-```commandBuffer.clearColorImage(image, layout, std::array<float, 4>{1.0f, 1.0f, 1.0f, 1.0f}, {...});```
-Optional parameters are being replaced by ```Optional<T>``` which accept a type of ```const T```, ```T```, or ```const std::string```. ```nullptr``` can be used to initialize an empty ```Optional<T>```.
+# Return values, Error Codes & Exceptions
+By default Vulkan-Hpp has exceptions enabled. This means that Vulkan-Hpp checks the return code of each function call which returns a Vk::Result. If Vk::Result is a failure a std::runtime_error will be thrown. 
+Since there is no need to return the error code anymore the C++ bindings can now return the actual desired return value, i.e. a vulkan handle. In those cases ResultValue <SomeType>::type is defined as the returned type.
+ To create a device you can now just write:
 
-Here are a few code examples:
+```C++
+vk::Device device = physicalDevice.createDevice(createInfo); 
+```
+
+If exception handling is disabled by defining ```VULKAN_HPP_NO_EXCEPTIONS``` the type of ```ResultValue<SomeType>::type``` is a struct holding a ```vk::Result``` and a ```SomeType```.
+This struct supports unpacking the return values by using ```std::tie```.
+
+In case you don’t want to use the ```vk::ArrayProxy``` and return value transformation you can still call the plain C-style function. Below are three examples showing the 3 ways to use the API:
+
+The first snippet shows how to use the API without exceptions and the return value transformation:
+
 ```c++
-  try {
-    VkInstance nativeInstance = nullptr; // Fetch the instance from a favorite toolkit
+// No exceptions, no return value transformation
+ShaderModuleCreateInfo createInfo(...);
+ShaderModule shader1;
+Result result = device.createShaderModule(&createInfo, allocator, &shader1);
+if (result.result != VK_SUCCESS)
+{
+    handle error code;
+    cleanup?
+    return?
+}
 
-    // create a vk::Instance handle from a native handle
-    vk::Instance i(nativeInstance);
+ShaderModule shader2;
+Result result = device.createShaderModule(&createInfo, allocator, &shader2);
+if (result != VK_SUCCESS)
+{
+    handle error code;
+    cleanup?
+    return?
+}
+```
 
-    // operator=(VkInstance const &) is also supported
-    i = nativeInstance;
+The second snippet shows how to use the API using return value transformation, but without exceptions. It’s already a little bit shorter than the original code:
 
-    // Get VkInstance from vk::Instance 
-    nativeInstance = i;
+```c++
+ResultValue<ShaderModule> shaderResult1 = device.createShaderModule({...} /* createInfo temporary */);
+if (shaderResult1.result != VK_SUCCESS)
+{
+  handle error code;
+  cleanup?
+  return?
+}
 
-    // Get a std::vector as result of an enumeration call.
-    std::vector<vk::PhysicalDevice> physicalDevices = i.enumeratePhysicalDevices();
-    vk::FormatProperties formatProperties = physicalDevices[0].getFormatProperties(vk::Format::eR8G8B8A8Unorm);
+// std::tie support. 
+vk::Result result;
+vk::ShaderModule shaderModule2;
+std::tie(result, shaderModule2)  = device.createShaderModule({...} /* createInfo temporary */);
+if (shaderResult2.result != VK_SUCCESS)
+{
+  handle error code;
+  cleanup?
+  return?
+}
+```
 
-    vk::CommandBuffer commandBuffer = ...;
-    vk::Buffer buffer = ...;
+A nicer way to unpack the result is provided by the structured bindings of C++17. They will allow us to get the result with a single line of code:
 
-    // Accept std::vector as source for updateBuffer
-    commandBuffer.updateBuffer(buffer, 0, {some values}); // update buffer with std::vector
+```c++
+auto [result, shaderModule2] = device.createShaderModule({...} /* createInfo temporary */);
+```
+ 
+Finally, the last code example is using exceptions and return value transformation. This is the default mode of the API.
 
-    // Sometimes it's necessary to pass a nullptr to a struct. For this case we've added Optional<T>(std::nullptr_t).
-    device.allocateMemory(allocateInfo, nullptr);
+```c++
+ ShaderModule shader1;
+ ShaderModule shader2;
+ try {
+   myHandle = device.createShaderModule({...});
+   myHandle2 = device.createShaderModule({...});
+ } catch(std::exception const &e) {
+   // handle error and free resources
+ }
+```
+Keep in mind that Vulkan-Hpp does not support RAII style handles and that you have to cleanup your resources in the error handler!
 
-  }
-  catch (const std::exception &e)
+# Enumerations
+For the return value transformation, there's one special class of return values which require special handling: Enumerations. For enumerations you usually have to write code like this:
+
+```c++
+std::vector<LayerProperties,Allocator> properties;
+uint32_t propertyCount;
+Result result;
+do
+{
+  // determine number of elements to query
+  result = static_cast<Result>( vk::enumerateDeviceLayerProperties( m_physicalDevice, &propertyCount, nullptr ) );
+  if ( ( result == Result::eSuccess ) && propertyCount )
   {
-    std::cerr << "Vulkan failure: " << e.what() << std::endl;
+    // allocate memory & query again
+    properties.resize( propertyCount );
+    result = static_cast<Result>( vk::enumerateDeviceLayerProperties( m_physicalDevice, &propertyCount, reinterpret_cast 
+     <VkLayerProperties*>( properties.data() ) ) );
   }
+} while ( result == Result::eIncomplete );
+// it's possible that the count has changed, start again if properties was not big enough
+properties.resize(propertyCount);
 ```
-# Exceptions and return types
-The wrapper functions will throw a ```std::system_error``` if the result of the wrapped function is not a success code.
-By defining ```VULKAN_HPP_NO_EXCEPTIONS``` before include vulkan.hpp, this can be disabled.
-Depending on exceptions being enabled or disabled, the return type of some functions change.
+Since writing this loop over and over again is tedious and error prone the C++ binding takes care of the enumeration so that you can just write:
 
-With exceptions enabled (the default) there are four different cases on the return types:
-* Just one possible success code
-  * no output value -> return type is ```void```
-  * one output value -> return type is T, which is the type of the output value
-* Multiple possible success codes
-  * no output value -> return type is ```vk::Result```
-  * one output value -> return type is a structure ```vk::ResultValue<T>``` with a member ```result``` of type ```vk::Result``` holding the actual result code, and a member ```value``` of type T, which is the type of the output value, holding that output value.
+std::vector<LayerProperties> properties = physicalDevice.enumerateDeviceLayerProperties();
 
-With exceptions disabled, the return type of those wrapper functions where the wrapped function has just one possible success code is different:
-* no output value -> return type is ```vk::Result```
-* one output value -> return type is ```vk::ResultValue<T>```, as described above.
+# Custom allocators
+Sometimes it is required to use ```std::vector``` with custom allocators. Vulkan-Hpp supports vectors with custom allocators as input for ```vk::ArrayProx``` and for functions which do return a vector. For the latter case, add your favorite custom allocator as template argument to the function call like this:
 
-Note: With exceptions disabled, it is the user's responsibility to check for errors!    
-
-# Usage
-To start with the C++ version of the Vulkan API download header from GIT, put it in a vulkan subdirectory and add
-```#include <vulkan/vulkan.hpp>``` to your source code.
-
-To build the header for a given vk.xml specification continue with the following steps:
-
-* Build VulkanHppGenerator
-* Grab your favourite version vk.xml from Khronos
-* Excute ```VulkanHppGenerator <vk.xml>``` to generate ```vulkan.hpp``` in the current working directory.
-
-# Build instructions for VulkanHppGenerator
-
-* Clone the repository: ```git clone https://github.com/KhronosGroup/vkcpp```
-* Update submodules: ```git submodule update --init --recursive```
-* Use CMake to generate a solution or makefile for your favourite build environment
-* Launch the build
-
-# Samples
-Brad Davis started to port Sascha Willems Samples to vulkan.hpp. You can find his work in his [repository](https://github.com/jherico/Vulkan).
+```c++
+std::vector<LayerProperties, MyCustomAllocator> properties = physicalDevice.enumerateDeviceLayerProperties<MyCustomAllocator>();
+```

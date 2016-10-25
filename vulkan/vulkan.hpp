@@ -85,6 +85,11 @@ static_assert( VK_HEADER_VERSION ==  32 , "Wrong VK_HEADER_VERSION!" );
 
 namespace vk
 {
+  template <typename FlagBitsType> struct FlagTraits
+  {
+    enum { allFlags = 0 };
+  };
+
   template <typename BitType, typename MaskType = VkFlags>
   class Flags
   {
@@ -152,6 +157,13 @@ namespace vk
     bool operator!() const
     {
       return !m_mask;
+    }
+
+    Flags<BitType> operator~() const
+    {
+      Flags<BitType> result(*this);
+      result.m_mask ^= FlagTraits<BitType>::allFlags;
+      return result;
     }
 
     bool operator==(Flags<BitType> const& rhs) const
@@ -4783,6 +4795,19 @@ namespace vk
     return CullModeFlags( bit0 ) | bit1;
   }
 
+  VULKAN_HPP_INLINE CullModeFlags operator~( CullModeFlagBits bits )
+  {
+    return ~( CullModeFlags( bits ) );
+  }
+
+  template <> struct FlagTraits<CullModeFlagBits>
+  {
+    enum
+    {
+      allFlags = VkFlags(CullModeFlagBits::eNone) | VkFlags(CullModeFlagBits::eFront) | VkFlags(CullModeFlagBits::eBack) | VkFlags(CullModeFlagBits::eFrontAndBack)
+    };
+  };
+
   enum class FrontFace
   {
     eCounterClockwise = VK_FRONT_FACE_COUNTER_CLOCKWISE,
@@ -9183,6 +9208,19 @@ namespace vk
     return QueueFlags( bit0 ) | bit1;
   }
 
+  VULKAN_HPP_INLINE QueueFlags operator~( QueueFlagBits bits )
+  {
+    return ~( QueueFlags( bits ) );
+  }
+
+  template <> struct FlagTraits<QueueFlagBits>
+  {
+    enum
+    {
+      allFlags = VkFlags(QueueFlagBits::eGraphics) | VkFlags(QueueFlagBits::eCompute) | VkFlags(QueueFlagBits::eTransfer) | VkFlags(QueueFlagBits::eSparseBinding)
+    };
+  };
+
   struct QueueFamilyProperties
   {
     operator const VkQueueFamilyProperties&() const
@@ -9226,6 +9264,19 @@ namespace vk
     return MemoryPropertyFlags( bit0 ) | bit1;
   }
 
+  VULKAN_HPP_INLINE MemoryPropertyFlags operator~( MemoryPropertyFlagBits bits )
+  {
+    return ~( MemoryPropertyFlags( bits ) );
+  }
+
+  template <> struct FlagTraits<MemoryPropertyFlagBits>
+  {
+    enum
+    {
+      allFlags = VkFlags(MemoryPropertyFlagBits::eDeviceLocal) | VkFlags(MemoryPropertyFlagBits::eHostVisible) | VkFlags(MemoryPropertyFlagBits::eHostCoherent) | VkFlags(MemoryPropertyFlagBits::eHostCached) | VkFlags(MemoryPropertyFlagBits::eLazilyAllocated)
+    };
+  };
+
   struct MemoryType
   {
     operator const VkMemoryType&() const
@@ -9260,6 +9311,19 @@ namespace vk
   {
     return MemoryHeapFlags( bit0 ) | bit1;
   }
+
+  VULKAN_HPP_INLINE MemoryHeapFlags operator~( MemoryHeapFlagBits bits )
+  {
+    return ~( MemoryHeapFlags( bits ) );
+  }
+
+  template <> struct FlagTraits<MemoryHeapFlagBits>
+  {
+    enum
+    {
+      allFlags = VkFlags(MemoryHeapFlagBits::eDeviceLocal)
+    };
+  };
 
   struct MemoryHeap
   {
@@ -9338,6 +9402,19 @@ namespace vk
   {
     return AccessFlags( bit0 ) | bit1;
   }
+
+  VULKAN_HPP_INLINE AccessFlags operator~( AccessFlagBits bits )
+  {
+    return ~( AccessFlags( bits ) );
+  }
+
+  template <> struct FlagTraits<AccessFlagBits>
+  {
+    enum
+    {
+      allFlags = VkFlags(AccessFlagBits::eIndirectCommandRead) | VkFlags(AccessFlagBits::eIndexRead) | VkFlags(AccessFlagBits::eVertexAttributeRead) | VkFlags(AccessFlagBits::eUniformRead) | VkFlags(AccessFlagBits::eInputAttachmentRead) | VkFlags(AccessFlagBits::eShaderRead) | VkFlags(AccessFlagBits::eShaderWrite) | VkFlags(AccessFlagBits::eColorAttachmentRead) | VkFlags(AccessFlagBits::eColorAttachmentWrite) | VkFlags(AccessFlagBits::eDepthStencilAttachmentRead) | VkFlags(AccessFlagBits::eDepthStencilAttachmentWrite) | VkFlags(AccessFlagBits::eTransferRead) | VkFlags(AccessFlagBits::eTransferWrite) | VkFlags(AccessFlagBits::eHostRead) | VkFlags(AccessFlagBits::eHostWrite) | VkFlags(AccessFlagBits::eMemoryRead) | VkFlags(AccessFlagBits::eMemoryWrite)
+    };
+  };
 
   struct MemoryBarrier
   {
@@ -9550,6 +9627,19 @@ namespace vk
     return BufferUsageFlags( bit0 ) | bit1;
   }
 
+  VULKAN_HPP_INLINE BufferUsageFlags operator~( BufferUsageFlagBits bits )
+  {
+    return ~( BufferUsageFlags( bits ) );
+  }
+
+  template <> struct FlagTraits<BufferUsageFlagBits>
+  {
+    enum
+    {
+      allFlags = VkFlags(BufferUsageFlagBits::eTransferSrc) | VkFlags(BufferUsageFlagBits::eTransferDst) | VkFlags(BufferUsageFlagBits::eUniformTexelBuffer) | VkFlags(BufferUsageFlagBits::eStorageTexelBuffer) | VkFlags(BufferUsageFlagBits::eUniformBuffer) | VkFlags(BufferUsageFlagBits::eStorageBuffer) | VkFlags(BufferUsageFlagBits::eIndexBuffer) | VkFlags(BufferUsageFlagBits::eVertexBuffer) | VkFlags(BufferUsageFlagBits::eIndirectBuffer)
+    };
+  };
+
   enum class BufferCreateFlagBits
   {
     eSparseBinding = VK_BUFFER_CREATE_SPARSE_BINDING_BIT,
@@ -9563,6 +9653,19 @@ namespace vk
   {
     return BufferCreateFlags( bit0 ) | bit1;
   }
+
+  VULKAN_HPP_INLINE BufferCreateFlags operator~( BufferCreateFlagBits bits )
+  {
+    return ~( BufferCreateFlags( bits ) );
+  }
+
+  template <> struct FlagTraits<BufferCreateFlagBits>
+  {
+    enum
+    {
+      allFlags = VkFlags(BufferCreateFlagBits::eSparseBinding) | VkFlags(BufferCreateFlagBits::eSparseResidency) | VkFlags(BufferCreateFlagBits::eSparseAliased)
+    };
+  };
 
   struct BufferCreateInfo
   {
@@ -9691,6 +9794,19 @@ namespace vk
   {
     return ShaderStageFlags( bit0 ) | bit1;
   }
+
+  VULKAN_HPP_INLINE ShaderStageFlags operator~( ShaderStageFlagBits bits )
+  {
+    return ~( ShaderStageFlags( bits ) );
+  }
+
+  template <> struct FlagTraits<ShaderStageFlagBits>
+  {
+    enum
+    {
+      allFlags = VkFlags(ShaderStageFlagBits::eVertex) | VkFlags(ShaderStageFlagBits::eTessellationControl) | VkFlags(ShaderStageFlagBits::eTessellationEvaluation) | VkFlags(ShaderStageFlagBits::eGeometry) | VkFlags(ShaderStageFlagBits::eFragment) | VkFlags(ShaderStageFlagBits::eCompute) | VkFlags(ShaderStageFlagBits::eAllGraphics) | VkFlags(ShaderStageFlagBits::eAll)
+    };
+  };
 
   struct DescriptorSetLayoutBinding
   {
@@ -10133,6 +10249,19 @@ namespace vk
     return ImageUsageFlags( bit0 ) | bit1;
   }
 
+  VULKAN_HPP_INLINE ImageUsageFlags operator~( ImageUsageFlagBits bits )
+  {
+    return ~( ImageUsageFlags( bits ) );
+  }
+
+  template <> struct FlagTraits<ImageUsageFlagBits>
+  {
+    enum
+    {
+      allFlags = VkFlags(ImageUsageFlagBits::eTransferSrc) | VkFlags(ImageUsageFlagBits::eTransferDst) | VkFlags(ImageUsageFlagBits::eSampled) | VkFlags(ImageUsageFlagBits::eStorage) | VkFlags(ImageUsageFlagBits::eColorAttachment) | VkFlags(ImageUsageFlagBits::eDepthStencilAttachment) | VkFlags(ImageUsageFlagBits::eTransientAttachment) | VkFlags(ImageUsageFlagBits::eInputAttachment)
+    };
+  };
+
   enum class ImageCreateFlagBits
   {
     eSparseBinding = VK_IMAGE_CREATE_SPARSE_BINDING_BIT,
@@ -10149,6 +10278,19 @@ namespace vk
     return ImageCreateFlags( bit0 ) | bit1;
   }
 
+  VULKAN_HPP_INLINE ImageCreateFlags operator~( ImageCreateFlagBits bits )
+  {
+    return ~( ImageCreateFlags( bits ) );
+  }
+
+  template <> struct FlagTraits<ImageCreateFlagBits>
+  {
+    enum
+    {
+      allFlags = VkFlags(ImageCreateFlagBits::eSparseBinding) | VkFlags(ImageCreateFlagBits::eSparseResidency) | VkFlags(ImageCreateFlagBits::eSparseAliased) | VkFlags(ImageCreateFlagBits::eMutableFormat) | VkFlags(ImageCreateFlagBits::eCubeCompatible)
+    };
+  };
+
   enum class PipelineCreateFlagBits
   {
     eDisableOptimization = VK_PIPELINE_CREATE_DISABLE_OPTIMIZATION_BIT,
@@ -10162,6 +10304,19 @@ namespace vk
   {
     return PipelineCreateFlags( bit0 ) | bit1;
   }
+
+  VULKAN_HPP_INLINE PipelineCreateFlags operator~( PipelineCreateFlagBits bits )
+  {
+    return ~( PipelineCreateFlags( bits ) );
+  }
+
+  template <> struct FlagTraits<PipelineCreateFlagBits>
+  {
+    enum
+    {
+      allFlags = VkFlags(PipelineCreateFlagBits::eDisableOptimization) | VkFlags(PipelineCreateFlagBits::eAllowDerivatives) | VkFlags(PipelineCreateFlagBits::eDerivative)
+    };
+  };
 
   struct ComputePipelineCreateInfo
   {
@@ -10277,6 +10432,19 @@ namespace vk
   {
     return ColorComponentFlags( bit0 ) | bit1;
   }
+
+  VULKAN_HPP_INLINE ColorComponentFlags operator~( ColorComponentFlagBits bits )
+  {
+    return ~( ColorComponentFlags( bits ) );
+  }
+
+  template <> struct FlagTraits<ColorComponentFlagBits>
+  {
+    enum
+    {
+      allFlags = VkFlags(ColorComponentFlagBits::eR) | VkFlags(ColorComponentFlagBits::eG) | VkFlags(ColorComponentFlagBits::eB) | VkFlags(ColorComponentFlagBits::eA)
+    };
+  };
 
   struct PipelineColorBlendAttachmentState
   {
@@ -10505,6 +10673,19 @@ namespace vk
     return FenceCreateFlags( bit0 ) | bit1;
   }
 
+  VULKAN_HPP_INLINE FenceCreateFlags operator~( FenceCreateFlagBits bits )
+  {
+    return ~( FenceCreateFlags( bits ) );
+  }
+
+  template <> struct FlagTraits<FenceCreateFlagBits>
+  {
+    enum
+    {
+      allFlags = VkFlags(FenceCreateFlagBits::eSignaled)
+    };
+  };
+
   struct FenceCreateInfo
   {
     FenceCreateInfo( FenceCreateFlags flags_ = FenceCreateFlags() )
@@ -10594,6 +10775,19 @@ namespace vk
     return FormatFeatureFlags( bit0 ) | bit1;
   }
 
+  VULKAN_HPP_INLINE FormatFeatureFlags operator~( FormatFeatureFlagBits bits )
+  {
+    return ~( FormatFeatureFlags( bits ) );
+  }
+
+  template <> struct FlagTraits<FormatFeatureFlagBits>
+  {
+    enum
+    {
+      allFlags = VkFlags(FormatFeatureFlagBits::eSampledImage) | VkFlags(FormatFeatureFlagBits::eStorageImage) | VkFlags(FormatFeatureFlagBits::eStorageImageAtomic) | VkFlags(FormatFeatureFlagBits::eUniformTexelBuffer) | VkFlags(FormatFeatureFlagBits::eStorageTexelBuffer) | VkFlags(FormatFeatureFlagBits::eStorageTexelBufferAtomic) | VkFlags(FormatFeatureFlagBits::eVertexBuffer) | VkFlags(FormatFeatureFlagBits::eColorAttachment) | VkFlags(FormatFeatureFlagBits::eColorAttachmentBlend) | VkFlags(FormatFeatureFlagBits::eDepthStencilAttachment) | VkFlags(FormatFeatureFlagBits::eBlitSrc) | VkFlags(FormatFeatureFlagBits::eBlitDst) | VkFlags(FormatFeatureFlagBits::eSampledImageFilterLinear) | VkFlags(FormatFeatureFlagBits::eSampledImageFilterCubicIMG)
+    };
+  };
+
   struct FormatProperties
   {
     operator const VkFormatProperties&() const
@@ -10631,6 +10825,19 @@ namespace vk
     return QueryControlFlags( bit0 ) | bit1;
   }
 
+  VULKAN_HPP_INLINE QueryControlFlags operator~( QueryControlFlagBits bits )
+  {
+    return ~( QueryControlFlags( bits ) );
+  }
+
+  template <> struct FlagTraits<QueryControlFlagBits>
+  {
+    enum
+    {
+      allFlags = VkFlags(QueryControlFlagBits::ePrecise)
+    };
+  };
+
   enum class QueryResultFlagBits
   {
     e64 = VK_QUERY_RESULT_64_BIT,
@@ -10646,6 +10853,19 @@ namespace vk
     return QueryResultFlags( bit0 ) | bit1;
   }
 
+  VULKAN_HPP_INLINE QueryResultFlags operator~( QueryResultFlagBits bits )
+  {
+    return ~( QueryResultFlags( bits ) );
+  }
+
+  template <> struct FlagTraits<QueryResultFlagBits>
+  {
+    enum
+    {
+      allFlags = VkFlags(QueryResultFlagBits::e64) | VkFlags(QueryResultFlagBits::eWait) | VkFlags(QueryResultFlagBits::eWithAvailability) | VkFlags(QueryResultFlagBits::ePartial)
+    };
+  };
+
   enum class CommandBufferUsageFlagBits
   {
     eOneTimeSubmit = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT,
@@ -10659,6 +10879,19 @@ namespace vk
   {
     return CommandBufferUsageFlags( bit0 ) | bit1;
   }
+
+  VULKAN_HPP_INLINE CommandBufferUsageFlags operator~( CommandBufferUsageFlagBits bits )
+  {
+    return ~( CommandBufferUsageFlags( bits ) );
+  }
+
+  template <> struct FlagTraits<CommandBufferUsageFlagBits>
+  {
+    enum
+    {
+      allFlags = VkFlags(CommandBufferUsageFlagBits::eOneTimeSubmit) | VkFlags(CommandBufferUsageFlagBits::eRenderPassContinue) | VkFlags(CommandBufferUsageFlagBits::eSimultaneousUse)
+    };
+  };
 
   enum class QueryPipelineStatisticFlagBits
   {
@@ -10681,6 +10914,19 @@ namespace vk
   {
     return QueryPipelineStatisticFlags( bit0 ) | bit1;
   }
+
+  VULKAN_HPP_INLINE QueryPipelineStatisticFlags operator~( QueryPipelineStatisticFlagBits bits )
+  {
+    return ~( QueryPipelineStatisticFlags( bits ) );
+  }
+
+  template <> struct FlagTraits<QueryPipelineStatisticFlagBits>
+  {
+    enum
+    {
+      allFlags = VkFlags(QueryPipelineStatisticFlagBits::eInputAssemblyVertices) | VkFlags(QueryPipelineStatisticFlagBits::eInputAssemblyPrimitives) | VkFlags(QueryPipelineStatisticFlagBits::eVertexShaderInvocations) | VkFlags(QueryPipelineStatisticFlagBits::eGeometryShaderInvocations) | VkFlags(QueryPipelineStatisticFlagBits::eGeometryShaderPrimitives) | VkFlags(QueryPipelineStatisticFlagBits::eClippingInvocations) | VkFlags(QueryPipelineStatisticFlagBits::eClippingPrimitives) | VkFlags(QueryPipelineStatisticFlagBits::eFragmentShaderInvocations) | VkFlags(QueryPipelineStatisticFlagBits::eTessellationControlShaderPatches) | VkFlags(QueryPipelineStatisticFlagBits::eTessellationEvaluationShaderInvocations) | VkFlags(QueryPipelineStatisticFlagBits::eComputeShaderInvocations)
+    };
+  };
 
   struct CommandBufferInheritanceInfo
   {
@@ -10969,6 +11215,19 @@ namespace vk
   {
     return ImageAspectFlags( bit0 ) | bit1;
   }
+
+  VULKAN_HPP_INLINE ImageAspectFlags operator~( ImageAspectFlagBits bits )
+  {
+    return ~( ImageAspectFlags( bits ) );
+  }
+
+  template <> struct FlagTraits<ImageAspectFlagBits>
+  {
+    enum
+    {
+      allFlags = VkFlags(ImageAspectFlagBits::eColor) | VkFlags(ImageAspectFlagBits::eDepth) | VkFlags(ImageAspectFlagBits::eStencil) | VkFlags(ImageAspectFlagBits::eMetadata)
+    };
+  };
 
   struct ImageSubresource
   {
@@ -11795,6 +12054,19 @@ namespace vk
     return SparseImageFormatFlags( bit0 ) | bit1;
   }
 
+  VULKAN_HPP_INLINE SparseImageFormatFlags operator~( SparseImageFormatFlagBits bits )
+  {
+    return ~( SparseImageFormatFlags( bits ) );
+  }
+
+  template <> struct FlagTraits<SparseImageFormatFlagBits>
+  {
+    enum
+    {
+      allFlags = VkFlags(SparseImageFormatFlagBits::eSingleMiptail) | VkFlags(SparseImageFormatFlagBits::eAlignedMipSize) | VkFlags(SparseImageFormatFlagBits::eNonstandardBlockSize)
+    };
+  };
+
   struct SparseImageFormatProperties
   {
     operator const VkSparseImageFormatProperties&() const
@@ -11860,6 +12132,19 @@ namespace vk
   {
     return SparseMemoryBindFlags( bit0 ) | bit1;
   }
+
+  VULKAN_HPP_INLINE SparseMemoryBindFlags operator~( SparseMemoryBindFlagBits bits )
+  {
+    return ~( SparseMemoryBindFlags( bits ) );
+  }
+
+  template <> struct FlagTraits<SparseMemoryBindFlagBits>
+  {
+    enum
+    {
+      allFlags = VkFlags(SparseMemoryBindFlagBits::eMetadata)
+    };
+  };
 
   struct SparseMemoryBind
   {
@@ -12384,6 +12669,19 @@ namespace vk
     return PipelineStageFlags( bit0 ) | bit1;
   }
 
+  VULKAN_HPP_INLINE PipelineStageFlags operator~( PipelineStageFlagBits bits )
+  {
+    return ~( PipelineStageFlags( bits ) );
+  }
+
+  template <> struct FlagTraits<PipelineStageFlagBits>
+  {
+    enum
+    {
+      allFlags = VkFlags(PipelineStageFlagBits::eTopOfPipe) | VkFlags(PipelineStageFlagBits::eDrawIndirect) | VkFlags(PipelineStageFlagBits::eVertexInput) | VkFlags(PipelineStageFlagBits::eVertexShader) | VkFlags(PipelineStageFlagBits::eTessellationControlShader) | VkFlags(PipelineStageFlagBits::eTessellationEvaluationShader) | VkFlags(PipelineStageFlagBits::eGeometryShader) | VkFlags(PipelineStageFlagBits::eFragmentShader) | VkFlags(PipelineStageFlagBits::eEarlyFragmentTests) | VkFlags(PipelineStageFlagBits::eLateFragmentTests) | VkFlags(PipelineStageFlagBits::eColorAttachmentOutput) | VkFlags(PipelineStageFlagBits::eComputeShader) | VkFlags(PipelineStageFlagBits::eTransfer) | VkFlags(PipelineStageFlagBits::eBottomOfPipe) | VkFlags(PipelineStageFlagBits::eHost) | VkFlags(PipelineStageFlagBits::eAllGraphics) | VkFlags(PipelineStageFlagBits::eAllCommands)
+    };
+  };
+
   enum class CommandPoolCreateFlagBits
   {
     eTransient = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT,
@@ -12396,6 +12694,19 @@ namespace vk
   {
     return CommandPoolCreateFlags( bit0 ) | bit1;
   }
+
+  VULKAN_HPP_INLINE CommandPoolCreateFlags operator~( CommandPoolCreateFlagBits bits )
+  {
+    return ~( CommandPoolCreateFlags( bits ) );
+  }
+
+  template <> struct FlagTraits<CommandPoolCreateFlagBits>
+  {
+    enum
+    {
+      allFlags = VkFlags(CommandPoolCreateFlagBits::eTransient) | VkFlags(CommandPoolCreateFlagBits::eResetCommandBuffer)
+    };
+  };
 
   struct CommandPoolCreateInfo
   {
@@ -12482,6 +12793,19 @@ namespace vk
     return CommandPoolResetFlags( bit0 ) | bit1;
   }
 
+  VULKAN_HPP_INLINE CommandPoolResetFlags operator~( CommandPoolResetFlagBits bits )
+  {
+    return ~( CommandPoolResetFlags( bits ) );
+  }
+
+  template <> struct FlagTraits<CommandPoolResetFlagBits>
+  {
+    enum
+    {
+      allFlags = VkFlags(CommandPoolResetFlagBits::eReleaseResources)
+    };
+  };
+
   enum class CommandBufferResetFlagBits
   {
     eReleaseResources = VK_COMMAND_BUFFER_RESET_RELEASE_RESOURCES_BIT
@@ -12493,6 +12817,19 @@ namespace vk
   {
     return CommandBufferResetFlags( bit0 ) | bit1;
   }
+
+  VULKAN_HPP_INLINE CommandBufferResetFlags operator~( CommandBufferResetFlagBits bits )
+  {
+    return ~( CommandBufferResetFlags( bits ) );
+  }
+
+  template <> struct FlagTraits<CommandBufferResetFlagBits>
+  {
+    enum
+    {
+      allFlags = VkFlags(CommandBufferResetFlagBits::eReleaseResources)
+    };
+  };
 
   enum class SampleCountFlagBits
   {
@@ -12511,6 +12848,19 @@ namespace vk
   {
     return SampleCountFlags( bit0 ) | bit1;
   }
+
+  VULKAN_HPP_INLINE SampleCountFlags operator~( SampleCountFlagBits bits )
+  {
+    return ~( SampleCountFlags( bits ) );
+  }
+
+  template <> struct FlagTraits<SampleCountFlagBits>
+  {
+    enum
+    {
+      allFlags = VkFlags(SampleCountFlagBits::e1) | VkFlags(SampleCountFlagBits::e2) | VkFlags(SampleCountFlagBits::e4) | VkFlags(SampleCountFlagBits::e8) | VkFlags(SampleCountFlagBits::e16) | VkFlags(SampleCountFlagBits::e32) | VkFlags(SampleCountFlagBits::e64)
+    };
+  };
 
   struct ImageFormatProperties
   {
@@ -13319,6 +13669,19 @@ namespace vk
     return AttachmentDescriptionFlags( bit0 ) | bit1;
   }
 
+  VULKAN_HPP_INLINE AttachmentDescriptionFlags operator~( AttachmentDescriptionFlagBits bits )
+  {
+    return ~( AttachmentDescriptionFlags( bits ) );
+  }
+
+  template <> struct FlagTraits<AttachmentDescriptionFlagBits>
+  {
+    enum
+    {
+      allFlags = VkFlags(AttachmentDescriptionFlagBits::eMayAlias)
+    };
+  };
+
   struct AttachmentDescription
   {
     AttachmentDescription( AttachmentDescriptionFlags flags_ = AttachmentDescriptionFlags(), Format format_ = Format::eUndefined, SampleCountFlagBits samples_ = SampleCountFlagBits::e1, AttachmentLoadOp loadOp_ = AttachmentLoadOp::eLoad, AttachmentStoreOp storeOp_ = AttachmentStoreOp::eStore, AttachmentLoadOp stencilLoadOp_ = AttachmentLoadOp::eLoad, AttachmentStoreOp stencilStoreOp_ = AttachmentStoreOp::eStore, ImageLayout initialLayout_ = ImageLayout::eUndefined, ImageLayout finalLayout_ = ImageLayout::eUndefined )
@@ -13448,6 +13811,19 @@ namespace vk
     return StencilFaceFlags( bit0 ) | bit1;
   }
 
+  VULKAN_HPP_INLINE StencilFaceFlags operator~( StencilFaceFlagBits bits )
+  {
+    return ~( StencilFaceFlags( bits ) );
+  }
+
+  template <> struct FlagTraits<StencilFaceFlagBits>
+  {
+    enum
+    {
+      allFlags = VkFlags(StencilFaceFlagBits::eFront) | VkFlags(StencilFaceFlagBits::eBack) | VkFlags(StencilFaceFlagBits::eVkStencilFrontAndBack)
+    };
+  };
+
   enum class DescriptorPoolCreateFlagBits
   {
     eFreeDescriptorSet = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT
@@ -13459,6 +13835,19 @@ namespace vk
   {
     return DescriptorPoolCreateFlags( bit0 ) | bit1;
   }
+
+  VULKAN_HPP_INLINE DescriptorPoolCreateFlags operator~( DescriptorPoolCreateFlagBits bits )
+  {
+    return ~( DescriptorPoolCreateFlags( bits ) );
+  }
+
+  template <> struct FlagTraits<DescriptorPoolCreateFlagBits>
+  {
+    enum
+    {
+      allFlags = VkFlags(DescriptorPoolCreateFlagBits::eFreeDescriptorSet)
+    };
+  };
 
   struct DescriptorPoolCreateInfo
   {
@@ -13562,6 +13951,19 @@ namespace vk
   {
     return DependencyFlags( bit0 ) | bit1;
   }
+
+  VULKAN_HPP_INLINE DependencyFlags operator~( DependencyFlagBits bits )
+  {
+    return ~( DependencyFlags( bits ) );
+  }
+
+  template <> struct FlagTraits<DependencyFlagBits>
+  {
+    enum
+    {
+      allFlags = VkFlags(DependencyFlagBits::eByRegion)
+    };
+  };
 
   class CommandBuffer
   {
@@ -14816,6 +15218,19 @@ namespace vk
     return DisplayPlaneAlphaFlagsKHR( bit0 ) | bit1;
   }
 
+  VULKAN_HPP_INLINE DisplayPlaneAlphaFlagsKHR operator~( DisplayPlaneAlphaFlagBitsKHR bits )
+  {
+    return ~( DisplayPlaneAlphaFlagsKHR( bits ) );
+  }
+
+  template <> struct FlagTraits<DisplayPlaneAlphaFlagBitsKHR>
+  {
+    enum
+    {
+      allFlags = VkFlags(DisplayPlaneAlphaFlagBitsKHR::eOpaque) | VkFlags(DisplayPlaneAlphaFlagBitsKHR::eGlobal) | VkFlags(DisplayPlaneAlphaFlagBitsKHR::ePerPixel) | VkFlags(DisplayPlaneAlphaFlagBitsKHR::ePerPixelPremultiplied)
+    };
+  };
+
   struct DisplayPlaneCapabilitiesKHR
   {
     operator const VkDisplayPlaneCapabilitiesKHR&() const
@@ -14868,6 +15283,19 @@ namespace vk
     return CompositeAlphaFlagsKHR( bit0 ) | bit1;
   }
 
+  VULKAN_HPP_INLINE CompositeAlphaFlagsKHR operator~( CompositeAlphaFlagBitsKHR bits )
+  {
+    return ~( CompositeAlphaFlagsKHR( bits ) );
+  }
+
+  template <> struct FlagTraits<CompositeAlphaFlagBitsKHR>
+  {
+    enum
+    {
+      allFlags = VkFlags(CompositeAlphaFlagBitsKHR::eOpaque) | VkFlags(CompositeAlphaFlagBitsKHR::ePreMultiplied) | VkFlags(CompositeAlphaFlagBitsKHR::ePostMultiplied) | VkFlags(CompositeAlphaFlagBitsKHR::eInherit)
+    };
+  };
+
   enum class SurfaceTransformFlagBitsKHR
   {
     eIdentity = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR,
@@ -14887,6 +15315,19 @@ namespace vk
   {
     return SurfaceTransformFlagsKHR( bit0 ) | bit1;
   }
+
+  VULKAN_HPP_INLINE SurfaceTransformFlagsKHR operator~( SurfaceTransformFlagBitsKHR bits )
+  {
+    return ~( SurfaceTransformFlagsKHR( bits ) );
+  }
+
+  template <> struct FlagTraits<SurfaceTransformFlagBitsKHR>
+  {
+    enum
+    {
+      allFlags = VkFlags(SurfaceTransformFlagBitsKHR::eIdentity) | VkFlags(SurfaceTransformFlagBitsKHR::eRotate90) | VkFlags(SurfaceTransformFlagBitsKHR::eRotate180) | VkFlags(SurfaceTransformFlagBitsKHR::eRotate270) | VkFlags(SurfaceTransformFlagBitsKHR::eHorizontalMirror) | VkFlags(SurfaceTransformFlagBitsKHR::eHorizontalMirrorRotate90) | VkFlags(SurfaceTransformFlagBitsKHR::eHorizontalMirrorRotate180) | VkFlags(SurfaceTransformFlagBitsKHR::eHorizontalMirrorRotate270) | VkFlags(SurfaceTransformFlagBitsKHR::eInherit)
+    };
+  };
 
   struct DisplayPropertiesKHR
   {
@@ -15302,6 +15743,19 @@ namespace vk
     return DebugReportFlagsEXT( bit0 ) | bit1;
   }
 
+  VULKAN_HPP_INLINE DebugReportFlagsEXT operator~( DebugReportFlagBitsEXT bits )
+  {
+    return ~( DebugReportFlagsEXT( bits ) );
+  }
+
+  template <> struct FlagTraits<DebugReportFlagBitsEXT>
+  {
+    enum
+    {
+      allFlags = VkFlags(DebugReportFlagBitsEXT::eInformation) | VkFlags(DebugReportFlagBitsEXT::eWarning) | VkFlags(DebugReportFlagBitsEXT::ePerformanceWarning) | VkFlags(DebugReportFlagBitsEXT::eError) | VkFlags(DebugReportFlagBitsEXT::eDebug)
+    };
+  };
+
   struct DebugReportCallbackCreateInfoEXT
   {
     DebugReportCallbackCreateInfoEXT( DebugReportFlagsEXT flags_ = DebugReportFlagsEXT(), PFN_vkDebugReportCallbackEXT pfnCallback_ = nullptr, void* pUserData_ = nullptr )
@@ -15689,6 +16143,19 @@ namespace vk
   {
     return ExternalMemoryHandleTypeFlagsNV( bit0 ) | bit1;
   }
+
+  VULKAN_HPP_INLINE ExternalMemoryHandleTypeFlagsNV operator~( ExternalMemoryHandleTypeFlagBitsNV bits )
+  {
+    return ~( ExternalMemoryHandleTypeFlagsNV( bits ) );
+  }
+
+  template <> struct FlagTraits<ExternalMemoryHandleTypeFlagBitsNV>
+  {
+    enum
+    {
+      allFlags = VkFlags(ExternalMemoryHandleTypeFlagBitsNV::eOpaqueWin32) | VkFlags(ExternalMemoryHandleTypeFlagBitsNV::eOpaqueWin32Kmt) | VkFlags(ExternalMemoryHandleTypeFlagBitsNV::eD3D11Image) | VkFlags(ExternalMemoryHandleTypeFlagBitsNV::eD3D11ImageKmt)
+    };
+  };
 
   class Device
   {
@@ -17086,6 +17553,19 @@ namespace vk
   {
     return ExternalMemoryFeatureFlagsNV( bit0 ) | bit1;
   }
+
+  VULKAN_HPP_INLINE ExternalMemoryFeatureFlagsNV operator~( ExternalMemoryFeatureFlagBitsNV bits )
+  {
+    return ~( ExternalMemoryFeatureFlagsNV( bits ) );
+  }
+
+  template <> struct FlagTraits<ExternalMemoryFeatureFlagBitsNV>
+  {
+    enum
+    {
+      allFlags = VkFlags(ExternalMemoryFeatureFlagBitsNV::eDedicatedOnly) | VkFlags(ExternalMemoryFeatureFlagBitsNV::eExportable) | VkFlags(ExternalMemoryFeatureFlagBitsNV::eImportable)
+    };
+  };
 
   struct ExternalImageFormatPropertiesNV
   {

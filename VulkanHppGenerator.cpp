@@ -62,6 +62,11 @@ const std::string exceptionHeader(
   );
 
 const std::string flagsHeader(
+"  template <typename FlagBitsType> struct FlagTraits\n"
+"  {\n"
+"    enum { allFlags = 0 };\n"
+"  };\n"
+"\n"
 "  template <typename BitType, typename MaskType = VkFlags>\n"
 "  class Flags\n"
 "  {\n"
@@ -129,6 +134,13 @@ const std::string flagsHeader(
 "    bool operator!() const\n"
 "    {\n"
 "      return !m_mask;\n"
+"    }\n"
+"\n"
+"    Flags<BitType> operator~() const\n"
+"    {\n"
+"      Flags<BitType> result(*this);\n"
+"      result.m_mask ^= FlagTraits<BitType>::allFlags;\n"
+"      return result;\n"
 "    }\n"
 "\n"
 "    bool operator==(Flags<BitType> const& rhs) const\n"
@@ -602,7 +614,7 @@ void writeTypeCommand(std::ofstream & ofs, VkData const& vkData, DependencyData 
 void writeTypeCommandEnhanced(std::ofstream & ofs, VkData const& vkData, std::string const& indentation, std::string const& className, std::string const& functionName, DependencyData const& dependencyData, CommandData const& commandData);
 void writeTypeCommandStandard(std::ofstream & ofs, std::string const& indentation, std::string const& functionName, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes);
 void writeTypeEnum(std::ofstream & ofs, DependencyData const& dependencyData, EnumData const& enumData);
-void writeTypeFlags( std::ofstream & ofs, DependencyData const& dependencyData, FlagData const& flagData );
+void writeTypeFlags(std::ofstream & ofs, DependencyData const& dependencyData, FlagData const& flagData, std::map<std::string, EnumData>::const_iterator enumData);
 void writeTypeHandle(std::ofstream & ofs, VkData const& vkData, DependencyData const& dependencyData, HandleData const& handle, std::list<DependencyData> const& dependencies);
 void writeTypeScalar( std::ofstream & ofs, DependencyData const& dependencyData );
 void writeTypeStruct( std::ofstream & ofs, VkData const& vkData, DependencyData const& dependencyData, std::map<std::string,std::string> const& defaultValues );
@@ -2650,7 +2662,7 @@ void writeEnumsToString(std::ofstream & ofs, VkData const& vkData)
   }
 }
 
-void writeTypeFlags( std::ofstream & ofs, DependencyData const& dependencyData, FlagData const& flagData )
+void writeTypeFlags(std::ofstream & ofs, DependencyData const& dependencyData, FlagData const& flagData, std::map<std::string, EnumData>::const_iterator enumData)
 {
   assert( dependencyData.dependencies.size() == 1 );
   enterProtect(ofs, flagData.protect);
@@ -2660,6 +2672,31 @@ void writeTypeFlags( std::ofstream & ofs, DependencyData const& dependencyData, 
       << "  {" << std::endl
       << "    return " << dependencyData.name << "( bit0 ) | bit1;" << std::endl
       << "  }" << std::endl;
+  if (!enumData->second.members.empty())
+  {
+    ofs << std::endl
+        << "  VULKAN_HPP_INLINE " << dependencyData.name << " operator~( " << *dependencyData.dependencies.begin() << " bits )" << std::endl
+        << "  {" << std::endl
+        << "    return ~( " << dependencyData.name << "( bits ) );" << std::endl
+        << "  }" << std::endl
+        << std::endl
+        << "  template <> struct FlagTraits<" << *dependencyData.dependencies.begin() << ">" << std::endl
+        << "  {" << std::endl
+        << "    enum" << std::endl
+        << "    {" << std::endl
+        << "      allFlags = ";
+    for (size_t i = 0; i < enumData->second.members.size(); i++)
+    {
+      if (i != 0)
+      {
+        ofs << " | ";
+      }
+      ofs << "VkFlags(" << *dependencyData.dependencies.begin() << "::" << enumData->second.members[i].name << ")";
+    }
+    ofs << std::endl
+        << "    };" << std::endl
+        << "  };" << std::endl;
+  }
   leaveProtect(ofs, flagData.protect);
   ofs << std::endl;
 }
@@ -3007,7 +3044,7 @@ void writeTypes(std::ofstream & ofs, VkData const& vkData, std::map<std::string,
         break;
       case DependencyData::Category::FLAGS :
         assert(vkData.flags.find(it->name) != vkData.flags.end());
-        writeTypeFlags( ofs, *it, vkData.flags.find( it->name)->second );
+        writeTypeFlags( ofs, *it, vkData.flags.find( it->name)->second, vkData.enums.find(generateEnumNameForFlags(it->name)) );
         break;
       case DependencyData::Category::FUNC_POINTER :
       case DependencyData::Category::REQUIRED :

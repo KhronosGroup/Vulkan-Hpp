@@ -208,11 +208,13 @@ namespace vk
     return flags ^ bit;
   }
 
+
   template <typename RefType>
   class Optional
   {
   public:
     Optional(RefType & reference) { m_ptr = &reference; }
+    Optional(RefType * ptr) { m_ptr = ptr; }
     Optional(std::nullptr_t) { m_ptr = nullptr; }
 
     operator RefType*() const { return m_ptr; }

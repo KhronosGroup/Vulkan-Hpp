@@ -187,23 +187,24 @@ const std::string flagsHeader(
 "\n"
 );
 
-std::string const optionalClassHeader = (
-  "  template <typename RefType>\n"
-  "  class Optional\n"
-  "  {\n"
-  "  public:\n"
-  "    Optional(RefType & reference) { m_ptr = &reference; }\n"
-  "    Optional(std::nullptr_t) { m_ptr = nullptr; }\n"
-  "\n"
-  "    operator RefType*() const { return m_ptr; }\n"
-  "    RefType const* operator->() const { return m_ptr; }\n"
-  "    explicit operator bool() const { return !!m_ptr; }\n"
-  "\n"
-  "  private:\n"
-  "    RefType *m_ptr;\n"
-  "  };\n"
-  "\n"
-);
+std::string const optionalClassHeader = R"(
+  template <typename RefType>
+  class Optional
+  {
+  public:
+    Optional(RefType & reference) { m_ptr = &reference; }
+    Optional(RefType * ptr) { m_ptr = ptr; }
+    Optional(std::nullptr_t) { m_ptr = nullptr; }
+
+    operator RefType*() const { return m_ptr; }
+    RefType const* operator->() const { return m_ptr; }
+    explicit operator bool() const { return !!m_ptr; }
+
+  private:
+    RefType *m_ptr;
+  };
+
+)";
 
 std::string const arrayProxyHeader = (
   "#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE\n"

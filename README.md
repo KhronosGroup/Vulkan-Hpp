@@ -13,8 +13,8 @@ Vulkan-Hpp requires a C++11 capable compiler to compile. The following compilers
 
 # namespace vk
 To avoid name collisions with the Vulkan C API the C++ bindings reside in the vk namespace. The following rules apply to the new naming
-* All functions, enums and structs have the Vk prefix removed.
-  * ```vkCreateImage``` can be accessed as ```vk::CreateImage```
+* All functions, enums, handles, and structs have the Vk prefix removed. In addition to this the first leter of functions is lower case.
+  * ```vkCreateImage``` can be accessed as ```vk::createImage```
   * ```VkImageTiling``` can be accessed as ```vk::ImageTiling```
   * ```VkImageCreateInfo``` can be accessed as ```vk::ImageCreateInfo```
 * Enums are mapped to scoped enums to provide compile time type safety. The names have been changed to 'e' + CamelCase with the VK_ prefix and type infix removed. In case the enum type is an extension the extension suffix has been removed from the enum values.

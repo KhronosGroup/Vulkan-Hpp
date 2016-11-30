@@ -41,7 +41,7 @@
 # include <vector>
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-static_assert( VK_HEADER_VERSION ==  32 , "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION ==  34 , "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -208,11 +208,13 @@ namespace vk
     return flags ^ bit;
   }
 
+
   template <typename RefType>
   class Optional
   {
   public:
     Optional(RefType & reference) { m_ptr = &reference; }
+    Optional(RefType * ptr) { m_ptr = ptr; }
     Optional(std::nullptr_t) { m_ptr = nullptr; }
 
     operator RefType*() const { return m_ptr; }

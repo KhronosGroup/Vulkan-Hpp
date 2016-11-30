@@ -500,6 +500,7 @@ struct DependencyData
   Category              category;
   std::string           name;
   std::set<std::string> dependencies;
+  std::set<std::string> forwardDependencies;
 };
 
 struct NameValue
@@ -527,6 +528,7 @@ struct FlagData
 struct HandleData
 {
   std::vector<std::string>  commands;
+  std::string               protect;
 };
 
 struct ScalarData
@@ -789,12 +791,13 @@ size_t findReturnIndex(CommandData const& commandData, std::map<size_t,size_t> c
       if ((commandData.arguments[i].type.find('*') != std::string::npos) && (commandData.arguments[i].type.find("const") == std::string::npos) && !isVectorSizeParameter(vectorParameters, i)
           && ((vectorParameters.find(i) == vectorParameters.end()) || commandData.twoStep || (commandData.successCodes.size() == 1)))
       {
-#if !defined(NDEBUG)
         for (size_t j = i + 1; j < commandData.arguments.size(); j++)
         {
-          assert((commandData.arguments[j].type.find('*') == std::string::npos) || (commandData.arguments[j].type.find("const") != std::string::npos));
+          if ((commandData.arguments[j].type.find('*') != std::string::npos) && (commandData.arguments[j].type.find("const") == std::string::npos))
+          {
+            return ~0;
+          }
         }
-#endif
         return i;
       }
     }
@@ -914,7 +917,7 @@ bool noDependencies(std::set<std::string> const& dependencies, std::set<std::str
   return( ok );
 }
 
-bool readCommandParam( tinyxml2::XMLElement * element, DependencyData & typeData, std::vector<MemberData> & arguments )
+bool readCommandParam( tinyxml2::XMLElement * element, DependencyData & dependencyData, std::vector<MemberData> & arguments )
 {
   arguments.push_back( MemberData() );
   MemberData & arg = arguments.back();
@@ -938,7 +941,7 @@ bool readCommandParam( tinyxml2::XMLElement * element, DependencyData & typeData
   assert( child->ToElement() );
   assert( ( strcmp( child->Value(), "type" ) == 0 ) && child->ToElement() && child->ToElement()->GetText() );
   std::string type = strip( child->ToElement()->GetText(), "Vk" );
-  typeData.dependencies.insert( type );
+  dependencyData.dependencies.insert( type );
   arg.type += type;
   arg.pureType = type;
 
@@ -1231,16 +1234,24 @@ void readExtensionRequire(tinyxml2::XMLElement * element, VkData & vkData, std::
         }
         else
         {
-          std::map<std::string, ScalarData>::iterator scit = vkData.scalars.find(name);
-          if (scit != vkData.scalars.end())
+          std::map<std::string, HandleData>::iterator hait = vkData.handles.find(name);
+          if (hait != vkData.handles.end())
           {
-            scit->second.protect = protect;
+            hait->second.protect = protect;
           }
           else
           {
-            std::map<std::string, StructData>::iterator stit = vkData.structs.find(name);
-            assert(stit != vkData.structs.end() && stit->second.protect.empty());
-            stit->second.protect = protect;
+            std::map<std::string, ScalarData>::iterator scit = vkData.scalars.find(name);
+            if (scit != vkData.scalars.end())
+            {
+              scit->second.protect = protect;
+            }
+            else
+            {
+              std::map<std::string, StructData>::iterator stit = vkData.structs.find(name);
+              assert(stit != vkData.structs.end() && stit->second.protect.empty());
+              stit->second.protect = protect;
+            }
           }
         }
       }
@@ -1675,9 +1686,7 @@ void sortDependencies( std::list<DependencyData> & dependencies )
 
   while ( !dependencies.empty() )
   {
-#if !defined(NDEBUG)
-    bool ok = false;
-#endif
+    bool found = false;
     for ( std::list<DependencyData>::iterator it = dependencies.begin() ; it != dependencies.end() ; ++it )
     {
       if ( noDependencies( it->dependencies, listedTypes ) )
@@ -1685,13 +1694,40 @@ void sortDependencies( std::list<DependencyData> & dependencies )
         sortedDependencies.push_back( *it );
         listedTypes.insert( it->name );
         dependencies.erase( it );
-#if !defined(NDEBUG)
-        ok = true;
-#endif
+        found = true;
         break;
       }
     }
-    assert( ok );
+    if (!found)
+    {
+      // resolve direct circular dependencies
+      for (std::list<DependencyData>::iterator it = dependencies.begin(); !found && it != dependencies.end(); ++it)
+      {
+        for (std::set<std::string>::const_iterator dit = it->dependencies.begin(); dit != it->dependencies.end(); ++dit)
+        {
+          std::list<DependencyData>::const_iterator depIt = std::find_if(dependencies.begin(), dependencies.end(), [&dit](DependencyData const& dd) { return(dd.name == *dit); });
+          if (depIt != dependencies.end())
+          {
+            if (depIt->dependencies.find(it->name) != depIt->dependencies.end())
+            {
+              // we only have just one case, for now!
+              assert((it->category == DependencyData::Category::HANDLE) && (depIt->category == DependencyData::Category::STRUCT));
+              it->forwardDependencies.insert(*dit);
+              it->dependencies.erase(*dit);
+              found = true;
+              break;
+            }
+          }
+#if !defined(NDEBUG)
+          else
+          {
+            assert(std::find_if(sortedDependencies.begin(), sortedDependencies.end(), [&dit](DependencyData const& dd) { return(dd.name == *dit); }) != sortedDependencies.end());
+          }
+#endif
+        }
+      }
+    }
+    assert( found );
   }
 
   dependencies.swap(sortedDependencies);
@@ -1849,7 +1885,7 @@ void writeCall(std::ofstream & ofs, std::string const& name, size_t templateInde
           if ((vkit != vkTypes.end()) || (it->first == templateIndex))
           {
             ofs << "reinterpret_cast<";
-            if (commandData.arguments[it->first].type.find("const") != std::string::npos)
+            if (commandData.arguments[it->first].type.find("const") == 0)
             {
               ofs << "const ";
             }
@@ -1857,7 +1893,12 @@ void writeCall(std::ofstream & ofs, std::string const& name, size_t templateInde
             {
               ofs << "Vk";
             }
-            ofs << commandData.arguments[it->first].pureType << "*>( " << (singular ? "&" : "") << reduceName(commandData.arguments[it->first].name, singular) << (singular ? "" : ".data()") << " )";
+            ofs << commandData.arguments[it->first].pureType;
+            if (commandData.arguments[it->first].type.rfind("* const") != std::string::npos)
+            {
+              ofs << "* const";
+            }
+            ofs << "*>( " << (singular ? "&" : "") << reduceName(commandData.arguments[it->first].name, singular) << (singular ? "" : ".data()") << " )";
           }
           else if (commandData.arguments[it->first].pureType == "char")
           {
@@ -2242,7 +2283,7 @@ void writeFunctionHeader(std::ofstream & ofs, VkData const& vkData, std::string 
         }
 
         std::map<size_t, size_t>::const_iterator it = vectorParameters.find(i);
-        size_t pos = commandData.arguments[i].type.find('*');
+        size_t pos = commandData.arguments[i].type.rfind('*');
         if (it == vectorParameters.end())
         {
           if (pos == std::string::npos)
@@ -2340,7 +2381,12 @@ void writeMemberData(std::ofstream & ofs, MemberData const& memberData, std::set
       {
         ofs << "const ";
       }
-      ofs << "Vk" << memberData.pureType << '*';
+      ofs << "Vk" << memberData.pureType;
+      if (memberData.type.find("* const") != std::string::npos)
+      {
+        ofs << "* const";
+      }
+      ofs << '*';
     }
     else
     {
@@ -2702,11 +2748,24 @@ void writeTypeFlags(std::ofstream & ofs, DependencyData const& dependencyData, F
   ofs << std::endl;
 }
 
-void writeTypeHandle(std::ofstream & ofs, VkData const& vkData, DependencyData const& dependencyData, HandleData const& handle, std::list<DependencyData> const& dependencies)
+void writeTypeHandle(std::ofstream & ofs, VkData const& vkData, DependencyData const& dependencyData, HandleData const& handleData, std::list<DependencyData> const& dependencies)
 {
   std::string memberName = dependencyData.name;
   assert(isupper(memberName[0]));
   memberName[0] = tolower(memberName[0]);
+
+  enterProtect(ofs, handleData.protect);
+
+  if (!dependencyData.forwardDependencies.empty())
+  {
+    ofs << "  // forward declarations" << std::endl;
+    for (std::set<std::string>::const_iterator it = dependencyData.forwardDependencies.begin(); it != dependencyData.forwardDependencies.end(); ++it)
+    {
+      assert(vkData.structs.find(*it) != vkData.structs.end());
+      ofs << "  struct " << *it << ";" << std::endl;
+    }
+    ofs << std::endl;
+  }
 
   ofs << "  class " << dependencyData.name << std::endl
       << "  {" << std::endl
@@ -2748,11 +2807,11 @@ void writeTypeHandle(std::ofstream & ofs, VkData const& vkData, DependencyData c
       << "    }" << std::endl
       << std::endl;
 
-  if (!handle.commands.empty())
+  if (!handleData.commands.empty())
   {
-    for (size_t i = 0; i < handle.commands.size(); i++)
+    for (size_t i = 0; i < handleData.commands.size(); i++)
     {
-      std::string commandName = handle.commands[i];
+      std::string commandName = handleData.commands[i];
       std::map<std::string, CommandData>::const_iterator cit = vkData.commands.find(commandName);
       assert((cit != vkData.commands.end()) && cit->second.handleCommand);
       std::list<DependencyData>::const_iterator dep = std::find_if(dependencies.begin(), dependencies.end(), [commandName](DependencyData const& dd) { return dd.name == commandName; });
@@ -2776,7 +2835,7 @@ void writeTypeHandle(std::ofstream & ofs, VkData const& vkData, DependencyData c
       writeTypeCommandEnhanced(ofs, vkData, "    ", className, functionName, *dep, cit->second);
       ofs << "#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/" << std::endl;
 
-      if (i < handle.commands.size() - 1)
+      if (i < handleData.commands.size() - 1)
       {
         ofs << std::endl;
       }
@@ -2808,6 +2867,7 @@ void writeTypeHandle(std::ofstream & ofs, VkData const& vkData, DependencyData c
       << "  static_assert( sizeof( " << dependencyData.name << " ) == sizeof( Vk" << dependencyData.name << " ), \"handle and wrapper have different size!\" );" << std::endl
 #endif
       << std::endl;
+  leaveProtect(ofs, handleData.protect);
 }
 
 void writeTypeScalar( std::ofstream & ofs, DependencyData const& dependencyData )

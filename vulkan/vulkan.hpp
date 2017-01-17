@@ -40,6 +40,9 @@
 # include <memory>
 # include <vector>
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#ifndef VULKAN_HPP_DISABLE_SCOPED_HANDLING
+#include <functional>
+#endif
 
 static_assert( VK_HEADER_VERSION ==  38 , "Wrong VK_HEADER_VERSION!" );
 
@@ -945,6 +948,172 @@ namespace vk
     return XcbSurfaceCreateFlagsKHR( bit0 ) | bit1;
   }
 #endif /*VK_USE_PLATFORM_XCB_KHR*/
+
+#ifndef VULKAN_HPP_DISABLE_SCOPED_HANDLING
+	template<class T, typename... _ARGS>
+	auto ptrMemberFnc(void(T::*p)(_ARGS...) const) {
+		return p;
+	};
+
+	class Instance;
+	class Device;
+	class DescriptorPool;
+	class DescriptorSet;
+	class CommandPool;
+	class CommandBuffer;
+	template<typename T>
+	class Optional;
+	class AllocationCallbacks;
+
+	template<class T>
+	class scoped_handle {
+	protected:
+		T object{ VK_NULL_HANDLE };
+		std::function<void(T object)> delete_func;
+
+#ifndef	VULKAN_HPP_DISABLE_ENHANCED_MODE
+		bool released = false, auto_release_copies = false;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+		using INS = vk::Instance; using DEV = vk::Device;
+	public:
+
+		scoped_handle(const scoped_handle<T>& s) {
+			std::cout << "copy constructor" << std::endl;
+			this->object = s.object;
+			this->delete_func = s.delete_func;
+			this->released = s.auto_release_copies;
+		}
+
+		template<typename Fnc, typename alloc>
+		std::function<void(T, alloc)> bindFnc(void(Fnc::*p)(T, alloc) const, scoped_handle<Fnc>&v) {
+			using namespace std;
+			return bind(p, v.get(), placeholders::_1, placeholders::_2);
+		}
+
+		template<typename Fnc, typename alloc>
+		std::function<void(T, alloc)> bindFnc(void(Fnc::*p)(T, alloc) const, const Fnc& v) {
+			using namespace std;
+			return bind(p, v, placeholders::_1, placeholders::_2);
+		}
+
+		scoped_handle(std::function<void(T)> fnc = [](T obj) {}, T obj = T()) {
+			this->delete_func = fnc;
+			this->object = obj;
+		}
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+		scoped_handle(void(INS::*p)(T, Optional<const AllocationCallbacks>) const,
+			scoped_handle<INS>& i, Optional<const AllocationCallbacks> alloc = nullptr, T obj = T()) {
+			if (alloc != nullptr) this->delete_func = [p, &i, &alloc, this](T o) {this->bindFnc<INS, Optional<const AllocationCallbacks>>(p, i)(o, alloc); };
+			else this->delete_func = [p, &i, this](T obj) {this->bindFnc<INS, Optional<const AllocationCallbacks>>(p, i)(obj, nullptr); };
+			this->object = obj;
+		}
+
+		scoped_handle(void(INS::*p)(T, Optional<const AllocationCallbacks>) const,
+			const INS& i, Optional<const AllocationCallbacks> alloc = nullptr, T obj = T()) {
+			if (alloc != nullptr) this->delete_func = [p, &i, &alloc, this](T o) {this->bindFnc<INS, Optional<const AllocationCallbacks>>(p, i)(o, alloc); };
+			else this->delete_func = [p, &i, this](T obj) {this->bindFnc<INS, Optional<const AllocationCallbacks>>(p, i)(obj, nullptr); };
+			this->object = obj;
+		}
+
+		scoped_handle(void(DEV::*p)(T, Optional<const AllocationCallbacks>) const, scoped_handle<DEV>& d, Optional<const AllocationCallbacks> alloc = nullptr, T obj = T())
+		{
+			if (alloc != nullptr)this->delete_func = [p, &d, &alloc, this](T o) {this->bindFnc<DEV, Optional<const AllocationCallbacks>>(p, d)(o, alloc); };
+			else this->delete_func = [p, &d, this](T o) {this->bindFnc<DEV, Optional<const AllocationCallbacks>>(p, d)(o, nullptr); };
+			this->object = obj;
+		}
+
+		scoped_handle(void(DEV::*p)(T, Optional<const AllocationCallbacks>) const, const DEV& d, Optional<const AllocationCallbacks> alloc = nullptr, T obj = T())
+		{
+			if (alloc != nullptr)this->delete_func = [p, d, &alloc, this](T o) {this->bindFnc<DEV, Optional<const AllocationCallbacks>>(p, d)(o, alloc); };
+			else this->delete_func = [p, &d, this](T o) {this->bindFnc<DEV, Optional<const AllocationCallbacks>>(p, d)(o, nullptr); };
+			this->object = obj;
+		}
+#endif
+		scoped_handle(void(INS::*p)(T,const AllocationCallbacks*) const,
+			scoped_handle<INS>& i, const AllocationCallbacks* alloc = nullptr, T obj = T()) {
+			if (alloc != nullptr) this->delete_func = [p, &i, &alloc, this](T o) {this->bindFnc<INS, const AllocationCallbacks*>(p, i)(o, alloc); };
+			else this->delete_func = [p, &i, this](T obj) {this->bindFnc<INS, const AllocationCallbacks*>(p, i)(obj, nullptr); };
+			this->object = obj;
+		}
+
+		scoped_handle(void(INS::*p)(T, const AllocationCallbacks*) const,
+			const INS& i, const AllocationCallbacks* alloc = nullptr, T obj = T()) {
+			if (alloc != nullptr) this->delete_func = [p, &i, &alloc, this](T o) {this->bindFnc<INS, const AllocationCallbacks*>(p, i)(o, alloc); };
+			else this->delete_func = [p, &i, this](T obj) {this->bindFnc<INS, const AllocationCallbacks*>(p, i)(obj, nullptr); };
+			this->object = obj;
+		}
+
+		scoped_handle(void(DEV::*p)(T, const AllocationCallbacks*) const, scoped_handle<DEV>& d, const AllocationCallbacks* alloc = nullptr, T obj = T())
+		{
+			if (alloc != nullptr)this->delete_func = [p, &d, &alloc, this](T o) {this->bindFnc<DEV, const AllocationCallbacks*>(p, d)(o, alloc); };
+			else this->delete_func = [p, &d, this](T o) {this->bindFnc<DEV, const AllocationCallbacks*>(p, d)(o, nullptr); };
+			this->object = obj;
+		}
+
+		scoped_handle(void(DEV::*p)(T, const AllocationCallbacks*) const, const DEV& d, const AllocationCallbacks* alloc = nullptr, T obj = T())
+		{
+			if (alloc != nullptr)this->delete_func = [p, &d, &alloc, this](T o) {this->bindFnc<DEV, AllocationCallbacks*>(p, d)(o, alloc); };
+			else this->delete_func = [p, &d, this](T o) {this->bindFnc<DEV, AllocationCallbacks*>(p, d)(o, nullptr); };
+			this->object = obj;
+		}
+
+		operator T() const {
+			return object;
+		}
+
+		void operator= (T obj) {
+			destroy();
+			this->object = obj;
+		}
+
+		T& get() {
+			return object;
+		}
+#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
+		void destroy() {
+			if (this->object)
+				this->delete_func(this->object);
+			this->object = VK_NULL_HANDLE;
+		}
+#else
+		void release() {
+			released = true;
+			auto_release_copies = true;
+		}
+
+		void doAutoReleaseCopies(bool state) {
+			auto_release_copies = state;
+		}
+
+		bool isAutoReleasingCopies() {
+			return auto_release_copies;
+		}
+
+		void destroy() {
+			if (this->object && released) {
+				std::cout << "Deleting object of type " << typeid(object).name() << std::endl;
+				this->delete_func(this->object);
+			}
+
+			this->object = VK_NULL_HANDLE;
+		}
+#endif
+		bool isEmpty() {
+			return this->object;
+		}
+
+		T* operator &() {
+			return &object;
+		}
+
+		~scoped_handle() {
+			destroy();
+		}
+	};
+
+#endif
 
   class DeviceMemory
   {
@@ -17843,18 +18012,33 @@ namespace vk
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-    Result allocateMemory( const MemoryAllocateInfo* pAllocateInfo, const AllocationCallbacks* pAllocator, DeviceMemory* pMemory ) const
-    {
-      return static_cast<Result>( vkAllocateMemory( m_device, reinterpret_cast<const VkMemoryAllocateInfo*>( pAllocateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkDeviceMemory*>( pMemory ) ) );
-    }
+#ifdef VULKAN_HPP_DISABLE_SCOPED_HANDLING
+		Result allocateMemory(const MemoryAllocateInfo* pAllocateInfo, const AllocationCallbacks* pAllocator, DeviceMemory* pMemory) const
+		{
+			return static_cast<Result>(vkAllocateMemory(m_device, reinterpret_cast<const VkMemoryAllocateInfo*>(pAllocateInfo), reinterpret_cast<const VkAllocationCallbacks*>(pAllocator), reinterpret_cast<VkDeviceMemory*>(pMemory)));
+		}
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    ResultValueType<DeviceMemory>::type allocateMemory( const MemoryAllocateInfo & allocateInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
-    {
-      DeviceMemory memory;
-      Result result = static_cast<Result>( vkAllocateMemory( m_device, reinterpret_cast<const VkMemoryAllocateInfo*>( &allocateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkDeviceMemory*>( &memory ) ) );
-      return createResultValue( result, memory, "vk::Device::allocateMemory" );
-    }
+		ResultValueType<DeviceMemory>::type allocateMemory(const MemoryAllocateInfo & allocateInfo, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			DeviceMemory memory;
+			Result result = static_cast<Result>(vkAllocateMemory(m_device, reinterpret_cast<const VkMemoryAllocateInfo*>(&allocateInfo), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkDeviceMemory*>(&memory)));
+			return createResultValue(result, memory, "vk::Device::allocateMemory");
+		}
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#else
+		Result allocateMemory(const MemoryAllocateInfo* pAllocateInfo, const AllocationCallbacks* pAllocator, scoped_handle<DeviceMemory>* pMemory) const
+		{
+			return static_cast<Result>(vkAllocateMemory(m_device, reinterpret_cast<const VkMemoryAllocateInfo*>(pAllocateInfo), reinterpret_cast<const VkAllocationCallbacks*>(pAllocator), reinterpret_cast<VkDeviceMemory*>(&pMemory->get())));
+		}
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+		ResultValueType<scoped_handle<DeviceMemory>>::type allocateMemory(const MemoryAllocateInfo & allocateInfo, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			scoped_handle<DeviceMemory> memory(ptrMemberFnc < Device, DeviceMemory, Optional<const AllocationCallbacks>>(&Device::freeMemory), *this, allocator);
+			Result result = static_cast<Result>(vkAllocateMemory(m_device, reinterpret_cast<const VkMemoryAllocateInfo*>(&allocateInfo), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkDeviceMemory*>(&memory)));
+			return createResultValue(result, memory, "vk::Device::allocateMemory");
+		}
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     void freeMemory( DeviceMemory memory, const AllocationCallbacks* pAllocator ) const
@@ -18015,19 +18199,35 @@ namespace vk
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-    Result createFence( const FenceCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, Fence* pFence ) const
-    {
-      return static_cast<Result>( vkCreateFence( m_device, reinterpret_cast<const VkFenceCreateInfo*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkFence*>( pFence ) ) );
-    }
+#ifdef VULKAN_HPP_DISABLE_SCOPED_HANDLING
+		Result createFence(const FenceCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, Fence* pFence) const
+		{
+			return static_cast<Result>(vkCreateFence(m_device, reinterpret_cast<const VkFenceCreateInfo*>(pCreateInfo), reinterpret_cast<const VkAllocationCallbacks*>(pAllocator), reinterpret_cast<VkFence*>(pFence)));
+		}
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    ResultValueType<Fence>::type createFence( const FenceCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
-    {
-      Fence fence;
-      Result result = static_cast<Result>( vkCreateFence( m_device, reinterpret_cast<const VkFenceCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkFence*>( &fence ) ) );
-      return createResultValue( result, fence, "vk::Device::createFence" );
-    }
+		ResultValueType<Fence>::type createFence(const FenceCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			Fence fence;
+			Result result = static_cast<Result>(vkCreateFence(m_device, reinterpret_cast<const VkFenceCreateInfo*>(&createInfo), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkFence*>(&fence)));
+			return createResultValue(result, fence, "vk::Device::createFence");
+		}
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#else
+		Result createFence(const FenceCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, Fence* pFence) const
+		{
+			return static_cast<Result>(vkCreateFence(m_device, reinterpret_cast<const VkFenceCreateInfo*>(pCreateInfo), reinterpret_cast<const VkAllocationCallbacks*>(pAllocator), reinterpret_cast<VkFence*>(pFence)));
+		}
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+		ResultValueType<scoped_handle<Fence>>::type createFence(const FenceCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			scoped_handle<Fence> fence(ptrMemberFnc<Device, Fence, Optional<const AllocationCallbacks>>(&Device::destroyFence), *this, allocator);
+			Result result = static_cast<Result>(vkCreateFence(m_device, reinterpret_cast<const VkFenceCreateInfo*>(&createInfo), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkFence*>(&fence)));
+			return createResultValue(result, fence, "vk::Device::createFence");
+		}
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif /*VULKAN_HPP_DISABLE_SCOPED_HANDLING*/
 
     void destroyFence( Fence fence, const AllocationCallbacks* pAllocator ) const
     {
@@ -18082,19 +18282,35 @@ namespace vk
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-    Result createSemaphore( const SemaphoreCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, Semaphore* pSemaphore ) const
-    {
-      return static_cast<Result>( vkCreateSemaphore( m_device, reinterpret_cast<const VkSemaphoreCreateInfo*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkSemaphore*>( pSemaphore ) ) );
-    }
+#ifdef VULKAN_HPP_DISABLE_SCOPED_HANDLING
+		Result createSemaphore(const SemaphoreCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, Semaphore* pSemaphore) const
+		{
+			return static_cast<Result>(vkCreateSemaphore(m_device, reinterpret_cast<const VkSemaphoreCreateInfo*>(pCreateInfo), reinterpret_cast<const VkAllocationCallbacks*>(pAllocator), reinterpret_cast<VkSemaphore*>(pSemaphore)));
+		}
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    ResultValueType<Semaphore>::type createSemaphore( const SemaphoreCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
-    {
-      Semaphore semaphore;
-      Result result = static_cast<Result>( vkCreateSemaphore( m_device, reinterpret_cast<const VkSemaphoreCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkSemaphore*>( &semaphore ) ) );
-      return createResultValue( result, semaphore, "vk::Device::createSemaphore" );
-    }
+		ResultValueType<Semaphore>::type createSemaphore(const SemaphoreCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			Semaphore semaphore;
+			Result result = static_cast<Result>(vkCreateSemaphore(m_device, reinterpret_cast<const VkSemaphoreCreateInfo*>(&createInfo), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkSemaphore*>(&semaphore)));
+			return createResultValue(result, semaphore, "vk::Device::createSemaphore");
+		}
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#else
+		Result createSemaphore(const SemaphoreCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, scoped_handle<Semaphore>* pSemaphore) const
+		{
+			return static_cast<Result>(vkCreateSemaphore(m_device, reinterpret_cast<const VkSemaphoreCreateInfo*>(pCreateInfo), reinterpret_cast<const VkAllocationCallbacks*>(pAllocator), reinterpret_cast<VkSemaphore*>(pSemaphore)));
+		}
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+		ResultValueType<scoped_handle<Semaphore>>::type createSemaphore(const SemaphoreCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			scoped_handle<Semaphore> semaphore(ptrMemberFnc<Device, Semaphore, Optional<const AllocationCallbacks>>(&Device::destroySemaphore), *this, allocator);
+			Result result = static_cast<Result>(vkCreateSemaphore(m_device, reinterpret_cast<const VkSemaphoreCreateInfo*>(&createInfo), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkSemaphore*>(&semaphore)));
+			return createResultValue(result, semaphore, "vk::Device::createSemaphore");
+		}
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif /*VULKAN_HPP_DISABLE_SCOPED_HANDLING*/
 
     void destroySemaphore( Semaphore semaphore, const AllocationCallbacks* pAllocator ) const
     {
@@ -18108,19 +18324,35 @@ namespace vk
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-    Result createEvent( const EventCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, Event* pEvent ) const
-    {
-      return static_cast<Result>( vkCreateEvent( m_device, reinterpret_cast<const VkEventCreateInfo*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkEvent*>( pEvent ) ) );
-    }
+#ifdef VULKAN_HPP_DISABLE_SCOPED_HANDLING
+		Result createEvent(const EventCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, Event* pEvent) const
+		{
+			return static_cast<Result>(vkCreateEvent(m_device, reinterpret_cast<const VkEventCreateInfo*>(pCreateInfo), reinterpret_cast<const VkAllocationCallbacks*>(pAllocator), reinterpret_cast<VkEvent*>(pEvent)));
+		}
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    ResultValueType<Event>::type createEvent( const EventCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
-    {
-      Event event;
-      Result result = static_cast<Result>( vkCreateEvent( m_device, reinterpret_cast<const VkEventCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkEvent*>( &event ) ) );
-      return createResultValue( result, event, "vk::Device::createEvent" );
-    }
+		ResultValueType<Event>::type createEvent(const EventCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			Event event;
+			Result result = static_cast<Result>(vkCreateEvent(m_device, reinterpret_cast<const VkEventCreateInfo*>(&createInfo), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkEvent*>(&event)));
+			return createResultValue(result, event, "vk::Device::createEvent");
+		}
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#else
+		Result createEvent(const EventCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, scoped_handle<Event>* pEvent) const
+		{
+			return static_cast<Result>(vkCreateEvent(m_device, reinterpret_cast<const VkEventCreateInfo*>(pCreateInfo), reinterpret_cast<const VkAllocationCallbacks*>(pAllocator), reinterpret_cast<VkEvent*>(pEvent)));
+		}
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+		ResultValueType<scoped_handle<Event>>::type createEvent(const EventCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			scoped_handle<Event> event(ptrMemberFnc<Device, Event, Optional<const AllocationCallbacks>>(&Device::destroyEvent), *this, allocator);
+			Result result = static_cast<Result>(vkCreateEvent(m_device, reinterpret_cast<const VkEventCreateInfo*>(&createInfo), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkEvent*>(&event)));
+			return createResultValue(result, event, "vk::Device::createEvent");
+		}
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif /*VULKAN_HPP_DISABLE_SCOPED_HANDLING*/
 
     void destroyEvent( Event event, const AllocationCallbacks* pAllocator ) const
     {
@@ -18179,19 +18411,35 @@ namespace vk
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-    Result createQueryPool( const QueryPoolCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, QueryPool* pQueryPool ) const
-    {
-      return static_cast<Result>( vkCreateQueryPool( m_device, reinterpret_cast<const VkQueryPoolCreateInfo*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkQueryPool*>( pQueryPool ) ) );
-    }
+#ifdef VULKAN_HPP_DISABLE_SCOPED_HANDLING
+		Result createQueryPool(const QueryPoolCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, QueryPool* pQueryPool) const
+		{
+			return static_cast<Result>(vkCreateQueryPool(m_device, reinterpret_cast<const VkQueryPoolCreateInfo*>(pCreateInfo), reinterpret_cast<const VkAllocationCallbacks*>(pAllocator), reinterpret_cast<VkQueryPool*>(pQueryPool)));
+		}
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    ResultValueType<QueryPool>::type createQueryPool( const QueryPoolCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
-    {
-      QueryPool queryPool;
-      Result result = static_cast<Result>( vkCreateQueryPool( m_device, reinterpret_cast<const VkQueryPoolCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkQueryPool*>( &queryPool ) ) );
-      return createResultValue( result, queryPool, "vk::Device::createQueryPool" );
-    }
+		ResultValueType<QueryPool>::type createQueryPool(const QueryPoolCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			QueryPool queryPool;
+			Result result = static_cast<Result>(vkCreateQueryPool(m_device, reinterpret_cast<const VkQueryPoolCreateInfo*>(&createInfo), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkQueryPool*>(&queryPool)));
+			return createResultValue(result, queryPool, "vk::Device::createQueryPool");
+		}
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#else
+		Result createQueryPool(const QueryPoolCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, scoped_handle<QueryPool>* pQueryPool) const
+		{
+			return static_cast<Result>(vkCreateQueryPool(m_device, reinterpret_cast<const VkQueryPoolCreateInfo*>(pCreateInfo), reinterpret_cast<const VkAllocationCallbacks*>(pAllocator), reinterpret_cast<VkQueryPool*>(pQueryPool)));
+		}
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+		ResultValueType<scoped_handle<QueryPool>>::type createQueryPool(const QueryPoolCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			scoped_handle<QueryPool> queryPool(ptrMemberFnc<Device, QueryPool, Optional<const AllocationCallbacks>>(&Device::destroyQueryPool), *this, allocator);
+			Result result = static_cast<Result>(vkCreateQueryPool(m_device, reinterpret_cast<const VkQueryPoolCreateInfo*>(&createInfo), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkQueryPool*>(&queryPool)));
+			return createResultValue(result, queryPool, "vk::Device::createQueryPool");
+		}
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif /*VULKAN_HPP_DISABLE_SCOPED_HANDLING*/
 
     void destroyQueryPool( QueryPool queryPool, const AllocationCallbacks* pAllocator ) const
     {
@@ -18219,19 +18467,46 @@ namespace vk
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-    Result createBuffer( const BufferCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, Buffer* pBuffer ) const
-    {
-      return static_cast<Result>( vkCreateBuffer( m_device, reinterpret_cast<const VkBufferCreateInfo*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkBuffer*>( pBuffer ) ) );
-    }
+#ifdef VULKAN_HPP_DISABLE_SCOPED_HANDLING
+		Result createBuffer(const BufferCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, Buffer* pBuffer) const
+		{
+			return static_cast<Result>(vkCreateBuffer(m_device, reinterpret_cast<const VkBufferCreateInfo*>(pCreateInfo), reinterpret_cast<const VkAllocationCallbacks*>(pAllocator), reinterpret_cast<VkBuffer*>(pBuffer)));
+		}
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    ResultValueType<Buffer>::type createBuffer( const BufferCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
-    {
-      Buffer buffer;
-      Result result = static_cast<Result>( vkCreateBuffer( m_device, reinterpret_cast<const VkBufferCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkBuffer*>( &buffer ) ) );
-      return createResultValue( result, buffer, "vk::Device::createBuffer" );
-    }
+		ResultValueType<Buffer>::type createBuffer(const BufferCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			Buffer buffer;
+			Result result = static_cast<Result>(vkCreateBuffer(m_device, reinterpret_cast<const VkBufferCreateInfo*>(&createInfo), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkBuffer*>(&buffer)));
+			return createResultValue(result, buffer, "vk::Device::createBuffer");
+		}
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#else
+		Result createBuffer(const BufferCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, scoped_handle<Buffer>* buffer) const
+		{
+			return static_cast<Result>(vkCreateBuffer(m_device, reinterpret_cast<const VkBufferCreateInfo*>(pCreateInfo), reinterpret_cast<const VkAllocationCallbacks*>(pAllocator), reinterpret_cast<VkBuffer*>(&buffer->get())));
+		}
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+		ResultValueType<Buffer>::type createBuffer(const BufferCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			auto buffer = scoped_handle<Buffer>(ptrMemberFnc<Device, Buffer, Optional<const AllocationCallbacks>>(&Device::destroyBuffer), *this, allocator);
+			Result result = static_cast<Result>(vkCreateBuffer(m_device, reinterpret_cast<const VkBufferCreateInfo*>(&createInfo), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkBuffer*>(&buffer)));
+			return createResultValue(result, buffer, "vk::Device::createBuffer");
+		}
+#endif
+		void destroyBuffer(Buffer buffer, const AllocationCallbacks* pAllocator) const
+		{
+			vkDestroyBuffer(m_device, static_cast<VkBuffer>(buffer), reinterpret_cast<const VkAllocationCallbacks*>(pAllocator));
+		}
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+		void destroyBuffer(Buffer buffer, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			vkDestroyBuffer(m_device, static_cast<VkBuffer>(buffer), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)));
+		}
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif /*VULKAN_HPP_DISABLE_SCOPED_HANDLING*/
 
     void destroyBuffer( Buffer buffer, const AllocationCallbacks* pAllocator ) const
     {
@@ -18245,19 +18520,35 @@ namespace vk
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-    Result createBufferView( const BufferViewCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, BufferView* pView ) const
-    {
-      return static_cast<Result>( vkCreateBufferView( m_device, reinterpret_cast<const VkBufferViewCreateInfo*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkBufferView*>( pView ) ) );
-    }
+#ifdef VULKAN_HPP_DISABLE_SCOPED_HANDLING
+		Result createBufferView(const BufferViewCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, BufferView* pView) const
+		{
+			return static_cast<Result>(vkCreateBufferView(m_device, reinterpret_cast<const VkBufferViewCreateInfo*>(pCreateInfo), reinterpret_cast<const VkAllocationCallbacks*>(pAllocator), reinterpret_cast<VkBufferView*>(pView)));
+		}
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    ResultValueType<BufferView>::type createBufferView( const BufferViewCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
-    {
-      BufferView view;
-      Result result = static_cast<Result>( vkCreateBufferView( m_device, reinterpret_cast<const VkBufferViewCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkBufferView*>( &view ) ) );
-      return createResultValue( result, view, "vk::Device::createBufferView" );
-    }
+		ResultValueType<BufferView>::type createBufferView(const BufferViewCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			BufferView view;
+			Result result = static_cast<Result>(vkCreateBufferView(m_device, reinterpret_cast<const VkBufferViewCreateInfo*>(&createInfo), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkBufferView*>(&view)));
+			return createResultValue(result, view, "vk::Device::createBufferView");
+		}
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#else
+		Result createBufferView(const BufferViewCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, scoped_handle<BufferView>* pView) const
+		{
+			return static_cast<Result>(vkCreateBufferView(m_device, reinterpret_cast<const VkBufferViewCreateInfo*>(pCreateInfo), reinterpret_cast<const VkAllocationCallbacks*>(pAllocator), reinterpret_cast<VkBufferView*>(&pView->get())));
+		}
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+		ResultValueType<scoped_handle<BufferView>>::type createBufferView(const BufferViewCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			scoped_handle<BufferView> view(ptrMemberFnc<Device, BufferView, Optional<const AllocationCallbacks>>(&Device::destroyBufferView), *this, allocator);
+			Result result = static_cast<Result>(vkCreateBufferView(m_device, reinterpret_cast<const VkBufferViewCreateInfo*>(&createInfo), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkBufferView*>(&view)));
+			return createResultValue(result, view, "vk::Device::createBufferView");
+		}
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif /*VULKAN_HPP_DISABLE_SCOPED_HANDLING*/
 
     void destroyBufferView( BufferView bufferView, const AllocationCallbacks* pAllocator ) const
     {
@@ -18271,19 +18562,36 @@ namespace vk
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-    Result createImage( const ImageCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, Image* pImage ) const
-    {
-      return static_cast<Result>( vkCreateImage( m_device, reinterpret_cast<const VkImageCreateInfo*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkImage*>( pImage ) ) );
-    }
+#ifdef VULKAN_HPP_DISABLE_SCOPED_HANDLING
+		Result createImage(const ImageCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, Image* pImage) const
+		{
+			return static_cast<Result>(vkCreateImage(m_device, reinterpret_cast<const VkImageCreateInfo*>(pCreateInfo), reinterpret_cast<const VkAllocationCallbacks*>(pAllocator), reinterpret_cast<VkImage*>(pImage)));
+		}
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    ResultValueType<Image>::type createImage( const ImageCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
-    {
-      Image image;
-      Result result = static_cast<Result>( vkCreateImage( m_device, reinterpret_cast<const VkImageCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkImage*>( &image ) ) );
-      return createResultValue( result, image, "vk::Device::createImage" );
-    }
+		ResultValueType<Image>::type createImage(const ImageCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			Image image;
+			Result result = static_cast<Result>(vkCreateImage(m_device, reinterpret_cast<const VkImageCreateInfo*>(&createInfo), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkImage*>(&image)));
+			return createResultValue(result, image, "vk::Device::createImage");
+		}
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#else
+		Result createImage(const ImageCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, scoped_handle<Image>& image) const
+		{
+			return static_cast<Result>(vkCreateImage(m_device, reinterpret_cast<const VkImageCreateInfo*>(pCreateInfo), reinterpret_cast<const VkAllocationCallbacks*>(pAllocator), reinterpret_cast<VkImage*>(&image)));
+		}
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+		ResultValueType<scoped_handle<Image>>::type createImage(const ImageCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			scoped_handle<Image> image(ptrMemberFnc<Device, Image, Optional<const AllocationCallbacks>>(&Device::destroyImage), *this, allocator);
+			Result result = static_cast<Result>(vkCreateImage(m_device, reinterpret_cast<const VkImageCreateInfo*>(&createInfo), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkImage*>(&image)));
+			return createResultValue(result, image, "vk::Device::createImage");
+		}
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+#endif
 
     void destroyImage( Image image, const AllocationCallbacks* pAllocator ) const
     {
@@ -18311,19 +18619,35 @@ namespace vk
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-    Result createImageView( const ImageViewCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, ImageView* pView ) const
-    {
-      return static_cast<Result>( vkCreateImageView( m_device, reinterpret_cast<const VkImageViewCreateInfo*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkImageView*>( pView ) ) );
-    }
+#ifdef VULKAN_HPP_DISABLE_SCOPED_HANDLING
+		Result createImageView(const ImageViewCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, ImageView* pView) const
+		{
+			return static_cast<Result>(vkCreateImageView(m_device, reinterpret_cast<const VkImageViewCreateInfo*>(pCreateInfo), reinterpret_cast<const VkAllocationCallbacks*>(pAllocator), reinterpret_cast<VkImageView*>(pView)));
+		}
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    ResultValueType<ImageView>::type createImageView( const ImageViewCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
-    {
-      ImageView view;
-      Result result = static_cast<Result>( vkCreateImageView( m_device, reinterpret_cast<const VkImageViewCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkImageView*>( &view ) ) );
-      return createResultValue( result, view, "vk::Device::createImageView" );
-    }
+		ResultValueType<ImageView>::type createImageView(const ImageViewCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			ImageView view;
+			Result result = static_cast<Result>(vkCreateImageView(m_device, reinterpret_cast<const VkImageViewCreateInfo*>(&createInfo), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkImageView*>(&view)));
+			return createResultValue(result, view, "vk::Device::createImageView");
+		}
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#else
+		Result createImageView(const ImageViewCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, scoped_handle<ImageView>& view) const
+		{
+			return static_cast<Result>(vkCreateImageView(m_device, reinterpret_cast<const VkImageViewCreateInfo*>(pCreateInfo), reinterpret_cast<const VkAllocationCallbacks*>(pAllocator), reinterpret_cast<VkImageView*>(&view)));
+		}
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+		ResultValueType<scoped_handle<ImageView>>::type createImageView(const ImageViewCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			auto view = scoped_handle<ImageView>(ptrMemberFnc<Device, ImageView, Optional<const AllocationCallbacks>>(&Device::destroyImageView), *this, allocator);
+			Result result = static_cast<Result>(vkCreateImageView(m_device, reinterpret_cast<const VkImageViewCreateInfo*>(&createInfo), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkImageView*>(&view)));
+			return createResultValue(result, view, "vk::Device::createImageView");
+		}
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif /*VULKAN_HPP_DISABLE_SCOPED_HANDLING*/
 
     void destroyImageView( ImageView imageView, const AllocationCallbacks* pAllocator ) const
     {
@@ -18337,19 +18661,35 @@ namespace vk
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-    Result createShaderModule( const ShaderModuleCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, ShaderModule* pShaderModule ) const
-    {
-      return static_cast<Result>( vkCreateShaderModule( m_device, reinterpret_cast<const VkShaderModuleCreateInfo*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkShaderModule*>( pShaderModule ) ) );
-    }
+#ifdef VULKAN_HPP_DISABLE_SCOPED_HANDLING
+		Result createShaderModule(const ShaderModuleCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, ShaderModule* pShaderModule) const
+		{
+			return static_cast<Result>(vkCreateShaderModule(m_device, reinterpret_cast<const VkShaderModuleCreateInfo*>(pCreateInfo), reinterpret_cast<const VkAllocationCallbacks*>(pAllocator), reinterpret_cast<VkShaderModule*>(pShaderModule)));
+		}
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    ResultValueType<ShaderModule>::type createShaderModule( const ShaderModuleCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
-    {
-      ShaderModule shaderModule;
-      Result result = static_cast<Result>( vkCreateShaderModule( m_device, reinterpret_cast<const VkShaderModuleCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkShaderModule*>( &shaderModule ) ) );
-      return createResultValue( result, shaderModule, "vk::Device::createShaderModule" );
-    }
+		ResultValueType<ShaderModule>::type createShaderModule(const ShaderModuleCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			ShaderModule shaderModule;
+			Result result = static_cast<Result>(vkCreateShaderModule(m_device, reinterpret_cast<const VkShaderModuleCreateInfo*>(&createInfo), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkShaderModule*>(&shaderModule)));
+			return createResultValue(result, shaderModule, "vk::Device::createShaderModule");
+		}
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#else
+		Result createShaderModule(const ShaderModuleCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, scoped_handle<ShaderModule>* pShaderModule) const
+		{
+			return static_cast<Result>(vkCreateShaderModule(m_device, reinterpret_cast<const VkShaderModuleCreateInfo*>(pCreateInfo), reinterpret_cast<const VkAllocationCallbacks*>(pAllocator), reinterpret_cast<VkShaderModule*>(pShaderModule)));
+		}
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+		ResultValueType<scoped_handle<ShaderModule>>::type createShaderModule(const ShaderModuleCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			scoped_handle<ShaderModule> shaderModule(ptrMemberFnc<Device, ShaderModule, Optional<const AllocationCallbacks>>(&Device::destroyShaderModule), *this, allocator);
+			Result result = static_cast<Result>(vkCreateShaderModule(m_device, reinterpret_cast<const VkShaderModuleCreateInfo*>(&createInfo), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkShaderModule*>(&shaderModule)));
+			return createResultValue(result, shaderModule, "vk::Device::createShaderModule");
+		}
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif /*VULKAN_HPP_DISABLE_SCOPED_HANDLING*/
 
     void destroyShaderModule( ShaderModule shaderModule, const AllocationCallbacks* pAllocator ) const
     {
@@ -18363,19 +18703,35 @@ namespace vk
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-    Result createPipelineCache( const PipelineCacheCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, PipelineCache* pPipelineCache ) const
-    {
-      return static_cast<Result>( vkCreatePipelineCache( m_device, reinterpret_cast<const VkPipelineCacheCreateInfo*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkPipelineCache*>( pPipelineCache ) ) );
-    }
+#ifdef VULKAN_HPP_DISABLE_SCOPED_HANDLING
+		Result createPipelineCache(const PipelineCacheCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, PipelineCache* pPipelineCache) const
+		{
+			return static_cast<Result>(vkCreatePipelineCache(m_device, reinterpret_cast<const VkPipelineCacheCreateInfo*>(pCreateInfo), reinterpret_cast<const VkAllocationCallbacks*>(pAllocator), reinterpret_cast<VkPipelineCache*>(pPipelineCache)));
+		}
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    ResultValueType<PipelineCache>::type createPipelineCache( const PipelineCacheCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
-    {
-      PipelineCache pipelineCache;
-      Result result = static_cast<Result>( vkCreatePipelineCache( m_device, reinterpret_cast<const VkPipelineCacheCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkPipelineCache*>( &pipelineCache ) ) );
-      return createResultValue( result, pipelineCache, "vk::Device::createPipelineCache" );
-    }
+		ResultValueType<PipelineCache>::type createPipelineCache(const PipelineCacheCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			PipelineCache pipelineCache;
+			Result result = static_cast<Result>(vkCreatePipelineCache(m_device, reinterpret_cast<const VkPipelineCacheCreateInfo*>(&createInfo), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkPipelineCache*>(&pipelineCache)));
+			return createResultValue(result, pipelineCache, "vk::Device::createPipelineCache");
+		}
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#else
+		Result createPipelineCache(const PipelineCacheCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, scoped_handle<PipelineCache>* pPipelineCache) const
+		{
+			return static_cast<Result>(vkCreatePipelineCache(m_device, reinterpret_cast<const VkPipelineCacheCreateInfo*>(pCreateInfo), reinterpret_cast<const VkAllocationCallbacks*>(pAllocator), reinterpret_cast<VkPipelineCache*>(pPipelineCache)));
+		}
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+		ResultValueType<scoped_handle<PipelineCache>>::type createPipelineCache(const PipelineCacheCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			scoped_handle<PipelineCache> pipelineCache(ptrMemberFnc<Device, PipelineCache, Optional<const AllocationCallbacks>>(&Device::destroyPipelineCache), *this, allocator);
+			Result result = static_cast<Result>(vkCreatePipelineCache(m_device, reinterpret_cast<const VkPipelineCacheCreateInfo*>(&createInfo), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkPipelineCache*>(&pipelineCache)));
+			return createResultValue(result, pipelineCache, "vk::Device::createPipelineCache");
+		}
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif /*VULKAN_HPP_DISABLE_SCOPED_HANDLING*/
 
     void destroyPipelineCache( PipelineCache pipelineCache, const AllocationCallbacks* pAllocator ) const
     {
@@ -18429,49 +18785,113 @@ namespace vk
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-    Result createGraphicsPipelines( PipelineCache pipelineCache, uint32_t createInfoCount, const GraphicsPipelineCreateInfo* pCreateInfos, const AllocationCallbacks* pAllocator, Pipeline* pPipelines ) const
-    {
-      return static_cast<Result>( vkCreateGraphicsPipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfoCount, reinterpret_cast<const VkGraphicsPipelineCreateInfo*>( pCreateInfos ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkPipeline*>( pPipelines ) ) );
-    }
+#ifdef VULKAN_HPP_DISABLE_SCOPED_HANDLING
+		Result createGraphicsPipelines(PipelineCache pipelineCache, uint32_t createInfoCount, const GraphicsPipelineCreateInfo* pCreateInfos, const AllocationCallbacks* pAllocator, Pipeline* pPipelines) const
+		{
+			return static_cast<Result>(vkCreateGraphicsPipelines(m_device, static_cast<VkPipelineCache>(pipelineCache), createInfoCount, reinterpret_cast<const VkGraphicsPipelineCreateInfo*>(pCreateInfos), reinterpret_cast<const VkAllocationCallbacks*>(pAllocator), reinterpret_cast<VkPipeline*>(pipelines)));
+		}
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    template <typename Allocator = std::allocator<Pipeline>>
-    typename ResultValueType<std::vector<Pipeline,Allocator>>::type createGraphicsPipelines( PipelineCache pipelineCache, ArrayProxy<const GraphicsPipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator = nullptr ) const
-    {
-      std::vector<Pipeline,Allocator> pipelines( createInfos.size() );
-      Result result = static_cast<Result>( vkCreateGraphicsPipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkGraphicsPipelineCreateInfo*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkPipeline*>( pipelines.data() ) ) );
-      return createResultValue( result, pipelines, "vk::Device::createGraphicsPipelines" );
-    }
+		template <typename Allocator = std::allocator<Pipeline>>
+		typename ResultValueType<std::vector<Pipeline, Allocator>>::type createGraphicsPipelines(PipelineCache pipelineCache, ArrayProxy<const GraphicsPipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			std::vector<Pipeline, Allocator> pipelines(createInfos.size());
+			Result result = static_cast<Result>(vkCreateGraphicsPipelines(m_device, static_cast<VkPipelineCache>(pipelineCache), createInfos.size(), reinterpret_cast<const VkGraphicsPipelineCreateInfo*>(createInfos.data()), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkPipeline*>(pipelines.data())));
+			return createResultValue(result, pipelines, "vk::Device::createGraphicsPipelines");
+		}
 
-    ResultValueType<Pipeline>::type createGraphicsPipeline( PipelineCache pipelineCache, const GraphicsPipelineCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
-    {
-      Pipeline pipeline;
-      Result result = static_cast<Result>( vkCreateGraphicsPipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), 1 , reinterpret_cast<const VkGraphicsPipelineCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkPipeline*>( &pipeline ) ) );
-      return createResultValue( result, pipeline, "vk::Device::createGraphicsPipeline" );
-    }
+		ResultValueType<Pipeline>::type createGraphicsPipeline(PipelineCache pipelineCache, const GraphicsPipelineCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			Pipeline pipeline;
+			Result result = static_cast<Result>(vkCreateGraphicsPipelines(m_device, static_cast<VkPipelineCache>(pipelineCache), 1, reinterpret_cast<const VkGraphicsPipelineCreateInfo*>(&createInfo), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkPipeline*>(&pipeline)));
+			return createResultValue(result, pipeline, "vk::Device::createGraphicsPipeline");
+		}
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-
-    Result createComputePipelines( PipelineCache pipelineCache, uint32_t createInfoCount, const ComputePipelineCreateInfo* pCreateInfos, const AllocationCallbacks* pAllocator, Pipeline* pPipelines ) const
-    {
-      return static_cast<Result>( vkCreateComputePipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfoCount, reinterpret_cast<const VkComputePipelineCreateInfo*>( pCreateInfos ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkPipeline*>( pPipelines ) ) );
-    }
+#else
+		Result createGraphicsPipelines(PipelineCache pipelineCache, uint32_t createInfoCount, const GraphicsPipelineCreateInfo* pCreateInfos, const AllocationCallbacks* pAllocator, scoped_handle<Pipeline>* pPipelines) const
+		{
+			Pipeline* pPipelinesRaw = new Pipeline[createInfoCount];
+			auto result = static_cast<Result>(vkCreateGraphicsPipelines(m_device, static_cast<VkPipelineCache>(pipelineCache), createInfoCount, reinterpret_cast<const VkGraphicsPipelineCreateInfo*>(pCreateInfos), reinterpret_cast<const VkAllocationCallbacks*>(pAllocator), reinterpret_cast<VkPipeline*>(pPipelinesRaw)));
+			if (result == Result::eSuccess)
+				for (uint32_t i = 0; i < createInfoCount; i++)
+					pPipelines[i] = pPipelinesRaw[i];
+			delete[] pPipelinesRaw;
+			return result;
+		}
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    template <typename Allocator = std::allocator<Pipeline>>
-    typename ResultValueType<std::vector<Pipeline,Allocator>>::type createComputePipelines( PipelineCache pipelineCache, ArrayProxy<const ComputePipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator = nullptr ) const
-    {
-      std::vector<Pipeline,Allocator> pipelines( createInfos.size() );
-      Result result = static_cast<Result>( vkCreateComputePipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkComputePipelineCreateInfo*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkPipeline*>( pipelines.data() ) ) );
-      return createResultValue( result, pipelines, "vk::Device::createComputePipelines" );
-    }
+		template <typename Allocator = std::allocator<scoped_handle<Pipeline>>>
+		typename ResultValueType<std::vector<scoped_handle<Pipeline>, Allocator>>::type createGraphicsPipelines(PipelineCache pipelineCache, ArrayProxy<const GraphicsPipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			std::vector<Pipeline> pipelinesRaw(createInfos.size());
+			Result result = static_cast<Result>(vkCreateGraphicsPipelines(m_device, static_cast<VkPipelineCache>(pipelineCache), createInfos.size(), reinterpret_cast<const VkGraphicsPipelineCreateInfo*>(createInfos.data()), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkPipeline*>(pipelinesRaw.data())));
+			std::vector<scoped_handle<Pipeline>, Allocator> pipelines(createInfos.size());
+			std::transform(pipelinesRaw.begin(), pipelinesRaw.end(), pipelines.begin(), [this, &allocator](Pipeline p) {return scoped_handle<Pipeline>(ptrMemberFnc<Device, Pipeline, Optional<const AllocationCallbacks>>(&Device::destroyPipeline), *this, allocator, p); });
+			return createResultValue(result, pipelines, "vk::Device::createGraphicsPipelines");
+		}
 
-    ResultValueType<Pipeline>::type createComputePipeline( PipelineCache pipelineCache, const ComputePipelineCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
-    {
-      Pipeline pipeline;
-      Result result = static_cast<Result>( vkCreateComputePipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), 1 , reinterpret_cast<const VkComputePipelineCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkPipeline*>( &pipeline ) ) );
-      return createResultValue( result, pipeline, "vk::Device::createComputePipeline" );
-    }
+		ResultValueType<scoped_handle<Pipeline>>::type createGraphicsPipeline(PipelineCache pipelineCache, const GraphicsPipelineCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			scoped_handle<Pipeline> pipeline(ptrMemberFnc<Device, Pipeline, Optional<const AllocationCallbacks>>(&Device::destroyPipeline), *this, allocator);
+			Result result = static_cast<Result>(vkCreateGraphicsPipelines(m_device, static_cast<VkPipelineCache>(pipelineCache), 1, reinterpret_cast<const VkGraphicsPipelineCreateInfo*>(&createInfo), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkPipeline*>(&pipeline)));
+			return createResultValue(result, pipeline, "vk::Device::createGraphicsPipeline");
+		}
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif /*VULKAN_HPP_DISABLE_SCOPED_HANDLING*/
+
+    #ifdef VULKAN_HPP_DISABLE_SCOPED_HANDLING
+		Result createComputePipelines(PipelineCache pipelineCache, uint32_t createInfoCount, const ComputePipelineCreateInfo* pCreateInfos, const AllocationCallbacks* pAllocator, Pipeline* pPipelines) const
+		{
+			return static_cast<Result>(vkCreateComputePipelines(m_device, static_cast<VkPipelineCache>(pipelineCache), createInfoCount, reinterpret_cast<const VkComputePipelineCreateInfo*>(pCreateInfos), reinterpret_cast<const VkAllocationCallbacks*>(pAllocator), reinterpret_cast<VkPipeline*>(pPipelines)));
+		}
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+		template <typename Allocator = std::allocator<Pipeline>>
+		typename ResultValueType<std::vector<Pipeline, Allocator>>::type createComputePipelines(PipelineCache pipelineCache, ArrayProxy<const ComputePipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			std::vector<Pipeline, Allocator> pipelines(createInfos.size());
+			Result result = static_cast<Result>(vkCreateComputePipelines(m_device, static_cast<VkPipelineCache>(pipelineCache), createInfos.size(), reinterpret_cast<const VkComputePipelineCreateInfo*>(createInfos.data()), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkPipeline*>(pipelines.data())));
+			return createResultValue(result, pipelines, "vk::Device::createComputePipelines");
+		}
+
+		ResultValueType<Pipeline>::type createComputePipeline(PipelineCache pipelineCache, const ComputePipelineCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			Pipeline pipeline;
+			Result result = static_cast<Result>(vkCreateComputePipelines(m_device, static_cast<VkPipelineCache>(pipelineCache), 1, reinterpret_cast<const VkComputePipelineCreateInfo*>(&createInfo), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkPipeline*>(&pipeline)));
+			return createResultValue(result, pipeline, "vk::Device::createComputePipeline");
+		}
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#else
+		Result createComputePipelines(PipelineCache pipelineCache, uint32_t createInfoCount, const ComputePipelineCreateInfo* pCreateInfos, const AllocationCallbacks* pAllocator, scoped_handle<Pipeline>* pPipelines) const
+		{
+			Pipeline* pPipelinesRaw = new Pipeline[createInfoCount];
+			auto result = static_cast<Result>(vkCreateComputePipelines(m_device, static_cast<VkPipelineCache>(pipelineCache), createInfoCount, reinterpret_cast<const VkComputePipelineCreateInfo*>(pCreateInfos), reinterpret_cast<const VkAllocationCallbacks*>(pAllocator), reinterpret_cast<VkPipeline*>(pPipelines)));
+			if (result == Result::eSuccess)
+				for (uint32_t i = 0; i < createInfoCount; i++)
+					pPipelines[i] = pPipelinesRaw[i];
+			delete[] pPipelinesRaw;
+			return result;
+		}
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+		template <typename Allocator = std::allocator<scoped_handle<Pipeline>>>
+		typename ResultValueType<std::vector<scoped_handle<Pipeline>, Allocator>>::type createComputePipelines(PipelineCache pipelineCache, ArrayProxy<const ComputePipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			std::vector<Pipeline> pipelinesRaw(createInfos.size());
+			Result result = static_cast<Result>(vkCreateComputePipelines(m_device, static_cast<VkPipelineCache>(pipelineCache), createInfos.size(), reinterpret_cast<const VkComputePipelineCreateInfo*>(createInfos.data()), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkPipeline*>(pipelinesRaw.data())));
+			std::vector<scoped_handle<Pipeline>, Allocator> pipelines(createInfos.size());
+			std::transform(pipelinesRaw.begin(), pipelinesRaw.end(), pipelines.begin(), [this, &allocator](Pipeline p) {return scoped_handle<Pipeline>(ptrMemberFnc<Device, Pipeline, Optional<const AllocationCallbacks>>(&Device::destroyPipeline), *this, allocator, p); });
+			return createResultValue(result, pipelines, "vk::Device::createComputePipelines");
+		}
+
+		ResultValueType<scoped_handle<Pipeline>>::type createComputePipeline(PipelineCache pipelineCache, const ComputePipelineCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			scoped_handle<Pipeline> pipeline(ptrMemberFnc<Device, Pipeline, Optional<const AllocationCallbacks>>(&Device::destroyPipeline), *this, allocator);
+			Result result = static_cast<Result>(vkCreateComputePipelines(m_device, static_cast<VkPipelineCache>(pipelineCache), 1, reinterpret_cast<const VkComputePipelineCreateInfo*>(&createInfo), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkPipeline*>(&pipeline)));
+			return createResultValue(result, pipeline, "vk::Device::createComputePipeline");
+		}
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif /*VULKAN_HPP_DISABLE_SCOPED_HANDLING*/
 
     void destroyPipeline( Pipeline pipeline, const AllocationCallbacks* pAllocator ) const
     {
@@ -18485,19 +18905,35 @@ namespace vk
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-    Result createPipelineLayout( const PipelineLayoutCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, PipelineLayout* pPipelineLayout ) const
-    {
-      return static_cast<Result>( vkCreatePipelineLayout( m_device, reinterpret_cast<const VkPipelineLayoutCreateInfo*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkPipelineLayout*>( pPipelineLayout ) ) );
-    }
+#ifdef VULKAN_HPP_DISABLE_SCOPED_HANDLING
+		Result createPipelineLayout(const PipelineLayoutCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, PipelineLayout* pPipelineLayout) const
+		{
+			return static_cast<Result>(vkCreatePipelineLayout(m_device, reinterpret_cast<const VkPipelineLayoutCreateInfo*>(pCreateInfo), reinterpret_cast<const VkAllocationCallbacks*>(pAllocator), reinterpret_cast<VkPipelineLayout*>(pPipelineLayout)));
+		}
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    ResultValueType<PipelineLayout>::type createPipelineLayout( const PipelineLayoutCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
-    {
-      PipelineLayout pipelineLayout;
-      Result result = static_cast<Result>( vkCreatePipelineLayout( m_device, reinterpret_cast<const VkPipelineLayoutCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkPipelineLayout*>( &pipelineLayout ) ) );
-      return createResultValue( result, pipelineLayout, "vk::Device::createPipelineLayout" );
-    }
+		ResultValueType<PipelineLayout>::type createPipelineLayout(const PipelineLayoutCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			PipelineLayout pipelineLayout;
+			Result result = static_cast<Result>(vkCreatePipelineLayout(m_device, reinterpret_cast<const VkPipelineLayoutCreateInfo*>(&createInfo), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkPipelineLayout*>(&pipelineLayout)));
+			return createResultValue(result, pipelineLayout, "vk::Device::createPipelineLayout");
+		}
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#else
+		Result createPipelineLayout(const PipelineLayoutCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, scoped_handle<PipelineLayout>* pPipelineLayout) const
+		{
+			return static_cast<Result>(vkCreatePipelineLayout(m_device, reinterpret_cast<const VkPipelineLayoutCreateInfo*>(pCreateInfo), reinterpret_cast<const VkAllocationCallbacks*>(pAllocator), reinterpret_cast<VkPipelineLayout*>(pPipelineLayout)));
+		}
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+		ResultValueType<scoped_handle<PipelineLayout>>::type createPipelineLayout(const PipelineLayoutCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			scoped_handle<PipelineLayout> pipelineLayout(ptrMemberFnc<Device, PipelineLayout, Optional<const AllocationCallbacks>>(&Device::destroyPipelineLayout), *this, allocator);
+			Result result = static_cast<Result>(vkCreatePipelineLayout(m_device, reinterpret_cast<const VkPipelineLayoutCreateInfo*>(&createInfo), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkPipelineLayout*>(&pipelineLayout)));
+			return createResultValue(result, pipelineLayout, "vk::Device::createPipelineLayout");
+		}
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif /*VULKAN_HPP_DISABLE_SCOPED_HANDLING*/
 
     void destroyPipelineLayout( PipelineLayout pipelineLayout, const AllocationCallbacks* pAllocator ) const
     {
@@ -18511,19 +18947,35 @@ namespace vk
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-    Result createSampler( const SamplerCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, Sampler* pSampler ) const
-    {
-      return static_cast<Result>( vkCreateSampler( m_device, reinterpret_cast<const VkSamplerCreateInfo*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkSampler*>( pSampler ) ) );
-    }
+#ifdef VULKAN_HPP_DISABLE_SCOPED_HANDLING
+		Result createSampler(const SamplerCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, Sampler* pSampler) const
+		{
+			return static_cast<Result>(vkCreateSampler(m_device, reinterpret_cast<const VkSamplerCreateInfo*>(pCreateInfo), reinterpret_cast<const VkAllocationCallbacks*>(pAllocator), reinterpret_cast<VkSampler*>(pSampler)));
+		}
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    ResultValueType<Sampler>::type createSampler( const SamplerCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
-    {
-      Sampler sampler;
-      Result result = static_cast<Result>( vkCreateSampler( m_device, reinterpret_cast<const VkSamplerCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkSampler*>( &sampler ) ) );
-      return createResultValue( result, sampler, "vk::Device::createSampler" );
-    }
+		ResultValueType<Sampler>::type createSampler(const SamplerCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			Sampler sampler;
+			Result result = static_cast<Result>(vkCreateSampler(m_device, reinterpret_cast<const VkSamplerCreateInfo*>(&createInfo), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkSampler*>(&sampler)));
+			return createResultValue(result, sampler, "vk::Device::createSampler");
+		}
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#else
+		Result createSampler(const SamplerCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, scoped_handle<Sampler>* pSampler) const
+		{
+			return static_cast<Result>(vkCreateSampler(m_device, reinterpret_cast<const VkSamplerCreateInfo*>(pCreateInfo), reinterpret_cast<const VkAllocationCallbacks*>(pAllocator), reinterpret_cast<VkSampler*>(pSampler)));
+		}
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+		ResultValueType<scoped_handle<Sampler>>::type createSampler(const SamplerCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			scoped_handle<Sampler> sampler(ptrMemberFnc<Device, Sampler, Optional<const AllocationCallbacks>>(&Device::destroySampler), m_device, allocator);
+			Result result = static_cast<Result>(vkCreateSampler(m_device, reinterpret_cast<const VkSamplerCreateInfo*>(&createInfo), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkSampler*>(&sampler)));
+			return createResultValue(result, sampler, "vk::Device::createSampler");
+		}
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif
 
     void destroySampler( Sampler sampler, const AllocationCallbacks* pAllocator ) const
     {
@@ -18563,19 +19015,35 @@ namespace vk
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-    Result createDescriptorPool( const DescriptorPoolCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, DescriptorPool* pDescriptorPool ) const
-    {
-      return static_cast<Result>( vkCreateDescriptorPool( m_device, reinterpret_cast<const VkDescriptorPoolCreateInfo*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkDescriptorPool*>( pDescriptorPool ) ) );
-    }
+#ifdef VULKAN_HPP_DISABLE_SCOPED_HANDLING
+		Result createDescriptorPool(const DescriptorPoolCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, DescriptorPool* pDescriptorPool) const
+		{
+			return static_cast<Result>(vkCreateDescriptorPool(m_device, reinterpret_cast<const VkDescriptorPoolCreateInfo*>(pCreateInfo), reinterpret_cast<const VkAllocationCallbacks*>(pAllocator), reinterpret_cast<VkDescriptorPool*>(pDescriptorPool)));
+		}
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    ResultValueType<DescriptorPool>::type createDescriptorPool( const DescriptorPoolCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
-    {
-      DescriptorPool descriptorPool;
-      Result result = static_cast<Result>( vkCreateDescriptorPool( m_device, reinterpret_cast<const VkDescriptorPoolCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkDescriptorPool*>( &descriptorPool ) ) );
-      return createResultValue( result, descriptorPool, "vk::Device::createDescriptorPool" );
-    }
+		ResultValueType<DescriptorPool>::type createDescriptorPool(const DescriptorPoolCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			DescriptorPool descriptorPool;
+			Result result = static_cast<Result>(vkCreateDescriptorPool(m_device, reinterpret_cast<const VkDescriptorPoolCreateInfo*>(&createInfo), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkDescriptorPool*>(&descriptorPool)));
+			return createResultValue(result, descriptorPool, "vk::Device::createDescriptorPool");
+		}
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#else
+		Result createDescriptorPool(const DescriptorPoolCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, scoped_handle<DescriptorPool>* pDescriptorPool) const
+		{
+			return static_cast<Result>(vkCreateDescriptorPool(m_device, reinterpret_cast<const VkDescriptorPoolCreateInfo*>(pCreateInfo), reinterpret_cast<const VkAllocationCallbacks*>(pAllocator), reinterpret_cast<VkDescriptorPool*>(pDescriptorPool)));
+		}
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+		ResultValueType<scoped_handle<DescriptorPool>>::type createDescriptorPool(const DescriptorPoolCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			scoped_handle<DescriptorPool> descriptorPool(ptrMemberFnc<Device, DescriptorPool, Optional< const AllocationCallbacks>>(&Device::destroyDescriptorPool), m_device, allocator);
+			Result result = static_cast<Result>(vkCreateDescriptorPool(m_device, reinterpret_cast<const VkDescriptorPoolCreateInfo*>(&createInfo), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkDescriptorPool*>(&descriptorPool)));
+			return createResultValue(result, descriptorPool, "vk::Device::createDescriptorPool");
+		}
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif
 
     void destroyDescriptorPool( DescriptorPool descriptorPool, const AllocationCallbacks* pAllocator ) const
     {
@@ -18644,19 +19112,35 @@ namespace vk
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-    Result createFramebuffer( const FramebufferCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, Framebuffer* pFramebuffer ) const
-    {
-      return static_cast<Result>( vkCreateFramebuffer( m_device, reinterpret_cast<const VkFramebufferCreateInfo*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkFramebuffer*>( pFramebuffer ) ) );
-    }
+#ifdef VULKAN_HPP_DISABLE_SCOPED_HANDLING
+		Result createFramebuffer(const FramebufferCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, Framebuffer* pFramebuffer) const
+		{
+			return static_cast<Result>(vkCreateFramebuffer(m_device, reinterpret_cast<const VkFramebufferCreateInfo*>(pCreateInfo), reinterpret_cast<const VkAllocationCallbacks*>(pAllocator), reinterpret_cast<VkFramebuffer*>(pFramebuffer)));
+		}
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    ResultValueType<Framebuffer>::type createFramebuffer( const FramebufferCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
-    {
-      Framebuffer framebuffer;
-      Result result = static_cast<Result>( vkCreateFramebuffer( m_device, reinterpret_cast<const VkFramebufferCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkFramebuffer*>( &framebuffer ) ) );
-      return createResultValue( result, framebuffer, "vk::Device::createFramebuffer" );
-    }
+		ResultValueType<Framebuffer>::type createFramebuffer(const FramebufferCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			Framebuffer framebuffer;
+			Result result = static_cast<Result>(vkCreateFramebuffer(m_device, reinterpret_cast<const VkFramebufferCreateInfo*>(&createInfo), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkFramebuffer*>(&framebuffer)));
+			return createResultValue(result, framebuffer, "vk::Device::createFramebuffer");
+		}
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#else
+		Result createFramebuffer(const FramebufferCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, scoped_handle<Framebuffer> framebuffer) const
+		{
+			return static_cast<Result>(vkCreateFramebuffer(m_device, reinterpret_cast<const VkFramebufferCreateInfo*>(pCreateInfo), reinterpret_cast<const VkAllocationCallbacks*>(pAllocator), reinterpret_cast<VkFramebuffer*>(&framebuffer)));
+		}
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+		ResultValueType<scoped_handle<Framebuffer>>::type createFramebuffer(const FramebufferCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			scoped_handle<Framebuffer> framebuffer(ptrMemberFnc<Device, Framebuffer, Optional<const AllocationCallbacks>>(&Device::destroyFramebuffer), *this, allocator);
+			Result result = static_cast<Result>(vkCreateFramebuffer(m_device, reinterpret_cast<const VkFramebufferCreateInfo*>(&createInfo), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkFramebuffer*>(&framebuffer)));
+			return createResultValue(result, framebuffer, "vk::Device::createFramebuffer");
+		}
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif /*VULKAN_HPP_DISABLE_SCOPED_HANDLING*/
 
     void destroyFramebuffer( Framebuffer framebuffer, const AllocationCallbacks* pAllocator ) const
     {
@@ -18670,19 +19154,35 @@ namespace vk
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-    Result createRenderPass( const RenderPassCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, RenderPass* pRenderPass ) const
-    {
-      return static_cast<Result>( vkCreateRenderPass( m_device, reinterpret_cast<const VkRenderPassCreateInfo*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkRenderPass*>( pRenderPass ) ) );
-    }
+#ifdef VULKAN_HPP_DISABLE_SCOPED_HANDLING
+		Result createRenderPass(const RenderPassCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, RenderPass* pRenderPass) const
+		{
+			return static_cast<Result>(vkCreateRenderPass(m_device, reinterpret_cast<const VkRenderPassCreateInfo*>(pCreateInfo), reinterpret_cast<const VkAllocationCallbacks*>(pAllocator), reinterpret_cast<VkRenderPass*>(pRenderPass)));
+		}
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    ResultValueType<RenderPass>::type createRenderPass( const RenderPassCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
-    {
-      RenderPass renderPass;
-      Result result = static_cast<Result>( vkCreateRenderPass( m_device, reinterpret_cast<const VkRenderPassCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkRenderPass*>( &renderPass ) ) );
-      return createResultValue( result, renderPass, "vk::Device::createRenderPass" );
-    }
+		ResultValueType<RenderPass>::type createRenderPass(const RenderPassCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			RenderPass renderPass;
+			Result result = static_cast<Result>(vkCreateRenderPass(m_device, reinterpret_cast<const VkRenderPassCreateInfo*>(&createInfo), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkRenderPass*>(&renderPass)));
+			return createResultValue(result, renderPass, "vk::Device::createRenderPass");
+		}
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#else
+		Result createRenderPass(const RenderPassCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, scoped_handle<RenderPass>* pRenderPass) const
+		{
+			return static_cast<Result>(vkCreateRenderPass(m_device, reinterpret_cast<const VkRenderPassCreateInfo*>(pCreateInfo), reinterpret_cast<const VkAllocationCallbacks*>(pAllocator), reinterpret_cast<VkRenderPass*>(&pRenderPass->get())));
+		}
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+		ResultValueType<scoped_handle<RenderPass>>::type createRenderPass(const RenderPassCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			scoped_handle<RenderPass> renderPass(ptrMemberFnc < Device, RenderPass, Optional<const AllocationCallbacks>>(&Device::destroyRenderPass), *this, allocator);
+			Result result = static_cast<Result>(vkCreateRenderPass(m_device, reinterpret_cast<const VkRenderPassCreateInfo*>(&createInfo), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkRenderPass*>(&renderPass)));
+			return createResultValue(result, renderPass, "vk::Device::createRenderPass");
+		}
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif /*VULKAN_HPP_DISABLE_SCOPED_HANDLING*/
 
     void destroyRenderPass( RenderPass renderPass, const AllocationCallbacks* pAllocator ) const
     {
@@ -18710,19 +19210,35 @@ namespace vk
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-    Result createCommandPool( const CommandPoolCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, CommandPool* pCommandPool ) const
-    {
-      return static_cast<Result>( vkCreateCommandPool( m_device, reinterpret_cast<const VkCommandPoolCreateInfo*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkCommandPool*>( pCommandPool ) ) );
-    }
+#ifdef VULKAN_HPP_DISABLE_SCOPED_HANDLING
+		Result createCommandPool(const CommandPoolCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, CommandPool* pCommandPool) const
+		{
+			return static_cast<Result>(vkCreateCommandPool(m_device, reinterpret_cast<const VkCommandPoolCreateInfo*>(pCreateInfo), reinterpret_cast<const VkAllocationCallbacks*>(pAllocator), reinterpret_cast<VkCommandPool*>(pCommandPool)));
+		}
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    ResultValueType<CommandPool>::type createCommandPool( const CommandPoolCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
-    {
-      CommandPool commandPool;
-      Result result = static_cast<Result>( vkCreateCommandPool( m_device, reinterpret_cast<const VkCommandPoolCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkCommandPool*>( &commandPool ) ) );
-      return createResultValue( result, commandPool, "vk::Device::createCommandPool" );
-    }
+		ResultValueType<CommandPool>::type createCommandPool(const CommandPoolCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			CommandPool commandPool;
+			Result result = static_cast<Result>(vkCreateCommandPool(m_device, reinterpret_cast<const VkCommandPoolCreateInfo*>(&createInfo), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkCommandPool*>(&commandPool)));
+			return createResultValue(result, commandPool, "vk::Device::createCommandPool");
+		}
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#else
+		Result createCommandPool(const CommandPoolCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, scoped_handle<CommandPool>* pCommandPool) const
+		{
+			return static_cast<Result>(vkCreateCommandPool(m_device, reinterpret_cast<const VkCommandPoolCreateInfo*>(pCreateInfo), reinterpret_cast<const VkAllocationCallbacks*>(pAllocator), reinterpret_cast<VkCommandPool*>(&pCommandPool->get())));
+		}
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+		ResultValueType<scoped_handle<CommandPool>>::type createCommandPool(const CommandPoolCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			scoped_handle<CommandPool> commandPool(ptrMemberFnc<Device, CommandPool, Optional<const AllocationCallbacks>>(&Device::destroyCommandPool), *this, allocator);
+			Result result = static_cast<Result>(vkCreateCommandPool(m_device, reinterpret_cast<const VkCommandPoolCreateInfo*>(&createInfo), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkCommandPool*>(&commandPool)));
+			return createResultValue(result, commandPool, "vk::Device::createCommandPool");
+		}
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif /*VULKAN_HPP_DISABLE_SCOPED_HANDLING*/
 
     void destroyCommandPool( CommandPool commandPool, const AllocationCallbacks* pAllocator ) const
     {
@@ -18778,41 +19294,80 @@ namespace vk
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-    Result createSharedSwapchainsKHR( uint32_t swapchainCount, const SwapchainCreateInfoKHR* pCreateInfos, const AllocationCallbacks* pAllocator, SwapchainKHR* pSwapchains ) const
-    {
-      return static_cast<Result>( vkCreateSharedSwapchainsKHR( m_device, swapchainCount, reinterpret_cast<const VkSwapchainCreateInfoKHR*>( pCreateInfos ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkSwapchainKHR*>( pSwapchains ) ) );
-    }
+#ifdef VULKAN_HPP_DISABLE_SCOPED_HANDLING
+		Result createSharedSwapchainsKHR(uint32_t swapchainCount, const SwapchainCreateInfoKHR* pCreateInfos, const AllocationCallbacks* pAllocator, SwapchainKHR* pSwapchains) const
+		{
+			return static_cast<Result>(vkCreateSharedSwapchainsKHR(m_device, swapchainCount, reinterpret_cast<const VkSwapchainCreateInfoKHR*>(pCreateInfos), reinterpret_cast<const VkAllocationCallbacks*>(pAllocator), reinterpret_cast<VkSwapchainKHR*>(pSwapchains)));
+		}
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    template <typename Allocator = std::allocator<SwapchainKHR>>
-    typename ResultValueType<std::vector<SwapchainKHR,Allocator>>::type createSharedSwapchainsKHR( ArrayProxy<const SwapchainCreateInfoKHR> createInfos, Optional<const AllocationCallbacks> allocator = nullptr ) const
-    {
-      std::vector<SwapchainKHR,Allocator> swapchains( createInfos.size() );
-      Result result = static_cast<Result>( vkCreateSharedSwapchainsKHR( m_device, createInfos.size() , reinterpret_cast<const VkSwapchainCreateInfoKHR*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkSwapchainKHR*>( swapchains.data() ) ) );
-      return createResultValue( result, swapchains, "vk::Device::createSharedSwapchainsKHR" );
-    }
+		template <typename Allocator = std::allocator<SwapchainKHR>>
+		typename ResultValueType<std::vector<SwapchainKHR, Allocator>>::type createSharedSwapchainsKHR(ArrayProxy<const SwapchainCreateInfoKHR> createInfos, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			std::vector<SwapchainKHR, Allocator> swapchains(createInfos.size());
+			Result result = static_cast<Result>(vkCreateSharedSwapchainsKHR(m_device, createInfos.size(), reinterpret_cast<const VkSwapchainCreateInfoKHR*>(createInfos.data()), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkSwapchainKHR*>(swapchains.data())));
+			return createResultValue(result, swapchains, "vk::Device::createSharedSwapchainsKHR");
+		}
 
-    ResultValueType<SwapchainKHR>::type createSharedSwapchainKHR( const SwapchainCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
-    {
-      SwapchainKHR swapchain;
-      Result result = static_cast<Result>( vkCreateSharedSwapchainsKHR( m_device, 1 , reinterpret_cast<const VkSwapchainCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkSwapchainKHR*>( &swapchain ) ) );
-      return createResultValue( result, swapchain, "vk::Device::createSharedSwapchainKHR" );
-    }
+		ResultValueType<SwapchainKHR>::type createSharedSwapchainKHR(const SwapchainCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			SwapchainKHR swapchain;
+			Result result = static_cast<Result>(vkCreateSharedSwapchainsKHR(m_device, 1, reinterpret_cast<const VkSwapchainCreateInfoKHR*>(&createInfo), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkSwapchainKHR*>(&swapchain)));
+			return createResultValue(result, swapchain, "vk::Device::createSharedSwapchainKHR");
+		}
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-
-    Result createSwapchainKHR( const SwapchainCreateInfoKHR* pCreateInfo, const AllocationCallbacks* pAllocator, SwapchainKHR* pSwapchain ) const
-    {
-      return static_cast<Result>( vkCreateSwapchainKHR( m_device, reinterpret_cast<const VkSwapchainCreateInfoKHR*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkSwapchainKHR*>( pSwapchain ) ) );
-    }
+#else
+		Result createSharedSwapchainsKHR(uint32_t swapchainCount, const SwapchainCreateInfoKHR* pCreateInfos, const AllocationCallbacks* pAllocator, scoped_handle<SwapchainKHR>* pSwapchains) const
+		{
+			return static_cast<Result>(vkCreateSharedSwapchainsKHR(m_device, swapchainCount, reinterpret_cast<const VkSwapchainCreateInfoKHR*>(pCreateInfos), reinterpret_cast<const VkAllocationCallbacks*>(pAllocator), reinterpret_cast<VkSwapchainKHR*>(pSwapchains)));
+		}
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    ResultValueType<SwapchainKHR>::type createSwapchainKHR( const SwapchainCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
-    {
-      SwapchainKHR swapchain;
-      Result result = static_cast<Result>( vkCreateSwapchainKHR( m_device, reinterpret_cast<const VkSwapchainCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkSwapchainKHR*>( &swapchain ) ) );
-      return createResultValue( result, swapchain, "vk::Device::createSwapchainKHR" );
-    }
+		template <typename Allocator = std::allocator<scoped_handle<SwapchainKHR>>>
+		typename ResultValueType<std::vector<scoped_handle<SwapchainKHR>, Allocator>>::type createSharedSwapchainsKHR(ArrayProxy<const SwapchainCreateInfoKHR> createInfos, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			std::vector<scoped_handle<SwapchainKHR>, Allocator> swapchains(createInfos.size(), scoped_handle<SwapchainKHR>(ptrMemberFnc<Device, SwapchainKHR, Optional<const AllocationCallbacks>>(&Device::destroySwapchainKHR), m_device, allocator, false));
+			Result result = static_cast<Result>(vkCreateSharedSwapchainsKHR(m_device, createInfos.size(), reinterpret_cast<const VkSwapchainCreateInfoKHR*>(createInfos.data()), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkSwapchainKHR*>(swapchains.data())));
+			return createResultValue(result, swapchains, "vk::Device::createSharedSwapchainsKHR");
+		}
+
+		ResultValueType<scoped_handle<SwapchainKHR>>::type createSharedSwapchainKHR(const SwapchainCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			scoped_handle<SwapchainKHR> swapchain(ptrMemberFnc<Device, SwapchainKHR, Optional<const AllocationCallbacks>>(&Device::destroySwapchainKHR), m_device, allocator);
+			Result result = static_cast<Result>(vkCreateSharedSwapchainsKHR(m_device, 1, reinterpret_cast<const VkSwapchainCreateInfoKHR*>(&createInfo), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkSwapchainKHR*>(&swapchain)));
+			return createResultValue(result, swapchain, "vk::Device::createSharedSwapchainKHR");
+		}
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif /*VULKAN_HPP_DISABLE_SCOPED_HANDLING*/
+#ifdef VULKAN_HPP_DISABLE_SCOPED_HANDLING
+		Result createSwapchainKHR(const SwapchainCreateInfoKHR* pCreateInfo, const AllocationCallbacks* pAllocator, SwapchainKHR* pSwapchain) const
+		{
+			return static_cast<Result>(vkCreateSwapchainKHR(m_device, reinterpret_cast<const VkSwapchainCreateInfoKHR*>(pCreateInfo), reinterpret_cast<const VkAllocationCallbacks*>(pAllocator), reinterpret_cast<VkSwapchainKHR*>(pSwapchain)));
+		}
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+		ResultValueType<SwapchainKHR>::type createSwapchainKHR(const SwapchainCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			SwapchainKHR swapchain;
+			Result result = static_cast<Result>(vkCreateSwapchainKHR(m_device, reinterpret_cast<const VkSwapchainCreateInfoKHR*>(&createInfo), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkSwapchainKHR*>(&swapchain)));
+			return createResultValue(result, swapchain, "vk::Device::createSwapchainKHR");
+		}
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#else
+		Result createSwapchainKHR(const SwapchainCreateInfoKHR* pCreateInfo, const AllocationCallbacks* pAllocator, scoped_handle<SwapchainKHR>* pSwapchain) const
+		{
+			return static_cast<Result>(vkCreateSwapchainKHR(m_device, reinterpret_cast<const VkSwapchainCreateInfoKHR*>(pCreateInfo), reinterpret_cast<const VkAllocationCallbacks*>(pAllocator), reinterpret_cast<VkSwapchainKHR*>(pSwapchain)));
+		}
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+		ResultValueType<scoped_handle<SwapchainKHR>>::type createSwapchainKHR(const SwapchainCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			scoped_handle<SwapchainKHR> swapchain(ptrMemberFnc<Device, SwapchainKHR, Optional<const AllocationCallbacks>>(&Device::destroySwapchainKHR), *this, allocator);
+			Result result = static_cast<Result>(vkCreateSwapchainKHR(m_device, reinterpret_cast<const VkSwapchainCreateInfoKHR*>(&createInfo), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkSwapchainKHR*>(&swapchain)));
+			return createResultValue(result, swapchain, "vk::Device::createSwapchainKHR");
+		}
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif /*VULKAN_HPP_DISABLE_SCOPED_HANDLING*/
 
     void destroySwapchainKHR( SwapchainKHR swapchain, const AllocationCallbacks* pAllocator ) const
     {
@@ -19152,19 +19707,35 @@ namespace vk
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-    Result createDevice( const DeviceCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, Device* pDevice ) const
-    {
-      return static_cast<Result>( vkCreateDevice( m_physicalDevice, reinterpret_cast<const VkDeviceCreateInfo*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkDevice*>( pDevice ) ) );
-    }
+#ifdef VULKAN_HPP_DISABLE_SCOPED_HANDLING
+		Result createDevice(const DeviceCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, Device* pDevice) const
+		{
+			return static_cast<Result>(vkCreateDevice(m_physicalDevice, reinterpret_cast<const VkDeviceCreateInfo*>(pCreateInfo), reinterpret_cast<const VkAllocationCallbacks*>(pAllocator), reinterpret_cast<VkDevice*>(pDevice)));
+		}
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    ResultValueType<Device>::type createDevice( const DeviceCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr ) const
-    {
-      Device device;
-      Result result = static_cast<Result>( vkCreateDevice( m_physicalDevice, reinterpret_cast<const VkDeviceCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator)), reinterpret_cast<VkDevice*>( &device ) ) );
-      return createResultValue( result, device, "vk::PhysicalDevice::createDevice" );
-    }
+		ResultValueType<Device>::type createDevice(const DeviceCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			Device device;
+			Result result = static_cast<Result>(vkCreateDevice(m_physicalDevice, reinterpret_cast<const VkDeviceCreateInfo*>(&createInfo), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkDevice*>(&device)));
+			return createResultValue(result, device, "vk::PhysicalDevice::createDevice");
+		}
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#else
+		Result createDevice(const DeviceCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, scoped_handle<Device>& Device) const
+		{
+			return static_cast<Result>(vkCreateDevice(m_physicalDevice, reinterpret_cast<const VkDeviceCreateInfo*>(pCreateInfo), reinterpret_cast<const VkAllocationCallbacks*>(pAllocator), reinterpret_cast<VkDevice*>(&Device)));
+		}
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+		ResultValueType<scoped_handle<Device>>::type createDevice(const DeviceCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr) const
+		{
+			scoped_handle<Device> device([](Device& d) {d.destroy(); });
+			Result result = static_cast<Result>(vkCreateDevice(m_physicalDevice, reinterpret_cast<const VkDeviceCreateInfo*>(&createInfo), reinterpret_cast<const VkAllocationCallbacks*>(static_cast<const AllocationCallbacks*>(allocator)), reinterpret_cast<VkDevice*>(&device)));
+			return createResultValue(result, device, "vk::PhysicalDevice::createDevice");
+		}
+#endif
+#endif /*VULKAN_HPP_DISABLE_SCOPED_HANDLING*/
 
     Result enumerateDeviceLayerProperties( uint32_t* pPropertyCount, LayerProperties* pProperties ) const
     {

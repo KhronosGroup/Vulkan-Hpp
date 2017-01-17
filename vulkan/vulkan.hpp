@@ -41,7 +41,7 @@
 # include <vector>
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-static_assert( VK_HEADER_VERSION ==  35 , "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION ==  38 , "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -9761,7 +9761,9 @@ namespace vk
     eHostRead = VK_ACCESS_HOST_READ_BIT,
     eHostWrite = VK_ACCESS_HOST_WRITE_BIT,
     eMemoryRead = VK_ACCESS_MEMORY_READ_BIT,
-    eMemoryWrite = VK_ACCESS_MEMORY_WRITE_BIT
+    eMemoryWrite = VK_ACCESS_MEMORY_WRITE_BIT,
+    eCommandProcessReadNVX = VK_ACCESS_COMMAND_PROCESS_READ_BIT_NVX,
+    eCommandProcessWriteNVX = VK_ACCESS_COMMAND_PROCESS_WRITE_BIT_NVX
   };
 
   using AccessFlags = Flags<AccessFlagBits, VkAccessFlags>;
@@ -9780,7 +9782,7 @@ namespace vk
   {
     enum
     {
-      allFlags = VkFlags(AccessFlagBits::eIndirectCommandRead) | VkFlags(AccessFlagBits::eIndexRead) | VkFlags(AccessFlagBits::eVertexAttributeRead) | VkFlags(AccessFlagBits::eUniformRead) | VkFlags(AccessFlagBits::eInputAttachmentRead) | VkFlags(AccessFlagBits::eShaderRead) | VkFlags(AccessFlagBits::eShaderWrite) | VkFlags(AccessFlagBits::eColorAttachmentRead) | VkFlags(AccessFlagBits::eColorAttachmentWrite) | VkFlags(AccessFlagBits::eDepthStencilAttachmentRead) | VkFlags(AccessFlagBits::eDepthStencilAttachmentWrite) | VkFlags(AccessFlagBits::eTransferRead) | VkFlags(AccessFlagBits::eTransferWrite) | VkFlags(AccessFlagBits::eHostRead) | VkFlags(AccessFlagBits::eHostWrite) | VkFlags(AccessFlagBits::eMemoryRead) | VkFlags(AccessFlagBits::eMemoryWrite)
+      allFlags = VkFlags(AccessFlagBits::eIndirectCommandRead) | VkFlags(AccessFlagBits::eIndexRead) | VkFlags(AccessFlagBits::eVertexAttributeRead) | VkFlags(AccessFlagBits::eUniformRead) | VkFlags(AccessFlagBits::eInputAttachmentRead) | VkFlags(AccessFlagBits::eShaderRead) | VkFlags(AccessFlagBits::eShaderWrite) | VkFlags(AccessFlagBits::eColorAttachmentRead) | VkFlags(AccessFlagBits::eColorAttachmentWrite) | VkFlags(AccessFlagBits::eDepthStencilAttachmentRead) | VkFlags(AccessFlagBits::eDepthStencilAttachmentWrite) | VkFlags(AccessFlagBits::eTransferRead) | VkFlags(AccessFlagBits::eTransferWrite) | VkFlags(AccessFlagBits::eHostRead) | VkFlags(AccessFlagBits::eHostWrite) | VkFlags(AccessFlagBits::eMemoryRead) | VkFlags(AccessFlagBits::eMemoryWrite) | VkFlags(AccessFlagBits::eCommandProcessReadNVX) | VkFlags(AccessFlagBits::eCommandProcessWriteNVX)
     };
   };
 
@@ -15250,7 +15252,11 @@ namespace vk
     eCommandPool = VK_DEBUG_REPORT_OBJECT_TYPE_COMMAND_POOL_EXT,
     eSurfaceKhr = VK_DEBUG_REPORT_OBJECT_TYPE_SURFACE_KHR_EXT,
     eSwapchainKhr = VK_DEBUG_REPORT_OBJECT_TYPE_SWAPCHAIN_KHR_EXT,
-    eDebugReport = VK_DEBUG_REPORT_OBJECT_TYPE_DEBUG_REPORT_EXT
+    eDebugReport = VK_DEBUG_REPORT_OBJECT_TYPE_DEBUG_REPORT_EXT,
+    eDisplayKhr = VK_DEBUG_REPORT_OBJECT_TYPE_DISPLAY_KHR_EXT,
+    eDisplayModeKhr = VK_DEBUG_REPORT_OBJECT_TYPE_DISPLAY_MODE_KHR_EXT,
+    eObjectTableNvx = VK_DEBUG_REPORT_OBJECT_TYPE_OBJECT_TABLE_NVX_EXT,
+    eIndirectCommandsLayoutNvx = VK_DEBUG_REPORT_OBJECT_TYPE_INDIRECT_COMMANDS_LAYOUT_NVX_EXT
   };
 
   struct DebugMarkerObjectNameInfoEXT
@@ -21245,6 +21251,8 @@ namespace vk
     case AccessFlagBits::eHostWrite: return "HostWrite";
     case AccessFlagBits::eMemoryRead: return "MemoryRead";
     case AccessFlagBits::eMemoryWrite: return "MemoryWrite";
+    case AccessFlagBits::eCommandProcessReadNVX: return "CommandProcessReadNVX";
+    case AccessFlagBits::eCommandProcessWriteNVX: return "CommandProcessWriteNVX";
     default: return "invalid";
     }
   }
@@ -21270,6 +21278,8 @@ namespace vk
     if (value & AccessFlagBits::eHostWrite) result += "HostWrite | ";
     if (value & AccessFlagBits::eMemoryRead) result += "MemoryRead | ";
     if (value & AccessFlagBits::eMemoryWrite) result += "MemoryWrite | ";
+    if (value & AccessFlagBits::eCommandProcessReadNVX) result += "CommandProcessReadNVX | ";
+    if (value & AccessFlagBits::eCommandProcessWriteNVX) result += "CommandProcessWriteNVX | ";
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
@@ -22040,6 +22050,10 @@ namespace vk
     case DebugReportObjectTypeEXT::eSurfaceKhr: return "SurfaceKhr";
     case DebugReportObjectTypeEXT::eSwapchainKhr: return "SwapchainKhr";
     case DebugReportObjectTypeEXT::eDebugReport: return "DebugReport";
+    case DebugReportObjectTypeEXT::eDisplayKhr: return "DisplayKhr";
+    case DebugReportObjectTypeEXT::eDisplayModeKhr: return "DisplayModeKhr";
+    case DebugReportObjectTypeEXT::eObjectTableNvx: return "ObjectTableNvx";
+    case DebugReportObjectTypeEXT::eIndirectCommandsLayoutNvx: return "IndirectCommandsLayoutNvx";
     default: return "invalid";
     }
   }

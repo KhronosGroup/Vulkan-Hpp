@@ -2079,6 +2079,9 @@ void writeFunctionBody(std::ofstream & ofs, std::string const& indentation, std:
           }
           assert(!size.empty());
           ofs << "( " << size << " )";
+        } else if (commandData.twoStep)
+        {
+            ofs << "( alloc )";
         }
       }
       ofs << ";" << std::endl;
@@ -2361,6 +2364,14 @@ void writeFunctionHeader(std::ofstream & ofs, VkData const& vkData, std::string 
       }
     }
     ofs << " ";
+  }
+  if (!singular && (returnType.find("Allocator") != std::string::npos))
+  {
+    if (skippedArguments.size() + (commandData.handleCommand ? 1 : 0) < commandData.arguments.size())
+    {
+      ofs << ", ";
+    }
+    ofs << " Allocator const& alloc = Allocator()";
   }
   ofs << ")";
   if (commandData.handleCommand)

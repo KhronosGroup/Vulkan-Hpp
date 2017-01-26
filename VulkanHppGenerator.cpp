@@ -2078,8 +2078,14 @@ void writeFunctionBody(std::ofstream & ofs, std::string const& indentation, std:
             }
           }
           assert(!size.empty());
-          ofs << "( " << size << " )";
-        } else if (commandData.twoStep)
+          ofs << "( " << size;
+          if (returnType.find("Allocator") != std::string::npos)
+          {
+            ofs << ", " << commandData.arguments[returnIndex].pureType << "(), alloc";
+          }
+          ofs << " )";
+        }
+        else if (commandData.twoStep)
         {
             ofs << "( alloc )";
         }
@@ -3257,7 +3263,7 @@ int main( int argc, char **argv )
         << arrayProxyHeader;
 
     // first of all, write out vk::Result and the exception handling stuff
-    std::list<DependencyData>::const_iterator it = std::find_if(vkData.dependencies.begin(), vkData.dependencies.end(), [](DependencyData const& dp) { return dp.name == "Result"; });
+    std::list<DependencyData>::iterator it = std::find_if(vkData.dependencies.begin(), vkData.dependencies.end(), [](DependencyData const& dp) { return dp.name == "Result"; });
     assert(it != vkData.dependencies.end());
     writeTypeEnum(ofs, *it, vkData.enums.find(it->name)->second);
     writeEnumsToString(ofs, *it, vkData.enums.find(it->name)->second);

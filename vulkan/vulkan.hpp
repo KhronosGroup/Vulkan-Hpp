@@ -5699,12 +5699,6 @@ namespace vk
       return *this;
     }
 
-    ApplicationInfo& setSType( StructureType sType_ )
-    {
-      sType = sType_;
-      return *this;
-    }
-
     ApplicationInfo& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
@@ -5798,12 +5792,6 @@ namespace vk
       return *this;
     }
 
-    DeviceQueueCreateInfo& setSType( StructureType sType_ )
-    {
-      sType = sType_;
-      return *this;
-    }
-
     DeviceQueueCreateInfo& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
@@ -5890,12 +5878,6 @@ namespace vk
     DeviceCreateInfo& operator=( VkDeviceCreateInfo const & rhs )
     {
       memcpy( this, &rhs, sizeof(DeviceCreateInfo) );
-      return *this;
-    }
-
-    DeviceCreateInfo& setSType( StructureType sType_ )
-    {
-      sType = sType_;
       return *this;
     }
 
@@ -6018,12 +6000,6 @@ namespace vk
       return *this;
     }
 
-    InstanceCreateInfo& setSType( StructureType sType_ )
-    {
-      sType = sType_;
-      return *this;
-    }
-
     InstanceCreateInfo& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
@@ -6123,12 +6099,6 @@ namespace vk
       return *this;
     }
 
-    MemoryAllocateInfo& setSType( StructureType sType_ )
-    {
-      sType = sType_;
-      return *this;
-    }
-
     MemoryAllocateInfo& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
@@ -6194,12 +6164,6 @@ namespace vk
     MappedMemoryRange& operator=( VkMappedMemoryRange const & rhs )
     {
       memcpy( this, &rhs, sizeof(MappedMemoryRange) );
-      return *this;
-    }
-
-    MappedMemoryRange& setSType( StructureType sType_ )
-    {
-      sType = sType_;
       return *this;
     }
 
@@ -6281,12 +6245,6 @@ namespace vk
     WriteDescriptorSet& operator=( VkWriteDescriptorSet const & rhs )
     {
       memcpy( this, &rhs, sizeof(WriteDescriptorSet) );
-      return *this;
-    }
-
-    WriteDescriptorSet& setSType( StructureType sType_ )
-    {
-      sType = sType_;
       return *this;
     }
 
@@ -6410,12 +6368,6 @@ namespace vk
       return *this;
     }
 
-    CopyDescriptorSet& setSType( StructureType sType_ )
-    {
-      sType = sType_;
-      return *this;
-    }
-
     CopyDescriptorSet& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
@@ -6526,12 +6478,6 @@ namespace vk
       return *this;
     }
 
-    BufferViewCreateInfo& setSType( StructureType sType_ )
-    {
-      sType = sType_;
-      return *this;
-    }
-
     BufferViewCreateInfo& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
@@ -6624,12 +6570,6 @@ namespace vk
       return *this;
     }
 
-    ShaderModuleCreateInfo& setSType( StructureType sType_ )
-    {
-      sType = sType_;
-      return *this;
-    }
-
     ShaderModuleCreateInfo& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
@@ -6703,12 +6643,6 @@ namespace vk
     DescriptorSetAllocateInfo& operator=( VkDescriptorSetAllocateInfo const & rhs )
     {
       memcpy( this, &rhs, sizeof(DescriptorSetAllocateInfo) );
-      return *this;
-    }
-
-    DescriptorSetAllocateInfo& setSType( StructureType sType_ )
-    {
-      sType = sType_;
       return *this;
     }
 
@@ -6787,12 +6721,6 @@ namespace vk
     PipelineVertexInputStateCreateInfo& operator=( VkPipelineVertexInputStateCreateInfo const & rhs )
     {
       memcpy( this, &rhs, sizeof(PipelineVertexInputStateCreateInfo) );
-      return *this;
-    }
-
-    PipelineVertexInputStateCreateInfo& setSType( StructureType sType_ )
-    {
-      sType = sType_;
       return *this;
     }
 
@@ -6888,12 +6816,6 @@ namespace vk
       return *this;
     }
 
-    PipelineInputAssemblyStateCreateInfo& setSType( StructureType sType_ )
-    {
-      sType = sType_;
-      return *this;
-    }
-
     PipelineInputAssemblyStateCreateInfo& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
@@ -6969,12 +6891,6 @@ namespace vk
       return *this;
     }
 
-    PipelineTessellationStateCreateInfo& setSType( StructureType sType_ )
-    {
-      sType = sType_;
-      return *this;
-    }
-
     PipelineTessellationStateCreateInfo& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
@@ -7042,12 +6958,6 @@ namespace vk
     PipelineViewportStateCreateInfo& operator=( VkPipelineViewportStateCreateInfo const & rhs )
     {
       memcpy( this, &rhs, sizeof(PipelineViewportStateCreateInfo) );
-      return *this;
-    }
-
-    PipelineViewportStateCreateInfo& setSType( StructureType sType_ )
-    {
-      sType = sType_;
       return *this;
     }
 
@@ -7148,12 +7058,6 @@ namespace vk
     PipelineRasterizationStateCreateInfo& operator=( VkPipelineRasterizationStateCreateInfo const & rhs )
     {
       memcpy( this, &rhs, sizeof(PipelineRasterizationStateCreateInfo) );
-      return *this;
-    }
-
-    PipelineRasterizationStateCreateInfo& setSType( StructureType sType_ )
-    {
-      sType = sType_;
       return *this;
     }
 
@@ -7304,12 +7208,6 @@ namespace vk
       return *this;
     }
 
-    PipelineDepthStencilStateCreateInfo& setSType( StructureType sType_ )
-    {
-      sType = sType_;
-      return *this;
-    }
-
     PipelineDepthStencilStateCreateInfo& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
@@ -7442,12 +7340,6 @@ namespace vk
       return *this;
     }
 
-    PipelineCacheCreateInfo& setSType( StructureType sType_ )
-    {
-      sType = sType_;
-      return *this;
-    }
-
     PipelineCacheCreateInfo& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
@@ -7534,12 +7426,6 @@ namespace vk
     SamplerCreateInfo& operator=( VkSamplerCreateInfo const & rhs )
     {
       memcpy( this, &rhs, sizeof(SamplerCreateInfo) );
-      return *this;
-    }
-
-    SamplerCreateInfo& setSType( StructureType sType_ )
-    {
-      sType = sType_;
       return *this;
     }
 
@@ -7723,12 +7609,6 @@ namespace vk
       return *this;
     }
 
-    CommandBufferAllocateInfo& setSType( StructureType sType_ )
-    {
-      sType = sType_;
-      return *this;
-    }
-
     CommandBufferAllocateInfo& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
@@ -7804,12 +7684,6 @@ namespace vk
     RenderPassBeginInfo& operator=( VkRenderPassBeginInfo const & rhs )
     {
       memcpy( this, &rhs, sizeof(RenderPassBeginInfo) );
-      return *this;
-    }
-
-    RenderPassBeginInfo& setSType( StructureType sType_ )
-    {
-      sType = sType_;
       return *this;
     }
 
@@ -7903,12 +7777,6 @@ namespace vk
       return *this;
     }
 
-    EventCreateInfo& setSType( StructureType sType_ )
-    {
-      sType = sType_;
-      return *this;
-    }
-
     EventCreateInfo& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
@@ -7964,12 +7832,6 @@ namespace vk
     SemaphoreCreateInfo& operator=( VkSemaphoreCreateInfo const & rhs )
     {
       memcpy( this, &rhs, sizeof(SemaphoreCreateInfo) );
-      return *this;
-    }
-
-    SemaphoreCreateInfo& setSType( StructureType sType_ )
-    {
-      sType = sType_;
       return *this;
     }
 
@@ -8034,12 +7896,6 @@ namespace vk
     FramebufferCreateInfo& operator=( VkFramebufferCreateInfo const & rhs )
     {
       memcpy( this, &rhs, sizeof(FramebufferCreateInfo) );
-      return *this;
-    }
-
-    FramebufferCreateInfo& setSType( StructureType sType_ )
-    {
-      sType = sType_;
       return *this;
     }
 
@@ -8150,12 +8006,6 @@ namespace vk
       return *this;
     }
 
-    DisplayModeCreateInfoKHR& setSType( StructureType sType_ )
-    {
-      sType = sType_;
-      return *this;
-    }
-
     DisplayModeCreateInfoKHR& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
@@ -8221,12 +8071,6 @@ namespace vk
     DisplayPresentInfoKHR& operator=( VkDisplayPresentInfoKHR const & rhs )
     {
       memcpy( this, &rhs, sizeof(DisplayPresentInfoKHR) );
-      return *this;
-    }
-
-    DisplayPresentInfoKHR& setSType( StructureType sType_ )
-    {
-      sType = sType_;
       return *this;
     }
 
@@ -8306,12 +8150,6 @@ namespace vk
       return *this;
     }
 
-    AndroidSurfaceCreateInfoKHR& setSType( StructureType sType_ )
-    {
-      sType = sType_;
-      return *this;
-    }
-
     AndroidSurfaceCreateInfoKHR& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
@@ -8379,12 +8217,6 @@ namespace vk
     MirSurfaceCreateInfoKHR& operator=( VkMirSurfaceCreateInfoKHR const & rhs )
     {
       memcpy( this, &rhs, sizeof(MirSurfaceCreateInfoKHR) );
-      return *this;
-    }
-
-    MirSurfaceCreateInfoKHR& setSType( StructureType sType_ )
-    {
-      sType = sType_;
       return *this;
     }
 
@@ -8466,12 +8298,6 @@ namespace vk
       return *this;
     }
 
-    WaylandSurfaceCreateInfoKHR& setSType( StructureType sType_ )
-    {
-      sType = sType_;
-      return *this;
-    }
-
     WaylandSurfaceCreateInfoKHR& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
@@ -8547,12 +8373,6 @@ namespace vk
     Win32SurfaceCreateInfoKHR& operator=( VkWin32SurfaceCreateInfoKHR const & rhs )
     {
       memcpy( this, &rhs, sizeof(Win32SurfaceCreateInfoKHR) );
-      return *this;
-    }
-
-    Win32SurfaceCreateInfoKHR& setSType( StructureType sType_ )
-    {
-      sType = sType_;
       return *this;
     }
 
@@ -8634,12 +8454,6 @@ namespace vk
       return *this;
     }
 
-    XlibSurfaceCreateInfoKHR& setSType( StructureType sType_ )
-    {
-      sType = sType_;
-      return *this;
-    }
-
     XlibSurfaceCreateInfoKHR& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
@@ -8715,12 +8529,6 @@ namespace vk
     XcbSurfaceCreateInfoKHR& operator=( VkXcbSurfaceCreateInfoKHR const & rhs )
     {
       memcpy( this, &rhs, sizeof(XcbSurfaceCreateInfoKHR) );
-      return *this;
-    }
-
-    XcbSurfaceCreateInfoKHR& setSType( StructureType sType_ )
-    {
-      sType = sType_;
       return *this;
     }
 
@@ -8800,12 +8608,6 @@ namespace vk
       return *this;
     }
 
-    DebugMarkerMarkerInfoEXT& setSType( StructureType sType_ )
-    {
-      sType = sType_;
-      return *this;
-    }
-
     DebugMarkerMarkerInfoEXT& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
@@ -8872,12 +8674,6 @@ namespace vk
       return *this;
     }
 
-    DedicatedAllocationImageCreateInfoNV& setSType( StructureType sType_ )
-    {
-      sType = sType_;
-      return *this;
-    }
-
     DedicatedAllocationImageCreateInfoNV& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
@@ -8933,12 +8729,6 @@ namespace vk
     DedicatedAllocationBufferCreateInfoNV& operator=( VkDedicatedAllocationBufferCreateInfoNV const & rhs )
     {
       memcpy( this, &rhs, sizeof(DedicatedAllocationBufferCreateInfoNV) );
-      return *this;
-    }
-
-    DedicatedAllocationBufferCreateInfoNV& setSType( StructureType sType_ )
-    {
-      sType = sType_;
       return *this;
     }
 
@@ -8998,12 +8788,6 @@ namespace vk
     DedicatedAllocationMemoryAllocateInfoNV& operator=( VkDedicatedAllocationMemoryAllocateInfoNV const & rhs )
     {
       memcpy( this, &rhs, sizeof(DedicatedAllocationMemoryAllocateInfoNV) );
-      return *this;
-    }
-
-    DedicatedAllocationMemoryAllocateInfoNV& setSType( StructureType sType_ )
-    {
-      sType = sType_;
       return *this;
     }
 
@@ -9072,12 +8856,6 @@ namespace vk
     ExportMemoryWin32HandleInfoNV& operator=( VkExportMemoryWin32HandleInfoNV const & rhs )
     {
       memcpy( this, &rhs, sizeof(ExportMemoryWin32HandleInfoNV) );
-      return *this;
-    }
-
-    ExportMemoryWin32HandleInfoNV& setSType( StructureType sType_ )
-    {
-      sType = sType_;
       return *this;
     }
 
@@ -9152,12 +8930,6 @@ namespace vk
     Win32KeyedMutexAcquireReleaseInfoNV& operator=( VkWin32KeyedMutexAcquireReleaseInfoNV const & rhs )
     {
       memcpy( this, &rhs, sizeof(Win32KeyedMutexAcquireReleaseInfoNV) );
-      return *this;
-    }
-
-    Win32KeyedMutexAcquireReleaseInfoNV& setSType( StructureType sType_ )
-    {
-      sType = sType_;
       return *this;
     }
 
@@ -9268,12 +9040,6 @@ namespace vk
       return *this;
     }
 
-    DeviceGeneratedCommandsFeaturesNVX& setSType( StructureType sType_ )
-    {
-      sType = sType_;
-      return *this;
-    }
-
     DeviceGeneratedCommandsFeaturesNVX& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
@@ -9333,12 +9099,6 @@ namespace vk
     DeviceGeneratedCommandsLimitsNVX& operator=( VkDeviceGeneratedCommandsLimitsNVX const & rhs )
     {
       memcpy( this, &rhs, sizeof(DeviceGeneratedCommandsLimitsNVX) );
-      return *this;
-    }
-
-    DeviceGeneratedCommandsLimitsNVX& setSType( StructureType sType_ )
-    {
-      sType = sType_;
       return *this;
     }
 
@@ -9434,12 +9194,6 @@ namespace vk
       return *this;
     }
 
-    CmdReserveSpaceForCommandsInfoNVX& setSType( StructureType sType_ )
-    {
-      sType = sType_;
-      return *this;
-    }
-
     CmdReserveSpaceForCommandsInfoNVX& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
@@ -9522,12 +9276,6 @@ namespace vk
     PresentInfoKHR& operator=( VkPresentInfoKHR const & rhs )
     {
       memcpy( this, &rhs, sizeof(PresentInfoKHR) );
-      return *this;
-    }
-
-    PresentInfoKHR& setSType( StructureType sType_ )
-    {
-      sType = sType_;
       return *this;
     }
 
@@ -9641,12 +9389,6 @@ namespace vk
     PipelineDynamicStateCreateInfo& operator=( VkPipelineDynamicStateCreateInfo const & rhs )
     {
       memcpy( this, &rhs, sizeof(PipelineDynamicStateCreateInfo) );
-      return *this;
-    }
-
-    PipelineDynamicStateCreateInfo& setSType( StructureType sType_ )
-    {
-      sType = sType_;
       return *this;
     }
 
@@ -9950,12 +9692,6 @@ namespace vk
       return *this;
     }
 
-    MemoryBarrier& setSType( StructureType sType_ )
-    {
-      sType = sType_;
-      return *this;
-    }
-
     MemoryBarrier& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
@@ -10025,12 +9761,6 @@ namespace vk
     BufferMemoryBarrier& operator=( VkBufferMemoryBarrier const & rhs )
     {
       memcpy( this, &rhs, sizeof(BufferMemoryBarrier) );
-      return *this;
-    }
-
-    BufferMemoryBarrier& setSType( StructureType sType_ )
-    {
-      sType = sType_;
       return *this;
     }
 
@@ -10202,12 +9932,6 @@ namespace vk
     BufferCreateInfo& operator=( VkBufferCreateInfo const & rhs )
     {
       memcpy( this, &rhs, sizeof(BufferCreateInfo) );
-      return *this;
-    }
-
-    BufferCreateInfo& setSType( StructureType sType_ )
-    {
-      sType = sType_;
       return *this;
     }
 
@@ -10422,12 +10146,6 @@ namespace vk
       return *this;
     }
 
-    DescriptorSetLayoutCreateInfo& setSType( StructureType sType_ )
-    {
-      sType = sType_;
-      return *this;
-    }
-
     DescriptorSetLayoutCreateInfo& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
@@ -10503,12 +10221,6 @@ namespace vk
     PipelineShaderStageCreateInfo& operator=( VkPipelineShaderStageCreateInfo const & rhs )
     {
       memcpy( this, &rhs, sizeof(PipelineShaderStageCreateInfo) );
-      return *this;
-    }
-
-    PipelineShaderStageCreateInfo& setSType( StructureType sType_ )
-    {
-      sType = sType_;
       return *this;
     }
 
@@ -10664,12 +10376,6 @@ namespace vk
     PipelineLayoutCreateInfo& operator=( VkPipelineLayoutCreateInfo const & rhs )
     {
       memcpy( this, &rhs, sizeof(PipelineLayoutCreateInfo) );
-      return *this;
-    }
-
-    PipelineLayoutCreateInfo& setSType( StructureType sType_ )
-    {
-      sType = sType_;
       return *this;
     }
 
@@ -10852,12 +10558,6 @@ namespace vk
     ComputePipelineCreateInfo& operator=( VkComputePipelineCreateInfo const & rhs )
     {
       memcpy( this, &rhs, sizeof(ComputePipelineCreateInfo) );
-      return *this;
-    }
-
-    ComputePipelineCreateInfo& setSType( StructureType sType_ )
-    {
-      sType = sType_;
       return *this;
     }
 
@@ -11090,12 +10790,6 @@ namespace vk
       return *this;
     }
 
-    PipelineColorBlendStateCreateInfo& setSType( StructureType sType_ )
-    {
-      sType = sType_;
-      return *this;
-    }
-
     PipelineColorBlendStateCreateInfo& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
@@ -11216,12 +10910,6 @@ namespace vk
     FenceCreateInfo& operator=( VkFenceCreateInfo const & rhs )
     {
       memcpy( this, &rhs, sizeof(FenceCreateInfo) );
-      return *this;
-    }
-
-    FenceCreateInfo& setSType( StructureType sType_ )
-    {
-      sType = sType_;
       return *this;
     }
 
@@ -11466,12 +11154,6 @@ namespace vk
       return *this;
     }
 
-    CommandBufferInheritanceInfo& setSType( StructureType sType_ )
-    {
-      sType = sType_;
-      return *this;
-    }
-
     CommandBufferInheritanceInfo& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
@@ -11571,12 +11253,6 @@ namespace vk
       return *this;
     }
 
-    CommandBufferBeginInfo& setSType( StructureType sType_ )
-    {
-      sType = sType_;
-      return *this;
-    }
-
     CommandBufferBeginInfo& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
@@ -11643,12 +11319,6 @@ namespace vk
     QueryPoolCreateInfo& operator=( VkQueryPoolCreateInfo const & rhs )
     {
       memcpy( this, &rhs, sizeof(QueryPoolCreateInfo) );
-      return *this;
-    }
-
-    QueryPoolCreateInfo& setSType( StructureType sType_ )
-    {
-      sType = sType_;
       return *this;
     }
 
@@ -11979,12 +11649,6 @@ namespace vk
       return *this;
     }
 
-    ImageMemoryBarrier& setSType( StructureType sType_ )
-    {
-      sType = sType_;
-      return *this;
-    }
-
     ImageMemoryBarrier& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
@@ -12101,12 +11765,6 @@ namespace vk
     ImageViewCreateInfo& operator=( VkImageViewCreateInfo const & rhs )
     {
       memcpy( this, &rhs, sizeof(ImageViewCreateInfo) );
-      return *this;
-    }
-
-    ImageViewCreateInfo& setSType( StructureType sType_ )
-    {
-      sType = sType_;
       return *this;
     }
 
@@ -13038,12 +12696,6 @@ namespace vk
       return *this;
     }
 
-    BindSparseInfo& setSType( StructureType sType_ )
-    {
-      sType = sType_;
-      return *this;
-    }
-
     BindSparseInfo& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
@@ -13243,12 +12895,6 @@ namespace vk
       return *this;
     }
 
-    CommandPoolCreateInfo& setSType( StructureType sType_ )
-    {
-      sType = sType_;
-      return *this;
-    }
-
     CommandPoolCreateInfo& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
@@ -13437,12 +13083,6 @@ namespace vk
       return *this;
     }
 
-    ImageCreateInfo& setSType( StructureType sType_ )
-    {
-      sType = sType_;
-      return *this;
-    }
-
     ImageCreateInfo& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
@@ -13603,12 +13243,6 @@ namespace vk
       return *this;
     }
 
-    PipelineMultisampleStateCreateInfo& setSType( StructureType sType_ )
-    {
-      sType = sType_;
-      return *this;
-    }
-
     PipelineMultisampleStateCreateInfo& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
@@ -13728,12 +13362,6 @@ namespace vk
     GraphicsPipelineCreateInfo& operator=( VkGraphicsPipelineCreateInfo const & rhs )
     {
       memcpy( this, &rhs, sizeof(GraphicsPipelineCreateInfo) );
-      return *this;
-    }
-
-    GraphicsPipelineCreateInfo& setSType( StructureType sType_ )
-    {
-      sType = sType_;
       return *this;
     }
 
@@ -14386,12 +14014,6 @@ namespace vk
       return *this;
     }
 
-    DescriptorPoolCreateInfo& setSType( StructureType sType_ )
-    {
-      sType = sType_;
-      return *this;
-    }
-
     DescriptorPoolCreateInfo& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
@@ -14599,12 +14221,6 @@ namespace vk
     RenderPassCreateInfo& operator=( VkRenderPassCreateInfo const & rhs )
     {
       memcpy( this, &rhs, sizeof(RenderPassCreateInfo) );
-      return *this;
-    }
-
-    RenderPassCreateInfo& setSType( StructureType sType_ )
-    {
-      sType = sType_;
       return *this;
     }
 
@@ -14916,12 +14532,6 @@ namespace vk
       return *this;
     }
 
-    DisplaySurfaceCreateInfoKHR& setSType( StructureType sType_ )
-    {
-      sType = sType_;
-      return *this;
-    }
-
     DisplaySurfaceCreateInfoKHR& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
@@ -15087,12 +14697,6 @@ namespace vk
     SwapchainCreateInfoKHR& operator=( VkSwapchainCreateInfoKHR const & rhs )
     {
       memcpy( this, &rhs, sizeof(SwapchainCreateInfoKHR) );
-      return *this;
-    }
-
-    SwapchainCreateInfoKHR& setSType( StructureType sType_ )
-    {
-      sType = sType_;
       return *this;
     }
 
@@ -15305,12 +14909,6 @@ namespace vk
       return *this;
     }
 
-    DebugReportCallbackCreateInfoEXT& setSType( StructureType sType_ )
-    {
-      sType = sType_;
-      return *this;
-    }
-
     DebugReportCallbackCreateInfoEXT& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
@@ -15424,12 +15022,6 @@ namespace vk
       return *this;
     }
 
-    DebugMarkerObjectNameInfoEXT& setSType( StructureType sType_ )
-    {
-      sType = sType_;
-      return *this;
-    }
-
     DebugMarkerObjectNameInfoEXT& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
@@ -15505,12 +15097,6 @@ namespace vk
     DebugMarkerObjectTagInfoEXT& operator=( VkDebugMarkerObjectTagInfoEXT const & rhs )
     {
       memcpy( this, &rhs, sizeof(DebugMarkerObjectTagInfoEXT) );
-      return *this;
-    }
-
-    DebugMarkerObjectTagInfoEXT& setSType( StructureType sType_ )
-    {
-      sType = sType_;
       return *this;
     }
 
@@ -15616,12 +15202,6 @@ namespace vk
       return *this;
     }
 
-    PipelineRasterizationStateRasterizationOrderAMD& setSType( StructureType sType_ )
-    {
-      sType = sType_;
-      return *this;
-    }
-
     PipelineRasterizationStateRasterizationOrderAMD& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
@@ -15708,12 +15288,6 @@ namespace vk
       return *this;
     }
 
-    ExternalMemoryImageCreateInfoNV& setSType( StructureType sType_ )
-    {
-      sType = sType_;
-      return *this;
-    }
-
     ExternalMemoryImageCreateInfoNV& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
@@ -15769,12 +15343,6 @@ namespace vk
     ExportMemoryAllocateInfoNV& operator=( VkExportMemoryAllocateInfoNV const & rhs )
     {
       memcpy( this, &rhs, sizeof(ExportMemoryAllocateInfoNV) );
-      return *this;
-    }
-
-    ExportMemoryAllocateInfoNV& setSType( StructureType sType_ )
-    {
-      sType = sType_;
       return *this;
     }
 
@@ -15835,12 +15403,6 @@ namespace vk
     ImportMemoryWin32HandleInfoNV& operator=( VkImportMemoryWin32HandleInfoNV const & rhs )
     {
       memcpy( this, &rhs, sizeof(ImportMemoryWin32HandleInfoNV) );
-      return *this;
-    }
-
-    ImportMemoryWin32HandleInfoNV& setSType( StructureType sType_ )
-    {
-      sType = sType_;
       return *this;
     }
 
@@ -15968,12 +15530,6 @@ namespace vk
     ValidationFlagsEXT& operator=( VkValidationFlagsEXT const & rhs )
     {
       memcpy( this, &rhs, sizeof(ValidationFlagsEXT) );
-      return *this;
-    }
-
-    ValidationFlagsEXT& setSType( StructureType sType_ )
-    {
-      sType = sType_;
       return *this;
     }
 
@@ -16243,12 +15799,6 @@ namespace vk
       return *this;
     }
 
-    IndirectCommandsLayoutCreateInfoNVX& setSType( StructureType sType_ )
-    {
-      sType = sType_;
-      return *this;
-    }
-
     IndirectCommandsLayoutCreateInfoNVX& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
@@ -16345,12 +15895,6 @@ namespace vk
     ObjectTableCreateInfoNVX& operator=( VkObjectTableCreateInfoNVX const & rhs )
     {
       memcpy( this, &rhs, sizeof(ObjectTableCreateInfoNVX) );
-      return *this;
-    }
-
-    ObjectTableCreateInfoNVX& setSType( StructureType sType_ )
-    {
-      sType = sType_;
       return *this;
     }
 
@@ -17693,12 +17237,6 @@ namespace vk
     SubmitInfo& operator=( VkSubmitInfo const & rhs )
     {
       memcpy( this, &rhs, sizeof(SubmitInfo) );
-      return *this;
-    }
-
-    SubmitInfo& setSType( StructureType sType_ )
-    {
-      sType = sType_;
       return *this;
     }
 
@@ -20936,12 +20474,6 @@ namespace vk
     CmdProcessCommandsInfoNVX& operator=( VkCmdProcessCommandsInfoNVX const & rhs )
     {
       memcpy( this, &rhs, sizeof(CmdProcessCommandsInfoNVX) );
-      return *this;
-    }
-
-    CmdProcessCommandsInfoNVX& setSType( StructureType sType_ )
-    {
-      sType = sType_;
       return *this;
     }
 

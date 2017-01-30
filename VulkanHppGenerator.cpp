@@ -2726,29 +2726,32 @@ void writeStructConstructor( std::ofstream & ofs, std::string const& name, Struc
 
 void writeStructSetter( std::ofstream & ofs, std::string const& name, MemberData const& memberData, std::set<std::string> const& vkTypes )
 {
-  ofs << "    " << name << "& set" << static_cast<char>(toupper(memberData.name[0])) << memberData.name.substr(1) << "( ";
-  if ( memberData.arraySize.empty() )
+  if (memberData.type != "StructureType") // filter out StructureType, which is supposed to be immutable !
   {
-    ofs << memberData.type << " ";
-  }
-  else
-  {
-    ofs << "std::array<" << memberData.type << "," << memberData.arraySize << "> ";
-  }
-  ofs << memberData.name << "_ )" << std::endl
+    ofs << "    " << name << "& set" << static_cast<char>(toupper(memberData.name[0])) << memberData.name.substr(1) << "( ";
+    if (memberData.arraySize.empty())
+    {
+      ofs << memberData.type << " ";
+    }
+    else
+    {
+      ofs << "std::array<" << memberData.type << "," << memberData.arraySize << "> ";
+    }
+    ofs << memberData.name << "_ )" << std::endl
       << "    {" << std::endl;
-  if ( !memberData.arraySize.empty() )
-  {
-    ofs << "      memcpy( &" << memberData.name << ", " << memberData.name << "_.data(), " << memberData.arraySize << " * sizeof( " << memberData.type << " ) )";
-  }
-  else
-  {
-    ofs << "      " << memberData.name << " = " << memberData.name << "_";
-  }
-  ofs << ";" << std::endl
+    if (!memberData.arraySize.empty())
+    {
+      ofs << "      memcpy( &" << memberData.name << ", " << memberData.name << "_.data(), " << memberData.arraySize << " * sizeof( " << memberData.type << " ) )";
+    }
+    else
+    {
+      ofs << "      " << memberData.name << " = " << memberData.name << "_";
+    }
+    ofs << ";" << std::endl
       << "      return *this;" << std::endl
       << "    }" << std::endl
       << std::endl;
+  }
 }
 
 void writeTypeCommand(std::ofstream & ofs, VkData const& vkData, DependencyData const& dependencyData)

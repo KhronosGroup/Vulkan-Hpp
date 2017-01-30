@@ -2278,7 +2278,16 @@ void writeFunctionBody(std::ofstream & ofs, std::string const& indentation, std:
             }
           }
           assert(!size.empty());
-          ofs << "( " << size << " )";
+          ofs << "( " << size;
+          if (returnType.find("Allocator") != std::string::npos)
+          {
+            ofs << ", " << commandData.params[returnIndex].pureType << "(), alloc";
+          }
+          ofs << " )";
+        }
+        else if (commandData.twoStep)
+        {
+            ofs << "( alloc )";
         }
       }
       ofs << ";" << std::endl;
@@ -2628,6 +2637,14 @@ void writeFunctionHeader(std::ofstream & ofs, std::set<size_t> const& skippedArg
       }
     }
     ofs << " ";
+  }
+  if (!singular && (returnType.find("Allocator") != std::string::npos))
+  {
+    if (skippedArguments.size() + (commandData.handleCommand ? 1 : 0) < commandData.params.size())
+    {
+      ofs << ", ";
+    }
+    ofs << " Allocator const& alloc = Allocator()";
   }
   ofs << ")";
   if (commandData.handleCommand)
@@ -3668,7 +3685,7 @@ int main( int argc, char **argv )
       << uniqueHandleHeader;
 
     // first of all, write out vk::Result and the exception handling stuff
-    std::list<DependencyData>::const_iterator it = std::find_if(vkData.dependencies.begin(), vkData.dependencies.end(), [](DependencyData const& dp) { return dp.name == "Result"; });
+    std::list<DependencyData>::iterator it = std::find_if(vkData.dependencies.begin(), vkData.dependencies.end(), [](DependencyData const& dp) { return dp.name == "Result"; });
     assert(it != vkData.dependencies.end());
     writeTypeEnum(ofs, *it, vkData.enums.find(it->name)->second);
     writeEnumsToString(ofs, *it, vkData.enums.find(it->name)->second);

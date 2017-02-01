@@ -46,7 +46,9 @@ static_assert( VK_HEADER_VERSION ==  39 , "Wrong VK_HEADER_VERSION!" );
 // 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
 #if defined(__LP64__) || defined(_WIN64) || (defined(__x86_64__) && !defined(__ILP32__) ) || defined(_M_X64) || defined(__ia64) || defined (_M_IA64) || defined(__aarch64__) || defined(__powerpc64__)
-#define VULKAN_HPP_TYPESAFE_CONVERSION 1
+# if !defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#  define VULKAN_HPP_TYPESAFE_CONVERSION
+# endif
 #endif
 
 #if !defined(VULKAN_HPP_HAS_UNRESTRICTED_UNIONS)
@@ -8340,12 +8342,6 @@ namespace vk
       return *this;
     }
 
-    ViSurfaceCreateInfoNN& setSType( StructureType sType_ )
-    {
-      sType = sType_;
-      return *this;
-    }
-
     ViSurfaceCreateInfoNN& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
@@ -9383,12 +9379,6 @@ namespace vk
     PhysicalDeviceFeatures2KHR& operator=( VkPhysicalDeviceFeatures2KHR const & rhs )
     {
       memcpy( this, &rhs, sizeof(PhysicalDeviceFeatures2KHR) );
-      return *this;
-    }
-
-    PhysicalDeviceFeatures2KHR& setSType( StructureType sType_ )
-    {
-      sType = sType_;
       return *this;
     }
 
@@ -10770,12 +10760,6 @@ namespace vk
     PhysicalDeviceImageFormatInfo2KHR& operator=( VkPhysicalDeviceImageFormatInfo2KHR const & rhs )
     {
       memcpy( this, &rhs, sizeof(PhysicalDeviceImageFormatInfo2KHR) );
-      return *this;
-    }
-
-    PhysicalDeviceImageFormatInfo2KHR& setSType( StructureType sType_ )
-    {
-      sType = sType_;
       return *this;
     }
 
@@ -14276,12 +14260,6 @@ namespace vk
       return *this;
     }
 
-    PhysicalDeviceSparseImageFormatInfo2KHR& setSType( StructureType sType_ )
-    {
-      sType = sType_;
-      return *this;
-    }
-
     PhysicalDeviceSparseImageFormatInfo2KHR& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
@@ -17042,12 +17020,6 @@ namespace vk
       return *this;
     }
 
-    SwapchainCounterCreateInfoEXT& setSType( StructureType sType_ )
-    {
-      sType = sType_;
-      return *this;
-    }
-
     SwapchainCounterCreateInfoEXT& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
@@ -17110,12 +17082,6 @@ namespace vk
     DisplayPowerInfoEXT& operator=( VkDisplayPowerInfoEXT const & rhs )
     {
       memcpy( this, &rhs, sizeof(DisplayPowerInfoEXT) );
-      return *this;
-    }
-
-    DisplayPowerInfoEXT& setSType( StructureType sType_ )
-    {
-      sType = sType_;
       return *this;
     }
 
@@ -17182,12 +17148,6 @@ namespace vk
       return *this;
     }
 
-    DeviceEventInfoEXT& setSType( StructureType sType_ )
-    {
-      sType = sType_;
-      return *this;
-    }
-
     DeviceEventInfoEXT& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
@@ -17248,12 +17208,6 @@ namespace vk
     DisplayEventInfoEXT& operator=( VkDisplayEventInfoEXT const & rhs )
     {
       memcpy( this, &rhs, sizeof(DisplayEventInfoEXT) );
-      return *this;
-    }
-
-    DisplayEventInfoEXT& setSType( StructureType sType_ )
-    {
-      sType = sType_;
       return *this;
     }
 

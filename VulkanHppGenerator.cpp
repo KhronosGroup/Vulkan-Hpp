@@ -3567,7 +3567,9 @@ void writeTypesafeCheck(std::ofstream & ofs, std::string const& typesafeCheck)
   ofs << "// 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default." << std::endl
       << "// To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION" << std::endl
       << typesafeCheck << std::endl
-      << "#define VULKAN_HPP_TYPESAFE_CONVERSION 1" << std::endl
+      << "# if !defined( VULKAN_HPP_TYPESAFE_CONVERSION )" << std::endl
+      << "#  define VULKAN_HPP_TYPESAFE_CONVERSION" << std::endl
+      << "# endif" << std::endl
       << "#endif" << std::endl
       << std::endl;
 }

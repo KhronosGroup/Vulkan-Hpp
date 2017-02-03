@@ -450,7 +450,7 @@ std::string const uniqueHandleHeader = { R"(
   class UniqueHandle
   {
   public:
-    UniqueHandle( Type const& value = Type(), Deleter const& deleter = Deleter() )
+    explicit UniqueHandle( Type const& value = Type(), Deleter const& deleter = Deleter() )
       : m_value( value )
       , m_deleter( deleter )
     {}

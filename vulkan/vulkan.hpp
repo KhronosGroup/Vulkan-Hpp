@@ -17383,19 +17383,11 @@ namespace vk
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
     void bindPipeline( PipelineBindPoint pipelineBindPoint, Pipeline pipeline ) const
     {
       vkCmdBindPipeline( m_commandBuffer, static_cast<VkPipelineBindPoint>( pipelineBindPoint ), static_cast<VkPipeline>( pipeline ) );
     }
-#endif /*!VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    void bindPipeline( PipelineBindPoint pipelineBindPoint, Pipeline pipeline ) const
-    {
-      vkCmdBindPipeline( m_commandBuffer, static_cast<VkPipelineBindPoint>( pipelineBindPoint ), static_cast<VkPipeline>( pipeline ) );
-    }
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     void setViewport( uint32_t firstViewport, uint32_t viewportCount, const Viewport* pViewports ) const
     {
@@ -17421,103 +17413,47 @@ namespace vk
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
     void setLineWidth( float lineWidth ) const
     {
       vkCmdSetLineWidth( m_commandBuffer, lineWidth );
     }
-#endif /*!VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    void setLineWidth( float lineWidth ) const
-    {
-      vkCmdSetLineWidth( m_commandBuffer, lineWidth );
-    }
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
     void setDepthBias( float depthBiasConstantFactor, float depthBiasClamp, float depthBiasSlopeFactor ) const
     {
       vkCmdSetDepthBias( m_commandBuffer, depthBiasConstantFactor, depthBiasClamp, depthBiasSlopeFactor );
     }
-#endif /*!VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    void setDepthBias( float depthBiasConstantFactor, float depthBiasClamp, float depthBiasSlopeFactor ) const
-    {
-      vkCmdSetDepthBias( m_commandBuffer, depthBiasConstantFactor, depthBiasClamp, depthBiasSlopeFactor );
-    }
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
     void setBlendConstants( const float blendConstants[4] ) const
     {
       vkCmdSetBlendConstants( m_commandBuffer, blendConstants );
     }
-#endif /*!VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    void setBlendConstants( const float blendConstants[4] ) const
-    {
-      vkCmdSetBlendConstants( m_commandBuffer, blendConstants );
-    }
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
     void setDepthBounds( float minDepthBounds, float maxDepthBounds ) const
     {
       vkCmdSetDepthBounds( m_commandBuffer, minDepthBounds, maxDepthBounds );
     }
-#endif /*!VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    void setDepthBounds( float minDepthBounds, float maxDepthBounds ) const
-    {
-      vkCmdSetDepthBounds( m_commandBuffer, minDepthBounds, maxDepthBounds );
-    }
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
     void setStencilCompareMask( StencilFaceFlags faceMask, uint32_t compareMask ) const
     {
       vkCmdSetStencilCompareMask( m_commandBuffer, static_cast<VkStencilFaceFlags>( faceMask ), compareMask );
     }
-#endif /*!VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    void setStencilCompareMask( StencilFaceFlags faceMask, uint32_t compareMask ) const
-    {
-      vkCmdSetStencilCompareMask( m_commandBuffer, static_cast<VkStencilFaceFlags>( faceMask ), compareMask );
-    }
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
     void setStencilWriteMask( StencilFaceFlags faceMask, uint32_t writeMask ) const
     {
       vkCmdSetStencilWriteMask( m_commandBuffer, static_cast<VkStencilFaceFlags>( faceMask ), writeMask );
     }
-#endif /*!VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    void setStencilWriteMask( StencilFaceFlags faceMask, uint32_t writeMask ) const
-    {
-      vkCmdSetStencilWriteMask( m_commandBuffer, static_cast<VkStencilFaceFlags>( faceMask ), writeMask );
-    }
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
     void setStencilReference( StencilFaceFlags faceMask, uint32_t reference ) const
     {
       vkCmdSetStencilReference( m_commandBuffer, static_cast<VkStencilFaceFlags>( faceMask ), reference );
     }
-#endif /*!VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    void setStencilReference( StencilFaceFlags faceMask, uint32_t reference ) const
-    {
-      vkCmdSetStencilReference( m_commandBuffer, static_cast<VkStencilFaceFlags>( faceMask ), reference );
-    }
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     void bindDescriptorSets( PipelineBindPoint pipelineBindPoint, PipelineLayout layout, uint32_t firstSet, uint32_t descriptorSetCount, const DescriptorSet* pDescriptorSets, uint32_t dynamicOffsetCount, const uint32_t* pDynamicOffsets ) const
     {
@@ -17531,19 +17467,11 @@ namespace vk
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
     void bindIndexBuffer( Buffer buffer, DeviceSize offset, IndexType indexType ) const
     {
       vkCmdBindIndexBuffer( m_commandBuffer, static_cast<VkBuffer>( buffer ), offset, static_cast<VkIndexType>( indexType ) );
     }
-#endif /*!VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    void bindIndexBuffer( Buffer buffer, DeviceSize offset, IndexType indexType ) const
-    {
-      vkCmdBindIndexBuffer( m_commandBuffer, static_cast<VkBuffer>( buffer ), offset, static_cast<VkIndexType>( indexType ) );
-    }
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     void bindVertexBuffers( uint32_t firstBinding, uint32_t bindingCount, const Buffer* pBuffers, const DeviceSize* pOffsets ) const
     {
@@ -17565,89 +17493,41 @@ namespace vk
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
     void draw( uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex, uint32_t firstInstance ) const
     {
       vkCmdDraw( m_commandBuffer, vertexCount, instanceCount, firstVertex, firstInstance );
     }
-#endif /*!VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    void draw( uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex, uint32_t firstInstance ) const
-    {
-      vkCmdDraw( m_commandBuffer, vertexCount, instanceCount, firstVertex, firstInstance );
-    }
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
     void drawIndexed( uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex, int32_t vertexOffset, uint32_t firstInstance ) const
     {
       vkCmdDrawIndexed( m_commandBuffer, indexCount, instanceCount, firstIndex, vertexOffset, firstInstance );
     }
-#endif /*!VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    void drawIndexed( uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex, int32_t vertexOffset, uint32_t firstInstance ) const
-    {
-      vkCmdDrawIndexed( m_commandBuffer, indexCount, instanceCount, firstIndex, vertexOffset, firstInstance );
-    }
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
     void drawIndirect( Buffer buffer, DeviceSize offset, uint32_t drawCount, uint32_t stride ) const
     {
       vkCmdDrawIndirect( m_commandBuffer, static_cast<VkBuffer>( buffer ), offset, drawCount, stride );
     }
-#endif /*!VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    void drawIndirect( Buffer buffer, DeviceSize offset, uint32_t drawCount, uint32_t stride ) const
-    {
-      vkCmdDrawIndirect( m_commandBuffer, static_cast<VkBuffer>( buffer ), offset, drawCount, stride );
-    }
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
     void drawIndexedIndirect( Buffer buffer, DeviceSize offset, uint32_t drawCount, uint32_t stride ) const
     {
       vkCmdDrawIndexedIndirect( m_commandBuffer, static_cast<VkBuffer>( buffer ), offset, drawCount, stride );
     }
-#endif /*!VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    void drawIndexedIndirect( Buffer buffer, DeviceSize offset, uint32_t drawCount, uint32_t stride ) const
-    {
-      vkCmdDrawIndexedIndirect( m_commandBuffer, static_cast<VkBuffer>( buffer ), offset, drawCount, stride );
-    }
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
     void dispatch( uint32_t x, uint32_t y, uint32_t z ) const
     {
       vkCmdDispatch( m_commandBuffer, x, y, z );
     }
-#endif /*!VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    void dispatch( uint32_t x, uint32_t y, uint32_t z ) const
-    {
-      vkCmdDispatch( m_commandBuffer, x, y, z );
-    }
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
     void dispatchIndirect( Buffer buffer, DeviceSize offset ) const
     {
       vkCmdDispatchIndirect( m_commandBuffer, static_cast<VkBuffer>( buffer ), offset );
     }
-#endif /*!VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    void dispatchIndirect( Buffer buffer, DeviceSize offset ) const
-    {
-      vkCmdDispatchIndirect( m_commandBuffer, static_cast<VkBuffer>( buffer ), offset );
-    }
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     void copyBuffer( Buffer srcBuffer, Buffer dstBuffer, uint32_t regionCount, const BufferCopy* pRegions ) const
     {
@@ -17722,19 +17602,11 @@ namespace vk
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
     void fillBuffer( Buffer dstBuffer, DeviceSize dstOffset, DeviceSize size, uint32_t data ) const
     {
       vkCmdFillBuffer( m_commandBuffer, static_cast<VkBuffer>( dstBuffer ), dstOffset, size, data );
     }
-#endif /*!VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    void fillBuffer( Buffer dstBuffer, DeviceSize dstOffset, DeviceSize size, uint32_t data ) const
-    {
-      vkCmdFillBuffer( m_commandBuffer, static_cast<VkBuffer>( dstBuffer ), dstOffset, size, data );
-    }
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     void clearColorImage( Image image, ImageLayout imageLayout, const ClearColorValue* pColor, uint32_t rangeCount, const ImageSubresourceRange* pRanges ) const
     {
@@ -17784,33 +17656,17 @@ namespace vk
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
     void setEvent( Event event, PipelineStageFlags stageMask ) const
     {
       vkCmdSetEvent( m_commandBuffer, static_cast<VkEvent>( event ), static_cast<VkPipelineStageFlags>( stageMask ) );
     }
-#endif /*!VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    void setEvent( Event event, PipelineStageFlags stageMask ) const
-    {
-      vkCmdSetEvent( m_commandBuffer, static_cast<VkEvent>( event ), static_cast<VkPipelineStageFlags>( stageMask ) );
-    }
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
     void resetEvent( Event event, PipelineStageFlags stageMask ) const
     {
       vkCmdResetEvent( m_commandBuffer, static_cast<VkEvent>( event ), static_cast<VkPipelineStageFlags>( stageMask ) );
     }
-#endif /*!VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    void resetEvent( Event event, PipelineStageFlags stageMask ) const
-    {
-      vkCmdResetEvent( m_commandBuffer, static_cast<VkEvent>( event ), static_cast<VkPipelineStageFlags>( stageMask ) );
-    }
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     void waitEvents( uint32_t eventCount, const Event* pEvents, PipelineStageFlags srcStageMask, PipelineStageFlags dstStageMask, uint32_t memoryBarrierCount, const MemoryBarrier* pMemoryBarriers, uint32_t bufferMemoryBarrierCount, const BufferMemoryBarrier* pBufferMemoryBarriers, uint32_t imageMemoryBarrierCount, const ImageMemoryBarrier* pImageMemoryBarriers ) const
     {
@@ -17836,75 +17692,35 @@ namespace vk
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
     void beginQuery( QueryPool queryPool, uint32_t query, QueryControlFlags flags ) const
     {
       vkCmdBeginQuery( m_commandBuffer, static_cast<VkQueryPool>( queryPool ), query, static_cast<VkQueryControlFlags>( flags ) );
     }
-#endif /*!VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    void beginQuery( QueryPool queryPool, uint32_t query, QueryControlFlags flags ) const
-    {
-      vkCmdBeginQuery( m_commandBuffer, static_cast<VkQueryPool>( queryPool ), query, static_cast<VkQueryControlFlags>( flags ) );
-    }
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
     void endQuery( QueryPool queryPool, uint32_t query ) const
     {
       vkCmdEndQuery( m_commandBuffer, static_cast<VkQueryPool>( queryPool ), query );
     }
-#endif /*!VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    void endQuery( QueryPool queryPool, uint32_t query ) const
-    {
-      vkCmdEndQuery( m_commandBuffer, static_cast<VkQueryPool>( queryPool ), query );
-    }
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
     void resetQueryPool( QueryPool queryPool, uint32_t firstQuery, uint32_t queryCount ) const
     {
       vkCmdResetQueryPool( m_commandBuffer, static_cast<VkQueryPool>( queryPool ), firstQuery, queryCount );
     }
-#endif /*!VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    void resetQueryPool( QueryPool queryPool, uint32_t firstQuery, uint32_t queryCount ) const
-    {
-      vkCmdResetQueryPool( m_commandBuffer, static_cast<VkQueryPool>( queryPool ), firstQuery, queryCount );
-    }
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
     void writeTimestamp( PipelineStageFlagBits pipelineStage, QueryPool queryPool, uint32_t query ) const
     {
       vkCmdWriteTimestamp( m_commandBuffer, static_cast<VkPipelineStageFlagBits>( pipelineStage ), static_cast<VkQueryPool>( queryPool ), query );
     }
-#endif /*!VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    void writeTimestamp( PipelineStageFlagBits pipelineStage, QueryPool queryPool, uint32_t query ) const
-    {
-      vkCmdWriteTimestamp( m_commandBuffer, static_cast<VkPipelineStageFlagBits>( pipelineStage ), static_cast<VkQueryPool>( queryPool ), query );
-    }
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
     void copyQueryPoolResults( QueryPool queryPool, uint32_t firstQuery, uint32_t queryCount, Buffer dstBuffer, DeviceSize dstOffset, DeviceSize stride, QueryResultFlags flags ) const
     {
       vkCmdCopyQueryPoolResults( m_commandBuffer, static_cast<VkQueryPool>( queryPool ), firstQuery, queryCount, static_cast<VkBuffer>( dstBuffer ), dstOffset, stride, static_cast<VkQueryResultFlags>( flags ) );
     }
-#endif /*!VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    void copyQueryPoolResults( QueryPool queryPool, uint32_t firstQuery, uint32_t queryCount, Buffer dstBuffer, DeviceSize dstOffset, DeviceSize stride, QueryResultFlags flags ) const
-    {
-      vkCmdCopyQueryPoolResults( m_commandBuffer, static_cast<VkQueryPool>( queryPool ), firstQuery, queryCount, static_cast<VkBuffer>( dstBuffer ), dstOffset, stride, static_cast<VkQueryResultFlags>( flags ) );
-    }
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     void pushConstants( PipelineLayout layout, ShaderStageFlags stageFlags, uint32_t offset, uint32_t size, const void* pValues ) const
     {
@@ -17931,33 +17747,17 @@ namespace vk
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
     void nextSubpass( SubpassContents contents ) const
     {
       vkCmdNextSubpass( m_commandBuffer, static_cast<VkSubpassContents>( contents ) );
     }
-#endif /*!VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    void nextSubpass( SubpassContents contents ) const
-    {
-      vkCmdNextSubpass( m_commandBuffer, static_cast<VkSubpassContents>( contents ) );
-    }
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
     void endRenderPass(  ) const
     {
       vkCmdEndRenderPass( m_commandBuffer );
     }
-#endif /*!VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    void endRenderPass() const
-    {
-      vkCmdEndRenderPass( m_commandBuffer );
-    }
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     void executeCommands( uint32_t commandBufferCount, const CommandBuffer* pCommandBuffers ) const
     {
@@ -17985,19 +17785,11 @@ namespace vk
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
     void debugMarkerEndEXT(  ) const
     {
       vkCmdDebugMarkerEndEXT( m_commandBuffer );
     }
-#endif /*!VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    void debugMarkerEndEXT() const
-    {
-      vkCmdDebugMarkerEndEXT( m_commandBuffer );
-    }
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     void debugMarkerInsertEXT( DebugMarkerMarkerInfoEXT* pMarkerInfo ) const
     {
@@ -18013,33 +17805,17 @@ namespace vk
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
     void drawIndirectCountAMD( Buffer buffer, DeviceSize offset, Buffer countBuffer, DeviceSize countBufferOffset, uint32_t maxDrawCount, uint32_t stride ) const
     {
       vkCmdDrawIndirectCountAMD( m_commandBuffer, static_cast<VkBuffer>( buffer ), offset, static_cast<VkBuffer>( countBuffer ), countBufferOffset, maxDrawCount, stride );
     }
-#endif /*!VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    void drawIndirectCountAMD( Buffer buffer, DeviceSize offset, Buffer countBuffer, DeviceSize countBufferOffset, uint32_t maxDrawCount, uint32_t stride ) const
-    {
-      vkCmdDrawIndirectCountAMD( m_commandBuffer, static_cast<VkBuffer>( buffer ), offset, static_cast<VkBuffer>( countBuffer ), countBufferOffset, maxDrawCount, stride );
-    }
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
     void drawIndexedIndirectCountAMD( Buffer buffer, DeviceSize offset, Buffer countBuffer, DeviceSize countBufferOffset, uint32_t maxDrawCount, uint32_t stride ) const
     {
       vkCmdDrawIndexedIndirectCountAMD( m_commandBuffer, static_cast<VkBuffer>( buffer ), offset, static_cast<VkBuffer>( countBuffer ), countBufferOffset, maxDrawCount, stride );
     }
-#endif /*!VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    void drawIndexedIndirectCountAMD( Buffer buffer, DeviceSize offset, Buffer countBuffer, DeviceSize countBufferOffset, uint32_t maxDrawCount, uint32_t stride ) const
-    {
-      vkCmdDrawIndexedIndirectCountAMD( m_commandBuffer, static_cast<VkBuffer>( buffer ), offset, static_cast<VkBuffer>( countBuffer ), countBufferOffset, maxDrawCount, stride );
-    }
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     void processCommandsNVX( const CmdProcessCommandsInfoNVX* pProcessCommandsInfo ) const
     {
@@ -18818,12 +18594,10 @@ namespace vk
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
     Result mapMemory( DeviceMemory memory, DeviceSize offset, DeviceSize size, MemoryMapFlags flags, void** ppData ) const
     {
       return static_cast<Result>( vkMapMemory( m_device, static_cast<VkDeviceMemory>( memory ), offset, size, static_cast<VkMemoryMapFlags>( flags ), ppData ) );
     }
-#endif /*!VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     ResultValueType<void*>::type mapMemory( DeviceMemory memory, DeviceSize offset, DeviceSize size, MemoryMapFlags flags = MemoryMapFlags() ) const
@@ -18834,19 +18608,11 @@ namespace vk
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
     void unmapMemory( DeviceMemory memory ) const
     {
       vkUnmapMemory( m_device, static_cast<VkDeviceMemory>( memory ) );
     }
-#endif /*!VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    void unmapMemory( DeviceMemory memory ) const
-    {
-      vkUnmapMemory( m_device, static_cast<VkDeviceMemory>( memory ) );
-    }
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     Result flushMappedMemoryRanges( uint32_t memoryRangeCount, const MappedMemoryRange* pMemoryRanges ) const
     {
@@ -20214,19 +19980,11 @@ namespace vk
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
     void trimCommandPoolKHR( CommandPool commandPool, CommandPoolTrimFlagsKHR flags ) const
     {
       vkTrimCommandPoolKHR( m_device, static_cast<VkCommandPool>( commandPool ), static_cast<VkCommandPoolTrimFlagsKHR>( flags ) );
     }
-#endif /*!VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    void trimCommandPoolKHR( CommandPool commandPool, CommandPoolTrimFlagsKHR flags = CommandPoolTrimFlagsKHR() ) const
-    {
-      vkTrimCommandPoolKHR( m_device, static_cast<VkCommandPool>( commandPool ), static_cast<VkCommandPoolTrimFlagsKHR>( flags ) );
-    }
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     Result displayPowerControlEXT( DisplayKHR display, const DisplayPowerInfoEXT* pDisplayPowerInfo ) const
     {
@@ -20894,23 +20652,13 @@ namespace vk
 #endif /*VK_USE_PLATFORM_WAYLAND_KHR*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
 #ifdef VK_USE_PLATFORM_WIN32_KHR
     Bool32 getWin32PresentationSupportKHR( uint32_t queueFamilyIndex ) const
     {
       return vkGetPhysicalDeviceWin32PresentationSupportKHR( m_physicalDevice, queueFamilyIndex );
     }
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
-#endif /*!VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-#ifdef VK_USE_PLATFORM_WIN32_KHR
-    Bool32 getWin32PresentationSupportKHR( uint32_t queueFamilyIndex ) const
-    {
-      return vkGetPhysicalDeviceWin32PresentationSupportKHR( m_physicalDevice, queueFamilyIndex );
-    }
-#endif /*VK_USE_PLATFORM_WIN32_KHR*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
 #ifdef VK_USE_PLATFORM_XLIB_KHR
     Bool32 getXlibPresentationSupportKHR( uint32_t queueFamilyIndex, Display* dpy, VisualID visualID ) const

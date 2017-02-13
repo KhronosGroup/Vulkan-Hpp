@@ -443,10 +443,6 @@ std::string const uniqueHandleHeader = { R"(
 #endif
 
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
-  class Device;
-  class Instance;
-  struct AllocationCallbacks;
-
   template <typename Type, typename Deleter>
   class UniqueHandle
   {
@@ -568,17 +564,24 @@ struct CommandData
   CommandData(std::string const& t, std::string const& fn)
     : returnType(t)
     , fullName(fn)
+    , returnParam(~0)
+    , templateParam(~0)
     , twoStep(false)
   {}
 
-  std::string               returnType;
+  std::string               className;
+  std::string               enhancedReturnType;
   std::string               fullName;
-  std::string               reducedName;
   std::vector<ParamData>    params;
-  std::vector<std::string>  successCodes;
   std::string               protect;
-  std::string               handle;
+  std::string               reducedName;
+  size_t                    returnParam;
+  std::string               returnType;
+  std::set<size_t>          skippedParams;
+  std::vector<std::string>  successCodes;
+  size_t                    templateParam;
   bool                      twoStep;
+  std::map<size_t, size_t>  vectorParams;
 };
 
 struct DependencyData
@@ -691,16 +694,16 @@ struct VkData
 };
 
 void createDefaults( VkData const& vkData, std::map<std::string,std::string> & defaultValues );
-void determineReducedName(CommandData const& commandData);
-std::string determineReturnType(CommandData const& commandData, size_t returnIndex, bool isVector = false);
-std::set<size_t> determineSkippedParams(size_t returnIndex, std::map<size_t, size_t> const& vectorParams);
+void determineEnhancedReturnType(CommandData & commandData);
+void determineReducedName(CommandData & commandData);
+void determineReturnParam(CommandData & commandData);
+void determineSkippedParams(CommandData & commandData);
+void determineTemplateParam(CommandData & commandData);
+void determineVectorParams(CommandData & commandData);
 void enterProtect(std::ostream &os, std::string const& protect);
 std::string extractTag(std::string const& name);
-size_t findReturnIndex(CommandData const& commandData, std::map<size_t,size_t> const& vectorParams);
 std::string findTag(std::string const& name, std::set<std::string> const& tags);
-size_t findTemplateIndex(std::vector<ParamData> const& params, std::map<size_t,size_t> const& vectorParams);
 std::string generateEnumNameForFlags(std::string const& name);
-std::map<size_t, size_t> getVectorParams(std::vector<ParamData> const& params);
 bool hasPointerParam(std::vector<ParamData> const& params);
 bool isVectorSizeParam(std::map<size_t, size_t> const& vectorParams, size_t idx);
 void leaveProtect(std::ostream &os, std::string const& protect);
@@ -740,30 +743,33 @@ std::string toCamelCase(std::string const& value);
 std::string toUpperCase(std::string const& name);
 std::string trimStart(std::string const& input);
 std::string trimEnd(std::string const& input);
-void writeCall(std::ostream & os, CommandData const& commandData, size_t templateIndex, std::set<std::string> const& vkTypes, std::map<size_t, size_t> const& vectorParams, size_t returnIndex, bool firstCall, bool singular);
-void writeDeleterClasses(std::ofstream & ofs, std::pair<std::string,std::set<std::string>> const& deleterTypes, std::map<std::string,DeleterData> const& deleterData);
-void writeDeleterOperators(std::ofstream & ofs, std::pair<std::string, std::set<std::string>> const& deleterTypes, std::map<std::string,DeleterData> const& deleterData);
+void writeCall(std::ostream & os, CommandData const& commandData, std::set<std::string> const& vkTypes, bool firstCall, bool singular);
+void writeDeleterClasses(std::ofstream & ofs, std::pair<std::string, std::set<std::string>> const& deleterTypes, std::map<std::string, DeleterData> const& deleterData);
+void writeDeleterForwardDeclarations(std::ofstream &ofs, std::pair<std::string, std::set<std::string>> const& deleterTypes, std::map<std::string, DeleterData> const& deleterData);
 void writeEnumsToString(std::ofstream & ofs, EnumData const& enumData);
 void writeEnumsToString(std::ofstream & ofs, VkData const& vkData);
 void writeFlagsToString(std::ofstream & ofs, std::string const& flagsName, EnumData const &enumData);
 void writeExceptionCheck(std::ofstream & ofs, std::string const& indentation, std::string const& className, std::string const& functionName, std::vector<std::string> const& successCodes);
-void writeFunctionBody(std::ostream & os, std::string const& indentation, std::string const& className, std::string const& functionName, std::string const& returnType,
-                       size_t templateIndex, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes, size_t returnIndex,
-                       std::map<size_t, size_t> const& vectorParams, bool singular);
-void writeFunctionBodyUnique(std::ostream & os, std::string const& indentation, CommandData const& commandData, std::string const& className,
-                             std::set<size_t> const& skippedParams, size_t returnIndex, std::map<size_t, size_t> const& vectorParams,
-                             std::map<std::string, DeleterData> const& deleterData, bool singular);
-std::set<size_t> writeFunctionHeader(std::ostream & os, std::map<size_t, size_t> const& skippedParams, VkData const& vkData, std::string const& indentation,
-                                     std::string const& returnType, std::string const& name, CommandData const& commandData, size_t returnIndex, size_t templateIndex,
-                                     std::map<size_t, size_t> const& vectorParams, bool singular, bool unique);
+void writeFunctionBody(std::ostream & os, std::string const& indentation, VkData const& vkData, CommandData const& commandData, DependencyData const& dependencyData, bool enhanced, bool singular, bool unique);
+void writeFunctionBodyEnhanced(std::ostream & os, std::string const& indentation, VkData const& vkData, CommandData const& commandData, DependencyData const& dependencyData, bool singular);
+void writeFunctionBodyStandard(std::ostream & os, std::string const& indentation, VkData const& vkData, CommandData const& commandData, DependencyData const& dependencyData);
+void writeFunctionBodyUnique(std::ostream & os, std::string const& indentation, VkData const& vkData, CommandData const& commandData, DependencyData const& dependencyData, bool singular);
+void writeFunctionDeclaration(std::ofstream & ofs, std::string const& indentation, VkData const& vkData, CommandData const& commandData, bool enhanced, bool singular, bool unique);
+void writeFunctionDefinition(std::ofstream & ofs, std::string const& indentation, VkData const& vkData, CommandData const& commandData, DependencyData const& dependencyData, bool enhanced, bool singular, bool unique);
+void writeFunctionHeaderArguments(std::ostream & os, VkData const& vkData, CommandData const& commandData, bool enhanced, bool singular, bool withDefaults);
+void writeFunctionHeaderName(std::ostream & os, std::string const& name, bool singular, bool unique);
+void writeFunctionHeaderReturnType(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool enhanced, bool singular, bool unique);
+void writeFunctionHeaderTemplate(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool singular, bool withDefault);
 void writeStructConstructor( std::ofstream & ofs, std::string const& name, StructData const& structData, std::set<std::string> const& vkTypes, std::map<std::string,std::string> const& defaultValues );
 void writeStructSetter( std::ofstream & ofs, std::string const& name, MemberData const& memberData, std::set<std::string> const& vkTypes, std::map<std::string,StructData> const& structs );
 void writeTypeCommand(std::ofstream & ofs, VkData const& vkData, DependencyData const& dependencyData);
-void writeTypeCommandEnhanced(std::ostream & os, VkData const& vkData, std::string const& indentation, std::string const& className, std::string const& functionName,
-                              DependencyData const& dependencyData, CommandData const& commandData);
+void writeTypeCommandDeclaration(std::ofstream &ofs, std::string const& indentation, VkData const& vkData, CommandData const& commandData);
+void writeTypeCommandDeclarationEnhanced(std::ofstream & ofs, std::string const& indentation, VkData const& vkData, CommandData const& commandData);
+void writeTypeCommandDeclarationStandard(std::ofstream & ofs, std::string const& indentation, VkData const& vkData, CommandData const& commandData);
+void writeTypeCommandDefinition(std::ofstream &ofs, std::string const& indentation, VkData const& vkData, CommandData const& commandData, DependencyData const& dependencyData);
+void writeTypeCommandDefinitionEnhanced(std::ofstream &ofs, std::string const& indentation, VkData const& vkData, CommandData const& commandData, DependencyData const& dependencyData);
+void writeTypeCommandDefinitionStandard(std::ofstream &ofs, std::string const& indentation, VkData const& vkData, CommandData const& commandData, DependencyData const& dependencyData);
 void writeTypeCommandParam(std::ostream & os, ParamData const& param, std::set<std::string> const& vkTypes);
-void writeTypeCommandStandard(std::ostream & os, std::string const& indentation, std::string const& functionName, DependencyData const& dependencyData,
-                              CommandData const& commandData, std::set<std::string> const& vkTypes);
 void writeTypeEnum(std::ofstream & ofs, EnumData const& enumData);
 void writeTypeFlags(std::ofstream & ofs, std::string const& flagsName, FlagData const& flagData, EnumData const& enumData);
 void writeTypeHandle(std::ofstream & ofs, VkData const& vkData, DependencyData const& dependencyData, HandleData const& handle, std::list<DependencyData> const& dependencies);
@@ -862,58 +868,107 @@ void determineReducedName(CommandData & commandData)
   }
 }
 
-std::string determineReturnType(CommandData const& commandData, size_t returnIndex, bool isVector)
+void determineEnhancedReturnType(CommandData & commandData)
 {
   std::string returnType;
-  if (    (returnIndex != ~0)
-      &&  (   (commandData.returnType == "void")
-          ||  (   (commandData.returnType == "Result")
-              &&  (   (commandData.successCodes.size() == 1)
-                  ||  (   (commandData.successCodes.size() == 2)
-                      &&  (commandData.successCodes[1] == "eIncomplete")
-                      &&  commandData.twoStep)))))
+  if ((commandData.returnParam != ~0)
+    && ((commandData.returnType == "void")
+      || ((commandData.returnType == "Result")
+        && ((commandData.successCodes.size() == 1)
+          || ((commandData.successCodes.size() == 2)
+            && (commandData.successCodes[1] == "eIncomplete")
+            && commandData.twoStep)))))
   {
-    if (isVector)
+    if (commandData.vectorParams.find(commandData.returnParam) != commandData.vectorParams.end())
     {
-      if (commandData.params[returnIndex].pureType == "void")
+      if (commandData.params[commandData.returnParam].pureType == "void")
       {
-        returnType = "std::vector<uint8_t,Allocator>";
+        commandData.enhancedReturnType = "std::vector<uint8_t,Allocator>";
       }
       else
       {
-        returnType = "std::vector<" + commandData.params[returnIndex].pureType + ",Allocator>";
+        commandData.enhancedReturnType = "std::vector<" + commandData.params[commandData.returnParam].pureType + ",Allocator>";
       }
     }
     else
     {
-      assert(commandData.params[returnIndex].type.back() == '*');
-      assert(commandData.params[returnIndex].type.find("const") == std::string::npos);
-      returnType = commandData.params[returnIndex].type;
-      returnType.pop_back();
+      assert(commandData.params[commandData.returnParam].type.back() == '*');
+      assert(commandData.params[commandData.returnParam].type.find("const") == std::string::npos);
+      commandData.enhancedReturnType = commandData.params[commandData.returnParam].type;
+      commandData.enhancedReturnType.pop_back();
     }
   }
   else if ((commandData.returnType == "Result") && (commandData.successCodes.size() == 1))
   {
     // an original return of type "Result" with just one successCode is changed to void, errors throw an exception
-    returnType = "void";
+    commandData.enhancedReturnType = "void";
   }
   else
   {
     // the return type just stays the original return type
-    returnType = commandData.returnType;
+    commandData.enhancedReturnType = commandData.returnType;
   }
-  return returnType;
 }
 
-std::set<size_t> determineSkippedParams(size_t returnIndex, std::map<size_t, size_t> const& vectorParams)
+void determineReturnParam(CommandData & commandData)
 {
-  std::set<size_t> skippedParams;
-  std::for_each(vectorParams.begin(), vectorParams.end(), [&skippedParams](std::pair<size_t,size_t> const& vp) { if (vp.second != ~0) skippedParams.insert(vp.second); });
-  if (returnIndex != ~0)
+  if ((commandData.returnType == "Result") || (commandData.returnType == "void"))
   {
-    skippedParams.insert(returnIndex);
+    for (size_t i = 0; i < commandData.params.size(); i++)
+    {
+      if ((commandData.params[i].type.find('*') != std::string::npos)
+        && (commandData.params[i].type.find("const") == std::string::npos)
+        && !isVectorSizeParam(commandData.vectorParams, i)
+        && ((commandData.vectorParams.find(i) == commandData.vectorParams.end()) || commandData.twoStep || (commandData.successCodes.size() == 1)))
+      {
+        auto paramIt = std::find_if(commandData.params.begin() + i + 1, commandData.params.end(), [](ParamData const& pd)
+        {
+          return (pd.type.find('*') != std::string::npos) && (pd.type.find("const") == std::string::npos);
+        });
+        commandData.returnParam = paramIt != commandData.params.end() ? ~0 : i;
+      }
+    }
   }
-  return skippedParams;
+}
+
+void determineSkippedParams(CommandData & commandData)
+{
+  std::for_each(commandData.vectorParams.begin(), commandData.vectorParams.end(), [&commandData](std::pair<size_t,size_t> const& vp) { if (vp.second != ~0) commandData.skippedParams.insert(vp.second); });
+  if (commandData.returnParam != ~0)
+  {
+    commandData.skippedParams.insert(commandData.returnParam);
+  }
+}
+
+void determineTemplateParam(CommandData & commandData)
+{
+  for (size_t i = 0; i < commandData.params.size(); i++)
+  {
+    if (((commandData.params[i].name == "pData") || (commandData.params[i].name == "pValues"))
+      && (commandData.vectorParams.find(i) != commandData.vectorParams.end()))
+    {
+      commandData.templateParam = i;
+    }
+  }
+  assert((commandData.templateParam == ~0) || (commandData.vectorParams.find(commandData.templateParam) != commandData.vectorParams.end()));
+}
+
+void determineVectorParams(CommandData & commandData)
+{
+  for (auto it = commandData.params.begin(), begin = it, end = commandData.params.end(); it != end; ++it)
+  {
+    if (!it->len.empty())
+    {
+      auto findLambda = [it](ParamData const& pd) { return pd.name == it->len; };
+      auto findIt = std::find_if(begin, it, findLambda);
+      assert((std::count_if(begin, end, findLambda) == 0) || (findIt < it));
+      commandData.vectorParams.insert(std::make_pair(std::distance(begin, it), findIt < it ? std::distance(begin, findIt) : ~0));
+      assert((commandData.vectorParams[std::distance(begin, it)] != ~0)
+        || (it->len == "null-terminated")
+        || (it->len == "pAllocateInfo::descriptorSetCount")
+        || (it->len == "pAllocateInfo::commandBufferCount"));
+    }
+  }
 }
 
 void enterProtect(std::ostream &os, std::string const& protect)
@@ -934,28 +989,6 @@ std::string extractTag(std::string const& name)
   return name.substr(start + 1, end - start - 1);
 }
 
-size_t findReturnIndex(CommandData const& commandData, std::map<size_t,size_t> const& vectorParams)
-{
-  if ((commandData.returnType == "Result") || (commandData.returnType == "void"))
-  {
-    for (size_t i = 0; i < commandData.params.size(); i++)
-    {
-      if ((commandData.params[i].type.find('*') != std::string::npos)
-        && (commandData.params[i].type.find("const") == std::string::npos)
-        && !isVectorSizeParam(vectorParams, i)
-        && ((vectorParams.find(i) == vectorParams.end()) || commandData.twoStep || (commandData.successCodes.size() == 1)))
-      {
-        auto paramIt = std::find_if(commandData.params.begin() + i + 1, commandData.params.end(), [](ParamData const& pd)
-        {
-          return (pd.type.find('*') != std::string::npos) && (pd.type.find("const") == std::string::npos);
-        });
-        return paramIt != commandData.params.end() ? ~0 : i;
-      }
-    }
-  }
-  return ~0;
-}
-
 std::string findTag(std::string const& name, std::set<std::string> const& tags)
 {
   auto tagIt = std::find_if(tags.begin(), tags.end(), [&name](std::string const& t)
@@ -966,19 +999,6 @@ std::string findTag(std::string const& name, std::set<std::string> const& tags)
   return tagIt != tags.end() ? *tagIt : "";
 }
 
-size_t findTemplateIndex(std::vector<ParamData> const& params, std::map<size_t, size_t> const& vectorParams)
-{
-  for (size_t i = 0; i < params.size(); i++)
-  {
-    if (((params[i].name == "pData") || (params[i].name == "pValues"))
-      && (vectorParams.find(i) != vectorParams.end()))
-    {
-      return i;
-    }
-  }
-  return ~0;
-}
-
 std::string generateEnumNameForFlags(std::string const& name)
 {
   std::string generatedName = name;
@@ -986,26 +1006,6 @@ std::string generateEnumNameForFlags(std::string const& name)
   assert(pos != std::string::npos);
   generatedName.replace(pos, 5, "FlagBits");
   return generatedName;
-}
-
-std::map<size_t, size_t> getVectorParams(std::vector<ParamData> const& params)
-{
-  std::map<size_t,size_t> lenParameters;
-  for (auto it = params.begin(), begin = it, end = params.end(); it != end; ++it)
-  {
-    if (!it->len.empty())
-    {
-      auto findLambda = [it](ParamData const& pd) { return pd.name == it->len; };
-      auto findIt = std::find_if(begin, it, findLambda);
-      assert((std::count_if(begin, end, findLambda) == 0) || (findIt < it));
-      lenParameters.insert(std::make_pair(std::distance(begin, it), findIt < it ? std::distance(begin, findIt) : ~0));
-      assert(   (lenParameters[std::distance(begin, it)] != ~0)
-             || (it->len == "null-terminated")
-             || (it->len == "pAllocateInfo::descriptorSetCount")
-             || (it->len == "pAllocateInfo::commandBufferCount"));
-    }
-  }
-  return lenParameters;
 }
 
 bool hasPointerParam(std::vector<ParamData> const& params)
@@ -1035,13 +1035,20 @@ void linkCommandToHandle(VkData & vkData, CommandData & commandData)
 {
   assert(!commandData.params.empty());
   std::map<std::string, HandleData>::iterator hit = vkData.handles.find(commandData.params[0].pureType);
-  if (hit != vkData.handles.end())
+  if (hit == vkData.handles.end())
   {
-    hit->second.commands.push_back(commandData.fullName);
-    commandData.handle = hit->first;
+    hit = vkData.handles.find("");
+  }
+  assert(hit != vkData.handles.end());
 
-    DependencyData const& commandDD = vkData.dependencies.back();
-    std::list<DependencyData>::iterator handleDD = std::find_if(vkData.dependencies.begin(), vkData.dependencies.end(), [hit](DependencyData const& dd) { return dd.name == hit->first; });
+  hit->second.commands.push_back(commandData.fullName);
+  commandData.className = hit->first;
+
+  DependencyData const& commandDD = vkData.dependencies.back();
+  std::list<DependencyData>::iterator handleDD = std::find_if(vkData.dependencies.begin(), vkData.dependencies.end(), [hit](DependencyData const& dd) { return dd.name == hit->first; });
+  assert((handleDD != vkData.dependencies.end()) || hit->first.empty());
+  if (handleDD != vkData.dependencies.end())
+  {
     std::copy_if(commandDD.dependencies.begin(), commandDD.dependencies.end(), std::inserter(handleDD->dependencies, handleDD->dependencies.end()), [hit](std::string const& d) { return d != hit->first; });
   }
 }
@@ -1201,6 +1208,11 @@ void readCommandsCommand(tinyxml2::XMLElement * element, VkData & vkData)
   determineReducedName(commandData);
   linkCommandToHandle(vkData, commandData);
   registerDeleter(vkData, commandData);
+  determineVectorParams(commandData);
+  determineReturnParam(commandData);
+  determineTemplateParam(commandData);
+  determineEnhancedReturnType(commandData);
+  determineSkippedParams(commandData);
 }
 
 std::vector<std::string> readCommandSuccessCodes(tinyxml2::XMLElement* element, std::set<std::string> const& tags)
@@ -1854,6 +1866,10 @@ void registerDeleter(VkData & vkData, CommandData const& commandData)
     default:
       assert(false);
     }
+    if (commandData.fullName == "destroyDevice")
+    {
+      key = "PhysicalDevice";
+    }
     assert(vkData.deleterTypes[key].find(commandData.params[valueIndex].pureType) == vkData.deleterTypes[key].end());
     vkData.deleterTypes[key].insert(commandData.params[valueIndex].pureType);
     vkData.deleterData[commandData.params[valueIndex].pureType].call = commandData.reducedName;
@@ -1993,25 +2009,24 @@ std::string trimEnd(std::string const& input)
   return result;
 }
 
-void writeCall(std::ostream & os, CommandData const& commandData, size_t templateIndex, std::set<std::string> const& vkTypes,
-               std::map<size_t, size_t> const& vectorParams, size_t returnIndex, bool firstCall, bool singular)
+void writeCall(std::ostream & os, CommandData const& commandData, std::set<std::string> const& vkTypes, bool firstCall, bool singular)
 {
   std::map<size_t,size_t> countIndices;
-  for (std::map<size_t, size_t>::const_iterator it = vectorParams.begin(); it != vectorParams.end(); ++it)
+  for (std::map<size_t, size_t>::const_iterator it = commandData.vectorParams.begin(); it != commandData.vectorParams.end(); ++it)
   {
     countIndices.insert(std::make_pair(it->second, it->first));
   }
-  if ((vectorParams.size() == 1)
-      && ((commandData.params[vectorParams.begin()->first].len == "dataSize/4") || (commandData.params[vectorParams.begin()->first].len == "latexmath:[$dataSize \\over 4$]")))
+  if ((commandData.vectorParams.size() == 1)
+      && ((commandData.params[commandData.vectorParams.begin()->first].len == "dataSize/4") || (commandData.params[commandData.vectorParams.begin()->first].len == "latexmath:[$dataSize \\over 4$]")))
   {
     assert(commandData.params[3].name == "dataSize");
-    countIndices.insert(std::make_pair(3, vectorParams.begin()->first));
+    countIndices.insert(std::make_pair(3, commandData.vectorParams.begin()->first));
   }
 
   assert(islower(commandData.fullName[0]));
   os << "vk" << static_cast<char>(toupper(commandData.fullName[0])) << commandData.fullName.substr(1) << "( ";
   size_t i = 0;
-  if (!commandData.handle.empty())
+  if (!commandData.className.empty())
   {
     os << "m_" << commandData.params[0].name;
     i++;
@@ -2025,7 +2040,7 @@ void writeCall(std::ostream & os, CommandData const& commandData, size_t templat
     std::map<size_t, size_t>::const_iterator it = countIndices.find(i);
     if (it != countIndices.end())
     {
-      if ((returnIndex == it->second) && commandData.twoStep)
+      if ((commandData.returnParam == it->second) && commandData.twoStep)
       {
         os << "&" << reduceName(commandData.params[it->first].name);
       }
@@ -2039,7 +2054,7 @@ void writeCall(std::ostream & os, CommandData const& commandData, size_t templat
         {
           os << reduceName(commandData.params[it->second].name) << ".size() ";
         }
-        if (templateIndex == it->second)
+        if (commandData.templateParam == it->second)
         {
           os << "* sizeof( T ) ";
         }
@@ -2047,18 +2062,18 @@ void writeCall(std::ostream & os, CommandData const& commandData, size_t templat
     }
     else
     {
-      it = vectorParams.find(i);
-      if (it != vectorParams.end())
+      it = commandData.vectorParams.find(i);
+      if (it != commandData.vectorParams.end())
       {
         assert(commandData.params[it->first].type.back() == '*');
-        if ((returnIndex == it->first) && commandData.twoStep && firstCall)
+        if ((commandData.returnParam == it->first) && commandData.twoStep && firstCall)
         {
           os << "nullptr";
         }
         else
         {
           std::set<std::string>::const_iterator vkit = vkTypes.find(commandData.params[it->first].pureType);
-          if ((vkit != vkTypes.end()) || (it->first == templateIndex))
+          if ((vkit != vkTypes.end()) || (it->first == commandData.templateParam))
           {
             os << "reinterpret_cast<";
             if (commandData.params[it->first].type.find("const") == 0)
@@ -2190,37 +2205,56 @@ void writeExceptionCheck(std::ofstream & ofs, std::string const& indentation, st
       << indentation << "  }" << std::endl;
 }
 
-void writeFunctionBody(std::ostream & os, std::string const& indentation, std::string const& className, std::string const& functionName, std::string const& returnType,
-                       size_t templateIndex, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes, size_t returnIndex,
-                       std::map<size_t, size_t> const& vectorParams, bool singular)
+void writeFunctionBody(std::ostream & os, std::string const& indentation, VkData const& vkData, CommandData const& commandData, DependencyData const& dependencyData, bool enhanced, bool singular, bool unique)
 {
   os << indentation << "{" << std::endl;
 
-  // add a static_assert if a type is templated and its size needs to be some multiple of the original size
-  if ((templateIndex != ~0) && (commandData.params[templateIndex].pureType != "void"))
+  if (enhanced)
   {
-    os << indentation << "  static_assert( sizeof( T ) % sizeof( " << commandData.params[templateIndex].pureType << " ) == 0, \"wrong size of template type T\" );" << std::endl;
+    if (unique)
+    {
+      writeFunctionBodyUnique(os, indentation, vkData, commandData, dependencyData, singular);
+    }
+    else
+    {
+      writeFunctionBodyEnhanced(os, indentation, vkData, commandData, dependencyData, singular);
+    }
+  }
+  else
+  {
+    writeFunctionBodyStandard(os, indentation, vkData, commandData, dependencyData);
+  }
+
+  os << indentation << "}" << std::endl;
+}
+
+void writeFunctionBodyEnhanced(std::ostream & os, std::string const& indentation, VkData const& vkData, CommandData const& commandData, DependencyData const& dependencyData, bool singular)
+{
+  // add a static_assert if a type is templated and its size needs to be some multiple of the original size
+  if ((commandData.templateParam != ~0) && (commandData.params[commandData.templateParam].pureType != "void"))
+  {
+    os << indentation << "  static_assert( sizeof( T ) % sizeof( " << commandData.params[commandData.templateParam].pureType << " ) == 0, \"wrong size of template type T\" );" << std::endl;
   }
 
   // add some error checks if multiple vectors need to have the same size
-  if (1 < vectorParams.size())
+  if (1 < commandData.vectorParams.size())
   {
-    for (std::map<size_t, size_t>::const_iterator it0 = vectorParams.begin(); it0 != vectorParams.end(); ++it0)
+    for (std::map<size_t, size_t>::const_iterator it0 = commandData.vectorParams.begin(); it0 != commandData.vectorParams.end(); ++it0)
     {
-      if (it0->first != returnIndex)
+      if (it0->first != commandData.returnParam)
       {
-        for (std::map<size_t, size_t>::const_iterator it1 = std::next(it0); it1 != vectorParams.end(); ++it1)
+        for (std::map<size_t, size_t>::const_iterator it1 = std::next(it0); it1 != commandData.vectorParams.end(); ++it1)
         {
-          if ((it1->first != returnIndex) && (it0->second == it1->second))
+          if ((it1->first != commandData.returnParam) && (it0->second == it1->second))
           {
             os << "#ifdef VULKAN_HPP_NO_EXCEPTIONS" << std::endl
-                << indentation << "  assert( " << reduceName(commandData.params[it0->first].name) << ".size() == " << reduceName(commandData.params[it1->first].name) << ".size() );" << std::endl
-                << "#else" << std::endl
-                << indentation << "  if ( " << reduceName(commandData.params[it0->first].name) << ".size() != " << reduceName(commandData.params[it1->first].name) << ".size() )" << std::endl
-                << indentation << "  {" << std::endl
-                << indentation << "    throw std::logic_error( \"vk::" << className << "::" << functionName << ": " << reduceName(commandData.params[it0->first].name) << ".size() != " << reduceName(commandData.params[it1->first].name) << ".size()\" );" << std::endl
-                << indentation << "  }" << std::endl
-                << "#endif  // VULKAN_HPP_NO_EXCEPTIONS" << std::endl;
+              << indentation << "  assert( " << reduceName(commandData.params[it0->first].name) << ".size() == " << reduceName(commandData.params[it1->first].name) << ".size() );" << std::endl
+              << "#else" << std::endl
+              << indentation << "  if ( " << reduceName(commandData.params[it0->first].name) << ".size() != " << reduceName(commandData.params[it1->first].name) << ".size() )" << std::endl
+              << indentation << "  {" << std::endl
+              << indentation << "    throw std::logic_error( \"vk::" << commandData.className << "::" << commandData.reducedName << ": " << reduceName(commandData.params[it0->first].name) << ".size() != " << reduceName(commandData.params[it1->first].name) << ".size()\" );" << std::endl
+              << indentation << "  }" << std::endl
+              << "#endif  // VULKAN_HPP_NO_EXCEPTIONS" << std::endl;
           }
         }
       }
@@ -2228,21 +2262,21 @@ void writeFunctionBody(std::ostream & os, std::string const& indentation, std::s
   }
 
   // write the local variable to hold a returned value
-  if (returnIndex != ~0)
+  if (commandData.returnParam != ~0)
   {
-    if (commandData.returnType != returnType)
+    if (commandData.returnType != commandData.enhancedReturnType)
     {
-      os << indentation << "  " << (singular ? commandData.params[returnIndex].pureType : returnType) << " " << reduceName(commandData.params[returnIndex].name, singular);
+      os << indentation << "  " << (singular ? commandData.params[commandData.returnParam].pureType : commandData.enhancedReturnType) << " " << reduceName(commandData.params[commandData.returnParam].name, singular);
 
-      if ( !singular)
+      if (!singular)
       {
-        std::map<size_t, size_t>::const_iterator it = vectorParams.find(returnIndex);
-        if (it != vectorParams.end() && !commandData.twoStep)
+        std::map<size_t, size_t>::const_iterator it = commandData.vectorParams.find(commandData.returnParam);
+        if (it != commandData.vectorParams.end() && !commandData.twoStep)
         {
           std::string size;
-          if ((it->second == ~0) && !commandData.params[returnIndex].len.empty())
+          if ((it->second == ~0) && !commandData.params[commandData.returnParam].len.empty())
           {
-            size = reduceName(commandData.params[returnIndex].len);
+            size = reduceName(commandData.params[commandData.returnParam].len);
             size_t pos = size.find("->");
             if (pos == std::string::npos)
             {
@@ -2253,9 +2287,9 @@ void writeFunctionBody(std::ostream & os, std::string const& indentation, std::s
           }
           else
           {
-            for (std::map<size_t, size_t>::const_iterator sit = vectorParams.begin(); sit != vectorParams.end(); ++sit)
+            for (std::map<size_t, size_t>::const_iterator sit = commandData.vectorParams.begin(); sit != commandData.vectorParams.end(); ++sit)
             {
-              if ((sit->first != returnIndex) && (sit->second == it->second))
+              if ((sit->first != commandData.returnParam) && (sit->second == it->second))
               {
                 size = reduceName(commandData.params[sit->first].name) + ".size()";
                 break;
@@ -2270,17 +2304,17 @@ void writeFunctionBody(std::ostream & os, std::string const& indentation, std::s
     }
     else if (1 < commandData.successCodes.size())
     {
-      os << indentation << "  " << commandData.params[returnIndex].pureType << " " << reduceName(commandData.params[returnIndex].name) << ";" << std::endl;
+      os << indentation << "  " << commandData.params[commandData.returnParam].pureType << " " << reduceName(commandData.params[commandData.returnParam].name) << ";" << std::endl;
     }
   }
 
   // local count variable to hold the size of the vector to fill
   if (commandData.twoStep)
   {
-    assert(returnIndex != ~0);
+    assert(commandData.returnParam != ~0);
 
-    std::map<size_t, size_t>::const_iterator returnit = vectorParams.find(returnIndex);
-    assert(returnit != vectorParams.end() && (returnit->second != ~0));
+    std::map<size_t, size_t>::const_iterator returnit = commandData.vectorParams.find(commandData.returnParam);
+    assert(returnit != commandData.vectorParams.end() && (returnit->second != ~0));
     assert((commandData.returnType == "Result") || (commandData.returnType == "void"));
 
     os << indentation << "  " << commandData.params[returnit->second].pureType << " " << reduceName(commandData.params[returnit->second].name) << ";" << std::endl;
@@ -2295,9 +2329,9 @@ void writeFunctionBody(std::ostream & os, std::string const& indentation, std::s
     if (commandData.twoStep && (1 < commandData.successCodes.size()))
     {
       os << ";" << std::endl
-          << indentation << "  do" << std::endl
-          << indentation << "  {" << std::endl
-          << indentation << "    result";
+        << indentation << "  do" << std::endl
+        << indentation << "  {" << std::endl
+        << indentation << "    result";
       localIndentation += "  ";
     }
     os << " = static_cast<Result>( ";
@@ -2308,7 +2342,7 @@ void writeFunctionBody(std::ostream & os, std::string const& indentation, std::s
     os << "return ";
   }
   assert(dependencyData.name == commandData.fullName);
-  writeCall(os, commandData, templateIndex, vkTypes, vectorParams, returnIndex, true, singular);
+  writeCall(os, commandData, vkData.vkTypes, true, singular);
   if (commandData.returnType == "Result")
   {
     os << " )";
@@ -2317,13 +2351,13 @@ void writeFunctionBody(std::ostream & os, std::string const& indentation, std::s
 
   if (commandData.twoStep)
   {
-    std::map<size_t, size_t>::const_iterator returnit = vectorParams.find(returnIndex);
+    std::map<size_t, size_t>::const_iterator returnit = commandData.vectorParams.find(commandData.returnParam);
 
     if (commandData.returnType == "Result")
     {
       os << indentation << localIndentation << "if ( ( result == Result::eSuccess ) && " << reduceName(commandData.params[returnit->second].name) << " )" << std::endl
-          << indentation << localIndentation << "{" << std::endl
-          << indentation << localIndentation << "  ";
+        << indentation << localIndentation << "{" << std::endl
+        << indentation << localIndentation << "  ";
     }
     else
     {
@@ -2344,7 +2378,7 @@ void writeFunctionBody(std::ostream & os, std::string const& indentation, std::s
     }
     assert(!singular);
     assert(dependencyData.name == commandData.fullName);
-    writeCall(os, commandData, templateIndex, vkTypes, vectorParams, returnIndex, false, singular);
+    writeCall(os, commandData, vkData.vkTypes, false, singular);
     if (commandData.returnType == "Result")
     {
       os << " )";
@@ -2356,20 +2390,20 @@ void writeFunctionBody(std::ostream & os, std::string const& indentation, std::s
       if (1 < commandData.successCodes.size())
       {
         os << indentation << "  } while ( result == Result::eIncomplete );" << std::endl
-            << indentation << "  assert( " << reduceName(commandData.params[returnit->second].name) << " <= " << reduceName(commandData.params[returnit->first].name) << ".size() ); " << std::endl
-            << indentation << "  " << reduceName(commandData.params[returnit->first].name) << ".resize( " << reduceName(commandData.params[returnit->second].name) << " ); " << std::endl;
+          << indentation << "  assert( " << reduceName(commandData.params[returnit->second].name) << " <= " << reduceName(commandData.params[returnit->first].name) << ".size() ); " << std::endl
+          << indentation << "  " << reduceName(commandData.params[returnit->first].name) << ".resize( " << reduceName(commandData.params[returnit->second].name) << " ); " << std::endl;
       }
     }
   }
-  
+
   if ((commandData.returnType == "Result") || !commandData.successCodes.empty())
   {
     os << indentation << "  return createResultValue( result, ";
-    if (returnIndex != ~0)
+    if (commandData.returnParam != ~0)
     {
-      os << reduceName(commandData.params[returnIndex].name, singular) << ", ";
+      os << reduceName(commandData.params[commandData.returnParam].name, singular) << ", ";
     }
-    os << "\"vk::" << (className.empty() ? "" : className + "::") << reduceName(functionName, singular) << "\"";
+    os << "\"vk::" << (commandData.className.empty() ? "" : commandData.className + "::") << reduceName(commandData.reducedName, singular) << "\"";
     if (1 < commandData.successCodes.size() && !commandData.twoStep)
     {
       os << ", { Result::" << commandData.successCodes[0];
@@ -2381,28 +2415,63 @@ void writeFunctionBody(std::ostream & os, std::string const& indentation, std::s
     }
     os << " );" << std::endl;
   }
-  else if ((returnIndex != ~0) && (commandData.returnType != returnType))
+  else if ((commandData.returnParam != ~0) && (commandData.returnType != commandData.enhancedReturnType))
   {
-    os << indentation << "  return " << reduceName(commandData.params[returnIndex].name) << ";" << std::endl;
+    os << indentation << "  return " << reduceName(commandData.params[commandData.returnParam].name) << ";" << std::endl;
   }
-
-  os << indentation << "}" << std::endl;
 }
 
-void writeFunctionBodyUnique(std::ostream & os, std::string const& indentation, CommandData const& commandData, std::string const& className,
-                             std::set<size_t> const& skippedParams, size_t returnIndex, std::map<size_t, size_t> const& vectorParams,
-                             std::map<std::string, DeleterData> const& deleterData, bool singular)
+void writeFunctionBodyStandard(std::ostream & os, std::string const& indentation, VkData const& vkData, CommandData const& commandData, DependencyData const& dependencyData)
 {
-  std::string type = commandData.params[returnIndex].pureType;
-  std::string typeValue = char(tolower(type[0])) + type.substr(1);
-  os << indentation << "{" << std::endl
-    << indentation << "  " << type << "Deleter deleter( ";
-  if (deleterData.find(className) != deleterData.end())
+  os << indentation << "  ";
+  bool castReturn = false;
+  if (commandData.returnType != "void")
   {
-    os << "this, ";
+    os << "return ";
+    castReturn = (vkData.vkTypes.find(commandData.returnType) != vkData.vkTypes.end());
+    if (castReturn)
+    {
+      os << "static_cast<" << commandData.returnType << ">( ";
+    }
   }
-  std::map<std::string, DeleterData>::const_iterator ddit = deleterData.find(type);
-  assert(ddit != deleterData.end());
+
+  std::string callName(dependencyData.name);
+  assert(islower(callName[0]));
+  callName[0] = toupper(callName[0]);
+
+  os << "vk" << callName << "( ";
+  if (!commandData.className.empty())
+  {
+    os << "m_" << commandData.params[0].name;
+  }
+  bool argEncountered = false;
+  for (size_t i = commandData.className.empty() ? 0 : 1; i < commandData.params.size(); i++)
+  {
+    if (0 < i)
+    {
+      os << ", ";
+    }
+    writeTypeCommandParam(os, commandData.params[i], vkData.vkTypes);
+  }
+  os << " )";
+  if (castReturn)
+  {
+    os << " )";
+  }
+  os << ";" << std::endl;
+}
+
+void writeFunctionBodyUnique(std::ostream & os, std::string const& indentation, VkData const& vkData, CommandData const& commandData, DependencyData const& dependencyData, bool singular)
+{
+  std::string type = commandData.params[commandData.returnParam].pureType;
+  std::string typeValue = char(tolower(type[0])) + type.substr(1);
+  os << indentation << "  " << type << "Deleter deleter( ";
+  if (vkData.deleterData.find(commandData.className) != vkData.deleterData.end())
+  {
+    os << "*this, ";
+  }
+  std::map<std::string, DeleterData>::const_iterator ddit = vkData.deleterData.find(type);
+  assert(ddit != vkData.deleterData.end());
   if (ddit->second.pool.empty())
   {
     os << "allocator";
@@ -2412,7 +2481,7 @@ void writeFunctionBodyUnique(std::ostream & os, std::string const& indentation, 
     os << reduceName(commandData.params[1].name) << "." << char(tolower(ddit->second.pool[0])) << ddit->second.pool.substr(1);
   }
   os << " );" << std::endl;
-  bool returnsVector = !singular && (vectorParams.find(returnIndex) != vectorParams.end());
+  bool returnsVector = !singular && (commandData.vectorParams.find(commandData.returnParam) != commandData.vectorParams.end());
   if (returnsVector)
   {
     os << indentation << "  std::vector<" << type << ",Allocator> " << typeValue << "s = ";
@@ -2423,9 +2492,9 @@ void writeFunctionBodyUnique(std::ostream & os, std::string const& indentation, 
   }
   os << reduceName(commandData.fullName, singular) << "( ";
   bool argEncountered = false;
-  for (size_t i = commandData.handle.empty() ? 0 : 1; i < commandData.params.size(); i++)
+  for (size_t i = commandData.className.empty() ? 0 : 1; i < commandData.params.size(); i++)
   {
-    if (skippedParams.find(i) == skippedParams.end())
+    if (commandData.skippedParams.find(i) == commandData.skippedParams.end())
     {
       if (argEncountered)
       {
@@ -2433,7 +2502,7 @@ void writeFunctionBodyUnique(std::ostream & os, std::string const& indentation, 
       }
       argEncountered = true;
 
-      os << reduceName(commandData.params[i].name, singular && (vectorParams.find(i) != vectorParams.end()));
+      os << reduceName(commandData.params[i].name, singular && (commandData.vectorParams.find(i) != commandData.vectorParams.end()));
     }
   }
   os << " )";
@@ -2452,181 +2521,264 @@ void writeFunctionBodyUnique(std::ostream & os, std::string const& indentation, 
   {
     os << ", deleter );" << std::endl;
   }
-  os << indentation << "}" << std::endl;
 }
 
-void writeFunctionHeader(std::ostream & os, std::set<size_t> const& skippedParams, VkData const& vkData, std::string const& indentation, std::string const& returnType,
-                         std::string const& name, CommandData const& commandData, size_t returnIndex, size_t templateIndex, std::map<size_t, size_t> const& vectorParams,
-                         bool singular, bool unique)
+void writeFunctionDeclaration(std::ofstream & ofs, std::string const& indentation, VkData const& vkData, CommandData const& commandData, bool enhanced, bool singular, bool unique)
 {
-  bool returnsVector = !singular && (vectorParams.find(returnIndex) != vectorParams.end());
-  os << indentation;
-  if ( !singular && (templateIndex != ~0) && ((templateIndex != returnIndex) || (returnType == "Result")))
+  if (enhanced)
   {
-    assert(returnType.find("Allocator") == std::string::npos);
-    os << "template <typename T>" << std::endl
-        << indentation;
+    writeFunctionHeaderTemplate(ofs, indentation, commandData, singular, true);
   }
-  else if (!singular && (returnType.find("Allocator") != std::string::npos))
+  ofs << indentation;
+  writeFunctionHeaderReturnType(ofs, indentation, commandData, enhanced, singular, unique);
+  writeFunctionHeaderName(ofs, commandData.reducedName, singular, unique);
+  writeFunctionHeaderArguments(ofs, vkData, commandData, enhanced, singular, true);
+  ofs << ";" << std::endl;
+}
+
+void writeFunctionDefinition(std::ofstream & ofs, std::string const& indentation, VkData const& vkData, CommandData const& commandData, DependencyData const& dependencyData, bool enhanced, bool singular, bool unique)
+{
+  if (enhanced)
   {
-    assert((returnType.substr(0, 12) == "std::vector<") && (returnType.find(',') != std::string::npos) && (12 < returnType.find(',')));
-    os << "template <typename Allocator = std::allocator<" << returnType.substr(12, returnType.find(',') - 12) << ">>" << std::endl
-        << indentation;
-    if (!unique && (returnType != commandData.returnType) && (commandData.returnType != "void"))
-    {
-      os << "typename ";
-    }
+    writeFunctionHeaderTemplate(ofs, indentation, commandData, singular, false);
   }
-  else if (commandData.handle.empty())
+  ofs << indentation << "VULKAN_HPP_INLINE ";
+  writeFunctionHeaderReturnType(ofs, indentation, commandData, enhanced, singular, unique);
+  if (!commandData.className.empty())
   {
-    os << "VULKAN_HPP_INLINE ";
+    ofs << commandData.className << "::";
   }
-  if (unique)
-  {
-    if (returnsVector)
-    {
-      os << "std::vector<";
-    }
-    os << "Unique" << commandData.params[returnIndex].pureType;
-    if (returnsVector)
-    {
-      os << ">";
-    }
-    os << " ";
-  }
-  else if ((returnType != commandData.returnType) && (commandData.returnType != "void"))
-  {
-    assert(commandData.returnType == "Result");
-    os << "ResultValueType<" << (singular ? commandData.params[returnIndex].pureType : returnType) << ">::type ";
-  }
-  else if ((returnIndex != ~0) && (1 < commandData.successCodes.size()))
-  {
-    assert(commandData.returnType == "Result");
-    os << "ResultValue<" << commandData.params[returnIndex].pureType << "> ";
-  }
-  else
-  {
-    os << returnType << " ";
-  }
-  os << reduceName(name, singular);
-  if (unique)
-  {
-    os << "Unique";
-  }
+  writeFunctionHeaderName(ofs, commandData.reducedName, singular, unique);
+  writeFunctionHeaderArguments(ofs, vkData, commandData, enhanced, singular, false);
+  ofs << std::endl;
+  writeFunctionBody(ofs, indentation, vkData, commandData, dependencyData, enhanced, singular, unique);
+}
+
+void writeFunctionHeaderArguments(std::ostream & os, VkData const& vkData, CommandData const& commandData, bool enhanced, bool singular, bool withDefaults)
+{
   os << "(";
-  if (skippedParams.size() + (commandData.handle.empty() ? 0 : 1) < commandData.params.size())
+  if (enhanced)
   {
-    size_t lastArgument = ~0;
-    for (size_t i = commandData.params.size() - 1; i < commandData.params.size(); i--)
+    if (commandData.skippedParams.size() + (commandData.className.empty() ? 0 : 1) < commandData.params.size())
     {
-      if (skippedParams.find(i) == skippedParams.end())
+      size_t lastArgument = ~0;
+      for (size_t i = commandData.params.size() - 1; i < commandData.params.size(); i--)
       {
-        lastArgument = i;
-        break;
-      }
-    }
-
-    os << " ";
-    bool argEncountered = false;
-    for (size_t i = commandData.handle.empty() ? 0 : 1; i < commandData.params.size(); i++)
-    {
-      if (skippedParams.find(i) == skippedParams.end())
-      {
-        if (argEncountered)
+        if (commandData.skippedParams.find(i) == commandData.skippedParams.end())
         {
-          os << ", ";
+          lastArgument = i;
+          break;
         }
+      }
 
-        std::map<size_t, size_t>::const_iterator it = vectorParams.find(i);
-        size_t pos = commandData.params[i].type.rfind('*');
-        if (it == vectorParams.end())
+      os << " ";
+      bool argEncountered = false;
+      for (size_t i = commandData.className.empty() ? 0 : 1; i < commandData.params.size(); i++)
+      {
+        if (commandData.skippedParams.find(i) == commandData.skippedParams.end())
         {
-          if (pos == std::string::npos)
+          if (argEncountered)
           {
-            os << commandData.params[i].type << " " << reduceName(commandData.params[i].name);
-            if (!commandData.params[i].arraySize.empty())
+            os << ", ";
+          }
+
+          std::map<size_t, size_t>::const_iterator it = commandData.vectorParams.find(i);
+          size_t pos = commandData.params[i].type.rfind('*');
+          if (it == commandData.vectorParams.end())
+          {
+            if (pos == std::string::npos)
             {
-              os << "[" << commandData.params[i].arraySize << "]";
-            }
-            if (lastArgument == i)
-            {
-              std::map<std::string, FlagData>::const_iterator flagIt = vkData.flags.find(commandData.params[i].pureType);
-              if (flagIt != vkData.flags.end())
+              os << commandData.params[i].type << " " << reduceName(commandData.params[i].name);
+              if (!commandData.params[i].arraySize.empty())
               {
-                std::list<DependencyData>::const_iterator depIt = std::find_if(vkData.dependencies.begin(), vkData.dependencies.end(), [&flagIt](DependencyData const& dd) { return(dd.name == flagIt->first); });
-                assert(depIt != vkData.dependencies.end());
-                assert(depIt->dependencies.size() == 1);
-                std::map<std::string, EnumData>::const_iterator enumIt = vkData.enums.find(*depIt->dependencies.begin());
-                assert(enumIt != vkData.enums.end());
-                if (enumIt->second.members.empty())
+                os << "[" << commandData.params[i].arraySize << "]";
+              }
+              if (lastArgument == i)
+              {
+                std::map<std::string, FlagData>::const_iterator flagIt = vkData.flags.find(commandData.params[i].pureType);
+                if (flagIt != vkData.flags.end())
                 {
-                  os << " = " << commandData.params[i].pureType << "()";
+                  std::list<DependencyData>::const_iterator depIt = std::find_if(vkData.dependencies.begin(), vkData.dependencies.end(), [&flagIt](DependencyData const& dd) { return(dd.name == flagIt->first); });
+                  assert(depIt != vkData.dependencies.end());
+                  assert(depIt->dependencies.size() == 1);
+                  if (withDefaults)
+                  {
+                    std::map<std::string, EnumData>::const_iterator enumIt = vkData.enums.find(*depIt->dependencies.begin());
+                    assert(enumIt != vkData.enums.end());
+                    if (enumIt->second.members.empty())
+                    {
+                      os << " = " << commandData.params[i].pureType << "()";
+                    }
+                  }
                 }
+              }
+            }
+            else
+            {
+              assert(commandData.params[i].type[pos] == '*');
+              if (commandData.params[i].optional)
+              {
+                os << "Optional<" << trimEnd(commandData.params[i].type.substr(0, pos)) << "> " << reduceName(commandData.params[i].name);
+                if (withDefaults)
+                {
+                  os << " = nullptr";
+                }
+              }
+              else if (commandData.params[i].pureType == "void")
+              {
+                os << commandData.params[i].type << " " << commandData.params[i].name;
+              }
+              else if (commandData.params[i].pureType != "char")
+              {
+                os << trimEnd(commandData.params[i].type.substr(0, pos)) << " & " << reduceName(commandData.params[i].name);
+              }
+              else
+              {
+                os << "const std::string & " << reduceName(commandData.params[i].name);
               }
             }
           }
           else
           {
+            bool optional = commandData.params[i].optional && ((it == commandData.vectorParams.end()) || (it->second == ~0));
+            assert(pos != std::string::npos);
             assert(commandData.params[i].type[pos] == '*');
-            if (commandData.params[i].optional)
+            if (commandData.params[i].type.find("char") != std::string::npos)
             {
-              os << "Optional<" << trimEnd(commandData.params[i].type.substr(0, pos)) << "> " << reduceName(commandData.params[i].name) << " = nullptr";
-            }
-            else if (commandData.params[i].pureType == "void")
-            {
-              os << commandData.params[i].type << " " << commandData.params[i].name;
-            }
-            else if (commandData.params[i].pureType != "char")
-            {
-              os << trimEnd(commandData.params[i].type.substr(0, pos)) << " & " << reduceName(commandData.params[i].name);
+              if (optional)
+              {
+                os << "Optional<const std::string> " << reduceName(commandData.params[i].name);
+                if (withDefaults)
+                {
+                  os << " = nullptr";
+                }
+              }
+              else
+              {
+                os << "const std::string & " << reduceName(commandData.params[i].name);
+              }
             }
             else
             {
-              os << "const std::string & " << reduceName(commandData.params[i].name);
+              assert(!optional);
+              if (singular)
+              {
+                os << trimEnd(commandData.params[i].type.substr(0, pos)) << " & " << reduceName(commandData.params[i].name, true);
+              }
+              else
+              {
+                bool isConst = (commandData.params[i].type.find("const") != std::string::npos);
+                os << "ArrayProxy<" << ((commandData.templateParam == i) ? (isConst ? "const T" : "T") : trimEnd(commandData.params[i].type.substr(0, pos))) << "> " << reduceName(commandData.params[i].name);
+              }
             }
           }
+          argEncountered = true;
         }
-        else
-        {
-          bool optional = commandData.params[i].optional && ((it == vectorParams.end()) || (it->second == ~0));
-          assert(pos != std::string::npos);
-          assert(commandData.params[i].type[pos] == '*');
-          if (commandData.params[i].type.find("char") != std::string::npos)
-          {
-            if (optional)
-            {
-              os << "Optional<const std::string> " << reduceName(commandData.params[i].name) << " = nullptr";
-            }
-            else
-            {
-              os << "const std::string & " << reduceName(commandData.params[i].name);
-            }
-          }
-          else
-          {
-            assert(!optional);
-            if (singular)
-            {
-              os << trimEnd(commandData.params[i].type.substr(0, pos)) << " & " << reduceName(commandData.params[i].name, true);
-            }
-            else
-            {
-              bool isConst = (commandData.params[i].type.find("const") != std::string::npos);
-              os << "ArrayProxy<" << ((templateIndex == i) ? (isConst ? "const T" : "T") : trimEnd(commandData.params[i].type.substr(0, pos))) << "> " << reduceName(commandData.params[i].name);
-            }
-          }
-        }
-        argEncountered = true;
       }
+      os << " ";
     }
-    os << " ";
+  }
+  else
+  {
+    bool argEncountered = false;
+    for (size_t i = commandData.className.empty() ? 0 : 1; i < commandData.params.size(); i++)
+    {
+      if (argEncountered)
+      {
+        os << ",";
+      }
+
+      os << " " << commandData.params[i].type << " " << commandData.params[i].name;
+      if (!commandData.params[i].arraySize.empty())
+      {
+        os << "[" << commandData.params[i].arraySize << "]";
+      }
+      argEncountered = true;
+    }
+    if (argEncountered)
+    {
+      os << " ";
+    }
   }
   os << ")";
-  if (!commandData.handle.empty())
+  if (!commandData.className.empty())
   {
     os << " const";
   }
-  os << std::endl;
+}
+
+void writeFunctionHeaderName(std::ostream & os, std::string const& name, bool singular, bool unique)
+{
+  os << reduceName(name, singular);
+  if (unique)
+  {
+    os << "Unique";
+  }
+}
+
+void writeFunctionHeaderReturnType(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool enhanced, bool singular, bool unique)
+{
+  if (enhanced && !singular && (commandData.enhancedReturnType.find("Allocator") != std::string::npos))
+  {
+    if (!unique && (commandData.enhancedReturnType != commandData.returnType) && (commandData.returnType != "void"))
+    {
+      os << "typename ";
+    }
+  }
+  if (enhanced)
+  {
+    if (unique)
+    {
+      bool returnsVector = !singular && (commandData.vectorParams.find(commandData.returnParam) != commandData.vectorParams.end());
+      if (returnsVector)
+      {
+        os << "std::vector<";
+      }
+      os << "Unique" << commandData.params[commandData.returnParam].pureType;
+      if (returnsVector)
+      {
+        os << ">";
+      }
+      os << " ";
+    }
+    else if ((commandData.enhancedReturnType != commandData.returnType) && (commandData.returnType != "void"))
+    {
+      assert(commandData.returnType == "Result");
+      os << "ResultValueType<" << (singular ? commandData.params[commandData.returnParam].pureType : commandData.enhancedReturnType) << ">::type ";
+    }
+    else if ((commandData.returnParam != ~0) && (1 < commandData.successCodes.size()))
+    {
+      assert(commandData.returnType == "Result");
+      os << "ResultValue<" << commandData.params[commandData.returnParam].pureType << "> ";
+    }
+    else
+    {
+      os << commandData.enhancedReturnType << " ";
+    }
+  }
+  else
+  {
+    os << commandData.returnType << " ";
+  }
+}
+
+void writeFunctionHeaderTemplate(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool singular, bool withDefault)
+{
+  if (!singular && (commandData.templateParam != ~0) && ((commandData.templateParam != commandData.returnParam) || (commandData.enhancedReturnType == "Result")))
+  {
+    assert(commandData.enhancedReturnType.find("Allocator") == std::string::npos);
+    os << indentation << "template <typename T>" << std::endl;
+  }
+  else if (!singular && (commandData.enhancedReturnType.find("Allocator") != std::string::npos))
+  {
+    assert((commandData.enhancedReturnType.substr(0, 12) == "std::vector<") && (commandData.enhancedReturnType.find(',') != std::string::npos) && (12 < commandData.enhancedReturnType.find(',')));
+    os << indentation << "template <typename Allocator";
+    if (withDefault)
+    {
+      os << " = std::allocator<" << commandData.enhancedReturnType.substr(12, commandData.enhancedReturnType.find(',') - 12) << ">";
+    }
+    os << "> " << std::endl;
+  }
 }
 
 void writeStructConstructor( std::ofstream & ofs, std::string const& name, StructData const& structData, std::set<std::string> const& vkTypes, std::map<std::string,std::string> const& defaultValues )
@@ -2750,62 +2902,135 @@ void writeTypeCommand(std::ofstream & ofs, VkData const& vkData, DependencyData 
 {
   assert(vkData.commands.find(dependencyData.name) != vkData.commands.end());
   CommandData const& commandData = vkData.commands.find(dependencyData.name)->second;
-  if (commandData.handle.empty())
+  if (commandData.className.empty())
   {
-    writeTypeCommandStandard(ofs, "  ", dependencyData.name, dependencyData, commandData, vkData.vkTypes);
-
-    ofs << std::endl
-        << "#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE" << std::endl;
-    writeTypeCommandEnhanced(ofs, vkData, "  ", "", dependencyData.name, dependencyData, commandData);
-    ofs << "#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/" << std::endl
-        << std::endl;
+    if (commandData.fullName == "createInstance")
+    {
+      auto deleterTypesIt = vkData.deleterTypes.find("");
+      assert((deleterTypesIt != vkData.deleterTypes.end()) && (deleterTypesIt->second.size() == 1));
+      writeDeleterForwardDeclarations(ofs, *deleterTypesIt, vkData.deleterData);
+    }
+    writeTypeCommandDeclaration(ofs, "  ", vkData, commandData);
+    if (commandData.fullName == "createInstance")
+    {
+      auto deleterTypesIt = vkData.deleterTypes.find("");
+      assert((deleterTypesIt != vkData.deleterTypes.end()) && (deleterTypesIt->second.size() == 1));
+      writeDeleterClasses(ofs, *deleterTypesIt, vkData.deleterData);
+    }
+    writeTypeCommandDefinition(ofs, "  ", vkData, commandData, dependencyData);
+    ofs << std::endl;
   }
 }
 
-void writeTypeCommandEnhanced(std::ostream & os, VkData const& vkData, std::string const& indentation, std::string const& className, std::string const& functionName,
-                              DependencyData const& dependencyData, CommandData const& commandData)
+void writeTypeCommandDeclaration(std::ofstream & ofs, std::string const& indentation, VkData const& vkData, CommandData const& commandData)
 {
-  enterProtect(os, commandData.protect);
-  std::map<size_t, size_t> vectorParams = getVectorParams(commandData.params);
-  size_t returnIndex = findReturnIndex(commandData, vectorParams);
-  size_t templateIndex = findTemplateIndex(commandData.params, vectorParams);
-  assert((templateIndex == ~0) || (vectorParams.find(templateIndex) != vectorParams.end()));
-  std::map<size_t, size_t>::const_iterator returnVector = vectorParams.find(returnIndex);
-  std::string returnType = determineReturnType(commandData, returnIndex, returnVector != vectorParams.end());
-  std::set<size_t> skippedParams = determineSkippedParams(returnIndex, vectorParams);
+  enterProtect(ofs, commandData.protect);
+  bool unchangedInterface = !hasPointerParam(commandData.params);
+  if ((commandData.enhancedReturnType == commandData.returnType) && commandData.vectorParams.empty() && unchangedInterface && (commandData.successCodes.size() <= 1))
+  {
+    writeTypeCommandDeclarationStandard(ofs, "    ", vkData, commandData);
+  }
+  else
+  {
+    if (unchangedInterface)
+    {
+      ofs << "#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE" << std::endl;
+    }
+    writeTypeCommandDeclarationStandard(ofs, "    ", vkData, commandData);
+    ofs << (unchangedInterface ? "#else" : "#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE") << std::endl;
+    writeTypeCommandDeclarationEnhanced(ofs, "    ", vkData, commandData);
+    ofs << "#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/" << std::endl;
+  }
+  leaveProtect(ofs, commandData.protect);
+  ofs << std::endl;
+}
 
-  writeFunctionHeader(os, skippedParams, vkData, indentation, returnType, functionName, commandData, returnIndex, templateIndex, vectorParams, false, false);
-  writeFunctionBody(os, indentation, className, functionName, returnType, templateIndex, dependencyData, commandData, vkData.vkTypes, returnIndex, vectorParams, false);
+void writeTypeCommandDeclarationEnhanced(std::ofstream & ofs, std::string const& indentation, VkData const& vkData, CommandData const& commandData)
+{
+  writeFunctionDeclaration(ofs, indentation, vkData, commandData, true, false, false);
 
   // determine candidates for singular version of function
-  bool singular = (returnVector != vectorParams.end()) && (returnVector->second != ~0) && (commandData.params[returnVector->second].type.back() != '*');
+  std::map<size_t, size_t>::const_iterator returnVector = commandData.vectorParams.find(commandData.returnParam);
+  bool singular = (returnVector != commandData.vectorParams.end()) && (returnVector->second != ~0) && (commandData.params[returnVector->second].type.back() != '*');
   if (singular)
   {
-    os << std::endl;
-    writeFunctionHeader(os, skippedParams, vkData, indentation, returnType, functionName, commandData, returnIndex, templateIndex, vectorParams, true, false);
-    writeFunctionBody(os, indentation, className, functionName, returnType, templateIndex, dependencyData, commandData, vkData.vkTypes, returnIndex, vectorParams, true);
+    writeFunctionDeclaration(ofs, indentation, vkData, commandData, true, true, false);
   }
 
-  // special handling for createDevice !
-  bool specialWriteUnique = (functionName == "createDevice");
+  // special handling for createDevice and createInstance !
+  bool specialWriteUnique = (commandData.reducedName == "createDevice") || (commandData.reducedName == "createInstance");
 
-  if (((vkData.deleterTypes.find(className) != vkData.deleterTypes.end()) || specialWriteUnique) && ((functionName.substr(0, 8) == "allocate") || (functionName.substr(0, 6) == "create")))
+  if (((vkData.deleterData.find(commandData.className) != vkData.deleterData.end()) || specialWriteUnique) && ((commandData.reducedName.substr(0, 8) == "allocate") || (commandData.reducedName.substr(0, 6) == "create")))
   {
-    os << std::endl
-      << "#ifndef VULKAN_HPP_NO_SMART_HANDLE" << std::endl;
-    writeFunctionHeader(os, skippedParams, vkData, indentation, returnType, functionName, commandData, returnIndex, templateIndex, vectorParams, false, true);
-    writeFunctionBodyUnique(os, indentation, commandData, className, skippedParams, returnIndex, vectorParams, vkData.deleterData, false);
+    ofs << "#ifndef VULKAN_HPP_NO_SMART_HANDLE" << std::endl;
+    writeFunctionDeclaration(ofs, indentation, vkData, commandData, true, false, true);
 
     if (singular)
     {
-      os << std::endl;
-      writeFunctionHeader(os, skippedParams, vkData, indentation, returnType, functionName, commandData, returnIndex, templateIndex, vectorParams, true, true);
-      writeFunctionBodyUnique(os, indentation, commandData, className, skippedParams, returnIndex, vectorParams, vkData.deleterData, true);
+      writeFunctionDeclaration(ofs, indentation, vkData, commandData, true, true, true);
     }
-    os << "#endif /*VULKAN_HPP_NO_SMART_HANDLE*/" << std::endl;
+    ofs << "#endif /*VULKAN_HPP_NO_SMART_HANDLE*/" << std::endl;
+  }
+}
+
+void writeTypeCommandDeclarationStandard(std::ofstream & ofs, std::string const& indentation, VkData const& vkData, CommandData const& commandData)
+{
+  writeFunctionDeclaration(ofs, indentation, vkData, commandData, false, false, false);
+}
+
+void writeTypeCommandDefinition(std::ofstream &ofs, std::string const& indentation, VkData const& vkData, CommandData const& commandData, DependencyData const& dependencyData)
+{
+  enterProtect(ofs, commandData.protect);
+  bool unchangedInterface = !hasPointerParam(commandData.params);
+  if ((commandData.enhancedReturnType == commandData.returnType) && commandData.vectorParams.empty() && unchangedInterface && (commandData.successCodes.size() <= 1))
+  {
+    writeTypeCommandDefinitionStandard(ofs, indentation, vkData, commandData, dependencyData);
+  }
+  else
+  {
+    if (unchangedInterface)
+    {
+      ofs << "#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE" << std::endl;
+    }
+    writeTypeCommandDefinitionStandard(ofs, indentation, vkData, commandData, dependencyData);
+    ofs << (unchangedInterface ? "#else" : "#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE") << std::endl;
+    writeTypeCommandDefinitionEnhanced(ofs, indentation, vkData, commandData, dependencyData);
+    ofs << "#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/" << std::endl;
+  }
+  leaveProtect(ofs, commandData.protect);
+}
+
+void writeTypeCommandDefinitionEnhanced(std::ofstream &ofs, std::string const& indentation, VkData const& vkData, CommandData const& commandData, DependencyData const& dependencyData)
+{
+  writeFunctionDefinition(ofs, indentation, vkData, commandData, dependencyData, true, false, false);
+
+  // determine candidates for singular version of function
+  std::map<size_t, size_t>::const_iterator returnVector = commandData.vectorParams.find(commandData.returnParam);
+  bool singular = (returnVector != commandData.vectorParams.end()) && (returnVector->second != ~0) && (commandData.params[returnVector->second].type.back() != '*');
+  if (singular)
+  {
+    writeFunctionDefinition(ofs, indentation, vkData, commandData, dependencyData, true, true, false);
   }
 
-  leaveProtect(os, commandData.protect);
+  // special handling for createDevice and createInstance !
+  bool specialWriteUnique = (commandData.reducedName == "createDevice") || (commandData.reducedName == "createInstance");
+
+  if (((vkData.deleterData.find(commandData.className) != vkData.deleterData.end()) || specialWriteUnique) && ((commandData.reducedName.substr(0, 8) == "allocate") || (commandData.reducedName.substr(0, 6) == "create")))
+  {
+    ofs << "#ifndef VULKAN_HPP_NO_SMART_HANDLE" << std::endl;
+    writeFunctionDefinition(ofs, indentation, vkData, commandData, dependencyData, true, false, true);
+
+    if (singular)
+    {
+      writeFunctionDefinition(ofs, indentation, vkData, commandData, dependencyData, true, true, true);
+    }
+    ofs << "#endif /*VULKAN_HPP_NO_SMART_HANDLE*/" << std::endl;
+  }
+}
+
+void writeTypeCommandDefinitionStandard(std::ofstream &ofs, std::string const& indentation, VkData const& vkData, CommandData const& commandData, DependencyData const& dependencyData)
+{
+  writeFunctionDefinition(ofs, indentation, vkData, commandData, dependencyData, false, false, false);
 }
 
 void writeTypeCommandParam(std::ostream & os, ParamData const& param, std::set<std::string> const& vkTypes)
@@ -2838,76 +3063,6 @@ void writeTypeCommandParam(std::ostream & os, ParamData const& param, std::set<s
   }
 }
 
-void writeTypeCommandStandard(std::ostream & os, std::string const& indentation, std::string const& functionName, DependencyData const& dependencyData, CommandData const& commandData, std::set<std::string> const& vkTypes)
-{
-  enterProtect(os, commandData.protect);
-  os << indentation;
-  if (commandData.handle.empty())
-  {
-    os << "VULKAN_HPP_INLINE ";
-  }
-  os << commandData.returnType << " " << functionName << "( ";
-  bool argEncountered = false;
-  for (size_t i = commandData.handle.empty() ? 0 : 1; i < commandData.params.size(); i++)
-  {
-    if (argEncountered)
-    {
-      os << ", ";
-    }
-    os << commandData.params[i].type << " " << commandData.params[i].name;
-    if (!commandData.params[i].arraySize.empty())
-    {
-      os << "[" << commandData.params[i].arraySize << "]";
-    }
-    argEncountered = true;
-  }
-  os << " )";
-  if (!commandData.handle.empty())
-  {
-    os << " const";
-  }
-  os << std::endl
-      << indentation << "{" << std::endl
-      << indentation << "  ";
-  bool castReturn = false;
-  if (commandData.returnType != "void")
-  {
-    os << "return ";
-    castReturn = (vkTypes.find(commandData.returnType) != vkTypes.end());
-    if (castReturn)
-    {
-      os << "static_cast<" << commandData.returnType << ">( ";
-    }
-  }
-
-  std::string callName(dependencyData.name);
-  assert(islower(callName[0]));
-  callName[0] = toupper(callName[0]);
-
-  os << "vk" << callName << "( ";
-  if (!commandData.handle.empty())
-  {
-    os << "m_" << commandData.params[0].name;
-  }
-  argEncountered = false;
-  for (size_t i = commandData.handle.empty() ? 0 : 1; i < commandData.params.size(); i++)
-  {
-    if (0 < i)
-    {
-      os << ", ";
-    }
-    writeTypeCommandParam(os, commandData.params[i], vkTypes);
-  }
-  os << " )";
-  if (castReturn)
-  {
-    os << " )";
-  }
-  os << ";" << std::endl
-      << indentation << "}" << std::endl;
-  leaveProtect(os, commandData.protect);
-}
-
 void writeTypeEnum( std::ofstream & ofs, EnumData const& enumData )
 {
   enterProtect(ofs, enumData.protect);
@@ -2927,13 +3082,15 @@ void writeTypeEnum( std::ofstream & ofs, EnumData const& enumData )
   ofs << std::endl;
 }
 
-void writeDeleterClasses(std::ofstream & ofs, std::pair<std::string,std::set<std::string>> const& deleterTypes, std::map<std::string, DeleterData> const& deleterData)
+void writeDeleterClasses(std::ofstream & ofs, std::pair<std::string, std::set<std::string>> const& deleterTypes, std::map<std::string, DeleterData> const& deleterData)
 {
   ofs << "#ifndef VULKAN_HPP_NO_SMART_HANDLE" << std::endl;
   bool first = true;
   std::string firstName = deleterTypes.first.empty() ? "" : (char(tolower(deleterTypes.first[0])) + deleterTypes.first.substr(1));
   for (auto const& dt : deleterTypes.second)
   {
+    std::string value = char(tolower(dt[0])) + dt.substr(1);
+
     if (!first)
     {
       ofs << std::endl;
@@ -2944,9 +3101,9 @@ void writeDeleterClasses(std::ofstream & ofs, std::pair<std::string,std::set<std
       << "  {" << std::endl
       << "  public:" << std::endl
       << "    " << dt << "Deleter( ";
-    if (!deleterTypes.first.empty())
+    if (!deleterTypes.first.empty() && (dt != "Device"))
     {
-      ofs << deleterTypes.first << " const* " << firstName << " = nullptr, ";
+      ofs << deleterTypes.first << " " << firstName << " = " << deleterTypes.first << "(), ";
     }
     auto const& dd = deleterData.find(dt);
     assert(dd != deleterData.end());
@@ -2962,7 +3119,7 @@ void writeDeleterClasses(std::ofstream & ofs, std::pair<std::string,std::set<std
       ofs << dd->second.pool << " " << poolName << " = " << dd->second.pool << "() )" << std::endl;
     }
     ofs << "      : ";
-    if (!deleterTypes.first.empty())
+    if (!deleterTypes.first.empty() && (dt != "Device"))
     {
       ofs << "m_" << firstName << "( " << firstName << " )" << std::endl
         << "      , ";
@@ -2977,12 +3134,44 @@ void writeDeleterClasses(std::ofstream & ofs, std::pair<std::string,std::set<std
     }
     ofs << "    {}" << std::endl
       << std::endl
-      << "    void operator()( " << dt << " " << char(tolower(dt[0])) + dt.substr(1) << " );" << std::endl
+      << "    void operator()( " << dt << " " << char(tolower(dt[0])) + dt.substr(1) << " )" << std::endl
+      << "    {" << std::endl;
+    if (dt == "Device")
+    {
+      ofs << "      device.";
+    }
+    else if (deleterTypes.first.empty())
+    {
+      ofs << "      " << value << ".";
+    }
+    else
+    {
+      ofs << "      m_" << char(tolower(deleterTypes.first[0])) << deleterTypes.first.substr(1) << ".";
+    }
+    ofs << dd->second.call << "( ";
+    if (!dd->second.pool.empty())
+    {
+      ofs << "m_" << char(tolower(dd->second.pool[0])) << dd->second.pool.substr(1) << ", ";
+    }
+    if (!deleterTypes.first.empty() && (dt != "Device"))
+    {
+      ofs << value;
+    }
+    if (dd->second.pool.empty())
+    {
+      if (!deleterTypes.first.empty() && (dt != "Device"))
+      {
+        ofs << ", ";
+      }
+      ofs << "m_allocator";
+    }
+    ofs << " );" << std::endl
+      << "    }" << std::endl
       << std::endl
       << "  private:" << std::endl;
-    if (!deleterTypes.first.empty())
+    if (!deleterTypes.first.empty() && (dt != "Device"))
     {
-      ofs << "    " << deleterTypes.first << " const* m_" << firstName << ";" << std::endl;
+      ofs << "    " << deleterTypes.first << " m_" << firstName << ";" << std::endl;
     }
     if (poolName.empty())
     {
@@ -2992,58 +3181,21 @@ void writeDeleterClasses(std::ofstream & ofs, std::pair<std::string,std::set<std
     {
       ofs << "    " << dd->second.pool << " m_" << poolName << ";" << std::endl;
     }
-    ofs << "  };" << std::endl
-      << "  using Unique" << dt << " = UniqueHandle<" << dt << ", " << dt << "Deleter>;" << std::endl;
-  } 
+    ofs << "  };" << std::endl;
+  }
   ofs << "#endif /*VULKAN_HPP_NO_SMART_HANDLE*/" << std::endl
     << std::endl;
 }
 
-void writeDeleterOperators(std::ofstream & ofs, std::pair<std::string, std::set<std::string>> const& deleterTypes, std::map<std::string,DeleterData> const& deleterData)
+void writeDeleterForwardDeclarations(std::ofstream &ofs, std::pair<std::string, std::set<std::string>> const& deleterTypes, std::map<std::string, DeleterData> const& deleterData)
 {
   ofs << "#ifndef VULKAN_HPP_NO_SMART_HANDLE" << std::endl;
   bool first = true;
-  for (auto dt : deleterTypes.second)
+  std::string firstName = deleterTypes.first.empty() ? "" : (char(tolower(deleterTypes.first[0])) + deleterTypes.first.substr(1));
+  for (auto const& dt : deleterTypes.second)
   {
-    if (!first)
-    {
-      ofs << std::endl;
-    }
-    first = false;
-
-    std::map<std::string, DeleterData>::const_iterator ddit = deleterData.find(dt);
-    assert(ddit != deleterData.end());
-
-    std::string value = char(tolower(dt[0])) + dt.substr(1);
-    ofs << "  VULKAN_HPP_INLINE void " << dt << "Deleter::operator()( " << dt << " " << value << " )" << std::endl
-      << "  {" << std::endl;
-    if (deleterTypes.first.empty())
-    {
-      ofs << "    " << value << ".";
-    }
-    else
-    {
-      ofs << "    m_" << char(tolower(deleterTypes.first[0])) << deleterTypes.first.substr(1) << "->";
-    }
-    ofs << ddit->second.call << "( ";
-    if (!ddit->second.pool.empty())
-    {
-      ofs << "m_" << char(tolower(ddit->second.pool[0])) << ddit->second.pool.substr(1) << ", ";
-    }
-    if (!deleterTypes.first.empty())
-    {
-      ofs << value;
-    }
-    if (ddit->second.pool.empty())
-    {
-      if (!deleterTypes.first.empty())
-      {
-        ofs << ", ";
-      }
-      ofs << "m_allocator";
-    }
-    ofs << " );" << std::endl
-      << "  }" << std::endl;
+    ofs << "  class " << dt << "Deleter;" << std::endl;
+    ofs << "  using Unique" << dt << " = UniqueHandle<" << dt << ", " << dt << "Deleter>;" << std::endl;
   }
   ofs << "#endif /*VULKAN_HPP_NO_SMART_HANDLE*/" << std::endl
     << std::endl;
@@ -3176,8 +3328,9 @@ void writeTypeHandle(std::ofstream & ofs, VkData const& vkData, DependencyData c
   std::map<std::string, std::set<std::string>>::const_iterator deleterTypesIt = vkData.deleterTypes.find(dependencyData.name);
   if (deleterTypesIt != vkData.deleterTypes.end())
   {
-    writeDeleterClasses(ofs, *deleterTypesIt, vkData.deleterData);
+    writeDeleterForwardDeclarations(ofs, *deleterTypesIt, vkData.deleterData);
   }
+
   ofs << "  class " << dependencyData.name << std::endl
       << "  {" << std::endl
       << "  public:" << std::endl
@@ -3218,50 +3371,15 @@ void writeTypeHandle(std::ofstream & ofs, VkData const& vkData, DependencyData c
       << "    }" << std::endl
       << std::endl;
 
-  if (!handleData.commands.empty())
+  for (size_t i = 0; i < handleData.commands.size(); i++)
   {
-    for (size_t i = 0; i < handleData.commands.size(); i++)
-    {
-      std::string commandName = handleData.commands[i];
-      std::map<std::string, CommandData>::const_iterator cit = vkData.commands.find(commandName);
-      assert((cit != vkData.commands.end()) && !cit->second.handle.empty());
-      std::list<DependencyData>::const_iterator dep = std::find_if(dependencies.begin(), dependencies.end(), [commandName](DependencyData const& dd) { return dd.name == commandName; });
-      assert(dep != dependencies.end() && (dep->name == cit->second.fullName));
-      std::string className = dependencyData.name;
+    std::string commandName = handleData.commands[i];
+    std::map<std::string, CommandData>::const_iterator cit = vkData.commands.find(commandName);
+    assert((cit != vkData.commands.end()) && !cit->second.className.empty());
 
-      std::ostringstream standard, enhanced;
-      writeTypeCommandStandard(standard, "    ", cit->second.reducedName, *dep, cit->second, vkData.vkTypes);
-      writeTypeCommandEnhanced(enhanced, vkData, "    ", className, cit->second.reducedName, *dep, cit->second);
-      if (standard.str().substr(standard.str().find('{')) == enhanced.str().substr(enhanced.str().find('{')))
-      {
-        ofs << standard.str() << std::endl;
-      }
-      else
-      {
-        bool unchangedInterface = !hasPointerParam(cit->second.params);
-        if (unchangedInterface)
-        {
-          ofs << "#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE" << std::endl;
-        }
-        ofs << standard.str();
-        if (unchangedInterface)
-        {
-          ofs << "#endif /*!VULKAN_HPP_DISABLE_ENHANCED_MODE*/" << std::endl;
-        }
-
-        ofs << std::endl
-          << "#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE" << std::endl
-          << enhanced.str()
-          << "#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/" << std::endl;
-      }
-
-      if (i < handleData.commands.size() - 1)
-      {
-        ofs << std::endl;
-      }
-    }
-    ofs << std::endl;
+    writeTypeCommandDeclaration(ofs, "    ", vkData, cit->second);
   }
+
   ofs << "#if !defined(VULKAN_HPP_TYPESAFE_CONVERSION)" << std::endl
       << "    explicit" << std::endl
       << "#endif" << std::endl
@@ -3287,10 +3405,29 @@ void writeTypeHandle(std::ofstream & ofs, VkData const& vkData, DependencyData c
       << "  static_assert( sizeof( " << dependencyData.name << " ) == sizeof( Vk" << dependencyData.name << " ), \"handle and wrapper have different size!\" );" << std::endl
 #endif
       << std::endl;
+
+  deleterTypesIt = vkData.deleterTypes.find(dependencyData.name);
   if (deleterTypesIt != vkData.deleterTypes.end())
   {
-    writeDeleterOperators(ofs, *deleterTypesIt, vkData.deleterData);
+    writeDeleterClasses(ofs, *deleterTypesIt, vkData.deleterData);
   }
+
+  for (size_t i = 0; i < handleData.commands.size(); i++)
+  {
+    std::string commandName = handleData.commands[i];
+    std::map<std::string, CommandData>::const_iterator cit = vkData.commands.find(commandName);
+    assert((cit != vkData.commands.end()) && !cit->second.className.empty());
+    std::list<DependencyData>::const_iterator dep = std::find_if(dependencies.begin(), dependencies.end(), [commandName](DependencyData const& dd) { return dd.name == commandName; });
+    assert(dep != dependencies.end() && (dep->name == cit->second.fullName));
+
+    writeTypeCommandDefinition(ofs, "  ", vkData, cit->second, *dep);
+
+    if (i < handleData.commands.size() - 1)
+    {
+      ofs << std::endl;
+    }
+  }
+
   leaveProtect(ofs, handleData.protect);
 }
 
@@ -3595,6 +3732,7 @@ int main( int argc, char **argv )
     assert(!registryElement->NextSiblingElement());
 
     VkData vkData;
+    vkData.handles[""];   // insert the default "handle" without class (for createInstance, and such)
 
     tinyxml2::XMLElement * child = registryElement->FirstChildElement();
     do
@@ -3695,9 +3833,7 @@ int main( int argc, char **argv )
       << createResultValueHeader;
 
     assert(vkData.deleterTypes.find("") != vkData.deleterTypes.end());
-    writeDeleterClasses(ofs, *vkData.deleterTypes.find(""), vkData.deleterData);
     writeTypes(ofs, vkData, defaultValues);
-    writeDeleterOperators(ofs, *vkData.deleterTypes.find(""), vkData.deleterData);
     writeEnumsToString(ofs, vkData);
 
     ofs << "} // namespace vk" << std::endl

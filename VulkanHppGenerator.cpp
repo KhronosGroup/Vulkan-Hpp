@@ -720,6 +720,7 @@ std::vector<std::string> readCommandSuccessCodes(tinyxml2::XMLElement* element, 
 void readComment(tinyxml2::XMLElement * element, std::string & header);
 void readEnums( tinyxml2::XMLElement * element, VkData & vkData );
 void readEnumsEnum( tinyxml2::XMLElement * element, EnumData & enumData, std::string const& tag );
+void readDisabledExtensionRequire(tinyxml2::XMLElement * element, VkData & vkData);
 void readExtensionRequire(tinyxml2::XMLElement * element, VkData & vkData, std::string const& protect, std::string const& tag);
 void readExtensions( tinyxml2::XMLElement * element, VkData & vkData );
 void readExtensionsExtension(tinyxml2::XMLElement * element, VkData & vkData);
@@ -1333,6 +1334,56 @@ void readEnumsEnum( tinyxml2::XMLElement * element, EnumData & enumData, std::st
   }
 }
 
+void readDisabledExtensionRequire(tinyxml2::XMLElement * element, VkData & vkData)
+{
+  tinyxml2::XMLElement * child = element->FirstChildElement();
+  do
+  {
+    std::string value = child->Value();
+
+    if ((value == "command") || (value == "type"))
+    {
+      assert(child->Attribute("name"));
+      std::string name = (value == "command") ? stripCommand(child->Attribute("name")) : strip(child->Attribute("name"), "Vk");
+      std::list<DependencyData>::const_iterator depIt = std::find_if(vkData.dependencies.begin(), vkData.dependencies.end(), [&name](DependencyData const& dd) { return(dd.name == name); });
+      assert(depIt != vkData.dependencies.end());
+      vkData.dependencies.erase(depIt);
+
+      for (auto & dep : vkData.dependencies)
+      {
+        dep.dependencies.erase(name);
+      }
+
+      if (value == "command")
+      {
+        // first unlink the command from its class
+        auto commandsIt = vkData.commands.find(name);
+        assert(commandsIt != vkData.commands.end());
+        assert(!commandsIt->second.className.empty());
+        auto handlesIt = vkData.handles.find(commandsIt->second.className);
+        assert(handlesIt != vkData.handles.end());
+        auto it = std::find(handlesIt->second.commands.begin(), handlesIt->second.commands.end(), name);
+        assert(it != handlesIt->second.commands.end());
+        handlesIt->second.commands.erase(it);
+
+        // then remove the command
+        vkData.commands.erase(name);
+      }
+      else
+      {
+        assert((vkData.structs.find(name) != vkData.structs.end()) && (vkData.vkTypes.find(name) != vkData.vkTypes.end()));
+        vkData.structs.erase(name);
+        vkData.vkTypes.erase(name);
+      }
+    }
+    else
+    {
+      // nothing to do for enums, no other values ever encountered
+      assert(value == "enum");
+    }
+  } while (child = child->NextSiblingElement());
+}
+
 void readExtensionRequire(tinyxml2::XMLElement * element, VkData & vkData, std::string const& protect, std::string const& tag)
 {
   tinyxml2::XMLElement * child = element->FirstChildElement();
@@ -1434,21 +1485,24 @@ void readExtensionsExtension(tinyxml2::XMLElement * element, VkData & vkData)
   std::string tag = extractTag(element->Attribute("name"));
   //assert(vkData.tags.find(tag) != vkData.tags.end());
 
-  // don't parse disabled extensions
+  tinyxml2::XMLElement * child = element->FirstChildElement();
+  assert(child && (strcmp(child->Value(), "require") == 0) && !child->NextSiblingElement());
+
   if (strcmp(element->Attribute("supported"), "disabled") == 0)
   {
-    return;
+    // kick out all the disabled stuff we've read before !!
+    readDisabledExtensionRequire(child, vkData);
   }
-
-  std::string protect;
-  if (element->Attribute("protect"))
+  else
   {
-    protect = element->Attribute( "protect" );
-  }
+    std::string protect;
+    if (element->Attribute("protect"))
+    {
+      protect = element->Attribute("protect");
+    }
 
-  tinyxml2::XMLElement * child = element->FirstChildElement();
-  assert( child && ( strcmp( child->Value(), "require" ) == 0 ) && !child->NextSiblingElement() );
-  readExtensionRequire( child, vkData, protect, tag );
+    readExtensionRequire(child, vkData, protect, tag);
+  }
 }
 
 void readTypeBasetype( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies )

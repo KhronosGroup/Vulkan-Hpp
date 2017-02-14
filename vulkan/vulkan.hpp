@@ -1092,6 +1092,10 @@ namespace vk
       : m_deviceMemory(VK_NULL_HANDLE)
     {}
 
+    DeviceMemory( nullptr_t )
+      : m_deviceMemory(VK_NULL_HANDLE)
+    {}
+
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     DeviceMemory(VkDeviceMemory deviceMemory)
        : m_deviceMemory(deviceMemory)
@@ -1103,6 +1107,12 @@ namespace vk
       return *this;
     }
 #endif
+
+    DeviceMemory& operator=( nullptr_t )
+    {
+      m_deviceMemory = VK_NULL_HANDLE;
+      return *this;
+    }
 
     bool operator==(DeviceMemory const &rhs) const
     {
@@ -1149,6 +1159,10 @@ namespace vk
       : m_commandPool(VK_NULL_HANDLE)
     {}
 
+    CommandPool( nullptr_t )
+      : m_commandPool(VK_NULL_HANDLE)
+    {}
+
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     CommandPool(VkCommandPool commandPool)
        : m_commandPool(commandPool)
@@ -1160,6 +1174,12 @@ namespace vk
       return *this;
     }
 #endif
+
+    CommandPool& operator=( nullptr_t )
+    {
+      m_commandPool = VK_NULL_HANDLE;
+      return *this;
+    }
 
     bool operator==(CommandPool const &rhs) const
     {
@@ -1206,6 +1226,10 @@ namespace vk
       : m_buffer(VK_NULL_HANDLE)
     {}
 
+    Buffer( nullptr_t )
+      : m_buffer(VK_NULL_HANDLE)
+    {}
+
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     Buffer(VkBuffer buffer)
        : m_buffer(buffer)
@@ -1217,6 +1241,12 @@ namespace vk
       return *this;
     }
 #endif
+
+    Buffer& operator=( nullptr_t )
+    {
+      m_buffer = VK_NULL_HANDLE;
+      return *this;
+    }
 
     bool operator==(Buffer const &rhs) const
     {
@@ -1263,6 +1293,10 @@ namespace vk
       : m_bufferView(VK_NULL_HANDLE)
     {}
 
+    BufferView( nullptr_t )
+      : m_bufferView(VK_NULL_HANDLE)
+    {}
+
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     BufferView(VkBufferView bufferView)
        : m_bufferView(bufferView)
@@ -1274,6 +1308,12 @@ namespace vk
       return *this;
     }
 #endif
+
+    BufferView& operator=( nullptr_t )
+    {
+      m_bufferView = VK_NULL_HANDLE;
+      return *this;
+    }
 
     bool operator==(BufferView const &rhs) const
     {
@@ -1320,6 +1360,10 @@ namespace vk
       : m_image(VK_NULL_HANDLE)
     {}
 
+    Image( nullptr_t )
+      : m_image(VK_NULL_HANDLE)
+    {}
+
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     Image(VkImage image)
        : m_image(image)
@@ -1331,6 +1375,12 @@ namespace vk
       return *this;
     }
 #endif
+
+    Image& operator=( nullptr_t )
+    {
+      m_image = VK_NULL_HANDLE;
+      return *this;
+    }
 
     bool operator==(Image const &rhs) const
     {
@@ -1377,6 +1427,10 @@ namespace vk
       : m_imageView(VK_NULL_HANDLE)
     {}
 
+    ImageView( nullptr_t )
+      : m_imageView(VK_NULL_HANDLE)
+    {}
+
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     ImageView(VkImageView imageView)
        : m_imageView(imageView)
@@ -1388,6 +1442,12 @@ namespace vk
       return *this;
     }
 #endif
+
+    ImageView& operator=( nullptr_t )
+    {
+      m_imageView = VK_NULL_HANDLE;
+      return *this;
+    }
 
     bool operator==(ImageView const &rhs) const
     {
@@ -1434,6 +1494,10 @@ namespace vk
       : m_shaderModule(VK_NULL_HANDLE)
     {}
 
+    ShaderModule( nullptr_t )
+      : m_shaderModule(VK_NULL_HANDLE)
+    {}
+
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     ShaderModule(VkShaderModule shaderModule)
        : m_shaderModule(shaderModule)
@@ -1445,6 +1509,12 @@ namespace vk
       return *this;
     }
 #endif
+
+    ShaderModule& operator=( nullptr_t )
+    {
+      m_shaderModule = VK_NULL_HANDLE;
+      return *this;
+    }
 
     bool operator==(ShaderModule const &rhs) const
     {
@@ -1491,6 +1561,10 @@ namespace vk
       : m_pipeline(VK_NULL_HANDLE)
     {}
 
+    Pipeline( nullptr_t )
+      : m_pipeline(VK_NULL_HANDLE)
+    {}
+
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     Pipeline(VkPipeline pipeline)
        : m_pipeline(pipeline)
@@ -1502,6 +1576,12 @@ namespace vk
       return *this;
     }
 #endif
+
+    Pipeline& operator=( nullptr_t )
+    {
+      m_pipeline = VK_NULL_HANDLE;
+      return *this;
+    }
 
     bool operator==(Pipeline const &rhs) const
     {
@@ -1548,6 +1628,10 @@ namespace vk
       : m_pipelineLayout(VK_NULL_HANDLE)
     {}
 
+    PipelineLayout( nullptr_t )
+      : m_pipelineLayout(VK_NULL_HANDLE)
+    {}
+
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     PipelineLayout(VkPipelineLayout pipelineLayout)
        : m_pipelineLayout(pipelineLayout)
@@ -1559,6 +1643,12 @@ namespace vk
       return *this;
     }
 #endif
+
+    PipelineLayout& operator=( nullptr_t )
+    {
+      m_pipelineLayout = VK_NULL_HANDLE;
+      return *this;
+    }
 
     bool operator==(PipelineLayout const &rhs) const
     {
@@ -1605,6 +1695,10 @@ namespace vk
       : m_sampler(VK_NULL_HANDLE)
     {}
 
+    Sampler( nullptr_t )
+      : m_sampler(VK_NULL_HANDLE)
+    {}
+
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     Sampler(VkSampler sampler)
        : m_sampler(sampler)
@@ -1616,6 +1710,12 @@ namespace vk
       return *this;
     }
 #endif
+
+    Sampler& operator=( nullptr_t )
+    {
+      m_sampler = VK_NULL_HANDLE;
+      return *this;
+    }
 
     bool operator==(Sampler const &rhs) const
     {
@@ -1662,6 +1762,10 @@ namespace vk
       : m_descriptorSet(VK_NULL_HANDLE)
     {}
 
+    DescriptorSet( nullptr_t )
+      : m_descriptorSet(VK_NULL_HANDLE)
+    {}
+
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     DescriptorSet(VkDescriptorSet descriptorSet)
        : m_descriptorSet(descriptorSet)
@@ -1673,6 +1777,12 @@ namespace vk
       return *this;
     }
 #endif
+
+    DescriptorSet& operator=( nullptr_t )
+    {
+      m_descriptorSet = VK_NULL_HANDLE;
+      return *this;
+    }
 
     bool operator==(DescriptorSet const &rhs) const
     {
@@ -1719,6 +1829,10 @@ namespace vk
       : m_descriptorSetLayout(VK_NULL_HANDLE)
     {}
 
+    DescriptorSetLayout( nullptr_t )
+      : m_descriptorSetLayout(VK_NULL_HANDLE)
+    {}
+
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     DescriptorSetLayout(VkDescriptorSetLayout descriptorSetLayout)
        : m_descriptorSetLayout(descriptorSetLayout)
@@ -1730,6 +1844,12 @@ namespace vk
       return *this;
     }
 #endif
+
+    DescriptorSetLayout& operator=( nullptr_t )
+    {
+      m_descriptorSetLayout = VK_NULL_HANDLE;
+      return *this;
+    }
 
     bool operator==(DescriptorSetLayout const &rhs) const
     {
@@ -1776,6 +1896,10 @@ namespace vk
       : m_descriptorPool(VK_NULL_HANDLE)
     {}
 
+    DescriptorPool( nullptr_t )
+      : m_descriptorPool(VK_NULL_HANDLE)
+    {}
+
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     DescriptorPool(VkDescriptorPool descriptorPool)
        : m_descriptorPool(descriptorPool)
@@ -1787,6 +1911,12 @@ namespace vk
       return *this;
     }
 #endif
+
+    DescriptorPool& operator=( nullptr_t )
+    {
+      m_descriptorPool = VK_NULL_HANDLE;
+      return *this;
+    }
 
     bool operator==(DescriptorPool const &rhs) const
     {
@@ -1833,6 +1963,10 @@ namespace vk
       : m_fence(VK_NULL_HANDLE)
     {}
 
+    Fence( nullptr_t )
+      : m_fence(VK_NULL_HANDLE)
+    {}
+
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     Fence(VkFence fence)
        : m_fence(fence)
@@ -1844,6 +1978,12 @@ namespace vk
       return *this;
     }
 #endif
+
+    Fence& operator=( nullptr_t )
+    {
+      m_fence = VK_NULL_HANDLE;
+      return *this;
+    }
 
     bool operator==(Fence const &rhs) const
     {
@@ -1890,6 +2030,10 @@ namespace vk
       : m_semaphore(VK_NULL_HANDLE)
     {}
 
+    Semaphore( nullptr_t )
+      : m_semaphore(VK_NULL_HANDLE)
+    {}
+
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     Semaphore(VkSemaphore semaphore)
        : m_semaphore(semaphore)
@@ -1901,6 +2045,12 @@ namespace vk
       return *this;
     }
 #endif
+
+    Semaphore& operator=( nullptr_t )
+    {
+      m_semaphore = VK_NULL_HANDLE;
+      return *this;
+    }
 
     bool operator==(Semaphore const &rhs) const
     {
@@ -1947,6 +2097,10 @@ namespace vk
       : m_event(VK_NULL_HANDLE)
     {}
 
+    Event( nullptr_t )
+      : m_event(VK_NULL_HANDLE)
+    {}
+
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     Event(VkEvent event)
        : m_event(event)
@@ -1958,6 +2112,12 @@ namespace vk
       return *this;
     }
 #endif
+
+    Event& operator=( nullptr_t )
+    {
+      m_event = VK_NULL_HANDLE;
+      return *this;
+    }
 
     bool operator==(Event const &rhs) const
     {
@@ -2004,6 +2164,10 @@ namespace vk
       : m_queryPool(VK_NULL_HANDLE)
     {}
 
+    QueryPool( nullptr_t )
+      : m_queryPool(VK_NULL_HANDLE)
+    {}
+
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     QueryPool(VkQueryPool queryPool)
        : m_queryPool(queryPool)
@@ -2015,6 +2179,12 @@ namespace vk
       return *this;
     }
 #endif
+
+    QueryPool& operator=( nullptr_t )
+    {
+      m_queryPool = VK_NULL_HANDLE;
+      return *this;
+    }
 
     bool operator==(QueryPool const &rhs) const
     {
@@ -2061,6 +2231,10 @@ namespace vk
       : m_framebuffer(VK_NULL_HANDLE)
     {}
 
+    Framebuffer( nullptr_t )
+      : m_framebuffer(VK_NULL_HANDLE)
+    {}
+
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     Framebuffer(VkFramebuffer framebuffer)
        : m_framebuffer(framebuffer)
@@ -2072,6 +2246,12 @@ namespace vk
       return *this;
     }
 #endif
+
+    Framebuffer& operator=( nullptr_t )
+    {
+      m_framebuffer = VK_NULL_HANDLE;
+      return *this;
+    }
 
     bool operator==(Framebuffer const &rhs) const
     {
@@ -2118,6 +2298,10 @@ namespace vk
       : m_renderPass(VK_NULL_HANDLE)
     {}
 
+    RenderPass( nullptr_t )
+      : m_renderPass(VK_NULL_HANDLE)
+    {}
+
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     RenderPass(VkRenderPass renderPass)
        : m_renderPass(renderPass)
@@ -2129,6 +2313,12 @@ namespace vk
       return *this;
     }
 #endif
+
+    RenderPass& operator=( nullptr_t )
+    {
+      m_renderPass = VK_NULL_HANDLE;
+      return *this;
+    }
 
     bool operator==(RenderPass const &rhs) const
     {
@@ -2175,6 +2365,10 @@ namespace vk
       : m_pipelineCache(VK_NULL_HANDLE)
     {}
 
+    PipelineCache( nullptr_t )
+      : m_pipelineCache(VK_NULL_HANDLE)
+    {}
+
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     PipelineCache(VkPipelineCache pipelineCache)
        : m_pipelineCache(pipelineCache)
@@ -2186,6 +2380,12 @@ namespace vk
       return *this;
     }
 #endif
+
+    PipelineCache& operator=( nullptr_t )
+    {
+      m_pipelineCache = VK_NULL_HANDLE;
+      return *this;
+    }
 
     bool operator==(PipelineCache const &rhs) const
     {
@@ -2232,6 +2432,10 @@ namespace vk
       : m_objectTableNVX(VK_NULL_HANDLE)
     {}
 
+    ObjectTableNVX( nullptr_t )
+      : m_objectTableNVX(VK_NULL_HANDLE)
+    {}
+
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     ObjectTableNVX(VkObjectTableNVX objectTableNVX)
        : m_objectTableNVX(objectTableNVX)
@@ -2243,6 +2447,12 @@ namespace vk
       return *this;
     }
 #endif
+
+    ObjectTableNVX& operator=( nullptr_t )
+    {
+      m_objectTableNVX = VK_NULL_HANDLE;
+      return *this;
+    }
 
     bool operator==(ObjectTableNVX const &rhs) const
     {
@@ -2289,6 +2499,10 @@ namespace vk
       : m_indirectCommandsLayoutNVX(VK_NULL_HANDLE)
     {}
 
+    IndirectCommandsLayoutNVX( nullptr_t )
+      : m_indirectCommandsLayoutNVX(VK_NULL_HANDLE)
+    {}
+
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     IndirectCommandsLayoutNVX(VkIndirectCommandsLayoutNVX indirectCommandsLayoutNVX)
        : m_indirectCommandsLayoutNVX(indirectCommandsLayoutNVX)
@@ -2300,6 +2514,12 @@ namespace vk
       return *this;
     }
 #endif
+
+    IndirectCommandsLayoutNVX& operator=( nullptr_t )
+    {
+      m_indirectCommandsLayoutNVX = VK_NULL_HANDLE;
+      return *this;
+    }
 
     bool operator==(IndirectCommandsLayoutNVX const &rhs) const
     {
@@ -2346,6 +2566,10 @@ namespace vk
       : m_displayKHR(VK_NULL_HANDLE)
     {}
 
+    DisplayKHR( nullptr_t )
+      : m_displayKHR(VK_NULL_HANDLE)
+    {}
+
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     DisplayKHR(VkDisplayKHR displayKHR)
        : m_displayKHR(displayKHR)
@@ -2357,6 +2581,12 @@ namespace vk
       return *this;
     }
 #endif
+
+    DisplayKHR& operator=( nullptr_t )
+    {
+      m_displayKHR = VK_NULL_HANDLE;
+      return *this;
+    }
 
     bool operator==(DisplayKHR const &rhs) const
     {
@@ -2403,6 +2633,10 @@ namespace vk
       : m_displayModeKHR(VK_NULL_HANDLE)
     {}
 
+    DisplayModeKHR( nullptr_t )
+      : m_displayModeKHR(VK_NULL_HANDLE)
+    {}
+
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     DisplayModeKHR(VkDisplayModeKHR displayModeKHR)
        : m_displayModeKHR(displayModeKHR)
@@ -2414,6 +2648,12 @@ namespace vk
       return *this;
     }
 #endif
+
+    DisplayModeKHR& operator=( nullptr_t )
+    {
+      m_displayModeKHR = VK_NULL_HANDLE;
+      return *this;
+    }
 
     bool operator==(DisplayModeKHR const &rhs) const
     {
@@ -2460,6 +2700,10 @@ namespace vk
       : m_surfaceKHR(VK_NULL_HANDLE)
     {}
 
+    SurfaceKHR( nullptr_t )
+      : m_surfaceKHR(VK_NULL_HANDLE)
+    {}
+
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     SurfaceKHR(VkSurfaceKHR surfaceKHR)
        : m_surfaceKHR(surfaceKHR)
@@ -2471,6 +2715,12 @@ namespace vk
       return *this;
     }
 #endif
+
+    SurfaceKHR& operator=( nullptr_t )
+    {
+      m_surfaceKHR = VK_NULL_HANDLE;
+      return *this;
+    }
 
     bool operator==(SurfaceKHR const &rhs) const
     {
@@ -2517,6 +2767,10 @@ namespace vk
       : m_swapchainKHR(VK_NULL_HANDLE)
     {}
 
+    SwapchainKHR( nullptr_t )
+      : m_swapchainKHR(VK_NULL_HANDLE)
+    {}
+
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     SwapchainKHR(VkSwapchainKHR swapchainKHR)
        : m_swapchainKHR(swapchainKHR)
@@ -2528,6 +2782,12 @@ namespace vk
       return *this;
     }
 #endif
+
+    SwapchainKHR& operator=( nullptr_t )
+    {
+      m_swapchainKHR = VK_NULL_HANDLE;
+      return *this;
+    }
 
     bool operator==(SwapchainKHR const &rhs) const
     {
@@ -2574,6 +2834,10 @@ namespace vk
       : m_debugReportCallbackEXT(VK_NULL_HANDLE)
     {}
 
+    DebugReportCallbackEXT( nullptr_t )
+      : m_debugReportCallbackEXT(VK_NULL_HANDLE)
+    {}
+
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     DebugReportCallbackEXT(VkDebugReportCallbackEXT debugReportCallbackEXT)
        : m_debugReportCallbackEXT(debugReportCallbackEXT)
@@ -2585,6 +2849,12 @@ namespace vk
       return *this;
     }
 #endif
+
+    DebugReportCallbackEXT& operator=( nullptr_t )
+    {
+      m_debugReportCallbackEXT = VK_NULL_HANDLE;
+      return *this;
+    }
 
     bool operator==(DebugReportCallbackEXT const &rhs) const
     {
@@ -17289,6 +17559,10 @@ namespace vk
       : m_commandBuffer(VK_NULL_HANDLE)
     {}
 
+    CommandBuffer( nullptr_t )
+      : m_commandBuffer(VK_NULL_HANDLE)
+    {}
+
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     CommandBuffer(VkCommandBuffer commandBuffer)
        : m_commandBuffer(commandBuffer)
@@ -17300,6 +17574,12 @@ namespace vk
       return *this;
     }
 #endif
+
+    CommandBuffer& operator=( nullptr_t )
+    {
+      m_commandBuffer = VK_NULL_HANDLE;
+      return *this;
+    }
 
     bool operator==(CommandBuffer const &rhs) const
     {
@@ -18092,6 +18372,10 @@ namespace vk
       : m_queue(VK_NULL_HANDLE)
     {}
 
+    Queue( nullptr_t )
+      : m_queue(VK_NULL_HANDLE)
+    {}
+
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     Queue(VkQueue queue)
        : m_queue(queue)
@@ -18103,6 +18387,12 @@ namespace vk
       return *this;
     }
 #endif
+
+    Queue& operator=( nullptr_t )
+    {
+      m_queue = VK_NULL_HANDLE;
+      return *this;
+    }
 
     bool operator==(Queue const &rhs) const
     {
@@ -18269,6 +18559,10 @@ namespace vk
       : m_device(VK_NULL_HANDLE)
     {}
 
+    Device( nullptr_t )
+      : m_device(VK_NULL_HANDLE)
+    {}
+
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     Device(VkDevice device)
        : m_device(device)
@@ -18280,6 +18574,12 @@ namespace vk
       return *this;
     }
 #endif
+
+    Device& operator=( nullptr_t )
+    {
+      m_device = VK_NULL_HANDLE;
+      return *this;
+    }
 
     bool operator==(Device const &rhs) const
     {
@@ -20718,6 +21018,10 @@ namespace vk
       : m_physicalDevice(VK_NULL_HANDLE)
     {}
 
+    PhysicalDevice( nullptr_t )
+      : m_physicalDevice(VK_NULL_HANDLE)
+    {}
+
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     PhysicalDevice(VkPhysicalDevice physicalDevice)
        : m_physicalDevice(physicalDevice)
@@ -20729,6 +21033,12 @@ namespace vk
       return *this;
     }
 #endif
+
+    PhysicalDevice& operator=( nullptr_t )
+    {
+      m_physicalDevice = VK_NULL_HANDLE;
+      return *this;
+    }
 
     bool operator==(PhysicalDevice const &rhs) const
     {
@@ -21635,6 +21945,10 @@ namespace vk
       : m_instance(VK_NULL_HANDLE)
     {}
 
+    Instance( nullptr_t )
+      : m_instance(VK_NULL_HANDLE)
+    {}
+
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
     Instance(VkInstance instance)
        : m_instance(instance)
@@ -21646,6 +21960,12 @@ namespace vk
       return *this;
     }
 #endif
+
+    Instance& operator=( nullptr_t )
+    {
+      m_instance = VK_NULL_HANDLE;
+      return *this;
+    }
 
     bool operator==(Instance const &rhs) const
     {

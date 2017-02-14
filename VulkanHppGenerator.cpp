@@ -3338,6 +3338,10 @@ void writeTypeHandle(std::ofstream & ofs, VkData const& vkData, DependencyData c
       << "      : m_" << memberName << "(VK_NULL_HANDLE)" << std::endl
       << "    {}" << std::endl
       << std::endl
+      << "    " << dependencyData.name << "( nullptr_t )" << std::endl
+      << "      : m_" << memberName << "(VK_NULL_HANDLE)" << std::endl
+      << "    {}" << std::endl
+      << std::endl
       << "#if defined(VULKAN_HPP_TYPESAFE_CONVERSION)" << std::endl
       // construct from native handle
       << "    " << dependencyData.name << "(Vk" << dependencyData.name << " " << memberName << ")" << std::endl
@@ -3351,6 +3355,13 @@ void writeTypeHandle(std::ofstream & ofs, VkData const& vkData, DependencyData c
       << "      return *this;" << std::endl
       << "    }" << std::endl
       << "#endif\n"
+      << std::endl
+      // assignment from nullptr_t
+      << "    " << dependencyData.name << "& operator=( nullptr_t )" << std::endl
+      << "    {" << std::endl
+      << "      m_" << memberName << " = VK_NULL_HANDLE;" << std::endl
+      << "      return *this;" << std::endl
+      << "    }" << std::endl
       << std::endl
       // operator==
       << "    bool operator==" << "(" << dependencyData.name << " const &rhs) const" << std::endl

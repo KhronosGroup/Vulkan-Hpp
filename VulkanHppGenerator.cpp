@@ -302,25 +302,25 @@ std::string const arrayProxyHeader = (
   "\n"
 );
 
-std::string const versionCheckHeader = (
-  "#if !defined(VULKAN_HPP_HAS_UNRESTRICTED_UNIONS)\n"
-  "# if defined(__clang__)\n"
-  "#  if __has_feature(cxx_unrestricted_unions)\n"
-  "#   define VULKAN_HPP_HAS_UNRESTRICTED_UNIONS\n"
-  "#  endif\n"
-  "# elif defined(__GNUC__)\n"
-  "#  define GCC_VERSION (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)\n"
-  "#  if 40600 <= GCC_VERSION\n"
-  "#   define VULKAN_HPP_HAS_UNRESTRICTED_UNIONS\n"
-  "#  endif\n"
-  "# elif defined(_MSC_VER)\n"
-  "#  if 1900 <= _MSC_VER\n"
-  "#   define VULKAN_HPP_HAS_UNRESTRICTED_UNIONS\n"
-  "#  endif\n"
-  "# endif\n"
-  "#endif\n"
-  "\n"
-  );
+std::string const versionCheckHeader = { R"(
+#if !defined(VULKAN_HPP_HAS_UNRESTRICTED_UNIONS)
+# if defined(__clang__)
+#  if __has_feature(cxx_unrestricted_unions)
+#   define VULKAN_HPP_HAS_UNRESTRICTED_UNIONS
+#  endif
+# elif defined(__GNUC__)
+#  define GCC_VERSION (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)
+#  if 40600 <= GCC_VERSION
+#   define VULKAN_HPP_HAS_UNRESTRICTED_UNIONS
+#  endif
+# elif defined(_MSC_VER)
+#  if 1900 <= _MSC_VER
+#   define VULKAN_HPP_HAS_UNRESTRICTED_UNIONS
+#  endif
+# endif
+#endif
+)"
+};
 
 std::string const inlineHeader = {R"(
 #if !defined(VULKAN_HPP_INLINE)
@@ -338,7 +338,15 @@ std::string const inlineHeader = {R"(
 #  define VULKAN_HPP_INLINE inline
 # endif
 #endif
+)"
+};
 
+std::string const explicitHeader = { R"(
+#if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
+# define VULKAN_HPP_TYPESAFE_EXPLICIT
+#else
+# define VULKAN_HPP_TYPESAFE_EXPLICIT explicit
+#endif
 )"
 };
 
@@ -3396,13 +3404,13 @@ void writeTypeHandle(std::ofstream & ofs, VkData const& vkData, DependencyData c
       << "      : m_" << memberName << "(VK_NULL_HANDLE)" << std::endl
       << "    {}" << std::endl
       << std::endl
-      << "#if defined(VULKAN_HPP_TYPESAFE_CONVERSION)" << std::endl
       // construct from native handle
-      << "    " << dependencyData.name << "(Vk" << dependencyData.name << " " << memberName << ")" << std::endl
+      << "    VULKAN_HPP_TYPESAFE_EXPLICIT " << dependencyData.name << "(Vk" << dependencyData.name << " " << memberName << ")" << std::endl
       << "       : m_" << memberName << "("  << memberName << ")" << std::endl
       << "    {}" << std::endl
       << std::endl
       // assignment from native handle
+      << "#if defined(VULKAN_HPP_TYPESAFE_CONVERSION)" << std::endl
       << "    " << dependencyData.name << "& operator=(Vk" << dependencyData.name << " " << memberName << ")" << std::endl
       << "    {" << std::endl
       << "      m_" << memberName << " = " << memberName << ";" << std::endl
@@ -3445,10 +3453,7 @@ void writeTypeHandle(std::ofstream & ofs, VkData const& vkData, DependencyData c
     writeTypeCommandDeclaration(ofs, "    ", vkData, cit->second);
   }
 
-  ofs << "#if !defined(VULKAN_HPP_TYPESAFE_CONVERSION)" << std::endl
-      << "    explicit" << std::endl
-      << "#endif" << std::endl
-      << "    operator Vk" << dependencyData.name << "() const" << std::endl
+  ofs << "    VULKAN_HPP_TYPESAFE_EXPLICIT operator Vk" << dependencyData.name << "() const" << std::endl
       << "    {" << std::endl
       << "      return m_" << memberName << ";" << std::endl
       << "    }" << std::endl
@@ -3772,8 +3777,7 @@ void writeTypesafeCheck(std::ofstream & ofs, std::string const& typesafeCheck)
       << "# if !defined( VULKAN_HPP_TYPESAFE_CONVERSION )" << std::endl
       << "#  define VULKAN_HPP_TYPESAFE_CONVERSION" << std::endl
       << "# endif" << std::endl
-      << "#endif" << std::endl
-      << std::endl;
+      << "#endif" << std::endl;
 }
 
 int main( int argc, char **argv )
@@ -3868,6 +3872,8 @@ int main( int argc, char **argv )
     writeTypesafeCheck(ofs, vkData.typesafeCheck);
     ofs << versionCheckHeader
       << inlineHeader
+      << explicitHeader
+      << std::endl
       << "namespace vk" << std::endl
       << "{" << std::endl
       << flagsHeader

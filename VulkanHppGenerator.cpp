@@ -3400,7 +3400,7 @@ void writeTypeHandle(std::ofstream & ofs, VkData const& vkData, DependencyData c
       << "      : m_" << memberName << "(VK_NULL_HANDLE)" << std::endl
       << "    {}" << std::endl
       << std::endl
-      << "    " << dependencyData.name << "( nullptr_t )" << std::endl
+      << "    " << dependencyData.name << "( std::nullptr_t )" << std::endl
       << "      : m_" << memberName << "(VK_NULL_HANDLE)" << std::endl
       << "    {}" << std::endl
       << std::endl
@@ -3418,8 +3418,8 @@ void writeTypeHandle(std::ofstream & ofs, VkData const& vkData, DependencyData c
       << "    }" << std::endl
       << "#endif\n"
       << std::endl
-      // assignment from nullptr_t
-      << "    " << dependencyData.name << "& operator=( nullptr_t )" << std::endl
+      // assignment from std::nullptr_t
+      << "    " << dependencyData.name << "& operator=( std::nullptr_t )" << std::endl
       << "    {" << std::endl
       << "      m_" << memberName << " = VK_NULL_HANDLE;" << std::endl
       << "      return *this;" << std::endl
@@ -3854,6 +3854,7 @@ int main( int argc, char **argv )
       << "#include <algorithm>" << std::endl
       << "#include <array>" << std::endl
       << "#include <cassert>" << std::endl
+      << "#include <cstddef>" << std::endl
       << "#include <cstdint>" << std::endl
       << "#include <cstring>" << std::endl
       << "#include <initializer_list>" << std::endl

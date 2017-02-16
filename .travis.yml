@@ -1,0 +1,38 @@
+# Build Configuration for Travis CI
+# https://travis-ci.org
+
+dist: precise
+sudo: false
+language: cpp
+compiler:
+  - gcc
+install:
+- if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    - llvm-toolchain-precise
+    - george-edison55-precise-backports # cmake 3.2.3 / doxygen 1.8.3
+    packages:
+    - gcc-5
+    - g++-5
+    - cmake
+    - cmake-data
+
+script:
+  - cmake --version
+  - cmake -H. -B/tmp/build
+  - make -C /tmp/build
+  - /tmp/build/VulkanHppGenerator
+  - echo "#include \"vulkan.hpp\"" > /tmp/test.cpp
+  - echo "void myCreateInstance()" >> /tmp/test.cpp
+  - echo "{" >> /tmp/test.cpp
+  - echo "    vk::Instance inst;" >> /tmp/test.cpp
+  - echo "    auto const inst_info = vk::InstanceCreateInfo();" >> /tmp/test.cpp
+  - echo "    vk::Result result = vk::createInstance(&inst_info, nullptr, &inst);" >> /tmp/test.cpp
+  - echo "}" >> /tmp/test.cpp
+  - cat /tmp/test.cpp
+  - ${CXX} -std=c++11 -Ivulkan -IVulkan-Docs/src -c /tmp/test.cpp
+  - clang --version
+  - clang++ -std=c++11 -Ivulkan -IVulkan-Docs/src -c /tmp/test.cpp

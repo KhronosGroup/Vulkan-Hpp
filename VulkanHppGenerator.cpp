@@ -763,8 +763,8 @@ void writeFunctionBody(std::ostream & os, std::string const& indentation, VkData
 void writeFunctionBodyEnhanced(std::ostream & os, std::string const& indentation, VkData const& vkData, CommandData const& commandData, DependencyData const& dependencyData, bool singular);
 void writeFunctionBodyStandard(std::ostream & os, std::string const& indentation, VkData const& vkData, CommandData const& commandData, DependencyData const& dependencyData);
 void writeFunctionBodyUnique(std::ostream & os, std::string const& indentation, VkData const& vkData, CommandData const& commandData, DependencyData const& dependencyData, bool singular);
-void writeFunctionDeclaration(std::ofstream & ofs, std::string const& indentation, VkData const& vkData, CommandData const& commandData, bool enhanced, bool singular, bool unique);
-void writeFunctionDefinition(std::ofstream & ofs, std::string const& indentation, VkData const& vkData, CommandData const& commandData, DependencyData const& dependencyData, bool enhanced, bool singular, bool unique);
+void writeFunctionDeclaration(std::ostream & os, std::string const& indentation, VkData const& vkData, CommandData const& commandData, bool enhanced, bool singular, bool unique);
+void writeFunctionDefinition(std::ostream & os, std::string const& indentation, VkData const& vkData, CommandData const& commandData, DependencyData const& dependencyData, bool enhanced, bool singular, bool unique);
 void writeFunctionHeaderArguments(std::ostream & os, VkData const& vkData, CommandData const& commandData, bool enhanced, bool singular, bool withDefaults);
 void writeFunctionHeaderName(std::ostream & os, std::string const& name, bool singular, bool unique);
 void writeFunctionHeaderReturnType(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool enhanced, bool singular, bool unique);
@@ -773,11 +773,11 @@ void writeStructConstructor( std::ofstream & ofs, std::string const& name, Struc
 void writeStructSetter( std::ofstream & ofs, std::string const& name, MemberData const& memberData, std::set<std::string> const& vkTypes, std::map<std::string,StructData> const& structs );
 void writeTypeCommand(std::ofstream & ofs, VkData const& vkData, DependencyData const& dependencyData);
 void writeTypeCommandDeclaration(std::ofstream &ofs, std::string const& indentation, VkData const& vkData, CommandData const& commandData);
-void writeTypeCommandDeclarationEnhanced(std::ofstream & ofs, std::string const& indentation, VkData const& vkData, CommandData const& commandData);
-void writeTypeCommandDeclarationStandard(std::ofstream & ofs, std::string const& indentation, VkData const& vkData, CommandData const& commandData);
+void writeTypeCommandDeclarationEnhanced(std::ostream & os, std::string const& indentation, VkData const& vkData, CommandData const& commandData);
+void writeTypeCommandDeclarationStandard(std::ostream & os, std::string const& indentation, VkData const& vkData, CommandData const& commandData);
 void writeTypeCommandDefinition(std::ofstream &ofs, std::string const& indentation, VkData const& vkData, CommandData const& commandData, DependencyData const& dependencyData);
-void writeTypeCommandDefinitionEnhanced(std::ofstream &ofs, std::string const& indentation, VkData const& vkData, CommandData const& commandData, DependencyData const& dependencyData);
-void writeTypeCommandDefinitionStandard(std::ofstream &ofs, std::string const& indentation, VkData const& vkData, CommandData const& commandData, DependencyData const& dependencyData);
+void writeTypeCommandDefinitionEnhanced(std::ostream &os, std::string const& indentation, VkData const& vkData, CommandData const& commandData, DependencyData const& dependencyData);
+void writeTypeCommandDefinitionStandard(std::ostream &os, std::string const& indentation, VkData const& vkData, CommandData const& commandData, DependencyData const& dependencyData);
 void writeTypeCommandParam(std::ostream & os, ParamData const& param, std::set<std::string> const& vkTypes);
 void writeTypeEnum(std::ofstream & ofs, EnumData const& enumData);
 void writeTypeFlags(std::ofstream & ofs, std::string const& flagsName, FlagData const& flagData, EnumData const& enumData);
@@ -2186,7 +2186,7 @@ void writeCall(std::ostream & os, CommandData const& commandData, std::set<std::
             {
               os << "&";
             }
-            os << reduceName(commandData.params[i].name) << (commandData.params[i].optional ? "))" : " )");
+            os << reduceName(commandData.params[i].name) << (commandData.params[i].optional ? " ) )" : " )");
           }
           else
           {
@@ -2585,35 +2585,35 @@ void writeFunctionBodyUnique(std::ostream & os, std::string const& indentation, 
   }
 }
 
-void writeFunctionDeclaration(std::ofstream & ofs, std::string const& indentation, VkData const& vkData, CommandData const& commandData, bool enhanced, bool singular, bool unique)
+void writeFunctionDeclaration(std::ostream & os, std::string const& indentation, VkData const& vkData, CommandData const& commandData, bool enhanced, bool singular, bool unique)
 {
   if (enhanced)
   {
-    writeFunctionHeaderTemplate(ofs, indentation, commandData, singular, true);
+    writeFunctionHeaderTemplate(os, indentation, commandData, singular, true);
   }
-  ofs << indentation;
-  writeFunctionHeaderReturnType(ofs, indentation, commandData, enhanced, singular, unique);
-  writeFunctionHeaderName(ofs, commandData.reducedName, singular, unique);
-  writeFunctionHeaderArguments(ofs, vkData, commandData, enhanced, singular, true);
-  ofs << ";" << std::endl;
+  os << indentation;
+  writeFunctionHeaderReturnType(os, indentation, commandData, enhanced, singular, unique);
+  writeFunctionHeaderName(os, commandData.reducedName, singular, unique);
+  writeFunctionHeaderArguments(os, vkData, commandData, enhanced, singular, true);
+  os << ";" << std::endl;
 }
 
-void writeFunctionDefinition(std::ofstream & ofs, std::string const& indentation, VkData const& vkData, CommandData const& commandData, DependencyData const& dependencyData, bool enhanced, bool singular, bool unique)
+void writeFunctionDefinition(std::ostream & os, std::string const& indentation, VkData const& vkData, CommandData const& commandData, DependencyData const& dependencyData, bool enhanced, bool singular, bool unique)
 {
   if (enhanced)
   {
-    writeFunctionHeaderTemplate(ofs, indentation, commandData, singular, false);
+    writeFunctionHeaderTemplate(os, indentation, commandData, singular, false);
   }
-  ofs << indentation << "VULKAN_HPP_INLINE ";
-  writeFunctionHeaderReturnType(ofs, indentation, commandData, enhanced, singular, unique);
+  os << indentation << "VULKAN_HPP_INLINE ";
+  writeFunctionHeaderReturnType(os, indentation, commandData, enhanced, singular, unique);
   if (!commandData.className.empty())
   {
-    ofs << commandData.className << "::";
+    os << commandData.className << "::";
   }
-  writeFunctionHeaderName(ofs, commandData.reducedName, singular, unique);
-  writeFunctionHeaderArguments(ofs, vkData, commandData, enhanced, singular, false);
-  ofs << std::endl;
-  writeFunctionBody(ofs, indentation, vkData, commandData, dependencyData, enhanced, singular, unique);
+  writeFunctionHeaderName(os, commandData.reducedName, singular, unique);
+  writeFunctionHeaderArguments(os, vkData, commandData, enhanced, singular, false);
+  os << std::endl;
+  writeFunctionBody(os, indentation, vkData, commandData, dependencyData, enhanced, singular, unique);
 }
 
 void writeFunctionHeaderArguments(std::ostream & os, VkData const& vkData, CommandData const& commandData, bool enhanced, bool singular, bool withDefaults)
@@ -2987,36 +2987,39 @@ void writeTypeCommand(std::ofstream & ofs, VkData const& vkData, DependencyData 
 void writeTypeCommandDeclaration(std::ofstream & ofs, std::string const& indentation, VkData const& vkData, CommandData const& commandData)
 {
   enterProtect(ofs, commandData.protect);
-  bool unchangedInterface = !hasPointerParam(commandData.params);
-  if ((commandData.enhancedReturnType == commandData.returnType) && commandData.vectorParams.empty() && unchangedInterface && (commandData.successCodes.size() <= 1))
+  std::ostringstream standard, enhanced;
+  writeTypeCommandDeclarationStandard(standard, "    ", vkData, commandData);
+  writeTypeCommandDeclarationEnhanced(enhanced, "    ", vkData, commandData);
+  if (standard.str() == enhanced.str())
   {
-    writeTypeCommandDeclarationStandard(ofs, "    ", vkData, commandData);
+    ofs << standard.str();
   }
   else
   {
+    bool unchangedInterface = !hasPointerParam(commandData.params);
     if (unchangedInterface)
     {
       ofs << "#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE" << std::endl;
     }
-    writeTypeCommandDeclarationStandard(ofs, "    ", vkData, commandData);
+    ofs << standard.str();
     ofs << (unchangedInterface ? "#else" : "#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE") << std::endl;
-    writeTypeCommandDeclarationEnhanced(ofs, "    ", vkData, commandData);
+    ofs << enhanced.str();
     ofs << "#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/" << std::endl;
   }
   leaveProtect(ofs, commandData.protect);
   ofs << std::endl;
 }
 
-void writeTypeCommandDeclarationEnhanced(std::ofstream & ofs, std::string const& indentation, VkData const& vkData, CommandData const& commandData)
+void writeTypeCommandDeclarationEnhanced(std::ostream & os, std::string const& indentation, VkData const& vkData, CommandData const& commandData)
 {
-  writeFunctionDeclaration(ofs, indentation, vkData, commandData, true, false, false);
+  writeFunctionDeclaration(os, indentation, vkData, commandData, true, false, false);
 
   // determine candidates for singular version of function
   std::map<size_t, size_t>::const_iterator returnVector = commandData.vectorParams.find(commandData.returnParam);
   bool singular = (returnVector != commandData.vectorParams.end()) && (returnVector->second != ~0) && (commandData.params[returnVector->second].type.back() != '*');
   if (singular)
   {
-    writeFunctionDeclaration(ofs, indentation, vkData, commandData, true, true, false);
+    writeFunctionDeclaration(os, indentation, vkData, commandData, true, true, false);
   }
 
   // special handling for createDevice and createInstance !
@@ -3024,54 +3027,58 @@ void writeTypeCommandDeclarationEnhanced(std::ofstream & ofs, std::string const&
 
   if (((vkData.deleterData.find(commandData.className) != vkData.deleterData.end()) || specialWriteUnique) && ((commandData.reducedName.substr(0, 8) == "allocate") || (commandData.reducedName.substr(0, 6) == "create")))
   {
-    ofs << "#ifndef VULKAN_HPP_NO_SMART_HANDLE" << std::endl;
-    writeFunctionDeclaration(ofs, indentation, vkData, commandData, true, false, true);
+    os << "#ifndef VULKAN_HPP_NO_SMART_HANDLE" << std::endl;
+    writeFunctionDeclaration(os, indentation, vkData, commandData, true, false, true);
 
     if (singular)
     {
-      writeFunctionDeclaration(ofs, indentation, vkData, commandData, true, true, true);
+      writeFunctionDeclaration(os, indentation, vkData, commandData, true, true, true);
     }
-    ofs << "#endif /*VULKAN_HPP_NO_SMART_HANDLE*/" << std::endl;
+    os << "#endif /*VULKAN_HPP_NO_SMART_HANDLE*/" << std::endl;
   }
 }
 
-void writeTypeCommandDeclarationStandard(std::ofstream & ofs, std::string const& indentation, VkData const& vkData, CommandData const& commandData)
+void writeTypeCommandDeclarationStandard(std::ostream & os, std::string const& indentation, VkData const& vkData, CommandData const& commandData)
 {
-  writeFunctionDeclaration(ofs, indentation, vkData, commandData, false, false, false);
+  writeFunctionDeclaration(os, indentation, vkData, commandData, false, false, false);
 }
 
 void writeTypeCommandDefinition(std::ofstream &ofs, std::string const& indentation, VkData const& vkData, CommandData const& commandData, DependencyData const& dependencyData)
 {
   enterProtect(ofs, commandData.protect);
-  bool unchangedInterface = !hasPointerParam(commandData.params);
-  if ((commandData.enhancedReturnType == commandData.returnType) && commandData.vectorParams.empty() && unchangedInterface && (commandData.successCodes.size() <= 1))
+  std::ostringstream standard, enhanced;
+  writeTypeCommandDefinitionStandard(standard, indentation, vkData, commandData, dependencyData);
+  writeTypeCommandDefinitionEnhanced(enhanced, indentation, vkData, commandData, dependencyData);
+  if (standard.str() == enhanced.str())
   {
-    writeTypeCommandDefinitionStandard(ofs, indentation, vkData, commandData, dependencyData);
+    ofs << standard.str();
   }
   else
   {
+    bool unchangedInterface = !hasPointerParam(commandData.params);
     if (unchangedInterface)
     {
       ofs << "#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE" << std::endl;
     }
-    writeTypeCommandDefinitionStandard(ofs, indentation, vkData, commandData, dependencyData);
+    ofs << standard.str();
     ofs << (unchangedInterface ? "#else" : "#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE") << std::endl;
-    writeTypeCommandDefinitionEnhanced(ofs, indentation, vkData, commandData, dependencyData);
+    ofs << enhanced.str();
     ofs << "#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/" << std::endl;
   }
   leaveProtect(ofs, commandData.protect);
+  ofs << std::endl;
 }
 
-void writeTypeCommandDefinitionEnhanced(std::ofstream &ofs, std::string const& indentation, VkData const& vkData, CommandData const& commandData, DependencyData const& dependencyData)
+void writeTypeCommandDefinitionEnhanced(std::ostream &os, std::string const& indentation, VkData const& vkData, CommandData const& commandData, DependencyData const& dependencyData)
 {
-  writeFunctionDefinition(ofs, indentation, vkData, commandData, dependencyData, true, false, false);
+  writeFunctionDefinition(os, indentation, vkData, commandData, dependencyData, true, false, false);
 
   // determine candidates for singular version of function
   std::map<size_t, size_t>::const_iterator returnVector = commandData.vectorParams.find(commandData.returnParam);
   bool singular = (returnVector != commandData.vectorParams.end()) && (returnVector->second != ~0) && (commandData.params[returnVector->second].type.back() != '*');
   if (singular)
   {
-    writeFunctionDefinition(ofs, indentation, vkData, commandData, dependencyData, true, true, false);
+    writeFunctionDefinition(os, indentation, vkData, commandData, dependencyData, true, true, false);
   }
 
   // special handling for createDevice and createInstance !
@@ -3079,20 +3086,20 @@ void writeTypeCommandDefinitionEnhanced(std::ofstream &ofs, std::string const& i
 
   if (((vkData.deleterData.find(commandData.className) != vkData.deleterData.end()) || specialWriteUnique) && ((commandData.reducedName.substr(0, 8) == "allocate") || (commandData.reducedName.substr(0, 6) == "create")))
   {
-    ofs << "#ifndef VULKAN_HPP_NO_SMART_HANDLE" << std::endl;
-    writeFunctionDefinition(ofs, indentation, vkData, commandData, dependencyData, true, false, true);
+    os << "#ifndef VULKAN_HPP_NO_SMART_HANDLE" << std::endl;
+    writeFunctionDefinition(os, indentation, vkData, commandData, dependencyData, true, false, true);
 
     if (singular)
     {
-      writeFunctionDefinition(ofs, indentation, vkData, commandData, dependencyData, true, true, true);
+      writeFunctionDefinition(os, indentation, vkData, commandData, dependencyData, true, true, true);
     }
-    ofs << "#endif /*VULKAN_HPP_NO_SMART_HANDLE*/" << std::endl;
+    os << "#endif /*VULKAN_HPP_NO_SMART_HANDLE*/" << std::endl;
   }
 }
 
-void writeTypeCommandDefinitionStandard(std::ofstream &ofs, std::string const& indentation, VkData const& vkData, CommandData const& commandData, DependencyData const& dependencyData)
+void writeTypeCommandDefinitionStandard(std::ostream &os, std::string const& indentation, VkData const& vkData, CommandData const& commandData, DependencyData const& dependencyData)
 {
-  writeFunctionDefinition(ofs, indentation, vkData, commandData, dependencyData, false, false, false);
+  writeFunctionDefinition(os, indentation, vkData, commandData, dependencyData, false, false, false);
 }
 
 void writeTypeCommandParam(std::ostream & os, ParamData const& param, std::set<std::string> const& vkTypes)
@@ -3491,11 +3498,6 @@ void writeTypeHandle(std::ofstream & ofs, VkData const& vkData, DependencyData c
     assert(dep != dependencies.end() && (dep->name == cit->second.fullName));
 
     writeTypeCommandDefinition(ofs, "  ", vkData, cit->second, *dep);
-
-    if (i < handleData.commands.size() - 1)
-    {
-      ofs << std::endl;
-    }
   }
 
   leaveProtect(ofs, handleData.protect);

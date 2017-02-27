@@ -34,5 +34,3 @@ script:
   - echo "}" >> /tmp/test.cpp
   - cat /tmp/test.cpp
   - ${CXX} -std=c++11 -Ivulkan -IVulkan-Docs/src -c /tmp/test.cpp
-  - clang --version
-  - clang++ -std=c++11 -Ivulkan -IVulkan-Docs/src -c /tmp/test.cpp

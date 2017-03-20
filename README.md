@@ -29,14 +29,14 @@ Vulkan-Hpp declares a class for all handles to ensure full type safety and to ad
  function which accepts the corresponding handle as first parameter. Instead of ```vkBindBufferMemory(device, ...)``` one can write ```device.bindBufferMemory(...)``` or ```vk::bindBufferMemory(device, ...)```.
 
 # C/C++ Interop for Handles
-On 64-bit platforms Vulkan-Hpp supports implicit conversions between C++ Vulkan handles and C Vulkan handles. On 32-bit platforms all non-dispatchable handles are defined as ```uint64_t```, 
-thus preventing type-conversion checks at compile time which would catch assignments between incompatible handle types.. 
+On 64-bit platforms Vulkan-Hpp supports implicit conversions between C++ Vulkan handles and C Vulkan handles. On 32-bit platforms all non-dispatchable handles are defined as ```uint64_t```,
+thus preventing type-conversion checks at compile time which would catch assignments between incompatible handle types..
 Due to that Vulkan-Hpp does not enable implicit conversion for 32-bit platforms by default and it is recommended to use a static_cast for the conversion like this: ```VkDevice = static_cast<VkDevice>(cppDevice)```
 to prevent converting some arbitrary int to a handle or vice versa by accident. If you're developing your code on a 64-bit platform, but want compile your code for a 32-bit platform without adding the explicit casts
 you can define ```VULKAN_HPP_TYPESAFE_CONVERSION``` to 1 in your build system or before including ```vulkan.hpp```. On 64-bit platforms this define is set to 1 by default and can be set to 0 to disable implicit conversions.
 
 # Flags
-The scoped enum feature adds type safety to the flags, but also prevents using the flag bits as input for bitwise operations like & and |. 
+The scoped enum feature adds type safety to the flags, but also prevents using the flag bits as input for bitwise operations like & and |.
 As solution Vulkan-Hpp provides a template class ```vk::Flags``` which brings the standard operations like &=, |=, & and | to our scoped enums. Except for the initialization with 0 this class behaves exactly like a normal bitmask
  with the improvement that it is impossible to set bits not specified by the corresponding enum by accident. Here are a few examples for the bitmask handling:
 
@@ -83,16 +83,16 @@ Vulkan-Hpp provides constructors for all CreateInfo objects which accept one par
 ```c++
  vk::ImageCreateInfo ci({}, vk::ImageType::e2D, vk::format::eR8G8B8A8Unorm,
                         { width, height, 1 },
-                        1, 1, vk::SampleCount::e1, 
+                        1, 1, vk::SampleCount::e1,
                         vk::ImageTiling::eOptimal, vk::ImageUsage:eColorAttachment,
                         vk::SharingMode::eExclusive, 0, 0, vk::Imagelayout::eUndefined);
 ```
 
 With constructors for CreateInfo structures one can also pass temporaries to Vulkan functions like this:
 ```c++
-  vk::Image image = device.createImage({{}, vk::ImageType::e2D, vk::format::eR8G8B8A8Unorm, 
+  vk::Image image = device.createImage({{}, vk::ImageType::e2D, vk::format::eR8G8B8A8Unorm,
                                        { width, height, 1 },
-                                       1, 1, vk::SampleCount::e1, 
+                                       1, 1, vk::SampleCount::e1,
                                        vk::ImageTiling::eOptimal, vk::ImageUsage:eColorAttachment,
                                        vk::SharingMode::eExclusive, 0, 0, vk::Imagelayout::eUndefined});
 ```
@@ -143,7 +143,7 @@ c.setScissor(0, vec);
 Vulkan-Hpp generates references for pointers to structs. This conversion allows passing temporary structs to functions which can result in shorter code. In case the input is optional and thus accepting a null pointer the parameter type will be
 a ```vk::Optional<T> const&``` type. This type accepts either a reference to ```T``` or nullptr as input and thus allows optional temporary structs.
 
-````c++
+```c++
 // C
 ImageSubResource subResource;
 subResource.aspectMask = 0;
@@ -152,16 +152,16 @@ subResource.arrayLayer = 0;
 vkSubresourceLayout layout = vkGetImageSubResourceLayout(image, subresource);
 
 // C++
-auto layout = device.getImageSubResourceLayout(image, { {} /* flags*/, 0 /* miplevel */, 0 /* layout */ }); 
+auto layout = device.getImageSubResourceLayout(image, { {} /* flags*/, 0 /* miplevel */, 0 /* layout */ });
 ```
 
 # Return values, Error Codes & Exceptions
-By default Vulkan-Hpp has exceptions enabled. This means that Vulkan-Hpp checks the return code of each function call which returns a Vk::Result. If Vk::Result is a failure a std::runtime_error will be thrown. 
+By default Vulkan-Hpp has exceptions enabled. This means that Vulkan-Hpp checks the return code of each function call which returns a Vk::Result. If Vk::Result is a failure a std::runtime_error will be thrown.
 Since there is no need to return the error code anymore the C++ bindings can now return the actual desired return value, i.e. a vulkan handle. In those cases ResultValue <SomeType>::type is defined as the returned type.
  To create a device you can now just write:
 
 ```C++
-vk::Device device = physicalDevice.createDevice(createInfo); 
+vk::Device device = physicalDevice.createDevice(createInfo);
 ```
 
 If exception handling is disabled by defining ```VULKAN_HPP_NO_EXCEPTIONS``` the type of ```ResultValue<SomeType>::type``` is a struct holding a ```vk::Result``` and a ```SomeType```.
@@ -204,7 +204,7 @@ if (shaderResult1.result != VK_SUCCESS)
   return?
 }
 
-// std::tie support. 
+// std::tie support.
 vk::Result result;
 vk::ShaderModule shaderModule2;
 std::tie(result, shaderModule2)  = device.createShaderModule({...} /* createInfo temporary */);
@@ -221,7 +221,7 @@ A nicer way to unpack the result is provided by the structured bindings of C++17
 ```c++
 auto [result, shaderModule2] = device.createShaderModule({...} /* createInfo temporary */);
 ```
- 
+
 Finally, the last code example is using exceptions and return value transformation. This is the default mode of the API.
 
 ```c++
@@ -251,7 +251,7 @@ do
   {
     // allocate memory & query again
     properties.resize( propertyCount );
-    result = static_cast<Result>( vk::enumerateDeviceLayerProperties( m_physicalDevice, &propertyCount, reinterpret_cast 
+    result = static_cast<Result>( vk::enumerateDeviceLayerProperties( m_physicalDevice, &propertyCount, reinterpret_cast
      <VkLayerProperties*>( properties.data() ) ) );
   }
 } while ( result == Result::eIncomplete );

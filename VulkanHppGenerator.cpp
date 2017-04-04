@@ -631,7 +631,7 @@ struct EnumData
     , bitmask(b)
   {}
 
-  void addEnumMember(std::string const & name, std::string const& tag, bool appendTag);
+  void addEnumMember(std::string const& name, std::string const& tag);
 
   std::string             name;
   std::string             prefix;
@@ -725,7 +725,7 @@ void readCommandsCommand(tinyxml2::XMLElement * element, VkData & vkData);
 std::vector<std::string> readCommandSuccessCodes(tinyxml2::XMLElement* element, std::set<std::string> const& tags);
 void readComment(tinyxml2::XMLElement * element, std::string & header);
 void readEnums( tinyxml2::XMLElement * element, VkData & vkData );
-void readEnumsEnum( tinyxml2::XMLElement * element, EnumData & enumData, std::string const& tag );
+void readEnumsEnum( tinyxml2::XMLElement * element, EnumData & enumData );
 void readDisabledExtensionRequire(tinyxml2::XMLElement * element, VkData & vkData);
 void readExtensionCommand(tinyxml2::XMLElement * element, std::map<std::string, CommandData> & commands, std::string const& protect);
 void readExtensionEnum(tinyxml2::XMLElement * element, std::map<std::string, EnumData> & enums, std::string const& tag);
@@ -746,7 +746,7 @@ void readTypes(tinyxml2::XMLElement * element, VkData & vkData);
 std::string reduceName(std::string const& name, bool singular = false);
 void registerDeleter(VkData & vkData, CommandData const& commandData);
 void sortDependencies( std::list<DependencyData> & dependencies );
-std::string strip(std::string const& value, std::string const& prefix, std::string const& tag = std::string());
+std::string strip(std::string const& value, std::string const& prefix, std::string const& postfix = std::string());
 std::string stripCommand(std::string const& value);
 std::string toCamelCase(std::string const& value);
 std::string toUpperCase(std::string const& name);
@@ -788,24 +788,24 @@ void writeTypes(std::ofstream & ofs, VkData const& vkData, std::map<std::string,
 void writeVersionCheck(std::ofstream & ofs, std::string const& version);
 void writeTypesafeCheck(std::ofstream & ofs, std::string const& typesafeCheck);
 
-void EnumData::addEnumMember(std::string const & name, std::string const& tag, bool appendTag)
+void EnumData::addEnumMember(std::string const &name, std::string const& tag)
 {
-  assert(tag.empty() || (name.find(tag) != std::string::npos));
-  members.push_back(NameValue());
-  members.back().name = "e" + toCamelCase(strip(name, prefix, tag));
-  members.back().value = name;
-  if (!postfix.empty())
+  NameValue nv;
+  nv.name = "e" + toCamelCase(strip(name, prefix, postfix));
+  nv.value = name;
+  if (bitmask)
   {
-    size_t pos = members.back().name.find(postfix);
+    size_t pos = nv.name.find("Bit");
     if (pos != std::string::npos)
     {
-      members.back().name.erase(pos);
+      nv.name.erase(pos, 3);
     }
   }
-  if (appendTag && !tag.empty())
+  if (!tag.empty() && (nv.name.substr(nv.name.length() - tag.length()) == toCamelCase(tag)))
   {
-    members.back().name += tag;
+    nv.name = nv.name.substr(0, nv.name.length() - tag.length()) + tag;
   }
+  members.push_back(nv);
 }
 
 void createDefaults( VkData const& vkData, std::map<std::string,std::string> & defaultValues )
@@ -1310,7 +1310,6 @@ void readEnums( tinyxml2::XMLElement * element, VkData & vkData )
     // ad an empty EnumData on this name into the enums map
     std::map<std::string,EnumData>::iterator it = vkData.enums.insert( std::make_pair( name, EnumData(name) ) ).first;
 
-    std::string tag;
     if (name == "Result")
     {
       // special handling for VKResult, as its enums just have VK_ in common
@@ -1330,7 +1329,6 @@ void readEnums( tinyxml2::XMLElement * element, VkData & vkData )
       }
 
       it->second.bitmask = (type == "bitmask");
-      std::string prefix, postfix;
       if (it->second.bitmask)
       {
         // for a bitmask enum, start with "VK", cut off the trailing "FlagBits", and convert that name to upper case
@@ -1338,7 +1336,6 @@ void readEnums( tinyxml2::XMLElement * element, VkData & vkData )
         size_t pos = name.find("FlagBits");
         assert(pos != std::string::npos);
         it->second.prefix = "VK" + toUpperCase(name.substr(0, pos)) + "_";
-        it->second.postfix = "Bit";
       }
       else
       {
@@ -1346,20 +1343,24 @@ void readEnums( tinyxml2::XMLElement * element, VkData & vkData )
         it->second.prefix = "VK" + toUpperCase(name) + "_";
       }
 
-      // if the enum name contains a tag remove it from the prefix to generate correct enum value names.
+      // if the enum name contains a tag move it from the prefix to the postfix to generate correct enum value names.
       for (std::set<std::string>::const_iterator tit = vkData.tags.begin(); tit != vkData.tags.end(); ++tit)
       {
-        size_t pos = it->second.prefix.find(*tit);
-        if ((pos != std::string::npos) && (pos == it->second.prefix.length() - tit->length() - 1))
+        if ((tit->length() < it->second.prefix.length()) && (it->second.prefix.substr(it->second.prefix.length() - tit->length() - 1) == (*tit + "_")))
         {
-          it->second.prefix.erase(pos);
-          tag = *tit;
+          it->second.prefix.erase(it->second.prefix.length() - tit->length() - 1);
+          it->second.postfix = "_" + *tit;
+          break;
+        }
+        else if ((tit->length() < it->second.name.length()) && (it->second.name.substr(it->second.name.length() - tit->length()) == *tit))
+        {
+          it->second.postfix = "_" + *tit;
           break;
         }
       }
     }
 
-    readEnumsEnum( element, it->second, tag );
+    readEnumsEnum( element, it->second );
 
     // add this enum to the set of Vulkan data types
     assert( vkData.vkTypes.find( name ) == vkData.vkTypes.end() );
@@ -1367,7 +1368,7 @@ void readEnums( tinyxml2::XMLElement * element, VkData & vkData )
   }
 }
 
-void readEnumsEnum( tinyxml2::XMLElement * element, EnumData & enumData, std::string const& tag )
+void readEnumsEnum( tinyxml2::XMLElement * element, EnumData & enumData )
 {
   // read the names of the enum values
   tinyxml2::XMLElement * child = element->FirstChildElement();
@@ -1375,7 +1376,7 @@ void readEnumsEnum( tinyxml2::XMLElement * element, EnumData & enumData, std::st
   {
     if ( child->Attribute( "name" ) )
     {
-      enumData.addEnumMember(child->Attribute("name"), tag, false);
+      enumData.addEnumMember(child->Attribute("name"), "");
     }
     child = child->NextSiblingElement();
   }
@@ -1458,7 +1459,7 @@ void readExtensionEnum(tinyxml2::XMLElement * element, std::map<std::string, Enu
     assert(!!element->Attribute("bitpos") + !!element->Attribute("offset") + !!element->Attribute("value") == 1);
     auto enumIt = enums.find(strip(element->Attribute("extends"), "Vk"));
     assert(enumIt != enums.end());
-    enumIt->second.addEnumMember(element->Attribute("name"), element->Attribute("value") ? "" : tag, true);
+    enumIt->second.addEnumMember(element->Attribute("name"), tag);
   }
 }
 
@@ -1500,7 +1501,7 @@ void readExtensionsExtension(tinyxml2::XMLElement * element, VkData & vkData)
 {
   assert( element->Attribute( "name" ) );
   std::string tag = extractTag(element->Attribute("name"));
-  assert((tag == "KHX") || (vkData.tags.find(tag) != vkData.tags.end()));
+  assert(vkData.tags.find(tag) != vkData.tags.end());
 
   tinyxml2::XMLElement * child = element->FirstChildElement();
   assert(child && (strcmp(child->Value(), "require") == 0) && !child->NextSiblingElement());
@@ -1934,10 +1935,9 @@ std::string strip(std::string const& value, std::string const& prefix, std::stri
   {
     strippedValue.erase(0, prefix.length());
   }
-  if (!postfix.empty())
+  if (!postfix.empty() && (strippedValue.substr(strippedValue.length() - postfix.length()) == postfix))
   {
-    assert(strippedValue.substr(strippedValue.length() - postfix.length()) == postfix);
-    strippedValue.erase(strippedValue.length() - postfix.length() - 1);
+    strippedValue.erase(strippedValue.length() - postfix.length());
   }
   return strippedValue;
 }
@@ -3729,7 +3729,8 @@ int main( int argc, char **argv )
     assert(!registryElement->NextSiblingElement());
 
     VkData vkData;
-    vkData.handles[""];   // insert the default "handle" without class (for createInstance, and such)
+    vkData.handles[""];         // insert the default "handle" without class (for createInstance, and such)
+    vkData.tags.insert("KHX");  // insert a non-listed tag
 
     for (tinyxml2::XMLElement * child = registryElement->FirstChildElement(); child; child = child->NextSiblingElement())
     {

@@ -62,6 +62,57 @@ const std::string exceptionHeader(
   "\n"
   );
 
+std::string const exceptionClassesHeader = (
+  "#if defined(_MSC_VER) && (_MSC_VER == 1800)\n"
+  "# define noexcept _NOEXCEPT\n"
+  "#endif\n"
+  "\n"
+  "  class Error\n"
+  "  {\n"
+  "    public:\n"
+  "    virtual ~Error() = default;\n"
+  "\n"
+  "    virtual const char* what() const noexcept = 0;\n"
+  "  };\n"
+  "\n"
+  "  class LogicError : public Error, public std::logic_error\n"
+  "  {\n"
+  "    public:\n"
+  "    explicit LogicError( const std::string& what )\n"
+  "      : Error(), std::logic_error(what) {}\n"
+  "    explicit LogicError( char const * what )\n"
+  "      : Error(), std::logic_error(what) {}\n"
+  "    virtual ~LogicError() = default;\n"
+  "\n"
+  "    virtual const char* what() const noexcept { return std::logic_error::what(); }\n"
+  "  };\n"
+  "\n"
+  "  class SystemError : public Error, public std::system_error\n"
+  "  {\n"
+  "    public:\n"
+  "    SystemError( std::error_code ec )\n"
+  "      : Error(), std::system_error(ec) {}\n"
+  "    SystemError( std::error_code ec, std::string const& what )\n"
+  "      : Error(), std::system_error(ec, what) {}\n"
+  "    SystemError( std::error_code ec, char const * what )\n"
+  "      : Error(), std::system_error(ec, what) {}\n"
+  "    SystemError( int ev, std::error_category const& ecat )\n"
+  "      : Error(), std::system_error(ev, ecat) {}\n"
+  "    SystemError( int ev, std::error_category const& ecat, std::string const& what)\n"
+  "      : Error(), std::system_error(ev, ecat, what) {}\n"
+  "    SystemError( int ev, std::error_category const& ecat, char const * what)\n"
+  "      : Error(), std::system_error(ev, ecat, what) {}\n"
+  "    virtual ~SystemError() = default;\n"
+  "\n"
+  "    virtual const char* what() const noexcept { return std::system_error::what(); }\n"
+  "  };\n"
+  "\n"
+  "#if defined(_MSC_VER) && (_MSC_VER == 1800)\n"
+  "# undef noexcept\n"
+  "#endif\n"
+  "\n"
+  );
+
 const std::string flagsHeader(
 "  template <typename FlagBitsType> struct FlagTraits\n"
 "  {\n"
@@ -396,7 +447,7 @@ std::string const createResultValueHeader = (
   "#else\n"
   "    if ( result != Result::eSuccess )\n"
   "    {\n"
-  "      throw std::system_error( result, message );\n"
+  "      throwResultException( result, message );\n"
   "    }\n"
   "#endif\n"
   "  }\n"
@@ -410,7 +461,7 @@ std::string const createResultValueHeader = (
   "#else\n"
   "    if ( result != Result::eSuccess )\n"
   "    {\n"
-  "      throw std::system_error( result, message );\n"
+  "      throwResultException( result, message );\n"
   "    }\n"
   "    return data;\n"
   "#endif\n"
@@ -423,7 +474,7 @@ std::string const createResultValueHeader = (
   "#else\n"
   "    if ( std::find( successCodes.begin(), successCodes.end(), result ) == successCodes.end() )\n"
   "    {\n"
-  "      throw std::system_error( result, message );\n"
+  "      throwResultException( result, message );\n"
   "    }\n"
   "#endif\n"
   "    return result;\n"
@@ -437,7 +488,7 @@ std::string const createResultValueHeader = (
   "#else\n"
   "    if ( std::find( successCodes.begin(), successCodes.end(), result ) == successCodes.end() )\n"
   "    {\n"
-  "      throw std::system_error( result, message );\n"
+  "      throwResultException( result, message );\n"
   "    }\n"
   "#endif\n"
   "    return ResultValue<T>( result, data );\n"
@@ -789,6 +840,10 @@ void writeStructSetter( std::ofstream & ofs, std::string const& structureName, M
 void writeTypeCommand(std::ofstream & ofs, VkData const& vkData, DependencyData const& dependencyData);
 void writeTypeCommand(std::ofstream &ofs, std::string const& indentation, VkData const& vkData, CommandData const& commandData, bool definition);
 void writeTypeEnum(std::ofstream & ofs, EnumData const& enumData);
+bool isErrorEnum(std::string const& enumName);
+std::string stripErrorEnumPrefix(std::string const& enumName);
+void writeExceptionsForEnum(std::ofstream & ofs, EnumData const& enumData);
+void writeThrowExceptions(std::ofstream& ofs, EnumData const& enumData);
 void writeTypeFlags(std::ofstream & ofs, std::string const& flagsName, FlagData const& flagData, EnumData const& enumData);
 void writeTypeHandle(std::ofstream & ofs, VkData const& vkData, DependencyData const& dependencyData, HandleData const& handle, std::list<DependencyData> const& dependencies);
 void writeTypeScalar( std::ofstream & ofs, DependencyData const& dependencyData );
@@ -2052,7 +2107,7 @@ void writeCall(std::ostream & os, CommandData const& commandData, std::set<std::
     {
       writeCallVectorParameter(os, commandData, vkTypes, firstCall, singular, it);
     }
-    else 
+    else
     {
       if (vkTypes.find(commandData.params[i].pureType) != vkTypes.end())
       {
@@ -2495,7 +2550,7 @@ void writeFunctionBodyEnhancedMultiVectorSizeCheck(std::ostream & os, std::strin
             << "#else" << std::endl
             << indentation << "  if ( " << firstVectorName << ".size() != " << secondVectorName << ".size() )" << std::endl
             << indentation << "  {" << std::endl
-            << indentation << "    throw std::logic_error( \"vk::" << commandData.className << "::" << commandData.reducedName << ": " << firstVectorName << ".size() != " << secondVectorName << ".size()\" );" << std::endl
+            << indentation << "    throw LogicError( \"vk::" << commandData.className << "::" << commandData.reducedName << ": " << firstVectorName << ".size() != " << secondVectorName << ".size()\" );" << std::endl
             << indentation << "  }" << std::endl
             << "#endif  // VULKAN_HPP_NO_EXCEPTIONS" << std::endl;
         }
@@ -2900,7 +2955,7 @@ void writeFunctionHeaderReturnType(std::ostream & os, std::string const& indenta
     }
     else if ((commandData.returnParam != ~0) && (1 < commandData.successCodes.size()))
     {
-      // if there is a return parameter at all, and there are multiple success codes, we return a ResultValue<...> with the pure return type 
+      // if there is a return parameter at all, and there are multiple success codes, we return a ResultValue<...> with the pure return type
       assert(commandData.returnType == "Result");
       os << "ResultValue<" << commandData.params[commandData.returnParam].pureType << "> ";
     }
@@ -3202,6 +3257,67 @@ void writeTypeEnum( std::ofstream & ofs, EnumData const& enumData )
     ofs << std::endl;
   }
   ofs << "  };" << std::endl;
+  leaveProtect(ofs, enumData.protect);
+  ofs << std::endl;
+}
+
+bool isErrorEnum(std::string const& enumName)
+{
+  return (enumName.substr(0, 6) == "eError");
+}
+
+std::string stripErrorEnumPrefix(std::string const& enumName)
+{
+  assert(isErrorEnum(enumName));
+  return strip(enumName, "eError");
+}
+
+// Intended only for `enum class Result`!
+void writeExceptionsForEnum( std::ofstream & ofs, EnumData const& enumData)
+{
+    enterProtect(ofs, enumData.protect);
+    for ( size_t i=0 ; i<enumData.members.size() ; i++ )
+    {
+      if (!isErrorEnum(enumData.members[i].name))
+      {
+        continue;
+      }
+      const std::string strippedName = stripErrorEnumPrefix(enumData.members[i].name);
+      ofs << "  class " << strippedName << "Error : public SystemError" << std::endl
+          << "  {" << std::endl
+          << "    public:" << std::endl
+          << "    " << strippedName << "Error( std::string const& message )" << std::endl
+          << "      : SystemError(make_error_code(" << enumData.name << "::" << enumData.members[i].name << "), message) {}" << std::endl
+          << "    " << strippedName << "Error( char const * message )" << std::endl
+          << "      : SystemError(make_error_code(" << enumData.name << "::" << enumData.members[i].name << "), message) {}" << std::endl
+          << "  };" << std::endl
+          << std::endl;
+    }
+    leaveProtect(ofs, enumData.protect);
+    ofs << std::endl;
+}
+
+void writeThrowExceptions( std::ofstream & ofs, EnumData const& enumData)
+{
+  enterProtect(ofs, enumData.protect);
+  ofs << "  VULKAN_HPP_INLINE void throwResultException( Result result, char const * message )" << std::endl
+      << "  {" << std::endl
+      << "    assert ( static_cast<long long int>(result) < 0 );" << std::endl
+      << "    switch ( result )" << std::endl
+      << "    {" << std::endl;
+  for ( size_t i=0 ; i<enumData.members.size() ; i++ )
+  {
+    if (!isErrorEnum(enumData.members[i].name))
+    {
+      continue;
+    }
+    const std::string strippedExceptionName = stripErrorEnumPrefix(enumData.members[i].name);
+    ofs << "    case " << enumData.name << "::" << enumData.members[i].name << ": "
+        << "throw " << strippedExceptionName << "Error ( message );" << std::endl;
+  }
+  ofs << "    default: throw SystemError( make_error_code( result ) );" << std::endl
+      << "    }" << std::endl
+      << "  }" << std::endl;
   leaveProtect(ofs, enumData.protect);
   ofs << std::endl;
 }
@@ -3981,8 +4097,11 @@ int main( int argc, char **argv )
     assert(it != vkData.dependencies.end());
     writeTypeEnum(ofs, vkData.enums.find(it->name)->second);
     writeEnumsToString(ofs, vkData.enums.find(it->name)->second);
-    vkData.dependencies.erase(it);
     ofs << exceptionHeader;
+    ofs << exceptionClassesHeader;
+    writeExceptionsForEnum(ofs, vkData.enums.find(it->name)->second);
+    writeThrowExceptions(ofs, vkData.enums.find(it->name)->second);
+    vkData.dependencies.erase(it);
 
     ofs << "} // namespace vk" << std::endl
       << std::endl

@@ -531,6 +531,264 @@ namespace vk
     return std::error_condition(static_cast<int>(e), errorCategory());
   }
 
+#if defined(_MSC_VER) && (_MSC_VER == 1800)
+# define noexcept _NOEXCEPT
+#endif
+
+  class Error
+  {
+    public:
+    virtual ~Error() = default;
+
+    virtual const char* what() const noexcept = 0;
+  };
+
+  class LogicError : public Error, public std::logic_error
+  {
+    public:
+    explicit LogicError( const std::string& what )
+      : Error(), std::logic_error(what) {}
+    explicit LogicError( char const * what )
+      : Error(), std::logic_error(what) {}
+    virtual ~LogicError() = default;
+
+    virtual const char* what() const noexcept { return std::logic_error::what(); }
+  };
+
+  class SystemError : public Error, public std::system_error
+  {
+    public:
+    SystemError( std::error_code ec )
+      : Error(), std::system_error(ec) {}
+    SystemError( std::error_code ec, std::string const& what )
+      : Error(), std::system_error(ec, what) {}
+    SystemError( std::error_code ec, char const * what )
+      : Error(), std::system_error(ec, what) {}
+    SystemError( int ev, std::error_category const& ecat )
+      : Error(), std::system_error(ev, ecat) {}
+    SystemError( int ev, std::error_category const& ecat, std::string const& what)
+      : Error(), std::system_error(ev, ecat, what) {}
+    SystemError( int ev, std::error_category const& ecat, char const * what)
+      : Error(), std::system_error(ev, ecat, what) {}
+    virtual ~SystemError() = default;
+
+    virtual const char* what() const noexcept { return std::system_error::what(); }
+  };
+
+#if defined(_MSC_VER) && (_MSC_VER == 1800)
+# undef noexcept
+#endif
+
+  class OutOfHostMemoryError : public SystemError
+  {
+    public:
+    OutOfHostMemoryError( std::string const& message )
+      : SystemError(make_error_code(Result::eErrorOutOfHostMemory), message) {}
+    OutOfHostMemoryError( char const * message )
+      : SystemError(make_error_code(Result::eErrorOutOfHostMemory), message) {}
+  };
+
+  class OutOfDeviceMemoryError : public SystemError
+  {
+    public:
+    OutOfDeviceMemoryError( std::string const& message )
+      : SystemError(make_error_code(Result::eErrorOutOfDeviceMemory), message) {}
+    OutOfDeviceMemoryError( char const * message )
+      : SystemError(make_error_code(Result::eErrorOutOfDeviceMemory), message) {}
+  };
+
+  class InitializationFailedError : public SystemError
+  {
+    public:
+    InitializationFailedError( std::string const& message )
+      : SystemError(make_error_code(Result::eErrorInitializationFailed), message) {}
+    InitializationFailedError( char const * message )
+      : SystemError(make_error_code(Result::eErrorInitializationFailed), message) {}
+  };
+
+  class DeviceLostError : public SystemError
+  {
+    public:
+    DeviceLostError( std::string const& message )
+      : SystemError(make_error_code(Result::eErrorDeviceLost), message) {}
+    DeviceLostError( char const * message )
+      : SystemError(make_error_code(Result::eErrorDeviceLost), message) {}
+  };
+
+  class MemoryMapFailedError : public SystemError
+  {
+    public:
+    MemoryMapFailedError( std::string const& message )
+      : SystemError(make_error_code(Result::eErrorMemoryMapFailed), message) {}
+    MemoryMapFailedError( char const * message )
+      : SystemError(make_error_code(Result::eErrorMemoryMapFailed), message) {}
+  };
+
+  class LayerNotPresentError : public SystemError
+  {
+    public:
+    LayerNotPresentError( std::string const& message )
+      : SystemError(make_error_code(Result::eErrorLayerNotPresent), message) {}
+    LayerNotPresentError( char const * message )
+      : SystemError(make_error_code(Result::eErrorLayerNotPresent), message) {}
+  };
+
+  class ExtensionNotPresentError : public SystemError
+  {
+    public:
+    ExtensionNotPresentError( std::string const& message )
+      : SystemError(make_error_code(Result::eErrorExtensionNotPresent), message) {}
+    ExtensionNotPresentError( char const * message )
+      : SystemError(make_error_code(Result::eErrorExtensionNotPresent), message) {}
+  };
+
+  class FeatureNotPresentError : public SystemError
+  {
+    public:
+    FeatureNotPresentError( std::string const& message )
+      : SystemError(make_error_code(Result::eErrorFeatureNotPresent), message) {}
+    FeatureNotPresentError( char const * message )
+      : SystemError(make_error_code(Result::eErrorFeatureNotPresent), message) {}
+  };
+
+  class IncompatibleDriverError : public SystemError
+  {
+    public:
+    IncompatibleDriverError( std::string const& message )
+      : SystemError(make_error_code(Result::eErrorIncompatibleDriver), message) {}
+    IncompatibleDriverError( char const * message )
+      : SystemError(make_error_code(Result::eErrorIncompatibleDriver), message) {}
+  };
+
+  class TooManyObjectsError : public SystemError
+  {
+    public:
+    TooManyObjectsError( std::string const& message )
+      : SystemError(make_error_code(Result::eErrorTooManyObjects), message) {}
+    TooManyObjectsError( char const * message )
+      : SystemError(make_error_code(Result::eErrorTooManyObjects), message) {}
+  };
+
+  class FormatNotSupportedError : public SystemError
+  {
+    public:
+    FormatNotSupportedError( std::string const& message )
+      : SystemError(make_error_code(Result::eErrorFormatNotSupported), message) {}
+    FormatNotSupportedError( char const * message )
+      : SystemError(make_error_code(Result::eErrorFormatNotSupported), message) {}
+  };
+
+  class FragmentedPoolError : public SystemError
+  {
+    public:
+    FragmentedPoolError( std::string const& message )
+      : SystemError(make_error_code(Result::eErrorFragmentedPool), message) {}
+    FragmentedPoolError( char const * message )
+      : SystemError(make_error_code(Result::eErrorFragmentedPool), message) {}
+  };
+
+  class SurfaceLostKHRError : public SystemError
+  {
+    public:
+    SurfaceLostKHRError( std::string const& message )
+      : SystemError(make_error_code(Result::eErrorSurfaceLostKHR), message) {}
+    SurfaceLostKHRError( char const * message )
+      : SystemError(make_error_code(Result::eErrorSurfaceLostKHR), message) {}
+  };
+
+  class NativeWindowInUseKHRError : public SystemError
+  {
+    public:
+    NativeWindowInUseKHRError( std::string const& message )
+      : SystemError(make_error_code(Result::eErrorNativeWindowInUseKHR), message) {}
+    NativeWindowInUseKHRError( char const * message )
+      : SystemError(make_error_code(Result::eErrorNativeWindowInUseKHR), message) {}
+  };
+
+  class OutOfDateKHRError : public SystemError
+  {
+    public:
+    OutOfDateKHRError( std::string const& message )
+      : SystemError(make_error_code(Result::eErrorOutOfDateKHR), message) {}
+    OutOfDateKHRError( char const * message )
+      : SystemError(make_error_code(Result::eErrorOutOfDateKHR), message) {}
+  };
+
+  class IncompatibleDisplayKHRError : public SystemError
+  {
+    public:
+    IncompatibleDisplayKHRError( std::string const& message )
+      : SystemError(make_error_code(Result::eErrorIncompatibleDisplayKHR), message) {}
+    IncompatibleDisplayKHRError( char const * message )
+      : SystemError(make_error_code(Result::eErrorIncompatibleDisplayKHR), message) {}
+  };
+
+  class ValidationFailedEXTError : public SystemError
+  {
+    public:
+    ValidationFailedEXTError( std::string const& message )
+      : SystemError(make_error_code(Result::eErrorValidationFailedEXT), message) {}
+    ValidationFailedEXTError( char const * message )
+      : SystemError(make_error_code(Result::eErrorValidationFailedEXT), message) {}
+  };
+
+  class InvalidShaderNVError : public SystemError
+  {
+    public:
+    InvalidShaderNVError( std::string const& message )
+      : SystemError(make_error_code(Result::eErrorInvalidShaderNV), message) {}
+    InvalidShaderNVError( char const * message )
+      : SystemError(make_error_code(Result::eErrorInvalidShaderNV), message) {}
+  };
+
+  class OutOfPoolMemoryKHRError : public SystemError
+  {
+    public:
+    OutOfPoolMemoryKHRError( std::string const& message )
+      : SystemError(make_error_code(Result::eErrorOutOfPoolMemoryKHR), message) {}
+    OutOfPoolMemoryKHRError( char const * message )
+      : SystemError(make_error_code(Result::eErrorOutOfPoolMemoryKHR), message) {}
+  };
+
+  class InvalidExternalHandleKHXError : public SystemError
+  {
+    public:
+    InvalidExternalHandleKHXError( std::string const& message )
+      : SystemError(make_error_code(Result::eErrorInvalidExternalHandleKHX), message) {}
+    InvalidExternalHandleKHXError( char const * message )
+      : SystemError(make_error_code(Result::eErrorInvalidExternalHandleKHX), message) {}
+  };
+
+
+  VULKAN_HPP_INLINE void throwResultException( Result result, char const * message )
+  {
+    assert ( static_cast<long long int>(result) < 0 );
+    switch ( result )
+    {
+    case Result::eErrorOutOfHostMemory: throw OutOfHostMemoryError ( message );
+    case Result::eErrorOutOfDeviceMemory: throw OutOfDeviceMemoryError ( message );
+    case Result::eErrorInitializationFailed: throw InitializationFailedError ( message );
+    case Result::eErrorDeviceLost: throw DeviceLostError ( message );
+    case Result::eErrorMemoryMapFailed: throw MemoryMapFailedError ( message );
+    case Result::eErrorLayerNotPresent: throw LayerNotPresentError ( message );
+    case Result::eErrorExtensionNotPresent: throw ExtensionNotPresentError ( message );
+    case Result::eErrorFeatureNotPresent: throw FeatureNotPresentError ( message );
+    case Result::eErrorIncompatibleDriver: throw IncompatibleDriverError ( message );
+    case Result::eErrorTooManyObjects: throw TooManyObjectsError ( message );
+    case Result::eErrorFormatNotSupported: throw FormatNotSupportedError ( message );
+    case Result::eErrorFragmentedPool: throw FragmentedPoolError ( message );
+    case Result::eErrorSurfaceLostKHR: throw SurfaceLostKHRError ( message );
+    case Result::eErrorNativeWindowInUseKHR: throw NativeWindowInUseKHRError ( message );
+    case Result::eErrorOutOfDateKHR: throw OutOfDateKHRError ( message );
+    case Result::eErrorIncompatibleDisplayKHR: throw IncompatibleDisplayKHRError ( message );
+    case Result::eErrorValidationFailedEXT: throw ValidationFailedEXTError ( message );
+    case Result::eErrorInvalidShaderNV: throw InvalidShaderNVError ( message );
+    case Result::eErrorOutOfPoolMemoryKHR: throw OutOfPoolMemoryKHRError ( message );
+    case Result::eErrorInvalidExternalHandleKHX: throw InvalidExternalHandleKHXError ( message );
+    default: throw SystemError( make_error_code( result ) );
+    }
+  }
+
 } // namespace vk
 
 namespace std
@@ -583,7 +841,7 @@ namespace vk
 #else
     if ( result != Result::eSuccess )
     {
-      throw std::system_error( result, message );
+      throwResultException( result, message );
     }
 #endif
   }
@@ -597,7 +855,7 @@ namespace vk
 #else
     if ( result != Result::eSuccess )
     {
-      throw std::system_error( result, message );
+      throwResultException( result, message );
     }
     return data;
 #endif
@@ -610,7 +868,7 @@ namespace vk
 #else
     if ( std::find( successCodes.begin(), successCodes.end(), result ) == successCodes.end() )
     {
-      throw std::system_error( result, message );
+      throwResultException( result, message );
     }
 #endif
     return result;
@@ -624,7 +882,7 @@ namespace vk
 #else
     if ( std::find( successCodes.begin(), successCodes.end(), result ) == successCodes.end() )
     {
-      throw std::system_error( result, message );
+      throwResultException( result, message );
     }
 #endif
     return ResultValue<T>( result, data );
@@ -22020,7 +22278,7 @@ namespace vk
 #else
     if ( buffers.size() != offsets.size() )
     {
-      throw std::logic_error( "vk::CommandBuffer::bindVertexBuffers: buffers.size() != offsets.size()" );
+      throw LogicError( "vk::CommandBuffer::bindVertexBuffers: buffers.size() != offsets.size()" );
     }
 #endif  // VULKAN_HPP_NO_EXCEPTIONS
     vkCmdBindVertexBuffers( m_commandBuffer, firstBinding, buffers.size() , reinterpret_cast<const VkBuffer*>( buffers.data() ), offsets.data() );
@@ -25175,7 +25433,7 @@ namespace vk
 #else
     if ( pObjectTableEntries.size() != objectIndices.size() )
     {
-      throw std::logic_error( "vk::Device::registerObjectsNVX: pObjectTableEntries.size() != objectIndices.size()" );
+      throw LogicError( "vk::Device::registerObjectsNVX: pObjectTableEntries.size() != objectIndices.size()" );
     }
 #endif  // VULKAN_HPP_NO_EXCEPTIONS
     Result result = static_cast<Result>( vkRegisterObjectsNVX( m_device, static_cast<VkObjectTableNVX>( objectTable ), pObjectTableEntries.size() , reinterpret_cast<const VkObjectTableEntryNVX* const*>( pObjectTableEntries.data() ), objectIndices.data() ) );
@@ -25195,7 +25453,7 @@ namespace vk
 #else
     if ( objectEntryTypes.size() != objectIndices.size() )
     {
-      throw std::logic_error( "vk::Device::unregisterObjectsNVX: objectEntryTypes.size() != objectIndices.size()" );
+      throw LogicError( "vk::Device::unregisterObjectsNVX: objectEntryTypes.size() != objectIndices.size()" );
     }
 #endif  // VULKAN_HPP_NO_EXCEPTIONS
     Result result = static_cast<Result>( vkUnregisterObjectsNVX( m_device, static_cast<VkObjectTableNVX>( objectTable ), objectEntryTypes.size() , reinterpret_cast<const VkObjectEntryTypeNVX*>( objectEntryTypes.data() ), objectIndices.data() ) );
@@ -25493,7 +25751,7 @@ namespace vk
 #else
     if ( swapchains.size() != metadata.size() )
     {
-      throw std::logic_error( "vk::Device::setHdrMetadataEXT: swapchains.size() != metadata.size()" );
+      throw LogicError( "vk::Device::setHdrMetadataEXT: swapchains.size() != metadata.size()" );
     }
 #endif  // VULKAN_HPP_NO_EXCEPTIONS
     vkSetHdrMetadataEXT( m_device, swapchains.size() , reinterpret_cast<const VkSwapchainKHR*>( swapchains.data() ), reinterpret_cast<const VkHdrMetadataEXT*>( metadata.data() ) );
@@ -27223,7 +27481,7 @@ namespace vk
 #else
     if ( layerPrefix.size() != message.size() )
     {
-      throw std::logic_error( "vk::Instance::debugReportMessageEXT: layerPrefix.size() != message.size()" );
+      throw LogicError( "vk::Instance::debugReportMessageEXT: layerPrefix.size() != message.size()" );
     }
 #endif  // VULKAN_HPP_NO_EXCEPTIONS
     vkDebugReportMessageEXT( m_instance, static_cast<VkDebugReportFlagsEXT>( flags ), static_cast<VkDebugReportObjectTypeEXT>( objectType ), object, location, messageCode, layerPrefix.c_str(), message.c_str() );

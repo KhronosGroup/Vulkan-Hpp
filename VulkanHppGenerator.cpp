@@ -28,218 +28,217 @@
 
 #include <tinyxml2.h>
 
-const std::string exceptionHeader(
-  "#if defined(_MSC_VER) && (_MSC_VER == 1800)\n"
-  "# define noexcept _NOEXCEPT\n"
-  "#endif\n"
-  "\n"
-  "  class ErrorCategoryImpl : public std::error_category\n"
-  "  {\n"
-  "    public:\n"
-  "    virtual const char* name() const noexcept override { return \"vk::Result\"; }\n"
-  "    virtual std::string message(int ev) const override { return to_string(static_cast<Result>(ev)); }\n"
-  "  };\n"
-  "\n"
-  "#if defined(_MSC_VER) && (_MSC_VER == 1800)\n"
-  "# undef noexcept\n"
-  "#endif\n"
-  "\n"
-  "  VULKAN_HPP_INLINE const std::error_category& errorCategory()\n"
-  "  {\n"
-  "    static ErrorCategoryImpl instance;\n"
-  "    return instance;\n"
-  "  }\n"
-  "\n"
-  "  VULKAN_HPP_INLINE std::error_code make_error_code(Result e)\n"
-  "  {\n"
-  "    return std::error_code(static_cast<int>(e), errorCategory());\n"
-  "  }\n"
-  "\n"
-  "  VULKAN_HPP_INLINE std::error_condition make_error_condition(Result e)\n"
-  "  {\n"
-  "    return std::error_condition(static_cast<int>(e), errorCategory());\n"
-  "  }\n"
-  "\n"
-  );
+const std::string exceptionHeader = R"(
+#if defined(_MSC_VER) && (_MSC_VER == 1800)
+# define noexcept _NOEXCEPT
+#endif
 
-std::string const exceptionClassesHeader = (
-  "#if defined(_MSC_VER) && (_MSC_VER == 1800)\n"
-  "# define noexcept _NOEXCEPT\n"
-  "#endif\n"
-  "\n"
-  "  class Error\n"
-  "  {\n"
-  "    public:\n"
-  "    virtual ~Error() = default;\n"
-  "\n"
-  "    virtual const char* what() const noexcept = 0;\n"
-  "  };\n"
-  "\n"
-  "  class LogicError : public Error, public std::logic_error\n"
-  "  {\n"
-  "    public:\n"
-  "    explicit LogicError( const std::string& what )\n"
-  "      : Error(), std::logic_error(what) {}\n"
-  "    explicit LogicError( char const * what )\n"
-  "      : Error(), std::logic_error(what) {}\n"
-  "    virtual ~LogicError() = default;\n"
-  "\n"
-  "    virtual const char* what() const noexcept { return std::logic_error::what(); }\n"
-  "  };\n"
-  "\n"
-  "  class SystemError : public Error, public std::system_error\n"
-  "  {\n"
-  "    public:\n"
-  "    SystemError( std::error_code ec )\n"
-  "      : Error(), std::system_error(ec) {}\n"
-  "    SystemError( std::error_code ec, std::string const& what )\n"
-  "      : Error(), std::system_error(ec, what) {}\n"
-  "    SystemError( std::error_code ec, char const * what )\n"
-  "      : Error(), std::system_error(ec, what) {}\n"
-  "    SystemError( int ev, std::error_category const& ecat )\n"
-  "      : Error(), std::system_error(ev, ecat) {}\n"
-  "    SystemError( int ev, std::error_category const& ecat, std::string const& what)\n"
-  "      : Error(), std::system_error(ev, ecat, what) {}\n"
-  "    SystemError( int ev, std::error_category const& ecat, char const * what)\n"
-  "      : Error(), std::system_error(ev, ecat, what) {}\n"
-  "    virtual ~SystemError() = default;\n"
-  "\n"
-  "    virtual const char* what() const noexcept { return std::system_error::what(); }\n"
-  "  };\n"
-  "\n"
-  "#if defined(_MSC_VER) && (_MSC_VER == 1800)\n"
-  "# undef noexcept\n"
-  "#endif\n"
-  "\n"
-  );
+  class ErrorCategoryImpl : public std::error_category
+  {
+    public:
+    virtual const char* name() const noexcept override { return "vk::Result"; }
+    virtual std::string message(int ev) const override { return to_string(static_cast<Result>(ev)); }
+  };
 
-const std::string flagsHeader(
-"  template <typename FlagBitsType> struct FlagTraits\n"
-"  {\n"
-"    enum { allFlags = 0 };\n"
-"  };\n"
-"\n"
-"  template <typename BitType, typename MaskType = VkFlags>\n"
-"  class Flags\n"
-"  {\n"
-"  public:\n"
-"    Flags()\n"
-"      : m_mask(0)\n"
-"    {\n"
-"    }\n"
-"\n"
-"    Flags(BitType bit)\n"
-"      : m_mask(static_cast<MaskType>(bit))\n"
-"    {\n"
-"    }\n"
-"\n"
-"    Flags(Flags<BitType> const& rhs)\n"
-"      : m_mask(rhs.m_mask)\n"
-"    {\n"
-"    }\n"
-"\n"
-"    Flags<BitType> & operator=(Flags<BitType> const& rhs)\n"
-"    {\n"
-"      m_mask = rhs.m_mask;\n"
-"      return *this;\n"
-"    }\n"
-"\n"
-"    Flags<BitType> & operator|=(Flags<BitType> const& rhs)\n"
-"    {\n"
-"      m_mask |= rhs.m_mask;\n"
-"      return *this;\n"
-"    }\n"
-"\n"
-"    Flags<BitType> & operator&=(Flags<BitType> const& rhs)\n"
-"    {\n"
-"      m_mask &= rhs.m_mask;\n"
-"      return *this;\n"
-"    }\n"
-"\n"
-"    Flags<BitType> & operator^=(Flags<BitType> const& rhs)\n"
-"    {\n"
-"      m_mask ^= rhs.m_mask;\n"
-"      return *this;\n"
-"    }\n"
-"\n"
-"    Flags<BitType> operator|(Flags<BitType> const& rhs) const\n"
-"    {\n"
-"      Flags<BitType> result(*this);\n"
-"      result |= rhs;\n"
-"      return result;\n"
-"    }\n"
-"\n"
-"    Flags<BitType> operator&(Flags<BitType> const& rhs) const\n"
-"    {\n"
-"      Flags<BitType> result(*this);\n"
-"      result &= rhs;\n"
-"      return result;\n"
-"    }\n"
-"\n"
-"    Flags<BitType> operator^(Flags<BitType> const& rhs) const\n"
-"    {\n"
-"      Flags<BitType> result(*this);\n"
-"      result ^= rhs;\n"
-"      return result;\n"
-"    }\n"
-"\n"
-"    bool operator!() const\n"
-"    {\n"
-"      return !m_mask;\n"
-"    }\n"
-"\n"
-"    Flags<BitType> operator~() const\n"
-"    {\n"
-"      Flags<BitType> result(*this);\n"
-"      result.m_mask ^= FlagTraits<BitType>::allFlags;\n"
-"      return result;\n"
-"    }\n"
-"\n"
-"    bool operator==(Flags<BitType> const& rhs) const\n"
-"    {\n"
-"      return m_mask == rhs.m_mask;\n"
-"    }\n"
-"\n"
-"    bool operator!=(Flags<BitType> const& rhs) const\n"
-"    {\n"
-"      return m_mask != rhs.m_mask;\n"
-"    }\n"
-"\n"
-"    explicit operator bool() const\n"
-"    {\n"
-"      return !!m_mask;\n"
-"    }\n"
-"\n"
-"    explicit operator MaskType() const\n"
-"    {\n"
-"        return m_mask;\n"
-"    }\n"
-"\n"
-"  private:\n"
-"    MaskType  m_mask;\n"
-"  };\n"
-"  \n"
-"  template <typename BitType>\n"
-"  Flags<BitType> operator|(BitType bit, Flags<BitType> const& flags)\n"
-"  {\n"
-"    return flags | bit;\n"
-"  }\n"
-"  \n"
-"  template <typename BitType>\n"
-"  Flags<BitType> operator&(BitType bit, Flags<BitType> const& flags)\n"
-"  {\n"
-"    return flags & bit;\n"
-"  }\n"
-"  \n"
-"  template <typename BitType>\n"
-"  Flags<BitType> operator^(BitType bit, Flags<BitType> const& flags)\n"
-"  {\n"
-"    return flags ^ bit;\n"
-"  }\n"
-"\n"
-);
+#if defined(_MSC_VER) && (_MSC_VER == 1800)
+# undef noexcept
+#endif
 
-std::string const optionalClassHeader = R"(
+  VULKAN_HPP_INLINE const std::error_category& errorCategory()
+  {
+    static ErrorCategoryImpl instance;
+    return instance;
+  }
+
+  VULKAN_HPP_INLINE std::error_code make_error_code(Result e)
+  {
+    return std::error_code(static_cast<int>(e), errorCategory());
+  }
+
+  VULKAN_HPP_INLINE std::error_condition make_error_condition(Result e)
+  {
+    return std::error_condition(static_cast<int>(e), errorCategory());
+  }
+)";
+
+const std::string exceptionClassesHeader = R"(
+#if defined(_MSC_VER) && (_MSC_VER == 1800)
+# define noexcept _NOEXCEPT
+#endif
+
+  class Error
+  {
+    public:
+    virtual ~Error() = default;
+
+    virtual const char* what() const noexcept = 0;
+  };
+
+  class LogicError : public Error, public std::logic_error
+  {
+    public:
+    explicit LogicError( const std::string& what )
+      : Error(), std::logic_error(what) {}
+    explicit LogicError( char const * what )
+      : Error(), std::logic_error(what) {}
+    virtual ~LogicError() = default;
+
+    virtual const char* what() const noexcept { return std::logic_error::what(); }
+  };
+
+  class SystemError : public Error, public std::system_error
+  {
+    public:
+    SystemError( std::error_code ec )
+      : Error(), std::system_error(ec) {}
+    SystemError( std::error_code ec, std::string const& what )
+      : Error(), std::system_error(ec, what) {}
+    SystemError( std::error_code ec, char const * what )
+      : Error(), std::system_error(ec, what) {}
+    SystemError( int ev, std::error_category const& ecat )
+      : Error(), std::system_error(ev, ecat) {}
+    SystemError( int ev, std::error_category const& ecat, std::string const& what)
+      : Error(), std::system_error(ev, ecat, what) {}
+    SystemError( int ev, std::error_category const& ecat, char const * what)
+      : Error(), std::system_error(ev, ecat, what) {}
+    virtual ~SystemError() = default;
+
+    virtual const char* what() const noexcept { return std::system_error::what(); }
+  };
+
+#if defined(_MSC_VER) && (_MSC_VER == 1800)
+# undef noexcept
+#endif
+
+)";
+
+const std::string flagsHeader = R"(
+  template <typename FlagBitsType> struct FlagTraits
+  {
+    enum { allFlags = 0 };
+  };
+
+  template <typename BitType, typename MaskType = VkFlags>
+  class Flags
+  {
+  public:
+    Flags()
+      : m_mask(0)
+    {
+    }
+
+    Flags(BitType bit)
+      : m_mask(static_cast<MaskType>(bit))
+    {
+    }
+
+    Flags(Flags<BitType> const& rhs)
+      : m_mask(rhs.m_mask)
+    {
+    }
+
+    Flags<BitType> & operator=(Flags<BitType> const& rhs)
+    {
+      m_mask = rhs.m_mask;
+      return *this;
+    }
+
+    Flags<BitType> & operator|=(Flags<BitType> const& rhs)
+    {
+      m_mask |= rhs.m_mask;
+      return *this;
+    }
+
+    Flags<BitType> & operator&=(Flags<BitType> const& rhs)
+    {
+      m_mask &= rhs.m_mask;
+      return *this;
+    }
+
+    Flags<BitType> & operator^=(Flags<BitType> const& rhs)
+    {
+      m_mask ^= rhs.m_mask;
+      return *this;
+    }
+
+    Flags<BitType> operator|(Flags<BitType> const& rhs) const
+    {
+      Flags<BitType> result(*this);
+      result |= rhs;
+      return result;
+    }
+
+    Flags<BitType> operator&(Flags<BitType> const& rhs) const
+    {
+      Flags<BitType> result(*this);
+      result &= rhs;
+      return result;
+    }
+
+    Flags<BitType> operator^(Flags<BitType> const& rhs) const
+    {
+      Flags<BitType> result(*this);
+      result ^= rhs;
+      return result;
+    }
+
+    bool operator!() const
+    {
+      return !m_mask;
+    }
+
+    Flags<BitType> operator~() const
+    {
+      Flags<BitType> result(*this);
+      result.m_mask ^= FlagTraits<BitType>::allFlags;
+      return result;
+    }
+
+    bool operator==(Flags<BitType> const& rhs) const
+    {
+      return m_mask == rhs.m_mask;
+    }
+
+    bool operator!=(Flags<BitType> const& rhs) const
+    {
+      return m_mask != rhs.m_mask;
+    }
+
+    explicit operator bool() const
+    {
+      return !!m_mask;
+    }
+
+    explicit operator MaskType() const
+    {
+        return m_mask;
+    }
+
+  private:
+    MaskType  m_mask;
+  };
+
+  template <typename BitType>
+  Flags<BitType> operator|(BitType bit, Flags<BitType> const& flags)
+  {
+    return flags | bit;
+  }
+
+  template <typename BitType>
+  Flags<BitType> operator&(BitType bit, Flags<BitType> const& flags)
+  {
+    return flags & bit;
+  }
+
+  template <typename BitType>
+  Flags<BitType> operator^(BitType bit, Flags<BitType> const& flags)
+  {
+    return flags ^ bit;
+  }
+
+)";
+
+const std::string optionalClassHeader = R"(
   template <typename RefType>
   class Optional
   {
@@ -255,105 +254,103 @@ std::string const optionalClassHeader = R"(
   private:
     RefType *m_ptr;
   };
-
 )";
 
-std::string const arrayProxyHeader = (
-  "#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE\n"
-  "  template <typename T>\n"
-  "  class ArrayProxy\n"
-  "  {\n"
-  "  public:\n"
-  "    ArrayProxy(std::nullptr_t)\n"
-  "      : m_count(0)\n"
-  "      , m_ptr(nullptr)\n"
-  "    {}\n"
-  "\n"
-  "    ArrayProxy(T & ptr)\n"
-  "      : m_count(1)\n"
-  "      , m_ptr(&ptr)\n"
-  "    {}\n"
-  "\n"
-  "    ArrayProxy(uint32_t count, T * ptr)\n"
-  "      : m_count(count)\n"
-  "      , m_ptr(ptr)\n"
-  "    {}\n"
-  "\n"
-  "    template <size_t N>\n"
-  "    ArrayProxy(std::array<typename std::remove_const<T>::type, N> & data)\n"
-  "      : m_count(N)\n"
-  "      , m_ptr(data.data())\n"
-  "    {}\n"
-  "\n"
-  "    template <size_t N>\n"
-  "    ArrayProxy(std::array<typename std::remove_const<T>::type, N> const& data)\n"
-  "      : m_count(N)\n"
-  "      , m_ptr(data.data())\n"
-  "    {}\n"
-  "\n"
-  "    template <class Allocator = std::allocator<typename std::remove_const<T>::type>>\n"
-  "    ArrayProxy(std::vector<typename std::remove_const<T>::type, Allocator> & data)\n"
-  "      : m_count(static_cast<uint32_t>(data.size()))\n"
-  "      , m_ptr(data.data())\n"
-  "    {}\n"
-  "\n"
-  "    template <class Allocator = std::allocator<typename std::remove_const<T>::type>>\n"
-  "    ArrayProxy(std::vector<typename std::remove_const<T>::type, Allocator> const& data)\n"
-  "      : m_count(static_cast<uint32_t>(data.size()))\n"
-  "      , m_ptr(data.data())\n"
-  "    {}\n"
-  "\n"
-  "    ArrayProxy(std::initializer_list<T> const& data)\n"
-  "      : m_count(static_cast<uint32_t>(data.end() - data.begin()))\n"
-  "      , m_ptr(data.begin())\n"
-  "    {}\n"
-  "\n"
-  "    const T * begin() const\n"
-  "    {\n"
-  "      return m_ptr;\n"
-  "    }\n"
-  "\n"
-  "    const T * end() const\n"
-  "    {\n"
-  "      return m_ptr + m_count;\n"
-  "    }\n"
-  "\n"
-  "    const T & front() const\n"
-  "    {\n"
-  "      assert(m_count && m_ptr);\n"
-  "      return *m_ptr;\n"
-  "    }\n"
-  "\n"
-  "    const T & back() const\n"
-  "    {\n"
-  "      assert(m_count && m_ptr);\n"
-  "      return *(m_ptr + m_count - 1);\n"
-  "    }\n"
-  "\n"
-  "    bool empty() const\n"
-  "    {\n"
-  "      return (m_count == 0);\n"
-  "    }\n"
-  "\n"
-  "    uint32_t size() const\n"
-  "    {\n"
-  "      return m_count;\n"
-  "    }\n"
-  "\n"
-  "    T * data() const\n"
-  "    {\n"
-  "      return m_ptr;\n"
-  "    }\n"
-  "\n"
-  "  private:\n"
-  "    uint32_t  m_count;\n"
-  "    T *       m_ptr;\n"
-  "  };\n"
-  "#endif\n"
-  "\n"
-);
+const std::string arrayProxyHeader = R"(
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename T>
+  class ArrayProxy
+  {
+  public:
+    ArrayProxy(std::nullptr_t)
+      : m_count(0)
+      , m_ptr(nullptr)
+    {}
 
-std::string const versionCheckHeader = { R"(
+    ArrayProxy(T & ptr)
+      : m_count(1)
+      , m_ptr(&ptr)
+    {}
+
+    ArrayProxy(uint32_t count, T * ptr)
+      : m_count(count)
+      , m_ptr(ptr)
+    {}
+
+    template <size_t N>
+    ArrayProxy(std::array<typename std::remove_const<T>::type, N> & data)
+      : m_count(N)
+      , m_ptr(data.data())
+    {}
+
+    template <size_t N>
+    ArrayProxy(std::array<typename std::remove_const<T>::type, N> const& data)
+      : m_count(N)
+      , m_ptr(data.data())
+    {}
+
+    template <class Allocator = std::allocator<typename std::remove_const<T>::type>>
+    ArrayProxy(std::vector<typename std::remove_const<T>::type, Allocator> & data)
+      : m_count(static_cast<uint32_t>(data.size()))
+      , m_ptr(data.data())
+    {}
+
+    template <class Allocator = std::allocator<typename std::remove_const<T>::type>>
+    ArrayProxy(std::vector<typename std::remove_const<T>::type, Allocator> const& data)
+      : m_count(static_cast<uint32_t>(data.size()))
+      , m_ptr(data.data())
+    {}
+
+    ArrayProxy(std::initializer_list<T> const& data)
+      : m_count(static_cast<uint32_t>(data.end() - data.begin()))
+      , m_ptr(data.begin())
+    {}
+
+    const T * begin() const
+    {
+      return m_ptr;
+    }
+
+    const T * end() const
+    {
+      return m_ptr + m_count;
+    }
+
+    const T & front() const
+    {
+      assert(m_count && m_ptr);
+      return *m_ptr;
+    }
+
+    const T & back() const
+    {
+      assert(m_count && m_ptr);
+      return *(m_ptr + m_count - 1);
+    }
+
+    bool empty() const
+    {
+      return (m_count == 0);
+    }
+
+    uint32_t size() const
+    {
+      return m_count;
+    }
+
+    T * data() const
+    {
+      return m_ptr;
+    }
+
+  private:
+    uint32_t  m_count;
+    T *       m_ptr;
+  };
+#endif
+)";
+
+const std::string versionCheckHeader = R"(
 #if !defined(VULKAN_HPP_HAS_UNRESTRICTED_UNIONS)
 # if defined(__clang__)
 #  if __has_feature(cxx_unrestricted_unions)
@@ -370,10 +367,9 @@ std::string const versionCheckHeader = { R"(
 #  endif
 # endif
 #endif
-)"
-};
+)";
 
-std::string const inlineHeader = {R"(
+const std::string inlineHeader = R"(
 #if !defined(VULKAN_HPP_INLINE)
 # if defined(__clang___)
 #  if __has_attribute(always_inline)
@@ -389,114 +385,111 @@ std::string const inlineHeader = {R"(
 #  define VULKAN_HPP_INLINE inline
 # endif
 #endif
-)"
-};
+)";
 
-std::string const explicitHeader = { R"(
+const std::string explicitHeader = R"(
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
 # define VULKAN_HPP_TYPESAFE_EXPLICIT
 #else
 # define VULKAN_HPP_TYPESAFE_EXPLICIT explicit
 #endif
-)"
-};
+)";
 
-std::string const resultValueHeader = (
-  "  template <typename T>\n"
-  "  struct ResultValue\n"
-  "  {\n"
-  "    ResultValue( Result r, T & v )\n"
-  "      : result( r )\n"
-  "      , value( v )\n"
-  "    {}\n"
-  "\n"
-  "    Result  result;\n"
-  "    T       value;\n"
-  "\n"
-  "    operator std::tuple<Result&, T&>() { return std::tuple<Result&, T&>(result, value); }\n"
-  "  };\n"
-  "\n"
-  "  template <typename T>\n"
-  "  struct ResultValueType\n"
-  "  {\n"
-  "#ifdef VULKAN_HPP_NO_EXCEPTIONS\n"
-  "    typedef ResultValue<T>  type;\n"
-  "#else\n"
-  "    typedef T              type;\n"
-  "#endif\n"
-  "  };\n"
-  "\n"
-  "  template <>"
-  "  struct ResultValueType<void>\n"
-  "  {\n"
-  "#ifdef VULKAN_HPP_NO_EXCEPTIONS\n"
-  "    typedef Result type;\n"
-  "#else\n"
-  "    typedef void   type;\n"
-  "#endif\n"
-  "  };\n"
-  "\n"
-  );
+const std::string resultValueHeader = R"(
+  template <typename T>
+  struct ResultValue
+  {
+    ResultValue( Result r, T & v )
+      : result( r )
+      , value( v )
+    {}
 
-std::string const createResultValueHeader = (
-  "  VULKAN_HPP_INLINE ResultValueType<void>::type createResultValue( Result result, char const * message )\n"
-  "  {\n"
-  "#ifdef VULKAN_HPP_NO_EXCEPTIONS\n"
-  "    assert( result == Result::eSuccess );\n"
-  "    return result;\n"
-  "#else\n"
-  "    if ( result != Result::eSuccess )\n"
-  "    {\n"
-  "      throwResultException( result, message );\n"
-  "    }\n"
-  "#endif\n"
-  "  }\n"
-  "\n"
-  "  template <typename T>\n"
-  "  VULKAN_HPP_INLINE typename ResultValueType<T>::type createResultValue( Result result, T & data, char const * message )\n"
-  "  {\n"
-  "#ifdef VULKAN_HPP_NO_EXCEPTIONS\n"
-  "    assert( result == Result::eSuccess );\n"
-  "    return ResultValue<T>( result, data );\n"
-  "#else\n"
-  "    if ( result != Result::eSuccess )\n"
-  "    {\n"
-  "      throwResultException( result, message );\n"
-  "    }\n"
-  "    return data;\n"
-  "#endif\n"
-  "  }\n"
-  "\n"
-  "  VULKAN_HPP_INLINE Result createResultValue( Result result, char const * message, std::initializer_list<Result> successCodes )\n"
-  "  {\n"
-  "#ifdef VULKAN_HPP_NO_EXCEPTIONS\n"
-  "    assert( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );\n"
-  "#else\n"
-  "    if ( std::find( successCodes.begin(), successCodes.end(), result ) == successCodes.end() )\n"
-  "    {\n"
-  "      throwResultException( result, message );\n"
-  "    }\n"
-  "#endif\n"
-  "    return result;\n"
-  "  }\n"
-  "\n"
-  "  template <typename T>\n"
-  "  VULKAN_HPP_INLINE ResultValue<T> createResultValue( Result result, T & data, char const * message, std::initializer_list<Result> successCodes )\n"
-  "  {\n"
-  "#ifdef VULKAN_HPP_NO_EXCEPTIONS\n"
-  "    assert( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );\n"
-  "#else\n"
-  "    if ( std::find( successCodes.begin(), successCodes.end(), result ) == successCodes.end() )\n"
-  "    {\n"
-  "      throwResultException( result, message );\n"
-  "    }\n"
-  "#endif\n"
-  "    return ResultValue<T>( result, data );\n"
-  "  }\n"
-  "\n"
-  );
+    Result  result;
+    T       value;
 
-std::string const uniqueHandleHeader = { R"(
+    operator std::tuple<Result&, T&>() { return std::tuple<Result&, T&>(result, value); }
+  };
+
+  template <typename T>
+  struct ResultValueType
+  {
+#ifdef VULKAN_HPP_NO_EXCEPTIONS
+    typedef ResultValue<T>  type;
+#else
+    typedef T              type;
+#endif
+  };
+
+  template <>
+  struct ResultValueType<void>
+  {
+#ifdef VULKAN_HPP_NO_EXCEPTIONS
+    typedef Result type;
+#else
+    typedef void   type;
+#endif
+  };
+)";
+
+const std::string createResultValueHeader = R"(
+  VULKAN_HPP_INLINE ResultValueType<void>::type createResultValue( Result result, char const * message )
+  {
+#ifdef VULKAN_HPP_NO_EXCEPTIONS
+    assert( result == Result::eSuccess );
+    return result;
+#else
+    if ( result != Result::eSuccess )
+    {
+      throwResultException( result, message );
+    }
+#endif
+  }
+
+  template <typename T>
+  VULKAN_HPP_INLINE typename ResultValueType<T>::type createResultValue( Result result, T & data, char const * message )
+  {
+#ifdef VULKAN_HPP_NO_EXCEPTIONS
+    assert( result == Result::eSuccess );
+    return ResultValue<T>( result, data );
+#else
+    if ( result != Result::eSuccess )
+    {
+      throwResultException( result, message );
+    }
+    return data;
+#endif
+  }
+
+  VULKAN_HPP_INLINE Result createResultValue( Result result, char const * message, std::initializer_list<Result> successCodes )
+  {
+#ifdef VULKAN_HPP_NO_EXCEPTIONS
+    assert( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );
+#else
+    if ( std::find( successCodes.begin(), successCodes.end(), result ) == successCodes.end() )
+    {
+      throwResultException( result, message );
+    }
+#endif
+    return result;
+  }
+
+  template <typename T>
+  VULKAN_HPP_INLINE ResultValue<T> createResultValue( Result result, T & data, char const * message, std::initializer_list<Result> successCodes )
+  {
+#ifdef VULKAN_HPP_NO_EXCEPTIONS
+    assert( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );
+#else
+    if ( std::find( successCodes.begin(), successCodes.end(), result ) == successCodes.end() )
+    {
+      throwResultException( result, message );
+    }
+#endif
+    return ResultValue<T>( result, data );
+  }
+
+)";
+
+const std::string uniqueHandleHeader = R"(
 #if defined(VULKAN_HPP_NO_EXCEPTIONS) && !defined(VULKAN_HPP_NO_SMART_HANDLE)
 #  define VULKAN_HPP_NO_SMART_HANDLE
 #endif
@@ -605,8 +598,7 @@ std::string const uniqueHandleHeader = { R"(
   }
 #endif
 
-)"
-};
+)";
 
 struct ParamData
 {
@@ -3621,7 +3613,7 @@ void writeTypeHandle(std::ofstream & ofs, VkData const& vkData, DependencyData c
       << "      m_" << memberName << " = " << memberName << ";" << std::endl
       << "      return *this;" << std::endl
       << "    }" << std::endl
-      << "#endif\n"
+      << "#endif" << std::endl
       << std::endl
       // assignment from std::nullptr_t
       << "    " << dependencyData.name << "& operator=( std::nullptr_t )" << std::endl

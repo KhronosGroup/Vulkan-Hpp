@@ -93,6 +93,7 @@ static_assert( VK_HEADER_VERSION ==  46 , "Wrong VK_HEADER_VERSION!" );
 
 namespace vk
 {
+
   template <typename FlagBitsType> struct FlagTraits
   {
     enum { allFlags = 0 };
@@ -197,19 +198,19 @@ namespace vk
   private:
     MaskType  m_mask;
   };
-  
+
   template <typename BitType>
   Flags<BitType> operator|(BitType bit, Flags<BitType> const& flags)
   {
     return flags | bit;
   }
-  
+
   template <typename BitType>
   Flags<BitType> operator&(BitType bit, Flags<BitType> const& flags)
   {
     return flags & bit;
   }
-  
+
   template <typename BitType>
   Flags<BitType> operator^(BitType bit, Flags<BitType> const& flags)
   {
@@ -324,7 +325,6 @@ namespace vk
     T *       m_ptr;
   };
 #endif
-
 
 #if defined(VULKAN_HPP_NO_EXCEPTIONS) && !defined(VULKAN_HPP_NO_SMART_HANDLE)
 #  define VULKAN_HPP_NO_SMART_HANDLE
@@ -499,6 +499,7 @@ namespace vk
     default: return "invalid";
     }
   }
+
 
 #if defined(_MSC_VER) && (_MSC_VER == 1800)
 # define noexcept _NOEXCEPT
@@ -800,6 +801,7 @@ namespace std
 
 namespace vk
 {
+
   template <typename T>
   struct ResultValue
   {
@@ -824,7 +826,8 @@ namespace vk
 #endif
   };
 
-  template <>  struct ResultValueType<void>
+  template <>
+  struct ResultValueType<void>
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
     typedef Result type;

@@ -25,6 +25,8 @@
 #include <string>
 #include <vector>
 #include <exception>
+#include <regex>
+#include <iterator>
 
 #include <tinyxml2.h>
 
@@ -600,6 +602,38 @@ const std::string uniqueHandleHeader = R"(
 
 )";
 
+std::string replaceWithMap(std::string const &input, std::map<std::string, std::string> replacements)
+{
+  // This will match ${someVariable} and contain someVariable in match group 1
+  std::regex re(R"(\$\{([^\}]+)\})");
+  auto it = std::sregex_iterator(input.begin(), input.end(), re);
+  auto end = std::sregex_iterator();
+
+  // No match, just return the original string
+  if (it == end)
+  {
+    return input;
+  }
+
+  std::string result = "";
+  while (it != end)
+  {
+    std::smatch match = *it;
+    auto itReplacement = replacements.find(match[1].str());
+    assert(itReplacement != replacements.end());
+
+    result += match.prefix().str() + ((itReplacement != replacements.end()) ? itReplacement->second : match[0].str());
+    ++it;
+
+    // we've passed the last match. Append the rest of the orignal string
+    if (it == end)
+    {
+      result += match.suffix().str();
+    }
+  }
+  return result;
+}
+
 struct ParamData
 {
   std::string type;
@@ -797,6 +831,7 @@ std::string toCamelCase(std::string const& value);
 std::string toUpperCase(std::string const& name);
 std::string trimEnd(std::string const& input);
 void writeCall(std::ostream & os, CommandData const& commandData, std::set<std::string> const& vkTypes, bool firstCall, bool singular);
+std::string generateCall(CommandData const& commandData, std::set<std::string> const& vkTypes, bool firstCall, bool singular);
 void writeCallCountParameter(std::ostream & os, CommandData const& commandData, bool singular, std::map<size_t, size_t>::const_iterator it);
 void writeCallParameter(std::ostream & os, ParamData const& paramData, std::set<std::string> const& vkTypes);
 void writeCallPlainTypeParameter(std::ostream & os, ParamData const& paramData);
@@ -1636,31 +1671,31 @@ void readExtensionType(tinyxml2::XMLElement * element, VkData & vkData, std::str
 
 tinyxml2::XMLNode* readType(tinyxml2::XMLNode* element, std::string & type, std::string & pureType)
 {
-	assert(element);
-	if (element->ToText())
-	{
-		std::string value = trimEnd(element->Value());
-		assert((value == "const") || (value == "struct"));
-		type = value + " ";
-		element = element->NextSibling();
-		assert(element);
-	}
+  assert(element);
+  if (element->ToText())
+  {
+    std::string value = trimEnd(element->Value());
+    assert((value == "const") || (value == "struct"));
+    type = value + " ";
+    element = element->NextSibling();
+    assert(element);
+  }
 
-	assert(element->ToElement());
-	assert((strcmp(element->Value(), "type") == 0) && element->ToElement() && element->ToElement()->GetText());
-	pureType = strip(element->ToElement()->GetText(), "Vk");
-	type += pureType;
+  assert(element->ToElement());
+  assert((strcmp(element->Value(), "type") == 0) && element->ToElement() && element->ToElement()->GetText());
+  pureType = strip(element->ToElement()->GetText(), "Vk");
+  type += pureType;
 
-	element = element->NextSibling();
-	assert(element);
-	if (element->ToText())
-	{
-		std::string value = trimEnd(element->Value());
-		assert((value == "*") || (value == "**") || (value == "* const*"));
-		type += value;
-		element = element->NextSibling();
-	}
-	return element;
+  element = element->NextSibling();
+  assert(element);
+  if (element->ToText())
+  {
+    std::string value = trimEnd(element->Value());
+    assert((value == "*") || (value == "**") || (value == "* const*"));
+    type += value;
+    element = element->NextSibling();
+  }
+  return element;
 }
 
 void readTypeBasetype( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies )
@@ -2065,6 +2100,13 @@ std::string trimEnd(std::string const& input)
   return result;
 }
 
+std::string generateCall(CommandData const& commandData, std::set<std::string> const& vkTypes, bool firstCall, bool singular)
+{
+  std::ostringstream call;
+  writeCall(call, commandData, vkTypes, firstCall, singular);
+  return call.str();
+}
+
 void writeCall(std::ostream & os, CommandData const& commandData, std::set<std::string> const& vkTypes, bool firstCall, bool singular)
 {
   // get the parameter indices of the counter for vector parameters
@@ -2374,76 +2416,81 @@ void writeFunctionBodyEnhanced(std::ostream & os, std::string const& indentation
   }
 }
 
+void writeFunctionBodyEnhanced(std::ostream &os, std::string const& templateString, std::string const& indentation, std::set<std::string> const& vkTypes, CommandData const& commandData, bool singular)
+{
+  os << replaceWithMap(templateString, {
+    { "call", generateCall(commandData, vkTypes, true, singular) },
+    { "i", indentation }
+  });
+
+}
+
 void writeFunctionBodyEnhancedCall(std::ostream &os, std::string const& indentation, std::set<std::string> const& vkTypes, CommandData const& commandData, bool singular)
 {
-  os << indentation << "  ";
-
-  if (commandData.returnType != "void")
-  {
-    os << "return ";
-  }
-  writeCall(os, commandData, vkTypes, true, singular);
-  os << ";" << std::endl;
+  std::string const templateString = "${i}  return ${call};\n";
+  std::string const templateStringVoid = "${i}  ${call};\n";
+  writeFunctionBodyEnhanced(os, commandData.returnType == "void" ? templateStringVoid : templateString, indentation, vkTypes, commandData, singular);
 }
 
 void writeFunctionBodyEnhancedCallResult(std::ostream &os, std::string const& indentation, std::set<std::string> const& vkTypes, CommandData const& commandData, bool singular)
 {
-  os << indentation << "  Result result = static_cast<Result>( ";
-  writeCall(os, commandData, vkTypes, true, singular);
-  os << " );" << std::endl;
+  std::string const templateString = "${i}  Result result = static_cast<Result>( ${call} );\n";
+  writeFunctionBodyEnhanced(os, templateString, indentation, vkTypes, commandData, singular);
+}
+
+void writeFunctionBodyTwoStep(std::ostream & os, std::string const &templateString, std::string const& indentation, std::set<std::string> const& vkTypes, std::string const& returnName, std::string const& sizeName, CommandData const& commandData)
+{
+  std::map<std::string, std::string> replacements = {
+    { "sizeName", sizeName },
+    { "returnName", returnName },
+    { "call1", generateCall(commandData, vkTypes, true, false) },
+    { "call2", generateCall(commandData, vkTypes, false, false) },
+    { "i", indentation }
+  };
+
+  os << replaceWithMap(templateString, replacements);
 }
 
 void writeFunctionBodyEnhancedCallTwoStep(std::ostream & os, std::string const& indentation, std::set<std::string> const& vkTypes, std::string const& returnName, std::string const& sizeName, CommandData const& commandData)
 {
-  os << indentation << "  ";
-  writeCall(os, commandData, vkTypes, true, false);
-  os << ";" << std::endl;
-
-  // resize the vector to hold the data according to the result from the first call
-  os << indentation << "  " << returnName << ".resize( " << sizeName << " );" << std::endl
-    << indentation << "  ";
-  writeCall(os, commandData, vkTypes, false, false);
-  os << ";" << std::endl;
+  std::string const templateString = 
+R"(${i}  ${call1};
+${i}  ${returnName}.resize( ${sizeName} );
+${i}  ${call2};
+)";
+  writeFunctionBodyTwoStep(os, templateString, indentation, vkTypes, returnName, sizeName, commandData);
 }
 
 void writeFunctionBodyEnhancedCallTwoStepChecked(std::ostream & os, std::string const& indentation, std::set<std::string> const& vkTypes, std::string const& returnName, std::string const& sizeName, CommandData const& commandData)
 {
-  os << indentation << "  Result result = static_cast<Result>( ";
-  writeCall(os, commandData, vkTypes, true, false);
-  os << " );" << std::endl
-    << indentation << "  if ( ( result == Result::eSuccess ) && " << sizeName << " )" << std::endl
-    << indentation << "  {" << std::endl
-    << indentation << "    " << returnName << ".resize( " << sizeName << " );" << std::endl
-    << indentation << "    result = static_cast<Result>( ";
-  writeCall(os, commandData, vkTypes, false, false);
-  os << " );" << std::endl
-    << indentation << "  }" << std::endl;
+  std::string const templateString =
+R"(${i}  Result result = static_cast<Result>( ${call1} );
+${i}  if ( ( result == Result::eSuccess ) && ${sizeName} )
+${i}  {
+${i}    ${returnName}.resize( ${sizeName} );
+${i}    result = static_cast<Result>( ${call2} );
+${i}  }
+)";
+  writeFunctionBodyTwoStep(os, templateString, indentation, vkTypes, returnName, sizeName, commandData);
 }
 
 void writeFunctionBodyEnhancedCallTwoStepIterate(std::ostream & os, std::string const& indentation, std::set<std::string> const& vkTypes, std::string const& returnName, std::string const& sizeName, CommandData const& commandData)
 {
-  // we need a local variable of type 'Result' to get the results of the calls
-  os << indentation << "  Result result;" << std::endl
-    << indentation << "  do" << std::endl
-    << indentation << "  {" << std::endl
-    << indentation << "    result = static_cast<Result>( ";
-  writeCall(os, commandData, vkTypes, true, false);
-  os << " );" << std::endl;
-
-  // check if the result was success and the size != 0
-  os << indentation << "    if ( ( result == Result::eSuccess ) && " << sizeName << " )" << std::endl
-    << indentation << "    {" << std::endl
-    // resize the vector to hold the data according to the result from the first call
-    << indentation << "      " << returnName << ".resize( " << sizeName << " );" << std::endl
-    // we need a static cast again
-    << indentation << "      result = static_cast<Result>( ";
-  writeCall(os, commandData, vkTypes, false, false);
-  os << " );" << std::endl
-    << indentation << "    }" << std::endl
-    // close the loop until we got complete data
-    << indentation << "  } while ( result == Result::eIncomplete );" << std::endl
-    << indentation << "  assert( " << sizeName << " <= " << returnName << ".size() ); " << std::endl
-    << indentation << "  " << returnName << ".resize( " << sizeName << " ); " << std::endl;
+  std::string const templateString = 
+R"(${i}  Result result;
+${i}  do
+${i}  {
+${i}    result = static_cast<Result>( ${call1} );
+${i}    if ( ( result == Result::eSuccess ) && ${sizeName} )
+${i}    {
+${i}      ${returnName}.resize( ${sizeName} );
+${i}      result = static_cast<Result>( ${call2} );
+${i}    }
+${i}  } while ( result == Result::eIncomplete );
+${i}  assert( ${sizeName} <= ${returnName}.size() );
+${i}  ${returnName}.resize( ${sizeName} );
+)";
+  writeFunctionBodyTwoStep(os, templateString, indentation, vkTypes, returnName, sizeName, commandData);
 }
 
 void writeFunctionBodyEnhancedLocalCountVariable(std::ostream & os, std::string const& indentation, CommandData const& commandData)
@@ -2526,6 +2573,18 @@ std::string writeFunctionBodyEnhancedLocalReturnVariable(std::ostream & os, std:
 
 void writeFunctionBodyEnhancedMultiVectorSizeCheck(std::ostream & os, std::string const& indentation, CommandData const& commandData)
 {
+  std::string const templateString = 
+R"#(#ifdef VULKAN_HPP_NO_EXCEPTIONS
+${i}  assert( ${firstVectorName}.size() == ${secondVectorName}.size() );
+#else
+${i}  if ( ${firstVectorName}.size() != ${secondVectorName}.size() )
+${i}  {
+${i}    throw LogicError( "vk::${className}::${reducedName}: ${firstVectorName}.size() != ${secondVectorName}.size()" );
+${i}  }
+#endif  // VULKAN_HPP_NO_EXCEPTIONS
+)#";
+
+
   // add some error checks if multiple vectors need to have the same size
   for (std::map<size_t, size_t>::const_iterator it0 = commandData.vectorParams.begin(); it0 != commandData.vectorParams.end(); ++it0)
   {
@@ -2535,16 +2594,13 @@ void writeFunctionBodyEnhancedMultiVectorSizeCheck(std::ostream & os, std::strin
       {
         if ((it1->first != commandData.returnParam) && (it0->second == it1->second))
         {
-          std::string firstVectorName = startLowerCase(strip(commandData.params[it0->first].name, "p"));
-          std::string secondVectorName = startLowerCase(strip(commandData.params[it1->first].name, "p"));
-          os << "#ifdef VULKAN_HPP_NO_EXCEPTIONS" << std::endl
-            << indentation << "  assert( " << firstVectorName << ".size() == " << secondVectorName << ".size() );" << std::endl
-            << "#else" << std::endl
-            << indentation << "  if ( " << firstVectorName << ".size() != " << secondVectorName << ".size() )" << std::endl
-            << indentation << "  {" << std::endl
-            << indentation << "    throw LogicError( \"vk::" << commandData.className << "::" << commandData.reducedName << ": " << firstVectorName << ".size() != " << secondVectorName << ".size()\" );" << std::endl
-            << indentation << "  }" << std::endl
-            << "#endif  // VULKAN_HPP_NO_EXCEPTIONS" << std::endl;
+          os << replaceWithMap(templateString, std::map<std::string, std::string>( {
+            { "firstVectorName", startLowerCase(strip(commandData.params[it0->first].name, "p")) },
+            { "secondVectorName", startLowerCase(strip(commandData.params[it1->first].name, "p")) },
+            { "className", commandData.className },
+            { "reducedName", commandData.reducedName},
+            { "i", indentation}
+          }));
         }
       }
     }
@@ -2707,15 +2763,20 @@ void writeFunctionBodyUnique(std::ostream & os, std::string const& indentation, 
   os << " )";
   if (returnsVector)
   {
-    // for vector returns, copy over the results from the non-unique function into a vector of Unique stuff
-    os << ";" << std::endl
-      << indentation << "  std::vector<Unique" << type << "> unique" << type << "s;" << std::endl
-      << indentation << "  unique" << type << "s.reserve( " << typeValue << "s.size() );" << std::endl
-      << indentation << "  for ( auto " << typeValue << " : " << typeValue << "s )" << std::endl
-      << indentation << "  {" << std::endl
-      << indentation << "    unique" << type << "s.push_back( Unique" << type << "( " << typeValue << ", deleter ) );" << std::endl
-      << indentation << "  }" << std::endl
-      << indentation << "  return unique" << type << "s;" << std::endl;
+    std::string const stringTemplate = R"(;
+${i}  std::vector<Unique${type}> unique${type}s;
+${i}  unique${type}s.reserve( ${typeValue}s.size() );
+${i}  for ( auto ${typeValue} : ${typeValue}s )
+${i}  {
+${i}    unique${type}s.push_back( Unique${type}( ${typeValue}, deleter ) );
+${i}  }
+${i}  return unique${type}s;
+)";
+    os << replaceWithMap(stringTemplate, std::map<std::string, std::string>{
+      { "i", indentation },
+      { "type", type },
+      { "typeValue", typeValue }
+    });
   }
   else
   {

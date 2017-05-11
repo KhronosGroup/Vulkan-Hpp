@@ -42,7 +42,7 @@
 # include <vector>
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-static_assert( VK_HEADER_VERSION ==  46 , "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION ==  48 , "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -6398,9 +6398,6 @@ namespace vk
     ePhysicalDeviceExternalBufferInfoKHX = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_BUFFER_INFO_KHX,
     eExternalBufferPropertiesKHX = VK_STRUCTURE_TYPE_EXTERNAL_BUFFER_PROPERTIES_KHX,
     ePhysicalDeviceIdPropertiesKHX = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ID_PROPERTIES_KHX,
-    ePhysicalDeviceProperties2KHX = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2_KHX,
-    eImageFormatProperties2KHX = VK_STRUCTURE_TYPE_IMAGE_FORMAT_PROPERTIES_2_KHX,
-    ePhysicalDeviceImageFormatInfo2KHX = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_FORMAT_INFO_2_KHX,
     eExternalMemoryBufferCreateInfoKHX = VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_BUFFER_CREATE_INFO_KHX,
     eExternalMemoryImageCreateInfoKHX = VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_IMAGE_CREATE_INFO_KHX,
     eExportMemoryAllocateInfoKHX = VK_STRUCTURE_TYPE_EXPORT_MEMORY_ALLOCATE_INFO_KHX,
@@ -21835,8 +21832,8 @@ namespace vk
         result = static_cast<Result>( vkEnumerateInstanceLayerProperties( &propertyCount, reinterpret_cast<VkLayerProperties*>( properties.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    assert( propertyCount <= properties.size() ); 
-    properties.resize( propertyCount ); 
+    assert( propertyCount <= properties.size() );
+    properties.resize( propertyCount );
     return createResultValue( result, properties, "vk::enumerateInstanceLayerProperties" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -21868,8 +21865,8 @@ namespace vk
         result = static_cast<Result>( vkEnumerateInstanceExtensionProperties( layerName ? layerName->c_str() : nullptr, &propertyCount, reinterpret_cast<VkExtensionProperties*>( properties.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    assert( propertyCount <= properties.size() ); 
-    properties.resize( propertyCount ); 
+    assert( propertyCount <= properties.size() );
+    properties.resize( propertyCount );
     return createResultValue( result, properties, "vk::enumerateInstanceExtensionProperties" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -24754,8 +24751,8 @@ namespace vk
         result = static_cast<Result>( vkGetPipelineCacheData( m_device, static_cast<VkPipelineCache>( pipelineCache ), &dataSize, reinterpret_cast<void*>( data.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    assert( dataSize <= data.size() ); 
-    data.resize( dataSize ); 
+    assert( dataSize <= data.size() );
+    data.resize( dataSize );
     return createResultValue( result, data, "vk::Device::getPipelineCacheData" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -25302,8 +25299,8 @@ namespace vk
         result = static_cast<Result>( vkGetSwapchainImagesKHR( m_device, static_cast<VkSwapchainKHR>( swapchain ), &swapchainImageCount, reinterpret_cast<VkImage*>( swapchainImages.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    assert( swapchainImageCount <= swapchainImages.size() ); 
-    swapchainImages.resize( swapchainImageCount ); 
+    assert( swapchainImageCount <= swapchainImages.size() );
+    swapchainImages.resize( swapchainImageCount );
     return createResultValue( result, swapchainImages, "vk::Device::getSwapchainImagesKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -26236,8 +26233,8 @@ namespace vk
         result = static_cast<Result>( vkEnumerateDeviceLayerProperties( m_physicalDevice, &propertyCount, reinterpret_cast<VkLayerProperties*>( properties.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    assert( propertyCount <= properties.size() ); 
-    properties.resize( propertyCount ); 
+    assert( propertyCount <= properties.size() );
+    properties.resize( propertyCount );
     return createResultValue( result, properties, "vk::PhysicalDevice::enumerateDeviceLayerProperties" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -26262,8 +26259,8 @@ namespace vk
         result = static_cast<Result>( vkEnumerateDeviceExtensionProperties( m_physicalDevice, layerName ? layerName->c_str() : nullptr, &propertyCount, reinterpret_cast<VkExtensionProperties*>( properties.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    assert( propertyCount <= properties.size() ); 
-    properties.resize( propertyCount ); 
+    assert( propertyCount <= properties.size() );
+    properties.resize( propertyCount );
     return createResultValue( result, properties, "vk::PhysicalDevice::enumerateDeviceExtensionProperties" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -26305,8 +26302,8 @@ namespace vk
         result = static_cast<Result>( vkGetPhysicalDeviceDisplayPropertiesKHR( m_physicalDevice, &propertyCount, reinterpret_cast<VkDisplayPropertiesKHR*>( properties.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    assert( propertyCount <= properties.size() ); 
-    properties.resize( propertyCount ); 
+    assert( propertyCount <= properties.size() );
+    properties.resize( propertyCount );
     return createResultValue( result, properties, "vk::PhysicalDevice::getDisplayPropertiesKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -26331,8 +26328,8 @@ namespace vk
         result = static_cast<Result>( vkGetPhysicalDeviceDisplayPlanePropertiesKHR( m_physicalDevice, &propertyCount, reinterpret_cast<VkDisplayPlanePropertiesKHR*>( properties.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    assert( propertyCount <= properties.size() ); 
-    properties.resize( propertyCount ); 
+    assert( propertyCount <= properties.size() );
+    properties.resize( propertyCount );
     return createResultValue( result, properties, "vk::PhysicalDevice::getDisplayPlanePropertiesKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -26357,8 +26354,8 @@ namespace vk
         result = static_cast<Result>( vkGetDisplayPlaneSupportedDisplaysKHR( m_physicalDevice, planeIndex, &displayCount, reinterpret_cast<VkDisplayKHR*>( displays.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    assert( displayCount <= displays.size() ); 
-    displays.resize( displayCount ); 
+    assert( displayCount <= displays.size() );
+    displays.resize( displayCount );
     return createResultValue( result, displays, "vk::PhysicalDevice::getDisplayPlaneSupportedDisplaysKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -26383,8 +26380,8 @@ namespace vk
         result = static_cast<Result>( vkGetDisplayModePropertiesKHR( m_physicalDevice, static_cast<VkDisplayKHR>( display ), &propertyCount, reinterpret_cast<VkDisplayModePropertiesKHR*>( properties.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    assert( propertyCount <= properties.size() ); 
-    properties.resize( propertyCount ); 
+    assert( propertyCount <= properties.size() );
+    properties.resize( propertyCount );
     return createResultValue( result, properties, "vk::PhysicalDevice::getDisplayModePropertiesKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -26474,8 +26471,8 @@ namespace vk
         result = static_cast<Result>( vkGetPhysicalDeviceSurfaceFormatsKHR( m_physicalDevice, static_cast<VkSurfaceKHR>( surface ), &surfaceFormatCount, reinterpret_cast<VkSurfaceFormatKHR*>( surfaceFormats.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    assert( surfaceFormatCount <= surfaceFormats.size() ); 
-    surfaceFormats.resize( surfaceFormatCount ); 
+    assert( surfaceFormatCount <= surfaceFormats.size() );
+    surfaceFormats.resize( surfaceFormatCount );
     return createResultValue( result, surfaceFormats, "vk::PhysicalDevice::getSurfaceFormatsKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -26500,8 +26497,8 @@ namespace vk
         result = static_cast<Result>( vkGetPhysicalDeviceSurfacePresentModesKHR( m_physicalDevice, static_cast<VkSurfaceKHR>( surface ), &presentModeCount, reinterpret_cast<VkPresentModeKHR*>( presentModes.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    assert( presentModeCount <= presentModes.size() ); 
-    presentModes.resize( presentModeCount ); 
+    assert( presentModeCount <= presentModes.size() );
+    presentModes.resize( presentModeCount );
     return createResultValue( result, presentModes, "vk::PhysicalDevice::getSurfacePresentModesKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -26779,8 +26776,8 @@ namespace vk
         result = static_cast<Result>( vkGetPhysicalDevicePresentRectanglesKHX( m_physicalDevice, static_cast<VkSurfaceKHR>( surface ), &rectCount, reinterpret_cast<VkRect2D*>( rects.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    assert( rectCount <= rects.size() ); 
-    rects.resize( rectCount ); 
+    assert( rectCount <= rects.size() );
+    rects.resize( rectCount );
     return createResultValue( result, rects, "vk::PhysicalDevice::getPresentRectanglesKHX" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -27239,8 +27236,8 @@ namespace vk
         result = static_cast<Result>( vkEnumeratePhysicalDevices( m_instance, &physicalDeviceCount, reinterpret_cast<VkPhysicalDevice*>( physicalDevices.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    assert( physicalDeviceCount <= physicalDevices.size() ); 
-    physicalDevices.resize( physicalDeviceCount ); 
+    assert( physicalDeviceCount <= physicalDevices.size() );
+    physicalDevices.resize( physicalDeviceCount );
     return createResultValue( result, physicalDevices, "vk::Instance::enumeratePhysicalDevices" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -27511,8 +27508,8 @@ namespace vk
         result = static_cast<Result>( vkEnumeratePhysicalDeviceGroupsKHX( m_instance, &physicalDeviceGroupCount, reinterpret_cast<VkPhysicalDeviceGroupPropertiesKHX*>( physicalDeviceGroupProperties.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    assert( physicalDeviceGroupCount <= physicalDeviceGroupProperties.size() ); 
-    physicalDeviceGroupProperties.resize( physicalDeviceGroupCount ); 
+    assert( physicalDeviceGroupCount <= physicalDeviceGroupProperties.size() );
+    physicalDeviceGroupProperties.resize( physicalDeviceGroupCount );
     return createResultValue( result, physicalDeviceGroupProperties, "vk::Instance::enumeratePhysicalDeviceGroupsKHX" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -28859,9 +28856,6 @@ namespace vk
     case StructureType::ePhysicalDeviceExternalBufferInfoKHX: return "PhysicalDeviceExternalBufferInfoKHX";
     case StructureType::eExternalBufferPropertiesKHX: return "ExternalBufferPropertiesKHX";
     case StructureType::ePhysicalDeviceIdPropertiesKHX: return "PhysicalDeviceIdPropertiesKHX";
-    case StructureType::ePhysicalDeviceProperties2KHX: return "PhysicalDeviceProperties2KHX";
-    case StructureType::eImageFormatProperties2KHX: return "ImageFormatProperties2KHX";
-    case StructureType::ePhysicalDeviceImageFormatInfo2KHX: return "PhysicalDeviceImageFormatInfo2KHX";
     case StructureType::eExternalMemoryBufferCreateInfoKHX: return "ExternalMemoryBufferCreateInfoKHX";
     case StructureType::eExternalMemoryImageCreateInfoKHX: return "ExternalMemoryImageCreateInfoKHX";
     case StructureType::eExportMemoryAllocateInfoKHX: return "ExportMemoryAllocateInfoKHX";

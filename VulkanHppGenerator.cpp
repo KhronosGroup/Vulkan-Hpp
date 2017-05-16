@@ -837,10 +837,10 @@ void writeCallParameter(std::ostream & os, ParamData const& paramData, std::set<
 void writeCallPlainTypeParameter(std::ostream & os, ParamData const& paramData);
 void writeCallVectorParameter(std::ostream & os, CommandData const& commandData, std::set<std::string> const& vkTypes, bool firstCall, bool singular, std::map<size_t, size_t>::const_iterator it);
 void writeCallVulkanTypeParameter(std::ostream & os, ParamData const& paramData);
-void writeDeleterClasses(std::ofstream & ofs, std::pair<std::string, std::set<std::string>> const& deleterTypes, std::map<std::string, DeleterData> const& deleterData);
-void writeDeleterForwardDeclarations(std::ofstream &ofs, std::pair<std::string, std::set<std::string>> const& deleterTypes, std::map<std::string, DeleterData> const& deleterData);
-void writeEnumsToString(std::ofstream & ofs, EnumData const& enumData);
-void writeFlagsToString(std::ofstream & ofs, std::string const& flagsName, EnumData const &enumData);
+void writeDeleterClasses(std::ostream & os, std::pair<std::string, std::set<std::string>> const& deleterTypes, std::map<std::string, DeleterData> const& deleterData);
+void writeDeleterForwardDeclarations(std::ostream &os, std::pair<std::string, std::set<std::string>> const& deleterTypes, std::map<std::string, DeleterData> const& deleterData);
+void writeEnumsToString(std::ostream & os, EnumData const& enumData);
+void writeFlagsToString(std::ostream & os, std::string const& flagsName, EnumData const &enumData);
 void writeFunction(std::ostream & os, std::string const& indentation, VkData const& vkData, CommandData const& commandData, bool definition, bool enhanced, bool singular, bool unique);
 void writeFunctionBodyEnhanced(std::ostream & os, std::string const& indentation, VkData const& vkData, CommandData const& commandData, bool singular);
 void writeFunctionBodyEnhancedCall(std::ostream &os, std::string const& indentation, std::set<std::string> const& vkTypes, CommandData const& commandData, bool singular);
@@ -861,24 +861,24 @@ void writeFunctionHeaderName(std::ostream & os, std::string const& name, bool si
 void writeFunctionHeaderReturnType(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool enhanced, bool singular, bool unique);
 void writeFunctionHeaderTemplate(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool withDefault);
 void writeReinterpretCast(std::ostream & os, bool leadingConst, bool vulkanType, std::string const& type, bool trailingPointerToConst);
-void writeStandardOrEnhanced(std::ofstream & ofs, std::string const& standard, std::string const& enhanced);
-void writeStructConstructor( std::ofstream & ofs, std::string const& name, StructData const& structData, std::set<std::string> const& vkTypes, std::map<std::string,std::string> const& defaultValues );
-void writeStructSetter( std::ofstream & ofs, std::string const& structureName, MemberData const& memberData, std::set<std::string> const& vkTypes, std::map<std::string,StructData> const& structs );
-void writeTypeCommand(std::ofstream & ofs, VkData const& vkData, DependencyData const& dependencyData);
-void writeTypeCommand(std::ofstream &ofs, std::string const& indentation, VkData const& vkData, CommandData const& commandData, bool definition);
-void writeTypeEnum(std::ofstream & ofs, EnumData const& enumData);
+void writeStandardOrEnhanced(std::ostream & os, std::string const& standard, std::string const& enhanced);
+void writeStructConstructor( std::ostream & os, std::string const& name, StructData const& structData, std::set<std::string> const& vkTypes, std::map<std::string,std::string> const& defaultValues );
+void writeStructSetter( std::ostream & os, std::string const& structureName, MemberData const& memberData, std::set<std::string> const& vkTypes, std::map<std::string,StructData> const& structs );
+void writeTypeCommand(std::ostream & os, VkData const& vkData, DependencyData const& dependencyData);
+void writeTypeCommand(std::ostream &os, std::string const& indentation, VkData const& vkData, CommandData const& commandData, bool definition);
+void writeTypeEnum(std::ostream & os, EnumData const& enumData);
 bool isErrorEnum(std::string const& enumName);
 std::string stripErrorEnumPrefix(std::string const& enumName);
-void writeExceptionsForEnum(std::ofstream & ofs, EnumData const& enumData);
-void writeThrowExceptions(std::ofstream& ofs, EnumData const& enumData);
-void writeTypeFlags(std::ofstream & ofs, std::string const& flagsName, FlagData const& flagData, EnumData const& enumData);
-void writeTypeHandle(std::ofstream & ofs, VkData const& vkData, DependencyData const& dependencyData, HandleData const& handle, std::list<DependencyData> const& dependencies);
-void writeTypeScalar( std::ofstream & ofs, DependencyData const& dependencyData );
-void writeTypeStruct( std::ofstream & ofs, VkData const& vkData, DependencyData const& dependencyData, std::map<std::string,std::string> const& defaultValues );
-void writeTypeUnion( std::ofstream & ofs, VkData const& vkData, DependencyData const& dependencyData, std::map<std::string,std::string> const& defaultValues );
-void writeTypes(std::ofstream & ofs, VkData const& vkData, std::map<std::string, std::string> const& defaultValues);
-void writeVersionCheck(std::ofstream & ofs, std::string const& version);
-void writeTypesafeCheck(std::ofstream & ofs, std::string const& typesafeCheck);
+void writeExceptionsForEnum(std::ostream & os, EnumData const& enumData);
+void writeThrowExceptions(std::ostream& os, EnumData const& enumData);
+void writeTypeFlags(std::ostream & os, std::string const& flagsName, FlagData const& flagData, EnumData const& enumData);
+void writeTypeHandle(std::ostream & os, VkData const& vkData, DependencyData const& dependencyData, HandleData const& handle, std::list<DependencyData> const& dependencies);
+void writeTypeScalar( std::ostream & os, DependencyData const& dependencyData );
+void writeTypeStruct( std::ostream & os, VkData const& vkData, DependencyData const& dependencyData, std::map<std::string,std::string> const& defaultValues );
+void writeTypeUnion( std::ostream & os, VkData const& vkData, DependencyData const& dependencyData, std::map<std::string,std::string> const& defaultValues );
+void writeTypes(std::ostream & os, VkData const& vkData, std::map<std::string, std::string> const& defaultValues);
+void writeVersionCheck(std::ostream & os, std::string const& version);
+void writeTypesafeCheck(std::ostream & os, std::string const& typesafeCheck);
 
 void EnumData::addEnumMember(std::string const &name, std::string const& tag)
 {
@@ -1207,7 +1207,7 @@ std::string readArraySize(tinyxml2::XMLNode * node, std::string& name)
       }
       else
       {
-        // otherwise, the node holds '[' and ']', so get the stuff inbetween those as the array size
+        // otherwise, the node holds '[' and ']', so get the stuff in between those as the array size
         assert((value.front() == '[') && (value.back() == ']'));
         arraySize = value.substr(1, value.length() - 2);
         assert(!node->NextSibling());
@@ -2975,6 +2975,8 @@ void writeFunctionHeaderName(std::ostream & os, std::string const& name, bool si
 
 void writeFunctionHeaderReturnType(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool enhanced, bool singular, bool unique)
 {
+  std::string templateString;
+  std::string returnType;
   if (enhanced)
   {
     // the enhanced function might return some pretty complex return stuff
@@ -2983,16 +2985,9 @@ void writeFunctionHeaderReturnType(std::ostream & os, std::string const& indenta
       // the unique version returns something prefixed with 'Unique'; potentially a vector of that stuff
       // it's a vector, if it's not the singular version and the return parameter is a vector parameter
       bool returnsVector = !singular && (commandData.vectorParams.find(commandData.returnParam) != commandData.vectorParams.end());
-      if (returnsVector)
-      {
-        os << "std::vector<";
-      }
-      os << "Unique" << commandData.params[commandData.returnParam].pureType;
-      if (returnsVector)
-      {
-        os << ">";
-      }
-      os << " ";
+      templateString = returnsVector ? "std::vector<Unique${returnType}> " : "Unique${returnType} ";
+      returnType = commandData.params[commandData.returnParam].pureType;
+      //os << replaceWithMap(, {{"returnType", commandData.params[commandData.returnParam].pureType }});
     }
     else if ((commandData.enhancedReturnType != commandData.returnType) && (commandData.returnType != "void"))
     {
@@ -3000,29 +2995,37 @@ void writeFunctionHeaderReturnType(std::ostream & os, std::string const& indenta
       if (!singular && (commandData.enhancedReturnType.find("Allocator") != std::string::npos))
       {
         // for the non-singular case with allocation, we need to prepend with 'typename' to keep compilers happy
-        os << "typename ";
+        templateString = "typename ResultValueType<${returnType}>::type ";
+      }
+      else
+      {
+        templateString = "ResultValueType<${returnType}>::type ";
       }
       assert(commandData.returnType == "Result");
       // in singular case, we create the ResultValueType from the pure return type, otherwise from the enhanced return type
-      os << "ResultValueType<" << (singular ? commandData.params[commandData.returnParam].pureType : commandData.enhancedReturnType) << ">::type ";
+      returnType = singular ? commandData.params[commandData.returnParam].pureType : commandData.enhancedReturnType;
     }
     else if ((commandData.returnParam != ~0) && (1 < commandData.successCodes.size()))
     {
       // if there is a return parameter at all, and there are multiple success codes, we return a ResultValue<...> with the pure return type
       assert(commandData.returnType == "Result");
-      os << "ResultValue<" << commandData.params[commandData.returnParam].pureType << "> ";
+      templateString = "ResultValue<${returnType}> ";
+      returnType = commandData.params[commandData.returnParam].pureType;
     }
     else
     {
       // and in every other case, we just return the enhanced return type.
-      os << commandData.enhancedReturnType << " ";
+      templateString = "${returnType} ";
+      returnType = commandData.enhancedReturnType;
     }
   }
   else
   {
     // the non-enhanced function just uses the return type
-    os << commandData.returnType << " ";
+    templateString = "${returnType} ";
+    returnType = commandData.returnType;
   }
+  os << replaceWithMap(templateString, { { "returnType", returnType } });
 }
 
 void writeFunctionHeaderTemplate(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool withDefault)
@@ -3066,12 +3069,12 @@ void writeReinterpretCast(std::ostream & os, bool leadingConst, bool vulkanType,
   os << "*>";
 }
 
-void writeStandardOrEnhanced(std::ofstream & ofs, std::string const& standard, std::string const& enhanced)
+void writeStandardOrEnhanced(std::ostream & os, std::string const& standard, std::string const& enhanced)
 {
   if (standard == enhanced)
   {
     // standard and enhanced string are equal -> just use one of them and we're done
-    ofs << standard;
+    os << standard;
   }
   else
   {
@@ -3084,25 +3087,25 @@ void writeStandardOrEnhanced(std::ofstream & ofs, std::string const& standard, s
     bool unchangedInterface = (standard.substr(standardStart, standardCount) == enhanced.substr(enhancedStart, standardCount));
     if (unchangedInterface)
     {
-      ofs << "#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE" << std::endl;
+      os << "#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE" << std::endl;
     }
-    ofs << standard
+    os << standard
       << (unchangedInterface ? "#else" : "#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE") << std::endl
       << enhanced
       << "#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/" << std::endl;
   }
 }
 
-void writeStructConstructor( std::ofstream & ofs, std::string const& name, StructData const& structData, std::set<std::string> const& vkTypes, std::map<std::string,std::string> const& defaultValues )
+void writeStructConstructor( std::ostream & os, std::string const& name, StructData const& structData, std::set<std::string> const& vkTypes, std::map<std::string,std::string> const& defaultValues )
 {
   // the constructor with all the elements as arguments, with defaults
-  ofs << "    " << name << "( ";
+  os << "    " << name << "( ";
   bool listedArgument = false;
   for (size_t i = 0; i<structData.members.size(); i++)
   {
     if (listedArgument)
     {
-      ofs << ", ";
+      os << ", ";
     }
     // skip members 'pNext' and 'sType', as they are never explicitly set
     if ((structData.members[i].name != "pNext") && (structData.members[i].name != "sType"))
@@ -3115,26 +3118,26 @@ void writeStructConstructor( std::ofstream & ofs, std::string const& name, Struc
       {
         // the arguments name get a trailing '_', to distinguish them from the actual struct members
         // pointer arguments get a nullptr as default
-        ofs << structData.members[i].type << " " << structData.members[i].name << "_ = " << (structData.members[i].type.back() == '*' ? "nullptr" : defaultIt->second);
+        os << structData.members[i].type << " " << structData.members[i].name << "_ = " << (structData.members[i].type.back() == '*' ? "nullptr" : defaultIt->second);
       }
       else
       {
         // array members are provided as const reference to a std::array
         // the arguments name get a trailing '_', to distinguish them from the actual struct members
         // list as many default values as there are elements in the array
-        ofs << "std::array<" << structData.members[i].type << "," << structData.members[i].arraySize << "> const& " << structData.members[i].name << "_ = { { " << defaultIt->second;
+        os << "std::array<" << structData.members[i].type << "," << structData.members[i].arraySize << "> const& " << structData.members[i].name << "_ = { { " << defaultIt->second;
         size_t n = atoi(structData.members[i].arraySize.c_str());
         assert(0 < n);
         for (size_t j = 1; j < n; j++)
         {
-          ofs << ", " << defaultIt->second;
+          os << ", " << defaultIt->second;
         }
-        ofs << " } }";
+        os << " } }";
       }
       listedArgument = true;
     }
   }
-  ofs << " )" << std::endl;
+  os << " )" << std::endl;
 
   // copy over the simple arguments
   bool firstArgument = true;
@@ -3143,91 +3146,98 @@ void writeStructConstructor( std::ofstream & ofs, std::string const& name, Struc
     if (structData.members[i].arraySize.empty())
     {
       // here, we can only handle non-array arguments
-      ofs << "      " << (firstArgument ? ":" : ",") << " " << structData.members[i].name << "( ";
+      std::string templateString = "      ${sep} ${member}( ${value} )\n";
+      std::string sep = firstArgument ? ":" : ",";
+      std::string member = structData.members[i].name;
+      std::string value;
 
       // 'pNext' and 'sType' don't get an argument, use nullptr and the correct StructureType enum value to initialize them
       if (structData.members[i].name == "pNext")
       {
-        ofs << "nullptr";
+        value = "nullptr";
       }
       else if (structData.members[i].name == "sType")
       {
-        ofs << "StructureType::e" << name;
+        value = std::string("StructureType::e") + name;
       }
       else
       {
         // the other elements are initialized by the corresponding argument (with trailing '_', as mentioned above)
-        ofs << structData.members[i].name << "_";
+        value = structData.members[i].name + "_";
       }
-      ofs << " )" << std::endl;
+      os << replaceWithMap(templateString, { {"sep", sep}, {"member", member}, {"value", value} });
       firstArgument = false;
     }
   }
 
   // the body of the constructor, copying over data from argument list into wrapped struct
-  ofs << "    {" << std::endl;
+  os << "    {" << std::endl;
   for ( size_t i=0 ; i<structData.members.size() ; i++ )
   {
-    if ( !structData.members[i].arraySize.empty() )
+    if (!structData.members[i].arraySize.empty())
     {
       // here we can handle the arrays, copying over from argument (with trailing '_') to member
       // size is arraySize times sizeof type
-      ofs << "      memcpy( &" << structData.members[i].name << ", " << structData.members[i].name << "_.data(), " << structData.members[i].arraySize << " * sizeof( " << structData.members[i].type << " ) );" << std::endl;
+      std::string member = structData.members[i].name;
+      std::string arraySize = structData.members[i].arraySize;
+      std::string type = structData.members[i].type;
+      os << replaceWithMap("      memcpy( &${member}, ${member}_.data(), ${arraySize} * sizeof( ${type} ) );\n",
+                            { {"member", member}, {"arraySize", arraySize }, {"type", type} });
     }
   }
-  ofs << "    }" << std::endl
+  os << "    }" << std::endl
       << std::endl;
 
-  // the copy constructor from a native struct (Vk...)
-  ofs << "    " << name << "( Vk" << name << " const & rhs )" << std::endl
-      << "    {" << std::endl
-      << "      memcpy( this, &rhs, sizeof(" << name << ") );" << std::endl
-      << "    }" << std::endl
-      << std::endl;
+  std::string templateString = 
+R"(    ${name}( Vk${name} const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ${name} ) );
+    }
 
-  // the assignment operator from a native sturct (Vk...)
-  ofs << "    " << name << "& operator=( Vk" << name << " const & rhs )" << std::endl
-    << "    {" << std::endl
-    << "      memcpy( this, &rhs, sizeof(" << name << ") );" << std::endl
-    << "      return *this;" << std::endl
-    << "    }" << std::endl
-    << std::endl;
+    ${name}& operator=( Vk${name} const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ${name} ) );
+      return *this;
+    }
+)";
+
+  os << replaceWithMap(templateString, { {"name", name } } );
 }
 
-void writeStructSetter( std::ofstream & ofs, std::string const& structureName, MemberData const& memberData, std::set<std::string> const& vkTypes )
+void writeStructSetter( std::ostream & os, std::string const& structureName, MemberData const& memberData, std::set<std::string> const& vkTypes )
 {
   if (memberData.type != "StructureType") // filter out StructureType, which is supposed to be immutable !
   {
     // the setters return a reference to the structure
-    ofs << "    " << structureName << "& set" << startUpperCase(memberData.name) << "( ";
+    os << "    " << structureName << "& set" << startUpperCase(memberData.name) << "( ";
     if (memberData.arraySize.empty())
     {
-      ofs << memberData.type << " ";
+      os << memberData.type << " ";
     }
     else
     {
-      ofs << "std::array<" << memberData.type << "," << memberData.arraySize << "> ";
+      os << "std::array<" << memberData.type << "," << memberData.arraySize << "> ";
     }
     // add a trailing '_' to the argument to distinguish it from the structure member
-    ofs << memberData.name << "_ )" << std::endl
+    os << memberData.name << "_ )" << std::endl
       << "    {" << std::endl;
     // copy over the argument, either by assigning simple data, or by memcpy array data
     if (memberData.arraySize.empty())
     {
-      ofs << "      " << memberData.name << " = " << memberData.name << "_";
+      os << "      " << memberData.name << " = " << memberData.name << "_";
     }
     else
     {
-      ofs << "      memcpy( &" << memberData.name << ", " << memberData.name << "_.data(), " << memberData.arraySize << " * sizeof( " << memberData.type << " ) )";
+      os << "      memcpy( &" << memberData.name << ", " << memberData.name << "_.data(), " << memberData.arraySize << " * sizeof( " << memberData.type << " ) )";
     }
-    ofs << ";" << std::endl
+    os << ";" << std::endl
       << "      return *this;" << std::endl
       << "    }" << std::endl
       << std::endl;
   }
 }
 
-void writeTypeCommand(std::ofstream & ofs, VkData const& vkData, DependencyData const& dependencyData)
+void writeTypeCommand(std::ostream & os, VkData const& vkData, DependencyData const& dependencyData)
 {
   assert(vkData.commands.find(dependencyData.name) != vkData.commands.end());
   CommandData const& commandData = vkData.commands.find(dependencyData.name)->second;
@@ -3239,22 +3249,22 @@ void writeTypeCommand(std::ofstream & ofs, VkData const& vkData, DependencyData 
       auto deleterTypesIt = vkData.deleterTypes.find("");
       assert((deleterTypesIt != vkData.deleterTypes.end()) && (deleterTypesIt->second.size() == 1));
 
-      writeDeleterForwardDeclarations(ofs, *deleterTypesIt, vkData.deleterData);
-      writeTypeCommand(ofs, "  ", vkData, commandData, false);
-      writeDeleterClasses(ofs, *deleterTypesIt, vkData.deleterData);
+      writeDeleterForwardDeclarations(os, *deleterTypesIt, vkData.deleterData);
+      writeTypeCommand(os, "  ", vkData, commandData, false);
+      writeDeleterClasses(os, *deleterTypesIt, vkData.deleterData);
     }
     else
     {
-      writeTypeCommand(ofs, "  ", vkData, commandData, false);
+      writeTypeCommand(os, "  ", vkData, commandData, false);
     }
-    writeTypeCommand(ofs, "  ", vkData, commandData, true);
-    ofs << std::endl;
+    writeTypeCommand(os, "  ", vkData, commandData, true);
+    os << std::endl;
   }
 }
 
-void writeTypeCommand(std::ofstream & ofs, std::string const& indentation, VkData const& vkData, CommandData const& commandData, bool definition)
+void writeTypeCommand(std::ostream & os, std::string const& indentation, VkData const& vkData, CommandData const& commandData, bool definition)
 {
-  enterProtect(ofs, commandData.protect);
+  enterProtect(os, commandData.protect);
 
   // first create the standard version of the function
   std::ostringstream standard;
@@ -3289,29 +3299,29 @@ void writeTypeCommand(std::ofstream & ofs, std::string const& indentation, VkDat
   }
 
   // and write one or both of them
-  writeStandardOrEnhanced(ofs, standard.str(), enhanced.str());
-  leaveProtect(ofs, commandData.protect);
-  ofs << std::endl;
+  writeStandardOrEnhanced(os, standard.str(), enhanced.str());
+  leaveProtect(os, commandData.protect);
+  os << std::endl;
 }
 
-void writeTypeEnum( std::ofstream & ofs, EnumData const& enumData )
+void writeTypeEnum( std::ostream & os, EnumData const& enumData )
 {
   // a named enum per enum, listing all its values by setting them to the original Vulkan names
-  enterProtect(ofs, enumData.protect);
-  ofs << "  enum class " << enumData.name << std::endl
+  enterProtect(os, enumData.protect);
+  os << "  enum class " << enumData.name << std::endl
       << "  {" << std::endl;
   for ( size_t i=0 ; i<enumData.members.size() ; i++ )
   {
-    ofs << "    " << enumData.members[i].name << " = " << enumData.members[i].value;
+    os << "    " << enumData.members[i].name << " = " << enumData.members[i].value;
     if ( i < enumData.members.size() - 1 )
     {
-      ofs << ",";
+      os << ",";
     }
-    ofs << std::endl;
+    os << std::endl;
   }
-  ofs << "  };" << std::endl;
-  leaveProtect(ofs, enumData.protect);
-  ofs << std::endl;
+  os << "  };" << std::endl;
+  leaveProtect(os, enumData.protect);
+  os << std::endl;
 }
 
 bool isErrorEnum(std::string const& enumName)
@@ -3326,38 +3336,46 @@ std::string stripErrorEnumPrefix(std::string const& enumName)
 }
 
 // Intended only for `enum class Result`!
-void writeExceptionsForEnum( std::ofstream & ofs, EnumData const& enumData)
+void writeExceptionsForEnum( std::ostream & os, EnumData const& enumData)
 {
-    enterProtect(ofs, enumData.protect);
-    for ( size_t i=0 ; i<enumData.members.size() ; i++ )
+  std::string templateString =
+R"(  class ${className} : public SystemError
+  {
+  public:
+    ${className}( std::string const& message )
+      : SystemError( make_error_code( ${enumName}::${enumMemberName} ), message ) {}
+    ${className}( char const * message )
+      : SystemError( make_error_code( ${enumName}::${enumMemberName} ), message ) {}
+  };
+)";
+  
+  enterProtect(os, enumData.protect);
+  for (size_t i = 0; i < enumData.members.size(); i++)
+  {
+    if (!isErrorEnum(enumData.members[i].name))
     {
-      if (!isErrorEnum(enumData.members[i].name))
-      {
-        continue;
-      }
-      const std::string strippedName = stripErrorEnumPrefix(enumData.members[i].name);
-      ofs << "  class " << strippedName << "Error : public SystemError" << std::endl
-          << "  {" << std::endl
-          << "    public:" << std::endl
-          << "    " << strippedName << "Error( std::string const& message )" << std::endl
-          << "      : SystemError(make_error_code(" << enumData.name << "::" << enumData.members[i].name << "), message) {}" << std::endl
-          << "    " << strippedName << "Error( char const * message )" << std::endl
-          << "      : SystemError(make_error_code(" << enumData.name << "::" << enumData.members[i].name << "), message) {}" << std::endl
-          << "  };" << std::endl
-          << std::endl;
+      continue;
     }
-    leaveProtect(ofs, enumData.protect);
-    ofs << std::endl;
+    os << replaceWithMap(templateString,
+    { { "className", stripErrorEnumPrefix(enumData.members[i].name) + "Error"},
+      { "enumName", enumData.name},
+      { "enumMemberName", enumData.members[i].name}
+    });
+  }
+  leaveProtect(os, enumData.protect);
+  os << std::endl;
 }
 
-void writeThrowExceptions( std::ofstream & ofs, EnumData const& enumData)
+void writeThrowExceptions( std::ostream & os, EnumData const& enumData)
 {
-  enterProtect(ofs, enumData.protect);
-  ofs << "  VULKAN_HPP_INLINE void throwResultException( Result result, char const * message )" << std::endl
-      << "  {" << std::endl
-      << "    assert ( static_cast<long long int>(result) < 0 );" << std::endl
-      << "    switch ( result )" << std::endl
-      << "    {" << std::endl;
+  enterProtect(os, enumData.protect);
+  os << 
+R"(  VULKAN_HPP_INLINE void throwResultException( Result result, char const * message )
+  {
+    assert ( static_cast<long long int>(result) < 0 );
+    switch ( result )
+    {
+)";
   for ( size_t i=0 ; i<enumData.members.size() ; i++ )
   {
     if (!isErrorEnum(enumData.members[i].name))
@@ -3365,20 +3383,22 @@ void writeThrowExceptions( std::ofstream & ofs, EnumData const& enumData)
       continue;
     }
     const std::string strippedExceptionName = stripErrorEnumPrefix(enumData.members[i].name);
-    ofs << "    case " << enumData.name << "::" << enumData.members[i].name << ": "
+    os << "    case " << enumData.name << "::" << enumData.members[i].name << ": "
         << "throw " << strippedExceptionName << "Error ( message );" << std::endl;
   }
-  ofs << "    default: throw SystemError( make_error_code( result ) );" << std::endl
-      << "    }" << std::endl
-      << "  }" << std::endl;
-  leaveProtect(ofs, enumData.protect);
-  ofs << std::endl;
+  os <<
+R"(    default: throw SystemError( make_error_code( result ) );
+    }
+  }
+)";
+  leaveProtect(os, enumData.protect);
+  os << std::endl;
 }
 
-void writeDeleterClasses(std::ofstream & ofs, std::pair<std::string, std::set<std::string>> const& deleterTypes, std::map<std::string, DeleterData> const& deleterData)
+void writeDeleterClasses(std::ostream & os, std::pair<std::string, std::set<std::string>> const& deleterTypes, std::map<std::string, DeleterData> const& deleterData)
 {
   // A Deleter class for each of the Unique* classes... but only if smart handles are not switched off
-  ofs << "#ifndef VULKAN_HPP_NO_SMART_HANDLE" << std::endl;
+  os << "#ifndef VULKAN_HPP_NO_SMART_HANDLE" << std::endl;
   bool first = true;
 
   // get type and name of the parent (holder) type
@@ -3393,18 +3413,18 @@ void writeDeleterClasses(std::ofstream & ofs, std::pair<std::string, std::set<st
 
     if (!first)
     {
-      ofs << std::endl;
+      os << std::endl;
     }
     first = false;
 
-    ofs << "  class " << deleterType << "Deleter" << std::endl
+    os << "  class " << deleterType << "Deleter" << std::endl
       << "  {" << std::endl
       << "  public:" << std::endl
       << "    " << deleterType << "Deleter( ";
     if (standardDeleter)
     {
       // the standard deleter gets a parent type in the constructor
-      ofs << parentType << " " << parentName << " = " << parentType << "(), ";
+      os << parentType << " " << parentName << " = " << parentType << "(), ";
     }
 
     // if this Deleter is pooled, make such a pool the last argument, otherwise an Optional allocator
@@ -3413,63 +3433,63 @@ void writeDeleterClasses(std::ofstream & ofs, std::pair<std::string, std::set<st
     std::string poolName = (dd->second.pool.empty() ? "" : startLowerCase(dd->second.pool));
     if (poolName.empty())
     {
-      ofs << "Optional<const AllocationCallbacks> allocator = nullptr )" << std::endl;
+      os << "Optional<const AllocationCallbacks> allocator = nullptr )" << std::endl;
     }
     else
     {
       assert(!dd->second.pool.empty());
-      ofs << dd->second.pool << " " << poolName << " = " << dd->second.pool << "() )" << std::endl;
+      os << dd->second.pool << " " << poolName << " = " << dd->second.pool << "() )" << std::endl;
     }
 
     // now the initializer list of the Deleter constructor
-    ofs << "      : ";
+    os << "      : ";
     if (standardDeleter)
     {
       // the standard deleter has a parent type as a member
-      ofs << "m_" << parentName << "( " << parentName << " )" << std::endl
+      os << "m_" << parentName << "( " << parentName << " )" << std::endl
         << "      , ";
     }
     if (poolName.empty())
     {
       // non-pooled deleter have an allocator as a member
-      ofs << "m_allocator( allocator )" << std::endl;
+      os << "m_allocator( allocator )" << std::endl;
     }
     else
     {
       // pooled deleter have a pool as a member
-      ofs << "m_" << poolName << "( " << poolName << " )" << std::endl;
+      os << "m_" << poolName << "( " << poolName << " )" << std::endl;
     }
 
     // besides that, the constructor is empty
-    ofs << "    {}" << std::endl
+    os << "    {}" << std::endl
       << std::endl;
 
     // the operator() calls the delete/destroy function
-    ofs << "    void operator()( " << deleterType << " " << deleterName << " )" << std::endl
+    os << "    void operator()( " << deleterType << " " << deleterName << " )" << std::endl
       << "    {" << std::endl;
 
     // the delete/destroy function is either part of the parent member of the deleter argument
     if (standardDeleter)
     {
-      ofs << "      m_" << parentName << ".";
+      os << "      m_" << parentName << ".";
     }
     else
     {
-      ofs << "      " << deleterName << ".";
+      os << "      " << deleterName << ".";
     }
 
-    ofs << dd->second.call << "( ";
+    os << dd->second.call << "( ";
 
     if (!poolName.empty())
     {
       // pooled Deleter gets the pool as the first argument
-      ofs << "m_" << poolName << ", ";
+      os << "m_" << poolName << ", ";
     }
 
     if (standardDeleter)
     {
       // the standard deleter gets the deleter argument as an argument
-      ofs << deleterName;
+      os << deleterName;
     }
 
     // the non-pooled deleter get the allocate as an argument (potentially after the deleterName
@@ -3477,271 +3497,268 @@ void writeDeleterClasses(std::ofstream & ofs, std::pair<std::string, std::set<st
     {
       if (standardDeleter)
       {
-        ofs << ", ";
+        os << ", ";
       }
-      ofs << "m_allocator";
+      os << "m_allocator";
     }
-    ofs << " );" << std::endl
+    os << " );" << std::endl
       << "    }" << std::endl
       << std::endl;
 
     // now the members of the Deleter class
-    ofs << "  private:" << std::endl;
+    os << "  private:" << std::endl;
     if (standardDeleter)
     {
       // the parentType for the standard deleter
-      ofs << "    " << parentType << " m_" << parentName << ";" << std::endl;
+      os << "    " << parentType << " m_" << parentName << ";" << std::endl;
     }
 
     // the allocator for the non-pooled deleters, the pool for the pooled ones
     if (poolName.empty())
     {
-      ofs << "    Optional<const AllocationCallbacks> m_allocator;" << std::endl;
+      os << "    Optional<const AllocationCallbacks> m_allocator;" << std::endl;
     }
     else
     {
-      ofs << "    " << dd->second.pool << " m_" << poolName << ";" << std::endl;
+      os << "    " << dd->second.pool << " m_" << poolName << ";" << std::endl;
     }
-    ofs << "  };" << std::endl;
+    os << "  };" << std::endl;
   }
 
-  ofs << "#endif /*VULKAN_HPP_NO_SMART_HANDLE*/" << std::endl
+  os << "#endif /*VULKAN_HPP_NO_SMART_HANDLE*/" << std::endl
     << std::endl;
 }
 
-void writeDeleterForwardDeclarations(std::ofstream &ofs, std::pair<std::string, std::set<std::string>> const& deleterTypes, std::map<std::string, DeleterData> const& deleterData)
+void writeDeleterForwardDeclarations(std::ostream &os, std::pair<std::string, std::set<std::string>> const& deleterTypes, std::map<std::string, DeleterData> const& deleterData)
 {
   // if smart handles are supported, all the Deleter classes need to be forward declared
-  ofs << "#ifndef VULKAN_HPP_NO_SMART_HANDLE" << std::endl;
+  os << "#ifndef VULKAN_HPP_NO_SMART_HANDLE" << std::endl;
   bool first = true;
   std::string firstName = deleterTypes.first.empty() ? "" : startLowerCase(deleterTypes.first);
   for (auto const& dt : deleterTypes.second)
   {
-    ofs << "  class " << dt << "Deleter;" << std::endl;
-    ofs << "  using Unique" << dt << " = UniqueHandle<" << dt << ", " << dt << "Deleter>;" << std::endl;
+    os << "  class " << dt << "Deleter;" << std::endl;
+    os << "  using Unique" << dt << " = UniqueHandle<" << dt << ", " << dt << "Deleter>;" << std::endl;
   }
-  ofs << "#endif /*VULKAN_HPP_NO_SMART_HANDLE*/" << std::endl
+  os << "#endif /*VULKAN_HPP_NO_SMART_HANDLE*/" << std::endl
     << std::endl;
 }
 
-void writeEnumsToString(std::ofstream & ofs, EnumData const& enumData)
+void writeEnumsToString(std::ostream & os, EnumData const& enumData)
 {
   // the helper functions to make strings out of enum values
-  enterProtect(ofs, enumData.protect);
-  ofs << "  VULKAN_HPP_INLINE std::string to_string(" << enumData.name << (enumData.members.empty() ? ")" : " value)") << std::endl
+  enterProtect(os, enumData.protect);
+  os << "  VULKAN_HPP_INLINE std::string to_string(" << enumData.name << (enumData.members.empty() ? ")" : " value)") << std::endl
       << "  {" << std::endl;
   if (enumData.members.empty())
   {
     // no enum values in this enum -> return "(void)"
-    ofs << "    return \"(void)\";" << std::endl;
+    os << "    return \"(void)\";" << std::endl;
   }
   else
   {
     // otherwise switch over the value and return the a stringized version of that value (without leading 'e')
-    ofs << "    switch (value)" << std::endl
+    os << "    switch (value)" << std::endl
         << "    {" << std::endl;
     for (auto const& member : enumData.members)
     {
-      ofs << "    case " << enumData.name << "::" << member.name << ": return \"" << member.name.substr(1) << "\";" << std::endl;
+      os << "    case " << enumData.name << "::" << member.name << ": return \"" << member.name.substr(1) << "\";" << std::endl;
     }
-    ofs << "    default: return \"invalid\";" << std::endl
+    os << "    default: return \"invalid\";" << std::endl
         << "    }" << std::endl;
   }
-  ofs << "  }" << std::endl;
-  leaveProtect(ofs, enumData.protect);
-  ofs << std::endl;
+  os << "  }" << std::endl;
+  leaveProtect(os, enumData.protect);
+  os << std::endl;
 }
 
-void writeFlagsToString(std::ofstream & ofs, std::string const& flagsName, EnumData const &enumData)
+void writeFlagsToString(std::ostream & os, std::string const& flagsName, EnumData const &enumData)
 {
   // the helper functions to make strings out of flag values
-  enterProtect(ofs, enumData.protect);
-  ofs << "  VULKAN_HPP_INLINE std::string to_string(" << flagsName << (enumData.members.empty() ? ")" : " value)") << std::endl
+  enterProtect(os, enumData.protect);
+  os << "  VULKAN_HPP_INLINE std::string to_string(" << flagsName << (enumData.members.empty() ? ")" : " value)") << std::endl
       << "  {" << std::endl;
   if (enumData.members.empty())
   {
     // no flags values in this enum -> return "{}"
-    ofs << "    return \"{}\";" << std::endl;
+    os << "    return \"{}\";" << std::endl;
   }
   else
   {
-    ofs << "    if (!value) return \"{}\";" << std::endl
+    os << "    if (!value) return \"{}\";" << std::endl
         << "    std::string result;" << std::endl;
 
     // 'or' together all the bits in the value
     for (auto itMember = enumData.members.begin(); itMember != enumData.members.end(); ++itMember)
     {
-      ofs << "    if (value & " << enumData.name << "::" << itMember->name << ") result += \"" << itMember->name.substr(1) << " | \";" << std::endl;
+      os << "    if (value & " << enumData.name << "::" << itMember->name << ") result += \"" << itMember->name.substr(1) << " | \";" << std::endl;
     }
     // cut off the last three characters from the result (being " | ")
-    ofs << "    return \"{\" + result.substr(0, result.size() - 3) + \"}\";" << std::endl;
+    os << "    return \"{\" + result.substr(0, result.size() - 3) + \"}\";" << std::endl;
   }
-  ofs << "  }" << std::endl;
-  leaveProtect(ofs, enumData.protect);
-  ofs << std::endl;
+  os << "  }" << std::endl;
+  leaveProtect(os, enumData.protect);
+  os << std::endl;
 }
 
-void writeTypeFlags(std::ofstream & ofs, std::string const& flagsName, FlagData const& flagData, EnumData const& enumData)
+void writeTypeFlags(std::ostream & os, std::string const& flagsName, FlagData const& flagData, EnumData const& enumData)
 {
-  enterProtect(ofs, flagData.protect);
+  enterProtect(os, flagData.protect);
   // each Flags class is using on the class 'Flags' with the corresponding FlagBits enum as the template parameter
-  ofs << "  using " << flagsName << " = Flags<" << enumData.name << ", Vk" << flagsName << ">;" << std::endl;
+  os << "  using " << flagsName << " = Flags<" << enumData.name << ", Vk" << flagsName << ">;" << std::endl;
+
+  std::stringstream allFlags;
+  for (size_t i = 0; i < enumData.members.size(); i++)
+  {
+    if (i != 0)
+    {
+      allFlags << " | ";
+    }
+    allFlags << "VkFlags(" << enumData.name << "::" << enumData.members[i].name << ")";
+  }
 
   if (!enumData.members.empty())
   {
-    ofs << std::endl;
-
-    // the operator| of two FlagBits into one Flags is mapped to the operator| of the Flags class
-    ofs << "  VULKAN_HPP_INLINE " << flagsName << " operator|( " << enumData.name << " bit0, " << enumData.name << " bit1 )" << std::endl
-      << "  {" << std::endl
-      << "    return " << flagsName << "( bit0 ) | bit1;" << std::endl
-      << "  }" << std::endl
-      << std::endl;
-
-    // the operator~ on a FlagBits is mapped to the operator~ of the Flags class
-    ofs << "  VULKAN_HPP_INLINE " << flagsName << " operator~( " << enumData.name << " bits )" << std::endl
-      << "  {" << std::endl
-      << "    return ~( " << flagsName << "( bits ) );" << std::endl
-      << "  }" << std::endl
-      << std::endl;
-
-    // the FlagTraits on FlagBits hold a value allFlags with all the defined bits set
-    ofs << "  template <> struct FlagTraits<" << enumData.name << ">" << std::endl
-        << "  {" << std::endl
-        << "    enum" << std::endl
-        << "    {" << std::endl
-        << "      allFlags = ";
-    for (size_t i = 0; i < enumData.members.size(); i++)
-    {
-      if (i != 0)
-      {
-        ofs << " | ";
-      }
-      ofs << "VkFlags(" << enumData.name << "::" << enumData.members[i].name << ")";
-    }
-    ofs << std::endl
-      << "    };" << std::endl
-      << "  };" << std::endl;
+    const std::string templateString = R"(
+  VULKAN_HPP_INLINE ${flagsName} operator|( ${enumName} bit0, ${enumName} bit1 )
+  {
+    return ${flagsName}( bit0 ) | bit1;
   }
-  leaveProtect(ofs, flagData.protect);
-  ofs << std::endl;
+
+  VULKAN_HPP_INLINE ${flagsName} operator~( ${enumName} bits )
+  {
+    return ~( ${flagsName}( bits ) );
+  }
+
+  template <> struct FlagTraits<${enumName}>
+  {
+    enum
+    {
+      allFlags = ${allFlags}
+    };
+  };
+)";
+    os << replaceWithMap(templateString, { { "flagsName", flagsName}, { "enumName", enumData.name }, { "allFlags", allFlags.str() } } );
+  }
+  leaveProtect(os, flagData.protect);
+  os << std::endl;
 }
 
-void writeTypeHandle(std::ofstream & ofs, VkData const& vkData, DependencyData const& dependencyData, HandleData const& handleData, std::list<DependencyData> const& dependencies)
+void writeTypeHandle(std::ostream & os, VkData const& vkData, DependencyData const& dependencyData, HandleData const& handleData, std::list<DependencyData> const& dependencies)
 {
-  enterProtect(ofs, handleData.protect);
+  enterProtect(os, handleData.protect);
 
   // check if there are any forward dependenices for this handle -> list them first
   if (!dependencyData.forwardDependencies.empty())
   {
-    ofs << "  // forward declarations" << std::endl;
+    os << "  // forward declarations" << std::endl;
     for (std::set<std::string>::const_iterator it = dependencyData.forwardDependencies.begin(); it != dependencyData.forwardDependencies.end(); ++it)
     {
       assert(vkData.structs.find(*it) != vkData.structs.end());
-      ofs << "  struct " << *it << ";" << std::endl;
+      os << "  struct " << *it << ";" << std::endl;
     }
-    ofs << std::endl;
+    os << std::endl;
   }
 
   // then write any forward declaration of Deleters used by this handle
   std::map<std::string, std::set<std::string>>::const_iterator deleterTypesIt = vkData.deleterTypes.find(dependencyData.name);
   if (deleterTypesIt != vkData.deleterTypes.end())
   {
-    writeDeleterForwardDeclarations(ofs, *deleterTypesIt, vkData.deleterData);
+    writeDeleterForwardDeclarations(os, *deleterTypesIt, vkData.deleterData);
   }
 
-  std::string memberName = startLowerCase(dependencyData.name);
-  ofs << "  class " << dependencyData.name << std::endl
-      << "  {" << std::endl
-      << "  public:" << std::endl
-      << "    " << dependencyData.name << "()" << std::endl
-      << "      : m_" << memberName << "(VK_NULL_HANDLE)" << std::endl
-      << "    {}" << std::endl
-      << std::endl
-      << "    " << dependencyData.name << "( std::nullptr_t )" << std::endl
-      << "      : m_" << memberName << "(VK_NULL_HANDLE)" << std::endl
-      << "    {}" << std::endl
-      << std::endl
-      // construct from native handle
-      << "    VULKAN_HPP_TYPESAFE_EXPLICIT " << dependencyData.name << "(Vk" << dependencyData.name << " " << memberName << ")" << std::endl
-      << "       : m_" << memberName << "("  << memberName << ")" << std::endl
-      << "    {}" << std::endl
-      << std::endl
-      // assignment from native handle
-      << "#if defined(VULKAN_HPP_TYPESAFE_CONVERSION)" << std::endl
-      << "    " << dependencyData.name << "& operator=(Vk" << dependencyData.name << " " << memberName << ")" << std::endl
-      << "    {" << std::endl
-      << "      m_" << memberName << " = " << memberName << ";" << std::endl
-      << "      return *this;" << std::endl
-      << "    }" << std::endl
-      << "#endif" << std::endl
-      << std::endl
-      // assignment from std::nullptr_t
-      << "    " << dependencyData.name << "& operator=( std::nullptr_t )" << std::endl
-      << "    {" << std::endl
-      << "      m_" << memberName << " = VK_NULL_HANDLE;" << std::endl
-      << "      return *this;" << std::endl
-      << "    }" << std::endl
-      << std::endl
-      // operator==
-      << "    bool operator==" << "(" << dependencyData.name << " const &rhs) const" << std::endl
-      << "    {" << std::endl
-      << "      return m_" << memberName << " == rhs.m_" << memberName << ";" << std::endl
-      << "    }" << std::endl
-      << std::endl
-      // operator!=
-      << "    bool operator!=" << "(" << dependencyData.name << " const &rhs) const" << std::endl
-      << "    {" << std::endl
-      << "      return m_" << memberName << " != rhs.m_" << memberName << ";" << std::endl
-      << "    }" << std::endl
-      << std::endl
-      // operator<
-      << "    bool operator<" << "(" << dependencyData.name << " const &rhs) const" << std::endl
-      << "    {" << std::endl
-      << "      return m_" << memberName << " < rhs.m_" << memberName << ";" << std::endl
-      << "    }" << std::endl
-      << std::endl;
+  const std::string memberName = startLowerCase(dependencyData.name);
+  const std::string templateString = 
+R"(  class ${className}
+  {
+  public:
+    ${className}()
+      : m_${memberName}(VK_NULL_HANDLE)
+    {}
 
+    ${className}( std::nullptr_t )
+      : m_${memberName}(VK_NULL_HANDLE)
+    {}
+
+    VULKAN_HPP_TYPESAFE_EXPLICIT ${className}( Vk${className} ${memberName} )
+       : m_${memberName}( ${memberName} )
+    {}
+
+#if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
+    ${className} & operator=(Vk${className} ${memberName})
+    {
+      m_${memberName} = ${memberName};
+      return *this; 
+    }
+#endif
+
+    ${className} & operator=( std::nullptr_t )
+    {
+      m_${memberName} = VK_NULL_HANDLE;
+      return *this;
+    }
+
+    bool operator==( ${className} const & rhs ) const
+    {
+      return m_${memberName} == rhs.m_${memberName};
+    }
+
+    bool operator!=(${className} const & rhs ) const
+    {
+      return m_${memberName} != rhs.m_${memberName};
+    }
+
+    bool operator<(${className} const & rhs ) const
+    {
+      return m_${memberName} < rhs.m_${memberName};
+    }
+
+${commands}
+
+    VULKAN_HPP_TYPESAFE_EXPLICIT operator Vk${className}() const
+    {
+      return m_${memberName};
+    }
+
+    explicit operator bool() const
+    {
+      return m_${memberName} != VK_NULL_HANDLE;
+    }
+
+    bool operator!() const
+    {
+      return m_${memberName} == VK_NULL_HANDLE;
+    }
+
+  private:
+    Vk${className} m_${memberName};
+  };
+
+  static_assert( sizeof( ${className} ) == sizeof( Vk${className} ), "handle and wrapper have different size!" );
+
+)";
+
+  std::ostringstream commands;
   // now list all the commands that are mapped to members of this class
   for (size_t i = 0; i < handleData.commands.size(); i++)
   {
     std::string commandName = handleData.commands[i];
     std::map<std::string, CommandData>::const_iterator cit = vkData.commands.find(commandName);
     assert((cit != vkData.commands.end()) && !cit->second.className.empty());
-    writeTypeCommand(ofs, "    ", vkData, cit->second, false);
+    writeTypeCommand(commands, "    ", vkData, cit->second, false);
   }
 
-  // finally list the cast operators to the corresponding Vk-type, and to bool (explicit), and the operator!
-  ofs << "    VULKAN_HPP_TYPESAFE_EXPLICIT operator Vk" << dependencyData.name << "() const" << std::endl
-    << "    {" << std::endl
-    << "      return m_" << memberName << ";" << std::endl
-    << "    }" << std::endl
-    << std::endl
-    << "    explicit operator bool() const" << std::endl
-    << "    {" << std::endl
-    << "      return m_" << memberName << " != VK_NULL_HANDLE;" << std::endl
-    << "    }" << std::endl
-    << std::endl
-    << "    bool operator!() const" << std::endl
-    << "    {" << std::endl
-    << "      return m_" << memberName << " == VK_NULL_HANDLE;" << std::endl
-    << "    }" << std::endl
-    << std::endl;
+  os << replaceWithMap(templateString, {
+    { "className", dependencyData.name },
+    { "memberName", memberName },
+    { "commands", commands.str() }
+  });
 
-  // and last but not least: the member variable: a corresponding Vk-type
-  ofs << "  private:" << std::endl
-    << "    Vk" << dependencyData.name << " m_" << memberName << ";" << std::endl
-    << "  };" << std::endl;
-
-  // and a little safety check, that our class has the same size as the corresponding Vk-type
-  ofs << "  static_assert( sizeof( " << dependencyData.name << " ) == sizeof( Vk" << dependencyData.name << " ), \"handle and wrapper have different size!\" );" << std::endl
-    << std::endl;
-
-  // then the actual Deleter classes can be listet
+  // then the actual Deleter classes can be listed
   deleterTypesIt = vkData.deleterTypes.find(dependencyData.name);
   if (deleterTypesIt != vkData.deleterTypes.end())
   {
-    writeDeleterClasses(ofs, *deleterTypesIt, vkData.deleterData);
+    writeDeleterClasses(os, *deleterTypesIt, vkData.deleterData);
   }
 
   // and finally the commands, that are member functions of this handle
@@ -3752,16 +3769,16 @@ void writeTypeHandle(std::ofstream & ofs, VkData const& vkData, DependencyData c
     assert((cit != vkData.commands.end()) && !cit->second.className.empty());
     std::list<DependencyData>::const_iterator dep = std::find_if(dependencies.begin(), dependencies.end(), [commandName](DependencyData const& dd) { return dd.name == commandName; });
     assert(dep != dependencies.end() && (dep->name == cit->second.fullName));
-    writeTypeCommand(ofs, "  ", vkData, cit->second, true);
+    writeTypeCommand(os, "  ", vkData, cit->second, true);
   }
 
-  leaveProtect(ofs, handleData.protect);
+  leaveProtect(os, handleData.protect);
 }
 
-void writeTypeScalar( std::ofstream & ofs, DependencyData const& dependencyData )
+void writeTypeScalar( std::ostream & os, DependencyData const& dependencyData )
 {
   assert( dependencyData.dependencies.size() == 1 );
-  ofs << "  using " << dependencyData.name << " = " << *dependencyData.dependencies.begin() << ";" << std::endl
+  os << "  using " << dependencyData.name << " = " << *dependencyData.dependencies.begin() << ";" << std::endl
       << std::endl;
 }
 
@@ -3781,19 +3798,19 @@ bool containsUnion(std::string const& type, std::map<std::string, StructData> co
   return found;
 }
 
-void writeTypeStruct( std::ofstream & ofs, VkData const& vkData, DependencyData const& dependencyData, std::map<std::string,std::string> const& defaultValues )
+void writeTypeStruct( std::ostream & os, VkData const& vkData, DependencyData const& dependencyData, std::map<std::string,std::string> const& defaultValues )
 {
   std::map<std::string,StructData>::const_iterator it = vkData.structs.find( dependencyData.name );
   assert( it != vkData.structs.end() );
 
-  enterProtect(ofs, it->second.protect);
-  ofs << "  struct " << dependencyData.name << std::endl
+  enterProtect(os, it->second.protect);
+  os << "  struct " << dependencyData.name << std::endl
       << "  {" << std::endl;
 
   // only structs that are not returnedOnly get a constructor!
   if ( !it->second.returnedOnly )
   {
-    writeStructConstructor( ofs, dependencyData.name, it->second, vkData.vkTypes, defaultValues );
+    writeStructConstructor( os, dependencyData.name, it->second, vkData.vkTypes, defaultValues );
   }
 
   // create the setters
@@ -3801,12 +3818,12 @@ void writeTypeStruct( std::ofstream & ofs, VkData const& vkData, DependencyData 
   {
     for (size_t i = 0; i<it->second.members.size(); i++)
     {
-      writeStructSetter( ofs, dependencyData.name, it->second.members[i], vkData.vkTypes );
+      writeStructSetter( os, dependencyData.name, it->second.members[i], vkData.vkTypes );
     }
   }
 
   // the cast-operator to the wrapped struct
-  ofs << "    operator const Vk" << dependencyData.name << "&() const" << std::endl
+  os << "    operator const Vk" << dependencyData.name << "&() const" << std::endl
       << "    {" << std::endl
       << "      return *reinterpret_cast<const Vk" << dependencyData.name << "*>(this);" << std::endl
       << "    }" << std::endl
@@ -3817,25 +3834,25 @@ void writeTypeStruct( std::ofstream & ofs, VkData const& vkData, DependencyData 
   if (!containsUnion(dependencyData.name, vkData.structs))
   {
     // two structs are compared by comparing each of the elements
-    ofs << "    bool operator==( " << dependencyData.name << " const& rhs ) const" << std::endl
+    os << "    bool operator==( " << dependencyData.name << " const& rhs ) const" << std::endl
         << "    {" << std::endl
         << "      return ";
     for (size_t i = 0; i < it->second.members.size(); i++)
     {
       if (i != 0)
       {
-        ofs << std::endl << "          && ";
+        os << std::endl << "          && ";
       }
       if (!it->second.members[i].arraySize.empty())
       {
-        ofs << "( memcmp( " << it->second.members[i].name << ", rhs." << it->second.members[i].name << ", " << it->second.members[i].arraySize << " * sizeof( " << it->second.members[i].type << " ) ) == 0 )";
+        os << "( memcmp( " << it->second.members[i].name << ", rhs." << it->second.members[i].name << ", " << it->second.members[i].arraySize << " * sizeof( " << it->second.members[i].type << " ) ) == 0 )";
       }
       else
       {
-        ofs << "( " << it->second.members[i].name << " == rhs." << it->second.members[i].name << " )";
+        os << "( " << it->second.members[i].name << " == rhs." << it->second.members[i].name << " )";
       }
     }
-    ofs << ";" << std::endl
+    os << ";" << std::endl
         << "    }" << std::endl
         << std::endl
         << "    bool operator!=( " << dependencyData.name << " const& rhs ) const" << std::endl
@@ -3851,50 +3868,50 @@ void writeTypeStruct( std::ofstream & ofs, VkData const& vkData, DependencyData 
     if (it->second.members[i].type == "StructureType")
     {
       assert((i == 0) && (it->second.members[i].name == "sType"));
-      ofs << "  private:" << std::endl
+      os << "  private:" << std::endl
           << "    StructureType sType;" << std::endl
           << std::endl
           << "  public:" << std::endl;
     }
     else
     {
-      ofs << "    " << it->second.members[i].type << " " << it->second.members[i].name;
+      os << "    " << it->second.members[i].type << " " << it->second.members[i].name;
       if (!it->second.members[i].arraySize.empty())
       {
-        ofs << "[" << it->second.members[i].arraySize << "]";
+        os << "[" << it->second.members[i].arraySize << "]";
       }
-      ofs << ";" << std::endl;
+      os << ";" << std::endl;
     }
   }
-  ofs << "  };" << std::endl
+  os << "  };" << std::endl
       << "  static_assert( sizeof( " << dependencyData.name << " ) == sizeof( Vk" << dependencyData.name << " ), \"struct and wrapper have different size!\" );" << std::endl;
 
-  leaveProtect(ofs, it->second.protect);
-  ofs << std::endl;
+  leaveProtect(os, it->second.protect);
+  os << std::endl;
 }
 
-void writeTypeUnion( std::ofstream & ofs, VkData const& vkData, DependencyData const& dependencyData, std::map<std::string,std::string> const& defaultValues )
+void writeTypeUnion( std::ostream & os, VkData const& vkData, DependencyData const& dependencyData, std::map<std::string,std::string> const& defaultValues )
 {
   std::map<std::string, StructData>::const_iterator it = vkData.structs.find(dependencyData.name);
   assert(it != vkData.structs.end());
 
   std::ostringstream oss;
-  ofs << "  union " << dependencyData.name << std::endl
+  os << "  union " << dependencyData.name << std::endl
       << "  {" << std::endl;
 
   for ( size_t i=0 ; i<it->second.members.size() ; i++ )
   {
     // one constructor per union element
-    ofs << "    " << dependencyData.name << "( ";
+    os << "    " << dependencyData.name << "( ";
     if ( it->second.members[i].arraySize.empty() )
     {
-      ofs << it->second.members[i].type << " ";
+      os << it->second.members[i].type << " ";
     }
     else
     {
-      ofs << "const std::array<" << it->second.members[i].type << "," << it->second.members[i].arraySize << ">& ";
+      os << "const std::array<" << it->second.members[i].type << "," << it->second.members[i].arraySize << ">& ";
     }
-    ofs << it->second.members[i].name << "_";
+    os << it->second.members[i].name << "_";
 
     // just the very first constructor gets default arguments
     if ( i == 0 )
@@ -3903,25 +3920,25 @@ void writeTypeUnion( std::ofstream & ofs, VkData const& vkData, DependencyData c
       assert(defaultIt != defaultValues.end() );
       if ( it->second.members[i].arraySize.empty() )
       {
-        ofs << " = " << defaultIt->second;
+        os << " = " << defaultIt->second;
       }
       else
       {
-        ofs << " = { {" << defaultIt->second << "} }";
+        os << " = { {" << defaultIt->second << "} }";
       }
     }
-    ofs << " )" << std::endl
+    os << " )" << std::endl
         << "    {" << std::endl
         << "      ";
     if ( it->second.members[i].arraySize.empty() )
     {
-      ofs << it->second.members[i].name << " = " << it->second.members[i].name << "_";
+      os << it->second.members[i].name << " = " << it->second.members[i].name << "_";
     }
     else
     {
-      ofs << "memcpy( &" << it->second.members[i].name << ", " << it->second.members[i].name << "_.data(), " << it->second.members[i].arraySize << " * sizeof( " << it->second.members[i].type << " ) )";
+      os << "memcpy( &" << it->second.members[i].name << ", " << it->second.members[i].name << "_.data(), " << it->second.members[i].arraySize << " * sizeof( " << it->second.members[i].type << " ) )";
     }
-    ofs << ";" << std::endl
+    os << ";" << std::endl
         << "    }" << std::endl
         << std::endl;
     }
@@ -3930,11 +3947,11 @@ void writeTypeUnion( std::ofstream & ofs, VkData const& vkData, DependencyData c
   {
     // one setter per union element
     assert(!it->second.returnedOnly);
-    writeStructSetter(ofs, dependencyData.name, it->second.members[i], vkData.vkTypes);
+    writeStructSetter(os, dependencyData.name, it->second.members[i], vkData.vkTypes);
   }
 
   // the implicit cast operator to the native type
-  ofs << "    operator Vk" << dependencyData.name << " const& () const" << std::endl
+  os << "    operator Vk" << dependencyData.name << " const& () const" << std::endl
       << "    {" << std::endl
       << "      return *reinterpret_cast<const Vk" << dependencyData.name << "*>(this);" << std::endl
       << "    }" << std::endl
@@ -3949,56 +3966,56 @@ void writeTypeUnion( std::ofstream & ofs, VkData const& vkData, DependencyData c
   }
   if (needsUnrestrictedUnions)
   {
-    ofs << "#ifdef VULKAN_HPP_HAS_UNRESTRICTED_UNIONS" << std::endl;
+    os << "#ifdef VULKAN_HPP_HAS_UNRESTRICTED_UNIONS" << std::endl;
     for (size_t i = 0; i < it->second.members.size(); i++)
     {
-      ofs << "    " << it->second.members[i].type << " " << it->second.members[i].name;
+      os << "    " << it->second.members[i].type << " " << it->second.members[i].name;
       if (!it->second.members[i].arraySize.empty())
       {
-        ofs << "[" << it->second.members[i].arraySize << "]";
+        os << "[" << it->second.members[i].arraySize << "]";
       }
-      ofs << ";" << std::endl;
+      os << ";" << std::endl;
     }
-    ofs << "#else" << std::endl;
+    os << "#else" << std::endl;
   }
   for (size_t i = 0; i < it->second.members.size(); i++)
   {
-    ofs << "    ";
+    os << "    ";
     if (vkData.vkTypes.find(it->second.members[i].type) != vkData.vkTypes.end())
     {
-      ofs << "Vk";
+      os << "Vk";
     }
-    ofs << it->second.members[i].type << " " << it->second.members[i].name;
+    os << it->second.members[i].type << " " << it->second.members[i].name;
     if (!it->second.members[i].arraySize.empty())
     {
-      ofs << "[" << it->second.members[i].arraySize << "]";
+      os << "[" << it->second.members[i].arraySize << "]";
     }
-    ofs << ";" << std::endl;
+    os << ";" << std::endl;
   }
   if (needsUnrestrictedUnions)
   {
-    ofs << "#endif  // VULKAN_HPP_HAS_UNRESTRICTED_UNIONS" << std::endl;
+    os << "#endif  // VULKAN_HPP_HAS_UNRESTRICTED_UNIONS" << std::endl;
   }
-  ofs << "  };" << std::endl
+  os << "  };" << std::endl
       << std::endl;
 }
 
-void writeTypes(std::ofstream & ofs, VkData const& vkData, std::map<std::string, std::string> const& defaultValues)
+void writeTypes(std::ostream & os, VkData const& vkData, std::map<std::string, std::string> const& defaultValues)
 {
   for ( std::list<DependencyData>::const_iterator it = vkData.dependencies.begin() ; it != vkData.dependencies.end() ; ++it )
   {
     switch( it->category )
     {
       case DependencyData::Category::COMMAND :
-        writeTypeCommand( ofs, vkData, *it );
+        writeTypeCommand( os, vkData, *it );
         break;
       case DependencyData::Category::ENUM :
         assert( vkData.enums.find( it->name ) != vkData.enums.end() );
-        writeTypeEnum( ofs, vkData.enums.find( it->name )->second );
+        writeTypeEnum( os, vkData.enums.find( it->name )->second );
         break;
       case DependencyData::Category::FLAGS :
         assert(vkData.flags.find(it->name) != vkData.flags.end());
-        writeTypeFlags( ofs, it->name, vkData.flags.find( it->name)->second, vkData.enums.find(generateEnumNameForFlags(it->name))->second );
+        writeTypeFlags( os, it->name, vkData.flags.find( it->name)->second, vkData.enums.find(generateEnumNameForFlags(it->name))->second );
         break;
       case DependencyData::Category::FUNC_POINTER :
       case DependencyData::Category::REQUIRED :
@@ -4006,17 +4023,17 @@ void writeTypes(std::ofstream & ofs, VkData const& vkData, std::map<std::string,
         break;
       case DependencyData::Category::HANDLE :
         assert(vkData.handles.find(it->name) != vkData.handles.end());
-        writeTypeHandle(ofs, vkData, *it, vkData.handles.find(it->name)->second, vkData.dependencies);
+        writeTypeHandle(os, vkData, *it, vkData.handles.find(it->name)->second, vkData.dependencies);
         break;
       case DependencyData::Category::SCALAR :
-        writeTypeScalar( ofs, *it );
+        writeTypeScalar( os, *it );
         break;
       case DependencyData::Category::STRUCT :
-        writeTypeStruct( ofs, vkData, *it, defaultValues );
+        writeTypeStruct( os, vkData, *it, defaultValues );
         break;
       case DependencyData::Category::UNION :
         assert( vkData.structs.find( it->name ) != vkData.structs.end() );
-        writeTypeUnion( ofs, vkData, *it, defaultValues );
+        writeTypeUnion( os, vkData, *it, defaultValues );
         break;
       default :
         assert( false );
@@ -4025,15 +4042,15 @@ void writeTypes(std::ofstream & ofs, VkData const& vkData, std::map<std::string,
   }
 }
 
-void writeVersionCheck(std::ofstream & ofs, std::string const& version)
+void writeVersionCheck(std::ostream & os, std::string const& version)
 {
-  ofs << "static_assert( VK_HEADER_VERSION == " << version << " , \"Wrong VK_HEADER_VERSION!\" );" << std::endl
+  os << "static_assert( VK_HEADER_VERSION == " << version << " , \"Wrong VK_HEADER_VERSION!\" );" << std::endl
       << std::endl;
 }
 
-void writeTypesafeCheck(std::ofstream & ofs, std::string const& typesafeCheck)
+void writeTypesafeCheck(std::ostream & os, std::string const& typesafeCheck)
 {
-  ofs << "// 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default." << std::endl
+  os << "// 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default." << std::endl
       << "// To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION" << std::endl
       << typesafeCheck << std::endl
       << "# if !defined( VULKAN_HPP_TYPESAFE_CONVERSION )" << std::endl
@@ -4109,28 +4126,27 @@ int main( int argc, char **argv )
 
     std::ofstream ofs(VULKAN_HPP);
     ofs << vkData.vulkanLicenseHeader << std::endl
-      << std::endl
-      << std::endl
-      << "#ifndef VULKAN_HPP" << std::endl
-      << "#define VULKAN_HPP" << std::endl
-      << std::endl
-      << "#include <algorithm>" << std::endl
-      << "#include <array>" << std::endl
-      << "#include <cassert>" << std::endl
-      << "#include <cstddef>" << std::endl
-      << "#include <cstdint>" << std::endl
-      << "#include <cstring>" << std::endl
-      << "#include <initializer_list>" << std::endl
-      << "#include <string>" << std::endl
-      << "#include <system_error>" << std::endl
-      << "#include <tuple>" << std::endl
-      << "#include <type_traits>" << std::endl
-      << "#include <vulkan/vulkan.h>" << std::endl
-      << "#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE" << std::endl
-      << "# include <memory>" << std::endl
-      << "# include <vector>" << std::endl
-      << "#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/" << std::endl
-      << std::endl;
+      << R"(
+#ifndef VULKAN_HPP
+#define VULKAN_HPP
+
+#include <algorithm>
+#include <array>
+#include <cassert>
+#include <cstddef>
+#include <cstdint>
+#include <cstring>
+#include <initializer_list>
+#include <string>
+#include <system_error>
+#include <tuple>
+#include <type_traits>
+#include <vulkan/vulkan.h>
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+# include <memory>
+# include <vector>
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+)";
 
     writeVersionCheck(ofs, vkData.version);
     writeTypesafeCheck(ofs, vkData.typesafeCheck);

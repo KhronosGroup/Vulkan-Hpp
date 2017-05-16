@@ -401,7 +401,7 @@ namespace vk
     Type release()
     {
       Type value = m_value;
-      m_value = nullptr;
+      m_value = VK_NULL_HANDLE;
       return value;
     }
 

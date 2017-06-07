@@ -24,6 +24,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <tuple>
 #include <exception>
 #include <regex>
 #include <iterator>
@@ -457,7 +458,7 @@ const std::string createResultValueHeader = R"(
     if ( result != Result::eSuccess )
     {
       throwResultException( result, message );
-    }
+    20
     return data;
 #endif
   }
@@ -602,7 +603,7 @@ const std::string uniqueHandleHeader = R"(
 
 )";
 
-std::string replaceWithMap(std::string const &input, std::map<std::string, std::string> replacements)
+std::string replaceWithMap(std::string const &input, std::map<std::string, std::string> const &replacements)
 {
   // This will match ${someVariable} and contain someVariable in match group 1
   std::regex re(R"(\$\{([^\}]+)\})");
@@ -2055,6 +2056,11 @@ std::string stripPluralS(std::string const& name)
 
 std::string toCamelCase(std::string const& value)
 {
+  static std::vector<std::tuple<std::string, std::string>> const replacements = 
+  {
+    std::make_tuple( "Ycbcr", "YCbCr" )
+  };
+
   assert(!value.empty() && (isupper(value[0]) || isdigit(value[0])));
   std::string result;
   result.reserve(value.size());
@@ -2071,6 +2077,17 @@ std::string toCamelCase(std::string const& value)
       {
         result.push_back(tolower(value[i]));
       }
+    }
+  }
+
+  // The Vulkan spec is using YCBCR instead of Y_CB_CR. The first will generated Ycbcr while the Vulkan spec required YCbCr.
+  // Fix the issue with a simple replacement pattern.
+  for (auto  it : replacements)
+  {
+    auto stringSize = std::get<0>(it).size();
+    for (auto itResult = result.find(std::get<0>(it)); itResult != std::string::npos; itResult = result.find(std::get<0>(it), itResult + stringSize))
+    {
+      result.replace(itResult, stringSize, std::get<1>(it));
     }
   }
   return result;

@@ -40,7 +40,7 @@
 # include <memory>
 # include <vector>
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-static_assert( VK_HEADER_VERSION ==  48 , "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION ==  51 , "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -5283,7 +5283,8 @@ namespace vk
     eTransferSrcOptimal = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
     eTransferDstOptimal = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
     ePreinitialized = VK_IMAGE_LAYOUT_PREINITIALIZED,
-    ePresentSrcKHR = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR
+    ePresentSrcKHR = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
+    eSharedPresentKHR = VK_IMAGE_LAYOUT_SHARED_PRESENT_KHR
   };
 
   struct DescriptorImageInfo
@@ -6388,6 +6389,7 @@ namespace vk
     eDedicatedAllocationImageCreateInfoNV = VK_STRUCTURE_TYPE_DEDICATED_ALLOCATION_IMAGE_CREATE_INFO_NV,
     eDedicatedAllocationBufferCreateInfoNV = VK_STRUCTURE_TYPE_DEDICATED_ALLOCATION_BUFFER_CREATE_INFO_NV,
     eDedicatedAllocationMemoryAllocateInfoNV = VK_STRUCTURE_TYPE_DEDICATED_ALLOCATION_MEMORY_ALLOCATE_INFO_NV,
+    eTextureLodGatherFormatPropertiesAMD = VK_STRUCTURE_TYPE_TEXTURE_LOD_GATHER_FORMAT_PROPERTIES_AMD,
     eRenderPassMultiviewCreateInfoKHX = VK_STRUCTURE_TYPE_RENDER_PASS_MULTIVIEW_CREATE_INFO_KHX,
     ePhysicalDeviceMultiviewFeaturesKHX = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTIVIEW_FEATURES_KHX,
     ePhysicalDeviceMultiviewPropertiesKHX = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTIVIEW_PROPERTIES_KHX,
@@ -6464,6 +6466,10 @@ namespace vk
     ePhysicalDeviceDiscardRectanglePropertiesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DISCARD_RECTANGLE_PROPERTIES_EXT,
     ePipelineDiscardRectangleStateCreateInfoEXT = VK_STRUCTURE_TYPE_PIPELINE_DISCARD_RECTANGLE_STATE_CREATE_INFO_EXT,
     eHdrMetadataEXT = VK_STRUCTURE_TYPE_HDR_METADATA_EXT,
+    eSharedPresentSurfaceCapabilitiesKHR = VK_STRUCTURE_TYPE_SHARED_PRESENT_SURFACE_CAPABILITIES_KHR,
+    ePhysicalDeviceSurfaceInfo2KHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SURFACE_INFO_2_KHR,
+    eSurfaceCapabilities2KHR = VK_STRUCTURE_TYPE_SURFACE_CAPABILITIES_2_KHR,
+    eSurfaceFormat2KHR = VK_STRUCTURE_TYPE_SURFACE_FORMAT_2_KHR,
     eIosSurfaceCreateInfoMVK = VK_STRUCTURE_TYPE_IOS_SURFACE_CREATE_INFO_MVK,
     eMacosSurfaceCreateInfoMVK = VK_STRUCTURE_TYPE_MACOS_SURFACE_CREATE_INFO_MVK
   };
@@ -12102,6 +12108,91 @@ namespace vk
   };
   static_assert( sizeof( PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX ) == sizeof( VkPhysicalDeviceMultiviewPerViewAttributesPropertiesNVX ), "struct and wrapper have different size!" );
 
+  struct PhysicalDeviceSurfaceInfo2KHR
+  {
+    PhysicalDeviceSurfaceInfo2KHR( SurfaceKHR surface_ = SurfaceKHR() )
+      : sType( StructureType::ePhysicalDeviceSurfaceInfo2KHR )
+      , pNext( nullptr )
+      , surface( surface_ )
+    {
+    }
+
+    PhysicalDeviceSurfaceInfo2KHR( VkPhysicalDeviceSurfaceInfo2KHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceSurfaceInfo2KHR ) );
+    }
+
+    PhysicalDeviceSurfaceInfo2KHR& operator=( VkPhysicalDeviceSurfaceInfo2KHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceSurfaceInfo2KHR ) );
+      return *this;
+    }
+    PhysicalDeviceSurfaceInfo2KHR& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PhysicalDeviceSurfaceInfo2KHR& setSurface( SurfaceKHR surface_ )
+    {
+      surface = surface_;
+      return *this;
+    }
+
+    operator const VkPhysicalDeviceSurfaceInfo2KHR&() const
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceSurfaceInfo2KHR*>(this);
+    }
+
+    bool operator==( PhysicalDeviceSurfaceInfo2KHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( surface == rhs.surface );
+    }
+
+    bool operator!=( PhysicalDeviceSurfaceInfo2KHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    const void* pNext;
+    SurfaceKHR surface;
+  };
+  static_assert( sizeof( PhysicalDeviceSurfaceInfo2KHR ) == sizeof( VkPhysicalDeviceSurfaceInfo2KHR ), "struct and wrapper have different size!" );
+
+  struct TextureLODGatherFormatPropertiesAMD
+  {
+    operator const VkTextureLODGatherFormatPropertiesAMD&() const
+    {
+      return *reinterpret_cast<const VkTextureLODGatherFormatPropertiesAMD*>(this);
+    }
+
+    bool operator==( TextureLODGatherFormatPropertiesAMD const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( supportsTextureGatherLODBiasAMD == rhs.supportsTextureGatherLODBiasAMD );
+    }
+
+    bool operator!=( TextureLODGatherFormatPropertiesAMD const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    void* pNext;
+    Bool32 supportsTextureGatherLODBiasAMD;
+  };
+  static_assert( sizeof( TextureLODGatherFormatPropertiesAMD ) == sizeof( VkTextureLODGatherFormatPropertiesAMD ), "struct and wrapper have different size!" );
+
   enum class SubpassContents
   {
     eInline = VK_SUBPASS_CONTENTS_INLINE,
@@ -12425,6 +12516,44 @@ namespace vk
     uint32_t set;
   };
   static_assert( sizeof( DescriptorUpdateTemplateCreateInfoKHR ) == sizeof( VkDescriptorUpdateTemplateCreateInfoKHR ), "struct and wrapper have different size!" );
+
+  enum class ObjectType
+  {
+    eUnknown = VK_OBJECT_TYPE_UNKNOWN,
+    eInstance = VK_OBJECT_TYPE_INSTANCE,
+    ePhysicalDevice = VK_OBJECT_TYPE_PHYSICAL_DEVICE,
+    eDevice = VK_OBJECT_TYPE_DEVICE,
+    eQueue = VK_OBJECT_TYPE_QUEUE,
+    eSemaphore = VK_OBJECT_TYPE_SEMAPHORE,
+    eCommandBuffer = VK_OBJECT_TYPE_COMMAND_BUFFER,
+    eFence = VK_OBJECT_TYPE_FENCE,
+    eDeviceMemory = VK_OBJECT_TYPE_DEVICE_MEMORY,
+    eBuffer = VK_OBJECT_TYPE_BUFFER,
+    eImage = VK_OBJECT_TYPE_IMAGE,
+    eEvent = VK_OBJECT_TYPE_EVENT,
+    eQueryPool = VK_OBJECT_TYPE_QUERY_POOL,
+    eBufferView = VK_OBJECT_TYPE_BUFFER_VIEW,
+    eImageView = VK_OBJECT_TYPE_IMAGE_VIEW,
+    eShaderModule = VK_OBJECT_TYPE_SHADER_MODULE,
+    ePipelineCache = VK_OBJECT_TYPE_PIPELINE_CACHE,
+    ePipelineLayout = VK_OBJECT_TYPE_PIPELINE_LAYOUT,
+    eRenderPass = VK_OBJECT_TYPE_RENDER_PASS,
+    ePipeline = VK_OBJECT_TYPE_PIPELINE,
+    eDescriptorSetLayout = VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT,
+    eSampler = VK_OBJECT_TYPE_SAMPLER,
+    eDescriptorPool = VK_OBJECT_TYPE_DESCRIPTOR_POOL,
+    eDescriptorSet = VK_OBJECT_TYPE_DESCRIPTOR_SET,
+    eFramebuffer = VK_OBJECT_TYPE_FRAMEBUFFER,
+    eCommandPool = VK_OBJECT_TYPE_COMMAND_POOL,
+    eSurfaceKHR = VK_OBJECT_TYPE_SURFACE_KHR,
+    eSwapchainKHR = VK_OBJECT_TYPE_SWAPCHAIN_KHR,
+    eDisplayKHR = VK_OBJECT_TYPE_DISPLAY_KHR,
+    eDisplayModeKHR = VK_OBJECT_TYPE_DISPLAY_MODE_KHR,
+    eDebugReportCallbackEXT = VK_OBJECT_TYPE_DEBUG_REPORT_CALLBACK_EXT,
+    eDescriptorUpdateTemplateKHR = VK_OBJECT_TYPE_DESCRIPTOR_UPDATE_TEMPLATE_KHR,
+    eObjectTableNVX = VK_OBJECT_TYPE_OBJECT_TABLE_NVX,
+    eIndirectCommandsLayoutNVX = VK_OBJECT_TYPE_INDIRECT_COMMANDS_LAYOUT_NVX
+  };
 
   enum class QueueFlagBits
   {
@@ -13434,6 +13563,34 @@ namespace vk
       allFlags = VkFlags(ImageUsageFlagBits::eTransferSrc) | VkFlags(ImageUsageFlagBits::eTransferDst) | VkFlags(ImageUsageFlagBits::eSampled) | VkFlags(ImageUsageFlagBits::eStorage) | VkFlags(ImageUsageFlagBits::eColorAttachment) | VkFlags(ImageUsageFlagBits::eDepthStencilAttachment) | VkFlags(ImageUsageFlagBits::eTransientAttachment) | VkFlags(ImageUsageFlagBits::eInputAttachment)
     };
   };
+
+  struct SharedPresentSurfaceCapabilitiesKHR
+  {
+    operator const VkSharedPresentSurfaceCapabilitiesKHR&() const
+    {
+      return *reinterpret_cast<const VkSharedPresentSurfaceCapabilitiesKHR*>(this);
+    }
+
+    bool operator==( SharedPresentSurfaceCapabilitiesKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( sharedPresentSupportedUsageFlags == rhs.sharedPresentSupportedUsageFlags );
+    }
+
+    bool operator!=( SharedPresentSurfaceCapabilitiesKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    void* pNext;
+    ImageUsageFlags sharedPresentSupportedUsageFlags;
+  };
+  static_assert( sizeof( SharedPresentSurfaceCapabilitiesKHR ) == sizeof( VkSharedPresentSurfaceCapabilitiesKHR ), "struct and wrapper have different size!" );
 
   enum class ImageCreateFlagBits
   {
@@ -17433,7 +17590,9 @@ namespace vk
     eImmediate = VK_PRESENT_MODE_IMMEDIATE_KHR,
     eMailbox = VK_PRESENT_MODE_MAILBOX_KHR,
     eFifo = VK_PRESENT_MODE_FIFO_KHR,
-    eFifoRelaxed = VK_PRESENT_MODE_FIFO_RELAXED_KHR
+    eFifoRelaxed = VK_PRESENT_MODE_FIFO_RELAXED_KHR,
+    eSharedDemandRefresh = VK_PRESENT_MODE_SHARED_DEMAND_REFRESH_KHR,
+    eSharedContinuousRefresh = VK_PRESENT_MODE_SHARED_CONTINUOUS_REFRESH_KHR
   };
 
   enum class ColorSpaceKHR
@@ -17476,6 +17635,34 @@ namespace vk
     ColorSpaceKHR colorSpace;
   };
   static_assert( sizeof( SurfaceFormatKHR ) == sizeof( VkSurfaceFormatKHR ), "struct and wrapper have different size!" );
+
+  struct SurfaceFormat2KHR
+  {
+    operator const VkSurfaceFormat2KHR&() const
+    {
+      return *reinterpret_cast<const VkSurfaceFormat2KHR*>(this);
+    }
+
+    bool operator==( SurfaceFormat2KHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( surfaceFormat == rhs.surfaceFormat );
+    }
+
+    bool operator!=( SurfaceFormat2KHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    void* pNext;
+    SurfaceFormatKHR surfaceFormat;
+  };
+  static_assert( sizeof( SurfaceFormat2KHR ) == sizeof( VkSurfaceFormat2KHR ), "struct and wrapper have different size!" );
 
   enum class DisplayPlaneAlphaFlagBitsKHR
   {
@@ -17795,6 +17982,34 @@ namespace vk
   };
   static_assert( sizeof( SurfaceCapabilitiesKHR ) == sizeof( VkSurfaceCapabilitiesKHR ), "struct and wrapper have different size!" );
 
+  struct SurfaceCapabilities2KHR
+  {
+    operator const VkSurfaceCapabilities2KHR&() const
+    {
+      return *reinterpret_cast<const VkSurfaceCapabilities2KHR*>(this);
+    }
+
+    bool operator==( SurfaceCapabilities2KHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( surfaceCapabilities == rhs.surfaceCapabilities );
+    }
+
+    bool operator!=( SurfaceCapabilities2KHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    void* pNext;
+    SurfaceCapabilitiesKHR surfaceCapabilities;
+  };
+  static_assert( sizeof( SurfaceCapabilities2KHR ) == sizeof( VkSurfaceCapabilities2KHR ), "struct and wrapper have different size!" );
+
   enum class DebugReportFlagBitsEXT
   {
     eInformation = VK_DEBUG_REPORT_INFORMATION_BIT_EXT,
@@ -17929,7 +18144,7 @@ namespace vk
     eCommandPool = VK_DEBUG_REPORT_OBJECT_TYPE_COMMAND_POOL_EXT,
     eSurfaceKhr = VK_DEBUG_REPORT_OBJECT_TYPE_SURFACE_KHR_EXT,
     eSwapchainKhr = VK_DEBUG_REPORT_OBJECT_TYPE_SWAPCHAIN_KHR_EXT,
-    eDebugReport = VK_DEBUG_REPORT_OBJECT_TYPE_DEBUG_REPORT_EXT,
+    eDebugReportCallbackExt = VK_DEBUG_REPORT_OBJECT_TYPE_DEBUG_REPORT_CALLBACK_EXT_EXT,
     eDisplayKhr = VK_DEBUG_REPORT_OBJECT_TYPE_DISPLAY_KHR_EXT,
     eDisplayModeKhr = VK_DEBUG_REPORT_OBJECT_TYPE_DISPLAY_MODE_KHR_EXT,
     eObjectTableNvx = VK_DEBUG_REPORT_OBJECT_TYPE_OBJECT_TABLE_NVX_EXT,
@@ -18104,12 +18319,6 @@ namespace vk
     const void* pTag;
   };
   static_assert( sizeof( DebugMarkerObjectTagInfoEXT ) == sizeof( VkDebugMarkerObjectTagInfoEXT ), "struct and wrapper have different size!" );
-
-  enum class DebugReportErrorEXT
-  {
-    eNone = VK_DEBUG_REPORT_ERROR_NONE_EXT,
-    eCallbackRef = VK_DEBUG_REPORT_ERROR_CALLBACK_REF_EXT
-  };
 
   enum class RasterizationOrderAMD
   {
@@ -18440,7 +18649,8 @@ namespace vk
 
   enum class ValidationCheckEXT
   {
-    eAll = VK_VALIDATION_CHECK_ALL_EXT
+    eAll = VK_VALIDATION_CHECK_ALL_EXT,
+    eShaders = VK_VALIDATION_CHECK_SHADERS_EXT
   };
 
   struct ValidationFlagsEXT
@@ -18565,19 +18775,19 @@ namespace vk
 
   enum class IndirectCommandsTokenTypeNVX
   {
-    eVkIndirectCommandsTokenPipeline = VK_INDIRECT_COMMANDS_TOKEN_PIPELINE_NVX,
-    eVkIndirectCommandsTokenDescriptorSet = VK_INDIRECT_COMMANDS_TOKEN_DESCRIPTOR_SET_NVX,
-    eVkIndirectCommandsTokenIndexBuffer = VK_INDIRECT_COMMANDS_TOKEN_INDEX_BUFFER_NVX,
-    eVkIndirectCommandsTokenVertexBuffer = VK_INDIRECT_COMMANDS_TOKEN_VERTEX_BUFFER_NVX,
-    eVkIndirectCommandsTokenPushConstant = VK_INDIRECT_COMMANDS_TOKEN_PUSH_CONSTANT_NVX,
-    eVkIndirectCommandsTokenDrawIndexed = VK_INDIRECT_COMMANDS_TOKEN_DRAW_INDEXED_NVX,
-    eVkIndirectCommandsTokenDraw = VK_INDIRECT_COMMANDS_TOKEN_DRAW_NVX,
-    eVkIndirectCommandsTokenDispatch = VK_INDIRECT_COMMANDS_TOKEN_DISPATCH_NVX
+    ePipeline = VK_INDIRECT_COMMANDS_TOKEN_TYPE_PIPELINE_NVX,
+    eDescriptorSet = VK_INDIRECT_COMMANDS_TOKEN_TYPE_DESCRIPTOR_SET_NVX,
+    eIndexBuffer = VK_INDIRECT_COMMANDS_TOKEN_TYPE_INDEX_BUFFER_NVX,
+    eVertexBuffer = VK_INDIRECT_COMMANDS_TOKEN_TYPE_VERTEX_BUFFER_NVX,
+    ePushConstant = VK_INDIRECT_COMMANDS_TOKEN_TYPE_PUSH_CONSTANT_NVX,
+    eDrawIndexed = VK_INDIRECT_COMMANDS_TOKEN_TYPE_DRAW_INDEXED_NVX,
+    eDraw = VK_INDIRECT_COMMANDS_TOKEN_TYPE_DRAW_NVX,
+    eDispatch = VK_INDIRECT_COMMANDS_TOKEN_TYPE_DISPATCH_NVX
   };
 
   struct IndirectCommandsTokenNVX
   {
-    IndirectCommandsTokenNVX( IndirectCommandsTokenTypeNVX tokenType_ = IndirectCommandsTokenTypeNVX::eVkIndirectCommandsTokenPipeline, Buffer buffer_ = Buffer(), DeviceSize offset_ = 0 )
+    IndirectCommandsTokenNVX( IndirectCommandsTokenTypeNVX tokenType_ = IndirectCommandsTokenTypeNVX::ePipeline, Buffer buffer_ = Buffer(), DeviceSize offset_ = 0 )
       : tokenType( tokenType_ )
       , buffer( buffer_ )
       , offset( offset_ )
@@ -18637,7 +18847,7 @@ namespace vk
 
   struct IndirectCommandsLayoutTokenNVX
   {
-    IndirectCommandsLayoutTokenNVX( IndirectCommandsTokenTypeNVX tokenType_ = IndirectCommandsTokenTypeNVX::eVkIndirectCommandsTokenPipeline, uint32_t bindingUnit_ = 0, uint32_t dynamicCount_ = 0, uint32_t divisor_ = 0 )
+    IndirectCommandsLayoutTokenNVX( IndirectCommandsTokenTypeNVX tokenType_ = IndirectCommandsTokenTypeNVX::ePipeline, uint32_t bindingUnit_ = 0, uint32_t dynamicCount_ = 0, uint32_t divisor_ = 0 )
       : tokenType( tokenType_ )
       , bindingUnit( bindingUnit_ )
       , dynamicCount( dynamicCount_ )
@@ -18790,11 +19000,11 @@ namespace vk
 
   enum class ObjectEntryTypeNVX
   {
-    eVkObjectEntryDescriptorSet = VK_OBJECT_ENTRY_DESCRIPTOR_SET_NVX,
-    eVkObjectEntryPipeline = VK_OBJECT_ENTRY_PIPELINE_NVX,
-    eVkObjectEntryIndexBuffer = VK_OBJECT_ENTRY_INDEX_BUFFER_NVX,
-    eVkObjectEntryVertexBuffer = VK_OBJECT_ENTRY_VERTEX_BUFFER_NVX,
-    eVkObjectEntryPushConstant = VK_OBJECT_ENTRY_PUSH_CONSTANT_NVX
+    eDescriptorSet = VK_OBJECT_ENTRY_TYPE_DESCRIPTOR_SET_NVX,
+    ePipeline = VK_OBJECT_ENTRY_TYPE_PIPELINE_NVX,
+    eIndexBuffer = VK_OBJECT_ENTRY_TYPE_INDEX_BUFFER_NVX,
+    eVertexBuffer = VK_OBJECT_ENTRY_TYPE_VERTEX_BUFFER_NVX,
+    ePushConstant = VK_OBJECT_ENTRY_TYPE_PUSH_CONSTANT_NVX
   };
 
   struct ObjectTableCreateInfoNVX
@@ -18928,7 +19138,7 @@ namespace vk
 
   struct ObjectTableEntryNVX
   {
-    ObjectTableEntryNVX( ObjectEntryTypeNVX type_ = ObjectEntryTypeNVX::eVkObjectEntryDescriptorSet, ObjectEntryUsageFlagsNVX flags_ = ObjectEntryUsageFlagsNVX() )
+    ObjectTableEntryNVX( ObjectEntryTypeNVX type_ = ObjectEntryTypeNVX::eDescriptorSet, ObjectEntryUsageFlagsNVX flags_ = ObjectEntryUsageFlagsNVX() )
       : type( type_ )
       , flags( flags_ )
     {
@@ -18979,7 +19189,7 @@ namespace vk
 
   struct ObjectTablePipelineEntryNVX
   {
-    ObjectTablePipelineEntryNVX( ObjectEntryTypeNVX type_ = ObjectEntryTypeNVX::eVkObjectEntryDescriptorSet, ObjectEntryUsageFlagsNVX flags_ = ObjectEntryUsageFlagsNVX(), Pipeline pipeline_ = Pipeline() )
+    ObjectTablePipelineEntryNVX( ObjectEntryTypeNVX type_ = ObjectEntryTypeNVX::eDescriptorSet, ObjectEntryUsageFlagsNVX flags_ = ObjectEntryUsageFlagsNVX(), Pipeline pipeline_ = Pipeline() )
       : type( type_ )
       , flags( flags_ )
       , pipeline( pipeline_ )
@@ -19039,7 +19249,7 @@ namespace vk
 
   struct ObjectTableDescriptorSetEntryNVX
   {
-    ObjectTableDescriptorSetEntryNVX( ObjectEntryTypeNVX type_ = ObjectEntryTypeNVX::eVkObjectEntryDescriptorSet, ObjectEntryUsageFlagsNVX flags_ = ObjectEntryUsageFlagsNVX(), PipelineLayout pipelineLayout_ = PipelineLayout(), DescriptorSet descriptorSet_ = DescriptorSet() )
+    ObjectTableDescriptorSetEntryNVX( ObjectEntryTypeNVX type_ = ObjectEntryTypeNVX::eDescriptorSet, ObjectEntryUsageFlagsNVX flags_ = ObjectEntryUsageFlagsNVX(), PipelineLayout pipelineLayout_ = PipelineLayout(), DescriptorSet descriptorSet_ = DescriptorSet() )
       : type( type_ )
       , flags( flags_ )
       , pipelineLayout( pipelineLayout_ )
@@ -19108,7 +19318,7 @@ namespace vk
 
   struct ObjectTableVertexBufferEntryNVX
   {
-    ObjectTableVertexBufferEntryNVX( ObjectEntryTypeNVX type_ = ObjectEntryTypeNVX::eVkObjectEntryDescriptorSet, ObjectEntryUsageFlagsNVX flags_ = ObjectEntryUsageFlagsNVX(), Buffer buffer_ = Buffer() )
+    ObjectTableVertexBufferEntryNVX( ObjectEntryTypeNVX type_ = ObjectEntryTypeNVX::eDescriptorSet, ObjectEntryUsageFlagsNVX flags_ = ObjectEntryUsageFlagsNVX(), Buffer buffer_ = Buffer() )
       : type( type_ )
       , flags( flags_ )
       , buffer( buffer_ )
@@ -19168,7 +19378,7 @@ namespace vk
 
   struct ObjectTableIndexBufferEntryNVX
   {
-    ObjectTableIndexBufferEntryNVX( ObjectEntryTypeNVX type_ = ObjectEntryTypeNVX::eVkObjectEntryDescriptorSet, ObjectEntryUsageFlagsNVX flags_ = ObjectEntryUsageFlagsNVX(), Buffer buffer_ = Buffer(), IndexType indexType_ = IndexType::eUint16 )
+    ObjectTableIndexBufferEntryNVX( ObjectEntryTypeNVX type_ = ObjectEntryTypeNVX::eDescriptorSet, ObjectEntryUsageFlagsNVX flags_ = ObjectEntryUsageFlagsNVX(), Buffer buffer_ = Buffer(), IndexType indexType_ = IndexType::eUint16 )
       : type( type_ )
       , flags( flags_ )
       , buffer( buffer_ )
@@ -19237,7 +19447,7 @@ namespace vk
 
   struct ObjectTablePushConstantEntryNVX
   {
-    ObjectTablePushConstantEntryNVX( ObjectEntryTypeNVX type_ = ObjectEntryTypeNVX::eVkObjectEntryDescriptorSet, ObjectEntryUsageFlagsNVX flags_ = ObjectEntryUsageFlagsNVX(), PipelineLayout pipelineLayout_ = PipelineLayout(), ShaderStageFlags stageFlags_ = ShaderStageFlags() )
+    ObjectTablePushConstantEntryNVX( ObjectEntryTypeNVX type_ = ObjectEntryTypeNVX::eDescriptorSet, ObjectEntryUsageFlagsNVX flags_ = ObjectEntryUsageFlagsNVX(), PipelineLayout pipelineLayout_ = PipelineLayout(), ShaderStageFlags stageFlags_ = ShaderStageFlags() )
       : type( type_ )
       , flags( flags_ )
       , pipelineLayout( pipelineLayout_ )
@@ -23515,6 +23725,8 @@ namespace vk
     void setHdrMetadataEXT( ArrayProxy<const SwapchainKHR> swapchains, ArrayProxy<const HdrMetadataEXT> metadata ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
+    Result getSwapchainStatusKHR( SwapchainKHR swapchain ) const;
+
     Result getRefreshCycleDurationGOOGLE( SwapchainKHR swapchain, RefreshCycleDurationGOOGLE* pDisplayTimingProperties ) const;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     ResultValueType<RefreshCycleDurationGOOGLE>::type getRefreshCycleDurationGOOGLE( SwapchainKHR swapchain ) const;
@@ -25643,6 +25855,19 @@ namespace vk
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
+#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  VULKAN_HPP_INLINE Result Device::getSwapchainStatusKHR( SwapchainKHR swapchain ) const
+  {
+    return static_cast<Result>( vkGetSwapchainStatusKHR( m_device, static_cast<VkSwapchainKHR>( swapchain ) ) );
+  }
+#else
+  VULKAN_HPP_INLINE Result Device::getSwapchainStatusKHR( SwapchainKHR swapchain ) const
+  {
+    Result result = static_cast<Result>( vkGetSwapchainStatusKHR( m_device, static_cast<VkSwapchainKHR>( swapchain ) ) );
+    return createResultValue( result, "vk::Device::getSwapchainStatusKHR", { Result::eSuccess, Result::eSuboptimalKHR } );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
   VULKAN_HPP_INLINE Result Device::getRefreshCycleDurationGOOGLE( SwapchainKHR swapchain, RefreshCycleDurationGOOGLE* pDisplayTimingProperties ) const
   {
     return static_cast<Result>( vkGetRefreshCycleDurationGOOGLE( m_device, static_cast<VkSwapchainKHR>( swapchain ), reinterpret_cast<VkRefreshCycleDurationGOOGLE*>( pDisplayTimingProperties ) ) );
@@ -25956,6 +26181,17 @@ namespace vk
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template <typename Allocator = std::allocator<Rect2D>> 
     typename ResultValueType<std::vector<Rect2D,Allocator>>::type getPresentRectanglesKHX( SurfaceKHR surface ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    Result getSurfaceCapabilities2KHR( const PhysicalDeviceSurfaceInfo2KHR* pSurfaceInfo, SurfaceCapabilities2KHR* pSurfaceCapabilities ) const;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    ResultValueType<SurfaceCapabilities2KHR>::type getSurfaceCapabilities2KHR( const PhysicalDeviceSurfaceInfo2KHR & surfaceInfo ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    Result getSurfaceFormats2KHR( const PhysicalDeviceSurfaceInfo2KHR* pSurfaceInfo, uint32_t* pSurfaceFormatCount, SurfaceFormat2KHR* pSurfaceFormats ) const;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename Allocator = std::allocator<SurfaceFormat2KHR>> 
+    typename ResultValueType<std::vector<SurfaceFormat2KHR,Allocator>>::type getSurfaceFormats2KHR( const PhysicalDeviceSurfaceInfo2KHR & surfaceInfo ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
 
@@ -26667,6 +26903,45 @@ namespace vk
     assert( rectCount <= rects.size() );
     rects.resize( rectCount );
     return createResultValue( result, rects, "vk::PhysicalDevice::getPresentRectanglesKHX" );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  VULKAN_HPP_INLINE Result PhysicalDevice::getSurfaceCapabilities2KHR( const PhysicalDeviceSurfaceInfo2KHR* pSurfaceInfo, SurfaceCapabilities2KHR* pSurfaceCapabilities ) const
+  {
+    return static_cast<Result>( vkGetPhysicalDeviceSurfaceCapabilities2KHR( m_physicalDevice, reinterpret_cast<const VkPhysicalDeviceSurfaceInfo2KHR*>( pSurfaceInfo ), reinterpret_cast<VkSurfaceCapabilities2KHR*>( pSurfaceCapabilities ) ) );
+  }
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  VULKAN_HPP_INLINE ResultValueType<SurfaceCapabilities2KHR>::type PhysicalDevice::getSurfaceCapabilities2KHR( const PhysicalDeviceSurfaceInfo2KHR & surfaceInfo ) const
+  {
+    SurfaceCapabilities2KHR surfaceCapabilities;
+    Result result = static_cast<Result>( vkGetPhysicalDeviceSurfaceCapabilities2KHR( m_physicalDevice, reinterpret_cast<const VkPhysicalDeviceSurfaceInfo2KHR*>( &surfaceInfo ), reinterpret_cast<VkSurfaceCapabilities2KHR*>( &surfaceCapabilities ) ) );
+    return createResultValue( result, surfaceCapabilities, "vk::PhysicalDevice::getSurfaceCapabilities2KHR" );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  VULKAN_HPP_INLINE Result PhysicalDevice::getSurfaceFormats2KHR( const PhysicalDeviceSurfaceInfo2KHR* pSurfaceInfo, uint32_t* pSurfaceFormatCount, SurfaceFormat2KHR* pSurfaceFormats ) const
+  {
+    return static_cast<Result>( vkGetPhysicalDeviceSurfaceFormats2KHR( m_physicalDevice, reinterpret_cast<const VkPhysicalDeviceSurfaceInfo2KHR*>( pSurfaceInfo ), pSurfaceFormatCount, reinterpret_cast<VkSurfaceFormat2KHR*>( pSurfaceFormats ) ) );
+  }
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Allocator> 
+  VULKAN_HPP_INLINE typename ResultValueType<std::vector<SurfaceFormat2KHR,Allocator>>::type PhysicalDevice::getSurfaceFormats2KHR( const PhysicalDeviceSurfaceInfo2KHR & surfaceInfo ) const
+  {
+    std::vector<SurfaceFormat2KHR,Allocator> surfaceFormats;
+    uint32_t surfaceFormatCount;
+    Result result;
+    do
+    {
+      result = static_cast<Result>( vkGetPhysicalDeviceSurfaceFormats2KHR( m_physicalDevice, reinterpret_cast<const VkPhysicalDeviceSurfaceInfo2KHR*>( &surfaceInfo ), &surfaceFormatCount, nullptr ) );
+      if ( ( result == Result::eSuccess ) && surfaceFormatCount )
+      {
+        surfaceFormats.resize( surfaceFormatCount );
+        result = static_cast<Result>( vkGetPhysicalDeviceSurfaceFormats2KHR( m_physicalDevice, reinterpret_cast<const VkPhysicalDeviceSurfaceInfo2KHR*>( &surfaceInfo ), &surfaceFormatCount, reinterpret_cast<VkSurfaceFormat2KHR*>( surfaceFormats.data() ) ) );
+      }
+    } while ( result == Result::eIncomplete );
+    assert( surfaceFormatCount <= surfaceFormats.size() );
+    surfaceFormats.resize( surfaceFormatCount );
+    return createResultValue( result, surfaceFormats, "vk::PhysicalDevice::getSurfaceFormats2KHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -28026,6 +28301,7 @@ namespace vk
     case ImageLayout::eTransferDstOptimal: return "TransferDstOptimal";
     case ImageLayout::ePreinitialized: return "Preinitialized";
     case ImageLayout::ePresentSrcKHR: return "PresentSrcKHR";
+    case ImageLayout::eSharedPresentKHR: return "SharedPresentKHR";
     default: return "invalid";
     }
   }
@@ -28706,6 +28982,7 @@ namespace vk
     case StructureType::eDedicatedAllocationImageCreateInfoNV: return "DedicatedAllocationImageCreateInfoNV";
     case StructureType::eDedicatedAllocationBufferCreateInfoNV: return "DedicatedAllocationBufferCreateInfoNV";
     case StructureType::eDedicatedAllocationMemoryAllocateInfoNV: return "DedicatedAllocationMemoryAllocateInfoNV";
+    case StructureType::eTextureLodGatherFormatPropertiesAMD: return "TextureLodGatherFormatPropertiesAMD";
     case StructureType::eRenderPassMultiviewCreateInfoKHX: return "RenderPassMultiviewCreateInfoKHX";
     case StructureType::ePhysicalDeviceMultiviewFeaturesKHX: return "PhysicalDeviceMultiviewFeaturesKHX";
     case StructureType::ePhysicalDeviceMultiviewPropertiesKHX: return "PhysicalDeviceMultiviewPropertiesKHX";
@@ -28782,6 +29059,10 @@ namespace vk
     case StructureType::ePhysicalDeviceDiscardRectanglePropertiesEXT: return "PhysicalDeviceDiscardRectanglePropertiesEXT";
     case StructureType::ePipelineDiscardRectangleStateCreateInfoEXT: return "PipelineDiscardRectangleStateCreateInfoEXT";
     case StructureType::eHdrMetadataEXT: return "HdrMetadataEXT";
+    case StructureType::eSharedPresentSurfaceCapabilitiesKHR: return "SharedPresentSurfaceCapabilitiesKHR";
+    case StructureType::ePhysicalDeviceSurfaceInfo2KHR: return "PhysicalDeviceSurfaceInfo2KHR";
+    case StructureType::eSurfaceCapabilities2KHR: return "SurfaceCapabilities2KHR";
+    case StructureType::eSurfaceFormat2KHR: return "SurfaceFormat2KHR";
     case StructureType::eIosSurfaceCreateInfoMVK: return "IosSurfaceCreateInfoMVK";
     case StructureType::eMacosSurfaceCreateInfoMVK: return "MacosSurfaceCreateInfoMVK";
     default: return "invalid";
@@ -28823,6 +29104,48 @@ namespace vk
     {
     case DescriptorUpdateTemplateTypeKHR::eDescriptorSet: return "DescriptorSet";
     case DescriptorUpdateTemplateTypeKHR::ePushDescriptors: return "PushDescriptors";
+    default: return "invalid";
+    }
+  }
+
+  VULKAN_HPP_INLINE std::string to_string(ObjectType value)
+  {
+    switch (value)
+    {
+    case ObjectType::eUnknown: return "Unknown";
+    case ObjectType::eInstance: return "Instance";
+    case ObjectType::ePhysicalDevice: return "PhysicalDevice";
+    case ObjectType::eDevice: return "Device";
+    case ObjectType::eQueue: return "Queue";
+    case ObjectType::eSemaphore: return "Semaphore";
+    case ObjectType::eCommandBuffer: return "CommandBuffer";
+    case ObjectType::eFence: return "Fence";
+    case ObjectType::eDeviceMemory: return "DeviceMemory";
+    case ObjectType::eBuffer: return "Buffer";
+    case ObjectType::eImage: return "Image";
+    case ObjectType::eEvent: return "Event";
+    case ObjectType::eQueryPool: return "QueryPool";
+    case ObjectType::eBufferView: return "BufferView";
+    case ObjectType::eImageView: return "ImageView";
+    case ObjectType::eShaderModule: return "ShaderModule";
+    case ObjectType::ePipelineCache: return "PipelineCache";
+    case ObjectType::ePipelineLayout: return "PipelineLayout";
+    case ObjectType::eRenderPass: return "RenderPass";
+    case ObjectType::ePipeline: return "Pipeline";
+    case ObjectType::eDescriptorSetLayout: return "DescriptorSetLayout";
+    case ObjectType::eSampler: return "Sampler";
+    case ObjectType::eDescriptorPool: return "DescriptorPool";
+    case ObjectType::eDescriptorSet: return "DescriptorSet";
+    case ObjectType::eFramebuffer: return "Framebuffer";
+    case ObjectType::eCommandPool: return "CommandPool";
+    case ObjectType::eSurfaceKHR: return "SurfaceKHR";
+    case ObjectType::eSwapchainKHR: return "SwapchainKHR";
+    case ObjectType::eDisplayKHR: return "DisplayKHR";
+    case ObjectType::eDisplayModeKHR: return "DisplayModeKHR";
+    case ObjectType::eDebugReportCallbackEXT: return "DebugReportCallbackEXT";
+    case ObjectType::eDescriptorUpdateTemplateKHR: return "DescriptorUpdateTemplateKHR";
+    case ObjectType::eObjectTableNVX: return "ObjectTableNVX";
+    case ObjectType::eIndirectCommandsLayoutNVX: return "IndirectCommandsLayoutNVX";
     default: return "invalid";
     }
   }
@@ -29580,6 +29903,8 @@ namespace vk
     case PresentModeKHR::eMailbox: return "Mailbox";
     case PresentModeKHR::eFifo: return "Fifo";
     case PresentModeKHR::eFifoRelaxed: return "FifoRelaxed";
+    case PresentModeKHR::eSharedDemandRefresh: return "SharedDemandRefresh";
+    case PresentModeKHR::eSharedContinuousRefresh: return "SharedContinuousRefresh";
     default: return "invalid";
     }
   }
@@ -29742,22 +30067,12 @@ namespace vk
     case DebugReportObjectTypeEXT::eCommandPool: return "CommandPool";
     case DebugReportObjectTypeEXT::eSurfaceKhr: return "SurfaceKhr";
     case DebugReportObjectTypeEXT::eSwapchainKhr: return "SwapchainKhr";
-    case DebugReportObjectTypeEXT::eDebugReport: return "DebugReport";
+    case DebugReportObjectTypeEXT::eDebugReportCallbackExt: return "DebugReportCallbackExt";
     case DebugReportObjectTypeEXT::eDisplayKhr: return "DisplayKhr";
     case DebugReportObjectTypeEXT::eDisplayModeKhr: return "DisplayModeKhr";
     case DebugReportObjectTypeEXT::eObjectTableNvx: return "ObjectTableNvx";
     case DebugReportObjectTypeEXT::eIndirectCommandsLayoutNvx: return "IndirectCommandsLayoutNvx";
     case DebugReportObjectTypeEXT::eDescriptorUpdateTemplateKHR: return "DescriptorUpdateTemplateKHR";
-    default: return "invalid";
-    }
-  }
-
-  VULKAN_HPP_INLINE std::string to_string(DebugReportErrorEXT value)
-  {
-    switch (value)
-    {
-    case DebugReportErrorEXT::eNone: return "None";
-    case DebugReportErrorEXT::eCallbackRef: return "CallbackRef";
     default: return "invalid";
     }
   }
@@ -29821,6 +30136,7 @@ namespace vk
     switch (value)
     {
     case ValidationCheckEXT::eAll: return "All";
+    case ValidationCheckEXT::eShaders: return "Shaders";
     default: return "invalid";
     }
   }
@@ -29871,14 +30187,14 @@ namespace vk
   {
     switch (value)
     {
-    case IndirectCommandsTokenTypeNVX::eVkIndirectCommandsTokenPipeline: return "VkIndirectCommandsTokenPipeline";
-    case IndirectCommandsTokenTypeNVX::eVkIndirectCommandsTokenDescriptorSet: return "VkIndirectCommandsTokenDescriptorSet";
-    case IndirectCommandsTokenTypeNVX::eVkIndirectCommandsTokenIndexBuffer: return "VkIndirectCommandsTokenIndexBuffer";
-    case IndirectCommandsTokenTypeNVX::eVkIndirectCommandsTokenVertexBuffer: return "VkIndirectCommandsTokenVertexBuffer";
-    case IndirectCommandsTokenTypeNVX::eVkIndirectCommandsTokenPushConstant: return "VkIndirectCommandsTokenPushConstant";
-    case IndirectCommandsTokenTypeNVX::eVkIndirectCommandsTokenDrawIndexed: return "VkIndirectCommandsTokenDrawIndexed";
-    case IndirectCommandsTokenTypeNVX::eVkIndirectCommandsTokenDraw: return "VkIndirectCommandsTokenDraw";
-    case IndirectCommandsTokenTypeNVX::eVkIndirectCommandsTokenDispatch: return "VkIndirectCommandsTokenDispatch";
+    case IndirectCommandsTokenTypeNVX::ePipeline: return "Pipeline";
+    case IndirectCommandsTokenTypeNVX::eDescriptorSet: return "DescriptorSet";
+    case IndirectCommandsTokenTypeNVX::eIndexBuffer: return "IndexBuffer";
+    case IndirectCommandsTokenTypeNVX::eVertexBuffer: return "VertexBuffer";
+    case IndirectCommandsTokenTypeNVX::ePushConstant: return "PushConstant";
+    case IndirectCommandsTokenTypeNVX::eDrawIndexed: return "DrawIndexed";
+    case IndirectCommandsTokenTypeNVX::eDraw: return "Draw";
+    case IndirectCommandsTokenTypeNVX::eDispatch: return "Dispatch";
     default: return "invalid";
     }
   }
@@ -29887,11 +30203,11 @@ namespace vk
   {
     switch (value)
     {
-    case ObjectEntryTypeNVX::eVkObjectEntryDescriptorSet: return "VkObjectEntryDescriptorSet";
-    case ObjectEntryTypeNVX::eVkObjectEntryPipeline: return "VkObjectEntryPipeline";
-    case ObjectEntryTypeNVX::eVkObjectEntryIndexBuffer: return "VkObjectEntryIndexBuffer";
-    case ObjectEntryTypeNVX::eVkObjectEntryVertexBuffer: return "VkObjectEntryVertexBuffer";
-    case ObjectEntryTypeNVX::eVkObjectEntryPushConstant: return "VkObjectEntryPushConstant";
+    case ObjectEntryTypeNVX::eDescriptorSet: return "DescriptorSet";
+    case ObjectEntryTypeNVX::ePipeline: return "Pipeline";
+    case ObjectEntryTypeNVX::eIndexBuffer: return "IndexBuffer";
+    case ObjectEntryTypeNVX::eVertexBuffer: return "VertexBuffer";
+    case ObjectEntryTypeNVX::ePushConstant: return "PushConstant";
     default: return "invalid";
     }
   }

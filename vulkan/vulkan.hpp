@@ -498,7 +498,7 @@ namespace vk
     }
   }
 
-
+#ifndef VULKAN_HPP_NO_EXCEPTIONS
 #if defined(_MSC_VER) && (_MSC_VER == 1800)
 # define noexcept _NOEXCEPT
 #endif
@@ -767,7 +767,7 @@ namespace vk
     default: throw SystemError( make_error_code( result ) );
     }
   }
-
+#endif
 } // namespace vk
 
 namespace std

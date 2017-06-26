@@ -3392,7 +3392,6 @@ R"(    default: throw SystemError( make_error_code( result ) );
   }
 )";
   leaveProtect(os, enumData.protect);
-  os << std::endl;
 }
 
 void writeDeleterClasses(std::ostream & os, std::pair<std::string, std::set<std::string>> const& deleterTypes, std::map<std::string, DeleterData> const& deleterData)
@@ -4166,10 +4165,12 @@ int main( int argc, char **argv )
     assert(it != vkData.dependencies.end());
     writeTypeEnum(ofs, vkData.enums.find(it->name)->second);
     writeEnumsToString(ofs, vkData.enums.find(it->name)->second);
+    ofs << "#ifndef VULKAN_HPP_NO_EXCEPTIONS";
     ofs << exceptionHeader;
     ofs << exceptionClassesHeader;
     writeExceptionsForEnum(ofs, vkData.enums.find(it->name)->second);
     writeThrowExceptions(ofs, vkData.enums.find(it->name)->second);
+    ofs << "#endif" << std::endl;
     vkData.dependencies.erase(it);
 
     ofs << "} // namespace vk" << std::endl

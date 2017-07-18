@@ -1,23 +1,16 @@
 // Copyright (c) 2015-2017 The Khronos Group Inc.
 // 
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and/or associated documentation files (the
-// "Materials"), to deal in the Materials without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Materials, and to
-// permit persons to whom the Materials are furnished to do so, subject to
-// the following conditions:
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 // 
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Materials.
+//     http://www.apache.org/licenses/LICENSE-2.0
 // 
-// THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-// IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-// CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-// TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-// MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 // This header is generated from the Khronos Vulkan XML API Registry.
 
@@ -40,7 +33,7 @@
 # include <memory>
 # include <vector>
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-static_assert( VK_HEADER_VERSION ==  51 , "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION ==  55 , "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -460,7 +453,7 @@ namespace vk
     eErrorValidationFailedEXT = VK_ERROR_VALIDATION_FAILED_EXT,
     eErrorInvalidShaderNV = VK_ERROR_INVALID_SHADER_NV,
     eErrorOutOfPoolMemoryKHR = VK_ERROR_OUT_OF_POOL_MEMORY_KHR,
-    eErrorInvalidExternalHandleKHX = VK_ERROR_INVALID_EXTERNAL_HANDLE_KHX
+    eErrorInvalidExternalHandleKHR = VK_ERROR_INVALID_EXTERNAL_HANDLE_KHR
   };
 
   VULKAN_HPP_INLINE std::string to_string(Result value)
@@ -493,7 +486,7 @@ namespace vk
     case Result::eErrorValidationFailedEXT: return "ErrorValidationFailedEXT";
     case Result::eErrorInvalidShaderNV: return "ErrorInvalidShaderNV";
     case Result::eErrorOutOfPoolMemoryKHR: return "ErrorOutOfPoolMemoryKHR";
-    case Result::eErrorInvalidExternalHandleKHX: return "ErrorInvalidExternalHandleKHX";
+    case Result::eErrorInvalidExternalHandleKHR: return "ErrorInvalidExternalHandleKHR";
     default: return "invalid";
     }
   }
@@ -730,13 +723,13 @@ namespace vk
     OutOfPoolMemoryKHRError( char const * message )
       : SystemError( make_error_code( Result::eErrorOutOfPoolMemoryKHR ), message ) {}
   };
-  class InvalidExternalHandleKHXError : public SystemError
+  class InvalidExternalHandleKHRError : public SystemError
   {
   public:
-    InvalidExternalHandleKHXError( std::string const& message )
-      : SystemError( make_error_code( Result::eErrorInvalidExternalHandleKHX ), message ) {}
-    InvalidExternalHandleKHXError( char const * message )
-      : SystemError( make_error_code( Result::eErrorInvalidExternalHandleKHX ), message ) {}
+    InvalidExternalHandleKHRError( std::string const& message )
+      : SystemError( make_error_code( Result::eErrorInvalidExternalHandleKHR ), message ) {}
+    InvalidExternalHandleKHRError( char const * message )
+      : SystemError( make_error_code( Result::eErrorInvalidExternalHandleKHR ), message ) {}
   };
 
   VULKAN_HPP_INLINE void throwResultException( Result result, char const * message )
@@ -763,7 +756,7 @@ namespace vk
     case Result::eErrorValidationFailedEXT: throw ValidationFailedEXTError ( message );
     case Result::eErrorInvalidShaderNV: throw InvalidShaderNVError ( message );
     case Result::eErrorOutOfPoolMemoryKHR: throw OutOfPoolMemoryKHRError ( message );
-    case Result::eErrorInvalidExternalHandleKHX: throw InvalidExternalHandleKHXError ( message );
+    case Result::eErrorInvalidExternalHandleKHR: throw InvalidExternalHandleKHRError ( message );
     default: throw SystemError( make_error_code( result ) );
     }
   }
@@ -1156,6 +1149,18 @@ namespace vk
   };
 
   using PipelineDiscardRectangleStateCreateFlagsEXT = Flags<PipelineDiscardRectangleStateCreateFlagBitsEXT, VkPipelineDiscardRectangleStateCreateFlagsEXT>;
+
+  enum class PipelineCoverageToColorStateCreateFlagBitsNV
+  {
+  };
+
+  using PipelineCoverageToColorStateCreateFlagsNV = Flags<PipelineCoverageToColorStateCreateFlagBitsNV, VkPipelineCoverageToColorStateCreateFlagsNV>;
+
+  enum class PipelineCoverageModulationStateCreateFlagBitsNV
+  {
+  };
+
+  using PipelineCoverageModulationStateCreateFlagsNV = Flags<PipelineCoverageModulationStateCreateFlagBitsNV, VkPipelineCoverageModulationStateCreateFlagsNV>;
 
   class DeviceMemory
   {
@@ -5767,7 +5772,8 @@ namespace vk
   {
     eFill = VK_POLYGON_MODE_FILL,
     eLine = VK_POLYGON_MODE_LINE,
-    ePoint = VK_POLYGON_MODE_POINT
+    ePoint = VK_POLYGON_MODE_POINT,
+    eFillRectangleNV = VK_POLYGON_MODE_FILL_RECTANGLE_NV
   };
 
   enum class CullModeFlagBits
@@ -5833,7 +5839,53 @@ namespace vk
     eSubtract = VK_BLEND_OP_SUBTRACT,
     eReverseSubtract = VK_BLEND_OP_REVERSE_SUBTRACT,
     eMin = VK_BLEND_OP_MIN,
-    eMax = VK_BLEND_OP_MAX
+    eMax = VK_BLEND_OP_MAX,
+    eZeroEXT = VK_BLEND_OP_ZERO_EXT,
+    eSrcEXT = VK_BLEND_OP_SRC_EXT,
+    eDstEXT = VK_BLEND_OP_DST_EXT,
+    eSrcOverEXT = VK_BLEND_OP_SRC_OVER_EXT,
+    eDstOverEXT = VK_BLEND_OP_DST_OVER_EXT,
+    eSrcInEXT = VK_BLEND_OP_SRC_IN_EXT,
+    eDstInEXT = VK_BLEND_OP_DST_IN_EXT,
+    eSrcOutEXT = VK_BLEND_OP_SRC_OUT_EXT,
+    eDstOutEXT = VK_BLEND_OP_DST_OUT_EXT,
+    eSrcAtopEXT = VK_BLEND_OP_SRC_ATOP_EXT,
+    eDstAtopEXT = VK_BLEND_OP_DST_ATOP_EXT,
+    eXorEXT = VK_BLEND_OP_XOR_EXT,
+    eMultiplyEXT = VK_BLEND_OP_MULTIPLY_EXT,
+    eScreenEXT = VK_BLEND_OP_SCREEN_EXT,
+    eOverlayEXT = VK_BLEND_OP_OVERLAY_EXT,
+    eDarkenEXT = VK_BLEND_OP_DARKEN_EXT,
+    eLightenEXT = VK_BLEND_OP_LIGHTEN_EXT,
+    eColordodgeEXT = VK_BLEND_OP_COLORDODGE_EXT,
+    eColorburnEXT = VK_BLEND_OP_COLORBURN_EXT,
+    eHardlightEXT = VK_BLEND_OP_HARDLIGHT_EXT,
+    eSoftlightEXT = VK_BLEND_OP_SOFTLIGHT_EXT,
+    eDifferenceEXT = VK_BLEND_OP_DIFFERENCE_EXT,
+    eExclusionEXT = VK_BLEND_OP_EXCLUSION_EXT,
+    eInvertEXT = VK_BLEND_OP_INVERT_EXT,
+    eInvertRgbEXT = VK_BLEND_OP_INVERT_RGB_EXT,
+    eLineardodgeEXT = VK_BLEND_OP_LINEARDODGE_EXT,
+    eLinearburnEXT = VK_BLEND_OP_LINEARBURN_EXT,
+    eVividlightEXT = VK_BLEND_OP_VIVIDLIGHT_EXT,
+    eLinearlightEXT = VK_BLEND_OP_LINEARLIGHT_EXT,
+    ePinlightEXT = VK_BLEND_OP_PINLIGHT_EXT,
+    eHardmixEXT = VK_BLEND_OP_HARDMIX_EXT,
+    eHslHueEXT = VK_BLEND_OP_HSL_HUE_EXT,
+    eHslSaturationEXT = VK_BLEND_OP_HSL_SATURATION_EXT,
+    eHslColorEXT = VK_BLEND_OP_HSL_COLOR_EXT,
+    eHslLuminosityEXT = VK_BLEND_OP_HSL_LUMINOSITY_EXT,
+    ePlusEXT = VK_BLEND_OP_PLUS_EXT,
+    ePlusClampedEXT = VK_BLEND_OP_PLUS_CLAMPED_EXT,
+    ePlusClampedAlphaEXT = VK_BLEND_OP_PLUS_CLAMPED_ALPHA_EXT,
+    ePlusDarkerEXT = VK_BLEND_OP_PLUS_DARKER_EXT,
+    eMinusEXT = VK_BLEND_OP_MINUS_EXT,
+    eMinusClampedEXT = VK_BLEND_OP_MINUS_CLAMPED_EXT,
+    eContrastEXT = VK_BLEND_OP_CONTRAST_EXT,
+    eInvertOvgEXT = VK_BLEND_OP_INVERT_OVG_EXT,
+    eRedEXT = VK_BLEND_OP_RED_EXT,
+    eGreenEXT = VK_BLEND_OP_GREEN_EXT,
+    eBlueEXT = VK_BLEND_OP_BLUE_EXT
   };
 
   enum class StencilOp
@@ -6424,28 +6476,33 @@ namespace vk
     eViSurfaceCreateInfoNN = VK_STRUCTURE_TYPE_VI_SURFACE_CREATE_INFO_NN,
     ePhysicalDeviceGroupPropertiesKHX = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GROUP_PROPERTIES_KHX,
     eDeviceGroupDeviceCreateInfoKHX = VK_STRUCTURE_TYPE_DEVICE_GROUP_DEVICE_CREATE_INFO_KHX,
-    ePhysicalDeviceExternalImageFormatInfoKHX = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_IMAGE_FORMAT_INFO_KHX,
-    eExternalImageFormatPropertiesKHX = VK_STRUCTURE_TYPE_EXTERNAL_IMAGE_FORMAT_PROPERTIES_KHX,
-    ePhysicalDeviceExternalBufferInfoKHX = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_BUFFER_INFO_KHX,
-    eExternalBufferPropertiesKHX = VK_STRUCTURE_TYPE_EXTERNAL_BUFFER_PROPERTIES_KHX,
-    ePhysicalDeviceIdPropertiesKHX = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ID_PROPERTIES_KHX,
-    eExternalMemoryBufferCreateInfoKHX = VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_BUFFER_CREATE_INFO_KHX,
-    eExternalMemoryImageCreateInfoKHX = VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_IMAGE_CREATE_INFO_KHX,
-    eExportMemoryAllocateInfoKHX = VK_STRUCTURE_TYPE_EXPORT_MEMORY_ALLOCATE_INFO_KHX,
-    eImportMemoryWin32HandleInfoKHX = VK_STRUCTURE_TYPE_IMPORT_MEMORY_WIN32_HANDLE_INFO_KHX,
-    eExportMemoryWin32HandleInfoKHX = VK_STRUCTURE_TYPE_EXPORT_MEMORY_WIN32_HANDLE_INFO_KHX,
-    eMemoryWin32HandlePropertiesKHX = VK_STRUCTURE_TYPE_MEMORY_WIN32_HANDLE_PROPERTIES_KHX,
-    eImportMemoryFdInfoKHX = VK_STRUCTURE_TYPE_IMPORT_MEMORY_FD_INFO_KHX,
-    eMemoryFdPropertiesKHX = VK_STRUCTURE_TYPE_MEMORY_FD_PROPERTIES_KHX,
-    eWin32KeyedMutexAcquireReleaseInfoKHX = VK_STRUCTURE_TYPE_WIN32_KEYED_MUTEX_ACQUIRE_RELEASE_INFO_KHX,
-    ePhysicalDeviceExternalSemaphoreInfoKHX = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_SEMAPHORE_INFO_KHX,
-    eExternalSemaphorePropertiesKHX = VK_STRUCTURE_TYPE_EXTERNAL_SEMAPHORE_PROPERTIES_KHX,
-    eExportSemaphoreCreateInfoKHX = VK_STRUCTURE_TYPE_EXPORT_SEMAPHORE_CREATE_INFO_KHX,
-    eImportSemaphoreWin32HandleInfoKHX = VK_STRUCTURE_TYPE_IMPORT_SEMAPHORE_WIN32_HANDLE_INFO_KHX,
-    eExportSemaphoreWin32HandleInfoKHX = VK_STRUCTURE_TYPE_EXPORT_SEMAPHORE_WIN32_HANDLE_INFO_KHX,
-    eD3D12FenceSubmitInfoKHX = VK_STRUCTURE_TYPE_D3D12_FENCE_SUBMIT_INFO_KHX,
-    eImportSemaphoreFdInfoKHX = VK_STRUCTURE_TYPE_IMPORT_SEMAPHORE_FD_INFO_KHX,
+    ePhysicalDeviceExternalImageFormatInfoKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_IMAGE_FORMAT_INFO_KHR,
+    eExternalImageFormatPropertiesKHR = VK_STRUCTURE_TYPE_EXTERNAL_IMAGE_FORMAT_PROPERTIES_KHR,
+    ePhysicalDeviceExternalBufferInfoKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_BUFFER_INFO_KHR,
+    eExternalBufferPropertiesKHR = VK_STRUCTURE_TYPE_EXTERNAL_BUFFER_PROPERTIES_KHR,
+    ePhysicalDeviceIdPropertiesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ID_PROPERTIES_KHR,
+    eExternalMemoryBufferCreateInfoKHR = VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_BUFFER_CREATE_INFO_KHR,
+    eExternalMemoryImageCreateInfoKHR = VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_IMAGE_CREATE_INFO_KHR,
+    eExportMemoryAllocateInfoKHR = VK_STRUCTURE_TYPE_EXPORT_MEMORY_ALLOCATE_INFO_KHR,
+    eImportMemoryWin32HandleInfoKHR = VK_STRUCTURE_TYPE_IMPORT_MEMORY_WIN32_HANDLE_INFO_KHR,
+    eExportMemoryWin32HandleInfoKHR = VK_STRUCTURE_TYPE_EXPORT_MEMORY_WIN32_HANDLE_INFO_KHR,
+    eMemoryWin32HandlePropertiesKHR = VK_STRUCTURE_TYPE_MEMORY_WIN32_HANDLE_PROPERTIES_KHR,
+    eMemoryGetWin32HandleInfoKHR = VK_STRUCTURE_TYPE_MEMORY_GET_WIN32_HANDLE_INFO_KHR,
+    eImportMemoryFdInfoKHR = VK_STRUCTURE_TYPE_IMPORT_MEMORY_FD_INFO_KHR,
+    eMemoryFdPropertiesKHR = VK_STRUCTURE_TYPE_MEMORY_FD_PROPERTIES_KHR,
+    eMemoryGetFdInfoKHR = VK_STRUCTURE_TYPE_MEMORY_GET_FD_INFO_KHR,
+    eWin32KeyedMutexAcquireReleaseInfoKHR = VK_STRUCTURE_TYPE_WIN32_KEYED_MUTEX_ACQUIRE_RELEASE_INFO_KHR,
+    ePhysicalDeviceExternalSemaphoreInfoKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_SEMAPHORE_INFO_KHR,
+    eExternalSemaphorePropertiesKHR = VK_STRUCTURE_TYPE_EXTERNAL_SEMAPHORE_PROPERTIES_KHR,
+    eExportSemaphoreCreateInfoKHR = VK_STRUCTURE_TYPE_EXPORT_SEMAPHORE_CREATE_INFO_KHR,
+    eImportSemaphoreWin32HandleInfoKHR = VK_STRUCTURE_TYPE_IMPORT_SEMAPHORE_WIN32_HANDLE_INFO_KHR,
+    eExportSemaphoreWin32HandleInfoKHR = VK_STRUCTURE_TYPE_EXPORT_SEMAPHORE_WIN32_HANDLE_INFO_KHR,
+    eD3D12FenceSubmitInfoKHR = VK_STRUCTURE_TYPE_D3D12_FENCE_SUBMIT_INFO_KHR,
+    eSemaphoreGetWin32HandleInfoKHR = VK_STRUCTURE_TYPE_SEMAPHORE_GET_WIN32_HANDLE_INFO_KHR,
+    eImportSemaphoreFdInfoKHR = VK_STRUCTURE_TYPE_IMPORT_SEMAPHORE_FD_INFO_KHR,
+    eSemaphoreGetFdInfoKHR = VK_STRUCTURE_TYPE_SEMAPHORE_GET_FD_INFO_KHR,
     ePhysicalDevicePushDescriptorPropertiesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PUSH_DESCRIPTOR_PROPERTIES_KHR,
+    ePhysicalDevice16BitStorageFeaturesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_16BIT_STORAGE_FEATURES_KHR,
     ePresentRegionsKHR = VK_STRUCTURE_TYPE_PRESENT_REGIONS_KHR,
     eDescriptorUpdateTemplateCreateInfoKHR = VK_STRUCTURE_TYPE_DESCRIPTOR_UPDATE_TEMPLATE_CREATE_INFO_KHR,
     eObjectTableCreateInfoNVX = VK_STRUCTURE_TYPE_OBJECT_TABLE_CREATE_INFO_NVX,
@@ -6467,11 +6524,34 @@ namespace vk
     ePipelineDiscardRectangleStateCreateInfoEXT = VK_STRUCTURE_TYPE_PIPELINE_DISCARD_RECTANGLE_STATE_CREATE_INFO_EXT,
     eHdrMetadataEXT = VK_STRUCTURE_TYPE_HDR_METADATA_EXT,
     eSharedPresentSurfaceCapabilitiesKHR = VK_STRUCTURE_TYPE_SHARED_PRESENT_SURFACE_CAPABILITIES_KHR,
+    ePhysicalDeviceExternalFenceInfoKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_FENCE_INFO_KHR,
+    eExternalFencePropertiesKHR = VK_STRUCTURE_TYPE_EXTERNAL_FENCE_PROPERTIES_KHR,
+    eExportFenceCreateInfoKHR = VK_STRUCTURE_TYPE_EXPORT_FENCE_CREATE_INFO_KHR,
+    eImportFenceWin32HandleInfoKHR = VK_STRUCTURE_TYPE_IMPORT_FENCE_WIN32_HANDLE_INFO_KHR,
+    eExportFenceWin32HandleInfoKHR = VK_STRUCTURE_TYPE_EXPORT_FENCE_WIN32_HANDLE_INFO_KHR,
+    eFenceGetWin32HandleInfoKHR = VK_STRUCTURE_TYPE_FENCE_GET_WIN32_HANDLE_INFO_KHR,
+    eImportFenceFdInfoKHR = VK_STRUCTURE_TYPE_IMPORT_FENCE_FD_INFO_KHR,
+    eFenceGetFdInfoKHR = VK_STRUCTURE_TYPE_FENCE_GET_FD_INFO_KHR,
     ePhysicalDeviceSurfaceInfo2KHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SURFACE_INFO_2_KHR,
     eSurfaceCapabilities2KHR = VK_STRUCTURE_TYPE_SURFACE_CAPABILITIES_2_KHR,
     eSurfaceFormat2KHR = VK_STRUCTURE_TYPE_SURFACE_FORMAT_2_KHR,
+    ePhysicalDeviceVariablePointerFeaturesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VARIABLE_POINTER_FEATURES_KHR,
     eIosSurfaceCreateInfoMVK = VK_STRUCTURE_TYPE_IOS_SURFACE_CREATE_INFO_MVK,
-    eMacosSurfaceCreateInfoMVK = VK_STRUCTURE_TYPE_MACOS_SURFACE_CREATE_INFO_MVK
+    eMacosSurfaceCreateInfoMVK = VK_STRUCTURE_TYPE_MACOS_SURFACE_CREATE_INFO_MVK,
+    eMemoryDedicatedRequirementsKHR = VK_STRUCTURE_TYPE_MEMORY_DEDICATED_REQUIREMENTS_KHR,
+    eMemoryDedicatedAllocateInfoKHR = VK_STRUCTURE_TYPE_MEMORY_DEDICATED_ALLOCATE_INFO_KHR,
+    ePhysicalDeviceSamplerFilterMinmaxPropertiesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SAMPLER_FILTER_MINMAX_PROPERTIES_EXT,
+    eSamplerReductionModeCreateInfoEXT = VK_STRUCTURE_TYPE_SAMPLER_REDUCTION_MODE_CREATE_INFO_EXT,
+    eBufferMemoryRequirementsInfo2KHR = VK_STRUCTURE_TYPE_BUFFER_MEMORY_REQUIREMENTS_INFO_2_KHR,
+    eImageMemoryRequirementsInfo2KHR = VK_STRUCTURE_TYPE_IMAGE_MEMORY_REQUIREMENTS_INFO_2_KHR,
+    eImageSparseMemoryRequirementsInfo2KHR = VK_STRUCTURE_TYPE_IMAGE_SPARSE_MEMORY_REQUIREMENTS_INFO_2_KHR,
+    eMemoryRequirements2KHR = VK_STRUCTURE_TYPE_MEMORY_REQUIREMENTS_2_KHR,
+    eSparseImageMemoryRequirements2KHR = VK_STRUCTURE_TYPE_SPARSE_IMAGE_MEMORY_REQUIREMENTS_2_KHR,
+    ePhysicalDeviceBlendOperationAdvancedFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BLEND_OPERATION_ADVANCED_FEATURES_EXT,
+    ePhysicalDeviceBlendOperationAdvancedPropertiesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BLEND_OPERATION_ADVANCED_PROPERTIES_EXT,
+    ePipelineColorBlendAdvancedStateCreateInfoEXT = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_ADVANCED_STATE_CREATE_INFO_EXT,
+    ePipelineCoverageToColorStateCreateInfoNV = VK_STRUCTURE_TYPE_PIPELINE_COVERAGE_TO_COLOR_STATE_CREATE_INFO_NV,
+    ePipelineCoverageModulationStateCreateInfoNV = VK_STRUCTURE_TYPE_PIPELINE_COVERAGE_MODULATION_STATE_CREATE_INFO_NV
   };
 
   struct ApplicationInfo
@@ -10254,24 +10334,91 @@ namespace vk
   };
   static_assert( sizeof( PresentRegionsKHR ) == sizeof( VkPresentRegionsKHR ), "struct and wrapper have different size!" );
 
-  struct PhysicalDeviceIDPropertiesKHX
+  struct PhysicalDeviceVariablePointerFeaturesKHR
   {
-    operator const VkPhysicalDeviceIDPropertiesKHX&() const
+    PhysicalDeviceVariablePointerFeaturesKHR( Bool32 variablePointersStorageBuffer_ = 0, Bool32 variablePointers_ = 0 )
+      : sType( StructureType::ePhysicalDeviceVariablePointerFeaturesKHR )
+      , pNext( nullptr )
+      , variablePointersStorageBuffer( variablePointersStorageBuffer_ )
+      , variablePointers( variablePointers_ )
     {
-      return *reinterpret_cast<const VkPhysicalDeviceIDPropertiesKHX*>(this);
     }
 
-    bool operator==( PhysicalDeviceIDPropertiesKHX const& rhs ) const
+    PhysicalDeviceVariablePointerFeaturesKHR( VkPhysicalDeviceVariablePointerFeaturesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceVariablePointerFeaturesKHR ) );
+    }
+
+    PhysicalDeviceVariablePointerFeaturesKHR& operator=( VkPhysicalDeviceVariablePointerFeaturesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceVariablePointerFeaturesKHR ) );
+      return *this;
+    }
+    PhysicalDeviceVariablePointerFeaturesKHR& setPNext( void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PhysicalDeviceVariablePointerFeaturesKHR& setVariablePointersStorageBuffer( Bool32 variablePointersStorageBuffer_ )
+    {
+      variablePointersStorageBuffer = variablePointersStorageBuffer_;
+      return *this;
+    }
+
+    PhysicalDeviceVariablePointerFeaturesKHR& setVariablePointers( Bool32 variablePointers_ )
+    {
+      variablePointers = variablePointers_;
+      return *this;
+    }
+
+    operator const VkPhysicalDeviceVariablePointerFeaturesKHR&() const
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceVariablePointerFeaturesKHR*>(this);
+    }
+
+    bool operator==( PhysicalDeviceVariablePointerFeaturesKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( variablePointersStorageBuffer == rhs.variablePointersStorageBuffer )
+          && ( variablePointers == rhs.variablePointers );
+    }
+
+    bool operator!=( PhysicalDeviceVariablePointerFeaturesKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    void* pNext;
+    Bool32 variablePointersStorageBuffer;
+    Bool32 variablePointers;
+  };
+  static_assert( sizeof( PhysicalDeviceVariablePointerFeaturesKHR ) == sizeof( VkPhysicalDeviceVariablePointerFeaturesKHR ), "struct and wrapper have different size!" );
+
+  struct PhysicalDeviceIDPropertiesKHR
+  {
+    operator const VkPhysicalDeviceIDPropertiesKHR&() const
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceIDPropertiesKHR*>(this);
+    }
+
+    bool operator==( PhysicalDeviceIDPropertiesKHR const& rhs ) const
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( memcmp( deviceUUID, rhs.deviceUUID, VK_UUID_SIZE * sizeof( uint8_t ) ) == 0 )
           && ( memcmp( driverUUID, rhs.driverUUID, VK_UUID_SIZE * sizeof( uint8_t ) ) == 0 )
-          && ( memcmp( deviceLUID, rhs.deviceLUID, VK_LUID_SIZE_KHX * sizeof( uint8_t ) ) == 0 )
+          && ( memcmp( deviceLUID, rhs.deviceLUID, VK_LUID_SIZE_KHR * sizeof( uint8_t ) ) == 0 )
+          && ( deviceNodeMask == rhs.deviceNodeMask )
           && ( deviceLUIDValid == rhs.deviceLUIDValid );
     }
 
-    bool operator!=( PhysicalDeviceIDPropertiesKHX const& rhs ) const
+    bool operator!=( PhysicalDeviceIDPropertiesKHR const& rhs ) const
     {
       return !operator==( rhs );
     }
@@ -10283,16 +10430,17 @@ namespace vk
     void* pNext;
     uint8_t deviceUUID[VK_UUID_SIZE];
     uint8_t driverUUID[VK_UUID_SIZE];
-    uint8_t deviceLUID[VK_LUID_SIZE_KHX];
+    uint8_t deviceLUID[VK_LUID_SIZE_KHR];
+    uint32_t deviceNodeMask;
     Bool32 deviceLUIDValid;
   };
-  static_assert( sizeof( PhysicalDeviceIDPropertiesKHX ) == sizeof( VkPhysicalDeviceIDPropertiesKHX ), "struct and wrapper have different size!" );
+  static_assert( sizeof( PhysicalDeviceIDPropertiesKHR ) == sizeof( VkPhysicalDeviceIDPropertiesKHR ), "struct and wrapper have different size!" );
 
-#ifdef VK_USE_PLATFORM_WIN32_KHX
-  struct ExportMemoryWin32HandleInfoKHX
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  struct ExportMemoryWin32HandleInfoKHR
   {
-    ExportMemoryWin32HandleInfoKHX( const SECURITY_ATTRIBUTES* pAttributes_ = nullptr, DWORD dwAccess_ = 0, LPCWSTR name_ = 0 )
-      : sType( StructureType::eExportMemoryWin32HandleInfoKHX )
+    ExportMemoryWin32HandleInfoKHR( const SECURITY_ATTRIBUTES* pAttributes_ = nullptr, DWORD dwAccess_ = 0, LPCWSTR name_ = 0 )
+      : sType( StructureType::eExportMemoryWin32HandleInfoKHR )
       , pNext( nullptr )
       , pAttributes( pAttributes_ )
       , dwAccess( dwAccess_ )
@@ -10300,46 +10448,46 @@ namespace vk
     {
     }
 
-    ExportMemoryWin32HandleInfoKHX( VkExportMemoryWin32HandleInfoKHX const & rhs )
+    ExportMemoryWin32HandleInfoKHR( VkExportMemoryWin32HandleInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ExportMemoryWin32HandleInfoKHX ) );
+      memcpy( this, &rhs, sizeof( ExportMemoryWin32HandleInfoKHR ) );
     }
 
-    ExportMemoryWin32HandleInfoKHX& operator=( VkExportMemoryWin32HandleInfoKHX const & rhs )
+    ExportMemoryWin32HandleInfoKHR& operator=( VkExportMemoryWin32HandleInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ExportMemoryWin32HandleInfoKHX ) );
+      memcpy( this, &rhs, sizeof( ExportMemoryWin32HandleInfoKHR ) );
       return *this;
     }
-    ExportMemoryWin32HandleInfoKHX& setPNext( const void* pNext_ )
+    ExportMemoryWin32HandleInfoKHR& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
       return *this;
     }
 
-    ExportMemoryWin32HandleInfoKHX& setPAttributes( const SECURITY_ATTRIBUTES* pAttributes_ )
+    ExportMemoryWin32HandleInfoKHR& setPAttributes( const SECURITY_ATTRIBUTES* pAttributes_ )
     {
       pAttributes = pAttributes_;
       return *this;
     }
 
-    ExportMemoryWin32HandleInfoKHX& setDwAccess( DWORD dwAccess_ )
+    ExportMemoryWin32HandleInfoKHR& setDwAccess( DWORD dwAccess_ )
     {
       dwAccess = dwAccess_;
       return *this;
     }
 
-    ExportMemoryWin32HandleInfoKHX& setName( LPCWSTR name_ )
+    ExportMemoryWin32HandleInfoKHR& setName( LPCWSTR name_ )
     {
       name = name_;
       return *this;
     }
 
-    operator const VkExportMemoryWin32HandleInfoKHX&() const
+    operator const VkExportMemoryWin32HandleInfoKHR&() const
     {
-      return *reinterpret_cast<const VkExportMemoryWin32HandleInfoKHX*>(this);
+      return *reinterpret_cast<const VkExportMemoryWin32HandleInfoKHR*>(this);
     }
 
-    bool operator==( ExportMemoryWin32HandleInfoKHX const& rhs ) const
+    bool operator==( ExportMemoryWin32HandleInfoKHR const& rhs ) const
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
@@ -10348,7 +10496,7 @@ namespace vk
           && ( name == rhs.name );
     }
 
-    bool operator!=( ExportMemoryWin32HandleInfoKHX const& rhs ) const
+    bool operator!=( ExportMemoryWin32HandleInfoKHR const& rhs ) const
     {
       return !operator==( rhs );
     }
@@ -10362,72 +10510,72 @@ namespace vk
     DWORD dwAccess;
     LPCWSTR name;
   };
-  static_assert( sizeof( ExportMemoryWin32HandleInfoKHX ) == sizeof( VkExportMemoryWin32HandleInfoKHX ), "struct and wrapper have different size!" );
-#endif /*VK_USE_PLATFORM_WIN32_KHX*/
-
-#ifdef VK_USE_PLATFORM_WIN32_KHX
-  struct MemoryWin32HandlePropertiesKHX
-  {
-    operator const VkMemoryWin32HandlePropertiesKHX&() const
-    {
-      return *reinterpret_cast<const VkMemoryWin32HandlePropertiesKHX*>(this);
-    }
-
-    bool operator==( MemoryWin32HandlePropertiesKHX const& rhs ) const
-    {
-      return ( sType == rhs.sType )
-          && ( pNext == rhs.pNext )
-          && ( memoryTypeBits == rhs.memoryTypeBits );
-    }
-
-    bool operator!=( MemoryWin32HandlePropertiesKHX const& rhs ) const
-    {
-      return !operator==( rhs );
-    }
-
-  private:
-    StructureType sType;
-
-  public:
-    void* pNext;
-    uint32_t memoryTypeBits;
-  };
-  static_assert( sizeof( MemoryWin32HandlePropertiesKHX ) == sizeof( VkMemoryWin32HandlePropertiesKHX ), "struct and wrapper have different size!" );
-#endif /*VK_USE_PLATFORM_WIN32_KHX*/
-
-  struct MemoryFdPropertiesKHX
-  {
-    operator const VkMemoryFdPropertiesKHX&() const
-    {
-      return *reinterpret_cast<const VkMemoryFdPropertiesKHX*>(this);
-    }
-
-    bool operator==( MemoryFdPropertiesKHX const& rhs ) const
-    {
-      return ( sType == rhs.sType )
-          && ( pNext == rhs.pNext )
-          && ( memoryTypeBits == rhs.memoryTypeBits );
-    }
-
-    bool operator!=( MemoryFdPropertiesKHX const& rhs ) const
-    {
-      return !operator==( rhs );
-    }
-
-  private:
-    StructureType sType;
-
-  public:
-    void* pNext;
-    uint32_t memoryTypeBits;
-  };
-  static_assert( sizeof( MemoryFdPropertiesKHX ) == sizeof( VkMemoryFdPropertiesKHX ), "struct and wrapper have different size!" );
+  static_assert( sizeof( ExportMemoryWin32HandleInfoKHR ) == sizeof( VkExportMemoryWin32HandleInfoKHR ), "struct and wrapper have different size!" );
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
-  struct Win32KeyedMutexAcquireReleaseInfoKHX
+  struct MemoryWin32HandlePropertiesKHR
   {
-    Win32KeyedMutexAcquireReleaseInfoKHX( uint32_t acquireCount_ = 0, const DeviceMemory* pAcquireSyncs_ = nullptr, const uint64_t* pAcquireKeys_ = nullptr, const uint32_t* pAcquireTimeouts_ = nullptr, uint32_t releaseCount_ = 0, const DeviceMemory* pReleaseSyncs_ = nullptr, const uint64_t* pReleaseKeys_ = nullptr )
-      : sType( StructureType::eWin32KeyedMutexAcquireReleaseInfoKHX )
+    operator const VkMemoryWin32HandlePropertiesKHR&() const
+    {
+      return *reinterpret_cast<const VkMemoryWin32HandlePropertiesKHR*>(this);
+    }
+
+    bool operator==( MemoryWin32HandlePropertiesKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( memoryTypeBits == rhs.memoryTypeBits );
+    }
+
+    bool operator!=( MemoryWin32HandlePropertiesKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    void* pNext;
+    uint32_t memoryTypeBits;
+  };
+  static_assert( sizeof( MemoryWin32HandlePropertiesKHR ) == sizeof( VkMemoryWin32HandlePropertiesKHR ), "struct and wrapper have different size!" );
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
+  struct MemoryFdPropertiesKHR
+  {
+    operator const VkMemoryFdPropertiesKHR&() const
+    {
+      return *reinterpret_cast<const VkMemoryFdPropertiesKHR*>(this);
+    }
+
+    bool operator==( MemoryFdPropertiesKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( memoryTypeBits == rhs.memoryTypeBits );
+    }
+
+    bool operator!=( MemoryFdPropertiesKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    void* pNext;
+    uint32_t memoryTypeBits;
+  };
+  static_assert( sizeof( MemoryFdPropertiesKHR ) == sizeof( VkMemoryFdPropertiesKHR ), "struct and wrapper have different size!" );
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  struct Win32KeyedMutexAcquireReleaseInfoKHR
+  {
+    Win32KeyedMutexAcquireReleaseInfoKHR( uint32_t acquireCount_ = 0, const DeviceMemory* pAcquireSyncs_ = nullptr, const uint64_t* pAcquireKeys_ = nullptr, const uint32_t* pAcquireTimeouts_ = nullptr, uint32_t releaseCount_ = 0, const DeviceMemory* pReleaseSyncs_ = nullptr, const uint64_t* pReleaseKeys_ = nullptr )
+      : sType( StructureType::eWin32KeyedMutexAcquireReleaseInfoKHR )
       , pNext( nullptr )
       , acquireCount( acquireCount_ )
       , pAcquireSyncs( pAcquireSyncs_ )
@@ -10439,70 +10587,70 @@ namespace vk
     {
     }
 
-    Win32KeyedMutexAcquireReleaseInfoKHX( VkWin32KeyedMutexAcquireReleaseInfoKHX const & rhs )
+    Win32KeyedMutexAcquireReleaseInfoKHR( VkWin32KeyedMutexAcquireReleaseInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( Win32KeyedMutexAcquireReleaseInfoKHX ) );
+      memcpy( this, &rhs, sizeof( Win32KeyedMutexAcquireReleaseInfoKHR ) );
     }
 
-    Win32KeyedMutexAcquireReleaseInfoKHX& operator=( VkWin32KeyedMutexAcquireReleaseInfoKHX const & rhs )
+    Win32KeyedMutexAcquireReleaseInfoKHR& operator=( VkWin32KeyedMutexAcquireReleaseInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( Win32KeyedMutexAcquireReleaseInfoKHX ) );
+      memcpy( this, &rhs, sizeof( Win32KeyedMutexAcquireReleaseInfoKHR ) );
       return *this;
     }
-    Win32KeyedMutexAcquireReleaseInfoKHX& setPNext( const void* pNext_ )
+    Win32KeyedMutexAcquireReleaseInfoKHR& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
       return *this;
     }
 
-    Win32KeyedMutexAcquireReleaseInfoKHX& setAcquireCount( uint32_t acquireCount_ )
+    Win32KeyedMutexAcquireReleaseInfoKHR& setAcquireCount( uint32_t acquireCount_ )
     {
       acquireCount = acquireCount_;
       return *this;
     }
 
-    Win32KeyedMutexAcquireReleaseInfoKHX& setPAcquireSyncs( const DeviceMemory* pAcquireSyncs_ )
+    Win32KeyedMutexAcquireReleaseInfoKHR& setPAcquireSyncs( const DeviceMemory* pAcquireSyncs_ )
     {
       pAcquireSyncs = pAcquireSyncs_;
       return *this;
     }
 
-    Win32KeyedMutexAcquireReleaseInfoKHX& setPAcquireKeys( const uint64_t* pAcquireKeys_ )
+    Win32KeyedMutexAcquireReleaseInfoKHR& setPAcquireKeys( const uint64_t* pAcquireKeys_ )
     {
       pAcquireKeys = pAcquireKeys_;
       return *this;
     }
 
-    Win32KeyedMutexAcquireReleaseInfoKHX& setPAcquireTimeouts( const uint32_t* pAcquireTimeouts_ )
+    Win32KeyedMutexAcquireReleaseInfoKHR& setPAcquireTimeouts( const uint32_t* pAcquireTimeouts_ )
     {
       pAcquireTimeouts = pAcquireTimeouts_;
       return *this;
     }
 
-    Win32KeyedMutexAcquireReleaseInfoKHX& setReleaseCount( uint32_t releaseCount_ )
+    Win32KeyedMutexAcquireReleaseInfoKHR& setReleaseCount( uint32_t releaseCount_ )
     {
       releaseCount = releaseCount_;
       return *this;
     }
 
-    Win32KeyedMutexAcquireReleaseInfoKHX& setPReleaseSyncs( const DeviceMemory* pReleaseSyncs_ )
+    Win32KeyedMutexAcquireReleaseInfoKHR& setPReleaseSyncs( const DeviceMemory* pReleaseSyncs_ )
     {
       pReleaseSyncs = pReleaseSyncs_;
       return *this;
     }
 
-    Win32KeyedMutexAcquireReleaseInfoKHX& setPReleaseKeys( const uint64_t* pReleaseKeys_ )
+    Win32KeyedMutexAcquireReleaseInfoKHR& setPReleaseKeys( const uint64_t* pReleaseKeys_ )
     {
       pReleaseKeys = pReleaseKeys_;
       return *this;
     }
 
-    operator const VkWin32KeyedMutexAcquireReleaseInfoKHX&() const
+    operator const VkWin32KeyedMutexAcquireReleaseInfoKHR&() const
     {
-      return *reinterpret_cast<const VkWin32KeyedMutexAcquireReleaseInfoKHX*>(this);
+      return *reinterpret_cast<const VkWin32KeyedMutexAcquireReleaseInfoKHR*>(this);
     }
 
-    bool operator==( Win32KeyedMutexAcquireReleaseInfoKHX const& rhs ) const
+    bool operator==( Win32KeyedMutexAcquireReleaseInfoKHR const& rhs ) const
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
@@ -10515,7 +10663,7 @@ namespace vk
           && ( pReleaseKeys == rhs.pReleaseKeys );
     }
 
-    bool operator!=( Win32KeyedMutexAcquireReleaseInfoKHX const& rhs ) const
+    bool operator!=( Win32KeyedMutexAcquireReleaseInfoKHR const& rhs ) const
     {
       return !operator==( rhs );
     }
@@ -10533,14 +10681,14 @@ namespace vk
     const DeviceMemory* pReleaseSyncs;
     const uint64_t* pReleaseKeys;
   };
-  static_assert( sizeof( Win32KeyedMutexAcquireReleaseInfoKHX ) == sizeof( VkWin32KeyedMutexAcquireReleaseInfoKHX ), "struct and wrapper have different size!" );
+  static_assert( sizeof( Win32KeyedMutexAcquireReleaseInfoKHR ) == sizeof( VkWin32KeyedMutexAcquireReleaseInfoKHR ), "struct and wrapper have different size!" );
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
-#ifdef VK_USE_PLATFORM_WIN32_KHX
-  struct ExportSemaphoreWin32HandleInfoKHX
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  struct ExportSemaphoreWin32HandleInfoKHR
   {
-    ExportSemaphoreWin32HandleInfoKHX( const SECURITY_ATTRIBUTES* pAttributes_ = nullptr, DWORD dwAccess_ = 0, LPCWSTR name_ = 0 )
-      : sType( StructureType::eExportSemaphoreWin32HandleInfoKHX )
+    ExportSemaphoreWin32HandleInfoKHR( const SECURITY_ATTRIBUTES* pAttributes_ = nullptr, DWORD dwAccess_ = 0, LPCWSTR name_ = 0 )
+      : sType( StructureType::eExportSemaphoreWin32HandleInfoKHR )
       , pNext( nullptr )
       , pAttributes( pAttributes_ )
       , dwAccess( dwAccess_ )
@@ -10548,46 +10696,46 @@ namespace vk
     {
     }
 
-    ExportSemaphoreWin32HandleInfoKHX( VkExportSemaphoreWin32HandleInfoKHX const & rhs )
+    ExportSemaphoreWin32HandleInfoKHR( VkExportSemaphoreWin32HandleInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ExportSemaphoreWin32HandleInfoKHX ) );
+      memcpy( this, &rhs, sizeof( ExportSemaphoreWin32HandleInfoKHR ) );
     }
 
-    ExportSemaphoreWin32HandleInfoKHX& operator=( VkExportSemaphoreWin32HandleInfoKHX const & rhs )
+    ExportSemaphoreWin32HandleInfoKHR& operator=( VkExportSemaphoreWin32HandleInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ExportSemaphoreWin32HandleInfoKHX ) );
+      memcpy( this, &rhs, sizeof( ExportSemaphoreWin32HandleInfoKHR ) );
       return *this;
     }
-    ExportSemaphoreWin32HandleInfoKHX& setPNext( const void* pNext_ )
+    ExportSemaphoreWin32HandleInfoKHR& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
       return *this;
     }
 
-    ExportSemaphoreWin32HandleInfoKHX& setPAttributes( const SECURITY_ATTRIBUTES* pAttributes_ )
+    ExportSemaphoreWin32HandleInfoKHR& setPAttributes( const SECURITY_ATTRIBUTES* pAttributes_ )
     {
       pAttributes = pAttributes_;
       return *this;
     }
 
-    ExportSemaphoreWin32HandleInfoKHX& setDwAccess( DWORD dwAccess_ )
+    ExportSemaphoreWin32HandleInfoKHR& setDwAccess( DWORD dwAccess_ )
     {
       dwAccess = dwAccess_;
       return *this;
     }
 
-    ExportSemaphoreWin32HandleInfoKHX& setName( LPCWSTR name_ )
+    ExportSemaphoreWin32HandleInfoKHR& setName( LPCWSTR name_ )
     {
       name = name_;
       return *this;
     }
 
-    operator const VkExportSemaphoreWin32HandleInfoKHX&() const
+    operator const VkExportSemaphoreWin32HandleInfoKHR&() const
     {
-      return *reinterpret_cast<const VkExportSemaphoreWin32HandleInfoKHX*>(this);
+      return *reinterpret_cast<const VkExportSemaphoreWin32HandleInfoKHR*>(this);
     }
 
-    bool operator==( ExportSemaphoreWin32HandleInfoKHX const& rhs ) const
+    bool operator==( ExportSemaphoreWin32HandleInfoKHR const& rhs ) const
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
@@ -10596,7 +10744,7 @@ namespace vk
           && ( name == rhs.name );
     }
 
-    bool operator!=( ExportSemaphoreWin32HandleInfoKHX const& rhs ) const
+    bool operator!=( ExportSemaphoreWin32HandleInfoKHR const& rhs ) const
     {
       return !operator==( rhs );
     }
@@ -10610,14 +10758,14 @@ namespace vk
     DWORD dwAccess;
     LPCWSTR name;
   };
-  static_assert( sizeof( ExportSemaphoreWin32HandleInfoKHX ) == sizeof( VkExportSemaphoreWin32HandleInfoKHX ), "struct and wrapper have different size!" );
-#endif /*VK_USE_PLATFORM_WIN32_KHX*/
+  static_assert( sizeof( ExportSemaphoreWin32HandleInfoKHR ) == sizeof( VkExportSemaphoreWin32HandleInfoKHR ), "struct and wrapper have different size!" );
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
-#ifdef VK_USE_PLATFORM_WIN32_KHX
-  struct D3D12FenceSubmitInfoKHX
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  struct D3D12FenceSubmitInfoKHR
   {
-    D3D12FenceSubmitInfoKHX( uint32_t waitSemaphoreValuesCount_ = 0, const uint64_t* pWaitSemaphoreValues_ = nullptr, uint32_t signalSemaphoreValuesCount_ = 0, const uint64_t* pSignalSemaphoreValues_ = nullptr )
-      : sType( StructureType::eD3D12FenceSubmitInfoKHX )
+    D3D12FenceSubmitInfoKHR( uint32_t waitSemaphoreValuesCount_ = 0, const uint64_t* pWaitSemaphoreValues_ = nullptr, uint32_t signalSemaphoreValuesCount_ = 0, const uint64_t* pSignalSemaphoreValues_ = nullptr )
+      : sType( StructureType::eD3D12FenceSubmitInfoKHR )
       , pNext( nullptr )
       , waitSemaphoreValuesCount( waitSemaphoreValuesCount_ )
       , pWaitSemaphoreValues( pWaitSemaphoreValues_ )
@@ -10626,52 +10774,52 @@ namespace vk
     {
     }
 
-    D3D12FenceSubmitInfoKHX( VkD3D12FenceSubmitInfoKHX const & rhs )
+    D3D12FenceSubmitInfoKHR( VkD3D12FenceSubmitInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( D3D12FenceSubmitInfoKHX ) );
+      memcpy( this, &rhs, sizeof( D3D12FenceSubmitInfoKHR ) );
     }
 
-    D3D12FenceSubmitInfoKHX& operator=( VkD3D12FenceSubmitInfoKHX const & rhs )
+    D3D12FenceSubmitInfoKHR& operator=( VkD3D12FenceSubmitInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( D3D12FenceSubmitInfoKHX ) );
+      memcpy( this, &rhs, sizeof( D3D12FenceSubmitInfoKHR ) );
       return *this;
     }
-    D3D12FenceSubmitInfoKHX& setPNext( const void* pNext_ )
+    D3D12FenceSubmitInfoKHR& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
       return *this;
     }
 
-    D3D12FenceSubmitInfoKHX& setWaitSemaphoreValuesCount( uint32_t waitSemaphoreValuesCount_ )
+    D3D12FenceSubmitInfoKHR& setWaitSemaphoreValuesCount( uint32_t waitSemaphoreValuesCount_ )
     {
       waitSemaphoreValuesCount = waitSemaphoreValuesCount_;
       return *this;
     }
 
-    D3D12FenceSubmitInfoKHX& setPWaitSemaphoreValues( const uint64_t* pWaitSemaphoreValues_ )
+    D3D12FenceSubmitInfoKHR& setPWaitSemaphoreValues( const uint64_t* pWaitSemaphoreValues_ )
     {
       pWaitSemaphoreValues = pWaitSemaphoreValues_;
       return *this;
     }
 
-    D3D12FenceSubmitInfoKHX& setSignalSemaphoreValuesCount( uint32_t signalSemaphoreValuesCount_ )
+    D3D12FenceSubmitInfoKHR& setSignalSemaphoreValuesCount( uint32_t signalSemaphoreValuesCount_ )
     {
       signalSemaphoreValuesCount = signalSemaphoreValuesCount_;
       return *this;
     }
 
-    D3D12FenceSubmitInfoKHX& setPSignalSemaphoreValues( const uint64_t* pSignalSemaphoreValues_ )
+    D3D12FenceSubmitInfoKHR& setPSignalSemaphoreValues( const uint64_t* pSignalSemaphoreValues_ )
     {
       pSignalSemaphoreValues = pSignalSemaphoreValues_;
       return *this;
     }
 
-    operator const VkD3D12FenceSubmitInfoKHX&() const
+    operator const VkD3D12FenceSubmitInfoKHR&() const
     {
-      return *reinterpret_cast<const VkD3D12FenceSubmitInfoKHX*>(this);
+      return *reinterpret_cast<const VkD3D12FenceSubmitInfoKHR*>(this);
     }
 
-    bool operator==( D3D12FenceSubmitInfoKHX const& rhs ) const
+    bool operator==( D3D12FenceSubmitInfoKHR const& rhs ) const
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
@@ -10681,7 +10829,7 @@ namespace vk
           && ( pSignalSemaphoreValues == rhs.pSignalSemaphoreValues );
     }
 
-    bool operator!=( D3D12FenceSubmitInfoKHX const& rhs ) const
+    bool operator!=( D3D12FenceSubmitInfoKHR const& rhs ) const
     {
       return !operator==( rhs );
     }
@@ -10696,8 +10844,85 @@ namespace vk
     uint32_t signalSemaphoreValuesCount;
     const uint64_t* pSignalSemaphoreValues;
   };
-  static_assert( sizeof( D3D12FenceSubmitInfoKHX ) == sizeof( VkD3D12FenceSubmitInfoKHX ), "struct and wrapper have different size!" );
-#endif /*VK_USE_PLATFORM_WIN32_KHX*/
+  static_assert( sizeof( D3D12FenceSubmitInfoKHR ) == sizeof( VkD3D12FenceSubmitInfoKHR ), "struct and wrapper have different size!" );
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  struct ExportFenceWin32HandleInfoKHR
+  {
+    ExportFenceWin32HandleInfoKHR( const SECURITY_ATTRIBUTES* pAttributes_ = nullptr, DWORD dwAccess_ = 0, LPCWSTR name_ = 0 )
+      : sType( StructureType::eExportFenceWin32HandleInfoKHR )
+      , pNext( nullptr )
+      , pAttributes( pAttributes_ )
+      , dwAccess( dwAccess_ )
+      , name( name_ )
+    {
+    }
+
+    ExportFenceWin32HandleInfoKHR( VkExportFenceWin32HandleInfoKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ExportFenceWin32HandleInfoKHR ) );
+    }
+
+    ExportFenceWin32HandleInfoKHR& operator=( VkExportFenceWin32HandleInfoKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ExportFenceWin32HandleInfoKHR ) );
+      return *this;
+    }
+    ExportFenceWin32HandleInfoKHR& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    ExportFenceWin32HandleInfoKHR& setPAttributes( const SECURITY_ATTRIBUTES* pAttributes_ )
+    {
+      pAttributes = pAttributes_;
+      return *this;
+    }
+
+    ExportFenceWin32HandleInfoKHR& setDwAccess( DWORD dwAccess_ )
+    {
+      dwAccess = dwAccess_;
+      return *this;
+    }
+
+    ExportFenceWin32HandleInfoKHR& setName( LPCWSTR name_ )
+    {
+      name = name_;
+      return *this;
+    }
+
+    operator const VkExportFenceWin32HandleInfoKHR&() const
+    {
+      return *reinterpret_cast<const VkExportFenceWin32HandleInfoKHR*>(this);
+    }
+
+    bool operator==( ExportFenceWin32HandleInfoKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( pAttributes == rhs.pAttributes )
+          && ( dwAccess == rhs.dwAccess )
+          && ( name == rhs.name );
+    }
+
+    bool operator!=( ExportFenceWin32HandleInfoKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    const void* pNext;
+    const SECURITY_ATTRIBUTES* pAttributes;
+    DWORD dwAccess;
+    LPCWSTR name;
+  };
+  static_assert( sizeof( ExportFenceWin32HandleInfoKHR ) == sizeof( VkExportFenceWin32HandleInfoKHR ), "struct and wrapper have different size!" );
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
   struct PhysicalDeviceMultiviewFeaturesKHX
   {
@@ -12165,6 +12390,385 @@ namespace vk
   };
   static_assert( sizeof( PhysicalDeviceSurfaceInfo2KHR ) == sizeof( VkPhysicalDeviceSurfaceInfo2KHR ), "struct and wrapper have different size!" );
 
+  struct PhysicalDevice16BitStorageFeaturesKHR
+  {
+    PhysicalDevice16BitStorageFeaturesKHR( Bool32 storageBuffer16BitAccess_ = 0, Bool32 uniformAndStorageBuffer16BitAccess_ = 0, Bool32 storagePushConstant16_ = 0, Bool32 storageInputOutput16_ = 0 )
+      : sType( StructureType::ePhysicalDevice16BitStorageFeaturesKHR )
+      , pNext( nullptr )
+      , storageBuffer16BitAccess( storageBuffer16BitAccess_ )
+      , uniformAndStorageBuffer16BitAccess( uniformAndStorageBuffer16BitAccess_ )
+      , storagePushConstant16( storagePushConstant16_ )
+      , storageInputOutput16( storageInputOutput16_ )
+    {
+    }
+
+    PhysicalDevice16BitStorageFeaturesKHR( VkPhysicalDevice16BitStorageFeaturesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDevice16BitStorageFeaturesKHR ) );
+    }
+
+    PhysicalDevice16BitStorageFeaturesKHR& operator=( VkPhysicalDevice16BitStorageFeaturesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDevice16BitStorageFeaturesKHR ) );
+      return *this;
+    }
+    PhysicalDevice16BitStorageFeaturesKHR& setPNext( void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PhysicalDevice16BitStorageFeaturesKHR& setStorageBuffer16BitAccess( Bool32 storageBuffer16BitAccess_ )
+    {
+      storageBuffer16BitAccess = storageBuffer16BitAccess_;
+      return *this;
+    }
+
+    PhysicalDevice16BitStorageFeaturesKHR& setUniformAndStorageBuffer16BitAccess( Bool32 uniformAndStorageBuffer16BitAccess_ )
+    {
+      uniformAndStorageBuffer16BitAccess = uniformAndStorageBuffer16BitAccess_;
+      return *this;
+    }
+
+    PhysicalDevice16BitStorageFeaturesKHR& setStoragePushConstant16( Bool32 storagePushConstant16_ )
+    {
+      storagePushConstant16 = storagePushConstant16_;
+      return *this;
+    }
+
+    PhysicalDevice16BitStorageFeaturesKHR& setStorageInputOutput16( Bool32 storageInputOutput16_ )
+    {
+      storageInputOutput16 = storageInputOutput16_;
+      return *this;
+    }
+
+    operator const VkPhysicalDevice16BitStorageFeaturesKHR&() const
+    {
+      return *reinterpret_cast<const VkPhysicalDevice16BitStorageFeaturesKHR*>(this);
+    }
+
+    bool operator==( PhysicalDevice16BitStorageFeaturesKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( storageBuffer16BitAccess == rhs.storageBuffer16BitAccess )
+          && ( uniformAndStorageBuffer16BitAccess == rhs.uniformAndStorageBuffer16BitAccess )
+          && ( storagePushConstant16 == rhs.storagePushConstant16 )
+          && ( storageInputOutput16 == rhs.storageInputOutput16 );
+    }
+
+    bool operator!=( PhysicalDevice16BitStorageFeaturesKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    void* pNext;
+    Bool32 storageBuffer16BitAccess;
+    Bool32 uniformAndStorageBuffer16BitAccess;
+    Bool32 storagePushConstant16;
+    Bool32 storageInputOutput16;
+  };
+  static_assert( sizeof( PhysicalDevice16BitStorageFeaturesKHR ) == sizeof( VkPhysicalDevice16BitStorageFeaturesKHR ), "struct and wrapper have different size!" );
+
+  struct BufferMemoryRequirementsInfo2KHR
+  {
+    BufferMemoryRequirementsInfo2KHR( Buffer buffer_ = Buffer() )
+      : sType( StructureType::eBufferMemoryRequirementsInfo2KHR )
+      , pNext( nullptr )
+      , buffer( buffer_ )
+    {
+    }
+
+    BufferMemoryRequirementsInfo2KHR( VkBufferMemoryRequirementsInfo2KHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( BufferMemoryRequirementsInfo2KHR ) );
+    }
+
+    BufferMemoryRequirementsInfo2KHR& operator=( VkBufferMemoryRequirementsInfo2KHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( BufferMemoryRequirementsInfo2KHR ) );
+      return *this;
+    }
+    BufferMemoryRequirementsInfo2KHR& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    BufferMemoryRequirementsInfo2KHR& setBuffer( Buffer buffer_ )
+    {
+      buffer = buffer_;
+      return *this;
+    }
+
+    operator const VkBufferMemoryRequirementsInfo2KHR&() const
+    {
+      return *reinterpret_cast<const VkBufferMemoryRequirementsInfo2KHR*>(this);
+    }
+
+    bool operator==( BufferMemoryRequirementsInfo2KHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( buffer == rhs.buffer );
+    }
+
+    bool operator!=( BufferMemoryRequirementsInfo2KHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    const void* pNext;
+    Buffer buffer;
+  };
+  static_assert( sizeof( BufferMemoryRequirementsInfo2KHR ) == sizeof( VkBufferMemoryRequirementsInfo2KHR ), "struct and wrapper have different size!" );
+
+  struct ImageMemoryRequirementsInfo2KHR
+  {
+    ImageMemoryRequirementsInfo2KHR( Image image_ = Image() )
+      : sType( StructureType::eImageMemoryRequirementsInfo2KHR )
+      , pNext( nullptr )
+      , image( image_ )
+    {
+    }
+
+    ImageMemoryRequirementsInfo2KHR( VkImageMemoryRequirementsInfo2KHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ImageMemoryRequirementsInfo2KHR ) );
+    }
+
+    ImageMemoryRequirementsInfo2KHR& operator=( VkImageMemoryRequirementsInfo2KHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ImageMemoryRequirementsInfo2KHR ) );
+      return *this;
+    }
+    ImageMemoryRequirementsInfo2KHR& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    ImageMemoryRequirementsInfo2KHR& setImage( Image image_ )
+    {
+      image = image_;
+      return *this;
+    }
+
+    operator const VkImageMemoryRequirementsInfo2KHR&() const
+    {
+      return *reinterpret_cast<const VkImageMemoryRequirementsInfo2KHR*>(this);
+    }
+
+    bool operator==( ImageMemoryRequirementsInfo2KHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( image == rhs.image );
+    }
+
+    bool operator!=( ImageMemoryRequirementsInfo2KHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    const void* pNext;
+    Image image;
+  };
+  static_assert( sizeof( ImageMemoryRequirementsInfo2KHR ) == sizeof( VkImageMemoryRequirementsInfo2KHR ), "struct and wrapper have different size!" );
+
+  struct ImageSparseMemoryRequirementsInfo2KHR
+  {
+    ImageSparseMemoryRequirementsInfo2KHR( Image image_ = Image() )
+      : sType( StructureType::eImageSparseMemoryRequirementsInfo2KHR )
+      , pNext( nullptr )
+      , image( image_ )
+    {
+    }
+
+    ImageSparseMemoryRequirementsInfo2KHR( VkImageSparseMemoryRequirementsInfo2KHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ImageSparseMemoryRequirementsInfo2KHR ) );
+    }
+
+    ImageSparseMemoryRequirementsInfo2KHR& operator=( VkImageSparseMemoryRequirementsInfo2KHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ImageSparseMemoryRequirementsInfo2KHR ) );
+      return *this;
+    }
+    ImageSparseMemoryRequirementsInfo2KHR& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    ImageSparseMemoryRequirementsInfo2KHR& setImage( Image image_ )
+    {
+      image = image_;
+      return *this;
+    }
+
+    operator const VkImageSparseMemoryRequirementsInfo2KHR&() const
+    {
+      return *reinterpret_cast<const VkImageSparseMemoryRequirementsInfo2KHR*>(this);
+    }
+
+    bool operator==( ImageSparseMemoryRequirementsInfo2KHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( image == rhs.image );
+    }
+
+    bool operator!=( ImageSparseMemoryRequirementsInfo2KHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    const void* pNext;
+    Image image;
+  };
+  static_assert( sizeof( ImageSparseMemoryRequirementsInfo2KHR ) == sizeof( VkImageSparseMemoryRequirementsInfo2KHR ), "struct and wrapper have different size!" );
+
+  struct MemoryRequirements2KHR
+  {
+    operator const VkMemoryRequirements2KHR&() const
+    {
+      return *reinterpret_cast<const VkMemoryRequirements2KHR*>(this);
+    }
+
+    bool operator==( MemoryRequirements2KHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( memoryRequirements == rhs.memoryRequirements );
+    }
+
+    bool operator!=( MemoryRequirements2KHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    void* pNext;
+    MemoryRequirements memoryRequirements;
+  };
+  static_assert( sizeof( MemoryRequirements2KHR ) == sizeof( VkMemoryRequirements2KHR ), "struct and wrapper have different size!" );
+
+  struct MemoryDedicatedRequirementsKHR
+  {
+    operator const VkMemoryDedicatedRequirementsKHR&() const
+    {
+      return *reinterpret_cast<const VkMemoryDedicatedRequirementsKHR*>(this);
+    }
+
+    bool operator==( MemoryDedicatedRequirementsKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( prefersDedicatedAllocation == rhs.prefersDedicatedAllocation )
+          && ( requiresDedicatedAllocation == rhs.requiresDedicatedAllocation );
+    }
+
+    bool operator!=( MemoryDedicatedRequirementsKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    void* pNext;
+    Bool32 prefersDedicatedAllocation;
+    Bool32 requiresDedicatedAllocation;
+  };
+  static_assert( sizeof( MemoryDedicatedRequirementsKHR ) == sizeof( VkMemoryDedicatedRequirementsKHR ), "struct and wrapper have different size!" );
+
+  struct MemoryDedicatedAllocateInfoKHR
+  {
+    MemoryDedicatedAllocateInfoKHR( Image image_ = Image(), Buffer buffer_ = Buffer() )
+      : sType( StructureType::eMemoryDedicatedAllocateInfoKHR )
+      , pNext( nullptr )
+      , image( image_ )
+      , buffer( buffer_ )
+    {
+    }
+
+    MemoryDedicatedAllocateInfoKHR( VkMemoryDedicatedAllocateInfoKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( MemoryDedicatedAllocateInfoKHR ) );
+    }
+
+    MemoryDedicatedAllocateInfoKHR& operator=( VkMemoryDedicatedAllocateInfoKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( MemoryDedicatedAllocateInfoKHR ) );
+      return *this;
+    }
+    MemoryDedicatedAllocateInfoKHR& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    MemoryDedicatedAllocateInfoKHR& setImage( Image image_ )
+    {
+      image = image_;
+      return *this;
+    }
+
+    MemoryDedicatedAllocateInfoKHR& setBuffer( Buffer buffer_ )
+    {
+      buffer = buffer_;
+      return *this;
+    }
+
+    operator const VkMemoryDedicatedAllocateInfoKHR&() const
+    {
+      return *reinterpret_cast<const VkMemoryDedicatedAllocateInfoKHR*>(this);
+    }
+
+    bool operator==( MemoryDedicatedAllocateInfoKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( image == rhs.image )
+          && ( buffer == rhs.buffer );
+    }
+
+    bool operator!=( MemoryDedicatedAllocateInfoKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    const void* pNext;
+    Image image;
+    Buffer buffer;
+  };
+  static_assert( sizeof( MemoryDedicatedAllocateInfoKHR ) == sizeof( VkMemoryDedicatedAllocateInfoKHR ), "struct and wrapper have different size!" );
+
   struct TextureLODGatherFormatPropertiesAMD
   {
     operator const VkTextureLODGatherFormatPropertiesAMD&() const
@@ -12192,6 +12796,206 @@ namespace vk
     Bool32 supportsTextureGatherLODBiasAMD;
   };
   static_assert( sizeof( TextureLODGatherFormatPropertiesAMD ) == sizeof( VkTextureLODGatherFormatPropertiesAMD ), "struct and wrapper have different size!" );
+
+  struct PipelineCoverageToColorStateCreateInfoNV
+  {
+    PipelineCoverageToColorStateCreateInfoNV( PipelineCoverageToColorStateCreateFlagsNV flags_ = PipelineCoverageToColorStateCreateFlagsNV(), Bool32 coverageToColorEnable_ = 0, uint32_t coverageToColorLocation_ = 0 )
+      : sType( StructureType::ePipelineCoverageToColorStateCreateInfoNV )
+      , pNext( nullptr )
+      , flags( flags_ )
+      , coverageToColorEnable( coverageToColorEnable_ )
+      , coverageToColorLocation( coverageToColorLocation_ )
+    {
+    }
+
+    PipelineCoverageToColorStateCreateInfoNV( VkPipelineCoverageToColorStateCreateInfoNV const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PipelineCoverageToColorStateCreateInfoNV ) );
+    }
+
+    PipelineCoverageToColorStateCreateInfoNV& operator=( VkPipelineCoverageToColorStateCreateInfoNV const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PipelineCoverageToColorStateCreateInfoNV ) );
+      return *this;
+    }
+    PipelineCoverageToColorStateCreateInfoNV& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PipelineCoverageToColorStateCreateInfoNV& setFlags( PipelineCoverageToColorStateCreateFlagsNV flags_ )
+    {
+      flags = flags_;
+      return *this;
+    }
+
+    PipelineCoverageToColorStateCreateInfoNV& setCoverageToColorEnable( Bool32 coverageToColorEnable_ )
+    {
+      coverageToColorEnable = coverageToColorEnable_;
+      return *this;
+    }
+
+    PipelineCoverageToColorStateCreateInfoNV& setCoverageToColorLocation( uint32_t coverageToColorLocation_ )
+    {
+      coverageToColorLocation = coverageToColorLocation_;
+      return *this;
+    }
+
+    operator const VkPipelineCoverageToColorStateCreateInfoNV&() const
+    {
+      return *reinterpret_cast<const VkPipelineCoverageToColorStateCreateInfoNV*>(this);
+    }
+
+    bool operator==( PipelineCoverageToColorStateCreateInfoNV const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( coverageToColorEnable == rhs.coverageToColorEnable )
+          && ( coverageToColorLocation == rhs.coverageToColorLocation );
+    }
+
+    bool operator!=( PipelineCoverageToColorStateCreateInfoNV const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    const void* pNext;
+    PipelineCoverageToColorStateCreateFlagsNV flags;
+    Bool32 coverageToColorEnable;
+    uint32_t coverageToColorLocation;
+  };
+  static_assert( sizeof( PipelineCoverageToColorStateCreateInfoNV ) == sizeof( VkPipelineCoverageToColorStateCreateInfoNV ), "struct and wrapper have different size!" );
+
+  struct PhysicalDeviceSamplerFilterMinmaxPropertiesEXT
+  {
+    operator const VkPhysicalDeviceSamplerFilterMinmaxPropertiesEXT&() const
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceSamplerFilterMinmaxPropertiesEXT*>(this);
+    }
+
+    bool operator==( PhysicalDeviceSamplerFilterMinmaxPropertiesEXT const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( filterMinmaxSingleComponentFormats == rhs.filterMinmaxSingleComponentFormats )
+          && ( filterMinmaxImageComponentMapping == rhs.filterMinmaxImageComponentMapping );
+    }
+
+    bool operator!=( PhysicalDeviceSamplerFilterMinmaxPropertiesEXT const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    void* pNext;
+    Bool32 filterMinmaxSingleComponentFormats;
+    Bool32 filterMinmaxImageComponentMapping;
+  };
+  static_assert( sizeof( PhysicalDeviceSamplerFilterMinmaxPropertiesEXT ) == sizeof( VkPhysicalDeviceSamplerFilterMinmaxPropertiesEXT ), "struct and wrapper have different size!" );
+
+  struct PhysicalDeviceBlendOperationAdvancedFeaturesEXT
+  {
+    PhysicalDeviceBlendOperationAdvancedFeaturesEXT( Bool32 advancedBlendCoherentOperations_ = 0 )
+      : sType( StructureType::ePhysicalDeviceBlendOperationAdvancedFeaturesEXT )
+      , pNext( nullptr )
+      , advancedBlendCoherentOperations( advancedBlendCoherentOperations_ )
+    {
+    }
+
+    PhysicalDeviceBlendOperationAdvancedFeaturesEXT( VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceBlendOperationAdvancedFeaturesEXT ) );
+    }
+
+    PhysicalDeviceBlendOperationAdvancedFeaturesEXT& operator=( VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceBlendOperationAdvancedFeaturesEXT ) );
+      return *this;
+    }
+    PhysicalDeviceBlendOperationAdvancedFeaturesEXT& setPNext( void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PhysicalDeviceBlendOperationAdvancedFeaturesEXT& setAdvancedBlendCoherentOperations( Bool32 advancedBlendCoherentOperations_ )
+    {
+      advancedBlendCoherentOperations = advancedBlendCoherentOperations_;
+      return *this;
+    }
+
+    operator const VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT&() const
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT*>(this);
+    }
+
+    bool operator==( PhysicalDeviceBlendOperationAdvancedFeaturesEXT const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( advancedBlendCoherentOperations == rhs.advancedBlendCoherentOperations );
+    }
+
+    bool operator!=( PhysicalDeviceBlendOperationAdvancedFeaturesEXT const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    void* pNext;
+    Bool32 advancedBlendCoherentOperations;
+  };
+  static_assert( sizeof( PhysicalDeviceBlendOperationAdvancedFeaturesEXT ) == sizeof( VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT ), "struct and wrapper have different size!" );
+
+  struct PhysicalDeviceBlendOperationAdvancedPropertiesEXT
+  {
+    operator const VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT&() const
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT*>(this);
+    }
+
+    bool operator==( PhysicalDeviceBlendOperationAdvancedPropertiesEXT const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( advancedBlendMaxColorAttachments == rhs.advancedBlendMaxColorAttachments )
+          && ( advancedBlendIndependentBlend == rhs.advancedBlendIndependentBlend )
+          && ( advancedBlendNonPremultipliedSrcColor == rhs.advancedBlendNonPremultipliedSrcColor )
+          && ( advancedBlendNonPremultipliedDstColor == rhs.advancedBlendNonPremultipliedDstColor )
+          && ( advancedBlendCorrelatedOverlap == rhs.advancedBlendCorrelatedOverlap )
+          && ( advancedBlendAllOperations == rhs.advancedBlendAllOperations );
+    }
+
+    bool operator!=( PhysicalDeviceBlendOperationAdvancedPropertiesEXT const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    void* pNext;
+    uint32_t advancedBlendMaxColorAttachments;
+    Bool32 advancedBlendIndependentBlend;
+    Bool32 advancedBlendNonPremultipliedSrcColor;
+    Bool32 advancedBlendNonPremultipliedDstColor;
+    Bool32 advancedBlendCorrelatedOverlap;
+    Bool32 advancedBlendAllOperations;
+  };
+  static_assert( sizeof( PhysicalDeviceBlendOperationAdvancedPropertiesEXT ) == sizeof( VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT ), "struct and wrapper have different size!" );
 
   enum class SubpassContents
   {
@@ -12814,7 +13618,8 @@ namespace vk
     eMemoryRead = VK_ACCESS_MEMORY_READ_BIT,
     eMemoryWrite = VK_ACCESS_MEMORY_WRITE_BIT,
     eCommandProcessReadNVX = VK_ACCESS_COMMAND_PROCESS_READ_BIT_NVX,
-    eCommandProcessWriteNVX = VK_ACCESS_COMMAND_PROCESS_WRITE_BIT_NVX
+    eCommandProcessWriteNVX = VK_ACCESS_COMMAND_PROCESS_WRITE_BIT_NVX,
+    eColorAttachmentReadNoncoherentEXT = VK_ACCESS_COLOR_ATTACHMENT_READ_NONCOHERENT_BIT_EXT
   };
 
   using AccessFlags = Flags<AccessFlagBits, VkAccessFlags>;
@@ -12833,7 +13638,7 @@ namespace vk
   {
     enum
     {
-      allFlags = VkFlags(AccessFlagBits::eIndirectCommandRead) | VkFlags(AccessFlagBits::eIndexRead) | VkFlags(AccessFlagBits::eVertexAttributeRead) | VkFlags(AccessFlagBits::eUniformRead) | VkFlags(AccessFlagBits::eInputAttachmentRead) | VkFlags(AccessFlagBits::eShaderRead) | VkFlags(AccessFlagBits::eShaderWrite) | VkFlags(AccessFlagBits::eColorAttachmentRead) | VkFlags(AccessFlagBits::eColorAttachmentWrite) | VkFlags(AccessFlagBits::eDepthStencilAttachmentRead) | VkFlags(AccessFlagBits::eDepthStencilAttachmentWrite) | VkFlags(AccessFlagBits::eTransferRead) | VkFlags(AccessFlagBits::eTransferWrite) | VkFlags(AccessFlagBits::eHostRead) | VkFlags(AccessFlagBits::eHostWrite) | VkFlags(AccessFlagBits::eMemoryRead) | VkFlags(AccessFlagBits::eMemoryWrite) | VkFlags(AccessFlagBits::eCommandProcessReadNVX) | VkFlags(AccessFlagBits::eCommandProcessWriteNVX)
+      allFlags = VkFlags(AccessFlagBits::eIndirectCommandRead) | VkFlags(AccessFlagBits::eIndexRead) | VkFlags(AccessFlagBits::eVertexAttributeRead) | VkFlags(AccessFlagBits::eUniformRead) | VkFlags(AccessFlagBits::eInputAttachmentRead) | VkFlags(AccessFlagBits::eShaderRead) | VkFlags(AccessFlagBits::eShaderWrite) | VkFlags(AccessFlagBits::eColorAttachmentRead) | VkFlags(AccessFlagBits::eColorAttachmentWrite) | VkFlags(AccessFlagBits::eDepthStencilAttachmentRead) | VkFlags(AccessFlagBits::eDepthStencilAttachmentWrite) | VkFlags(AccessFlagBits::eTransferRead) | VkFlags(AccessFlagBits::eTransferWrite) | VkFlags(AccessFlagBits::eHostRead) | VkFlags(AccessFlagBits::eHostWrite) | VkFlags(AccessFlagBits::eMemoryRead) | VkFlags(AccessFlagBits::eMemoryWrite) | VkFlags(AccessFlagBits::eCommandProcessReadNVX) | VkFlags(AccessFlagBits::eCommandProcessWriteNVX) | VkFlags(AccessFlagBits::eColorAttachmentReadNoncoherentEXT)
     };
   };
 
@@ -14172,7 +14977,8 @@ namespace vk
     eSampledImageFilterLinear = VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT,
     eSampledImageFilterCubicIMG = VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_CUBIC_BIT_IMG,
     eTransferSrcKHR = VK_FORMAT_FEATURE_TRANSFER_SRC_BIT_KHR,
-    eTransferDstKHR = VK_FORMAT_FEATURE_TRANSFER_DST_BIT_KHR
+    eTransferDstKHR = VK_FORMAT_FEATURE_TRANSFER_DST_BIT_KHR,
+    eSampledImageFilterMinmaxEXT = VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_MINMAX_BIT_EXT
   };
 
   using FormatFeatureFlags = Flags<FormatFeatureFlagBits, VkFormatFeatureFlags>;
@@ -14191,7 +14997,7 @@ namespace vk
   {
     enum
     {
-      allFlags = VkFlags(FormatFeatureFlagBits::eSampledImage) | VkFlags(FormatFeatureFlagBits::eStorageImage) | VkFlags(FormatFeatureFlagBits::eStorageImageAtomic) | VkFlags(FormatFeatureFlagBits::eUniformTexelBuffer) | VkFlags(FormatFeatureFlagBits::eStorageTexelBuffer) | VkFlags(FormatFeatureFlagBits::eStorageTexelBufferAtomic) | VkFlags(FormatFeatureFlagBits::eVertexBuffer) | VkFlags(FormatFeatureFlagBits::eColorAttachment) | VkFlags(FormatFeatureFlagBits::eColorAttachmentBlend) | VkFlags(FormatFeatureFlagBits::eDepthStencilAttachment) | VkFlags(FormatFeatureFlagBits::eBlitSrc) | VkFlags(FormatFeatureFlagBits::eBlitDst) | VkFlags(FormatFeatureFlagBits::eSampledImageFilterLinear) | VkFlags(FormatFeatureFlagBits::eSampledImageFilterCubicIMG) | VkFlags(FormatFeatureFlagBits::eTransferSrcKHR) | VkFlags(FormatFeatureFlagBits::eTransferDstKHR)
+      allFlags = VkFlags(FormatFeatureFlagBits::eSampledImage) | VkFlags(FormatFeatureFlagBits::eStorageImage) | VkFlags(FormatFeatureFlagBits::eStorageImageAtomic) | VkFlags(FormatFeatureFlagBits::eUniformTexelBuffer) | VkFlags(FormatFeatureFlagBits::eStorageTexelBuffer) | VkFlags(FormatFeatureFlagBits::eStorageTexelBufferAtomic) | VkFlags(FormatFeatureFlagBits::eVertexBuffer) | VkFlags(FormatFeatureFlagBits::eColorAttachment) | VkFlags(FormatFeatureFlagBits::eColorAttachmentBlend) | VkFlags(FormatFeatureFlagBits::eDepthStencilAttachment) | VkFlags(FormatFeatureFlagBits::eBlitSrc) | VkFlags(FormatFeatureFlagBits::eBlitDst) | VkFlags(FormatFeatureFlagBits::eSampledImageFilterLinear) | VkFlags(FormatFeatureFlagBits::eSampledImageFilterCubicIMG) | VkFlags(FormatFeatureFlagBits::eTransferSrcKHR) | VkFlags(FormatFeatureFlagBits::eTransferDstKHR) | VkFlags(FormatFeatureFlagBits::eSampledImageFilterMinmaxEXT)
     };
   };
 
@@ -15540,6 +16346,34 @@ namespace vk
     SparseImageFormatProperties properties;
   };
   static_assert( sizeof( SparseImageFormatProperties2KHR ) == sizeof( VkSparseImageFormatProperties2KHR ), "struct and wrapper have different size!" );
+
+  struct SparseImageMemoryRequirements2KHR
+  {
+    operator const VkSparseImageMemoryRequirements2KHR&() const
+    {
+      return *reinterpret_cast<const VkSparseImageMemoryRequirements2KHR*>(this);
+    }
+
+    bool operator==( SparseImageMemoryRequirements2KHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( memoryRequirements == rhs.memoryRequirements );
+    }
+
+    bool operator!=( SparseImageMemoryRequirements2KHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    void* pNext;
+    SparseImageMemoryRequirements memoryRequirements;
+  };
+  static_assert( sizeof( SparseImageMemoryRequirements2KHR ) == sizeof( VkSparseImageMemoryRequirements2KHR ), "struct and wrapper have different size!" );
 
   enum class SparseMemoryBindFlagBits
   {
@@ -17610,7 +18444,8 @@ namespace vk
     eHdr10HlgEXT = VK_COLOR_SPACE_HDR10_HLG_EXT,
     eAdobergbLinearEXT = VK_COLOR_SPACE_ADOBERGB_LINEAR_EXT,
     eAdobergbNonlinearEXT = VK_COLOR_SPACE_ADOBERGB_NONLINEAR_EXT,
-    ePassThroughEXT = VK_COLOR_SPACE_PASS_THROUGH_EXT
+    ePassThroughEXT = VK_COLOR_SPACE_PASS_THROUGH_EXT,
+    eExtendedSrgbNonlinearEXT = VK_COLOR_SPACE_EXTENDED_SRGB_NONLINEAR_EXT
   };
 
   struct SurfaceFormatKHR
@@ -19614,81 +20449,81 @@ namespace vk
   };
   static_assert( sizeof( DescriptorSetLayoutCreateInfo ) == sizeof( VkDescriptorSetLayoutCreateInfo ), "struct and wrapper have different size!" );
 
-  enum class ExternalMemoryHandleTypeFlagBitsKHX
+  enum class ExternalMemoryHandleTypeFlagBitsKHR
   {
-    eOpaqueFd = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT_KHX,
-    eOpaqueWin32 = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_BIT_KHX,
-    eOpaqueWin32Kmt = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT_KHX,
-    eD3D11Texture = VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D11_TEXTURE_BIT_KHX,
-    eD3D11TextureKmt = VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D11_TEXTURE_KMT_BIT_KHX,
-    eD3D12Heap = VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D12_HEAP_BIT_KHX,
-    eD3D12Resource = VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D12_RESOURCE_BIT_KHX
+    eOpaqueFd = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT_KHR,
+    eOpaqueWin32 = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_BIT_KHR,
+    eOpaqueWin32Kmt = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT_KHR,
+    eD3D11Texture = VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D11_TEXTURE_BIT_KHR,
+    eD3D11TextureKmt = VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D11_TEXTURE_KMT_BIT_KHR,
+    eD3D12Heap = VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D12_HEAP_BIT_KHR,
+    eD3D12Resource = VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D12_RESOURCE_BIT_KHR
   };
 
-  using ExternalMemoryHandleTypeFlagsKHX = Flags<ExternalMemoryHandleTypeFlagBitsKHX, VkExternalMemoryHandleTypeFlagsKHX>;
+  using ExternalMemoryHandleTypeFlagsKHR = Flags<ExternalMemoryHandleTypeFlagBitsKHR, VkExternalMemoryHandleTypeFlagsKHR>;
 
-  VULKAN_HPP_INLINE ExternalMemoryHandleTypeFlagsKHX operator|( ExternalMemoryHandleTypeFlagBitsKHX bit0, ExternalMemoryHandleTypeFlagBitsKHX bit1 )
+  VULKAN_HPP_INLINE ExternalMemoryHandleTypeFlagsKHR operator|( ExternalMemoryHandleTypeFlagBitsKHR bit0, ExternalMemoryHandleTypeFlagBitsKHR bit1 )
   {
-    return ExternalMemoryHandleTypeFlagsKHX( bit0 ) | bit1;
+    return ExternalMemoryHandleTypeFlagsKHR( bit0 ) | bit1;
   }
 
-  VULKAN_HPP_INLINE ExternalMemoryHandleTypeFlagsKHX operator~( ExternalMemoryHandleTypeFlagBitsKHX bits )
+  VULKAN_HPP_INLINE ExternalMemoryHandleTypeFlagsKHR operator~( ExternalMemoryHandleTypeFlagBitsKHR bits )
   {
-    return ~( ExternalMemoryHandleTypeFlagsKHX( bits ) );
+    return ~( ExternalMemoryHandleTypeFlagsKHR( bits ) );
   }
 
-  template <> struct FlagTraits<ExternalMemoryHandleTypeFlagBitsKHX>
+  template <> struct FlagTraits<ExternalMemoryHandleTypeFlagBitsKHR>
   {
     enum
     {
-      allFlags = VkFlags(ExternalMemoryHandleTypeFlagBitsKHX::eOpaqueFd) | VkFlags(ExternalMemoryHandleTypeFlagBitsKHX::eOpaqueWin32) | VkFlags(ExternalMemoryHandleTypeFlagBitsKHX::eOpaqueWin32Kmt) | VkFlags(ExternalMemoryHandleTypeFlagBitsKHX::eD3D11Texture) | VkFlags(ExternalMemoryHandleTypeFlagBitsKHX::eD3D11TextureKmt) | VkFlags(ExternalMemoryHandleTypeFlagBitsKHX::eD3D12Heap) | VkFlags(ExternalMemoryHandleTypeFlagBitsKHX::eD3D12Resource)
+      allFlags = VkFlags(ExternalMemoryHandleTypeFlagBitsKHR::eOpaqueFd) | VkFlags(ExternalMemoryHandleTypeFlagBitsKHR::eOpaqueWin32) | VkFlags(ExternalMemoryHandleTypeFlagBitsKHR::eOpaqueWin32Kmt) | VkFlags(ExternalMemoryHandleTypeFlagBitsKHR::eD3D11Texture) | VkFlags(ExternalMemoryHandleTypeFlagBitsKHR::eD3D11TextureKmt) | VkFlags(ExternalMemoryHandleTypeFlagBitsKHR::eD3D12Heap) | VkFlags(ExternalMemoryHandleTypeFlagBitsKHR::eD3D12Resource)
     };
   };
 
-  struct PhysicalDeviceExternalImageFormatInfoKHX
+  struct PhysicalDeviceExternalImageFormatInfoKHR
   {
-    PhysicalDeviceExternalImageFormatInfoKHX( ExternalMemoryHandleTypeFlagBitsKHX handleType_ = ExternalMemoryHandleTypeFlagBitsKHX::eOpaqueFd )
-      : sType( StructureType::ePhysicalDeviceExternalImageFormatInfoKHX )
+    PhysicalDeviceExternalImageFormatInfoKHR( ExternalMemoryHandleTypeFlagBitsKHR handleType_ = ExternalMemoryHandleTypeFlagBitsKHR::eOpaqueFd )
+      : sType( StructureType::ePhysicalDeviceExternalImageFormatInfoKHR )
       , pNext( nullptr )
       , handleType( handleType_ )
     {
     }
 
-    PhysicalDeviceExternalImageFormatInfoKHX( VkPhysicalDeviceExternalImageFormatInfoKHX const & rhs )
+    PhysicalDeviceExternalImageFormatInfoKHR( VkPhysicalDeviceExternalImageFormatInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceExternalImageFormatInfoKHX ) );
+      memcpy( this, &rhs, sizeof( PhysicalDeviceExternalImageFormatInfoKHR ) );
     }
 
-    PhysicalDeviceExternalImageFormatInfoKHX& operator=( VkPhysicalDeviceExternalImageFormatInfoKHX const & rhs )
+    PhysicalDeviceExternalImageFormatInfoKHR& operator=( VkPhysicalDeviceExternalImageFormatInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceExternalImageFormatInfoKHX ) );
+      memcpy( this, &rhs, sizeof( PhysicalDeviceExternalImageFormatInfoKHR ) );
       return *this;
     }
-    PhysicalDeviceExternalImageFormatInfoKHX& setPNext( const void* pNext_ )
+    PhysicalDeviceExternalImageFormatInfoKHR& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
       return *this;
     }
 
-    PhysicalDeviceExternalImageFormatInfoKHX& setHandleType( ExternalMemoryHandleTypeFlagBitsKHX handleType_ )
+    PhysicalDeviceExternalImageFormatInfoKHR& setHandleType( ExternalMemoryHandleTypeFlagBitsKHR handleType_ )
     {
       handleType = handleType_;
       return *this;
     }
 
-    operator const VkPhysicalDeviceExternalImageFormatInfoKHX&() const
+    operator const VkPhysicalDeviceExternalImageFormatInfoKHR&() const
     {
-      return *reinterpret_cast<const VkPhysicalDeviceExternalImageFormatInfoKHX*>(this);
+      return *reinterpret_cast<const VkPhysicalDeviceExternalImageFormatInfoKHR*>(this);
     }
 
-    bool operator==( PhysicalDeviceExternalImageFormatInfoKHX const& rhs ) const
+    bool operator==( PhysicalDeviceExternalImageFormatInfoKHR const& rhs ) const
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( handleType == rhs.handleType );
     }
 
-    bool operator!=( PhysicalDeviceExternalImageFormatInfoKHX const& rhs ) const
+    bool operator!=( PhysicalDeviceExternalImageFormatInfoKHR const& rhs ) const
     {
       return !operator==( rhs );
     }
@@ -19698,14 +20533,14 @@ namespace vk
 
   public:
     const void* pNext;
-    ExternalMemoryHandleTypeFlagBitsKHX handleType;
+    ExternalMemoryHandleTypeFlagBitsKHR handleType;
   };
-  static_assert( sizeof( PhysicalDeviceExternalImageFormatInfoKHX ) == sizeof( VkPhysicalDeviceExternalImageFormatInfoKHX ), "struct and wrapper have different size!" );
+  static_assert( sizeof( PhysicalDeviceExternalImageFormatInfoKHR ) == sizeof( VkPhysicalDeviceExternalImageFormatInfoKHR ), "struct and wrapper have different size!" );
 
-  struct PhysicalDeviceExternalBufferInfoKHX
+  struct PhysicalDeviceExternalBufferInfoKHR
   {
-    PhysicalDeviceExternalBufferInfoKHX( BufferCreateFlags flags_ = BufferCreateFlags(), BufferUsageFlags usage_ = BufferUsageFlags(), ExternalMemoryHandleTypeFlagBitsKHX handleType_ = ExternalMemoryHandleTypeFlagBitsKHX::eOpaqueFd )
-      : sType( StructureType::ePhysicalDeviceExternalBufferInfoKHX )
+    PhysicalDeviceExternalBufferInfoKHR( BufferCreateFlags flags_ = BufferCreateFlags(), BufferUsageFlags usage_ = BufferUsageFlags(), ExternalMemoryHandleTypeFlagBitsKHR handleType_ = ExternalMemoryHandleTypeFlagBitsKHR::eOpaqueFd )
+      : sType( StructureType::ePhysicalDeviceExternalBufferInfoKHR )
       , pNext( nullptr )
       , flags( flags_ )
       , usage( usage_ )
@@ -19713,46 +20548,46 @@ namespace vk
     {
     }
 
-    PhysicalDeviceExternalBufferInfoKHX( VkPhysicalDeviceExternalBufferInfoKHX const & rhs )
+    PhysicalDeviceExternalBufferInfoKHR( VkPhysicalDeviceExternalBufferInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceExternalBufferInfoKHX ) );
+      memcpy( this, &rhs, sizeof( PhysicalDeviceExternalBufferInfoKHR ) );
     }
 
-    PhysicalDeviceExternalBufferInfoKHX& operator=( VkPhysicalDeviceExternalBufferInfoKHX const & rhs )
+    PhysicalDeviceExternalBufferInfoKHR& operator=( VkPhysicalDeviceExternalBufferInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceExternalBufferInfoKHX ) );
+      memcpy( this, &rhs, sizeof( PhysicalDeviceExternalBufferInfoKHR ) );
       return *this;
     }
-    PhysicalDeviceExternalBufferInfoKHX& setPNext( const void* pNext_ )
+    PhysicalDeviceExternalBufferInfoKHR& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
       return *this;
     }
 
-    PhysicalDeviceExternalBufferInfoKHX& setFlags( BufferCreateFlags flags_ )
+    PhysicalDeviceExternalBufferInfoKHR& setFlags( BufferCreateFlags flags_ )
     {
       flags = flags_;
       return *this;
     }
 
-    PhysicalDeviceExternalBufferInfoKHX& setUsage( BufferUsageFlags usage_ )
+    PhysicalDeviceExternalBufferInfoKHR& setUsage( BufferUsageFlags usage_ )
     {
       usage = usage_;
       return *this;
     }
 
-    PhysicalDeviceExternalBufferInfoKHX& setHandleType( ExternalMemoryHandleTypeFlagBitsKHX handleType_ )
+    PhysicalDeviceExternalBufferInfoKHR& setHandleType( ExternalMemoryHandleTypeFlagBitsKHR handleType_ )
     {
       handleType = handleType_;
       return *this;
     }
 
-    operator const VkPhysicalDeviceExternalBufferInfoKHX&() const
+    operator const VkPhysicalDeviceExternalBufferInfoKHR&() const
     {
-      return *reinterpret_cast<const VkPhysicalDeviceExternalBufferInfoKHX*>(this);
+      return *reinterpret_cast<const VkPhysicalDeviceExternalBufferInfoKHR*>(this);
     }
 
-    bool operator==( PhysicalDeviceExternalBufferInfoKHX const& rhs ) const
+    bool operator==( PhysicalDeviceExternalBufferInfoKHR const& rhs ) const
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
@@ -19761,7 +20596,7 @@ namespace vk
           && ( handleType == rhs.handleType );
     }
 
-    bool operator!=( PhysicalDeviceExternalBufferInfoKHX const& rhs ) const
+    bool operator!=( PhysicalDeviceExternalBufferInfoKHR const& rhs ) const
     {
       return !operator==( rhs );
     }
@@ -19773,54 +20608,54 @@ namespace vk
     const void* pNext;
     BufferCreateFlags flags;
     BufferUsageFlags usage;
-    ExternalMemoryHandleTypeFlagBitsKHX handleType;
+    ExternalMemoryHandleTypeFlagBitsKHR handleType;
   };
-  static_assert( sizeof( PhysicalDeviceExternalBufferInfoKHX ) == sizeof( VkPhysicalDeviceExternalBufferInfoKHX ), "struct and wrapper have different size!" );
+  static_assert( sizeof( PhysicalDeviceExternalBufferInfoKHR ) == sizeof( VkPhysicalDeviceExternalBufferInfoKHR ), "struct and wrapper have different size!" );
 
-  struct ExternalMemoryImageCreateInfoKHX
+  struct ExternalMemoryImageCreateInfoKHR
   {
-    ExternalMemoryImageCreateInfoKHX( ExternalMemoryHandleTypeFlagsKHX handleTypes_ = ExternalMemoryHandleTypeFlagsKHX() )
-      : sType( StructureType::eExternalMemoryImageCreateInfoKHX )
+    ExternalMemoryImageCreateInfoKHR( ExternalMemoryHandleTypeFlagsKHR handleTypes_ = ExternalMemoryHandleTypeFlagsKHR() )
+      : sType( StructureType::eExternalMemoryImageCreateInfoKHR )
       , pNext( nullptr )
       , handleTypes( handleTypes_ )
     {
     }
 
-    ExternalMemoryImageCreateInfoKHX( VkExternalMemoryImageCreateInfoKHX const & rhs )
+    ExternalMemoryImageCreateInfoKHR( VkExternalMemoryImageCreateInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ExternalMemoryImageCreateInfoKHX ) );
+      memcpy( this, &rhs, sizeof( ExternalMemoryImageCreateInfoKHR ) );
     }
 
-    ExternalMemoryImageCreateInfoKHX& operator=( VkExternalMemoryImageCreateInfoKHX const & rhs )
+    ExternalMemoryImageCreateInfoKHR& operator=( VkExternalMemoryImageCreateInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ExternalMemoryImageCreateInfoKHX ) );
+      memcpy( this, &rhs, sizeof( ExternalMemoryImageCreateInfoKHR ) );
       return *this;
     }
-    ExternalMemoryImageCreateInfoKHX& setPNext( const void* pNext_ )
+    ExternalMemoryImageCreateInfoKHR& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
       return *this;
     }
 
-    ExternalMemoryImageCreateInfoKHX& setHandleTypes( ExternalMemoryHandleTypeFlagsKHX handleTypes_ )
+    ExternalMemoryImageCreateInfoKHR& setHandleTypes( ExternalMemoryHandleTypeFlagsKHR handleTypes_ )
     {
       handleTypes = handleTypes_;
       return *this;
     }
 
-    operator const VkExternalMemoryImageCreateInfoKHX&() const
+    operator const VkExternalMemoryImageCreateInfoKHR&() const
     {
-      return *reinterpret_cast<const VkExternalMemoryImageCreateInfoKHX*>(this);
+      return *reinterpret_cast<const VkExternalMemoryImageCreateInfoKHR*>(this);
     }
 
-    bool operator==( ExternalMemoryImageCreateInfoKHX const& rhs ) const
+    bool operator==( ExternalMemoryImageCreateInfoKHR const& rhs ) const
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( handleTypes == rhs.handleTypes );
     }
 
-    bool operator!=( ExternalMemoryImageCreateInfoKHX const& rhs ) const
+    bool operator!=( ExternalMemoryImageCreateInfoKHR const& rhs ) const
     {
       return !operator==( rhs );
     }
@@ -19830,54 +20665,54 @@ namespace vk
 
   public:
     const void* pNext;
-    ExternalMemoryHandleTypeFlagsKHX handleTypes;
+    ExternalMemoryHandleTypeFlagsKHR handleTypes;
   };
-  static_assert( sizeof( ExternalMemoryImageCreateInfoKHX ) == sizeof( VkExternalMemoryImageCreateInfoKHX ), "struct and wrapper have different size!" );
+  static_assert( sizeof( ExternalMemoryImageCreateInfoKHR ) == sizeof( VkExternalMemoryImageCreateInfoKHR ), "struct and wrapper have different size!" );
 
-  struct ExternalMemoryBufferCreateInfoKHX
+  struct ExternalMemoryBufferCreateInfoKHR
   {
-    ExternalMemoryBufferCreateInfoKHX( ExternalMemoryHandleTypeFlagsKHX handleTypes_ = ExternalMemoryHandleTypeFlagsKHX() )
-      : sType( StructureType::eExternalMemoryBufferCreateInfoKHX )
+    ExternalMemoryBufferCreateInfoKHR( ExternalMemoryHandleTypeFlagsKHR handleTypes_ = ExternalMemoryHandleTypeFlagsKHR() )
+      : sType( StructureType::eExternalMemoryBufferCreateInfoKHR )
       , pNext( nullptr )
       , handleTypes( handleTypes_ )
     {
     }
 
-    ExternalMemoryBufferCreateInfoKHX( VkExternalMemoryBufferCreateInfoKHX const & rhs )
+    ExternalMemoryBufferCreateInfoKHR( VkExternalMemoryBufferCreateInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ExternalMemoryBufferCreateInfoKHX ) );
+      memcpy( this, &rhs, sizeof( ExternalMemoryBufferCreateInfoKHR ) );
     }
 
-    ExternalMemoryBufferCreateInfoKHX& operator=( VkExternalMemoryBufferCreateInfoKHX const & rhs )
+    ExternalMemoryBufferCreateInfoKHR& operator=( VkExternalMemoryBufferCreateInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ExternalMemoryBufferCreateInfoKHX ) );
+      memcpy( this, &rhs, sizeof( ExternalMemoryBufferCreateInfoKHR ) );
       return *this;
     }
-    ExternalMemoryBufferCreateInfoKHX& setPNext( const void* pNext_ )
+    ExternalMemoryBufferCreateInfoKHR& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
       return *this;
     }
 
-    ExternalMemoryBufferCreateInfoKHX& setHandleTypes( ExternalMemoryHandleTypeFlagsKHX handleTypes_ )
+    ExternalMemoryBufferCreateInfoKHR& setHandleTypes( ExternalMemoryHandleTypeFlagsKHR handleTypes_ )
     {
       handleTypes = handleTypes_;
       return *this;
     }
 
-    operator const VkExternalMemoryBufferCreateInfoKHX&() const
+    operator const VkExternalMemoryBufferCreateInfoKHR&() const
     {
-      return *reinterpret_cast<const VkExternalMemoryBufferCreateInfoKHX*>(this);
+      return *reinterpret_cast<const VkExternalMemoryBufferCreateInfoKHR*>(this);
     }
 
-    bool operator==( ExternalMemoryBufferCreateInfoKHX const& rhs ) const
+    bool operator==( ExternalMemoryBufferCreateInfoKHR const& rhs ) const
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( handleTypes == rhs.handleTypes );
     }
 
-    bool operator!=( ExternalMemoryBufferCreateInfoKHX const& rhs ) const
+    bool operator!=( ExternalMemoryBufferCreateInfoKHR const& rhs ) const
     {
       return !operator==( rhs );
     }
@@ -19887,54 +20722,54 @@ namespace vk
 
   public:
     const void* pNext;
-    ExternalMemoryHandleTypeFlagsKHX handleTypes;
+    ExternalMemoryHandleTypeFlagsKHR handleTypes;
   };
-  static_assert( sizeof( ExternalMemoryBufferCreateInfoKHX ) == sizeof( VkExternalMemoryBufferCreateInfoKHX ), "struct and wrapper have different size!" );
+  static_assert( sizeof( ExternalMemoryBufferCreateInfoKHR ) == sizeof( VkExternalMemoryBufferCreateInfoKHR ), "struct and wrapper have different size!" );
 
-  struct ExportMemoryAllocateInfoKHX
+  struct ExportMemoryAllocateInfoKHR
   {
-    ExportMemoryAllocateInfoKHX( ExternalMemoryHandleTypeFlagsKHX handleTypes_ = ExternalMemoryHandleTypeFlagsKHX() )
-      : sType( StructureType::eExportMemoryAllocateInfoKHX )
+    ExportMemoryAllocateInfoKHR( ExternalMemoryHandleTypeFlagsKHR handleTypes_ = ExternalMemoryHandleTypeFlagsKHR() )
+      : sType( StructureType::eExportMemoryAllocateInfoKHR )
       , pNext( nullptr )
       , handleTypes( handleTypes_ )
     {
     }
 
-    ExportMemoryAllocateInfoKHX( VkExportMemoryAllocateInfoKHX const & rhs )
+    ExportMemoryAllocateInfoKHR( VkExportMemoryAllocateInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ExportMemoryAllocateInfoKHX ) );
+      memcpy( this, &rhs, sizeof( ExportMemoryAllocateInfoKHR ) );
     }
 
-    ExportMemoryAllocateInfoKHX& operator=( VkExportMemoryAllocateInfoKHX const & rhs )
+    ExportMemoryAllocateInfoKHR& operator=( VkExportMemoryAllocateInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ExportMemoryAllocateInfoKHX ) );
+      memcpy( this, &rhs, sizeof( ExportMemoryAllocateInfoKHR ) );
       return *this;
     }
-    ExportMemoryAllocateInfoKHX& setPNext( const void* pNext_ )
+    ExportMemoryAllocateInfoKHR& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
       return *this;
     }
 
-    ExportMemoryAllocateInfoKHX& setHandleTypes( ExternalMemoryHandleTypeFlagsKHX handleTypes_ )
+    ExportMemoryAllocateInfoKHR& setHandleTypes( ExternalMemoryHandleTypeFlagsKHR handleTypes_ )
     {
       handleTypes = handleTypes_;
       return *this;
     }
 
-    operator const VkExportMemoryAllocateInfoKHX&() const
+    operator const VkExportMemoryAllocateInfoKHR&() const
     {
-      return *reinterpret_cast<const VkExportMemoryAllocateInfoKHX*>(this);
+      return *reinterpret_cast<const VkExportMemoryAllocateInfoKHR*>(this);
     }
 
-    bool operator==( ExportMemoryAllocateInfoKHX const& rhs ) const
+    bool operator==( ExportMemoryAllocateInfoKHR const& rhs ) const
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( handleTypes == rhs.handleTypes );
     }
 
-    bool operator!=( ExportMemoryAllocateInfoKHX const& rhs ) const
+    bool operator!=( ExportMemoryAllocateInfoKHR const& rhs ) const
     {
       return !operator==( rhs );
     }
@@ -19944,63 +20779,71 @@ namespace vk
 
   public:
     const void* pNext;
-    ExternalMemoryHandleTypeFlagsKHX handleTypes;
+    ExternalMemoryHandleTypeFlagsKHR handleTypes;
   };
-  static_assert( sizeof( ExportMemoryAllocateInfoKHX ) == sizeof( VkExportMemoryAllocateInfoKHX ), "struct and wrapper have different size!" );
+  static_assert( sizeof( ExportMemoryAllocateInfoKHR ) == sizeof( VkExportMemoryAllocateInfoKHR ), "struct and wrapper have different size!" );
 
-#ifdef VK_USE_PLATFORM_WIN32_KHX
-  struct ImportMemoryWin32HandleInfoKHX
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  struct ImportMemoryWin32HandleInfoKHR
   {
-    ImportMemoryWin32HandleInfoKHX( ExternalMemoryHandleTypeFlagBitsKHX handleType_ = ExternalMemoryHandleTypeFlagBitsKHX::eOpaqueFd, HANDLE handle_ = 0 )
-      : sType( StructureType::eImportMemoryWin32HandleInfoKHX )
+    ImportMemoryWin32HandleInfoKHR( ExternalMemoryHandleTypeFlagBitsKHR handleType_ = ExternalMemoryHandleTypeFlagBitsKHR::eOpaqueFd, HANDLE handle_ = 0, LPCWSTR name_ = 0 )
+      : sType( StructureType::eImportMemoryWin32HandleInfoKHR )
       , pNext( nullptr )
       , handleType( handleType_ )
       , handle( handle_ )
+      , name( name_ )
     {
     }
 
-    ImportMemoryWin32HandleInfoKHX( VkImportMemoryWin32HandleInfoKHX const & rhs )
+    ImportMemoryWin32HandleInfoKHR( VkImportMemoryWin32HandleInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImportMemoryWin32HandleInfoKHX ) );
+      memcpy( this, &rhs, sizeof( ImportMemoryWin32HandleInfoKHR ) );
     }
 
-    ImportMemoryWin32HandleInfoKHX& operator=( VkImportMemoryWin32HandleInfoKHX const & rhs )
+    ImportMemoryWin32HandleInfoKHR& operator=( VkImportMemoryWin32HandleInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImportMemoryWin32HandleInfoKHX ) );
+      memcpy( this, &rhs, sizeof( ImportMemoryWin32HandleInfoKHR ) );
       return *this;
     }
-    ImportMemoryWin32HandleInfoKHX& setPNext( const void* pNext_ )
+    ImportMemoryWin32HandleInfoKHR& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
       return *this;
     }
 
-    ImportMemoryWin32HandleInfoKHX& setHandleType( ExternalMemoryHandleTypeFlagBitsKHX handleType_ )
+    ImportMemoryWin32HandleInfoKHR& setHandleType( ExternalMemoryHandleTypeFlagBitsKHR handleType_ )
     {
       handleType = handleType_;
       return *this;
     }
 
-    ImportMemoryWin32HandleInfoKHX& setHandle( HANDLE handle_ )
+    ImportMemoryWin32HandleInfoKHR& setHandle( HANDLE handle_ )
     {
       handle = handle_;
       return *this;
     }
 
-    operator const VkImportMemoryWin32HandleInfoKHX&() const
+    ImportMemoryWin32HandleInfoKHR& setName( LPCWSTR name_ )
     {
-      return *reinterpret_cast<const VkImportMemoryWin32HandleInfoKHX*>(this);
+      name = name_;
+      return *this;
     }
 
-    bool operator==( ImportMemoryWin32HandleInfoKHX const& rhs ) const
+    operator const VkImportMemoryWin32HandleInfoKHR&() const
+    {
+      return *reinterpret_cast<const VkImportMemoryWin32HandleInfoKHR*>(this);
+    }
+
+    bool operator==( ImportMemoryWin32HandleInfoKHR const& rhs ) const
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( handleType == rhs.handleType )
-          && ( handle == rhs.handle );
+          && ( handle == rhs.handle )
+          && ( name == rhs.name );
     }
 
-    bool operator!=( ImportMemoryWin32HandleInfoKHX const& rhs ) const
+    bool operator!=( ImportMemoryWin32HandleInfoKHR const& rhs ) const
     {
       return !operator==( rhs );
     }
@@ -20010,56 +20853,125 @@ namespace vk
 
   public:
     const void* pNext;
-    ExternalMemoryHandleTypeFlagBitsKHX handleType;
+    ExternalMemoryHandleTypeFlagBitsKHR handleType;
     HANDLE handle;
+    LPCWSTR name;
   };
-  static_assert( sizeof( ImportMemoryWin32HandleInfoKHX ) == sizeof( VkImportMemoryWin32HandleInfoKHX ), "struct and wrapper have different size!" );
-#endif /*VK_USE_PLATFORM_WIN32_KHX*/
+  static_assert( sizeof( ImportMemoryWin32HandleInfoKHR ) == sizeof( VkImportMemoryWin32HandleInfoKHR ), "struct and wrapper have different size!" );
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
-  struct ImportMemoryFdInfoKHX
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  struct MemoryGetWin32HandleInfoKHR
   {
-    ImportMemoryFdInfoKHX( ExternalMemoryHandleTypeFlagBitsKHX handleType_ = ExternalMemoryHandleTypeFlagBitsKHX::eOpaqueFd, int fd_ = 0 )
-      : sType( StructureType::eImportMemoryFdInfoKHX )
+    MemoryGetWin32HandleInfoKHR( DeviceMemory memory_ = DeviceMemory(), ExternalMemoryHandleTypeFlagBitsKHR handleType_ = ExternalMemoryHandleTypeFlagBitsKHR::eOpaqueFd )
+      : sType( StructureType::eMemoryGetWin32HandleInfoKHR )
+      , pNext( nullptr )
+      , memory( memory_ )
+      , handleType( handleType_ )
+    {
+    }
+
+    MemoryGetWin32HandleInfoKHR( VkMemoryGetWin32HandleInfoKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( MemoryGetWin32HandleInfoKHR ) );
+    }
+
+    MemoryGetWin32HandleInfoKHR& operator=( VkMemoryGetWin32HandleInfoKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( MemoryGetWin32HandleInfoKHR ) );
+      return *this;
+    }
+    MemoryGetWin32HandleInfoKHR& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    MemoryGetWin32HandleInfoKHR& setMemory( DeviceMemory memory_ )
+    {
+      memory = memory_;
+      return *this;
+    }
+
+    MemoryGetWin32HandleInfoKHR& setHandleType( ExternalMemoryHandleTypeFlagBitsKHR handleType_ )
+    {
+      handleType = handleType_;
+      return *this;
+    }
+
+    operator const VkMemoryGetWin32HandleInfoKHR&() const
+    {
+      return *reinterpret_cast<const VkMemoryGetWin32HandleInfoKHR*>(this);
+    }
+
+    bool operator==( MemoryGetWin32HandleInfoKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( memory == rhs.memory )
+          && ( handleType == rhs.handleType );
+    }
+
+    bool operator!=( MemoryGetWin32HandleInfoKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    const void* pNext;
+    DeviceMemory memory;
+    ExternalMemoryHandleTypeFlagBitsKHR handleType;
+  };
+  static_assert( sizeof( MemoryGetWin32HandleInfoKHR ) == sizeof( VkMemoryGetWin32HandleInfoKHR ), "struct and wrapper have different size!" );
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
+  struct ImportMemoryFdInfoKHR
+  {
+    ImportMemoryFdInfoKHR( ExternalMemoryHandleTypeFlagBitsKHR handleType_ = ExternalMemoryHandleTypeFlagBitsKHR::eOpaqueFd, int fd_ = 0 )
+      : sType( StructureType::eImportMemoryFdInfoKHR )
       , pNext( nullptr )
       , handleType( handleType_ )
       , fd( fd_ )
     {
     }
 
-    ImportMemoryFdInfoKHX( VkImportMemoryFdInfoKHX const & rhs )
+    ImportMemoryFdInfoKHR( VkImportMemoryFdInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImportMemoryFdInfoKHX ) );
+      memcpy( this, &rhs, sizeof( ImportMemoryFdInfoKHR ) );
     }
 
-    ImportMemoryFdInfoKHX& operator=( VkImportMemoryFdInfoKHX const & rhs )
+    ImportMemoryFdInfoKHR& operator=( VkImportMemoryFdInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImportMemoryFdInfoKHX ) );
+      memcpy( this, &rhs, sizeof( ImportMemoryFdInfoKHR ) );
       return *this;
     }
-    ImportMemoryFdInfoKHX& setPNext( const void* pNext_ )
+    ImportMemoryFdInfoKHR& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
       return *this;
     }
 
-    ImportMemoryFdInfoKHX& setHandleType( ExternalMemoryHandleTypeFlagBitsKHX handleType_ )
+    ImportMemoryFdInfoKHR& setHandleType( ExternalMemoryHandleTypeFlagBitsKHR handleType_ )
     {
       handleType = handleType_;
       return *this;
     }
 
-    ImportMemoryFdInfoKHX& setFd( int fd_ )
+    ImportMemoryFdInfoKHR& setFd( int fd_ )
     {
       fd = fd_;
       return *this;
     }
 
-    operator const VkImportMemoryFdInfoKHX&() const
+    operator const VkImportMemoryFdInfoKHR&() const
     {
-      return *reinterpret_cast<const VkImportMemoryFdInfoKHX*>(this);
+      return *reinterpret_cast<const VkImportMemoryFdInfoKHR*>(this);
     }
 
-    bool operator==( ImportMemoryFdInfoKHX const& rhs ) const
+    bool operator==( ImportMemoryFdInfoKHR const& rhs ) const
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
@@ -20067,7 +20979,7 @@ namespace vk
           && ( fd == rhs.fd );
     }
 
-    bool operator!=( ImportMemoryFdInfoKHX const& rhs ) const
+    bool operator!=( ImportMemoryFdInfoKHR const& rhs ) const
     {
       return !operator==( rhs );
     }
@@ -20077,78 +20989,144 @@ namespace vk
 
   public:
     const void* pNext;
-    ExternalMemoryHandleTypeFlagBitsKHX handleType;
+    ExternalMemoryHandleTypeFlagBitsKHR handleType;
     int fd;
   };
-  static_assert( sizeof( ImportMemoryFdInfoKHX ) == sizeof( VkImportMemoryFdInfoKHX ), "struct and wrapper have different size!" );
+  static_assert( sizeof( ImportMemoryFdInfoKHR ) == sizeof( VkImportMemoryFdInfoKHR ), "struct and wrapper have different size!" );
 
-  enum class ExternalMemoryFeatureFlagBitsKHX
+  struct MemoryGetFdInfoKHR
   {
-    eDedicatedOnly = VK_EXTERNAL_MEMORY_FEATURE_DEDICATED_ONLY_BIT_KHX,
-    eExportable = VK_EXTERNAL_MEMORY_FEATURE_EXPORTABLE_BIT_KHX,
-    eImportable = VK_EXTERNAL_MEMORY_FEATURE_IMPORTABLE_BIT_KHX
+    MemoryGetFdInfoKHR( DeviceMemory memory_ = DeviceMemory(), ExternalMemoryHandleTypeFlagBitsKHR handleType_ = ExternalMemoryHandleTypeFlagBitsKHR::eOpaqueFd )
+      : sType( StructureType::eMemoryGetFdInfoKHR )
+      , pNext( nullptr )
+      , memory( memory_ )
+      , handleType( handleType_ )
+    {
+    }
+
+    MemoryGetFdInfoKHR( VkMemoryGetFdInfoKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( MemoryGetFdInfoKHR ) );
+    }
+
+    MemoryGetFdInfoKHR& operator=( VkMemoryGetFdInfoKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( MemoryGetFdInfoKHR ) );
+      return *this;
+    }
+    MemoryGetFdInfoKHR& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    MemoryGetFdInfoKHR& setMemory( DeviceMemory memory_ )
+    {
+      memory = memory_;
+      return *this;
+    }
+
+    MemoryGetFdInfoKHR& setHandleType( ExternalMemoryHandleTypeFlagBitsKHR handleType_ )
+    {
+      handleType = handleType_;
+      return *this;
+    }
+
+    operator const VkMemoryGetFdInfoKHR&() const
+    {
+      return *reinterpret_cast<const VkMemoryGetFdInfoKHR*>(this);
+    }
+
+    bool operator==( MemoryGetFdInfoKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( memory == rhs.memory )
+          && ( handleType == rhs.handleType );
+    }
+
+    bool operator!=( MemoryGetFdInfoKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    const void* pNext;
+    DeviceMemory memory;
+    ExternalMemoryHandleTypeFlagBitsKHR handleType;
+  };
+  static_assert( sizeof( MemoryGetFdInfoKHR ) == sizeof( VkMemoryGetFdInfoKHR ), "struct and wrapper have different size!" );
+
+  enum class ExternalMemoryFeatureFlagBitsKHR
+  {
+    eDedicatedOnly = VK_EXTERNAL_MEMORY_FEATURE_DEDICATED_ONLY_BIT_KHR,
+    eExportable = VK_EXTERNAL_MEMORY_FEATURE_EXPORTABLE_BIT_KHR,
+    eImportable = VK_EXTERNAL_MEMORY_FEATURE_IMPORTABLE_BIT_KHR
   };
 
-  using ExternalMemoryFeatureFlagsKHX = Flags<ExternalMemoryFeatureFlagBitsKHX, VkExternalMemoryFeatureFlagsKHX>;
+  using ExternalMemoryFeatureFlagsKHR = Flags<ExternalMemoryFeatureFlagBitsKHR, VkExternalMemoryFeatureFlagsKHR>;
 
-  VULKAN_HPP_INLINE ExternalMemoryFeatureFlagsKHX operator|( ExternalMemoryFeatureFlagBitsKHX bit0, ExternalMemoryFeatureFlagBitsKHX bit1 )
+  VULKAN_HPP_INLINE ExternalMemoryFeatureFlagsKHR operator|( ExternalMemoryFeatureFlagBitsKHR bit0, ExternalMemoryFeatureFlagBitsKHR bit1 )
   {
-    return ExternalMemoryFeatureFlagsKHX( bit0 ) | bit1;
+    return ExternalMemoryFeatureFlagsKHR( bit0 ) | bit1;
   }
 
-  VULKAN_HPP_INLINE ExternalMemoryFeatureFlagsKHX operator~( ExternalMemoryFeatureFlagBitsKHX bits )
+  VULKAN_HPP_INLINE ExternalMemoryFeatureFlagsKHR operator~( ExternalMemoryFeatureFlagBitsKHR bits )
   {
-    return ~( ExternalMemoryFeatureFlagsKHX( bits ) );
+    return ~( ExternalMemoryFeatureFlagsKHR( bits ) );
   }
 
-  template <> struct FlagTraits<ExternalMemoryFeatureFlagBitsKHX>
+  template <> struct FlagTraits<ExternalMemoryFeatureFlagBitsKHR>
   {
     enum
     {
-      allFlags = VkFlags(ExternalMemoryFeatureFlagBitsKHX::eDedicatedOnly) | VkFlags(ExternalMemoryFeatureFlagBitsKHX::eExportable) | VkFlags(ExternalMemoryFeatureFlagBitsKHX::eImportable)
+      allFlags = VkFlags(ExternalMemoryFeatureFlagBitsKHR::eDedicatedOnly) | VkFlags(ExternalMemoryFeatureFlagBitsKHR::eExportable) | VkFlags(ExternalMemoryFeatureFlagBitsKHR::eImportable)
     };
   };
 
-  struct ExternalMemoryPropertiesKHX
+  struct ExternalMemoryPropertiesKHR
   {
-    operator const VkExternalMemoryPropertiesKHX&() const
+    operator const VkExternalMemoryPropertiesKHR&() const
     {
-      return *reinterpret_cast<const VkExternalMemoryPropertiesKHX*>(this);
+      return *reinterpret_cast<const VkExternalMemoryPropertiesKHR*>(this);
     }
 
-    bool operator==( ExternalMemoryPropertiesKHX const& rhs ) const
+    bool operator==( ExternalMemoryPropertiesKHR const& rhs ) const
     {
       return ( externalMemoryFeatures == rhs.externalMemoryFeatures )
           && ( exportFromImportedHandleTypes == rhs.exportFromImportedHandleTypes )
           && ( compatibleHandleTypes == rhs.compatibleHandleTypes );
     }
 
-    bool operator!=( ExternalMemoryPropertiesKHX const& rhs ) const
+    bool operator!=( ExternalMemoryPropertiesKHR const& rhs ) const
     {
       return !operator==( rhs );
     }
 
-    ExternalMemoryFeatureFlagsKHX externalMemoryFeatures;
-    ExternalMemoryHandleTypeFlagsKHX exportFromImportedHandleTypes;
-    ExternalMemoryHandleTypeFlagsKHX compatibleHandleTypes;
+    ExternalMemoryFeatureFlagsKHR externalMemoryFeatures;
+    ExternalMemoryHandleTypeFlagsKHR exportFromImportedHandleTypes;
+    ExternalMemoryHandleTypeFlagsKHR compatibleHandleTypes;
   };
-  static_assert( sizeof( ExternalMemoryPropertiesKHX ) == sizeof( VkExternalMemoryPropertiesKHX ), "struct and wrapper have different size!" );
+  static_assert( sizeof( ExternalMemoryPropertiesKHR ) == sizeof( VkExternalMemoryPropertiesKHR ), "struct and wrapper have different size!" );
 
-  struct ExternalImageFormatPropertiesKHX
+  struct ExternalImageFormatPropertiesKHR
   {
-    operator const VkExternalImageFormatPropertiesKHX&() const
+    operator const VkExternalImageFormatPropertiesKHR&() const
     {
-      return *reinterpret_cast<const VkExternalImageFormatPropertiesKHX*>(this);
+      return *reinterpret_cast<const VkExternalImageFormatPropertiesKHR*>(this);
     }
 
-    bool operator==( ExternalImageFormatPropertiesKHX const& rhs ) const
+    bool operator==( ExternalImageFormatPropertiesKHR const& rhs ) const
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( externalMemoryProperties == rhs.externalMemoryProperties );
     }
 
-    bool operator!=( ExternalImageFormatPropertiesKHX const& rhs ) const
+    bool operator!=( ExternalImageFormatPropertiesKHR const& rhs ) const
     {
       return !operator==( rhs );
     }
@@ -20158,25 +21136,25 @@ namespace vk
 
   public:
     void* pNext;
-    ExternalMemoryPropertiesKHX externalMemoryProperties;
+    ExternalMemoryPropertiesKHR externalMemoryProperties;
   };
-  static_assert( sizeof( ExternalImageFormatPropertiesKHX ) == sizeof( VkExternalImageFormatPropertiesKHX ), "struct and wrapper have different size!" );
+  static_assert( sizeof( ExternalImageFormatPropertiesKHR ) == sizeof( VkExternalImageFormatPropertiesKHR ), "struct and wrapper have different size!" );
 
-  struct ExternalBufferPropertiesKHX
+  struct ExternalBufferPropertiesKHR
   {
-    operator const VkExternalBufferPropertiesKHX&() const
+    operator const VkExternalBufferPropertiesKHR&() const
     {
-      return *reinterpret_cast<const VkExternalBufferPropertiesKHX*>(this);
+      return *reinterpret_cast<const VkExternalBufferPropertiesKHR*>(this);
     }
 
-    bool operator==( ExternalBufferPropertiesKHX const& rhs ) const
+    bool operator==( ExternalBufferPropertiesKHR const& rhs ) const
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( externalMemoryProperties == rhs.externalMemoryProperties );
     }
 
-    bool operator!=( ExternalBufferPropertiesKHX const& rhs ) const
+    bool operator!=( ExternalBufferPropertiesKHR const& rhs ) const
     {
       return !operator==( rhs );
     }
@@ -20186,83 +21164,83 @@ namespace vk
 
   public:
     void* pNext;
-    ExternalMemoryPropertiesKHX externalMemoryProperties;
+    ExternalMemoryPropertiesKHR externalMemoryProperties;
   };
-  static_assert( sizeof( ExternalBufferPropertiesKHX ) == sizeof( VkExternalBufferPropertiesKHX ), "struct and wrapper have different size!" );
+  static_assert( sizeof( ExternalBufferPropertiesKHR ) == sizeof( VkExternalBufferPropertiesKHR ), "struct and wrapper have different size!" );
 
-  enum class ExternalSemaphoreHandleTypeFlagBitsKHX
+  enum class ExternalSemaphoreHandleTypeFlagBitsKHR
   {
-    eOpaqueFd = VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_FD_BIT_KHX,
-    eOpaqueWin32 = VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32_BIT_KHX,
-    eOpaqueWin32Kmt = VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT_KHX,
-    eD3D12Fence = VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_D3D12_FENCE_BIT_KHX,
-    eFenceFd = VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_FENCE_FD_BIT_KHX
+    eOpaqueFd = VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_FD_BIT_KHR,
+    eOpaqueWin32 = VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32_BIT_KHR,
+    eOpaqueWin32Kmt = VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT_KHR,
+    eD3D12Fence = VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_D3D12_FENCE_BIT_KHR,
+    eSyncFd = VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_SYNC_FD_BIT_KHR
   };
 
-  using ExternalSemaphoreHandleTypeFlagsKHX = Flags<ExternalSemaphoreHandleTypeFlagBitsKHX, VkExternalSemaphoreHandleTypeFlagsKHX>;
+  using ExternalSemaphoreHandleTypeFlagsKHR = Flags<ExternalSemaphoreHandleTypeFlagBitsKHR, VkExternalSemaphoreHandleTypeFlagsKHR>;
 
-  VULKAN_HPP_INLINE ExternalSemaphoreHandleTypeFlagsKHX operator|( ExternalSemaphoreHandleTypeFlagBitsKHX bit0, ExternalSemaphoreHandleTypeFlagBitsKHX bit1 )
+  VULKAN_HPP_INLINE ExternalSemaphoreHandleTypeFlagsKHR operator|( ExternalSemaphoreHandleTypeFlagBitsKHR bit0, ExternalSemaphoreHandleTypeFlagBitsKHR bit1 )
   {
-    return ExternalSemaphoreHandleTypeFlagsKHX( bit0 ) | bit1;
+    return ExternalSemaphoreHandleTypeFlagsKHR( bit0 ) | bit1;
   }
 
-  VULKAN_HPP_INLINE ExternalSemaphoreHandleTypeFlagsKHX operator~( ExternalSemaphoreHandleTypeFlagBitsKHX bits )
+  VULKAN_HPP_INLINE ExternalSemaphoreHandleTypeFlagsKHR operator~( ExternalSemaphoreHandleTypeFlagBitsKHR bits )
   {
-    return ~( ExternalSemaphoreHandleTypeFlagsKHX( bits ) );
+    return ~( ExternalSemaphoreHandleTypeFlagsKHR( bits ) );
   }
 
-  template <> struct FlagTraits<ExternalSemaphoreHandleTypeFlagBitsKHX>
+  template <> struct FlagTraits<ExternalSemaphoreHandleTypeFlagBitsKHR>
   {
     enum
     {
-      allFlags = VkFlags(ExternalSemaphoreHandleTypeFlagBitsKHX::eOpaqueFd) | VkFlags(ExternalSemaphoreHandleTypeFlagBitsKHX::eOpaqueWin32) | VkFlags(ExternalSemaphoreHandleTypeFlagBitsKHX::eOpaqueWin32Kmt) | VkFlags(ExternalSemaphoreHandleTypeFlagBitsKHX::eD3D12Fence) | VkFlags(ExternalSemaphoreHandleTypeFlagBitsKHX::eFenceFd)
+      allFlags = VkFlags(ExternalSemaphoreHandleTypeFlagBitsKHR::eOpaqueFd) | VkFlags(ExternalSemaphoreHandleTypeFlagBitsKHR::eOpaqueWin32) | VkFlags(ExternalSemaphoreHandleTypeFlagBitsKHR::eOpaqueWin32Kmt) | VkFlags(ExternalSemaphoreHandleTypeFlagBitsKHR::eD3D12Fence) | VkFlags(ExternalSemaphoreHandleTypeFlagBitsKHR::eSyncFd)
     };
   };
 
-  struct PhysicalDeviceExternalSemaphoreInfoKHX
+  struct PhysicalDeviceExternalSemaphoreInfoKHR
   {
-    PhysicalDeviceExternalSemaphoreInfoKHX( ExternalSemaphoreHandleTypeFlagBitsKHX handleType_ = ExternalSemaphoreHandleTypeFlagBitsKHX::eOpaqueFd )
-      : sType( StructureType::ePhysicalDeviceExternalSemaphoreInfoKHX )
+    PhysicalDeviceExternalSemaphoreInfoKHR( ExternalSemaphoreHandleTypeFlagBitsKHR handleType_ = ExternalSemaphoreHandleTypeFlagBitsKHR::eOpaqueFd )
+      : sType( StructureType::ePhysicalDeviceExternalSemaphoreInfoKHR )
       , pNext( nullptr )
       , handleType( handleType_ )
     {
     }
 
-    PhysicalDeviceExternalSemaphoreInfoKHX( VkPhysicalDeviceExternalSemaphoreInfoKHX const & rhs )
+    PhysicalDeviceExternalSemaphoreInfoKHR( VkPhysicalDeviceExternalSemaphoreInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceExternalSemaphoreInfoKHX ) );
+      memcpy( this, &rhs, sizeof( PhysicalDeviceExternalSemaphoreInfoKHR ) );
     }
 
-    PhysicalDeviceExternalSemaphoreInfoKHX& operator=( VkPhysicalDeviceExternalSemaphoreInfoKHX const & rhs )
+    PhysicalDeviceExternalSemaphoreInfoKHR& operator=( VkPhysicalDeviceExternalSemaphoreInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceExternalSemaphoreInfoKHX ) );
+      memcpy( this, &rhs, sizeof( PhysicalDeviceExternalSemaphoreInfoKHR ) );
       return *this;
     }
-    PhysicalDeviceExternalSemaphoreInfoKHX& setPNext( const void* pNext_ )
+    PhysicalDeviceExternalSemaphoreInfoKHR& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
       return *this;
     }
 
-    PhysicalDeviceExternalSemaphoreInfoKHX& setHandleType( ExternalSemaphoreHandleTypeFlagBitsKHX handleType_ )
+    PhysicalDeviceExternalSemaphoreInfoKHR& setHandleType( ExternalSemaphoreHandleTypeFlagBitsKHR handleType_ )
     {
       handleType = handleType_;
       return *this;
     }
 
-    operator const VkPhysicalDeviceExternalSemaphoreInfoKHX&() const
+    operator const VkPhysicalDeviceExternalSemaphoreInfoKHR&() const
     {
-      return *reinterpret_cast<const VkPhysicalDeviceExternalSemaphoreInfoKHX*>(this);
+      return *reinterpret_cast<const VkPhysicalDeviceExternalSemaphoreInfoKHR*>(this);
     }
 
-    bool operator==( PhysicalDeviceExternalSemaphoreInfoKHX const& rhs ) const
+    bool operator==( PhysicalDeviceExternalSemaphoreInfoKHR const& rhs ) const
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( handleType == rhs.handleType );
     }
 
-    bool operator!=( PhysicalDeviceExternalSemaphoreInfoKHX const& rhs ) const
+    bool operator!=( PhysicalDeviceExternalSemaphoreInfoKHR const& rhs ) const
     {
       return !operator==( rhs );
     }
@@ -20272,54 +21250,54 @@ namespace vk
 
   public:
     const void* pNext;
-    ExternalSemaphoreHandleTypeFlagBitsKHX handleType;
+    ExternalSemaphoreHandleTypeFlagBitsKHR handleType;
   };
-  static_assert( sizeof( PhysicalDeviceExternalSemaphoreInfoKHX ) == sizeof( VkPhysicalDeviceExternalSemaphoreInfoKHX ), "struct and wrapper have different size!" );
+  static_assert( sizeof( PhysicalDeviceExternalSemaphoreInfoKHR ) == sizeof( VkPhysicalDeviceExternalSemaphoreInfoKHR ), "struct and wrapper have different size!" );
 
-  struct ExportSemaphoreCreateInfoKHX
+  struct ExportSemaphoreCreateInfoKHR
   {
-    ExportSemaphoreCreateInfoKHX( ExternalSemaphoreHandleTypeFlagsKHX handleTypes_ = ExternalSemaphoreHandleTypeFlagsKHX() )
-      : sType( StructureType::eExportSemaphoreCreateInfoKHX )
+    ExportSemaphoreCreateInfoKHR( ExternalSemaphoreHandleTypeFlagsKHR handleTypes_ = ExternalSemaphoreHandleTypeFlagsKHR() )
+      : sType( StructureType::eExportSemaphoreCreateInfoKHR )
       , pNext( nullptr )
       , handleTypes( handleTypes_ )
     {
     }
 
-    ExportSemaphoreCreateInfoKHX( VkExportSemaphoreCreateInfoKHX const & rhs )
+    ExportSemaphoreCreateInfoKHR( VkExportSemaphoreCreateInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ExportSemaphoreCreateInfoKHX ) );
+      memcpy( this, &rhs, sizeof( ExportSemaphoreCreateInfoKHR ) );
     }
 
-    ExportSemaphoreCreateInfoKHX& operator=( VkExportSemaphoreCreateInfoKHX const & rhs )
+    ExportSemaphoreCreateInfoKHR& operator=( VkExportSemaphoreCreateInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ExportSemaphoreCreateInfoKHX ) );
+      memcpy( this, &rhs, sizeof( ExportSemaphoreCreateInfoKHR ) );
       return *this;
     }
-    ExportSemaphoreCreateInfoKHX& setPNext( const void* pNext_ )
+    ExportSemaphoreCreateInfoKHR& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
       return *this;
     }
 
-    ExportSemaphoreCreateInfoKHX& setHandleTypes( ExternalSemaphoreHandleTypeFlagsKHX handleTypes_ )
+    ExportSemaphoreCreateInfoKHR& setHandleTypes( ExternalSemaphoreHandleTypeFlagsKHR handleTypes_ )
     {
       handleTypes = handleTypes_;
       return *this;
     }
 
-    operator const VkExportSemaphoreCreateInfoKHX&() const
+    operator const VkExportSemaphoreCreateInfoKHR&() const
     {
-      return *reinterpret_cast<const VkExportSemaphoreCreateInfoKHX*>(this);
+      return *reinterpret_cast<const VkExportSemaphoreCreateInfoKHR*>(this);
     }
 
-    bool operator==( ExportSemaphoreCreateInfoKHX const& rhs ) const
+    bool operator==( ExportSemaphoreCreateInfoKHR const& rhs ) const
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( handleTypes == rhs.handleTypes );
     }
 
-    bool operator!=( ExportSemaphoreCreateInfoKHX const& rhs ) const
+    bool operator!=( ExportSemaphoreCreateInfoKHR const& rhs ) const
     {
       return !operator==( rhs );
     }
@@ -20329,71 +21307,63 @@ namespace vk
 
   public:
     const void* pNext;
-    ExternalSemaphoreHandleTypeFlagsKHX handleTypes;
+    ExternalSemaphoreHandleTypeFlagsKHR handleTypes;
   };
-  static_assert( sizeof( ExportSemaphoreCreateInfoKHX ) == sizeof( VkExportSemaphoreCreateInfoKHX ), "struct and wrapper have different size!" );
+  static_assert( sizeof( ExportSemaphoreCreateInfoKHR ) == sizeof( VkExportSemaphoreCreateInfoKHR ), "struct and wrapper have different size!" );
 
-#ifdef VK_USE_PLATFORM_WIN32_KHX
-  struct ImportSemaphoreWin32HandleInfoKHX
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  struct SemaphoreGetWin32HandleInfoKHR
   {
-    ImportSemaphoreWin32HandleInfoKHX( Semaphore semaphore_ = Semaphore(), ExternalSemaphoreHandleTypeFlagsKHX handleType_ = ExternalSemaphoreHandleTypeFlagsKHX(), HANDLE handle_ = 0 )
-      : sType( StructureType::eImportSemaphoreWin32HandleInfoKHX )
+    SemaphoreGetWin32HandleInfoKHR( Semaphore semaphore_ = Semaphore(), ExternalSemaphoreHandleTypeFlagBitsKHR handleType_ = ExternalSemaphoreHandleTypeFlagBitsKHR::eOpaqueFd )
+      : sType( StructureType::eSemaphoreGetWin32HandleInfoKHR )
       , pNext( nullptr )
       , semaphore( semaphore_ )
       , handleType( handleType_ )
-      , handle( handle_ )
     {
     }
 
-    ImportSemaphoreWin32HandleInfoKHX( VkImportSemaphoreWin32HandleInfoKHX const & rhs )
+    SemaphoreGetWin32HandleInfoKHR( VkSemaphoreGetWin32HandleInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImportSemaphoreWin32HandleInfoKHX ) );
+      memcpy( this, &rhs, sizeof( SemaphoreGetWin32HandleInfoKHR ) );
     }
 
-    ImportSemaphoreWin32HandleInfoKHX& operator=( VkImportSemaphoreWin32HandleInfoKHX const & rhs )
+    SemaphoreGetWin32HandleInfoKHR& operator=( VkSemaphoreGetWin32HandleInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImportSemaphoreWin32HandleInfoKHX ) );
+      memcpy( this, &rhs, sizeof( SemaphoreGetWin32HandleInfoKHR ) );
       return *this;
     }
-    ImportSemaphoreWin32HandleInfoKHX& setPNext( const void* pNext_ )
+    SemaphoreGetWin32HandleInfoKHR& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
       return *this;
     }
 
-    ImportSemaphoreWin32HandleInfoKHX& setSemaphore( Semaphore semaphore_ )
+    SemaphoreGetWin32HandleInfoKHR& setSemaphore( Semaphore semaphore_ )
     {
       semaphore = semaphore_;
       return *this;
     }
 
-    ImportSemaphoreWin32HandleInfoKHX& setHandleType( ExternalSemaphoreHandleTypeFlagsKHX handleType_ )
+    SemaphoreGetWin32HandleInfoKHR& setHandleType( ExternalSemaphoreHandleTypeFlagBitsKHR handleType_ )
     {
       handleType = handleType_;
       return *this;
     }
 
-    ImportSemaphoreWin32HandleInfoKHX& setHandle( HANDLE handle_ )
+    operator const VkSemaphoreGetWin32HandleInfoKHR&() const
     {
-      handle = handle_;
-      return *this;
+      return *reinterpret_cast<const VkSemaphoreGetWin32HandleInfoKHR*>(this);
     }
 
-    operator const VkImportSemaphoreWin32HandleInfoKHX&() const
-    {
-      return *reinterpret_cast<const VkImportSemaphoreWin32HandleInfoKHX*>(this);
-    }
-
-    bool operator==( ImportSemaphoreWin32HandleInfoKHX const& rhs ) const
+    bool operator==( SemaphoreGetWin32HandleInfoKHR const& rhs ) const
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( semaphore == rhs.semaphore )
-          && ( handleType == rhs.handleType )
-          && ( handle == rhs.handle );
+          && ( handleType == rhs.handleType );
     }
 
-    bool operator!=( ImportSemaphoreWin32HandleInfoKHX const& rhs ) const
+    bool operator!=( SemaphoreGetWin32HandleInfoKHR const& rhs ) const
     {
       return !operator==( rhs );
     }
@@ -20404,72 +21374,63 @@ namespace vk
   public:
     const void* pNext;
     Semaphore semaphore;
-    ExternalSemaphoreHandleTypeFlagsKHX handleType;
-    HANDLE handle;
+    ExternalSemaphoreHandleTypeFlagBitsKHR handleType;
   };
-  static_assert( sizeof( ImportSemaphoreWin32HandleInfoKHX ) == sizeof( VkImportSemaphoreWin32HandleInfoKHX ), "struct and wrapper have different size!" );
-#endif /*VK_USE_PLATFORM_WIN32_KHX*/
+  static_assert( sizeof( SemaphoreGetWin32HandleInfoKHR ) == sizeof( VkSemaphoreGetWin32HandleInfoKHR ), "struct and wrapper have different size!" );
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
-  struct ImportSemaphoreFdInfoKHX
+  struct SemaphoreGetFdInfoKHR
   {
-    ImportSemaphoreFdInfoKHX( Semaphore semaphore_ = Semaphore(), ExternalSemaphoreHandleTypeFlagBitsKHX handleType_ = ExternalSemaphoreHandleTypeFlagBitsKHX::eOpaqueFd, int fd_ = 0 )
-      : sType( StructureType::eImportSemaphoreFdInfoKHX )
+    SemaphoreGetFdInfoKHR( Semaphore semaphore_ = Semaphore(), ExternalSemaphoreHandleTypeFlagBitsKHR handleType_ = ExternalSemaphoreHandleTypeFlagBitsKHR::eOpaqueFd )
+      : sType( StructureType::eSemaphoreGetFdInfoKHR )
       , pNext( nullptr )
       , semaphore( semaphore_ )
       , handleType( handleType_ )
-      , fd( fd_ )
     {
     }
 
-    ImportSemaphoreFdInfoKHX( VkImportSemaphoreFdInfoKHX const & rhs )
+    SemaphoreGetFdInfoKHR( VkSemaphoreGetFdInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImportSemaphoreFdInfoKHX ) );
+      memcpy( this, &rhs, sizeof( SemaphoreGetFdInfoKHR ) );
     }
 
-    ImportSemaphoreFdInfoKHX& operator=( VkImportSemaphoreFdInfoKHX const & rhs )
+    SemaphoreGetFdInfoKHR& operator=( VkSemaphoreGetFdInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImportSemaphoreFdInfoKHX ) );
+      memcpy( this, &rhs, sizeof( SemaphoreGetFdInfoKHR ) );
       return *this;
     }
-    ImportSemaphoreFdInfoKHX& setPNext( const void* pNext_ )
+    SemaphoreGetFdInfoKHR& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
       return *this;
     }
 
-    ImportSemaphoreFdInfoKHX& setSemaphore( Semaphore semaphore_ )
+    SemaphoreGetFdInfoKHR& setSemaphore( Semaphore semaphore_ )
     {
       semaphore = semaphore_;
       return *this;
     }
 
-    ImportSemaphoreFdInfoKHX& setHandleType( ExternalSemaphoreHandleTypeFlagBitsKHX handleType_ )
+    SemaphoreGetFdInfoKHR& setHandleType( ExternalSemaphoreHandleTypeFlagBitsKHR handleType_ )
     {
       handleType = handleType_;
       return *this;
     }
 
-    ImportSemaphoreFdInfoKHX& setFd( int fd_ )
+    operator const VkSemaphoreGetFdInfoKHR&() const
     {
-      fd = fd_;
-      return *this;
+      return *reinterpret_cast<const VkSemaphoreGetFdInfoKHR*>(this);
     }
 
-    operator const VkImportSemaphoreFdInfoKHX&() const
-    {
-      return *reinterpret_cast<const VkImportSemaphoreFdInfoKHX*>(this);
-    }
-
-    bool operator==( ImportSemaphoreFdInfoKHX const& rhs ) const
+    bool operator==( SemaphoreGetFdInfoKHR const& rhs ) const
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( semaphore == rhs.semaphore )
-          && ( handleType == rhs.handleType )
-          && ( fd == rhs.fd );
+          && ( handleType == rhs.handleType );
     }
 
-    bool operator!=( ImportSemaphoreFdInfoKHX const& rhs ) const
+    bool operator!=( SemaphoreGetFdInfoKHR const& rhs ) const
     {
       return !operator==( rhs );
     }
@@ -20480,45 +21441,44 @@ namespace vk
   public:
     const void* pNext;
     Semaphore semaphore;
-    ExternalSemaphoreHandleTypeFlagBitsKHX handleType;
-    int fd;
+    ExternalSemaphoreHandleTypeFlagBitsKHR handleType;
   };
-  static_assert( sizeof( ImportSemaphoreFdInfoKHX ) == sizeof( VkImportSemaphoreFdInfoKHX ), "struct and wrapper have different size!" );
+  static_assert( sizeof( SemaphoreGetFdInfoKHR ) == sizeof( VkSemaphoreGetFdInfoKHR ), "struct and wrapper have different size!" );
 
-  enum class ExternalSemaphoreFeatureFlagBitsKHX
+  enum class ExternalSemaphoreFeatureFlagBitsKHR
   {
-    eExportable = VK_EXTERNAL_SEMAPHORE_FEATURE_EXPORTABLE_BIT_KHX,
-    eImportable = VK_EXTERNAL_SEMAPHORE_FEATURE_IMPORTABLE_BIT_KHX
+    eExportable = VK_EXTERNAL_SEMAPHORE_FEATURE_EXPORTABLE_BIT_KHR,
+    eImportable = VK_EXTERNAL_SEMAPHORE_FEATURE_IMPORTABLE_BIT_KHR
   };
 
-  using ExternalSemaphoreFeatureFlagsKHX = Flags<ExternalSemaphoreFeatureFlagBitsKHX, VkExternalSemaphoreFeatureFlagsKHX>;
+  using ExternalSemaphoreFeatureFlagsKHR = Flags<ExternalSemaphoreFeatureFlagBitsKHR, VkExternalSemaphoreFeatureFlagsKHR>;
 
-  VULKAN_HPP_INLINE ExternalSemaphoreFeatureFlagsKHX operator|( ExternalSemaphoreFeatureFlagBitsKHX bit0, ExternalSemaphoreFeatureFlagBitsKHX bit1 )
+  VULKAN_HPP_INLINE ExternalSemaphoreFeatureFlagsKHR operator|( ExternalSemaphoreFeatureFlagBitsKHR bit0, ExternalSemaphoreFeatureFlagBitsKHR bit1 )
   {
-    return ExternalSemaphoreFeatureFlagsKHX( bit0 ) | bit1;
+    return ExternalSemaphoreFeatureFlagsKHR( bit0 ) | bit1;
   }
 
-  VULKAN_HPP_INLINE ExternalSemaphoreFeatureFlagsKHX operator~( ExternalSemaphoreFeatureFlagBitsKHX bits )
+  VULKAN_HPP_INLINE ExternalSemaphoreFeatureFlagsKHR operator~( ExternalSemaphoreFeatureFlagBitsKHR bits )
   {
-    return ~( ExternalSemaphoreFeatureFlagsKHX( bits ) );
+    return ~( ExternalSemaphoreFeatureFlagsKHR( bits ) );
   }
 
-  template <> struct FlagTraits<ExternalSemaphoreFeatureFlagBitsKHX>
+  template <> struct FlagTraits<ExternalSemaphoreFeatureFlagBitsKHR>
   {
     enum
     {
-      allFlags = VkFlags(ExternalSemaphoreFeatureFlagBitsKHX::eExportable) | VkFlags(ExternalSemaphoreFeatureFlagBitsKHX::eImportable)
+      allFlags = VkFlags(ExternalSemaphoreFeatureFlagBitsKHR::eExportable) | VkFlags(ExternalSemaphoreFeatureFlagBitsKHR::eImportable)
     };
   };
 
-  struct ExternalSemaphorePropertiesKHX
+  struct ExternalSemaphorePropertiesKHR
   {
-    operator const VkExternalSemaphorePropertiesKHX&() const
+    operator const VkExternalSemaphorePropertiesKHR&() const
     {
-      return *reinterpret_cast<const VkExternalSemaphorePropertiesKHX*>(this);
+      return *reinterpret_cast<const VkExternalSemaphorePropertiesKHR*>(this);
     }
 
-    bool operator==( ExternalSemaphorePropertiesKHX const& rhs ) const
+    bool operator==( ExternalSemaphorePropertiesKHR const& rhs ) const
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
@@ -20527,7 +21487,7 @@ namespace vk
           && ( externalSemaphoreFeatures == rhs.externalSemaphoreFeatures );
     }
 
-    bool operator!=( ExternalSemaphorePropertiesKHX const& rhs ) const
+    bool operator!=( ExternalSemaphorePropertiesKHR const& rhs ) const
     {
       return !operator==( rhs );
     }
@@ -20537,11 +21497,753 @@ namespace vk
 
   public:
     void* pNext;
-    ExternalSemaphoreHandleTypeFlagsKHX exportFromImportedHandleTypes;
-    ExternalSemaphoreHandleTypeFlagsKHX compatibleHandleTypes;
-    ExternalSemaphoreFeatureFlagsKHX externalSemaphoreFeatures;
+    ExternalSemaphoreHandleTypeFlagsKHR exportFromImportedHandleTypes;
+    ExternalSemaphoreHandleTypeFlagsKHR compatibleHandleTypes;
+    ExternalSemaphoreFeatureFlagsKHR externalSemaphoreFeatures;
   };
-  static_assert( sizeof( ExternalSemaphorePropertiesKHX ) == sizeof( VkExternalSemaphorePropertiesKHX ), "struct and wrapper have different size!" );
+  static_assert( sizeof( ExternalSemaphorePropertiesKHR ) == sizeof( VkExternalSemaphorePropertiesKHR ), "struct and wrapper have different size!" );
+
+  enum class SemaphoreImportFlagBitsKHR
+  {
+    eTemporary = VK_SEMAPHORE_IMPORT_TEMPORARY_BIT_KHR
+  };
+
+  using SemaphoreImportFlagsKHR = Flags<SemaphoreImportFlagBitsKHR, VkSemaphoreImportFlagsKHR>;
+
+  VULKAN_HPP_INLINE SemaphoreImportFlagsKHR operator|( SemaphoreImportFlagBitsKHR bit0, SemaphoreImportFlagBitsKHR bit1 )
+  {
+    return SemaphoreImportFlagsKHR( bit0 ) | bit1;
+  }
+
+  VULKAN_HPP_INLINE SemaphoreImportFlagsKHR operator~( SemaphoreImportFlagBitsKHR bits )
+  {
+    return ~( SemaphoreImportFlagsKHR( bits ) );
+  }
+
+  template <> struct FlagTraits<SemaphoreImportFlagBitsKHR>
+  {
+    enum
+    {
+      allFlags = VkFlags(SemaphoreImportFlagBitsKHR::eTemporary)
+    };
+  };
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  struct ImportSemaphoreWin32HandleInfoKHR
+  {
+    ImportSemaphoreWin32HandleInfoKHR( Semaphore semaphore_ = Semaphore(), SemaphoreImportFlagsKHR flags_ = SemaphoreImportFlagsKHR(), ExternalSemaphoreHandleTypeFlagBitsKHR handleType_ = ExternalSemaphoreHandleTypeFlagBitsKHR::eOpaqueFd, HANDLE handle_ = 0, LPCWSTR name_ = 0 )
+      : sType( StructureType::eImportSemaphoreWin32HandleInfoKHR )
+      , pNext( nullptr )
+      , semaphore( semaphore_ )
+      , flags( flags_ )
+      , handleType( handleType_ )
+      , handle( handle_ )
+      , name( name_ )
+    {
+    }
+
+    ImportSemaphoreWin32HandleInfoKHR( VkImportSemaphoreWin32HandleInfoKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ImportSemaphoreWin32HandleInfoKHR ) );
+    }
+
+    ImportSemaphoreWin32HandleInfoKHR& operator=( VkImportSemaphoreWin32HandleInfoKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ImportSemaphoreWin32HandleInfoKHR ) );
+      return *this;
+    }
+    ImportSemaphoreWin32HandleInfoKHR& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    ImportSemaphoreWin32HandleInfoKHR& setSemaphore( Semaphore semaphore_ )
+    {
+      semaphore = semaphore_;
+      return *this;
+    }
+
+    ImportSemaphoreWin32HandleInfoKHR& setFlags( SemaphoreImportFlagsKHR flags_ )
+    {
+      flags = flags_;
+      return *this;
+    }
+
+    ImportSemaphoreWin32HandleInfoKHR& setHandleType( ExternalSemaphoreHandleTypeFlagBitsKHR handleType_ )
+    {
+      handleType = handleType_;
+      return *this;
+    }
+
+    ImportSemaphoreWin32HandleInfoKHR& setHandle( HANDLE handle_ )
+    {
+      handle = handle_;
+      return *this;
+    }
+
+    ImportSemaphoreWin32HandleInfoKHR& setName( LPCWSTR name_ )
+    {
+      name = name_;
+      return *this;
+    }
+
+    operator const VkImportSemaphoreWin32HandleInfoKHR&() const
+    {
+      return *reinterpret_cast<const VkImportSemaphoreWin32HandleInfoKHR*>(this);
+    }
+
+    bool operator==( ImportSemaphoreWin32HandleInfoKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( semaphore == rhs.semaphore )
+          && ( flags == rhs.flags )
+          && ( handleType == rhs.handleType )
+          && ( handle == rhs.handle )
+          && ( name == rhs.name );
+    }
+
+    bool operator!=( ImportSemaphoreWin32HandleInfoKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    const void* pNext;
+    Semaphore semaphore;
+    SemaphoreImportFlagsKHR flags;
+    ExternalSemaphoreHandleTypeFlagBitsKHR handleType;
+    HANDLE handle;
+    LPCWSTR name;
+  };
+  static_assert( sizeof( ImportSemaphoreWin32HandleInfoKHR ) == sizeof( VkImportSemaphoreWin32HandleInfoKHR ), "struct and wrapper have different size!" );
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
+  struct ImportSemaphoreFdInfoKHR
+  {
+    ImportSemaphoreFdInfoKHR( Semaphore semaphore_ = Semaphore(), SemaphoreImportFlagsKHR flags_ = SemaphoreImportFlagsKHR(), ExternalSemaphoreHandleTypeFlagBitsKHR handleType_ = ExternalSemaphoreHandleTypeFlagBitsKHR::eOpaqueFd, int fd_ = 0 )
+      : sType( StructureType::eImportSemaphoreFdInfoKHR )
+      , pNext( nullptr )
+      , semaphore( semaphore_ )
+      , flags( flags_ )
+      , handleType( handleType_ )
+      , fd( fd_ )
+    {
+    }
+
+    ImportSemaphoreFdInfoKHR( VkImportSemaphoreFdInfoKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ImportSemaphoreFdInfoKHR ) );
+    }
+
+    ImportSemaphoreFdInfoKHR& operator=( VkImportSemaphoreFdInfoKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ImportSemaphoreFdInfoKHR ) );
+      return *this;
+    }
+    ImportSemaphoreFdInfoKHR& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    ImportSemaphoreFdInfoKHR& setSemaphore( Semaphore semaphore_ )
+    {
+      semaphore = semaphore_;
+      return *this;
+    }
+
+    ImportSemaphoreFdInfoKHR& setFlags( SemaphoreImportFlagsKHR flags_ )
+    {
+      flags = flags_;
+      return *this;
+    }
+
+    ImportSemaphoreFdInfoKHR& setHandleType( ExternalSemaphoreHandleTypeFlagBitsKHR handleType_ )
+    {
+      handleType = handleType_;
+      return *this;
+    }
+
+    ImportSemaphoreFdInfoKHR& setFd( int fd_ )
+    {
+      fd = fd_;
+      return *this;
+    }
+
+    operator const VkImportSemaphoreFdInfoKHR&() const
+    {
+      return *reinterpret_cast<const VkImportSemaphoreFdInfoKHR*>(this);
+    }
+
+    bool operator==( ImportSemaphoreFdInfoKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( semaphore == rhs.semaphore )
+          && ( flags == rhs.flags )
+          && ( handleType == rhs.handleType )
+          && ( fd == rhs.fd );
+    }
+
+    bool operator!=( ImportSemaphoreFdInfoKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    const void* pNext;
+    Semaphore semaphore;
+    SemaphoreImportFlagsKHR flags;
+    ExternalSemaphoreHandleTypeFlagBitsKHR handleType;
+    int fd;
+  };
+  static_assert( sizeof( ImportSemaphoreFdInfoKHR ) == sizeof( VkImportSemaphoreFdInfoKHR ), "struct and wrapper have different size!" );
+
+  enum class ExternalFenceHandleTypeFlagBitsKHR
+  {
+    eOpaqueFd = VK_EXTERNAL_FENCE_HANDLE_TYPE_OPAQUE_FD_BIT_KHR,
+    eOpaqueWin32 = VK_EXTERNAL_FENCE_HANDLE_TYPE_OPAQUE_WIN32_BIT_KHR,
+    eOpaqueWin32Kmt = VK_EXTERNAL_FENCE_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT_KHR,
+    eSyncFd = VK_EXTERNAL_FENCE_HANDLE_TYPE_SYNC_FD_BIT_KHR
+  };
+
+  using ExternalFenceHandleTypeFlagsKHR = Flags<ExternalFenceHandleTypeFlagBitsKHR, VkExternalFenceHandleTypeFlagsKHR>;
+
+  VULKAN_HPP_INLINE ExternalFenceHandleTypeFlagsKHR operator|( ExternalFenceHandleTypeFlagBitsKHR bit0, ExternalFenceHandleTypeFlagBitsKHR bit1 )
+  {
+    return ExternalFenceHandleTypeFlagsKHR( bit0 ) | bit1;
+  }
+
+  VULKAN_HPP_INLINE ExternalFenceHandleTypeFlagsKHR operator~( ExternalFenceHandleTypeFlagBitsKHR bits )
+  {
+    return ~( ExternalFenceHandleTypeFlagsKHR( bits ) );
+  }
+
+  template <> struct FlagTraits<ExternalFenceHandleTypeFlagBitsKHR>
+  {
+    enum
+    {
+      allFlags = VkFlags(ExternalFenceHandleTypeFlagBitsKHR::eOpaqueFd) | VkFlags(ExternalFenceHandleTypeFlagBitsKHR::eOpaqueWin32) | VkFlags(ExternalFenceHandleTypeFlagBitsKHR::eOpaqueWin32Kmt) | VkFlags(ExternalFenceHandleTypeFlagBitsKHR::eSyncFd)
+    };
+  };
+
+  struct PhysicalDeviceExternalFenceInfoKHR
+  {
+    PhysicalDeviceExternalFenceInfoKHR( ExternalFenceHandleTypeFlagBitsKHR handleType_ = ExternalFenceHandleTypeFlagBitsKHR::eOpaqueFd )
+      : sType( StructureType::ePhysicalDeviceExternalFenceInfoKHR )
+      , pNext( nullptr )
+      , handleType( handleType_ )
+    {
+    }
+
+    PhysicalDeviceExternalFenceInfoKHR( VkPhysicalDeviceExternalFenceInfoKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceExternalFenceInfoKHR ) );
+    }
+
+    PhysicalDeviceExternalFenceInfoKHR& operator=( VkPhysicalDeviceExternalFenceInfoKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceExternalFenceInfoKHR ) );
+      return *this;
+    }
+    PhysicalDeviceExternalFenceInfoKHR& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PhysicalDeviceExternalFenceInfoKHR& setHandleType( ExternalFenceHandleTypeFlagBitsKHR handleType_ )
+    {
+      handleType = handleType_;
+      return *this;
+    }
+
+    operator const VkPhysicalDeviceExternalFenceInfoKHR&() const
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceExternalFenceInfoKHR*>(this);
+    }
+
+    bool operator==( PhysicalDeviceExternalFenceInfoKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( handleType == rhs.handleType );
+    }
+
+    bool operator!=( PhysicalDeviceExternalFenceInfoKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    const void* pNext;
+    ExternalFenceHandleTypeFlagBitsKHR handleType;
+  };
+  static_assert( sizeof( PhysicalDeviceExternalFenceInfoKHR ) == sizeof( VkPhysicalDeviceExternalFenceInfoKHR ), "struct and wrapper have different size!" );
+
+  struct ExportFenceCreateInfoKHR
+  {
+    ExportFenceCreateInfoKHR( ExternalFenceHandleTypeFlagsKHR handleTypes_ = ExternalFenceHandleTypeFlagsKHR() )
+      : sType( StructureType::eExportFenceCreateInfoKHR )
+      , pNext( nullptr )
+      , handleTypes( handleTypes_ )
+    {
+    }
+
+    ExportFenceCreateInfoKHR( VkExportFenceCreateInfoKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ExportFenceCreateInfoKHR ) );
+    }
+
+    ExportFenceCreateInfoKHR& operator=( VkExportFenceCreateInfoKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ExportFenceCreateInfoKHR ) );
+      return *this;
+    }
+    ExportFenceCreateInfoKHR& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    ExportFenceCreateInfoKHR& setHandleTypes( ExternalFenceHandleTypeFlagsKHR handleTypes_ )
+    {
+      handleTypes = handleTypes_;
+      return *this;
+    }
+
+    operator const VkExportFenceCreateInfoKHR&() const
+    {
+      return *reinterpret_cast<const VkExportFenceCreateInfoKHR*>(this);
+    }
+
+    bool operator==( ExportFenceCreateInfoKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( handleTypes == rhs.handleTypes );
+    }
+
+    bool operator!=( ExportFenceCreateInfoKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    const void* pNext;
+    ExternalFenceHandleTypeFlagsKHR handleTypes;
+  };
+  static_assert( sizeof( ExportFenceCreateInfoKHR ) == sizeof( VkExportFenceCreateInfoKHR ), "struct and wrapper have different size!" );
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  struct FenceGetWin32HandleInfoKHR
+  {
+    FenceGetWin32HandleInfoKHR( Fence fence_ = Fence(), ExternalFenceHandleTypeFlagBitsKHR handleType_ = ExternalFenceHandleTypeFlagBitsKHR::eOpaqueFd )
+      : sType( StructureType::eFenceGetWin32HandleInfoKHR )
+      , pNext( nullptr )
+      , fence( fence_ )
+      , handleType( handleType_ )
+    {
+    }
+
+    FenceGetWin32HandleInfoKHR( VkFenceGetWin32HandleInfoKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( FenceGetWin32HandleInfoKHR ) );
+    }
+
+    FenceGetWin32HandleInfoKHR& operator=( VkFenceGetWin32HandleInfoKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( FenceGetWin32HandleInfoKHR ) );
+      return *this;
+    }
+    FenceGetWin32HandleInfoKHR& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    FenceGetWin32HandleInfoKHR& setFence( Fence fence_ )
+    {
+      fence = fence_;
+      return *this;
+    }
+
+    FenceGetWin32HandleInfoKHR& setHandleType( ExternalFenceHandleTypeFlagBitsKHR handleType_ )
+    {
+      handleType = handleType_;
+      return *this;
+    }
+
+    operator const VkFenceGetWin32HandleInfoKHR&() const
+    {
+      return *reinterpret_cast<const VkFenceGetWin32HandleInfoKHR*>(this);
+    }
+
+    bool operator==( FenceGetWin32HandleInfoKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( fence == rhs.fence )
+          && ( handleType == rhs.handleType );
+    }
+
+    bool operator!=( FenceGetWin32HandleInfoKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    const void* pNext;
+    Fence fence;
+    ExternalFenceHandleTypeFlagBitsKHR handleType;
+  };
+  static_assert( sizeof( FenceGetWin32HandleInfoKHR ) == sizeof( VkFenceGetWin32HandleInfoKHR ), "struct and wrapper have different size!" );
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
+  struct FenceGetFdInfoKHR
+  {
+    FenceGetFdInfoKHR( Fence fence_ = Fence(), ExternalFenceHandleTypeFlagBitsKHR handleType_ = ExternalFenceHandleTypeFlagBitsKHR::eOpaqueFd )
+      : sType( StructureType::eFenceGetFdInfoKHR )
+      , pNext( nullptr )
+      , fence( fence_ )
+      , handleType( handleType_ )
+    {
+    }
+
+    FenceGetFdInfoKHR( VkFenceGetFdInfoKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( FenceGetFdInfoKHR ) );
+    }
+
+    FenceGetFdInfoKHR& operator=( VkFenceGetFdInfoKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( FenceGetFdInfoKHR ) );
+      return *this;
+    }
+    FenceGetFdInfoKHR& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    FenceGetFdInfoKHR& setFence( Fence fence_ )
+    {
+      fence = fence_;
+      return *this;
+    }
+
+    FenceGetFdInfoKHR& setHandleType( ExternalFenceHandleTypeFlagBitsKHR handleType_ )
+    {
+      handleType = handleType_;
+      return *this;
+    }
+
+    operator const VkFenceGetFdInfoKHR&() const
+    {
+      return *reinterpret_cast<const VkFenceGetFdInfoKHR*>(this);
+    }
+
+    bool operator==( FenceGetFdInfoKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( fence == rhs.fence )
+          && ( handleType == rhs.handleType );
+    }
+
+    bool operator!=( FenceGetFdInfoKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    const void* pNext;
+    Fence fence;
+    ExternalFenceHandleTypeFlagBitsKHR handleType;
+  };
+  static_assert( sizeof( FenceGetFdInfoKHR ) == sizeof( VkFenceGetFdInfoKHR ), "struct and wrapper have different size!" );
+
+  enum class ExternalFenceFeatureFlagBitsKHR
+  {
+    eExportable = VK_EXTERNAL_FENCE_FEATURE_EXPORTABLE_BIT_KHR,
+    eImportable = VK_EXTERNAL_FENCE_FEATURE_IMPORTABLE_BIT_KHR
+  };
+
+  using ExternalFenceFeatureFlagsKHR = Flags<ExternalFenceFeatureFlagBitsKHR, VkExternalFenceFeatureFlagsKHR>;
+
+  VULKAN_HPP_INLINE ExternalFenceFeatureFlagsKHR operator|( ExternalFenceFeatureFlagBitsKHR bit0, ExternalFenceFeatureFlagBitsKHR bit1 )
+  {
+    return ExternalFenceFeatureFlagsKHR( bit0 ) | bit1;
+  }
+
+  VULKAN_HPP_INLINE ExternalFenceFeatureFlagsKHR operator~( ExternalFenceFeatureFlagBitsKHR bits )
+  {
+    return ~( ExternalFenceFeatureFlagsKHR( bits ) );
+  }
+
+  template <> struct FlagTraits<ExternalFenceFeatureFlagBitsKHR>
+  {
+    enum
+    {
+      allFlags = VkFlags(ExternalFenceFeatureFlagBitsKHR::eExportable) | VkFlags(ExternalFenceFeatureFlagBitsKHR::eImportable)
+    };
+  };
+
+  struct ExternalFencePropertiesKHR
+  {
+    operator const VkExternalFencePropertiesKHR&() const
+    {
+      return *reinterpret_cast<const VkExternalFencePropertiesKHR*>(this);
+    }
+
+    bool operator==( ExternalFencePropertiesKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( exportFromImportedHandleTypes == rhs.exportFromImportedHandleTypes )
+          && ( compatibleHandleTypes == rhs.compatibleHandleTypes )
+          && ( externalFenceFeatures == rhs.externalFenceFeatures );
+    }
+
+    bool operator!=( ExternalFencePropertiesKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    void* pNext;
+    ExternalFenceHandleTypeFlagsKHR exportFromImportedHandleTypes;
+    ExternalFenceHandleTypeFlagsKHR compatibleHandleTypes;
+    ExternalFenceFeatureFlagsKHR externalFenceFeatures;
+  };
+  static_assert( sizeof( ExternalFencePropertiesKHR ) == sizeof( VkExternalFencePropertiesKHR ), "struct and wrapper have different size!" );
+
+  enum class FenceImportFlagBitsKHR
+  {
+    eTemporary = VK_FENCE_IMPORT_TEMPORARY_BIT_KHR
+  };
+
+  using FenceImportFlagsKHR = Flags<FenceImportFlagBitsKHR, VkFenceImportFlagsKHR>;
+
+  VULKAN_HPP_INLINE FenceImportFlagsKHR operator|( FenceImportFlagBitsKHR bit0, FenceImportFlagBitsKHR bit1 )
+  {
+    return FenceImportFlagsKHR( bit0 ) | bit1;
+  }
+
+  VULKAN_HPP_INLINE FenceImportFlagsKHR operator~( FenceImportFlagBitsKHR bits )
+  {
+    return ~( FenceImportFlagsKHR( bits ) );
+  }
+
+  template <> struct FlagTraits<FenceImportFlagBitsKHR>
+  {
+    enum
+    {
+      allFlags = VkFlags(FenceImportFlagBitsKHR::eTemporary)
+    };
+  };
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  struct ImportFenceWin32HandleInfoKHR
+  {
+    ImportFenceWin32HandleInfoKHR( Fence fence_ = Fence(), FenceImportFlagsKHR flags_ = FenceImportFlagsKHR(), ExternalFenceHandleTypeFlagBitsKHR handleType_ = ExternalFenceHandleTypeFlagBitsKHR::eOpaqueFd, HANDLE handle_ = 0, LPCWSTR name_ = 0 )
+      : sType( StructureType::eImportFenceWin32HandleInfoKHR )
+      , pNext( nullptr )
+      , fence( fence_ )
+      , flags( flags_ )
+      , handleType( handleType_ )
+      , handle( handle_ )
+      , name( name_ )
+    {
+    }
+
+    ImportFenceWin32HandleInfoKHR( VkImportFenceWin32HandleInfoKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ImportFenceWin32HandleInfoKHR ) );
+    }
+
+    ImportFenceWin32HandleInfoKHR& operator=( VkImportFenceWin32HandleInfoKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ImportFenceWin32HandleInfoKHR ) );
+      return *this;
+    }
+    ImportFenceWin32HandleInfoKHR& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    ImportFenceWin32HandleInfoKHR& setFence( Fence fence_ )
+    {
+      fence = fence_;
+      return *this;
+    }
+
+    ImportFenceWin32HandleInfoKHR& setFlags( FenceImportFlagsKHR flags_ )
+    {
+      flags = flags_;
+      return *this;
+    }
+
+    ImportFenceWin32HandleInfoKHR& setHandleType( ExternalFenceHandleTypeFlagBitsKHR handleType_ )
+    {
+      handleType = handleType_;
+      return *this;
+    }
+
+    ImportFenceWin32HandleInfoKHR& setHandle( HANDLE handle_ )
+    {
+      handle = handle_;
+      return *this;
+    }
+
+    ImportFenceWin32HandleInfoKHR& setName( LPCWSTR name_ )
+    {
+      name = name_;
+      return *this;
+    }
+
+    operator const VkImportFenceWin32HandleInfoKHR&() const
+    {
+      return *reinterpret_cast<const VkImportFenceWin32HandleInfoKHR*>(this);
+    }
+
+    bool operator==( ImportFenceWin32HandleInfoKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( fence == rhs.fence )
+          && ( flags == rhs.flags )
+          && ( handleType == rhs.handleType )
+          && ( handle == rhs.handle )
+          && ( name == rhs.name );
+    }
+
+    bool operator!=( ImportFenceWin32HandleInfoKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    const void* pNext;
+    Fence fence;
+    FenceImportFlagsKHR flags;
+    ExternalFenceHandleTypeFlagBitsKHR handleType;
+    HANDLE handle;
+    LPCWSTR name;
+  };
+  static_assert( sizeof( ImportFenceWin32HandleInfoKHR ) == sizeof( VkImportFenceWin32HandleInfoKHR ), "struct and wrapper have different size!" );
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
+  struct ImportFenceFdInfoKHR
+  {
+    ImportFenceFdInfoKHR( Fence fence_ = Fence(), FenceImportFlagsKHR flags_ = FenceImportFlagsKHR(), ExternalFenceHandleTypeFlagBitsKHR handleType_ = ExternalFenceHandleTypeFlagBitsKHR::eOpaqueFd, int fd_ = 0 )
+      : sType( StructureType::eImportFenceFdInfoKHR )
+      , pNext( nullptr )
+      , fence( fence_ )
+      , flags( flags_ )
+      , handleType( handleType_ )
+      , fd( fd_ )
+    {
+    }
+
+    ImportFenceFdInfoKHR( VkImportFenceFdInfoKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ImportFenceFdInfoKHR ) );
+    }
+
+    ImportFenceFdInfoKHR& operator=( VkImportFenceFdInfoKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ImportFenceFdInfoKHR ) );
+      return *this;
+    }
+    ImportFenceFdInfoKHR& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    ImportFenceFdInfoKHR& setFence( Fence fence_ )
+    {
+      fence = fence_;
+      return *this;
+    }
+
+    ImportFenceFdInfoKHR& setFlags( FenceImportFlagsKHR flags_ )
+    {
+      flags = flags_;
+      return *this;
+    }
+
+    ImportFenceFdInfoKHR& setHandleType( ExternalFenceHandleTypeFlagBitsKHR handleType_ )
+    {
+      handleType = handleType_;
+      return *this;
+    }
+
+    ImportFenceFdInfoKHR& setFd( int fd_ )
+    {
+      fd = fd_;
+      return *this;
+    }
+
+    operator const VkImportFenceFdInfoKHR&() const
+    {
+      return *reinterpret_cast<const VkImportFenceFdInfoKHR*>(this);
+    }
+
+    bool operator==( ImportFenceFdInfoKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( fence == rhs.fence )
+          && ( flags == rhs.flags )
+          && ( handleType == rhs.handleType )
+          && ( fd == rhs.fd );
+    }
+
+    bool operator!=( ImportFenceFdInfoKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    const void* pNext;
+    Fence fence;
+    FenceImportFlagsKHR flags;
+    ExternalFenceHandleTypeFlagBitsKHR handleType;
+    int fd;
+  };
+  static_assert( sizeof( ImportFenceFdInfoKHR ) == sizeof( VkImportFenceFdInfoKHR ), "struct and wrapper have different size!" );
 
   enum class SurfaceCounterFlagBitsEXT
   {
@@ -21893,6 +23595,253 @@ namespace vk
   };
   static_assert( sizeof( RenderPassCreateInfo ) == sizeof( VkRenderPassCreateInfo ), "struct and wrapper have different size!" );
 
+  enum class SamplerReductionModeEXT
+  {
+    eWeightedAverage = VK_SAMPLER_REDUCTION_MODE_WEIGHTED_AVERAGE_EXT,
+    eMin = VK_SAMPLER_REDUCTION_MODE_MIN_EXT,
+    eMax = VK_SAMPLER_REDUCTION_MODE_MAX_EXT
+  };
+
+  struct SamplerReductionModeCreateInfoEXT
+  {
+    SamplerReductionModeCreateInfoEXT( SamplerReductionModeEXT reductionMode_ = SamplerReductionModeEXT::eWeightedAverage )
+      : sType( StructureType::eSamplerReductionModeCreateInfoEXT )
+      , pNext( nullptr )
+      , reductionMode( reductionMode_ )
+    {
+    }
+
+    SamplerReductionModeCreateInfoEXT( VkSamplerReductionModeCreateInfoEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SamplerReductionModeCreateInfoEXT ) );
+    }
+
+    SamplerReductionModeCreateInfoEXT& operator=( VkSamplerReductionModeCreateInfoEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SamplerReductionModeCreateInfoEXT ) );
+      return *this;
+    }
+    SamplerReductionModeCreateInfoEXT& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    SamplerReductionModeCreateInfoEXT& setReductionMode( SamplerReductionModeEXT reductionMode_ )
+    {
+      reductionMode = reductionMode_;
+      return *this;
+    }
+
+    operator const VkSamplerReductionModeCreateInfoEXT&() const
+    {
+      return *reinterpret_cast<const VkSamplerReductionModeCreateInfoEXT*>(this);
+    }
+
+    bool operator==( SamplerReductionModeCreateInfoEXT const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( reductionMode == rhs.reductionMode );
+    }
+
+    bool operator!=( SamplerReductionModeCreateInfoEXT const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    const void* pNext;
+    SamplerReductionModeEXT reductionMode;
+  };
+  static_assert( sizeof( SamplerReductionModeCreateInfoEXT ) == sizeof( VkSamplerReductionModeCreateInfoEXT ), "struct and wrapper have different size!" );
+
+  enum class BlendOverlapEXT
+  {
+    eUncorrelated = VK_BLEND_OVERLAP_UNCORRELATED_EXT,
+    eDisjoint = VK_BLEND_OVERLAP_DISJOINT_EXT,
+    eConjoint = VK_BLEND_OVERLAP_CONJOINT_EXT
+  };
+
+  struct PipelineColorBlendAdvancedStateCreateInfoEXT
+  {
+    PipelineColorBlendAdvancedStateCreateInfoEXT( Bool32 srcPremultiplied_ = 0, Bool32 dstPremultiplied_ = 0, BlendOverlapEXT blendOverlap_ = BlendOverlapEXT::eUncorrelated )
+      : sType( StructureType::ePipelineColorBlendAdvancedStateCreateInfoEXT )
+      , pNext( nullptr )
+      , srcPremultiplied( srcPremultiplied_ )
+      , dstPremultiplied( dstPremultiplied_ )
+      , blendOverlap( blendOverlap_ )
+    {
+    }
+
+    PipelineColorBlendAdvancedStateCreateInfoEXT( VkPipelineColorBlendAdvancedStateCreateInfoEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PipelineColorBlendAdvancedStateCreateInfoEXT ) );
+    }
+
+    PipelineColorBlendAdvancedStateCreateInfoEXT& operator=( VkPipelineColorBlendAdvancedStateCreateInfoEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PipelineColorBlendAdvancedStateCreateInfoEXT ) );
+      return *this;
+    }
+    PipelineColorBlendAdvancedStateCreateInfoEXT& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PipelineColorBlendAdvancedStateCreateInfoEXT& setSrcPremultiplied( Bool32 srcPremultiplied_ )
+    {
+      srcPremultiplied = srcPremultiplied_;
+      return *this;
+    }
+
+    PipelineColorBlendAdvancedStateCreateInfoEXT& setDstPremultiplied( Bool32 dstPremultiplied_ )
+    {
+      dstPremultiplied = dstPremultiplied_;
+      return *this;
+    }
+
+    PipelineColorBlendAdvancedStateCreateInfoEXT& setBlendOverlap( BlendOverlapEXT blendOverlap_ )
+    {
+      blendOverlap = blendOverlap_;
+      return *this;
+    }
+
+    operator const VkPipelineColorBlendAdvancedStateCreateInfoEXT&() const
+    {
+      return *reinterpret_cast<const VkPipelineColorBlendAdvancedStateCreateInfoEXT*>(this);
+    }
+
+    bool operator==( PipelineColorBlendAdvancedStateCreateInfoEXT const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( srcPremultiplied == rhs.srcPremultiplied )
+          && ( dstPremultiplied == rhs.dstPremultiplied )
+          && ( blendOverlap == rhs.blendOverlap );
+    }
+
+    bool operator!=( PipelineColorBlendAdvancedStateCreateInfoEXT const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    const void* pNext;
+    Bool32 srcPremultiplied;
+    Bool32 dstPremultiplied;
+    BlendOverlapEXT blendOverlap;
+  };
+  static_assert( sizeof( PipelineColorBlendAdvancedStateCreateInfoEXT ) == sizeof( VkPipelineColorBlendAdvancedStateCreateInfoEXT ), "struct and wrapper have different size!" );
+
+  enum class CoverageModulationModeNV
+  {
+    eNone = VK_COVERAGE_MODULATION_MODE_NONE_NV,
+    eRgb = VK_COVERAGE_MODULATION_MODE_RGB_NV,
+    eAlpha = VK_COVERAGE_MODULATION_MODE_ALPHA_NV,
+    eRgba = VK_COVERAGE_MODULATION_MODE_RGBA_NV
+  };
+
+  struct PipelineCoverageModulationStateCreateInfoNV
+  {
+    PipelineCoverageModulationStateCreateInfoNV( PipelineCoverageModulationStateCreateFlagsNV flags_ = PipelineCoverageModulationStateCreateFlagsNV(), CoverageModulationModeNV coverageModulationMode_ = CoverageModulationModeNV::eNone, Bool32 coverageModulationTableEnable_ = 0, uint32_t coverageModulationTableCount_ = 0, const float* pCoverageModulationTable_ = nullptr )
+      : sType( StructureType::ePipelineCoverageModulationStateCreateInfoNV )
+      , pNext( nullptr )
+      , flags( flags_ )
+      , coverageModulationMode( coverageModulationMode_ )
+      , coverageModulationTableEnable( coverageModulationTableEnable_ )
+      , coverageModulationTableCount( coverageModulationTableCount_ )
+      , pCoverageModulationTable( pCoverageModulationTable_ )
+    {
+    }
+
+    PipelineCoverageModulationStateCreateInfoNV( VkPipelineCoverageModulationStateCreateInfoNV const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PipelineCoverageModulationStateCreateInfoNV ) );
+    }
+
+    PipelineCoverageModulationStateCreateInfoNV& operator=( VkPipelineCoverageModulationStateCreateInfoNV const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PipelineCoverageModulationStateCreateInfoNV ) );
+      return *this;
+    }
+    PipelineCoverageModulationStateCreateInfoNV& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PipelineCoverageModulationStateCreateInfoNV& setFlags( PipelineCoverageModulationStateCreateFlagsNV flags_ )
+    {
+      flags = flags_;
+      return *this;
+    }
+
+    PipelineCoverageModulationStateCreateInfoNV& setCoverageModulationMode( CoverageModulationModeNV coverageModulationMode_ )
+    {
+      coverageModulationMode = coverageModulationMode_;
+      return *this;
+    }
+
+    PipelineCoverageModulationStateCreateInfoNV& setCoverageModulationTableEnable( Bool32 coverageModulationTableEnable_ )
+    {
+      coverageModulationTableEnable = coverageModulationTableEnable_;
+      return *this;
+    }
+
+    PipelineCoverageModulationStateCreateInfoNV& setCoverageModulationTableCount( uint32_t coverageModulationTableCount_ )
+    {
+      coverageModulationTableCount = coverageModulationTableCount_;
+      return *this;
+    }
+
+    PipelineCoverageModulationStateCreateInfoNV& setPCoverageModulationTable( const float* pCoverageModulationTable_ )
+    {
+      pCoverageModulationTable = pCoverageModulationTable_;
+      return *this;
+    }
+
+    operator const VkPipelineCoverageModulationStateCreateInfoNV&() const
+    {
+      return *reinterpret_cast<const VkPipelineCoverageModulationStateCreateInfoNV*>(this);
+    }
+
+    bool operator==( PipelineCoverageModulationStateCreateInfoNV const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( coverageModulationMode == rhs.coverageModulationMode )
+          && ( coverageModulationTableEnable == rhs.coverageModulationTableEnable )
+          && ( coverageModulationTableCount == rhs.coverageModulationTableCount )
+          && ( pCoverageModulationTable == rhs.pCoverageModulationTable );
+    }
+
+    bool operator!=( PipelineCoverageModulationStateCreateInfoNV const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType;
+
+  public:
+    const void* pNext;
+    PipelineCoverageModulationStateCreateFlagsNV flags;
+    CoverageModulationModeNV coverageModulationMode;
+    Bool32 coverageModulationTableEnable;
+    uint32_t coverageModulationTableCount;
+    const float* pCoverageModulationTable;
+  };
+  static_assert( sizeof( PipelineCoverageModulationStateCreateInfoNV ) == sizeof( VkPipelineCoverageModulationStateCreateInfoNV ), "struct and wrapper have different size!" );
+
   Result enumerateInstanceLayerProperties( uint32_t* pPropertyCount, LayerProperties* pProperties );
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename Allocator = std::allocator<LayerProperties>> 
@@ -22170,16 +24119,16 @@ namespace vk
     void executeCommands( ArrayProxy<const CommandBuffer> commandBuffers ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-    void debugMarkerBeginEXT( DebugMarkerMarkerInfoEXT* pMarkerInfo ) const;
+    void debugMarkerBeginEXT( const DebugMarkerMarkerInfoEXT* pMarkerInfo ) const;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    DebugMarkerMarkerInfoEXT debugMarkerBeginEXT() const;
+    void debugMarkerBeginEXT( const DebugMarkerMarkerInfoEXT & markerInfo ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     void debugMarkerEndEXT() const;
 
-    void debugMarkerInsertEXT( DebugMarkerMarkerInfoEXT* pMarkerInfo ) const;
+    void debugMarkerInsertEXT( const DebugMarkerMarkerInfoEXT* pMarkerInfo ) const;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    DebugMarkerMarkerInfoEXT debugMarkerInsertEXT() const;
+    void debugMarkerInsertEXT( const DebugMarkerMarkerInfoEXT & markerInfo ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     void drawIndirectCountAMD( Buffer buffer, DeviceSize offset, Buffer countBuffer, DeviceSize countBufferOffset, uint32_t maxDrawCount, uint32_t stride ) const;
@@ -22622,16 +24571,14 @@ namespace vk
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-  VULKAN_HPP_INLINE void CommandBuffer::debugMarkerBeginEXT( DebugMarkerMarkerInfoEXT* pMarkerInfo ) const
+  VULKAN_HPP_INLINE void CommandBuffer::debugMarkerBeginEXT( const DebugMarkerMarkerInfoEXT* pMarkerInfo ) const
   {
-    vkCmdDebugMarkerBeginEXT( m_commandBuffer, reinterpret_cast<VkDebugMarkerMarkerInfoEXT*>( pMarkerInfo ) );
+    vkCmdDebugMarkerBeginEXT( m_commandBuffer, reinterpret_cast<const VkDebugMarkerMarkerInfoEXT*>( pMarkerInfo ) );
   }
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-  VULKAN_HPP_INLINE DebugMarkerMarkerInfoEXT CommandBuffer::debugMarkerBeginEXT() const
+  VULKAN_HPP_INLINE void CommandBuffer::debugMarkerBeginEXT( const DebugMarkerMarkerInfoEXT & markerInfo ) const
   {
-    DebugMarkerMarkerInfoEXT markerInfo;
-    vkCmdDebugMarkerBeginEXT( m_commandBuffer, reinterpret_cast<VkDebugMarkerMarkerInfoEXT*>( &markerInfo ) );
-    return markerInfo;
+    vkCmdDebugMarkerBeginEXT( m_commandBuffer, reinterpret_cast<const VkDebugMarkerMarkerInfoEXT*>( &markerInfo ) );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -22640,16 +24587,14 @@ namespace vk
     vkCmdDebugMarkerEndEXT( m_commandBuffer );
   }
 
-  VULKAN_HPP_INLINE void CommandBuffer::debugMarkerInsertEXT( DebugMarkerMarkerInfoEXT* pMarkerInfo ) const
+  VULKAN_HPP_INLINE void CommandBuffer::debugMarkerInsertEXT( const DebugMarkerMarkerInfoEXT* pMarkerInfo ) const
   {
-    vkCmdDebugMarkerInsertEXT( m_commandBuffer, reinterpret_cast<VkDebugMarkerMarkerInfoEXT*>( pMarkerInfo ) );
+    vkCmdDebugMarkerInsertEXT( m_commandBuffer, reinterpret_cast<const VkDebugMarkerMarkerInfoEXT*>( pMarkerInfo ) );
   }
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-  VULKAN_HPP_INLINE DebugMarkerMarkerInfoEXT CommandBuffer::debugMarkerInsertEXT() const
+  VULKAN_HPP_INLINE void CommandBuffer::debugMarkerInsertEXT( const DebugMarkerMarkerInfoEXT & markerInfo ) const
   {
-    DebugMarkerMarkerInfoEXT markerInfo;
-    vkCmdDebugMarkerInsertEXT( m_commandBuffer, reinterpret_cast<VkDebugMarkerMarkerInfoEXT*>( &markerInfo ) );
-    return markerInfo;
+    vkCmdDebugMarkerInsertEXT( m_commandBuffer, reinterpret_cast<const VkDebugMarkerMarkerInfoEXT*>( &markerInfo ) );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -23548,14 +25493,14 @@ namespace vk
     ResultValue<uint32_t> acquireNextImageKHR( SwapchainKHR swapchain, uint64_t timeout, Semaphore semaphore, Fence fence ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-    Result debugMarkerSetObjectNameEXT( DebugMarkerObjectNameInfoEXT* pNameInfo ) const;
+    Result debugMarkerSetObjectNameEXT( const DebugMarkerObjectNameInfoEXT* pNameInfo ) const;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    ResultValueType<DebugMarkerObjectNameInfoEXT>::type debugMarkerSetObjectNameEXT() const;
+    ResultValueType<void>::type debugMarkerSetObjectNameEXT( const DebugMarkerObjectNameInfoEXT & nameInfo ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-    Result debugMarkerSetObjectTagEXT( DebugMarkerObjectTagInfoEXT* pTagInfo ) const;
+    Result debugMarkerSetObjectTagEXT( const DebugMarkerObjectTagInfoEXT* pTagInfo ) const;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    ResultValueType<DebugMarkerObjectTagInfoEXT>::type debugMarkerSetObjectTagEXT() const;
+    ResultValueType<void>::type debugMarkerSetObjectTagEXT( const DebugMarkerObjectTagInfoEXT & tagInfo ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
@@ -23607,52 +25552,76 @@ namespace vk
     void trimCommandPoolKHR( CommandPool commandPool, CommandPoolTrimFlagsKHR flags = CommandPoolTrimFlagsKHR() ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifdef VK_USE_PLATFORM_WIN32_KHX
-    Result getMemoryWin32HandleKHX( DeviceMemory memory, ExternalMemoryHandleTypeFlagBitsKHX handleType, HANDLE* pHandle ) const;
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+    Result getMemoryWin32HandleKHR( const MemoryGetWin32HandleInfoKHR* pGetWin32HandleInfo, HANDLE* pHandle ) const;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    ResultValueType<HANDLE>::type getMemoryWin32HandleKHX( DeviceMemory memory, ExternalMemoryHandleTypeFlagBitsKHX handleType ) const;
+    ResultValueType<HANDLE>::type getMemoryWin32HandleKHR( const MemoryGetWin32HandleInfoKHR & getWin32HandleInfo ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_WIN32_KHX*/
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
-#ifdef VK_USE_PLATFORM_WIN32_KHX
-    Result getMemoryWin32HandlePropertiesKHX( ExternalMemoryHandleTypeFlagBitsKHX handleType, HANDLE handle, MemoryWin32HandlePropertiesKHX* pMemoryWin32HandleProperties ) const;
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+    Result getMemoryWin32HandlePropertiesKHR( ExternalMemoryHandleTypeFlagBitsKHR handleType, HANDLE handle, MemoryWin32HandlePropertiesKHR* pMemoryWin32HandleProperties ) const;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    ResultValueType<MemoryWin32HandlePropertiesKHX>::type getMemoryWin32HandlePropertiesKHX( ExternalMemoryHandleTypeFlagBitsKHX handleType, HANDLE handle ) const;
+    ResultValueType<MemoryWin32HandlePropertiesKHR>::type getMemoryWin32HandlePropertiesKHR( ExternalMemoryHandleTypeFlagBitsKHR handleType, HANDLE handle ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_WIN32_KHX*/
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
-    Result getMemoryFdKHX( DeviceMemory memory, ExternalMemoryHandleTypeFlagBitsKHX handleType, int* pFd ) const;
+    Result getMemoryFdKHR( const MemoryGetFdInfoKHR* pGetFdInfo, int* pFd ) const;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    ResultValueType<int>::type getMemoryFdKHX( DeviceMemory memory, ExternalMemoryHandleTypeFlagBitsKHX handleType ) const;
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-
-    Result getMemoryFdPropertiesKHX( ExternalMemoryHandleTypeFlagBitsKHX handleType, int fd, MemoryFdPropertiesKHX* pMemoryFdProperties ) const;
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    ResultValueType<MemoryFdPropertiesKHX>::type getMemoryFdPropertiesKHX( ExternalMemoryHandleTypeFlagBitsKHX handleType, int fd ) const;
+    ResultValueType<int>::type getMemoryFdKHR( const MemoryGetFdInfoKHR & getFdInfo ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifdef VK_USE_PLATFORM_WIN32_KHX
-    Result getSemaphoreWin32HandleKHX( Semaphore semaphore, ExternalSemaphoreHandleTypeFlagBitsKHX handleType, HANDLE* pHandle ) const;
+    Result getMemoryFdPropertiesKHR( ExternalMemoryHandleTypeFlagBitsKHR handleType, int fd, MemoryFdPropertiesKHR* pMemoryFdProperties ) const;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    ResultValueType<HANDLE>::type getSemaphoreWin32HandleKHX( Semaphore semaphore, ExternalSemaphoreHandleTypeFlagBitsKHX handleType ) const;
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_WIN32_KHX*/
-
-#ifdef VK_USE_PLATFORM_WIN32_KHX
-    Result importSemaphoreWin32HandleKHX( const ImportSemaphoreWin32HandleInfoKHX* pImportSemaphoreWin32HandleInfo ) const;
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    ResultValueType<void>::type importSemaphoreWin32HandleKHX( const ImportSemaphoreWin32HandleInfoKHX & importSemaphoreWin32HandleInfo ) const;
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_WIN32_KHX*/
-
-    Result getSemaphoreFdKHX( Semaphore semaphore, ExternalSemaphoreHandleTypeFlagBitsKHX handleType, int* pFd ) const;
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    ResultValueType<int>::type getSemaphoreFdKHX( Semaphore semaphore, ExternalSemaphoreHandleTypeFlagBitsKHX handleType ) const;
+    ResultValueType<MemoryFdPropertiesKHR>::type getMemoryFdPropertiesKHR( ExternalMemoryHandleTypeFlagBitsKHR handleType, int fd ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-    Result importSemaphoreFdKHX( const ImportSemaphoreFdInfoKHX* pImportSemaphoreFdInfo ) const;
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+    Result getSemaphoreWin32HandleKHR( const SemaphoreGetWin32HandleInfoKHR* pGetWin32HandleInfo, HANDLE* pHandle ) const;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    ResultValueType<void>::type importSemaphoreFdKHX( const ImportSemaphoreFdInfoKHX & importSemaphoreFdInfo ) const;
+    ResultValueType<HANDLE>::type getSemaphoreWin32HandleKHR( const SemaphoreGetWin32HandleInfoKHR & getWin32HandleInfo ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+    Result importSemaphoreWin32HandleKHR( const ImportSemaphoreWin32HandleInfoKHR* pImportSemaphoreWin32HandleInfo ) const;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    ResultValueType<void>::type importSemaphoreWin32HandleKHR( const ImportSemaphoreWin32HandleInfoKHR & importSemaphoreWin32HandleInfo ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
+    Result getSemaphoreFdKHR( const SemaphoreGetFdInfoKHR* pGetFdInfo, int* pFd ) const;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    ResultValueType<int>::type getSemaphoreFdKHR( const SemaphoreGetFdInfoKHR & getFdInfo ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    Result importSemaphoreFdKHR( const ImportSemaphoreFdInfoKHR* pImportSemaphoreFdInfo ) const;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    ResultValueType<void>::type importSemaphoreFdKHR( const ImportSemaphoreFdInfoKHR & importSemaphoreFdInfo ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+    Result getFenceWin32HandleKHR( const FenceGetWin32HandleInfoKHR* pGetWin32HandleInfo, HANDLE* pHandle ) const;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    ResultValueType<HANDLE>::type getFenceWin32HandleKHR( const FenceGetWin32HandleInfoKHR & getWin32HandleInfo ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+    Result importFenceWin32HandleKHR( const ImportFenceWin32HandleInfoKHR* pImportFenceWin32HandleInfo ) const;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    ResultValueType<void>::type importFenceWin32HandleKHR( const ImportFenceWin32HandleInfoKHR & importFenceWin32HandleInfo ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
+    Result getFenceFdKHR( const FenceGetFdInfoKHR* pGetFdInfo, int* pFd ) const;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    ResultValueType<int>::type getFenceFdKHR( const FenceGetFdInfoKHR & getFdInfo ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    Result importFenceFdKHR( const ImportFenceFdInfoKHR* pImportFenceFdInfo ) const;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    ResultValueType<void>::type importFenceFdKHR( const ImportFenceFdInfoKHR & importFenceFdInfo ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     Result displayPowerControlEXT( DisplayKHR display, const DisplayPowerInfoEXT* pDisplayPowerInfo ) const;
@@ -23736,6 +25705,22 @@ namespace vk
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template <typename Allocator = std::allocator<PastPresentationTimingGOOGLE>> 
     typename ResultValueType<std::vector<PastPresentationTimingGOOGLE,Allocator>>::type getPastPresentationTimingGOOGLE( SwapchainKHR swapchain ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    void getBufferMemoryRequirements2KHR( const BufferMemoryRequirementsInfo2KHR* pInfo, MemoryRequirements2KHR* pMemoryRequirements ) const;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    MemoryRequirements2KHR getBufferMemoryRequirements2KHR( const BufferMemoryRequirementsInfo2KHR & info ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    void getImageMemoryRequirements2KHR( const ImageMemoryRequirementsInfo2KHR* pInfo, MemoryRequirements2KHR* pMemoryRequirements ) const;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    MemoryRequirements2KHR getImageMemoryRequirements2KHR( const ImageMemoryRequirementsInfo2KHR & info ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    void getImageSparseMemoryRequirements2KHR( const ImageSparseMemoryRequirementsInfo2KHR* pInfo, uint32_t* pSparseMemoryRequirementCount, SparseImageMemoryRequirements2KHR* pSparseMemoryRequirements ) const;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename Allocator = std::allocator<SparseImageMemoryRequirements2KHR>> 
+    std::vector<SparseImageMemoryRequirements2KHR,Allocator> getImageSparseMemoryRequirements2KHR( const ImageSparseMemoryRequirementsInfo2KHR & info ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
 
@@ -25415,29 +27400,27 @@ namespace vk
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-  VULKAN_HPP_INLINE Result Device::debugMarkerSetObjectNameEXT( DebugMarkerObjectNameInfoEXT* pNameInfo ) const
+  VULKAN_HPP_INLINE Result Device::debugMarkerSetObjectNameEXT( const DebugMarkerObjectNameInfoEXT* pNameInfo ) const
   {
-    return static_cast<Result>( vkDebugMarkerSetObjectNameEXT( m_device, reinterpret_cast<VkDebugMarkerObjectNameInfoEXT*>( pNameInfo ) ) );
+    return static_cast<Result>( vkDebugMarkerSetObjectNameEXT( m_device, reinterpret_cast<const VkDebugMarkerObjectNameInfoEXT*>( pNameInfo ) ) );
   }
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-  VULKAN_HPP_INLINE ResultValueType<DebugMarkerObjectNameInfoEXT>::type Device::debugMarkerSetObjectNameEXT() const
+  VULKAN_HPP_INLINE ResultValueType<void>::type Device::debugMarkerSetObjectNameEXT( const DebugMarkerObjectNameInfoEXT & nameInfo ) const
   {
-    DebugMarkerObjectNameInfoEXT nameInfo;
-    Result result = static_cast<Result>( vkDebugMarkerSetObjectNameEXT( m_device, reinterpret_cast<VkDebugMarkerObjectNameInfoEXT*>( &nameInfo ) ) );
-    return createResultValue( result, nameInfo, "vk::Device::debugMarkerSetObjectNameEXT" );
+    Result result = static_cast<Result>( vkDebugMarkerSetObjectNameEXT( m_device, reinterpret_cast<const VkDebugMarkerObjectNameInfoEXT*>( &nameInfo ) ) );
+    return createResultValue( result, "vk::Device::debugMarkerSetObjectNameEXT" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-  VULKAN_HPP_INLINE Result Device::debugMarkerSetObjectTagEXT( DebugMarkerObjectTagInfoEXT* pTagInfo ) const
+  VULKAN_HPP_INLINE Result Device::debugMarkerSetObjectTagEXT( const DebugMarkerObjectTagInfoEXT* pTagInfo ) const
   {
-    return static_cast<Result>( vkDebugMarkerSetObjectTagEXT( m_device, reinterpret_cast<VkDebugMarkerObjectTagInfoEXT*>( pTagInfo ) ) );
+    return static_cast<Result>( vkDebugMarkerSetObjectTagEXT( m_device, reinterpret_cast<const VkDebugMarkerObjectTagInfoEXT*>( pTagInfo ) ) );
   }
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-  VULKAN_HPP_INLINE ResultValueType<DebugMarkerObjectTagInfoEXT>::type Device::debugMarkerSetObjectTagEXT() const
+  VULKAN_HPP_INLINE ResultValueType<void>::type Device::debugMarkerSetObjectTagEXT( const DebugMarkerObjectTagInfoEXT & tagInfo ) const
   {
-    DebugMarkerObjectTagInfoEXT tagInfo;
-    Result result = static_cast<Result>( vkDebugMarkerSetObjectTagEXT( m_device, reinterpret_cast<VkDebugMarkerObjectTagInfoEXT*>( &tagInfo ) ) );
-    return createResultValue( result, tagInfo, "vk::Device::debugMarkerSetObjectTagEXT" );
+    Result result = static_cast<Result>( vkDebugMarkerSetObjectTagEXT( m_device, reinterpret_cast<const VkDebugMarkerObjectTagInfoEXT*>( &tagInfo ) ) );
+    return createResultValue( result, "vk::Device::debugMarkerSetObjectTagEXT" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -25563,113 +27546,167 @@ namespace vk
     vkTrimCommandPoolKHR( m_device, static_cast<VkCommandPool>( commandPool ), static_cast<VkCommandPoolTrimFlagsKHR>( flags ) );
   }
 
-#ifdef VK_USE_PLATFORM_WIN32_KHX
-  VULKAN_HPP_INLINE Result Device::getMemoryWin32HandleKHX( DeviceMemory memory, ExternalMemoryHandleTypeFlagBitsKHX handleType, HANDLE* pHandle ) const
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  VULKAN_HPP_INLINE Result Device::getMemoryWin32HandleKHR( const MemoryGetWin32HandleInfoKHR* pGetWin32HandleInfo, HANDLE* pHandle ) const
   {
-    return static_cast<Result>( vkGetMemoryWin32HandleKHX( m_device, static_cast<VkDeviceMemory>( memory ), static_cast<VkExternalMemoryHandleTypeFlagBitsKHX>( handleType ), pHandle ) );
+    return static_cast<Result>( vkGetMemoryWin32HandleKHR( m_device, reinterpret_cast<const VkMemoryGetWin32HandleInfoKHR*>( pGetWin32HandleInfo ), pHandle ) );
   }
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-  VULKAN_HPP_INLINE ResultValueType<HANDLE>::type Device::getMemoryWin32HandleKHX( DeviceMemory memory, ExternalMemoryHandleTypeFlagBitsKHX handleType ) const
+  VULKAN_HPP_INLINE ResultValueType<HANDLE>::type Device::getMemoryWin32HandleKHR( const MemoryGetWin32HandleInfoKHR & getWin32HandleInfo ) const
   {
     HANDLE handle;
-    Result result = static_cast<Result>( vkGetMemoryWin32HandleKHX( m_device, static_cast<VkDeviceMemory>( memory ), static_cast<VkExternalMemoryHandleTypeFlagBitsKHX>( handleType ), &handle ) );
-    return createResultValue( result, handle, "vk::Device::getMemoryWin32HandleKHX" );
+    Result result = static_cast<Result>( vkGetMemoryWin32HandleKHR( m_device, reinterpret_cast<const VkMemoryGetWin32HandleInfoKHR*>( &getWin32HandleInfo ), &handle ) );
+    return createResultValue( result, handle, "vk::Device::getMemoryWin32HandleKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_WIN32_KHX*/
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
-#ifdef VK_USE_PLATFORM_WIN32_KHX
-  VULKAN_HPP_INLINE Result Device::getMemoryWin32HandlePropertiesKHX( ExternalMemoryHandleTypeFlagBitsKHX handleType, HANDLE handle, MemoryWin32HandlePropertiesKHX* pMemoryWin32HandleProperties ) const
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  VULKAN_HPP_INLINE Result Device::getMemoryWin32HandlePropertiesKHR( ExternalMemoryHandleTypeFlagBitsKHR handleType, HANDLE handle, MemoryWin32HandlePropertiesKHR* pMemoryWin32HandleProperties ) const
   {
-    return static_cast<Result>( vkGetMemoryWin32HandlePropertiesKHX( m_device, static_cast<VkExternalMemoryHandleTypeFlagBitsKHX>( handleType ), handle, reinterpret_cast<VkMemoryWin32HandlePropertiesKHX*>( pMemoryWin32HandleProperties ) ) );
+    return static_cast<Result>( vkGetMemoryWin32HandlePropertiesKHR( m_device, static_cast<VkExternalMemoryHandleTypeFlagBitsKHR>( handleType ), handle, reinterpret_cast<VkMemoryWin32HandlePropertiesKHR*>( pMemoryWin32HandleProperties ) ) );
   }
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-  VULKAN_HPP_INLINE ResultValueType<MemoryWin32HandlePropertiesKHX>::type Device::getMemoryWin32HandlePropertiesKHX( ExternalMemoryHandleTypeFlagBitsKHX handleType, HANDLE handle ) const
+  VULKAN_HPP_INLINE ResultValueType<MemoryWin32HandlePropertiesKHR>::type Device::getMemoryWin32HandlePropertiesKHR( ExternalMemoryHandleTypeFlagBitsKHR handleType, HANDLE handle ) const
   {
-    MemoryWin32HandlePropertiesKHX memoryWin32HandleProperties;
-    Result result = static_cast<Result>( vkGetMemoryWin32HandlePropertiesKHX( m_device, static_cast<VkExternalMemoryHandleTypeFlagBitsKHX>( handleType ), handle, reinterpret_cast<VkMemoryWin32HandlePropertiesKHX*>( &memoryWin32HandleProperties ) ) );
-    return createResultValue( result, memoryWin32HandleProperties, "vk::Device::getMemoryWin32HandlePropertiesKHX" );
+    MemoryWin32HandlePropertiesKHR memoryWin32HandleProperties;
+    Result result = static_cast<Result>( vkGetMemoryWin32HandlePropertiesKHR( m_device, static_cast<VkExternalMemoryHandleTypeFlagBitsKHR>( handleType ), handle, reinterpret_cast<VkMemoryWin32HandlePropertiesKHR*>( &memoryWin32HandleProperties ) ) );
+    return createResultValue( result, memoryWin32HandleProperties, "vk::Device::getMemoryWin32HandlePropertiesKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_WIN32_KHX*/
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
-  VULKAN_HPP_INLINE Result Device::getMemoryFdKHX( DeviceMemory memory, ExternalMemoryHandleTypeFlagBitsKHX handleType, int* pFd ) const
+  VULKAN_HPP_INLINE Result Device::getMemoryFdKHR( const MemoryGetFdInfoKHR* pGetFdInfo, int* pFd ) const
   {
-    return static_cast<Result>( vkGetMemoryFdKHX( m_device, static_cast<VkDeviceMemory>( memory ), static_cast<VkExternalMemoryHandleTypeFlagBitsKHX>( handleType ), pFd ) );
+    return static_cast<Result>( vkGetMemoryFdKHR( m_device, reinterpret_cast<const VkMemoryGetFdInfoKHR*>( pGetFdInfo ), pFd ) );
   }
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-  VULKAN_HPP_INLINE ResultValueType<int>::type Device::getMemoryFdKHX( DeviceMemory memory, ExternalMemoryHandleTypeFlagBitsKHX handleType ) const
+  VULKAN_HPP_INLINE ResultValueType<int>::type Device::getMemoryFdKHR( const MemoryGetFdInfoKHR & getFdInfo ) const
   {
     int fd;
-    Result result = static_cast<Result>( vkGetMemoryFdKHX( m_device, static_cast<VkDeviceMemory>( memory ), static_cast<VkExternalMemoryHandleTypeFlagBitsKHX>( handleType ), &fd ) );
-    return createResultValue( result, fd, "vk::Device::getMemoryFdKHX" );
+    Result result = static_cast<Result>( vkGetMemoryFdKHR( m_device, reinterpret_cast<const VkMemoryGetFdInfoKHR*>( &getFdInfo ), &fd ) );
+    return createResultValue( result, fd, "vk::Device::getMemoryFdKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-  VULKAN_HPP_INLINE Result Device::getMemoryFdPropertiesKHX( ExternalMemoryHandleTypeFlagBitsKHX handleType, int fd, MemoryFdPropertiesKHX* pMemoryFdProperties ) const
+  VULKAN_HPP_INLINE Result Device::getMemoryFdPropertiesKHR( ExternalMemoryHandleTypeFlagBitsKHR handleType, int fd, MemoryFdPropertiesKHR* pMemoryFdProperties ) const
   {
-    return static_cast<Result>( vkGetMemoryFdPropertiesKHX( m_device, static_cast<VkExternalMemoryHandleTypeFlagBitsKHX>( handleType ), fd, reinterpret_cast<VkMemoryFdPropertiesKHX*>( pMemoryFdProperties ) ) );
+    return static_cast<Result>( vkGetMemoryFdPropertiesKHR( m_device, static_cast<VkExternalMemoryHandleTypeFlagBitsKHR>( handleType ), fd, reinterpret_cast<VkMemoryFdPropertiesKHR*>( pMemoryFdProperties ) ) );
   }
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-  VULKAN_HPP_INLINE ResultValueType<MemoryFdPropertiesKHX>::type Device::getMemoryFdPropertiesKHX( ExternalMemoryHandleTypeFlagBitsKHX handleType, int fd ) const
+  VULKAN_HPP_INLINE ResultValueType<MemoryFdPropertiesKHR>::type Device::getMemoryFdPropertiesKHR( ExternalMemoryHandleTypeFlagBitsKHR handleType, int fd ) const
   {
-    MemoryFdPropertiesKHX memoryFdProperties;
-    Result result = static_cast<Result>( vkGetMemoryFdPropertiesKHX( m_device, static_cast<VkExternalMemoryHandleTypeFlagBitsKHX>( handleType ), fd, reinterpret_cast<VkMemoryFdPropertiesKHX*>( &memoryFdProperties ) ) );
-    return createResultValue( result, memoryFdProperties, "vk::Device::getMemoryFdPropertiesKHX" );
+    MemoryFdPropertiesKHR memoryFdProperties;
+    Result result = static_cast<Result>( vkGetMemoryFdPropertiesKHR( m_device, static_cast<VkExternalMemoryHandleTypeFlagBitsKHR>( handleType ), fd, reinterpret_cast<VkMemoryFdPropertiesKHR*>( &memoryFdProperties ) ) );
+    return createResultValue( result, memoryFdProperties, "vk::Device::getMemoryFdPropertiesKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifdef VK_USE_PLATFORM_WIN32_KHX
-  VULKAN_HPP_INLINE Result Device::getSemaphoreWin32HandleKHX( Semaphore semaphore, ExternalSemaphoreHandleTypeFlagBitsKHX handleType, HANDLE* pHandle ) const
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  VULKAN_HPP_INLINE Result Device::getSemaphoreWin32HandleKHR( const SemaphoreGetWin32HandleInfoKHR* pGetWin32HandleInfo, HANDLE* pHandle ) const
   {
-    return static_cast<Result>( vkGetSemaphoreWin32HandleKHX( m_device, static_cast<VkSemaphore>( semaphore ), static_cast<VkExternalSemaphoreHandleTypeFlagBitsKHX>( handleType ), pHandle ) );
+    return static_cast<Result>( vkGetSemaphoreWin32HandleKHR( m_device, reinterpret_cast<const VkSemaphoreGetWin32HandleInfoKHR*>( pGetWin32HandleInfo ), pHandle ) );
   }
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-  VULKAN_HPP_INLINE ResultValueType<HANDLE>::type Device::getSemaphoreWin32HandleKHX( Semaphore semaphore, ExternalSemaphoreHandleTypeFlagBitsKHX handleType ) const
+  VULKAN_HPP_INLINE ResultValueType<HANDLE>::type Device::getSemaphoreWin32HandleKHR( const SemaphoreGetWin32HandleInfoKHR & getWin32HandleInfo ) const
   {
     HANDLE handle;
-    Result result = static_cast<Result>( vkGetSemaphoreWin32HandleKHX( m_device, static_cast<VkSemaphore>( semaphore ), static_cast<VkExternalSemaphoreHandleTypeFlagBitsKHX>( handleType ), &handle ) );
-    return createResultValue( result, handle, "vk::Device::getSemaphoreWin32HandleKHX" );
+    Result result = static_cast<Result>( vkGetSemaphoreWin32HandleKHR( m_device, reinterpret_cast<const VkSemaphoreGetWin32HandleInfoKHR*>( &getWin32HandleInfo ), &handle ) );
+    return createResultValue( result, handle, "vk::Device::getSemaphoreWin32HandleKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_WIN32_KHX*/
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
-#ifdef VK_USE_PLATFORM_WIN32_KHX
-  VULKAN_HPP_INLINE Result Device::importSemaphoreWin32HandleKHX( const ImportSemaphoreWin32HandleInfoKHX* pImportSemaphoreWin32HandleInfo ) const
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  VULKAN_HPP_INLINE Result Device::importSemaphoreWin32HandleKHR( const ImportSemaphoreWin32HandleInfoKHR* pImportSemaphoreWin32HandleInfo ) const
   {
-    return static_cast<Result>( vkImportSemaphoreWin32HandleKHX( m_device, reinterpret_cast<const VkImportSemaphoreWin32HandleInfoKHX*>( pImportSemaphoreWin32HandleInfo ) ) );
+    return static_cast<Result>( vkImportSemaphoreWin32HandleKHR( m_device, reinterpret_cast<const VkImportSemaphoreWin32HandleInfoKHR*>( pImportSemaphoreWin32HandleInfo ) ) );
   }
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-  VULKAN_HPP_INLINE ResultValueType<void>::type Device::importSemaphoreWin32HandleKHX( const ImportSemaphoreWin32HandleInfoKHX & importSemaphoreWin32HandleInfo ) const
+  VULKAN_HPP_INLINE ResultValueType<void>::type Device::importSemaphoreWin32HandleKHR( const ImportSemaphoreWin32HandleInfoKHR & importSemaphoreWin32HandleInfo ) const
   {
-    Result result = static_cast<Result>( vkImportSemaphoreWin32HandleKHX( m_device, reinterpret_cast<const VkImportSemaphoreWin32HandleInfoKHX*>( &importSemaphoreWin32HandleInfo ) ) );
-    return createResultValue( result, "vk::Device::importSemaphoreWin32HandleKHX" );
+    Result result = static_cast<Result>( vkImportSemaphoreWin32HandleKHR( m_device, reinterpret_cast<const VkImportSemaphoreWin32HandleInfoKHR*>( &importSemaphoreWin32HandleInfo ) ) );
+    return createResultValue( result, "vk::Device::importSemaphoreWin32HandleKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_WIN32_KHX*/
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
-  VULKAN_HPP_INLINE Result Device::getSemaphoreFdKHX( Semaphore semaphore, ExternalSemaphoreHandleTypeFlagBitsKHX handleType, int* pFd ) const
+  VULKAN_HPP_INLINE Result Device::getSemaphoreFdKHR( const SemaphoreGetFdInfoKHR* pGetFdInfo, int* pFd ) const
   {
-    return static_cast<Result>( vkGetSemaphoreFdKHX( m_device, static_cast<VkSemaphore>( semaphore ), static_cast<VkExternalSemaphoreHandleTypeFlagBitsKHX>( handleType ), pFd ) );
+    return static_cast<Result>( vkGetSemaphoreFdKHR( m_device, reinterpret_cast<const VkSemaphoreGetFdInfoKHR*>( pGetFdInfo ), pFd ) );
   }
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-  VULKAN_HPP_INLINE ResultValueType<int>::type Device::getSemaphoreFdKHX( Semaphore semaphore, ExternalSemaphoreHandleTypeFlagBitsKHX handleType ) const
+  VULKAN_HPP_INLINE ResultValueType<int>::type Device::getSemaphoreFdKHR( const SemaphoreGetFdInfoKHR & getFdInfo ) const
   {
     int fd;
-    Result result = static_cast<Result>( vkGetSemaphoreFdKHX( m_device, static_cast<VkSemaphore>( semaphore ), static_cast<VkExternalSemaphoreHandleTypeFlagBitsKHX>( handleType ), &fd ) );
-    return createResultValue( result, fd, "vk::Device::getSemaphoreFdKHX" );
+    Result result = static_cast<Result>( vkGetSemaphoreFdKHR( m_device, reinterpret_cast<const VkSemaphoreGetFdInfoKHR*>( &getFdInfo ), &fd ) );
+    return createResultValue( result, fd, "vk::Device::getSemaphoreFdKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-  VULKAN_HPP_INLINE Result Device::importSemaphoreFdKHX( const ImportSemaphoreFdInfoKHX* pImportSemaphoreFdInfo ) const
+  VULKAN_HPP_INLINE Result Device::importSemaphoreFdKHR( const ImportSemaphoreFdInfoKHR* pImportSemaphoreFdInfo ) const
   {
-    return static_cast<Result>( vkImportSemaphoreFdKHX( m_device, reinterpret_cast<const VkImportSemaphoreFdInfoKHX*>( pImportSemaphoreFdInfo ) ) );
+    return static_cast<Result>( vkImportSemaphoreFdKHR( m_device, reinterpret_cast<const VkImportSemaphoreFdInfoKHR*>( pImportSemaphoreFdInfo ) ) );
   }
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-  VULKAN_HPP_INLINE ResultValueType<void>::type Device::importSemaphoreFdKHX( const ImportSemaphoreFdInfoKHX & importSemaphoreFdInfo ) const
+  VULKAN_HPP_INLINE ResultValueType<void>::type Device::importSemaphoreFdKHR( const ImportSemaphoreFdInfoKHR & importSemaphoreFdInfo ) const
   {
-    Result result = static_cast<Result>( vkImportSemaphoreFdKHX( m_device, reinterpret_cast<const VkImportSemaphoreFdInfoKHX*>( &importSemaphoreFdInfo ) ) );
-    return createResultValue( result, "vk::Device::importSemaphoreFdKHX" );
+    Result result = static_cast<Result>( vkImportSemaphoreFdKHR( m_device, reinterpret_cast<const VkImportSemaphoreFdInfoKHR*>( &importSemaphoreFdInfo ) ) );
+    return createResultValue( result, "vk::Device::importSemaphoreFdKHR" );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  VULKAN_HPP_INLINE Result Device::getFenceWin32HandleKHR( const FenceGetWin32HandleInfoKHR* pGetWin32HandleInfo, HANDLE* pHandle ) const
+  {
+    return static_cast<Result>( vkGetFenceWin32HandleKHR( m_device, reinterpret_cast<const VkFenceGetWin32HandleInfoKHR*>( pGetWin32HandleInfo ), pHandle ) );
+  }
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  VULKAN_HPP_INLINE ResultValueType<HANDLE>::type Device::getFenceWin32HandleKHR( const FenceGetWin32HandleInfoKHR & getWin32HandleInfo ) const
+  {
+    HANDLE handle;
+    Result result = static_cast<Result>( vkGetFenceWin32HandleKHR( m_device, reinterpret_cast<const VkFenceGetWin32HandleInfoKHR*>( &getWin32HandleInfo ), &handle ) );
+    return createResultValue( result, handle, "vk::Device::getFenceWin32HandleKHR" );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  VULKAN_HPP_INLINE Result Device::importFenceWin32HandleKHR( const ImportFenceWin32HandleInfoKHR* pImportFenceWin32HandleInfo ) const
+  {
+    return static_cast<Result>( vkImportFenceWin32HandleKHR( m_device, reinterpret_cast<const VkImportFenceWin32HandleInfoKHR*>( pImportFenceWin32HandleInfo ) ) );
+  }
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  VULKAN_HPP_INLINE ResultValueType<void>::type Device::importFenceWin32HandleKHR( const ImportFenceWin32HandleInfoKHR & importFenceWin32HandleInfo ) const
+  {
+    Result result = static_cast<Result>( vkImportFenceWin32HandleKHR( m_device, reinterpret_cast<const VkImportFenceWin32HandleInfoKHR*>( &importFenceWin32HandleInfo ) ) );
+    return createResultValue( result, "vk::Device::importFenceWin32HandleKHR" );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
+  VULKAN_HPP_INLINE Result Device::getFenceFdKHR( const FenceGetFdInfoKHR* pGetFdInfo, int* pFd ) const
+  {
+    return static_cast<Result>( vkGetFenceFdKHR( m_device, reinterpret_cast<const VkFenceGetFdInfoKHR*>( pGetFdInfo ), pFd ) );
+  }
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  VULKAN_HPP_INLINE ResultValueType<int>::type Device::getFenceFdKHR( const FenceGetFdInfoKHR & getFdInfo ) const
+  {
+    int fd;
+    Result result = static_cast<Result>( vkGetFenceFdKHR( m_device, reinterpret_cast<const VkFenceGetFdInfoKHR*>( &getFdInfo ), &fd ) );
+    return createResultValue( result, fd, "vk::Device::getFenceFdKHR" );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  VULKAN_HPP_INLINE Result Device::importFenceFdKHR( const ImportFenceFdInfoKHR* pImportFenceFdInfo ) const
+  {
+    return static_cast<Result>( vkImportFenceFdKHR( m_device, reinterpret_cast<const VkImportFenceFdInfoKHR*>( pImportFenceFdInfo ) ) );
+  }
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  VULKAN_HPP_INLINE ResultValueType<void>::type Device::importFenceFdKHR( const ImportFenceFdInfoKHR & importFenceFdInfo ) const
+  {
+    Result result = static_cast<Result>( vkImportFenceFdKHR( m_device, reinterpret_cast<const VkImportFenceFdInfoKHR*>( &importFenceFdInfo ) ) );
+    return createResultValue( result, "vk::Device::importFenceFdKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -25898,6 +27935,49 @@ namespace vk
       result = static_cast<Result>( vkGetPastPresentationTimingGOOGLE( m_device, static_cast<VkSwapchainKHR>( swapchain ), &presentationTimingCount, reinterpret_cast<VkPastPresentationTimingGOOGLE*>( presentationTimings.data() ) ) );
     }
     return createResultValue( result, presentationTimings, "vk::Device::getPastPresentationTimingGOOGLE" );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  VULKAN_HPP_INLINE void Device::getBufferMemoryRequirements2KHR( const BufferMemoryRequirementsInfo2KHR* pInfo, MemoryRequirements2KHR* pMemoryRequirements ) const
+  {
+    vkGetBufferMemoryRequirements2KHR( m_device, reinterpret_cast<const VkBufferMemoryRequirementsInfo2KHR*>( pInfo ), reinterpret_cast<VkMemoryRequirements2KHR*>( pMemoryRequirements ) );
+  }
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  VULKAN_HPP_INLINE MemoryRequirements2KHR Device::getBufferMemoryRequirements2KHR( const BufferMemoryRequirementsInfo2KHR & info ) const
+  {
+    MemoryRequirements2KHR memoryRequirements;
+    vkGetBufferMemoryRequirements2KHR( m_device, reinterpret_cast<const VkBufferMemoryRequirementsInfo2KHR*>( &info ), reinterpret_cast<VkMemoryRequirements2KHR*>( &memoryRequirements ) );
+    return memoryRequirements;
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  VULKAN_HPP_INLINE void Device::getImageMemoryRequirements2KHR( const ImageMemoryRequirementsInfo2KHR* pInfo, MemoryRequirements2KHR* pMemoryRequirements ) const
+  {
+    vkGetImageMemoryRequirements2KHR( m_device, reinterpret_cast<const VkImageMemoryRequirementsInfo2KHR*>( pInfo ), reinterpret_cast<VkMemoryRequirements2KHR*>( pMemoryRequirements ) );
+  }
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  VULKAN_HPP_INLINE MemoryRequirements2KHR Device::getImageMemoryRequirements2KHR( const ImageMemoryRequirementsInfo2KHR & info ) const
+  {
+    MemoryRequirements2KHR memoryRequirements;
+    vkGetImageMemoryRequirements2KHR( m_device, reinterpret_cast<const VkImageMemoryRequirementsInfo2KHR*>( &info ), reinterpret_cast<VkMemoryRequirements2KHR*>( &memoryRequirements ) );
+    return memoryRequirements;
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  VULKAN_HPP_INLINE void Device::getImageSparseMemoryRequirements2KHR( const ImageSparseMemoryRequirementsInfo2KHR* pInfo, uint32_t* pSparseMemoryRequirementCount, SparseImageMemoryRequirements2KHR* pSparseMemoryRequirements ) const
+  {
+    vkGetImageSparseMemoryRequirements2KHR( m_device, reinterpret_cast<const VkImageSparseMemoryRequirementsInfo2KHR*>( pInfo ), pSparseMemoryRequirementCount, reinterpret_cast<VkSparseImageMemoryRequirements2KHR*>( pSparseMemoryRequirements ) );
+  }
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Allocator> 
+  VULKAN_HPP_INLINE std::vector<SparseImageMemoryRequirements2KHR,Allocator> Device::getImageSparseMemoryRequirements2KHR( const ImageSparseMemoryRequirementsInfo2KHR & info ) const
+  {
+    std::vector<SparseImageMemoryRequirements2KHR,Allocator> sparseMemoryRequirements;
+    uint32_t sparseMemoryRequirementCount;
+    vkGetImageSparseMemoryRequirements2KHR( m_device, reinterpret_cast<const VkImageSparseMemoryRequirementsInfo2KHR*>( &info ), &sparseMemoryRequirementCount, nullptr );
+    sparseMemoryRequirements.resize( sparseMemoryRequirementCount );
+    vkGetImageSparseMemoryRequirements2KHR( m_device, reinterpret_cast<const VkImageSparseMemoryRequirementsInfo2KHR*>( &info ), &sparseMemoryRequirementCount, reinterpret_cast<VkSparseImageMemoryRequirements2KHR*>( sparseMemoryRequirements.data() ) );
+    return sparseMemoryRequirements;
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -26142,14 +28222,19 @@ namespace vk
     std::vector<SparseImageFormatProperties2KHR,Allocator> getSparseImageFormatProperties2KHR( const PhysicalDeviceSparseImageFormatInfo2KHR & formatInfo ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-    void getExternalBufferPropertiesKHX( const PhysicalDeviceExternalBufferInfoKHX* pExternalBufferInfo, ExternalBufferPropertiesKHX* pExternalBufferProperties ) const;
+    void getExternalBufferPropertiesKHR( const PhysicalDeviceExternalBufferInfoKHR* pExternalBufferInfo, ExternalBufferPropertiesKHR* pExternalBufferProperties ) const;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    ExternalBufferPropertiesKHX getExternalBufferPropertiesKHX( const PhysicalDeviceExternalBufferInfoKHX & externalBufferInfo ) const;
+    ExternalBufferPropertiesKHR getExternalBufferPropertiesKHR( const PhysicalDeviceExternalBufferInfoKHR & externalBufferInfo ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-    void getExternalSemaphorePropertiesKHX( const PhysicalDeviceExternalSemaphoreInfoKHX* pExternalSemaphoreInfo, ExternalSemaphorePropertiesKHX* pExternalSemaphoreProperties ) const;
+    void getExternalSemaphorePropertiesKHR( const PhysicalDeviceExternalSemaphoreInfoKHR* pExternalSemaphoreInfo, ExternalSemaphorePropertiesKHR* pExternalSemaphoreProperties ) const;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    ExternalSemaphorePropertiesKHX getExternalSemaphorePropertiesKHX( const PhysicalDeviceExternalSemaphoreInfoKHX & externalSemaphoreInfo ) const;
+    ExternalSemaphorePropertiesKHR getExternalSemaphorePropertiesKHR( const PhysicalDeviceExternalSemaphoreInfoKHR & externalSemaphoreInfo ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    void getExternalFencePropertiesKHR( const PhysicalDeviceExternalFenceInfoKHR* pExternalFenceInfo, ExternalFencePropertiesKHR* pExternalFenceProperties ) const;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    ExternalFencePropertiesKHR getExternalFencePropertiesKHR( const PhysicalDeviceExternalFenceInfoKHR & externalFenceInfo ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
 #ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
@@ -26798,29 +28883,42 @@ namespace vk
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-  VULKAN_HPP_INLINE void PhysicalDevice::getExternalBufferPropertiesKHX( const PhysicalDeviceExternalBufferInfoKHX* pExternalBufferInfo, ExternalBufferPropertiesKHX* pExternalBufferProperties ) const
+  VULKAN_HPP_INLINE void PhysicalDevice::getExternalBufferPropertiesKHR( const PhysicalDeviceExternalBufferInfoKHR* pExternalBufferInfo, ExternalBufferPropertiesKHR* pExternalBufferProperties ) const
   {
-    vkGetPhysicalDeviceExternalBufferPropertiesKHX( m_physicalDevice, reinterpret_cast<const VkPhysicalDeviceExternalBufferInfoKHX*>( pExternalBufferInfo ), reinterpret_cast<VkExternalBufferPropertiesKHX*>( pExternalBufferProperties ) );
+    vkGetPhysicalDeviceExternalBufferPropertiesKHR( m_physicalDevice, reinterpret_cast<const VkPhysicalDeviceExternalBufferInfoKHR*>( pExternalBufferInfo ), reinterpret_cast<VkExternalBufferPropertiesKHR*>( pExternalBufferProperties ) );
   }
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-  VULKAN_HPP_INLINE ExternalBufferPropertiesKHX PhysicalDevice::getExternalBufferPropertiesKHX( const PhysicalDeviceExternalBufferInfoKHX & externalBufferInfo ) const
+  VULKAN_HPP_INLINE ExternalBufferPropertiesKHR PhysicalDevice::getExternalBufferPropertiesKHR( const PhysicalDeviceExternalBufferInfoKHR & externalBufferInfo ) const
   {
-    ExternalBufferPropertiesKHX externalBufferProperties;
-    vkGetPhysicalDeviceExternalBufferPropertiesKHX( m_physicalDevice, reinterpret_cast<const VkPhysicalDeviceExternalBufferInfoKHX*>( &externalBufferInfo ), reinterpret_cast<VkExternalBufferPropertiesKHX*>( &externalBufferProperties ) );
+    ExternalBufferPropertiesKHR externalBufferProperties;
+    vkGetPhysicalDeviceExternalBufferPropertiesKHR( m_physicalDevice, reinterpret_cast<const VkPhysicalDeviceExternalBufferInfoKHR*>( &externalBufferInfo ), reinterpret_cast<VkExternalBufferPropertiesKHR*>( &externalBufferProperties ) );
     return externalBufferProperties;
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-  VULKAN_HPP_INLINE void PhysicalDevice::getExternalSemaphorePropertiesKHX( const PhysicalDeviceExternalSemaphoreInfoKHX* pExternalSemaphoreInfo, ExternalSemaphorePropertiesKHX* pExternalSemaphoreProperties ) const
+  VULKAN_HPP_INLINE void PhysicalDevice::getExternalSemaphorePropertiesKHR( const PhysicalDeviceExternalSemaphoreInfoKHR* pExternalSemaphoreInfo, ExternalSemaphorePropertiesKHR* pExternalSemaphoreProperties ) const
   {
-    vkGetPhysicalDeviceExternalSemaphorePropertiesKHX( m_physicalDevice, reinterpret_cast<const VkPhysicalDeviceExternalSemaphoreInfoKHX*>( pExternalSemaphoreInfo ), reinterpret_cast<VkExternalSemaphorePropertiesKHX*>( pExternalSemaphoreProperties ) );
+    vkGetPhysicalDeviceExternalSemaphorePropertiesKHR( m_physicalDevice, reinterpret_cast<const VkPhysicalDeviceExternalSemaphoreInfoKHR*>( pExternalSemaphoreInfo ), reinterpret_cast<VkExternalSemaphorePropertiesKHR*>( pExternalSemaphoreProperties ) );
   }
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-  VULKAN_HPP_INLINE ExternalSemaphorePropertiesKHX PhysicalDevice::getExternalSemaphorePropertiesKHX( const PhysicalDeviceExternalSemaphoreInfoKHX & externalSemaphoreInfo ) const
+  VULKAN_HPP_INLINE ExternalSemaphorePropertiesKHR PhysicalDevice::getExternalSemaphorePropertiesKHR( const PhysicalDeviceExternalSemaphoreInfoKHR & externalSemaphoreInfo ) const
   {
-    ExternalSemaphorePropertiesKHX externalSemaphoreProperties;
-    vkGetPhysicalDeviceExternalSemaphorePropertiesKHX( m_physicalDevice, reinterpret_cast<const VkPhysicalDeviceExternalSemaphoreInfoKHX*>( &externalSemaphoreInfo ), reinterpret_cast<VkExternalSemaphorePropertiesKHX*>( &externalSemaphoreProperties ) );
+    ExternalSemaphorePropertiesKHR externalSemaphoreProperties;
+    vkGetPhysicalDeviceExternalSemaphorePropertiesKHR( m_physicalDevice, reinterpret_cast<const VkPhysicalDeviceExternalSemaphoreInfoKHR*>( &externalSemaphoreInfo ), reinterpret_cast<VkExternalSemaphorePropertiesKHR*>( &externalSemaphoreProperties ) );
     return externalSemaphoreProperties;
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  VULKAN_HPP_INLINE void PhysicalDevice::getExternalFencePropertiesKHR( const PhysicalDeviceExternalFenceInfoKHR* pExternalFenceInfo, ExternalFencePropertiesKHR* pExternalFenceProperties ) const
+  {
+    vkGetPhysicalDeviceExternalFencePropertiesKHR( m_physicalDevice, reinterpret_cast<const VkPhysicalDeviceExternalFenceInfoKHR*>( pExternalFenceInfo ), reinterpret_cast<VkExternalFencePropertiesKHR*>( pExternalFenceProperties ) );
+  }
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  VULKAN_HPP_INLINE ExternalFencePropertiesKHR PhysicalDevice::getExternalFencePropertiesKHR( const PhysicalDeviceExternalFenceInfoKHR & externalFenceInfo ) const
+  {
+    ExternalFencePropertiesKHR externalFenceProperties;
+    vkGetPhysicalDeviceExternalFencePropertiesKHR( m_physicalDevice, reinterpret_cast<const VkPhysicalDeviceExternalFenceInfoKHR*>( &externalFenceInfo ), reinterpret_cast<VkExternalFencePropertiesKHR*>( &externalFenceProperties ) );
+    return externalFenceProperties;
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -28287,6 +30385,26 @@ namespace vk
     return "{}";
   }
 
+  VULKAN_HPP_INLINE std::string to_string(PipelineCoverageToColorStateCreateFlagBitsNV)
+  {
+    return "(void)";
+  }
+
+  VULKAN_HPP_INLINE std::string to_string(PipelineCoverageToColorStateCreateFlagsNV)
+  {
+    return "{}";
+  }
+
+  VULKAN_HPP_INLINE std::string to_string(PipelineCoverageModulationStateCreateFlagBitsNV)
+  {
+    return "(void)";
+  }
+
+  VULKAN_HPP_INLINE std::string to_string(PipelineCoverageModulationStateCreateFlagsNV)
+  {
+    return "{}";
+  }
+
   VULKAN_HPP_INLINE std::string to_string(ImageLayout value)
   {
     switch (value)
@@ -28547,6 +30665,7 @@ namespace vk
     case PolygonMode::eFill: return "Fill";
     case PolygonMode::eLine: return "Line";
     case PolygonMode::ePoint: return "Point";
+    case PolygonMode::eFillRectangleNV: return "FillRectangleNV";
     default: return "invalid";
     }
   }
@@ -28620,6 +30739,52 @@ namespace vk
     case BlendOp::eReverseSubtract: return "ReverseSubtract";
     case BlendOp::eMin: return "Min";
     case BlendOp::eMax: return "Max";
+    case BlendOp::eZeroEXT: return "ZeroEXT";
+    case BlendOp::eSrcEXT: return "SrcEXT";
+    case BlendOp::eDstEXT: return "DstEXT";
+    case BlendOp::eSrcOverEXT: return "SrcOverEXT";
+    case BlendOp::eDstOverEXT: return "DstOverEXT";
+    case BlendOp::eSrcInEXT: return "SrcInEXT";
+    case BlendOp::eDstInEXT: return "DstInEXT";
+    case BlendOp::eSrcOutEXT: return "SrcOutEXT";
+    case BlendOp::eDstOutEXT: return "DstOutEXT";
+    case BlendOp::eSrcAtopEXT: return "SrcAtopEXT";
+    case BlendOp::eDstAtopEXT: return "DstAtopEXT";
+    case BlendOp::eXorEXT: return "XorEXT";
+    case BlendOp::eMultiplyEXT: return "MultiplyEXT";
+    case BlendOp::eScreenEXT: return "ScreenEXT";
+    case BlendOp::eOverlayEXT: return "OverlayEXT";
+    case BlendOp::eDarkenEXT: return "DarkenEXT";
+    case BlendOp::eLightenEXT: return "LightenEXT";
+    case BlendOp::eColordodgeEXT: return "ColordodgeEXT";
+    case BlendOp::eColorburnEXT: return "ColorburnEXT";
+    case BlendOp::eHardlightEXT: return "HardlightEXT";
+    case BlendOp::eSoftlightEXT: return "SoftlightEXT";
+    case BlendOp::eDifferenceEXT: return "DifferenceEXT";
+    case BlendOp::eExclusionEXT: return "ExclusionEXT";
+    case BlendOp::eInvertEXT: return "InvertEXT";
+    case BlendOp::eInvertRgbEXT: return "InvertRgbEXT";
+    case BlendOp::eLineardodgeEXT: return "LineardodgeEXT";
+    case BlendOp::eLinearburnEXT: return "LinearburnEXT";
+    case BlendOp::eVividlightEXT: return "VividlightEXT";
+    case BlendOp::eLinearlightEXT: return "LinearlightEXT";
+    case BlendOp::ePinlightEXT: return "PinlightEXT";
+    case BlendOp::eHardmixEXT: return "HardmixEXT";
+    case BlendOp::eHslHueEXT: return "HslHueEXT";
+    case BlendOp::eHslSaturationEXT: return "HslSaturationEXT";
+    case BlendOp::eHslColorEXT: return "HslColorEXT";
+    case BlendOp::eHslLuminosityEXT: return "HslLuminosityEXT";
+    case BlendOp::ePlusEXT: return "PlusEXT";
+    case BlendOp::ePlusClampedEXT: return "PlusClampedEXT";
+    case BlendOp::ePlusClampedAlphaEXT: return "PlusClampedAlphaEXT";
+    case BlendOp::ePlusDarkerEXT: return "PlusDarkerEXT";
+    case BlendOp::eMinusEXT: return "MinusEXT";
+    case BlendOp::eMinusClampedEXT: return "MinusClampedEXT";
+    case BlendOp::eContrastEXT: return "ContrastEXT";
+    case BlendOp::eInvertOvgEXT: return "InvertOvgEXT";
+    case BlendOp::eRedEXT: return "RedEXT";
+    case BlendOp::eGreenEXT: return "GreenEXT";
+    case BlendOp::eBlueEXT: return "BlueEXT";
     default: return "invalid";
     }
   }
@@ -29017,28 +31182,33 @@ namespace vk
     case StructureType::eViSurfaceCreateInfoNN: return "ViSurfaceCreateInfoNN";
     case StructureType::ePhysicalDeviceGroupPropertiesKHX: return "PhysicalDeviceGroupPropertiesKHX";
     case StructureType::eDeviceGroupDeviceCreateInfoKHX: return "DeviceGroupDeviceCreateInfoKHX";
-    case StructureType::ePhysicalDeviceExternalImageFormatInfoKHX: return "PhysicalDeviceExternalImageFormatInfoKHX";
-    case StructureType::eExternalImageFormatPropertiesKHX: return "ExternalImageFormatPropertiesKHX";
-    case StructureType::ePhysicalDeviceExternalBufferInfoKHX: return "PhysicalDeviceExternalBufferInfoKHX";
-    case StructureType::eExternalBufferPropertiesKHX: return "ExternalBufferPropertiesKHX";
-    case StructureType::ePhysicalDeviceIdPropertiesKHX: return "PhysicalDeviceIdPropertiesKHX";
-    case StructureType::eExternalMemoryBufferCreateInfoKHX: return "ExternalMemoryBufferCreateInfoKHX";
-    case StructureType::eExternalMemoryImageCreateInfoKHX: return "ExternalMemoryImageCreateInfoKHX";
-    case StructureType::eExportMemoryAllocateInfoKHX: return "ExportMemoryAllocateInfoKHX";
-    case StructureType::eImportMemoryWin32HandleInfoKHX: return "ImportMemoryWin32HandleInfoKHX";
-    case StructureType::eExportMemoryWin32HandleInfoKHX: return "ExportMemoryWin32HandleInfoKHX";
-    case StructureType::eMemoryWin32HandlePropertiesKHX: return "MemoryWin32HandlePropertiesKHX";
-    case StructureType::eImportMemoryFdInfoKHX: return "ImportMemoryFdInfoKHX";
-    case StructureType::eMemoryFdPropertiesKHX: return "MemoryFdPropertiesKHX";
-    case StructureType::eWin32KeyedMutexAcquireReleaseInfoKHX: return "Win32KeyedMutexAcquireReleaseInfoKHX";
-    case StructureType::ePhysicalDeviceExternalSemaphoreInfoKHX: return "PhysicalDeviceExternalSemaphoreInfoKHX";
-    case StructureType::eExternalSemaphorePropertiesKHX: return "ExternalSemaphorePropertiesKHX";
-    case StructureType::eExportSemaphoreCreateInfoKHX: return "ExportSemaphoreCreateInfoKHX";
-    case StructureType::eImportSemaphoreWin32HandleInfoKHX: return "ImportSemaphoreWin32HandleInfoKHX";
-    case StructureType::eExportSemaphoreWin32HandleInfoKHX: return "ExportSemaphoreWin32HandleInfoKHX";
-    case StructureType::eD3D12FenceSubmitInfoKHX: return "D3D12FenceSubmitInfoKHX";
-    case StructureType::eImportSemaphoreFdInfoKHX: return "ImportSemaphoreFdInfoKHX";
+    case StructureType::ePhysicalDeviceExternalImageFormatInfoKHR: return "PhysicalDeviceExternalImageFormatInfoKHR";
+    case StructureType::eExternalImageFormatPropertiesKHR: return "ExternalImageFormatPropertiesKHR";
+    case StructureType::ePhysicalDeviceExternalBufferInfoKHR: return "PhysicalDeviceExternalBufferInfoKHR";
+    case StructureType::eExternalBufferPropertiesKHR: return "ExternalBufferPropertiesKHR";
+    case StructureType::ePhysicalDeviceIdPropertiesKHR: return "PhysicalDeviceIdPropertiesKHR";
+    case StructureType::eExternalMemoryBufferCreateInfoKHR: return "ExternalMemoryBufferCreateInfoKHR";
+    case StructureType::eExternalMemoryImageCreateInfoKHR: return "ExternalMemoryImageCreateInfoKHR";
+    case StructureType::eExportMemoryAllocateInfoKHR: return "ExportMemoryAllocateInfoKHR";
+    case StructureType::eImportMemoryWin32HandleInfoKHR: return "ImportMemoryWin32HandleInfoKHR";
+    case StructureType::eExportMemoryWin32HandleInfoKHR: return "ExportMemoryWin32HandleInfoKHR";
+    case StructureType::eMemoryWin32HandlePropertiesKHR: return "MemoryWin32HandlePropertiesKHR";
+    case StructureType::eMemoryGetWin32HandleInfoKHR: return "MemoryGetWin32HandleInfoKHR";
+    case StructureType::eImportMemoryFdInfoKHR: return "ImportMemoryFdInfoKHR";
+    case StructureType::eMemoryFdPropertiesKHR: return "MemoryFdPropertiesKHR";
+    case StructureType::eMemoryGetFdInfoKHR: return "MemoryGetFdInfoKHR";
+    case StructureType::eWin32KeyedMutexAcquireReleaseInfoKHR: return "Win32KeyedMutexAcquireReleaseInfoKHR";
+    case StructureType::ePhysicalDeviceExternalSemaphoreInfoKHR: return "PhysicalDeviceExternalSemaphoreInfoKHR";
+    case StructureType::eExternalSemaphorePropertiesKHR: return "ExternalSemaphorePropertiesKHR";
+    case StructureType::eExportSemaphoreCreateInfoKHR: return "ExportSemaphoreCreateInfoKHR";
+    case StructureType::eImportSemaphoreWin32HandleInfoKHR: return "ImportSemaphoreWin32HandleInfoKHR";
+    case StructureType::eExportSemaphoreWin32HandleInfoKHR: return "ExportSemaphoreWin32HandleInfoKHR";
+    case StructureType::eD3D12FenceSubmitInfoKHR: return "D3D12FenceSubmitInfoKHR";
+    case StructureType::eSemaphoreGetWin32HandleInfoKHR: return "SemaphoreGetWin32HandleInfoKHR";
+    case StructureType::eImportSemaphoreFdInfoKHR: return "ImportSemaphoreFdInfoKHR";
+    case StructureType::eSemaphoreGetFdInfoKHR: return "SemaphoreGetFdInfoKHR";
     case StructureType::ePhysicalDevicePushDescriptorPropertiesKHR: return "PhysicalDevicePushDescriptorPropertiesKHR";
+    case StructureType::ePhysicalDevice16BitStorageFeaturesKHR: return "PhysicalDevice16BitStorageFeaturesKHR";
     case StructureType::ePresentRegionsKHR: return "PresentRegionsKHR";
     case StructureType::eDescriptorUpdateTemplateCreateInfoKHR: return "DescriptorUpdateTemplateCreateInfoKHR";
     case StructureType::eObjectTableCreateInfoNVX: return "ObjectTableCreateInfoNVX";
@@ -29060,11 +31230,34 @@ namespace vk
     case StructureType::ePipelineDiscardRectangleStateCreateInfoEXT: return "PipelineDiscardRectangleStateCreateInfoEXT";
     case StructureType::eHdrMetadataEXT: return "HdrMetadataEXT";
     case StructureType::eSharedPresentSurfaceCapabilitiesKHR: return "SharedPresentSurfaceCapabilitiesKHR";
+    case StructureType::ePhysicalDeviceExternalFenceInfoKHR: return "PhysicalDeviceExternalFenceInfoKHR";
+    case StructureType::eExternalFencePropertiesKHR: return "ExternalFencePropertiesKHR";
+    case StructureType::eExportFenceCreateInfoKHR: return "ExportFenceCreateInfoKHR";
+    case StructureType::eImportFenceWin32HandleInfoKHR: return "ImportFenceWin32HandleInfoKHR";
+    case StructureType::eExportFenceWin32HandleInfoKHR: return "ExportFenceWin32HandleInfoKHR";
+    case StructureType::eFenceGetWin32HandleInfoKHR: return "FenceGetWin32HandleInfoKHR";
+    case StructureType::eImportFenceFdInfoKHR: return "ImportFenceFdInfoKHR";
+    case StructureType::eFenceGetFdInfoKHR: return "FenceGetFdInfoKHR";
     case StructureType::ePhysicalDeviceSurfaceInfo2KHR: return "PhysicalDeviceSurfaceInfo2KHR";
     case StructureType::eSurfaceCapabilities2KHR: return "SurfaceCapabilities2KHR";
     case StructureType::eSurfaceFormat2KHR: return "SurfaceFormat2KHR";
+    case StructureType::ePhysicalDeviceVariablePointerFeaturesKHR: return "PhysicalDeviceVariablePointerFeaturesKHR";
     case StructureType::eIosSurfaceCreateInfoMVK: return "IosSurfaceCreateInfoMVK";
     case StructureType::eMacosSurfaceCreateInfoMVK: return "MacosSurfaceCreateInfoMVK";
+    case StructureType::eMemoryDedicatedRequirementsKHR: return "MemoryDedicatedRequirementsKHR";
+    case StructureType::eMemoryDedicatedAllocateInfoKHR: return "MemoryDedicatedAllocateInfoKHR";
+    case StructureType::ePhysicalDeviceSamplerFilterMinmaxPropertiesEXT: return "PhysicalDeviceSamplerFilterMinmaxPropertiesEXT";
+    case StructureType::eSamplerReductionModeCreateInfoEXT: return "SamplerReductionModeCreateInfoEXT";
+    case StructureType::eBufferMemoryRequirementsInfo2KHR: return "BufferMemoryRequirementsInfo2KHR";
+    case StructureType::eImageMemoryRequirementsInfo2KHR: return "ImageMemoryRequirementsInfo2KHR";
+    case StructureType::eImageSparseMemoryRequirementsInfo2KHR: return "ImageSparseMemoryRequirementsInfo2KHR";
+    case StructureType::eMemoryRequirements2KHR: return "MemoryRequirements2KHR";
+    case StructureType::eSparseImageMemoryRequirements2KHR: return "SparseImageMemoryRequirements2KHR";
+    case StructureType::ePhysicalDeviceBlendOperationAdvancedFeaturesEXT: return "PhysicalDeviceBlendOperationAdvancedFeaturesEXT";
+    case StructureType::ePhysicalDeviceBlendOperationAdvancedPropertiesEXT: return "PhysicalDeviceBlendOperationAdvancedPropertiesEXT";
+    case StructureType::ePipelineColorBlendAdvancedStateCreateInfoEXT: return "PipelineColorBlendAdvancedStateCreateInfoEXT";
+    case StructureType::ePipelineCoverageToColorStateCreateInfoNV: return "PipelineCoverageToColorStateCreateInfoNV";
+    case StructureType::ePipelineCoverageModulationStateCreateInfoNV: return "PipelineCoverageModulationStateCreateInfoNV";
     default: return "invalid";
     }
   }
@@ -29240,6 +31433,7 @@ namespace vk
     case AccessFlagBits::eMemoryWrite: return "MemoryWrite";
     case AccessFlagBits::eCommandProcessReadNVX: return "CommandProcessReadNVX";
     case AccessFlagBits::eCommandProcessWriteNVX: return "CommandProcessWriteNVX";
+    case AccessFlagBits::eColorAttachmentReadNoncoherentEXT: return "ColorAttachmentReadNoncoherentEXT";
     default: return "invalid";
     }
   }
@@ -29267,6 +31461,7 @@ namespace vk
     if (value & AccessFlagBits::eMemoryWrite) result += "MemoryWrite | ";
     if (value & AccessFlagBits::eCommandProcessReadNVX) result += "CommandProcessReadNVX | ";
     if (value & AccessFlagBits::eCommandProcessWriteNVX) result += "CommandProcessWriteNVX | ";
+    if (value & AccessFlagBits::eColorAttachmentReadNoncoherentEXT) result += "ColorAttachmentReadNoncoherentEXT | ";
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
@@ -29500,6 +31695,7 @@ namespace vk
     case FormatFeatureFlagBits::eSampledImageFilterCubicIMG: return "SampledImageFilterCubicIMG";
     case FormatFeatureFlagBits::eTransferSrcKHR: return "TransferSrcKHR";
     case FormatFeatureFlagBits::eTransferDstKHR: return "TransferDstKHR";
+    case FormatFeatureFlagBits::eSampledImageFilterMinmaxEXT: return "SampledImageFilterMinmaxEXT";
     default: return "invalid";
     }
   }
@@ -29524,6 +31720,7 @@ namespace vk
     if (value & FormatFeatureFlagBits::eSampledImageFilterCubicIMG) result += "SampledImageFilterCubicIMG | ";
     if (value & FormatFeatureFlagBits::eTransferSrcKHR) result += "TransferSrcKHR | ";
     if (value & FormatFeatureFlagBits::eTransferDstKHR) result += "TransferDstKHR | ";
+    if (value & FormatFeatureFlagBits::eSampledImageFilterMinmaxEXT) result += "SampledImageFilterMinmaxEXT | ";
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
@@ -29927,6 +32124,7 @@ namespace vk
     case ColorSpaceKHR::eAdobergbLinearEXT: return "AdobergbLinearEXT";
     case ColorSpaceKHR::eAdobergbNonlinearEXT: return "AdobergbNonlinearEXT";
     case ColorSpaceKHR::ePassThroughEXT: return "PassThroughEXT";
+    case ColorSpaceKHR::eExtendedSrgbNonlinearEXT: return "ExtendedSrgbNonlinearEXT";
     default: return "invalid";
     }
   }
@@ -30229,97 +32427,173 @@ namespace vk
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
-  VULKAN_HPP_INLINE std::string to_string(ExternalMemoryHandleTypeFlagBitsKHX value)
+  VULKAN_HPP_INLINE std::string to_string(ExternalMemoryHandleTypeFlagBitsKHR value)
   {
     switch (value)
     {
-    case ExternalMemoryHandleTypeFlagBitsKHX::eOpaqueFd: return "OpaqueFd";
-    case ExternalMemoryHandleTypeFlagBitsKHX::eOpaqueWin32: return "OpaqueWin32";
-    case ExternalMemoryHandleTypeFlagBitsKHX::eOpaqueWin32Kmt: return "OpaqueWin32Kmt";
-    case ExternalMemoryHandleTypeFlagBitsKHX::eD3D11Texture: return "D3D11Texture";
-    case ExternalMemoryHandleTypeFlagBitsKHX::eD3D11TextureKmt: return "D3D11TextureKmt";
-    case ExternalMemoryHandleTypeFlagBitsKHX::eD3D12Heap: return "D3D12Heap";
-    case ExternalMemoryHandleTypeFlagBitsKHX::eD3D12Resource: return "D3D12Resource";
+    case ExternalMemoryHandleTypeFlagBitsKHR::eOpaqueFd: return "OpaqueFd";
+    case ExternalMemoryHandleTypeFlagBitsKHR::eOpaqueWin32: return "OpaqueWin32";
+    case ExternalMemoryHandleTypeFlagBitsKHR::eOpaqueWin32Kmt: return "OpaqueWin32Kmt";
+    case ExternalMemoryHandleTypeFlagBitsKHR::eD3D11Texture: return "D3D11Texture";
+    case ExternalMemoryHandleTypeFlagBitsKHR::eD3D11TextureKmt: return "D3D11TextureKmt";
+    case ExternalMemoryHandleTypeFlagBitsKHR::eD3D12Heap: return "D3D12Heap";
+    case ExternalMemoryHandleTypeFlagBitsKHR::eD3D12Resource: return "D3D12Resource";
     default: return "invalid";
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string(ExternalMemoryHandleTypeFlagsKHX value)
+  VULKAN_HPP_INLINE std::string to_string(ExternalMemoryHandleTypeFlagsKHR value)
   {
     if (!value) return "{}";
     std::string result;
-    if (value & ExternalMemoryHandleTypeFlagBitsKHX::eOpaqueFd) result += "OpaqueFd | ";
-    if (value & ExternalMemoryHandleTypeFlagBitsKHX::eOpaqueWin32) result += "OpaqueWin32 | ";
-    if (value & ExternalMemoryHandleTypeFlagBitsKHX::eOpaqueWin32Kmt) result += "OpaqueWin32Kmt | ";
-    if (value & ExternalMemoryHandleTypeFlagBitsKHX::eD3D11Texture) result += "D3D11Texture | ";
-    if (value & ExternalMemoryHandleTypeFlagBitsKHX::eD3D11TextureKmt) result += "D3D11TextureKmt | ";
-    if (value & ExternalMemoryHandleTypeFlagBitsKHX::eD3D12Heap) result += "D3D12Heap | ";
-    if (value & ExternalMemoryHandleTypeFlagBitsKHX::eD3D12Resource) result += "D3D12Resource | ";
+    if (value & ExternalMemoryHandleTypeFlagBitsKHR::eOpaqueFd) result += "OpaqueFd | ";
+    if (value & ExternalMemoryHandleTypeFlagBitsKHR::eOpaqueWin32) result += "OpaqueWin32 | ";
+    if (value & ExternalMemoryHandleTypeFlagBitsKHR::eOpaqueWin32Kmt) result += "OpaqueWin32Kmt | ";
+    if (value & ExternalMemoryHandleTypeFlagBitsKHR::eD3D11Texture) result += "D3D11Texture | ";
+    if (value & ExternalMemoryHandleTypeFlagBitsKHR::eD3D11TextureKmt) result += "D3D11TextureKmt | ";
+    if (value & ExternalMemoryHandleTypeFlagBitsKHR::eD3D12Heap) result += "D3D12Heap | ";
+    if (value & ExternalMemoryHandleTypeFlagBitsKHR::eD3D12Resource) result += "D3D12Resource | ";
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
-  VULKAN_HPP_INLINE std::string to_string(ExternalMemoryFeatureFlagBitsKHX value)
+  VULKAN_HPP_INLINE std::string to_string(ExternalMemoryFeatureFlagBitsKHR value)
   {
     switch (value)
     {
-    case ExternalMemoryFeatureFlagBitsKHX::eDedicatedOnly: return "DedicatedOnly";
-    case ExternalMemoryFeatureFlagBitsKHX::eExportable: return "Exportable";
-    case ExternalMemoryFeatureFlagBitsKHX::eImportable: return "Importable";
+    case ExternalMemoryFeatureFlagBitsKHR::eDedicatedOnly: return "DedicatedOnly";
+    case ExternalMemoryFeatureFlagBitsKHR::eExportable: return "Exportable";
+    case ExternalMemoryFeatureFlagBitsKHR::eImportable: return "Importable";
     default: return "invalid";
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string(ExternalMemoryFeatureFlagsKHX value)
+  VULKAN_HPP_INLINE std::string to_string(ExternalMemoryFeatureFlagsKHR value)
   {
     if (!value) return "{}";
     std::string result;
-    if (value & ExternalMemoryFeatureFlagBitsKHX::eDedicatedOnly) result += "DedicatedOnly | ";
-    if (value & ExternalMemoryFeatureFlagBitsKHX::eExportable) result += "Exportable | ";
-    if (value & ExternalMemoryFeatureFlagBitsKHX::eImportable) result += "Importable | ";
+    if (value & ExternalMemoryFeatureFlagBitsKHR::eDedicatedOnly) result += "DedicatedOnly | ";
+    if (value & ExternalMemoryFeatureFlagBitsKHR::eExportable) result += "Exportable | ";
+    if (value & ExternalMemoryFeatureFlagBitsKHR::eImportable) result += "Importable | ";
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
-  VULKAN_HPP_INLINE std::string to_string(ExternalSemaphoreHandleTypeFlagBitsKHX value)
+  VULKAN_HPP_INLINE std::string to_string(ExternalSemaphoreHandleTypeFlagBitsKHR value)
   {
     switch (value)
     {
-    case ExternalSemaphoreHandleTypeFlagBitsKHX::eOpaqueFd: return "OpaqueFd";
-    case ExternalSemaphoreHandleTypeFlagBitsKHX::eOpaqueWin32: return "OpaqueWin32";
-    case ExternalSemaphoreHandleTypeFlagBitsKHX::eOpaqueWin32Kmt: return "OpaqueWin32Kmt";
-    case ExternalSemaphoreHandleTypeFlagBitsKHX::eD3D12Fence: return "D3D12Fence";
-    case ExternalSemaphoreHandleTypeFlagBitsKHX::eFenceFd: return "FenceFd";
+    case ExternalSemaphoreHandleTypeFlagBitsKHR::eOpaqueFd: return "OpaqueFd";
+    case ExternalSemaphoreHandleTypeFlagBitsKHR::eOpaqueWin32: return "OpaqueWin32";
+    case ExternalSemaphoreHandleTypeFlagBitsKHR::eOpaqueWin32Kmt: return "OpaqueWin32Kmt";
+    case ExternalSemaphoreHandleTypeFlagBitsKHR::eD3D12Fence: return "D3D12Fence";
+    case ExternalSemaphoreHandleTypeFlagBitsKHR::eSyncFd: return "SyncFd";
     default: return "invalid";
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string(ExternalSemaphoreHandleTypeFlagsKHX value)
+  VULKAN_HPP_INLINE std::string to_string(ExternalSemaphoreHandleTypeFlagsKHR value)
   {
     if (!value) return "{}";
     std::string result;
-    if (value & ExternalSemaphoreHandleTypeFlagBitsKHX::eOpaqueFd) result += "OpaqueFd | ";
-    if (value & ExternalSemaphoreHandleTypeFlagBitsKHX::eOpaqueWin32) result += "OpaqueWin32 | ";
-    if (value & ExternalSemaphoreHandleTypeFlagBitsKHX::eOpaqueWin32Kmt) result += "OpaqueWin32Kmt | ";
-    if (value & ExternalSemaphoreHandleTypeFlagBitsKHX::eD3D12Fence) result += "D3D12Fence | ";
-    if (value & ExternalSemaphoreHandleTypeFlagBitsKHX::eFenceFd) result += "FenceFd | ";
+    if (value & ExternalSemaphoreHandleTypeFlagBitsKHR::eOpaqueFd) result += "OpaqueFd | ";
+    if (value & ExternalSemaphoreHandleTypeFlagBitsKHR::eOpaqueWin32) result += "OpaqueWin32 | ";
+    if (value & ExternalSemaphoreHandleTypeFlagBitsKHR::eOpaqueWin32Kmt) result += "OpaqueWin32Kmt | ";
+    if (value & ExternalSemaphoreHandleTypeFlagBitsKHR::eD3D12Fence) result += "D3D12Fence | ";
+    if (value & ExternalSemaphoreHandleTypeFlagBitsKHR::eSyncFd) result += "SyncFd | ";
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
-  VULKAN_HPP_INLINE std::string to_string(ExternalSemaphoreFeatureFlagBitsKHX value)
+  VULKAN_HPP_INLINE std::string to_string(ExternalSemaphoreFeatureFlagBitsKHR value)
   {
     switch (value)
     {
-    case ExternalSemaphoreFeatureFlagBitsKHX::eExportable: return "Exportable";
-    case ExternalSemaphoreFeatureFlagBitsKHX::eImportable: return "Importable";
+    case ExternalSemaphoreFeatureFlagBitsKHR::eExportable: return "Exportable";
+    case ExternalSemaphoreFeatureFlagBitsKHR::eImportable: return "Importable";
     default: return "invalid";
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string(ExternalSemaphoreFeatureFlagsKHX value)
+  VULKAN_HPP_INLINE std::string to_string(ExternalSemaphoreFeatureFlagsKHR value)
   {
     if (!value) return "{}";
     std::string result;
-    if (value & ExternalSemaphoreFeatureFlagBitsKHX::eExportable) result += "Exportable | ";
-    if (value & ExternalSemaphoreFeatureFlagBitsKHX::eImportable) result += "Importable | ";
+    if (value & ExternalSemaphoreFeatureFlagBitsKHR::eExportable) result += "Exportable | ";
+    if (value & ExternalSemaphoreFeatureFlagBitsKHR::eImportable) result += "Importable | ";
+    return "{" + result.substr(0, result.size() - 3) + "}";
+  }
+
+  VULKAN_HPP_INLINE std::string to_string(SemaphoreImportFlagBitsKHR value)
+  {
+    switch (value)
+    {
+    case SemaphoreImportFlagBitsKHR::eTemporary: return "Temporary";
+    default: return "invalid";
+    }
+  }
+
+  VULKAN_HPP_INLINE std::string to_string(SemaphoreImportFlagsKHR value)
+  {
+    if (!value) return "{}";
+    std::string result;
+    if (value & SemaphoreImportFlagBitsKHR::eTemporary) result += "Temporary | ";
+    return "{" + result.substr(0, result.size() - 3) + "}";
+  }
+
+  VULKAN_HPP_INLINE std::string to_string(ExternalFenceHandleTypeFlagBitsKHR value)
+  {
+    switch (value)
+    {
+    case ExternalFenceHandleTypeFlagBitsKHR::eOpaqueFd: return "OpaqueFd";
+    case ExternalFenceHandleTypeFlagBitsKHR::eOpaqueWin32: return "OpaqueWin32";
+    case ExternalFenceHandleTypeFlagBitsKHR::eOpaqueWin32Kmt: return "OpaqueWin32Kmt";
+    case ExternalFenceHandleTypeFlagBitsKHR::eSyncFd: return "SyncFd";
+    default: return "invalid";
+    }
+  }
+
+  VULKAN_HPP_INLINE std::string to_string(ExternalFenceHandleTypeFlagsKHR value)
+  {
+    if (!value) return "{}";
+    std::string result;
+    if (value & ExternalFenceHandleTypeFlagBitsKHR::eOpaqueFd) result += "OpaqueFd | ";
+    if (value & ExternalFenceHandleTypeFlagBitsKHR::eOpaqueWin32) result += "OpaqueWin32 | ";
+    if (value & ExternalFenceHandleTypeFlagBitsKHR::eOpaqueWin32Kmt) result += "OpaqueWin32Kmt | ";
+    if (value & ExternalFenceHandleTypeFlagBitsKHR::eSyncFd) result += "SyncFd | ";
+    return "{" + result.substr(0, result.size() - 3) + "}";
+  }
+
+  VULKAN_HPP_INLINE std::string to_string(ExternalFenceFeatureFlagBitsKHR value)
+  {
+    switch (value)
+    {
+    case ExternalFenceFeatureFlagBitsKHR::eExportable: return "Exportable";
+    case ExternalFenceFeatureFlagBitsKHR::eImportable: return "Importable";
+    default: return "invalid";
+    }
+  }
+
+  VULKAN_HPP_INLINE std::string to_string(ExternalFenceFeatureFlagsKHR value)
+  {
+    if (!value) return "{}";
+    std::string result;
+    if (value & ExternalFenceFeatureFlagBitsKHR::eExportable) result += "Exportable | ";
+    if (value & ExternalFenceFeatureFlagBitsKHR::eImportable) result += "Importable | ";
+    return "{" + result.substr(0, result.size() - 3) + "}";
+  }
+
+  VULKAN_HPP_INLINE std::string to_string(FenceImportFlagBitsKHR value)
+  {
+    switch (value)
+    {
+    case FenceImportFlagBitsKHR::eTemporary: return "Temporary";
+    default: return "invalid";
+    }
+  }
+
+  VULKAN_HPP_INLINE std::string to_string(FenceImportFlagsKHR value)
+  {
+    if (!value) return "{}";
+    std::string result;
+    if (value & FenceImportFlagBitsKHR::eTemporary) result += "Temporary | ";
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
@@ -30492,6 +32766,40 @@ namespace vk
     if (value & SubpassDescriptionFlagBits::ePerViewAttributesNVX) result += "PerViewAttributesNVX | ";
     if (value & SubpassDescriptionFlagBits::ePerViewPositionXOnlyNVX) result += "PerViewPositionXOnlyNVX | ";
     return "{" + result.substr(0, result.size() - 3) + "}";
+  }
+
+  VULKAN_HPP_INLINE std::string to_string(SamplerReductionModeEXT value)
+  {
+    switch (value)
+    {
+    case SamplerReductionModeEXT::eWeightedAverage: return "WeightedAverage";
+    case SamplerReductionModeEXT::eMin: return "Min";
+    case SamplerReductionModeEXT::eMax: return "Max";
+    default: return "invalid";
+    }
+  }
+
+  VULKAN_HPP_INLINE std::string to_string(BlendOverlapEXT value)
+  {
+    switch (value)
+    {
+    case BlendOverlapEXT::eUncorrelated: return "Uncorrelated";
+    case BlendOverlapEXT::eDisjoint: return "Disjoint";
+    case BlendOverlapEXT::eConjoint: return "Conjoint";
+    default: return "invalid";
+    }
+  }
+
+  VULKAN_HPP_INLINE std::string to_string(CoverageModulationModeNV value)
+  {
+    switch (value)
+    {
+    case CoverageModulationModeNV::eNone: return "None";
+    case CoverageModulationModeNV::eRgb: return "Rgb";
+    case CoverageModulationModeNV::eAlpha: return "Alpha";
+    case CoverageModulationModeNV::eRgba: return "Rgba";
+    default: return "invalid";
+    }
   }
 
 } // namespace vk

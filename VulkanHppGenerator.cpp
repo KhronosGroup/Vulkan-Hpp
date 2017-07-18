@@ -1203,15 +1203,15 @@ std::string readArraySize(tinyxml2::XMLNode * node, std::string& name)
         assert(node && node->ToElement() && (strcmp(node->Value(), "enum") == 0));
         arraySize = node->ToElement()->GetText();
         node = node->NextSibling();
-        assert(node && node->ToText() && (strcmp(node->Value(), "]") == 0) && !node->NextSibling());
+        assert(node && node->ToText() && (strcmp(node->Value(), "]") == 0));
       }
       else
       {
         // otherwise, the node holds '[' and ']', so get the stuff in between those as the array size
         assert((value.front() == '[') && (value.back() == ']'));
         arraySize = value.substr(1, value.length() - 2);
-        assert(!node->NextSibling());
       }
+      assert(!node->NextSibling() || ((strcmp(node->NextSibling()->Value(), "comment") == 0) && !node->NextSibling()->NextSibling()));
     }
   }
   return arraySize;
@@ -1367,23 +1367,26 @@ std::vector<std::string> readCommandSuccessCodes(tinyxml2::XMLElement* element, 
 void readComment(tinyxml2::XMLElement * element, std::string & header)
 {
   assert(element->GetText());
-  assert(header.empty());
-  header = element->GetText();
-  assert(header.find("\nCopyright") == 0);
-
-  // erase the part after the Copyright text
-  size_t pos = header.find("\n\n-----");
-  assert(pos != std::string::npos);
-  header.erase(pos);
-
-  // replace any '\n' with "\n// "
-  for (size_t pos = header.find('\n'); pos != std::string::npos; pos = header.find('\n', pos + 1))
+  std::string text = element->GetText();
+  if (text.find("\nCopyright") == 0)
   {
-    header.replace(pos, 1, "\n// ");
-  }
+    assert(header.empty());
+    header = text;
 
-  // and add a little message on our own
-  header += "\n\n// This header is generated from the Khronos Vulkan XML API Registry.";
+    // erase the part after the Copyright text
+    size_t pos = header.find("\n\n-----");
+    assert(pos != std::string::npos);
+    header.erase(pos);
+
+    // replace any '\n' with "\n// "
+    for (size_t pos = header.find('\n'); pos != std::string::npos; pos = header.find('\n', pos + 1))
+    {
+      header.replace(pos, 1, "\n// ");
+    }
+
+    // and add a little message on our own
+    header += "\n\n// This header is generated from the Khronos Vulkan XML API Registry.";
+  }
 }
 
 void readEnums( tinyxml2::XMLElement * element, VkData & vkData )
@@ -1827,8 +1830,11 @@ void readTypeStruct( tinyxml2::XMLElement * element, VkData & vkData, bool isUni
   {
     assert( child->Value() );
     std::string value = child->Value();
-    assert(value == "member");
-    readTypeStructMember( child, it->second.members, vkData.dependencies.back().dependencies );
+    assert((value == "comment") || (value == "member"));
+    if (value == "member")
+    {
+      readTypeStructMember(child, it->second.members, vkData.dependencies.back().dependencies);
+    }
   }
 
   assert( vkData.vkTypes.find( name ) == vkData.vkTypes.end() );
@@ -1864,49 +1870,52 @@ void readTypes(tinyxml2::XMLElement * element, VkData & vkData)
 {
   for (tinyxml2::XMLElement * child = element->FirstChildElement(); child; child = child->NextSiblingElement())
   {
-    assert( strcmp( child->Value(), "type" ) == 0 );
-    std::string type = child->Value();
-    assert( type == "type" );
-    if ( child->Attribute( "category" ) )
+    assert(child->Value());
+    std::string value = child->Value();
+    assert((value == "comment") || (value == "type"));
+    if (value == "type")
     {
-      std::string category = child->Attribute( "category" );
-      if ( category == "basetype" )
+      if (child->Attribute("category"))
       {
-        readTypeBasetype( child, vkData.dependencies );
-      }
-      else if ( category == "bitmask" )
-      {
-        readTypeBitmask( child, vkData);
-      }
-      else if ( category == "define" )
-      {
-        readTypeDefine( child, vkData );
-      }
-      else if ( category == "funcpointer" )
-      {
-        readTypeFuncpointer( child, vkData.dependencies );
-      }
-      else if ( category == "handle" )
-      {
-        readTypeHandle( child, vkData );
-      }
-      else if ( category == "struct" )
-      {
-        readTypeStruct( child, vkData, false );
-      }
-      else if ( category == "union" )
-      {
-        readTypeStruct( child, vkData, true );
+        std::string category = child->Attribute("category");
+        if (category == "basetype")
+        {
+          readTypeBasetype(child, vkData.dependencies);
+        }
+        else if (category == "bitmask")
+        {
+          readTypeBitmask(child, vkData);
+        }
+        else if (category == "define")
+        {
+          readTypeDefine(child, vkData);
+        }
+        else if (category == "funcpointer")
+        {
+          readTypeFuncpointer(child, vkData.dependencies);
+        }
+        else if (category == "handle")
+        {
+          readTypeHandle(child, vkData);
+        }
+        else if (category == "struct")
+        {
+          readTypeStruct(child, vkData, false);
+        }
+        else if (category == "union")
+        {
+          readTypeStruct(child, vkData, true);
+        }
+        else
+        {
+          assert((category == "enum") || (category == "include"));
+        }
       }
       else
       {
-        assert( ( category == "enum" ) || ( category == "include" ) );
+        assert(child->Attribute("name"));
+        vkData.dependencies.push_back(DependencyData(DependencyData::Category::REQUIRED, child->Attribute("name")));
       }
-    }
-    else
-    {
-      assert( child->Attribute( "name" ) );
-      vkData.dependencies.push_back( DependencyData( DependencyData::Category::REQUIRED, child->Attribute( "name" ) ) );
     }
   }
 }

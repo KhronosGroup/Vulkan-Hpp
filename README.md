@@ -155,6 +155,32 @@ vkSubresourceLayout layout = vkGetImageSubResourceLayout(image, subresource);
 auto layout = device.getImageSubResourceLayout(image, { {} /* flags*/, 0 /* miplevel */, 0 /* layout */ });
 ```
 
+# Structure Pointer Chains
+Vulkan allows chaining of structures through the pNext pointer. Vulkan-Hpp has a variadic template class which allows constructing of such structure chains with minimal efforts.
+In addition to this it checks at compile time if the spec allows the construction of such a pNext chain.
+
+```
+// This will compile successfully.
+vk::StructureChain<vk::MemoryAllocateInfo, vk::ImportMemoryFdInfoKHR> c;
+vk::MemoryAllocateInfo &allocInfo = c.get<vk::MemoryAllocateInfo>();
+vk::ImportMemoryFdInfoKHR &fdInfo = c.get<vk::ImportMemoryFdInfoKHR>();
+
+// This will fail compilation since it's not valid according to the spec.
+vk::StructureChain<vk::MemoryAllocateInfo, vk::MemoryDedicatedRequirementsKHR> c;
+vk::MemoryAllocateInfo &allocInfo = c.get<vk::MemoryAllocateInfo>();
+vk::ImportMemoryFdInfoKHR &fdInfo = c.get<vk::ImportMemoryFdInfoKHR>();
+```
+
+Sometimes the user has to pass a preallocated structure chain to query information. In those cases the corresponding query functions are variadic templates and do accept a structure chain to construct the return value:
+
+```
+// Query vk::MemoryRequirements2KHR and vk::MemoryDedicatedRequirementsKHR when calling Device::getBufferMemoryRequirements2KHR:
+auto result = device.getBufferMemoryRequirements2KHR<vk::MemoryRequirements2KHR, vk::MemoryDedicatedRequirementsKHR>({});
+vk::MemoryRequirements2KHR &memReqs = result.get<vk::MemoryRequirements2KHR>();
+vk::MemoryDedicatedRequirementsKHR &dedMemReqs = result.get<vk::MemoryDedicatedRequirementsKHR>();
+```
+
+
 # Return values, Error Codes & Exceptions
 By default Vulkan-Hpp has exceptions enabled. This means that Vulkan-Hpp checks the return code of each function call which returns a Vk::Result. If Vk::Result is a failure a std::runtime_error will be thrown.
 Since there is no need to return the error code anymore the C++ bindings can now return the actual desired return value, i.e. a vulkan handle. In those cases ResultValue <SomeType>::type is defined as the returned type.

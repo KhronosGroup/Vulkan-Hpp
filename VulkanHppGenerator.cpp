@@ -352,6 +352,77 @@ const std::string arrayProxyHeader = R"(
 #endif
 )";
 
+const std::string structureChainHeader = R"(
+  template <typename X, typename Y> constexpr bool isStructureChainValid() { return false; }
+
+  template <class Element>
+  class StructureChainElement
+  {
+  public:
+    explicit operator Element&() { return value; }
+    explicit operator const Element&() const { return value; }
+  private:
+    Element value;
+  };
+
+  template<typename ...StructureElements>
+  class StructureChain : private StructureChainElement<StructureElements>...
+  {
+  public:
+    StructureChain()
+    {
+      link<StructureElements...>();  
+    }
+
+    StructureChain(StructureChain const &rhs)
+    {
+      linkAndCopy<StructureElements...>(rhs);
+    }
+
+    StructureChain& operator=(StructureChain const &rhs)
+    {
+      linkAndCopy(rhs);
+      return this;
+    }
+
+    template<typename ClassType> ClassType& get() { return static_cast<ClassType&>(*this);}
+
+  private:
+    template<typename X>
+    void link()
+    {
+    }
+
+    template<typename X, typename Y, typename ...Z>
+    void link()
+    {
+      static_assert(isStructureChainValid<X,Y>(), "The structure chain is not valid!");
+      X& x = static_cast<X&>(*this);
+      Y& y = static_cast<Y&>(*this);
+      x.pNext = &y;
+      link<Y, Z...>();
+    }
+
+    template<typename X>
+    void linkAndCopy(StructureChain const &rhs)
+    {
+      static_cast<X&>(*this) = static_cast<X const &>(rhs);
+    }
+
+    template<typename X, typename Y, typename ...Z>
+    void linkAndCopy(StructureChain const &rhs)
+    {
+      static_assert(isStructureChainValid<X,Y>(), "The structure chain is not valid!");
+      X& x = static_cast<X&>(*this);
+      Y& y = static_cast<Y&>(*this);
+      x = static_cast<X const &>(rhs);
+      x.pNext = &y;
+      linkAndCopy<Y, Z...>(rhs);
+    }
+
+};
+)";
+
 const std::string versionCheckHeader = R"(
 #if !defined(VULKAN_HPP_HAS_UNRESTRICTED_UNIONS)
 # if defined(__clang__)
@@ -748,10 +819,11 @@ struct StructData
     : returnedOnly(false)
   {}
 
-  bool                    returnedOnly;
-  bool                    isUnion;
-  std::vector<MemberData> members;
-  std::string             protect;
+  bool                     returnedOnly;
+  bool                     isUnion;
+  std::vector<MemberData>  members;
+  std::string              protect;
+  std::vector<std::string> structExtends;
 };
 
 struct DeleterData
@@ -771,6 +843,7 @@ struct VkData
   std::map<std::string, HandleData>             handles;
   std::map<std::string, ScalarData>             scalars;
   std::map<std::string, StructData>             structs;
+  std::set<std::string>                         extendedStructs; // structs which are referenced by the structextends tag
   std::set<std::string>                         tags;
   std::string                                   typesafeCheck;
   std::string                                   version;
@@ -817,7 +890,7 @@ void readTypeDefine( tinyxml2::XMLElement * element, VkData & vkData );
 void readTypeFuncpointer( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies );
 void readTypeHandle(tinyxml2::XMLElement * element, VkData & vkData);
 void readTypeStruct( tinyxml2::XMLElement * element, VkData & vkData, bool isUnion );
-void readTypeStructMember( tinyxml2::XMLElement * element, std::vector<MemberData> & members, std::set<std::string> & dependencies );
+void readTypeStructMember( tinyxml2::XMLElement * element, VkData & vkData, StructData & structData );
 void readTags(tinyxml2::XMLElement * element, std::set<std::string> & tags);
 void readTypes(tinyxml2::XMLElement * element, VkData & vkData);
 std::string reduceName(std::string const& name, bool singular = false);
@@ -841,15 +914,15 @@ void writeDeleterClasses(std::ostream & os, std::pair<std::string, std::set<std:
 void writeDeleterForwardDeclarations(std::ostream &os, std::pair<std::string, std::set<std::string>> const& deleterTypes, std::map<std::string, DeleterData> const& deleterData);
 void writeEnumsToString(std::ostream & os, EnumData const& enumData);
 void writeFlagsToString(std::ostream & os, std::string const& flagsName, EnumData const &enumData);
-void writeFunction(std::ostream & os, std::string const& indentation, VkData const& vkData, CommandData const& commandData, bool definition, bool enhanced, bool singular, bool unique);
-void writeFunctionBodyEnhanced(std::ostream & os, std::string const& indentation, VkData const& vkData, CommandData const& commandData, bool singular);
+void writeFunction(std::ostream & os, std::string const& indentation, VkData const& vkData, CommandData const& commandData, bool definition, bool enhanced, bool singular, bool unique, bool isStructureChain);
+void writeFunctionBodyEnhanced(std::ostream & os, std::string const& indentation, VkData const& vkData, CommandData const& commandData, bool singular, bool isStructureChain);
 void writeFunctionBodyEnhancedCall(std::ostream &os, std::string const& indentation, std::set<std::string> const& vkTypes, CommandData const& commandData, bool singular);
 void writeFunctionBodyEnhancedCallResult(std::ostream &os, std::string const& indentation, std::set<std::string> const& vkTypes, CommandData const& commandData, bool singular);
 void writeFunctionBodyEnhancedCallTwoStep(std::ostream & os, std::string const& indentation, std::set<std::string> const& vkTypes, std::string const& returnName, std::string const& sizeName, CommandData const& commandData);
 void writeFunctionBodyEnhancedCallTwoStepChecked(std::ostream & os, std::string const& indentation, std::set<std::string> const& vkTypes, std::string const& returnName, std::string const& sizeName, CommandData const& commandData);
 void writeFunctionBodyEnhancedCallTwoStepIterate(std::ostream & os, std::string const& indentation, std::set<std::string> const& vkTypes, std::string const& returnName, std::string const& sizeName, CommandData const& commandData);
 void writeFunctionBodyEnhancedLocalCountVariable(std::ostream & os, std::string const& indentation, CommandData const& commandData);
-std::string writeFunctionBodyEnhancedLocalReturnVariable(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool singular);
+std::string writeFunctionBodyEnhancedLocalReturnVariable(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool singular, bool isStructureChain);
 void writeFunctionBodyEnhancedMultiVectorSizeCheck(std::ostream & os, std::string const& indentation, CommandData const& commandData);
 void writeFunctionBodyEnhancedReturnResultValue(std::ostream & os, std::string const& indentation, std::string const& returnName, CommandData const& commandData, bool singular);
 void writeFunctionBodyStandard(std::ostream & os, std::string const& indentation, VkData const& vkData, CommandData const& commandData);
@@ -858,8 +931,8 @@ void writeFunctionHeaderArguments(std::ostream & os, VkData const& vkData, Comma
 void writeFunctionHeaderArgumentsEnhanced(std::ostream & os, VkData const& vkData, CommandData const& commandData, bool singular, bool withDefaults);
 void writeFunctionHeaderArgumentsStandard(std::ostream & os, CommandData const& commandData);
 void writeFunctionHeaderName(std::ostream & os, std::string const& name, bool singular, bool unique);
-void writeFunctionHeaderReturnType(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool enhanced, bool singular, bool unique);
-void writeFunctionHeaderTemplate(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool withDefault);
+void writeFunctionHeaderReturnType(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool enhanced, bool singular, bool unique, bool isStructureChain);
+void writeFunctionHeaderTemplate(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool withDefault, bool isStructureChain);
 void writeReinterpretCast(std::ostream & os, bool leadingConst, bool vulkanType, std::string const& type, bool trailingPointerToConst);
 void writeStandardOrEnhanced(std::ostream & os, std::string const& standard, std::string const& enhanced);
 void writeStructConstructor( std::ostream & os, std::string const& name, StructData const& structData, std::set<std::string> const& vkTypes, std::map<std::string,std::string> const& defaultValues );
@@ -1826,6 +1899,23 @@ void readTypeStruct( tinyxml2::XMLElement * element, VkData & vkData, bool isUni
   it->second.returnedOnly = !!element->Attribute( "returnedonly" );
   it->second.isUnion = isUnion;
 
+  if (element->Attribute("structextends"))
+  {
+    std::string structextends = element->Attribute("structextends");
+    std::vector<std::string> structs;
+    size_t endPos = -1;
+    do
+    {
+      size_t startPos = endPos + 1;
+      endPos = structextends.find(',', startPos);
+      assert(structextends.substr(startPos, 2) == "Vk");
+      std::string structExtendName = structextends.substr(startPos + 2, endPos - startPos - 2);
+      it->second.structExtends.push_back(structExtendName);
+      vkData.extendedStructs.insert(structExtendName);
+    } while (endPos != std::string::npos);
+    assert(!it->second.structExtends.empty());
+  }
+
   for (tinyxml2::XMLElement * child = element->FirstChildElement(); child; child = child->NextSiblingElement())
   {
     assert( child->Value() );
@@ -1833,7 +1923,7 @@ void readTypeStruct( tinyxml2::XMLElement * element, VkData & vkData, bool isUni
     assert((value == "comment") || (value == "member"));
     if (value == "member")
     {
-      readTypeStructMember(child, it->second.members, vkData.dependencies.back().dependencies);
+      readTypeStructMember(child, vkData, it->second);
     }
   }
 
@@ -1841,13 +1931,14 @@ void readTypeStruct( tinyxml2::XMLElement * element, VkData & vkData, bool isUni
   vkData.vkTypes.insert( name );
 }
 
-void readTypeStructMember(tinyxml2::XMLElement * element, std::vector<MemberData> & members, std::set<std::string> & dependencies)
+void readTypeStructMember(tinyxml2::XMLElement * element, VkData & vkData, StructData & structData)
 {
-  members.push_back(MemberData());
-  MemberData & member = members.back();
+
+  structData.members.push_back(MemberData());
+  MemberData & member = structData.members.back();
 
   tinyxml2::XMLNode* child = readType(element->FirstChild(), member.type, member.pureType);
-  dependencies.insert(member.pureType);
+  vkData.dependencies.back().dependencies.insert(member.pureType);
 
   assert((child->ToElement() && strcmp(child->Value(), "name") == 0));
   member.name = child->ToElement()->GetText();
@@ -2324,14 +2415,14 @@ void writeCallVulkanTypeParameter(std::ostream & os, ParamData const& paramData)
   }
 }
 
-void writeFunction(std::ostream & os, std::string const& indentation, VkData const& vkData, CommandData const& commandData, bool definition, bool enhanced, bool singular, bool unique)
+void writeFunction(std::ostream & os, std::string const& indentation, VkData const& vkData, CommandData const& commandData, bool definition, bool enhanced, bool singular, bool unique, bool isStructureChain)
 {
-  if (enhanced && !singular)
+  if (enhanced && (!singular || isStructureChain))
   {
-    writeFunctionHeaderTemplate(os, indentation, commandData, !definition);
+    writeFunctionHeaderTemplate(os, indentation, commandData, !definition, isStructureChain);
   }
   os << indentation << (definition ? "VULKAN_HPP_INLINE " : "");
-  writeFunctionHeaderReturnType(os, indentation, commandData, enhanced, singular, unique);
+  writeFunctionHeaderReturnType(os, indentation, commandData, enhanced, singular, unique, isStructureChain);
   if (definition && !commandData.className.empty())
   {
     os << commandData.className << "::";
@@ -2352,7 +2443,7 @@ void writeFunction(std::ostream & os, std::string const& indentation, VkData con
       }
       else
       {
-        writeFunctionBodyEnhanced(os, indentation, vkData, commandData, singular);
+        writeFunctionBodyEnhanced(os, indentation, vkData, commandData, singular, isStructureChain);
       }
     }
     else
@@ -2363,7 +2454,7 @@ void writeFunction(std::ostream & os, std::string const& indentation, VkData con
   }
 }
 
-void writeFunctionBodyEnhanced(std::ostream & os, std::string const& indentation, VkData const& vkData, CommandData const& commandData, bool singular)
+void writeFunctionBodyEnhanced(std::ostream & os, std::string const& indentation, VkData const& vkData, CommandData const& commandData, bool singular, bool isStructureChain)
 {
   if (1 < commandData.vectorParams.size())
   {
@@ -2373,7 +2464,7 @@ void writeFunctionBodyEnhanced(std::ostream & os, std::string const& indentation
   std::string returnName;
   if (commandData.returnParam != ~0)
   {
-    returnName = writeFunctionBodyEnhancedLocalReturnVariable(os, indentation, commandData, singular);
+    returnName = writeFunctionBodyEnhancedLocalReturnVariable(os, indentation, commandData, singular, isStructureChain);
   }
 
   if (commandData.twoStep)
@@ -2515,25 +2606,48 @@ void writeFunctionBodyEnhancedLocalCountVariable(std::ostream & os, std::string 
   os << indentation << "  " << commandData.params[returnit->second].pureType << " " << startLowerCase(strip(commandData.params[returnit->second].name, "p")) << ";" << std::endl;
 }
 
-std::string writeFunctionBodyEnhancedLocalReturnVariable(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool singular)
+std::string writeFunctionBodyEnhancedLocalReturnVariable(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool singular, bool isStructureChain)
 {
   std::string returnName = startLowerCase(strip(commandData.params[commandData.returnParam].name, "p"));
 
   // there is a returned parameter -> we need a local variable to hold that value
   if (commandData.returnType != commandData.enhancedReturnType)
   {
-    // the returned parameter is somehow enanced by us
+    // the returned parameter is somehow enhanced by us
     os << indentation << "  ";
     if (singular)
     {
-      // in singular case, just use the return parameters pure type for the return variable
-      returnName = stripPluralS(returnName);
-      os << commandData.params[commandData.returnParam].pureType << " " << returnName;
+      if (isStructureChain)
+      {
+        std::string const &pureType = commandData.params[commandData.returnParam].pureType;
+        // For StructureChains use the template parameters
+        os << "StructureChain<T...> structureChain;" << std::endl;
+        returnName = stripPluralS(returnName);
+        os << indentation << "  " << pureType << "& " << returnName << " = structureChain.template get<" << pureType << ">()";
+        returnName = "structureChain";
+      }
+      else
+      {
+        // in singular case, just use the return parameters pure type for the return variable
+        returnName = stripPluralS(returnName);
+        os << commandData.params[commandData.returnParam].pureType << " " << returnName;
+      }
     }
     else
     {
       // in non-singular case, use the enhanced type for the return variable (like vector<...>)
-      os << commandData.enhancedReturnType << " " << returnName;
+      if (isStructureChain)
+      {
+        std::string const &returnType = commandData.enhancedReturnType;
+        // For StructureChains use the template parameters
+        os << "StructureChain<T...> structureChain;" << std::endl;
+        os << indentation << "  " << returnType << "& " << returnName << " = structureChain.template get<" << returnType << ">()";
+        returnName = "structureChain";
+      }
+      else
+      {
+        os << commandData.enhancedReturnType << " " << returnName;
+      }
 
       std::map<size_t, size_t>::const_iterator it = commandData.vectorParams.find(commandData.returnParam);
       if (it != commandData.vectorParams.end() && !commandData.twoStep)
@@ -2982,7 +3096,7 @@ void writeFunctionHeaderName(std::ostream & os, std::string const& name, bool si
   }
 }
 
-void writeFunctionHeaderReturnType(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool enhanced, bool singular, bool unique)
+void writeFunctionHeaderReturnType(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool enhanced, bool singular, bool unique, bool isStructureChain)
 {
   std::string templateString;
   std::string returnType;
@@ -2994,38 +3108,43 @@ void writeFunctionHeaderReturnType(std::ostream & os, std::string const& indenta
       // the unique version returns something prefixed with 'Unique'; potentially a vector of that stuff
       // it's a vector, if it's not the singular version and the return parameter is a vector parameter
       bool returnsVector = !singular && (commandData.vectorParams.find(commandData.returnParam) != commandData.vectorParams.end());
+
       templateString = returnsVector ? "std::vector<Unique${returnType}> " : "Unique${returnType} ";
-      returnType = commandData.params[commandData.returnParam].pureType;
-      //os << replaceWithMap(, {{"returnType", commandData.params[commandData.returnParam].pureType }});
+      returnType = isStructureChain ? "StructureChain<T...>" : commandData.params[commandData.returnParam].pureType;
     }
     else if ((commandData.enhancedReturnType != commandData.returnType) && (commandData.returnType != "void"))
     {
       // if the enhanced return type differs from the original return type, and it's not void, we return a ResultValueType<...>::type
-      if (!singular && (commandData.enhancedReturnType.find("Allocator") != std::string::npos))
+      if (isStructureChain || (!singular && (commandData.enhancedReturnType.find("Allocator") != std::string::npos)))
       {
         // for the non-singular case with allocation, we need to prepend with 'typename' to keep compilers happy
-        templateString = "typename ResultValueType<${returnType}>::type ";
+        templateString = "typename ";
+      }
+      templateString += "ResultValueType<${returnType}>::type ";
+
+      assert(commandData.returnType == "Result");
+      // in singular case, we create the ResultValueType from the pure return type, otherwise from the enhanced return type
+      if (isStructureChain)
+      {
+        returnType = "StructureChain<T...>";
       }
       else
       {
-        templateString = "ResultValueType<${returnType}>::type ";
+        returnType = singular ? commandData.params[commandData.returnParam].pureType : commandData.enhancedReturnType;
       }
-      assert(commandData.returnType == "Result");
-      // in singular case, we create the ResultValueType from the pure return type, otherwise from the enhanced return type
-      returnType = singular ? commandData.params[commandData.returnParam].pureType : commandData.enhancedReturnType;
     }
     else if ((commandData.returnParam != ~0) && (1 < commandData.successCodes.size()))
     {
       // if there is a return parameter at all, and there are multiple success codes, we return a ResultValue<...> with the pure return type
       assert(commandData.returnType == "Result");
       templateString = "ResultValue<${returnType}> ";
-      returnType = commandData.params[commandData.returnParam].pureType;
+      returnType = isStructureChain ? "StructureChain<T...>" : commandData.params[commandData.returnParam].pureType;
     }
     else
     {
       // and in every other case, we just return the enhanced return type.
       templateString = "${returnType} ";
-      returnType = commandData.enhancedReturnType;
+      returnType = isStructureChain ? "StructureChain<T...>" : commandData.enhancedReturnType;
     }
   }
   else
@@ -3037,9 +3156,13 @@ void writeFunctionHeaderReturnType(std::ostream & os, std::string const& indenta
   os << replaceWithMap(templateString, { { "returnType", returnType } });
 }
 
-void writeFunctionHeaderTemplate(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool withDefault)
+void writeFunctionHeaderTemplate(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool withDefault, bool isStructureChain)
 {
-  if ((commandData.templateParam != ~0) && ((commandData.templateParam != commandData.returnParam) || (commandData.enhancedReturnType == "Result")))
+  if (isStructureChain)
+  {
+    os << indentation << "template <typename ...T>" << std::endl;
+  }
+  else if ((commandData.templateParam != ~0) && ((commandData.templateParam != commandData.returnParam) || (commandData.enhancedReturnType == "Result")))
   {
     // if there's a template parameter, not being the return parameter or where the enhanced return type is 'Result' -> templatize on type 'T'
     assert(commandData.enhancedReturnType.find("Allocator") == std::string::npos);
@@ -3275,20 +3398,27 @@ void writeTypeCommand(std::ostream & os, std::string const& indentation, VkData 
 {
   enterProtect(os, commandData.protect);
 
+  bool isStructureChain = vkData.extendedStructs.find(commandData.enhancedReturnType) != vkData.extendedStructs.end();
+
   // first create the standard version of the function
   std::ostringstream standard;
-  writeFunction(standard, indentation, vkData, commandData, definition, false, false, false);
+  writeFunction(standard, indentation, vkData, commandData, definition, false, false, false, false);
 
-  // then the enhanced version, composed by up to four parts
+  // then the enhanced version, composed by up to five parts
   std::ostringstream enhanced;
-  writeFunction(enhanced, indentation, vkData, commandData, definition, true, false, false);
+  writeFunction(enhanced, indentation, vkData, commandData, definition, true, false, false, false);
+
+  if (isStructureChain)
+  {
+    writeFunction(enhanced, indentation, vkData, commandData, definition, true, false, false, true);
+  }
 
   // then a singular version, if a sized vector would be returned
   std::map<size_t, size_t>::const_iterator returnVector = commandData.vectorParams.find(commandData.returnParam);
   bool singular = (returnVector != commandData.vectorParams.end()) && (returnVector->second != ~0) && (commandData.params[returnVector->second].type.back() != '*');
   if (singular)
   {
-    writeFunction(enhanced, indentation, vkData, commandData, definition, true, true, false);
+    writeFunction(enhanced, indentation, vkData, commandData, definition, true, true, false, false);
   }
 
   // special handling for createDevice and createInstance !
@@ -3298,11 +3428,11 @@ void writeTypeCommand(std::ostream & os, std::string const& indentation, VkData 
   if (((vkData.deleterData.find(commandData.className) != vkData.deleterData.end()) || specialWriteUnique) && ((commandData.reducedName.substr(0, 8) == "allocate") || (commandData.reducedName.substr(0, 6) == "create")))
   {
     enhanced << "#ifndef VULKAN_HPP_NO_SMART_HANDLE" << std::endl;
-    writeFunction(enhanced, indentation, vkData, commandData, definition, true, false, true);
+    writeFunction(enhanced, indentation, vkData, commandData, definition, true, false, true, false);
 
     if (singular)
     {
-      writeFunction(enhanced, indentation, vkData, commandData, definition, true, true, true);
+      writeFunction(enhanced, indentation, vkData, commandData, definition, true, true, true, false);
     }
     enhanced << "#endif /*VULKAN_HPP_NO_SMART_HANDLE*/" << std::endl;
   }
@@ -3898,6 +4028,29 @@ void writeTypeStruct( std::ostream & os, VkData const& vkData, DependencyData co
   os << std::endl;
 }
 
+void writeStructureChainValidation(std::ostream & os, VkData const& vkData, DependencyData const& dependencyData)
+{
+  std::map<std::string, StructData>::const_iterator it = vkData.structs.find(dependencyData.name);
+  assert(it != vkData.structs.end());
+
+  if (!it->second.structExtends.empty()) {
+    enterProtect(os, it->second.protect);
+
+    // write out allowed structure chains
+    for (auto extendName : it->second.structExtends)
+    {
+      std::map<std::string, StructData>::const_iterator itExtend = vkData.structs.find(extendName);
+      assert(itExtend != vkData.structs.end());
+      enterProtect(os, itExtend->second.protect);
+
+      os << "  template <> constexpr bool isStructureChainValid<" << extendName << ", " << dependencyData.name << ">() { return true; }" << std::endl;
+
+      leaveProtect(os, itExtend->second.protect);
+    }
+    leaveProtect(os, it->second.protect);
+  }
+}
+
 void writeTypeUnion( std::ostream & os, VkData const& vkData, DependencyData const& dependencyData, std::map<std::string,std::string> const& defaultValues )
 {
   std::map<std::string, StructData>::const_iterator it = vkData.structs.find(dependencyData.name);
@@ -4167,7 +4320,8 @@ int main( int argc, char **argv )
       << flagsHeader
       << optionalClassHeader
       << arrayProxyHeader
-      << uniqueHandleHeader;
+      << uniqueHandleHeader
+      << structureChainHeader;
 
     // first of all, write out vk::Result and the exception handling stuff
     std::list<DependencyData>::const_iterator it = std::find_if(vkData.dependencies.begin(), vkData.dependencies.end(), [](DependencyData const& dp) { return dp.name == "Result"; });
@@ -4198,6 +4352,17 @@ int main( int argc, char **argv )
 
     assert(vkData.deleterTypes.find("") != vkData.deleterTypes.end());
     writeTypes(ofs, vkData, defaultValues);
+
+    // write all template functions for the structure pointer chain validation
+    for (auto it = vkData.dependencies.begin(); it != vkData.dependencies.end(); ++it)
+    {
+      switch (it->category)
+      {
+      case DependencyData::Category::STRUCT:
+        writeStructureChainValidation(ofs, vkData, *it);
+        break;
+      }
+    }
 
     // write all the to_string functions for enums and flags
     for (auto it = vkData.dependencies.begin(); it != vkData.dependencies.end(); ++it)

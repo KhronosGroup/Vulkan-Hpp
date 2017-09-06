@@ -361,13 +361,28 @@ namespace vk
     {
       return &m_value;
     }
-
+    
+    Type * operator->()
+    {
+      return &m_value;
+    }
+    
     Type const& operator*() const
     {
       return m_value;
     }
 
-    Type get() const
+    Type & operator*()
+    {
+      return m_value;
+    }
+
+    const Type & get() const
+    {
+      return m_value;
+    }
+    
+    Type & get()
     {
       return m_value;
     }

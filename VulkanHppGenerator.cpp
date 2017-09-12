@@ -1676,7 +1676,7 @@ void readExtensionsExtension(tinyxml2::XMLElement * element, VkData & vkData)
   assert(vkData.tags.find(tag) != vkData.tags.end());
 
   tinyxml2::XMLElement * child = element->FirstChildElement();
-  assert(child && (strcmp(child->Value(), "require") == 0) && !child->NextSiblingElement());
+  assert(child && (strcmp(child->Value(), "require") == 0));
 
   if (strcmp(element->Attribute("supported"), "disabled") == 0)
   {
@@ -1690,8 +1690,11 @@ void readExtensionsExtension(tinyxml2::XMLElement * element, VkData & vkData)
     {
       protect = element->Attribute("protect");
     }
-
-    readExtensionRequire(child, vkData, protect, tag);
+    while (child) {
+      assert(strcmp(child->Value(), "require") == 0);
+      readExtensionRequire(child, vkData, protect, tag);
+      child = child->NextSiblingElement();
+    }
   }
 }
 

@@ -1649,6 +1649,10 @@ void readExtensionRequire(tinyxml2::XMLElement * element, VkData & vkData, std::
     {
       readExtensionEnum(child, vkData.enums, tag);
     }
+    else if (value == "comment")
+    {
+      // do nothing for comment
+    }
     else
     {
       assert(value=="usage");

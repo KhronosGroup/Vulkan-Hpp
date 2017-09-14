@@ -381,8 +381,8 @@ const std::string structureChainHeader = R"(
 
     StructureChain& operator=(StructureChain const &rhs)
     {
-      linkAndCopy(rhs);
-      return this;
+      linkAndCopy<StructureElements...>(rhs);
+      return *this;
     }
 
     template<typename ClassType> ClassType& get() { return static_cast<ClassType&>(*this);}

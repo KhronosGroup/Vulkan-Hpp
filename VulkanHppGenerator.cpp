@@ -30,6 +30,15 @@
 
 #include <tinyxml2.h>
 
+const std::string vkNamespace = R"(
+#if !defined(VULKAN_HPP_NAMESPACE)
+#define VULKAN_HPP_NAMESPACE vk
+#endif
+
+namespace VULKAN_HPP_NAMESPACE
+{
+)";
+
 const std::string exceptionHeader = R"(
 #if defined(_MSC_VER) && (_MSC_VER == 1800)
 # define noexcept _NOEXCEPT
@@ -38,7 +47,7 @@ const std::string exceptionHeader = R"(
   class ErrorCategoryImpl : public std::error_category
   {
     public:
-    virtual const char* name() const noexcept override { return "vk::Result"; }
+    virtual const char* name() const noexcept override { return "VULKAN_HPP_NAMESPACE::Result"; }
     virtual std::string message(int ev) const override { return to_string(static_cast<Result>(ev)); }
   };
 
@@ -2717,7 +2726,7 @@ ${i}  assert( ${firstVectorName}.size() == ${secondVectorName}.size() );
 #else
 ${i}  if ( ${firstVectorName}.size() != ${secondVectorName}.size() )
 ${i}  {
-${i}    throw LogicError( "vk::${className}::${reducedName}: ${firstVectorName}.size() != ${secondVectorName}.size()" );
+${i}    throw LogicError( "VULKAN_HPP_NAMESPACE::${className}::${reducedName}: ${firstVectorName}.size() != ${secondVectorName}.size()" );
 ${i}  }
 #endif  // VULKAN_HPP_NO_EXCEPTIONS
 )#";
@@ -2756,7 +2765,7 @@ void writeFunctionBodyEnhancedReturnResultValue(std::ostream & os, std::string c
   }
 
   // now the function name (with full namespace) as a string
-  os << "\"vk::" << (commandData.className.empty() ? "" : commandData.className + "::") << (singular ? stripPluralS(commandData.reducedName) : commandData.reducedName) << "\"";
+  os << "\"VULKAN_HPP_NAMESPACE::" << (commandData.className.empty() ? "" : commandData.className + "::") << (singular ? stripPluralS(commandData.reducedName) : commandData.reducedName) << "\"";
 
   if (!commandData.twoStep && (1 < commandData.successCodes.size()))
   {
@@ -4330,8 +4339,7 @@ int main( int argc, char **argv )
       << inlineHeader
       << explicitHeader
       << std::endl
-      << "namespace vk" << std::endl
-      << "{" << std::endl
+      << vkNamespace
       << flagsHeader
       << optionalClassHeader
       << arrayProxyHeader
@@ -4351,16 +4359,16 @@ int main( int argc, char **argv )
     ofs << "#endif" << std::endl;
     vkData.dependencies.erase(it);
 
-    ofs << "} // namespace vk" << std::endl
+    ofs << "} // namespace VULKAN_HPP_NAMESPACE" << std::endl
       << std::endl
       << "namespace std" << std::endl
       << "{" << std::endl
       << "  template <>" << std::endl
-      << "  struct is_error_code_enum<vk::Result> : public true_type" << std::endl
+      << "  struct is_error_code_enum<VULKAN_HPP_NAMESPACE::Result> : public true_type" << std::endl
       << "  {};" << std::endl
       << "}" << std::endl
       << std::endl
-      << "namespace vk" << std::endl
+      << "namespace VULKAN_HPP_NAMESPACE" << std::endl
       << "{" << std::endl
       << resultValueHeader
       << createResultValueHeader;
@@ -4394,7 +4402,7 @@ int main( int argc, char **argv )
       }
     }
 
-    ofs << "} // namespace vk" << std::endl
+    ofs << "} // namespace VULKAN_HPP_NAMESPACE" << std::endl
       << std::endl
       << "#endif" << std::endl;
   }

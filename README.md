@@ -24,6 +24,8 @@ To avoid name collisions with the Vulkan C API the C++ bindings reside in the vk
   *  ```VK_STRUCTURE_TYPE_PRESENT_INFO_KHR``` is now ```vk::StructureType::ePresentInfoKHR```.
 *  Flag bits are handled like scoped enums with the addition that the _BIT suffix has also been removed.
 
+In some cases it might be necessary to move Vulkan-Hpp to a custom namespace. This can be achieved by defining VULKAN_HPP_NAMESPACE before including Vulkan-Hpp.
+
 # Handles
 Vulkan-Hpp declares a class for all handles to ensure full type safety and to add support for member functions on handles. A member function has been added to a handle class for each
  function which accepts the corresponding handle as first parameter. Instead of ```vkBindBufferMemory(device, ...)``` one can write ```device.bindBufferMemory(...)``` or ```vk::bindBufferMemory(device, ...)```.

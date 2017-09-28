@@ -2666,6 +2666,7 @@ void writeFunctionBodyEnhancedLocalCountVariable(std::ostream & os, std::string 
 
 std::string writeFunctionBodyEnhancedLocalReturnVariable(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool singular, bool isStructureChain)
 {
+  bool returnsVector = !singular && (commandData.vectorParams.find(commandData.returnParam) != commandData.vectorParams.end());
   std::string returnName = startLowerCase(strip(commandData.params[commandData.returnParam].name, "p"));
 
   // there is a returned parameter -> we need a local variable to hold that value
@@ -2737,7 +2738,11 @@ std::string writeFunctionBodyEnhancedLocalReturnVariable(std::ostream & os, std:
           }
         }
         assert(!size.empty());
-        os << "( " << size << " )";
+        os << "( " << size << (returnsVector ? ", {}, {alloc} )" : " )");
+      }
+      else if ( returnsVector )
+      {
+        os << "( {alloc} )";
       }
     }
     os << ";" << std::endl;
@@ -2941,7 +2946,14 @@ void writeFunctionBodyUnique(std::ostream & os, std::string const& indentation, 
       os << argumentName;
     }
   }
+
+  if (returnsVector)
+  {
+    os << ", alloc";
+  }
+
   os << " )";
+
   if (returnsVector)
   {
     std::string const stringTemplate = R"(;
@@ -2986,6 +2998,8 @@ void writeFunctionHeaderArguments(std::ostream & os, VkData const& vkData, Comma
 
 void writeFunctionHeaderArgumentsEnhanced(std::ostream & os, VkData const& vkData, CommandData const& commandData, bool singular, bool withDefaults)
 {
+  bool returnsVector = !singular && (commandData.vectorParams.find(commandData.returnParam) != commandData.vectorParams.end());
+
   // check if there's at least one argument left to put in here
   if (commandData.skippedParams.size() + (commandData.className.empty() ? 0 : 1) < commandData.params.size())
   {
@@ -3117,7 +3131,16 @@ void writeFunctionHeaderArgumentsEnhanced(std::ostream & os, VkData const& vkDat
         argEncountered = true;
       }
     }
-    os << " ";
+
+    os << (returnsVector ? ", " : " ");
+  }
+
+  if (returnsVector)
+  {
+    os << "Allocator const & alloc ";
+    if (withDefaults) {
+      os << "= Allocator() ";
+    }
   }
 }
 

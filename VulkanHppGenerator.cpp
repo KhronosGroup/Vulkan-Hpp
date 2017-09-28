@@ -616,12 +616,12 @@ const std::string uniqueHandleHeader = R"(
     {
       return &m_value;
     }
-    
+
     Type * operator->()
     {
       return &m_value;
     }
-    
+
     Type const& operator*() const
     {
       return m_value;
@@ -856,6 +856,14 @@ struct DeleterData
   std::string call;
 };
 
+#if !defined(NDEBUG)
+struct ExtensionData
+{
+  std::string               protect;
+  std::vector<std::string>  requires;
+};
+#endif
+
 struct VkData
 {
   std::map<std::string, CommandData>            commands;
@@ -873,6 +881,9 @@ struct VkData
   std::string                                   version;
   std::set<std::string>                         vkTypes;
   std::string                                   vulkanLicenseHeader;
+#if !defined(NDEBUG)
+  std::map<std::string, ExtensionData>          extensions;
+#endif
 };
 
 void createDefaults( VkData const& vkData, std::map<std::string,std::string> & defaultValues );
@@ -925,6 +936,7 @@ void sortDependencies( std::list<DependencyData> & dependencies );
 std::string strip(std::string const& value, std::string const& prefix, std::string const& postfix = std::string());
 std::string stripPluralS(std::string const& name);
 std::string toCamelCase(std::string const& value);
+std::vector<std::string> tokenize(std::string tokenString, char separator);
 std::string toUpperCase(std::string const& name);
 std::string trimEnd(std::string const& input);
 void writeCall(std::ostream & os, CommandData const& commandData, std::set<std::string> const& vkTypes, bool firstCall, bool singular);
@@ -1446,17 +1458,13 @@ std::vector<std::string> readCommandSuccessCodes(tinyxml2::XMLElement* element, 
   {
     std::string successCodes = element->Attribute("successcodes");
 
-    // tokenize the successCodes string, using ',' as the separator
-    size_t start = 0, end;
-    do
+    results = tokenize(successCodes, ',');
+    for (auto & code : results)
     {
-      end = successCodes.find(',', start);
-      std::string code = successCodes.substr(start, end - start);
       std::string tag = findTag(code, tags);
       // on each success code: prepend 'e', strip "VK_" and a tag, convert it to camel case, and add the tag again
-      results.push_back(std::string("e") + toCamelCase(strip(code, "VK_", tag)) + tag);
-      start = end + 1;
-    } while (end != std::string::npos);
+      code = std::string("e") + toCamelCase(strip(code, "VK_", tag)) + tag;
+    }
   }
   return results;
 }
@@ -1675,7 +1683,7 @@ void readExtensionRequire(tinyxml2::XMLElement * element, VkData & vkData, std::
     }
     else
     {
-      assert(value=="usage");
+      assert((value == "comment") || (value=="usage"));
     }
   }
 }
@@ -1691,27 +1699,44 @@ void readExtensions(tinyxml2::XMLElement * element, VkData & vkData)
 
 void readExtensionsExtension(tinyxml2::XMLElement * element, VkData & vkData)
 {
-  assert( element->Attribute( "name" ) );
-  std::string tag = extractTag(element->Attribute("name"));
-  assert(vkData.tags.find(tag) != vkData.tags.end());
-
-  tinyxml2::XMLElement * child = element->FirstChildElement();
-  assert(child && (strcmp(child->Value(), "require") == 0) && !child->NextSiblingElement());
-
   if (strcmp(element->Attribute("supported"), "disabled") == 0)
   {
     // kick out all the disabled stuff we've read before !!
-    readDisabledExtensionRequire(child, vkData);
+    for (tinyxml2::XMLElement * child = element->FirstChildElement(); child; child = child->NextSiblingElement())
+    {
+      assert(strcmp(child->Value(), "require") == 0);
+      readDisabledExtensionRequire(child, vkData);
+    }
   }
   else
   {
+    assert( element->Attribute( "name" ) );
+    std::string name = element->Attribute("name");
+
+    std::string tag = extractTag(name);
+    assert(vkData.tags.find(tag) != vkData.tags.end());
+
     std::string protect;
     if (element->Attribute("protect"))
     {
       protect = element->Attribute("protect");
     }
 
-    readExtensionRequire(child, vkData, protect, tag);
+#if !defined(NDEBUG)
+    assert(vkData.extensions.find(name) == vkData.extensions.end());
+    ExtensionData & extension = vkData.extensions.insert(std::make_pair(name, ExtensionData())).first->second;
+    extension.protect = protect;
+    if (element->Attribute("requires"))
+    {
+      extension.requires = tokenize(element->Attribute("requires"), ',');
+    }
+#endif
+
+    for (tinyxml2::XMLElement * child = element->FirstChildElement(); child; child = child->NextSiblingElement())
+    {
+      assert(strcmp(child->Value(), "require") == 0);
+      readExtensionRequire(child, vkData, protect, tag);
+    }
   }
 }
 
@@ -1925,18 +1950,14 @@ void readTypeStruct( tinyxml2::XMLElement * element, VkData & vkData, bool isUni
 
   if (element->Attribute("structextends"))
   {
-    std::string structextends = element->Attribute("structextends");
-    std::vector<std::string> structs;
-    size_t endPos = -1;
-    do
+    std::vector<std::string> structExtends = tokenize(element->Attribute("structextends"), ',');
+    for (auto const& s : structExtends)
     {
-      size_t startPos = endPos + 1;
-      endPos = structextends.find(',', startPos);
-      assert(structextends.substr(startPos, 2) == "Vk");
-      std::string structExtendName = structextends.substr(startPos + 2, endPos - startPos - 2);
-      it->second.structExtends.push_back(structExtendName);
-      vkData.extendedStructs.insert(structExtendName);
-    } while (endPos != std::string::npos);
+      assert(s.substr(0, 2) == "Vk");
+      std::string strippedName = s.substr(2);
+      it->second.structExtends.push_back(strippedName);
+      vkData.extendedStructs.insert(strippedName);
+    }
     assert(!it->second.structExtends.empty());
   }
 
@@ -2198,6 +2219,19 @@ std::string toCamelCase(std::string const& value)
     }
   }
   return result;
+}
+
+std::vector<std::string> tokenize(std::string tokenString, char separator)
+{
+  std::vector<std::string> tokens;
+  size_t start = 0, end;
+  do
+  {
+    end = tokenString.find(separator, start);
+    tokens.push_back(tokenString.substr(start, end - start));
+    start = end + 1;
+  } while (end != std::string::npos);
+  return tokens;
 }
 
 std::string toUpperCase(std::string const& name)
@@ -4305,6 +4339,18 @@ int main( int argc, char **argv )
     }
 
     sortDependencies(vkData.dependencies);
+
+#if !defined(NDEBUG)
+    for (auto const& ext : vkData.extensions)
+    {
+      for (auto const& req : ext.second.requires)
+      {
+        auto reqExt = vkData.extensions.find(req);
+        assert(reqExt != vkData.extensions.end());
+        assert(reqExt->second.protect.empty() || (reqExt->second.protect == ext.second.protect));
+      }
+    }
+#endif
 
     std::map<std::string, std::string> defaultValues;
     createDefaults(vkData, defaultValues);

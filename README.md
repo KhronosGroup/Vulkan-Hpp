@@ -7,7 +7,7 @@ Vulkan-Hpp is part of the LunarG Vulkan SDK since version 1.0.24. Just include `
 
 # Minimum Requirements
 Vulkan-Hpp requires a C++11 capable compiler to compile. The following compilers are known to work:
-* Visual Studio >=2013
+* Visual Studio >=2015
 * GCC >= 4.8.2 (earlier version might work, but are untested)
 * Clang >= 3.3
 
@@ -288,7 +288,18 @@ properties.resize(propertyCount);
 ```
 Since writing this loop over and over again is tedious and error prone the C++ binding takes care of the enumeration so that you can just write:
 
+```
 std::vector<LayerProperties> properties = physicalDevice.enumerateDeviceLayerProperties();
+```
+
+# UniqueHandle
+Vulkan-Hpp provides a ```vk::UniqueHandle<Type, Deleter>``` interface. For each Vulkan handle type ```vk::Type``` there is a unqiue handle ```vk::UniqueType``` which will delete the underlying Vulkan resource upon destruction, e.g.
+```vk::UniqueBuffer ``` is the unique handle for ```vk::Buffer```.
+
+For each function which constructs a Vulkan handle of type ```vk::Type``` Vulkan-Hpp provides a second version which returns a ```vk::UnqiueType```. E.g. for ```vk::Device::createBuffer``` there is ```vk::Device::createBufferUnique``` and for ```vk::allocateCommandBuffers```
+there is ```vk::allocateCommandBuffersUnique```.
+
+Note that using ```vk::UniqueHandle``` comes at a cost since most deleters have to store the ```vk::AllocationCallbacks``` and parent handle used for construction because they are required for automatic destruction.
 
 # Custom allocators
 Sometimes it is required to use ```std::vector``` with custom allocators. Vulkan-Hpp supports vectors with custom allocators as input for ```vk::ArrayProx``` and for functions which do return a vector. For the latter case, add your favorite custom allocator as template argument to the function call like this:

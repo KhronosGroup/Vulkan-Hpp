@@ -1,5 +1,10 @@
 # Vulkan-Hpp: C++ Bindings for Vulkan
 
+## CI Build Status
+| Platform | Build Status |
+|:--------:|:------------:|
+| Linux | [![Build Status](https://travis-ci.org/KhronosGroup/Vulkan-Hpp.svg?branch=master)](https://travis-ci.org/KhronosGroup/Vulkan-Hpp) |
+
 The goal of the Vulkan-Hpp is to provide header only C++ bindings for the Vulkan C API to improve the developers Vulkan experience without introducing CPU runtime cost. It adds features like type safety for enums and bitfields, STL container support, exceptions and simple enumerations.
 
 # Getting Started

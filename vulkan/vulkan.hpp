@@ -33,7 +33,7 @@
 # include <memory>
 # include <vector>
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-static_assert( VK_HEADER_VERSION ==  61 , "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION ==  62 , "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -19324,13 +19324,13 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct RenderPassSampleLocationsBeginInfoEXT
   {
-    RenderPassSampleLocationsBeginInfoEXT( uint32_t attachmentInitialSampleLocationsCount_ = 0, const AttachmentSampleLocationsEXT* pAttachmentInitialSampleLocations_ = nullptr, uint32_t postSubpassSampleLocationsCount_ = 0, const SubpassSampleLocationsEXT* pSubpassSampleLocations_ = nullptr )
+    RenderPassSampleLocationsBeginInfoEXT( uint32_t attachmentInitialSampleLocationsCount_ = 0, const AttachmentSampleLocationsEXT* pAttachmentInitialSampleLocations_ = nullptr, uint32_t postSubpassSampleLocationsCount_ = 0, const SubpassSampleLocationsEXT* pPostSubpassSampleLocations_ = nullptr )
       : sType( StructureType::eRenderPassSampleLocationsBeginInfoEXT )
       , pNext( nullptr )
       , attachmentInitialSampleLocationsCount( attachmentInitialSampleLocationsCount_ )
       , pAttachmentInitialSampleLocations( pAttachmentInitialSampleLocations_ )
       , postSubpassSampleLocationsCount( postSubpassSampleLocationsCount_ )
-      , pSubpassSampleLocations( pSubpassSampleLocations_ )
+      , pPostSubpassSampleLocations( pPostSubpassSampleLocations_ )
     {
     }
 
@@ -19368,9 +19368,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    RenderPassSampleLocationsBeginInfoEXT& setPSubpassSampleLocations( const SubpassSampleLocationsEXT* pSubpassSampleLocations_ )
+    RenderPassSampleLocationsBeginInfoEXT& setPPostSubpassSampleLocations( const SubpassSampleLocationsEXT* pPostSubpassSampleLocations_ )
     {
-      pSubpassSampleLocations = pSubpassSampleLocations_;
+      pPostSubpassSampleLocations = pPostSubpassSampleLocations_;
       return *this;
     }
 
@@ -19386,7 +19386,7 @@ namespace VULKAN_HPP_NAMESPACE
           && ( attachmentInitialSampleLocationsCount == rhs.attachmentInitialSampleLocationsCount )
           && ( pAttachmentInitialSampleLocations == rhs.pAttachmentInitialSampleLocations )
           && ( postSubpassSampleLocationsCount == rhs.postSubpassSampleLocationsCount )
-          && ( pSubpassSampleLocations == rhs.pSubpassSampleLocations );
+          && ( pPostSubpassSampleLocations == rhs.pPostSubpassSampleLocations );
     }
 
     bool operator!=( RenderPassSampleLocationsBeginInfoEXT const& rhs ) const
@@ -19402,7 +19402,7 @@ namespace VULKAN_HPP_NAMESPACE
     uint32_t attachmentInitialSampleLocationsCount;
     const AttachmentSampleLocationsEXT* pAttachmentInitialSampleLocations;
     uint32_t postSubpassSampleLocationsCount;
-    const SubpassSampleLocationsEXT* pSubpassSampleLocations;
+    const SubpassSampleLocationsEXT* pPostSubpassSampleLocations;
   };
   static_assert( sizeof( RenderPassSampleLocationsBeginInfoEXT ) == sizeof( VkRenderPassSampleLocationsBeginInfoEXT ), "struct and wrapper have different size!" );
 

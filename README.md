@@ -304,7 +304,7 @@ Vulkan-Hpp provides a ```vk::UniqueHandle<Type, Deleter>``` interface. For each 
 For each function which constructs a Vulkan handle of type ```vk::Type``` Vulkan-Hpp provides a second version which returns a ```vk::UnqiueType```. E.g. for ```vk::Device::createBuffer``` there is ```vk::Device::createBufferUnique``` and for ```vk::allocateCommandBuffers```
 there is ```vk::allocateCommandBuffersUnique```.
 
-Note that using ```vk::UniqueHandle``` comes at a cost since most deleters have to store the ```vk::AllocationCallbacks``` and parent handle used for construction because they are required for automatic destruction.
+Note that using ```vk::UniqueHandle``` comes at a cost since most deleters have to store the ```vk::AllocationCallbacks``` and parent handle used for construction because they are required for automatic destruction. The use of ```vk::UniqueHandle``` also requires that exceptions are enabled.
 
 # Custom allocators
 Sometimes it is required to use ```std::vector``` with custom allocators. Vulkan-Hpp supports vectors with custom allocators as input for ```vk::ArrayProx``` and for functions which do return a vector. For the latter case, add your favorite custom allocator as template argument to the function call like this:

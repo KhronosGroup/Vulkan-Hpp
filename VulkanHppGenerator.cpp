@@ -572,10 +572,6 @@ const std::string createResultValueHeader = R"(
 )";
 
 const std::string uniqueHandleHeader = R"(
-#if defined(VULKAN_HPP_NO_EXCEPTIONS) && !defined(VULKAN_HPP_NO_SMART_HANDLE)
-#  define VULKAN_HPP_NO_SMART_HANDLE
-#endif
-
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template <typename Type, typename Deleter>
   class UniqueHandle

@@ -790,10 +790,11 @@ struct DependencyData
   std::set<std::string> forwardDependencies;
 };
 
-struct NameValue
+struct EnumValueData
 {
   std::string name;
   std::string value;
+  std::string alias;
 };
 
 struct EnumData
@@ -803,25 +804,28 @@ struct EnumData
     , bitmask(b)
   {}
 
-  void addEnumMember(std::string const& name, std::string const& tag);
+  void addEnumValue(std::string const& name, std::string const& tag);
 
-  std::string             name;
-  std::string             prefix;
-  std::string             postfix;
-  std::vector<NameValue>  members;
-  std::string             protect;
-  bool                    bitmask;
+  std::string                 name;
+  std::string                 prefix;
+  std::string                 postfix;
+  std::vector<EnumValueData>  values;
+  std::string                 protect;
+  bool                        bitmask;
+  std::string                 alias;
 };
 
 struct FlagData
 {
   std::string protect;
+  std::string alias;
 };
 
 struct HandleData
 {
   std::vector<std::string>  commands;
   std::string               protect;
+  std::string               alias;
 };
 
 struct ScalarData
@@ -843,11 +847,12 @@ struct StructData
     : returnedOnly(false)
   {}
 
-  bool                     returnedOnly;
-  bool                     isUnion;
-  std::vector<MemberData>  members;
-  std::string              protect;
-  std::vector<std::string> structExtends;
+  bool                      returnedOnly;
+  bool                      isUnion;
+  std::vector<MemberData>   members;
+  std::string               protect;
+  std::vector<std::string>  structExtends;
+  std::string               alias;
 };
 
 struct DeleterData
@@ -867,9 +872,11 @@ struct ExtensionData
 struct VkData
 {
   std::map<std::string, CommandData>            commands;
+  std::map<std::string, std::string>            constants;
+  std::set<std::string>                         defines;
   std::list<DependencyData>                     dependencies;
+  std::map<std::string, DeleterData>            deleters;     // map from child types to corresponding deleter data
   std::map<std::string, std::set<std::string>>  deleterTypes; // map from parent type to set of child types
-  std::map<std::string, DeleterData>            deleterData;  // map from child types to corresponding deleter data
   std::map<std::string, EnumData>               enums;
   std::map<std::string, FlagData>               flags;
   std::map<std::string, HandleData>             handles;
@@ -886,6 +893,7 @@ struct VkData
 #endif
 };
 
+void aliasEnum(VkData & vkData, std::map<std::string, EnumData>::iterator enumsIt, std::string const& newName, std::string const& protect);
 void createDefaults( VkData const& vkData, std::map<std::string,std::string> & defaultValues );
 void determineEnhancedReturnType(CommandData & commandData);
 void determineReducedName(CommandData & commandData);
@@ -910,14 +918,19 @@ void readCommandsCommand(tinyxml2::XMLElement * element, VkData & vkData);
 std::vector<std::string> readCommandSuccessCodes(tinyxml2::XMLElement* element, std::set<std::string> const& tags);
 void readComment(tinyxml2::XMLElement * element, std::string & header);
 void readEnums( tinyxml2::XMLElement * element, VkData & vkData );
+void readEnumsConstant(tinyxml2::XMLElement * element, std::map<std::string, std::string> & constants);
 void readEnumsEnum( tinyxml2::XMLElement * element, EnumData & enumData );
 void readDisabledExtensionRequire(tinyxml2::XMLElement * element, VkData & vkData);
+void readExtensionAlias(tinyxml2::XMLElement * element, VkData & vkData, std::string const& protect, std::string const& tag);
 void readExtensionCommand(tinyxml2::XMLElement * element, std::map<std::string, CommandData> & commands, std::string const& protect);
 void readExtensionEnum(tinyxml2::XMLElement * element, std::map<std::string, EnumData> & enums, std::string const& tag);
 void readExtensionRequire(tinyxml2::XMLElement * element, VkData & vkData, std::string const& protect, std::string const& tag);
 void readExtensions( tinyxml2::XMLElement * element, VkData & vkData );
 void readExtensionsExtension(tinyxml2::XMLElement * element, VkData & vkData);
 void readExtensionType(tinyxml2::XMLElement * element, VkData & vkData, std::string const& protect);
+void readFeature(tinyxml2::XMLElement * element, std::map<std::string, EnumData> & enums);
+void readFeatureRequire(tinyxml2::XMLElement * element, std::map<std::string, EnumData> & enums);
+void readFeatureRequireEnum(tinyxml2::XMLElement * element, std::map<std::string, EnumData> & enums);
 tinyxml2::XMLNode* readType(tinyxml2::XMLNode* element, std::string & type, std::string & pureType);
 void readTypeBasetype( tinyxml2::XMLElement * element, std::list<DependencyData> & dependencies );
 void readTypeBitmask( tinyxml2::XMLElement * element, VkData & vkData);
@@ -928,6 +941,7 @@ void readTypeStruct( tinyxml2::XMLElement * element, VkData & vkData, bool isUni
 void readTypeStructMember( tinyxml2::XMLElement * element, VkData & vkData, StructData & structData );
 void readTags(tinyxml2::XMLElement * element, std::set<std::string> & tags);
 void readTypes(tinyxml2::XMLElement * element, VkData & vkData);
+void readTypesType(tinyxml2::XMLElement * element, VkData & vkData);
 std::string reduceName(std::string const& name, bool singular = false);
 void registerDeleter(VkData & vkData, CommandData const& commandData);
 std::string startLowerCase(std::string const& input);
@@ -938,6 +952,7 @@ std::string stripPluralS(std::string const& name);
 std::string toCamelCase(std::string const& value);
 std::vector<std::string> tokenize(std::string tokenString, char separator);
 std::string toUpperCase(std::string const& name);
+std::string trim(std::string const& input);
 std::string trimEnd(std::string const& input);
 void writeCall(std::ostream & os, CommandData const& commandData, std::set<std::string> const& vkTypes, bool firstCall, bool singular);
 std::string generateCall(CommandData const& commandData, std::set<std::string> const& vkTypes, bool firstCall, bool singular);
@@ -946,8 +961,8 @@ void writeCallParameter(std::ostream & os, ParamData const& paramData, std::set<
 void writeCallPlainTypeParameter(std::ostream & os, ParamData const& paramData);
 void writeCallVectorParameter(std::ostream & os, CommandData const& commandData, std::set<std::string> const& vkTypes, bool firstCall, bool singular, std::map<size_t, size_t>::const_iterator it);
 void writeCallVulkanTypeParameter(std::ostream & os, ParamData const& paramData);
-void writeDeleterClasses(std::ostream & os, std::pair<std::string, std::set<std::string>> const& deleterTypes, std::map<std::string, DeleterData> const& deleterData);
-void writeDeleterForwardDeclarations(std::ostream &os, std::pair<std::string, std::set<std::string>> const& deleterTypes, std::map<std::string, DeleterData> const& deleterData);
+void writeDeleterClasses(std::ostream & os, std::pair<std::string, std::set<std::string>> const& deleterTypes, std::map<std::string, DeleterData> const& deleters);
+void writeDeleterForwardDeclarations(std::ostream &os, std::pair<std::string, std::set<std::string>> const& deleterTypes, std::map<std::string, DeleterData> const& deleters);
 void writeEnumsToString(std::ostream & os, EnumData const& enumData);
 void writeFlagsToString(std::ostream & os, std::string const& flagsName, EnumData const &enumData);
 void writeFunction(std::ostream & os, std::string const& indentation, VkData const& vkData, CommandData const& commandData, bool definition, bool enhanced, bool singular, bool unique, bool isStructureChain);
@@ -989,24 +1004,47 @@ void writeTypes(std::ostream & os, VkData const& vkData, std::map<std::string, s
 void writeVersionCheck(std::ostream & os, std::string const& version);
 void writeTypesafeCheck(std::ostream & os, std::string const& typesafeCheck);
 
-void EnumData::addEnumMember(std::string const &name, std::string const& tag)
+std::string createEnumValueName(std::string const& name, std::string const& prefix, std::string const& postfix, bool bitmask, std::string const& tag)
 {
-  NameValue nv;
-  nv.name = "e" + toCamelCase(strip(name, prefix, postfix));
-  nv.value = name;
+  std::string result = "e" + toCamelCase(strip(name, prefix, postfix));
   if (bitmask)
   {
-    size_t pos = nv.name.find("Bit");
+    size_t pos = result.find("Bit");
     if (pos != std::string::npos)
     {
-      nv.name.erase(pos, 3);
+      result.erase(pos, 3);
     }
   }
-  if (!tag.empty() && (nv.name.substr(nv.name.length() - tag.length()) == toCamelCase(tag)))
+  if (!tag.empty() && (result.substr(result.length() - tag.length()) == toCamelCase(tag)))
   {
-    nv.name = nv.name.substr(0, nv.name.length() - tag.length()) + tag;
+    result = result.substr(0, result.length() - tag.length()) + tag;
   }
-  members.push_back(nv);
+  return result;
+}
+
+void EnumData::addEnumValue(std::string const &name, std::string const& tag)
+{
+  EnumValueData evd;
+  evd.name = createEnumValueName(name, prefix, postfix, bitmask, tag);
+  evd.value = name;
+
+  auto it = std::find_if(values.begin(), values.end(), [&evd](EnumValueData const& _evd) { return _evd.name == evd.name; });
+  if (it == values.end())
+  {
+    values.push_back(evd);
+  }
+  else
+  {
+    assert(it->value == evd.value);
+  }
+}
+
+void aliasEnum(VkData & vkData, std::map<std::string, EnumData>::iterator enumsIt, std::string const& newName, std::string const& protect)
+{
+  assert(vkData.enums.find(newName) == vkData.enums.end());
+  assert(enumsIt->second.protect == protect);
+  assert(enumsIt->second.alias.empty());
+  enumsIt->second.alias = newName;
 }
 
 void createDefaults( VkData const& vkData, std::map<std::string,std::string> & defaultValues )
@@ -1022,9 +1060,9 @@ void createDefaults( VkData const& vkData, std::map<std::string,std::string> & d
         {
           assert(vkData.enums.find(dependency.name) != vkData.enums.end());
           EnumData const & enumData = vkData.enums.find(dependency.name)->second;
-          if (!enumData.members.empty())
+          if (!enumData.values.empty())
           {
-            defaultValues[dependency.name] = dependency.name + "::" + vkData.enums.find(dependency.name)->second.members.front().name;
+            defaultValues[dependency.name] = dependency.name + "::" + vkData.enums.find(dependency.name)->second.values.front().name;
           }
           else
           {
@@ -1304,7 +1342,7 @@ std::string readArraySize(tinyxml2::XMLNode * node, std::string& name)
     node = node->NextSibling();
     if (node && node->ToText())
     {
-      std::string value = node->Value();
+      std::string value = trimEnd(node->Value());
       if (value == "[")
       {
         // if this node has '[' as its value, the next node holds the array size, and the node after that needs to hold ']', and there should be no more siblings
@@ -1312,7 +1350,7 @@ std::string readArraySize(tinyxml2::XMLNode * node, std::string& name)
         assert(node && node->ToElement() && (strcmp(node->Value(), "enum") == 0));
         arraySize = node->ToElement()->GetText();
         node = node->NextSibling();
-        assert(node && node->ToText() && (strcmp(node->Value(), "]") == 0));
+        assert(node && node->ToText() && (trimEnd(node->Value()) == "]"));
       }
       else
       {
@@ -1330,9 +1368,15 @@ bool readCommandParam( tinyxml2::XMLElement * element, std::set<std::string> & d
 {
   ParamData param;
 
+  bool isTwoStep = false;
   if (element->Attribute("len"))
   {
     param.len = element->Attribute("len");
+    auto pit = std::find_if(params.begin(), params.end(), [&param](ParamData const& pd) { return param.len == pd.name; });
+    if (pit != params.end())
+    {
+      isTwoStep = (pit->type.find('*') != std::string::npos);
+    }
   }
 
   // get the type of the parameter, and put it into the list of dependencies
@@ -1348,8 +1392,8 @@ bool readCommandParam( tinyxml2::XMLElement * element, std::set<std::string> & d
 
   params.push_back(param);
 
-  // an optional parameter with "false,true" value is supposed to be part of a two-step algorithm: first get the size, than use it
-  return element->Attribute("optional") && (strcmp(element->Attribute("optional"), "false,true") == 0);
+  assert(!isTwoStep || (param.type.substr(0, 6) != "const "));
+  return isTwoStep;
 }
 
 void readCommandParams(tinyxml2::XMLElement* element, std::set<std::string> & dependencies, CommandData & commandData)
@@ -1377,7 +1421,7 @@ tinyxml2::XMLNode* readCommandParamType(tinyxml2::XMLNode* node, ParamData& para
   if (node->ToText())
   {
     // start type with "const" or "struct", if needed
-    std::string value = trimEnd(node->Value());
+    std::string value = trim(node->Value());
     assert((value == "const") || (value == "struct"));
     param.type = value + " ";
     node = node->NextSibling();
@@ -1502,7 +1546,14 @@ void readEnums( tinyxml2::XMLElement * element, VkData & vkData )
   }
   std::string name = strip(element->Attribute("name"), "Vk");
 
-  if ( name != "API Constants" )    // skip the "API Constants"
+  if (name == "API Constants")
+  {
+    for (tinyxml2::XMLElement * child = element->FirstChildElement(); child; child = child->NextSiblingElement())
+    {
+      readEnumsConstant(child, vkData.constants);
+    }
+  }
+  else
   {
     // add an empty DependencyData on this name into the dependencies list
     vkData.dependencies.push_back( DependencyData( DependencyData::Category::ENUM, name ) );
@@ -1568,6 +1619,14 @@ void readEnums( tinyxml2::XMLElement * element, VkData & vkData )
   }
 }
 
+void readEnumsConstant(tinyxml2::XMLElement * element, std::map<std::string, std::string> & constants)
+{
+  assert((strcmp(element->Value(), "enum") == 0) && element->Attribute("value") && element->Attribute("name"));
+  std::string name = element->Attribute("name");
+  assert(constants.find(name) == constants.end());
+  constants[name] = element->Attribute("value");
+}
+
 void readEnumsEnum( tinyxml2::XMLElement * element, EnumData & enumData )
 {
   // read the names of the enum values
@@ -1576,7 +1635,7 @@ void readEnumsEnum( tinyxml2::XMLElement * element, EnumData & enumData )
   {
     if ( child->Attribute( "name" ) )
     {
-      enumData.addEnumMember(child->Attribute("name"), "");
+      enumData.addEnumValue(child->Attribute("name"), "");
     }
     child = child->NextSiblingElement();
   }
@@ -1636,6 +1695,109 @@ void readDisabledExtensionRequire(tinyxml2::XMLElement * element, VkData & vkDat
   }
 }
 
+void readExtensionAlias(tinyxml2::XMLElement * element, VkData & vkData, std::string const& protect, std::string const& tag)
+{
+  assert(element->Attribute("name") && element->Attribute("value"));
+  std::string name = element->Attribute("name");
+  std::string value = element->Attribute("value");
+
+  auto commandsIt = vkData.commands.find(startLowerCase(strip(value, "vk")));
+  if (commandsIt != vkData.commands.end())
+  {
+    // the alias is on a command -> add a command with that name
+    CommandData commandData = commandsIt->second;
+    commandData.fullName = startLowerCase(strip(name, "vk"));
+    assert(vkData.commands.find(commandData.fullName) == vkData.commands.end());
+
+    determineReducedName(commandData);
+    vkData.commands.insert(std::make_pair(commandData.fullName, commandData));
+  }
+  else
+  {
+    auto constantsIt = vkData.constants.find(value);
+    if (constantsIt != vkData.constants.end())
+    {
+      // alias on a constant -> just add it to the set of constants... we're doing nothing with them
+      auto it = vkData.constants.find(name);
+      assert((vkData.constants.find(name) == vkData.constants.end()) || (vkData.constants.find(name)->second == constantsIt->second));
+      vkData.constants[name] = constantsIt->second;
+    }
+    else
+    {
+      std::string strippedValue = strip(value, "Vk");
+      std::string strippedName = strip(name, "Vk");
+
+      auto enumsIt = vkData.enums.find(strippedValue);
+      if (enumsIt != vkData.enums.end())
+      {
+        // the alias is on an enum -> set the alias, which will map to a using directive
+        aliasEnum(vkData, enumsIt, strippedName, protect);
+      }
+      else
+      {
+        auto flagsIt = vkData.flags.find(strippedValue);
+        if (flagsIt != vkData.flags.end())
+        {
+          // the alias is on a flags -> set the alias, which will map to a using directive
+          assert(vkData.flags.find(strippedName) == vkData.flags.end());
+          assert(flagsIt->second.alias.empty());
+          flagsIt->second.alias = strippedName;
+
+          // adjust the generated enum name as well, if it's empty (and therefore auto-generated)
+          std::string enumName = generateEnumNameForFlags(strippedValue);
+          std::map<std::string, EnumData>::iterator enumsIt = vkData.enums.find(enumName);
+          assert(enumsIt != vkData.enums.end());
+          if (enumsIt->second.values.empty())
+          {
+            aliasEnum(vkData, enumsIt, generateEnumNameForFlags(flagsIt->second.alias), protect);
+          }
+        }
+        else
+        {
+          auto handlesIt = vkData.handles.find(strippedValue);
+          if (handlesIt != vkData.handles.end())
+          {
+            assert(vkData.handles.find(strippedName) == vkData.handles.end());
+            assert(handlesIt->second.protect == protect);
+            assert(handlesIt->second.alias.empty());
+            handlesIt->second.alias = strippedName;
+          }
+          else
+          {
+            auto structsIt = vkData.structs.find(strippedValue);
+            if (structsIt != vkData.structs.end())
+            {
+              // the alias is on a structure -> set the alias, which will map to a using directive
+              assert(vkData.structs.find(strippedName) == vkData.structs.end());
+              assert(structsIt->second.protect == protect);
+              assert(structsIt->second.alias.empty() || (structsIt->second.alias == strippedName));
+              structsIt->second.alias = strippedName;
+            }
+            else
+            {
+              // final catch: it has to be an enum value
+              bool found = false;
+              for (auto & e : vkData.enums)
+              {
+                auto valueIt = std::find_if(e.second.values.begin(), e.second.values.end(), [&value](EnumValueData const& evd) { return evd.value == value; });
+                if (valueIt != e.second.values.end())
+                {
+                  assert(std::find_if(e.second.values.begin(), e.second.values.end(), [&name](EnumValueData const& evd) {return evd.value == name; }) == e.second.values.end());
+                  assert(valueIt->alias.empty());
+                  valueIt->alias = createEnumValueName(name, e.second.prefix, e.second.postfix, e.second.bitmask, tag);
+                  found = true;
+                  break;
+                }
+              }
+              assert(found);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 void readExtensionCommand(tinyxml2::XMLElement * element, std::map<std::string, CommandData> & commands, std::string const& protect)
 {
   // just add the protect string to the CommandData
@@ -1655,11 +1817,12 @@ void readExtensionEnum(tinyxml2::XMLElement * element, std::map<std::string, Enu
   if (element->Attribute("extends"))
   {
     assert(element->Attribute("name"));
-    assert(enums.find(strip(element->Attribute("extends"), "Vk")) != enums.end());
+    std::string extends = strip(element->Attribute("extends"), "Vk");
+    assert(enums.find(extends) != enums.end());
     assert(!!element->Attribute("bitpos") + !!element->Attribute("offset") + !!element->Attribute("value") == 1);
-    auto enumIt = enums.find(strip(element->Attribute("extends"), "Vk"));
+    auto enumIt = enums.find(extends);
     assert(enumIt != enums.end());
-    enumIt->second.addEnumMember(element->Attribute("name"), tag);
+    enumIt->second.addEnumValue(element->Attribute("name"), tag);
   }
 }
 
@@ -1669,7 +1832,11 @@ void readExtensionRequire(tinyxml2::XMLElement * element, VkData & vkData, std::
   {
     std::string value = child->Value();
 
-    if ( value == "command" )
+    if (value == "alias")
+    {
+      readExtensionAlias(child, vkData, protect, tag);
+    }
+    else if ( value == "command" )
     {
       readExtensionCommand(child, vkData.commands, protect);
     }
@@ -1721,6 +1888,11 @@ void readExtensionsExtension(tinyxml2::XMLElement * element, VkData & vkData)
     {
       protect = element->Attribute("protect");
     }
+    else if (element->Attribute("platform"))
+    {
+      assert(element->Attribute("author"));
+      protect = "VK_USE_PLATFORM_" + toUpperCase(element->Attribute("platform")) + "_" + element->Attribute("author");
+    }
 
 #if !defined(NDEBUG)
     assert(vkData.extensions.find(name) == vkData.extensions.end());
@@ -1763,7 +1935,7 @@ void readExtensionType(tinyxml2::XMLElement * element, VkData & vkData, std::str
         std::string enumName = generateEnumNameForFlags(name);
         std::map<std::string, EnumData>::iterator eit = vkData.enums.find(enumName);
         assert(eit != vkData.enums.end());
-        if (eit->second.members.empty())
+        if (eit->second.values.empty())
         {
           eit->second.protect = protect;
         }
@@ -1785,12 +1957,60 @@ void readExtensionType(tinyxml2::XMLElement * element, VkData & vkData, std::str
           else
           {
             std::map<std::string, StructData>::iterator stit = vkData.structs.find(name);
-            assert(stit != vkData.structs.end() && stit->second.protect.empty());
-            stit->second.protect = protect;
+            if (stit != vkData.structs.end())
+            {
+              stit->second.protect = protect;
+            }
+            else
+            {
+              assert(vkData.defines.find(name) != vkData.defines.end());
+            }
           }
         }
       }
     }
+  }
+}
+
+void readFeature(tinyxml2::XMLElement * element, std::map<std::string, EnumData> & enums)
+{
+  assert(element->Attribute("api") && (strcmp(element->Attribute("api"), "vulkan") == 0));
+
+  for (tinyxml2::XMLElement * child = element->FirstChildElement(); child; child = child->NextSiblingElement())
+  {
+    assert(child->Value());
+    std::string value = child->Value();
+    assert(value == "require");
+    readFeatureRequire(child, enums);
+  }
+}
+
+void readFeatureRequire(tinyxml2::XMLElement * element, std::map<std::string, EnumData> & enums)
+{
+  for (tinyxml2::XMLElement * child = element->FirstChildElement(); child; child = child->NextSiblingElement())
+  {
+    assert(child->Value());
+    std::string value = child->Value();
+    if (value == "enum")
+    {
+      readFeatureRequireEnum(child, enums);
+    }
+    else
+    {
+      assert((value == "command") || (value == "type"));
+    }
+  }
+}
+
+void readFeatureRequireEnum(tinyxml2::XMLElement * element, std::map<std::string, EnumData> & enums)
+{
+  if (element->Attribute("extends"))
+  {
+    assert((strncmp(element->Attribute("extends"), "Vk", 2) == 0) && element->Attribute("name"));
+    std::string extends = strip(element->Attribute("extends"), "Vk");
+    auto enumIt = enums.find(extends);
+    assert(enumIt != enums.end());
+    enumIt->second.addEnumValue(element->Attribute("name"), "");
   }
 }
 
@@ -1799,7 +2019,7 @@ tinyxml2::XMLNode* readType(tinyxml2::XMLNode* element, std::string & type, std:
   assert(element);
   if (element->ToText())
   {
-    std::string value = trimEnd(element->Value());
+    std::string value = trim(element->Value());
     assert((value == "const") || (value == "struct"));
     type = value + " ";
     element = element->NextSibling();
@@ -1897,6 +2117,12 @@ void readTypeDefine( tinyxml2::XMLElement * element, VkData & vkData )
     size_t end = text.find_first_of("\r\n", start + 1);
     vkData.typesafeCheck = text.substr(start, end - start);
   }
+  else if (element->GetText() && (trim(element->GetText()) == "struct"))
+  {
+    assert(child && (strcmp(child->Value(), "name") == 0) && child->GetText());
+    vkData.defines.insert(child->GetText());
+    vkData.dependencies.push_back(DependencyData(DependencyData::Category::REQUIRED, child->GetText()));
+  }
   // ignore all the other defines
 }
 
@@ -1978,7 +2204,6 @@ void readTypeStruct( tinyxml2::XMLElement * element, VkData & vkData, bool isUni
 
 void readTypeStructMember(tinyxml2::XMLElement * element, VkData & vkData, StructData & structData)
 {
-
   structData.members.push_back(MemberData());
   MemberData & member = structData.members.back();
 
@@ -2008,51 +2233,59 @@ void readTypes(tinyxml2::XMLElement * element, VkData & vkData)
   {
     assert(child->Value());
     std::string value = child->Value();
-    assert((value == "comment") || (value == "type"));
     if (value == "type")
     {
-      if (child->Attribute("category"))
-      {
-        std::string category = child->Attribute("category");
-        if (category == "basetype")
-        {
-          readTypeBasetype(child, vkData.dependencies);
-        }
-        else if (category == "bitmask")
-        {
-          readTypeBitmask(child, vkData);
-        }
-        else if (category == "define")
-        {
-          readTypeDefine(child, vkData);
-        }
-        else if (category == "funcpointer")
-        {
-          readTypeFuncpointer(child, vkData.dependencies);
-        }
-        else if (category == "handle")
-        {
-          readTypeHandle(child, vkData);
-        }
-        else if (category == "struct")
-        {
-          readTypeStruct(child, vkData, false);
-        }
-        else if (category == "union")
-        {
-          readTypeStruct(child, vkData, true);
-        }
-        else
-        {
-          assert((category == "enum") || (category == "include"));
-        }
-      }
-      else
-      {
-        assert(child->Attribute("name"));
-        vkData.dependencies.push_back(DependencyData(DependencyData::Category::REQUIRED, child->Attribute("name")));
-      }
+      readTypesType(child, vkData);
     }
+    else
+    {
+      assert(value == "comment");
+    }
+  }
+}
+
+void readTypesType(tinyxml2::XMLElement * element, VkData & vkData)
+{
+  if (element->Attribute("category"))
+  {
+    std::string category = element->Attribute("category");
+    if (category == "basetype")
+    {
+      readTypeBasetype(element, vkData.dependencies);
+    }
+    else if (category == "bitmask")
+    {
+      readTypeBitmask(element, vkData);
+    }
+    else if (category == "define")
+    {
+      readTypeDefine(element, vkData);
+    }
+    else if (category == "funcpointer")
+    {
+      readTypeFuncpointer(element, vkData.dependencies);
+    }
+    else if (category == "handle")
+    {
+      readTypeHandle(element, vkData);
+    }
+    else if (category == "struct")
+    {
+      readTypeStruct(element, vkData, false);
+    }
+    else if (category == "union")
+    {
+      readTypeStruct(element, vkData, true);
+    }
+    else
+    {
+      assert((category == "enum") || (category == "include"));
+    }
+  }
+  else
+  {
+    assert(element->Attribute("name"));
+    vkData.dependencies.push_back(DependencyData(DependencyData::Category::REQUIRED, element->Attribute("name")));
   }
 }
 
@@ -2095,8 +2328,8 @@ void registerDeleter(VkData & vkData, CommandData const& commandData)
     case 4:
       key = commandData.params[0].pureType;
       valueIndex = 3;
-      assert(vkData.deleterData.find(commandData.params[valueIndex].pureType) == vkData.deleterData.end());
-      vkData.deleterData[commandData.params[valueIndex].pureType].pool = commandData.params[1].pureType;
+      assert(vkData.deleters.find(commandData.params[valueIndex].pureType) == vkData.deleters.end());
+      vkData.deleters[commandData.params[valueIndex].pureType].pool = commandData.params[1].pureType;
       break;
     default:
       assert(false);
@@ -2107,7 +2340,7 @@ void registerDeleter(VkData & vkData, CommandData const& commandData)
     }
     assert(vkData.deleterTypes[key].find(commandData.params[valueIndex].pureType) == vkData.deleterTypes[key].end());
     vkData.deleterTypes[key].insert(commandData.params[valueIndex].pureType);
-    vkData.deleterData[commandData.params[valueIndex].pureType].call = commandData.reducedName;
+    vkData.deleters[commandData.params[valueIndex].pureType].call = commandData.reducedName;
   }
 }
 
@@ -2175,14 +2408,24 @@ std::string startUpperCase(std::string const& input)
   return static_cast<char>(toupper(input[0])) + input.substr(1);
 }
 
+bool beginsWith(std::string const& text, std::string const& prefix)
+{
+  return !prefix.empty() && text.substr(0, prefix.length()) == prefix;
+}
+
+bool endsWith(std::string const& text, std::string const& postfix)
+{
+  return !postfix.empty() && (postfix.length() < text.length()) && (text.substr(text.length() - postfix.length()) == postfix);
+}
+
 std::string strip(std::string const& value, std::string const& prefix, std::string const& postfix)
 {
   std::string strippedValue = value;
-  if (strippedValue.substr(0, prefix.length()) == prefix)
+  if (beginsWith(strippedValue, prefix))
   {
     strippedValue.erase(0, prefix.length());
   }
-  if (!postfix.empty() && (strippedValue.substr(strippedValue.length() - postfix.length()) == postfix))
+  if (endsWith(strippedValue, postfix))
   {
     strippedValue.erase(strippedValue.length() - postfix.length());
   }
@@ -2236,7 +2479,6 @@ std::vector<std::string> tokenize(std::string tokenString, char separator)
 
 std::string toUpperCase(std::string const& name)
 {
-  assert(isupper(name.front()));
   std::string convertedName;
 
   for (size_t i = 0; i<name.length(); i++)
@@ -2248,6 +2490,14 @@ std::string toUpperCase(std::string const& name)
     convertedName.push_back(toupper(name[i]));
   }
   return convertedName;
+}
+
+std::string trim(std::string const& input)
+{
+  std::string result = input;
+  result.erase(result.begin(), std::find_if(result.begin(), result.end(), [](char c) { return !std::isspace(c); }));
+  result.erase(std::find_if(result.rbegin(), result.rend(), [](char c) { return !std::isspace(c); }).base(), result.end());
+  return result;
 }
 
 // trim from end
@@ -2299,16 +2549,13 @@ void writeCall(std::ostream & os, CommandData const& commandData, std::set<std::
     {
       writeCallVectorParameter(os, commandData, vkTypes, firstCall, singular, it);
     }
+    else if (vkTypes.find(commandData.params[i].pureType) != vkTypes.end())
+    {
+      writeCallVulkanTypeParameter(os, commandData.params[i]);
+    }
     else
     {
-      if (vkTypes.find(commandData.params[i].pureType) != vkTypes.end())
-      {
-        writeCallVulkanTypeParameter(os, commandData.params[i]);
-      }
-      else
-      {
-        writeCallPlainTypeParameter(os, commandData.params[i]);
-      }
+      writeCallPlainTypeParameter(os, commandData.params[i]);
     }
   }
   os << " )";
@@ -2666,7 +2913,6 @@ void writeFunctionBodyEnhancedLocalCountVariable(std::ostream & os, std::string 
 
 std::string writeFunctionBodyEnhancedLocalReturnVariable(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool singular, bool isStructureChain)
 {
-  bool returnsVector = !singular && (commandData.vectorParams.find(commandData.returnParam) != commandData.vectorParams.end());
   std::string returnName = startLowerCase(strip(commandData.params[commandData.returnParam].name, "p"));
 
   // there is a returned parameter -> we need a local variable to hold that value
@@ -2738,11 +2984,7 @@ std::string writeFunctionBodyEnhancedLocalReturnVariable(std::ostream & os, std:
           }
         }
         assert(!size.empty());
-        os << "( " << size << (returnsVector ? ", {}, {alloc} )" : " )");
-      }
-      else if ( returnsVector )
-      {
-        os << "( {alloc} )";
+        os << "( " << size << " )";
       }
     }
     os << ";" << std::endl;
@@ -2890,15 +3132,15 @@ void writeFunctionBodyUnique(std::ostream & os, std::string const& indentation, 
   std::string type = commandData.params[commandData.returnParam].pureType;
   std::string typeValue = startLowerCase(type);
   os << indentation << "  " << type << "Deleter deleter( ";
-  if (vkData.deleterData.find(commandData.className) != vkData.deleterData.end())
+  if (vkData.deleters.find(commandData.className) != vkData.deleters.end())
   {
     // if the Deleter is specific to the command's class, add '*this' to the deleter
     os << "*this, ";
   }
 
   // get the DeleterData corresponding to the returned type
-  std::map<std::string, DeleterData>::const_iterator ddit = vkData.deleterData.find(type);
-  assert(ddit != vkData.deleterData.end());
+  std::map<std::string, DeleterData>::const_iterator ddit = vkData.deleters.find(type);
+  assert(ddit != vkData.deleters.end());
   if (ddit->second.pool.empty())
   {
     // if this type isn't pooled, use the allocator (provided as a function argument)
@@ -2946,14 +3188,7 @@ void writeFunctionBodyUnique(std::ostream & os, std::string const& indentation, 
       os << argumentName;
     }
   }
-
-  if (returnsVector)
-  {
-    os << ", alloc";
-  }
-
   os << " )";
-
   if (returnsVector)
   {
     std::string const stringTemplate = R"(;
@@ -2998,8 +3233,6 @@ void writeFunctionHeaderArguments(std::ostream & os, VkData const& vkData, Comma
 
 void writeFunctionHeaderArgumentsEnhanced(std::ostream & os, VkData const& vkData, CommandData const& commandData, bool singular, bool withDefaults)
 {
-  bool returnsVector = !singular && (commandData.vectorParams.find(commandData.returnParam) != commandData.vectorParams.end());
-
   // check if there's at least one argument left to put in here
   if (commandData.skippedParams.size() + (commandData.className.empty() ? 0 : 1) < commandData.params.size())
   {
@@ -3051,7 +3284,7 @@ void writeFunctionHeaderArgumentsEnhanced(std::ostream & os, VkData const& vkDat
                 assert((depIt != vkData.dependencies.end()) && (depIt->dependencies.size() == 1));
                 std::map<std::string, EnumData>::const_iterator enumIt = vkData.enums.find(*depIt->dependencies.begin());
                 assert(enumIt != vkData.enums.end());
-                if (enumIt->second.members.empty())
+                if (enumIt->second.values.empty())
                 {
                   // there are no bits in this flag -> provide the default
                   os << " = " << commandData.params[i].pureType << "()";
@@ -3131,16 +3364,7 @@ void writeFunctionHeaderArgumentsEnhanced(std::ostream & os, VkData const& vkDat
         argEncountered = true;
       }
     }
-
-    os << (returnsVector ? ", " : " ");
-  }
-
-  if (returnsVector)
-  {
-    os << "Allocator const & alloc ";
-    if (withDefaults) {
-      os << "= Allocator() ";
-    }
+    os << " ";
   }
 }
 
@@ -3462,9 +3686,9 @@ void writeTypeCommand(std::ostream & os, VkData const& vkData, DependencyData co
       auto deleterTypesIt = vkData.deleterTypes.find("");
       assert((deleterTypesIt != vkData.deleterTypes.end()) && (deleterTypesIt->second.size() == 1));
 
-      writeDeleterForwardDeclarations(os, *deleterTypesIt, vkData.deleterData);
+      writeDeleterForwardDeclarations(os, *deleterTypesIt, vkData.deleters);
       writeTypeCommand(os, "  ", vkData, commandData, false);
-      writeDeleterClasses(os, *deleterTypesIt, vkData.deleterData);
+      writeDeleterClasses(os, *deleterTypesIt, vkData.deleters);
     }
     else
     {
@@ -3506,7 +3730,7 @@ void writeTypeCommand(std::ostream & os, std::string const& indentation, VkData 
   bool specialWriteUnique = (commandData.reducedName == "createDevice") || (commandData.reducedName == "createInstance");
 
   // and then the same for the Unique* versions (a Deleter is available for the commandData's class, and the function starts with 'allocate' or 'create')
-  if (((vkData.deleterData.find(commandData.className) != vkData.deleterData.end()) || specialWriteUnique) && ((commandData.reducedName.substr(0, 8) == "allocate") || (commandData.reducedName.substr(0, 6) == "create")))
+  if (((vkData.deleters.find(commandData.className) != vkData.deleters.end()) || specialWriteUnique) && ((commandData.reducedName.substr(0, 8) == "allocate") || (commandData.reducedName.substr(0, 6) == "create")))
   {
     enhanced << "#ifndef VULKAN_HPP_NO_SMART_HANDLE" << std::endl;
     writeFunction(enhanced, indentation, vkData, commandData, definition, true, false, true, false);
@@ -3530,16 +3754,28 @@ void writeTypeEnum( std::ostream & os, EnumData const& enumData )
   enterProtect(os, enumData.protect);
   os << "  enum class " << enumData.name << std::endl
       << "  {" << std::endl;
-  for ( size_t i=0 ; i<enumData.members.size() ; i++ )
+  for ( size_t i=0 ; i<enumData.values.size() ; i++ )
   {
-    os << "    " << enumData.members[i].name << " = " << enumData.members[i].value;
-    if ( i < enumData.members.size() - 1 )
+    os << "    " << enumData.values[i].name << " = " << enumData.values[i].value;
+    if (!enumData.values[i].alias.empty())
+    {
+      os << "," << std::endl
+        << "    " << enumData.values[i].alias << " = " << enumData.values[i].value;
+    }
+    if (i < enumData.values.size() - 1)
     {
       os << ",";
     }
     os << std::endl;
   }
   os << "  };" << std::endl;
+
+  if (!enumData.alias.empty())
+  {
+    os << std::endl
+      << "  using " << enumData.alias << " = " << enumData.name << ";" << std::endl;
+  }
+
   leaveProtect(os, enumData.protect);
   os << std::endl;
 }
@@ -3570,16 +3806,16 @@ R"(  class ${className} : public SystemError
 )";
   
   enterProtect(os, enumData.protect);
-  for (size_t i = 0; i < enumData.members.size(); i++)
+  for (size_t i = 0; i < enumData.values.size(); i++)
   {
-    if (!isErrorEnum(enumData.members[i].name))
+    if (!isErrorEnum(enumData.values[i].name))
     {
       continue;
     }
     os << replaceWithMap(templateString,
-    { { "className", stripErrorEnumPrefix(enumData.members[i].name) + "Error"},
+    { { "className", stripErrorEnumPrefix(enumData.values[i].name) + "Error"},
       { "enumName", enumData.name},
-      { "enumMemberName", enumData.members[i].name}
+      { "enumMemberName", enumData.values[i].name}
     });
   }
   leaveProtect(os, enumData.protect);
@@ -3596,14 +3832,14 @@ R"(  VULKAN_HPP_INLINE void throwResultException( Result result, char const * me
     switch ( result )
     {
 )";
-  for ( size_t i=0 ; i<enumData.members.size() ; i++ )
+  for ( size_t i=0 ; i<enumData.values.size() ; i++ )
   {
-    if (!isErrorEnum(enumData.members[i].name))
+    if (!isErrorEnum(enumData.values[i].name))
     {
       continue;
     }
-    const std::string strippedExceptionName = stripErrorEnumPrefix(enumData.members[i].name);
-    os << "    case " << enumData.name << "::" << enumData.members[i].name << ": "
+    const std::string strippedExceptionName = stripErrorEnumPrefix(enumData.values[i].name);
+    os << "    case " << enumData.name << "::" << enumData.values[i].name << ": "
         << "throw " << strippedExceptionName << "Error ( message );" << std::endl;
   }
   os <<
@@ -3614,7 +3850,7 @@ R"(    default: throw SystemError( make_error_code( result ) );
   leaveProtect(os, enumData.protect);
 }
 
-void writeDeleterClasses(std::ostream & os, std::pair<std::string, std::set<std::string>> const& deleterTypes, std::map<std::string, DeleterData> const& deleterData)
+void writeDeleterClasses(std::ostream & os, std::pair<std::string, std::set<std::string>> const& deleterTypes, std::map<std::string, DeleterData> const& deleters)
 {
   // A Deleter class for each of the Unique* classes... but only if smart handles are not switched off
   os << "#ifndef VULKAN_HPP_NO_SMART_HANDLE" << std::endl;
@@ -3647,8 +3883,8 @@ void writeDeleterClasses(std::ostream & os, std::pair<std::string, std::set<std:
     }
 
     // if this Deleter is pooled, make such a pool the last argument, otherwise an Optional allocator
-    auto const& dd = deleterData.find(deleterType);
-    assert(dd != deleterData.end());
+    auto const& dd = deleters.find(deleterType);
+    assert(dd != deleters.end());
     std::string poolName = (dd->second.pool.empty() ? "" : startLowerCase(dd->second.pool));
     if (poolName.empty())
     {
@@ -3748,7 +3984,7 @@ void writeDeleterClasses(std::ostream & os, std::pair<std::string, std::set<std:
     << std::endl;
 }
 
-void writeDeleterForwardDeclarations(std::ostream &os, std::pair<std::string, std::set<std::string>> const& deleterTypes, std::map<std::string, DeleterData> const& deleterData)
+void writeDeleterForwardDeclarations(std::ostream &os, std::pair<std::string, std::set<std::string>> const& deleterTypes, std::map<std::string, DeleterData> const& deleters)
 {
   // if smart handles are supported, all the Deleter classes need to be forward declared
   os << "#ifndef VULKAN_HPP_NO_SMART_HANDLE" << std::endl;
@@ -3767,9 +4003,9 @@ void writeEnumsToString(std::ostream & os, EnumData const& enumData)
 {
   // the helper functions to make strings out of enum values
   enterProtect(os, enumData.protect);
-  os << "  VULKAN_HPP_INLINE std::string to_string(" << enumData.name << (enumData.members.empty() ? ")" : " value)") << std::endl
+  os << "  VULKAN_HPP_INLINE std::string to_string(" << enumData.name << (enumData.values.empty() ? ")" : " value)") << std::endl
       << "  {" << std::endl;
-  if (enumData.members.empty())
+  if (enumData.values.empty())
   {
     // no enum values in this enum -> return "(void)"
     os << "    return \"(void)\";" << std::endl;
@@ -3779,9 +4015,9 @@ void writeEnumsToString(std::ostream & os, EnumData const& enumData)
     // otherwise switch over the value and return the a stringized version of that value (without leading 'e')
     os << "    switch (value)" << std::endl
         << "    {" << std::endl;
-    for (auto const& member : enumData.members)
+    for (auto const& value : enumData.values)
     {
-      os << "    case " << enumData.name << "::" << member.name << ": return \"" << member.name.substr(1) << "\";" << std::endl;
+      os << "    case " << enumData.name << "::" << value.name << ": return \"" << value.name.substr(1) << "\";" << std::endl;
     }
     os << "    default: return \"invalid\";" << std::endl
         << "    }" << std::endl;
@@ -3795,9 +4031,9 @@ void writeFlagsToString(std::ostream & os, std::string const& flagsName, EnumDat
 {
   // the helper functions to make strings out of flag values
   enterProtect(os, enumData.protect);
-  os << "  VULKAN_HPP_INLINE std::string to_string(" << flagsName << (enumData.members.empty() ? ")" : " value)") << std::endl
+  os << "  VULKAN_HPP_INLINE std::string to_string(" << flagsName << (enumData.values.empty() ? ")" : " value)") << std::endl
       << "  {" << std::endl;
-  if (enumData.members.empty())
+  if (enumData.values.empty())
   {
     // no flags values in this enum -> return "{}"
     os << "    return \"{}\";" << std::endl;
@@ -3808,9 +4044,9 @@ void writeFlagsToString(std::ostream & os, std::string const& flagsName, EnumDat
         << "    std::string result;" << std::endl;
 
     // 'or' together all the bits in the value
-    for (auto itMember = enumData.members.begin(); itMember != enumData.members.end(); ++itMember)
+    for (auto valuesIt = enumData.values.begin(); valuesIt != enumData.values.end(); ++valuesIt)
     {
-      os << "    if (value & " << enumData.name << "::" << itMember->name << ") result += \"" << itMember->name.substr(1) << " | \";" << std::endl;
+      os << "    if (value & " << enumData.name << "::" << valuesIt->name << ") result += \"" << valuesIt->name.substr(1) << " | \";" << std::endl;
     }
     // cut off the last three characters from the result (being " | ")
     os << "    return \"{\" + result.substr(0, result.size() - 3) + \"}\";" << std::endl;
@@ -3827,16 +4063,16 @@ void writeTypeFlags(std::ostream & os, std::string const& flagsName, FlagData co
   os << "  using " << flagsName << " = Flags<" << enumData.name << ", Vk" << flagsName << ">;" << std::endl;
 
   std::stringstream allFlags;
-  for (size_t i = 0; i < enumData.members.size(); i++)
+  for (size_t i = 0; i < enumData.values.size(); i++)
   {
     if (i != 0)
     {
       allFlags << " | ";
     }
-    allFlags << "VkFlags(" << enumData.name << "::" << enumData.members[i].name << ")";
+    allFlags << "VkFlags(" << enumData.name << "::" << enumData.values[i].name << ")";
   }
 
-  if (!enumData.members.empty())
+  if (!enumData.values.empty())
   {
     const std::string templateString = R"(
   VULKAN_HPP_INLINE ${flagsName} operator|( ${enumName} bit0, ${enumName} bit1 )
@@ -3859,6 +4095,13 @@ void writeTypeFlags(std::ostream & os, std::string const& flagsName, FlagData co
 )";
     os << replaceWithMap(templateString, { { "flagsName", flagsName}, { "enumName", enumData.name }, { "allFlags", allFlags.str() } } );
   }
+
+  if (!flagData.alias.empty())
+  {
+    os << std::endl
+      << "  using " << flagData.alias << " = " << flagsName << ";" << std::endl;
+  }
+
   leaveProtect(os, flagData.protect);
   os << std::endl;
 }
@@ -3883,7 +4126,7 @@ void writeTypeHandle(std::ostream & os, VkData const& vkData, DependencyData con
   std::map<std::string, std::set<std::string>>::const_iterator deleterTypesIt = vkData.deleterTypes.find(dependencyData.name);
   if (deleterTypesIt != vkData.deleterTypes.end())
   {
-    writeDeleterForwardDeclarations(os, *deleterTypesIt, vkData.deleterData);
+    writeDeleterForwardDeclarations(os, *deleterTypesIt, vkData.deleters);
   }
 
   const std::string memberName = startLowerCase(dependencyData.name);
@@ -3973,11 +4216,17 @@ ${commands}
     { "commands", commands.str() }
   });
 
+  if (!handleData.alias.empty())
+  {
+    os << std::endl
+      << "  using " << handleData.alias << " = " << dependencyData.name << ";" << std::endl;
+  }
+
   // then the actual Deleter classes can be listed
   deleterTypesIt = vkData.deleterTypes.find(dependencyData.name);
   if (deleterTypesIt != vkData.deleterTypes.end())
   {
-    writeDeleterClasses(os, *deleterTypesIt, vkData.deleterData);
+    writeDeleterClasses(os, *deleterTypesIt, vkData.deleters);
   }
 
   // and finally the commands, that are member functions of this handle
@@ -4104,6 +4353,12 @@ void writeTypeStruct( std::ostream & os, VkData const& vkData, DependencyData co
   }
   os << "  };" << std::endl
       << "  static_assert( sizeof( " << dependencyData.name << " ) == sizeof( Vk" << dependencyData.name << " ), \"struct and wrapper have different size!\" );" << std::endl;
+
+  if (!it->second.alias.empty())
+  {
+    os << std::endl
+      << "  using " << it->second.alias << " = " << it->first << ";" << std::endl;
+  }
 
   leaveProtect(os, it->second.protect);
   os << std::endl;
@@ -4347,6 +4602,10 @@ int main( int argc, char **argv )
       {
         readExtensions(child, vkData);
       }
+      else if (value == "feature")
+      {
+        readFeature(child, vkData.enums);
+      }
       else if (value == "tags")
       {
         readTags(child, vkData.tags);
@@ -4357,7 +4616,7 @@ int main( int argc, char **argv )
       }
       else
       {
-        assert((value == "feature") || (value == "vendorids"));
+        assert(value == "vendorids");
       }
     }
 

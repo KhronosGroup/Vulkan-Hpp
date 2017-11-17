@@ -27566,7 +27566,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     Result acquireNextImage2KHX( const AcquireNextImageInfoKHX* pAcquireInfo, uint32_t* pImageIndex ) const;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    ResultValue<uint32_t> acquireNextImage2KHX( const AcquireNextImageInfoKHX & acquireInfo ) const;
+    ResultValueType<uint32_t>::type acquireNextImage2KHX( const AcquireNextImageInfoKHX & acquireInfo ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     Result createDescriptorUpdateTemplateKHR( const DescriptorUpdateTemplateCreateInfoKHR* pCreateInfo, const AllocationCallbacks* pAllocator, DescriptorUpdateTemplateKHR* pDescriptorUpdateTemplate ) const;
@@ -29807,7 +29807,7 @@ namespace VULKAN_HPP_NAMESPACE
     return static_cast<Result>( vkAcquireNextImage2KHX( m_device, reinterpret_cast<const VkAcquireNextImageInfoKHX*>( pAcquireInfo ), pImageIndex ) );
   }
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-  VULKAN_HPP_INLINE ResultValue<uint32_t> Device::acquireNextImage2KHX( const AcquireNextImageInfoKHX & acquireInfo ) const
+  VULKAN_HPP_INLINE ResultValueType<uint32_t>::type Device::acquireNextImage2KHX( const AcquireNextImageInfoKHX & acquireInfo ) const
   {
     uint32_t imageIndex;
     Result result = static_cast<Result>( vkAcquireNextImage2KHX( m_device, reinterpret_cast<const VkAcquireNextImageInfoKHX*>( &acquireInfo ), &imageIndex ) );

@@ -945,17 +945,18 @@ namespace VULKAN_HPP_NAMESPACE
   }
 
   template <typename T>
-  VULKAN_HPP_INLINE ResultValue<T> createResultValue( Result result, T & data, char const * message, std::initializer_list<Result> successCodes )
+  VULKAN_HPP_INLINE typename ResultValueType<T>::type createResultValue( Result result, T & data, char const * message, std::initializer_list<Result> successCodes )
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
     assert( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );
+	return ResultValue<T>( result, data );
 #else
     if ( std::find( successCodes.begin(), successCodes.end(), result ) == successCodes.end() )
     {
       throwResultException( result, message );
     }
 #endif
-    return ResultValue<T>( result, data );
+    return data;
   }
 
   using SampleMask = uint32_t;

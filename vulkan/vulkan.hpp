@@ -33,7 +33,7 @@
 # include <memory>
 # include <vector>
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-static_assert( VK_HEADER_VERSION ==  64 , "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION ==  65 , "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -442,7 +442,7 @@ namespace VULKAN_HPP_NAMESPACE
 #endif
 
 
-  template <typename X, typename Y> constexpr bool isStructureChainValid() { return false; }
+  template <typename X, typename Y> struct isStructureChainValid { enum { value = false }; };
 
   template <class Element>
   class StructureChainElement
@@ -485,7 +485,7 @@ namespace VULKAN_HPP_NAMESPACE
     template<typename X, typename Y, typename ...Z>
     void link()
     {
-      static_assert(isStructureChainValid<X,Y>(), "The structure chain is not valid!");
+      static_assert(isStructureChainValid<X,Y>::value, "The structure chain is not valid!");
       X& x = static_cast<X&>(*this);
       Y& y = static_cast<Y&>(*this);
       x.pNext = &y;
@@ -501,7 +501,7 @@ namespace VULKAN_HPP_NAMESPACE
     template<typename X, typename Y, typename ...Z>
     void linkAndCopy(StructureChain const &rhs)
     {
-      static_assert(isStructureChainValid<X,Y>(), "The structure chain is not valid!");
+      static_assert(isStructureChainValid<X,Y>::value, "The structure chain is not valid!");
       X& x = static_cast<X&>(*this);
       Y& y = static_cast<Y&>(*this);
       x = static_cast<X const &>(rhs);
@@ -32116,110 +32116,110 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
 
-  template <> constexpr bool isStructureChainValid<PresentInfoKHR, DisplayPresentInfoKHR>() { return true; }
-  template <> constexpr bool isStructureChainValid<ImageCreateInfo, DedicatedAllocationImageCreateInfoNV>() { return true; }
-  template <> constexpr bool isStructureChainValid<BufferCreateInfo, DedicatedAllocationBufferCreateInfoNV>() { return true; }
-  template <> constexpr bool isStructureChainValid<MemoryAllocateInfo, DedicatedAllocationMemoryAllocateInfoNV>() { return true; }
+  template <> struct isStructureChainValid<PresentInfoKHR, DisplayPresentInfoKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<ImageCreateInfo, DedicatedAllocationImageCreateInfoNV>{ enum { value = true }; };
+  template <> struct isStructureChainValid<BufferCreateInfo, DedicatedAllocationBufferCreateInfoNV>{ enum { value = true }; };
+  template <> struct isStructureChainValid<MemoryAllocateInfo, DedicatedAllocationMemoryAllocateInfoNV>{ enum { value = true }; };
 #ifdef VK_USE_PLATFORM_WIN32_KHR
-  template <> constexpr bool isStructureChainValid<MemoryAllocateInfo, ExportMemoryWin32HandleInfoNV>() { return true; }
+  template <> struct isStructureChainValid<MemoryAllocateInfo, ExportMemoryWin32HandleInfoNV>{ enum { value = true }; };
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
 #ifdef VK_USE_PLATFORM_WIN32_KHR
-  template <> constexpr bool isStructureChainValid<SubmitInfo, Win32KeyedMutexAcquireReleaseInfoNV>() { return true; }
+  template <> struct isStructureChainValid<SubmitInfo, Win32KeyedMutexAcquireReleaseInfoNV>{ enum { value = true }; };
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
-  template <> constexpr bool isStructureChainValid<DeviceCreateInfo, PhysicalDeviceFeatures2KHR>() { return true; }
-  template <> constexpr bool isStructureChainValid<PhysicalDeviceProperties2KHR, PhysicalDevicePushDescriptorPropertiesKHR>() { return true; }
-  template <> constexpr bool isStructureChainValid<PresentInfoKHR, PresentRegionsKHR>() { return true; }
-  template <> constexpr bool isStructureChainValid<PhysicalDeviceFeatures2KHR, PhysicalDeviceVariablePointerFeaturesKHR>() { return true; }
-  template <> constexpr bool isStructureChainValid<DeviceCreateInfo, PhysicalDeviceVariablePointerFeaturesKHR>() { return true; }
-  template <> constexpr bool isStructureChainValid<PhysicalDeviceProperties2KHR, PhysicalDeviceIDPropertiesKHR>() { return true; }
+  template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceFeatures2KHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceProperties2KHR, PhysicalDevicePushDescriptorPropertiesKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PresentInfoKHR, PresentRegionsKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceFeatures2KHR, PhysicalDeviceVariablePointerFeaturesKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceVariablePointerFeaturesKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceProperties2KHR, PhysicalDeviceIDPropertiesKHR>{ enum { value = true }; };
 #ifdef VK_USE_PLATFORM_WIN32_KHR
-  template <> constexpr bool isStructureChainValid<MemoryAllocateInfo, ExportMemoryWin32HandleInfoKHR>() { return true; }
-#endif /*VK_USE_PLATFORM_WIN32_KHR*/
-#ifdef VK_USE_PLATFORM_WIN32_KHR
-  template <> constexpr bool isStructureChainValid<SubmitInfo, Win32KeyedMutexAcquireReleaseInfoKHR>() { return true; }
+  template <> struct isStructureChainValid<MemoryAllocateInfo, ExportMemoryWin32HandleInfoKHR>{ enum { value = true }; };
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
 #ifdef VK_USE_PLATFORM_WIN32_KHR
-  template <> constexpr bool isStructureChainValid<SemaphoreCreateInfo, ExportSemaphoreWin32HandleInfoKHR>() { return true; }
+  template <> struct isStructureChainValid<SubmitInfo, Win32KeyedMutexAcquireReleaseInfoKHR>{ enum { value = true }; };
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
 #ifdef VK_USE_PLATFORM_WIN32_KHR
-  template <> constexpr bool isStructureChainValid<SubmitInfo, D3D12FenceSubmitInfoKHR>() { return true; }
+  template <> struct isStructureChainValid<SemaphoreCreateInfo, ExportSemaphoreWin32HandleInfoKHR>{ enum { value = true }; };
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
 #ifdef VK_USE_PLATFORM_WIN32_KHR
-  template <> constexpr bool isStructureChainValid<FenceCreateInfo, ExportFenceWin32HandleInfoKHR>() { return true; }
+  template <> struct isStructureChainValid<SubmitInfo, D3D12FenceSubmitInfoKHR>{ enum { value = true }; };
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
-  template <> constexpr bool isStructureChainValid<PhysicalDeviceFeatures2KHR, PhysicalDeviceMultiviewFeaturesKHX>() { return true; }
-  template <> constexpr bool isStructureChainValid<DeviceCreateInfo, PhysicalDeviceMultiviewFeaturesKHX>() { return true; }
-  template <> constexpr bool isStructureChainValid<PhysicalDeviceProperties2KHR, PhysicalDeviceMultiviewPropertiesKHX>() { return true; }
-  template <> constexpr bool isStructureChainValid<RenderPassCreateInfo, RenderPassMultiviewCreateInfoKHX>() { return true; }
-  template <> constexpr bool isStructureChainValid<BindBufferMemoryInfoKHR, BindBufferMemoryDeviceGroupInfoKHX>() { return true; }
-  template <> constexpr bool isStructureChainValid<BindImageMemoryInfoKHR, BindImageMemoryDeviceGroupInfoKHX>() { return true; }
-  template <> constexpr bool isStructureChainValid<RenderPassBeginInfo, DeviceGroupRenderPassBeginInfoKHX>() { return true; }
-  template <> constexpr bool isStructureChainValid<CommandBufferBeginInfo, DeviceGroupCommandBufferBeginInfoKHX>() { return true; }
-  template <> constexpr bool isStructureChainValid<SubmitInfo, DeviceGroupSubmitInfoKHX>() { return true; }
-  template <> constexpr bool isStructureChainValid<BindSparseInfo, DeviceGroupBindSparseInfoKHX>() { return true; }
-  template <> constexpr bool isStructureChainValid<ImageCreateInfo, ImageSwapchainCreateInfoKHX>() { return true; }
-  template <> constexpr bool isStructureChainValid<BindImageMemoryInfoKHR, BindImageMemorySwapchainInfoKHX>() { return true; }
-  template <> constexpr bool isStructureChainValid<PresentInfoKHR, PresentTimesInfoGOOGLE>() { return true; }
-  template <> constexpr bool isStructureChainValid<PipelineViewportStateCreateInfo, PipelineViewportWScalingStateCreateInfoNV>() { return true; }
-  template <> constexpr bool isStructureChainValid<PhysicalDeviceProperties2KHR, PhysicalDeviceDiscardRectanglePropertiesEXT>() { return true; }
-  template <> constexpr bool isStructureChainValid<PhysicalDeviceProperties2KHR, PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX>() { return true; }
-  template <> constexpr bool isStructureChainValid<PhysicalDeviceFeatures2KHR, PhysicalDevice16BitStorageFeaturesKHR>() { return true; }
-  template <> constexpr bool isStructureChainValid<DeviceCreateInfo, PhysicalDevice16BitStorageFeaturesKHR>() { return true; }
-  template <> constexpr bool isStructureChainValid<MemoryRequirements2KHR, MemoryDedicatedRequirementsKHR>() { return true; }
-  template <> constexpr bool isStructureChainValid<MemoryAllocateInfo, MemoryDedicatedAllocateInfoKHR>() { return true; }
-  template <> constexpr bool isStructureChainValid<SamplerCreateInfo, SamplerYcbcrConversionInfoKHR>() { return true; }
-  template <> constexpr bool isStructureChainValid<ImageViewCreateInfo, SamplerYcbcrConversionInfoKHR>() { return true; }
-  template <> constexpr bool isStructureChainValid<PhysicalDeviceFeatures2KHR, PhysicalDeviceSamplerYcbcrConversionFeaturesKHR>() { return true; }
-  template <> constexpr bool isStructureChainValid<DeviceCreateInfo, PhysicalDeviceSamplerYcbcrConversionFeaturesKHR>() { return true; }
-  template <> constexpr bool isStructureChainValid<ImageFormatProperties2KHR, SamplerYcbcrConversionImageFormatPropertiesKHR>() { return true; }
-  template <> constexpr bool isStructureChainValid<ImageFormatProperties2KHR, TextureLODGatherFormatPropertiesAMD>() { return true; }
-  template <> constexpr bool isStructureChainValid<PipelineMultisampleStateCreateInfo, PipelineCoverageToColorStateCreateInfoNV>() { return true; }
-  template <> constexpr bool isStructureChainValid<PhysicalDeviceProperties2KHR, PhysicalDeviceSamplerFilterMinmaxPropertiesEXT>() { return true; }
-  template <> constexpr bool isStructureChainValid<PhysicalDeviceFeatures2KHR, PhysicalDeviceBlendOperationAdvancedFeaturesEXT>() { return true; }
-  template <> constexpr bool isStructureChainValid<PhysicalDeviceProperties2KHR, PhysicalDeviceBlendOperationAdvancedPropertiesEXT>() { return true; }
-  template <> constexpr bool isStructureChainValid<ImageCreateInfo, ImageFormatListCreateInfoKHR>() { return true; }
-  template <> constexpr bool isStructureChainValid<ShaderModuleCreateInfo, ShaderModuleValidationCacheCreateInfoEXT>() { return true; }
-  template <> constexpr bool isStructureChainValid<SurfaceCapabilities2KHR, SharedPresentSurfaceCapabilitiesKHR>() { return true; }
-  template <> constexpr bool isStructureChainValid<ImageViewCreateInfo, ImageViewUsageCreateInfoKHR>() { return true; }
-  template <> constexpr bool isStructureChainValid<RenderPassCreateInfo, RenderPassInputAttachmentAspectCreateInfoKHR>() { return true; }
-  template <> constexpr bool isStructureChainValid<BindImageMemoryInfoKHR, BindImagePlaneMemoryInfoKHR>() { return true; }
-  template <> constexpr bool isStructureChainValid<ImageMemoryRequirementsInfo2KHR, ImagePlaneMemoryRequirementsInfoKHR>() { return true; }
-  template <> constexpr bool isStructureChainValid<ImageMemoryBarrier, SampleLocationsInfoEXT>() { return true; }
-  template <> constexpr bool isStructureChainValid<RenderPassBeginInfo, RenderPassSampleLocationsBeginInfoEXT>() { return true; }
-  template <> constexpr bool isStructureChainValid<PipelineMultisampleStateCreateInfo, PipelineSampleLocationsStateCreateInfoEXT>() { return true; }
-  template <> constexpr bool isStructureChainValid<PhysicalDeviceProperties2KHR, PhysicalDeviceSampleLocationsPropertiesEXT>() { return true; }
-  template <> constexpr bool isStructureChainValid<InstanceCreateInfo, DebugReportCallbackCreateInfoEXT>() { return true; }
-  template <> constexpr bool isStructureChainValid<PipelineRasterizationStateCreateInfo, PipelineRasterizationStateRasterizationOrderAMD>() { return true; }
-  template <> constexpr bool isStructureChainValid<ImageCreateInfo, ExternalMemoryImageCreateInfoNV>() { return true; }
-  template <> constexpr bool isStructureChainValid<MemoryAllocateInfo, ExportMemoryAllocateInfoNV>() { return true; }
 #ifdef VK_USE_PLATFORM_WIN32_KHR
-  template <> constexpr bool isStructureChainValid<MemoryAllocateInfo, ImportMemoryWin32HandleInfoNV>() { return true; }
+  template <> struct isStructureChainValid<FenceCreateInfo, ExportFenceWin32HandleInfoKHR>{ enum { value = true }; };
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
-  template <> constexpr bool isStructureChainValid<InstanceCreateInfo, ValidationFlagsEXT>() { return true; }
-  template <> constexpr bool isStructureChainValid<PhysicalDeviceImageFormatInfo2KHR, PhysicalDeviceExternalImageFormatInfoKHR>() { return true; }
-  template <> constexpr bool isStructureChainValid<ImageCreateInfo, ExternalMemoryImageCreateInfoKHR>() { return true; }
-  template <> constexpr bool isStructureChainValid<BufferCreateInfo, ExternalMemoryBufferCreateInfoKHR>() { return true; }
-  template <> constexpr bool isStructureChainValid<MemoryAllocateInfo, ExportMemoryAllocateInfoKHR>() { return true; }
+  template <> struct isStructureChainValid<PhysicalDeviceFeatures2KHR, PhysicalDeviceMultiviewFeaturesKHX>{ enum { value = true }; };
+  template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceMultiviewFeaturesKHX>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceProperties2KHR, PhysicalDeviceMultiviewPropertiesKHX>{ enum { value = true }; };
+  template <> struct isStructureChainValid<RenderPassCreateInfo, RenderPassMultiviewCreateInfoKHX>{ enum { value = true }; };
+  template <> struct isStructureChainValid<BindBufferMemoryInfoKHR, BindBufferMemoryDeviceGroupInfoKHX>{ enum { value = true }; };
+  template <> struct isStructureChainValid<BindImageMemoryInfoKHR, BindImageMemoryDeviceGroupInfoKHX>{ enum { value = true }; };
+  template <> struct isStructureChainValid<RenderPassBeginInfo, DeviceGroupRenderPassBeginInfoKHX>{ enum { value = true }; };
+  template <> struct isStructureChainValid<CommandBufferBeginInfo, DeviceGroupCommandBufferBeginInfoKHX>{ enum { value = true }; };
+  template <> struct isStructureChainValid<SubmitInfo, DeviceGroupSubmitInfoKHX>{ enum { value = true }; };
+  template <> struct isStructureChainValid<BindSparseInfo, DeviceGroupBindSparseInfoKHX>{ enum { value = true }; };
+  template <> struct isStructureChainValid<ImageCreateInfo, ImageSwapchainCreateInfoKHX>{ enum { value = true }; };
+  template <> struct isStructureChainValid<BindImageMemoryInfoKHR, BindImageMemorySwapchainInfoKHX>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PresentInfoKHR, PresentTimesInfoGOOGLE>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PipelineViewportStateCreateInfo, PipelineViewportWScalingStateCreateInfoNV>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceProperties2KHR, PhysicalDeviceDiscardRectanglePropertiesEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceProperties2KHR, PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceFeatures2KHR, PhysicalDevice16BitStorageFeaturesKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDevice16BitStorageFeaturesKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<MemoryRequirements2KHR, MemoryDedicatedRequirementsKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<MemoryAllocateInfo, MemoryDedicatedAllocateInfoKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<SamplerCreateInfo, SamplerYcbcrConversionInfoKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<ImageViewCreateInfo, SamplerYcbcrConversionInfoKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceFeatures2KHR, PhysicalDeviceSamplerYcbcrConversionFeaturesKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceSamplerYcbcrConversionFeaturesKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<ImageFormatProperties2KHR, SamplerYcbcrConversionImageFormatPropertiesKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<ImageFormatProperties2KHR, TextureLODGatherFormatPropertiesAMD>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PipelineMultisampleStateCreateInfo, PipelineCoverageToColorStateCreateInfoNV>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceProperties2KHR, PhysicalDeviceSamplerFilterMinmaxPropertiesEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceFeatures2KHR, PhysicalDeviceBlendOperationAdvancedFeaturesEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceProperties2KHR, PhysicalDeviceBlendOperationAdvancedPropertiesEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<ImageCreateInfo, ImageFormatListCreateInfoKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<ShaderModuleCreateInfo, ShaderModuleValidationCacheCreateInfoEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<SurfaceCapabilities2KHR, SharedPresentSurfaceCapabilitiesKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<ImageViewCreateInfo, ImageViewUsageCreateInfoKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<RenderPassCreateInfo, RenderPassInputAttachmentAspectCreateInfoKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<BindImageMemoryInfoKHR, BindImagePlaneMemoryInfoKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<ImageMemoryRequirementsInfo2KHR, ImagePlaneMemoryRequirementsInfoKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<ImageMemoryBarrier, SampleLocationsInfoEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<RenderPassBeginInfo, RenderPassSampleLocationsBeginInfoEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PipelineMultisampleStateCreateInfo, PipelineSampleLocationsStateCreateInfoEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceProperties2KHR, PhysicalDeviceSampleLocationsPropertiesEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<InstanceCreateInfo, DebugReportCallbackCreateInfoEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PipelineRasterizationStateCreateInfo, PipelineRasterizationStateRasterizationOrderAMD>{ enum { value = true }; };
+  template <> struct isStructureChainValid<ImageCreateInfo, ExternalMemoryImageCreateInfoNV>{ enum { value = true }; };
+  template <> struct isStructureChainValid<MemoryAllocateInfo, ExportMemoryAllocateInfoNV>{ enum { value = true }; };
 #ifdef VK_USE_PLATFORM_WIN32_KHR
-  template <> constexpr bool isStructureChainValid<MemoryAllocateInfo, ImportMemoryWin32HandleInfoKHR>() { return true; }
+  template <> struct isStructureChainValid<MemoryAllocateInfo, ImportMemoryWin32HandleInfoNV>{ enum { value = true }; };
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
-  template <> constexpr bool isStructureChainValid<MemoryAllocateInfo, ImportMemoryFdInfoKHR>() { return true; }
-  template <> constexpr bool isStructureChainValid<ImageFormatProperties2KHR, ExternalImageFormatPropertiesKHR>() { return true; }
-  template <> constexpr bool isStructureChainValid<SemaphoreCreateInfo, ExportSemaphoreCreateInfoKHR>() { return true; }
-  template <> constexpr bool isStructureChainValid<FenceCreateInfo, ExportFenceCreateInfoKHR>() { return true; }
-  template <> constexpr bool isStructureChainValid<SwapchainCreateInfoKHR, SwapchainCounterCreateInfoEXT>() { return true; }
-  template <> constexpr bool isStructureChainValid<MemoryAllocateInfo, MemoryAllocateFlagsInfoKHX>() { return true; }
-  template <> constexpr bool isStructureChainValid<PresentInfoKHR, DeviceGroupPresentInfoKHX>() { return true; }
-  template <> constexpr bool isStructureChainValid<SwapchainCreateInfoKHR, DeviceGroupSwapchainCreateInfoKHX>() { return true; }
-  template <> constexpr bool isStructureChainValid<PipelineViewportStateCreateInfo, PipelineViewportSwizzleStateCreateInfoNV>() { return true; }
-  template <> constexpr bool isStructureChainValid<GraphicsPipelineCreateInfo, PipelineDiscardRectangleStateCreateInfoEXT>() { return true; }
-  template <> constexpr bool isStructureChainValid<PhysicalDeviceProperties2KHR, PhysicalDevicePointClippingPropertiesKHR>() { return true; }
-  template <> constexpr bool isStructureChainValid<SamplerCreateInfo, SamplerReductionModeCreateInfoEXT>() { return true; }
-  template <> constexpr bool isStructureChainValid<PipelineTessellationStateCreateInfo, PipelineTessellationDomainOriginStateCreateInfoKHR>() { return true; }
-  template <> constexpr bool isStructureChainValid<PipelineColorBlendStateCreateInfo, PipelineColorBlendAdvancedStateCreateInfoEXT>() { return true; }
-  template <> constexpr bool isStructureChainValid<PipelineMultisampleStateCreateInfo, PipelineCoverageModulationStateCreateInfoNV>() { return true; }
-  template <> constexpr bool isStructureChainValid<DeviceQueueCreateInfo, DeviceQueueGlobalPriorityCreateInfoEXT>() { return true; }
-  template <> constexpr bool isStructureChainValid<DeviceCreateInfo, DeviceGroupDeviceCreateInfoKHX>() { return true; }
+  template <> struct isStructureChainValid<InstanceCreateInfo, ValidationFlagsEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceImageFormatInfo2KHR, PhysicalDeviceExternalImageFormatInfoKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<ImageCreateInfo, ExternalMemoryImageCreateInfoKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<BufferCreateInfo, ExternalMemoryBufferCreateInfoKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<MemoryAllocateInfo, ExportMemoryAllocateInfoKHR>{ enum { value = true }; };
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  template <> struct isStructureChainValid<MemoryAllocateInfo, ImportMemoryWin32HandleInfoKHR>{ enum { value = true }; };
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+  template <> struct isStructureChainValid<MemoryAllocateInfo, ImportMemoryFdInfoKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<ImageFormatProperties2KHR, ExternalImageFormatPropertiesKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<SemaphoreCreateInfo, ExportSemaphoreCreateInfoKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<FenceCreateInfo, ExportFenceCreateInfoKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<SwapchainCreateInfoKHR, SwapchainCounterCreateInfoEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<MemoryAllocateInfo, MemoryAllocateFlagsInfoKHX>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PresentInfoKHR, DeviceGroupPresentInfoKHX>{ enum { value = true }; };
+  template <> struct isStructureChainValid<SwapchainCreateInfoKHR, DeviceGroupSwapchainCreateInfoKHX>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PipelineViewportStateCreateInfo, PipelineViewportSwizzleStateCreateInfoNV>{ enum { value = true }; };
+  template <> struct isStructureChainValid<GraphicsPipelineCreateInfo, PipelineDiscardRectangleStateCreateInfoEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceProperties2KHR, PhysicalDevicePointClippingPropertiesKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<SamplerCreateInfo, SamplerReductionModeCreateInfoEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PipelineTessellationStateCreateInfo, PipelineTessellationDomainOriginStateCreateInfoKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PipelineColorBlendStateCreateInfo, PipelineColorBlendAdvancedStateCreateInfoEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PipelineMultisampleStateCreateInfo, PipelineCoverageModulationStateCreateInfoNV>{ enum { value = true }; };
+  template <> struct isStructureChainValid<DeviceQueueCreateInfo, DeviceQueueGlobalPriorityCreateInfoEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<DeviceCreateInfo, DeviceGroupDeviceCreateInfoKHX>{ enum { value = true }; };
   VULKAN_HPP_INLINE std::string to_string(FramebufferCreateFlagBits)
   {
     return "(void)";

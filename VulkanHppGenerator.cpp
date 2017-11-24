@@ -362,7 +362,7 @@ const std::string arrayProxyHeader = R"(
 )";
 
 const std::string structureChainHeader = R"(
-  template <typename X, typename Y> constexpr bool isStructureChainValid() { return false; }
+  template <typename X, typename Y> struct isStructureChainValid { enum { value = false }; };
 
   template <class Element>
   class StructureChainElement
@@ -405,7 +405,7 @@ const std::string structureChainHeader = R"(
     template<typename X, typename Y, typename ...Z>
     void link()
     {
-      static_assert(isStructureChainValid<X,Y>(), "The structure chain is not valid!");
+      static_assert(isStructureChainValid<X,Y>::value, "The structure chain is not valid!");
       X& x = static_cast<X&>(*this);
       Y& y = static_cast<Y&>(*this);
       x.pNext = &y;
@@ -421,7 +421,7 @@ const std::string structureChainHeader = R"(
     template<typename X, typename Y, typename ...Z>
     void linkAndCopy(StructureChain const &rhs)
     {
-      static_assert(isStructureChainValid<X,Y>(), "The structure chain is not valid!");
+      static_assert(isStructureChainValid<X,Y>::value, "The structure chain is not valid!");
       X& x = static_cast<X&>(*this);
       Y& y = static_cast<Y&>(*this);
       x = static_cast<X const &>(rhs);
@@ -4375,7 +4375,7 @@ void writeStructureChainValidation(std::ostream & os, VkData const& vkData, Depe
       assert(itExtend != vkData.structs.end());
       enterProtect(os, itExtend->second.protect);
 
-      os << "  template <> constexpr bool isStructureChainValid<" << extendName << ", " << dependencyData.name << ">() { return true; }" << std::endl;
+      os << "  template <> struct isStructureChainValid<" << extendName << ", " << dependencyData.name << ">{ enum { value = true }; };" << std::endl;
 
       leaveProtect(os, itExtend->second.protect);
     }

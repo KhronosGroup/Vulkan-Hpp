@@ -3696,6 +3696,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ExtensionProperties
   {
+    ExtensionProperties(  )
+    {
+    }
+
+    ExtensionProperties( VkExtensionProperties const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ExtensionProperties ) );
+    }
+
+    ExtensionProperties& operator=( VkExtensionProperties const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ExtensionProperties ) );
+      return *this;
+    }
     operator const VkExtensionProperties&() const
     {
       return *reinterpret_cast<const VkExtensionProperties*>(this);
@@ -3719,6 +3733,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct LayerProperties
   {
+    LayerProperties(  )
+    {
+    }
+
+    LayerProperties( VkLayerProperties const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( LayerProperties ) );
+    }
+
+    LayerProperties& operator=( VkLayerProperties const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( LayerProperties ) );
+      return *this;
+    }
     operator const VkLayerProperties&() const
     {
       return *reinterpret_cast<const VkLayerProperties*>(this);
@@ -3833,6 +3861,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct MemoryRequirements
   {
+    MemoryRequirements(  )
+    {
+    }
+
+    MemoryRequirements( VkMemoryRequirements const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( MemoryRequirements ) );
+    }
+
+    MemoryRequirements& operator=( VkMemoryRequirements const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( MemoryRequirements ) );
+      return *this;
+    }
     operator const VkMemoryRequirements&() const
     {
       return *reinterpret_cast<const VkMemoryRequirements*>(this);
@@ -3918,6 +3960,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SubresourceLayout
   {
+    SubresourceLayout(  )
+    {
+    }
+
+    SubresourceLayout( VkSubresourceLayout const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SubresourceLayout ) );
+    }
+
+    SubresourceLayout& operator=( VkSubresourceLayout const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SubresourceLayout ) );
+      return *this;
+    }
     operator const VkSubresourceLayout&() const
     {
       return *reinterpret_cast<const VkSubresourceLayout*>(this);
@@ -4798,6 +4854,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceSparseProperties
   {
+    PhysicalDeviceSparseProperties(  )
+    {
+    }
+
+    PhysicalDeviceSparseProperties( VkPhysicalDeviceSparseProperties const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceSparseProperties ) );
+    }
+
+    PhysicalDeviceSparseProperties& operator=( VkPhysicalDeviceSparseProperties const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceSparseProperties ) );
+      return *this;
+    }
     operator const VkPhysicalDeviceSparseProperties&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceSparseProperties*>(this);
@@ -5034,6 +5104,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DisplayPlanePropertiesKHR
   {
+    DisplayPlanePropertiesKHR(  )
+    {
+    }
+
+    DisplayPlanePropertiesKHR( VkDisplayPlanePropertiesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( DisplayPlanePropertiesKHR ) );
+    }
+
+    DisplayPlanePropertiesKHR& operator=( VkDisplayPlanePropertiesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( DisplayPlanePropertiesKHR ) );
+      return *this;
+    }
     operator const VkDisplayPlanePropertiesKHR&() const
     {
       return *reinterpret_cast<const VkDisplayPlanePropertiesKHR*>(this);
@@ -5108,6 +5192,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DisplayModePropertiesKHR
   {
+    DisplayModePropertiesKHR(  )
+    {
+    }
+
+    DisplayModePropertiesKHR( VkDisplayModePropertiesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( DisplayModePropertiesKHR ) );
+    }
+
+    DisplayModePropertiesKHR& operator=( VkDisplayModePropertiesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( DisplayModePropertiesKHR ) );
+      return *this;
+    }
     operator const VkDisplayModePropertiesKHR&() const
     {
       return *reinterpret_cast<const VkDisplayModePropertiesKHR*>(this);
@@ -5566,6 +5664,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ShaderResourceUsageAMD
   {
+    ShaderResourceUsageAMD(  )
+    {
+    }
+
+    ShaderResourceUsageAMD( VkShaderResourceUsageAMD const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ShaderResourceUsageAMD ) );
+    }
+
+    ShaderResourceUsageAMD& operator=( VkShaderResourceUsageAMD const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ShaderResourceUsageAMD ) );
+      return *this;
+    }
     operator const VkShaderResourceUsageAMD&() const
     {
       return *reinterpret_cast<const VkShaderResourceUsageAMD*>(this);
@@ -10775,6 +10887,22 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceIDPropertiesKHR
   {
+    PhysicalDeviceIDPropertiesKHR(  )
+      : sType( StructureType::ePhysicalDeviceIdPropertiesKHR )
+      , pNext( nullptr )
+    {
+    }
+
+    PhysicalDeviceIDPropertiesKHR( VkPhysicalDeviceIDPropertiesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceIDPropertiesKHR ) );
+    }
+
+    PhysicalDeviceIDPropertiesKHR& operator=( VkPhysicalDeviceIDPropertiesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceIDPropertiesKHR ) );
+      return *this;
+    }
     operator const VkPhysicalDeviceIDPropertiesKHR&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceIDPropertiesKHR*>(this);
@@ -10889,6 +11017,22 @@ namespace VULKAN_HPP_NAMESPACE
 #ifdef VK_USE_PLATFORM_WIN32_KHR
   struct MemoryWin32HandlePropertiesKHR
   {
+    MemoryWin32HandlePropertiesKHR(  )
+      : sType( StructureType::eMemoryWin32HandlePropertiesKHR )
+      , pNext( nullptr )
+    {
+    }
+
+    MemoryWin32HandlePropertiesKHR( VkMemoryWin32HandlePropertiesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( MemoryWin32HandlePropertiesKHR ) );
+    }
+
+    MemoryWin32HandlePropertiesKHR& operator=( VkMemoryWin32HandlePropertiesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( MemoryWin32HandlePropertiesKHR ) );
+      return *this;
+    }
     operator const VkMemoryWin32HandlePropertiesKHR&() const
     {
       return *reinterpret_cast<const VkMemoryWin32HandlePropertiesKHR*>(this);
@@ -10918,6 +11062,22 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct MemoryFdPropertiesKHR
   {
+    MemoryFdPropertiesKHR(  )
+      : sType( StructureType::eMemoryFdPropertiesKHR )
+      , pNext( nullptr )
+    {
+    }
+
+    MemoryFdPropertiesKHR( VkMemoryFdPropertiesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( MemoryFdPropertiesKHR ) );
+    }
+
+    MemoryFdPropertiesKHR& operator=( VkMemoryFdPropertiesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( MemoryFdPropertiesKHR ) );
+      return *this;
+    }
     operator const VkMemoryFdPropertiesKHR&() const
     {
       return *reinterpret_cast<const VkMemoryFdPropertiesKHR*>(this);
@@ -11374,6 +11534,22 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceMultiviewPropertiesKHX
   {
+    PhysicalDeviceMultiviewPropertiesKHX(  )
+      : sType( StructureType::ePhysicalDeviceMultiviewPropertiesKHX )
+      , pNext( nullptr )
+    {
+    }
+
+    PhysicalDeviceMultiviewPropertiesKHX( VkPhysicalDeviceMultiviewPropertiesKHX const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceMultiviewPropertiesKHX ) );
+    }
+
+    PhysicalDeviceMultiviewPropertiesKHX& operator=( VkPhysicalDeviceMultiviewPropertiesKHX const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceMultiviewPropertiesKHX ) );
+      return *this;
+    }
     operator const VkPhysicalDeviceMultiviewPropertiesKHX&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceMultiviewPropertiesKHX*>(this);
@@ -12776,6 +12952,22 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX
   {
+    PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX(  )
+      : sType( StructureType::ePhysicalDeviceMultiviewPerViewAttributesPropertiesNVX )
+      , pNext( nullptr )
+    {
+    }
+
+    PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX( VkPhysicalDeviceMultiviewPerViewAttributesPropertiesNVX const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX ) );
+    }
+
+    PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX& operator=( VkPhysicalDeviceMultiviewPerViewAttributesPropertiesNVX const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX ) );
+      return *this;
+    }
     operator const VkPhysicalDeviceMultiviewPerViewAttributesPropertiesNVX&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceMultiviewPerViewAttributesPropertiesNVX*>(this);
@@ -13116,6 +13308,22 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct MemoryRequirements2KHR
   {
+    MemoryRequirements2KHR(  )
+      : sType( StructureType::eMemoryRequirements2KHR )
+      , pNext( nullptr )
+    {
+    }
+
+    MemoryRequirements2KHR( VkMemoryRequirements2KHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( MemoryRequirements2KHR ) );
+    }
+
+    MemoryRequirements2KHR& operator=( VkMemoryRequirements2KHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( MemoryRequirements2KHR ) );
+      return *this;
+    }
     operator const VkMemoryRequirements2KHR&() const
     {
       return *reinterpret_cast<const VkMemoryRequirements2KHR*>(this);
@@ -13144,6 +13352,22 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct MemoryDedicatedRequirementsKHR
   {
+    MemoryDedicatedRequirementsKHR(  )
+      : sType( StructureType::eMemoryDedicatedRequirementsKHR )
+      , pNext( nullptr )
+    {
+    }
+
+    MemoryDedicatedRequirementsKHR( VkMemoryDedicatedRequirementsKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( MemoryDedicatedRequirementsKHR ) );
+    }
+
+    MemoryDedicatedRequirementsKHR& operator=( VkMemoryDedicatedRequirementsKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( MemoryDedicatedRequirementsKHR ) );
+      return *this;
+    }
     operator const VkMemoryDedicatedRequirementsKHR&() const
     {
       return *reinterpret_cast<const VkMemoryDedicatedRequirementsKHR*>(this);
@@ -13354,6 +13578,22 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SamplerYcbcrConversionImageFormatPropertiesKHR
   {
+    SamplerYcbcrConversionImageFormatPropertiesKHR(  )
+      : sType( StructureType::eSamplerYcbcrConversionImageFormatPropertiesKHR )
+      , pNext( nullptr )
+    {
+    }
+
+    SamplerYcbcrConversionImageFormatPropertiesKHR( VkSamplerYcbcrConversionImageFormatPropertiesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SamplerYcbcrConversionImageFormatPropertiesKHR ) );
+    }
+
+    SamplerYcbcrConversionImageFormatPropertiesKHR& operator=( VkSamplerYcbcrConversionImageFormatPropertiesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SamplerYcbcrConversionImageFormatPropertiesKHR ) );
+      return *this;
+    }
     operator const VkSamplerYcbcrConversionImageFormatPropertiesKHR&() const
     {
       return *reinterpret_cast<const VkSamplerYcbcrConversionImageFormatPropertiesKHR*>(this);
@@ -13382,6 +13622,22 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct TextureLODGatherFormatPropertiesAMD
   {
+    TextureLODGatherFormatPropertiesAMD(  )
+      : sType( StructureType::eTextureLodGatherFormatPropertiesAMD )
+      , pNext( nullptr )
+    {
+    }
+
+    TextureLODGatherFormatPropertiesAMD( VkTextureLODGatherFormatPropertiesAMD const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( TextureLODGatherFormatPropertiesAMD ) );
+    }
+
+    TextureLODGatherFormatPropertiesAMD& operator=( VkTextureLODGatherFormatPropertiesAMD const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( TextureLODGatherFormatPropertiesAMD ) );
+      return *this;
+    }
     operator const VkTextureLODGatherFormatPropertiesAMD&() const
     {
       return *reinterpret_cast<const VkTextureLODGatherFormatPropertiesAMD*>(this);
@@ -13485,6 +13741,22 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceSamplerFilterMinmaxPropertiesEXT
   {
+    PhysicalDeviceSamplerFilterMinmaxPropertiesEXT(  )
+      : sType( StructureType::ePhysicalDeviceSamplerFilterMinmaxPropertiesEXT )
+      , pNext( nullptr )
+    {
+    }
+
+    PhysicalDeviceSamplerFilterMinmaxPropertiesEXT( VkPhysicalDeviceSamplerFilterMinmaxPropertiesEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceSamplerFilterMinmaxPropertiesEXT ) );
+    }
+
+    PhysicalDeviceSamplerFilterMinmaxPropertiesEXT& operator=( VkPhysicalDeviceSamplerFilterMinmaxPropertiesEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceSamplerFilterMinmaxPropertiesEXT ) );
+      return *this;
+    }
     operator const VkPhysicalDeviceSamplerFilterMinmaxPropertiesEXT&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceSamplerFilterMinmaxPropertiesEXT*>(this);
@@ -13515,6 +13787,22 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct MultisamplePropertiesEXT
   {
+    MultisamplePropertiesEXT(  )
+      : sType( StructureType::eMultisamplePropertiesEXT )
+      , pNext( nullptr )
+    {
+    }
+
+    MultisamplePropertiesEXT( VkMultisamplePropertiesEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( MultisamplePropertiesEXT ) );
+    }
+
+    MultisamplePropertiesEXT& operator=( VkMultisamplePropertiesEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( MultisamplePropertiesEXT ) );
+      return *this;
+    }
     operator const VkMultisamplePropertiesEXT&() const
     {
       return *reinterpret_cast<const VkMultisamplePropertiesEXT*>(this);
@@ -13600,6 +13888,22 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceBlendOperationAdvancedPropertiesEXT
   {
+    PhysicalDeviceBlendOperationAdvancedPropertiesEXT(  )
+      : sType( StructureType::ePhysicalDeviceBlendOperationAdvancedPropertiesEXT )
+      , pNext( nullptr )
+    {
+    }
+
+    PhysicalDeviceBlendOperationAdvancedPropertiesEXT( VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceBlendOperationAdvancedPropertiesEXT ) );
+    }
+
+    PhysicalDeviceBlendOperationAdvancedPropertiesEXT& operator=( VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceBlendOperationAdvancedPropertiesEXT ) );
+      return *this;
+    }
     operator const VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT*>(this);
@@ -14229,6 +14533,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct QueueFamilyProperties
   {
+    QueueFamilyProperties(  )
+    {
+    }
+
+    QueueFamilyProperties( VkQueueFamilyProperties const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( QueueFamilyProperties ) );
+    }
+
+    QueueFamilyProperties& operator=( VkQueueFamilyProperties const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( QueueFamilyProperties ) );
+      return *this;
+    }
     operator const VkQueueFamilyProperties&() const
     {
       return *reinterpret_cast<const VkQueueFamilyProperties*>(this);
@@ -14256,6 +14574,22 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct QueueFamilyProperties2KHR
   {
+    QueueFamilyProperties2KHR(  )
+      : sType( StructureType::eQueueFamilyProperties2KHR )
+      , pNext( nullptr )
+    {
+    }
+
+    QueueFamilyProperties2KHR( VkQueueFamilyProperties2KHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( QueueFamilyProperties2KHR ) );
+    }
+
+    QueueFamilyProperties2KHR& operator=( VkQueueFamilyProperties2KHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( QueueFamilyProperties2KHR ) );
+      return *this;
+    }
     operator const VkQueueFamilyProperties2KHR&() const
     {
       return *reinterpret_cast<const VkQueueFamilyProperties2KHR*>(this);
@@ -14313,6 +14647,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct MemoryType
   {
+    MemoryType(  )
+    {
+    }
+
+    MemoryType( VkMemoryType const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( MemoryType ) );
+    }
+
+    MemoryType& operator=( VkMemoryType const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( MemoryType ) );
+      return *this;
+    }
     operator const VkMemoryType&() const
     {
       return *reinterpret_cast<const VkMemoryType*>(this);
@@ -14362,6 +14710,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct MemoryHeap
   {
+    MemoryHeap(  )
+    {
+    }
+
+    MemoryHeap( VkMemoryHeap const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( MemoryHeap ) );
+    }
+
+    MemoryHeap& operator=( VkMemoryHeap const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( MemoryHeap ) );
+      return *this;
+    }
     operator const VkMemoryHeap&() const
     {
       return *reinterpret_cast<const VkMemoryHeap*>(this);
@@ -14385,6 +14747,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceMemoryProperties
   {
+    PhysicalDeviceMemoryProperties(  )
+    {
+    }
+
+    PhysicalDeviceMemoryProperties( VkPhysicalDeviceMemoryProperties const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceMemoryProperties ) );
+    }
+
+    PhysicalDeviceMemoryProperties& operator=( VkPhysicalDeviceMemoryProperties const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceMemoryProperties ) );
+      return *this;
+    }
     operator const VkPhysicalDeviceMemoryProperties&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceMemoryProperties*>(this);
@@ -14412,6 +14788,22 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceMemoryProperties2KHR
   {
+    PhysicalDeviceMemoryProperties2KHR(  )
+      : sType( StructureType::ePhysicalDeviceMemoryProperties2KHR )
+      , pNext( nullptr )
+    {
+    }
+
+    PhysicalDeviceMemoryProperties2KHR( VkPhysicalDeviceMemoryProperties2KHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceMemoryProperties2KHR ) );
+    }
+
+    PhysicalDeviceMemoryProperties2KHR& operator=( VkPhysicalDeviceMemoryProperties2KHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceMemoryProperties2KHR ) );
+      return *this;
+    }
     operator const VkPhysicalDeviceMemoryProperties2KHR&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceMemoryProperties2KHR*>(this);
@@ -15179,6 +15571,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ShaderStatisticsInfoAMD
   {
+    ShaderStatisticsInfoAMD(  )
+    {
+    }
+
+    ShaderStatisticsInfoAMD( VkShaderStatisticsInfoAMD const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ShaderStatisticsInfoAMD ) );
+    }
+
+    ShaderStatisticsInfoAMD& operator=( VkShaderStatisticsInfoAMD const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ShaderStatisticsInfoAMD ) );
+      return *this;
+    }
     operator const VkShaderStatisticsInfoAMD&() const
     {
       return *reinterpret_cast<const VkShaderStatisticsInfoAMD*>(this);
@@ -15244,6 +15650,22 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SharedPresentSurfaceCapabilitiesKHR
   {
+    SharedPresentSurfaceCapabilitiesKHR(  )
+      : sType( StructureType::eSharedPresentSurfaceCapabilitiesKHR )
+      , pNext( nullptr )
+    {
+    }
+
+    SharedPresentSurfaceCapabilitiesKHR( VkSharedPresentSurfaceCapabilitiesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SharedPresentSurfaceCapabilitiesKHR ) );
+    }
+
+    SharedPresentSurfaceCapabilitiesKHR& operator=( VkSharedPresentSurfaceCapabilitiesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SharedPresentSurfaceCapabilitiesKHR ) );
+      return *this;
+    }
     operator const VkSharedPresentSurfaceCapabilitiesKHR&() const
     {
       return *reinterpret_cast<const VkSharedPresentSurfaceCapabilitiesKHR*>(this);
@@ -15945,6 +16367,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct FormatProperties
   {
+    FormatProperties(  )
+    {
+    }
+
+    FormatProperties( VkFormatProperties const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( FormatProperties ) );
+    }
+
+    FormatProperties& operator=( VkFormatProperties const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( FormatProperties ) );
+      return *this;
+    }
     operator const VkFormatProperties&() const
     {
       return *reinterpret_cast<const VkFormatProperties*>(this);
@@ -15970,6 +16406,22 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct FormatProperties2KHR
   {
+    FormatProperties2KHR(  )
+      : sType( StructureType::eFormatProperties2KHR )
+      , pNext( nullptr )
+    {
+    }
+
+    FormatProperties2KHR( VkFormatProperties2KHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( FormatProperties2KHR ) );
+    }
+
+    FormatProperties2KHR& operator=( VkFormatProperties2KHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( FormatProperties2KHR ) );
+      return *this;
+    }
     operator const VkFormatProperties2KHR&() const
     {
       return *reinterpret_cast<const VkFormatProperties2KHR*>(this);
@@ -17452,6 +17904,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SparseImageFormatProperties
   {
+    SparseImageFormatProperties(  )
+    {
+    }
+
+    SparseImageFormatProperties( VkSparseImageFormatProperties const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SparseImageFormatProperties ) );
+    }
+
+    SparseImageFormatProperties& operator=( VkSparseImageFormatProperties const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SparseImageFormatProperties ) );
+      return *this;
+    }
     operator const VkSparseImageFormatProperties&() const
     {
       return *reinterpret_cast<const VkSparseImageFormatProperties*>(this);
@@ -17477,6 +17943,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SparseImageMemoryRequirements
   {
+    SparseImageMemoryRequirements(  )
+    {
+    }
+
+    SparseImageMemoryRequirements( VkSparseImageMemoryRequirements const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SparseImageMemoryRequirements ) );
+    }
+
+    SparseImageMemoryRequirements& operator=( VkSparseImageMemoryRequirements const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SparseImageMemoryRequirements ) );
+      return *this;
+    }
     operator const VkSparseImageMemoryRequirements&() const
     {
       return *reinterpret_cast<const VkSparseImageMemoryRequirements*>(this);
@@ -17506,6 +17986,22 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SparseImageFormatProperties2KHR
   {
+    SparseImageFormatProperties2KHR(  )
+      : sType( StructureType::eSparseImageFormatProperties2KHR )
+      , pNext( nullptr )
+    {
+    }
+
+    SparseImageFormatProperties2KHR( VkSparseImageFormatProperties2KHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SparseImageFormatProperties2KHR ) );
+    }
+
+    SparseImageFormatProperties2KHR& operator=( VkSparseImageFormatProperties2KHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SparseImageFormatProperties2KHR ) );
+      return *this;
+    }
     operator const VkSparseImageFormatProperties2KHR&() const
     {
       return *reinterpret_cast<const VkSparseImageFormatProperties2KHR*>(this);
@@ -17534,6 +18030,22 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SparseImageMemoryRequirements2KHR
   {
+    SparseImageMemoryRequirements2KHR(  )
+      : sType( StructureType::eSparseImageMemoryRequirements2KHR )
+      , pNext( nullptr )
+    {
+    }
+
+    SparseImageMemoryRequirements2KHR( VkSparseImageMemoryRequirements2KHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SparseImageMemoryRequirements2KHR ) );
+    }
+
+    SparseImageMemoryRequirements2KHR& operator=( VkSparseImageMemoryRequirements2KHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SparseImageMemoryRequirements2KHR ) );
+      return *this;
+    }
     operator const VkSparseImageMemoryRequirements2KHR&() const
     {
       return *reinterpret_cast<const VkSparseImageMemoryRequirements2KHR*>(this);
@@ -18285,6 +18797,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ImageFormatProperties
   {
+    ImageFormatProperties(  )
+    {
+    }
+
+    ImageFormatProperties( VkImageFormatProperties const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ImageFormatProperties ) );
+    }
+
+    ImageFormatProperties& operator=( VkImageFormatProperties const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ImageFormatProperties ) );
+      return *this;
+    }
     operator const VkImageFormatProperties&() const
     {
       return *reinterpret_cast<const VkImageFormatProperties*>(this);
@@ -18791,6 +19317,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceLimits
   {
+    PhysicalDeviceLimits(  )
+    {
+    }
+
+    PhysicalDeviceLimits( VkPhysicalDeviceLimits const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceLimits ) );
+    }
+
+    PhysicalDeviceLimits& operator=( VkPhysicalDeviceLimits const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceLimits ) );
+      return *this;
+    }
     operator const VkPhysicalDeviceLimits&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceLimits*>(this);
@@ -19022,6 +19562,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceProperties
   {
+    PhysicalDeviceProperties(  )
+    {
+    }
+
+    PhysicalDeviceProperties( VkPhysicalDeviceProperties const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceProperties ) );
+    }
+
+    PhysicalDeviceProperties& operator=( VkPhysicalDeviceProperties const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceProperties ) );
+      return *this;
+    }
     operator const VkPhysicalDeviceProperties&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceProperties*>(this);
@@ -19059,6 +19613,22 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceProperties2KHR
   {
+    PhysicalDeviceProperties2KHR(  )
+      : sType( StructureType::ePhysicalDeviceProperties2KHR )
+      , pNext( nullptr )
+    {
+    }
+
+    PhysicalDeviceProperties2KHR( VkPhysicalDeviceProperties2KHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceProperties2KHR ) );
+    }
+
+    PhysicalDeviceProperties2KHR& operator=( VkPhysicalDeviceProperties2KHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceProperties2KHR ) );
+      return *this;
+    }
     operator const VkPhysicalDeviceProperties2KHR&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceProperties2KHR*>(this);
@@ -19087,6 +19657,22 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ImageFormatProperties2KHR
   {
+    ImageFormatProperties2KHR(  )
+      : sType( StructureType::eImageFormatProperties2KHR )
+      , pNext( nullptr )
+    {
+    }
+
+    ImageFormatProperties2KHR( VkImageFormatProperties2KHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ImageFormatProperties2KHR ) );
+    }
+
+    ImageFormatProperties2KHR& operator=( VkImageFormatProperties2KHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ImageFormatProperties2KHR ) );
+      return *this;
+    }
     operator const VkImageFormatProperties2KHR&() const
     {
       return *reinterpret_cast<const VkImageFormatProperties2KHR*>(this);
@@ -19544,6 +20130,22 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceSampleLocationsPropertiesEXT
   {
+    PhysicalDeviceSampleLocationsPropertiesEXT(  )
+      : sType( StructureType::ePhysicalDeviceSampleLocationsPropertiesEXT )
+      , pNext( nullptr )
+    {
+    }
+
+    PhysicalDeviceSampleLocationsPropertiesEXT( VkPhysicalDeviceSampleLocationsPropertiesEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceSampleLocationsPropertiesEXT ) );
+    }
+
+    PhysicalDeviceSampleLocationsPropertiesEXT& operator=( VkPhysicalDeviceSampleLocationsPropertiesEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceSampleLocationsPropertiesEXT ) );
+      return *this;
+    }
     operator const VkPhysicalDeviceSampleLocationsPropertiesEXT&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceSampleLocationsPropertiesEXT*>(this);
@@ -20007,6 +20609,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SurfaceFormatKHR
   {
+    SurfaceFormatKHR(  )
+    {
+    }
+
+    SurfaceFormatKHR( VkSurfaceFormatKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SurfaceFormatKHR ) );
+    }
+
+    SurfaceFormatKHR& operator=( VkSurfaceFormatKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SurfaceFormatKHR ) );
+      return *this;
+    }
     operator const VkSurfaceFormatKHR&() const
     {
       return *reinterpret_cast<const VkSurfaceFormatKHR*>(this);
@@ -20030,6 +20646,22 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SurfaceFormat2KHR
   {
+    SurfaceFormat2KHR(  )
+      : sType( StructureType::eSurfaceFormat2KHR )
+      , pNext( nullptr )
+    {
+    }
+
+    SurfaceFormat2KHR( VkSurfaceFormat2KHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SurfaceFormat2KHR ) );
+    }
+
+    SurfaceFormat2KHR& operator=( VkSurfaceFormat2KHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SurfaceFormat2KHR ) );
+      return *this;
+    }
     operator const VkSurfaceFormat2KHR&() const
     {
       return *reinterpret_cast<const VkSurfaceFormat2KHR*>(this);
@@ -20086,6 +20718,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DisplayPlaneCapabilitiesKHR
   {
+    DisplayPlaneCapabilitiesKHR(  )
+    {
+    }
+
+    DisplayPlaneCapabilitiesKHR( VkDisplayPlaneCapabilitiesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( DisplayPlaneCapabilitiesKHR ) );
+    }
+
+    DisplayPlaneCapabilitiesKHR& operator=( VkDisplayPlaneCapabilitiesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( DisplayPlaneCapabilitiesKHR ) );
+      return *this;
+    }
     operator const VkDisplayPlaneCapabilitiesKHR&() const
     {
       return *reinterpret_cast<const VkDisplayPlaneCapabilitiesKHR*>(this);
@@ -20184,6 +20830,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DisplayPropertiesKHR
   {
+    DisplayPropertiesKHR(  )
+    {
+    }
+
+    DisplayPropertiesKHR( VkDisplayPropertiesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( DisplayPropertiesKHR ) );
+    }
+
+    DisplayPropertiesKHR& operator=( VkDisplayPropertiesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( DisplayPropertiesKHR ) );
+      return *this;
+    }
     operator const VkDisplayPropertiesKHR&() const
     {
       return *reinterpret_cast<const VkDisplayPropertiesKHR*>(this);
@@ -20337,6 +20997,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SurfaceCapabilitiesKHR
   {
+    SurfaceCapabilitiesKHR(  )
+    {
+    }
+
+    SurfaceCapabilitiesKHR( VkSurfaceCapabilitiesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SurfaceCapabilitiesKHR ) );
+    }
+
+    SurfaceCapabilitiesKHR& operator=( VkSurfaceCapabilitiesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SurfaceCapabilitiesKHR ) );
+      return *this;
+    }
     operator const VkSurfaceCapabilitiesKHR&() const
     {
       return *reinterpret_cast<const VkSurfaceCapabilitiesKHR*>(this);
@@ -20376,6 +21050,22 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SurfaceCapabilities2KHR
   {
+    SurfaceCapabilities2KHR(  )
+      : sType( StructureType::eSurfaceCapabilities2KHR )
+      , pNext( nullptr )
+    {
+    }
+
+    SurfaceCapabilities2KHR( VkSurfaceCapabilities2KHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SurfaceCapabilities2KHR ) );
+    }
+
+    SurfaceCapabilities2KHR& operator=( VkSurfaceCapabilities2KHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SurfaceCapabilities2KHR ) );
+      return *this;
+    }
     operator const VkSurfaceCapabilities2KHR&() const
     {
       return *reinterpret_cast<const VkSurfaceCapabilities2KHR*>(this);
@@ -21016,6 +21706,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ExternalImageFormatPropertiesNV
   {
+    ExternalImageFormatPropertiesNV(  )
+    {
+    }
+
+    ExternalImageFormatPropertiesNV( VkExternalImageFormatPropertiesNV const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ExternalImageFormatPropertiesNV ) );
+    }
+
+    ExternalImageFormatPropertiesNV& operator=( VkExternalImageFormatPropertiesNV const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ExternalImageFormatPropertiesNV ) );
+      return *this;
+    }
     operator const VkExternalImageFormatPropertiesNV&() const
     {
       return *reinterpret_cast<const VkExternalImageFormatPropertiesNV*>(this);
@@ -22648,6 +23352,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ExternalMemoryPropertiesKHR
   {
+    ExternalMemoryPropertiesKHR(  )
+    {
+    }
+
+    ExternalMemoryPropertiesKHR( VkExternalMemoryPropertiesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ExternalMemoryPropertiesKHR ) );
+    }
+
+    ExternalMemoryPropertiesKHR& operator=( VkExternalMemoryPropertiesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ExternalMemoryPropertiesKHR ) );
+      return *this;
+    }
     operator const VkExternalMemoryPropertiesKHR&() const
     {
       return *reinterpret_cast<const VkExternalMemoryPropertiesKHR*>(this);
@@ -22673,6 +23391,22 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ExternalImageFormatPropertiesKHR
   {
+    ExternalImageFormatPropertiesKHR(  )
+      : sType( StructureType::eExternalImageFormatPropertiesKHR )
+      , pNext( nullptr )
+    {
+    }
+
+    ExternalImageFormatPropertiesKHR( VkExternalImageFormatPropertiesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ExternalImageFormatPropertiesKHR ) );
+    }
+
+    ExternalImageFormatPropertiesKHR& operator=( VkExternalImageFormatPropertiesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ExternalImageFormatPropertiesKHR ) );
+      return *this;
+    }
     operator const VkExternalImageFormatPropertiesKHR&() const
     {
       return *reinterpret_cast<const VkExternalImageFormatPropertiesKHR*>(this);
@@ -22701,6 +23435,22 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ExternalBufferPropertiesKHR
   {
+    ExternalBufferPropertiesKHR(  )
+      : sType( StructureType::eExternalBufferPropertiesKHR )
+      , pNext( nullptr )
+    {
+    }
+
+    ExternalBufferPropertiesKHR( VkExternalBufferPropertiesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ExternalBufferPropertiesKHR ) );
+    }
+
+    ExternalBufferPropertiesKHR& operator=( VkExternalBufferPropertiesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ExternalBufferPropertiesKHR ) );
+      return *this;
+    }
     operator const VkExternalBufferPropertiesKHR&() const
     {
       return *reinterpret_cast<const VkExternalBufferPropertiesKHR*>(this);
@@ -23032,6 +23782,22 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ExternalSemaphorePropertiesKHR
   {
+    ExternalSemaphorePropertiesKHR(  )
+      : sType( StructureType::eExternalSemaphorePropertiesKHR )
+      , pNext( nullptr )
+    {
+    }
+
+    ExternalSemaphorePropertiesKHR( VkExternalSemaphorePropertiesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ExternalSemaphorePropertiesKHR ) );
+    }
+
+    ExternalSemaphorePropertiesKHR& operator=( VkExternalSemaphorePropertiesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ExternalSemaphorePropertiesKHR ) );
+      return *this;
+    }
     operator const VkExternalSemaphorePropertiesKHR&() const
     {
       return *reinterpret_cast<const VkExternalSemaphorePropertiesKHR*>(this);
@@ -23570,6 +24336,22 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ExternalFencePropertiesKHR
   {
+    ExternalFencePropertiesKHR(  )
+      : sType( StructureType::eExternalFencePropertiesKHR )
+      , pNext( nullptr )
+    {
+    }
+
+    ExternalFencePropertiesKHR( VkExternalFencePropertiesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ExternalFencePropertiesKHR ) );
+    }
+
+    ExternalFencePropertiesKHR& operator=( VkExternalFencePropertiesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ExternalFencePropertiesKHR ) );
+      return *this;
+    }
     operator const VkExternalFencePropertiesKHR&() const
     {
       return *reinterpret_cast<const VkExternalFencePropertiesKHR*>(this);
@@ -23831,6 +24613,22 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SurfaceCapabilities2EXT
   {
+    SurfaceCapabilities2EXT(  )
+      : sType( StructureType::eSurfaceCapabilities2EXT )
+      , pNext( nullptr )
+    {
+    }
+
+    SurfaceCapabilities2EXT( VkSurfaceCapabilities2EXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SurfaceCapabilities2EXT ) );
+    }
+
+    SurfaceCapabilities2EXT& operator=( VkSurfaceCapabilities2EXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SurfaceCapabilities2EXT ) );
+      return *this;
+    }
     operator const VkSurfaceCapabilities2EXT&() const
     {
       return *reinterpret_cast<const VkSurfaceCapabilities2EXT*>(this);
@@ -24271,6 +25069,22 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DeviceGroupPresentCapabilitiesKHX
   {
+    DeviceGroupPresentCapabilitiesKHX(  )
+      : sType( StructureType::eDeviceGroupPresentCapabilitiesKHX )
+      , pNext( nullptr )
+    {
+    }
+
+    DeviceGroupPresentCapabilitiesKHX( VkDeviceGroupPresentCapabilitiesKHX const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( DeviceGroupPresentCapabilitiesKHX ) );
+    }
+
+    DeviceGroupPresentCapabilitiesKHX& operator=( VkDeviceGroupPresentCapabilitiesKHX const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( DeviceGroupPresentCapabilitiesKHX ) );
+      return *this;
+    }
     operator const VkDeviceGroupPresentCapabilitiesKHX&() const
     {
       return *reinterpret_cast<const VkDeviceGroupPresentCapabilitiesKHX*>(this);
@@ -25162,6 +25976,22 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDevicePointClippingPropertiesKHR
   {
+    PhysicalDevicePointClippingPropertiesKHR(  )
+      : sType( StructureType::ePhysicalDevicePointClippingPropertiesKHR )
+      , pNext( nullptr )
+    {
+    }
+
+    PhysicalDevicePointClippingPropertiesKHR( VkPhysicalDevicePointClippingPropertiesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDevicePointClippingPropertiesKHR ) );
+    }
+
+    PhysicalDevicePointClippingPropertiesKHR& operator=( VkPhysicalDevicePointClippingPropertiesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDevicePointClippingPropertiesKHR ) );
+      return *this;
+    }
     operator const VkPhysicalDevicePointClippingPropertiesKHR&() const
     {
       return *reinterpret_cast<const VkPhysicalDevicePointClippingPropertiesKHR*>(this);
@@ -31360,6 +32190,22 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceGroupPropertiesKHX
   {
+    PhysicalDeviceGroupPropertiesKHX(  )
+      : sType( StructureType::ePhysicalDeviceGroupPropertiesKHX )
+      , pNext( nullptr )
+    {
+    }
+
+    PhysicalDeviceGroupPropertiesKHX( VkPhysicalDeviceGroupPropertiesKHX const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceGroupPropertiesKHX ) );
+    }
+
+    PhysicalDeviceGroupPropertiesKHX& operator=( VkPhysicalDeviceGroupPropertiesKHX const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceGroupPropertiesKHX ) );
+      return *this;
+    }
     operator const VkPhysicalDeviceGroupPropertiesKHX&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceGroupPropertiesKHX*>(this);

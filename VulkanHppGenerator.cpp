@@ -573,25 +573,30 @@ const std::string createResultValueHeader = R"(
 
 const std::string uniqueHandleHeader = R"(
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
-  template <typename Type, typename Deleter>
-  class UniqueHandle
+
+  template <typename Type> class UniqueHandleTraits;
+
+  template <typename Type>
+  class UniqueHandle : public UniqueHandleTraits<Type>::deleter
   {
+  private:
+    using Deleter = typename UniqueHandleTraits<Type>::deleter;
   public:
     explicit UniqueHandle( Type const& value = Type(), Deleter const& deleter = Deleter() )
-      : m_value( value )
-      , m_deleter( deleter )
+      : Deleter( deleter)
+      , m_value( value )
     {}
 
     UniqueHandle( UniqueHandle const& ) = delete;
 
     UniqueHandle( UniqueHandle && other )
-      : m_value( other.release() )
-      , m_deleter( std::move( other.m_deleter ) )
+      : Deleter( std::move( static_cast<Deleter&>( other ) ) )
+      , m_value( other.release() )
     {}
 
     ~UniqueHandle()
     {
-      destroy();
+      this->destroy( m_value );
     }
 
     UniqueHandle & operator=( UniqueHandle const& ) = delete;
@@ -599,7 +604,7 @@ const std::string uniqueHandleHeader = R"(
     UniqueHandle & operator=( UniqueHandle && other )
     {
       reset( other.release() );
-      m_deleter = std::move( other.m_deleter );
+      *static_cast<Deleter*>(this) = std::move( static_cast<Deleter&>(other) );
       return *this;
     }
 
@@ -638,21 +643,11 @@ const std::string uniqueHandleHeader = R"(
       return m_value;
     }
 
-    Deleter & getDeleter()
-    {
-      return m_deleter;
-    }
-
-    Deleter const& getDeleter() const
-    {
-      return m_deleter;
-    }
-
     void reset( Type const& value = Type() )
     {
       if ( m_value != value )
       {
-        destroy();
+        this->destroy( m_value );
         m_value = value;
       }
     }
@@ -664,28 +659,18 @@ const std::string uniqueHandleHeader = R"(
       return value;
     }
 
-    void swap( UniqueHandle<Type, Deleter> & rhs )
+    void swap( UniqueHandle<Type> & rhs )
     {
       std::swap(m_value, rhs.m_value);
-      std::swap(m_deleter, rhs.m_deleter);
-    }
-
-  private:
-    void destroy()
-    {
-      if ( m_value )
-      {
-        m_deleter( m_value );
-      }
+      std::swap(static_cast<Deleter&>(*this), static_cast<Deleter&>(rhs));
     }
 
   private:
     Type    m_value;
-    Deleter m_deleter;
   };
 
-  template <typename Type, typename Deleter>
-  VULKAN_HPP_INLINE void swap( UniqueHandle<Type,Deleter> & lhs, UniqueHandle<Type,Deleter> & rhs )
+  template <typename Type>
+  VULKAN_HPP_INLINE void swap( UniqueHandle<Type> & lhs, UniqueHandle<Type> & rhs )
   {
     lhs.swap( rhs );
   }
@@ -3934,6 +3919,10 @@ void writeDeleterClasses(std::ostream & os, std::pair<std::string, std::set<std:
   {
     std::string deleterName = startLowerCase(deleterType);
     bool standardDeleter = !parentType.empty() && (deleterType != "Device");    // this detects the 'standard' case for a deleter
+                                                                                // if this Deleter is pooled, make such a pool the last argument, otherwise an Optional allocator
+    auto const& dd = deleters.find(deleterType);
+    assert(dd != deleters.end());
+    std::string poolName = (dd->second.pool.empty() ? "" : startLowerCase(dd->second.pool));
 
     if (!first)
     {
@@ -3942,19 +3931,15 @@ void writeDeleterClasses(std::ostream & os, std::pair<std::string, std::set<std:
     first = false;
 
     os << "  class " << deleterType << "Deleter" << std::endl
-      << "  {" << std::endl
-      << "  public:" << std::endl
-      << "    " << deleterType << "Deleter( ";
+       << "  {" << std::endl
+       << "  public:" << std::endl
+       << "    " << deleterType << "Deleter( ";
     if (standardDeleter)
     {
       // the standard deleter gets a parent type in the constructor
       os << parentType << " " << parentName << " = " << parentType << "(), ";
     }
 
-    // if this Deleter is pooled, make such a pool the last argument, otherwise an Optional allocator
-    auto const& dd = deleters.find(deleterType);
-    assert(dd != deleters.end());
-    std::string poolName = (dd->second.pool.empty() ? "" : startLowerCase(dd->second.pool));
     if (poolName.empty())
     {
       os << "Optional<const AllocationCallbacks> allocator = nullptr )" << std::endl;
@@ -3988,9 +3973,28 @@ void writeDeleterClasses(std::ostream & os, std::pair<std::string, std::set<std:
     os << "    {}" << std::endl
       << std::endl;
 
+    // getter for the parent type
+    if (standardDeleter)
+    {
+      os << "    " << parentType << " get" << parentType << "() const { return m_" << parentName << "; }\n";
+    }
+
+    // getter for pool
+    if (!poolName.empty())
+    {
+      os << "    " << dd->second.pool << " get" << dd->second.pool << "() const { return m_" << poolName << "; }\n";
+    }
+    else // getter for allocator
+    {
+      os << "    Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }\n";
+    }
+
+    os << "\n";
+
     // the operator() calls the delete/destroy function
-    os << "    void operator()( " << deleterType << " " << deleterName << " )" << std::endl
-      << "    {" << std::endl;
+    os << "  protected:\n"
+       << "    void destroy( " << deleterType << " " << deleterName << " )\n"
+      << "    {\n";
 
     // the delete/destroy function is either part of the parent member of the deleter argument
     if (standardDeleter)
@@ -4062,7 +4066,8 @@ void writeDeleterForwardDeclarations(std::ostream &os, std::pair<std::string, st
   for (auto const& dt : deleterTypes.second)
   {
     os << "  class " << dt << "Deleter;" << std::endl;
-    os << "  using Unique" << dt << " = UniqueHandle<" << dt << ", " << dt << "Deleter>;" << std::endl;
+    os << "  template <> class UniqueHandleTraits<" << dt << "> {public: using deleter = " << dt << "Deleter; };\n";
+    os << "  using Unique" << dt << " = UniqueHandle<" << dt << ">;" << std::endl;
   }
   os << "#endif /*VULKAN_HPP_NO_SMART_HANDLE*/" << std::endl
     << std::endl;

@@ -12510,7 +12510,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct IOSSurfaceCreateInfoMVK
   {
     IOSSurfaceCreateInfoMVK( IOSSurfaceCreateFlagsMVK flags_ = IOSSurfaceCreateFlagsMVK(), const void* pView_ = nullptr )
-      : sType( StructureType::eIOSSurfaceCreateInfoMVK )
+      : sType( StructureType::eIosSurfaceCreateInfoMVK )
       , pNext( nullptr )
       , flags( flags_ )
       , pView( pView_ )
@@ -12578,7 +12578,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct MacOSSurfaceCreateInfoMVK
   {
     MacOSSurfaceCreateInfoMVK( MacOSSurfaceCreateFlagsMVK flags_ = MacOSSurfaceCreateFlagsMVK(), const void* pView_ = nullptr )
-      : sType( StructureType::eMacOSSurfaceCreateInfoMVK )
+      : sType( StructureType::eMacosSurfaceCreateInfoMVK )
       , pNext( nullptr )
       , flags( flags_ )
       , pView( pView_ )

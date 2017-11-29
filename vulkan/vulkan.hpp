@@ -328,25 +328,30 @@ namespace VULKAN_HPP_NAMESPACE
 #endif
 
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
-  template <typename Type, typename Deleter>
-  class UniqueHandle
+
+  template <typename Type> class UniqueHandleTraits;
+
+  template <typename Type>
+  class UniqueHandle : public UniqueHandleTraits<Type>::deleter
   {
+  private:
+    using Deleter = typename UniqueHandleTraits<Type>::deleter;
   public:
     explicit UniqueHandle( Type const& value = Type(), Deleter const& deleter = Deleter() )
-      : m_value( value )
-      , m_deleter( deleter )
+      : Deleter( deleter)
+      , m_value( value )
     {}
 
     UniqueHandle( UniqueHandle const& ) = delete;
 
     UniqueHandle( UniqueHandle && other )
-      : m_value( other.release() )
-      , m_deleter( std::move( other.m_deleter ) )
+      : Deleter( std::move( static_cast<Deleter&>( other ) ) )
+      , m_value( other.release() )
     {}
 
     ~UniqueHandle()
     {
-      destroy();
+      this->destroy( m_value );
     }
 
     UniqueHandle & operator=( UniqueHandle const& ) = delete;
@@ -354,7 +359,7 @@ namespace VULKAN_HPP_NAMESPACE
     UniqueHandle & operator=( UniqueHandle && other )
     {
       reset( other.release() );
-      m_deleter = std::move( other.m_deleter );
+      *static_cast<Deleter*>(this) = std::move( static_cast<Deleter&>(other) );
       return *this;
     }
 
@@ -393,21 +398,11 @@ namespace VULKAN_HPP_NAMESPACE
       return m_value;
     }
 
-    Deleter & getDeleter()
-    {
-      return m_deleter;
-    }
-
-    Deleter const& getDeleter() const
-    {
-      return m_deleter;
-    }
-
     void reset( Type const& value = Type() )
     {
       if ( m_value != value )
       {
-        destroy();
+        this->destroy( m_value );
         m_value = value;
       }
     }
@@ -419,28 +414,18 @@ namespace VULKAN_HPP_NAMESPACE
       return value;
     }
 
-    void swap( UniqueHandle<Type, Deleter> & rhs )
+    void swap( UniqueHandle<Type> & rhs )
     {
       std::swap(m_value, rhs.m_value);
-      std::swap(m_deleter, rhs.m_deleter);
-    }
-
-  private:
-    void destroy()
-    {
-      if ( m_value )
-      {
-        m_deleter( m_value );
-      }
+      std::swap(static_cast<Deleter&>(*this), static_cast<Deleter&>(rhs));
     }
 
   private:
     Type    m_value;
-    Deleter m_deleter;
   };
 
-  template <typename Type, typename Deleter>
-  VULKAN_HPP_INLINE void swap( UniqueHandle<Type,Deleter> & lhs, UniqueHandle<Type,Deleter> & rhs )
+  template <typename Type>
+  VULKAN_HPP_INLINE void swap( UniqueHandle<Type> & lhs, UniqueHandle<Type> & rhs )
   {
     lhs.swap( rhs );
   }
@@ -27653,59 +27638,86 @@ namespace VULKAN_HPP_NAMESPACE
 
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   class BufferDeleter;
-  using UniqueBuffer = UniqueHandle<Buffer, BufferDeleter>;
+  template <> class UniqueHandleTraits<Buffer> {public: using deleter = BufferDeleter; };
+  using UniqueBuffer = UniqueHandle<Buffer>;
   class BufferViewDeleter;
-  using UniqueBufferView = UniqueHandle<BufferView, BufferViewDeleter>;
+  template <> class UniqueHandleTraits<BufferView> {public: using deleter = BufferViewDeleter; };
+  using UniqueBufferView = UniqueHandle<BufferView>;
   class CommandBufferDeleter;
-  using UniqueCommandBuffer = UniqueHandle<CommandBuffer, CommandBufferDeleter>;
+  template <> class UniqueHandleTraits<CommandBuffer> {public: using deleter = CommandBufferDeleter; };
+  using UniqueCommandBuffer = UniqueHandle<CommandBuffer>;
   class CommandPoolDeleter;
-  using UniqueCommandPool = UniqueHandle<CommandPool, CommandPoolDeleter>;
+  template <> class UniqueHandleTraits<CommandPool> {public: using deleter = CommandPoolDeleter; };
+  using UniqueCommandPool = UniqueHandle<CommandPool>;
   class DescriptorPoolDeleter;
-  using UniqueDescriptorPool = UniqueHandle<DescriptorPool, DescriptorPoolDeleter>;
+  template <> class UniqueHandleTraits<DescriptorPool> {public: using deleter = DescriptorPoolDeleter; };
+  using UniqueDescriptorPool = UniqueHandle<DescriptorPool>;
   class DescriptorSetDeleter;
-  using UniqueDescriptorSet = UniqueHandle<DescriptorSet, DescriptorSetDeleter>;
+  template <> class UniqueHandleTraits<DescriptorSet> {public: using deleter = DescriptorSetDeleter; };
+  using UniqueDescriptorSet = UniqueHandle<DescriptorSet>;
   class DescriptorSetLayoutDeleter;
-  using UniqueDescriptorSetLayout = UniqueHandle<DescriptorSetLayout, DescriptorSetLayoutDeleter>;
+  template <> class UniqueHandleTraits<DescriptorSetLayout> {public: using deleter = DescriptorSetLayoutDeleter; };
+  using UniqueDescriptorSetLayout = UniqueHandle<DescriptorSetLayout>;
   class DescriptorUpdateTemplateKHRDeleter;
-  using UniqueDescriptorUpdateTemplateKHR = UniqueHandle<DescriptorUpdateTemplateKHR, DescriptorUpdateTemplateKHRDeleter>;
+  template <> class UniqueHandleTraits<DescriptorUpdateTemplateKHR> {public: using deleter = DescriptorUpdateTemplateKHRDeleter; };
+  using UniqueDescriptorUpdateTemplateKHR = UniqueHandle<DescriptorUpdateTemplateKHR>;
   class DeviceMemoryDeleter;
-  using UniqueDeviceMemory = UniqueHandle<DeviceMemory, DeviceMemoryDeleter>;
+  template <> class UniqueHandleTraits<DeviceMemory> {public: using deleter = DeviceMemoryDeleter; };
+  using UniqueDeviceMemory = UniqueHandle<DeviceMemory>;
   class EventDeleter;
-  using UniqueEvent = UniqueHandle<Event, EventDeleter>;
+  template <> class UniqueHandleTraits<Event> {public: using deleter = EventDeleter; };
+  using UniqueEvent = UniqueHandle<Event>;
   class FenceDeleter;
-  using UniqueFence = UniqueHandle<Fence, FenceDeleter>;
+  template <> class UniqueHandleTraits<Fence> {public: using deleter = FenceDeleter; };
+  using UniqueFence = UniqueHandle<Fence>;
   class FramebufferDeleter;
-  using UniqueFramebuffer = UniqueHandle<Framebuffer, FramebufferDeleter>;
+  template <> class UniqueHandleTraits<Framebuffer> {public: using deleter = FramebufferDeleter; };
+  using UniqueFramebuffer = UniqueHandle<Framebuffer>;
   class ImageDeleter;
-  using UniqueImage = UniqueHandle<Image, ImageDeleter>;
+  template <> class UniqueHandleTraits<Image> {public: using deleter = ImageDeleter; };
+  using UniqueImage = UniqueHandle<Image>;
   class ImageViewDeleter;
-  using UniqueImageView = UniqueHandle<ImageView, ImageViewDeleter>;
+  template <> class UniqueHandleTraits<ImageView> {public: using deleter = ImageViewDeleter; };
+  using UniqueImageView = UniqueHandle<ImageView>;
   class IndirectCommandsLayoutNVXDeleter;
-  using UniqueIndirectCommandsLayoutNVX = UniqueHandle<IndirectCommandsLayoutNVX, IndirectCommandsLayoutNVXDeleter>;
+  template <> class UniqueHandleTraits<IndirectCommandsLayoutNVX> {public: using deleter = IndirectCommandsLayoutNVXDeleter; };
+  using UniqueIndirectCommandsLayoutNVX = UniqueHandle<IndirectCommandsLayoutNVX>;
   class ObjectTableNVXDeleter;
-  using UniqueObjectTableNVX = UniqueHandle<ObjectTableNVX, ObjectTableNVXDeleter>;
+  template <> class UniqueHandleTraits<ObjectTableNVX> {public: using deleter = ObjectTableNVXDeleter; };
+  using UniqueObjectTableNVX = UniqueHandle<ObjectTableNVX>;
   class PipelineDeleter;
-  using UniquePipeline = UniqueHandle<Pipeline, PipelineDeleter>;
+  template <> class UniqueHandleTraits<Pipeline> {public: using deleter = PipelineDeleter; };
+  using UniquePipeline = UniqueHandle<Pipeline>;
   class PipelineCacheDeleter;
-  using UniquePipelineCache = UniqueHandle<PipelineCache, PipelineCacheDeleter>;
+  template <> class UniqueHandleTraits<PipelineCache> {public: using deleter = PipelineCacheDeleter; };
+  using UniquePipelineCache = UniqueHandle<PipelineCache>;
   class PipelineLayoutDeleter;
-  using UniquePipelineLayout = UniqueHandle<PipelineLayout, PipelineLayoutDeleter>;
+  template <> class UniqueHandleTraits<PipelineLayout> {public: using deleter = PipelineLayoutDeleter; };
+  using UniquePipelineLayout = UniqueHandle<PipelineLayout>;
   class QueryPoolDeleter;
-  using UniqueQueryPool = UniqueHandle<QueryPool, QueryPoolDeleter>;
+  template <> class UniqueHandleTraits<QueryPool> {public: using deleter = QueryPoolDeleter; };
+  using UniqueQueryPool = UniqueHandle<QueryPool>;
   class RenderPassDeleter;
-  using UniqueRenderPass = UniqueHandle<RenderPass, RenderPassDeleter>;
+  template <> class UniqueHandleTraits<RenderPass> {public: using deleter = RenderPassDeleter; };
+  using UniqueRenderPass = UniqueHandle<RenderPass>;
   class SamplerDeleter;
-  using UniqueSampler = UniqueHandle<Sampler, SamplerDeleter>;
+  template <> class UniqueHandleTraits<Sampler> {public: using deleter = SamplerDeleter; };
+  using UniqueSampler = UniqueHandle<Sampler>;
   class SamplerYcbcrConversionKHRDeleter;
-  using UniqueSamplerYcbcrConversionKHR = UniqueHandle<SamplerYcbcrConversionKHR, SamplerYcbcrConversionKHRDeleter>;
+  template <> class UniqueHandleTraits<SamplerYcbcrConversionKHR> {public: using deleter = SamplerYcbcrConversionKHRDeleter; };
+  using UniqueSamplerYcbcrConversionKHR = UniqueHandle<SamplerYcbcrConversionKHR>;
   class SemaphoreDeleter;
-  using UniqueSemaphore = UniqueHandle<Semaphore, SemaphoreDeleter>;
+  template <> class UniqueHandleTraits<Semaphore> {public: using deleter = SemaphoreDeleter; };
+  using UniqueSemaphore = UniqueHandle<Semaphore>;
   class ShaderModuleDeleter;
-  using UniqueShaderModule = UniqueHandle<ShaderModule, ShaderModuleDeleter>;
+  template <> class UniqueHandleTraits<ShaderModule> {public: using deleter = ShaderModuleDeleter; };
+  using UniqueShaderModule = UniqueHandle<ShaderModule>;
   class SwapchainKHRDeleter;
-  using UniqueSwapchainKHR = UniqueHandle<SwapchainKHR, SwapchainKHRDeleter>;
+  template <> class UniqueHandleTraits<SwapchainKHR> {public: using deleter = SwapchainKHRDeleter; };
+  using UniqueSwapchainKHR = UniqueHandle<SwapchainKHR>;
   class ValidationCacheEXTDeleter;
-  using UniqueValidationCacheEXT = UniqueHandle<ValidationCacheEXT, ValidationCacheEXTDeleter>;
+  template <> class UniqueHandleTraits<ValidationCacheEXT> {public: using deleter = ValidationCacheEXTDeleter; };
+  using UniqueValidationCacheEXT = UniqueHandle<ValidationCacheEXT>;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 
   class Device
@@ -28531,7 +28543,11 @@ namespace VULKAN_HPP_NAMESPACE
       , m_allocator( allocator )
     {}
 
-    void operator()( Buffer buffer )
+    Device getDevice() const { return m_device; }
+    Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }
+
+  protected:
+    void destroy( Buffer buffer )
     {
       m_device.destroyBuffer( buffer, m_allocator );
     }
@@ -28549,7 +28565,11 @@ namespace VULKAN_HPP_NAMESPACE
       , m_allocator( allocator )
     {}
 
-    void operator()( BufferView bufferView )
+    Device getDevice() const { return m_device; }
+    Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }
+
+  protected:
+    void destroy( BufferView bufferView )
     {
       m_device.destroyBufferView( bufferView, m_allocator );
     }
@@ -28567,7 +28587,11 @@ namespace VULKAN_HPP_NAMESPACE
       , m_commandPool( commandPool )
     {}
 
-    void operator()( CommandBuffer commandBuffer )
+    Device getDevice() const { return m_device; }
+    CommandPool getCommandPool() const { return m_commandPool; }
+
+  protected:
+    void destroy( CommandBuffer commandBuffer )
     {
       m_device.freeCommandBuffers( m_commandPool, commandBuffer );
     }
@@ -28585,7 +28609,11 @@ namespace VULKAN_HPP_NAMESPACE
       , m_allocator( allocator )
     {}
 
-    void operator()( CommandPool commandPool )
+    Device getDevice() const { return m_device; }
+    Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }
+
+  protected:
+    void destroy( CommandPool commandPool )
     {
       m_device.destroyCommandPool( commandPool, m_allocator );
     }
@@ -28603,7 +28631,11 @@ namespace VULKAN_HPP_NAMESPACE
       , m_allocator( allocator )
     {}
 
-    void operator()( DescriptorPool descriptorPool )
+    Device getDevice() const { return m_device; }
+    Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }
+
+  protected:
+    void destroy( DescriptorPool descriptorPool )
     {
       m_device.destroyDescriptorPool( descriptorPool, m_allocator );
     }
@@ -28621,7 +28653,11 @@ namespace VULKAN_HPP_NAMESPACE
       , m_descriptorPool( descriptorPool )
     {}
 
-    void operator()( DescriptorSet descriptorSet )
+    Device getDevice() const { return m_device; }
+    DescriptorPool getDescriptorPool() const { return m_descriptorPool; }
+
+  protected:
+    void destroy( DescriptorSet descriptorSet )
     {
       m_device.freeDescriptorSets( m_descriptorPool, descriptorSet );
     }
@@ -28639,7 +28675,11 @@ namespace VULKAN_HPP_NAMESPACE
       , m_allocator( allocator )
     {}
 
-    void operator()( DescriptorSetLayout descriptorSetLayout )
+    Device getDevice() const { return m_device; }
+    Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }
+
+  protected:
+    void destroy( DescriptorSetLayout descriptorSetLayout )
     {
       m_device.destroyDescriptorSetLayout( descriptorSetLayout, m_allocator );
     }
@@ -28657,7 +28697,11 @@ namespace VULKAN_HPP_NAMESPACE
       , m_allocator( allocator )
     {}
 
-    void operator()( DescriptorUpdateTemplateKHR descriptorUpdateTemplateKHR )
+    Device getDevice() const { return m_device; }
+    Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }
+
+  protected:
+    void destroy( DescriptorUpdateTemplateKHR descriptorUpdateTemplateKHR )
     {
       m_device.destroyDescriptorUpdateTemplateKHR( descriptorUpdateTemplateKHR, m_allocator );
     }
@@ -28675,7 +28719,11 @@ namespace VULKAN_HPP_NAMESPACE
       , m_allocator( allocator )
     {}
 
-    void operator()( DeviceMemory deviceMemory )
+    Device getDevice() const { return m_device; }
+    Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }
+
+  protected:
+    void destroy( DeviceMemory deviceMemory )
     {
       m_device.freeMemory( deviceMemory, m_allocator );
     }
@@ -28693,7 +28741,11 @@ namespace VULKAN_HPP_NAMESPACE
       , m_allocator( allocator )
     {}
 
-    void operator()( Event event )
+    Device getDevice() const { return m_device; }
+    Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }
+
+  protected:
+    void destroy( Event event )
     {
       m_device.destroyEvent( event, m_allocator );
     }
@@ -28711,7 +28763,11 @@ namespace VULKAN_HPP_NAMESPACE
       , m_allocator( allocator )
     {}
 
-    void operator()( Fence fence )
+    Device getDevice() const { return m_device; }
+    Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }
+
+  protected:
+    void destroy( Fence fence )
     {
       m_device.destroyFence( fence, m_allocator );
     }
@@ -28729,7 +28785,11 @@ namespace VULKAN_HPP_NAMESPACE
       , m_allocator( allocator )
     {}
 
-    void operator()( Framebuffer framebuffer )
+    Device getDevice() const { return m_device; }
+    Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }
+
+  protected:
+    void destroy( Framebuffer framebuffer )
     {
       m_device.destroyFramebuffer( framebuffer, m_allocator );
     }
@@ -28747,7 +28807,11 @@ namespace VULKAN_HPP_NAMESPACE
       , m_allocator( allocator )
     {}
 
-    void operator()( Image image )
+    Device getDevice() const { return m_device; }
+    Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }
+
+  protected:
+    void destroy( Image image )
     {
       m_device.destroyImage( image, m_allocator );
     }
@@ -28765,7 +28829,11 @@ namespace VULKAN_HPP_NAMESPACE
       , m_allocator( allocator )
     {}
 
-    void operator()( ImageView imageView )
+    Device getDevice() const { return m_device; }
+    Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }
+
+  protected:
+    void destroy( ImageView imageView )
     {
       m_device.destroyImageView( imageView, m_allocator );
     }
@@ -28783,7 +28851,11 @@ namespace VULKAN_HPP_NAMESPACE
       , m_allocator( allocator )
     {}
 
-    void operator()( IndirectCommandsLayoutNVX indirectCommandsLayoutNVX )
+    Device getDevice() const { return m_device; }
+    Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }
+
+  protected:
+    void destroy( IndirectCommandsLayoutNVX indirectCommandsLayoutNVX )
     {
       m_device.destroyIndirectCommandsLayoutNVX( indirectCommandsLayoutNVX, m_allocator );
     }
@@ -28801,7 +28873,11 @@ namespace VULKAN_HPP_NAMESPACE
       , m_allocator( allocator )
     {}
 
-    void operator()( ObjectTableNVX objectTableNVX )
+    Device getDevice() const { return m_device; }
+    Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }
+
+  protected:
+    void destroy( ObjectTableNVX objectTableNVX )
     {
       m_device.destroyObjectTableNVX( objectTableNVX, m_allocator );
     }
@@ -28819,7 +28895,11 @@ namespace VULKAN_HPP_NAMESPACE
       , m_allocator( allocator )
     {}
 
-    void operator()( Pipeline pipeline )
+    Device getDevice() const { return m_device; }
+    Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }
+
+  protected:
+    void destroy( Pipeline pipeline )
     {
       m_device.destroyPipeline( pipeline, m_allocator );
     }
@@ -28837,7 +28917,11 @@ namespace VULKAN_HPP_NAMESPACE
       , m_allocator( allocator )
     {}
 
-    void operator()( PipelineCache pipelineCache )
+    Device getDevice() const { return m_device; }
+    Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }
+
+  protected:
+    void destroy( PipelineCache pipelineCache )
     {
       m_device.destroyPipelineCache( pipelineCache, m_allocator );
     }
@@ -28855,7 +28939,11 @@ namespace VULKAN_HPP_NAMESPACE
       , m_allocator( allocator )
     {}
 
-    void operator()( PipelineLayout pipelineLayout )
+    Device getDevice() const { return m_device; }
+    Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }
+
+  protected:
+    void destroy( PipelineLayout pipelineLayout )
     {
       m_device.destroyPipelineLayout( pipelineLayout, m_allocator );
     }
@@ -28873,7 +28961,11 @@ namespace VULKAN_HPP_NAMESPACE
       , m_allocator( allocator )
     {}
 
-    void operator()( QueryPool queryPool )
+    Device getDevice() const { return m_device; }
+    Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }
+
+  protected:
+    void destroy( QueryPool queryPool )
     {
       m_device.destroyQueryPool( queryPool, m_allocator );
     }
@@ -28891,7 +28983,11 @@ namespace VULKAN_HPP_NAMESPACE
       , m_allocator( allocator )
     {}
 
-    void operator()( RenderPass renderPass )
+    Device getDevice() const { return m_device; }
+    Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }
+
+  protected:
+    void destroy( RenderPass renderPass )
     {
       m_device.destroyRenderPass( renderPass, m_allocator );
     }
@@ -28909,7 +29005,11 @@ namespace VULKAN_HPP_NAMESPACE
       , m_allocator( allocator )
     {}
 
-    void operator()( Sampler sampler )
+    Device getDevice() const { return m_device; }
+    Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }
+
+  protected:
+    void destroy( Sampler sampler )
     {
       m_device.destroySampler( sampler, m_allocator );
     }
@@ -28927,7 +29027,11 @@ namespace VULKAN_HPP_NAMESPACE
       , m_allocator( allocator )
     {}
 
-    void operator()( SamplerYcbcrConversionKHR samplerYcbcrConversionKHR )
+    Device getDevice() const { return m_device; }
+    Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }
+
+  protected:
+    void destroy( SamplerYcbcrConversionKHR samplerYcbcrConversionKHR )
     {
       m_device.destroySamplerYcbcrConversionKHR( samplerYcbcrConversionKHR, m_allocator );
     }
@@ -28945,7 +29049,11 @@ namespace VULKAN_HPP_NAMESPACE
       , m_allocator( allocator )
     {}
 
-    void operator()( Semaphore semaphore )
+    Device getDevice() const { return m_device; }
+    Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }
+
+  protected:
+    void destroy( Semaphore semaphore )
     {
       m_device.destroySemaphore( semaphore, m_allocator );
     }
@@ -28963,7 +29071,11 @@ namespace VULKAN_HPP_NAMESPACE
       , m_allocator( allocator )
     {}
 
-    void operator()( ShaderModule shaderModule )
+    Device getDevice() const { return m_device; }
+    Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }
+
+  protected:
+    void destroy( ShaderModule shaderModule )
     {
       m_device.destroyShaderModule( shaderModule, m_allocator );
     }
@@ -28981,7 +29093,11 @@ namespace VULKAN_HPP_NAMESPACE
       , m_allocator( allocator )
     {}
 
-    void operator()( SwapchainKHR swapchainKHR )
+    Device getDevice() const { return m_device; }
+    Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }
+
+  protected:
+    void destroy( SwapchainKHR swapchainKHR )
     {
       m_device.destroySwapchainKHR( swapchainKHR, m_allocator );
     }
@@ -28999,7 +29115,11 @@ namespace VULKAN_HPP_NAMESPACE
       , m_allocator( allocator )
     {}
 
-    void operator()( ValidationCacheEXT validationCacheEXT )
+    Device getDevice() const { return m_device; }
+    Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }
+
+  protected:
+    void destroy( ValidationCacheEXT validationCacheEXT )
     {
       m_device.destroyValidationCacheEXT( validationCacheEXT, m_allocator );
     }
@@ -30937,7 +31057,8 @@ namespace VULKAN_HPP_NAMESPACE
 
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   class DeviceDeleter;
-  using UniqueDevice = UniqueHandle<Device, DeviceDeleter>;
+  template <> class UniqueHandleTraits<Device> {public: using deleter = DeviceDeleter; };
+  using UniqueDevice = UniqueHandle<Device>;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 
   class PhysicalDevice
@@ -31277,7 +31398,10 @@ namespace VULKAN_HPP_NAMESPACE
       : m_allocator( allocator )
     {}
 
-    void operator()( Device device )
+    Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }
+
+  protected:
+    void destroy( Device device )
     {
       device.destroy( m_allocator );
     }
@@ -32243,9 +32367,11 @@ namespace VULKAN_HPP_NAMESPACE
 
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   class DebugReportCallbackEXTDeleter;
-  using UniqueDebugReportCallbackEXT = UniqueHandle<DebugReportCallbackEXT, DebugReportCallbackEXTDeleter>;
+  template <> class UniqueHandleTraits<DebugReportCallbackEXT> {public: using deleter = DebugReportCallbackEXTDeleter; };
+  using UniqueDebugReportCallbackEXT = UniqueHandle<DebugReportCallbackEXT>;
   class SurfaceKHRDeleter;
-  using UniqueSurfaceKHR = UniqueHandle<SurfaceKHR, SurfaceKHRDeleter>;
+  template <> class UniqueHandleTraits<SurfaceKHR> {public: using deleter = SurfaceKHRDeleter; };
+  using UniqueSurfaceKHR = UniqueHandle<SurfaceKHR>;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 
   class Instance
@@ -32467,7 +32593,11 @@ namespace VULKAN_HPP_NAMESPACE
       , m_allocator( allocator )
     {}
 
-    void operator()( DebugReportCallbackEXT debugReportCallbackEXT )
+    Instance getInstance() const { return m_instance; }
+    Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }
+
+  protected:
+    void destroy( DebugReportCallbackEXT debugReportCallbackEXT )
     {
       m_instance.destroyDebugReportCallbackEXT( debugReportCallbackEXT, m_allocator );
     }
@@ -32485,7 +32615,11 @@ namespace VULKAN_HPP_NAMESPACE
       , m_allocator( allocator )
     {}
 
-    void operator()( SurfaceKHR surfaceKHR )
+    Instance getInstance() const { return m_instance; }
+    Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }
+
+  protected:
+    void destroy( SurfaceKHR surfaceKHR )
     {
       m_instance.destroySurfaceKHR( surfaceKHR, m_allocator );
     }
@@ -32917,7 +33051,8 @@ namespace VULKAN_HPP_NAMESPACE
 
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   class InstanceDeleter;
-  using UniqueInstance = UniqueHandle<Instance, InstanceDeleter>;
+  template <> class UniqueHandleTraits<Instance> {public: using deleter = InstanceDeleter; };
+  using UniqueInstance = UniqueHandle<Instance>;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 
   Result createInstance( const InstanceCreateInfo* pCreateInfo, const AllocationCallbacks* pAllocator, Instance* pInstance );
@@ -32936,7 +33071,10 @@ namespace VULKAN_HPP_NAMESPACE
       : m_allocator( allocator )
     {}
 
-    void operator()( Instance instance )
+    Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }
+
+  protected:
+    void destroy( Instance instance )
     {
       instance.destroy( m_allocator );
     }

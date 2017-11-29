@@ -3604,40 +3604,43 @@ void writeStructConstructor( std::ostream & os, std::string const& name, StructD
   // the constructor with all the elements as arguments, with defaults
   os << "    " << name << "( ";
   bool listedArgument = false;
-  for (size_t i = 0; i<structData.members.size(); i++)
+  if (!structData.returnedOnly)
   {
-    if (listedArgument)
+    for (size_t i = 0; i < structData.members.size(); i++)
     {
-      os << ", ";
-    }
-    // skip members 'pNext' and 'sType', as they are never explicitly set
-    if ((structData.members[i].name != "pNext") && (structData.members[i].name != "sType"))
-    {
-      // find a default value for the given pure type
-      std::map<std::string, std::string>::const_iterator defaultIt = defaultValues.find(structData.members[i].pureType);
-      assert(defaultIt != defaultValues.end());
+      if (listedArgument)
+      {
+        os << ", ";
+      }
+      // skip members 'pNext' and 'sType', as they are never explicitly set
+      if ((structData.members[i].name != "pNext") && (structData.members[i].name != "sType"))
+      {
+        // find a default value for the given pure type
+        std::map<std::string, std::string>::const_iterator defaultIt = defaultValues.find(structData.members[i].pureType);
+        assert(defaultIt != defaultValues.end());
 
-      if (structData.members[i].arraySize.empty())
-      {
-        // the arguments name get a trailing '_', to distinguish them from the actual struct members
-        // pointer arguments get a nullptr as default
-        os << structData.members[i].type << " " << structData.members[i].name << "_ = " << (structData.members[i].type.back() == '*' ? "nullptr" : defaultIt->second);
-      }
-      else
-      {
-        // array members are provided as const reference to a std::array
-        // the arguments name get a trailing '_', to distinguish them from the actual struct members
-        // list as many default values as there are elements in the array
-        os << "std::array<" << structData.members[i].type << "," << structData.members[i].arraySize << "> const& " << structData.members[i].name << "_ = { { " << defaultIt->second;
-        size_t n = atoi(structData.members[i].arraySize.c_str());
-        assert(0 < n);
-        for (size_t j = 1; j < n; j++)
+        if (structData.members[i].arraySize.empty())
         {
-          os << ", " << defaultIt->second;
+          // the arguments name get a trailing '_', to distinguish them from the actual struct members
+          // pointer arguments get a nullptr as default
+          os << structData.members[i].type << " " << structData.members[i].name << "_ = " << (structData.members[i].type.back() == '*' ? "nullptr" : defaultIt->second);
         }
-        os << " } }";
+        else
+        {
+          // array members are provided as const reference to a std::array
+          // the arguments name get a trailing '_', to distinguish them from the actual struct members
+          // list as many default values as there are elements in the array
+          os << "std::array<" << structData.members[i].type << "," << structData.members[i].arraySize << "> const& " << structData.members[i].name << "_ = { { " << defaultIt->second;
+          size_t n = atoi(structData.members[i].arraySize.c_str());
+          assert(0 < n);
+          for (size_t j = 1; j < n; j++)
+          {
+            os << ", " << defaultIt->second;
+          }
+          os << " } }";
+        }
+        listedArgument = true;
       }
-      listedArgument = true;
     }
   }
   os << " )" << std::endl;
@@ -3668,8 +3671,15 @@ void writeStructConstructor( std::ostream & os, std::string const& name, StructD
       }
       else
       {
-        // the other elements are initialized by the corresponding argument (with trailing '_', as mentioned above)
-        value = structData.members[i].name + "_";
+        if (!structData.returnedOnly)
+        {
+          // the other elements are initialized by the corresponding argument (with trailing '_', as mentioned above)
+          value = structData.members[i].name + "_";
+        }
+        else
+        {
+          templateString = "";
+        }
       }
       os << replaceWithMap(templateString, { {"sep", sep}, {"member", member}, {"value", value} });
       firstArgument = false;
@@ -3678,21 +3688,23 @@ void writeStructConstructor( std::ostream & os, std::string const& name, StructD
 
   // the body of the constructor, copying over data from argument list into wrapped struct
   os << "    {" << std::endl;
-  for ( size_t i=0 ; i<structData.members.size() ; i++ )
+  if (!structData.returnedOnly)
   {
-    if (!structData.members[i].arraySize.empty())
+    for (size_t i = 0; i < structData.members.size(); i++)
     {
-      // here we can handle the arrays, copying over from argument (with trailing '_') to member
-      // size is arraySize times sizeof type
-      std::string member = structData.members[i].name;
-      std::string arraySize = structData.members[i].arraySize;
-      std::string type = structData.members[i].type;
-      os << replaceWithMap("      memcpy( &${member}, ${member}_.data(), ${arraySize} * sizeof( ${type} ) );\n",
-                            { {"member", member}, {"arraySize", arraySize }, {"type", type} });
+      if (!structData.members[i].arraySize.empty())
+      {
+        // here we can handle the arrays, copying over from argument (with trailing '_') to member
+        // size is arraySize times sizeof type
+        std::string member = structData.members[i].name;
+        std::string arraySize = structData.members[i].arraySize;
+        std::string type = structData.members[i].type;
+        os << replaceWithMap("      memcpy( &${member}, ${member}_.data(), ${arraySize} * sizeof( ${type} ) );\n",
+        { {"member", member}, {"arraySize", arraySize }, {"type", type} });
+      }
     }
   }
-  os << "    }" << std::endl
-      << std::endl;
+  os << "    }\n\n";
 
   std::string templateString = 
 R"(    ${name}( Vk${name} const & rhs )
@@ -4344,11 +4356,7 @@ void writeTypeStruct( std::ostream & os, VkData const& vkData, DependencyData co
   os << "  struct " << dependencyData.name << std::endl
       << "  {" << std::endl;
 
-  // only structs that are not returnedOnly get a constructor!
-  if ( !it->second.returnedOnly )
-  {
-    writeStructConstructor( os, dependencyData.name, it->second, vkData.vkTypes, vkData.nameMap, defaultValues );
-  }
+  writeStructConstructor( os, dependencyData.name, it->second, vkData.vkTypes, vkData.nameMap, defaultValues );
 
   // create the setters
   if (!it->second.returnedOnly)

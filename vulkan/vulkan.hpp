@@ -114,6 +114,11 @@ namespace VULKAN_HPP_NAMESPACE
     {
     }
 
+    explicit Flags(MaskType flags)
+      : m_mask(flags)
+    {
+    }
+
     Flags<BitType> & operator=(Flags<BitType> const& rhs)
     {
       m_mask = rhs.m_mask;

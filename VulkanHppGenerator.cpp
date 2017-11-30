@@ -3899,7 +3899,6 @@ void writeThrowExceptions( std::ostream & os, EnumData const& enumData)
   os << 
 R"(  VULKAN_HPP_INLINE void throwResultException( Result result, char const * message )
   {
-    assert ( static_cast<long long int>(result) < 0 );
     switch ( result )
     {
 )";

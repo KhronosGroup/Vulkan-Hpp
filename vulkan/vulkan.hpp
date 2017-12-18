@@ -20715,7 +20715,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SurfaceFormatKHR
   {
-    SurfaceFormatKHR(  )
+    SurfaceFormatKHR(Format format_ = Format(), ColorSpaceKHR colorSpace_ = ColorSpaceKHR())
+      : format(format_)
+      , colorSpace(colorSpace_)
     {
     }
 

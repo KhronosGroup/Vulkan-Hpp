@@ -27,7 +27,7 @@ class VulkanHppGenerator
   public:
     VulkanHppGenerator()
     {
-      m_handles[""];    // insert the default "handle" without class (for createInstance, and such)
+      m_handles.insert(std::make_pair("", HandleData()));   // insert the default "handle" without class (for createInstance, and such)
     }
 
     std::map<std::string, std::string> createDefaults();
@@ -52,14 +52,19 @@ class VulkanHppGenerator
 #endif
 
   private:
+    struct BitmaskData
+    {
+      std::string protect;
+      std::string alias;
+    };
+
     struct DependencyData
     {
       enum class Category
       {
-        ALIAS,
+        BITMASK,
         COMMAND,
         ENUM,
-        FLAGS,
         FUNC_POINTER,
         HANDLE,
         REQUIRED,
@@ -77,19 +82,6 @@ class VulkanHppGenerator
       std::string           name;
       std::set<std::string> dependencies;
       std::set<std::string> forwardDependencies;
-    };
-
-    struct AliasData
-    {
-      AliasData(DependencyData::Category c, std::string const& v, std::string const& p)
-        : category(c)
-        , value(v)
-        , protect(p)
-      {}
-
-      DependencyData::Category  category;
-      std::string               value;
-      std::string               protect;
     };
 
     struct ParamData
@@ -155,12 +147,6 @@ class VulkanHppGenerator
       bool                        bitmask;
     };
 
-    struct FlagData
-    {
-      std::string protect;
-      std::string alias;
-    };
-
     struct HandleData
     {
       std::vector<std::string>  commands;
@@ -193,6 +179,7 @@ class VulkanHppGenerator
       std::vector<MemberData>   members;
       std::string               protect;
       std::vector<std::string>  structExtends;
+      std::string               alias;
     };
 
 #if !defined(NDEBUG)
@@ -211,7 +198,7 @@ class VulkanHppGenerator
 #endif
 
   private:
-    void aliasType(DependencyData::Category category, std::string const& aliasName, std::string const& newName, std::string const& protect);
+    template <typename T> void checkAlias(std::map<std::string, T> const& data, std::string const& name, int line);
     bool containsUnion(std::string const& type, std::map<std::string, StructData> const& structs);
     void determineEnhancedReturnType(CommandData & commandData);
     void determineReducedName(CommandData & commandData);
@@ -228,7 +215,6 @@ class VulkanHppGenerator
     void readDisabledExtensionRequire(tinyxml2::XMLElement const* element);
     void readEnumsEnum(tinyxml2::XMLElement const* element, EnumData & enumData, std::string const& tag);
     void readEnumsConstant(tinyxml2::XMLElement const* element);
-    void readExtensionAlias(tinyxml2::XMLElement const* element, std::string const& protect, std::string const& tag);
     void readExtensionCommand(tinyxml2::XMLElement const* element, std::string const& protect);
     void readExtensionEnum(tinyxml2::XMLElement const* element, std::string const& tag);
     void readExtensionRequire(tinyxml2::XMLElement const* element, std::string const& protect, std::string const& tag);
@@ -248,6 +234,7 @@ class VulkanHppGenerator
     void readTypeStructMember(tinyxml2::XMLElement const* element, StructData & structData);
     void registerDeleter(CommandData const& commandData);
     void setDefault(std::string const& name, std::map<std::string, std::string> & defaultValues, EnumData const& enumData);
+    void writeBitmaskToString(std::ostream & os, std::string const& flagsName, EnumData const &enumData);
     void writeCall(std::ostream & os, CommandData const& commandData, bool firstCall, bool singular);
     void writeCallCountParameter(std::ostream & os, CommandData const& commandData, bool singular, std::map<size_t, size_t>::const_iterator it);
     void writeCallPlainTypeParameter(std::ostream & os, ParamData const& paramData);
@@ -257,7 +244,6 @@ class VulkanHppGenerator
     void writeDeleterClasses(std::ostream & os, std::pair<std::string, std::set<std::string>> const& deleterTypes);
     void writeDeleterForwardDeclarations(std::ostream &os, std::pair<std::string, std::set<std::string>> const& deleterTypes);
     void writeExceptionsForEnum(std::ostream & os, EnumData const& enumData);
-    void writeFlagsToString(std::ostream & os, std::string const& flagsName, EnumData const &enumData);
     void writeFunction(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool definition, bool enhanced, bool singular, bool unique, bool isStructureChain);
     void writeFunctionBodyEnhanced(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool singular, bool isStructureChain);
     void writeFunctionBodyEnhanced(std::ostream & os, std::string const& templateString, std::string const& indentation, CommandData const& commandData, bool singular);
@@ -282,11 +268,10 @@ class VulkanHppGenerator
     void writeStructSetter(std::ostream & os, std::string const& structureName, MemberData const& memberData);
     void writeStructureChainValidation(std::ostream & os, DependencyData const& dependencyData);
     void writeThrowExceptions(std::ostream& os, EnumData const& enumData);
-    void writeTypeAlias(std::ostream & os, DependencyData const& dependencyData);
+    void writeTypeBitmask(std::ostream & os, std::string const& flagsName, BitmaskData const& bitmaskData, EnumData const& enumData);
     void writeTypeCommand(std::ostream & os, DependencyData const& dependencyData);
     void writeTypeCommand(std::ostream &os, std::string const& indentation, CommandData const& commandData, bool definition);
     void writeTypeEnum(std::ostream & os, EnumData const& enumData);
-    void writeTypeFlags(std::ostream & os, std::string const& flagsName, FlagData const& flagData, EnumData const& enumData);
     void writeTypeHandle(std::ostream & os, DependencyData const& dependencyData, HandleData const& handle);
     void writeTypeScalar(std::ostream & os, DependencyData const& dependencyData);
     void writeTypeStruct(std::ostream & os, DependencyData const& dependencyData, std::map<std::string, std::string> const& defaultValues);
@@ -296,7 +281,7 @@ class VulkanHppGenerator
 #endif
 
   private:
-    std::map<std::string, AliasData>              m_aliases;
+    std::map<std::string, BitmaskData>            m_bitmasks;
     std::map<std::string, CommandData>            m_commands;
     std::map<std::string, std::string>            m_constants;
     std::set<std::string>                         m_defines;
@@ -305,7 +290,6 @@ class VulkanHppGenerator
     std::list<DependencyData>                     m_dependencies;
     std::map<std::string, EnumData>               m_enums;
     std::set<std::string>                         m_extendedStructs; // structs which are referenced by the structextends tag
-    std::map<std::string, FlagData>               m_flags;
     std::map<std::string, HandleData>             m_handles;
     std::map<std::string, std::string>            m_nameMap;
     std::map<std::string, ScalarData>             m_scalars;

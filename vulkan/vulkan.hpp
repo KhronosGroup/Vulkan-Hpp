@@ -1265,7 +1265,7 @@ namespace VULKAN_HPP_NAMESPACE
     {}
 
     VULKAN_HPP_TYPESAFE_EXPLICIT DeviceMemory( VkDeviceMemory deviceMemory )
-       : m_deviceMemory( deviceMemory )
+      : m_deviceMemory( deviceMemory )
     {}
 
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
@@ -1332,7 +1332,7 @@ namespace VULKAN_HPP_NAMESPACE
     {}
 
     VULKAN_HPP_TYPESAFE_EXPLICIT CommandPool( VkCommandPool commandPool )
-       : m_commandPool( commandPool )
+      : m_commandPool( commandPool )
     {}
 
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
@@ -1399,7 +1399,7 @@ namespace VULKAN_HPP_NAMESPACE
     {}
 
     VULKAN_HPP_TYPESAFE_EXPLICIT Buffer( VkBuffer buffer )
-       : m_buffer( buffer )
+      : m_buffer( buffer )
     {}
 
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
@@ -1466,7 +1466,7 @@ namespace VULKAN_HPP_NAMESPACE
     {}
 
     VULKAN_HPP_TYPESAFE_EXPLICIT BufferView( VkBufferView bufferView )
-       : m_bufferView( bufferView )
+      : m_bufferView( bufferView )
     {}
 
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
@@ -1533,7 +1533,7 @@ namespace VULKAN_HPP_NAMESPACE
     {}
 
     VULKAN_HPP_TYPESAFE_EXPLICIT Image( VkImage image )
-       : m_image( image )
+      : m_image( image )
     {}
 
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
@@ -1600,7 +1600,7 @@ namespace VULKAN_HPP_NAMESPACE
     {}
 
     VULKAN_HPP_TYPESAFE_EXPLICIT ImageView( VkImageView imageView )
-       : m_imageView( imageView )
+      : m_imageView( imageView )
     {}
 
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
@@ -1667,7 +1667,7 @@ namespace VULKAN_HPP_NAMESPACE
     {}
 
     VULKAN_HPP_TYPESAFE_EXPLICIT ShaderModule( VkShaderModule shaderModule )
-       : m_shaderModule( shaderModule )
+      : m_shaderModule( shaderModule )
     {}
 
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
@@ -1734,7 +1734,7 @@ namespace VULKAN_HPP_NAMESPACE
     {}
 
     VULKAN_HPP_TYPESAFE_EXPLICIT Pipeline( VkPipeline pipeline )
-       : m_pipeline( pipeline )
+      : m_pipeline( pipeline )
     {}
 
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
@@ -1801,7 +1801,7 @@ namespace VULKAN_HPP_NAMESPACE
     {}
 
     VULKAN_HPP_TYPESAFE_EXPLICIT PipelineLayout( VkPipelineLayout pipelineLayout )
-       : m_pipelineLayout( pipelineLayout )
+      : m_pipelineLayout( pipelineLayout )
     {}
 
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
@@ -1868,7 +1868,7 @@ namespace VULKAN_HPP_NAMESPACE
     {}
 
     VULKAN_HPP_TYPESAFE_EXPLICIT Sampler( VkSampler sampler )
-       : m_sampler( sampler )
+      : m_sampler( sampler )
     {}
 
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
@@ -1935,7 +1935,7 @@ namespace VULKAN_HPP_NAMESPACE
     {}
 
     VULKAN_HPP_TYPESAFE_EXPLICIT DescriptorSet( VkDescriptorSet descriptorSet )
-       : m_descriptorSet( descriptorSet )
+      : m_descriptorSet( descriptorSet )
     {}
 
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
@@ -2002,7 +2002,7 @@ namespace VULKAN_HPP_NAMESPACE
     {}
 
     VULKAN_HPP_TYPESAFE_EXPLICIT DescriptorSetLayout( VkDescriptorSetLayout descriptorSetLayout )
-       : m_descriptorSetLayout( descriptorSetLayout )
+      : m_descriptorSetLayout( descriptorSetLayout )
     {}
 
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
@@ -2069,7 +2069,7 @@ namespace VULKAN_HPP_NAMESPACE
     {}
 
     VULKAN_HPP_TYPESAFE_EXPLICIT DescriptorPool( VkDescriptorPool descriptorPool )
-       : m_descriptorPool( descriptorPool )
+      : m_descriptorPool( descriptorPool )
     {}
 
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
@@ -2136,7 +2136,7 @@ namespace VULKAN_HPP_NAMESPACE
     {}
 
     VULKAN_HPP_TYPESAFE_EXPLICIT Fence( VkFence fence )
-       : m_fence( fence )
+      : m_fence( fence )
     {}
 
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
@@ -2203,7 +2203,7 @@ namespace VULKAN_HPP_NAMESPACE
     {}
 
     VULKAN_HPP_TYPESAFE_EXPLICIT Semaphore( VkSemaphore semaphore )
-       : m_semaphore( semaphore )
+      : m_semaphore( semaphore )
     {}
 
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
@@ -2270,7 +2270,7 @@ namespace VULKAN_HPP_NAMESPACE
     {}
 
     VULKAN_HPP_TYPESAFE_EXPLICIT Event( VkEvent event )
-       : m_event( event )
+      : m_event( event )
     {}
 
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
@@ -2337,7 +2337,7 @@ namespace VULKAN_HPP_NAMESPACE
     {}
 
     VULKAN_HPP_TYPESAFE_EXPLICIT QueryPool( VkQueryPool queryPool )
-       : m_queryPool( queryPool )
+      : m_queryPool( queryPool )
     {}
 
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
@@ -2404,7 +2404,7 @@ namespace VULKAN_HPP_NAMESPACE
     {}
 
     VULKAN_HPP_TYPESAFE_EXPLICIT Framebuffer( VkFramebuffer framebuffer )
-       : m_framebuffer( framebuffer )
+      : m_framebuffer( framebuffer )
     {}
 
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
@@ -2471,7 +2471,7 @@ namespace VULKAN_HPP_NAMESPACE
     {}
 
     VULKAN_HPP_TYPESAFE_EXPLICIT RenderPass( VkRenderPass renderPass )
-       : m_renderPass( renderPass )
+      : m_renderPass( renderPass )
     {}
 
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
@@ -2538,7 +2538,7 @@ namespace VULKAN_HPP_NAMESPACE
     {}
 
     VULKAN_HPP_TYPESAFE_EXPLICIT PipelineCache( VkPipelineCache pipelineCache )
-       : m_pipelineCache( pipelineCache )
+      : m_pipelineCache( pipelineCache )
     {}
 
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
@@ -2605,7 +2605,7 @@ namespace VULKAN_HPP_NAMESPACE
     {}
 
     VULKAN_HPP_TYPESAFE_EXPLICIT ObjectTableNVX( VkObjectTableNVX objectTableNVX )
-       : m_objectTableNVX( objectTableNVX )
+      : m_objectTableNVX( objectTableNVX )
     {}
 
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
@@ -2672,7 +2672,7 @@ namespace VULKAN_HPP_NAMESPACE
     {}
 
     VULKAN_HPP_TYPESAFE_EXPLICIT IndirectCommandsLayoutNVX( VkIndirectCommandsLayoutNVX indirectCommandsLayoutNVX )
-       : m_indirectCommandsLayoutNVX( indirectCommandsLayoutNVX )
+      : m_indirectCommandsLayoutNVX( indirectCommandsLayoutNVX )
     {}
 
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
@@ -2739,7 +2739,7 @@ namespace VULKAN_HPP_NAMESPACE
     {}
 
     VULKAN_HPP_TYPESAFE_EXPLICIT DescriptorUpdateTemplateKHR( VkDescriptorUpdateTemplateKHR descriptorUpdateTemplateKHR )
-       : m_descriptorUpdateTemplateKHR( descriptorUpdateTemplateKHR )
+      : m_descriptorUpdateTemplateKHR( descriptorUpdateTemplateKHR )
     {}
 
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
@@ -2806,7 +2806,7 @@ namespace VULKAN_HPP_NAMESPACE
     {}
 
     VULKAN_HPP_TYPESAFE_EXPLICIT SamplerYcbcrConversionKHR( VkSamplerYcbcrConversionKHR samplerYcbcrConversionKHR )
-       : m_samplerYcbcrConversionKHR( samplerYcbcrConversionKHR )
+      : m_samplerYcbcrConversionKHR( samplerYcbcrConversionKHR )
     {}
 
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
@@ -2873,7 +2873,7 @@ namespace VULKAN_HPP_NAMESPACE
     {}
 
     VULKAN_HPP_TYPESAFE_EXPLICIT ValidationCacheEXT( VkValidationCacheEXT validationCacheEXT )
-       : m_validationCacheEXT( validationCacheEXT )
+      : m_validationCacheEXT( validationCacheEXT )
     {}
 
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
@@ -2940,7 +2940,7 @@ namespace VULKAN_HPP_NAMESPACE
     {}
 
     VULKAN_HPP_TYPESAFE_EXPLICIT DisplayKHR( VkDisplayKHR displayKHR )
-       : m_displayKHR( displayKHR )
+      : m_displayKHR( displayKHR )
     {}
 
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
@@ -3007,7 +3007,7 @@ namespace VULKAN_HPP_NAMESPACE
     {}
 
     VULKAN_HPP_TYPESAFE_EXPLICIT DisplayModeKHR( VkDisplayModeKHR displayModeKHR )
-       : m_displayModeKHR( displayModeKHR )
+      : m_displayModeKHR( displayModeKHR )
     {}
 
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
@@ -3074,7 +3074,7 @@ namespace VULKAN_HPP_NAMESPACE
     {}
 
     VULKAN_HPP_TYPESAFE_EXPLICIT SurfaceKHR( VkSurfaceKHR surfaceKHR )
-       : m_surfaceKHR( surfaceKHR )
+      : m_surfaceKHR( surfaceKHR )
     {}
 
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
@@ -3141,7 +3141,7 @@ namespace VULKAN_HPP_NAMESPACE
     {}
 
     VULKAN_HPP_TYPESAFE_EXPLICIT SwapchainKHR( VkSwapchainKHR swapchainKHR )
-       : m_swapchainKHR( swapchainKHR )
+      : m_swapchainKHR( swapchainKHR )
     {}
 
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
@@ -3208,7 +3208,7 @@ namespace VULKAN_HPP_NAMESPACE
     {}
 
     VULKAN_HPP_TYPESAFE_EXPLICIT DebugReportCallbackEXT( VkDebugReportCallbackEXT debugReportCallbackEXT )
-       : m_debugReportCallbackEXT( debugReportCallbackEXT )
+      : m_debugReportCallbackEXT( debugReportCallbackEXT )
     {}
 
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
@@ -26802,7 +26802,7 @@ namespace VULKAN_HPP_NAMESPACE
     {}
 
     VULKAN_HPP_TYPESAFE_EXPLICIT CommandBuffer( VkCommandBuffer commandBuffer )
-       : m_commandBuffer( commandBuffer )
+      : m_commandBuffer( commandBuffer )
     {}
 
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
@@ -27696,7 +27696,7 @@ namespace VULKAN_HPP_NAMESPACE
     {}
 
     VULKAN_HPP_TYPESAFE_EXPLICIT Queue( VkQueue queue )
-       : m_queue( queue )
+      : m_queue( queue )
     {}
 
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
@@ -27917,7 +27917,7 @@ namespace VULKAN_HPP_NAMESPACE
     {}
 
     VULKAN_HPP_TYPESAFE_EXPLICIT Device( VkDevice device )
-       : m_device( device )
+      : m_device( device )
     {}
 
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
@@ -31276,7 +31276,7 @@ namespace VULKAN_HPP_NAMESPACE
     {}
 
     VULKAN_HPP_TYPESAFE_EXPLICIT PhysicalDevice( VkPhysicalDevice physicalDevice )
-       : m_physicalDevice( physicalDevice )
+      : m_physicalDevice( physicalDevice )
     {}
 
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
@@ -32589,7 +32589,7 @@ namespace VULKAN_HPP_NAMESPACE
     {}
 
     VULKAN_HPP_TYPESAFE_EXPLICIT Instance( VkInstance instance )
-       : m_instance( instance )
+      : m_instance( instance )
     {}
 
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)

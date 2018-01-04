@@ -1165,7 +1165,7 @@ void writeVersionCheck(std::ostream & os, std::string const& version)
 void skipFeatureRequire(tinyxml2::XMLElement const* element)
 {
   std::map<std::string, std::string> attributes = getAttributes(element);
-  checkAttributes(attributes, element->GetLineNum(), { { "name",{} } }, {});
+  checkAttributes(attributes, element->GetLineNum(), {}, { { "name",{} } });
   checkElements(getChildElements(element), {});
 }
 
@@ -1179,7 +1179,7 @@ void skipImplicitExternSyncParams(tinyxml2::XMLElement const* element)
 
 void skipTypeEnum(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes)
 {
-  checkAttributes(attributes, element->GetLineNum(), { { "category",{ "enum" } } }, { { "name",{} } });
+  checkAttributes(attributes, element->GetLineNum(), { { "category",{ "enum" } } }, { { "alias", {} }, { "name",{} } });
   checkElements(getChildElements(element), {});
 }
 
@@ -1196,25 +1196,17 @@ void skipTypeInclude(tinyxml2::XMLElement const* element, std::map<std::string, 
 }
 #endif
 
-
-void VulkanHppGenerator::aliasType(DependencyData::Category category, std::string const& aliasName, std::string const& newName, std::string const& protect)
+template <typename T>
+void VulkanHppGenerator::checkAlias(std::map<std::string, T> const& data, std::string const& name, int line)
 {
-  auto aliasIt = m_aliases.find(newName);
-  if (aliasIt == m_aliases.end())
+  if (data.find(name) == data.end())
   {
-    m_aliases.insert(std::make_pair(newName, AliasData(category, aliasName, protect)));
-    // we have to add the type to the set of vulkan types to ensure that the require type conversion takes place
-    m_vkTypes.insert(newName);
+    std::stringstream ss;
+    ss << line;
+    std::string lineNumber = ss.str();
 
-    assert(std::find_if(m_dependencies.begin(), m_dependencies.end(), [newName](DependencyData const& dd) {return dd.name == newName; }) == m_dependencies.end());
-    m_dependencies.push_back(DependencyData(DependencyData::Category::ALIAS, newName));
-    m_dependencies.back().dependencies.insert(aliasName);
-  }
-  else
-  {
-    assert(aliasIt->second.protect == protect);
-    auto dependencyIt = std::find_if(m_dependencies.begin(), m_dependencies.end(), [newName](DependencyData const& dd) {return dd.name == newName; });
-    assert((dependencyIt != m_dependencies.end()) && (dependencyIt->dependencies.size() == 1) && (dependencyIt->dependencies.find(aliasName) != dependencyIt->dependencies.end()));
+    assert(false);
+    throw std::runtime_error("Spec error on line " + lineNumber + ": missing alias <" + name + ">");
   }
 }
 
@@ -1242,35 +1234,17 @@ std::map<std::string, std::string> VulkanHppGenerator::createDefaults()
     assert(defaultValues.find(dependency.name) == defaultValues.end());
     switch (dependency.category)
     {
-    case DependencyData::Category::ALIAS:
-    {
-      auto aliasIt = m_aliases.find(dependency.name);
-      switch (aliasIt->second.category)
-      {
-      case DependencyData::Category::ENUM:
-        assert((aliasIt != m_aliases.end()) && (m_enums.find(aliasIt->second.value) != m_enums.end()));
-        setDefault(dependency.name, defaultValues, m_enums.find(aliasIt->second.value)->second);
-        break;
-      case DependencyData::Category::STRUCT:
-        defaultValues[dependency.name] = dependency.name + "()";
-        break;
-      default:
-        assert(false);
-        break;
-      }
-    }
-    break;
+    case DependencyData::Category::BITMASK:
+    case DependencyData::Category::HANDLE:
+    case DependencyData::Category::STRUCT:
+    case DependencyData::Category::UNION:        // just call the default constructor for bitmasks, handles, structs, and unions (which are mapped to classes)
+      defaultValues[dependency.name] = dependency.name + "()";
+      break;
     case DependencyData::Category::COMMAND:    // commands should never be asked for defaults
       break;
     case DependencyData::Category::ENUM:
       assert(m_enums.find(dependency.name) != m_enums.end());
       setDefault(dependency.name, defaultValues, m_enums.find(dependency.name)->second);
-      break;
-    case DependencyData::Category::FLAGS:
-    case DependencyData::Category::HANDLE:
-    case DependencyData::Category::STRUCT:
-    case DependencyData::Category::UNION:        // just call the default constructor for flags, structs, and structs (which are mapped to classes)
-      defaultValues[dependency.name] = dependency.name + "()";
       break;
     case DependencyData::Category::FUNC_POINTER: // func_pointers default to nullptr
       defaultValues[dependency.name] = "nullptr";
@@ -1579,61 +1553,86 @@ void VulkanHppGenerator::readCommandsCommand(tinyxml2::XMLElement const* element
 {
   std::map<std::string, std::string> attributes = getAttributes(element);
   checkAttributes(attributes, element->GetLineNum(), {},
-  { { "cmdbufferlevel",{ "primary", "secondary" } },
+  { { "alias", {} },
+    { "cmdbufferlevel",{ "primary", "secondary" } },
     { "comment",{} },
     { "errorcodes",{} },
+    { "name", {} },
     { "pipeline",{ "compute", "graphics", "transfer" } },
     { "queues",{ "compute", "graphics", "sparse_binding", "transfer" } },
     { "renderpass",{ "both", "inside", "outside" } },
     { "successcodes",{} }
   });
   std::vector<tinyxml2::XMLElement const*> children = getChildElements(element);
-  assert(!children.empty());
-  checkElements(children, { "implicitexternsyncparams", "param", "proto" });
 
   CommandData commandData;
-
-  // read the success codes
-  auto successcodesAttribute = attributes.find("successcodes");
-  if (successcodesAttribute != attributes.end())
+  auto aliasIt = attributes.find("alias");
+  if (aliasIt != attributes.end())
   {
-    commandData.successCodes = tokenize(successcodesAttribute->second, ',');
-    for (auto & code : commandData.successCodes)
-    {
-      std::string tag = findTag(code, m_tags);
-      // on each success code: prepend 'e', strip "VK_" and a tag, convert it to camel case, and add the tag again
-      code = std::string("e") + toCamelCase(strip(code, "VK_", tag)) + tag;
-    }
+    // for command aliases, create a copy of the aliased command
+    checkAttributes(attributes, element->GetLineNum(), { { "alias",{} },{ "name",{} } }, {});    // re-check on alias type!
+    checkElements(children, {});
+
+    std::string alias = startLowerCase(strip(aliasIt->second, "vk"));
+    checkAlias(m_commands, alias, element->GetLineNum());
+
+    auto commandsIt = m_commands.find(alias);
+    assert(commandsIt != m_commands.end());
+    commandData = commandsIt->second;
+    commandData.fullName = startLowerCase(strip(attributes.find("name")->second, "vk"));
+    determineReducedName(commandData);
+    linkCommandToHandle(commandData);
+
+    // add a DependencyData to this name
+    m_dependencies.push_back(DependencyData(DependencyData::Category::COMMAND, commandData.fullName));
+    m_dependencies.back().dependencies.insert(alias);
   }
-
-  for (auto child : children)
+  else
   {
-    std::string value = child->Value();
-    if (value == "param")
+    checkElements(children, { "implicitexternsyncparams", "param", "proto" });
+
+    // read the success codes
+    auto successcodesAttribute = attributes.find("successcodes");
+    if (successcodesAttribute != attributes.end())
     {
-      commandData.twoStep |= readCommandParam(child, m_dependencies.back().dependencies, commandData.params);
+      commandData.successCodes = tokenize(successcodesAttribute->second, ',');
+      for (auto & code : commandData.successCodes)
+      {
+        std::string tag = findTag(code, m_tags);
+        // on each success code: prepend 'e', strip "VK_" and a tag, convert it to camel case, and add the tag again
+        code = std::string("e") + toCamelCase(strip(code, "VK_", tag)) + tag;
+      }
     }
-    else if (value == "proto")
+
+    for (auto child : children)
     {
-      readCommandProto(child, commandData.returnType, commandData.fullName);
-    }
+      std::string value = child->Value();
+      if (value == "param")
+      {
+        commandData.twoStep |= readCommandParam(child, m_dependencies.back().dependencies, commandData.params);
+      }
+      else if (value == "proto")
+      {
+        readCommandProto(child, commandData.returnType, commandData.fullName);
+      }
 #if !defined(NDEBUG)
-    else
-    {
-      assert(value == "implicitexternsyncparams");
-      skipImplicitExternSyncParams(child);
-    }
+      else
+      {
+        assert(value == "implicitexternsyncparams");
+        skipImplicitExternSyncParams(child);
+      }
 #endif
-  }
+    }
 
-  determineReducedName(commandData);
-  linkCommandToHandle(commandData);
-  registerDeleter(commandData);
-  determineVectorParams(commandData);
-  determineReturnParam(commandData);
-  determineTemplateParam(commandData);
-  determineEnhancedReturnType(commandData);
-  determineSkippedParams(commandData);
+    determineReducedName(commandData);
+    linkCommandToHandle(commandData);
+    registerDeleter(commandData);
+    determineVectorParams(commandData);
+    determineReturnParam(commandData);
+    determineTemplateParam(commandData);
+    determineEnhancedReturnType(commandData);
+    determineSkippedParams(commandData);
+  }
 
   // insert the commandData into the commands-map,
   assert(m_commands.find(commandData.fullName) == m_commands.end());
@@ -1848,119 +1847,22 @@ void VulkanHppGenerator::readEnumsEnum(tinyxml2::XMLElement const* element, Enum
 void VulkanHppGenerator::readEnumsConstant(tinyxml2::XMLElement const* element)
 {
   std::map<std::string, std::string> attributes = getAttributes(element);
-  checkAttributes(attributes, element->GetLineNum(), { { "name",{} },{ "value",{} } }, { { "comment",{} } });
+  checkAttributes(attributes, element->GetLineNum(), { { "name",{} } }, { { "alias", {}}, { "comment",{} }, { "value",{} } });
   checkElements(getChildElements(element), {});
   std::string name = attributes.find("name")->second;
   assert(m_constants.find(name) == m_constants.end());
-  m_constants[name] = attributes.find("value")->second;
-}
 
-void VulkanHppGenerator::readExtensionAlias(tinyxml2::XMLElement const* element, std::string const& protect, std::string const& tag)
-{
-  std::map<std::string, std::string> attributes = getAttributes(element);
-  checkAttributes(attributes, element->GetLineNum(), { { "name",{} },{ "value",{} } }, {});
-  checkElements(getChildElements(element), {});
-
-  std::string name = attributes.find("name")->second;
-  std::string value = attributes.find("value")->second;
-
-  auto commandsIt = m_commands.find(startLowerCase(strip(value, "vk")));
-  if (commandsIt != m_commands.end())
+  auto aliasIt = attributes.find("alias");
+  if (aliasIt != attributes.end())
   {
-    // the alias is on a command -> add a command with that name
-    CommandData commandData = commandsIt->second;
-    commandData.fullName = startLowerCase(strip(name, "vk"));
-    assert(m_commands.find(commandData.fullName) == m_commands.end());
-
-    determineReducedName(commandData);
-    m_commands.insert(std::make_pair(commandData.fullName, commandData));
-    linkCommandToHandle(commandData);
-
-    // add an empty DependencyData to this name
-    m_dependencies.push_back(DependencyData(DependencyData::Category::COMMAND, commandData.fullName));
+    checkAttributes(attributes, element->GetLineNum(), { {"alias", {}}, { "name", {}} }, {});    // re-check on alias type
+    checkAlias(m_constants, aliasIt->second, element->GetLineNum());
+    m_constants[name] = m_constants.find(aliasIt->second)->second;
   }
   else
   {
-    auto constantsIt = m_constants.find(value);
-    if (constantsIt != m_constants.end())
-    {
-      // alias on a constant -> just add it to the set of constants... we're doing nothing with them
-      auto it = m_constants.find(name);
-      assert((m_constants.find(name) == m_constants.end()) || (m_constants.find(name)->second == constantsIt->second));
-      m_constants[name] = constantsIt->second;
-    }
-    else
-    {
-      std::string strippedValue = strip(value, "Vk");
-      std::string strippedName = strip(name, "Vk");
-
-      auto enumsIt = m_enums.find(strippedValue);
-      if (enumsIt != m_enums.end())
-      {
-        // the alias is on an enum -> set the alias, which will map to a using directive
-        assert(m_enums.find(strippedName) == m_enums.end());
-        aliasType(DependencyData::Category::ENUM, enumsIt->first, strippedName, protect);
-      }
-      else
-      {
-        auto flagsIt = m_flags.find(strippedValue);
-        if (flagsIt != m_flags.end())
-        {
-          // the alias is on a flags -> set the alias, which will map to a using directive
-          assert(m_flags.find(strippedName) == m_flags.end());
-          assert(flagsIt->second.alias.empty());
-          flagsIt->second.alias = strippedName;
-
-          // adjust the generated enum name as well, if it's empty (and therefore auto-generated)
-          std::string enumName = generateEnumNameForFlags(strippedValue);
-          std::map<std::string, EnumData>::iterator enumsIt = m_enums.find(enumName);
-          assert(enumsIt != m_enums.end());
-          if (enumsIt->second.values.empty())
-          {
-            aliasType(DependencyData::Category::ENUM, enumsIt->first, generateEnumNameForFlags(flagsIt->second.alias), protect);
-          }
-        }
-        else
-        {
-          auto handlesIt = m_handles.find(strippedValue);
-          if (handlesIt != m_handles.end())
-          {
-            assert(m_handles.find(strippedName) == m_handles.end());
-            assert(handlesIt->second.protect == protect);
-            assert(handlesIt->second.alias.empty());
-            handlesIt->second.alias = strippedName;
-          }
-          else
-          {
-            auto structsIt = m_structs.find(strippedValue);
-            if (structsIt != m_structs.end())
-            {
-              // the alias is on a structure -> set the alias, which will map to a using directive
-              assert(m_structs.find(strippedName) == m_structs.end());
-              aliasType(DependencyData::Category::STRUCT, structsIt->first, strippedName, protect);
-            }
-            else
-            {
-              // final catch: it has to be an enum value
-              bool found = false;
-              for (auto & e : m_enums)
-              {
-                auto valueIt = std::find_if(e.second.values.begin(), e.second.values.end(), [&value](EnumValueData const& evd) { return evd.value == value; });
-                if (valueIt != e.second.values.end())
-                {
-                  assert(std::find_if(e.second.values.begin(), e.second.values.end(), [&name](EnumValueData const& evd) {return evd.value == name; }) == e.second.values.end());
-                  assert(valueIt->alias.empty());
-                  valueIt->alias = createEnumValueName(name, e.second.prefix, e.second.postfix, e.second.bitmask, tag);
-                  found = true;
-                  break;
-                }
-              }
-              assert(found);
-            }
-          }
-        }
-      }
-    }
+    checkAttributes(attributes, element->GetLineNum(), { { "name",{} }, { "value", {}} }, { {"comment", {} } });    // re-check on non-alias type
+    m_constants[name] = attributes.find("value")->second;
   }
 }
 
@@ -1983,19 +1885,44 @@ void VulkanHppGenerator::readExtensionCommand(tinyxml2::XMLElement const* elemen
 void VulkanHppGenerator::readExtensionEnum(tinyxml2::XMLElement const* element, std::string const& tag)
 {
   std::map<std::string, std::string> attributes = getAttributes(element);
-  checkAttributes(attributes, element->GetLineNum(), { { "name",{} } }, { { "bitpos",{} },{ "comment",{} },{ "dir",{ "-" } },{ "extends",{} },{ "offset",{} },{ "value",{} } });
+  checkAttributes(attributes, element->GetLineNum(),
+  {
+    { "name", {} }
+  },
+  {
+    { "alias", {} },
+    { "bitpos", {} },
+    { "comment", {} },
+    { "dir", { "-" } },
+    { "extends", {} },
+    { "extnumber", {} },
+    { "offset", {} },
+    { "value", {} }
+  });
   checkElements(getChildElements(element), {});
 
   // TODO process enums which don't extend existing enums
-  auto extendsAttribute = attributes.find("extends");
-  if (extendsAttribute != attributes.end())
+  auto extendsIt = attributes.find("extends");
+  if (extendsIt != attributes.end())
   {
-    std::string extends = strip(extendsAttribute->second, "Vk");
-    assert(m_enums.find(extends) != m_enums.end());
-    assert((attributes.find("bitpos") != attributes.end()) + (attributes.find("offset") != attributes.end()) + (attributes.find("value") != attributes.end()) == 1);
+    std::string extends = strip(extendsIt->second, "Vk");
     auto enumIt = m_enums.find(extends);
     assert(enumIt != m_enums.end());
-    enumIt->second.addEnumValue(attributes.find("name")->second, tag, m_nameMap);
+
+    auto aliasIt = attributes.find("alias");
+    if (aliasIt != attributes.end())
+    {
+      checkAttributes(attributes, element->GetLineNum(), { { "alias", {} }, { "extends", {} }, { "name", {} } }, {});
+      std::string alias = createEnumValueName(aliasIt->second, enumIt->second.prefix, enumIt->second.postfix, enumIt->second.bitmask, tag);
+      auto evdIt = std::find_if(enumIt->second.values.begin(), enumIt->second.values.end(), [&alias](EnumValueData const& evd) { return evd.name == alias; });
+      assert(evdIt != enumIt->second.values.end());
+      evdIt->alias = createEnumValueName(attributes.find("name")->second, enumIt->second.prefix, enumIt->second.postfix, enumIt->second.bitmask, tag);
+    }
+    else
+    {
+      assert((attributes.find("bitpos") != attributes.end()) + (attributes.find("offset") != attributes.end()) + (attributes.find("value") != attributes.end()) == 1);
+      enumIt->second.addEnumValue(attributes.find("name")->second, tag, m_nameMap);
+    }
   }
 }
 
@@ -2004,17 +1931,13 @@ void VulkanHppGenerator::readExtensionRequire(tinyxml2::XMLElement const* elemen
   std::map<std::string, std::string> attributes = getAttributes(element);
   checkAttributes(attributes, element->GetLineNum(), {}, { { "extension",{} },{ "feature",{} } });
   std::vector<tinyxml2::XMLElement const*> children = getChildElements(element);
-  checkElements(children, { "alias", "command", "comment", "enum", "type" });
+  checkElements(children, { "command", "comment", "enum", "type" });
 
   for (auto child : children)
   {
     std::string value = child->Value();
 
-    if (value == "alias")
-    {
-      readExtensionAlias(child, protect, tag);
-    }
-    else if (value == "command")
+    if (value == "command")
     {
       readExtensionCommand(child, protect);
     }
@@ -2060,6 +1983,7 @@ void VulkanHppGenerator::readExtensionsExtension(tinyxml2::XMLElement const* ele
   },
   {
     { "author",{} },
+    { "comment", {} },
     { "contact",{} },
     { "platform",{} },
     { "protect",{} },
@@ -2126,26 +2050,26 @@ void VulkanHppGenerator::readExtensionType(tinyxml2::XMLElement const* element, 
   if (!protect.empty())
   {
     std::string name = strip(attributes.find("name")->second, "Vk");
-    std::map<std::string, EnumData>::iterator eit = m_enums.find(name);
-    if (eit != m_enums.end())
+    std::map<std::string, BitmaskData>::iterator bitmasksIt = m_bitmasks.find(name);
+    if (bitmasksIt != m_bitmasks.end())
     {
-      eit->second.protect = protect;
+      bitmasksIt->second.protect = protect;
+
+      // if the enum of this flags is auto-generated, protect it as well
+      std::string enumName = generateEnumNameForFlags(name);
+      std::map<std::string, EnumData>::iterator enumsIt = m_enums.find(enumName);
+      assert(enumsIt != m_enums.end());
+      if (enumsIt->second.values.empty())
+      {
+        enumsIt->second.protect = protect;
+      }
     }
     else
     {
-      std::map<std::string, FlagData>::iterator fit = m_flags.find(name);
-      if (fit != m_flags.end())
+      std::map<std::string, EnumData>::iterator eit = m_enums.find(name);
+      if (eit != m_enums.end())
       {
-        fit->second.protect = protect;
-
-        // if the enum of this flags is auto-generated, protect it as well
-        std::string enumName = generateEnumNameForFlags(name);
-        std::map<std::string, EnumData>::iterator eit = m_enums.find(enumName);
-        assert(eit != m_enums.end());
-        if (eit->second.values.empty())
-        {
-          eit->second.protect = protect;
-        }
+        eit->second.protect = protect;
       }
       else
       {
@@ -2197,7 +2121,7 @@ void VulkanHppGenerator::readFeatureRequire(tinyxml2::XMLElement const* element)
   std::map<std::string, std::string> attributes = getAttributes(element);
   checkAttributes(attributes, element->GetLineNum(), {}, { { "comment",{} } });
   std::vector<tinyxml2::XMLElement const*> children = getChildElements(element);
-  checkElements(children, { "command", "enum", "type" });
+  checkElements(children, { "command", "comment", "enum", "type" });
 
   for (auto child : children)
   {
@@ -2209,7 +2133,7 @@ void VulkanHppGenerator::readFeatureRequire(tinyxml2::XMLElement const* element)
 #if !defined(NDEBUG)
     else
     {
-      assert((value == "command") || (value == "type"));
+      assert((value == "command") || (value == "comment") || (value == "type"));
       skipFeatureRequire(child);
     }
 #endif
@@ -2219,7 +2143,19 @@ void VulkanHppGenerator::readFeatureRequire(tinyxml2::XMLElement const* element)
 void VulkanHppGenerator::readFeatureRequireEnum(tinyxml2::XMLElement const* element)
 {
   std::map<std::string, std::string> attributes = getAttributes(element);
-  checkAttributes(attributes, element->GetLineNum(), { { "name",{} } }, { { "bitpos",{} },{ "comment",{} },{ "extends",{} },{ "value",{} } });
+  checkAttributes(attributes, element->GetLineNum(),
+  {
+    { "name",{} }
+  },
+  {
+    { "bitpos",{} },
+    { "comment",{} },
+    { "dir", { "-" } },
+    { "extends",{} },
+    { "extnumber", {} },
+    { "offset", {} },
+    { "value",{} }
+  });
   checkElements(getChildElements(element), {});
 
   auto extendsAttribute = attributes.find("extends");
@@ -2361,39 +2297,58 @@ void VulkanHppGenerator::readTypeBasetype(tinyxml2::XMLElement const* element, s
 
 void VulkanHppGenerator::readTypeBitmask(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes)
 {
-  checkAttributes(attributes, element->GetLineNum(), { { "category",{ "bitmask" } } }, { { "requires",{} } });
+  checkAttributes(attributes, element->GetLineNum(), { { "category", { "bitmask" } } }, { { "alias", {} }, { "name", {}}, { "requires", {} } });
   std::vector<tinyxml2::XMLElement const*> children = getChildElements(element);
-  checkOrderedElements(children, { "type", "name" });
-  checkEmptyElement(children[0]);
-  checkEmptyElement(children[1]);
 
-  assert(strcmp(children[0]->GetText(), "VkFlags") == 0);
-
-  std::string name = strip(children[1]->GetText(), "Vk");
-
-  std::string requires;
-  auto requiresIt = attributes.find("requires");
-  if (requiresIt != attributes.end())
+  auto aliasIt = attributes.find("alias");
+  if (aliasIt != attributes.end())
   {
-    requires = strip(requiresIt->second, "Vk");
+    checkAttributes(attributes, element->GetLineNum(), { { "alias", {} }, { "category", {"bitmask"} }, { "name", {} } }, {});   // re-check on alias type!
+    checkElements(children, {});
+
+    std::string alias = strip(aliasIt->second, "Vk");
+    checkAlias(m_bitmasks, alias, element->GetLineNum());
+
+    std::string name = strip(attributes.find("name")->second, "Vk");
+
+    auto bitmasksIt = m_bitmasks.find(alias);
+    assert((bitmasksIt != m_bitmasks.end()) && bitmasksIt->second.alias.empty());
+    bitmasksIt->second.alias = name;
   }
   else
   {
-    // Generate FlagBits name, add a DependencyData for that name, and add it to the list of enums and vulkan types
-    requires = generateEnumNameForFlags(name);
-    m_dependencies.push_back(DependencyData(DependencyData::Category::ENUM, requires));
-    m_enums.insert(std::make_pair(requires, EnumData(requires, true)));
-    m_vkTypes.insert(requires);
+    checkOrderedElements(children, { "type", "name" });
+    checkEmptyElement(children[0]);
+    checkEmptyElement(children[1]);
+
+    assert(strcmp(children[0]->GetText(), "VkFlags") == 0);
+
+    std::string name = strip(children[1]->GetText(), "Vk");
+
+    std::string requires;
+    auto requiresIt = attributes.find("requires");
+    if (requiresIt != attributes.end())
+    {
+      requires = strip(requiresIt->second, "Vk");
+    }
+    else
+    {
+      // Generate FlagBits name, add a DependencyData for that name, and add it to the list of enums and vulkan types
+      requires = generateEnumNameForFlags(name);
+      m_dependencies.push_back(DependencyData(DependencyData::Category::ENUM, requires));
+      m_enums.insert(std::make_pair(requires, EnumData(requires, true)));
+      m_vkTypes.insert(requires);
+    }
+
+    // add a DependencyData for the bitmask name, with the required type as its first dependency
+    m_dependencies.push_back(DependencyData(DependencyData::Category::BITMASK, name));
+    m_dependencies.back().dependencies.insert(requires);
+
+    m_bitmasks.insert(std::make_pair(name, BitmaskData()));
+
+    assert(m_vkTypes.find(name) == m_vkTypes.end());
+    m_vkTypes.insert(name);
   }
-
-  // add a DependencyData for the bitmask name, with the required type as its first dependency
-  m_dependencies.push_back(DependencyData(DependencyData::Category::FLAGS, name));
-  m_dependencies.back().dependencies.insert(requires);
-
-  m_flags.insert(std::make_pair(name, FlagData()));
-
-  assert(m_vkTypes.find(name) == m_vkTypes.end());
-  m_vkTypes.insert(name);
 }
 
 void VulkanHppGenerator::readTypeDefine(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes)
@@ -2454,24 +2409,44 @@ void VulkanHppGenerator::readTypeFuncpointer(tinyxml2::XMLElement const* element
 
 void VulkanHppGenerator::readTypeHandle(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes)
 {
-  checkAttributes(attributes, element->GetLineNum(), { { "category",{ "handle" } } }, { { "parent",{} } });
+  checkAttributes(attributes, element->GetLineNum(), { { "category",{ "handle" } } }, { { "alias",{} }, { "name",{} }, { "parent",{} } });
   std::vector<tinyxml2::XMLElement const*> children = getChildElements(element);
-  checkOrderedElements(children, { "type", "name" });
-  checkEmptyElement(children[0]);
-  checkEmptyElement(children[1]);
+
+  auto aliasIt = attributes.find("alias");
+  if (aliasIt != attributes.end())
+  {
+    checkAttributes(attributes, element->GetLineNum(), { { "alias",{} },{ "category",{ "handle" } },{ "name",{} } }, {});   // re-check on alias type!
+    checkElements(children, {});
+
+    std::string alias = strip(aliasIt->second, "Vk");
+    checkAlias(m_handles, alias, element->GetLineNum());
+
+    std::string name = strip(attributes.find("name")->second, "Vk");
+
+    auto handlesIt = m_handles.find(alias);
+    assert((handlesIt != m_handles.end()) && handlesIt->second.alias.empty());
+    handlesIt->second.alias = name;
+  }
+  else
+  {
+    checkOrderedElements(children, { "type", "name" });
+    checkEmptyElement(children[0]);
+    checkEmptyElement(children[1]);
 
 #if !defined(NDEBUG)
-  std::string type = children[0]->GetText();
-  assert((type.find("VK_DEFINE_HANDLE") == 0) || (type.find("VK_DEFINE_NON_DISPATCHABLE_HANDLE") == 0));
+    std::string type = children[0]->GetText();
+    assert((type.find("VK_DEFINE_HANDLE") == 0) || (type.find("VK_DEFINE_NON_DISPATCHABLE_HANDLE") == 0));
 #endif
 
-  std::string name = strip(children[1]->GetText(), "Vk");
+    std::string name = strip(children[1]->GetText(), "Vk");
 
-  m_dependencies.push_back(DependencyData(DependencyData::Category::HANDLE, name));
-  assert(m_vkTypes.find(name) == m_vkTypes.end());
-  m_vkTypes.insert(name);
-  assert(m_handles.find(name) == m_handles.end());
-  m_handles[name];
+    m_dependencies.push_back(DependencyData(DependencyData::Category::HANDLE, name));
+
+    assert(m_vkTypes.find(name) == m_vkTypes.end());
+    m_vkTypes.insert(name);
+    assert(m_handles.find(name) == m_handles.end());
+    m_handles.insert(std::make_pair(name, HandleData()));
+  }
 }
 
 void VulkanHppGenerator::readTypeName(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes)
@@ -2515,6 +2490,7 @@ void VulkanHppGenerator::readTypeStruct(tinyxml2::XMLElement const* element, boo
     { "name",{} }
   },
   {
+    { "alias", {} },
     { "comment",{} },
     { "returnedonly",{ "true" } },
     { "structextends",{} }
@@ -2522,48 +2498,65 @@ void VulkanHppGenerator::readTypeStruct(tinyxml2::XMLElement const* element, boo
   std::vector<tinyxml2::XMLElement const*> children = getChildElements(element);
   checkElements(children, { "comment", "member" });
 
-  std::string name = strip(attributes.find("name")->second, "Vk");
-
-  m_dependencies.push_back(DependencyData(isUnion ? DependencyData::Category::UNION : DependencyData::Category::STRUCT, name));
-
-  assert(m_structs.find(name) == m_structs.end());
-  std::map<std::string, StructData>::iterator it = m_structs.insert(std::make_pair(name, StructData())).first;
-  it->second.returnedOnly = (attributes.find("returnedonly") != attributes.end());
-  it->second.isUnion = isUnion;
-
-  auto attributesIt = attributes.find("structextends");
-  if (attributesIt != attributes.end())
+  auto aliasIt = attributes.find("alias");
+  if (aliasIt != attributes.end())
   {
-    std::vector<std::string> structExtends = tokenize(attributesIt->second, ',');
-    for (auto const& s : structExtends)
-    {
-      assert(s.substr(0, 2) == "Vk");
-      std::string strippedName = s.substr(2);
-      it->second.structExtends.push_back(strippedName);
-      m_extendedStructs.insert(strippedName);
-    }
-    assert(!it->second.structExtends.empty());
+    checkAttributes(attributes, element->GetLineNum(), { { "alias", {}}, {"category", {"struct"}}, { "name", {}} }, {});    // re-check on alias type!
+
+    std::string alias = strip(aliasIt->second, "Vk");
+    checkAlias(m_structs, alias, element->GetLineNum());
+
+    std::string name = strip(attributes.find("name")->second, "Vk");
+
+    auto structsIt = m_structs.find(alias);
+    assert((structsIt != m_structs.end()) && structsIt->second.alias.empty());
+    structsIt->second.alias = name;
   }
-
-  for (auto child : children)
+  else
   {
-    assert(child->Value());
-    std::string value = child->Value();
-    if (value == "member")
+    std::string name = strip(attributes.find("name")->second, "Vk");
+
+    m_dependencies.push_back(DependencyData(isUnion ? DependencyData::Category::UNION : DependencyData::Category::STRUCT, name));
+
+    assert(m_structs.find(name) == m_structs.end());
+    std::map<std::string, StructData>::iterator it = m_structs.insert(std::make_pair(name, StructData())).first;
+    it->second.returnedOnly = (attributes.find("returnedonly") != attributes.end());
+    it->second.isUnion = isUnion;
+
+    auto attributesIt = attributes.find("structextends");
+    if (attributesIt != attributes.end())
     {
-      readTypeStructMember(child, it->second);
+      std::vector<std::string> structExtends = tokenize(attributesIt->second, ',');
+      for (auto const& s : structExtends)
+      {
+        assert(s.substr(0, 2) == "Vk");
+        std::string strippedName = s.substr(2);
+        it->second.structExtends.push_back(strippedName);
+        m_extendedStructs.insert(strippedName);
+      }
+      assert(!it->second.structExtends.empty());
     }
+
+    for (auto child : children)
+    {
+      assert(child->Value());
+      std::string value = child->Value();
+      if (value == "member")
+      {
+        readTypeStructMember(child, it->second);
+      }
 #if !defined(NDEBUG)
-    else
-    {
-      assert(value == "comment");
-      checkEmptyElement(child);
-    }
+      else
+      {
+        assert(value == "comment");
+        checkEmptyElement(child);
+      }
 #endif
-  }
+    }
 
-  assert(m_vkTypes.find(name) == m_vkTypes.end());
-  m_vkTypes.insert(name);
+    assert(m_vkTypes.find(name) == m_vkTypes.end());
+    m_vkTypes.insert(name);
+  }
 }
 
 void VulkanHppGenerator::readTypeStructMember(tinyxml2::XMLElement const* element, StructData & structData)
@@ -2721,6 +2714,35 @@ void VulkanHppGenerator::sortDependencies()
   }
 
   m_dependencies.swap(sortedDependencies);
+}
+
+void VulkanHppGenerator::writeBitmaskToString(std::ostream & os, std::string const& bitmaskName, EnumData const &enumData)
+{
+  // the helper functions to make strings out of flag values
+  enterProtect(os, enumData.protect);
+  os << "  VULKAN_HPP_INLINE std::string to_string(" << bitmaskName << (enumData.values.empty() ? ")" : " value)") << std::endl
+    << "  {" << std::endl;
+  if (enumData.values.empty())
+  {
+    // no flags values in this enum -> return "{}"
+    os << "    return \"{}\";" << std::endl;
+  }
+  else
+  {
+    os << "    if (!value) return \"{}\";" << std::endl
+      << "    std::string result;" << std::endl;
+
+    // 'or' together all the bits in the value
+    for (auto valuesIt = enumData.values.begin(); valuesIt != enumData.values.end(); ++valuesIt)
+    {
+      os << "    if (value & " << enumData.name << "::" << valuesIt->name << ") result += \"" << valuesIt->name.substr(1) << " | \";" << std::endl;
+    }
+    // cut off the last three characters from the result (being " | ")
+    os << "    return \"{\" + result.substr(0, result.size() - 3) + \"}\";" << std::endl;
+  }
+  os << "  }" << std::endl;
+  leaveProtect(os, enumData.protect);
+  os << std::endl;
 }
 
 void VulkanHppGenerator::writeCall(std::ostream & os, CommandData const& commandData, bool firstCall, bool singular)
@@ -3151,35 +3173,6 @@ void VulkanHppGenerator::writeExceptionsForEnum(std::ostream & os, EnumData cons
     { "enumMemberName", enumData.values[i].name }
     });
   }
-  leaveProtect(os, enumData.protect);
-  os << std::endl;
-}
-
-void VulkanHppGenerator::writeFlagsToString(std::ostream & os, std::string const& flagsName, EnumData const &enumData)
-{
-  // the helper functions to make strings out of flag values
-  enterProtect(os, enumData.protect);
-  os << "  VULKAN_HPP_INLINE std::string to_string(" << flagsName << (enumData.values.empty() ? ")" : " value)") << std::endl
-    << "  {" << std::endl;
-  if (enumData.values.empty())
-  {
-    // no flags values in this enum -> return "{}"
-    os << "    return \"{}\";" << std::endl;
-  }
-  else
-  {
-    os << "    if (!value) return \"{}\";" << std::endl
-      << "    std::string result;" << std::endl;
-
-    // 'or' together all the bits in the value
-    for (auto valuesIt = enumData.values.begin(); valuesIt != enumData.values.end(); ++valuesIt)
-    {
-      os << "    if (value & " << enumData.name << "::" << valuesIt->name << ") result += \"" << valuesIt->name.substr(1) << " | \";" << std::endl;
-    }
-    // cut off the last three characters from the result (being " | ")
-    os << "    return \"{\" + result.substr(0, result.size() - 3) + \"}\";" << std::endl;
-  }
-  os << "  }" << std::endl;
   leaveProtect(os, enumData.protect);
   os << std::endl;
 }
@@ -3739,11 +3732,11 @@ void VulkanHppGenerator::writeFunctionHeaderArgumentsEnhanced(std::ostream & os,
             if (withDefaults && (lastArgument == i))
             {
               // check if the very last argument is a flag without any bits -> provide some empty default for it
-              std::map<std::string, FlagData>::const_iterator flagIt = m_flags.find(commandData.params[i].pureType);
-              if (flagIt != m_flags.end())
+              std::map<std::string, BitmaskData>::const_iterator bitmasksIt = m_bitmasks.find(commandData.params[i].pureType);
+              if (bitmasksIt != m_bitmasks.end())
               {
                 // get the enum corresponding to this flag, to check if it's empty
-                std::list<DependencyData>::const_iterator depIt = std::find_if(m_dependencies.begin(), m_dependencies.end(), [&flagIt](DependencyData const& dd) { return(dd.name == flagIt->first); });
+                std::list<DependencyData>::const_iterator depIt = std::find_if(m_dependencies.begin(), m_dependencies.end(), [&bitmasksIt](DependencyData const& dd) { return(dd.name == bitmasksIt->first); });
                 assert((depIt != m_dependencies.end()) && (depIt->dependencies.size() == 1));
                 std::map<std::string, EnumData>::const_iterator enumIt = m_enums.find(*depIt->dependencies.begin());
                 assert(enumIt != m_enums.end());
@@ -4137,17 +4130,13 @@ void VulkanHppGenerator::writeStructureChainValidation(std::ostream & os, Depend
     // write out allowed structure chains
     for (auto extendName : it->second.structExtends)
     {
-      // We do not have to generate the templates for aliased structs;
-      if (m_aliases.find(extendName) == m_aliases.end())
-      {
-        std::map<std::string, StructData>::const_iterator itExtend = m_structs.find(extendName);
-        assert(itExtend != m_structs.end());
-        enterProtect(os, itExtend->second.protect);
+      std::map<std::string, StructData>::const_iterator itExtend = m_structs.find(extendName);
+      assert(itExtend != m_structs.end());
+      enterProtect(os, itExtend->second.protect);
 
-        os << "  template <> struct isStructureChainValid<" << extendName << ", " << dependencyData.name << ">{ enum { value = true }; };" << std::endl;
+      os << "  template <> struct isStructureChainValid<" << extendName << ", " << dependencyData.name << ">{ enum { value = true }; };" << std::endl;
 
-        leaveProtect(os, itExtend->second.protect);
-      }
+      leaveProtect(os, itExtend->second.protect);
     }
     leaveProtect(os, it->second.protect);
   }
@@ -4187,27 +4176,65 @@ void VulkanHppGenerator::writeToStringFunctions(std::ostream & os)
   {
     switch (it->category)
     {
+    case DependencyData::Category::BITMASK:
+      writeBitmaskToString(os, it->name, m_enums.find(*it->dependencies.begin())->second);
+      break;
     case DependencyData::Category::ENUM:
       assert(m_enums.find(it->name) != m_enums.end());
       writeEnumsToString(os, m_enums.find(it->name)->second);
-      break;
-    case DependencyData::Category::FLAGS:
-      writeFlagsToString(os, it->name, m_enums.find(*it->dependencies.begin())->second);
       break;
     }
   }
 }
 
-void VulkanHppGenerator::writeTypeAlias(std::ostream & os, DependencyData const& dependencyData)
+void VulkanHppGenerator::writeTypeBitmask(std::ostream & os, std::string const& bitmaskName, BitmaskData const& bitmaskData, EnumData const& enumData)
 {
-  auto aliasIt = m_aliases.find(dependencyData.name);
-  assert(aliasIt != m_aliases.end());
-  assert(((aliasIt->second.category == DependencyData::Category::ENUM) && (m_enums.find(aliasIt->second.value) != m_enums.end()))
-    || ((aliasIt->second.category == DependencyData::Category::STRUCT) && (m_structs.find(aliasIt->second.value) != m_structs.end())));
+  enterProtect(os, bitmaskData.protect);
 
-  enterProtect(os, aliasIt->second.protect);
-  os << "  using " << aliasIt->first << " = " << aliasIt->second.value << ";" << std::endl;
-  leaveProtect(os, aliasIt->second.protect);
+  // each Flags class is using on the class 'Flags' with the corresponding FlagBits enum as the template parameter
+  os << "  using " << bitmaskName << " = Flags<" << enumData.name << ", Vk" << bitmaskName << ">;" << std::endl;
+
+  std::stringstream allFlags;
+  for (size_t i = 0; i < enumData.values.size(); i++)
+  {
+    if (i != 0)
+    {
+      allFlags << " | ";
+    }
+    allFlags << "VkFlags(" << enumData.name << "::" << enumData.values[i].name << ")";
+  }
+
+  if (!enumData.values.empty())
+  {
+    const std::string templateString = R"(
+  VULKAN_HPP_INLINE ${bitmaskName} operator|( ${enumName} bit0, ${enumName} bit1 )
+  {
+    return ${bitmaskName}( bit0 ) | bit1;
+  }
+
+  VULKAN_HPP_INLINE ${bitmaskName} operator~( ${enumName} bits )
+  {
+    return ~( ${bitmaskName}( bits ) );
+  }
+
+  template <> struct FlagTraits<${enumName}>
+  {
+    enum
+    {
+      allFlags = ${allFlags}
+    };
+  };
+)";
+    os << replaceWithMap(templateString, { { "bitmaskName", bitmaskName },{ "enumName", enumData.name },{ "allFlags", allFlags.str() } });
+  }
+
+  if (!bitmaskData.alias.empty())
+  {
+    os << std::endl
+      << "  using " << bitmaskData.alias << " = " << bitmaskName << ";" << std::endl;
+  }
+
+  leaveProtect(os, bitmaskData.protect);
   os << std::endl;
 }
 
@@ -4281,6 +4308,7 @@ void VulkanHppGenerator::writeTypeCommand(std::ostream & os, std::string const& 
 
   // and write one or both of them
   writeStandardOrEnhanced(os, standard.str(), enhanced.str());
+
   leaveProtect(os, commandData.protect);
   os << std::endl;
 }
@@ -4308,56 +4336,6 @@ void VulkanHppGenerator::writeTypeEnum(std::ostream & os, EnumData const& enumDa
   os << "  };" << std::endl;
 
   leaveProtect(os, enumData.protect);
-  os << std::endl;
-}
-
-void VulkanHppGenerator::writeTypeFlags(std::ostream & os, std::string const& flagsName, FlagData const& flagData, EnumData const& enumData)
-{
-  enterProtect(os, flagData.protect);
-  // each Flags class is using on the class 'Flags' with the corresponding FlagBits enum as the template parameter
-  os << "  using " << flagsName << " = Flags<" << enumData.name << ", Vk" << flagsName << ">;" << std::endl;
-
-  std::stringstream allFlags;
-  for (size_t i = 0; i < enumData.values.size(); i++)
-  {
-    if (i != 0)
-    {
-      allFlags << " | ";
-    }
-    allFlags << "VkFlags(" << enumData.name << "::" << enumData.values[i].name << ")";
-  }
-
-  if (!enumData.values.empty())
-  {
-    const std::string templateString = R"(
-  VULKAN_HPP_INLINE ${flagsName} operator|( ${enumName} bit0, ${enumName} bit1 )
-  {
-    return ${flagsName}( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE ${flagsName} operator~( ${enumName} bits )
-  {
-    return ~( ${flagsName}( bits ) );
-  }
-
-  template <> struct FlagTraits<${enumName}>
-  {
-    enum
-    {
-      allFlags = ${allFlags}
-    };
-  };
-)";
-    os << replaceWithMap(templateString, { { "flagsName", flagsName },{ "enumName", enumData.name },{ "allFlags", allFlags.str() } });
-  }
-
-  if (!flagData.alias.empty())
-  {
-    os << std::endl
-      << "  using " << flagData.alias << " = " << flagsName << ";" << std::endl;
-  }
-
-  leaveProtect(os, flagData.protect);
   os << std::endl;
 }
 
@@ -4398,7 +4376,7 @@ void VulkanHppGenerator::writeTypeHandle(std::ostream & os, DependencyData const
     {}
 
     VULKAN_HPP_TYPESAFE_EXPLICIT ${className}( Vk${className} ${memberName} )
-       : m_${memberName}( ${memberName} )
+      : m_${memberName}( ${memberName} )
     {}
 
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
@@ -4471,12 +4449,6 @@ ${commands}
     { "commands", commands.str() }
   });
 
-  if (!handleData.alias.empty())
-  {
-    os << "  using " << handleData.alias << " = " << dependencyData.name << ";" << std::endl
-      << std::endl;
-  }
-
   // then the actual Deleter classes can be listed
   deleterTypesIt = m_deleterTypes.find(dependencyData.name);
   if (deleterTypesIt != m_deleterTypes.end())
@@ -4495,6 +4467,12 @@ ${commands}
     writeTypeCommand(os, "  ", cit->second, true);
   }
 
+  if (!handleData.alias.empty())
+  {
+    os << "  using " << handleData.alias << " = " << dependencyData.name << ";" << std::endl
+      << std::endl;
+  }
+
   leaveProtect(os, handleData.protect);
 }
 
@@ -4506,8 +4484,9 @@ void VulkanHppGenerator::writeTypes(std::ostream & os, std::map<std::string, std
   {
     switch (it->category)
     {
-    case DependencyData::Category::ALIAS:
-      writeTypeAlias(os, *it);
+    case DependencyData::Category::BITMASK:
+      assert(m_bitmasks.find(it->name) != m_bitmasks.end());
+      writeTypeBitmask(os, it->name, m_bitmasks.find(it->name)->second, m_enums.find(generateEnumNameForFlags(it->name))->second);
       break;
     case DependencyData::Category::COMMAND:
       writeTypeCommand(os, *it);
@@ -4515,10 +4494,6 @@ void VulkanHppGenerator::writeTypes(std::ostream & os, std::map<std::string, std
     case DependencyData::Category::ENUM:
       assert(m_enums.find(it->name) != m_enums.end());
       writeTypeEnum(os, m_enums.find(it->name)->second);
-      break;
-    case DependencyData::Category::FLAGS:
-      assert(m_flags.find(it->name) != m_flags.end());
-      writeTypeFlags(os, it->name, m_flags.find(it->name)->second, m_enums.find(generateEnumNameForFlags(it->name))->second);
       break;
     case DependencyData::Category::FUNC_POINTER:
     case DependencyData::Category::REQUIRED:
@@ -4635,6 +4610,12 @@ void VulkanHppGenerator::writeTypeStruct(std::ostream & os, DependencyData const
   }
   os << "  };" << std::endl
     << "  static_assert( sizeof( " << dependencyData.name << " ) == sizeof( Vk" << dependencyData.name << " ), \"struct and wrapper have different size!\" );" << std::endl;
+
+  if (!it->second.alias.empty())
+  {
+    os << std::endl
+      << "  using " << it->second.alias << " = " << dependencyData.name << ";" << std::endl;
+  }
 
   leaveProtect(os, it->second.protect);
   os << std::endl;

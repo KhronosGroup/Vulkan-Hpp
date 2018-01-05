@@ -3954,43 +3954,40 @@ void VulkanHppGenerator::writeStructConstructor(std::ostream & os, std::string c
   // the constructor with all the elements as arguments, with defaults
   os << "    " << name << "( ";
   bool listedArgument = false;
-  if (!structData.returnedOnly)
+  for (size_t i = 0; i < structData.members.size(); i++)
   {
-    for (size_t i = 0; i < structData.members.size(); i++)
+    if (listedArgument)
     {
-      if (listedArgument)
-      {
-        os << ", ";
-      }
-      // skip members 'pNext' and 'sType', as they are never explicitly set
-      if ((structData.members[i].name != "pNext") && (structData.members[i].name != "sType"))
-      {
-        // find a default value for the given pure type
-        std::map<std::string, std::string>::const_iterator defaultIt = defaultValues.find(structData.members[i].pureType);
-        assert(defaultIt != defaultValues.end());
+      os << ", ";
+    }
+    // skip members 'pNext' and 'sType', as they are never explicitly set
+    if ((structData.members[i].name != "pNext") && (structData.members[i].name != "sType"))
+    {
+      // find a default value for the given pure type
+      std::map<std::string, std::string>::const_iterator defaultIt = defaultValues.find(structData.members[i].pureType);
+      assert(defaultIt != defaultValues.end());
 
-        if (structData.members[i].arraySize.empty())
-        {
-          // the arguments name get a trailing '_', to distinguish them from the actual struct members
-          // pointer arguments get a nullptr as default
-          os << structData.members[i].type << " " << structData.members[i].name << "_ = " << (structData.members[i].type.back() == '*' ? "nullptr" : defaultIt->second);
-        }
-        else
-        {
-          // array members are provided as const reference to a std::array
-          // the arguments name get a trailing '_', to distinguish them from the actual struct members
-          // list as many default values as there are elements in the array
-          os << "std::array<" << structData.members[i].type << "," << structData.members[i].arraySize << "> const& " << structData.members[i].name << "_ = { { " << defaultIt->second;
-          size_t n = atoi(structData.members[i].arraySize.c_str());
-          assert(0 < n);
-          for (size_t j = 1; j < n; j++)
-          {
-            os << ", " << defaultIt->second;
-          }
-          os << " } }";
-        }
-        listedArgument = true;
+      if (structData.members[i].arraySize.empty())
+      {
+        // the arguments name get a trailing '_', to distinguish them from the actual struct members
+        // pointer arguments get a nullptr as default
+        os << structData.members[i].type << " " << structData.members[i].name << "_ = " << (structData.members[i].type.back() == '*' ? "nullptr" : defaultIt->second);
       }
+      else
+      {
+        // array members are provided as const reference to a std::array
+        // the arguments name get a trailing '_', to distinguish them from the actual struct members
+        // list as many default values as there are elements in the array
+        os << "std::array<" << structData.members[i].type << "," << structData.members[i].arraySize << "> const& " << structData.members[i].name << "_ = { { " << defaultIt->second;
+        size_t n = atoi(structData.members[i].arraySize.c_str());
+        assert(0 < n);
+        for (size_t j = 1; j < n; j++)
+        {
+          os << ", " << defaultIt->second;
+        }
+        os << " } }";
+      }
+      listedArgument = true;
     }
   }
   os << " )" << std::endl;
@@ -3999,38 +3996,15 @@ void VulkanHppGenerator::writeStructConstructor(std::ostream & os, std::string c
   bool firstArgument = true;
   for (size_t i = 0; i < structData.members.size(); i++)
   {
-    if (structData.members[i].arraySize.empty())
+    // skip members 'pNext' and 'sType' are directly set by initializers
+    if ((structData.members[i].name != "pNext") && (structData.members[i].name != "sType") && (structData.members[i].arraySize.empty()))
     {
       // here, we can only handle non-array arguments
       std::string templateString = "      ${sep} ${member}( ${value} )\n";
       std::string sep = firstArgument ? ":" : ",";
       std::string member = structData.members[i].name;
-      std::string value;
+      std::string value = structData.members[i].name + "_";   // the elements are initialized by the corresponding argument (with trailing '_', as mentioned above)
 
-      // 'pNext' and 'sType' don't get an argument, use nullptr and the correct StructureType enum value to initialize them
-      if (structData.members[i].name == "pNext")
-      {
-        value = "nullptr";
-      }
-      else if (structData.members[i].name == "sType")
-      {
-        assert(!structData.members[i].values.empty());
-        auto nameIt = m_nameMap.find(structData.members[i].values);
-        assert(nameIt != m_nameMap.end());
-        value = nameIt->second;
-      }
-      else
-      {
-        if (!structData.returnedOnly)
-        {
-          // the other elements are initialized by the corresponding argument (with trailing '_', as mentioned above)
-          value = structData.members[i].name + "_";
-        }
-        else
-        {
-          templateString = "";
-        }
-      }
       os << replaceWithMap(templateString, { { "sep", sep },{ "member", member },{ "value", value } });
       firstArgument = false;
     }
@@ -4038,20 +4012,17 @@ void VulkanHppGenerator::writeStructConstructor(std::ostream & os, std::string c
 
   // the body of the constructor, copying over data from argument list into wrapped struct
   os << "    {" << std::endl;
-  if (!structData.returnedOnly)
+  for (size_t i = 0; i < structData.members.size(); i++)
   {
-    for (size_t i = 0; i < structData.members.size(); i++)
+    if (!structData.members[i].arraySize.empty())
     {
-      if (!structData.members[i].arraySize.empty())
-      {
-        // here we can handle the arrays, copying over from argument (with trailing '_') to member
-        // size is arraySize times sizeof type
-        std::string member = structData.members[i].name;
-        std::string arraySize = structData.members[i].arraySize;
-        std::string type = structData.members[i].type;
-        os << replaceWithMap("      memcpy( &${member}, ${member}_.data(), ${arraySize} * sizeof( ${type} ) );\n",
-        { { "member", member },{ "arraySize", arraySize },{ "type", type } });
-      }
+      // here we can handle the arrays, copying over from argument (with trailing '_') to member
+      // size is arraySize times sizeof type
+      std::string member = structData.members[i].name;
+      std::string arraySize = structData.members[i].arraySize;
+      std::string type = structData.members[i].type;
+      os << replaceWithMap("      memcpy( &${member}, ${member}_.data(), ${arraySize} * sizeof( ${type} ) );\n",
+      { { "member", member },{ "arraySize", arraySize },{ "type", type } });
     }
   }
   os << "    }\n\n";
@@ -4536,7 +4507,11 @@ void VulkanHppGenerator::writeTypeStruct(std::ostream & os, DependencyData const
   os << "  struct " << dependencyData.name << std::endl
     << "  {" << std::endl;
 
-  writeStructConstructor(os, dependencyData.name, it->second, defaultValues);
+  // only structs that are not returnedOnly get a constructor!
+  if (!it->second.returnedOnly)
+  {
+    writeStructConstructor(os, dependencyData.name, it->second, defaultValues);
+  }
 
   // create the setters
   if (!it->second.returnedOnly)
@@ -4593,15 +4568,22 @@ void VulkanHppGenerator::writeTypeStruct(std::ostream & os, DependencyData const
     if (it->second.members[i].type == "StructureType")
     {
       assert((i == 0) && (it->second.members[i].name == "sType"));
+      assert(!it->second.members[i].values.empty());
+      auto nameIt = m_nameMap.find(it->second.members[i].values);
+      assert(nameIt != m_nameMap.end());
       os << "  private:" << std::endl
-        << "    StructureType sType;" << std::endl
+        << "    StructureType sType = " << nameIt->second << ";" << std::endl
         << std::endl
         << "  public:" << std::endl;
     }
     else
     {
       os << "    " << it->second.members[i].type << " " << it->second.members[i].name;
-      if (!it->second.members[i].arraySize.empty())
+      if (it->second.members[i].name == "pNext")
+      {
+        os << " = nullptr";
+      }
+      else if (!it->second.members[i].arraySize.empty())
       {
         os << "[" << it->second.members[i].arraySize << "]";
       }

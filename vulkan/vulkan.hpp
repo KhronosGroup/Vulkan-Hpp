@@ -351,7 +351,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ~UniqueHandle()
     {
-      this->destroy( m_value );
+      if ( m_value ) this->destroy( m_value );
     }
 
     UniqueHandle & operator=( UniqueHandle const& ) = delete;
@@ -402,7 +402,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       if ( m_value != value )
       {
-        this->destroy( m_value );
+        if ( m_value ) this->destroy( m_value );
         m_value = value;
       }
     }

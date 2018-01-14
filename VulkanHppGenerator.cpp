@@ -594,7 +594,7 @@ const std::string uniqueHandleHeader = R"(
 
     ~UniqueHandle()
     {
-      this->destroy( m_value );
+      if ( m_value ) this->destroy( m_value );
     }
 
     UniqueHandle & operator=( UniqueHandle const& ) = delete;
@@ -645,7 +645,7 @@ const std::string uniqueHandleHeader = R"(
     {
       if ( m_value != value )
       {
-        this->destroy( m_value );
+        if ( m_value ) this->destroy( m_value );
         m_value = value;
       }
     }

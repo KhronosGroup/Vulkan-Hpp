@@ -245,7 +245,7 @@ class VulkanHppGenerator
     void writeDeleterForwardDeclarations(std::ostream &os, std::pair<std::string, std::set<std::string>> const& deleterTypes);
     void writeExceptionsForEnum(std::ostream & os, EnumData const& enumData);
     void writeFunction(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool definition, bool enhanced, bool singular, bool unique, bool isStructureChain);
-    void writeFunctionBodyEnhanced(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool singular, bool isStructureChain);
+    void writeFunctionBodyEnhanced(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool singular, bool unique, bool isStructureChain);
     void writeFunctionBodyEnhanced(std::ostream & os, std::string const& templateString, std::string const& indentation, CommandData const& commandData, bool singular);
     void writeFunctionBodyTwoStep(std::ostream & os, std::string const &templateString, std::string const& indentation, std::string const& returnName, std::string const& sizeName, CommandData const& commandData);
     std::string writeFunctionBodyEnhancedLocalReturnVariable(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool singular, bool isStructureChain);
@@ -256,9 +256,8 @@ class VulkanHppGenerator
     void writeFunctionBodyEnhancedCallTwoStepChecked(std::ostream & os, std::string const& indentation, std::string const& returnName, std::string const& sizeName, CommandData const& commandData);
     void writeFunctionBodyEnhancedLocalCountVariable(std::ostream & os, std::string const& indentation, CommandData const& commandData);
     void writeFunctionBodyEnhancedMultiVectorSizeCheck(std::ostream & os, std::string const& indentation, CommandData const& commandData);
-    void writeFunctionBodyEnhancedReturnResultValue(std::ostream & os, std::string const& indentation, std::string const& returnName, CommandData const& commandData, bool singular);
+    void writeFunctionBodyEnhancedReturnResultValue(std::ostream & os, std::string const& indentation, std::string const& returnName, CommandData const& commandData, bool singular, bool unique);
     void writeFunctionBodyStandard(std::ostream & os, std::string const& indentation, CommandData const& commandData);
-    void writeFunctionBodyUnique(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool singular);
     void writeFunctionHeaderArguments(std::ostream & os, CommandData const& commandData, bool enhanced, bool singular, bool withDefaults);
     void writeFunctionHeaderArgumentsEnhanced(std::ostream & os, CommandData const& commandData, bool singular, bool withDefaults);
     void writeFunctionHeaderArgumentsStandard(std::ostream & os, CommandData const& commandData);

@@ -484,6 +484,11 @@ const std::string resultValueHeader = R"(
       , value( v )
     {}
 
+    ResultValue( Result r, T && v )
+      : result( r )
+      , value( std::move( v ) )
+    {}
+
     Result  result;
     T       value;
 
@@ -496,7 +501,7 @@ const std::string resultValueHeader = R"(
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
     typedef ResultValue<T>  type;
 #else
-    typedef T              type;
+    typedef T               type;
 #endif
   };
 
@@ -566,6 +571,23 @@ const std::string createResultValueHeader = R"(
 #endif
     return ResultValue<T>( result, data );
   }
+
+#ifndef VULKAN_HPP_NO_SMART_HANDLE
+  template <typename T>
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<T>>::type createResultValue( Result result, T & data, char const * message, typename UniqueHandleTraits<T>::deleter const& deleter )
+  {
+#ifdef VULKAN_HPP_NO_EXCEPTIONS
+    assert( result == Result::eSuccess );
+    return ResultValue<UniqueHandle<T>>( result, UniqueHandle<T>(data, deleter) );
+#else
+    if ( result != Result::eSuccess )
+    {
+      throwResultException( result, message );
+    }
+    return UniqueHandle<T>(data, deleter);
+#endif
+  }
+#endif
 
 )";
 
@@ -991,7 +1013,7 @@ std::string startUpperCase(std::string const& input)
 
 std::string startLowerCase(std::string const& input)
 {
-  return static_cast<char>(tolower(input[0])) + input.substr(1);
+  return input.empty() ? "" : static_cast<char>(tolower(input[0])) + input.substr(1);
 }
 
 std::string strip(std::string const& value, std::string const& prefix, std::string const& postfix)
@@ -3199,14 +3221,7 @@ void VulkanHppGenerator::writeFunction(std::ostream & os, std::string const& ind
     os << indentation << "{" << std::endl;
     if (enhanced)
     {
-      if (unique)
-      {
-        writeFunctionBodyUnique(os, indentation, commandData, singular);
-      }
-      else
-      {
-        writeFunctionBodyEnhanced(os, indentation, commandData, singular, isStructureChain);
-      }
+      writeFunctionBodyEnhanced(os, indentation, commandData, singular, unique, isStructureChain);
     }
     else
     {
@@ -3216,7 +3231,7 @@ void VulkanHppGenerator::writeFunction(std::ostream & os, std::string const& ind
   }
 }
 
-void VulkanHppGenerator::writeFunctionBodyEnhanced(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool singular, bool isStructureChain)
+void VulkanHppGenerator::writeFunctionBodyEnhanced(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool singular, bool unique, bool isStructureChain)
 {
   if (1 < commandData.vectorParams.size())
   {
@@ -3269,7 +3284,7 @@ void VulkanHppGenerator::writeFunctionBodyEnhanced(std::ostream & os, std::strin
 
   if ((commandData.returnType == "Result") || !commandData.successCodes.empty())
   {
-    writeFunctionBodyEnhancedReturnResultValue(os, indentation, returnName, commandData, singular);
+    writeFunctionBodyEnhancedReturnResultValue(os, indentation, returnName, commandData, singular, unique);
   }
   else if ((commandData.returnParam != ~0) && (commandData.returnType != commandData.enhancedReturnType))
   {
@@ -3491,18 +3506,69 @@ ${i}  }
   }
 }
 
-void VulkanHppGenerator::writeFunctionBodyEnhancedReturnResultValue(std::ostream & os, std::string const& indentation, std::string const& returnName, CommandData const& commandData, bool singular)
+void VulkanHppGenerator::writeFunctionBodyEnhancedReturnResultValue(std::ostream & os, std::string const& indentation, std::string const& returnName, CommandData const& commandData, bool singular, bool unique)
 {
+  std::string type = (commandData.returnParam != ~0) ? commandData.params[commandData.returnParam].pureType : "";
+  std::string returnVectorName = (commandData.returnParam != ~0) ? strip(commandData.params[commandData.returnParam].name, "p", "s") : "";
+
+  if (unique)
+  {
+    // the unique version needs a Deleter object for destruction of the newly created stuff
+    os << std::endl
+      << indentation << "  " << type << "Deleter deleter( ";
+    if (m_deleters.find(commandData.className) != m_deleters.end())
+    {
+      // if the Deleter is specific to the command's class, add '*this' to the deleter
+      os << "*this, ";
+    }
+
+    // get the DeleterData corresponding to the returned type
+    std::map<std::string, DeleterData>::const_iterator ddit = m_deleters.find(type);
+    assert(ddit != m_deleters.end());
+    if (ddit->second.pool.empty())
+    {
+      // if this type isn't pooled, use the allocator (provided as a function argument)
+      os << "allocator";
+    }
+    else
+    {
+      // otherwise use the pool, which always is a member of the second argument
+      os << startLowerCase(strip(commandData.params[1].name, "p")) << "." << startLowerCase(ddit->second.pool);
+    }
+    os << " );" << std::endl;
+  }
+
+  bool returnUniqueVector = unique && !singular && (commandData.vectorParams.find(commandData.returnParam) != commandData.vectorParams.end());
+  if (returnUniqueVector)
+  {
+    std::string const stringTemplate =
+R"(${i}  std::vector<Unique${type}> unique${returnVectorName}s;
+${i}  unique${returnVectorName}s.reserve( ${localName}s.size() );
+${i}  for ( auto const& ${localName} : ${localName}s )
+${i}  {
+${i}    unique${returnVectorName}s.push_back( Unique${type}( ${localName}, deleter ) );
+${i}  }
+
+)";
+
+    os << replaceWithMap(stringTemplate, std::map<std::string, std::string>{
+      { "i", indentation },
+      { "type", type },
+      { "returnVectorName", returnVectorName },
+      { "localName", startLowerCase(returnVectorName) }
+    });
+  }
+
   // if the return type is "Result" or there is at least one success code, create the Result/Value construct to return
   os << indentation << "  return createResultValue( result, ";
   if (commandData.returnParam != ~0)
   {
     // if there's a return parameter, list it in the Result/Value constructor
-    os << returnName << ", ";
+    os << (returnUniqueVector ? "unique" + returnVectorName + "s" : returnName) << ", ";
   }
 
   // now the function name (with full namespace) as a string
-  os << "\"VULKAN_HPP_NAMESPACE::" << (commandData.className.empty() ? "" : commandData.className + "::") << (singular ? stripPluralS(commandData.reducedName) : commandData.reducedName) << "\"";
+  os << "\"VULKAN_HPP_NAMESPACE::" << (commandData.className.empty() ? "" : commandData.className + "::") << (singular ? stripPluralS(commandData.reducedName) : commandData.reducedName) << (unique ? "Unique" : "") << "\"";
 
   if (!commandData.twoStep && (1 < commandData.successCodes.size()))
   {
@@ -3514,6 +3580,12 @@ void VulkanHppGenerator::writeFunctionBodyEnhancedReturnResultValue(std::ostream
     }
     os << " }";
   }
+
+  if (unique && !returnUniqueVector)
+  {
+    os << ", deleter";
+  }
+
   os << " );" << std::endl;
 }
 
@@ -3580,93 +3652,6 @@ void VulkanHppGenerator::writeFunctionBodyStandard(std::ostream & os, std::strin
     os << " )";
   }
   os << ";" << std::endl;
-}
-
-void VulkanHppGenerator::writeFunctionBodyUnique(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool singular)
-{
-  // the unique version needs a Deleter object for destruction of the newly created stuff
-  std::string type = commandData.params[commandData.returnParam].pureType;
-  std::string typeValue = startLowerCase(type);
-  os << indentation << "  " << type << "Deleter deleter( ";
-  if (m_deleters.find(commandData.className) != m_deleters.end())
-  {
-    // if the Deleter is specific to the command's class, add '*this' to the deleter
-    os << "*this, ";
-  }
-
-  // get the DeleterData corresponding to the returned type
-  std::map<std::string, DeleterData>::const_iterator ddit = m_deleters.find(type);
-  assert(ddit != m_deleters.end());
-  if (ddit->second.pool.empty())
-  {
-    // if this type isn't pooled, use the allocator (provided as a function argument)
-    os << "allocator";
-  }
-  else
-  {
-    // otherwise use the pool, which always is a member of the second argument
-    os << startLowerCase(strip(commandData.params[1].name, "p")) << "." << startLowerCase(ddit->second.pool);
-  }
-  os << " );" << std::endl;
-
-  bool returnsVector = !singular && (commandData.vectorParams.find(commandData.returnParam) != commandData.vectorParams.end());
-  if (returnsVector)
-  {
-    // if a vector of data is returned, use a local variable to hold the returned data from the non-unique function call
-    os << indentation << "  std::vector<" << type << ",Allocator> " << typeValue << "s = ";
-  }
-  else
-  {
-    // otherwise create a Unique stuff out of the returned data from the non-unique function call
-    os << indentation << "  return Unique" << type << "( ";
-  }
-
-  // the call to the non-unique function
-  os << (singular ? stripPluralS(commandData.fullName) : commandData.fullName) << "( ";
-  bool argEncountered = false;
-  for (size_t i = commandData.className.empty() ? 0 : 1; i < commandData.params.size(); i++)
-  {
-    if (commandData.skippedParams.find(i) == commandData.skippedParams.end())
-    {
-      if (argEncountered)
-      {
-        os << ", ";
-      }
-      argEncountered = true;
-
-      // strip off the leading 'p' for pointer arguments
-      std::string argumentName = (commandData.params[i].type.back() == '*') ? startLowerCase(strip(commandData.params[i].name, "p")) : commandData.params[i].name;
-      if (singular && (commandData.vectorParams.find(i) != commandData.vectorParams.end()))
-      {
-        // and strip off the plural 's' if appropriate
-        argumentName = stripPluralS(argumentName);
-      }
-      os << argumentName;
-    }
-  }
-  os << " )";
-  if (returnsVector)
-  {
-    std::string const stringTemplate = R"(;
-${i}  std::vector<Unique${type}> unique${type}s;
-${i}  unique${type}s.reserve( ${typeValue}s.size() );
-${i}  for ( auto ${typeValue} : ${typeValue}s )
-${i}  {
-${i}    unique${type}s.push_back( Unique${type}( ${typeValue}, deleter ) );
-${i}  }
-${i}  return unique${type}s;
-)";
-    os << replaceWithMap(stringTemplate, std::map<std::string, std::string>{
-      { "i", indentation },
-      { "type", type },
-      { "typeValue", typeValue }
-    });
-  }
-  else
-  {
-    // for non-vector returns, just add the deleter (local variable) to the Unique-stuff constructor
-    os << ", deleter );" << std::endl;
-  }
 }
 
 void VulkanHppGenerator::writeFunctionHeaderArguments(std::ostream & os, CommandData const& commandData, bool enhanced, bool singular, bool withDefaults)
@@ -3855,23 +3840,23 @@ void VulkanHppGenerator::writeFunctionHeaderReturnType(std::ostream & os, std::s
   if (enhanced)
   {
     // the enhanced function might return some pretty complex return stuff
+    if (isStructureChain || (!singular && (commandData.enhancedReturnType.find("Allocator") != std::string::npos)))
+    {
+      // for the non-singular case with allocation, we need to prepend with 'typename' to keep compilers happy
+      templateString = "typename ";
+    }
     if (unique)
     {
       // the unique version returns something prefixed with 'Unique'; potentially a vector of that stuff
       // it's a vector, if it's not the singular version and the return parameter is a vector parameter
       bool returnsVector = !singular && (commandData.vectorParams.find(commandData.returnParam) != commandData.vectorParams.end());
 
-      templateString = returnsVector ? "std::vector<Unique${returnType}> " : "Unique${returnType} ";
+      templateString += returnsVector ? "ResultValueType<std::vector<Unique${returnType},Allocator>>::type " : "ResultValueType<Unique${returnType}>::type ";
       returnType = isStructureChain ? "StructureChain<T...>" : commandData.params[commandData.returnParam].pureType;
     }
     else if ((commandData.enhancedReturnType != commandData.returnType) && (commandData.returnType != "void"))
     {
       // if the enhanced return type differs from the original return type, and it's not void, we return a ResultValueType<...>::type
-      if (isStructureChain || (!singular && (commandData.enhancedReturnType.find("Allocator") != std::string::npos)))
-      {
-        // for the non-singular case with allocation, we need to prepend with 'typename' to keep compilers happy
-        templateString = "typename ";
-      }
       templateString += "ResultValueType<${returnType}>::type ";
 
       assert(commandData.returnType == "Result");

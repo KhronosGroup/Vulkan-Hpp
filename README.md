@@ -319,6 +319,10 @@ Sometimes it is required to use `std::vector` with custom allocators. Vulkan-Hpp
 std::vector<LayerProperties, MyCustomAllocator> properties = physicalDevice.enumerateDeviceLayerProperties<MyCustomAllocator>();
 ```
 
+### Custom assertions
+
+All over vulkan.hpp, there are a couple of calls to an assert function. By defining VULKAN_HPP_ASSERT, you can specifiy your own custom assert function to be called instead.
+
 ## See Also
 
 Feel free to submit a PR to add to this list.

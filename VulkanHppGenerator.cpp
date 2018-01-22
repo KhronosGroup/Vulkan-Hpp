@@ -1541,6 +1541,7 @@ tinyxml2::XMLNode const* VulkanHppGenerator::readCommandParamType(tinyxml2::XMLN
   tinyxml2::XMLElement const* typeElement = node->ToElement();
   checkEmptyElement(typeElement);
   std::string type = strip(node->ToElement()->GetText(), "Vk");
+  param.unchangedType = param.type + node->ToElement()->GetText();
   param.type += type;
   param.pureType = type;
 
@@ -1552,6 +1553,7 @@ tinyxml2::XMLNode const* VulkanHppGenerator::readCommandParamType(tinyxml2::XMLN
     std::string value = trimEnd(node->Value());
     assert((value == "*") || (value == "**") || (value == "* const*"));
     param.type += value;
+    param.unchangedType += value;
     node = node->NextSibling();
   }
 
@@ -1635,7 +1637,7 @@ void VulkanHppGenerator::readCommandsCommand(tinyxml2::XMLElement const* element
       }
       else if (value == "proto")
       {
-        readCommandProto(child, commandData.returnType, commandData.fullName);
+        readCommandProto(child, commandData.returnType, commandData.unchangedReturnType, commandData.fullName);
       }
 #if !defined(NDEBUG)
       else
@@ -1661,7 +1663,7 @@ void VulkanHppGenerator::readCommandsCommand(tinyxml2::XMLElement const* element
   m_commands.insert(std::make_pair(commandData.fullName, commandData));
 }
 
-void VulkanHppGenerator::readCommandProto(tinyxml2::XMLElement const* element, std::string & returnType, std::string & fullName)
+void VulkanHppGenerator::readCommandProto(tinyxml2::XMLElement const* element, std::string & returnType, std::string & unchangedReturnType, std::string & fullName)
 {
   checkAttributes(getAttributes(element), element->GetLineNum(), {}, {});
   std::vector<tinyxml2::XMLElement const*> children = getChildElements(element);
@@ -1669,6 +1671,7 @@ void VulkanHppGenerator::readCommandProto(tinyxml2::XMLElement const* element, s
 
   // get return type and name of the command
   returnType = strip(children[0]->GetText(), "Vk");
+  unchangedReturnType = children[0]->GetText();
   fullName = startLowerCase(strip(children[1]->GetText(), "vk"));
 
   // add an empty DependencyData to this name
@@ -2777,7 +2780,7 @@ void VulkanHppGenerator::writeCall(std::ostream & os, CommandData const& command
   }
 
   // the original function call
-  os << "vk" << startUpperCase(commandData.fullName) << "( ";
+  os << "d.vk" << startUpperCase(commandData.fullName) << "( ";
 
   if (!commandData.className.empty())
   {
@@ -3201,10 +3204,8 @@ void VulkanHppGenerator::writeExceptionsForEnum(std::ostream & os, EnumData cons
 
 void VulkanHppGenerator::writeFunction(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool definition, bool enhanced, bool singular, bool unique, bool isStructureChain)
 {
-  if (enhanced && (!singular || isStructureChain))
-  {
-    writeFunctionHeaderTemplate(os, indentation, commandData, !definition, isStructureChain);
-  }
+  writeFunctionHeaderTemplate(os, indentation, commandData, enhanced, !definition, isStructureChain);
+
   os << indentation << (definition ? "VULKAN_HPP_INLINE " : "");
   writeFunctionHeaderReturnType(os, indentation, commandData, enhanced, singular, unique, isStructureChain);
   if (definition && !commandData.className.empty())
@@ -3607,7 +3608,7 @@ void VulkanHppGenerator::writeFunctionBodyStandard(std::ostream & os, std::strin
   }
 
   // call the original function
-  os << "vk" << startUpperCase(commandData.fullName) << "( ";
+  os << "d.vk" << startUpperCase(commandData.fullName) << "( ";
 
   if (!commandData.className.empty())
   {
@@ -3663,7 +3664,7 @@ void VulkanHppGenerator::writeFunctionHeaderArguments(std::ostream & os, Command
   }
   else
   {
-    writeFunctionHeaderArgumentsStandard(os, commandData);
+    writeFunctionHeaderArgumentsStandard(os, commandData, withDefaults);
   }
   os << ")";
   if (!commandData.className.empty())
@@ -3805,14 +3806,29 @@ void VulkanHppGenerator::writeFunctionHeaderArgumentsEnhanced(std::ostream & os,
         argEncountered = true;
       }
     }
-    os << " ";
+
+    if (argEncountered)
+    {
+      os << ", ";
+    }
   }
+  os << "Dispatch const &d";
+  if (withDefaults)
+  {
+    os << " = Dispatch()";
+  }
+
+  os << " ";
 }
 
-void VulkanHppGenerator::writeFunctionHeaderArgumentsStandard(std::ostream & os, CommandData const& commandData)
+void VulkanHppGenerator::writeFunctionHeaderArgumentsStandard(std::ostream & os, CommandData const& commandData, bool withDefaults)
 {
   // for the standard case, just list all the arguments as we've got them
   bool argEncountered = false;
+
+  // determine the last argument, where we might provide some default for
+  size_t lastArgument = commandData.params.size() - 1;
+
   for (size_t i = commandData.className.empty() ? 0 : 1; i < commandData.params.size(); i++)
   {
     if (argEncountered)
@@ -3825,11 +3841,36 @@ void VulkanHppGenerator::writeFunctionHeaderArgumentsStandard(std::ostream & os,
     {
       os << "[" << commandData.params[i].arraySize << "]";
     }
+
+    if (withDefaults && (lastArgument == i))
+    {
+      // check if the very last argument is a flag without any bits -> provide some empty default for it
+      std::map<std::string, BitmaskData>::const_iterator flagIt = m_bitmasks.find(commandData.params[i].pureType);
+      if (flagIt != m_bitmasks.end())
+      {
+        // get the enum corresponding to this flag, to check if it's empty
+        std::list<DependencyData>::const_iterator depIt = std::find_if(m_dependencies.begin(), m_dependencies.end(), [&flagIt](DependencyData const& dd) { return(dd.name == flagIt->first); });
+        assert((depIt != m_dependencies.end()) && (depIt->dependencies.size() == 1));
+        std::map<std::string, EnumData>::const_iterator enumIt = m_enums.find(*depIt->dependencies.begin());
+        assert(enumIt != m_enums.end());
+        if (enumIt->second.values.empty())
+        {
+          // there are no bits in this flag -> provide the default
+          os << " = " << commandData.params[i].pureType << "()";
+        }
+      }
+    }
     argEncountered = true;
   }
   if (argEncountered)
   {
-    os << " ";
+    os << ", ";
+  }
+
+  os << "Dispatch const &d";
+  if (withDefaults)
+  {
+    os << " = Dispatch() ";
   }
 }
 
@@ -3893,19 +3934,20 @@ void VulkanHppGenerator::writeFunctionHeaderReturnType(std::ostream & os, std::s
   os << replaceWithMap(templateString, { { "returnType", returnType } });
 }
 
-void VulkanHppGenerator::writeFunctionHeaderTemplate(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool withDefault, bool isStructureChain)
+void VulkanHppGenerator::writeFunctionHeaderTemplate(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool enhanced, bool withDefault, bool isStructureChain)
 {
-  if (isStructureChain)
+  std::string dispatch = withDefault ? std::string("typename Dispatch = DispatchLoader") : std::string("typename Dispatch");
+  if (enhanced && isStructureChain)
   {
-    os << indentation << "template <typename ...T>" << std::endl;
+    os << indentation << "template <typename ...T, " << dispatch << ">" << std::endl;
   }
-  else if ((commandData.templateParam != ~0) && ((commandData.templateParam != commandData.returnParam) || (commandData.enhancedReturnType == "Result")))
+  else if (enhanced && (commandData.templateParam != ~0) && ((commandData.templateParam != commandData.returnParam) || (commandData.enhancedReturnType == "Result")))
   {
     // if there's a template parameter, not being the return parameter or where the enhanced return type is 'Result' -> templatize on type 'T'
     assert(commandData.enhancedReturnType.find("Allocator") == std::string::npos);
-    os << indentation << "template <typename T>" << std::endl;
+    os << indentation << "template <typename T, " << dispatch << ">" << std::endl;
   }
-  else if ((commandData.enhancedReturnType.find("Allocator") != std::string::npos))
+  else if (enhanced && (commandData.enhancedReturnType.find("Allocator") != std::string::npos))
   {
     // otherwise, if there's an Allocator used in the enhanced return type, we templatize on that Allocator
     assert((commandData.enhancedReturnType.substr(0, 12) == "std::vector<") && (commandData.enhancedReturnType.find(',') != std::string::npos) && (12 < commandData.enhancedReturnType.find(',')));
@@ -3915,7 +3957,12 @@ void VulkanHppGenerator::writeFunctionHeaderTemplate(std::ostream & os, std::str
       // for the default type get the type from the enhancedReturnType, which is of the form 'std::vector<Type,Allocator>'
       os << " = std::allocator<" << commandData.enhancedReturnType.substr(12, commandData.enhancedReturnType.find(',') - 12) << ">";
     }
+    os << ", " << dispatch;
     os << "> " << std::endl;
+  }
+  else
+  {
+    os << indentation << "template<" << dispatch << ">" << std::endl;
   }
 }
 
@@ -4771,6 +4818,48 @@ void VulkanHppGenerator::EnumData::addEnumValue(std::string const &name, std::st
   }
 }
 
+void VulkanHppGenerator::writeDelegationClass(std::ostream &os)
+{
+  os << "class DispatchLoader" << std::endl
+     << "{"                    << std::endl
+     << "public:\n";
+
+  for (auto command : m_commands)
+  {
+    enterProtect(os, command.second.protect);
+    os << "  " << command.second.unchangedReturnType << " vk" << startUpperCase(command.second.fullName) << "( ";
+    bool first = true;
+    for (auto param : command.second.params)
+    {
+      if (!first) {
+        os << ", ";
+      }
+      os << param.unchangedType << " " << param.name;
+      if (!param.arraySize.empty())
+      {
+        os << "[" << param.arraySize << "]";
+      }
+      first = false;
+    }
+    os << "  ) const\n"
+      << "  {\n"
+      << "    return ::vk" << startUpperCase(command.second.fullName) << "( ";
+    first = true;
+    for (auto param : command.second.params)
+    {
+      if (!first) {
+        os << ", ";
+      }
+      os << param.name;
+      first = false;
+    }
+    os << ");\n";
+    os << "  }\n";
+    leaveProtect(os, command.second.protect);
+  }
+  os << "};\n";
+}
+
 
 int main( int argc, char **argv )
 {
@@ -4899,6 +4988,8 @@ int main( int argc, char **argv )
       << "{" << std::endl
       << resultValueHeader
       << createResultValueHeader;
+
+    generator.writeDelegationClass(ofs);
 
     generator.writeTypes(ofs, defaultValues);
     generator.writeStructureChainValidation(ofs);

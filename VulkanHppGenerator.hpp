@@ -46,6 +46,7 @@ class VulkanHppGenerator
     void writeStructureChainValidation(std::ostream & os);
     void writeToStringFunctions(std::ostream & os);
     void writeTypes(std::ostream & os, std::map<std::string, std::string> const& defaultValues);
+    void writeDelegationClass(std::ostream &os);
 #if !defined(NDEBUG)
     void checkExtensionRequirements();
     void skipVendorIDs(tinyxml2::XMLElement const* element);
@@ -87,6 +88,7 @@ class VulkanHppGenerator
     struct ParamData
     {
       std::string type;
+      std::string unchangedType;
       std::string name;
       std::string arraySize;
       std::string pureType;
@@ -110,6 +112,7 @@ class VulkanHppGenerator
       std::string               reducedName;
       size_t                    returnParam;
       std::string               returnType;
+      std::string               unchangedReturnType;
       std::set<size_t>          skippedParams;
       std::vector<std::string>  successCodes;
       size_t                    templateParam;
@@ -211,7 +214,7 @@ class VulkanHppGenerator
     bool readCommandParam(tinyxml2::XMLElement const* element, std::set<std::string> & dependencies, std::vector<ParamData> & params);
     tinyxml2::XMLNode const* readCommandParamType(tinyxml2::XMLNode const* node, ParamData& param);
     void readCommandsCommand(tinyxml2::XMLElement const* element);
-    void readCommandProto(tinyxml2::XMLElement const* element, std::string & returnType, std::string & fullName);
+    void readCommandProto(tinyxml2::XMLElement const* element, std::string & returnType, std::string & unchangedReturnType, std::string & fullName);
     void readDisabledExtensionRequire(tinyxml2::XMLElement const* element);
     void readEnumsEnum(tinyxml2::XMLElement const* element, EnumData & enumData, std::string const& tag);
     void readEnumsConstant(tinyxml2::XMLElement const* element);
@@ -260,9 +263,9 @@ class VulkanHppGenerator
     void writeFunctionBodyStandard(std::ostream & os, std::string const& indentation, CommandData const& commandData);
     void writeFunctionHeaderArguments(std::ostream & os, CommandData const& commandData, bool enhanced, bool singular, bool withDefaults);
     void writeFunctionHeaderArgumentsEnhanced(std::ostream & os, CommandData const& commandData, bool singular, bool withDefaults);
-    void writeFunctionHeaderArgumentsStandard(std::ostream & os, CommandData const& commandData);
+    void writeFunctionHeaderArgumentsStandard(std::ostream & os, CommandData const& commandData, bool withDefaults);
     void writeFunctionHeaderReturnType(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool enhanced, bool singular, bool unique, bool isStructureChain);
-    void writeFunctionHeaderTemplate(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool withDefault, bool isStructureChain);
+    void writeFunctionHeaderTemplate(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool enhanced, bool withDefault, bool isStructureChain);
     void writeStructConstructor(std::ostream & os, std::string const& name, StructData const& structData, std::map<std::string, std::string> const& defaultValues);
     void writeStructSetter(std::ostream & os, std::string const& structureName, MemberData const& memberData);
     void writeStructureChainValidation(std::ostream & os, DependencyData const& dependencyData);

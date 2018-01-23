@@ -327,13 +327,13 @@ const std::string arrayProxyHeader = R"(
 
     const T & front() const
     {
-      assert(m_count && m_ptr);
+      VULKAN_HPP_ASSERT(m_count && m_ptr);
       return *m_ptr;
     }
 
     const T & back() const
     {
-      assert(m_count && m_ptr);
+      VULKAN_HPP_ASSERT(m_count && m_ptr);
       return *(m_ptr + m_count - 1);
     }
 
@@ -520,7 +520,7 @@ const std::string createResultValueHeader = R"(
   VULKAN_HPP_INLINE ResultValueType<void>::type createResultValue( Result result, char const * message )
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
-    assert( result == Result::eSuccess );
+    VULKAN_HPP_ASSERT( result == Result::eSuccess );
     return result;
 #else
     if ( result != Result::eSuccess )
@@ -534,7 +534,7 @@ const std::string createResultValueHeader = R"(
   VULKAN_HPP_INLINE typename ResultValueType<T>::type createResultValue( Result result, T & data, char const * message )
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
-    assert( result == Result::eSuccess );
+    VULKAN_HPP_ASSERT( result == Result::eSuccess );
     return ResultValue<T>( result, data );
 #else
     if ( result != Result::eSuccess )
@@ -548,7 +548,7 @@ const std::string createResultValueHeader = R"(
   VULKAN_HPP_INLINE Result createResultValue( Result result, char const * message, std::initializer_list<Result> successCodes )
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
-    assert( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );
+    VULKAN_HPP_ASSERT( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );
 #else
     if ( std::find( successCodes.begin(), successCodes.end(), result ) == successCodes.end() )
     {
@@ -562,7 +562,7 @@ const std::string createResultValueHeader = R"(
   VULKAN_HPP_INLINE ResultValue<T> createResultValue( Result result, T & data, char const * message, std::initializer_list<Result> successCodes )
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
-    assert( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );
+    VULKAN_HPP_ASSERT( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );
 #else
     if ( std::find( successCodes.begin(), successCodes.end(), result ) == successCodes.end() )
     {
@@ -577,7 +577,7 @@ const std::string createResultValueHeader = R"(
   VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<T>>::type createResultValue( Result result, T & data, char const * message, typename UniqueHandleTraits<T>::deleter const& deleter )
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
-    assert( result == Result::eSuccess );
+    VULKAN_HPP_ASSERT( result == Result::eSuccess );
     return ResultValue<UniqueHandle<T>>( result, UniqueHandle<T>(data, deleter) );
 #else
     if ( result != Result::eSuccess )
@@ -3439,7 +3439,7 @@ ${i}      ${returnName}.resize( ${sizeName} );
 ${i}      result = static_cast<Result>( ${call2} );
 ${i}    }
 ${i}  } while ( result == Result::eIncomplete );
-${i}  assert( ${sizeName} <= ${returnName}.size() );
+${i}  VULKAN_HPP_ASSERT( ${sizeName} <= ${returnName}.size() );
 ${i}  ${returnName}.resize( ${sizeName} );
 )";
   writeFunctionBodyTwoStep(os, templateString, indentation, returnName, sizeName, commandData);
@@ -3475,7 +3475,7 @@ void VulkanHppGenerator::writeFunctionBodyEnhancedMultiVectorSizeCheck(std::ostr
 {
   std::string const templateString =
     R"#(#ifdef VULKAN_HPP_NO_EXCEPTIONS
-${i}  assert( ${firstVectorName}.size() == ${secondVectorName}.size() );
+${i}  VULKAN_HPP_ASSERT( ${firstVectorName}.size() == ${secondVectorName}.size() );
 #else
 ${i}  if ( ${firstVectorName}.size() != ${secondVectorName}.size() )
 ${i}  {
@@ -4943,7 +4943,6 @@ int main( int argc, char **argv )
 
 #include <algorithm>
 #include <array>
-#include <cassert>
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
@@ -4957,6 +4956,10 @@ int main( int argc, char **argv )
 # include <memory>
 # include <vector>
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#if !defined(VULKAN_HPP_ASSERT)
+# include <cassert>
+# define VULKAN_HPP_ASSERT   assert
+#endif
 )";
 
     writeVersionCheck(ofs, generator.getVersion());

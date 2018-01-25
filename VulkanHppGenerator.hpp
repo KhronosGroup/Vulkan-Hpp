@@ -46,7 +46,8 @@ class VulkanHppGenerator
     void writeStructureChainValidation(std::ostream & os);
     void writeToStringFunctions(std::ostream & os);
     void writeTypes(std::ostream & os, std::map<std::string, std::string> const& defaultValues);
-    void writeDelegationClass(std::ostream &os);
+    void writeDelegationClassStatic(std::ostream &os);  // use exported symbols from loader
+    void writeDelegationClassDynamic(std::ostream &os); // use vkGet*ProcAddress to get function pointers
 #if !defined(NDEBUG)
     void checkExtensionRequirements();
     void skipVendorIDs(tinyxml2::XMLElement const* element);

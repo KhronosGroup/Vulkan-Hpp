@@ -323,6 +323,23 @@ std::vector<LayerProperties, MyCustomAllocator> properties = physicalDevice.enum
 
 All over vulkan.hpp, there are a couple of calls to an assert function. By defining VULKAN_HPP_ASSERT, you can specifiy your own custom assert function to be called instead.
 
+### Extensions / Per Device function pointers
+
+The Vulkan loader exposes only the Vulkan core functions and a limited number of extensions. To use Vulkan-Hpp with extensions it's required to have either a library which provides stubs to all used Vulkan
+functions or to tell Vulkan-Hpp to dispatch those functions pointers. Vulkan-Hpp provides a per-function dispatch mechanism by accepting a dispatch class as last parameter in each function call. The dispatch
+class must provide a callable type for each used Vulkan function. Vulkan-Hpp provides one implementation, ```DispatchLoaderDynamic```, which fetches all function pointers known to the library.
+
+```c++
+// This dispatch class will fetch all function pointers through the passed instance
+vk::DispatchLoaderDynamic dldi(instance);
+
+// This dispatch class will fetch function pointers for the passed device if possible, else for the passed instance
+vk::DispatchLoaderDynamic dldid(instance, device);
+
+// Pass dispatch class to function call as last parameter
+device.getQueue(graphics_queue_family_index, 0, &graphics_queue, dldid);
+```
+
 ## See Also
 
 Feel free to submit a PR to add to this list.

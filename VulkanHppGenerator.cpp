@@ -3936,7 +3936,7 @@ void VulkanHppGenerator::writeFunctionHeaderReturnType(std::ostream & os, std::s
 
 void VulkanHppGenerator::writeFunctionHeaderTemplate(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool enhanced, bool withDefault, bool isStructureChain)
 {
-  std::string dispatch = withDefault ? std::string("typename Dispatch = DispatchLoader") : std::string("typename Dispatch");
+  std::string dispatch = withDefault ? std::string("typename Dispatch = DispatchLoaderStatic") : std::string("typename Dispatch");
   if (enhanced && isStructureChain)
   {
     os << indentation << "template <typename ...T, " << dispatch << ">" << std::endl;
@@ -4818,9 +4818,9 @@ void VulkanHppGenerator::EnumData::addEnumValue(std::string const &name, std::st
   }
 }
 
-void VulkanHppGenerator::writeDelegationClass(std::ostream &os)
+void VulkanHppGenerator::writeDelegationClassStatic(std::ostream &os)
 {
-  os << "class DispatchLoader" << std::endl
+  os << "class DispatchLoaderStatic" << std::endl
      << "{"                    << std::endl
      << "public:\n";
 
@@ -4860,6 +4860,49 @@ void VulkanHppGenerator::writeDelegationClass(std::ostream &os)
   os << "};\n";
 }
 
+void VulkanHppGenerator::writeDelegationClassDynamic(std::ostream &os)
+{
+  os << "  class DispatchLoaderDynamic" << std::endl
+     << "  {" << std::endl
+     << "  public:" << std::endl;
+
+  for (auto command : m_commands)
+  {
+    enterProtect(os, command.second.protect);
+    os << "    PFN_vk" << startUpperCase(command.second.fullName) << " vk" << startUpperCase(command.second.fullName) << " = 0;" << std::endl;
+    leaveProtect(os, command.second.protect);
+  }
+
+  // write initialization function to fetch function pointers
+  os << "  public:" << std::endl
+     << "    DispatchLoaderDynamic(Instance instance = Instance(), Device device = Device())" << std::endl
+     << "    {" << std::endl
+     << "      if (instance)" << std::endl
+     << "      {" << std::endl
+     << "        init(instance, device);" << std::endl
+     << "      }" << std::endl
+     << "    }" << std::endl << std::endl
+     << "    void init(Instance instance, Device device = Device())" << std::endl
+     << "    {" << std::endl;
+
+  for (auto command : m_commands)
+  {
+    enterProtect(os, command.second.protect);
+    if (!command.second.params.empty() 
+      && m_handles.find(command.second.params[0].type) != m_handles.end()
+      && command.second.params[0].type != "Instance")
+    {
+      os << "      vk" << startUpperCase(command.second.fullName) << " = PFN_vk" << startUpperCase(command.second.fullName) 
+        << "(device ? device.getProcAddr( \"vk" << startUpperCase(command.second.fullName) << "\") : instance.getProcAddr( \"vk" << startUpperCase(command.second.fullName) << "\"));" << std::endl;
+    }
+    else {
+      os << "      vk" << startUpperCase(command.second.fullName) << " = PFN_vk" << startUpperCase(command.second.fullName) << "(instance.getProcAddr( \"vk" << startUpperCase(command.second.fullName) << "\"));" << std::endl;
+    }
+    leaveProtect(os, command.second.protect);
+  }
+  os << "    }" << std::endl;
+  os << "  };\n";
+}
 
 int main( int argc, char **argv )
 {
@@ -4992,11 +5035,13 @@ int main( int argc, char **argv )
       << resultValueHeader
       << createResultValueHeader;
 
-    generator.writeDelegationClass(ofs);
+    generator.writeDelegationClassStatic(ofs);
 
     generator.writeTypes(ofs, defaultValues);
     generator.writeStructureChainValidation(ofs);
     generator.writeToStringFunctions(ofs);
+
+    generator.writeDelegationClassDynamic(ofs);
 
     ofs << "} // namespace VULKAN_HPP_NAMESPACE" << std::endl
       << std::endl

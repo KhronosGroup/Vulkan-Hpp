@@ -924,7 +924,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       throwResultException( result, message );
     }
-    return data;
+    return std::move( data );
 #endif
   }
 
@@ -28699,9 +28699,9 @@ public:
     template <typename Allocator = std::allocator<Pipeline>, typename Dispatch = DispatchLoader> 
     ResultValueType<Pipeline>::type createGraphicsPipeline( PipelineCache pipelineCache, const GraphicsPipelineCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
-    template <typename Allocator = std::allocator<Pipeline>, typename Dispatch = DispatchLoader> 
+    template <typename Allocator = std::allocator<UniquePipeline>, typename Dispatch = DispatchLoader> 
     typename ResultValueType<std::vector<UniquePipeline,Allocator>>::type createGraphicsPipelinesUnique( PipelineCache pipelineCache, ArrayProxy<const GraphicsPipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
-    template <typename Allocator = std::allocator<Pipeline>, typename Dispatch = DispatchLoader> 
+    template <typename Allocator = std::allocator<UniquePipeline>, typename Dispatch = DispatchLoader> 
     ResultValueType<UniquePipeline>::type createGraphicsPipelineUnique( PipelineCache pipelineCache, const GraphicsPipelineCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -28714,9 +28714,9 @@ public:
     template <typename Allocator = std::allocator<Pipeline>, typename Dispatch = DispatchLoader> 
     ResultValueType<Pipeline>::type createComputePipeline( PipelineCache pipelineCache, const ComputePipelineCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
-    template <typename Allocator = std::allocator<Pipeline>, typename Dispatch = DispatchLoader> 
+    template <typename Allocator = std::allocator<UniquePipeline>, typename Dispatch = DispatchLoader> 
     typename ResultValueType<std::vector<UniquePipeline,Allocator>>::type createComputePipelinesUnique( PipelineCache pipelineCache, ArrayProxy<const ComputePipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
-    template <typename Allocator = std::allocator<Pipeline>, typename Dispatch = DispatchLoader> 
+    template <typename Allocator = std::allocator<UniquePipeline>, typename Dispatch = DispatchLoader> 
     ResultValueType<UniquePipeline>::type createComputePipelineUnique( PipelineCache pipelineCache, const ComputePipelineCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -28814,7 +28814,7 @@ public:
     template <typename Allocator = std::allocator<DescriptorSet>, typename Dispatch = DispatchLoader> 
     typename ResultValueType<std::vector<DescriptorSet,Allocator>>::type allocateDescriptorSets( const DescriptorSetAllocateInfo & allocateInfo, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
-    template <typename Allocator = std::allocator<DescriptorSet>, typename Dispatch = DispatchLoader> 
+    template <typename Allocator = std::allocator<UniqueDescriptorSet>, typename Dispatch = DispatchLoader> 
     typename ResultValueType<std::vector<UniqueDescriptorSet,Allocator>>::type allocateDescriptorSetsUnique( const DescriptorSetAllocateInfo & allocateInfo, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -28908,7 +28908,7 @@ public:
     template <typename Allocator = std::allocator<CommandBuffer>, typename Dispatch = DispatchLoader> 
     typename ResultValueType<std::vector<CommandBuffer,Allocator>>::type allocateCommandBuffers( const CommandBufferAllocateInfo & allocateInfo, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
-    template <typename Allocator = std::allocator<CommandBuffer>, typename Dispatch = DispatchLoader> 
+    template <typename Allocator = std::allocator<UniqueCommandBuffer>, typename Dispatch = DispatchLoader> 
     typename ResultValueType<std::vector<UniqueCommandBuffer,Allocator>>::type allocateCommandBuffersUnique( const CommandBufferAllocateInfo & allocateInfo, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -28928,9 +28928,9 @@ public:
     template <typename Allocator = std::allocator<SwapchainKHR>, typename Dispatch = DispatchLoader> 
     ResultValueType<SwapchainKHR>::type createSharedSwapchainKHR( const SwapchainCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
-    template <typename Allocator = std::allocator<SwapchainKHR>, typename Dispatch = DispatchLoader> 
+    template <typename Allocator = std::allocator<UniqueSwapchainKHR>, typename Dispatch = DispatchLoader> 
     typename ResultValueType<std::vector<UniqueSwapchainKHR,Allocator>>::type createSharedSwapchainsKHRUnique( ArrayProxy<const SwapchainCreateInfoKHR> createInfos, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
-    template <typename Allocator = std::allocator<SwapchainKHR>, typename Dispatch = DispatchLoader> 
+    template <typename Allocator = std::allocator<UniqueSwapchainKHR>, typename Dispatch = DispatchLoader> 
     ResultValueType<UniqueSwapchainKHR>::type createSharedSwapchainKHRUnique( const SwapchainCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -30779,18 +30779,19 @@ public:
   template <typename Allocator, typename Dispatch> 
   VULKAN_HPP_INLINE typename ResultValueType<std::vector<UniquePipeline,Allocator>>::type Device::createGraphicsPipelinesUnique( PipelineCache pipelineCache, ArrayProxy<const GraphicsPipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
-    std::vector<Pipeline,Allocator> pipelines( createInfos.size() );
-    Result result = static_cast<Result>( d.vkCreateGraphicsPipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkGraphicsPipelineCreateInfo*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( pipelines.data() ) ) );
+    static_assert( sizeof( Pipeline ) <= sizeof( UniquePipeline ), "Pipeline is greater than UniquePipeline!" );
+    std::vector<UniquePipeline, Allocator> pipelines;
+    pipelines.reserve( createInfos.size() );
+    Pipeline* buffer = reinterpret_cast<Pipeline*>( reinterpret_cast<char*>( pipelines.data() ) + createInfos.size() * ( sizeof( UniquePipeline ) - sizeof( Pipeline ) ) );
+    Result result = static_cast<Result>(d.vkCreateGraphicsPipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkGraphicsPipelineCreateInfo*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( buffer ) ) );
 
     PipelineDeleter deleter( *this, allocator );
-    std::vector<UniquePipeline> uniquePipelines;
-    uniquePipelines.reserve( pipelines.size() );
-    for ( auto const& pipeline : pipelines )
+    for ( size_t i=0 ; i<createInfos.size() ; i++ )
     {
-      uniquePipelines.push_back( UniquePipeline( pipeline, deleter ) );
+      pipelines.push_back( UniquePipeline( buffer[i], deleter ) );
     }
 
-    return createResultValue( result, uniquePipelines, "VULKAN_HPP_NAMESPACE::Device::createGraphicsPipelinesUnique" );
+    return createResultValue( result, pipelines, "VULKAN_HPP_NAMESPACE::Device::createGraphicsPipelinesUnique" );
   }
   template <typename Allocator, typename Dispatch> 
   VULKAN_HPP_INLINE ResultValueType<UniquePipeline>::type Device::createGraphicsPipelineUnique( PipelineCache pipelineCache, const GraphicsPipelineCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
@@ -30828,18 +30829,19 @@ public:
   template <typename Allocator, typename Dispatch> 
   VULKAN_HPP_INLINE typename ResultValueType<std::vector<UniquePipeline,Allocator>>::type Device::createComputePipelinesUnique( PipelineCache pipelineCache, ArrayProxy<const ComputePipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
-    std::vector<Pipeline,Allocator> pipelines( createInfos.size() );
-    Result result = static_cast<Result>( d.vkCreateComputePipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkComputePipelineCreateInfo*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( pipelines.data() ) ) );
+    static_assert( sizeof( Pipeline ) <= sizeof( UniquePipeline ), "Pipeline is greater than UniquePipeline!" );
+    std::vector<UniquePipeline, Allocator> pipelines;
+    pipelines.reserve( createInfos.size() );
+    Pipeline* buffer = reinterpret_cast<Pipeline*>( reinterpret_cast<char*>( pipelines.data() ) + createInfos.size() * ( sizeof( UniquePipeline ) - sizeof( Pipeline ) ) );
+    Result result = static_cast<Result>(d.vkCreateComputePipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkComputePipelineCreateInfo*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( buffer ) ) );
 
     PipelineDeleter deleter( *this, allocator );
-    std::vector<UniquePipeline> uniquePipelines;
-    uniquePipelines.reserve( pipelines.size() );
-    for ( auto const& pipeline : pipelines )
+    for ( size_t i=0 ; i<createInfos.size() ; i++ )
     {
-      uniquePipelines.push_back( UniquePipeline( pipeline, deleter ) );
+      pipelines.push_back( UniquePipeline( buffer[i], deleter ) );
     }
 
-    return createResultValue( result, uniquePipelines, "VULKAN_HPP_NAMESPACE::Device::createComputePipelinesUnique" );
+    return createResultValue( result, pipelines, "VULKAN_HPP_NAMESPACE::Device::createComputePipelinesUnique" );
   }
   template <typename Allocator, typename Dispatch> 
   VULKAN_HPP_INLINE ResultValueType<UniquePipeline>::type Device::createComputePipelineUnique( PipelineCache pipelineCache, const ComputePipelineCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
@@ -31054,18 +31056,19 @@ public:
   template <typename Allocator, typename Dispatch> 
   VULKAN_HPP_INLINE typename ResultValueType<std::vector<UniqueDescriptorSet,Allocator>>::type Device::allocateDescriptorSetsUnique( const DescriptorSetAllocateInfo & allocateInfo, Dispatch const &d ) const
   {
-    std::vector<DescriptorSet,Allocator> descriptorSets( allocateInfo.descriptorSetCount );
-    Result result = static_cast<Result>( d.vkAllocateDescriptorSets( m_device, reinterpret_cast<const VkDescriptorSetAllocateInfo*>( &allocateInfo ), reinterpret_cast<VkDescriptorSet*>( descriptorSets.data() ) ) );
+    static_assert( sizeof( DescriptorSet ) <= sizeof( UniqueDescriptorSet ), "DescriptorSet is greater than UniqueDescriptorSet!" );
+    std::vector<UniqueDescriptorSet, Allocator> descriptorSets;
+    descriptorSets.reserve( allocateInfo.descriptorSetCount );
+    DescriptorSet* buffer = reinterpret_cast<DescriptorSet*>( reinterpret_cast<char*>( descriptorSets.data() ) + allocateInfo.descriptorSetCount * ( sizeof( UniqueDescriptorSet ) - sizeof( DescriptorSet ) ) );
+    Result result = static_cast<Result>(d.vkAllocateDescriptorSets( m_device, reinterpret_cast<const VkDescriptorSetAllocateInfo*>( &allocateInfo ), reinterpret_cast<VkDescriptorSet*>( buffer ) ) );
 
     DescriptorSetDeleter deleter( *this, allocateInfo.descriptorPool );
-    std::vector<UniqueDescriptorSet> uniqueDescriptorSets;
-    uniqueDescriptorSets.reserve( descriptorSets.size() );
-    for ( auto const& descriptorSet : descriptorSets )
+    for ( size_t i=0 ; i<allocateInfo.descriptorSetCount ; i++ )
     {
-      uniqueDescriptorSets.push_back( UniqueDescriptorSet( descriptorSet, deleter ) );
+      descriptorSets.push_back( UniqueDescriptorSet( buffer[i], deleter ) );
     }
 
-    return createResultValue( result, uniqueDescriptorSets, "VULKAN_HPP_NAMESPACE::Device::allocateDescriptorSetsUnique" );
+    return createResultValue( result, descriptorSets, "VULKAN_HPP_NAMESPACE::Device::allocateDescriptorSetsUnique" );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -31261,18 +31264,19 @@ public:
   template <typename Allocator, typename Dispatch> 
   VULKAN_HPP_INLINE typename ResultValueType<std::vector<UniqueCommandBuffer,Allocator>>::type Device::allocateCommandBuffersUnique( const CommandBufferAllocateInfo & allocateInfo, Dispatch const &d ) const
   {
-    std::vector<CommandBuffer,Allocator> commandBuffers( allocateInfo.commandBufferCount );
-    Result result = static_cast<Result>( d.vkAllocateCommandBuffers( m_device, reinterpret_cast<const VkCommandBufferAllocateInfo*>( &allocateInfo ), reinterpret_cast<VkCommandBuffer*>( commandBuffers.data() ) ) );
+    static_assert( sizeof( CommandBuffer ) <= sizeof( UniqueCommandBuffer ), "CommandBuffer is greater than UniqueCommandBuffer!" );
+    std::vector<UniqueCommandBuffer, Allocator> commandBuffers;
+    commandBuffers.reserve( allocateInfo.commandBufferCount );
+    CommandBuffer* buffer = reinterpret_cast<CommandBuffer*>( reinterpret_cast<char*>( commandBuffers.data() ) + allocateInfo.commandBufferCount * ( sizeof( UniqueCommandBuffer ) - sizeof( CommandBuffer ) ) );
+    Result result = static_cast<Result>(d.vkAllocateCommandBuffers( m_device, reinterpret_cast<const VkCommandBufferAllocateInfo*>( &allocateInfo ), reinterpret_cast<VkCommandBuffer*>( buffer ) ) );
 
     CommandBufferDeleter deleter( *this, allocateInfo.commandPool );
-    std::vector<UniqueCommandBuffer> uniqueCommandBuffers;
-    uniqueCommandBuffers.reserve( commandBuffers.size() );
-    for ( auto const& commandBuffer : commandBuffers )
+    for ( size_t i=0 ; i<allocateInfo.commandBufferCount ; i++ )
     {
-      uniqueCommandBuffers.push_back( UniqueCommandBuffer( commandBuffer, deleter ) );
+      commandBuffers.push_back( UniqueCommandBuffer( buffer[i], deleter ) );
     }
 
-    return createResultValue( result, uniqueCommandBuffers, "VULKAN_HPP_NAMESPACE::Device::allocateCommandBuffersUnique" );
+    return createResultValue( result, commandBuffers, "VULKAN_HPP_NAMESPACE::Device::allocateCommandBuffersUnique" );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -31314,18 +31318,19 @@ public:
   template <typename Allocator, typename Dispatch> 
   VULKAN_HPP_INLINE typename ResultValueType<std::vector<UniqueSwapchainKHR,Allocator>>::type Device::createSharedSwapchainsKHRUnique( ArrayProxy<const SwapchainCreateInfoKHR> createInfos, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
-    std::vector<SwapchainKHR,Allocator> swapchains( createInfos.size() );
-    Result result = static_cast<Result>( d.vkCreateSharedSwapchainsKHR( m_device, createInfos.size() , reinterpret_cast<const VkSwapchainCreateInfoKHR*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSwapchainKHR*>( swapchains.data() ) ) );
+    static_assert( sizeof( SwapchainKHR ) <= sizeof( UniqueSwapchainKHR ), "SwapchainKHR is greater than UniqueSwapchainKHR!" );
+    std::vector<UniqueSwapchainKHR, Allocator> swapchainKHRs;
+    swapchainKHRs.reserve( createInfos.size() );
+    SwapchainKHR* buffer = reinterpret_cast<SwapchainKHR*>( reinterpret_cast<char*>( swapchainKHRs.data() ) + createInfos.size() * ( sizeof( UniqueSwapchainKHR ) - sizeof( SwapchainKHR ) ) );
+    Result result = static_cast<Result>(d.vkCreateSharedSwapchainsKHR( m_device, createInfos.size() , reinterpret_cast<const VkSwapchainCreateInfoKHR*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSwapchainKHR*>( buffer ) ) );
 
     SwapchainKHRDeleter deleter( *this, allocator );
-    std::vector<UniqueSwapchainKHR> uniqueSwapchains;
-    uniqueSwapchains.reserve( swapchains.size() );
-    for ( auto const& swapchain : swapchains )
+    for ( size_t i=0 ; i<createInfos.size() ; i++ )
     {
-      uniqueSwapchains.push_back( UniqueSwapchainKHR( swapchain, deleter ) );
+      swapchainKHRs.push_back( UniqueSwapchainKHR( buffer[i], deleter ) );
     }
 
-    return createResultValue( result, uniqueSwapchains, "VULKAN_HPP_NAMESPACE::Device::createSharedSwapchainsKHRUnique" );
+    return createResultValue( result, swapchainKHRs, "VULKAN_HPP_NAMESPACE::Device::createSharedSwapchainsKHRUnique" );
   }
   template <typename Allocator, typename Dispatch> 
   VULKAN_HPP_INLINE ResultValueType<UniqueSwapchainKHR>::type Device::createSharedSwapchainKHRUnique( const SwapchainCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const

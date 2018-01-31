@@ -541,7 +541,7 @@ const std::string createResultValueHeader = R"(
     {
       throwResultException( result, message );
     }
-    return data;
+    return std::move( data );
 #endif
   }
 
@@ -2741,6 +2741,46 @@ void VulkanHppGenerator::sortDependencies()
   m_dependencies.swap(sortedDependencies);
 }
 
+void VulkanHppGenerator::writeArguments(std::ostream & os, CommandData const& commandData, bool firstCall, bool singular, size_t from, size_t to)
+{
+  assert(from <= to);
+
+  // get the parameter indices of the counter for vector parameters
+  std::map<size_t, size_t> countIndices;
+  for (std::map<size_t, size_t>::const_iterator it = commandData.vectorParams.begin(); it != commandData.vectorParams.end(); ++it)
+  {
+    countIndices.insert(std::make_pair(it->second, it->first));
+  }
+
+  bool encounteredArgument = false;
+  for (size_t i = from; i < to; i++)
+  {
+    if (encounteredArgument)
+    {
+      os << ", ";
+    }
+
+    std::map<size_t, size_t>::const_iterator it = countIndices.find(i);
+    if (it != countIndices.end())
+    {
+      writeCallCountParameter(os, commandData, singular, it);
+    }
+    else if ((it = commandData.vectorParams.find(i)) != commandData.vectorParams.end())
+    {
+      writeCallVectorParameter(os, commandData, firstCall, singular, it);
+    }
+    else if (m_vkTypes.find(commandData.params[i].pureType) != m_vkTypes.end())
+    {
+      writeCallVulkanTypeParameter(os, commandData.params[i]);
+    }
+    else
+    {
+      writeCallPlainTypeParameter(os, commandData.params[i]);
+    }
+    encounteredArgument = true;
+  }
+}
+
 void VulkanHppGenerator::writeBitmaskToString(std::ostream & os, std::string const& bitmaskName, EnumData const &enumData)
 {
   // the helper functions to make strings out of flag values
@@ -2772,13 +2812,6 @@ void VulkanHppGenerator::writeBitmaskToString(std::ostream & os, std::string con
 
 void VulkanHppGenerator::writeCall(std::ostream & os, CommandData const& commandData, bool firstCall, bool singular)
 {
-  // get the parameter indices of the counter for vector parameters
-  std::map<size_t, size_t> countIndices;
-  for (std::map<size_t, size_t>::const_iterator it = commandData.vectorParams.begin(); it != commandData.vectorParams.end(); ++it)
-  {
-    countIndices.insert(std::make_pair(it->second, it->first));
-  }
-
   // the original function call
   os << "d.vk" << startUpperCase(commandData.fullName) << "( ";
 
@@ -2786,33 +2819,13 @@ void VulkanHppGenerator::writeCall(std::ostream & os, CommandData const& command
   {
     // if it's member of a class -> add the first parameter with "m_" as prefix
     os << "m_" << commandData.params[0].name;
-  }
-
-  for (size_t i = commandData.className.empty() ? 0 : 1; i < commandData.params.size(); i++)
-  {
-    if (0 < i)
+    if (1 < commandData.params.size())
     {
       os << ", ";
     }
-
-    std::map<size_t, size_t>::const_iterator it = countIndices.find(i);
-    if (it != countIndices.end())
-    {
-      writeCallCountParameter(os, commandData, singular, it);
-    }
-    else if ((it = commandData.vectorParams.find(i)) != commandData.vectorParams.end())
-    {
-      writeCallVectorParameter(os, commandData, firstCall, singular, it);
-    }
-    else if (m_vkTypes.find(commandData.params[i].pureType) != m_vkTypes.end())
-    {
-      writeCallVulkanTypeParameter(os, commandData.params[i]);
-    }
-    else
-    {
-      writeCallPlainTypeParameter(os, commandData.params[i]);
-    }
   }
+
+  writeArguments(os, commandData, firstCall, singular, commandData.className.empty() ? 0 : 1, commandData.params.size());
   os << " )";
 }
 
@@ -3204,7 +3217,7 @@ void VulkanHppGenerator::writeExceptionsForEnum(std::ostream & os, EnumData cons
 
 void VulkanHppGenerator::writeFunction(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool definition, bool enhanced, bool singular, bool unique, bool isStructureChain)
 {
-  writeFunctionHeaderTemplate(os, indentation, commandData, enhanced, !definition, isStructureChain);
+  writeFunctionHeaderTemplate(os, indentation, commandData, enhanced, unique, !definition, isStructureChain);
 
   os << indentation << (definition ? "VULKAN_HPP_INLINE " : "");
   writeFunctionHeaderReturnType(os, indentation, commandData, enhanced, singular, unique, isStructureChain);
@@ -3234,63 +3247,106 @@ void VulkanHppGenerator::writeFunction(std::ostream & os, std::string const& ind
 
 void VulkanHppGenerator::writeFunctionBodyEnhanced(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool singular, bool unique, bool isStructureChain)
 {
-  if (1 < commandData.vectorParams.size())
+  if (unique && !singular && (commandData.vectorParams.find(commandData.returnParam) != commandData.vectorParams.end()))    // returns a vector of UniqueStuff
   {
-    writeFunctionBodyEnhancedMultiVectorSizeCheck(os, indentation, commandData);
-  }
+    std::string const stringTemplate =
+R"(${i}  static_assert( sizeof( ${type} ) <= sizeof( Unique${type} ), "${type} is greater than Unique${type}!" );
+${i}  std::vector<Unique${type}, Allocator> ${typeVariable}s;
+${i}  ${typeVariable}s.reserve( ${vectorSize} );
+${i}  ${type}* buffer = reinterpret_cast<${type}*>( reinterpret_cast<char*>( ${typeVariable}s.data() ) + ${vectorSize} * ( sizeof( Unique${type} ) - sizeof( ${type} ) ) );
+${i}  Result result = static_cast<Result>(d.vk${command}( m_device, ${arguments}, reinterpret_cast<Vk${type}*>( buffer ) ) );
 
-  std::string returnName;
-  if (commandData.returnParam != ~0)
-  {
-    returnName = writeFunctionBodyEnhancedLocalReturnVariable(os, indentation, commandData, singular, isStructureChain);
-  }
+${i}  ${type}Deleter deleter( *this, ${deleterArg} );
+${i}  for ( size_t i=0 ; i<${vectorSize} ; i++ )
+${i}  {
+${i}    ${typeVariable}s.push_back( Unique${type}( buffer[i], deleter ) );
+${i}  }
 
-  if (commandData.twoStep)
-  {
-    assert(!singular);
-    writeFunctionBodyEnhancedLocalCountVariable(os, indentation, commandData);
+${i}  return createResultValue( result, ${typeVariable}s, "VULKAN_HPP_NAMESPACE::${class}::${function}Unique" );
+)";
 
-    // we now might have to check the result, resize the returned vector accordingly, and call the function again
-    std::map<size_t, size_t>::const_iterator returnit = commandData.vectorParams.find(commandData.returnParam);
-    assert(returnit != commandData.vectorParams.end() && (returnit->second != ~0));
-    std::string sizeName = startLowerCase(strip(commandData.params[returnit->second].name, "p"));
+    std::string type = (commandData.returnParam != ~0) ? commandData.params[commandData.returnParam].pureType : "";
+    std::string typeVariable = startLowerCase(type);
+    std::ostringstream arguments;
+    writeArguments(arguments, commandData, true, singular, 1, commandData.params.size() - 1);
 
-    if (commandData.returnType == "Result")
+    std::map<std::string, DeleterData>::const_iterator ddit = m_deleters.find(type);
+    assert(ddit != m_deleters.end());
+
+    bool isCreateFunction = (commandData.fullName.substr(0, 6) == "create");
+    os << replaceWithMap(stringTemplate, std::map<std::string, std::string>
     {
-      if (1 < commandData.successCodes.size())
-      {
-        writeFunctionBodyEnhancedCallTwoStepIterate(os, indentation, returnName, sizeName, commandData);
-      }
-      else
-      {
-        writeFunctionBodyEnhancedCallTwoStepChecked(os, indentation, returnName, sizeName, commandData);
-      }
-    }
-    else
-    {
-      writeFunctionBodyEnhancedCallTwoStep(os, indentation, returnName, sizeName, commandData);
-    }
+      { "i", indentation },
+      { "type", type },
+      { "typeVariable", typeVariable },
+      { "vectorSize", isCreateFunction ? "createInfos.size()" : "allocateInfo." + typeVariable + "Count" },
+      { "command", startUpperCase(commandData.fullName) },
+      { "arguments", arguments.str() },
+      { "deleterArg", ddit->second.pool.empty() ? "allocator" : "allocateInfo." + startLowerCase(ddit->second.pool) },
+      { "class", commandData.className },
+      { "function", commandData.reducedName }
+    });
   }
   else
   {
-    if (commandData.returnType == "Result")
+    if (1 < commandData.vectorParams.size())
     {
-      writeFunctionBodyEnhancedCallResult(os, indentation, commandData, singular);
+      writeFunctionBodyEnhancedMultiVectorSizeCheck(os, indentation, commandData);
+    }
+
+    std::string returnName;
+    if (commandData.returnParam != ~0)
+    {
+      returnName = writeFunctionBodyEnhancedLocalReturnVariable(os, indentation, commandData, singular, isStructureChain);
+    }
+
+    if (commandData.twoStep)
+    {
+      assert(!singular);
+      writeFunctionBodyEnhancedLocalCountVariable(os, indentation, commandData);
+
+      // we now might have to check the result, resize the returned vector accordingly, and call the function again
+      std::map<size_t, size_t>::const_iterator returnit = commandData.vectorParams.find(commandData.returnParam);
+      assert(returnit != commandData.vectorParams.end() && (returnit->second != ~0));
+      std::string sizeName = startLowerCase(strip(commandData.params[returnit->second].name, "p"));
+
+      if (commandData.returnType == "Result")
+      {
+        if (1 < commandData.successCodes.size())
+        {
+          writeFunctionBodyEnhancedCallTwoStepIterate(os, indentation, returnName, sizeName, commandData);
+        }
+        else
+        {
+          writeFunctionBodyEnhancedCallTwoStepChecked(os, indentation, returnName, sizeName, commandData);
+        }
+      }
+      else
+      {
+        writeFunctionBodyEnhancedCallTwoStep(os, indentation, returnName, sizeName, commandData);
+      }
     }
     else
     {
-      writeFunctionBodyEnhancedCall(os, indentation, commandData, singular);
+      if (commandData.returnType == "Result")
+      {
+        writeFunctionBodyEnhancedCallResult(os, indentation, commandData, singular);
+      }
+      else
+      {
+        writeFunctionBodyEnhancedCall(os, indentation, commandData, singular);
+      }
     }
-  }
 
-  if ((commandData.returnType == "Result") || !commandData.successCodes.empty())
-  {
-    writeFunctionBodyEnhancedReturnResultValue(os, indentation, returnName, commandData, singular, unique);
-  }
-  else if ((commandData.returnParam != ~0) && (commandData.returnType != commandData.enhancedReturnType))
-  {
-    // for the other returning cases, when the return type is somhow enhanced, just return the local returnVariable
-    os << indentation << "  return " << returnName << ";" << std::endl;
+    if ((commandData.returnType == "Result") || !commandData.successCodes.empty())
+    {
+      writeFunctionBodyEnhancedReturnResultValue(os, indentation, returnName, commandData, singular, unique);
+    }
+    else if ((commandData.returnParam != ~0) && (commandData.returnType != commandData.enhancedReturnType))
+    {
+      // for the other returning cases, when the return type is somhow enhanced, just return the local returnVariable
+      os << indentation << "  return " << returnName << ";" << std::endl;
+    }
   }
 }
 
@@ -3539,33 +3595,12 @@ void VulkanHppGenerator::writeFunctionBodyEnhancedReturnResultValue(std::ostream
     os << " );" << std::endl;
   }
 
-  bool returnUniqueVector = unique && !singular && (commandData.vectorParams.find(commandData.returnParam) != commandData.vectorParams.end());
-  if (returnUniqueVector)
-  {
-    std::string const stringTemplate =
-R"(${i}  std::vector<Unique${type}> unique${returnVectorName}s;
-${i}  unique${returnVectorName}s.reserve( ${localName}s.size() );
-${i}  for ( auto const& ${localName} : ${localName}s )
-${i}  {
-${i}    unique${returnVectorName}s.push_back( Unique${type}( ${localName}, deleter ) );
-${i}  }
-
-)";
-
-    os << replaceWithMap(stringTemplate, std::map<std::string, std::string>{
-      { "i", indentation },
-      { "type", type },
-      { "returnVectorName", returnVectorName },
-      { "localName", startLowerCase(returnVectorName) }
-    });
-  }
-
   // if the return type is "Result" or there is at least one success code, create the Result/Value construct to return
   os << indentation << "  return createResultValue( result, ";
   if (commandData.returnParam != ~0)
   {
     // if there's a return parameter, list it in the Result/Value constructor
-    os << (returnUniqueVector ? "unique" + returnVectorName + "s" : returnName) << ", ";
+    os << returnName << ", ";
   }
 
   // now the function name (with full namespace) as a string
@@ -3582,7 +3617,7 @@ ${i}  }
     os << " }";
   }
 
-  if (unique && !returnUniqueVector)
+  if (unique)
   {
     os << ", deleter";
   }
@@ -3934,7 +3969,7 @@ void VulkanHppGenerator::writeFunctionHeaderReturnType(std::ostream & os, std::s
   os << replaceWithMap(templateString, { { "returnType", returnType } });
 }
 
-void VulkanHppGenerator::writeFunctionHeaderTemplate(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool enhanced, bool withDefault, bool isStructureChain)
+void VulkanHppGenerator::writeFunctionHeaderTemplate(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool enhanced, bool unique, bool withDefault, bool isStructureChain)
 {
   std::string dispatch = withDefault ? std::string("typename Dispatch = DispatchLoaderStatic") : std::string("typename Dispatch");
   if (enhanced && isStructureChain)
@@ -3955,7 +3990,7 @@ void VulkanHppGenerator::writeFunctionHeaderTemplate(std::ostream & os, std::str
     if (withDefault)
     {
       // for the default type get the type from the enhancedReturnType, which is of the form 'std::vector<Type,Allocator>'
-      os << " = std::allocator<" << commandData.enhancedReturnType.substr(12, commandData.enhancedReturnType.find(',') - 12) << ">";
+      os << " = std::allocator<" << (unique ? "Unique" : "") << commandData.enhancedReturnType.substr(12, commandData.enhancedReturnType.find(',') - 12) << ">";
     }
     os << ", " << dispatch;
     os << "> " << std::endl;

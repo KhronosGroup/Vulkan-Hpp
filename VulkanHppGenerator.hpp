@@ -238,6 +238,7 @@ class VulkanHppGenerator
     void readTypeStructMember(tinyxml2::XMLElement const* element, StructData & structData);
     void registerDeleter(CommandData const& commandData);
     void setDefault(std::string const& name, std::map<std::string, std::string> & defaultValues, EnumData const& enumData);
+    void writeArguments(std::ostream & os, CommandData const& commandData, bool firstCall, bool singular, size_t from, size_t to);
     void writeBitmaskToString(std::ostream & os, std::string const& flagsName, EnumData const &enumData);
     void writeCall(std::ostream & os, CommandData const& commandData, bool firstCall, bool singular);
     void writeCallCountParameter(std::ostream & os, CommandData const& commandData, bool singular, std::map<size_t, size_t>::const_iterator it);
@@ -266,7 +267,7 @@ class VulkanHppGenerator
     void writeFunctionHeaderArgumentsEnhanced(std::ostream & os, CommandData const& commandData, bool singular, bool withDefaults);
     void writeFunctionHeaderArgumentsStandard(std::ostream & os, CommandData const& commandData, bool withDefaults);
     void writeFunctionHeaderReturnType(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool enhanced, bool singular, bool unique, bool isStructureChain);
-    void writeFunctionHeaderTemplate(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool enhanced, bool withDefault, bool isStructureChain);
+    void writeFunctionHeaderTemplate(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool enhanced, bool unique, bool withDefault, bool isStructureChain);
     void writeStructConstructor(std::ostream & os, std::string const& name, StructData const& structData, std::map<std::string, std::string> const& defaultValues);
     void writeStructSetter(std::ostream & os, std::string const& structureName, MemberData const& memberData);
     void writeStructureChainValidation(std::ostream & os, DependencyData const& dependencyData);

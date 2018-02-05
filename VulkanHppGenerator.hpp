@@ -246,8 +246,6 @@ class VulkanHppGenerator
     void writeCallVectorParameter(std::ostream & os, CommandData const& commandData, bool firstCall, bool singular, std::map<size_t, size_t>::const_iterator it);
     void writeCallVulkanTypeParameter(std::ostream & os, ParamData const& paramData);
     void writeEnumsToString(std::ostream & os, EnumData const& enumData);
-    void writeDeleterClasses(std::ostream & os, std::pair<std::string, std::set<std::string>> const& deleterTypes);
-    void writeDeleterForwardDeclarations(std::ostream &os, std::pair<std::string, std::set<std::string>> const& deleterTypes);
     void writeExceptionsForEnum(std::ostream & os, EnumData const& enumData);
     void writeFunction(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool definition, bool enhanced, bool singular, bool unique, bool isStructureChain);
     void writeFunctionBodyEnhanced(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool singular, bool unique, bool isStructureChain);
@@ -280,6 +278,7 @@ class VulkanHppGenerator
     void writeTypeScalar(std::ostream & os, DependencyData const& dependencyData);
     void writeTypeStruct(std::ostream & os, DependencyData const& dependencyData, std::map<std::string, std::string> const& defaultValues);
     void writeTypeUnion(std::ostream & os, DependencyData const& dependencyData, std::map<std::string, std::string> const& defaultValues);
+    void writeUniqueTypes(std::ostream &os, std::pair<std::string, std::set<std::string>> const& deleterTypes);
 #if !defined(NDEBUG)
     void skipVendorID(tinyxml2::XMLElement const* element);
 #endif

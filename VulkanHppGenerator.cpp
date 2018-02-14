@@ -2378,10 +2378,8 @@ void VulkanHppGenerator::readTypeBasetype(tinyxml2::XMLElement const* element, s
   checkEmptyElement(children[0]);
   checkEmptyElement(children[1]);
 
-#if !defined(NDEBUG)
   std::string type = children[0]->GetText();
   assert((type == "uint32_t") || (type == "uint64_t"));
-#endif
 
   std::string name = strip(children[1]->GetText(), "Vk");
 

@@ -698,6 +698,83 @@ const std::string uniqueHandleHeader = R"(
 
 )";
 
+const std::string deleterClassString = R"(
+  struct AllocationCallbacks;
+
+  template <typename OwnerType>
+  class ObjectDeleter
+  {
+    public:
+      ObjectDeleter(OwnerType owner = OwnerType(), Optional<const AllocationCallbacks> allocator = nullptr)
+        : m_owner(owner)
+        , m_allocator(allocator)
+      {}
+
+      OwnerType getOwner() const { return m_owner; }
+      Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }
+
+    protected:
+      template <typename T>
+      void destroy(T t)
+      {
+        m_owner.destroy(t, m_allocator);
+      }
+
+    private:
+      OwnerType m_owner;
+      Optional<const AllocationCallbacks> m_allocator;
+  };
+
+  class NoParent;
+
+  template <>
+  class ObjectDeleter<NoParent>
+  {
+  public:
+    ObjectDeleter( Optional<const AllocationCallbacks> allocator = nullptr )
+      : m_allocator( allocator )
+    {}
+
+    Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }
+
+  protected:
+    template <typename T>
+    void destroy(T t)
+    {
+      t.destroy( m_allocator );
+    }
+
+  private:
+    Optional<const AllocationCallbacks> m_allocator;
+  };
+
+  template <typename OwnerType, typename PoolType>
+  class PoolDeleter
+  {
+    public:
+      PoolDeleter(OwnerType owner = OwnerType(), PoolType pool = PoolType())
+        : m_owner(owner)
+        , m_pool(pool)
+      {}
+
+      OwnerType getOwner() const { return m_owner; }
+      PoolType getPool() const { return m_pool; }
+
+    protected:
+      template <typename T>
+      void destroy(T t)
+      {
+        m_owner.free(m_pool, t);
+      }
+
+    private:
+      OwnerType m_owner;
+      PoolType m_pool;
+  };
+
+)";
+
+
 std::string replaceWithMap(std::string const &input, std::map<std::string, std::string> replacements)
 {
   // This will match ${someVariable} and contain someVariable in match group 1
@@ -3015,175 +3092,6 @@ void VulkanHppGenerator::writeEnumsToString(std::ostream & os, EnumData const& e
   os << std::endl;
 }
 
-void VulkanHppGenerator::writeDeleterClasses(std::ostream & os, std::pair<std::string, std::set<std::string>> const& deleterTypes)
-{
-  // A Deleter class for each of the Unique* classes... but only if smart handles are not switched off
-  os << "#ifndef VULKAN_HPP_NO_SMART_HANDLE" << std::endl;
-  bool first = true;
-
-  // get type and name of the parent (holder) type
-  std::string parentType = deleterTypes.first;
-  std::string parentName = parentType.empty() ? "" : startLowerCase(parentType);
-
-  // iterate over the deleter types parented by this type
-  for (auto const& deleterType : deleterTypes.second)
-  {
-    std::string deleterName = startLowerCase(deleterType);
-    bool standardDeleter = !parentType.empty() && (deleterType != "Device");    // this detects the 'standard' case for a deleter
-                                                                                // if this Deleter is pooled, make such a pool the last argument, otherwise an Optional allocator
-    auto const& dd = m_deleters.find(deleterType);
-    assert(dd != m_deleters.end());
-    std::string poolName = (dd->second.pool.empty() ? "" : startLowerCase(dd->second.pool));
-
-    if (!first)
-    {
-      os << std::endl;
-    }
-    first = false;
-
-    os << "  class " << deleterType << "Deleter" << std::endl
-      << "  {" << std::endl
-      << "  public:" << std::endl
-      << "    " << deleterType << "Deleter( ";
-    if (standardDeleter)
-    {
-      // the standard deleter gets a parent type in the constructor
-      os << parentType << " " << parentName << " = " << parentType << "(), ";
-    }
-
-    if (poolName.empty())
-    {
-      os << "Optional<const AllocationCallbacks> allocator = nullptr )" << std::endl;
-    }
-    else
-    {
-      assert(!dd->second.pool.empty());
-      os << dd->second.pool << " " << poolName << " = " << dd->second.pool << "() )" << std::endl;
-    }
-
-    // now the initializer list of the Deleter constructor
-    os << "      : ";
-    if (standardDeleter)
-    {
-      // the standard deleter has a parent type as a member
-      os << "m_" << parentName << "( " << parentName << " )" << std::endl
-        << "      , ";
-    }
-    if (poolName.empty())
-    {
-      // non-pooled deleter have an allocator as a member
-      os << "m_allocator( allocator )" << std::endl;
-    }
-    else
-    {
-      // pooled deleter have a pool as a member
-      os << "m_" << poolName << "( " << poolName << " )" << std::endl;
-    }
-
-    // besides that, the constructor is empty
-    os << "    {}" << std::endl
-      << std::endl;
-
-    // getter for the parent type
-    if (standardDeleter)
-    {
-      os << "    " << parentType << " get" << parentType << "() const { return m_" << parentName << "; }\n";
-    }
-
-    // getter for pool
-    if (!poolName.empty())
-    {
-      os << "    " << dd->second.pool << " get" << dd->second.pool << "() const { return m_" << poolName << "; }\n";
-    }
-    else // getter for allocator
-    {
-      os << "    Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }\n";
-    }
-
-    os << "\n";
-
-    // the operator() calls the delete/destroy function
-    os << "  protected:\n"
-      << "    void destroy( " << deleterType << " " << deleterName << " )\n"
-      << "    {\n";
-
-    // the delete/destroy function is either part of the parent member of the deleter argument
-    if (standardDeleter)
-    {
-      os << "      m_" << parentName << ".";
-    }
-    else
-    {
-      os << "      " << deleterName << ".";
-    }
-
-    os << dd->second.call << "( ";
-
-    if (!poolName.empty())
-    {
-      // pooled Deleter gets the pool as the first argument
-      os << "m_" << poolName << ", ";
-    }
-
-    if (standardDeleter)
-    {
-      // the standard deleter gets the deleter argument as an argument
-      os << deleterName;
-    }
-
-    // the non-pooled deleter get the allocate as an argument (potentially after the deleterName
-    if (poolName.empty())
-    {
-      if (standardDeleter)
-      {
-        os << ", ";
-      }
-      os << "m_allocator";
-    }
-    os << " );" << std::endl
-      << "    }" << std::endl
-      << std::endl;
-
-    // now the members of the Deleter class
-    os << "  private:" << std::endl;
-    if (standardDeleter)
-    {
-      // the parentType for the standard deleter
-      os << "    " << parentType << " m_" << parentName << ";" << std::endl;
-    }
-
-    // the allocator for the non-pooled deleters, the pool for the pooled ones
-    if (poolName.empty())
-    {
-      os << "    Optional<const AllocationCallbacks> m_allocator;" << std::endl;
-    }
-    else
-    {
-      os << "    " << dd->second.pool << " m_" << poolName << ";" << std::endl;
-    }
-    os << "  };" << std::endl;
-  }
-
-  os << "#endif /*VULKAN_HPP_NO_SMART_HANDLE*/" << std::endl
-    << std::endl;
-}
-
-void VulkanHppGenerator::writeDeleterForwardDeclarations(std::ostream &os, std::pair<std::string, std::set<std::string>> const& deleterTypes)
-{
-  // if smart handles are supported, all the Deleter classes need to be forward declared
-  os << "#ifndef VULKAN_HPP_NO_SMART_HANDLE" << std::endl;
-  bool first = true;
-  std::string firstName = deleterTypes.first.empty() ? "" : startLowerCase(deleterTypes.first);
-  for (auto const& dt : deleterTypes.second)
-  {
-    os << "  class " << dt << "Deleter;" << std::endl;
-    os << "  template <> class UniqueHandleTraits<" << dt << "> {public: using deleter = " << dt << "Deleter; };\n";
-    os << "  using Unique" << dt << " = UniqueHandle<" << dt << ">;" << std::endl;
-  }
-  os << "#endif /*VULKAN_HPP_NO_SMART_HANDLE*/" << std::endl
-    << std::endl;
-}
-
 // Intended only for `enum class Result`!
 void VulkanHppGenerator::writeExceptionsForEnum(std::ostream & os, EnumData const& enumData)
 {
@@ -3256,7 +3164,7 @@ ${i}  ${typeVariable}s.reserve( ${vectorSize} );
 ${i}  ${type}* buffer = reinterpret_cast<${type}*>( reinterpret_cast<char*>( ${typeVariable}s.data() ) + ${vectorSize} * ( sizeof( Unique${type} ) - sizeof( ${type} ) ) );
 ${i}  Result result = static_cast<Result>(d.vk${command}( m_device, ${arguments}, reinterpret_cast<Vk${type}*>( buffer ) ) );
 
-${i}  ${type}Deleter deleter( *this, ${deleterArg} );
+${i}  ${Deleter}<${DeleterTemplate}> deleter( *this, ${deleterArg} );
 ${i}  for ( size_t i=0 ; i<${vectorSize} ; i++ )
 ${i}  {
 ${i}    ${typeVariable}s.push_back( Unique${type}( buffer[i], deleter ) );
@@ -3282,6 +3190,8 @@ ${i}  return createResultValue( result, ${typeVariable}s, "VULKAN_HPP_NAMESPACE:
       { "vectorSize", isCreateFunction ? "createInfos.size()" : "allocateInfo." + typeVariable + "Count" },
       { "command", startUpperCase(commandData.fullName) },
       { "arguments", arguments.str() },
+      { "Deleter", ddit->second.pool.empty() ? "ObjectDeleter" : "PoolDeleter" },
+      { "DeleterTemplate", ddit->second.pool.empty() ? type : commandData.className + "," + ddit->second.pool },
       { "deleterArg", ddit->second.pool.empty() ? "allocator" : "allocateInfo." + startLowerCase(ddit->second.pool) },
       { "class", commandData.className },
       { "function", commandData.reducedName }
@@ -3571,28 +3481,12 @@ void VulkanHppGenerator::writeFunctionBodyEnhancedReturnResultValue(std::ostream
   if (unique)
   {
     // the unique version needs a Deleter object for destruction of the newly created stuff
-    os << std::endl
-      << indentation << "  " << type << "Deleter deleter( ";
-    if (m_deleters.find(commandData.className) != m_deleters.end())
-    {
-      // if the Deleter is specific to the command's class, add '*this' to the deleter
-      os << "*this, ";
-    }
-
     // get the DeleterData corresponding to the returned type
     std::map<std::string, DeleterData>::const_iterator ddit = m_deleters.find(type);
-    assert(ddit != m_deleters.end());
-    if (ddit->second.pool.empty())
-    {
-      // if this type isn't pooled, use the allocator (provided as a function argument)
-      os << "allocator";
-    }
-    else
-    {
-      // otherwise use the pool, which always is a member of the second argument
-      os << startLowerCase(strip(commandData.params[1].name, "p")) << "." << startLowerCase(ddit->second.pool);
-    }
-    os << " );" << std::endl;
+    assert(ddit != m_deleters.end() && ddit->second.pool.empty());
+
+    os << std::endl
+      << indentation << "  ObjectDeleter<" << (commandData.className.empty() ? "NoParent" : commandData.className) << "> deleter( " << (commandData.className.empty() ? "" : "*this, ") << "allocator );" << std::endl;
   }
 
   // if the return type is "Result" or there is at least one success code, create the Result/Value construct to return
@@ -4288,9 +4182,8 @@ void VulkanHppGenerator::writeTypeCommand(std::ostream & os, DependencyData cons
       auto deleterTypesIt = m_deleterTypes.find("");
       assert((deleterTypesIt != m_deleterTypes.end()) && (deleterTypesIt->second.size() == 1));
 
-      writeDeleterForwardDeclarations(os, *deleterTypesIt);
+      writeUniqueTypes(os, *deleterTypesIt);
       writeTypeCommand(os, "  ", commandData, false);
-      writeDeleterClasses(os, *deleterTypesIt);
     }
     else
     {
@@ -4397,7 +4290,7 @@ void VulkanHppGenerator::writeTypeHandle(std::ostream & os, DependencyData const
   std::map<std::string, std::set<std::string>>::const_iterator deleterTypesIt = m_deleterTypes.find(dependencyData.name);
   if (deleterTypesIt != m_deleterTypes.end())
   {
-    writeDeleterForwardDeclarations(os, *deleterTypesIt);
+    writeUniqueTypes(os, *deleterTypesIt);
   }
 
   const std::string memberName = startLowerCase(dependencyData.name);
@@ -4475,10 +4368,17 @@ ${commands}
   // now list all the commands that are mapped to members of this class
   for (size_t i = 0; i < handleData.commands.size(); i++)
   {
-    std::string commandName = handleData.commands[i];
-    std::map<std::string, CommandData>::const_iterator cit = m_commands.find(commandName);
+    std::map<std::string, CommandData>::const_iterator cit = m_commands.find(handleData.commands[i]);
     assert((cit != m_commands.end()) && !cit->second.className.empty());
     writeTypeCommand(commands, "    ", cit->second, false);
+
+    // special handling for destroy functions
+    if (((cit->second.fullName.substr(0, 7) == "destroy") && (cit->second.reducedName != "destroy")) || (cit->second.fullName.substr(0, 4) == "free"))
+    {
+      CommandData shortenedCommand = cit->second;
+      shortenedCommand.reducedName = (cit->second.fullName.substr(0, 7) == "destroy") ? "destroy" : "free";
+      writeTypeCommand(commands, "    ", shortenedCommand, false);
+    }
   }
 
   os << replaceWithMap(templateString, {
@@ -4486,13 +4386,6 @@ ${commands}
     { "memberName", memberName },
     { "commands", commands.str() }
   });
-
-  // then the actual Deleter classes can be listed
-  deleterTypesIt = m_deleterTypes.find(dependencyData.name);
-  if (deleterTypesIt != m_deleterTypes.end())
-  {
-    writeDeleterClasses(os, *deleterTypesIt);
-  }
 
   // and finally the commands, that are member functions of this handle
   for (size_t i = 0; i < handleData.commands.size(); i++)
@@ -4503,6 +4396,14 @@ ${commands}
     std::list<DependencyData>::const_iterator dep = std::find_if(m_dependencies.begin(), m_dependencies.end(), [commandName](DependencyData const& dd) { return dd.name == commandName; });
     assert(dep != m_dependencies.end() && (dep->name == cit->second.fullName));
     writeTypeCommand(os, "  ", cit->second, true);
+
+    // special handling for destroy functions
+    if (((cit->second.fullName.substr(0, 7) == "destroy") && (cit->second.reducedName != "destroy")) || (cit->second.fullName.substr(0, 4) == "free"))
+    {
+      CommandData shortenedCommand = cit->second;
+      shortenedCommand.reducedName = (cit->second.fullName.substr(0, 7) == "destroy") ? "destroy" : "free";
+      writeTypeCommand(os, "  ", shortenedCommand, true);
+    }
   }
 
   if (!handleData.alias.empty())
@@ -4668,6 +4569,28 @@ void VulkanHppGenerator::writeTypeStruct(std::ostream & os, DependencyData const
 
   leaveProtect(os, it->second.protect);
   os << std::endl;
+}
+
+void VulkanHppGenerator::writeUniqueTypes(std::ostream &os, std::pair<std::string, std::set<std::string>> const& deleterTypes)
+{
+  os << "#ifndef VULKAN_HPP_NO_SMART_HANDLE" << std::endl;
+  if (!deleterTypes.first.empty())
+  {
+    os << "  class " << deleterTypes.first << ";" << std::endl;
+  }
+  os << std::endl;
+
+  bool first = true;
+  for (auto const& dt : deleterTypes.second)
+  {
+    auto ddit = m_deleters.find(dt);
+    assert(ddit != m_deleters.end());
+
+    os << "  template <> class UniqueHandleTraits<" << dt << "> {public: using deleter = " << (ddit->second.pool.empty() ? "Object" : "Pool") << "Deleter<" << (deleterTypes.first.empty() ? "NoParent" : deleterTypes.first) << (ddit->second.pool.empty() ? "" : ", " + ddit->second.pool) << ">; };\n";
+    os << "  using Unique" << dt << " = UniqueHandle<" << dt << ">;" << std::endl;
+  }
+  os << "#endif /*VULKAN_HPP_NO_SMART_HANDLE*/" << std::endl
+    << std::endl;
 }
 
 void VulkanHppGenerator::writeTypeUnion(std::ostream & os, DependencyData const& dependencyData, std::map<std::string, std::string> const& defaultValues)
@@ -5068,7 +4991,8 @@ int main( int argc, char **argv )
       << "namespace VULKAN_HPP_NAMESPACE" << std::endl
       << "{" << std::endl
       << resultValueHeader
-      << createResultValueHeader;
+      << createResultValueHeader
+      << deleterClassString;
 
     generator.writeDelegationClassStatic(ofs);
 

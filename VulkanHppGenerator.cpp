@@ -3189,7 +3189,7 @@ ${i}  return createResultValue( result, ${typeVariable}s, "VULKAN_HPP_NAMESPACE:
       { "command", startUpperCase(commandData.fullName) },
       { "arguments", arguments.str() },
       { "Deleter", ddit->second.pool.empty() ? "ObjectDeleter" : "PoolDeleter" },
-      { "DeleterTemplate", ddit->second.pool.empty() ? type : commandData.className + "," + ddit->second.pool },
+      { "DeleterTemplate", ddit->second.pool.empty() ? commandData.className : commandData.className + "," + ddit->second.pool },
       { "deleterArg", ddit->second.pool.empty() ? "allocator" : "allocateInfo." + startLowerCase(ddit->second.pool) },
       { "class", commandData.className },
       { "function", commandData.reducedName }

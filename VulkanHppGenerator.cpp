@@ -28,6 +28,9 @@ const std::string vkNamespace = R"(
 #define VULKAN_HPP_NAMESPACE vk
 #endif
 
+#define stringize(a)          #a
+#define stringize_indirect(a) std::string(stringize(a))
+
 namespace VULKAN_HPP_NAMESPACE
 {
 )";
@@ -40,8 +43,11 @@ const std::string exceptionHeader = R"(
   class ErrorCategoryImpl : public std::error_category
   {
     public:
-    virtual const char* name() const noexcept override { return "VULKAN_HPP_NAMESPACE::Result"; }
-    virtual std::string message(int ev) const override { return to_string(static_cast<Result>(ev)); }
+      virtual const char* name() const noexcept override { return m_name.c_str(); }
+      virtual std::string message(int ev) const override { return to_string(static_cast<Result>(ev)); }
+
+    private:
+      std::string m_name = (stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Result");
   };
 
 #if defined(_MSC_VER) && (_MSC_VER == 1800)
@@ -517,7 +523,7 @@ const std::string resultValueHeader = R"(
 )";
 
 const std::string createResultValueHeader = R"(
-  VULKAN_HPP_INLINE ResultValueType<void>::type createResultValue( Result result, char const * message )
+  VULKAN_HPP_INLINE ResultValueType<void>::type createResultValue( Result result, std::string const& message )
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
     VULKAN_HPP_ASSERT( result == Result::eSuccess );
@@ -525,13 +531,13 @@ const std::string createResultValueHeader = R"(
 #else
     if ( result != Result::eSuccess )
     {
-      throwResultException( result, message );
+      throwResultException( result, message.c_str() );
     }
 #endif
   }
 
   template <typename T>
-  VULKAN_HPP_INLINE typename ResultValueType<T>::type createResultValue( Result result, T & data, char const * message )
+  VULKAN_HPP_INLINE typename ResultValueType<T>::type createResultValue( Result result, T & data, std::string const& message )
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
     VULKAN_HPP_ASSERT( result == Result::eSuccess );
@@ -539,34 +545,34 @@ const std::string createResultValueHeader = R"(
 #else
     if ( result != Result::eSuccess )
     {
-      throwResultException( result, message );
+      throwResultException( result, message.c_str() );
     }
     return std::move( data );
 #endif
   }
 
-  VULKAN_HPP_INLINE Result createResultValue( Result result, char const * message, std::initializer_list<Result> successCodes )
+  VULKAN_HPP_INLINE Result createResultValue( Result result, std::string const& message, std::initializer_list<Result> successCodes )
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
     VULKAN_HPP_ASSERT( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );
 #else
     if ( std::find( successCodes.begin(), successCodes.end(), result ) == successCodes.end() )
     {
-      throwResultException( result, message );
+      throwResultException( result, message.c_str() );
     }
 #endif
     return result;
   }
 
   template <typename T>
-  VULKAN_HPP_INLINE ResultValue<T> createResultValue( Result result, T & data, char const * message, std::initializer_list<Result> successCodes )
+  VULKAN_HPP_INLINE ResultValue<T> createResultValue( Result result, T & data, std::string const& message, std::initializer_list<Result> successCodes )
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
     VULKAN_HPP_ASSERT( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );
 #else
     if ( std::find( successCodes.begin(), successCodes.end(), result ) == successCodes.end() )
     {
-      throwResultException( result, message );
+      throwResultException( result, message.c_str() );
     }
 #endif
     return ResultValue<T>( result, data );
@@ -574,7 +580,7 @@ const std::string createResultValueHeader = R"(
 
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template <typename T>
-  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<T>>::type createResultValue( Result result, T & data, char const * message, typename UniqueHandleTraits<T>::deleter const& deleter )
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<T>>::type createResultValue( Result result, T & data, std::string const& message, typename UniqueHandleTraits<T>::deleter const& deleter )
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
     VULKAN_HPP_ASSERT( result == Result::eSuccess );
@@ -582,7 +588,7 @@ const std::string createResultValueHeader = R"(
 #else
     if ( result != Result::eSuccess )
     {
-      throwResultException( result, message );
+      throwResultException( result, message.c_str() );
     }
     return UniqueHandle<T>(data, deleter);
 #endif
@@ -3168,7 +3174,7 @@ ${i}  {
 ${i}    ${typeVariable}s.push_back( Unique${type}( buffer[i], deleter ) );
 ${i}  }
 
-${i}  return createResultValue( result, ${typeVariable}s, "VULKAN_HPP_NAMESPACE::${class}::${function}Unique" );
+${i}  return createResultValue( result, ${typeVariable}s, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::${class}::${function}Unique" );
 )";
 
     std::string type = (commandData.returnParam != ~0) ? commandData.params[commandData.returnParam].pureType : "";
@@ -3443,7 +3449,7 @@ ${i}  VULKAN_HPP_ASSERT( ${firstVectorName}.size() == ${secondVectorName}.size()
 #else
 ${i}  if ( ${firstVectorName}.size() != ${secondVectorName}.size() )
 ${i}  {
-${i}    throw LogicError( "VULKAN_HPP_NAMESPACE::${className}::${reducedName}: ${firstVectorName}.size() != ${secondVectorName}.size()" );
+${i}    throw LogicError( (stringize_indirect(VULKAN_HPP_NAMESPACE) + "::${className}::${reducedName}: ${firstVectorName}.size() != ${secondVectorName}.size()").c_str() );
 ${i}  }
 #endif  // VULKAN_HPP_NO_EXCEPTIONS
 )#";
@@ -3496,7 +3502,7 @@ void VulkanHppGenerator::writeFunctionBodyEnhancedReturnResultValue(std::ostream
   }
 
   // now the function name (with full namespace) as a string
-  os << "\"VULKAN_HPP_NAMESPACE::" << (commandData.className.empty() ? "" : commandData.className + "::") << (singular ? stripPluralS(commandData.reducedName) : commandData.reducedName) << (unique ? "Unique" : "") << "\"";
+  os << "stringize_indirect(VULKAN_HPP_NAMESPACE) + \"::" << (commandData.className.empty() ? "" : commandData.className + "::") << (singular ? stripPluralS(commandData.reducedName) : commandData.reducedName) << (unique ? "Unique" : "") << "\"";
 
   if (!commandData.twoStep && (1 < commandData.successCodes.size()))
   {

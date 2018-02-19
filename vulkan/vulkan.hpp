@@ -90,6 +90,9 @@ static_assert( VK_HEADER_VERSION ==  66 , "Wrong VK_HEADER_VERSION!" );
 #define VULKAN_HPP_NAMESPACE vk
 #endif
 
+#define stringize(a)          #a
+#define stringize_indirect(a) std::string(stringize(a))
+
 namespace VULKAN_HPP_NAMESPACE
 {
 
@@ -579,8 +582,11 @@ namespace VULKAN_HPP_NAMESPACE
   class ErrorCategoryImpl : public std::error_category
   {
     public:
-    virtual const char* name() const noexcept override { return "VULKAN_HPP_NAMESPACE::Result"; }
-    virtual std::string message(int ev) const override { return to_string(static_cast<Result>(ev)); }
+      virtual const char* name() const noexcept override { return m_name.c_str(); }
+      virtual std::string message(int ev) const override { return to_string(static_cast<Result>(ev)); }
+
+    private:
+      std::string m_name = (stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Result");
   };
 
 #if defined(_MSC_VER) && (_MSC_VER == 1800)
@@ -900,7 +906,7 @@ namespace VULKAN_HPP_NAMESPACE
 #endif
   };
 
-  VULKAN_HPP_INLINE ResultValueType<void>::type createResultValue( Result result, char const * message )
+  VULKAN_HPP_INLINE ResultValueType<void>::type createResultValue( Result result, std::string const& message )
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
     VULKAN_HPP_ASSERT( result == Result::eSuccess );
@@ -908,13 +914,13 @@ namespace VULKAN_HPP_NAMESPACE
 #else
     if ( result != Result::eSuccess )
     {
-      throwResultException( result, message );
+      throwResultException( result, message.c_str() );
     }
 #endif
   }
 
   template <typename T>
-  VULKAN_HPP_INLINE typename ResultValueType<T>::type createResultValue( Result result, T & data, char const * message )
+  VULKAN_HPP_INLINE typename ResultValueType<T>::type createResultValue( Result result, T & data, std::string const& message )
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
     VULKAN_HPP_ASSERT( result == Result::eSuccess );
@@ -922,34 +928,34 @@ namespace VULKAN_HPP_NAMESPACE
 #else
     if ( result != Result::eSuccess )
     {
-      throwResultException( result, message );
+      throwResultException( result, message.c_str() );
     }
     return std::move( data );
 #endif
   }
 
-  VULKAN_HPP_INLINE Result createResultValue( Result result, char const * message, std::initializer_list<Result> successCodes )
+  VULKAN_HPP_INLINE Result createResultValue( Result result, std::string const& message, std::initializer_list<Result> successCodes )
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
     VULKAN_HPP_ASSERT( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );
 #else
     if ( std::find( successCodes.begin(), successCodes.end(), result ) == successCodes.end() )
     {
-      throwResultException( result, message );
+      throwResultException( result, message.c_str() );
     }
 #endif
     return result;
   }
 
   template <typename T>
-  VULKAN_HPP_INLINE ResultValue<T> createResultValue( Result result, T & data, char const * message, std::initializer_list<Result> successCodes )
+  VULKAN_HPP_INLINE ResultValue<T> createResultValue( Result result, T & data, std::string const& message, std::initializer_list<Result> successCodes )
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
     VULKAN_HPP_ASSERT( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );
 #else
     if ( std::find( successCodes.begin(), successCodes.end(), result ) == successCodes.end() )
     {
-      throwResultException( result, message );
+      throwResultException( result, message.c_str() );
     }
 #endif
     return ResultValue<T>( result, data );
@@ -957,7 +963,7 @@ namespace VULKAN_HPP_NAMESPACE
 
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template <typename T>
-  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<T>>::type createResultValue( Result result, T & data, char const * message, typename UniqueHandleTraits<T>::deleter const& deleter )
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<T>>::type createResultValue( Result result, T & data, std::string const& message, typename UniqueHandleTraits<T>::deleter const& deleter )
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
     VULKAN_HPP_ASSERT( result == Result::eSuccess );
@@ -965,7 +971,7 @@ namespace VULKAN_HPP_NAMESPACE
 #else
     if ( result != Result::eSuccess )
     {
-      throwResultException( result, message );
+      throwResultException( result, message.c_str() );
     }
     return UniqueHandle<T>(data, deleter);
 #endif
@@ -26764,7 +26770,7 @@ public:
     } while ( result == Result::eIncomplete );
     VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
     properties.resize( propertyCount );
-    return createResultValue( result, properties, "VULKAN_HPP_NAMESPACE::enumerateInstanceLayerProperties" );
+    return createResultValue( result, properties, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::enumerateInstanceLayerProperties" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -26799,7 +26805,7 @@ public:
     } while ( result == Result::eIncomplete );
     VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
     properties.resize( propertyCount );
-    return createResultValue( result, properties, "VULKAN_HPP_NAMESPACE::enumerateInstanceExtensionProperties" );
+    return createResultValue( result, properties, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::enumerateInstanceExtensionProperties" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -27189,7 +27195,7 @@ public:
   VULKAN_HPP_INLINE ResultValueType<void>::type CommandBuffer::begin( const CommandBufferBeginInfo & beginInfo, Dispatch const &d ) const
   {
     Result result = static_cast<Result>( d.vkBeginCommandBuffer( m_commandBuffer, reinterpret_cast<const VkCommandBufferBeginInfo*>( &beginInfo ) ) );
-    return createResultValue( result, "VULKAN_HPP_NAMESPACE::CommandBuffer::begin" );
+    return createResultValue( result, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::CommandBuffer::begin" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -27204,7 +27210,7 @@ public:
   VULKAN_HPP_INLINE ResultValueType<void>::type CommandBuffer::end(Dispatch const &d ) const
   {
     Result result = static_cast<Result>( d.vkEndCommandBuffer( m_commandBuffer ) );
-    return createResultValue( result, "VULKAN_HPP_NAMESPACE::CommandBuffer::end" );
+    return createResultValue( result, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::CommandBuffer::end" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -27219,7 +27225,7 @@ public:
   VULKAN_HPP_INLINE ResultValueType<void>::type CommandBuffer::reset( CommandBufferResetFlags flags, Dispatch const &d ) const
   {
     Result result = static_cast<Result>( d.vkResetCommandBuffer( m_commandBuffer, static_cast<VkCommandBufferResetFlags>( flags ) ) );
-    return createResultValue( result, "VULKAN_HPP_NAMESPACE::CommandBuffer::reset" );
+    return createResultValue( result, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::CommandBuffer::reset" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -27402,7 +27408,7 @@ public:
 #else
     if ( buffers.size() != offsets.size() )
     {
-      throw LogicError( "VULKAN_HPP_NAMESPACE::CommandBuffer::bindVertexBuffers: buffers.size() != offsets.size()" );
+      throw LogicError( (stringize_indirect(VULKAN_HPP_NAMESPACE) + "::CommandBuffer::bindVertexBuffers: buffers.size() != offsets.size()").c_str() );
     }
 #endif  // VULKAN_HPP_NO_EXCEPTIONS
     d.vkCmdBindVertexBuffers( m_commandBuffer, firstBinding, buffers.size() , reinterpret_cast<const VkBuffer*>( buffers.data() ), offsets.data() );
@@ -28231,7 +28237,7 @@ public:
   VULKAN_HPP_INLINE ResultValueType<void>::type Queue::submit( ArrayProxy<const SubmitInfo> submits, Fence fence, Dispatch const &d ) const
   {
     Result result = static_cast<Result>( d.vkQueueSubmit( m_queue, submits.size() , reinterpret_cast<const VkSubmitInfo*>( submits.data() ), static_cast<VkFence>( fence ) ) );
-    return createResultValue( result, "VULKAN_HPP_NAMESPACE::Queue::submit" );
+    return createResultValue( result, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Queue::submit" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -28246,7 +28252,7 @@ public:
   VULKAN_HPP_INLINE ResultValueType<void>::type Queue::waitIdle(Dispatch const &d ) const
   {
     Result result = static_cast<Result>( d.vkQueueWaitIdle( m_queue ) );
-    return createResultValue( result, "VULKAN_HPP_NAMESPACE::Queue::waitIdle" );
+    return createResultValue( result, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Queue::waitIdle" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -28260,7 +28266,7 @@ public:
   VULKAN_HPP_INLINE ResultValueType<void>::type Queue::bindSparse( ArrayProxy<const BindSparseInfo> bindInfo, Fence fence, Dispatch const &d ) const
   {
     Result result = static_cast<Result>( d.vkQueueBindSparse( m_queue, bindInfo.size() , reinterpret_cast<const VkBindSparseInfo*>( bindInfo.data() ), static_cast<VkFence>( fence ) ) );
-    return createResultValue( result, "VULKAN_HPP_NAMESPACE::Queue::bindSparse" );
+    return createResultValue( result, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Queue::bindSparse" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -28274,7 +28280,7 @@ public:
   VULKAN_HPP_INLINE Result Queue::presentKHR( const PresentInfoKHR & presentInfo, Dispatch const &d ) const
   {
     Result result = static_cast<Result>( d.vkQueuePresentKHR( m_queue, reinterpret_cast<const VkPresentInfoKHR*>( &presentInfo ) ) );
-    return createResultValue( result, "VULKAN_HPP_NAMESPACE::Queue::presentKHR", { Result::eSuccess, Result::eSuboptimalKHR } );
+    return createResultValue( result, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Queue::presentKHR", { Result::eSuccess, Result::eSuboptimalKHR } );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -29656,7 +29662,7 @@ public:
   VULKAN_HPP_INLINE ResultValueType<void>::type Device::waitIdle(Dispatch const &d ) const
   {
     Result result = static_cast<Result>( d.vkDeviceWaitIdle( m_device ) );
-    return createResultValue( result, "VULKAN_HPP_NAMESPACE::Device::waitIdle" );
+    return createResultValue( result, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::waitIdle" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -29671,7 +29677,7 @@ public:
   {
     DeviceMemory memory;
     Result result = static_cast<Result>( d.vkAllocateMemory( m_device, reinterpret_cast<const VkMemoryAllocateInfo*>( &allocateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkDeviceMemory*>( &memory ) ) );
-    return createResultValue( result, memory, "VULKAN_HPP_NAMESPACE::Device::allocateMemory" );
+    return createResultValue( result, memory, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::allocateMemory" );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
@@ -29681,7 +29687,7 @@ public:
     Result result = static_cast<Result>( d.vkAllocateMemory( m_device, reinterpret_cast<const VkMemoryAllocateInfo*>( &allocateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkDeviceMemory*>( &memory ) ) );
 
     ObjectDeleter<Device> deleter( *this, allocator );
-    return createResultValue( result, memory, "VULKAN_HPP_NAMESPACE::Device::allocateMemoryUnique", deleter );
+    return createResultValue( result, memory, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::allocateMemoryUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -29723,7 +29729,7 @@ public:
   {
     void* pData;
     Result result = static_cast<Result>( d.vkMapMemory( m_device, static_cast<VkDeviceMemory>( memory ), offset, size, static_cast<VkMemoryMapFlags>( flags ), &pData ) );
-    return createResultValue( result, pData, "VULKAN_HPP_NAMESPACE::Device::mapMemory" );
+    return createResultValue( result, pData, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::mapMemory" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -29751,7 +29757,7 @@ public:
   VULKAN_HPP_INLINE ResultValueType<void>::type Device::flushMappedMemoryRanges( ArrayProxy<const MappedMemoryRange> memoryRanges, Dispatch const &d ) const
   {
     Result result = static_cast<Result>( d.vkFlushMappedMemoryRanges( m_device, memoryRanges.size() , reinterpret_cast<const VkMappedMemoryRange*>( memoryRanges.data() ) ) );
-    return createResultValue( result, "VULKAN_HPP_NAMESPACE::Device::flushMappedMemoryRanges" );
+    return createResultValue( result, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::flushMappedMemoryRanges" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -29765,7 +29771,7 @@ public:
   VULKAN_HPP_INLINE ResultValueType<void>::type Device::invalidateMappedMemoryRanges( ArrayProxy<const MappedMemoryRange> memoryRanges, Dispatch const &d ) const
   {
     Result result = static_cast<Result>( d.vkInvalidateMappedMemoryRanges( m_device, memoryRanges.size() , reinterpret_cast<const VkMappedMemoryRange*>( memoryRanges.data() ) ) );
-    return createResultValue( result, "VULKAN_HPP_NAMESPACE::Device::invalidateMappedMemoryRanges" );
+    return createResultValue( result, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::invalidateMappedMemoryRanges" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -29810,7 +29816,7 @@ public:
   VULKAN_HPP_INLINE ResultValueType<void>::type Device::bindBufferMemory( Buffer buffer, DeviceMemory memory, DeviceSize memoryOffset, Dispatch const &d ) const
   {
     Result result = static_cast<Result>( d.vkBindBufferMemory( m_device, static_cast<VkBuffer>( buffer ), static_cast<VkDeviceMemory>( memory ), memoryOffset ) );
-    return createResultValue( result, "VULKAN_HPP_NAMESPACE::Device::bindBufferMemory" );
+    return createResultValue( result, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::bindBufferMemory" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -29840,7 +29846,7 @@ public:
   VULKAN_HPP_INLINE ResultValueType<void>::type Device::bindImageMemory( Image image, DeviceMemory memory, DeviceSize memoryOffset, Dispatch const &d ) const
   {
     Result result = static_cast<Result>( d.vkBindImageMemory( m_device, static_cast<VkImage>( image ), static_cast<VkDeviceMemory>( memory ), memoryOffset ) );
-    return createResultValue( result, "VULKAN_HPP_NAMESPACE::Device::bindImageMemory" );
+    return createResultValue( result, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::bindImageMemory" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -29873,7 +29879,7 @@ public:
   {
     Fence fence;
     Result result = static_cast<Result>( d.vkCreateFence( m_device, reinterpret_cast<const VkFenceCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkFence*>( &fence ) ) );
-    return createResultValue( result, fence, "VULKAN_HPP_NAMESPACE::Device::createFence" );
+    return createResultValue( result, fence, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createFence" );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
@@ -29883,7 +29889,7 @@ public:
     Result result = static_cast<Result>( d.vkCreateFence( m_device, reinterpret_cast<const VkFenceCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkFence*>( &fence ) ) );
 
     ObjectDeleter<Device> deleter( *this, allocator );
-    return createResultValue( result, fence, "VULKAN_HPP_NAMESPACE::Device::createFenceUnique", deleter );
+    return createResultValue( result, fence, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createFenceUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -29924,7 +29930,7 @@ public:
   VULKAN_HPP_INLINE ResultValueType<void>::type Device::resetFences( ArrayProxy<const Fence> fences, Dispatch const &d ) const
   {
     Result result = static_cast<Result>( d.vkResetFences( m_device, fences.size() , reinterpret_cast<const VkFence*>( fences.data() ) ) );
-    return createResultValue( result, "VULKAN_HPP_NAMESPACE::Device::resetFences" );
+    return createResultValue( result, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::resetFences" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -29939,7 +29945,7 @@ public:
   VULKAN_HPP_INLINE Result Device::getFenceStatus( Fence fence, Dispatch const &d ) const
   {
     Result result = static_cast<Result>( d.vkGetFenceStatus( m_device, static_cast<VkFence>( fence ) ) );
-    return createResultValue( result, "VULKAN_HPP_NAMESPACE::Device::getFenceStatus", { Result::eSuccess, Result::eNotReady } );
+    return createResultValue( result, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::getFenceStatus", { Result::eSuccess, Result::eNotReady } );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -29953,7 +29959,7 @@ public:
   VULKAN_HPP_INLINE Result Device::waitForFences( ArrayProxy<const Fence> fences, Bool32 waitAll, uint64_t timeout, Dispatch const &d ) const
   {
     Result result = static_cast<Result>( d.vkWaitForFences( m_device, fences.size() , reinterpret_cast<const VkFence*>( fences.data() ), waitAll, timeout ) );
-    return createResultValue( result, "VULKAN_HPP_NAMESPACE::Device::waitForFences", { Result::eSuccess, Result::eTimeout } );
+    return createResultValue( result, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::waitForFences", { Result::eSuccess, Result::eTimeout } );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -29968,7 +29974,7 @@ public:
   {
     Semaphore semaphore;
     Result result = static_cast<Result>( d.vkCreateSemaphore( m_device, reinterpret_cast<const VkSemaphoreCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSemaphore*>( &semaphore ) ) );
-    return createResultValue( result, semaphore, "VULKAN_HPP_NAMESPACE::Device::createSemaphore" );
+    return createResultValue( result, semaphore, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createSemaphore" );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
@@ -29978,7 +29984,7 @@ public:
     Result result = static_cast<Result>( d.vkCreateSemaphore( m_device, reinterpret_cast<const VkSemaphoreCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSemaphore*>( &semaphore ) ) );
 
     ObjectDeleter<Device> deleter( *this, allocator );
-    return createResultValue( result, semaphore, "VULKAN_HPP_NAMESPACE::Device::createSemaphoreUnique", deleter );
+    return createResultValue( result, semaphore, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createSemaphoreUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -30020,7 +30026,7 @@ public:
   {
     Event event;
     Result result = static_cast<Result>( d.vkCreateEvent( m_device, reinterpret_cast<const VkEventCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkEvent*>( &event ) ) );
-    return createResultValue( result, event, "VULKAN_HPP_NAMESPACE::Device::createEvent" );
+    return createResultValue( result, event, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createEvent" );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
@@ -30030,7 +30036,7 @@ public:
     Result result = static_cast<Result>( d.vkCreateEvent( m_device, reinterpret_cast<const VkEventCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkEvent*>( &event ) ) );
 
     ObjectDeleter<Device> deleter( *this, allocator );
-    return createResultValue( result, event, "VULKAN_HPP_NAMESPACE::Device::createEventUnique", deleter );
+    return createResultValue( result, event, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createEventUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -30072,7 +30078,7 @@ public:
   VULKAN_HPP_INLINE Result Device::getEventStatus( Event event, Dispatch const &d ) const
   {
     Result result = static_cast<Result>( d.vkGetEventStatus( m_device, static_cast<VkEvent>( event ) ) );
-    return createResultValue( result, "VULKAN_HPP_NAMESPACE::Device::getEventStatus", { Result::eEventSet, Result::eEventReset } );
+    return createResultValue( result, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::getEventStatus", { Result::eEventSet, Result::eEventReset } );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -30087,7 +30093,7 @@ public:
   VULKAN_HPP_INLINE ResultValueType<void>::type Device::setEvent( Event event, Dispatch const &d ) const
   {
     Result result = static_cast<Result>( d.vkSetEvent( m_device, static_cast<VkEvent>( event ) ) );
-    return createResultValue( result, "VULKAN_HPP_NAMESPACE::Device::setEvent" );
+    return createResultValue( result, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::setEvent" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -30102,7 +30108,7 @@ public:
   VULKAN_HPP_INLINE ResultValueType<void>::type Device::resetEvent( Event event, Dispatch const &d ) const
   {
     Result result = static_cast<Result>( d.vkResetEvent( m_device, static_cast<VkEvent>( event ) ) );
-    return createResultValue( result, "VULKAN_HPP_NAMESPACE::Device::resetEvent" );
+    return createResultValue( result, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::resetEvent" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -30117,7 +30123,7 @@ public:
   {
     QueryPool queryPool;
     Result result = static_cast<Result>( d.vkCreateQueryPool( m_device, reinterpret_cast<const VkQueryPoolCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkQueryPool*>( &queryPool ) ) );
-    return createResultValue( result, queryPool, "VULKAN_HPP_NAMESPACE::Device::createQueryPool" );
+    return createResultValue( result, queryPool, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createQueryPool" );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
@@ -30127,7 +30133,7 @@ public:
     Result result = static_cast<Result>( d.vkCreateQueryPool( m_device, reinterpret_cast<const VkQueryPoolCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkQueryPool*>( &queryPool ) ) );
 
     ObjectDeleter<Device> deleter( *this, allocator );
-    return createResultValue( result, queryPool, "VULKAN_HPP_NAMESPACE::Device::createQueryPoolUnique", deleter );
+    return createResultValue( result, queryPool, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createQueryPoolUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -30168,7 +30174,7 @@ public:
   VULKAN_HPP_INLINE Result Device::getQueryPoolResults( QueryPool queryPool, uint32_t firstQuery, uint32_t queryCount, ArrayProxy<T> data, DeviceSize stride, QueryResultFlags flags, Dispatch const &d ) const
   {
     Result result = static_cast<Result>( d.vkGetQueryPoolResults( m_device, static_cast<VkQueryPool>( queryPool ), firstQuery, queryCount, data.size() * sizeof( T ) , reinterpret_cast<void*>( data.data() ), stride, static_cast<VkQueryResultFlags>( flags ) ) );
-    return createResultValue( result, "VULKAN_HPP_NAMESPACE::Device::getQueryPoolResults", { Result::eSuccess, Result::eNotReady } );
+    return createResultValue( result, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::getQueryPoolResults", { Result::eSuccess, Result::eNotReady } );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -30183,7 +30189,7 @@ public:
   {
     Buffer buffer;
     Result result = static_cast<Result>( d.vkCreateBuffer( m_device, reinterpret_cast<const VkBufferCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkBuffer*>( &buffer ) ) );
-    return createResultValue( result, buffer, "VULKAN_HPP_NAMESPACE::Device::createBuffer" );
+    return createResultValue( result, buffer, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createBuffer" );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
@@ -30193,7 +30199,7 @@ public:
     Result result = static_cast<Result>( d.vkCreateBuffer( m_device, reinterpret_cast<const VkBufferCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkBuffer*>( &buffer ) ) );
 
     ObjectDeleter<Device> deleter( *this, allocator );
-    return createResultValue( result, buffer, "VULKAN_HPP_NAMESPACE::Device::createBufferUnique", deleter );
+    return createResultValue( result, buffer, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createBufferUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -30235,7 +30241,7 @@ public:
   {
     BufferView view;
     Result result = static_cast<Result>( d.vkCreateBufferView( m_device, reinterpret_cast<const VkBufferViewCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkBufferView*>( &view ) ) );
-    return createResultValue( result, view, "VULKAN_HPP_NAMESPACE::Device::createBufferView" );
+    return createResultValue( result, view, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createBufferView" );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
@@ -30245,7 +30251,7 @@ public:
     Result result = static_cast<Result>( d.vkCreateBufferView( m_device, reinterpret_cast<const VkBufferViewCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkBufferView*>( &view ) ) );
 
     ObjectDeleter<Device> deleter( *this, allocator );
-    return createResultValue( result, view, "VULKAN_HPP_NAMESPACE::Device::createBufferViewUnique", deleter );
+    return createResultValue( result, view, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createBufferViewUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -30287,7 +30293,7 @@ public:
   {
     Image image;
     Result result = static_cast<Result>( d.vkCreateImage( m_device, reinterpret_cast<const VkImageCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkImage*>( &image ) ) );
-    return createResultValue( result, image, "VULKAN_HPP_NAMESPACE::Device::createImage" );
+    return createResultValue( result, image, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createImage" );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
@@ -30297,7 +30303,7 @@ public:
     Result result = static_cast<Result>( d.vkCreateImage( m_device, reinterpret_cast<const VkImageCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkImage*>( &image ) ) );
 
     ObjectDeleter<Device> deleter( *this, allocator );
-    return createResultValue( result, image, "VULKAN_HPP_NAMESPACE::Device::createImageUnique", deleter );
+    return createResultValue( result, image, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createImageUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -30354,7 +30360,7 @@ public:
   {
     ImageView view;
     Result result = static_cast<Result>( d.vkCreateImageView( m_device, reinterpret_cast<const VkImageViewCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkImageView*>( &view ) ) );
-    return createResultValue( result, view, "VULKAN_HPP_NAMESPACE::Device::createImageView" );
+    return createResultValue( result, view, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createImageView" );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
@@ -30364,7 +30370,7 @@ public:
     Result result = static_cast<Result>( d.vkCreateImageView( m_device, reinterpret_cast<const VkImageViewCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkImageView*>( &view ) ) );
 
     ObjectDeleter<Device> deleter( *this, allocator );
-    return createResultValue( result, view, "VULKAN_HPP_NAMESPACE::Device::createImageViewUnique", deleter );
+    return createResultValue( result, view, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createImageViewUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -30406,7 +30412,7 @@ public:
   {
     ShaderModule shaderModule;
     Result result = static_cast<Result>( d.vkCreateShaderModule( m_device, reinterpret_cast<const VkShaderModuleCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkShaderModule*>( &shaderModule ) ) );
-    return createResultValue( result, shaderModule, "VULKAN_HPP_NAMESPACE::Device::createShaderModule" );
+    return createResultValue( result, shaderModule, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createShaderModule" );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
@@ -30416,7 +30422,7 @@ public:
     Result result = static_cast<Result>( d.vkCreateShaderModule( m_device, reinterpret_cast<const VkShaderModuleCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkShaderModule*>( &shaderModule ) ) );
 
     ObjectDeleter<Device> deleter( *this, allocator );
-    return createResultValue( result, shaderModule, "VULKAN_HPP_NAMESPACE::Device::createShaderModuleUnique", deleter );
+    return createResultValue( result, shaderModule, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createShaderModuleUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -30458,7 +30464,7 @@ public:
   {
     PipelineCache pipelineCache;
     Result result = static_cast<Result>( d.vkCreatePipelineCache( m_device, reinterpret_cast<const VkPipelineCacheCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipelineCache*>( &pipelineCache ) ) );
-    return createResultValue( result, pipelineCache, "VULKAN_HPP_NAMESPACE::Device::createPipelineCache" );
+    return createResultValue( result, pipelineCache, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createPipelineCache" );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
@@ -30468,7 +30474,7 @@ public:
     Result result = static_cast<Result>( d.vkCreatePipelineCache( m_device, reinterpret_cast<const VkPipelineCacheCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipelineCache*>( &pipelineCache ) ) );
 
     ObjectDeleter<Device> deleter( *this, allocator );
-    return createResultValue( result, pipelineCache, "VULKAN_HPP_NAMESPACE::Device::createPipelineCacheUnique", deleter );
+    return createResultValue( result, pipelineCache, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createPipelineCacheUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -30522,7 +30528,7 @@ public:
     } while ( result == Result::eIncomplete );
     VULKAN_HPP_ASSERT( dataSize <= data.size() );
     data.resize( dataSize );
-    return createResultValue( result, data, "VULKAN_HPP_NAMESPACE::Device::getPipelineCacheData" );
+    return createResultValue( result, data, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::getPipelineCacheData" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -30536,7 +30542,7 @@ public:
   VULKAN_HPP_INLINE ResultValueType<void>::type Device::mergePipelineCaches( PipelineCache dstCache, ArrayProxy<const PipelineCache> srcCaches, Dispatch const &d ) const
   {
     Result result = static_cast<Result>( d.vkMergePipelineCaches( m_device, static_cast<VkPipelineCache>( dstCache ), srcCaches.size() , reinterpret_cast<const VkPipelineCache*>( srcCaches.data() ) ) );
-    return createResultValue( result, "VULKAN_HPP_NAMESPACE::Device::mergePipelineCaches" );
+    return createResultValue( result, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::mergePipelineCaches" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -30551,14 +30557,14 @@ public:
   {
     std::vector<Pipeline,Allocator> pipelines( createInfos.size() );
     Result result = static_cast<Result>( d.vkCreateGraphicsPipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkGraphicsPipelineCreateInfo*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( pipelines.data() ) ) );
-    return createResultValue( result, pipelines, "VULKAN_HPP_NAMESPACE::Device::createGraphicsPipelines" );
+    return createResultValue( result, pipelines, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createGraphicsPipelines" );
   }
   template <typename Allocator, typename Dispatch> 
   VULKAN_HPP_INLINE ResultValueType<Pipeline>::type Device::createGraphicsPipeline( PipelineCache pipelineCache, const GraphicsPipelineCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     Pipeline pipeline;
     Result result = static_cast<Result>( d.vkCreateGraphicsPipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), 1 , reinterpret_cast<const VkGraphicsPipelineCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( &pipeline ) ) );
-    return createResultValue( result, pipeline, "VULKAN_HPP_NAMESPACE::Device::createGraphicsPipeline" );
+    return createResultValue( result, pipeline, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createGraphicsPipeline" );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template <typename Allocator, typename Dispatch> 
@@ -30576,7 +30582,7 @@ public:
       pipelines.push_back( UniquePipeline( buffer[i], deleter ) );
     }
 
-    return createResultValue( result, pipelines, "VULKAN_HPP_NAMESPACE::Device::createGraphicsPipelinesUnique" );
+    return createResultValue( result, pipelines, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createGraphicsPipelinesUnique" );
   }
   template <typename Allocator, typename Dispatch> 
   VULKAN_HPP_INLINE ResultValueType<UniquePipeline>::type Device::createGraphicsPipelineUnique( PipelineCache pipelineCache, const GraphicsPipelineCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
@@ -30585,7 +30591,7 @@ public:
     Result result = static_cast<Result>( d.vkCreateGraphicsPipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), 1 , reinterpret_cast<const VkGraphicsPipelineCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( &pipeline ) ) );
 
     ObjectDeleter<Device> deleter( *this, allocator );
-    return createResultValue( result, pipeline, "VULKAN_HPP_NAMESPACE::Device::createGraphicsPipelineUnique", deleter );
+    return createResultValue( result, pipeline, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createGraphicsPipelineUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -30601,14 +30607,14 @@ public:
   {
     std::vector<Pipeline,Allocator> pipelines( createInfos.size() );
     Result result = static_cast<Result>( d.vkCreateComputePipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkComputePipelineCreateInfo*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( pipelines.data() ) ) );
-    return createResultValue( result, pipelines, "VULKAN_HPP_NAMESPACE::Device::createComputePipelines" );
+    return createResultValue( result, pipelines, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createComputePipelines" );
   }
   template <typename Allocator, typename Dispatch> 
   VULKAN_HPP_INLINE ResultValueType<Pipeline>::type Device::createComputePipeline( PipelineCache pipelineCache, const ComputePipelineCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     Pipeline pipeline;
     Result result = static_cast<Result>( d.vkCreateComputePipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), 1 , reinterpret_cast<const VkComputePipelineCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( &pipeline ) ) );
-    return createResultValue( result, pipeline, "VULKAN_HPP_NAMESPACE::Device::createComputePipeline" );
+    return createResultValue( result, pipeline, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createComputePipeline" );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template <typename Allocator, typename Dispatch> 
@@ -30626,7 +30632,7 @@ public:
       pipelines.push_back( UniquePipeline( buffer[i], deleter ) );
     }
 
-    return createResultValue( result, pipelines, "VULKAN_HPP_NAMESPACE::Device::createComputePipelinesUnique" );
+    return createResultValue( result, pipelines, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createComputePipelinesUnique" );
   }
   template <typename Allocator, typename Dispatch> 
   VULKAN_HPP_INLINE ResultValueType<UniquePipeline>::type Device::createComputePipelineUnique( PipelineCache pipelineCache, const ComputePipelineCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
@@ -30635,7 +30641,7 @@ public:
     Result result = static_cast<Result>( d.vkCreateComputePipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), 1 , reinterpret_cast<const VkComputePipelineCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( &pipeline ) ) );
 
     ObjectDeleter<Device> deleter( *this, allocator );
-    return createResultValue( result, pipeline, "VULKAN_HPP_NAMESPACE::Device::createComputePipelineUnique", deleter );
+    return createResultValue( result, pipeline, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createComputePipelineUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -30677,7 +30683,7 @@ public:
   {
     PipelineLayout pipelineLayout;
     Result result = static_cast<Result>( d.vkCreatePipelineLayout( m_device, reinterpret_cast<const VkPipelineLayoutCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipelineLayout*>( &pipelineLayout ) ) );
-    return createResultValue( result, pipelineLayout, "VULKAN_HPP_NAMESPACE::Device::createPipelineLayout" );
+    return createResultValue( result, pipelineLayout, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createPipelineLayout" );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
@@ -30687,7 +30693,7 @@ public:
     Result result = static_cast<Result>( d.vkCreatePipelineLayout( m_device, reinterpret_cast<const VkPipelineLayoutCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipelineLayout*>( &pipelineLayout ) ) );
 
     ObjectDeleter<Device> deleter( *this, allocator );
-    return createResultValue( result, pipelineLayout, "VULKAN_HPP_NAMESPACE::Device::createPipelineLayoutUnique", deleter );
+    return createResultValue( result, pipelineLayout, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createPipelineLayoutUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -30729,7 +30735,7 @@ public:
   {
     Sampler sampler;
     Result result = static_cast<Result>( d.vkCreateSampler( m_device, reinterpret_cast<const VkSamplerCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSampler*>( &sampler ) ) );
-    return createResultValue( result, sampler, "VULKAN_HPP_NAMESPACE::Device::createSampler" );
+    return createResultValue( result, sampler, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createSampler" );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
@@ -30739,7 +30745,7 @@ public:
     Result result = static_cast<Result>( d.vkCreateSampler( m_device, reinterpret_cast<const VkSamplerCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSampler*>( &sampler ) ) );
 
     ObjectDeleter<Device> deleter( *this, allocator );
-    return createResultValue( result, sampler, "VULKAN_HPP_NAMESPACE::Device::createSamplerUnique", deleter );
+    return createResultValue( result, sampler, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createSamplerUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -30781,7 +30787,7 @@ public:
   {
     DescriptorSetLayout setLayout;
     Result result = static_cast<Result>( d.vkCreateDescriptorSetLayout( m_device, reinterpret_cast<const VkDescriptorSetLayoutCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkDescriptorSetLayout*>( &setLayout ) ) );
-    return createResultValue( result, setLayout, "VULKAN_HPP_NAMESPACE::Device::createDescriptorSetLayout" );
+    return createResultValue( result, setLayout, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createDescriptorSetLayout" );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
@@ -30791,7 +30797,7 @@ public:
     Result result = static_cast<Result>( d.vkCreateDescriptorSetLayout( m_device, reinterpret_cast<const VkDescriptorSetLayoutCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkDescriptorSetLayout*>( &setLayout ) ) );
 
     ObjectDeleter<Device> deleter( *this, allocator );
-    return createResultValue( result, setLayout, "VULKAN_HPP_NAMESPACE::Device::createDescriptorSetLayoutUnique", deleter );
+    return createResultValue( result, setLayout, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createDescriptorSetLayoutUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -30833,7 +30839,7 @@ public:
   {
     DescriptorPool descriptorPool;
     Result result = static_cast<Result>( d.vkCreateDescriptorPool( m_device, reinterpret_cast<const VkDescriptorPoolCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkDescriptorPool*>( &descriptorPool ) ) );
-    return createResultValue( result, descriptorPool, "VULKAN_HPP_NAMESPACE::Device::createDescriptorPool" );
+    return createResultValue( result, descriptorPool, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createDescriptorPool" );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
@@ -30843,7 +30849,7 @@ public:
     Result result = static_cast<Result>( d.vkCreateDescriptorPool( m_device, reinterpret_cast<const VkDescriptorPoolCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkDescriptorPool*>( &descriptorPool ) ) );
 
     ObjectDeleter<Device> deleter( *this, allocator );
-    return createResultValue( result, descriptorPool, "VULKAN_HPP_NAMESPACE::Device::createDescriptorPoolUnique", deleter );
+    return createResultValue( result, descriptorPool, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createDescriptorPoolUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -30885,7 +30891,7 @@ public:
   VULKAN_HPP_INLINE ResultValueType<void>::type Device::resetDescriptorPool( DescriptorPool descriptorPool, DescriptorPoolResetFlags flags, Dispatch const &d ) const
   {
     Result result = static_cast<Result>( d.vkResetDescriptorPool( m_device, static_cast<VkDescriptorPool>( descriptorPool ), static_cast<VkDescriptorPoolResetFlags>( flags ) ) );
-    return createResultValue( result, "VULKAN_HPP_NAMESPACE::Device::resetDescriptorPool" );
+    return createResultValue( result, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::resetDescriptorPool" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -30900,7 +30906,7 @@ public:
   {
     std::vector<DescriptorSet,Allocator> descriptorSets( allocateInfo.descriptorSetCount );
     Result result = static_cast<Result>( d.vkAllocateDescriptorSets( m_device, reinterpret_cast<const VkDescriptorSetAllocateInfo*>( &allocateInfo ), reinterpret_cast<VkDescriptorSet*>( descriptorSets.data() ) ) );
-    return createResultValue( result, descriptorSets, "VULKAN_HPP_NAMESPACE::Device::allocateDescriptorSets" );
+    return createResultValue( result, descriptorSets, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::allocateDescriptorSets" );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template <typename Allocator, typename Dispatch> 
@@ -30918,7 +30924,7 @@ public:
       descriptorSets.push_back( UniqueDescriptorSet( buffer[i], deleter ) );
     }
 
-    return createResultValue( result, descriptorSets, "VULKAN_HPP_NAMESPACE::Device::allocateDescriptorSetsUnique" );
+    return createResultValue( result, descriptorSets, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::allocateDescriptorSetsUnique" );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -30933,7 +30939,7 @@ public:
   VULKAN_HPP_INLINE ResultValueType<void>::type Device::freeDescriptorSets( DescriptorPool descriptorPool, ArrayProxy<const DescriptorSet> descriptorSets, Dispatch const &d ) const
   {
     Result result = static_cast<Result>( d.vkFreeDescriptorSets( m_device, static_cast<VkDescriptorPool>( descriptorPool ), descriptorSets.size() , reinterpret_cast<const VkDescriptorSet*>( descriptorSets.data() ) ) );
-    return createResultValue( result, "VULKAN_HPP_NAMESPACE::Device::freeDescriptorSets" );
+    return createResultValue( result, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::freeDescriptorSets" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -30947,7 +30953,7 @@ public:
   VULKAN_HPP_INLINE ResultValueType<void>::type Device::free( DescriptorPool descriptorPool, ArrayProxy<const DescriptorSet> descriptorSets, Dispatch const &d ) const
   {
     Result result = static_cast<Result>( d.vkFreeDescriptorSets( m_device, static_cast<VkDescriptorPool>( descriptorPool ), descriptorSets.size() , reinterpret_cast<const VkDescriptorSet*>( descriptorSets.data() ) ) );
-    return createResultValue( result, "VULKAN_HPP_NAMESPACE::Device::free" );
+    return createResultValue( result, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::free" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -30975,7 +30981,7 @@ public:
   {
     Framebuffer framebuffer;
     Result result = static_cast<Result>( d.vkCreateFramebuffer( m_device, reinterpret_cast<const VkFramebufferCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkFramebuffer*>( &framebuffer ) ) );
-    return createResultValue( result, framebuffer, "VULKAN_HPP_NAMESPACE::Device::createFramebuffer" );
+    return createResultValue( result, framebuffer, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createFramebuffer" );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
@@ -30985,7 +30991,7 @@ public:
     Result result = static_cast<Result>( d.vkCreateFramebuffer( m_device, reinterpret_cast<const VkFramebufferCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkFramebuffer*>( &framebuffer ) ) );
 
     ObjectDeleter<Device> deleter( *this, allocator );
-    return createResultValue( result, framebuffer, "VULKAN_HPP_NAMESPACE::Device::createFramebufferUnique", deleter );
+    return createResultValue( result, framebuffer, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createFramebufferUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -31027,7 +31033,7 @@ public:
   {
     RenderPass renderPass;
     Result result = static_cast<Result>( d.vkCreateRenderPass( m_device, reinterpret_cast<const VkRenderPassCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkRenderPass*>( &renderPass ) ) );
-    return createResultValue( result, renderPass, "VULKAN_HPP_NAMESPACE::Device::createRenderPass" );
+    return createResultValue( result, renderPass, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createRenderPass" );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
@@ -31037,7 +31043,7 @@ public:
     Result result = static_cast<Result>( d.vkCreateRenderPass( m_device, reinterpret_cast<const VkRenderPassCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkRenderPass*>( &renderPass ) ) );
 
     ObjectDeleter<Device> deleter( *this, allocator );
-    return createResultValue( result, renderPass, "VULKAN_HPP_NAMESPACE::Device::createRenderPassUnique", deleter );
+    return createResultValue( result, renderPass, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createRenderPassUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -31094,7 +31100,7 @@ public:
   {
     CommandPool commandPool;
     Result result = static_cast<Result>( d.vkCreateCommandPool( m_device, reinterpret_cast<const VkCommandPoolCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkCommandPool*>( &commandPool ) ) );
-    return createResultValue( result, commandPool, "VULKAN_HPP_NAMESPACE::Device::createCommandPool" );
+    return createResultValue( result, commandPool, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createCommandPool" );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
@@ -31104,7 +31110,7 @@ public:
     Result result = static_cast<Result>( d.vkCreateCommandPool( m_device, reinterpret_cast<const VkCommandPoolCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkCommandPool*>( &commandPool ) ) );
 
     ObjectDeleter<Device> deleter( *this, allocator );
-    return createResultValue( result, commandPool, "VULKAN_HPP_NAMESPACE::Device::createCommandPoolUnique", deleter );
+    return createResultValue( result, commandPool, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createCommandPoolUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -31146,7 +31152,7 @@ public:
   VULKAN_HPP_INLINE ResultValueType<void>::type Device::resetCommandPool( CommandPool commandPool, CommandPoolResetFlags flags, Dispatch const &d ) const
   {
     Result result = static_cast<Result>( d.vkResetCommandPool( m_device, static_cast<VkCommandPool>( commandPool ), static_cast<VkCommandPoolResetFlags>( flags ) ) );
-    return createResultValue( result, "VULKAN_HPP_NAMESPACE::Device::resetCommandPool" );
+    return createResultValue( result, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::resetCommandPool" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -31161,7 +31167,7 @@ public:
   {
     std::vector<CommandBuffer,Allocator> commandBuffers( allocateInfo.commandBufferCount );
     Result result = static_cast<Result>( d.vkAllocateCommandBuffers( m_device, reinterpret_cast<const VkCommandBufferAllocateInfo*>( &allocateInfo ), reinterpret_cast<VkCommandBuffer*>( commandBuffers.data() ) ) );
-    return createResultValue( result, commandBuffers, "VULKAN_HPP_NAMESPACE::Device::allocateCommandBuffers" );
+    return createResultValue( result, commandBuffers, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::allocateCommandBuffers" );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template <typename Allocator, typename Dispatch> 
@@ -31179,7 +31185,7 @@ public:
       commandBuffers.push_back( UniqueCommandBuffer( buffer[i], deleter ) );
     }
 
-    return createResultValue( result, commandBuffers, "VULKAN_HPP_NAMESPACE::Device::allocateCommandBuffersUnique" );
+    return createResultValue( result, commandBuffers, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::allocateCommandBuffersUnique" );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -31221,14 +31227,14 @@ public:
   {
     std::vector<SwapchainKHR,Allocator> swapchains( createInfos.size() );
     Result result = static_cast<Result>( d.vkCreateSharedSwapchainsKHR( m_device, createInfos.size() , reinterpret_cast<const VkSwapchainCreateInfoKHR*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSwapchainKHR*>( swapchains.data() ) ) );
-    return createResultValue( result, swapchains, "VULKAN_HPP_NAMESPACE::Device::createSharedSwapchainsKHR" );
+    return createResultValue( result, swapchains, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createSharedSwapchainsKHR" );
   }
   template <typename Allocator, typename Dispatch> 
   VULKAN_HPP_INLINE ResultValueType<SwapchainKHR>::type Device::createSharedSwapchainKHR( const SwapchainCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     SwapchainKHR swapchain;
     Result result = static_cast<Result>( d.vkCreateSharedSwapchainsKHR( m_device, 1 , reinterpret_cast<const VkSwapchainCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSwapchainKHR*>( &swapchain ) ) );
-    return createResultValue( result, swapchain, "VULKAN_HPP_NAMESPACE::Device::createSharedSwapchainKHR" );
+    return createResultValue( result, swapchain, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createSharedSwapchainKHR" );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template <typename Allocator, typename Dispatch> 
@@ -31246,7 +31252,7 @@ public:
       swapchainKHRs.push_back( UniqueSwapchainKHR( buffer[i], deleter ) );
     }
 
-    return createResultValue( result, swapchainKHRs, "VULKAN_HPP_NAMESPACE::Device::createSharedSwapchainsKHRUnique" );
+    return createResultValue( result, swapchainKHRs, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createSharedSwapchainsKHRUnique" );
   }
   template <typename Allocator, typename Dispatch> 
   VULKAN_HPP_INLINE ResultValueType<UniqueSwapchainKHR>::type Device::createSharedSwapchainKHRUnique( const SwapchainCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
@@ -31255,7 +31261,7 @@ public:
     Result result = static_cast<Result>( d.vkCreateSharedSwapchainsKHR( m_device, 1 , reinterpret_cast<const VkSwapchainCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSwapchainKHR*>( &swapchain ) ) );
 
     ObjectDeleter<Device> deleter( *this, allocator );
-    return createResultValue( result, swapchain, "VULKAN_HPP_NAMESPACE::Device::createSharedSwapchainKHRUnique", deleter );
+    return createResultValue( result, swapchain, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createSharedSwapchainKHRUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -31271,7 +31277,7 @@ public:
   {
     SwapchainKHR swapchain;
     Result result = static_cast<Result>( d.vkCreateSwapchainKHR( m_device, reinterpret_cast<const VkSwapchainCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSwapchainKHR*>( &swapchain ) ) );
-    return createResultValue( result, swapchain, "VULKAN_HPP_NAMESPACE::Device::createSwapchainKHR" );
+    return createResultValue( result, swapchain, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createSwapchainKHR" );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
@@ -31281,7 +31287,7 @@ public:
     Result result = static_cast<Result>( d.vkCreateSwapchainKHR( m_device, reinterpret_cast<const VkSwapchainCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSwapchainKHR*>( &swapchain ) ) );
 
     ObjectDeleter<Device> deleter( *this, allocator );
-    return createResultValue( result, swapchain, "VULKAN_HPP_NAMESPACE::Device::createSwapchainKHRUnique", deleter );
+    return createResultValue( result, swapchain, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createSwapchainKHRUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -31335,7 +31341,7 @@ public:
     } while ( result == Result::eIncomplete );
     VULKAN_HPP_ASSERT( swapchainImageCount <= swapchainImages.size() );
     swapchainImages.resize( swapchainImageCount );
-    return createResultValue( result, swapchainImages, "VULKAN_HPP_NAMESPACE::Device::getSwapchainImagesKHR" );
+    return createResultValue( result, swapchainImages, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::getSwapchainImagesKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -31350,7 +31356,7 @@ public:
   {
     uint32_t imageIndex;
     Result result = static_cast<Result>( d.vkAcquireNextImageKHR( m_device, static_cast<VkSwapchainKHR>( swapchain ), timeout, static_cast<VkSemaphore>( semaphore ), static_cast<VkFence>( fence ), &imageIndex ) );
-    return createResultValue( result, imageIndex, "VULKAN_HPP_NAMESPACE::Device::acquireNextImageKHR", { Result::eSuccess, Result::eTimeout, Result::eNotReady, Result::eSuboptimalKHR } );
+    return createResultValue( result, imageIndex, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::acquireNextImageKHR", { Result::eSuccess, Result::eTimeout, Result::eNotReady, Result::eSuboptimalKHR } );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -31364,7 +31370,7 @@ public:
   VULKAN_HPP_INLINE ResultValueType<void>::type Device::debugMarkerSetObjectNameEXT( const DebugMarkerObjectNameInfoEXT & nameInfo, Dispatch const &d ) const
   {
     Result result = static_cast<Result>( d.vkDebugMarkerSetObjectNameEXT( m_device, reinterpret_cast<const VkDebugMarkerObjectNameInfoEXT*>( &nameInfo ) ) );
-    return createResultValue( result, "VULKAN_HPP_NAMESPACE::Device::debugMarkerSetObjectNameEXT" );
+    return createResultValue( result, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::debugMarkerSetObjectNameEXT" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -31378,7 +31384,7 @@ public:
   VULKAN_HPP_INLINE ResultValueType<void>::type Device::debugMarkerSetObjectTagEXT( const DebugMarkerObjectTagInfoEXT & tagInfo, Dispatch const &d ) const
   {
     Result result = static_cast<Result>( d.vkDebugMarkerSetObjectTagEXT( m_device, reinterpret_cast<const VkDebugMarkerObjectTagInfoEXT*>( &tagInfo ) ) );
-    return createResultValue( result, "VULKAN_HPP_NAMESPACE::Device::debugMarkerSetObjectTagEXT" );
+    return createResultValue( result, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::debugMarkerSetObjectTagEXT" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -31394,7 +31400,7 @@ public:
   {
     HANDLE handle;
     Result result = static_cast<Result>( d.vkGetMemoryWin32HandleNV( m_device, static_cast<VkDeviceMemory>( memory ), static_cast<VkExternalMemoryHandleTypeFlagsNV>( handleType ), &handle ) );
-    return createResultValue( result, handle, "VULKAN_HPP_NAMESPACE::Device::getMemoryWin32HandleNV" );
+    return createResultValue( result, handle, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::getMemoryWin32HandleNV" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
@@ -31410,7 +31416,7 @@ public:
   {
     IndirectCommandsLayoutNVX indirectCommandsLayout;
     Result result = static_cast<Result>( d.vkCreateIndirectCommandsLayoutNVX( m_device, reinterpret_cast<const VkIndirectCommandsLayoutCreateInfoNVX*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkIndirectCommandsLayoutNVX*>( &indirectCommandsLayout ) ) );
-    return createResultValue( result, indirectCommandsLayout, "VULKAN_HPP_NAMESPACE::Device::createIndirectCommandsLayoutNVX" );
+    return createResultValue( result, indirectCommandsLayout, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createIndirectCommandsLayoutNVX" );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
@@ -31420,7 +31426,7 @@ public:
     Result result = static_cast<Result>( d.vkCreateIndirectCommandsLayoutNVX( m_device, reinterpret_cast<const VkIndirectCommandsLayoutCreateInfoNVX*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkIndirectCommandsLayoutNVX*>( &indirectCommandsLayout ) ) );
 
     ObjectDeleter<Device> deleter( *this, allocator );
-    return createResultValue( result, indirectCommandsLayout, "VULKAN_HPP_NAMESPACE::Device::createIndirectCommandsLayoutNVXUnique", deleter );
+    return createResultValue( result, indirectCommandsLayout, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createIndirectCommandsLayoutNVXUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -31462,7 +31468,7 @@ public:
   {
     ObjectTableNVX objectTable;
     Result result = static_cast<Result>( d.vkCreateObjectTableNVX( m_device, reinterpret_cast<const VkObjectTableCreateInfoNVX*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkObjectTableNVX*>( &objectTable ) ) );
-    return createResultValue( result, objectTable, "VULKAN_HPP_NAMESPACE::Device::createObjectTableNVX" );
+    return createResultValue( result, objectTable, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createObjectTableNVX" );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
@@ -31472,7 +31478,7 @@ public:
     Result result = static_cast<Result>( d.vkCreateObjectTableNVX( m_device, reinterpret_cast<const VkObjectTableCreateInfoNVX*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkObjectTableNVX*>( &objectTable ) ) );
 
     ObjectDeleter<Device> deleter( *this, allocator );
-    return createResultValue( result, objectTable, "VULKAN_HPP_NAMESPACE::Device::createObjectTableNVXUnique", deleter );
+    return createResultValue( result, objectTable, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createObjectTableNVXUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -31517,11 +31523,11 @@ public:
 #else
     if ( pObjectTableEntries.size() != objectIndices.size() )
     {
-      throw LogicError( "VULKAN_HPP_NAMESPACE::Device::registerObjectsNVX: pObjectTableEntries.size() != objectIndices.size()" );
+      throw LogicError( (stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::registerObjectsNVX: pObjectTableEntries.size() != objectIndices.size()").c_str() );
     }
 #endif  // VULKAN_HPP_NO_EXCEPTIONS
     Result result = static_cast<Result>( d.vkRegisterObjectsNVX( m_device, static_cast<VkObjectTableNVX>( objectTable ), pObjectTableEntries.size() , reinterpret_cast<const VkObjectTableEntryNVX* const*>( pObjectTableEntries.data() ), objectIndices.data() ) );
-    return createResultValue( result, "VULKAN_HPP_NAMESPACE::Device::registerObjectsNVX" );
+    return createResultValue( result, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::registerObjectsNVX" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -31539,11 +31545,11 @@ public:
 #else
     if ( objectEntryTypes.size() != objectIndices.size() )
     {
-      throw LogicError( "VULKAN_HPP_NAMESPACE::Device::unregisterObjectsNVX: objectEntryTypes.size() != objectIndices.size()" );
+      throw LogicError( (stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::unregisterObjectsNVX: objectEntryTypes.size() != objectIndices.size()").c_str() );
     }
 #endif  // VULKAN_HPP_NO_EXCEPTIONS
     Result result = static_cast<Result>( d.vkUnregisterObjectsNVX( m_device, static_cast<VkObjectTableNVX>( objectTable ), objectEntryTypes.size() , reinterpret_cast<const VkObjectEntryTypeNVX*>( objectEntryTypes.data() ), objectIndices.data() ) );
-    return createResultValue( result, "VULKAN_HPP_NAMESPACE::Device::unregisterObjectsNVX" );
+    return createResultValue( result, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::unregisterObjectsNVX" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -31573,7 +31579,7 @@ public:
   {
     HANDLE handle;
     Result result = static_cast<Result>( d.vkGetMemoryWin32HandleKHR( m_device, reinterpret_cast<const VkMemoryGetWin32HandleInfoKHR*>( &getWin32HandleInfo ), &handle ) );
-    return createResultValue( result, handle, "VULKAN_HPP_NAMESPACE::Device::getMemoryWin32HandleKHR" );
+    return createResultValue( result, handle, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::getMemoryWin32HandleKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
@@ -31590,7 +31596,7 @@ public:
   {
     MemoryWin32HandlePropertiesKHR memoryWin32HandleProperties;
     Result result = static_cast<Result>( d.vkGetMemoryWin32HandlePropertiesKHR( m_device, static_cast<VkExternalMemoryHandleTypeFlagBitsKHR>( handleType ), handle, reinterpret_cast<VkMemoryWin32HandlePropertiesKHR*>( &memoryWin32HandleProperties ) ) );
-    return createResultValue( result, memoryWin32HandleProperties, "VULKAN_HPP_NAMESPACE::Device::getMemoryWin32HandlePropertiesKHR" );
+    return createResultValue( result, memoryWin32HandleProperties, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::getMemoryWin32HandlePropertiesKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
@@ -31606,7 +31612,7 @@ public:
   {
     int fd;
     Result result = static_cast<Result>( d.vkGetMemoryFdKHR( m_device, reinterpret_cast<const VkMemoryGetFdInfoKHR*>( &getFdInfo ), &fd ) );
-    return createResultValue( result, fd, "VULKAN_HPP_NAMESPACE::Device::getMemoryFdKHR" );
+    return createResultValue( result, fd, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::getMemoryFdKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -31621,7 +31627,7 @@ public:
   {
     MemoryFdPropertiesKHR memoryFdProperties;
     Result result = static_cast<Result>( d.vkGetMemoryFdPropertiesKHR( m_device, static_cast<VkExternalMemoryHandleTypeFlagBitsKHR>( handleType ), fd, reinterpret_cast<VkMemoryFdPropertiesKHR*>( &memoryFdProperties ) ) );
-    return createResultValue( result, memoryFdProperties, "VULKAN_HPP_NAMESPACE::Device::getMemoryFdPropertiesKHR" );
+    return createResultValue( result, memoryFdProperties, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::getMemoryFdPropertiesKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -31637,7 +31643,7 @@ public:
   {
     HANDLE handle;
     Result result = static_cast<Result>( d.vkGetSemaphoreWin32HandleKHR( m_device, reinterpret_cast<const VkSemaphoreGetWin32HandleInfoKHR*>( &getWin32HandleInfo ), &handle ) );
-    return createResultValue( result, handle, "VULKAN_HPP_NAMESPACE::Device::getSemaphoreWin32HandleKHR" );
+    return createResultValue( result, handle, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::getSemaphoreWin32HandleKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
@@ -31653,7 +31659,7 @@ public:
   VULKAN_HPP_INLINE ResultValueType<void>::type Device::importSemaphoreWin32HandleKHR( const ImportSemaphoreWin32HandleInfoKHR & importSemaphoreWin32HandleInfo, Dispatch const &d ) const
   {
     Result result = static_cast<Result>( d.vkImportSemaphoreWin32HandleKHR( m_device, reinterpret_cast<const VkImportSemaphoreWin32HandleInfoKHR*>( &importSemaphoreWin32HandleInfo ) ) );
-    return createResultValue( result, "VULKAN_HPP_NAMESPACE::Device::importSemaphoreWin32HandleKHR" );
+    return createResultValue( result, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::importSemaphoreWin32HandleKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
@@ -31669,7 +31675,7 @@ public:
   {
     int fd;
     Result result = static_cast<Result>( d.vkGetSemaphoreFdKHR( m_device, reinterpret_cast<const VkSemaphoreGetFdInfoKHR*>( &getFdInfo ), &fd ) );
-    return createResultValue( result, fd, "VULKAN_HPP_NAMESPACE::Device::getSemaphoreFdKHR" );
+    return createResultValue( result, fd, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::getSemaphoreFdKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -31683,7 +31689,7 @@ public:
   VULKAN_HPP_INLINE ResultValueType<void>::type Device::importSemaphoreFdKHR( const ImportSemaphoreFdInfoKHR & importSemaphoreFdInfo, Dispatch const &d ) const
   {
     Result result = static_cast<Result>( d.vkImportSemaphoreFdKHR( m_device, reinterpret_cast<const VkImportSemaphoreFdInfoKHR*>( &importSemaphoreFdInfo ) ) );
-    return createResultValue( result, "VULKAN_HPP_NAMESPACE::Device::importSemaphoreFdKHR" );
+    return createResultValue( result, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::importSemaphoreFdKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -31699,7 +31705,7 @@ public:
   {
     HANDLE handle;
     Result result = static_cast<Result>( d.vkGetFenceWin32HandleKHR( m_device, reinterpret_cast<const VkFenceGetWin32HandleInfoKHR*>( &getWin32HandleInfo ), &handle ) );
-    return createResultValue( result, handle, "VULKAN_HPP_NAMESPACE::Device::getFenceWin32HandleKHR" );
+    return createResultValue( result, handle, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::getFenceWin32HandleKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
@@ -31715,7 +31721,7 @@ public:
   VULKAN_HPP_INLINE ResultValueType<void>::type Device::importFenceWin32HandleKHR( const ImportFenceWin32HandleInfoKHR & importFenceWin32HandleInfo, Dispatch const &d ) const
   {
     Result result = static_cast<Result>( d.vkImportFenceWin32HandleKHR( m_device, reinterpret_cast<const VkImportFenceWin32HandleInfoKHR*>( &importFenceWin32HandleInfo ) ) );
-    return createResultValue( result, "VULKAN_HPP_NAMESPACE::Device::importFenceWin32HandleKHR" );
+    return createResultValue( result, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::importFenceWin32HandleKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
@@ -31731,7 +31737,7 @@ public:
   {
     int fd;
     Result result = static_cast<Result>( d.vkGetFenceFdKHR( m_device, reinterpret_cast<const VkFenceGetFdInfoKHR*>( &getFdInfo ), &fd ) );
-    return createResultValue( result, fd, "VULKAN_HPP_NAMESPACE::Device::getFenceFdKHR" );
+    return createResultValue( result, fd, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::getFenceFdKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -31745,7 +31751,7 @@ public:
   VULKAN_HPP_INLINE ResultValueType<void>::type Device::importFenceFdKHR( const ImportFenceFdInfoKHR & importFenceFdInfo, Dispatch const &d ) const
   {
     Result result = static_cast<Result>( d.vkImportFenceFdKHR( m_device, reinterpret_cast<const VkImportFenceFdInfoKHR*>( &importFenceFdInfo ) ) );
-    return createResultValue( result, "VULKAN_HPP_NAMESPACE::Device::importFenceFdKHR" );
+    return createResultValue( result, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::importFenceFdKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -31759,7 +31765,7 @@ public:
   VULKAN_HPP_INLINE ResultValueType<void>::type Device::displayPowerControlEXT( DisplayKHR display, const DisplayPowerInfoEXT & displayPowerInfo, Dispatch const &d ) const
   {
     Result result = static_cast<Result>( d.vkDisplayPowerControlEXT( m_device, static_cast<VkDisplayKHR>( display ), reinterpret_cast<const VkDisplayPowerInfoEXT*>( &displayPowerInfo ) ) );
-    return createResultValue( result, "VULKAN_HPP_NAMESPACE::Device::displayPowerControlEXT" );
+    return createResultValue( result, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::displayPowerControlEXT" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -31774,7 +31780,7 @@ public:
   {
     Fence fence;
     Result result = static_cast<Result>( d.vkRegisterDeviceEventEXT( m_device, reinterpret_cast<const VkDeviceEventInfoEXT*>( &deviceEventInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkFence*>( &fence ) ) );
-    return createResultValue( result, fence, "VULKAN_HPP_NAMESPACE::Device::registerEventEXT" );
+    return createResultValue( result, fence, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::registerEventEXT" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -31789,7 +31795,7 @@ public:
   {
     Fence fence;
     Result result = static_cast<Result>( d.vkRegisterDisplayEventEXT( m_device, static_cast<VkDisplayKHR>( display ), reinterpret_cast<const VkDisplayEventInfoEXT*>( &displayEventInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkFence*>( &fence ) ) );
-    return createResultValue( result, fence, "VULKAN_HPP_NAMESPACE::Device::registerDisplayEventEXT" );
+    return createResultValue( result, fence, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::registerDisplayEventEXT" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -31804,7 +31810,7 @@ public:
   {
     uint64_t counterValue;
     Result result = static_cast<Result>( d.vkGetSwapchainCounterEXT( m_device, static_cast<VkSwapchainKHR>( swapchain ), static_cast<VkSurfaceCounterFlagBitsEXT>( counter ), &counterValue ) );
-    return createResultValue( result, counterValue, "VULKAN_HPP_NAMESPACE::Device::getSwapchainCounterEXT", { Result::eSuccess, Result::eErrorDeviceLost, Result::eErrorOutOfDateKHR } );
+    return createResultValue( result, counterValue, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::getSwapchainCounterEXT", { Result::eSuccess, Result::eErrorDeviceLost, Result::eErrorOutOfDateKHR } );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -31833,7 +31839,7 @@ public:
   VULKAN_HPP_INLINE ResultValueType<void>::type Device::bindBufferMemory2KHR( ArrayProxy<const BindBufferMemoryInfoKHR> bindInfos, Dispatch const &d ) const
   {
     Result result = static_cast<Result>( d.vkBindBufferMemory2KHR( m_device, bindInfos.size() , reinterpret_cast<const VkBindBufferMemoryInfoKHR*>( bindInfos.data() ) ) );
-    return createResultValue( result, "VULKAN_HPP_NAMESPACE::Device::bindBufferMemory2KHR" );
+    return createResultValue( result, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::bindBufferMemory2KHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -31847,7 +31853,7 @@ public:
   VULKAN_HPP_INLINE ResultValueType<void>::type Device::bindImageMemory2KHR( ArrayProxy<const BindImageMemoryInfoKHR> bindInfos, Dispatch const &d ) const
   {
     Result result = static_cast<Result>( d.vkBindImageMemory2KHR( m_device, bindInfos.size() , reinterpret_cast<const VkBindImageMemoryInfoKHR*>( bindInfos.data() ) ) );
-    return createResultValue( result, "VULKAN_HPP_NAMESPACE::Device::bindImageMemory2KHR" );
+    return createResultValue( result, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::bindImageMemory2KHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -31862,7 +31868,7 @@ public:
   {
     DeviceGroupPresentCapabilitiesKHX deviceGroupPresentCapabilities;
     Result result = static_cast<Result>( d.vkGetDeviceGroupPresentCapabilitiesKHX( m_device, reinterpret_cast<VkDeviceGroupPresentCapabilitiesKHX*>( &deviceGroupPresentCapabilities ) ) );
-    return createResultValue( result, deviceGroupPresentCapabilities, "VULKAN_HPP_NAMESPACE::Device::getGroupPresentCapabilitiesKHX" );
+    return createResultValue( result, deviceGroupPresentCapabilities, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::getGroupPresentCapabilitiesKHX" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -31877,7 +31883,7 @@ public:
   {
     DeviceGroupPresentModeFlagsKHX modes;
     Result result = static_cast<Result>( d.vkGetDeviceGroupSurfacePresentModesKHX( m_device, static_cast<VkSurfaceKHR>( surface ), reinterpret_cast<VkDeviceGroupPresentModeFlagsKHX*>( &modes ) ) );
-    return createResultValue( result, modes, "VULKAN_HPP_NAMESPACE::Device::getGroupSurfacePresentModesKHX" );
+    return createResultValue( result, modes, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::getGroupSurfacePresentModesKHX" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -31892,7 +31898,7 @@ public:
   {
     uint32_t imageIndex;
     Result result = static_cast<Result>( d.vkAcquireNextImage2KHX( m_device, reinterpret_cast<const VkAcquireNextImageInfoKHX*>( &acquireInfo ), &imageIndex ) );
-    return createResultValue( result, imageIndex, "VULKAN_HPP_NAMESPACE::Device::acquireNextImage2KHX", { Result::eSuccess, Result::eTimeout, Result::eNotReady, Result::eSuboptimalKHR } );
+    return createResultValue( result, imageIndex, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::acquireNextImage2KHX", { Result::eSuccess, Result::eTimeout, Result::eNotReady, Result::eSuboptimalKHR } );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -31907,7 +31913,7 @@ public:
   {
     DescriptorUpdateTemplateKHR descriptorUpdateTemplate;
     Result result = static_cast<Result>( d.vkCreateDescriptorUpdateTemplateKHR( m_device, reinterpret_cast<const VkDescriptorUpdateTemplateCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkDescriptorUpdateTemplateKHR*>( &descriptorUpdateTemplate ) ) );
-    return createResultValue( result, descriptorUpdateTemplate, "VULKAN_HPP_NAMESPACE::Device::createDescriptorUpdateTemplateKHR" );
+    return createResultValue( result, descriptorUpdateTemplate, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createDescriptorUpdateTemplateKHR" );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
@@ -31917,7 +31923,7 @@ public:
     Result result = static_cast<Result>( d.vkCreateDescriptorUpdateTemplateKHR( m_device, reinterpret_cast<const VkDescriptorUpdateTemplateCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkDescriptorUpdateTemplateKHR*>( &descriptorUpdateTemplate ) ) );
 
     ObjectDeleter<Device> deleter( *this, allocator );
-    return createResultValue( result, descriptorUpdateTemplate, "VULKAN_HPP_NAMESPACE::Device::createDescriptorUpdateTemplateKHRUnique", deleter );
+    return createResultValue( result, descriptorUpdateTemplate, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createDescriptorUpdateTemplateKHRUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -31976,7 +31982,7 @@ public:
 #else
     if ( swapchains.size() != metadata.size() )
     {
-      throw LogicError( "VULKAN_HPP_NAMESPACE::Device::setHdrMetadataEXT: swapchains.size() != metadata.size()" );
+      throw LogicError( (stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::setHdrMetadataEXT: swapchains.size() != metadata.size()").c_str() );
     }
 #endif  // VULKAN_HPP_NO_EXCEPTIONS
     d.vkSetHdrMetadataEXT( m_device, swapchains.size() , reinterpret_cast<const VkSwapchainKHR*>( swapchains.data() ), reinterpret_cast<const VkHdrMetadataEXT*>( metadata.data() ) );
@@ -31994,7 +32000,7 @@ public:
   VULKAN_HPP_INLINE Result Device::getSwapchainStatusKHR( SwapchainKHR swapchain, Dispatch const &d ) const
   {
     Result result = static_cast<Result>( d.vkGetSwapchainStatusKHR( m_device, static_cast<VkSwapchainKHR>( swapchain ) ) );
-    return createResultValue( result, "VULKAN_HPP_NAMESPACE::Device::getSwapchainStatusKHR", { Result::eSuccess, Result::eSuboptimalKHR } );
+    return createResultValue( result, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::getSwapchainStatusKHR", { Result::eSuccess, Result::eSuboptimalKHR } );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -32009,7 +32015,7 @@ public:
   {
     RefreshCycleDurationGOOGLE displayTimingProperties;
     Result result = static_cast<Result>( d.vkGetRefreshCycleDurationGOOGLE( m_device, static_cast<VkSwapchainKHR>( swapchain ), reinterpret_cast<VkRefreshCycleDurationGOOGLE*>( &displayTimingProperties ) ) );
-    return createResultValue( result, displayTimingProperties, "VULKAN_HPP_NAMESPACE::Device::getRefreshCycleDurationGOOGLE" );
+    return createResultValue( result, displayTimingProperties, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::getRefreshCycleDurationGOOGLE" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -32030,7 +32036,7 @@ public:
       presentationTimings.resize( presentationTimingCount );
       result = static_cast<Result>( d.vkGetPastPresentationTimingGOOGLE( m_device, static_cast<VkSwapchainKHR>( swapchain ), &presentationTimingCount, reinterpret_cast<VkPastPresentationTimingGOOGLE*>( presentationTimings.data() ) ) );
     }
-    return createResultValue( result, presentationTimings, "VULKAN_HPP_NAMESPACE::Device::getPastPresentationTimingGOOGLE" );
+    return createResultValue( result, presentationTimings, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::getPastPresentationTimingGOOGLE" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -32109,7 +32115,7 @@ public:
   {
     SamplerYcbcrConversionKHR ycbcrConversion;
     Result result = static_cast<Result>( d.vkCreateSamplerYcbcrConversionKHR( m_device, reinterpret_cast<const VkSamplerYcbcrConversionCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSamplerYcbcrConversionKHR*>( &ycbcrConversion ) ) );
-    return createResultValue( result, ycbcrConversion, "VULKAN_HPP_NAMESPACE::Device::createSamplerYcbcrConversionKHR" );
+    return createResultValue( result, ycbcrConversion, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createSamplerYcbcrConversionKHR" );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
@@ -32119,7 +32125,7 @@ public:
     Result result = static_cast<Result>( d.vkCreateSamplerYcbcrConversionKHR( m_device, reinterpret_cast<const VkSamplerYcbcrConversionCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSamplerYcbcrConversionKHR*>( &ycbcrConversion ) ) );
 
     ObjectDeleter<Device> deleter( *this, allocator );
-    return createResultValue( result, ycbcrConversion, "VULKAN_HPP_NAMESPACE::Device::createSamplerYcbcrConversionKHRUnique", deleter );
+    return createResultValue( result, ycbcrConversion, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createSamplerYcbcrConversionKHRUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -32161,7 +32167,7 @@ public:
   {
     ValidationCacheEXT validationCache;
     Result result = static_cast<Result>( d.vkCreateValidationCacheEXT( m_device, reinterpret_cast<const VkValidationCacheCreateInfoEXT*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkValidationCacheEXT*>( &validationCache ) ) );
-    return createResultValue( result, validationCache, "VULKAN_HPP_NAMESPACE::Device::createValidationCacheEXT" );
+    return createResultValue( result, validationCache, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createValidationCacheEXT" );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
@@ -32171,7 +32177,7 @@ public:
     Result result = static_cast<Result>( d.vkCreateValidationCacheEXT( m_device, reinterpret_cast<const VkValidationCacheCreateInfoEXT*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkValidationCacheEXT*>( &validationCache ) ) );
 
     ObjectDeleter<Device> deleter( *this, allocator );
-    return createResultValue( result, validationCache, "VULKAN_HPP_NAMESPACE::Device::createValidationCacheEXTUnique", deleter );
+    return createResultValue( result, validationCache, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::createValidationCacheEXTUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -32225,7 +32231,7 @@ public:
     } while ( result == Result::eIncomplete );
     VULKAN_HPP_ASSERT( dataSize <= data.size() );
     data.resize( dataSize );
-    return createResultValue( result, data, "VULKAN_HPP_NAMESPACE::Device::getValidationCacheDataEXT" );
+    return createResultValue( result, data, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::getValidationCacheDataEXT" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -32239,7 +32245,7 @@ public:
   VULKAN_HPP_INLINE ResultValueType<void>::type Device::mergeValidationCachesEXT( ValidationCacheEXT dstCache, ArrayProxy<const ValidationCacheEXT> srcCaches, Dispatch const &d ) const
   {
     Result result = static_cast<Result>( d.vkMergeValidationCachesEXT( m_device, static_cast<VkValidationCacheEXT>( dstCache ), srcCaches.size() , reinterpret_cast<const VkValidationCacheEXT*>( srcCaches.data() ) ) );
-    return createResultValue( result, "VULKAN_HPP_NAMESPACE::Device::mergeValidationCachesEXT" );
+    return createResultValue( result, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::mergeValidationCachesEXT" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -32266,7 +32272,7 @@ public:
     } while ( result == Result::eIncomplete );
     VULKAN_HPP_ASSERT( infoSize <= info.size() );
     info.resize( infoSize );
-    return createResultValue( result, info, "VULKAN_HPP_NAMESPACE::Device::getShaderInfoAMD" );
+    return createResultValue( result, info, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::getShaderInfoAMD" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -32281,7 +32287,7 @@ public:
   {
     MemoryHostPointerPropertiesEXT memoryHostPointerProperties;
     Result result = static_cast<Result>( d.vkGetMemoryHostPointerPropertiesEXT( m_device, static_cast<VkExternalMemoryHandleTypeFlagBitsKHR>( handleType ), pHostPointer, reinterpret_cast<VkMemoryHostPointerPropertiesEXT*>( &memoryHostPointerProperties ) ) );
-    return createResultValue( result, memoryHostPointerProperties, "VULKAN_HPP_NAMESPACE::Device::getMemoryHostPointerPropertiesEXT" );
+    return createResultValue( result, memoryHostPointerProperties, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Device::getMemoryHostPointerPropertiesEXT" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -32786,7 +32792,7 @@ public:
   {
     ImageFormatProperties imageFormatProperties;
     Result result = static_cast<Result>( d.vkGetPhysicalDeviceImageFormatProperties( m_physicalDevice, static_cast<VkFormat>( format ), static_cast<VkImageType>( type ), static_cast<VkImageTiling>( tiling ), static_cast<VkImageUsageFlags>( usage ), static_cast<VkImageCreateFlags>( flags ), reinterpret_cast<VkImageFormatProperties*>( &imageFormatProperties ) ) );
-    return createResultValue( result, imageFormatProperties, "VULKAN_HPP_NAMESPACE::PhysicalDevice::getImageFormatProperties" );
+    return createResultValue( result, imageFormatProperties, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::PhysicalDevice::getImageFormatProperties" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -32801,7 +32807,7 @@ public:
   {
     Device device;
     Result result = static_cast<Result>( d.vkCreateDevice( m_physicalDevice, reinterpret_cast<const VkDeviceCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkDevice*>( &device ) ) );
-    return createResultValue( result, device, "VULKAN_HPP_NAMESPACE::PhysicalDevice::createDevice" );
+    return createResultValue( result, device, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::PhysicalDevice::createDevice" );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
@@ -32811,7 +32817,7 @@ public:
     Result result = static_cast<Result>( d.vkCreateDevice( m_physicalDevice, reinterpret_cast<const VkDeviceCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkDevice*>( &device ) ) );
 
     ObjectDeleter<PhysicalDevice> deleter( *this, allocator );
-    return createResultValue( result, device, "VULKAN_HPP_NAMESPACE::PhysicalDevice::createDeviceUnique", deleter );
+    return createResultValue( result, device, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::PhysicalDevice::createDeviceUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -32839,7 +32845,7 @@ public:
     } while ( result == Result::eIncomplete );
     VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
     properties.resize( propertyCount );
-    return createResultValue( result, properties, "VULKAN_HPP_NAMESPACE::PhysicalDevice::enumerateDeviceLayerProperties" );
+    return createResultValue( result, properties, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::PhysicalDevice::enumerateDeviceLayerProperties" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -32866,7 +32872,7 @@ public:
     } while ( result == Result::eIncomplete );
     VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
     properties.resize( propertyCount );
-    return createResultValue( result, properties, "VULKAN_HPP_NAMESPACE::PhysicalDevice::enumerateDeviceExtensionProperties" );
+    return createResultValue( result, properties, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::PhysicalDevice::enumerateDeviceExtensionProperties" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -32911,7 +32917,7 @@ public:
     } while ( result == Result::eIncomplete );
     VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
     properties.resize( propertyCount );
-    return createResultValue( result, properties, "VULKAN_HPP_NAMESPACE::PhysicalDevice::getDisplayPropertiesKHR" );
+    return createResultValue( result, properties, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::PhysicalDevice::getDisplayPropertiesKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -32938,7 +32944,7 @@ public:
     } while ( result == Result::eIncomplete );
     VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
     properties.resize( propertyCount );
-    return createResultValue( result, properties, "VULKAN_HPP_NAMESPACE::PhysicalDevice::getDisplayPlanePropertiesKHR" );
+    return createResultValue( result, properties, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::PhysicalDevice::getDisplayPlanePropertiesKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -32965,7 +32971,7 @@ public:
     } while ( result == Result::eIncomplete );
     VULKAN_HPP_ASSERT( displayCount <= displays.size() );
     displays.resize( displayCount );
-    return createResultValue( result, displays, "VULKAN_HPP_NAMESPACE::PhysicalDevice::getDisplayPlaneSupportedDisplaysKHR" );
+    return createResultValue( result, displays, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::PhysicalDevice::getDisplayPlaneSupportedDisplaysKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -32992,7 +32998,7 @@ public:
     } while ( result == Result::eIncomplete );
     VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
     properties.resize( propertyCount );
-    return createResultValue( result, properties, "VULKAN_HPP_NAMESPACE::PhysicalDevice::getDisplayModePropertiesKHR" );
+    return createResultValue( result, properties, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::PhysicalDevice::getDisplayModePropertiesKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -33007,7 +33013,7 @@ public:
   {
     DisplayModeKHR mode;
     Result result = static_cast<Result>( d.vkCreateDisplayModeKHR( m_physicalDevice, static_cast<VkDisplayKHR>( display ), reinterpret_cast<const VkDisplayModeCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkDisplayModeKHR*>( &mode ) ) );
-    return createResultValue( result, mode, "VULKAN_HPP_NAMESPACE::PhysicalDevice::createDisplayModeKHR" );
+    return createResultValue( result, mode, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::PhysicalDevice::createDisplayModeKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -33022,7 +33028,7 @@ public:
   {
     DisplayPlaneCapabilitiesKHR capabilities;
     Result result = static_cast<Result>( d.vkGetDisplayPlaneCapabilitiesKHR( m_physicalDevice, static_cast<VkDisplayModeKHR>( mode ), planeIndex, reinterpret_cast<VkDisplayPlaneCapabilitiesKHR*>( &capabilities ) ) );
-    return createResultValue( result, capabilities, "VULKAN_HPP_NAMESPACE::PhysicalDevice::getDisplayPlaneCapabilitiesKHR" );
+    return createResultValue( result, capabilities, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::PhysicalDevice::getDisplayPlaneCapabilitiesKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -33052,7 +33058,7 @@ public:
   {
     Bool32 supported;
     Result result = static_cast<Result>( d.vkGetPhysicalDeviceSurfaceSupportKHR( m_physicalDevice, queueFamilyIndex, static_cast<VkSurfaceKHR>( surface ), &supported ) );
-    return createResultValue( result, supported, "VULKAN_HPP_NAMESPACE::PhysicalDevice::getSurfaceSupportKHR" );
+    return createResultValue( result, supported, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::PhysicalDevice::getSurfaceSupportKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -33067,7 +33073,7 @@ public:
   {
     SurfaceCapabilitiesKHR surfaceCapabilities;
     Result result = static_cast<Result>( d.vkGetPhysicalDeviceSurfaceCapabilitiesKHR( m_physicalDevice, static_cast<VkSurfaceKHR>( surface ), reinterpret_cast<VkSurfaceCapabilitiesKHR*>( &surfaceCapabilities ) ) );
-    return createResultValue( result, surfaceCapabilities, "VULKAN_HPP_NAMESPACE::PhysicalDevice::getSurfaceCapabilitiesKHR" );
+    return createResultValue( result, surfaceCapabilities, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::PhysicalDevice::getSurfaceCapabilitiesKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -33094,7 +33100,7 @@ public:
     } while ( result == Result::eIncomplete );
     VULKAN_HPP_ASSERT( surfaceFormatCount <= surfaceFormats.size() );
     surfaceFormats.resize( surfaceFormatCount );
-    return createResultValue( result, surfaceFormats, "VULKAN_HPP_NAMESPACE::PhysicalDevice::getSurfaceFormatsKHR" );
+    return createResultValue( result, surfaceFormats, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::PhysicalDevice::getSurfaceFormatsKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -33121,7 +33127,7 @@ public:
     } while ( result == Result::eIncomplete );
     VULKAN_HPP_ASSERT( presentModeCount <= presentModes.size() );
     presentModes.resize( presentModeCount );
-    return createResultValue( result, presentModes, "VULKAN_HPP_NAMESPACE::PhysicalDevice::getSurfacePresentModesKHR" );
+    return createResultValue( result, presentModes, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::PhysicalDevice::getSurfacePresentModesKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -33197,7 +33203,7 @@ public:
   {
     ExternalImageFormatPropertiesNV externalImageFormatProperties;
     Result result = static_cast<Result>( d.vkGetPhysicalDeviceExternalImageFormatPropertiesNV( m_physicalDevice, static_cast<VkFormat>( format ), static_cast<VkImageType>( type ), static_cast<VkImageTiling>( tiling ), static_cast<VkImageUsageFlags>( usage ), static_cast<VkImageCreateFlags>( flags ), static_cast<VkExternalMemoryHandleTypeFlagsNV>( externalHandleType ), reinterpret_cast<VkExternalImageFormatPropertiesNV*>( &externalImageFormatProperties ) ) );
-    return createResultValue( result, externalImageFormatProperties, "VULKAN_HPP_NAMESPACE::PhysicalDevice::getExternalImageFormatPropertiesNV" );
+    return createResultValue( result, externalImageFormatProperties, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::PhysicalDevice::getExternalImageFormatPropertiesNV" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -33288,7 +33294,7 @@ public:
   {
     ImageFormatProperties2KHR imageFormatProperties;
     Result result = static_cast<Result>( d.vkGetPhysicalDeviceImageFormatProperties2KHR( m_physicalDevice, reinterpret_cast<const VkPhysicalDeviceImageFormatInfo2KHR*>( &imageFormatInfo ), reinterpret_cast<VkImageFormatProperties2KHR*>( &imageFormatProperties ) ) );
-    return createResultValue( result, imageFormatProperties, "VULKAN_HPP_NAMESPACE::PhysicalDevice::getImageFormatProperties2KHR" );
+    return createResultValue( result, imageFormatProperties, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::PhysicalDevice::getImageFormatProperties2KHR" );
   }
   template <typename ...T, typename Dispatch>
   VULKAN_HPP_INLINE typename ResultValueType<StructureChain<T...>>::type PhysicalDevice::getImageFormatProperties2KHR( const PhysicalDeviceImageFormatInfo2KHR & imageFormatInfo, Dispatch const &d ) const
@@ -33296,7 +33302,7 @@ public:
     StructureChain<T...> structureChain;
     ImageFormatProperties2KHR& imageFormatProperties = structureChain.template get<ImageFormatProperties2KHR>();
     Result result = static_cast<Result>( d.vkGetPhysicalDeviceImageFormatProperties2KHR( m_physicalDevice, reinterpret_cast<const VkPhysicalDeviceImageFormatInfo2KHR*>( &imageFormatInfo ), reinterpret_cast<VkImageFormatProperties2KHR*>( &imageFormatProperties ) ) );
-    return createResultValue( result, structureChain, "VULKAN_HPP_NAMESPACE::PhysicalDevice::getImageFormatProperties2KHR" );
+    return createResultValue( result, structureChain, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::PhysicalDevice::getImageFormatProperties2KHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -33407,7 +33413,7 @@ public:
   VULKAN_HPP_INLINE ResultValueType<void>::type PhysicalDevice::releaseDisplayEXT( DisplayKHR display, Dispatch const &d ) const
   {
     Result result = static_cast<Result>( d.vkReleaseDisplayEXT( m_physicalDevice, static_cast<VkDisplayKHR>( display ) ) );
-    return createResultValue( result, "VULKAN_HPP_NAMESPACE::PhysicalDevice::releaseDisplayEXT" );
+    return createResultValue( result, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::PhysicalDevice::releaseDisplayEXT" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -33423,7 +33429,7 @@ public:
   {
     Display dpy;
     Result result = static_cast<Result>( d.vkAcquireXlibDisplayEXT( m_physicalDevice, &dpy, static_cast<VkDisplayKHR>( display ) ) );
-    return createResultValue( result, dpy, "VULKAN_HPP_NAMESPACE::PhysicalDevice::acquireXlibDisplayEXT" );
+    return createResultValue( result, dpy, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::PhysicalDevice::acquireXlibDisplayEXT" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 #endif /*VK_USE_PLATFORM_XLIB_XRANDR_EXT*/
@@ -33440,7 +33446,7 @@ public:
   {
     DisplayKHR display;
     Result result = static_cast<Result>( d.vkGetRandROutputDisplayEXT( m_physicalDevice, &dpy, rrOutput, reinterpret_cast<VkDisplayKHR*>( &display ) ) );
-    return createResultValue( result, display, "VULKAN_HPP_NAMESPACE::PhysicalDevice::getRandROutputDisplayEXT" );
+    return createResultValue( result, display, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::PhysicalDevice::getRandROutputDisplayEXT" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 #endif /*VK_USE_PLATFORM_XLIB_XRANDR_EXT*/
@@ -33456,7 +33462,7 @@ public:
   {
     SurfaceCapabilities2EXT surfaceCapabilities;
     Result result = static_cast<Result>( d.vkGetPhysicalDeviceSurfaceCapabilities2EXT( m_physicalDevice, static_cast<VkSurfaceKHR>( surface ), reinterpret_cast<VkSurfaceCapabilities2EXT*>( &surfaceCapabilities ) ) );
-    return createResultValue( result, surfaceCapabilities, "VULKAN_HPP_NAMESPACE::PhysicalDevice::getSurfaceCapabilities2EXT" );
+    return createResultValue( result, surfaceCapabilities, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::PhysicalDevice::getSurfaceCapabilities2EXT" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -33483,7 +33489,7 @@ public:
     } while ( result == Result::eIncomplete );
     VULKAN_HPP_ASSERT( rectCount <= rects.size() );
     rects.resize( rectCount );
-    return createResultValue( result, rects, "VULKAN_HPP_NAMESPACE::PhysicalDevice::getPresentRectanglesKHX" );
+    return createResultValue( result, rects, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::PhysicalDevice::getPresentRectanglesKHX" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -33513,7 +33519,7 @@ public:
   {
     SurfaceCapabilities2KHR surfaceCapabilities;
     Result result = static_cast<Result>( d.vkGetPhysicalDeviceSurfaceCapabilities2KHR( m_physicalDevice, reinterpret_cast<const VkPhysicalDeviceSurfaceInfo2KHR*>( &surfaceInfo ), reinterpret_cast<VkSurfaceCapabilities2KHR*>( &surfaceCapabilities ) ) );
-    return createResultValue( result, surfaceCapabilities, "VULKAN_HPP_NAMESPACE::PhysicalDevice::getSurfaceCapabilities2KHR" );
+    return createResultValue( result, surfaceCapabilities, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::PhysicalDevice::getSurfaceCapabilities2KHR" );
   }
   template <typename ...T, typename Dispatch>
   VULKAN_HPP_INLINE typename ResultValueType<StructureChain<T...>>::type PhysicalDevice::getSurfaceCapabilities2KHR( const PhysicalDeviceSurfaceInfo2KHR & surfaceInfo, Dispatch const &d ) const
@@ -33521,7 +33527,7 @@ public:
     StructureChain<T...> structureChain;
     SurfaceCapabilities2KHR& surfaceCapabilities = structureChain.template get<SurfaceCapabilities2KHR>();
     Result result = static_cast<Result>( d.vkGetPhysicalDeviceSurfaceCapabilities2KHR( m_physicalDevice, reinterpret_cast<const VkPhysicalDeviceSurfaceInfo2KHR*>( &surfaceInfo ), reinterpret_cast<VkSurfaceCapabilities2KHR*>( &surfaceCapabilities ) ) );
-    return createResultValue( result, structureChain, "VULKAN_HPP_NAMESPACE::PhysicalDevice::getSurfaceCapabilities2KHR" );
+    return createResultValue( result, structureChain, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::PhysicalDevice::getSurfaceCapabilities2KHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -33548,7 +33554,7 @@ public:
     } while ( result == Result::eIncomplete );
     VULKAN_HPP_ASSERT( surfaceFormatCount <= surfaceFormats.size() );
     surfaceFormats.resize( surfaceFormatCount );
-    return createResultValue( result, surfaceFormats, "VULKAN_HPP_NAMESPACE::PhysicalDevice::getSurfaceFormats2KHR" );
+    return createResultValue( result, surfaceFormats, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::PhysicalDevice::getSurfaceFormats2KHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -34034,7 +34040,7 @@ public:
     } while ( result == Result::eIncomplete );
     VULKAN_HPP_ASSERT( physicalDeviceCount <= physicalDevices.size() );
     physicalDevices.resize( physicalDeviceCount );
-    return createResultValue( result, physicalDevices, "VULKAN_HPP_NAMESPACE::Instance::enumeratePhysicalDevices" );
+    return createResultValue( result, physicalDevices, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Instance::enumeratePhysicalDevices" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -34063,7 +34069,7 @@ public:
   {
     SurfaceKHR surface;
     Result result = static_cast<Result>( d.vkCreateAndroidSurfaceKHR( m_instance, reinterpret_cast<const VkAndroidSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
-    return createResultValue( result, surface, "VULKAN_HPP_NAMESPACE::Instance::createAndroidSurfaceKHR" );
+    return createResultValue( result, surface, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Instance::createAndroidSurfaceKHR" );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
@@ -34073,7 +34079,7 @@ public:
     Result result = static_cast<Result>( d.vkCreateAndroidSurfaceKHR( m_instance, reinterpret_cast<const VkAndroidSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
 
     ObjectDeleter<Instance> deleter( *this, allocator );
-    return createResultValue( result, surface, "VULKAN_HPP_NAMESPACE::Instance::createAndroidSurfaceKHRUnique", deleter );
+    return createResultValue( result, surface, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Instance::createAndroidSurfaceKHRUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -34090,7 +34096,7 @@ public:
   {
     SurfaceKHR surface;
     Result result = static_cast<Result>( d.vkCreateDisplayPlaneSurfaceKHR( m_instance, reinterpret_cast<const VkDisplaySurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
-    return createResultValue( result, surface, "VULKAN_HPP_NAMESPACE::Instance::createDisplayPlaneSurfaceKHR" );
+    return createResultValue( result, surface, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Instance::createDisplayPlaneSurfaceKHR" );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
@@ -34100,7 +34106,7 @@ public:
     Result result = static_cast<Result>( d.vkCreateDisplayPlaneSurfaceKHR( m_instance, reinterpret_cast<const VkDisplaySurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
 
     ObjectDeleter<Instance> deleter( *this, allocator );
-    return createResultValue( result, surface, "VULKAN_HPP_NAMESPACE::Instance::createDisplayPlaneSurfaceKHRUnique", deleter );
+    return createResultValue( result, surface, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Instance::createDisplayPlaneSurfaceKHRUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -34117,7 +34123,7 @@ public:
   {
     SurfaceKHR surface;
     Result result = static_cast<Result>( d.vkCreateMirSurfaceKHR( m_instance, reinterpret_cast<const VkMirSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
-    return createResultValue( result, surface, "VULKAN_HPP_NAMESPACE::Instance::createMirSurfaceKHR" );
+    return createResultValue( result, surface, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Instance::createMirSurfaceKHR" );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
@@ -34127,7 +34133,7 @@ public:
     Result result = static_cast<Result>( d.vkCreateMirSurfaceKHR( m_instance, reinterpret_cast<const VkMirSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
 
     ObjectDeleter<Instance> deleter( *this, allocator );
-    return createResultValue( result, surface, "VULKAN_HPP_NAMESPACE::Instance::createMirSurfaceKHRUnique", deleter );
+    return createResultValue( result, surface, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Instance::createMirSurfaceKHRUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -34171,7 +34177,7 @@ public:
   {
     SurfaceKHR surface;
     Result result = static_cast<Result>( d.vkCreateViSurfaceNN( m_instance, reinterpret_cast<const VkViSurfaceCreateInfoNN*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
-    return createResultValue( result, surface, "VULKAN_HPP_NAMESPACE::Instance::createViSurfaceNN" );
+    return createResultValue( result, surface, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Instance::createViSurfaceNN" );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
@@ -34181,7 +34187,7 @@ public:
     Result result = static_cast<Result>( d.vkCreateViSurfaceNN( m_instance, reinterpret_cast<const VkViSurfaceCreateInfoNN*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
 
     ObjectDeleter<Instance> deleter( *this, allocator );
-    return createResultValue( result, surface, "VULKAN_HPP_NAMESPACE::Instance::createViSurfaceNNUnique", deleter );
+    return createResultValue( result, surface, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Instance::createViSurfaceNNUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -34199,7 +34205,7 @@ public:
   {
     SurfaceKHR surface;
     Result result = static_cast<Result>( d.vkCreateWaylandSurfaceKHR( m_instance, reinterpret_cast<const VkWaylandSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
-    return createResultValue( result, surface, "VULKAN_HPP_NAMESPACE::Instance::createWaylandSurfaceKHR" );
+    return createResultValue( result, surface, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Instance::createWaylandSurfaceKHR" );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
@@ -34209,7 +34215,7 @@ public:
     Result result = static_cast<Result>( d.vkCreateWaylandSurfaceKHR( m_instance, reinterpret_cast<const VkWaylandSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
 
     ObjectDeleter<Instance> deleter( *this, allocator );
-    return createResultValue( result, surface, "VULKAN_HPP_NAMESPACE::Instance::createWaylandSurfaceKHRUnique", deleter );
+    return createResultValue( result, surface, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Instance::createWaylandSurfaceKHRUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -34227,7 +34233,7 @@ public:
   {
     SurfaceKHR surface;
     Result result = static_cast<Result>( d.vkCreateWin32SurfaceKHR( m_instance, reinterpret_cast<const VkWin32SurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
-    return createResultValue( result, surface, "VULKAN_HPP_NAMESPACE::Instance::createWin32SurfaceKHR" );
+    return createResultValue( result, surface, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Instance::createWin32SurfaceKHR" );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
@@ -34237,7 +34243,7 @@ public:
     Result result = static_cast<Result>( d.vkCreateWin32SurfaceKHR( m_instance, reinterpret_cast<const VkWin32SurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
 
     ObjectDeleter<Instance> deleter( *this, allocator );
-    return createResultValue( result, surface, "VULKAN_HPP_NAMESPACE::Instance::createWin32SurfaceKHRUnique", deleter );
+    return createResultValue( result, surface, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Instance::createWin32SurfaceKHRUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -34255,7 +34261,7 @@ public:
   {
     SurfaceKHR surface;
     Result result = static_cast<Result>( d.vkCreateXlibSurfaceKHR( m_instance, reinterpret_cast<const VkXlibSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
-    return createResultValue( result, surface, "VULKAN_HPP_NAMESPACE::Instance::createXlibSurfaceKHR" );
+    return createResultValue( result, surface, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Instance::createXlibSurfaceKHR" );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
@@ -34265,7 +34271,7 @@ public:
     Result result = static_cast<Result>( d.vkCreateXlibSurfaceKHR( m_instance, reinterpret_cast<const VkXlibSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
 
     ObjectDeleter<Instance> deleter( *this, allocator );
-    return createResultValue( result, surface, "VULKAN_HPP_NAMESPACE::Instance::createXlibSurfaceKHRUnique", deleter );
+    return createResultValue( result, surface, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Instance::createXlibSurfaceKHRUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -34283,7 +34289,7 @@ public:
   {
     SurfaceKHR surface;
     Result result = static_cast<Result>( d.vkCreateXcbSurfaceKHR( m_instance, reinterpret_cast<const VkXcbSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
-    return createResultValue( result, surface, "VULKAN_HPP_NAMESPACE::Instance::createXcbSurfaceKHR" );
+    return createResultValue( result, surface, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Instance::createXcbSurfaceKHR" );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
@@ -34293,7 +34299,7 @@ public:
     Result result = static_cast<Result>( d.vkCreateXcbSurfaceKHR( m_instance, reinterpret_cast<const VkXcbSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
 
     ObjectDeleter<Instance> deleter( *this, allocator );
-    return createResultValue( result, surface, "VULKAN_HPP_NAMESPACE::Instance::createXcbSurfaceKHRUnique", deleter );
+    return createResultValue( result, surface, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Instance::createXcbSurfaceKHRUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -34310,7 +34316,7 @@ public:
   {
     DebugReportCallbackEXT callback;
     Result result = static_cast<Result>( d.vkCreateDebugReportCallbackEXT( m_instance, reinterpret_cast<const VkDebugReportCallbackCreateInfoEXT*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkDebugReportCallbackEXT*>( &callback ) ) );
-    return createResultValue( result, callback, "VULKAN_HPP_NAMESPACE::Instance::createDebugReportCallbackEXT" );
+    return createResultValue( result, callback, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Instance::createDebugReportCallbackEXT" );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
@@ -34320,7 +34326,7 @@ public:
     Result result = static_cast<Result>( d.vkCreateDebugReportCallbackEXT( m_instance, reinterpret_cast<const VkDebugReportCallbackCreateInfoEXT*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkDebugReportCallbackEXT*>( &callback ) ) );
 
     ObjectDeleter<Instance> deleter( *this, allocator );
-    return createResultValue( result, callback, "VULKAN_HPP_NAMESPACE::Instance::createDebugReportCallbackEXTUnique", deleter );
+    return createResultValue( result, callback, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Instance::createDebugReportCallbackEXTUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -34365,7 +34371,7 @@ public:
 #else
     if ( layerPrefix.size() != message.size() )
     {
-      throw LogicError( "VULKAN_HPP_NAMESPACE::Instance::debugReportMessageEXT: layerPrefix.size() != message.size()" );
+      throw LogicError( (stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Instance::debugReportMessageEXT: layerPrefix.size() != message.size()").c_str() );
     }
 #endif  // VULKAN_HPP_NO_EXCEPTIONS
     d.vkDebugReportMessageEXT( m_instance, static_cast<VkDebugReportFlagsEXT>( flags ), static_cast<VkDebugReportObjectTypeEXT>( objectType ), object, location, messageCode, layerPrefix.c_str(), message.c_str() );
@@ -34395,7 +34401,7 @@ public:
     } while ( result == Result::eIncomplete );
     VULKAN_HPP_ASSERT( physicalDeviceGroupCount <= physicalDeviceGroupProperties.size() );
     physicalDeviceGroupProperties.resize( physicalDeviceGroupCount );
-    return createResultValue( result, physicalDeviceGroupProperties, "VULKAN_HPP_NAMESPACE::Instance::enumeratePhysicalDeviceGroupsKHX" );
+    return createResultValue( result, physicalDeviceGroupProperties, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Instance::enumeratePhysicalDeviceGroupsKHX" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -34411,7 +34417,7 @@ public:
   {
     SurfaceKHR surface;
     Result result = static_cast<Result>( d.vkCreateIOSSurfaceMVK( m_instance, reinterpret_cast<const VkIOSSurfaceCreateInfoMVK*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
-    return createResultValue( result, surface, "VULKAN_HPP_NAMESPACE::Instance::createIOSSurfaceMVK" );
+    return createResultValue( result, surface, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Instance::createIOSSurfaceMVK" );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
@@ -34421,7 +34427,7 @@ public:
     Result result = static_cast<Result>( d.vkCreateIOSSurfaceMVK( m_instance, reinterpret_cast<const VkIOSSurfaceCreateInfoMVK*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
 
     ObjectDeleter<Instance> deleter( *this, allocator );
-    return createResultValue( result, surface, "VULKAN_HPP_NAMESPACE::Instance::createIOSSurfaceMVKUnique", deleter );
+    return createResultValue( result, surface, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Instance::createIOSSurfaceMVKUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -34439,7 +34445,7 @@ public:
   {
     SurfaceKHR surface;
     Result result = static_cast<Result>( d.vkCreateMacOSSurfaceMVK( m_instance, reinterpret_cast<const VkMacOSSurfaceCreateInfoMVK*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
-    return createResultValue( result, surface, "VULKAN_HPP_NAMESPACE::Instance::createMacOSSurfaceMVK" );
+    return createResultValue( result, surface, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Instance::createMacOSSurfaceMVK" );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
@@ -34449,7 +34455,7 @@ public:
     Result result = static_cast<Result>( d.vkCreateMacOSSurfaceMVK( m_instance, reinterpret_cast<const VkMacOSSurfaceCreateInfoMVK*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
 
     ObjectDeleter<Instance> deleter( *this, allocator );
-    return createResultValue( result, surface, "VULKAN_HPP_NAMESPACE::Instance::createMacOSSurfaceMVKUnique", deleter );
+    return createResultValue( result, surface, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::Instance::createMacOSSurfaceMVKUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -34547,7 +34553,7 @@ public:
   {
     Instance instance;
     Result result = static_cast<Result>( d.vkCreateInstance( reinterpret_cast<const VkInstanceCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkInstance*>( &instance ) ) );
-    return createResultValue( result, instance, "VULKAN_HPP_NAMESPACE::createInstance" );
+    return createResultValue( result, instance, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::createInstance" );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
@@ -34557,7 +34563,7 @@ public:
     Result result = static_cast<Result>( d.vkCreateInstance( reinterpret_cast<const VkInstanceCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkInstance*>( &instance ) ) );
 
     ObjectDeleter<NoParent> deleter( allocator );
-    return createResultValue( result, instance, "VULKAN_HPP_NAMESPACE::createInstanceUnique", deleter );
+    return createResultValue( result, instance, stringize_indirect(VULKAN_HPP_NAMESPACE) + "::createInstanceUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/

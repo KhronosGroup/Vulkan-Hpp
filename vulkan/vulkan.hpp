@@ -30570,7 +30570,7 @@ public:
     Pipeline* buffer = reinterpret_cast<Pipeline*>( reinterpret_cast<char*>( pipelines.data() ) + createInfos.size() * ( sizeof( UniquePipeline ) - sizeof( Pipeline ) ) );
     Result result = static_cast<Result>(d.vkCreateGraphicsPipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkGraphicsPipelineCreateInfo*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( buffer ) ) );
 
-    ObjectDeleter<Pipeline> deleter( *this, allocator );
+    ObjectDeleter<Device> deleter( *this, allocator );
     for ( size_t i=0 ; i<createInfos.size() ; i++ )
     {
       pipelines.push_back( UniquePipeline( buffer[i], deleter ) );
@@ -30620,7 +30620,7 @@ public:
     Pipeline* buffer = reinterpret_cast<Pipeline*>( reinterpret_cast<char*>( pipelines.data() ) + createInfos.size() * ( sizeof( UniquePipeline ) - sizeof( Pipeline ) ) );
     Result result = static_cast<Result>(d.vkCreateComputePipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkComputePipelineCreateInfo*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( buffer ) ) );
 
-    ObjectDeleter<Pipeline> deleter( *this, allocator );
+    ObjectDeleter<Device> deleter( *this, allocator );
     for ( size_t i=0 ; i<createInfos.size() ; i++ )
     {
       pipelines.push_back( UniquePipeline( buffer[i], deleter ) );
@@ -31240,7 +31240,7 @@ public:
     SwapchainKHR* buffer = reinterpret_cast<SwapchainKHR*>( reinterpret_cast<char*>( swapchainKHRs.data() ) + createInfos.size() * ( sizeof( UniqueSwapchainKHR ) - sizeof( SwapchainKHR ) ) );
     Result result = static_cast<Result>(d.vkCreateSharedSwapchainsKHR( m_device, createInfos.size() , reinterpret_cast<const VkSwapchainCreateInfoKHR*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSwapchainKHR*>( buffer ) ) );
 
-    ObjectDeleter<SwapchainKHR> deleter( *this, allocator );
+    ObjectDeleter<Device> deleter( *this, allocator );
     for ( size_t i=0 ; i<createInfos.size() ; i++ )
     {
       swapchainKHRs.push_back( UniqueSwapchainKHR( buffer[i], deleter ) );

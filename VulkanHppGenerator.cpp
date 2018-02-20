@@ -28,6 +28,10 @@ const std::string vkNamespace = R"(
 #define VULKAN_HPP_NAMESPACE vk
 #endif
 
+#define VULKAN_HPP_STRINGIFY2(text) #text
+#define VULKAN_HPP_STRINGIFY(text) VULKAN_HPP_STRINGIFY2(text)
+#define VULKAN_HPP_NAMESPACE_STRING VULKAN_HPP_STRINGIFY(VULKAN_HPP_NAMESPACE)
+
 namespace VULKAN_HPP_NAMESPACE
 {
 )";
@@ -40,7 +44,7 @@ const std::string exceptionHeader = R"(
   class ErrorCategoryImpl : public std::error_category
   {
     public:
-    virtual const char* name() const noexcept override { return "VULKAN_HPP_NAMESPACE::Result"; }
+    virtual const char* name() const noexcept override { return VULKAN_HPP_NAMESPACE_STRING"::Result"; }
     virtual std::string message(int ev) const override { return to_string(static_cast<Result>(ev)); }
   };
 
@@ -3168,7 +3172,7 @@ ${i}  {
 ${i}    ${typeVariable}s.push_back( Unique${type}( buffer[i], deleter ) );
 ${i}  }
 
-${i}  return createResultValue( result, ${typeVariable}s, "VULKAN_HPP_NAMESPACE::${class}::${function}Unique" );
+${i}  return createResultValue( result, ${typeVariable}s, VULKAN_HPP_NAMESPACE_STRING "::${class}::${function}Unique" );
 )";
 
     std::string type = (commandData.returnParam != ~0) ? commandData.params[commandData.returnParam].pureType : "";
@@ -3443,7 +3447,7 @@ ${i}  VULKAN_HPP_ASSERT( ${firstVectorName}.size() == ${secondVectorName}.size()
 #else
 ${i}  if ( ${firstVectorName}.size() != ${secondVectorName}.size() )
 ${i}  {
-${i}    throw LogicError( "VULKAN_HPP_NAMESPACE::${className}::${reducedName}: ${firstVectorName}.size() != ${secondVectorName}.size()" );
+${i}    throw LogicError( VULKAN_HPP_NAMESPACE_STRING "::${className}::${reducedName}: ${firstVectorName}.size() != ${secondVectorName}.size()" );
 ${i}  }
 #endif  // VULKAN_HPP_NO_EXCEPTIONS
 )#";
@@ -3496,7 +3500,7 @@ void VulkanHppGenerator::writeFunctionBodyEnhancedReturnResultValue(std::ostream
   }
 
   // now the function name (with full namespace) as a string
-  os << "\"VULKAN_HPP_NAMESPACE::" << (commandData.className.empty() ? "" : commandData.className + "::") << (singular ? stripPluralS(commandData.reducedName) : commandData.reducedName) << (unique ? "Unique" : "") << "\"";
+  os << "VULKAN_HPP_NAMESPACE_STRING\"::" << (commandData.className.empty() ? "" : commandData.className + "::") << (singular ? stripPluralS(commandData.reducedName) : commandData.reducedName) << (unique ? "Unique" : "") << "\"";
 
   if (!commandData.twoStep && (1 < commandData.successCodes.size()))
   {

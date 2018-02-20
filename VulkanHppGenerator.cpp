@@ -4888,7 +4888,7 @@ int main( int argc, char **argv )
     assert(!registryElement->NextSiblingElement());
 
     std::vector<tinyxml2::XMLElement const*> children = getChildElements(registryElement);
-    checkElements(children, { "commands", "comment", "enums", "extensions", "feature", "tags", "types", "vendorids" });
+    checkElements(children, { "commands", "comment", "enums", "extensions", "feature", "tags", "types", "vendorids", "platforms" });
     for (auto child : children)
     {
       const std::string value = child->Value();
@@ -4921,12 +4921,21 @@ int main( int argc, char **argv )
       {
         generator.readTypes(child);
       }
-      else
+      else if (value == "vendorids")
       {
-        assert(value == "vendorids");
 #if !defined(NDEBUG)
         generator.skipVendorIDs(child);
 #endif
+      }
+      else if (value == "platforms")
+      {
+        // skip this tag
+      }
+      else
+      {
+        std::stringstream lineNumber;
+        lineNumber << child->GetLineNum();
+        throw std::runtime_error(std::string("unknown tag ") + value + " at line number:" + lineNumber.str());
       }
     }
 

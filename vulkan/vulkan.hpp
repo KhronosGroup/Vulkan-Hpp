@@ -1,4 +1,4 @@
-// Copyright (c) 2015-2017 The Khronos Group Inc.
+// Copyright (c) 2015-2018 The Khronos Group Inc.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@
 # include <cassert>
 # define VULKAN_HPP_ASSERT   assert
 #endif
-static_assert( VK_HEADER_VERSION ==  66 , "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION ==  69 , "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -1323,6 +1323,10 @@ public:
   {
     return ::vkCmdWaitEvents( commandBuffer, eventCount, pEvents, srcStageMask, dstStageMask, memoryBarrierCount, pMemoryBarriers, bufferMemoryBarrierCount, pBufferMemoryBarriers, imageMemoryBarrierCount, pImageMemoryBarriers);
   }
+  void vkCmdWriteBufferMarkerAMD( VkCommandBuffer commandBuffer, VkPipelineStageFlagBits pipelineStage, VkBuffer dstBuffer, VkDeviceSize dstOffset, uint32_t marker  ) const
+  {
+    return ::vkCmdWriteBufferMarkerAMD( commandBuffer, pipelineStage, dstBuffer, dstOffset, marker);
+  }
   void vkCmdWriteTimestamp( VkCommandBuffer commandBuffer, VkPipelineStageFlagBits pipelineStage, VkQueryPool queryPool, uint32_t query  ) const
   {
     return ::vkCmdWriteTimestamp( commandBuffer, pipelineStage, queryPool, query);
@@ -2429,6 +2433,12 @@ public:
   };
 
   using ValidationCacheCreateFlagsEXT = Flags<ValidationCacheCreateFlagBitsEXT, VkValidationCacheCreateFlagsEXT>;
+
+  enum class PipelineRasterizationConservativeStateCreateFlagBitsEXT
+  {
+  };
+
+  using PipelineRasterizationConservativeStateCreateFlagsEXT = Flags<PipelineRasterizationConservativeStateCreateFlagBitsEXT, VkPipelineRasterizationConservativeStateCreateFlagsEXT>;
 
   class DeviceMemory
   {
@@ -8040,6 +8050,8 @@ public:
     ePipelineViewportSwizzleStateCreateInfoNV = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_SWIZZLE_STATE_CREATE_INFO_NV,
     ePhysicalDeviceDiscardRectanglePropertiesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DISCARD_RECTANGLE_PROPERTIES_EXT,
     ePipelineDiscardRectangleStateCreateInfoEXT = VK_STRUCTURE_TYPE_PIPELINE_DISCARD_RECTANGLE_STATE_CREATE_INFO_EXT,
+    ePhysicalDeviceConservativeRasterizationPropertiesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CONSERVATIVE_RASTERIZATION_PROPERTIES_EXT,
+    ePipelineRasterizationConservativeStateCreateInfoEXT = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_CONSERVATIVE_STATE_CREATE_INFO_EXT,
     eHdrMetadataEXT = VK_STRUCTURE_TYPE_HDR_METADATA_EXT,
     eSharedPresentSurfaceCapabilitiesKHR = VK_STRUCTURE_TYPE_SHARED_PRESENT_SURFACE_CAPABILITIES_KHR,
     ePhysicalDeviceExternalFenceInfoKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_FENCE_INFO_KHR,
@@ -14947,6 +14959,133 @@ public:
   };
   static_assert( sizeof( PhysicalDeviceExternalMemoryHostPropertiesEXT ) == sizeof( VkPhysicalDeviceExternalMemoryHostPropertiesEXT ), "struct and wrapper have different size!" );
 
+  struct PhysicalDeviceConservativeRasterizationPropertiesEXT
+  {
+    PhysicalDeviceConservativeRasterizationPropertiesEXT( float primitiveOverestimationSize_ = 0, float maxExtraPrimitiveOverestimationSize_ = 0, float extraPrimitiveOverestimationSizeGranularity_ = 0, Bool32 primitiveUnderestimation_ = 0, Bool32 conservativePointAndLineRasterization_ = 0, Bool32 degenerateTrianglesRasterized_ = 0, Bool32 degenerateLinesRasterized_ = 0, Bool32 fullyCoveredFragmentShaderInputVariable_ = 0, Bool32 conservativeRasterizationPostDepthCoverage_ = 0 )
+      : primitiveOverestimationSize( primitiveOverestimationSize_ )
+      , maxExtraPrimitiveOverestimationSize( maxExtraPrimitiveOverestimationSize_ )
+      , extraPrimitiveOverestimationSizeGranularity( extraPrimitiveOverestimationSizeGranularity_ )
+      , primitiveUnderestimation( primitiveUnderestimation_ )
+      , conservativePointAndLineRasterization( conservativePointAndLineRasterization_ )
+      , degenerateTrianglesRasterized( degenerateTrianglesRasterized_ )
+      , degenerateLinesRasterized( degenerateLinesRasterized_ )
+      , fullyCoveredFragmentShaderInputVariable( fullyCoveredFragmentShaderInputVariable_ )
+      , conservativeRasterizationPostDepthCoverage( conservativeRasterizationPostDepthCoverage_ )
+    {
+    }
+
+    PhysicalDeviceConservativeRasterizationPropertiesEXT( VkPhysicalDeviceConservativeRasterizationPropertiesEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceConservativeRasterizationPropertiesEXT ) );
+    }
+
+    PhysicalDeviceConservativeRasterizationPropertiesEXT& operator=( VkPhysicalDeviceConservativeRasterizationPropertiesEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceConservativeRasterizationPropertiesEXT ) );
+      return *this;
+    }
+    PhysicalDeviceConservativeRasterizationPropertiesEXT& setPNext( void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PhysicalDeviceConservativeRasterizationPropertiesEXT& setPrimitiveOverestimationSize( float primitiveOverestimationSize_ )
+    {
+      primitiveOverestimationSize = primitiveOverestimationSize_;
+      return *this;
+    }
+
+    PhysicalDeviceConservativeRasterizationPropertiesEXT& setMaxExtraPrimitiveOverestimationSize( float maxExtraPrimitiveOverestimationSize_ )
+    {
+      maxExtraPrimitiveOverestimationSize = maxExtraPrimitiveOverestimationSize_;
+      return *this;
+    }
+
+    PhysicalDeviceConservativeRasterizationPropertiesEXT& setExtraPrimitiveOverestimationSizeGranularity( float extraPrimitiveOverestimationSizeGranularity_ )
+    {
+      extraPrimitiveOverestimationSizeGranularity = extraPrimitiveOverestimationSizeGranularity_;
+      return *this;
+    }
+
+    PhysicalDeviceConservativeRasterizationPropertiesEXT& setPrimitiveUnderestimation( Bool32 primitiveUnderestimation_ )
+    {
+      primitiveUnderestimation = primitiveUnderestimation_;
+      return *this;
+    }
+
+    PhysicalDeviceConservativeRasterizationPropertiesEXT& setConservativePointAndLineRasterization( Bool32 conservativePointAndLineRasterization_ )
+    {
+      conservativePointAndLineRasterization = conservativePointAndLineRasterization_;
+      return *this;
+    }
+
+    PhysicalDeviceConservativeRasterizationPropertiesEXT& setDegenerateTrianglesRasterized( Bool32 degenerateTrianglesRasterized_ )
+    {
+      degenerateTrianglesRasterized = degenerateTrianglesRasterized_;
+      return *this;
+    }
+
+    PhysicalDeviceConservativeRasterizationPropertiesEXT& setDegenerateLinesRasterized( Bool32 degenerateLinesRasterized_ )
+    {
+      degenerateLinesRasterized = degenerateLinesRasterized_;
+      return *this;
+    }
+
+    PhysicalDeviceConservativeRasterizationPropertiesEXT& setFullyCoveredFragmentShaderInputVariable( Bool32 fullyCoveredFragmentShaderInputVariable_ )
+    {
+      fullyCoveredFragmentShaderInputVariable = fullyCoveredFragmentShaderInputVariable_;
+      return *this;
+    }
+
+    PhysicalDeviceConservativeRasterizationPropertiesEXT& setConservativeRasterizationPostDepthCoverage( Bool32 conservativeRasterizationPostDepthCoverage_ )
+    {
+      conservativeRasterizationPostDepthCoverage = conservativeRasterizationPostDepthCoverage_;
+      return *this;
+    }
+
+    operator const VkPhysicalDeviceConservativeRasterizationPropertiesEXT&() const
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceConservativeRasterizationPropertiesEXT*>(this);
+    }
+
+    bool operator==( PhysicalDeviceConservativeRasterizationPropertiesEXT const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( primitiveOverestimationSize == rhs.primitiveOverestimationSize )
+          && ( maxExtraPrimitiveOverestimationSize == rhs.maxExtraPrimitiveOverestimationSize )
+          && ( extraPrimitiveOverestimationSizeGranularity == rhs.extraPrimitiveOverestimationSizeGranularity )
+          && ( primitiveUnderestimation == rhs.primitiveUnderestimation )
+          && ( conservativePointAndLineRasterization == rhs.conservativePointAndLineRasterization )
+          && ( degenerateTrianglesRasterized == rhs.degenerateTrianglesRasterized )
+          && ( degenerateLinesRasterized == rhs.degenerateLinesRasterized )
+          && ( fullyCoveredFragmentShaderInputVariable == rhs.fullyCoveredFragmentShaderInputVariable )
+          && ( conservativeRasterizationPostDepthCoverage == rhs.conservativeRasterizationPostDepthCoverage );
+    }
+
+    bool operator!=( PhysicalDeviceConservativeRasterizationPropertiesEXT const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::ePhysicalDeviceConservativeRasterizationPropertiesEXT;
+
+  public:
+    void* pNext = nullptr;
+    float primitiveOverestimationSize;
+    float maxExtraPrimitiveOverestimationSize;
+    float extraPrimitiveOverestimationSizeGranularity;
+    Bool32 primitiveUnderestimation;
+    Bool32 conservativePointAndLineRasterization;
+    Bool32 degenerateTrianglesRasterized;
+    Bool32 degenerateLinesRasterized;
+    Bool32 fullyCoveredFragmentShaderInputVariable;
+    Bool32 conservativeRasterizationPostDepthCoverage;
+  };
+  static_assert( sizeof( PhysicalDeviceConservativeRasterizationPropertiesEXT ) == sizeof( VkPhysicalDeviceConservativeRasterizationPropertiesEXT ), "struct and wrapper have different size!" );
+
   enum class SubpassContents
   {
     eInline = VK_SUBPASS_CONTENTS_INLINE,
@@ -21588,7 +21727,7 @@ public:
     eDisplayModeKhr = VK_DEBUG_REPORT_OBJECT_TYPE_DISPLAY_MODE_KHR_EXT,
     eObjectTableNvx = VK_DEBUG_REPORT_OBJECT_TYPE_OBJECT_TABLE_NVX_EXT,
     eIndirectCommandsLayoutNvx = VK_DEBUG_REPORT_OBJECT_TYPE_INDIRECT_COMMANDS_LAYOUT_NVX_EXT,
-    eValidationCache = VK_DEBUG_REPORT_OBJECT_TYPE_VALIDATION_CACHE_EXT,
+    eValidationCacheExt = VK_DEBUG_REPORT_OBJECT_TYPE_VALIDATION_CACHE_EXT_EXT,
     eDescriptorUpdateTemplateKHR = VK_DEBUG_REPORT_OBJECT_TYPE_DESCRIPTOR_UPDATE_TEMPLATE_KHR_EXT,
     eSamplerYcbcrConversionKHR = VK_DEBUG_REPORT_OBJECT_TYPE_SAMPLER_YCBCR_CONVERSION_KHR_EXT
   };
@@ -26734,6 +26873,86 @@ public:
   };
   static_assert( sizeof( DeviceQueueGlobalPriorityCreateInfoEXT ) == sizeof( VkDeviceQueueGlobalPriorityCreateInfoEXT ), "struct and wrapper have different size!" );
 
+  enum class ConservativeRasterizationModeEXT
+  {
+    eDisabled = VK_CONSERVATIVE_RASTERIZATION_MODE_DISABLED_EXT,
+    eOverestimate = VK_CONSERVATIVE_RASTERIZATION_MODE_OVERESTIMATE_EXT,
+    eUnderestimate = VK_CONSERVATIVE_RASTERIZATION_MODE_UNDERESTIMATE_EXT
+  };
+
+  struct PipelineRasterizationConservativeStateCreateInfoEXT
+  {
+    PipelineRasterizationConservativeStateCreateInfoEXT( PipelineRasterizationConservativeStateCreateFlagsEXT flags_ = PipelineRasterizationConservativeStateCreateFlagsEXT(), ConservativeRasterizationModeEXT conservativeRasterizationMode_ = ConservativeRasterizationModeEXT::eDisabled, float extraPrimitiveOverestimationSize_ = 0 )
+      : flags( flags_ )
+      , conservativeRasterizationMode( conservativeRasterizationMode_ )
+      , extraPrimitiveOverestimationSize( extraPrimitiveOverestimationSize_ )
+    {
+    }
+
+    PipelineRasterizationConservativeStateCreateInfoEXT( VkPipelineRasterizationConservativeStateCreateInfoEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PipelineRasterizationConservativeStateCreateInfoEXT ) );
+    }
+
+    PipelineRasterizationConservativeStateCreateInfoEXT& operator=( VkPipelineRasterizationConservativeStateCreateInfoEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PipelineRasterizationConservativeStateCreateInfoEXT ) );
+      return *this;
+    }
+    PipelineRasterizationConservativeStateCreateInfoEXT& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PipelineRasterizationConservativeStateCreateInfoEXT& setFlags( PipelineRasterizationConservativeStateCreateFlagsEXT flags_ )
+    {
+      flags = flags_;
+      return *this;
+    }
+
+    PipelineRasterizationConservativeStateCreateInfoEXT& setConservativeRasterizationMode( ConservativeRasterizationModeEXT conservativeRasterizationMode_ )
+    {
+      conservativeRasterizationMode = conservativeRasterizationMode_;
+      return *this;
+    }
+
+    PipelineRasterizationConservativeStateCreateInfoEXT& setExtraPrimitiveOverestimationSize( float extraPrimitiveOverestimationSize_ )
+    {
+      extraPrimitiveOverestimationSize = extraPrimitiveOverestimationSize_;
+      return *this;
+    }
+
+    operator const VkPipelineRasterizationConservativeStateCreateInfoEXT&() const
+    {
+      return *reinterpret_cast<const VkPipelineRasterizationConservativeStateCreateInfoEXT*>(this);
+    }
+
+    bool operator==( PipelineRasterizationConservativeStateCreateInfoEXT const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( conservativeRasterizationMode == rhs.conservativeRasterizationMode )
+          && ( extraPrimitiveOverestimationSize == rhs.extraPrimitiveOverestimationSize );
+    }
+
+    bool operator!=( PipelineRasterizationConservativeStateCreateInfoEXT const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::ePipelineRasterizationConservativeStateCreateInfoEXT;
+
+  public:
+    const void* pNext = nullptr;
+    PipelineRasterizationConservativeStateCreateFlagsEXT flags;
+    ConservativeRasterizationModeEXT conservativeRasterizationMode;
+    float extraPrimitiveOverestimationSize;
+  };
+  static_assert( sizeof( PipelineRasterizationConservativeStateCreateInfoEXT ) == sizeof( VkPipelineRasterizationConservativeStateCreateInfoEXT ), "struct and wrapper have different size!" );
+
   template<typename Dispatch = DispatchLoaderStatic>
   Result enumerateInstanceLayerProperties( uint32_t* pPropertyCount, LayerProperties* pProperties, Dispatch const &d = Dispatch() );
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
@@ -27155,6 +27374,9 @@ public:
     template<typename Dispatch = DispatchLoaderStatic>
     void setSampleLocationsEXT( const SampleLocationsInfoEXT & sampleLocationsInfo, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    template<typename Dispatch = DispatchLoaderStatic>
+    void writeBufferMarkerAMD( PipelineStageFlagBits pipelineStage, Buffer dstBuffer, DeviceSize dstOffset, uint32_t marker, Dispatch const &d = Dispatch() ) const;
 
 
 
@@ -28013,6 +28235,20 @@ public:
   VULKAN_HPP_INLINE void CommandBuffer::setSampleLocationsEXT( const SampleLocationsInfoEXT & sampleLocationsInfo, Dispatch const &d ) const
   {
     d.vkCmdSetSampleLocationsEXT( m_commandBuffer, reinterpret_cast<const VkSampleLocationsInfoEXT*>( &sampleLocationsInfo ) );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::writeBufferMarkerAMD( PipelineStageFlagBits pipelineStage, Buffer dstBuffer, DeviceSize dstOffset, uint32_t marker, Dispatch const &d) const
+  {
+    d.vkCmdWriteBufferMarkerAMD( m_commandBuffer, static_cast<VkPipelineStageFlagBits>( pipelineStage ), static_cast<VkBuffer>( dstBuffer ), dstOffset, marker );
+  }
+#else
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::writeBufferMarkerAMD( PipelineStageFlagBits pipelineStage, Buffer dstBuffer, DeviceSize dstOffset, uint32_t marker, Dispatch const &d ) const
+  {
+    d.vkCmdWriteBufferMarkerAMD( m_commandBuffer, static_cast<VkPipelineStageFlagBits>( pipelineStage ), static_cast<VkBuffer>( dstBuffer ), dstOffset, marker );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -32024,12 +32260,18 @@ public:
   {
     std::vector<PastPresentationTimingGOOGLE,Allocator> presentationTimings;
     uint32_t presentationTimingCount;
-    Result result = static_cast<Result>( d.vkGetPastPresentationTimingGOOGLE( m_device, static_cast<VkSwapchainKHR>( swapchain ), &presentationTimingCount, nullptr ) );
-    if ( ( result == Result::eSuccess ) && presentationTimingCount )
+    Result result;
+    do
     {
-      presentationTimings.resize( presentationTimingCount );
-      result = static_cast<Result>( d.vkGetPastPresentationTimingGOOGLE( m_device, static_cast<VkSwapchainKHR>( swapchain ), &presentationTimingCount, reinterpret_cast<VkPastPresentationTimingGOOGLE*>( presentationTimings.data() ) ) );
-    }
+      result = static_cast<Result>( d.vkGetPastPresentationTimingGOOGLE( m_device, static_cast<VkSwapchainKHR>( swapchain ), &presentationTimingCount, nullptr ) );
+      if ( ( result == Result::eSuccess ) && presentationTimingCount )
+      {
+        presentationTimings.resize( presentationTimingCount );
+        result = static_cast<Result>( d.vkGetPastPresentationTimingGOOGLE( m_device, static_cast<VkSwapchainKHR>( swapchain ), &presentationTimingCount, reinterpret_cast<VkPastPresentationTimingGOOGLE*>( presentationTimings.data() ) ) );
+      }
+    } while ( result == Result::eIncomplete );
+    VULKAN_HPP_ASSERT( presentationTimingCount <= presentationTimings.size() );
+    presentationTimings.resize( presentationTimingCount );
     return createResultValue( result, presentationTimings, "VULKAN_HPP_NAMESPACE::Device::getPastPresentationTimingGOOGLE" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -34627,6 +34869,7 @@ public:
   template <> struct isStructureChainValid<ImageCreateInfo, ImageFormatListCreateInfoKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<ShaderModuleCreateInfo, ShaderModuleValidationCacheCreateInfoEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceProperties2KHR, PhysicalDeviceExternalMemoryHostPropertiesEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceProperties2KHR, PhysicalDeviceConservativeRasterizationPropertiesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<SurfaceCapabilities2KHR, SharedPresentSurfaceCapabilitiesKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<ImageViewCreateInfo, ImageViewUsageCreateInfoKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<RenderPassCreateInfo, RenderPassInputAttachmentAspectCreateInfoKHR>{ enum { value = true }; };
@@ -34668,6 +34911,7 @@ public:
   template <> struct isStructureChainValid<PipelineColorBlendStateCreateInfo, PipelineColorBlendAdvancedStateCreateInfoEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PipelineMultisampleStateCreateInfo, PipelineCoverageModulationStateCreateInfoNV>{ enum { value = true }; };
   template <> struct isStructureChainValid<DeviceQueueCreateInfo, DeviceQueueGlobalPriorityCreateInfoEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PipelineRasterizationStateCreateInfo, PipelineRasterizationConservativeStateCreateInfoEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<DeviceCreateInfo, DeviceGroupDeviceCreateInfoKHX>{ enum { value = true }; };
   VULKAN_HPP_INLINE std::string to_string(FramebufferCreateFlagBits)
   {
@@ -35141,6 +35385,16 @@ public:
   }
 
   VULKAN_HPP_INLINE std::string to_string(ValidationCacheCreateFlagsEXT)
+  {
+    return "{}";
+  }
+
+  VULKAN_HPP_INLINE std::string to_string(PipelineRasterizationConservativeStateCreateFlagBitsEXT)
+  {
+    return "(void)";
+  }
+
+  VULKAN_HPP_INLINE std::string to_string(PipelineRasterizationConservativeStateCreateFlagsEXT)
   {
     return "{}";
   }
@@ -36004,6 +36258,8 @@ public:
     case StructureType::ePipelineViewportSwizzleStateCreateInfoNV: return "PipelineViewportSwizzleStateCreateInfoNV";
     case StructureType::ePhysicalDeviceDiscardRectanglePropertiesEXT: return "PhysicalDeviceDiscardRectanglePropertiesEXT";
     case StructureType::ePipelineDiscardRectangleStateCreateInfoEXT: return "PipelineDiscardRectangleStateCreateInfoEXT";
+    case StructureType::ePhysicalDeviceConservativeRasterizationPropertiesEXT: return "PhysicalDeviceConservativeRasterizationPropertiesEXT";
+    case StructureType::ePipelineRasterizationConservativeStateCreateInfoEXT: return "PipelineRasterizationConservativeStateCreateInfoEXT";
     case StructureType::eHdrMetadataEXT: return "HdrMetadataEXT";
     case StructureType::eSharedPresentSurfaceCapabilitiesKHR: return "SharedPresentSurfaceCapabilitiesKHR";
     case StructureType::ePhysicalDeviceExternalFenceInfoKHR: return "PhysicalDeviceExternalFenceInfoKHR";
@@ -37103,7 +37359,7 @@ public:
     case DebugReportObjectTypeEXT::eDisplayModeKhr: return "DisplayModeKhr";
     case DebugReportObjectTypeEXT::eObjectTableNvx: return "ObjectTableNvx";
     case DebugReportObjectTypeEXT::eIndirectCommandsLayoutNvx: return "IndirectCommandsLayoutNvx";
-    case DebugReportObjectTypeEXT::eValidationCache: return "ValidationCache";
+    case DebugReportObjectTypeEXT::eValidationCacheExt: return "ValidationCacheExt";
     case DebugReportObjectTypeEXT::eDescriptorUpdateTemplateKHR: return "DescriptorUpdateTemplateKHR";
     case DebugReportObjectTypeEXT::eSamplerYcbcrConversionKHR: return "SamplerYcbcrConversionKHR";
     default: return "invalid";
@@ -37728,6 +37984,17 @@ public:
     }
   }
 
+  VULKAN_HPP_INLINE std::string to_string(ConservativeRasterizationModeEXT value)
+  {
+    switch (value)
+    {
+    case ConservativeRasterizationModeEXT::eDisabled: return "Disabled";
+    case ConservativeRasterizationModeEXT::eOverestimate: return "Overestimate";
+    case ConservativeRasterizationModeEXT::eUnderestimate: return "Underestimate";
+    default: return "invalid";
+    }
+  }
+
   class DispatchLoaderDynamic
   {
   public:
@@ -37801,6 +38068,7 @@ public:
     PFN_vkCmdSetViewportWScalingNV vkCmdSetViewportWScalingNV = 0;
     PFN_vkCmdUpdateBuffer vkCmdUpdateBuffer = 0;
     PFN_vkCmdWaitEvents vkCmdWaitEvents = 0;
+    PFN_vkCmdWriteBufferMarkerAMD vkCmdWriteBufferMarkerAMD = 0;
     PFN_vkCmdWriteTimestamp vkCmdWriteTimestamp = 0;
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
     PFN_vkCreateAndroidSurfaceKHR vkCreateAndroidSurfaceKHR = 0;
@@ -38115,6 +38383,7 @@ public:
       vkCmdSetViewportWScalingNV = PFN_vkCmdSetViewportWScalingNV(device ? device.getProcAddr( "vkCmdSetViewportWScalingNV") : instance.getProcAddr( "vkCmdSetViewportWScalingNV"));
       vkCmdUpdateBuffer = PFN_vkCmdUpdateBuffer(device ? device.getProcAddr( "vkCmdUpdateBuffer") : instance.getProcAddr( "vkCmdUpdateBuffer"));
       vkCmdWaitEvents = PFN_vkCmdWaitEvents(device ? device.getProcAddr( "vkCmdWaitEvents") : instance.getProcAddr( "vkCmdWaitEvents"));
+      vkCmdWriteBufferMarkerAMD = PFN_vkCmdWriteBufferMarkerAMD(device ? device.getProcAddr( "vkCmdWriteBufferMarkerAMD") : instance.getProcAddr( "vkCmdWriteBufferMarkerAMD"));
       vkCmdWriteTimestamp = PFN_vkCmdWriteTimestamp(device ? device.getProcAddr( "vkCmdWriteTimestamp") : instance.getProcAddr( "vkCmdWriteTimestamp"));
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
       vkCreateAndroidSurfaceKHR = PFN_vkCreateAndroidSurfaceKHR(instance.getProcAddr( "vkCreateAndroidSurfaceKHR"));

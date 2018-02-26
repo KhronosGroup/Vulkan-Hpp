@@ -980,10 +980,10 @@ namespace VULKAN_HPP_NAMESPACE
   struct AllocationCallbacks;
 
   template <typename OwnerType>
-  class ObjectDeleter
+  class ObjectDestroy
   {
     public:
-      ObjectDeleter(OwnerType owner = OwnerType(), Optional<const AllocationCallbacks> allocator = nullptr)
+      ObjectDestroy(OwnerType owner = OwnerType(), Optional<const AllocationCallbacks> allocator = nullptr)
         : m_owner(owner)
         , m_allocator(allocator)
       {}
@@ -1006,10 +1006,10 @@ namespace VULKAN_HPP_NAMESPACE
   class NoParent;
 
   template <>
-  class ObjectDeleter<NoParent>
+  class ObjectDestroy<NoParent>
   {
   public:
-    ObjectDeleter( Optional<const AllocationCallbacks> allocator = nullptr )
+    ObjectDestroy( Optional<const AllocationCallbacks> allocator = nullptr )
       : m_allocator( allocator )
     {}
 
@@ -1026,11 +1026,35 @@ namespace VULKAN_HPP_NAMESPACE
     Optional<const AllocationCallbacks> m_allocator;
   };
 
-  template <typename OwnerType, typename PoolType>
-  class PoolDeleter
+  template <typename OwnerType>
+  class ObjectFree
   {
     public:
-      PoolDeleter(OwnerType owner = OwnerType(), PoolType pool = PoolType())
+      ObjectFree(OwnerType owner = OwnerType(), Optional<const AllocationCallbacks> allocator = nullptr)
+        : m_owner(owner)
+        , m_allocator(allocator)
+      {}
+
+      OwnerType getOwner() const { return m_owner; }
+      Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }
+
+    protected:
+      template <typename T>
+      void destroy(T t)
+      {
+        m_owner.free(t, m_allocator);
+      }
+
+    private:
+      OwnerType m_owner;
+      Optional<const AllocationCallbacks> m_allocator;
+  };
+
+  template <typename OwnerType, typename PoolType>
+  class PoolFree
+  {
+    public:
+      PoolFree(OwnerType owner = OwnerType(), PoolType pool = PoolType())
         : m_owner(owner)
         , m_pool(pool)
       {}
@@ -28521,59 +28545,59 @@ public:
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   class Device;
 
-  template <> class UniqueHandleTraits<Buffer> {public: using deleter = ObjectDeleter<Device>; };
+  template <> class UniqueHandleTraits<Buffer> {public: using deleter = ObjectDestroy<Device>; };
   using UniqueBuffer = UniqueHandle<Buffer>;
-  template <> class UniqueHandleTraits<BufferView> {public: using deleter = ObjectDeleter<Device>; };
+  template <> class UniqueHandleTraits<BufferView> {public: using deleter = ObjectDestroy<Device>; };
   using UniqueBufferView = UniqueHandle<BufferView>;
-  template <> class UniqueHandleTraits<CommandBuffer> {public: using deleter = PoolDeleter<Device, CommandPool>; };
+  template <> class UniqueHandleTraits<CommandBuffer> {public: using deleter = PoolFree<Device, CommandPool>; };
   using UniqueCommandBuffer = UniqueHandle<CommandBuffer>;
-  template <> class UniqueHandleTraits<CommandPool> {public: using deleter = ObjectDeleter<Device>; };
+  template <> class UniqueHandleTraits<CommandPool> {public: using deleter = ObjectDestroy<Device>; };
   using UniqueCommandPool = UniqueHandle<CommandPool>;
-  template <> class UniqueHandleTraits<DescriptorPool> {public: using deleter = ObjectDeleter<Device>; };
+  template <> class UniqueHandleTraits<DescriptorPool> {public: using deleter = ObjectDestroy<Device>; };
   using UniqueDescriptorPool = UniqueHandle<DescriptorPool>;
-  template <> class UniqueHandleTraits<DescriptorSet> {public: using deleter = PoolDeleter<Device, DescriptorPool>; };
+  template <> class UniqueHandleTraits<DescriptorSet> {public: using deleter = PoolFree<Device, DescriptorPool>; };
   using UniqueDescriptorSet = UniqueHandle<DescriptorSet>;
-  template <> class UniqueHandleTraits<DescriptorSetLayout> {public: using deleter = ObjectDeleter<Device>; };
+  template <> class UniqueHandleTraits<DescriptorSetLayout> {public: using deleter = ObjectDestroy<Device>; };
   using UniqueDescriptorSetLayout = UniqueHandle<DescriptorSetLayout>;
-  template <> class UniqueHandleTraits<DescriptorUpdateTemplateKHR> {public: using deleter = ObjectDeleter<Device>; };
+  template <> class UniqueHandleTraits<DescriptorUpdateTemplateKHR> {public: using deleter = ObjectDestroy<Device>; };
   using UniqueDescriptorUpdateTemplateKHR = UniqueHandle<DescriptorUpdateTemplateKHR>;
-  template <> class UniqueHandleTraits<DeviceMemory> {public: using deleter = ObjectDeleter<Device>; };
+  template <> class UniqueHandleTraits<DeviceMemory> {public: using deleter = ObjectFree<Device>; };
   using UniqueDeviceMemory = UniqueHandle<DeviceMemory>;
-  template <> class UniqueHandleTraits<Event> {public: using deleter = ObjectDeleter<Device>; };
+  template <> class UniqueHandleTraits<Event> {public: using deleter = ObjectDestroy<Device>; };
   using UniqueEvent = UniqueHandle<Event>;
-  template <> class UniqueHandleTraits<Fence> {public: using deleter = ObjectDeleter<Device>; };
+  template <> class UniqueHandleTraits<Fence> {public: using deleter = ObjectDestroy<Device>; };
   using UniqueFence = UniqueHandle<Fence>;
-  template <> class UniqueHandleTraits<Framebuffer> {public: using deleter = ObjectDeleter<Device>; };
+  template <> class UniqueHandleTraits<Framebuffer> {public: using deleter = ObjectDestroy<Device>; };
   using UniqueFramebuffer = UniqueHandle<Framebuffer>;
-  template <> class UniqueHandleTraits<Image> {public: using deleter = ObjectDeleter<Device>; };
+  template <> class UniqueHandleTraits<Image> {public: using deleter = ObjectDestroy<Device>; };
   using UniqueImage = UniqueHandle<Image>;
-  template <> class UniqueHandleTraits<ImageView> {public: using deleter = ObjectDeleter<Device>; };
+  template <> class UniqueHandleTraits<ImageView> {public: using deleter = ObjectDestroy<Device>; };
   using UniqueImageView = UniqueHandle<ImageView>;
-  template <> class UniqueHandleTraits<IndirectCommandsLayoutNVX> {public: using deleter = ObjectDeleter<Device>; };
+  template <> class UniqueHandleTraits<IndirectCommandsLayoutNVX> {public: using deleter = ObjectDestroy<Device>; };
   using UniqueIndirectCommandsLayoutNVX = UniqueHandle<IndirectCommandsLayoutNVX>;
-  template <> class UniqueHandleTraits<ObjectTableNVX> {public: using deleter = ObjectDeleter<Device>; };
+  template <> class UniqueHandleTraits<ObjectTableNVX> {public: using deleter = ObjectDestroy<Device>; };
   using UniqueObjectTableNVX = UniqueHandle<ObjectTableNVX>;
-  template <> class UniqueHandleTraits<Pipeline> {public: using deleter = ObjectDeleter<Device>; };
+  template <> class UniqueHandleTraits<Pipeline> {public: using deleter = ObjectDestroy<Device>; };
   using UniquePipeline = UniqueHandle<Pipeline>;
-  template <> class UniqueHandleTraits<PipelineCache> {public: using deleter = ObjectDeleter<Device>; };
+  template <> class UniqueHandleTraits<PipelineCache> {public: using deleter = ObjectDestroy<Device>; };
   using UniquePipelineCache = UniqueHandle<PipelineCache>;
-  template <> class UniqueHandleTraits<PipelineLayout> {public: using deleter = ObjectDeleter<Device>; };
+  template <> class UniqueHandleTraits<PipelineLayout> {public: using deleter = ObjectDestroy<Device>; };
   using UniquePipelineLayout = UniqueHandle<PipelineLayout>;
-  template <> class UniqueHandleTraits<QueryPool> {public: using deleter = ObjectDeleter<Device>; };
+  template <> class UniqueHandleTraits<QueryPool> {public: using deleter = ObjectDestroy<Device>; };
   using UniqueQueryPool = UniqueHandle<QueryPool>;
-  template <> class UniqueHandleTraits<RenderPass> {public: using deleter = ObjectDeleter<Device>; };
+  template <> class UniqueHandleTraits<RenderPass> {public: using deleter = ObjectDestroy<Device>; };
   using UniqueRenderPass = UniqueHandle<RenderPass>;
-  template <> class UniqueHandleTraits<Sampler> {public: using deleter = ObjectDeleter<Device>; };
+  template <> class UniqueHandleTraits<Sampler> {public: using deleter = ObjectDestroy<Device>; };
   using UniqueSampler = UniqueHandle<Sampler>;
-  template <> class UniqueHandleTraits<SamplerYcbcrConversionKHR> {public: using deleter = ObjectDeleter<Device>; };
+  template <> class UniqueHandleTraits<SamplerYcbcrConversionKHR> {public: using deleter = ObjectDestroy<Device>; };
   using UniqueSamplerYcbcrConversionKHR = UniqueHandle<SamplerYcbcrConversionKHR>;
-  template <> class UniqueHandleTraits<Semaphore> {public: using deleter = ObjectDeleter<Device>; };
+  template <> class UniqueHandleTraits<Semaphore> {public: using deleter = ObjectDestroy<Device>; };
   using UniqueSemaphore = UniqueHandle<Semaphore>;
-  template <> class UniqueHandleTraits<ShaderModule> {public: using deleter = ObjectDeleter<Device>; };
+  template <> class UniqueHandleTraits<ShaderModule> {public: using deleter = ObjectDestroy<Device>; };
   using UniqueShaderModule = UniqueHandle<ShaderModule>;
-  template <> class UniqueHandleTraits<SwapchainKHR> {public: using deleter = ObjectDeleter<Device>; };
+  template <> class UniqueHandleTraits<SwapchainKHR> {public: using deleter = ObjectDestroy<Device>; };
   using UniqueSwapchainKHR = UniqueHandle<SwapchainKHR>;
-  template <> class UniqueHandleTraits<ValidationCacheEXT> {public: using deleter = ObjectDeleter<Device>; };
+  template <> class UniqueHandleTraits<ValidationCacheEXT> {public: using deleter = ObjectDestroy<Device>; };
   using UniqueValidationCacheEXT = UniqueHandle<ValidationCacheEXT>;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 
@@ -29920,7 +29944,7 @@ public:
     DeviceMemory memory;
     Result result = static_cast<Result>( d.vkAllocateMemory( m_device, reinterpret_cast<const VkMemoryAllocateInfo*>( &allocateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkDeviceMemory*>( &memory ) ) );
 
-    ObjectDeleter<Device> deleter( *this, allocator );
+    ObjectFree<Device> deleter( *this, allocator );
     return createResultValue( result, memory, VULKAN_HPP_NAMESPACE_STRING"::Device::allocateMemoryUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
@@ -30122,7 +30146,7 @@ public:
     Fence fence;
     Result result = static_cast<Result>( d.vkCreateFence( m_device, reinterpret_cast<const VkFenceCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkFence*>( &fence ) ) );
 
-    ObjectDeleter<Device> deleter( *this, allocator );
+    ObjectDestroy<Device> deleter( *this, allocator );
     return createResultValue( result, fence, VULKAN_HPP_NAMESPACE_STRING"::Device::createFenceUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
@@ -30217,7 +30241,7 @@ public:
     Semaphore semaphore;
     Result result = static_cast<Result>( d.vkCreateSemaphore( m_device, reinterpret_cast<const VkSemaphoreCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSemaphore*>( &semaphore ) ) );
 
-    ObjectDeleter<Device> deleter( *this, allocator );
+    ObjectDestroy<Device> deleter( *this, allocator );
     return createResultValue( result, semaphore, VULKAN_HPP_NAMESPACE_STRING"::Device::createSemaphoreUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
@@ -30269,7 +30293,7 @@ public:
     Event event;
     Result result = static_cast<Result>( d.vkCreateEvent( m_device, reinterpret_cast<const VkEventCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkEvent*>( &event ) ) );
 
-    ObjectDeleter<Device> deleter( *this, allocator );
+    ObjectDestroy<Device> deleter( *this, allocator );
     return createResultValue( result, event, VULKAN_HPP_NAMESPACE_STRING"::Device::createEventUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
@@ -30366,7 +30390,7 @@ public:
     QueryPool queryPool;
     Result result = static_cast<Result>( d.vkCreateQueryPool( m_device, reinterpret_cast<const VkQueryPoolCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkQueryPool*>( &queryPool ) ) );
 
-    ObjectDeleter<Device> deleter( *this, allocator );
+    ObjectDestroy<Device> deleter( *this, allocator );
     return createResultValue( result, queryPool, VULKAN_HPP_NAMESPACE_STRING"::Device::createQueryPoolUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
@@ -30432,7 +30456,7 @@ public:
     Buffer buffer;
     Result result = static_cast<Result>( d.vkCreateBuffer( m_device, reinterpret_cast<const VkBufferCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkBuffer*>( &buffer ) ) );
 
-    ObjectDeleter<Device> deleter( *this, allocator );
+    ObjectDestroy<Device> deleter( *this, allocator );
     return createResultValue( result, buffer, VULKAN_HPP_NAMESPACE_STRING"::Device::createBufferUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
@@ -30484,7 +30508,7 @@ public:
     BufferView view;
     Result result = static_cast<Result>( d.vkCreateBufferView( m_device, reinterpret_cast<const VkBufferViewCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkBufferView*>( &view ) ) );
 
-    ObjectDeleter<Device> deleter( *this, allocator );
+    ObjectDestroy<Device> deleter( *this, allocator );
     return createResultValue( result, view, VULKAN_HPP_NAMESPACE_STRING"::Device::createBufferViewUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
@@ -30536,7 +30560,7 @@ public:
     Image image;
     Result result = static_cast<Result>( d.vkCreateImage( m_device, reinterpret_cast<const VkImageCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkImage*>( &image ) ) );
 
-    ObjectDeleter<Device> deleter( *this, allocator );
+    ObjectDestroy<Device> deleter( *this, allocator );
     return createResultValue( result, image, VULKAN_HPP_NAMESPACE_STRING"::Device::createImageUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
@@ -30603,7 +30627,7 @@ public:
     ImageView view;
     Result result = static_cast<Result>( d.vkCreateImageView( m_device, reinterpret_cast<const VkImageViewCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkImageView*>( &view ) ) );
 
-    ObjectDeleter<Device> deleter( *this, allocator );
+    ObjectDestroy<Device> deleter( *this, allocator );
     return createResultValue( result, view, VULKAN_HPP_NAMESPACE_STRING"::Device::createImageViewUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
@@ -30655,7 +30679,7 @@ public:
     ShaderModule shaderModule;
     Result result = static_cast<Result>( d.vkCreateShaderModule( m_device, reinterpret_cast<const VkShaderModuleCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkShaderModule*>( &shaderModule ) ) );
 
-    ObjectDeleter<Device> deleter( *this, allocator );
+    ObjectDestroy<Device> deleter( *this, allocator );
     return createResultValue( result, shaderModule, VULKAN_HPP_NAMESPACE_STRING"::Device::createShaderModuleUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
@@ -30707,7 +30731,7 @@ public:
     PipelineCache pipelineCache;
     Result result = static_cast<Result>( d.vkCreatePipelineCache( m_device, reinterpret_cast<const VkPipelineCacheCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipelineCache*>( &pipelineCache ) ) );
 
-    ObjectDeleter<Device> deleter( *this, allocator );
+    ObjectDestroy<Device> deleter( *this, allocator );
     return createResultValue( result, pipelineCache, VULKAN_HPP_NAMESPACE_STRING"::Device::createPipelineCacheUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
@@ -30810,7 +30834,7 @@ public:
     Pipeline* buffer = reinterpret_cast<Pipeline*>( reinterpret_cast<char*>( pipelines.data() ) + createInfos.size() * ( sizeof( UniquePipeline ) - sizeof( Pipeline ) ) );
     Result result = static_cast<Result>(d.vkCreateGraphicsPipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkGraphicsPipelineCreateInfo*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( buffer ) ) );
 
-    ObjectDeleter<Device> deleter( *this, allocator );
+    ObjectDestroy<Device> deleter( *this, allocator );
     for ( size_t i=0 ; i<createInfos.size() ; i++ )
     {
       pipelines.push_back( UniquePipeline( buffer[i], deleter ) );
@@ -30824,7 +30848,7 @@ public:
     Pipeline pipeline;
     Result result = static_cast<Result>( d.vkCreateGraphicsPipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), 1 , reinterpret_cast<const VkGraphicsPipelineCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( &pipeline ) ) );
 
-    ObjectDeleter<Device> deleter( *this, allocator );
+    ObjectDestroy<Device> deleter( *this, allocator );
     return createResultValue( result, pipeline, VULKAN_HPP_NAMESPACE_STRING"::Device::createGraphicsPipelineUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
@@ -30860,7 +30884,7 @@ public:
     Pipeline* buffer = reinterpret_cast<Pipeline*>( reinterpret_cast<char*>( pipelines.data() ) + createInfos.size() * ( sizeof( UniquePipeline ) - sizeof( Pipeline ) ) );
     Result result = static_cast<Result>(d.vkCreateComputePipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkComputePipelineCreateInfo*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( buffer ) ) );
 
-    ObjectDeleter<Device> deleter( *this, allocator );
+    ObjectDestroy<Device> deleter( *this, allocator );
     for ( size_t i=0 ; i<createInfos.size() ; i++ )
     {
       pipelines.push_back( UniquePipeline( buffer[i], deleter ) );
@@ -30874,7 +30898,7 @@ public:
     Pipeline pipeline;
     Result result = static_cast<Result>( d.vkCreateComputePipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), 1 , reinterpret_cast<const VkComputePipelineCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( &pipeline ) ) );
 
-    ObjectDeleter<Device> deleter( *this, allocator );
+    ObjectDestroy<Device> deleter( *this, allocator );
     return createResultValue( result, pipeline, VULKAN_HPP_NAMESPACE_STRING"::Device::createComputePipelineUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
@@ -30926,7 +30950,7 @@ public:
     PipelineLayout pipelineLayout;
     Result result = static_cast<Result>( d.vkCreatePipelineLayout( m_device, reinterpret_cast<const VkPipelineLayoutCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipelineLayout*>( &pipelineLayout ) ) );
 
-    ObjectDeleter<Device> deleter( *this, allocator );
+    ObjectDestroy<Device> deleter( *this, allocator );
     return createResultValue( result, pipelineLayout, VULKAN_HPP_NAMESPACE_STRING"::Device::createPipelineLayoutUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
@@ -30978,7 +31002,7 @@ public:
     Sampler sampler;
     Result result = static_cast<Result>( d.vkCreateSampler( m_device, reinterpret_cast<const VkSamplerCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSampler*>( &sampler ) ) );
 
-    ObjectDeleter<Device> deleter( *this, allocator );
+    ObjectDestroy<Device> deleter( *this, allocator );
     return createResultValue( result, sampler, VULKAN_HPP_NAMESPACE_STRING"::Device::createSamplerUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
@@ -31030,7 +31054,7 @@ public:
     DescriptorSetLayout setLayout;
     Result result = static_cast<Result>( d.vkCreateDescriptorSetLayout( m_device, reinterpret_cast<const VkDescriptorSetLayoutCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkDescriptorSetLayout*>( &setLayout ) ) );
 
-    ObjectDeleter<Device> deleter( *this, allocator );
+    ObjectDestroy<Device> deleter( *this, allocator );
     return createResultValue( result, setLayout, VULKAN_HPP_NAMESPACE_STRING"::Device::createDescriptorSetLayoutUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
@@ -31082,7 +31106,7 @@ public:
     DescriptorPool descriptorPool;
     Result result = static_cast<Result>( d.vkCreateDescriptorPool( m_device, reinterpret_cast<const VkDescriptorPoolCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkDescriptorPool*>( &descriptorPool ) ) );
 
-    ObjectDeleter<Device> deleter( *this, allocator );
+    ObjectDestroy<Device> deleter( *this, allocator );
     return createResultValue( result, descriptorPool, VULKAN_HPP_NAMESPACE_STRING"::Device::createDescriptorPoolUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
@@ -31152,7 +31176,7 @@ public:
     DescriptorSet* buffer = reinterpret_cast<DescriptorSet*>( reinterpret_cast<char*>( descriptorSets.data() ) + allocateInfo.descriptorSetCount * ( sizeof( UniqueDescriptorSet ) - sizeof( DescriptorSet ) ) );
     Result result = static_cast<Result>(d.vkAllocateDescriptorSets( m_device, reinterpret_cast<const VkDescriptorSetAllocateInfo*>( &allocateInfo ), reinterpret_cast<VkDescriptorSet*>( buffer ) ) );
 
-    PoolDeleter<Device,DescriptorPool> deleter( *this, allocateInfo.descriptorPool );
+    PoolFree<Device,DescriptorPool> deleter( *this, allocateInfo.descriptorPool );
     for ( size_t i=0 ; i<allocateInfo.descriptorSetCount ; i++ )
     {
       descriptorSets.push_back( UniqueDescriptorSet( buffer[i], deleter ) );
@@ -31224,7 +31248,7 @@ public:
     Framebuffer framebuffer;
     Result result = static_cast<Result>( d.vkCreateFramebuffer( m_device, reinterpret_cast<const VkFramebufferCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkFramebuffer*>( &framebuffer ) ) );
 
-    ObjectDeleter<Device> deleter( *this, allocator );
+    ObjectDestroy<Device> deleter( *this, allocator );
     return createResultValue( result, framebuffer, VULKAN_HPP_NAMESPACE_STRING"::Device::createFramebufferUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
@@ -31276,7 +31300,7 @@ public:
     RenderPass renderPass;
     Result result = static_cast<Result>( d.vkCreateRenderPass( m_device, reinterpret_cast<const VkRenderPassCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkRenderPass*>( &renderPass ) ) );
 
-    ObjectDeleter<Device> deleter( *this, allocator );
+    ObjectDestroy<Device> deleter( *this, allocator );
     return createResultValue( result, renderPass, VULKAN_HPP_NAMESPACE_STRING"::Device::createRenderPassUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
@@ -31343,7 +31367,7 @@ public:
     CommandPool commandPool;
     Result result = static_cast<Result>( d.vkCreateCommandPool( m_device, reinterpret_cast<const VkCommandPoolCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkCommandPool*>( &commandPool ) ) );
 
-    ObjectDeleter<Device> deleter( *this, allocator );
+    ObjectDestroy<Device> deleter( *this, allocator );
     return createResultValue( result, commandPool, VULKAN_HPP_NAMESPACE_STRING"::Device::createCommandPoolUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
@@ -31413,7 +31437,7 @@ public:
     CommandBuffer* buffer = reinterpret_cast<CommandBuffer*>( reinterpret_cast<char*>( commandBuffers.data() ) + allocateInfo.commandBufferCount * ( sizeof( UniqueCommandBuffer ) - sizeof( CommandBuffer ) ) );
     Result result = static_cast<Result>(d.vkAllocateCommandBuffers( m_device, reinterpret_cast<const VkCommandBufferAllocateInfo*>( &allocateInfo ), reinterpret_cast<VkCommandBuffer*>( buffer ) ) );
 
-    PoolDeleter<Device,CommandPool> deleter( *this, allocateInfo.commandPool );
+    PoolFree<Device,CommandPool> deleter( *this, allocateInfo.commandPool );
     for ( size_t i=0 ; i<allocateInfo.commandBufferCount ; i++ )
     {
       commandBuffers.push_back( UniqueCommandBuffer( buffer[i], deleter ) );
@@ -31480,7 +31504,7 @@ public:
     SwapchainKHR* buffer = reinterpret_cast<SwapchainKHR*>( reinterpret_cast<char*>( swapchainKHRs.data() ) + createInfos.size() * ( sizeof( UniqueSwapchainKHR ) - sizeof( SwapchainKHR ) ) );
     Result result = static_cast<Result>(d.vkCreateSharedSwapchainsKHR( m_device, createInfos.size() , reinterpret_cast<const VkSwapchainCreateInfoKHR*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSwapchainKHR*>( buffer ) ) );
 
-    ObjectDeleter<Device> deleter( *this, allocator );
+    ObjectDestroy<Device> deleter( *this, allocator );
     for ( size_t i=0 ; i<createInfos.size() ; i++ )
     {
       swapchainKHRs.push_back( UniqueSwapchainKHR( buffer[i], deleter ) );
@@ -31494,7 +31518,7 @@ public:
     SwapchainKHR swapchain;
     Result result = static_cast<Result>( d.vkCreateSharedSwapchainsKHR( m_device, 1 , reinterpret_cast<const VkSwapchainCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSwapchainKHR*>( &swapchain ) ) );
 
-    ObjectDeleter<Device> deleter( *this, allocator );
+    ObjectDestroy<Device> deleter( *this, allocator );
     return createResultValue( result, swapchain, VULKAN_HPP_NAMESPACE_STRING"::Device::createSharedSwapchainKHRUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
@@ -31520,7 +31544,7 @@ public:
     SwapchainKHR swapchain;
     Result result = static_cast<Result>( d.vkCreateSwapchainKHR( m_device, reinterpret_cast<const VkSwapchainCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSwapchainKHR*>( &swapchain ) ) );
 
-    ObjectDeleter<Device> deleter( *this, allocator );
+    ObjectDestroy<Device> deleter( *this, allocator );
     return createResultValue( result, swapchain, VULKAN_HPP_NAMESPACE_STRING"::Device::createSwapchainKHRUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
@@ -31659,7 +31683,7 @@ public:
     IndirectCommandsLayoutNVX indirectCommandsLayout;
     Result result = static_cast<Result>( d.vkCreateIndirectCommandsLayoutNVX( m_device, reinterpret_cast<const VkIndirectCommandsLayoutCreateInfoNVX*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkIndirectCommandsLayoutNVX*>( &indirectCommandsLayout ) ) );
 
-    ObjectDeleter<Device> deleter( *this, allocator );
+    ObjectDestroy<Device> deleter( *this, allocator );
     return createResultValue( result, indirectCommandsLayout, VULKAN_HPP_NAMESPACE_STRING"::Device::createIndirectCommandsLayoutNVXUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
@@ -31711,7 +31735,7 @@ public:
     ObjectTableNVX objectTable;
     Result result = static_cast<Result>( d.vkCreateObjectTableNVX( m_device, reinterpret_cast<const VkObjectTableCreateInfoNVX*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkObjectTableNVX*>( &objectTable ) ) );
 
-    ObjectDeleter<Device> deleter( *this, allocator );
+    ObjectDestroy<Device> deleter( *this, allocator );
     return createResultValue( result, objectTable, VULKAN_HPP_NAMESPACE_STRING"::Device::createObjectTableNVXUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
@@ -32156,7 +32180,7 @@ public:
     DescriptorUpdateTemplateKHR descriptorUpdateTemplate;
     Result result = static_cast<Result>( d.vkCreateDescriptorUpdateTemplateKHR( m_device, reinterpret_cast<const VkDescriptorUpdateTemplateCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkDescriptorUpdateTemplateKHR*>( &descriptorUpdateTemplate ) ) );
 
-    ObjectDeleter<Device> deleter( *this, allocator );
+    ObjectDestroy<Device> deleter( *this, allocator );
     return createResultValue( result, descriptorUpdateTemplate, VULKAN_HPP_NAMESPACE_STRING"::Device::createDescriptorUpdateTemplateKHRUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
@@ -32364,7 +32388,7 @@ public:
     SamplerYcbcrConversionKHR ycbcrConversion;
     Result result = static_cast<Result>( d.vkCreateSamplerYcbcrConversionKHR( m_device, reinterpret_cast<const VkSamplerYcbcrConversionCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSamplerYcbcrConversionKHR*>( &ycbcrConversion ) ) );
 
-    ObjectDeleter<Device> deleter( *this, allocator );
+    ObjectDestroy<Device> deleter( *this, allocator );
     return createResultValue( result, ycbcrConversion, VULKAN_HPP_NAMESPACE_STRING"::Device::createSamplerYcbcrConversionKHRUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
@@ -32416,7 +32440,7 @@ public:
     ValidationCacheEXT validationCache;
     Result result = static_cast<Result>( d.vkCreateValidationCacheEXT( m_device, reinterpret_cast<const VkValidationCacheCreateInfoEXT*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkValidationCacheEXT*>( &validationCache ) ) );
 
-    ObjectDeleter<Device> deleter( *this, allocator );
+    ObjectDestroy<Device> deleter( *this, allocator );
     return createResultValue( result, validationCache, VULKAN_HPP_NAMESPACE_STRING"::Device::createValidationCacheEXTUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
@@ -32532,9 +32556,8 @@ public:
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
-  class PhysicalDevice;
 
-  template <> class UniqueHandleTraits<Device> {public: using deleter = ObjectDeleter<PhysicalDevice>; };
+  template <> class UniqueHandleTraits<Device> {public: using deleter = ObjectDestroy<NoParent>; };
   using UniqueDevice = UniqueHandle<Device>;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 
@@ -33056,7 +33079,7 @@ public:
     Device device;
     Result result = static_cast<Result>( d.vkCreateDevice( m_physicalDevice, reinterpret_cast<const VkDeviceCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkDevice*>( &device ) ) );
 
-    ObjectDeleter<PhysicalDevice> deleter( *this, allocator );
+    ObjectDestroy<NoParent> deleter( *this, allocator );
     return createResultValue( result, device, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::createDeviceUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
@@ -33969,9 +33992,9 @@ public:
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   class Instance;
 
-  template <> class UniqueHandleTraits<DebugReportCallbackEXT> {public: using deleter = ObjectDeleter<Instance>; };
+  template <> class UniqueHandleTraits<DebugReportCallbackEXT> {public: using deleter = ObjectDestroy<Instance>; };
   using UniqueDebugReportCallbackEXT = UniqueHandle<DebugReportCallbackEXT>;
-  template <> class UniqueHandleTraits<SurfaceKHR> {public: using deleter = ObjectDeleter<Instance>; };
+  template <> class UniqueHandleTraits<SurfaceKHR> {public: using deleter = ObjectDestroy<Instance>; };
   using UniqueSurfaceKHR = UniqueHandle<SurfaceKHR>;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 
@@ -34318,7 +34341,7 @@ public:
     SurfaceKHR surface;
     Result result = static_cast<Result>( d.vkCreateAndroidSurfaceKHR( m_instance, reinterpret_cast<const VkAndroidSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
 
-    ObjectDeleter<Instance> deleter( *this, allocator );
+    ObjectDestroy<Instance> deleter( *this, allocator );
     return createResultValue( result, surface, VULKAN_HPP_NAMESPACE_STRING"::Instance::createAndroidSurfaceKHRUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
@@ -34345,7 +34368,7 @@ public:
     SurfaceKHR surface;
     Result result = static_cast<Result>( d.vkCreateDisplayPlaneSurfaceKHR( m_instance, reinterpret_cast<const VkDisplaySurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
 
-    ObjectDeleter<Instance> deleter( *this, allocator );
+    ObjectDestroy<Instance> deleter( *this, allocator );
     return createResultValue( result, surface, VULKAN_HPP_NAMESPACE_STRING"::Instance::createDisplayPlaneSurfaceKHRUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
@@ -34372,7 +34395,7 @@ public:
     SurfaceKHR surface;
     Result result = static_cast<Result>( d.vkCreateMirSurfaceKHR( m_instance, reinterpret_cast<const VkMirSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
 
-    ObjectDeleter<Instance> deleter( *this, allocator );
+    ObjectDestroy<Instance> deleter( *this, allocator );
     return createResultValue( result, surface, VULKAN_HPP_NAMESPACE_STRING"::Instance::createMirSurfaceKHRUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
@@ -34426,7 +34449,7 @@ public:
     SurfaceKHR surface;
     Result result = static_cast<Result>( d.vkCreateViSurfaceNN( m_instance, reinterpret_cast<const VkViSurfaceCreateInfoNN*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
 
-    ObjectDeleter<Instance> deleter( *this, allocator );
+    ObjectDestroy<Instance> deleter( *this, allocator );
     return createResultValue( result, surface, VULKAN_HPP_NAMESPACE_STRING"::Instance::createViSurfaceNNUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
@@ -34454,7 +34477,7 @@ public:
     SurfaceKHR surface;
     Result result = static_cast<Result>( d.vkCreateWaylandSurfaceKHR( m_instance, reinterpret_cast<const VkWaylandSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
 
-    ObjectDeleter<Instance> deleter( *this, allocator );
+    ObjectDestroy<Instance> deleter( *this, allocator );
     return createResultValue( result, surface, VULKAN_HPP_NAMESPACE_STRING"::Instance::createWaylandSurfaceKHRUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
@@ -34482,7 +34505,7 @@ public:
     SurfaceKHR surface;
     Result result = static_cast<Result>( d.vkCreateWin32SurfaceKHR( m_instance, reinterpret_cast<const VkWin32SurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
 
-    ObjectDeleter<Instance> deleter( *this, allocator );
+    ObjectDestroy<Instance> deleter( *this, allocator );
     return createResultValue( result, surface, VULKAN_HPP_NAMESPACE_STRING"::Instance::createWin32SurfaceKHRUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
@@ -34510,7 +34533,7 @@ public:
     SurfaceKHR surface;
     Result result = static_cast<Result>( d.vkCreateXlibSurfaceKHR( m_instance, reinterpret_cast<const VkXlibSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
 
-    ObjectDeleter<Instance> deleter( *this, allocator );
+    ObjectDestroy<Instance> deleter( *this, allocator );
     return createResultValue( result, surface, VULKAN_HPP_NAMESPACE_STRING"::Instance::createXlibSurfaceKHRUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
@@ -34538,7 +34561,7 @@ public:
     SurfaceKHR surface;
     Result result = static_cast<Result>( d.vkCreateXcbSurfaceKHR( m_instance, reinterpret_cast<const VkXcbSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
 
-    ObjectDeleter<Instance> deleter( *this, allocator );
+    ObjectDestroy<Instance> deleter( *this, allocator );
     return createResultValue( result, surface, VULKAN_HPP_NAMESPACE_STRING"::Instance::createXcbSurfaceKHRUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
@@ -34565,7 +34588,7 @@ public:
     DebugReportCallbackEXT callback;
     Result result = static_cast<Result>( d.vkCreateDebugReportCallbackEXT( m_instance, reinterpret_cast<const VkDebugReportCallbackCreateInfoEXT*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkDebugReportCallbackEXT*>( &callback ) ) );
 
-    ObjectDeleter<Instance> deleter( *this, allocator );
+    ObjectDestroy<Instance> deleter( *this, allocator );
     return createResultValue( result, callback, VULKAN_HPP_NAMESPACE_STRING"::Instance::createDebugReportCallbackEXTUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
@@ -34666,7 +34689,7 @@ public:
     SurfaceKHR surface;
     Result result = static_cast<Result>( d.vkCreateIOSSurfaceMVK( m_instance, reinterpret_cast<const VkIOSSurfaceCreateInfoMVK*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
 
-    ObjectDeleter<Instance> deleter( *this, allocator );
+    ObjectDestroy<Instance> deleter( *this, allocator );
     return createResultValue( result, surface, VULKAN_HPP_NAMESPACE_STRING"::Instance::createIOSSurfaceMVKUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
@@ -34694,7 +34717,7 @@ public:
     SurfaceKHR surface;
     Result result = static_cast<Result>( d.vkCreateMacOSSurfaceMVK( m_instance, reinterpret_cast<const VkMacOSSurfaceCreateInfoMVK*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
 
-    ObjectDeleter<Instance> deleter( *this, allocator );
+    ObjectDestroy<Instance> deleter( *this, allocator );
     return createResultValue( result, surface, VULKAN_HPP_NAMESPACE_STRING"::Instance::createMacOSSurfaceMVKUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
@@ -34767,7 +34790,7 @@ public:
 
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
 
-  template <> class UniqueHandleTraits<Instance> {public: using deleter = ObjectDeleter<NoParent>; };
+  template <> class UniqueHandleTraits<Instance> {public: using deleter = ObjectDestroy<NoParent>; };
   using UniqueInstance = UniqueHandle<Instance>;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 
@@ -34802,7 +34825,7 @@ public:
     Instance instance;
     Result result = static_cast<Result>( d.vkCreateInstance( reinterpret_cast<const VkInstanceCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkInstance*>( &instance ) ) );
 
-    ObjectDeleter<NoParent> deleter( allocator );
+    ObjectDestroy<NoParent> deleter( allocator );
     return createResultValue( result, instance, VULKAN_HPP_NAMESPACE_STRING"::createInstanceUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/

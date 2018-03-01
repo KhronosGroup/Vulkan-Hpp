@@ -103,6 +103,7 @@ class VulkanHppGenerator
         : returnParam(~0)
         , templateParam(~0)
         , twoStep(false)
+        , isAlias(false)
       {}
 
       std::string               className;
@@ -117,8 +118,9 @@ class VulkanHppGenerator
       std::set<size_t>          skippedParams;
       std::vector<std::string>  successCodes;
       size_t                    templateParam;
-      bool                      twoStep;
       std::map<size_t, size_t>  vectorParams;
+      bool                      twoStep;
+      bool                      isAlias;
     };
 
     struct DeleterData

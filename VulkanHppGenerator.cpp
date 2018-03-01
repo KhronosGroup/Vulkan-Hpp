@@ -1709,6 +1709,7 @@ void VulkanHppGenerator::readCommandsCommand(tinyxml2::XMLElement const* element
     assert(commandsIt != m_commands.end());
     commandData = commandsIt->second;
     commandData.fullName = startLowerCase(strip(attributes.find("name")->second, "vk"));
+    commandData.isAlias = true;
     determineReducedName(commandData);
     linkCommandToHandle(commandData);
 
@@ -4403,8 +4404,8 @@ ${commands}
     assert((cit != m_commands.end()) && !cit->second.className.empty());
     writeTypeCommand(commands, "    ", cit->second, false);
 
-    // special handling for destroy functions
-    if (((cit->second.fullName.substr(0, 7) == "destroy") && (cit->second.reducedName != "destroy")) || (cit->second.fullName.substr(0, 4) == "free"))
+    // special handling for destroy functions which are not aliased.
+    if (!cit->second.isAlias && (((cit->second.fullName.substr(0, 7) == "destroy") && (cit->second.reducedName != "destroy")) || (cit->second.fullName.substr(0, 4) == "free")))
     {
       CommandData shortenedCommand = cit->second;
       shortenedCommand.reducedName = (cit->second.fullName.substr(0, 7) == "destroy") ? "destroy" : "free";
@@ -4429,7 +4430,7 @@ ${commands}
     writeTypeCommand(os, "  ", cit->second, true);
 
     // special handling for destroy functions
-    if (((cit->second.fullName.substr(0, 7) == "destroy") && (cit->second.reducedName != "destroy")) || (cit->second.fullName.substr(0, 4) == "free"))
+    if (!cit->second.isAlias && (((cit->second.fullName.substr(0, 7) == "destroy") && (cit->second.reducedName != "destroy")) || (cit->second.fullName.substr(0, 4) == "free")))
     {
       CommandData shortenedCommand = cit->second;
       shortenedCommand.reducedName = (cit->second.fullName.substr(0, 7) == "destroy") ? "destroy" : "free";

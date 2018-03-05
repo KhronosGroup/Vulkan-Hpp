@@ -33079,7 +33079,7 @@ public:
     Device device;
     Result result = static_cast<Result>( d.vkCreateDevice( m_physicalDevice, reinterpret_cast<const VkDeviceCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkDevice*>( &device ) ) );
 
-    ObjectDestroy<NoParent> deleter( *this, allocator );
+    ObjectDestroy<NoParent> deleter( allocator );
     return createResultValue( result, device, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::createDeviceUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/

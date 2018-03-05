@@ -3509,8 +3509,9 @@ void VulkanHppGenerator::writeFunctionBodyEnhancedReturnResultValue(std::ostream
     assert(ddit != m_deleters.end() && ddit->second.pool.empty());
 
     // special handling for "createDevice", as Device is created from PhysicalDevice, but destroyed on its own
+    bool noParent = commandData.className.empty() || (commandData.fullName == "createDevice");
     os << std::endl
-      << indentation << ((commandData.fullName == "allocateMemory") ? "  ObjectFree<" : "  ObjectDestroy<") << ((commandData.className.empty() || (commandData.fullName == "createDevice")) ? "NoParent" : commandData.className) << "> deleter( " << (commandData.className.empty() ? "" : "*this, ") << "allocator );" << std::endl;
+      << indentation << ((commandData.fullName == "allocateMemory") ? "  ObjectFree<" : "  ObjectDestroy<") << (noParent ? "NoParent" : commandData.className) << "> deleter( " << (noParent ? "" : "*this, ") << "allocator );" << std::endl;
   }
 
   // if the return type is "Result" or there is at least one success code, create the Result/Value construct to return

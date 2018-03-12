@@ -36,6 +36,14 @@ namespace VULKAN_HPP_NAMESPACE
 {
 )";
 
+const std::string constExprHeader = R"(
+#if defined(_MSC_VER) && (_MSC_VER <= 1800)
+# define VULKAN_HPP_CONSTEXPR
+#else
+# define VULKAN_HPP_CONSTEXPR constexpr
+#endif
+)";
+
 const std::string exceptionHeader = R"(
 #if defined(_MSC_VER) && (_MSC_VER == 1800)
 # define noexcept _NOEXCEPT
@@ -130,7 +138,7 @@ const std::string flagsHeader = R"(
   class Flags
   {
   public:
-    Flags()
+    VULKAN_HPP_CONSTEXPR Flags()
       : m_mask(0)
     {
     }
@@ -275,7 +283,7 @@ const std::string arrayProxyHeader = R"(
   class ArrayProxy
   {
   public:
-    ArrayProxy(std::nullptr_t)
+    VULKAN_HPP_CONSTEXPR ArrayProxy(std::nullptr_t)
       : m_count(0)
       , m_ptr(nullptr)
     {}
@@ -4331,11 +4339,11 @@ void VulkanHppGenerator::writeTypeHandle(std::ostream & os, DependencyData const
     R"(  class ${className}
   {
   public:
-    ${className}()
+    VULKAN_HPP_CONSTEXPR ${className}()
       : m_${memberName}(VK_NULL_HANDLE)
     {}
 
-    ${className}( std::nullptr_t )
+    VULKAN_HPP_CONSTEXPR ${className}( std::nullptr_t )
       : m_${memberName}(VK_NULL_HANDLE)
     {}
 
@@ -5010,6 +5018,7 @@ int main( int argc, char **argv )
     ofs << versionCheckHeader
       << inlineHeader
       << explicitHeader
+      << constExprHeader
       << std::endl
       << vkNamespace
       << flagsHeader

@@ -85,6 +85,12 @@ static_assert( VK_HEADER_VERSION ==  70 , "Wrong VK_HEADER_VERSION!" );
 # define VULKAN_HPP_TYPESAFE_EXPLICIT explicit
 #endif
 
+#if defined(_MSC_VER) && (_MSC_VER <= 1800)
+# define VULKAN_HPP_CONSTEXPR
+#else
+# define VULKAN_HPP_CONSTEXPR constexpr
+#endif
+
 
 #if !defined(VULKAN_HPP_NAMESPACE)
 #define VULKAN_HPP_NAMESPACE vk
@@ -106,7 +112,7 @@ namespace VULKAN_HPP_NAMESPACE
   class Flags
   {
   public:
-    Flags()
+    VULKAN_HPP_CONSTEXPR Flags()
       : m_mask(0)
     {
     }
@@ -247,7 +253,7 @@ namespace VULKAN_HPP_NAMESPACE
   class ArrayProxy
   {
   public:
-    ArrayProxy(std::nullptr_t)
+    VULKAN_HPP_CONSTEXPR ArrayProxy(std::nullptr_t)
       : m_count(0)
       , m_ptr(nullptr)
     {}
@@ -2643,11 +2649,11 @@ public:
   class DeviceMemory
   {
   public:
-    DeviceMemory()
+    VULKAN_HPP_CONSTEXPR DeviceMemory()
       : m_deviceMemory(VK_NULL_HANDLE)
     {}
 
-    DeviceMemory( std::nullptr_t )
+    VULKAN_HPP_CONSTEXPR DeviceMemory( std::nullptr_t )
       : m_deviceMemory(VK_NULL_HANDLE)
     {}
 
@@ -2710,11 +2716,11 @@ public:
   class CommandPool
   {
   public:
-    CommandPool()
+    VULKAN_HPP_CONSTEXPR CommandPool()
       : m_commandPool(VK_NULL_HANDLE)
     {}
 
-    CommandPool( std::nullptr_t )
+    VULKAN_HPP_CONSTEXPR CommandPool( std::nullptr_t )
       : m_commandPool(VK_NULL_HANDLE)
     {}
 
@@ -2777,11 +2783,11 @@ public:
   class Buffer
   {
   public:
-    Buffer()
+    VULKAN_HPP_CONSTEXPR Buffer()
       : m_buffer(VK_NULL_HANDLE)
     {}
 
-    Buffer( std::nullptr_t )
+    VULKAN_HPP_CONSTEXPR Buffer( std::nullptr_t )
       : m_buffer(VK_NULL_HANDLE)
     {}
 
@@ -2844,11 +2850,11 @@ public:
   class BufferView
   {
   public:
-    BufferView()
+    VULKAN_HPP_CONSTEXPR BufferView()
       : m_bufferView(VK_NULL_HANDLE)
     {}
 
-    BufferView( std::nullptr_t )
+    VULKAN_HPP_CONSTEXPR BufferView( std::nullptr_t )
       : m_bufferView(VK_NULL_HANDLE)
     {}
 
@@ -2911,11 +2917,11 @@ public:
   class Image
   {
   public:
-    Image()
+    VULKAN_HPP_CONSTEXPR Image()
       : m_image(VK_NULL_HANDLE)
     {}
 
-    Image( std::nullptr_t )
+    VULKAN_HPP_CONSTEXPR Image( std::nullptr_t )
       : m_image(VK_NULL_HANDLE)
     {}
 
@@ -2978,11 +2984,11 @@ public:
   class ImageView
   {
   public:
-    ImageView()
+    VULKAN_HPP_CONSTEXPR ImageView()
       : m_imageView(VK_NULL_HANDLE)
     {}
 
-    ImageView( std::nullptr_t )
+    VULKAN_HPP_CONSTEXPR ImageView( std::nullptr_t )
       : m_imageView(VK_NULL_HANDLE)
     {}
 
@@ -3045,11 +3051,11 @@ public:
   class ShaderModule
   {
   public:
-    ShaderModule()
+    VULKAN_HPP_CONSTEXPR ShaderModule()
       : m_shaderModule(VK_NULL_HANDLE)
     {}
 
-    ShaderModule( std::nullptr_t )
+    VULKAN_HPP_CONSTEXPR ShaderModule( std::nullptr_t )
       : m_shaderModule(VK_NULL_HANDLE)
     {}
 
@@ -3112,11 +3118,11 @@ public:
   class Pipeline
   {
   public:
-    Pipeline()
+    VULKAN_HPP_CONSTEXPR Pipeline()
       : m_pipeline(VK_NULL_HANDLE)
     {}
 
-    Pipeline( std::nullptr_t )
+    VULKAN_HPP_CONSTEXPR Pipeline( std::nullptr_t )
       : m_pipeline(VK_NULL_HANDLE)
     {}
 
@@ -3179,11 +3185,11 @@ public:
   class PipelineLayout
   {
   public:
-    PipelineLayout()
+    VULKAN_HPP_CONSTEXPR PipelineLayout()
       : m_pipelineLayout(VK_NULL_HANDLE)
     {}
 
-    PipelineLayout( std::nullptr_t )
+    VULKAN_HPP_CONSTEXPR PipelineLayout( std::nullptr_t )
       : m_pipelineLayout(VK_NULL_HANDLE)
     {}
 
@@ -3246,11 +3252,11 @@ public:
   class Sampler
   {
   public:
-    Sampler()
+    VULKAN_HPP_CONSTEXPR Sampler()
       : m_sampler(VK_NULL_HANDLE)
     {}
 
-    Sampler( std::nullptr_t )
+    VULKAN_HPP_CONSTEXPR Sampler( std::nullptr_t )
       : m_sampler(VK_NULL_HANDLE)
     {}
 
@@ -3313,11 +3319,11 @@ public:
   class DescriptorSet
   {
   public:
-    DescriptorSet()
+    VULKAN_HPP_CONSTEXPR DescriptorSet()
       : m_descriptorSet(VK_NULL_HANDLE)
     {}
 
-    DescriptorSet( std::nullptr_t )
+    VULKAN_HPP_CONSTEXPR DescriptorSet( std::nullptr_t )
       : m_descriptorSet(VK_NULL_HANDLE)
     {}
 
@@ -3380,11 +3386,11 @@ public:
   class DescriptorSetLayout
   {
   public:
-    DescriptorSetLayout()
+    VULKAN_HPP_CONSTEXPR DescriptorSetLayout()
       : m_descriptorSetLayout(VK_NULL_HANDLE)
     {}
 
-    DescriptorSetLayout( std::nullptr_t )
+    VULKAN_HPP_CONSTEXPR DescriptorSetLayout( std::nullptr_t )
       : m_descriptorSetLayout(VK_NULL_HANDLE)
     {}
 
@@ -3447,11 +3453,11 @@ public:
   class DescriptorPool
   {
   public:
-    DescriptorPool()
+    VULKAN_HPP_CONSTEXPR DescriptorPool()
       : m_descriptorPool(VK_NULL_HANDLE)
     {}
 
-    DescriptorPool( std::nullptr_t )
+    VULKAN_HPP_CONSTEXPR DescriptorPool( std::nullptr_t )
       : m_descriptorPool(VK_NULL_HANDLE)
     {}
 
@@ -3514,11 +3520,11 @@ public:
   class Fence
   {
   public:
-    Fence()
+    VULKAN_HPP_CONSTEXPR Fence()
       : m_fence(VK_NULL_HANDLE)
     {}
 
-    Fence( std::nullptr_t )
+    VULKAN_HPP_CONSTEXPR Fence( std::nullptr_t )
       : m_fence(VK_NULL_HANDLE)
     {}
 
@@ -3581,11 +3587,11 @@ public:
   class Semaphore
   {
   public:
-    Semaphore()
+    VULKAN_HPP_CONSTEXPR Semaphore()
       : m_semaphore(VK_NULL_HANDLE)
     {}
 
-    Semaphore( std::nullptr_t )
+    VULKAN_HPP_CONSTEXPR Semaphore( std::nullptr_t )
       : m_semaphore(VK_NULL_HANDLE)
     {}
 
@@ -3648,11 +3654,11 @@ public:
   class Event
   {
   public:
-    Event()
+    VULKAN_HPP_CONSTEXPR Event()
       : m_event(VK_NULL_HANDLE)
     {}
 
-    Event( std::nullptr_t )
+    VULKAN_HPP_CONSTEXPR Event( std::nullptr_t )
       : m_event(VK_NULL_HANDLE)
     {}
 
@@ -3715,11 +3721,11 @@ public:
   class QueryPool
   {
   public:
-    QueryPool()
+    VULKAN_HPP_CONSTEXPR QueryPool()
       : m_queryPool(VK_NULL_HANDLE)
     {}
 
-    QueryPool( std::nullptr_t )
+    VULKAN_HPP_CONSTEXPR QueryPool( std::nullptr_t )
       : m_queryPool(VK_NULL_HANDLE)
     {}
 
@@ -3782,11 +3788,11 @@ public:
   class Framebuffer
   {
   public:
-    Framebuffer()
+    VULKAN_HPP_CONSTEXPR Framebuffer()
       : m_framebuffer(VK_NULL_HANDLE)
     {}
 
-    Framebuffer( std::nullptr_t )
+    VULKAN_HPP_CONSTEXPR Framebuffer( std::nullptr_t )
       : m_framebuffer(VK_NULL_HANDLE)
     {}
 
@@ -3849,11 +3855,11 @@ public:
   class RenderPass
   {
   public:
-    RenderPass()
+    VULKAN_HPP_CONSTEXPR RenderPass()
       : m_renderPass(VK_NULL_HANDLE)
     {}
 
-    RenderPass( std::nullptr_t )
+    VULKAN_HPP_CONSTEXPR RenderPass( std::nullptr_t )
       : m_renderPass(VK_NULL_HANDLE)
     {}
 
@@ -3916,11 +3922,11 @@ public:
   class PipelineCache
   {
   public:
-    PipelineCache()
+    VULKAN_HPP_CONSTEXPR PipelineCache()
       : m_pipelineCache(VK_NULL_HANDLE)
     {}
 
-    PipelineCache( std::nullptr_t )
+    VULKAN_HPP_CONSTEXPR PipelineCache( std::nullptr_t )
       : m_pipelineCache(VK_NULL_HANDLE)
     {}
 
@@ -3983,11 +3989,11 @@ public:
   class ObjectTableNVX
   {
   public:
-    ObjectTableNVX()
+    VULKAN_HPP_CONSTEXPR ObjectTableNVX()
       : m_objectTableNVX(VK_NULL_HANDLE)
     {}
 
-    ObjectTableNVX( std::nullptr_t )
+    VULKAN_HPP_CONSTEXPR ObjectTableNVX( std::nullptr_t )
       : m_objectTableNVX(VK_NULL_HANDLE)
     {}
 
@@ -4050,11 +4056,11 @@ public:
   class IndirectCommandsLayoutNVX
   {
   public:
-    IndirectCommandsLayoutNVX()
+    VULKAN_HPP_CONSTEXPR IndirectCommandsLayoutNVX()
       : m_indirectCommandsLayoutNVX(VK_NULL_HANDLE)
     {}
 
-    IndirectCommandsLayoutNVX( std::nullptr_t )
+    VULKAN_HPP_CONSTEXPR IndirectCommandsLayoutNVX( std::nullptr_t )
       : m_indirectCommandsLayoutNVX(VK_NULL_HANDLE)
     {}
 
@@ -4117,11 +4123,11 @@ public:
   class DescriptorUpdateTemplate
   {
   public:
-    DescriptorUpdateTemplate()
+    VULKAN_HPP_CONSTEXPR DescriptorUpdateTemplate()
       : m_descriptorUpdateTemplate(VK_NULL_HANDLE)
     {}
 
-    DescriptorUpdateTemplate( std::nullptr_t )
+    VULKAN_HPP_CONSTEXPR DescriptorUpdateTemplate( std::nullptr_t )
       : m_descriptorUpdateTemplate(VK_NULL_HANDLE)
     {}
 
@@ -4186,11 +4192,11 @@ public:
   class SamplerYcbcrConversion
   {
   public:
-    SamplerYcbcrConversion()
+    VULKAN_HPP_CONSTEXPR SamplerYcbcrConversion()
       : m_samplerYcbcrConversion(VK_NULL_HANDLE)
     {}
 
-    SamplerYcbcrConversion( std::nullptr_t )
+    VULKAN_HPP_CONSTEXPR SamplerYcbcrConversion( std::nullptr_t )
       : m_samplerYcbcrConversion(VK_NULL_HANDLE)
     {}
 
@@ -4255,11 +4261,11 @@ public:
   class ValidationCacheEXT
   {
   public:
-    ValidationCacheEXT()
+    VULKAN_HPP_CONSTEXPR ValidationCacheEXT()
       : m_validationCacheEXT(VK_NULL_HANDLE)
     {}
 
-    ValidationCacheEXT( std::nullptr_t )
+    VULKAN_HPP_CONSTEXPR ValidationCacheEXT( std::nullptr_t )
       : m_validationCacheEXT(VK_NULL_HANDLE)
     {}
 
@@ -4322,11 +4328,11 @@ public:
   class DisplayKHR
   {
   public:
-    DisplayKHR()
+    VULKAN_HPP_CONSTEXPR DisplayKHR()
       : m_displayKHR(VK_NULL_HANDLE)
     {}
 
-    DisplayKHR( std::nullptr_t )
+    VULKAN_HPP_CONSTEXPR DisplayKHR( std::nullptr_t )
       : m_displayKHR(VK_NULL_HANDLE)
     {}
 
@@ -4389,11 +4395,11 @@ public:
   class DisplayModeKHR
   {
   public:
-    DisplayModeKHR()
+    VULKAN_HPP_CONSTEXPR DisplayModeKHR()
       : m_displayModeKHR(VK_NULL_HANDLE)
     {}
 
-    DisplayModeKHR( std::nullptr_t )
+    VULKAN_HPP_CONSTEXPR DisplayModeKHR( std::nullptr_t )
       : m_displayModeKHR(VK_NULL_HANDLE)
     {}
 
@@ -4456,11 +4462,11 @@ public:
   class SurfaceKHR
   {
   public:
-    SurfaceKHR()
+    VULKAN_HPP_CONSTEXPR SurfaceKHR()
       : m_surfaceKHR(VK_NULL_HANDLE)
     {}
 
-    SurfaceKHR( std::nullptr_t )
+    VULKAN_HPP_CONSTEXPR SurfaceKHR( std::nullptr_t )
       : m_surfaceKHR(VK_NULL_HANDLE)
     {}
 
@@ -4523,11 +4529,11 @@ public:
   class SwapchainKHR
   {
   public:
-    SwapchainKHR()
+    VULKAN_HPP_CONSTEXPR SwapchainKHR()
       : m_swapchainKHR(VK_NULL_HANDLE)
     {}
 
-    SwapchainKHR( std::nullptr_t )
+    VULKAN_HPP_CONSTEXPR SwapchainKHR( std::nullptr_t )
       : m_swapchainKHR(VK_NULL_HANDLE)
     {}
 
@@ -4590,11 +4596,11 @@ public:
   class DebugReportCallbackEXT
   {
   public:
-    DebugReportCallbackEXT()
+    VULKAN_HPP_CONSTEXPR DebugReportCallbackEXT()
       : m_debugReportCallbackEXT(VK_NULL_HANDLE)
     {}
 
-    DebugReportCallbackEXT( std::nullptr_t )
+    VULKAN_HPP_CONSTEXPR DebugReportCallbackEXT( std::nullptr_t )
       : m_debugReportCallbackEXT(VK_NULL_HANDLE)
     {}
 
@@ -4657,11 +4663,11 @@ public:
   class DebugUtilsMessengerEXT
   {
   public:
-    DebugUtilsMessengerEXT()
+    VULKAN_HPP_CONSTEXPR DebugUtilsMessengerEXT()
       : m_debugUtilsMessengerEXT(VK_NULL_HANDLE)
     {}
 
-    DebugUtilsMessengerEXT( std::nullptr_t )
+    VULKAN_HPP_CONSTEXPR DebugUtilsMessengerEXT( std::nullptr_t )
       : m_debugUtilsMessengerEXT(VK_NULL_HANDLE)
     {}
 
@@ -28773,11 +28779,11 @@ public:
   class CommandBuffer
   {
   public:
-    CommandBuffer()
+    VULKAN_HPP_CONSTEXPR CommandBuffer()
       : m_commandBuffer(VK_NULL_HANDLE)
     {}
 
-    CommandBuffer( std::nullptr_t )
+    VULKAN_HPP_CONSTEXPR CommandBuffer( std::nullptr_t )
       : m_commandBuffer(VK_NULL_HANDLE)
     {}
 
@@ -30199,11 +30205,11 @@ public:
   class Queue
   {
   public:
-    Queue()
+    VULKAN_HPP_CONSTEXPR Queue()
       : m_queue(VK_NULL_HANDLE)
     {}
 
-    Queue( std::nullptr_t )
+    VULKAN_HPP_CONSTEXPR Queue( std::nullptr_t )
       : m_queue(VK_NULL_HANDLE)
     {}
 
@@ -30468,11 +30474,11 @@ public:
   class Device
   {
   public:
-    Device()
+    VULKAN_HPP_CONSTEXPR Device()
       : m_device(VK_NULL_HANDLE)
     {}
 
-    Device( std::nullptr_t )
+    VULKAN_HPP_CONSTEXPR Device( std::nullptr_t )
       : m_device(VK_NULL_HANDLE)
     {}
 
@@ -34837,11 +34843,11 @@ public:
   class PhysicalDevice
   {
   public:
-    PhysicalDevice()
+    VULKAN_HPP_CONSTEXPR PhysicalDevice()
       : m_physicalDevice(VK_NULL_HANDLE)
     {}
 
-    PhysicalDevice( std::nullptr_t )
+    VULKAN_HPP_CONSTEXPR PhysicalDevice( std::nullptr_t )
       : m_physicalDevice(VK_NULL_HANDLE)
     {}
 
@@ -36534,11 +36540,11 @@ public:
   class Instance
   {
   public:
-    Instance()
+    VULKAN_HPP_CONSTEXPR Instance()
       : m_instance(VK_NULL_HANDLE)
     {}
 
-    Instance( std::nullptr_t )
+    VULKAN_HPP_CONSTEXPR Instance( std::nullptr_t )
       : m_instance(VK_NULL_HANDLE)
     {}
 

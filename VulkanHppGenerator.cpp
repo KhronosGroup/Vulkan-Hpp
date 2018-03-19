@@ -1643,7 +1643,7 @@ tinyxml2::XMLNode const* VulkanHppGenerator::readCommandParamType(tinyxml2::XMLN
   {
     // start type with "const" or "struct", if needed
     std::string value = trim(node->Value());
-    assert((value == "const") || (value == "struct"));
+    assert((value == "const") || (value == "struct") || (value == "const struct"));
     param.type = value + " ";
     node = node->NextSibling();
     assert(node);
@@ -2994,8 +2994,8 @@ void VulkanHppGenerator::writeCallPlainTypeParameter(std::ostream & os, ParamDat
       }
       else
       {
-        // it's const pointer to void (only other type that occurs) -> just use the name
-        assert((paramData.pureType == "void") && !paramData.optional);
+        // it's const pointer to something else -> just use the name
+        assert(!paramData.optional);
         os << paramData.name;
       }
     }

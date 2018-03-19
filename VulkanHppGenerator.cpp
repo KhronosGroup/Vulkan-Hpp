@@ -4910,7 +4910,7 @@ int main( int argc, char **argv )
 
     std::string filename = (argc == 1) ? VK_SPEC : argv[1];
     std::cout << "Loading vk.xml from " << filename << std::endl;
-    std::cout << "Writing vulkan.hpp to " << VULKAN_HPP << std::endl;
+    std::cout << "Writing vulkan.hpp to " << VULKAN_HPP_FILE << std::endl;
 
     tinyxml2::XMLError error = doc.LoadFile(filename.c_str());
     if (error != tinyxml2::XML_SUCCESS)
@@ -4986,7 +4986,7 @@ int main( int argc, char **argv )
 
     std::map<std::string, std::string> defaultValues = generator.createDefaults();
 
-    std::ofstream ofs(VULKAN_HPP);
+    std::ofstream ofs(VULKAN_HPP_FILE);
     ofs << generator.getVulkanLicenseHeader() << std::endl
       << R"(
 #ifndef VULKAN_HPP

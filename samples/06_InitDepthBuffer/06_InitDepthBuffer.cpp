@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// VulkanHpp Samples : 05_InitSwapchain
-//                     Initialize a swapchain
+// VulkanHpp Samples : 06_InitDepthBuffer
+//                     Initialize a depth buffer
 
 #include "vulkan/vulkan.hpp"
 #include <iostream>
 
-static char const* AppName = "05_InitSwapchain";
+static char const* AppName = "06_InitDepthBuffer";
 static char const* EngineName = "Vulkan.hpp";
 
 template<class T, class Compare>

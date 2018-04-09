@@ -4096,7 +4096,20 @@ void VulkanHppGenerator::writeStructureChainValidation(std::ostream & os, Depend
     for (auto extendName : it->second.structExtends)
     {
       std::map<std::string, StructData>::const_iterator itExtend = m_structs.find(extendName);
-      assert(itExtend != m_structs.end());
+      if (itExtend == m_structs.end()) {
+        std::stringstream errorString;
+        errorString << extendName << " does not specify a struct in structextends field.";
+
+        // check if symbol name is an alias to a struct
+        auto itAlias = std::find_if(m_structs.begin(), m_structs.end(), [&extendName](std::pair<std::string, StructData> const &it) -> bool {return it.second.alias == extendName;});
+        if (itAlias != m_structs.end())
+        {
+          errorString << " The symbol is an alias and maps to " << itAlias->first << ".";
+        }
+
+        errorString << std::endl;
+        throw std::runtime_error(errorString.str());
+      }
       enterProtect(os, itExtend->second.protect);
 
       os << "  template <> struct isStructureChainValid<" << extendName << ", " << dependencyData.name << ">{ enum { value = true }; };" << std::endl;

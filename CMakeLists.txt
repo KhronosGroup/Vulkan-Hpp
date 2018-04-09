@@ -1,4 +1,4 @@
-# Copyright(c) 2015-2016, NVIDIA CORPORATION. All rights reserved.
+# Copyright(c) 2015-2018, NVIDIA CORPORATION. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -30,7 +30,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 project(VulkanHppGenerator)
 
-file(TO_NATIVE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/Vulkan-Docs/src/spec/vk.xml vk_spec)
+file(TO_NATIVE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/Vulkan-Docs/xml/vk.xml vk_spec)
 string(REPLACE "\\" "\\\\" vk_spec ${vk_spec})
 add_definitions(-DVK_SPEC="${vk_spec}")
 

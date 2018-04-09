@@ -36,7 +36,7 @@
 # include <cassert>
 # define VULKAN_HPP_ASSERT   assert
 #endif
-static_assert( VK_HEADER_VERSION ==  71 , "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION ==  72 , "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -544,6 +544,7 @@ namespace VULKAN_HPP_NAMESPACE
     eErrorIncompatibleDisplayKHR = VK_ERROR_INCOMPATIBLE_DISPLAY_KHR,
     eErrorValidationFailedEXT = VK_ERROR_VALIDATION_FAILED_EXT,
     eErrorInvalidShaderNV = VK_ERROR_INVALID_SHADER_NV,
+    eErrorFragmentationEXT = VK_ERROR_FRAGMENTATION_EXT,
     eErrorNotPermittedEXT = VK_ERROR_NOT_PERMITTED_EXT
   };
 
@@ -578,6 +579,7 @@ namespace VULKAN_HPP_NAMESPACE
     case Result::eErrorIncompatibleDisplayKHR: return "ErrorIncompatibleDisplayKHR";
     case Result::eErrorValidationFailedEXT: return "ErrorValidationFailedEXT";
     case Result::eErrorInvalidShaderNV: return "ErrorInvalidShaderNV";
+    case Result::eErrorFragmentationEXT: return "ErrorFragmentationEXT";
     case Result::eErrorNotPermittedEXT: return "ErrorNotPermittedEXT";
     default: return "invalid";
     }
@@ -823,6 +825,14 @@ namespace VULKAN_HPP_NAMESPACE
     InvalidShaderNVError( char const * message )
       : SystemError( make_error_code( Result::eErrorInvalidShaderNV ), message ) {}
   };
+  class FragmentationEXTError : public SystemError
+  {
+  public:
+    FragmentationEXTError( std::string const& message )
+      : SystemError( make_error_code( Result::eErrorFragmentationEXT ), message ) {}
+    FragmentationEXTError( char const * message )
+      : SystemError( make_error_code( Result::eErrorFragmentationEXT ), message ) {}
+  };
   class NotPermittedEXTError : public SystemError
   {
   public:
@@ -856,6 +866,7 @@ namespace VULKAN_HPP_NAMESPACE
     case Result::eErrorIncompatibleDisplayKHR: throw IncompatibleDisplayKHRError ( message );
     case Result::eErrorValidationFailedEXT: throw ValidationFailedEXTError ( message );
     case Result::eErrorInvalidShaderNV: throw InvalidShaderNVError ( message );
+    case Result::eErrorFragmentationEXT: throw FragmentationEXTError ( message );
     case Result::eErrorNotPermittedEXT: throw NotPermittedEXTError ( message );
     default: throw SystemError( make_error_code( result ) );
     }
@@ -8558,10 +8569,16 @@ public:
     ePipelineCoverageModulationStateCreateInfoNV = VK_STRUCTURE_TYPE_PIPELINE_COVERAGE_MODULATION_STATE_CREATE_INFO_NV,
     eValidationCacheCreateInfoEXT = VK_STRUCTURE_TYPE_VALIDATION_CACHE_CREATE_INFO_EXT,
     eShaderModuleValidationCacheCreateInfoEXT = VK_STRUCTURE_TYPE_SHADER_MODULE_VALIDATION_CACHE_CREATE_INFO_EXT,
+    eDescriptorSetLayoutBindingFlagsCreateInfoEXT = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_BINDING_FLAGS_CREATE_INFO_EXT,
+    ePhysicalDeviceDescriptorIndexingFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_FEATURES_EXT,
+    ePhysicalDeviceDescriptorIndexingPropertiesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_PROPERTIES_EXT,
+    eDescriptorSetVariableDescriptorCountAllocateInfoEXT = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_ALLOCATE_INFO_EXT,
+    eDescriptorSetVariableDescriptorCountLayoutSupportEXT = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_LAYOUT_SUPPORT_EXT,
     eDeviceQueueGlobalPriorityCreateInfoEXT = VK_STRUCTURE_TYPE_DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO_EXT,
     eImportMemoryHostPointerInfoEXT = VK_STRUCTURE_TYPE_IMPORT_MEMORY_HOST_POINTER_INFO_EXT,
     eMemoryHostPointerPropertiesEXT = VK_STRUCTURE_TYPE_MEMORY_HOST_POINTER_PROPERTIES_EXT,
     ePhysicalDeviceExternalMemoryHostPropertiesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_MEMORY_HOST_PROPERTIES_EXT,
+    ePhysicalDeviceShaderCorePropertiesAMD = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_AMD,
     ePhysicalDeviceVertexAttributeDivisorPropertiesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES_EXT,
     ePipelineVertexInputDivisorStateCreateInfoEXT = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO_EXT
   };
@@ -15738,6 +15755,450 @@ public:
   };
   static_assert( sizeof( PhysicalDeviceConservativeRasterizationPropertiesEXT ) == sizeof( VkPhysicalDeviceConservativeRasterizationPropertiesEXT ), "struct and wrapper have different size!" );
 
+  struct PhysicalDeviceShaderCorePropertiesAMD
+  {
+    operator const VkPhysicalDeviceShaderCorePropertiesAMD&() const
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceShaderCorePropertiesAMD*>(this);
+    }
+
+    bool operator==( PhysicalDeviceShaderCorePropertiesAMD const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( shaderEngineCount == rhs.shaderEngineCount )
+          && ( shaderArraysPerEngineCount == rhs.shaderArraysPerEngineCount )
+          && ( computeUnitsPerShaderArray == rhs.computeUnitsPerShaderArray )
+          && ( simdPerComputeUnit == rhs.simdPerComputeUnit )
+          && ( wavefrontsPerSimd == rhs.wavefrontsPerSimd )
+          && ( wavefrontSize == rhs.wavefrontSize )
+          && ( sgprsPerSimd == rhs.sgprsPerSimd )
+          && ( minSgprAllocation == rhs.minSgprAllocation )
+          && ( maxSgprAllocation == rhs.maxSgprAllocation )
+          && ( sgprAllocationGranularity == rhs.sgprAllocationGranularity )
+          && ( vgprsPerSimd == rhs.vgprsPerSimd )
+          && ( minVgprAllocation == rhs.minVgprAllocation )
+          && ( maxVgprAllocation == rhs.maxVgprAllocation )
+          && ( vgprAllocationGranularity == rhs.vgprAllocationGranularity );
+    }
+
+    bool operator!=( PhysicalDeviceShaderCorePropertiesAMD const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::ePhysicalDeviceShaderCorePropertiesAMD;
+
+  public:
+    void* pNext = nullptr;
+    uint32_t shaderEngineCount;
+    uint32_t shaderArraysPerEngineCount;
+    uint32_t computeUnitsPerShaderArray;
+    uint32_t simdPerComputeUnit;
+    uint32_t wavefrontsPerSimd;
+    uint32_t wavefrontSize;
+    uint32_t sgprsPerSimd;
+    uint32_t minSgprAllocation;
+    uint32_t maxSgprAllocation;
+    uint32_t sgprAllocationGranularity;
+    uint32_t vgprsPerSimd;
+    uint32_t minVgprAllocation;
+    uint32_t maxVgprAllocation;
+    uint32_t vgprAllocationGranularity;
+  };
+  static_assert( sizeof( PhysicalDeviceShaderCorePropertiesAMD ) == sizeof( VkPhysicalDeviceShaderCorePropertiesAMD ), "struct and wrapper have different size!" );
+
+  struct PhysicalDeviceDescriptorIndexingFeaturesEXT
+  {
+    PhysicalDeviceDescriptorIndexingFeaturesEXT( Bool32 shaderInputAttachmentArrayDynamicIndexing_ = 0, Bool32 shaderUniformTexelBufferArrayDynamicIndexing_ = 0, Bool32 shaderStorageTexelBufferArrayDynamicIndexing_ = 0, Bool32 shaderUniformBufferArrayNonUniformIndexing_ = 0, Bool32 shaderSampledImageArrayNonUniformIndexing_ = 0, Bool32 shaderStorageBufferArrayNonUniformIndexing_ = 0, Bool32 shaderStorageImageArrayNonUniformIndexing_ = 0, Bool32 shaderInputAttachmentArrayNonUniformIndexing_ = 0, Bool32 shaderUniformTexelBufferArrayNonUniformIndexing_ = 0, Bool32 shaderStorageTexelBufferArrayNonUniformIndexing_ = 0, Bool32 descriptorBindingUniformBufferUpdateAfterBind_ = 0, Bool32 descriptorBindingSampledImageUpdateAfterBind_ = 0, Bool32 descriptorBindingStorageImageUpdateAfterBind_ = 0, Bool32 descriptorBindingStorageBufferUpdateAfterBind_ = 0, Bool32 descriptorBindingUniformTexelBufferUpdateAfterBind_ = 0, Bool32 descriptorBindingStorageTexelBufferUpdateAfterBind_ = 0, Bool32 descriptorBindingUpdateUnusedWhilePending_ = 0, Bool32 descriptorBindingPartiallyBound_ = 0, Bool32 descriptorBindingVariableDescriptorCount_ = 0, Bool32 runtimeDescriptorArray_ = 0 )
+      : shaderInputAttachmentArrayDynamicIndexing( shaderInputAttachmentArrayDynamicIndexing_ )
+      , shaderUniformTexelBufferArrayDynamicIndexing( shaderUniformTexelBufferArrayDynamicIndexing_ )
+      , shaderStorageTexelBufferArrayDynamicIndexing( shaderStorageTexelBufferArrayDynamicIndexing_ )
+      , shaderUniformBufferArrayNonUniformIndexing( shaderUniformBufferArrayNonUniformIndexing_ )
+      , shaderSampledImageArrayNonUniformIndexing( shaderSampledImageArrayNonUniformIndexing_ )
+      , shaderStorageBufferArrayNonUniformIndexing( shaderStorageBufferArrayNonUniformIndexing_ )
+      , shaderStorageImageArrayNonUniformIndexing( shaderStorageImageArrayNonUniformIndexing_ )
+      , shaderInputAttachmentArrayNonUniformIndexing( shaderInputAttachmentArrayNonUniformIndexing_ )
+      , shaderUniformTexelBufferArrayNonUniformIndexing( shaderUniformTexelBufferArrayNonUniformIndexing_ )
+      , shaderStorageTexelBufferArrayNonUniformIndexing( shaderStorageTexelBufferArrayNonUniformIndexing_ )
+      , descriptorBindingUniformBufferUpdateAfterBind( descriptorBindingUniformBufferUpdateAfterBind_ )
+      , descriptorBindingSampledImageUpdateAfterBind( descriptorBindingSampledImageUpdateAfterBind_ )
+      , descriptorBindingStorageImageUpdateAfterBind( descriptorBindingStorageImageUpdateAfterBind_ )
+      , descriptorBindingStorageBufferUpdateAfterBind( descriptorBindingStorageBufferUpdateAfterBind_ )
+      , descriptorBindingUniformTexelBufferUpdateAfterBind( descriptorBindingUniformTexelBufferUpdateAfterBind_ )
+      , descriptorBindingStorageTexelBufferUpdateAfterBind( descriptorBindingStorageTexelBufferUpdateAfterBind_ )
+      , descriptorBindingUpdateUnusedWhilePending( descriptorBindingUpdateUnusedWhilePending_ )
+      , descriptorBindingPartiallyBound( descriptorBindingPartiallyBound_ )
+      , descriptorBindingVariableDescriptorCount( descriptorBindingVariableDescriptorCount_ )
+      , runtimeDescriptorArray( runtimeDescriptorArray_ )
+    {
+    }
+
+    PhysicalDeviceDescriptorIndexingFeaturesEXT( VkPhysicalDeviceDescriptorIndexingFeaturesEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceDescriptorIndexingFeaturesEXT ) );
+    }
+
+    PhysicalDeviceDescriptorIndexingFeaturesEXT& operator=( VkPhysicalDeviceDescriptorIndexingFeaturesEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceDescriptorIndexingFeaturesEXT ) );
+      return *this;
+    }
+    PhysicalDeviceDescriptorIndexingFeaturesEXT& setPNext( void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PhysicalDeviceDescriptorIndexingFeaturesEXT& setShaderInputAttachmentArrayDynamicIndexing( Bool32 shaderInputAttachmentArrayDynamicIndexing_ )
+    {
+      shaderInputAttachmentArrayDynamicIndexing = shaderInputAttachmentArrayDynamicIndexing_;
+      return *this;
+    }
+
+    PhysicalDeviceDescriptorIndexingFeaturesEXT& setShaderUniformTexelBufferArrayDynamicIndexing( Bool32 shaderUniformTexelBufferArrayDynamicIndexing_ )
+    {
+      shaderUniformTexelBufferArrayDynamicIndexing = shaderUniformTexelBufferArrayDynamicIndexing_;
+      return *this;
+    }
+
+    PhysicalDeviceDescriptorIndexingFeaturesEXT& setShaderStorageTexelBufferArrayDynamicIndexing( Bool32 shaderStorageTexelBufferArrayDynamicIndexing_ )
+    {
+      shaderStorageTexelBufferArrayDynamicIndexing = shaderStorageTexelBufferArrayDynamicIndexing_;
+      return *this;
+    }
+
+    PhysicalDeviceDescriptorIndexingFeaturesEXT& setShaderUniformBufferArrayNonUniformIndexing( Bool32 shaderUniformBufferArrayNonUniformIndexing_ )
+    {
+      shaderUniformBufferArrayNonUniformIndexing = shaderUniformBufferArrayNonUniformIndexing_;
+      return *this;
+    }
+
+    PhysicalDeviceDescriptorIndexingFeaturesEXT& setShaderSampledImageArrayNonUniformIndexing( Bool32 shaderSampledImageArrayNonUniformIndexing_ )
+    {
+      shaderSampledImageArrayNonUniformIndexing = shaderSampledImageArrayNonUniformIndexing_;
+      return *this;
+    }
+
+    PhysicalDeviceDescriptorIndexingFeaturesEXT& setShaderStorageBufferArrayNonUniformIndexing( Bool32 shaderStorageBufferArrayNonUniformIndexing_ )
+    {
+      shaderStorageBufferArrayNonUniformIndexing = shaderStorageBufferArrayNonUniformIndexing_;
+      return *this;
+    }
+
+    PhysicalDeviceDescriptorIndexingFeaturesEXT& setShaderStorageImageArrayNonUniformIndexing( Bool32 shaderStorageImageArrayNonUniformIndexing_ )
+    {
+      shaderStorageImageArrayNonUniformIndexing = shaderStorageImageArrayNonUniformIndexing_;
+      return *this;
+    }
+
+    PhysicalDeviceDescriptorIndexingFeaturesEXT& setShaderInputAttachmentArrayNonUniformIndexing( Bool32 shaderInputAttachmentArrayNonUniformIndexing_ )
+    {
+      shaderInputAttachmentArrayNonUniformIndexing = shaderInputAttachmentArrayNonUniformIndexing_;
+      return *this;
+    }
+
+    PhysicalDeviceDescriptorIndexingFeaturesEXT& setShaderUniformTexelBufferArrayNonUniformIndexing( Bool32 shaderUniformTexelBufferArrayNonUniformIndexing_ )
+    {
+      shaderUniformTexelBufferArrayNonUniformIndexing = shaderUniformTexelBufferArrayNonUniformIndexing_;
+      return *this;
+    }
+
+    PhysicalDeviceDescriptorIndexingFeaturesEXT& setShaderStorageTexelBufferArrayNonUniformIndexing( Bool32 shaderStorageTexelBufferArrayNonUniformIndexing_ )
+    {
+      shaderStorageTexelBufferArrayNonUniformIndexing = shaderStorageTexelBufferArrayNonUniformIndexing_;
+      return *this;
+    }
+
+    PhysicalDeviceDescriptorIndexingFeaturesEXT& setDescriptorBindingUniformBufferUpdateAfterBind( Bool32 descriptorBindingUniformBufferUpdateAfterBind_ )
+    {
+      descriptorBindingUniformBufferUpdateAfterBind = descriptorBindingUniformBufferUpdateAfterBind_;
+      return *this;
+    }
+
+    PhysicalDeviceDescriptorIndexingFeaturesEXT& setDescriptorBindingSampledImageUpdateAfterBind( Bool32 descriptorBindingSampledImageUpdateAfterBind_ )
+    {
+      descriptorBindingSampledImageUpdateAfterBind = descriptorBindingSampledImageUpdateAfterBind_;
+      return *this;
+    }
+
+    PhysicalDeviceDescriptorIndexingFeaturesEXT& setDescriptorBindingStorageImageUpdateAfterBind( Bool32 descriptorBindingStorageImageUpdateAfterBind_ )
+    {
+      descriptorBindingStorageImageUpdateAfterBind = descriptorBindingStorageImageUpdateAfterBind_;
+      return *this;
+    }
+
+    PhysicalDeviceDescriptorIndexingFeaturesEXT& setDescriptorBindingStorageBufferUpdateAfterBind( Bool32 descriptorBindingStorageBufferUpdateAfterBind_ )
+    {
+      descriptorBindingStorageBufferUpdateAfterBind = descriptorBindingStorageBufferUpdateAfterBind_;
+      return *this;
+    }
+
+    PhysicalDeviceDescriptorIndexingFeaturesEXT& setDescriptorBindingUniformTexelBufferUpdateAfterBind( Bool32 descriptorBindingUniformTexelBufferUpdateAfterBind_ )
+    {
+      descriptorBindingUniformTexelBufferUpdateAfterBind = descriptorBindingUniformTexelBufferUpdateAfterBind_;
+      return *this;
+    }
+
+    PhysicalDeviceDescriptorIndexingFeaturesEXT& setDescriptorBindingStorageTexelBufferUpdateAfterBind( Bool32 descriptorBindingStorageTexelBufferUpdateAfterBind_ )
+    {
+      descriptorBindingStorageTexelBufferUpdateAfterBind = descriptorBindingStorageTexelBufferUpdateAfterBind_;
+      return *this;
+    }
+
+    PhysicalDeviceDescriptorIndexingFeaturesEXT& setDescriptorBindingUpdateUnusedWhilePending( Bool32 descriptorBindingUpdateUnusedWhilePending_ )
+    {
+      descriptorBindingUpdateUnusedWhilePending = descriptorBindingUpdateUnusedWhilePending_;
+      return *this;
+    }
+
+    PhysicalDeviceDescriptorIndexingFeaturesEXT& setDescriptorBindingPartiallyBound( Bool32 descriptorBindingPartiallyBound_ )
+    {
+      descriptorBindingPartiallyBound = descriptorBindingPartiallyBound_;
+      return *this;
+    }
+
+    PhysicalDeviceDescriptorIndexingFeaturesEXT& setDescriptorBindingVariableDescriptorCount( Bool32 descriptorBindingVariableDescriptorCount_ )
+    {
+      descriptorBindingVariableDescriptorCount = descriptorBindingVariableDescriptorCount_;
+      return *this;
+    }
+
+    PhysicalDeviceDescriptorIndexingFeaturesEXT& setRuntimeDescriptorArray( Bool32 runtimeDescriptorArray_ )
+    {
+      runtimeDescriptorArray = runtimeDescriptorArray_;
+      return *this;
+    }
+
+    operator const VkPhysicalDeviceDescriptorIndexingFeaturesEXT&() const
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceDescriptorIndexingFeaturesEXT*>(this);
+    }
+
+    bool operator==( PhysicalDeviceDescriptorIndexingFeaturesEXT const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( shaderInputAttachmentArrayDynamicIndexing == rhs.shaderInputAttachmentArrayDynamicIndexing )
+          && ( shaderUniformTexelBufferArrayDynamicIndexing == rhs.shaderUniformTexelBufferArrayDynamicIndexing )
+          && ( shaderStorageTexelBufferArrayDynamicIndexing == rhs.shaderStorageTexelBufferArrayDynamicIndexing )
+          && ( shaderUniformBufferArrayNonUniformIndexing == rhs.shaderUniformBufferArrayNonUniformIndexing )
+          && ( shaderSampledImageArrayNonUniformIndexing == rhs.shaderSampledImageArrayNonUniformIndexing )
+          && ( shaderStorageBufferArrayNonUniformIndexing == rhs.shaderStorageBufferArrayNonUniformIndexing )
+          && ( shaderStorageImageArrayNonUniformIndexing == rhs.shaderStorageImageArrayNonUniformIndexing )
+          && ( shaderInputAttachmentArrayNonUniformIndexing == rhs.shaderInputAttachmentArrayNonUniformIndexing )
+          && ( shaderUniformTexelBufferArrayNonUniformIndexing == rhs.shaderUniformTexelBufferArrayNonUniformIndexing )
+          && ( shaderStorageTexelBufferArrayNonUniformIndexing == rhs.shaderStorageTexelBufferArrayNonUniformIndexing )
+          && ( descriptorBindingUniformBufferUpdateAfterBind == rhs.descriptorBindingUniformBufferUpdateAfterBind )
+          && ( descriptorBindingSampledImageUpdateAfterBind == rhs.descriptorBindingSampledImageUpdateAfterBind )
+          && ( descriptorBindingStorageImageUpdateAfterBind == rhs.descriptorBindingStorageImageUpdateAfterBind )
+          && ( descriptorBindingStorageBufferUpdateAfterBind == rhs.descriptorBindingStorageBufferUpdateAfterBind )
+          && ( descriptorBindingUniformTexelBufferUpdateAfterBind == rhs.descriptorBindingUniformTexelBufferUpdateAfterBind )
+          && ( descriptorBindingStorageTexelBufferUpdateAfterBind == rhs.descriptorBindingStorageTexelBufferUpdateAfterBind )
+          && ( descriptorBindingUpdateUnusedWhilePending == rhs.descriptorBindingUpdateUnusedWhilePending )
+          && ( descriptorBindingPartiallyBound == rhs.descriptorBindingPartiallyBound )
+          && ( descriptorBindingVariableDescriptorCount == rhs.descriptorBindingVariableDescriptorCount )
+          && ( runtimeDescriptorArray == rhs.runtimeDescriptorArray );
+    }
+
+    bool operator!=( PhysicalDeviceDescriptorIndexingFeaturesEXT const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::ePhysicalDeviceDescriptorIndexingFeaturesEXT;
+
+  public:
+    void* pNext = nullptr;
+    Bool32 shaderInputAttachmentArrayDynamicIndexing;
+    Bool32 shaderUniformTexelBufferArrayDynamicIndexing;
+    Bool32 shaderStorageTexelBufferArrayDynamicIndexing;
+    Bool32 shaderUniformBufferArrayNonUniformIndexing;
+    Bool32 shaderSampledImageArrayNonUniformIndexing;
+    Bool32 shaderStorageBufferArrayNonUniformIndexing;
+    Bool32 shaderStorageImageArrayNonUniformIndexing;
+    Bool32 shaderInputAttachmentArrayNonUniformIndexing;
+    Bool32 shaderUniformTexelBufferArrayNonUniformIndexing;
+    Bool32 shaderStorageTexelBufferArrayNonUniformIndexing;
+    Bool32 descriptorBindingUniformBufferUpdateAfterBind;
+    Bool32 descriptorBindingSampledImageUpdateAfterBind;
+    Bool32 descriptorBindingStorageImageUpdateAfterBind;
+    Bool32 descriptorBindingStorageBufferUpdateAfterBind;
+    Bool32 descriptorBindingUniformTexelBufferUpdateAfterBind;
+    Bool32 descriptorBindingStorageTexelBufferUpdateAfterBind;
+    Bool32 descriptorBindingUpdateUnusedWhilePending;
+    Bool32 descriptorBindingPartiallyBound;
+    Bool32 descriptorBindingVariableDescriptorCount;
+    Bool32 runtimeDescriptorArray;
+  };
+  static_assert( sizeof( PhysicalDeviceDescriptorIndexingFeaturesEXT ) == sizeof( VkPhysicalDeviceDescriptorIndexingFeaturesEXT ), "struct and wrapper have different size!" );
+
+  struct PhysicalDeviceDescriptorIndexingPropertiesEXT
+  {
+    operator const VkPhysicalDeviceDescriptorIndexingPropertiesEXT&() const
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceDescriptorIndexingPropertiesEXT*>(this);
+    }
+
+    bool operator==( PhysicalDeviceDescriptorIndexingPropertiesEXT const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( maxUpdateAfterBindDescriptorsInAllPools == rhs.maxUpdateAfterBindDescriptorsInAllPools )
+          && ( shaderUniformBufferArrayNonUniformIndexingNative == rhs.shaderUniformBufferArrayNonUniformIndexingNative )
+          && ( shaderSampledImageArrayNonUniformIndexingNative == rhs.shaderSampledImageArrayNonUniformIndexingNative )
+          && ( shaderStorageBufferArrayNonUniformIndexingNative == rhs.shaderStorageBufferArrayNonUniformIndexingNative )
+          && ( shaderStorageImageArrayNonUniformIndexingNative == rhs.shaderStorageImageArrayNonUniformIndexingNative )
+          && ( shaderInputAttachmentArrayNonUniformIndexingNative == rhs.shaderInputAttachmentArrayNonUniformIndexingNative )
+          && ( robustBufferAccessUpdateAfterBind == rhs.robustBufferAccessUpdateAfterBind )
+          && ( quadDivergentImplicitLod == rhs.quadDivergentImplicitLod )
+          && ( maxPerStageDescriptorUpdateAfterBindSamplers == rhs.maxPerStageDescriptorUpdateAfterBindSamplers )
+          && ( maxPerStageDescriptorUpdateAfterBindUniformBuffers == rhs.maxPerStageDescriptorUpdateAfterBindUniformBuffers )
+          && ( maxPerStageDescriptorUpdateAfterBindStorageBuffers == rhs.maxPerStageDescriptorUpdateAfterBindStorageBuffers )
+          && ( maxPerStageDescriptorUpdateAfterBindSampledImages == rhs.maxPerStageDescriptorUpdateAfterBindSampledImages )
+          && ( maxPerStageDescriptorUpdateAfterBindStorageImages == rhs.maxPerStageDescriptorUpdateAfterBindStorageImages )
+          && ( maxPerStageDescriptorUpdateAfterBindInputAttachments == rhs.maxPerStageDescriptorUpdateAfterBindInputAttachments )
+          && ( maxPerStageUpdateAfterBindResources == rhs.maxPerStageUpdateAfterBindResources )
+          && ( maxDescriptorSetUpdateAfterBindSamplers == rhs.maxDescriptorSetUpdateAfterBindSamplers )
+          && ( maxDescriptorSetUpdateAfterBindUniformBuffers == rhs.maxDescriptorSetUpdateAfterBindUniformBuffers )
+          && ( maxDescriptorSetUpdateAfterBindUniformBuffersDynamic == rhs.maxDescriptorSetUpdateAfterBindUniformBuffersDynamic )
+          && ( maxDescriptorSetUpdateAfterBindStorageBuffers == rhs.maxDescriptorSetUpdateAfterBindStorageBuffers )
+          && ( maxDescriptorSetUpdateAfterBindStorageBuffersDynamic == rhs.maxDescriptorSetUpdateAfterBindStorageBuffersDynamic )
+          && ( maxDescriptorSetUpdateAfterBindSampledImages == rhs.maxDescriptorSetUpdateAfterBindSampledImages )
+          && ( maxDescriptorSetUpdateAfterBindStorageImages == rhs.maxDescriptorSetUpdateAfterBindStorageImages )
+          && ( maxDescriptorSetUpdateAfterBindInputAttachments == rhs.maxDescriptorSetUpdateAfterBindInputAttachments );
+    }
+
+    bool operator!=( PhysicalDeviceDescriptorIndexingPropertiesEXT const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::ePhysicalDeviceDescriptorIndexingPropertiesEXT;
+
+  public:
+    void* pNext = nullptr;
+    uint32_t maxUpdateAfterBindDescriptorsInAllPools;
+    Bool32 shaderUniformBufferArrayNonUniformIndexingNative;
+    Bool32 shaderSampledImageArrayNonUniformIndexingNative;
+    Bool32 shaderStorageBufferArrayNonUniformIndexingNative;
+    Bool32 shaderStorageImageArrayNonUniformIndexingNative;
+    Bool32 shaderInputAttachmentArrayNonUniformIndexingNative;
+    Bool32 robustBufferAccessUpdateAfterBind;
+    Bool32 quadDivergentImplicitLod;
+    uint32_t maxPerStageDescriptorUpdateAfterBindSamplers;
+    uint32_t maxPerStageDescriptorUpdateAfterBindUniformBuffers;
+    uint32_t maxPerStageDescriptorUpdateAfterBindStorageBuffers;
+    uint32_t maxPerStageDescriptorUpdateAfterBindSampledImages;
+    uint32_t maxPerStageDescriptorUpdateAfterBindStorageImages;
+    uint32_t maxPerStageDescriptorUpdateAfterBindInputAttachments;
+    uint32_t maxPerStageUpdateAfterBindResources;
+    uint32_t maxDescriptorSetUpdateAfterBindSamplers;
+    uint32_t maxDescriptorSetUpdateAfterBindUniformBuffers;
+    uint32_t maxDescriptorSetUpdateAfterBindUniformBuffersDynamic;
+    uint32_t maxDescriptorSetUpdateAfterBindStorageBuffers;
+    uint32_t maxDescriptorSetUpdateAfterBindStorageBuffersDynamic;
+    uint32_t maxDescriptorSetUpdateAfterBindSampledImages;
+    uint32_t maxDescriptorSetUpdateAfterBindStorageImages;
+    uint32_t maxDescriptorSetUpdateAfterBindInputAttachments;
+  };
+  static_assert( sizeof( PhysicalDeviceDescriptorIndexingPropertiesEXT ) == sizeof( VkPhysicalDeviceDescriptorIndexingPropertiesEXT ), "struct and wrapper have different size!" );
+
+  struct DescriptorSetVariableDescriptorCountAllocateInfoEXT
+  {
+    DescriptorSetVariableDescriptorCountAllocateInfoEXT( uint32_t descriptorSetCount_ = 0, const uint32_t* pDescriptorCounts_ = nullptr )
+      : descriptorSetCount( descriptorSetCount_ )
+      , pDescriptorCounts( pDescriptorCounts_ )
+    {
+    }
+
+    DescriptorSetVariableDescriptorCountAllocateInfoEXT( VkDescriptorSetVariableDescriptorCountAllocateInfoEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( DescriptorSetVariableDescriptorCountAllocateInfoEXT ) );
+    }
+
+    DescriptorSetVariableDescriptorCountAllocateInfoEXT& operator=( VkDescriptorSetVariableDescriptorCountAllocateInfoEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( DescriptorSetVariableDescriptorCountAllocateInfoEXT ) );
+      return *this;
+    }
+    DescriptorSetVariableDescriptorCountAllocateInfoEXT& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    DescriptorSetVariableDescriptorCountAllocateInfoEXT& setDescriptorSetCount( uint32_t descriptorSetCount_ )
+    {
+      descriptorSetCount = descriptorSetCount_;
+      return *this;
+    }
+
+    DescriptorSetVariableDescriptorCountAllocateInfoEXT& setPDescriptorCounts( const uint32_t* pDescriptorCounts_ )
+    {
+      pDescriptorCounts = pDescriptorCounts_;
+      return *this;
+    }
+
+    operator const VkDescriptorSetVariableDescriptorCountAllocateInfoEXT&() const
+    {
+      return *reinterpret_cast<const VkDescriptorSetVariableDescriptorCountAllocateInfoEXT*>(this);
+    }
+
+    bool operator==( DescriptorSetVariableDescriptorCountAllocateInfoEXT const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( descriptorSetCount == rhs.descriptorSetCount )
+          && ( pDescriptorCounts == rhs.pDescriptorCounts );
+    }
+
+    bool operator!=( DescriptorSetVariableDescriptorCountAllocateInfoEXT const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::eDescriptorSetVariableDescriptorCountAllocateInfoEXT;
+
+  public:
+    const void* pNext = nullptr;
+    uint32_t descriptorSetCount;
+    const uint32_t* pDescriptorCounts;
+  };
+  static_assert( sizeof( DescriptorSetVariableDescriptorCountAllocateInfoEXT ) == sizeof( VkDescriptorSetVariableDescriptorCountAllocateInfoEXT ), "struct and wrapper have different size!" );
+
+  struct DescriptorSetVariableDescriptorCountLayoutSupportEXT
+  {
+    operator const VkDescriptorSetVariableDescriptorCountLayoutSupportEXT&() const
+    {
+      return *reinterpret_cast<const VkDescriptorSetVariableDescriptorCountLayoutSupportEXT*>(this);
+    }
+
+    bool operator==( DescriptorSetVariableDescriptorCountLayoutSupportEXT const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( maxVariableDescriptorCount == rhs.maxVariableDescriptorCount );
+    }
+
+    bool operator!=( DescriptorSetVariableDescriptorCountLayoutSupportEXT const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::eDescriptorSetVariableDescriptorCountLayoutSupportEXT;
+
+  public:
+    void* pNext = nullptr;
+    uint32_t maxVariableDescriptorCount;
+  };
+  static_assert( sizeof( DescriptorSetVariableDescriptorCountLayoutSupportEXT ) == sizeof( VkDescriptorSetVariableDescriptorCountLayoutSupportEXT ), "struct and wrapper have different size!" );
+
   struct PipelineVertexInputDivisorStateCreateInfoEXT
   {
     PipelineVertexInputDivisorStateCreateInfoEXT( uint32_t vertexBindingDivisorCount_ = 0, const VertexInputBindingDivisorDescriptionEXT* pVertexBindingDivisors_ = nullptr )
@@ -22600,7 +23061,8 @@ public:
 
   enum class DescriptorPoolCreateFlagBits
   {
-    eFreeDescriptorSet = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT
+    eFreeDescriptorSet = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT,
+    eUpdateAfterBindEXT = VK_DESCRIPTOR_POOL_CREATE_UPDATE_AFTER_BIND_BIT_EXT
   };
 
   using DescriptorPoolCreateFlags = Flags<DescriptorPoolCreateFlagBits, VkDescriptorPoolCreateFlags>;
@@ -22619,7 +23081,7 @@ public:
   {
     enum
     {
-      allFlags = VkFlags(DescriptorPoolCreateFlagBits::eFreeDescriptorSet)
+      allFlags = VkFlags(DescriptorPoolCreateFlagBits::eFreeDescriptorSet) | VkFlags(DescriptorPoolCreateFlagBits::eUpdateAfterBindEXT)
     };
   };
 
@@ -23960,7 +24422,8 @@ public:
     eShuffle = VK_SUBGROUP_FEATURE_SHUFFLE_BIT,
     eShuffleRelative = VK_SUBGROUP_FEATURE_SHUFFLE_RELATIVE_BIT,
     eClustered = VK_SUBGROUP_FEATURE_CLUSTERED_BIT,
-    eQuad = VK_SUBGROUP_FEATURE_QUAD_BIT
+    eQuad = VK_SUBGROUP_FEATURE_QUAD_BIT,
+    ePartitionedNV = VK_SUBGROUP_FEATURE_PARTITIONED_BIT_NV
   };
 
   using SubgroupFeatureFlags = Flags<SubgroupFeatureFlagBits, VkSubgroupFeatureFlags>;
@@ -23979,7 +24442,7 @@ public:
   {
     enum
     {
-      allFlags = VkFlags(SubgroupFeatureFlagBits::eBasic) | VkFlags(SubgroupFeatureFlagBits::eVote) | VkFlags(SubgroupFeatureFlagBits::eArithmetic) | VkFlags(SubgroupFeatureFlagBits::eBallot) | VkFlags(SubgroupFeatureFlagBits::eShuffle) | VkFlags(SubgroupFeatureFlagBits::eShuffleRelative) | VkFlags(SubgroupFeatureFlagBits::eClustered) | VkFlags(SubgroupFeatureFlagBits::eQuad)
+      allFlags = VkFlags(SubgroupFeatureFlagBits::eBasic) | VkFlags(SubgroupFeatureFlagBits::eVote) | VkFlags(SubgroupFeatureFlagBits::eArithmetic) | VkFlags(SubgroupFeatureFlagBits::eBallot) | VkFlags(SubgroupFeatureFlagBits::eShuffle) | VkFlags(SubgroupFeatureFlagBits::eShuffleRelative) | VkFlags(SubgroupFeatureFlagBits::eClustered) | VkFlags(SubgroupFeatureFlagBits::eQuad) | VkFlags(SubgroupFeatureFlagBits::ePartitionedNV)
     };
   };
 
@@ -24810,7 +25273,8 @@ public:
 
   enum class DescriptorSetLayoutCreateFlagBits
   {
-    ePushDescriptorKHR = VK_DESCRIPTOR_SET_LAYOUT_CREATE_PUSH_DESCRIPTOR_BIT_KHR
+    ePushDescriptorKHR = VK_DESCRIPTOR_SET_LAYOUT_CREATE_PUSH_DESCRIPTOR_BIT_KHR,
+    eUpdateAfterBindPoolEXT = VK_DESCRIPTOR_SET_LAYOUT_CREATE_UPDATE_AFTER_BIND_POOL_BIT_EXT
   };
 
   using DescriptorSetLayoutCreateFlags = Flags<DescriptorSetLayoutCreateFlagBits, VkDescriptorSetLayoutCreateFlags>;
@@ -24829,7 +25293,7 @@ public:
   {
     enum
     {
-      allFlags = VkFlags(DescriptorSetLayoutCreateFlagBits::ePushDescriptorKHR)
+      allFlags = VkFlags(DescriptorSetLayoutCreateFlagBits::ePushDescriptorKHR) | VkFlags(DescriptorSetLayoutCreateFlagBits::eUpdateAfterBindPoolEXT)
     };
   };
 
@@ -28976,6 +29440,98 @@ public:
   };
   static_assert( sizeof( PipelineRasterizationConservativeStateCreateInfoEXT ) == sizeof( VkPipelineRasterizationConservativeStateCreateInfoEXT ), "struct and wrapper have different size!" );
 
+  enum class DescriptorBindingFlagBitsEXT
+  {
+    eUpdateAfterBind = VK_DESCRIPTOR_BINDING_UPDATE_AFTER_BIND_BIT_EXT,
+    eUpdateUnusedWhilePending = VK_DESCRIPTOR_BINDING_UPDATE_UNUSED_WHILE_PENDING_BIT_EXT,
+    ePartiallyBound = VK_DESCRIPTOR_BINDING_PARTIALLY_BOUND_BIT_EXT,
+    eVariableDescriptorCount = VK_DESCRIPTOR_BINDING_VARIABLE_DESCRIPTOR_COUNT_BIT_EXT
+  };
+
+  using DescriptorBindingFlagsEXT = Flags<DescriptorBindingFlagBitsEXT, VkDescriptorBindingFlagsEXT>;
+
+  VULKAN_HPP_INLINE DescriptorBindingFlagsEXT operator|( DescriptorBindingFlagBitsEXT bit0, DescriptorBindingFlagBitsEXT bit1 )
+  {
+    return DescriptorBindingFlagsEXT( bit0 ) | bit1;
+  }
+
+  VULKAN_HPP_INLINE DescriptorBindingFlagsEXT operator~( DescriptorBindingFlagBitsEXT bits )
+  {
+    return ~( DescriptorBindingFlagsEXT( bits ) );
+  }
+
+  template <> struct FlagTraits<DescriptorBindingFlagBitsEXT>
+  {
+    enum
+    {
+      allFlags = VkFlags(DescriptorBindingFlagBitsEXT::eUpdateAfterBind) | VkFlags(DescriptorBindingFlagBitsEXT::eUpdateUnusedWhilePending) | VkFlags(DescriptorBindingFlagBitsEXT::ePartiallyBound) | VkFlags(DescriptorBindingFlagBitsEXT::eVariableDescriptorCount)
+    };
+  };
+
+  struct DescriptorSetLayoutBindingFlagsCreateInfoEXT
+  {
+    DescriptorSetLayoutBindingFlagsCreateInfoEXT( uint32_t bindingCount_ = 0, const DescriptorBindingFlagsEXT* pBindingFlags_ = nullptr )
+      : bindingCount( bindingCount_ )
+      , pBindingFlags( pBindingFlags_ )
+    {
+    }
+
+    DescriptorSetLayoutBindingFlagsCreateInfoEXT( VkDescriptorSetLayoutBindingFlagsCreateInfoEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( DescriptorSetLayoutBindingFlagsCreateInfoEXT ) );
+    }
+
+    DescriptorSetLayoutBindingFlagsCreateInfoEXT& operator=( VkDescriptorSetLayoutBindingFlagsCreateInfoEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( DescriptorSetLayoutBindingFlagsCreateInfoEXT ) );
+      return *this;
+    }
+    DescriptorSetLayoutBindingFlagsCreateInfoEXT& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    DescriptorSetLayoutBindingFlagsCreateInfoEXT& setBindingCount( uint32_t bindingCount_ )
+    {
+      bindingCount = bindingCount_;
+      return *this;
+    }
+
+    DescriptorSetLayoutBindingFlagsCreateInfoEXT& setPBindingFlags( const DescriptorBindingFlagsEXT* pBindingFlags_ )
+    {
+      pBindingFlags = pBindingFlags_;
+      return *this;
+    }
+
+    operator const VkDescriptorSetLayoutBindingFlagsCreateInfoEXT&() const
+    {
+      return *reinterpret_cast<const VkDescriptorSetLayoutBindingFlagsCreateInfoEXT*>(this);
+    }
+
+    bool operator==( DescriptorSetLayoutBindingFlagsCreateInfoEXT const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( bindingCount == rhs.bindingCount )
+          && ( pBindingFlags == rhs.pBindingFlags );
+    }
+
+    bool operator!=( DescriptorSetLayoutBindingFlagsCreateInfoEXT const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::eDescriptorSetLayoutBindingFlagsCreateInfoEXT;
+
+  public:
+    const void* pNext = nullptr;
+    uint32_t bindingCount;
+    const DescriptorBindingFlagsEXT* pBindingFlags;
+  };
+  static_assert( sizeof( DescriptorSetLayoutBindingFlagsCreateInfoEXT ) == sizeof( VkDescriptorSetLayoutBindingFlagsCreateInfoEXT ), "struct and wrapper have different size!" );
+
   template<typename Dispatch = DispatchLoaderStatic>
   Result enumerateInstanceVersion( uint32_t* pApiVersion, Dispatch const &d = Dispatch() );
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
@@ -32097,6 +32653,8 @@ public:
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = DispatchLoaderStatic>
     DescriptorSetLayoutSupport getDescriptorSetLayoutSupport( const DescriptorSetLayoutCreateInfo & createInfo, Dispatch const &d = Dispatch() ) const;
+    template <typename ...T, typename Dispatch = DispatchLoaderStatic>
+    StructureChain<T...> getDescriptorSetLayoutSupport( const DescriptorSetLayoutCreateInfo & createInfo, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = DispatchLoaderStatic>
@@ -32104,6 +32662,8 @@ public:
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = DispatchLoaderStatic>
     DescriptorSetLayoutSupport getDescriptorSetLayoutSupportKHR( const DescriptorSetLayoutCreateInfo & createInfo, Dispatch const &d = Dispatch() ) const;
+    template <typename ...T, typename Dispatch = DispatchLoaderStatic>
+    StructureChain<T...> getDescriptorSetLayoutSupportKHR( const DescriptorSetLayoutCreateInfo & createInfo, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = DispatchLoaderStatic>
@@ -35063,6 +35623,14 @@ public:
     d.vkGetDescriptorSetLayoutSupport( m_device, reinterpret_cast<const VkDescriptorSetLayoutCreateInfo*>( &createInfo ), reinterpret_cast<VkDescriptorSetLayoutSupport*>( &support ) );
     return support;
   }
+  template <typename ...T, typename Dispatch>
+  VULKAN_HPP_INLINE StructureChain<T...> Device::getDescriptorSetLayoutSupport( const DescriptorSetLayoutCreateInfo & createInfo, Dispatch const &d ) const
+  {
+    StructureChain<T...> structureChain;
+    DescriptorSetLayoutSupport& support = structureChain.template get<DescriptorSetLayoutSupport>();
+    d.vkGetDescriptorSetLayoutSupport( m_device, reinterpret_cast<const VkDescriptorSetLayoutCreateInfo*>( &createInfo ), reinterpret_cast<VkDescriptorSetLayoutSupport*>( &support ) );
+    return structureChain;
+  }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template<typename Dispatch>
@@ -35077,6 +35645,14 @@ public:
     DescriptorSetLayoutSupport support;
     d.vkGetDescriptorSetLayoutSupportKHR( m_device, reinterpret_cast<const VkDescriptorSetLayoutCreateInfo*>( &createInfo ), reinterpret_cast<VkDescriptorSetLayoutSupport*>( &support ) );
     return support;
+  }
+  template <typename ...T, typename Dispatch>
+  VULKAN_HPP_INLINE StructureChain<T...> Device::getDescriptorSetLayoutSupportKHR( const DescriptorSetLayoutCreateInfo & createInfo, Dispatch const &d ) const
+  {
+    StructureChain<T...> structureChain;
+    DescriptorSetLayoutSupport& support = structureChain.template get<DescriptorSetLayoutSupport>();
+    d.vkGetDescriptorSetLayoutSupportKHR( m_device, reinterpret_cast<const VkDescriptorSetLayoutCreateInfo*>( &createInfo ), reinterpret_cast<VkDescriptorSetLayoutSupport*>( &support ) );
+    return structureChain;
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -37933,6 +38509,12 @@ public:
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceShaderDrawParameterFeatures>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceExternalMemoryHostPropertiesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceConservativeRasterizationPropertiesEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceShaderCorePropertiesAMD>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceDescriptorIndexingFeaturesEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceDescriptorIndexingFeaturesEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceDescriptorIndexingPropertiesEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<DescriptorSetAllocateInfo, DescriptorSetVariableDescriptorCountAllocateInfoEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<DescriptorSetLayoutSupport, DescriptorSetVariableDescriptorCountLayoutSupportEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PipelineVertexInputStateCreateInfo, PipelineVertexInputDivisorStateCreateInfoEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceVertexAttributeDivisorPropertiesEXT>{ enum { value = true }; };
 #ifdef VK_USE_PLATFORM_ANDROID_ANDROID
@@ -37994,6 +38576,7 @@ public:
   template <> struct isStructureChainValid<DeviceQueueCreateInfo, DeviceQueueGlobalPriorityCreateInfoEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<InstanceCreateInfo, DebugUtilsMessengerCreateInfoEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PipelineRasterizationStateCreateInfo, PipelineRasterizationConservativeStateCreateInfoEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<DescriptorSetLayoutCreateInfo, DescriptorSetLayoutBindingFlagsCreateInfoEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<DeviceCreateInfo, DeviceGroupDeviceCreateInfo>{ enum { value = true }; };
   VULKAN_HPP_INLINE std::string to_string(FramebufferCreateFlagBits)
   {
@@ -39421,10 +40004,16 @@ public:
     case StructureType::ePipelineCoverageModulationStateCreateInfoNV: return "PipelineCoverageModulationStateCreateInfoNV";
     case StructureType::eValidationCacheCreateInfoEXT: return "ValidationCacheCreateInfoEXT";
     case StructureType::eShaderModuleValidationCacheCreateInfoEXT: return "ShaderModuleValidationCacheCreateInfoEXT";
+    case StructureType::eDescriptorSetLayoutBindingFlagsCreateInfoEXT: return "DescriptorSetLayoutBindingFlagsCreateInfoEXT";
+    case StructureType::ePhysicalDeviceDescriptorIndexingFeaturesEXT: return "PhysicalDeviceDescriptorIndexingFeaturesEXT";
+    case StructureType::ePhysicalDeviceDescriptorIndexingPropertiesEXT: return "PhysicalDeviceDescriptorIndexingPropertiesEXT";
+    case StructureType::eDescriptorSetVariableDescriptorCountAllocateInfoEXT: return "DescriptorSetVariableDescriptorCountAllocateInfoEXT";
+    case StructureType::eDescriptorSetVariableDescriptorCountLayoutSupportEXT: return "DescriptorSetVariableDescriptorCountLayoutSupportEXT";
     case StructureType::eDeviceQueueGlobalPriorityCreateInfoEXT: return "DeviceQueueGlobalPriorityCreateInfoEXT";
     case StructureType::eImportMemoryHostPointerInfoEXT: return "ImportMemoryHostPointerInfoEXT";
     case StructureType::eMemoryHostPointerPropertiesEXT: return "MemoryHostPointerPropertiesEXT";
     case StructureType::ePhysicalDeviceExternalMemoryHostPropertiesEXT: return "PhysicalDeviceExternalMemoryHostPropertiesEXT";
+    case StructureType::ePhysicalDeviceShaderCorePropertiesAMD: return "PhysicalDeviceShaderCorePropertiesAMD";
     case StructureType::ePhysicalDeviceVertexAttributeDivisorPropertiesEXT: return "PhysicalDeviceVertexAttributeDivisorPropertiesEXT";
     case StructureType::ePipelineVertexInputDivisorStateCreateInfoEXT: return "PipelineVertexInputDivisorStateCreateInfoEXT";
     default: return "invalid";
@@ -40289,6 +40878,7 @@ public:
     switch (value)
     {
     case DescriptorPoolCreateFlagBits::eFreeDescriptorSet: return "FreeDescriptorSet";
+    case DescriptorPoolCreateFlagBits::eUpdateAfterBindEXT: return "UpdateAfterBindEXT";
     default: return "invalid";
     }
   }
@@ -40298,6 +40888,7 @@ public:
     if (!value) return "{}";
     std::string result;
     if (value & DescriptorPoolCreateFlagBits::eFreeDescriptorSet) result += "FreeDescriptorSet | ";
+    if (value & DescriptorPoolCreateFlagBits::eUpdateAfterBindEXT) result += "UpdateAfterBindEXT | ";
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
@@ -40583,6 +41174,7 @@ public:
     case SubgroupFeatureFlagBits::eShuffleRelative: return "ShuffleRelative";
     case SubgroupFeatureFlagBits::eClustered: return "Clustered";
     case SubgroupFeatureFlagBits::eQuad: return "Quad";
+    case SubgroupFeatureFlagBits::ePartitionedNV: return "PartitionedNV";
     default: return "invalid";
     }
   }
@@ -40599,6 +41191,7 @@ public:
     if (value & SubgroupFeatureFlagBits::eShuffleRelative) result += "ShuffleRelative | ";
     if (value & SubgroupFeatureFlagBits::eClustered) result += "Clustered | ";
     if (value & SubgroupFeatureFlagBits::eQuad) result += "Quad | ";
+    if (value & SubgroupFeatureFlagBits::ePartitionedNV) result += "PartitionedNV | ";
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
@@ -40678,6 +41271,7 @@ public:
     switch (value)
     {
     case DescriptorSetLayoutCreateFlagBits::ePushDescriptorKHR: return "PushDescriptorKHR";
+    case DescriptorSetLayoutCreateFlagBits::eUpdateAfterBindPoolEXT: return "UpdateAfterBindPoolEXT";
     default: return "invalid";
     }
   }
@@ -40687,6 +41281,7 @@ public:
     if (!value) return "{}";
     std::string result;
     if (value & DescriptorSetLayoutCreateFlagBits::ePushDescriptorKHR) result += "PushDescriptorKHR | ";
+    if (value & DescriptorSetLayoutCreateFlagBits::eUpdateAfterBindPoolEXT) result += "UpdateAfterBindPoolEXT | ";
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
@@ -41213,6 +41808,29 @@ public:
     case ConservativeRasterizationModeEXT::eUnderestimate: return "Underestimate";
     default: return "invalid";
     }
+  }
+
+  VULKAN_HPP_INLINE std::string to_string(DescriptorBindingFlagBitsEXT value)
+  {
+    switch (value)
+    {
+    case DescriptorBindingFlagBitsEXT::eUpdateAfterBind: return "UpdateAfterBind";
+    case DescriptorBindingFlagBitsEXT::eUpdateUnusedWhilePending: return "UpdateUnusedWhilePending";
+    case DescriptorBindingFlagBitsEXT::ePartiallyBound: return "PartiallyBound";
+    case DescriptorBindingFlagBitsEXT::eVariableDescriptorCount: return "VariableDescriptorCount";
+    default: return "invalid";
+    }
+  }
+
+  VULKAN_HPP_INLINE std::string to_string(DescriptorBindingFlagsEXT value)
+  {
+    if (!value) return "{}";
+    std::string result;
+    if (value & DescriptorBindingFlagBitsEXT::eUpdateAfterBind) result += "UpdateAfterBind | ";
+    if (value & DescriptorBindingFlagBitsEXT::eUpdateUnusedWhilePending) result += "UpdateUnusedWhilePending | ";
+    if (value & DescriptorBindingFlagBitsEXT::ePartiallyBound) result += "PartiallyBound | ";
+    if (value & DescriptorBindingFlagBitsEXT::eVariableDescriptorCount) result += "VariableDescriptorCount | ";
+    return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
   class DispatchLoaderDynamic

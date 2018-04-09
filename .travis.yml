@@ -33,4 +33,4 @@ script:
   - echo "    vk::Result result = vk::createInstance(&inst_info, nullptr, &inst);" >> /tmp/test.cpp
   - echo "}" >> /tmp/test.cpp
   - cat /tmp/test.cpp
-  - ${CXX} -std=c++11 -Ivulkan -IVulkan-Docs/src -c /tmp/test.cpp
+  - ${CXX} -std=c++11 -Ivulkan -IVulkan-Docs/include -c /tmp/test.cpp

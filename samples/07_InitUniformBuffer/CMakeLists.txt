@@ -32,10 +32,4 @@ add_executable(07_InitUniformBuffer
 )
 
 set_target_properties(07_InitUniformBuffer PROPERTIES FOLDER "Samples")
-
-if (SAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP)
-  target_include_directories(07_InitUniformBuffer PUBLIC "${CMAKE_SOURCE_DIR}")
-endif()
-target_include_directories(07_InitUniformBuffer PUBLIC "$ENV{VK_SDK_PATH}/include" "${CMAKE_SOURCE_DIR}/glm")
-
 target_link_libraries(07_InitUniformBuffer "$ENV{VK_SDK_PATH}/Lib/vulkan-1.lib")

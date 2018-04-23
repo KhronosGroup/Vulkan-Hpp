@@ -32,10 +32,4 @@ add_executable(04_InitCommandBuffer
 )
 
 set_target_properties(04_InitCommandBuffer PROPERTIES FOLDER "Samples")
-
-if (SAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP)
-  target_include_directories(04_InitCommandBuffer PUBLIC "${CMAKE_SOURCE_DIR}")
-endif()
-target_include_directories(04_InitCommandBuffer PUBLIC "$ENV{VK_SDK_PATH}/include")
-
 target_link_libraries(04_InitCommandBuffer "$ENV{VK_SDK_PATH}/Lib/vulkan-1.lib")

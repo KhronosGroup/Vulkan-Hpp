@@ -32,10 +32,4 @@ add_executable(02_EnumerateDevices
 )
 
 set_target_properties(02_EnumerateDevices PROPERTIES FOLDER "Samples")
-
-if (SAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP)
-  target_include_directories(02_EnumerateDevices PUBLIC "${CMAKE_SOURCE_DIR}")
-endif()
-target_include_directories(02_EnumerateDevices PUBLIC "$ENV{VK_SDK_PATH}/include")
-
 target_link_libraries(02_EnumerateDevices "$ENV{VK_SDK_PATH}/Lib/vulkan-1.lib")

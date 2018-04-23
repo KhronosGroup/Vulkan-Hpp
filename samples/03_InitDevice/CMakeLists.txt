@@ -32,10 +32,4 @@ add_executable(03_InitDevice
 )
 
 set_target_properties(03_InitDevice PROPERTIES FOLDER "Samples")
-
-if (SAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP)
-  target_include_directories(03_InitDevice PUBLIC "${CMAKE_SOURCE_DIR}")
-endif()
-target_include_directories(03_InitDevice PUBLIC "$ENV{VK_SDK_PATH}/include")
-
 target_link_libraries(03_InitDevice "$ENV{VK_SDK_PATH}/Lib/vulkan-1.lib")

@@ -32,10 +32,4 @@ add_executable(06_InitDepthBuffer
 )
 
 set_target_properties(06_InitDepthBuffer PROPERTIES FOLDER "Samples")
-
-if (SAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP)
-  target_include_directories(06_InitDepthBuffer PUBLIC "${CMAKE_SOURCE_DIR}")
-endif()
-target_include_directories(06_InitDepthBuffer PUBLIC "$ENV{VK_SDK_PATH}/include")
-
 target_link_libraries(06_InitDepthBuffer "$ENV{VK_SDK_PATH}/Lib/vulkan-1.lib")

@@ -14,6 +14,8 @@
 
 cmake_minimum_required(VERSION 3.2)
 
+project(Vulkan-Hpp_Samples)
+
 option (SAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP OFF)
 
 if (CMAKE_SYSTEM_NAME MATCHES "Windows")
@@ -23,6 +25,15 @@ else()
 endif()
 
 FILE (GLOB linkunits ${CMAKE_CURRENT_SOURCE_DIR}/*)
+
+if (SAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP)
+  include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../Vulkan-Docs/include")
+  include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
+else()
+  include_directories("$ENV{VK_SDK_PATH}/include")
+endif()
+
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../glm")
 
 FOREACH( linkunit ${linkunits} )
   if( IS_DIRECTORY ${linkunit} )

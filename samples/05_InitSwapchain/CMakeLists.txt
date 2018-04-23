@@ -32,10 +32,4 @@ add_executable(05_InitSwapchain
 )
 
 set_target_properties(05_InitSwapchain PROPERTIES FOLDER "Samples")
-
-if (SAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP)
-  target_include_directories(05_InitSwapchain PUBLIC "${CMAKE_SOURCE_DIR}")
-endif()
-target_include_directories(05_InitSwapchain PUBLIC "$ENV{VK_SDK_PATH}/include")
-
 target_link_libraries(05_InitSwapchain "$ENV{VK_SDK_PATH}/Lib/vulkan-1.lib")

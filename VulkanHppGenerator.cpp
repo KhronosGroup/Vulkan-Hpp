@@ -2127,6 +2127,7 @@ void VulkanHppGenerator::readExtensionsExtension(tinyxml2::XMLElement const* ele
     { "platform",{} },
     { "protect",{} },
     { "requires",{} },
+    { "requiresCore",{} },
     { "type",{ "device", "instance" } }
   });
   std::vector<tinyxml2::XMLElement const*> children = getChildElements(element);

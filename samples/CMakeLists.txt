@@ -14,6 +14,8 @@
 
 cmake_minimum_required(VERSION 3.2)
 
+project(Vulkan-Hpp_Samples)
+
 option (SAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP OFF)
 
 if (CMAKE_SYSTEM_NAME MATCHES "Windows")

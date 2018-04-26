@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// VulkanHpp Samples : 07_InitUniformBuffer
-//                     Initialize a uniform buffer
+// VulkanHpp Samples : 09_InitDescriptorSet
+//                     Initialize a descriptor set
 
 #include <iostream>
 #include "vulkan/vulkan.hpp"
@@ -21,7 +21,7 @@
 #define GLM_FORCE_RADIANS
 #include <glm/gtc/matrix_transform.hpp>
 
-static char const* AppName = "07_InitUniformBuffer";
+static char const* AppName = "09_InitDescriptorSet";
 static char const* EngineName = "Vulkan.hpp";
 
 int main(int argc, char *argv[])
@@ -47,42 +47,29 @@ int main(int argc, char *argv[])
     vk::DeviceQueueCreateInfo deviceQueueCreateInfo({}, static_cast<uint32_t>(graphicsQueueFamilyIndex), 1, &queuePriority);
     vk::UniqueDevice device = physicalDevices[0].createDeviceUnique(vk::DeviceCreateInfo({}, 1, &deviceQueueCreateInfo, 0, nullptr));
 
-    /* VULKAN_HPP_KEY_START */
-
     glm::mat4x4 projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);
     glm::mat4x4 view = glm::lookAt(glm::vec3(-5.0f, 3.0f, -10.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f));
     glm::mat4x4 model = glm::mat4x4(1.0f);
-    glm::mat4x4 clip = glm::mat4x4(1.0f, 0.0f, 0.0f, 0.0f,  0.0f, -1.0f, 0.0f, 0.0f,  0.0f, 0.0f, 0.5f, 0.0f,  0.0f, 0.0f, 0.5f, 1.0f);   // vulkan clip space has inverted y and half z !
+    glm::mat4x4 clip = glm::mat4x4(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 0.5f, 1.0f);   // vulkan clip space has inverted y and half z !
     glm::mat4x4 mvpc = clip * projection * view * model;
 
-    vk::UniqueBuffer uniformDataBuffer = device->createBufferUnique(vk::BufferCreateInfo(vk::BufferCreateFlags(), sizeof(mvpc), vk::BufferUsageFlagBits::eUniformBuffer));
+    vk::UniqueBuffer buffer = device->createBufferUnique(vk::BufferCreateInfo(vk::BufferCreateFlags(), sizeof(mvpc), vk::BufferUsageFlagBits::eUniformBuffer));
 
-    vk::MemoryRequirements memoryRequirements = device->getBufferMemoryRequirements(uniformDataBuffer.get());
-    uint32_t typeBits = memoryRequirements.memoryTypeBits;
+    // create a DescriptorSetLayout
+    vk::DescriptorSetLayoutBinding descriptorSetLayoutBinding(0, vk::DescriptorType::eUniformBuffer, 1, vk::ShaderStageFlagBits::eVertex);
+    vk::UniqueDescriptorSetLayout descriptorSetLayout = device->createDescriptorSetLayoutUnique(vk::DescriptorSetLayoutCreateInfo({}, 1, &descriptorSetLayoutBinding));
 
-    vk::PhysicalDeviceMemoryProperties memoryProperties = physicalDevices[0].getMemoryProperties();
-    vk::MemoryPropertyFlags requirementsMask = vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent;
-    uint32_t typeIndex = ~0;
-    for (uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++)
-    {
-      if ((typeBits & 1) && ((memoryProperties.memoryTypes[i].propertyFlags & requirementsMask) == requirementsMask))
-      {
-        typeIndex = i;
-        break;
-      }
-      typeBits >>= 1;
-    }
-    assert(typeIndex != ~0);
-    vk::UniqueDeviceMemory uniformDataMemory = device->allocateMemoryUnique(vk::MemoryAllocateInfo(memoryRequirements.size, typeIndex));
+    /* VULKAN_HPP_KEY_START */
 
-    uint8_t* pData = static_cast<uint8_t*>(device->mapMemory(uniformDataMemory.get(), 0, memoryRequirements.size));
-    memcpy(pData, &mvpc, sizeof(mvpc));
-    device->unmapMemory(uniformDataMemory.get());
+    // create a descriptor pool
+    vk::DescriptorPoolSize poolSize(vk::DescriptorType::eUniformBuffer, 1);
+    vk::UniqueDescriptorPool descriptorPool = device->createDescriptorPoolUnique(vk::DescriptorPoolCreateInfo(vk::DescriptorPoolCreateFlags(), 1, 1, &poolSize));
 
-    device->bindBufferMemory(uniformDataBuffer.get(), uniformDataMemory.get(), 0);
+    // allocate a descriptor set
+    std::vector<vk::UniqueDescriptorSet> descriptorSets = device->allocateDescriptorSetsUnique(vk::DescriptorSetAllocateInfo(descriptorPool.get(), 1, &descriptorSetLayout.get()));
 
-    // Note: No need to explicitly destroy the memory or the buffer, as the corresponding destroy function is
-    // called by the destructor of the UniqueMemory or UniqueBuffer, respectively, on leaving this scope.
+    vk::DescriptorBufferInfo descriptorBufferInfo(buffer.get(), 0, sizeof(glm::mat4x4));
+    device->updateDescriptorSets(vk::WriteDescriptorSet(descriptorSets[0].get(), 0, 0, 1, vk::DescriptorType::eUniformBuffer, nullptr, &descriptorBufferInfo), {});
 
     /* VULKAN_HPP_KEY_END */
   }

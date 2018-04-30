@@ -186,6 +186,7 @@ class VulkanHppGenerator
       std::string               protect;
       std::vector<std::string>  structExtends;
       std::string               alias;
+      std::string               subStruct;
     };
 
 #if !defined(NDEBUG)
@@ -213,6 +214,7 @@ class VulkanHppGenerator
     void determineTemplateParam(CommandData & commandData);
     void determineVectorParams(CommandData & commandData);
     std::string generateCall(CommandData const& commandData, bool firstCall, bool singular);
+    bool isSubStruct(std::pair<std::string, StructData> const& nsd, std::string const& name, StructData const& structData);
     void linkCommandToHandle(CommandData & commandData);
     bool readCommandParam(tinyxml2::XMLElement const* element, std::set<std::string> & dependencies, std::vector<ParamData> & params);
     tinyxml2::XMLNode const* readCommandParamType(tinyxml2::XMLNode const* node, ParamData& param);
@@ -269,6 +271,7 @@ class VulkanHppGenerator
     void writeFunctionHeaderReturnType(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool enhanced, bool singular, bool unique, bool isStructureChain);
     void writeFunctionHeaderTemplate(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool enhanced, bool unique, bool withDefault, bool isStructureChain);
     void writeStructConstructor(std::ostream & os, std::string const& name, StructData const& structData, std::map<std::string, std::string> const& defaultValues);
+    bool writeStructConstructorArgument(std::ostream & os, bool listedArgument, MemberData const& memberData, std::map<std::string, std::string> const& defaultValues);
     void writeStructSetter(std::ostream & os, std::string const& structureName, MemberData const& memberData);
     void writeStructureChainValidation(std::ostream & os, DependencyData const& dependencyData);
     void writeThrowExceptions(std::ostream& os, EnumData const& enumData);

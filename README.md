@@ -344,6 +344,7 @@ device.getQueue(graphics_queue_family_index, 0, &graphics_queue, dldid);
 
 Feel free to submit a PR to add to this list.
 
+- [Examples](https://github.com/jherico/vulkan) A port of Sascha Willems [examples](https://github.com/SaschaWillems/Vulkan) to Vulkan-Hpp 
 - [Vookoo](https://github.com/andy-thomason/Vookoo/) Stateful helper classes for Vulkan-Hpp, [Introduction Article](https://accu.org/index.php/journals/2380).
 
 ## License

@@ -66,6 +66,7 @@ int main(int argc, char *argv[])
   catch (std::runtime_error err)
   {
     std::cout << "std::runtime_error: " << err.what() << std::endl;
+    exit(-1);
   }
   catch (...)
   {

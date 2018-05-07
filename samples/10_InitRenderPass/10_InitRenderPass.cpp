@@ -12,36 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// VulkanHpp Samples : 05_InitSwapchain
-//                     Initialize a swapchain
+// VulkanHpp Samples : 10_InitRenderPass
+//                     Initialize a render pass
 
-#include "vulkan/vulkan.hpp"
 #include <iostream>
+#include "vulkan/vulkan.hpp"
 
-static char const* AppName = "05_InitSwapchain";
+#define GLM_FORCE_RADIANS
+#include <glm/gtc/matrix_transform.hpp>
+
+static char const* AppName = "10_InitRenderPass";
 static char const* EngineName = "Vulkan.hpp";
-
-template<class T, class Compare>
-constexpr const T& clamp(const T& v, const T& lo, const T& hi, Compare comp)
-{
-  return assert(!comp(hi, lo)),
-    comp(v, lo) ? lo : comp(hi, v) ? hi : v;
-}
-
-template<class T>
-constexpr const T& clamp(const T& v, const T& lo, const T& hi)
-{
-  return clamp(v, lo, hi, std::less<>());
-}
-
-static std::vector<char const*> getDeviceExtensions()
-{
-  std::vector<char const*> extensions;
-
-  extensions.push_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
-
-  return extensions;
-}
 
 static std::vector<char const*> getInstanceExtensions()
 {
@@ -78,11 +59,11 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
   switch (uMsg)
   {
-    case WM_CLOSE:
-      PostQuitMessage(0);
-      break;
-    default:
-      break;
+  case WM_CLOSE:
+    PostQuitMessage(0);
+    break;
+  default:
+    break;
   }
   return (DefWindowProc(hWnd, uMsg, wParam, lParam));
 }
@@ -112,7 +93,7 @@ HWND initializeWindow(std::string const& className, std::string const& windowNam
   AdjustWindowRect(&windowRect, WS_OVERLAPPEDWINDOW, FALSE);
 
   HWND window = CreateWindowEx(0, className.c_str(), windowName.c_str(), WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_SYSMENU, 100, 100, windowRect.right - windowRect.left,
-                              windowRect.bottom - windowRect.top, nullptr, nullptr, instance, nullptr);
+    windowRect.bottom - windowRect.top, nullptr, nullptr, instance, nullptr);
   if (!window)
   {
     throw std::runtime_error("Failed to create window -> terminating");
@@ -123,7 +104,6 @@ HWND initializeWindow(std::string const& className, std::string const& windowNam
 #else
 #pragma error "unhandled platform"
 #endif
-
 
 int main(int argc, char *argv[])
 {
@@ -137,14 +117,11 @@ int main(int argc, char *argv[])
     std::vector<vk::PhysicalDevice> physicalDevices = instance->enumeratePhysicalDevices();
     assert(!physicalDevices.empty());
 
-    /* VULKAN_HPP_KEY_START */
-
     uint32_t width = 50;
     uint32_t height = 50;
 #if defined(VK_USE_PLATFORM_WIN32_KHR)
     HWND window = initializeWindow(AppName, "Sample", width, height);
-
-    vk::UniqueSurfaceKHR surface = instance->createWin32SurfaceKHRUnique(vk::Win32SurfaceCreateInfoKHR(vk::Win32SurfaceCreateFlagsKHR(), GetModuleHandle(nullptr), window));
+    vk::UniqueSurfaceKHR surface = instance->createWin32SurfaceKHRUnique(vk::Win32SurfaceCreateInfoKHR({}, GetModuleHandle(nullptr), window));
 #else
 #pragma error "unhandled platform"
 #endif
@@ -192,31 +169,26 @@ int main(int argc, char *argv[])
     // create a device
     float queuePriority = 0.0f;
     vk::DeviceQueueCreateInfo deviceQueueCreateInfo({}, static_cast<uint32_t>(graphicsQueueFamilyIndex), 1, &queuePriority);
-    std::vector<char const*> deviceExtensionNames = getDeviceExtensions();
-    vk::UniqueDevice device = physicalDevices[0].createDeviceUnique(vk::DeviceCreateInfo({}, 1, &deviceQueueCreateInfo, 0, nullptr, static_cast<uint32_t>(deviceExtensionNames.size()), deviceExtensionNames.data()));
+    vk::UniqueDevice device = physicalDevices[0].createDeviceUnique(vk::DeviceCreateInfo({}, 1, &deviceQueueCreateInfo, 0, nullptr));
 
     // get the supported VkFormats
+    vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevices[0].getSurfaceCapabilitiesKHR(surface.get());
     std::vector<vk::SurfaceFormatKHR> formats = physicalDevices[0].getSurfaceFormatsKHR(surface.get());
     assert(!formats.empty());
     vk::Format format = (formats[0].format == vk::Format::eUndefined) ? vk::Format::eB8G8R8A8Unorm : formats[0].format;
-
-    vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevices[0].getSurfaceCapabilitiesKHR(surface.get());
 
     VkExtent2D swapchainExtent;
     if (surfaceCapabilities.currentExtent.width == std::numeric_limits<uint32_t>::max())
     {
       // If the surface size is undefined, the size is set to the size of the images requested.
-      swapchainExtent.width = clamp(width, surfaceCapabilities.minImageExtent.width, surfaceCapabilities.maxImageExtent.width);
-      swapchainExtent.height = clamp(height, surfaceCapabilities.minImageExtent.height, surfaceCapabilities.maxImageExtent.height);
+      swapchainExtent.width = glm::clamp(width, surfaceCapabilities.minImageExtent.width, surfaceCapabilities.maxImageExtent.width);
+      swapchainExtent.height = glm::clamp(height, surfaceCapabilities.minImageExtent.height, surfaceCapabilities.maxImageExtent.height);
     }
     else
     {
       // If the surface size is defined, the swap chain size must match
       swapchainExtent = surfaceCapabilities.currentExtent;
     }
-
-    // The FIFO present mode is guaranteed by the spec to be supported
-    vk::PresentModeKHR swapchainPresentMode = vk::PresentModeKHR::eFifo;
 
     vk::SurfaceTransformFlagBitsKHR preTransform = (surfaceCapabilities.supportedTransforms & vk::SurfaceTransformFlagBitsKHR::eIdentity) ? vk::SurfaceTransformFlagBitsKHR::eIdentity : surfaceCapabilities.currentTransform;
 
@@ -225,8 +197,9 @@ int main(int argc, char *argv[])
       (surfaceCapabilities.supportedCompositeAlpha & vk::CompositeAlphaFlagBitsKHR::ePostMultiplied) ? vk::CompositeAlphaFlagBitsKHR::ePostMultiplied :
       (surfaceCapabilities.supportedCompositeAlpha & vk::CompositeAlphaFlagBitsKHR::eInherit) ? vk::CompositeAlphaFlagBitsKHR::eInherit : vk::CompositeAlphaFlagBitsKHR::eOpaque;
 
-    vk::SwapchainCreateInfoKHR swapChainCreateInfo(vk::SwapchainCreateFlagsKHR(), surface.get(), surfaceCapabilities.minImageCount, format, vk::ColorSpaceKHR::eSrgbNonlinear,
-      swapchainExtent, 1, vk::ImageUsageFlagBits::eColorAttachment, vk::SharingMode::eExclusive, 0, nullptr, preTransform, compositeAlpha, swapchainPresentMode, true, nullptr);
+    vk::SwapchainCreateInfoKHR swapChainCreateInfo({}, surface.get(), surfaceCapabilities.minImageCount, format, vk::ColorSpaceKHR::eSrgbNonlinear, swapchainExtent, 1,
+      vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eTransferSrc, vk::SharingMode::eExclusive, 0, nullptr, preTransform, compositeAlpha, vk::PresentModeKHR::eFifo, true,
+      nullptr);
 
     uint32_t queueFamilyIndices[2] = { static_cast<uint32_t>(graphicsQueueFamilyIndex), static_cast<uint32_t>(presentQueueFamilyIndex) };
     if (graphicsQueueFamilyIndex != presentQueueFamilyIndex)
@@ -237,29 +210,26 @@ int main(int argc, char *argv[])
       swapChainCreateInfo.queueFamilyIndexCount = 2;
       swapChainCreateInfo.pQueueFamilyIndices = queueFamilyIndices;
     }
-
     vk::UniqueSwapchainKHR swapChain = device->createSwapchainKHRUnique(swapChainCreateInfo);
 
-    std::vector<vk::Image> swapChainImages = device->getSwapchainImagesKHR(swapChain.get());
+    const vk::Format depthFormat = vk::Format::eD16Unorm;
 
-    std::vector<vk::UniqueImageView> imageViews;
-    imageViews.reserve(swapChainImages.size());
-    for (auto image : swapChainImages)
-    {
-      vk::ComponentMapping componentMapping(vk::ComponentSwizzle::eR, vk::ComponentSwizzle::eG, vk::ComponentSwizzle::eB, vk::ComponentSwizzle::eA);
-      vk::ImageSubresourceRange subResourceRange(vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1);
-      vk::ImageViewCreateInfo imageViewCreateInfo(vk::ImageViewCreateFlags(), image, vk::ImageViewType::e2D, format, componentMapping, subResourceRange);
-      imageViews.push_back(device->createImageViewUnique(imageViewCreateInfo));
-    }
+    /* VULKAN_HPP_KEY_START */
 
-#if defined(VK_USE_PLATFORM_WIN32_KHR)
-    DestroyWindow(window);
-#else
-#pragma error "unhandled platform"
-#endif
+    vk::AttachmentDescription attachments[2];
+    attachments[0] = vk::AttachmentDescription(vk::AttachmentDescriptionFlags(), format, vk::SampleCountFlagBits::e1, vk::AttachmentLoadOp::eClear, vk::AttachmentStoreOp::eStore,
+      vk::AttachmentLoadOp::eDontCare, vk::AttachmentStoreOp::eDontCare, vk::ImageLayout::eUndefined, vk::ImageLayout::ePresentSrcKHR);
+    attachments[1] = vk::AttachmentDescription(vk::AttachmentDescriptionFlags(), depthFormat, vk::SampleCountFlagBits::e1, vk::AttachmentLoadOp::eClear, vk::AttachmentStoreOp::eDontCare,
+      vk::AttachmentLoadOp::eDontCare, vk::AttachmentStoreOp::eDontCare, vk::ImageLayout::eUndefined, vk::ImageLayout::eDepthStencilAttachmentOptimal);
 
-    // Note: No need to explicitly destroy the ImageViews or the swapChain, as the corresponding destroy
-    // functions are called by the destructor of the UniqueImageView and the UniqueSwapChainKHR on leaving this scope.
+    vk::AttachmentReference colorReference(0, vk::ImageLayout::eColorAttachmentOptimal);
+    vk::AttachmentReference depthReference(1, vk::ImageLayout::eDepthStencilAttachmentOptimal);
+    vk::SubpassDescription subpass(vk::SubpassDescriptionFlags(), vk::PipelineBindPoint::eGraphics, 0, nullptr, 1, &colorReference, nullptr, &depthReference);
+
+    vk::UniqueRenderPass renderPass = device->createRenderPassUnique(vk::RenderPassCreateInfo(vk::RenderPassCreateFlags(), 2, attachments, 1, &subpass));
+
+    // Note: No need to explicitly destroy the RenderPass or the Semaphore, as the corresponding destroy
+    // functions are called by the destructor of the UniqueRenderPass and the UniqueSemaphore on leaving this scope.
 
     /* VULKAN_HPP_KEY_END */
   }

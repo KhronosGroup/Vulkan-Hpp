@@ -4810,6 +4810,12 @@ public:
     {
     }
 
+    explicit Offset3D( Offset2D const& offset2D, int32_t z_ = 0 )
+      : x( offset2D.x )
+      , y( offset2D.y )
+      , z( z_ )
+    {}
+
     Offset3D( VkOffset3D const & rhs )
     {
       memcpy( this, &rhs, sizeof( Offset3D ) );
@@ -4920,6 +4926,12 @@ public:
       , depth( depth_ )
     {
     }
+
+    explicit Extent3D( Extent2D const& extent2D, uint32_t depth_ = 0 )
+      : width( extent2D.width )
+      , height( extent2D.height )
+      , depth( depth_ )
+    {}
 
     Extent3D( VkExtent3D const & rhs )
     {
@@ -6613,6 +6625,12 @@ public:
       , layer( layer_ )
     {
     }
+
+    explicit RectLayerKHR( Rect2D const& rect2D, uint32_t layer_ = 0 )
+      : offset( rect2D.offset )
+      , extent( rect2D.extent )
+      , layer( layer_ )
+    {}
 
     RectLayerKHR( VkRectLayerKHR const & rhs )
     {
@@ -24953,6 +24971,12 @@ public:
     {
     }
 
+    explicit ObjectTablePipelineEntryNVX( ObjectTableEntryNVX const& objectTableEntryNVX, Pipeline pipeline_ = Pipeline() )
+      : type( objectTableEntryNVX.type )
+      , flags( objectTableEntryNVX.flags )
+      , pipeline( pipeline_ )
+    {}
+
     ObjectTablePipelineEntryNVX( VkObjectTablePipelineEntryNVX const & rhs )
     {
       memcpy( this, &rhs, sizeof( ObjectTablePipelineEntryNVX ) );
@@ -25013,6 +25037,13 @@ public:
       , descriptorSet( descriptorSet_ )
     {
     }
+
+    explicit ObjectTableDescriptorSetEntryNVX( ObjectTableEntryNVX const& objectTableEntryNVX, PipelineLayout pipelineLayout_ = PipelineLayout(), DescriptorSet descriptorSet_ = DescriptorSet() )
+      : type( objectTableEntryNVX.type )
+      , flags( objectTableEntryNVX.flags )
+      , pipelineLayout( pipelineLayout_ )
+      , descriptorSet( descriptorSet_ )
+    {}
 
     ObjectTableDescriptorSetEntryNVX( VkObjectTableDescriptorSetEntryNVX const & rhs )
     {
@@ -25082,6 +25113,12 @@ public:
     {
     }
 
+    explicit ObjectTableVertexBufferEntryNVX( ObjectTableEntryNVX const& objectTableEntryNVX, Buffer buffer_ = Buffer() )
+      : type( objectTableEntryNVX.type )
+      , flags( objectTableEntryNVX.flags )
+      , buffer( buffer_ )
+    {}
+
     ObjectTableVertexBufferEntryNVX( VkObjectTableVertexBufferEntryNVX const & rhs )
     {
       memcpy( this, &rhs, sizeof( ObjectTableVertexBufferEntryNVX ) );
@@ -25142,6 +25179,13 @@ public:
       , indexType( indexType_ )
     {
     }
+
+    explicit ObjectTableIndexBufferEntryNVX( ObjectTableEntryNVX const& objectTableEntryNVX, Buffer buffer_ = Buffer(), IndexType indexType_ = IndexType::eUint16 )
+      : type( objectTableEntryNVX.type )
+      , flags( objectTableEntryNVX.flags )
+      , buffer( buffer_ )
+      , indexType( indexType_ )
+    {}
 
     ObjectTableIndexBufferEntryNVX( VkObjectTableIndexBufferEntryNVX const & rhs )
     {
@@ -25211,6 +25255,13 @@ public:
       , stageFlags( stageFlags_ )
     {
     }
+
+    explicit ObjectTablePushConstantEntryNVX( ObjectTableEntryNVX const& objectTableEntryNVX, PipelineLayout pipelineLayout_ = PipelineLayout(), ShaderStageFlags stageFlags_ = ShaderStageFlags() )
+      : type( objectTableEntryNVX.type )
+      , flags( objectTableEntryNVX.flags )
+      , pipelineLayout( pipelineLayout_ )
+      , stageFlags( stageFlags_ )
+    {}
 
     ObjectTablePushConstantEntryNVX( VkObjectTablePushConstantEntryNVX const & rhs )
     {

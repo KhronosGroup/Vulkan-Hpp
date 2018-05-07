@@ -1570,6 +1570,23 @@ std::string const& VulkanHppGenerator::getVulkanLicenseHeader() const
   return m_vulkanLicenseHeader;
 }
 
+bool VulkanHppGenerator::isSubStruct(std::pair<std::string, StructData> const& nsd, std::string const& name, StructData const& structData)
+{
+  if ((nsd.first != name) && (nsd.second.members.size() < structData.members.size()) && (structData.members[0].name != "sType"))
+  {
+    bool equal = true;
+    for (size_t i = 0; i < nsd.second.members.size() && equal; i++)
+    {
+      equal = (nsd.second.members[i].type == structData.members[i].type) && (nsd.second.members[i].name == structData.members[i].name);
+    }
+    if (equal)
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
 void VulkanHppGenerator::linkCommandToHandle(CommandData & commandData)
 {
   // first, find the handle named like the type of the first argument
@@ -2694,6 +2711,15 @@ void VulkanHppGenerator::readTypeStruct(tinyxml2::XMLElement const* element, boo
 
     assert(m_vkTypes.find(name) == m_vkTypes.end());
     m_vkTypes.insert(name);
+
+    for (auto const& s : m_structs)
+    {
+      if (isSubStruct(s, name, it->second))
+      {
+        it->second.subStruct = s.first;
+        break;    // just take the very first candidate as a subStruct, skip any possible others!
+      }
+    }
   }
 }
 
@@ -3951,39 +3977,7 @@ void VulkanHppGenerator::writeStructConstructor(std::ostream & os, std::string c
   bool listedArgument = false;
   for (size_t i = 0; i < structData.members.size(); i++)
   {
-    if (listedArgument)
-    {
-      os << ", ";
-    }
-    // skip members 'pNext' and 'sType', as they are never explicitly set
-    if ((structData.members[i].name != "pNext") && (structData.members[i].name != "sType"))
-    {
-      // find a default value for the given pure type
-      std::map<std::string, std::string>::const_iterator defaultIt = defaultValues.find(structData.members[i].pureType);
-      assert(defaultIt != defaultValues.end());
-
-      if (structData.members[i].arraySize.empty())
-      {
-        // the arguments name get a trailing '_', to distinguish them from the actual struct members
-        // pointer arguments get a nullptr as default
-        os << structData.members[i].type << " " << structData.members[i].name << "_ = " << (structData.members[i].type.back() == '*' ? "nullptr" : defaultIt->second);
-      }
-      else
-      {
-        // array members are provided as const reference to a std::array
-        // the arguments name get a trailing '_', to distinguish them from the actual struct members
-        // list as many default values as there are elements in the array
-        os << "std::array<" << structData.members[i].type << "," << structData.members[i].arraySize << "> const& " << structData.members[i].name << "_ = { { " << defaultIt->second;
-        size_t n = atoi(structData.members[i].arraySize.c_str());
-        assert(0 < n);
-        for (size_t j = 1; j < n; j++)
-        {
-          os << ", " << defaultIt->second;
-        }
-        os << " } }";
-      }
-      listedArgument = true;
-    }
+    listedArgument = writeStructConstructorArgument(os, listedArgument, structData.members[i], defaultValues);
   }
   os << " )" << std::endl;
 
@@ -4022,6 +4016,43 @@ void VulkanHppGenerator::writeStructConstructor(std::ostream & os, std::string c
   }
   os << "    }\n\n";
 
+  if (!structData.subStruct.empty())
+  {
+    auto const& subStruct = m_structs.find(structData.subStruct);
+    assert(subStruct != m_structs.end());
+
+    std::string subStructArgumentName = startLowerCase(strip(subStruct->first, "vk"));
+
+    os << "    explicit " << name << "( " << subStruct->first << " const& " << subStructArgumentName;
+    for (size_t i = subStruct->second.members.size(); i < structData.members.size(); i++)
+    {
+      writeStructConstructorArgument(os, true, structData.members[i], defaultValues);
+    }
+    os << " )" << std::endl;
+
+    bool firstArgument = true;
+    std::string templateString = "      ${sep} ${member}( ${value} )\n";
+    for (size_t i = 0; i < subStruct->second.members.size(); i++)
+    {
+      assert(structData.members[i].arraySize.empty());
+      std::string sep = firstArgument ? ":" : ",";
+      std::string member = structData.members[i].name;
+      std::string value = subStructArgumentName + "." + subStruct->second.members[i].name;
+
+      os << replaceWithMap(templateString, { { "sep", sep },{ "member", member },{ "value", value } });
+      firstArgument = false;
+    }
+    for (size_t i = subStruct->second.members.size(); i < structData.members.size(); i++)
+    {
+      assert(structData.members[i].arraySize.empty());
+      std::string member = structData.members[i].name;
+      std::string value = structData.members[i].name + "_";   // the elements are initialized by the corresponding argument (with trailing '_', as mentioned above)
+
+      os << replaceWithMap(templateString, { { "sep", "," },{ "member", member },{ "value", value } });
+    }
+    os << "    {}" << std::endl << std::endl;
+  }
+
   std::string templateString =
     R"(    ${name}( Vk${name} const & rhs )
     {
@@ -4036,6 +4067,44 @@ void VulkanHppGenerator::writeStructConstructor(std::ostream & os, std::string c
 )";
 
   os << replaceWithMap(templateString, { { "name", name } });
+}
+
+bool VulkanHppGenerator::writeStructConstructorArgument(std::ostream & os, bool listedArgument, MemberData const& memberData, std::map<std::string, std::string> const& defaultValues)
+{
+  if (listedArgument)
+  {
+    os << ", ";
+  }
+  // skip members 'pNext' and 'sType', as they are never explicitly set
+  if ((memberData.name != "pNext") && (memberData.name != "sType"))
+  {
+    // find a default value for the given pure type
+    std::map<std::string, std::string>::const_iterator defaultIt = defaultValues.find(memberData.pureType);
+    assert(defaultIt != defaultValues.end());
+
+    if (memberData.arraySize.empty())
+    {
+      // the arguments name get a trailing '_', to distinguish them from the actual struct members
+      // pointer arguments get a nullptr as default
+      os << memberData.type << " " << memberData.name << "_ = " << (memberData.type.back() == '*' ? "nullptr" : defaultIt->second);
+    }
+    else
+    {
+      // array members are provided as const reference to a std::array
+      // the arguments name get a trailing '_', to distinguish them from the actual struct members
+      // list as many default values as there are elements in the array
+      os << "std::array<" << memberData.type << "," << memberData.arraySize << "> const& " << memberData.name << "_ = { { " << defaultIt->second;
+      size_t n = atoi(memberData.arraySize.c_str());
+      assert(0 < n);
+      for (size_t j = 1; j < n; j++)
+      {
+        os << ", " << defaultIt->second;
+      }
+      os << " } }";
+    }
+    listedArgument = true;
+  }
+  return listedArgument;
 }
 
 void VulkanHppGenerator::writeStructSetter(std::ostream & os, std::string const& structureName, MemberData const& memberData)

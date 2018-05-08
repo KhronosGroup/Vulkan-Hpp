@@ -445,9 +445,9 @@ const std::string structureChainHeader = R"(
     }
 
     template<typename X>
-    void linkAndCopyElements(X const &rhs)
+    void linkAndCopyElements(X const &xelem)
     {
-      static_cast<X&>(*this) = rhs;
+      static_cast<X&>(*this) = xelem;
     }
 
     template<typename X, typename Y, typename ...Z>

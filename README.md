@@ -182,6 +182,15 @@ vk::MemoryAllocateInfo &allocInfo = c.get<vk::MemoryAllocateInfo>();
 vk::ImportMemoryFdInfoKHR &fdInfo = c.get<vk::ImportMemoryFdInfoKHR>();
 ```
 
+Vulkan-Hpp provides a constructor for these chains similar to the CreateInfo objects which accepts a list of all structures part of the chain. The `pNext` field is automatically set to the correct value:
+
+```c++
+vk::StructureChain<vk::MemoryAllocateInfo, vk::MemoryDedicatedAllocateInfo> c = {
+  vk::MemoryAllocateInfo(size, type),
+  vk::MemoryDedicatedAllocateInfo(image)
+};
+```
+
 Sometimes the user has to pass a preallocated structure chain to query information. In those cases the corresponding query functions are variadic templates and do accept a structure chain to construct the return value:
 
 ```

@@ -398,6 +398,11 @@ const std::string structureChainHeader = R"(
       linkAndCopy<StructureElements...>(rhs);
     }
 
+    StructureChain(StructureElements const &... elems)
+    {
+      linkAndCopyElements<StructureElements...>(elems...);
+    }
+
     StructureChain& operator=(StructureChain const &rhs)
     {
       linkAndCopy<StructureElements...>(rhs);
@@ -439,7 +444,24 @@ const std::string structureChainHeader = R"(
       linkAndCopy<Y, Z...>(rhs);
     }
 
-};
+    template<typename X>
+    void linkAndCopyElements(X const &xelem)
+    {
+      static_cast<X&>(*this) = xelem;
+    }
+
+    template<typename X, typename Y, typename ...Z>
+    void linkAndCopyElements(X const &xelem, Y const &yelem, Z const &... zelem)
+    {
+      static_assert(isStructureChainValid<X,Y>::value, "The structure chain is not valid!");
+      X& x = static_cast<X&>(*this);
+      Y& y = static_cast<Y&>(*this);
+      x = xelem;
+      x.pNext = &y;
+      linkAndCopyElements<Y, Z...>(yelem, zelem...);
+    }
+  };
+
 )";
 
 const std::string versionCheckHeader = R"(

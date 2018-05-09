@@ -460,7 +460,8 @@ const std::string structureChainHeader = R"(
       x.pNext = &y;
       linkAndCopyElements<Y, Z...>(yelem, zelem...);
     }
-};
+  };
+
 )";
 
 const std::string versionCheckHeader = R"(

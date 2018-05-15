@@ -355,6 +355,7 @@ Feel free to submit a PR to add to this list.
 
 - [Examples](https://github.com/jherico/vulkan) A port of Sascha Willems [examples](https://github.com/SaschaWillems/Vulkan) to Vulkan-Hpp 
 - [Vookoo](https://github.com/andy-thomason/Vookoo/) Stateful helper classes for Vulkan-Hpp, [Introduction Article](https://accu.org/index.php/journals/2380).
+- [VK²](https://github.com/kotlin-graphics/vkk) Wrapper to dramatically enhance Vulkan programming in Kotlin on the JVM. Strongly inspired by Vulkan hpp, it's shaped on the Sasha examples [port](https://github.com/java-opengl-labs/Vulkan). 
 
 ## License
 

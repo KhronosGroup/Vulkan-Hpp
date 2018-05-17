@@ -36,7 +36,7 @@
 # include <cassert>
 # define VULKAN_HPP_ASSERT   assert
 #endif
-static_assert( VK_HEADER_VERSION ==  74 , "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION ==  75 , "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -38510,6 +38510,92 @@ public:
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
+
+  struct BaseOutStructure
+  {
+    BaseOutStructure(  )
+    {
+    }
+
+    BaseOutStructure( VkBaseOutStructure const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( BaseOutStructure ) );
+    }
+
+    BaseOutStructure& operator=( VkBaseOutStructure const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( BaseOutStructure ) );
+      return *this;
+    }
+    BaseOutStructure& setPNext( struct BaseOutStructure* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    operator const VkBaseOutStructure&() const
+    {
+      return *reinterpret_cast<const VkBaseOutStructure*>(this);
+    }
+
+    bool operator==( BaseOutStructure const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext );
+    }
+
+    bool operator!=( BaseOutStructure const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+    StructureType sType;
+    struct BaseOutStructure* pNext = nullptr;
+  };
+  static_assert( sizeof( BaseOutStructure ) == sizeof( VkBaseOutStructure ), "struct and wrapper have different size!" );
+
+  struct BaseInStructure
+  {
+    BaseInStructure(  )
+    {
+    }
+
+    BaseInStructure( VkBaseInStructure const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( BaseInStructure ) );
+    }
+
+    BaseInStructure& operator=( VkBaseInStructure const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( BaseInStructure ) );
+      return *this;
+    }
+    BaseInStructure& setPNext( const struct BaseInStructure* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    operator const VkBaseInStructure&() const
+    {
+      return *reinterpret_cast<const VkBaseInStructure*>(this);
+    }
+
+    bool operator==( BaseInStructure const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext );
+    }
+
+    bool operator!=( BaseInStructure const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+    StructureType sType;
+    const struct BaseInStructure* pNext = nullptr;
+  };
+  static_assert( sizeof( BaseInStructure ) == sizeof( VkBaseInStructure ), "struct and wrapper have different size!" );
 
   template <> struct isStructureChainValid<PresentInfoKHR, DisplayPresentInfoKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<ImageCreateInfo, DedicatedAllocationImageCreateInfoNV>{ enum { value = true }; };

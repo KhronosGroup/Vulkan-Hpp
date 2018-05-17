@@ -2778,7 +2778,7 @@ void VulkanHppGenerator::readTypeStructMember(tinyxml2::XMLElement const* elemen
   if (child->ToText())
   {
     std::string value = trim(child->Value());
-    assert((value == "const") || (value == "struct"));
+    assert((value == "const") || (value == "struct") || value == "const struct");
     member.type = value + " ";
     child = child->NextSibling();
     assert(child);
@@ -2876,7 +2876,8 @@ void VulkanHppGenerator::sortDependencies()
             if (depIt->dependencies.find(it->name) != depIt->dependencies.end())
             {
               // we only have just one case, for now!
-              assert((it->category == DependencyData::Category::HANDLE) && (depIt->category == DependencyData::Category::STRUCT));
+              assert((it->category == DependencyData::Category::HANDLE) && (depIt->category == DependencyData::Category::STRUCT)
+              || (it->category == DependencyData::Category::STRUCT) && (depIt->category == DependencyData::Category::STRUCT));
               it->forwardDependencies.insert(*dit);
               it->dependencies.erase(*dit);
               found = true;
@@ -4682,13 +4683,20 @@ void VulkanHppGenerator::writeTypeStruct(std::ostream & os, DependencyData const
     if (it->second.members[i].type == "StructureType")
     {
       assert((i == 0) && (it->second.members[i].name == "sType"));
-      assert(!it->second.members[i].values.empty());
-      auto nameIt = m_nameMap.find(it->second.members[i].values);
-      assert(nameIt != m_nameMap.end());
-      os << "  private:" << std::endl
-        << "    StructureType sType = " << nameIt->second << ";" << std::endl
-        << std::endl
-        << "  public:" << std::endl;
+      if (!it->second.members[i].values.empty())
+      {
+        assert(!it->second.members[i].values.empty());
+        auto nameIt = m_nameMap.find(it->second.members[i].values);
+        assert(nameIt != m_nameMap.end());
+        os << "  private:" << std::endl
+          << "    StructureType sType = " << nameIt->second << ";" << std::endl
+          << std::endl
+          << "  public:" << std::endl;
+      }
+      else
+      {
+        os << "    StructureType sType;" << std::endl;
+      }
     }
     else
     {

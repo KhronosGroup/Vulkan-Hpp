@@ -1844,9 +1844,10 @@ void VulkanHppGenerator::readComment(tinyxml2::XMLElement const* element)
     m_vulkanLicenseHeader = text;
 
     // erase the part after the Copyright text
-    size_t pos = m_vulkanLicenseHeader.find("\n\n-----");
-    assert(pos != std::string::npos);
-    m_vulkanLicenseHeader.erase(pos);
+    size_t pos = m_vulkanLicenseHeader.find("\n\n------------------------------------------------------------------------");
+    if (pos != std::string::npos) {
+      m_vulkanLicenseHeader.erase(pos);
+    }
 
     // replace any '\n' with "\n// "
     for (size_t pos = m_vulkanLicenseHeader.find('\n'); pos != std::string::npos; pos = m_vulkanLicenseHeader.find('\n', pos + 1))
@@ -5034,6 +5035,8 @@ int main( int argc, char **argv )
 
     VulkanHppGenerator generator;
 
+    bool foundLicense = false;
+
     tinyxml2::XMLElement const* registryElement = doc.FirstChildElement();
     checkAttributes(getAttributes(registryElement), registryElement->GetLineNum(), {}, {});
     assert(strcmp(registryElement->Value(), "registry") == 0);
@@ -5050,8 +5053,12 @@ int main( int argc, char **argv )
       }
       else if (value == "comment")
       {
-        // get the vulkan license header and skip any leading spaces
-        generator.readComment(child);
+        if (!foundLicense)
+        {
+          // get the vulkan license header and skip any leading spaces
+          generator.readComment(child);
+          foundLicense = true;
+        }
       }
       else if (value == "enums")
       {

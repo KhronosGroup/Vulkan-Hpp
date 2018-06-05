@@ -971,8 +971,7 @@ void checkElements(std::vector<tinyxml2::XMLElement const*> const& elements, std
       std::stringstream ss;
       ss << e->GetLineNum();
       std::string lineNumber = ss.str();
-      assert(false);
-      throw std::runtime_error("Spec error on line " + lineNumber + ": unexpected element value <" + e->Value() + ">");
+      std::cerr << "Unknown element in spec on line: " << lineNumber << " " << e->Value() << std::endl;
     }
   }
 }
@@ -5094,7 +5093,7 @@ int main( int argc, char **argv )
       {
         std::stringstream lineNumber;
         lineNumber << child->GetLineNum();
-        throw std::runtime_error(std::string("unknown tag ") + value + " at line number:" + lineNumber.str());
+        std::cerr << "Unhandled tag " << value << " at line number: " << lineNumber.str() << std::endl;
       }
     }
 

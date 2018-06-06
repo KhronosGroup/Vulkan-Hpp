@@ -270,8 +270,9 @@ class VulkanHppGenerator
     void writeFunctionHeaderArgumentsStandard(std::ostream & os, CommandData const& commandData, bool withDefaults);
     void writeFunctionHeaderReturnType(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool enhanced, bool singular, bool unique, bool isStructureChain);
     void writeFunctionHeaderTemplate(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool enhanced, bool unique, bool withDefault, bool isStructureChain);
+    void writeIndentation(std::ostream & os, size_t indentLength);
     void writeStructConstructor(std::ostream & os, std::string const& name, StructData const& structData, std::map<std::string, std::string> const& defaultValues);
-    bool writeStructConstructorArgument(std::ostream & os, bool listedArgument, MemberData const& memberData, std::map<std::string, std::string> const& defaultValues);
+    bool writeStructConstructorArgument(std::ostream & os, bool listedArgument, size_t indentLength, MemberData const& memberData, std::map<std::string, std::string> const& defaultValues);
     void writeStructSetter(std::ostream & os, std::string const& structureName, MemberData const& memberData);
     void writeStructureChainValidation(std::ostream & os, DependencyData const& dependencyData);
     void writeThrowExceptions(std::ostream& os, EnumData const& enumData);

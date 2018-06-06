@@ -4815,7 +4815,8 @@ public:
 
   struct Offset2D
   {
-    Offset2D( int32_t x_ = 0, int32_t y_ = 0 )
+    Offset2D( int32_t x_ = 0,
+              int32_t y_ = 0 )
       : x( x_ )
       , y( y_ )
     {
@@ -4866,14 +4867,17 @@ public:
 
   struct Offset3D
   {
-    Offset3D( int32_t x_ = 0, int32_t y_ = 0, int32_t z_ = 0 )
+    Offset3D( int32_t x_ = 0,
+              int32_t y_ = 0,
+              int32_t z_ = 0 )
       : x( x_ )
       , y( y_ )
       , z( z_ )
     {
     }
 
-    explicit Offset3D( Offset2D const& offset2D, int32_t z_ = 0 )
+    explicit Offset3D( Offset2D const& offset2D,
+                       int32_t z_ = 0 )
       : x( offset2D.x )
       , y( offset2D.y )
       , z( z_ )
@@ -4932,7 +4936,8 @@ public:
 
   struct Extent2D
   {
-    Extent2D( uint32_t width_ = 0, uint32_t height_ = 0 )
+    Extent2D( uint32_t width_ = 0,
+              uint32_t height_ = 0 )
       : width( width_ )
       , height( height_ )
     {
@@ -4983,14 +4988,17 @@ public:
 
   struct Extent3D
   {
-    Extent3D( uint32_t width_ = 0, uint32_t height_ = 0, uint32_t depth_ = 0 )
+    Extent3D( uint32_t width_ = 0,
+              uint32_t height_ = 0,
+              uint32_t depth_ = 0 )
       : width( width_ )
       , height( height_ )
       , depth( depth_ )
     {
     }
 
-    explicit Extent3D( Extent2D const& extent2D, uint32_t depth_ = 0 )
+    explicit Extent3D( Extent2D const& extent2D,
+                       uint32_t depth_ = 0 )
       : width( extent2D.width )
       , height( extent2D.height )
       , depth( depth_ )
@@ -5049,7 +5057,12 @@ public:
 
   struct Viewport
   {
-    Viewport( float x_ = 0, float y_ = 0, float width_ = 0, float height_ = 0, float minDepth_ = 0, float maxDepth_ = 0 )
+    Viewport( float x_ = 0,
+              float y_ = 0,
+              float width_ = 0,
+              float height_ = 0,
+              float minDepth_ = 0,
+              float maxDepth_ = 0 )
       : x( x_ )
       , y( y_ )
       , width( width_ )
@@ -5136,7 +5149,8 @@ public:
 
   struct Rect2D
   {
-    Rect2D( Offset2D offset_ = Offset2D(), Extent2D extent_ = Extent2D() )
+    Rect2D( Offset2D offset_ = Offset2D(),
+            Extent2D extent_ = Extent2D() )
       : offset( offset_ )
       , extent( extent_ )
     {
@@ -5187,7 +5201,9 @@ public:
 
   struct ClearRect
   {
-    ClearRect( Rect2D rect_ = Rect2D(), uint32_t baseArrayLayer_ = 0, uint32_t layerCount_ = 0 )
+    ClearRect( Rect2D rect_ = Rect2D(),
+               uint32_t baseArrayLayer_ = 0,
+               uint32_t layerCount_ = 0 )
       : rect( rect_ )
       , baseArrayLayer( baseArrayLayer_ )
       , layerCount( layerCount_ )
@@ -5297,7 +5313,12 @@ public:
 
   struct AllocationCallbacks
   {
-    AllocationCallbacks( void* pUserData_ = nullptr, PFN_vkAllocationFunction pfnAllocation_ = nullptr, PFN_vkReallocationFunction pfnReallocation_ = nullptr, PFN_vkFreeFunction pfnFree_ = nullptr, PFN_vkInternalAllocationNotification pfnInternalAllocation_ = nullptr, PFN_vkInternalFreeNotification pfnInternalFree_ = nullptr )
+    AllocationCallbacks( void* pUserData_ = nullptr,
+                         PFN_vkAllocationFunction pfnAllocation_ = nullptr,
+                         PFN_vkReallocationFunction pfnReallocation_ = nullptr,
+                         PFN_vkFreeFunction pfnFree_ = nullptr,
+                         PFN_vkInternalAllocationNotification pfnInternalAllocation_ = nullptr,
+                         PFN_vkInternalFreeNotification pfnInternalFree_ = nullptr )
       : pUserData( pUserData_ )
       , pfnAllocation( pfnAllocation_ )
       , pfnReallocation( pfnReallocation_ )
@@ -5409,7 +5430,9 @@ public:
 
   struct DescriptorBufferInfo
   {
-    DescriptorBufferInfo( Buffer buffer_ = Buffer(), DeviceSize offset_ = 0, DeviceSize range_ = 0 )
+    DescriptorBufferInfo( Buffer buffer_ = Buffer(),
+                          DeviceSize offset_ = 0,
+                          DeviceSize range_ = 0 )
       : buffer( buffer_ )
       , offset( offset_ )
       , range( range_ )
@@ -5498,7 +5521,9 @@ public:
 
   struct BufferCopy
   {
-    BufferCopy( DeviceSize srcOffset_ = 0, DeviceSize dstOffset_ = 0, DeviceSize size_ = 0 )
+    BufferCopy( DeviceSize srcOffset_ = 0,
+                DeviceSize dstOffset_ = 0,
+                DeviceSize size_ = 0 )
       : srcOffset( srcOffset_ )
       , dstOffset( dstOffset_ )
       , size( size_ )
@@ -5558,7 +5583,9 @@ public:
 
   struct SpecializationMapEntry
   {
-    SpecializationMapEntry( uint32_t constantID_ = 0, uint32_t offset_ = 0, size_t size_ = 0 )
+    SpecializationMapEntry( uint32_t constantID_ = 0,
+                            uint32_t offset_ = 0,
+                            size_t size_ = 0 )
       : constantID( constantID_ )
       , offset( offset_ )
       , size( size_ )
@@ -5618,7 +5645,10 @@ public:
 
   struct SpecializationInfo
   {
-    SpecializationInfo( uint32_t mapEntryCount_ = 0, const SpecializationMapEntry* pMapEntries_ = nullptr, size_t dataSize_ = 0, const void* pData_ = nullptr )
+    SpecializationInfo( uint32_t mapEntryCount_ = 0,
+                        const SpecializationMapEntry* pMapEntries_ = nullptr,
+                        size_t dataSize_ = 0,
+                        const void* pData_ = nullptr )
       : mapEntryCount( mapEntryCount_ )
       , pMapEntries( pMapEntries_ )
       , dataSize( dataSize_ )
@@ -5732,7 +5762,8 @@ public:
 
   struct ClearDepthStencilValue
   {
-    ClearDepthStencilValue( float depth_ = 0, uint32_t stencil_ = 0 )
+    ClearDepthStencilValue( float depth_ = 0,
+                            uint32_t stencil_ = 0 )
       : depth( depth_ )
       , stencil( stencil_ )
     {
@@ -5821,7 +5852,61 @@ public:
 
   struct PhysicalDeviceFeatures
   {
-    PhysicalDeviceFeatures( Bool32 robustBufferAccess_ = 0, Bool32 fullDrawIndexUint32_ = 0, Bool32 imageCubeArray_ = 0, Bool32 independentBlend_ = 0, Bool32 geometryShader_ = 0, Bool32 tessellationShader_ = 0, Bool32 sampleRateShading_ = 0, Bool32 dualSrcBlend_ = 0, Bool32 logicOp_ = 0, Bool32 multiDrawIndirect_ = 0, Bool32 drawIndirectFirstInstance_ = 0, Bool32 depthClamp_ = 0, Bool32 depthBiasClamp_ = 0, Bool32 fillModeNonSolid_ = 0, Bool32 depthBounds_ = 0, Bool32 wideLines_ = 0, Bool32 largePoints_ = 0, Bool32 alphaToOne_ = 0, Bool32 multiViewport_ = 0, Bool32 samplerAnisotropy_ = 0, Bool32 textureCompressionETC2_ = 0, Bool32 textureCompressionASTC_LDR_ = 0, Bool32 textureCompressionBC_ = 0, Bool32 occlusionQueryPrecise_ = 0, Bool32 pipelineStatisticsQuery_ = 0, Bool32 vertexPipelineStoresAndAtomics_ = 0, Bool32 fragmentStoresAndAtomics_ = 0, Bool32 shaderTessellationAndGeometryPointSize_ = 0, Bool32 shaderImageGatherExtended_ = 0, Bool32 shaderStorageImageExtendedFormats_ = 0, Bool32 shaderStorageImageMultisample_ = 0, Bool32 shaderStorageImageReadWithoutFormat_ = 0, Bool32 shaderStorageImageWriteWithoutFormat_ = 0, Bool32 shaderUniformBufferArrayDynamicIndexing_ = 0, Bool32 shaderSampledImageArrayDynamicIndexing_ = 0, Bool32 shaderStorageBufferArrayDynamicIndexing_ = 0, Bool32 shaderStorageImageArrayDynamicIndexing_ = 0, Bool32 shaderClipDistance_ = 0, Bool32 shaderCullDistance_ = 0, Bool32 shaderFloat64_ = 0, Bool32 shaderInt64_ = 0, Bool32 shaderInt16_ = 0, Bool32 shaderResourceResidency_ = 0, Bool32 shaderResourceMinLod_ = 0, Bool32 sparseBinding_ = 0, Bool32 sparseResidencyBuffer_ = 0, Bool32 sparseResidencyImage2D_ = 0, Bool32 sparseResidencyImage3D_ = 0, Bool32 sparseResidency2Samples_ = 0, Bool32 sparseResidency4Samples_ = 0, Bool32 sparseResidency8Samples_ = 0, Bool32 sparseResidency16Samples_ = 0, Bool32 sparseResidencyAliased_ = 0, Bool32 variableMultisampleRate_ = 0, Bool32 inheritedQueries_ = 0 )
+    PhysicalDeviceFeatures( Bool32 robustBufferAccess_ = 0,
+                            Bool32 fullDrawIndexUint32_ = 0,
+                            Bool32 imageCubeArray_ = 0,
+                            Bool32 independentBlend_ = 0,
+                            Bool32 geometryShader_ = 0,
+                            Bool32 tessellationShader_ = 0,
+                            Bool32 sampleRateShading_ = 0,
+                            Bool32 dualSrcBlend_ = 0,
+                            Bool32 logicOp_ = 0,
+                            Bool32 multiDrawIndirect_ = 0,
+                            Bool32 drawIndirectFirstInstance_ = 0,
+                            Bool32 depthClamp_ = 0,
+                            Bool32 depthBiasClamp_ = 0,
+                            Bool32 fillModeNonSolid_ = 0,
+                            Bool32 depthBounds_ = 0,
+                            Bool32 wideLines_ = 0,
+                            Bool32 largePoints_ = 0,
+                            Bool32 alphaToOne_ = 0,
+                            Bool32 multiViewport_ = 0,
+                            Bool32 samplerAnisotropy_ = 0,
+                            Bool32 textureCompressionETC2_ = 0,
+                            Bool32 textureCompressionASTC_LDR_ = 0,
+                            Bool32 textureCompressionBC_ = 0,
+                            Bool32 occlusionQueryPrecise_ = 0,
+                            Bool32 pipelineStatisticsQuery_ = 0,
+                            Bool32 vertexPipelineStoresAndAtomics_ = 0,
+                            Bool32 fragmentStoresAndAtomics_ = 0,
+                            Bool32 shaderTessellationAndGeometryPointSize_ = 0,
+                            Bool32 shaderImageGatherExtended_ = 0,
+                            Bool32 shaderStorageImageExtendedFormats_ = 0,
+                            Bool32 shaderStorageImageMultisample_ = 0,
+                            Bool32 shaderStorageImageReadWithoutFormat_ = 0,
+                            Bool32 shaderStorageImageWriteWithoutFormat_ = 0,
+                            Bool32 shaderUniformBufferArrayDynamicIndexing_ = 0,
+                            Bool32 shaderSampledImageArrayDynamicIndexing_ = 0,
+                            Bool32 shaderStorageBufferArrayDynamicIndexing_ = 0,
+                            Bool32 shaderStorageImageArrayDynamicIndexing_ = 0,
+                            Bool32 shaderClipDistance_ = 0,
+                            Bool32 shaderCullDistance_ = 0,
+                            Bool32 shaderFloat64_ = 0,
+                            Bool32 shaderInt64_ = 0,
+                            Bool32 shaderInt16_ = 0,
+                            Bool32 shaderResourceResidency_ = 0,
+                            Bool32 shaderResourceMinLod_ = 0,
+                            Bool32 sparseBinding_ = 0,
+                            Bool32 sparseResidencyBuffer_ = 0,
+                            Bool32 sparseResidencyImage2D_ = 0,
+                            Bool32 sparseResidencyImage3D_ = 0,
+                            Bool32 sparseResidency2Samples_ = 0,
+                            Bool32 sparseResidency4Samples_ = 0,
+                            Bool32 sparseResidency8Samples_ = 0,
+                            Bool32 sparseResidency16Samples_ = 0,
+                            Bool32 sparseResidencyAliased_ = 0,
+                            Bool32 variableMultisampleRate_ = 0,
+                            Bool32 inheritedQueries_ = 0 )
       : robustBufferAccess( robustBufferAccess_ )
       , fullDrawIndexUint32( fullDrawIndexUint32_ )
       , imageCubeArray( imageCubeArray_ )
@@ -6378,7 +6463,10 @@ public:
 
   struct DrawIndirectCommand
   {
-    DrawIndirectCommand( uint32_t vertexCount_ = 0, uint32_t instanceCount_ = 0, uint32_t firstVertex_ = 0, uint32_t firstInstance_ = 0 )
+    DrawIndirectCommand( uint32_t vertexCount_ = 0,
+                         uint32_t instanceCount_ = 0,
+                         uint32_t firstVertex_ = 0,
+                         uint32_t firstInstance_ = 0 )
       : vertexCount( vertexCount_ )
       , instanceCount( instanceCount_ )
       , firstVertex( firstVertex_ )
@@ -6447,7 +6535,11 @@ public:
 
   struct DrawIndexedIndirectCommand
   {
-    DrawIndexedIndirectCommand( uint32_t indexCount_ = 0, uint32_t instanceCount_ = 0, uint32_t firstIndex_ = 0, int32_t vertexOffset_ = 0, uint32_t firstInstance_ = 0 )
+    DrawIndexedIndirectCommand( uint32_t indexCount_ = 0,
+                                uint32_t instanceCount_ = 0,
+                                uint32_t firstIndex_ = 0,
+                                int32_t vertexOffset_ = 0,
+                                uint32_t firstInstance_ = 0 )
       : indexCount( indexCount_ )
       , instanceCount( instanceCount_ )
       , firstIndex( firstIndex_ )
@@ -6525,7 +6617,9 @@ public:
 
   struct DispatchIndirectCommand
   {
-    DispatchIndirectCommand( uint32_t x_ = 0, uint32_t y_ = 0, uint32_t z_ = 0 )
+    DispatchIndirectCommand( uint32_t x_ = 0,
+                             uint32_t y_ = 0,
+                             uint32_t z_ = 0 )
       : x( x_ )
       , y( y_ )
       , z( z_ )
@@ -6608,7 +6702,8 @@ public:
 
   struct DisplayModeParametersKHR
   {
-    DisplayModeParametersKHR( Extent2D visibleRegion_ = Extent2D(), uint32_t refreshRate_ = 0 )
+    DisplayModeParametersKHR( Extent2D visibleRegion_ = Extent2D(),
+                              uint32_t refreshRate_ = 0 )
       : visibleRegion( visibleRegion_ )
       , refreshRate( refreshRate_ )
     {
@@ -6682,14 +6777,17 @@ public:
 
   struct RectLayerKHR
   {
-    RectLayerKHR( Offset2D offset_ = Offset2D(), Extent2D extent_ = Extent2D(), uint32_t layer_ = 0 )
+    RectLayerKHR( Offset2D offset_ = Offset2D(),
+                  Extent2D extent_ = Extent2D(),
+                  uint32_t layer_ = 0 )
       : offset( offset_ )
       , extent( extent_ )
       , layer( layer_ )
     {
     }
 
-    explicit RectLayerKHR( Rect2D const& rect2D, uint32_t layer_ = 0 )
+    explicit RectLayerKHR( Rect2D const& rect2D,
+                           uint32_t layer_ = 0 )
       : offset( rect2D.offset )
       , extent( rect2D.extent )
       , layer( layer_ )
@@ -6748,7 +6846,8 @@ public:
 
   struct PresentRegionKHR
   {
-    PresentRegionKHR( uint32_t rectangleCount_ = 0, const RectLayerKHR* pRectangles_ = nullptr )
+    PresentRegionKHR( uint32_t rectangleCount_ = 0,
+                      const RectLayerKHR* pRectangles_ = nullptr )
       : rectangleCount( rectangleCount_ )
       , pRectangles( pRectangles_ )
     {
@@ -6799,7 +6898,8 @@ public:
 
   struct XYColorEXT
   {
-    XYColorEXT( float x_ = 0, float y_ = 0 )
+    XYColorEXT( float x_ = 0,
+                float y_ = 0 )
       : x( x_ )
       , y( y_ )
     {
@@ -6892,7 +6992,11 @@ public:
 
   struct PastPresentationTimingGOOGLE
   {
-    PastPresentationTimingGOOGLE( uint32_t presentID_ = 0, uint64_t desiredPresentTime_ = 0, uint64_t actualPresentTime_ = 0, uint64_t earliestPresentTime_ = 0, uint64_t presentMargin_ = 0 )
+    PastPresentationTimingGOOGLE( uint32_t presentID_ = 0,
+                                  uint64_t desiredPresentTime_ = 0,
+                                  uint64_t actualPresentTime_ = 0,
+                                  uint64_t earliestPresentTime_ = 0,
+                                  uint64_t presentMargin_ = 0 )
       : presentID( presentID_ )
       , desiredPresentTime( desiredPresentTime_ )
       , actualPresentTime( actualPresentTime_ )
@@ -6970,7 +7074,8 @@ public:
 
   struct PresentTimeGOOGLE
   {
-    PresentTimeGOOGLE( uint32_t presentID_ = 0, uint64_t desiredPresentTime_ = 0 )
+    PresentTimeGOOGLE( uint32_t presentID_ = 0,
+                       uint64_t desiredPresentTime_ = 0 )
       : presentID( presentID_ )
       , desiredPresentTime( desiredPresentTime_ )
     {
@@ -7021,7 +7126,8 @@ public:
 
   struct ViewportWScalingNV
   {
-    ViewportWScalingNV( float xcoeff_ = 0, float ycoeff_ = 0 )
+    ViewportWScalingNV( float xcoeff_ = 0,
+                        float ycoeff_ = 0 )
       : xcoeff( xcoeff_ )
       , ycoeff( ycoeff_ )
     {
@@ -7072,7 +7178,8 @@ public:
 
   struct SampleLocationEXT
   {
-    SampleLocationEXT( float x_ = 0, float y_ = 0 )
+    SampleLocationEXT( float x_ = 0,
+                       float y_ = 0 )
       : x( x_ )
       , y( y_ )
     {
@@ -7152,7 +7259,8 @@ public:
 
   struct VertexInputBindingDivisorDescriptionEXT
   {
-    VertexInputBindingDivisorDescriptionEXT( uint32_t binding_ = 0, uint32_t divisor_ = 0 )
+    VertexInputBindingDivisorDescriptionEXT( uint32_t binding_ = 0,
+                                             uint32_t divisor_ = 0 )
       : binding( binding_ )
       , divisor( divisor_ )
     {
@@ -7222,7 +7330,9 @@ public:
 
   struct DescriptorImageInfo
   {
-    DescriptorImageInfo( Sampler sampler_ = Sampler(), ImageView imageView_ = ImageView(), ImageLayout imageLayout_ = ImageLayout::eUndefined )
+    DescriptorImageInfo( Sampler sampler_ = Sampler(),
+                         ImageView imageView_ = ImageView(),
+                         ImageLayout imageLayout_ = ImageLayout::eUndefined )
       : sampler( sampler_ )
       , imageView( imageView_ )
       , imageLayout( imageLayout_ )
@@ -7282,7 +7392,8 @@ public:
 
   struct AttachmentReference
   {
-    AttachmentReference( uint32_t attachment_ = 0, ImageLayout layout_ = ImageLayout::eUndefined )
+    AttachmentReference( uint32_t attachment_ = 0,
+                         ImageLayout layout_ = ImageLayout::eUndefined )
       : attachment( attachment_ )
       , layout( layout_ )
     {
@@ -7387,7 +7498,10 @@ public:
 
   struct ComponentMapping
   {
-    ComponentMapping( ComponentSwizzle r_ = ComponentSwizzle::eIdentity, ComponentSwizzle g_ = ComponentSwizzle::eIdentity, ComponentSwizzle b_ = ComponentSwizzle::eIdentity, ComponentSwizzle a_ = ComponentSwizzle::eIdentity )
+    ComponentMapping( ComponentSwizzle r_ = ComponentSwizzle::eIdentity,
+                      ComponentSwizzle g_ = ComponentSwizzle::eIdentity,
+                      ComponentSwizzle b_ = ComponentSwizzle::eIdentity,
+                      ComponentSwizzle a_ = ComponentSwizzle::eIdentity )
       : r( r_ )
       , g( g_ )
       , b( b_ )
@@ -7471,7 +7585,8 @@ public:
 
   struct DescriptorPoolSize
   {
-    DescriptorPoolSize( DescriptorType type_ = DescriptorType::eSampler, uint32_t descriptorCount_ = 0 )
+    DescriptorPoolSize( DescriptorType type_ = DescriptorType::eSampler,
+                        uint32_t descriptorCount_ = 0 )
       : type( type_ )
       , descriptorCount( descriptorCount_ )
     {
@@ -7522,7 +7637,12 @@ public:
 
   struct DescriptorUpdateTemplateEntry
   {
-    DescriptorUpdateTemplateEntry( uint32_t dstBinding_ = 0, uint32_t dstArrayElement_ = 0, uint32_t descriptorCount_ = 0, DescriptorType descriptorType_ = DescriptorType::eSampler, size_t offset_ = 0, size_t stride_ = 0 )
+    DescriptorUpdateTemplateEntry( uint32_t dstBinding_ = 0,
+                                   uint32_t dstArrayElement_ = 0,
+                                   uint32_t descriptorCount_ = 0,
+                                   DescriptorType descriptorType_ = DescriptorType::eSampler,
+                                   size_t offset_ = 0,
+                                   size_t stride_ = 0 )
       : dstBinding( dstBinding_ )
       , dstArrayElement( dstArrayElement_ )
       , descriptorCount( descriptorCount_ )
@@ -7832,7 +7952,13 @@ public:
 
   struct StencilOpState
   {
-    StencilOpState( StencilOp failOp_ = StencilOp::eKeep, StencilOp passOp_ = StencilOp::eKeep, StencilOp depthFailOp_ = StencilOp::eKeep, CompareOp compareOp_ = CompareOp::eNever, uint32_t compareMask_ = 0, uint32_t writeMask_ = 0, uint32_t reference_ = 0 )
+    StencilOpState( StencilOp failOp_ = StencilOp::eKeep,
+                    StencilOp passOp_ = StencilOp::eKeep,
+                    StencilOp depthFailOp_ = StencilOp::eKeep,
+                    CompareOp compareOp_ = CompareOp::eNever,
+                    uint32_t compareMask_ = 0,
+                    uint32_t writeMask_ = 0,
+                    uint32_t reference_ = 0 )
       : failOp( failOp_ )
       , passOp( passOp_ )
       , depthFailOp( depthFailOp_ )
@@ -7977,7 +8103,9 @@ public:
 
   struct VertexInputBindingDescription
   {
-    VertexInputBindingDescription( uint32_t binding_ = 0, uint32_t stride_ = 0, VertexInputRate inputRate_ = VertexInputRate::eVertex )
+    VertexInputBindingDescription( uint32_t binding_ = 0,
+                                   uint32_t stride_ = 0,
+                                   VertexInputRate inputRate_ = VertexInputRate::eVertex )
       : binding( binding_ )
       , stride( stride_ )
       , inputRate( inputRate_ )
@@ -8302,7 +8430,10 @@ public:
 
   struct VertexInputAttributeDescription
   {
-    VertexInputAttributeDescription( uint32_t location_ = 0, uint32_t binding_ = 0, Format format_ = Format::eUndefined, uint32_t offset_ = 0 )
+    VertexInputAttributeDescription( uint32_t location_ = 0,
+                                     uint32_t binding_ = 0,
+                                     Format format_ = Format::eUndefined,
+                                     uint32_t offset_ = 0 )
       : location( location_ )
       , binding( binding_ )
       , format( format_ )
@@ -8671,7 +8802,11 @@ public:
 
   struct ApplicationInfo
   {
-    ApplicationInfo( const char* pApplicationName_ = nullptr, uint32_t applicationVersion_ = 0, const char* pEngineName_ = nullptr, uint32_t engineVersion_ = 0, uint32_t apiVersion_ = 0 )
+    ApplicationInfo( const char* pApplicationName_ = nullptr,
+                     uint32_t applicationVersion_ = 0,
+                     const char* pEngineName_ = nullptr,
+                     uint32_t engineVersion_ = 0,
+                     uint32_t apiVersion_ = 0 )
       : pApplicationName( pApplicationName_ )
       , applicationVersion( applicationVersion_ )
       , pEngineName( pEngineName_ )
@@ -8762,7 +8897,12 @@ public:
 
   struct InstanceCreateInfo
   {
-    InstanceCreateInfo( InstanceCreateFlags flags_ = InstanceCreateFlags(), const ApplicationInfo* pApplicationInfo_ = nullptr, uint32_t enabledLayerCount_ = 0, const char* const* ppEnabledLayerNames_ = nullptr, uint32_t enabledExtensionCount_ = 0, const char* const* ppEnabledExtensionNames_ = nullptr )
+    InstanceCreateInfo( InstanceCreateFlags flags_ = InstanceCreateFlags(),
+                        const ApplicationInfo* pApplicationInfo_ = nullptr,
+                        uint32_t enabledLayerCount_ = 0,
+                        const char* const* ppEnabledLayerNames_ = nullptr,
+                        uint32_t enabledExtensionCount_ = 0,
+                        const char* const* ppEnabledExtensionNames_ = nullptr )
       : flags( flags_ )
       , pApplicationInfo( pApplicationInfo_ )
       , enabledLayerCount( enabledLayerCount_ )
@@ -8862,7 +9002,8 @@ public:
 
   struct MemoryAllocateInfo
   {
-    MemoryAllocateInfo( DeviceSize allocationSize_ = 0, uint32_t memoryTypeIndex_ = 0 )
+    MemoryAllocateInfo( DeviceSize allocationSize_ = 0,
+                        uint32_t memoryTypeIndex_ = 0 )
       : allocationSize( allocationSize_ )
       , memoryTypeIndex( memoryTypeIndex_ )
     {
@@ -8926,7 +9067,9 @@ public:
 
   struct MappedMemoryRange
   {
-    MappedMemoryRange( DeviceMemory memory_ = DeviceMemory(), DeviceSize offset_ = 0, DeviceSize size_ = 0 )
+    MappedMemoryRange( DeviceMemory memory_ = DeviceMemory(),
+                       DeviceSize offset_ = 0,
+                       DeviceSize size_ = 0 )
       : memory( memory_ )
       , offset( offset_ )
       , size( size_ )
@@ -8999,7 +9142,14 @@ public:
 
   struct WriteDescriptorSet
   {
-    WriteDescriptorSet( DescriptorSet dstSet_ = DescriptorSet(), uint32_t dstBinding_ = 0, uint32_t dstArrayElement_ = 0, uint32_t descriptorCount_ = 0, DescriptorType descriptorType_ = DescriptorType::eSampler, const DescriptorImageInfo* pImageInfo_ = nullptr, const DescriptorBufferInfo* pBufferInfo_ = nullptr, const BufferView* pTexelBufferView_ = nullptr )
+    WriteDescriptorSet( DescriptorSet dstSet_ = DescriptorSet(),
+                        uint32_t dstBinding_ = 0,
+                        uint32_t dstArrayElement_ = 0,
+                        uint32_t descriptorCount_ = 0,
+                        DescriptorType descriptorType_ = DescriptorType::eSampler,
+                        const DescriptorImageInfo* pImageInfo_ = nullptr,
+                        const DescriptorBufferInfo* pBufferInfo_ = nullptr,
+                        const BufferView* pTexelBufferView_ = nullptr )
       : dstSet( dstSet_ )
       , dstBinding( dstBinding_ )
       , dstArrayElement( dstArrayElement_ )
@@ -9117,7 +9267,13 @@ public:
 
   struct CopyDescriptorSet
   {
-    CopyDescriptorSet( DescriptorSet srcSet_ = DescriptorSet(), uint32_t srcBinding_ = 0, uint32_t srcArrayElement_ = 0, DescriptorSet dstSet_ = DescriptorSet(), uint32_t dstBinding_ = 0, uint32_t dstArrayElement_ = 0, uint32_t descriptorCount_ = 0 )
+    CopyDescriptorSet( DescriptorSet srcSet_ = DescriptorSet(),
+                       uint32_t srcBinding_ = 0,
+                       uint32_t srcArrayElement_ = 0,
+                       DescriptorSet dstSet_ = DescriptorSet(),
+                       uint32_t dstBinding_ = 0,
+                       uint32_t dstArrayElement_ = 0,
+                       uint32_t descriptorCount_ = 0 )
       : srcSet( srcSet_ )
       , srcBinding( srcBinding_ )
       , srcArrayElement( srcArrayElement_ )
@@ -9226,7 +9382,11 @@ public:
 
   struct BufferViewCreateInfo
   {
-    BufferViewCreateInfo( BufferViewCreateFlags flags_ = BufferViewCreateFlags(), Buffer buffer_ = Buffer(), Format format_ = Format::eUndefined, DeviceSize offset_ = 0, DeviceSize range_ = 0 )
+    BufferViewCreateInfo( BufferViewCreateFlags flags_ = BufferViewCreateFlags(),
+                          Buffer buffer_ = Buffer(),
+                          Format format_ = Format::eUndefined,
+                          DeviceSize offset_ = 0,
+                          DeviceSize range_ = 0 )
       : flags( flags_ )
       , buffer( buffer_ )
       , format( format_ )
@@ -9317,7 +9477,9 @@ public:
 
   struct ShaderModuleCreateInfo
   {
-    ShaderModuleCreateInfo( ShaderModuleCreateFlags flags_ = ShaderModuleCreateFlags(), size_t codeSize_ = 0, const uint32_t* pCode_ = nullptr )
+    ShaderModuleCreateInfo( ShaderModuleCreateFlags flags_ = ShaderModuleCreateFlags(),
+                            size_t codeSize_ = 0,
+                            const uint32_t* pCode_ = nullptr )
       : flags( flags_ )
       , codeSize( codeSize_ )
       , pCode( pCode_ )
@@ -9390,7 +9552,9 @@ public:
 
   struct DescriptorSetAllocateInfo
   {
-    DescriptorSetAllocateInfo( DescriptorPool descriptorPool_ = DescriptorPool(), uint32_t descriptorSetCount_ = 0, const DescriptorSetLayout* pSetLayouts_ = nullptr )
+    DescriptorSetAllocateInfo( DescriptorPool descriptorPool_ = DescriptorPool(),
+                               uint32_t descriptorSetCount_ = 0,
+                               const DescriptorSetLayout* pSetLayouts_ = nullptr )
       : descriptorPool( descriptorPool_ )
       , descriptorSetCount( descriptorSetCount_ )
       , pSetLayouts( pSetLayouts_ )
@@ -9463,7 +9627,11 @@ public:
 
   struct PipelineVertexInputStateCreateInfo
   {
-    PipelineVertexInputStateCreateInfo( PipelineVertexInputStateCreateFlags flags_ = PipelineVertexInputStateCreateFlags(), uint32_t vertexBindingDescriptionCount_ = 0, const VertexInputBindingDescription* pVertexBindingDescriptions_ = nullptr, uint32_t vertexAttributeDescriptionCount_ = 0, const VertexInputAttributeDescription* pVertexAttributeDescriptions_ = nullptr )
+    PipelineVertexInputStateCreateInfo( PipelineVertexInputStateCreateFlags flags_ = PipelineVertexInputStateCreateFlags(),
+                                        uint32_t vertexBindingDescriptionCount_ = 0,
+                                        const VertexInputBindingDescription* pVertexBindingDescriptions_ = nullptr,
+                                        uint32_t vertexAttributeDescriptionCount_ = 0,
+                                        const VertexInputAttributeDescription* pVertexAttributeDescriptions_ = nullptr )
       : flags( flags_ )
       , vertexBindingDescriptionCount( vertexBindingDescriptionCount_ )
       , pVertexBindingDescriptions( pVertexBindingDescriptions_ )
@@ -9554,7 +9722,9 @@ public:
 
   struct PipelineInputAssemblyStateCreateInfo
   {
-    PipelineInputAssemblyStateCreateInfo( PipelineInputAssemblyStateCreateFlags flags_ = PipelineInputAssemblyStateCreateFlags(), PrimitiveTopology topology_ = PrimitiveTopology::ePointList, Bool32 primitiveRestartEnable_ = 0 )
+    PipelineInputAssemblyStateCreateInfo( PipelineInputAssemblyStateCreateFlags flags_ = PipelineInputAssemblyStateCreateFlags(),
+                                          PrimitiveTopology topology_ = PrimitiveTopology::ePointList,
+                                          Bool32 primitiveRestartEnable_ = 0 )
       : flags( flags_ )
       , topology( topology_ )
       , primitiveRestartEnable( primitiveRestartEnable_ )
@@ -9627,7 +9797,8 @@ public:
 
   struct PipelineTessellationStateCreateInfo
   {
-    PipelineTessellationStateCreateInfo( PipelineTessellationStateCreateFlags flags_ = PipelineTessellationStateCreateFlags(), uint32_t patchControlPoints_ = 0 )
+    PipelineTessellationStateCreateInfo( PipelineTessellationStateCreateFlags flags_ = PipelineTessellationStateCreateFlags(),
+                                         uint32_t patchControlPoints_ = 0 )
       : flags( flags_ )
       , patchControlPoints( patchControlPoints_ )
     {
@@ -9691,7 +9862,11 @@ public:
 
   struct PipelineViewportStateCreateInfo
   {
-    PipelineViewportStateCreateInfo( PipelineViewportStateCreateFlags flags_ = PipelineViewportStateCreateFlags(), uint32_t viewportCount_ = 0, const Viewport* pViewports_ = nullptr, uint32_t scissorCount_ = 0, const Rect2D* pScissors_ = nullptr )
+    PipelineViewportStateCreateInfo( PipelineViewportStateCreateFlags flags_ = PipelineViewportStateCreateFlags(),
+                                     uint32_t viewportCount_ = 0,
+                                     const Viewport* pViewports_ = nullptr,
+                                     uint32_t scissorCount_ = 0,
+                                     const Rect2D* pScissors_ = nullptr )
       : flags( flags_ )
       , viewportCount( viewportCount_ )
       , pViewports( pViewports_ )
@@ -9782,7 +9957,17 @@ public:
 
   struct PipelineRasterizationStateCreateInfo
   {
-    PipelineRasterizationStateCreateInfo( PipelineRasterizationStateCreateFlags flags_ = PipelineRasterizationStateCreateFlags(), Bool32 depthClampEnable_ = 0, Bool32 rasterizerDiscardEnable_ = 0, PolygonMode polygonMode_ = PolygonMode::eFill, CullModeFlags cullMode_ = CullModeFlags(), FrontFace frontFace_ = FrontFace::eCounterClockwise, Bool32 depthBiasEnable_ = 0, float depthBiasConstantFactor_ = 0, float depthBiasClamp_ = 0, float depthBiasSlopeFactor_ = 0, float lineWidth_ = 0 )
+    PipelineRasterizationStateCreateInfo( PipelineRasterizationStateCreateFlags flags_ = PipelineRasterizationStateCreateFlags(),
+                                          Bool32 depthClampEnable_ = 0,
+                                          Bool32 rasterizerDiscardEnable_ = 0,
+                                          PolygonMode polygonMode_ = PolygonMode::eFill,
+                                          CullModeFlags cullMode_ = CullModeFlags(),
+                                          FrontFace frontFace_ = FrontFace::eCounterClockwise,
+                                          Bool32 depthBiasEnable_ = 0,
+                                          float depthBiasConstantFactor_ = 0,
+                                          float depthBiasClamp_ = 0,
+                                          float depthBiasSlopeFactor_ = 0,
+                                          float lineWidth_ = 0 )
       : flags( flags_ )
       , depthClampEnable( depthClampEnable_ )
       , rasterizerDiscardEnable( rasterizerDiscardEnable_ )
@@ -9927,7 +10112,16 @@ public:
 
   struct PipelineDepthStencilStateCreateInfo
   {
-    PipelineDepthStencilStateCreateInfo( PipelineDepthStencilStateCreateFlags flags_ = PipelineDepthStencilStateCreateFlags(), Bool32 depthTestEnable_ = 0, Bool32 depthWriteEnable_ = 0, CompareOp depthCompareOp_ = CompareOp::eNever, Bool32 depthBoundsTestEnable_ = 0, Bool32 stencilTestEnable_ = 0, StencilOpState front_ = StencilOpState(), StencilOpState back_ = StencilOpState(), float minDepthBounds_ = 0, float maxDepthBounds_ = 0 )
+    PipelineDepthStencilStateCreateInfo( PipelineDepthStencilStateCreateFlags flags_ = PipelineDepthStencilStateCreateFlags(),
+                                         Bool32 depthTestEnable_ = 0,
+                                         Bool32 depthWriteEnable_ = 0,
+                                         CompareOp depthCompareOp_ = CompareOp::eNever,
+                                         Bool32 depthBoundsTestEnable_ = 0,
+                                         Bool32 stencilTestEnable_ = 0,
+                                         StencilOpState front_ = StencilOpState(),
+                                         StencilOpState back_ = StencilOpState(),
+                                         float minDepthBounds_ = 0,
+                                         float maxDepthBounds_ = 0 )
       : flags( flags_ )
       , depthTestEnable( depthTestEnable_ )
       , depthWriteEnable( depthWriteEnable_ )
@@ -10063,7 +10257,9 @@ public:
 
   struct PipelineCacheCreateInfo
   {
-    PipelineCacheCreateInfo( PipelineCacheCreateFlags flags_ = PipelineCacheCreateFlags(), size_t initialDataSize_ = 0, const void* pInitialData_ = nullptr )
+    PipelineCacheCreateInfo( PipelineCacheCreateFlags flags_ = PipelineCacheCreateFlags(),
+                             size_t initialDataSize_ = 0,
+                             const void* pInitialData_ = nullptr )
       : flags( flags_ )
       , initialDataSize( initialDataSize_ )
       , pInitialData( pInitialData_ )
@@ -10136,7 +10332,22 @@ public:
 
   struct SamplerCreateInfo
   {
-    SamplerCreateInfo( SamplerCreateFlags flags_ = SamplerCreateFlags(), Filter magFilter_ = Filter::eNearest, Filter minFilter_ = Filter::eNearest, SamplerMipmapMode mipmapMode_ = SamplerMipmapMode::eNearest, SamplerAddressMode addressModeU_ = SamplerAddressMode::eRepeat, SamplerAddressMode addressModeV_ = SamplerAddressMode::eRepeat, SamplerAddressMode addressModeW_ = SamplerAddressMode::eRepeat, float mipLodBias_ = 0, Bool32 anisotropyEnable_ = 0, float maxAnisotropy_ = 0, Bool32 compareEnable_ = 0, CompareOp compareOp_ = CompareOp::eNever, float minLod_ = 0, float maxLod_ = 0, BorderColor borderColor_ = BorderColor::eFloatTransparentBlack, Bool32 unnormalizedCoordinates_ = 0 )
+    SamplerCreateInfo( SamplerCreateFlags flags_ = SamplerCreateFlags(),
+                       Filter magFilter_ = Filter::eNearest,
+                       Filter minFilter_ = Filter::eNearest,
+                       SamplerMipmapMode mipmapMode_ = SamplerMipmapMode::eNearest,
+                       SamplerAddressMode addressModeU_ = SamplerAddressMode::eRepeat,
+                       SamplerAddressMode addressModeV_ = SamplerAddressMode::eRepeat,
+                       SamplerAddressMode addressModeW_ = SamplerAddressMode::eRepeat,
+                       float mipLodBias_ = 0,
+                       Bool32 anisotropyEnable_ = 0,
+                       float maxAnisotropy_ = 0,
+                       Bool32 compareEnable_ = 0,
+                       CompareOp compareOp_ = CompareOp::eNever,
+                       float minLod_ = 0,
+                       float maxLod_ = 0,
+                       BorderColor borderColor_ = BorderColor::eFloatTransparentBlack,
+                       Bool32 unnormalizedCoordinates_ = 0 )
       : flags( flags_ )
       , magFilter( magFilter_ )
       , minFilter( minFilter_ )
@@ -10326,7 +10537,9 @@ public:
 
   struct CommandBufferAllocateInfo
   {
-    CommandBufferAllocateInfo( CommandPool commandPool_ = CommandPool(), CommandBufferLevel level_ = CommandBufferLevel::ePrimary, uint32_t commandBufferCount_ = 0 )
+    CommandBufferAllocateInfo( CommandPool commandPool_ = CommandPool(),
+                               CommandBufferLevel level_ = CommandBufferLevel::ePrimary,
+                               uint32_t commandBufferCount_ = 0 )
       : commandPool( commandPool_ )
       , level( level_ )
       , commandBufferCount( commandBufferCount_ )
@@ -10399,7 +10612,11 @@ public:
 
   struct RenderPassBeginInfo
   {
-    RenderPassBeginInfo( RenderPass renderPass_ = RenderPass(), Framebuffer framebuffer_ = Framebuffer(), Rect2D renderArea_ = Rect2D(), uint32_t clearValueCount_ = 0, const ClearValue* pClearValues_ = nullptr )
+    RenderPassBeginInfo( RenderPass renderPass_ = RenderPass(),
+                         Framebuffer framebuffer_ = Framebuffer(),
+                         Rect2D renderArea_ = Rect2D(),
+                         uint32_t clearValueCount_ = 0,
+                         const ClearValue* pClearValues_ = nullptr )
       : renderPass( renderPass_ )
       , framebuffer( framebuffer_ )
       , renderArea( renderArea_ )
@@ -10600,7 +10817,13 @@ public:
 
   struct FramebufferCreateInfo
   {
-    FramebufferCreateInfo( FramebufferCreateFlags flags_ = FramebufferCreateFlags(), RenderPass renderPass_ = RenderPass(), uint32_t attachmentCount_ = 0, const ImageView* pAttachments_ = nullptr, uint32_t width_ = 0, uint32_t height_ = 0, uint32_t layers_ = 0 )
+    FramebufferCreateInfo( FramebufferCreateFlags flags_ = FramebufferCreateFlags(),
+                           RenderPass renderPass_ = RenderPass(),
+                           uint32_t attachmentCount_ = 0,
+                           const ImageView* pAttachments_ = nullptr,
+                           uint32_t width_ = 0,
+                           uint32_t height_ = 0,
+                           uint32_t layers_ = 0 )
       : flags( flags_ )
       , renderPass( renderPass_ )
       , attachmentCount( attachmentCount_ )
@@ -10709,7 +10932,8 @@ public:
 
   struct DisplayModeCreateInfoKHR
   {
-    DisplayModeCreateInfoKHR( DisplayModeCreateFlagsKHR flags_ = DisplayModeCreateFlagsKHR(), DisplayModeParametersKHR parameters_ = DisplayModeParametersKHR() )
+    DisplayModeCreateInfoKHR( DisplayModeCreateFlagsKHR flags_ = DisplayModeCreateFlagsKHR(),
+                              DisplayModeParametersKHR parameters_ = DisplayModeParametersKHR() )
       : flags( flags_ )
       , parameters( parameters_ )
     {
@@ -10773,7 +10997,9 @@ public:
 
   struct DisplayPresentInfoKHR
   {
-    DisplayPresentInfoKHR( Rect2D srcRect_ = Rect2D(), Rect2D dstRect_ = Rect2D(), Bool32 persistent_ = 0 )
+    DisplayPresentInfoKHR( Rect2D srcRect_ = Rect2D(),
+                           Rect2D dstRect_ = Rect2D(),
+                           Bool32 persistent_ = 0 )
       : srcRect( srcRect_ )
       , dstRect( dstRect_ )
       , persistent( persistent_ )
@@ -10847,7 +11073,8 @@ public:
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
   struct AndroidSurfaceCreateInfoKHR
   {
-    AndroidSurfaceCreateInfoKHR( AndroidSurfaceCreateFlagsKHR flags_ = AndroidSurfaceCreateFlagsKHR(), struct ANativeWindow* window_ = nullptr )
+    AndroidSurfaceCreateInfoKHR( AndroidSurfaceCreateFlagsKHR flags_ = AndroidSurfaceCreateFlagsKHR(),
+                                 struct ANativeWindow* window_ = nullptr )
       : flags( flags_ )
       , window( window_ )
     {
@@ -10913,7 +11140,9 @@ public:
 #ifdef VK_USE_PLATFORM_MIR_KHR
   struct MirSurfaceCreateInfoKHR
   {
-    MirSurfaceCreateInfoKHR( MirSurfaceCreateFlagsKHR flags_ = MirSurfaceCreateFlagsKHR(), MirConnection* connection_ = nullptr, MirSurface* mirSurface_ = nullptr )
+    MirSurfaceCreateInfoKHR( MirSurfaceCreateFlagsKHR flags_ = MirSurfaceCreateFlagsKHR(),
+                             MirConnection* connection_ = nullptr,
+                             MirSurface* mirSurface_ = nullptr )
       : flags( flags_ )
       , connection( connection_ )
       , mirSurface( mirSurface_ )
@@ -10988,7 +11217,8 @@ public:
 #ifdef VK_USE_PLATFORM_VI_NN
   struct ViSurfaceCreateInfoNN
   {
-    ViSurfaceCreateInfoNN( ViSurfaceCreateFlagsNN flags_ = ViSurfaceCreateFlagsNN(), void* window_ = nullptr )
+    ViSurfaceCreateInfoNN( ViSurfaceCreateFlagsNN flags_ = ViSurfaceCreateFlagsNN(),
+                           void* window_ = nullptr )
       : flags( flags_ )
       , window( window_ )
     {
@@ -11054,7 +11284,9 @@ public:
 #ifdef VK_USE_PLATFORM_WAYLAND_KHR
   struct WaylandSurfaceCreateInfoKHR
   {
-    WaylandSurfaceCreateInfoKHR( WaylandSurfaceCreateFlagsKHR flags_ = WaylandSurfaceCreateFlagsKHR(), struct wl_display* display_ = nullptr, struct wl_surface* surface_ = nullptr )
+    WaylandSurfaceCreateInfoKHR( WaylandSurfaceCreateFlagsKHR flags_ = WaylandSurfaceCreateFlagsKHR(),
+                                 struct wl_display* display_ = nullptr,
+                                 struct wl_surface* surface_ = nullptr )
       : flags( flags_ )
       , display( display_ )
       , surface( surface_ )
@@ -11129,7 +11361,9 @@ public:
 #ifdef VK_USE_PLATFORM_WIN32_KHR
   struct Win32SurfaceCreateInfoKHR
   {
-    Win32SurfaceCreateInfoKHR( Win32SurfaceCreateFlagsKHR flags_ = Win32SurfaceCreateFlagsKHR(), HINSTANCE hinstance_ = 0, HWND hwnd_ = 0 )
+    Win32SurfaceCreateInfoKHR( Win32SurfaceCreateFlagsKHR flags_ = Win32SurfaceCreateFlagsKHR(),
+                               HINSTANCE hinstance_ = 0,
+                               HWND hwnd_ = 0 )
       : flags( flags_ )
       , hinstance( hinstance_ )
       , hwnd( hwnd_ )
@@ -11204,7 +11438,9 @@ public:
 #ifdef VK_USE_PLATFORM_XLIB_KHR
   struct XlibSurfaceCreateInfoKHR
   {
-    XlibSurfaceCreateInfoKHR( XlibSurfaceCreateFlagsKHR flags_ = XlibSurfaceCreateFlagsKHR(), Display* dpy_ = nullptr, Window window_ = 0 )
+    XlibSurfaceCreateInfoKHR( XlibSurfaceCreateFlagsKHR flags_ = XlibSurfaceCreateFlagsKHR(),
+                              Display* dpy_ = nullptr,
+                              Window window_ = 0 )
       : flags( flags_ )
       , dpy( dpy_ )
       , window( window_ )
@@ -11279,7 +11515,9 @@ public:
 #ifdef VK_USE_PLATFORM_XCB_KHR
   struct XcbSurfaceCreateInfoKHR
   {
-    XcbSurfaceCreateInfoKHR( XcbSurfaceCreateFlagsKHR flags_ = XcbSurfaceCreateFlagsKHR(), xcb_connection_t* connection_ = nullptr, xcb_window_t window_ = 0 )
+    XcbSurfaceCreateInfoKHR( XcbSurfaceCreateFlagsKHR flags_ = XcbSurfaceCreateFlagsKHR(),
+                             xcb_connection_t* connection_ = nullptr,
+                             xcb_window_t window_ = 0 )
       : flags( flags_ )
       , connection( connection_ )
       , window( window_ )
@@ -11353,7 +11591,8 @@ public:
 
   struct DebugMarkerMarkerInfoEXT
   {
-    DebugMarkerMarkerInfoEXT( const char* pMarkerName_ = nullptr, std::array<float,4> const& color_ = { { 0, 0, 0, 0 } } )
+    DebugMarkerMarkerInfoEXT( const char* pMarkerName_ = nullptr,
+                              std::array<float,4> const& color_ = { { 0, 0, 0, 0 } } )
       : pMarkerName( pMarkerName_ )
     {
       memcpy( &color, color_.data(), 4 * sizeof( float ) );
@@ -11527,7 +11766,8 @@ public:
 
   struct DedicatedAllocationMemoryAllocateInfoNV
   {
-    DedicatedAllocationMemoryAllocateInfoNV( Image image_ = Image(), Buffer buffer_ = Buffer() )
+    DedicatedAllocationMemoryAllocateInfoNV( Image image_ = Image(),
+                                             Buffer buffer_ = Buffer() )
       : image( image_ )
       , buffer( buffer_ )
     {
@@ -11592,7 +11832,8 @@ public:
 #ifdef VK_USE_PLATFORM_WIN32_NV
   struct ExportMemoryWin32HandleInfoNV
   {
-    ExportMemoryWin32HandleInfoNV( const SECURITY_ATTRIBUTES* pAttributes_ = nullptr, DWORD dwAccess_ = 0 )
+    ExportMemoryWin32HandleInfoNV( const SECURITY_ATTRIBUTES* pAttributes_ = nullptr,
+                                   DWORD dwAccess_ = 0 )
       : pAttributes( pAttributes_ )
       , dwAccess( dwAccess_ )
     {
@@ -11658,7 +11899,13 @@ public:
 #ifdef VK_USE_PLATFORM_WIN32_NV
   struct Win32KeyedMutexAcquireReleaseInfoNV
   {
-    Win32KeyedMutexAcquireReleaseInfoNV( uint32_t acquireCount_ = 0, const DeviceMemory* pAcquireSyncs_ = nullptr, const uint64_t* pAcquireKeys_ = nullptr, const uint32_t* pAcquireTimeoutMilliseconds_ = nullptr, uint32_t releaseCount_ = 0, const DeviceMemory* pReleaseSyncs_ = nullptr, const uint64_t* pReleaseKeys_ = nullptr )
+    Win32KeyedMutexAcquireReleaseInfoNV( uint32_t acquireCount_ = 0,
+                                         const DeviceMemory* pAcquireSyncs_ = nullptr,
+                                         const uint64_t* pAcquireKeys_ = nullptr,
+                                         const uint32_t* pAcquireTimeoutMilliseconds_ = nullptr,
+                                         uint32_t releaseCount_ = 0,
+                                         const DeviceMemory* pReleaseSyncs_ = nullptr,
+                                         const uint64_t* pReleaseKeys_ = nullptr )
       : acquireCount( acquireCount_ )
       , pAcquireSyncs( pAcquireSyncs_ )
       , pAcquireKeys( pAcquireKeys_ )
@@ -11823,7 +12070,11 @@ public:
 
   struct DeviceGeneratedCommandsLimitsNVX
   {
-    DeviceGeneratedCommandsLimitsNVX( uint32_t maxIndirectCommandsLayoutTokenCount_ = 0, uint32_t maxObjectEntryCounts_ = 0, uint32_t minSequenceCountBufferOffsetAlignment_ = 0, uint32_t minSequenceIndexBufferOffsetAlignment_ = 0, uint32_t minCommandsTokenBufferOffsetAlignment_ = 0 )
+    DeviceGeneratedCommandsLimitsNVX( uint32_t maxIndirectCommandsLayoutTokenCount_ = 0,
+                                      uint32_t maxObjectEntryCounts_ = 0,
+                                      uint32_t minSequenceCountBufferOffsetAlignment_ = 0,
+                                      uint32_t minSequenceIndexBufferOffsetAlignment_ = 0,
+                                      uint32_t minCommandsTokenBufferOffsetAlignment_ = 0 )
       : maxIndirectCommandsLayoutTokenCount( maxIndirectCommandsLayoutTokenCount_ )
       , maxObjectEntryCounts( maxObjectEntryCounts_ )
       , minSequenceCountBufferOffsetAlignment( minSequenceCountBufferOffsetAlignment_ )
@@ -11914,7 +12165,9 @@ public:
 
   struct CmdReserveSpaceForCommandsInfoNVX
   {
-    CmdReserveSpaceForCommandsInfoNVX( ObjectTableNVX objectTable_ = ObjectTableNVX(), IndirectCommandsLayoutNVX indirectCommandsLayout_ = IndirectCommandsLayoutNVX(), uint32_t maxSequencesCount_ = 0 )
+    CmdReserveSpaceForCommandsInfoNVX( ObjectTableNVX objectTable_ = ObjectTableNVX(),
+                                       IndirectCommandsLayoutNVX indirectCommandsLayout_ = IndirectCommandsLayoutNVX(),
+                                       uint32_t maxSequencesCount_ = 0 )
       : objectTable( objectTable_ )
       , indirectCommandsLayout( indirectCommandsLayout_ )
       , maxSequencesCount( maxSequencesCount_ )
@@ -12099,7 +12352,8 @@ public:
 
   struct PresentRegionsKHR
   {
-    PresentRegionsKHR( uint32_t swapchainCount_ = 0, const PresentRegionKHR* pRegions_ = nullptr )
+    PresentRegionsKHR( uint32_t swapchainCount_ = 0,
+                       const PresentRegionKHR* pRegions_ = nullptr )
       : swapchainCount( swapchainCount_ )
       , pRegions( pRegions_ )
     {
@@ -12163,7 +12417,8 @@ public:
 
   struct PhysicalDeviceVariablePointerFeatures
   {
-    PhysicalDeviceVariablePointerFeatures( Bool32 variablePointersStorageBuffer_ = 0, Bool32 variablePointers_ = 0 )
+    PhysicalDeviceVariablePointerFeatures( Bool32 variablePointersStorageBuffer_ = 0,
+                                           Bool32 variablePointers_ = 0 )
       : variablePointersStorageBuffer( variablePointersStorageBuffer_ )
       , variablePointers( variablePointers_ )
     {
@@ -12268,7 +12523,9 @@ public:
 #ifdef VK_USE_PLATFORM_WIN32_KHR
   struct ExportMemoryWin32HandleInfoKHR
   {
-    ExportMemoryWin32HandleInfoKHR( const SECURITY_ATTRIBUTES* pAttributes_ = nullptr, DWORD dwAccess_ = 0, LPCWSTR name_ = 0 )
+    ExportMemoryWin32HandleInfoKHR( const SECURITY_ATTRIBUTES* pAttributes_ = nullptr,
+                                    DWORD dwAccess_ = 0,
+                                    LPCWSTR name_ = 0 )
       : pAttributes( pAttributes_ )
       , dwAccess( dwAccess_ )
       , name( name_ )
@@ -12401,7 +12658,13 @@ public:
 #ifdef VK_USE_PLATFORM_WIN32_KHR
   struct Win32KeyedMutexAcquireReleaseInfoKHR
   {
-    Win32KeyedMutexAcquireReleaseInfoKHR( uint32_t acquireCount_ = 0, const DeviceMemory* pAcquireSyncs_ = nullptr, const uint64_t* pAcquireKeys_ = nullptr, const uint32_t* pAcquireTimeouts_ = nullptr, uint32_t releaseCount_ = 0, const DeviceMemory* pReleaseSyncs_ = nullptr, const uint64_t* pReleaseKeys_ = nullptr )
+    Win32KeyedMutexAcquireReleaseInfoKHR( uint32_t acquireCount_ = 0,
+                                          const DeviceMemory* pAcquireSyncs_ = nullptr,
+                                          const uint64_t* pAcquireKeys_ = nullptr,
+                                          const uint32_t* pAcquireTimeouts_ = nullptr,
+                                          uint32_t releaseCount_ = 0,
+                                          const DeviceMemory* pReleaseSyncs_ = nullptr,
+                                          const uint64_t* pReleaseKeys_ = nullptr )
       : acquireCount( acquireCount_ )
       , pAcquireSyncs( pAcquireSyncs_ )
       , pAcquireKeys( pAcquireKeys_ )
@@ -12512,7 +12775,9 @@ public:
 #ifdef VK_USE_PLATFORM_WIN32_KHR
   struct ExportSemaphoreWin32HandleInfoKHR
   {
-    ExportSemaphoreWin32HandleInfoKHR( const SECURITY_ATTRIBUTES* pAttributes_ = nullptr, DWORD dwAccess_ = 0, LPCWSTR name_ = 0 )
+    ExportSemaphoreWin32HandleInfoKHR( const SECURITY_ATTRIBUTES* pAttributes_ = nullptr,
+                                       DWORD dwAccess_ = 0,
+                                       LPCWSTR name_ = 0 )
       : pAttributes( pAttributes_ )
       , dwAccess( dwAccess_ )
       , name( name_ )
@@ -12587,7 +12852,10 @@ public:
 #ifdef VK_USE_PLATFORM_WIN32_KHR
   struct D3D12FenceSubmitInfoKHR
   {
-    D3D12FenceSubmitInfoKHR( uint32_t waitSemaphoreValuesCount_ = 0, const uint64_t* pWaitSemaphoreValues_ = nullptr, uint32_t signalSemaphoreValuesCount_ = 0, const uint64_t* pSignalSemaphoreValues_ = nullptr )
+    D3D12FenceSubmitInfoKHR( uint32_t waitSemaphoreValuesCount_ = 0,
+                             const uint64_t* pWaitSemaphoreValues_ = nullptr,
+                             uint32_t signalSemaphoreValuesCount_ = 0,
+                             const uint64_t* pSignalSemaphoreValues_ = nullptr )
       : waitSemaphoreValuesCount( waitSemaphoreValuesCount_ )
       , pWaitSemaphoreValues( pWaitSemaphoreValues_ )
       , signalSemaphoreValuesCount( signalSemaphoreValuesCount_ )
@@ -12671,7 +12939,9 @@ public:
 #ifdef VK_USE_PLATFORM_WIN32_KHR
   struct ExportFenceWin32HandleInfoKHR
   {
-    ExportFenceWin32HandleInfoKHR( const SECURITY_ATTRIBUTES* pAttributes_ = nullptr, DWORD dwAccess_ = 0, LPCWSTR name_ = 0 )
+    ExportFenceWin32HandleInfoKHR( const SECURITY_ATTRIBUTES* pAttributes_ = nullptr,
+                                   DWORD dwAccess_ = 0,
+                                   LPCWSTR name_ = 0 )
       : pAttributes( pAttributes_ )
       , dwAccess( dwAccess_ )
       , name( name_ )
@@ -12745,7 +13015,9 @@ public:
 
   struct PhysicalDeviceMultiviewFeatures
   {
-    PhysicalDeviceMultiviewFeatures( Bool32 multiview_ = 0, Bool32 multiviewGeometryShader_ = 0, Bool32 multiviewTessellationShader_ = 0 )
+    PhysicalDeviceMultiviewFeatures( Bool32 multiview_ = 0,
+                                     Bool32 multiviewGeometryShader_ = 0,
+                                     Bool32 multiviewTessellationShader_ = 0 )
       : multiview( multiview_ )
       , multiviewGeometryShader( multiviewGeometryShader_ )
       , multiviewTessellationShader( multiviewTessellationShader_ )
@@ -12852,7 +13124,12 @@ public:
 
   struct RenderPassMultiviewCreateInfo
   {
-    RenderPassMultiviewCreateInfo( uint32_t subpassCount_ = 0, const uint32_t* pViewMasks_ = nullptr, uint32_t dependencyCount_ = 0, const int32_t* pViewOffsets_ = nullptr, uint32_t correlationMaskCount_ = 0, const uint32_t* pCorrelationMasks_ = nullptr )
+    RenderPassMultiviewCreateInfo( uint32_t subpassCount_ = 0,
+                                   const uint32_t* pViewMasks_ = nullptr,
+                                   uint32_t dependencyCount_ = 0,
+                                   const int32_t* pViewOffsets_ = nullptr,
+                                   uint32_t correlationMaskCount_ = 0,
+                                   const uint32_t* pCorrelationMasks_ = nullptr )
       : subpassCount( subpassCount_ )
       , pViewMasks( pViewMasks_ )
       , dependencyCount( dependencyCount_ )
@@ -12954,7 +13231,9 @@ public:
 
   struct BindBufferMemoryInfo
   {
-    BindBufferMemoryInfo( Buffer buffer_ = Buffer(), DeviceMemory memory_ = DeviceMemory(), DeviceSize memoryOffset_ = 0 )
+    BindBufferMemoryInfo( Buffer buffer_ = Buffer(),
+                          DeviceMemory memory_ = DeviceMemory(),
+                          DeviceSize memoryOffset_ = 0 )
       : buffer( buffer_ )
       , memory( memory_ )
       , memoryOffset( memoryOffset_ )
@@ -13029,7 +13308,8 @@ public:
 
   struct BindBufferMemoryDeviceGroupInfo
   {
-    BindBufferMemoryDeviceGroupInfo( uint32_t deviceIndexCount_ = 0, const uint32_t* pDeviceIndices_ = nullptr )
+    BindBufferMemoryDeviceGroupInfo( uint32_t deviceIndexCount_ = 0,
+                                     const uint32_t* pDeviceIndices_ = nullptr )
       : deviceIndexCount( deviceIndexCount_ )
       , pDeviceIndices( pDeviceIndices_ )
     {
@@ -13095,7 +13375,9 @@ public:
 
   struct BindImageMemoryInfo
   {
-    BindImageMemoryInfo( Image image_ = Image(), DeviceMemory memory_ = DeviceMemory(), DeviceSize memoryOffset_ = 0 )
+    BindImageMemoryInfo( Image image_ = Image(),
+                         DeviceMemory memory_ = DeviceMemory(),
+                         DeviceSize memoryOffset_ = 0 )
       : image( image_ )
       , memory( memory_ )
       , memoryOffset( memoryOffset_ )
@@ -13170,7 +13452,10 @@ public:
 
   struct BindImageMemoryDeviceGroupInfo
   {
-    BindImageMemoryDeviceGroupInfo( uint32_t deviceIndexCount_ = 0, const uint32_t* pDeviceIndices_ = nullptr, uint32_t splitInstanceBindRegionCount_ = 0, const Rect2D* pSplitInstanceBindRegions_ = nullptr )
+    BindImageMemoryDeviceGroupInfo( uint32_t deviceIndexCount_ = 0,
+                                    const uint32_t* pDeviceIndices_ = nullptr,
+                                    uint32_t splitInstanceBindRegionCount_ = 0,
+                                    const Rect2D* pSplitInstanceBindRegions_ = nullptr )
       : deviceIndexCount( deviceIndexCount_ )
       , pDeviceIndices( pDeviceIndices_ )
       , splitInstanceBindRegionCount( splitInstanceBindRegionCount_ )
@@ -13254,7 +13539,9 @@ public:
 
   struct DeviceGroupRenderPassBeginInfo
   {
-    DeviceGroupRenderPassBeginInfo( uint32_t deviceMask_ = 0, uint32_t deviceRenderAreaCount_ = 0, const Rect2D* pDeviceRenderAreas_ = nullptr )
+    DeviceGroupRenderPassBeginInfo( uint32_t deviceMask_ = 0,
+                                    uint32_t deviceRenderAreaCount_ = 0,
+                                    const Rect2D* pDeviceRenderAreas_ = nullptr )
       : deviceMask( deviceMask_ )
       , deviceRenderAreaCount( deviceRenderAreaCount_ )
       , pDeviceRenderAreas( pDeviceRenderAreas_ )
@@ -13386,7 +13673,12 @@ public:
 
   struct DeviceGroupSubmitInfo
   {
-    DeviceGroupSubmitInfo( uint32_t waitSemaphoreCount_ = 0, const uint32_t* pWaitSemaphoreDeviceIndices_ = nullptr, uint32_t commandBufferCount_ = 0, const uint32_t* pCommandBufferDeviceMasks_ = nullptr, uint32_t signalSemaphoreCount_ = 0, const uint32_t* pSignalSemaphoreDeviceIndices_ = nullptr )
+    DeviceGroupSubmitInfo( uint32_t waitSemaphoreCount_ = 0,
+                           const uint32_t* pWaitSemaphoreDeviceIndices_ = nullptr,
+                           uint32_t commandBufferCount_ = 0,
+                           const uint32_t* pCommandBufferDeviceMasks_ = nullptr,
+                           uint32_t signalSemaphoreCount_ = 0,
+                           const uint32_t* pSignalSemaphoreDeviceIndices_ = nullptr )
       : waitSemaphoreCount( waitSemaphoreCount_ )
       , pWaitSemaphoreDeviceIndices( pWaitSemaphoreDeviceIndices_ )
       , commandBufferCount( commandBufferCount_ )
@@ -13488,7 +13780,8 @@ public:
 
   struct DeviceGroupBindSparseInfo
   {
-    DeviceGroupBindSparseInfo( uint32_t resourceDeviceIndex_ = 0, uint32_t memoryDeviceIndex_ = 0 )
+    DeviceGroupBindSparseInfo( uint32_t resourceDeviceIndex_ = 0,
+                               uint32_t memoryDeviceIndex_ = 0 )
       : resourceDeviceIndex( resourceDeviceIndex_ )
       , memoryDeviceIndex( memoryDeviceIndex_ )
     {
@@ -13609,7 +13902,8 @@ public:
 
   struct BindImageMemorySwapchainInfoKHR
   {
-    BindImageMemorySwapchainInfoKHR( SwapchainKHR swapchain_ = SwapchainKHR(), uint32_t imageIndex_ = 0 )
+    BindImageMemorySwapchainInfoKHR( SwapchainKHR swapchain_ = SwapchainKHR(),
+                                     uint32_t imageIndex_ = 0 )
       : swapchain( swapchain_ )
       , imageIndex( imageIndex_ )
     {
@@ -13673,7 +13967,11 @@ public:
 
   struct AcquireNextImageInfoKHR
   {
-    AcquireNextImageInfoKHR( SwapchainKHR swapchain_ = SwapchainKHR(), uint64_t timeout_ = 0, Semaphore semaphore_ = Semaphore(), Fence fence_ = Fence(), uint32_t deviceMask_ = 0 )
+    AcquireNextImageInfoKHR( SwapchainKHR swapchain_ = SwapchainKHR(),
+                             uint64_t timeout_ = 0,
+                             Semaphore semaphore_ = Semaphore(),
+                             Fence fence_ = Fence(),
+                             uint32_t deviceMask_ = 0 )
       : swapchain( swapchain_ )
       , timeout( timeout_ )
       , semaphore( semaphore_ )
@@ -13764,7 +14062,14 @@ public:
 
   struct HdrMetadataEXT
   {
-    HdrMetadataEXT( XYColorEXT displayPrimaryRed_ = XYColorEXT(), XYColorEXT displayPrimaryGreen_ = XYColorEXT(), XYColorEXT displayPrimaryBlue_ = XYColorEXT(), XYColorEXT whitePoint_ = XYColorEXT(), float maxLuminance_ = 0, float minLuminance_ = 0, float maxContentLightLevel_ = 0, float maxFrameAverageLightLevel_ = 0 )
+    HdrMetadataEXT( XYColorEXT displayPrimaryRed_ = XYColorEXT(),
+                    XYColorEXT displayPrimaryGreen_ = XYColorEXT(),
+                    XYColorEXT displayPrimaryBlue_ = XYColorEXT(),
+                    XYColorEXT whitePoint_ = XYColorEXT(),
+                    float maxLuminance_ = 0,
+                    float minLuminance_ = 0,
+                    float maxContentLightLevel_ = 0,
+                    float maxFrameAverageLightLevel_ = 0 )
       : displayPrimaryRed( displayPrimaryRed_ )
       , displayPrimaryGreen( displayPrimaryGreen_ )
       , displayPrimaryBlue( displayPrimaryBlue_ )
@@ -13882,7 +14187,8 @@ public:
 
   struct PresentTimesInfoGOOGLE
   {
-    PresentTimesInfoGOOGLE( uint32_t swapchainCount_ = 0, const PresentTimeGOOGLE* pTimes_ = nullptr )
+    PresentTimesInfoGOOGLE( uint32_t swapchainCount_ = 0,
+                            const PresentTimeGOOGLE* pTimes_ = nullptr )
       : swapchainCount( swapchainCount_ )
       , pTimes( pTimes_ )
     {
@@ -13947,7 +14253,8 @@ public:
 #ifdef VK_USE_PLATFORM_IOS_MVK
   struct IOSSurfaceCreateInfoMVK
   {
-    IOSSurfaceCreateInfoMVK( IOSSurfaceCreateFlagsMVK flags_ = IOSSurfaceCreateFlagsMVK(), const void* pView_ = nullptr )
+    IOSSurfaceCreateInfoMVK( IOSSurfaceCreateFlagsMVK flags_ = IOSSurfaceCreateFlagsMVK(),
+                             const void* pView_ = nullptr )
       : flags( flags_ )
       , pView( pView_ )
     {
@@ -14013,7 +14320,8 @@ public:
 #ifdef VK_USE_PLATFORM_MACOS_MVK
   struct MacOSSurfaceCreateInfoMVK
   {
-    MacOSSurfaceCreateInfoMVK( MacOSSurfaceCreateFlagsMVK flags_ = MacOSSurfaceCreateFlagsMVK(), const void* pView_ = nullptr )
+    MacOSSurfaceCreateInfoMVK( MacOSSurfaceCreateFlagsMVK flags_ = MacOSSurfaceCreateFlagsMVK(),
+                               const void* pView_ = nullptr )
       : flags( flags_ )
       , pView( pView_ )
     {
@@ -14078,7 +14386,9 @@ public:
 
   struct PipelineViewportWScalingStateCreateInfoNV
   {
-    PipelineViewportWScalingStateCreateInfoNV( Bool32 viewportWScalingEnable_ = 0, uint32_t viewportCount_ = 0, const ViewportWScalingNV* pViewportWScalings_ = nullptr )
+    PipelineViewportWScalingStateCreateInfoNV( Bool32 viewportWScalingEnable_ = 0,
+                                               uint32_t viewportCount_ = 0,
+                                               const ViewportWScalingNV* pViewportWScalings_ = nullptr )
       : viewportWScalingEnable( viewportWScalingEnable_ )
       , viewportCount( viewportCount_ )
       , pViewportWScalings( pViewportWScalings_ )
@@ -14345,7 +14655,8 @@ public:
 
   struct DisplayPlaneInfo2KHR
   {
-    DisplayPlaneInfo2KHR( DisplayModeKHR mode_ = DisplayModeKHR(), uint32_t planeIndex_ = 0 )
+    DisplayPlaneInfo2KHR( DisplayModeKHR mode_ = DisplayModeKHR(),
+                          uint32_t planeIndex_ = 0 )
       : mode( mode_ )
       , planeIndex( planeIndex_ )
     {
@@ -14409,7 +14720,10 @@ public:
 
   struct PhysicalDevice16BitStorageFeatures
   {
-    PhysicalDevice16BitStorageFeatures( Bool32 storageBuffer16BitAccess_ = 0, Bool32 uniformAndStorageBuffer16BitAccess_ = 0, Bool32 storagePushConstant16_ = 0, Bool32 storageInputOutput16_ = 0 )
+    PhysicalDevice16BitStorageFeatures( Bool32 storageBuffer16BitAccess_ = 0,
+                                        Bool32 uniformAndStorageBuffer16BitAccess_ = 0,
+                                        Bool32 storagePushConstant16_ = 0,
+                                        Bool32 storageInputOutput16_ = 0 )
       : storageBuffer16BitAccess( storageBuffer16BitAccess_ )
       , uniformAndStorageBuffer16BitAccess( uniformAndStorageBuffer16BitAccess_ )
       , storagePushConstant16( storagePushConstant16_ )
@@ -14726,7 +15040,8 @@ public:
 
   struct MemoryDedicatedAllocateInfo
   {
-    MemoryDedicatedAllocateInfo( Image image_ = Image(), Buffer buffer_ = Buffer() )
+    MemoryDedicatedAllocateInfo( Image image_ = Image(),
+                                 Buffer buffer_ = Buffer() )
       : image( image_ )
       , buffer( buffer_ )
     {
@@ -15129,7 +15444,9 @@ public:
 
   struct PipelineCoverageToColorStateCreateInfoNV
   {
-    PipelineCoverageToColorStateCreateInfoNV( PipelineCoverageToColorStateCreateFlagsNV flags_ = PipelineCoverageToColorStateCreateFlagsNV(), Bool32 coverageToColorEnable_ = 0, uint32_t coverageToColorLocation_ = 0 )
+    PipelineCoverageToColorStateCreateInfoNV( PipelineCoverageToColorStateCreateFlagsNV flags_ = PipelineCoverageToColorStateCreateFlagsNV(),
+                                              Bool32 coverageToColorEnable_ = 0,
+                                              uint32_t coverageToColorLocation_ = 0 )
       : flags( flags_ )
       , coverageToColorEnable( coverageToColorEnable_ )
       , coverageToColorLocation( coverageToColorLocation_ )
@@ -15353,7 +15670,8 @@ public:
 
   struct ImageFormatListCreateInfoKHR
   {
-    ImageFormatListCreateInfoKHR( uint32_t viewFormatCount_ = 0, const Format* pViewFormats_ = nullptr )
+    ImageFormatListCreateInfoKHR( uint32_t viewFormatCount_ = 0,
+                                  const Format* pViewFormats_ = nullptr )
       : viewFormatCount( viewFormatCount_ )
       , pViewFormats( pViewFormats_ )
     {
@@ -15417,7 +15735,9 @@ public:
 
   struct ValidationCacheCreateInfoEXT
   {
-    ValidationCacheCreateInfoEXT( ValidationCacheCreateFlagsEXT flags_ = ValidationCacheCreateFlagsEXT(), size_t initialDataSize_ = 0, const void* pInitialData_ = nullptr )
+    ValidationCacheCreateInfoEXT( ValidationCacheCreateFlagsEXT flags_ = ValidationCacheCreateFlagsEXT(),
+                                  size_t initialDataSize_ = 0,
+                                  const void* pInitialData_ = nullptr )
       : flags( flags_ )
       , initialDataSize( initialDataSize_ )
       , pInitialData( pInitialData_ )
@@ -15662,7 +15982,8 @@ public:
 
   struct DebugUtilsLabelEXT
   {
-    DebugUtilsLabelEXT( const char* pLabelName_ = nullptr, std::array<float,4> const& color_ = { { 0, 0, 0, 0 } } )
+    DebugUtilsLabelEXT( const char* pLabelName_ = nullptr,
+                        std::array<float,4> const& color_ = { { 0, 0, 0, 0 } } )
       : pLabelName( pLabelName_ )
     {
       memcpy( &color, color_.data(), 4 * sizeof( float ) );
@@ -15836,7 +16157,15 @@ public:
 
   struct PhysicalDeviceConservativeRasterizationPropertiesEXT
   {
-    PhysicalDeviceConservativeRasterizationPropertiesEXT( float primitiveOverestimationSize_ = 0, float maxExtraPrimitiveOverestimationSize_ = 0, float extraPrimitiveOverestimationSizeGranularity_ = 0, Bool32 primitiveUnderestimation_ = 0, Bool32 conservativePointAndLineRasterization_ = 0, Bool32 degenerateTrianglesRasterized_ = 0, Bool32 degenerateLinesRasterized_ = 0, Bool32 fullyCoveredFragmentShaderInputVariable_ = 0, Bool32 conservativeRasterizationPostDepthCoverage_ = 0 )
+    PhysicalDeviceConservativeRasterizationPropertiesEXT( float primitiveOverestimationSize_ = 0,
+                                                          float maxExtraPrimitiveOverestimationSize_ = 0,
+                                                          float extraPrimitiveOverestimationSizeGranularity_ = 0,
+                                                          Bool32 primitiveUnderestimation_ = 0,
+                                                          Bool32 conservativePointAndLineRasterization_ = 0,
+                                                          Bool32 degenerateTrianglesRasterized_ = 0,
+                                                          Bool32 degenerateLinesRasterized_ = 0,
+                                                          Bool32 fullyCoveredFragmentShaderInputVariable_ = 0,
+                                                          Bool32 conservativeRasterizationPostDepthCoverage_ = 0 )
       : primitiveOverestimationSize( primitiveOverestimationSize_ )
       , maxExtraPrimitiveOverestimationSize( maxExtraPrimitiveOverestimationSize_ )
       , extraPrimitiveOverestimationSizeGranularity( extraPrimitiveOverestimationSizeGranularity_ )
@@ -16017,7 +16346,26 @@ public:
 
   struct PhysicalDeviceDescriptorIndexingFeaturesEXT
   {
-    PhysicalDeviceDescriptorIndexingFeaturesEXT( Bool32 shaderInputAttachmentArrayDynamicIndexing_ = 0, Bool32 shaderUniformTexelBufferArrayDynamicIndexing_ = 0, Bool32 shaderStorageTexelBufferArrayDynamicIndexing_ = 0, Bool32 shaderUniformBufferArrayNonUniformIndexing_ = 0, Bool32 shaderSampledImageArrayNonUniformIndexing_ = 0, Bool32 shaderStorageBufferArrayNonUniformIndexing_ = 0, Bool32 shaderStorageImageArrayNonUniformIndexing_ = 0, Bool32 shaderInputAttachmentArrayNonUniformIndexing_ = 0, Bool32 shaderUniformTexelBufferArrayNonUniformIndexing_ = 0, Bool32 shaderStorageTexelBufferArrayNonUniformIndexing_ = 0, Bool32 descriptorBindingUniformBufferUpdateAfterBind_ = 0, Bool32 descriptorBindingSampledImageUpdateAfterBind_ = 0, Bool32 descriptorBindingStorageImageUpdateAfterBind_ = 0, Bool32 descriptorBindingStorageBufferUpdateAfterBind_ = 0, Bool32 descriptorBindingUniformTexelBufferUpdateAfterBind_ = 0, Bool32 descriptorBindingStorageTexelBufferUpdateAfterBind_ = 0, Bool32 descriptorBindingUpdateUnusedWhilePending_ = 0, Bool32 descriptorBindingPartiallyBound_ = 0, Bool32 descriptorBindingVariableDescriptorCount_ = 0, Bool32 runtimeDescriptorArray_ = 0 )
+    PhysicalDeviceDescriptorIndexingFeaturesEXT( Bool32 shaderInputAttachmentArrayDynamicIndexing_ = 0,
+                                                 Bool32 shaderUniformTexelBufferArrayDynamicIndexing_ = 0,
+                                                 Bool32 shaderStorageTexelBufferArrayDynamicIndexing_ = 0,
+                                                 Bool32 shaderUniformBufferArrayNonUniformIndexing_ = 0,
+                                                 Bool32 shaderSampledImageArrayNonUniformIndexing_ = 0,
+                                                 Bool32 shaderStorageBufferArrayNonUniformIndexing_ = 0,
+                                                 Bool32 shaderStorageImageArrayNonUniformIndexing_ = 0,
+                                                 Bool32 shaderInputAttachmentArrayNonUniformIndexing_ = 0,
+                                                 Bool32 shaderUniformTexelBufferArrayNonUniformIndexing_ = 0,
+                                                 Bool32 shaderStorageTexelBufferArrayNonUniformIndexing_ = 0,
+                                                 Bool32 descriptorBindingUniformBufferUpdateAfterBind_ = 0,
+                                                 Bool32 descriptorBindingSampledImageUpdateAfterBind_ = 0,
+                                                 Bool32 descriptorBindingStorageImageUpdateAfterBind_ = 0,
+                                                 Bool32 descriptorBindingStorageBufferUpdateAfterBind_ = 0,
+                                                 Bool32 descriptorBindingUniformTexelBufferUpdateAfterBind_ = 0,
+                                                 Bool32 descriptorBindingStorageTexelBufferUpdateAfterBind_ = 0,
+                                                 Bool32 descriptorBindingUpdateUnusedWhilePending_ = 0,
+                                                 Bool32 descriptorBindingPartiallyBound_ = 0,
+                                                 Bool32 descriptorBindingVariableDescriptorCount_ = 0,
+                                                 Bool32 runtimeDescriptorArray_ = 0 )
       : shaderInputAttachmentArrayDynamicIndexing( shaderInputAttachmentArrayDynamicIndexing_ )
       , shaderUniformTexelBufferArrayDynamicIndexing( shaderUniformTexelBufferArrayDynamicIndexing_ )
       , shaderStorageTexelBufferArrayDynamicIndexing( shaderStorageTexelBufferArrayDynamicIndexing_ )
@@ -16315,7 +16663,8 @@ public:
 
   struct DescriptorSetVariableDescriptorCountAllocateInfoEXT
   {
-    DescriptorSetVariableDescriptorCountAllocateInfoEXT( uint32_t descriptorSetCount_ = 0, const uint32_t* pDescriptorCounts_ = nullptr )
+    DescriptorSetVariableDescriptorCountAllocateInfoEXT( uint32_t descriptorSetCount_ = 0,
+                                                         const uint32_t* pDescriptorCounts_ = nullptr )
       : descriptorSetCount( descriptorSetCount_ )
       , pDescriptorCounts( pDescriptorCounts_ )
     {
@@ -16407,7 +16756,8 @@ public:
 
   struct PipelineVertexInputDivisorStateCreateInfoEXT
   {
-    PipelineVertexInputDivisorStateCreateInfoEXT( uint32_t vertexBindingDivisorCount_ = 0, const VertexInputBindingDivisorDescriptionEXT* pVertexBindingDivisors_ = nullptr )
+    PipelineVertexInputDivisorStateCreateInfoEXT( uint32_t vertexBindingDivisorCount_ = 0,
+                                                  const VertexInputBindingDivisorDescriptionEXT* pVertexBindingDivisors_ = nullptr )
       : vertexBindingDivisorCount( vertexBindingDivisorCount_ )
       , pVertexBindingDivisors( pVertexBindingDivisors_ )
     {
@@ -16765,7 +17115,12 @@ public:
 
   struct PresentInfoKHR
   {
-    PresentInfoKHR( uint32_t waitSemaphoreCount_ = 0, const Semaphore* pWaitSemaphores_ = nullptr, uint32_t swapchainCount_ = 0, const SwapchainKHR* pSwapchains_ = nullptr, const uint32_t* pImageIndices_ = nullptr, Result* pResults_ = nullptr )
+    PresentInfoKHR( uint32_t waitSemaphoreCount_ = 0,
+                    const Semaphore* pWaitSemaphores_ = nullptr,
+                    uint32_t swapchainCount_ = 0,
+                    const SwapchainKHR* pSwapchains_ = nullptr,
+                    const uint32_t* pImageIndices_ = nullptr,
+                    Result* pResults_ = nullptr )
       : waitSemaphoreCount( waitSemaphoreCount_ )
       , pWaitSemaphores( pWaitSemaphores_ )
       , swapchainCount( swapchainCount_ )
@@ -16881,7 +17236,9 @@ public:
 
   struct PipelineDynamicStateCreateInfo
   {
-    PipelineDynamicStateCreateInfo( PipelineDynamicStateCreateFlags flags_ = PipelineDynamicStateCreateFlags(), uint32_t dynamicStateCount_ = 0, const DynamicState* pDynamicStates_ = nullptr )
+    PipelineDynamicStateCreateInfo( PipelineDynamicStateCreateFlags flags_ = PipelineDynamicStateCreateFlags(),
+                                    uint32_t dynamicStateCount_ = 0,
+                                    const DynamicState* pDynamicStates_ = nullptr )
       : flags( flags_ )
       , dynamicStateCount( dynamicStateCount_ )
       , pDynamicStates( pDynamicStates_ )
@@ -16961,7 +17318,14 @@ public:
 
   struct DescriptorUpdateTemplateCreateInfo
   {
-    DescriptorUpdateTemplateCreateInfo( DescriptorUpdateTemplateCreateFlags flags_ = DescriptorUpdateTemplateCreateFlags(), uint32_t descriptorUpdateEntryCount_ = 0, const DescriptorUpdateTemplateEntry* pDescriptorUpdateEntries_ = nullptr, DescriptorUpdateTemplateType templateType_ = DescriptorUpdateTemplateType::eDescriptorSet, DescriptorSetLayout descriptorSetLayout_ = DescriptorSetLayout(), PipelineBindPoint pipelineBindPoint_ = PipelineBindPoint::eGraphics, PipelineLayout pipelineLayout_ = PipelineLayout(), uint32_t set_ = 0 )
+    DescriptorUpdateTemplateCreateInfo( DescriptorUpdateTemplateCreateFlags flags_ = DescriptorUpdateTemplateCreateFlags(),
+                                        uint32_t descriptorUpdateEntryCount_ = 0,
+                                        const DescriptorUpdateTemplateEntry* pDescriptorUpdateEntries_ = nullptr,
+                                        DescriptorUpdateTemplateType templateType_ = DescriptorUpdateTemplateType::eDescriptorSet,
+                                        DescriptorSetLayout descriptorSetLayout_ = DescriptorSetLayout(),
+                                        PipelineBindPoint pipelineBindPoint_ = PipelineBindPoint::eGraphics,
+                                        PipelineLayout pipelineLayout_ = PipelineLayout(),
+                                        uint32_t set_ = 0 )
       : flags( flags_ )
       , descriptorUpdateEntryCount( descriptorUpdateEntryCount_ )
       , pDescriptorUpdateEntries( pDescriptorUpdateEntries_ )
@@ -17124,7 +17488,9 @@ public:
 
   struct DebugUtilsObjectNameInfoEXT
   {
-    DebugUtilsObjectNameInfoEXT( ObjectType objectType_ = ObjectType::eUnknown, uint64_t objectHandle_ = 0, const char* pObjectName_ = nullptr )
+    DebugUtilsObjectNameInfoEXT( ObjectType objectType_ = ObjectType::eUnknown,
+                                 uint64_t objectHandle_ = 0,
+                                 const char* pObjectName_ = nullptr )
       : objectType( objectType_ )
       , objectHandle( objectHandle_ )
       , pObjectName( pObjectName_ )
@@ -17197,7 +17563,11 @@ public:
 
   struct DebugUtilsObjectTagInfoEXT
   {
-    DebugUtilsObjectTagInfoEXT( ObjectType objectType_ = ObjectType::eUnknown, uint64_t objectHandle_ = 0, uint64_t tagName_ = 0, size_t tagSize_ = 0, const void* pTag_ = nullptr )
+    DebugUtilsObjectTagInfoEXT( ObjectType objectType_ = ObjectType::eUnknown,
+                                uint64_t objectHandle_ = 0,
+                                uint64_t tagName_ = 0,
+                                size_t tagSize_ = 0,
+                                const void* pTag_ = nullptr )
       : objectType( objectType_ )
       , objectHandle( objectHandle_ )
       , tagName( tagName_ )
@@ -17288,7 +17658,16 @@ public:
 
   struct DebugUtilsMessengerCallbackDataEXT
   {
-    DebugUtilsMessengerCallbackDataEXT( DebugUtilsMessengerCallbackDataFlagsEXT flags_ = DebugUtilsMessengerCallbackDataFlagsEXT(), const char* pMessageIdName_ = nullptr, int32_t messageIdNumber_ = 0, const char* pMessage_ = nullptr, uint32_t queueLabelCount_ = 0, DebugUtilsLabelEXT* pQueueLabels_ = nullptr, uint32_t cmdBufLabelCount_ = 0, DebugUtilsLabelEXT* pCmdBufLabels_ = nullptr, uint32_t objectCount_ = 0, DebugUtilsObjectNameInfoEXT* pObjects_ = nullptr )
+    DebugUtilsMessengerCallbackDataEXT( DebugUtilsMessengerCallbackDataFlagsEXT flags_ = DebugUtilsMessengerCallbackDataFlagsEXT(),
+                                        const char* pMessageIdName_ = nullptr,
+                                        int32_t messageIdNumber_ = 0,
+                                        const char* pMessage_ = nullptr,
+                                        uint32_t queueLabelCount_ = 0,
+                                        DebugUtilsLabelEXT* pQueueLabels_ = nullptr,
+                                        uint32_t cmdBufLabelCount_ = 0,
+                                        DebugUtilsLabelEXT* pCmdBufLabels_ = nullptr,
+                                        uint32_t objectCount_ = 0,
+                                        DebugUtilsObjectNameInfoEXT* pObjects_ = nullptr )
       : flags( flags_ )
       , pMessageIdName( pMessageIdName_ )
       , messageIdNumber( messageIdNumber_ )
@@ -17535,7 +17914,10 @@ public:
 
   struct DeviceQueueCreateInfo
   {
-    DeviceQueueCreateInfo( DeviceQueueCreateFlags flags_ = DeviceQueueCreateFlags(), uint32_t queueFamilyIndex_ = 0, uint32_t queueCount_ = 0, const float* pQueuePriorities_ = nullptr )
+    DeviceQueueCreateInfo( DeviceQueueCreateFlags flags_ = DeviceQueueCreateFlags(),
+                           uint32_t queueFamilyIndex_ = 0,
+                           uint32_t queueCount_ = 0,
+                           const float* pQueuePriorities_ = nullptr )
       : flags( flags_ )
       , queueFamilyIndex( queueFamilyIndex_ )
       , queueCount( queueCount_ )
@@ -17617,7 +17999,14 @@ public:
 
   struct DeviceCreateInfo
   {
-    DeviceCreateInfo( DeviceCreateFlags flags_ = DeviceCreateFlags(), uint32_t queueCreateInfoCount_ = 0, const DeviceQueueCreateInfo* pQueueCreateInfos_ = nullptr, uint32_t enabledLayerCount_ = 0, const char* const* ppEnabledLayerNames_ = nullptr, uint32_t enabledExtensionCount_ = 0, const char* const* ppEnabledExtensionNames_ = nullptr, const PhysicalDeviceFeatures* pEnabledFeatures_ = nullptr )
+    DeviceCreateInfo( DeviceCreateFlags flags_ = DeviceCreateFlags(),
+                      uint32_t queueCreateInfoCount_ = 0,
+                      const DeviceQueueCreateInfo* pQueueCreateInfos_ = nullptr,
+                      uint32_t enabledLayerCount_ = 0,
+                      const char* const* ppEnabledLayerNames_ = nullptr,
+                      uint32_t enabledExtensionCount_ = 0,
+                      const char* const* ppEnabledExtensionNames_ = nullptr,
+                      const PhysicalDeviceFeatures* pEnabledFeatures_ = nullptr )
       : flags( flags_ )
       , queueCreateInfoCount( queueCreateInfoCount_ )
       , pQueueCreateInfos( pQueueCreateInfos_ )
@@ -17735,7 +18124,9 @@ public:
 
   struct DeviceQueueInfo2
   {
-    DeviceQueueInfo2( DeviceQueueCreateFlags flags_ = DeviceQueueCreateFlags(), uint32_t queueFamilyIndex_ = 0, uint32_t queueIndex_ = 0 )
+    DeviceQueueInfo2( DeviceQueueCreateFlags flags_ = DeviceQueueCreateFlags(),
+                      uint32_t queueFamilyIndex_ = 0,
+                      uint32_t queueIndex_ = 0 )
       : flags( flags_ )
       , queueFamilyIndex( queueFamilyIndex_ )
       , queueIndex( queueIndex_ )
@@ -18012,7 +18403,8 @@ public:
 
   struct MemoryBarrier
   {
-    MemoryBarrier( AccessFlags srcAccessMask_ = AccessFlags(), AccessFlags dstAccessMask_ = AccessFlags() )
+    MemoryBarrier( AccessFlags srcAccessMask_ = AccessFlags(),
+                   AccessFlags dstAccessMask_ = AccessFlags() )
       : srcAccessMask( srcAccessMask_ )
       , dstAccessMask( dstAccessMask_ )
     {
@@ -18076,7 +18468,13 @@ public:
 
   struct BufferMemoryBarrier
   {
-    BufferMemoryBarrier( AccessFlags srcAccessMask_ = AccessFlags(), AccessFlags dstAccessMask_ = AccessFlags(), uint32_t srcQueueFamilyIndex_ = 0, uint32_t dstQueueFamilyIndex_ = 0, Buffer buffer_ = Buffer(), DeviceSize offset_ = 0, DeviceSize size_ = 0 )
+    BufferMemoryBarrier( AccessFlags srcAccessMask_ = AccessFlags(),
+                         AccessFlags dstAccessMask_ = AccessFlags(),
+                         uint32_t srcQueueFamilyIndex_ = 0,
+                         uint32_t dstQueueFamilyIndex_ = 0,
+                         Buffer buffer_ = Buffer(),
+                         DeviceSize offset_ = 0,
+                         DeviceSize size_ = 0 )
       : srcAccessMask( srcAccessMask_ )
       , dstAccessMask( dstAccessMask_ )
       , srcQueueFamilyIndex( srcQueueFamilyIndex_ )
@@ -18246,7 +18644,12 @@ public:
 
   struct BufferCreateInfo
   {
-    BufferCreateInfo( BufferCreateFlags flags_ = BufferCreateFlags(), DeviceSize size_ = 0, BufferUsageFlags usage_ = BufferUsageFlags(), SharingMode sharingMode_ = SharingMode::eExclusive, uint32_t queueFamilyIndexCount_ = 0, const uint32_t* pQueueFamilyIndices_ = nullptr )
+    BufferCreateInfo( BufferCreateFlags flags_ = BufferCreateFlags(),
+                      DeviceSize size_ = 0,
+                      BufferUsageFlags usage_ = BufferUsageFlags(),
+                      SharingMode sharingMode_ = SharingMode::eExclusive,
+                      uint32_t queueFamilyIndexCount_ = 0,
+                      const uint32_t* pQueueFamilyIndices_ = nullptr )
       : flags( flags_ )
       , size( size_ )
       , usage( usage_ )
@@ -18378,7 +18781,11 @@ public:
 
   struct DescriptorSetLayoutBinding
   {
-    DescriptorSetLayoutBinding( uint32_t binding_ = 0, DescriptorType descriptorType_ = DescriptorType::eSampler, uint32_t descriptorCount_ = 0, ShaderStageFlags stageFlags_ = ShaderStageFlags(), const Sampler* pImmutableSamplers_ = nullptr )
+    DescriptorSetLayoutBinding( uint32_t binding_ = 0,
+                                DescriptorType descriptorType_ = DescriptorType::eSampler,
+                                uint32_t descriptorCount_ = 0,
+                                ShaderStageFlags stageFlags_ = ShaderStageFlags(),
+                                const Sampler* pImmutableSamplers_ = nullptr )
       : binding( binding_ )
       , descriptorType( descriptorType_ )
       , descriptorCount( descriptorCount_ )
@@ -18456,7 +18863,11 @@ public:
 
   struct PipelineShaderStageCreateInfo
   {
-    PipelineShaderStageCreateInfo( PipelineShaderStageCreateFlags flags_ = PipelineShaderStageCreateFlags(), ShaderStageFlagBits stage_ = ShaderStageFlagBits::eVertex, ShaderModule module_ = ShaderModule(), const char* pName_ = nullptr, const SpecializationInfo* pSpecializationInfo_ = nullptr )
+    PipelineShaderStageCreateInfo( PipelineShaderStageCreateFlags flags_ = PipelineShaderStageCreateFlags(),
+                                   ShaderStageFlagBits stage_ = ShaderStageFlagBits::eVertex,
+                                   ShaderModule module_ = ShaderModule(),
+                                   const char* pName_ = nullptr,
+                                   const SpecializationInfo* pSpecializationInfo_ = nullptr )
       : flags( flags_ )
       , stage( stage_ )
       , module( module_ )
@@ -18547,7 +18958,9 @@ public:
 
   struct PushConstantRange
   {
-    PushConstantRange( ShaderStageFlags stageFlags_ = ShaderStageFlags(), uint32_t offset_ = 0, uint32_t size_ = 0 )
+    PushConstantRange( ShaderStageFlags stageFlags_ = ShaderStageFlags(),
+                       uint32_t offset_ = 0,
+                       uint32_t size_ = 0 )
       : stageFlags( stageFlags_ )
       , offset( offset_ )
       , size( size_ )
@@ -18607,7 +19020,11 @@ public:
 
   struct PipelineLayoutCreateInfo
   {
-    PipelineLayoutCreateInfo( PipelineLayoutCreateFlags flags_ = PipelineLayoutCreateFlags(), uint32_t setLayoutCount_ = 0, const DescriptorSetLayout* pSetLayouts_ = nullptr, uint32_t pushConstantRangeCount_ = 0, const PushConstantRange* pPushConstantRanges_ = nullptr )
+    PipelineLayoutCreateInfo( PipelineLayoutCreateFlags flags_ = PipelineLayoutCreateFlags(),
+                              uint32_t setLayoutCount_ = 0,
+                              const DescriptorSetLayout* pSetLayouts_ = nullptr,
+                              uint32_t pushConstantRangeCount_ = 0,
+                              const PushConstantRange* pPushConstantRanges_ = nullptr )
       : flags( flags_ )
       , setLayoutCount( setLayoutCount_ )
       , pSetLayouts( pSetLayouts_ )
@@ -18891,7 +19308,11 @@ public:
 
   struct PhysicalDeviceImageFormatInfo2
   {
-    PhysicalDeviceImageFormatInfo2( Format format_ = Format::eUndefined, ImageType type_ = ImageType::e1D, ImageTiling tiling_ = ImageTiling::eOptimal, ImageUsageFlags usage_ = ImageUsageFlags(), ImageCreateFlags flags_ = ImageCreateFlags() )
+    PhysicalDeviceImageFormatInfo2( Format format_ = Format::eUndefined,
+                                    ImageType type_ = ImageType::e1D,
+                                    ImageTiling tiling_ = ImageTiling::eOptimal,
+                                    ImageUsageFlags usage_ = ImageUsageFlags(),
+                                    ImageCreateFlags flags_ = ImageCreateFlags() )
       : format( format_ )
       , type( type_ )
       , tiling( tiling_ )
@@ -19015,7 +19436,11 @@ public:
 
   struct ComputePipelineCreateInfo
   {
-    ComputePipelineCreateInfo( PipelineCreateFlags flags_ = PipelineCreateFlags(), PipelineShaderStageCreateInfo stage_ = PipelineShaderStageCreateInfo(), PipelineLayout layout_ = PipelineLayout(), Pipeline basePipelineHandle_ = Pipeline(), int32_t basePipelineIndex_ = 0 )
+    ComputePipelineCreateInfo( PipelineCreateFlags flags_ = PipelineCreateFlags(),
+                               PipelineShaderStageCreateInfo stage_ = PipelineShaderStageCreateInfo(),
+                               PipelineLayout layout_ = PipelineLayout(),
+                               Pipeline basePipelineHandle_ = Pipeline(),
+                               int32_t basePipelineIndex_ = 0 )
       : flags( flags_ )
       , stage( stage_ )
       , layout( layout_ )
@@ -19134,7 +19559,14 @@ public:
 
   struct PipelineColorBlendAttachmentState
   {
-    PipelineColorBlendAttachmentState( Bool32 blendEnable_ = 0, BlendFactor srcColorBlendFactor_ = BlendFactor::eZero, BlendFactor dstColorBlendFactor_ = BlendFactor::eZero, BlendOp colorBlendOp_ = BlendOp::eAdd, BlendFactor srcAlphaBlendFactor_ = BlendFactor::eZero, BlendFactor dstAlphaBlendFactor_ = BlendFactor::eZero, BlendOp alphaBlendOp_ = BlendOp::eAdd, ColorComponentFlags colorWriteMask_ = ColorComponentFlags() )
+    PipelineColorBlendAttachmentState( Bool32 blendEnable_ = 0,
+                                       BlendFactor srcColorBlendFactor_ = BlendFactor::eZero,
+                                       BlendFactor dstColorBlendFactor_ = BlendFactor::eZero,
+                                       BlendOp colorBlendOp_ = BlendOp::eAdd,
+                                       BlendFactor srcAlphaBlendFactor_ = BlendFactor::eZero,
+                                       BlendFactor dstAlphaBlendFactor_ = BlendFactor::eZero,
+                                       BlendOp alphaBlendOp_ = BlendOp::eAdd,
+                                       ColorComponentFlags colorWriteMask_ = ColorComponentFlags() )
       : blendEnable( blendEnable_ )
       , srcColorBlendFactor( srcColorBlendFactor_ )
       , dstColorBlendFactor( dstColorBlendFactor_ )
@@ -19239,7 +19671,12 @@ public:
 
   struct PipelineColorBlendStateCreateInfo
   {
-    PipelineColorBlendStateCreateInfo( PipelineColorBlendStateCreateFlags flags_ = PipelineColorBlendStateCreateFlags(), Bool32 logicOpEnable_ = 0, LogicOp logicOp_ = LogicOp::eClear, uint32_t attachmentCount_ = 0, const PipelineColorBlendAttachmentState* pAttachments_ = nullptr, std::array<float,4> const& blendConstants_ = { { 0, 0, 0, 0 } } )
+    PipelineColorBlendStateCreateInfo( PipelineColorBlendStateCreateFlags flags_ = PipelineColorBlendStateCreateFlags(),
+                                       Bool32 logicOpEnable_ = 0,
+                                       LogicOp logicOp_ = LogicOp::eClear,
+                                       uint32_t attachmentCount_ = 0,
+                                       const PipelineColorBlendAttachmentState* pAttachments_ = nullptr,
+                                       std::array<float,4> const& blendConstants_ = { { 0, 0, 0, 0 } } )
       : flags( flags_ )
       , logicOpEnable( logicOpEnable_ )
       , logicOp( logicOp_ )
@@ -19646,7 +20083,12 @@ public:
 
   struct CommandBufferInheritanceInfo
   {
-    CommandBufferInheritanceInfo( RenderPass renderPass_ = RenderPass(), uint32_t subpass_ = 0, Framebuffer framebuffer_ = Framebuffer(), Bool32 occlusionQueryEnable_ = 0, QueryControlFlags queryFlags_ = QueryControlFlags(), QueryPipelineStatisticFlags pipelineStatistics_ = QueryPipelineStatisticFlags() )
+    CommandBufferInheritanceInfo( RenderPass renderPass_ = RenderPass(),
+                                  uint32_t subpass_ = 0,
+                                  Framebuffer framebuffer_ = Framebuffer(),
+                                  Bool32 occlusionQueryEnable_ = 0,
+                                  QueryControlFlags queryFlags_ = QueryControlFlags(),
+                                  QueryPipelineStatisticFlags pipelineStatistics_ = QueryPipelineStatisticFlags() )
       : renderPass( renderPass_ )
       , subpass( subpass_ )
       , framebuffer( framebuffer_ )
@@ -19746,7 +20188,8 @@ public:
 
   struct CommandBufferBeginInfo
   {
-    CommandBufferBeginInfo( CommandBufferUsageFlags flags_ = CommandBufferUsageFlags(), const CommandBufferInheritanceInfo* pInheritanceInfo_ = nullptr )
+    CommandBufferBeginInfo( CommandBufferUsageFlags flags_ = CommandBufferUsageFlags(),
+                            const CommandBufferInheritanceInfo* pInheritanceInfo_ = nullptr )
       : flags( flags_ )
       , pInheritanceInfo( pInheritanceInfo_ )
     {
@@ -19810,7 +20253,10 @@ public:
 
   struct QueryPoolCreateInfo
   {
-    QueryPoolCreateInfo( QueryPoolCreateFlags flags_ = QueryPoolCreateFlags(), QueryType queryType_ = QueryType::eOcclusion, uint32_t queryCount_ = 0, QueryPipelineStatisticFlags pipelineStatistics_ = QueryPipelineStatisticFlags() )
+    QueryPoolCreateInfo( QueryPoolCreateFlags flags_ = QueryPoolCreateFlags(),
+                         QueryType queryType_ = QueryType::eOcclusion,
+                         uint32_t queryCount_ = 0,
+                         QueryPipelineStatisticFlags pipelineStatistics_ = QueryPipelineStatisticFlags() )
       : flags( flags_ )
       , queryType( queryType_ )
       , queryCount( queryCount_ )
@@ -19926,7 +20372,9 @@ public:
 
   struct ImageSubresource
   {
-    ImageSubresource( ImageAspectFlags aspectMask_ = ImageAspectFlags(), uint32_t mipLevel_ = 0, uint32_t arrayLayer_ = 0 )
+    ImageSubresource( ImageAspectFlags aspectMask_ = ImageAspectFlags(),
+                      uint32_t mipLevel_ = 0,
+                      uint32_t arrayLayer_ = 0 )
       : aspectMask( aspectMask_ )
       , mipLevel( mipLevel_ )
       , arrayLayer( arrayLayer_ )
@@ -19986,7 +20434,10 @@ public:
 
   struct ImageSubresourceLayers
   {
-    ImageSubresourceLayers( ImageAspectFlags aspectMask_ = ImageAspectFlags(), uint32_t mipLevel_ = 0, uint32_t baseArrayLayer_ = 0, uint32_t layerCount_ = 0 )
+    ImageSubresourceLayers( ImageAspectFlags aspectMask_ = ImageAspectFlags(),
+                            uint32_t mipLevel_ = 0,
+                            uint32_t baseArrayLayer_ = 0,
+                            uint32_t layerCount_ = 0 )
       : aspectMask( aspectMask_ )
       , mipLevel( mipLevel_ )
       , baseArrayLayer( baseArrayLayer_ )
@@ -20055,7 +20506,11 @@ public:
 
   struct ImageSubresourceRange
   {
-    ImageSubresourceRange( ImageAspectFlags aspectMask_ = ImageAspectFlags(), uint32_t baseMipLevel_ = 0, uint32_t levelCount_ = 0, uint32_t baseArrayLayer_ = 0, uint32_t layerCount_ = 0 )
+    ImageSubresourceRange( ImageAspectFlags aspectMask_ = ImageAspectFlags(),
+                           uint32_t baseMipLevel_ = 0,
+                           uint32_t levelCount_ = 0,
+                           uint32_t baseArrayLayer_ = 0,
+                           uint32_t layerCount_ = 0 )
       : aspectMask( aspectMask_ )
       , baseMipLevel( baseMipLevel_ )
       , levelCount( levelCount_ )
@@ -20133,7 +20588,14 @@ public:
 
   struct ImageMemoryBarrier
   {
-    ImageMemoryBarrier( AccessFlags srcAccessMask_ = AccessFlags(), AccessFlags dstAccessMask_ = AccessFlags(), ImageLayout oldLayout_ = ImageLayout::eUndefined, ImageLayout newLayout_ = ImageLayout::eUndefined, uint32_t srcQueueFamilyIndex_ = 0, uint32_t dstQueueFamilyIndex_ = 0, Image image_ = Image(), ImageSubresourceRange subresourceRange_ = ImageSubresourceRange() )
+    ImageMemoryBarrier( AccessFlags srcAccessMask_ = AccessFlags(),
+                        AccessFlags dstAccessMask_ = AccessFlags(),
+                        ImageLayout oldLayout_ = ImageLayout::eUndefined,
+                        ImageLayout newLayout_ = ImageLayout::eUndefined,
+                        uint32_t srcQueueFamilyIndex_ = 0,
+                        uint32_t dstQueueFamilyIndex_ = 0,
+                        Image image_ = Image(),
+                        ImageSubresourceRange subresourceRange_ = ImageSubresourceRange() )
       : srcAccessMask( srcAccessMask_ )
       , dstAccessMask( dstAccessMask_ )
       , oldLayout( oldLayout_ )
@@ -20251,7 +20713,12 @@ public:
 
   struct ImageViewCreateInfo
   {
-    ImageViewCreateInfo( ImageViewCreateFlags flags_ = ImageViewCreateFlags(), Image image_ = Image(), ImageViewType viewType_ = ImageViewType::e1D, Format format_ = Format::eUndefined, ComponentMapping components_ = ComponentMapping(), ImageSubresourceRange subresourceRange_ = ImageSubresourceRange() )
+    ImageViewCreateInfo( ImageViewCreateFlags flags_ = ImageViewCreateFlags(),
+                         Image image_ = Image(),
+                         ImageViewType viewType_ = ImageViewType::e1D,
+                         Format format_ = Format::eUndefined,
+                         ComponentMapping components_ = ComponentMapping(),
+                         ImageSubresourceRange subresourceRange_ = ImageSubresourceRange() )
       : flags( flags_ )
       , image( image_ )
       , viewType( viewType_ )
@@ -20351,7 +20818,11 @@ public:
 
   struct ImageCopy
   {
-    ImageCopy( ImageSubresourceLayers srcSubresource_ = ImageSubresourceLayers(), Offset3D srcOffset_ = Offset3D(), ImageSubresourceLayers dstSubresource_ = ImageSubresourceLayers(), Offset3D dstOffset_ = Offset3D(), Extent3D extent_ = Extent3D() )
+    ImageCopy( ImageSubresourceLayers srcSubresource_ = ImageSubresourceLayers(),
+               Offset3D srcOffset_ = Offset3D(),
+               ImageSubresourceLayers dstSubresource_ = ImageSubresourceLayers(),
+               Offset3D dstOffset_ = Offset3D(),
+               Extent3D extent_ = Extent3D() )
       : srcSubresource( srcSubresource_ )
       , srcOffset( srcOffset_ )
       , dstSubresource( dstSubresource_ )
@@ -20429,7 +20900,10 @@ public:
 
   struct ImageBlit
   {
-    ImageBlit( ImageSubresourceLayers srcSubresource_ = ImageSubresourceLayers(), std::array<Offset3D,2> const& srcOffsets_ = { { Offset3D(), Offset3D() } }, ImageSubresourceLayers dstSubresource_ = ImageSubresourceLayers(), std::array<Offset3D,2> const& dstOffsets_ = { { Offset3D(), Offset3D() } } )
+    ImageBlit( ImageSubresourceLayers srcSubresource_ = ImageSubresourceLayers(),
+               std::array<Offset3D,2> const& srcOffsets_ = { { Offset3D(), Offset3D() } },
+               ImageSubresourceLayers dstSubresource_ = ImageSubresourceLayers(),
+               std::array<Offset3D,2> const& dstOffsets_ = { { Offset3D(), Offset3D() } } )
       : srcSubresource( srcSubresource_ )
       , dstSubresource( dstSubresource_ )
     {
@@ -20498,7 +20972,12 @@ public:
 
   struct BufferImageCopy
   {
-    BufferImageCopy( DeviceSize bufferOffset_ = 0, uint32_t bufferRowLength_ = 0, uint32_t bufferImageHeight_ = 0, ImageSubresourceLayers imageSubresource_ = ImageSubresourceLayers(), Offset3D imageOffset_ = Offset3D(), Extent3D imageExtent_ = Extent3D() )
+    BufferImageCopy( DeviceSize bufferOffset_ = 0,
+                     uint32_t bufferRowLength_ = 0,
+                     uint32_t bufferImageHeight_ = 0,
+                     ImageSubresourceLayers imageSubresource_ = ImageSubresourceLayers(),
+                     Offset3D imageOffset_ = Offset3D(),
+                     Extent3D imageExtent_ = Extent3D() )
       : bufferOffset( bufferOffset_ )
       , bufferRowLength( bufferRowLength_ )
       , bufferImageHeight( bufferImageHeight_ )
@@ -20585,7 +21064,11 @@ public:
 
   struct ImageResolve
   {
-    ImageResolve( ImageSubresourceLayers srcSubresource_ = ImageSubresourceLayers(), Offset3D srcOffset_ = Offset3D(), ImageSubresourceLayers dstSubresource_ = ImageSubresourceLayers(), Offset3D dstOffset_ = Offset3D(), Extent3D extent_ = Extent3D() )
+    ImageResolve( ImageSubresourceLayers srcSubresource_ = ImageSubresourceLayers(),
+                  Offset3D srcOffset_ = Offset3D(),
+                  ImageSubresourceLayers dstSubresource_ = ImageSubresourceLayers(),
+                  Offset3D dstOffset_ = Offset3D(),
+                  Extent3D extent_ = Extent3D() )
       : srcSubresource( srcSubresource_ )
       , srcOffset( srcOffset_ )
       , dstSubresource( dstSubresource_ )
@@ -20663,7 +21146,9 @@ public:
 
   struct ClearAttachment
   {
-    ClearAttachment( ImageAspectFlags aspectMask_ = ImageAspectFlags(), uint32_t colorAttachment_ = 0, ClearValue clearValue_ = ClearValue() )
+    ClearAttachment( ImageAspectFlags aspectMask_ = ImageAspectFlags(),
+                     uint32_t colorAttachment_ = 0,
+                     ClearValue clearValue_ = ClearValue() )
       : aspectMask( aspectMask_ )
       , colorAttachment( colorAttachment_ )
       , clearValue( clearValue_ )
@@ -20711,7 +21196,9 @@ public:
 
   struct InputAttachmentAspectReference
   {
-    InputAttachmentAspectReference( uint32_t subpass_ = 0, uint32_t inputAttachmentIndex_ = 0, ImageAspectFlags aspectMask_ = ImageAspectFlags() )
+    InputAttachmentAspectReference( uint32_t subpass_ = 0,
+                                    uint32_t inputAttachmentIndex_ = 0,
+                                    ImageAspectFlags aspectMask_ = ImageAspectFlags() )
       : subpass( subpass_ )
       , inputAttachmentIndex( inputAttachmentIndex_ )
       , aspectMask( aspectMask_ )
@@ -20773,7 +21260,8 @@ public:
 
   struct RenderPassInputAttachmentAspectCreateInfo
   {
-    RenderPassInputAttachmentAspectCreateInfo( uint32_t aspectReferenceCount_ = 0, const InputAttachmentAspectReference* pAspectReferences_ = nullptr )
+    RenderPassInputAttachmentAspectCreateInfo( uint32_t aspectReferenceCount_ = 0,
+                                               const InputAttachmentAspectReference* pAspectReferences_ = nullptr )
       : aspectReferenceCount( aspectReferenceCount_ )
       , pAspectReferences( pAspectReferences_ )
     {
@@ -21119,7 +21607,11 @@ public:
 
   struct SparseMemoryBind
   {
-    SparseMemoryBind( DeviceSize resourceOffset_ = 0, DeviceSize size_ = 0, DeviceMemory memory_ = DeviceMemory(), DeviceSize memoryOffset_ = 0, SparseMemoryBindFlags flags_ = SparseMemoryBindFlags() )
+    SparseMemoryBind( DeviceSize resourceOffset_ = 0,
+                      DeviceSize size_ = 0,
+                      DeviceMemory memory_ = DeviceMemory(),
+                      DeviceSize memoryOffset_ = 0,
+                      SparseMemoryBindFlags flags_ = SparseMemoryBindFlags() )
       : resourceOffset( resourceOffset_ )
       , size( size_ )
       , memory( memory_ )
@@ -21197,7 +21689,12 @@ public:
 
   struct SparseImageMemoryBind
   {
-    SparseImageMemoryBind( ImageSubresource subresource_ = ImageSubresource(), Offset3D offset_ = Offset3D(), Extent3D extent_ = Extent3D(), DeviceMemory memory_ = DeviceMemory(), DeviceSize memoryOffset_ = 0, SparseMemoryBindFlags flags_ = SparseMemoryBindFlags() )
+    SparseImageMemoryBind( ImageSubresource subresource_ = ImageSubresource(),
+                           Offset3D offset_ = Offset3D(),
+                           Extent3D extent_ = Extent3D(),
+                           DeviceMemory memory_ = DeviceMemory(),
+                           DeviceSize memoryOffset_ = 0,
+                           SparseMemoryBindFlags flags_ = SparseMemoryBindFlags() )
       : subresource( subresource_ )
       , offset( offset_ )
       , extent( extent_ )
@@ -21284,7 +21781,9 @@ public:
 
   struct SparseBufferMemoryBindInfo
   {
-    SparseBufferMemoryBindInfo( Buffer buffer_ = Buffer(), uint32_t bindCount_ = 0, const SparseMemoryBind* pBinds_ = nullptr )
+    SparseBufferMemoryBindInfo( Buffer buffer_ = Buffer(),
+                                uint32_t bindCount_ = 0,
+                                const SparseMemoryBind* pBinds_ = nullptr )
       : buffer( buffer_ )
       , bindCount( bindCount_ )
       , pBinds( pBinds_ )
@@ -21344,7 +21843,9 @@ public:
 
   struct SparseImageOpaqueMemoryBindInfo
   {
-    SparseImageOpaqueMemoryBindInfo( Image image_ = Image(), uint32_t bindCount_ = 0, const SparseMemoryBind* pBinds_ = nullptr )
+    SparseImageOpaqueMemoryBindInfo( Image image_ = Image(),
+                                     uint32_t bindCount_ = 0,
+                                     const SparseMemoryBind* pBinds_ = nullptr )
       : image( image_ )
       , bindCount( bindCount_ )
       , pBinds( pBinds_ )
@@ -21404,7 +21905,9 @@ public:
 
   struct SparseImageMemoryBindInfo
   {
-    SparseImageMemoryBindInfo( Image image_ = Image(), uint32_t bindCount_ = 0, const SparseImageMemoryBind* pBinds_ = nullptr )
+    SparseImageMemoryBindInfo( Image image_ = Image(),
+                               uint32_t bindCount_ = 0,
+                               const SparseImageMemoryBind* pBinds_ = nullptr )
       : image( image_ )
       , bindCount( bindCount_ )
       , pBinds( pBinds_ )
@@ -21464,7 +21967,16 @@ public:
 
   struct BindSparseInfo
   {
-    BindSparseInfo( uint32_t waitSemaphoreCount_ = 0, const Semaphore* pWaitSemaphores_ = nullptr, uint32_t bufferBindCount_ = 0, const SparseBufferMemoryBindInfo* pBufferBinds_ = nullptr, uint32_t imageOpaqueBindCount_ = 0, const SparseImageOpaqueMemoryBindInfo* pImageOpaqueBinds_ = nullptr, uint32_t imageBindCount_ = 0, const SparseImageMemoryBindInfo* pImageBinds_ = nullptr, uint32_t signalSemaphoreCount_ = 0, const Semaphore* pSignalSemaphores_ = nullptr )
+    BindSparseInfo( uint32_t waitSemaphoreCount_ = 0,
+                    const Semaphore* pWaitSemaphores_ = nullptr,
+                    uint32_t bufferBindCount_ = 0,
+                    const SparseBufferMemoryBindInfo* pBufferBinds_ = nullptr,
+                    uint32_t imageOpaqueBindCount_ = 0,
+                    const SparseImageOpaqueMemoryBindInfo* pImageOpaqueBinds_ = nullptr,
+                    uint32_t imageBindCount_ = 0,
+                    const SparseImageMemoryBindInfo* pImageBinds_ = nullptr,
+                    uint32_t signalSemaphoreCount_ = 0,
+                    const Semaphore* pSignalSemaphores_ = nullptr )
       : waitSemaphoreCount( waitSemaphoreCount_ )
       , pWaitSemaphores( pWaitSemaphores_ )
       , bufferBindCount( bufferBindCount_ )
@@ -21669,7 +22181,8 @@ public:
 
   struct CommandPoolCreateInfo
   {
-    CommandPoolCreateInfo( CommandPoolCreateFlags flags_ = CommandPoolCreateFlags(), uint32_t queueFamilyIndex_ = 0 )
+    CommandPoolCreateInfo( CommandPoolCreateFlags flags_ = CommandPoolCreateFlags(),
+                           uint32_t queueFamilyIndex_ = 0 )
       : flags( flags_ )
       , queueFamilyIndex( queueFamilyIndex_ )
     {
@@ -21843,7 +22356,19 @@ public:
 
   struct ImageCreateInfo
   {
-    ImageCreateInfo( ImageCreateFlags flags_ = ImageCreateFlags(), ImageType imageType_ = ImageType::e1D, Format format_ = Format::eUndefined, Extent3D extent_ = Extent3D(), uint32_t mipLevels_ = 0, uint32_t arrayLayers_ = 0, SampleCountFlagBits samples_ = SampleCountFlagBits::e1, ImageTiling tiling_ = ImageTiling::eOptimal, ImageUsageFlags usage_ = ImageUsageFlags(), SharingMode sharingMode_ = SharingMode::eExclusive, uint32_t queueFamilyIndexCount_ = 0, const uint32_t* pQueueFamilyIndices_ = nullptr, ImageLayout initialLayout_ = ImageLayout::eUndefined )
+    ImageCreateInfo( ImageCreateFlags flags_ = ImageCreateFlags(),
+                     ImageType imageType_ = ImageType::e1D,
+                     Format format_ = Format::eUndefined,
+                     Extent3D extent_ = Extent3D(),
+                     uint32_t mipLevels_ = 0,
+                     uint32_t arrayLayers_ = 0,
+                     SampleCountFlagBits samples_ = SampleCountFlagBits::e1,
+                     ImageTiling tiling_ = ImageTiling::eOptimal,
+                     ImageUsageFlags usage_ = ImageUsageFlags(),
+                     SharingMode sharingMode_ = SharingMode::eExclusive,
+                     uint32_t queueFamilyIndexCount_ = 0,
+                     const uint32_t* pQueueFamilyIndices_ = nullptr,
+                     ImageLayout initialLayout_ = ImageLayout::eUndefined )
       : flags( flags_ )
       , imageType( imageType_ )
       , format( format_ )
@@ -22006,7 +22531,13 @@ public:
 
   struct PipelineMultisampleStateCreateInfo
   {
-    PipelineMultisampleStateCreateInfo( PipelineMultisampleStateCreateFlags flags_ = PipelineMultisampleStateCreateFlags(), SampleCountFlagBits rasterizationSamples_ = SampleCountFlagBits::e1, Bool32 sampleShadingEnable_ = 0, float minSampleShading_ = 0, const SampleMask* pSampleMask_ = nullptr, Bool32 alphaToCoverageEnable_ = 0, Bool32 alphaToOneEnable_ = 0 )
+    PipelineMultisampleStateCreateInfo( PipelineMultisampleStateCreateFlags flags_ = PipelineMultisampleStateCreateFlags(),
+                                        SampleCountFlagBits rasterizationSamples_ = SampleCountFlagBits::e1,
+                                        Bool32 sampleShadingEnable_ = 0,
+                                        float minSampleShading_ = 0,
+                                        const SampleMask* pSampleMask_ = nullptr,
+                                        Bool32 alphaToCoverageEnable_ = 0,
+                                        Bool32 alphaToOneEnable_ = 0 )
       : flags( flags_ )
       , rasterizationSamples( rasterizationSamples_ )
       , sampleShadingEnable( sampleShadingEnable_ )
@@ -22115,7 +22646,23 @@ public:
 
   struct GraphicsPipelineCreateInfo
   {
-    GraphicsPipelineCreateInfo( PipelineCreateFlags flags_ = PipelineCreateFlags(), uint32_t stageCount_ = 0, const PipelineShaderStageCreateInfo* pStages_ = nullptr, const PipelineVertexInputStateCreateInfo* pVertexInputState_ = nullptr, const PipelineInputAssemblyStateCreateInfo* pInputAssemblyState_ = nullptr, const PipelineTessellationStateCreateInfo* pTessellationState_ = nullptr, const PipelineViewportStateCreateInfo* pViewportState_ = nullptr, const PipelineRasterizationStateCreateInfo* pRasterizationState_ = nullptr, const PipelineMultisampleStateCreateInfo* pMultisampleState_ = nullptr, const PipelineDepthStencilStateCreateInfo* pDepthStencilState_ = nullptr, const PipelineColorBlendStateCreateInfo* pColorBlendState_ = nullptr, const PipelineDynamicStateCreateInfo* pDynamicState_ = nullptr, PipelineLayout layout_ = PipelineLayout(), RenderPass renderPass_ = RenderPass(), uint32_t subpass_ = 0, Pipeline basePipelineHandle_ = Pipeline(), int32_t basePipelineIndex_ = 0 )
+    GraphicsPipelineCreateInfo( PipelineCreateFlags flags_ = PipelineCreateFlags(),
+                                uint32_t stageCount_ = 0,
+                                const PipelineShaderStageCreateInfo* pStages_ = nullptr,
+                                const PipelineVertexInputStateCreateInfo* pVertexInputState_ = nullptr,
+                                const PipelineInputAssemblyStateCreateInfo* pInputAssemblyState_ = nullptr,
+                                const PipelineTessellationStateCreateInfo* pTessellationState_ = nullptr,
+                                const PipelineViewportStateCreateInfo* pViewportState_ = nullptr,
+                                const PipelineRasterizationStateCreateInfo* pRasterizationState_ = nullptr,
+                                const PipelineMultisampleStateCreateInfo* pMultisampleState_ = nullptr,
+                                const PipelineDepthStencilStateCreateInfo* pDepthStencilState_ = nullptr,
+                                const PipelineColorBlendStateCreateInfo* pColorBlendState_ = nullptr,
+                                const PipelineDynamicStateCreateInfo* pDynamicState_ = nullptr,
+                                PipelineLayout layout_ = PipelineLayout(),
+                                RenderPass renderPass_ = RenderPass(),
+                                uint32_t subpass_ = 0,
+                                Pipeline basePipelineHandle_ = Pipeline(),
+                                int32_t basePipelineIndex_ = 0 )
       : flags( flags_ )
       , stageCount( stageCount_ )
       , pStages( pStages_ )
@@ -22642,7 +23189,11 @@ public:
 
   struct PhysicalDeviceSparseImageFormatInfo2
   {
-    PhysicalDeviceSparseImageFormatInfo2( Format format_ = Format::eUndefined, ImageType type_ = ImageType::e1D, SampleCountFlagBits samples_ = SampleCountFlagBits::e1, ImageUsageFlags usage_ = ImageUsageFlags(), ImageTiling tiling_ = ImageTiling::eOptimal )
+    PhysicalDeviceSparseImageFormatInfo2( Format format_ = Format::eUndefined,
+                                          ImageType type_ = ImageType::e1D,
+                                          SampleCountFlagBits samples_ = SampleCountFlagBits::e1,
+                                          ImageUsageFlags usage_ = ImageUsageFlags(),
+                                          ImageTiling tiling_ = ImageTiling::eOptimal )
       : format( format_ )
       , type( type_ )
       , samples( samples_ )
@@ -22735,7 +23286,10 @@ public:
 
   struct SampleLocationsInfoEXT
   {
-    SampleLocationsInfoEXT( SampleCountFlagBits sampleLocationsPerPixel_ = SampleCountFlagBits::e1, Extent2D sampleLocationGridSize_ = Extent2D(), uint32_t sampleLocationsCount_ = 0, const SampleLocationEXT* pSampleLocations_ = nullptr )
+    SampleLocationsInfoEXT( SampleCountFlagBits sampleLocationsPerPixel_ = SampleCountFlagBits::e1,
+                            Extent2D sampleLocationGridSize_ = Extent2D(),
+                            uint32_t sampleLocationsCount_ = 0,
+                            const SampleLocationEXT* pSampleLocations_ = nullptr )
       : sampleLocationsPerPixel( sampleLocationsPerPixel_ )
       , sampleLocationGridSize( sampleLocationGridSize_ )
       , sampleLocationsCount( sampleLocationsCount_ )
@@ -22817,7 +23371,8 @@ public:
 
   struct AttachmentSampleLocationsEXT
   {
-    AttachmentSampleLocationsEXT( uint32_t attachmentIndex_ = 0, SampleLocationsInfoEXT sampleLocationsInfo_ = SampleLocationsInfoEXT() )
+    AttachmentSampleLocationsEXT( uint32_t attachmentIndex_ = 0,
+                                  SampleLocationsInfoEXT sampleLocationsInfo_ = SampleLocationsInfoEXT() )
       : attachmentIndex( attachmentIndex_ )
       , sampleLocationsInfo( sampleLocationsInfo_ )
     {
@@ -22868,7 +23423,8 @@ public:
 
   struct SubpassSampleLocationsEXT
   {
-    SubpassSampleLocationsEXT( uint32_t subpassIndex_ = 0, SampleLocationsInfoEXT sampleLocationsInfo_ = SampleLocationsInfoEXT() )
+    SubpassSampleLocationsEXT( uint32_t subpassIndex_ = 0,
+                               SampleLocationsInfoEXT sampleLocationsInfo_ = SampleLocationsInfoEXT() )
       : subpassIndex( subpassIndex_ )
       , sampleLocationsInfo( sampleLocationsInfo_ )
     {
@@ -22919,7 +23475,10 @@ public:
 
   struct RenderPassSampleLocationsBeginInfoEXT
   {
-    RenderPassSampleLocationsBeginInfoEXT( uint32_t attachmentInitialSampleLocationsCount_ = 0, const AttachmentSampleLocationsEXT* pAttachmentInitialSampleLocations_ = nullptr, uint32_t postSubpassSampleLocationsCount_ = 0, const SubpassSampleLocationsEXT* pPostSubpassSampleLocations_ = nullptr )
+    RenderPassSampleLocationsBeginInfoEXT( uint32_t attachmentInitialSampleLocationsCount_ = 0,
+                                           const AttachmentSampleLocationsEXT* pAttachmentInitialSampleLocations_ = nullptr,
+                                           uint32_t postSubpassSampleLocationsCount_ = 0,
+                                           const SubpassSampleLocationsEXT* pPostSubpassSampleLocations_ = nullptr )
       : attachmentInitialSampleLocationsCount( attachmentInitialSampleLocationsCount_ )
       , pAttachmentInitialSampleLocations( pAttachmentInitialSampleLocations_ )
       , postSubpassSampleLocationsCount( postSubpassSampleLocationsCount_ )
@@ -23001,7 +23560,8 @@ public:
 
   struct PipelineSampleLocationsStateCreateInfoEXT
   {
-    PipelineSampleLocationsStateCreateInfoEXT( Bool32 sampleLocationsEnable_ = 0, SampleLocationsInfoEXT sampleLocationsInfo_ = SampleLocationsInfoEXT() )
+    PipelineSampleLocationsStateCreateInfoEXT( Bool32 sampleLocationsEnable_ = 0,
+                                               SampleLocationsInfoEXT sampleLocationsInfo_ = SampleLocationsInfoEXT() )
       : sampleLocationsEnable( sampleLocationsEnable_ )
       , sampleLocationsInfo( sampleLocationsInfo_ )
     {
@@ -23126,7 +23686,15 @@ public:
 
   struct AttachmentDescription
   {
-    AttachmentDescription( AttachmentDescriptionFlags flags_ = AttachmentDescriptionFlags(), Format format_ = Format::eUndefined, SampleCountFlagBits samples_ = SampleCountFlagBits::e1, AttachmentLoadOp loadOp_ = AttachmentLoadOp::eLoad, AttachmentStoreOp storeOp_ = AttachmentStoreOp::eStore, AttachmentLoadOp stencilLoadOp_ = AttachmentLoadOp::eLoad, AttachmentStoreOp stencilStoreOp_ = AttachmentStoreOp::eStore, ImageLayout initialLayout_ = ImageLayout::eUndefined, ImageLayout finalLayout_ = ImageLayout::eUndefined )
+    AttachmentDescription( AttachmentDescriptionFlags flags_ = AttachmentDescriptionFlags(),
+                           Format format_ = Format::eUndefined,
+                           SampleCountFlagBits samples_ = SampleCountFlagBits::e1,
+                           AttachmentLoadOp loadOp_ = AttachmentLoadOp::eLoad,
+                           AttachmentStoreOp storeOp_ = AttachmentStoreOp::eStore,
+                           AttachmentLoadOp stencilLoadOp_ = AttachmentLoadOp::eLoad,
+                           AttachmentStoreOp stencilStoreOp_ = AttachmentStoreOp::eStore,
+                           ImageLayout initialLayout_ = ImageLayout::eUndefined,
+                           ImageLayout finalLayout_ = ImageLayout::eUndefined )
       : flags( flags_ )
       , format( format_ )
       , samples( samples_ )
@@ -23293,7 +23861,10 @@ public:
 
   struct DescriptorPoolCreateInfo
   {
-    DescriptorPoolCreateInfo( DescriptorPoolCreateFlags flags_ = DescriptorPoolCreateFlags(), uint32_t maxSets_ = 0, uint32_t poolSizeCount_ = 0, const DescriptorPoolSize* pPoolSizes_ = nullptr )
+    DescriptorPoolCreateInfo( DescriptorPoolCreateFlags flags_ = DescriptorPoolCreateFlags(),
+                              uint32_t maxSets_ = 0,
+                              uint32_t poolSizeCount_ = 0,
+                              const DescriptorPoolSize* pPoolSizes_ = nullptr )
       : flags( flags_ )
       , maxSets( maxSets_ )
       , poolSizeCount( poolSizeCount_ )
@@ -23404,7 +23975,13 @@ public:
 
   struct SubpassDependency
   {
-    SubpassDependency( uint32_t srcSubpass_ = 0, uint32_t dstSubpass_ = 0, PipelineStageFlags srcStageMask_ = PipelineStageFlags(), PipelineStageFlags dstStageMask_ = PipelineStageFlags(), AccessFlags srcAccessMask_ = AccessFlags(), AccessFlags dstAccessMask_ = AccessFlags(), DependencyFlags dependencyFlags_ = DependencyFlags() )
+    SubpassDependency( uint32_t srcSubpass_ = 0,
+                       uint32_t dstSubpass_ = 0,
+                       PipelineStageFlags srcStageMask_ = PipelineStageFlags(),
+                       PipelineStageFlags dstStageMask_ = PipelineStageFlags(),
+                       AccessFlags srcAccessMask_ = AccessFlags(),
+                       AccessFlags dstAccessMask_ = AccessFlags(),
+                       DependencyFlags dependencyFlags_ = DependencyFlags() )
       : srcSubpass( srcSubpass_ )
       , dstSubpass( dstSubpass_ )
       , srcStageMask( srcStageMask_ )
@@ -23767,7 +24344,14 @@ public:
 
   struct DisplaySurfaceCreateInfoKHR
   {
-    DisplaySurfaceCreateInfoKHR( DisplaySurfaceCreateFlagsKHR flags_ = DisplaySurfaceCreateFlagsKHR(), DisplayModeKHR displayMode_ = DisplayModeKHR(), uint32_t planeIndex_ = 0, uint32_t planeStackIndex_ = 0, SurfaceTransformFlagBitsKHR transform_ = SurfaceTransformFlagBitsKHR::eIdentity, float globalAlpha_ = 0, DisplayPlaneAlphaFlagBitsKHR alphaMode_ = DisplayPlaneAlphaFlagBitsKHR::eOpaque, Extent2D imageExtent_ = Extent2D() )
+    DisplaySurfaceCreateInfoKHR( DisplaySurfaceCreateFlagsKHR flags_ = DisplaySurfaceCreateFlagsKHR(),
+                                 DisplayModeKHR displayMode_ = DisplayModeKHR(),
+                                 uint32_t planeIndex_ = 0,
+                                 uint32_t planeStackIndex_ = 0,
+                                 SurfaceTransformFlagBitsKHR transform_ = SurfaceTransformFlagBitsKHR::eIdentity,
+                                 float globalAlpha_ = 0,
+                                 DisplayPlaneAlphaFlagBitsKHR alphaMode_ = DisplayPlaneAlphaFlagBitsKHR::eOpaque,
+                                 Extent2D imageExtent_ = Extent2D() )
       : flags( flags_ )
       , displayMode( displayMode_ )
       , planeIndex( planeIndex_ )
@@ -24009,7 +24593,9 @@ public:
 
   struct DebugReportCallbackCreateInfoEXT
   {
-    DebugReportCallbackCreateInfoEXT( DebugReportFlagsEXT flags_ = DebugReportFlagsEXT(), PFN_vkDebugReportCallbackEXT pfnCallback_ = nullptr, void* pUserData_ = nullptr )
+    DebugReportCallbackCreateInfoEXT( DebugReportFlagsEXT flags_ = DebugReportFlagsEXT(),
+                                      PFN_vkDebugReportCallbackEXT pfnCallback_ = nullptr,
+                                      void* pUserData_ = nullptr )
       : flags( flags_ )
       , pfnCallback( pfnCallback_ )
       , pUserData( pUserData_ )
@@ -24124,7 +24710,9 @@ public:
 
   struct DebugMarkerObjectNameInfoEXT
   {
-    DebugMarkerObjectNameInfoEXT( DebugReportObjectTypeEXT objectType_ = DebugReportObjectTypeEXT::eUnknown, uint64_t object_ = 0, const char* pObjectName_ = nullptr )
+    DebugMarkerObjectNameInfoEXT( DebugReportObjectTypeEXT objectType_ = DebugReportObjectTypeEXT::eUnknown,
+                                  uint64_t object_ = 0,
+                                  const char* pObjectName_ = nullptr )
       : objectType( objectType_ )
       , object( object_ )
       , pObjectName( pObjectName_ )
@@ -24197,7 +24785,11 @@ public:
 
   struct DebugMarkerObjectTagInfoEXT
   {
-    DebugMarkerObjectTagInfoEXT( DebugReportObjectTypeEXT objectType_ = DebugReportObjectTypeEXT::eUnknown, uint64_t object_ = 0, uint64_t tagName_ = 0, size_t tagSize_ = 0, const void* pTag_ = nullptr )
+    DebugMarkerObjectTagInfoEXT( DebugReportObjectTypeEXT objectType_ = DebugReportObjectTypeEXT::eUnknown,
+                                 uint64_t object_ = 0,
+                                 uint64_t tagName_ = 0,
+                                 size_t tagSize_ = 0,
+                                 const void* pTag_ = nullptr )
       : objectType( objectType_ )
       , object( object_ )
       , tagName( tagName_ )
@@ -24488,7 +25080,8 @@ public:
 #ifdef VK_USE_PLATFORM_WIN32_NV
   struct ImportMemoryWin32HandleInfoNV
   {
-    ImportMemoryWin32HandleInfoNV( ExternalMemoryHandleTypeFlagsNV handleType_ = ExternalMemoryHandleTypeFlagsNV(), HANDLE handle_ = 0 )
+    ImportMemoryWin32HandleInfoNV( ExternalMemoryHandleTypeFlagsNV handleType_ = ExternalMemoryHandleTypeFlagsNV(),
+                                   HANDLE handle_ = 0 )
       : handleType( handleType_ )
       , handle( handle_ )
     {
@@ -24613,7 +25206,8 @@ public:
 
   struct ValidationFlagsEXT
   {
-    ValidationFlagsEXT( uint32_t disabledValidationCheckCount_ = 0, ValidationCheckEXT* pDisabledValidationChecks_ = nullptr )
+    ValidationFlagsEXT( uint32_t disabledValidationCheckCount_ = 0,
+                        ValidationCheckEXT* pDisabledValidationChecks_ = nullptr )
       : disabledValidationCheckCount( disabledValidationCheckCount_ )
       , pDisabledValidationChecks( pDisabledValidationChecks_ )
     {
@@ -24810,7 +25404,9 @@ public:
 
   struct IndirectCommandsTokenNVX
   {
-    IndirectCommandsTokenNVX( IndirectCommandsTokenTypeNVX tokenType_ = IndirectCommandsTokenTypeNVX::ePipeline, Buffer buffer_ = Buffer(), DeviceSize offset_ = 0 )
+    IndirectCommandsTokenNVX( IndirectCommandsTokenTypeNVX tokenType_ = IndirectCommandsTokenTypeNVX::ePipeline,
+                              Buffer buffer_ = Buffer(),
+                              DeviceSize offset_ = 0 )
       : tokenType( tokenType_ )
       , buffer( buffer_ )
       , offset( offset_ )
@@ -24870,7 +25466,10 @@ public:
 
   struct IndirectCommandsLayoutTokenNVX
   {
-    IndirectCommandsLayoutTokenNVX( IndirectCommandsTokenTypeNVX tokenType_ = IndirectCommandsTokenTypeNVX::ePipeline, uint32_t bindingUnit_ = 0, uint32_t dynamicCount_ = 0, uint32_t divisor_ = 0 )
+    IndirectCommandsLayoutTokenNVX( IndirectCommandsTokenTypeNVX tokenType_ = IndirectCommandsTokenTypeNVX::ePipeline,
+                                    uint32_t bindingUnit_ = 0,
+                                    uint32_t dynamicCount_ = 0,
+                                    uint32_t divisor_ = 0 )
       : tokenType( tokenType_ )
       , bindingUnit( bindingUnit_ )
       , dynamicCount( dynamicCount_ )
@@ -24939,7 +25538,10 @@ public:
 
   struct IndirectCommandsLayoutCreateInfoNVX
   {
-    IndirectCommandsLayoutCreateInfoNVX( PipelineBindPoint pipelineBindPoint_ = PipelineBindPoint::eGraphics, IndirectCommandsLayoutUsageFlagsNVX flags_ = IndirectCommandsLayoutUsageFlagsNVX(), uint32_t tokenCount_ = 0, const IndirectCommandsLayoutTokenNVX* pTokens_ = nullptr )
+    IndirectCommandsLayoutCreateInfoNVX( PipelineBindPoint pipelineBindPoint_ = PipelineBindPoint::eGraphics,
+                                         IndirectCommandsLayoutUsageFlagsNVX flags_ = IndirectCommandsLayoutUsageFlagsNVX(),
+                                         uint32_t tokenCount_ = 0,
+                                         const IndirectCommandsLayoutTokenNVX* pTokens_ = nullptr )
       : pipelineBindPoint( pipelineBindPoint_ )
       , flags( flags_ )
       , tokenCount( tokenCount_ )
@@ -25030,7 +25632,15 @@ public:
 
   struct ObjectTableCreateInfoNVX
   {
-    ObjectTableCreateInfoNVX( uint32_t objectCount_ = 0, const ObjectEntryTypeNVX* pObjectEntryTypes_ = nullptr, const uint32_t* pObjectEntryCounts_ = nullptr, const ObjectEntryUsageFlagsNVX* pObjectEntryUsageFlags_ = nullptr, uint32_t maxUniformBuffersPerDescriptor_ = 0, uint32_t maxStorageBuffersPerDescriptor_ = 0, uint32_t maxStorageImagesPerDescriptor_ = 0, uint32_t maxSampledImagesPerDescriptor_ = 0, uint32_t maxPipelineLayouts_ = 0 )
+    ObjectTableCreateInfoNVX( uint32_t objectCount_ = 0,
+                              const ObjectEntryTypeNVX* pObjectEntryTypes_ = nullptr,
+                              const uint32_t* pObjectEntryCounts_ = nullptr,
+                              const ObjectEntryUsageFlagsNVX* pObjectEntryUsageFlags_ = nullptr,
+                              uint32_t maxUniformBuffersPerDescriptor_ = 0,
+                              uint32_t maxStorageBuffersPerDescriptor_ = 0,
+                              uint32_t maxStorageImagesPerDescriptor_ = 0,
+                              uint32_t maxSampledImagesPerDescriptor_ = 0,
+                              uint32_t maxPipelineLayouts_ = 0 )
       : objectCount( objectCount_ )
       , pObjectEntryTypes( pObjectEntryTypes_ )
       , pObjectEntryCounts( pObjectEntryCounts_ )
@@ -25157,7 +25767,8 @@ public:
 
   struct ObjectTableEntryNVX
   {
-    ObjectTableEntryNVX( ObjectEntryTypeNVX type_ = ObjectEntryTypeNVX::eDescriptorSet, ObjectEntryUsageFlagsNVX flags_ = ObjectEntryUsageFlagsNVX() )
+    ObjectTableEntryNVX( ObjectEntryTypeNVX type_ = ObjectEntryTypeNVX::eDescriptorSet,
+                         ObjectEntryUsageFlagsNVX flags_ = ObjectEntryUsageFlagsNVX() )
       : type( type_ )
       , flags( flags_ )
     {
@@ -25208,14 +25819,17 @@ public:
 
   struct ObjectTablePipelineEntryNVX
   {
-    ObjectTablePipelineEntryNVX( ObjectEntryTypeNVX type_ = ObjectEntryTypeNVX::eDescriptorSet, ObjectEntryUsageFlagsNVX flags_ = ObjectEntryUsageFlagsNVX(), Pipeline pipeline_ = Pipeline() )
+    ObjectTablePipelineEntryNVX( ObjectEntryTypeNVX type_ = ObjectEntryTypeNVX::eDescriptorSet,
+                                 ObjectEntryUsageFlagsNVX flags_ = ObjectEntryUsageFlagsNVX(),
+                                 Pipeline pipeline_ = Pipeline() )
       : type( type_ )
       , flags( flags_ )
       , pipeline( pipeline_ )
     {
     }
 
-    explicit ObjectTablePipelineEntryNVX( ObjectTableEntryNVX const& objectTableEntryNVX, Pipeline pipeline_ = Pipeline() )
+    explicit ObjectTablePipelineEntryNVX( ObjectTableEntryNVX const& objectTableEntryNVX,
+                                          Pipeline pipeline_ = Pipeline() )
       : type( objectTableEntryNVX.type )
       , flags( objectTableEntryNVX.flags )
       , pipeline( pipeline_ )
@@ -25274,7 +25888,10 @@ public:
 
   struct ObjectTableDescriptorSetEntryNVX
   {
-    ObjectTableDescriptorSetEntryNVX( ObjectEntryTypeNVX type_ = ObjectEntryTypeNVX::eDescriptorSet, ObjectEntryUsageFlagsNVX flags_ = ObjectEntryUsageFlagsNVX(), PipelineLayout pipelineLayout_ = PipelineLayout(), DescriptorSet descriptorSet_ = DescriptorSet() )
+    ObjectTableDescriptorSetEntryNVX( ObjectEntryTypeNVX type_ = ObjectEntryTypeNVX::eDescriptorSet,
+                                      ObjectEntryUsageFlagsNVX flags_ = ObjectEntryUsageFlagsNVX(),
+                                      PipelineLayout pipelineLayout_ = PipelineLayout(),
+                                      DescriptorSet descriptorSet_ = DescriptorSet() )
       : type( type_ )
       , flags( flags_ )
       , pipelineLayout( pipelineLayout_ )
@@ -25282,7 +25899,9 @@ public:
     {
     }
 
-    explicit ObjectTableDescriptorSetEntryNVX( ObjectTableEntryNVX const& objectTableEntryNVX, PipelineLayout pipelineLayout_ = PipelineLayout(), DescriptorSet descriptorSet_ = DescriptorSet() )
+    explicit ObjectTableDescriptorSetEntryNVX( ObjectTableEntryNVX const& objectTableEntryNVX,
+                                               PipelineLayout pipelineLayout_ = PipelineLayout(),
+                                               DescriptorSet descriptorSet_ = DescriptorSet() )
       : type( objectTableEntryNVX.type )
       , flags( objectTableEntryNVX.flags )
       , pipelineLayout( pipelineLayout_ )
@@ -25350,14 +25969,17 @@ public:
 
   struct ObjectTableVertexBufferEntryNVX
   {
-    ObjectTableVertexBufferEntryNVX( ObjectEntryTypeNVX type_ = ObjectEntryTypeNVX::eDescriptorSet, ObjectEntryUsageFlagsNVX flags_ = ObjectEntryUsageFlagsNVX(), Buffer buffer_ = Buffer() )
+    ObjectTableVertexBufferEntryNVX( ObjectEntryTypeNVX type_ = ObjectEntryTypeNVX::eDescriptorSet,
+                                     ObjectEntryUsageFlagsNVX flags_ = ObjectEntryUsageFlagsNVX(),
+                                     Buffer buffer_ = Buffer() )
       : type( type_ )
       , flags( flags_ )
       , buffer( buffer_ )
     {
     }
 
-    explicit ObjectTableVertexBufferEntryNVX( ObjectTableEntryNVX const& objectTableEntryNVX, Buffer buffer_ = Buffer() )
+    explicit ObjectTableVertexBufferEntryNVX( ObjectTableEntryNVX const& objectTableEntryNVX,
+                                              Buffer buffer_ = Buffer() )
       : type( objectTableEntryNVX.type )
       , flags( objectTableEntryNVX.flags )
       , buffer( buffer_ )
@@ -25416,7 +26038,10 @@ public:
 
   struct ObjectTableIndexBufferEntryNVX
   {
-    ObjectTableIndexBufferEntryNVX( ObjectEntryTypeNVX type_ = ObjectEntryTypeNVX::eDescriptorSet, ObjectEntryUsageFlagsNVX flags_ = ObjectEntryUsageFlagsNVX(), Buffer buffer_ = Buffer(), IndexType indexType_ = IndexType::eUint16 )
+    ObjectTableIndexBufferEntryNVX( ObjectEntryTypeNVX type_ = ObjectEntryTypeNVX::eDescriptorSet,
+                                    ObjectEntryUsageFlagsNVX flags_ = ObjectEntryUsageFlagsNVX(),
+                                    Buffer buffer_ = Buffer(),
+                                    IndexType indexType_ = IndexType::eUint16 )
       : type( type_ )
       , flags( flags_ )
       , buffer( buffer_ )
@@ -25424,7 +26049,9 @@ public:
     {
     }
 
-    explicit ObjectTableIndexBufferEntryNVX( ObjectTableEntryNVX const& objectTableEntryNVX, Buffer buffer_ = Buffer(), IndexType indexType_ = IndexType::eUint16 )
+    explicit ObjectTableIndexBufferEntryNVX( ObjectTableEntryNVX const& objectTableEntryNVX,
+                                             Buffer buffer_ = Buffer(),
+                                             IndexType indexType_ = IndexType::eUint16 )
       : type( objectTableEntryNVX.type )
       , flags( objectTableEntryNVX.flags )
       , buffer( buffer_ )
@@ -25492,7 +26119,10 @@ public:
 
   struct ObjectTablePushConstantEntryNVX
   {
-    ObjectTablePushConstantEntryNVX( ObjectEntryTypeNVX type_ = ObjectEntryTypeNVX::eDescriptorSet, ObjectEntryUsageFlagsNVX flags_ = ObjectEntryUsageFlagsNVX(), PipelineLayout pipelineLayout_ = PipelineLayout(), ShaderStageFlags stageFlags_ = ShaderStageFlags() )
+    ObjectTablePushConstantEntryNVX( ObjectEntryTypeNVX type_ = ObjectEntryTypeNVX::eDescriptorSet,
+                                     ObjectEntryUsageFlagsNVX flags_ = ObjectEntryUsageFlagsNVX(),
+                                     PipelineLayout pipelineLayout_ = PipelineLayout(),
+                                     ShaderStageFlags stageFlags_ = ShaderStageFlags() )
       : type( type_ )
       , flags( flags_ )
       , pipelineLayout( pipelineLayout_ )
@@ -25500,7 +26130,9 @@ public:
     {
     }
 
-    explicit ObjectTablePushConstantEntryNVX( ObjectTableEntryNVX const& objectTableEntryNVX, PipelineLayout pipelineLayout_ = PipelineLayout(), ShaderStageFlags stageFlags_ = ShaderStageFlags() )
+    explicit ObjectTablePushConstantEntryNVX( ObjectTableEntryNVX const& objectTableEntryNVX,
+                                              PipelineLayout pipelineLayout_ = PipelineLayout(),
+                                              ShaderStageFlags stageFlags_ = ShaderStageFlags() )
       : type( objectTableEntryNVX.type )
       , flags( objectTableEntryNVX.flags )
       , pipelineLayout( pipelineLayout_ )
@@ -25594,7 +26226,9 @@ public:
 
   struct DescriptorSetLayoutCreateInfo
   {
-    DescriptorSetLayoutCreateInfo( DescriptorSetLayoutCreateFlags flags_ = DescriptorSetLayoutCreateFlags(), uint32_t bindingCount_ = 0, const DescriptorSetLayoutBinding* pBindings_ = nullptr )
+    DescriptorSetLayoutCreateInfo( DescriptorSetLayoutCreateFlags flags_ = DescriptorSetLayoutCreateFlags(),
+                                   uint32_t bindingCount_ = 0,
+                                   const DescriptorSetLayoutBinding* pBindings_ = nullptr )
       : flags( flags_ )
       , bindingCount( bindingCount_ )
       , pBindings( pBindings_ )
@@ -25768,7 +26402,9 @@ public:
 
   struct PhysicalDeviceExternalBufferInfo
   {
-    PhysicalDeviceExternalBufferInfo( BufferCreateFlags flags_ = BufferCreateFlags(), BufferUsageFlags usage_ = BufferUsageFlags(), ExternalMemoryHandleTypeFlagBits handleType_ = ExternalMemoryHandleTypeFlagBits::eOpaqueFd )
+    PhysicalDeviceExternalBufferInfo( BufferCreateFlags flags_ = BufferCreateFlags(),
+                                      BufferUsageFlags usage_ = BufferUsageFlags(),
+                                      ExternalMemoryHandleTypeFlagBits handleType_ = ExternalMemoryHandleTypeFlagBits::eOpaqueFd )
       : flags( flags_ )
       , usage( usage_ )
       , handleType( handleType_ )
@@ -26015,7 +26651,9 @@ public:
 #ifdef VK_USE_PLATFORM_WIN32_KHR
   struct ImportMemoryWin32HandleInfoKHR
   {
-    ImportMemoryWin32HandleInfoKHR( ExternalMemoryHandleTypeFlagBits handleType_ = ExternalMemoryHandleTypeFlagBits::eOpaqueFd, HANDLE handle_ = 0, LPCWSTR name_ = 0 )
+    ImportMemoryWin32HandleInfoKHR( ExternalMemoryHandleTypeFlagBits handleType_ = ExternalMemoryHandleTypeFlagBits::eOpaqueFd,
+                                    HANDLE handle_ = 0,
+                                    LPCWSTR name_ = 0 )
       : handleType( handleType_ )
       , handle( handle_ )
       , name( name_ )
@@ -26090,7 +26728,8 @@ public:
 #ifdef VK_USE_PLATFORM_WIN32_KHR
   struct MemoryGetWin32HandleInfoKHR
   {
-    MemoryGetWin32HandleInfoKHR( DeviceMemory memory_ = DeviceMemory(), ExternalMemoryHandleTypeFlagBits handleType_ = ExternalMemoryHandleTypeFlagBits::eOpaqueFd )
+    MemoryGetWin32HandleInfoKHR( DeviceMemory memory_ = DeviceMemory(),
+                                 ExternalMemoryHandleTypeFlagBits handleType_ = ExternalMemoryHandleTypeFlagBits::eOpaqueFd )
       : memory( memory_ )
       , handleType( handleType_ )
     {
@@ -26155,7 +26794,8 @@ public:
 
   struct ImportMemoryFdInfoKHR
   {
-    ImportMemoryFdInfoKHR( ExternalMemoryHandleTypeFlagBits handleType_ = ExternalMemoryHandleTypeFlagBits::eOpaqueFd, int fd_ = 0 )
+    ImportMemoryFdInfoKHR( ExternalMemoryHandleTypeFlagBits handleType_ = ExternalMemoryHandleTypeFlagBits::eOpaqueFd,
+                           int fd_ = 0 )
       : handleType( handleType_ )
       , fd( fd_ )
     {
@@ -26219,7 +26859,8 @@ public:
 
   struct MemoryGetFdInfoKHR
   {
-    MemoryGetFdInfoKHR( DeviceMemory memory_ = DeviceMemory(), ExternalMemoryHandleTypeFlagBits handleType_ = ExternalMemoryHandleTypeFlagBits::eOpaqueFd )
+    MemoryGetFdInfoKHR( DeviceMemory memory_ = DeviceMemory(),
+                        ExternalMemoryHandleTypeFlagBits handleType_ = ExternalMemoryHandleTypeFlagBits::eOpaqueFd )
       : memory( memory_ )
       , handleType( handleType_ )
     {
@@ -26283,7 +26924,8 @@ public:
 
   struct ImportMemoryHostPointerInfoEXT
   {
-    ImportMemoryHostPointerInfoEXT( ExternalMemoryHandleTypeFlagBits handleType_ = ExternalMemoryHandleTypeFlagBits::eOpaqueFd, void* pHostPointer_ = nullptr )
+    ImportMemoryHostPointerInfoEXT( ExternalMemoryHandleTypeFlagBits handleType_ = ExternalMemoryHandleTypeFlagBits::eOpaqueFd,
+                                    void* pHostPointer_ = nullptr )
       : handleType( handleType_ )
       , pHostPointer( pHostPointer_ )
     {
@@ -26617,7 +27259,8 @@ public:
 #ifdef VK_USE_PLATFORM_WIN32_KHR
   struct SemaphoreGetWin32HandleInfoKHR
   {
-    SemaphoreGetWin32HandleInfoKHR( Semaphore semaphore_ = Semaphore(), ExternalSemaphoreHandleTypeFlagBits handleType_ = ExternalSemaphoreHandleTypeFlagBits::eOpaqueFd )
+    SemaphoreGetWin32HandleInfoKHR( Semaphore semaphore_ = Semaphore(),
+                                    ExternalSemaphoreHandleTypeFlagBits handleType_ = ExternalSemaphoreHandleTypeFlagBits::eOpaqueFd )
       : semaphore( semaphore_ )
       , handleType( handleType_ )
     {
@@ -26682,7 +27325,8 @@ public:
 
   struct SemaphoreGetFdInfoKHR
   {
-    SemaphoreGetFdInfoKHR( Semaphore semaphore_ = Semaphore(), ExternalSemaphoreHandleTypeFlagBits handleType_ = ExternalSemaphoreHandleTypeFlagBits::eOpaqueFd )
+    SemaphoreGetFdInfoKHR( Semaphore semaphore_ = Semaphore(),
+                           ExternalSemaphoreHandleTypeFlagBits handleType_ = ExternalSemaphoreHandleTypeFlagBits::eOpaqueFd )
       : semaphore( semaphore_ )
       , handleType( handleType_ )
     {
@@ -26839,7 +27483,11 @@ public:
 #ifdef VK_USE_PLATFORM_WIN32_KHR
   struct ImportSemaphoreWin32HandleInfoKHR
   {
-    ImportSemaphoreWin32HandleInfoKHR( Semaphore semaphore_ = Semaphore(), SemaphoreImportFlags flags_ = SemaphoreImportFlags(), ExternalSemaphoreHandleTypeFlagBits handleType_ = ExternalSemaphoreHandleTypeFlagBits::eOpaqueFd, HANDLE handle_ = 0, LPCWSTR name_ = 0 )
+    ImportSemaphoreWin32HandleInfoKHR( Semaphore semaphore_ = Semaphore(),
+                                       SemaphoreImportFlags flags_ = SemaphoreImportFlags(),
+                                       ExternalSemaphoreHandleTypeFlagBits handleType_ = ExternalSemaphoreHandleTypeFlagBits::eOpaqueFd,
+                                       HANDLE handle_ = 0,
+                                       LPCWSTR name_ = 0 )
       : semaphore( semaphore_ )
       , flags( flags_ )
       , handleType( handleType_ )
@@ -26931,7 +27579,10 @@ public:
 
   struct ImportSemaphoreFdInfoKHR
   {
-    ImportSemaphoreFdInfoKHR( Semaphore semaphore_ = Semaphore(), SemaphoreImportFlags flags_ = SemaphoreImportFlags(), ExternalSemaphoreHandleTypeFlagBits handleType_ = ExternalSemaphoreHandleTypeFlagBits::eOpaqueFd, int fd_ = 0 )
+    ImportSemaphoreFdInfoKHR( Semaphore semaphore_ = Semaphore(),
+                              SemaphoreImportFlags flags_ = SemaphoreImportFlags(),
+                              ExternalSemaphoreHandleTypeFlagBits handleType_ = ExternalSemaphoreHandleTypeFlagBits::eOpaqueFd,
+                              int fd_ = 0 )
       : semaphore( semaphore_ )
       , flags( flags_ )
       , handleType( handleType_ )
@@ -27162,7 +27813,8 @@ public:
 #ifdef VK_USE_PLATFORM_WIN32_KHR
   struct FenceGetWin32HandleInfoKHR
   {
-    FenceGetWin32HandleInfoKHR( Fence fence_ = Fence(), ExternalFenceHandleTypeFlagBits handleType_ = ExternalFenceHandleTypeFlagBits::eOpaqueFd )
+    FenceGetWin32HandleInfoKHR( Fence fence_ = Fence(),
+                                ExternalFenceHandleTypeFlagBits handleType_ = ExternalFenceHandleTypeFlagBits::eOpaqueFd )
       : fence( fence_ )
       , handleType( handleType_ )
     {
@@ -27227,7 +27879,8 @@ public:
 
   struct FenceGetFdInfoKHR
   {
-    FenceGetFdInfoKHR( Fence fence_ = Fence(), ExternalFenceHandleTypeFlagBits handleType_ = ExternalFenceHandleTypeFlagBits::eOpaqueFd )
+    FenceGetFdInfoKHR( Fence fence_ = Fence(),
+                       ExternalFenceHandleTypeFlagBits handleType_ = ExternalFenceHandleTypeFlagBits::eOpaqueFd )
       : fence( fence_ )
       , handleType( handleType_ )
     {
@@ -27384,7 +28037,11 @@ public:
 #ifdef VK_USE_PLATFORM_WIN32_KHR
   struct ImportFenceWin32HandleInfoKHR
   {
-    ImportFenceWin32HandleInfoKHR( Fence fence_ = Fence(), FenceImportFlags flags_ = FenceImportFlags(), ExternalFenceHandleTypeFlagBits handleType_ = ExternalFenceHandleTypeFlagBits::eOpaqueFd, HANDLE handle_ = 0, LPCWSTR name_ = 0 )
+    ImportFenceWin32HandleInfoKHR( Fence fence_ = Fence(),
+                                   FenceImportFlags flags_ = FenceImportFlags(),
+                                   ExternalFenceHandleTypeFlagBits handleType_ = ExternalFenceHandleTypeFlagBits::eOpaqueFd,
+                                   HANDLE handle_ = 0,
+                                   LPCWSTR name_ = 0 )
       : fence( fence_ )
       , flags( flags_ )
       , handleType( handleType_ )
@@ -27476,7 +28133,10 @@ public:
 
   struct ImportFenceFdInfoKHR
   {
-    ImportFenceFdInfoKHR( Fence fence_ = Fence(), FenceImportFlags flags_ = FenceImportFlags(), ExternalFenceHandleTypeFlagBits handleType_ = ExternalFenceHandleTypeFlagBits::eOpaqueFd, int fd_ = 0 )
+    ImportFenceFdInfoKHR( Fence fence_ = Fence(),
+                          FenceImportFlags flags_ = FenceImportFlags(),
+                          ExternalFenceHandleTypeFlagBits handleType_ = ExternalFenceHandleTypeFlagBits::eOpaqueFd,
+                          int fd_ = 0 )
       : fence( fence_ )
       , flags( flags_ )
       , handleType( handleType_ )
@@ -27930,7 +28590,8 @@ public:
 
   struct MemoryAllocateFlagsInfo
   {
-    MemoryAllocateFlagsInfo( MemoryAllocateFlags flags_ = MemoryAllocateFlags(), uint32_t deviceMask_ = 0 )
+    MemoryAllocateFlagsInfo( MemoryAllocateFlags flags_ = MemoryAllocateFlags(),
+                             uint32_t deviceMask_ = 0 )
       : flags( flags_ )
       , deviceMask( deviceMask_ )
     {
@@ -28054,7 +28715,9 @@ public:
 
   struct DeviceGroupPresentInfoKHR
   {
-    DeviceGroupPresentInfoKHR( uint32_t swapchainCount_ = 0, const uint32_t* pDeviceMasks_ = nullptr, DeviceGroupPresentModeFlagBitsKHR mode_ = DeviceGroupPresentModeFlagBitsKHR::eLocal )
+    DeviceGroupPresentInfoKHR( uint32_t swapchainCount_ = 0,
+                               const uint32_t* pDeviceMasks_ = nullptr,
+                               DeviceGroupPresentModeFlagBitsKHR mode_ = DeviceGroupPresentModeFlagBitsKHR::eLocal )
       : swapchainCount( swapchainCount_ )
       , pDeviceMasks( pDeviceMasks_ )
       , mode( mode_ )
@@ -28208,7 +28871,22 @@ public:
 
   struct SwapchainCreateInfoKHR
   {
-    SwapchainCreateInfoKHR( SwapchainCreateFlagsKHR flags_ = SwapchainCreateFlagsKHR(), SurfaceKHR surface_ = SurfaceKHR(), uint32_t minImageCount_ = 0, Format imageFormat_ = Format::eUndefined, ColorSpaceKHR imageColorSpace_ = ColorSpaceKHR::eSrgbNonlinear, Extent2D imageExtent_ = Extent2D(), uint32_t imageArrayLayers_ = 0, ImageUsageFlags imageUsage_ = ImageUsageFlags(), SharingMode imageSharingMode_ = SharingMode::eExclusive, uint32_t queueFamilyIndexCount_ = 0, const uint32_t* pQueueFamilyIndices_ = nullptr, SurfaceTransformFlagBitsKHR preTransform_ = SurfaceTransformFlagBitsKHR::eIdentity, CompositeAlphaFlagBitsKHR compositeAlpha_ = CompositeAlphaFlagBitsKHR::eOpaque, PresentModeKHR presentMode_ = PresentModeKHR::eImmediate, Bool32 clipped_ = 0, SwapchainKHR oldSwapchain_ = SwapchainKHR() )
+    SwapchainCreateInfoKHR( SwapchainCreateFlagsKHR flags_ = SwapchainCreateFlagsKHR(),
+                            SurfaceKHR surface_ = SurfaceKHR(),
+                            uint32_t minImageCount_ = 0,
+                            Format imageFormat_ = Format::eUndefined,
+                            ColorSpaceKHR imageColorSpace_ = ColorSpaceKHR::eSrgbNonlinear,
+                            Extent2D imageExtent_ = Extent2D(),
+                            uint32_t imageArrayLayers_ = 0,
+                            ImageUsageFlags imageUsage_ = ImageUsageFlags(),
+                            SharingMode imageSharingMode_ = SharingMode::eExclusive,
+                            uint32_t queueFamilyIndexCount_ = 0,
+                            const uint32_t* pQueueFamilyIndices_ = nullptr,
+                            SurfaceTransformFlagBitsKHR preTransform_ = SurfaceTransformFlagBitsKHR::eIdentity,
+                            CompositeAlphaFlagBitsKHR compositeAlpha_ = CompositeAlphaFlagBitsKHR::eOpaque,
+                            PresentModeKHR presentMode_ = PresentModeKHR::eImmediate,
+                            Bool32 clipped_ = 0,
+                            SwapchainKHR oldSwapchain_ = SwapchainKHR() )
       : flags( flags_ )
       , surface( surface_ )
       , minImageCount( minImageCount_ )
@@ -28410,7 +29088,10 @@ public:
 
   struct ViewportSwizzleNV
   {
-    ViewportSwizzleNV( ViewportCoordinateSwizzleNV x_ = ViewportCoordinateSwizzleNV::ePositiveX, ViewportCoordinateSwizzleNV y_ = ViewportCoordinateSwizzleNV::ePositiveX, ViewportCoordinateSwizzleNV z_ = ViewportCoordinateSwizzleNV::ePositiveX, ViewportCoordinateSwizzleNV w_ = ViewportCoordinateSwizzleNV::ePositiveX )
+    ViewportSwizzleNV( ViewportCoordinateSwizzleNV x_ = ViewportCoordinateSwizzleNV::ePositiveX,
+                       ViewportCoordinateSwizzleNV y_ = ViewportCoordinateSwizzleNV::ePositiveX,
+                       ViewportCoordinateSwizzleNV z_ = ViewportCoordinateSwizzleNV::ePositiveX,
+                       ViewportCoordinateSwizzleNV w_ = ViewportCoordinateSwizzleNV::ePositiveX )
       : x( x_ )
       , y( y_ )
       , z( z_ )
@@ -28479,7 +29160,9 @@ public:
 
   struct PipelineViewportSwizzleStateCreateInfoNV
   {
-    PipelineViewportSwizzleStateCreateInfoNV( PipelineViewportSwizzleStateCreateFlagsNV flags_ = PipelineViewportSwizzleStateCreateFlagsNV(), uint32_t viewportCount_ = 0, const ViewportSwizzleNV* pViewportSwizzles_ = nullptr )
+    PipelineViewportSwizzleStateCreateInfoNV( PipelineViewportSwizzleStateCreateFlagsNV flags_ = PipelineViewportSwizzleStateCreateFlagsNV(),
+                                              uint32_t viewportCount_ = 0,
+                                              const ViewportSwizzleNV* pViewportSwizzles_ = nullptr )
       : flags( flags_ )
       , viewportCount( viewportCount_ )
       , pViewportSwizzles( pViewportSwizzles_ )
@@ -28558,7 +29241,10 @@ public:
 
   struct PipelineDiscardRectangleStateCreateInfoEXT
   {
-    PipelineDiscardRectangleStateCreateInfoEXT( PipelineDiscardRectangleStateCreateFlagsEXT flags_ = PipelineDiscardRectangleStateCreateFlagsEXT(), DiscardRectangleModeEXT discardRectangleMode_ = DiscardRectangleModeEXT::eInclusive, uint32_t discardRectangleCount_ = 0, const Rect2D* pDiscardRectangles_ = nullptr )
+    PipelineDiscardRectangleStateCreateInfoEXT( PipelineDiscardRectangleStateCreateFlagsEXT flags_ = PipelineDiscardRectangleStateCreateFlagsEXT(),
+                                                DiscardRectangleModeEXT discardRectangleMode_ = DiscardRectangleModeEXT::eInclusive,
+                                                uint32_t discardRectangleCount_ = 0,
+                                                const Rect2D* pDiscardRectangles_ = nullptr )
       : flags( flags_ )
       , discardRectangleMode( discardRectangleMode_ )
       , discardRectangleCount( discardRectangleCount_ )
@@ -28666,7 +29352,16 @@ public:
 
   struct SubpassDescription
   {
-    SubpassDescription( SubpassDescriptionFlags flags_ = SubpassDescriptionFlags(), PipelineBindPoint pipelineBindPoint_ = PipelineBindPoint::eGraphics, uint32_t inputAttachmentCount_ = 0, const AttachmentReference* pInputAttachments_ = nullptr, uint32_t colorAttachmentCount_ = 0, const AttachmentReference* pColorAttachments_ = nullptr, const AttachmentReference* pResolveAttachments_ = nullptr, const AttachmentReference* pDepthStencilAttachment_ = nullptr, uint32_t preserveAttachmentCount_ = 0, const uint32_t* pPreserveAttachments_ = nullptr )
+    SubpassDescription( SubpassDescriptionFlags flags_ = SubpassDescriptionFlags(),
+                        PipelineBindPoint pipelineBindPoint_ = PipelineBindPoint::eGraphics,
+                        uint32_t inputAttachmentCount_ = 0,
+                        const AttachmentReference* pInputAttachments_ = nullptr,
+                        uint32_t colorAttachmentCount_ = 0,
+                        const AttachmentReference* pColorAttachments_ = nullptr,
+                        const AttachmentReference* pResolveAttachments_ = nullptr,
+                        const AttachmentReference* pDepthStencilAttachment_ = nullptr,
+                        uint32_t preserveAttachmentCount_ = 0,
+                        const uint32_t* pPreserveAttachments_ = nullptr )
       : flags( flags_ )
       , pipelineBindPoint( pipelineBindPoint_ )
       , inputAttachmentCount( inputAttachmentCount_ )
@@ -28789,7 +29484,13 @@ public:
 
   struct RenderPassCreateInfo
   {
-    RenderPassCreateInfo( RenderPassCreateFlags flags_ = RenderPassCreateFlags(), uint32_t attachmentCount_ = 0, const AttachmentDescription* pAttachments_ = nullptr, uint32_t subpassCount_ = 0, const SubpassDescription* pSubpasses_ = nullptr, uint32_t dependencyCount_ = 0, const SubpassDependency* pDependencies_ = nullptr )
+    RenderPassCreateInfo( RenderPassCreateFlags flags_ = RenderPassCreateFlags(),
+                          uint32_t attachmentCount_ = 0,
+                          const AttachmentDescription* pAttachments_ = nullptr,
+                          uint32_t subpassCount_ = 0,
+                          const SubpassDescription* pSubpasses_ = nullptr,
+                          uint32_t dependencyCount_ = 0,
+                          const SubpassDependency* pDependencies_ = nullptr )
       : flags( flags_ )
       , attachmentCount( attachmentCount_ )
       , pAttachments( pAttachments_ )
@@ -29093,7 +29794,14 @@ public:
 
   struct SamplerYcbcrConversionCreateInfo
   {
-    SamplerYcbcrConversionCreateInfo( Format format_ = Format::eUndefined, SamplerYcbcrModelConversion ycbcrModel_ = SamplerYcbcrModelConversion::eRgbIdentity, SamplerYcbcrRange ycbcrRange_ = SamplerYcbcrRange::eItuFull, ComponentMapping components_ = ComponentMapping(), ChromaLocation xChromaOffset_ = ChromaLocation::eCositedEven, ChromaLocation yChromaOffset_ = ChromaLocation::eCositedEven, Filter chromaFilter_ = Filter::eNearest, Bool32 forceExplicitReconstruction_ = 0 )
+    SamplerYcbcrConversionCreateInfo( Format format_ = Format::eUndefined,
+                                      SamplerYcbcrModelConversion ycbcrModel_ = SamplerYcbcrModelConversion::eRgbIdentity,
+                                      SamplerYcbcrRange ycbcrRange_ = SamplerYcbcrRange::eItuFull,
+                                      ComponentMapping components_ = ComponentMapping(),
+                                      ChromaLocation xChromaOffset_ = ChromaLocation::eCositedEven,
+                                      ChromaLocation yChromaOffset_ = ChromaLocation::eCositedEven,
+                                      Filter chromaFilter_ = Filter::eNearest,
+                                      Bool32 forceExplicitReconstruction_ = 0 )
       : format( format_ )
       , ycbcrModel( ycbcrModel_ )
       , ycbcrRange( ycbcrRange_ )
@@ -29264,7 +29972,9 @@ public:
 
   struct PipelineColorBlendAdvancedStateCreateInfoEXT
   {
-    PipelineColorBlendAdvancedStateCreateInfoEXT( Bool32 srcPremultiplied_ = 0, Bool32 dstPremultiplied_ = 0, BlendOverlapEXT blendOverlap_ = BlendOverlapEXT::eUncorrelated )
+    PipelineColorBlendAdvancedStateCreateInfoEXT( Bool32 srcPremultiplied_ = 0,
+                                                  Bool32 dstPremultiplied_ = 0,
+                                                  BlendOverlapEXT blendOverlap_ = BlendOverlapEXT::eUncorrelated )
       : srcPremultiplied( srcPremultiplied_ )
       , dstPremultiplied( dstPremultiplied_ )
       , blendOverlap( blendOverlap_ )
@@ -29345,7 +30055,11 @@ public:
 
   struct PipelineCoverageModulationStateCreateInfoNV
   {
-    PipelineCoverageModulationStateCreateInfoNV( PipelineCoverageModulationStateCreateFlagsNV flags_ = PipelineCoverageModulationStateCreateFlagsNV(), CoverageModulationModeNV coverageModulationMode_ = CoverageModulationModeNV::eNone, Bool32 coverageModulationTableEnable_ = 0, uint32_t coverageModulationTableCount_ = 0, const float* pCoverageModulationTable_ = nullptr )
+    PipelineCoverageModulationStateCreateInfoNV( PipelineCoverageModulationStateCreateFlagsNV flags_ = PipelineCoverageModulationStateCreateFlagsNV(),
+                                                 CoverageModulationModeNV coverageModulationMode_ = CoverageModulationModeNV::eNone,
+                                                 Bool32 coverageModulationTableEnable_ = 0,
+                                                 uint32_t coverageModulationTableCount_ = 0,
+                                                 const float* pCoverageModulationTable_ = nullptr )
       : flags( flags_ )
       , coverageModulationMode( coverageModulationMode_ )
       , coverageModulationTableEnable( coverageModulationTableEnable_ )
@@ -29566,7 +30280,11 @@ public:
 
   struct DebugUtilsMessengerCreateInfoEXT
   {
-    DebugUtilsMessengerCreateInfoEXT( DebugUtilsMessengerCreateFlagsEXT flags_ = DebugUtilsMessengerCreateFlagsEXT(), DebugUtilsMessageSeverityFlagsEXT messageSeverity_ = DebugUtilsMessageSeverityFlagsEXT(), DebugUtilsMessageTypeFlagsEXT messageType_ = DebugUtilsMessageTypeFlagsEXT(), PFN_vkDebugUtilsMessengerCallbackEXT pfnUserCallback_ = nullptr, void* pUserData_ = nullptr )
+    DebugUtilsMessengerCreateInfoEXT( DebugUtilsMessengerCreateFlagsEXT flags_ = DebugUtilsMessengerCreateFlagsEXT(),
+                                      DebugUtilsMessageSeverityFlagsEXT messageSeverity_ = DebugUtilsMessageSeverityFlagsEXT(),
+                                      DebugUtilsMessageTypeFlagsEXT messageType_ = DebugUtilsMessageTypeFlagsEXT(),
+                                      PFN_vkDebugUtilsMessengerCallbackEXT pfnUserCallback_ = nullptr,
+                                      void* pUserData_ = nullptr )
       : flags( flags_ )
       , messageSeverity( messageSeverity_ )
       , messageType( messageType_ )
@@ -29664,7 +30382,9 @@ public:
 
   struct PipelineRasterizationConservativeStateCreateInfoEXT
   {
-    PipelineRasterizationConservativeStateCreateInfoEXT( PipelineRasterizationConservativeStateCreateFlagsEXT flags_ = PipelineRasterizationConservativeStateCreateFlagsEXT(), ConservativeRasterizationModeEXT conservativeRasterizationMode_ = ConservativeRasterizationModeEXT::eDisabled, float extraPrimitiveOverestimationSize_ = 0 )
+    PipelineRasterizationConservativeStateCreateInfoEXT( PipelineRasterizationConservativeStateCreateFlagsEXT flags_ = PipelineRasterizationConservativeStateCreateFlagsEXT(),
+                                                         ConservativeRasterizationModeEXT conservativeRasterizationMode_ = ConservativeRasterizationModeEXT::eDisabled,
+                                                         float extraPrimitiveOverestimationSize_ = 0 )
       : flags( flags_ )
       , conservativeRasterizationMode( conservativeRasterizationMode_ )
       , extraPrimitiveOverestimationSize( extraPrimitiveOverestimationSize_ )
@@ -29765,7 +30485,8 @@ public:
 
   struct DescriptorSetLayoutBindingFlagsCreateInfoEXT
   {
-    DescriptorSetLayoutBindingFlagsCreateInfoEXT( uint32_t bindingCount_ = 0, const DescriptorBindingFlagsEXT* pBindingFlags_ = nullptr )
+    DescriptorSetLayoutBindingFlagsCreateInfoEXT( uint32_t bindingCount_ = 0,
+                                                  const DescriptorBindingFlagsEXT* pBindingFlags_ = nullptr )
       : bindingCount( bindingCount_ )
       , pBindingFlags( pBindingFlags_ )
     {
@@ -31276,7 +31997,13 @@ public:
 
   struct SubmitInfo
   {
-    SubmitInfo( uint32_t waitSemaphoreCount_ = 0, const Semaphore* pWaitSemaphores_ = nullptr, const PipelineStageFlags* pWaitDstStageMask_ = nullptr, uint32_t commandBufferCount_ = 0, const CommandBuffer* pCommandBuffers_ = nullptr, uint32_t signalSemaphoreCount_ = 0, const Semaphore* pSignalSemaphores_ = nullptr )
+    SubmitInfo( uint32_t waitSemaphoreCount_ = 0,
+                const Semaphore* pWaitSemaphores_ = nullptr,
+                const PipelineStageFlags* pWaitDstStageMask_ = nullptr,
+                uint32_t commandBufferCount_ = 0,
+                const CommandBuffer* pCommandBuffers_ = nullptr,
+                uint32_t signalSemaphoreCount_ = 0,
+                const Semaphore* pSignalSemaphores_ = nullptr )
       : waitSemaphoreCount( waitSemaphoreCount_ )
       , pWaitSemaphores( pWaitSemaphores_ )
       , pWaitDstStageMask( pWaitDstStageMask_ )
@@ -37745,7 +38472,16 @@ public:
 
   struct CmdProcessCommandsInfoNVX
   {
-    CmdProcessCommandsInfoNVX( ObjectTableNVX objectTable_ = ObjectTableNVX(), IndirectCommandsLayoutNVX indirectCommandsLayout_ = IndirectCommandsLayoutNVX(), uint32_t indirectCommandsTokenCount_ = 0, const IndirectCommandsTokenNVX* pIndirectCommandsTokens_ = nullptr, uint32_t maxSequencesCount_ = 0, CommandBuffer targetCommandBuffer_ = CommandBuffer(), Buffer sequencesCountBuffer_ = Buffer(), DeviceSize sequencesCountOffset_ = 0, Buffer sequencesIndexBuffer_ = Buffer(), DeviceSize sequencesIndexOffset_ = 0 )
+    CmdProcessCommandsInfoNVX( ObjectTableNVX objectTable_ = ObjectTableNVX(),
+                               IndirectCommandsLayoutNVX indirectCommandsLayout_ = IndirectCommandsLayoutNVX(),
+                               uint32_t indirectCommandsTokenCount_ = 0,
+                               const IndirectCommandsTokenNVX* pIndirectCommandsTokens_ = nullptr,
+                               uint32_t maxSequencesCount_ = 0,
+                               CommandBuffer targetCommandBuffer_ = CommandBuffer(),
+                               Buffer sequencesCountBuffer_ = Buffer(),
+                               DeviceSize sequencesCountOffset_ = 0,
+                               Buffer sequencesIndexBuffer_ = Buffer(),
+                               DeviceSize sequencesIndexOffset_ = 0 )
       : objectTable( objectTable_ )
       , indirectCommandsLayout( indirectCommandsLayout_ )
       , indirectCommandsTokenCount( indirectCommandsTokenCount_ )
@@ -38783,7 +39519,8 @@ public:
 
   struct DeviceGroupDeviceCreateInfo
   {
-    DeviceGroupDeviceCreateInfo( uint32_t physicalDeviceCount_ = 0, const PhysicalDevice* pPhysicalDevices_ = nullptr )
+    DeviceGroupDeviceCreateInfo( uint32_t physicalDeviceCount_ = 0,
+                                 const PhysicalDevice* pPhysicalDevices_ = nullptr )
       : physicalDeviceCount( physicalDeviceCount_ )
       , pPhysicalDevices( pPhysicalDevices_ )
     {

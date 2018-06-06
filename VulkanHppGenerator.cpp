@@ -3996,11 +3996,14 @@ void VulkanHppGenerator::writeResultEnum(std::ostream & os)
 void VulkanHppGenerator::writeStructConstructor(std::ostream & os, std::string const& name, StructData const& structData, std::map<std::string, std::string> const& defaultValues)
 {
   // the constructor with all the elements as arguments, with defaults
-  os << "    " << name << "( ";
+  std::string ctorOpening = "    " + name + "( ";
+  size_t indentSize = ctorOpening.size();
+  os << ctorOpening;
+
   bool listedArgument = false;
   for (size_t i = 0; i < structData.members.size(); i++)
   {
-    listedArgument = writeStructConstructorArgument(os, listedArgument, structData.members[i], defaultValues);
+    listedArgument = writeStructConstructorArgument(os, listedArgument, indentSize, structData.members[i], defaultValues);
   }
   os << " )" << std::endl;
 
@@ -4045,11 +4048,14 @@ void VulkanHppGenerator::writeStructConstructor(std::ostream & os, std::string c
     assert(subStruct != m_structs.end());
 
     std::string subStructArgumentName = startLowerCase(strip(subStruct->first, "vk"));
+    std::string ctorOpening = "    explicit " + name + "( ";
+    size_t indentSize = ctorOpening.size();
 
-    os << "    explicit " << name << "( " << subStruct->first << " const& " << subStructArgumentName;
+    os << ctorOpening << subStruct->first << " const& " << subStructArgumentName;
+
     for (size_t i = subStruct->second.members.size(); i < structData.members.size(); i++)
     {
-      writeStructConstructorArgument(os, true, structData.members[i], defaultValues);
+      writeStructConstructorArgument(os, true, indentSize, structData.members[i], defaultValues);
     }
     os << " )" << std::endl;
 
@@ -4092,12 +4098,22 @@ void VulkanHppGenerator::writeStructConstructor(std::ostream & os, std::string c
   os << replaceWithMap(templateString, { { "name", name } });
 }
 
-bool VulkanHppGenerator::writeStructConstructorArgument(std::ostream & os, bool listedArgument, MemberData const& memberData, std::map<std::string, std::string> const& defaultValues)
+void VulkanHppGenerator::writeIndentation(std::ostream & os, size_t indentLength)
+{
+  for(size_t i = 0; i < indentLength; i++)
+  {
+    os << " ";
+  }
+}
+
+bool VulkanHppGenerator::writeStructConstructorArgument(std::ostream & os, bool listedArgument, size_t indentLength, MemberData const& memberData, std::map<std::string, std::string> const& defaultValues)
 {
   if (listedArgument)
   {
-    os << ", ";
+    os << ",\n";
+    writeIndentation(os, indentLength);
   }
+
   // skip members 'pNext' and 'sType', as they are never explicitly set
   if ((memberData.name != "pNext") && (memberData.name != "sType"))
   {

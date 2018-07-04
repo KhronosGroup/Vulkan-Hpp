@@ -202,7 +202,7 @@ vk::MemoryDedicatedRequirementsKHR &dedMemReqs = result.get<vk::MemoryDedicatedR
 
 ### Return values, Error Codes & Exceptions
 
-By default Vulkan-Hpp has exceptions enabled. This means that Vulkan-Hpp checks the return code of each function call which returns a Vk::Result. If Vk::Result is a failure a std::runtime_error will be thrown. Since there is no need to return the error code anymore the C++ bindings can now return the actual desired return value, i.e. a vulkan handle. In those cases ResultValue <SomeType>::type is defined as the returned type.
+By default Vulkan-Hpp has exceptions enabled. This means that Vulkan-Hpp checks the return code of each function call which returns a Vk::Result. If Vk::Result is a failure a std::runtime_error will be thrown. Since there is no need to return the error code anymore the C++ bindings can now return the actual desired return value, i.e. a vulkan handle. In those cases `ResultValueType<SomeType>::type` is defined as the returned type.
 
 To create a device you can now just write:
 
@@ -210,11 +210,24 @@ To create a device you can now just write:
 vk::Device device = physicalDevice.createDevice(createInfo);
 ```
 
-If exception handling is disabled by defining `VULKAN_HPP_NO_EXCEPTIONS` the type of `ResultValue<SomeType>::type` is a struct holding a `vk::Result` and a `SomeType`. This struct supports unpacking the return values by using `std::tie`.
+If exception handling is disabled by defining `VULKAN_HPP_NO_EXCEPTIONS` the type of `ResultValueType<SomeType>::type` is `ResultValue<SomeType>`, a struct holding a `vk::Result` and a `SomeType`. This struct supports unpacking the return values by using `std::tie`, and a `.get()` method that emulates the exceptions-enabled API.
 
-In case you don’t want to use the `vk::ArrayProxy` and return value transformation you can still call the plain C-style function. Below are three examples showing the 3 ways to use the API:
+In case you don’t want to use the `vk::ArrayProxy` and return value transformation you can still call the plain C-style function. Below are four examples showing the 4 ways to use the API:
 
-The first snippet shows how to use the API without exceptions and the return value transformation:
+This first snippet shows how to use the API with exceptions and return value transformation. This is the default mode of the API.
+
+```c++
+ ShaderModule shader1;
+ ShaderModule shader2;
+ try {
+   myHandle = device.createShaderModule({...});
+   myHandle2 = device.createShaderModule({...});
+ } catch(std::exception const &e) {
+   // handle error and free resources
+ }
+```
+
+This snippet shows how to use the API without exceptions and the return value transformation:
 
 ```c++
 // No exceptions, no return value transformation
@@ -238,7 +251,7 @@ if (result != VK_SUCCESS)
 }
 ```
 
-The second snippet shows how to use the API using return value transformation, but without exceptions. It’s already a little bit shorter than the original code:
+This snippet shows how to use the API using return value transformation, but without exceptions. It’s already a little bit shorter than previous original code:
 
 ```c++
 ResultValue<ShaderModule> shaderResult1 = device.createShaderModule({...} /* createInfo temporary */);
@@ -267,14 +280,14 @@ A nicer way to unpack the result is provided by the structured bindings of C++17
 auto [result, shaderModule2] = device.createShaderModule({...} /* createInfo temporary */);
 ```
 
-Finally, the last code example is using exceptions and return value transformation. This is the default mode of the API.
+Finally, the last code example uses return value transformation, has exceptions disabled, and uses the `.get()` method. This is similar to the default API.
 
 ```c++
  ShaderModule shader1;
  ShaderModule shader2;
  try {
-   myHandle = device.createShaderModule({...});
-   myHandle2 = device.createShaderModule({...});
+   myHandle = device.createShaderModule({...}).get();
+   myHandle2 = device.createShaderModule({...}).get();
  } catch(std::exception const &e) {
    // handle error and free resources
  }
@@ -353,7 +366,7 @@ device.getQueue(graphics_queue_family_index, 0, &graphics_queue, dldid);
 
 Feel free to submit a PR to add to this list.
 
-- [Examples](https://github.com/jherico/vulkan) A port of Sascha Willems [examples](https://github.com/SaschaWillems/Vulkan) to Vulkan-Hpp 
+- [Examples](https://github.com/jherico/vulkan) A port of Sascha Willems [examples](https://github.com/SaschaWillems/Vulkan) to Vulkan-Hpp
 - [Vookoo](https://github.com/andy-thomason/Vookoo/) Stateful helper classes for Vulkan-Hpp, [Introduction Article](https://accu.org/index.php/journals/2380).
 
 ## License
@@ -371,4 +384,3 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-

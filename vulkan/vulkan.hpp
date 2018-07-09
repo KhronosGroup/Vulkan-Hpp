@@ -53,7 +53,7 @@
 # include <cassert>
 # define VULKAN_HPP_ASSERT   assert
 #endif
-static_assert( VK_HEADER_VERSION ==  76 , "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION ==  80 , "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -359,13 +359,13 @@ namespace VULKAN_HPP_NAMESPACE
 
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
 
-  template <typename Type> class UniqueHandleTraits;
+  template <typename Type, typename Dispatch> class UniqueHandleTraits;
 
-  template <typename Type>
-  class UniqueHandle : public UniqueHandleTraits<Type>::deleter
+  template <typename Type, typename Dispatch>
+  class UniqueHandle : public UniqueHandleTraits<Type,Dispatch>::deleter
   {
   private:
-    using Deleter = typename UniqueHandleTraits<Type>::deleter;
+    using Deleter = typename UniqueHandleTraits<Type,Dispatch>::deleter;
   public:
     explicit UniqueHandle( Type const& value = Type(), Deleter const& deleter = Deleter() )
       : Deleter( deleter)
@@ -444,7 +444,7 @@ namespace VULKAN_HPP_NAMESPACE
       return value;
     }
 
-    void swap( UniqueHandle<Type> & rhs )
+    void swap( UniqueHandle<Type,Dispatch> & rhs )
     {
       std::swap(m_value, rhs.m_value);
       std::swap(static_cast<Deleter&>(*this), static_cast<Deleter&>(rhs));
@@ -454,8 +454,8 @@ namespace VULKAN_HPP_NAMESPACE
     Type    m_value;
   };
 
-  template <typename Type>
-  VULKAN_HPP_INLINE void swap( UniqueHandle<Type> & lhs, UniqueHandle<Type> & rhs )
+  template <typename Type, typename Dispatch>
+  VULKAN_HPP_INLINE void swap( UniqueHandle<Type,Dispatch> & lhs, UniqueHandle<Type,Dispatch> & rhs )
   {
     lhs.swap( rhs );
   }
@@ -1018,119 +1018,21 @@ namespace VULKAN_HPP_NAMESPACE
   }
 
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
-  template <typename T>
-  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<T>>::type createResultValue( Result result, T & data, char const * message, typename UniqueHandleTraits<T>::deleter const& deleter )
+  template <typename T, typename D>
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<T,D>>::type createResultValue( Result result, T & data, char const * message, typename UniqueHandleTraits<T,D>::deleter const& deleter )
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
     VULKAN_HPP_ASSERT( result == Result::eSuccess );
-    return ResultValue<UniqueHandle<T>>( result, UniqueHandle<T>(data, deleter) );
+    return ResultValue<UniqueHandle<T,D>>( result, UniqueHandle<T,D>(data, deleter) );
 #else
     if ( result != Result::eSuccess )
     {
       throwResultException( result, message );
     }
-    return UniqueHandle<T>(data, deleter);
+    return UniqueHandle<T,D>(data, deleter);
 #endif
   }
 #endif
-
-
-  struct AllocationCallbacks;
-
-  template <typename OwnerType>
-  class ObjectDestroy
-  {
-    public:
-      ObjectDestroy(OwnerType owner = OwnerType(), Optional<const AllocationCallbacks> allocator = nullptr)
-        : m_owner(owner)
-        , m_allocator(allocator)
-      {}
-
-      OwnerType getOwner() const { return m_owner; }
-      Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }
-
-    protected:
-      template <typename T>
-      void destroy(T t)
-      {
-        m_owner.destroy(t, m_allocator);
-      }
-
-    private:
-      OwnerType m_owner;
-      Optional<const AllocationCallbacks> m_allocator;
-  };
-
-  class NoParent;
-
-  template <>
-  class ObjectDestroy<NoParent>
-  {
-  public:
-    ObjectDestroy( Optional<const AllocationCallbacks> allocator = nullptr )
-      : m_allocator( allocator )
-    {}
-
-    Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }
-
-  protected:
-    template <typename T>
-    void destroy(T t)
-    {
-      t.destroy( m_allocator );
-    }
-
-  private:
-    Optional<const AllocationCallbacks> m_allocator;
-  };
-
-  template <typename OwnerType>
-  class ObjectFree
-  {
-    public:
-      ObjectFree(OwnerType owner = OwnerType(), Optional<const AllocationCallbacks> allocator = nullptr)
-        : m_owner(owner)
-        , m_allocator(allocator)
-      {}
-
-      OwnerType getOwner() const { return m_owner; }
-      Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }
-
-    protected:
-      template <typename T>
-      void destroy(T t)
-      {
-        m_owner.free(t, m_allocator);
-      }
-
-    private:
-      OwnerType m_owner;
-      Optional<const AllocationCallbacks> m_allocator;
-  };
-
-  template <typename OwnerType, typename PoolType>
-  class PoolFree
-  {
-    public:
-      PoolFree(OwnerType owner = OwnerType(), PoolType pool = PoolType())
-        : m_owner(owner)
-        , m_pool(pool)
-      {}
-
-      OwnerType getOwner() const { return m_owner; }
-      PoolType getPool() const { return m_pool; }
-
-    protected:
-      template <typename T>
-      void destroy(T t)
-      {
-        m_owner.free(m_pool, t);
-      }
-
-    private:
-      OwnerType m_owner;
-      PoolType m_pool;
-  };
 
 class DispatchLoaderStatic
 {
@@ -1189,6 +1091,10 @@ public:
   {
     return ::vkBindImageMemory2KHR( device, bindInfoCount, pBindInfos);
   }
+  void vkCmdBeginConditionalRenderingEXT( VkCommandBuffer commandBuffer, const VkConditionalRenderingBeginInfoEXT* pConditionalRenderingBegin  ) const
+  {
+    return ::vkCmdBeginConditionalRenderingEXT( commandBuffer, pConditionalRenderingBegin);
+  }
   void vkCmdBeginDebugUtilsLabelEXT( VkCommandBuffer commandBuffer, const VkDebugUtilsLabelEXT* pLabelInfo  ) const
   {
     return ::vkCmdBeginDebugUtilsLabelEXT( commandBuffer, pLabelInfo);
@@ -1200,6 +1106,10 @@ public:
   void vkCmdBeginRenderPass( VkCommandBuffer commandBuffer, const VkRenderPassBeginInfo* pRenderPassBegin, VkSubpassContents contents  ) const
   {
     return ::vkCmdBeginRenderPass( commandBuffer, pRenderPassBegin, contents);
+  }
+  void vkCmdBeginRenderPass2KHR( VkCommandBuffer commandBuffer, const VkRenderPassBeginInfo* pRenderPassBegin, const VkSubpassBeginInfoKHR* pSubpassBeginInfo  ) const
+  {
+    return ::vkCmdBeginRenderPass2KHR( commandBuffer, pRenderPassBegin, pSubpassBeginInfo);
   }
   void vkCmdBindDescriptorSets( VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipelineLayout layout, uint32_t firstSet, uint32_t descriptorSetCount, const VkDescriptorSet* pDescriptorSets, uint32_t dynamicOffsetCount, const uint32_t* pDynamicOffsets  ) const
   {
@@ -1313,6 +1223,10 @@ public:
   {
     return ::vkCmdDrawIndirectCountKHR( commandBuffer, buffer, offset, countBuffer, countBufferOffset, maxDrawCount, stride);
   }
+  void vkCmdEndConditionalRenderingEXT( VkCommandBuffer commandBuffer  ) const
+  {
+    return ::vkCmdEndConditionalRenderingEXT( commandBuffer);
+  }
   void vkCmdEndDebugUtilsLabelEXT( VkCommandBuffer commandBuffer  ) const
   {
     return ::vkCmdEndDebugUtilsLabelEXT( commandBuffer);
@@ -1324,6 +1238,10 @@ public:
   void vkCmdEndRenderPass( VkCommandBuffer commandBuffer  ) const
   {
     return ::vkCmdEndRenderPass( commandBuffer);
+  }
+  void vkCmdEndRenderPass2KHR( VkCommandBuffer commandBuffer, const VkSubpassEndInfoKHR* pSubpassEndInfo  ) const
+  {
+    return ::vkCmdEndRenderPass2KHR( commandBuffer, pSubpassEndInfo);
   }
   void vkCmdExecuteCommands( VkCommandBuffer commandBuffer, uint32_t commandBufferCount, const VkCommandBuffer* pCommandBuffers  ) const
   {
@@ -1340,6 +1258,10 @@ public:
   void vkCmdNextSubpass( VkCommandBuffer commandBuffer, VkSubpassContents contents  ) const
   {
     return ::vkCmdNextSubpass( commandBuffer, contents);
+  }
+  void vkCmdNextSubpass2KHR( VkCommandBuffer commandBuffer, const VkSubpassBeginInfoKHR* pSubpassBeginInfo, const VkSubpassEndInfoKHR* pSubpassEndInfo  ) const
+  {
+    return ::vkCmdNextSubpass2KHR( commandBuffer, pSubpassBeginInfo, pSubpassEndInfo);
   }
   void vkCmdPipelineBarrier( VkCommandBuffer commandBuffer, VkPipelineStageFlags srcStageMask, VkPipelineStageFlags dstStageMask, VkDependencyFlags dependencyFlags, uint32_t memoryBarrierCount, const VkMemoryBarrier* pMemoryBarriers, uint32_t bufferMemoryBarrierCount, const VkBufferMemoryBarrier* pBufferMemoryBarriers, uint32_t imageMemoryBarrierCount, const VkImageMemoryBarrier* pImageMemoryBarriers  ) const
   {
@@ -1580,6 +1502,10 @@ public:
   VkResult vkCreateRenderPass( VkDevice device, const VkRenderPassCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkRenderPass* pRenderPass  ) const
   {
     return ::vkCreateRenderPass( device, pCreateInfo, pAllocator, pRenderPass);
+  }
+  VkResult vkCreateRenderPass2KHR( VkDevice device, const VkRenderPassCreateInfo2KHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkRenderPass* pRenderPass  ) const
+  {
+    return ::vkCreateRenderPass2KHR( device, pCreateInfo, pAllocator, pRenderPass);
   }
   VkResult vkCreateSampler( VkDevice device, const VkSamplerCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSampler* pSampler  ) const
   {
@@ -2410,6 +2336,112 @@ public:
     return ::vkWaitForFences( device, fenceCount, pFences, waitAll, timeout);
   }
 };
+
+  struct AllocationCallbacks;
+
+  template <typename OwnerType, typename Dispatch>
+  class ObjectDestroy
+  {
+    public:
+      ObjectDestroy( OwnerType owner = OwnerType(), Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &dispatch = Dispatch() )
+        : m_owner( owner )
+        , m_allocator( allocator )
+        , m_dispatch( dispatch )
+      {}
+
+      OwnerType getOwner() const { return m_owner; }
+      Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }
+
+    protected:
+      template <typename T>
+      void destroy(T t)
+      {
+        m_owner.destroy( t, m_allocator, m_dispatch );
+      }
+
+    private:
+      OwnerType m_owner;
+      Optional<const AllocationCallbacks> m_allocator;
+      Dispatch const& m_dispatch;
+  };
+
+  class NoParent;
+
+  template <typename Dispatch>
+  class ObjectDestroy<NoParent,Dispatch>
+  {
+    public:
+      ObjectDestroy( Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &dispatch = Dispatch() )
+        : m_allocator( allocator )
+        , m_dispatch( dispatch )
+      {}
+
+      Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }
+
+    protected:
+      template <typename T>
+      void destroy(T t)
+      {
+        t.destroy( m_allocator, m_dispatch );
+      }
+
+    private:
+      Optional<const AllocationCallbacks> m_allocator;
+      Dispatch const& m_dispatch;
+  };
+
+  template <typename OwnerType, typename Dispatch>
+  class ObjectFree
+  {
+    public:
+      ObjectFree( OwnerType owner = OwnerType(), Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &dispatch = Dispatch() )
+        : m_owner( owner )
+        , m_allocator( allocator )
+        , m_dispatch( dispatch )
+      {}
+
+      OwnerType getOwner() const { return m_owner; }
+      Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }
+
+    protected:
+      template <typename T>
+      void destroy(T t)
+      {
+        m_owner.free( t, m_allocator, m_dispatch );
+      }
+
+    private:
+      OwnerType m_owner;
+      Optional<const AllocationCallbacks> m_allocator;
+      Dispatch const& m_dispatch;
+  };
+
+  template <typename OwnerType, typename PoolType, typename Dispatch>
+  class PoolFree
+  {
+    public:
+      PoolFree( OwnerType owner = OwnerType(), PoolType pool = PoolType(), Dispatch const &dispatch = Dispatch() )
+        : m_owner( owner )
+        , m_pool( pool )
+        , m_dispatch( dispatch )
+      {}
+
+      OwnerType getOwner() const { return m_owner; }
+      PoolType getPool() const { return m_pool; }
+
+    protected:
+      template <typename T>
+      void destroy(T t)
+      {
+        m_owner.free( m_pool, t, m_dispatch );
+      }
+
+    private:
+      OwnerType m_owner;
+      PoolType m_pool;
+      Dispatch const& m_dispatch;
+  };
+
   using SampleMask = uint32_t;
 
   using Bool32 = uint32_t;
@@ -8723,6 +8755,9 @@ public:
     eImportSemaphoreFdInfoKHR = VK_STRUCTURE_TYPE_IMPORT_SEMAPHORE_FD_INFO_KHR,
     eSemaphoreGetFdInfoKHR = VK_STRUCTURE_TYPE_SEMAPHORE_GET_FD_INFO_KHR,
     ePhysicalDevicePushDescriptorPropertiesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PUSH_DESCRIPTOR_PROPERTIES_KHR,
+    eCommandBufferInheritanceConditionalRenderingInfoEXT = VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_CONDITIONAL_RENDERING_INFO_EXT,
+    ePhysicalDeviceConditionalRenderingFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CONDITIONAL_RENDERING_FEATURES_EXT,
+    eConditionalRenderingBeginInfoEXT = VK_STRUCTURE_TYPE_CONDITIONAL_RENDERING_BEGIN_INFO_EXT,
     ePresentRegionsKHR = VK_STRUCTURE_TYPE_PRESENT_REGIONS_KHR,
     eObjectTableCreateInfoNVX = VK_STRUCTURE_TYPE_OBJECT_TABLE_CREATE_INFO_NVX,
     eIndirectCommandsLayoutCreateInfoNVX = VK_STRUCTURE_TYPE_INDIRECT_COMMANDS_LAYOUT_CREATE_INFO_NVX,
@@ -8744,6 +8779,13 @@ public:
     ePhysicalDeviceConservativeRasterizationPropertiesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CONSERVATIVE_RASTERIZATION_PROPERTIES_EXT,
     ePipelineRasterizationConservativeStateCreateInfoEXT = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_CONSERVATIVE_STATE_CREATE_INFO_EXT,
     eHdrMetadataEXT = VK_STRUCTURE_TYPE_HDR_METADATA_EXT,
+    eAttachmentDescription2KHR = VK_STRUCTURE_TYPE_ATTACHMENT_DESCRIPTION_2_KHR,
+    eAttachmentReference2KHR = VK_STRUCTURE_TYPE_ATTACHMENT_REFERENCE_2_KHR,
+    eSubpassDescription2KHR = VK_STRUCTURE_TYPE_SUBPASS_DESCRIPTION_2_KHR,
+    eSubpassDependency2KHR = VK_STRUCTURE_TYPE_SUBPASS_DEPENDENCY_2_KHR,
+    eRenderPassCreateInfo2KHR = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO_2_KHR,
+    eSubpassBeginInfoKHR = VK_STRUCTURE_TYPE_SUBPASS_BEGIN_INFO_KHR,
+    eSubpassEndInfoKHR = VK_STRUCTURE_TYPE_SUBPASS_END_INFO_KHR,
     eSharedPresentSurfaceCapabilitiesKHR = VK_STRUCTURE_TYPE_SHARED_PRESENT_SURFACE_CAPABILITIES_KHR,
     eImportFenceWin32HandleInfoKHR = VK_STRUCTURE_TYPE_IMPORT_FENCE_WIN32_HANDLE_INFO_KHR,
     eExportFenceWin32HandleInfoKHR = VK_STRUCTURE_TYPE_EXPORT_FENCE_WIN32_HANDLE_INFO_KHR,
@@ -8792,6 +8834,7 @@ public:
     eDescriptorSetVariableDescriptorCountAllocateInfoEXT = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_ALLOCATE_INFO_EXT,
     eDescriptorSetVariableDescriptorCountLayoutSupportEXT = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_LAYOUT_SUPPORT_EXT,
     eDeviceQueueGlobalPriorityCreateInfoEXT = VK_STRUCTURE_TYPE_DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO_EXT,
+    ePhysicalDevice8BitStorageFeaturesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_8BIT_STORAGE_FEATURES_KHR,
     eImportMemoryHostPointerInfoEXT = VK_STRUCTURE_TYPE_IMPORT_MEMORY_HOST_POINTER_INFO_EXT,
     eMemoryHostPointerPropertiesEXT = VK_STRUCTURE_TYPE_MEMORY_HOST_POINTER_PROPERTIES_EXT,
     ePhysicalDeviceExternalMemoryHostPropertiesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_MEMORY_HOST_PROPERTIES_EXT,
@@ -16754,6 +16797,52 @@ public:
   };
   static_assert( sizeof( DescriptorSetVariableDescriptorCountLayoutSupportEXT ) == sizeof( VkDescriptorSetVariableDescriptorCountLayoutSupportEXT ), "struct and wrapper have different size!" );
 
+  struct SubpassEndInfoKHR
+  {
+    SubpassEndInfoKHR(  )
+    {
+    }
+
+    SubpassEndInfoKHR( VkSubpassEndInfoKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SubpassEndInfoKHR ) );
+    }
+
+    SubpassEndInfoKHR& operator=( VkSubpassEndInfoKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SubpassEndInfoKHR ) );
+      return *this;
+    }
+    SubpassEndInfoKHR& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    operator const VkSubpassEndInfoKHR&() const
+    {
+      return *reinterpret_cast<const VkSubpassEndInfoKHR*>(this);
+    }
+
+    bool operator==( SubpassEndInfoKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext );
+    }
+
+    bool operator!=( SubpassEndInfoKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::eSubpassEndInfoKHR;
+
+  public:
+    const void* pNext = nullptr;
+  };
+  static_assert( sizeof( SubpassEndInfoKHR ) == sizeof( VkSubpassEndInfoKHR ), "struct and wrapper have different size!" );
+
   struct PipelineVertexInputDivisorStateCreateInfoEXT
   {
     PipelineVertexInputDivisorStateCreateInfoEXT( uint32_t vertexBindingDivisorCount_ = 0,
@@ -17050,6 +17139,61 @@ public:
   static_assert( sizeof( MemoryGetAndroidHardwareBufferInfoANDROID ) == sizeof( VkMemoryGetAndroidHardwareBufferInfoANDROID ), "struct and wrapper have different size!" );
 #endif /*VK_USE_PLATFORM_ANDROID_ANDROID*/
 
+  struct CommandBufferInheritanceConditionalRenderingInfoEXT
+  {
+    CommandBufferInheritanceConditionalRenderingInfoEXT( Bool32 conditionalRenderingEnable_ = 0 )
+      : conditionalRenderingEnable( conditionalRenderingEnable_ )
+    {
+    }
+
+    CommandBufferInheritanceConditionalRenderingInfoEXT( VkCommandBufferInheritanceConditionalRenderingInfoEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( CommandBufferInheritanceConditionalRenderingInfoEXT ) );
+    }
+
+    CommandBufferInheritanceConditionalRenderingInfoEXT& operator=( VkCommandBufferInheritanceConditionalRenderingInfoEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( CommandBufferInheritanceConditionalRenderingInfoEXT ) );
+      return *this;
+    }
+    CommandBufferInheritanceConditionalRenderingInfoEXT& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    CommandBufferInheritanceConditionalRenderingInfoEXT& setConditionalRenderingEnable( Bool32 conditionalRenderingEnable_ )
+    {
+      conditionalRenderingEnable = conditionalRenderingEnable_;
+      return *this;
+    }
+
+    operator const VkCommandBufferInheritanceConditionalRenderingInfoEXT&() const
+    {
+      return *reinterpret_cast<const VkCommandBufferInheritanceConditionalRenderingInfoEXT*>(this);
+    }
+
+    bool operator==( CommandBufferInheritanceConditionalRenderingInfoEXT const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( conditionalRenderingEnable == rhs.conditionalRenderingEnable );
+    }
+
+    bool operator!=( CommandBufferInheritanceConditionalRenderingInfoEXT const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::eCommandBufferInheritanceConditionalRenderingInfoEXT;
+
+  public:
+    const void* pNext = nullptr;
+    Bool32 conditionalRenderingEnable;
+  };
+  static_assert( sizeof( CommandBufferInheritanceConditionalRenderingInfoEXT ) == sizeof( VkCommandBufferInheritanceConditionalRenderingInfoEXT ), "struct and wrapper have different size!" );
+
 #ifdef VK_USE_PLATFORM_ANDROID_ANDROID
   struct ExternalFormatANDROID
   {
@@ -17107,11 +17251,206 @@ public:
   static_assert( sizeof( ExternalFormatANDROID ) == sizeof( VkExternalFormatANDROID ), "struct and wrapper have different size!" );
 #endif /*VK_USE_PLATFORM_ANDROID_ANDROID*/
 
+  struct PhysicalDevice8BitStorageFeaturesKHR
+  {
+    PhysicalDevice8BitStorageFeaturesKHR( Bool32 storageBuffer8BitAccess_ = 0,
+                                          Bool32 uniformAndStorageBuffer8BitAccess_ = 0,
+                                          Bool32 storagePushConstant8_ = 0 )
+      : storageBuffer8BitAccess( storageBuffer8BitAccess_ )
+      , uniformAndStorageBuffer8BitAccess( uniformAndStorageBuffer8BitAccess_ )
+      , storagePushConstant8( storagePushConstant8_ )
+    {
+    }
+
+    PhysicalDevice8BitStorageFeaturesKHR( VkPhysicalDevice8BitStorageFeaturesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDevice8BitStorageFeaturesKHR ) );
+    }
+
+    PhysicalDevice8BitStorageFeaturesKHR& operator=( VkPhysicalDevice8BitStorageFeaturesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDevice8BitStorageFeaturesKHR ) );
+      return *this;
+    }
+    PhysicalDevice8BitStorageFeaturesKHR& setPNext( void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PhysicalDevice8BitStorageFeaturesKHR& setStorageBuffer8BitAccess( Bool32 storageBuffer8BitAccess_ )
+    {
+      storageBuffer8BitAccess = storageBuffer8BitAccess_;
+      return *this;
+    }
+
+    PhysicalDevice8BitStorageFeaturesKHR& setUniformAndStorageBuffer8BitAccess( Bool32 uniformAndStorageBuffer8BitAccess_ )
+    {
+      uniformAndStorageBuffer8BitAccess = uniformAndStorageBuffer8BitAccess_;
+      return *this;
+    }
+
+    PhysicalDevice8BitStorageFeaturesKHR& setStoragePushConstant8( Bool32 storagePushConstant8_ )
+    {
+      storagePushConstant8 = storagePushConstant8_;
+      return *this;
+    }
+
+    operator const VkPhysicalDevice8BitStorageFeaturesKHR&() const
+    {
+      return *reinterpret_cast<const VkPhysicalDevice8BitStorageFeaturesKHR*>(this);
+    }
+
+    bool operator==( PhysicalDevice8BitStorageFeaturesKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( storageBuffer8BitAccess == rhs.storageBuffer8BitAccess )
+          && ( uniformAndStorageBuffer8BitAccess == rhs.uniformAndStorageBuffer8BitAccess )
+          && ( storagePushConstant8 == rhs.storagePushConstant8 );
+    }
+
+    bool operator!=( PhysicalDevice8BitStorageFeaturesKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::ePhysicalDevice8BitStorageFeaturesKHR;
+
+  public:
+    void* pNext = nullptr;
+    Bool32 storageBuffer8BitAccess;
+    Bool32 uniformAndStorageBuffer8BitAccess;
+    Bool32 storagePushConstant8;
+  };
+  static_assert( sizeof( PhysicalDevice8BitStorageFeaturesKHR ) == sizeof( VkPhysicalDevice8BitStorageFeaturesKHR ), "struct and wrapper have different size!" );
+
+  struct PhysicalDeviceConditionalRenderingFeaturesEXT
+  {
+    PhysicalDeviceConditionalRenderingFeaturesEXT( Bool32 conditionalRendering_ = 0,
+                                                   Bool32 inheritedConditionalRendering_ = 0 )
+      : conditionalRendering( conditionalRendering_ )
+      , inheritedConditionalRendering( inheritedConditionalRendering_ )
+    {
+    }
+
+    PhysicalDeviceConditionalRenderingFeaturesEXT( VkPhysicalDeviceConditionalRenderingFeaturesEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceConditionalRenderingFeaturesEXT ) );
+    }
+
+    PhysicalDeviceConditionalRenderingFeaturesEXT& operator=( VkPhysicalDeviceConditionalRenderingFeaturesEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceConditionalRenderingFeaturesEXT ) );
+      return *this;
+    }
+    PhysicalDeviceConditionalRenderingFeaturesEXT& setPNext( void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PhysicalDeviceConditionalRenderingFeaturesEXT& setConditionalRendering( Bool32 conditionalRendering_ )
+    {
+      conditionalRendering = conditionalRendering_;
+      return *this;
+    }
+
+    PhysicalDeviceConditionalRenderingFeaturesEXT& setInheritedConditionalRendering( Bool32 inheritedConditionalRendering_ )
+    {
+      inheritedConditionalRendering = inheritedConditionalRendering_;
+      return *this;
+    }
+
+    operator const VkPhysicalDeviceConditionalRenderingFeaturesEXT&() const
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceConditionalRenderingFeaturesEXT*>(this);
+    }
+
+    bool operator==( PhysicalDeviceConditionalRenderingFeaturesEXT const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( conditionalRendering == rhs.conditionalRendering )
+          && ( inheritedConditionalRendering == rhs.inheritedConditionalRendering );
+    }
+
+    bool operator!=( PhysicalDeviceConditionalRenderingFeaturesEXT const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::ePhysicalDeviceConditionalRenderingFeaturesEXT;
+
+  public:
+    void* pNext = nullptr;
+    Bool32 conditionalRendering;
+    Bool32 inheritedConditionalRendering;
+  };
+  static_assert( sizeof( PhysicalDeviceConditionalRenderingFeaturesEXT ) == sizeof( VkPhysicalDeviceConditionalRenderingFeaturesEXT ), "struct and wrapper have different size!" );
+
   enum class SubpassContents
   {
     eInline = VK_SUBPASS_CONTENTS_INLINE,
     eSecondaryCommandBuffers = VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS
   };
+
+  struct SubpassBeginInfoKHR
+  {
+    SubpassBeginInfoKHR( SubpassContents contents_ = SubpassContents::eInline )
+      : contents( contents_ )
+    {
+    }
+
+    SubpassBeginInfoKHR( VkSubpassBeginInfoKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SubpassBeginInfoKHR ) );
+    }
+
+    SubpassBeginInfoKHR& operator=( VkSubpassBeginInfoKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SubpassBeginInfoKHR ) );
+      return *this;
+    }
+    SubpassBeginInfoKHR& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    SubpassBeginInfoKHR& setContents( SubpassContents contents_ )
+    {
+      contents = contents_;
+      return *this;
+    }
+
+    operator const VkSubpassBeginInfoKHR&() const
+    {
+      return *reinterpret_cast<const VkSubpassBeginInfoKHR*>(this);
+    }
+
+    bool operator==( SubpassBeginInfoKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( contents == rhs.contents );
+    }
+
+    bool operator!=( SubpassBeginInfoKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::eSubpassBeginInfoKHR;
+
+  public:
+    const void* pNext = nullptr;
+    SubpassContents contents;
+  };
+  static_assert( sizeof( SubpassBeginInfoKHR ) == sizeof( VkSubpassBeginInfoKHR ), "struct and wrapper have different size!" );
 
   struct PresentInfoKHR
   {
@@ -18376,6 +18715,7 @@ public:
     eHostWrite = VK_ACCESS_HOST_WRITE_BIT,
     eMemoryRead = VK_ACCESS_MEMORY_READ_BIT,
     eMemoryWrite = VK_ACCESS_MEMORY_WRITE_BIT,
+    eConditionalRenderingReadEXT = VK_ACCESS_CONDITIONAL_RENDERING_READ_BIT_EXT,
     eCommandProcessReadNVX = VK_ACCESS_COMMAND_PROCESS_READ_BIT_NVX,
     eCommandProcessWriteNVX = VK_ACCESS_COMMAND_PROCESS_WRITE_BIT_NVX,
     eColorAttachmentReadNoncoherentEXT = VK_ACCESS_COLOR_ATTACHMENT_READ_NONCOHERENT_BIT_EXT
@@ -18397,7 +18737,7 @@ public:
   {
     enum
     {
-      allFlags = VkFlags(AccessFlagBits::eIndirectCommandRead) | VkFlags(AccessFlagBits::eIndexRead) | VkFlags(AccessFlagBits::eVertexAttributeRead) | VkFlags(AccessFlagBits::eUniformRead) | VkFlags(AccessFlagBits::eInputAttachmentRead) | VkFlags(AccessFlagBits::eShaderRead) | VkFlags(AccessFlagBits::eShaderWrite) | VkFlags(AccessFlagBits::eColorAttachmentRead) | VkFlags(AccessFlagBits::eColorAttachmentWrite) | VkFlags(AccessFlagBits::eDepthStencilAttachmentRead) | VkFlags(AccessFlagBits::eDepthStencilAttachmentWrite) | VkFlags(AccessFlagBits::eTransferRead) | VkFlags(AccessFlagBits::eTransferWrite) | VkFlags(AccessFlagBits::eHostRead) | VkFlags(AccessFlagBits::eHostWrite) | VkFlags(AccessFlagBits::eMemoryRead) | VkFlags(AccessFlagBits::eMemoryWrite) | VkFlags(AccessFlagBits::eCommandProcessReadNVX) | VkFlags(AccessFlagBits::eCommandProcessWriteNVX) | VkFlags(AccessFlagBits::eColorAttachmentReadNoncoherentEXT)
+      allFlags = VkFlags(AccessFlagBits::eIndirectCommandRead) | VkFlags(AccessFlagBits::eIndexRead) | VkFlags(AccessFlagBits::eVertexAttributeRead) | VkFlags(AccessFlagBits::eUniformRead) | VkFlags(AccessFlagBits::eInputAttachmentRead) | VkFlags(AccessFlagBits::eShaderRead) | VkFlags(AccessFlagBits::eShaderWrite) | VkFlags(AccessFlagBits::eColorAttachmentRead) | VkFlags(AccessFlagBits::eColorAttachmentWrite) | VkFlags(AccessFlagBits::eDepthStencilAttachmentRead) | VkFlags(AccessFlagBits::eDepthStencilAttachmentWrite) | VkFlags(AccessFlagBits::eTransferRead) | VkFlags(AccessFlagBits::eTransferWrite) | VkFlags(AccessFlagBits::eHostRead) | VkFlags(AccessFlagBits::eHostWrite) | VkFlags(AccessFlagBits::eMemoryRead) | VkFlags(AccessFlagBits::eMemoryWrite) | VkFlags(AccessFlagBits::eConditionalRenderingReadEXT) | VkFlags(AccessFlagBits::eCommandProcessReadNVX) | VkFlags(AccessFlagBits::eCommandProcessWriteNVX) | VkFlags(AccessFlagBits::eColorAttachmentReadNoncoherentEXT)
     };
   };
 
@@ -18591,7 +18931,8 @@ public:
     eStorageBuffer = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,
     eIndexBuffer = VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
     eVertexBuffer = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
-    eIndirectBuffer = VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT
+    eIndirectBuffer = VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT,
+    eConditionalRenderingEXT = VK_BUFFER_USAGE_CONDITIONAL_RENDERING_BIT_EXT
   };
 
   using BufferUsageFlags = Flags<BufferUsageFlagBits, VkBufferUsageFlags>;
@@ -18610,7 +18951,7 @@ public:
   {
     enum
     {
-      allFlags = VkFlags(BufferUsageFlagBits::eTransferSrc) | VkFlags(BufferUsageFlagBits::eTransferDst) | VkFlags(BufferUsageFlagBits::eUniformTexelBuffer) | VkFlags(BufferUsageFlagBits::eStorageTexelBuffer) | VkFlags(BufferUsageFlagBits::eUniformBuffer) | VkFlags(BufferUsageFlagBits::eStorageBuffer) | VkFlags(BufferUsageFlagBits::eIndexBuffer) | VkFlags(BufferUsageFlagBits::eVertexBuffer) | VkFlags(BufferUsageFlagBits::eIndirectBuffer)
+      allFlags = VkFlags(BufferUsageFlagBits::eTransferSrc) | VkFlags(BufferUsageFlagBits::eTransferDst) | VkFlags(BufferUsageFlagBits::eUniformTexelBuffer) | VkFlags(BufferUsageFlagBits::eStorageTexelBuffer) | VkFlags(BufferUsageFlagBits::eUniformBuffer) | VkFlags(BufferUsageFlagBits::eStorageBuffer) | VkFlags(BufferUsageFlagBits::eIndexBuffer) | VkFlags(BufferUsageFlagBits::eVertexBuffer) | VkFlags(BufferUsageFlagBits::eIndirectBuffer) | VkFlags(BufferUsageFlagBits::eConditionalRenderingEXT)
     };
   };
 
@@ -21439,6 +21780,81 @@ public:
 
   using ImagePlaneMemoryRequirementsInfoKHR = ImagePlaneMemoryRequirementsInfo;
 
+  struct AttachmentReference2KHR
+  {
+    AttachmentReference2KHR( uint32_t attachment_ = 0,
+                             ImageLayout layout_ = ImageLayout::eUndefined,
+                             ImageAspectFlags aspectMask_ = ImageAspectFlags() )
+      : attachment( attachment_ )
+      , layout( layout_ )
+      , aspectMask( aspectMask_ )
+    {
+    }
+
+    AttachmentReference2KHR( VkAttachmentReference2KHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( AttachmentReference2KHR ) );
+    }
+
+    AttachmentReference2KHR& operator=( VkAttachmentReference2KHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( AttachmentReference2KHR ) );
+      return *this;
+    }
+    AttachmentReference2KHR& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    AttachmentReference2KHR& setAttachment( uint32_t attachment_ )
+    {
+      attachment = attachment_;
+      return *this;
+    }
+
+    AttachmentReference2KHR& setLayout( ImageLayout layout_ )
+    {
+      layout = layout_;
+      return *this;
+    }
+
+    AttachmentReference2KHR& setAspectMask( ImageAspectFlags aspectMask_ )
+    {
+      aspectMask = aspectMask_;
+      return *this;
+    }
+
+    operator const VkAttachmentReference2KHR&() const
+    {
+      return *reinterpret_cast<const VkAttachmentReference2KHR*>(this);
+    }
+
+    bool operator==( AttachmentReference2KHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( attachment == rhs.attachment )
+          && ( layout == rhs.layout )
+          && ( aspectMask == rhs.aspectMask );
+    }
+
+    bool operator!=( AttachmentReference2KHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::eAttachmentReference2KHR;
+
+  public:
+    const void* pNext = nullptr;
+    uint32_t attachment;
+    ImageLayout layout;
+    ImageAspectFlags aspectMask;
+  };
+  static_assert( sizeof( AttachmentReference2KHR ) == sizeof( VkAttachmentReference2KHR ), "struct and wrapper have different size!" );
+
   enum class SparseImageFormatFlagBits
   {
     eSingleMiptail = VK_SPARSE_IMAGE_FORMAT_SINGLE_MIPTAIL_BIT,
@@ -22129,6 +22545,7 @@ public:
     eHost = VK_PIPELINE_STAGE_HOST_BIT,
     eAllGraphics = VK_PIPELINE_STAGE_ALL_GRAPHICS_BIT,
     eAllCommands = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
+    eConditionalRenderingEXT = VK_PIPELINE_STAGE_CONDITIONAL_RENDERING_BIT_EXT,
     eCommandProcessNVX = VK_PIPELINE_STAGE_COMMAND_PROCESS_BIT_NVX
   };
 
@@ -22148,7 +22565,7 @@ public:
   {
     enum
     {
-      allFlags = VkFlags(PipelineStageFlagBits::eTopOfPipe) | VkFlags(PipelineStageFlagBits::eDrawIndirect) | VkFlags(PipelineStageFlagBits::eVertexInput) | VkFlags(PipelineStageFlagBits::eVertexShader) | VkFlags(PipelineStageFlagBits::eTessellationControlShader) | VkFlags(PipelineStageFlagBits::eTessellationEvaluationShader) | VkFlags(PipelineStageFlagBits::eGeometryShader) | VkFlags(PipelineStageFlagBits::eFragmentShader) | VkFlags(PipelineStageFlagBits::eEarlyFragmentTests) | VkFlags(PipelineStageFlagBits::eLateFragmentTests) | VkFlags(PipelineStageFlagBits::eColorAttachmentOutput) | VkFlags(PipelineStageFlagBits::eComputeShader) | VkFlags(PipelineStageFlagBits::eTransfer) | VkFlags(PipelineStageFlagBits::eBottomOfPipe) | VkFlags(PipelineStageFlagBits::eHost) | VkFlags(PipelineStageFlagBits::eAllGraphics) | VkFlags(PipelineStageFlagBits::eAllCommands) | VkFlags(PipelineStageFlagBits::eCommandProcessNVX)
+      allFlags = VkFlags(PipelineStageFlagBits::eTopOfPipe) | VkFlags(PipelineStageFlagBits::eDrawIndirect) | VkFlags(PipelineStageFlagBits::eVertexInput) | VkFlags(PipelineStageFlagBits::eVertexShader) | VkFlags(PipelineStageFlagBits::eTessellationControlShader) | VkFlags(PipelineStageFlagBits::eTessellationEvaluationShader) | VkFlags(PipelineStageFlagBits::eGeometryShader) | VkFlags(PipelineStageFlagBits::eFragmentShader) | VkFlags(PipelineStageFlagBits::eEarlyFragmentTests) | VkFlags(PipelineStageFlagBits::eLateFragmentTests) | VkFlags(PipelineStageFlagBits::eColorAttachmentOutput) | VkFlags(PipelineStageFlagBits::eComputeShader) | VkFlags(PipelineStageFlagBits::eTransfer) | VkFlags(PipelineStageFlagBits::eBottomOfPipe) | VkFlags(PipelineStageFlagBits::eHost) | VkFlags(PipelineStageFlagBits::eAllGraphics) | VkFlags(PipelineStageFlagBits::eAllCommands) | VkFlags(PipelineStageFlagBits::eConditionalRenderingEXT) | VkFlags(PipelineStageFlagBits::eCommandProcessNVX)
     };
   };
 
@@ -23806,6 +24223,141 @@ public:
   };
   static_assert( sizeof( AttachmentDescription ) == sizeof( VkAttachmentDescription ), "struct and wrapper have different size!" );
 
+  struct AttachmentDescription2KHR
+  {
+    AttachmentDescription2KHR( AttachmentDescriptionFlags flags_ = AttachmentDescriptionFlags(),
+                               Format format_ = Format::eUndefined,
+                               SampleCountFlagBits samples_ = SampleCountFlagBits::e1,
+                               AttachmentLoadOp loadOp_ = AttachmentLoadOp::eLoad,
+                               AttachmentStoreOp storeOp_ = AttachmentStoreOp::eStore,
+                               AttachmentLoadOp stencilLoadOp_ = AttachmentLoadOp::eLoad,
+                               AttachmentStoreOp stencilStoreOp_ = AttachmentStoreOp::eStore,
+                               ImageLayout initialLayout_ = ImageLayout::eUndefined,
+                               ImageLayout finalLayout_ = ImageLayout::eUndefined )
+      : flags( flags_ )
+      , format( format_ )
+      , samples( samples_ )
+      , loadOp( loadOp_ )
+      , storeOp( storeOp_ )
+      , stencilLoadOp( stencilLoadOp_ )
+      , stencilStoreOp( stencilStoreOp_ )
+      , initialLayout( initialLayout_ )
+      , finalLayout( finalLayout_ )
+    {
+    }
+
+    AttachmentDescription2KHR( VkAttachmentDescription2KHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( AttachmentDescription2KHR ) );
+    }
+
+    AttachmentDescription2KHR& operator=( VkAttachmentDescription2KHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( AttachmentDescription2KHR ) );
+      return *this;
+    }
+    AttachmentDescription2KHR& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    AttachmentDescription2KHR& setFlags( AttachmentDescriptionFlags flags_ )
+    {
+      flags = flags_;
+      return *this;
+    }
+
+    AttachmentDescription2KHR& setFormat( Format format_ )
+    {
+      format = format_;
+      return *this;
+    }
+
+    AttachmentDescription2KHR& setSamples( SampleCountFlagBits samples_ )
+    {
+      samples = samples_;
+      return *this;
+    }
+
+    AttachmentDescription2KHR& setLoadOp( AttachmentLoadOp loadOp_ )
+    {
+      loadOp = loadOp_;
+      return *this;
+    }
+
+    AttachmentDescription2KHR& setStoreOp( AttachmentStoreOp storeOp_ )
+    {
+      storeOp = storeOp_;
+      return *this;
+    }
+
+    AttachmentDescription2KHR& setStencilLoadOp( AttachmentLoadOp stencilLoadOp_ )
+    {
+      stencilLoadOp = stencilLoadOp_;
+      return *this;
+    }
+
+    AttachmentDescription2KHR& setStencilStoreOp( AttachmentStoreOp stencilStoreOp_ )
+    {
+      stencilStoreOp = stencilStoreOp_;
+      return *this;
+    }
+
+    AttachmentDescription2KHR& setInitialLayout( ImageLayout initialLayout_ )
+    {
+      initialLayout = initialLayout_;
+      return *this;
+    }
+
+    AttachmentDescription2KHR& setFinalLayout( ImageLayout finalLayout_ )
+    {
+      finalLayout = finalLayout_;
+      return *this;
+    }
+
+    operator const VkAttachmentDescription2KHR&() const
+    {
+      return *reinterpret_cast<const VkAttachmentDescription2KHR*>(this);
+    }
+
+    bool operator==( AttachmentDescription2KHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( format == rhs.format )
+          && ( samples == rhs.samples )
+          && ( loadOp == rhs.loadOp )
+          && ( storeOp == rhs.storeOp )
+          && ( stencilLoadOp == rhs.stencilLoadOp )
+          && ( stencilStoreOp == rhs.stencilStoreOp )
+          && ( initialLayout == rhs.initialLayout )
+          && ( finalLayout == rhs.finalLayout );
+    }
+
+    bool operator!=( AttachmentDescription2KHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::eAttachmentDescription2KHR;
+
+  public:
+    const void* pNext = nullptr;
+    AttachmentDescriptionFlags flags;
+    Format format;
+    SampleCountFlagBits samples;
+    AttachmentLoadOp loadOp;
+    AttachmentStoreOp storeOp;
+    AttachmentLoadOp stencilLoadOp;
+    AttachmentStoreOp stencilStoreOp;
+    ImageLayout initialLayout;
+    ImageLayout finalLayout;
+  };
+  static_assert( sizeof( AttachmentDescription2KHR ) == sizeof( VkAttachmentDescription2KHR ), "struct and wrapper have different size!" );
+
   enum class StencilFaceFlagBits
   {
     eFront = VK_STENCIL_FACE_FRONT_BIT,
@@ -24074,6 +24626,131 @@ public:
     DependencyFlags dependencyFlags;
   };
   static_assert( sizeof( SubpassDependency ) == sizeof( VkSubpassDependency ), "struct and wrapper have different size!" );
+
+  struct SubpassDependency2KHR
+  {
+    SubpassDependency2KHR( uint32_t srcSubpass_ = 0,
+                           uint32_t dstSubpass_ = 0,
+                           PipelineStageFlags srcStageMask_ = PipelineStageFlags(),
+                           PipelineStageFlags dstStageMask_ = PipelineStageFlags(),
+                           AccessFlags srcAccessMask_ = AccessFlags(),
+                           AccessFlags dstAccessMask_ = AccessFlags(),
+                           DependencyFlags dependencyFlags_ = DependencyFlags(),
+                           int32_t viewOffset_ = 0 )
+      : srcSubpass( srcSubpass_ )
+      , dstSubpass( dstSubpass_ )
+      , srcStageMask( srcStageMask_ )
+      , dstStageMask( dstStageMask_ )
+      , srcAccessMask( srcAccessMask_ )
+      , dstAccessMask( dstAccessMask_ )
+      , dependencyFlags( dependencyFlags_ )
+      , viewOffset( viewOffset_ )
+    {
+    }
+
+    SubpassDependency2KHR( VkSubpassDependency2KHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SubpassDependency2KHR ) );
+    }
+
+    SubpassDependency2KHR& operator=( VkSubpassDependency2KHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SubpassDependency2KHR ) );
+      return *this;
+    }
+    SubpassDependency2KHR& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    SubpassDependency2KHR& setSrcSubpass( uint32_t srcSubpass_ )
+    {
+      srcSubpass = srcSubpass_;
+      return *this;
+    }
+
+    SubpassDependency2KHR& setDstSubpass( uint32_t dstSubpass_ )
+    {
+      dstSubpass = dstSubpass_;
+      return *this;
+    }
+
+    SubpassDependency2KHR& setSrcStageMask( PipelineStageFlags srcStageMask_ )
+    {
+      srcStageMask = srcStageMask_;
+      return *this;
+    }
+
+    SubpassDependency2KHR& setDstStageMask( PipelineStageFlags dstStageMask_ )
+    {
+      dstStageMask = dstStageMask_;
+      return *this;
+    }
+
+    SubpassDependency2KHR& setSrcAccessMask( AccessFlags srcAccessMask_ )
+    {
+      srcAccessMask = srcAccessMask_;
+      return *this;
+    }
+
+    SubpassDependency2KHR& setDstAccessMask( AccessFlags dstAccessMask_ )
+    {
+      dstAccessMask = dstAccessMask_;
+      return *this;
+    }
+
+    SubpassDependency2KHR& setDependencyFlags( DependencyFlags dependencyFlags_ )
+    {
+      dependencyFlags = dependencyFlags_;
+      return *this;
+    }
+
+    SubpassDependency2KHR& setViewOffset( int32_t viewOffset_ )
+    {
+      viewOffset = viewOffset_;
+      return *this;
+    }
+
+    operator const VkSubpassDependency2KHR&() const
+    {
+      return *reinterpret_cast<const VkSubpassDependency2KHR*>(this);
+    }
+
+    bool operator==( SubpassDependency2KHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( srcSubpass == rhs.srcSubpass )
+          && ( dstSubpass == rhs.dstSubpass )
+          && ( srcStageMask == rhs.srcStageMask )
+          && ( dstStageMask == rhs.dstStageMask )
+          && ( srcAccessMask == rhs.srcAccessMask )
+          && ( dstAccessMask == rhs.dstAccessMask )
+          && ( dependencyFlags == rhs.dependencyFlags )
+          && ( viewOffset == rhs.viewOffset );
+    }
+
+    bool operator!=( SubpassDependency2KHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::eSubpassDependency2KHR;
+
+  public:
+    const void* pNext = nullptr;
+    uint32_t srcSubpass;
+    uint32_t dstSubpass;
+    PipelineStageFlags srcStageMask;
+    PipelineStageFlags dstStageMask;
+    AccessFlags srcAccessMask;
+    AccessFlags dstAccessMask;
+    DependencyFlags dependencyFlags;
+    int32_t viewOffset;
+  };
+  static_assert( sizeof( SubpassDependency2KHR ) == sizeof( VkSubpassDependency2KHR ), "struct and wrapper have different size!" );
 
   enum class PresentModeKHR
   {
@@ -29597,6 +30274,296 @@ public:
   };
   static_assert( sizeof( RenderPassCreateInfo ) == sizeof( VkRenderPassCreateInfo ), "struct and wrapper have different size!" );
 
+  struct SubpassDescription2KHR
+  {
+    SubpassDescription2KHR( SubpassDescriptionFlags flags_ = SubpassDescriptionFlags(),
+                            PipelineBindPoint pipelineBindPoint_ = PipelineBindPoint::eGraphics,
+                            uint32_t viewMask_ = 0,
+                            uint32_t inputAttachmentCount_ = 0,
+                            const AttachmentReference2KHR* pInputAttachments_ = nullptr,
+                            uint32_t colorAttachmentCount_ = 0,
+                            const AttachmentReference2KHR* pColorAttachments_ = nullptr,
+                            const AttachmentReference2KHR* pResolveAttachments_ = nullptr,
+                            const AttachmentReference2KHR* pDepthStencilAttachment_ = nullptr,
+                            uint32_t preserveAttachmentCount_ = 0,
+                            const uint32_t* pPreserveAttachments_ = nullptr )
+      : flags( flags_ )
+      , pipelineBindPoint( pipelineBindPoint_ )
+      , viewMask( viewMask_ )
+      , inputAttachmentCount( inputAttachmentCount_ )
+      , pInputAttachments( pInputAttachments_ )
+      , colorAttachmentCount( colorAttachmentCount_ )
+      , pColorAttachments( pColorAttachments_ )
+      , pResolveAttachments( pResolveAttachments_ )
+      , pDepthStencilAttachment( pDepthStencilAttachment_ )
+      , preserveAttachmentCount( preserveAttachmentCount_ )
+      , pPreserveAttachments( pPreserveAttachments_ )
+    {
+    }
+
+    SubpassDescription2KHR( VkSubpassDescription2KHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SubpassDescription2KHR ) );
+    }
+
+    SubpassDescription2KHR& operator=( VkSubpassDescription2KHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SubpassDescription2KHR ) );
+      return *this;
+    }
+    SubpassDescription2KHR& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    SubpassDescription2KHR& setFlags( SubpassDescriptionFlags flags_ )
+    {
+      flags = flags_;
+      return *this;
+    }
+
+    SubpassDescription2KHR& setPipelineBindPoint( PipelineBindPoint pipelineBindPoint_ )
+    {
+      pipelineBindPoint = pipelineBindPoint_;
+      return *this;
+    }
+
+    SubpassDescription2KHR& setViewMask( uint32_t viewMask_ )
+    {
+      viewMask = viewMask_;
+      return *this;
+    }
+
+    SubpassDescription2KHR& setInputAttachmentCount( uint32_t inputAttachmentCount_ )
+    {
+      inputAttachmentCount = inputAttachmentCount_;
+      return *this;
+    }
+
+    SubpassDescription2KHR& setPInputAttachments( const AttachmentReference2KHR* pInputAttachments_ )
+    {
+      pInputAttachments = pInputAttachments_;
+      return *this;
+    }
+
+    SubpassDescription2KHR& setColorAttachmentCount( uint32_t colorAttachmentCount_ )
+    {
+      colorAttachmentCount = colorAttachmentCount_;
+      return *this;
+    }
+
+    SubpassDescription2KHR& setPColorAttachments( const AttachmentReference2KHR* pColorAttachments_ )
+    {
+      pColorAttachments = pColorAttachments_;
+      return *this;
+    }
+
+    SubpassDescription2KHR& setPResolveAttachments( const AttachmentReference2KHR* pResolveAttachments_ )
+    {
+      pResolveAttachments = pResolveAttachments_;
+      return *this;
+    }
+
+    SubpassDescription2KHR& setPDepthStencilAttachment( const AttachmentReference2KHR* pDepthStencilAttachment_ )
+    {
+      pDepthStencilAttachment = pDepthStencilAttachment_;
+      return *this;
+    }
+
+    SubpassDescription2KHR& setPreserveAttachmentCount( uint32_t preserveAttachmentCount_ )
+    {
+      preserveAttachmentCount = preserveAttachmentCount_;
+      return *this;
+    }
+
+    SubpassDescription2KHR& setPPreserveAttachments( const uint32_t* pPreserveAttachments_ )
+    {
+      pPreserveAttachments = pPreserveAttachments_;
+      return *this;
+    }
+
+    operator const VkSubpassDescription2KHR&() const
+    {
+      return *reinterpret_cast<const VkSubpassDescription2KHR*>(this);
+    }
+
+    bool operator==( SubpassDescription2KHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( pipelineBindPoint == rhs.pipelineBindPoint )
+          && ( viewMask == rhs.viewMask )
+          && ( inputAttachmentCount == rhs.inputAttachmentCount )
+          && ( pInputAttachments == rhs.pInputAttachments )
+          && ( colorAttachmentCount == rhs.colorAttachmentCount )
+          && ( pColorAttachments == rhs.pColorAttachments )
+          && ( pResolveAttachments == rhs.pResolveAttachments )
+          && ( pDepthStencilAttachment == rhs.pDepthStencilAttachment )
+          && ( preserveAttachmentCount == rhs.preserveAttachmentCount )
+          && ( pPreserveAttachments == rhs.pPreserveAttachments );
+    }
+
+    bool operator!=( SubpassDescription2KHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::eSubpassDescription2KHR;
+
+  public:
+    const void* pNext = nullptr;
+    SubpassDescriptionFlags flags;
+    PipelineBindPoint pipelineBindPoint;
+    uint32_t viewMask;
+    uint32_t inputAttachmentCount;
+    const AttachmentReference2KHR* pInputAttachments;
+    uint32_t colorAttachmentCount;
+    const AttachmentReference2KHR* pColorAttachments;
+    const AttachmentReference2KHR* pResolveAttachments;
+    const AttachmentReference2KHR* pDepthStencilAttachment;
+    uint32_t preserveAttachmentCount;
+    const uint32_t* pPreserveAttachments;
+  };
+  static_assert( sizeof( SubpassDescription2KHR ) == sizeof( VkSubpassDescription2KHR ), "struct and wrapper have different size!" );
+
+  struct RenderPassCreateInfo2KHR
+  {
+    RenderPassCreateInfo2KHR( RenderPassCreateFlags flags_ = RenderPassCreateFlags(),
+                              uint32_t attachmentCount_ = 0,
+                              const AttachmentDescription2KHR* pAttachments_ = nullptr,
+                              uint32_t subpassCount_ = 0,
+                              const SubpassDescription2KHR* pSubpasses_ = nullptr,
+                              uint32_t dependencyCount_ = 0,
+                              const SubpassDependency2KHR* pDependencies_ = nullptr,
+                              uint32_t correlatedViewMaskCount_ = 0,
+                              const uint32_t* pCorrelatedViewMasks_ = nullptr )
+      : flags( flags_ )
+      , attachmentCount( attachmentCount_ )
+      , pAttachments( pAttachments_ )
+      , subpassCount( subpassCount_ )
+      , pSubpasses( pSubpasses_ )
+      , dependencyCount( dependencyCount_ )
+      , pDependencies( pDependencies_ )
+      , correlatedViewMaskCount( correlatedViewMaskCount_ )
+      , pCorrelatedViewMasks( pCorrelatedViewMasks_ )
+    {
+    }
+
+    RenderPassCreateInfo2KHR( VkRenderPassCreateInfo2KHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( RenderPassCreateInfo2KHR ) );
+    }
+
+    RenderPassCreateInfo2KHR& operator=( VkRenderPassCreateInfo2KHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( RenderPassCreateInfo2KHR ) );
+      return *this;
+    }
+    RenderPassCreateInfo2KHR& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    RenderPassCreateInfo2KHR& setFlags( RenderPassCreateFlags flags_ )
+    {
+      flags = flags_;
+      return *this;
+    }
+
+    RenderPassCreateInfo2KHR& setAttachmentCount( uint32_t attachmentCount_ )
+    {
+      attachmentCount = attachmentCount_;
+      return *this;
+    }
+
+    RenderPassCreateInfo2KHR& setPAttachments( const AttachmentDescription2KHR* pAttachments_ )
+    {
+      pAttachments = pAttachments_;
+      return *this;
+    }
+
+    RenderPassCreateInfo2KHR& setSubpassCount( uint32_t subpassCount_ )
+    {
+      subpassCount = subpassCount_;
+      return *this;
+    }
+
+    RenderPassCreateInfo2KHR& setPSubpasses( const SubpassDescription2KHR* pSubpasses_ )
+    {
+      pSubpasses = pSubpasses_;
+      return *this;
+    }
+
+    RenderPassCreateInfo2KHR& setDependencyCount( uint32_t dependencyCount_ )
+    {
+      dependencyCount = dependencyCount_;
+      return *this;
+    }
+
+    RenderPassCreateInfo2KHR& setPDependencies( const SubpassDependency2KHR* pDependencies_ )
+    {
+      pDependencies = pDependencies_;
+      return *this;
+    }
+
+    RenderPassCreateInfo2KHR& setCorrelatedViewMaskCount( uint32_t correlatedViewMaskCount_ )
+    {
+      correlatedViewMaskCount = correlatedViewMaskCount_;
+      return *this;
+    }
+
+    RenderPassCreateInfo2KHR& setPCorrelatedViewMasks( const uint32_t* pCorrelatedViewMasks_ )
+    {
+      pCorrelatedViewMasks = pCorrelatedViewMasks_;
+      return *this;
+    }
+
+    operator const VkRenderPassCreateInfo2KHR&() const
+    {
+      return *reinterpret_cast<const VkRenderPassCreateInfo2KHR*>(this);
+    }
+
+    bool operator==( RenderPassCreateInfo2KHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( attachmentCount == rhs.attachmentCount )
+          && ( pAttachments == rhs.pAttachments )
+          && ( subpassCount == rhs.subpassCount )
+          && ( pSubpasses == rhs.pSubpasses )
+          && ( dependencyCount == rhs.dependencyCount )
+          && ( pDependencies == rhs.pDependencies )
+          && ( correlatedViewMaskCount == rhs.correlatedViewMaskCount )
+          && ( pCorrelatedViewMasks == rhs.pCorrelatedViewMasks );
+    }
+
+    bool operator!=( RenderPassCreateInfo2KHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::eRenderPassCreateInfo2KHR;
+
+  public:
+    const void* pNext = nullptr;
+    RenderPassCreateFlags flags;
+    uint32_t attachmentCount;
+    const AttachmentDescription2KHR* pAttachments;
+    uint32_t subpassCount;
+    const SubpassDescription2KHR* pSubpasses;
+    uint32_t dependencyCount;
+    const SubpassDependency2KHR* pDependencies;
+    uint32_t correlatedViewMaskCount;
+    const uint32_t* pCorrelatedViewMasks;
+  };
+  static_assert( sizeof( RenderPassCreateInfo2KHR ) == sizeof( VkRenderPassCreateInfo2KHR ), "struct and wrapper have different size!" );
+
   enum class PointClippingBehavior
   {
     eAllClipPlanes = VK_POINT_CLIPPING_BEHAVIOR_ALL_CLIP_PLANES,
@@ -30548,6 +31515,113 @@ public:
   };
   static_assert( sizeof( DescriptorSetLayoutBindingFlagsCreateInfoEXT ) == sizeof( VkDescriptorSetLayoutBindingFlagsCreateInfoEXT ), "struct and wrapper have different size!" );
 
+  enum class VendorId
+  {
+    eViv = VK_VENDOR_ID_VIV,
+    eVsi = VK_VENDOR_ID_VSI,
+    eKazan = VK_VENDOR_ID_KAZAN
+  };
+
+  enum class ConditionalRenderingFlagBitsEXT
+  {
+    eInverted = VK_CONDITIONAL_RENDERING_INVERTED_BIT_EXT
+  };
+
+  using ConditionalRenderingFlagsEXT = Flags<ConditionalRenderingFlagBitsEXT, VkConditionalRenderingFlagsEXT>;
+
+  VULKAN_HPP_INLINE ConditionalRenderingFlagsEXT operator|( ConditionalRenderingFlagBitsEXT bit0, ConditionalRenderingFlagBitsEXT bit1 )
+  {
+    return ConditionalRenderingFlagsEXT( bit0 ) | bit1;
+  }
+
+  VULKAN_HPP_INLINE ConditionalRenderingFlagsEXT operator~( ConditionalRenderingFlagBitsEXT bits )
+  {
+    return ~( ConditionalRenderingFlagsEXT( bits ) );
+  }
+
+  template <> struct FlagTraits<ConditionalRenderingFlagBitsEXT>
+  {
+    enum
+    {
+      allFlags = VkFlags(ConditionalRenderingFlagBitsEXT::eInverted)
+    };
+  };
+
+  struct ConditionalRenderingBeginInfoEXT
+  {
+    ConditionalRenderingBeginInfoEXT( Buffer buffer_ = Buffer(),
+                                      DeviceSize offset_ = 0,
+                                      ConditionalRenderingFlagsEXT flags_ = ConditionalRenderingFlagsEXT() )
+      : buffer( buffer_ )
+      , offset( offset_ )
+      , flags( flags_ )
+    {
+    }
+
+    ConditionalRenderingBeginInfoEXT( VkConditionalRenderingBeginInfoEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ConditionalRenderingBeginInfoEXT ) );
+    }
+
+    ConditionalRenderingBeginInfoEXT& operator=( VkConditionalRenderingBeginInfoEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ConditionalRenderingBeginInfoEXT ) );
+      return *this;
+    }
+    ConditionalRenderingBeginInfoEXT& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    ConditionalRenderingBeginInfoEXT& setBuffer( Buffer buffer_ )
+    {
+      buffer = buffer_;
+      return *this;
+    }
+
+    ConditionalRenderingBeginInfoEXT& setOffset( DeviceSize offset_ )
+    {
+      offset = offset_;
+      return *this;
+    }
+
+    ConditionalRenderingBeginInfoEXT& setFlags( ConditionalRenderingFlagsEXT flags_ )
+    {
+      flags = flags_;
+      return *this;
+    }
+
+    operator const VkConditionalRenderingBeginInfoEXT&() const
+    {
+      return *reinterpret_cast<const VkConditionalRenderingBeginInfoEXT*>(this);
+    }
+
+    bool operator==( ConditionalRenderingBeginInfoEXT const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( buffer == rhs.buffer )
+          && ( offset == rhs.offset )
+          && ( flags == rhs.flags );
+    }
+
+    bool operator!=( ConditionalRenderingBeginInfoEXT const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::eConditionalRenderingBeginInfoEXT;
+
+  public:
+    const void* pNext = nullptr;
+    Buffer buffer;
+    DeviceSize offset;
+    ConditionalRenderingFlagsEXT flags;
+  };
+  static_assert( sizeof( ConditionalRenderingBeginInfoEXT ) == sizeof( VkConditionalRenderingBeginInfoEXT ), "struct and wrapper have different size!" );
+
   template<typename Dispatch = DispatchLoaderStatic>
   Result enumerateInstanceVersion( uint32_t* pApiVersion, Dispatch const &d = Dispatch() );
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
@@ -30884,6 +31958,16 @@ public:
     void endQuery( QueryPool queryPool, uint32_t query, Dispatch const &d = Dispatch() ) const;
 
     template<typename Dispatch = DispatchLoaderStatic>
+    void beginConditionalRenderingEXT( const ConditionalRenderingBeginInfoEXT* pConditionalRenderingBegin, Dispatch const &d = Dispatch() ) const;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template<typename Dispatch = DispatchLoaderStatic>
+    void beginConditionalRenderingEXT( const ConditionalRenderingBeginInfoEXT & conditionalRenderingBegin, Dispatch const &d = Dispatch() ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    template<typename Dispatch = DispatchLoaderStatic>
+    void endConditionalRenderingEXT(Dispatch const &d = Dispatch() ) const;
+
+    template<typename Dispatch = DispatchLoaderStatic>
     void resetQueryPool( QueryPool queryPool, uint32_t firstQuery, uint32_t queryCount, Dispatch const &d = Dispatch() ) const;
 
     template<typename Dispatch = DispatchLoaderStatic>
@@ -31018,6 +32102,27 @@ public:
 
     template<typename Dispatch = DispatchLoaderStatic>
     void writeBufferMarkerAMD( PipelineStageFlagBits pipelineStage, Buffer dstBuffer, DeviceSize dstOffset, uint32_t marker, Dispatch const &d = Dispatch() ) const;
+
+    template<typename Dispatch = DispatchLoaderStatic>
+    void beginRenderPass2KHR( const RenderPassBeginInfo* pRenderPassBegin, const SubpassBeginInfoKHR* pSubpassBeginInfo, Dispatch const &d = Dispatch() ) const;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template<typename Dispatch = DispatchLoaderStatic>
+    void beginRenderPass2KHR( const RenderPassBeginInfo & renderPassBegin, const SubpassBeginInfoKHR & subpassBeginInfo, Dispatch const &d = Dispatch() ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    template<typename Dispatch = DispatchLoaderStatic>
+    void nextSubpass2KHR( const SubpassBeginInfoKHR* pSubpassBeginInfo, const SubpassEndInfoKHR* pSubpassEndInfo, Dispatch const &d = Dispatch() ) const;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template<typename Dispatch = DispatchLoaderStatic>
+    void nextSubpass2KHR( const SubpassBeginInfoKHR & subpassBeginInfo, const SubpassEndInfoKHR & subpassEndInfo, Dispatch const &d = Dispatch() ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    template<typename Dispatch = DispatchLoaderStatic>
+    void endRenderPass2KHR( const SubpassEndInfoKHR* pSubpassEndInfo, Dispatch const &d = Dispatch() ) const;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template<typename Dispatch = DispatchLoaderStatic>
+    void endRenderPass2KHR( const SubpassEndInfoKHR & subpassEndInfo, Dispatch const &d = Dispatch() ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = DispatchLoaderStatic>
     void drawIndirectCountKHR( Buffer buffer, DeviceSize offset, Buffer countBuffer, DeviceSize countBufferOffset, uint32_t maxDrawCount, uint32_t stride, Dispatch const &d = Dispatch() ) const;
@@ -31588,6 +32693,33 @@ public:
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::beginConditionalRenderingEXT( const ConditionalRenderingBeginInfoEXT* pConditionalRenderingBegin, Dispatch const &d) const
+  {
+    d.vkCmdBeginConditionalRenderingEXT( m_commandBuffer, reinterpret_cast<const VkConditionalRenderingBeginInfoEXT*>( pConditionalRenderingBegin ) );
+  }
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::beginConditionalRenderingEXT( const ConditionalRenderingBeginInfoEXT & conditionalRenderingBegin, Dispatch const &d ) const
+  {
+    d.vkCmdBeginConditionalRenderingEXT( m_commandBuffer, reinterpret_cast<const VkConditionalRenderingBeginInfoEXT*>( &conditionalRenderingBegin ) );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::endConditionalRenderingEXT(Dispatch const &d) const
+  {
+    d.vkCmdEndConditionalRenderingEXT( m_commandBuffer );
+  }
+#else
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::endConditionalRenderingEXT(Dispatch const &d ) const
+  {
+    d.vkCmdEndConditionalRenderingEXT( m_commandBuffer );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
 #ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template<typename Dispatch>
   VULKAN_HPP_INLINE void CommandBuffer::resetQueryPool( QueryPool queryPool, uint32_t firstQuery, uint32_t queryCount, Dispatch const &d) const
@@ -31967,6 +33099,45 @@ public:
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::beginRenderPass2KHR( const RenderPassBeginInfo* pRenderPassBegin, const SubpassBeginInfoKHR* pSubpassBeginInfo, Dispatch const &d) const
+  {
+    d.vkCmdBeginRenderPass2KHR( m_commandBuffer, reinterpret_cast<const VkRenderPassBeginInfo*>( pRenderPassBegin ), reinterpret_cast<const VkSubpassBeginInfoKHR*>( pSubpassBeginInfo ) );
+  }
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::beginRenderPass2KHR( const RenderPassBeginInfo & renderPassBegin, const SubpassBeginInfoKHR & subpassBeginInfo, Dispatch const &d ) const
+  {
+    d.vkCmdBeginRenderPass2KHR( m_commandBuffer, reinterpret_cast<const VkRenderPassBeginInfo*>( &renderPassBegin ), reinterpret_cast<const VkSubpassBeginInfoKHR*>( &subpassBeginInfo ) );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::nextSubpass2KHR( const SubpassBeginInfoKHR* pSubpassBeginInfo, const SubpassEndInfoKHR* pSubpassEndInfo, Dispatch const &d) const
+  {
+    d.vkCmdNextSubpass2KHR( m_commandBuffer, reinterpret_cast<const VkSubpassBeginInfoKHR*>( pSubpassBeginInfo ), reinterpret_cast<const VkSubpassEndInfoKHR*>( pSubpassEndInfo ) );
+  }
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::nextSubpass2KHR( const SubpassBeginInfoKHR & subpassBeginInfo, const SubpassEndInfoKHR & subpassEndInfo, Dispatch const &d ) const
+  {
+    d.vkCmdNextSubpass2KHR( m_commandBuffer, reinterpret_cast<const VkSubpassBeginInfoKHR*>( &subpassBeginInfo ), reinterpret_cast<const VkSubpassEndInfoKHR*>( &subpassEndInfo ) );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::endRenderPass2KHR( const SubpassEndInfoKHR* pSubpassEndInfo, Dispatch const &d) const
+  {
+    d.vkCmdEndRenderPass2KHR( m_commandBuffer, reinterpret_cast<const VkSubpassEndInfoKHR*>( pSubpassEndInfo ) );
+  }
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::endRenderPass2KHR( const SubpassEndInfoKHR & subpassEndInfo, Dispatch const &d ) const
+  {
+    d.vkCmdEndRenderPass2KHR( m_commandBuffer, reinterpret_cast<const VkSubpassEndInfoKHR*>( &subpassEndInfo ) );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
 #ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template<typename Dispatch>
   VULKAN_HPP_INLINE void CommandBuffer::drawIndirectCountKHR( Buffer buffer, DeviceSize offset, Buffer countBuffer, DeviceSize countBufferOffset, uint32_t maxDrawCount, uint32_t stride, Dispatch const &d) const
@@ -32323,60 +33494,60 @@ public:
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   class Device;
 
-  template <> class UniqueHandleTraits<Buffer> {public: using deleter = ObjectDestroy<Device>; };
-  using UniqueBuffer = UniqueHandle<Buffer>;
-  template <> class UniqueHandleTraits<BufferView> {public: using deleter = ObjectDestroy<Device>; };
-  using UniqueBufferView = UniqueHandle<BufferView>;
-  template <> class UniqueHandleTraits<CommandBuffer> {public: using deleter = PoolFree<Device, CommandPool>; };
-  using UniqueCommandBuffer = UniqueHandle<CommandBuffer>;
-  template <> class UniqueHandleTraits<CommandPool> {public: using deleter = ObjectDestroy<Device>; };
-  using UniqueCommandPool = UniqueHandle<CommandPool>;
-  template <> class UniqueHandleTraits<DescriptorPool> {public: using deleter = ObjectDestroy<Device>; };
-  using UniqueDescriptorPool = UniqueHandle<DescriptorPool>;
-  template <> class UniqueHandleTraits<DescriptorSet> {public: using deleter = PoolFree<Device, DescriptorPool>; };
-  using UniqueDescriptorSet = UniqueHandle<DescriptorSet>;
-  template <> class UniqueHandleTraits<DescriptorSetLayout> {public: using deleter = ObjectDestroy<Device>; };
-  using UniqueDescriptorSetLayout = UniqueHandle<DescriptorSetLayout>;
-  template <> class UniqueHandleTraits<DescriptorUpdateTemplate> {public: using deleter = ObjectDestroy<Device>; };
-  using UniqueDescriptorUpdateTemplate = UniqueHandle<DescriptorUpdateTemplate>;
-  template <> class UniqueHandleTraits<DeviceMemory> {public: using deleter = ObjectFree<Device>; };
-  using UniqueDeviceMemory = UniqueHandle<DeviceMemory>;
-  template <> class UniqueHandleTraits<Event> {public: using deleter = ObjectDestroy<Device>; };
-  using UniqueEvent = UniqueHandle<Event>;
-  template <> class UniqueHandleTraits<Fence> {public: using deleter = ObjectDestroy<Device>; };
-  using UniqueFence = UniqueHandle<Fence>;
-  template <> class UniqueHandleTraits<Framebuffer> {public: using deleter = ObjectDestroy<Device>; };
-  using UniqueFramebuffer = UniqueHandle<Framebuffer>;
-  template <> class UniqueHandleTraits<Image> {public: using deleter = ObjectDestroy<Device>; };
-  using UniqueImage = UniqueHandle<Image>;
-  template <> class UniqueHandleTraits<ImageView> {public: using deleter = ObjectDestroy<Device>; };
-  using UniqueImageView = UniqueHandle<ImageView>;
-  template <> class UniqueHandleTraits<IndirectCommandsLayoutNVX> {public: using deleter = ObjectDestroy<Device>; };
-  using UniqueIndirectCommandsLayoutNVX = UniqueHandle<IndirectCommandsLayoutNVX>;
-  template <> class UniqueHandleTraits<ObjectTableNVX> {public: using deleter = ObjectDestroy<Device>; };
-  using UniqueObjectTableNVX = UniqueHandle<ObjectTableNVX>;
-  template <> class UniqueHandleTraits<Pipeline> {public: using deleter = ObjectDestroy<Device>; };
-  using UniquePipeline = UniqueHandle<Pipeline>;
-  template <> class UniqueHandleTraits<PipelineCache> {public: using deleter = ObjectDestroy<Device>; };
-  using UniquePipelineCache = UniqueHandle<PipelineCache>;
-  template <> class UniqueHandleTraits<PipelineLayout> {public: using deleter = ObjectDestroy<Device>; };
-  using UniquePipelineLayout = UniqueHandle<PipelineLayout>;
-  template <> class UniqueHandleTraits<QueryPool> {public: using deleter = ObjectDestroy<Device>; };
-  using UniqueQueryPool = UniqueHandle<QueryPool>;
-  template <> class UniqueHandleTraits<RenderPass> {public: using deleter = ObjectDestroy<Device>; };
-  using UniqueRenderPass = UniqueHandle<RenderPass>;
-  template <> class UniqueHandleTraits<Sampler> {public: using deleter = ObjectDestroy<Device>; };
-  using UniqueSampler = UniqueHandle<Sampler>;
-  template <> class UniqueHandleTraits<SamplerYcbcrConversion> {public: using deleter = ObjectDestroy<Device>; };
-  using UniqueSamplerYcbcrConversion = UniqueHandle<SamplerYcbcrConversion>;
-  template <> class UniqueHandleTraits<Semaphore> {public: using deleter = ObjectDestroy<Device>; };
-  using UniqueSemaphore = UniqueHandle<Semaphore>;
-  template <> class UniqueHandleTraits<ShaderModule> {public: using deleter = ObjectDestroy<Device>; };
-  using UniqueShaderModule = UniqueHandle<ShaderModule>;
-  template <> class UniqueHandleTraits<SwapchainKHR> {public: using deleter = ObjectDestroy<Device>; };
-  using UniqueSwapchainKHR = UniqueHandle<SwapchainKHR>;
-  template <> class UniqueHandleTraits<ValidationCacheEXT> {public: using deleter = ObjectDestroy<Device>; };
-  using UniqueValidationCacheEXT = UniqueHandle<ValidationCacheEXT>;
+  template <typename Dispatch> class UniqueHandleTraits<Buffer,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  using UniqueBuffer = UniqueHandle<Buffer,DispatchLoaderStatic>;
+  template <typename Dispatch> class UniqueHandleTraits<BufferView,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  using UniqueBufferView = UniqueHandle<BufferView,DispatchLoaderStatic>;
+  template <typename Dispatch> class UniqueHandleTraits<CommandBuffer,Dispatch> {public: using deleter = PoolFree<Device, CommandPool,Dispatch>; };
+  using UniqueCommandBuffer = UniqueHandle<CommandBuffer,DispatchLoaderStatic>;
+  template <typename Dispatch> class UniqueHandleTraits<CommandPool,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  using UniqueCommandPool = UniqueHandle<CommandPool,DispatchLoaderStatic>;
+  template <typename Dispatch> class UniqueHandleTraits<DescriptorPool,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  using UniqueDescriptorPool = UniqueHandle<DescriptorPool,DispatchLoaderStatic>;
+  template <typename Dispatch> class UniqueHandleTraits<DescriptorSet,Dispatch> {public: using deleter = PoolFree<Device, DescriptorPool,Dispatch>; };
+  using UniqueDescriptorSet = UniqueHandle<DescriptorSet,DispatchLoaderStatic>;
+  template <typename Dispatch> class UniqueHandleTraits<DescriptorSetLayout,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  using UniqueDescriptorSetLayout = UniqueHandle<DescriptorSetLayout,DispatchLoaderStatic>;
+  template <typename Dispatch> class UniqueHandleTraits<DescriptorUpdateTemplate,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  using UniqueDescriptorUpdateTemplate = UniqueHandle<DescriptorUpdateTemplate,DispatchLoaderStatic>;
+  template <typename Dispatch> class UniqueHandleTraits<DeviceMemory,Dispatch> {public: using deleter = ObjectFree<Device,Dispatch>; };
+  using UniqueDeviceMemory = UniqueHandle<DeviceMemory,DispatchLoaderStatic>;
+  template <typename Dispatch> class UniqueHandleTraits<Event,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  using UniqueEvent = UniqueHandle<Event,DispatchLoaderStatic>;
+  template <typename Dispatch> class UniqueHandleTraits<Fence,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  using UniqueFence = UniqueHandle<Fence,DispatchLoaderStatic>;
+  template <typename Dispatch> class UniqueHandleTraits<Framebuffer,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  using UniqueFramebuffer = UniqueHandle<Framebuffer,DispatchLoaderStatic>;
+  template <typename Dispatch> class UniqueHandleTraits<Image,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  using UniqueImage = UniqueHandle<Image,DispatchLoaderStatic>;
+  template <typename Dispatch> class UniqueHandleTraits<ImageView,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  using UniqueImageView = UniqueHandle<ImageView,DispatchLoaderStatic>;
+  template <typename Dispatch> class UniqueHandleTraits<IndirectCommandsLayoutNVX,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  using UniqueIndirectCommandsLayoutNVX = UniqueHandle<IndirectCommandsLayoutNVX,DispatchLoaderStatic>;
+  template <typename Dispatch> class UniqueHandleTraits<ObjectTableNVX,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  using UniqueObjectTableNVX = UniqueHandle<ObjectTableNVX,DispatchLoaderStatic>;
+  template <typename Dispatch> class UniqueHandleTraits<Pipeline,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  using UniquePipeline = UniqueHandle<Pipeline,DispatchLoaderStatic>;
+  template <typename Dispatch> class UniqueHandleTraits<PipelineCache,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  using UniquePipelineCache = UniqueHandle<PipelineCache,DispatchLoaderStatic>;
+  template <typename Dispatch> class UniqueHandleTraits<PipelineLayout,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  using UniquePipelineLayout = UniqueHandle<PipelineLayout,DispatchLoaderStatic>;
+  template <typename Dispatch> class UniqueHandleTraits<QueryPool,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  using UniqueQueryPool = UniqueHandle<QueryPool,DispatchLoaderStatic>;
+  template <typename Dispatch> class UniqueHandleTraits<RenderPass,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  using UniqueRenderPass = UniqueHandle<RenderPass,DispatchLoaderStatic>;
+  template <typename Dispatch> class UniqueHandleTraits<Sampler,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  using UniqueSampler = UniqueHandle<Sampler,DispatchLoaderStatic>;
+  template <typename Dispatch> class UniqueHandleTraits<SamplerYcbcrConversion,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  using UniqueSamplerYcbcrConversion = UniqueHandle<SamplerYcbcrConversion,DispatchLoaderStatic>;
+  template <typename Dispatch> class UniqueHandleTraits<Semaphore,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  using UniqueSemaphore = UniqueHandle<Semaphore,DispatchLoaderStatic>;
+  template <typename Dispatch> class UniqueHandleTraits<ShaderModule,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  using UniqueShaderModule = UniqueHandle<ShaderModule,DispatchLoaderStatic>;
+  template <typename Dispatch> class UniqueHandleTraits<SwapchainKHR,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  using UniqueSwapchainKHR = UniqueHandle<SwapchainKHR,DispatchLoaderStatic>;
+  template <typename Dispatch> class UniqueHandleTraits<ValidationCacheEXT,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  using UniqueValidationCacheEXT = UniqueHandle<ValidationCacheEXT,DispatchLoaderStatic>;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 
   class Device
@@ -33750,6 +34921,17 @@ public:
     ResultValueType<MemoryHostPointerPropertiesEXT>::type getMemoryHostPointerPropertiesEXT( ExternalMemoryHandleTypeFlagBits handleType, const void* pHostPointer, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
+    template<typename Dispatch = DispatchLoaderStatic>
+    Result createRenderPass2KHR( const RenderPassCreateInfo2KHR* pCreateInfo, const AllocationCallbacks* pAllocator, RenderPass* pRenderPass, Dispatch const &d = Dispatch() ) const;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template<typename Dispatch = DispatchLoaderStatic>
+    ResultValueType<RenderPass>::type createRenderPass2KHR( const RenderPassCreateInfo2KHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+#ifndef VULKAN_HPP_NO_SMART_HANDLE
+    template<typename Dispatch = DispatchLoaderStatic>
+    ResultValueType<UniqueRenderPass>::type createRenderPass2KHRUnique( const RenderPassCreateInfo2KHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+#endif /*VULKAN_HPP_NO_SMART_HANDLE*/
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
 #ifdef VK_USE_PLATFORM_ANDROID_ANDROID
     template<typename Dispatch = DispatchLoaderStatic>
     Result getAndroidHardwareBufferPropertiesANDROID( const struct AHardwareBuffer* buffer, AndroidHardwareBufferPropertiesANDROID* pProperties, Dispatch const &d = Dispatch() ) const;
@@ -33869,8 +35051,8 @@ public:
     DeviceMemory memory;
     Result result = static_cast<Result>( d.vkAllocateMemory( m_device, reinterpret_cast<const VkMemoryAllocateInfo*>( &allocateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkDeviceMemory*>( &memory ) ) );
 
-    ObjectFree<Device> deleter( *this, allocator );
-    return createResultValue( result, memory, VULKAN_HPP_NAMESPACE_STRING"::Device::allocateMemoryUnique", deleter );
+    ObjectFree<Device,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<DeviceMemory,Dispatch>( result, memory, VULKAN_HPP_NAMESPACE_STRING"::Device::allocateMemoryUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -34071,8 +35253,8 @@ public:
     Fence fence;
     Result result = static_cast<Result>( d.vkCreateFence( m_device, reinterpret_cast<const VkFenceCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkFence*>( &fence ) ) );
 
-    ObjectDestroy<Device> deleter( *this, allocator );
-    return createResultValue( result, fence, VULKAN_HPP_NAMESPACE_STRING"::Device::createFenceUnique", deleter );
+    ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<Fence,Dispatch>( result, fence, VULKAN_HPP_NAMESPACE_STRING"::Device::createFenceUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -34166,8 +35348,8 @@ public:
     Semaphore semaphore;
     Result result = static_cast<Result>( d.vkCreateSemaphore( m_device, reinterpret_cast<const VkSemaphoreCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSemaphore*>( &semaphore ) ) );
 
-    ObjectDestroy<Device> deleter( *this, allocator );
-    return createResultValue( result, semaphore, VULKAN_HPP_NAMESPACE_STRING"::Device::createSemaphoreUnique", deleter );
+    ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<Semaphore,Dispatch>( result, semaphore, VULKAN_HPP_NAMESPACE_STRING"::Device::createSemaphoreUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -34218,8 +35400,8 @@ public:
     Event event;
     Result result = static_cast<Result>( d.vkCreateEvent( m_device, reinterpret_cast<const VkEventCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkEvent*>( &event ) ) );
 
-    ObjectDestroy<Device> deleter( *this, allocator );
-    return createResultValue( result, event, VULKAN_HPP_NAMESPACE_STRING"::Device::createEventUnique", deleter );
+    ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<Event,Dispatch>( result, event, VULKAN_HPP_NAMESPACE_STRING"::Device::createEventUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -34315,8 +35497,8 @@ public:
     QueryPool queryPool;
     Result result = static_cast<Result>( d.vkCreateQueryPool( m_device, reinterpret_cast<const VkQueryPoolCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkQueryPool*>( &queryPool ) ) );
 
-    ObjectDestroy<Device> deleter( *this, allocator );
-    return createResultValue( result, queryPool, VULKAN_HPP_NAMESPACE_STRING"::Device::createQueryPoolUnique", deleter );
+    ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<QueryPool,Dispatch>( result, queryPool, VULKAN_HPP_NAMESPACE_STRING"::Device::createQueryPoolUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -34381,8 +35563,8 @@ public:
     Buffer buffer;
     Result result = static_cast<Result>( d.vkCreateBuffer( m_device, reinterpret_cast<const VkBufferCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkBuffer*>( &buffer ) ) );
 
-    ObjectDestroy<Device> deleter( *this, allocator );
-    return createResultValue( result, buffer, VULKAN_HPP_NAMESPACE_STRING"::Device::createBufferUnique", deleter );
+    ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<Buffer,Dispatch>( result, buffer, VULKAN_HPP_NAMESPACE_STRING"::Device::createBufferUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -34433,8 +35615,8 @@ public:
     BufferView view;
     Result result = static_cast<Result>( d.vkCreateBufferView( m_device, reinterpret_cast<const VkBufferViewCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkBufferView*>( &view ) ) );
 
-    ObjectDestroy<Device> deleter( *this, allocator );
-    return createResultValue( result, view, VULKAN_HPP_NAMESPACE_STRING"::Device::createBufferViewUnique", deleter );
+    ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<BufferView,Dispatch>( result, view, VULKAN_HPP_NAMESPACE_STRING"::Device::createBufferViewUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -34485,8 +35667,8 @@ public:
     Image image;
     Result result = static_cast<Result>( d.vkCreateImage( m_device, reinterpret_cast<const VkImageCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkImage*>( &image ) ) );
 
-    ObjectDestroy<Device> deleter( *this, allocator );
-    return createResultValue( result, image, VULKAN_HPP_NAMESPACE_STRING"::Device::createImageUnique", deleter );
+    ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<Image,Dispatch>( result, image, VULKAN_HPP_NAMESPACE_STRING"::Device::createImageUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -34552,8 +35734,8 @@ public:
     ImageView view;
     Result result = static_cast<Result>( d.vkCreateImageView( m_device, reinterpret_cast<const VkImageViewCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkImageView*>( &view ) ) );
 
-    ObjectDestroy<Device> deleter( *this, allocator );
-    return createResultValue( result, view, VULKAN_HPP_NAMESPACE_STRING"::Device::createImageViewUnique", deleter );
+    ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<ImageView,Dispatch>( result, view, VULKAN_HPP_NAMESPACE_STRING"::Device::createImageViewUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -34604,8 +35786,8 @@ public:
     ShaderModule shaderModule;
     Result result = static_cast<Result>( d.vkCreateShaderModule( m_device, reinterpret_cast<const VkShaderModuleCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkShaderModule*>( &shaderModule ) ) );
 
-    ObjectDestroy<Device> deleter( *this, allocator );
-    return createResultValue( result, shaderModule, VULKAN_HPP_NAMESPACE_STRING"::Device::createShaderModuleUnique", deleter );
+    ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<ShaderModule,Dispatch>( result, shaderModule, VULKAN_HPP_NAMESPACE_STRING"::Device::createShaderModuleUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -34656,8 +35838,8 @@ public:
     PipelineCache pipelineCache;
     Result result = static_cast<Result>( d.vkCreatePipelineCache( m_device, reinterpret_cast<const VkPipelineCacheCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipelineCache*>( &pipelineCache ) ) );
 
-    ObjectDestroy<Device> deleter( *this, allocator );
-    return createResultValue( result, pipelineCache, VULKAN_HPP_NAMESPACE_STRING"::Device::createPipelineCacheUnique", deleter );
+    ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<PipelineCache,Dispatch>( result, pipelineCache, VULKAN_HPP_NAMESPACE_STRING"::Device::createPipelineCacheUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -34759,7 +35941,7 @@ public:
     Pipeline* buffer = reinterpret_cast<Pipeline*>( reinterpret_cast<char*>( pipelines.data() ) + createInfos.size() * ( sizeof( UniquePipeline ) - sizeof( Pipeline ) ) );
     Result result = static_cast<Result>(d.vkCreateGraphicsPipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkGraphicsPipelineCreateInfo*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( buffer ) ) );
 
-    ObjectDestroy<Device> deleter( *this, allocator );
+    ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
     for ( size_t i=0 ; i<createInfos.size() ; i++ )
     {
       pipelines.push_back( UniquePipeline( buffer[i], deleter ) );
@@ -34773,8 +35955,8 @@ public:
     Pipeline pipeline;
     Result result = static_cast<Result>( d.vkCreateGraphicsPipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), 1 , reinterpret_cast<const VkGraphicsPipelineCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( &pipeline ) ) );
 
-    ObjectDestroy<Device> deleter( *this, allocator );
-    return createResultValue( result, pipeline, VULKAN_HPP_NAMESPACE_STRING"::Device::createGraphicsPipelineUnique", deleter );
+    ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<Pipeline,Dispatch>( result, pipeline, VULKAN_HPP_NAMESPACE_STRING"::Device::createGraphicsPipelineUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -34809,7 +35991,7 @@ public:
     Pipeline* buffer = reinterpret_cast<Pipeline*>( reinterpret_cast<char*>( pipelines.data() ) + createInfos.size() * ( sizeof( UniquePipeline ) - sizeof( Pipeline ) ) );
     Result result = static_cast<Result>(d.vkCreateComputePipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkComputePipelineCreateInfo*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( buffer ) ) );
 
-    ObjectDestroy<Device> deleter( *this, allocator );
+    ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
     for ( size_t i=0 ; i<createInfos.size() ; i++ )
     {
       pipelines.push_back( UniquePipeline( buffer[i], deleter ) );
@@ -34823,8 +36005,8 @@ public:
     Pipeline pipeline;
     Result result = static_cast<Result>( d.vkCreateComputePipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), 1 , reinterpret_cast<const VkComputePipelineCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( &pipeline ) ) );
 
-    ObjectDestroy<Device> deleter( *this, allocator );
-    return createResultValue( result, pipeline, VULKAN_HPP_NAMESPACE_STRING"::Device::createComputePipelineUnique", deleter );
+    ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<Pipeline,Dispatch>( result, pipeline, VULKAN_HPP_NAMESPACE_STRING"::Device::createComputePipelineUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -34875,8 +36057,8 @@ public:
     PipelineLayout pipelineLayout;
     Result result = static_cast<Result>( d.vkCreatePipelineLayout( m_device, reinterpret_cast<const VkPipelineLayoutCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipelineLayout*>( &pipelineLayout ) ) );
 
-    ObjectDestroy<Device> deleter( *this, allocator );
-    return createResultValue( result, pipelineLayout, VULKAN_HPP_NAMESPACE_STRING"::Device::createPipelineLayoutUnique", deleter );
+    ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<PipelineLayout,Dispatch>( result, pipelineLayout, VULKAN_HPP_NAMESPACE_STRING"::Device::createPipelineLayoutUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -34927,8 +36109,8 @@ public:
     Sampler sampler;
     Result result = static_cast<Result>( d.vkCreateSampler( m_device, reinterpret_cast<const VkSamplerCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSampler*>( &sampler ) ) );
 
-    ObjectDestroy<Device> deleter( *this, allocator );
-    return createResultValue( result, sampler, VULKAN_HPP_NAMESPACE_STRING"::Device::createSamplerUnique", deleter );
+    ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<Sampler,Dispatch>( result, sampler, VULKAN_HPP_NAMESPACE_STRING"::Device::createSamplerUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -34979,8 +36161,8 @@ public:
     DescriptorSetLayout setLayout;
     Result result = static_cast<Result>( d.vkCreateDescriptorSetLayout( m_device, reinterpret_cast<const VkDescriptorSetLayoutCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkDescriptorSetLayout*>( &setLayout ) ) );
 
-    ObjectDestroy<Device> deleter( *this, allocator );
-    return createResultValue( result, setLayout, VULKAN_HPP_NAMESPACE_STRING"::Device::createDescriptorSetLayoutUnique", deleter );
+    ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<DescriptorSetLayout,Dispatch>( result, setLayout, VULKAN_HPP_NAMESPACE_STRING"::Device::createDescriptorSetLayoutUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -35031,8 +36213,8 @@ public:
     DescriptorPool descriptorPool;
     Result result = static_cast<Result>( d.vkCreateDescriptorPool( m_device, reinterpret_cast<const VkDescriptorPoolCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkDescriptorPool*>( &descriptorPool ) ) );
 
-    ObjectDestroy<Device> deleter( *this, allocator );
-    return createResultValue( result, descriptorPool, VULKAN_HPP_NAMESPACE_STRING"::Device::createDescriptorPoolUnique", deleter );
+    ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<DescriptorPool,Dispatch>( result, descriptorPool, VULKAN_HPP_NAMESPACE_STRING"::Device::createDescriptorPoolUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -35101,7 +36283,7 @@ public:
     DescriptorSet* buffer = reinterpret_cast<DescriptorSet*>( reinterpret_cast<char*>( descriptorSets.data() ) + allocateInfo.descriptorSetCount * ( sizeof( UniqueDescriptorSet ) - sizeof( DescriptorSet ) ) );
     Result result = static_cast<Result>(d.vkAllocateDescriptorSets( m_device, reinterpret_cast<const VkDescriptorSetAllocateInfo*>( &allocateInfo ), reinterpret_cast<VkDescriptorSet*>( buffer ) ) );
 
-    PoolFree<Device,DescriptorPool> deleter( *this, allocateInfo.descriptorPool );
+    PoolFree<Device,DescriptorPool,Dispatch> deleter( *this, allocateInfo.descriptorPool, d );
     for ( size_t i=0 ; i<allocateInfo.descriptorSetCount ; i++ )
     {
       descriptorSets.push_back( UniqueDescriptorSet( buffer[i], deleter ) );
@@ -35173,8 +36355,8 @@ public:
     Framebuffer framebuffer;
     Result result = static_cast<Result>( d.vkCreateFramebuffer( m_device, reinterpret_cast<const VkFramebufferCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkFramebuffer*>( &framebuffer ) ) );
 
-    ObjectDestroy<Device> deleter( *this, allocator );
-    return createResultValue( result, framebuffer, VULKAN_HPP_NAMESPACE_STRING"::Device::createFramebufferUnique", deleter );
+    ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<Framebuffer,Dispatch>( result, framebuffer, VULKAN_HPP_NAMESPACE_STRING"::Device::createFramebufferUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -35225,8 +36407,8 @@ public:
     RenderPass renderPass;
     Result result = static_cast<Result>( d.vkCreateRenderPass( m_device, reinterpret_cast<const VkRenderPassCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkRenderPass*>( &renderPass ) ) );
 
-    ObjectDestroy<Device> deleter( *this, allocator );
-    return createResultValue( result, renderPass, VULKAN_HPP_NAMESPACE_STRING"::Device::createRenderPassUnique", deleter );
+    ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<RenderPass,Dispatch>( result, renderPass, VULKAN_HPP_NAMESPACE_STRING"::Device::createRenderPassUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -35292,8 +36474,8 @@ public:
     CommandPool commandPool;
     Result result = static_cast<Result>( d.vkCreateCommandPool( m_device, reinterpret_cast<const VkCommandPoolCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkCommandPool*>( &commandPool ) ) );
 
-    ObjectDestroy<Device> deleter( *this, allocator );
-    return createResultValue( result, commandPool, VULKAN_HPP_NAMESPACE_STRING"::Device::createCommandPoolUnique", deleter );
+    ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<CommandPool,Dispatch>( result, commandPool, VULKAN_HPP_NAMESPACE_STRING"::Device::createCommandPoolUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -35362,7 +36544,7 @@ public:
     CommandBuffer* buffer = reinterpret_cast<CommandBuffer*>( reinterpret_cast<char*>( commandBuffers.data() ) + allocateInfo.commandBufferCount * ( sizeof( UniqueCommandBuffer ) - sizeof( CommandBuffer ) ) );
     Result result = static_cast<Result>(d.vkAllocateCommandBuffers( m_device, reinterpret_cast<const VkCommandBufferAllocateInfo*>( &allocateInfo ), reinterpret_cast<VkCommandBuffer*>( buffer ) ) );
 
-    PoolFree<Device,CommandPool> deleter( *this, allocateInfo.commandPool );
+    PoolFree<Device,CommandPool,Dispatch> deleter( *this, allocateInfo.commandPool, d );
     for ( size_t i=0 ; i<allocateInfo.commandBufferCount ; i++ )
     {
       commandBuffers.push_back( UniqueCommandBuffer( buffer[i], deleter ) );
@@ -35429,7 +36611,7 @@ public:
     SwapchainKHR* buffer = reinterpret_cast<SwapchainKHR*>( reinterpret_cast<char*>( swapchainKHRs.data() ) + createInfos.size() * ( sizeof( UniqueSwapchainKHR ) - sizeof( SwapchainKHR ) ) );
     Result result = static_cast<Result>(d.vkCreateSharedSwapchainsKHR( m_device, createInfos.size() , reinterpret_cast<const VkSwapchainCreateInfoKHR*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSwapchainKHR*>( buffer ) ) );
 
-    ObjectDestroy<Device> deleter( *this, allocator );
+    ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
     for ( size_t i=0 ; i<createInfos.size() ; i++ )
     {
       swapchainKHRs.push_back( UniqueSwapchainKHR( buffer[i], deleter ) );
@@ -35443,8 +36625,8 @@ public:
     SwapchainKHR swapchain;
     Result result = static_cast<Result>( d.vkCreateSharedSwapchainsKHR( m_device, 1 , reinterpret_cast<const VkSwapchainCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSwapchainKHR*>( &swapchain ) ) );
 
-    ObjectDestroy<Device> deleter( *this, allocator );
-    return createResultValue( result, swapchain, VULKAN_HPP_NAMESPACE_STRING"::Device::createSharedSwapchainKHRUnique", deleter );
+    ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<SwapchainKHR,Dispatch>( result, swapchain, VULKAN_HPP_NAMESPACE_STRING"::Device::createSharedSwapchainKHRUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -35469,8 +36651,8 @@ public:
     SwapchainKHR swapchain;
     Result result = static_cast<Result>( d.vkCreateSwapchainKHR( m_device, reinterpret_cast<const VkSwapchainCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSwapchainKHR*>( &swapchain ) ) );
 
-    ObjectDestroy<Device> deleter( *this, allocator );
-    return createResultValue( result, swapchain, VULKAN_HPP_NAMESPACE_STRING"::Device::createSwapchainKHRUnique", deleter );
+    ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<SwapchainKHR,Dispatch>( result, swapchain, VULKAN_HPP_NAMESPACE_STRING"::Device::createSwapchainKHRUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -35608,8 +36790,8 @@ public:
     IndirectCommandsLayoutNVX indirectCommandsLayout;
     Result result = static_cast<Result>( d.vkCreateIndirectCommandsLayoutNVX( m_device, reinterpret_cast<const VkIndirectCommandsLayoutCreateInfoNVX*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkIndirectCommandsLayoutNVX*>( &indirectCommandsLayout ) ) );
 
-    ObjectDestroy<Device> deleter( *this, allocator );
-    return createResultValue( result, indirectCommandsLayout, VULKAN_HPP_NAMESPACE_STRING"::Device::createIndirectCommandsLayoutNVXUnique", deleter );
+    ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<IndirectCommandsLayoutNVX,Dispatch>( result, indirectCommandsLayout, VULKAN_HPP_NAMESPACE_STRING"::Device::createIndirectCommandsLayoutNVXUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -35660,8 +36842,8 @@ public:
     ObjectTableNVX objectTable;
     Result result = static_cast<Result>( d.vkCreateObjectTableNVX( m_device, reinterpret_cast<const VkObjectTableCreateInfoNVX*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkObjectTableNVX*>( &objectTable ) ) );
 
-    ObjectDestroy<Device> deleter( *this, allocator );
-    return createResultValue( result, objectTable, VULKAN_HPP_NAMESPACE_STRING"::Device::createObjectTableNVXUnique", deleter );
+    ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<ObjectTableNVX,Dispatch>( result, objectTable, VULKAN_HPP_NAMESPACE_STRING"::Device::createObjectTableNVXUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -36162,8 +37344,8 @@ public:
     DescriptorUpdateTemplate descriptorUpdateTemplate;
     Result result = static_cast<Result>( d.vkCreateDescriptorUpdateTemplate( m_device, reinterpret_cast<const VkDescriptorUpdateTemplateCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkDescriptorUpdateTemplate*>( &descriptorUpdateTemplate ) ) );
 
-    ObjectDestroy<Device> deleter( *this, allocator );
-    return createResultValue( result, descriptorUpdateTemplate, VULKAN_HPP_NAMESPACE_STRING"::Device::createDescriptorUpdateTemplateUnique", deleter );
+    ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<DescriptorUpdateTemplate,Dispatch>( result, descriptorUpdateTemplate, VULKAN_HPP_NAMESPACE_STRING"::Device::createDescriptorUpdateTemplateUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -36188,8 +37370,8 @@ public:
     DescriptorUpdateTemplate descriptorUpdateTemplate;
     Result result = static_cast<Result>( d.vkCreateDescriptorUpdateTemplateKHR( m_device, reinterpret_cast<const VkDescriptorUpdateTemplateCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkDescriptorUpdateTemplate*>( &descriptorUpdateTemplate ) ) );
 
-    ObjectDestroy<Device> deleter( *this, allocator );
-    return createResultValue( result, descriptorUpdateTemplate, VULKAN_HPP_NAMESPACE_STRING"::Device::createDescriptorUpdateTemplateKHRUnique", deleter );
+    ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<DescriptorUpdateTemplate,Dispatch>( result, descriptorUpdateTemplate, VULKAN_HPP_NAMESPACE_STRING"::Device::createDescriptorUpdateTemplateKHRUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -36487,8 +37669,8 @@ public:
     SamplerYcbcrConversion ycbcrConversion;
     Result result = static_cast<Result>( d.vkCreateSamplerYcbcrConversion( m_device, reinterpret_cast<const VkSamplerYcbcrConversionCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSamplerYcbcrConversion*>( &ycbcrConversion ) ) );
 
-    ObjectDestroy<Device> deleter( *this, allocator );
-    return createResultValue( result, ycbcrConversion, VULKAN_HPP_NAMESPACE_STRING"::Device::createSamplerYcbcrConversionUnique", deleter );
+    ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<SamplerYcbcrConversion,Dispatch>( result, ycbcrConversion, VULKAN_HPP_NAMESPACE_STRING"::Device::createSamplerYcbcrConversionUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -36513,8 +37695,8 @@ public:
     SamplerYcbcrConversion ycbcrConversion;
     Result result = static_cast<Result>( d.vkCreateSamplerYcbcrConversionKHR( m_device, reinterpret_cast<const VkSamplerYcbcrConversionCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSamplerYcbcrConversion*>( &ycbcrConversion ) ) );
 
-    ObjectDestroy<Device> deleter( *this, allocator );
-    return createResultValue( result, ycbcrConversion, VULKAN_HPP_NAMESPACE_STRING"::Device::createSamplerYcbcrConversionKHRUnique", deleter );
+    ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<SamplerYcbcrConversion,Dispatch>( result, ycbcrConversion, VULKAN_HPP_NAMESPACE_STRING"::Device::createSamplerYcbcrConversionKHRUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -36593,8 +37775,8 @@ public:
     ValidationCacheEXT validationCache;
     Result result = static_cast<Result>( d.vkCreateValidationCacheEXT( m_device, reinterpret_cast<const VkValidationCacheCreateInfoEXT*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkValidationCacheEXT*>( &validationCache ) ) );
 
-    ObjectDestroy<Device> deleter( *this, allocator );
-    return createResultValue( result, validationCache, VULKAN_HPP_NAMESPACE_STRING"::Device::createValidationCacheEXTUnique", deleter );
+    ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<ValidationCacheEXT,Dispatch>( result, validationCache, VULKAN_HPP_NAMESPACE_STRING"::Device::createValidationCacheEXTUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -36782,6 +37964,32 @@ public:
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE Result Device::createRenderPass2KHR( const RenderPassCreateInfo2KHR* pCreateInfo, const AllocationCallbacks* pAllocator, RenderPass* pRenderPass, Dispatch const &d) const
+  {
+    return static_cast<Result>( d.vkCreateRenderPass2KHR( m_device, reinterpret_cast<const VkRenderPassCreateInfo2KHR*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkRenderPass*>( pRenderPass ) ) );
+  }
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE ResultValueType<RenderPass>::type Device::createRenderPass2KHR( const RenderPassCreateInfo2KHR & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  {
+    RenderPass renderPass;
+    Result result = static_cast<Result>( d.vkCreateRenderPass2KHR( m_device, reinterpret_cast<const VkRenderPassCreateInfo2KHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkRenderPass*>( &renderPass ) ) );
+    return createResultValue( result, renderPass, VULKAN_HPP_NAMESPACE_STRING"::Device::createRenderPass2KHR" );
+  }
+#ifndef VULKAN_HPP_NO_SMART_HANDLE
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE ResultValueType<UniqueRenderPass>::type Device::createRenderPass2KHRUnique( const RenderPassCreateInfo2KHR & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  {
+    RenderPass renderPass;
+    Result result = static_cast<Result>( d.vkCreateRenderPass2KHR( m_device, reinterpret_cast<const VkRenderPassCreateInfo2KHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkRenderPass*>( &renderPass ) ) );
+
+    ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<RenderPass,Dispatch>( result, renderPass, VULKAN_HPP_NAMESPACE_STRING"::Device::createRenderPass2KHRUnique", deleter );
+  }
+#endif /*VULKAN_HPP_NO_SMART_HANDLE*/
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
 #ifdef VK_USE_PLATFORM_ANDROID_ANDROID
   template<typename Dispatch>
   VULKAN_HPP_INLINE Result Device::getAndroidHardwareBufferPropertiesANDROID( const struct AHardwareBuffer* buffer, AndroidHardwareBufferPropertiesANDROID* pProperties, Dispatch const &d) const
@@ -36826,8 +38034,8 @@ public:
 
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
 
-  template <> class UniqueHandleTraits<Device> {public: using deleter = ObjectDestroy<NoParent>; };
-  using UniqueDevice = UniqueHandle<Device>;
+  template <typename Dispatch> class UniqueHandleTraits<Device,Dispatch> {public: using deleter = ObjectDestroy<NoParent,Dispatch>; };
+  using UniqueDevice = UniqueHandle<Device,DispatchLoaderStatic>;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 
   class PhysicalDevice
@@ -37452,8 +38660,8 @@ public:
     Device device;
     Result result = static_cast<Result>( d.vkCreateDevice( m_physicalDevice, reinterpret_cast<const VkDeviceCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkDevice*>( &device ) ) );
 
-    ObjectDestroy<NoParent> deleter( allocator );
-    return createResultValue( result, device, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::createDeviceUnique", deleter );
+    ObjectDestroy<NoParent,Dispatch> deleter( allocator, d );
+    return createResultValue<Device,Dispatch>( result, device, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::createDeviceUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -38652,12 +39860,12 @@ public:
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   class Instance;
 
-  template <> class UniqueHandleTraits<DebugReportCallbackEXT> {public: using deleter = ObjectDestroy<Instance>; };
-  using UniqueDebugReportCallbackEXT = UniqueHandle<DebugReportCallbackEXT>;
-  template <> class UniqueHandleTraits<DebugUtilsMessengerEXT> {public: using deleter = ObjectDestroy<Instance>; };
-  using UniqueDebugUtilsMessengerEXT = UniqueHandle<DebugUtilsMessengerEXT>;
-  template <> class UniqueHandleTraits<SurfaceKHR> {public: using deleter = ObjectDestroy<Instance>; };
-  using UniqueSurfaceKHR = UniqueHandle<SurfaceKHR>;
+  template <typename Dispatch> class UniqueHandleTraits<DebugReportCallbackEXT,Dispatch> {public: using deleter = ObjectDestroy<Instance,Dispatch>; };
+  using UniqueDebugReportCallbackEXT = UniqueHandle<DebugReportCallbackEXT,DispatchLoaderStatic>;
+  template <typename Dispatch> class UniqueHandleTraits<DebugUtilsMessengerEXT,Dispatch> {public: using deleter = ObjectDestroy<Instance,Dispatch>; };
+  using UniqueDebugUtilsMessengerEXT = UniqueHandle<DebugUtilsMessengerEXT,DispatchLoaderStatic>;
+  template <typename Dispatch> class UniqueHandleTraits<SurfaceKHR,Dispatch> {public: using deleter = ObjectDestroy<Instance,Dispatch>; };
+  using UniqueSurfaceKHR = UniqueHandle<SurfaceKHR,DispatchLoaderStatic>;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 
   class Instance
@@ -39042,8 +40250,8 @@ public:
     SurfaceKHR surface;
     Result result = static_cast<Result>( d.vkCreateAndroidSurfaceKHR( m_instance, reinterpret_cast<const VkAndroidSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
 
-    ObjectDestroy<Instance> deleter( *this, allocator );
-    return createResultValue( result, surface, VULKAN_HPP_NAMESPACE_STRING"::Instance::createAndroidSurfaceKHRUnique", deleter );
+    ObjectDestroy<Instance,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<SurfaceKHR,Dispatch>( result, surface, VULKAN_HPP_NAMESPACE_STRING"::Instance::createAndroidSurfaceKHRUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -39069,8 +40277,8 @@ public:
     SurfaceKHR surface;
     Result result = static_cast<Result>( d.vkCreateDisplayPlaneSurfaceKHR( m_instance, reinterpret_cast<const VkDisplaySurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
 
-    ObjectDestroy<Instance> deleter( *this, allocator );
-    return createResultValue( result, surface, VULKAN_HPP_NAMESPACE_STRING"::Instance::createDisplayPlaneSurfaceKHRUnique", deleter );
+    ObjectDestroy<Instance,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<SurfaceKHR,Dispatch>( result, surface, VULKAN_HPP_NAMESPACE_STRING"::Instance::createDisplayPlaneSurfaceKHRUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -39096,8 +40304,8 @@ public:
     SurfaceKHR surface;
     Result result = static_cast<Result>( d.vkCreateMirSurfaceKHR( m_instance, reinterpret_cast<const VkMirSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
 
-    ObjectDestroy<Instance> deleter( *this, allocator );
-    return createResultValue( result, surface, VULKAN_HPP_NAMESPACE_STRING"::Instance::createMirSurfaceKHRUnique", deleter );
+    ObjectDestroy<Instance,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<SurfaceKHR,Dispatch>( result, surface, VULKAN_HPP_NAMESPACE_STRING"::Instance::createMirSurfaceKHRUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -39150,8 +40358,8 @@ public:
     SurfaceKHR surface;
     Result result = static_cast<Result>( d.vkCreateViSurfaceNN( m_instance, reinterpret_cast<const VkViSurfaceCreateInfoNN*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
 
-    ObjectDestroy<Instance> deleter( *this, allocator );
-    return createResultValue( result, surface, VULKAN_HPP_NAMESPACE_STRING"::Instance::createViSurfaceNNUnique", deleter );
+    ObjectDestroy<Instance,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<SurfaceKHR,Dispatch>( result, surface, VULKAN_HPP_NAMESPACE_STRING"::Instance::createViSurfaceNNUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -39178,8 +40386,8 @@ public:
     SurfaceKHR surface;
     Result result = static_cast<Result>( d.vkCreateWaylandSurfaceKHR( m_instance, reinterpret_cast<const VkWaylandSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
 
-    ObjectDestroy<Instance> deleter( *this, allocator );
-    return createResultValue( result, surface, VULKAN_HPP_NAMESPACE_STRING"::Instance::createWaylandSurfaceKHRUnique", deleter );
+    ObjectDestroy<Instance,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<SurfaceKHR,Dispatch>( result, surface, VULKAN_HPP_NAMESPACE_STRING"::Instance::createWaylandSurfaceKHRUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -39206,8 +40414,8 @@ public:
     SurfaceKHR surface;
     Result result = static_cast<Result>( d.vkCreateWin32SurfaceKHR( m_instance, reinterpret_cast<const VkWin32SurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
 
-    ObjectDestroy<Instance> deleter( *this, allocator );
-    return createResultValue( result, surface, VULKAN_HPP_NAMESPACE_STRING"::Instance::createWin32SurfaceKHRUnique", deleter );
+    ObjectDestroy<Instance,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<SurfaceKHR,Dispatch>( result, surface, VULKAN_HPP_NAMESPACE_STRING"::Instance::createWin32SurfaceKHRUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -39234,8 +40442,8 @@ public:
     SurfaceKHR surface;
     Result result = static_cast<Result>( d.vkCreateXlibSurfaceKHR( m_instance, reinterpret_cast<const VkXlibSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
 
-    ObjectDestroy<Instance> deleter( *this, allocator );
-    return createResultValue( result, surface, VULKAN_HPP_NAMESPACE_STRING"::Instance::createXlibSurfaceKHRUnique", deleter );
+    ObjectDestroy<Instance,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<SurfaceKHR,Dispatch>( result, surface, VULKAN_HPP_NAMESPACE_STRING"::Instance::createXlibSurfaceKHRUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -39262,8 +40470,8 @@ public:
     SurfaceKHR surface;
     Result result = static_cast<Result>( d.vkCreateXcbSurfaceKHR( m_instance, reinterpret_cast<const VkXcbSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
 
-    ObjectDestroy<Instance> deleter( *this, allocator );
-    return createResultValue( result, surface, VULKAN_HPP_NAMESPACE_STRING"::Instance::createXcbSurfaceKHRUnique", deleter );
+    ObjectDestroy<Instance,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<SurfaceKHR,Dispatch>( result, surface, VULKAN_HPP_NAMESPACE_STRING"::Instance::createXcbSurfaceKHRUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -39289,8 +40497,8 @@ public:
     DebugReportCallbackEXT callback;
     Result result = static_cast<Result>( d.vkCreateDebugReportCallbackEXT( m_instance, reinterpret_cast<const VkDebugReportCallbackCreateInfoEXT*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkDebugReportCallbackEXT*>( &callback ) ) );
 
-    ObjectDestroy<Instance> deleter( *this, allocator );
-    return createResultValue( result, callback, VULKAN_HPP_NAMESPACE_STRING"::Instance::createDebugReportCallbackEXTUnique", deleter );
+    ObjectDestroy<Instance,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<DebugReportCallbackEXT,Dispatch>( result, callback, VULKAN_HPP_NAMESPACE_STRING"::Instance::createDebugReportCallbackEXTUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -39417,8 +40625,8 @@ public:
     SurfaceKHR surface;
     Result result = static_cast<Result>( d.vkCreateIOSSurfaceMVK( m_instance, reinterpret_cast<const VkIOSSurfaceCreateInfoMVK*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
 
-    ObjectDestroy<Instance> deleter( *this, allocator );
-    return createResultValue( result, surface, VULKAN_HPP_NAMESPACE_STRING"::Instance::createIOSSurfaceMVKUnique", deleter );
+    ObjectDestroy<Instance,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<SurfaceKHR,Dispatch>( result, surface, VULKAN_HPP_NAMESPACE_STRING"::Instance::createIOSSurfaceMVKUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -39445,8 +40653,8 @@ public:
     SurfaceKHR surface;
     Result result = static_cast<Result>( d.vkCreateMacOSSurfaceMVK( m_instance, reinterpret_cast<const VkMacOSSurfaceCreateInfoMVK*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
 
-    ObjectDestroy<Instance> deleter( *this, allocator );
-    return createResultValue( result, surface, VULKAN_HPP_NAMESPACE_STRING"::Instance::createMacOSSurfaceMVKUnique", deleter );
+    ObjectDestroy<Instance,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<SurfaceKHR,Dispatch>( result, surface, VULKAN_HPP_NAMESPACE_STRING"::Instance::createMacOSSurfaceMVKUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -39472,8 +40680,8 @@ public:
     DebugUtilsMessengerEXT messenger;
     Result result = static_cast<Result>( d.vkCreateDebugUtilsMessengerEXT( m_instance, reinterpret_cast<const VkDebugUtilsMessengerCreateInfoEXT*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkDebugUtilsMessengerEXT*>( &messenger ) ) );
 
-    ObjectDestroy<Instance> deleter( *this, allocator );
-    return createResultValue( result, messenger, VULKAN_HPP_NAMESPACE_STRING"::Instance::createDebugUtilsMessengerEXTUnique", deleter );
+    ObjectDestroy<Instance,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<DebugUtilsMessengerEXT,Dispatch>( result, messenger, VULKAN_HPP_NAMESPACE_STRING"::Instance::createDebugUtilsMessengerEXTUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -39586,8 +40794,8 @@ public:
 
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
 
-  template <> class UniqueHandleTraits<Instance> {public: using deleter = ObjectDestroy<NoParent>; };
-  using UniqueInstance = UniqueHandle<Instance>;
+  template <typename Dispatch> class UniqueHandleTraits<Instance,Dispatch> {public: using deleter = ObjectDestroy<NoParent,Dispatch>; };
+  using UniqueInstance = UniqueHandle<Instance,DispatchLoaderStatic>;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 
   template<typename Dispatch = DispatchLoaderStatic>
@@ -39621,8 +40829,8 @@ public:
     Instance instance;
     Result result = static_cast<Result>( d.vkCreateInstance( reinterpret_cast<const VkInstanceCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkInstance*>( &instance ) ) );
 
-    ObjectDestroy<NoParent> deleter( allocator );
-    return createResultValue( result, instance, VULKAN_HPP_NAMESPACE_STRING"::createInstanceUnique", deleter );
+    ObjectDestroy<NoParent,Dispatch> deleter( allocator, d );
+    return createResultValue<Instance,Dispatch>( result, instance, VULKAN_HPP_NAMESPACE_STRING"::createInstanceUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -39799,10 +41007,15 @@ public:
 #ifdef VK_USE_PLATFORM_ANDROID_ANDROID
   template <> struct isStructureChainValid<ImageFormatProperties2, AndroidHardwareBufferUsageANDROID>{ enum { value = true }; };
 #endif /*VK_USE_PLATFORM_ANDROID_ANDROID*/
+  template <> struct isStructureChainValid<CommandBufferInheritanceInfo, CommandBufferInheritanceConditionalRenderingInfoEXT>{ enum { value = true }; };
 #ifdef VK_USE_PLATFORM_ANDROID_ANDROID
   template <> struct isStructureChainValid<ImageCreateInfo, ExternalFormatANDROID>{ enum { value = true }; };
   template <> struct isStructureChainValid<SamplerYcbcrConversionCreateInfo, ExternalFormatANDROID>{ enum { value = true }; };
 #endif /*VK_USE_PLATFORM_ANDROID_ANDROID*/
+  template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDevice8BitStorageFeaturesKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDevice8BitStorageFeaturesKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceConditionalRenderingFeaturesEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceConditionalRenderingFeaturesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<SurfaceCapabilities2KHR, SharedPresentSurfaceCapabilitiesKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<ImageViewCreateInfo, ImageViewUsageCreateInfo>{ enum { value = true }; };
   template <> struct isStructureChainValid<RenderPassCreateInfo, RenderPassInputAttachmentAspectCreateInfo>{ enum { value = true }; };
@@ -41222,6 +42435,9 @@ public:
     case StructureType::eImportSemaphoreFdInfoKHR: return "ImportSemaphoreFdInfoKHR";
     case StructureType::eSemaphoreGetFdInfoKHR: return "SemaphoreGetFdInfoKHR";
     case StructureType::ePhysicalDevicePushDescriptorPropertiesKHR: return "PhysicalDevicePushDescriptorPropertiesKHR";
+    case StructureType::eCommandBufferInheritanceConditionalRenderingInfoEXT: return "CommandBufferInheritanceConditionalRenderingInfoEXT";
+    case StructureType::ePhysicalDeviceConditionalRenderingFeaturesEXT: return "PhysicalDeviceConditionalRenderingFeaturesEXT";
+    case StructureType::eConditionalRenderingBeginInfoEXT: return "ConditionalRenderingBeginInfoEXT";
     case StructureType::ePresentRegionsKHR: return "PresentRegionsKHR";
     case StructureType::eObjectTableCreateInfoNVX: return "ObjectTableCreateInfoNVX";
     case StructureType::eIndirectCommandsLayoutCreateInfoNVX: return "IndirectCommandsLayoutCreateInfoNVX";
@@ -41243,6 +42459,13 @@ public:
     case StructureType::ePhysicalDeviceConservativeRasterizationPropertiesEXT: return "PhysicalDeviceConservativeRasterizationPropertiesEXT";
     case StructureType::ePipelineRasterizationConservativeStateCreateInfoEXT: return "PipelineRasterizationConservativeStateCreateInfoEXT";
     case StructureType::eHdrMetadataEXT: return "HdrMetadataEXT";
+    case StructureType::eAttachmentDescription2KHR: return "AttachmentDescription2KHR";
+    case StructureType::eAttachmentReference2KHR: return "AttachmentReference2KHR";
+    case StructureType::eSubpassDescription2KHR: return "SubpassDescription2KHR";
+    case StructureType::eSubpassDependency2KHR: return "SubpassDependency2KHR";
+    case StructureType::eRenderPassCreateInfo2KHR: return "RenderPassCreateInfo2KHR";
+    case StructureType::eSubpassBeginInfoKHR: return "SubpassBeginInfoKHR";
+    case StructureType::eSubpassEndInfoKHR: return "SubpassEndInfoKHR";
     case StructureType::eSharedPresentSurfaceCapabilitiesKHR: return "SharedPresentSurfaceCapabilitiesKHR";
     case StructureType::eImportFenceWin32HandleInfoKHR: return "ImportFenceWin32HandleInfoKHR";
     case StructureType::eExportFenceWin32HandleInfoKHR: return "ExportFenceWin32HandleInfoKHR";
@@ -41291,6 +42514,7 @@ public:
     case StructureType::eDescriptorSetVariableDescriptorCountAllocateInfoEXT: return "DescriptorSetVariableDescriptorCountAllocateInfoEXT";
     case StructureType::eDescriptorSetVariableDescriptorCountLayoutSupportEXT: return "DescriptorSetVariableDescriptorCountLayoutSupportEXT";
     case StructureType::eDeviceQueueGlobalPriorityCreateInfoEXT: return "DeviceQueueGlobalPriorityCreateInfoEXT";
+    case StructureType::ePhysicalDevice8BitStorageFeaturesKHR: return "PhysicalDevice8BitStorageFeaturesKHR";
     case StructureType::eImportMemoryHostPointerInfoEXT: return "ImportMemoryHostPointerInfoEXT";
     case StructureType::eMemoryHostPointerPropertiesEXT: return "MemoryHostPointerPropertiesEXT";
     case StructureType::ePhysicalDeviceExternalMemoryHostPropertiesEXT: return "PhysicalDeviceExternalMemoryHostPropertiesEXT";
@@ -41495,6 +42719,7 @@ public:
     case AccessFlagBits::eHostWrite: return "HostWrite";
     case AccessFlagBits::eMemoryRead: return "MemoryRead";
     case AccessFlagBits::eMemoryWrite: return "MemoryWrite";
+    case AccessFlagBits::eConditionalRenderingReadEXT: return "ConditionalRenderingReadEXT";
     case AccessFlagBits::eCommandProcessReadNVX: return "CommandProcessReadNVX";
     case AccessFlagBits::eCommandProcessWriteNVX: return "CommandProcessWriteNVX";
     case AccessFlagBits::eColorAttachmentReadNoncoherentEXT: return "ColorAttachmentReadNoncoherentEXT";
@@ -41523,6 +42748,7 @@ public:
     if (value & AccessFlagBits::eHostWrite) result += "HostWrite | ";
     if (value & AccessFlagBits::eMemoryRead) result += "MemoryRead | ";
     if (value & AccessFlagBits::eMemoryWrite) result += "MemoryWrite | ";
+    if (value & AccessFlagBits::eConditionalRenderingReadEXT) result += "ConditionalRenderingReadEXT | ";
     if (value & AccessFlagBits::eCommandProcessReadNVX) result += "CommandProcessReadNVX | ";
     if (value & AccessFlagBits::eCommandProcessWriteNVX) result += "CommandProcessWriteNVX | ";
     if (value & AccessFlagBits::eColorAttachmentReadNoncoherentEXT) result += "ColorAttachmentReadNoncoherentEXT | ";
@@ -41542,6 +42768,7 @@ public:
     case BufferUsageFlagBits::eIndexBuffer: return "IndexBuffer";
     case BufferUsageFlagBits::eVertexBuffer: return "VertexBuffer";
     case BufferUsageFlagBits::eIndirectBuffer: return "IndirectBuffer";
+    case BufferUsageFlagBits::eConditionalRenderingEXT: return "ConditionalRenderingEXT";
     default: return "invalid";
     }
   }
@@ -41559,6 +42786,7 @@ public:
     if (value & BufferUsageFlagBits::eIndexBuffer) result += "IndexBuffer | ";
     if (value & BufferUsageFlagBits::eVertexBuffer) result += "VertexBuffer | ";
     if (value & BufferUsageFlagBits::eIndirectBuffer) result += "IndirectBuffer | ";
+    if (value & BufferUsageFlagBits::eConditionalRenderingEXT) result += "ConditionalRenderingEXT | ";
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
@@ -42002,6 +43230,7 @@ public:
     case PipelineStageFlagBits::eHost: return "Host";
     case PipelineStageFlagBits::eAllGraphics: return "AllGraphics";
     case PipelineStageFlagBits::eAllCommands: return "AllCommands";
+    case PipelineStageFlagBits::eConditionalRenderingEXT: return "ConditionalRenderingEXT";
     case PipelineStageFlagBits::eCommandProcessNVX: return "CommandProcessNVX";
     default: return "invalid";
     }
@@ -42028,6 +43257,7 @@ public:
     if (value & PipelineStageFlagBits::eHost) result += "Host | ";
     if (value & PipelineStageFlagBits::eAllGraphics) result += "AllGraphics | ";
     if (value & PipelineStageFlagBits::eAllCommands) result += "AllCommands | ";
+    if (value & PipelineStageFlagBits::eConditionalRenderingEXT) result += "ConditionalRenderingEXT | ";
     if (value & PipelineStageFlagBits::eCommandProcessNVX) result += "CommandProcessNVX | ";
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
@@ -43114,6 +44344,34 @@ public:
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
+  VULKAN_HPP_INLINE std::string to_string(VendorId value)
+  {
+    switch (value)
+    {
+    case VendorId::eViv: return "Viv";
+    case VendorId::eVsi: return "Vsi";
+    case VendorId::eKazan: return "Kazan";
+    default: return "invalid";
+    }
+  }
+
+  VULKAN_HPP_INLINE std::string to_string(ConditionalRenderingFlagBitsEXT value)
+  {
+    switch (value)
+    {
+    case ConditionalRenderingFlagBitsEXT::eInverted: return "Inverted";
+    default: return "invalid";
+    }
+  }
+
+  VULKAN_HPP_INLINE std::string to_string(ConditionalRenderingFlagsEXT value)
+  {
+    if (!value) return "{}";
+    std::string result;
+    if (value & ConditionalRenderingFlagBitsEXT::eInverted) result += "Inverted | ";
+    return "{" + result.substr(0, result.size() - 3) + "}";
+  }
+
   class DispatchLoaderDynamic
   {
   public:
@@ -43132,9 +44390,11 @@ public:
     PFN_vkBindImageMemory vkBindImageMemory = 0;
     PFN_vkBindImageMemory2 vkBindImageMemory2 = 0;
     PFN_vkBindImageMemory2KHR vkBindImageMemory2KHR = 0;
+    PFN_vkCmdBeginConditionalRenderingEXT vkCmdBeginConditionalRenderingEXT = 0;
     PFN_vkCmdBeginDebugUtilsLabelEXT vkCmdBeginDebugUtilsLabelEXT = 0;
     PFN_vkCmdBeginQuery vkCmdBeginQuery = 0;
     PFN_vkCmdBeginRenderPass vkCmdBeginRenderPass = 0;
+    PFN_vkCmdBeginRenderPass2KHR vkCmdBeginRenderPass2KHR = 0;
     PFN_vkCmdBindDescriptorSets vkCmdBindDescriptorSets = 0;
     PFN_vkCmdBindIndexBuffer vkCmdBindIndexBuffer = 0;
     PFN_vkCmdBindPipeline vkCmdBindPipeline = 0;
@@ -43163,13 +44423,16 @@ public:
     PFN_vkCmdDrawIndirect vkCmdDrawIndirect = 0;
     PFN_vkCmdDrawIndirectCountAMD vkCmdDrawIndirectCountAMD = 0;
     PFN_vkCmdDrawIndirectCountKHR vkCmdDrawIndirectCountKHR = 0;
+    PFN_vkCmdEndConditionalRenderingEXT vkCmdEndConditionalRenderingEXT = 0;
     PFN_vkCmdEndDebugUtilsLabelEXT vkCmdEndDebugUtilsLabelEXT = 0;
     PFN_vkCmdEndQuery vkCmdEndQuery = 0;
     PFN_vkCmdEndRenderPass vkCmdEndRenderPass = 0;
+    PFN_vkCmdEndRenderPass2KHR vkCmdEndRenderPass2KHR = 0;
     PFN_vkCmdExecuteCommands vkCmdExecuteCommands = 0;
     PFN_vkCmdFillBuffer vkCmdFillBuffer = 0;
     PFN_vkCmdInsertDebugUtilsLabelEXT vkCmdInsertDebugUtilsLabelEXT = 0;
     PFN_vkCmdNextSubpass vkCmdNextSubpass = 0;
+    PFN_vkCmdNextSubpass2KHR vkCmdNextSubpass2KHR = 0;
     PFN_vkCmdPipelineBarrier vkCmdPipelineBarrier = 0;
     PFN_vkCmdProcessCommandsNVX vkCmdProcessCommandsNVX = 0;
     PFN_vkCmdPushConstants vkCmdPushConstants = 0;
@@ -43236,6 +44499,7 @@ public:
     PFN_vkCreatePipelineLayout vkCreatePipelineLayout = 0;
     PFN_vkCreateQueryPool vkCreateQueryPool = 0;
     PFN_vkCreateRenderPass vkCreateRenderPass = 0;
+    PFN_vkCreateRenderPass2KHR vkCreateRenderPass2KHR = 0;
     PFN_vkCreateSampler vkCreateSampler = 0;
     PFN_vkCreateSamplerYcbcrConversion vkCreateSamplerYcbcrConversion = 0;
     PFN_vkCreateSamplerYcbcrConversionKHR vkCreateSamplerYcbcrConversionKHR = 0;
@@ -43499,9 +44763,11 @@ public:
       vkBindImageMemory = PFN_vkBindImageMemory(device ? device.getProcAddr( "vkBindImageMemory") : instance.getProcAddr( "vkBindImageMemory"));
       vkBindImageMemory2 = PFN_vkBindImageMemory2(device ? device.getProcAddr( "vkBindImageMemory2") : instance.getProcAddr( "vkBindImageMemory2"));
       vkBindImageMemory2KHR = PFN_vkBindImageMemory2KHR(device ? device.getProcAddr( "vkBindImageMemory2KHR") : instance.getProcAddr( "vkBindImageMemory2KHR"));
+      vkCmdBeginConditionalRenderingEXT = PFN_vkCmdBeginConditionalRenderingEXT(device ? device.getProcAddr( "vkCmdBeginConditionalRenderingEXT") : instance.getProcAddr( "vkCmdBeginConditionalRenderingEXT"));
       vkCmdBeginDebugUtilsLabelEXT = PFN_vkCmdBeginDebugUtilsLabelEXT(device ? device.getProcAddr( "vkCmdBeginDebugUtilsLabelEXT") : instance.getProcAddr( "vkCmdBeginDebugUtilsLabelEXT"));
       vkCmdBeginQuery = PFN_vkCmdBeginQuery(device ? device.getProcAddr( "vkCmdBeginQuery") : instance.getProcAddr( "vkCmdBeginQuery"));
       vkCmdBeginRenderPass = PFN_vkCmdBeginRenderPass(device ? device.getProcAddr( "vkCmdBeginRenderPass") : instance.getProcAddr( "vkCmdBeginRenderPass"));
+      vkCmdBeginRenderPass2KHR = PFN_vkCmdBeginRenderPass2KHR(device ? device.getProcAddr( "vkCmdBeginRenderPass2KHR") : instance.getProcAddr( "vkCmdBeginRenderPass2KHR"));
       vkCmdBindDescriptorSets = PFN_vkCmdBindDescriptorSets(device ? device.getProcAddr( "vkCmdBindDescriptorSets") : instance.getProcAddr( "vkCmdBindDescriptorSets"));
       vkCmdBindIndexBuffer = PFN_vkCmdBindIndexBuffer(device ? device.getProcAddr( "vkCmdBindIndexBuffer") : instance.getProcAddr( "vkCmdBindIndexBuffer"));
       vkCmdBindPipeline = PFN_vkCmdBindPipeline(device ? device.getProcAddr( "vkCmdBindPipeline") : instance.getProcAddr( "vkCmdBindPipeline"));
@@ -43530,13 +44796,16 @@ public:
       vkCmdDrawIndirect = PFN_vkCmdDrawIndirect(device ? device.getProcAddr( "vkCmdDrawIndirect") : instance.getProcAddr( "vkCmdDrawIndirect"));
       vkCmdDrawIndirectCountAMD = PFN_vkCmdDrawIndirectCountAMD(device ? device.getProcAddr( "vkCmdDrawIndirectCountAMD") : instance.getProcAddr( "vkCmdDrawIndirectCountAMD"));
       vkCmdDrawIndirectCountKHR = PFN_vkCmdDrawIndirectCountKHR(device ? device.getProcAddr( "vkCmdDrawIndirectCountKHR") : instance.getProcAddr( "vkCmdDrawIndirectCountKHR"));
+      vkCmdEndConditionalRenderingEXT = PFN_vkCmdEndConditionalRenderingEXT(device ? device.getProcAddr( "vkCmdEndConditionalRenderingEXT") : instance.getProcAddr( "vkCmdEndConditionalRenderingEXT"));
       vkCmdEndDebugUtilsLabelEXT = PFN_vkCmdEndDebugUtilsLabelEXT(device ? device.getProcAddr( "vkCmdEndDebugUtilsLabelEXT") : instance.getProcAddr( "vkCmdEndDebugUtilsLabelEXT"));
       vkCmdEndQuery = PFN_vkCmdEndQuery(device ? device.getProcAddr( "vkCmdEndQuery") : instance.getProcAddr( "vkCmdEndQuery"));
       vkCmdEndRenderPass = PFN_vkCmdEndRenderPass(device ? device.getProcAddr( "vkCmdEndRenderPass") : instance.getProcAddr( "vkCmdEndRenderPass"));
+      vkCmdEndRenderPass2KHR = PFN_vkCmdEndRenderPass2KHR(device ? device.getProcAddr( "vkCmdEndRenderPass2KHR") : instance.getProcAddr( "vkCmdEndRenderPass2KHR"));
       vkCmdExecuteCommands = PFN_vkCmdExecuteCommands(device ? device.getProcAddr( "vkCmdExecuteCommands") : instance.getProcAddr( "vkCmdExecuteCommands"));
       vkCmdFillBuffer = PFN_vkCmdFillBuffer(device ? device.getProcAddr( "vkCmdFillBuffer") : instance.getProcAddr( "vkCmdFillBuffer"));
       vkCmdInsertDebugUtilsLabelEXT = PFN_vkCmdInsertDebugUtilsLabelEXT(device ? device.getProcAddr( "vkCmdInsertDebugUtilsLabelEXT") : instance.getProcAddr( "vkCmdInsertDebugUtilsLabelEXT"));
       vkCmdNextSubpass = PFN_vkCmdNextSubpass(device ? device.getProcAddr( "vkCmdNextSubpass") : instance.getProcAddr( "vkCmdNextSubpass"));
+      vkCmdNextSubpass2KHR = PFN_vkCmdNextSubpass2KHR(device ? device.getProcAddr( "vkCmdNextSubpass2KHR") : instance.getProcAddr( "vkCmdNextSubpass2KHR"));
       vkCmdPipelineBarrier = PFN_vkCmdPipelineBarrier(device ? device.getProcAddr( "vkCmdPipelineBarrier") : instance.getProcAddr( "vkCmdPipelineBarrier"));
       vkCmdProcessCommandsNVX = PFN_vkCmdProcessCommandsNVX(device ? device.getProcAddr( "vkCmdProcessCommandsNVX") : instance.getProcAddr( "vkCmdProcessCommandsNVX"));
       vkCmdPushConstants = PFN_vkCmdPushConstants(device ? device.getProcAddr( "vkCmdPushConstants") : instance.getProcAddr( "vkCmdPushConstants"));
@@ -43603,6 +44872,7 @@ public:
       vkCreatePipelineLayout = PFN_vkCreatePipelineLayout(device ? device.getProcAddr( "vkCreatePipelineLayout") : instance.getProcAddr( "vkCreatePipelineLayout"));
       vkCreateQueryPool = PFN_vkCreateQueryPool(device ? device.getProcAddr( "vkCreateQueryPool") : instance.getProcAddr( "vkCreateQueryPool"));
       vkCreateRenderPass = PFN_vkCreateRenderPass(device ? device.getProcAddr( "vkCreateRenderPass") : instance.getProcAddr( "vkCreateRenderPass"));
+      vkCreateRenderPass2KHR = PFN_vkCreateRenderPass2KHR(device ? device.getProcAddr( "vkCreateRenderPass2KHR") : instance.getProcAddr( "vkCreateRenderPass2KHR"));
       vkCreateSampler = PFN_vkCreateSampler(device ? device.getProcAddr( "vkCreateSampler") : instance.getProcAddr( "vkCreateSampler"));
       vkCreateSamplerYcbcrConversion = PFN_vkCreateSamplerYcbcrConversion(device ? device.getProcAddr( "vkCreateSamplerYcbcrConversion") : instance.getProcAddr( "vkCreateSamplerYcbcrConversion"));
       vkCreateSamplerYcbcrConversionKHR = PFN_vkCreateSamplerYcbcrConversionKHR(device ? device.getProcAddr( "vkCreateSamplerYcbcrConversionKHR") : instance.getProcAddr( "vkCreateSamplerYcbcrConversionKHR"));

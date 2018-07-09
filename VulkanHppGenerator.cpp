@@ -607,18 +607,18 @@ const std::string createResultValueHeader = R"(
   }
 
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
-  template <typename T>
-  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<T>>::type createResultValue( Result result, T & data, char const * message, typename UniqueHandleTraits<T>::deleter const& deleter )
+  template <typename T, typename D>
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<T,D>>::type createResultValue( Result result, T & data, char const * message, typename UniqueHandleTraits<T,D>::deleter const& deleter )
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
     VULKAN_HPP_ASSERT( result == Result::eSuccess );
-    return ResultValue<UniqueHandle<T>>( result, UniqueHandle<T>(data, deleter) );
+    return ResultValue<UniqueHandle<T,D>>( result, UniqueHandle<T,D>(data, deleter) );
 #else
     if ( result != Result::eSuccess )
     {
       throwResultException( result, message );
     }
-    return UniqueHandle<T>(data, deleter);
+    return UniqueHandle<T,D>(data, deleter);
 #endif
   }
 #endif
@@ -628,13 +628,13 @@ const std::string createResultValueHeader = R"(
 const std::string uniqueHandleHeader = R"(
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
 
-  template <typename Type> class UniqueHandleTraits;
+  template <typename Type, typename Dispatch> class UniqueHandleTraits;
 
-  template <typename Type>
-  class UniqueHandle : public UniqueHandleTraits<Type>::deleter
+  template <typename Type, typename Dispatch>
+  class UniqueHandle : public UniqueHandleTraits<Type,Dispatch>::deleter
   {
   private:
-    using Deleter = typename UniqueHandleTraits<Type>::deleter;
+    using Deleter = typename UniqueHandleTraits<Type,Dispatch>::deleter;
   public:
     explicit UniqueHandle( Type const& value = Type(), Deleter const& deleter = Deleter() )
       : Deleter( deleter)
@@ -713,7 +713,7 @@ const std::string uniqueHandleHeader = R"(
       return value;
     }
 
-    void swap( UniqueHandle<Type> & rhs )
+    void swap( UniqueHandle<Type,Dispatch> & rhs )
     {
       std::swap(m_value, rhs.m_value);
       std::swap(static_cast<Deleter&>(*this), static_cast<Deleter&>(rhs));
@@ -723,8 +723,8 @@ const std::string uniqueHandleHeader = R"(
     Type    m_value;
   };
 
-  template <typename Type>
-  VULKAN_HPP_INLINE void swap( UniqueHandle<Type> & lhs, UniqueHandle<Type> & rhs )
+  template <typename Type, typename Dispatch>
+  VULKAN_HPP_INLINE void swap( UniqueHandle<Type,Dispatch> & lhs, UniqueHandle<Type,Dispatch> & rhs )
   {
     lhs.swap( rhs );
   }
@@ -735,13 +735,14 @@ const std::string uniqueHandleHeader = R"(
 const std::string deleterClassString = R"(
   struct AllocationCallbacks;
 
-  template <typename OwnerType>
+  template <typename OwnerType, typename Dispatch>
   class ObjectDestroy
   {
     public:
-      ObjectDestroy(OwnerType owner = OwnerType(), Optional<const AllocationCallbacks> allocator = nullptr)
-        : m_owner(owner)
-        , m_allocator(allocator)
+      ObjectDestroy( OwnerType owner = OwnerType(), Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &dispatch = Dispatch() )
+        : m_owner( owner )
+        , m_allocator( allocator )
+        , m_dispatch( dispatch )
       {}
 
       OwnerType getOwner() const { return m_owner; }
@@ -751,44 +752,48 @@ const std::string deleterClassString = R"(
       template <typename T>
       void destroy(T t)
       {
-        m_owner.destroy(t, m_allocator);
+        m_owner.destroy( t, m_allocator, m_dispatch );
       }
 
     private:
       OwnerType m_owner;
       Optional<const AllocationCallbacks> m_allocator;
+      Dispatch const& m_dispatch;
   };
 
   class NoParent;
 
-  template <>
-  class ObjectDestroy<NoParent>
+  template <typename Dispatch>
+  class ObjectDestroy<NoParent,Dispatch>
   {
-  public:
-    ObjectDestroy( Optional<const AllocationCallbacks> allocator = nullptr )
-      : m_allocator( allocator )
-    {}
+    public:
+      ObjectDestroy( Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &dispatch = Dispatch() )
+        : m_allocator( allocator )
+        , m_dispatch( dispatch )
+      {}
 
-    Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }
+      Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }
 
-  protected:
-    template <typename T>
-    void destroy(T t)
-    {
-      t.destroy( m_allocator );
-    }
+    protected:
+      template <typename T>
+      void destroy(T t)
+      {
+        t.destroy( m_allocator, m_dispatch );
+      }
 
-  private:
-    Optional<const AllocationCallbacks> m_allocator;
+    private:
+      Optional<const AllocationCallbacks> m_allocator;
+      Dispatch const& m_dispatch;
   };
 
-  template <typename OwnerType>
+  template <typename OwnerType, typename Dispatch>
   class ObjectFree
   {
     public:
-      ObjectFree(OwnerType owner = OwnerType(), Optional<const AllocationCallbacks> allocator = nullptr)
-        : m_owner(owner)
-        , m_allocator(allocator)
+      ObjectFree( OwnerType owner = OwnerType(), Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &dispatch = Dispatch() )
+        : m_owner( owner )
+        , m_allocator( allocator )
+        , m_dispatch( dispatch )
       {}
 
       OwnerType getOwner() const { return m_owner; }
@@ -798,21 +803,23 @@ const std::string deleterClassString = R"(
       template <typename T>
       void destroy(T t)
       {
-        m_owner.free(t, m_allocator);
+        m_owner.free( t, m_allocator, m_dispatch );
       }
 
     private:
       OwnerType m_owner;
       Optional<const AllocationCallbacks> m_allocator;
+      Dispatch const& m_dispatch;
   };
 
-  template <typename OwnerType, typename PoolType>
+  template <typename OwnerType, typename PoolType, typename Dispatch>
   class PoolFree
   {
     public:
-      PoolFree(OwnerType owner = OwnerType(), PoolType pool = PoolType())
-        : m_owner(owner)
-        , m_pool(pool)
+      PoolFree( OwnerType owner = OwnerType(), PoolType pool = PoolType(), Dispatch const &dispatch = Dispatch() )
+        : m_owner( owner )
+        , m_pool( pool )
+        , m_dispatch( dispatch )
       {}
 
       OwnerType getOwner() const { return m_owner; }
@@ -822,12 +829,13 @@ const std::string deleterClassString = R"(
       template <typename T>
       void destroy(T t)
       {
-        m_owner.free(m_pool, t);
+        m_owner.free( m_pool, t, m_dispatch );
       }
 
     private:
       OwnerType m_owner;
       PoolType m_pool;
+      Dispatch const& m_dispatch;
   };
 
 )";
@@ -2163,7 +2171,10 @@ void VulkanHppGenerator::readExtensionsExtension(tinyxml2::XMLElement const* ele
     { "author",{} },
     { "comment", {} },
     { "contact",{} },
+    { "deprecatedby", {} },
+    { "obsoletedby", {} },
     { "platform",{} },
+    { "promotedto", {} },
     { "protect",{} },
     { "requires",{} },
     { "requiresCore",{} },
@@ -3245,7 +3256,7 @@ ${i}  ${typeVariable}s.reserve( ${vectorSize} );
 ${i}  ${type}* buffer = reinterpret_cast<${type}*>( reinterpret_cast<char*>( ${typeVariable}s.data() ) + ${vectorSize} * ( sizeof( Unique${type} ) - sizeof( ${type} ) ) );
 ${i}  Result result = static_cast<Result>(d.vk${command}( m_device, ${arguments}, reinterpret_cast<Vk${type}*>( buffer ) ) );
 
-${i}  ${Deleter}<${DeleterTemplate}> deleter( *this, ${deleterArg} );
+${i}  ${Deleter}<${DeleterTemplate},Dispatch> deleter( *this, ${deleterArg}, d );
 ${i}  for ( size_t i=0 ; i<${vectorSize} ; i++ )
 ${i}  {
 ${i}    ${typeVariable}s.push_back( Unique${type}( buffer[i], deleter ) );
@@ -3569,11 +3580,15 @@ void VulkanHppGenerator::writeFunctionBodyEnhancedReturnResultValue(std::ostream
     // special handling for "createDevice", as Device is created from PhysicalDevice, but destroyed on its own
     bool noParent = commandData.className.empty() || (commandData.fullName == "createDevice");
     os << std::endl
-      << indentation << ((commandData.fullName == "allocateMemory") ? "  ObjectFree<" : "  ObjectDestroy<") << (noParent ? "NoParent" : commandData.className) << "> deleter( " << (noParent ? "" : "*this, ") << "allocator );" << std::endl;
+      << indentation << ((commandData.fullName == "allocateMemory") ? "  ObjectFree<" : "  ObjectDestroy<") << (noParent ? "NoParent" : commandData.className) << ",Dispatch> deleter( " << (noParent ? "" : "*this, ") << "allocator, d );" << std::endl
+      << indentation << "  return createResultValue<" << type << ",Dispatch>( result, ";
+  }
+  else
+  {
+    os << indentation << "  return createResultValue( result, ";
   }
 
   // if the return type is "Result" or there is at least one success code, create the Result/Value construct to return
-  os << indentation << "  return createResultValue( result, ";
   if (commandData.returnParam != ~0)
   {
     // if there's a return parameter, list it in the Result/Value constructor
@@ -4756,8 +4771,8 @@ void VulkanHppGenerator::writeUniqueTypes(std::ostream &os, std::pair<std::strin
     auto ddit = m_deleters.find(dt);
     assert(ddit != m_deleters.end());
 
-    os << "  template <> class UniqueHandleTraits<" << dt << "> {public: using deleter = " << (ddit->second.pool.empty() ? "Object" : "Pool") << ((ddit->second.call.substr(0, 4) == "free") ? "Free<" : "Destroy<") << (deleterTypes.first.empty() ? "NoParent" : deleterTypes.first) << (ddit->second.pool.empty() ? "" : ", " + ddit->second.pool) << ">; };\n";
-    os << "  using Unique" << dt << " = UniqueHandle<" << dt << ">;" << std::endl;
+    os << "  template <typename Dispatch> class UniqueHandleTraits<" << dt << ",Dispatch> {public: using deleter = " << (ddit->second.pool.empty() ? "Object" : "Pool") << ((ddit->second.call.substr(0, 4) == "free") ? "Free<" : "Destroy<") << (deleterTypes.first.empty() ? "NoParent" : deleterTypes.first) << (ddit->second.pool.empty() ? "" : ", " + ddit->second.pool) << ",Dispatch>; };\n";
+    os << "  using Unique" << dt << " = UniqueHandle<" << dt << ",DispatchLoaderStatic>;" << std::endl;
   }
   os << "#endif /*VULKAN_HPP_NO_SMART_HANDLE*/" << std::endl
     << std::endl;
@@ -5177,10 +5192,9 @@ int main( int argc, char **argv )
       << "namespace VULKAN_HPP_NAMESPACE" << std::endl
       << "{" << std::endl
       << resultValueHeader
-      << createResultValueHeader
-      << deleterClassString;
-
+      << createResultValueHeader;
     generator.writeDelegationClassStatic(ofs);
+    ofs << deleterClassString;
 
     generator.writeTypes(ofs, defaultValues);
     generator.writeStructureChainValidation(ofs);

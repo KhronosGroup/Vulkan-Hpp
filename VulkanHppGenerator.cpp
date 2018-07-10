@@ -3434,15 +3434,20 @@ std::string VulkanHppGenerator::writeFunctionBodyEnhancedLocalReturnVariable(std
         else
         {
           // the size of the vector is given by an other parameter
-          // that means (as this is not a two-step algorithm) it's size is determined by some other vector parameter!
+          // first check, if that size has become the size of some other vector parameter
           // -> look for it and get it's actual size
           for (auto const& vectorParam : commandData.vectorParams)
           {
-            if ((vectorParam.first != commandData.returnParam) && (vectorParam.second == it->second))
+            if ((vectorParam.first != it->first) && (vectorParam.second == it->second))
             {
               size = startLowerCase(strip(commandData.params[vectorParam.first].name, "p")) + ".size()";
               break;
             }
+          }
+          if (size.empty())
+          {
+            // otherwise, just use that parameter
+            size = commandData.params[it->second].name;
           }
         }
         assert(!size.empty());
@@ -4388,7 +4393,10 @@ void VulkanHppGenerator::writeTypeCommand(std::ostream & os, std::string const& 
 
   // then a singular version, if a sized vector would be returned
   std::map<size_t, size_t>::const_iterator returnVector = commandData.vectorParams.find(commandData.returnParam);
-  bool singular = (returnVector != commandData.vectorParams.end()) && (returnVector->second != ~0) && (commandData.params[returnVector->second].type.back() != '*');
+  bool singular = (returnVector != commandData.vectorParams.end()) &&
+                  (returnVector->second != ~0) &&
+                  (commandData.params[returnVector->first].pureType != "void") &&
+                  (commandData.params[returnVector->second].type.back() != '*');
   if (singular)
   {
     writeFunction(enhanced, indentation, commandData, definition, true, true, false, false);

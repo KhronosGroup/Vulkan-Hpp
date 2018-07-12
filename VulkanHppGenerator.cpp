@@ -3924,7 +3924,7 @@ void VulkanHppGenerator::writeFunctionHeaderReturnType(std::ostream & os, std::s
       // it's a vector, if it's not the singular version and the return parameter is a vector parameter
       bool returnsVector = !singular && (commandData.vectorParams.find(commandData.returnParam) != commandData.vectorParams.end());
 
-      templateString += returnsVector ? "ResultValueType<std::vector<Unique${returnType},Allocator>>::type " : "ResultValueType<Unique${returnType}>::type ";
+      templateString += returnsVector ? "ResultValueType<std::vector<UniqueHandle<${returnType},Dispatch>,Allocator>>::type " : "typename ResultValueType<UniqueHandle<${returnType},Dispatch>>::type ";
       returnType = isStructureChain ? "StructureChain<T...>" : commandData.params[commandData.returnParam].pureType;
     }
     else if ((commandData.enhancedReturnType != commandData.returnType) && (commandData.returnType != "void"))

@@ -33630,7 +33630,7 @@ public:
     ResultValueType<DeviceMemory>::type allocateMemory( const MemoryAllocateInfo & allocateInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template<typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<UniqueDeviceMemory>::type allocateMemoryUnique( const MemoryAllocateInfo & allocateInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<UniqueHandle<DeviceMemory,Dispatch>>::type allocateMemoryUnique( const MemoryAllocateInfo & allocateInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -33723,7 +33723,7 @@ public:
     ResultValueType<Fence>::type createFence( const FenceCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template<typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<UniqueFence>::type createFenceUnique( const FenceCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<UniqueHandle<Fence,Dispatch>>::type createFenceUnique( const FenceCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -33765,7 +33765,7 @@ public:
     ResultValueType<Semaphore>::type createSemaphore( const SemaphoreCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template<typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<UniqueSemaphore>::type createSemaphoreUnique( const SemaphoreCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<UniqueHandle<Semaphore,Dispatch>>::type createSemaphoreUnique( const SemaphoreCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -33790,7 +33790,7 @@ public:
     ResultValueType<Event>::type createEvent( const EventCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template<typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<UniqueEvent>::type createEventUnique( const EventCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<UniqueHandle<Event,Dispatch>>::type createEventUnique( const EventCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -33834,7 +33834,7 @@ public:
     ResultValueType<QueryPool>::type createQueryPool( const QueryPoolCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template<typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<UniqueQueryPool>::type createQueryPoolUnique( const QueryPoolCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<UniqueHandle<QueryPool,Dispatch>>::type createQueryPoolUnique( const QueryPoolCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -33866,7 +33866,7 @@ public:
     ResultValueType<Buffer>::type createBuffer( const BufferCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template<typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<UniqueBuffer>::type createBufferUnique( const BufferCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<UniqueHandle<Buffer,Dispatch>>::type createBufferUnique( const BufferCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -33891,7 +33891,7 @@ public:
     ResultValueType<BufferView>::type createBufferView( const BufferViewCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template<typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<UniqueBufferView>::type createBufferViewUnique( const BufferViewCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<UniqueHandle<BufferView,Dispatch>>::type createBufferViewUnique( const BufferViewCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -33916,7 +33916,7 @@ public:
     ResultValueType<Image>::type createImage( const ImageCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template<typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<UniqueImage>::type createImageUnique( const ImageCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<UniqueHandle<Image,Dispatch>>::type createImageUnique( const ImageCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -33948,7 +33948,7 @@ public:
     ResultValueType<ImageView>::type createImageView( const ImageViewCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template<typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<UniqueImageView>::type createImageViewUnique( const ImageViewCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<UniqueHandle<ImageView,Dispatch>>::type createImageViewUnique( const ImageViewCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -33973,7 +33973,7 @@ public:
     ResultValueType<ShaderModule>::type createShaderModule( const ShaderModuleCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template<typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<UniqueShaderModule>::type createShaderModuleUnique( const ShaderModuleCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<UniqueHandle<ShaderModule,Dispatch>>::type createShaderModuleUnique( const ShaderModuleCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -33998,7 +33998,7 @@ public:
     ResultValueType<PipelineCache>::type createPipelineCache( const PipelineCacheCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template<typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<UniquePipelineCache>::type createPipelineCacheUnique( const PipelineCacheCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<UniqueHandle<PipelineCache,Dispatch>>::type createPipelineCacheUnique( const PipelineCacheCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -34039,9 +34039,9 @@ public:
     ResultValueType<Pipeline>::type createGraphicsPipeline( PipelineCache pipelineCache, const GraphicsPipelineCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template <typename Allocator = std::allocator<UniquePipeline>, typename Dispatch = DispatchLoaderStatic> 
-    typename ResultValueType<std::vector<UniquePipeline,Allocator>>::type createGraphicsPipelinesUnique( PipelineCache pipelineCache, ArrayProxy<const GraphicsPipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<std::vector<UniqueHandle<Pipeline,Dispatch>,Allocator>>::type createGraphicsPipelinesUnique( PipelineCache pipelineCache, ArrayProxy<const GraphicsPipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
     template <typename Allocator = std::allocator<UniquePipeline>, typename Dispatch = DispatchLoaderStatic> 
-    ResultValueType<UniquePipeline>::type createGraphicsPipelineUnique( PipelineCache pipelineCache, const GraphicsPipelineCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<UniqueHandle<Pipeline,Dispatch>>::type createGraphicsPipelineUnique( PipelineCache pipelineCache, const GraphicsPipelineCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -34054,9 +34054,9 @@ public:
     ResultValueType<Pipeline>::type createComputePipeline( PipelineCache pipelineCache, const ComputePipelineCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template <typename Allocator = std::allocator<UniquePipeline>, typename Dispatch = DispatchLoaderStatic> 
-    typename ResultValueType<std::vector<UniquePipeline,Allocator>>::type createComputePipelinesUnique( PipelineCache pipelineCache, ArrayProxy<const ComputePipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<std::vector<UniqueHandle<Pipeline,Dispatch>,Allocator>>::type createComputePipelinesUnique( PipelineCache pipelineCache, ArrayProxy<const ComputePipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
     template <typename Allocator = std::allocator<UniquePipeline>, typename Dispatch = DispatchLoaderStatic> 
-    ResultValueType<UniquePipeline>::type createComputePipelineUnique( PipelineCache pipelineCache, const ComputePipelineCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<UniqueHandle<Pipeline,Dispatch>>::type createComputePipelineUnique( PipelineCache pipelineCache, const ComputePipelineCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -34081,7 +34081,7 @@ public:
     ResultValueType<PipelineLayout>::type createPipelineLayout( const PipelineLayoutCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template<typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<UniquePipelineLayout>::type createPipelineLayoutUnique( const PipelineLayoutCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<UniqueHandle<PipelineLayout,Dispatch>>::type createPipelineLayoutUnique( const PipelineLayoutCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -34106,7 +34106,7 @@ public:
     ResultValueType<Sampler>::type createSampler( const SamplerCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template<typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<UniqueSampler>::type createSamplerUnique( const SamplerCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<UniqueHandle<Sampler,Dispatch>>::type createSamplerUnique( const SamplerCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -34131,7 +34131,7 @@ public:
     ResultValueType<DescriptorSetLayout>::type createDescriptorSetLayout( const DescriptorSetLayoutCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template<typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<UniqueDescriptorSetLayout>::type createDescriptorSetLayoutUnique( const DescriptorSetLayoutCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<UniqueHandle<DescriptorSetLayout,Dispatch>>::type createDescriptorSetLayoutUnique( const DescriptorSetLayoutCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -34156,7 +34156,7 @@ public:
     ResultValueType<DescriptorPool>::type createDescriptorPool( const DescriptorPoolCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template<typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<UniqueDescriptorPool>::type createDescriptorPoolUnique( const DescriptorPoolCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<UniqueHandle<DescriptorPool,Dispatch>>::type createDescriptorPoolUnique( const DescriptorPoolCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -34189,7 +34189,7 @@ public:
     typename ResultValueType<std::vector<DescriptorSet,Allocator>>::type allocateDescriptorSets( const DescriptorSetAllocateInfo & allocateInfo, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template <typename Allocator = std::allocator<UniqueDescriptorSet>, typename Dispatch = DispatchLoaderStatic> 
-    typename ResultValueType<std::vector<UniqueDescriptorSet,Allocator>>::type allocateDescriptorSetsUnique( const DescriptorSetAllocateInfo & allocateInfo, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<std::vector<UniqueHandle<DescriptorSet,Dispatch>,Allocator>>::type allocateDescriptorSetsUnique( const DescriptorSetAllocateInfo & allocateInfo, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -34221,7 +34221,7 @@ public:
     ResultValueType<Framebuffer>::type createFramebuffer( const FramebufferCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template<typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<UniqueFramebuffer>::type createFramebufferUnique( const FramebufferCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<UniqueHandle<Framebuffer,Dispatch>>::type createFramebufferUnique( const FramebufferCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -34246,7 +34246,7 @@ public:
     ResultValueType<RenderPass>::type createRenderPass( const RenderPassCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template<typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<UniqueRenderPass>::type createRenderPassUnique( const RenderPassCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<UniqueHandle<RenderPass,Dispatch>>::type createRenderPassUnique( const RenderPassCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -34278,7 +34278,7 @@ public:
     ResultValueType<CommandPool>::type createCommandPool( const CommandPoolCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template<typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<UniqueCommandPool>::type createCommandPoolUnique( const CommandPoolCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<UniqueHandle<CommandPool,Dispatch>>::type createCommandPoolUnique( const CommandPoolCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -34311,7 +34311,7 @@ public:
     typename ResultValueType<std::vector<CommandBuffer,Allocator>>::type allocateCommandBuffers( const CommandBufferAllocateInfo & allocateInfo, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template <typename Allocator = std::allocator<UniqueCommandBuffer>, typename Dispatch = DispatchLoaderStatic> 
-    typename ResultValueType<std::vector<UniqueCommandBuffer,Allocator>>::type allocateCommandBuffersUnique( const CommandBufferAllocateInfo & allocateInfo, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<std::vector<UniqueHandle<CommandBuffer,Dispatch>,Allocator>>::type allocateCommandBuffersUnique( const CommandBufferAllocateInfo & allocateInfo, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -34338,9 +34338,9 @@ public:
     ResultValueType<SwapchainKHR>::type createSharedSwapchainKHR( const SwapchainCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template <typename Allocator = std::allocator<UniqueSwapchainKHR>, typename Dispatch = DispatchLoaderStatic> 
-    typename ResultValueType<std::vector<UniqueSwapchainKHR,Allocator>>::type createSharedSwapchainsKHRUnique( ArrayProxy<const SwapchainCreateInfoKHR> createInfos, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<std::vector<UniqueHandle<SwapchainKHR,Dispatch>,Allocator>>::type createSharedSwapchainsKHRUnique( ArrayProxy<const SwapchainCreateInfoKHR> createInfos, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
     template <typename Allocator = std::allocator<UniqueSwapchainKHR>, typename Dispatch = DispatchLoaderStatic> 
-    ResultValueType<UniqueSwapchainKHR>::type createSharedSwapchainKHRUnique( const SwapchainCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<UniqueHandle<SwapchainKHR,Dispatch>>::type createSharedSwapchainKHRUnique( const SwapchainCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -34351,7 +34351,7 @@ public:
     ResultValueType<SwapchainKHR>::type createSwapchainKHR( const SwapchainCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template<typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<UniqueSwapchainKHR>::type createSwapchainKHRUnique( const SwapchainCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<UniqueHandle<SwapchainKHR,Dispatch>>::type createSwapchainKHRUnique( const SwapchainCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -34413,7 +34413,7 @@ public:
     ResultValueType<IndirectCommandsLayoutNVX>::type createIndirectCommandsLayoutNVX( const IndirectCommandsLayoutCreateInfoNVX & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template<typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<UniqueIndirectCommandsLayoutNVX>::type createIndirectCommandsLayoutNVXUnique( const IndirectCommandsLayoutCreateInfoNVX & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<UniqueHandle<IndirectCommandsLayoutNVX,Dispatch>>::type createIndirectCommandsLayoutNVXUnique( const IndirectCommandsLayoutCreateInfoNVX & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -34438,7 +34438,7 @@ public:
     ResultValueType<ObjectTableNVX>::type createObjectTableNVX( const ObjectTableCreateInfoNVX & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template<typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<UniqueObjectTableNVX>::type createObjectTableNVXUnique( const ObjectTableCreateInfoNVX & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<UniqueHandle<ObjectTableNVX,Dispatch>>::type createObjectTableNVXUnique( const ObjectTableCreateInfoNVX & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -34670,7 +34670,7 @@ public:
     ResultValueType<DescriptorUpdateTemplate>::type createDescriptorUpdateTemplate( const DescriptorUpdateTemplateCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template<typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<UniqueDescriptorUpdateTemplate>::type createDescriptorUpdateTemplateUnique( const DescriptorUpdateTemplateCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<UniqueHandle<DescriptorUpdateTemplate,Dispatch>>::type createDescriptorUpdateTemplateUnique( const DescriptorUpdateTemplateCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -34681,7 +34681,7 @@ public:
     ResultValueType<DescriptorUpdateTemplate>::type createDescriptorUpdateTemplateKHR( const DescriptorUpdateTemplateCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template<typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<UniqueDescriptorUpdateTemplate>::type createDescriptorUpdateTemplateKHRUnique( const DescriptorUpdateTemplateCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<UniqueHandle<DescriptorUpdateTemplate,Dispatch>>::type createDescriptorUpdateTemplateKHRUnique( const DescriptorUpdateTemplateCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -34793,7 +34793,7 @@ public:
     ResultValueType<SamplerYcbcrConversion>::type createSamplerYcbcrConversion( const SamplerYcbcrConversionCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template<typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<UniqueSamplerYcbcrConversion>::type createSamplerYcbcrConversionUnique( const SamplerYcbcrConversionCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<UniqueHandle<SamplerYcbcrConversion,Dispatch>>::type createSamplerYcbcrConversionUnique( const SamplerYcbcrConversionCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -34804,7 +34804,7 @@ public:
     ResultValueType<SamplerYcbcrConversion>::type createSamplerYcbcrConversionKHR( const SamplerYcbcrConversionCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template<typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<UniqueSamplerYcbcrConversion>::type createSamplerYcbcrConversionKHRUnique( const SamplerYcbcrConversionCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<UniqueHandle<SamplerYcbcrConversion,Dispatch>>::type createSamplerYcbcrConversionKHRUnique( const SamplerYcbcrConversionCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -34843,7 +34843,7 @@ public:
     ResultValueType<ValidationCacheEXT>::type createValidationCacheEXT( const ValidationCacheCreateInfoEXT & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template<typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<UniqueValidationCacheEXT>::type createValidationCacheEXTUnique( const ValidationCacheCreateInfoEXT & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<UniqueHandle<ValidationCacheEXT,Dispatch>>::type createValidationCacheEXTUnique( const ValidationCacheCreateInfoEXT & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -34928,7 +34928,7 @@ public:
     ResultValueType<RenderPass>::type createRenderPass2KHR( const RenderPassCreateInfo2KHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template<typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<UniqueRenderPass>::type createRenderPass2KHRUnique( const RenderPassCreateInfo2KHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<UniqueHandle<RenderPass,Dispatch>>::type createRenderPass2KHRUnique( const RenderPassCreateInfo2KHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -35046,7 +35046,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<UniqueDeviceMemory>::type Device::allocateMemoryUnique( const MemoryAllocateInfo & allocateInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<DeviceMemory,Dispatch>>::type Device::allocateMemoryUnique( const MemoryAllocateInfo & allocateInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     DeviceMemory memory;
     Result result = static_cast<Result>( d.vkAllocateMemory( m_device, reinterpret_cast<const VkMemoryAllocateInfo*>( &allocateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkDeviceMemory*>( &memory ) ) );
@@ -35248,7 +35248,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<UniqueFence>::type Device::createFenceUnique( const FenceCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<Fence,Dispatch>>::type Device::createFenceUnique( const FenceCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     Fence fence;
     Result result = static_cast<Result>( d.vkCreateFence( m_device, reinterpret_cast<const VkFenceCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkFence*>( &fence ) ) );
@@ -35343,7 +35343,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<UniqueSemaphore>::type Device::createSemaphoreUnique( const SemaphoreCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<Semaphore,Dispatch>>::type Device::createSemaphoreUnique( const SemaphoreCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     Semaphore semaphore;
     Result result = static_cast<Result>( d.vkCreateSemaphore( m_device, reinterpret_cast<const VkSemaphoreCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSemaphore*>( &semaphore ) ) );
@@ -35395,7 +35395,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<UniqueEvent>::type Device::createEventUnique( const EventCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<Event,Dispatch>>::type Device::createEventUnique( const EventCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     Event event;
     Result result = static_cast<Result>( d.vkCreateEvent( m_device, reinterpret_cast<const VkEventCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkEvent*>( &event ) ) );
@@ -35492,7 +35492,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<UniqueQueryPool>::type Device::createQueryPoolUnique( const QueryPoolCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<QueryPool,Dispatch>>::type Device::createQueryPoolUnique( const QueryPoolCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     QueryPool queryPool;
     Result result = static_cast<Result>( d.vkCreateQueryPool( m_device, reinterpret_cast<const VkQueryPoolCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkQueryPool*>( &queryPool ) ) );
@@ -35558,7 +35558,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<UniqueBuffer>::type Device::createBufferUnique( const BufferCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<Buffer,Dispatch>>::type Device::createBufferUnique( const BufferCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     Buffer buffer;
     Result result = static_cast<Result>( d.vkCreateBuffer( m_device, reinterpret_cast<const VkBufferCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkBuffer*>( &buffer ) ) );
@@ -35610,7 +35610,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<UniqueBufferView>::type Device::createBufferViewUnique( const BufferViewCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<BufferView,Dispatch>>::type Device::createBufferViewUnique( const BufferViewCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     BufferView view;
     Result result = static_cast<Result>( d.vkCreateBufferView( m_device, reinterpret_cast<const VkBufferViewCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkBufferView*>( &view ) ) );
@@ -35662,7 +35662,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<UniqueImage>::type Device::createImageUnique( const ImageCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<Image,Dispatch>>::type Device::createImageUnique( const ImageCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     Image image;
     Result result = static_cast<Result>( d.vkCreateImage( m_device, reinterpret_cast<const VkImageCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkImage*>( &image ) ) );
@@ -35729,7 +35729,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<UniqueImageView>::type Device::createImageViewUnique( const ImageViewCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<ImageView,Dispatch>>::type Device::createImageViewUnique( const ImageViewCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     ImageView view;
     Result result = static_cast<Result>( d.vkCreateImageView( m_device, reinterpret_cast<const VkImageViewCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkImageView*>( &view ) ) );
@@ -35781,7 +35781,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<UniqueShaderModule>::type Device::createShaderModuleUnique( const ShaderModuleCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<ShaderModule,Dispatch>>::type Device::createShaderModuleUnique( const ShaderModuleCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     ShaderModule shaderModule;
     Result result = static_cast<Result>( d.vkCreateShaderModule( m_device, reinterpret_cast<const VkShaderModuleCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkShaderModule*>( &shaderModule ) ) );
@@ -35833,7 +35833,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<UniquePipelineCache>::type Device::createPipelineCacheUnique( const PipelineCacheCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<PipelineCache,Dispatch>>::type Device::createPipelineCacheUnique( const PipelineCacheCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     PipelineCache pipelineCache;
     Result result = static_cast<Result>( d.vkCreatePipelineCache( m_device, reinterpret_cast<const VkPipelineCacheCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipelineCache*>( &pipelineCache ) ) );
@@ -35933,7 +35933,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template <typename Allocator, typename Dispatch> 
-  VULKAN_HPP_INLINE typename ResultValueType<std::vector<UniquePipeline,Allocator>>::type Device::createGraphicsPipelinesUnique( PipelineCache pipelineCache, ArrayProxy<const GraphicsPipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<std::vector<UniqueHandle<Pipeline,Dispatch>,Allocator>>::type Device::createGraphicsPipelinesUnique( PipelineCache pipelineCache, ArrayProxy<const GraphicsPipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     static_assert( sizeof( Pipeline ) <= sizeof( UniquePipeline ), "Pipeline is greater than UniquePipeline!" );
     std::vector<UniquePipeline, Allocator> pipelines;
@@ -35950,7 +35950,7 @@ public:
     return createResultValue( result, pipelines, VULKAN_HPP_NAMESPACE_STRING "::Device::createGraphicsPipelinesUnique" );
   }
   template <typename Allocator, typename Dispatch> 
-  VULKAN_HPP_INLINE ResultValueType<UniquePipeline>::type Device::createGraphicsPipelineUnique( PipelineCache pipelineCache, const GraphicsPipelineCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<Pipeline,Dispatch>>::type Device::createGraphicsPipelineUnique( PipelineCache pipelineCache, const GraphicsPipelineCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     Pipeline pipeline;
     Result result = static_cast<Result>( d.vkCreateGraphicsPipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), 1 , reinterpret_cast<const VkGraphicsPipelineCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( &pipeline ) ) );
@@ -35983,7 +35983,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template <typename Allocator, typename Dispatch> 
-  VULKAN_HPP_INLINE typename ResultValueType<std::vector<UniquePipeline,Allocator>>::type Device::createComputePipelinesUnique( PipelineCache pipelineCache, ArrayProxy<const ComputePipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<std::vector<UniqueHandle<Pipeline,Dispatch>,Allocator>>::type Device::createComputePipelinesUnique( PipelineCache pipelineCache, ArrayProxy<const ComputePipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     static_assert( sizeof( Pipeline ) <= sizeof( UniquePipeline ), "Pipeline is greater than UniquePipeline!" );
     std::vector<UniquePipeline, Allocator> pipelines;
@@ -36000,7 +36000,7 @@ public:
     return createResultValue( result, pipelines, VULKAN_HPP_NAMESPACE_STRING "::Device::createComputePipelinesUnique" );
   }
   template <typename Allocator, typename Dispatch> 
-  VULKAN_HPP_INLINE ResultValueType<UniquePipeline>::type Device::createComputePipelineUnique( PipelineCache pipelineCache, const ComputePipelineCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<Pipeline,Dispatch>>::type Device::createComputePipelineUnique( PipelineCache pipelineCache, const ComputePipelineCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     Pipeline pipeline;
     Result result = static_cast<Result>( d.vkCreateComputePipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), 1 , reinterpret_cast<const VkComputePipelineCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( &pipeline ) ) );
@@ -36052,7 +36052,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<UniquePipelineLayout>::type Device::createPipelineLayoutUnique( const PipelineLayoutCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<PipelineLayout,Dispatch>>::type Device::createPipelineLayoutUnique( const PipelineLayoutCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     PipelineLayout pipelineLayout;
     Result result = static_cast<Result>( d.vkCreatePipelineLayout( m_device, reinterpret_cast<const VkPipelineLayoutCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipelineLayout*>( &pipelineLayout ) ) );
@@ -36104,7 +36104,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<UniqueSampler>::type Device::createSamplerUnique( const SamplerCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<Sampler,Dispatch>>::type Device::createSamplerUnique( const SamplerCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     Sampler sampler;
     Result result = static_cast<Result>( d.vkCreateSampler( m_device, reinterpret_cast<const VkSamplerCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSampler*>( &sampler ) ) );
@@ -36156,7 +36156,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<UniqueDescriptorSetLayout>::type Device::createDescriptorSetLayoutUnique( const DescriptorSetLayoutCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<DescriptorSetLayout,Dispatch>>::type Device::createDescriptorSetLayoutUnique( const DescriptorSetLayoutCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     DescriptorSetLayout setLayout;
     Result result = static_cast<Result>( d.vkCreateDescriptorSetLayout( m_device, reinterpret_cast<const VkDescriptorSetLayoutCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkDescriptorSetLayout*>( &setLayout ) ) );
@@ -36208,7 +36208,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<UniqueDescriptorPool>::type Device::createDescriptorPoolUnique( const DescriptorPoolCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<DescriptorPool,Dispatch>>::type Device::createDescriptorPoolUnique( const DescriptorPoolCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     DescriptorPool descriptorPool;
     Result result = static_cast<Result>( d.vkCreateDescriptorPool( m_device, reinterpret_cast<const VkDescriptorPoolCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkDescriptorPool*>( &descriptorPool ) ) );
@@ -36275,7 +36275,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template <typename Allocator, typename Dispatch> 
-  VULKAN_HPP_INLINE typename ResultValueType<std::vector<UniqueDescriptorSet,Allocator>>::type Device::allocateDescriptorSetsUnique( const DescriptorSetAllocateInfo & allocateInfo, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<std::vector<UniqueHandle<DescriptorSet,Dispatch>,Allocator>>::type Device::allocateDescriptorSetsUnique( const DescriptorSetAllocateInfo & allocateInfo, Dispatch const &d ) const
   {
     static_assert( sizeof( DescriptorSet ) <= sizeof( UniqueDescriptorSet ), "DescriptorSet is greater than UniqueDescriptorSet!" );
     std::vector<UniqueDescriptorSet, Allocator> descriptorSets;
@@ -36350,7 +36350,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<UniqueFramebuffer>::type Device::createFramebufferUnique( const FramebufferCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<Framebuffer,Dispatch>>::type Device::createFramebufferUnique( const FramebufferCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     Framebuffer framebuffer;
     Result result = static_cast<Result>( d.vkCreateFramebuffer( m_device, reinterpret_cast<const VkFramebufferCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkFramebuffer*>( &framebuffer ) ) );
@@ -36402,7 +36402,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<UniqueRenderPass>::type Device::createRenderPassUnique( const RenderPassCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<RenderPass,Dispatch>>::type Device::createRenderPassUnique( const RenderPassCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     RenderPass renderPass;
     Result result = static_cast<Result>( d.vkCreateRenderPass( m_device, reinterpret_cast<const VkRenderPassCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkRenderPass*>( &renderPass ) ) );
@@ -36469,7 +36469,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<UniqueCommandPool>::type Device::createCommandPoolUnique( const CommandPoolCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<CommandPool,Dispatch>>::type Device::createCommandPoolUnique( const CommandPoolCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     CommandPool commandPool;
     Result result = static_cast<Result>( d.vkCreateCommandPool( m_device, reinterpret_cast<const VkCommandPoolCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkCommandPool*>( &commandPool ) ) );
@@ -36536,7 +36536,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template <typename Allocator, typename Dispatch> 
-  VULKAN_HPP_INLINE typename ResultValueType<std::vector<UniqueCommandBuffer,Allocator>>::type Device::allocateCommandBuffersUnique( const CommandBufferAllocateInfo & allocateInfo, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<std::vector<UniqueHandle<CommandBuffer,Dispatch>,Allocator>>::type Device::allocateCommandBuffersUnique( const CommandBufferAllocateInfo & allocateInfo, Dispatch const &d ) const
   {
     static_assert( sizeof( CommandBuffer ) <= sizeof( UniqueCommandBuffer ), "CommandBuffer is greater than UniqueCommandBuffer!" );
     std::vector<UniqueCommandBuffer, Allocator> commandBuffers;
@@ -36603,7 +36603,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template <typename Allocator, typename Dispatch> 
-  VULKAN_HPP_INLINE typename ResultValueType<std::vector<UniqueSwapchainKHR,Allocator>>::type Device::createSharedSwapchainsKHRUnique( ArrayProxy<const SwapchainCreateInfoKHR> createInfos, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<std::vector<UniqueHandle<SwapchainKHR,Dispatch>,Allocator>>::type Device::createSharedSwapchainsKHRUnique( ArrayProxy<const SwapchainCreateInfoKHR> createInfos, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     static_assert( sizeof( SwapchainKHR ) <= sizeof( UniqueSwapchainKHR ), "SwapchainKHR is greater than UniqueSwapchainKHR!" );
     std::vector<UniqueSwapchainKHR, Allocator> swapchainKHRs;
@@ -36620,7 +36620,7 @@ public:
     return createResultValue( result, swapchainKHRs, VULKAN_HPP_NAMESPACE_STRING "::Device::createSharedSwapchainsKHRUnique" );
   }
   template <typename Allocator, typename Dispatch> 
-  VULKAN_HPP_INLINE ResultValueType<UniqueSwapchainKHR>::type Device::createSharedSwapchainKHRUnique( const SwapchainCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<SwapchainKHR,Dispatch>>::type Device::createSharedSwapchainKHRUnique( const SwapchainCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     SwapchainKHR swapchain;
     Result result = static_cast<Result>( d.vkCreateSharedSwapchainsKHR( m_device, 1 , reinterpret_cast<const VkSwapchainCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSwapchainKHR*>( &swapchain ) ) );
@@ -36646,7 +36646,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<UniqueSwapchainKHR>::type Device::createSwapchainKHRUnique( const SwapchainCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<SwapchainKHR,Dispatch>>::type Device::createSwapchainKHRUnique( const SwapchainCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     SwapchainKHR swapchain;
     Result result = static_cast<Result>( d.vkCreateSwapchainKHR( m_device, reinterpret_cast<const VkSwapchainCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSwapchainKHR*>( &swapchain ) ) );
@@ -36785,7 +36785,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<UniqueIndirectCommandsLayoutNVX>::type Device::createIndirectCommandsLayoutNVXUnique( const IndirectCommandsLayoutCreateInfoNVX & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<IndirectCommandsLayoutNVX,Dispatch>>::type Device::createIndirectCommandsLayoutNVXUnique( const IndirectCommandsLayoutCreateInfoNVX & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     IndirectCommandsLayoutNVX indirectCommandsLayout;
     Result result = static_cast<Result>( d.vkCreateIndirectCommandsLayoutNVX( m_device, reinterpret_cast<const VkIndirectCommandsLayoutCreateInfoNVX*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkIndirectCommandsLayoutNVX*>( &indirectCommandsLayout ) ) );
@@ -36837,7 +36837,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<UniqueObjectTableNVX>::type Device::createObjectTableNVXUnique( const ObjectTableCreateInfoNVX & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<ObjectTableNVX,Dispatch>>::type Device::createObjectTableNVXUnique( const ObjectTableCreateInfoNVX & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     ObjectTableNVX objectTable;
     Result result = static_cast<Result>( d.vkCreateObjectTableNVX( m_device, reinterpret_cast<const VkObjectTableCreateInfoNVX*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkObjectTableNVX*>( &objectTable ) ) );
@@ -37339,7 +37339,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<UniqueDescriptorUpdateTemplate>::type Device::createDescriptorUpdateTemplateUnique( const DescriptorUpdateTemplateCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<DescriptorUpdateTemplate,Dispatch>>::type Device::createDescriptorUpdateTemplateUnique( const DescriptorUpdateTemplateCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     DescriptorUpdateTemplate descriptorUpdateTemplate;
     Result result = static_cast<Result>( d.vkCreateDescriptorUpdateTemplate( m_device, reinterpret_cast<const VkDescriptorUpdateTemplateCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkDescriptorUpdateTemplate*>( &descriptorUpdateTemplate ) ) );
@@ -37365,7 +37365,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<UniqueDescriptorUpdateTemplate>::type Device::createDescriptorUpdateTemplateKHRUnique( const DescriptorUpdateTemplateCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<DescriptorUpdateTemplate,Dispatch>>::type Device::createDescriptorUpdateTemplateKHRUnique( const DescriptorUpdateTemplateCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     DescriptorUpdateTemplate descriptorUpdateTemplate;
     Result result = static_cast<Result>( d.vkCreateDescriptorUpdateTemplateKHR( m_device, reinterpret_cast<const VkDescriptorUpdateTemplateCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkDescriptorUpdateTemplate*>( &descriptorUpdateTemplate ) ) );
@@ -37664,7 +37664,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<UniqueSamplerYcbcrConversion>::type Device::createSamplerYcbcrConversionUnique( const SamplerYcbcrConversionCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<SamplerYcbcrConversion,Dispatch>>::type Device::createSamplerYcbcrConversionUnique( const SamplerYcbcrConversionCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     SamplerYcbcrConversion ycbcrConversion;
     Result result = static_cast<Result>( d.vkCreateSamplerYcbcrConversion( m_device, reinterpret_cast<const VkSamplerYcbcrConversionCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSamplerYcbcrConversion*>( &ycbcrConversion ) ) );
@@ -37690,7 +37690,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<UniqueSamplerYcbcrConversion>::type Device::createSamplerYcbcrConversionKHRUnique( const SamplerYcbcrConversionCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<SamplerYcbcrConversion,Dispatch>>::type Device::createSamplerYcbcrConversionKHRUnique( const SamplerYcbcrConversionCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     SamplerYcbcrConversion ycbcrConversion;
     Result result = static_cast<Result>( d.vkCreateSamplerYcbcrConversionKHR( m_device, reinterpret_cast<const VkSamplerYcbcrConversionCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSamplerYcbcrConversion*>( &ycbcrConversion ) ) );
@@ -37770,7 +37770,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<UniqueValidationCacheEXT>::type Device::createValidationCacheEXTUnique( const ValidationCacheCreateInfoEXT & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<ValidationCacheEXT,Dispatch>>::type Device::createValidationCacheEXTUnique( const ValidationCacheCreateInfoEXT & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     ValidationCacheEXT validationCache;
     Result result = static_cast<Result>( d.vkCreateValidationCacheEXT( m_device, reinterpret_cast<const VkValidationCacheCreateInfoEXT*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkValidationCacheEXT*>( &validationCache ) ) );
@@ -37979,7 +37979,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<UniqueRenderPass>::type Device::createRenderPass2KHRUnique( const RenderPassCreateInfo2KHR & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<RenderPass,Dispatch>>::type Device::createRenderPass2KHRUnique( const RenderPassCreateInfo2KHR & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     RenderPass renderPass;
     Result result = static_cast<Result>( d.vkCreateRenderPass2KHR( m_device, reinterpret_cast<const VkRenderPassCreateInfo2KHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkRenderPass*>( &renderPass ) ) );
@@ -38131,7 +38131,7 @@ public:
     ResultValueType<Device>::type createDevice( const DeviceCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template<typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<UniqueDevice>::type createDeviceUnique( const DeviceCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<UniqueHandle<Device,Dispatch>>::type createDeviceUnique( const DeviceCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -38655,7 +38655,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<UniqueDevice>::type PhysicalDevice::createDeviceUnique( const DeviceCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<Device,Dispatch>>::type PhysicalDevice::createDeviceUnique( const DeviceCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     Device device;
     Result result = static_cast<Result>( d.vkCreateDevice( m_physicalDevice, reinterpret_cast<const VkDeviceCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkDevice*>( &device ) ) );
@@ -39941,7 +39941,7 @@ public:
     ResultValueType<SurfaceKHR>::type createAndroidSurfaceKHR( const AndroidSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template<typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<UniqueSurfaceKHR>::type createAndroidSurfaceKHRUnique( const AndroidSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<UniqueHandle<SurfaceKHR,Dispatch>>::type createAndroidSurfaceKHRUnique( const AndroidSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
@@ -39953,7 +39953,7 @@ public:
     ResultValueType<SurfaceKHR>::type createDisplayPlaneSurfaceKHR( const DisplaySurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template<typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<UniqueSurfaceKHR>::type createDisplayPlaneSurfaceKHRUnique( const DisplaySurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<UniqueHandle<SurfaceKHR,Dispatch>>::type createDisplayPlaneSurfaceKHRUnique( const DisplaySurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -39965,7 +39965,7 @@ public:
     ResultValueType<SurfaceKHR>::type createMirSurfaceKHR( const MirSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template<typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<UniqueSurfaceKHR>::type createMirSurfaceKHRUnique( const MirSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<UniqueHandle<SurfaceKHR,Dispatch>>::type createMirSurfaceKHRUnique( const MirSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 #endif /*VK_USE_PLATFORM_MIR_KHR*/
@@ -39992,7 +39992,7 @@ public:
     ResultValueType<SurfaceKHR>::type createViSurfaceNN( const ViSurfaceCreateInfoNN & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template<typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<UniqueSurfaceKHR>::type createViSurfaceNNUnique( const ViSurfaceCreateInfoNN & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<UniqueHandle<SurfaceKHR,Dispatch>>::type createViSurfaceNNUnique( const ViSurfaceCreateInfoNN & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 #endif /*VK_USE_PLATFORM_VI_NN*/
@@ -40005,7 +40005,7 @@ public:
     ResultValueType<SurfaceKHR>::type createWaylandSurfaceKHR( const WaylandSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template<typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<UniqueSurfaceKHR>::type createWaylandSurfaceKHRUnique( const WaylandSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<UniqueHandle<SurfaceKHR,Dispatch>>::type createWaylandSurfaceKHRUnique( const WaylandSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 #endif /*VK_USE_PLATFORM_WAYLAND_KHR*/
@@ -40018,7 +40018,7 @@ public:
     ResultValueType<SurfaceKHR>::type createWin32SurfaceKHR( const Win32SurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template<typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<UniqueSurfaceKHR>::type createWin32SurfaceKHRUnique( const Win32SurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<UniqueHandle<SurfaceKHR,Dispatch>>::type createWin32SurfaceKHRUnique( const Win32SurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
@@ -40031,7 +40031,7 @@ public:
     ResultValueType<SurfaceKHR>::type createXlibSurfaceKHR( const XlibSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template<typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<UniqueSurfaceKHR>::type createXlibSurfaceKHRUnique( const XlibSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<UniqueHandle<SurfaceKHR,Dispatch>>::type createXlibSurfaceKHRUnique( const XlibSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 #endif /*VK_USE_PLATFORM_XLIB_KHR*/
@@ -40044,7 +40044,7 @@ public:
     ResultValueType<SurfaceKHR>::type createXcbSurfaceKHR( const XcbSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template<typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<UniqueSurfaceKHR>::type createXcbSurfaceKHRUnique( const XcbSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<UniqueHandle<SurfaceKHR,Dispatch>>::type createXcbSurfaceKHRUnique( const XcbSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 #endif /*VK_USE_PLATFORM_XCB_KHR*/
@@ -40056,7 +40056,7 @@ public:
     ResultValueType<DebugReportCallbackEXT>::type createDebugReportCallbackEXT( const DebugReportCallbackCreateInfoEXT & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template<typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<UniqueDebugReportCallbackEXT>::type createDebugReportCallbackEXTUnique( const DebugReportCallbackCreateInfoEXT & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<UniqueHandle<DebugReportCallbackEXT,Dispatch>>::type createDebugReportCallbackEXTUnique( const DebugReportCallbackCreateInfoEXT & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -40103,7 +40103,7 @@ public:
     ResultValueType<SurfaceKHR>::type createIOSSurfaceMVK( const IOSSurfaceCreateInfoMVK & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template<typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<UniqueSurfaceKHR>::type createIOSSurfaceMVKUnique( const IOSSurfaceCreateInfoMVK & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<UniqueHandle<SurfaceKHR,Dispatch>>::type createIOSSurfaceMVKUnique( const IOSSurfaceCreateInfoMVK & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 #endif /*VK_USE_PLATFORM_IOS_MVK*/
@@ -40116,7 +40116,7 @@ public:
     ResultValueType<SurfaceKHR>::type createMacOSSurfaceMVK( const MacOSSurfaceCreateInfoMVK & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template<typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<UniqueSurfaceKHR>::type createMacOSSurfaceMVKUnique( const MacOSSurfaceCreateInfoMVK & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<UniqueHandle<SurfaceKHR,Dispatch>>::type createMacOSSurfaceMVKUnique( const MacOSSurfaceCreateInfoMVK & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 #endif /*VK_USE_PLATFORM_MACOS_MVK*/
@@ -40128,7 +40128,7 @@ public:
     ResultValueType<DebugUtilsMessengerEXT>::type createDebugUtilsMessengerEXT( const DebugUtilsMessengerCreateInfoEXT & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template<typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<UniqueDebugUtilsMessengerEXT>::type createDebugUtilsMessengerEXTUnique( const DebugUtilsMessengerCreateInfoEXT & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<UniqueHandle<DebugUtilsMessengerEXT,Dispatch>>::type createDebugUtilsMessengerEXTUnique( const DebugUtilsMessengerCreateInfoEXT & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -40245,7 +40245,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<UniqueSurfaceKHR>::type Instance::createAndroidSurfaceKHRUnique( const AndroidSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<SurfaceKHR,Dispatch>>::type Instance::createAndroidSurfaceKHRUnique( const AndroidSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     SurfaceKHR surface;
     Result result = static_cast<Result>( d.vkCreateAndroidSurfaceKHR( m_instance, reinterpret_cast<const VkAndroidSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
@@ -40272,7 +40272,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<UniqueSurfaceKHR>::type Instance::createDisplayPlaneSurfaceKHRUnique( const DisplaySurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<SurfaceKHR,Dispatch>>::type Instance::createDisplayPlaneSurfaceKHRUnique( const DisplaySurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     SurfaceKHR surface;
     Result result = static_cast<Result>( d.vkCreateDisplayPlaneSurfaceKHR( m_instance, reinterpret_cast<const VkDisplaySurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
@@ -40299,7 +40299,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<UniqueSurfaceKHR>::type Instance::createMirSurfaceKHRUnique( const MirSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<SurfaceKHR,Dispatch>>::type Instance::createMirSurfaceKHRUnique( const MirSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     SurfaceKHR surface;
     Result result = static_cast<Result>( d.vkCreateMirSurfaceKHR( m_instance, reinterpret_cast<const VkMirSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
@@ -40353,7 +40353,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<UniqueSurfaceKHR>::type Instance::createViSurfaceNNUnique( const ViSurfaceCreateInfoNN & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<SurfaceKHR,Dispatch>>::type Instance::createViSurfaceNNUnique( const ViSurfaceCreateInfoNN & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     SurfaceKHR surface;
     Result result = static_cast<Result>( d.vkCreateViSurfaceNN( m_instance, reinterpret_cast<const VkViSurfaceCreateInfoNN*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
@@ -40381,7 +40381,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<UniqueSurfaceKHR>::type Instance::createWaylandSurfaceKHRUnique( const WaylandSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<SurfaceKHR,Dispatch>>::type Instance::createWaylandSurfaceKHRUnique( const WaylandSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     SurfaceKHR surface;
     Result result = static_cast<Result>( d.vkCreateWaylandSurfaceKHR( m_instance, reinterpret_cast<const VkWaylandSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
@@ -40409,7 +40409,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<UniqueSurfaceKHR>::type Instance::createWin32SurfaceKHRUnique( const Win32SurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<SurfaceKHR,Dispatch>>::type Instance::createWin32SurfaceKHRUnique( const Win32SurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     SurfaceKHR surface;
     Result result = static_cast<Result>( d.vkCreateWin32SurfaceKHR( m_instance, reinterpret_cast<const VkWin32SurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
@@ -40437,7 +40437,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<UniqueSurfaceKHR>::type Instance::createXlibSurfaceKHRUnique( const XlibSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<SurfaceKHR,Dispatch>>::type Instance::createXlibSurfaceKHRUnique( const XlibSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     SurfaceKHR surface;
     Result result = static_cast<Result>( d.vkCreateXlibSurfaceKHR( m_instance, reinterpret_cast<const VkXlibSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
@@ -40465,7 +40465,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<UniqueSurfaceKHR>::type Instance::createXcbSurfaceKHRUnique( const XcbSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<SurfaceKHR,Dispatch>>::type Instance::createXcbSurfaceKHRUnique( const XcbSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     SurfaceKHR surface;
     Result result = static_cast<Result>( d.vkCreateXcbSurfaceKHR( m_instance, reinterpret_cast<const VkXcbSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
@@ -40492,7 +40492,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<UniqueDebugReportCallbackEXT>::type Instance::createDebugReportCallbackEXTUnique( const DebugReportCallbackCreateInfoEXT & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<DebugReportCallbackEXT,Dispatch>>::type Instance::createDebugReportCallbackEXTUnique( const DebugReportCallbackCreateInfoEXT & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     DebugReportCallbackEXT callback;
     Result result = static_cast<Result>( d.vkCreateDebugReportCallbackEXT( m_instance, reinterpret_cast<const VkDebugReportCallbackCreateInfoEXT*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkDebugReportCallbackEXT*>( &callback ) ) );
@@ -40620,7 +40620,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<UniqueSurfaceKHR>::type Instance::createIOSSurfaceMVKUnique( const IOSSurfaceCreateInfoMVK & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<SurfaceKHR,Dispatch>>::type Instance::createIOSSurfaceMVKUnique( const IOSSurfaceCreateInfoMVK & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     SurfaceKHR surface;
     Result result = static_cast<Result>( d.vkCreateIOSSurfaceMVK( m_instance, reinterpret_cast<const VkIOSSurfaceCreateInfoMVK*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
@@ -40648,7 +40648,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<UniqueSurfaceKHR>::type Instance::createMacOSSurfaceMVKUnique( const MacOSSurfaceCreateInfoMVK & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<SurfaceKHR,Dispatch>>::type Instance::createMacOSSurfaceMVKUnique( const MacOSSurfaceCreateInfoMVK & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     SurfaceKHR surface;
     Result result = static_cast<Result>( d.vkCreateMacOSSurfaceMVK( m_instance, reinterpret_cast<const VkMacOSSurfaceCreateInfoMVK*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
@@ -40675,7 +40675,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<UniqueDebugUtilsMessengerEXT>::type Instance::createDebugUtilsMessengerEXTUnique( const DebugUtilsMessengerCreateInfoEXT & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<DebugUtilsMessengerEXT,Dispatch>>::type Instance::createDebugUtilsMessengerEXTUnique( const DebugUtilsMessengerCreateInfoEXT & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     DebugUtilsMessengerEXT messenger;
     Result result = static_cast<Result>( d.vkCreateDebugUtilsMessengerEXT( m_instance, reinterpret_cast<const VkDebugUtilsMessengerCreateInfoEXT*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkDebugUtilsMessengerEXT*>( &messenger ) ) );
@@ -40805,7 +40805,7 @@ public:
   ResultValueType<Instance>::type createInstance( const InstanceCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() );
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch = DispatchLoaderStatic>
-  ResultValueType<UniqueInstance>::type createInstanceUnique( const InstanceCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() );
+  typename ResultValueType<UniqueHandle<Instance,Dispatch>>::type createInstanceUnique( const InstanceCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() );
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -40824,7 +40824,7 @@ public:
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<UniqueInstance>::type createInstanceUnique( const InstanceCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d )
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<Instance,Dispatch>>::type createInstanceUnique( const InstanceCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d )
   {
     Instance instance;
     Result result = static_cast<Result>( d.vkCreateInstance( reinterpret_cast<const VkInstanceCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkInstance*>( &instance ) ) );

@@ -934,12 +934,10 @@ void checkAttributes(std::map<std::string, std::string> const& attributes, int l
     auto attributesIt = attributes.find(r.first);
     if (attributesIt == attributes.end())
     {
-      assert(false);
       throw std::runtime_error("Spec error on line " + lineNumber + ": missing attribute <" + r.first + ">");
     }
     if (!r.second.empty() && (r.second.find(attributesIt->second) == r.second.end()))
     {
-      assert(false);
       throw std::runtime_error("Spec error on line " + lineNumber + ": unexpected attribute value <" + attributesIt->second + "> in attribute <" + r.first + ">");
     }
   }
@@ -951,8 +949,8 @@ void checkAttributes(std::map<std::string, std::string> const& attributes, int l
       auto optionalIt = optional.find(a.first);
       if (optionalIt == optional.end())
       {
-        assert(false);
-        throw std::runtime_error("Spec error on line " + lineNumber + ": unexpected attribute <" + a.first + ">");
+        std::cerr << "warning: " << "Unknown attribute " + a.first + " in line " + lineNumber + "!";
+        continue;
       }
       if (!optionalIt->second.empty())
       {
@@ -961,7 +959,6 @@ void checkAttributes(std::map<std::string, std::string> const& attributes, int l
         {
           if (optionalIt->second.find(v) == optionalIt->second.end())
           {
-            assert(false);
             throw std::runtime_error("Spec error on line " + lineNumber + ": unexpected attribute value <" + v + "> in attribute <" + a.first + ">");
           }
         }
@@ -979,7 +976,7 @@ void checkElements(std::vector<tinyxml2::XMLElement const*> const& elements, std
       std::stringstream ss;
       ss << e->GetLineNum();
       std::string lineNumber = ss.str();
-      std::cerr << "Unknown element in spec on line: " << lineNumber << " " << e->Value() << std::endl;
+      std::cerr << "warning: Unknown element in spec on line: " << lineNumber << " " << e->Value() << "!" << std::endl;
     }
   }
 }
@@ -1000,12 +997,10 @@ void checkOrderedElements(std::vector<tinyxml2::XMLElement const*> const& elemen
 
     if (values.size() <= i)
     {
-      assert(false);
       throw std::runtime_error("Spec error on line " + lineNumber + ": unexpected surplus element <" + elements[i]->Value() + ">");
     }
     if (values[i] != elements[i]->Value())
     {
-      assert(false);
       throw std::runtime_error("Spec error on line " + lineNumber + ": unexpected element <" + elements[i]->Value() + ">, expected <" + values[i] + ">");
     }
   }
@@ -1369,7 +1364,6 @@ void VulkanHppGenerator::checkAlias(std::map<std::string, T> const& data, std::s
     ss << line;
     std::string lineNumber = ss.str();
 
-    assert(false);
     throw std::runtime_error("Spec error on line " + lineNumber + ": missing alias <" + name + ">");
   }
 }
@@ -1418,7 +1412,7 @@ std::map<std::string, std::string> VulkanHppGenerator::createDefaults()
       defaultValues[dependency.name] = "0";
       break;
     default:
-      assert(false);
+      assert(false && "Unhandled exception category");
       break;
     }
   }
@@ -2447,7 +2441,6 @@ void VulkanHppGenerator::readType(tinyxml2::XMLElement const* element)
       ss << element->GetLineNum();
       std::string lineNumber = ss.str();
 
-      assert(false);
       throw std::runtime_error("Spec error on line " + lineNumber + ": unknown category <" + categoryIt->second + ">");
     }
   }
@@ -5132,7 +5125,7 @@ int main( int argc, char **argv )
       {
         std::stringstream lineNumber;
         lineNumber << child->GetLineNum();
-        std::cerr << "Unhandled tag " << value << " at line number: " << lineNumber.str() << std::endl;
+        std::cerr << "warning: Unhandled tag " << value << " at line number: " << lineNumber.str() << "!" << std::endl;
       }
     }
 

@@ -742,7 +742,7 @@ const std::string deleterClassString = R"(
       ObjectDestroy( OwnerType owner = OwnerType(), Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &dispatch = Dispatch() )
         : m_owner( owner )
         , m_allocator( allocator )
-        , m_dispatch( dispatch )
+        , m_dispatch( &dispatch )
       {}
 
       OwnerType getOwner() const { return m_owner; }
@@ -752,13 +752,13 @@ const std::string deleterClassString = R"(
       template <typename T>
       void destroy(T t)
       {
-        m_owner.destroy( t, m_allocator, m_dispatch );
+        m_owner.destroy( t, m_allocator, *m_dispatch );
       }
 
     private:
       OwnerType m_owner;
       Optional<const AllocationCallbacks> m_allocator;
-      Dispatch const& m_dispatch;
+      Dispatch const* m_dispatch;
   };
 
   class NoParent;
@@ -769,7 +769,7 @@ const std::string deleterClassString = R"(
     public:
       ObjectDestroy( Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &dispatch = Dispatch() )
         : m_allocator( allocator )
-        , m_dispatch( dispatch )
+        , m_dispatch( &dispatch )
       {}
 
       Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }
@@ -778,12 +778,12 @@ const std::string deleterClassString = R"(
       template <typename T>
       void destroy(T t)
       {
-        t.destroy( m_allocator, m_dispatch );
+        t.destroy( m_allocator, *m_dispatch );
       }
 
     private:
       Optional<const AllocationCallbacks> m_allocator;
-      Dispatch const& m_dispatch;
+      Dispatch const* m_dispatch;
   };
 
   template <typename OwnerType, typename Dispatch>
@@ -793,7 +793,7 @@ const std::string deleterClassString = R"(
       ObjectFree( OwnerType owner = OwnerType(), Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &dispatch = Dispatch() )
         : m_owner( owner )
         , m_allocator( allocator )
-        , m_dispatch( dispatch )
+        , m_dispatch( &dispatch )
       {}
 
       OwnerType getOwner() const { return m_owner; }
@@ -803,13 +803,13 @@ const std::string deleterClassString = R"(
       template <typename T>
       void destroy(T t)
       {
-        m_owner.free( t, m_allocator, m_dispatch );
+        m_owner.free( t, m_allocator, *m_dispatch );
       }
 
     private:
       OwnerType m_owner;
       Optional<const AllocationCallbacks> m_allocator;
-      Dispatch const& m_dispatch;
+      Dispatch const* m_dispatch;
   };
 
   template <typename OwnerType, typename PoolType, typename Dispatch>
@@ -819,7 +819,7 @@ const std::string deleterClassString = R"(
       PoolFree( OwnerType owner = OwnerType(), PoolType pool = PoolType(), Dispatch const &dispatch = Dispatch() )
         : m_owner( owner )
         , m_pool( pool )
-        , m_dispatch( dispatch )
+        , m_dispatch( &dispatch )
       {}
 
       OwnerType getOwner() const { return m_owner; }
@@ -829,13 +829,13 @@ const std::string deleterClassString = R"(
       template <typename T>
       void destroy(T t)
       {
-        m_owner.free( m_pool, t, m_dispatch );
+        m_owner.free( m_pool, t, *m_dispatch );
       }
 
     private:
       OwnerType m_owner;
       PoolType m_pool;
-      Dispatch const& m_dispatch;
+      Dispatch const* m_dispatch;
   };
 
 )";

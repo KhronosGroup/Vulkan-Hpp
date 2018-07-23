@@ -53,7 +53,24 @@
 # include <cassert>
 # define VULKAN_HPP_ASSERT   assert
 #endif
-static_assert( VK_HEADER_VERSION ==  80 , "Wrong VK_HEADER_VERSION!" );
+
+// <tuple> includes <sys/sysmacros.h> through some other header
+// this results in major(x) being resolved to gnu_dev_major(x)
+// which is an expression in a constructor initializer list.
+#if defined(major)
+  #undef major
+#endif
+#if defined(minor)
+  #undef minor
+#endif
+
+// Windows defines MemoryBarrier which is deprecated and collides
+// with the vk::MemoryBarrier struct.
+#ifdef MemoryBarrier
+  #undef MemoryBarrier
+#endif
+
+static_assert( VK_HEADER_VERSION ==  81 , "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -2038,6 +2055,10 @@ public:
   void vkGetPhysicalDeviceMultisamplePropertiesEXT( VkPhysicalDevice physicalDevice, VkSampleCountFlagBits samples, VkMultisamplePropertiesEXT* pMultisampleProperties  ) const
   {
     return ::vkGetPhysicalDeviceMultisamplePropertiesEXT( physicalDevice, samples, pMultisampleProperties);
+  }
+  void vkGetPhysicalDevicePortabilitySubsetDataKHR( VkPhysicalDevice physicalDevice, VkBaseOutStructure* pData  ) const
+  {
+    return ::vkGetPhysicalDevicePortabilitySubsetDataKHR( physicalDevice, pData);
   }
   VkResult vkGetPhysicalDevicePresentRectanglesKHR( VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, uint32_t* pRectCount, VkRect2D* pRects  ) const
   {
@@ -6807,6 +6828,78 @@ public:
   };
   static_assert( sizeof( DisplayModePropertiesKHR ) == sizeof( VkDisplayModePropertiesKHR ), "struct and wrapper have different size!" );
 
+  struct ConformanceVersionKHR
+  {
+    ConformanceVersionKHR( uint8_t major_ = 0,
+                           uint8_t minor_ = 0,
+                           uint8_t subminor_ = 0,
+                           uint8_t patch_ = 0 )
+      : major( major_ )
+      , minor( minor_ )
+      , subminor( subminor_ )
+      , patch( patch_ )
+    {
+    }
+
+    ConformanceVersionKHR( VkConformanceVersionKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ConformanceVersionKHR ) );
+    }
+
+    ConformanceVersionKHR& operator=( VkConformanceVersionKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ConformanceVersionKHR ) );
+      return *this;
+    }
+    ConformanceVersionKHR& setMajor( uint8_t major_ )
+    {
+      major = major_;
+      return *this;
+    }
+
+    ConformanceVersionKHR& setMinor( uint8_t minor_ )
+    {
+      minor = minor_;
+      return *this;
+    }
+
+    ConformanceVersionKHR& setSubminor( uint8_t subminor_ )
+    {
+      subminor = subminor_;
+      return *this;
+    }
+
+    ConformanceVersionKHR& setPatch( uint8_t patch_ )
+    {
+      patch = patch_;
+      return *this;
+    }
+
+    operator const VkConformanceVersionKHR&() const
+    {
+      return *reinterpret_cast<const VkConformanceVersionKHR*>(this);
+    }
+
+    bool operator==( ConformanceVersionKHR const& rhs ) const
+    {
+      return ( major == rhs.major )
+          && ( minor == rhs.minor )
+          && ( subminor == rhs.subminor )
+          && ( patch == rhs.patch );
+    }
+
+    bool operator!=( ConformanceVersionKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+    uint8_t major;
+    uint8_t minor;
+    uint8_t subminor;
+    uint8_t patch;
+  };
+  static_assert( sizeof( ConformanceVersionKHR ) == sizeof( VkConformanceVersionKHR ), "struct and wrapper have different size!" );
+
   struct RectLayerKHR
   {
     RectLayerKHR( Offset2D offset_ = Offset2D(),
@@ -6982,27 +7075,6 @@ public:
 
   struct RefreshCycleDurationGOOGLE
   {
-    RefreshCycleDurationGOOGLE( uint64_t refreshDuration_ = 0 )
-      : refreshDuration( refreshDuration_ )
-    {
-    }
-
-    RefreshCycleDurationGOOGLE( VkRefreshCycleDurationGOOGLE const & rhs )
-    {
-      memcpy( this, &rhs, sizeof( RefreshCycleDurationGOOGLE ) );
-    }
-
-    RefreshCycleDurationGOOGLE& operator=( VkRefreshCycleDurationGOOGLE const & rhs )
-    {
-      memcpy( this, &rhs, sizeof( RefreshCycleDurationGOOGLE ) );
-      return *this;
-    }
-    RefreshCycleDurationGOOGLE& setRefreshDuration( uint64_t refreshDuration_ )
-    {
-      refreshDuration = refreshDuration_;
-      return *this;
-    }
-
     operator const VkRefreshCycleDurationGOOGLE&() const
     {
       return *reinterpret_cast<const VkRefreshCycleDurationGOOGLE*>(this);
@@ -7024,59 +7096,6 @@ public:
 
   struct PastPresentationTimingGOOGLE
   {
-    PastPresentationTimingGOOGLE( uint32_t presentID_ = 0,
-                                  uint64_t desiredPresentTime_ = 0,
-                                  uint64_t actualPresentTime_ = 0,
-                                  uint64_t earliestPresentTime_ = 0,
-                                  uint64_t presentMargin_ = 0 )
-      : presentID( presentID_ )
-      , desiredPresentTime( desiredPresentTime_ )
-      , actualPresentTime( actualPresentTime_ )
-      , earliestPresentTime( earliestPresentTime_ )
-      , presentMargin( presentMargin_ )
-    {
-    }
-
-    PastPresentationTimingGOOGLE( VkPastPresentationTimingGOOGLE const & rhs )
-    {
-      memcpy( this, &rhs, sizeof( PastPresentationTimingGOOGLE ) );
-    }
-
-    PastPresentationTimingGOOGLE& operator=( VkPastPresentationTimingGOOGLE const & rhs )
-    {
-      memcpy( this, &rhs, sizeof( PastPresentationTimingGOOGLE ) );
-      return *this;
-    }
-    PastPresentationTimingGOOGLE& setPresentID( uint32_t presentID_ )
-    {
-      presentID = presentID_;
-      return *this;
-    }
-
-    PastPresentationTimingGOOGLE& setDesiredPresentTime( uint64_t desiredPresentTime_ )
-    {
-      desiredPresentTime = desiredPresentTime_;
-      return *this;
-    }
-
-    PastPresentationTimingGOOGLE& setActualPresentTime( uint64_t actualPresentTime_ )
-    {
-      actualPresentTime = actualPresentTime_;
-      return *this;
-    }
-
-    PastPresentationTimingGOOGLE& setEarliestPresentTime( uint64_t earliestPresentTime_ )
-    {
-      earliestPresentTime = earliestPresentTime_;
-      return *this;
-    }
-
-    PastPresentationTimingGOOGLE& setPresentMargin( uint64_t presentMargin_ )
-    {
-      presentMargin = presentMargin_;
-      return *this;
-    }
-
     operator const VkPastPresentationTimingGOOGLE&() const
     {
       return *reinterpret_cast<const VkPastPresentationTimingGOOGLE*>(this);
@@ -8758,6 +8777,7 @@ public:
     eCommandBufferInheritanceConditionalRenderingInfoEXT = VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_CONDITIONAL_RENDERING_INFO_EXT,
     ePhysicalDeviceConditionalRenderingFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CONDITIONAL_RENDERING_FEATURES_EXT,
     eConditionalRenderingBeginInfoEXT = VK_STRUCTURE_TYPE_CONDITIONAL_RENDERING_BEGIN_INFO_EXT,
+    ePhysicalDeviceFloat16Int8FeaturesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FLOAT16_INT8_FEATURES_KHR,
     ePresentRegionsKHR = VK_STRUCTURE_TYPE_PRESENT_REGIONS_KHR,
     eObjectTableCreateInfoNVX = VK_STRUCTURE_TYPE_OBJECT_TABLE_CREATE_INFO_NVX,
     eIndirectCommandsLayoutCreateInfoNVX = VK_STRUCTURE_TYPE_INDIRECT_COMMANDS_LAYOUT_CREATE_INFO_NVX,
@@ -8834,13 +8854,19 @@ public:
     eDescriptorSetVariableDescriptorCountAllocateInfoEXT = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_ALLOCATE_INFO_EXT,
     eDescriptorSetVariableDescriptorCountLayoutSupportEXT = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_LAYOUT_SUPPORT_EXT,
     eDeviceQueueGlobalPriorityCreateInfoEXT = VK_STRUCTURE_TYPE_DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO_EXT,
+    ePhysicalDevicePointerCastToPointerFeaturesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_POINTER_CAST_TO_POINTER_FEATURES_KHR,
     ePhysicalDevice8BitStorageFeaturesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_8BIT_STORAGE_FEATURES_KHR,
     eImportMemoryHostPointerInfoEXT = VK_STRUCTURE_TYPE_IMPORT_MEMORY_HOST_POINTER_INFO_EXT,
     eMemoryHostPointerPropertiesEXT = VK_STRUCTURE_TYPE_MEMORY_HOST_POINTER_PROPERTIES_EXT,
     ePhysicalDeviceExternalMemoryHostPropertiesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_MEMORY_HOST_PROPERTIES_EXT,
+    ePhysicalDeviceShaderAtomicInt64FeaturesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_ATOMIC_INT64_FEATURES_KHR,
     ePhysicalDeviceShaderCorePropertiesAMD = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_AMD,
     ePhysicalDeviceVertexAttributeDivisorPropertiesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES_EXT,
-    ePipelineVertexInputDivisorStateCreateInfoEXT = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO_EXT
+    ePipelineVertexInputDivisorStateCreateInfoEXT = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO_EXT,
+    ePhysicalDeviceDriverPropertiesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DRIVER_PROPERTIES_KHR,
+    ePhysicalDeviceFloatControlsPropertiesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FLOAT_CONTROLS_PROPERTIES_KHR,
+    ePipelineShaderStageFloatBehaviorCreateInfoKHR = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_FLOAT_BEHAVIOR_CREATE_INFO_KHR,
+    ePhysicalDeviceVulkanMemoryModelFeaturesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_MEMORY_MODEL_FEATURES_KHR
   };
 
   struct ApplicationInfo
@@ -12392,6 +12418,40 @@ public:
     uint32_t maxPushDescriptors;
   };
   static_assert( sizeof( PhysicalDevicePushDescriptorPropertiesKHR ) == sizeof( VkPhysicalDevicePushDescriptorPropertiesKHR ), "struct and wrapper have different size!" );
+
+  struct PhysicalDeviceDriverPropertiesKHR
+  {
+    operator const VkPhysicalDeviceDriverPropertiesKHR&() const
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceDriverPropertiesKHR*>(this);
+    }
+
+    bool operator==( PhysicalDeviceDriverPropertiesKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( driverID == rhs.driverID )
+          && ( memcmp( driverName, rhs.driverName, VK_MAX_DRIVER_NAME_SIZE_KHR * sizeof( char ) ) == 0 )
+          && ( memcmp( driverInfo, rhs.driverInfo, VK_MAX_DRIVER_INFO_SIZE_KHR * sizeof( char ) ) == 0 )
+          && ( conformanceVersion == rhs.conformanceVersion );
+    }
+
+    bool operator!=( PhysicalDeviceDriverPropertiesKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::ePhysicalDeviceDriverPropertiesKHR;
+
+  public:
+    void* pNext = nullptr;
+    uint32_t driverID;
+    char driverName[VK_MAX_DRIVER_NAME_SIZE_KHR];
+    char driverInfo[VK_MAX_DRIVER_INFO_SIZE_KHR];
+    ConformanceVersionKHR conformanceVersion;
+  };
+  static_assert( sizeof( PhysicalDeviceDriverPropertiesKHR ) == sizeof( VkPhysicalDeviceDriverPropertiesKHR ), "struct and wrapper have different size!" );
 
   struct PresentRegionsKHR
   {
@@ -16023,6 +16083,286 @@ public:
   };
   static_assert( sizeof( PhysicalDeviceShaderDrawParameterFeatures ) == sizeof( VkPhysicalDeviceShaderDrawParameterFeatures ), "struct and wrapper have different size!" );
 
+  struct PhysicalDeviceFloat16Int8FeaturesKHR
+  {
+    PhysicalDeviceFloat16Int8FeaturesKHR( Bool32 shaderFloat16_ = 0,
+                                          Bool32 shaderInt8_ = 0 )
+      : shaderFloat16( shaderFloat16_ )
+      , shaderInt8( shaderInt8_ )
+    {
+    }
+
+    PhysicalDeviceFloat16Int8FeaturesKHR( VkPhysicalDeviceFloat16Int8FeaturesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceFloat16Int8FeaturesKHR ) );
+    }
+
+    PhysicalDeviceFloat16Int8FeaturesKHR& operator=( VkPhysicalDeviceFloat16Int8FeaturesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceFloat16Int8FeaturesKHR ) );
+      return *this;
+    }
+    PhysicalDeviceFloat16Int8FeaturesKHR& setPNext( void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PhysicalDeviceFloat16Int8FeaturesKHR& setShaderFloat16( Bool32 shaderFloat16_ )
+    {
+      shaderFloat16 = shaderFloat16_;
+      return *this;
+    }
+
+    PhysicalDeviceFloat16Int8FeaturesKHR& setShaderInt8( Bool32 shaderInt8_ )
+    {
+      shaderInt8 = shaderInt8_;
+      return *this;
+    }
+
+    operator const VkPhysicalDeviceFloat16Int8FeaturesKHR&() const
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceFloat16Int8FeaturesKHR*>(this);
+    }
+
+    bool operator==( PhysicalDeviceFloat16Int8FeaturesKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( shaderFloat16 == rhs.shaderFloat16 )
+          && ( shaderInt8 == rhs.shaderInt8 );
+    }
+
+    bool operator!=( PhysicalDeviceFloat16Int8FeaturesKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::ePhysicalDeviceFloat16Int8FeaturesKHR;
+
+  public:
+    void* pNext = nullptr;
+    Bool32 shaderFloat16;
+    Bool32 shaderInt8;
+  };
+  static_assert( sizeof( PhysicalDeviceFloat16Int8FeaturesKHR ) == sizeof( VkPhysicalDeviceFloat16Int8FeaturesKHR ), "struct and wrapper have different size!" );
+
+  struct PhysicalDeviceFloatControlsPropertiesKHR
+  {
+    PhysicalDeviceFloatControlsPropertiesKHR( Bool32 separateDenormSettings_ = 0,
+                                              Bool32 separateRoundingModeSettings_ = 0,
+                                              Bool32 fp16SignedZeroInfNanPreserve_ = 0,
+                                              Bool32 fp32SignedZeroInfNanPreserve_ = 0,
+                                              Bool32 fp64SignedZeroInfNanPreserve_ = 0,
+                                              Bool32 fp16DenormPreserve_ = 0,
+                                              Bool32 fp32DenormPreserve_ = 0,
+                                              Bool32 fp64DenormPreserve_ = 0,
+                                              Bool32 fp16DenormFlushToZero_ = 0,
+                                              Bool32 fp32DenormFlushToZero_ = 0,
+                                              Bool32 fp64DenormFlushToZero_ = 0,
+                                              Bool32 fp16RoundingModeRTE_ = 0,
+                                              Bool32 fp32RoundingModeRTE_ = 0,
+                                              Bool32 fp64RoundingModeRTE_ = 0,
+                                              Bool32 fp16RoundingModeRTZ_ = 0,
+                                              Bool32 fp32RoundingModeRTZ_ = 0,
+                                              Bool32 fp64RoundingModeRTZ_ = 0 )
+      : separateDenormSettings( separateDenormSettings_ )
+      , separateRoundingModeSettings( separateRoundingModeSettings_ )
+      , fp16SignedZeroInfNanPreserve( fp16SignedZeroInfNanPreserve_ )
+      , fp32SignedZeroInfNanPreserve( fp32SignedZeroInfNanPreserve_ )
+      , fp64SignedZeroInfNanPreserve( fp64SignedZeroInfNanPreserve_ )
+      , fp16DenormPreserve( fp16DenormPreserve_ )
+      , fp32DenormPreserve( fp32DenormPreserve_ )
+      , fp64DenormPreserve( fp64DenormPreserve_ )
+      , fp16DenormFlushToZero( fp16DenormFlushToZero_ )
+      , fp32DenormFlushToZero( fp32DenormFlushToZero_ )
+      , fp64DenormFlushToZero( fp64DenormFlushToZero_ )
+      , fp16RoundingModeRTE( fp16RoundingModeRTE_ )
+      , fp32RoundingModeRTE( fp32RoundingModeRTE_ )
+      , fp64RoundingModeRTE( fp64RoundingModeRTE_ )
+      , fp16RoundingModeRTZ( fp16RoundingModeRTZ_ )
+      , fp32RoundingModeRTZ( fp32RoundingModeRTZ_ )
+      , fp64RoundingModeRTZ( fp64RoundingModeRTZ_ )
+    {
+    }
+
+    PhysicalDeviceFloatControlsPropertiesKHR( VkPhysicalDeviceFloatControlsPropertiesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceFloatControlsPropertiesKHR ) );
+    }
+
+    PhysicalDeviceFloatControlsPropertiesKHR& operator=( VkPhysicalDeviceFloatControlsPropertiesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceFloatControlsPropertiesKHR ) );
+      return *this;
+    }
+    PhysicalDeviceFloatControlsPropertiesKHR& setPNext( void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PhysicalDeviceFloatControlsPropertiesKHR& setSeparateDenormSettings( Bool32 separateDenormSettings_ )
+    {
+      separateDenormSettings = separateDenormSettings_;
+      return *this;
+    }
+
+    PhysicalDeviceFloatControlsPropertiesKHR& setSeparateRoundingModeSettings( Bool32 separateRoundingModeSettings_ )
+    {
+      separateRoundingModeSettings = separateRoundingModeSettings_;
+      return *this;
+    }
+
+    PhysicalDeviceFloatControlsPropertiesKHR& setFp16SignedZeroInfNanPreserve( Bool32 fp16SignedZeroInfNanPreserve_ )
+    {
+      fp16SignedZeroInfNanPreserve = fp16SignedZeroInfNanPreserve_;
+      return *this;
+    }
+
+    PhysicalDeviceFloatControlsPropertiesKHR& setFp32SignedZeroInfNanPreserve( Bool32 fp32SignedZeroInfNanPreserve_ )
+    {
+      fp32SignedZeroInfNanPreserve = fp32SignedZeroInfNanPreserve_;
+      return *this;
+    }
+
+    PhysicalDeviceFloatControlsPropertiesKHR& setFp64SignedZeroInfNanPreserve( Bool32 fp64SignedZeroInfNanPreserve_ )
+    {
+      fp64SignedZeroInfNanPreserve = fp64SignedZeroInfNanPreserve_;
+      return *this;
+    }
+
+    PhysicalDeviceFloatControlsPropertiesKHR& setFp16DenormPreserve( Bool32 fp16DenormPreserve_ )
+    {
+      fp16DenormPreserve = fp16DenormPreserve_;
+      return *this;
+    }
+
+    PhysicalDeviceFloatControlsPropertiesKHR& setFp32DenormPreserve( Bool32 fp32DenormPreserve_ )
+    {
+      fp32DenormPreserve = fp32DenormPreserve_;
+      return *this;
+    }
+
+    PhysicalDeviceFloatControlsPropertiesKHR& setFp64DenormPreserve( Bool32 fp64DenormPreserve_ )
+    {
+      fp64DenormPreserve = fp64DenormPreserve_;
+      return *this;
+    }
+
+    PhysicalDeviceFloatControlsPropertiesKHR& setFp16DenormFlushToZero( Bool32 fp16DenormFlushToZero_ )
+    {
+      fp16DenormFlushToZero = fp16DenormFlushToZero_;
+      return *this;
+    }
+
+    PhysicalDeviceFloatControlsPropertiesKHR& setFp32DenormFlushToZero( Bool32 fp32DenormFlushToZero_ )
+    {
+      fp32DenormFlushToZero = fp32DenormFlushToZero_;
+      return *this;
+    }
+
+    PhysicalDeviceFloatControlsPropertiesKHR& setFp64DenormFlushToZero( Bool32 fp64DenormFlushToZero_ )
+    {
+      fp64DenormFlushToZero = fp64DenormFlushToZero_;
+      return *this;
+    }
+
+    PhysicalDeviceFloatControlsPropertiesKHR& setFp16RoundingModeRTE( Bool32 fp16RoundingModeRTE_ )
+    {
+      fp16RoundingModeRTE = fp16RoundingModeRTE_;
+      return *this;
+    }
+
+    PhysicalDeviceFloatControlsPropertiesKHR& setFp32RoundingModeRTE( Bool32 fp32RoundingModeRTE_ )
+    {
+      fp32RoundingModeRTE = fp32RoundingModeRTE_;
+      return *this;
+    }
+
+    PhysicalDeviceFloatControlsPropertiesKHR& setFp64RoundingModeRTE( Bool32 fp64RoundingModeRTE_ )
+    {
+      fp64RoundingModeRTE = fp64RoundingModeRTE_;
+      return *this;
+    }
+
+    PhysicalDeviceFloatControlsPropertiesKHR& setFp16RoundingModeRTZ( Bool32 fp16RoundingModeRTZ_ )
+    {
+      fp16RoundingModeRTZ = fp16RoundingModeRTZ_;
+      return *this;
+    }
+
+    PhysicalDeviceFloatControlsPropertiesKHR& setFp32RoundingModeRTZ( Bool32 fp32RoundingModeRTZ_ )
+    {
+      fp32RoundingModeRTZ = fp32RoundingModeRTZ_;
+      return *this;
+    }
+
+    PhysicalDeviceFloatControlsPropertiesKHR& setFp64RoundingModeRTZ( Bool32 fp64RoundingModeRTZ_ )
+    {
+      fp64RoundingModeRTZ = fp64RoundingModeRTZ_;
+      return *this;
+    }
+
+    operator const VkPhysicalDeviceFloatControlsPropertiesKHR&() const
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceFloatControlsPropertiesKHR*>(this);
+    }
+
+    bool operator==( PhysicalDeviceFloatControlsPropertiesKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( separateDenormSettings == rhs.separateDenormSettings )
+          && ( separateRoundingModeSettings == rhs.separateRoundingModeSettings )
+          && ( fp16SignedZeroInfNanPreserve == rhs.fp16SignedZeroInfNanPreserve )
+          && ( fp32SignedZeroInfNanPreserve == rhs.fp32SignedZeroInfNanPreserve )
+          && ( fp64SignedZeroInfNanPreserve == rhs.fp64SignedZeroInfNanPreserve )
+          && ( fp16DenormPreserve == rhs.fp16DenormPreserve )
+          && ( fp32DenormPreserve == rhs.fp32DenormPreserve )
+          && ( fp64DenormPreserve == rhs.fp64DenormPreserve )
+          && ( fp16DenormFlushToZero == rhs.fp16DenormFlushToZero )
+          && ( fp32DenormFlushToZero == rhs.fp32DenormFlushToZero )
+          && ( fp64DenormFlushToZero == rhs.fp64DenormFlushToZero )
+          && ( fp16RoundingModeRTE == rhs.fp16RoundingModeRTE )
+          && ( fp32RoundingModeRTE == rhs.fp32RoundingModeRTE )
+          && ( fp64RoundingModeRTE == rhs.fp64RoundingModeRTE )
+          && ( fp16RoundingModeRTZ == rhs.fp16RoundingModeRTZ )
+          && ( fp32RoundingModeRTZ == rhs.fp32RoundingModeRTZ )
+          && ( fp64RoundingModeRTZ == rhs.fp64RoundingModeRTZ );
+    }
+
+    bool operator!=( PhysicalDeviceFloatControlsPropertiesKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::ePhysicalDeviceFloatControlsPropertiesKHR;
+
+  public:
+    void* pNext = nullptr;
+    Bool32 separateDenormSettings;
+    Bool32 separateRoundingModeSettings;
+    Bool32 fp16SignedZeroInfNanPreserve;
+    Bool32 fp32SignedZeroInfNanPreserve;
+    Bool32 fp64SignedZeroInfNanPreserve;
+    Bool32 fp16DenormPreserve;
+    Bool32 fp32DenormPreserve;
+    Bool32 fp64DenormPreserve;
+    Bool32 fp16DenormFlushToZero;
+    Bool32 fp32DenormFlushToZero;
+    Bool32 fp64DenormFlushToZero;
+    Bool32 fp16RoundingModeRTE;
+    Bool32 fp32RoundingModeRTE;
+    Bool32 fp64RoundingModeRTE;
+    Bool32 fp16RoundingModeRTZ;
+    Bool32 fp32RoundingModeRTZ;
+    Bool32 fp64RoundingModeRTZ;
+  };
+  static_assert( sizeof( PhysicalDeviceFloatControlsPropertiesKHR ) == sizeof( VkPhysicalDeviceFloatControlsPropertiesKHR ), "struct and wrapper have different size!" );
+
   struct DebugUtilsLabelEXT
   {
     DebugUtilsLabelEXT( const char* pLabelName_ = nullptr,
@@ -17251,6 +17591,61 @@ public:
   static_assert( sizeof( ExternalFormatANDROID ) == sizeof( VkExternalFormatANDROID ), "struct and wrapper have different size!" );
 #endif /*VK_USE_PLATFORM_ANDROID_ANDROID*/
 
+  struct PhysicalDevicePointerCastToPointerFeaturesKHR
+  {
+    PhysicalDevicePointerCastToPointerFeaturesKHR( Bool32 pointerCastToPointer_ = 0 )
+      : pointerCastToPointer( pointerCastToPointer_ )
+    {
+    }
+
+    PhysicalDevicePointerCastToPointerFeaturesKHR( VkPhysicalDevicePointerCastToPointerFeaturesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDevicePointerCastToPointerFeaturesKHR ) );
+    }
+
+    PhysicalDevicePointerCastToPointerFeaturesKHR& operator=( VkPhysicalDevicePointerCastToPointerFeaturesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDevicePointerCastToPointerFeaturesKHR ) );
+      return *this;
+    }
+    PhysicalDevicePointerCastToPointerFeaturesKHR& setPNext( void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PhysicalDevicePointerCastToPointerFeaturesKHR& setPointerCastToPointer( Bool32 pointerCastToPointer_ )
+    {
+      pointerCastToPointer = pointerCastToPointer_;
+      return *this;
+    }
+
+    operator const VkPhysicalDevicePointerCastToPointerFeaturesKHR&() const
+    {
+      return *reinterpret_cast<const VkPhysicalDevicePointerCastToPointerFeaturesKHR*>(this);
+    }
+
+    bool operator==( PhysicalDevicePointerCastToPointerFeaturesKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( pointerCastToPointer == rhs.pointerCastToPointer );
+    }
+
+    bool operator!=( PhysicalDevicePointerCastToPointerFeaturesKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::ePhysicalDevicePointerCastToPointerFeaturesKHR;
+
+  public:
+    void* pNext = nullptr;
+    Bool32 pointerCastToPointer;
+  };
+  static_assert( sizeof( PhysicalDevicePointerCastToPointerFeaturesKHR ) == sizeof( VkPhysicalDevicePointerCastToPointerFeaturesKHR ), "struct and wrapper have different size!" );
+
   struct PhysicalDevice8BitStorageFeaturesKHR
   {
     PhysicalDevice8BitStorageFeaturesKHR( Bool32 storageBuffer8BitAccess_ = 0,
@@ -17390,6 +17785,99 @@ public:
     Bool32 inheritedConditionalRendering;
   };
   static_assert( sizeof( PhysicalDeviceConditionalRenderingFeaturesEXT ) == sizeof( VkPhysicalDeviceConditionalRenderingFeaturesEXT ), "struct and wrapper have different size!" );
+
+  struct PhysicalDeviceVulkanMemoryModelFeaturesKHR
+  {
+    operator const VkPhysicalDeviceVulkanMemoryModelFeaturesKHR&() const
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceVulkanMemoryModelFeaturesKHR*>(this);
+    }
+
+    bool operator==( PhysicalDeviceVulkanMemoryModelFeaturesKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( vulkanMemoryModelSupported == rhs.vulkanMemoryModelSupported );
+    }
+
+    bool operator!=( PhysicalDeviceVulkanMemoryModelFeaturesKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::ePhysicalDeviceVulkanMemoryModelFeaturesKHR;
+
+  public:
+    void* pNext = nullptr;
+    Bool32 vulkanMemoryModelSupported;
+  };
+  static_assert( sizeof( PhysicalDeviceVulkanMemoryModelFeaturesKHR ) == sizeof( VkPhysicalDeviceVulkanMemoryModelFeaturesKHR ), "struct and wrapper have different size!" );
+
+  struct PhysicalDeviceShaderAtomicInt64FeaturesKHR
+  {
+    PhysicalDeviceShaderAtomicInt64FeaturesKHR( Bool32 shaderBufferInt64Atomics_ = 0,
+                                                Bool32 shaderSharedInt64Atomics_ = 0 )
+      : shaderBufferInt64Atomics( shaderBufferInt64Atomics_ )
+      , shaderSharedInt64Atomics( shaderSharedInt64Atomics_ )
+    {
+    }
+
+    PhysicalDeviceShaderAtomicInt64FeaturesKHR( VkPhysicalDeviceShaderAtomicInt64FeaturesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceShaderAtomicInt64FeaturesKHR ) );
+    }
+
+    PhysicalDeviceShaderAtomicInt64FeaturesKHR& operator=( VkPhysicalDeviceShaderAtomicInt64FeaturesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceShaderAtomicInt64FeaturesKHR ) );
+      return *this;
+    }
+    PhysicalDeviceShaderAtomicInt64FeaturesKHR& setPNext( void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderAtomicInt64FeaturesKHR& setShaderBufferInt64Atomics( Bool32 shaderBufferInt64Atomics_ )
+    {
+      shaderBufferInt64Atomics = shaderBufferInt64Atomics_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderAtomicInt64FeaturesKHR& setShaderSharedInt64Atomics( Bool32 shaderSharedInt64Atomics_ )
+    {
+      shaderSharedInt64Atomics = shaderSharedInt64Atomics_;
+      return *this;
+    }
+
+    operator const VkPhysicalDeviceShaderAtomicInt64FeaturesKHR&() const
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceShaderAtomicInt64FeaturesKHR*>(this);
+    }
+
+    bool operator==( PhysicalDeviceShaderAtomicInt64FeaturesKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( shaderBufferInt64Atomics == rhs.shaderBufferInt64Atomics )
+          && ( shaderSharedInt64Atomics == rhs.shaderSharedInt64Atomics );
+    }
+
+    bool operator!=( PhysicalDeviceShaderAtomicInt64FeaturesKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::ePhysicalDeviceShaderAtomicInt64FeaturesKHR;
+
+  public:
+    void* pNext = nullptr;
+    Bool32 shaderBufferInt64Atomics;
+    Bool32 shaderSharedInt64Atomics;
+  };
+  static_assert( sizeof( PhysicalDeviceShaderAtomicInt64FeaturesKHR ) == sizeof( VkPhysicalDeviceShaderAtomicInt64FeaturesKHR ), "struct and wrapper have different size!" );
 
   enum class SubpassContents
   {
@@ -24752,6 +25240,161 @@ public:
   };
   static_assert( sizeof( SubpassDependency2KHR ) == sizeof( VkSubpassDependency2KHR ), "struct and wrapper have different size!" );
 
+  enum class ShaderDenormBehaviorKHR
+  {
+    eUnspecified = VK_SHADER_DENORM_BEHAVIOR_UNSPECIFIED_KHR,
+    ePreserve = VK_SHADER_DENORM_BEHAVIOR_PRESERVE_KHR,
+    eFlushToZero = VK_SHADER_DENORM_BEHAVIOR_FLUSH_TO_ZERO_KHR
+  };
+
+  enum class ShaderFloatingPointRoundingModeKHR
+  {
+    eUnspecified = VK_SHADER_FLOATING_POINT_ROUNDING_MODE_UNSPECIFIED_KHR,
+    eRte = VK_SHADER_FLOATING_POINT_ROUNDING_MODE_RTE_KHR,
+    eRtz = VK_SHADER_FLOATING_POINT_ROUNDING_MODE_RTZ_KHR
+  };
+
+  enum class ShaderSignedZeroInfNanBehaviorKHR
+  {
+    eVkShaderSignedZeroInfNanIgnore = VK_SHADER_SIGNED_ZERO_INF_NAN_IGNORE_KHR,
+    eVkShaderSignedZeroInfNanPreserve = VK_SHADER_SIGNED_ZERO_INF_NAN_PRESERVE_KHR
+  };
+
+  struct PipelineShaderStageFloatBehaviorCreateInfoKHR
+  {
+    PipelineShaderStageFloatBehaviorCreateInfoKHR( ShaderDenormBehaviorKHR fp16Denorm_ = ShaderDenormBehaviorKHR::eUnspecified,
+                                                   ShaderDenormBehaviorKHR fp32Denorm_ = ShaderDenormBehaviorKHR::eUnspecified,
+                                                   ShaderDenormBehaviorKHR fp64Denorm_ = ShaderDenormBehaviorKHR::eUnspecified,
+                                                   ShaderSignedZeroInfNanBehaviorKHR fp16SignedZeroInfNan_ = ShaderSignedZeroInfNanBehaviorKHR::eVkShaderSignedZeroInfNanIgnore,
+                                                   ShaderSignedZeroInfNanBehaviorKHR fp32SignedZeroInfNan_ = ShaderSignedZeroInfNanBehaviorKHR::eVkShaderSignedZeroInfNanIgnore,
+                                                   ShaderSignedZeroInfNanBehaviorKHR fp64SignedZeroInfNan_ = ShaderSignedZeroInfNanBehaviorKHR::eVkShaderSignedZeroInfNanIgnore,
+                                                   ShaderFloatingPointRoundingModeKHR fp16RoundingMode_ = ShaderFloatingPointRoundingModeKHR::eUnspecified,
+                                                   ShaderFloatingPointRoundingModeKHR fp32RoundingMode_ = ShaderFloatingPointRoundingModeKHR::eUnspecified,
+                                                   ShaderFloatingPointRoundingModeKHR fp64RoundingMode_ = ShaderFloatingPointRoundingModeKHR::eUnspecified )
+      : fp16Denorm( fp16Denorm_ )
+      , fp32Denorm( fp32Denorm_ )
+      , fp64Denorm( fp64Denorm_ )
+      , fp16SignedZeroInfNan( fp16SignedZeroInfNan_ )
+      , fp32SignedZeroInfNan( fp32SignedZeroInfNan_ )
+      , fp64SignedZeroInfNan( fp64SignedZeroInfNan_ )
+      , fp16RoundingMode( fp16RoundingMode_ )
+      , fp32RoundingMode( fp32RoundingMode_ )
+      , fp64RoundingMode( fp64RoundingMode_ )
+    {
+    }
+
+    PipelineShaderStageFloatBehaviorCreateInfoKHR( VkPipelineShaderStageFloatBehaviorCreateInfoKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PipelineShaderStageFloatBehaviorCreateInfoKHR ) );
+    }
+
+    PipelineShaderStageFloatBehaviorCreateInfoKHR& operator=( VkPipelineShaderStageFloatBehaviorCreateInfoKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PipelineShaderStageFloatBehaviorCreateInfoKHR ) );
+      return *this;
+    }
+    PipelineShaderStageFloatBehaviorCreateInfoKHR& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PipelineShaderStageFloatBehaviorCreateInfoKHR& setFp16Denorm( ShaderDenormBehaviorKHR fp16Denorm_ )
+    {
+      fp16Denorm = fp16Denorm_;
+      return *this;
+    }
+
+    PipelineShaderStageFloatBehaviorCreateInfoKHR& setFp32Denorm( ShaderDenormBehaviorKHR fp32Denorm_ )
+    {
+      fp32Denorm = fp32Denorm_;
+      return *this;
+    }
+
+    PipelineShaderStageFloatBehaviorCreateInfoKHR& setFp64Denorm( ShaderDenormBehaviorKHR fp64Denorm_ )
+    {
+      fp64Denorm = fp64Denorm_;
+      return *this;
+    }
+
+    PipelineShaderStageFloatBehaviorCreateInfoKHR& setFp16SignedZeroInfNan( ShaderSignedZeroInfNanBehaviorKHR fp16SignedZeroInfNan_ )
+    {
+      fp16SignedZeroInfNan = fp16SignedZeroInfNan_;
+      return *this;
+    }
+
+    PipelineShaderStageFloatBehaviorCreateInfoKHR& setFp32SignedZeroInfNan( ShaderSignedZeroInfNanBehaviorKHR fp32SignedZeroInfNan_ )
+    {
+      fp32SignedZeroInfNan = fp32SignedZeroInfNan_;
+      return *this;
+    }
+
+    PipelineShaderStageFloatBehaviorCreateInfoKHR& setFp64SignedZeroInfNan( ShaderSignedZeroInfNanBehaviorKHR fp64SignedZeroInfNan_ )
+    {
+      fp64SignedZeroInfNan = fp64SignedZeroInfNan_;
+      return *this;
+    }
+
+    PipelineShaderStageFloatBehaviorCreateInfoKHR& setFp16RoundingMode( ShaderFloatingPointRoundingModeKHR fp16RoundingMode_ )
+    {
+      fp16RoundingMode = fp16RoundingMode_;
+      return *this;
+    }
+
+    PipelineShaderStageFloatBehaviorCreateInfoKHR& setFp32RoundingMode( ShaderFloatingPointRoundingModeKHR fp32RoundingMode_ )
+    {
+      fp32RoundingMode = fp32RoundingMode_;
+      return *this;
+    }
+
+    PipelineShaderStageFloatBehaviorCreateInfoKHR& setFp64RoundingMode( ShaderFloatingPointRoundingModeKHR fp64RoundingMode_ )
+    {
+      fp64RoundingMode = fp64RoundingMode_;
+      return *this;
+    }
+
+    operator const VkPipelineShaderStageFloatBehaviorCreateInfoKHR&() const
+    {
+      return *reinterpret_cast<const VkPipelineShaderStageFloatBehaviorCreateInfoKHR*>(this);
+    }
+
+    bool operator==( PipelineShaderStageFloatBehaviorCreateInfoKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( fp16Denorm == rhs.fp16Denorm )
+          && ( fp32Denorm == rhs.fp32Denorm )
+          && ( fp64Denorm == rhs.fp64Denorm )
+          && ( fp16SignedZeroInfNan == rhs.fp16SignedZeroInfNan )
+          && ( fp32SignedZeroInfNan == rhs.fp32SignedZeroInfNan )
+          && ( fp64SignedZeroInfNan == rhs.fp64SignedZeroInfNan )
+          && ( fp16RoundingMode == rhs.fp16RoundingMode )
+          && ( fp32RoundingMode == rhs.fp32RoundingMode )
+          && ( fp64RoundingMode == rhs.fp64RoundingMode );
+    }
+
+    bool operator!=( PipelineShaderStageFloatBehaviorCreateInfoKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::ePipelineShaderStageFloatBehaviorCreateInfoKHR;
+
+  public:
+    const void* pNext = nullptr;
+    ShaderDenormBehaviorKHR fp16Denorm;
+    ShaderDenormBehaviorKHR fp32Denorm;
+    ShaderDenormBehaviorKHR fp64Denorm;
+    ShaderSignedZeroInfNanBehaviorKHR fp16SignedZeroInfNan;
+    ShaderSignedZeroInfNanBehaviorKHR fp32SignedZeroInfNan;
+    ShaderSignedZeroInfNanBehaviorKHR fp64SignedZeroInfNan;
+    ShaderFloatingPointRoundingModeKHR fp16RoundingMode;
+    ShaderFloatingPointRoundingModeKHR fp32RoundingMode;
+    ShaderFloatingPointRoundingModeKHR fp64RoundingMode;
+  };
+  static_assert( sizeof( PipelineShaderStageFloatBehaviorCreateInfoKHR ) == sizeof( VkPipelineShaderStageFloatBehaviorCreateInfoKHR ), "struct and wrapper have different size!" );
+
   enum class PresentModeKHR
   {
     eImmediate = VK_PRESENT_MODE_IMMEDIATE_KHR,
@@ -25884,7 +26527,7 @@ public:
   struct ValidationFlagsEXT
   {
     ValidationFlagsEXT( uint32_t disabledValidationCheckCount_ = 0,
-                        ValidationCheckEXT* pDisabledValidationChecks_ = nullptr )
+                        const ValidationCheckEXT* pDisabledValidationChecks_ = nullptr )
       : disabledValidationCheckCount( disabledValidationCheckCount_ )
       , pDisabledValidationChecks( pDisabledValidationChecks_ )
     {
@@ -25912,7 +26555,7 @@ public:
       return *this;
     }
 
-    ValidationFlagsEXT& setPDisabledValidationChecks( ValidationCheckEXT* pDisabledValidationChecks_ )
+    ValidationFlagsEXT& setPDisabledValidationChecks( const ValidationCheckEXT* pDisabledValidationChecks_ )
     {
       pDisabledValidationChecks = pDisabledValidationChecks_;
       return *this;
@@ -25942,7 +26585,7 @@ public:
   public:
     const void* pNext = nullptr;
     uint32_t disabledValidationCheckCount;
-    ValidationCheckEXT* pDisabledValidationChecks;
+    const ValidationCheckEXT* pDisabledValidationChecks;
   };
   static_assert( sizeof( ValidationFlagsEXT ) == sizeof( VkValidationFlagsEXT ), "struct and wrapper have different size!" );
 
@@ -29523,7 +30166,8 @@ public:
   enum class SwapchainCreateFlagBitsKHR
   {
     eSplitInstanceBindRegions = VK_SWAPCHAIN_CREATE_SPLIT_INSTANCE_BIND_REGIONS_BIT_KHR,
-    eProtected = VK_SWAPCHAIN_CREATE_PROTECTED_BIT_KHR
+    eProtected = VK_SWAPCHAIN_CREATE_PROTECTED_BIT_KHR,
+    eMutableFormat = VK_SWAPCHAIN_CREATE_MUTABLE_FORMAT_BIT_KHR
   };
 
   using SwapchainCreateFlagsKHR = Flags<SwapchainCreateFlagBitsKHR, VkSwapchainCreateFlagsKHR>;
@@ -29542,7 +30186,7 @@ public:
   {
     enum
     {
-      allFlags = VkFlags(SwapchainCreateFlagBitsKHR::eSplitInstanceBindRegions) | VkFlags(SwapchainCreateFlagBitsKHR::eProtected)
+      allFlags = VkFlags(SwapchainCreateFlagBitsKHR::eSplitInstanceBindRegions) | VkFlags(SwapchainCreateFlagBitsKHR::eProtected) | VkFlags(SwapchainCreateFlagBitsKHR::eMutableFormat)
     };
   };
 
@@ -31520,6 +32164,19 @@ public:
     eViv = VK_VENDOR_ID_VIV,
     eVsi = VK_VENDOR_ID_VSI,
     eKazan = VK_VENDOR_ID_KAZAN
+  };
+
+  enum class DriverIdKHR
+  {
+    eAmdProprietary = VK_DRIVER_ID_AMD_PROPRIETARY_KHR,
+    eAmdOpenSource = VK_DRIVER_ID_AMD_OPEN_SOURCE_KHR,
+    eMesaRadv = VK_DRIVER_ID_MESA_RADV_KHR,
+    eNvidiaProprietary = VK_DRIVER_ID_NVIDIA_PROPRIETARY_KHR,
+    eIntelProprietaryWindows = VK_DRIVER_ID_INTEL_PROPRIETARY_WINDOWS_KHR,
+    eIntelOpenSourceMesa = VK_DRIVER_ID_INTEL_OPEN_SOURCE_MESA_KHR,
+    eImaginationProprietary = VK_DRIVER_ID_IMAGINATION_PROPRIETARY_KHR,
+    eQualcommProprietary = VK_DRIVER_ID_QUALCOMM_PROPRIETARY_KHR,
+    eArmProprietary = VK_DRIVER_ID_ARM_PROPRIETARY_KHR
   };
 
   enum class ConditionalRenderingFlagBitsEXT
@@ -38032,6 +38689,194 @@ public:
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 #endif /*VK_USE_PLATFORM_ANDROID_ANDROID*/
 
+  struct CmdProcessCommandsInfoNVX
+  {
+    CmdProcessCommandsInfoNVX( ObjectTableNVX objectTable_ = ObjectTableNVX(),
+                               IndirectCommandsLayoutNVX indirectCommandsLayout_ = IndirectCommandsLayoutNVX(),
+                               uint32_t indirectCommandsTokenCount_ = 0,
+                               const IndirectCommandsTokenNVX* pIndirectCommandsTokens_ = nullptr,
+                               uint32_t maxSequencesCount_ = 0,
+                               CommandBuffer targetCommandBuffer_ = CommandBuffer(),
+                               Buffer sequencesCountBuffer_ = Buffer(),
+                               DeviceSize sequencesCountOffset_ = 0,
+                               Buffer sequencesIndexBuffer_ = Buffer(),
+                               DeviceSize sequencesIndexOffset_ = 0 )
+      : objectTable( objectTable_ )
+      , indirectCommandsLayout( indirectCommandsLayout_ )
+      , indirectCommandsTokenCount( indirectCommandsTokenCount_ )
+      , pIndirectCommandsTokens( pIndirectCommandsTokens_ )
+      , maxSequencesCount( maxSequencesCount_ )
+      , targetCommandBuffer( targetCommandBuffer_ )
+      , sequencesCountBuffer( sequencesCountBuffer_ )
+      , sequencesCountOffset( sequencesCountOffset_ )
+      , sequencesIndexBuffer( sequencesIndexBuffer_ )
+      , sequencesIndexOffset( sequencesIndexOffset_ )
+    {
+    }
+
+    CmdProcessCommandsInfoNVX( VkCmdProcessCommandsInfoNVX const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( CmdProcessCommandsInfoNVX ) );
+    }
+
+    CmdProcessCommandsInfoNVX& operator=( VkCmdProcessCommandsInfoNVX const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( CmdProcessCommandsInfoNVX ) );
+      return *this;
+    }
+    CmdProcessCommandsInfoNVX& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    CmdProcessCommandsInfoNVX& setObjectTable( ObjectTableNVX objectTable_ )
+    {
+      objectTable = objectTable_;
+      return *this;
+    }
+
+    CmdProcessCommandsInfoNVX& setIndirectCommandsLayout( IndirectCommandsLayoutNVX indirectCommandsLayout_ )
+    {
+      indirectCommandsLayout = indirectCommandsLayout_;
+      return *this;
+    }
+
+    CmdProcessCommandsInfoNVX& setIndirectCommandsTokenCount( uint32_t indirectCommandsTokenCount_ )
+    {
+      indirectCommandsTokenCount = indirectCommandsTokenCount_;
+      return *this;
+    }
+
+    CmdProcessCommandsInfoNVX& setPIndirectCommandsTokens( const IndirectCommandsTokenNVX* pIndirectCommandsTokens_ )
+    {
+      pIndirectCommandsTokens = pIndirectCommandsTokens_;
+      return *this;
+    }
+
+    CmdProcessCommandsInfoNVX& setMaxSequencesCount( uint32_t maxSequencesCount_ )
+    {
+      maxSequencesCount = maxSequencesCount_;
+      return *this;
+    }
+
+    CmdProcessCommandsInfoNVX& setTargetCommandBuffer( CommandBuffer targetCommandBuffer_ )
+    {
+      targetCommandBuffer = targetCommandBuffer_;
+      return *this;
+    }
+
+    CmdProcessCommandsInfoNVX& setSequencesCountBuffer( Buffer sequencesCountBuffer_ )
+    {
+      sequencesCountBuffer = sequencesCountBuffer_;
+      return *this;
+    }
+
+    CmdProcessCommandsInfoNVX& setSequencesCountOffset( DeviceSize sequencesCountOffset_ )
+    {
+      sequencesCountOffset = sequencesCountOffset_;
+      return *this;
+    }
+
+    CmdProcessCommandsInfoNVX& setSequencesIndexBuffer( Buffer sequencesIndexBuffer_ )
+    {
+      sequencesIndexBuffer = sequencesIndexBuffer_;
+      return *this;
+    }
+
+    CmdProcessCommandsInfoNVX& setSequencesIndexOffset( DeviceSize sequencesIndexOffset_ )
+    {
+      sequencesIndexOffset = sequencesIndexOffset_;
+      return *this;
+    }
+
+    operator const VkCmdProcessCommandsInfoNVX&() const
+    {
+      return *reinterpret_cast<const VkCmdProcessCommandsInfoNVX*>(this);
+    }
+
+    bool operator==( CmdProcessCommandsInfoNVX const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( objectTable == rhs.objectTable )
+          && ( indirectCommandsLayout == rhs.indirectCommandsLayout )
+          && ( indirectCommandsTokenCount == rhs.indirectCommandsTokenCount )
+          && ( pIndirectCommandsTokens == rhs.pIndirectCommandsTokens )
+          && ( maxSequencesCount == rhs.maxSequencesCount )
+          && ( targetCommandBuffer == rhs.targetCommandBuffer )
+          && ( sequencesCountBuffer == rhs.sequencesCountBuffer )
+          && ( sequencesCountOffset == rhs.sequencesCountOffset )
+          && ( sequencesIndexBuffer == rhs.sequencesIndexBuffer )
+          && ( sequencesIndexOffset == rhs.sequencesIndexOffset );
+    }
+
+    bool operator!=( CmdProcessCommandsInfoNVX const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::eCmdProcessCommandsInfoNVX;
+
+  public:
+    const void* pNext = nullptr;
+    ObjectTableNVX objectTable;
+    IndirectCommandsLayoutNVX indirectCommandsLayout;
+    uint32_t indirectCommandsTokenCount;
+    const IndirectCommandsTokenNVX* pIndirectCommandsTokens;
+    uint32_t maxSequencesCount;
+    CommandBuffer targetCommandBuffer;
+    Buffer sequencesCountBuffer;
+    DeviceSize sequencesCountOffset;
+    Buffer sequencesIndexBuffer;
+    DeviceSize sequencesIndexOffset;
+  };
+  static_assert( sizeof( CmdProcessCommandsInfoNVX ) == sizeof( VkCmdProcessCommandsInfoNVX ), "struct and wrapper have different size!" );
+
+  struct BaseOutStructure
+  {
+    BaseOutStructure(  )
+    {
+    }
+
+    BaseOutStructure( VkBaseOutStructure const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( BaseOutStructure ) );
+    }
+
+    BaseOutStructure& operator=( VkBaseOutStructure const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( BaseOutStructure ) );
+      return *this;
+    }
+    BaseOutStructure& setPNext( struct BaseOutStructure* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    operator const VkBaseOutStructure&() const
+    {
+      return *reinterpret_cast<const VkBaseOutStructure*>(this);
+    }
+
+    bool operator==( BaseOutStructure const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext );
+    }
+
+    bool operator!=( BaseOutStructure const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+    StructureType sType;
+    struct BaseOutStructure* pNext = nullptr;
+  };
+  static_assert( sizeof( BaseOutStructure ) == sizeof( VkBaseOutStructure ), "struct and wrapper have different size!" );
+
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
 
   template <typename Dispatch> class UniqueHandleTraits<Device,Dispatch> {public: using deleter = ObjectDestroy<NoParent,Dispatch>; };
@@ -38522,6 +39367,13 @@ public:
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = DispatchLoaderStatic>
     ResultValueType<DisplayPlaneCapabilities2KHR>::type getDisplayPlaneCapabilities2KHR( const DisplayPlaneInfo2KHR & displayPlaneInfo, Dispatch const &d = Dispatch() ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    template<typename Dispatch = DispatchLoaderStatic>
+    void getPortabilitySubsetDataKHR( BaseOutStructure* pData, Dispatch const &d = Dispatch() ) const;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template<typename Dispatch = DispatchLoaderStatic>
+    BaseOutStructure getPortabilitySubsetDataKHR(Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
 
@@ -39678,150 +40530,20 @@ public:
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-  struct CmdProcessCommandsInfoNVX
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE void PhysicalDevice::getPortabilitySubsetDataKHR( BaseOutStructure* pData, Dispatch const &d) const
   {
-    CmdProcessCommandsInfoNVX( ObjectTableNVX objectTable_ = ObjectTableNVX(),
-                               IndirectCommandsLayoutNVX indirectCommandsLayout_ = IndirectCommandsLayoutNVX(),
-                               uint32_t indirectCommandsTokenCount_ = 0,
-                               const IndirectCommandsTokenNVX* pIndirectCommandsTokens_ = nullptr,
-                               uint32_t maxSequencesCount_ = 0,
-                               CommandBuffer targetCommandBuffer_ = CommandBuffer(),
-                               Buffer sequencesCountBuffer_ = Buffer(),
-                               DeviceSize sequencesCountOffset_ = 0,
-                               Buffer sequencesIndexBuffer_ = Buffer(),
-                               DeviceSize sequencesIndexOffset_ = 0 )
-      : objectTable( objectTable_ )
-      , indirectCommandsLayout( indirectCommandsLayout_ )
-      , indirectCommandsTokenCount( indirectCommandsTokenCount_ )
-      , pIndirectCommandsTokens( pIndirectCommandsTokens_ )
-      , maxSequencesCount( maxSequencesCount_ )
-      , targetCommandBuffer( targetCommandBuffer_ )
-      , sequencesCountBuffer( sequencesCountBuffer_ )
-      , sequencesCountOffset( sequencesCountOffset_ )
-      , sequencesIndexBuffer( sequencesIndexBuffer_ )
-      , sequencesIndexOffset( sequencesIndexOffset_ )
-    {
-    }
-
-    CmdProcessCommandsInfoNVX( VkCmdProcessCommandsInfoNVX const & rhs )
-    {
-      memcpy( this, &rhs, sizeof( CmdProcessCommandsInfoNVX ) );
-    }
-
-    CmdProcessCommandsInfoNVX& operator=( VkCmdProcessCommandsInfoNVX const & rhs )
-    {
-      memcpy( this, &rhs, sizeof( CmdProcessCommandsInfoNVX ) );
-      return *this;
-    }
-    CmdProcessCommandsInfoNVX& setPNext( const void* pNext_ )
-    {
-      pNext = pNext_;
-      return *this;
-    }
-
-    CmdProcessCommandsInfoNVX& setObjectTable( ObjectTableNVX objectTable_ )
-    {
-      objectTable = objectTable_;
-      return *this;
-    }
-
-    CmdProcessCommandsInfoNVX& setIndirectCommandsLayout( IndirectCommandsLayoutNVX indirectCommandsLayout_ )
-    {
-      indirectCommandsLayout = indirectCommandsLayout_;
-      return *this;
-    }
-
-    CmdProcessCommandsInfoNVX& setIndirectCommandsTokenCount( uint32_t indirectCommandsTokenCount_ )
-    {
-      indirectCommandsTokenCount = indirectCommandsTokenCount_;
-      return *this;
-    }
-
-    CmdProcessCommandsInfoNVX& setPIndirectCommandsTokens( const IndirectCommandsTokenNVX* pIndirectCommandsTokens_ )
-    {
-      pIndirectCommandsTokens = pIndirectCommandsTokens_;
-      return *this;
-    }
-
-    CmdProcessCommandsInfoNVX& setMaxSequencesCount( uint32_t maxSequencesCount_ )
-    {
-      maxSequencesCount = maxSequencesCount_;
-      return *this;
-    }
-
-    CmdProcessCommandsInfoNVX& setTargetCommandBuffer( CommandBuffer targetCommandBuffer_ )
-    {
-      targetCommandBuffer = targetCommandBuffer_;
-      return *this;
-    }
-
-    CmdProcessCommandsInfoNVX& setSequencesCountBuffer( Buffer sequencesCountBuffer_ )
-    {
-      sequencesCountBuffer = sequencesCountBuffer_;
-      return *this;
-    }
-
-    CmdProcessCommandsInfoNVX& setSequencesCountOffset( DeviceSize sequencesCountOffset_ )
-    {
-      sequencesCountOffset = sequencesCountOffset_;
-      return *this;
-    }
-
-    CmdProcessCommandsInfoNVX& setSequencesIndexBuffer( Buffer sequencesIndexBuffer_ )
-    {
-      sequencesIndexBuffer = sequencesIndexBuffer_;
-      return *this;
-    }
-
-    CmdProcessCommandsInfoNVX& setSequencesIndexOffset( DeviceSize sequencesIndexOffset_ )
-    {
-      sequencesIndexOffset = sequencesIndexOffset_;
-      return *this;
-    }
-
-    operator const VkCmdProcessCommandsInfoNVX&() const
-    {
-      return *reinterpret_cast<const VkCmdProcessCommandsInfoNVX*>(this);
-    }
-
-    bool operator==( CmdProcessCommandsInfoNVX const& rhs ) const
-    {
-      return ( sType == rhs.sType )
-          && ( pNext == rhs.pNext )
-          && ( objectTable == rhs.objectTable )
-          && ( indirectCommandsLayout == rhs.indirectCommandsLayout )
-          && ( indirectCommandsTokenCount == rhs.indirectCommandsTokenCount )
-          && ( pIndirectCommandsTokens == rhs.pIndirectCommandsTokens )
-          && ( maxSequencesCount == rhs.maxSequencesCount )
-          && ( targetCommandBuffer == rhs.targetCommandBuffer )
-          && ( sequencesCountBuffer == rhs.sequencesCountBuffer )
-          && ( sequencesCountOffset == rhs.sequencesCountOffset )
-          && ( sequencesIndexBuffer == rhs.sequencesIndexBuffer )
-          && ( sequencesIndexOffset == rhs.sequencesIndexOffset );
-    }
-
-    bool operator!=( CmdProcessCommandsInfoNVX const& rhs ) const
-    {
-      return !operator==( rhs );
-    }
-
-  private:
-    StructureType sType = StructureType::eCmdProcessCommandsInfoNVX;
-
-  public:
-    const void* pNext = nullptr;
-    ObjectTableNVX objectTable;
-    IndirectCommandsLayoutNVX indirectCommandsLayout;
-    uint32_t indirectCommandsTokenCount;
-    const IndirectCommandsTokenNVX* pIndirectCommandsTokens;
-    uint32_t maxSequencesCount;
-    CommandBuffer targetCommandBuffer;
-    Buffer sequencesCountBuffer;
-    DeviceSize sequencesCountOffset;
-    Buffer sequencesIndexBuffer;
-    DeviceSize sequencesIndexOffset;
-  };
-  static_assert( sizeof( CmdProcessCommandsInfoNVX ) == sizeof( VkCmdProcessCommandsInfoNVX ), "struct and wrapper have different size!" );
+    d.vkGetPhysicalDevicePortabilitySubsetDataKHR( m_physicalDevice, reinterpret_cast<VkBaseOutStructure*>( pData ) );
+  }
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE BaseOutStructure PhysicalDevice::getPortabilitySubsetDataKHR(Dispatch const &d ) const
+  {
+    BaseOutStructure data;
+    d.vkGetPhysicalDevicePortabilitySubsetDataKHR( m_physicalDevice, reinterpret_cast<VkBaseOutStructure*>( &data ) );
+    return data;
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   struct PhysicalDeviceGroupProperties
   {
@@ -40836,49 +41558,6 @@ public:
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
 
-  struct BaseOutStructure
-  {
-    BaseOutStructure(  )
-    {
-    }
-
-    BaseOutStructure( VkBaseOutStructure const & rhs )
-    {
-      memcpy( this, &rhs, sizeof( BaseOutStructure ) );
-    }
-
-    BaseOutStructure& operator=( VkBaseOutStructure const & rhs )
-    {
-      memcpy( this, &rhs, sizeof( BaseOutStructure ) );
-      return *this;
-    }
-    BaseOutStructure& setPNext( struct BaseOutStructure* pNext_ )
-    {
-      pNext = pNext_;
-      return *this;
-    }
-
-    operator const VkBaseOutStructure&() const
-    {
-      return *reinterpret_cast<const VkBaseOutStructure*>(this);
-    }
-
-    bool operator==( BaseOutStructure const& rhs ) const
-    {
-      return ( sType == rhs.sType )
-          && ( pNext == rhs.pNext );
-    }
-
-    bool operator!=( BaseOutStructure const& rhs ) const
-    {
-      return !operator==( rhs );
-    }
-
-    StructureType sType;
-    struct BaseOutStructure* pNext = nullptr;
-  };
-  static_assert( sizeof( BaseOutStructure ) == sizeof( VkBaseOutStructure ), "struct and wrapper have different size!" );
-
   struct BaseInStructure
   {
     BaseInStructure(  )
@@ -40934,6 +41613,7 @@ public:
 #endif /*VK_USE_PLATFORM_WIN32_NV*/
   template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceFeatures2>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDevicePushDescriptorPropertiesKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceDriverPropertiesKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<PresentInfoKHR, PresentRegionsKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceVariablePointerFeatures>{ enum { value = true }; };
   template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceVariablePointerFeatures>{ enum { value = true }; };
@@ -40988,9 +41668,13 @@ public:
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceBlendOperationAdvancedFeaturesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceBlendOperationAdvancedPropertiesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<ImageCreateInfo, ImageFormatListCreateInfoKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<SwapchainCreateInfoKHR, ImageFormatListCreateInfoKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<ShaderModuleCreateInfo, ShaderModuleValidationCacheCreateInfoEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceMaintenance3Properties>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceShaderDrawParameterFeatures>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceFloat16Int8FeaturesKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceFloat16Int8FeaturesKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceFloatControlsPropertiesKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceExternalMemoryHostPropertiesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceConservativeRasterizationPropertiesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceShaderCorePropertiesAMD>{ enum { value = true }; };
@@ -41012,10 +41696,16 @@ public:
   template <> struct isStructureChainValid<ImageCreateInfo, ExternalFormatANDROID>{ enum { value = true }; };
   template <> struct isStructureChainValid<SamplerYcbcrConversionCreateInfo, ExternalFormatANDROID>{ enum { value = true }; };
 #endif /*VK_USE_PLATFORM_ANDROID_ANDROID*/
+  template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDevicePointerCastToPointerFeaturesKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDevicePointerCastToPointerFeaturesKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDevice8BitStorageFeaturesKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDevice8BitStorageFeaturesKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceConditionalRenderingFeaturesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceConditionalRenderingFeaturesEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceVulkanMemoryModelFeaturesKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceVulkanMemoryModelFeaturesKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceShaderAtomicInt64FeaturesKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceShaderAtomicInt64FeaturesKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<SurfaceCapabilities2KHR, SharedPresentSurfaceCapabilitiesKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<ImageViewCreateInfo, ImageViewUsageCreateInfo>{ enum { value = true }; };
   template <> struct isStructureChainValid<RenderPassCreateInfo, RenderPassInputAttachmentAspectCreateInfo>{ enum { value = true }; };
@@ -41025,6 +41715,7 @@ public:
   template <> struct isStructureChainValid<RenderPassBeginInfo, RenderPassSampleLocationsBeginInfoEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PipelineMultisampleStateCreateInfo, PipelineSampleLocationsStateCreateInfoEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceSampleLocationsPropertiesEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PipelineShaderStageCreateInfo, PipelineShaderStageFloatBehaviorCreateInfoKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<InstanceCreateInfo, DebugReportCallbackCreateInfoEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PipelineRasterizationStateCreateInfo, PipelineRasterizationStateRasterizationOrderAMD>{ enum { value = true }; };
   template <> struct isStructureChainValid<ImageCreateInfo, ExternalMemoryImageCreateInfoNV>{ enum { value = true }; };
@@ -42438,6 +43129,7 @@ public:
     case StructureType::eCommandBufferInheritanceConditionalRenderingInfoEXT: return "CommandBufferInheritanceConditionalRenderingInfoEXT";
     case StructureType::ePhysicalDeviceConditionalRenderingFeaturesEXT: return "PhysicalDeviceConditionalRenderingFeaturesEXT";
     case StructureType::eConditionalRenderingBeginInfoEXT: return "ConditionalRenderingBeginInfoEXT";
+    case StructureType::ePhysicalDeviceFloat16Int8FeaturesKHR: return "PhysicalDeviceFloat16Int8FeaturesKHR";
     case StructureType::ePresentRegionsKHR: return "PresentRegionsKHR";
     case StructureType::eObjectTableCreateInfoNVX: return "ObjectTableCreateInfoNVX";
     case StructureType::eIndirectCommandsLayoutCreateInfoNVX: return "IndirectCommandsLayoutCreateInfoNVX";
@@ -42514,13 +43206,19 @@ public:
     case StructureType::eDescriptorSetVariableDescriptorCountAllocateInfoEXT: return "DescriptorSetVariableDescriptorCountAllocateInfoEXT";
     case StructureType::eDescriptorSetVariableDescriptorCountLayoutSupportEXT: return "DescriptorSetVariableDescriptorCountLayoutSupportEXT";
     case StructureType::eDeviceQueueGlobalPriorityCreateInfoEXT: return "DeviceQueueGlobalPriorityCreateInfoEXT";
+    case StructureType::ePhysicalDevicePointerCastToPointerFeaturesKHR: return "PhysicalDevicePointerCastToPointerFeaturesKHR";
     case StructureType::ePhysicalDevice8BitStorageFeaturesKHR: return "PhysicalDevice8BitStorageFeaturesKHR";
     case StructureType::eImportMemoryHostPointerInfoEXT: return "ImportMemoryHostPointerInfoEXT";
     case StructureType::eMemoryHostPointerPropertiesEXT: return "MemoryHostPointerPropertiesEXT";
     case StructureType::ePhysicalDeviceExternalMemoryHostPropertiesEXT: return "PhysicalDeviceExternalMemoryHostPropertiesEXT";
+    case StructureType::ePhysicalDeviceShaderAtomicInt64FeaturesKHR: return "PhysicalDeviceShaderAtomicInt64FeaturesKHR";
     case StructureType::ePhysicalDeviceShaderCorePropertiesAMD: return "PhysicalDeviceShaderCorePropertiesAMD";
     case StructureType::ePhysicalDeviceVertexAttributeDivisorPropertiesEXT: return "PhysicalDeviceVertexAttributeDivisorPropertiesEXT";
     case StructureType::ePipelineVertexInputDivisorStateCreateInfoEXT: return "PipelineVertexInputDivisorStateCreateInfoEXT";
+    case StructureType::ePhysicalDeviceDriverPropertiesKHR: return "PhysicalDeviceDriverPropertiesKHR";
+    case StructureType::ePhysicalDeviceFloatControlsPropertiesKHR: return "PhysicalDeviceFloatControlsPropertiesKHR";
+    case StructureType::ePipelineShaderStageFloatBehaviorCreateInfoKHR: return "PipelineShaderStageFloatBehaviorCreateInfoKHR";
+    case StructureType::ePhysicalDeviceVulkanMemoryModelFeaturesKHR: return "PhysicalDeviceVulkanMemoryModelFeaturesKHR";
     default: return "invalid";
     }
   }
@@ -43424,6 +44122,38 @@ public:
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
+  VULKAN_HPP_INLINE std::string to_string(ShaderDenormBehaviorKHR value)
+  {
+    switch (value)
+    {
+    case ShaderDenormBehaviorKHR::eUnspecified: return "Unspecified";
+    case ShaderDenormBehaviorKHR::ePreserve: return "Preserve";
+    case ShaderDenormBehaviorKHR::eFlushToZero: return "FlushToZero";
+    default: return "invalid";
+    }
+  }
+
+  VULKAN_HPP_INLINE std::string to_string(ShaderFloatingPointRoundingModeKHR value)
+  {
+    switch (value)
+    {
+    case ShaderFloatingPointRoundingModeKHR::eUnspecified: return "Unspecified";
+    case ShaderFloatingPointRoundingModeKHR::eRte: return "Rte";
+    case ShaderFloatingPointRoundingModeKHR::eRtz: return "Rtz";
+    default: return "invalid";
+    }
+  }
+
+  VULKAN_HPP_INLINE std::string to_string(ShaderSignedZeroInfNanBehaviorKHR value)
+  {
+    switch (value)
+    {
+    case ShaderSignedZeroInfNanBehaviorKHR::eVkShaderSignedZeroInfNanIgnore: return "VkShaderSignedZeroInfNanIgnore";
+    case ShaderSignedZeroInfNanBehaviorKHR::eVkShaderSignedZeroInfNanPreserve: return "VkShaderSignedZeroInfNanPreserve";
+    default: return "invalid";
+    }
+  }
+
   VULKAN_HPP_INLINE std::string to_string(PresentModeKHR value)
   {
     switch (value)
@@ -44089,6 +44819,7 @@ public:
     {
     case SwapchainCreateFlagBitsKHR::eSplitInstanceBindRegions: return "SplitInstanceBindRegions";
     case SwapchainCreateFlagBitsKHR::eProtected: return "Protected";
+    case SwapchainCreateFlagBitsKHR::eMutableFormat: return "MutableFormat";
     default: return "invalid";
     }
   }
@@ -44099,6 +44830,7 @@ public:
     std::string result;
     if (value & SwapchainCreateFlagBitsKHR::eSplitInstanceBindRegions) result += "SplitInstanceBindRegions | ";
     if (value & SwapchainCreateFlagBitsKHR::eProtected) result += "Protected | ";
+    if (value & SwapchainCreateFlagBitsKHR::eMutableFormat) result += "MutableFormat | ";
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
@@ -44351,6 +45083,23 @@ public:
     case VendorId::eViv: return "Viv";
     case VendorId::eVsi: return "Vsi";
     case VendorId::eKazan: return "Kazan";
+    default: return "invalid";
+    }
+  }
+
+  VULKAN_HPP_INLINE std::string to_string(DriverIdKHR value)
+  {
+    switch (value)
+    {
+    case DriverIdKHR::eAmdProprietary: return "AmdProprietary";
+    case DriverIdKHR::eAmdOpenSource: return "AmdOpenSource";
+    case DriverIdKHR::eMesaRadv: return "MesaRadv";
+    case DriverIdKHR::eNvidiaProprietary: return "NvidiaProprietary";
+    case DriverIdKHR::eIntelProprietaryWindows: return "IntelProprietaryWindows";
+    case DriverIdKHR::eIntelOpenSourceMesa: return "IntelOpenSourceMesa";
+    case DriverIdKHR::eImaginationProprietary: return "ImaginationProprietary";
+    case DriverIdKHR::eQualcommProprietary: return "QualcommProprietary";
+    case DriverIdKHR::eArmProprietary: return "ArmProprietary";
     default: return "invalid";
     }
   }
@@ -44651,6 +45400,7 @@ public:
     PFN_vkGetPhysicalDeviceMirPresentationSupportKHR vkGetPhysicalDeviceMirPresentationSupportKHR = 0;
 #endif /*VK_USE_PLATFORM_MIR_KHR*/
     PFN_vkGetPhysicalDeviceMultisamplePropertiesEXT vkGetPhysicalDeviceMultisamplePropertiesEXT = 0;
+    PFN_vkGetPhysicalDevicePortabilitySubsetDataKHR vkGetPhysicalDevicePortabilitySubsetDataKHR = 0;
     PFN_vkGetPhysicalDevicePresentRectanglesKHR vkGetPhysicalDevicePresentRectanglesKHR = 0;
     PFN_vkGetPhysicalDeviceProperties vkGetPhysicalDeviceProperties = 0;
     PFN_vkGetPhysicalDeviceProperties2 vkGetPhysicalDeviceProperties2 = 0;
@@ -45024,6 +45774,7 @@ public:
       vkGetPhysicalDeviceMirPresentationSupportKHR = PFN_vkGetPhysicalDeviceMirPresentationSupportKHR(device ? device.getProcAddr( "vkGetPhysicalDeviceMirPresentationSupportKHR") : instance.getProcAddr( "vkGetPhysicalDeviceMirPresentationSupportKHR"));
 #endif /*VK_USE_PLATFORM_MIR_KHR*/
       vkGetPhysicalDeviceMultisamplePropertiesEXT = PFN_vkGetPhysicalDeviceMultisamplePropertiesEXT(device ? device.getProcAddr( "vkGetPhysicalDeviceMultisamplePropertiesEXT") : instance.getProcAddr( "vkGetPhysicalDeviceMultisamplePropertiesEXT"));
+      vkGetPhysicalDevicePortabilitySubsetDataKHR = PFN_vkGetPhysicalDevicePortabilitySubsetDataKHR(device ? device.getProcAddr( "vkGetPhysicalDevicePortabilitySubsetDataKHR") : instance.getProcAddr( "vkGetPhysicalDevicePortabilitySubsetDataKHR"));
       vkGetPhysicalDevicePresentRectanglesKHR = PFN_vkGetPhysicalDevicePresentRectanglesKHR(device ? device.getProcAddr( "vkGetPhysicalDevicePresentRectanglesKHR") : instance.getProcAddr( "vkGetPhysicalDevicePresentRectanglesKHR"));
       vkGetPhysicalDeviceProperties = PFN_vkGetPhysicalDeviceProperties(device ? device.getProcAddr( "vkGetPhysicalDeviceProperties") : instance.getProcAddr( "vkGetPhysicalDeviceProperties"));
       vkGetPhysicalDeviceProperties2 = PFN_vkGetPhysicalDeviceProperties2(device ? device.getProcAddr( "vkGetPhysicalDeviceProperties2") : instance.getProcAddr( "vkGetPhysicalDeviceProperties2"));

@@ -5162,6 +5162,23 @@ int main( int argc, char **argv )
 # include <cassert>
 # define VULKAN_HPP_ASSERT   assert
 #endif
+
+// <tuple> includes <sys/sysmacros.h> through some other header
+// this results in major(x) being resolved to gnu_dev_major(x)
+// which is an expression in a constructor initializer list.
+#if defined(major)
+  #undef major
+#endif
+#if defined(minor)
+  #undef minor
+#endif
+
+// Windows defines MemoryBarrier which is deprecated and collides
+// with the vk::MemoryBarrier struct.
+#ifdef MemoryBarrier
+  #undef MemoryBarrier
+#endif
+
 )";
 
     writeVersionCheck(ofs, generator.getVersion());

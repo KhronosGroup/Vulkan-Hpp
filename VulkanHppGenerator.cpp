@@ -949,7 +949,7 @@ void checkAttributes(std::map<std::string, std::string> const& attributes, int l
       auto optionalIt = optional.find(a.first);
       if (optionalIt == optional.end())
       {
-        std::cerr << "warning: " << "Unknown attribute " + a.first + " in line " + lineNumber + "!";
+        std::cerr << "warning: " << "Unknown attribute " + a.first + " in line " + lineNumber + "!" << std::endl;
         continue;
       }
       if (!optionalIt->second.empty())
@@ -1921,7 +1921,7 @@ void VulkanHppGenerator::readDisabledExtensionRequire(tinyxml2::XMLElement const
     {
       assert(value == "enum");
       std::map<std::string, std::string> attributes = getAttributes(child);
-      checkAttributes(attributes, child->GetLineNum(), { { "name",{} } }, { { "extends",{} },{ "offset",{} },{ "value",{} } });
+      checkAttributes(attributes, child->GetLineNum(), { { "name",{} } }, { { "bitpos", {} }, { "extends",{} },{ "offset",{} },{ "value",{} } });
     }
   }
 }
@@ -2018,10 +2018,20 @@ void VulkanHppGenerator::readEnums(tinyxml2::XMLElement const* element)
 void VulkanHppGenerator::readEnumsEnum(tinyxml2::XMLElement const* element, EnumData & enumData, std::string const& tag)
 {
   std::map<std::string, std::string> attributes = getAttributes(element);
-  checkAttributes(attributes, element->GetLineNum(), { { "name",{} } }, { { "bitpos",{} },{ "comment",{} },{ "value",{} } });
-  assert((attributes.find("bitpos") != attributes.end()) + (attributes.find("value") != attributes.end()) == 1);
+  checkAttributes(attributes, element->GetLineNum(), { { "name",{} } }, { {"alias", {} }, { "bitpos",{} },{ "comment",{} },{ "value",{} } });
+  assert((attributes.find("alias") != attributes.end()) + (attributes.find("bitpos") != attributes.end()) + (attributes.find("value") != attributes.end()) == 1);
   checkElements(getChildElements(element), {});
-  enumData.addEnumValue(attributes.find("name")->second, tag, m_nameMap);
+  auto aliasIt = attributes.find("alias");
+  if (aliasIt != attributes.end())
+  {
+    auto enumIt = std::find_if(enumData.values.begin(), enumData.values.end(), [&aliasIt](EnumValueData const& evd) { return evd.value == aliasIt->second; });
+    assert((enumIt != enumData.values.end()) && enumIt->alias.empty());
+    enumIt->alias = createEnumValueName(attributes.find("name")->second, enumData.prefix, enumData.postfix, enumData.bitmask, tag);
+  }
+  else
+  {
+    enumData.addEnumValue(attributes.find("name")->second, tag, m_nameMap);
+  }
 }
 
 void VulkanHppGenerator::readEnumsConstant(tinyxml2::XMLElement const* element)
@@ -2092,11 +2102,16 @@ void VulkanHppGenerator::readExtensionEnum(tinyxml2::XMLElement const* element, 
     auto aliasIt = attributes.find("alias");
     if (aliasIt != attributes.end())
     {
-      checkAttributes(attributes, element->GetLineNum(), { { "alias", {} }, { "extends", {} }, { "name", {} } }, {});
+      checkAttributes(attributes, element->GetLineNum(), { { "alias", {} }, { "extends", {} }, { "name", {} } }, { { "comment",{} } });
       std::string alias = createEnumValueName(aliasIt->second, enumIt->second.prefix, enumIt->second.postfix, enumIt->second.bitmask, tag);
       auto evdIt = std::find_if(enumIt->second.values.begin(), enumIt->second.values.end(), [&alias](EnumValueData const& evd) { return evd.name == alias; });
       assert(evdIt != enumIt->second.values.end());
       evdIt->alias = createEnumValueName(attributes.find("name")->second, enumIt->second.prefix, enumIt->second.postfix, enumIt->second.bitmask, tag);
+      if (evdIt->name == evdIt->alias)
+      {
+        // skip alias, that would result in the very same enum name
+        evdIt->alias.clear();
+      }
     }
     else
     {

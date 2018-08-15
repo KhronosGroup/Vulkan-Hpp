@@ -70,7 +70,7 @@
   #undef MemoryBarrier
 #endif
 
-static_assert( VK_HEADER_VERSION ==  81 , "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION ==  82 , "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -1320,6 +1320,10 @@ public:
   {
     return ::vkCmdSetBlendConstants( commandBuffer, blendConstants);
   }
+  void vkCmdSetCheckpointNV( VkCommandBuffer commandBuffer, const void* pCheckpointMarker  ) const
+  {
+    return ::vkCmdSetCheckpointNV( commandBuffer, pCheckpointMarker);
+  }
   void vkCmdSetDepthBias( VkCommandBuffer commandBuffer, float depthBiasConstantFactor, float depthBiasClamp, float depthBiasSlopeFactor  ) const
   {
     return ::vkCmdSetDepthBias( commandBuffer, depthBiasConstantFactor, depthBiasClamp, depthBiasSlopeFactor);
@@ -2155,6 +2159,10 @@ public:
   VkResult vkGetQueryPoolResults( VkDevice device, VkQueryPool queryPool, uint32_t firstQuery, uint32_t queryCount, size_t dataSize, void* pData, VkDeviceSize stride, VkQueryResultFlags flags  ) const
   {
     return ::vkGetQueryPoolResults( device, queryPool, firstQuery, queryCount, dataSize, pData, stride, flags);
+  }
+  void vkGetQueueCheckpointDataNV( VkQueue queue, uint32_t* pCheckpointDataCount, VkCheckpointDataNV* pCheckpointData  ) const
+  {
+    return ::vkGetQueueCheckpointDataNV( queue, pCheckpointDataCount, pCheckpointData);
   }
 #ifdef VK_USE_PLATFORM_XLIB_XRANDR_NV
   VkResult vkGetRandROutputDisplayEXT( VkPhysicalDevice physicalDevice, Display* dpy, RROutput rrOutput, VkDisplayKHR* pDisplay  ) const
@@ -8783,7 +8791,9 @@ public:
     ePhysicalDeviceExternalMemoryHostPropertiesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_MEMORY_HOST_PROPERTIES_EXT,
     ePhysicalDeviceShaderCorePropertiesAMD = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_AMD,
     ePhysicalDeviceVertexAttributeDivisorPropertiesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES_EXT,
-    ePipelineVertexInputDivisorStateCreateInfoEXT = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO_EXT
+    ePipelineVertexInputDivisorStateCreateInfoEXT = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO_EXT,
+    eCheckpointDataNV = VK_STRUCTURE_TYPE_CHECKPOINT_DATA_NV,
+    eQueueFamilyCheckpointPropertiesNV = VK_STRUCTURE_TYPE_QUEUE_FAMILY_CHECKPOINT_PROPERTIES_NV
   };
 
   struct ApplicationInfo
@@ -22512,6 +22522,64 @@ public:
     };
   };
 
+  struct QueueFamilyCheckpointPropertiesNV
+  {
+    operator const VkQueueFamilyCheckpointPropertiesNV&() const
+    {
+      return *reinterpret_cast<const VkQueueFamilyCheckpointPropertiesNV*>(this);
+    }
+
+    bool operator==( QueueFamilyCheckpointPropertiesNV const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( checkpointExecutionStageMask == rhs.checkpointExecutionStageMask );
+    }
+
+    bool operator!=( QueueFamilyCheckpointPropertiesNV const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::eQueueFamilyCheckpointPropertiesNV;
+
+  public:
+    void* pNext = nullptr;
+    PipelineStageFlags checkpointExecutionStageMask;
+  };
+  static_assert( sizeof( QueueFamilyCheckpointPropertiesNV ) == sizeof( VkQueueFamilyCheckpointPropertiesNV ), "struct and wrapper have different size!" );
+
+  struct CheckpointDataNV
+  {
+    operator const VkCheckpointDataNV&() const
+    {
+      return *reinterpret_cast<const VkCheckpointDataNV*>(this);
+    }
+
+    bool operator==( CheckpointDataNV const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( stage == rhs.stage )
+          && ( pCheckpointMarker == rhs.pCheckpointMarker );
+    }
+
+    bool operator!=( CheckpointDataNV const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::eCheckpointDataNV;
+
+  public:
+    void* pNext = nullptr;
+    PipelineStageFlagBits stage;
+    void* pCheckpointMarker;
+  };
+  static_assert( sizeof( CheckpointDataNV ) == sizeof( VkCheckpointDataNV ), "struct and wrapper have different size!" );
+
   enum class CommandPoolCreateFlagBits
   {
     eTransient = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT,
@@ -32073,6 +32141,9 @@ public:
     template<typename Dispatch = DispatchLoaderStatic>
     void drawIndexedIndirectCountKHR( Buffer buffer, DeviceSize offset, Buffer countBuffer, DeviceSize countBufferOffset, uint32_t maxDrawCount, uint32_t stride, Dispatch const &d = Dispatch() ) const;
 
+    template<typename Dispatch = DispatchLoaderStatic>
+    void setCheckpointNV( const void* pCheckpointMarker, Dispatch const &d = Dispatch() ) const;
+
 
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkCommandBuffer() const
@@ -33109,6 +33180,20 @@ public:
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
+#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::setCheckpointNV( const void* pCheckpointMarker, Dispatch const &d) const
+  {
+    d.vkCmdSetCheckpointNV( m_commandBuffer, pCheckpointMarker );
+  }
+#else
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::setCheckpointNV( const void* pCheckpointMarker, Dispatch const &d ) const
+  {
+    d.vkCmdSetCheckpointNV( m_commandBuffer, pCheckpointMarker );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
   struct SubmitInfo
   {
     SubmitInfo( uint32_t waitSemaphoreCount_ = 0,
@@ -33314,6 +33399,13 @@ public:
     void insertDebugUtilsLabelEXT( const DebugUtilsLabelEXT & labelInfo, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
+    template<typename Dispatch = DispatchLoaderStatic>
+    void getCheckpointDataNV( uint32_t* pCheckpointDataCount, CheckpointDataNV* pCheckpointData, Dispatch const &d = Dispatch() ) const;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename Allocator = std::allocator<CheckpointDataNV>, typename Dispatch = DispatchLoaderStatic> 
+    std::vector<CheckpointDataNV,Allocator> getCheckpointDataNV(Dispatch const &d = Dispatch() ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
 
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkQueue() const
@@ -33431,6 +33523,24 @@ public:
   VULKAN_HPP_INLINE void Queue::insertDebugUtilsLabelEXT( const DebugUtilsLabelEXT & labelInfo, Dispatch const &d ) const
   {
     d.vkQueueInsertDebugUtilsLabelEXT( m_queue, reinterpret_cast<const VkDebugUtilsLabelEXT*>( &labelInfo ) );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE void Queue::getCheckpointDataNV( uint32_t* pCheckpointDataCount, CheckpointDataNV* pCheckpointData, Dispatch const &d) const
+  {
+    d.vkGetQueueCheckpointDataNV( m_queue, pCheckpointDataCount, reinterpret_cast<VkCheckpointDataNV*>( pCheckpointData ) );
+  }
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Allocator, typename Dispatch> 
+  VULKAN_HPP_INLINE std::vector<CheckpointDataNV,Allocator> Queue::getCheckpointDataNV(Dispatch const &d ) const
+  {
+    std::vector<CheckpointDataNV,Allocator> checkpointData;
+    uint32_t checkpointDataCount;
+    d.vkGetQueueCheckpointDataNV( m_queue, &checkpointDataCount, nullptr );
+    checkpointData.resize( checkpointDataCount );
+    d.vkGetQueueCheckpointDataNV( m_queue, &checkpointDataCount, reinterpret_cast<VkCheckpointDataNV*>( checkpointData.data() ) );
+    return checkpointData;
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -40964,6 +41074,7 @@ public:
   template <> struct isStructureChainValid<RenderPassCreateInfo, RenderPassInputAttachmentAspectCreateInfo>{ enum { value = true }; };
   template <> struct isStructureChainValid<BindImageMemoryInfo, BindImagePlaneMemoryInfo>{ enum { value = true }; };
   template <> struct isStructureChainValid<ImageMemoryRequirementsInfo2, ImagePlaneMemoryRequirementsInfo>{ enum { value = true }; };
+  template <> struct isStructureChainValid<QueueFamilyProperties2, QueueFamilyCheckpointPropertiesNV>{ enum { value = true }; };
   template <> struct isStructureChainValid<ImageMemoryBarrier, SampleLocationsInfoEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<RenderPassBeginInfo, RenderPassSampleLocationsBeginInfoEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PipelineMultisampleStateCreateInfo, PipelineSampleLocationsStateCreateInfoEXT>{ enum { value = true }; };
@@ -42464,6 +42575,8 @@ public:
     case StructureType::ePhysicalDeviceShaderCorePropertiesAMD: return "PhysicalDeviceShaderCorePropertiesAMD";
     case StructureType::ePhysicalDeviceVertexAttributeDivisorPropertiesEXT: return "PhysicalDeviceVertexAttributeDivisorPropertiesEXT";
     case StructureType::ePipelineVertexInputDivisorStateCreateInfoEXT: return "PipelineVertexInputDivisorStateCreateInfoEXT";
+    case StructureType::eCheckpointDataNV: return "CheckpointDataNV";
+    case StructureType::eQueueFamilyCheckpointPropertiesNV: return "QueueFamilyCheckpointPropertiesNV";
     default: return "invalid";
     }
   }
@@ -44386,6 +44499,7 @@ public:
     PFN_vkCmdResetQueryPool vkCmdResetQueryPool = 0;
     PFN_vkCmdResolveImage vkCmdResolveImage = 0;
     PFN_vkCmdSetBlendConstants vkCmdSetBlendConstants = 0;
+    PFN_vkCmdSetCheckpointNV vkCmdSetCheckpointNV = 0;
     PFN_vkCmdSetDepthBias vkCmdSetDepthBias = 0;
     PFN_vkCmdSetDepthBounds vkCmdSetDepthBounds = 0;
     PFN_vkCmdSetDeviceMask vkCmdSetDeviceMask = 0;
@@ -44625,6 +44739,7 @@ public:
 #endif /*VK_USE_PLATFORM_XLIB_KHR*/
     PFN_vkGetPipelineCacheData vkGetPipelineCacheData = 0;
     PFN_vkGetQueryPoolResults vkGetQueryPoolResults = 0;
+    PFN_vkGetQueueCheckpointDataNV vkGetQueueCheckpointDataNV = 0;
 #ifdef VK_USE_PLATFORM_XLIB_XRANDR_NV
     PFN_vkGetRandROutputDisplayEXT vkGetRandROutputDisplayEXT = 0;
 #endif /*VK_USE_PLATFORM_XLIB_XRANDR_NV*/
@@ -44759,6 +44874,7 @@ public:
       vkCmdResetQueryPool = PFN_vkCmdResetQueryPool(device ? device.getProcAddr( "vkCmdResetQueryPool") : instance.getProcAddr( "vkCmdResetQueryPool"));
       vkCmdResolveImage = PFN_vkCmdResolveImage(device ? device.getProcAddr( "vkCmdResolveImage") : instance.getProcAddr( "vkCmdResolveImage"));
       vkCmdSetBlendConstants = PFN_vkCmdSetBlendConstants(device ? device.getProcAddr( "vkCmdSetBlendConstants") : instance.getProcAddr( "vkCmdSetBlendConstants"));
+      vkCmdSetCheckpointNV = PFN_vkCmdSetCheckpointNV(device ? device.getProcAddr( "vkCmdSetCheckpointNV") : instance.getProcAddr( "vkCmdSetCheckpointNV"));
       vkCmdSetDepthBias = PFN_vkCmdSetDepthBias(device ? device.getProcAddr( "vkCmdSetDepthBias") : instance.getProcAddr( "vkCmdSetDepthBias"));
       vkCmdSetDepthBounds = PFN_vkCmdSetDepthBounds(device ? device.getProcAddr( "vkCmdSetDepthBounds") : instance.getProcAddr( "vkCmdSetDepthBounds"));
       vkCmdSetDeviceMask = PFN_vkCmdSetDeviceMask(device ? device.getProcAddr( "vkCmdSetDeviceMask") : instance.getProcAddr( "vkCmdSetDeviceMask"));
@@ -44998,6 +45114,7 @@ public:
 #endif /*VK_USE_PLATFORM_XLIB_KHR*/
       vkGetPipelineCacheData = PFN_vkGetPipelineCacheData(device ? device.getProcAddr( "vkGetPipelineCacheData") : instance.getProcAddr( "vkGetPipelineCacheData"));
       vkGetQueryPoolResults = PFN_vkGetQueryPoolResults(device ? device.getProcAddr( "vkGetQueryPoolResults") : instance.getProcAddr( "vkGetQueryPoolResults"));
+      vkGetQueueCheckpointDataNV = PFN_vkGetQueueCheckpointDataNV(device ? device.getProcAddr( "vkGetQueueCheckpointDataNV") : instance.getProcAddr( "vkGetQueueCheckpointDataNV"));
 #ifdef VK_USE_PLATFORM_XLIB_XRANDR_NV
       vkGetRandROutputDisplayEXT = PFN_vkGetRandROutputDisplayEXT(device ? device.getProcAddr( "vkGetRandROutputDisplayEXT") : instance.getProcAddr( "vkGetRandROutputDisplayEXT"));
 #endif /*VK_USE_PLATFORM_XLIB_XRANDR_NV*/

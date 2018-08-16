@@ -494,7 +494,7 @@ const std::string inlineHeader = R"(
 # elif defined(__GNUC__)
 #  define VULKAN_HPP_INLINE __attribute__((always_inline)) __inline__
 # elif defined(_MSC_VER)
-#  define VULKAN_HPP_INLINE __forceinline
+#  define VULKAN_HPP_INLINE inline
 # else
 #  define VULKAN_HPP_INLINE inline
 # endif
@@ -909,7 +909,7 @@ void writeVersionCheck(std::ostream & os, std::string const& version);
 void skipFeatureRequire(tinyxml2::XMLElement const* element);
 void skipImplicitExternSyncParams(tinyxml2::XMLElement const* element);
 void skipTypeEnum(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes);
-void skipTypeInclude(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes);
+void skipTypeInclude(tinyxml2::XMLElement const* element);
 #endif
 
 bool beginsWith(std::string const& text, std::string const& prefix)
@@ -1226,7 +1226,7 @@ std::string toCamelCase(std::string const& value)
       }
       else
       {
-        result.push_back(tolower(value[i]));
+        result.push_back(static_cast<char>(tolower(value[i])));
       }
     }
   }
@@ -1243,7 +1243,7 @@ std::string toUpperCase(std::string const& name)
     {
       convertedName.push_back('_');
     }
-    convertedName.push_back(toupper(name[i]));
+    convertedName.push_back(static_cast<char>(toupper(name[i])));
   }
   return convertedName;
 }
@@ -1342,7 +1342,7 @@ void skipTypeEnum(tinyxml2::XMLElement const* element, std::map<std::string, std
   checkElements(getChildElements(element), {});
 }
 
-void skipTypeInclude(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes)
+void skipTypeInclude(tinyxml2::XMLElement const* element)
 {
   checkAttributes(getAttributes(element), element->GetLineNum(), { { "category",{ "include" } } }, { { "name",{} } });
   std::vector<tinyxml2::XMLElement const*> children = getChildElements(element);
@@ -1475,7 +1475,7 @@ void VulkanHppGenerator::determineReducedName(CommandData & commandData)
   size_t pos = commandData.fullName.find(searchName);
   if ((pos == std::string::npos) && isupper(searchName[0]))
   {
-    searchName[0] = tolower(searchName[0]);
+    searchName[0] = static_cast<char>(tolower(searchName[0]));
     pos = commandData.fullName.find(searchName);
   }
   if (pos != std::string::npos)
@@ -1489,7 +1489,7 @@ void VulkanHppGenerator::determineReducedName(CommandData & commandData)
   }
   if ((pos == 0) && isupper(commandData.reducedName[0]))
   {
-    commandData.reducedName[0] = tolower(commandData.reducedName[0]);
+    commandData.reducedName[0] = static_cast<char>(tolower(commandData.reducedName[0]));
   }
 }
 
@@ -1851,7 +1851,7 @@ void VulkanHppGenerator::readComment(tinyxml2::XMLElement const* element)
     }
 
     // replace any '\n' with "\n// "
-    for (size_t pos = m_vulkanLicenseHeader.find('\n'); pos != std::string::npos; pos = m_vulkanLicenseHeader.find('\n', pos + 1))
+    for (pos = m_vulkanLicenseHeader.find('\n'); pos != std::string::npos; pos = m_vulkanLicenseHeader.find('\n', pos + 1))
     {
       m_vulkanLicenseHeader.replace(pos, 1, "\n// ");
     }
@@ -2445,7 +2445,7 @@ void VulkanHppGenerator::readType(tinyxml2::XMLElement const* element)
     }
     else if (categoryIt->second == "include")
     {
-      skipTypeInclude(element, attributes);
+      skipTypeInclude(element);
     }
     else
 #else
@@ -2851,6 +2851,7 @@ void VulkanHppGenerator::registerDeleter(CommandData const& commandData)
       break;
     default:
       assert(false);
+      valueIndex = 0;
     }
     assert(m_deleterTypes[key].find(commandData.params[valueIndex].pureType) == m_deleterTypes[key].end());
     m_deleterTypes[key].insert(commandData.params[valueIndex].pureType);
@@ -3228,7 +3229,7 @@ void VulkanHppGenerator::writeFunction(std::ostream & os, std::string const& ind
   writeFunctionHeaderTemplate(os, indentation, commandData, enhanced, unique, !definition, isStructureChain);
 
   os << indentation << (definition ? "VULKAN_HPP_INLINE " : "");
-  writeFunctionHeaderReturnType(os, indentation, commandData, enhanced, singular, unique, isStructureChain);
+  writeFunctionHeaderReturnType(os, commandData, enhanced, singular, unique, isStructureChain);
   if (definition && !commandData.className.empty())
   {
     os << commandData.className << "::";
@@ -3719,7 +3720,7 @@ void VulkanHppGenerator::writeFunctionHeaderArgumentsEnhanced(std::ostream & os,
   if (commandData.skippedParams.size() + (commandData.className.empty() ? 0 : 1) < commandData.params.size())
   {
     // determine the last argument, where we might provide some default for
-    size_t lastArgument = ~0;
+    size_t lastArgument = size_t(~0);
     for (size_t i = commandData.params.size() - 1; i < commandData.params.size(); i--)
     {
       if (commandData.skippedParams.find(i) == commandData.skippedParams.end())
@@ -3914,7 +3915,7 @@ void VulkanHppGenerator::writeFunctionHeaderArgumentsStandard(std::ostream & os,
   }
 }
 
-void VulkanHppGenerator::writeFunctionHeaderReturnType(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool enhanced, bool singular, bool unique, bool isStructureChain)
+void VulkanHppGenerator::writeFunctionHeaderReturnType(std::ostream & os, CommandData const& commandData, bool enhanced, bool singular, bool unique, bool isStructureChain)
 {
   std::string templateString;
   std::string returnType;
@@ -4076,8 +4077,8 @@ void VulkanHppGenerator::writeStructConstructor(std::ostream & os, std::string c
     assert(subStruct != m_structs.end());
 
     std::string subStructArgumentName = startLowerCase(strip(subStruct->first, "vk"));
-    std::string ctorOpening = "    explicit " + name + "( ";
-    size_t indentSize = ctorOpening.size();
+    ctorOpening = "    explicit " + name + "( ";
+    indentSize = ctorOpening.size();
 
     os << ctorOpening << subStruct->first << " const& " << subStructArgumentName;
 
@@ -4087,7 +4088,7 @@ void VulkanHppGenerator::writeStructConstructor(std::ostream & os, std::string c
     }
     os << " )" << std::endl;
 
-    bool firstArgument = true;
+    firstArgument = true;
     std::string templateString = "      ${sep} ${member}( ${value} )\n";
     for (size_t i = 0; i < subStruct->second.members.size(); i++)
     {
@@ -4781,7 +4782,6 @@ void VulkanHppGenerator::writeUniqueTypes(std::ostream &os, std::pair<std::strin
   }
   os << std::endl;
 
-  bool first = true;
   for (auto const& dt : deleterTypes.second)
   {
     auto ddit = m_deleters.find(dt);
@@ -4958,18 +4958,18 @@ void VulkanHppGenerator::skipVendorIDs(tinyxml2::XMLElement const* element)
 }
 #endif
 
-void VulkanHppGenerator::EnumData::addEnumValue(std::string const &name, std::string const& tag, std::map<std::string, std::string> & nameMap)
+void VulkanHppGenerator::EnumData::addEnumValue(std::string const &enumName, std::string const& tag, std::map<std::string, std::string> & nameMap)
 {
   EnumValueData evd;
-  evd.name = createEnumValueName(name, prefix, postfix, bitmask, tag);
-  evd.value = name;
+  evd.name = createEnumValueName(enumName, prefix, postfix, bitmask, tag);
+  evd.value = enumName;
 
   auto it = std::find_if(values.begin(), values.end(), [&evd](EnumValueData const& _evd) { return _evd.name == evd.name; });
   if (it == values.end())
   {
     values.push_back(evd);
-    assert(nameMap.find(name) == nameMap.end());
-    nameMap[name] = this->name + "::" + evd.name;
+    assert(nameMap.find(enumName) == nameMap.end());
+    nameMap[enumName] = this->name + "::" + evd.name;
   }
   else
   {

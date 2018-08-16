@@ -125,7 +125,7 @@ HWND initializeWindow(std::string const& className, std::string const& windowNam
 #endif
 
 
-int main(int argc, char *argv[])
+int main(int /*argc*/, char * /*argv[]*/)
 {
   try
   {
@@ -217,7 +217,7 @@ int main(int argc, char *argv[])
     vk::PhysicalDeviceMemoryProperties memoryProperties = physicalDevices[0].getMemoryProperties();
     vk::MemoryRequirements memoryRequirements = device->getImageMemoryRequirements(depthImage.get());
     uint32_t typeBits = memoryRequirements.memoryTypeBits;
-    uint32_t typeIndex = ~0;
+    uint32_t typeIndex = uint32_t(~0);
     for (uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++)
     {
       if ((typeBits & 1) && ((memoryProperties.memoryTypes[i].propertyFlags & vk::MemoryPropertyFlagBits::eDeviceLocal) == vk::MemoryPropertyFlagBits::eDeviceLocal))

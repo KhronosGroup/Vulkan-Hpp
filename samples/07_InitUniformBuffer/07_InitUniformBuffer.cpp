@@ -19,12 +19,13 @@
 #include "vulkan/vulkan.hpp"
 
 #define GLM_FORCE_RADIANS
+#pragma warning(disable:4201)   // disable warning C4201: nonstandard extension used: nameless struct/union; needed to get glm/detail/type_vec?.hpp without warnings
 #include <glm/gtc/matrix_transform.hpp>
 
 static char const* AppName = "07_InitUniformBuffer";
 static char const* EngineName = "Vulkan.hpp";
 
-int main(int argc, char *argv[])
+int main(int /*argc*/, char * /*argv[]*/)
 {
   try
   {
@@ -62,7 +63,7 @@ int main(int argc, char *argv[])
 
     vk::PhysicalDeviceMemoryProperties memoryProperties = physicalDevices[0].getMemoryProperties();
     vk::MemoryPropertyFlags requirementsMask = vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent;
-    uint32_t typeIndex = ~0;
+    uint32_t typeIndex = uint32_t(~0);
     for (uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++)
     {
       if ((typeBits & 1) && ((memoryProperties.memoryTypes[i].propertyFlags & requirementsMask) == requirementsMask))

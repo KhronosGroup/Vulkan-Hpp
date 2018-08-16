@@ -125,7 +125,7 @@ HWND initializeWindow(std::string const& className, std::string const& windowNam
 #endif
 
 
-int main(int argc, char *argv[])
+int main(int /*argc*/, char * /*argv[]*/)
 {
   try
   {

@@ -100,8 +100,8 @@ class VulkanHppGenerator
     struct CommandData
     {
       CommandData()
-        : returnParam(~0)
-        , templateParam(~0)
+        : returnParam(size_t(~0))
+        , templateParam(size_t(~0))
         , twoStep(false)
         , isAlias(false)
       {}
@@ -268,7 +268,7 @@ class VulkanHppGenerator
     void writeFunctionHeaderArguments(std::ostream & os, CommandData const& commandData, bool enhanced, bool singular, bool withDefaults);
     void writeFunctionHeaderArgumentsEnhanced(std::ostream & os, CommandData const& commandData, bool singular, bool withDefaults);
     void writeFunctionHeaderArgumentsStandard(std::ostream & os, CommandData const& commandData, bool withDefaults);
-    void writeFunctionHeaderReturnType(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool enhanced, bool singular, bool unique, bool isStructureChain);
+    void writeFunctionHeaderReturnType(std::ostream & os, CommandData const& commandData, bool enhanced, bool singular, bool unique, bool isStructureChain);
     void writeFunctionHeaderTemplate(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool enhanced, bool unique, bool withDefault, bool isStructureChain);
     void writeIndentation(std::ostream & os, size_t indentLength);
     void writeStructConstructor(std::ostream & os, std::string const& name, StructData const& structData, std::map<std::string, std::string> const& defaultValues);

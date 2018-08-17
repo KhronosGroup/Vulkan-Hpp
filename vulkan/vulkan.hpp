@@ -107,7 +107,7 @@ static_assert( VK_HEADER_VERSION ==  83 , "Wrong VK_HEADER_VERSION!" );
 # elif defined(__GNUC__)
 #  define VULKAN_HPP_INLINE __attribute__((always_inline)) __inline__
 # elif defined(_MSC_VER)
-#  define VULKAN_HPP_INLINE __forceinline
+#  define VULKAN_HPP_INLINE inline
 # else
 #  define VULKAN_HPP_INLINE inline
 # endif

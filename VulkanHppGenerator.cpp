@@ -390,7 +390,7 @@ const std::string structureChainHeader = R"(
   public:
     StructureChain()
     {
-      link<StructureElements...>();  
+      link<StructureElements...>();
     }
 
     StructureChain(StructureChain const &rhs)
@@ -527,6 +527,15 @@ const std::string resultValueHeader = R"(
     T       value;
 
     operator std::tuple<Result&, T&>() { return std::tuple<Result&, T&>(result, value); }
+
+    VULKAN_HPP_INLINE T get()
+    {
+      if ( result != Result::eSuccess )
+      {
+        throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::ResultValue::get" );
+      }
+      return value;
+    }
   };
 
   template <typename T>
@@ -691,7 +700,7 @@ const std::string uniqueHandleHeader = R"(
     {
       return m_value;
     }
-    
+
     Type & get()
     {
       return m_value;
@@ -4509,7 +4518,7 @@ void VulkanHppGenerator::writeTypeHandle(std::ostream & os, DependencyData const
     ${className} & operator=(Vk${className} ${memberName})
     {
       m_${memberName} = ${memberName};
-      return *this; 
+      return *this;
     }
 #endif
 
@@ -5047,11 +5056,11 @@ void VulkanHppGenerator::writeDelegationClassDynamic(std::ostream &os)
   for (auto command : m_commands)
   {
     enterProtect(os, command.second.protect);
-    if (!command.second.params.empty() 
+    if (!command.second.params.empty()
       && m_handles.find(command.second.params[0].type) != m_handles.end()
       && command.second.params[0].type != "Instance")
     {
-      os << "      vk" << startUpperCase(command.second.fullName) << " = PFN_vk" << startUpperCase(command.second.fullName) 
+      os << "      vk" << startUpperCase(command.second.fullName) << " = PFN_vk" << startUpperCase(command.second.fullName)
         << "(device ? device.getProcAddr( \"vk" << startUpperCase(command.second.fullName) << "\") : instance.getProcAddr( \"vk" << startUpperCase(command.second.fullName) << "\"));" << std::endl;
     }
     else {

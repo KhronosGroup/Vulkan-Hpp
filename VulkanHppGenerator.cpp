@@ -634,10 +634,16 @@ const std::string uniqueHandleHeader = R"(
   class UniqueHandle : public UniqueHandleTraits<Type,Dispatch>::deleter
   {
   private:
+    using Owner = typename UniqueHandleTraits<Type,Dispatch>::owner;
     using Deleter = typename UniqueHandleTraits<Type,Dispatch>::deleter;
   public:
     explicit UniqueHandle( Type const& value = Type(), Deleter const& deleter = Deleter() )
       : Deleter( deleter)
+      , m_value( value )
+    {}
+
+    explicit UniqueHandle( Type const& value = Type(), Owner const& owner = Owner() )
+      : Deleter( owner)
       , m_value( value )
     {}
 
@@ -4787,7 +4793,9 @@ void VulkanHppGenerator::writeUniqueTypes(std::ostream &os, std::pair<std::strin
     auto ddit = m_deleters.find(dt);
     assert(ddit != m_deleters.end());
 
-    os << "  template <typename Dispatch> class UniqueHandleTraits<" << dt << ",Dispatch> {public: using deleter = " << (ddit->second.pool.empty() ? "Object" : "Pool") << ((ddit->second.call.substr(0, 4) == "free") ? "Free<" : "Destroy<") << (deleterTypes.first.empty() ? "NoParent" : deleterTypes.first) << (ddit->second.pool.empty() ? "" : ", " + ddit->second.pool) << ",Dispatch>; };\n";
+    std::string deleterType = (deleterTypes.first.empty() ? "NoParent" : deleterTypes.first);
+
+    os << "  template <typename Dispatch> class UniqueHandleTraits<" << dt << ",Dispatch> {public: " << "using owner = " << deleterType << "; " << "using deleter = " << (ddit->second.pool.empty() ? "Object" : "Pool") << ((ddit->second.call.substr(0, 4) == "free") ? "Free<" : "Destroy<") << "owner" << (ddit->second.pool.empty() ? "" : ", " + ddit->second.pool) << ",Dispatch>;};\n";
     os << "  using Unique" << dt << " = UniqueHandle<" << dt << ",DispatchLoaderStatic>;" << std::endl;
   }
   os << "#endif /*VULKAN_HPP_NO_SMART_HANDLE*/" << std::endl

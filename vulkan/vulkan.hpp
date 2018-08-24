@@ -382,10 +382,16 @@ namespace VULKAN_HPP_NAMESPACE
   class UniqueHandle : public UniqueHandleTraits<Type,Dispatch>::deleter
   {
   private:
+    using Owner = typename UniqueHandleTraits<Type,Dispatch>::owner;
     using Deleter = typename UniqueHandleTraits<Type,Dispatch>::deleter;
   public:
     explicit UniqueHandle( Type const& value = Type(), Deleter const& deleter = Deleter() )
       : Deleter( deleter)
+      , m_value( value )
+    {}
+
+    explicit UniqueHandle( Type const& value = Type(), Owner const& owner = Owner() )
+      : Deleter( owner)
       , m_value( value )
     {}
 
@@ -33551,59 +33557,59 @@ public:
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   class Device;
 
-  template <typename Dispatch> class UniqueHandleTraits<Buffer,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  template <typename Dispatch> class UniqueHandleTraits<Buffer,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
   using UniqueBuffer = UniqueHandle<Buffer,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<BufferView,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  template <typename Dispatch> class UniqueHandleTraits<BufferView,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
   using UniqueBufferView = UniqueHandle<BufferView,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<CommandBuffer,Dispatch> {public: using deleter = PoolFree<Device, CommandPool,Dispatch>; };
+  template <typename Dispatch> class UniqueHandleTraits<CommandBuffer,Dispatch> {public: using owner = Device; using deleter = PoolFree<owner, CommandPool,Dispatch>;};
   using UniqueCommandBuffer = UniqueHandle<CommandBuffer,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<CommandPool,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  template <typename Dispatch> class UniqueHandleTraits<CommandPool,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
   using UniqueCommandPool = UniqueHandle<CommandPool,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<DescriptorPool,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  template <typename Dispatch> class UniqueHandleTraits<DescriptorPool,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
   using UniqueDescriptorPool = UniqueHandle<DescriptorPool,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<DescriptorSet,Dispatch> {public: using deleter = PoolFree<Device, DescriptorPool,Dispatch>; };
+  template <typename Dispatch> class UniqueHandleTraits<DescriptorSet,Dispatch> {public: using owner = Device; using deleter = PoolFree<owner, DescriptorPool,Dispatch>;};
   using UniqueDescriptorSet = UniqueHandle<DescriptorSet,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<DescriptorSetLayout,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  template <typename Dispatch> class UniqueHandleTraits<DescriptorSetLayout,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
   using UniqueDescriptorSetLayout = UniqueHandle<DescriptorSetLayout,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<DescriptorUpdateTemplate,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  template <typename Dispatch> class UniqueHandleTraits<DescriptorUpdateTemplate,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
   using UniqueDescriptorUpdateTemplate = UniqueHandle<DescriptorUpdateTemplate,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<DeviceMemory,Dispatch> {public: using deleter = ObjectFree<Device,Dispatch>; };
+  template <typename Dispatch> class UniqueHandleTraits<DeviceMemory,Dispatch> {public: using owner = Device; using deleter = ObjectFree<owner,Dispatch>;};
   using UniqueDeviceMemory = UniqueHandle<DeviceMemory,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<Event,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  template <typename Dispatch> class UniqueHandleTraits<Event,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
   using UniqueEvent = UniqueHandle<Event,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<Fence,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  template <typename Dispatch> class UniqueHandleTraits<Fence,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
   using UniqueFence = UniqueHandle<Fence,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<Framebuffer,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  template <typename Dispatch> class UniqueHandleTraits<Framebuffer,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
   using UniqueFramebuffer = UniqueHandle<Framebuffer,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<Image,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  template <typename Dispatch> class UniqueHandleTraits<Image,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
   using UniqueImage = UniqueHandle<Image,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<ImageView,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  template <typename Dispatch> class UniqueHandleTraits<ImageView,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
   using UniqueImageView = UniqueHandle<ImageView,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<IndirectCommandsLayoutNVX,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  template <typename Dispatch> class UniqueHandleTraits<IndirectCommandsLayoutNVX,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
   using UniqueIndirectCommandsLayoutNVX = UniqueHandle<IndirectCommandsLayoutNVX,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<ObjectTableNVX,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  template <typename Dispatch> class UniqueHandleTraits<ObjectTableNVX,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
   using UniqueObjectTableNVX = UniqueHandle<ObjectTableNVX,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<Pipeline,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  template <typename Dispatch> class UniqueHandleTraits<Pipeline,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
   using UniquePipeline = UniqueHandle<Pipeline,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<PipelineCache,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  template <typename Dispatch> class UniqueHandleTraits<PipelineCache,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
   using UniquePipelineCache = UniqueHandle<PipelineCache,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<PipelineLayout,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  template <typename Dispatch> class UniqueHandleTraits<PipelineLayout,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
   using UniquePipelineLayout = UniqueHandle<PipelineLayout,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<QueryPool,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  template <typename Dispatch> class UniqueHandleTraits<QueryPool,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
   using UniqueQueryPool = UniqueHandle<QueryPool,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<RenderPass,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  template <typename Dispatch> class UniqueHandleTraits<RenderPass,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
   using UniqueRenderPass = UniqueHandle<RenderPass,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<Sampler,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  template <typename Dispatch> class UniqueHandleTraits<Sampler,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
   using UniqueSampler = UniqueHandle<Sampler,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<SamplerYcbcrConversion,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  template <typename Dispatch> class UniqueHandleTraits<SamplerYcbcrConversion,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
   using UniqueSamplerYcbcrConversion = UniqueHandle<SamplerYcbcrConversion,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<Semaphore,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  template <typename Dispatch> class UniqueHandleTraits<Semaphore,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
   using UniqueSemaphore = UniqueHandle<Semaphore,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<ShaderModule,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  template <typename Dispatch> class UniqueHandleTraits<ShaderModule,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
   using UniqueShaderModule = UniqueHandle<ShaderModule,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<SwapchainKHR,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  template <typename Dispatch> class UniqueHandleTraits<SwapchainKHR,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
   using UniqueSwapchainKHR = UniqueHandle<SwapchainKHR,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<ValidationCacheEXT,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  template <typename Dispatch> class UniqueHandleTraits<ValidationCacheEXT,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
   using UniqueValidationCacheEXT = UniqueHandle<ValidationCacheEXT,DispatchLoaderStatic>;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 
@@ -38091,7 +38097,7 @@ public:
 
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
 
-  template <typename Dispatch> class UniqueHandleTraits<Device,Dispatch> {public: using deleter = ObjectDestroy<NoParent,Dispatch>; };
+  template <typename Dispatch> class UniqueHandleTraits<Device,Dispatch> {public: using owner = NoParent; using deleter = ObjectDestroy<owner,Dispatch>;};
   using UniqueDevice = UniqueHandle<Device,DispatchLoaderStatic>;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 
@@ -39917,11 +39923,11 @@ public:
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   class Instance;
 
-  template <typename Dispatch> class UniqueHandleTraits<DebugReportCallbackEXT,Dispatch> {public: using deleter = ObjectDestroy<Instance,Dispatch>; };
+  template <typename Dispatch> class UniqueHandleTraits<DebugReportCallbackEXT,Dispatch> {public: using owner = Instance; using deleter = ObjectDestroy<owner,Dispatch>;};
   using UniqueDebugReportCallbackEXT = UniqueHandle<DebugReportCallbackEXT,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<DebugUtilsMessengerEXT,Dispatch> {public: using deleter = ObjectDestroy<Instance,Dispatch>; };
+  template <typename Dispatch> class UniqueHandleTraits<DebugUtilsMessengerEXT,Dispatch> {public: using owner = Instance; using deleter = ObjectDestroy<owner,Dispatch>;};
   using UniqueDebugUtilsMessengerEXT = UniqueHandle<DebugUtilsMessengerEXT,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<SurfaceKHR,Dispatch> {public: using deleter = ObjectDestroy<Instance,Dispatch>; };
+  template <typename Dispatch> class UniqueHandleTraits<SurfaceKHR,Dispatch> {public: using owner = Instance; using deleter = ObjectDestroy<owner,Dispatch>;};
   using UniqueSurfaceKHR = UniqueHandle<SurfaceKHR,DispatchLoaderStatic>;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 
@@ -40851,7 +40857,7 @@ public:
 
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
 
-  template <typename Dispatch> class UniqueHandleTraits<Instance,Dispatch> {public: using deleter = ObjectDestroy<NoParent,Dispatch>; };
+  template <typename Dispatch> class UniqueHandleTraits<Instance,Dispatch> {public: using owner = NoParent; using deleter = ObjectDestroy<owner,Dispatch>;};
   using UniqueInstance = UniqueHandle<Instance,DispatchLoaderStatic>;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 

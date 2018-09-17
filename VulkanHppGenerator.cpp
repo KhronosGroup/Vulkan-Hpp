@@ -1387,7 +1387,7 @@ bool VulkanHppGenerator::containsUnion(std::string const& type, std::map<std::st
 std::map<std::string, std::string> VulkanHppGenerator::createDefaults()
 {
   std::map<std::string, std::string> defaultValues;
-  for (auto dependency : m_dependencies)
+  for (auto const& dependency : m_dependencies)
   {
     assert(defaultValues.find(dependency.name) == defaultValues.end());
     switch (dependency.category)
@@ -2184,6 +2184,7 @@ void VulkanHppGenerator::readExtensionsExtension(tinyxml2::XMLElement const* ele
     { "obsoletedby", {} },
     { "platform",{} },
     { "promotedto", {} },
+    { "provisional", {} },
     { "protect",{} },
     { "requires",{} },
     { "requiresCore",{} },
@@ -2577,7 +2578,7 @@ void VulkanHppGenerator::readTypeDefine(tinyxml2::XMLElement const* element, std
     std::string text = trim(child->GetText());
     if (text == "VK_HEADER_VERSION")
     {
-      m_version = element->LastChild()->ToText()->Value();
+      m_version = trimEnd(element->LastChild()->ToText()->Value());
     }
     // ignore all the other defines
     assert(!child->NextSiblingElement() || (child->NextSiblingElement() && !child->NextSiblingElement()->FirstAttribute() && (strcmp(child->NextSiblingElement()->Value(), "type") == 0) && !child->NextSiblingElement()->NextSiblingElement()));
@@ -2874,10 +2875,24 @@ void VulkanHppGenerator::sortDependencies()
     bool found = false;
     for (std::list<DependencyData>::iterator it = m_dependencies.begin(); it != m_dependencies.end(); ++it)
     {
+      // check if all dependencies of it are already listed
       if (std::find_if(it->dependencies.begin(), it->dependencies.end(), [&listedTypes](std::string const& d) { return listedTypes.find(d) == listedTypes.end(); }) == it->dependencies.end())
       {
+        // add it to the end of the sorted list and the set of listed types, remove it from the list of dependencies to handle and start over with the next dependency
         sortedDependencies.push_back(*it);
         listedTypes.insert(it->name);
+
+        // if it is a struct, add any alias of it to the list of encountered types
+        if (it->category == DependencyData::Category::STRUCT)
+        {
+          std::map<std::string, StructData>::const_iterator sit = m_structs.find(it->name);
+          assert(sit != m_structs.end());
+          if (!sit->second.alias.empty())
+          {
+            assert(listedTypes.find(sit->second.alias) == listedTypes.end());
+            listedTypes.insert(sit->second.alias);
+          }
+        }
         m_dependencies.erase(it);
         found = true;
         break;
@@ -2885,7 +2900,7 @@ void VulkanHppGenerator::sortDependencies()
     }
     if (!found)
     {
-      // resolve direct circular dependencies
+      // at least one dependency of it is not yet listed -> resolve direct circular dependencies
       for (std::list<DependencyData>::iterator it = m_dependencies.begin(); !found && it != m_dependencies.end(); ++it)
       {
         for (std::set<std::string>::const_iterator dit = it->dependencies.begin(); dit != it->dependencies.end(); ++dit)
@@ -2895,9 +2910,9 @@ void VulkanHppGenerator::sortDependencies()
           {
             if (depIt->dependencies.find(it->name) != depIt->dependencies.end())
             {
-              // we only have just one case, for now!
+              // we only have two cases, for now!
               assert((it->category == DependencyData::Category::HANDLE) && (depIt->category == DependencyData::Category::STRUCT)
-              || (it->category == DependencyData::Category::STRUCT) && (depIt->category == DependencyData::Category::STRUCT));
+                  || (it->category == DependencyData::Category::STRUCT) && (depIt->category == DependencyData::Category::STRUCT));
               it->forwardDependencies.insert(*dit);
               it->dependencies.erase(*dit);
               found = true;
@@ -2907,7 +2922,14 @@ void VulkanHppGenerator::sortDependencies()
 #if !defined(NDEBUG)
           else
           {
-            assert(std::find_if(sortedDependencies.begin(), sortedDependencies.end(), [&dit](DependencyData const& dd) { return(dd.name == *dit); }) != sortedDependencies.end());
+            // here, only already sorted dependencies should occur, or structs that are aliased and sorted
+            std::list<DependencyData>::const_iterator sdit = std::find_if(sortedDependencies.begin(), sortedDependencies.end(), [&dit](DependencyData const& dd) { return(dd.name == *dit); });
+            if (sdit == sortedDependencies.end())
+            {
+              std::map<std::string, StructData>::const_iterator sit = std::find_if(m_structs.begin(), m_structs.end(), [&dit](std::pair<std::string, StructData> const& sd) { return sd.second.alias == *dit; });
+              assert(sit != m_structs.end());
+              assert(std::find_if(sortedDependencies.begin(), sortedDependencies.end(), [name = sit->first](DependencyData const& dd) { return dd.name == name; }) != sortedDependencies.end());
+            }
           }
 #endif
         }
@@ -2995,8 +3017,9 @@ void VulkanHppGenerator::writeCall(std::ostream & os, CommandData const& command
 
   if (!commandData.className.empty())
   {
-    // if it's member of a class -> add the first parameter with "m_" as prefix
-    os << "m_" << commandData.params[0].name;
+    // if it's member of a class -> the first argument is the member variable, starting with "m_"
+    assert(commandData.className == commandData.params[0].type);
+    os << "m_" << startLowerCase(commandData.className);
     if (1 < commandData.params.size())
     {
       os << ", ";
@@ -3654,7 +3677,8 @@ void VulkanHppGenerator::writeFunctionBodyStandard(std::ostream & os, std::strin
   if (!commandData.className.empty())
   {
     // the command is part of a class -> the first argument is the member variable, starting with "m_"
-    os << "m_" << commandData.params[0].name;
+    assert(commandData.className == commandData.params[0].type);
+    os << "m_" << startLowerCase(commandData.className);
   }
 
   // list all the arguments
@@ -4227,7 +4251,8 @@ void VulkanHppGenerator::writeStructureChainValidation(std::ostream & os, Depend
   std::map<std::string, StructData>::const_iterator it = m_structs.find(dependencyData.name);
   assert(it != m_structs.end());
 
-  if (!it->second.structExtends.empty()) {
+  if (!it->second.structExtends.empty())
+  {
     enterProtect(os, it->second.protect);
 
     // write out allowed structure chains
@@ -4679,7 +4704,7 @@ void VulkanHppGenerator::writeTypeStruct(std::ostream & os, DependencyData const
   // create the setters
   if (!it->second.returnedOnly)
   {
-    for (size_t i = 0; i<it->second.members.size(); i++)
+    for (size_t i = 0; i < it->second.members.size(); i++)
     {
       writeStructSetter(os, dependencyData.name, it->second.members[i]);
     }

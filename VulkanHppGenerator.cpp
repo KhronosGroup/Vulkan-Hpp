@@ -4710,10 +4710,15 @@ void VulkanHppGenerator::writeTypeStruct(std::ostream & os, DependencyData const
     }
   }
 
-  // the cast-operator to the wrapped struct
-  os << "    operator const Vk" << dependencyData.name << "&() const" << std::endl
+  // the implicit cast-operators to the native type
+  os << "    operator Vk" << dependencyData.name << " const&() const" << std::endl
     << "    {" << std::endl
     << "      return *reinterpret_cast<const Vk" << dependencyData.name << "*>(this);" << std::endl
+    << "    }" << std::endl
+    << std::endl
+    << "    operator Vk" << dependencyData.name << " &()" << std::endl
+    << "    {" << std::endl
+    << "      return *reinterpret_cast<Vk" << dependencyData.name << "*>(this);" << std::endl
     << "    }" << std::endl
     << std::endl;
 
@@ -4879,10 +4884,15 @@ void VulkanHppGenerator::writeTypeUnion(std::ostream & os, DependencyData const&
     writeStructSetter(os, dependencyData.name, it->second.members[i]);
   }
 
-  // the implicit cast operator to the native type
-  os << "    operator Vk" << dependencyData.name << " const& () const" << std::endl
+  // the implicit cast operators to the native type
+  os << "    operator Vk" << dependencyData.name << " const&() const" << std::endl
     << "    {" << std::endl
     << "      return *reinterpret_cast<const Vk" << dependencyData.name << "*>(this);" << std::endl
+    << "    }" << std::endl
+    << std::endl
+    << "    operator Vk" << dependencyData.name << " &()" << std::endl
+    << "    {" << std::endl
+    << "      return *reinterpret_cast<Vk" << dependencyData.name << "*>(this);" << std::endl
     << "    }" << std::endl
     << std::endl;
 

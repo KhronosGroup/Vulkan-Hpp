@@ -1947,11 +1947,19 @@ void VulkanHppGenerator::readEnums(tinyxml2::XMLElement const* element)
   {
     checkAttributes(attributes, element->GetLineNum(), { { "name",{} },{ "type",{ "bitmask", "enum" } } }, { { "comment",{} } });   // re-check with type as required
 
-                                                                                                                                    // add an empty DependencyData on this name into the dependencies list
-    m_dependencies.push_back(DependencyData(DependencyData::Category::ENUM, name));
+    if (std::find_if(m_dependencies.begin(), m_dependencies.end(), [&name](DependencyData const& dd) { return dd.name == name; }) == m_dependencies.end())
+    {
+      // add an empty DependencyData on this name into the dependencies list
+      m_dependencies.push_back(DependencyData(DependencyData::Category::ENUM, name));
+
+      // add this enum to the set of Vulkan data types
+      assert(m_vkTypes.find(name) == m_vkTypes.end());
+      m_vkTypes.insert(name);
+    }
 
     // ad an empty EnumData on this name into the enums map
     std::map<std::string, EnumData>::iterator it = m_enums.insert(std::make_pair(name, EnumData(name))).first;
+    assert(it->second.postfix.empty() && it->second.prefix.empty() && it->second.protect.empty() && it->second.values.empty());
 
     if (name == "Result")
     {
@@ -2008,10 +2016,6 @@ void VulkanHppGenerator::readEnums(tinyxml2::XMLElement const* element)
       }
 #endif
     }
-
-    // add this enum to the set of Vulkan data types
-    assert(m_vkTypes.find(name) == m_vkTypes.end());
-    m_vkTypes.insert(name);
   }
 }
 
@@ -2532,8 +2536,11 @@ void VulkanHppGenerator::readTypeBitmask(tinyxml2::XMLElement const* element, st
     {
       // Generate FlagBits name, add a DependencyData for that name, and add it to the list of enums and vulkan types
       requires = generateEnumNameForFlags(name);
+      assert(std::find_if(m_dependencies.begin(), m_dependencies.end(), [&requires](DependencyData const& dd) { return dd.name == requires; }) == m_dependencies.end());
       m_dependencies.push_back(DependencyData(DependencyData::Category::ENUM, requires));
+      assert(m_enums.find(requires) == m_enums.end());
       m_enums.insert(std::make_pair(requires, EnumData(requires, true)));
+      assert(m_vkTypes.find(requires) == m_vkTypes.end());
       m_vkTypes.insert(requires);
     }
 
@@ -2695,6 +2702,8 @@ void VulkanHppGenerator::readTypeStruct(tinyxml2::XMLElement const* element, boo
   std::vector<tinyxml2::XMLElement const*> children = getChildElements(element);
   checkElements(children, { "comment", "member" });
 
+  std::string name = strip(attributes.find("name")->second, "Vk");
+
   auto aliasIt = attributes.find("alias");
   if (aliasIt != attributes.end())
   {
@@ -2703,16 +2712,12 @@ void VulkanHppGenerator::readTypeStruct(tinyxml2::XMLElement const* element, boo
     std::string alias = strip(aliasIt->second, "Vk");
     checkAlias(m_structs, alias, element->GetLineNum());
 
-    std::string name = strip(attributes.find("name")->second, "Vk");
-
     auto structsIt = m_structs.find(alias);
     assert((structsIt != m_structs.end()) && structsIt->second.alias.empty());
     structsIt->second.alias = name;
   }
   else
   {
-    std::string name = strip(attributes.find("name")->second, "Vk");
-
     m_dependencies.push_back(DependencyData(isUnion ? DependencyData::Category::UNION : DependencyData::Category::STRUCT, name));
 
     assert(m_structs.find(name) == m_structs.end());
@@ -2751,9 +2756,6 @@ void VulkanHppGenerator::readTypeStruct(tinyxml2::XMLElement const* element, boo
 #endif
     }
 
-    assert(m_vkTypes.find(name) == m_vkTypes.end());
-    m_vkTypes.insert(name);
-
     for (auto const& s : m_structs)
     {
       if (isSubStruct(s, name, it->second))
@@ -2763,6 +2765,9 @@ void VulkanHppGenerator::readTypeStruct(tinyxml2::XMLElement const* element, boo
       }
     }
   }
+
+  assert(m_vkTypes.find(name) == m_vkTypes.end());
+  m_vkTypes.insert(name);
 }
 
 void VulkanHppGenerator::readTypeStructMember(tinyxml2::XMLElement const* element, StructData & structData)

@@ -191,13 +191,20 @@ vk::StructureChain<vk::MemoryAllocateInfo, vk::MemoryDedicatedAllocateInfo> c = 
 };
 ```
 
-Sometimes the user has to pass a preallocated structure chain to query information. In those cases the corresponding query functions are variadic templates and do accept a structure chain to construct the return value:
+Sometimes the user has to pass a preallocated structure chain to query information. For those cases there are two corresponding getter functions. One with a variadic template generating a structure chain of at least two elements to construct the return value:
 
 ```
-// Query vk::MemoryRequirements2KHR and vk::MemoryDedicatedRequirementsKHR when calling Device::getBufferMemoryRequirements2KHR:
+// Query vk::MemoryRequirements2HR and vk::MemoryDedicatedRequirementsKHR when calling Device::getBufferMemoryRequirements2KHR:
 auto result = device.getBufferMemoryRequirements2KHR<vk::MemoryRequirements2KHR, vk::MemoryDedicatedRequirementsKHR>({});
 vk::MemoryRequirements2KHR &memReqs = result.get<vk::MemoryRequirements2KHR>();
 vk::MemoryDedicatedRequirementsKHR &dedMemReqs = result.get<vk::MemoryDedicatedRequirementsKHR>();
+```
+
+To get just the base structure, without chaining, the other getter function provided does not need a template argument for the structure to get:
+
+```
+// Query just vk::MemoryRequirements2KHR
+vk::MemoryRequirements2KHR memoryRequirements = device.getBufferMemoryRequirements2KHR({});
 ```
 
 ### Return values, Error Codes & Exceptions

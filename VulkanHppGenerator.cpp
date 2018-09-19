@@ -3425,7 +3425,7 @@ std::string VulkanHppGenerator::writeFunctionBodyEnhancedLocalReturnVariable(std
       {
         std::string const &pureType = commandData.params[commandData.returnParam].pureType;
         // For StructureChains use the template parameters
-        os << "StructureChain<T...> structureChain;" << std::endl;
+        os << "StructureChain<X, Y, Z...> structureChain;" << std::endl;
         returnName = stripPluralS(returnName);
         os << indentation << "  " << pureType << "& " << returnName << " = structureChain.template get<" << pureType << ">()";
         returnName = "structureChain";
@@ -3444,7 +3444,7 @@ std::string VulkanHppGenerator::writeFunctionBodyEnhancedLocalReturnVariable(std
       {
         std::string const &returnType = commandData.enhancedReturnType;
         // For StructureChains use the template parameters
-        os << "StructureChain<T...> structureChain;" << std::endl;
+        os << "StructureChain<X, Y, Z...> structureChain;" << std::endl;
         os << indentation << "  " << returnType << "& " << returnName << " = structureChain.template get<" << returnType << ">()";
         returnName = "structureChain";
       }
@@ -3963,7 +3963,7 @@ void VulkanHppGenerator::writeFunctionHeaderReturnType(std::ostream & os, Comman
       bool returnsVector = !singular && (commandData.vectorParams.find(commandData.returnParam) != commandData.vectorParams.end());
 
       templateString += returnsVector ? "ResultValueType<std::vector<UniqueHandle<${returnType},Dispatch>,Allocator>>::type " : "typename ResultValueType<UniqueHandle<${returnType},Dispatch>>::type ";
-      returnType = isStructureChain ? "StructureChain<T...>" : commandData.params[commandData.returnParam].pureType;
+      returnType = isStructureChain ? "StructureChain<X, Y, Z...>" : commandData.params[commandData.returnParam].pureType;
     }
     else if ((commandData.enhancedReturnType != commandData.returnType) && (commandData.returnType != "void"))
     {
@@ -3974,7 +3974,7 @@ void VulkanHppGenerator::writeFunctionHeaderReturnType(std::ostream & os, Comman
       // in singular case, we create the ResultValueType from the pure return type, otherwise from the enhanced return type
       if (isStructureChain)
       {
-        returnType = "StructureChain<T...>";
+        returnType = "StructureChain<X, Y, Z...>";
       }
       else
       {
@@ -3986,13 +3986,13 @@ void VulkanHppGenerator::writeFunctionHeaderReturnType(std::ostream & os, Comman
       // if there is a return parameter at all, and there are multiple success codes, we return a ResultValue<...> with the pure return type
       assert(commandData.returnType == "Result");
       templateString = "ResultValue<${returnType}> ";
-      returnType = isStructureChain ? "StructureChain<T...>" : commandData.params[commandData.returnParam].pureType;
+      returnType = isStructureChain ? "StructureChain<X, Y, Z...>" : commandData.params[commandData.returnParam].pureType;
     }
     else
     {
       // and in every other case, we just return the enhanced return type.
       templateString = "${returnType} ";
-      returnType = isStructureChain ? "StructureChain<T...>" : commandData.enhancedReturnType;
+      returnType = isStructureChain ? "StructureChain<X, Y, Z...>" : commandData.enhancedReturnType;
     }
   }
   else
@@ -4009,7 +4009,7 @@ void VulkanHppGenerator::writeFunctionHeaderTemplate(std::ostream & os, std::str
   std::string dispatch = withDefault ? std::string("typename Dispatch = DispatchLoaderStatic") : std::string("typename Dispatch");
   if (enhanced && isStructureChain)
   {
-    os << indentation << "template <typename ...T, " << dispatch << ">" << std::endl;
+    os << indentation << "template <typename X, typename Y, typename ...Z, " << dispatch << ">" << std::endl;
   }
   else if (enhanced && (commandData.templateParam != ~0) && ((commandData.templateParam != commandData.returnParam) || (commandData.enhancedReturnType == "Result")))
   {

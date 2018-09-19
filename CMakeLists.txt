@@ -78,7 +78,11 @@ set_property(TARGET VulkanHppGenerator PROPERTY CXX_STANDARD 11)
 target_include_directories(VulkanHppGenerator PRIVATE "${CMAKE_SOURCE_DIR}/tinyxml2")
 
 option (SAMPLES_BUILD OFF)
-
 if (SAMPLES_BUILD)
   add_subdirectory(samples)
 endif (SAMPLES_BUILD)
+
+option (TESTS_BUILD OFF)
+if (TESTS_BUILD)
+  add_subdirectory(tests)
+endif (TESTS_BUILD)

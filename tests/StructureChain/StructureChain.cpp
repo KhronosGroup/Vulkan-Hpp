@@ -37,13 +37,27 @@ int main(int /*argc*/, char * /*argv[]*/)
     vk::UniqueInstance instance = vk::createInstanceUnique(vk::InstanceCreateInfo({}, &appInfo));
     std::vector<vk::PhysicalDevice> physicalDevices = instance->enumeratePhysicalDevices();
 
+    // some valid StructureChains
+    vk::StructureChain<vk::PhysicalDeviceProperties2> sc0;
+    vk::StructureChain<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceIDProperties> sc1;
+    vk::StructureChain<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceMaintenance3Properties> sc2;
+    vk::StructureChain<vk::PhysicalDeviceProperties2, vk::PhysicalDevicePushDescriptorPropertiesKHR> sc3;
+    vk::StructureChain<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceIDProperties, vk::PhysicalDeviceMaintenance3Properties> sc4;
+    vk::StructureChain<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceIDProperties, vk::PhysicalDevicePushDescriptorPropertiesKHR> sc6;
+    vk::StructureChain<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceIDProperties, vk::PhysicalDeviceMaintenance3Properties, vk::PhysicalDevicePushDescriptorPropertiesKHR> sc7;
+
+    // some not valid StructureChains
+    //vk::StructureChain<vk::PhysicalDeviceIDProperties, vk::PhysicalDeviceMaintenance3Properties> x;
+    //vk::StructureChain<vk::PhysicalDeviceIDProperties, vk::PhysicalDeviceMaintenance3Properties, vk::PhysicalDevicePushDescriptorPropertiesKHR> x;
+    //vk::StructureChain<vk::PhysicalDeviceIDProperties, vk::PhysicalDevicePushDescriptorPropertiesKHR, vk::PhysicalDeviceMaintenance3Properties> x;
+    //vk::StructureChain<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceIDProperties, vk::PhysicalDeviceIDProperties> x;
+    //vk::StructureChain<vk::PhysicalDeviceIDProperties, vk::PhysicalDeviceProperties2> x;
+
     vk::PhysicalDevice & pd = physicalDevices[0];
 
     // simple call, passing structures in
     vk::PhysicalDeviceFeatures2 pdf;
     pd.getFeatures2(&pdf);
-
-    vk::StructureChain<vk::PhysicalDeviceFeatures2, vk::PhysicalDeviceVariablePointerFeatures> z;
 
     // simple calls, getting structure back
     vk::PhysicalDeviceFeatures2 a = pd.getFeatures2();

@@ -23,6 +23,8 @@
 #include <iterator>
 #include "VulkanHppGenerator.hpp"
 
+const size_t INVALID_INDEX = (size_t)~0;
+
 const std::string vkNamespace = R"(
 #if !defined(VULKAN_HPP_NAMESPACE)
 #define VULKAN_HPP_NAMESPACE vk
@@ -1454,7 +1456,7 @@ void VulkanHppGenerator::determineEnhancedReturnType(CommandData & commandData)
   // if there is a return parameter of type void or Result, and if it's of type Result it either has just one success code
   // or two success codes, where the second one is of type eIncomplete and it's a two-step process
   // -> we can return that parameter
-  if ((commandData.returnParam != ~0)
+  if ((commandData.returnParam != INVALID_INDEX)
     && ((commandData.returnType == "void")
       || ((commandData.returnType == "Result")
         && ((commandData.successCodes.size() == 1)
@@ -1540,9 +1542,9 @@ void VulkanHppGenerator::determineReturnParam(CommandData & commandData)
         {
           return (pd.type.find('*') != std::string::npos) && (pd.type.find("const") == std::string::npos);
         });
-        // if there is another such argument, we can't decide which one to return -> return none (~0)
+        // if there is another such argument, we can't decide which one to return -> return INVALID_INDEX
         // otherwise return the index of the selcted parameter
-        commandData.returnParam = paramIt != commandData.params.end() ? ~0 : i;
+        commandData.returnParam = paramIt != commandData.params.end() ? INVALID_INDEX : i;
       }
     }
   }
@@ -1551,9 +1553,9 @@ void VulkanHppGenerator::determineReturnParam(CommandData & commandData)
 void VulkanHppGenerator::determineSkippedParams(CommandData & commandData)
 {
   // the size-parameters of vector parameters are not explicitly used in the enhanced API
-  std::for_each(commandData.vectorParams.begin(), commandData.vectorParams.end(), [&commandData](std::pair<size_t, size_t> const& vp) { if (vp.second != ~0) commandData.skippedParams.insert(vp.second); });
+  std::for_each(commandData.vectorParams.begin(), commandData.vectorParams.end(), [&commandData](std::pair<size_t, size_t> const& vp) { if (vp.second != INVALID_INDEX) commandData.skippedParams.insert(vp.second); });
   // and the return parameter is also skipped
-  if (commandData.returnParam != ~0)
+  if (commandData.returnParam != INVALID_INDEX)
   {
     commandData.skippedParams.insert(commandData.returnParam);
   }
@@ -1576,7 +1578,7 @@ void VulkanHppGenerator::determineTemplateParam(CommandData & commandData)
       break;
     }
   }
-  assert((commandData.templateParam == ~0) || (commandData.vectorParams.find(commandData.templateParam) != commandData.vectorParams.end()));
+  assert((commandData.templateParam == INVALID_INDEX) || (commandData.vectorParams.find(commandData.templateParam) != commandData.vectorParams.end()));
 }
 
 void VulkanHppGenerator::determineVectorParams(CommandData & commandData)
@@ -1590,9 +1592,9 @@ void VulkanHppGenerator::determineVectorParams(CommandData & commandData)
       auto findIt = std::find_if(begin, it, findLambda);                        // look for a parameter named as the len of this parameter
       assert((std::count_if(begin, end, findLambda) == 0) || (findIt < it));    // make sure, there is no other parameter like that
 
-                                                                                // add this parameter as a vector parameter, using the len-name parameter as the second value (or ~0 if there is nothing like that)
-      commandData.vectorParams.insert(std::make_pair(std::distance(begin, it), findIt < it ? std::distance(begin, findIt) : ~0));
-      assert((commandData.vectorParams[std::distance(begin, it)] != ~0)
+      // add this parameter as a vector parameter, using the len-name parameter as the second value (or INVALID_INDEX if there is nothing like that)
+      commandData.vectorParams.insert(std::make_pair(std::distance(begin, it), findIt < it ? std::distance(begin, findIt) : INVALID_INDEX));
+      assert((commandData.vectorParams[std::distance(begin, it)] != INVALID_INDEX)
         || (it->len == "null-terminated")
         || (it->len == "pAllocateInfo::descriptorSetCount")
         || (it->len == "pAllocateInfo::commandBufferCount"));
@@ -2945,8 +2947,7 @@ void VulkanHppGenerator::sortDependencies()
             if (depIt->dependencies.find(it->name) != depIt->dependencies.end())
             {
               // we only have two cases, for now!
-              assert((it->category == DependencyData::Category::HANDLE) && (depIt->category == DependencyData::Category::STRUCT)
-                  || (it->category == DependencyData::Category::STRUCT) && (depIt->category == DependencyData::Category::STRUCT));
+              assert((depIt->category == DependencyData::Category::STRUCT) && ((it->category == DependencyData::Category::HANDLE) || (it->category == DependencyData::Category::STRUCT)));
               it->forwardDependencies.insert(*dit);
               it->dependencies.erase(*dit);
               found = true;
@@ -3331,7 +3332,7 @@ ${i}  }
 ${i}  return createResultValue( result, ${typeVariable}s, VULKAN_HPP_NAMESPACE_STRING "::${class}::${function}Unique" );
 )";
 
-    std::string type = (commandData.returnParam != ~0) ? commandData.params[commandData.returnParam].pureType : "";
+    std::string type = (commandData.returnParam != INVALID_INDEX) ? commandData.params[commandData.returnParam].pureType : "";
     std::string typeVariable = startLowerCase(type);
     std::ostringstream arguments;
     writeArguments(arguments, commandData, true, singular, 1, commandData.params.size() - 1);
@@ -3363,7 +3364,7 @@ ${i}  return createResultValue( result, ${typeVariable}s, VULKAN_HPP_NAMESPACE_S
     }
 
     std::string returnName;
-    if (commandData.returnParam != ~0)
+    if (commandData.returnParam != INVALID_INDEX)
     {
       returnName = writeFunctionBodyEnhancedLocalReturnVariable(os, indentation, commandData, singular, isStructureChain);
     }
@@ -3375,7 +3376,7 @@ ${i}  return createResultValue( result, ${typeVariable}s, VULKAN_HPP_NAMESPACE_S
 
       // we now might have to check the result, resize the returned vector accordingly, and call the function again
       std::map<size_t, size_t>::const_iterator returnit = commandData.vectorParams.find(commandData.returnParam);
-      assert(returnit != commandData.vectorParams.end() && (returnit->second != ~0));
+      assert(returnit != commandData.vectorParams.end() && (returnit->second != INVALID_INDEX));
       std::string sizeName = startLowerCase(strip(commandData.params[returnit->second].name, "p"));
 
       if (commandData.returnType == "Result")
@@ -3410,7 +3411,7 @@ ${i}  return createResultValue( result, ${typeVariable}s, VULKAN_HPP_NAMESPACE_S
     {
       writeFunctionBodyEnhancedReturnResultValue(os, indentation, returnName, commandData, singular, unique);
     }
-    else if ((commandData.returnParam != ~0) && (commandData.returnType != commandData.enhancedReturnType))
+    else if ((commandData.returnParam != INVALID_INDEX) && (commandData.returnType != commandData.enhancedReturnType))
     {
       // for the other returning cases, when the return type is somhow enhanced, just return the local returnVariable
       os << indentation << "  return " << returnName << ";" << std::endl;
@@ -3487,7 +3488,7 @@ std::string VulkanHppGenerator::writeFunctionBodyEnhancedLocalReturnVariable(std
       {
         // if the return parameter is a vector parameter, and not part of a two-step algorithm, initialize its size
         std::string size;
-        if (it->second == ~0)
+        if (it->second == INVALID_INDEX)
         {
           assert(!commandData.params[commandData.returnParam].len.empty());
           // the size of the vector is not given by an other parameter, but by some member of a parameter, described as 'parameter::member'
@@ -3590,10 +3591,10 @@ ${i}  }
 void VulkanHppGenerator::writeFunctionBodyEnhancedLocalCountVariable(std::ostream & os, std::string const& indentation, CommandData const& commandData)
 {
   // local count variable to hold the size of the vector to fill
-  assert(commandData.returnParam != ~0);
+  assert(commandData.returnParam != INVALID_INDEX);
 
   std::map<size_t, size_t>::const_iterator returnit = commandData.vectorParams.find(commandData.returnParam);
-  assert(returnit != commandData.vectorParams.end() && (returnit->second != ~0));
+  assert(returnit != commandData.vectorParams.end() && (returnit->second != INVALID_INDEX));
   assert((commandData.returnType == "Result") || (commandData.returnType == "void"));
 
   // take the pure type of the size parameter; strip the leading 'p' from its name for its local name
@@ -3638,8 +3639,8 @@ ${i}  }
 
 void VulkanHppGenerator::writeFunctionBodyEnhancedReturnResultValue(std::ostream & os, std::string const& indentation, std::string const& returnName, CommandData const& commandData, bool singular, bool unique)
 {
-  std::string type = (commandData.returnParam != ~0) ? commandData.params[commandData.returnParam].pureType : "";
-  std::string returnVectorName = (commandData.returnParam != ~0) ? strip(commandData.params[commandData.returnParam].name, "p", "s") : "";
+  std::string type = (commandData.returnParam != INVALID_INDEX) ? commandData.params[commandData.returnParam].pureType : "";
+  std::string returnVectorName = (commandData.returnParam != INVALID_INDEX) ? strip(commandData.params[commandData.returnParam].name, "p", "s") : "";
 
   if (unique)
   {
@@ -3660,7 +3661,7 @@ void VulkanHppGenerator::writeFunctionBodyEnhancedReturnResultValue(std::ostream
   }
 
   // if the return type is "Result" or there is at least one success code, create the Result/Value construct to return
-  if (commandData.returnParam != ~0)
+  if (commandData.returnParam != INVALID_INDEX)
   {
     // if there's a return parameter, list it in the Result/Value constructor
     os << returnName << ", ";
@@ -3778,7 +3779,7 @@ void VulkanHppGenerator::writeFunctionHeaderArgumentsEnhanced(std::ostream & os,
   if (commandData.skippedParams.size() + (commandData.className.empty() ? 0 : 1) < commandData.params.size())
   {
     // determine the last argument, where we might provide some default for
-    size_t lastArgument = size_t(~0);
+    size_t lastArgument = INVALID_INDEX;
     for (size_t i = commandData.params.size() - 1; i < commandData.params.size(); i--)
     {
       if (commandData.skippedParams.find(i) == commandData.skippedParams.end())
@@ -3867,7 +3868,7 @@ void VulkanHppGenerator::writeFunctionHeaderArgumentsEnhanced(std::ostream & os,
         {
           // the argument is a vector
           // it's optional, if it's marked as optional and there's no size specified
-          bool optional = commandData.params[i].optional && (it->second == ~0);
+          bool optional = commandData.params[i].optional && (it->second == INVALID_INDEX);
           assert((rightStarPos != std::string::npos) && (commandData.params[i].type[rightStarPos] == '*'));
           if (commandData.params[i].type.find("char") != std::string::npos)
           {
@@ -4010,7 +4011,7 @@ void VulkanHppGenerator::writeFunctionHeaderReturnType(std::ostream & os, Comman
         returnType = singular ? commandData.params[commandData.returnParam].pureType : commandData.enhancedReturnType;
       }
     }
-    else if ((commandData.returnParam != ~0) && (1 < commandData.successCodes.size()))
+    else if ((commandData.returnParam != INVALID_INDEX) && (1 < commandData.successCodes.size()))
     {
       // if there is a return parameter at all, and there are multiple success codes, we return a ResultValue<...> with the pure return type
       assert(commandData.returnType == "Result");
@@ -4040,7 +4041,7 @@ void VulkanHppGenerator::writeFunctionHeaderTemplate(std::ostream & os, std::str
   {
     os << indentation << "template <typename X, typename Y, typename ...Z, " << dispatch << ">" << std::endl;
   }
-  else if (enhanced && (commandData.templateParam != ~0) && ((commandData.templateParam != commandData.returnParam) || (commandData.enhancedReturnType == "Result")))
+  else if (enhanced && (commandData.templateParam != INVALID_INDEX) && ((commandData.templateParam != commandData.returnParam) || (commandData.enhancedReturnType == "Result")))
   {
     // if there's a template parameter, not being the return parameter or where the enhanced return type is 'Result' -> templatize on type 'T'
     assert(commandData.enhancedReturnType.find("Allocator") == std::string::npos);
@@ -4271,11 +4272,9 @@ void VulkanHppGenerator::writeStructureChainValidation(std::ostream & os)
   // write all template functions for the structure pointer chain validation
   for (auto it = m_dependencies.begin(); it != m_dependencies.end(); ++it)
   {
-    switch (it->category)
+    if (it->category == DependencyData::Category::STRUCT)
     {
-    case DependencyData::Category::STRUCT:
       writeStructureChainValidation(os, *it);
-      break;
     }
   }
 }
@@ -4351,13 +4350,15 @@ void VulkanHppGenerator::writeToStringFunctions(std::ostream & os)
   {
     switch (it->category)
     {
-    case DependencyData::Category::BITMASK:
-      writeBitmaskToString(os, it->name, m_enums.find(*it->dependencies.begin())->second);
-      break;
-    case DependencyData::Category::ENUM:
-      assert(m_enums.find(it->name) != m_enums.end());
-      writeEnumsToString(os, m_enums.find(it->name)->second);
-      break;
+      case DependencyData::Category::BITMASK:
+        writeBitmaskToString(os, it->name, m_enums.find(*it->dependencies.begin())->second);
+        break;
+      case DependencyData::Category::ENUM:
+        assert(m_enums.find(it->name) != m_enums.end());
+        writeEnumsToString(os, m_enums.find(it->name)->second);
+        break;
+      default:
+        break;
     }
   }
 }
@@ -4462,7 +4463,7 @@ void VulkanHppGenerator::writeTypeCommand(std::ostream & os, std::string const& 
   // then a singular version, if a sized vector would be returned
   std::map<size_t, size_t>::const_iterator returnVector = commandData.vectorParams.find(commandData.returnParam);
   bool singular = (returnVector != commandData.vectorParams.end()) &&
-                  (returnVector->second != ~0) &&
+                  (returnVector->second != INVALID_INDEX) &&
                   (commandData.params[returnVector->first].pureType != "void") &&
                   (commandData.params[returnVector->second].type.back() != '*');
   if (singular)

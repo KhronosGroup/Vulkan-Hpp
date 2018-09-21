@@ -1451,6 +1451,7 @@ std::map<std::string, std::string> VulkanHppGenerator::createDefaults()
 void VulkanHppGenerator::determineEnhancedReturnType(CommandData & commandData)
 {
   std::string returnType;
+
   // if there is a return parameter of type void or Result, and if it's of type Result it either has just one success code
   // or two success codes, where the second one is of type eIncomplete and it's a two-step process
   // -> we can return that parameter
@@ -1551,7 +1552,17 @@ void VulkanHppGenerator::determineReturnParam(CommandData & commandData)
 void VulkanHppGenerator::determineSkippedParams(CommandData & commandData)
 {
   // the size-parameters of vector parameters are not explicitly used in the enhanced API
-  std::for_each(commandData.vectorParams.begin(), commandData.vectorParams.end(), [&commandData](std::pair<size_t, size_t> const& vp) { if (vp.second != ~0) commandData.skippedParams.insert(vp.second); });
+  std::for_each(commandData.vectorParams.begin(), commandData.vectorParams.end(), [&commandData](std::pair<size_t, size_t> const& vp)
+  {
+    // skip output-vector params which are indicated through a pointer.
+    if (vp.second != ~0 // it is an vector
+      // and it's not a get function with a fixed size input
+      && !(commandData.fullName.find("get") == 0 && commandData.params[vp.second].unchangedType.find("*") == std::string::npos && vp.first == commandData.returnParam))
+    {
+      commandData.skippedParams.insert(vp.second);
+    }
+  });
+
   // and the return parameter is also skipped
   if (commandData.returnParam != ~0)
   {
@@ -3090,7 +3101,9 @@ void VulkanHppGenerator::writeCallCountParameter(std::ostream & os, CommandData 
     if (commandData.templateParam == it->second)
     {
       // if the vector parameter is templatized -> multiply by the size of that type to get the size in bytes
-      os << "* sizeof( T ) ";
+      if (commandData.enhancedReturnType != "std::vector<uint8_t,Allocator>") {
+        os << "* sizeof( T ) ";
+      }
     }
   }
 }

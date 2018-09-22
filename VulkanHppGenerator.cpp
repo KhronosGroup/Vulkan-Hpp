@@ -5118,7 +5118,8 @@ void VulkanHppGenerator::writeDelegationClassDynamic(std::ostream &os)
     enterProtect(os, command.second.protect);
     if (!command.second.params.empty() 
       && m_handles.find(command.second.params[0].type) != m_handles.end()
-      && command.second.params[0].type != "Instance")
+      && command.second.params[0].type != "Instance"
+      && command.second.params[0].type != "PhysicalDevice")
     {
       os << "      vk" << startUpperCase(command.second.fullName) << " = PFN_vk" << startUpperCase(command.second.fullName) 
         << "(device ? device.getProcAddr( \"vk" << startUpperCase(command.second.fullName) << "\") : instance.getProcAddr( \"vk" << startUpperCase(command.second.fullName) << "\"));" << std::endl;

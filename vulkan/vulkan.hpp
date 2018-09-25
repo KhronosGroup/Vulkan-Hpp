@@ -385,12 +385,17 @@ namespace VULKAN_HPP_NAMESPACE
     using Owner = typename UniqueHandleTraits<Type,Dispatch>::owner;
     using Deleter = typename UniqueHandleTraits<Type,Dispatch>::deleter;
   public:
-    explicit UniqueHandle( Type const& value = Type(), Deleter const& deleter = Deleter() )
+
+    explicit UniqueHandle( Type const& value = Type() )
+      : UniqueHandle(value, Deleter())
+    {}
+
+    explicit UniqueHandle( Type const& value, Deleter const& deleter = Deleter() )
       : Deleter( deleter)
       , m_value( value )
     {}
 
-    explicit UniqueHandle( Type const& value = Type(), Owner const& owner = Owner() )
+    explicit UniqueHandle( Type const& value, Owner const& owner = Owner() )
       : Deleter( owner)
       , m_value( value )
     {}
@@ -485,7 +490,33 @@ namespace VULKAN_HPP_NAMESPACE
 #endif
 
 
+
   template <typename X, typename Y> struct isStructureChainValid { enum { value = false }; };
+
+  template <typename P, typename T>
+  struct TypeList
+  {
+    using list = P;
+    using last = T;
+  };
+
+  template <typename List, typename X>
+  struct extendCheck
+  {
+    static const bool valid = isStructureChainValid<typename List::last, X>::value || extendCheck<typename List::list,X>::valid;
+  };
+
+  template <typename T, typename X>
+  struct extendCheck<TypeList<void,T>,X>
+  {
+    static const bool valid = isStructureChainValid<T, X>::value;
+  };
+
+  template <typename X>
+  struct extendCheck<void,X>
+  {
+    static const bool valid = true;
+  };
 
   template <class Element>
   class StructureChainElement
@@ -503,75 +534,78 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     StructureChain()
     {
-      link<StructureElements...>();  
+      link<void, StructureElements...>();  
     }
 
     StructureChain(StructureChain const &rhs)
     {
-      linkAndCopy<StructureElements...>(rhs);
+      linkAndCopy<void, StructureElements...>(rhs);
     }
 
     StructureChain(StructureElements const &... elems)
     {
-      linkAndCopyElements<StructureElements...>(elems...);
+      linkAndCopyElements<void, StructureElements...>(elems...);
     }
 
     StructureChain& operator=(StructureChain const &rhs)
     {
-      linkAndCopy<StructureElements...>(rhs);
+      linkAndCopy<void, StructureElements...>(rhs);
       return *this;
     }
 
     template<typename ClassType> ClassType& get() { return static_cast<ClassType&>(*this);}
 
   private:
-    template<typename X>
+    template<typename List, typename X>
     void link()
     {
+      static_assert(extendCheck<List, X>::valid, "The structure chain is not valid!");
     }
 
-    template<typename X, typename Y, typename ...Z>
+    template<typename List, typename X, typename Y, typename ...Z>
     void link()
     {
-      static_assert(isStructureChainValid<X,Y>::value, "The structure chain is not valid!");
+      static_assert(extendCheck<List,X>::valid, "The structure chain is not valid!");
       X& x = static_cast<X&>(*this);
       Y& y = static_cast<Y&>(*this);
       x.pNext = &y;
-      link<Y, Z...>();
+      link<TypeList<List, X>, Y, Z...>();
     }
 
-    template<typename X>
+    template<typename List, typename X>
     void linkAndCopy(StructureChain const &rhs)
     {
+      static_assert(extendCheck<List, X>::valid, "The structure chain is not valid!");
       static_cast<X&>(*this) = static_cast<X const &>(rhs);
     }
 
-    template<typename X, typename Y, typename ...Z>
+    template<typename List, typename X, typename Y, typename ...Z>
     void linkAndCopy(StructureChain const &rhs)
     {
-      static_assert(isStructureChainValid<X,Y>::value, "The structure chain is not valid!");
+      static_assert(extendCheck<List, X>::valid, "The structure chain is not valid!");
       X& x = static_cast<X&>(*this);
       Y& y = static_cast<Y&>(*this);
       x = static_cast<X const &>(rhs);
       x.pNext = &y;
-      linkAndCopy<Y, Z...>(rhs);
+      linkAndCopy<TypeList<List, X>, Y, Z...>(rhs);
     }
 
-    template<typename X>
+    template<typename List, typename X>
     void linkAndCopyElements(X const &xelem)
     {
+      static_assert(extendCheck<List, X>::valid, "The structure chain is not valid!");
       static_cast<X&>(*this) = xelem;
     }
 
-    template<typename X, typename Y, typename ...Z>
+    template<typename List, typename X, typename Y, typename ...Z>
     void linkAndCopyElements(X const &xelem, Y const &yelem, Z const &... zelem)
     {
-      static_assert(isStructureChainValid<X,Y>::value, "The structure chain is not valid!");
+      static_assert(extendCheck<List, X>::valid, "The structure chain is not valid!");
       X& x = static_cast<X&>(*this);
       Y& y = static_cast<Y&>(*this);
       x = xelem;
       x.pNext = &y;
-      linkAndCopyElements<Y, Z...>(yelem, zelem...);
+      linkAndCopyElements<TypeList<List, X>, Y, Z...>(yelem, zelem...);
     }
   };
 
@@ -4907,9 +4941,14 @@ public:
       return *this;
     }
 
-    operator const VkOffset2D&() const
+    operator VkOffset2D const&() const
     {
       return *reinterpret_cast<const VkOffset2D*>(this);
+    }
+
+    operator VkOffset2D &()
+    {
+      return *reinterpret_cast<VkOffset2D*>(this);
     }
 
     bool operator==( Offset2D const& rhs ) const
@@ -4974,9 +5013,14 @@ public:
       return *this;
     }
 
-    operator const VkOffset3D&() const
+    operator VkOffset3D const&() const
     {
       return *reinterpret_cast<const VkOffset3D*>(this);
+    }
+
+    operator VkOffset3D &()
+    {
+      return *reinterpret_cast<VkOffset3D*>(this);
     }
 
     bool operator==( Offset3D const& rhs ) const
@@ -5028,9 +5072,14 @@ public:
       return *this;
     }
 
-    operator const VkExtent2D&() const
+    operator VkExtent2D const&() const
     {
       return *reinterpret_cast<const VkExtent2D*>(this);
+    }
+
+    operator VkExtent2D &()
+    {
+      return *reinterpret_cast<VkExtent2D*>(this);
     }
 
     bool operator==( Extent2D const& rhs ) const
@@ -5095,9 +5144,14 @@ public:
       return *this;
     }
 
-    operator const VkExtent3D&() const
+    operator VkExtent3D const&() const
     {
       return *reinterpret_cast<const VkExtent3D*>(this);
+    }
+
+    operator VkExtent3D &()
+    {
+      return *reinterpret_cast<VkExtent3D*>(this);
     }
 
     bool operator==( Extent3D const& rhs ) const
@@ -5181,9 +5235,14 @@ public:
       return *this;
     }
 
-    operator const VkViewport&() const
+    operator VkViewport const&() const
     {
       return *reinterpret_cast<const VkViewport*>(this);
+    }
+
+    operator VkViewport &()
+    {
+      return *reinterpret_cast<VkViewport*>(this);
     }
 
     bool operator==( Viewport const& rhs ) const
@@ -5241,9 +5300,14 @@ public:
       return *this;
     }
 
-    operator const VkRect2D&() const
+    operator VkRect2D const&() const
     {
       return *reinterpret_cast<const VkRect2D*>(this);
+    }
+
+    operator VkRect2D &()
+    {
+      return *reinterpret_cast<VkRect2D*>(this);
     }
 
     bool operator==( Rect2D const& rhs ) const
@@ -5301,9 +5365,14 @@ public:
       return *this;
     }
 
-    operator const VkClearRect&() const
+    operator VkClearRect const&() const
     {
       return *reinterpret_cast<const VkClearRect*>(this);
+    }
+
+    operator VkClearRect &()
+    {
+      return *reinterpret_cast<VkClearRect*>(this);
     }
 
     bool operator==( ClearRect const& rhs ) const
@@ -5326,9 +5395,14 @@ public:
 
   struct ExtensionProperties
   {
-    operator const VkExtensionProperties&() const
+    operator VkExtensionProperties const&() const
     {
       return *reinterpret_cast<const VkExtensionProperties*>(this);
+    }
+
+    operator VkExtensionProperties &()
+    {
+      return *reinterpret_cast<VkExtensionProperties*>(this);
     }
 
     bool operator==( ExtensionProperties const& rhs ) const
@@ -5349,9 +5423,14 @@ public:
 
   struct LayerProperties
   {
-    operator const VkLayerProperties&() const
+    operator VkLayerProperties const&() const
     {
       return *reinterpret_cast<const VkLayerProperties*>(this);
+    }
+
+    operator VkLayerProperties &()
+    {
+      return *reinterpret_cast<VkLayerProperties*>(this);
     }
 
     bool operator==( LayerProperties const& rhs ) const
@@ -5437,9 +5516,14 @@ public:
       return *this;
     }
 
-    operator const VkAllocationCallbacks&() const
+    operator VkAllocationCallbacks const&() const
     {
       return *reinterpret_cast<const VkAllocationCallbacks*>(this);
+    }
+
+    operator VkAllocationCallbacks &()
+    {
+      return *reinterpret_cast<VkAllocationCallbacks*>(this);
     }
 
     bool operator==( AllocationCallbacks const& rhs ) const
@@ -5468,9 +5552,14 @@ public:
 
   struct MemoryRequirements
   {
-    operator const VkMemoryRequirements&() const
+    operator VkMemoryRequirements const&() const
     {
       return *reinterpret_cast<const VkMemoryRequirements*>(this);
+    }
+
+    operator VkMemoryRequirements &()
+    {
+      return *reinterpret_cast<VkMemoryRequirements*>(this);
     }
 
     bool operator==( MemoryRequirements const& rhs ) const
@@ -5530,9 +5619,14 @@ public:
       return *this;
     }
 
-    operator const VkDescriptorBufferInfo&() const
+    operator VkDescriptorBufferInfo const&() const
     {
       return *reinterpret_cast<const VkDescriptorBufferInfo*>(this);
+    }
+
+    operator VkDescriptorBufferInfo &()
+    {
+      return *reinterpret_cast<VkDescriptorBufferInfo*>(this);
     }
 
     bool operator==( DescriptorBufferInfo const& rhs ) const
@@ -5555,9 +5649,14 @@ public:
 
   struct SubresourceLayout
   {
-    operator const VkSubresourceLayout&() const
+    operator VkSubresourceLayout const&() const
     {
       return *reinterpret_cast<const VkSubresourceLayout*>(this);
+    }
+
+    operator VkSubresourceLayout &()
+    {
+      return *reinterpret_cast<VkSubresourceLayout*>(this);
     }
 
     bool operator==( SubresourceLayout const& rhs ) const
@@ -5621,9 +5720,14 @@ public:
       return *this;
     }
 
-    operator const VkBufferCopy&() const
+    operator VkBufferCopy const&() const
     {
       return *reinterpret_cast<const VkBufferCopy*>(this);
+    }
+
+    operator VkBufferCopy &()
+    {
+      return *reinterpret_cast<VkBufferCopy*>(this);
     }
 
     bool operator==( BufferCopy const& rhs ) const
@@ -5683,9 +5787,14 @@ public:
       return *this;
     }
 
-    operator const VkSpecializationMapEntry&() const
+    operator VkSpecializationMapEntry const&() const
     {
       return *reinterpret_cast<const VkSpecializationMapEntry*>(this);
+    }
+
+    operator VkSpecializationMapEntry &()
+    {
+      return *reinterpret_cast<VkSpecializationMapEntry*>(this);
     }
 
     bool operator==( SpecializationMapEntry const& rhs ) const
@@ -5753,9 +5862,14 @@ public:
       return *this;
     }
 
-    operator const VkSpecializationInfo&() const
+    operator VkSpecializationInfo const&() const
     {
       return *reinterpret_cast<const VkSpecializationInfo*>(this);
+    }
+
+    operator VkSpecializationInfo &()
+    {
+      return *reinterpret_cast<VkSpecializationInfo*>(this);
     }
 
     bool operator==( SpecializationInfo const& rhs ) const
@@ -5813,9 +5927,14 @@ public:
       return *this;
     }
 
-    operator VkClearColorValue const& () const
+    operator VkClearColorValue const&() const
     {
       return *reinterpret_cast<const VkClearColorValue*>(this);
+    }
+
+    operator VkClearColorValue &()
+    {
+      return *reinterpret_cast<VkClearColorValue*>(this);
     }
 
     float float32[4];
@@ -5854,9 +5973,14 @@ public:
       return *this;
     }
 
-    operator const VkClearDepthStencilValue&() const
+    operator VkClearDepthStencilValue const&() const
     {
       return *reinterpret_cast<const VkClearDepthStencilValue*>(this);
+    }
+
+    operator VkClearDepthStencilValue &()
+    {
+      return *reinterpret_cast<VkClearDepthStencilValue*>(this);
     }
 
     bool operator==( ClearDepthStencilValue const& rhs ) const
@@ -5899,9 +6023,14 @@ public:
       return *this;
     }
 
-    operator VkClearValue const& () const
+    operator VkClearValue const&() const
     {
       return *reinterpret_cast<const VkClearValue*>(this);
+    }
+
+    operator VkClearValue &()
+    {
+      return *reinterpret_cast<VkClearValue*>(this);
     }
 
 #ifdef VULKAN_HPP_HAS_UNRESTRICTED_UNIONS
@@ -6368,9 +6497,14 @@ public:
       return *this;
     }
 
-    operator const VkPhysicalDeviceFeatures&() const
+    operator VkPhysicalDeviceFeatures const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceFeatures*>(this);
+    }
+
+    operator VkPhysicalDeviceFeatures &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceFeatures*>(this);
     }
 
     bool operator==( PhysicalDeviceFeatures const& rhs ) const
@@ -6497,9 +6631,14 @@ public:
 
   struct PhysicalDeviceSparseProperties
   {
-    operator const VkPhysicalDeviceSparseProperties&() const
+    operator VkPhysicalDeviceSparseProperties const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceSparseProperties*>(this);
+    }
+
+    operator VkPhysicalDeviceSparseProperties &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceSparseProperties*>(this);
     }
 
     bool operator==( PhysicalDeviceSparseProperties const& rhs ) const
@@ -6571,9 +6710,14 @@ public:
       return *this;
     }
 
-    operator const VkDrawIndirectCommand&() const
+    operator VkDrawIndirectCommand const&() const
     {
       return *reinterpret_cast<const VkDrawIndirectCommand*>(this);
+    }
+
+    operator VkDrawIndirectCommand &()
+    {
+      return *reinterpret_cast<VkDrawIndirectCommand*>(this);
     }
 
     bool operator==( DrawIndirectCommand const& rhs ) const
@@ -6651,9 +6795,14 @@ public:
       return *this;
     }
 
-    operator const VkDrawIndexedIndirectCommand&() const
+    operator VkDrawIndexedIndirectCommand const&() const
     {
       return *reinterpret_cast<const VkDrawIndexedIndirectCommand*>(this);
+    }
+
+    operator VkDrawIndexedIndirectCommand &()
+    {
+      return *reinterpret_cast<VkDrawIndexedIndirectCommand*>(this);
     }
 
     bool operator==( DrawIndexedIndirectCommand const& rhs ) const
@@ -6717,9 +6866,14 @@ public:
       return *this;
     }
 
-    operator const VkDispatchIndirectCommand&() const
+    operator VkDispatchIndirectCommand const&() const
     {
       return *reinterpret_cast<const VkDispatchIndirectCommand*>(this);
+    }
+
+    operator VkDispatchIndirectCommand &()
+    {
+      return *reinterpret_cast<VkDispatchIndirectCommand*>(this);
     }
 
     bool operator==( DispatchIndirectCommand const& rhs ) const
@@ -6742,9 +6896,14 @@ public:
 
   struct DisplayPlanePropertiesKHR
   {
-    operator const VkDisplayPlanePropertiesKHR&() const
+    operator VkDisplayPlanePropertiesKHR const&() const
     {
       return *reinterpret_cast<const VkDisplayPlanePropertiesKHR*>(this);
+    }
+
+    operator VkDisplayPlanePropertiesKHR &()
+    {
+      return *reinterpret_cast<VkDisplayPlanePropertiesKHR*>(this);
     }
 
     bool operator==( DisplayPlanePropertiesKHR const& rhs ) const
@@ -6794,9 +6953,14 @@ public:
       return *this;
     }
 
-    operator const VkDisplayModeParametersKHR&() const
+    operator VkDisplayModeParametersKHR const&() const
     {
       return *reinterpret_cast<const VkDisplayModeParametersKHR*>(this);
+    }
+
+    operator VkDisplayModeParametersKHR &()
+    {
+      return *reinterpret_cast<VkDisplayModeParametersKHR*>(this);
     }
 
     bool operator==( DisplayModeParametersKHR const& rhs ) const
@@ -6817,9 +6981,14 @@ public:
 
   struct DisplayModePropertiesKHR
   {
-    operator const VkDisplayModePropertiesKHR&() const
+    operator VkDisplayModePropertiesKHR const&() const
     {
       return *reinterpret_cast<const VkDisplayModePropertiesKHR*>(this);
+    }
+
+    operator VkDisplayModePropertiesKHR &()
+    {
+      return *reinterpret_cast<VkDisplayModePropertiesKHR*>(this);
     }
 
     bool operator==( DisplayModePropertiesKHR const& rhs ) const
@@ -6884,9 +7053,14 @@ public:
       return *this;
     }
 
-    operator const VkRectLayerKHR&() const
+    operator VkRectLayerKHR const&() const
     {
       return *reinterpret_cast<const VkRectLayerKHR*>(this);
+    }
+
+    operator VkRectLayerKHR &()
+    {
+      return *reinterpret_cast<VkRectLayerKHR*>(this);
     }
 
     bool operator==( RectLayerKHR const& rhs ) const
@@ -6938,9 +7112,14 @@ public:
       return *this;
     }
 
-    operator const VkPresentRegionKHR&() const
+    operator VkPresentRegionKHR const&() const
     {
       return *reinterpret_cast<const VkPresentRegionKHR*>(this);
+    }
+
+    operator VkPresentRegionKHR &()
+    {
+      return *reinterpret_cast<VkPresentRegionKHR*>(this);
     }
 
     bool operator==( PresentRegionKHR const& rhs ) const
@@ -6990,9 +7169,14 @@ public:
       return *this;
     }
 
-    operator const VkXYColorEXT&() const
+    operator VkXYColorEXT const&() const
     {
       return *reinterpret_cast<const VkXYColorEXT*>(this);
+    }
+
+    operator VkXYColorEXT &()
+    {
+      return *reinterpret_cast<VkXYColorEXT*>(this);
     }
 
     bool operator==( XYColorEXT const& rhs ) const
@@ -7013,9 +7197,14 @@ public:
 
   struct RefreshCycleDurationGOOGLE
   {
-    operator const VkRefreshCycleDurationGOOGLE&() const
+    operator VkRefreshCycleDurationGOOGLE const&() const
     {
       return *reinterpret_cast<const VkRefreshCycleDurationGOOGLE*>(this);
+    }
+
+    operator VkRefreshCycleDurationGOOGLE &()
+    {
+      return *reinterpret_cast<VkRefreshCycleDurationGOOGLE*>(this);
     }
 
     bool operator==( RefreshCycleDurationGOOGLE const& rhs ) const
@@ -7034,9 +7223,14 @@ public:
 
   struct PastPresentationTimingGOOGLE
   {
-    operator const VkPastPresentationTimingGOOGLE&() const
+    operator VkPastPresentationTimingGOOGLE const&() const
     {
       return *reinterpret_cast<const VkPastPresentationTimingGOOGLE*>(this);
+    }
+
+    operator VkPastPresentationTimingGOOGLE &()
+    {
+      return *reinterpret_cast<VkPastPresentationTimingGOOGLE*>(this);
     }
 
     bool operator==( PastPresentationTimingGOOGLE const& rhs ) const
@@ -7092,9 +7286,14 @@ public:
       return *this;
     }
 
-    operator const VkPresentTimeGOOGLE&() const
+    operator VkPresentTimeGOOGLE const&() const
     {
       return *reinterpret_cast<const VkPresentTimeGOOGLE*>(this);
+    }
+
+    operator VkPresentTimeGOOGLE &()
+    {
+      return *reinterpret_cast<VkPresentTimeGOOGLE*>(this);
     }
 
     bool operator==( PresentTimeGOOGLE const& rhs ) const
@@ -7144,9 +7343,14 @@ public:
       return *this;
     }
 
-    operator const VkViewportWScalingNV&() const
+    operator VkViewportWScalingNV const&() const
     {
       return *reinterpret_cast<const VkViewportWScalingNV*>(this);
+    }
+
+    operator VkViewportWScalingNV &()
+    {
+      return *reinterpret_cast<VkViewportWScalingNV*>(this);
     }
 
     bool operator==( ViewportWScalingNV const& rhs ) const
@@ -7196,9 +7400,14 @@ public:
       return *this;
     }
 
-    operator const VkSampleLocationEXT&() const
+    operator VkSampleLocationEXT const&() const
     {
       return *reinterpret_cast<const VkSampleLocationEXT*>(this);
+    }
+
+    operator VkSampleLocationEXT &()
+    {
+      return *reinterpret_cast<VkSampleLocationEXT*>(this);
     }
 
     bool operator==( SampleLocationEXT const& rhs ) const
@@ -7219,9 +7428,14 @@ public:
 
   struct ShaderResourceUsageAMD
   {
-    operator const VkShaderResourceUsageAMD&() const
+    operator VkShaderResourceUsageAMD const&() const
     {
       return *reinterpret_cast<const VkShaderResourceUsageAMD*>(this);
+    }
+
+    operator VkShaderResourceUsageAMD &()
+    {
+      return *reinterpret_cast<VkShaderResourceUsageAMD*>(this);
     }
 
     bool operator==( ShaderResourceUsageAMD const& rhs ) const
@@ -7277,9 +7491,14 @@ public:
       return *this;
     }
 
-    operator const VkVertexInputBindingDivisorDescriptionEXT&() const
+    operator VkVertexInputBindingDivisorDescriptionEXT const&() const
     {
       return *reinterpret_cast<const VkVertexInputBindingDivisorDescriptionEXT*>(this);
+    }
+
+    operator VkVertexInputBindingDivisorDescriptionEXT &()
+    {
+      return *reinterpret_cast<VkVertexInputBindingDivisorDescriptionEXT*>(this);
     }
 
     bool operator==( VertexInputBindingDivisorDescriptionEXT const& rhs ) const
@@ -7356,9 +7575,14 @@ public:
       return *this;
     }
 
-    operator const VkDescriptorImageInfo&() const
+    operator VkDescriptorImageInfo const&() const
     {
       return *reinterpret_cast<const VkDescriptorImageInfo*>(this);
+    }
+
+    operator VkDescriptorImageInfo &()
+    {
+      return *reinterpret_cast<VkDescriptorImageInfo*>(this);
     }
 
     bool operator==( DescriptorImageInfo const& rhs ) const
@@ -7410,9 +7634,14 @@ public:
       return *this;
     }
 
-    operator const VkAttachmentReference&() const
+    operator VkAttachmentReference const&() const
     {
       return *reinterpret_cast<const VkAttachmentReference*>(this);
+    }
+
+    operator VkAttachmentReference &()
+    {
+      return *reinterpret_cast<VkAttachmentReference*>(this);
     }
 
     bool operator==( AttachmentReference const& rhs ) const
@@ -7532,9 +7761,14 @@ public:
       return *this;
     }
 
-    operator const VkComponentMapping&() const
+    operator VkComponentMapping const&() const
     {
       return *reinterpret_cast<const VkComponentMapping*>(this);
+    }
+
+    operator VkComponentMapping &()
+    {
+      return *reinterpret_cast<VkComponentMapping*>(this);
     }
 
     bool operator==( ComponentMapping const& rhs ) const
@@ -7603,9 +7837,14 @@ public:
       return *this;
     }
 
-    operator const VkDescriptorPoolSize&() const
+    operator VkDescriptorPoolSize const&() const
     {
       return *reinterpret_cast<const VkDescriptorPoolSize*>(this);
+    }
+
+    operator VkDescriptorPoolSize &()
+    {
+      return *reinterpret_cast<VkDescriptorPoolSize*>(this);
     }
 
     bool operator==( DescriptorPoolSize const& rhs ) const
@@ -7687,9 +7926,14 @@ public:
       return *this;
     }
 
-    operator const VkDescriptorUpdateTemplateEntry&() const
+    operator VkDescriptorUpdateTemplateEntry const&() const
     {
       return *reinterpret_cast<const VkDescriptorUpdateTemplateEntry*>(this);
+    }
+
+    operator VkDescriptorUpdateTemplateEntry &()
+    {
+      return *reinterpret_cast<VkDescriptorUpdateTemplateEntry*>(this);
     }
 
     bool operator==( DescriptorUpdateTemplateEntry const& rhs ) const
@@ -8010,9 +8254,14 @@ public:
       return *this;
     }
 
-    operator const VkStencilOpState&() const
+    operator VkStencilOpState const&() const
     {
       return *reinterpret_cast<const VkStencilOpState*>(this);
+    }
+
+    operator VkStencilOpState &()
+    {
+      return *reinterpret_cast<VkStencilOpState*>(this);
     }
 
     bool operator==( StencilOpState const& rhs ) const
@@ -8129,9 +8378,14 @@ public:
       return *this;
     }
 
-    operator const VkVertexInputBindingDescription&() const
+    operator VkVertexInputBindingDescription const&() const
     {
       return *reinterpret_cast<const VkVertexInputBindingDescription*>(this);
+    }
+
+    operator VkVertexInputBindingDescription &()
+    {
+      return *reinterpret_cast<VkVertexInputBindingDescription*>(this);
     }
 
     bool operator==( VertexInputBindingDescription const& rhs ) const
@@ -8464,9 +8718,14 @@ public:
       return *this;
     }
 
-    operator const VkVertexInputAttributeDescription&() const
+    operator VkVertexInputAttributeDescription const&() const
     {
       return *reinterpret_cast<const VkVertexInputAttributeDescription*>(this);
+    }
+
+    operator VkVertexInputAttributeDescription &()
+    {
+      return *reinterpret_cast<VkVertexInputAttributeDescription*>(this);
     }
 
     bool operator==( VertexInputAttributeDescription const& rhs ) const
@@ -8864,9 +9123,14 @@ public:
       return *this;
     }
 
-    operator const VkApplicationInfo&() const
+    operator VkApplicationInfo const&() const
     {
       return *reinterpret_cast<const VkApplicationInfo*>(this);
+    }
+
+    operator VkApplicationInfo &()
+    {
+      return *reinterpret_cast<VkApplicationInfo*>(this);
     }
 
     bool operator==( ApplicationInfo const& rhs ) const
@@ -8967,9 +9231,14 @@ public:
       return *this;
     }
 
-    operator const VkInstanceCreateInfo&() const
+    operator VkInstanceCreateInfo const&() const
     {
       return *reinterpret_cast<const VkInstanceCreateInfo*>(this);
+    }
+
+    operator VkInstanceCreateInfo &()
+    {
+      return *reinterpret_cast<VkInstanceCreateInfo*>(this);
     }
 
     bool operator==( InstanceCreateInfo const& rhs ) const
@@ -9040,9 +9309,14 @@ public:
       return *this;
     }
 
-    operator const VkMemoryAllocateInfo&() const
+    operator VkMemoryAllocateInfo const&() const
     {
       return *reinterpret_cast<const VkMemoryAllocateInfo*>(this);
+    }
+
+    operator VkMemoryAllocateInfo &()
+    {
+      return *reinterpret_cast<VkMemoryAllocateInfo*>(this);
     }
 
     bool operator==( MemoryAllocateInfo const& rhs ) const
@@ -9113,9 +9387,14 @@ public:
       return *this;
     }
 
-    operator const VkMappedMemoryRange&() const
+    operator VkMappedMemoryRange const&() const
     {
       return *reinterpret_cast<const VkMappedMemoryRange*>(this);
+    }
+
+    operator VkMappedMemoryRange &()
+    {
+      return *reinterpret_cast<VkMappedMemoryRange*>(this);
     }
 
     bool operator==( MappedMemoryRange const& rhs ) const
@@ -9228,9 +9507,14 @@ public:
       return *this;
     }
 
-    operator const VkWriteDescriptorSet&() const
+    operator VkWriteDescriptorSet const&() const
     {
       return *reinterpret_cast<const VkWriteDescriptorSet*>(this);
+    }
+
+    operator VkWriteDescriptorSet &()
+    {
+      return *reinterpret_cast<VkWriteDescriptorSet*>(this);
     }
 
     bool operator==( WriteDescriptorSet const& rhs ) const
@@ -9345,9 +9629,14 @@ public:
       return *this;
     }
 
-    operator const VkCopyDescriptorSet&() const
+    operator VkCopyDescriptorSet const&() const
     {
       return *reinterpret_cast<const VkCopyDescriptorSet*>(this);
+    }
+
+    operator VkCopyDescriptorSet &()
+    {
+      return *reinterpret_cast<VkCopyDescriptorSet*>(this);
     }
 
     bool operator==( CopyDescriptorSet const& rhs ) const
@@ -9444,9 +9733,14 @@ public:
       return *this;
     }
 
-    operator const VkBufferViewCreateInfo&() const
+    operator VkBufferViewCreateInfo const&() const
     {
       return *reinterpret_cast<const VkBufferViewCreateInfo*>(this);
+    }
+
+    operator VkBufferViewCreateInfo &()
+    {
+      return *reinterpret_cast<VkBufferViewCreateInfo*>(this);
     }
 
     bool operator==( BufferViewCreateInfo const& rhs ) const
@@ -9523,9 +9817,14 @@ public:
       return *this;
     }
 
-    operator const VkShaderModuleCreateInfo&() const
+    operator VkShaderModuleCreateInfo const&() const
     {
       return *reinterpret_cast<const VkShaderModuleCreateInfo*>(this);
+    }
+
+    operator VkShaderModuleCreateInfo &()
+    {
+      return *reinterpret_cast<VkShaderModuleCreateInfo*>(this);
     }
 
     bool operator==( ShaderModuleCreateInfo const& rhs ) const
@@ -9598,9 +9897,14 @@ public:
       return *this;
     }
 
-    operator const VkDescriptorSetAllocateInfo&() const
+    operator VkDescriptorSetAllocateInfo const&() const
     {
       return *reinterpret_cast<const VkDescriptorSetAllocateInfo*>(this);
+    }
+
+    operator VkDescriptorSetAllocateInfo &()
+    {
+      return *reinterpret_cast<VkDescriptorSetAllocateInfo*>(this);
     }
 
     bool operator==( DescriptorSetAllocateInfo const& rhs ) const
@@ -9689,9 +9993,14 @@ public:
       return *this;
     }
 
-    operator const VkPipelineVertexInputStateCreateInfo&() const
+    operator VkPipelineVertexInputStateCreateInfo const&() const
     {
       return *reinterpret_cast<const VkPipelineVertexInputStateCreateInfo*>(this);
+    }
+
+    operator VkPipelineVertexInputStateCreateInfo &()
+    {
+      return *reinterpret_cast<VkPipelineVertexInputStateCreateInfo*>(this);
     }
 
     bool operator==( PipelineVertexInputStateCreateInfo const& rhs ) const
@@ -9768,9 +10077,14 @@ public:
       return *this;
     }
 
-    operator const VkPipelineInputAssemblyStateCreateInfo&() const
+    operator VkPipelineInputAssemblyStateCreateInfo const&() const
     {
       return *reinterpret_cast<const VkPipelineInputAssemblyStateCreateInfo*>(this);
+    }
+
+    operator VkPipelineInputAssemblyStateCreateInfo &()
+    {
+      return *reinterpret_cast<VkPipelineInputAssemblyStateCreateInfo*>(this);
     }
 
     bool operator==( PipelineInputAssemblyStateCreateInfo const& rhs ) const
@@ -9835,9 +10149,14 @@ public:
       return *this;
     }
 
-    operator const VkPipelineTessellationStateCreateInfo&() const
+    operator VkPipelineTessellationStateCreateInfo const&() const
     {
       return *reinterpret_cast<const VkPipelineTessellationStateCreateInfo*>(this);
+    }
+
+    operator VkPipelineTessellationStateCreateInfo &()
+    {
+      return *reinterpret_cast<VkPipelineTessellationStateCreateInfo*>(this);
     }
 
     bool operator==( PipelineTessellationStateCreateInfo const& rhs ) const
@@ -9924,9 +10243,14 @@ public:
       return *this;
     }
 
-    operator const VkPipelineViewportStateCreateInfo&() const
+    operator VkPipelineViewportStateCreateInfo const&() const
     {
       return *reinterpret_cast<const VkPipelineViewportStateCreateInfo*>(this);
+    }
+
+    operator VkPipelineViewportStateCreateInfo &()
+    {
+      return *reinterpret_cast<VkPipelineViewportStateCreateInfo*>(this);
     }
 
     bool operator==( PipelineViewportStateCreateInfo const& rhs ) const
@@ -10067,9 +10391,14 @@ public:
       return *this;
     }
 
-    operator const VkPipelineRasterizationStateCreateInfo&() const
+    operator VkPipelineRasterizationStateCreateInfo const&() const
     {
       return *reinterpret_cast<const VkPipelineRasterizationStateCreateInfo*>(this);
+    }
+
+    operator VkPipelineRasterizationStateCreateInfo &()
+    {
+      return *reinterpret_cast<VkPipelineRasterizationStateCreateInfo*>(this);
     }
 
     bool operator==( PipelineRasterizationStateCreateInfo const& rhs ) const
@@ -10214,9 +10543,14 @@ public:
       return *this;
     }
 
-    operator const VkPipelineDepthStencilStateCreateInfo&() const
+    operator VkPipelineDepthStencilStateCreateInfo const&() const
     {
       return *reinterpret_cast<const VkPipelineDepthStencilStateCreateInfo*>(this);
+    }
+
+    operator VkPipelineDepthStencilStateCreateInfo &()
+    {
+      return *reinterpret_cast<VkPipelineDepthStencilStateCreateInfo*>(this);
     }
 
     bool operator==( PipelineDepthStencilStateCreateInfo const& rhs ) const
@@ -10303,9 +10637,14 @@ public:
       return *this;
     }
 
-    operator const VkPipelineCacheCreateInfo&() const
+    operator VkPipelineCacheCreateInfo const&() const
     {
       return *reinterpret_cast<const VkPipelineCacheCreateInfo*>(this);
+    }
+
+    operator VkPipelineCacheCreateInfo &()
+    {
+      return *reinterpret_cast<VkPipelineCacheCreateInfo*>(this);
     }
 
     bool operator==( PipelineCacheCreateInfo const& rhs ) const
@@ -10482,9 +10821,14 @@ public:
       return *this;
     }
 
-    operator const VkSamplerCreateInfo&() const
+    operator VkSamplerCreateInfo const&() const
     {
       return *reinterpret_cast<const VkSamplerCreateInfo*>(this);
+    }
+
+    operator VkSamplerCreateInfo &()
+    {
+      return *reinterpret_cast<VkSamplerCreateInfo*>(this);
     }
 
     bool operator==( SamplerCreateInfo const& rhs ) const
@@ -10583,9 +10927,14 @@ public:
       return *this;
     }
 
-    operator const VkCommandBufferAllocateInfo&() const
+    operator VkCommandBufferAllocateInfo const&() const
     {
       return *reinterpret_cast<const VkCommandBufferAllocateInfo*>(this);
+    }
+
+    operator VkCommandBufferAllocateInfo &()
+    {
+      return *reinterpret_cast<VkCommandBufferAllocateInfo*>(this);
     }
 
     bool operator==( CommandBufferAllocateInfo const& rhs ) const
@@ -10674,9 +11023,14 @@ public:
       return *this;
     }
 
-    operator const VkRenderPassBeginInfo&() const
+    operator VkRenderPassBeginInfo const&() const
     {
       return *reinterpret_cast<const VkRenderPassBeginInfo*>(this);
+    }
+
+    operator VkRenderPassBeginInfo &()
+    {
+      return *reinterpret_cast<VkRenderPassBeginInfo*>(this);
     }
 
     bool operator==( RenderPassBeginInfo const& rhs ) const
@@ -10737,9 +11091,14 @@ public:
       return *this;
     }
 
-    operator const VkEventCreateInfo&() const
+    operator VkEventCreateInfo const&() const
     {
       return *reinterpret_cast<const VkEventCreateInfo*>(this);
+    }
+
+    operator VkEventCreateInfo &()
+    {
+      return *reinterpret_cast<VkEventCreateInfo*>(this);
     }
 
     bool operator==( EventCreateInfo const& rhs ) const
@@ -10792,9 +11151,14 @@ public:
       return *this;
     }
 
-    operator const VkSemaphoreCreateInfo&() const
+    operator VkSemaphoreCreateInfo const&() const
     {
       return *reinterpret_cast<const VkSemaphoreCreateInfo*>(this);
+    }
+
+    operator VkSemaphoreCreateInfo &()
+    {
+      return *reinterpret_cast<VkSemaphoreCreateInfo*>(this);
     }
 
     bool operator==( SemaphoreCreateInfo const& rhs ) const
@@ -10895,9 +11259,14 @@ public:
       return *this;
     }
 
-    operator const VkFramebufferCreateInfo&() const
+    operator VkFramebufferCreateInfo const&() const
     {
       return *reinterpret_cast<const VkFramebufferCreateInfo*>(this);
+    }
+
+    operator VkFramebufferCreateInfo &()
+    {
+      return *reinterpret_cast<VkFramebufferCreateInfo*>(this);
     }
 
     bool operator==( FramebufferCreateInfo const& rhs ) const
@@ -10970,9 +11339,14 @@ public:
       return *this;
     }
 
-    operator const VkDisplayModeCreateInfoKHR&() const
+    operator VkDisplayModeCreateInfoKHR const&() const
     {
       return *reinterpret_cast<const VkDisplayModeCreateInfoKHR*>(this);
+    }
+
+    operator VkDisplayModeCreateInfoKHR &()
+    {
+      return *reinterpret_cast<VkDisplayModeCreateInfoKHR*>(this);
     }
 
     bool operator==( DisplayModeCreateInfoKHR const& rhs ) const
@@ -11043,9 +11417,14 @@ public:
       return *this;
     }
 
-    operator const VkDisplayPresentInfoKHR&() const
+    operator VkDisplayPresentInfoKHR const&() const
     {
       return *reinterpret_cast<const VkDisplayPresentInfoKHR*>(this);
+    }
+
+    operator VkDisplayPresentInfoKHR &()
+    {
+      return *reinterpret_cast<VkDisplayPresentInfoKHR*>(this);
     }
 
     bool operator==( DisplayPresentInfoKHR const& rhs ) const
@@ -11111,9 +11490,14 @@ public:
       return *this;
     }
 
-    operator const VkAndroidSurfaceCreateInfoKHR&() const
+    operator VkAndroidSurfaceCreateInfoKHR const&() const
     {
       return *reinterpret_cast<const VkAndroidSurfaceCreateInfoKHR*>(this);
+    }
+
+    operator VkAndroidSurfaceCreateInfoKHR &()
+    {
+      return *reinterpret_cast<VkAndroidSurfaceCreateInfoKHR*>(this);
     }
 
     bool operator==( AndroidSurfaceCreateInfoKHR const& rhs ) const
@@ -11186,9 +11570,14 @@ public:
       return *this;
     }
 
-    operator const VkMirSurfaceCreateInfoKHR&() const
+    operator VkMirSurfaceCreateInfoKHR const&() const
     {
       return *reinterpret_cast<const VkMirSurfaceCreateInfoKHR*>(this);
+    }
+
+    operator VkMirSurfaceCreateInfoKHR &()
+    {
+      return *reinterpret_cast<VkMirSurfaceCreateInfoKHR*>(this);
     }
 
     bool operator==( MirSurfaceCreateInfoKHR const& rhs ) const
@@ -11255,9 +11644,14 @@ public:
       return *this;
     }
 
-    operator const VkViSurfaceCreateInfoNN&() const
+    operator VkViSurfaceCreateInfoNN const&() const
     {
       return *reinterpret_cast<const VkViSurfaceCreateInfoNN*>(this);
+    }
+
+    operator VkViSurfaceCreateInfoNN &()
+    {
+      return *reinterpret_cast<VkViSurfaceCreateInfoNN*>(this);
     }
 
     bool operator==( ViSurfaceCreateInfoNN const& rhs ) const
@@ -11330,9 +11724,14 @@ public:
       return *this;
     }
 
-    operator const VkWaylandSurfaceCreateInfoKHR&() const
+    operator VkWaylandSurfaceCreateInfoKHR const&() const
     {
       return *reinterpret_cast<const VkWaylandSurfaceCreateInfoKHR*>(this);
+    }
+
+    operator VkWaylandSurfaceCreateInfoKHR &()
+    {
+      return *reinterpret_cast<VkWaylandSurfaceCreateInfoKHR*>(this);
     }
 
     bool operator==( WaylandSurfaceCreateInfoKHR const& rhs ) const
@@ -11407,9 +11806,14 @@ public:
       return *this;
     }
 
-    operator const VkWin32SurfaceCreateInfoKHR&() const
+    operator VkWin32SurfaceCreateInfoKHR const&() const
     {
       return *reinterpret_cast<const VkWin32SurfaceCreateInfoKHR*>(this);
+    }
+
+    operator VkWin32SurfaceCreateInfoKHR &()
+    {
+      return *reinterpret_cast<VkWin32SurfaceCreateInfoKHR*>(this);
     }
 
     bool operator==( Win32SurfaceCreateInfoKHR const& rhs ) const
@@ -11484,9 +11888,14 @@ public:
       return *this;
     }
 
-    operator const VkXlibSurfaceCreateInfoKHR&() const
+    operator VkXlibSurfaceCreateInfoKHR const&() const
     {
       return *reinterpret_cast<const VkXlibSurfaceCreateInfoKHR*>(this);
+    }
+
+    operator VkXlibSurfaceCreateInfoKHR &()
+    {
+      return *reinterpret_cast<VkXlibSurfaceCreateInfoKHR*>(this);
     }
 
     bool operator==( XlibSurfaceCreateInfoKHR const& rhs ) const
@@ -11561,9 +11970,14 @@ public:
       return *this;
     }
 
-    operator const VkXcbSurfaceCreateInfoKHR&() const
+    operator VkXcbSurfaceCreateInfoKHR const&() const
     {
       return *reinterpret_cast<const VkXcbSurfaceCreateInfoKHR*>(this);
+    }
+
+    operator VkXcbSurfaceCreateInfoKHR &()
+    {
+      return *reinterpret_cast<VkXcbSurfaceCreateInfoKHR*>(this);
     }
 
     bool operator==( XcbSurfaceCreateInfoKHR const& rhs ) const
@@ -11629,9 +12043,14 @@ public:
       return *this;
     }
 
-    operator const VkDebugMarkerMarkerInfoEXT&() const
+    operator VkDebugMarkerMarkerInfoEXT const&() const
     {
       return *reinterpret_cast<const VkDebugMarkerMarkerInfoEXT*>(this);
+    }
+
+    operator VkDebugMarkerMarkerInfoEXT &()
+    {
+      return *reinterpret_cast<VkDebugMarkerMarkerInfoEXT*>(this);
     }
 
     bool operator==( DebugMarkerMarkerInfoEXT const& rhs ) const
@@ -11686,9 +12105,14 @@ public:
       return *this;
     }
 
-    operator const VkDedicatedAllocationImageCreateInfoNV&() const
+    operator VkDedicatedAllocationImageCreateInfoNV const&() const
     {
       return *reinterpret_cast<const VkDedicatedAllocationImageCreateInfoNV*>(this);
+    }
+
+    operator VkDedicatedAllocationImageCreateInfoNV &()
+    {
+      return *reinterpret_cast<VkDedicatedAllocationImageCreateInfoNV*>(this);
     }
 
     bool operator==( DedicatedAllocationImageCreateInfoNV const& rhs ) const
@@ -11741,9 +12165,14 @@ public:
       return *this;
     }
 
-    operator const VkDedicatedAllocationBufferCreateInfoNV&() const
+    operator VkDedicatedAllocationBufferCreateInfoNV const&() const
     {
       return *reinterpret_cast<const VkDedicatedAllocationBufferCreateInfoNV*>(this);
+    }
+
+    operator VkDedicatedAllocationBufferCreateInfoNV &()
+    {
+      return *reinterpret_cast<VkDedicatedAllocationBufferCreateInfoNV*>(this);
     }
 
     bool operator==( DedicatedAllocationBufferCreateInfoNV const& rhs ) const
@@ -11804,9 +12233,14 @@ public:
       return *this;
     }
 
-    operator const VkDedicatedAllocationMemoryAllocateInfoNV&() const
+    operator VkDedicatedAllocationMemoryAllocateInfoNV const&() const
     {
       return *reinterpret_cast<const VkDedicatedAllocationMemoryAllocateInfoNV*>(this);
+    }
+
+    operator VkDedicatedAllocationMemoryAllocateInfoNV &()
+    {
+      return *reinterpret_cast<VkDedicatedAllocationMemoryAllocateInfoNV*>(this);
     }
 
     bool operator==( DedicatedAllocationMemoryAllocateInfoNV const& rhs ) const
@@ -11870,9 +12304,14 @@ public:
       return *this;
     }
 
-    operator const VkExportMemoryWin32HandleInfoNV&() const
+    operator VkExportMemoryWin32HandleInfoNV const&() const
     {
       return *reinterpret_cast<const VkExportMemoryWin32HandleInfoNV*>(this);
+    }
+
+    operator VkExportMemoryWin32HandleInfoNV &()
+    {
+      return *reinterpret_cast<VkExportMemoryWin32HandleInfoNV*>(this);
     }
 
     bool operator==( ExportMemoryWin32HandleInfoNV const& rhs ) const
@@ -11977,9 +12416,14 @@ public:
       return *this;
     }
 
-    operator const VkWin32KeyedMutexAcquireReleaseInfoNV&() const
+    operator VkWin32KeyedMutexAcquireReleaseInfoNV const&() const
     {
       return *reinterpret_cast<const VkWin32KeyedMutexAcquireReleaseInfoNV*>(this);
+    }
+
+    operator VkWin32KeyedMutexAcquireReleaseInfoNV &()
+    {
+      return *reinterpret_cast<VkWin32KeyedMutexAcquireReleaseInfoNV*>(this);
     }
 
     bool operator==( Win32KeyedMutexAcquireReleaseInfoNV const& rhs ) const
@@ -12045,9 +12489,14 @@ public:
       return *this;
     }
 
-    operator const VkDeviceGeneratedCommandsFeaturesNVX&() const
+    operator VkDeviceGeneratedCommandsFeaturesNVX const&() const
     {
       return *reinterpret_cast<const VkDeviceGeneratedCommandsFeaturesNVX*>(this);
+    }
+
+    operator VkDeviceGeneratedCommandsFeaturesNVX &()
+    {
+      return *reinterpret_cast<VkDeviceGeneratedCommandsFeaturesNVX*>(this);
     }
 
     bool operator==( DeviceGeneratedCommandsFeaturesNVX const& rhs ) const
@@ -12132,9 +12581,14 @@ public:
       return *this;
     }
 
-    operator const VkDeviceGeneratedCommandsLimitsNVX&() const
+    operator VkDeviceGeneratedCommandsLimitsNVX const&() const
     {
       return *reinterpret_cast<const VkDeviceGeneratedCommandsLimitsNVX*>(this);
+    }
+
+    operator VkDeviceGeneratedCommandsLimitsNVX &()
+    {
+      return *reinterpret_cast<VkDeviceGeneratedCommandsLimitsNVX*>(this);
     }
 
     bool operator==( DeviceGeneratedCommandsLimitsNVX const& rhs ) const
@@ -12211,9 +12665,14 @@ public:
       return *this;
     }
 
-    operator const VkCmdReserveSpaceForCommandsInfoNVX&() const
+    operator VkCmdReserveSpaceForCommandsInfoNVX const&() const
     {
       return *reinterpret_cast<const VkCmdReserveSpaceForCommandsInfoNVX*>(this);
+    }
+
+    operator VkCmdReserveSpaceForCommandsInfoNVX &()
+    {
+      return *reinterpret_cast<VkCmdReserveSpaceForCommandsInfoNVX*>(this);
     }
 
     bool operator==( CmdReserveSpaceForCommandsInfoNVX const& rhs ) const
@@ -12270,9 +12729,14 @@ public:
       return *this;
     }
 
-    operator const VkPhysicalDeviceFeatures2&() const
+    operator VkPhysicalDeviceFeatures2 const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceFeatures2*>(this);
+    }
+
+    operator VkPhysicalDeviceFeatures2 &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceFeatures2*>(this);
     }
 
     bool operator==( PhysicalDeviceFeatures2 const& rhs ) const
@@ -12327,9 +12791,14 @@ public:
       return *this;
     }
 
-    operator const VkPhysicalDevicePushDescriptorPropertiesKHR&() const
+    operator VkPhysicalDevicePushDescriptorPropertiesKHR const&() const
     {
       return *reinterpret_cast<const VkPhysicalDevicePushDescriptorPropertiesKHR*>(this);
+    }
+
+    operator VkPhysicalDevicePushDescriptorPropertiesKHR &()
+    {
+      return *reinterpret_cast<VkPhysicalDevicePushDescriptorPropertiesKHR*>(this);
     }
 
     bool operator==( PhysicalDevicePushDescriptorPropertiesKHR const& rhs ) const
@@ -12390,9 +12859,14 @@ public:
       return *this;
     }
 
-    operator const VkPresentRegionsKHR&() const
+    operator VkPresentRegionsKHR const&() const
     {
       return *reinterpret_cast<const VkPresentRegionsKHR*>(this);
+    }
+
+    operator VkPresentRegionsKHR &()
+    {
+      return *reinterpret_cast<VkPresentRegionsKHR*>(this);
     }
 
     bool operator==( PresentRegionsKHR const& rhs ) const
@@ -12455,9 +12929,14 @@ public:
       return *this;
     }
 
-    operator const VkPhysicalDeviceVariablePointerFeatures&() const
+    operator VkPhysicalDeviceVariablePointerFeatures const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceVariablePointerFeatures*>(this);
+    }
+
+    operator VkPhysicalDeviceVariablePointerFeatures &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceVariablePointerFeatures*>(this);
     }
 
     bool operator==( PhysicalDeviceVariablePointerFeatures const& rhs ) const
@@ -12487,9 +12966,14 @@ public:
 
   struct PhysicalDeviceIDProperties
   {
-    operator const VkPhysicalDeviceIDProperties&() const
+    operator VkPhysicalDeviceIDProperties const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceIDProperties*>(this);
+    }
+
+    operator VkPhysicalDeviceIDProperties &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceIDProperties*>(this);
     }
 
     bool operator==( PhysicalDeviceIDProperties const& rhs ) const
@@ -12569,9 +13053,14 @@ public:
       return *this;
     }
 
-    operator const VkExportMemoryWin32HandleInfoKHR&() const
+    operator VkExportMemoryWin32HandleInfoKHR const&() const
     {
       return *reinterpret_cast<const VkExportMemoryWin32HandleInfoKHR*>(this);
+    }
+
+    operator VkExportMemoryWin32HandleInfoKHR &()
+    {
+      return *reinterpret_cast<VkExportMemoryWin32HandleInfoKHR*>(this);
     }
 
     bool operator==( ExportMemoryWin32HandleInfoKHR const& rhs ) const
@@ -12603,9 +13092,14 @@ public:
 #ifdef VK_USE_PLATFORM_WIN32_KHR
   struct MemoryWin32HandlePropertiesKHR
   {
-    operator const VkMemoryWin32HandlePropertiesKHR&() const
+    operator VkMemoryWin32HandlePropertiesKHR const&() const
     {
       return *reinterpret_cast<const VkMemoryWin32HandlePropertiesKHR*>(this);
+    }
+
+    operator VkMemoryWin32HandlePropertiesKHR &()
+    {
+      return *reinterpret_cast<VkMemoryWin32HandlePropertiesKHR*>(this);
     }
 
     bool operator==( MemoryWin32HandlePropertiesKHR const& rhs ) const
@@ -12632,9 +13126,14 @@ public:
 
   struct MemoryFdPropertiesKHR
   {
-    operator const VkMemoryFdPropertiesKHR&() const
+    operator VkMemoryFdPropertiesKHR const&() const
     {
       return *reinterpret_cast<const VkMemoryFdPropertiesKHR*>(this);
+    }
+
+    operator VkMemoryFdPropertiesKHR &()
+    {
+      return *reinterpret_cast<VkMemoryFdPropertiesKHR*>(this);
     }
 
     bool operator==( MemoryFdPropertiesKHR const& rhs ) const
@@ -12736,9 +13235,14 @@ public:
       return *this;
     }
 
-    operator const VkWin32KeyedMutexAcquireReleaseInfoKHR&() const
+    operator VkWin32KeyedMutexAcquireReleaseInfoKHR const&() const
     {
       return *reinterpret_cast<const VkWin32KeyedMutexAcquireReleaseInfoKHR*>(this);
+    }
+
+    operator VkWin32KeyedMutexAcquireReleaseInfoKHR &()
+    {
+      return *reinterpret_cast<VkWin32KeyedMutexAcquireReleaseInfoKHR*>(this);
     }
 
     bool operator==( Win32KeyedMutexAcquireReleaseInfoKHR const& rhs ) const
@@ -12821,9 +13325,14 @@ public:
       return *this;
     }
 
-    operator const VkExportSemaphoreWin32HandleInfoKHR&() const
+    operator VkExportSemaphoreWin32HandleInfoKHR const&() const
     {
       return *reinterpret_cast<const VkExportSemaphoreWin32HandleInfoKHR*>(this);
+    }
+
+    operator VkExportSemaphoreWin32HandleInfoKHR &()
+    {
+      return *reinterpret_cast<VkExportSemaphoreWin32HandleInfoKHR*>(this);
     }
 
     bool operator==( ExportSemaphoreWin32HandleInfoKHR const& rhs ) const
@@ -12906,9 +13415,14 @@ public:
       return *this;
     }
 
-    operator const VkD3D12FenceSubmitInfoKHR&() const
+    operator VkD3D12FenceSubmitInfoKHR const&() const
     {
       return *reinterpret_cast<const VkD3D12FenceSubmitInfoKHR*>(this);
+    }
+
+    operator VkD3D12FenceSubmitInfoKHR &()
+    {
+      return *reinterpret_cast<VkD3D12FenceSubmitInfoKHR*>(this);
     }
 
     bool operator==( D3D12FenceSubmitInfoKHR const& rhs ) const
@@ -12985,9 +13499,14 @@ public:
       return *this;
     }
 
-    operator const VkExportFenceWin32HandleInfoKHR&() const
+    operator VkExportFenceWin32HandleInfoKHR const&() const
     {
       return *reinterpret_cast<const VkExportFenceWin32HandleInfoKHR*>(this);
+    }
+
+    operator VkExportFenceWin32HandleInfoKHR &()
+    {
+      return *reinterpret_cast<VkExportFenceWin32HandleInfoKHR*>(this);
     }
 
     bool operator==( ExportFenceWin32HandleInfoKHR const& rhs ) const
@@ -13061,9 +13580,14 @@ public:
       return *this;
     }
 
-    operator const VkPhysicalDeviceMultiviewFeatures&() const
+    operator VkPhysicalDeviceMultiviewFeatures const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceMultiviewFeatures*>(this);
+    }
+
+    operator VkPhysicalDeviceMultiviewFeatures &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceMultiviewFeatures*>(this);
     }
 
     bool operator==( PhysicalDeviceMultiviewFeatures const& rhs ) const
@@ -13095,9 +13619,14 @@ public:
 
   struct PhysicalDeviceMultiviewProperties
   {
-    operator const VkPhysicalDeviceMultiviewProperties&() const
+    operator VkPhysicalDeviceMultiviewProperties const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceMultiviewProperties*>(this);
+    }
+
+    operator VkPhysicalDeviceMultiviewProperties &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceMultiviewProperties*>(this);
     }
 
     bool operator==( PhysicalDeviceMultiviewProperties const& rhs ) const
@@ -13194,9 +13723,14 @@ public:
       return *this;
     }
 
-    operator const VkRenderPassMultiviewCreateInfo&() const
+    operator VkRenderPassMultiviewCreateInfo const&() const
     {
       return *reinterpret_cast<const VkRenderPassMultiviewCreateInfo*>(this);
+    }
+
+    operator VkRenderPassMultiviewCreateInfo &()
+    {
+      return *reinterpret_cast<VkRenderPassMultiviewCreateInfo*>(this);
     }
 
     bool operator==( RenderPassMultiviewCreateInfo const& rhs ) const
@@ -13277,9 +13811,14 @@ public:
       return *this;
     }
 
-    operator const VkBindBufferMemoryInfo&() const
+    operator VkBindBufferMemoryInfo const&() const
     {
       return *reinterpret_cast<const VkBindBufferMemoryInfo*>(this);
+    }
+
+    operator VkBindBufferMemoryInfo &()
+    {
+      return *reinterpret_cast<VkBindBufferMemoryInfo*>(this);
     }
 
     bool operator==( BindBufferMemoryInfo const& rhs ) const
@@ -13346,9 +13885,14 @@ public:
       return *this;
     }
 
-    operator const VkBindBufferMemoryDeviceGroupInfo&() const
+    operator VkBindBufferMemoryDeviceGroupInfo const&() const
     {
       return *reinterpret_cast<const VkBindBufferMemoryDeviceGroupInfo*>(this);
+    }
+
+    operator VkBindBufferMemoryDeviceGroupInfo &()
+    {
+      return *reinterpret_cast<VkBindBufferMemoryDeviceGroupInfo*>(this);
     }
 
     bool operator==( BindBufferMemoryDeviceGroupInfo const& rhs ) const
@@ -13421,9 +13965,14 @@ public:
       return *this;
     }
 
-    operator const VkBindImageMemoryInfo&() const
+    operator VkBindImageMemoryInfo const&() const
     {
       return *reinterpret_cast<const VkBindImageMemoryInfo*>(this);
+    }
+
+    operator VkBindImageMemoryInfo &()
+    {
+      return *reinterpret_cast<VkBindImageMemoryInfo*>(this);
     }
 
     bool operator==( BindImageMemoryInfo const& rhs ) const
@@ -13506,9 +14055,14 @@ public:
       return *this;
     }
 
-    operator const VkBindImageMemoryDeviceGroupInfo&() const
+    operator VkBindImageMemoryDeviceGroupInfo const&() const
     {
       return *reinterpret_cast<const VkBindImageMemoryDeviceGroupInfo*>(this);
+    }
+
+    operator VkBindImageMemoryDeviceGroupInfo &()
+    {
+      return *reinterpret_cast<VkBindImageMemoryDeviceGroupInfo*>(this);
     }
 
     bool operator==( BindImageMemoryDeviceGroupInfo const& rhs ) const
@@ -13585,9 +14139,14 @@ public:
       return *this;
     }
 
-    operator const VkDeviceGroupRenderPassBeginInfo&() const
+    operator VkDeviceGroupRenderPassBeginInfo const&() const
     {
       return *reinterpret_cast<const VkDeviceGroupRenderPassBeginInfo*>(this);
+    }
+
+    operator VkDeviceGroupRenderPassBeginInfo &()
+    {
+      return *reinterpret_cast<VkDeviceGroupRenderPassBeginInfo*>(this);
     }
 
     bool operator==( DeviceGroupRenderPassBeginInfo const& rhs ) const
@@ -13646,9 +14205,14 @@ public:
       return *this;
     }
 
-    operator const VkDeviceGroupCommandBufferBeginInfo&() const
+    operator VkDeviceGroupCommandBufferBeginInfo const&() const
     {
       return *reinterpret_cast<const VkDeviceGroupCommandBufferBeginInfo*>(this);
+    }
+
+    operator VkDeviceGroupCommandBufferBeginInfo &()
+    {
+      return *reinterpret_cast<VkDeviceGroupCommandBufferBeginInfo*>(this);
     }
 
     bool operator==( DeviceGroupCommandBufferBeginInfo const& rhs ) const
@@ -13743,9 +14307,14 @@ public:
       return *this;
     }
 
-    operator const VkDeviceGroupSubmitInfo&() const
+    operator VkDeviceGroupSubmitInfo const&() const
     {
       return *reinterpret_cast<const VkDeviceGroupSubmitInfo*>(this);
+    }
+
+    operator VkDeviceGroupSubmitInfo &()
+    {
+      return *reinterpret_cast<VkDeviceGroupSubmitInfo*>(this);
     }
 
     bool operator==( DeviceGroupSubmitInfo const& rhs ) const
@@ -13818,9 +14387,14 @@ public:
       return *this;
     }
 
-    operator const VkDeviceGroupBindSparseInfo&() const
+    operator VkDeviceGroupBindSparseInfo const&() const
     {
       return *reinterpret_cast<const VkDeviceGroupBindSparseInfo*>(this);
+    }
+
+    operator VkDeviceGroupBindSparseInfo &()
+    {
+      return *reinterpret_cast<VkDeviceGroupBindSparseInfo*>(this);
     }
 
     bool operator==( DeviceGroupBindSparseInfo const& rhs ) const
@@ -13877,9 +14451,14 @@ public:
       return *this;
     }
 
-    operator const VkImageSwapchainCreateInfoKHR&() const
+    operator VkImageSwapchainCreateInfoKHR const&() const
     {
       return *reinterpret_cast<const VkImageSwapchainCreateInfoKHR*>(this);
+    }
+
+    operator VkImageSwapchainCreateInfoKHR &()
+    {
+      return *reinterpret_cast<VkImageSwapchainCreateInfoKHR*>(this);
     }
 
     bool operator==( ImageSwapchainCreateInfoKHR const& rhs ) const
@@ -13940,9 +14519,14 @@ public:
       return *this;
     }
 
-    operator const VkBindImageMemorySwapchainInfoKHR&() const
+    operator VkBindImageMemorySwapchainInfoKHR const&() const
     {
       return *reinterpret_cast<const VkBindImageMemorySwapchainInfoKHR*>(this);
+    }
+
+    operator VkBindImageMemorySwapchainInfoKHR &()
+    {
+      return *reinterpret_cast<VkBindImageMemorySwapchainInfoKHR*>(this);
     }
 
     bool operator==( BindImageMemorySwapchainInfoKHR const& rhs ) const
@@ -14029,9 +14613,14 @@ public:
       return *this;
     }
 
-    operator const VkAcquireNextImageInfoKHR&() const
+    operator VkAcquireNextImageInfoKHR const&() const
     {
       return *reinterpret_cast<const VkAcquireNextImageInfoKHR*>(this);
+    }
+
+    operator VkAcquireNextImageInfoKHR &()
+    {
+      return *reinterpret_cast<VkAcquireNextImageInfoKHR*>(this);
     }
 
     bool operator==( AcquireNextImageInfoKHR const& rhs ) const
@@ -14148,9 +14737,14 @@ public:
       return *this;
     }
 
-    operator const VkHdrMetadataEXT&() const
+    operator VkHdrMetadataEXT const&() const
     {
       return *reinterpret_cast<const VkHdrMetadataEXT*>(this);
+    }
+
+    operator VkHdrMetadataEXT &()
+    {
+      return *reinterpret_cast<VkHdrMetadataEXT*>(this);
     }
 
     bool operator==( HdrMetadataEXT const& rhs ) const
@@ -14225,9 +14819,14 @@ public:
       return *this;
     }
 
-    operator const VkPresentTimesInfoGOOGLE&() const
+    operator VkPresentTimesInfoGOOGLE const&() const
     {
       return *reinterpret_cast<const VkPresentTimesInfoGOOGLE*>(this);
+    }
+
+    operator VkPresentTimesInfoGOOGLE &()
+    {
+      return *reinterpret_cast<VkPresentTimesInfoGOOGLE*>(this);
     }
 
     bool operator==( PresentTimesInfoGOOGLE const& rhs ) const
@@ -14291,9 +14890,14 @@ public:
       return *this;
     }
 
-    operator const VkIOSSurfaceCreateInfoMVK&() const
+    operator VkIOSSurfaceCreateInfoMVK const&() const
     {
       return *reinterpret_cast<const VkIOSSurfaceCreateInfoMVK*>(this);
+    }
+
+    operator VkIOSSurfaceCreateInfoMVK &()
+    {
+      return *reinterpret_cast<VkIOSSurfaceCreateInfoMVK*>(this);
     }
 
     bool operator==( IOSSurfaceCreateInfoMVK const& rhs ) const
@@ -14358,9 +14962,14 @@ public:
       return *this;
     }
 
-    operator const VkMacOSSurfaceCreateInfoMVK&() const
+    operator VkMacOSSurfaceCreateInfoMVK const&() const
     {
       return *reinterpret_cast<const VkMacOSSurfaceCreateInfoMVK*>(this);
+    }
+
+    operator VkMacOSSurfaceCreateInfoMVK &()
+    {
+      return *reinterpret_cast<VkMacOSSurfaceCreateInfoMVK*>(this);
     }
 
     bool operator==( MacOSSurfaceCreateInfoMVK const& rhs ) const
@@ -14432,9 +15041,14 @@ public:
       return *this;
     }
 
-    operator const VkPipelineViewportWScalingStateCreateInfoNV&() const
+    operator VkPipelineViewportWScalingStateCreateInfoNV const&() const
     {
       return *reinterpret_cast<const VkPipelineViewportWScalingStateCreateInfoNV*>(this);
+    }
+
+    operator VkPipelineViewportWScalingStateCreateInfoNV &()
+    {
+      return *reinterpret_cast<VkPipelineViewportWScalingStateCreateInfoNV*>(this);
     }
 
     bool operator==( PipelineViewportWScalingStateCreateInfoNV const& rhs ) const
@@ -14491,9 +15105,14 @@ public:
       return *this;
     }
 
-    operator const VkPhysicalDeviceDiscardRectanglePropertiesEXT&() const
+    operator VkPhysicalDeviceDiscardRectanglePropertiesEXT const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceDiscardRectanglePropertiesEXT*>(this);
+    }
+
+    operator VkPhysicalDeviceDiscardRectanglePropertiesEXT &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceDiscardRectanglePropertiesEXT*>(this);
     }
 
     bool operator==( PhysicalDeviceDiscardRectanglePropertiesEXT const& rhs ) const
@@ -14519,9 +15138,14 @@ public:
 
   struct PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX
   {
-    operator const VkPhysicalDeviceMultiviewPerViewAttributesPropertiesNVX&() const
+    operator VkPhysicalDeviceMultiviewPerViewAttributesPropertiesNVX const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceMultiviewPerViewAttributesPropertiesNVX*>(this);
+    }
+
+    operator VkPhysicalDeviceMultiviewPerViewAttributesPropertiesNVX &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceMultiviewPerViewAttributesPropertiesNVX*>(this);
     }
 
     bool operator==( PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX const& rhs ) const
@@ -14574,9 +15198,14 @@ public:
       return *this;
     }
 
-    operator const VkPhysicalDeviceSurfaceInfo2KHR&() const
+    operator VkPhysicalDeviceSurfaceInfo2KHR const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceSurfaceInfo2KHR*>(this);
+    }
+
+    operator VkPhysicalDeviceSurfaceInfo2KHR &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceSurfaceInfo2KHR*>(this);
     }
 
     bool operator==( PhysicalDeviceSurfaceInfo2KHR const& rhs ) const
@@ -14602,9 +15231,14 @@ public:
 
   struct DisplayPlaneProperties2KHR
   {
-    operator const VkDisplayPlaneProperties2KHR&() const
+    operator VkDisplayPlaneProperties2KHR const&() const
     {
       return *reinterpret_cast<const VkDisplayPlaneProperties2KHR*>(this);
+    }
+
+    operator VkDisplayPlaneProperties2KHR &()
+    {
+      return *reinterpret_cast<VkDisplayPlaneProperties2KHR*>(this);
     }
 
     bool operator==( DisplayPlaneProperties2KHR const& rhs ) const
@@ -14630,9 +15264,14 @@ public:
 
   struct DisplayModeProperties2KHR
   {
-    operator const VkDisplayModeProperties2KHR&() const
+    operator VkDisplayModeProperties2KHR const&() const
     {
       return *reinterpret_cast<const VkDisplayModeProperties2KHR*>(this);
+    }
+
+    operator VkDisplayModeProperties2KHR &()
+    {
+      return *reinterpret_cast<VkDisplayModeProperties2KHR*>(this);
     }
 
     bool operator==( DisplayModeProperties2KHR const& rhs ) const
@@ -14693,9 +15332,14 @@ public:
       return *this;
     }
 
-    operator const VkDisplayPlaneInfo2KHR&() const
+    operator VkDisplayPlaneInfo2KHR const&() const
     {
       return *reinterpret_cast<const VkDisplayPlaneInfo2KHR*>(this);
+    }
+
+    operator VkDisplayPlaneInfo2KHR &()
+    {
+      return *reinterpret_cast<VkDisplayPlaneInfo2KHR*>(this);
     }
 
     bool operator==( DisplayPlaneInfo2KHR const& rhs ) const
@@ -14774,9 +15418,14 @@ public:
       return *this;
     }
 
-    operator const VkPhysicalDevice16BitStorageFeatures&() const
+    operator VkPhysicalDevice16BitStorageFeatures const&() const
     {
       return *reinterpret_cast<const VkPhysicalDevice16BitStorageFeatures*>(this);
+    }
+
+    operator VkPhysicalDevice16BitStorageFeatures &()
+    {
+      return *reinterpret_cast<VkPhysicalDevice16BitStorageFeatures*>(this);
     }
 
     bool operator==( PhysicalDevice16BitStorageFeatures const& rhs ) const
@@ -14837,9 +15486,14 @@ public:
       return *this;
     }
 
-    operator const VkBufferMemoryRequirementsInfo2&() const
+    operator VkBufferMemoryRequirementsInfo2 const&() const
     {
       return *reinterpret_cast<const VkBufferMemoryRequirementsInfo2*>(this);
+    }
+
+    operator VkBufferMemoryRequirementsInfo2 &()
+    {
+      return *reinterpret_cast<VkBufferMemoryRequirementsInfo2*>(this);
     }
 
     bool operator==( BufferMemoryRequirementsInfo2 const& rhs ) const
@@ -14894,9 +15548,14 @@ public:
       return *this;
     }
 
-    operator const VkImageMemoryRequirementsInfo2&() const
+    operator VkImageMemoryRequirementsInfo2 const&() const
     {
       return *reinterpret_cast<const VkImageMemoryRequirementsInfo2*>(this);
+    }
+
+    operator VkImageMemoryRequirementsInfo2 &()
+    {
+      return *reinterpret_cast<VkImageMemoryRequirementsInfo2*>(this);
     }
 
     bool operator==( ImageMemoryRequirementsInfo2 const& rhs ) const
@@ -14951,9 +15610,14 @@ public:
       return *this;
     }
 
-    operator const VkImageSparseMemoryRequirementsInfo2&() const
+    operator VkImageSparseMemoryRequirementsInfo2 const&() const
     {
       return *reinterpret_cast<const VkImageSparseMemoryRequirementsInfo2*>(this);
+    }
+
+    operator VkImageSparseMemoryRequirementsInfo2 &()
+    {
+      return *reinterpret_cast<VkImageSparseMemoryRequirementsInfo2*>(this);
     }
 
     bool operator==( ImageSparseMemoryRequirementsInfo2 const& rhs ) const
@@ -14981,9 +15645,14 @@ public:
 
   struct MemoryRequirements2
   {
-    operator const VkMemoryRequirements2&() const
+    operator VkMemoryRequirements2 const&() const
     {
       return *reinterpret_cast<const VkMemoryRequirements2*>(this);
+    }
+
+    operator VkMemoryRequirements2 &()
+    {
+      return *reinterpret_cast<VkMemoryRequirements2*>(this);
     }
 
     bool operator==( MemoryRequirements2 const& rhs ) const
@@ -15011,9 +15680,14 @@ public:
 
   struct MemoryDedicatedRequirements
   {
-    operator const VkMemoryDedicatedRequirements&() const
+    operator VkMemoryDedicatedRequirements const&() const
     {
       return *reinterpret_cast<const VkMemoryDedicatedRequirements*>(this);
+    }
+
+    operator VkMemoryDedicatedRequirements &()
+    {
+      return *reinterpret_cast<VkMemoryDedicatedRequirements*>(this);
     }
 
     bool operator==( MemoryDedicatedRequirements const& rhs ) const
@@ -15078,9 +15752,14 @@ public:
       return *this;
     }
 
-    operator const VkMemoryDedicatedAllocateInfo&() const
+    operator VkMemoryDedicatedAllocateInfo const&() const
     {
       return *reinterpret_cast<const VkMemoryDedicatedAllocateInfo*>(this);
+    }
+
+    operator VkMemoryDedicatedAllocateInfo &()
+    {
+      return *reinterpret_cast<VkMemoryDedicatedAllocateInfo*>(this);
     }
 
     bool operator==( MemoryDedicatedAllocateInfo const& rhs ) const
@@ -15137,9 +15816,14 @@ public:
       return *this;
     }
 
-    operator const VkSamplerYcbcrConversionInfo&() const
+    operator VkSamplerYcbcrConversionInfo const&() const
     {
       return *reinterpret_cast<const VkSamplerYcbcrConversionInfo*>(this);
+    }
+
+    operator VkSamplerYcbcrConversionInfo &()
+    {
+      return *reinterpret_cast<VkSamplerYcbcrConversionInfo*>(this);
     }
 
     bool operator==( SamplerYcbcrConversionInfo const& rhs ) const
@@ -15194,9 +15878,14 @@ public:
       return *this;
     }
 
-    operator const VkPhysicalDeviceSamplerYcbcrConversionFeatures&() const
+    operator VkPhysicalDeviceSamplerYcbcrConversionFeatures const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceSamplerYcbcrConversionFeatures*>(this);
+    }
+
+    operator VkPhysicalDeviceSamplerYcbcrConversionFeatures &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceSamplerYcbcrConversionFeatures*>(this);
     }
 
     bool operator==( PhysicalDeviceSamplerYcbcrConversionFeatures const& rhs ) const
@@ -15224,9 +15913,14 @@ public:
 
   struct SamplerYcbcrConversionImageFormatProperties
   {
-    operator const VkSamplerYcbcrConversionImageFormatProperties&() const
+    operator VkSamplerYcbcrConversionImageFormatProperties const&() const
     {
       return *reinterpret_cast<const VkSamplerYcbcrConversionImageFormatProperties*>(this);
+    }
+
+    operator VkSamplerYcbcrConversionImageFormatProperties &()
+    {
+      return *reinterpret_cast<VkSamplerYcbcrConversionImageFormatProperties*>(this);
     }
 
     bool operator==( SamplerYcbcrConversionImageFormatProperties const& rhs ) const
@@ -15254,9 +15948,14 @@ public:
 
   struct TextureLODGatherFormatPropertiesAMD
   {
-    operator const VkTextureLODGatherFormatPropertiesAMD&() const
+    operator VkTextureLODGatherFormatPropertiesAMD const&() const
     {
       return *reinterpret_cast<const VkTextureLODGatherFormatPropertiesAMD*>(this);
+    }
+
+    operator VkTextureLODGatherFormatPropertiesAMD &()
+    {
+      return *reinterpret_cast<VkTextureLODGatherFormatPropertiesAMD*>(this);
     }
 
     bool operator==( TextureLODGatherFormatPropertiesAMD const& rhs ) const
@@ -15309,9 +16008,14 @@ public:
       return *this;
     }
 
-    operator const VkProtectedSubmitInfo&() const
+    operator VkProtectedSubmitInfo const&() const
     {
       return *reinterpret_cast<const VkProtectedSubmitInfo*>(this);
+    }
+
+    operator VkProtectedSubmitInfo &()
+    {
+      return *reinterpret_cast<VkProtectedSubmitInfo*>(this);
     }
 
     bool operator==( ProtectedSubmitInfo const& rhs ) const
@@ -15364,9 +16068,14 @@ public:
       return *this;
     }
 
-    operator const VkPhysicalDeviceProtectedMemoryFeatures&() const
+    operator VkPhysicalDeviceProtectedMemoryFeatures const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceProtectedMemoryFeatures*>(this);
+    }
+
+    operator VkPhysicalDeviceProtectedMemoryFeatures &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceProtectedMemoryFeatures*>(this);
     }
 
     bool operator==( PhysicalDeviceProtectedMemoryFeatures const& rhs ) const
@@ -15419,9 +16128,14 @@ public:
       return *this;
     }
 
-    operator const VkPhysicalDeviceProtectedMemoryProperties&() const
+    operator VkPhysicalDeviceProtectedMemoryProperties const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceProtectedMemoryProperties*>(this);
+    }
+
+    operator VkPhysicalDeviceProtectedMemoryProperties &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceProtectedMemoryProperties*>(this);
     }
 
     bool operator==( PhysicalDeviceProtectedMemoryProperties const& rhs ) const
@@ -15490,9 +16204,14 @@ public:
       return *this;
     }
 
-    operator const VkPipelineCoverageToColorStateCreateInfoNV&() const
+    operator VkPipelineCoverageToColorStateCreateInfoNV const&() const
     {
       return *reinterpret_cast<const VkPipelineCoverageToColorStateCreateInfoNV*>(this);
+    }
+
+    operator VkPipelineCoverageToColorStateCreateInfoNV &()
+    {
+      return *reinterpret_cast<VkPipelineCoverageToColorStateCreateInfoNV*>(this);
     }
 
     bool operator==( PipelineCoverageToColorStateCreateInfoNV const& rhs ) const
@@ -15522,9 +16241,14 @@ public:
 
   struct PhysicalDeviceSamplerFilterMinmaxPropertiesEXT
   {
-    operator const VkPhysicalDeviceSamplerFilterMinmaxPropertiesEXT&() const
+    operator VkPhysicalDeviceSamplerFilterMinmaxPropertiesEXT const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceSamplerFilterMinmaxPropertiesEXT*>(this);
+    }
+
+    operator VkPhysicalDeviceSamplerFilterMinmaxPropertiesEXT &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceSamplerFilterMinmaxPropertiesEXT*>(this);
     }
 
     bool operator==( PhysicalDeviceSamplerFilterMinmaxPropertiesEXT const& rhs ) const
@@ -15552,9 +16276,14 @@ public:
 
   struct MultisamplePropertiesEXT
   {
-    operator const VkMultisamplePropertiesEXT&() const
+    operator VkMultisamplePropertiesEXT const&() const
     {
       return *reinterpret_cast<const VkMultisamplePropertiesEXT*>(this);
+    }
+
+    operator VkMultisamplePropertiesEXT &()
+    {
+      return *reinterpret_cast<VkMultisamplePropertiesEXT*>(this);
     }
 
     bool operator==( MultisamplePropertiesEXT const& rhs ) const
@@ -15607,9 +16336,14 @@ public:
       return *this;
     }
 
-    operator const VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT&() const
+    operator VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT*>(this);
+    }
+
+    operator VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT*>(this);
     }
 
     bool operator==( PhysicalDeviceBlendOperationAdvancedFeaturesEXT const& rhs ) const
@@ -15635,9 +16369,14 @@ public:
 
   struct PhysicalDeviceBlendOperationAdvancedPropertiesEXT
   {
-    operator const VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT&() const
+    operator VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT*>(this);
+    }
+
+    operator VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT*>(this);
     }
 
     bool operator==( PhysicalDeviceBlendOperationAdvancedPropertiesEXT const& rhs ) const
@@ -15708,9 +16447,14 @@ public:
       return *this;
     }
 
-    operator const VkImageFormatListCreateInfoKHR&() const
+    operator VkImageFormatListCreateInfoKHR const&() const
     {
       return *reinterpret_cast<const VkImageFormatListCreateInfoKHR*>(this);
+    }
+
+    operator VkImageFormatListCreateInfoKHR &()
+    {
+      return *reinterpret_cast<VkImageFormatListCreateInfoKHR*>(this);
     }
 
     bool operator==( ImageFormatListCreateInfoKHR const& rhs ) const
@@ -15781,9 +16525,14 @@ public:
       return *this;
     }
 
-    operator const VkValidationCacheCreateInfoEXT&() const
+    operator VkValidationCacheCreateInfoEXT const&() const
     {
       return *reinterpret_cast<const VkValidationCacheCreateInfoEXT*>(this);
+    }
+
+    operator VkValidationCacheCreateInfoEXT &()
+    {
+      return *reinterpret_cast<VkValidationCacheCreateInfoEXT*>(this);
     }
 
     bool operator==( ValidationCacheCreateInfoEXT const& rhs ) const
@@ -15840,9 +16589,14 @@ public:
       return *this;
     }
 
-    operator const VkShaderModuleValidationCacheCreateInfoEXT&() const
+    operator VkShaderModuleValidationCacheCreateInfoEXT const&() const
     {
       return *reinterpret_cast<const VkShaderModuleValidationCacheCreateInfoEXT*>(this);
+    }
+
+    operator VkShaderModuleValidationCacheCreateInfoEXT &()
+    {
+      return *reinterpret_cast<VkShaderModuleValidationCacheCreateInfoEXT*>(this);
     }
 
     bool operator==( ShaderModuleValidationCacheCreateInfoEXT const& rhs ) const
@@ -15868,9 +16622,14 @@ public:
 
   struct PhysicalDeviceMaintenance3Properties
   {
-    operator const VkPhysicalDeviceMaintenance3Properties&() const
+    operator VkPhysicalDeviceMaintenance3Properties const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceMaintenance3Properties*>(this);
+    }
+
+    operator VkPhysicalDeviceMaintenance3Properties &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceMaintenance3Properties*>(this);
     }
 
     bool operator==( PhysicalDeviceMaintenance3Properties const& rhs ) const
@@ -15900,9 +16659,14 @@ public:
 
   struct DescriptorSetLayoutSupport
   {
-    operator const VkDescriptorSetLayoutSupport&() const
+    operator VkDescriptorSetLayoutSupport const&() const
     {
       return *reinterpret_cast<const VkDescriptorSetLayoutSupport*>(this);
+    }
+
+    operator VkDescriptorSetLayoutSupport &()
+    {
+      return *reinterpret_cast<VkDescriptorSetLayoutSupport*>(this);
     }
 
     bool operator==( DescriptorSetLayoutSupport const& rhs ) const
@@ -15957,9 +16721,14 @@ public:
       return *this;
     }
 
-    operator const VkPhysicalDeviceShaderDrawParameterFeatures&() const
+    operator VkPhysicalDeviceShaderDrawParameterFeatures const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceShaderDrawParameterFeatures*>(this);
+    }
+
+    operator VkPhysicalDeviceShaderDrawParameterFeatures &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceShaderDrawParameterFeatures*>(this);
     }
 
     bool operator==( PhysicalDeviceShaderDrawParameterFeatures const& rhs ) const
@@ -16020,9 +16789,14 @@ public:
       return *this;
     }
 
-    operator const VkDebugUtilsLabelEXT&() const
+    operator VkDebugUtilsLabelEXT const&() const
     {
       return *reinterpret_cast<const VkDebugUtilsLabelEXT*>(this);
+    }
+
+    operator VkDebugUtilsLabelEXT &()
+    {
+      return *reinterpret_cast<VkDebugUtilsLabelEXT*>(this);
     }
 
     bool operator==( DebugUtilsLabelEXT const& rhs ) const
@@ -16077,9 +16851,14 @@ public:
       return *this;
     }
 
-    operator const VkMemoryHostPointerPropertiesEXT&() const
+    operator VkMemoryHostPointerPropertiesEXT const&() const
     {
       return *reinterpret_cast<const VkMemoryHostPointerPropertiesEXT*>(this);
+    }
+
+    operator VkMemoryHostPointerPropertiesEXT &()
+    {
+      return *reinterpret_cast<VkMemoryHostPointerPropertiesEXT*>(this);
     }
 
     bool operator==( MemoryHostPointerPropertiesEXT const& rhs ) const
@@ -16132,9 +16911,14 @@ public:
       return *this;
     }
 
-    operator const VkPhysicalDeviceExternalMemoryHostPropertiesEXT&() const
+    operator VkPhysicalDeviceExternalMemoryHostPropertiesEXT const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceExternalMemoryHostPropertiesEXT*>(this);
+    }
+
+    operator VkPhysicalDeviceExternalMemoryHostPropertiesEXT &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceExternalMemoryHostPropertiesEXT*>(this);
     }
 
     bool operator==( PhysicalDeviceExternalMemoryHostPropertiesEXT const& rhs ) const
@@ -16251,9 +17035,14 @@ public:
       return *this;
     }
 
-    operator const VkPhysicalDeviceConservativeRasterizationPropertiesEXT&() const
+    operator VkPhysicalDeviceConservativeRasterizationPropertiesEXT const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceConservativeRasterizationPropertiesEXT*>(this);
+    }
+
+    operator VkPhysicalDeviceConservativeRasterizationPropertiesEXT &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceConservativeRasterizationPropertiesEXT*>(this);
     }
 
     bool operator==( PhysicalDeviceConservativeRasterizationPropertiesEXT const& rhs ) const
@@ -16295,9 +17084,14 @@ public:
 
   struct PhysicalDeviceShaderCorePropertiesAMD
   {
-    operator const VkPhysicalDeviceShaderCorePropertiesAMD&() const
+    operator VkPhysicalDeviceShaderCorePropertiesAMD const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceShaderCorePropertiesAMD*>(this);
+    }
+
+    operator VkPhysicalDeviceShaderCorePropertiesAMD &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceShaderCorePropertiesAMD*>(this);
     }
 
     bool operator==( PhysicalDeviceShaderCorePropertiesAMD const& rhs ) const
@@ -16528,9 +17322,14 @@ public:
       return *this;
     }
 
-    operator const VkPhysicalDeviceDescriptorIndexingFeaturesEXT&() const
+    operator VkPhysicalDeviceDescriptorIndexingFeaturesEXT const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceDescriptorIndexingFeaturesEXT*>(this);
+    }
+
+    operator VkPhysicalDeviceDescriptorIndexingFeaturesEXT &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceDescriptorIndexingFeaturesEXT*>(this);
     }
 
     bool operator==( PhysicalDeviceDescriptorIndexingFeaturesEXT const& rhs ) const
@@ -16594,9 +17393,14 @@ public:
 
   struct PhysicalDeviceDescriptorIndexingPropertiesEXT
   {
-    operator const VkPhysicalDeviceDescriptorIndexingPropertiesEXT&() const
+    operator VkPhysicalDeviceDescriptorIndexingPropertiesEXT const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceDescriptorIndexingPropertiesEXT*>(this);
+    }
+
+    operator VkPhysicalDeviceDescriptorIndexingPropertiesEXT &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceDescriptorIndexingPropertiesEXT*>(this);
     }
 
     bool operator==( PhysicalDeviceDescriptorIndexingPropertiesEXT const& rhs ) const
@@ -16701,9 +17505,14 @@ public:
       return *this;
     }
 
-    operator const VkDescriptorSetVariableDescriptorCountAllocateInfoEXT&() const
+    operator VkDescriptorSetVariableDescriptorCountAllocateInfoEXT const&() const
     {
       return *reinterpret_cast<const VkDescriptorSetVariableDescriptorCountAllocateInfoEXT*>(this);
+    }
+
+    operator VkDescriptorSetVariableDescriptorCountAllocateInfoEXT &()
+    {
+      return *reinterpret_cast<VkDescriptorSetVariableDescriptorCountAllocateInfoEXT*>(this);
     }
 
     bool operator==( DescriptorSetVariableDescriptorCountAllocateInfoEXT const& rhs ) const
@@ -16731,9 +17540,14 @@ public:
 
   struct DescriptorSetVariableDescriptorCountLayoutSupportEXT
   {
-    operator const VkDescriptorSetVariableDescriptorCountLayoutSupportEXT&() const
+    operator VkDescriptorSetVariableDescriptorCountLayoutSupportEXT const&() const
     {
       return *reinterpret_cast<const VkDescriptorSetVariableDescriptorCountLayoutSupportEXT*>(this);
+    }
+
+    operator VkDescriptorSetVariableDescriptorCountLayoutSupportEXT &()
+    {
+      return *reinterpret_cast<VkDescriptorSetVariableDescriptorCountLayoutSupportEXT*>(this);
     }
 
     bool operator==( DescriptorSetVariableDescriptorCountLayoutSupportEXT const& rhs ) const
@@ -16779,9 +17593,14 @@ public:
       return *this;
     }
 
-    operator const VkSubpassEndInfoKHR&() const
+    operator VkSubpassEndInfoKHR const&() const
     {
       return *reinterpret_cast<const VkSubpassEndInfoKHR*>(this);
+    }
+
+    operator VkSubpassEndInfoKHR &()
+    {
+      return *reinterpret_cast<VkSubpassEndInfoKHR*>(this);
     }
 
     bool operator==( SubpassEndInfoKHR const& rhs ) const
@@ -16840,9 +17659,14 @@ public:
       return *this;
     }
 
-    operator const VkPipelineVertexInputDivisorStateCreateInfoEXT&() const
+    operator VkPipelineVertexInputDivisorStateCreateInfoEXT const&() const
     {
       return *reinterpret_cast<const VkPipelineVertexInputDivisorStateCreateInfoEXT*>(this);
+    }
+
+    operator VkPipelineVertexInputDivisorStateCreateInfoEXT &()
+    {
+      return *reinterpret_cast<VkPipelineVertexInputDivisorStateCreateInfoEXT*>(this);
     }
 
     bool operator==( PipelineVertexInputDivisorStateCreateInfoEXT const& rhs ) const
@@ -16897,9 +17721,14 @@ public:
       return *this;
     }
 
-    operator const VkPhysicalDeviceVertexAttributeDivisorPropertiesEXT&() const
+    operator VkPhysicalDeviceVertexAttributeDivisorPropertiesEXT const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceVertexAttributeDivisorPropertiesEXT*>(this);
+    }
+
+    operator VkPhysicalDeviceVertexAttributeDivisorPropertiesEXT &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceVertexAttributeDivisorPropertiesEXT*>(this);
     }
 
     bool operator==( PhysicalDeviceVertexAttributeDivisorPropertiesEXT const& rhs ) const
@@ -16953,9 +17782,14 @@ public:
       return *this;
     }
 
-    operator const VkImportAndroidHardwareBufferInfoANDROID&() const
+    operator VkImportAndroidHardwareBufferInfoANDROID const&() const
     {
       return *reinterpret_cast<const VkImportAndroidHardwareBufferInfoANDROID*>(this);
+    }
+
+    operator VkImportAndroidHardwareBufferInfoANDROID &()
+    {
+      return *reinterpret_cast<VkImportAndroidHardwareBufferInfoANDROID*>(this);
     }
 
     bool operator==( ImportAndroidHardwareBufferInfoANDROID const& rhs ) const
@@ -16983,9 +17817,14 @@ public:
 #ifdef VK_USE_PLATFORM_ANDROID_ANDROID
   struct AndroidHardwareBufferUsageANDROID
   {
-    operator const VkAndroidHardwareBufferUsageANDROID&() const
+    operator VkAndroidHardwareBufferUsageANDROID const&() const
     {
       return *reinterpret_cast<const VkAndroidHardwareBufferUsageANDROID*>(this);
+    }
+
+    operator VkAndroidHardwareBufferUsageANDROID &()
+    {
+      return *reinterpret_cast<VkAndroidHardwareBufferUsageANDROID*>(this);
     }
 
     bool operator==( AndroidHardwareBufferUsageANDROID const& rhs ) const
@@ -17013,9 +17852,14 @@ public:
 #ifdef VK_USE_PLATFORM_ANDROID_ANDROID
   struct AndroidHardwareBufferPropertiesANDROID
   {
-    operator const VkAndroidHardwareBufferPropertiesANDROID&() const
+    operator VkAndroidHardwareBufferPropertiesANDROID const&() const
     {
       return *reinterpret_cast<const VkAndroidHardwareBufferPropertiesANDROID*>(this);
+    }
+
+    operator VkAndroidHardwareBufferPropertiesANDROID &()
+    {
+      return *reinterpret_cast<VkAndroidHardwareBufferPropertiesANDROID*>(this);
     }
 
     bool operator==( AndroidHardwareBufferPropertiesANDROID const& rhs ) const
@@ -17072,9 +17916,14 @@ public:
       return *this;
     }
 
-    operator const VkMemoryGetAndroidHardwareBufferInfoANDROID&() const
+    operator VkMemoryGetAndroidHardwareBufferInfoANDROID const&() const
     {
       return *reinterpret_cast<const VkMemoryGetAndroidHardwareBufferInfoANDROID*>(this);
+    }
+
+    operator VkMemoryGetAndroidHardwareBufferInfoANDROID &()
+    {
+      return *reinterpret_cast<VkMemoryGetAndroidHardwareBufferInfoANDROID*>(this);
     }
 
     bool operator==( MemoryGetAndroidHardwareBufferInfoANDROID const& rhs ) const
@@ -17128,9 +17977,14 @@ public:
       return *this;
     }
 
-    operator const VkCommandBufferInheritanceConditionalRenderingInfoEXT&() const
+    operator VkCommandBufferInheritanceConditionalRenderingInfoEXT const&() const
     {
       return *reinterpret_cast<const VkCommandBufferInheritanceConditionalRenderingInfoEXT*>(this);
+    }
+
+    operator VkCommandBufferInheritanceConditionalRenderingInfoEXT &()
+    {
+      return *reinterpret_cast<VkCommandBufferInheritanceConditionalRenderingInfoEXT*>(this);
     }
 
     bool operator==( CommandBufferInheritanceConditionalRenderingInfoEXT const& rhs ) const
@@ -17184,9 +18038,14 @@ public:
       return *this;
     }
 
-    operator const VkExternalFormatANDROID&() const
+    operator VkExternalFormatANDROID const&() const
     {
       return *reinterpret_cast<const VkExternalFormatANDROID*>(this);
+    }
+
+    operator VkExternalFormatANDROID &()
+    {
+      return *reinterpret_cast<VkExternalFormatANDROID*>(this);
     }
 
     bool operator==( ExternalFormatANDROID const& rhs ) const
@@ -17256,9 +18115,14 @@ public:
       return *this;
     }
 
-    operator const VkPhysicalDevice8BitStorageFeaturesKHR&() const
+    operator VkPhysicalDevice8BitStorageFeaturesKHR const&() const
     {
       return *reinterpret_cast<const VkPhysicalDevice8BitStorageFeaturesKHR*>(this);
+    }
+
+    operator VkPhysicalDevice8BitStorageFeaturesKHR &()
+    {
+      return *reinterpret_cast<VkPhysicalDevice8BitStorageFeaturesKHR*>(this);
     }
 
     bool operator==( PhysicalDevice8BitStorageFeaturesKHR const& rhs ) const
@@ -17323,9 +18187,14 @@ public:
       return *this;
     }
 
-    operator const VkPhysicalDeviceConditionalRenderingFeaturesEXT&() const
+    operator VkPhysicalDeviceConditionalRenderingFeaturesEXT const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceConditionalRenderingFeaturesEXT*>(this);
+    }
+
+    operator VkPhysicalDeviceConditionalRenderingFeaturesEXT &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceConditionalRenderingFeaturesEXT*>(this);
     }
 
     bool operator==( PhysicalDeviceConditionalRenderingFeaturesEXT const& rhs ) const
@@ -17386,9 +18255,14 @@ public:
       return *this;
     }
 
-    operator const VkSubpassBeginInfoKHR&() const
+    operator VkSubpassBeginInfoKHR const&() const
     {
       return *reinterpret_cast<const VkSubpassBeginInfoKHR*>(this);
+    }
+
+    operator VkSubpassBeginInfoKHR &()
+    {
+      return *reinterpret_cast<VkSubpassBeginInfoKHR*>(this);
     }
 
     bool operator==( SubpassBeginInfoKHR const& rhs ) const
@@ -17481,9 +18355,14 @@ public:
       return *this;
     }
 
-    operator const VkPresentInfoKHR&() const
+    operator VkPresentInfoKHR const&() const
     {
       return *reinterpret_cast<const VkPresentInfoKHR*>(this);
+    }
+
+    operator VkPresentInfoKHR &()
+    {
+      return *reinterpret_cast<VkPresentInfoKHR*>(this);
     }
 
     bool operator==( PresentInfoKHR const& rhs ) const
@@ -17578,9 +18457,14 @@ public:
       return *this;
     }
 
-    operator const VkPipelineDynamicStateCreateInfo&() const
+    operator VkPipelineDynamicStateCreateInfo const&() const
     {
       return *reinterpret_cast<const VkPipelineDynamicStateCreateInfo*>(this);
+    }
+
+    operator VkPipelineDynamicStateCreateInfo &()
+    {
+      return *reinterpret_cast<VkPipelineDynamicStateCreateInfo*>(this);
     }
 
     bool operator==( PipelineDynamicStateCreateInfo const& rhs ) const
@@ -17700,9 +18584,14 @@ public:
       return *this;
     }
 
-    operator const VkDescriptorUpdateTemplateCreateInfo&() const
+    operator VkDescriptorUpdateTemplateCreateInfo const&() const
     {
       return *reinterpret_cast<const VkDescriptorUpdateTemplateCreateInfo*>(this);
+    }
+
+    operator VkDescriptorUpdateTemplateCreateInfo &()
+    {
+      return *reinterpret_cast<VkDescriptorUpdateTemplateCreateInfo*>(this);
     }
 
     bool operator==( DescriptorUpdateTemplateCreateInfo const& rhs ) const
@@ -17830,9 +18719,14 @@ public:
       return *this;
     }
 
-    operator const VkDebugUtilsObjectNameInfoEXT&() const
+    operator VkDebugUtilsObjectNameInfoEXT const&() const
     {
       return *reinterpret_cast<const VkDebugUtilsObjectNameInfoEXT*>(this);
+    }
+
+    operator VkDebugUtilsObjectNameInfoEXT &()
+    {
+      return *reinterpret_cast<VkDebugUtilsObjectNameInfoEXT*>(this);
     }
 
     bool operator==( DebugUtilsObjectNameInfoEXT const& rhs ) const
@@ -17921,9 +18815,14 @@ public:
       return *this;
     }
 
-    operator const VkDebugUtilsObjectTagInfoEXT&() const
+    operator VkDebugUtilsObjectTagInfoEXT const&() const
     {
       return *reinterpret_cast<const VkDebugUtilsObjectTagInfoEXT*>(this);
+    }
+
+    operator VkDebugUtilsObjectTagInfoEXT &()
+    {
+      return *reinterpret_cast<VkDebugUtilsObjectTagInfoEXT*>(this);
     }
 
     bool operator==( DebugUtilsObjectTagInfoEXT const& rhs ) const
@@ -18056,9 +18955,14 @@ public:
       return *this;
     }
 
-    operator const VkDebugUtilsMessengerCallbackDataEXT&() const
+    operator VkDebugUtilsMessengerCallbackDataEXT const&() const
     {
       return *reinterpret_cast<const VkDebugUtilsMessengerCallbackDataEXT*>(this);
+    }
+
+    operator VkDebugUtilsMessengerCallbackDataEXT &()
+    {
+      return *reinterpret_cast<VkDebugUtilsMessengerCallbackDataEXT*>(this);
     }
 
     bool operator==( DebugUtilsMessengerCallbackDataEXT const& rhs ) const
@@ -18131,9 +19035,14 @@ public:
 
   struct QueueFamilyProperties
   {
-    operator const VkQueueFamilyProperties&() const
+    operator VkQueueFamilyProperties const&() const
     {
       return *reinterpret_cast<const VkQueueFamilyProperties*>(this);
+    }
+
+    operator VkQueueFamilyProperties &()
+    {
+      return *reinterpret_cast<VkQueueFamilyProperties*>(this);
     }
 
     bool operator==( QueueFamilyProperties const& rhs ) const
@@ -18158,9 +19067,14 @@ public:
 
   struct QueueFamilyProperties2
   {
-    operator const VkQueueFamilyProperties2&() const
+    operator VkQueueFamilyProperties2 const&() const
     {
       return *reinterpret_cast<const VkQueueFamilyProperties2*>(this);
+    }
+
+    operator VkQueueFamilyProperties2 &()
+    {
+      return *reinterpret_cast<VkQueueFamilyProperties2*>(this);
     }
 
     bool operator==( QueueFamilyProperties2 const& rhs ) const
@@ -18264,9 +19178,14 @@ public:
       return *this;
     }
 
-    operator const VkDeviceQueueCreateInfo&() const
+    operator VkDeviceQueueCreateInfo const&() const
     {
       return *reinterpret_cast<const VkDeviceQueueCreateInfo*>(this);
+    }
+
+    operator VkDeviceQueueCreateInfo &()
+    {
+      return *reinterpret_cast<VkDeviceQueueCreateInfo*>(this);
     }
 
     bool operator==( DeviceQueueCreateInfo const& rhs ) const
@@ -18381,9 +19300,14 @@ public:
       return *this;
     }
 
-    operator const VkDeviceCreateInfo&() const
+    operator VkDeviceCreateInfo const&() const
     {
       return *reinterpret_cast<const VkDeviceCreateInfo*>(this);
+    }
+
+    operator VkDeviceCreateInfo &()
+    {
+      return *reinterpret_cast<VkDeviceCreateInfo*>(this);
     }
 
     bool operator==( DeviceCreateInfo const& rhs ) const
@@ -18466,9 +19390,14 @@ public:
       return *this;
     }
 
-    operator const VkDeviceQueueInfo2&() const
+    operator VkDeviceQueueInfo2 const&() const
     {
       return *reinterpret_cast<const VkDeviceQueueInfo2*>(this);
+    }
+
+    operator VkDeviceQueueInfo2 &()
+    {
+      return *reinterpret_cast<VkDeviceQueueInfo2*>(this);
     }
 
     bool operator==( DeviceQueueInfo2 const& rhs ) const
@@ -18528,9 +19457,14 @@ public:
 
   struct MemoryType
   {
-    operator const VkMemoryType&() const
+    operator VkMemoryType const&() const
     {
       return *reinterpret_cast<const VkMemoryType*>(this);
+    }
+
+    operator VkMemoryType &()
+    {
+      return *reinterpret_cast<VkMemoryType*>(this);
     }
 
     bool operator==( MemoryType const& rhs ) const
@@ -18578,9 +19512,14 @@ public:
 
   struct MemoryHeap
   {
-    operator const VkMemoryHeap&() const
+    operator VkMemoryHeap const&() const
     {
       return *reinterpret_cast<const VkMemoryHeap*>(this);
+    }
+
+    operator VkMemoryHeap &()
+    {
+      return *reinterpret_cast<VkMemoryHeap*>(this);
     }
 
     bool operator==( MemoryHeap const& rhs ) const
@@ -18601,9 +19540,14 @@ public:
 
   struct PhysicalDeviceMemoryProperties
   {
-    operator const VkPhysicalDeviceMemoryProperties&() const
+    operator VkPhysicalDeviceMemoryProperties const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceMemoryProperties*>(this);
+    }
+
+    operator VkPhysicalDeviceMemoryProperties &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceMemoryProperties*>(this);
     }
 
     bool operator==( PhysicalDeviceMemoryProperties const& rhs ) const
@@ -18628,9 +19572,14 @@ public:
 
   struct PhysicalDeviceMemoryProperties2
   {
-    operator const VkPhysicalDeviceMemoryProperties2&() const
+    operator VkPhysicalDeviceMemoryProperties2 const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceMemoryProperties2*>(this);
+    }
+
+    operator VkPhysicalDeviceMemoryProperties2 &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceMemoryProperties2*>(this);
     }
 
     bool operator==( PhysicalDeviceMemoryProperties2 const& rhs ) const
@@ -18738,9 +19687,14 @@ public:
       return *this;
     }
 
-    operator const VkMemoryBarrier&() const
+    operator VkMemoryBarrier const&() const
     {
       return *reinterpret_cast<const VkMemoryBarrier*>(this);
+    }
+
+    operator VkMemoryBarrier &()
+    {
+      return *reinterpret_cast<VkMemoryBarrier*>(this);
     }
 
     bool operator==( MemoryBarrier const& rhs ) const
@@ -18843,9 +19797,14 @@ public:
       return *this;
     }
 
-    operator const VkBufferMemoryBarrier&() const
+    operator VkBufferMemoryBarrier const&() const
     {
       return *reinterpret_cast<const VkBufferMemoryBarrier*>(this);
+    }
+
+    operator VkBufferMemoryBarrier &()
+    {
+      return *reinterpret_cast<VkBufferMemoryBarrier*>(this);
     }
 
     bool operator==( BufferMemoryBarrier const& rhs ) const
@@ -19012,9 +19971,14 @@ public:
       return *this;
     }
 
-    operator const VkBufferCreateInfo&() const
+    operator VkBufferCreateInfo const&() const
     {
       return *reinterpret_cast<const VkBufferCreateInfo*>(this);
+    }
+
+    operator VkBufferCreateInfo &()
+    {
+      return *reinterpret_cast<VkBufferCreateInfo*>(this);
     }
 
     bool operator==( BufferCreateInfo const& rhs ) const
@@ -19135,9 +20099,14 @@ public:
       return *this;
     }
 
-    operator const VkDescriptorSetLayoutBinding&() const
+    operator VkDescriptorSetLayoutBinding const&() const
     {
       return *reinterpret_cast<const VkDescriptorSetLayoutBinding*>(this);
+    }
+
+    operator VkDescriptorSetLayoutBinding &()
+    {
+      return *reinterpret_cast<VkDescriptorSetLayoutBinding*>(this);
     }
 
     bool operator==( DescriptorSetLayoutBinding const& rhs ) const
@@ -19223,9 +20192,14 @@ public:
       return *this;
     }
 
-    operator const VkPipelineShaderStageCreateInfo&() const
+    operator VkPipelineShaderStageCreateInfo const&() const
     {
       return *reinterpret_cast<const VkPipelineShaderStageCreateInfo*>(this);
+    }
+
+    operator VkPipelineShaderStageCreateInfo &()
+    {
+      return *reinterpret_cast<VkPipelineShaderStageCreateInfo*>(this);
     }
 
     bool operator==( PipelineShaderStageCreateInfo const& rhs ) const
@@ -19296,9 +20270,14 @@ public:
       return *this;
     }
 
-    operator const VkPushConstantRange&() const
+    operator VkPushConstantRange const&() const
     {
       return *reinterpret_cast<const VkPushConstantRange*>(this);
+    }
+
+    operator VkPushConstantRange &()
+    {
+      return *reinterpret_cast<VkPushConstantRange*>(this);
     }
 
     bool operator==( PushConstantRange const& rhs ) const
@@ -19380,9 +20359,14 @@ public:
       return *this;
     }
 
-    operator const VkPipelineLayoutCreateInfo&() const
+    operator VkPipelineLayoutCreateInfo const&() const
     {
       return *reinterpret_cast<const VkPipelineLayoutCreateInfo*>(this);
+    }
+
+    operator VkPipelineLayoutCreateInfo &()
+    {
+      return *reinterpret_cast<VkPipelineLayoutCreateInfo*>(this);
     }
 
     bool operator==( PipelineLayoutCreateInfo const& rhs ) const
@@ -19416,9 +20400,14 @@ public:
 
   struct ShaderStatisticsInfoAMD
   {
-    operator const VkShaderStatisticsInfoAMD&() const
+    operator VkShaderStatisticsInfoAMD const&() const
     {
       return *reinterpret_cast<const VkShaderStatisticsInfoAMD*>(this);
+    }
+
+    operator VkShaderStatisticsInfoAMD &()
+    {
+      return *reinterpret_cast<VkShaderStatisticsInfoAMD*>(this);
     }
 
     bool operator==( ShaderStatisticsInfoAMD const& rhs ) const
@@ -19481,9 +20470,14 @@ public:
 
   struct SharedPresentSurfaceCapabilitiesKHR
   {
-    operator const VkSharedPresentSurfaceCapabilitiesKHR&() const
+    operator VkSharedPresentSurfaceCapabilitiesKHR const&() const
     {
       return *reinterpret_cast<const VkSharedPresentSurfaceCapabilitiesKHR*>(this);
+    }
+
+    operator VkSharedPresentSurfaceCapabilitiesKHR &()
+    {
+      return *reinterpret_cast<VkSharedPresentSurfaceCapabilitiesKHR*>(this);
     }
 
     bool operator==( SharedPresentSurfaceCapabilitiesKHR const& rhs ) const
@@ -19536,9 +20530,14 @@ public:
       return *this;
     }
 
-    operator const VkImageViewUsageCreateInfo&() const
+    operator VkImageViewUsageCreateInfo const&() const
     {
       return *reinterpret_cast<const VkImageViewUsageCreateInfo*>(this);
+    }
+
+    operator VkImageViewUsageCreateInfo &()
+    {
+      return *reinterpret_cast<VkImageViewUsageCreateInfo*>(this);
     }
 
     bool operator==( ImageViewUsageCreateInfo const& rhs ) const
@@ -19668,9 +20667,14 @@ public:
       return *this;
     }
 
-    operator const VkPhysicalDeviceImageFormatInfo2&() const
+    operator VkPhysicalDeviceImageFormatInfo2 const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceImageFormatInfo2*>(this);
+    }
+
+    operator VkPhysicalDeviceImageFormatInfo2 &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceImageFormatInfo2*>(this);
     }
 
     bool operator==( PhysicalDeviceImageFormatInfo2 const& rhs ) const
@@ -19796,9 +20800,14 @@ public:
       return *this;
     }
 
-    operator const VkComputePipelineCreateInfo&() const
+    operator VkComputePipelineCreateInfo const&() const
     {
       return *reinterpret_cast<const VkComputePipelineCreateInfo*>(this);
+    }
+
+    operator VkComputePipelineCreateInfo &()
+    {
+      return *reinterpret_cast<VkComputePipelineCreateInfo*>(this);
     }
 
     bool operator==( ComputePipelineCreateInfo const& rhs ) const
@@ -19937,9 +20946,14 @@ public:
       return *this;
     }
 
-    operator const VkPipelineColorBlendAttachmentState&() const
+    operator VkPipelineColorBlendAttachmentState const&() const
     {
       return *reinterpret_cast<const VkPipelineColorBlendAttachmentState*>(this);
+    }
+
+    operator VkPipelineColorBlendAttachmentState &()
+    {
+      return *reinterpret_cast<VkPipelineColorBlendAttachmentState*>(this);
     }
 
     bool operator==( PipelineColorBlendAttachmentState const& rhs ) const
@@ -20039,9 +21053,14 @@ public:
       return *this;
     }
 
-    operator const VkPipelineColorBlendStateCreateInfo&() const
+    operator VkPipelineColorBlendStateCreateInfo const&() const
     {
       return *reinterpret_cast<const VkPipelineColorBlendStateCreateInfo*>(this);
+    }
+
+    operator VkPipelineColorBlendStateCreateInfo &()
+    {
+      return *reinterpret_cast<VkPipelineColorBlendStateCreateInfo*>(this);
     }
 
     bool operator==( PipelineColorBlendStateCreateInfo const& rhs ) const
@@ -20129,9 +21148,14 @@ public:
       return *this;
     }
 
-    operator const VkFenceCreateInfo&() const
+    operator VkFenceCreateInfo const&() const
     {
       return *reinterpret_cast<const VkFenceCreateInfo*>(this);
+    }
+
+    operator VkFenceCreateInfo &()
+    {
+      return *reinterpret_cast<VkFenceCreateInfo*>(this);
     }
 
     bool operator==( FenceCreateInfo const& rhs ) const
@@ -20214,9 +21238,14 @@ public:
 
   struct FormatProperties
   {
-    operator const VkFormatProperties&() const
+    operator VkFormatProperties const&() const
     {
       return *reinterpret_cast<const VkFormatProperties*>(this);
+    }
+
+    operator VkFormatProperties &()
+    {
+      return *reinterpret_cast<VkFormatProperties*>(this);
     }
 
     bool operator==( FormatProperties const& rhs ) const
@@ -20239,9 +21268,14 @@ public:
 
   struct FormatProperties2
   {
-    operator const VkFormatProperties2&() const
+    operator VkFormatProperties2 const&() const
     {
       return *reinterpret_cast<const VkFormatProperties2*>(this);
+    }
+
+    operator VkFormatProperties2 &()
+    {
+      return *reinterpret_cast<VkFormatProperties2*>(this);
     }
 
     bool operator==( FormatProperties2 const& rhs ) const
@@ -20451,9 +21485,14 @@ public:
       return *this;
     }
 
-    operator const VkCommandBufferInheritanceInfo&() const
+    operator VkCommandBufferInheritanceInfo const&() const
     {
       return *reinterpret_cast<const VkCommandBufferInheritanceInfo*>(this);
+    }
+
+    operator VkCommandBufferInheritanceInfo &()
+    {
+      return *reinterpret_cast<VkCommandBufferInheritanceInfo*>(this);
     }
 
     bool operator==( CommandBufferInheritanceInfo const& rhs ) const
@@ -20524,9 +21563,14 @@ public:
       return *this;
     }
 
-    operator const VkCommandBufferBeginInfo&() const
+    operator VkCommandBufferBeginInfo const&() const
     {
       return *reinterpret_cast<const VkCommandBufferBeginInfo*>(this);
+    }
+
+    operator VkCommandBufferBeginInfo &()
+    {
+      return *reinterpret_cast<VkCommandBufferBeginInfo*>(this);
     }
 
     bool operator==( CommandBufferBeginInfo const& rhs ) const
@@ -20605,9 +21649,14 @@ public:
       return *this;
     }
 
-    operator const VkQueryPoolCreateInfo&() const
+    operator VkQueryPoolCreateInfo const&() const
     {
       return *reinterpret_cast<const VkQueryPoolCreateInfo*>(this);
+    }
+
+    operator VkQueryPoolCreateInfo &()
+    {
+      return *reinterpret_cast<VkQueryPoolCreateInfo*>(this);
     }
 
     bool operator==( QueryPoolCreateInfo const& rhs ) const
@@ -20710,9 +21759,14 @@ public:
       return *this;
     }
 
-    operator const VkImageSubresource&() const
+    operator VkImageSubresource const&() const
     {
       return *reinterpret_cast<const VkImageSubresource*>(this);
+    }
+
+    operator VkImageSubresource &()
+    {
+      return *reinterpret_cast<VkImageSubresource*>(this);
     }
 
     bool operator==( ImageSubresource const& rhs ) const
@@ -20780,9 +21834,14 @@ public:
       return *this;
     }
 
-    operator const VkImageSubresourceLayers&() const
+    operator VkImageSubresourceLayers const&() const
     {
       return *reinterpret_cast<const VkImageSubresourceLayers*>(this);
+    }
+
+    operator VkImageSubresourceLayers &()
+    {
+      return *reinterpret_cast<VkImageSubresourceLayers*>(this);
     }
 
     bool operator==( ImageSubresourceLayers const& rhs ) const
@@ -20860,9 +21919,14 @@ public:
       return *this;
     }
 
-    operator const VkImageSubresourceRange&() const
+    operator VkImageSubresourceRange const&() const
     {
       return *reinterpret_cast<const VkImageSubresourceRange*>(this);
+    }
+
+    operator VkImageSubresourceRange &()
+    {
+      return *reinterpret_cast<VkImageSubresourceRange*>(this);
     }
 
     bool operator==( ImageSubresourceRange const& rhs ) const
@@ -20972,9 +22036,14 @@ public:
       return *this;
     }
 
-    operator const VkImageMemoryBarrier&() const
+    operator VkImageMemoryBarrier const&() const
     {
       return *reinterpret_cast<const VkImageMemoryBarrier*>(this);
+    }
+
+    operator VkImageMemoryBarrier &()
+    {
+      return *reinterpret_cast<VkImageMemoryBarrier*>(this);
     }
 
     bool operator==( ImageMemoryBarrier const& rhs ) const
@@ -21081,9 +22150,14 @@ public:
       return *this;
     }
 
-    operator const VkImageViewCreateInfo&() const
+    operator VkImageViewCreateInfo const&() const
     {
       return *reinterpret_cast<const VkImageViewCreateInfo*>(this);
+    }
+
+    operator VkImageViewCreateInfo &()
+    {
+      return *reinterpret_cast<VkImageViewCreateInfo*>(this);
     }
 
     bool operator==( ImageViewCreateInfo const& rhs ) const
@@ -21172,9 +22246,14 @@ public:
       return *this;
     }
 
-    operator const VkImageCopy&() const
+    operator VkImageCopy const&() const
     {
       return *reinterpret_cast<const VkImageCopy*>(this);
+    }
+
+    operator VkImageCopy &()
+    {
+      return *reinterpret_cast<VkImageCopy*>(this);
     }
 
     bool operator==( ImageCopy const& rhs ) const
@@ -21246,9 +22325,14 @@ public:
       return *this;
     }
 
-    operator const VkImageBlit&() const
+    operator VkImageBlit const&() const
     {
       return *reinterpret_cast<const VkImageBlit*>(this);
+    }
+
+    operator VkImageBlit &()
+    {
+      return *reinterpret_cast<VkImageBlit*>(this);
     }
 
     bool operator==( ImageBlit const& rhs ) const
@@ -21334,9 +22418,14 @@ public:
       return *this;
     }
 
-    operator const VkBufferImageCopy&() const
+    operator VkBufferImageCopy const&() const
     {
       return *reinterpret_cast<const VkBufferImageCopy*>(this);
+    }
+
+    operator VkBufferImageCopy &()
+    {
+      return *reinterpret_cast<VkBufferImageCopy*>(this);
     }
 
     bool operator==( BufferImageCopy const& rhs ) const
@@ -21418,9 +22507,14 @@ public:
       return *this;
     }
 
-    operator const VkImageResolve&() const
+    operator VkImageResolve const&() const
     {
       return *reinterpret_cast<const VkImageResolve*>(this);
+    }
+
+    operator VkImageResolve &()
+    {
+      return *reinterpret_cast<VkImageResolve*>(this);
     }
 
     bool operator==( ImageResolve const& rhs ) const
@@ -21484,9 +22578,14 @@ public:
       return *this;
     }
 
-    operator const VkClearAttachment&() const
+    operator VkClearAttachment const&() const
     {
       return *reinterpret_cast<const VkClearAttachment*>(this);
+    }
+
+    operator VkClearAttachment &()
+    {
+      return *reinterpret_cast<VkClearAttachment*>(this);
     }
 
     ImageAspectFlags aspectMask;
@@ -21534,9 +22633,14 @@ public:
       return *this;
     }
 
-    operator const VkInputAttachmentAspectReference&() const
+    operator VkInputAttachmentAspectReference const&() const
     {
       return *reinterpret_cast<const VkInputAttachmentAspectReference*>(this);
+    }
+
+    operator VkInputAttachmentAspectReference &()
+    {
+      return *reinterpret_cast<VkInputAttachmentAspectReference*>(this);
     }
 
     bool operator==( InputAttachmentAspectReference const& rhs ) const
@@ -21596,9 +22700,14 @@ public:
       return *this;
     }
 
-    operator const VkRenderPassInputAttachmentAspectCreateInfo&() const
+    operator VkRenderPassInputAttachmentAspectCreateInfo const&() const
     {
       return *reinterpret_cast<const VkRenderPassInputAttachmentAspectCreateInfo*>(this);
+    }
+
+    operator VkRenderPassInputAttachmentAspectCreateInfo &()
+    {
+      return *reinterpret_cast<VkRenderPassInputAttachmentAspectCreateInfo*>(this);
     }
 
     bool operator==( RenderPassInputAttachmentAspectCreateInfo const& rhs ) const
@@ -21655,9 +22764,14 @@ public:
       return *this;
     }
 
-    operator const VkBindImagePlaneMemoryInfo&() const
+    operator VkBindImagePlaneMemoryInfo const&() const
     {
       return *reinterpret_cast<const VkBindImagePlaneMemoryInfo*>(this);
+    }
+
+    operator VkBindImagePlaneMemoryInfo &()
+    {
+      return *reinterpret_cast<VkBindImagePlaneMemoryInfo*>(this);
     }
 
     bool operator==( BindImagePlaneMemoryInfo const& rhs ) const
@@ -21712,9 +22826,14 @@ public:
       return *this;
     }
 
-    operator const VkImagePlaneMemoryRequirementsInfo&() const
+    operator VkImagePlaneMemoryRequirementsInfo const&() const
     {
       return *reinterpret_cast<const VkImagePlaneMemoryRequirementsInfo*>(this);
+    }
+
+    operator VkImagePlaneMemoryRequirementsInfo &()
+    {
+      return *reinterpret_cast<VkImagePlaneMemoryRequirementsInfo*>(this);
     }
 
     bool operator==( ImagePlaneMemoryRequirementsInfo const& rhs ) const
@@ -21785,9 +22904,14 @@ public:
       return *this;
     }
 
-    operator const VkAttachmentReference2KHR&() const
+    operator VkAttachmentReference2KHR const&() const
     {
       return *reinterpret_cast<const VkAttachmentReference2KHR*>(this);
+    }
+
+    operator VkAttachmentReference2KHR &()
+    {
+      return *reinterpret_cast<VkAttachmentReference2KHR*>(this);
     }
 
     bool operator==( AttachmentReference2KHR const& rhs ) const
@@ -21844,9 +22968,14 @@ public:
 
   struct SparseImageFormatProperties
   {
-    operator const VkSparseImageFormatProperties&() const
+    operator VkSparseImageFormatProperties const&() const
     {
       return *reinterpret_cast<const VkSparseImageFormatProperties*>(this);
+    }
+
+    operator VkSparseImageFormatProperties &()
+    {
+      return *reinterpret_cast<VkSparseImageFormatProperties*>(this);
     }
 
     bool operator==( SparseImageFormatProperties const& rhs ) const
@@ -21869,9 +22998,14 @@ public:
 
   struct SparseImageMemoryRequirements
   {
-    operator const VkSparseImageMemoryRequirements&() const
+    operator VkSparseImageMemoryRequirements const&() const
     {
       return *reinterpret_cast<const VkSparseImageMemoryRequirements*>(this);
+    }
+
+    operator VkSparseImageMemoryRequirements &()
+    {
+      return *reinterpret_cast<VkSparseImageMemoryRequirements*>(this);
     }
 
     bool operator==( SparseImageMemoryRequirements const& rhs ) const
@@ -21898,9 +23032,14 @@ public:
 
   struct SparseImageFormatProperties2
   {
-    operator const VkSparseImageFormatProperties2&() const
+    operator VkSparseImageFormatProperties2 const&() const
     {
       return *reinterpret_cast<const VkSparseImageFormatProperties2*>(this);
+    }
+
+    operator VkSparseImageFormatProperties2 &()
+    {
+      return *reinterpret_cast<VkSparseImageFormatProperties2*>(this);
     }
 
     bool operator==( SparseImageFormatProperties2 const& rhs ) const
@@ -21928,9 +23067,14 @@ public:
 
   struct SparseImageMemoryRequirements2
   {
-    operator const VkSparseImageMemoryRequirements2&() const
+    operator VkSparseImageMemoryRequirements2 const&() const
     {
       return *reinterpret_cast<const VkSparseImageMemoryRequirements2*>(this);
+    }
+
+    operator VkSparseImageMemoryRequirements2 &()
+    {
+      return *reinterpret_cast<VkSparseImageMemoryRequirements2*>(this);
     }
 
     bool operator==( SparseImageMemoryRequirements2 const& rhs ) const
@@ -22036,9 +23180,14 @@ public:
       return *this;
     }
 
-    operator const VkSparseMemoryBind&() const
+    operator VkSparseMemoryBind const&() const
     {
       return *reinterpret_cast<const VkSparseMemoryBind*>(this);
+    }
+
+    operator VkSparseMemoryBind &()
+    {
+      return *reinterpret_cast<VkSparseMemoryBind*>(this);
     }
 
     bool operator==( SparseMemoryBind const& rhs ) const
@@ -22126,9 +23275,14 @@ public:
       return *this;
     }
 
-    operator const VkSparseImageMemoryBind&() const
+    operator VkSparseImageMemoryBind const&() const
     {
       return *reinterpret_cast<const VkSparseImageMemoryBind*>(this);
+    }
+
+    operator VkSparseImageMemoryBind &()
+    {
+      return *reinterpret_cast<VkSparseImageMemoryBind*>(this);
     }
 
     bool operator==( SparseImageMemoryBind const& rhs ) const
@@ -22194,9 +23348,14 @@ public:
       return *this;
     }
 
-    operator const VkSparseBufferMemoryBindInfo&() const
+    operator VkSparseBufferMemoryBindInfo const&() const
     {
       return *reinterpret_cast<const VkSparseBufferMemoryBindInfo*>(this);
+    }
+
+    operator VkSparseBufferMemoryBindInfo &()
+    {
+      return *reinterpret_cast<VkSparseBufferMemoryBindInfo*>(this);
     }
 
     bool operator==( SparseBufferMemoryBindInfo const& rhs ) const
@@ -22256,9 +23415,14 @@ public:
       return *this;
     }
 
-    operator const VkSparseImageOpaqueMemoryBindInfo&() const
+    operator VkSparseImageOpaqueMemoryBindInfo const&() const
     {
       return *reinterpret_cast<const VkSparseImageOpaqueMemoryBindInfo*>(this);
+    }
+
+    operator VkSparseImageOpaqueMemoryBindInfo &()
+    {
+      return *reinterpret_cast<VkSparseImageOpaqueMemoryBindInfo*>(this);
     }
 
     bool operator==( SparseImageOpaqueMemoryBindInfo const& rhs ) const
@@ -22318,9 +23482,14 @@ public:
       return *this;
     }
 
-    operator const VkSparseImageMemoryBindInfo&() const
+    operator VkSparseImageMemoryBindInfo const&() const
     {
       return *reinterpret_cast<const VkSparseImageMemoryBindInfo*>(this);
+    }
+
+    operator VkSparseImageMemoryBindInfo &()
+    {
+      return *reinterpret_cast<VkSparseImageMemoryBindInfo*>(this);
     }
 
     bool operator==( SparseImageMemoryBindInfo const& rhs ) const
@@ -22442,9 +23611,14 @@ public:
       return *this;
     }
 
-    operator const VkBindSparseInfo&() const
+    operator VkBindSparseInfo const&() const
     {
       return *reinterpret_cast<const VkBindSparseInfo*>(this);
+    }
+
+    operator VkBindSparseInfo &()
+    {
+      return *reinterpret_cast<VkBindSparseInfo*>(this);
     }
 
     bool operator==( BindSparseInfo const& rhs ) const
@@ -22531,9 +23705,14 @@ public:
 
   struct QueueFamilyCheckpointPropertiesNV
   {
-    operator const VkQueueFamilyCheckpointPropertiesNV&() const
+    operator VkQueueFamilyCheckpointPropertiesNV const&() const
     {
       return *reinterpret_cast<const VkQueueFamilyCheckpointPropertiesNV*>(this);
+    }
+
+    operator VkQueueFamilyCheckpointPropertiesNV &()
+    {
+      return *reinterpret_cast<VkQueueFamilyCheckpointPropertiesNV*>(this);
     }
 
     bool operator==( QueueFamilyCheckpointPropertiesNV const& rhs ) const
@@ -22559,9 +23738,14 @@ public:
 
   struct CheckpointDataNV
   {
-    operator const VkCheckpointDataNV&() const
+    operator VkCheckpointDataNV const&() const
     {
       return *reinterpret_cast<const VkCheckpointDataNV*>(this);
+    }
+
+    operator VkCheckpointDataNV &()
+    {
+      return *reinterpret_cast<VkCheckpointDataNV*>(this);
     }
 
     bool operator==( CheckpointDataNV const& rhs ) const
@@ -22651,9 +23835,14 @@ public:
       return *this;
     }
 
-    operator const VkCommandPoolCreateInfo&() const
+    operator VkCommandPoolCreateInfo const&() const
     {
       return *reinterpret_cast<const VkCommandPoolCreateInfo*>(this);
+    }
+
+    operator VkCommandPoolCreateInfo &()
+    {
+      return *reinterpret_cast<VkCommandPoolCreateInfo*>(this);
     }
 
     bool operator==( CommandPoolCreateInfo const& rhs ) const
@@ -22762,9 +23951,14 @@ public:
 
   struct ImageFormatProperties
   {
-    operator const VkImageFormatProperties&() const
+    operator VkImageFormatProperties const&() const
     {
       return *reinterpret_cast<const VkImageFormatProperties*>(this);
+    }
+
+    operator VkImageFormatProperties &()
+    {
+      return *reinterpret_cast<VkImageFormatProperties*>(this);
     }
 
     bool operator==( ImageFormatProperties const& rhs ) const
@@ -22914,9 +24108,14 @@ public:
       return *this;
     }
 
-    operator const VkImageCreateInfo&() const
+    operator VkImageCreateInfo const&() const
     {
       return *reinterpret_cast<const VkImageCreateInfo*>(this);
+    }
+
+    operator VkImageCreateInfo &()
+    {
+      return *reinterpret_cast<VkImageCreateInfo*>(this);
     }
 
     bool operator==( ImageCreateInfo const& rhs ) const
@@ -23041,9 +24240,14 @@ public:
       return *this;
     }
 
-    operator const VkPipelineMultisampleStateCreateInfo&() const
+    operator VkPipelineMultisampleStateCreateInfo const&() const
     {
       return *reinterpret_cast<const VkPipelineMultisampleStateCreateInfo*>(this);
+    }
+
+    operator VkPipelineMultisampleStateCreateInfo &()
+    {
+      return *reinterpret_cast<VkPipelineMultisampleStateCreateInfo*>(this);
     }
 
     bool operator==( PipelineMultisampleStateCreateInfo const& rhs ) const
@@ -23236,9 +24440,14 @@ public:
       return *this;
     }
 
-    operator const VkGraphicsPipelineCreateInfo&() const
+    operator VkGraphicsPipelineCreateInfo const&() const
     {
       return *reinterpret_cast<const VkGraphicsPipelineCreateInfo*>(this);
+    }
+
+    operator VkGraphicsPipelineCreateInfo &()
+    {
+      return *reinterpret_cast<VkGraphicsPipelineCreateInfo*>(this);
     }
 
     bool operator==( GraphicsPipelineCreateInfo const& rhs ) const
@@ -23296,9 +24505,14 @@ public:
 
   struct PhysicalDeviceLimits
   {
-    operator const VkPhysicalDeviceLimits&() const
+    operator VkPhysicalDeviceLimits const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceLimits*>(this);
+    }
+
+    operator VkPhysicalDeviceLimits &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceLimits*>(this);
     }
 
     bool operator==( PhysicalDeviceLimits const& rhs ) const
@@ -23527,9 +24741,14 @@ public:
 
   struct PhysicalDeviceProperties
   {
-    operator const VkPhysicalDeviceProperties&() const
+    operator VkPhysicalDeviceProperties const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceProperties*>(this);
+    }
+
+    operator VkPhysicalDeviceProperties &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceProperties*>(this);
     }
 
     bool operator==( PhysicalDeviceProperties const& rhs ) const
@@ -23564,9 +24783,14 @@ public:
 
   struct PhysicalDeviceProperties2
   {
-    operator const VkPhysicalDeviceProperties2&() const
+    operator VkPhysicalDeviceProperties2 const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceProperties2*>(this);
+    }
+
+    operator VkPhysicalDeviceProperties2 &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceProperties2*>(this);
     }
 
     bool operator==( PhysicalDeviceProperties2 const& rhs ) const
@@ -23594,9 +24818,14 @@ public:
 
   struct ImageFormatProperties2
   {
-    operator const VkImageFormatProperties2&() const
+    operator VkImageFormatProperties2 const&() const
     {
       return *reinterpret_cast<const VkImageFormatProperties2*>(this);
+    }
+
+    operator VkImageFormatProperties2 &()
+    {
+      return *reinterpret_cast<VkImageFormatProperties2*>(this);
     }
 
     bool operator==( ImageFormatProperties2 const& rhs ) const
@@ -23683,9 +24912,14 @@ public:
       return *this;
     }
 
-    operator const VkPhysicalDeviceSparseImageFormatInfo2&() const
+    operator VkPhysicalDeviceSparseImageFormatInfo2 const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceSparseImageFormatInfo2*>(this);
+    }
+
+    operator VkPhysicalDeviceSparseImageFormatInfo2 &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceSparseImageFormatInfo2*>(this);
     }
 
     bool operator==( PhysicalDeviceSparseImageFormatInfo2 const& rhs ) const
@@ -23772,9 +25006,14 @@ public:
       return *this;
     }
 
-    operator const VkSampleLocationsInfoEXT&() const
+    operator VkSampleLocationsInfoEXT const&() const
     {
       return *reinterpret_cast<const VkSampleLocationsInfoEXT*>(this);
+    }
+
+    operator VkSampleLocationsInfoEXT &()
+    {
+      return *reinterpret_cast<VkSampleLocationsInfoEXT*>(this);
     }
 
     bool operator==( SampleLocationsInfoEXT const& rhs ) const
@@ -23835,9 +25074,14 @@ public:
       return *this;
     }
 
-    operator const VkAttachmentSampleLocationsEXT&() const
+    operator VkAttachmentSampleLocationsEXT const&() const
     {
       return *reinterpret_cast<const VkAttachmentSampleLocationsEXT*>(this);
+    }
+
+    operator VkAttachmentSampleLocationsEXT &()
+    {
+      return *reinterpret_cast<VkAttachmentSampleLocationsEXT*>(this);
     }
 
     bool operator==( AttachmentSampleLocationsEXT const& rhs ) const
@@ -23887,9 +25131,14 @@ public:
       return *this;
     }
 
-    operator const VkSubpassSampleLocationsEXT&() const
+    operator VkSubpassSampleLocationsEXT const&() const
     {
       return *reinterpret_cast<const VkSubpassSampleLocationsEXT*>(this);
+    }
+
+    operator VkSubpassSampleLocationsEXT &()
+    {
+      return *reinterpret_cast<VkSubpassSampleLocationsEXT*>(this);
     }
 
     bool operator==( SubpassSampleLocationsEXT const& rhs ) const
@@ -23961,9 +25210,14 @@ public:
       return *this;
     }
 
-    operator const VkRenderPassSampleLocationsBeginInfoEXT&() const
+    operator VkRenderPassSampleLocationsBeginInfoEXT const&() const
     {
       return *reinterpret_cast<const VkRenderPassSampleLocationsBeginInfoEXT*>(this);
+    }
+
+    operator VkRenderPassSampleLocationsBeginInfoEXT &()
+    {
+      return *reinterpret_cast<VkRenderPassSampleLocationsBeginInfoEXT*>(this);
     }
 
     bool operator==( RenderPassSampleLocationsBeginInfoEXT const& rhs ) const
@@ -24030,9 +25284,14 @@ public:
       return *this;
     }
 
-    operator const VkPipelineSampleLocationsStateCreateInfoEXT&() const
+    operator VkPipelineSampleLocationsStateCreateInfoEXT const&() const
     {
       return *reinterpret_cast<const VkPipelineSampleLocationsStateCreateInfoEXT*>(this);
+    }
+
+    operator VkPipelineSampleLocationsStateCreateInfoEXT &()
+    {
+      return *reinterpret_cast<VkPipelineSampleLocationsStateCreateInfoEXT*>(this);
     }
 
     bool operator==( PipelineSampleLocationsStateCreateInfoEXT const& rhs ) const
@@ -24060,9 +25319,14 @@ public:
 
   struct PhysicalDeviceSampleLocationsPropertiesEXT
   {
-    operator const VkPhysicalDeviceSampleLocationsPropertiesEXT&() const
+    operator VkPhysicalDeviceSampleLocationsPropertiesEXT const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceSampleLocationsPropertiesEXT*>(this);
+    }
+
+    operator VkPhysicalDeviceSampleLocationsPropertiesEXT &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceSampleLocationsPropertiesEXT*>(this);
     }
 
     bool operator==( PhysicalDeviceSampleLocationsPropertiesEXT const& rhs ) const
@@ -24206,9 +25470,14 @@ public:
       return *this;
     }
 
-    operator const VkAttachmentDescription&() const
+    operator VkAttachmentDescription const&() const
     {
       return *reinterpret_cast<const VkAttachmentDescription*>(this);
+    }
+
+    operator VkAttachmentDescription &()
+    {
+      return *reinterpret_cast<VkAttachmentDescription*>(this);
     }
 
     bool operator==( AttachmentDescription const& rhs ) const
@@ -24334,9 +25603,14 @@ public:
       return *this;
     }
 
-    operator const VkAttachmentDescription2KHR&() const
+    operator VkAttachmentDescription2KHR const&() const
     {
       return *reinterpret_cast<const VkAttachmentDescription2KHR*>(this);
+    }
+
+    operator VkAttachmentDescription2KHR &()
+    {
+      return *reinterpret_cast<VkAttachmentDescription2KHR*>(this);
     }
 
     bool operator==( AttachmentDescription2KHR const& rhs ) const
@@ -24482,9 +25756,14 @@ public:
       return *this;
     }
 
-    operator const VkDescriptorPoolCreateInfo&() const
+    operator VkDescriptorPoolCreateInfo const&() const
     {
       return *reinterpret_cast<const VkDescriptorPoolCreateInfo*>(this);
+    }
+
+    operator VkDescriptorPoolCreateInfo &()
+    {
+      return *reinterpret_cast<VkDescriptorPoolCreateInfo*>(this);
     }
 
     bool operator==( DescriptorPoolCreateInfo const& rhs ) const
@@ -24614,9 +25893,14 @@ public:
       return *this;
     }
 
-    operator const VkSubpassDependency&() const
+    operator VkSubpassDependency const&() const
     {
       return *reinterpret_cast<const VkSubpassDependency*>(this);
+    }
+
+    operator VkSubpassDependency &()
+    {
+      return *reinterpret_cast<VkSubpassDependency*>(this);
     }
 
     bool operator==( SubpassDependency const& rhs ) const
@@ -24730,9 +26014,14 @@ public:
       return *this;
     }
 
-    operator const VkSubpassDependency2KHR&() const
+    operator VkSubpassDependency2KHR const&() const
     {
       return *reinterpret_cast<const VkSubpassDependency2KHR*>(this);
+    }
+
+    operator VkSubpassDependency2KHR &()
+    {
+      return *reinterpret_cast<VkSubpassDependency2KHR*>(this);
     }
 
     bool operator==( SubpassDependency2KHR const& rhs ) const
@@ -24802,9 +26091,14 @@ public:
 
   struct SurfaceFormatKHR
   {
-    operator const VkSurfaceFormatKHR&() const
+    operator VkSurfaceFormatKHR const&() const
     {
       return *reinterpret_cast<const VkSurfaceFormatKHR*>(this);
+    }
+
+    operator VkSurfaceFormatKHR &()
+    {
+      return *reinterpret_cast<VkSurfaceFormatKHR*>(this);
     }
 
     bool operator==( SurfaceFormatKHR const& rhs ) const
@@ -24825,9 +26119,14 @@ public:
 
   struct SurfaceFormat2KHR
   {
-    operator const VkSurfaceFormat2KHR&() const
+    operator VkSurfaceFormat2KHR const&() const
     {
       return *reinterpret_cast<const VkSurfaceFormat2KHR*>(this);
+    }
+
+    operator VkSurfaceFormat2KHR &()
+    {
+      return *reinterpret_cast<VkSurfaceFormat2KHR*>(this);
     }
 
     bool operator==( SurfaceFormat2KHR const& rhs ) const
@@ -24881,9 +26180,14 @@ public:
 
   struct DisplayPlaneCapabilitiesKHR
   {
-    operator const VkDisplayPlaneCapabilitiesKHR&() const
+    operator VkDisplayPlaneCapabilitiesKHR const&() const
     {
       return *reinterpret_cast<const VkDisplayPlaneCapabilitiesKHR*>(this);
+    }
+
+    operator VkDisplayPlaneCapabilitiesKHR &()
+    {
+      return *reinterpret_cast<VkDisplayPlaneCapabilitiesKHR*>(this);
     }
 
     bool operator==( DisplayPlaneCapabilitiesKHR const& rhs ) const
@@ -24918,9 +26222,14 @@ public:
 
   struct DisplayPlaneCapabilities2KHR
   {
-    operator const VkDisplayPlaneCapabilities2KHR&() const
+    operator VkDisplayPlaneCapabilities2KHR const&() const
     {
       return *reinterpret_cast<const VkDisplayPlaneCapabilities2KHR*>(this);
+    }
+
+    operator VkDisplayPlaneCapabilities2KHR &()
+    {
+      return *reinterpret_cast<VkDisplayPlaneCapabilities2KHR*>(this);
     }
 
     bool operator==( DisplayPlaneCapabilities2KHR const& rhs ) const
@@ -25007,9 +26316,14 @@ public:
 
   struct DisplayPropertiesKHR
   {
-    operator const VkDisplayPropertiesKHR&() const
+    operator VkDisplayPropertiesKHR const&() const
     {
       return *reinterpret_cast<const VkDisplayPropertiesKHR*>(this);
+    }
+
+    operator VkDisplayPropertiesKHR &()
+    {
+      return *reinterpret_cast<VkDisplayPropertiesKHR*>(this);
     }
 
     bool operator==( DisplayPropertiesKHR const& rhs ) const
@@ -25123,9 +26437,14 @@ public:
       return *this;
     }
 
-    operator const VkDisplaySurfaceCreateInfoKHR&() const
+    operator VkDisplaySurfaceCreateInfoKHR const&() const
     {
       return *reinterpret_cast<const VkDisplaySurfaceCreateInfoKHR*>(this);
+    }
+
+    operator VkDisplaySurfaceCreateInfoKHR &()
+    {
+      return *reinterpret_cast<VkDisplaySurfaceCreateInfoKHR*>(this);
     }
 
     bool operator==( DisplaySurfaceCreateInfoKHR const& rhs ) const
@@ -25165,9 +26484,14 @@ public:
 
   struct SurfaceCapabilitiesKHR
   {
-    operator const VkSurfaceCapabilitiesKHR&() const
+    operator VkSurfaceCapabilitiesKHR const&() const
     {
       return *reinterpret_cast<const VkSurfaceCapabilitiesKHR*>(this);
+    }
+
+    operator VkSurfaceCapabilitiesKHR &()
+    {
+      return *reinterpret_cast<VkSurfaceCapabilitiesKHR*>(this);
     }
 
     bool operator==( SurfaceCapabilitiesKHR const& rhs ) const
@@ -25204,9 +26528,14 @@ public:
 
   struct SurfaceCapabilities2KHR
   {
-    operator const VkSurfaceCapabilities2KHR&() const
+    operator VkSurfaceCapabilities2KHR const&() const
     {
       return *reinterpret_cast<const VkSurfaceCapabilities2KHR*>(this);
+    }
+
+    operator VkSurfaceCapabilities2KHR &()
+    {
+      return *reinterpret_cast<VkSurfaceCapabilities2KHR*>(this);
     }
 
     bool operator==( SurfaceCapabilities2KHR const& rhs ) const
@@ -25232,9 +26561,14 @@ public:
 
   struct DisplayProperties2KHR
   {
-    operator const VkDisplayProperties2KHR&() const
+    operator VkDisplayProperties2KHR const&() const
     {
       return *reinterpret_cast<const VkDisplayProperties2KHR*>(this);
+    }
+
+    operator VkDisplayProperties2KHR &()
+    {
+      return *reinterpret_cast<VkDisplayProperties2KHR*>(this);
     }
 
     bool operator==( DisplayProperties2KHR const& rhs ) const
@@ -25332,9 +26666,14 @@ public:
       return *this;
     }
 
-    operator const VkDebugReportCallbackCreateInfoEXT&() const
+    operator VkDebugReportCallbackCreateInfoEXT const&() const
     {
       return *reinterpret_cast<const VkDebugReportCallbackCreateInfoEXT*>(this);
+    }
+
+    operator VkDebugReportCallbackCreateInfoEXT &()
+    {
+      return *reinterpret_cast<VkDebugReportCallbackCreateInfoEXT*>(this);
     }
 
     bool operator==( DebugReportCallbackCreateInfoEXT const& rhs ) const
@@ -25451,9 +26790,14 @@ public:
       return *this;
     }
 
-    operator const VkDebugMarkerObjectNameInfoEXT&() const
+    operator VkDebugMarkerObjectNameInfoEXT const&() const
     {
       return *reinterpret_cast<const VkDebugMarkerObjectNameInfoEXT*>(this);
+    }
+
+    operator VkDebugMarkerObjectNameInfoEXT &()
+    {
+      return *reinterpret_cast<VkDebugMarkerObjectNameInfoEXT*>(this);
     }
 
     bool operator==( DebugMarkerObjectNameInfoEXT const& rhs ) const
@@ -25542,9 +26886,14 @@ public:
       return *this;
     }
 
-    operator const VkDebugMarkerObjectTagInfoEXT&() const
+    operator VkDebugMarkerObjectTagInfoEXT const&() const
     {
       return *reinterpret_cast<const VkDebugMarkerObjectTagInfoEXT*>(this);
+    }
+
+    operator VkDebugMarkerObjectTagInfoEXT &()
+    {
+      return *reinterpret_cast<VkDebugMarkerObjectTagInfoEXT*>(this);
     }
 
     bool operator==( DebugMarkerObjectTagInfoEXT const& rhs ) const
@@ -25611,9 +26960,14 @@ public:
       return *this;
     }
 
-    operator const VkPipelineRasterizationStateRasterizationOrderAMD&() const
+    operator VkPipelineRasterizationStateRasterizationOrderAMD const&() const
     {
       return *reinterpret_cast<const VkPipelineRasterizationStateRasterizationOrderAMD*>(this);
+    }
+
+    operator VkPipelineRasterizationStateRasterizationOrderAMD &()
+    {
+      return *reinterpret_cast<VkPipelineRasterizationStateRasterizationOrderAMD*>(this);
     }
 
     bool operator==( PipelineRasterizationStateRasterizationOrderAMD const& rhs ) const
@@ -25694,9 +27048,14 @@ public:
       return *this;
     }
 
-    operator const VkExternalMemoryImageCreateInfoNV&() const
+    operator VkExternalMemoryImageCreateInfoNV const&() const
     {
       return *reinterpret_cast<const VkExternalMemoryImageCreateInfoNV*>(this);
+    }
+
+    operator VkExternalMemoryImageCreateInfoNV &()
+    {
+      return *reinterpret_cast<VkExternalMemoryImageCreateInfoNV*>(this);
     }
 
     bool operator==( ExternalMemoryImageCreateInfoNV const& rhs ) const
@@ -25749,9 +27108,14 @@ public:
       return *this;
     }
 
-    operator const VkExportMemoryAllocateInfoNV&() const
+    operator VkExportMemoryAllocateInfoNV const&() const
     {
       return *reinterpret_cast<const VkExportMemoryAllocateInfoNV*>(this);
+    }
+
+    operator VkExportMemoryAllocateInfoNV &()
+    {
+      return *reinterpret_cast<VkExportMemoryAllocateInfoNV*>(this);
     }
 
     bool operator==( ExportMemoryAllocateInfoNV const& rhs ) const
@@ -25813,9 +27177,14 @@ public:
       return *this;
     }
 
-    operator const VkImportMemoryWin32HandleInfoNV&() const
+    operator VkImportMemoryWin32HandleInfoNV const&() const
     {
       return *reinterpret_cast<const VkImportMemoryWin32HandleInfoNV*>(this);
+    }
+
+    operator VkImportMemoryWin32HandleInfoNV &()
+    {
+      return *reinterpret_cast<VkImportMemoryWin32HandleInfoNV*>(this);
     }
 
     bool operator==( ImportMemoryWin32HandleInfoNV const& rhs ) const
@@ -25871,9 +27240,14 @@ public:
 
   struct ExternalImageFormatPropertiesNV
   {
-    operator const VkExternalImageFormatPropertiesNV&() const
+    operator VkExternalImageFormatPropertiesNV const&() const
     {
       return *reinterpret_cast<const VkExternalImageFormatPropertiesNV*>(this);
+    }
+
+    operator VkExternalImageFormatPropertiesNV &()
+    {
+      return *reinterpret_cast<VkExternalImageFormatPropertiesNV*>(this);
     }
 
     bool operator==( ExternalImageFormatPropertiesNV const& rhs ) const
@@ -25939,9 +27313,14 @@ public:
       return *this;
     }
 
-    operator const VkValidationFlagsEXT&() const
+    operator VkValidationFlagsEXT const&() const
     {
       return *reinterpret_cast<const VkValidationFlagsEXT*>(this);
+    }
+
+    operator VkValidationFlagsEXT &()
+    {
+      return *reinterpret_cast<VkValidationFlagsEXT*>(this);
     }
 
     bool operator==( ValidationFlagsEXT const& rhs ) const
@@ -26002,9 +27381,14 @@ public:
 
   struct PhysicalDeviceSubgroupProperties
   {
-    operator const VkPhysicalDeviceSubgroupProperties&() const
+    operator VkPhysicalDeviceSubgroupProperties const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceSubgroupProperties*>(this);
+    }
+
+    operator VkPhysicalDeviceSubgroupProperties &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceSubgroupProperties*>(this);
     }
 
     bool operator==( PhysicalDeviceSubgroupProperties const& rhs ) const
@@ -26139,9 +27523,14 @@ public:
       return *this;
     }
 
-    operator const VkIndirectCommandsTokenNVX&() const
+    operator VkIndirectCommandsTokenNVX const&() const
     {
       return *reinterpret_cast<const VkIndirectCommandsTokenNVX*>(this);
+    }
+
+    operator VkIndirectCommandsTokenNVX &()
+    {
+      return *reinterpret_cast<VkIndirectCommandsTokenNVX*>(this);
     }
 
     bool operator==( IndirectCommandsTokenNVX const& rhs ) const
@@ -26209,9 +27598,14 @@ public:
       return *this;
     }
 
-    operator const VkIndirectCommandsLayoutTokenNVX&() const
+    operator VkIndirectCommandsLayoutTokenNVX const&() const
     {
       return *reinterpret_cast<const VkIndirectCommandsLayoutTokenNVX*>(this);
+    }
+
+    operator VkIndirectCommandsLayoutTokenNVX &()
+    {
+      return *reinterpret_cast<VkIndirectCommandsLayoutTokenNVX*>(this);
     }
 
     bool operator==( IndirectCommandsLayoutTokenNVX const& rhs ) const
@@ -26287,9 +27681,14 @@ public:
       return *this;
     }
 
-    operator const VkIndirectCommandsLayoutCreateInfoNVX&() const
+    operator VkIndirectCommandsLayoutCreateInfoNVX const&() const
     {
       return *reinterpret_cast<const VkIndirectCommandsLayoutCreateInfoNVX*>(this);
+    }
+
+    operator VkIndirectCommandsLayoutCreateInfoNVX &()
+    {
+      return *reinterpret_cast<VkIndirectCommandsLayoutCreateInfoNVX*>(this);
     }
 
     bool operator==( IndirectCommandsLayoutCreateInfoNVX const& rhs ) const
@@ -26421,9 +27820,14 @@ public:
       return *this;
     }
 
-    operator const VkObjectTableCreateInfoNVX&() const
+    operator VkObjectTableCreateInfoNVX const&() const
     {
       return *reinterpret_cast<const VkObjectTableCreateInfoNVX*>(this);
+    }
+
+    operator VkObjectTableCreateInfoNVX &()
+    {
+      return *reinterpret_cast<VkObjectTableCreateInfoNVX*>(this);
     }
 
     bool operator==( ObjectTableCreateInfoNVX const& rhs ) const
@@ -26494,9 +27898,14 @@ public:
       return *this;
     }
 
-    operator const VkObjectTableEntryNVX&() const
+    operator VkObjectTableEntryNVX const&() const
     {
       return *reinterpret_cast<const VkObjectTableEntryNVX*>(this);
+    }
+
+    operator VkObjectTableEntryNVX &()
+    {
+      return *reinterpret_cast<VkObjectTableEntryNVX*>(this);
     }
 
     bool operator==( ObjectTableEntryNVX const& rhs ) const
@@ -26561,9 +27970,14 @@ public:
       return *this;
     }
 
-    operator const VkObjectTablePipelineEntryNVX&() const
+    operator VkObjectTablePipelineEntryNVX const&() const
     {
       return *reinterpret_cast<const VkObjectTablePipelineEntryNVX*>(this);
+    }
+
+    operator VkObjectTablePipelineEntryNVX &()
+    {
+      return *reinterpret_cast<VkObjectTablePipelineEntryNVX*>(this);
     }
 
     bool operator==( ObjectTablePipelineEntryNVX const& rhs ) const
@@ -26640,9 +28054,14 @@ public:
       return *this;
     }
 
-    operator const VkObjectTableDescriptorSetEntryNVX&() const
+    operator VkObjectTableDescriptorSetEntryNVX const&() const
     {
       return *reinterpret_cast<const VkObjectTableDescriptorSetEntryNVX*>(this);
+    }
+
+    operator VkObjectTableDescriptorSetEntryNVX &()
+    {
+      return *reinterpret_cast<VkObjectTableDescriptorSetEntryNVX*>(this);
     }
 
     bool operator==( ObjectTableDescriptorSetEntryNVX const& rhs ) const
@@ -26711,9 +28130,14 @@ public:
       return *this;
     }
 
-    operator const VkObjectTableVertexBufferEntryNVX&() const
+    operator VkObjectTableVertexBufferEntryNVX const&() const
     {
       return *reinterpret_cast<const VkObjectTableVertexBufferEntryNVX*>(this);
+    }
+
+    operator VkObjectTableVertexBufferEntryNVX &()
+    {
+      return *reinterpret_cast<VkObjectTableVertexBufferEntryNVX*>(this);
     }
 
     bool operator==( ObjectTableVertexBufferEntryNVX const& rhs ) const
@@ -26790,9 +28214,14 @@ public:
       return *this;
     }
 
-    operator const VkObjectTableIndexBufferEntryNVX&() const
+    operator VkObjectTableIndexBufferEntryNVX const&() const
     {
       return *reinterpret_cast<const VkObjectTableIndexBufferEntryNVX*>(this);
+    }
+
+    operator VkObjectTableIndexBufferEntryNVX &()
+    {
+      return *reinterpret_cast<VkObjectTableIndexBufferEntryNVX*>(this);
     }
 
     bool operator==( ObjectTableIndexBufferEntryNVX const& rhs ) const
@@ -26871,9 +28300,14 @@ public:
       return *this;
     }
 
-    operator const VkObjectTablePushConstantEntryNVX&() const
+    operator VkObjectTablePushConstantEntryNVX const&() const
     {
       return *reinterpret_cast<const VkObjectTablePushConstantEntryNVX*>(this);
+    }
+
+    operator VkObjectTablePushConstantEntryNVX &()
+    {
+      return *reinterpret_cast<VkObjectTablePushConstantEntryNVX*>(this);
     }
 
     bool operator==( ObjectTablePushConstantEntryNVX const& rhs ) const
@@ -26967,9 +28401,14 @@ public:
       return *this;
     }
 
-    operator const VkDescriptorSetLayoutCreateInfo&() const
+    operator VkDescriptorSetLayoutCreateInfo const&() const
     {
       return *reinterpret_cast<const VkDescriptorSetLayoutCreateInfo*>(this);
+    }
+
+    operator VkDescriptorSetLayoutCreateInfo &()
+    {
+      return *reinterpret_cast<VkDescriptorSetLayoutCreateInfo*>(this);
     }
 
     bool operator==( DescriptorSetLayoutCreateInfo const& rhs ) const
@@ -27070,9 +28509,14 @@ public:
       return *this;
     }
 
-    operator const VkPhysicalDeviceExternalImageFormatInfo&() const
+    operator VkPhysicalDeviceExternalImageFormatInfo const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceExternalImageFormatInfo*>(this);
+    }
+
+    operator VkPhysicalDeviceExternalImageFormatInfo &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceExternalImageFormatInfo*>(this);
     }
 
     bool operator==( PhysicalDeviceExternalImageFormatInfo const& rhs ) const
@@ -27143,9 +28587,14 @@ public:
       return *this;
     }
 
-    operator const VkPhysicalDeviceExternalBufferInfo&() const
+    operator VkPhysicalDeviceExternalBufferInfo const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceExternalBufferInfo*>(this);
+    }
+
+    operator VkPhysicalDeviceExternalBufferInfo &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceExternalBufferInfo*>(this);
     }
 
     bool operator==( PhysicalDeviceExternalBufferInfo const& rhs ) const
@@ -27204,9 +28653,14 @@ public:
       return *this;
     }
 
-    operator const VkExternalMemoryImageCreateInfo&() const
+    operator VkExternalMemoryImageCreateInfo const&() const
     {
       return *reinterpret_cast<const VkExternalMemoryImageCreateInfo*>(this);
+    }
+
+    operator VkExternalMemoryImageCreateInfo &()
+    {
+      return *reinterpret_cast<VkExternalMemoryImageCreateInfo*>(this);
     }
 
     bool operator==( ExternalMemoryImageCreateInfo const& rhs ) const
@@ -27261,9 +28715,14 @@ public:
       return *this;
     }
 
-    operator const VkExternalMemoryBufferCreateInfo&() const
+    operator VkExternalMemoryBufferCreateInfo const&() const
     {
       return *reinterpret_cast<const VkExternalMemoryBufferCreateInfo*>(this);
+    }
+
+    operator VkExternalMemoryBufferCreateInfo &()
+    {
+      return *reinterpret_cast<VkExternalMemoryBufferCreateInfo*>(this);
     }
 
     bool operator==( ExternalMemoryBufferCreateInfo const& rhs ) const
@@ -27318,9 +28777,14 @@ public:
       return *this;
     }
 
-    operator const VkExportMemoryAllocateInfo&() const
+    operator VkExportMemoryAllocateInfo const&() const
     {
       return *reinterpret_cast<const VkExportMemoryAllocateInfo*>(this);
+    }
+
+    operator VkExportMemoryAllocateInfo &()
+    {
+      return *reinterpret_cast<VkExportMemoryAllocateInfo*>(this);
     }
 
     bool operator==( ExportMemoryAllocateInfo const& rhs ) const
@@ -27392,9 +28856,14 @@ public:
       return *this;
     }
 
-    operator const VkImportMemoryWin32HandleInfoKHR&() const
+    operator VkImportMemoryWin32HandleInfoKHR const&() const
     {
       return *reinterpret_cast<const VkImportMemoryWin32HandleInfoKHR*>(this);
+    }
+
+    operator VkImportMemoryWin32HandleInfoKHR &()
+    {
+      return *reinterpret_cast<VkImportMemoryWin32HandleInfoKHR*>(this);
     }
 
     bool operator==( ImportMemoryWin32HandleInfoKHR const& rhs ) const
@@ -27461,9 +28930,14 @@ public:
       return *this;
     }
 
-    operator const VkMemoryGetWin32HandleInfoKHR&() const
+    operator VkMemoryGetWin32HandleInfoKHR const&() const
     {
       return *reinterpret_cast<const VkMemoryGetWin32HandleInfoKHR*>(this);
+    }
+
+    operator VkMemoryGetWin32HandleInfoKHR &()
+    {
+      return *reinterpret_cast<VkMemoryGetWin32HandleInfoKHR*>(this);
     }
 
     bool operator==( MemoryGetWin32HandleInfoKHR const& rhs ) const
@@ -27527,9 +29001,14 @@ public:
       return *this;
     }
 
-    operator const VkImportMemoryFdInfoKHR&() const
+    operator VkImportMemoryFdInfoKHR const&() const
     {
       return *reinterpret_cast<const VkImportMemoryFdInfoKHR*>(this);
+    }
+
+    operator VkImportMemoryFdInfoKHR &()
+    {
+      return *reinterpret_cast<VkImportMemoryFdInfoKHR*>(this);
     }
 
     bool operator==( ImportMemoryFdInfoKHR const& rhs ) const
@@ -27592,9 +29071,14 @@ public:
       return *this;
     }
 
-    operator const VkMemoryGetFdInfoKHR&() const
+    operator VkMemoryGetFdInfoKHR const&() const
     {
       return *reinterpret_cast<const VkMemoryGetFdInfoKHR*>(this);
+    }
+
+    operator VkMemoryGetFdInfoKHR &()
+    {
+      return *reinterpret_cast<VkMemoryGetFdInfoKHR*>(this);
     }
 
     bool operator==( MemoryGetFdInfoKHR const& rhs ) const
@@ -27657,9 +29141,14 @@ public:
       return *this;
     }
 
-    operator const VkImportMemoryHostPointerInfoEXT&() const
+    operator VkImportMemoryHostPointerInfoEXT const&() const
     {
       return *reinterpret_cast<const VkImportMemoryHostPointerInfoEXT*>(this);
+    }
+
+    operator VkImportMemoryHostPointerInfoEXT &()
+    {
+      return *reinterpret_cast<VkImportMemoryHostPointerInfoEXT*>(this);
     }
 
     bool operator==( ImportMemoryHostPointerInfoEXT const& rhs ) const
@@ -27719,9 +29208,14 @@ public:
 
   struct ExternalMemoryProperties
   {
-    operator const VkExternalMemoryProperties&() const
+    operator VkExternalMemoryProperties const&() const
     {
       return *reinterpret_cast<const VkExternalMemoryProperties*>(this);
+    }
+
+    operator VkExternalMemoryProperties &()
+    {
+      return *reinterpret_cast<VkExternalMemoryProperties*>(this);
     }
 
     bool operator==( ExternalMemoryProperties const& rhs ) const
@@ -27746,9 +29240,14 @@ public:
 
   struct ExternalImageFormatProperties
   {
-    operator const VkExternalImageFormatProperties&() const
+    operator VkExternalImageFormatProperties const&() const
     {
       return *reinterpret_cast<const VkExternalImageFormatProperties*>(this);
+    }
+
+    operator VkExternalImageFormatProperties &()
+    {
+      return *reinterpret_cast<VkExternalImageFormatProperties*>(this);
     }
 
     bool operator==( ExternalImageFormatProperties const& rhs ) const
@@ -27776,9 +29275,14 @@ public:
 
   struct ExternalBufferProperties
   {
-    operator const VkExternalBufferProperties&() const
+    operator VkExternalBufferProperties const&() const
     {
       return *reinterpret_cast<const VkExternalBufferProperties*>(this);
+    }
+
+    operator VkExternalBufferProperties &()
+    {
+      return *reinterpret_cast<VkExternalBufferProperties*>(this);
     }
 
     bool operator==( ExternalBufferProperties const& rhs ) const
@@ -27869,9 +29373,14 @@ public:
       return *this;
     }
 
-    operator const VkPhysicalDeviceExternalSemaphoreInfo&() const
+    operator VkPhysicalDeviceExternalSemaphoreInfo const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceExternalSemaphoreInfo*>(this);
+    }
+
+    operator VkPhysicalDeviceExternalSemaphoreInfo &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceExternalSemaphoreInfo*>(this);
     }
 
     bool operator==( PhysicalDeviceExternalSemaphoreInfo const& rhs ) const
@@ -27926,9 +29435,14 @@ public:
       return *this;
     }
 
-    operator const VkExportSemaphoreCreateInfo&() const
+    operator VkExportSemaphoreCreateInfo const&() const
     {
       return *reinterpret_cast<const VkExportSemaphoreCreateInfo*>(this);
+    }
+
+    operator VkExportSemaphoreCreateInfo &()
+    {
+      return *reinterpret_cast<VkExportSemaphoreCreateInfo*>(this);
     }
 
     bool operator==( ExportSemaphoreCreateInfo const& rhs ) const
@@ -27992,9 +29506,14 @@ public:
       return *this;
     }
 
-    operator const VkSemaphoreGetWin32HandleInfoKHR&() const
+    operator VkSemaphoreGetWin32HandleInfoKHR const&() const
     {
       return *reinterpret_cast<const VkSemaphoreGetWin32HandleInfoKHR*>(this);
+    }
+
+    operator VkSemaphoreGetWin32HandleInfoKHR &()
+    {
+      return *reinterpret_cast<VkSemaphoreGetWin32HandleInfoKHR*>(this);
     }
 
     bool operator==( SemaphoreGetWin32HandleInfoKHR const& rhs ) const
@@ -28058,9 +29577,14 @@ public:
       return *this;
     }
 
-    operator const VkSemaphoreGetFdInfoKHR&() const
+    operator VkSemaphoreGetFdInfoKHR const&() const
     {
       return *reinterpret_cast<const VkSemaphoreGetFdInfoKHR*>(this);
+    }
+
+    operator VkSemaphoreGetFdInfoKHR &()
+    {
+      return *reinterpret_cast<VkSemaphoreGetFdInfoKHR*>(this);
     }
 
     bool operator==( SemaphoreGetFdInfoKHR const& rhs ) const
@@ -28118,9 +29642,14 @@ public:
 
   struct ExternalSemaphoreProperties
   {
-    operator const VkExternalSemaphoreProperties&() const
+    operator VkExternalSemaphoreProperties const&() const
     {
       return *reinterpret_cast<const VkExternalSemaphoreProperties*>(this);
+    }
+
+    operator VkExternalSemaphoreProperties &()
+    {
+      return *reinterpret_cast<VkExternalSemaphoreProperties*>(this);
     }
 
     bool operator==( ExternalSemaphoreProperties const& rhs ) const
@@ -28240,9 +29769,14 @@ public:
       return *this;
     }
 
-    operator const VkImportSemaphoreWin32HandleInfoKHR&() const
+    operator VkImportSemaphoreWin32HandleInfoKHR const&() const
     {
       return *reinterpret_cast<const VkImportSemaphoreWin32HandleInfoKHR*>(this);
+    }
+
+    operator VkImportSemaphoreWin32HandleInfoKHR &()
+    {
+      return *reinterpret_cast<VkImportSemaphoreWin32HandleInfoKHR*>(this);
     }
 
     bool operator==( ImportSemaphoreWin32HandleInfoKHR const& rhs ) const
@@ -28328,9 +29862,14 @@ public:
       return *this;
     }
 
-    operator const VkImportSemaphoreFdInfoKHR&() const
+    operator VkImportSemaphoreFdInfoKHR const&() const
     {
       return *reinterpret_cast<const VkImportSemaphoreFdInfoKHR*>(this);
+    }
+
+    operator VkImportSemaphoreFdInfoKHR &()
+    {
+      return *reinterpret_cast<VkImportSemaphoreFdInfoKHR*>(this);
     }
 
     bool operator==( ImportSemaphoreFdInfoKHR const& rhs ) const
@@ -28423,9 +29962,14 @@ public:
       return *this;
     }
 
-    operator const VkPhysicalDeviceExternalFenceInfo&() const
+    operator VkPhysicalDeviceExternalFenceInfo const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceExternalFenceInfo*>(this);
+    }
+
+    operator VkPhysicalDeviceExternalFenceInfo &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceExternalFenceInfo*>(this);
     }
 
     bool operator==( PhysicalDeviceExternalFenceInfo const& rhs ) const
@@ -28480,9 +30024,14 @@ public:
       return *this;
     }
 
-    operator const VkExportFenceCreateInfo&() const
+    operator VkExportFenceCreateInfo const&() const
     {
       return *reinterpret_cast<const VkExportFenceCreateInfo*>(this);
+    }
+
+    operator VkExportFenceCreateInfo &()
+    {
+      return *reinterpret_cast<VkExportFenceCreateInfo*>(this);
     }
 
     bool operator==( ExportFenceCreateInfo const& rhs ) const
@@ -28546,9 +30095,14 @@ public:
       return *this;
     }
 
-    operator const VkFenceGetWin32HandleInfoKHR&() const
+    operator VkFenceGetWin32HandleInfoKHR const&() const
     {
       return *reinterpret_cast<const VkFenceGetWin32HandleInfoKHR*>(this);
+    }
+
+    operator VkFenceGetWin32HandleInfoKHR &()
+    {
+      return *reinterpret_cast<VkFenceGetWin32HandleInfoKHR*>(this);
     }
 
     bool operator==( FenceGetWin32HandleInfoKHR const& rhs ) const
@@ -28612,9 +30166,14 @@ public:
       return *this;
     }
 
-    operator const VkFenceGetFdInfoKHR&() const
+    operator VkFenceGetFdInfoKHR const&() const
     {
       return *reinterpret_cast<const VkFenceGetFdInfoKHR*>(this);
+    }
+
+    operator VkFenceGetFdInfoKHR &()
+    {
+      return *reinterpret_cast<VkFenceGetFdInfoKHR*>(this);
     }
 
     bool operator==( FenceGetFdInfoKHR const& rhs ) const
@@ -28672,9 +30231,14 @@ public:
 
   struct ExternalFenceProperties
   {
-    operator const VkExternalFenceProperties&() const
+    operator VkExternalFenceProperties const&() const
     {
       return *reinterpret_cast<const VkExternalFenceProperties*>(this);
+    }
+
+    operator VkExternalFenceProperties &()
+    {
+      return *reinterpret_cast<VkExternalFenceProperties*>(this);
     }
 
     bool operator==( ExternalFenceProperties const& rhs ) const
@@ -28794,9 +30358,14 @@ public:
       return *this;
     }
 
-    operator const VkImportFenceWin32HandleInfoKHR&() const
+    operator VkImportFenceWin32HandleInfoKHR const&() const
     {
       return *reinterpret_cast<const VkImportFenceWin32HandleInfoKHR*>(this);
+    }
+
+    operator VkImportFenceWin32HandleInfoKHR &()
+    {
+      return *reinterpret_cast<VkImportFenceWin32HandleInfoKHR*>(this);
     }
 
     bool operator==( ImportFenceWin32HandleInfoKHR const& rhs ) const
@@ -28882,9 +30451,14 @@ public:
       return *this;
     }
 
-    operator const VkImportFenceFdInfoKHR&() const
+    operator VkImportFenceFdInfoKHR const&() const
     {
       return *reinterpret_cast<const VkImportFenceFdInfoKHR*>(this);
+    }
+
+    operator VkImportFenceFdInfoKHR &()
+    {
+      return *reinterpret_cast<VkImportFenceFdInfoKHR*>(this);
     }
 
     bool operator==( ImportFenceFdInfoKHR const& rhs ) const
@@ -28941,9 +30515,14 @@ public:
 
   struct SurfaceCapabilities2EXT
   {
-    operator const VkSurfaceCapabilities2EXT&() const
+    operator VkSurfaceCapabilities2EXT const&() const
     {
       return *reinterpret_cast<const VkSurfaceCapabilities2EXT*>(this);
+    }
+
+    operator VkSurfaceCapabilities2EXT &()
+    {
+      return *reinterpret_cast<VkSurfaceCapabilities2EXT*>(this);
     }
 
     bool operator==( SurfaceCapabilities2EXT const& rhs ) const
@@ -29016,9 +30595,14 @@ public:
       return *this;
     }
 
-    operator const VkSwapchainCounterCreateInfoEXT&() const
+    operator VkSwapchainCounterCreateInfoEXT const&() const
     {
       return *reinterpret_cast<const VkSwapchainCounterCreateInfoEXT*>(this);
+    }
+
+    operator VkSwapchainCounterCreateInfoEXT &()
+    {
+      return *reinterpret_cast<VkSwapchainCounterCreateInfoEXT*>(this);
     }
 
     bool operator==( SwapchainCounterCreateInfoEXT const& rhs ) const
@@ -29078,9 +30662,14 @@ public:
       return *this;
     }
 
-    operator const VkDisplayPowerInfoEXT&() const
+    operator VkDisplayPowerInfoEXT const&() const
     {
       return *reinterpret_cast<const VkDisplayPowerInfoEXT*>(this);
+    }
+
+    operator VkDisplayPowerInfoEXT &()
+    {
+      return *reinterpret_cast<VkDisplayPowerInfoEXT*>(this);
     }
 
     bool operator==( DisplayPowerInfoEXT const& rhs ) const
@@ -29138,9 +30727,14 @@ public:
       return *this;
     }
 
-    operator const VkDeviceEventInfoEXT&() const
+    operator VkDeviceEventInfoEXT const&() const
     {
       return *reinterpret_cast<const VkDeviceEventInfoEXT*>(this);
+    }
+
+    operator VkDeviceEventInfoEXT &()
+    {
+      return *reinterpret_cast<VkDeviceEventInfoEXT*>(this);
     }
 
     bool operator==( DeviceEventInfoEXT const& rhs ) const
@@ -29198,9 +30792,14 @@ public:
       return *this;
     }
 
-    operator const VkDisplayEventInfoEXT&() const
+    operator VkDisplayEventInfoEXT const&() const
     {
       return *reinterpret_cast<const VkDisplayEventInfoEXT*>(this);
+    }
+
+    operator VkDisplayEventInfoEXT &()
+    {
+      return *reinterpret_cast<VkDisplayEventInfoEXT*>(this);
     }
 
     bool operator==( DisplayEventInfoEXT const& rhs ) const
@@ -29323,9 +30922,14 @@ public:
       return *this;
     }
 
-    operator const VkMemoryAllocateFlagsInfo&() const
+    operator VkMemoryAllocateFlagsInfo const&() const
     {
       return *reinterpret_cast<const VkMemoryAllocateFlagsInfo*>(this);
+    }
+
+    operator VkMemoryAllocateFlagsInfo &()
+    {
+      return *reinterpret_cast<VkMemoryAllocateFlagsInfo*>(this);
     }
 
     bool operator==( MemoryAllocateFlagsInfo const& rhs ) const
@@ -29383,9 +30987,14 @@ public:
 
   struct DeviceGroupPresentCapabilitiesKHR
   {
-    operator const VkDeviceGroupPresentCapabilitiesKHR&() const
+    operator VkDeviceGroupPresentCapabilitiesKHR const&() const
     {
       return *reinterpret_cast<const VkDeviceGroupPresentCapabilitiesKHR*>(this);
+    }
+
+    operator VkDeviceGroupPresentCapabilitiesKHR &()
+    {
+      return *reinterpret_cast<VkDeviceGroupPresentCapabilitiesKHR*>(this);
     }
 
     bool operator==( DeviceGroupPresentCapabilitiesKHR const& rhs ) const
@@ -29456,9 +31065,14 @@ public:
       return *this;
     }
 
-    operator const VkDeviceGroupPresentInfoKHR&() const
+    operator VkDeviceGroupPresentInfoKHR const&() const
     {
       return *reinterpret_cast<const VkDeviceGroupPresentInfoKHR*>(this);
+    }
+
+    operator VkDeviceGroupPresentInfoKHR &()
+    {
+      return *reinterpret_cast<VkDeviceGroupPresentInfoKHR*>(this);
     }
 
     bool operator==( DeviceGroupPresentInfoKHR const& rhs ) const
@@ -29515,9 +31129,14 @@ public:
       return *this;
     }
 
-    operator const VkDeviceGroupSwapchainCreateInfoKHR&() const
+    operator VkDeviceGroupSwapchainCreateInfoKHR const&() const
     {
       return *reinterpret_cast<const VkDeviceGroupSwapchainCreateInfoKHR*>(this);
+    }
+
+    operator VkDeviceGroupSwapchainCreateInfoKHR &()
+    {
+      return *reinterpret_cast<VkDeviceGroupSwapchainCreateInfoKHR*>(this);
     }
 
     bool operator==( DeviceGroupSwapchainCreateInfoKHR const& rhs ) const
@@ -29716,9 +31335,14 @@ public:
       return *this;
     }
 
-    operator const VkSwapchainCreateInfoKHR&() const
+    operator VkSwapchainCreateInfoKHR const&() const
     {
       return *reinterpret_cast<const VkSwapchainCreateInfoKHR*>(this);
+    }
+
+    operator VkSwapchainCreateInfoKHR &()
+    {
+      return *reinterpret_cast<VkSwapchainCreateInfoKHR*>(this);
     }
 
     bool operator==( SwapchainCreateInfoKHR const& rhs ) const
@@ -29831,9 +31455,14 @@ public:
       return *this;
     }
 
-    operator const VkViewportSwizzleNV&() const
+    operator VkViewportSwizzleNV const&() const
     {
       return *reinterpret_cast<const VkViewportSwizzleNV*>(this);
+    }
+
+    operator VkViewportSwizzleNV &()
+    {
+      return *reinterpret_cast<VkViewportSwizzleNV*>(this);
     }
 
     bool operator==( ViewportSwizzleNV const& rhs ) const
@@ -29901,9 +31530,14 @@ public:
       return *this;
     }
 
-    operator const VkPipelineViewportSwizzleStateCreateInfoNV&() const
+    operator VkPipelineViewportSwizzleStateCreateInfoNV const&() const
     {
       return *reinterpret_cast<const VkPipelineViewportSwizzleStateCreateInfoNV*>(this);
+    }
+
+    operator VkPipelineViewportSwizzleStateCreateInfoNV &()
+    {
+      return *reinterpret_cast<VkPipelineViewportSwizzleStateCreateInfoNV*>(this);
     }
 
     bool operator==( PipelineViewportSwizzleStateCreateInfoNV const& rhs ) const
@@ -29990,9 +31624,14 @@ public:
       return *this;
     }
 
-    operator const VkPipelineDiscardRectangleStateCreateInfoEXT&() const
+    operator VkPipelineDiscardRectangleStateCreateInfoEXT const&() const
     {
       return *reinterpret_cast<const VkPipelineDiscardRectangleStateCreateInfoEXT*>(this);
+    }
+
+    operator VkPipelineDiscardRectangleStateCreateInfoEXT &()
+    {
+      return *reinterpret_cast<VkPipelineDiscardRectangleStateCreateInfoEXT*>(this);
     }
 
     bool operator==( PipelineDiscardRectangleStateCreateInfoEXT const& rhs ) const
@@ -30143,9 +31782,14 @@ public:
       return *this;
     }
 
-    operator const VkSubpassDescription&() const
+    operator VkSubpassDescription const&() const
     {
       return *reinterpret_cast<const VkSubpassDescription*>(this);
+    }
+
+    operator VkSubpassDescription &()
+    {
+      return *reinterpret_cast<VkSubpassDescription*>(this);
     }
 
     bool operator==( SubpassDescription const& rhs ) const
@@ -30257,9 +31901,14 @@ public:
       return *this;
     }
 
-    operator const VkRenderPassCreateInfo&() const
+    operator VkRenderPassCreateInfo const&() const
     {
       return *reinterpret_cast<const VkRenderPassCreateInfo*>(this);
+    }
+
+    operator VkRenderPassCreateInfo &()
+    {
+      return *reinterpret_cast<VkRenderPassCreateInfo*>(this);
     }
 
     bool operator==( RenderPassCreateInfo const& rhs ) const
@@ -30404,9 +32053,14 @@ public:
       return *this;
     }
 
-    operator const VkSubpassDescription2KHR&() const
+    operator VkSubpassDescription2KHR const&() const
     {
       return *reinterpret_cast<const VkSubpassDescription2KHR*>(this);
+    }
+
+    operator VkSubpassDescription2KHR &()
+    {
+      return *reinterpret_cast<VkSubpassDescription2KHR*>(this);
     }
 
     bool operator==( SubpassDescription2KHR const& rhs ) const
@@ -30543,9 +32197,14 @@ public:
       return *this;
     }
 
-    operator const VkRenderPassCreateInfo2KHR&() const
+    operator VkRenderPassCreateInfo2KHR const&() const
     {
       return *reinterpret_cast<const VkRenderPassCreateInfo2KHR*>(this);
+    }
+
+    operator VkRenderPassCreateInfo2KHR &()
+    {
+      return *reinterpret_cast<VkRenderPassCreateInfo2KHR*>(this);
     }
 
     bool operator==( RenderPassCreateInfo2KHR const& rhs ) const
@@ -30595,9 +32254,14 @@ public:
 
   struct PhysicalDevicePointClippingProperties
   {
-    operator const VkPhysicalDevicePointClippingProperties&() const
+    operator VkPhysicalDevicePointClippingProperties const&() const
     {
       return *reinterpret_cast<const VkPhysicalDevicePointClippingProperties*>(this);
+    }
+
+    operator VkPhysicalDevicePointClippingProperties &()
+    {
+      return *reinterpret_cast<VkPhysicalDevicePointClippingProperties*>(this);
     }
 
     bool operator==( PhysicalDevicePointClippingProperties const& rhs ) const
@@ -30659,9 +32323,14 @@ public:
       return *this;
     }
 
-    operator const VkSamplerReductionModeCreateInfoEXT&() const
+    operator VkSamplerReductionModeCreateInfoEXT const&() const
     {
       return *reinterpret_cast<const VkSamplerReductionModeCreateInfoEXT*>(this);
+    }
+
+    operator VkSamplerReductionModeCreateInfoEXT &()
+    {
+      return *reinterpret_cast<VkSamplerReductionModeCreateInfoEXT*>(this);
     }
 
     bool operator==( SamplerReductionModeCreateInfoEXT const& rhs ) const
@@ -30722,9 +32391,14 @@ public:
       return *this;
     }
 
-    operator const VkPipelineTessellationDomainOriginStateCreateInfo&() const
+    operator VkPipelineTessellationDomainOriginStateCreateInfo const&() const
     {
       return *reinterpret_cast<const VkPipelineTessellationDomainOriginStateCreateInfo*>(this);
+    }
+
+    operator VkPipelineTessellationDomainOriginStateCreateInfo &()
+    {
+      return *reinterpret_cast<VkPipelineTessellationDomainOriginStateCreateInfo*>(this);
     }
 
     bool operator==( PipelineTessellationDomainOriginStateCreateInfo const& rhs ) const
@@ -30865,9 +32539,14 @@ public:
       return *this;
     }
 
-    operator const VkSamplerYcbcrConversionCreateInfo&() const
+    operator VkSamplerYcbcrConversionCreateInfo const&() const
     {
       return *reinterpret_cast<const VkSamplerYcbcrConversionCreateInfo*>(this);
+    }
+
+    operator VkSamplerYcbcrConversionCreateInfo &()
+    {
+      return *reinterpret_cast<VkSamplerYcbcrConversionCreateInfo*>(this);
     }
 
     bool operator==( SamplerYcbcrConversionCreateInfo const& rhs ) const
@@ -30910,9 +32589,14 @@ public:
 #ifdef VK_USE_PLATFORM_ANDROID_ANDROID
   struct AndroidHardwareBufferFormatPropertiesANDROID
   {
-    operator const VkAndroidHardwareBufferFormatPropertiesANDROID&() const
+    operator VkAndroidHardwareBufferFormatPropertiesANDROID const&() const
     {
       return *reinterpret_cast<const VkAndroidHardwareBufferFormatPropertiesANDROID*>(this);
+    }
+
+    operator VkAndroidHardwareBufferFormatPropertiesANDROID &()
+    {
+      return *reinterpret_cast<VkAndroidHardwareBufferFormatPropertiesANDROID*>(this);
     }
 
     bool operator==( AndroidHardwareBufferFormatPropertiesANDROID const& rhs ) const
@@ -31003,9 +32687,14 @@ public:
       return *this;
     }
 
-    operator const VkPipelineColorBlendAdvancedStateCreateInfoEXT&() const
+    operator VkPipelineColorBlendAdvancedStateCreateInfoEXT const&() const
     {
       return *reinterpret_cast<const VkPipelineColorBlendAdvancedStateCreateInfoEXT*>(this);
+    }
+
+    operator VkPipelineColorBlendAdvancedStateCreateInfoEXT &()
+    {
+      return *reinterpret_cast<VkPipelineColorBlendAdvancedStateCreateInfoEXT*>(this);
     }
 
     bool operator==( PipelineColorBlendAdvancedStateCreateInfoEXT const& rhs ) const
@@ -31102,9 +32791,14 @@ public:
       return *this;
     }
 
-    operator const VkPipelineCoverageModulationStateCreateInfoNV&() const
+    operator VkPipelineCoverageModulationStateCreateInfoNV const&() const
     {
       return *reinterpret_cast<const VkPipelineCoverageModulationStateCreateInfoNV*>(this);
+    }
+
+    operator VkPipelineCoverageModulationStateCreateInfoNV &()
+    {
+      return *reinterpret_cast<VkPipelineCoverageModulationStateCreateInfoNV*>(this);
     }
 
     bool operator==( PipelineCoverageModulationStateCreateInfoNV const& rhs ) const
@@ -31185,9 +32879,14 @@ public:
       return *this;
     }
 
-    operator const VkDeviceQueueGlobalPriorityCreateInfoEXT&() const
+    operator VkDeviceQueueGlobalPriorityCreateInfoEXT const&() const
     {
       return *reinterpret_cast<const VkDeviceQueueGlobalPriorityCreateInfoEXT*>(this);
+    }
+
+    operator VkDeviceQueueGlobalPriorityCreateInfoEXT &()
+    {
+      return *reinterpret_cast<VkDeviceQueueGlobalPriorityCreateInfoEXT*>(this);
     }
 
     bool operator==( DeviceQueueGlobalPriorityCreateInfoEXT const& rhs ) const
@@ -31327,9 +33026,14 @@ public:
       return *this;
     }
 
-    operator const VkDebugUtilsMessengerCreateInfoEXT&() const
+    operator VkDebugUtilsMessengerCreateInfoEXT const&() const
     {
       return *reinterpret_cast<const VkDebugUtilsMessengerCreateInfoEXT*>(this);
+    }
+
+    operator VkDebugUtilsMessengerCreateInfoEXT &()
+    {
+      return *reinterpret_cast<VkDebugUtilsMessengerCreateInfoEXT*>(this);
     }
 
     bool operator==( DebugUtilsMessengerCreateInfoEXT const& rhs ) const
@@ -31413,9 +33117,14 @@ public:
       return *this;
     }
 
-    operator const VkPipelineRasterizationConservativeStateCreateInfoEXT&() const
+    operator VkPipelineRasterizationConservativeStateCreateInfoEXT const&() const
     {
       return *reinterpret_cast<const VkPipelineRasterizationConservativeStateCreateInfoEXT*>(this);
+    }
+
+    operator VkPipelineRasterizationConservativeStateCreateInfoEXT &()
+    {
+      return *reinterpret_cast<VkPipelineRasterizationConservativeStateCreateInfoEXT*>(this);
     }
 
     bool operator==( PipelineRasterizationConservativeStateCreateInfoEXT const& rhs ) const
@@ -31508,9 +33217,14 @@ public:
       return *this;
     }
 
-    operator const VkDescriptorSetLayoutBindingFlagsCreateInfoEXT&() const
+    operator VkDescriptorSetLayoutBindingFlagsCreateInfoEXT const&() const
     {
       return *reinterpret_cast<const VkDescriptorSetLayoutBindingFlagsCreateInfoEXT*>(this);
+    }
+
+    operator VkDescriptorSetLayoutBindingFlagsCreateInfoEXT &()
+    {
+      return *reinterpret_cast<VkDescriptorSetLayoutBindingFlagsCreateInfoEXT*>(this);
     }
 
     bool operator==( DescriptorSetLayoutBindingFlagsCreateInfoEXT const& rhs ) const
@@ -31613,9 +33327,14 @@ public:
       return *this;
     }
 
-    operator const VkConditionalRenderingBeginInfoEXT&() const
+    operator VkConditionalRenderingBeginInfoEXT const&() const
     {
       return *reinterpret_cast<const VkConditionalRenderingBeginInfoEXT*>(this);
+    }
+
+    operator VkConditionalRenderingBeginInfoEXT &()
+    {
+      return *reinterpret_cast<VkConditionalRenderingBeginInfoEXT*>(this);
     }
 
     bool operator==( ConditionalRenderingBeginInfoEXT const& rhs ) const
@@ -33281,9 +35000,14 @@ public:
       return *this;
     }
 
-    operator const VkSubmitInfo&() const
+    operator VkSubmitInfo const&() const
     {
       return *reinterpret_cast<const VkSubmitInfo*>(this);
+    }
+
+    operator VkSubmitInfo &()
+    {
+      return *reinterpret_cast<VkSubmitInfo*>(this);
     }
 
     bool operator==( SubmitInfo const& rhs ) const
@@ -33557,59 +35281,59 @@ public:
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   class Device;
 
-  template <typename Dispatch> class UniqueHandleTraits<Buffer,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
+  template <typename Dispatch> class UniqueHandleTraits<Buffer,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<Device,Dispatch>; };
   using UniqueBuffer = UniqueHandle<Buffer,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<BufferView,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
+  template <typename Dispatch> class UniqueHandleTraits<BufferView,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<Device,Dispatch>; };
   using UniqueBufferView = UniqueHandle<BufferView,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<CommandBuffer,Dispatch> {public: using owner = Device; using deleter = PoolFree<owner, CommandPool,Dispatch>;};
+  template <typename Dispatch> class UniqueHandleTraits<CommandBuffer,Dispatch> {public: using owner = Device; using deleter = PoolFree<Device, CommandPool,Dispatch>; };
   using UniqueCommandBuffer = UniqueHandle<CommandBuffer,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<CommandPool,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
+  template <typename Dispatch> class UniqueHandleTraits<CommandPool,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<Device,Dispatch>; };
   using UniqueCommandPool = UniqueHandle<CommandPool,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<DescriptorPool,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
+  template <typename Dispatch> class UniqueHandleTraits<DescriptorPool,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<Device,Dispatch>; };
   using UniqueDescriptorPool = UniqueHandle<DescriptorPool,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<DescriptorSet,Dispatch> {public: using owner = Device; using deleter = PoolFree<owner, DescriptorPool,Dispatch>;};
+  template <typename Dispatch> class UniqueHandleTraits<DescriptorSet,Dispatch> {public: using owner = Device; using deleter = PoolFree<Device, DescriptorPool,Dispatch>; };
   using UniqueDescriptorSet = UniqueHandle<DescriptorSet,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<DescriptorSetLayout,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
+  template <typename Dispatch> class UniqueHandleTraits<DescriptorSetLayout,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<Device,Dispatch>; };
   using UniqueDescriptorSetLayout = UniqueHandle<DescriptorSetLayout,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<DescriptorUpdateTemplate,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
+  template <typename Dispatch> class UniqueHandleTraits<DescriptorUpdateTemplate,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<Device,Dispatch>; };
   using UniqueDescriptorUpdateTemplate = UniqueHandle<DescriptorUpdateTemplate,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<DeviceMemory,Dispatch> {public: using owner = Device; using deleter = ObjectFree<owner,Dispatch>;};
+  template <typename Dispatch> class UniqueHandleTraits<DeviceMemory,Dispatch> {public: using owner = Device; using deleter = ObjectFree<Device,Dispatch>; };
   using UniqueDeviceMemory = UniqueHandle<DeviceMemory,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<Event,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
+  template <typename Dispatch> class UniqueHandleTraits<Event,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<Device,Dispatch>; };
   using UniqueEvent = UniqueHandle<Event,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<Fence,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
+  template <typename Dispatch> class UniqueHandleTraits<Fence,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<Device,Dispatch>; };
   using UniqueFence = UniqueHandle<Fence,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<Framebuffer,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
+  template <typename Dispatch> class UniqueHandleTraits<Framebuffer,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<Device,Dispatch>; };
   using UniqueFramebuffer = UniqueHandle<Framebuffer,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<Image,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
+  template <typename Dispatch> class UniqueHandleTraits<Image,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<Device,Dispatch>; };
   using UniqueImage = UniqueHandle<Image,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<ImageView,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
+  template <typename Dispatch> class UniqueHandleTraits<ImageView,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<Device,Dispatch>; };
   using UniqueImageView = UniqueHandle<ImageView,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<IndirectCommandsLayoutNVX,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
+  template <typename Dispatch> class UniqueHandleTraits<IndirectCommandsLayoutNVX,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<Device,Dispatch>; };
   using UniqueIndirectCommandsLayoutNVX = UniqueHandle<IndirectCommandsLayoutNVX,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<ObjectTableNVX,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
+  template <typename Dispatch> class UniqueHandleTraits<ObjectTableNVX,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<Device,Dispatch>; };
   using UniqueObjectTableNVX = UniqueHandle<ObjectTableNVX,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<Pipeline,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
+  template <typename Dispatch> class UniqueHandleTraits<Pipeline,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<Device,Dispatch>; };
   using UniquePipeline = UniqueHandle<Pipeline,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<PipelineCache,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
+  template <typename Dispatch> class UniqueHandleTraits<PipelineCache,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<Device,Dispatch>; };
   using UniquePipelineCache = UniqueHandle<PipelineCache,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<PipelineLayout,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
+  template <typename Dispatch> class UniqueHandleTraits<PipelineLayout,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<Device,Dispatch>; };
   using UniquePipelineLayout = UniqueHandle<PipelineLayout,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<QueryPool,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
+  template <typename Dispatch> class UniqueHandleTraits<QueryPool,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<Device,Dispatch>; };
   using UniqueQueryPool = UniqueHandle<QueryPool,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<RenderPass,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
+  template <typename Dispatch> class UniqueHandleTraits<RenderPass,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<Device,Dispatch>; };
   using UniqueRenderPass = UniqueHandle<RenderPass,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<Sampler,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
+  template <typename Dispatch> class UniqueHandleTraits<Sampler,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<Device,Dispatch>; };
   using UniqueSampler = UniqueHandle<Sampler,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<SamplerYcbcrConversion,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
+  template <typename Dispatch> class UniqueHandleTraits<SamplerYcbcrConversion,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<Device,Dispatch>; };
   using UniqueSamplerYcbcrConversion = UniqueHandle<SamplerYcbcrConversion,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<Semaphore,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
+  template <typename Dispatch> class UniqueHandleTraits<Semaphore,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<Device,Dispatch>; };
   using UniqueSemaphore = UniqueHandle<Semaphore,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<ShaderModule,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
+  template <typename Dispatch> class UniqueHandleTraits<ShaderModule,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<Device,Dispatch>; };
   using UniqueShaderModule = UniqueHandle<ShaderModule,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<SwapchainKHR,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
+  template <typename Dispatch> class UniqueHandleTraits<SwapchainKHR,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<Device,Dispatch>; };
   using UniqueSwapchainKHR = UniqueHandle<SwapchainKHR,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<ValidationCacheEXT,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<owner,Dispatch>;};
+  template <typename Dispatch> class UniqueHandleTraits<ValidationCacheEXT,Dispatch> {public: using owner = Device; using deleter = ObjectDestroy<Device,Dispatch>; };
   using UniqueValidationCacheEXT = UniqueHandle<ValidationCacheEXT,DispatchLoaderStatic>;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 
@@ -34804,8 +36528,8 @@ public:
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = DispatchLoaderStatic>
     MemoryRequirements2 getBufferMemoryRequirements2( const BufferMemoryRequirementsInfo2 & info, Dispatch const &d = Dispatch() ) const;
-    template <typename ...T, typename Dispatch = DispatchLoaderStatic>
-    StructureChain<T...> getBufferMemoryRequirements2( const BufferMemoryRequirementsInfo2 & info, Dispatch const &d = Dispatch() ) const;
+    template <typename X, typename Y, typename ...Z, typename Dispatch = DispatchLoaderStatic>
+    StructureChain<X, Y, Z...> getBufferMemoryRequirements2( const BufferMemoryRequirementsInfo2 & info, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = DispatchLoaderStatic>
@@ -34813,8 +36537,8 @@ public:
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = DispatchLoaderStatic>
     MemoryRequirements2 getBufferMemoryRequirements2KHR( const BufferMemoryRequirementsInfo2 & info, Dispatch const &d = Dispatch() ) const;
-    template <typename ...T, typename Dispatch = DispatchLoaderStatic>
-    StructureChain<T...> getBufferMemoryRequirements2KHR( const BufferMemoryRequirementsInfo2 & info, Dispatch const &d = Dispatch() ) const;
+    template <typename X, typename Y, typename ...Z, typename Dispatch = DispatchLoaderStatic>
+    StructureChain<X, Y, Z...> getBufferMemoryRequirements2KHR( const BufferMemoryRequirementsInfo2 & info, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = DispatchLoaderStatic>
@@ -34822,8 +36546,8 @@ public:
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = DispatchLoaderStatic>
     MemoryRequirements2 getImageMemoryRequirements2( const ImageMemoryRequirementsInfo2 & info, Dispatch const &d = Dispatch() ) const;
-    template <typename ...T, typename Dispatch = DispatchLoaderStatic>
-    StructureChain<T...> getImageMemoryRequirements2( const ImageMemoryRequirementsInfo2 & info, Dispatch const &d = Dispatch() ) const;
+    template <typename X, typename Y, typename ...Z, typename Dispatch = DispatchLoaderStatic>
+    StructureChain<X, Y, Z...> getImageMemoryRequirements2( const ImageMemoryRequirementsInfo2 & info, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = DispatchLoaderStatic>
@@ -34831,8 +36555,8 @@ public:
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = DispatchLoaderStatic>
     MemoryRequirements2 getImageMemoryRequirements2KHR( const ImageMemoryRequirementsInfo2 & info, Dispatch const &d = Dispatch() ) const;
-    template <typename ...T, typename Dispatch = DispatchLoaderStatic>
-    StructureChain<T...> getImageMemoryRequirements2KHR( const ImageMemoryRequirementsInfo2 & info, Dispatch const &d = Dispatch() ) const;
+    template <typename X, typename Y, typename ...Z, typename Dispatch = DispatchLoaderStatic>
+    StructureChain<X, Y, Z...> getImageMemoryRequirements2KHR( const ImageMemoryRequirementsInfo2 & info, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = DispatchLoaderStatic>
@@ -34943,8 +36667,8 @@ public:
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = DispatchLoaderStatic>
     DescriptorSetLayoutSupport getDescriptorSetLayoutSupport( const DescriptorSetLayoutCreateInfo & createInfo, Dispatch const &d = Dispatch() ) const;
-    template <typename ...T, typename Dispatch = DispatchLoaderStatic>
-    StructureChain<T...> getDescriptorSetLayoutSupport( const DescriptorSetLayoutCreateInfo & createInfo, Dispatch const &d = Dispatch() ) const;
+    template <typename X, typename Y, typename ...Z, typename Dispatch = DispatchLoaderStatic>
+    StructureChain<X, Y, Z...> getDescriptorSetLayoutSupport( const DescriptorSetLayoutCreateInfo & createInfo, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = DispatchLoaderStatic>
@@ -34952,8 +36676,8 @@ public:
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = DispatchLoaderStatic>
     DescriptorSetLayoutSupport getDescriptorSetLayoutSupportKHR( const DescriptorSetLayoutCreateInfo & createInfo, Dispatch const &d = Dispatch() ) const;
-    template <typename ...T, typename Dispatch = DispatchLoaderStatic>
-    StructureChain<T...> getDescriptorSetLayoutSupportKHR( const DescriptorSetLayoutCreateInfo & createInfo, Dispatch const &d = Dispatch() ) const;
+    template <typename X, typename Y, typename ...Z, typename Dispatch = DispatchLoaderStatic>
+    StructureChain<X, Y, Z...> getDescriptorSetLayoutSupportKHR( const DescriptorSetLayoutCreateInfo & createInfo, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = DispatchLoaderStatic>
@@ -35001,8 +36725,8 @@ public:
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = DispatchLoaderStatic>
     ResultValueType<AndroidHardwareBufferPropertiesANDROID>::type getAndroidHardwareBufferPropertiesANDROID( const struct AHardwareBuffer & buffer, Dispatch const &d = Dispatch() ) const;
-    template <typename ...T, typename Dispatch = DispatchLoaderStatic>
-    typename ResultValueType<StructureChain<T...>>::type getAndroidHardwareBufferPropertiesANDROID( const struct AHardwareBuffer & buffer, Dispatch const &d = Dispatch() ) const;
+    template <typename X, typename Y, typename ...Z, typename Dispatch = DispatchLoaderStatic>
+    typename ResultValueType<StructureChain<X, Y, Z...>>::type getAndroidHardwareBufferPropertiesANDROID( const struct AHardwareBuffer & buffer, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 #endif /*VK_USE_PLATFORM_ANDROID_ANDROID*/
 
@@ -37597,10 +39321,10 @@ public:
     d.vkGetBufferMemoryRequirements2( m_device, reinterpret_cast<const VkBufferMemoryRequirementsInfo2*>( &info ), reinterpret_cast<VkMemoryRequirements2*>( &memoryRequirements ) );
     return memoryRequirements;
   }
-  template <typename ...T, typename Dispatch>
-  VULKAN_HPP_INLINE StructureChain<T...> Device::getBufferMemoryRequirements2( const BufferMemoryRequirementsInfo2 & info, Dispatch const &d ) const
+  template <typename X, typename Y, typename ...Z, typename Dispatch>
+  VULKAN_HPP_INLINE StructureChain<X, Y, Z...> Device::getBufferMemoryRequirements2( const BufferMemoryRequirementsInfo2 & info, Dispatch const &d ) const
   {
-    StructureChain<T...> structureChain;
+    StructureChain<X, Y, Z...> structureChain;
     MemoryRequirements2& memoryRequirements = structureChain.template get<MemoryRequirements2>();
     d.vkGetBufferMemoryRequirements2( m_device, reinterpret_cast<const VkBufferMemoryRequirementsInfo2*>( &info ), reinterpret_cast<VkMemoryRequirements2*>( &memoryRequirements ) );
     return structureChain;
@@ -37620,10 +39344,10 @@ public:
     d.vkGetBufferMemoryRequirements2KHR( m_device, reinterpret_cast<const VkBufferMemoryRequirementsInfo2*>( &info ), reinterpret_cast<VkMemoryRequirements2*>( &memoryRequirements ) );
     return memoryRequirements;
   }
-  template <typename ...T, typename Dispatch>
-  VULKAN_HPP_INLINE StructureChain<T...> Device::getBufferMemoryRequirements2KHR( const BufferMemoryRequirementsInfo2 & info, Dispatch const &d ) const
+  template <typename X, typename Y, typename ...Z, typename Dispatch>
+  VULKAN_HPP_INLINE StructureChain<X, Y, Z...> Device::getBufferMemoryRequirements2KHR( const BufferMemoryRequirementsInfo2 & info, Dispatch const &d ) const
   {
-    StructureChain<T...> structureChain;
+    StructureChain<X, Y, Z...> structureChain;
     MemoryRequirements2& memoryRequirements = structureChain.template get<MemoryRequirements2>();
     d.vkGetBufferMemoryRequirements2KHR( m_device, reinterpret_cast<const VkBufferMemoryRequirementsInfo2*>( &info ), reinterpret_cast<VkMemoryRequirements2*>( &memoryRequirements ) );
     return structureChain;
@@ -37643,10 +39367,10 @@ public:
     d.vkGetImageMemoryRequirements2( m_device, reinterpret_cast<const VkImageMemoryRequirementsInfo2*>( &info ), reinterpret_cast<VkMemoryRequirements2*>( &memoryRequirements ) );
     return memoryRequirements;
   }
-  template <typename ...T, typename Dispatch>
-  VULKAN_HPP_INLINE StructureChain<T...> Device::getImageMemoryRequirements2( const ImageMemoryRequirementsInfo2 & info, Dispatch const &d ) const
+  template <typename X, typename Y, typename ...Z, typename Dispatch>
+  VULKAN_HPP_INLINE StructureChain<X, Y, Z...> Device::getImageMemoryRequirements2( const ImageMemoryRequirementsInfo2 & info, Dispatch const &d ) const
   {
-    StructureChain<T...> structureChain;
+    StructureChain<X, Y, Z...> structureChain;
     MemoryRequirements2& memoryRequirements = structureChain.template get<MemoryRequirements2>();
     d.vkGetImageMemoryRequirements2( m_device, reinterpret_cast<const VkImageMemoryRequirementsInfo2*>( &info ), reinterpret_cast<VkMemoryRequirements2*>( &memoryRequirements ) );
     return structureChain;
@@ -37666,10 +39390,10 @@ public:
     d.vkGetImageMemoryRequirements2KHR( m_device, reinterpret_cast<const VkImageMemoryRequirementsInfo2*>( &info ), reinterpret_cast<VkMemoryRequirements2*>( &memoryRequirements ) );
     return memoryRequirements;
   }
-  template <typename ...T, typename Dispatch>
-  VULKAN_HPP_INLINE StructureChain<T...> Device::getImageMemoryRequirements2KHR( const ImageMemoryRequirementsInfo2 & info, Dispatch const &d ) const
+  template <typename X, typename Y, typename ...Z, typename Dispatch>
+  VULKAN_HPP_INLINE StructureChain<X, Y, Z...> Device::getImageMemoryRequirements2KHR( const ImageMemoryRequirementsInfo2 & info, Dispatch const &d ) const
   {
-    StructureChain<T...> structureChain;
+    StructureChain<X, Y, Z...> structureChain;
     MemoryRequirements2& memoryRequirements = structureChain.template get<MemoryRequirements2>();
     d.vkGetImageMemoryRequirements2KHR( m_device, reinterpret_cast<const VkImageMemoryRequirementsInfo2*>( &info ), reinterpret_cast<VkMemoryRequirements2*>( &memoryRequirements ) );
     return structureChain;
@@ -37924,10 +39648,10 @@ public:
     d.vkGetDescriptorSetLayoutSupport( m_device, reinterpret_cast<const VkDescriptorSetLayoutCreateInfo*>( &createInfo ), reinterpret_cast<VkDescriptorSetLayoutSupport*>( &support ) );
     return support;
   }
-  template <typename ...T, typename Dispatch>
-  VULKAN_HPP_INLINE StructureChain<T...> Device::getDescriptorSetLayoutSupport( const DescriptorSetLayoutCreateInfo & createInfo, Dispatch const &d ) const
+  template <typename X, typename Y, typename ...Z, typename Dispatch>
+  VULKAN_HPP_INLINE StructureChain<X, Y, Z...> Device::getDescriptorSetLayoutSupport( const DescriptorSetLayoutCreateInfo & createInfo, Dispatch const &d ) const
   {
-    StructureChain<T...> structureChain;
+    StructureChain<X, Y, Z...> structureChain;
     DescriptorSetLayoutSupport& support = structureChain.template get<DescriptorSetLayoutSupport>();
     d.vkGetDescriptorSetLayoutSupport( m_device, reinterpret_cast<const VkDescriptorSetLayoutCreateInfo*>( &createInfo ), reinterpret_cast<VkDescriptorSetLayoutSupport*>( &support ) );
     return structureChain;
@@ -37947,10 +39671,10 @@ public:
     d.vkGetDescriptorSetLayoutSupportKHR( m_device, reinterpret_cast<const VkDescriptorSetLayoutCreateInfo*>( &createInfo ), reinterpret_cast<VkDescriptorSetLayoutSupport*>( &support ) );
     return support;
   }
-  template <typename ...T, typename Dispatch>
-  VULKAN_HPP_INLINE StructureChain<T...> Device::getDescriptorSetLayoutSupportKHR( const DescriptorSetLayoutCreateInfo & createInfo, Dispatch const &d ) const
+  template <typename X, typename Y, typename ...Z, typename Dispatch>
+  VULKAN_HPP_INLINE StructureChain<X, Y, Z...> Device::getDescriptorSetLayoutSupportKHR( const DescriptorSetLayoutCreateInfo & createInfo, Dispatch const &d ) const
   {
-    StructureChain<T...> structureChain;
+    StructureChain<X, Y, Z...> structureChain;
     DescriptorSetLayoutSupport& support = structureChain.template get<DescriptorSetLayoutSupport>();
     d.vkGetDescriptorSetLayoutSupportKHR( m_device, reinterpret_cast<const VkDescriptorSetLayoutCreateInfo*>( &createInfo ), reinterpret_cast<VkDescriptorSetLayoutSupport*>( &support ) );
     return structureChain;
@@ -38067,10 +39791,10 @@ public:
     Result result = static_cast<Result>( d.vkGetAndroidHardwareBufferPropertiesANDROID( m_device, buffer, reinterpret_cast<VkAndroidHardwareBufferPropertiesANDROID*>( &properties ) ) );
     return createResultValue( result, properties, VULKAN_HPP_NAMESPACE_STRING"::Device::getAndroidHardwareBufferPropertiesANDROID" );
   }
-  template <typename ...T, typename Dispatch>
-  VULKAN_HPP_INLINE typename ResultValueType<StructureChain<T...>>::type Device::getAndroidHardwareBufferPropertiesANDROID( const struct AHardwareBuffer & buffer, Dispatch const &d ) const
+  template <typename X, typename Y, typename ...Z, typename Dispatch>
+  VULKAN_HPP_INLINE typename ResultValueType<StructureChain<X, Y, Z...>>::type Device::getAndroidHardwareBufferPropertiesANDROID( const struct AHardwareBuffer & buffer, Dispatch const &d ) const
   {
-    StructureChain<T...> structureChain;
+    StructureChain<X, Y, Z...> structureChain;
     AndroidHardwareBufferPropertiesANDROID& properties = structureChain.template get<AndroidHardwareBufferPropertiesANDROID>();
     Result result = static_cast<Result>( d.vkGetAndroidHardwareBufferPropertiesANDROID( m_device, buffer, reinterpret_cast<VkAndroidHardwareBufferPropertiesANDROID*>( &properties ) ) );
     return createResultValue( result, structureChain, VULKAN_HPP_NAMESPACE_STRING"::Device::getAndroidHardwareBufferPropertiesANDROID" );
@@ -38097,7 +39821,7 @@ public:
 
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
 
-  template <typename Dispatch> class UniqueHandleTraits<Device,Dispatch> {public: using owner = NoParent; using deleter = ObjectDestroy<owner,Dispatch>;};
+  template <typename Dispatch> class UniqueHandleTraits<Device,Dispatch> {public: using owner = NoParent; using deleter = ObjectDestroy<NoParent,Dispatch>; };
   using UniqueDevice = UniqueHandle<Device,DispatchLoaderStatic>;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 
@@ -38349,8 +40073,8 @@ public:
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = DispatchLoaderStatic>
     PhysicalDeviceFeatures2 getFeatures2(Dispatch const &d = Dispatch() ) const;
-    template <typename ...T, typename Dispatch = DispatchLoaderStatic>
-    StructureChain<T...> getFeatures2(Dispatch const &d = Dispatch() ) const;
+    template <typename X, typename Y, typename ...Z, typename Dispatch = DispatchLoaderStatic>
+    StructureChain<X, Y, Z...> getFeatures2(Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = DispatchLoaderStatic>
@@ -38358,8 +40082,8 @@ public:
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = DispatchLoaderStatic>
     PhysicalDeviceFeatures2 getFeatures2KHR(Dispatch const &d = Dispatch() ) const;
-    template <typename ...T, typename Dispatch = DispatchLoaderStatic>
-    StructureChain<T...> getFeatures2KHR(Dispatch const &d = Dispatch() ) const;
+    template <typename X, typename Y, typename ...Z, typename Dispatch = DispatchLoaderStatic>
+    StructureChain<X, Y, Z...> getFeatures2KHR(Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = DispatchLoaderStatic>
@@ -38367,8 +40091,8 @@ public:
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = DispatchLoaderStatic>
     PhysicalDeviceProperties2 getProperties2(Dispatch const &d = Dispatch() ) const;
-    template <typename ...T, typename Dispatch = DispatchLoaderStatic>
-    StructureChain<T...> getProperties2(Dispatch const &d = Dispatch() ) const;
+    template <typename X, typename Y, typename ...Z, typename Dispatch = DispatchLoaderStatic>
+    StructureChain<X, Y, Z...> getProperties2(Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = DispatchLoaderStatic>
@@ -38376,8 +40100,8 @@ public:
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = DispatchLoaderStatic>
     PhysicalDeviceProperties2 getProperties2KHR(Dispatch const &d = Dispatch() ) const;
-    template <typename ...T, typename Dispatch = DispatchLoaderStatic>
-    StructureChain<T...> getProperties2KHR(Dispatch const &d = Dispatch() ) const;
+    template <typename X, typename Y, typename ...Z, typename Dispatch = DispatchLoaderStatic>
+    StructureChain<X, Y, Z...> getProperties2KHR(Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = DispatchLoaderStatic>
@@ -38399,8 +40123,8 @@ public:
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = DispatchLoaderStatic>
     ResultValueType<ImageFormatProperties2>::type getImageFormatProperties2( const PhysicalDeviceImageFormatInfo2 & imageFormatInfo, Dispatch const &d = Dispatch() ) const;
-    template <typename ...T, typename Dispatch = DispatchLoaderStatic>
-    typename ResultValueType<StructureChain<T...>>::type getImageFormatProperties2( const PhysicalDeviceImageFormatInfo2 & imageFormatInfo, Dispatch const &d = Dispatch() ) const;
+    template <typename X, typename Y, typename ...Z, typename Dispatch = DispatchLoaderStatic>
+    typename ResultValueType<StructureChain<X, Y, Z...>>::type getImageFormatProperties2( const PhysicalDeviceImageFormatInfo2 & imageFormatInfo, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = DispatchLoaderStatic>
@@ -38408,8 +40132,8 @@ public:
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = DispatchLoaderStatic>
     ResultValueType<ImageFormatProperties2>::type getImageFormatProperties2KHR( const PhysicalDeviceImageFormatInfo2 & imageFormatInfo, Dispatch const &d = Dispatch() ) const;
-    template <typename ...T, typename Dispatch = DispatchLoaderStatic>
-    typename ResultValueType<StructureChain<T...>>::type getImageFormatProperties2KHR( const PhysicalDeviceImageFormatInfo2 & imageFormatInfo, Dispatch const &d = Dispatch() ) const;
+    template <typename X, typename Y, typename ...Z, typename Dispatch = DispatchLoaderStatic>
+    typename ResultValueType<StructureChain<X, Y, Z...>>::type getImageFormatProperties2KHR( const PhysicalDeviceImageFormatInfo2 & imageFormatInfo, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = DispatchLoaderStatic>
@@ -38548,8 +40272,8 @@ public:
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = DispatchLoaderStatic>
     ResultValueType<SurfaceCapabilities2KHR>::type getSurfaceCapabilities2KHR( const PhysicalDeviceSurfaceInfo2KHR & surfaceInfo, Dispatch const &d = Dispatch() ) const;
-    template <typename ...T, typename Dispatch = DispatchLoaderStatic>
-    typename ResultValueType<StructureChain<T...>>::type getSurfaceCapabilities2KHR( const PhysicalDeviceSurfaceInfo2KHR & surfaceInfo, Dispatch const &d = Dispatch() ) const;
+    template <typename X, typename Y, typename ...Z, typename Dispatch = DispatchLoaderStatic>
+    typename ResultValueType<StructureChain<X, Y, Z...>>::type getSurfaceCapabilities2KHR( const PhysicalDeviceSurfaceInfo2KHR & surfaceInfo, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = DispatchLoaderStatic>
@@ -39142,10 +40866,10 @@ public:
     d.vkGetPhysicalDeviceFeatures2( m_physicalDevice, reinterpret_cast<VkPhysicalDeviceFeatures2*>( &features ) );
     return features;
   }
-  template <typename ...T, typename Dispatch>
-  VULKAN_HPP_INLINE StructureChain<T...> PhysicalDevice::getFeatures2(Dispatch const &d ) const
+  template <typename X, typename Y, typename ...Z, typename Dispatch>
+  VULKAN_HPP_INLINE StructureChain<X, Y, Z...> PhysicalDevice::getFeatures2(Dispatch const &d ) const
   {
-    StructureChain<T...> structureChain;
+    StructureChain<X, Y, Z...> structureChain;
     PhysicalDeviceFeatures2& features = structureChain.template get<PhysicalDeviceFeatures2>();
     d.vkGetPhysicalDeviceFeatures2( m_physicalDevice, reinterpret_cast<VkPhysicalDeviceFeatures2*>( &features ) );
     return structureChain;
@@ -39165,10 +40889,10 @@ public:
     d.vkGetPhysicalDeviceFeatures2KHR( m_physicalDevice, reinterpret_cast<VkPhysicalDeviceFeatures2*>( &features ) );
     return features;
   }
-  template <typename ...T, typename Dispatch>
-  VULKAN_HPP_INLINE StructureChain<T...> PhysicalDevice::getFeatures2KHR(Dispatch const &d ) const
+  template <typename X, typename Y, typename ...Z, typename Dispatch>
+  VULKAN_HPP_INLINE StructureChain<X, Y, Z...> PhysicalDevice::getFeatures2KHR(Dispatch const &d ) const
   {
-    StructureChain<T...> structureChain;
+    StructureChain<X, Y, Z...> structureChain;
     PhysicalDeviceFeatures2& features = structureChain.template get<PhysicalDeviceFeatures2>();
     d.vkGetPhysicalDeviceFeatures2KHR( m_physicalDevice, reinterpret_cast<VkPhysicalDeviceFeatures2*>( &features ) );
     return structureChain;
@@ -39188,10 +40912,10 @@ public:
     d.vkGetPhysicalDeviceProperties2( m_physicalDevice, reinterpret_cast<VkPhysicalDeviceProperties2*>( &properties ) );
     return properties;
   }
-  template <typename ...T, typename Dispatch>
-  VULKAN_HPP_INLINE StructureChain<T...> PhysicalDevice::getProperties2(Dispatch const &d ) const
+  template <typename X, typename Y, typename ...Z, typename Dispatch>
+  VULKAN_HPP_INLINE StructureChain<X, Y, Z...> PhysicalDevice::getProperties2(Dispatch const &d ) const
   {
-    StructureChain<T...> structureChain;
+    StructureChain<X, Y, Z...> structureChain;
     PhysicalDeviceProperties2& properties = structureChain.template get<PhysicalDeviceProperties2>();
     d.vkGetPhysicalDeviceProperties2( m_physicalDevice, reinterpret_cast<VkPhysicalDeviceProperties2*>( &properties ) );
     return structureChain;
@@ -39211,10 +40935,10 @@ public:
     d.vkGetPhysicalDeviceProperties2KHR( m_physicalDevice, reinterpret_cast<VkPhysicalDeviceProperties2*>( &properties ) );
     return properties;
   }
-  template <typename ...T, typename Dispatch>
-  VULKAN_HPP_INLINE StructureChain<T...> PhysicalDevice::getProperties2KHR(Dispatch const &d ) const
+  template <typename X, typename Y, typename ...Z, typename Dispatch>
+  VULKAN_HPP_INLINE StructureChain<X, Y, Z...> PhysicalDevice::getProperties2KHR(Dispatch const &d ) const
   {
-    StructureChain<T...> structureChain;
+    StructureChain<X, Y, Z...> structureChain;
     PhysicalDeviceProperties2& properties = structureChain.template get<PhysicalDeviceProperties2>();
     d.vkGetPhysicalDeviceProperties2KHR( m_physicalDevice, reinterpret_cast<VkPhysicalDeviceProperties2*>( &properties ) );
     return structureChain;
@@ -39264,10 +40988,10 @@ public:
     Result result = static_cast<Result>( d.vkGetPhysicalDeviceImageFormatProperties2( m_physicalDevice, reinterpret_cast<const VkPhysicalDeviceImageFormatInfo2*>( &imageFormatInfo ), reinterpret_cast<VkImageFormatProperties2*>( &imageFormatProperties ) ) );
     return createResultValue( result, imageFormatProperties, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::getImageFormatProperties2" );
   }
-  template <typename ...T, typename Dispatch>
-  VULKAN_HPP_INLINE typename ResultValueType<StructureChain<T...>>::type PhysicalDevice::getImageFormatProperties2( const PhysicalDeviceImageFormatInfo2 & imageFormatInfo, Dispatch const &d ) const
+  template <typename X, typename Y, typename ...Z, typename Dispatch>
+  VULKAN_HPP_INLINE typename ResultValueType<StructureChain<X, Y, Z...>>::type PhysicalDevice::getImageFormatProperties2( const PhysicalDeviceImageFormatInfo2 & imageFormatInfo, Dispatch const &d ) const
   {
-    StructureChain<T...> structureChain;
+    StructureChain<X, Y, Z...> structureChain;
     ImageFormatProperties2& imageFormatProperties = structureChain.template get<ImageFormatProperties2>();
     Result result = static_cast<Result>( d.vkGetPhysicalDeviceImageFormatProperties2( m_physicalDevice, reinterpret_cast<const VkPhysicalDeviceImageFormatInfo2*>( &imageFormatInfo ), reinterpret_cast<VkImageFormatProperties2*>( &imageFormatProperties ) ) );
     return createResultValue( result, structureChain, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::getImageFormatProperties2" );
@@ -39287,10 +41011,10 @@ public:
     Result result = static_cast<Result>( d.vkGetPhysicalDeviceImageFormatProperties2KHR( m_physicalDevice, reinterpret_cast<const VkPhysicalDeviceImageFormatInfo2*>( &imageFormatInfo ), reinterpret_cast<VkImageFormatProperties2*>( &imageFormatProperties ) ) );
     return createResultValue( result, imageFormatProperties, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::getImageFormatProperties2KHR" );
   }
-  template <typename ...T, typename Dispatch>
-  VULKAN_HPP_INLINE typename ResultValueType<StructureChain<T...>>::type PhysicalDevice::getImageFormatProperties2KHR( const PhysicalDeviceImageFormatInfo2 & imageFormatInfo, Dispatch const &d ) const
+  template <typename X, typename Y, typename ...Z, typename Dispatch>
+  VULKAN_HPP_INLINE typename ResultValueType<StructureChain<X, Y, Z...>>::type PhysicalDevice::getImageFormatProperties2KHR( const PhysicalDeviceImageFormatInfo2 & imageFormatInfo, Dispatch const &d ) const
   {
-    StructureChain<T...> structureChain;
+    StructureChain<X, Y, Z...> structureChain;
     ImageFormatProperties2& imageFormatProperties = structureChain.template get<ImageFormatProperties2>();
     Result result = static_cast<Result>( d.vkGetPhysicalDeviceImageFormatProperties2KHR( m_physicalDevice, reinterpret_cast<const VkPhysicalDeviceImageFormatInfo2*>( &imageFormatInfo ), reinterpret_cast<VkImageFormatProperties2*>( &imageFormatProperties ) ) );
     return createResultValue( result, structureChain, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::getImageFormatProperties2KHR" );
@@ -39608,10 +41332,10 @@ public:
     Result result = static_cast<Result>( d.vkGetPhysicalDeviceSurfaceCapabilities2KHR( m_physicalDevice, reinterpret_cast<const VkPhysicalDeviceSurfaceInfo2KHR*>( &surfaceInfo ), reinterpret_cast<VkSurfaceCapabilities2KHR*>( &surfaceCapabilities ) ) );
     return createResultValue( result, surfaceCapabilities, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::getSurfaceCapabilities2KHR" );
   }
-  template <typename ...T, typename Dispatch>
-  VULKAN_HPP_INLINE typename ResultValueType<StructureChain<T...>>::type PhysicalDevice::getSurfaceCapabilities2KHR( const PhysicalDeviceSurfaceInfo2KHR & surfaceInfo, Dispatch const &d ) const
+  template <typename X, typename Y, typename ...Z, typename Dispatch>
+  VULKAN_HPP_INLINE typename ResultValueType<StructureChain<X, Y, Z...>>::type PhysicalDevice::getSurfaceCapabilities2KHR( const PhysicalDeviceSurfaceInfo2KHR & surfaceInfo, Dispatch const &d ) const
   {
-    StructureChain<T...> structureChain;
+    StructureChain<X, Y, Z...> structureChain;
     SurfaceCapabilities2KHR& surfaceCapabilities = structureChain.template get<SurfaceCapabilities2KHR>();
     Result result = static_cast<Result>( d.vkGetPhysicalDeviceSurfaceCapabilities2KHR( m_physicalDevice, reinterpret_cast<const VkPhysicalDeviceSurfaceInfo2KHR*>( &surfaceInfo ), reinterpret_cast<VkSurfaceCapabilities2KHR*>( &surfaceCapabilities ) ) );
     return createResultValue( result, structureChain, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::getSurfaceCapabilities2KHR" );
@@ -39842,9 +41566,14 @@ public:
       return *this;
     }
 
-    operator const VkCmdProcessCommandsInfoNVX&() const
+    operator VkCmdProcessCommandsInfoNVX const&() const
     {
       return *reinterpret_cast<const VkCmdProcessCommandsInfoNVX*>(this);
+    }
+
+    operator VkCmdProcessCommandsInfoNVX &()
+    {
+      return *reinterpret_cast<VkCmdProcessCommandsInfoNVX*>(this);
     }
 
     bool operator==( CmdProcessCommandsInfoNVX const& rhs ) const
@@ -39888,9 +41617,14 @@ public:
 
   struct PhysicalDeviceGroupProperties
   {
-    operator const VkPhysicalDeviceGroupProperties&() const
+    operator VkPhysicalDeviceGroupProperties const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceGroupProperties*>(this);
+    }
+
+    operator VkPhysicalDeviceGroupProperties &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceGroupProperties*>(this);
     }
 
     bool operator==( PhysicalDeviceGroupProperties const& rhs ) const
@@ -39923,11 +41657,11 @@ public:
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   class Instance;
 
-  template <typename Dispatch> class UniqueHandleTraits<DebugReportCallbackEXT,Dispatch> {public: using owner = Instance; using deleter = ObjectDestroy<owner,Dispatch>;};
+  template <typename Dispatch> class UniqueHandleTraits<DebugReportCallbackEXT,Dispatch> {public: using owner = Instance; using deleter = ObjectDestroy<Instance,Dispatch>; };
   using UniqueDebugReportCallbackEXT = UniqueHandle<DebugReportCallbackEXT,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<DebugUtilsMessengerEXT,Dispatch> {public: using owner = Instance; using deleter = ObjectDestroy<owner,Dispatch>;};
+  template <typename Dispatch> class UniqueHandleTraits<DebugUtilsMessengerEXT,Dispatch> {public: using owner = Instance; using deleter = ObjectDestroy<Instance,Dispatch>; };
   using UniqueDebugUtilsMessengerEXT = UniqueHandle<DebugUtilsMessengerEXT,DispatchLoaderStatic>;
-  template <typename Dispatch> class UniqueHandleTraits<SurfaceKHR,Dispatch> {public: using owner = Instance; using deleter = ObjectDestroy<owner,Dispatch>;};
+  template <typename Dispatch> class UniqueHandleTraits<SurfaceKHR,Dispatch> {public: using owner = Instance; using deleter = ObjectDestroy<Instance,Dispatch>; };
   using UniqueSurfaceKHR = UniqueHandle<SurfaceKHR,DispatchLoaderStatic>;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 
@@ -40825,9 +42559,14 @@ public:
       return *this;
     }
 
-    operator const VkDeviceGroupDeviceCreateInfo&() const
+    operator VkDeviceGroupDeviceCreateInfo const&() const
     {
       return *reinterpret_cast<const VkDeviceGroupDeviceCreateInfo*>(this);
+    }
+
+    operator VkDeviceGroupDeviceCreateInfo &()
+    {
+      return *reinterpret_cast<VkDeviceGroupDeviceCreateInfo*>(this);
     }
 
     bool operator==( DeviceGroupDeviceCreateInfo const& rhs ) const
@@ -40857,7 +42596,7 @@ public:
 
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
 
-  template <typename Dispatch> class UniqueHandleTraits<Instance,Dispatch> {public: using owner = NoParent; using deleter = ObjectDestroy<owner,Dispatch>;};
+  template <typename Dispatch> class UniqueHandleTraits<Instance,Dispatch> {public: using owner = NoParent; using deleter = ObjectDestroy<NoParent,Dispatch>; };
   using UniqueInstance = UniqueHandle<Instance,DispatchLoaderStatic>;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 
@@ -40921,9 +42660,14 @@ public:
       return *this;
     }
 
-    operator const VkBaseOutStructure&() const
+    operator VkBaseOutStructure const&() const
     {
       return *reinterpret_cast<const VkBaseOutStructure*>(this);
+    }
+
+    operator VkBaseOutStructure &()
+    {
+      return *reinterpret_cast<VkBaseOutStructure*>(this);
     }
 
     bool operator==( BaseOutStructure const& rhs ) const
@@ -40964,9 +42708,14 @@ public:
       return *this;
     }
 
-    operator const VkBaseInStructure&() const
+    operator VkBaseInStructure const&() const
     {
       return *reinterpret_cast<const VkBaseInStructure*>(this);
+    }
+
+    operator VkBaseInStructure &()
+    {
+      return *reinterpret_cast<VkBaseInStructure*>(this);
     }
 
     bool operator==( BaseInStructure const& rhs ) const
@@ -44819,7 +46568,7 @@ public:
       vkAcquireNextImage2KHR = PFN_vkAcquireNextImage2KHR(device ? device.getProcAddr( "vkAcquireNextImage2KHR") : instance.getProcAddr( "vkAcquireNextImage2KHR"));
       vkAcquireNextImageKHR = PFN_vkAcquireNextImageKHR(device ? device.getProcAddr( "vkAcquireNextImageKHR") : instance.getProcAddr( "vkAcquireNextImageKHR"));
 #ifdef VK_USE_PLATFORM_XLIB_XRANDR_NV
-      vkAcquireXlibDisplayEXT = PFN_vkAcquireXlibDisplayEXT(device ? device.getProcAddr( "vkAcquireXlibDisplayEXT") : instance.getProcAddr( "vkAcquireXlibDisplayEXT"));
+      vkAcquireXlibDisplayEXT = PFN_vkAcquireXlibDisplayEXT(instance.getProcAddr( "vkAcquireXlibDisplayEXT"));
 #endif /*VK_USE_PLATFORM_XLIB_XRANDR_NV*/
       vkAllocateCommandBuffers = PFN_vkAllocateCommandBuffers(device ? device.getProcAddr( "vkAllocateCommandBuffers") : instance.getProcAddr( "vkAllocateCommandBuffers"));
       vkAllocateDescriptorSets = PFN_vkAllocateDescriptorSets(device ? device.getProcAddr( "vkAllocateDescriptorSets") : instance.getProcAddr( "vkAllocateDescriptorSets"));
@@ -44916,8 +46665,8 @@ public:
       vkCreateDescriptorSetLayout = PFN_vkCreateDescriptorSetLayout(device ? device.getProcAddr( "vkCreateDescriptorSetLayout") : instance.getProcAddr( "vkCreateDescriptorSetLayout"));
       vkCreateDescriptorUpdateTemplate = PFN_vkCreateDescriptorUpdateTemplate(device ? device.getProcAddr( "vkCreateDescriptorUpdateTemplate") : instance.getProcAddr( "vkCreateDescriptorUpdateTemplate"));
       vkCreateDescriptorUpdateTemplateKHR = PFN_vkCreateDescriptorUpdateTemplateKHR(device ? device.getProcAddr( "vkCreateDescriptorUpdateTemplateKHR") : instance.getProcAddr( "vkCreateDescriptorUpdateTemplateKHR"));
-      vkCreateDevice = PFN_vkCreateDevice(device ? device.getProcAddr( "vkCreateDevice") : instance.getProcAddr( "vkCreateDevice"));
-      vkCreateDisplayModeKHR = PFN_vkCreateDisplayModeKHR(device ? device.getProcAddr( "vkCreateDisplayModeKHR") : instance.getProcAddr( "vkCreateDisplayModeKHR"));
+      vkCreateDevice = PFN_vkCreateDevice(instance.getProcAddr( "vkCreateDevice"));
+      vkCreateDisplayModeKHR = PFN_vkCreateDisplayModeKHR(instance.getProcAddr( "vkCreateDisplayModeKHR"));
       vkCreateDisplayPlaneSurfaceKHR = PFN_vkCreateDisplayPlaneSurfaceKHR(instance.getProcAddr( "vkCreateDisplayPlaneSurfaceKHR"));
       vkCreateEvent = PFN_vkCreateEvent(device ? device.getProcAddr( "vkCreateEvent") : instance.getProcAddr( "vkCreateEvent"));
       vkCreateFence = PFN_vkCreateFence(device ? device.getProcAddr( "vkCreateFence") : instance.getProcAddr( "vkCreateFence"));
@@ -45002,8 +46751,8 @@ public:
       vkDeviceWaitIdle = PFN_vkDeviceWaitIdle(device ? device.getProcAddr( "vkDeviceWaitIdle") : instance.getProcAddr( "vkDeviceWaitIdle"));
       vkDisplayPowerControlEXT = PFN_vkDisplayPowerControlEXT(device ? device.getProcAddr( "vkDisplayPowerControlEXT") : instance.getProcAddr( "vkDisplayPowerControlEXT"));
       vkEndCommandBuffer = PFN_vkEndCommandBuffer(device ? device.getProcAddr( "vkEndCommandBuffer") : instance.getProcAddr( "vkEndCommandBuffer"));
-      vkEnumerateDeviceExtensionProperties = PFN_vkEnumerateDeviceExtensionProperties(device ? device.getProcAddr( "vkEnumerateDeviceExtensionProperties") : instance.getProcAddr( "vkEnumerateDeviceExtensionProperties"));
-      vkEnumerateDeviceLayerProperties = PFN_vkEnumerateDeviceLayerProperties(device ? device.getProcAddr( "vkEnumerateDeviceLayerProperties") : instance.getProcAddr( "vkEnumerateDeviceLayerProperties"));
+      vkEnumerateDeviceExtensionProperties = PFN_vkEnumerateDeviceExtensionProperties(instance.getProcAddr( "vkEnumerateDeviceExtensionProperties"));
+      vkEnumerateDeviceLayerProperties = PFN_vkEnumerateDeviceLayerProperties(instance.getProcAddr( "vkEnumerateDeviceLayerProperties"));
       vkEnumerateInstanceExtensionProperties = PFN_vkEnumerateInstanceExtensionProperties(instance.getProcAddr( "vkEnumerateInstanceExtensionProperties"));
       vkEnumerateInstanceLayerProperties = PFN_vkEnumerateInstanceLayerProperties(instance.getProcAddr( "vkEnumerateInstanceLayerProperties"));
       vkEnumerateInstanceVersion = PFN_vkEnumerateInstanceVersion(instance.getProcAddr( "vkEnumerateInstanceVersion"));
@@ -45030,11 +46779,11 @@ public:
       vkGetDeviceProcAddr = PFN_vkGetDeviceProcAddr(device ? device.getProcAddr( "vkGetDeviceProcAddr") : instance.getProcAddr( "vkGetDeviceProcAddr"));
       vkGetDeviceQueue = PFN_vkGetDeviceQueue(device ? device.getProcAddr( "vkGetDeviceQueue") : instance.getProcAddr( "vkGetDeviceQueue"));
       vkGetDeviceQueue2 = PFN_vkGetDeviceQueue2(device ? device.getProcAddr( "vkGetDeviceQueue2") : instance.getProcAddr( "vkGetDeviceQueue2"));
-      vkGetDisplayModeProperties2KHR = PFN_vkGetDisplayModeProperties2KHR(device ? device.getProcAddr( "vkGetDisplayModeProperties2KHR") : instance.getProcAddr( "vkGetDisplayModeProperties2KHR"));
-      vkGetDisplayModePropertiesKHR = PFN_vkGetDisplayModePropertiesKHR(device ? device.getProcAddr( "vkGetDisplayModePropertiesKHR") : instance.getProcAddr( "vkGetDisplayModePropertiesKHR"));
-      vkGetDisplayPlaneCapabilities2KHR = PFN_vkGetDisplayPlaneCapabilities2KHR(device ? device.getProcAddr( "vkGetDisplayPlaneCapabilities2KHR") : instance.getProcAddr( "vkGetDisplayPlaneCapabilities2KHR"));
-      vkGetDisplayPlaneCapabilitiesKHR = PFN_vkGetDisplayPlaneCapabilitiesKHR(device ? device.getProcAddr( "vkGetDisplayPlaneCapabilitiesKHR") : instance.getProcAddr( "vkGetDisplayPlaneCapabilitiesKHR"));
-      vkGetDisplayPlaneSupportedDisplaysKHR = PFN_vkGetDisplayPlaneSupportedDisplaysKHR(device ? device.getProcAddr( "vkGetDisplayPlaneSupportedDisplaysKHR") : instance.getProcAddr( "vkGetDisplayPlaneSupportedDisplaysKHR"));
+      vkGetDisplayModeProperties2KHR = PFN_vkGetDisplayModeProperties2KHR(instance.getProcAddr( "vkGetDisplayModeProperties2KHR"));
+      vkGetDisplayModePropertiesKHR = PFN_vkGetDisplayModePropertiesKHR(instance.getProcAddr( "vkGetDisplayModePropertiesKHR"));
+      vkGetDisplayPlaneCapabilities2KHR = PFN_vkGetDisplayPlaneCapabilities2KHR(instance.getProcAddr( "vkGetDisplayPlaneCapabilities2KHR"));
+      vkGetDisplayPlaneCapabilitiesKHR = PFN_vkGetDisplayPlaneCapabilitiesKHR(instance.getProcAddr( "vkGetDisplayPlaneCapabilitiesKHR"));
+      vkGetDisplayPlaneSupportedDisplaysKHR = PFN_vkGetDisplayPlaneSupportedDisplaysKHR(instance.getProcAddr( "vkGetDisplayPlaneSupportedDisplaysKHR"));
       vkGetEventStatus = PFN_vkGetEventStatus(device ? device.getProcAddr( "vkGetEventStatus") : instance.getProcAddr( "vkGetEventStatus"));
       vkGetFenceFdKHR = PFN_vkGetFenceFdKHR(device ? device.getProcAddr( "vkGetFenceFdKHR") : instance.getProcAddr( "vkGetFenceFdKHR"));
       vkGetFenceStatus = PFN_vkGetFenceStatus(device ? device.getProcAddr( "vkGetFenceStatus") : instance.getProcAddr( "vkGetFenceStatus"));
@@ -45065,68 +46814,68 @@ public:
       vkGetMemoryWin32HandlePropertiesKHR = PFN_vkGetMemoryWin32HandlePropertiesKHR(device ? device.getProcAddr( "vkGetMemoryWin32HandlePropertiesKHR") : instance.getProcAddr( "vkGetMemoryWin32HandlePropertiesKHR"));
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
       vkGetPastPresentationTimingGOOGLE = PFN_vkGetPastPresentationTimingGOOGLE(device ? device.getProcAddr( "vkGetPastPresentationTimingGOOGLE") : instance.getProcAddr( "vkGetPastPresentationTimingGOOGLE"));
-      vkGetPhysicalDeviceDisplayPlaneProperties2KHR = PFN_vkGetPhysicalDeviceDisplayPlaneProperties2KHR(device ? device.getProcAddr( "vkGetPhysicalDeviceDisplayPlaneProperties2KHR") : instance.getProcAddr( "vkGetPhysicalDeviceDisplayPlaneProperties2KHR"));
-      vkGetPhysicalDeviceDisplayPlanePropertiesKHR = PFN_vkGetPhysicalDeviceDisplayPlanePropertiesKHR(device ? device.getProcAddr( "vkGetPhysicalDeviceDisplayPlanePropertiesKHR") : instance.getProcAddr( "vkGetPhysicalDeviceDisplayPlanePropertiesKHR"));
-      vkGetPhysicalDeviceDisplayProperties2KHR = PFN_vkGetPhysicalDeviceDisplayProperties2KHR(device ? device.getProcAddr( "vkGetPhysicalDeviceDisplayProperties2KHR") : instance.getProcAddr( "vkGetPhysicalDeviceDisplayProperties2KHR"));
-      vkGetPhysicalDeviceDisplayPropertiesKHR = PFN_vkGetPhysicalDeviceDisplayPropertiesKHR(device ? device.getProcAddr( "vkGetPhysicalDeviceDisplayPropertiesKHR") : instance.getProcAddr( "vkGetPhysicalDeviceDisplayPropertiesKHR"));
-      vkGetPhysicalDeviceExternalBufferProperties = PFN_vkGetPhysicalDeviceExternalBufferProperties(device ? device.getProcAddr( "vkGetPhysicalDeviceExternalBufferProperties") : instance.getProcAddr( "vkGetPhysicalDeviceExternalBufferProperties"));
-      vkGetPhysicalDeviceExternalBufferPropertiesKHR = PFN_vkGetPhysicalDeviceExternalBufferPropertiesKHR(device ? device.getProcAddr( "vkGetPhysicalDeviceExternalBufferPropertiesKHR") : instance.getProcAddr( "vkGetPhysicalDeviceExternalBufferPropertiesKHR"));
-      vkGetPhysicalDeviceExternalFenceProperties = PFN_vkGetPhysicalDeviceExternalFenceProperties(device ? device.getProcAddr( "vkGetPhysicalDeviceExternalFenceProperties") : instance.getProcAddr( "vkGetPhysicalDeviceExternalFenceProperties"));
-      vkGetPhysicalDeviceExternalFencePropertiesKHR = PFN_vkGetPhysicalDeviceExternalFencePropertiesKHR(device ? device.getProcAddr( "vkGetPhysicalDeviceExternalFencePropertiesKHR") : instance.getProcAddr( "vkGetPhysicalDeviceExternalFencePropertiesKHR"));
-      vkGetPhysicalDeviceExternalImageFormatPropertiesNV = PFN_vkGetPhysicalDeviceExternalImageFormatPropertiesNV(device ? device.getProcAddr( "vkGetPhysicalDeviceExternalImageFormatPropertiesNV") : instance.getProcAddr( "vkGetPhysicalDeviceExternalImageFormatPropertiesNV"));
-      vkGetPhysicalDeviceExternalSemaphoreProperties = PFN_vkGetPhysicalDeviceExternalSemaphoreProperties(device ? device.getProcAddr( "vkGetPhysicalDeviceExternalSemaphoreProperties") : instance.getProcAddr( "vkGetPhysicalDeviceExternalSemaphoreProperties"));
-      vkGetPhysicalDeviceExternalSemaphorePropertiesKHR = PFN_vkGetPhysicalDeviceExternalSemaphorePropertiesKHR(device ? device.getProcAddr( "vkGetPhysicalDeviceExternalSemaphorePropertiesKHR") : instance.getProcAddr( "vkGetPhysicalDeviceExternalSemaphorePropertiesKHR"));
-      vkGetPhysicalDeviceFeatures = PFN_vkGetPhysicalDeviceFeatures(device ? device.getProcAddr( "vkGetPhysicalDeviceFeatures") : instance.getProcAddr( "vkGetPhysicalDeviceFeatures"));
-      vkGetPhysicalDeviceFeatures2 = PFN_vkGetPhysicalDeviceFeatures2(device ? device.getProcAddr( "vkGetPhysicalDeviceFeatures2") : instance.getProcAddr( "vkGetPhysicalDeviceFeatures2"));
-      vkGetPhysicalDeviceFeatures2KHR = PFN_vkGetPhysicalDeviceFeatures2KHR(device ? device.getProcAddr( "vkGetPhysicalDeviceFeatures2KHR") : instance.getProcAddr( "vkGetPhysicalDeviceFeatures2KHR"));
-      vkGetPhysicalDeviceFormatProperties = PFN_vkGetPhysicalDeviceFormatProperties(device ? device.getProcAddr( "vkGetPhysicalDeviceFormatProperties") : instance.getProcAddr( "vkGetPhysicalDeviceFormatProperties"));
-      vkGetPhysicalDeviceFormatProperties2 = PFN_vkGetPhysicalDeviceFormatProperties2(device ? device.getProcAddr( "vkGetPhysicalDeviceFormatProperties2") : instance.getProcAddr( "vkGetPhysicalDeviceFormatProperties2"));
-      vkGetPhysicalDeviceFormatProperties2KHR = PFN_vkGetPhysicalDeviceFormatProperties2KHR(device ? device.getProcAddr( "vkGetPhysicalDeviceFormatProperties2KHR") : instance.getProcAddr( "vkGetPhysicalDeviceFormatProperties2KHR"));
-      vkGetPhysicalDeviceGeneratedCommandsPropertiesNVX = PFN_vkGetPhysicalDeviceGeneratedCommandsPropertiesNVX(device ? device.getProcAddr( "vkGetPhysicalDeviceGeneratedCommandsPropertiesNVX") : instance.getProcAddr( "vkGetPhysicalDeviceGeneratedCommandsPropertiesNVX"));
-      vkGetPhysicalDeviceImageFormatProperties = PFN_vkGetPhysicalDeviceImageFormatProperties(device ? device.getProcAddr( "vkGetPhysicalDeviceImageFormatProperties") : instance.getProcAddr( "vkGetPhysicalDeviceImageFormatProperties"));
-      vkGetPhysicalDeviceImageFormatProperties2 = PFN_vkGetPhysicalDeviceImageFormatProperties2(device ? device.getProcAddr( "vkGetPhysicalDeviceImageFormatProperties2") : instance.getProcAddr( "vkGetPhysicalDeviceImageFormatProperties2"));
-      vkGetPhysicalDeviceImageFormatProperties2KHR = PFN_vkGetPhysicalDeviceImageFormatProperties2KHR(device ? device.getProcAddr( "vkGetPhysicalDeviceImageFormatProperties2KHR") : instance.getProcAddr( "vkGetPhysicalDeviceImageFormatProperties2KHR"));
-      vkGetPhysicalDeviceMemoryProperties = PFN_vkGetPhysicalDeviceMemoryProperties(device ? device.getProcAddr( "vkGetPhysicalDeviceMemoryProperties") : instance.getProcAddr( "vkGetPhysicalDeviceMemoryProperties"));
-      vkGetPhysicalDeviceMemoryProperties2 = PFN_vkGetPhysicalDeviceMemoryProperties2(device ? device.getProcAddr( "vkGetPhysicalDeviceMemoryProperties2") : instance.getProcAddr( "vkGetPhysicalDeviceMemoryProperties2"));
-      vkGetPhysicalDeviceMemoryProperties2KHR = PFN_vkGetPhysicalDeviceMemoryProperties2KHR(device ? device.getProcAddr( "vkGetPhysicalDeviceMemoryProperties2KHR") : instance.getProcAddr( "vkGetPhysicalDeviceMemoryProperties2KHR"));
+      vkGetPhysicalDeviceDisplayPlaneProperties2KHR = PFN_vkGetPhysicalDeviceDisplayPlaneProperties2KHR(instance.getProcAddr( "vkGetPhysicalDeviceDisplayPlaneProperties2KHR"));
+      vkGetPhysicalDeviceDisplayPlanePropertiesKHR = PFN_vkGetPhysicalDeviceDisplayPlanePropertiesKHR(instance.getProcAddr( "vkGetPhysicalDeviceDisplayPlanePropertiesKHR"));
+      vkGetPhysicalDeviceDisplayProperties2KHR = PFN_vkGetPhysicalDeviceDisplayProperties2KHR(instance.getProcAddr( "vkGetPhysicalDeviceDisplayProperties2KHR"));
+      vkGetPhysicalDeviceDisplayPropertiesKHR = PFN_vkGetPhysicalDeviceDisplayPropertiesKHR(instance.getProcAddr( "vkGetPhysicalDeviceDisplayPropertiesKHR"));
+      vkGetPhysicalDeviceExternalBufferProperties = PFN_vkGetPhysicalDeviceExternalBufferProperties(instance.getProcAddr( "vkGetPhysicalDeviceExternalBufferProperties"));
+      vkGetPhysicalDeviceExternalBufferPropertiesKHR = PFN_vkGetPhysicalDeviceExternalBufferPropertiesKHR(instance.getProcAddr( "vkGetPhysicalDeviceExternalBufferPropertiesKHR"));
+      vkGetPhysicalDeviceExternalFenceProperties = PFN_vkGetPhysicalDeviceExternalFenceProperties(instance.getProcAddr( "vkGetPhysicalDeviceExternalFenceProperties"));
+      vkGetPhysicalDeviceExternalFencePropertiesKHR = PFN_vkGetPhysicalDeviceExternalFencePropertiesKHR(instance.getProcAddr( "vkGetPhysicalDeviceExternalFencePropertiesKHR"));
+      vkGetPhysicalDeviceExternalImageFormatPropertiesNV = PFN_vkGetPhysicalDeviceExternalImageFormatPropertiesNV(instance.getProcAddr( "vkGetPhysicalDeviceExternalImageFormatPropertiesNV"));
+      vkGetPhysicalDeviceExternalSemaphoreProperties = PFN_vkGetPhysicalDeviceExternalSemaphoreProperties(instance.getProcAddr( "vkGetPhysicalDeviceExternalSemaphoreProperties"));
+      vkGetPhysicalDeviceExternalSemaphorePropertiesKHR = PFN_vkGetPhysicalDeviceExternalSemaphorePropertiesKHR(instance.getProcAddr( "vkGetPhysicalDeviceExternalSemaphorePropertiesKHR"));
+      vkGetPhysicalDeviceFeatures = PFN_vkGetPhysicalDeviceFeatures(instance.getProcAddr( "vkGetPhysicalDeviceFeatures"));
+      vkGetPhysicalDeviceFeatures2 = PFN_vkGetPhysicalDeviceFeatures2(instance.getProcAddr( "vkGetPhysicalDeviceFeatures2"));
+      vkGetPhysicalDeviceFeatures2KHR = PFN_vkGetPhysicalDeviceFeatures2KHR(instance.getProcAddr( "vkGetPhysicalDeviceFeatures2KHR"));
+      vkGetPhysicalDeviceFormatProperties = PFN_vkGetPhysicalDeviceFormatProperties(instance.getProcAddr( "vkGetPhysicalDeviceFormatProperties"));
+      vkGetPhysicalDeviceFormatProperties2 = PFN_vkGetPhysicalDeviceFormatProperties2(instance.getProcAddr( "vkGetPhysicalDeviceFormatProperties2"));
+      vkGetPhysicalDeviceFormatProperties2KHR = PFN_vkGetPhysicalDeviceFormatProperties2KHR(instance.getProcAddr( "vkGetPhysicalDeviceFormatProperties2KHR"));
+      vkGetPhysicalDeviceGeneratedCommandsPropertiesNVX = PFN_vkGetPhysicalDeviceGeneratedCommandsPropertiesNVX(instance.getProcAddr( "vkGetPhysicalDeviceGeneratedCommandsPropertiesNVX"));
+      vkGetPhysicalDeviceImageFormatProperties = PFN_vkGetPhysicalDeviceImageFormatProperties(instance.getProcAddr( "vkGetPhysicalDeviceImageFormatProperties"));
+      vkGetPhysicalDeviceImageFormatProperties2 = PFN_vkGetPhysicalDeviceImageFormatProperties2(instance.getProcAddr( "vkGetPhysicalDeviceImageFormatProperties2"));
+      vkGetPhysicalDeviceImageFormatProperties2KHR = PFN_vkGetPhysicalDeviceImageFormatProperties2KHR(instance.getProcAddr( "vkGetPhysicalDeviceImageFormatProperties2KHR"));
+      vkGetPhysicalDeviceMemoryProperties = PFN_vkGetPhysicalDeviceMemoryProperties(instance.getProcAddr( "vkGetPhysicalDeviceMemoryProperties"));
+      vkGetPhysicalDeviceMemoryProperties2 = PFN_vkGetPhysicalDeviceMemoryProperties2(instance.getProcAddr( "vkGetPhysicalDeviceMemoryProperties2"));
+      vkGetPhysicalDeviceMemoryProperties2KHR = PFN_vkGetPhysicalDeviceMemoryProperties2KHR(instance.getProcAddr( "vkGetPhysicalDeviceMemoryProperties2KHR"));
 #ifdef VK_USE_PLATFORM_MIR_KHR
-      vkGetPhysicalDeviceMirPresentationSupportKHR = PFN_vkGetPhysicalDeviceMirPresentationSupportKHR(device ? device.getProcAddr( "vkGetPhysicalDeviceMirPresentationSupportKHR") : instance.getProcAddr( "vkGetPhysicalDeviceMirPresentationSupportKHR"));
+      vkGetPhysicalDeviceMirPresentationSupportKHR = PFN_vkGetPhysicalDeviceMirPresentationSupportKHR(instance.getProcAddr( "vkGetPhysicalDeviceMirPresentationSupportKHR"));
 #endif /*VK_USE_PLATFORM_MIR_KHR*/
-      vkGetPhysicalDeviceMultisamplePropertiesEXT = PFN_vkGetPhysicalDeviceMultisamplePropertiesEXT(device ? device.getProcAddr( "vkGetPhysicalDeviceMultisamplePropertiesEXT") : instance.getProcAddr( "vkGetPhysicalDeviceMultisamplePropertiesEXT"));
-      vkGetPhysicalDevicePresentRectanglesKHR = PFN_vkGetPhysicalDevicePresentRectanglesKHR(device ? device.getProcAddr( "vkGetPhysicalDevicePresentRectanglesKHR") : instance.getProcAddr( "vkGetPhysicalDevicePresentRectanglesKHR"));
-      vkGetPhysicalDeviceProperties = PFN_vkGetPhysicalDeviceProperties(device ? device.getProcAddr( "vkGetPhysicalDeviceProperties") : instance.getProcAddr( "vkGetPhysicalDeviceProperties"));
-      vkGetPhysicalDeviceProperties2 = PFN_vkGetPhysicalDeviceProperties2(device ? device.getProcAddr( "vkGetPhysicalDeviceProperties2") : instance.getProcAddr( "vkGetPhysicalDeviceProperties2"));
-      vkGetPhysicalDeviceProperties2KHR = PFN_vkGetPhysicalDeviceProperties2KHR(device ? device.getProcAddr( "vkGetPhysicalDeviceProperties2KHR") : instance.getProcAddr( "vkGetPhysicalDeviceProperties2KHR"));
-      vkGetPhysicalDeviceQueueFamilyProperties = PFN_vkGetPhysicalDeviceQueueFamilyProperties(device ? device.getProcAddr( "vkGetPhysicalDeviceQueueFamilyProperties") : instance.getProcAddr( "vkGetPhysicalDeviceQueueFamilyProperties"));
-      vkGetPhysicalDeviceQueueFamilyProperties2 = PFN_vkGetPhysicalDeviceQueueFamilyProperties2(device ? device.getProcAddr( "vkGetPhysicalDeviceQueueFamilyProperties2") : instance.getProcAddr( "vkGetPhysicalDeviceQueueFamilyProperties2"));
-      vkGetPhysicalDeviceQueueFamilyProperties2KHR = PFN_vkGetPhysicalDeviceQueueFamilyProperties2KHR(device ? device.getProcAddr( "vkGetPhysicalDeviceQueueFamilyProperties2KHR") : instance.getProcAddr( "vkGetPhysicalDeviceQueueFamilyProperties2KHR"));
-      vkGetPhysicalDeviceSparseImageFormatProperties = PFN_vkGetPhysicalDeviceSparseImageFormatProperties(device ? device.getProcAddr( "vkGetPhysicalDeviceSparseImageFormatProperties") : instance.getProcAddr( "vkGetPhysicalDeviceSparseImageFormatProperties"));
-      vkGetPhysicalDeviceSparseImageFormatProperties2 = PFN_vkGetPhysicalDeviceSparseImageFormatProperties2(device ? device.getProcAddr( "vkGetPhysicalDeviceSparseImageFormatProperties2") : instance.getProcAddr( "vkGetPhysicalDeviceSparseImageFormatProperties2"));
-      vkGetPhysicalDeviceSparseImageFormatProperties2KHR = PFN_vkGetPhysicalDeviceSparseImageFormatProperties2KHR(device ? device.getProcAddr( "vkGetPhysicalDeviceSparseImageFormatProperties2KHR") : instance.getProcAddr( "vkGetPhysicalDeviceSparseImageFormatProperties2KHR"));
-      vkGetPhysicalDeviceSurfaceCapabilities2EXT = PFN_vkGetPhysicalDeviceSurfaceCapabilities2EXT(device ? device.getProcAddr( "vkGetPhysicalDeviceSurfaceCapabilities2EXT") : instance.getProcAddr( "vkGetPhysicalDeviceSurfaceCapabilities2EXT"));
-      vkGetPhysicalDeviceSurfaceCapabilities2KHR = PFN_vkGetPhysicalDeviceSurfaceCapabilities2KHR(device ? device.getProcAddr( "vkGetPhysicalDeviceSurfaceCapabilities2KHR") : instance.getProcAddr( "vkGetPhysicalDeviceSurfaceCapabilities2KHR"));
-      vkGetPhysicalDeviceSurfaceCapabilitiesKHR = PFN_vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device ? device.getProcAddr( "vkGetPhysicalDeviceSurfaceCapabilitiesKHR") : instance.getProcAddr( "vkGetPhysicalDeviceSurfaceCapabilitiesKHR"));
-      vkGetPhysicalDeviceSurfaceFormats2KHR = PFN_vkGetPhysicalDeviceSurfaceFormats2KHR(device ? device.getProcAddr( "vkGetPhysicalDeviceSurfaceFormats2KHR") : instance.getProcAddr( "vkGetPhysicalDeviceSurfaceFormats2KHR"));
-      vkGetPhysicalDeviceSurfaceFormatsKHR = PFN_vkGetPhysicalDeviceSurfaceFormatsKHR(device ? device.getProcAddr( "vkGetPhysicalDeviceSurfaceFormatsKHR") : instance.getProcAddr( "vkGetPhysicalDeviceSurfaceFormatsKHR"));
-      vkGetPhysicalDeviceSurfacePresentModesKHR = PFN_vkGetPhysicalDeviceSurfacePresentModesKHR(device ? device.getProcAddr( "vkGetPhysicalDeviceSurfacePresentModesKHR") : instance.getProcAddr( "vkGetPhysicalDeviceSurfacePresentModesKHR"));
-      vkGetPhysicalDeviceSurfaceSupportKHR = PFN_vkGetPhysicalDeviceSurfaceSupportKHR(device ? device.getProcAddr( "vkGetPhysicalDeviceSurfaceSupportKHR") : instance.getProcAddr( "vkGetPhysicalDeviceSurfaceSupportKHR"));
+      vkGetPhysicalDeviceMultisamplePropertiesEXT = PFN_vkGetPhysicalDeviceMultisamplePropertiesEXT(instance.getProcAddr( "vkGetPhysicalDeviceMultisamplePropertiesEXT"));
+      vkGetPhysicalDevicePresentRectanglesKHR = PFN_vkGetPhysicalDevicePresentRectanglesKHR(instance.getProcAddr( "vkGetPhysicalDevicePresentRectanglesKHR"));
+      vkGetPhysicalDeviceProperties = PFN_vkGetPhysicalDeviceProperties(instance.getProcAddr( "vkGetPhysicalDeviceProperties"));
+      vkGetPhysicalDeviceProperties2 = PFN_vkGetPhysicalDeviceProperties2(instance.getProcAddr( "vkGetPhysicalDeviceProperties2"));
+      vkGetPhysicalDeviceProperties2KHR = PFN_vkGetPhysicalDeviceProperties2KHR(instance.getProcAddr( "vkGetPhysicalDeviceProperties2KHR"));
+      vkGetPhysicalDeviceQueueFamilyProperties = PFN_vkGetPhysicalDeviceQueueFamilyProperties(instance.getProcAddr( "vkGetPhysicalDeviceQueueFamilyProperties"));
+      vkGetPhysicalDeviceQueueFamilyProperties2 = PFN_vkGetPhysicalDeviceQueueFamilyProperties2(instance.getProcAddr( "vkGetPhysicalDeviceQueueFamilyProperties2"));
+      vkGetPhysicalDeviceQueueFamilyProperties2KHR = PFN_vkGetPhysicalDeviceQueueFamilyProperties2KHR(instance.getProcAddr( "vkGetPhysicalDeviceQueueFamilyProperties2KHR"));
+      vkGetPhysicalDeviceSparseImageFormatProperties = PFN_vkGetPhysicalDeviceSparseImageFormatProperties(instance.getProcAddr( "vkGetPhysicalDeviceSparseImageFormatProperties"));
+      vkGetPhysicalDeviceSparseImageFormatProperties2 = PFN_vkGetPhysicalDeviceSparseImageFormatProperties2(instance.getProcAddr( "vkGetPhysicalDeviceSparseImageFormatProperties2"));
+      vkGetPhysicalDeviceSparseImageFormatProperties2KHR = PFN_vkGetPhysicalDeviceSparseImageFormatProperties2KHR(instance.getProcAddr( "vkGetPhysicalDeviceSparseImageFormatProperties2KHR"));
+      vkGetPhysicalDeviceSurfaceCapabilities2EXT = PFN_vkGetPhysicalDeviceSurfaceCapabilities2EXT(instance.getProcAddr( "vkGetPhysicalDeviceSurfaceCapabilities2EXT"));
+      vkGetPhysicalDeviceSurfaceCapabilities2KHR = PFN_vkGetPhysicalDeviceSurfaceCapabilities2KHR(instance.getProcAddr( "vkGetPhysicalDeviceSurfaceCapabilities2KHR"));
+      vkGetPhysicalDeviceSurfaceCapabilitiesKHR = PFN_vkGetPhysicalDeviceSurfaceCapabilitiesKHR(instance.getProcAddr( "vkGetPhysicalDeviceSurfaceCapabilitiesKHR"));
+      vkGetPhysicalDeviceSurfaceFormats2KHR = PFN_vkGetPhysicalDeviceSurfaceFormats2KHR(instance.getProcAddr( "vkGetPhysicalDeviceSurfaceFormats2KHR"));
+      vkGetPhysicalDeviceSurfaceFormatsKHR = PFN_vkGetPhysicalDeviceSurfaceFormatsKHR(instance.getProcAddr( "vkGetPhysicalDeviceSurfaceFormatsKHR"));
+      vkGetPhysicalDeviceSurfacePresentModesKHR = PFN_vkGetPhysicalDeviceSurfacePresentModesKHR(instance.getProcAddr( "vkGetPhysicalDeviceSurfacePresentModesKHR"));
+      vkGetPhysicalDeviceSurfaceSupportKHR = PFN_vkGetPhysicalDeviceSurfaceSupportKHR(instance.getProcAddr( "vkGetPhysicalDeviceSurfaceSupportKHR"));
 #ifdef VK_USE_PLATFORM_WAYLAND_KHR
-      vkGetPhysicalDeviceWaylandPresentationSupportKHR = PFN_vkGetPhysicalDeviceWaylandPresentationSupportKHR(device ? device.getProcAddr( "vkGetPhysicalDeviceWaylandPresentationSupportKHR") : instance.getProcAddr( "vkGetPhysicalDeviceWaylandPresentationSupportKHR"));
+      vkGetPhysicalDeviceWaylandPresentationSupportKHR = PFN_vkGetPhysicalDeviceWaylandPresentationSupportKHR(instance.getProcAddr( "vkGetPhysicalDeviceWaylandPresentationSupportKHR"));
 #endif /*VK_USE_PLATFORM_WAYLAND_KHR*/
 #ifdef VK_USE_PLATFORM_WIN32_KHR
-      vkGetPhysicalDeviceWin32PresentationSupportKHR = PFN_vkGetPhysicalDeviceWin32PresentationSupportKHR(device ? device.getProcAddr( "vkGetPhysicalDeviceWin32PresentationSupportKHR") : instance.getProcAddr( "vkGetPhysicalDeviceWin32PresentationSupportKHR"));
+      vkGetPhysicalDeviceWin32PresentationSupportKHR = PFN_vkGetPhysicalDeviceWin32PresentationSupportKHR(instance.getProcAddr( "vkGetPhysicalDeviceWin32PresentationSupportKHR"));
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
 #ifdef VK_USE_PLATFORM_XCB_KHR
-      vkGetPhysicalDeviceXcbPresentationSupportKHR = PFN_vkGetPhysicalDeviceXcbPresentationSupportKHR(device ? device.getProcAddr( "vkGetPhysicalDeviceXcbPresentationSupportKHR") : instance.getProcAddr( "vkGetPhysicalDeviceXcbPresentationSupportKHR"));
+      vkGetPhysicalDeviceXcbPresentationSupportKHR = PFN_vkGetPhysicalDeviceXcbPresentationSupportKHR(instance.getProcAddr( "vkGetPhysicalDeviceXcbPresentationSupportKHR"));
 #endif /*VK_USE_PLATFORM_XCB_KHR*/
 #ifdef VK_USE_PLATFORM_XLIB_KHR
-      vkGetPhysicalDeviceXlibPresentationSupportKHR = PFN_vkGetPhysicalDeviceXlibPresentationSupportKHR(device ? device.getProcAddr( "vkGetPhysicalDeviceXlibPresentationSupportKHR") : instance.getProcAddr( "vkGetPhysicalDeviceXlibPresentationSupportKHR"));
+      vkGetPhysicalDeviceXlibPresentationSupportKHR = PFN_vkGetPhysicalDeviceXlibPresentationSupportKHR(instance.getProcAddr( "vkGetPhysicalDeviceXlibPresentationSupportKHR"));
 #endif /*VK_USE_PLATFORM_XLIB_KHR*/
       vkGetPipelineCacheData = PFN_vkGetPipelineCacheData(device ? device.getProcAddr( "vkGetPipelineCacheData") : instance.getProcAddr( "vkGetPipelineCacheData"));
       vkGetQueryPoolResults = PFN_vkGetQueryPoolResults(device ? device.getProcAddr( "vkGetQueryPoolResults") : instance.getProcAddr( "vkGetQueryPoolResults"));
       vkGetQueueCheckpointDataNV = PFN_vkGetQueueCheckpointDataNV(device ? device.getProcAddr( "vkGetQueueCheckpointDataNV") : instance.getProcAddr( "vkGetQueueCheckpointDataNV"));
 #ifdef VK_USE_PLATFORM_XLIB_XRANDR_NV
-      vkGetRandROutputDisplayEXT = PFN_vkGetRandROutputDisplayEXT(device ? device.getProcAddr( "vkGetRandROutputDisplayEXT") : instance.getProcAddr( "vkGetRandROutputDisplayEXT"));
+      vkGetRandROutputDisplayEXT = PFN_vkGetRandROutputDisplayEXT(instance.getProcAddr( "vkGetRandROutputDisplayEXT"));
 #endif /*VK_USE_PLATFORM_XLIB_XRANDR_NV*/
       vkGetRefreshCycleDurationGOOGLE = PFN_vkGetRefreshCycleDurationGOOGLE(device ? device.getProcAddr( "vkGetRefreshCycleDurationGOOGLE") : instance.getProcAddr( "vkGetRefreshCycleDurationGOOGLE"));
       vkGetRenderAreaGranularity = PFN_vkGetRenderAreaGranularity(device ? device.getProcAddr( "vkGetRenderAreaGranularity") : instance.getProcAddr( "vkGetRenderAreaGranularity"));
@@ -45161,7 +46910,7 @@ public:
       vkRegisterDeviceEventEXT = PFN_vkRegisterDeviceEventEXT(device ? device.getProcAddr( "vkRegisterDeviceEventEXT") : instance.getProcAddr( "vkRegisterDeviceEventEXT"));
       vkRegisterDisplayEventEXT = PFN_vkRegisterDisplayEventEXT(device ? device.getProcAddr( "vkRegisterDisplayEventEXT") : instance.getProcAddr( "vkRegisterDisplayEventEXT"));
       vkRegisterObjectsNVX = PFN_vkRegisterObjectsNVX(device ? device.getProcAddr( "vkRegisterObjectsNVX") : instance.getProcAddr( "vkRegisterObjectsNVX"));
-      vkReleaseDisplayEXT = PFN_vkReleaseDisplayEXT(device ? device.getProcAddr( "vkReleaseDisplayEXT") : instance.getProcAddr( "vkReleaseDisplayEXT"));
+      vkReleaseDisplayEXT = PFN_vkReleaseDisplayEXT(instance.getProcAddr( "vkReleaseDisplayEXT"));
       vkResetCommandBuffer = PFN_vkResetCommandBuffer(device ? device.getProcAddr( "vkResetCommandBuffer") : instance.getProcAddr( "vkResetCommandBuffer"));
       vkResetCommandPool = PFN_vkResetCommandPool(device ? device.getProcAddr( "vkResetCommandPool") : instance.getProcAddr( "vkResetCommandPool"));
       vkResetDescriptorPool = PFN_vkResetDescriptorPool(device ? device.getProcAddr( "vkResetDescriptorPool") : instance.getProcAddr( "vkResetDescriptorPool"));

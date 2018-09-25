@@ -23,6 +23,8 @@
 #include <iterator>
 #include "VulkanHppGenerator.hpp"
 
+const size_t INVALID_INDEX = (size_t)~0;
+
 const std::string vkNamespace = R"(
 #if !defined(VULKAN_HPP_NAMESPACE)
 #define VULKAN_HPP_NAMESPACE vk
@@ -372,7 +374,33 @@ const std::string arrayProxyHeader = R"(
 )";
 
 const std::string structureChainHeader = R"(
+
   template <typename X, typename Y> struct isStructureChainValid { enum { value = false }; };
+
+  template <typename P, typename T>
+  struct TypeList
+  {
+    using list = P;
+    using last = T;
+  };
+
+  template <typename List, typename X>
+  struct extendCheck
+  {
+    static const bool valid = isStructureChainValid<typename List::last, X>::value || extendCheck<typename List::list,X>::valid;
+  };
+
+  template <typename T, typename X>
+  struct extendCheck<TypeList<void,T>,X>
+  {
+    static const bool valid = isStructureChainValid<T, X>::value;
+  };
+
+  template <typename X>
+  struct extendCheck<void,X>
+  {
+    static const bool valid = true;
+  };
 
   template <class Element>
   class StructureChainElement
@@ -390,75 +418,78 @@ const std::string structureChainHeader = R"(
   public:
     StructureChain()
     {
-      link<StructureElements...>();  
+      link<void, StructureElements...>();  
     }
 
     StructureChain(StructureChain const &rhs)
     {
-      linkAndCopy<StructureElements...>(rhs);
+      linkAndCopy<void, StructureElements...>(rhs);
     }
 
     StructureChain(StructureElements const &... elems)
     {
-      linkAndCopyElements<StructureElements...>(elems...);
+      linkAndCopyElements<void, StructureElements...>(elems...);
     }
 
     StructureChain& operator=(StructureChain const &rhs)
     {
-      linkAndCopy<StructureElements...>(rhs);
+      linkAndCopy<void, StructureElements...>(rhs);
       return *this;
     }
 
     template<typename ClassType> ClassType& get() { return static_cast<ClassType&>(*this);}
 
   private:
-    template<typename X>
+    template<typename List, typename X>
     void link()
     {
+      static_assert(extendCheck<List, X>::valid, "The structure chain is not valid!");
     }
 
-    template<typename X, typename Y, typename ...Z>
+    template<typename List, typename X, typename Y, typename ...Z>
     void link()
     {
-      static_assert(isStructureChainValid<X,Y>::value, "The structure chain is not valid!");
+      static_assert(extendCheck<List,X>::valid, "The structure chain is not valid!");
       X& x = static_cast<X&>(*this);
       Y& y = static_cast<Y&>(*this);
       x.pNext = &y;
-      link<Y, Z...>();
+      link<TypeList<List, X>, Y, Z...>();
     }
 
-    template<typename X>
+    template<typename List, typename X>
     void linkAndCopy(StructureChain const &rhs)
     {
+      static_assert(extendCheck<List, X>::valid, "The structure chain is not valid!");
       static_cast<X&>(*this) = static_cast<X const &>(rhs);
     }
 
-    template<typename X, typename Y, typename ...Z>
+    template<typename List, typename X, typename Y, typename ...Z>
     void linkAndCopy(StructureChain const &rhs)
     {
-      static_assert(isStructureChainValid<X,Y>::value, "The structure chain is not valid!");
+      static_assert(extendCheck<List, X>::valid, "The structure chain is not valid!");
       X& x = static_cast<X&>(*this);
       Y& y = static_cast<Y&>(*this);
       x = static_cast<X const &>(rhs);
       x.pNext = &y;
-      linkAndCopy<Y, Z...>(rhs);
+      linkAndCopy<TypeList<List, X>, Y, Z...>(rhs);
     }
 
-    template<typename X>
+    template<typename List, typename X>
     void linkAndCopyElements(X const &xelem)
     {
+      static_assert(extendCheck<List, X>::valid, "The structure chain is not valid!");
       static_cast<X&>(*this) = xelem;
     }
 
-    template<typename X, typename Y, typename ...Z>
+    template<typename List, typename X, typename Y, typename ...Z>
     void linkAndCopyElements(X const &xelem, Y const &yelem, Z const &... zelem)
     {
-      static_assert(isStructureChainValid<X,Y>::value, "The structure chain is not valid!");
+      static_assert(extendCheck<List, X>::valid, "The structure chain is not valid!");
       X& x = static_cast<X&>(*this);
       Y& y = static_cast<Y&>(*this);
       x = xelem;
       x.pNext = &y;
-      linkAndCopyElements<Y, Z...>(yelem, zelem...);
+      linkAndCopyElements<TypeList<List, X>, Y, Z...>(yelem, zelem...);
     }
   };
 
@@ -637,12 +668,17 @@ const std::string uniqueHandleHeader = R"(
     using Owner = typename UniqueHandleTraits<Type,Dispatch>::owner;
     using Deleter = typename UniqueHandleTraits<Type,Dispatch>::deleter;
   public:
-    explicit UniqueHandle( Type const& value = Type(), Deleter const& deleter = Deleter() )
+
+    explicit UniqueHandle( Type const& value = Type() )
+      : UniqueHandle(value, Deleter())
+    {}
+
+    explicit UniqueHandle( Type const& value, Deleter const& deleter = Deleter() )
       : Deleter( deleter)
       , m_value( value )
     {}
 
-    explicit UniqueHandle( Type const& value = Type(), Owner const& owner = Owner() )
+    explicit UniqueHandle( Type const& value, Owner const& owner = Owner() )
       : Deleter( owner)
       , m_value( value )
     {}
@@ -1393,7 +1429,7 @@ bool VulkanHppGenerator::containsUnion(std::string const& type, std::map<std::st
 std::map<std::string, std::string> VulkanHppGenerator::createDefaults()
 {
   std::map<std::string, std::string> defaultValues;
-  for (auto dependency : m_dependencies)
+  for (auto const& dependency : m_dependencies)
   {
     assert(defaultValues.find(dependency.name) == defaultValues.end());
     switch (dependency.category)
@@ -1431,7 +1467,7 @@ void VulkanHppGenerator::determineEnhancedReturnType(CommandData & commandData)
   // if there is a return parameter of type void or Result, and if it's of type Result it either has just one success code
   // or two success codes, where the second one is of type eIncomplete and it's a two-step process
   // -> we can return that parameter
-  if ((commandData.returnParam != ~0)
+  if ((commandData.returnParam != INVALID_INDEX)
     && ((commandData.returnType == "void")
       || ((commandData.returnType == "Result")
         && ((commandData.successCodes.size() == 1)
@@ -1508,18 +1544,22 @@ void VulkanHppGenerator::determineReturnParam(CommandData & commandData)
     {
       if ((commandData.params[i].type.find('*') != std::string::npos)
         && (commandData.params[i].type.find("const") == std::string::npos)
-        && std::find_if(commandData.vectorParams.begin(), commandData.vectorParams.end(), [i](std::pair<size_t, size_t> const& vp) { return vp.second == i; }) == commandData.vectorParams.end()
-        && ((commandData.vectorParams.find(i) == commandData.vectorParams.end()) || commandData.twoStep || (commandData.successCodes.size() == 1)))
+        && std::find_if(commandData.vectorParams.begin(), commandData.vectorParams.end(), [i](std::pair<size_t, size_t> const& vp) { return vp.second == i; }) == commandData.vectorParams.end())
       {
-        // it's a non-const pointer, not a vector-size parameter, if it's a vector parameter, its a two-step process or there's just one success code
-        // -> look for another non-cost pointer argument
-        auto paramIt = std::find_if(commandData.params.begin() + i + 1, commandData.params.end(), [](ParamData const& pd)
+        // it's a non-const pointer and not a vector-size parameter
+        std::map<size_t, size_t>::const_iterator vpit = commandData.vectorParams.find(i);
+        if ((vpit == commandData.vectorParams.end()) || commandData.twoStep || (commandData.vectorParams.size() > 1) || (vpit->second == INVALID_INDEX) || (commandData.params[vpit->second].type.find('*') != std::string::npos))
         {
-          return (pd.type.find('*') != std::string::npos) && (pd.type.find("const") == std::string::npos);
-        });
-        // if there is another such argument, we can't decide which one to return -> return none (~0)
-        // otherwise return the index of the selcted parameter
-        commandData.returnParam = paramIt != commandData.params.end() ? ~0 : i;
+          // it's not a vector parameter, or a two-step process, or there is at least one more vector parameter, or the size argument of this vector parameter is not an argument, or the size argument of this vector parameter is provided by a pointer
+          // -> look for another non-cost pointer argument
+          auto paramIt = std::find_if(commandData.params.begin() + i + 1, commandData.params.end(), [](ParamData const& pd)
+          {
+            return (pd.type.find('*') != std::string::npos) && (pd.type.find("const") == std::string::npos);
+          });
+          // if there is another such argument, we can't decide which one to return -> return INVALID_INDEX
+          // otherwise return the index of the selcted parameter
+          commandData.returnParam = paramIt != commandData.params.end() ? ~0 : i;
+        }
       }
     }
   }
@@ -1528,9 +1568,9 @@ void VulkanHppGenerator::determineReturnParam(CommandData & commandData)
 void VulkanHppGenerator::determineSkippedParams(CommandData & commandData)
 {
   // the size-parameters of vector parameters are not explicitly used in the enhanced API
-  std::for_each(commandData.vectorParams.begin(), commandData.vectorParams.end(), [&commandData](std::pair<size_t, size_t> const& vp) { if (vp.second != ~0) commandData.skippedParams.insert(vp.second); });
+  std::for_each(commandData.vectorParams.begin(), commandData.vectorParams.end(), [&commandData](std::pair<size_t, size_t> const& vp) { if (vp.second != INVALID_INDEX) commandData.skippedParams.insert(vp.second); });
   // and the return parameter is also skipped
-  if (commandData.returnParam != ~0)
+  if (commandData.returnParam != INVALID_INDEX)
   {
     commandData.skippedParams.insert(commandData.returnParam);
   }
@@ -1553,7 +1593,7 @@ void VulkanHppGenerator::determineTemplateParam(CommandData & commandData)
       break;
     }
   }
-  assert((commandData.templateParam == ~0) || (commandData.vectorParams.find(commandData.templateParam) != commandData.vectorParams.end()));
+  assert((commandData.templateParam == INVALID_INDEX) || (commandData.vectorParams.find(commandData.templateParam) != commandData.vectorParams.end()));
 }
 
 void VulkanHppGenerator::determineVectorParams(CommandData & commandData)
@@ -1567,9 +1607,9 @@ void VulkanHppGenerator::determineVectorParams(CommandData & commandData)
       auto findIt = std::find_if(begin, it, findLambda);                        // look for a parameter named as the len of this parameter
       assert((std::count_if(begin, end, findLambda) == 0) || (findIt < it));    // make sure, there is no other parameter like that
 
-                                                                                // add this parameter as a vector parameter, using the len-name parameter as the second value (or ~0 if there is nothing like that)
-      commandData.vectorParams.insert(std::make_pair(std::distance(begin, it), findIt < it ? std::distance(begin, findIt) : ~0));
-      assert((commandData.vectorParams[std::distance(begin, it)] != ~0)
+      // add this parameter as a vector parameter, using the len-name parameter as the second value (or INVALID_INDEX if there is nothing like that)
+      commandData.vectorParams.insert(std::make_pair(std::distance(begin, it), findIt < it ? std::distance(begin, findIt) : INVALID_INDEX));
+      assert((commandData.vectorParams[std::distance(begin, it)] != INVALID_INDEX)
         || (it->len == "null-terminated")
         || (it->len == "pAllocateInfo::descriptorSetCount")
         || (it->len == "pAllocateInfo::commandBufferCount"));
@@ -1953,11 +1993,19 @@ void VulkanHppGenerator::readEnums(tinyxml2::XMLElement const* element)
   {
     checkAttributes(attributes, element->GetLineNum(), { { "name",{} },{ "type",{ "bitmask", "enum" } } }, { { "comment",{} } });   // re-check with type as required
 
-                                                                                                                                    // add an empty DependencyData on this name into the dependencies list
-    m_dependencies.push_back(DependencyData(DependencyData::Category::ENUM, name));
+    if (std::find_if(m_dependencies.begin(), m_dependencies.end(), [&name](DependencyData const& dd) { return dd.name == name; }) == m_dependencies.end())
+    {
+      // add an empty DependencyData on this name into the dependencies list
+      m_dependencies.push_back(DependencyData(DependencyData::Category::ENUM, name));
+
+      // add this enum to the set of Vulkan data types
+      assert(m_vkTypes.find(name) == m_vkTypes.end());
+      m_vkTypes.insert(name);
+    }
 
     // ad an empty EnumData on this name into the enums map
     std::map<std::string, EnumData>::iterator it = m_enums.insert(std::make_pair(name, EnumData(name))).first;
+    assert(it->second.postfix.empty() && it->second.prefix.empty() && it->second.protect.empty() && it->second.values.empty());
 
     if (name == "Result")
     {
@@ -2014,10 +2062,6 @@ void VulkanHppGenerator::readEnums(tinyxml2::XMLElement const* element)
       }
 #endif
     }
-
-    // add this enum to the set of Vulkan data types
-    assert(m_vkTypes.find(name) == m_vkTypes.end());
-    m_vkTypes.insert(name);
   }
 }
 
@@ -2190,6 +2234,7 @@ void VulkanHppGenerator::readExtensionsExtension(tinyxml2::XMLElement const* ele
     { "obsoletedby", {} },
     { "platform",{} },
     { "promotedto", {} },
+    { "provisional", {} },
     { "protect",{} },
     { "requires",{} },
     { "requiresCore",{} },
@@ -2537,8 +2582,11 @@ void VulkanHppGenerator::readTypeBitmask(tinyxml2::XMLElement const* element, st
     {
       // Generate FlagBits name, add a DependencyData for that name, and add it to the list of enums and vulkan types
       requires = generateEnumNameForFlags(name);
+      assert(std::find_if(m_dependencies.begin(), m_dependencies.end(), [&requires](DependencyData const& dd) { return dd.name == requires; }) == m_dependencies.end());
       m_dependencies.push_back(DependencyData(DependencyData::Category::ENUM, requires));
+      assert(m_enums.find(requires) == m_enums.end());
       m_enums.insert(std::make_pair(requires, EnumData(requires, true)));
+      assert(m_vkTypes.find(requires) == m_vkTypes.end());
       m_vkTypes.insert(requires);
     }
 
@@ -2583,7 +2631,7 @@ void VulkanHppGenerator::readTypeDefine(tinyxml2::XMLElement const* element, std
     std::string text = trim(child->GetText());
     if (text == "VK_HEADER_VERSION")
     {
-      m_version = element->LastChild()->ToText()->Value();
+      m_version = trimEnd(element->LastChild()->ToText()->Value());
     }
     // ignore all the other defines
     assert(!child->NextSiblingElement() || (child->NextSiblingElement() && !child->NextSiblingElement()->FirstAttribute() && (strcmp(child->NextSiblingElement()->Value(), "type") == 0) && !child->NextSiblingElement()->NextSiblingElement()));
@@ -2700,6 +2748,8 @@ void VulkanHppGenerator::readTypeStruct(tinyxml2::XMLElement const* element, boo
   std::vector<tinyxml2::XMLElement const*> children = getChildElements(element);
   checkElements(children, { "comment", "member" });
 
+  std::string name = strip(attributes.find("name")->second, "Vk");
+
   auto aliasIt = attributes.find("alias");
   if (aliasIt != attributes.end())
   {
@@ -2708,16 +2758,12 @@ void VulkanHppGenerator::readTypeStruct(tinyxml2::XMLElement const* element, boo
     std::string alias = strip(aliasIt->second, "Vk");
     checkAlias(m_structs, alias, element->GetLineNum());
 
-    std::string name = strip(attributes.find("name")->second, "Vk");
-
     auto structsIt = m_structs.find(alias);
     assert((structsIt != m_structs.end()) && structsIt->second.alias.empty());
     structsIt->second.alias = name;
   }
   else
   {
-    std::string name = strip(attributes.find("name")->second, "Vk");
-
     m_dependencies.push_back(DependencyData(isUnion ? DependencyData::Category::UNION : DependencyData::Category::STRUCT, name));
 
     assert(m_structs.find(name) == m_structs.end());
@@ -2756,9 +2802,6 @@ void VulkanHppGenerator::readTypeStruct(tinyxml2::XMLElement const* element, boo
 #endif
     }
 
-    assert(m_vkTypes.find(name) == m_vkTypes.end());
-    m_vkTypes.insert(name);
-
     for (auto const& s : m_structs)
     {
       if (isSubStruct(s, name, it->second))
@@ -2768,6 +2811,9 @@ void VulkanHppGenerator::readTypeStruct(tinyxml2::XMLElement const* element, boo
       }
     }
   }
+
+  assert(m_vkTypes.find(name) == m_vkTypes.end());
+  m_vkTypes.insert(name);
 }
 
 void VulkanHppGenerator::readTypeStructMember(tinyxml2::XMLElement const* element, StructData & structData)
@@ -2880,10 +2926,24 @@ void VulkanHppGenerator::sortDependencies()
     bool found = false;
     for (std::list<DependencyData>::iterator it = m_dependencies.begin(); it != m_dependencies.end(); ++it)
     {
+      // check if all dependencies of it are already listed
       if (std::find_if(it->dependencies.begin(), it->dependencies.end(), [&listedTypes](std::string const& d) { return listedTypes.find(d) == listedTypes.end(); }) == it->dependencies.end())
       {
+        // add it to the end of the sorted list and the set of listed types, remove it from the list of dependencies to handle and start over with the next dependency
         sortedDependencies.push_back(*it);
         listedTypes.insert(it->name);
+
+        // if it is a struct, add any alias of it to the list of encountered types
+        if (it->category == DependencyData::Category::STRUCT)
+        {
+          std::map<std::string, StructData>::const_iterator sit = m_structs.find(it->name);
+          assert(sit != m_structs.end());
+          if (!sit->second.alias.empty())
+          {
+            assert(listedTypes.find(sit->second.alias) == listedTypes.end());
+            listedTypes.insert(sit->second.alias);
+          }
+        }
         m_dependencies.erase(it);
         found = true;
         break;
@@ -2891,7 +2951,7 @@ void VulkanHppGenerator::sortDependencies()
     }
     if (!found)
     {
-      // resolve direct circular dependencies
+      // at least one dependency of it is not yet listed -> resolve direct circular dependencies
       for (std::list<DependencyData>::iterator it = m_dependencies.begin(); !found && it != m_dependencies.end(); ++it)
       {
         for (std::set<std::string>::const_iterator dit = it->dependencies.begin(); dit != it->dependencies.end(); ++dit)
@@ -2901,9 +2961,8 @@ void VulkanHppGenerator::sortDependencies()
           {
             if (depIt->dependencies.find(it->name) != depIt->dependencies.end())
             {
-              // we only have just one case, for now!
-              assert((it->category == DependencyData::Category::HANDLE) && (depIt->category == DependencyData::Category::STRUCT)
-              || (it->category == DependencyData::Category::STRUCT) && (depIt->category == DependencyData::Category::STRUCT));
+              // we only have two cases, for now!
+              assert((depIt->category == DependencyData::Category::STRUCT) && ((it->category == DependencyData::Category::HANDLE) || (it->category == DependencyData::Category::STRUCT)));
               it->forwardDependencies.insert(*dit);
               it->dependencies.erase(*dit);
               found = true;
@@ -2913,7 +2972,14 @@ void VulkanHppGenerator::sortDependencies()
 #if !defined(NDEBUG)
           else
           {
-            assert(std::find_if(sortedDependencies.begin(), sortedDependencies.end(), [&dit](DependencyData const& dd) { return(dd.name == *dit); }) != sortedDependencies.end());
+            // here, only already sorted dependencies should occur, or structs that are aliased and sorted
+            std::list<DependencyData>::const_iterator sdit = std::find_if(sortedDependencies.begin(), sortedDependencies.end(), [&dit](DependencyData const& dd) { return(dd.name == *dit); });
+            if (sdit == sortedDependencies.end())
+            {
+              std::map<std::string, StructData>::const_iterator sit = std::find_if(m_structs.begin(), m_structs.end(), [&dit](std::pair<std::string, StructData> const& sd) { return sd.second.alias == *dit; });
+              assert(sit != m_structs.end());
+              assert(std::find_if(sortedDependencies.begin(), sortedDependencies.end(), [name = sit->first](DependencyData const& dd) { return dd.name == name; }) != sortedDependencies.end());
+            }
           }
 #endif
         }
@@ -3001,8 +3067,9 @@ void VulkanHppGenerator::writeCall(std::ostream & os, CommandData const& command
 
   if (!commandData.className.empty())
   {
-    // if it's member of a class -> add the first parameter with "m_" as prefix
-    os << "m_" << commandData.params[0].name;
+    // if it's member of a class -> the first argument is the member variable, starting with "m_"
+    assert(commandData.className == commandData.params[0].type);
+    os << "m_" << startLowerCase(commandData.className);
     if (1 < commandData.params.size())
     {
       os << ", ";
@@ -3280,7 +3347,7 @@ ${i}  }
 ${i}  return createResultValue( result, ${typeVariable}s, VULKAN_HPP_NAMESPACE_STRING "::${class}::${function}Unique" );
 )";
 
-    std::string type = (commandData.returnParam != ~0) ? commandData.params[commandData.returnParam].pureType : "";
+    std::string type = (commandData.returnParam != INVALID_INDEX) ? commandData.params[commandData.returnParam].pureType : "";
     std::string typeVariable = startLowerCase(type);
     std::ostringstream arguments;
     writeArguments(arguments, commandData, true, singular, 1, commandData.params.size() - 1);
@@ -3312,7 +3379,7 @@ ${i}  return createResultValue( result, ${typeVariable}s, VULKAN_HPP_NAMESPACE_S
     }
 
     std::string returnName;
-    if (commandData.returnParam != ~0)
+    if (commandData.returnParam != INVALID_INDEX)
     {
       returnName = writeFunctionBodyEnhancedLocalReturnVariable(os, indentation, commandData, singular, isStructureChain);
     }
@@ -3324,7 +3391,7 @@ ${i}  return createResultValue( result, ${typeVariable}s, VULKAN_HPP_NAMESPACE_S
 
       // we now might have to check the result, resize the returned vector accordingly, and call the function again
       std::map<size_t, size_t>::const_iterator returnit = commandData.vectorParams.find(commandData.returnParam);
-      assert(returnit != commandData.vectorParams.end() && (returnit->second != ~0));
+      assert(returnit != commandData.vectorParams.end() && (returnit->second != INVALID_INDEX));
       std::string sizeName = startLowerCase(strip(commandData.params[returnit->second].name, "p"));
 
       if (commandData.returnType == "Result")
@@ -3359,7 +3426,7 @@ ${i}  return createResultValue( result, ${typeVariable}s, VULKAN_HPP_NAMESPACE_S
     {
       writeFunctionBodyEnhancedReturnResultValue(os, indentation, returnName, commandData, singular, unique);
     }
-    else if ((commandData.returnParam != ~0) && (commandData.returnType != commandData.enhancedReturnType))
+    else if ((commandData.returnParam != INVALID_INDEX) && (commandData.returnType != commandData.enhancedReturnType))
     {
       // for the other returning cases, when the return type is somhow enhanced, just return the local returnVariable
       os << indentation << "  return " << returnName << ";" << std::endl;
@@ -3403,7 +3470,7 @@ std::string VulkanHppGenerator::writeFunctionBodyEnhancedLocalReturnVariable(std
       {
         std::string const &pureType = commandData.params[commandData.returnParam].pureType;
         // For StructureChains use the template parameters
-        os << "StructureChain<T...> structureChain;" << std::endl;
+        os << "StructureChain<X, Y, Z...> structureChain;" << std::endl;
         returnName = stripPluralS(returnName);
         os << indentation << "  " << pureType << "& " << returnName << " = structureChain.template get<" << pureType << ">()";
         returnName = "structureChain";
@@ -3422,7 +3489,7 @@ std::string VulkanHppGenerator::writeFunctionBodyEnhancedLocalReturnVariable(std
       {
         std::string const &returnType = commandData.enhancedReturnType;
         // For StructureChains use the template parameters
-        os << "StructureChain<T...> structureChain;" << std::endl;
+        os << "StructureChain<X, Y, Z...> structureChain;" << std::endl;
         os << indentation << "  " << returnType << "& " << returnName << " = structureChain.template get<" << returnType << ">()";
         returnName = "structureChain";
       }
@@ -3436,7 +3503,7 @@ std::string VulkanHppGenerator::writeFunctionBodyEnhancedLocalReturnVariable(std
       {
         // if the return parameter is a vector parameter, and not part of a two-step algorithm, initialize its size
         std::string size;
-        if (it->second == ~0)
+        if (it->second == INVALID_INDEX)
         {
           assert(!commandData.params[commandData.returnParam].len.empty());
           // the size of the vector is not given by an other parameter, but by some member of a parameter, described as 'parameter::member'
@@ -3539,10 +3606,10 @@ ${i}  }
 void VulkanHppGenerator::writeFunctionBodyEnhancedLocalCountVariable(std::ostream & os, std::string const& indentation, CommandData const& commandData)
 {
   // local count variable to hold the size of the vector to fill
-  assert(commandData.returnParam != ~0);
+  assert(commandData.returnParam != INVALID_INDEX);
 
   std::map<size_t, size_t>::const_iterator returnit = commandData.vectorParams.find(commandData.returnParam);
-  assert(returnit != commandData.vectorParams.end() && (returnit->second != ~0));
+  assert(returnit != commandData.vectorParams.end() && (returnit->second != INVALID_INDEX));
   assert((commandData.returnType == "Result") || (commandData.returnType == "void"));
 
   // take the pure type of the size parameter; strip the leading 'p' from its name for its local name
@@ -3587,8 +3654,8 @@ ${i}  }
 
 void VulkanHppGenerator::writeFunctionBodyEnhancedReturnResultValue(std::ostream & os, std::string const& indentation, std::string const& returnName, CommandData const& commandData, bool singular, bool unique)
 {
-  std::string type = (commandData.returnParam != ~0) ? commandData.params[commandData.returnParam].pureType : "";
-  std::string returnVectorName = (commandData.returnParam != ~0) ? strip(commandData.params[commandData.returnParam].name, "p", "s") : "";
+  std::string type = (commandData.returnParam != INVALID_INDEX) ? commandData.params[commandData.returnParam].pureType : "";
+  std::string returnVectorName = (commandData.returnParam != INVALID_INDEX) ? strip(commandData.params[commandData.returnParam].name, "p", "s") : "";
 
   if (unique)
   {
@@ -3609,7 +3676,7 @@ void VulkanHppGenerator::writeFunctionBodyEnhancedReturnResultValue(std::ostream
   }
 
   // if the return type is "Result" or there is at least one success code, create the Result/Value construct to return
-  if (commandData.returnParam != ~0)
+  if (commandData.returnParam != INVALID_INDEX)
   {
     // if there's a return parameter, list it in the Result/Value constructor
     os << returnName << ", ";
@@ -3660,7 +3727,8 @@ void VulkanHppGenerator::writeFunctionBodyStandard(std::ostream & os, std::strin
   if (!commandData.className.empty())
   {
     // the command is part of a class -> the first argument is the member variable, starting with "m_"
-    os << "m_" << commandData.params[0].name;
+    assert(commandData.className == commandData.params[0].type);
+    os << "m_" << startLowerCase(commandData.className);
   }
 
   // list all the arguments
@@ -3726,7 +3794,7 @@ void VulkanHppGenerator::writeFunctionHeaderArgumentsEnhanced(std::ostream & os,
   if (commandData.skippedParams.size() + (commandData.className.empty() ? 0 : 1) < commandData.params.size())
   {
     // determine the last argument, where we might provide some default for
-    size_t lastArgument = size_t(~0);
+    size_t lastArgument = INVALID_INDEX;
     for (size_t i = commandData.params.size() - 1; i < commandData.params.size(); i--)
     {
       if (commandData.skippedParams.find(i) == commandData.skippedParams.end())
@@ -3815,7 +3883,7 @@ void VulkanHppGenerator::writeFunctionHeaderArgumentsEnhanced(std::ostream & os,
         {
           // the argument is a vector
           // it's optional, if it's marked as optional and there's no size specified
-          bool optional = commandData.params[i].optional && (it->second == ~0);
+          bool optional = commandData.params[i].optional && (it->second == INVALID_INDEX);
           assert((rightStarPos != std::string::npos) && (commandData.params[i].type[rightStarPos] == '*'));
           if (commandData.params[i].type.find("char") != std::string::npos)
           {
@@ -3940,7 +4008,7 @@ void VulkanHppGenerator::writeFunctionHeaderReturnType(std::ostream & os, Comman
       bool returnsVector = !singular && (commandData.vectorParams.find(commandData.returnParam) != commandData.vectorParams.end());
 
       templateString += returnsVector ? "ResultValueType<std::vector<UniqueHandle<${returnType},Dispatch>,Allocator>>::type " : "typename ResultValueType<UniqueHandle<${returnType},Dispatch>>::type ";
-      returnType = isStructureChain ? "StructureChain<T...>" : commandData.params[commandData.returnParam].pureType;
+      returnType = isStructureChain ? "StructureChain<X, Y, Z...>" : commandData.params[commandData.returnParam].pureType;
     }
     else if ((commandData.enhancedReturnType != commandData.returnType) && (commandData.returnType != "void"))
     {
@@ -3951,25 +4019,25 @@ void VulkanHppGenerator::writeFunctionHeaderReturnType(std::ostream & os, Comman
       // in singular case, we create the ResultValueType from the pure return type, otherwise from the enhanced return type
       if (isStructureChain)
       {
-        returnType = "StructureChain<T...>";
+        returnType = "StructureChain<X, Y, Z...>";
       }
       else
       {
         returnType = singular ? commandData.params[commandData.returnParam].pureType : commandData.enhancedReturnType;
       }
     }
-    else if ((commandData.returnParam != ~0) && (1 < commandData.successCodes.size()))
+    else if ((commandData.returnParam != INVALID_INDEX) && (1 < commandData.successCodes.size()))
     {
       // if there is a return parameter at all, and there are multiple success codes, we return a ResultValue<...> with the pure return type
       assert(commandData.returnType == "Result");
       templateString = "ResultValue<${returnType}> ";
-      returnType = isStructureChain ? "StructureChain<T...>" : commandData.params[commandData.returnParam].pureType;
+      returnType = isStructureChain ? "StructureChain<X, Y, Z...>" : commandData.params[commandData.returnParam].pureType;
     }
     else
     {
       // and in every other case, we just return the enhanced return type.
       templateString = "${returnType} ";
-      returnType = isStructureChain ? "StructureChain<T...>" : commandData.enhancedReturnType;
+      returnType = isStructureChain ? "StructureChain<X, Y, Z...>" : commandData.enhancedReturnType;
     }
   }
   else
@@ -3986,9 +4054,9 @@ void VulkanHppGenerator::writeFunctionHeaderTemplate(std::ostream & os, std::str
   std::string dispatch = withDefault ? std::string("typename Dispatch = DispatchLoaderStatic") : std::string("typename Dispatch");
   if (enhanced && isStructureChain)
   {
-    os << indentation << "template <typename ...T, " << dispatch << ">" << std::endl;
+    os << indentation << "template <typename X, typename Y, typename ...Z, " << dispatch << ">" << std::endl;
   }
-  else if (enhanced && (commandData.templateParam != ~0) && ((commandData.templateParam != commandData.returnParam) || (commandData.enhancedReturnType == "Result")))
+  else if (enhanced && (commandData.templateParam != INVALID_INDEX) && ((commandData.templateParam != commandData.returnParam) || (commandData.enhancedReturnType == "Result")))
   {
     // if there's a template parameter, not being the return parameter or where the enhanced return type is 'Result' -> templatize on type 'T'
     assert(commandData.enhancedReturnType.find("Allocator") == std::string::npos);
@@ -4219,11 +4287,9 @@ void VulkanHppGenerator::writeStructureChainValidation(std::ostream & os)
   // write all template functions for the structure pointer chain validation
   for (auto it = m_dependencies.begin(); it != m_dependencies.end(); ++it)
   {
-    switch (it->category)
+    if (it->category == DependencyData::Category::STRUCT)
     {
-    case DependencyData::Category::STRUCT:
       writeStructureChainValidation(os, *it);
-      break;
     }
   }
 }
@@ -4233,7 +4299,8 @@ void VulkanHppGenerator::writeStructureChainValidation(std::ostream & os, Depend
   std::map<std::string, StructData>::const_iterator it = m_structs.find(dependencyData.name);
   assert(it != m_structs.end());
 
-  if (!it->second.structExtends.empty()) {
+  if (!it->second.structExtends.empty())
+  {
     enterProtect(os, it->second.protect);
 
     // write out allowed structure chains
@@ -4298,13 +4365,15 @@ void VulkanHppGenerator::writeToStringFunctions(std::ostream & os)
   {
     switch (it->category)
     {
-    case DependencyData::Category::BITMASK:
-      writeBitmaskToString(os, it->name, m_enums.find(*it->dependencies.begin())->second);
-      break;
-    case DependencyData::Category::ENUM:
-      assert(m_enums.find(it->name) != m_enums.end());
-      writeEnumsToString(os, m_enums.find(it->name)->second);
-      break;
+      case DependencyData::Category::BITMASK:
+        writeBitmaskToString(os, it->name, m_enums.find(*it->dependencies.begin())->second);
+        break;
+      case DependencyData::Category::ENUM:
+        assert(m_enums.find(it->name) != m_enums.end());
+        writeEnumsToString(os, m_enums.find(it->name)->second);
+        break;
+      default:
+        break;
     }
   }
 }
@@ -4409,7 +4478,7 @@ void VulkanHppGenerator::writeTypeCommand(std::ostream & os, std::string const& 
   // then a singular version, if a sized vector would be returned
   std::map<size_t, size_t>::const_iterator returnVector = commandData.vectorParams.find(commandData.returnParam);
   bool singular = (returnVector != commandData.vectorParams.end()) &&
-                  (returnVector->second != ~0) &&
+                  (returnVector->second != INVALID_INDEX) &&
                   (commandData.params[returnVector->first].pureType != "void") &&
                   (commandData.params[returnVector->second].type.back() != '*');
   if (singular)
@@ -4685,16 +4754,21 @@ void VulkanHppGenerator::writeTypeStruct(std::ostream & os, DependencyData const
   // create the setters
   if (!it->second.returnedOnly)
   {
-    for (size_t i = 0; i<it->second.members.size(); i++)
+    for (size_t i = 0; i < it->second.members.size(); i++)
     {
       writeStructSetter(os, dependencyData.name, it->second.members[i]);
     }
   }
 
-  // the cast-operator to the wrapped struct
-  os << "    operator const Vk" << dependencyData.name << "&() const" << std::endl
+  // the implicit cast-operators to the native type
+  os << "    operator Vk" << dependencyData.name << " const&() const" << std::endl
     << "    {" << std::endl
     << "      return *reinterpret_cast<const Vk" << dependencyData.name << "*>(this);" << std::endl
+    << "    }" << std::endl
+    << std::endl
+    << "    operator Vk" << dependencyData.name << " &()" << std::endl
+    << "    {" << std::endl
+    << "      return *reinterpret_cast<Vk" << dependencyData.name << "*>(this);" << std::endl
     << "    }" << std::endl
     << std::endl;
 
@@ -4795,7 +4869,7 @@ void VulkanHppGenerator::writeUniqueTypes(std::ostream &os, std::pair<std::strin
 
     std::string deleterType = (deleterTypes.first.empty() ? "NoParent" : deleterTypes.first);
 
-    os << "  template <typename Dispatch> class UniqueHandleTraits<" << dt << ",Dispatch> {public: " << "using owner = " << deleterType << "; " << "using deleter = " << (ddit->second.pool.empty() ? "Object" : "Pool") << ((ddit->second.call.substr(0, 4) == "free") ? "Free<" : "Destroy<") << "owner" << (ddit->second.pool.empty() ? "" : ", " + ddit->second.pool) << ",Dispatch>;};\n";
+    os << "  template <typename Dispatch> class UniqueHandleTraits<" << dt << ",Dispatch> {public: " <<  "using owner = " << deleterType << "; " << "using deleter = " << (ddit->second.pool.empty() ? "Object" : "Pool") << ((ddit->second.call.substr(0, 4) == "free") ? "Free<" : "Destroy<") << (deleterTypes.first.empty() ? "NoParent" : deleterTypes.first) << (ddit->second.pool.empty() ? "" : ", " + ddit->second.pool) << ",Dispatch>; };\n";
     os << "  using Unique" << dt << " = UniqueHandle<" << dt << ",DispatchLoaderStatic>;" << std::endl;
   }
   os << "#endif /*VULKAN_HPP_NO_SMART_HANDLE*/" << std::endl
@@ -4862,10 +4936,15 @@ void VulkanHppGenerator::writeTypeUnion(std::ostream & os, DependencyData const&
     writeStructSetter(os, dependencyData.name, it->second.members[i]);
   }
 
-  // the implicit cast operator to the native type
-  os << "    operator Vk" << dependencyData.name << " const& () const" << std::endl
+  // the implicit cast operators to the native type
+  os << "    operator Vk" << dependencyData.name << " const&() const" << std::endl
     << "    {" << std::endl
     << "      return *reinterpret_cast<const Vk" << dependencyData.name << "*>(this);" << std::endl
+    << "    }" << std::endl
+    << std::endl
+    << "    operator Vk" << dependencyData.name << " &()" << std::endl
+    << "    {" << std::endl
+    << "      return *reinterpret_cast<Vk" << dependencyData.name << "*>(this);" << std::endl
     << "    }" << std::endl
     << std::endl;
 
@@ -5057,7 +5136,8 @@ void VulkanHppGenerator::writeDelegationClassDynamic(std::ostream &os)
     enterProtect(os, command.second.protect);
     if (!command.second.params.empty() 
       && m_handles.find(command.second.params[0].type) != m_handles.end()
-      && command.second.params[0].type != "Instance")
+      && command.second.params[0].type != "Instance"
+      && command.second.params[0].type != "PhysicalDevice")
     {
       os << "      vk" << startUpperCase(command.second.fullName) << " = PFN_vk" << startUpperCase(command.second.fullName) 
         << "(device ? device.getProcAddr( \"vk" << startUpperCase(command.second.fullName) << "\") : instance.getProcAddr( \"vk" << startUpperCase(command.second.fullName) << "\"));" << std::endl;

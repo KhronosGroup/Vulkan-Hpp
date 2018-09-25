@@ -1533,18 +1533,22 @@ void VulkanHppGenerator::determineReturnParam(CommandData & commandData)
     {
       if ((commandData.params[i].type.find('*') != std::string::npos)
         && (commandData.params[i].type.find("const") == std::string::npos)
-        && std::find_if(commandData.vectorParams.begin(), commandData.vectorParams.end(), [i](std::pair<size_t, size_t> const& vp) { return vp.second == i; }) == commandData.vectorParams.end()
-        && ((commandData.vectorParams.find(i) == commandData.vectorParams.end()) || commandData.twoStep || (commandData.successCodes.size() == 1)))
+        && std::find_if(commandData.vectorParams.begin(), commandData.vectorParams.end(), [i](std::pair<size_t, size_t> const& vp) { return vp.second == i; }) == commandData.vectorParams.end())
       {
-        // it's a non-const pointer, not a vector-size parameter, if it's a vector parameter, its a two-step process or there's just one success code
-        // -> look for another non-cost pointer argument
-        auto paramIt = std::find_if(commandData.params.begin() + i + 1, commandData.params.end(), [](ParamData const& pd)
+        // it's a non-const pointer and not a vector-size parameter
+        std::map<size_t, size_t>::const_iterator vpit = commandData.vectorParams.find(i);
+        if ((vpit == commandData.vectorParams.end()) || commandData.twoStep || (commandData.vectorParams.size() > 1) || (vpit->second == INVALID_INDEX) || (commandData.params[vpit->second].type.find('*') != std::string::npos))
         {
-          return (pd.type.find('*') != std::string::npos) && (pd.type.find("const") == std::string::npos);
-        });
-        // if there is another such argument, we can't decide which one to return -> return INVALID_INDEX
-        // otherwise return the index of the selcted parameter
-        commandData.returnParam = paramIt != commandData.params.end() ? INVALID_INDEX : i;
+          // it's not a vector parameter, or a two-step process, or there is at least one more vector parameter, or the size argument of this vector parameter is not an argument, or the size argument of this vector parameter is provided by a pointer
+          // -> look for another non-cost pointer argument
+          auto paramIt = std::find_if(commandData.params.begin() + i + 1, commandData.params.end(), [](ParamData const& pd)
+          {
+            return (pd.type.find('*') != std::string::npos) && (pd.type.find("const") == std::string::npos);
+          });
+          // if there is another such argument, we can't decide which one to return -> return INVALID_INDEX
+          // otherwise return the index of the selcted parameter
+          commandData.returnParam = paramIt != commandData.params.end() ? ~0 : i;
+        }
       }
     }
   }
@@ -5119,7 +5123,8 @@ void VulkanHppGenerator::writeDelegationClassDynamic(std::ostream &os)
     enterProtect(os, command.second.protect);
     if (!command.second.params.empty() 
       && m_handles.find(command.second.params[0].type) != m_handles.end()
-      && command.second.params[0].type != "Instance")
+      && command.second.params[0].type != "Instance"
+      && command.second.params[0].type != "PhysicalDevice")
     {
       os << "      vk" << startUpperCase(command.second.fullName) << " = PFN_vk" << startUpperCase(command.second.fullName) 
         << "(device ? device.getProcAddr( \"vk" << startUpperCase(command.second.fullName) << "\") : instance.getProcAddr( \"vk" << startUpperCase(command.second.fullName) << "\"));" << std::endl;

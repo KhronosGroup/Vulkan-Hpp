@@ -30,6 +30,7 @@ class VulkanHppGenerator
       m_handles.insert(std::make_pair("", HandleData()));   // insert the default "handle" without class (for createInstance, and such)
     }
 
+    void checkCorrectness();
     std::map<std::string, std::string> createDefaults();
     std::string const& getTypesafeCheck() const;
     std::string const& getVersion() const;

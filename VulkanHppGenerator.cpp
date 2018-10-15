@@ -1415,6 +1415,18 @@ bool VulkanHppGenerator::containsUnion(std::string const& type, std::map<std::st
   return found;
 }
 
+void VulkanHppGenerator::checkCorrectness()
+{
+  for (auto command : m_commands)
+  {
+    // check that functions returning a VkResult specify successcodes
+    if ((command.second.unchangedReturnType == "VkResult") && command.second.successCodes.empty())
+    {
+      throw std::runtime_error("Spec error on command Vk" + startUpperCase(command.first) + " : missing successcodes on command returning VkResult!");
+    }
+  }
+}
+
 std::map<std::string, std::string> VulkanHppGenerator::createDefaults()
 {
   std::map<std::string, std::string> defaultValues;
@@ -5219,6 +5231,7 @@ int main( int argc, char **argv )
       }
     }
 
+    generator.checkCorrectness();
     generator.sortDependencies();
 
 #if !defined(NDEBUG)

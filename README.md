@@ -335,6 +335,14 @@ Sometimes it is required to use `std::vector` with custom allocators. Vulkan-Hpp
 std::vector<LayerProperties, MyCustomAllocator> properties = physicalDevice.enumerateDeviceLayerProperties<MyCustomAllocator>();
 ```
 
+You can as well use a stateful custom allocator by providing it as an argument to those functions. Unfortunately, to make the compilers happy, you also need to explicitly set the Dispatch argument. To get the default there, a simple ´´´{}´´´ would suffice:
+
+```c++
+MyStatefulCustomAllocator allocator;
+std::vector<LayerProperties, MyStatefulCustomAllocator> properties = physicalDevice.enumerateDeviceLayerProperties( allocator, {} );
+```
+
+
 ### Custom assertions
 
 All over vulkan.hpp, there are a couple of calls to an assert function. By defining VULKAN_HPP_ASSERT, you can specifiy your own custom assert function to be called instead.

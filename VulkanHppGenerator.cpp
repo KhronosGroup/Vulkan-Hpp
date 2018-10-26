@@ -770,25 +770,25 @@ const std::string deleterClassString = R"(
   class ObjectDestroy
   {
     public:
-      ObjectDestroy( OwnerType owner = OwnerType(), Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &dispatch = Dispatch() )
+      ObjectDestroy( OwnerType owner = OwnerType(), Optional<const AllocationCallbacks> allocationCallbacks = nullptr, Dispatch const &dispatch = Dispatch() )
         : m_owner( owner )
-        , m_allocator( allocator )
+        , m_allocationCallbacks( allocationCallbacks )
         , m_dispatch( &dispatch )
       {}
 
       OwnerType getOwner() const { return m_owner; }
-      Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }
+      Optional<const AllocationCallbacks> getAllocator() const { return m_allocationCallbacks; }
 
     protected:
       template <typename T>
       void destroy(T t)
       {
-        m_owner.destroy( t, m_allocator, *m_dispatch );
+        m_owner.destroy( t, m_allocationCallbacks, *m_dispatch );
       }
 
     private:
       OwnerType m_owner;
-      Optional<const AllocationCallbacks> m_allocator;
+      Optional<const AllocationCallbacks> m_allocationCallbacks;
       Dispatch const* m_dispatch;
   };
 
@@ -798,22 +798,22 @@ const std::string deleterClassString = R"(
   class ObjectDestroy<NoParent,Dispatch>
   {
     public:
-      ObjectDestroy( Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &dispatch = Dispatch() )
-        : m_allocator( allocator )
+      ObjectDestroy( Optional<const AllocationCallbacks> allocationCallbacks = nullptr, Dispatch const &dispatch = Dispatch() )
+        : m_allocationCallbacks( allocationCallbacks )
         , m_dispatch( &dispatch )
       {}
 
-      Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }
+      Optional<const AllocationCallbacks> getAllocator() const { return m_allocationCallbacks; }
 
     protected:
       template <typename T>
       void destroy(T t)
       {
-        t.destroy( m_allocator, *m_dispatch );
+        t.destroy( m_allocationCallbacks, *m_dispatch );
       }
 
     private:
-      Optional<const AllocationCallbacks> m_allocator;
+      Optional<const AllocationCallbacks> m_allocationCallbacks;
       Dispatch const* m_dispatch;
   };
 
@@ -821,25 +821,25 @@ const std::string deleterClassString = R"(
   class ObjectFree
   {
     public:
-      ObjectFree( OwnerType owner = OwnerType(), Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &dispatch = Dispatch() )
+      ObjectFree( OwnerType owner = OwnerType(), Optional<const AllocationCallbacks> allocationCallbacks = nullptr, Dispatch const &dispatch = Dispatch() )
         : m_owner( owner )
-        , m_allocator( allocator )
+        , m_allocationCallbacks( allocationCallbacks )
         , m_dispatch( &dispatch )
       {}
 
       OwnerType getOwner() const { return m_owner; }
-      Optional<const AllocationCallbacks> getAllocator() const { return m_allocator; }
+      Optional<const AllocationCallbacks> getAllocator() const { return m_allocationCallbacks; }
 
     protected:
       template <typename T>
       void destroy(T t)
       {
-        m_owner.free( t, m_allocator, *m_dispatch );
+        m_owner.free( t, m_allocationCallbacks, *m_dispatch );
       }
 
     private:
       OwnerType m_owner;
-      Optional<const AllocationCallbacks> m_allocator;
+      Optional<const AllocationCallbacks> m_allocationCallbacks;
       Dispatch const* m_dispatch;
   };
 
@@ -3298,9 +3298,9 @@ void VulkanHppGenerator::writeExceptionsForEnum(std::ostream & os, EnumData cons
   os << std::endl;
 }
 
-void VulkanHppGenerator::writeFunction(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool definition, bool enhanced, bool singular, bool unique, bool isStructureChain)
+void VulkanHppGenerator::writeFunction(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool definition, bool enhanced, bool singular, bool unique, bool isStructureChain, bool withAllocator)
 {
-  writeFunctionHeaderTemplate(os, indentation, commandData, enhanced, unique, !definition, isStructureChain);
+  writeFunctionHeaderTemplate(os, indentation, commandData, enhanced, singular, unique, !definition, isStructureChain);
 
   os << indentation << (definition ? "VULKAN_HPP_INLINE " : "");
   writeFunctionHeaderReturnType(os, commandData, enhanced, singular, unique, isStructureChain);
@@ -3309,7 +3309,7 @@ void VulkanHppGenerator::writeFunction(std::ostream & os, std::string const& ind
     os << commandData.className << "::";
   }
   writeFunctionHeaderName(os, commandData.reducedName, singular, unique);
-  writeFunctionHeaderArguments(os, commandData, enhanced, singular, !definition);
+  writeFunctionHeaderArguments(os, commandData, enhanced, singular, !definition, withAllocator);
   os << (definition ? "" : ";") << std::endl;
 
   if (definition)
@@ -3318,7 +3318,7 @@ void VulkanHppGenerator::writeFunction(std::ostream & os, std::string const& ind
     os << indentation << "{" << std::endl;
     if (enhanced)
     {
-      writeFunctionBodyEnhanced(os, indentation, commandData, singular, unique, isStructureChain);
+      writeFunctionBodyEnhanced(os, indentation, commandData, singular, unique, isStructureChain, withAllocator);
     }
     else
     {
@@ -3328,7 +3328,7 @@ void VulkanHppGenerator::writeFunction(std::ostream & os, std::string const& ind
   }
 }
 
-void VulkanHppGenerator::writeFunctionBodyEnhanced(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool singular, bool unique, bool isStructureChain)
+void VulkanHppGenerator::writeFunctionBodyEnhanced(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool singular, bool unique, bool isStructureChain, bool withAllocator)
 {
   if (unique && !singular && (commandData.vectorParams.find(commandData.returnParam) != commandData.vectorParams.end()))    // returns a vector of UniqueStuff
   {
@@ -3382,7 +3382,7 @@ ${i}  return createResultValue( result, ${typeVariable}s, VULKAN_HPP_NAMESPACE_S
     std::string returnName;
     if (commandData.returnParam != INVALID_INDEX)
     {
-      returnName = writeFunctionBodyEnhancedLocalReturnVariable(os, indentation, commandData, singular, isStructureChain);
+      returnName = writeFunctionBodyEnhancedLocalReturnVariable(os, indentation, commandData, singular, isStructureChain, withAllocator);
     }
 
     if (commandData.twoStep)
@@ -3456,7 +3456,7 @@ void VulkanHppGenerator::writeFunctionBodyTwoStep(std::ostream & os, std::string
   os << replaceWithMap(templateString, replacements);
 }
 
-std::string VulkanHppGenerator::writeFunctionBodyEnhancedLocalReturnVariable(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool singular, bool isStructureChain)
+std::string VulkanHppGenerator::writeFunctionBodyEnhancedLocalReturnVariable(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool singular, bool isStructureChain, bool withAllocator)
 {
   std::string returnName = startLowerCase(strip(commandData.params[commandData.returnParam].name, "p"));
 
@@ -3534,7 +3534,11 @@ std::string VulkanHppGenerator::writeFunctionBodyEnhancedLocalReturnVariable(std
           }
         }
         assert(!size.empty());
-        os << "( " << size << " )";
+        os << "( " << size << (withAllocator ? ", vectorAllocator" : "") << " )";
+      }
+      else if (withAllocator)
+      {
+        os << "( vectorAllocator )";
       }
     }
     os << ";" << std::endl;
@@ -3771,12 +3775,12 @@ void VulkanHppGenerator::writeFunctionBodyStandard(std::ostream & os, std::strin
   os << ";" << std::endl;
 }
 
-void VulkanHppGenerator::writeFunctionHeaderArguments(std::ostream & os, CommandData const& commandData, bool enhanced, bool singular, bool withDefaults)
+void VulkanHppGenerator::writeFunctionHeaderArguments(std::ostream & os, CommandData const& commandData, bool enhanced, bool singular, bool withDefaults, bool withAllocator)
 {
   os << "(";
   if (enhanced)
   {
-    writeFunctionHeaderArgumentsEnhanced(os, commandData, singular, withDefaults);
+    writeFunctionHeaderArgumentsEnhanced(os, commandData, singular, withDefaults, withAllocator);
   }
   else
   {
@@ -3789,7 +3793,7 @@ void VulkanHppGenerator::writeFunctionHeaderArguments(std::ostream & os, Command
   }
 }
 
-void VulkanHppGenerator::writeFunctionHeaderArgumentsEnhanced(std::ostream & os, CommandData const& commandData, bool singular, bool withDefaults)
+void VulkanHppGenerator::writeFunctionHeaderArgumentsEnhanced(std::ostream & os, CommandData const& commandData, bool singular, bool withDefaults, bool withAllocator)
 {
   // check if there's at least one argument left to put in here
   if (commandData.skippedParams.size() + (commandData.className.empty() ? 0 : 1) < commandData.params.size())
@@ -3831,7 +3835,7 @@ void VulkanHppGenerator::writeFunctionHeaderArgumentsEnhanced(std::ostream & os,
               os << "[" << commandData.params[i].arraySize << "]";
             }
 
-            if (withDefaults && (lastArgument == i))
+            if (withDefaults && (lastArgument == i) && !withAllocator)
             {
               // check if the very last argument is a flag without any bits -> provide some empty default for it
               std::map<std::string, BitmaskData>::const_iterator bitmasksIt = m_bitmasks.find(commandData.params[i].pureType);
@@ -3858,7 +3862,7 @@ void VulkanHppGenerator::writeFunctionHeaderArgumentsEnhanced(std::ostream & os,
             {
               // for an optional argument, trim the trailing '*' from the type, and the leading 'p' from the name
               os << "Optional<" << trimEnd(commandData.params[i].type.substr(0, rightStarPos)) << "> " << strippedParameterName;
-              if (withDefaults)
+              if (withDefaults && !withAllocator)
               {
                 os << " = nullptr";
               }
@@ -3892,7 +3896,7 @@ void VulkanHppGenerator::writeFunctionHeaderArgumentsEnhanced(std::ostream & os,
             if (optional)
             {
               os << "Optional<const std::string> " << strippedParameterName;
-              if (withDefaults)
+              if (withDefaults && !withAllocator)
               {
                 os << " = nullptr";
               }
@@ -3928,8 +3932,12 @@ void VulkanHppGenerator::writeFunctionHeaderArgumentsEnhanced(std::ostream & os,
       os << ", ";
     }
   }
+  if (withAllocator)
+  {
+    os << "Allocator const& vectorAllocator, ";
+  }
   os << "Dispatch const &d";
-  if (withDefaults)
+  if (withDefaults && !withAllocator)
   {
     os << " = Dispatch()";
   }
@@ -4050,7 +4058,7 @@ void VulkanHppGenerator::writeFunctionHeaderReturnType(std::ostream & os, Comman
   os << replaceWithMap(templateString, { { "returnType", returnType } });
 }
 
-void VulkanHppGenerator::writeFunctionHeaderTemplate(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool enhanced, bool unique, bool withDefault, bool isStructureChain)
+void VulkanHppGenerator::writeFunctionHeaderTemplate(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool enhanced, bool singular, bool unique, bool withDefault, bool isStructureChain)
 {
   std::string dispatch = withDefault ? std::string("typename Dispatch = DispatchLoaderStatic") : std::string("typename Dispatch");
   if (enhanced && isStructureChain)
@@ -4063,7 +4071,7 @@ void VulkanHppGenerator::writeFunctionHeaderTemplate(std::ostream & os, std::str
     assert(commandData.enhancedReturnType.find("Allocator") == std::string::npos);
     os << indentation << "template <typename T, " << dispatch << ">" << std::endl;
   }
-  else if (enhanced && (commandData.enhancedReturnType.find("Allocator") != std::string::npos))
+  else if (enhanced && !singular && (commandData.enhancedReturnType.find("Allocator") != std::string::npos))
   {
     // otherwise, if there's an Allocator used in the enhanced return type, we templatize on that Allocator
     assert((commandData.enhancedReturnType.substr(0, 12) == "std::vector<") && (commandData.enhancedReturnType.find(',') != std::string::npos) && (12 < commandData.enhancedReturnType.find(',')));
@@ -4465,15 +4473,20 @@ void VulkanHppGenerator::writeTypeCommand(std::ostream & os, std::string const& 
 
   // first create the standard version of the function
   std::ostringstream standard;
-  writeFunction(standard, indentation, commandData, definition, false, false, false, false);
+  writeFunction(standard, indentation, commandData, definition, false, false, false, false, false);
 
-  // then the enhanced version, composed by up to five parts
+  // then the enhanced version, composed by up to seven parts
   std::ostringstream enhanced;
-  writeFunction(enhanced, indentation, commandData, definition, true, false, false, false);
+  writeFunction(enhanced, indentation, commandData, definition, true, false, false, false, false);
+
+  if (commandData.enhancedReturnType.find("Allocator") != std::string::npos)
+  {
+    writeFunction(enhanced, indentation, commandData, definition, true, false, false, false, true);
+  }
 
   if (isStructureChain)
   {
-    writeFunction(enhanced, indentation, commandData, definition, true, false, false, true);
+    writeFunction(enhanced, indentation, commandData, definition, true, false, false, true, false);
   }
 
   // then a singular version, if a sized vector would be returned
@@ -4484,7 +4497,7 @@ void VulkanHppGenerator::writeTypeCommand(std::ostream & os, std::string const& 
                   (commandData.params[returnVector->second].type.back() != '*');
   if (singular)
   {
-    writeFunction(enhanced, indentation, commandData, definition, true, true, false, false);
+    writeFunction(enhanced, indentation, commandData, definition, true, true, false, false, false);
   }
 
   // special handling for createDevice and createInstance !
@@ -4494,11 +4507,16 @@ void VulkanHppGenerator::writeTypeCommand(std::ostream & os, std::string const& 
   if (((m_deleters.find(commandData.className) != m_deleters.end()) || specialWriteUnique) && ((commandData.reducedName.substr(0, 8) == "allocate") || (commandData.reducedName.substr(0, 6) == "create")))
   {
     enhanced << "#ifndef VULKAN_HPP_NO_SMART_HANDLE" << std::endl;
-    writeFunction(enhanced, indentation, commandData, definition, true, false, true, false);
+    writeFunction(enhanced, indentation, commandData, definition, true, false, true, false, false);
+
+    if (commandData.enhancedReturnType.find("Allocator") != std::string::npos)
+    {
+      writeFunction(enhanced, indentation, commandData, definition, true, false, true, false, true);
+    }
 
     if (singular)
     {
-      writeFunction(enhanced, indentation, commandData, definition, true, true, true, false);
+      writeFunction(enhanced, indentation, commandData, definition, true, true, true, false, false);
     }
     enhanced << "#endif /*VULKAN_HPP_NO_SMART_HANDLE*/" << std::endl;
   }

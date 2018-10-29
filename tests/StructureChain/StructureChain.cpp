@@ -71,6 +71,10 @@ int main(int /*argc*/, char * /*argv[]*/)
     auto d = pd.getFeatures2<vk::PhysicalDeviceFeatures2, vk::PhysicalDeviceVariablePointerFeatures>(vk::DispatchLoaderStatic());
     vk::PhysicalDeviceFeatures2 & d0 = d.get<vk::PhysicalDeviceFeatures2>();
     vk::PhysicalDeviceVariablePointerFeatures & d1 = d.get<vk::PhysicalDeviceVariablePointerFeatures>();
+
+    using StructureChain = vk::StructureChain<vk::QueueFamilyProperties2, vk::QueueFamilyCheckpointPropertiesNV>;
+    using AllocatorType = std::vector<StructureChain>::allocator_type;
+    auto qfd = pd.getQueueFamilyProperties2<StructureChain, AllocatorType>(vk::DispatchLoaderStatic());
   }
   catch (vk::SystemError err)
   {

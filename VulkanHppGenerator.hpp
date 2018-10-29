@@ -14,11 +14,9 @@
 
 #pragma once
 
-#include <list>
 #include <map>
 #include <iostream>
 #include <set>
-#include <string>
 #include <vector>
 #include <tinyxml2.h>
 
@@ -31,7 +29,7 @@ class VulkanHppGenerator
     }
 
     void checkCorrectness();
-    std::map<std::string, std::string> createDefaults();
+    std::set<std::string> gatherForwardDeclarations();
     std::string const& getTypesafeCheck() const;
     std::string const& getVersion() const;
     std::string const& getVulkanLicenseHeader() const;
@@ -43,58 +41,49 @@ class VulkanHppGenerator
     void readPlatforms(tinyxml2::XMLElement const* element);
     void readTags(tinyxml2::XMLElement const* element);
     void readTypes(tinyxml2::XMLElement const* element);
-    void sortDependencies();
-    void writeResultEnum(std::ostream & os);
+    void writeBaseTypes(std::ostream & os) const;
+    void writeBitmasks(std::ostream & os) const;
+    void writeDispatchLoaderDynamic(std::ostream &os); // use vkGet*ProcAddress to get function pointers
+    void writeDispatchLoaderStatic(std::ostream &os);  // use exported symbols from loader
+    void writeEnums(std::ostream & os) const;
+    void writeForwardDeclarations(std::ostream & os, std::set<std::string> const& forwardDeclarations) const;
+    void writeHandles(std::ostream & os) const;
+    void writeResultExceptions(std::ostream & os) const;
+    void writeStructs(std::ostream & os) const;
     void writeStructureChainValidation(std::ostream & os);
-    void writeToStringFunctions(std::ostream & os);
-    void writeTypes(std::ostream & os, std::map<std::string, std::string> const& defaultValues);
-    void writeDelegationClassStatic(std::ostream &os);  // use exported symbols from loader
-    void writeDelegationClassDynamic(std::ostream &os); // use vkGet*ProcAddress to get function pointers
-#if !defined(NDEBUG)
-    void checkExtensionRequirements();
-    void skipVendorIDs(tinyxml2::XMLElement const* element);
-#endif
+    void writeThrowExceptions(std::ostream& os) const;
 
   private:
     struct BitmaskData
     {
-      std::string protect;
-      std::string alias;
-    };
-
-    struct DependencyData
-    {
-      enum class Category
-      {
-        BITMASK,
-        COMMAND,
-        ENUM,
-        FUNC_POINTER,
-        HANDLE,
-        REQUIRED,
-        SCALAR,
-        STRUCT,
-        UNION
-      };
-
-      DependencyData(Category c, std::string const& n)
-        : category(c)
-        , name(n)
+      BitmaskData(std::string const& r)
+        : requires(r)
       {}
 
-      Category              category;
-      std::string           name;
-      std::set<std::string> dependencies;
-      std::set<std::string> forwardDependencies;
+      std::string requires;   // original vulkan name: VK*FlagBits
+      std::string platform;
+      std::string alias;      // original vulkan name
+    };
+
+    struct TypeData
+    {
+      std::string compose() const;
+
+      bool operator==(TypeData const& rhs) const
+      {
+        return (prefix == rhs.prefix) && (type == rhs.type) && (postfix == rhs.postfix);
+      }
+
+      std::string prefix;
+      std::string type;
+      std::string postfix;
     };
 
     struct ParamData
     {
-      std::string type;
-      std::string unchangedType;
+      TypeData    type;
       std::string name;
       std::string arraySize;
-      std::string pureType;
       std::string len;
       bool        optional;
     };
@@ -102,83 +91,45 @@ class VulkanHppGenerator
     struct CommandData
     {
       CommandData()
-        : returnParam(size_t(~0))
-        , templateParam(size_t(~0))
-        , twoStep(false)
-        , isAlias(false)
+        : isAlias(false)
       {}
 
-      std::string               className;
-      std::string               enhancedReturnType;
-      std::string               fullName;
       std::vector<ParamData>    params;
-      std::string               protect;
-      std::string               reducedName;
-      size_t                    returnParam;
+      std::string               platform;
       std::string               returnType;
-      std::string               unchangedReturnType;
-      std::set<size_t>          skippedParams;
       std::vector<std::string>  successCodes;
-      size_t                    templateParam;
-      std::map<size_t, size_t>  vectorParams;
-      bool                      twoStep;
       bool                      isAlias;
-    };
-
-    struct DeleterData
-    {
-      std::string pool;
-      std::string call;
-    };
-
-    struct EnumValueData
-    {
-      std::string name;
-      std::string value;
-      std::string alias;
     };
 
     struct EnumData
     {
-      EnumData(std::string const& n, bool b = false)
-        : name(n)
-        , bitmask(b)
-      {}
+      void addAlias(std::string const& valueName, std::string const& aliasName, bool bitmask, std::string const& prefix, std::string const& postfix, std::string const& tag);
+      void addEnumValue(std::string const& valueName, bool bitmask, std::string const& prefix, std::string const& postfix, std::string const& tag);
 
-      void addEnumValue(std::string const& name, std::string const& tag, std::map<std::string, std::string> & nameMap);
-
-      std::string                 name;
-      std::string                 prefix;
-      std::string                 postfix;
-      std::vector<EnumValueData>  values;
-      std::string                 protect;
-      bool                        bitmask;
+      std::vector<std::pair<std::string, std::string>>  values;   // pairs of vulkan enum value and corresponding vk::-namespace enum value
+      std::vector<std::pair<std::string, std::string>>  aliases;  // pairs of vulkan enum value and corresponding vk::-namespace enum value
     };
 
     struct HandleData
     {
-      std::vector<std::string>  commands;
-      std::string               protect;
-      std::string               alias;
+      std::string                         alias;
+      std::map<std::string, CommandData>  commands;
+      std::string                         deleteCommand;
+      std::string                         deletePool;
+      std::set<std::string>               childrenHandles;
     };
 
     struct MemberData
     {
-      std::string type;
+      TypeData    type;
       std::string name;
       std::string arraySize;
-      std::string pureType;
       std::string values;
     };
 
-    struct ScalarData
+    struct StructureData
     {
-      std::string protect;
-    };
-
-    struct StructData
-    {
-      StructData()
+      StructureData()
         : returnedOnly(false)
       {}
 
@@ -191,129 +142,104 @@ class VulkanHppGenerator
       std::string               subStruct;
     };
 
-#if !defined(NDEBUG)
-    struct ExtensionData
-    {
-      std::string               protect;
-      std::vector<std::string>  requires;
-    };
-
-    struct VendorIDData
-    {
-      std::string name;
-      std::string id;
-      std::string comment;
-    };
-#endif
-
   private:
-    template <typename T> void checkAlias(std::map<std::string, T> const& data, std::string const& name, int line);
-    bool containsUnion(std::string const& type, std::map<std::string, StructData> const& structs);
-    void determineEnhancedReturnType(CommandData & commandData);
-    void determineReducedName(CommandData & commandData);
-    void determineReturnParam(CommandData & commandData);
-    void determineSkippedParams(CommandData & commandData);
-    void determineTemplateParam(CommandData & commandData);
-    void determineVectorParams(CommandData & commandData);
-    std::string generateCall(CommandData const& commandData, bool firstCall, bool singular);
-    bool isSubStruct(std::pair<std::string, StructData> const& nsd, std::string const& name, StructData const& structData);
-    void linkCommandToHandle(CommandData & commandData);
-    bool readCommandParam(tinyxml2::XMLElement const* element, std::set<std::string> & dependencies, std::vector<ParamData> & params);
+    bool containsUnion(std::string const& type) const;
+    std::string defaultValue(std::string const& type) const;
+    std::string determineEnhancedReturnType(CommandData const& commandData, size_t returnParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool twoStep, bool isStructureChain) const;
+    size_t determineReturnParamIndex(CommandData const& commandData, std::map<size_t, size_t> const& vectorParamIndices, bool twoStep) const;
+    std::string determineSubStruct(std::pair<std::string, StructureData> const& structure) const;
+    size_t determineTemplateParamIndex(std::vector<ParamData> const& params, std::map<size_t, size_t> const& vectorParamIndices) const;
+    std::map<size_t, size_t> determineVectorParamIndices(std::vector<ParamData> const& params) const;
+    std::string generateCall(std::pair<std::string, CommandData> const& commandData, size_t returnParamIndex, size_t templateParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool twoStep, bool firstCall, bool singular) const;
+    bool isTwoStepAlgorithm(std::vector<ParamData> const& params) const;
+    void linkCommandToHandle(std::string const& name, CommandData const& commandData);
+    void readBaseType(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes);
+    void readBitmask(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes);
+    void readBitmaskAlias(int lineNum, std::string const& alias, std::map<std::string, std::string> const& attributes, std::vector<tinyxml2::XMLElement const*> const& children);
+    void readCommand(tinyxml2::XMLElement const* element);
+    void readCommandAlias(int lineNum, std::string const& alias, std::map<std::string, std::string> const& attributes, std::vector<tinyxml2::XMLElement const*> const& children);
+    ParamData readCommandParam(tinyxml2::XMLElement const* element);
     tinyxml2::XMLNode const* readCommandParamType(tinyxml2::XMLNode const* node, ParamData& param);
-    void readCommandsCommand(tinyxml2::XMLElement const* element);
-    void readCommandProto(tinyxml2::XMLElement const* element, std::string & returnType, std::string & unchangedReturnType, std::string & fullName);
-    void readDisabledExtensionRequire(tinyxml2::XMLElement const* element);
-    void readEnumsEnum(tinyxml2::XMLElement const* element, EnumData & enumData, std::string const& tag);
-    void readEnumsConstant(tinyxml2::XMLElement const* element);
-    void readExtensionCommand(tinyxml2::XMLElement const* element, std::string const& protect);
-    void readExtensionEnum(tinyxml2::XMLElement const* element, std::string const& tag);
-    void readExtensionRequire(tinyxml2::XMLElement const* element, std::string const& protect, std::string const& tag);
-    void readExtensionsExtension(tinyxml2::XMLElement const* element);
-    void readExtensionType(tinyxml2::XMLElement const* element, std::string const& protect);
+    std::string readCommandProto(tinyxml2::XMLElement const* element, std::string & returnType);
+    std::vector<std::string> readCommandSuccessCodes(std::map<std::string, std::string> const& attributes);
+    void readDefine(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes);
+    void readEnum(tinyxml2::XMLElement const* element, EnumData & enumData, bool bitmask, std::string const& prefix, std::string const& postfix);
+    void readExtension(tinyxml2::XMLElement const* element);
+    void readExtensionDisabled(std::vector<tinyxml2::XMLElement const*> const& children);
+    void readExtensionDisabledRequire(tinyxml2::XMLElement const* element);
+    void readExtensionRequire(tinyxml2::XMLElement const* element, std::string const& platform, std::string const& tag);
+    void readExtensionRequireCommand(tinyxml2::XMLElement const* element, std::string const& platform);
+    void readExtensionRequireEnum(tinyxml2::XMLElement const* element, std::string const& tag);
+    void readExtensionRequireType(tinyxml2::XMLElement const* element, std::string const& platform);
     void readFeatureRequire(tinyxml2::XMLElement const* element);
     void readFeatureRequireEnum(tinyxml2::XMLElement const* element);
+    void readFuncpointer(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes);
+    void readHandle(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes);
     void readPlatform(tinyxml2::XMLElement const* element);
+    void readStruct(tinyxml2::XMLElement const* element, bool isUnion, std::map<std::string, std::string> const& attributes);
+    void readStructAlias(int lineNum, std::string const& name, std::string const& alias, std::map<std::string, std::string> const& attributes);
+    MemberData readStructMember(tinyxml2::XMLElement const* element);
+    std::vector<MemberData> readStructMembers(std::vector<tinyxml2::XMLElement const*> const& children);
     void readTag(tinyxml2::XMLElement const* element);
     void readType(tinyxml2::XMLElement const* element);
-    void readTypeBasetype(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes);
-    void readTypeBitmask(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes);
-    void readTypeDefine(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes);
-    void readTypeFuncpointer(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes);
-    void readTypeHandle(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes);
-    void readTypeName(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes);
-    void readTypeStruct(tinyxml2::XMLElement const* element, bool isUnion, std::map<std::string, std::string> const& attributes);
-    void readTypeStructMember(tinyxml2::XMLElement const* element, StructData & structData);
-    void registerDeleter(CommandData const& commandData);
-    void setDefault(std::string const& name, std::map<std::string, std::string> & defaultValues, EnumData const& enumData);
-    void writeArguments(std::ostream & os, CommandData const& commandData, bool firstCall, bool singular, size_t from, size_t to);
-    void writeBitmaskToString(std::ostream & os, std::string const& flagsName, EnumData const &enumData);
-    void writeCall(std::ostream & os, CommandData const& commandData, bool firstCall, bool singular);
-    void writeCallCountParameter(std::ostream & os, CommandData const& commandData, bool singular, std::map<size_t, size_t>::const_iterator it);
-    void writeCallPlainTypeParameter(std::ostream & os, ParamData const& paramData);
-    void writeCallVectorParameter(std::ostream & os, CommandData const& commandData, bool firstCall, bool singular, std::map<size_t, size_t>::const_iterator it);
-    void writeCallVulkanTypeParameter(std::ostream & os, ParamData const& paramData);
-    void writeEnumsToString(std::ostream & os, EnumData const& enumData);
-    void writeExceptionsForEnum(std::ostream & os, EnumData const& enumData);
-    void writeFunction(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool definition, bool enhanced, bool singular, bool unique, bool isStructureChain, bool withAllocator);
-    void writeFunctionBodyEnhanced(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool singular, bool unique, bool isStructureChain, bool withAllocator);
-    void writeFunctionBodyEnhanced(std::ostream & os, std::string const& templateString, std::string const& indentation, CommandData const& commandData, bool singular);
-    void writeFunctionBodyTwoStep(std::ostream & os, std::string const &templateString, std::string const& indentation, std::string const& returnName, std::string const& sizeName, CommandData const& commandData);
-    std::string writeFunctionBodyEnhancedLocalReturnVariable(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool singular, bool isStructureChain, bool withAllocator);
-    void writeFunctionBodyEnhancedCall(std::ostream &os, std::string const& indentation, CommandData const& commandData, bool singular);
-    void writeFunctionBodyEnhancedCallResult(std::ostream &os, std::string const& indentation, CommandData const& commandData, bool singular);
-    void writeFunctionBodyEnhancedCallTwoStep(std::ostream & os, std::string const& indentation, std::string const& returnName, std::string const& sizeName, CommandData const& commandData);
-    void writeFunctionBodyEnhancedCallTwoStepIterate(std::ostream & os, std::string const& indentation, std::string const& returnName, std::string const& sizeName, CommandData const& commandData);
-    void writeFunctionBodyEnhancedCallTwoStepChecked(std::ostream & os, std::string const& indentation, std::string const& returnName, std::string const& sizeName, CommandData const& commandData);
-    void writeFunctionBodyEnhancedLocalCountVariable(std::ostream & os, std::string const& indentation, CommandData const& commandData);
-    void writeFunctionBodyEnhancedMultiVectorSizeCheck(std::ostream & os, std::string const& indentation, CommandData const& commandData);
-    void writeFunctionBodyEnhancedReturnResultValue(std::ostream & os, std::string const& indentation, std::string const& returnName, CommandData const& commandData, bool singular, bool unique);
-    void writeFunctionBodyStandard(std::ostream & os, std::string const& indentation, CommandData const& commandData);
-    void writeFunctionHeaderArguments(std::ostream & os, CommandData const& commandData, bool enhanced, bool singular, bool withDefaults, bool withAllocator);
-    void writeFunctionHeaderArgumentsEnhanced(std::ostream & os, CommandData const& commandData, bool singular, bool withDefaults, bool withAllocator);
-    void writeFunctionHeaderArgumentsStandard(std::ostream & os, CommandData const& commandData, bool withDefaults);
-    void writeFunctionHeaderReturnType(std::ostream & os, CommandData const& commandData, bool enhanced, bool singular, bool unique, bool isStructureChain);
-    void writeFunctionHeaderTemplate(std::ostream & os, std::string const& indentation, CommandData const& commandData, bool enhanced, bool singular, bool unique, bool withDefault, bool isStructureChain);
-    void writeIndentation(std::ostream & os, size_t indentLength);
-    void writeStructConstructor(std::ostream & os, std::string const& name, StructData const& structData, std::map<std::string, std::string> const& defaultValues);
-    bool writeStructConstructorArgument(std::ostream & os, bool listedArgument, size_t indentLength, MemberData const& memberData, std::map<std::string, std::string> const& defaultValues);
-    void writeStructSetter(std::ostream & os, std::string const& structureName, MemberData const& memberData);
-    void writeStructureChainValidation(std::ostream & os, DependencyData const& dependencyData);
-    void writeThrowExceptions(std::ostream& os, EnumData const& enumData);
-    void writeTypeBitmask(std::ostream & os, std::string const& flagsName, BitmaskData const& bitmaskData, EnumData const& enumData);
-    void writeTypeCommand(std::ostream & os, DependencyData const& dependencyData);
-    void writeTypeCommand(std::ostream &os, std::string const& indentation, CommandData const& commandData, bool definition);
-    void writeTypeEnum(std::ostream & os, EnumData const& enumData);
-    void writeTypeHandle(std::ostream & os, DependencyData const& dependencyData, HandleData const& handle);
-    void writeTypeScalar(std::ostream & os, DependencyData const& dependencyData);
-    void writeTypeStruct(std::ostream & os, DependencyData const& dependencyData, std::map<std::string, std::string> const& defaultValues);
-    void writeTypeUnion(std::ostream & os, DependencyData const& dependencyData, std::map<std::string, std::string> const& defaultValues);
-    void writeUniqueTypes(std::ostream &os, std::pair<std::string, std::set<std::string>> const& deleterTypes);
-#if !defined(NDEBUG)
-    void skipVendorID(tinyxml2::XMLElement const* element);
-#endif
+    void registerDeleter(std::string const& name, std::pair<std::string, CommandData> const& commandData);
+    void unlinkCommandFromHandle(std::string const& name);
+    void writeArgumentPlainType(std::ostream & os, ParamData const& paramData) const;
+    void writeArguments(std::ostream & os, CommandData const& commandData, size_t returnParamIndex, size_t templateParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool twoStep, bool firstCall, bool singular, size_t from, size_t to) const;
+    void writeArgumentVector(std::ostream & os, size_t paramIndex, ParamData const& paramData, size_t returnParamIndex, size_t templateParamIndex, bool twoStep, bool firstCall, bool singular) const;
+    void writeArgumentVulkanType(std::ostream & os, ParamData const& paramData) const;
+    void writeCommand(std::ostream &os, std::string const& indentation, std::string const& name, std::pair<std::string, CommandData> const& commandData, bool definition) const;
+    void writeEnum(std::ostream & os, std::pair<std::string,EnumData> const& enumData) const;
+    void writeFunction(std::ostream & os, std::string const& indentation, std::string const& name, std::pair<std::string, CommandData> const& commandData, size_t returnParamIndex, size_t templateParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool twoStep, std::string const& enhancedReturnType, bool definition, bool enhanced, bool singular, bool unique, bool isStructureChain, bool withAllocator) const;
+    void writeFunctionBodyEnhanced(std::ostream & os, std::string const& indentation, std::string const& commandName, std::pair<std::string, CommandData> const& commandData, size_t returnParamIndex, size_t templateParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool twoStep, std::string const& enhancedReturnType, bool singular, bool unique, bool isStructureChain, bool withAllocator) const;
+    std::string writeFunctionBodyEnhancedLocalReturnVariable(std::ostream & os, std::string const& indentation, CommandData const& commandData, size_t returnParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool twoStep, std::string const& enhancedReturnType, bool singular, bool isStructureChain, bool withAllocator) const;
+    void writeFunctionBodyEnhancedLocalReturnVariableVectorSize(std::ostream & os, std::vector<ParamData> const& params, std::pair<size_t, size_t> const& vectorParamIndex, size_t returnParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool withAllocator) const;
+    void writeFunctionBodyEnhancedMultiVectorSizeCheck(std::ostream & os, std::string const& indentation, std::string const& commandName, std::pair<std::string, CommandData> const& commandData, size_t returnParamIndex, std::map<size_t, size_t> const& vectorParamIndices) const;
+    void writeFunctionBodyEnhancedReturnResultValue(std::ostream & os, std::string const& indentation, std::string const& returnName, std::string const& commandName, std::pair<std::string, CommandData> const& commandData, size_t returnParamIndex, bool twoStep, bool singular, bool unique) const;
+    void writeFunctionBodyEnhancedSingleStep(std::ostream & os, std::string const& indentation, std::pair<std::string, CommandData> const& commandData, size_t returnParamIndex, size_t templateParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool singular) const;
+    void writeFunctionBodyEnhancedTwoStep(std::ostream & os, std::string const& indentation, std::pair<std::string, CommandData> const& commandData, size_t returnParamIndex, size_t templateParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool singular, std::string const& returnName) const;
+    void writeFunctionBodyEnhancedVectorOfUniqueHandles(std::ostream & os, std::string const& indentation, std::string const& commandName, std::pair<std::string, CommandData> const& commandData, size_t returnParamIndex, size_t templateParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool twoStep, bool singular, bool withAllocator) const;
+    void writeFunctionBodyStandard(std::ostream & os, std::string const& indentation, std::pair<std::string, CommandData> const& commandData) const;
+    std::string writeFunctionBodyStandardArgument(TypeData const& typeData, std::string const& name) const;
+    bool writeFunctionHeaderArgumentEnhanced(std::ostream & os, ParamData const& param, size_t paramIndex, std::map<size_t, size_t> const& vectorParamIndices, bool skip, bool argEncountered, bool isTemplateParam, bool isLastArgument, bool singular, bool withDefaults, bool withAllocator) const;
+    void writeFunctionHeaderArgumentEnhancedPointer(std::ostream & os, ParamData const& param, std::string const& strippedParameterName, bool withDefaults, bool withAllocator) const;
+    void writeFunctionHeaderArgumentEnhancedSimple(std::ostream & os, ParamData const& param, bool lastArgument, bool withDefaults, bool withAllocator) const;
+    void writeFunctionHeaderArgumentEnhancedVector(std::ostream & os, ParamData const& param, std::string const& strippedParameterName, bool hasSizeParam, bool isTemplateParam, bool singular, bool withDefaults, bool withAllocator) const;
+    void writeFunctionHeaderArguments(std::ostream & os, std::pair<std::string, CommandData> const& commandData, size_t returnParamIndex, size_t templateParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool enhanced, bool singular, bool withDefaults, bool withAllocator) const;
+    void writeFunctionHeaderArgumentsEnhanced(std::ostream & os, std::pair<std::string, CommandData> const& commandData, size_t returnParamIndex, size_t templateParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool singular, bool withDefaults, bool withAllocator) const;
+    void writeFunctionHeaderArgumentsStandard(std::ostream & os, std::pair<std::string, CommandData> const& commandData, bool withDefaults) const;
+    bool writeFunctionHeaderArgumentStandard(std::ostream & os, ParamData const& param, bool argEncountered, bool isLastArgument, bool withDefaults) const;
+    void writeFunctionHeaderReturnType(std::ostream & os, CommandData const& commandData, size_t returnParamIndex, std::map<size_t, size_t> const& vectorParamIndices, std::string const& enhancedReturnType, bool enhanced, bool singular, bool unique, bool isStructureChain) const;
+    void writeFunctionHeaderTemplate(std::ostream & os, std::string const& indentation, size_t returnParamIndex, size_t templateParamIndex, std::string const& enhancedReturnType, bool enhanced, bool singular, bool unique, bool withDefault, bool isStructureChain) const;
+    void writeHandle(std::ostream & os, std::pair<std::string, HandleData> const& handle, std::set<std::string> & listedHandles) const;
+    void writeStruct(std::ostream & os, std::pair<std::string, StructureData> const& structure, std::set<std::string> & listedStructures) const;
+    void writeStructCompareOperators(std::ostream & os, std::pair<std::string, StructureData> const& structure) const;
+    void writeStructConstructor(std::ostream & os, std::pair<std::string, StructureData> const& structData) const;
+    std::string writeStructConstructorArgument(bool & listedArgument, std::string const& indentation, MemberData const& memberData) const;
+    void writeStructMembers(std::ostream & os, StructureData const& structData) const;
+    void writeStructSetter(std::ostream & os, std::string const& structureName, MemberData const& memberData) const;
+    void writeStructure(std::ostream & os, std::pair<std::string, StructureData> const& structure) const;
+    void writeUnion(std::ostream & os, std::pair<std::string, StructureData> const& structure) const;
+    void writeUniqueTypes(std::ostream &os, std::string const& parentType, std::set<std::string> const& childrenTypes) const;
 
   private:
-    std::map<std::string, BitmaskData>            m_bitmasks;
-    std::map<std::string, CommandData>            m_commands;
-    std::map<std::string, std::string>            m_constants;
-    std::set<std::string>                         m_defines;
-    std::map<std::string, DeleterData>            m_deleters;     // map from child types to corresponding deleter data
-    std::map<std::string, std::set<std::string>>  m_deleterTypes; // map from parent type to set of child types
-    std::list<DependencyData>                     m_dependencies;
-    std::map<std::string, EnumData>               m_enums;
-    std::set<std::string>                         m_extendedStructs; // structs which are referenced by the structextends tag
-    std::map<std::string, HandleData>             m_handles;
-    std::map<std::string, std::string>            m_nameMap;
-    std::map<std::string, std::string>            m_platforms;
-    std::map<std::string, ScalarData>             m_scalars;
-    std::map<std::string, StructData>             m_structs;
-    std::set<std::string>                         m_tags;
-    std::string                                   m_typesafeCheck;
-    std::string                                   m_version;
-    std::set<std::string>                         m_vkTypes;
-    std::string                                   m_vulkanLicenseHeader;
+    std::map<std::string, std::string>    m_baseTypes;
+    std::map<std::string, EnumData>       m_bitmaskBits;
+    std::map<std::string, BitmaskData>    m_bitmasks;
+    std::map<std::string, std::string>    m_commandToHandle;
+    std::map<std::string, EnumData>       m_enums;
+    std::set<std::string>                 m_extendedStructs; // structs which are referenced by the structextends tag
+    std::map<std::string, HandleData>     m_handles;
+    std::map<std::string, std::string>    m_platforms;
+    std::map<std::string, std::string>    m_structureAliases;
+    std::map<std::string, StructureData>  m_structures;
+    std::set<std::string>                 m_tags;
+    std::string                           m_typesafeCheck;
+    std::string                           m_version;
+    std::string                           m_vulkanLicenseHeader;
 #if !defined(NDEBUG)
-    std::map<std::string, ExtensionData>          m_extensions;
-    std::vector<VendorIDData>                     m_vendorIDs;
+    std::set<std::string>                 m_defines;        // just used for verfication in readExtensionType
 #endif
 };
+
+const size_t INVALID_INDEX = (size_t)~0;

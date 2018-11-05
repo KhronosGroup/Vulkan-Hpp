@@ -46,7 +46,7 @@ int main(int /*argc*/, char * /*argv[]*/)
     vk::UniqueDevice device = physicalDevices[0].createDeviceUnique(vk::DeviceCreateInfo(vk::DeviceCreateFlags(), 1, &deviceQueueCreateInfo));
 
     std::vector<uint8_t> data;
-    device->getAccelerationStructureHandleNVX<uint8_t>({}, data, vk::DispatchLoaderDynamic());
+    device->getAccelerationStructureHandleNV<uint8_t>({}, data, vk::DispatchLoaderDynamic());
   }
   catch (vk::SystemError err)
   {
@@ -58,5 +58,6 @@ int main(int /*argc*/, char * /*argv[]*/)
     std::cout << "unknown error\n";
     exit(-1);
   }
+
   return 0;
 }

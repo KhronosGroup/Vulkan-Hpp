@@ -70,7 +70,7 @@
   #undef MemoryBarrier
 #endif
 
-static_assert( VK_HEADER_VERSION ==  89 , "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION ==  91 , "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -1124,9 +1124,9 @@ public:
   {
     return ::vkBeginCommandBuffer( commandBuffer, pBeginInfo);
   }
-  VkResult vkBindAccelerationStructureMemoryNVX( VkDevice device, uint32_t bindInfoCount, const VkBindAccelerationStructureMemoryInfoNVX* pBindInfos  ) const
+  VkResult vkBindAccelerationStructureMemoryNV( VkDevice device, uint32_t bindInfoCount, const VkBindAccelerationStructureMemoryInfoNV* pBindInfos  ) const
   {
-    return ::vkBindAccelerationStructureMemoryNVX( device, bindInfoCount, pBindInfos);
+    return ::vkBindAccelerationStructureMemoryNV( device, bindInfoCount, pBindInfos);
   }
   VkResult vkBindBufferMemory( VkDevice device, VkBuffer buffer, VkDeviceMemory memory, VkDeviceSize memoryOffset  ) const
   {
@@ -1208,9 +1208,9 @@ public:
   {
     return ::vkCmdBlitImage( commandBuffer, srcImage, srcImageLayout, dstImage, dstImageLayout, regionCount, pRegions, filter);
   }
-  void vkCmdBuildAccelerationStructureNVX( VkCommandBuffer commandBuffer, VkAccelerationStructureTypeNVX type, uint32_t instanceCount, VkBuffer instanceData, VkDeviceSize instanceOffset, uint32_t geometryCount, const VkGeometryNVX* pGeometries, VkBuildAccelerationStructureFlagsNVX flags, VkBool32 update, VkAccelerationStructureNVX dst, VkAccelerationStructureNVX src, VkBuffer scratch, VkDeviceSize scratchOffset  ) const
+  void vkCmdBuildAccelerationStructureNV( VkCommandBuffer commandBuffer, const VkAccelerationStructureInfoNV* pInfo, VkBuffer instanceData, VkDeviceSize instanceOffset, VkBool32 update, VkAccelerationStructureNV dst, VkAccelerationStructureNV src, VkBuffer scratch, VkDeviceSize scratchOffset  ) const
   {
-    return ::vkCmdBuildAccelerationStructureNVX( commandBuffer, type, instanceCount, instanceData, instanceOffset, geometryCount, pGeometries, flags, update, dst, src, scratch, scratchOffset);
+    return ::vkCmdBuildAccelerationStructureNV( commandBuffer, pInfo, instanceData, instanceOffset, update, dst, src, scratch, scratchOffset);
   }
   void vkCmdClearAttachments( VkCommandBuffer commandBuffer, uint32_t attachmentCount, const VkClearAttachment* pAttachments, uint32_t rectCount, const VkClearRect* pRects  ) const
   {
@@ -1224,9 +1224,9 @@ public:
   {
     return ::vkCmdClearDepthStencilImage( commandBuffer, image, imageLayout, pDepthStencil, rangeCount, pRanges);
   }
-  void vkCmdCopyAccelerationStructureNVX( VkCommandBuffer commandBuffer, VkAccelerationStructureNVX dst, VkAccelerationStructureNVX src, VkCopyAccelerationStructureModeNVX mode  ) const
+  void vkCmdCopyAccelerationStructureNV( VkCommandBuffer commandBuffer, VkAccelerationStructureNV dst, VkAccelerationStructureNV src, VkCopyAccelerationStructureModeNV mode  ) const
   {
-    return ::vkCmdCopyAccelerationStructureNVX( commandBuffer, dst, src, mode);
+    return ::vkCmdCopyAccelerationStructureNV( commandBuffer, dst, src, mode);
   }
   void vkCmdCopyBuffer( VkCommandBuffer commandBuffer, VkBuffer srcBuffer, VkBuffer dstBuffer, uint32_t regionCount, const VkBufferCopy* pRegions  ) const
   {
@@ -1484,9 +1484,9 @@ public:
   {
     return ::vkCmdSetViewportWScalingNV( commandBuffer, firstViewport, viewportCount, pViewportWScalings);
   }
-  void vkCmdTraceRaysNVX( VkCommandBuffer commandBuffer, VkBuffer raygenShaderBindingTableBuffer, VkDeviceSize raygenShaderBindingOffset, VkBuffer missShaderBindingTableBuffer, VkDeviceSize missShaderBindingOffset, VkDeviceSize missShaderBindingStride, VkBuffer hitShaderBindingTableBuffer, VkDeviceSize hitShaderBindingOffset, VkDeviceSize hitShaderBindingStride, uint32_t width, uint32_t height  ) const
+  void vkCmdTraceRaysNV( VkCommandBuffer commandBuffer, VkBuffer raygenShaderBindingTableBuffer, VkDeviceSize raygenShaderBindingOffset, VkBuffer missShaderBindingTableBuffer, VkDeviceSize missShaderBindingOffset, VkDeviceSize missShaderBindingStride, VkBuffer hitShaderBindingTableBuffer, VkDeviceSize hitShaderBindingOffset, VkDeviceSize hitShaderBindingStride, VkBuffer callableShaderBindingTableBuffer, VkDeviceSize callableShaderBindingOffset, VkDeviceSize callableShaderBindingStride, uint32_t width, uint32_t height, uint32_t depth  ) const
   {
-    return ::vkCmdTraceRaysNVX( commandBuffer, raygenShaderBindingTableBuffer, raygenShaderBindingOffset, missShaderBindingTableBuffer, missShaderBindingOffset, missShaderBindingStride, hitShaderBindingTableBuffer, hitShaderBindingOffset, hitShaderBindingStride, width, height);
+    return ::vkCmdTraceRaysNV( commandBuffer, raygenShaderBindingTableBuffer, raygenShaderBindingOffset, missShaderBindingTableBuffer, missShaderBindingOffset, missShaderBindingStride, hitShaderBindingTableBuffer, hitShaderBindingOffset, hitShaderBindingStride, callableShaderBindingTableBuffer, callableShaderBindingOffset, callableShaderBindingStride, width, height, depth);
   }
   void vkCmdUpdateBuffer( VkCommandBuffer commandBuffer, VkBuffer dstBuffer, VkDeviceSize dstOffset, VkDeviceSize dataSize, const void* pData  ) const
   {
@@ -1496,9 +1496,9 @@ public:
   {
     return ::vkCmdWaitEvents( commandBuffer, eventCount, pEvents, srcStageMask, dstStageMask, memoryBarrierCount, pMemoryBarriers, bufferMemoryBarrierCount, pBufferMemoryBarriers, imageMemoryBarrierCount, pImageMemoryBarriers);
   }
-  void vkCmdWriteAccelerationStructurePropertiesNVX( VkCommandBuffer commandBuffer, VkAccelerationStructureNVX accelerationStructure, VkQueryType queryType, VkQueryPool queryPool, uint32_t query  ) const
+  void vkCmdWriteAccelerationStructuresPropertiesNV( VkCommandBuffer commandBuffer, uint32_t accelerationStructureCount, const VkAccelerationStructureNV* pAccelerationStructures, VkQueryType queryType, VkQueryPool queryPool, uint32_t firstQuery  ) const
   {
-    return ::vkCmdWriteAccelerationStructurePropertiesNVX( commandBuffer, accelerationStructure, queryType, queryPool, query);
+    return ::vkCmdWriteAccelerationStructuresPropertiesNV( commandBuffer, accelerationStructureCount, pAccelerationStructures, queryType, queryPool, firstQuery);
   }
   void vkCmdWriteBufferMarkerAMD( VkCommandBuffer commandBuffer, VkPipelineStageFlagBits pipelineStage, VkBuffer dstBuffer, VkDeviceSize dstOffset, uint32_t marker  ) const
   {
@@ -1508,13 +1508,13 @@ public:
   {
     return ::vkCmdWriteTimestamp( commandBuffer, pipelineStage, queryPool, query);
   }
-  VkResult vkCompileDeferredNVX( VkDevice device, VkPipeline pipeline, uint32_t shader  ) const
+  VkResult vkCompileDeferredNV( VkDevice device, VkPipeline pipeline, uint32_t shader  ) const
   {
-    return ::vkCompileDeferredNVX( device, pipeline, shader);
+    return ::vkCompileDeferredNV( device, pipeline, shader);
   }
-  VkResult vkCreateAccelerationStructureNVX( VkDevice device, const VkAccelerationStructureCreateInfoNVX* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkAccelerationStructureNVX* pAccelerationStructure  ) const
+  VkResult vkCreateAccelerationStructureNV( VkDevice device, const VkAccelerationStructureCreateInfoNV* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkAccelerationStructureNV* pAccelerationStructure  ) const
   {
-    return ::vkCreateAccelerationStructureNVX( device, pCreateInfo, pAllocator, pAccelerationStructure);
+    return ::vkCreateAccelerationStructureNV( device, pCreateInfo, pAllocator, pAccelerationStructure);
   }
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
   VkResult vkCreateAndroidSurfaceKHR( VkInstance instance, const VkAndroidSurfaceCreateInfoKHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface  ) const
@@ -1624,12 +1624,6 @@ public:
     return ::vkCreateMacOSSurfaceMVK( instance, pCreateInfo, pAllocator, pSurface);
   }
 #endif /*VK_USE_PLATFORM_MACOS_MVK*/
-#ifdef VK_USE_PLATFORM_MIR_KHR
-  VkResult vkCreateMirSurfaceKHR( VkInstance instance, const VkMirSurfaceCreateInfoKHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface  ) const
-  {
-    return ::vkCreateMirSurfaceKHR( instance, pCreateInfo, pAllocator, pSurface);
-  }
-#endif /*VK_USE_PLATFORM_MIR_KHR*/
   VkResult vkCreateObjectTableNVX( VkDevice device, const VkObjectTableCreateInfoNVX* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkObjectTableNVX* pObjectTable  ) const
   {
     return ::vkCreateObjectTableNVX( device, pCreateInfo, pAllocator, pObjectTable);
@@ -1646,9 +1640,9 @@ public:
   {
     return ::vkCreateQueryPool( device, pCreateInfo, pAllocator, pQueryPool);
   }
-  VkResult vkCreateRaytracingPipelinesNVX( VkDevice device, VkPipelineCache pipelineCache, uint32_t createInfoCount, const VkRaytracingPipelineCreateInfoNVX* pCreateInfos, const VkAllocationCallbacks* pAllocator, VkPipeline* pPipelines  ) const
+  VkResult vkCreateRayTracingPipelinesNV( VkDevice device, VkPipelineCache pipelineCache, uint32_t createInfoCount, const VkRayTracingPipelineCreateInfoNV* pCreateInfos, const VkAllocationCallbacks* pAllocator, VkPipeline* pPipelines  ) const
   {
-    return ::vkCreateRaytracingPipelinesNVX( device, pipelineCache, createInfoCount, pCreateInfos, pAllocator, pPipelines);
+    return ::vkCreateRayTracingPipelinesNV( device, pipelineCache, createInfoCount, pCreateInfos, pAllocator, pPipelines);
   }
   VkResult vkCreateRenderPass( VkDevice device, const VkRenderPassCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkRenderPass* pRenderPass  ) const
   {
@@ -1732,9 +1726,9 @@ public:
   {
     return ::vkDebugReportMessageEXT( instance, flags, objectType, object, location, messageCode, pLayerPrefix, pMessage);
   }
-  void vkDestroyAccelerationStructureNVX( VkDevice device, VkAccelerationStructureNVX accelerationStructure, const VkAllocationCallbacks* pAllocator  ) const
+  void vkDestroyAccelerationStructureNV( VkDevice device, VkAccelerationStructureNV accelerationStructure, const VkAllocationCallbacks* pAllocator  ) const
   {
-    return ::vkDestroyAccelerationStructureNVX( device, accelerationStructure, pAllocator);
+    return ::vkDestroyAccelerationStructureNV( device, accelerationStructure, pAllocator);
   }
   void vkDestroyBuffer( VkDevice device, VkBuffer buffer, const VkAllocationCallbacks* pAllocator  ) const
   {
@@ -1920,17 +1914,13 @@ public:
   {
     return ::vkFreeMemory( device, memory, pAllocator);
   }
-  VkResult vkGetAccelerationStructureHandleNVX( VkDevice device, VkAccelerationStructureNVX accelerationStructure, size_t dataSize, void* pData  ) const
+  VkResult vkGetAccelerationStructureHandleNV( VkDevice device, VkAccelerationStructureNV accelerationStructure, size_t dataSize, void* pData  ) const
   {
-    return ::vkGetAccelerationStructureHandleNVX( device, accelerationStructure, dataSize, pData);
+    return ::vkGetAccelerationStructureHandleNV( device, accelerationStructure, dataSize, pData);
   }
-  void vkGetAccelerationStructureMemoryRequirementsNVX( VkDevice device, const VkAccelerationStructureMemoryRequirementsInfoNVX* pInfo, VkMemoryRequirements2KHR* pMemoryRequirements  ) const
+  void vkGetAccelerationStructureMemoryRequirementsNV( VkDevice device, const VkAccelerationStructureMemoryRequirementsInfoNV* pInfo, VkMemoryRequirements2KHR* pMemoryRequirements  ) const
   {
-    return ::vkGetAccelerationStructureMemoryRequirementsNVX( device, pInfo, pMemoryRequirements);
-  }
-  void vkGetAccelerationStructureScratchMemoryRequirementsNVX( VkDevice device, const VkAccelerationStructureMemoryRequirementsInfoNVX* pInfo, VkMemoryRequirements2KHR* pMemoryRequirements  ) const
-  {
-    return ::vkGetAccelerationStructureScratchMemoryRequirementsNVX( device, pInfo, pMemoryRequirements);
+    return ::vkGetAccelerationStructureMemoryRequirementsNV( device, pInfo, pMemoryRequirements);
   }
 #ifdef VK_USE_PLATFORM_ANDROID_ANDROID
   VkResult vkGetAndroidHardwareBufferPropertiesANDROID( VkDevice device, const struct AHardwareBuffer* buffer, VkAndroidHardwareBufferPropertiesANDROID* pProperties  ) const
@@ -2208,12 +2198,6 @@ public:
   {
     return ::vkGetPhysicalDeviceMemoryProperties2KHR( physicalDevice, pMemoryProperties);
   }
-#ifdef VK_USE_PLATFORM_MIR_KHR
-  VkBool32 vkGetPhysicalDeviceMirPresentationSupportKHR( VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, MirConnection* connection  ) const
-  {
-    return ::vkGetPhysicalDeviceMirPresentationSupportKHR( physicalDevice, queueFamilyIndex, connection);
-  }
-#endif /*VK_USE_PLATFORM_MIR_KHR*/
   void vkGetPhysicalDeviceMultisamplePropertiesEXT( VkPhysicalDevice physicalDevice, VkSampleCountFlagBits samples, VkMultisamplePropertiesEXT* pMultisampleProperties  ) const
   {
     return ::vkGetPhysicalDeviceMultisamplePropertiesEXT( physicalDevice, samples, pMultisampleProperties);
@@ -2328,9 +2312,9 @@ public:
     return ::vkGetRandROutputDisplayEXT( physicalDevice, dpy, rrOutput, pDisplay);
   }
 #endif /*VK_USE_PLATFORM_XLIB_XRANDR_NV*/
-  VkResult vkGetRaytracingShaderHandlesNVX( VkDevice device, VkPipeline pipeline, uint32_t firstGroup, uint32_t groupCount, size_t dataSize, void* pData  ) const
+  VkResult vkGetRayTracingShaderGroupHandlesNV( VkDevice device, VkPipeline pipeline, uint32_t firstGroup, uint32_t groupCount, size_t dataSize, void* pData  ) const
   {
-    return ::vkGetRaytracingShaderHandlesNVX( device, pipeline, firstGroup, groupCount, dataSize, pData);
+    return ::vkGetRayTracingShaderGroupHandlesNV( device, pipeline, firstGroup, groupCount, dataSize, pData);
   }
   VkResult vkGetRefreshCycleDurationGOOGLE( VkDevice device, VkSwapchainKHR swapchain, VkRefreshCycleDurationGOOGLE* pDisplayTimingProperties  ) const
   {
@@ -2814,16 +2798,6 @@ public:
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
   using AndroidSurfaceCreateFlagsKHR = Flags<AndroidSurfaceCreateFlagBitsKHR, VkAndroidSurfaceCreateFlagsKHR>;
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
-
-#ifdef VK_USE_PLATFORM_MIR_KHR
-  enum class MirSurfaceCreateFlagBitsKHR
-  {
-  };
-#endif /*VK_USE_PLATFORM_MIR_KHR*/
-
-#ifdef VK_USE_PLATFORM_MIR_KHR
-  using MirSurfaceCreateFlagsKHR = Flags<MirSurfaceCreateFlagBitsKHR, VkMirSurfaceCreateFlagsKHR>;
-#endif /*VK_USE_PLATFORM_MIR_KHR*/
 
 #ifdef VK_USE_PLATFORM_VI_NN
   enum class ViSurfaceCreateFlagBitsNN
@@ -4646,72 +4620,72 @@ public:
 
   static_assert( sizeof( ValidationCacheEXT ) == sizeof( VkValidationCacheEXT ), "handle and wrapper have different size!" );
 
-  class AccelerationStructureNVX
+  class AccelerationStructureNV
   {
   public:
-    VULKAN_HPP_CONSTEXPR AccelerationStructureNVX()
-      : m_accelerationStructureNVX(VK_NULL_HANDLE)
+    VULKAN_HPP_CONSTEXPR AccelerationStructureNV()
+      : m_accelerationStructureNV(VK_NULL_HANDLE)
     {}
 
-    VULKAN_HPP_CONSTEXPR AccelerationStructureNVX( std::nullptr_t )
-      : m_accelerationStructureNVX(VK_NULL_HANDLE)
+    VULKAN_HPP_CONSTEXPR AccelerationStructureNV( std::nullptr_t )
+      : m_accelerationStructureNV(VK_NULL_HANDLE)
     {}
 
-    VULKAN_HPP_TYPESAFE_EXPLICIT AccelerationStructureNVX( VkAccelerationStructureNVX accelerationStructureNVX )
-      : m_accelerationStructureNVX( accelerationStructureNVX )
+    VULKAN_HPP_TYPESAFE_EXPLICIT AccelerationStructureNV( VkAccelerationStructureNV accelerationStructureNV )
+      : m_accelerationStructureNV( accelerationStructureNV )
     {}
 
 #if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
-    AccelerationStructureNVX & operator=(VkAccelerationStructureNVX accelerationStructureNVX)
+    AccelerationStructureNV & operator=(VkAccelerationStructureNV accelerationStructureNV)
     {
-      m_accelerationStructureNVX = accelerationStructureNVX;
+      m_accelerationStructureNV = accelerationStructureNV;
       return *this; 
     }
 #endif
 
-    AccelerationStructureNVX & operator=( std::nullptr_t )
+    AccelerationStructureNV & operator=( std::nullptr_t )
     {
-      m_accelerationStructureNVX = VK_NULL_HANDLE;
+      m_accelerationStructureNV = VK_NULL_HANDLE;
       return *this;
     }
 
-    bool operator==( AccelerationStructureNVX const & rhs ) const
+    bool operator==( AccelerationStructureNV const & rhs ) const
     {
-      return m_accelerationStructureNVX == rhs.m_accelerationStructureNVX;
+      return m_accelerationStructureNV == rhs.m_accelerationStructureNV;
     }
 
-    bool operator!=(AccelerationStructureNVX const & rhs ) const
+    bool operator!=(AccelerationStructureNV const & rhs ) const
     {
-      return m_accelerationStructureNVX != rhs.m_accelerationStructureNVX;
+      return m_accelerationStructureNV != rhs.m_accelerationStructureNV;
     }
 
-    bool operator<(AccelerationStructureNVX const & rhs ) const
+    bool operator<(AccelerationStructureNV const & rhs ) const
     {
-      return m_accelerationStructureNVX < rhs.m_accelerationStructureNVX;
+      return m_accelerationStructureNV < rhs.m_accelerationStructureNV;
     }
 
 
 
-    VULKAN_HPP_TYPESAFE_EXPLICIT operator VkAccelerationStructureNVX() const
+    VULKAN_HPP_TYPESAFE_EXPLICIT operator VkAccelerationStructureNV() const
     {
-      return m_accelerationStructureNVX;
+      return m_accelerationStructureNV;
     }
 
     explicit operator bool() const
     {
-      return m_accelerationStructureNVX != VK_NULL_HANDLE;
+      return m_accelerationStructureNV != VK_NULL_HANDLE;
     }
 
     bool operator!() const
     {
-      return m_accelerationStructureNVX == VK_NULL_HANDLE;
+      return m_accelerationStructureNV == VK_NULL_HANDLE;
     }
 
   private:
-    VkAccelerationStructureNVX m_accelerationStructureNVX;
+    VkAccelerationStructureNV m_accelerationStructureNV;
   };
 
-  static_assert( sizeof( AccelerationStructureNVX ) == sizeof( VkAccelerationStructureNVX ), "handle and wrapper have different size!" );
+  static_assert( sizeof( AccelerationStructureNV ) == sizeof( VkAccelerationStructureNV ), "handle and wrapper have different size!" );
 
   class DisplayKHR
   {
@@ -8213,7 +8187,7 @@ public:
     eStorageBufferDynamic = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC,
     eInputAttachment = VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT,
     eInlineUniformBlockEXT = VK_DESCRIPTOR_TYPE_INLINE_UNIFORM_BLOCK_EXT,
-    eAccelerationStructureNVX = VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_NVX
+    eAccelerationStructureNV = VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_NV
   };
 
   struct DescriptorPoolSize
@@ -8378,7 +8352,7 @@ public:
     ePipelineStatistics = VK_QUERY_TYPE_PIPELINE_STATISTICS,
     eTimestamp = VK_QUERY_TYPE_TIMESTAMP,
     eTransformFeedbackStreamEXT = VK_QUERY_TYPE_TRANSFORM_FEEDBACK_STREAM_EXT,
-    eCompactedSizeNVX = VK_QUERY_TYPE_COMPACTED_SIZE_NVX
+    eAccelerationStructureCompactedSizeNV = VK_QUERY_TYPE_ACCELERATION_STRUCTURE_COMPACTED_SIZE_NV
   };
 
   enum class BorderColor
@@ -8395,7 +8369,7 @@ public:
   {
     eGraphics = VK_PIPELINE_BIND_POINT_GRAPHICS,
     eCompute = VK_PIPELINE_BIND_POINT_COMPUTE,
-    eRaytracingNVX = VK_PIPELINE_BIND_POINT_RAYTRACING_NVX
+    eRayTracingNV = VK_PIPELINE_BIND_POINT_RAY_TRACING_NV
   };
 
   enum class PipelineCacheHeaderVersion
@@ -8427,7 +8401,8 @@ public:
   enum class IndexType
   {
     eUint16 = VK_INDEX_TYPE_UINT16,
-    eUint32 = VK_INDEX_TYPE_UINT32
+    eUint32 = VK_INDEX_TYPE_UINT32,
+    eNoneNV = VK_INDEX_TYPE_NONE_NV
   };
 
   enum class Filter
@@ -9350,7 +9325,6 @@ public:
     eXlibSurfaceCreateInfoKHR = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR,
     eXcbSurfaceCreateInfoKHR = VK_STRUCTURE_TYPE_XCB_SURFACE_CREATE_INFO_KHR,
     eWaylandSurfaceCreateInfoKHR = VK_STRUCTURE_TYPE_WAYLAND_SURFACE_CREATE_INFO_KHR,
-    eMirSurfaceCreateInfoKHR = VK_STRUCTURE_TYPE_MIR_SURFACE_CREATE_INFO_KHR,
     eAndroidSurfaceCreateInfoKHR = VK_STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR,
     eWin32SurfaceCreateInfoKHR = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR,
     eDebugReportCallbackCreateInfoEXT = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT,
@@ -9470,7 +9444,7 @@ public:
     eDrmFormatModifierPropertiesEXT = VK_STRUCTURE_TYPE_DRM_FORMAT_MODIFIER_PROPERTIES_EXT,
     ePhysicalDeviceImageDrmFormatModifierInfoEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_DRM_FORMAT_MODIFIER_INFO_EXT,
     eImageDrmFormatModifierListCreateInfoEXT = VK_STRUCTURE_TYPE_IMAGE_DRM_FORMAT_MODIFIER_LIST_CREATE_INFO_EXT,
-    eImageExcplicitDrmFormatModifierCreateInfoEXT = VK_STRUCTURE_TYPE_IMAGE_EXCPLICIT_DRM_FORMAT_MODIFIER_CREATE_INFO_EXT,
+    eImageDrmFormatModifierExplicitCreateInfoEXT = VK_STRUCTURE_TYPE_IMAGE_DRM_FORMAT_MODIFIER_EXPLICIT_CREATE_INFO_EXT,
     eImageDrmFormatModifierPropertiesEXT = VK_STRUCTURE_TYPE_IMAGE_DRM_FORMAT_MODIFIER_PROPERTIES_EXT,
     eValidationCacheCreateInfoEXT = VK_STRUCTURE_TYPE_VALIDATION_CACHE_CREATE_INFO_EXT,
     eShaderModuleValidationCacheCreateInfoEXT = VK_STRUCTURE_TYPE_SHADER_MODULE_VALIDATION_CACHE_CREATE_INFO_EXT,
@@ -9483,17 +9457,17 @@ public:
     ePhysicalDeviceShadingRateImageFeaturesNV = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADING_RATE_IMAGE_FEATURES_NV,
     ePhysicalDeviceShadingRateImagePropertiesNV = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADING_RATE_IMAGE_PROPERTIES_NV,
     ePipelineViewportCoarseSampleOrderStateCreateInfoNV = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_COARSE_SAMPLE_ORDER_STATE_CREATE_INFO_NV,
-    eRaytracingPipelineCreateInfoNVX = VK_STRUCTURE_TYPE_RAYTRACING_PIPELINE_CREATE_INFO_NVX,
-    eAccelerationStructureCreateInfoNVX = VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_CREATE_INFO_NVX,
-    eGeometryInstanceNVX = VK_STRUCTURE_TYPE_GEOMETRY_INSTANCE_NVX,
-    eGeometryNVX = VK_STRUCTURE_TYPE_GEOMETRY_NVX,
-    eGeometryTrianglesNVX = VK_STRUCTURE_TYPE_GEOMETRY_TRIANGLES_NVX,
-    eGeometryAabbNVX = VK_STRUCTURE_TYPE_GEOMETRY_AABB_NVX,
-    eBindAccelerationStructureMemoryInfoNVX = VK_STRUCTURE_TYPE_BIND_ACCELERATION_STRUCTURE_MEMORY_INFO_NVX,
-    eDescriptorAccelerationStructureInfoNVX = VK_STRUCTURE_TYPE_DESCRIPTOR_ACCELERATION_STRUCTURE_INFO_NVX,
-    eAccelerationStructureMemoryRequirementsInfoNVX = VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_MEMORY_REQUIREMENTS_INFO_NVX,
-    ePhysicalDeviceRaytracingPropertiesNVX = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAYTRACING_PROPERTIES_NVX,
-    eHitShaderModuleCreateInfoNVX = VK_STRUCTURE_TYPE_HIT_SHADER_MODULE_CREATE_INFO_NVX,
+    eRayTracingPipelineCreateInfoNV = VK_STRUCTURE_TYPE_RAY_TRACING_PIPELINE_CREATE_INFO_NV,
+    eAccelerationStructureCreateInfoNV = VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_CREATE_INFO_NV,
+    eGeometryNV = VK_STRUCTURE_TYPE_GEOMETRY_NV,
+    eGeometryTrianglesNV = VK_STRUCTURE_TYPE_GEOMETRY_TRIANGLES_NV,
+    eGeometryAabbNV = VK_STRUCTURE_TYPE_GEOMETRY_AABB_NV,
+    eBindAccelerationStructureMemoryInfoNV = VK_STRUCTURE_TYPE_BIND_ACCELERATION_STRUCTURE_MEMORY_INFO_NV,
+    eWriteDescriptorSetAccelerationStructureNV = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET_ACCELERATION_STRUCTURE_NV,
+    eAccelerationStructureMemoryRequirementsInfoNV = VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_MEMORY_REQUIREMENTS_INFO_NV,
+    ePhysicalDeviceRayTracingPropertiesNV = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_PROPERTIES_NV,
+    eRayTracingShaderGroupCreateInfoNV = VK_STRUCTURE_TYPE_RAY_TRACING_SHADER_GROUP_CREATE_INFO_NV,
+    eAccelerationStructureInfoNV = VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_INFO_NV,
     ePhysicalDeviceRepresentativeFragmentTestFeaturesNV = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_REPRESENTATIVE_FRAGMENT_TEST_FEATURES_NV,
     ePipelineRepresentativeFragmentTestStateCreateInfoNV = VK_STRUCTURE_TYPE_PIPELINE_REPRESENTATIVE_FRAGMENT_TEST_STATE_CREATE_INFO_NV,
     eDeviceQueueGlobalPriorityCreateInfoEXT = VK_STRUCTURE_TYPE_DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO_EXT,
@@ -9504,6 +9478,7 @@ public:
     ePhysicalDeviceShaderAtomicInt64FeaturesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_ATOMIC_INT64_FEATURES_KHR,
     eCalibratedTimestampInfoEXT = VK_STRUCTURE_TYPE_CALIBRATED_TIMESTAMP_INFO_EXT,
     ePhysicalDeviceShaderCorePropertiesAMD = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_AMD,
+    eDeviceMemoryOverallocationCreateInfoAMD = VK_STRUCTURE_TYPE_DEVICE_MEMORY_OVERALLOCATION_CREATE_INFO_AMD,
     ePhysicalDeviceVertexAttributeDivisorPropertiesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES_EXT,
     ePipelineVertexInputDivisorStateCreateInfoEXT = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO_EXT,
     ePhysicalDeviceVertexAttributeDivisorFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES_EXT,
@@ -11983,88 +11958,6 @@ public:
   };
   static_assert( sizeof( AndroidSurfaceCreateInfoKHR ) == sizeof( VkAndroidSurfaceCreateInfoKHR ), "struct and wrapper have different size!" );
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
-
-#ifdef VK_USE_PLATFORM_MIR_KHR
-  struct MirSurfaceCreateInfoKHR
-  {
-    MirSurfaceCreateInfoKHR( MirSurfaceCreateFlagsKHR flags_ = MirSurfaceCreateFlagsKHR(),
-                             MirConnection* connection_ = nullptr,
-                             MirSurface* mirSurface_ = nullptr )
-      : flags( flags_ )
-      , connection( connection_ )
-      , mirSurface( mirSurface_ )
-    {
-    }
-
-    MirSurfaceCreateInfoKHR( VkMirSurfaceCreateInfoKHR const & rhs )
-    {
-      memcpy( this, &rhs, sizeof( MirSurfaceCreateInfoKHR ) );
-    }
-
-    MirSurfaceCreateInfoKHR& operator=( VkMirSurfaceCreateInfoKHR const & rhs )
-    {
-      memcpy( this, &rhs, sizeof( MirSurfaceCreateInfoKHR ) );
-      return *this;
-    }
-    MirSurfaceCreateInfoKHR& setPNext( const void* pNext_ )
-    {
-      pNext = pNext_;
-      return *this;
-    }
-
-    MirSurfaceCreateInfoKHR& setFlags( MirSurfaceCreateFlagsKHR flags_ )
-    {
-      flags = flags_;
-      return *this;
-    }
-
-    MirSurfaceCreateInfoKHR& setConnection( MirConnection* connection_ )
-    {
-      connection = connection_;
-      return *this;
-    }
-
-    MirSurfaceCreateInfoKHR& setMirSurface( MirSurface* mirSurface_ )
-    {
-      mirSurface = mirSurface_;
-      return *this;
-    }
-
-    operator VkMirSurfaceCreateInfoKHR const&() const
-    {
-      return *reinterpret_cast<const VkMirSurfaceCreateInfoKHR*>(this);
-    }
-
-    operator VkMirSurfaceCreateInfoKHR &()
-    {
-      return *reinterpret_cast<VkMirSurfaceCreateInfoKHR*>(this);
-    }
-
-    bool operator==( MirSurfaceCreateInfoKHR const& rhs ) const
-    {
-      return ( sType == rhs.sType )
-          && ( pNext == rhs.pNext )
-          && ( flags == rhs.flags )
-          && ( connection == rhs.connection )
-          && ( mirSurface == rhs.mirSurface );
-    }
-
-    bool operator!=( MirSurfaceCreateInfoKHR const& rhs ) const
-    {
-      return !operator==( rhs );
-    }
-
-  private:
-    StructureType sType = StructureType::eMirSurfaceCreateInfoKHR;
-
-  public:
-    const void* pNext = nullptr;
-    MirSurfaceCreateFlagsKHR flags;
-    MirConnection* connection;
-    MirSurface* mirSurface;
-  };
-  static_assert( sizeof( MirSurfaceCreateInfoKHR ) == sizeof( VkMirSurfaceCreateInfoKHR ), "struct and wrapper have different size!" );
-#endif /*VK_USE_PLATFORM_MIR_KHR*/
 
 #ifdef VK_USE_PLATFORM_VI_NN
   struct ViSurfaceCreateInfoNN
@@ -20340,19 +20233,19 @@ public:
   };
   static_assert( sizeof( PhysicalDeviceMeshShaderPropertiesNV ) == sizeof( VkPhysicalDeviceMeshShaderPropertiesNV ), "struct and wrapper have different size!" );
 
-  struct GeometryTrianglesNVX
+  struct GeometryTrianglesNV
   {
-    GeometryTrianglesNVX( Buffer vertexData_ = Buffer(),
-                          DeviceSize vertexOffset_ = 0,
-                          uint32_t vertexCount_ = 0,
-                          DeviceSize vertexStride_ = 0,
-                          Format vertexFormat_ = Format::eUndefined,
-                          Buffer indexData_ = Buffer(),
-                          DeviceSize indexOffset_ = 0,
-                          uint32_t indexCount_ = 0,
-                          IndexType indexType_ = IndexType::eUint16,
-                          Buffer transformData_ = Buffer(),
-                          DeviceSize transformOffset_ = 0 )
+    GeometryTrianglesNV( Buffer vertexData_ = Buffer(),
+                         DeviceSize vertexOffset_ = 0,
+                         uint32_t vertexCount_ = 0,
+                         DeviceSize vertexStride_ = 0,
+                         Format vertexFormat_ = Format::eUndefined,
+                         Buffer indexData_ = Buffer(),
+                         DeviceSize indexOffset_ = 0,
+                         uint32_t indexCount_ = 0,
+                         IndexType indexType_ = IndexType::eUint16,
+                         Buffer transformData_ = Buffer(),
+                         DeviceSize transformOffset_ = 0 )
       : vertexData( vertexData_ )
       , vertexOffset( vertexOffset_ )
       , vertexCount( vertexCount_ )
@@ -20367,99 +20260,99 @@ public:
     {
     }
 
-    GeometryTrianglesNVX( VkGeometryTrianglesNVX const & rhs )
+    GeometryTrianglesNV( VkGeometryTrianglesNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( GeometryTrianglesNVX ) );
+      memcpy( this, &rhs, sizeof( GeometryTrianglesNV ) );
     }
 
-    GeometryTrianglesNVX& operator=( VkGeometryTrianglesNVX const & rhs )
+    GeometryTrianglesNV& operator=( VkGeometryTrianglesNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( GeometryTrianglesNVX ) );
+      memcpy( this, &rhs, sizeof( GeometryTrianglesNV ) );
       return *this;
     }
-    GeometryTrianglesNVX& setPNext( const void* pNext_ )
+    GeometryTrianglesNV& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
       return *this;
     }
 
-    GeometryTrianglesNVX& setVertexData( Buffer vertexData_ )
+    GeometryTrianglesNV& setVertexData( Buffer vertexData_ )
     {
       vertexData = vertexData_;
       return *this;
     }
 
-    GeometryTrianglesNVX& setVertexOffset( DeviceSize vertexOffset_ )
+    GeometryTrianglesNV& setVertexOffset( DeviceSize vertexOffset_ )
     {
       vertexOffset = vertexOffset_;
       return *this;
     }
 
-    GeometryTrianglesNVX& setVertexCount( uint32_t vertexCount_ )
+    GeometryTrianglesNV& setVertexCount( uint32_t vertexCount_ )
     {
       vertexCount = vertexCount_;
       return *this;
     }
 
-    GeometryTrianglesNVX& setVertexStride( DeviceSize vertexStride_ )
+    GeometryTrianglesNV& setVertexStride( DeviceSize vertexStride_ )
     {
       vertexStride = vertexStride_;
       return *this;
     }
 
-    GeometryTrianglesNVX& setVertexFormat( Format vertexFormat_ )
+    GeometryTrianglesNV& setVertexFormat( Format vertexFormat_ )
     {
       vertexFormat = vertexFormat_;
       return *this;
     }
 
-    GeometryTrianglesNVX& setIndexData( Buffer indexData_ )
+    GeometryTrianglesNV& setIndexData( Buffer indexData_ )
     {
       indexData = indexData_;
       return *this;
     }
 
-    GeometryTrianglesNVX& setIndexOffset( DeviceSize indexOffset_ )
+    GeometryTrianglesNV& setIndexOffset( DeviceSize indexOffset_ )
     {
       indexOffset = indexOffset_;
       return *this;
     }
 
-    GeometryTrianglesNVX& setIndexCount( uint32_t indexCount_ )
+    GeometryTrianglesNV& setIndexCount( uint32_t indexCount_ )
     {
       indexCount = indexCount_;
       return *this;
     }
 
-    GeometryTrianglesNVX& setIndexType( IndexType indexType_ )
+    GeometryTrianglesNV& setIndexType( IndexType indexType_ )
     {
       indexType = indexType_;
       return *this;
     }
 
-    GeometryTrianglesNVX& setTransformData( Buffer transformData_ )
+    GeometryTrianglesNV& setTransformData( Buffer transformData_ )
     {
       transformData = transformData_;
       return *this;
     }
 
-    GeometryTrianglesNVX& setTransformOffset( DeviceSize transformOffset_ )
+    GeometryTrianglesNV& setTransformOffset( DeviceSize transformOffset_ )
     {
       transformOffset = transformOffset_;
       return *this;
     }
 
-    operator VkGeometryTrianglesNVX const&() const
+    operator VkGeometryTrianglesNV const&() const
     {
-      return *reinterpret_cast<const VkGeometryTrianglesNVX*>(this);
+      return *reinterpret_cast<const VkGeometryTrianglesNV*>(this);
     }
 
-    operator VkGeometryTrianglesNVX &()
+    operator VkGeometryTrianglesNV &()
     {
-      return *reinterpret_cast<VkGeometryTrianglesNVX*>(this);
+      return *reinterpret_cast<VkGeometryTrianglesNV*>(this);
     }
 
-    bool operator==( GeometryTrianglesNVX const& rhs ) const
+    bool operator==( GeometryTrianglesNV const& rhs ) const
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
@@ -20476,13 +20369,13 @@ public:
           && ( transformOffset == rhs.transformOffset );
     }
 
-    bool operator!=( GeometryTrianglesNVX const& rhs ) const
+    bool operator!=( GeometryTrianglesNV const& rhs ) const
     {
       return !operator==( rhs );
     }
 
   private:
-    StructureType sType = StructureType::eGeometryTrianglesNVX;
+    StructureType sType = StructureType::eGeometryTrianglesNV;
 
   public:
     const void* pNext = nullptr;
@@ -20498,14 +20391,14 @@ public:
     Buffer transformData;
     DeviceSize transformOffset;
   };
-  static_assert( sizeof( GeometryTrianglesNVX ) == sizeof( VkGeometryTrianglesNVX ), "struct and wrapper have different size!" );
+  static_assert( sizeof( GeometryTrianglesNV ) == sizeof( VkGeometryTrianglesNV ), "struct and wrapper have different size!" );
 
-  struct GeometryAABBNVX
+  struct GeometryAABBNV
   {
-    GeometryAABBNVX( Buffer aabbData_ = Buffer(),
-                     uint32_t numAABBs_ = 0,
-                     uint32_t stride_ = 0,
-                     DeviceSize offset_ = 0 )
+    GeometryAABBNV( Buffer aabbData_ = Buffer(),
+                    uint32_t numAABBs_ = 0,
+                    uint32_t stride_ = 0,
+                    DeviceSize offset_ = 0 )
       : aabbData( aabbData_ )
       , numAABBs( numAABBs_ )
       , stride( stride_ )
@@ -20513,57 +20406,57 @@ public:
     {
     }
 
-    GeometryAABBNVX( VkGeometryAABBNVX const & rhs )
+    GeometryAABBNV( VkGeometryAABBNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( GeometryAABBNVX ) );
+      memcpy( this, &rhs, sizeof( GeometryAABBNV ) );
     }
 
-    GeometryAABBNVX& operator=( VkGeometryAABBNVX const & rhs )
+    GeometryAABBNV& operator=( VkGeometryAABBNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( GeometryAABBNVX ) );
+      memcpy( this, &rhs, sizeof( GeometryAABBNV ) );
       return *this;
     }
-    GeometryAABBNVX& setPNext( const void* pNext_ )
+    GeometryAABBNV& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
       return *this;
     }
 
-    GeometryAABBNVX& setAabbData( Buffer aabbData_ )
+    GeometryAABBNV& setAabbData( Buffer aabbData_ )
     {
       aabbData = aabbData_;
       return *this;
     }
 
-    GeometryAABBNVX& setNumAABBs( uint32_t numAABBs_ )
+    GeometryAABBNV& setNumAABBs( uint32_t numAABBs_ )
     {
       numAABBs = numAABBs_;
       return *this;
     }
 
-    GeometryAABBNVX& setStride( uint32_t stride_ )
+    GeometryAABBNV& setStride( uint32_t stride_ )
     {
       stride = stride_;
       return *this;
     }
 
-    GeometryAABBNVX& setOffset( DeviceSize offset_ )
+    GeometryAABBNV& setOffset( DeviceSize offset_ )
     {
       offset = offset_;
       return *this;
     }
 
-    operator VkGeometryAABBNVX const&() const
+    operator VkGeometryAABBNV const&() const
     {
-      return *reinterpret_cast<const VkGeometryAABBNVX*>(this);
+      return *reinterpret_cast<const VkGeometryAABBNV*>(this);
     }
 
-    operator VkGeometryAABBNVX &()
+    operator VkGeometryAABBNV &()
     {
-      return *reinterpret_cast<VkGeometryAABBNVX*>(this);
+      return *reinterpret_cast<VkGeometryAABBNV*>(this);
     }
 
-    bool operator==( GeometryAABBNVX const& rhs ) const
+    bool operator==( GeometryAABBNV const& rhs ) const
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
@@ -20573,13 +20466,13 @@ public:
           && ( offset == rhs.offset );
     }
 
-    bool operator!=( GeometryAABBNVX const& rhs ) const
+    bool operator!=( GeometryAABBNV const& rhs ) const
     {
       return !operator==( rhs );
     }
 
   private:
-    StructureType sType = StructureType::eGeometryAabbNVX;
+    StructureType sType = StructureType::eGeometryAabbNV;
 
   public:
     const void* pNext = nullptr;
@@ -20588,72 +20481,72 @@ public:
     uint32_t stride;
     DeviceSize offset;
   };
-  static_assert( sizeof( GeometryAABBNVX ) == sizeof( VkGeometryAABBNVX ), "struct and wrapper have different size!" );
+  static_assert( sizeof( GeometryAABBNV ) == sizeof( VkGeometryAABBNV ), "struct and wrapper have different size!" );
 
-  struct GeometryDataNVX
+  struct GeometryDataNV
   {
-    GeometryDataNVX( GeometryTrianglesNVX triangles_ = GeometryTrianglesNVX(),
-                     GeometryAABBNVX aabbs_ = GeometryAABBNVX() )
+    GeometryDataNV( GeometryTrianglesNV triangles_ = GeometryTrianglesNV(),
+                    GeometryAABBNV aabbs_ = GeometryAABBNV() )
       : triangles( triangles_ )
       , aabbs( aabbs_ )
     {
     }
 
-    GeometryDataNVX( VkGeometryDataNVX const & rhs )
+    GeometryDataNV( VkGeometryDataNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( GeometryDataNVX ) );
+      memcpy( this, &rhs, sizeof( GeometryDataNV ) );
     }
 
-    GeometryDataNVX& operator=( VkGeometryDataNVX const & rhs )
+    GeometryDataNV& operator=( VkGeometryDataNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( GeometryDataNVX ) );
+      memcpy( this, &rhs, sizeof( GeometryDataNV ) );
       return *this;
     }
-    GeometryDataNVX& setTriangles( GeometryTrianglesNVX triangles_ )
+    GeometryDataNV& setTriangles( GeometryTrianglesNV triangles_ )
     {
       triangles = triangles_;
       return *this;
     }
 
-    GeometryDataNVX& setAabbs( GeometryAABBNVX aabbs_ )
+    GeometryDataNV& setAabbs( GeometryAABBNV aabbs_ )
     {
       aabbs = aabbs_;
       return *this;
     }
 
-    operator VkGeometryDataNVX const&() const
+    operator VkGeometryDataNV const&() const
     {
-      return *reinterpret_cast<const VkGeometryDataNVX*>(this);
+      return *reinterpret_cast<const VkGeometryDataNV*>(this);
     }
 
-    operator VkGeometryDataNVX &()
+    operator VkGeometryDataNV &()
     {
-      return *reinterpret_cast<VkGeometryDataNVX*>(this);
+      return *reinterpret_cast<VkGeometryDataNV*>(this);
     }
 
-    bool operator==( GeometryDataNVX const& rhs ) const
+    bool operator==( GeometryDataNV const& rhs ) const
     {
       return ( triangles == rhs.triangles )
           && ( aabbs == rhs.aabbs );
     }
 
-    bool operator!=( GeometryDataNVX const& rhs ) const
+    bool operator!=( GeometryDataNV const& rhs ) const
     {
       return !operator==( rhs );
     }
 
-    GeometryTrianglesNVX triangles;
-    GeometryAABBNVX aabbs;
+    GeometryTrianglesNV triangles;
+    GeometryAABBNV aabbs;
   };
-  static_assert( sizeof( GeometryDataNVX ) == sizeof( VkGeometryDataNVX ), "struct and wrapper have different size!" );
+  static_assert( sizeof( GeometryDataNV ) == sizeof( VkGeometryDataNV ), "struct and wrapper have different size!" );
 
-  struct BindAccelerationStructureMemoryInfoNVX
+  struct BindAccelerationStructureMemoryInfoNV
   {
-    BindAccelerationStructureMemoryInfoNVX( AccelerationStructureNVX accelerationStructure_ = AccelerationStructureNVX(),
-                                            DeviceMemory memory_ = DeviceMemory(),
-                                            DeviceSize memoryOffset_ = 0,
-                                            uint32_t deviceIndexCount_ = 0,
-                                            const uint32_t* pDeviceIndices_ = nullptr )
+    BindAccelerationStructureMemoryInfoNV( AccelerationStructureNV accelerationStructure_ = AccelerationStructureNV(),
+                                           DeviceMemory memory_ = DeviceMemory(),
+                                           DeviceSize memoryOffset_ = 0,
+                                           uint32_t deviceIndexCount_ = 0,
+                                           const uint32_t* pDeviceIndices_ = nullptr )
       : accelerationStructure( accelerationStructure_ )
       , memory( memory_ )
       , memoryOffset( memoryOffset_ )
@@ -20662,63 +20555,63 @@ public:
     {
     }
 
-    BindAccelerationStructureMemoryInfoNVX( VkBindAccelerationStructureMemoryInfoNVX const & rhs )
+    BindAccelerationStructureMemoryInfoNV( VkBindAccelerationStructureMemoryInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( BindAccelerationStructureMemoryInfoNVX ) );
+      memcpy( this, &rhs, sizeof( BindAccelerationStructureMemoryInfoNV ) );
     }
 
-    BindAccelerationStructureMemoryInfoNVX& operator=( VkBindAccelerationStructureMemoryInfoNVX const & rhs )
+    BindAccelerationStructureMemoryInfoNV& operator=( VkBindAccelerationStructureMemoryInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( BindAccelerationStructureMemoryInfoNVX ) );
+      memcpy( this, &rhs, sizeof( BindAccelerationStructureMemoryInfoNV ) );
       return *this;
     }
-    BindAccelerationStructureMemoryInfoNVX& setPNext( const void* pNext_ )
+    BindAccelerationStructureMemoryInfoNV& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
       return *this;
     }
 
-    BindAccelerationStructureMemoryInfoNVX& setAccelerationStructure( AccelerationStructureNVX accelerationStructure_ )
+    BindAccelerationStructureMemoryInfoNV& setAccelerationStructure( AccelerationStructureNV accelerationStructure_ )
     {
       accelerationStructure = accelerationStructure_;
       return *this;
     }
 
-    BindAccelerationStructureMemoryInfoNVX& setMemory( DeviceMemory memory_ )
+    BindAccelerationStructureMemoryInfoNV& setMemory( DeviceMemory memory_ )
     {
       memory = memory_;
       return *this;
     }
 
-    BindAccelerationStructureMemoryInfoNVX& setMemoryOffset( DeviceSize memoryOffset_ )
+    BindAccelerationStructureMemoryInfoNV& setMemoryOffset( DeviceSize memoryOffset_ )
     {
       memoryOffset = memoryOffset_;
       return *this;
     }
 
-    BindAccelerationStructureMemoryInfoNVX& setDeviceIndexCount( uint32_t deviceIndexCount_ )
+    BindAccelerationStructureMemoryInfoNV& setDeviceIndexCount( uint32_t deviceIndexCount_ )
     {
       deviceIndexCount = deviceIndexCount_;
       return *this;
     }
 
-    BindAccelerationStructureMemoryInfoNVX& setPDeviceIndices( const uint32_t* pDeviceIndices_ )
+    BindAccelerationStructureMemoryInfoNV& setPDeviceIndices( const uint32_t* pDeviceIndices_ )
     {
       pDeviceIndices = pDeviceIndices_;
       return *this;
     }
 
-    operator VkBindAccelerationStructureMemoryInfoNVX const&() const
+    operator VkBindAccelerationStructureMemoryInfoNV const&() const
     {
-      return *reinterpret_cast<const VkBindAccelerationStructureMemoryInfoNVX*>(this);
+      return *reinterpret_cast<const VkBindAccelerationStructureMemoryInfoNV*>(this);
     }
 
-    operator VkBindAccelerationStructureMemoryInfoNVX &()
+    operator VkBindAccelerationStructureMemoryInfoNV &()
     {
-      return *reinterpret_cast<VkBindAccelerationStructureMemoryInfoNVX*>(this);
+      return *reinterpret_cast<VkBindAccelerationStructureMemoryInfoNV*>(this);
     }
 
-    bool operator==( BindAccelerationStructureMemoryInfoNVX const& rhs ) const
+    bool operator==( BindAccelerationStructureMemoryInfoNV const& rhs ) const
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
@@ -20729,72 +20622,72 @@ public:
           && ( pDeviceIndices == rhs.pDeviceIndices );
     }
 
-    bool operator!=( BindAccelerationStructureMemoryInfoNVX const& rhs ) const
+    bool operator!=( BindAccelerationStructureMemoryInfoNV const& rhs ) const
     {
       return !operator==( rhs );
     }
 
   private:
-    StructureType sType = StructureType::eBindAccelerationStructureMemoryInfoNVX;
+    StructureType sType = StructureType::eBindAccelerationStructureMemoryInfoNV;
 
   public:
     const void* pNext = nullptr;
-    AccelerationStructureNVX accelerationStructure;
+    AccelerationStructureNV accelerationStructure;
     DeviceMemory memory;
     DeviceSize memoryOffset;
     uint32_t deviceIndexCount;
     const uint32_t* pDeviceIndices;
   };
-  static_assert( sizeof( BindAccelerationStructureMemoryInfoNVX ) == sizeof( VkBindAccelerationStructureMemoryInfoNVX ), "struct and wrapper have different size!" );
+  static_assert( sizeof( BindAccelerationStructureMemoryInfoNV ) == sizeof( VkBindAccelerationStructureMemoryInfoNV ), "struct and wrapper have different size!" );
 
-  struct DescriptorAccelerationStructureInfoNVX
+  struct WriteDescriptorSetAccelerationStructureNV
   {
-    DescriptorAccelerationStructureInfoNVX( uint32_t accelerationStructureCount_ = 0,
-                                            const AccelerationStructureNVX* pAccelerationStructures_ = nullptr )
+    WriteDescriptorSetAccelerationStructureNV( uint32_t accelerationStructureCount_ = 0,
+                                               const AccelerationStructureNV* pAccelerationStructures_ = nullptr )
       : accelerationStructureCount( accelerationStructureCount_ )
       , pAccelerationStructures( pAccelerationStructures_ )
     {
     }
 
-    DescriptorAccelerationStructureInfoNVX( VkDescriptorAccelerationStructureInfoNVX const & rhs )
+    WriteDescriptorSetAccelerationStructureNV( VkWriteDescriptorSetAccelerationStructureNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DescriptorAccelerationStructureInfoNVX ) );
+      memcpy( this, &rhs, sizeof( WriteDescriptorSetAccelerationStructureNV ) );
     }
 
-    DescriptorAccelerationStructureInfoNVX& operator=( VkDescriptorAccelerationStructureInfoNVX const & rhs )
+    WriteDescriptorSetAccelerationStructureNV& operator=( VkWriteDescriptorSetAccelerationStructureNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DescriptorAccelerationStructureInfoNVX ) );
+      memcpy( this, &rhs, sizeof( WriteDescriptorSetAccelerationStructureNV ) );
       return *this;
     }
-    DescriptorAccelerationStructureInfoNVX& setPNext( const void* pNext_ )
+    WriteDescriptorSetAccelerationStructureNV& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
       return *this;
     }
 
-    DescriptorAccelerationStructureInfoNVX& setAccelerationStructureCount( uint32_t accelerationStructureCount_ )
+    WriteDescriptorSetAccelerationStructureNV& setAccelerationStructureCount( uint32_t accelerationStructureCount_ )
     {
       accelerationStructureCount = accelerationStructureCount_;
       return *this;
     }
 
-    DescriptorAccelerationStructureInfoNVX& setPAccelerationStructures( const AccelerationStructureNVX* pAccelerationStructures_ )
+    WriteDescriptorSetAccelerationStructureNV& setPAccelerationStructures( const AccelerationStructureNV* pAccelerationStructures_ )
     {
       pAccelerationStructures = pAccelerationStructures_;
       return *this;
     }
 
-    operator VkDescriptorAccelerationStructureInfoNVX const&() const
+    operator VkWriteDescriptorSetAccelerationStructureNV const&() const
     {
-      return *reinterpret_cast<const VkDescriptorAccelerationStructureInfoNVX*>(this);
+      return *reinterpret_cast<const VkWriteDescriptorSetAccelerationStructureNV*>(this);
     }
 
-    operator VkDescriptorAccelerationStructureInfoNVX &()
+    operator VkWriteDescriptorSetAccelerationStructureNV &()
     {
-      return *reinterpret_cast<VkDescriptorAccelerationStructureInfoNVX*>(this);
+      return *reinterpret_cast<VkWriteDescriptorSetAccelerationStructureNV*>(this);
     }
 
-    bool operator==( DescriptorAccelerationStructureInfoNVX const& rhs ) const
+    bool operator==( WriteDescriptorSetAccelerationStructureNV const& rhs ) const
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
@@ -20802,160 +20695,150 @@ public:
           && ( pAccelerationStructures == rhs.pAccelerationStructures );
     }
 
-    bool operator!=( DescriptorAccelerationStructureInfoNVX const& rhs ) const
+    bool operator!=( WriteDescriptorSetAccelerationStructureNV const& rhs ) const
     {
       return !operator==( rhs );
     }
 
   private:
-    StructureType sType = StructureType::eDescriptorAccelerationStructureInfoNVX;
+    StructureType sType = StructureType::eWriteDescriptorSetAccelerationStructureNV;
 
   public:
     const void* pNext = nullptr;
     uint32_t accelerationStructureCount;
-    const AccelerationStructureNVX* pAccelerationStructures;
+    const AccelerationStructureNV* pAccelerationStructures;
   };
-  static_assert( sizeof( DescriptorAccelerationStructureInfoNVX ) == sizeof( VkDescriptorAccelerationStructureInfoNVX ), "struct and wrapper have different size!" );
+  static_assert( sizeof( WriteDescriptorSetAccelerationStructureNV ) == sizeof( VkWriteDescriptorSetAccelerationStructureNV ), "struct and wrapper have different size!" );
 
-  struct AccelerationStructureMemoryRequirementsInfoNVX
+  struct PhysicalDeviceRayTracingPropertiesNV
   {
-    AccelerationStructureMemoryRequirementsInfoNVX( AccelerationStructureNVX accelerationStructure_ = AccelerationStructureNVX() )
-      : accelerationStructure( accelerationStructure_ )
-    {
-    }
-
-    AccelerationStructureMemoryRequirementsInfoNVX( VkAccelerationStructureMemoryRequirementsInfoNVX const & rhs )
-    {
-      memcpy( this, &rhs, sizeof( AccelerationStructureMemoryRequirementsInfoNVX ) );
-    }
-
-    AccelerationStructureMemoryRequirementsInfoNVX& operator=( VkAccelerationStructureMemoryRequirementsInfoNVX const & rhs )
-    {
-      memcpy( this, &rhs, sizeof( AccelerationStructureMemoryRequirementsInfoNVX ) );
-      return *this;
-    }
-    AccelerationStructureMemoryRequirementsInfoNVX& setPNext( const void* pNext_ )
-    {
-      pNext = pNext_;
-      return *this;
-    }
-
-    AccelerationStructureMemoryRequirementsInfoNVX& setAccelerationStructure( AccelerationStructureNVX accelerationStructure_ )
-    {
-      accelerationStructure = accelerationStructure_;
-      return *this;
-    }
-
-    operator VkAccelerationStructureMemoryRequirementsInfoNVX const&() const
-    {
-      return *reinterpret_cast<const VkAccelerationStructureMemoryRequirementsInfoNVX*>(this);
-    }
-
-    operator VkAccelerationStructureMemoryRequirementsInfoNVX &()
-    {
-      return *reinterpret_cast<VkAccelerationStructureMemoryRequirementsInfoNVX*>(this);
-    }
-
-    bool operator==( AccelerationStructureMemoryRequirementsInfoNVX const& rhs ) const
-    {
-      return ( sType == rhs.sType )
-          && ( pNext == rhs.pNext )
-          && ( accelerationStructure == rhs.accelerationStructure );
-    }
-
-    bool operator!=( AccelerationStructureMemoryRequirementsInfoNVX const& rhs ) const
-    {
-      return !operator==( rhs );
-    }
-
-  private:
-    StructureType sType = StructureType::eAccelerationStructureMemoryRequirementsInfoNVX;
-
-  public:
-    const void* pNext = nullptr;
-    AccelerationStructureNVX accelerationStructure;
-  };
-  static_assert( sizeof( AccelerationStructureMemoryRequirementsInfoNVX ) == sizeof( VkAccelerationStructureMemoryRequirementsInfoNVX ), "struct and wrapper have different size!" );
-
-  struct PhysicalDeviceRaytracingPropertiesNVX
-  {
-    PhysicalDeviceRaytracingPropertiesNVX( uint32_t shaderHeaderSize_ = 0,
-                                           uint32_t maxRecursionDepth_ = 0,
-                                           uint32_t maxGeometryCount_ = 0 )
-      : shaderHeaderSize( shaderHeaderSize_ )
+    PhysicalDeviceRayTracingPropertiesNV( uint32_t shaderGroupHandleSize_ = 0,
+                                          uint32_t maxRecursionDepth_ = 0,
+                                          uint32_t maxShaderGroupStride_ = 0,
+                                          uint32_t shaderGroupBaseAlignment_ = 0,
+                                          uint64_t maxGeometryCount_ = 0,
+                                          uint64_t maxInstanceCount_ = 0,
+                                          uint64_t maxTriangleCount_ = 0,
+                                          uint32_t maxDescriptorSetAccelerationStructures_ = 0 )
+      : shaderGroupHandleSize( shaderGroupHandleSize_ )
       , maxRecursionDepth( maxRecursionDepth_ )
+      , maxShaderGroupStride( maxShaderGroupStride_ )
+      , shaderGroupBaseAlignment( shaderGroupBaseAlignment_ )
       , maxGeometryCount( maxGeometryCount_ )
+      , maxInstanceCount( maxInstanceCount_ )
+      , maxTriangleCount( maxTriangleCount_ )
+      , maxDescriptorSetAccelerationStructures( maxDescriptorSetAccelerationStructures_ )
     {
     }
 
-    PhysicalDeviceRaytracingPropertiesNVX( VkPhysicalDeviceRaytracingPropertiesNVX const & rhs )
+    PhysicalDeviceRayTracingPropertiesNV( VkPhysicalDeviceRayTracingPropertiesNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceRaytracingPropertiesNVX ) );
+      memcpy( this, &rhs, sizeof( PhysicalDeviceRayTracingPropertiesNV ) );
     }
 
-    PhysicalDeviceRaytracingPropertiesNVX& operator=( VkPhysicalDeviceRaytracingPropertiesNVX const & rhs )
+    PhysicalDeviceRayTracingPropertiesNV& operator=( VkPhysicalDeviceRayTracingPropertiesNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceRaytracingPropertiesNVX ) );
+      memcpy( this, &rhs, sizeof( PhysicalDeviceRayTracingPropertiesNV ) );
       return *this;
     }
-    PhysicalDeviceRaytracingPropertiesNVX& setPNext( void* pNext_ )
+    PhysicalDeviceRayTracingPropertiesNV& setPNext( void* pNext_ )
     {
       pNext = pNext_;
       return *this;
     }
 
-    PhysicalDeviceRaytracingPropertiesNVX& setShaderHeaderSize( uint32_t shaderHeaderSize_ )
+    PhysicalDeviceRayTracingPropertiesNV& setShaderGroupHandleSize( uint32_t shaderGroupHandleSize_ )
     {
-      shaderHeaderSize = shaderHeaderSize_;
+      shaderGroupHandleSize = shaderGroupHandleSize_;
       return *this;
     }
 
-    PhysicalDeviceRaytracingPropertiesNVX& setMaxRecursionDepth( uint32_t maxRecursionDepth_ )
+    PhysicalDeviceRayTracingPropertiesNV& setMaxRecursionDepth( uint32_t maxRecursionDepth_ )
     {
       maxRecursionDepth = maxRecursionDepth_;
       return *this;
     }
 
-    PhysicalDeviceRaytracingPropertiesNVX& setMaxGeometryCount( uint32_t maxGeometryCount_ )
+    PhysicalDeviceRayTracingPropertiesNV& setMaxShaderGroupStride( uint32_t maxShaderGroupStride_ )
+    {
+      maxShaderGroupStride = maxShaderGroupStride_;
+      return *this;
+    }
+
+    PhysicalDeviceRayTracingPropertiesNV& setShaderGroupBaseAlignment( uint32_t shaderGroupBaseAlignment_ )
+    {
+      shaderGroupBaseAlignment = shaderGroupBaseAlignment_;
+      return *this;
+    }
+
+    PhysicalDeviceRayTracingPropertiesNV& setMaxGeometryCount( uint64_t maxGeometryCount_ )
     {
       maxGeometryCount = maxGeometryCount_;
       return *this;
     }
 
-    operator VkPhysicalDeviceRaytracingPropertiesNVX const&() const
+    PhysicalDeviceRayTracingPropertiesNV& setMaxInstanceCount( uint64_t maxInstanceCount_ )
     {
-      return *reinterpret_cast<const VkPhysicalDeviceRaytracingPropertiesNVX*>(this);
+      maxInstanceCount = maxInstanceCount_;
+      return *this;
     }
 
-    operator VkPhysicalDeviceRaytracingPropertiesNVX &()
+    PhysicalDeviceRayTracingPropertiesNV& setMaxTriangleCount( uint64_t maxTriangleCount_ )
     {
-      return *reinterpret_cast<VkPhysicalDeviceRaytracingPropertiesNVX*>(this);
+      maxTriangleCount = maxTriangleCount_;
+      return *this;
     }
 
-    bool operator==( PhysicalDeviceRaytracingPropertiesNVX const& rhs ) const
+    PhysicalDeviceRayTracingPropertiesNV& setMaxDescriptorSetAccelerationStructures( uint32_t maxDescriptorSetAccelerationStructures_ )
+    {
+      maxDescriptorSetAccelerationStructures = maxDescriptorSetAccelerationStructures_;
+      return *this;
+    }
+
+    operator VkPhysicalDeviceRayTracingPropertiesNV const&() const
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceRayTracingPropertiesNV*>(this);
+    }
+
+    operator VkPhysicalDeviceRayTracingPropertiesNV &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceRayTracingPropertiesNV*>(this);
+    }
+
+    bool operator==( PhysicalDeviceRayTracingPropertiesNV const& rhs ) const
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
-          && ( shaderHeaderSize == rhs.shaderHeaderSize )
+          && ( shaderGroupHandleSize == rhs.shaderGroupHandleSize )
           && ( maxRecursionDepth == rhs.maxRecursionDepth )
-          && ( maxGeometryCount == rhs.maxGeometryCount );
+          && ( maxShaderGroupStride == rhs.maxShaderGroupStride )
+          && ( shaderGroupBaseAlignment == rhs.shaderGroupBaseAlignment )
+          && ( maxGeometryCount == rhs.maxGeometryCount )
+          && ( maxInstanceCount == rhs.maxInstanceCount )
+          && ( maxTriangleCount == rhs.maxTriangleCount )
+          && ( maxDescriptorSetAccelerationStructures == rhs.maxDescriptorSetAccelerationStructures );
     }
 
-    bool operator!=( PhysicalDeviceRaytracingPropertiesNVX const& rhs ) const
+    bool operator!=( PhysicalDeviceRayTracingPropertiesNV const& rhs ) const
     {
       return !operator==( rhs );
     }
 
   private:
-    StructureType sType = StructureType::ePhysicalDeviceRaytracingPropertiesNVX;
+    StructureType sType = StructureType::ePhysicalDeviceRayTracingPropertiesNV;
 
   public:
     void* pNext = nullptr;
-    uint32_t shaderHeaderSize;
+    uint32_t shaderGroupHandleSize;
     uint32_t maxRecursionDepth;
-    uint32_t maxGeometryCount;
+    uint32_t maxShaderGroupStride;
+    uint32_t shaderGroupBaseAlignment;
+    uint64_t maxGeometryCount;
+    uint64_t maxInstanceCount;
+    uint64_t maxTriangleCount;
+    uint32_t maxDescriptorSetAccelerationStructures;
   };
-  static_assert( sizeof( PhysicalDeviceRaytracingPropertiesNVX ) == sizeof( VkPhysicalDeviceRaytracingPropertiesNVX ), "struct and wrapper have different size!" );
+  static_assert( sizeof( PhysicalDeviceRayTracingPropertiesNV ) == sizeof( VkPhysicalDeviceRayTracingPropertiesNV ), "struct and wrapper have different size!" );
 
   struct PhysicalDeviceImageDrmFormatModifierInfoEXT
   {
@@ -21187,7 +21070,7 @@ public:
     }
 
   private:
-    StructureType sType = StructureType::eImageExcplicitDrmFormatModifierCreateInfoEXT;
+    StructureType sType = StructureType::eImageDrmFormatModifierExplicitCreateInfoEXT;
 
   public:
     const void* pNext = nullptr;
@@ -21685,7 +21568,7 @@ public:
     eIndirectCommandsLayoutNVX = VK_OBJECT_TYPE_INDIRECT_COMMANDS_LAYOUT_NVX,
     eDebugUtilsMessengerEXT = VK_OBJECT_TYPE_DEBUG_UTILS_MESSENGER_EXT,
     eValidationCacheEXT = VK_OBJECT_TYPE_VALIDATION_CACHE_EXT,
-    eAccelerationStructureNVX = VK_OBJECT_TYPE_ACCELERATION_STRUCTURE_NVX
+    eAccelerationStructureNV = VK_OBJECT_TYPE_ACCELERATION_STRUCTURE_NV
   };
 
   struct DebugUtilsObjectNameInfoEXT
@@ -22646,8 +22529,8 @@ public:
     eCommandProcessWriteNVX = VK_ACCESS_COMMAND_PROCESS_WRITE_BIT_NVX,
     eColorAttachmentReadNoncoherentEXT = VK_ACCESS_COLOR_ATTACHMENT_READ_NONCOHERENT_BIT_EXT,
     eShadingRateImageReadNV = VK_ACCESS_SHADING_RATE_IMAGE_READ_BIT_NV,
-    eAccelerationStructureReadNVX = VK_ACCESS_ACCELERATION_STRUCTURE_READ_BIT_NVX,
-    eAccelerationStructureWriteNVX = VK_ACCESS_ACCELERATION_STRUCTURE_WRITE_BIT_NVX
+    eAccelerationStructureReadNV = VK_ACCESS_ACCELERATION_STRUCTURE_READ_BIT_NV,
+    eAccelerationStructureWriteNV = VK_ACCESS_ACCELERATION_STRUCTURE_WRITE_BIT_NV
   };
 
   using AccessFlags = Flags<AccessFlagBits, VkAccessFlags>;
@@ -22666,7 +22549,7 @@ public:
   {
     enum
     {
-      allFlags = VkFlags(AccessFlagBits::eIndirectCommandRead) | VkFlags(AccessFlagBits::eIndexRead) | VkFlags(AccessFlagBits::eVertexAttributeRead) | VkFlags(AccessFlagBits::eUniformRead) | VkFlags(AccessFlagBits::eInputAttachmentRead) | VkFlags(AccessFlagBits::eShaderRead) | VkFlags(AccessFlagBits::eShaderWrite) | VkFlags(AccessFlagBits::eColorAttachmentRead) | VkFlags(AccessFlagBits::eColorAttachmentWrite) | VkFlags(AccessFlagBits::eDepthStencilAttachmentRead) | VkFlags(AccessFlagBits::eDepthStencilAttachmentWrite) | VkFlags(AccessFlagBits::eTransferRead) | VkFlags(AccessFlagBits::eTransferWrite) | VkFlags(AccessFlagBits::eHostRead) | VkFlags(AccessFlagBits::eHostWrite) | VkFlags(AccessFlagBits::eMemoryRead) | VkFlags(AccessFlagBits::eMemoryWrite) | VkFlags(AccessFlagBits::eTransformFeedbackWriteEXT) | VkFlags(AccessFlagBits::eTransformFeedbackCounterReadEXT) | VkFlags(AccessFlagBits::eTransformFeedbackCounterWriteEXT) | VkFlags(AccessFlagBits::eConditionalRenderingReadEXT) | VkFlags(AccessFlagBits::eCommandProcessReadNVX) | VkFlags(AccessFlagBits::eCommandProcessWriteNVX) | VkFlags(AccessFlagBits::eColorAttachmentReadNoncoherentEXT) | VkFlags(AccessFlagBits::eShadingRateImageReadNV) | VkFlags(AccessFlagBits::eAccelerationStructureReadNVX) | VkFlags(AccessFlagBits::eAccelerationStructureWriteNVX)
+      allFlags = VkFlags(AccessFlagBits::eIndirectCommandRead) | VkFlags(AccessFlagBits::eIndexRead) | VkFlags(AccessFlagBits::eVertexAttributeRead) | VkFlags(AccessFlagBits::eUniformRead) | VkFlags(AccessFlagBits::eInputAttachmentRead) | VkFlags(AccessFlagBits::eShaderRead) | VkFlags(AccessFlagBits::eShaderWrite) | VkFlags(AccessFlagBits::eColorAttachmentRead) | VkFlags(AccessFlagBits::eColorAttachmentWrite) | VkFlags(AccessFlagBits::eDepthStencilAttachmentRead) | VkFlags(AccessFlagBits::eDepthStencilAttachmentWrite) | VkFlags(AccessFlagBits::eTransferRead) | VkFlags(AccessFlagBits::eTransferWrite) | VkFlags(AccessFlagBits::eHostRead) | VkFlags(AccessFlagBits::eHostWrite) | VkFlags(AccessFlagBits::eMemoryRead) | VkFlags(AccessFlagBits::eMemoryWrite) | VkFlags(AccessFlagBits::eTransformFeedbackWriteEXT) | VkFlags(AccessFlagBits::eTransformFeedbackCounterReadEXT) | VkFlags(AccessFlagBits::eTransformFeedbackCounterWriteEXT) | VkFlags(AccessFlagBits::eConditionalRenderingReadEXT) | VkFlags(AccessFlagBits::eCommandProcessReadNVX) | VkFlags(AccessFlagBits::eCommandProcessWriteNVX) | VkFlags(AccessFlagBits::eColorAttachmentReadNoncoherentEXT) | VkFlags(AccessFlagBits::eShadingRateImageReadNV) | VkFlags(AccessFlagBits::eAccelerationStructureReadNV) | VkFlags(AccessFlagBits::eAccelerationStructureWriteNV)
     };
   };
 
@@ -22874,7 +22757,7 @@ public:
     eTransformFeedbackBufferEXT = VK_BUFFER_USAGE_TRANSFORM_FEEDBACK_BUFFER_BIT_EXT,
     eTransformFeedbackCounterBufferEXT = VK_BUFFER_USAGE_TRANSFORM_FEEDBACK_COUNTER_BUFFER_BIT_EXT,
     eConditionalRenderingEXT = VK_BUFFER_USAGE_CONDITIONAL_RENDERING_BIT_EXT,
-    eRaytracingNVX = VK_BUFFER_USAGE_RAYTRACING_BIT_NVX
+    eRayTracingNV = VK_BUFFER_USAGE_RAY_TRACING_BIT_NV
   };
 
   using BufferUsageFlags = Flags<BufferUsageFlagBits, VkBufferUsageFlags>;
@@ -22893,7 +22776,7 @@ public:
   {
     enum
     {
-      allFlags = VkFlags(BufferUsageFlagBits::eTransferSrc) | VkFlags(BufferUsageFlagBits::eTransferDst) | VkFlags(BufferUsageFlagBits::eUniformTexelBuffer) | VkFlags(BufferUsageFlagBits::eStorageTexelBuffer) | VkFlags(BufferUsageFlagBits::eUniformBuffer) | VkFlags(BufferUsageFlagBits::eStorageBuffer) | VkFlags(BufferUsageFlagBits::eIndexBuffer) | VkFlags(BufferUsageFlagBits::eVertexBuffer) | VkFlags(BufferUsageFlagBits::eIndirectBuffer) | VkFlags(BufferUsageFlagBits::eTransformFeedbackBufferEXT) | VkFlags(BufferUsageFlagBits::eTransformFeedbackCounterBufferEXT) | VkFlags(BufferUsageFlagBits::eConditionalRenderingEXT) | VkFlags(BufferUsageFlagBits::eRaytracingNVX)
+      allFlags = VkFlags(BufferUsageFlagBits::eTransferSrc) | VkFlags(BufferUsageFlagBits::eTransferDst) | VkFlags(BufferUsageFlagBits::eUniformTexelBuffer) | VkFlags(BufferUsageFlagBits::eStorageTexelBuffer) | VkFlags(BufferUsageFlagBits::eUniformBuffer) | VkFlags(BufferUsageFlagBits::eStorageBuffer) | VkFlags(BufferUsageFlagBits::eIndexBuffer) | VkFlags(BufferUsageFlagBits::eVertexBuffer) | VkFlags(BufferUsageFlagBits::eIndirectBuffer) | VkFlags(BufferUsageFlagBits::eTransformFeedbackBufferEXT) | VkFlags(BufferUsageFlagBits::eTransformFeedbackCounterBufferEXT) | VkFlags(BufferUsageFlagBits::eConditionalRenderingEXT) | VkFlags(BufferUsageFlagBits::eRayTracingNV)
     };
   };
 
@@ -23045,12 +22928,12 @@ public:
     eCompute = VK_SHADER_STAGE_COMPUTE_BIT,
     eAllGraphics = VK_SHADER_STAGE_ALL_GRAPHICS,
     eAll = VK_SHADER_STAGE_ALL,
-    eRaygenNVX = VK_SHADER_STAGE_RAYGEN_BIT_NVX,
-    eAnyHitNVX = VK_SHADER_STAGE_ANY_HIT_BIT_NVX,
-    eClosestHitNVX = VK_SHADER_STAGE_CLOSEST_HIT_BIT_NVX,
-    eMissNVX = VK_SHADER_STAGE_MISS_BIT_NVX,
-    eIntersectionNVX = VK_SHADER_STAGE_INTERSECTION_BIT_NVX,
-    eCallableNVX = VK_SHADER_STAGE_CALLABLE_BIT_NVX,
+    eRaygenNV = VK_SHADER_STAGE_RAYGEN_BIT_NV,
+    eAnyHitNV = VK_SHADER_STAGE_ANY_HIT_BIT_NV,
+    eClosestHitNV = VK_SHADER_STAGE_CLOSEST_HIT_BIT_NV,
+    eMissNV = VK_SHADER_STAGE_MISS_BIT_NV,
+    eIntersectionNV = VK_SHADER_STAGE_INTERSECTION_BIT_NV,
+    eCallableNV = VK_SHADER_STAGE_CALLABLE_BIT_NV,
     eTaskNV = VK_SHADER_STAGE_TASK_BIT_NV,
     eMeshNV = VK_SHADER_STAGE_MESH_BIT_NV
   };
@@ -23071,7 +22954,7 @@ public:
   {
     enum
     {
-      allFlags = VkFlags(ShaderStageFlagBits::eVertex) | VkFlags(ShaderStageFlagBits::eTessellationControl) | VkFlags(ShaderStageFlagBits::eTessellationEvaluation) | VkFlags(ShaderStageFlagBits::eGeometry) | VkFlags(ShaderStageFlagBits::eFragment) | VkFlags(ShaderStageFlagBits::eCompute) | VkFlags(ShaderStageFlagBits::eAllGraphics) | VkFlags(ShaderStageFlagBits::eAll) | VkFlags(ShaderStageFlagBits::eRaygenNVX) | VkFlags(ShaderStageFlagBits::eAnyHitNVX) | VkFlags(ShaderStageFlagBits::eClosestHitNVX) | VkFlags(ShaderStageFlagBits::eMissNVX) | VkFlags(ShaderStageFlagBits::eIntersectionNVX) | VkFlags(ShaderStageFlagBits::eCallableNVX) | VkFlags(ShaderStageFlagBits::eTaskNV) | VkFlags(ShaderStageFlagBits::eMeshNV)
+      allFlags = VkFlags(ShaderStageFlagBits::eVertex) | VkFlags(ShaderStageFlagBits::eTessellationControl) | VkFlags(ShaderStageFlagBits::eTessellationEvaluation) | VkFlags(ShaderStageFlagBits::eGeometry) | VkFlags(ShaderStageFlagBits::eFragment) | VkFlags(ShaderStageFlagBits::eCompute) | VkFlags(ShaderStageFlagBits::eAllGraphics) | VkFlags(ShaderStageFlagBits::eAll) | VkFlags(ShaderStageFlagBits::eRaygenNV) | VkFlags(ShaderStageFlagBits::eAnyHitNV) | VkFlags(ShaderStageFlagBits::eClosestHitNV) | VkFlags(ShaderStageFlagBits::eMissNV) | VkFlags(ShaderStageFlagBits::eIntersectionNV) | VkFlags(ShaderStageFlagBits::eCallableNV) | VkFlags(ShaderStageFlagBits::eTaskNV) | VkFlags(ShaderStageFlagBits::eMeshNV)
     };
   };
 
@@ -23750,7 +23633,7 @@ public:
     eViewIndexFromDeviceIndexKHR = VK_PIPELINE_CREATE_VIEW_INDEX_FROM_DEVICE_INDEX_BIT,
     eDispatchBase = VK_PIPELINE_CREATE_DISPATCH_BASE,
     eDispatchBaseKHR = VK_PIPELINE_CREATE_DISPATCH_BASE,
-    eDeferCompileNVX = VK_PIPELINE_CREATE_DEFER_COMPILE_BIT_NVX
+    eDeferCompileNV = VK_PIPELINE_CREATE_DEFER_COMPILE_BIT_NV
   };
 
   using PipelineCreateFlags = Flags<PipelineCreateFlagBits, VkPipelineCreateFlags>;
@@ -23769,7 +23652,7 @@ public:
   {
     enum
     {
-      allFlags = VkFlags(PipelineCreateFlagBits::eDisableOptimization) | VkFlags(PipelineCreateFlagBits::eAllowDerivatives) | VkFlags(PipelineCreateFlagBits::eDerivative) | VkFlags(PipelineCreateFlagBits::eViewIndexFromDeviceIndex) | VkFlags(PipelineCreateFlagBits::eDispatchBase) | VkFlags(PipelineCreateFlagBits::eDeferCompileNVX)
+      allFlags = VkFlags(PipelineCreateFlagBits::eDisableOptimization) | VkFlags(PipelineCreateFlagBits::eAllowDerivatives) | VkFlags(PipelineCreateFlagBits::eDerivative) | VkFlags(PipelineCreateFlagBits::eViewIndexFromDeviceIndex) | VkFlags(PipelineCreateFlagBits::eDispatchBase) | VkFlags(PipelineCreateFlagBits::eDeferCompileNV)
     };
   };
 
@@ -23872,136 +23755,6 @@ public:
     int32_t basePipelineIndex;
   };
   static_assert( sizeof( ComputePipelineCreateInfo ) == sizeof( VkComputePipelineCreateInfo ), "struct and wrapper have different size!" );
-
-  struct RaytracingPipelineCreateInfoNVX
-  {
-    RaytracingPipelineCreateInfoNVX( PipelineCreateFlags flags_ = PipelineCreateFlags(),
-                                     uint32_t stageCount_ = 0,
-                                     const PipelineShaderStageCreateInfo* pStages_ = nullptr,
-                                     const uint32_t* pGroupNumbers_ = nullptr,
-                                     uint32_t maxRecursionDepth_ = 0,
-                                     PipelineLayout layout_ = PipelineLayout(),
-                                     Pipeline basePipelineHandle_ = Pipeline(),
-                                     int32_t basePipelineIndex_ = 0 )
-      : flags( flags_ )
-      , stageCount( stageCount_ )
-      , pStages( pStages_ )
-      , pGroupNumbers( pGroupNumbers_ )
-      , maxRecursionDepth( maxRecursionDepth_ )
-      , layout( layout_ )
-      , basePipelineHandle( basePipelineHandle_ )
-      , basePipelineIndex( basePipelineIndex_ )
-    {
-    }
-
-    RaytracingPipelineCreateInfoNVX( VkRaytracingPipelineCreateInfoNVX const & rhs )
-    {
-      memcpy( this, &rhs, sizeof( RaytracingPipelineCreateInfoNVX ) );
-    }
-
-    RaytracingPipelineCreateInfoNVX& operator=( VkRaytracingPipelineCreateInfoNVX const & rhs )
-    {
-      memcpy( this, &rhs, sizeof( RaytracingPipelineCreateInfoNVX ) );
-      return *this;
-    }
-    RaytracingPipelineCreateInfoNVX& setPNext( const void* pNext_ )
-    {
-      pNext = pNext_;
-      return *this;
-    }
-
-    RaytracingPipelineCreateInfoNVX& setFlags( PipelineCreateFlags flags_ )
-    {
-      flags = flags_;
-      return *this;
-    }
-
-    RaytracingPipelineCreateInfoNVX& setStageCount( uint32_t stageCount_ )
-    {
-      stageCount = stageCount_;
-      return *this;
-    }
-
-    RaytracingPipelineCreateInfoNVX& setPStages( const PipelineShaderStageCreateInfo* pStages_ )
-    {
-      pStages = pStages_;
-      return *this;
-    }
-
-    RaytracingPipelineCreateInfoNVX& setPGroupNumbers( const uint32_t* pGroupNumbers_ )
-    {
-      pGroupNumbers = pGroupNumbers_;
-      return *this;
-    }
-
-    RaytracingPipelineCreateInfoNVX& setMaxRecursionDepth( uint32_t maxRecursionDepth_ )
-    {
-      maxRecursionDepth = maxRecursionDepth_;
-      return *this;
-    }
-
-    RaytracingPipelineCreateInfoNVX& setLayout( PipelineLayout layout_ )
-    {
-      layout = layout_;
-      return *this;
-    }
-
-    RaytracingPipelineCreateInfoNVX& setBasePipelineHandle( Pipeline basePipelineHandle_ )
-    {
-      basePipelineHandle = basePipelineHandle_;
-      return *this;
-    }
-
-    RaytracingPipelineCreateInfoNVX& setBasePipelineIndex( int32_t basePipelineIndex_ )
-    {
-      basePipelineIndex = basePipelineIndex_;
-      return *this;
-    }
-
-    operator VkRaytracingPipelineCreateInfoNVX const&() const
-    {
-      return *reinterpret_cast<const VkRaytracingPipelineCreateInfoNVX*>(this);
-    }
-
-    operator VkRaytracingPipelineCreateInfoNVX &()
-    {
-      return *reinterpret_cast<VkRaytracingPipelineCreateInfoNVX*>(this);
-    }
-
-    bool operator==( RaytracingPipelineCreateInfoNVX const& rhs ) const
-    {
-      return ( sType == rhs.sType )
-          && ( pNext == rhs.pNext )
-          && ( flags == rhs.flags )
-          && ( stageCount == rhs.stageCount )
-          && ( pStages == rhs.pStages )
-          && ( pGroupNumbers == rhs.pGroupNumbers )
-          && ( maxRecursionDepth == rhs.maxRecursionDepth )
-          && ( layout == rhs.layout )
-          && ( basePipelineHandle == rhs.basePipelineHandle )
-          && ( basePipelineIndex == rhs.basePipelineIndex );
-    }
-
-    bool operator!=( RaytracingPipelineCreateInfoNVX const& rhs ) const
-    {
-      return !operator==( rhs );
-    }
-
-  private:
-    StructureType sType = StructureType::eRaytracingPipelineCreateInfoNVX;
-
-  public:
-    const void* pNext = nullptr;
-    PipelineCreateFlags flags;
-    uint32_t stageCount;
-    const PipelineShaderStageCreateInfo* pStages;
-    const uint32_t* pGroupNumbers;
-    uint32_t maxRecursionDepth;
-    PipelineLayout layout;
-    Pipeline basePipelineHandle;
-    int32_t basePipelineIndex;
-  };
-  static_assert( sizeof( RaytracingPipelineCreateInfoNVX ) == sizeof( VkRaytracingPipelineCreateInfoNVX ), "struct and wrapper have different size!" );
 
   enum class ColorComponentFlagBits
   {
@@ -26951,7 +26704,8 @@ public:
     eConditionalRenderingEXT = VK_PIPELINE_STAGE_CONDITIONAL_RENDERING_BIT_EXT,
     eCommandProcessNVX = VK_PIPELINE_STAGE_COMMAND_PROCESS_BIT_NVX,
     eShadingRateImageNV = VK_PIPELINE_STAGE_SHADING_RATE_IMAGE_BIT_NV,
-    eRaytracingNVX = VK_PIPELINE_STAGE_RAYTRACING_BIT_NVX,
+    eRayTracingShaderNV = VK_PIPELINE_STAGE_RAY_TRACING_SHADER_BIT_NV,
+    eAccelerationStructureBuildNV = VK_PIPELINE_STAGE_ACCELERATION_STRUCTURE_BUILD_BIT_NV,
     eTaskShaderNV = VK_PIPELINE_STAGE_TASK_SHADER_BIT_NV,
     eMeshShaderNV = VK_PIPELINE_STAGE_MESH_SHADER_BIT_NV
   };
@@ -26972,7 +26726,7 @@ public:
   {
     enum
     {
-      allFlags = VkFlags(PipelineStageFlagBits::eTopOfPipe) | VkFlags(PipelineStageFlagBits::eDrawIndirect) | VkFlags(PipelineStageFlagBits::eVertexInput) | VkFlags(PipelineStageFlagBits::eVertexShader) | VkFlags(PipelineStageFlagBits::eTessellationControlShader) | VkFlags(PipelineStageFlagBits::eTessellationEvaluationShader) | VkFlags(PipelineStageFlagBits::eGeometryShader) | VkFlags(PipelineStageFlagBits::eFragmentShader) | VkFlags(PipelineStageFlagBits::eEarlyFragmentTests) | VkFlags(PipelineStageFlagBits::eLateFragmentTests) | VkFlags(PipelineStageFlagBits::eColorAttachmentOutput) | VkFlags(PipelineStageFlagBits::eComputeShader) | VkFlags(PipelineStageFlagBits::eTransfer) | VkFlags(PipelineStageFlagBits::eBottomOfPipe) | VkFlags(PipelineStageFlagBits::eHost) | VkFlags(PipelineStageFlagBits::eAllGraphics) | VkFlags(PipelineStageFlagBits::eAllCommands) | VkFlags(PipelineStageFlagBits::eTransformFeedbackEXT) | VkFlags(PipelineStageFlagBits::eConditionalRenderingEXT) | VkFlags(PipelineStageFlagBits::eCommandProcessNVX) | VkFlags(PipelineStageFlagBits::eShadingRateImageNV) | VkFlags(PipelineStageFlagBits::eRaytracingNVX) | VkFlags(PipelineStageFlagBits::eTaskShaderNV) | VkFlags(PipelineStageFlagBits::eMeshShaderNV)
+      allFlags = VkFlags(PipelineStageFlagBits::eTopOfPipe) | VkFlags(PipelineStageFlagBits::eDrawIndirect) | VkFlags(PipelineStageFlagBits::eVertexInput) | VkFlags(PipelineStageFlagBits::eVertexShader) | VkFlags(PipelineStageFlagBits::eTessellationControlShader) | VkFlags(PipelineStageFlagBits::eTessellationEvaluationShader) | VkFlags(PipelineStageFlagBits::eGeometryShader) | VkFlags(PipelineStageFlagBits::eFragmentShader) | VkFlags(PipelineStageFlagBits::eEarlyFragmentTests) | VkFlags(PipelineStageFlagBits::eLateFragmentTests) | VkFlags(PipelineStageFlagBits::eColorAttachmentOutput) | VkFlags(PipelineStageFlagBits::eComputeShader) | VkFlags(PipelineStageFlagBits::eTransfer) | VkFlags(PipelineStageFlagBits::eBottomOfPipe) | VkFlags(PipelineStageFlagBits::eHost) | VkFlags(PipelineStageFlagBits::eAllGraphics) | VkFlags(PipelineStageFlagBits::eAllCommands) | VkFlags(PipelineStageFlagBits::eTransformFeedbackEXT) | VkFlags(PipelineStageFlagBits::eConditionalRenderingEXT) | VkFlags(PipelineStageFlagBits::eCommandProcessNVX) | VkFlags(PipelineStageFlagBits::eShadingRateImageNV) | VkFlags(PipelineStageFlagBits::eRayTracingShaderNV) | VkFlags(PipelineStageFlagBits::eAccelerationStructureBuildNV) | VkFlags(PipelineStageFlagBits::eTaskShaderNV) | VkFlags(PipelineStageFlagBits::eMeshShaderNV)
     };
   };
 
@@ -30084,7 +29838,7 @@ public:
     eSamplerYcbcrConversionKHR = VK_DEBUG_REPORT_OBJECT_TYPE_SAMPLER_YCBCR_CONVERSION_EXT,
     eDescriptorUpdateTemplate = VK_DEBUG_REPORT_OBJECT_TYPE_DESCRIPTOR_UPDATE_TEMPLATE_EXT,
     eDescriptorUpdateTemplateKHR = VK_DEBUG_REPORT_OBJECT_TYPE_DESCRIPTOR_UPDATE_TEMPLATE_EXT,
-    eAccelerationStructureNVX = VK_DEBUG_REPORT_OBJECT_TYPE_ACCELERATION_STRUCTURE_NVX_EXT
+    eAccelerationStructureNV = VK_DEBUG_REPORT_OBJECT_TYPE_ACCELERATION_STRUCTURE_NV_EXT
   };
 
   struct DebugMarkerObjectNameInfoEXT
@@ -37074,163 +36828,163 @@ public:
   };
   static_assert( sizeof( PipelineViewportCoarseSampleOrderStateCreateInfoNV ) == sizeof( VkPipelineViewportCoarseSampleOrderStateCreateInfoNV ), "struct and wrapper have different size!" );
 
-  enum class GeometryInstanceFlagBitsNVX
+  enum class GeometryInstanceFlagBitsNV
   {
-    eTriangleCullDisable = VK_GEOMETRY_INSTANCE_TRIANGLE_CULL_DISABLE_BIT_NVX,
-    eTriangleCullFlipWinding = VK_GEOMETRY_INSTANCE_TRIANGLE_CULL_FLIP_WINDING_BIT_NVX,
-    eForceOpaque = VK_GEOMETRY_INSTANCE_FORCE_OPAQUE_BIT_NVX,
-    eForceNoOpaque = VK_GEOMETRY_INSTANCE_FORCE_NO_OPAQUE_BIT_NVX
+    eTriangleCullDisable = VK_GEOMETRY_INSTANCE_TRIANGLE_CULL_DISABLE_BIT_NV,
+    eTriangleFrontCounterclockwise = VK_GEOMETRY_INSTANCE_TRIANGLE_FRONT_COUNTERCLOCKWISE_BIT_NV,
+    eForceOpaque = VK_GEOMETRY_INSTANCE_FORCE_OPAQUE_BIT_NV,
+    eForceNoOpaque = VK_GEOMETRY_INSTANCE_FORCE_NO_OPAQUE_BIT_NV
   };
 
-  using GeometryInstanceFlagsNVX = Flags<GeometryInstanceFlagBitsNVX, VkGeometryInstanceFlagsNVX>;
+  using GeometryInstanceFlagsNV = Flags<GeometryInstanceFlagBitsNV, VkGeometryInstanceFlagsNV>;
 
-  VULKAN_HPP_INLINE GeometryInstanceFlagsNVX operator|( GeometryInstanceFlagBitsNVX bit0, GeometryInstanceFlagBitsNVX bit1 )
+  VULKAN_HPP_INLINE GeometryInstanceFlagsNV operator|( GeometryInstanceFlagBitsNV bit0, GeometryInstanceFlagBitsNV bit1 )
   {
-    return GeometryInstanceFlagsNVX( bit0 ) | bit1;
+    return GeometryInstanceFlagsNV( bit0 ) | bit1;
   }
 
-  VULKAN_HPP_INLINE GeometryInstanceFlagsNVX operator~( GeometryInstanceFlagBitsNVX bits )
+  VULKAN_HPP_INLINE GeometryInstanceFlagsNV operator~( GeometryInstanceFlagBitsNV bits )
   {
-    return ~( GeometryInstanceFlagsNVX( bits ) );
+    return ~( GeometryInstanceFlagsNV( bits ) );
   }
 
-  template <> struct FlagTraits<GeometryInstanceFlagBitsNVX>
+  template <> struct FlagTraits<GeometryInstanceFlagBitsNV>
   {
     enum
     {
-      allFlags = VkFlags(GeometryInstanceFlagBitsNVX::eTriangleCullDisable) | VkFlags(GeometryInstanceFlagBitsNVX::eTriangleCullFlipWinding) | VkFlags(GeometryInstanceFlagBitsNVX::eForceOpaque) | VkFlags(GeometryInstanceFlagBitsNVX::eForceNoOpaque)
+      allFlags = VkFlags(GeometryInstanceFlagBitsNV::eTriangleCullDisable) | VkFlags(GeometryInstanceFlagBitsNV::eTriangleFrontCounterclockwise) | VkFlags(GeometryInstanceFlagBitsNV::eForceOpaque) | VkFlags(GeometryInstanceFlagBitsNV::eForceNoOpaque)
     };
   };
 
-  enum class GeometryFlagBitsNVX
+  enum class GeometryFlagBitsNV
   {
-    eOpaque = VK_GEOMETRY_OPAQUE_BIT_NVX,
-    eNoDuplicateAnyHitInvocation = VK_GEOMETRY_NO_DUPLICATE_ANY_HIT_INVOCATION_BIT_NVX
+    eOpaque = VK_GEOMETRY_OPAQUE_BIT_NV,
+    eNoDuplicateAnyHitInvocation = VK_GEOMETRY_NO_DUPLICATE_ANY_HIT_INVOCATION_BIT_NV
   };
 
-  using GeometryFlagsNVX = Flags<GeometryFlagBitsNVX, VkGeometryFlagsNVX>;
+  using GeometryFlagsNV = Flags<GeometryFlagBitsNV, VkGeometryFlagsNV>;
 
-  VULKAN_HPP_INLINE GeometryFlagsNVX operator|( GeometryFlagBitsNVX bit0, GeometryFlagBitsNVX bit1 )
+  VULKAN_HPP_INLINE GeometryFlagsNV operator|( GeometryFlagBitsNV bit0, GeometryFlagBitsNV bit1 )
   {
-    return GeometryFlagsNVX( bit0 ) | bit1;
+    return GeometryFlagsNV( bit0 ) | bit1;
   }
 
-  VULKAN_HPP_INLINE GeometryFlagsNVX operator~( GeometryFlagBitsNVX bits )
+  VULKAN_HPP_INLINE GeometryFlagsNV operator~( GeometryFlagBitsNV bits )
   {
-    return ~( GeometryFlagsNVX( bits ) );
+    return ~( GeometryFlagsNV( bits ) );
   }
 
-  template <> struct FlagTraits<GeometryFlagBitsNVX>
+  template <> struct FlagTraits<GeometryFlagBitsNV>
   {
     enum
     {
-      allFlags = VkFlags(GeometryFlagBitsNVX::eOpaque) | VkFlags(GeometryFlagBitsNVX::eNoDuplicateAnyHitInvocation)
+      allFlags = VkFlags(GeometryFlagBitsNV::eOpaque) | VkFlags(GeometryFlagBitsNV::eNoDuplicateAnyHitInvocation)
     };
   };
 
-  enum class BuildAccelerationStructureFlagBitsNVX
+  enum class BuildAccelerationStructureFlagBitsNV
   {
-    eAllowUpdate = VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_UPDATE_BIT_NVX,
-    eAllowCompaction = VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_COMPACTION_BIT_NVX,
-    ePreferFastTrace = VK_BUILD_ACCELERATION_STRUCTURE_PREFER_FAST_TRACE_BIT_NVX,
-    ePreferFastBuild = VK_BUILD_ACCELERATION_STRUCTURE_PREFER_FAST_BUILD_BIT_NVX,
-    eLowMemory = VK_BUILD_ACCELERATION_STRUCTURE_LOW_MEMORY_BIT_NVX
+    eAllowUpdate = VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_UPDATE_BIT_NV,
+    eAllowCompaction = VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_COMPACTION_BIT_NV,
+    ePreferFastTrace = VK_BUILD_ACCELERATION_STRUCTURE_PREFER_FAST_TRACE_BIT_NV,
+    ePreferFastBuild = VK_BUILD_ACCELERATION_STRUCTURE_PREFER_FAST_BUILD_BIT_NV,
+    eLowMemory = VK_BUILD_ACCELERATION_STRUCTURE_LOW_MEMORY_BIT_NV
   };
 
-  using BuildAccelerationStructureFlagsNVX = Flags<BuildAccelerationStructureFlagBitsNVX, VkBuildAccelerationStructureFlagsNVX>;
+  using BuildAccelerationStructureFlagsNV = Flags<BuildAccelerationStructureFlagBitsNV, VkBuildAccelerationStructureFlagsNV>;
 
-  VULKAN_HPP_INLINE BuildAccelerationStructureFlagsNVX operator|( BuildAccelerationStructureFlagBitsNVX bit0, BuildAccelerationStructureFlagBitsNVX bit1 )
+  VULKAN_HPP_INLINE BuildAccelerationStructureFlagsNV operator|( BuildAccelerationStructureFlagBitsNV bit0, BuildAccelerationStructureFlagBitsNV bit1 )
   {
-    return BuildAccelerationStructureFlagsNVX( bit0 ) | bit1;
+    return BuildAccelerationStructureFlagsNV( bit0 ) | bit1;
   }
 
-  VULKAN_HPP_INLINE BuildAccelerationStructureFlagsNVX operator~( BuildAccelerationStructureFlagBitsNVX bits )
+  VULKAN_HPP_INLINE BuildAccelerationStructureFlagsNV operator~( BuildAccelerationStructureFlagBitsNV bits )
   {
-    return ~( BuildAccelerationStructureFlagsNVX( bits ) );
+    return ~( BuildAccelerationStructureFlagsNV( bits ) );
   }
 
-  template <> struct FlagTraits<BuildAccelerationStructureFlagBitsNVX>
+  template <> struct FlagTraits<BuildAccelerationStructureFlagBitsNV>
   {
     enum
     {
-      allFlags = VkFlags(BuildAccelerationStructureFlagBitsNVX::eAllowUpdate) | VkFlags(BuildAccelerationStructureFlagBitsNVX::eAllowCompaction) | VkFlags(BuildAccelerationStructureFlagBitsNVX::ePreferFastTrace) | VkFlags(BuildAccelerationStructureFlagBitsNVX::ePreferFastBuild) | VkFlags(BuildAccelerationStructureFlagBitsNVX::eLowMemory)
+      allFlags = VkFlags(BuildAccelerationStructureFlagBitsNV::eAllowUpdate) | VkFlags(BuildAccelerationStructureFlagBitsNV::eAllowCompaction) | VkFlags(BuildAccelerationStructureFlagBitsNV::ePreferFastTrace) | VkFlags(BuildAccelerationStructureFlagBitsNV::ePreferFastBuild) | VkFlags(BuildAccelerationStructureFlagBitsNV::eLowMemory)
     };
   };
 
-  enum class CopyAccelerationStructureModeNVX
+  enum class CopyAccelerationStructureModeNV
   {
-    eClone = VK_COPY_ACCELERATION_STRUCTURE_MODE_CLONE_NVX,
-    eCompact = VK_COPY_ACCELERATION_STRUCTURE_MODE_COMPACT_NVX
+    eClone = VK_COPY_ACCELERATION_STRUCTURE_MODE_CLONE_NV,
+    eCompact = VK_COPY_ACCELERATION_STRUCTURE_MODE_COMPACT_NV
   };
 
-  enum class AccelerationStructureTypeNVX
+  enum class AccelerationStructureTypeNV
   {
-    eTopLevel = VK_ACCELERATION_STRUCTURE_TYPE_TOP_LEVEL_NVX,
-    eBottomLevel = VK_ACCELERATION_STRUCTURE_TYPE_BOTTOM_LEVEL_NVX
+    eTopLevel = VK_ACCELERATION_STRUCTURE_TYPE_TOP_LEVEL_NV,
+    eBottomLevel = VK_ACCELERATION_STRUCTURE_TYPE_BOTTOM_LEVEL_NV
   };
 
-  enum class GeometryTypeNVX
+  enum class GeometryTypeNV
   {
-    eTriangles = VK_GEOMETRY_TYPE_TRIANGLES_NVX,
-    eAabbs = VK_GEOMETRY_TYPE_AABBS_NVX
+    eTriangles = VK_GEOMETRY_TYPE_TRIANGLES_NV,
+    eAabbs = VK_GEOMETRY_TYPE_AABBS_NV
   };
 
-  struct GeometryNVX
+  struct GeometryNV
   {
-    GeometryNVX( GeometryTypeNVX geometryType_ = GeometryTypeNVX::eTriangles,
-                 GeometryDataNVX geometry_ = GeometryDataNVX(),
-                 GeometryFlagsNVX flags_ = GeometryFlagsNVX() )
+    GeometryNV( GeometryTypeNV geometryType_ = GeometryTypeNV::eTriangles,
+                GeometryDataNV geometry_ = GeometryDataNV(),
+                GeometryFlagsNV flags_ = GeometryFlagsNV() )
       : geometryType( geometryType_ )
       , geometry( geometry_ )
       , flags( flags_ )
     {
     }
 
-    GeometryNVX( VkGeometryNVX const & rhs )
+    GeometryNV( VkGeometryNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( GeometryNVX ) );
+      memcpy( this, &rhs, sizeof( GeometryNV ) );
     }
 
-    GeometryNVX& operator=( VkGeometryNVX const & rhs )
+    GeometryNV& operator=( VkGeometryNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( GeometryNVX ) );
+      memcpy( this, &rhs, sizeof( GeometryNV ) );
       return *this;
     }
-    GeometryNVX& setPNext( const void* pNext_ )
+    GeometryNV& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
       return *this;
     }
 
-    GeometryNVX& setGeometryType( GeometryTypeNVX geometryType_ )
+    GeometryNV& setGeometryType( GeometryTypeNV geometryType_ )
     {
       geometryType = geometryType_;
       return *this;
     }
 
-    GeometryNVX& setGeometry( GeometryDataNVX geometry_ )
+    GeometryNV& setGeometry( GeometryDataNV geometry_ )
     {
       geometry = geometry_;
       return *this;
     }
 
-    GeometryNVX& setFlags( GeometryFlagsNVX flags_ )
+    GeometryNV& setFlags( GeometryFlagsNV flags_ )
     {
       flags = flags_;
       return *this;
     }
 
-    operator VkGeometryNVX const&() const
+    operator VkGeometryNV const&() const
     {
-      return *reinterpret_cast<const VkGeometryNVX*>(this);
+      return *reinterpret_cast<const VkGeometryNV*>(this);
     }
 
-    operator VkGeometryNVX &()
+    operator VkGeometryNV &()
     {
-      return *reinterpret_cast<VkGeometryNVX*>(this);
+      return *reinterpret_cast<VkGeometryNV*>(this);
     }
 
-    bool operator==( GeometryNVX const& rhs ) const
+    bool operator==( GeometryNV const& rhs ) const
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
@@ -37239,131 +36993,582 @@ public:
           && ( flags == rhs.flags );
     }
 
-    bool operator!=( GeometryNVX const& rhs ) const
+    bool operator!=( GeometryNV const& rhs ) const
     {
       return !operator==( rhs );
     }
 
   private:
-    StructureType sType = StructureType::eGeometryNVX;
+    StructureType sType = StructureType::eGeometryNV;
 
   public:
     const void* pNext = nullptr;
-    GeometryTypeNVX geometryType;
-    GeometryDataNVX geometry;
-    GeometryFlagsNVX flags;
+    GeometryTypeNV geometryType;
+    GeometryDataNV geometry;
+    GeometryFlagsNV flags;
   };
-  static_assert( sizeof( GeometryNVX ) == sizeof( VkGeometryNVX ), "struct and wrapper have different size!" );
+  static_assert( sizeof( GeometryNV ) == sizeof( VkGeometryNV ), "struct and wrapper have different size!" );
 
-  struct AccelerationStructureCreateInfoNVX
+  struct AccelerationStructureInfoNV
   {
-    AccelerationStructureCreateInfoNVX( AccelerationStructureTypeNVX type_ = AccelerationStructureTypeNVX::eTopLevel,
-                                        BuildAccelerationStructureFlagsNVX flags_ = BuildAccelerationStructureFlagsNVX(),
-                                        DeviceSize compactedSize_ = 0,
-                                        uint32_t instanceCount_ = 0,
-                                        uint32_t geometryCount_ = 0,
-                                        const GeometryNVX* pGeometries_ = nullptr )
+    AccelerationStructureInfoNV( AccelerationStructureTypeNV type_ = AccelerationStructureTypeNV::eTopLevel,
+                                 BuildAccelerationStructureFlagsNV flags_ = BuildAccelerationStructureFlagsNV(),
+                                 uint32_t instanceCount_ = 0,
+                                 uint32_t geometryCount_ = 0,
+                                 const GeometryNV* pGeometries_ = nullptr )
       : type( type_ )
       , flags( flags_ )
-      , compactedSize( compactedSize_ )
       , instanceCount( instanceCount_ )
       , geometryCount( geometryCount_ )
       , pGeometries( pGeometries_ )
     {
     }
 
-    AccelerationStructureCreateInfoNVX( VkAccelerationStructureCreateInfoNVX const & rhs )
+    AccelerationStructureInfoNV( VkAccelerationStructureInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( AccelerationStructureCreateInfoNVX ) );
+      memcpy( this, &rhs, sizeof( AccelerationStructureInfoNV ) );
     }
 
-    AccelerationStructureCreateInfoNVX& operator=( VkAccelerationStructureCreateInfoNVX const & rhs )
+    AccelerationStructureInfoNV& operator=( VkAccelerationStructureInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( AccelerationStructureCreateInfoNVX ) );
+      memcpy( this, &rhs, sizeof( AccelerationStructureInfoNV ) );
       return *this;
     }
-    AccelerationStructureCreateInfoNVX& setPNext( const void* pNext_ )
+    AccelerationStructureInfoNV& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
       return *this;
     }
 
-    AccelerationStructureCreateInfoNVX& setType( AccelerationStructureTypeNVX type_ )
+    AccelerationStructureInfoNV& setType( AccelerationStructureTypeNV type_ )
     {
       type = type_;
       return *this;
     }
 
-    AccelerationStructureCreateInfoNVX& setFlags( BuildAccelerationStructureFlagsNVX flags_ )
+    AccelerationStructureInfoNV& setFlags( BuildAccelerationStructureFlagsNV flags_ )
     {
       flags = flags_;
       return *this;
     }
 
-    AccelerationStructureCreateInfoNVX& setCompactedSize( DeviceSize compactedSize_ )
-    {
-      compactedSize = compactedSize_;
-      return *this;
-    }
-
-    AccelerationStructureCreateInfoNVX& setInstanceCount( uint32_t instanceCount_ )
+    AccelerationStructureInfoNV& setInstanceCount( uint32_t instanceCount_ )
     {
       instanceCount = instanceCount_;
       return *this;
     }
 
-    AccelerationStructureCreateInfoNVX& setGeometryCount( uint32_t geometryCount_ )
+    AccelerationStructureInfoNV& setGeometryCount( uint32_t geometryCount_ )
     {
       geometryCount = geometryCount_;
       return *this;
     }
 
-    AccelerationStructureCreateInfoNVX& setPGeometries( const GeometryNVX* pGeometries_ )
+    AccelerationStructureInfoNV& setPGeometries( const GeometryNV* pGeometries_ )
     {
       pGeometries = pGeometries_;
       return *this;
     }
 
-    operator VkAccelerationStructureCreateInfoNVX const&() const
+    operator VkAccelerationStructureInfoNV const&() const
     {
-      return *reinterpret_cast<const VkAccelerationStructureCreateInfoNVX*>(this);
+      return *reinterpret_cast<const VkAccelerationStructureInfoNV*>(this);
     }
 
-    operator VkAccelerationStructureCreateInfoNVX &()
+    operator VkAccelerationStructureInfoNV &()
     {
-      return *reinterpret_cast<VkAccelerationStructureCreateInfoNVX*>(this);
+      return *reinterpret_cast<VkAccelerationStructureInfoNV*>(this);
     }
 
-    bool operator==( AccelerationStructureCreateInfoNVX const& rhs ) const
+    bool operator==( AccelerationStructureInfoNV const& rhs ) const
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( type == rhs.type )
           && ( flags == rhs.flags )
-          && ( compactedSize == rhs.compactedSize )
           && ( instanceCount == rhs.instanceCount )
           && ( geometryCount == rhs.geometryCount )
           && ( pGeometries == rhs.pGeometries );
     }
 
-    bool operator!=( AccelerationStructureCreateInfoNVX const& rhs ) const
+    bool operator!=( AccelerationStructureInfoNV const& rhs ) const
     {
       return !operator==( rhs );
     }
 
   private:
-    StructureType sType = StructureType::eAccelerationStructureCreateInfoNVX;
+    StructureType sType = StructureType::eAccelerationStructureInfoNV;
 
   public:
     const void* pNext = nullptr;
-    AccelerationStructureTypeNVX type;
-    BuildAccelerationStructureFlagsNVX flags;
-    DeviceSize compactedSize;
+    AccelerationStructureTypeNV type;
+    BuildAccelerationStructureFlagsNV flags;
     uint32_t instanceCount;
     uint32_t geometryCount;
-    const GeometryNVX* pGeometries;
+    const GeometryNV* pGeometries;
   };
-  static_assert( sizeof( AccelerationStructureCreateInfoNVX ) == sizeof( VkAccelerationStructureCreateInfoNVX ), "struct and wrapper have different size!" );
+  static_assert( sizeof( AccelerationStructureInfoNV ) == sizeof( VkAccelerationStructureInfoNV ), "struct and wrapper have different size!" );
+
+  struct AccelerationStructureCreateInfoNV
+  {
+    AccelerationStructureCreateInfoNV( DeviceSize compactedSize_ = 0,
+                                       AccelerationStructureInfoNV info_ = AccelerationStructureInfoNV() )
+      : compactedSize( compactedSize_ )
+      , info( info_ )
+    {
+    }
+
+    AccelerationStructureCreateInfoNV( VkAccelerationStructureCreateInfoNV const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( AccelerationStructureCreateInfoNV ) );
+    }
+
+    AccelerationStructureCreateInfoNV& operator=( VkAccelerationStructureCreateInfoNV const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( AccelerationStructureCreateInfoNV ) );
+      return *this;
+    }
+    AccelerationStructureCreateInfoNV& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    AccelerationStructureCreateInfoNV& setCompactedSize( DeviceSize compactedSize_ )
+    {
+      compactedSize = compactedSize_;
+      return *this;
+    }
+
+    AccelerationStructureCreateInfoNV& setInfo( AccelerationStructureInfoNV info_ )
+    {
+      info = info_;
+      return *this;
+    }
+
+    operator VkAccelerationStructureCreateInfoNV const&() const
+    {
+      return *reinterpret_cast<const VkAccelerationStructureCreateInfoNV*>(this);
+    }
+
+    operator VkAccelerationStructureCreateInfoNV &()
+    {
+      return *reinterpret_cast<VkAccelerationStructureCreateInfoNV*>(this);
+    }
+
+    bool operator==( AccelerationStructureCreateInfoNV const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( compactedSize == rhs.compactedSize )
+          && ( info == rhs.info );
+    }
+
+    bool operator!=( AccelerationStructureCreateInfoNV const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::eAccelerationStructureCreateInfoNV;
+
+  public:
+    const void* pNext = nullptr;
+    DeviceSize compactedSize;
+    AccelerationStructureInfoNV info;
+  };
+  static_assert( sizeof( AccelerationStructureCreateInfoNV ) == sizeof( VkAccelerationStructureCreateInfoNV ), "struct and wrapper have different size!" );
+
+  enum class AccelerationStructureMemoryRequirementsTypeNV
+  {
+    eObject = VK_ACCELERATION_STRUCTURE_MEMORY_REQUIREMENTS_TYPE_OBJECT_NV,
+    eBuildScratch = VK_ACCELERATION_STRUCTURE_MEMORY_REQUIREMENTS_TYPE_BUILD_SCRATCH_NV,
+    eUpdateScratch = VK_ACCELERATION_STRUCTURE_MEMORY_REQUIREMENTS_TYPE_UPDATE_SCRATCH_NV
+  };
+
+  struct AccelerationStructureMemoryRequirementsInfoNV
+  {
+    AccelerationStructureMemoryRequirementsInfoNV( AccelerationStructureMemoryRequirementsTypeNV type_ = AccelerationStructureMemoryRequirementsTypeNV::eObject,
+                                                   AccelerationStructureNV accelerationStructure_ = AccelerationStructureNV() )
+      : type( type_ )
+      , accelerationStructure( accelerationStructure_ )
+    {
+    }
+
+    AccelerationStructureMemoryRequirementsInfoNV( VkAccelerationStructureMemoryRequirementsInfoNV const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( AccelerationStructureMemoryRequirementsInfoNV ) );
+    }
+
+    AccelerationStructureMemoryRequirementsInfoNV& operator=( VkAccelerationStructureMemoryRequirementsInfoNV const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( AccelerationStructureMemoryRequirementsInfoNV ) );
+      return *this;
+    }
+    AccelerationStructureMemoryRequirementsInfoNV& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    AccelerationStructureMemoryRequirementsInfoNV& setType( AccelerationStructureMemoryRequirementsTypeNV type_ )
+    {
+      type = type_;
+      return *this;
+    }
+
+    AccelerationStructureMemoryRequirementsInfoNV& setAccelerationStructure( AccelerationStructureNV accelerationStructure_ )
+    {
+      accelerationStructure = accelerationStructure_;
+      return *this;
+    }
+
+    operator VkAccelerationStructureMemoryRequirementsInfoNV const&() const
+    {
+      return *reinterpret_cast<const VkAccelerationStructureMemoryRequirementsInfoNV*>(this);
+    }
+
+    operator VkAccelerationStructureMemoryRequirementsInfoNV &()
+    {
+      return *reinterpret_cast<VkAccelerationStructureMemoryRequirementsInfoNV*>(this);
+    }
+
+    bool operator==( AccelerationStructureMemoryRequirementsInfoNV const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( type == rhs.type )
+          && ( accelerationStructure == rhs.accelerationStructure );
+    }
+
+    bool operator!=( AccelerationStructureMemoryRequirementsInfoNV const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::eAccelerationStructureMemoryRequirementsInfoNV;
+
+  public:
+    const void* pNext = nullptr;
+    AccelerationStructureMemoryRequirementsTypeNV type;
+    AccelerationStructureNV accelerationStructure;
+  };
+  static_assert( sizeof( AccelerationStructureMemoryRequirementsInfoNV ) == sizeof( VkAccelerationStructureMemoryRequirementsInfoNV ), "struct and wrapper have different size!" );
+
+  enum class RayTracingShaderGroupTypeNV
+  {
+    eGeneral = VK_RAY_TRACING_SHADER_GROUP_TYPE_GENERAL_NV,
+    eTrianglesHitGroup = VK_RAY_TRACING_SHADER_GROUP_TYPE_TRIANGLES_HIT_GROUP_NV,
+    eProceduralHitGroup = VK_RAY_TRACING_SHADER_GROUP_TYPE_PROCEDURAL_HIT_GROUP_NV
+  };
+
+  struct RayTracingShaderGroupCreateInfoNV
+  {
+    RayTracingShaderGroupCreateInfoNV( RayTracingShaderGroupTypeNV type_ = RayTracingShaderGroupTypeNV::eGeneral,
+                                       uint32_t generalShader_ = 0,
+                                       uint32_t closestHitShader_ = 0,
+                                       uint32_t anyHitShader_ = 0,
+                                       uint32_t intersectionShader_ = 0 )
+      : type( type_ )
+      , generalShader( generalShader_ )
+      , closestHitShader( closestHitShader_ )
+      , anyHitShader( anyHitShader_ )
+      , intersectionShader( intersectionShader_ )
+    {
+    }
+
+    RayTracingShaderGroupCreateInfoNV( VkRayTracingShaderGroupCreateInfoNV const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( RayTracingShaderGroupCreateInfoNV ) );
+    }
+
+    RayTracingShaderGroupCreateInfoNV& operator=( VkRayTracingShaderGroupCreateInfoNV const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( RayTracingShaderGroupCreateInfoNV ) );
+      return *this;
+    }
+    RayTracingShaderGroupCreateInfoNV& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    RayTracingShaderGroupCreateInfoNV& setType( RayTracingShaderGroupTypeNV type_ )
+    {
+      type = type_;
+      return *this;
+    }
+
+    RayTracingShaderGroupCreateInfoNV& setGeneralShader( uint32_t generalShader_ )
+    {
+      generalShader = generalShader_;
+      return *this;
+    }
+
+    RayTracingShaderGroupCreateInfoNV& setClosestHitShader( uint32_t closestHitShader_ )
+    {
+      closestHitShader = closestHitShader_;
+      return *this;
+    }
+
+    RayTracingShaderGroupCreateInfoNV& setAnyHitShader( uint32_t anyHitShader_ )
+    {
+      anyHitShader = anyHitShader_;
+      return *this;
+    }
+
+    RayTracingShaderGroupCreateInfoNV& setIntersectionShader( uint32_t intersectionShader_ )
+    {
+      intersectionShader = intersectionShader_;
+      return *this;
+    }
+
+    operator VkRayTracingShaderGroupCreateInfoNV const&() const
+    {
+      return *reinterpret_cast<const VkRayTracingShaderGroupCreateInfoNV*>(this);
+    }
+
+    operator VkRayTracingShaderGroupCreateInfoNV &()
+    {
+      return *reinterpret_cast<VkRayTracingShaderGroupCreateInfoNV*>(this);
+    }
+
+    bool operator==( RayTracingShaderGroupCreateInfoNV const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( type == rhs.type )
+          && ( generalShader == rhs.generalShader )
+          && ( closestHitShader == rhs.closestHitShader )
+          && ( anyHitShader == rhs.anyHitShader )
+          && ( intersectionShader == rhs.intersectionShader );
+    }
+
+    bool operator!=( RayTracingShaderGroupCreateInfoNV const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::eRayTracingShaderGroupCreateInfoNV;
+
+  public:
+    const void* pNext = nullptr;
+    RayTracingShaderGroupTypeNV type;
+    uint32_t generalShader;
+    uint32_t closestHitShader;
+    uint32_t anyHitShader;
+    uint32_t intersectionShader;
+  };
+  static_assert( sizeof( RayTracingShaderGroupCreateInfoNV ) == sizeof( VkRayTracingShaderGroupCreateInfoNV ), "struct and wrapper have different size!" );
+
+  struct RayTracingPipelineCreateInfoNV
+  {
+    RayTracingPipelineCreateInfoNV( PipelineCreateFlags flags_ = PipelineCreateFlags(),
+                                    uint32_t stageCount_ = 0,
+                                    const PipelineShaderStageCreateInfo* pStages_ = nullptr,
+                                    uint32_t groupCount_ = 0,
+                                    const RayTracingShaderGroupCreateInfoNV* pGroups_ = nullptr,
+                                    uint32_t maxRecursionDepth_ = 0,
+                                    PipelineLayout layout_ = PipelineLayout(),
+                                    Pipeline basePipelineHandle_ = Pipeline(),
+                                    int32_t basePipelineIndex_ = 0 )
+      : flags( flags_ )
+      , stageCount( stageCount_ )
+      , pStages( pStages_ )
+      , groupCount( groupCount_ )
+      , pGroups( pGroups_ )
+      , maxRecursionDepth( maxRecursionDepth_ )
+      , layout( layout_ )
+      , basePipelineHandle( basePipelineHandle_ )
+      , basePipelineIndex( basePipelineIndex_ )
+    {
+    }
+
+    RayTracingPipelineCreateInfoNV( VkRayTracingPipelineCreateInfoNV const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( RayTracingPipelineCreateInfoNV ) );
+    }
+
+    RayTracingPipelineCreateInfoNV& operator=( VkRayTracingPipelineCreateInfoNV const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( RayTracingPipelineCreateInfoNV ) );
+      return *this;
+    }
+    RayTracingPipelineCreateInfoNV& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    RayTracingPipelineCreateInfoNV& setFlags( PipelineCreateFlags flags_ )
+    {
+      flags = flags_;
+      return *this;
+    }
+
+    RayTracingPipelineCreateInfoNV& setStageCount( uint32_t stageCount_ )
+    {
+      stageCount = stageCount_;
+      return *this;
+    }
+
+    RayTracingPipelineCreateInfoNV& setPStages( const PipelineShaderStageCreateInfo* pStages_ )
+    {
+      pStages = pStages_;
+      return *this;
+    }
+
+    RayTracingPipelineCreateInfoNV& setGroupCount( uint32_t groupCount_ )
+    {
+      groupCount = groupCount_;
+      return *this;
+    }
+
+    RayTracingPipelineCreateInfoNV& setPGroups( const RayTracingShaderGroupCreateInfoNV* pGroups_ )
+    {
+      pGroups = pGroups_;
+      return *this;
+    }
+
+    RayTracingPipelineCreateInfoNV& setMaxRecursionDepth( uint32_t maxRecursionDepth_ )
+    {
+      maxRecursionDepth = maxRecursionDepth_;
+      return *this;
+    }
+
+    RayTracingPipelineCreateInfoNV& setLayout( PipelineLayout layout_ )
+    {
+      layout = layout_;
+      return *this;
+    }
+
+    RayTracingPipelineCreateInfoNV& setBasePipelineHandle( Pipeline basePipelineHandle_ )
+    {
+      basePipelineHandle = basePipelineHandle_;
+      return *this;
+    }
+
+    RayTracingPipelineCreateInfoNV& setBasePipelineIndex( int32_t basePipelineIndex_ )
+    {
+      basePipelineIndex = basePipelineIndex_;
+      return *this;
+    }
+
+    operator VkRayTracingPipelineCreateInfoNV const&() const
+    {
+      return *reinterpret_cast<const VkRayTracingPipelineCreateInfoNV*>(this);
+    }
+
+    operator VkRayTracingPipelineCreateInfoNV &()
+    {
+      return *reinterpret_cast<VkRayTracingPipelineCreateInfoNV*>(this);
+    }
+
+    bool operator==( RayTracingPipelineCreateInfoNV const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( stageCount == rhs.stageCount )
+          && ( pStages == rhs.pStages )
+          && ( groupCount == rhs.groupCount )
+          && ( pGroups == rhs.pGroups )
+          && ( maxRecursionDepth == rhs.maxRecursionDepth )
+          && ( layout == rhs.layout )
+          && ( basePipelineHandle == rhs.basePipelineHandle )
+          && ( basePipelineIndex == rhs.basePipelineIndex );
+    }
+
+    bool operator!=( RayTracingPipelineCreateInfoNV const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::eRayTracingPipelineCreateInfoNV;
+
+  public:
+    const void* pNext = nullptr;
+    PipelineCreateFlags flags;
+    uint32_t stageCount;
+    const PipelineShaderStageCreateInfo* pStages;
+    uint32_t groupCount;
+    const RayTracingShaderGroupCreateInfoNV* pGroups;
+    uint32_t maxRecursionDepth;
+    PipelineLayout layout;
+    Pipeline basePipelineHandle;
+    int32_t basePipelineIndex;
+  };
+  static_assert( sizeof( RayTracingPipelineCreateInfoNV ) == sizeof( VkRayTracingPipelineCreateInfoNV ), "struct and wrapper have different size!" );
+
+  enum class MemoryOverallocationBehaviorAMD
+  {
+    eDefault = VK_MEMORY_OVERALLOCATION_BEHAVIOR_DEFAULT_AMD,
+    eAllowed = VK_MEMORY_OVERALLOCATION_BEHAVIOR_ALLOWED_AMD,
+    eDisallowed = VK_MEMORY_OVERALLOCATION_BEHAVIOR_DISALLOWED_AMD
+  };
+
+  struct DeviceMemoryOverallocationCreateInfoAMD
+  {
+    DeviceMemoryOverallocationCreateInfoAMD( MemoryOverallocationBehaviorAMD overallocationBehavior_ = MemoryOverallocationBehaviorAMD::eDefault )
+      : overallocationBehavior( overallocationBehavior_ )
+    {
+    }
+
+    DeviceMemoryOverallocationCreateInfoAMD( VkDeviceMemoryOverallocationCreateInfoAMD const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( DeviceMemoryOverallocationCreateInfoAMD ) );
+    }
+
+    DeviceMemoryOverallocationCreateInfoAMD& operator=( VkDeviceMemoryOverallocationCreateInfoAMD const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( DeviceMemoryOverallocationCreateInfoAMD ) );
+      return *this;
+    }
+    DeviceMemoryOverallocationCreateInfoAMD& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    DeviceMemoryOverallocationCreateInfoAMD& setOverallocationBehavior( MemoryOverallocationBehaviorAMD overallocationBehavior_ )
+    {
+      overallocationBehavior = overallocationBehavior_;
+      return *this;
+    }
+
+    operator VkDeviceMemoryOverallocationCreateInfoAMD const&() const
+    {
+      return *reinterpret_cast<const VkDeviceMemoryOverallocationCreateInfoAMD*>(this);
+    }
+
+    operator VkDeviceMemoryOverallocationCreateInfoAMD &()
+    {
+      return *reinterpret_cast<VkDeviceMemoryOverallocationCreateInfoAMD*>(this);
+    }
+
+    bool operator==( DeviceMemoryOverallocationCreateInfoAMD const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( overallocationBehavior == rhs.overallocationBehavior );
+    }
+
+    bool operator!=( DeviceMemoryOverallocationCreateInfoAMD const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::eDeviceMemoryOverallocationCreateInfoAMD;
+
+  public:
+    const void* pNext = nullptr;
+    MemoryOverallocationBehaviorAMD overallocationBehavior;
+  };
+  static_assert( sizeof( DeviceMemoryOverallocationCreateInfoAMD ) == sizeof( VkDeviceMemoryOverallocationCreateInfoAMD ), "struct and wrapper have different size!" );
 
   template<typename Dispatch = DispatchLoaderStatic>
   Result enumerateInstanceVersion( uint32_t* pApiVersion, Dispatch const &d = Dispatch() );
@@ -37982,20 +38187,24 @@ public:
     void drawMeshTasksIndirectCountNV( Buffer buffer, DeviceSize offset, Buffer countBuffer, DeviceSize countBufferOffset, uint32_t maxDrawCount, uint32_t stride, Dispatch const &d = Dispatch() ) const;
 
     template<typename Dispatch = DispatchLoaderStatic>
-    void copyAccelerationStructureNVX( AccelerationStructureNVX dst, AccelerationStructureNVX src, CopyAccelerationStructureModeNVX mode, Dispatch const &d = Dispatch() ) const;
+    void copyAccelerationStructureNV( AccelerationStructureNV dst, AccelerationStructureNV src, CopyAccelerationStructureModeNV mode, Dispatch const &d = Dispatch() ) const;
 
     template<typename Dispatch = DispatchLoaderStatic>
-    void writeAccelerationStructurePropertiesNVX( AccelerationStructureNVX accelerationStructure, QueryType queryType, QueryPool queryPool, uint32_t query, Dispatch const &d = Dispatch() ) const;
-
-    template<typename Dispatch = DispatchLoaderStatic>
-    void buildAccelerationStructureNVX( AccelerationStructureTypeNVX type, uint32_t instanceCount, Buffer instanceData, DeviceSize instanceOffset, uint32_t geometryCount, const GeometryNVX* pGeometries, BuildAccelerationStructureFlagsNVX flags, Bool32 update, AccelerationStructureNVX dst, AccelerationStructureNVX src, Buffer scratch, DeviceSize scratchOffset, Dispatch const &d = Dispatch() ) const;
+    void writeAccelerationStructuresPropertiesNV( uint32_t accelerationStructureCount, const AccelerationStructureNV* pAccelerationStructures, QueryType queryType, QueryPool queryPool, uint32_t firstQuery, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = DispatchLoaderStatic>
-    void buildAccelerationStructureNVX( AccelerationStructureTypeNVX type, uint32_t instanceCount, Buffer instanceData, DeviceSize instanceOffset, ArrayProxy<const GeometryNVX> geometries, BuildAccelerationStructureFlagsNVX flags, Bool32 update, AccelerationStructureNVX dst, AccelerationStructureNVX src, Buffer scratch, DeviceSize scratchOffset, Dispatch const &d = Dispatch() ) const;
+    void writeAccelerationStructuresPropertiesNV( ArrayProxy<const AccelerationStructureNV> accelerationStructures, QueryType queryType, QueryPool queryPool, uint32_t firstQuery, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = DispatchLoaderStatic>
-    void traceRaysNVX( Buffer raygenShaderBindingTableBuffer, DeviceSize raygenShaderBindingOffset, Buffer missShaderBindingTableBuffer, DeviceSize missShaderBindingOffset, DeviceSize missShaderBindingStride, Buffer hitShaderBindingTableBuffer, DeviceSize hitShaderBindingOffset, DeviceSize hitShaderBindingStride, uint32_t width, uint32_t height, Dispatch const &d = Dispatch() ) const;
+    void buildAccelerationStructureNV( const AccelerationStructureInfoNV* pInfo, Buffer instanceData, DeviceSize instanceOffset, Bool32 update, AccelerationStructureNV dst, AccelerationStructureNV src, Buffer scratch, DeviceSize scratchOffset, Dispatch const &d = Dispatch() ) const;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template<typename Dispatch = DispatchLoaderStatic>
+    void buildAccelerationStructureNV( const AccelerationStructureInfoNV & info, Buffer instanceData, DeviceSize instanceOffset, Bool32 update, AccelerationStructureNV dst, AccelerationStructureNV src, Buffer scratch, DeviceSize scratchOffset, Dispatch const &d = Dispatch() ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    template<typename Dispatch = DispatchLoaderStatic>
+    void traceRaysNV( Buffer raygenShaderBindingTableBuffer, DeviceSize raygenShaderBindingOffset, Buffer missShaderBindingTableBuffer, DeviceSize missShaderBindingOffset, DeviceSize missShaderBindingStride, Buffer hitShaderBindingTableBuffer, DeviceSize hitShaderBindingOffset, DeviceSize hitShaderBindingStride, Buffer callableShaderBindingTableBuffer, DeviceSize callableShaderBindingOffset, DeviceSize callableShaderBindingStride, uint32_t width, uint32_t height, uint32_t depth, Dispatch const &d = Dispatch() ) const;
 
 
 
@@ -39265,56 +39474,55 @@ public:
 
 #ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE void CommandBuffer::copyAccelerationStructureNVX( AccelerationStructureNVX dst, AccelerationStructureNVX src, CopyAccelerationStructureModeNVX mode, Dispatch const &d) const
+  VULKAN_HPP_INLINE void CommandBuffer::copyAccelerationStructureNV( AccelerationStructureNV dst, AccelerationStructureNV src, CopyAccelerationStructureModeNV mode, Dispatch const &d) const
   {
-    d.vkCmdCopyAccelerationStructureNVX( m_commandBuffer, static_cast<VkAccelerationStructureNVX>( dst ), static_cast<VkAccelerationStructureNVX>( src ), static_cast<VkCopyAccelerationStructureModeNVX>( mode ) );
+    d.vkCmdCopyAccelerationStructureNV( m_commandBuffer, static_cast<VkAccelerationStructureNV>( dst ), static_cast<VkAccelerationStructureNV>( src ), static_cast<VkCopyAccelerationStructureModeNV>( mode ) );
   }
 #else
   template<typename Dispatch>
-  VULKAN_HPP_INLINE void CommandBuffer::copyAccelerationStructureNVX( AccelerationStructureNVX dst, AccelerationStructureNVX src, CopyAccelerationStructureModeNVX mode, Dispatch const &d ) const
+  VULKAN_HPP_INLINE void CommandBuffer::copyAccelerationStructureNV( AccelerationStructureNV dst, AccelerationStructureNV src, CopyAccelerationStructureModeNV mode, Dispatch const &d ) const
   {
-    d.vkCmdCopyAccelerationStructureNVX( m_commandBuffer, static_cast<VkAccelerationStructureNVX>( dst ), static_cast<VkAccelerationStructureNVX>( src ), static_cast<VkCopyAccelerationStructureModeNVX>( mode ) );
-  }
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-
-#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
-  template<typename Dispatch>
-  VULKAN_HPP_INLINE void CommandBuffer::writeAccelerationStructurePropertiesNVX( AccelerationStructureNVX accelerationStructure, QueryType queryType, QueryPool queryPool, uint32_t query, Dispatch const &d) const
-  {
-    d.vkCmdWriteAccelerationStructurePropertiesNVX( m_commandBuffer, static_cast<VkAccelerationStructureNVX>( accelerationStructure ), static_cast<VkQueryType>( queryType ), static_cast<VkQueryPool>( queryPool ), query );
-  }
-#else
-  template<typename Dispatch>
-  VULKAN_HPP_INLINE void CommandBuffer::writeAccelerationStructurePropertiesNVX( AccelerationStructureNVX accelerationStructure, QueryType queryType, QueryPool queryPool, uint32_t query, Dispatch const &d ) const
-  {
-    d.vkCmdWriteAccelerationStructurePropertiesNVX( m_commandBuffer, static_cast<VkAccelerationStructureNVX>( accelerationStructure ), static_cast<VkQueryType>( queryType ), static_cast<VkQueryPool>( queryPool ), query );
+    d.vkCmdCopyAccelerationStructureNV( m_commandBuffer, static_cast<VkAccelerationStructureNV>( dst ), static_cast<VkAccelerationStructureNV>( src ), static_cast<VkCopyAccelerationStructureModeNV>( mode ) );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template<typename Dispatch>
-  VULKAN_HPP_INLINE void CommandBuffer::buildAccelerationStructureNVX( AccelerationStructureTypeNVX type, uint32_t instanceCount, Buffer instanceData, DeviceSize instanceOffset, uint32_t geometryCount, const GeometryNVX* pGeometries, BuildAccelerationStructureFlagsNVX flags, Bool32 update, AccelerationStructureNVX dst, AccelerationStructureNVX src, Buffer scratch, DeviceSize scratchOffset, Dispatch const &d) const
+  VULKAN_HPP_INLINE void CommandBuffer::writeAccelerationStructuresPropertiesNV( uint32_t accelerationStructureCount, const AccelerationStructureNV* pAccelerationStructures, QueryType queryType, QueryPool queryPool, uint32_t firstQuery, Dispatch const &d) const
   {
-    d.vkCmdBuildAccelerationStructureNVX( m_commandBuffer, static_cast<VkAccelerationStructureTypeNVX>( type ), instanceCount, static_cast<VkBuffer>( instanceData ), instanceOffset, geometryCount, reinterpret_cast<const VkGeometryNVX*>( pGeometries ), static_cast<VkBuildAccelerationStructureFlagsNVX>( flags ), update, static_cast<VkAccelerationStructureNVX>( dst ), static_cast<VkAccelerationStructureNVX>( src ), static_cast<VkBuffer>( scratch ), scratchOffset );
+    d.vkCmdWriteAccelerationStructuresPropertiesNV( m_commandBuffer, accelerationStructureCount, reinterpret_cast<const VkAccelerationStructureNV*>( pAccelerationStructures ), static_cast<VkQueryType>( queryType ), static_cast<VkQueryPool>( queryPool ), firstQuery );
   }
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE void CommandBuffer::buildAccelerationStructureNVX( AccelerationStructureTypeNVX type, uint32_t instanceCount, Buffer instanceData, DeviceSize instanceOffset, ArrayProxy<const GeometryNVX> geometries, BuildAccelerationStructureFlagsNVX flags, Bool32 update, AccelerationStructureNVX dst, AccelerationStructureNVX src, Buffer scratch, DeviceSize scratchOffset, Dispatch const &d ) const
+  VULKAN_HPP_INLINE void CommandBuffer::writeAccelerationStructuresPropertiesNV( ArrayProxy<const AccelerationStructureNV> accelerationStructures, QueryType queryType, QueryPool queryPool, uint32_t firstQuery, Dispatch const &d ) const
   {
-    d.vkCmdBuildAccelerationStructureNVX( m_commandBuffer, static_cast<VkAccelerationStructureTypeNVX>( type ), instanceCount, static_cast<VkBuffer>( instanceData ), instanceOffset, geometries.size() , reinterpret_cast<const VkGeometryNVX*>( geometries.data() ), static_cast<VkBuildAccelerationStructureFlagsNVX>( flags ), update, static_cast<VkAccelerationStructureNVX>( dst ), static_cast<VkAccelerationStructureNVX>( src ), static_cast<VkBuffer>( scratch ), scratchOffset );
+    d.vkCmdWriteAccelerationStructuresPropertiesNV( m_commandBuffer, accelerationStructures.size() , reinterpret_cast<const VkAccelerationStructureNV*>( accelerationStructures.data() ), static_cast<VkQueryType>( queryType ), static_cast<VkQueryPool>( queryPool ), firstQuery );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::buildAccelerationStructureNV( const AccelerationStructureInfoNV* pInfo, Buffer instanceData, DeviceSize instanceOffset, Bool32 update, AccelerationStructureNV dst, AccelerationStructureNV src, Buffer scratch, DeviceSize scratchOffset, Dispatch const &d) const
+  {
+    d.vkCmdBuildAccelerationStructureNV( m_commandBuffer, reinterpret_cast<const VkAccelerationStructureInfoNV*>( pInfo ), static_cast<VkBuffer>( instanceData ), instanceOffset, update, static_cast<VkAccelerationStructureNV>( dst ), static_cast<VkAccelerationStructureNV>( src ), static_cast<VkBuffer>( scratch ), scratchOffset );
+  }
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::buildAccelerationStructureNV( const AccelerationStructureInfoNV & info, Buffer instanceData, DeviceSize instanceOffset, Bool32 update, AccelerationStructureNV dst, AccelerationStructureNV src, Buffer scratch, DeviceSize scratchOffset, Dispatch const &d ) const
+  {
+    d.vkCmdBuildAccelerationStructureNV( m_commandBuffer, reinterpret_cast<const VkAccelerationStructureInfoNV*>( &info ), static_cast<VkBuffer>( instanceData ), instanceOffset, update, static_cast<VkAccelerationStructureNV>( dst ), static_cast<VkAccelerationStructureNV>( src ), static_cast<VkBuffer>( scratch ), scratchOffset );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
 #ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE void CommandBuffer::traceRaysNVX( Buffer raygenShaderBindingTableBuffer, DeviceSize raygenShaderBindingOffset, Buffer missShaderBindingTableBuffer, DeviceSize missShaderBindingOffset, DeviceSize missShaderBindingStride, Buffer hitShaderBindingTableBuffer, DeviceSize hitShaderBindingOffset, DeviceSize hitShaderBindingStride, uint32_t width, uint32_t height, Dispatch const &d) const
+  VULKAN_HPP_INLINE void CommandBuffer::traceRaysNV( Buffer raygenShaderBindingTableBuffer, DeviceSize raygenShaderBindingOffset, Buffer missShaderBindingTableBuffer, DeviceSize missShaderBindingOffset, DeviceSize missShaderBindingStride, Buffer hitShaderBindingTableBuffer, DeviceSize hitShaderBindingOffset, DeviceSize hitShaderBindingStride, Buffer callableShaderBindingTableBuffer, DeviceSize callableShaderBindingOffset, DeviceSize callableShaderBindingStride, uint32_t width, uint32_t height, uint32_t depth, Dispatch const &d) const
   {
-    d.vkCmdTraceRaysNVX( m_commandBuffer, static_cast<VkBuffer>( raygenShaderBindingTableBuffer ), raygenShaderBindingOffset, static_cast<VkBuffer>( missShaderBindingTableBuffer ), missShaderBindingOffset, missShaderBindingStride, static_cast<VkBuffer>( hitShaderBindingTableBuffer ), hitShaderBindingOffset, hitShaderBindingStride, width, height );
+    d.vkCmdTraceRaysNV( m_commandBuffer, static_cast<VkBuffer>( raygenShaderBindingTableBuffer ), raygenShaderBindingOffset, static_cast<VkBuffer>( missShaderBindingTableBuffer ), missShaderBindingOffset, missShaderBindingStride, static_cast<VkBuffer>( hitShaderBindingTableBuffer ), hitShaderBindingOffset, hitShaderBindingStride, static_cast<VkBuffer>( callableShaderBindingTableBuffer ), callableShaderBindingOffset, callableShaderBindingStride, width, height, depth );
   }
 #else
   template<typename Dispatch>
-  VULKAN_HPP_INLINE void CommandBuffer::traceRaysNVX( Buffer raygenShaderBindingTableBuffer, DeviceSize raygenShaderBindingOffset, Buffer missShaderBindingTableBuffer, DeviceSize missShaderBindingOffset, DeviceSize missShaderBindingStride, Buffer hitShaderBindingTableBuffer, DeviceSize hitShaderBindingOffset, DeviceSize hitShaderBindingStride, uint32_t width, uint32_t height, Dispatch const &d ) const
+  VULKAN_HPP_INLINE void CommandBuffer::traceRaysNV( Buffer raygenShaderBindingTableBuffer, DeviceSize raygenShaderBindingOffset, Buffer missShaderBindingTableBuffer, DeviceSize missShaderBindingOffset, DeviceSize missShaderBindingStride, Buffer hitShaderBindingTableBuffer, DeviceSize hitShaderBindingOffset, DeviceSize hitShaderBindingStride, Buffer callableShaderBindingTableBuffer, DeviceSize callableShaderBindingOffset, DeviceSize callableShaderBindingStride, uint32_t width, uint32_t height, uint32_t depth, Dispatch const &d ) const
   {
-    d.vkCmdTraceRaysNVX( m_commandBuffer, static_cast<VkBuffer>( raygenShaderBindingTableBuffer ), raygenShaderBindingOffset, static_cast<VkBuffer>( missShaderBindingTableBuffer ), missShaderBindingOffset, missShaderBindingStride, static_cast<VkBuffer>( hitShaderBindingTableBuffer ), hitShaderBindingOffset, hitShaderBindingStride, width, height );
+    d.vkCmdTraceRaysNV( m_commandBuffer, static_cast<VkBuffer>( raygenShaderBindingTableBuffer ), raygenShaderBindingOffset, static_cast<VkBuffer>( missShaderBindingTableBuffer ), missShaderBindingOffset, missShaderBindingStride, static_cast<VkBuffer>( hitShaderBindingTableBuffer ), hitShaderBindingOffset, hitShaderBindingStride, static_cast<VkBuffer>( callableShaderBindingTableBuffer ), callableShaderBindingOffset, callableShaderBindingStride, width, height, depth );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -39688,8 +39896,8 @@ public:
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   class Device;
 
-  template <typename Dispatch> class UniqueHandleTraits<AccelerationStructureNVX,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
-  using UniqueAccelerationStructureNVX = UniqueHandle<AccelerationStructureNVX,DispatchLoaderStatic>;
+  template <typename Dispatch> class UniqueHandleTraits<AccelerationStructureNV,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
+  using UniqueAccelerationStructureNV = UniqueHandle<AccelerationStructureNV,DispatchLoaderStatic>;
   template <typename Dispatch> class UniqueHandleTraits<Buffer,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
   using UniqueBuffer = UniqueHandle<Buffer,DispatchLoaderStatic>;
   template <typename Dispatch> class UniqueHandleTraits<BufferView,Dispatch> {public: using deleter = ObjectDestroy<Device,Dispatch>; };
@@ -41193,88 +41401,81 @@ public:
 
 #ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = DispatchLoaderStatic>
-    Result compileDeferredNVX( Pipeline pipeline, uint32_t shader, Dispatch const &d = Dispatch() ) const;
+    Result compileDeferredNV( Pipeline pipeline, uint32_t shader, Dispatch const &d = Dispatch() ) const;
 #else
     template<typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<void>::type compileDeferredNVX( Pipeline pipeline, uint32_t shader, Dispatch const &d = Dispatch() ) const;
+    ResultValueType<void>::type compileDeferredNV( Pipeline pipeline, uint32_t shader, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = DispatchLoaderStatic>
-    Result createAccelerationStructureNVX( const AccelerationStructureCreateInfoNVX* pCreateInfo, const AllocationCallbacks* pAllocator, AccelerationStructureNVX* pAccelerationStructure, Dispatch const &d = Dispatch() ) const;
+    Result createAccelerationStructureNV( const AccelerationStructureCreateInfoNV* pCreateInfo, const AllocationCallbacks* pAllocator, AccelerationStructureNV* pAccelerationStructure, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<AccelerationStructureNVX>::type createAccelerationStructureNVX( const AccelerationStructureCreateInfoNVX & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    ResultValueType<AccelerationStructureNV>::type createAccelerationStructureNV( const AccelerationStructureCreateInfoNV & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template<typename Dispatch = DispatchLoaderStatic>
-    typename ResultValueType<UniqueHandle<AccelerationStructureNVX,Dispatch>>::type createAccelerationStructureNVXUnique( const AccelerationStructureCreateInfoNVX & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<UniqueHandle<AccelerationStructureNV,Dispatch>>::type createAccelerationStructureNVUnique( const AccelerationStructureCreateInfoNV & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = DispatchLoaderStatic>
-    void destroyAccelerationStructureNVX( AccelerationStructureNVX accelerationStructure, const AllocationCallbacks* pAllocator, Dispatch const &d = Dispatch() ) const;
+    void destroyAccelerationStructureNV( AccelerationStructureNV accelerationStructure, const AllocationCallbacks* pAllocator, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = DispatchLoaderStatic>
-    void destroyAccelerationStructureNVX( AccelerationStructureNVX accelerationStructure, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    void destroyAccelerationStructureNV( AccelerationStructureNV accelerationStructure, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = DispatchLoaderStatic>
-    void destroy( AccelerationStructureNVX accelerationStructure, const AllocationCallbacks* pAllocator, Dispatch const &d = Dispatch() ) const;
+    void destroy( AccelerationStructureNV accelerationStructure, const AllocationCallbacks* pAllocator, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = DispatchLoaderStatic>
-    void destroy( AccelerationStructureNVX accelerationStructure, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    void destroy( AccelerationStructureNV accelerationStructure, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = DispatchLoaderStatic>
-    void getAccelerationStructureMemoryRequirementsNVX( const AccelerationStructureMemoryRequirementsInfoNVX* pInfo, MemoryRequirements2KHR* pMemoryRequirements, Dispatch const &d = Dispatch() ) const;
+    void getAccelerationStructureMemoryRequirementsNV( const AccelerationStructureMemoryRequirementsInfoNV* pInfo, MemoryRequirements2KHR* pMemoryRequirements, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = DispatchLoaderStatic>
-    MemoryRequirements2KHR getAccelerationStructureMemoryRequirementsNVX( const AccelerationStructureMemoryRequirementsInfoNVX & info, Dispatch const &d = Dispatch() ) const;
+    MemoryRequirements2KHR getAccelerationStructureMemoryRequirementsNV( const AccelerationStructureMemoryRequirementsInfoNV & info, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = DispatchLoaderStatic>
-    void getAccelerationStructureScratchMemoryRequirementsNVX( const AccelerationStructureMemoryRequirementsInfoNVX* pInfo, MemoryRequirements2KHR* pMemoryRequirements, Dispatch const &d = Dispatch() ) const;
+    Result bindAccelerationStructureMemoryNV( uint32_t bindInfoCount, const BindAccelerationStructureMemoryInfoNV* pBindInfos, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = DispatchLoaderStatic>
-    MemoryRequirements2KHR getAccelerationStructureScratchMemoryRequirementsNVX( const AccelerationStructureMemoryRequirementsInfoNVX & info, Dispatch const &d = Dispatch() ) const;
+    ResultValueType<void>::type bindAccelerationStructureMemoryNV( ArrayProxy<const BindAccelerationStructureMemoryInfoNV> bindInfos, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = DispatchLoaderStatic>
-    Result bindAccelerationStructureMemoryNVX( uint32_t bindInfoCount, const BindAccelerationStructureMemoryInfoNVX* pBindInfos, Dispatch const &d = Dispatch() ) const;
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    template<typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<void>::type bindAccelerationStructureMemoryNVX( ArrayProxy<const BindAccelerationStructureMemoryInfoNVX> bindInfos, Dispatch const &d = Dispatch() ) const;
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-
-    template<typename Dispatch = DispatchLoaderStatic>
-    Result getRaytracingShaderHandlesNVX( Pipeline pipeline, uint32_t firstGroup, uint32_t groupCount, size_t dataSize, void* pData, Dispatch const &d = Dispatch() ) const;
+    Result getRayTracingShaderGroupHandlesNV( Pipeline pipeline, uint32_t firstGroup, uint32_t groupCount, size_t dataSize, void* pData, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template <typename T, typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<void>::type getRaytracingShaderHandlesNVX( Pipeline pipeline, uint32_t firstGroup, uint32_t groupCount, ArrayProxy<T> data, Dispatch const &d = Dispatch() ) const;
+    ResultValueType<void>::type getRayTracingShaderGroupHandlesNV( Pipeline pipeline, uint32_t firstGroup, uint32_t groupCount, ArrayProxy<T> data, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = DispatchLoaderStatic>
-    Result getAccelerationStructureHandleNVX( AccelerationStructureNVX accelerationStructure, size_t dataSize, void* pData, Dispatch const &d = Dispatch() ) const;
+    Result getAccelerationStructureHandleNV( AccelerationStructureNV accelerationStructure, size_t dataSize, void* pData, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template <typename T, typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<void>::type getAccelerationStructureHandleNVX( AccelerationStructureNVX accelerationStructure, ArrayProxy<T> data, Dispatch const &d = Dispatch() ) const;
+    ResultValueType<void>::type getAccelerationStructureHandleNV( AccelerationStructureNV accelerationStructure, ArrayProxy<T> data, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = DispatchLoaderStatic>
-    Result createRaytracingPipelinesNVX( PipelineCache pipelineCache, uint32_t createInfoCount, const RaytracingPipelineCreateInfoNVX* pCreateInfos, const AllocationCallbacks* pAllocator, Pipeline* pPipelines, Dispatch const &d = Dispatch() ) const;
+    Result createRayTracingPipelinesNV( PipelineCache pipelineCache, uint32_t createInfoCount, const RayTracingPipelineCreateInfoNV* pCreateInfos, const AllocationCallbacks* pAllocator, Pipeline* pPipelines, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template <typename Allocator = std::allocator<Pipeline>, typename Dispatch = DispatchLoaderStatic> 
-    typename ResultValueType<std::vector<Pipeline,Allocator>>::type createRaytracingPipelinesNVX( PipelineCache pipelineCache, ArrayProxy<const RaytracingPipelineCreateInfoNVX> createInfos, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<std::vector<Pipeline,Allocator>>::type createRayTracingPipelinesNV( PipelineCache pipelineCache, ArrayProxy<const RayTracingPipelineCreateInfoNV> createInfos, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
     template <typename Allocator = std::allocator<Pipeline>, typename Dispatch = DispatchLoaderStatic> 
-    typename ResultValueType<std::vector<Pipeline,Allocator>>::type createRaytracingPipelinesNVX( PipelineCache pipelineCache, ArrayProxy<const RaytracingPipelineCreateInfoNVX> createInfos, Optional<const AllocationCallbacks> allocator, Allocator const& vectorAllocator, Dispatch const &d ) const;
+    typename ResultValueType<std::vector<Pipeline,Allocator>>::type createRayTracingPipelinesNV( PipelineCache pipelineCache, ArrayProxy<const RayTracingPipelineCreateInfoNV> createInfos, Optional<const AllocationCallbacks> allocator, Allocator const& vectorAllocator, Dispatch const &d ) const;
     template<typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<Pipeline>::type createRaytracingPipelineNVX( PipelineCache pipelineCache, const RaytracingPipelineCreateInfoNVX & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    ResultValueType<Pipeline>::type createRayTracingPipelineNV( PipelineCache pipelineCache, const RayTracingPipelineCreateInfoNV & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template <typename Allocator = std::allocator<UniquePipeline>, typename Dispatch = DispatchLoaderStatic> 
-    typename ResultValueType<std::vector<UniqueHandle<Pipeline,Dispatch>,Allocator>>::type createRaytracingPipelinesNVXUnique( PipelineCache pipelineCache, ArrayProxy<const RaytracingPipelineCreateInfoNVX> createInfos, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<std::vector<UniqueHandle<Pipeline,Dispatch>,Allocator>>::type createRayTracingPipelinesNVUnique( PipelineCache pipelineCache, ArrayProxy<const RayTracingPipelineCreateInfoNV> createInfos, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
     template <typename Allocator = std::allocator<UniquePipeline>, typename Dispatch = DispatchLoaderStatic> 
-    typename ResultValueType<std::vector<UniqueHandle<Pipeline,Dispatch>,Allocator>>::type createRaytracingPipelinesNVXUnique( PipelineCache pipelineCache, ArrayProxy<const RaytracingPipelineCreateInfoNVX> createInfos, Optional<const AllocationCallbacks> allocator, Allocator const& vectorAllocator, Dispatch const &d ) const;
+    typename ResultValueType<std::vector<UniqueHandle<Pipeline,Dispatch>,Allocator>>::type createRayTracingPipelinesNVUnique( PipelineCache pipelineCache, ArrayProxy<const RayTracingPipelineCreateInfoNV> createInfos, Optional<const AllocationCallbacks> allocator, Allocator const& vectorAllocator, Dispatch const &d ) const;
     template<typename Dispatch = DispatchLoaderStatic>
-    typename ResultValueType<UniqueHandle<Pipeline,Dispatch>>::type createRaytracingPipelineNVXUnique( PipelineCache pipelineCache, const RaytracingPipelineCreateInfoNVX & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+    typename ResultValueType<UniqueHandle<Pipeline,Dispatch>>::type createRayTracingPipelineNVUnique( PipelineCache pipelineCache, const RayTracingPipelineCreateInfoNV & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -44635,179 +44836,164 @@ public:
 
 #ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE Result Device::compileDeferredNVX( Pipeline pipeline, uint32_t shader, Dispatch const &d) const
+  VULKAN_HPP_INLINE Result Device::compileDeferredNV( Pipeline pipeline, uint32_t shader, Dispatch const &d) const
   {
-    return static_cast<Result>( d.vkCompileDeferredNVX( m_device, static_cast<VkPipeline>( pipeline ), shader ) );
+    return static_cast<Result>( d.vkCompileDeferredNV( m_device, static_cast<VkPipeline>( pipeline ), shader ) );
   }
 #else
   template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<void>::type Device::compileDeferredNVX( Pipeline pipeline, uint32_t shader, Dispatch const &d ) const
+  VULKAN_HPP_INLINE ResultValueType<void>::type Device::compileDeferredNV( Pipeline pipeline, uint32_t shader, Dispatch const &d ) const
   {
-    Result result = static_cast<Result>( d.vkCompileDeferredNVX( m_device, static_cast<VkPipeline>( pipeline ), shader ) );
-    return createResultValue( result, VULKAN_HPP_NAMESPACE_STRING"::Device::compileDeferredNVX" );
+    Result result = static_cast<Result>( d.vkCompileDeferredNV( m_device, static_cast<VkPipeline>( pipeline ), shader ) );
+    return createResultValue( result, VULKAN_HPP_NAMESPACE_STRING"::Device::compileDeferredNV" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template<typename Dispatch>
-  VULKAN_HPP_INLINE Result Device::createAccelerationStructureNVX( const AccelerationStructureCreateInfoNVX* pCreateInfo, const AllocationCallbacks* pAllocator, AccelerationStructureNVX* pAccelerationStructure, Dispatch const &d) const
+  VULKAN_HPP_INLINE Result Device::createAccelerationStructureNV( const AccelerationStructureCreateInfoNV* pCreateInfo, const AllocationCallbacks* pAllocator, AccelerationStructureNV* pAccelerationStructure, Dispatch const &d) const
   {
-    return static_cast<Result>( d.vkCreateAccelerationStructureNVX( m_device, reinterpret_cast<const VkAccelerationStructureCreateInfoNVX*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkAccelerationStructureNVX*>( pAccelerationStructure ) ) );
+    return static_cast<Result>( d.vkCreateAccelerationStructureNV( m_device, reinterpret_cast<const VkAccelerationStructureCreateInfoNV*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkAccelerationStructureNV*>( pAccelerationStructure ) ) );
   }
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<AccelerationStructureNVX>::type Device::createAccelerationStructureNVX( const AccelerationStructureCreateInfoNVX & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE ResultValueType<AccelerationStructureNV>::type Device::createAccelerationStructureNV( const AccelerationStructureCreateInfoNV & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
-    AccelerationStructureNVX accelerationStructure;
-    Result result = static_cast<Result>( d.vkCreateAccelerationStructureNVX( m_device, reinterpret_cast<const VkAccelerationStructureCreateInfoNVX*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkAccelerationStructureNVX*>( &accelerationStructure ) ) );
-    return createResultValue( result, accelerationStructure, VULKAN_HPP_NAMESPACE_STRING"::Device::createAccelerationStructureNVX" );
+    AccelerationStructureNV accelerationStructure;
+    Result result = static_cast<Result>( d.vkCreateAccelerationStructureNV( m_device, reinterpret_cast<const VkAccelerationStructureCreateInfoNV*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkAccelerationStructureNV*>( &accelerationStructure ) ) );
+    return createResultValue( result, accelerationStructure, VULKAN_HPP_NAMESPACE_STRING"::Device::createAccelerationStructureNV" );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<AccelerationStructureNVX,Dispatch>>::type Device::createAccelerationStructureNVXUnique( const AccelerationStructureCreateInfoNVX & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<AccelerationStructureNV,Dispatch>>::type Device::createAccelerationStructureNVUnique( const AccelerationStructureCreateInfoNV & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
-    AccelerationStructureNVX accelerationStructure;
-    Result result = static_cast<Result>( d.vkCreateAccelerationStructureNVX( m_device, reinterpret_cast<const VkAccelerationStructureCreateInfoNVX*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkAccelerationStructureNVX*>( &accelerationStructure ) ) );
+    AccelerationStructureNV accelerationStructure;
+    Result result = static_cast<Result>( d.vkCreateAccelerationStructureNV( m_device, reinterpret_cast<const VkAccelerationStructureCreateInfoNV*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkAccelerationStructureNV*>( &accelerationStructure ) ) );
 
     ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
-    return createResultValue<AccelerationStructureNVX,Dispatch>( result, accelerationStructure, VULKAN_HPP_NAMESPACE_STRING"::Device::createAccelerationStructureNVXUnique", deleter );
+    return createResultValue<AccelerationStructureNV,Dispatch>( result, accelerationStructure, VULKAN_HPP_NAMESPACE_STRING"::Device::createAccelerationStructureNVUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template<typename Dispatch>
-  VULKAN_HPP_INLINE void Device::destroyAccelerationStructureNVX( AccelerationStructureNVX accelerationStructure, const AllocationCallbacks* pAllocator, Dispatch const &d) const
+  VULKAN_HPP_INLINE void Device::destroyAccelerationStructureNV( AccelerationStructureNV accelerationStructure, const AllocationCallbacks* pAllocator, Dispatch const &d) const
   {
-    d.vkDestroyAccelerationStructureNVX( m_device, static_cast<VkAccelerationStructureNVX>( accelerationStructure ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ) );
+    d.vkDestroyAccelerationStructureNV( m_device, static_cast<VkAccelerationStructureNV>( accelerationStructure ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ) );
   }
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE void Device::destroyAccelerationStructureNVX( AccelerationStructureNVX accelerationStructure, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE void Device::destroyAccelerationStructureNV( AccelerationStructureNV accelerationStructure, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
-    d.vkDestroyAccelerationStructureNVX( m_device, static_cast<VkAccelerationStructureNVX>( accelerationStructure ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ) );
+    d.vkDestroyAccelerationStructureNV( m_device, static_cast<VkAccelerationStructureNV>( accelerationStructure ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ) );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template<typename Dispatch>
-  VULKAN_HPP_INLINE void Device::destroy( AccelerationStructureNVX accelerationStructure, const AllocationCallbacks* pAllocator, Dispatch const &d) const
+  VULKAN_HPP_INLINE void Device::destroy( AccelerationStructureNV accelerationStructure, const AllocationCallbacks* pAllocator, Dispatch const &d) const
   {
-    d.vkDestroyAccelerationStructureNVX( m_device, static_cast<VkAccelerationStructureNVX>( accelerationStructure ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ) );
+    d.vkDestroyAccelerationStructureNV( m_device, static_cast<VkAccelerationStructureNV>( accelerationStructure ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ) );
   }
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE void Device::destroy( AccelerationStructureNVX accelerationStructure, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE void Device::destroy( AccelerationStructureNV accelerationStructure, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
-    d.vkDestroyAccelerationStructureNVX( m_device, static_cast<VkAccelerationStructureNVX>( accelerationStructure ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ) );
+    d.vkDestroyAccelerationStructureNV( m_device, static_cast<VkAccelerationStructureNV>( accelerationStructure ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ) );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template<typename Dispatch>
-  VULKAN_HPP_INLINE void Device::getAccelerationStructureMemoryRequirementsNVX( const AccelerationStructureMemoryRequirementsInfoNVX* pInfo, MemoryRequirements2KHR* pMemoryRequirements, Dispatch const &d) const
+  VULKAN_HPP_INLINE void Device::getAccelerationStructureMemoryRequirementsNV( const AccelerationStructureMemoryRequirementsInfoNV* pInfo, MemoryRequirements2KHR* pMemoryRequirements, Dispatch const &d) const
   {
-    d.vkGetAccelerationStructureMemoryRequirementsNVX( m_device, reinterpret_cast<const VkAccelerationStructureMemoryRequirementsInfoNVX*>( pInfo ), reinterpret_cast<VkMemoryRequirements2KHR*>( pMemoryRequirements ) );
+    d.vkGetAccelerationStructureMemoryRequirementsNV( m_device, reinterpret_cast<const VkAccelerationStructureMemoryRequirementsInfoNV*>( pInfo ), reinterpret_cast<VkMemoryRequirements2KHR*>( pMemoryRequirements ) );
   }
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE MemoryRequirements2KHR Device::getAccelerationStructureMemoryRequirementsNVX( const AccelerationStructureMemoryRequirementsInfoNVX & info, Dispatch const &d ) const
+  VULKAN_HPP_INLINE MemoryRequirements2KHR Device::getAccelerationStructureMemoryRequirementsNV( const AccelerationStructureMemoryRequirementsInfoNV & info, Dispatch const &d ) const
   {
     MemoryRequirements2KHR memoryRequirements;
-    d.vkGetAccelerationStructureMemoryRequirementsNVX( m_device, reinterpret_cast<const VkAccelerationStructureMemoryRequirementsInfoNVX*>( &info ), reinterpret_cast<VkMemoryRequirements2KHR*>( &memoryRequirements ) );
+    d.vkGetAccelerationStructureMemoryRequirementsNV( m_device, reinterpret_cast<const VkAccelerationStructureMemoryRequirementsInfoNV*>( &info ), reinterpret_cast<VkMemoryRequirements2KHR*>( &memoryRequirements ) );
     return memoryRequirements;
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template<typename Dispatch>
-  VULKAN_HPP_INLINE void Device::getAccelerationStructureScratchMemoryRequirementsNVX( const AccelerationStructureMemoryRequirementsInfoNVX* pInfo, MemoryRequirements2KHR* pMemoryRequirements, Dispatch const &d) const
+  VULKAN_HPP_INLINE Result Device::bindAccelerationStructureMemoryNV( uint32_t bindInfoCount, const BindAccelerationStructureMemoryInfoNV* pBindInfos, Dispatch const &d) const
   {
-    d.vkGetAccelerationStructureScratchMemoryRequirementsNVX( m_device, reinterpret_cast<const VkAccelerationStructureMemoryRequirementsInfoNVX*>( pInfo ), reinterpret_cast<VkMemoryRequirements2KHR*>( pMemoryRequirements ) );
+    return static_cast<Result>( d.vkBindAccelerationStructureMemoryNV( m_device, bindInfoCount, reinterpret_cast<const VkBindAccelerationStructureMemoryInfoNV*>( pBindInfos ) ) );
   }
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE MemoryRequirements2KHR Device::getAccelerationStructureScratchMemoryRequirementsNVX( const AccelerationStructureMemoryRequirementsInfoNVX & info, Dispatch const &d ) const
+  VULKAN_HPP_INLINE ResultValueType<void>::type Device::bindAccelerationStructureMemoryNV( ArrayProxy<const BindAccelerationStructureMemoryInfoNV> bindInfos, Dispatch const &d ) const
   {
-    MemoryRequirements2KHR memoryRequirements;
-    d.vkGetAccelerationStructureScratchMemoryRequirementsNVX( m_device, reinterpret_cast<const VkAccelerationStructureMemoryRequirementsInfoNVX*>( &info ), reinterpret_cast<VkMemoryRequirements2KHR*>( &memoryRequirements ) );
-    return memoryRequirements;
+    Result result = static_cast<Result>( d.vkBindAccelerationStructureMemoryNV( m_device, bindInfos.size() , reinterpret_cast<const VkBindAccelerationStructureMemoryInfoNV*>( bindInfos.data() ) ) );
+    return createResultValue( result, VULKAN_HPP_NAMESPACE_STRING"::Device::bindAccelerationStructureMemoryNV" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template<typename Dispatch>
-  VULKAN_HPP_INLINE Result Device::bindAccelerationStructureMemoryNVX( uint32_t bindInfoCount, const BindAccelerationStructureMemoryInfoNVX* pBindInfos, Dispatch const &d) const
+  VULKAN_HPP_INLINE Result Device::getRayTracingShaderGroupHandlesNV( Pipeline pipeline, uint32_t firstGroup, uint32_t groupCount, size_t dataSize, void* pData, Dispatch const &d) const
   {
-    return static_cast<Result>( d.vkBindAccelerationStructureMemoryNVX( m_device, bindInfoCount, reinterpret_cast<const VkBindAccelerationStructureMemoryInfoNVX*>( pBindInfos ) ) );
-  }
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-  template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<void>::type Device::bindAccelerationStructureMemoryNVX( ArrayProxy<const BindAccelerationStructureMemoryInfoNVX> bindInfos, Dispatch const &d ) const
-  {
-    Result result = static_cast<Result>( d.vkBindAccelerationStructureMemoryNVX( m_device, bindInfos.size() , reinterpret_cast<const VkBindAccelerationStructureMemoryInfoNVX*>( bindInfos.data() ) ) );
-    return createResultValue( result, VULKAN_HPP_NAMESPACE_STRING"::Device::bindAccelerationStructureMemoryNVX" );
-  }
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-
-  template<typename Dispatch>
-  VULKAN_HPP_INLINE Result Device::getRaytracingShaderHandlesNVX( Pipeline pipeline, uint32_t firstGroup, uint32_t groupCount, size_t dataSize, void* pData, Dispatch const &d) const
-  {
-    return static_cast<Result>( d.vkGetRaytracingShaderHandlesNVX( m_device, static_cast<VkPipeline>( pipeline ), firstGroup, groupCount, dataSize, pData ) );
+    return static_cast<Result>( d.vkGetRayTracingShaderGroupHandlesNV( m_device, static_cast<VkPipeline>( pipeline ), firstGroup, groupCount, dataSize, pData ) );
   }
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename T, typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<void>::type Device::getRaytracingShaderHandlesNVX( Pipeline pipeline, uint32_t firstGroup, uint32_t groupCount, ArrayProxy<T> data, Dispatch const &d ) const
+  VULKAN_HPP_INLINE ResultValueType<void>::type Device::getRayTracingShaderGroupHandlesNV( Pipeline pipeline, uint32_t firstGroup, uint32_t groupCount, ArrayProxy<T> data, Dispatch const &d ) const
   {
-    Result result = static_cast<Result>( d.vkGetRaytracingShaderHandlesNVX( m_device, static_cast<VkPipeline>( pipeline ), firstGroup, groupCount, data.size() * sizeof( T ) , reinterpret_cast<void*>( data.data() ) ) );
-    return createResultValue( result, VULKAN_HPP_NAMESPACE_STRING"::Device::getRaytracingShaderHandlesNVX" );
+    Result result = static_cast<Result>( d.vkGetRayTracingShaderGroupHandlesNV( m_device, static_cast<VkPipeline>( pipeline ), firstGroup, groupCount, data.size() * sizeof( T ) , reinterpret_cast<void*>( data.data() ) ) );
+    return createResultValue( result, VULKAN_HPP_NAMESPACE_STRING"::Device::getRayTracingShaderGroupHandlesNV" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template<typename Dispatch>
-  VULKAN_HPP_INLINE Result Device::getAccelerationStructureHandleNVX( AccelerationStructureNVX accelerationStructure, size_t dataSize, void* pData, Dispatch const &d) const
+  VULKAN_HPP_INLINE Result Device::getAccelerationStructureHandleNV( AccelerationStructureNV accelerationStructure, size_t dataSize, void* pData, Dispatch const &d) const
   {
-    return static_cast<Result>( d.vkGetAccelerationStructureHandleNVX( m_device, static_cast<VkAccelerationStructureNVX>( accelerationStructure ), dataSize, pData ) );
+    return static_cast<Result>( d.vkGetAccelerationStructureHandleNV( m_device, static_cast<VkAccelerationStructureNV>( accelerationStructure ), dataSize, pData ) );
   }
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename T, typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<void>::type Device::getAccelerationStructureHandleNVX( AccelerationStructureNVX accelerationStructure, ArrayProxy<T> data, Dispatch const &d ) const
+  VULKAN_HPP_INLINE ResultValueType<void>::type Device::getAccelerationStructureHandleNV( AccelerationStructureNV accelerationStructure, ArrayProxy<T> data, Dispatch const &d ) const
   {
-    Result result = static_cast<Result>( d.vkGetAccelerationStructureHandleNVX( m_device, static_cast<VkAccelerationStructureNVX>( accelerationStructure ), data.size() * sizeof( T ) , reinterpret_cast<void*>( data.data() ) ) );
-    return createResultValue( result, VULKAN_HPP_NAMESPACE_STRING"::Device::getAccelerationStructureHandleNVX" );
+    Result result = static_cast<Result>( d.vkGetAccelerationStructureHandleNV( m_device, static_cast<VkAccelerationStructureNV>( accelerationStructure ), data.size() * sizeof( T ) , reinterpret_cast<void*>( data.data() ) ) );
+    return createResultValue( result, VULKAN_HPP_NAMESPACE_STRING"::Device::getAccelerationStructureHandleNV" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template<typename Dispatch>
-  VULKAN_HPP_INLINE Result Device::createRaytracingPipelinesNVX( PipelineCache pipelineCache, uint32_t createInfoCount, const RaytracingPipelineCreateInfoNVX* pCreateInfos, const AllocationCallbacks* pAllocator, Pipeline* pPipelines, Dispatch const &d) const
+  VULKAN_HPP_INLINE Result Device::createRayTracingPipelinesNV( PipelineCache pipelineCache, uint32_t createInfoCount, const RayTracingPipelineCreateInfoNV* pCreateInfos, const AllocationCallbacks* pAllocator, Pipeline* pPipelines, Dispatch const &d) const
   {
-    return static_cast<Result>( d.vkCreateRaytracingPipelinesNVX( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfoCount, reinterpret_cast<const VkRaytracingPipelineCreateInfoNVX*>( pCreateInfos ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkPipeline*>( pPipelines ) ) );
+    return static_cast<Result>( d.vkCreateRayTracingPipelinesNV( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfoCount, reinterpret_cast<const VkRayTracingPipelineCreateInfoNV*>( pCreateInfos ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkPipeline*>( pPipelines ) ) );
   }
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename Allocator, typename Dispatch> 
-  VULKAN_HPP_INLINE typename ResultValueType<std::vector<Pipeline,Allocator>>::type Device::createRaytracingPipelinesNVX( PipelineCache pipelineCache, ArrayProxy<const RaytracingPipelineCreateInfoNVX> createInfos, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<std::vector<Pipeline,Allocator>>::type Device::createRayTracingPipelinesNV( PipelineCache pipelineCache, ArrayProxy<const RayTracingPipelineCreateInfoNV> createInfos, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     std::vector<Pipeline,Allocator> pipelines( createInfos.size() );
-    Result result = static_cast<Result>( d.vkCreateRaytracingPipelinesNVX( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkRaytracingPipelineCreateInfoNVX*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( pipelines.data() ) ) );
-    return createResultValue( result, pipelines, VULKAN_HPP_NAMESPACE_STRING"::Device::createRaytracingPipelinesNVX" );
+    Result result = static_cast<Result>( d.vkCreateRayTracingPipelinesNV( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkRayTracingPipelineCreateInfoNV*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( pipelines.data() ) ) );
+    return createResultValue( result, pipelines, VULKAN_HPP_NAMESPACE_STRING"::Device::createRayTracingPipelinesNV" );
   }
   template <typename Allocator, typename Dispatch> 
-  VULKAN_HPP_INLINE typename ResultValueType<std::vector<Pipeline,Allocator>>::type Device::createRaytracingPipelinesNVX( PipelineCache pipelineCache, ArrayProxy<const RaytracingPipelineCreateInfoNVX> createInfos, Optional<const AllocationCallbacks> allocator, Allocator const& vectorAllocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<std::vector<Pipeline,Allocator>>::type Device::createRayTracingPipelinesNV( PipelineCache pipelineCache, ArrayProxy<const RayTracingPipelineCreateInfoNV> createInfos, Optional<const AllocationCallbacks> allocator, Allocator const& vectorAllocator, Dispatch const &d ) const
   {
     std::vector<Pipeline,Allocator> pipelines( createInfos.size(), vectorAllocator );
-    Result result = static_cast<Result>( d.vkCreateRaytracingPipelinesNVX( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkRaytracingPipelineCreateInfoNVX*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( pipelines.data() ) ) );
-    return createResultValue( result, pipelines, VULKAN_HPP_NAMESPACE_STRING"::Device::createRaytracingPipelinesNVX" );
+    Result result = static_cast<Result>( d.vkCreateRayTracingPipelinesNV( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkRayTracingPipelineCreateInfoNV*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( pipelines.data() ) ) );
+    return createResultValue( result, pipelines, VULKAN_HPP_NAMESPACE_STRING"::Device::createRayTracingPipelinesNV" );
   }
   template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<Pipeline>::type Device::createRaytracingPipelineNVX( PipelineCache pipelineCache, const RaytracingPipelineCreateInfoNVX & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE ResultValueType<Pipeline>::type Device::createRayTracingPipelineNV( PipelineCache pipelineCache, const RayTracingPipelineCreateInfoNV & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     Pipeline pipeline;
-    Result result = static_cast<Result>( d.vkCreateRaytracingPipelinesNVX( m_device, static_cast<VkPipelineCache>( pipelineCache ), 1 , reinterpret_cast<const VkRaytracingPipelineCreateInfoNVX*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( &pipeline ) ) );
-    return createResultValue( result, pipeline, VULKAN_HPP_NAMESPACE_STRING"::Device::createRaytracingPipelineNVX" );
+    Result result = static_cast<Result>( d.vkCreateRayTracingPipelinesNV( m_device, static_cast<VkPipelineCache>( pipelineCache ), 1 , reinterpret_cast<const VkRayTracingPipelineCreateInfoNV*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( &pipeline ) ) );
+    return createResultValue( result, pipeline, VULKAN_HPP_NAMESPACE_STRING"::Device::createRayTracingPipelineNV" );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template <typename Allocator, typename Dispatch> 
-  VULKAN_HPP_INLINE typename ResultValueType<std::vector<UniqueHandle<Pipeline,Dispatch>,Allocator>>::type Device::createRaytracingPipelinesNVXUnique( PipelineCache pipelineCache, ArrayProxy<const RaytracingPipelineCreateInfoNVX> createInfos, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<std::vector<UniqueHandle<Pipeline,Dispatch>,Allocator>>::type Device::createRayTracingPipelinesNVUnique( PipelineCache pipelineCache, ArrayProxy<const RayTracingPipelineCreateInfoNV> createInfos, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     static_assert( sizeof( Pipeline ) <= sizeof( UniquePipeline ), "Pipeline is greater than UniquePipeline!" );
     std::vector<UniquePipeline, Allocator> pipelines;
     pipelines.reserve( createInfos.size() );
     Pipeline* buffer = reinterpret_cast<Pipeline*>( reinterpret_cast<char*>( pipelines.data() ) + createInfos.size() * ( sizeof( UniquePipeline ) - sizeof( Pipeline ) ) );
-    Result result = static_cast<Result>(d.vkCreateRaytracingPipelinesNVX( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkRaytracingPipelineCreateInfoNVX*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( buffer ) ) );
+    Result result = static_cast<Result>(d.vkCreateRayTracingPipelinesNV( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkRayTracingPipelineCreateInfoNV*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( buffer ) ) );
 
     ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
     for ( size_t i=0 ; i<createInfos.size() ; i++ )
@@ -44815,16 +45001,16 @@ public:
       pipelines.push_back( UniquePipeline( buffer[i], deleter ) );
     }
 
-    return createResultValue( result, pipelines, VULKAN_HPP_NAMESPACE_STRING "::Device::createRaytracingPipelinesNVXUnique" );
+    return createResultValue( result, pipelines, VULKAN_HPP_NAMESPACE_STRING "::Device::createRayTracingPipelinesNVUnique" );
   }
   template <typename Allocator, typename Dispatch> 
-  VULKAN_HPP_INLINE typename ResultValueType<std::vector<UniqueHandle<Pipeline,Dispatch>,Allocator>>::type Device::createRaytracingPipelinesNVXUnique( PipelineCache pipelineCache, ArrayProxy<const RaytracingPipelineCreateInfoNVX> createInfos, Optional<const AllocationCallbacks> allocator, Allocator const& vectorAllocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<std::vector<UniqueHandle<Pipeline,Dispatch>,Allocator>>::type Device::createRayTracingPipelinesNVUnique( PipelineCache pipelineCache, ArrayProxy<const RayTracingPipelineCreateInfoNV> createInfos, Optional<const AllocationCallbacks> allocator, Allocator const& vectorAllocator, Dispatch const &d ) const
   {
     static_assert( sizeof( Pipeline ) <= sizeof( UniquePipeline ), "Pipeline is greater than UniquePipeline!" );
     std::vector<UniquePipeline, Allocator> pipelines;
     pipelines.reserve( createInfos.size() );
     Pipeline* buffer = reinterpret_cast<Pipeline*>( reinterpret_cast<char*>( pipelines.data() ) + createInfos.size() * ( sizeof( UniquePipeline ) - sizeof( Pipeline ) ) );
-    Result result = static_cast<Result>(d.vkCreateRaytracingPipelinesNVX( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkRaytracingPipelineCreateInfoNVX*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( buffer ) ) );
+    Result result = static_cast<Result>(d.vkCreateRayTracingPipelinesNV( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkRayTracingPipelineCreateInfoNV*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( buffer ) ) );
 
     ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
     for ( size_t i=0 ; i<createInfos.size() ; i++ )
@@ -44832,16 +45018,16 @@ public:
       pipelines.push_back( UniquePipeline( buffer[i], deleter ) );
     }
 
-    return createResultValue( result, pipelines, VULKAN_HPP_NAMESPACE_STRING "::Device::createRaytracingPipelinesNVXUnique" );
+    return createResultValue( result, pipelines, VULKAN_HPP_NAMESPACE_STRING "::Device::createRayTracingPipelinesNVUnique" );
   }
   template<typename Dispatch>
-  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<Pipeline,Dispatch>>::type Device::createRaytracingPipelineNVXUnique( PipelineCache pipelineCache, const RaytracingPipelineCreateInfoNVX & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<Pipeline,Dispatch>>::type Device::createRayTracingPipelineNVUnique( PipelineCache pipelineCache, const RayTracingPipelineCreateInfoNV & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     Pipeline pipeline;
-    Result result = static_cast<Result>( d.vkCreateRaytracingPipelinesNVX( m_device, static_cast<VkPipelineCache>( pipelineCache ), 1 , reinterpret_cast<const VkRaytracingPipelineCreateInfoNVX*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( &pipeline ) ) );
+    Result result = static_cast<Result>( d.vkCreateRayTracingPipelinesNV( m_device, static_cast<VkPipelineCache>( pipelineCache ), 1 , reinterpret_cast<const VkRayTracingPipelineCreateInfoNV*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( &pipeline ) ) );
 
     ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
-    return createResultValue<Pipeline,Dispatch>( result, pipeline, VULKAN_HPP_NAMESPACE_STRING"::Device::createRaytracingPipelineNVXUnique", deleter );
+    return createResultValue<Pipeline,Dispatch>( result, pipeline, VULKAN_HPP_NAMESPACE_STRING"::Device::createRayTracingPipelineNVUnique", deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -45044,15 +45230,6 @@ public:
     template<typename Dispatch = DispatchLoaderStatic>
     ResultValueType<DisplayPlaneCapabilitiesKHR>::type getDisplayPlaneCapabilitiesKHR( DisplayModeKHR mode, uint32_t planeIndex, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-
-#ifdef VK_USE_PLATFORM_MIR_KHR
-    template<typename Dispatch = DispatchLoaderStatic>
-    Bool32 getMirPresentationSupportKHR( uint32_t queueFamilyIndex, MirConnection* connection, Dispatch const &d = Dispatch() ) const;
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    template<typename Dispatch = DispatchLoaderStatic>
-    Bool32 getMirPresentationSupportKHR( uint32_t queueFamilyIndex, MirConnection & connection, Dispatch const &d = Dispatch() ) const;
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_MIR_KHR*/
 
     template<typename Dispatch = DispatchLoaderStatic>
     Result getSurfaceSupportKHR( uint32_t queueFamilyIndex, SurfaceKHR surface, Bool32* pSupported, Dispatch const &d = Dispatch() ) const;
@@ -45899,21 +46076,6 @@ public:
     return createResultValue( result, capabilities, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::getDisplayPlaneCapabilitiesKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-
-#ifdef VK_USE_PLATFORM_MIR_KHR
-  template<typename Dispatch>
-  VULKAN_HPP_INLINE Bool32 PhysicalDevice::getMirPresentationSupportKHR( uint32_t queueFamilyIndex, MirConnection* connection, Dispatch const &d) const
-  {
-    return d.vkGetPhysicalDeviceMirPresentationSupportKHR( m_physicalDevice, queueFamilyIndex, connection );
-  }
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-  template<typename Dispatch>
-  VULKAN_HPP_INLINE Bool32 PhysicalDevice::getMirPresentationSupportKHR( uint32_t queueFamilyIndex, MirConnection & connection, Dispatch const &d ) const
-  {
-    return d.vkGetPhysicalDeviceMirPresentationSupportKHR( m_physicalDevice, queueFamilyIndex, &connection );
-  }
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_MIR_KHR*/
 
   template<typename Dispatch>
   VULKAN_HPP_INLINE Result PhysicalDevice::getSurfaceSupportKHR( uint32_t queueFamilyIndex, SurfaceKHR surface, Bool32* pSupported, Dispatch const &d) const
@@ -47228,19 +47390,6 @@ public:
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifdef VK_USE_PLATFORM_MIR_KHR
-    template<typename Dispatch = DispatchLoaderStatic>
-    Result createMirSurfaceKHR( const MirSurfaceCreateInfoKHR* pCreateInfo, const AllocationCallbacks* pAllocator, SurfaceKHR* pSurface, Dispatch const &d = Dispatch() ) const;
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    template<typename Dispatch = DispatchLoaderStatic>
-    ResultValueType<SurfaceKHR>::type createMirSurfaceKHR( const MirSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
-#ifndef VULKAN_HPP_NO_SMART_HANDLE
-    template<typename Dispatch = DispatchLoaderStatic>
-    typename ResultValueType<UniqueHandle<SurfaceKHR,Dispatch>>::type createMirSurfaceKHRUnique( const MirSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
-#endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_MIR_KHR*/
-
     template<typename Dispatch = DispatchLoaderStatic>
     void destroySurfaceKHR( SurfaceKHR surface, const AllocationCallbacks* pAllocator, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
@@ -47589,34 +47738,6 @@ public:
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-
-#ifdef VK_USE_PLATFORM_MIR_KHR
-  template<typename Dispatch>
-  VULKAN_HPP_INLINE Result Instance::createMirSurfaceKHR( const MirSurfaceCreateInfoKHR* pCreateInfo, const AllocationCallbacks* pAllocator, SurfaceKHR* pSurface, Dispatch const &d) const
-  {
-    return static_cast<Result>( d.vkCreateMirSurfaceKHR( m_instance, reinterpret_cast<const VkMirSurfaceCreateInfoKHR*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkSurfaceKHR*>( pSurface ) ) );
-  }
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-  template<typename Dispatch>
-  VULKAN_HPP_INLINE ResultValueType<SurfaceKHR>::type Instance::createMirSurfaceKHR( const MirSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
-  {
-    SurfaceKHR surface;
-    Result result = static_cast<Result>( d.vkCreateMirSurfaceKHR( m_instance, reinterpret_cast<const VkMirSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
-    return createResultValue( result, surface, VULKAN_HPP_NAMESPACE_STRING"::Instance::createMirSurfaceKHR" );
-  }
-#ifndef VULKAN_HPP_NO_SMART_HANDLE
-  template<typename Dispatch>
-  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<SurfaceKHR,Dispatch>>::type Instance::createMirSurfaceKHRUnique( const MirSurfaceCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
-  {
-    SurfaceKHR surface;
-    Result result = static_cast<Result>( d.vkCreateMirSurfaceKHR( m_instance, reinterpret_cast<const VkMirSurfaceCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
-
-    ObjectDestroy<Instance,Dispatch> deleter( *this, allocator, d );
-    return createResultValue<SurfaceKHR,Dispatch>( result, surface, VULKAN_HPP_NAMESPACE_STRING"::Instance::createMirSurfaceKHRUnique", deleter );
-  }
-#endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_MIR_KHR*/
 
   template<typename Dispatch>
   VULKAN_HPP_INLINE void Instance::destroySurfaceKHR( SurfaceKHR surface, const AllocationCallbacks* pAllocator, Dispatch const &d) const
@@ -48446,8 +48567,8 @@ public:
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceMeshShaderFeaturesNV>{ enum { value = true }; };
   template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceMeshShaderFeaturesNV>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceMeshShaderPropertiesNV>{ enum { value = true }; };
-  template <> struct isStructureChainValid<WriteDescriptorSet, DescriptorAccelerationStructureInfoNVX>{ enum { value = true }; };
-  template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceRaytracingPropertiesNVX>{ enum { value = true }; };
+  template <> struct isStructureChainValid<WriteDescriptorSet, WriteDescriptorSetAccelerationStructureNV>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceRayTracingPropertiesNV>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceImageFormatInfo2, PhysicalDeviceImageDrmFormatModifierInfoEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<ImageCreateInfo, ImageDrmFormatModifierListCreateInfoEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<ImageCreateInfo, ImageDrmFormatModifierExplicitCreateInfoEXT>{ enum { value = true }; };
@@ -48506,6 +48627,7 @@ public:
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceDriverPropertiesKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<PipelineViewportStateCreateInfo, PipelineViewportShadingRateImageStateCreateInfoNV>{ enum { value = true }; };
   template <> struct isStructureChainValid<PipelineViewportStateCreateInfo, PipelineViewportCoarseSampleOrderStateCreateInfoNV>{ enum { value = true }; };
+  template <> struct isStructureChainValid<DeviceCreateInfo, DeviceMemoryOverallocationCreateInfoAMD>{ enum { value = true }; };
   template <> struct isStructureChainValid<DeviceCreateInfo, DeviceGroupDeviceCreateInfo>{ enum { value = true }; };
   VULKAN_HPP_INLINE std::string to_string(FramebufferCreateFlagBits)
   {
@@ -48800,20 +48922,6 @@ public:
     return "{}";
   }
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
-
-#ifdef VK_USE_PLATFORM_MIR_KHR
-  VULKAN_HPP_INLINE std::string to_string(MirSurfaceCreateFlagBitsKHR)
-  {
-    return "(void)";
-  }
-#endif /*VK_USE_PLATFORM_MIR_KHR*/
-
-#ifdef VK_USE_PLATFORM_MIR_KHR
-  VULKAN_HPP_INLINE std::string to_string(MirSurfaceCreateFlagsKHR)
-  {
-    return "{}";
-  }
-#endif /*VK_USE_PLATFORM_MIR_KHR*/
 
 #ifdef VK_USE_PLATFORM_VI_NN
   VULKAN_HPP_INLINE std::string to_string(ViSurfaceCreateFlagBitsNN)
@@ -49148,7 +49256,7 @@ public:
     case DescriptorType::eStorageBufferDynamic: return "StorageBufferDynamic";
     case DescriptorType::eInputAttachment: return "InputAttachment";
     case DescriptorType::eInlineUniformBlockEXT: return "InlineUniformBlockEXT";
-    case DescriptorType::eAccelerationStructureNVX: return "AccelerationStructureNVX";
+    case DescriptorType::eAccelerationStructureNV: return "AccelerationStructureNV";
     default: return "invalid";
     }
   }
@@ -49161,7 +49269,7 @@ public:
     case QueryType::ePipelineStatistics: return "PipelineStatistics";
     case QueryType::eTimestamp: return "Timestamp";
     case QueryType::eTransformFeedbackStreamEXT: return "TransformFeedbackStreamEXT";
-    case QueryType::eCompactedSizeNVX: return "CompactedSizeNVX";
+    case QueryType::eAccelerationStructureCompactedSizeNV: return "AccelerationStructureCompactedSizeNV";
     default: return "invalid";
     }
   }
@@ -49186,7 +49294,7 @@ public:
     {
     case PipelineBindPoint::eGraphics: return "Graphics";
     case PipelineBindPoint::eCompute: return "Compute";
-    case PipelineBindPoint::eRaytracingNVX: return "RaytracingNVX";
+    case PipelineBindPoint::eRayTracingNV: return "RayTracingNV";
     default: return "invalid";
     }
   }
@@ -49235,6 +49343,7 @@ public:
     {
     case IndexType::eUint16: return "Uint16";
     case IndexType::eUint32: return "Uint32";
+    case IndexType::eNoneNV: return "NoneNV";
     default: return "invalid";
     }
   }
@@ -49872,7 +49981,6 @@ public:
     case StructureType::eXlibSurfaceCreateInfoKHR: return "XlibSurfaceCreateInfoKHR";
     case StructureType::eXcbSurfaceCreateInfoKHR: return "XcbSurfaceCreateInfoKHR";
     case StructureType::eWaylandSurfaceCreateInfoKHR: return "WaylandSurfaceCreateInfoKHR";
-    case StructureType::eMirSurfaceCreateInfoKHR: return "MirSurfaceCreateInfoKHR";
     case StructureType::eAndroidSurfaceCreateInfoKHR: return "AndroidSurfaceCreateInfoKHR";
     case StructureType::eWin32SurfaceCreateInfoKHR: return "Win32SurfaceCreateInfoKHR";
     case StructureType::eDebugReportCallbackCreateInfoEXT: return "DebugReportCallbackCreateInfoEXT";
@@ -49991,7 +50099,7 @@ public:
     case StructureType::eDrmFormatModifierPropertiesEXT: return "DrmFormatModifierPropertiesEXT";
     case StructureType::ePhysicalDeviceImageDrmFormatModifierInfoEXT: return "PhysicalDeviceImageDrmFormatModifierInfoEXT";
     case StructureType::eImageDrmFormatModifierListCreateInfoEXT: return "ImageDrmFormatModifierListCreateInfoEXT";
-    case StructureType::eImageExcplicitDrmFormatModifierCreateInfoEXT: return "ImageExcplicitDrmFormatModifierCreateInfoEXT";
+    case StructureType::eImageDrmFormatModifierExplicitCreateInfoEXT: return "ImageDrmFormatModifierExplicitCreateInfoEXT";
     case StructureType::eImageDrmFormatModifierPropertiesEXT: return "ImageDrmFormatModifierPropertiesEXT";
     case StructureType::eValidationCacheCreateInfoEXT: return "ValidationCacheCreateInfoEXT";
     case StructureType::eShaderModuleValidationCacheCreateInfoEXT: return "ShaderModuleValidationCacheCreateInfoEXT";
@@ -50004,17 +50112,17 @@ public:
     case StructureType::ePhysicalDeviceShadingRateImageFeaturesNV: return "PhysicalDeviceShadingRateImageFeaturesNV";
     case StructureType::ePhysicalDeviceShadingRateImagePropertiesNV: return "PhysicalDeviceShadingRateImagePropertiesNV";
     case StructureType::ePipelineViewportCoarseSampleOrderStateCreateInfoNV: return "PipelineViewportCoarseSampleOrderStateCreateInfoNV";
-    case StructureType::eRaytracingPipelineCreateInfoNVX: return "RaytracingPipelineCreateInfoNVX";
-    case StructureType::eAccelerationStructureCreateInfoNVX: return "AccelerationStructureCreateInfoNVX";
-    case StructureType::eGeometryInstanceNVX: return "GeometryInstanceNVX";
-    case StructureType::eGeometryNVX: return "GeometryNVX";
-    case StructureType::eGeometryTrianglesNVX: return "GeometryTrianglesNVX";
-    case StructureType::eGeometryAabbNVX: return "GeometryAabbNVX";
-    case StructureType::eBindAccelerationStructureMemoryInfoNVX: return "BindAccelerationStructureMemoryInfoNVX";
-    case StructureType::eDescriptorAccelerationStructureInfoNVX: return "DescriptorAccelerationStructureInfoNVX";
-    case StructureType::eAccelerationStructureMemoryRequirementsInfoNVX: return "AccelerationStructureMemoryRequirementsInfoNVX";
-    case StructureType::ePhysicalDeviceRaytracingPropertiesNVX: return "PhysicalDeviceRaytracingPropertiesNVX";
-    case StructureType::eHitShaderModuleCreateInfoNVX: return "HitShaderModuleCreateInfoNVX";
+    case StructureType::eRayTracingPipelineCreateInfoNV: return "RayTracingPipelineCreateInfoNV";
+    case StructureType::eAccelerationStructureCreateInfoNV: return "AccelerationStructureCreateInfoNV";
+    case StructureType::eGeometryNV: return "GeometryNV";
+    case StructureType::eGeometryTrianglesNV: return "GeometryTrianglesNV";
+    case StructureType::eGeometryAabbNV: return "GeometryAabbNV";
+    case StructureType::eBindAccelerationStructureMemoryInfoNV: return "BindAccelerationStructureMemoryInfoNV";
+    case StructureType::eWriteDescriptorSetAccelerationStructureNV: return "WriteDescriptorSetAccelerationStructureNV";
+    case StructureType::eAccelerationStructureMemoryRequirementsInfoNV: return "AccelerationStructureMemoryRequirementsInfoNV";
+    case StructureType::ePhysicalDeviceRayTracingPropertiesNV: return "PhysicalDeviceRayTracingPropertiesNV";
+    case StructureType::eRayTracingShaderGroupCreateInfoNV: return "RayTracingShaderGroupCreateInfoNV";
+    case StructureType::eAccelerationStructureInfoNV: return "AccelerationStructureInfoNV";
     case StructureType::ePhysicalDeviceRepresentativeFragmentTestFeaturesNV: return "PhysicalDeviceRepresentativeFragmentTestFeaturesNV";
     case StructureType::ePipelineRepresentativeFragmentTestStateCreateInfoNV: return "PipelineRepresentativeFragmentTestStateCreateInfoNV";
     case StructureType::eDeviceQueueGlobalPriorityCreateInfoEXT: return "DeviceQueueGlobalPriorityCreateInfoEXT";
@@ -50025,6 +50133,7 @@ public:
     case StructureType::ePhysicalDeviceShaderAtomicInt64FeaturesKHR: return "PhysicalDeviceShaderAtomicInt64FeaturesKHR";
     case StructureType::eCalibratedTimestampInfoEXT: return "CalibratedTimestampInfoEXT";
     case StructureType::ePhysicalDeviceShaderCorePropertiesAMD: return "PhysicalDeviceShaderCorePropertiesAMD";
+    case StructureType::eDeviceMemoryOverallocationCreateInfoAMD: return "DeviceMemoryOverallocationCreateInfoAMD";
     case StructureType::ePhysicalDeviceVertexAttributeDivisorPropertiesEXT: return "PhysicalDeviceVertexAttributeDivisorPropertiesEXT";
     case StructureType::ePipelineVertexInputDivisorStateCreateInfoEXT: return "PipelineVertexInputDivisorStateCreateInfoEXT";
     case StructureType::ePhysicalDeviceVertexAttributeDivisorFeaturesEXT: return "PhysicalDeviceVertexAttributeDivisorFeaturesEXT";
@@ -50129,7 +50238,7 @@ public:
     case ObjectType::eIndirectCommandsLayoutNVX: return "IndirectCommandsLayoutNVX";
     case ObjectType::eDebugUtilsMessengerEXT: return "DebugUtilsMessengerEXT";
     case ObjectType::eValidationCacheEXT: return "ValidationCacheEXT";
-    case ObjectType::eAccelerationStructureNVX: return "AccelerationStructureNVX";
+    case ObjectType::eAccelerationStructureNV: return "AccelerationStructureNV";
     default: return "invalid";
     }
   }
@@ -50251,8 +50360,8 @@ public:
     case AccessFlagBits::eCommandProcessWriteNVX: return "CommandProcessWriteNVX";
     case AccessFlagBits::eColorAttachmentReadNoncoherentEXT: return "ColorAttachmentReadNoncoherentEXT";
     case AccessFlagBits::eShadingRateImageReadNV: return "ShadingRateImageReadNV";
-    case AccessFlagBits::eAccelerationStructureReadNVX: return "AccelerationStructureReadNVX";
-    case AccessFlagBits::eAccelerationStructureWriteNVX: return "AccelerationStructureWriteNVX";
+    case AccessFlagBits::eAccelerationStructureReadNV: return "AccelerationStructureReadNV";
+    case AccessFlagBits::eAccelerationStructureWriteNV: return "AccelerationStructureWriteNV";
     default: return "invalid";
     }
   }
@@ -50286,8 +50395,8 @@ public:
     if (value & AccessFlagBits::eCommandProcessWriteNVX) result += "CommandProcessWriteNVX | ";
     if (value & AccessFlagBits::eColorAttachmentReadNoncoherentEXT) result += "ColorAttachmentReadNoncoherentEXT | ";
     if (value & AccessFlagBits::eShadingRateImageReadNV) result += "ShadingRateImageReadNV | ";
-    if (value & AccessFlagBits::eAccelerationStructureReadNVX) result += "AccelerationStructureReadNVX | ";
-    if (value & AccessFlagBits::eAccelerationStructureWriteNVX) result += "AccelerationStructureWriteNVX | ";
+    if (value & AccessFlagBits::eAccelerationStructureReadNV) result += "AccelerationStructureReadNV | ";
+    if (value & AccessFlagBits::eAccelerationStructureWriteNV) result += "AccelerationStructureWriteNV | ";
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
@@ -50307,7 +50416,7 @@ public:
     case BufferUsageFlagBits::eTransformFeedbackBufferEXT: return "TransformFeedbackBufferEXT";
     case BufferUsageFlagBits::eTransformFeedbackCounterBufferEXT: return "TransformFeedbackCounterBufferEXT";
     case BufferUsageFlagBits::eConditionalRenderingEXT: return "ConditionalRenderingEXT";
-    case BufferUsageFlagBits::eRaytracingNVX: return "RaytracingNVX";
+    case BufferUsageFlagBits::eRayTracingNV: return "RayTracingNV";
     default: return "invalid";
     }
   }
@@ -50328,7 +50437,7 @@ public:
     if (value & BufferUsageFlagBits::eTransformFeedbackBufferEXT) result += "TransformFeedbackBufferEXT | ";
     if (value & BufferUsageFlagBits::eTransformFeedbackCounterBufferEXT) result += "TransformFeedbackCounterBufferEXT | ";
     if (value & BufferUsageFlagBits::eConditionalRenderingEXT) result += "ConditionalRenderingEXT | ";
-    if (value & BufferUsageFlagBits::eRaytracingNVX) result += "RaytracingNVX | ";
+    if (value & BufferUsageFlagBits::eRayTracingNV) result += "RayTracingNV | ";
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
@@ -50367,12 +50476,12 @@ public:
     case ShaderStageFlagBits::eCompute: return "Compute";
     case ShaderStageFlagBits::eAllGraphics: return "AllGraphics";
     case ShaderStageFlagBits::eAll: return "All";
-    case ShaderStageFlagBits::eRaygenNVX: return "RaygenNVX";
-    case ShaderStageFlagBits::eAnyHitNVX: return "AnyHitNVX";
-    case ShaderStageFlagBits::eClosestHitNVX: return "ClosestHitNVX";
-    case ShaderStageFlagBits::eMissNVX: return "MissNVX";
-    case ShaderStageFlagBits::eIntersectionNVX: return "IntersectionNVX";
-    case ShaderStageFlagBits::eCallableNVX: return "CallableNVX";
+    case ShaderStageFlagBits::eRaygenNV: return "RaygenNV";
+    case ShaderStageFlagBits::eAnyHitNV: return "AnyHitNV";
+    case ShaderStageFlagBits::eClosestHitNV: return "ClosestHitNV";
+    case ShaderStageFlagBits::eMissNV: return "MissNV";
+    case ShaderStageFlagBits::eIntersectionNV: return "IntersectionNV";
+    case ShaderStageFlagBits::eCallableNV: return "CallableNV";
     case ShaderStageFlagBits::eTaskNV: return "TaskNV";
     case ShaderStageFlagBits::eMeshNV: return "MeshNV";
     default: return "invalid";
@@ -50391,12 +50500,12 @@ public:
     if (value & ShaderStageFlagBits::eCompute) result += "Compute | ";
     if (value & ShaderStageFlagBits::eAllGraphics) result += "AllGraphics | ";
     if (value & ShaderStageFlagBits::eAll) result += "All | ";
-    if (value & ShaderStageFlagBits::eRaygenNVX) result += "RaygenNVX | ";
-    if (value & ShaderStageFlagBits::eAnyHitNVX) result += "AnyHitNVX | ";
-    if (value & ShaderStageFlagBits::eClosestHitNVX) result += "ClosestHitNVX | ";
-    if (value & ShaderStageFlagBits::eMissNVX) result += "MissNVX | ";
-    if (value & ShaderStageFlagBits::eIntersectionNVX) result += "IntersectionNVX | ";
-    if (value & ShaderStageFlagBits::eCallableNVX) result += "CallableNVX | ";
+    if (value & ShaderStageFlagBits::eRaygenNV) result += "RaygenNV | ";
+    if (value & ShaderStageFlagBits::eAnyHitNV) result += "AnyHitNV | ";
+    if (value & ShaderStageFlagBits::eClosestHitNV) result += "ClosestHitNV | ";
+    if (value & ShaderStageFlagBits::eMissNV) result += "MissNV | ";
+    if (value & ShaderStageFlagBits::eIntersectionNV) result += "IntersectionNV | ";
+    if (value & ShaderStageFlagBits::eCallableNV) result += "CallableNV | ";
     if (value & ShaderStageFlagBits::eTaskNV) result += "TaskNV | ";
     if (value & ShaderStageFlagBits::eMeshNV) result += "MeshNV | ";
     return "{" + result.substr(0, result.size() - 3) + "}";
@@ -50487,7 +50596,7 @@ public:
     case PipelineCreateFlagBits::eDerivative: return "Derivative";
     case PipelineCreateFlagBits::eViewIndexFromDeviceIndex: return "ViewIndexFromDeviceIndex";
     case PipelineCreateFlagBits::eDispatchBase: return "DispatchBase";
-    case PipelineCreateFlagBits::eDeferCompileNVX: return "DeferCompileNVX";
+    case PipelineCreateFlagBits::eDeferCompileNV: return "DeferCompileNV";
     default: return "invalid";
     }
   }
@@ -50501,7 +50610,7 @@ public:
     if (value & PipelineCreateFlagBits::eDerivative) result += "Derivative | ";
     if (value & PipelineCreateFlagBits::eViewIndexFromDeviceIndex) result += "ViewIndexFromDeviceIndex | ";
     if (value & PipelineCreateFlagBits::eDispatchBase) result += "DispatchBase | ";
-    if (value & PipelineCreateFlagBits::eDeferCompileNVX) result += "DeferCompileNVX | ";
+    if (value & PipelineCreateFlagBits::eDeferCompileNV) result += "DeferCompileNV | ";
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
@@ -50806,7 +50915,8 @@ public:
     case PipelineStageFlagBits::eConditionalRenderingEXT: return "ConditionalRenderingEXT";
     case PipelineStageFlagBits::eCommandProcessNVX: return "CommandProcessNVX";
     case PipelineStageFlagBits::eShadingRateImageNV: return "ShadingRateImageNV";
-    case PipelineStageFlagBits::eRaytracingNVX: return "RaytracingNVX";
+    case PipelineStageFlagBits::eRayTracingShaderNV: return "RayTracingShaderNV";
+    case PipelineStageFlagBits::eAccelerationStructureBuildNV: return "AccelerationStructureBuildNV";
     case PipelineStageFlagBits::eTaskShaderNV: return "TaskShaderNV";
     case PipelineStageFlagBits::eMeshShaderNV: return "MeshShaderNV";
     default: return "invalid";
@@ -50838,7 +50948,8 @@ public:
     if (value & PipelineStageFlagBits::eConditionalRenderingEXT) result += "ConditionalRenderingEXT | ";
     if (value & PipelineStageFlagBits::eCommandProcessNVX) result += "CommandProcessNVX | ";
     if (value & PipelineStageFlagBits::eShadingRateImageNV) result += "ShadingRateImageNV | ";
-    if (value & PipelineStageFlagBits::eRaytracingNVX) result += "RaytracingNVX | ";
+    if (value & PipelineStageFlagBits::eRayTracingShaderNV) result += "RayTracingShaderNV | ";
+    if (value & PipelineStageFlagBits::eAccelerationStructureBuildNV) result += "AccelerationStructureBuildNV | ";
     if (value & PipelineStageFlagBits::eTaskShaderNV) result += "TaskShaderNV | ";
     if (value & PipelineStageFlagBits::eMeshShaderNV) result += "MeshShaderNV | ";
     return "{" + result.substr(0, result.size() - 3) + "}";
@@ -51199,7 +51310,7 @@ public:
     case DebugReportObjectTypeEXT::eValidationCacheExt: return "ValidationCacheExt";
     case DebugReportObjectTypeEXT::eSamplerYcbcrConversion: return "SamplerYcbcrConversion";
     case DebugReportObjectTypeEXT::eDescriptorUpdateTemplate: return "DescriptorUpdateTemplate";
-    case DebugReportObjectTypeEXT::eAccelerationStructureNVX: return "AccelerationStructureNVX";
+    case DebugReportObjectTypeEXT::eAccelerationStructureNV: return "AccelerationStructureNV";
     default: return "invalid";
     }
   }
@@ -52016,99 +52127,132 @@ public:
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string(GeometryInstanceFlagBitsNVX value)
+  VULKAN_HPP_INLINE std::string to_string(GeometryInstanceFlagBitsNV value)
   {
     switch (value)
     {
-    case GeometryInstanceFlagBitsNVX::eTriangleCullDisable: return "TriangleCullDisable";
-    case GeometryInstanceFlagBitsNVX::eTriangleCullFlipWinding: return "TriangleCullFlipWinding";
-    case GeometryInstanceFlagBitsNVX::eForceOpaque: return "ForceOpaque";
-    case GeometryInstanceFlagBitsNVX::eForceNoOpaque: return "ForceNoOpaque";
+    case GeometryInstanceFlagBitsNV::eTriangleCullDisable: return "TriangleCullDisable";
+    case GeometryInstanceFlagBitsNV::eTriangleFrontCounterclockwise: return "TriangleFrontCounterclockwise";
+    case GeometryInstanceFlagBitsNV::eForceOpaque: return "ForceOpaque";
+    case GeometryInstanceFlagBitsNV::eForceNoOpaque: return "ForceNoOpaque";
     default: return "invalid";
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string(GeometryInstanceFlagsNVX value)
+  VULKAN_HPP_INLINE std::string to_string(GeometryInstanceFlagsNV value)
   {
     if (!value) return "{}";
     std::string result;
-    if (value & GeometryInstanceFlagBitsNVX::eTriangleCullDisable) result += "TriangleCullDisable | ";
-    if (value & GeometryInstanceFlagBitsNVX::eTriangleCullFlipWinding) result += "TriangleCullFlipWinding | ";
-    if (value & GeometryInstanceFlagBitsNVX::eForceOpaque) result += "ForceOpaque | ";
-    if (value & GeometryInstanceFlagBitsNVX::eForceNoOpaque) result += "ForceNoOpaque | ";
+    if (value & GeometryInstanceFlagBitsNV::eTriangleCullDisable) result += "TriangleCullDisable | ";
+    if (value & GeometryInstanceFlagBitsNV::eTriangleFrontCounterclockwise) result += "TriangleFrontCounterclockwise | ";
+    if (value & GeometryInstanceFlagBitsNV::eForceOpaque) result += "ForceOpaque | ";
+    if (value & GeometryInstanceFlagBitsNV::eForceNoOpaque) result += "ForceNoOpaque | ";
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
-  VULKAN_HPP_INLINE std::string to_string(GeometryFlagBitsNVX value)
+  VULKAN_HPP_INLINE std::string to_string(GeometryFlagBitsNV value)
   {
     switch (value)
     {
-    case GeometryFlagBitsNVX::eOpaque: return "Opaque";
-    case GeometryFlagBitsNVX::eNoDuplicateAnyHitInvocation: return "NoDuplicateAnyHitInvocation";
+    case GeometryFlagBitsNV::eOpaque: return "Opaque";
+    case GeometryFlagBitsNV::eNoDuplicateAnyHitInvocation: return "NoDuplicateAnyHitInvocation";
     default: return "invalid";
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string(GeometryFlagsNVX value)
+  VULKAN_HPP_INLINE std::string to_string(GeometryFlagsNV value)
   {
     if (!value) return "{}";
     std::string result;
-    if (value & GeometryFlagBitsNVX::eOpaque) result += "Opaque | ";
-    if (value & GeometryFlagBitsNVX::eNoDuplicateAnyHitInvocation) result += "NoDuplicateAnyHitInvocation | ";
+    if (value & GeometryFlagBitsNV::eOpaque) result += "Opaque | ";
+    if (value & GeometryFlagBitsNV::eNoDuplicateAnyHitInvocation) result += "NoDuplicateAnyHitInvocation | ";
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
-  VULKAN_HPP_INLINE std::string to_string(BuildAccelerationStructureFlagBitsNVX value)
+  VULKAN_HPP_INLINE std::string to_string(BuildAccelerationStructureFlagBitsNV value)
   {
     switch (value)
     {
-    case BuildAccelerationStructureFlagBitsNVX::eAllowUpdate: return "AllowUpdate";
-    case BuildAccelerationStructureFlagBitsNVX::eAllowCompaction: return "AllowCompaction";
-    case BuildAccelerationStructureFlagBitsNVX::ePreferFastTrace: return "PreferFastTrace";
-    case BuildAccelerationStructureFlagBitsNVX::ePreferFastBuild: return "PreferFastBuild";
-    case BuildAccelerationStructureFlagBitsNVX::eLowMemory: return "LowMemory";
+    case BuildAccelerationStructureFlagBitsNV::eAllowUpdate: return "AllowUpdate";
+    case BuildAccelerationStructureFlagBitsNV::eAllowCompaction: return "AllowCompaction";
+    case BuildAccelerationStructureFlagBitsNV::ePreferFastTrace: return "PreferFastTrace";
+    case BuildAccelerationStructureFlagBitsNV::ePreferFastBuild: return "PreferFastBuild";
+    case BuildAccelerationStructureFlagBitsNV::eLowMemory: return "LowMemory";
     default: return "invalid";
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string(BuildAccelerationStructureFlagsNVX value)
+  VULKAN_HPP_INLINE std::string to_string(BuildAccelerationStructureFlagsNV value)
   {
     if (!value) return "{}";
     std::string result;
-    if (value & BuildAccelerationStructureFlagBitsNVX::eAllowUpdate) result += "AllowUpdate | ";
-    if (value & BuildAccelerationStructureFlagBitsNVX::eAllowCompaction) result += "AllowCompaction | ";
-    if (value & BuildAccelerationStructureFlagBitsNVX::ePreferFastTrace) result += "PreferFastTrace | ";
-    if (value & BuildAccelerationStructureFlagBitsNVX::ePreferFastBuild) result += "PreferFastBuild | ";
-    if (value & BuildAccelerationStructureFlagBitsNVX::eLowMemory) result += "LowMemory | ";
+    if (value & BuildAccelerationStructureFlagBitsNV::eAllowUpdate) result += "AllowUpdate | ";
+    if (value & BuildAccelerationStructureFlagBitsNV::eAllowCompaction) result += "AllowCompaction | ";
+    if (value & BuildAccelerationStructureFlagBitsNV::ePreferFastTrace) result += "PreferFastTrace | ";
+    if (value & BuildAccelerationStructureFlagBitsNV::ePreferFastBuild) result += "PreferFastBuild | ";
+    if (value & BuildAccelerationStructureFlagBitsNV::eLowMemory) result += "LowMemory | ";
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
-  VULKAN_HPP_INLINE std::string to_string(CopyAccelerationStructureModeNVX value)
+  VULKAN_HPP_INLINE std::string to_string(CopyAccelerationStructureModeNV value)
   {
     switch (value)
     {
-    case CopyAccelerationStructureModeNVX::eClone: return "Clone";
-    case CopyAccelerationStructureModeNVX::eCompact: return "Compact";
+    case CopyAccelerationStructureModeNV::eClone: return "Clone";
+    case CopyAccelerationStructureModeNV::eCompact: return "Compact";
     default: return "invalid";
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string(AccelerationStructureTypeNVX value)
+  VULKAN_HPP_INLINE std::string to_string(AccelerationStructureTypeNV value)
   {
     switch (value)
     {
-    case AccelerationStructureTypeNVX::eTopLevel: return "TopLevel";
-    case AccelerationStructureTypeNVX::eBottomLevel: return "BottomLevel";
+    case AccelerationStructureTypeNV::eTopLevel: return "TopLevel";
+    case AccelerationStructureTypeNV::eBottomLevel: return "BottomLevel";
     default: return "invalid";
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string(GeometryTypeNVX value)
+  VULKAN_HPP_INLINE std::string to_string(GeometryTypeNV value)
   {
     switch (value)
     {
-    case GeometryTypeNVX::eTriangles: return "Triangles";
-    case GeometryTypeNVX::eAabbs: return "Aabbs";
+    case GeometryTypeNV::eTriangles: return "Triangles";
+    case GeometryTypeNV::eAabbs: return "Aabbs";
+    default: return "invalid";
+    }
+  }
+
+  VULKAN_HPP_INLINE std::string to_string(AccelerationStructureMemoryRequirementsTypeNV value)
+  {
+    switch (value)
+    {
+    case AccelerationStructureMemoryRequirementsTypeNV::eObject: return "Object";
+    case AccelerationStructureMemoryRequirementsTypeNV::eBuildScratch: return "BuildScratch";
+    case AccelerationStructureMemoryRequirementsTypeNV::eUpdateScratch: return "UpdateScratch";
+    default: return "invalid";
+    }
+  }
+
+  VULKAN_HPP_INLINE std::string to_string(RayTracingShaderGroupTypeNV value)
+  {
+    switch (value)
+    {
+    case RayTracingShaderGroupTypeNV::eGeneral: return "General";
+    case RayTracingShaderGroupTypeNV::eTrianglesHitGroup: return "TrianglesHitGroup";
+    case RayTracingShaderGroupTypeNV::eProceduralHitGroup: return "ProceduralHitGroup";
+    default: return "invalid";
+    }
+  }
+
+  VULKAN_HPP_INLINE std::string to_string(MemoryOverallocationBehaviorAMD value)
+  {
+    switch (value)
+    {
+    case MemoryOverallocationBehaviorAMD::eDefault: return "Default";
+    case MemoryOverallocationBehaviorAMD::eAllowed: return "Allowed";
+    case MemoryOverallocationBehaviorAMD::eDisallowed: return "Disallowed";
     default: return "invalid";
     }
   }
@@ -52125,7 +52269,7 @@ public:
     PFN_vkAllocateDescriptorSets vkAllocateDescriptorSets = 0;
     PFN_vkAllocateMemory vkAllocateMemory = 0;
     PFN_vkBeginCommandBuffer vkBeginCommandBuffer = 0;
-    PFN_vkBindAccelerationStructureMemoryNVX vkBindAccelerationStructureMemoryNVX = 0;
+    PFN_vkBindAccelerationStructureMemoryNV vkBindAccelerationStructureMemoryNV = 0;
     PFN_vkBindBufferMemory vkBindBufferMemory = 0;
     PFN_vkBindBufferMemory2 vkBindBufferMemory2 = 0;
     PFN_vkBindBufferMemory2KHR vkBindBufferMemory2KHR = 0;
@@ -52146,11 +52290,11 @@ public:
     PFN_vkCmdBindTransformFeedbackBuffersEXT vkCmdBindTransformFeedbackBuffersEXT = 0;
     PFN_vkCmdBindVertexBuffers vkCmdBindVertexBuffers = 0;
     PFN_vkCmdBlitImage vkCmdBlitImage = 0;
-    PFN_vkCmdBuildAccelerationStructureNVX vkCmdBuildAccelerationStructureNVX = 0;
+    PFN_vkCmdBuildAccelerationStructureNV vkCmdBuildAccelerationStructureNV = 0;
     PFN_vkCmdClearAttachments vkCmdClearAttachments = 0;
     PFN_vkCmdClearColorImage vkCmdClearColorImage = 0;
     PFN_vkCmdClearDepthStencilImage vkCmdClearDepthStencilImage = 0;
-    PFN_vkCmdCopyAccelerationStructureNVX vkCmdCopyAccelerationStructureNVX = 0;
+    PFN_vkCmdCopyAccelerationStructureNV vkCmdCopyAccelerationStructureNV = 0;
     PFN_vkCmdCopyBuffer vkCmdCopyBuffer = 0;
     PFN_vkCmdCopyBufferToImage vkCmdCopyBufferToImage = 0;
     PFN_vkCmdCopyImage vkCmdCopyImage = 0;
@@ -52215,14 +52359,14 @@ public:
     PFN_vkCmdSetViewport vkCmdSetViewport = 0;
     PFN_vkCmdSetViewportShadingRatePaletteNV vkCmdSetViewportShadingRatePaletteNV = 0;
     PFN_vkCmdSetViewportWScalingNV vkCmdSetViewportWScalingNV = 0;
-    PFN_vkCmdTraceRaysNVX vkCmdTraceRaysNVX = 0;
+    PFN_vkCmdTraceRaysNV vkCmdTraceRaysNV = 0;
     PFN_vkCmdUpdateBuffer vkCmdUpdateBuffer = 0;
     PFN_vkCmdWaitEvents vkCmdWaitEvents = 0;
-    PFN_vkCmdWriteAccelerationStructurePropertiesNVX vkCmdWriteAccelerationStructurePropertiesNVX = 0;
+    PFN_vkCmdWriteAccelerationStructuresPropertiesNV vkCmdWriteAccelerationStructuresPropertiesNV = 0;
     PFN_vkCmdWriteBufferMarkerAMD vkCmdWriteBufferMarkerAMD = 0;
     PFN_vkCmdWriteTimestamp vkCmdWriteTimestamp = 0;
-    PFN_vkCompileDeferredNVX vkCompileDeferredNVX = 0;
-    PFN_vkCreateAccelerationStructureNVX vkCreateAccelerationStructureNVX = 0;
+    PFN_vkCompileDeferredNV vkCompileDeferredNV = 0;
+    PFN_vkCreateAccelerationStructureNV vkCreateAccelerationStructureNV = 0;
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
     PFN_vkCreateAndroidSurfaceKHR vkCreateAndroidSurfaceKHR = 0;
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
@@ -52256,14 +52400,11 @@ public:
 #ifdef VK_USE_PLATFORM_MACOS_MVK
     PFN_vkCreateMacOSSurfaceMVK vkCreateMacOSSurfaceMVK = 0;
 #endif /*VK_USE_PLATFORM_MACOS_MVK*/
-#ifdef VK_USE_PLATFORM_MIR_KHR
-    PFN_vkCreateMirSurfaceKHR vkCreateMirSurfaceKHR = 0;
-#endif /*VK_USE_PLATFORM_MIR_KHR*/
     PFN_vkCreateObjectTableNVX vkCreateObjectTableNVX = 0;
     PFN_vkCreatePipelineCache vkCreatePipelineCache = 0;
     PFN_vkCreatePipelineLayout vkCreatePipelineLayout = 0;
     PFN_vkCreateQueryPool vkCreateQueryPool = 0;
-    PFN_vkCreateRaytracingPipelinesNVX vkCreateRaytracingPipelinesNVX = 0;
+    PFN_vkCreateRayTracingPipelinesNV vkCreateRayTracingPipelinesNV = 0;
     PFN_vkCreateRenderPass vkCreateRenderPass = 0;
     PFN_vkCreateRenderPass2KHR vkCreateRenderPass2KHR = 0;
     PFN_vkCreateSampler vkCreateSampler = 0;
@@ -52292,7 +52433,7 @@ public:
     PFN_vkDebugMarkerSetObjectNameEXT vkDebugMarkerSetObjectNameEXT = 0;
     PFN_vkDebugMarkerSetObjectTagEXT vkDebugMarkerSetObjectTagEXT = 0;
     PFN_vkDebugReportMessageEXT vkDebugReportMessageEXT = 0;
-    PFN_vkDestroyAccelerationStructureNVX vkDestroyAccelerationStructureNVX = 0;
+    PFN_vkDestroyAccelerationStructureNV vkDestroyAccelerationStructureNV = 0;
     PFN_vkDestroyBuffer vkDestroyBuffer = 0;
     PFN_vkDestroyBufferView vkDestroyBufferView = 0;
     PFN_vkDestroyCommandPool vkDestroyCommandPool = 0;
@@ -52339,9 +52480,8 @@ public:
     PFN_vkFreeCommandBuffers vkFreeCommandBuffers = 0;
     PFN_vkFreeDescriptorSets vkFreeDescriptorSets = 0;
     PFN_vkFreeMemory vkFreeMemory = 0;
-    PFN_vkGetAccelerationStructureHandleNVX vkGetAccelerationStructureHandleNVX = 0;
-    PFN_vkGetAccelerationStructureMemoryRequirementsNVX vkGetAccelerationStructureMemoryRequirementsNVX = 0;
-    PFN_vkGetAccelerationStructureScratchMemoryRequirementsNVX vkGetAccelerationStructureScratchMemoryRequirementsNVX = 0;
+    PFN_vkGetAccelerationStructureHandleNV vkGetAccelerationStructureHandleNV = 0;
+    PFN_vkGetAccelerationStructureMemoryRequirementsNV vkGetAccelerationStructureMemoryRequirementsNV = 0;
 #ifdef VK_USE_PLATFORM_ANDROID_ANDROID
     PFN_vkGetAndroidHardwareBufferPropertiesANDROID vkGetAndroidHardwareBufferPropertiesANDROID = 0;
 #endif /*VK_USE_PLATFORM_ANDROID_ANDROID*/
@@ -52420,9 +52560,6 @@ public:
     PFN_vkGetPhysicalDeviceMemoryProperties vkGetPhysicalDeviceMemoryProperties = 0;
     PFN_vkGetPhysicalDeviceMemoryProperties2 vkGetPhysicalDeviceMemoryProperties2 = 0;
     PFN_vkGetPhysicalDeviceMemoryProperties2KHR vkGetPhysicalDeviceMemoryProperties2KHR = 0;
-#ifdef VK_USE_PLATFORM_MIR_KHR
-    PFN_vkGetPhysicalDeviceMirPresentationSupportKHR vkGetPhysicalDeviceMirPresentationSupportKHR = 0;
-#endif /*VK_USE_PLATFORM_MIR_KHR*/
     PFN_vkGetPhysicalDeviceMultisamplePropertiesEXT vkGetPhysicalDeviceMultisamplePropertiesEXT = 0;
     PFN_vkGetPhysicalDevicePresentRectanglesKHR vkGetPhysicalDevicePresentRectanglesKHR = 0;
     PFN_vkGetPhysicalDeviceProperties vkGetPhysicalDeviceProperties = 0;
@@ -52459,7 +52596,7 @@ public:
 #ifdef VK_USE_PLATFORM_XLIB_XRANDR_NV
     PFN_vkGetRandROutputDisplayEXT vkGetRandROutputDisplayEXT = 0;
 #endif /*VK_USE_PLATFORM_XLIB_XRANDR_NV*/
-    PFN_vkGetRaytracingShaderHandlesNVX vkGetRaytracingShaderHandlesNVX = 0;
+    PFN_vkGetRayTracingShaderGroupHandlesNV vkGetRayTracingShaderGroupHandlesNV = 0;
     PFN_vkGetRefreshCycleDurationGOOGLE vkGetRefreshCycleDurationGOOGLE = 0;
     PFN_vkGetRenderAreaGranularity vkGetRenderAreaGranularity = 0;
     PFN_vkGetSemaphoreFdKHR vkGetSemaphoreFdKHR = 0;
@@ -52532,7 +52669,7 @@ public:
       vkAllocateDescriptorSets = PFN_vkAllocateDescriptorSets(device ? device.getProcAddr( "vkAllocateDescriptorSets") : instance.getProcAddr( "vkAllocateDescriptorSets"));
       vkAllocateMemory = PFN_vkAllocateMemory(device ? device.getProcAddr( "vkAllocateMemory") : instance.getProcAddr( "vkAllocateMemory"));
       vkBeginCommandBuffer = PFN_vkBeginCommandBuffer(device ? device.getProcAddr( "vkBeginCommandBuffer") : instance.getProcAddr( "vkBeginCommandBuffer"));
-      vkBindAccelerationStructureMemoryNVX = PFN_vkBindAccelerationStructureMemoryNVX(device ? device.getProcAddr( "vkBindAccelerationStructureMemoryNVX") : instance.getProcAddr( "vkBindAccelerationStructureMemoryNVX"));
+      vkBindAccelerationStructureMemoryNV = PFN_vkBindAccelerationStructureMemoryNV(device ? device.getProcAddr( "vkBindAccelerationStructureMemoryNV") : instance.getProcAddr( "vkBindAccelerationStructureMemoryNV"));
       vkBindBufferMemory = PFN_vkBindBufferMemory(device ? device.getProcAddr( "vkBindBufferMemory") : instance.getProcAddr( "vkBindBufferMemory"));
       vkBindBufferMemory2 = PFN_vkBindBufferMemory2(device ? device.getProcAddr( "vkBindBufferMemory2") : instance.getProcAddr( "vkBindBufferMemory2"));
       vkBindBufferMemory2KHR = PFN_vkBindBufferMemory2KHR(device ? device.getProcAddr( "vkBindBufferMemory2KHR") : instance.getProcAddr( "vkBindBufferMemory2KHR"));
@@ -52553,11 +52690,11 @@ public:
       vkCmdBindTransformFeedbackBuffersEXT = PFN_vkCmdBindTransformFeedbackBuffersEXT(device ? device.getProcAddr( "vkCmdBindTransformFeedbackBuffersEXT") : instance.getProcAddr( "vkCmdBindTransformFeedbackBuffersEXT"));
       vkCmdBindVertexBuffers = PFN_vkCmdBindVertexBuffers(device ? device.getProcAddr( "vkCmdBindVertexBuffers") : instance.getProcAddr( "vkCmdBindVertexBuffers"));
       vkCmdBlitImage = PFN_vkCmdBlitImage(device ? device.getProcAddr( "vkCmdBlitImage") : instance.getProcAddr( "vkCmdBlitImage"));
-      vkCmdBuildAccelerationStructureNVX = PFN_vkCmdBuildAccelerationStructureNVX(device ? device.getProcAddr( "vkCmdBuildAccelerationStructureNVX") : instance.getProcAddr( "vkCmdBuildAccelerationStructureNVX"));
+      vkCmdBuildAccelerationStructureNV = PFN_vkCmdBuildAccelerationStructureNV(device ? device.getProcAddr( "vkCmdBuildAccelerationStructureNV") : instance.getProcAddr( "vkCmdBuildAccelerationStructureNV"));
       vkCmdClearAttachments = PFN_vkCmdClearAttachments(device ? device.getProcAddr( "vkCmdClearAttachments") : instance.getProcAddr( "vkCmdClearAttachments"));
       vkCmdClearColorImage = PFN_vkCmdClearColorImage(device ? device.getProcAddr( "vkCmdClearColorImage") : instance.getProcAddr( "vkCmdClearColorImage"));
       vkCmdClearDepthStencilImage = PFN_vkCmdClearDepthStencilImage(device ? device.getProcAddr( "vkCmdClearDepthStencilImage") : instance.getProcAddr( "vkCmdClearDepthStencilImage"));
-      vkCmdCopyAccelerationStructureNVX = PFN_vkCmdCopyAccelerationStructureNVX(device ? device.getProcAddr( "vkCmdCopyAccelerationStructureNVX") : instance.getProcAddr( "vkCmdCopyAccelerationStructureNVX"));
+      vkCmdCopyAccelerationStructureNV = PFN_vkCmdCopyAccelerationStructureNV(device ? device.getProcAddr( "vkCmdCopyAccelerationStructureNV") : instance.getProcAddr( "vkCmdCopyAccelerationStructureNV"));
       vkCmdCopyBuffer = PFN_vkCmdCopyBuffer(device ? device.getProcAddr( "vkCmdCopyBuffer") : instance.getProcAddr( "vkCmdCopyBuffer"));
       vkCmdCopyBufferToImage = PFN_vkCmdCopyBufferToImage(device ? device.getProcAddr( "vkCmdCopyBufferToImage") : instance.getProcAddr( "vkCmdCopyBufferToImage"));
       vkCmdCopyImage = PFN_vkCmdCopyImage(device ? device.getProcAddr( "vkCmdCopyImage") : instance.getProcAddr( "vkCmdCopyImage"));
@@ -52622,14 +52759,14 @@ public:
       vkCmdSetViewport = PFN_vkCmdSetViewport(device ? device.getProcAddr( "vkCmdSetViewport") : instance.getProcAddr( "vkCmdSetViewport"));
       vkCmdSetViewportShadingRatePaletteNV = PFN_vkCmdSetViewportShadingRatePaletteNV(device ? device.getProcAddr( "vkCmdSetViewportShadingRatePaletteNV") : instance.getProcAddr( "vkCmdSetViewportShadingRatePaletteNV"));
       vkCmdSetViewportWScalingNV = PFN_vkCmdSetViewportWScalingNV(device ? device.getProcAddr( "vkCmdSetViewportWScalingNV") : instance.getProcAddr( "vkCmdSetViewportWScalingNV"));
-      vkCmdTraceRaysNVX = PFN_vkCmdTraceRaysNVX(device ? device.getProcAddr( "vkCmdTraceRaysNVX") : instance.getProcAddr( "vkCmdTraceRaysNVX"));
+      vkCmdTraceRaysNV = PFN_vkCmdTraceRaysNV(device ? device.getProcAddr( "vkCmdTraceRaysNV") : instance.getProcAddr( "vkCmdTraceRaysNV"));
       vkCmdUpdateBuffer = PFN_vkCmdUpdateBuffer(device ? device.getProcAddr( "vkCmdUpdateBuffer") : instance.getProcAddr( "vkCmdUpdateBuffer"));
       vkCmdWaitEvents = PFN_vkCmdWaitEvents(device ? device.getProcAddr( "vkCmdWaitEvents") : instance.getProcAddr( "vkCmdWaitEvents"));
-      vkCmdWriteAccelerationStructurePropertiesNVX = PFN_vkCmdWriteAccelerationStructurePropertiesNVX(device ? device.getProcAddr( "vkCmdWriteAccelerationStructurePropertiesNVX") : instance.getProcAddr( "vkCmdWriteAccelerationStructurePropertiesNVX"));
+      vkCmdWriteAccelerationStructuresPropertiesNV = PFN_vkCmdWriteAccelerationStructuresPropertiesNV(device ? device.getProcAddr( "vkCmdWriteAccelerationStructuresPropertiesNV") : instance.getProcAddr( "vkCmdWriteAccelerationStructuresPropertiesNV"));
       vkCmdWriteBufferMarkerAMD = PFN_vkCmdWriteBufferMarkerAMD(device ? device.getProcAddr( "vkCmdWriteBufferMarkerAMD") : instance.getProcAddr( "vkCmdWriteBufferMarkerAMD"));
       vkCmdWriteTimestamp = PFN_vkCmdWriteTimestamp(device ? device.getProcAddr( "vkCmdWriteTimestamp") : instance.getProcAddr( "vkCmdWriteTimestamp"));
-      vkCompileDeferredNVX = PFN_vkCompileDeferredNVX(device ? device.getProcAddr( "vkCompileDeferredNVX") : instance.getProcAddr( "vkCompileDeferredNVX"));
-      vkCreateAccelerationStructureNVX = PFN_vkCreateAccelerationStructureNVX(device ? device.getProcAddr( "vkCreateAccelerationStructureNVX") : instance.getProcAddr( "vkCreateAccelerationStructureNVX"));
+      vkCompileDeferredNV = PFN_vkCompileDeferredNV(device ? device.getProcAddr( "vkCompileDeferredNV") : instance.getProcAddr( "vkCompileDeferredNV"));
+      vkCreateAccelerationStructureNV = PFN_vkCreateAccelerationStructureNV(device ? device.getProcAddr( "vkCreateAccelerationStructureNV") : instance.getProcAddr( "vkCreateAccelerationStructureNV"));
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
       vkCreateAndroidSurfaceKHR = PFN_vkCreateAndroidSurfaceKHR(instance.getProcAddr( "vkCreateAndroidSurfaceKHR"));
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
@@ -52663,14 +52800,11 @@ public:
 #ifdef VK_USE_PLATFORM_MACOS_MVK
       vkCreateMacOSSurfaceMVK = PFN_vkCreateMacOSSurfaceMVK(instance.getProcAddr( "vkCreateMacOSSurfaceMVK"));
 #endif /*VK_USE_PLATFORM_MACOS_MVK*/
-#ifdef VK_USE_PLATFORM_MIR_KHR
-      vkCreateMirSurfaceKHR = PFN_vkCreateMirSurfaceKHR(instance.getProcAddr( "vkCreateMirSurfaceKHR"));
-#endif /*VK_USE_PLATFORM_MIR_KHR*/
       vkCreateObjectTableNVX = PFN_vkCreateObjectTableNVX(device ? device.getProcAddr( "vkCreateObjectTableNVX") : instance.getProcAddr( "vkCreateObjectTableNVX"));
       vkCreatePipelineCache = PFN_vkCreatePipelineCache(device ? device.getProcAddr( "vkCreatePipelineCache") : instance.getProcAddr( "vkCreatePipelineCache"));
       vkCreatePipelineLayout = PFN_vkCreatePipelineLayout(device ? device.getProcAddr( "vkCreatePipelineLayout") : instance.getProcAddr( "vkCreatePipelineLayout"));
       vkCreateQueryPool = PFN_vkCreateQueryPool(device ? device.getProcAddr( "vkCreateQueryPool") : instance.getProcAddr( "vkCreateQueryPool"));
-      vkCreateRaytracingPipelinesNVX = PFN_vkCreateRaytracingPipelinesNVX(device ? device.getProcAddr( "vkCreateRaytracingPipelinesNVX") : instance.getProcAddr( "vkCreateRaytracingPipelinesNVX"));
+      vkCreateRayTracingPipelinesNV = PFN_vkCreateRayTracingPipelinesNV(device ? device.getProcAddr( "vkCreateRayTracingPipelinesNV") : instance.getProcAddr( "vkCreateRayTracingPipelinesNV"));
       vkCreateRenderPass = PFN_vkCreateRenderPass(device ? device.getProcAddr( "vkCreateRenderPass") : instance.getProcAddr( "vkCreateRenderPass"));
       vkCreateRenderPass2KHR = PFN_vkCreateRenderPass2KHR(device ? device.getProcAddr( "vkCreateRenderPass2KHR") : instance.getProcAddr( "vkCreateRenderPass2KHR"));
       vkCreateSampler = PFN_vkCreateSampler(device ? device.getProcAddr( "vkCreateSampler") : instance.getProcAddr( "vkCreateSampler"));
@@ -52699,7 +52833,7 @@ public:
       vkDebugMarkerSetObjectNameEXT = PFN_vkDebugMarkerSetObjectNameEXT(device ? device.getProcAddr( "vkDebugMarkerSetObjectNameEXT") : instance.getProcAddr( "vkDebugMarkerSetObjectNameEXT"));
       vkDebugMarkerSetObjectTagEXT = PFN_vkDebugMarkerSetObjectTagEXT(device ? device.getProcAddr( "vkDebugMarkerSetObjectTagEXT") : instance.getProcAddr( "vkDebugMarkerSetObjectTagEXT"));
       vkDebugReportMessageEXT = PFN_vkDebugReportMessageEXT(instance.getProcAddr( "vkDebugReportMessageEXT"));
-      vkDestroyAccelerationStructureNVX = PFN_vkDestroyAccelerationStructureNVX(device ? device.getProcAddr( "vkDestroyAccelerationStructureNVX") : instance.getProcAddr( "vkDestroyAccelerationStructureNVX"));
+      vkDestroyAccelerationStructureNV = PFN_vkDestroyAccelerationStructureNV(device ? device.getProcAddr( "vkDestroyAccelerationStructureNV") : instance.getProcAddr( "vkDestroyAccelerationStructureNV"));
       vkDestroyBuffer = PFN_vkDestroyBuffer(device ? device.getProcAddr( "vkDestroyBuffer") : instance.getProcAddr( "vkDestroyBuffer"));
       vkDestroyBufferView = PFN_vkDestroyBufferView(device ? device.getProcAddr( "vkDestroyBufferView") : instance.getProcAddr( "vkDestroyBufferView"));
       vkDestroyCommandPool = PFN_vkDestroyCommandPool(device ? device.getProcAddr( "vkDestroyCommandPool") : instance.getProcAddr( "vkDestroyCommandPool"));
@@ -52746,9 +52880,8 @@ public:
       vkFreeCommandBuffers = PFN_vkFreeCommandBuffers(device ? device.getProcAddr( "vkFreeCommandBuffers") : instance.getProcAddr( "vkFreeCommandBuffers"));
       vkFreeDescriptorSets = PFN_vkFreeDescriptorSets(device ? device.getProcAddr( "vkFreeDescriptorSets") : instance.getProcAddr( "vkFreeDescriptorSets"));
       vkFreeMemory = PFN_vkFreeMemory(device ? device.getProcAddr( "vkFreeMemory") : instance.getProcAddr( "vkFreeMemory"));
-      vkGetAccelerationStructureHandleNVX = PFN_vkGetAccelerationStructureHandleNVX(device ? device.getProcAddr( "vkGetAccelerationStructureHandleNVX") : instance.getProcAddr( "vkGetAccelerationStructureHandleNVX"));
-      vkGetAccelerationStructureMemoryRequirementsNVX = PFN_vkGetAccelerationStructureMemoryRequirementsNVX(device ? device.getProcAddr( "vkGetAccelerationStructureMemoryRequirementsNVX") : instance.getProcAddr( "vkGetAccelerationStructureMemoryRequirementsNVX"));
-      vkGetAccelerationStructureScratchMemoryRequirementsNVX = PFN_vkGetAccelerationStructureScratchMemoryRequirementsNVX(device ? device.getProcAddr( "vkGetAccelerationStructureScratchMemoryRequirementsNVX") : instance.getProcAddr( "vkGetAccelerationStructureScratchMemoryRequirementsNVX"));
+      vkGetAccelerationStructureHandleNV = PFN_vkGetAccelerationStructureHandleNV(device ? device.getProcAddr( "vkGetAccelerationStructureHandleNV") : instance.getProcAddr( "vkGetAccelerationStructureHandleNV"));
+      vkGetAccelerationStructureMemoryRequirementsNV = PFN_vkGetAccelerationStructureMemoryRequirementsNV(device ? device.getProcAddr( "vkGetAccelerationStructureMemoryRequirementsNV") : instance.getProcAddr( "vkGetAccelerationStructureMemoryRequirementsNV"));
 #ifdef VK_USE_PLATFORM_ANDROID_ANDROID
       vkGetAndroidHardwareBufferPropertiesANDROID = PFN_vkGetAndroidHardwareBufferPropertiesANDROID(device ? device.getProcAddr( "vkGetAndroidHardwareBufferPropertiesANDROID") : instance.getProcAddr( "vkGetAndroidHardwareBufferPropertiesANDROID"));
 #endif /*VK_USE_PLATFORM_ANDROID_ANDROID*/
@@ -52827,9 +52960,6 @@ public:
       vkGetPhysicalDeviceMemoryProperties = PFN_vkGetPhysicalDeviceMemoryProperties(instance.getProcAddr( "vkGetPhysicalDeviceMemoryProperties"));
       vkGetPhysicalDeviceMemoryProperties2 = PFN_vkGetPhysicalDeviceMemoryProperties2(instance.getProcAddr( "vkGetPhysicalDeviceMemoryProperties2"));
       vkGetPhysicalDeviceMemoryProperties2KHR = PFN_vkGetPhysicalDeviceMemoryProperties2KHR(instance.getProcAddr( "vkGetPhysicalDeviceMemoryProperties2KHR"));
-#ifdef VK_USE_PLATFORM_MIR_KHR
-      vkGetPhysicalDeviceMirPresentationSupportKHR = PFN_vkGetPhysicalDeviceMirPresentationSupportKHR(instance.getProcAddr( "vkGetPhysicalDeviceMirPresentationSupportKHR"));
-#endif /*VK_USE_PLATFORM_MIR_KHR*/
       vkGetPhysicalDeviceMultisamplePropertiesEXT = PFN_vkGetPhysicalDeviceMultisamplePropertiesEXT(instance.getProcAddr( "vkGetPhysicalDeviceMultisamplePropertiesEXT"));
       vkGetPhysicalDevicePresentRectanglesKHR = PFN_vkGetPhysicalDevicePresentRectanglesKHR(instance.getProcAddr( "vkGetPhysicalDevicePresentRectanglesKHR"));
       vkGetPhysicalDeviceProperties = PFN_vkGetPhysicalDeviceProperties(instance.getProcAddr( "vkGetPhysicalDeviceProperties"));
@@ -52866,7 +52996,7 @@ public:
 #ifdef VK_USE_PLATFORM_XLIB_XRANDR_NV
       vkGetRandROutputDisplayEXT = PFN_vkGetRandROutputDisplayEXT(instance.getProcAddr( "vkGetRandROutputDisplayEXT"));
 #endif /*VK_USE_PLATFORM_XLIB_XRANDR_NV*/
-      vkGetRaytracingShaderHandlesNVX = PFN_vkGetRaytracingShaderHandlesNVX(device ? device.getProcAddr( "vkGetRaytracingShaderHandlesNVX") : instance.getProcAddr( "vkGetRaytracingShaderHandlesNVX"));
+      vkGetRayTracingShaderGroupHandlesNV = PFN_vkGetRayTracingShaderGroupHandlesNV(device ? device.getProcAddr( "vkGetRayTracingShaderGroupHandlesNV") : instance.getProcAddr( "vkGetRayTracingShaderGroupHandlesNV"));
       vkGetRefreshCycleDurationGOOGLE = PFN_vkGetRefreshCycleDurationGOOGLE(device ? device.getProcAddr( "vkGetRefreshCycleDurationGOOGLE") : instance.getProcAddr( "vkGetRefreshCycleDurationGOOGLE"));
       vkGetRenderAreaGranularity = PFN_vkGetRenderAreaGranularity(device ? device.getProcAddr( "vkGetRenderAreaGranularity") : instance.getProcAddr( "vkGetRenderAreaGranularity"));
       vkGetSemaphoreFdKHR = PFN_vkGetSemaphoreFdKHR(device ? device.getProcAddr( "vkGetSemaphoreFdKHR") : instance.getProcAddr( "vkGetSemaphoreFdKHR"));

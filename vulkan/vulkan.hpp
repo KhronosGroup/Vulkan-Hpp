@@ -37623,8 +37623,11 @@ public:
         result = static_cast<Result>( d.vkEnumerateInstanceLayerProperties( &propertyCount, reinterpret_cast<VkLayerProperties*>( properties.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
-    properties.resize( propertyCount );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
+      properties.resize( propertyCount );
+    }
     return createResultValue( result, properties, VULKAN_HPP_NAMESPACE_STRING"::enumerateInstanceLayerProperties" );
   }
   template <typename Allocator, typename Dispatch> 
@@ -37642,8 +37645,11 @@ public:
         result = static_cast<Result>( d.vkEnumerateInstanceLayerProperties( &propertyCount, reinterpret_cast<VkLayerProperties*>( properties.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
-    properties.resize( propertyCount );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
+      properties.resize( propertyCount );
+    }
     return createResultValue( result, properties, VULKAN_HPP_NAMESPACE_STRING"::enumerateInstanceLayerProperties" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -37679,8 +37685,11 @@ public:
         result = static_cast<Result>( d.vkEnumerateInstanceExtensionProperties( layerName ? layerName->c_str() : nullptr, &propertyCount, reinterpret_cast<VkExtensionProperties*>( properties.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
-    properties.resize( propertyCount );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
+      properties.resize( propertyCount );
+    }
     return createResultValue( result, properties, VULKAN_HPP_NAMESPACE_STRING"::enumerateInstanceExtensionProperties" );
   }
   template <typename Allocator, typename Dispatch> 
@@ -37698,8 +37707,11 @@ public:
         result = static_cast<Result>( d.vkEnumerateInstanceExtensionProperties( layerName ? layerName->c_str() : nullptr, &propertyCount, reinterpret_cast<VkExtensionProperties*>( properties.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
-    properties.resize( propertyCount );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
+      properties.resize( propertyCount );
+    }
     return createResultValue( result, properties, VULKAN_HPP_NAMESPACE_STRING"::enumerateInstanceExtensionProperties" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -42435,8 +42447,11 @@ public:
         result = static_cast<Result>( d.vkGetPipelineCacheData( m_device, static_cast<VkPipelineCache>( pipelineCache ), &dataSize, reinterpret_cast<void*>( data.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( dataSize <= data.size() );
-    data.resize( dataSize );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( dataSize <= data.size() );
+      data.resize( dataSize );
+    }
     return createResultValue( result, data, VULKAN_HPP_NAMESPACE_STRING"::Device::getPipelineCacheData" );
   }
   template <typename Allocator, typename Dispatch> 
@@ -42454,8 +42469,11 @@ public:
         result = static_cast<Result>( d.vkGetPipelineCacheData( m_device, static_cast<VkPipelineCache>( pipelineCache ), &dataSize, reinterpret_cast<void*>( data.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( dataSize <= data.size() );
-    data.resize( dataSize );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( dataSize <= data.size() );
+      data.resize( dataSize );
+    }
     return createResultValue( result, data, VULKAN_HPP_NAMESPACE_STRING"::Device::getPipelineCacheData" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -43387,8 +43405,11 @@ public:
         result = static_cast<Result>( d.vkGetSwapchainImagesKHR( m_device, static_cast<VkSwapchainKHR>( swapchain ), &swapchainImageCount, reinterpret_cast<VkImage*>( swapchainImages.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( swapchainImageCount <= swapchainImages.size() );
-    swapchainImages.resize( swapchainImageCount );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( swapchainImageCount <= swapchainImages.size() );
+      swapchainImages.resize( swapchainImageCount );
+    }
     return createResultValue( result, swapchainImages, VULKAN_HPP_NAMESPACE_STRING"::Device::getSwapchainImagesKHR" );
   }
   template <typename Allocator, typename Dispatch> 
@@ -43406,8 +43427,11 @@ public:
         result = static_cast<Result>( d.vkGetSwapchainImagesKHR( m_device, static_cast<VkSwapchainKHR>( swapchain ), &swapchainImageCount, reinterpret_cast<VkImage*>( swapchainImages.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( swapchainImageCount <= swapchainImages.size() );
-    swapchainImages.resize( swapchainImageCount );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( swapchainImageCount <= swapchainImages.size() );
+      swapchainImages.resize( swapchainImageCount );
+    }
     return createResultValue( result, swapchainImages, VULKAN_HPP_NAMESPACE_STRING"::Device::getSwapchainImagesKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -44217,8 +44241,11 @@ public:
         result = static_cast<Result>( d.vkGetPastPresentationTimingGOOGLE( m_device, static_cast<VkSwapchainKHR>( swapchain ), &presentationTimingCount, reinterpret_cast<VkPastPresentationTimingGOOGLE*>( presentationTimings.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( presentationTimingCount <= presentationTimings.size() );
-    presentationTimings.resize( presentationTimingCount );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( presentationTimingCount <= presentationTimings.size() );
+      presentationTimings.resize( presentationTimingCount );
+    }
     return createResultValue( result, presentationTimings, VULKAN_HPP_NAMESPACE_STRING"::Device::getPastPresentationTimingGOOGLE" );
   }
   template <typename Allocator, typename Dispatch> 
@@ -44236,8 +44263,11 @@ public:
         result = static_cast<Result>( d.vkGetPastPresentationTimingGOOGLE( m_device, static_cast<VkSwapchainKHR>( swapchain ), &presentationTimingCount, reinterpret_cast<VkPastPresentationTimingGOOGLE*>( presentationTimings.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( presentationTimingCount <= presentationTimings.size() );
-    presentationTimings.resize( presentationTimingCount );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( presentationTimingCount <= presentationTimings.size() );
+      presentationTimings.resize( presentationTimingCount );
+    }
     return createResultValue( result, presentationTimings, VULKAN_HPP_NAMESPACE_STRING"::Device::getPastPresentationTimingGOOGLE" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -44569,8 +44599,11 @@ public:
         result = static_cast<Result>( d.vkGetValidationCacheDataEXT( m_device, static_cast<VkValidationCacheEXT>( validationCache ), &dataSize, reinterpret_cast<void*>( data.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( dataSize <= data.size() );
-    data.resize( dataSize );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( dataSize <= data.size() );
+      data.resize( dataSize );
+    }
     return createResultValue( result, data, VULKAN_HPP_NAMESPACE_STRING"::Device::getValidationCacheDataEXT" );
   }
   template <typename Allocator, typename Dispatch> 
@@ -44588,8 +44621,11 @@ public:
         result = static_cast<Result>( d.vkGetValidationCacheDataEXT( m_device, static_cast<VkValidationCacheEXT>( validationCache ), &dataSize, reinterpret_cast<void*>( data.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( dataSize <= data.size() );
-    data.resize( dataSize );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( dataSize <= data.size() );
+      data.resize( dataSize );
+    }
     return createResultValue( result, data, VULKAN_HPP_NAMESPACE_STRING"::Device::getValidationCacheDataEXT" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -44675,8 +44711,11 @@ public:
         result = static_cast<Result>( d.vkGetShaderInfoAMD( m_device, static_cast<VkPipeline>( pipeline ), static_cast<VkShaderStageFlagBits>( shaderStage ), static_cast<VkShaderInfoTypeAMD>( infoType ), &infoSize, reinterpret_cast<void*>( info.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( infoSize <= info.size() );
-    info.resize( infoSize );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( infoSize <= info.size() );
+      info.resize( infoSize );
+    }
     return createResultValue( result, info, VULKAN_HPP_NAMESPACE_STRING"::Device::getShaderInfoAMD" );
   }
   template <typename Allocator, typename Dispatch> 
@@ -44694,8 +44733,11 @@ public:
         result = static_cast<Result>( d.vkGetShaderInfoAMD( m_device, static_cast<VkPipeline>( pipeline ), static_cast<VkShaderStageFlagBits>( shaderStage ), static_cast<VkShaderInfoTypeAMD>( infoType ), &infoSize, reinterpret_cast<void*>( info.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( infoSize <= info.size() );
-    info.resize( infoSize );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( infoSize <= info.size() );
+      info.resize( infoSize );
+    }
     return createResultValue( result, info, VULKAN_HPP_NAMESPACE_STRING"::Device::getShaderInfoAMD" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -45764,8 +45806,11 @@ public:
         result = static_cast<Result>( d.vkEnumerateDeviceLayerProperties( m_physicalDevice, &propertyCount, reinterpret_cast<VkLayerProperties*>( properties.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
-    properties.resize( propertyCount );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
+      properties.resize( propertyCount );
+    }
     return createResultValue( result, properties, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::enumerateDeviceLayerProperties" );
   }
   template <typename Allocator, typename Dispatch> 
@@ -45783,8 +45828,11 @@ public:
         result = static_cast<Result>( d.vkEnumerateDeviceLayerProperties( m_physicalDevice, &propertyCount, reinterpret_cast<VkLayerProperties*>( properties.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
-    properties.resize( propertyCount );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
+      properties.resize( propertyCount );
+    }
     return createResultValue( result, properties, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::enumerateDeviceLayerProperties" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -45810,8 +45858,11 @@ public:
         result = static_cast<Result>( d.vkEnumerateDeviceExtensionProperties( m_physicalDevice, layerName ? layerName->c_str() : nullptr, &propertyCount, reinterpret_cast<VkExtensionProperties*>( properties.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
-    properties.resize( propertyCount );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
+      properties.resize( propertyCount );
+    }
     return createResultValue( result, properties, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::enumerateDeviceExtensionProperties" );
   }
   template <typename Allocator, typename Dispatch> 
@@ -45829,8 +45880,11 @@ public:
         result = static_cast<Result>( d.vkEnumerateDeviceExtensionProperties( m_physicalDevice, layerName ? layerName->c_str() : nullptr, &propertyCount, reinterpret_cast<VkExtensionProperties*>( properties.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
-    properties.resize( propertyCount );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
+      properties.resize( propertyCount );
+    }
     return createResultValue( result, properties, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::enumerateDeviceExtensionProperties" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -45884,8 +45938,11 @@ public:
         result = static_cast<Result>( d.vkGetPhysicalDeviceDisplayPropertiesKHR( m_physicalDevice, &propertyCount, reinterpret_cast<VkDisplayPropertiesKHR*>( properties.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
-    properties.resize( propertyCount );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
+      properties.resize( propertyCount );
+    }
     return createResultValue( result, properties, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::getDisplayPropertiesKHR" );
   }
   template <typename Allocator, typename Dispatch> 
@@ -45903,8 +45960,11 @@ public:
         result = static_cast<Result>( d.vkGetPhysicalDeviceDisplayPropertiesKHR( m_physicalDevice, &propertyCount, reinterpret_cast<VkDisplayPropertiesKHR*>( properties.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
-    properties.resize( propertyCount );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
+      properties.resize( propertyCount );
+    }
     return createResultValue( result, properties, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::getDisplayPropertiesKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -45930,8 +45990,11 @@ public:
         result = static_cast<Result>( d.vkGetPhysicalDeviceDisplayPlanePropertiesKHR( m_physicalDevice, &propertyCount, reinterpret_cast<VkDisplayPlanePropertiesKHR*>( properties.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
-    properties.resize( propertyCount );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
+      properties.resize( propertyCount );
+    }
     return createResultValue( result, properties, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::getDisplayPlanePropertiesKHR" );
   }
   template <typename Allocator, typename Dispatch> 
@@ -45949,8 +46012,11 @@ public:
         result = static_cast<Result>( d.vkGetPhysicalDeviceDisplayPlanePropertiesKHR( m_physicalDevice, &propertyCount, reinterpret_cast<VkDisplayPlanePropertiesKHR*>( properties.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
-    properties.resize( propertyCount );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
+      properties.resize( propertyCount );
+    }
     return createResultValue( result, properties, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::getDisplayPlanePropertiesKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -45976,8 +46042,11 @@ public:
         result = static_cast<Result>( d.vkGetDisplayPlaneSupportedDisplaysKHR( m_physicalDevice, planeIndex, &displayCount, reinterpret_cast<VkDisplayKHR*>( displays.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( displayCount <= displays.size() );
-    displays.resize( displayCount );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( displayCount <= displays.size() );
+      displays.resize( displayCount );
+    }
     return createResultValue( result, displays, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::getDisplayPlaneSupportedDisplaysKHR" );
   }
   template <typename Allocator, typename Dispatch> 
@@ -45995,8 +46064,11 @@ public:
         result = static_cast<Result>( d.vkGetDisplayPlaneSupportedDisplaysKHR( m_physicalDevice, planeIndex, &displayCount, reinterpret_cast<VkDisplayKHR*>( displays.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( displayCount <= displays.size() );
-    displays.resize( displayCount );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( displayCount <= displays.size() );
+      displays.resize( displayCount );
+    }
     return createResultValue( result, displays, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::getDisplayPlaneSupportedDisplaysKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -46022,8 +46094,11 @@ public:
         result = static_cast<Result>( d.vkGetDisplayModePropertiesKHR( m_physicalDevice, static_cast<VkDisplayKHR>( display ), &propertyCount, reinterpret_cast<VkDisplayModePropertiesKHR*>( properties.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
-    properties.resize( propertyCount );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
+      properties.resize( propertyCount );
+    }
     return createResultValue( result, properties, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::getDisplayModePropertiesKHR" );
   }
   template <typename Allocator, typename Dispatch> 
@@ -46041,8 +46116,11 @@ public:
         result = static_cast<Result>( d.vkGetDisplayModePropertiesKHR( m_physicalDevice, static_cast<VkDisplayKHR>( display ), &propertyCount, reinterpret_cast<VkDisplayModePropertiesKHR*>( properties.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
-    properties.resize( propertyCount );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
+      properties.resize( propertyCount );
+    }
     return createResultValue( result, properties, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::getDisplayModePropertiesKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -46128,8 +46206,11 @@ public:
         result = static_cast<Result>( d.vkGetPhysicalDeviceSurfaceFormatsKHR( m_physicalDevice, static_cast<VkSurfaceKHR>( surface ), &surfaceFormatCount, reinterpret_cast<VkSurfaceFormatKHR*>( surfaceFormats.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( surfaceFormatCount <= surfaceFormats.size() );
-    surfaceFormats.resize( surfaceFormatCount );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( surfaceFormatCount <= surfaceFormats.size() );
+      surfaceFormats.resize( surfaceFormatCount );
+    }
     return createResultValue( result, surfaceFormats, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::getSurfaceFormatsKHR" );
   }
   template <typename Allocator, typename Dispatch> 
@@ -46147,8 +46228,11 @@ public:
         result = static_cast<Result>( d.vkGetPhysicalDeviceSurfaceFormatsKHR( m_physicalDevice, static_cast<VkSurfaceKHR>( surface ), &surfaceFormatCount, reinterpret_cast<VkSurfaceFormatKHR*>( surfaceFormats.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( surfaceFormatCount <= surfaceFormats.size() );
-    surfaceFormats.resize( surfaceFormatCount );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( surfaceFormatCount <= surfaceFormats.size() );
+      surfaceFormats.resize( surfaceFormatCount );
+    }
     return createResultValue( result, surfaceFormats, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::getSurfaceFormatsKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -46174,8 +46258,11 @@ public:
         result = static_cast<Result>( d.vkGetPhysicalDeviceSurfacePresentModesKHR( m_physicalDevice, static_cast<VkSurfaceKHR>( surface ), &presentModeCount, reinterpret_cast<VkPresentModeKHR*>( presentModes.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( presentModeCount <= presentModes.size() );
-    presentModes.resize( presentModeCount );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( presentModeCount <= presentModes.size() );
+      presentModes.resize( presentModeCount );
+    }
     return createResultValue( result, presentModes, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::getSurfacePresentModesKHR" );
   }
   template <typename Allocator, typename Dispatch> 
@@ -46193,8 +46280,11 @@ public:
         result = static_cast<Result>( d.vkGetPhysicalDeviceSurfacePresentModesKHR( m_physicalDevice, static_cast<VkSurfaceKHR>( surface ), &presentModeCount, reinterpret_cast<VkPresentModeKHR*>( presentModes.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( presentModeCount <= presentModes.size() );
-    presentModes.resize( presentModeCount );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( presentModeCount <= presentModes.size() );
+      presentModes.resize( presentModeCount );
+    }
     return createResultValue( result, presentModes, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::getSurfacePresentModesKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -46791,8 +46881,11 @@ public:
         result = static_cast<Result>( d.vkGetPhysicalDevicePresentRectanglesKHR( m_physicalDevice, static_cast<VkSurfaceKHR>( surface ), &rectCount, reinterpret_cast<VkRect2D*>( rects.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( rectCount <= rects.size() );
-    rects.resize( rectCount );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( rectCount <= rects.size() );
+      rects.resize( rectCount );
+    }
     return createResultValue( result, rects, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::getPresentRectanglesKHR" );
   }
   template <typename Allocator, typename Dispatch> 
@@ -46810,8 +46903,11 @@ public:
         result = static_cast<Result>( d.vkGetPhysicalDevicePresentRectanglesKHR( m_physicalDevice, static_cast<VkSurfaceKHR>( surface ), &rectCount, reinterpret_cast<VkRect2D*>( rects.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( rectCount <= rects.size() );
-    rects.resize( rectCount );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( rectCount <= rects.size() );
+      rects.resize( rectCount );
+    }
     return createResultValue( result, rects, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::getPresentRectanglesKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -46875,8 +46971,11 @@ public:
         result = static_cast<Result>( d.vkGetPhysicalDeviceSurfaceFormats2KHR( m_physicalDevice, reinterpret_cast<const VkPhysicalDeviceSurfaceInfo2KHR*>( &surfaceInfo ), &surfaceFormatCount, reinterpret_cast<VkSurfaceFormat2KHR*>( surfaceFormats.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( surfaceFormatCount <= surfaceFormats.size() );
-    surfaceFormats.resize( surfaceFormatCount );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( surfaceFormatCount <= surfaceFormats.size() );
+      surfaceFormats.resize( surfaceFormatCount );
+    }
     return createResultValue( result, surfaceFormats, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::getSurfaceFormats2KHR" );
   }
   template <typename Allocator, typename Dispatch> 
@@ -46894,8 +46993,11 @@ public:
         result = static_cast<Result>( d.vkGetPhysicalDeviceSurfaceFormats2KHR( m_physicalDevice, reinterpret_cast<const VkPhysicalDeviceSurfaceInfo2KHR*>( &surfaceInfo ), &surfaceFormatCount, reinterpret_cast<VkSurfaceFormat2KHR*>( surfaceFormats.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( surfaceFormatCount <= surfaceFormats.size() );
-    surfaceFormats.resize( surfaceFormatCount );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( surfaceFormatCount <= surfaceFormats.size() );
+      surfaceFormats.resize( surfaceFormatCount );
+    }
     return createResultValue( result, surfaceFormats, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::getSurfaceFormats2KHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -46921,8 +47023,11 @@ public:
         result = static_cast<Result>( d.vkGetPhysicalDeviceDisplayProperties2KHR( m_physicalDevice, &propertyCount, reinterpret_cast<VkDisplayProperties2KHR*>( properties.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
-    properties.resize( propertyCount );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
+      properties.resize( propertyCount );
+    }
     return createResultValue( result, properties, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::getDisplayProperties2KHR" );
   }
   template <typename Allocator, typename Dispatch> 
@@ -46940,8 +47045,11 @@ public:
         result = static_cast<Result>( d.vkGetPhysicalDeviceDisplayProperties2KHR( m_physicalDevice, &propertyCount, reinterpret_cast<VkDisplayProperties2KHR*>( properties.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
-    properties.resize( propertyCount );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
+      properties.resize( propertyCount );
+    }
     return createResultValue( result, properties, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::getDisplayProperties2KHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -46967,8 +47075,11 @@ public:
         result = static_cast<Result>( d.vkGetPhysicalDeviceDisplayPlaneProperties2KHR( m_physicalDevice, &propertyCount, reinterpret_cast<VkDisplayPlaneProperties2KHR*>( properties.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
-    properties.resize( propertyCount );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
+      properties.resize( propertyCount );
+    }
     return createResultValue( result, properties, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::getDisplayPlaneProperties2KHR" );
   }
   template <typename Allocator, typename Dispatch> 
@@ -46986,8 +47097,11 @@ public:
         result = static_cast<Result>( d.vkGetPhysicalDeviceDisplayPlaneProperties2KHR( m_physicalDevice, &propertyCount, reinterpret_cast<VkDisplayPlaneProperties2KHR*>( properties.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
-    properties.resize( propertyCount );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
+      properties.resize( propertyCount );
+    }
     return createResultValue( result, properties, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::getDisplayPlaneProperties2KHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -47013,8 +47127,11 @@ public:
         result = static_cast<Result>( d.vkGetDisplayModeProperties2KHR( m_physicalDevice, static_cast<VkDisplayKHR>( display ), &propertyCount, reinterpret_cast<VkDisplayModeProperties2KHR*>( properties.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
-    properties.resize( propertyCount );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
+      properties.resize( propertyCount );
+    }
     return createResultValue( result, properties, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::getDisplayModeProperties2KHR" );
   }
   template <typename Allocator, typename Dispatch> 
@@ -47032,8 +47149,11 @@ public:
         result = static_cast<Result>( d.vkGetDisplayModeProperties2KHR( m_physicalDevice, static_cast<VkDisplayKHR>( display ), &propertyCount, reinterpret_cast<VkDisplayModeProperties2KHR*>( properties.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
-    properties.resize( propertyCount );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
+      properties.resize( propertyCount );
+    }
     return createResultValue( result, properties, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::getDisplayModeProperties2KHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -47074,8 +47194,11 @@ public:
         result = static_cast<Result>( d.vkGetPhysicalDeviceCalibrateableTimeDomainsEXT( m_physicalDevice, &timeDomainCount, reinterpret_cast<VkTimeDomainEXT*>( timeDomains.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( timeDomainCount <= timeDomains.size() );
-    timeDomains.resize( timeDomainCount );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( timeDomainCount <= timeDomains.size() );
+      timeDomains.resize( timeDomainCount );
+    }
     return createResultValue( result, timeDomains, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::getCalibrateableTimeDomainsEXT" );
   }
   template <typename Allocator, typename Dispatch> 
@@ -47093,8 +47216,11 @@ public:
         result = static_cast<Result>( d.vkGetPhysicalDeviceCalibrateableTimeDomainsEXT( m_physicalDevice, &timeDomainCount, reinterpret_cast<VkTimeDomainEXT*>( timeDomains.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( timeDomainCount <= timeDomains.size() );
-    timeDomains.resize( timeDomainCount );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( timeDomainCount <= timeDomains.size() );
+      timeDomains.resize( timeDomainCount );
+    }
     return createResultValue( result, timeDomains, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::getCalibrateableTimeDomainsEXT" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -47647,8 +47773,11 @@ public:
         result = static_cast<Result>( d.vkEnumeratePhysicalDevices( m_instance, &physicalDeviceCount, reinterpret_cast<VkPhysicalDevice*>( physicalDevices.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( physicalDeviceCount <= physicalDevices.size() );
-    physicalDevices.resize( physicalDeviceCount );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( physicalDeviceCount <= physicalDevices.size() );
+      physicalDevices.resize( physicalDeviceCount );
+    }
     return createResultValue( result, physicalDevices, VULKAN_HPP_NAMESPACE_STRING"::Instance::enumeratePhysicalDevices" );
   }
   template <typename Allocator, typename Dispatch> 
@@ -47666,8 +47795,11 @@ public:
         result = static_cast<Result>( d.vkEnumeratePhysicalDevices( m_instance, &physicalDeviceCount, reinterpret_cast<VkPhysicalDevice*>( physicalDevices.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( physicalDeviceCount <= physicalDevices.size() );
-    physicalDevices.resize( physicalDeviceCount );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( physicalDeviceCount <= physicalDevices.size() );
+      physicalDevices.resize( physicalDeviceCount );
+    }
     return createResultValue( result, physicalDevices, VULKAN_HPP_NAMESPACE_STRING"::Instance::enumeratePhysicalDevices" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -48027,8 +48159,11 @@ public:
         result = static_cast<Result>( d.vkEnumeratePhysicalDeviceGroups( m_instance, &physicalDeviceGroupCount, reinterpret_cast<VkPhysicalDeviceGroupProperties*>( physicalDeviceGroupProperties.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( physicalDeviceGroupCount <= physicalDeviceGroupProperties.size() );
-    physicalDeviceGroupProperties.resize( physicalDeviceGroupCount );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( physicalDeviceGroupCount <= physicalDeviceGroupProperties.size() );
+      physicalDeviceGroupProperties.resize( physicalDeviceGroupCount );
+    }
     return createResultValue( result, physicalDeviceGroupProperties, VULKAN_HPP_NAMESPACE_STRING"::Instance::enumeratePhysicalDeviceGroups" );
   }
   template <typename Allocator, typename Dispatch> 
@@ -48046,8 +48181,11 @@ public:
         result = static_cast<Result>( d.vkEnumeratePhysicalDeviceGroups( m_instance, &physicalDeviceGroupCount, reinterpret_cast<VkPhysicalDeviceGroupProperties*>( physicalDeviceGroupProperties.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( physicalDeviceGroupCount <= physicalDeviceGroupProperties.size() );
-    physicalDeviceGroupProperties.resize( physicalDeviceGroupCount );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( physicalDeviceGroupCount <= physicalDeviceGroupProperties.size() );
+      physicalDeviceGroupProperties.resize( physicalDeviceGroupCount );
+    }
     return createResultValue( result, physicalDeviceGroupProperties, VULKAN_HPP_NAMESPACE_STRING"::Instance::enumeratePhysicalDeviceGroups" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -48073,8 +48211,11 @@ public:
         result = static_cast<Result>( d.vkEnumeratePhysicalDeviceGroupsKHR( m_instance, &physicalDeviceGroupCount, reinterpret_cast<VkPhysicalDeviceGroupProperties*>( physicalDeviceGroupProperties.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( physicalDeviceGroupCount <= physicalDeviceGroupProperties.size() );
-    physicalDeviceGroupProperties.resize( physicalDeviceGroupCount );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( physicalDeviceGroupCount <= physicalDeviceGroupProperties.size() );
+      physicalDeviceGroupProperties.resize( physicalDeviceGroupCount );
+    }
     return createResultValue( result, physicalDeviceGroupProperties, VULKAN_HPP_NAMESPACE_STRING"::Instance::enumeratePhysicalDeviceGroupsKHR" );
   }
   template <typename Allocator, typename Dispatch> 
@@ -48092,8 +48233,11 @@ public:
         result = static_cast<Result>( d.vkEnumeratePhysicalDeviceGroupsKHR( m_instance, &physicalDeviceGroupCount, reinterpret_cast<VkPhysicalDeviceGroupProperties*>( physicalDeviceGroupProperties.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-    VULKAN_HPP_ASSERT( physicalDeviceGroupCount <= physicalDeviceGroupProperties.size() );
-    physicalDeviceGroupProperties.resize( physicalDeviceGroupCount );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( physicalDeviceGroupCount <= physicalDeviceGroupProperties.size() );
+      physicalDeviceGroupProperties.resize( physicalDeviceGroupCount );
+    }
     return createResultValue( result, physicalDeviceGroupProperties, VULKAN_HPP_NAMESPACE_STRING"::Instance::enumeratePhysicalDeviceGroupsKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/

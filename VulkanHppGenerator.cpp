@@ -3589,8 +3589,11 @@ ${i}      ${returnName}.resize( ${sizeName} );
 ${i}      result = static_cast<Result>( ${call2} );
 ${i}    }
 ${i}  } while ( result == Result::eIncomplete );
-${i}  VULKAN_HPP_ASSERT( ${sizeName} <= ${returnName}.size() );
-${i}  ${returnName}.resize( ${sizeName} );
+${i}  if ( result == Result::eSuccess )
+${i}  {
+${i}    VULKAN_HPP_ASSERT( ${sizeName} <= ${returnName}.size() );
+${i}    ${returnName}.resize( ${sizeName} );
+${i}  }
 )";
   writeFunctionBodyTwoStep(os, templateString, indentation, returnName, sizeName, commandData);
 }

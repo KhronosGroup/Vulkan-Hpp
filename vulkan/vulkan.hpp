@@ -1102,12 +1102,12 @@ public:
   {
     return ::vkAcquireNextImageKHR( device, swapchain, timeout, semaphore, fence, pImageIndex);
   }
-#ifdef VK_USE_PLATFORM_XLIB_XRANDR_NV
+#ifdef VK_USE_PLATFORM_XLIB_XRANDR_EXT
   VkResult vkAcquireXlibDisplayEXT( VkPhysicalDevice physicalDevice, Display* dpy, VkDisplayKHR display  ) const
   {
     return ::vkAcquireXlibDisplayEXT( physicalDevice, dpy, display);
   }
-#endif /*VK_USE_PLATFORM_XLIB_XRANDR_NV*/
+#endif /*VK_USE_PLATFORM_XLIB_XRANDR_EXT*/
   VkResult vkAllocateCommandBuffers( VkDevice device, const VkCommandBufferAllocateInfo* pAllocateInfo, VkCommandBuffer* pCommandBuffers  ) const
   {
     return ::vkAllocateCommandBuffers( device, pAllocateInfo, pCommandBuffers);
@@ -1600,12 +1600,12 @@ public:
   {
     return ::vkCreateImage( device, pCreateInfo, pAllocator, pImage);
   }
-#ifdef VK_USE_PLATFORM_FUCHSIA_FUCHSIA
+#ifdef VK_USE_PLATFORM_FUCHSIA
   VkResult vkCreateImagePipeSurfaceFUCHSIA( VkInstance instance, const VkImagePipeSurfaceCreateInfoFUCHSIA* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface  ) const
   {
     return ::vkCreateImagePipeSurfaceFUCHSIA( instance, pCreateInfo, pAllocator, pSurface);
   }
-#endif /*VK_USE_PLATFORM_FUCHSIA_FUCHSIA*/
+#endif /*VK_USE_PLATFORM_FUCHSIA*/
   VkResult vkCreateImageView( VkDevice device, const VkImageViewCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkImageView* pView  ) const
   {
     return ::vkCreateImageView( device, pCreateInfo, pAllocator, pView);
@@ -1922,12 +1922,12 @@ public:
   {
     return ::vkGetAccelerationStructureMemoryRequirementsNV( device, pInfo, pMemoryRequirements);
   }
-#ifdef VK_USE_PLATFORM_ANDROID_ANDROID
+#ifdef VK_USE_PLATFORM_ANDROID_KHR
   VkResult vkGetAndroidHardwareBufferPropertiesANDROID( VkDevice device, const struct AHardwareBuffer* buffer, VkAndroidHardwareBufferPropertiesANDROID* pProperties  ) const
   {
     return ::vkGetAndroidHardwareBufferPropertiesANDROID( device, buffer, pProperties);
   }
-#endif /*VK_USE_PLATFORM_ANDROID_ANDROID*/
+#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
   void vkGetBufferMemoryRequirements( VkDevice device, VkBuffer buffer, VkMemoryRequirements* pMemoryRequirements  ) const
   {
     return ::vkGetBufferMemoryRequirements( device, buffer, pMemoryRequirements);
@@ -2058,12 +2058,12 @@ public:
   {
     return ::vkGetInstanceProcAddr( instance, pName);
   }
-#ifdef VK_USE_PLATFORM_ANDROID_ANDROID
+#ifdef VK_USE_PLATFORM_ANDROID_KHR
   VkResult vkGetMemoryAndroidHardwareBufferANDROID( VkDevice device, const VkMemoryGetAndroidHardwareBufferInfoANDROID* pInfo, struct AHardwareBuffer** pBuffer  ) const
   {
     return ::vkGetMemoryAndroidHardwareBufferANDROID( device, pInfo, pBuffer);
   }
-#endif /*VK_USE_PLATFORM_ANDROID_ANDROID*/
+#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
   VkResult vkGetMemoryFdKHR( VkDevice device, const VkMemoryGetFdInfoKHR* pGetFdInfo, int* pFd  ) const
   {
     return ::vkGetMemoryFdKHR( device, pGetFdInfo, pFd);
@@ -2082,12 +2082,12 @@ public:
     return ::vkGetMemoryWin32HandleKHR( device, pGetWin32HandleInfo, pHandle);
   }
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
-#ifdef VK_USE_PLATFORM_WIN32_NV
+#ifdef VK_USE_PLATFORM_WIN32_KHR
   VkResult vkGetMemoryWin32HandleNV( VkDevice device, VkDeviceMemory memory, VkExternalMemoryHandleTypeFlagsNV handleType, HANDLE* pHandle  ) const
   {
     return ::vkGetMemoryWin32HandleNV( device, memory, handleType, pHandle);
   }
-#endif /*VK_USE_PLATFORM_WIN32_NV*/
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
 #ifdef VK_USE_PLATFORM_WIN32_KHR
   VkResult vkGetMemoryWin32HandlePropertiesKHR( VkDevice device, VkExternalMemoryHandleTypeFlagBits handleType, HANDLE handle, VkMemoryWin32HandlePropertiesKHR* pMemoryWin32HandleProperties  ) const
   {
@@ -2306,12 +2306,12 @@ public:
   {
     return ::vkGetQueueCheckpointDataNV( queue, pCheckpointDataCount, pCheckpointData);
   }
-#ifdef VK_USE_PLATFORM_XLIB_XRANDR_NV
+#ifdef VK_USE_PLATFORM_XLIB_XRANDR_EXT
   VkResult vkGetRandROutputDisplayEXT( VkPhysicalDevice physicalDevice, Display* dpy, RROutput rrOutput, VkDisplayKHR* pDisplay  ) const
   {
     return ::vkGetRandROutputDisplayEXT( physicalDevice, dpy, rrOutput, pDisplay);
   }
-#endif /*VK_USE_PLATFORM_XLIB_XRANDR_NV*/
+#endif /*VK_USE_PLATFORM_XLIB_XRANDR_EXT*/
   VkResult vkGetRayTracingShaderGroupHandlesNV( VkDevice device, VkPipeline pipeline, uint32_t firstGroup, uint32_t groupCount, size_t dataSize, void* pData  ) const
   {
     return ::vkGetRayTracingShaderGroupHandlesNV( device, pipeline, firstGroup, groupCount, dataSize, pData);
@@ -2857,15 +2857,15 @@ public:
   using MacOSSurfaceCreateFlagsMVK = Flags<MacOSSurfaceCreateFlagBitsMVK, VkMacOSSurfaceCreateFlagsMVK>;
 #endif /*VK_USE_PLATFORM_MACOS_MVK*/
 
-#ifdef VK_USE_PLATFORM_FUCHSIA_FUCHSIA
+#ifdef VK_USE_PLATFORM_FUCHSIA
   enum class ImagePipeSurfaceCreateFlagBitsFUCHSIA
   {
   };
-#endif /*VK_USE_PLATFORM_FUCHSIA_FUCHSIA*/
+#endif /*VK_USE_PLATFORM_FUCHSIA*/
 
-#ifdef VK_USE_PLATFORM_FUCHSIA_FUCHSIA
+#ifdef VK_USE_PLATFORM_FUCHSIA
   using ImagePipeSurfaceCreateFlagsFUCHSIA = Flags<ImagePipeSurfaceCreateFlagBitsFUCHSIA, VkImagePipeSurfaceCreateFlagsFUCHSIA>;
-#endif /*VK_USE_PLATFORM_FUCHSIA_FUCHSIA*/
+#endif /*VK_USE_PLATFORM_FUCHSIA*/
 
   enum class CommandPoolTrimFlagBits
   {
@@ -12143,7 +12143,7 @@ public:
   static_assert( sizeof( XcbSurfaceCreateInfoKHR ) == sizeof( VkXcbSurfaceCreateInfoKHR ), "struct and wrapper have different size!" );
 #endif /*VK_USE_PLATFORM_XCB_KHR*/
 
-#ifdef VK_USE_PLATFORM_FUCHSIA_FUCHSIA
+#ifdef VK_USE_PLATFORM_FUCHSIA
   struct ImagePipeSurfaceCreateInfoFUCHSIA
   {
     ImagePipeSurfaceCreateInfoFUCHSIA( ImagePipeSurfaceCreateFlagsFUCHSIA flags_ = ImagePipeSurfaceCreateFlagsFUCHSIA(),
@@ -12213,7 +12213,7 @@ public:
     zx_handle_t imagePipeHandle;
   };
   static_assert( sizeof( ImagePipeSurfaceCreateInfoFUCHSIA ) == sizeof( VkImagePipeSurfaceCreateInfoFUCHSIA ), "struct and wrapper have different size!" );
-#endif /*VK_USE_PLATFORM_FUCHSIA_FUCHSIA*/
+#endif /*VK_USE_PLATFORM_FUCHSIA*/
 
   struct DebugMarkerMarkerInfoEXT
   {
@@ -12475,7 +12475,7 @@ public:
   };
   static_assert( sizeof( DedicatedAllocationMemoryAllocateInfoNV ) == sizeof( VkDedicatedAllocationMemoryAllocateInfoNV ), "struct and wrapper have different size!" );
 
-#ifdef VK_USE_PLATFORM_WIN32_NV
+#ifdef VK_USE_PLATFORM_WIN32_KHR
   struct ExportMemoryWin32HandleInfoNV
   {
     ExportMemoryWin32HandleInfoNV( const SECURITY_ATTRIBUTES* pAttributes_ = nullptr,
@@ -12545,9 +12545,9 @@ public:
     DWORD dwAccess;
   };
   static_assert( sizeof( ExportMemoryWin32HandleInfoNV ) == sizeof( VkExportMemoryWin32HandleInfoNV ), "struct and wrapper have different size!" );
-#endif /*VK_USE_PLATFORM_WIN32_NV*/
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
-#ifdef VK_USE_PLATFORM_WIN32_NV
+#ifdef VK_USE_PLATFORM_WIN32_KHR
   struct Win32KeyedMutexAcquireReleaseInfoNV
   {
     Win32KeyedMutexAcquireReleaseInfoNV( uint32_t acquireCount_ = 0,
@@ -12667,7 +12667,7 @@ public:
     const uint64_t* pReleaseKeys;
   };
   static_assert( sizeof( Win32KeyedMutexAcquireReleaseInfoNV ) == sizeof( VkWin32KeyedMutexAcquireReleaseInfoNV ), "struct and wrapper have different size!" );
-#endif /*VK_USE_PLATFORM_WIN32_NV*/
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
   struct DeviceGeneratedCommandsFeaturesNVX
   {
@@ -18206,7 +18206,7 @@ public:
   };
   static_assert( sizeof( PhysicalDevicePCIBusInfoPropertiesEXT ) == sizeof( VkPhysicalDevicePCIBusInfoPropertiesEXT ), "struct and wrapper have different size!" );
 
-#ifdef VK_USE_PLATFORM_ANDROID_ANDROID
+#ifdef VK_USE_PLATFORM_ANDROID_KHR
   struct ImportAndroidHardwareBufferInfoANDROID
   {
     ImportAndroidHardwareBufferInfoANDROID( struct AHardwareBuffer* buffer_ = nullptr )
@@ -18266,9 +18266,9 @@ public:
     struct AHardwareBuffer* buffer;
   };
   static_assert( sizeof( ImportAndroidHardwareBufferInfoANDROID ) == sizeof( VkImportAndroidHardwareBufferInfoANDROID ), "struct and wrapper have different size!" );
-#endif /*VK_USE_PLATFORM_ANDROID_ANDROID*/
+#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
-#ifdef VK_USE_PLATFORM_ANDROID_ANDROID
+#ifdef VK_USE_PLATFORM_ANDROID_KHR
   struct AndroidHardwareBufferUsageANDROID
   {
     operator VkAndroidHardwareBufferUsageANDROID const&() const
@@ -18301,9 +18301,9 @@ public:
     uint64_t androidHardwareBufferUsage;
   };
   static_assert( sizeof( AndroidHardwareBufferUsageANDROID ) == sizeof( VkAndroidHardwareBufferUsageANDROID ), "struct and wrapper have different size!" );
-#endif /*VK_USE_PLATFORM_ANDROID_ANDROID*/
+#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
-#ifdef VK_USE_PLATFORM_ANDROID_ANDROID
+#ifdef VK_USE_PLATFORM_ANDROID_KHR
   struct AndroidHardwareBufferPropertiesANDROID
   {
     operator VkAndroidHardwareBufferPropertiesANDROID const&() const
@@ -18338,9 +18338,9 @@ public:
     uint32_t memoryTypeBits;
   };
   static_assert( sizeof( AndroidHardwareBufferPropertiesANDROID ) == sizeof( VkAndroidHardwareBufferPropertiesANDROID ), "struct and wrapper have different size!" );
-#endif /*VK_USE_PLATFORM_ANDROID_ANDROID*/
+#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
-#ifdef VK_USE_PLATFORM_ANDROID_ANDROID
+#ifdef VK_USE_PLATFORM_ANDROID_KHR
   struct MemoryGetAndroidHardwareBufferInfoANDROID
   {
     MemoryGetAndroidHardwareBufferInfoANDROID( DeviceMemory memory_ = DeviceMemory() )
@@ -18400,7 +18400,7 @@ public:
     DeviceMemory memory;
   };
   static_assert( sizeof( MemoryGetAndroidHardwareBufferInfoANDROID ) == sizeof( VkMemoryGetAndroidHardwareBufferInfoANDROID ), "struct and wrapper have different size!" );
-#endif /*VK_USE_PLATFORM_ANDROID_ANDROID*/
+#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
   struct CommandBufferInheritanceConditionalRenderingInfoEXT
   {
@@ -18462,7 +18462,7 @@ public:
   };
   static_assert( sizeof( CommandBufferInheritanceConditionalRenderingInfoEXT ) == sizeof( VkCommandBufferInheritanceConditionalRenderingInfoEXT ), "struct and wrapper have different size!" );
 
-#ifdef VK_USE_PLATFORM_ANDROID_ANDROID
+#ifdef VK_USE_PLATFORM_ANDROID_KHR
   struct ExternalFormatANDROID
   {
     ExternalFormatANDROID( uint64_t externalFormat_ = 0 )
@@ -18522,7 +18522,7 @@ public:
     uint64_t externalFormat;
   };
   static_assert( sizeof( ExternalFormatANDROID ) == sizeof( VkExternalFormatANDROID ), "struct and wrapper have different size!" );
-#endif /*VK_USE_PLATFORM_ANDROID_ANDROID*/
+#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
   struct PhysicalDevice8BitStorageFeaturesKHR
   {
@@ -30539,7 +30539,7 @@ public:
   };
   static_assert( sizeof( ExportMemoryAllocateInfoNV ) == sizeof( VkExportMemoryAllocateInfoNV ), "struct and wrapper have different size!" );
 
-#ifdef VK_USE_PLATFORM_WIN32_NV
+#ifdef VK_USE_PLATFORM_WIN32_KHR
   struct ImportMemoryWin32HandleInfoNV
   {
     ImportMemoryWin32HandleInfoNV( ExternalMemoryHandleTypeFlagsNV handleType_ = ExternalMemoryHandleTypeFlagsNV(),
@@ -30609,7 +30609,7 @@ public:
     HANDLE handle;
   };
   static_assert( sizeof( ImportMemoryWin32HandleInfoNV ) == sizeof( VkImportMemoryWin32HandleInfoNV ), "struct and wrapper have different size!" );
-#endif /*VK_USE_PLATFORM_WIN32_NV*/
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
   enum class ExternalMemoryFeatureFlagBitsNV
   {
@@ -35987,7 +35987,7 @@ public:
 
   using SamplerYcbcrConversionCreateInfoKHR = SamplerYcbcrConversionCreateInfo;
 
-#ifdef VK_USE_PLATFORM_ANDROID_ANDROID
+#ifdef VK_USE_PLATFORM_ANDROID_KHR
   struct AndroidHardwareBufferFormatPropertiesANDROID
   {
     operator VkAndroidHardwareBufferFormatPropertiesANDROID const&() const
@@ -36034,7 +36034,7 @@ public:
     ChromaLocation suggestedYChromaOffset;
   };
   static_assert( sizeof( AndroidHardwareBufferFormatPropertiesANDROID ) == sizeof( VkAndroidHardwareBufferFormatPropertiesANDROID ), "struct and wrapper have different size!" );
-#endif /*VK_USE_PLATFORM_ANDROID_ANDROID*/
+#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
   enum class BlendOverlapEXT
   {
@@ -41145,14 +41145,14 @@ public:
     ResultValueType<void>::type debugMarkerSetObjectTagEXT( const DebugMarkerObjectTagInfoEXT & tagInfo, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifdef VK_USE_PLATFORM_WIN32_NV
+#ifdef VK_USE_PLATFORM_WIN32_KHR
     template<typename Dispatch = DispatchLoaderStatic>
     Result getMemoryWin32HandleNV( DeviceMemory memory, ExternalMemoryHandleTypeFlagsNV handleType, HANDLE* pHandle, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = DispatchLoaderStatic>
     ResultValueType<HANDLE>::type getMemoryWin32HandleNV( DeviceMemory memory, ExternalMemoryHandleTypeFlagsNV handleType, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_WIN32_NV*/
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
     template<typename Dispatch = DispatchLoaderStatic>
     Result createIndirectCommandsLayoutNVX( const IndirectCommandsLayoutCreateInfoNVX* pCreateInfo, const AllocationCallbacks* pAllocator, IndirectCommandsLayoutNVX* pIndirectCommandsLayout, Dispatch const &d = Dispatch() ) const;
@@ -41697,7 +41697,7 @@ public:
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifdef VK_USE_PLATFORM_ANDROID_ANDROID
+#ifdef VK_USE_PLATFORM_ANDROID_KHR
     template<typename Dispatch = DispatchLoaderStatic>
     Result getAndroidHardwareBufferPropertiesANDROID( const struct AHardwareBuffer* buffer, AndroidHardwareBufferPropertiesANDROID* pProperties, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
@@ -41706,16 +41706,16 @@ public:
     template <typename X, typename Y, typename ...Z, typename Dispatch = DispatchLoaderStatic>
     typename ResultValueType<StructureChain<X, Y, Z...>>::type getAndroidHardwareBufferPropertiesANDROID( const struct AHardwareBuffer & buffer, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_ANDROID_ANDROID*/
+#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
-#ifdef VK_USE_PLATFORM_ANDROID_ANDROID
+#ifdef VK_USE_PLATFORM_ANDROID_KHR
     template<typename Dispatch = DispatchLoaderStatic>
     Result getMemoryAndroidHardwareBufferANDROID( const MemoryGetAndroidHardwareBufferInfoANDROID* pInfo, struct AHardwareBuffer** pBuffer, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = DispatchLoaderStatic>
     ResultValueType<struct AHardwareBuffer*>::type getMemoryAndroidHardwareBufferANDROID( const MemoryGetAndroidHardwareBufferInfoANDROID & info, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_ANDROID_ANDROID*/
+#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
 #ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = DispatchLoaderStatic>
@@ -43785,7 +43785,7 @@ public:
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifdef VK_USE_PLATFORM_WIN32_NV
+#ifdef VK_USE_PLATFORM_WIN32_KHR
   template<typename Dispatch>
   VULKAN_HPP_INLINE Result Device::getMemoryWin32HandleNV( DeviceMemory memory, ExternalMemoryHandleTypeFlagsNV handleType, HANDLE* pHandle, Dispatch const &d) const
   {
@@ -43800,7 +43800,7 @@ public:
     return createResultValue( result, handle, VULKAN_HPP_NAMESPACE_STRING"::Device::getMemoryWin32HandleNV" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_WIN32_NV*/
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
   template<typename Dispatch>
   VULKAN_HPP_INLINE Result Device::createIndirectCommandsLayoutNVX( const IndirectCommandsLayoutCreateInfoNVX* pCreateInfo, const AllocationCallbacks* pAllocator, IndirectCommandsLayoutNVX* pIndirectCommandsLayout, Dispatch const &d) const
@@ -45140,7 +45140,7 @@ public:
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifdef VK_USE_PLATFORM_ANDROID_ANDROID
+#ifdef VK_USE_PLATFORM_ANDROID_KHR
   template<typename Dispatch>
   VULKAN_HPP_INLINE Result Device::getAndroidHardwareBufferPropertiesANDROID( const struct AHardwareBuffer* buffer, AndroidHardwareBufferPropertiesANDROID* pProperties, Dispatch const &d) const
   {
@@ -45163,9 +45163,9 @@ public:
     return createResultValue( result, structureChain, VULKAN_HPP_NAMESPACE_STRING"::Device::getAndroidHardwareBufferPropertiesANDROID" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_ANDROID_ANDROID*/
+#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
-#ifdef VK_USE_PLATFORM_ANDROID_ANDROID
+#ifdef VK_USE_PLATFORM_ANDROID_KHR
   template<typename Dispatch>
   VULKAN_HPP_INLINE Result Device::getMemoryAndroidHardwareBufferANDROID( const MemoryGetAndroidHardwareBufferInfoANDROID* pInfo, struct AHardwareBuffer** pBuffer, Dispatch const &d) const
   {
@@ -45180,7 +45180,7 @@ public:
     return createResultValue( result, buffer, VULKAN_HPP_NAMESPACE_STRING"::Device::getMemoryAndroidHardwareBufferANDROID" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_ANDROID_ANDROID*/
+#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
 #ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template<typename Dispatch>
@@ -45829,23 +45829,23 @@ public:
     ResultValueType<void>::type releaseDisplayEXT( DisplayKHR display, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifdef VK_USE_PLATFORM_XLIB_XRANDR_NV
+#ifdef VK_USE_PLATFORM_XLIB_XRANDR_EXT
     template<typename Dispatch = DispatchLoaderStatic>
     Result acquireXlibDisplayEXT( Display* dpy, DisplayKHR display, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = DispatchLoaderStatic>
     ResultValueType<Display>::type acquireXlibDisplayEXT( DisplayKHR display, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_XLIB_XRANDR_NV*/
+#endif /*VK_USE_PLATFORM_XLIB_XRANDR_EXT*/
 
-#ifdef VK_USE_PLATFORM_XLIB_XRANDR_NV
+#ifdef VK_USE_PLATFORM_XLIB_XRANDR_EXT
     template<typename Dispatch = DispatchLoaderStatic>
     Result getRandROutputDisplayEXT( Display* dpy, RROutput rrOutput, DisplayKHR* pDisplay, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = DispatchLoaderStatic>
     ResultValueType<DisplayKHR>::type getRandROutputDisplayEXT( Display & dpy, RROutput rrOutput, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_XLIB_XRANDR_NV*/
+#endif /*VK_USE_PLATFORM_XLIB_XRANDR_EXT*/
 
     template<typename Dispatch = DispatchLoaderStatic>
     Result getSurfaceCapabilities2EXT( SurfaceKHR surface, SurfaceCapabilities2EXT* pSurfaceCapabilities, Dispatch const &d = Dispatch() ) const;
@@ -47117,7 +47117,7 @@ public:
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#ifdef VK_USE_PLATFORM_XLIB_XRANDR_NV
+#ifdef VK_USE_PLATFORM_XLIB_XRANDR_EXT
   template<typename Dispatch>
   VULKAN_HPP_INLINE Result PhysicalDevice::acquireXlibDisplayEXT( Display* dpy, DisplayKHR display, Dispatch const &d) const
   {
@@ -47132,9 +47132,9 @@ public:
     return createResultValue( result, dpy, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::acquireXlibDisplayEXT" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_XLIB_XRANDR_NV*/
+#endif /*VK_USE_PLATFORM_XLIB_XRANDR_EXT*/
 
-#ifdef VK_USE_PLATFORM_XLIB_XRANDR_NV
+#ifdef VK_USE_PLATFORM_XLIB_XRANDR_EXT
   template<typename Dispatch>
   VULKAN_HPP_INLINE Result PhysicalDevice::getRandROutputDisplayEXT( Display* dpy, RROutput rrOutput, DisplayKHR* pDisplay, Dispatch const &d) const
   {
@@ -47149,7 +47149,7 @@ public:
     return createResultValue( result, display, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::getRandROutputDisplayEXT" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_XLIB_XRANDR_NV*/
+#endif /*VK_USE_PLATFORM_XLIB_XRANDR_EXT*/
 
   template<typename Dispatch>
   VULKAN_HPP_INLINE Result PhysicalDevice::getSurfaceCapabilities2EXT( SurfaceKHR surface, SurfaceCapabilities2EXT* pSurfaceCapabilities, Dispatch const &d) const
@@ -47901,7 +47901,7 @@ public:
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 #endif /*VK_USE_PLATFORM_XCB_KHR*/
 
-#ifdef VK_USE_PLATFORM_FUCHSIA_FUCHSIA
+#ifdef VK_USE_PLATFORM_FUCHSIA
     template<typename Dispatch = DispatchLoaderStatic>
     Result createImagePipeSurfaceFUCHSIA( const ImagePipeSurfaceCreateInfoFUCHSIA* pCreateInfo, const AllocationCallbacks* pAllocator, SurfaceKHR* pSurface, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
@@ -47912,7 +47912,7 @@ public:
     typename ResultValueType<UniqueHandle<SurfaceKHR,Dispatch>>::type createImagePipeSurfaceFUCHSIAUnique( const ImagePipeSurfaceCreateInfoFUCHSIA & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_FUCHSIA_FUCHSIA*/
+#endif /*VK_USE_PLATFORM_FUCHSIA*/
 
     template<typename Dispatch = DispatchLoaderStatic>
     Result createDebugReportCallbackEXT( const DebugReportCallbackCreateInfoEXT* pCreateInfo, const AllocationCallbacks* pAllocator, DebugReportCallbackEXT* pCallback, Dispatch const &d = Dispatch() ) const;
@@ -48343,7 +48343,7 @@ public:
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 #endif /*VK_USE_PLATFORM_XCB_KHR*/
 
-#ifdef VK_USE_PLATFORM_FUCHSIA_FUCHSIA
+#ifdef VK_USE_PLATFORM_FUCHSIA
   template<typename Dispatch>
   VULKAN_HPP_INLINE Result Instance::createImagePipeSurfaceFUCHSIA( const ImagePipeSurfaceCreateInfoFUCHSIA* pCreateInfo, const AllocationCallbacks* pAllocator, SurfaceKHR* pSurface, Dispatch const &d) const
   {
@@ -48369,7 +48369,7 @@ public:
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_FUCHSIA_FUCHSIA*/
+#endif /*VK_USE_PLATFORM_FUCHSIA*/
 
   template<typename Dispatch>
   VULKAN_HPP_INLINE Result Instance::createDebugReportCallbackEXT( const DebugReportCallbackCreateInfoEXT* pCreateInfo, const AllocationCallbacks* pAllocator, DebugReportCallbackEXT* pCallback, Dispatch const &d) const
@@ -48885,12 +48885,12 @@ public:
   template <> struct isStructureChainValid<ImageCreateInfo, DedicatedAllocationImageCreateInfoNV>{ enum { value = true }; };
   template <> struct isStructureChainValid<BufferCreateInfo, DedicatedAllocationBufferCreateInfoNV>{ enum { value = true }; };
   template <> struct isStructureChainValid<MemoryAllocateInfo, DedicatedAllocationMemoryAllocateInfoNV>{ enum { value = true }; };
-#ifdef VK_USE_PLATFORM_WIN32_NV
+#ifdef VK_USE_PLATFORM_WIN32_KHR
   template <> struct isStructureChainValid<MemoryAllocateInfo, ExportMemoryWin32HandleInfoNV>{ enum { value = true }; };
-#endif /*VK_USE_PLATFORM_WIN32_NV*/
-#ifdef VK_USE_PLATFORM_WIN32_NV
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+#ifdef VK_USE_PLATFORM_WIN32_KHR
   template <> struct isStructureChainValid<SubmitInfo, Win32KeyedMutexAcquireReleaseInfoNV>{ enum { value = true }; };
-#endif /*VK_USE_PLATFORM_WIN32_NV*/
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
   template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceFeatures2>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDevicePushDescriptorPropertiesKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<PresentInfoKHR, PresentRegionsKHR>{ enum { value = true }; };
@@ -48970,17 +48970,17 @@ public:
   template <> struct isStructureChainValid<PipelineVertexInputStateCreateInfo, PipelineVertexInputDivisorStateCreateInfoEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceVertexAttributeDivisorPropertiesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDevicePCIBusInfoPropertiesEXT>{ enum { value = true }; };
-#ifdef VK_USE_PLATFORM_ANDROID_ANDROID
+#ifdef VK_USE_PLATFORM_ANDROID_KHR
   template <> struct isStructureChainValid<MemoryAllocateInfo, ImportAndroidHardwareBufferInfoANDROID>{ enum { value = true }; };
-#endif /*VK_USE_PLATFORM_ANDROID_ANDROID*/
-#ifdef VK_USE_PLATFORM_ANDROID_ANDROID
+#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
+#ifdef VK_USE_PLATFORM_ANDROID_KHR
   template <> struct isStructureChainValid<ImageFormatProperties2, AndroidHardwareBufferUsageANDROID>{ enum { value = true }; };
-#endif /*VK_USE_PLATFORM_ANDROID_ANDROID*/
+#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
   template <> struct isStructureChainValid<CommandBufferInheritanceInfo, CommandBufferInheritanceConditionalRenderingInfoEXT>{ enum { value = true }; };
-#ifdef VK_USE_PLATFORM_ANDROID_ANDROID
+#ifdef VK_USE_PLATFORM_ANDROID_KHR
   template <> struct isStructureChainValid<ImageCreateInfo, ExternalFormatANDROID>{ enum { value = true }; };
   template <> struct isStructureChainValid<SamplerYcbcrConversionCreateInfo, ExternalFormatANDROID>{ enum { value = true }; };
-#endif /*VK_USE_PLATFORM_ANDROID_ANDROID*/
+#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDevice8BitStorageFeaturesKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDevice8BitStorageFeaturesKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceConditionalRenderingFeaturesEXT>{ enum { value = true }; };
@@ -49046,9 +49046,9 @@ public:
   template <> struct isStructureChainValid<PipelineRasterizationStateCreateInfo, PipelineRasterizationStateRasterizationOrderAMD>{ enum { value = true }; };
   template <> struct isStructureChainValid<ImageCreateInfo, ExternalMemoryImageCreateInfoNV>{ enum { value = true }; };
   template <> struct isStructureChainValid<MemoryAllocateInfo, ExportMemoryAllocateInfoNV>{ enum { value = true }; };
-#ifdef VK_USE_PLATFORM_WIN32_NV
+#ifdef VK_USE_PLATFORM_WIN32_KHR
   template <> struct isStructureChainValid<MemoryAllocateInfo, ImportMemoryWin32HandleInfoNV>{ enum { value = true }; };
-#endif /*VK_USE_PLATFORM_WIN32_NV*/
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
   template <> struct isStructureChainValid<InstanceCreateInfo, ValidationFlagsEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceSubgroupProperties>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceImageFormatInfo2, PhysicalDeviceExternalImageFormatInfo>{ enum { value = true }; };
@@ -49072,11 +49072,11 @@ public:
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDevicePointClippingProperties>{ enum { value = true }; };
   template <> struct isStructureChainValid<SamplerCreateInfo, SamplerReductionModeCreateInfoEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PipelineTessellationStateCreateInfo, PipelineTessellationDomainOriginStateCreateInfo>{ enum { value = true }; };
-#ifdef VK_USE_PLATFORM_ANDROID_ANDROID
-#ifdef VK_USE_PLATFORM_ANDROID_ANDROID
+#ifdef VK_USE_PLATFORM_ANDROID_KHR
+#ifdef VK_USE_PLATFORM_ANDROID_KHR
   template <> struct isStructureChainValid<AndroidHardwareBufferPropertiesANDROID, AndroidHardwareBufferFormatPropertiesANDROID>{ enum { value = true }; };
-#endif /*VK_USE_PLATFORM_ANDROID_ANDROID*/
-#endif /*VK_USE_PLATFORM_ANDROID_ANDROID*/
+#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
+#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
   template <> struct isStructureChainValid<PipelineColorBlendStateCreateInfo, PipelineColorBlendAdvancedStateCreateInfoEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PipelineMultisampleStateCreateInfo, PipelineCoverageModulationStateCreateInfoNV>{ enum { value = true }; };
   template <> struct isStructureChainValid<DeviceQueueCreateInfo, DeviceQueueGlobalPriorityCreateInfoEXT>{ enum { value = true }; };
@@ -49460,19 +49460,19 @@ public:
   }
 #endif /*VK_USE_PLATFORM_MACOS_MVK*/
 
-#ifdef VK_USE_PLATFORM_FUCHSIA_FUCHSIA
+#ifdef VK_USE_PLATFORM_FUCHSIA
   VULKAN_HPP_INLINE std::string to_string(ImagePipeSurfaceCreateFlagBitsFUCHSIA)
   {
     return "(void)";
   }
-#endif /*VK_USE_PLATFORM_FUCHSIA_FUCHSIA*/
+#endif /*VK_USE_PLATFORM_FUCHSIA*/
 
-#ifdef VK_USE_PLATFORM_FUCHSIA_FUCHSIA
+#ifdef VK_USE_PLATFORM_FUCHSIA
   VULKAN_HPP_INLINE std::string to_string(ImagePipeSurfaceCreateFlagsFUCHSIA)
   {
     return "{}";
   }
-#endif /*VK_USE_PLATFORM_FUCHSIA_FUCHSIA*/
+#endif /*VK_USE_PLATFORM_FUCHSIA*/
 
   VULKAN_HPP_INLINE std::string to_string(CommandPoolTrimFlagBits)
   {
@@ -52756,9 +52756,9 @@ public:
   public:
     PFN_vkAcquireNextImage2KHR vkAcquireNextImage2KHR = 0;
     PFN_vkAcquireNextImageKHR vkAcquireNextImageKHR = 0;
-#ifdef VK_USE_PLATFORM_XLIB_XRANDR_NV
+#ifdef VK_USE_PLATFORM_XLIB_XRANDR_EXT
     PFN_vkAcquireXlibDisplayEXT vkAcquireXlibDisplayEXT = 0;
-#endif /*VK_USE_PLATFORM_XLIB_XRANDR_NV*/
+#endif /*VK_USE_PLATFORM_XLIB_XRANDR_EXT*/
     PFN_vkAllocateCommandBuffers vkAllocateCommandBuffers = 0;
     PFN_vkAllocateDescriptorSets vkAllocateDescriptorSets = 0;
     PFN_vkAllocateMemory vkAllocateMemory = 0;
@@ -52885,9 +52885,9 @@ public:
     PFN_vkCreateIOSSurfaceMVK vkCreateIOSSurfaceMVK = 0;
 #endif /*VK_USE_PLATFORM_IOS_MVK*/
     PFN_vkCreateImage vkCreateImage = 0;
-#ifdef VK_USE_PLATFORM_FUCHSIA_FUCHSIA
+#ifdef VK_USE_PLATFORM_FUCHSIA
     PFN_vkCreateImagePipeSurfaceFUCHSIA vkCreateImagePipeSurfaceFUCHSIA = 0;
-#endif /*VK_USE_PLATFORM_FUCHSIA_FUCHSIA*/
+#endif /*VK_USE_PLATFORM_FUCHSIA*/
     PFN_vkCreateImageView vkCreateImageView = 0;
     PFN_vkCreateIndirectCommandsLayoutNVX vkCreateIndirectCommandsLayoutNVX = 0;
     PFN_vkCreateInstance vkCreateInstance = 0;
@@ -52976,9 +52976,9 @@ public:
     PFN_vkFreeMemory vkFreeMemory = 0;
     PFN_vkGetAccelerationStructureHandleNV vkGetAccelerationStructureHandleNV = 0;
     PFN_vkGetAccelerationStructureMemoryRequirementsNV vkGetAccelerationStructureMemoryRequirementsNV = 0;
-#ifdef VK_USE_PLATFORM_ANDROID_ANDROID
+#ifdef VK_USE_PLATFORM_ANDROID_KHR
     PFN_vkGetAndroidHardwareBufferPropertiesANDROID vkGetAndroidHardwareBufferPropertiesANDROID = 0;
-#endif /*VK_USE_PLATFORM_ANDROID_ANDROID*/
+#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
     PFN_vkGetBufferMemoryRequirements vkGetBufferMemoryRequirements = 0;
     PFN_vkGetBufferMemoryRequirements2 vkGetBufferMemoryRequirements2 = 0;
     PFN_vkGetBufferMemoryRequirements2KHR vkGetBufferMemoryRequirements2KHR = 0;
@@ -53013,18 +53013,18 @@ public:
     PFN_vkGetImageSparseMemoryRequirements2KHR vkGetImageSparseMemoryRequirements2KHR = 0;
     PFN_vkGetImageSubresourceLayout vkGetImageSubresourceLayout = 0;
     PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr = 0;
-#ifdef VK_USE_PLATFORM_ANDROID_ANDROID
+#ifdef VK_USE_PLATFORM_ANDROID_KHR
     PFN_vkGetMemoryAndroidHardwareBufferANDROID vkGetMemoryAndroidHardwareBufferANDROID = 0;
-#endif /*VK_USE_PLATFORM_ANDROID_ANDROID*/
+#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
     PFN_vkGetMemoryFdKHR vkGetMemoryFdKHR = 0;
     PFN_vkGetMemoryFdPropertiesKHR vkGetMemoryFdPropertiesKHR = 0;
     PFN_vkGetMemoryHostPointerPropertiesEXT vkGetMemoryHostPointerPropertiesEXT = 0;
 #ifdef VK_USE_PLATFORM_WIN32_KHR
     PFN_vkGetMemoryWin32HandleKHR vkGetMemoryWin32HandleKHR = 0;
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
-#ifdef VK_USE_PLATFORM_WIN32_NV
+#ifdef VK_USE_PLATFORM_WIN32_KHR
     PFN_vkGetMemoryWin32HandleNV vkGetMemoryWin32HandleNV = 0;
-#endif /*VK_USE_PLATFORM_WIN32_NV*/
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
 #ifdef VK_USE_PLATFORM_WIN32_KHR
     PFN_vkGetMemoryWin32HandlePropertiesKHR vkGetMemoryWin32HandlePropertiesKHR = 0;
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
@@ -53087,9 +53087,9 @@ public:
     PFN_vkGetPipelineCacheData vkGetPipelineCacheData = 0;
     PFN_vkGetQueryPoolResults vkGetQueryPoolResults = 0;
     PFN_vkGetQueueCheckpointDataNV vkGetQueueCheckpointDataNV = 0;
-#ifdef VK_USE_PLATFORM_XLIB_XRANDR_NV
+#ifdef VK_USE_PLATFORM_XLIB_XRANDR_EXT
     PFN_vkGetRandROutputDisplayEXT vkGetRandROutputDisplayEXT = 0;
-#endif /*VK_USE_PLATFORM_XLIB_XRANDR_NV*/
+#endif /*VK_USE_PLATFORM_XLIB_XRANDR_EXT*/
     PFN_vkGetRayTracingShaderGroupHandlesNV vkGetRayTracingShaderGroupHandlesNV = 0;
     PFN_vkGetRefreshCycleDurationGOOGLE vkGetRefreshCycleDurationGOOGLE = 0;
     PFN_vkGetRenderAreaGranularity vkGetRenderAreaGranularity = 0;
@@ -53156,9 +53156,9 @@ public:
     {
       vkAcquireNextImage2KHR = PFN_vkAcquireNextImage2KHR(device ? device.getProcAddr( "vkAcquireNextImage2KHR") : instance.getProcAddr( "vkAcquireNextImage2KHR"));
       vkAcquireNextImageKHR = PFN_vkAcquireNextImageKHR(device ? device.getProcAddr( "vkAcquireNextImageKHR") : instance.getProcAddr( "vkAcquireNextImageKHR"));
-#ifdef VK_USE_PLATFORM_XLIB_XRANDR_NV
+#ifdef VK_USE_PLATFORM_XLIB_XRANDR_EXT
       vkAcquireXlibDisplayEXT = PFN_vkAcquireXlibDisplayEXT(instance.getProcAddr( "vkAcquireXlibDisplayEXT"));
-#endif /*VK_USE_PLATFORM_XLIB_XRANDR_NV*/
+#endif /*VK_USE_PLATFORM_XLIB_XRANDR_EXT*/
       vkAllocateCommandBuffers = PFN_vkAllocateCommandBuffers(device ? device.getProcAddr( "vkAllocateCommandBuffers") : instance.getProcAddr( "vkAllocateCommandBuffers"));
       vkAllocateDescriptorSets = PFN_vkAllocateDescriptorSets(device ? device.getProcAddr( "vkAllocateDescriptorSets") : instance.getProcAddr( "vkAllocateDescriptorSets"));
       vkAllocateMemory = PFN_vkAllocateMemory(device ? device.getProcAddr( "vkAllocateMemory") : instance.getProcAddr( "vkAllocateMemory"));
@@ -53285,9 +53285,9 @@ public:
       vkCreateIOSSurfaceMVK = PFN_vkCreateIOSSurfaceMVK(instance.getProcAddr( "vkCreateIOSSurfaceMVK"));
 #endif /*VK_USE_PLATFORM_IOS_MVK*/
       vkCreateImage = PFN_vkCreateImage(device ? device.getProcAddr( "vkCreateImage") : instance.getProcAddr( "vkCreateImage"));
-#ifdef VK_USE_PLATFORM_FUCHSIA_FUCHSIA
+#ifdef VK_USE_PLATFORM_FUCHSIA
       vkCreateImagePipeSurfaceFUCHSIA = PFN_vkCreateImagePipeSurfaceFUCHSIA(instance.getProcAddr( "vkCreateImagePipeSurfaceFUCHSIA"));
-#endif /*VK_USE_PLATFORM_FUCHSIA_FUCHSIA*/
+#endif /*VK_USE_PLATFORM_FUCHSIA*/
       vkCreateImageView = PFN_vkCreateImageView(device ? device.getProcAddr( "vkCreateImageView") : instance.getProcAddr( "vkCreateImageView"));
       vkCreateIndirectCommandsLayoutNVX = PFN_vkCreateIndirectCommandsLayoutNVX(device ? device.getProcAddr( "vkCreateIndirectCommandsLayoutNVX") : instance.getProcAddr( "vkCreateIndirectCommandsLayoutNVX"));
       vkCreateInstance = PFN_vkCreateInstance(instance.getProcAddr( "vkCreateInstance"));
@@ -53376,9 +53376,9 @@ public:
       vkFreeMemory = PFN_vkFreeMemory(device ? device.getProcAddr( "vkFreeMemory") : instance.getProcAddr( "vkFreeMemory"));
       vkGetAccelerationStructureHandleNV = PFN_vkGetAccelerationStructureHandleNV(device ? device.getProcAddr( "vkGetAccelerationStructureHandleNV") : instance.getProcAddr( "vkGetAccelerationStructureHandleNV"));
       vkGetAccelerationStructureMemoryRequirementsNV = PFN_vkGetAccelerationStructureMemoryRequirementsNV(device ? device.getProcAddr( "vkGetAccelerationStructureMemoryRequirementsNV") : instance.getProcAddr( "vkGetAccelerationStructureMemoryRequirementsNV"));
-#ifdef VK_USE_PLATFORM_ANDROID_ANDROID
+#ifdef VK_USE_PLATFORM_ANDROID_KHR
       vkGetAndroidHardwareBufferPropertiesANDROID = PFN_vkGetAndroidHardwareBufferPropertiesANDROID(device ? device.getProcAddr( "vkGetAndroidHardwareBufferPropertiesANDROID") : instance.getProcAddr( "vkGetAndroidHardwareBufferPropertiesANDROID"));
-#endif /*VK_USE_PLATFORM_ANDROID_ANDROID*/
+#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
       vkGetBufferMemoryRequirements = PFN_vkGetBufferMemoryRequirements(device ? device.getProcAddr( "vkGetBufferMemoryRequirements") : instance.getProcAddr( "vkGetBufferMemoryRequirements"));
       vkGetBufferMemoryRequirements2 = PFN_vkGetBufferMemoryRequirements2(device ? device.getProcAddr( "vkGetBufferMemoryRequirements2") : instance.getProcAddr( "vkGetBufferMemoryRequirements2"));
       vkGetBufferMemoryRequirements2KHR = PFN_vkGetBufferMemoryRequirements2KHR(device ? device.getProcAddr( "vkGetBufferMemoryRequirements2KHR") : instance.getProcAddr( "vkGetBufferMemoryRequirements2KHR"));
@@ -53413,18 +53413,18 @@ public:
       vkGetImageSparseMemoryRequirements2KHR = PFN_vkGetImageSparseMemoryRequirements2KHR(device ? device.getProcAddr( "vkGetImageSparseMemoryRequirements2KHR") : instance.getProcAddr( "vkGetImageSparseMemoryRequirements2KHR"));
       vkGetImageSubresourceLayout = PFN_vkGetImageSubresourceLayout(device ? device.getProcAddr( "vkGetImageSubresourceLayout") : instance.getProcAddr( "vkGetImageSubresourceLayout"));
       vkGetInstanceProcAddr = PFN_vkGetInstanceProcAddr(instance.getProcAddr( "vkGetInstanceProcAddr"));
-#ifdef VK_USE_PLATFORM_ANDROID_ANDROID
+#ifdef VK_USE_PLATFORM_ANDROID_KHR
       vkGetMemoryAndroidHardwareBufferANDROID = PFN_vkGetMemoryAndroidHardwareBufferANDROID(device ? device.getProcAddr( "vkGetMemoryAndroidHardwareBufferANDROID") : instance.getProcAddr( "vkGetMemoryAndroidHardwareBufferANDROID"));
-#endif /*VK_USE_PLATFORM_ANDROID_ANDROID*/
+#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
       vkGetMemoryFdKHR = PFN_vkGetMemoryFdKHR(device ? device.getProcAddr( "vkGetMemoryFdKHR") : instance.getProcAddr( "vkGetMemoryFdKHR"));
       vkGetMemoryFdPropertiesKHR = PFN_vkGetMemoryFdPropertiesKHR(device ? device.getProcAddr( "vkGetMemoryFdPropertiesKHR") : instance.getProcAddr( "vkGetMemoryFdPropertiesKHR"));
       vkGetMemoryHostPointerPropertiesEXT = PFN_vkGetMemoryHostPointerPropertiesEXT(device ? device.getProcAddr( "vkGetMemoryHostPointerPropertiesEXT") : instance.getProcAddr( "vkGetMemoryHostPointerPropertiesEXT"));
 #ifdef VK_USE_PLATFORM_WIN32_KHR
       vkGetMemoryWin32HandleKHR = PFN_vkGetMemoryWin32HandleKHR(device ? device.getProcAddr( "vkGetMemoryWin32HandleKHR") : instance.getProcAddr( "vkGetMemoryWin32HandleKHR"));
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
-#ifdef VK_USE_PLATFORM_WIN32_NV
+#ifdef VK_USE_PLATFORM_WIN32_KHR
       vkGetMemoryWin32HandleNV = PFN_vkGetMemoryWin32HandleNV(device ? device.getProcAddr( "vkGetMemoryWin32HandleNV") : instance.getProcAddr( "vkGetMemoryWin32HandleNV"));
-#endif /*VK_USE_PLATFORM_WIN32_NV*/
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
 #ifdef VK_USE_PLATFORM_WIN32_KHR
       vkGetMemoryWin32HandlePropertiesKHR = PFN_vkGetMemoryWin32HandlePropertiesKHR(device ? device.getProcAddr( "vkGetMemoryWin32HandlePropertiesKHR") : instance.getProcAddr( "vkGetMemoryWin32HandlePropertiesKHR"));
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
@@ -53487,9 +53487,9 @@ public:
       vkGetPipelineCacheData = PFN_vkGetPipelineCacheData(device ? device.getProcAddr( "vkGetPipelineCacheData") : instance.getProcAddr( "vkGetPipelineCacheData"));
       vkGetQueryPoolResults = PFN_vkGetQueryPoolResults(device ? device.getProcAddr( "vkGetQueryPoolResults") : instance.getProcAddr( "vkGetQueryPoolResults"));
       vkGetQueueCheckpointDataNV = PFN_vkGetQueueCheckpointDataNV(device ? device.getProcAddr( "vkGetQueueCheckpointDataNV") : instance.getProcAddr( "vkGetQueueCheckpointDataNV"));
-#ifdef VK_USE_PLATFORM_XLIB_XRANDR_NV
+#ifdef VK_USE_PLATFORM_XLIB_XRANDR_EXT
       vkGetRandROutputDisplayEXT = PFN_vkGetRandROutputDisplayEXT(instance.getProcAddr( "vkGetRandROutputDisplayEXT"));
-#endif /*VK_USE_PLATFORM_XLIB_XRANDR_NV*/
+#endif /*VK_USE_PLATFORM_XLIB_XRANDR_EXT*/
       vkGetRayTracingShaderGroupHandlesNV = PFN_vkGetRayTracingShaderGroupHandlesNV(device ? device.getProcAddr( "vkGetRayTracingShaderGroupHandlesNV") : instance.getProcAddr( "vkGetRayTracingShaderGroupHandlesNV"));
       vkGetRefreshCycleDurationGOOGLE = PFN_vkGetRefreshCycleDurationGOOGLE(device ? device.getProcAddr( "vkGetRefreshCycleDurationGOOGLE") : instance.getProcAddr( "vkGetRefreshCycleDurationGOOGLE"));
       vkGetRenderAreaGranularity = PFN_vkGetRenderAreaGranularity(device ? device.getProcAddr( "vkGetRenderAreaGranularity") : instance.getProcAddr( "vkGetRenderAreaGranularity"));

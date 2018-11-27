@@ -600,7 +600,7 @@ const std::string createResultValueHeader = R"(
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
     VULKAN_HPP_ASSERT( result == Result::eSuccess );
-    return ResultValue<T>( result, data );
+    return ResultValue<T>( result, std::move(data) );
 #else
     if ( result != Result::eSuccess )
     {
@@ -643,7 +643,7 @@ const std::string createResultValueHeader = R"(
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
     VULKAN_HPP_ASSERT( result == Result::eSuccess );
-    return ResultValue<UniqueHandle<T,D>>( result, UniqueHandle<T,D>(data, deleter) );
+    return ResultValue<UniqueHandle<T,D>>( result, UniqueHandle<T,D>(std::move(data), deleter) );
 #else
     if ( result != Result::eSuccess )
     {

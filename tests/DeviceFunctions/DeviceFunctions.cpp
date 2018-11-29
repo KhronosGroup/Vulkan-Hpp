@@ -47,6 +47,9 @@ int main(int /*argc*/, char * /*argv[]*/)
 
     std::vector<uint8_t> data;
     device->getAccelerationStructureHandleNV<uint8_t>({}, data, vk::DispatchLoaderDynamic());
+
+    std::vector<vk::UniqueCommandBuffer>::allocator_type vectorAllocator;
+    std::vector<vk::UniqueCommandBuffer> commandBuffers = device->allocateCommandBuffersUnique({}, vectorAllocator, vk::DispatchLoaderStatic());
   }
   catch (vk::SystemError err)
   {

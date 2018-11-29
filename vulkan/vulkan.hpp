@@ -70,7 +70,7 @@
   #undef MemoryBarrier
 #endif
 
-static_assert( VK_HEADER_VERSION ==  91 , "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION ==  94 , "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -2637,12 +2637,6 @@ public:
 
   using RenderPassCreateFlags = Flags<RenderPassCreateFlagBits, VkRenderPassCreateFlags>;
 
-  enum class SamplerCreateFlagBits
-  {
-  };
-
-  using SamplerCreateFlags = Flags<SamplerCreateFlagBits, VkSamplerCreateFlags>;
-
   enum class PipelineLayoutCreateFlagBits
   {
   };
@@ -2732,12 +2726,6 @@ public:
   };
 
   using DeviceCreateFlags = Flags<DeviceCreateFlagBits, VkDeviceCreateFlags>;
-
-  enum class ImageViewCreateFlagBits
-  {
-  };
-
-  using ImageViewCreateFlags = Flags<ImageViewCreateFlagBits, VkImageViewCreateFlags>;
 
   enum class SemaphoreCreateFlagBits
   {
@@ -7914,7 +7902,8 @@ public:
     eDepthAttachmentStencilReadOnlyOptimalKHR = VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL,
     ePresentSrcKHR = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
     eSharedPresentKHR = VK_IMAGE_LAYOUT_SHARED_PRESENT_KHR,
-    eShadingRateOptimalNV = VK_IMAGE_LAYOUT_SHADING_RATE_OPTIMAL_NV
+    eShadingRateOptimalNV = VK_IMAGE_LAYOUT_SHADING_RATE_OPTIMAL_NV,
+    eFragmentDensityMapOptimalEXT = VK_IMAGE_LAYOUT_FRAGMENT_DENSITY_MAP_OPTIMAL_EXT
   };
 
   struct DescriptorImageInfo
@@ -9494,7 +9483,12 @@ public:
     eQueueFamilyCheckpointPropertiesNV = VK_STRUCTURE_TYPE_QUEUE_FAMILY_CHECKPOINT_PROPERTIES_NV,
     ePhysicalDeviceVulkanMemoryModelFeaturesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_MEMORY_MODEL_FEATURES_KHR,
     ePhysicalDevicePciBusInfoPropertiesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PCI_BUS_INFO_PROPERTIES_EXT,
-    eImagepipeSurfaceCreateInfoFUCHSIA = VK_STRUCTURE_TYPE_IMAGEPIPE_SURFACE_CREATE_INFO_FUCHSIA
+    eImagepipeSurfaceCreateInfoFUCHSIA = VK_STRUCTURE_TYPE_IMAGEPIPE_SURFACE_CREATE_INFO_FUCHSIA,
+    ePhysicalDeviceFragmentDensityMapFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_FEATURES_EXT,
+    ePhysicalDeviceFragmentDensityMapPropertiesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_PROPERTIES_EXT,
+    eRenderPassFragmentDensityMapCreateInfoEXT = VK_STRUCTURE_TYPE_RENDER_PASS_FRAGMENT_DENSITY_MAP_CREATE_INFO_EXT,
+    ePhysicalDeviceScalarBlockLayoutFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SCALAR_BLOCK_LAYOUT_FEATURES_EXT,
+    eImageStencilUsageCreateInfoEXT = VK_STRUCTURE_TYPE_IMAGE_STENCIL_USAGE_CREATE_INFO_EXT
   };
 
   struct ApplicationInfo
@@ -11106,216 +11100,6 @@ public:
     const void* pInitialData;
   };
   static_assert( sizeof( PipelineCacheCreateInfo ) == sizeof( VkPipelineCacheCreateInfo ), "struct and wrapper have different size!" );
-
-  struct SamplerCreateInfo
-  {
-    SamplerCreateInfo( SamplerCreateFlags flags_ = SamplerCreateFlags(),
-                       Filter magFilter_ = Filter::eNearest,
-                       Filter minFilter_ = Filter::eNearest,
-                       SamplerMipmapMode mipmapMode_ = SamplerMipmapMode::eNearest,
-                       SamplerAddressMode addressModeU_ = SamplerAddressMode::eRepeat,
-                       SamplerAddressMode addressModeV_ = SamplerAddressMode::eRepeat,
-                       SamplerAddressMode addressModeW_ = SamplerAddressMode::eRepeat,
-                       float mipLodBias_ = 0,
-                       Bool32 anisotropyEnable_ = 0,
-                       float maxAnisotropy_ = 0,
-                       Bool32 compareEnable_ = 0,
-                       CompareOp compareOp_ = CompareOp::eNever,
-                       float minLod_ = 0,
-                       float maxLod_ = 0,
-                       BorderColor borderColor_ = BorderColor::eFloatTransparentBlack,
-                       Bool32 unnormalizedCoordinates_ = 0 )
-      : flags( flags_ )
-      , magFilter( magFilter_ )
-      , minFilter( minFilter_ )
-      , mipmapMode( mipmapMode_ )
-      , addressModeU( addressModeU_ )
-      , addressModeV( addressModeV_ )
-      , addressModeW( addressModeW_ )
-      , mipLodBias( mipLodBias_ )
-      , anisotropyEnable( anisotropyEnable_ )
-      , maxAnisotropy( maxAnisotropy_ )
-      , compareEnable( compareEnable_ )
-      , compareOp( compareOp_ )
-      , minLod( minLod_ )
-      , maxLod( maxLod_ )
-      , borderColor( borderColor_ )
-      , unnormalizedCoordinates( unnormalizedCoordinates_ )
-    {
-    }
-
-    SamplerCreateInfo( VkSamplerCreateInfo const & rhs )
-    {
-      memcpy( this, &rhs, sizeof( SamplerCreateInfo ) );
-    }
-
-    SamplerCreateInfo& operator=( VkSamplerCreateInfo const & rhs )
-    {
-      memcpy( this, &rhs, sizeof( SamplerCreateInfo ) );
-      return *this;
-    }
-    SamplerCreateInfo& setPNext( const void* pNext_ )
-    {
-      pNext = pNext_;
-      return *this;
-    }
-
-    SamplerCreateInfo& setFlags( SamplerCreateFlags flags_ )
-    {
-      flags = flags_;
-      return *this;
-    }
-
-    SamplerCreateInfo& setMagFilter( Filter magFilter_ )
-    {
-      magFilter = magFilter_;
-      return *this;
-    }
-
-    SamplerCreateInfo& setMinFilter( Filter minFilter_ )
-    {
-      minFilter = minFilter_;
-      return *this;
-    }
-
-    SamplerCreateInfo& setMipmapMode( SamplerMipmapMode mipmapMode_ )
-    {
-      mipmapMode = mipmapMode_;
-      return *this;
-    }
-
-    SamplerCreateInfo& setAddressModeU( SamplerAddressMode addressModeU_ )
-    {
-      addressModeU = addressModeU_;
-      return *this;
-    }
-
-    SamplerCreateInfo& setAddressModeV( SamplerAddressMode addressModeV_ )
-    {
-      addressModeV = addressModeV_;
-      return *this;
-    }
-
-    SamplerCreateInfo& setAddressModeW( SamplerAddressMode addressModeW_ )
-    {
-      addressModeW = addressModeW_;
-      return *this;
-    }
-
-    SamplerCreateInfo& setMipLodBias( float mipLodBias_ )
-    {
-      mipLodBias = mipLodBias_;
-      return *this;
-    }
-
-    SamplerCreateInfo& setAnisotropyEnable( Bool32 anisotropyEnable_ )
-    {
-      anisotropyEnable = anisotropyEnable_;
-      return *this;
-    }
-
-    SamplerCreateInfo& setMaxAnisotropy( float maxAnisotropy_ )
-    {
-      maxAnisotropy = maxAnisotropy_;
-      return *this;
-    }
-
-    SamplerCreateInfo& setCompareEnable( Bool32 compareEnable_ )
-    {
-      compareEnable = compareEnable_;
-      return *this;
-    }
-
-    SamplerCreateInfo& setCompareOp( CompareOp compareOp_ )
-    {
-      compareOp = compareOp_;
-      return *this;
-    }
-
-    SamplerCreateInfo& setMinLod( float minLod_ )
-    {
-      minLod = minLod_;
-      return *this;
-    }
-
-    SamplerCreateInfo& setMaxLod( float maxLod_ )
-    {
-      maxLod = maxLod_;
-      return *this;
-    }
-
-    SamplerCreateInfo& setBorderColor( BorderColor borderColor_ )
-    {
-      borderColor = borderColor_;
-      return *this;
-    }
-
-    SamplerCreateInfo& setUnnormalizedCoordinates( Bool32 unnormalizedCoordinates_ )
-    {
-      unnormalizedCoordinates = unnormalizedCoordinates_;
-      return *this;
-    }
-
-    operator VkSamplerCreateInfo const&() const
-    {
-      return *reinterpret_cast<const VkSamplerCreateInfo*>(this);
-    }
-
-    operator VkSamplerCreateInfo &()
-    {
-      return *reinterpret_cast<VkSamplerCreateInfo*>(this);
-    }
-
-    bool operator==( SamplerCreateInfo const& rhs ) const
-    {
-      return ( sType == rhs.sType )
-          && ( pNext == rhs.pNext )
-          && ( flags == rhs.flags )
-          && ( magFilter == rhs.magFilter )
-          && ( minFilter == rhs.minFilter )
-          && ( mipmapMode == rhs.mipmapMode )
-          && ( addressModeU == rhs.addressModeU )
-          && ( addressModeV == rhs.addressModeV )
-          && ( addressModeW == rhs.addressModeW )
-          && ( mipLodBias == rhs.mipLodBias )
-          && ( anisotropyEnable == rhs.anisotropyEnable )
-          && ( maxAnisotropy == rhs.maxAnisotropy )
-          && ( compareEnable == rhs.compareEnable )
-          && ( compareOp == rhs.compareOp )
-          && ( minLod == rhs.minLod )
-          && ( maxLod == rhs.maxLod )
-          && ( borderColor == rhs.borderColor )
-          && ( unnormalizedCoordinates == rhs.unnormalizedCoordinates );
-    }
-
-    bool operator!=( SamplerCreateInfo const& rhs ) const
-    {
-      return !operator==( rhs );
-    }
-
-  private:
-    StructureType sType = StructureType::eSamplerCreateInfo;
-
-  public:
-    const void* pNext = nullptr;
-    SamplerCreateFlags flags;
-    Filter magFilter;
-    Filter minFilter;
-    SamplerMipmapMode mipmapMode;
-    SamplerAddressMode addressModeU;
-    SamplerAddressMode addressModeV;
-    SamplerAddressMode addressModeW;
-    float mipLodBias;
-    Bool32 anisotropyEnable;
-    float maxAnisotropy;
-    Bool32 compareEnable;
-    CompareOp compareOp;
-    float minLod;
-    float maxLod;
-    BorderColor borderColor;
-    Bool32 unnormalizedCoordinates;
-  };
-  static_assert( sizeof( SamplerCreateInfo ) == sizeof( VkSamplerCreateInfo ), "struct and wrapper have different size!" );
 
   struct CommandBufferAllocateInfo
   {
@@ -21113,6 +20897,200 @@ public:
   };
   static_assert( sizeof( ImageDrmFormatModifierPropertiesEXT ) == sizeof( VkImageDrmFormatModifierPropertiesEXT ), "struct and wrapper have different size!" );
 
+  struct PhysicalDeviceFragmentDensityMapFeaturesEXT
+  {
+    operator VkPhysicalDeviceFragmentDensityMapFeaturesEXT const&() const
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceFragmentDensityMapFeaturesEXT*>(this);
+    }
+
+    operator VkPhysicalDeviceFragmentDensityMapFeaturesEXT &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceFragmentDensityMapFeaturesEXT*>(this);
+    }
+
+    bool operator==( PhysicalDeviceFragmentDensityMapFeaturesEXT const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( fragmentDensityMap == rhs.fragmentDensityMap )
+          && ( fragmentDensityMapDynamic == rhs.fragmentDensityMapDynamic )
+          && ( fragmentDensityMapNonSubsampledImages == rhs.fragmentDensityMapNonSubsampledImages );
+    }
+
+    bool operator!=( PhysicalDeviceFragmentDensityMapFeaturesEXT const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::ePhysicalDeviceFragmentDensityMapFeaturesEXT;
+
+  public:
+    void* pNext = nullptr;
+    Bool32 fragmentDensityMap;
+    Bool32 fragmentDensityMapDynamic;
+    Bool32 fragmentDensityMapNonSubsampledImages;
+  };
+  static_assert( sizeof( PhysicalDeviceFragmentDensityMapFeaturesEXT ) == sizeof( VkPhysicalDeviceFragmentDensityMapFeaturesEXT ), "struct and wrapper have different size!" );
+
+  struct PhysicalDeviceFragmentDensityMapPropertiesEXT
+  {
+    operator VkPhysicalDeviceFragmentDensityMapPropertiesEXT const&() const
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceFragmentDensityMapPropertiesEXT*>(this);
+    }
+
+    operator VkPhysicalDeviceFragmentDensityMapPropertiesEXT &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceFragmentDensityMapPropertiesEXT*>(this);
+    }
+
+    bool operator==( PhysicalDeviceFragmentDensityMapPropertiesEXT const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( minFragmentDensityTexelSize == rhs.minFragmentDensityTexelSize )
+          && ( maxFragmentDensityTexelSize == rhs.maxFragmentDensityTexelSize )
+          && ( fragmentDensityInvocations == rhs.fragmentDensityInvocations );
+    }
+
+    bool operator!=( PhysicalDeviceFragmentDensityMapPropertiesEXT const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::ePhysicalDeviceFragmentDensityMapPropertiesEXT;
+
+  public:
+    void* pNext = nullptr;
+    Extent2D minFragmentDensityTexelSize;
+    Extent2D maxFragmentDensityTexelSize;
+    Bool32 fragmentDensityInvocations;
+  };
+  static_assert( sizeof( PhysicalDeviceFragmentDensityMapPropertiesEXT ) == sizeof( VkPhysicalDeviceFragmentDensityMapPropertiesEXT ), "struct and wrapper have different size!" );
+
+  struct RenderPassFragmentDensityMapCreateInfoEXT
+  {
+    RenderPassFragmentDensityMapCreateInfoEXT( AttachmentReference fragmentDensityMapAttachment_ = AttachmentReference() )
+      : fragmentDensityMapAttachment( fragmentDensityMapAttachment_ )
+    {
+    }
+
+    RenderPassFragmentDensityMapCreateInfoEXT( VkRenderPassFragmentDensityMapCreateInfoEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( RenderPassFragmentDensityMapCreateInfoEXT ) );
+    }
+
+    RenderPassFragmentDensityMapCreateInfoEXT& operator=( VkRenderPassFragmentDensityMapCreateInfoEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( RenderPassFragmentDensityMapCreateInfoEXT ) );
+      return *this;
+    }
+    RenderPassFragmentDensityMapCreateInfoEXT& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    RenderPassFragmentDensityMapCreateInfoEXT& setFragmentDensityMapAttachment( AttachmentReference fragmentDensityMapAttachment_ )
+    {
+      fragmentDensityMapAttachment = fragmentDensityMapAttachment_;
+      return *this;
+    }
+
+    operator VkRenderPassFragmentDensityMapCreateInfoEXT const&() const
+    {
+      return *reinterpret_cast<const VkRenderPassFragmentDensityMapCreateInfoEXT*>(this);
+    }
+
+    operator VkRenderPassFragmentDensityMapCreateInfoEXT &()
+    {
+      return *reinterpret_cast<VkRenderPassFragmentDensityMapCreateInfoEXT*>(this);
+    }
+
+    bool operator==( RenderPassFragmentDensityMapCreateInfoEXT const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( fragmentDensityMapAttachment == rhs.fragmentDensityMapAttachment );
+    }
+
+    bool operator!=( RenderPassFragmentDensityMapCreateInfoEXT const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::eRenderPassFragmentDensityMapCreateInfoEXT;
+
+  public:
+    const void* pNext = nullptr;
+    AttachmentReference fragmentDensityMapAttachment;
+  };
+  static_assert( sizeof( RenderPassFragmentDensityMapCreateInfoEXT ) == sizeof( VkRenderPassFragmentDensityMapCreateInfoEXT ), "struct and wrapper have different size!" );
+
+  struct PhysicalDeviceScalarBlockLayoutFeaturesEXT
+  {
+    PhysicalDeviceScalarBlockLayoutFeaturesEXT( Bool32 scalarBlockLayout_ = 0 )
+      : scalarBlockLayout( scalarBlockLayout_ )
+    {
+    }
+
+    PhysicalDeviceScalarBlockLayoutFeaturesEXT( VkPhysicalDeviceScalarBlockLayoutFeaturesEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceScalarBlockLayoutFeaturesEXT ) );
+    }
+
+    PhysicalDeviceScalarBlockLayoutFeaturesEXT& operator=( VkPhysicalDeviceScalarBlockLayoutFeaturesEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceScalarBlockLayoutFeaturesEXT ) );
+      return *this;
+    }
+    PhysicalDeviceScalarBlockLayoutFeaturesEXT& setPNext( void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PhysicalDeviceScalarBlockLayoutFeaturesEXT& setScalarBlockLayout( Bool32 scalarBlockLayout_ )
+    {
+      scalarBlockLayout = scalarBlockLayout_;
+      return *this;
+    }
+
+    operator VkPhysicalDeviceScalarBlockLayoutFeaturesEXT const&() const
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceScalarBlockLayoutFeaturesEXT*>(this);
+    }
+
+    operator VkPhysicalDeviceScalarBlockLayoutFeaturesEXT &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceScalarBlockLayoutFeaturesEXT*>(this);
+    }
+
+    bool operator==( PhysicalDeviceScalarBlockLayoutFeaturesEXT const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( scalarBlockLayout == rhs.scalarBlockLayout );
+    }
+
+    bool operator!=( PhysicalDeviceScalarBlockLayoutFeaturesEXT const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::ePhysicalDeviceScalarBlockLayoutFeaturesEXT;
+
+  public:
+    void* pNext = nullptr;
+    Bool32 scalarBlockLayout;
+  };
+  static_assert( sizeof( PhysicalDeviceScalarBlockLayoutFeaturesEXT ) == sizeof( VkPhysicalDeviceScalarBlockLayoutFeaturesEXT ), "struct and wrapper have different size!" );
+
   enum class SubpassContents
   {
     eInline = VK_SUBPASS_CONTENTS_INLINE,
@@ -21426,7 +21404,7 @@ public:
       memcpy( this, &rhs, sizeof( DescriptorUpdateTemplateCreateInfo ) );
       return *this;
     }
-    DescriptorUpdateTemplateCreateInfo& setPNext( void* pNext_ )
+    DescriptorUpdateTemplateCreateInfo& setPNext( const void* pNext_ )
     {
       pNext = pNext_;
       return *this;
@@ -21513,7 +21491,7 @@ public:
     StructureType sType = StructureType::eDescriptorUpdateTemplateCreateInfo;
 
   public:
-    void* pNext = nullptr;
+    const void* pNext = nullptr;
     DescriptorUpdateTemplateCreateFlags flags;
     uint32_t descriptorUpdateEntryCount;
     const DescriptorUpdateTemplateEntry* pDescriptorUpdateEntries;
@@ -22530,7 +22508,8 @@ public:
     eColorAttachmentReadNoncoherentEXT = VK_ACCESS_COLOR_ATTACHMENT_READ_NONCOHERENT_BIT_EXT,
     eShadingRateImageReadNV = VK_ACCESS_SHADING_RATE_IMAGE_READ_BIT_NV,
     eAccelerationStructureReadNV = VK_ACCESS_ACCELERATION_STRUCTURE_READ_BIT_NV,
-    eAccelerationStructureWriteNV = VK_ACCESS_ACCELERATION_STRUCTURE_WRITE_BIT_NV
+    eAccelerationStructureWriteNV = VK_ACCESS_ACCELERATION_STRUCTURE_WRITE_BIT_NV,
+    eFragmentDensityMapReadEXT = VK_ACCESS_FRAGMENT_DENSITY_MAP_READ_BIT_EXT
   };
 
   using AccessFlags = Flags<AccessFlagBits, VkAccessFlags>;
@@ -22549,7 +22528,7 @@ public:
   {
     enum
     {
-      allFlags = VkFlags(AccessFlagBits::eIndirectCommandRead) | VkFlags(AccessFlagBits::eIndexRead) | VkFlags(AccessFlagBits::eVertexAttributeRead) | VkFlags(AccessFlagBits::eUniformRead) | VkFlags(AccessFlagBits::eInputAttachmentRead) | VkFlags(AccessFlagBits::eShaderRead) | VkFlags(AccessFlagBits::eShaderWrite) | VkFlags(AccessFlagBits::eColorAttachmentRead) | VkFlags(AccessFlagBits::eColorAttachmentWrite) | VkFlags(AccessFlagBits::eDepthStencilAttachmentRead) | VkFlags(AccessFlagBits::eDepthStencilAttachmentWrite) | VkFlags(AccessFlagBits::eTransferRead) | VkFlags(AccessFlagBits::eTransferWrite) | VkFlags(AccessFlagBits::eHostRead) | VkFlags(AccessFlagBits::eHostWrite) | VkFlags(AccessFlagBits::eMemoryRead) | VkFlags(AccessFlagBits::eMemoryWrite) | VkFlags(AccessFlagBits::eTransformFeedbackWriteEXT) | VkFlags(AccessFlagBits::eTransformFeedbackCounterReadEXT) | VkFlags(AccessFlagBits::eTransformFeedbackCounterWriteEXT) | VkFlags(AccessFlagBits::eConditionalRenderingReadEXT) | VkFlags(AccessFlagBits::eCommandProcessReadNVX) | VkFlags(AccessFlagBits::eCommandProcessWriteNVX) | VkFlags(AccessFlagBits::eColorAttachmentReadNoncoherentEXT) | VkFlags(AccessFlagBits::eShadingRateImageReadNV) | VkFlags(AccessFlagBits::eAccelerationStructureReadNV) | VkFlags(AccessFlagBits::eAccelerationStructureWriteNV)
+      allFlags = VkFlags(AccessFlagBits::eIndirectCommandRead) | VkFlags(AccessFlagBits::eIndexRead) | VkFlags(AccessFlagBits::eVertexAttributeRead) | VkFlags(AccessFlagBits::eUniformRead) | VkFlags(AccessFlagBits::eInputAttachmentRead) | VkFlags(AccessFlagBits::eShaderRead) | VkFlags(AccessFlagBits::eShaderWrite) | VkFlags(AccessFlagBits::eColorAttachmentRead) | VkFlags(AccessFlagBits::eColorAttachmentWrite) | VkFlags(AccessFlagBits::eDepthStencilAttachmentRead) | VkFlags(AccessFlagBits::eDepthStencilAttachmentWrite) | VkFlags(AccessFlagBits::eTransferRead) | VkFlags(AccessFlagBits::eTransferWrite) | VkFlags(AccessFlagBits::eHostRead) | VkFlags(AccessFlagBits::eHostWrite) | VkFlags(AccessFlagBits::eMemoryRead) | VkFlags(AccessFlagBits::eMemoryWrite) | VkFlags(AccessFlagBits::eTransformFeedbackWriteEXT) | VkFlags(AccessFlagBits::eTransformFeedbackCounterReadEXT) | VkFlags(AccessFlagBits::eTransformFeedbackCounterWriteEXT) | VkFlags(AccessFlagBits::eConditionalRenderingReadEXT) | VkFlags(AccessFlagBits::eCommandProcessReadNVX) | VkFlags(AccessFlagBits::eCommandProcessWriteNVX) | VkFlags(AccessFlagBits::eColorAttachmentReadNoncoherentEXT) | VkFlags(AccessFlagBits::eShadingRateImageReadNV) | VkFlags(AccessFlagBits::eAccelerationStructureReadNV) | VkFlags(AccessFlagBits::eAccelerationStructureWriteNV) | VkFlags(AccessFlagBits::eFragmentDensityMapReadEXT)
     };
   };
 
@@ -23360,7 +23339,8 @@ public:
     eDepthStencilAttachment = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
     eTransientAttachment = VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT,
     eInputAttachment = VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT,
-    eShadingRateImageNV = VK_IMAGE_USAGE_SHADING_RATE_IMAGE_BIT_NV
+    eShadingRateImageNV = VK_IMAGE_USAGE_SHADING_RATE_IMAGE_BIT_NV,
+    eFragmentDensityMapEXT = VK_IMAGE_USAGE_FRAGMENT_DENSITY_MAP_BIT_EXT
   };
 
   using ImageUsageFlags = Flags<ImageUsageFlagBits, VkImageUsageFlags>;
@@ -23379,7 +23359,7 @@ public:
   {
     enum
     {
-      allFlags = VkFlags(ImageUsageFlagBits::eTransferSrc) | VkFlags(ImageUsageFlagBits::eTransferDst) | VkFlags(ImageUsageFlagBits::eSampled) | VkFlags(ImageUsageFlagBits::eStorage) | VkFlags(ImageUsageFlagBits::eColorAttachment) | VkFlags(ImageUsageFlagBits::eDepthStencilAttachment) | VkFlags(ImageUsageFlagBits::eTransientAttachment) | VkFlags(ImageUsageFlagBits::eInputAttachment) | VkFlags(ImageUsageFlagBits::eShadingRateImageNV)
+      allFlags = VkFlags(ImageUsageFlagBits::eTransferSrc) | VkFlags(ImageUsageFlagBits::eTransferDst) | VkFlags(ImageUsageFlagBits::eSampled) | VkFlags(ImageUsageFlagBits::eStorage) | VkFlags(ImageUsageFlagBits::eColorAttachment) | VkFlags(ImageUsageFlagBits::eDepthStencilAttachment) | VkFlags(ImageUsageFlagBits::eTransientAttachment) | VkFlags(ImageUsageFlagBits::eInputAttachment) | VkFlags(ImageUsageFlagBits::eShadingRateImageNV) | VkFlags(ImageUsageFlagBits::eFragmentDensityMapEXT)
     };
   };
 
@@ -23478,6 +23458,66 @@ public:
 
   using ImageViewUsageCreateInfoKHR = ImageViewUsageCreateInfo;
 
+  struct ImageStencilUsageCreateInfoEXT
+  {
+    ImageStencilUsageCreateInfoEXT( ImageUsageFlags stencilUsage_ = ImageUsageFlags() )
+      : stencilUsage( stencilUsage_ )
+    {
+    }
+
+    ImageStencilUsageCreateInfoEXT( VkImageStencilUsageCreateInfoEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ImageStencilUsageCreateInfoEXT ) );
+    }
+
+    ImageStencilUsageCreateInfoEXT& operator=( VkImageStencilUsageCreateInfoEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( ImageStencilUsageCreateInfoEXT ) );
+      return *this;
+    }
+    ImageStencilUsageCreateInfoEXT& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    ImageStencilUsageCreateInfoEXT& setStencilUsage( ImageUsageFlags stencilUsage_ )
+    {
+      stencilUsage = stencilUsage_;
+      return *this;
+    }
+
+    operator VkImageStencilUsageCreateInfoEXT const&() const
+    {
+      return *reinterpret_cast<const VkImageStencilUsageCreateInfoEXT*>(this);
+    }
+
+    operator VkImageStencilUsageCreateInfoEXT &()
+    {
+      return *reinterpret_cast<VkImageStencilUsageCreateInfoEXT*>(this);
+    }
+
+    bool operator==( ImageStencilUsageCreateInfoEXT const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( stencilUsage == rhs.stencilUsage );
+    }
+
+    bool operator!=( ImageStencilUsageCreateInfoEXT const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::eImageStencilUsageCreateInfoEXT;
+
+  public:
+    const void* pNext = nullptr;
+    ImageUsageFlags stencilUsage;
+  };
+  static_assert( sizeof( ImageStencilUsageCreateInfoEXT ) == sizeof( VkImageStencilUsageCreateInfoEXT ), "struct and wrapper have different size!" );
+
   enum class ImageCreateFlagBits
   {
     eSparseBinding = VK_IMAGE_CREATE_SPARSE_BINDING_BIT,
@@ -23499,7 +23539,8 @@ public:
     eDisjoint = VK_IMAGE_CREATE_DISJOINT_BIT,
     eDisjointKHR = VK_IMAGE_CREATE_DISJOINT_BIT,
     eCornerSampledNV = VK_IMAGE_CREATE_CORNER_SAMPLED_BIT_NV,
-    eSampleLocationsCompatibleDepthEXT = VK_IMAGE_CREATE_SAMPLE_LOCATIONS_COMPATIBLE_DEPTH_BIT_EXT
+    eSampleLocationsCompatibleDepthEXT = VK_IMAGE_CREATE_SAMPLE_LOCATIONS_COMPATIBLE_DEPTH_BIT_EXT,
+    eSubsampledEXT = VK_IMAGE_CREATE_SUBSAMPLED_BIT_EXT
   };
 
   using ImageCreateFlags = Flags<ImageCreateFlagBits, VkImageCreateFlags>;
@@ -23518,7 +23559,7 @@ public:
   {
     enum
     {
-      allFlags = VkFlags(ImageCreateFlagBits::eSparseBinding) | VkFlags(ImageCreateFlagBits::eSparseResidency) | VkFlags(ImageCreateFlagBits::eSparseAliased) | VkFlags(ImageCreateFlagBits::eMutableFormat) | VkFlags(ImageCreateFlagBits::eCubeCompatible) | VkFlags(ImageCreateFlagBits::eAlias) | VkFlags(ImageCreateFlagBits::eSplitInstanceBindRegions) | VkFlags(ImageCreateFlagBits::e2DArrayCompatible) | VkFlags(ImageCreateFlagBits::eBlockTexelViewCompatible) | VkFlags(ImageCreateFlagBits::eExtendedUsage) | VkFlags(ImageCreateFlagBits::eProtected) | VkFlags(ImageCreateFlagBits::eDisjoint) | VkFlags(ImageCreateFlagBits::eCornerSampledNV) | VkFlags(ImageCreateFlagBits::eSampleLocationsCompatibleDepthEXT)
+      allFlags = VkFlags(ImageCreateFlagBits::eSparseBinding) | VkFlags(ImageCreateFlagBits::eSparseResidency) | VkFlags(ImageCreateFlagBits::eSparseAliased) | VkFlags(ImageCreateFlagBits::eMutableFormat) | VkFlags(ImageCreateFlagBits::eCubeCompatible) | VkFlags(ImageCreateFlagBits::eAlias) | VkFlags(ImageCreateFlagBits::eSplitInstanceBindRegions) | VkFlags(ImageCreateFlagBits::e2DArrayCompatible) | VkFlags(ImageCreateFlagBits::eBlockTexelViewCompatible) | VkFlags(ImageCreateFlagBits::eExtendedUsage) | VkFlags(ImageCreateFlagBits::eProtected) | VkFlags(ImageCreateFlagBits::eDisjoint) | VkFlags(ImageCreateFlagBits::eCornerSampledNV) | VkFlags(ImageCreateFlagBits::eSampleLocationsCompatibleDepthEXT) | VkFlags(ImageCreateFlagBits::eSubsampledEXT)
     };
   };
 
@@ -23623,6 +23664,267 @@ public:
   static_assert( sizeof( PhysicalDeviceImageFormatInfo2 ) == sizeof( VkPhysicalDeviceImageFormatInfo2 ), "struct and wrapper have different size!" );
 
   using PhysicalDeviceImageFormatInfo2KHR = PhysicalDeviceImageFormatInfo2;
+
+  enum class ImageViewCreateFlagBits
+  {
+    eFragmentDensityMapDynamicEXT = VK_IMAGE_VIEW_CREATE_FRAGMENT_DENSITY_MAP_DYNAMIC_BIT_EXT
+  };
+
+  using ImageViewCreateFlags = Flags<ImageViewCreateFlagBits, VkImageViewCreateFlags>;
+
+  VULKAN_HPP_INLINE ImageViewCreateFlags operator|( ImageViewCreateFlagBits bit0, ImageViewCreateFlagBits bit1 )
+  {
+    return ImageViewCreateFlags( bit0 ) | bit1;
+  }
+
+  VULKAN_HPP_INLINE ImageViewCreateFlags operator~( ImageViewCreateFlagBits bits )
+  {
+    return ~( ImageViewCreateFlags( bits ) );
+  }
+
+  template <> struct FlagTraits<ImageViewCreateFlagBits>
+  {
+    enum
+    {
+      allFlags = VkFlags(ImageViewCreateFlagBits::eFragmentDensityMapDynamicEXT)
+    };
+  };
+
+  enum class SamplerCreateFlagBits
+  {
+    eSubsampledEXT = VK_SAMPLER_CREATE_SUBSAMPLED_BIT_EXT,
+    eSubsampledCoarseReconstructionEXT = VK_SAMPLER_CREATE_SUBSAMPLED_COARSE_RECONSTRUCTION_BIT_EXT
+  };
+
+  using SamplerCreateFlags = Flags<SamplerCreateFlagBits, VkSamplerCreateFlags>;
+
+  VULKAN_HPP_INLINE SamplerCreateFlags operator|( SamplerCreateFlagBits bit0, SamplerCreateFlagBits bit1 )
+  {
+    return SamplerCreateFlags( bit0 ) | bit1;
+  }
+
+  VULKAN_HPP_INLINE SamplerCreateFlags operator~( SamplerCreateFlagBits bits )
+  {
+    return ~( SamplerCreateFlags( bits ) );
+  }
+
+  template <> struct FlagTraits<SamplerCreateFlagBits>
+  {
+    enum
+    {
+      allFlags = VkFlags(SamplerCreateFlagBits::eSubsampledEXT) | VkFlags(SamplerCreateFlagBits::eSubsampledCoarseReconstructionEXT)
+    };
+  };
+
+  struct SamplerCreateInfo
+  {
+    SamplerCreateInfo( SamplerCreateFlags flags_ = SamplerCreateFlags(),
+                       Filter magFilter_ = Filter::eNearest,
+                       Filter minFilter_ = Filter::eNearest,
+                       SamplerMipmapMode mipmapMode_ = SamplerMipmapMode::eNearest,
+                       SamplerAddressMode addressModeU_ = SamplerAddressMode::eRepeat,
+                       SamplerAddressMode addressModeV_ = SamplerAddressMode::eRepeat,
+                       SamplerAddressMode addressModeW_ = SamplerAddressMode::eRepeat,
+                       float mipLodBias_ = 0,
+                       Bool32 anisotropyEnable_ = 0,
+                       float maxAnisotropy_ = 0,
+                       Bool32 compareEnable_ = 0,
+                       CompareOp compareOp_ = CompareOp::eNever,
+                       float minLod_ = 0,
+                       float maxLod_ = 0,
+                       BorderColor borderColor_ = BorderColor::eFloatTransparentBlack,
+                       Bool32 unnormalizedCoordinates_ = 0 )
+      : flags( flags_ )
+      , magFilter( magFilter_ )
+      , minFilter( minFilter_ )
+      , mipmapMode( mipmapMode_ )
+      , addressModeU( addressModeU_ )
+      , addressModeV( addressModeV_ )
+      , addressModeW( addressModeW_ )
+      , mipLodBias( mipLodBias_ )
+      , anisotropyEnable( anisotropyEnable_ )
+      , maxAnisotropy( maxAnisotropy_ )
+      , compareEnable( compareEnable_ )
+      , compareOp( compareOp_ )
+      , minLod( minLod_ )
+      , maxLod( maxLod_ )
+      , borderColor( borderColor_ )
+      , unnormalizedCoordinates( unnormalizedCoordinates_ )
+    {
+    }
+
+    SamplerCreateInfo( VkSamplerCreateInfo const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SamplerCreateInfo ) );
+    }
+
+    SamplerCreateInfo& operator=( VkSamplerCreateInfo const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SamplerCreateInfo ) );
+      return *this;
+    }
+    SamplerCreateInfo& setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    SamplerCreateInfo& setFlags( SamplerCreateFlags flags_ )
+    {
+      flags = flags_;
+      return *this;
+    }
+
+    SamplerCreateInfo& setMagFilter( Filter magFilter_ )
+    {
+      magFilter = magFilter_;
+      return *this;
+    }
+
+    SamplerCreateInfo& setMinFilter( Filter minFilter_ )
+    {
+      minFilter = minFilter_;
+      return *this;
+    }
+
+    SamplerCreateInfo& setMipmapMode( SamplerMipmapMode mipmapMode_ )
+    {
+      mipmapMode = mipmapMode_;
+      return *this;
+    }
+
+    SamplerCreateInfo& setAddressModeU( SamplerAddressMode addressModeU_ )
+    {
+      addressModeU = addressModeU_;
+      return *this;
+    }
+
+    SamplerCreateInfo& setAddressModeV( SamplerAddressMode addressModeV_ )
+    {
+      addressModeV = addressModeV_;
+      return *this;
+    }
+
+    SamplerCreateInfo& setAddressModeW( SamplerAddressMode addressModeW_ )
+    {
+      addressModeW = addressModeW_;
+      return *this;
+    }
+
+    SamplerCreateInfo& setMipLodBias( float mipLodBias_ )
+    {
+      mipLodBias = mipLodBias_;
+      return *this;
+    }
+
+    SamplerCreateInfo& setAnisotropyEnable( Bool32 anisotropyEnable_ )
+    {
+      anisotropyEnable = anisotropyEnable_;
+      return *this;
+    }
+
+    SamplerCreateInfo& setMaxAnisotropy( float maxAnisotropy_ )
+    {
+      maxAnisotropy = maxAnisotropy_;
+      return *this;
+    }
+
+    SamplerCreateInfo& setCompareEnable( Bool32 compareEnable_ )
+    {
+      compareEnable = compareEnable_;
+      return *this;
+    }
+
+    SamplerCreateInfo& setCompareOp( CompareOp compareOp_ )
+    {
+      compareOp = compareOp_;
+      return *this;
+    }
+
+    SamplerCreateInfo& setMinLod( float minLod_ )
+    {
+      minLod = minLod_;
+      return *this;
+    }
+
+    SamplerCreateInfo& setMaxLod( float maxLod_ )
+    {
+      maxLod = maxLod_;
+      return *this;
+    }
+
+    SamplerCreateInfo& setBorderColor( BorderColor borderColor_ )
+    {
+      borderColor = borderColor_;
+      return *this;
+    }
+
+    SamplerCreateInfo& setUnnormalizedCoordinates( Bool32 unnormalizedCoordinates_ )
+    {
+      unnormalizedCoordinates = unnormalizedCoordinates_;
+      return *this;
+    }
+
+    operator VkSamplerCreateInfo const&() const
+    {
+      return *reinterpret_cast<const VkSamplerCreateInfo*>(this);
+    }
+
+    operator VkSamplerCreateInfo &()
+    {
+      return *reinterpret_cast<VkSamplerCreateInfo*>(this);
+    }
+
+    bool operator==( SamplerCreateInfo const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( magFilter == rhs.magFilter )
+          && ( minFilter == rhs.minFilter )
+          && ( mipmapMode == rhs.mipmapMode )
+          && ( addressModeU == rhs.addressModeU )
+          && ( addressModeV == rhs.addressModeV )
+          && ( addressModeW == rhs.addressModeW )
+          && ( mipLodBias == rhs.mipLodBias )
+          && ( anisotropyEnable == rhs.anisotropyEnable )
+          && ( maxAnisotropy == rhs.maxAnisotropy )
+          && ( compareEnable == rhs.compareEnable )
+          && ( compareOp == rhs.compareOp )
+          && ( minLod == rhs.minLod )
+          && ( maxLod == rhs.maxLod )
+          && ( borderColor == rhs.borderColor )
+          && ( unnormalizedCoordinates == rhs.unnormalizedCoordinates );
+    }
+
+    bool operator!=( SamplerCreateInfo const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::eSamplerCreateInfo;
+
+  public:
+    const void* pNext = nullptr;
+    SamplerCreateFlags flags;
+    Filter magFilter;
+    Filter minFilter;
+    SamplerMipmapMode mipmapMode;
+    SamplerAddressMode addressModeU;
+    SamplerAddressMode addressModeV;
+    SamplerAddressMode addressModeW;
+    float mipLodBias;
+    Bool32 anisotropyEnable;
+    float maxAnisotropy;
+    Bool32 compareEnable;
+    CompareOp compareOp;
+    float minLod;
+    float maxLod;
+    BorderColor borderColor;
+    Bool32 unnormalizedCoordinates;
+  };
+  static_assert( sizeof( SamplerCreateInfo ) == sizeof( VkSamplerCreateInfo ), "struct and wrapper have different size!" );
 
   enum class PipelineCreateFlagBits
   {
@@ -24130,7 +24432,8 @@ public:
     eCositedChromaSamples = VK_FORMAT_FEATURE_COSITED_CHROMA_SAMPLES_BIT,
     eCositedChromaSamplesKHR = VK_FORMAT_FEATURE_COSITED_CHROMA_SAMPLES_BIT,
     eSampledImageFilterCubicIMG = VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_CUBIC_BIT_IMG,
-    eSampledImageFilterMinmaxEXT = VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_MINMAX_BIT_EXT
+    eSampledImageFilterMinmaxEXT = VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_MINMAX_BIT_EXT,
+    eFragmentDensityMapEXT = VK_FORMAT_FEATURE_FRAGMENT_DENSITY_MAP_BIT_EXT
   };
 
   using FormatFeatureFlags = Flags<FormatFeatureFlagBits, VkFormatFeatureFlags>;
@@ -24149,7 +24452,7 @@ public:
   {
     enum
     {
-      allFlags = VkFlags(FormatFeatureFlagBits::eSampledImage) | VkFlags(FormatFeatureFlagBits::eStorageImage) | VkFlags(FormatFeatureFlagBits::eStorageImageAtomic) | VkFlags(FormatFeatureFlagBits::eUniformTexelBuffer) | VkFlags(FormatFeatureFlagBits::eStorageTexelBuffer) | VkFlags(FormatFeatureFlagBits::eStorageTexelBufferAtomic) | VkFlags(FormatFeatureFlagBits::eVertexBuffer) | VkFlags(FormatFeatureFlagBits::eColorAttachment) | VkFlags(FormatFeatureFlagBits::eColorAttachmentBlend) | VkFlags(FormatFeatureFlagBits::eDepthStencilAttachment) | VkFlags(FormatFeatureFlagBits::eBlitSrc) | VkFlags(FormatFeatureFlagBits::eBlitDst) | VkFlags(FormatFeatureFlagBits::eSampledImageFilterLinear) | VkFlags(FormatFeatureFlagBits::eTransferSrc) | VkFlags(FormatFeatureFlagBits::eTransferDst) | VkFlags(FormatFeatureFlagBits::eMidpointChromaSamples) | VkFlags(FormatFeatureFlagBits::eSampledImageYcbcrConversionLinearFilter) | VkFlags(FormatFeatureFlagBits::eSampledImageYcbcrConversionSeparateReconstructionFilter) | VkFlags(FormatFeatureFlagBits::eSampledImageYcbcrConversionChromaReconstructionExplicit) | VkFlags(FormatFeatureFlagBits::eSampledImageYcbcrConversionChromaReconstructionExplicitForceable) | VkFlags(FormatFeatureFlagBits::eDisjoint) | VkFlags(FormatFeatureFlagBits::eCositedChromaSamples) | VkFlags(FormatFeatureFlagBits::eSampledImageFilterCubicIMG) | VkFlags(FormatFeatureFlagBits::eSampledImageFilterMinmaxEXT)
+      allFlags = VkFlags(FormatFeatureFlagBits::eSampledImage) | VkFlags(FormatFeatureFlagBits::eStorageImage) | VkFlags(FormatFeatureFlagBits::eStorageImageAtomic) | VkFlags(FormatFeatureFlagBits::eUniformTexelBuffer) | VkFlags(FormatFeatureFlagBits::eStorageTexelBuffer) | VkFlags(FormatFeatureFlagBits::eStorageTexelBufferAtomic) | VkFlags(FormatFeatureFlagBits::eVertexBuffer) | VkFlags(FormatFeatureFlagBits::eColorAttachment) | VkFlags(FormatFeatureFlagBits::eColorAttachmentBlend) | VkFlags(FormatFeatureFlagBits::eDepthStencilAttachment) | VkFlags(FormatFeatureFlagBits::eBlitSrc) | VkFlags(FormatFeatureFlagBits::eBlitDst) | VkFlags(FormatFeatureFlagBits::eSampledImageFilterLinear) | VkFlags(FormatFeatureFlagBits::eTransferSrc) | VkFlags(FormatFeatureFlagBits::eTransferDst) | VkFlags(FormatFeatureFlagBits::eMidpointChromaSamples) | VkFlags(FormatFeatureFlagBits::eSampledImageYcbcrConversionLinearFilter) | VkFlags(FormatFeatureFlagBits::eSampledImageYcbcrConversionSeparateReconstructionFilter) | VkFlags(FormatFeatureFlagBits::eSampledImageYcbcrConversionChromaReconstructionExplicit) | VkFlags(FormatFeatureFlagBits::eSampledImageYcbcrConversionChromaReconstructionExplicitForceable) | VkFlags(FormatFeatureFlagBits::eDisjoint) | VkFlags(FormatFeatureFlagBits::eCositedChromaSamples) | VkFlags(FormatFeatureFlagBits::eSampledImageFilterCubicIMG) | VkFlags(FormatFeatureFlagBits::eSampledImageFilterMinmaxEXT) | VkFlags(FormatFeatureFlagBits::eFragmentDensityMapEXT)
     };
   };
 
@@ -26707,7 +27010,8 @@ public:
     eRayTracingShaderNV = VK_PIPELINE_STAGE_RAY_TRACING_SHADER_BIT_NV,
     eAccelerationStructureBuildNV = VK_PIPELINE_STAGE_ACCELERATION_STRUCTURE_BUILD_BIT_NV,
     eTaskShaderNV = VK_PIPELINE_STAGE_TASK_SHADER_BIT_NV,
-    eMeshShaderNV = VK_PIPELINE_STAGE_MESH_SHADER_BIT_NV
+    eMeshShaderNV = VK_PIPELINE_STAGE_MESH_SHADER_BIT_NV,
+    eFragmentDensityProcessEXT = VK_PIPELINE_STAGE_FRAGMENT_DENSITY_PROCESS_BIT_EXT
   };
 
   using PipelineStageFlags = Flags<PipelineStageFlagBits, VkPipelineStageFlags>;
@@ -26726,7 +27030,7 @@ public:
   {
     enum
     {
-      allFlags = VkFlags(PipelineStageFlagBits::eTopOfPipe) | VkFlags(PipelineStageFlagBits::eDrawIndirect) | VkFlags(PipelineStageFlagBits::eVertexInput) | VkFlags(PipelineStageFlagBits::eVertexShader) | VkFlags(PipelineStageFlagBits::eTessellationControlShader) | VkFlags(PipelineStageFlagBits::eTessellationEvaluationShader) | VkFlags(PipelineStageFlagBits::eGeometryShader) | VkFlags(PipelineStageFlagBits::eFragmentShader) | VkFlags(PipelineStageFlagBits::eEarlyFragmentTests) | VkFlags(PipelineStageFlagBits::eLateFragmentTests) | VkFlags(PipelineStageFlagBits::eColorAttachmentOutput) | VkFlags(PipelineStageFlagBits::eComputeShader) | VkFlags(PipelineStageFlagBits::eTransfer) | VkFlags(PipelineStageFlagBits::eBottomOfPipe) | VkFlags(PipelineStageFlagBits::eHost) | VkFlags(PipelineStageFlagBits::eAllGraphics) | VkFlags(PipelineStageFlagBits::eAllCommands) | VkFlags(PipelineStageFlagBits::eTransformFeedbackEXT) | VkFlags(PipelineStageFlagBits::eConditionalRenderingEXT) | VkFlags(PipelineStageFlagBits::eCommandProcessNVX) | VkFlags(PipelineStageFlagBits::eShadingRateImageNV) | VkFlags(PipelineStageFlagBits::eRayTracingShaderNV) | VkFlags(PipelineStageFlagBits::eAccelerationStructureBuildNV) | VkFlags(PipelineStageFlagBits::eTaskShaderNV) | VkFlags(PipelineStageFlagBits::eMeshShaderNV)
+      allFlags = VkFlags(PipelineStageFlagBits::eTopOfPipe) | VkFlags(PipelineStageFlagBits::eDrawIndirect) | VkFlags(PipelineStageFlagBits::eVertexInput) | VkFlags(PipelineStageFlagBits::eVertexShader) | VkFlags(PipelineStageFlagBits::eTessellationControlShader) | VkFlags(PipelineStageFlagBits::eTessellationEvaluationShader) | VkFlags(PipelineStageFlagBits::eGeometryShader) | VkFlags(PipelineStageFlagBits::eFragmentShader) | VkFlags(PipelineStageFlagBits::eEarlyFragmentTests) | VkFlags(PipelineStageFlagBits::eLateFragmentTests) | VkFlags(PipelineStageFlagBits::eColorAttachmentOutput) | VkFlags(PipelineStageFlagBits::eComputeShader) | VkFlags(PipelineStageFlagBits::eTransfer) | VkFlags(PipelineStageFlagBits::eBottomOfPipe) | VkFlags(PipelineStageFlagBits::eHost) | VkFlags(PipelineStageFlagBits::eAllGraphics) | VkFlags(PipelineStageFlagBits::eAllCommands) | VkFlags(PipelineStageFlagBits::eTransformFeedbackEXT) | VkFlags(PipelineStageFlagBits::eConditionalRenderingEXT) | VkFlags(PipelineStageFlagBits::eCommandProcessNVX) | VkFlags(PipelineStageFlagBits::eShadingRateImageNV) | VkFlags(PipelineStageFlagBits::eRayTracingShaderNV) | VkFlags(PipelineStageFlagBits::eAccelerationStructureBuildNV) | VkFlags(PipelineStageFlagBits::eTaskShaderNV) | VkFlags(PipelineStageFlagBits::eMeshShaderNV) | VkFlags(PipelineStageFlagBits::eFragmentDensityProcessEXT)
     };
   };
 
@@ -34259,7 +34563,8 @@ public:
   enum class SwapchainCreateFlagBitsKHR
   {
     eSplitInstanceBindRegions = VK_SWAPCHAIN_CREATE_SPLIT_INSTANCE_BIND_REGIONS_BIT_KHR,
-    eProtected = VK_SWAPCHAIN_CREATE_PROTECTED_BIT_KHR
+    eProtected = VK_SWAPCHAIN_CREATE_PROTECTED_BIT_KHR,
+    eMutableFormat = VK_SWAPCHAIN_CREATE_MUTABLE_FORMAT_BIT_KHR
   };
 
   using SwapchainCreateFlagsKHR = Flags<SwapchainCreateFlagBitsKHR, VkSwapchainCreateFlagsKHR>;
@@ -34278,7 +34583,7 @@ public:
   {
     enum
     {
-      allFlags = VkFlags(SwapchainCreateFlagBitsKHR::eSplitInstanceBindRegions) | VkFlags(SwapchainCreateFlagBitsKHR::eProtected)
+      allFlags = VkFlags(SwapchainCreateFlagBitsKHR::eSplitInstanceBindRegions) | VkFlags(SwapchainCreateFlagBitsKHR::eProtected) | VkFlags(SwapchainCreateFlagBitsKHR::eMutableFormat)
     };
   };
 
@@ -36363,7 +36668,8 @@ public:
     eIntelOpenSourceMesa = VK_DRIVER_ID_INTEL_OPEN_SOURCE_MESA_KHR,
     eImaginationProprietary = VK_DRIVER_ID_IMAGINATION_PROPRIETARY_KHR,
     eQualcommProprietary = VK_DRIVER_ID_QUALCOMM_PROPRIETARY_KHR,
-    eArmProprietary = VK_DRIVER_ID_ARM_PROPRIETARY_KHR
+    eArmProprietary = VK_DRIVER_ID_ARM_PROPRIETARY_KHR,
+    eGooglePastel = VK_DRIVER_ID_GOOGLE_PASTEL_KHR
   };
 
   struct PhysicalDeviceDriverPropertiesKHR
@@ -42541,7 +42847,7 @@ public:
   VULKAN_HPP_INLINE typename ResultValueType<std::vector<UniqueHandle<Pipeline,Dispatch>,Allocator>>::type Device::createGraphicsPipelinesUnique( PipelineCache pipelineCache, ArrayProxy<const GraphicsPipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator, Allocator const& vectorAllocator, Dispatch const &d ) const
   {
     static_assert( sizeof( Pipeline ) <= sizeof( UniquePipeline ), "Pipeline is greater than UniquePipeline!" );
-    std::vector<UniquePipeline, Allocator> pipelines;
+    std::vector<UniquePipeline, Allocator> pipelines( vectorAllocator );
     pipelines.reserve( createInfos.size() );
     Pipeline* buffer = reinterpret_cast<Pipeline*>( reinterpret_cast<char*>( pipelines.data() ) + createInfos.size() * ( sizeof( UniquePipeline ) - sizeof( Pipeline ) ) );
     Result result = static_cast<Result>(d.vkCreateGraphicsPipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkGraphicsPipelineCreateInfo*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( buffer ) ) );
@@ -42615,7 +42921,7 @@ public:
   VULKAN_HPP_INLINE typename ResultValueType<std::vector<UniqueHandle<Pipeline,Dispatch>,Allocator>>::type Device::createComputePipelinesUnique( PipelineCache pipelineCache, ArrayProxy<const ComputePipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator, Allocator const& vectorAllocator, Dispatch const &d ) const
   {
     static_assert( sizeof( Pipeline ) <= sizeof( UniquePipeline ), "Pipeline is greater than UniquePipeline!" );
-    std::vector<UniquePipeline, Allocator> pipelines;
+    std::vector<UniquePipeline, Allocator> pipelines( vectorAllocator );
     pipelines.reserve( createInfos.size() );
     Pipeline* buffer = reinterpret_cast<Pipeline*>( reinterpret_cast<char*>( pipelines.data() ) + createInfos.size() * ( sizeof( UniquePipeline ) - sizeof( Pipeline ) ) );
     Result result = static_cast<Result>(d.vkCreateComputePipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkComputePipelineCreateInfo*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( buffer ) ) );
@@ -42931,7 +43237,7 @@ public:
   VULKAN_HPP_INLINE typename ResultValueType<std::vector<UniqueHandle<DescriptorSet,Dispatch>,Allocator>>::type Device::allocateDescriptorSetsUnique( const DescriptorSetAllocateInfo & allocateInfo, Allocator const& vectorAllocator, Dispatch const &d ) const
   {
     static_assert( sizeof( DescriptorSet ) <= sizeof( UniqueDescriptorSet ), "DescriptorSet is greater than UniqueDescriptorSet!" );
-    std::vector<UniqueDescriptorSet, Allocator> descriptorSets;
+    std::vector<UniqueDescriptorSet, Allocator> descriptorSets( vectorAllocator );
     descriptorSets.reserve( allocateInfo.descriptorSetCount );
     DescriptorSet* buffer = reinterpret_cast<DescriptorSet*>( reinterpret_cast<char*>( descriptorSets.data() ) + allocateInfo.descriptorSetCount * ( sizeof( UniqueDescriptorSet ) - sizeof( DescriptorSet ) ) );
     Result result = static_cast<Result>(d.vkAllocateDescriptorSets( m_device, reinterpret_cast<const VkDescriptorSetAllocateInfo*>( &allocateInfo ), reinterpret_cast<VkDescriptorSet*>( buffer ) ) );
@@ -43216,7 +43522,7 @@ public:
   VULKAN_HPP_INLINE typename ResultValueType<std::vector<UniqueHandle<CommandBuffer,Dispatch>,Allocator>>::type Device::allocateCommandBuffersUnique( const CommandBufferAllocateInfo & allocateInfo, Allocator const& vectorAllocator, Dispatch const &d ) const
   {
     static_assert( sizeof( CommandBuffer ) <= sizeof( UniqueCommandBuffer ), "CommandBuffer is greater than UniqueCommandBuffer!" );
-    std::vector<UniqueCommandBuffer, Allocator> commandBuffers;
+    std::vector<UniqueCommandBuffer, Allocator> commandBuffers( vectorAllocator );
     commandBuffers.reserve( allocateInfo.commandBufferCount );
     CommandBuffer* buffer = reinterpret_cast<CommandBuffer*>( reinterpret_cast<char*>( commandBuffers.data() ) + allocateInfo.commandBufferCount * ( sizeof( UniqueCommandBuffer ) - sizeof( CommandBuffer ) ) );
     Result result = static_cast<Result>(d.vkAllocateCommandBuffers( m_device, reinterpret_cast<const VkCommandBufferAllocateInfo*>( &allocateInfo ), reinterpret_cast<VkCommandBuffer*>( buffer ) ) );
@@ -43307,7 +43613,7 @@ public:
   VULKAN_HPP_INLINE typename ResultValueType<std::vector<UniqueHandle<SwapchainKHR,Dispatch>,Allocator>>::type Device::createSharedSwapchainsKHRUnique( ArrayProxy<const SwapchainCreateInfoKHR> createInfos, Optional<const AllocationCallbacks> allocator, Allocator const& vectorAllocator, Dispatch const &d ) const
   {
     static_assert( sizeof( SwapchainKHR ) <= sizeof( UniqueSwapchainKHR ), "SwapchainKHR is greater than UniqueSwapchainKHR!" );
-    std::vector<UniqueSwapchainKHR, Allocator> swapchainKHRs;
+    std::vector<UniqueSwapchainKHR, Allocator> swapchainKHRs( vectorAllocator );
     swapchainKHRs.reserve( createInfos.size() );
     SwapchainKHR* buffer = reinterpret_cast<SwapchainKHR*>( reinterpret_cast<char*>( swapchainKHRs.data() ) + createInfos.size() * ( sizeof( UniqueSwapchainKHR ) - sizeof( SwapchainKHR ) ) );
     Result result = static_cast<Result>(d.vkCreateSharedSwapchainsKHR( m_device, createInfos.size() , reinterpret_cast<const VkSwapchainCreateInfoKHR*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSwapchainKHR*>( buffer ) ) );
@@ -45049,7 +45355,7 @@ public:
   VULKAN_HPP_INLINE typename ResultValueType<std::vector<UniqueHandle<Pipeline,Dispatch>,Allocator>>::type Device::createRayTracingPipelinesNVUnique( PipelineCache pipelineCache, ArrayProxy<const RayTracingPipelineCreateInfoNV> createInfos, Optional<const AllocationCallbacks> allocator, Allocator const& vectorAllocator, Dispatch const &d ) const
   {
     static_assert( sizeof( Pipeline ) <= sizeof( UniquePipeline ), "Pipeline is greater than UniquePipeline!" );
-    std::vector<UniquePipeline, Allocator> pipelines;
+    std::vector<UniquePipeline, Allocator> pipelines( vectorAllocator );
     pipelines.reserve( createInfos.size() );
     Pipeline* buffer = reinterpret_cast<Pipeline*>( reinterpret_cast<char*>( pipelines.data() ) + createInfos.size() * ( sizeof( UniquePipeline ) - sizeof( Pipeline ) ) );
     Result result = static_cast<Result>(d.vkCreateRayTracingPipelinesNV( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkRayTracingPipelineCreateInfoNV*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( buffer ) ) );
@@ -48647,6 +48953,7 @@ public:
   template <> struct isStructureChainValid<WriteDescriptorSet, WriteDescriptorSetInlineUniformBlockEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<DescriptorPoolCreateInfo, DescriptorPoolInlineUniformBlockCreateInfoEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<ImageCreateInfo, ImageFormatListCreateInfoKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<SwapchainCreateInfoKHR, ImageFormatListCreateInfoKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceImageFormatInfo2, ImageFormatListCreateInfoKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<ShaderModuleCreateInfo, ShaderModuleValidationCacheCreateInfoEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceMaintenance3Properties>{ enum { value = true }; };
@@ -48716,8 +49023,16 @@ public:
   template <> struct isStructureChainValid<PhysicalDeviceImageFormatInfo2, PhysicalDeviceImageDrmFormatModifierInfoEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<ImageCreateInfo, ImageDrmFormatModifierListCreateInfoEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<ImageCreateInfo, ImageDrmFormatModifierExplicitCreateInfoEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceFragmentDensityMapFeaturesEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceFragmentDensityMapFeaturesEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceFragmentDensityMapPropertiesEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<RenderPassCreateInfo, RenderPassFragmentDensityMapCreateInfoEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceScalarBlockLayoutFeaturesEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceScalarBlockLayoutFeaturesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<SurfaceCapabilities2KHR, SharedPresentSurfaceCapabilitiesKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<ImageViewCreateInfo, ImageViewUsageCreateInfo>{ enum { value = true }; };
+  template <> struct isStructureChainValid<ImageCreateInfo, ImageStencilUsageCreateInfoEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceImageFormatInfo2, ImageStencilUsageCreateInfoEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<FormatProperties2, DrmFormatModifierPropertiesListEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<RenderPassCreateInfo, RenderPassInputAttachmentAspectCreateInfo>{ enum { value = true }; };
   template <> struct isStructureChainValid<BindImageMemoryInfo, BindImagePlaneMemoryInfo>{ enum { value = true }; };
@@ -48799,16 +49114,6 @@ public:
   }
 
   VULKAN_HPP_INLINE std::string to_string(RenderPassCreateFlags)
-  {
-    return "{}";
-  }
-
-  VULKAN_HPP_INLINE std::string to_string(SamplerCreateFlagBits)
-  {
-    return "(void)";
-  }
-
-  VULKAN_HPP_INLINE std::string to_string(SamplerCreateFlags)
   {
     return "{}";
   }
@@ -48959,16 +49264,6 @@ public:
   }
 
   VULKAN_HPP_INLINE std::string to_string(DeviceCreateFlags)
-  {
-    return "{}";
-  }
-
-  VULKAN_HPP_INLINE std::string to_string(ImageViewCreateFlagBits)
-  {
-    return "(void)";
-  }
-
-  VULKAN_HPP_INLINE std::string to_string(ImageViewCreateFlags)
   {
     return "{}";
   }
@@ -49297,6 +49592,7 @@ public:
     case ImageLayout::ePresentSrcKHR: return "PresentSrcKHR";
     case ImageLayout::eSharedPresentKHR: return "SharedPresentKHR";
     case ImageLayout::eShadingRateOptimalNV: return "ShadingRateOptimalNV";
+    case ImageLayout::eFragmentDensityMapOptimalEXT: return "FragmentDensityMapOptimalEXT";
     default: return "invalid";
     }
   }
@@ -50294,6 +50590,11 @@ public:
     case StructureType::ePhysicalDeviceVulkanMemoryModelFeaturesKHR: return "PhysicalDeviceVulkanMemoryModelFeaturesKHR";
     case StructureType::ePhysicalDevicePciBusInfoPropertiesEXT: return "PhysicalDevicePciBusInfoPropertiesEXT";
     case StructureType::eImagepipeSurfaceCreateInfoFUCHSIA: return "ImagepipeSurfaceCreateInfoFUCHSIA";
+    case StructureType::ePhysicalDeviceFragmentDensityMapFeaturesEXT: return "PhysicalDeviceFragmentDensityMapFeaturesEXT";
+    case StructureType::ePhysicalDeviceFragmentDensityMapPropertiesEXT: return "PhysicalDeviceFragmentDensityMapPropertiesEXT";
+    case StructureType::eRenderPassFragmentDensityMapCreateInfoEXT: return "RenderPassFragmentDensityMapCreateInfoEXT";
+    case StructureType::ePhysicalDeviceScalarBlockLayoutFeaturesEXT: return "PhysicalDeviceScalarBlockLayoutFeaturesEXT";
+    case StructureType::eImageStencilUsageCreateInfoEXT: return "ImageStencilUsageCreateInfoEXT";
     default: return "invalid";
     }
   }
@@ -50506,6 +50807,7 @@ public:
     case AccessFlagBits::eShadingRateImageReadNV: return "ShadingRateImageReadNV";
     case AccessFlagBits::eAccelerationStructureReadNV: return "AccelerationStructureReadNV";
     case AccessFlagBits::eAccelerationStructureWriteNV: return "AccelerationStructureWriteNV";
+    case AccessFlagBits::eFragmentDensityMapReadEXT: return "FragmentDensityMapReadEXT";
     default: return "invalid";
     }
   }
@@ -50541,6 +50843,7 @@ public:
     if (value & AccessFlagBits::eShadingRateImageReadNV) result += "ShadingRateImageReadNV | ";
     if (value & AccessFlagBits::eAccelerationStructureReadNV) result += "AccelerationStructureReadNV | ";
     if (value & AccessFlagBits::eAccelerationStructureWriteNV) result += "AccelerationStructureWriteNV | ";
+    if (value & AccessFlagBits::eFragmentDensityMapReadEXT) result += "FragmentDensityMapReadEXT | ";
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
@@ -50668,6 +50971,7 @@ public:
     case ImageUsageFlagBits::eTransientAttachment: return "TransientAttachment";
     case ImageUsageFlagBits::eInputAttachment: return "InputAttachment";
     case ImageUsageFlagBits::eShadingRateImageNV: return "ShadingRateImageNV";
+    case ImageUsageFlagBits::eFragmentDensityMapEXT: return "FragmentDensityMapEXT";
     default: return "invalid";
     }
   }
@@ -50685,6 +50989,7 @@ public:
     if (value & ImageUsageFlagBits::eTransientAttachment) result += "TransientAttachment | ";
     if (value & ImageUsageFlagBits::eInputAttachment) result += "InputAttachment | ";
     if (value & ImageUsageFlagBits::eShadingRateImageNV) result += "ShadingRateImageNV | ";
+    if (value & ImageUsageFlagBits::eFragmentDensityMapEXT) result += "FragmentDensityMapEXT | ";
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
@@ -50706,6 +51011,7 @@ public:
     case ImageCreateFlagBits::eDisjoint: return "Disjoint";
     case ImageCreateFlagBits::eCornerSampledNV: return "CornerSampledNV";
     case ImageCreateFlagBits::eSampleLocationsCompatibleDepthEXT: return "SampleLocationsCompatibleDepthEXT";
+    case ImageCreateFlagBits::eSubsampledEXT: return "SubsampledEXT";
     default: return "invalid";
     }
   }
@@ -50728,6 +51034,43 @@ public:
     if (value & ImageCreateFlagBits::eDisjoint) result += "Disjoint | ";
     if (value & ImageCreateFlagBits::eCornerSampledNV) result += "CornerSampledNV | ";
     if (value & ImageCreateFlagBits::eSampleLocationsCompatibleDepthEXT) result += "SampleLocationsCompatibleDepthEXT | ";
+    if (value & ImageCreateFlagBits::eSubsampledEXT) result += "SubsampledEXT | ";
+    return "{" + result.substr(0, result.size() - 3) + "}";
+  }
+
+  VULKAN_HPP_INLINE std::string to_string(ImageViewCreateFlagBits value)
+  {
+    switch (value)
+    {
+    case ImageViewCreateFlagBits::eFragmentDensityMapDynamicEXT: return "FragmentDensityMapDynamicEXT";
+    default: return "invalid";
+    }
+  }
+
+  VULKAN_HPP_INLINE std::string to_string(ImageViewCreateFlags value)
+  {
+    if (!value) return "{}";
+    std::string result;
+    if (value & ImageViewCreateFlagBits::eFragmentDensityMapDynamicEXT) result += "FragmentDensityMapDynamicEXT | ";
+    return "{" + result.substr(0, result.size() - 3) + "}";
+  }
+
+  VULKAN_HPP_INLINE std::string to_string(SamplerCreateFlagBits value)
+  {
+    switch (value)
+    {
+    case SamplerCreateFlagBits::eSubsampledEXT: return "SubsampledEXT";
+    case SamplerCreateFlagBits::eSubsampledCoarseReconstructionEXT: return "SubsampledCoarseReconstructionEXT";
+    default: return "invalid";
+    }
+  }
+
+  VULKAN_HPP_INLINE std::string to_string(SamplerCreateFlags value)
+  {
+    if (!value) return "{}";
+    std::string result;
+    if (value & SamplerCreateFlagBits::eSubsampledEXT) result += "SubsampledEXT | ";
+    if (value & SamplerCreateFlagBits::eSubsampledCoarseReconstructionEXT) result += "SubsampledCoarseReconstructionEXT | ";
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
@@ -50826,6 +51169,7 @@ public:
     case FormatFeatureFlagBits::eCositedChromaSamples: return "CositedChromaSamples";
     case FormatFeatureFlagBits::eSampledImageFilterCubicIMG: return "SampledImageFilterCubicIMG";
     case FormatFeatureFlagBits::eSampledImageFilterMinmaxEXT: return "SampledImageFilterMinmaxEXT";
+    case FormatFeatureFlagBits::eFragmentDensityMapEXT: return "FragmentDensityMapEXT";
     default: return "invalid";
     }
   }
@@ -50858,6 +51202,7 @@ public:
     if (value & FormatFeatureFlagBits::eCositedChromaSamples) result += "CositedChromaSamples | ";
     if (value & FormatFeatureFlagBits::eSampledImageFilterCubicIMG) result += "SampledImageFilterCubicIMG | ";
     if (value & FormatFeatureFlagBits::eSampledImageFilterMinmaxEXT) result += "SampledImageFilterMinmaxEXT | ";
+    if (value & FormatFeatureFlagBits::eFragmentDensityMapEXT) result += "FragmentDensityMapEXT | ";
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
@@ -51063,6 +51408,7 @@ public:
     case PipelineStageFlagBits::eAccelerationStructureBuildNV: return "AccelerationStructureBuildNV";
     case PipelineStageFlagBits::eTaskShaderNV: return "TaskShaderNV";
     case PipelineStageFlagBits::eMeshShaderNV: return "MeshShaderNV";
+    case PipelineStageFlagBits::eFragmentDensityProcessEXT: return "FragmentDensityProcessEXT";
     default: return "invalid";
     }
   }
@@ -51096,6 +51442,7 @@ public:
     if (value & PipelineStageFlagBits::eAccelerationStructureBuildNV) result += "AccelerationStructureBuildNV | ";
     if (value & PipelineStageFlagBits::eTaskShaderNV) result += "TaskShaderNV | ";
     if (value & PipelineStageFlagBits::eMeshShaderNV) result += "MeshShaderNV | ";
+    if (value & PipelineStageFlagBits::eFragmentDensityProcessEXT) result += "FragmentDensityProcessEXT | ";
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
@@ -51939,6 +52286,7 @@ public:
     {
     case SwapchainCreateFlagBitsKHR::eSplitInstanceBindRegions: return "SplitInstanceBindRegions";
     case SwapchainCreateFlagBitsKHR::eProtected: return "Protected";
+    case SwapchainCreateFlagBitsKHR::eMutableFormat: return "MutableFormat";
     default: return "invalid";
     }
   }
@@ -51949,6 +52297,7 @@ public:
     std::string result;
     if (value & SwapchainCreateFlagBitsKHR::eSplitInstanceBindRegions) result += "SplitInstanceBindRegions | ";
     if (value & SwapchainCreateFlagBitsKHR::eProtected) result += "Protected | ";
+    if (value & SwapchainCreateFlagBitsKHR::eMutableFormat) result += "MutableFormat | ";
     return "{" + result.substr(0, result.size() - 3) + "}";
   }
 
@@ -52218,6 +52567,7 @@ public:
     case DriverIdKHR::eImaginationProprietary: return "ImaginationProprietary";
     case DriverIdKHR::eQualcommProprietary: return "QualcommProprietary";
     case DriverIdKHR::eArmProprietary: return "ArmProprietary";
+    case DriverIdKHR::eGooglePastel: return "GooglePastel";
     default: return "invalid";
     }
   }

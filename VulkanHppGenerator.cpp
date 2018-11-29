@@ -3334,7 +3334,7 @@ void VulkanHppGenerator::writeFunctionBodyEnhanced(std::ostream & os, std::strin
   {
     std::string const stringTemplate =
 R"(${i}  static_assert( sizeof( ${type} ) <= sizeof( Unique${type} ), "${type} is greater than Unique${type}!" );
-${i}  std::vector<Unique${type}, Allocator> ${typeVariable}s;
+${i}  std::vector<Unique${type}, Allocator> ${typeVariable}s${allocator};
 ${i}  ${typeVariable}s.reserve( ${vectorSize} );
 ${i}  ${type}* buffer = reinterpret_cast<${type}*>( reinterpret_cast<char*>( ${typeVariable}s.data() ) + ${vectorSize} * ( sizeof( Unique${type} ) - sizeof( ${type} ) ) );
 ${i}  Result result = static_cast<Result>(d.vk${command}( m_device, ${arguments}, reinterpret_cast<Vk${type}*>( buffer ) ) );
@@ -3362,6 +3362,7 @@ ${i}  return createResultValue( result, ${typeVariable}s, VULKAN_HPP_NAMESPACE_S
       { "i", indentation },
       { "type", type },
       { "typeVariable", typeVariable },
+      { "allocator", withAllocator ? "( vectorAllocator )" : "" },
       { "vectorSize", isCreateFunction ? "createInfos.size()" : "allocateInfo." + typeVariable + "Count" },
       { "command", startUpperCase(commandData.fullName) },
       { "arguments", arguments.str() },

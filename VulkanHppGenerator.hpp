@@ -40,6 +40,7 @@ class VulkanHppGenerator
     void readEnums(tinyxml2::XMLElement const* element);
     void readExtensions(tinyxml2::XMLElement const* element);
     void readFeature(tinyxml2::XMLElement const* element);
+    void readPlatforms(tinyxml2::XMLElement const* element);
     void readTags(tinyxml2::XMLElement const* element);
     void readTypes(tinyxml2::XMLElement const* element);
     void sortDependencies();
@@ -231,6 +232,7 @@ class VulkanHppGenerator
     void readExtensionType(tinyxml2::XMLElement const* element, std::string const& protect);
     void readFeatureRequire(tinyxml2::XMLElement const* element);
     void readFeatureRequireEnum(tinyxml2::XMLElement const* element);
+    void readPlatform(tinyxml2::XMLElement const* element);
     void readTag(tinyxml2::XMLElement const* element);
     void readType(tinyxml2::XMLElement const* element);
     void readTypeBasetype(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes);
@@ -302,6 +304,7 @@ class VulkanHppGenerator
     std::set<std::string>                         m_extendedStructs; // structs which are referenced by the structextends tag
     std::map<std::string, HandleData>             m_handles;
     std::map<std::string, std::string>            m_nameMap;
+    std::map<std::string, std::string>            m_platforms;
     std::map<std::string, ScalarData>             m_scalars;
     std::map<std::string, StructData>             m_structs;
     std::set<std::string>                         m_tags;

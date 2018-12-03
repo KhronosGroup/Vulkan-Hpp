@@ -2244,7 +2244,6 @@ void VulkanHppGenerator::readExtensionsExtension(tinyxml2::XMLElement const* ele
     { "platform",{} },
     { "promotedto", {} },
     { "provisional", {} },
-    { "protect",{} },
     { "requires",{} },
     { "requiresCore",{} },
     { "type",{ "device", "instance" } }
@@ -2267,18 +2266,12 @@ void VulkanHppGenerator::readExtensionsExtension(tinyxml2::XMLElement const* ele
     std::string tag = extractTag(name);
     assert(m_tags.find(tag) != m_tags.end());
 
-    auto protectAttribute = attributes.find("protect");
-    auto platformAttribute = attributes.find("platform");
     std::string protect;
-    if (protectAttribute != attributes.end())
+    auto platformAttribute = attributes.find("platform");
+    if (platformAttribute != attributes.end())
     {
-      protect = protectAttribute->second;
-    }
-    else if (platformAttribute != attributes.end())
-    {
-      auto authorAttribute = attributes.find("author");
-      assert(authorAttribute != attributes.end());
-      protect = "VK_USE_PLATFORM_" + toUpperCase(platformAttribute->second) + "_" + authorAttribute->second;
+      assert(m_platforms.find(platformAttribute->second) != m_platforms.end());
+      protect = m_platforms.find(platformAttribute->second)->second;
     }
 
 #if !defined(NDEBUG)
@@ -2428,6 +2421,42 @@ void VulkanHppGenerator::readFeatureRequireEnum(tinyxml2::XMLElement const* elem
   }
 }
 
+void VulkanHppGenerator::readPlatform(tinyxml2::XMLElement const* element)
+{
+  std::map<std::string, std::string> attributes = getAttributes(element);
+  checkAttributes(attributes, element->GetLineNum(), { { "name",{} },{ "protect",{} },{ "comment",{} } }, {});
+  checkElements(getChildElements(element), {});
+
+  std::string name, protect;
+  for (auto const& attribute : attributes)
+  {
+    std::string value = attribute.first;
+    if (value == "name")
+    {
+      name = attribute.second;
+    }
+    else if (value == "protect")
+    {
+      protect = attribute.second;
+    }
+  }
+  assert(!name.empty() && !protect.empty());
+  assert(m_platforms.find(name) == m_platforms.end());
+  m_platforms[name] = protect;
+}
+
+void VulkanHppGenerator::readPlatforms(tinyxml2::XMLElement const* element)
+{
+  checkAttributes(getAttributes(element), element->GetLineNum(), { { "comment",{} } }, {});
+  std::vector<tinyxml2::XMLElement const*> children = getChildElements(element);
+  checkElements(children, { "platform" });
+
+  for (auto child : children)
+  {
+    readPlatform(child);
+  }
+}
+
 void VulkanHppGenerator::readTags(tinyxml2::XMLElement const* element)
 {
   checkAttributes(getAttributes(element), element->GetLineNum(), { { "comment",{} } }, {});
@@ -2436,8 +2465,6 @@ void VulkanHppGenerator::readTags(tinyxml2::XMLElement const* element)
 
   for (auto child : children)
   {
-    std::string value = child->Value();
-    assert(value == "tag");
     readTag(child);
   }
 }
@@ -5235,6 +5262,10 @@ int main( int argc, char **argv )
       {
         generator.readFeature(child);
       }
+      else if (value == "platforms")
+      {
+        generator.readPlatforms(child);
+      }
       else if (value == "tags")
       {
         generator.readTags(child);
@@ -5248,10 +5279,6 @@ int main( int argc, char **argv )
 #if !defined(NDEBUG)
         generator.skipVendorIDs(child);
 #endif
-      }
-      else if (value == "platforms")
-      {
-        // skip this tag
       }
       else
       {

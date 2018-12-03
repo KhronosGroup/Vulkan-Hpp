@@ -582,9 +582,13 @@ const std::string resultValueHeader = R"(
 )";
 
 const std::string createResultValueHeader = R"(
+  template <typename T>
+  VULKAN_HPP_INLINE void ignore(T const&) {}
+
   VULKAN_HPP_INLINE ResultValueType<void>::type createResultValue( Result result, char const * message )
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
+    ignore( message );
     VULKAN_HPP_ASSERT( result == Result::eSuccess );
     return result;
 #else
@@ -599,8 +603,9 @@ const std::string createResultValueHeader = R"(
   VULKAN_HPP_INLINE typename ResultValueType<T>::type createResultValue( Result result, T & data, char const * message )
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
+    ignore( message );
     VULKAN_HPP_ASSERT( result == Result::eSuccess );
-    return ResultValue<T>( result, std::move(data) );
+    return ResultValue<T>( result, std::move( data ) );
 #else
     if ( result != Result::eSuccess )
     {
@@ -613,6 +618,7 @@ const std::string createResultValueHeader = R"(
   VULKAN_HPP_INLINE Result createResultValue( Result result, char const * message, std::initializer_list<Result> successCodes )
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
+    ignore( message );
     VULKAN_HPP_ASSERT( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );
 #else
     if ( std::find( successCodes.begin(), successCodes.end(), result ) == successCodes.end() )
@@ -627,6 +633,7 @@ const std::string createResultValueHeader = R"(
   VULKAN_HPP_INLINE ResultValue<T> createResultValue( Result result, T & data, char const * message, std::initializer_list<Result> successCodes )
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
+    ignore( message );
     VULKAN_HPP_ASSERT( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );
 #else
     if ( std::find( successCodes.begin(), successCodes.end(), result ) == successCodes.end() )
@@ -642,8 +649,9 @@ const std::string createResultValueHeader = R"(
   VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<T,D>>::type createResultValue( Result result, T & data, char const * message, typename UniqueHandleTraits<T,D>::deleter const& deleter )
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
+    ignore( message );
     VULKAN_HPP_ASSERT( result == Result::eSuccess );
-    return ResultValue<UniqueHandle<T,D>>( result, UniqueHandle<T,D>(std::move(data), deleter) );
+    return ResultValue<UniqueHandle<T,D>>( result, UniqueHandle<T,D>(std::move( data ), deleter) );
 #else
     if ( result != Result::eSuccess )
     {

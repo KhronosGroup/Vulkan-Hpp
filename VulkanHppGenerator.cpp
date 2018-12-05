@@ -3014,7 +3014,7 @@ void VulkanHppGenerator::sortDependencies()
             {
               std::map<std::string, StructData>::const_iterator sit = std::find_if(m_structs.begin(), m_structs.end(), [&dit](std::pair<std::string, StructData> const& sd) { return sd.second.alias == *dit; });
               assert(sit != m_structs.end());
-              assert(std::find_if(sortedDependencies.begin(), sortedDependencies.end(), [name = sit->first](DependencyData const& dd) { return dd.name == name; }) != sortedDependencies.end());
+              assert(std::find_if(sortedDependencies.begin(), sortedDependencies.end(), [sit](DependencyData const& dd) { return dd.name == sit->first; }) != sortedDependencies.end());
             }
           }
 #endif
@@ -3368,16 +3368,16 @@ void VulkanHppGenerator::writeFunctionBodyEnhanced(std::ostream & os, std::strin
   if (unique && !singular && (commandData.vectorParams.find(commandData.returnParam) != commandData.vectorParams.end()))    // returns a vector of UniqueStuff
   {
     std::string const stringTemplate =
-R"(${i}  static_assert( sizeof( ${type} ) <= sizeof( Unique${type} ), "${type} is greater than Unique${type}!" );
-${i}  std::vector<Unique${type}, Allocator> ${typeVariable}s${allocator};
+R"(${i}  static_assert( sizeof( ${type} ) <= sizeof( UniqueHandle<${type}, Dispatch> ), "${type} is greater than UniqueHandle<${type}, Dispatch>!" );
+${i}  std::vector<UniqueHandle<${type}, Dispatch>, Allocator> ${typeVariable}s${allocator};
 ${i}  ${typeVariable}s.reserve( ${vectorSize} );
-${i}  ${type}* buffer = reinterpret_cast<${type}*>( reinterpret_cast<char*>( ${typeVariable}s.data() ) + ${vectorSize} * ( sizeof( Unique${type} ) - sizeof( ${type} ) ) );
+${i}  ${type}* buffer = reinterpret_cast<${type}*>( reinterpret_cast<char*>( ${typeVariable}s.data() ) + ${vectorSize} * ( sizeof( UniqueHandle<${type}, Dispatch> ) - sizeof( ${type} ) ) );
 ${i}  Result result = static_cast<Result>(d.vk${command}( m_device, ${arguments}, reinterpret_cast<Vk${type}*>( buffer ) ) );
 
 ${i}  ${Deleter}<${DeleterTemplate},Dispatch> deleter( *this, ${deleterArg}, d );
 ${i}  for ( size_t i=0 ; i<${vectorSize} ; i++ )
 ${i}  {
-${i}    ${typeVariable}s.push_back( Unique${type}( buffer[i], deleter ) );
+${i}    ${typeVariable}s.push_back( UniqueHandle<${type}, Dispatch>( buffer[i], deleter ) );
 ${i}  }
 
 ${i}  return createResultValue( result, ${typeVariable}s, VULKAN_HPP_NAMESPACE_STRING "::${class}::${function}Unique" );

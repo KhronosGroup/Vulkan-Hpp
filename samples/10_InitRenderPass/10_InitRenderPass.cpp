@@ -25,6 +25,15 @@
 static char const* AppName = "10_InitRenderPass";
 static char const* EngineName = "Vulkan.hpp";
 
+static std::vector<char const*> getDeviceExtensions()
+{
+  std::vector<char const*> extensions;
+
+  extensions.push_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
+
+  return extensions;
+}
+
 static std::vector<char const*> getInstanceExtensions()
 {
   std::vector<char const*> extensions;
@@ -170,7 +179,8 @@ int main(int /*argc*/, char * /*argv[]*/)
     // create a device
     float queuePriority = 0.0f;
     vk::DeviceQueueCreateInfo deviceQueueCreateInfo({}, static_cast<uint32_t>(graphicsQueueFamilyIndex), 1, &queuePriority);
-    vk::UniqueDevice device = physicalDevices[0].createDeviceUnique(vk::DeviceCreateInfo({}, 1, &deviceQueueCreateInfo, 0, nullptr));
+    std::vector<char const*> deviceExtensionNames = getDeviceExtensions();
+    vk::UniqueDevice device = physicalDevices[0].createDeviceUnique(vk::DeviceCreateInfo({}, 1, &deviceQueueCreateInfo, 0, nullptr, static_cast<uint32_t>(deviceExtensionNames.size()), deviceExtensionNames.data()));
 
     // get the supported VkFormats
     vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevices[0].getSurfaceCapabilitiesKHR(surface.get());

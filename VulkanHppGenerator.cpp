@@ -40,8 +40,10 @@ std::vector<tinyxml2::XMLElement const*> getChildElements(tinyxml2::XMLElement c
 std::string getEnumPostfix(std::string const& name, std::set<std::string> const& tags, std::string & prefix);
 std::string getEnumPrefix(std::string const& name, bool bitmask);
 void leaveProtect(std::ostream &os, std::string const& protect);
-std::string readArraySize(tinyxml2::XMLNode const* node, std::string& name);
+std::string readArraySize(tinyxml2::XMLNode const* node);
 void readStructStructExtends(std::map<std::string, std::string> const& attributes, std::vector<std::string> & structExtends, std::set<std::string> & extendedStructs);
+std::string readTypePostfix(tinyxml2::XMLNode const* node);
+std::string readTypePrefix(tinyxml2::XMLNode const* node);
 std::string replaceWithMap(std::string const &input, std::map<std::string, std::string> replacements);
 std::string startLowerCase(std::string const& input);
 std::string startUpperCase(std::string const& input);
@@ -342,45 +344,19 @@ void leaveProtect(std::ostream &os, std::string const& protect)
   }
 }
 
-std::string readArraySize(tinyxml2::XMLNode const* node, std::string& name)
+std::string readArraySize(tinyxml2::XMLNode const* node)
 {
-  std::string arraySize;
-  if (name.back() == ']')
+  if (node && node->ToText())
   {
-    // if the parameter has '[' and ']' in its name, get the stuff inbetween those as the array size and erase that part from the parameter name
-    assert(!node->NextSibling());
-    size_t pos = name.find('[');
-    assert(pos != std::string::npos);
-    arraySize = name.substr(pos + 1, name.length() - 2 - pos);
-    name.erase(pos);
-  }
-  else
-  {
-    // otherwise look for a sibling of this node
-    node = node->NextSibling();
-    if (node && node->ToText())
+    // following the name there might be some array size
+    assert(!node->ToElement());
+    std::string arraySize = node->Value();
+    if ((arraySize.front() == '[') && (arraySize.back() == ']'))
     {
-      assert(node->Value());
-      std::string value = trimEnd(node->Value());
-      if (value == "[")
-      {
-        // if this node has '[' as its value, the next node holds the array size, and the node after that needs to hold ']', and there should be no more siblings
-        node = node->NextSibling();
-        assert(node && node->ToElement() && (strcmp(node->Value(), "enum") == 0));
-        arraySize = node->ToElement()->GetText();
-        node = node->NextSibling();
-        assert(node && node->ToText() && (trimEnd(node->Value()) == "]"));
-      }
-      else
-      {
-        // otherwise, the node holds '[' and ']', so get the stuff in between those as the array size
-        assert((value.front() == '[') && (value.back() == ']'));
-        arraySize = value.substr(1, value.length() - 2);
-      }
-      assert(!node->NextSibling() || ((strcmp(node->NextSibling()->Value(), "comment") == 0) && !node->NextSibling()->NextSibling()));
+      return arraySize.substr(1, arraySize.length() - 2);
     }
   }
-  return arraySize;
+  return "";
 }
 
 void readStructStructExtends(std::map<std::string, std::string> const& attributes, std::vector<std::string> & structExtends, std::set<std::string> & extendedStructs)
@@ -393,6 +369,28 @@ void readStructStructExtends(std::map<std::string, std::string> const& attribute
     extendedStructs.insert(extends.begin(), extends.end());
     assert(!structExtends.empty());
   }
+}
+
+std::string readTypePostfix(tinyxml2::XMLNode const* node)
+{
+  std::string postfix;
+  if (node && node->ToText())
+  {
+    postfix = trimEnd(node->Value());
+    assert((postfix == "*") || (postfix == "**") || (postfix == "* const*"));
+  }
+  return postfix;
+}
+
+std::string readTypePrefix(tinyxml2::XMLNode const* node)
+{
+  std::string prefix;
+  if (node && node->ToText())
+  {
+    prefix = trim(node->Value());
+    assert((prefix == "const") || (prefix == "struct") || (prefix == "const struct"));
+  }
+  return prefix;
 }
 
 std::string replaceWithMap(std::string const &input, std::map<std::string, std::string> replacements)
@@ -1233,65 +1231,40 @@ VulkanHppGenerator::ParamData VulkanHppGenerator::readCommandParam(tinyxml2::XML
 {
   std::map<std::string, std::string> attributes = getAttributes(element);
   checkAttributes(attributes, element->GetLineNum(), {}, { { "externsync",{} },{ "len",{} },{ "noautovalidity",{ "true" } },{ "optional",{ "false", "true" } } });
-  checkElements(getChildElements(element), { "name", "type" });
+  std::vector<tinyxml2::XMLElement const*> children = getChildElements(element);
+  checkElements(children, { "name", "type" });
 
-  ParamData param;
-
-  auto lenAttribute = attributes.find("len");
-  if (lenAttribute != attributes.end())
+  ParamData paramData;
+  for (auto attribute : attributes)
   {
-    param.len = lenAttribute->second;
+    if (attribute.first == "len")
+    {
+      paramData.len = attribute.second;
+    }
+    else if (attribute.first == "optional")
+    {
+      paramData.optional = (attribute.second == "true");
+    }
   }
 
-  // get the type of the parameter, and put it into the list of dependencies
-  tinyxml2::XMLNode const* child = readCommandParamType(element->FirstChild(), param);
-
-  assert(child->ToElement());
-  tinyxml2::XMLElement const* nameElement = child->ToElement();
-  checkEmptyElement(nameElement);
-  param.name = child->ToElement()->GetText();
-
-  param.arraySize = readArraySize(child, param.name);
-
-  auto optionalAttribute = attributes.find("optional");
-  param.optional = (optionalAttribute != attributes.end()) && (optionalAttribute->second == "true");
-
-  return param;
-}
-
-tinyxml2::XMLNode const* VulkanHppGenerator::readCommandParamType(tinyxml2::XMLNode const* node, ParamData& param)
-{
-  assert(node);
-  if (node->ToText())
+  for (auto child : children)
   {
-    // start type with "const" or "struct", if needed
-    std::string value = trim(node->Value());
-    assert((value == "const") || (value == "struct") || (value == "const struct"));
-    param.type.prefix = value;
-    node = node->NextSibling();
-    assert(node);
+    checkEmptyElement(child);
+    std::string value = child->Value();
+    if (value == "name")
+    {
+      paramData.name = child->GetText();
+      paramData.arraySize = readArraySize(child->NextSibling());
+    }
+    else if (value == "type")
+    {
+      paramData.type.prefix = readTypePrefix(child->PreviousSibling());
+      paramData.type.type = child->GetText();
+      paramData.type.postfix = readTypePostfix(child->NextSibling());
+    }
   }
 
-  // get the pure type
-  assert(node->ToElement());
-  tinyxml2::XMLElement const* typeElement = node->ToElement();
-  checkEmptyElement(typeElement);
-
-  // replace aliased types by its alias
-  param.type.type = node->ToElement()->GetText();
-
-  // end with "*", "**", or "* const*", if needed
-  node = node->NextSibling();
-  assert(node);
-  if (node->ToText())
-  {
-    std::string value = trimEnd(node->Value());
-    assert((value == "*") || (value == "**") || (value == "* const*"));
-    param.type.postfix = value;
-    node = node->NextSibling();
-  }
-
-  return node;
+  return paramData;
 }
 
 std::string VulkanHppGenerator::readCommandProto(tinyxml2::XMLElement const* element, std::string & returnType)
@@ -1951,50 +1924,39 @@ VulkanHppGenerator::MemberData VulkanHppGenerator::readStructMember(tinyxml2::XM
   });
   std::vector<tinyxml2::XMLElement const*> children = getChildElements(element);
   checkElements(children, { "comment", "enum", "name", "type" });
+
+  MemberData memberData;
+  auto valuesIt = attributes.find("values");
+  if (valuesIt != attributes.end())
+  {
+    memberData.values = valuesIt->second;
+  }
+
   for (auto child : children)
   {
     checkEmptyElement(child);
+    assert(child->Value());
+    std::string value = child->Value();
+    assert(child->GetText());
+    if (value == "enum")
+    {
+      assert(child->PreviousSibling() && (strcmp(child->PreviousSibling()->Value(), "[") == 0)
+        && child->NextSibling() && (strcmp(child->NextSibling()->Value(), "]") == 0));
+      memberData.arraySize = child->GetText();
+    }
+    else if (value == "name")
+    {
+      memberData.name = child->GetText();
+      memberData.arraySize = readArraySize(child->NextSibling());
+    }
+    else if (value == "type")
+    {
+      memberData.type.prefix = readTypePrefix(child->PreviousSibling());
+      memberData.type.type = child->GetText();
+      memberData.type.postfix = readTypePostfix(child->NextSibling());
+    }
   }
 
-  MemberData memberData;
-  auto valuesAttribute = attributes.find("values");
-  if (valuesAttribute != attributes.end())
-  {
-    memberData.values = valuesAttribute->second;
-  }
-
-  tinyxml2::XMLNode const* child = element->FirstChild();
-  assert(child);
-  if (child->ToText())
-  {
-    std::string value = trim(child->Value());
-    assert((value == "const") || (value == "struct") || value == "const struct");
-    memberData.type.prefix = value;
-    child = child->NextSibling();
-    assert(child);
-  }
-
-  assert(child->ToElement());
-  tinyxml2::XMLElement const* typeElement = child->ToElement();
-  assert((strcmp(typeElement->Value(), "type") == 0) && typeElement->GetText());
-  memberData.type.type = typeElement->GetText();
-
-  child = typeElement->NextSibling();
-  assert(child);
-  if (child->ToText())
-  {
-    std::string value = trimEnd(child->Value());
-    assert((value == "*") || (value == "**") || (value == "* const*"));
-    memberData.type.postfix = value;
-    child = child->NextSibling();
-  }
-
-  assert(child->ToElement());
-  tinyxml2::XMLElement const* nameElement = child->ToElement();
-  assert((strcmp(nameElement->Value(), "name") == 0) && nameElement->GetText());
-  memberData.name = nameElement->GetText();
-
-  memberData.arraySize = readArraySize(nameElement, memberData.name);
   return memberData;
 }
 

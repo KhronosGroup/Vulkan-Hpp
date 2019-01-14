@@ -82,6 +82,10 @@ class VulkanHppGenerator
 
     struct ParamData
     {
+      ParamData()
+        : optional(false)
+      {}
+
       TypeData    type;
       std::string name;
       std::string arraySize;
@@ -160,7 +164,6 @@ class VulkanHppGenerator
     void readCommand(tinyxml2::XMLElement const* element);
     void readCommandAlias(int lineNum, std::string const& alias, std::map<std::string, std::string> const& attributes, std::vector<tinyxml2::XMLElement const*> const& children);
     ParamData readCommandParam(tinyxml2::XMLElement const* element);
-    tinyxml2::XMLNode const* readCommandParamType(tinyxml2::XMLNode const* node, ParamData& param);
     std::string readCommandProto(tinyxml2::XMLElement const* element, std::string & returnType);
     std::vector<std::string> readCommandSuccessCodes(std::map<std::string, std::string> const& attributes);
     void readDefine(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes);

@@ -2430,36 +2430,45 @@ void VulkanHppGenerator::writeDispatchLoaderDynamic(std::ostream &os)
   }
 
   // write initialization function to fetch function pointers
-  os << "  public:" << std::endl
-    << "    DispatchLoaderDynamic(Instance instance = Instance(), Device device = Device())" << std::endl
-    << "    {" << std::endl
-    << "      if (instance)" << std::endl
-    << "      {" << std::endl
-    << "        init(instance, device);" << std::endl
-    << "      }" << std::endl
-    << "    }" << std::endl << std::endl
-    << "    void init(Instance instance, Device device = Device())" << std::endl
-    << "    {" << std::endl;
+  os << R"(
+  public:
+    DispatchLoaderDynamic() = default;
+
+    DispatchLoaderDynamic( VkInstance instance, PFN_vkGetInstanceProcAddr getInstanceProcAddr, VkDevice device = VK_NULL_HANDLE, PFN_vkGetDeviceProcAddr getDeviceProcAddr = nullptr )
+    {
+      init( instance, getInstanceProcAddr, device, getDeviceProcAddr );
+    }
+
+    void init( VkInstance instance, PFN_vkGetInstanceProcAddr getInstanceProcAddr, VkDevice device = VK_NULL_HANDLE, PFN_vkGetDeviceProcAddr getDeviceProcAddr = nullptr )
+    {
+      assert(instance && getInstanceProcAddr);
+      assert(!!device == !!getDeviceProcAddr);
+      vkGetInstanceProcAddr = getInstanceProcAddr;
+      vkGetDeviceProcAddr = getDeviceProcAddr ? getDeviceProcAddr : PFN_vkGetDeviceProcAddr( vkGetInstanceProcAddr( instance, "vkGetDeviceProcAddr") );
+)";
 
   for (auto const& handle : m_handles)
   {
     for (auto const& command : handle.second.commands)
     {
-      std::string const& protect = m_platforms.find(command.second.platform)->second;
-      enterProtect(os, protect);
-      if (!command.second.params.empty()
-        && m_handles.find(command.second.params[0].type.type) != m_handles.end()
-        && command.second.params[0].type.type != "VkInstance"
-        && command.second.params[0].type.type != "VkPhysicalDevice")
+      if ((command.first != "vkGetDeviceProcAddr") && (command.first != "vkGetInstanceProcAddr"))
       {
-        os << "      " << command.first << " = PFN_" << command.first
-          << "(device ? device.getProcAddr( \"" << command.first << "\") : instance.getProcAddr( \"" << command.first << "\"));" << std::endl;
+        std::string const& protect = m_platforms.find(command.second.platform)->second;
+        enterProtect(os, protect);
+        if (!command.second.params.empty()
+          && m_handles.find(command.second.params[0].type.type) != m_handles.end()
+          && command.second.params[0].type.type != "VkInstance"
+          && command.second.params[0].type.type != "VkPhysicalDevice")
+        {
+          os << "      " << command.first << " = PFN_" << command.first
+            << "( device ? vkGetDeviceProcAddr( device, \"" << command.first << "\" ) : vkGetInstanceProcAddr( instance, \"" << command.first << "\" ) );" << std::endl;
+        }
+        else
+        {
+          os << "      " << command.first << " = PFN_" << command.first << "( vkGetInstanceProcAddr( instance, \"" << command.first << "\" ) );" << std::endl;
+        }
+        leaveProtect(os, protect);
       }
-      else
-      {
-        os << "      " << command.first << " = PFN_" << command.first << "(instance.getProcAddr( \"" << command.first << "\"));" << std::endl;
-      }
-      leaveProtect(os, protect);
     }
   }
   os << "    }" << std::endl;

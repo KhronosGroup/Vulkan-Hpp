@@ -32,4 +32,4 @@ add_executable(06_InitDepthBuffer
 )
 
 set_target_properties(06_InitDepthBuffer PROPERTIES FOLDER "Samples")
-target_link_libraries(06_InitDepthBuffer "$ENV{VK_SDK_PATH}/Lib/vulkan-1.lib")
+target_link_libraries(06_InitDepthBuffer "$ENV{VULKAN_SDK}/Lib/vulkan-1.lib")

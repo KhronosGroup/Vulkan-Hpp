@@ -32,4 +32,4 @@ add_executable(04_InitCommandBuffer
 )
 
 set_target_properties(04_InitCommandBuffer PROPERTIES FOLDER "Samples")
-target_link_libraries(04_InitCommandBuffer "$ENV{VK_SDK_PATH}/Lib/vulkan-1.lib")
+target_link_libraries(04_InitCommandBuffer "$ENV{VULKAN_SDK}/Lib/vulkan-1.lib")

@@ -32,4 +32,4 @@ add_executable(03_InitDevice
 )
 
 set_target_properties(03_InitDevice PROPERTIES FOLDER "Samples")
-target_link_libraries(03_InitDevice "$ENV{VK_SDK_PATH}/Lib/vulkan-1.lib")
+target_link_libraries(03_InitDevice "$ENV{VULKAN_SDK}/Lib/vulkan-1.lib")

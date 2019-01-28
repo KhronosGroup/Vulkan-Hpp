@@ -32,4 +32,4 @@ add_executable(07_InitUniformBuffer
 )
 
 set_target_properties(07_InitUniformBuffer PROPERTIES FOLDER "Samples")
-target_link_libraries(07_InitUniformBuffer "$ENV{VK_SDK_PATH}/Lib/vulkan-1.lib")
+target_link_libraries(07_InitUniformBuffer "$ENV{VULKAN_SDK}/Lib/vulkan-1.lib")

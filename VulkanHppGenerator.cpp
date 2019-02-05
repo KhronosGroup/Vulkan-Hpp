@@ -669,7 +669,8 @@ void writeBitmaskToStringFunction(std::ostream & os, std::string const& bitmaskN
     static const std::string bodyTemplate = R"(
     if ( !value ) return "{}";
     std::string result;
-${cases})";
+${cases}
+    return result;)";
     functionBody = replaceWithMap(bodyTemplate, { { "cases", casesString } });
   }
 

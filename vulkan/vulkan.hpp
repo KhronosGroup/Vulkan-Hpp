@@ -56,7 +56,7 @@
 # define VULKAN_HPP_ASSERT   assert
 #endif
 
-static_assert( VK_HEADER_VERSION ==  98 , "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION ==  100 , "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -3230,7 +3230,8 @@ namespace VULKAN_HPP_NAMESPACE
   {
     eNearest = VK_FILTER_NEAREST,
     eLinear = VK_FILTER_LINEAR,
-    eCubicIMG = VK_FILTER_CUBIC_IMG
+    eCubicIMG = VK_FILTER_CUBIC_IMG,
+    eCubicEXT = VK_FILTER_CUBIC_EXT
   };
 
   VULKAN_HPP_INLINE std::string to_string( Filter value )
@@ -4892,6 +4893,8 @@ namespace VULKAN_HPP_NAMESPACE
     eAccelerationStructureInfoNV = VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_INFO_NV,
     ePhysicalDeviceRepresentativeFragmentTestFeaturesNV = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_REPRESENTATIVE_FRAGMENT_TEST_FEATURES_NV,
     ePipelineRepresentativeFragmentTestStateCreateInfoNV = VK_STRUCTURE_TYPE_PIPELINE_REPRESENTATIVE_FRAGMENT_TEST_STATE_CREATE_INFO_NV,
+    ePhysicalDeviceImageViewImageFormatInfoEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_VIEW_IMAGE_FORMAT_INFO_EXT,
+    eFilterCubicImageViewImageFormatPropertiesEXT = VK_STRUCTURE_TYPE_FILTER_CUBIC_IMAGE_VIEW_IMAGE_FORMAT_PROPERTIES_EXT,
     eDeviceQueueGlobalPriorityCreateInfoEXT = VK_STRUCTURE_TYPE_DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO_EXT,
     ePhysicalDevice8BitStorageFeaturesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_8BIT_STORAGE_FEATURES_KHR,
     eImportMemoryHostPointerInfoEXT = VK_STRUCTURE_TYPE_IMPORT_MEMORY_HOST_POINTER_INFO_EXT,
@@ -4927,6 +4930,7 @@ namespace VULKAN_HPP_NAMESPACE
     ePhysicalDeviceMemoryBudgetPropertiesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_BUDGET_PROPERTIES_EXT,
     ePhysicalDeviceMemoryPriorityFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_PRIORITY_FEATURES_EXT,
     eMemoryPriorityAllocateInfoEXT = VK_STRUCTURE_TYPE_MEMORY_PRIORITY_ALLOCATE_INFO_EXT,
+    ePhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEDICATED_ALLOCATION_IMAGE_ALIASING_FEATURES_NV,
     ePhysicalDeviceBufferAddressFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BUFFER_ADDRESS_FEATURES_EXT,
     eBufferDeviceAddressInfoEXT = VK_STRUCTURE_TYPE_BUFFER_DEVICE_ADDRESS_INFO_EXT,
     eBufferDeviceAddressCreateInfoEXT = VK_STRUCTURE_TYPE_BUFFER_DEVICE_ADDRESS_CREATE_INFO_EXT,
@@ -5271,6 +5275,8 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eAccelerationStructureInfoNV : return "AccelerationStructureInfoNV";
       case StructureType::ePhysicalDeviceRepresentativeFragmentTestFeaturesNV : return "PhysicalDeviceRepresentativeFragmentTestFeaturesNV";
       case StructureType::ePipelineRepresentativeFragmentTestStateCreateInfoNV : return "PipelineRepresentativeFragmentTestStateCreateInfoNV";
+      case StructureType::ePhysicalDeviceImageViewImageFormatInfoEXT : return "PhysicalDeviceImageViewImageFormatInfoEXT";
+      case StructureType::eFilterCubicImageViewImageFormatPropertiesEXT : return "FilterCubicImageViewImageFormatPropertiesEXT";
       case StructureType::eDeviceQueueGlobalPriorityCreateInfoEXT : return "DeviceQueueGlobalPriorityCreateInfoEXT";
       case StructureType::ePhysicalDevice8BitStorageFeaturesKHR : return "PhysicalDevice8BitStorageFeaturesKHR";
       case StructureType::eImportMemoryHostPointerInfoEXT : return "ImportMemoryHostPointerInfoEXT";
@@ -5306,6 +5312,7 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceMemoryBudgetPropertiesEXT : return "PhysicalDeviceMemoryBudgetPropertiesEXT";
       case StructureType::ePhysicalDeviceMemoryPriorityFeaturesEXT : return "PhysicalDeviceMemoryPriorityFeaturesEXT";
       case StructureType::eMemoryPriorityAllocateInfoEXT : return "MemoryPriorityAllocateInfoEXT";
+      case StructureType::ePhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV : return "PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV";
       case StructureType::ePhysicalDeviceBufferAddressFeaturesEXT : return "PhysicalDeviceBufferAddressFeaturesEXT";
       case StructureType::eBufferDeviceAddressInfoEXT : return "BufferDeviceAddressInfoEXT";
       case StructureType::eBufferDeviceAddressCreateInfoEXT : return "BufferDeviceAddressCreateInfoEXT";
@@ -7517,7 +7524,8 @@ namespace VULKAN_HPP_NAMESPACE
     eSampledImageYcbcrConversionChromaReconstructionExplicitKHR = VK_FORMAT_FEATURE_SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_BIT_KHR,
     eSampledImageYcbcrConversionChromaReconstructionExplicitForceableKHR = VK_FORMAT_FEATURE_SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_FORCEABLE_BIT_KHR,
     eDisjointKHR = VK_FORMAT_FEATURE_DISJOINT_BIT_KHR,
-    eCositedChromaSamplesKHR = VK_FORMAT_FEATURE_COSITED_CHROMA_SAMPLES_BIT_KHR
+    eCositedChromaSamplesKHR = VK_FORMAT_FEATURE_COSITED_CHROMA_SAMPLES_BIT_KHR,
+    eSampledImageFilterCubicEXT = VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_CUBIC_BIT_EXT
   };
 
   VULKAN_HPP_INLINE std::string to_string( FormatFeatureFlagBits value )
@@ -28188,6 +28196,41 @@ namespace VULKAN_HPP_NAMESPACE
   static_assert( sizeof( FenceGetWin32HandleInfoKHR ) == sizeof( VkFenceGetWin32HandleInfoKHR ), "struct and wrapper have different size!" );
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
+  struct FilterCubicImageViewImageFormatPropertiesEXT
+  {
+    operator VkFilterCubicImageViewImageFormatPropertiesEXT const&() const
+    {
+      return *reinterpret_cast<const VkFilterCubicImageViewImageFormatPropertiesEXT*>( this );
+    }
+
+    operator VkFilterCubicImageViewImageFormatPropertiesEXT &()
+    {
+      return *reinterpret_cast<VkFilterCubicImageViewImageFormatPropertiesEXT*>( this );
+    }
+
+    bool operator==( FilterCubicImageViewImageFormatPropertiesEXT const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( filterCubic == rhs.filterCubic )
+          && ( filterCubicMinmax == rhs.filterCubicMinmax );
+    }
+
+    bool operator!=( FilterCubicImageViewImageFormatPropertiesEXT const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::eFilterCubicImageViewImageFormatPropertiesEXT;
+
+  public:
+    void* pNext = nullptr;
+    Bool32 filterCubic;
+    Bool32 filterCubicMinmax;
+  };
+  static_assert( sizeof( FilterCubicImageViewImageFormatPropertiesEXT ) == sizeof( VkFilterCubicImageViewImageFormatPropertiesEXT ), "struct and wrapper have different size!" );
+
   struct FormatProperties
   {
     operator VkFormatProperties const&() const
@@ -35256,6 +35299,66 @@ namespace VULKAN_HPP_NAMESPACE
   };
   static_assert( sizeof( PhysicalDeviceCornerSampledImageFeaturesNV ) == sizeof( VkPhysicalDeviceCornerSampledImageFeaturesNV ), "struct and wrapper have different size!" );
 
+  struct PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV
+  {
+    PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV( Bool32 dedicatedAllocationImageAliasing_ = 0 )
+      : dedicatedAllocationImageAliasing( dedicatedAllocationImageAliasing_ )
+    {}
+
+    PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV( VkPhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV ) );
+    }
+
+    PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV& operator=( VkPhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV ) );
+      return *this;
+    }
+
+    PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV & setPNext( void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV & setDedicatedAllocationImageAliasing( Bool32 dedicatedAllocationImageAliasing_ )
+    {
+      dedicatedAllocationImageAliasing = dedicatedAllocationImageAliasing_;
+      return *this;
+    }
+
+    operator VkPhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV const&() const
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV*>( this );
+    }
+
+    operator VkPhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV*>( this );
+    }
+
+    bool operator==( PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( dedicatedAllocationImageAliasing == rhs.dedicatedAllocationImageAliasing );
+    }
+
+    bool operator!=( PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::ePhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV;
+
+  public:
+    void* pNext = nullptr;
+    Bool32 dedicatedAllocationImageAliasing;
+  };
+  static_assert( sizeof( PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV ) == sizeof( VkPhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV ), "struct and wrapper have different size!" );
+
   struct PhysicalDeviceDepthStencilResolvePropertiesKHR
   {
     operator VkPhysicalDeviceDepthStencilResolvePropertiesKHR const&() const
@@ -36643,6 +36746,66 @@ namespace VULKAN_HPP_NAMESPACE
     ImageCreateFlags flags;
   };
   static_assert( sizeof( PhysicalDeviceImageFormatInfo2 ) == sizeof( VkPhysicalDeviceImageFormatInfo2 ), "struct and wrapper have different size!" );
+
+  struct PhysicalDeviceImageViewImageFormatInfoEXT
+  {
+    PhysicalDeviceImageViewImageFormatInfoEXT( ImageViewType imageViewType_ = ImageViewType::e1D )
+      : imageViewType( imageViewType_ )
+    {}
+
+    PhysicalDeviceImageViewImageFormatInfoEXT( VkPhysicalDeviceImageViewImageFormatInfoEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceImageViewImageFormatInfoEXT ) );
+    }
+
+    PhysicalDeviceImageViewImageFormatInfoEXT& operator=( VkPhysicalDeviceImageViewImageFormatInfoEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceImageViewImageFormatInfoEXT ) );
+      return *this;
+    }
+
+    PhysicalDeviceImageViewImageFormatInfoEXT & setPNext( void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PhysicalDeviceImageViewImageFormatInfoEXT & setImageViewType( ImageViewType imageViewType_ )
+    {
+      imageViewType = imageViewType_;
+      return *this;
+    }
+
+    operator VkPhysicalDeviceImageViewImageFormatInfoEXT const&() const
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceImageViewImageFormatInfoEXT*>( this );
+    }
+
+    operator VkPhysicalDeviceImageViewImageFormatInfoEXT &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceImageViewImageFormatInfoEXT*>( this );
+    }
+
+    bool operator==( PhysicalDeviceImageViewImageFormatInfoEXT const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( imageViewType == rhs.imageViewType );
+    }
+
+    bool operator!=( PhysicalDeviceImageViewImageFormatInfoEXT const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::ePhysicalDeviceImageViewImageFormatInfoEXT;
+
+  public:
+    void* pNext = nullptr;
+    ImageViewType imageViewType;
+  };
+  static_assert( sizeof( PhysicalDeviceImageViewImageFormatInfoEXT ) == sizeof( VkPhysicalDeviceImageViewImageFormatInfoEXT ), "struct and wrapper have different size!" );
 
   struct PhysicalDeviceInlineUniformBlockFeaturesEXT
   {
@@ -53431,6 +53594,7 @@ namespace VULKAN_HPP_NAMESPACE
   template <> struct isStructureChainValid<BufferCreateInfo, ExternalMemoryBufferCreateInfo>{ enum { value = true }; };
   template <> struct isStructureChainValid<ImageCreateInfo, ExternalMemoryImageCreateInfo>{ enum { value = true }; };
   template <> struct isStructureChainValid<ImageCreateInfo, ExternalMemoryImageCreateInfoNV>{ enum { value = true }; };
+  template <> struct isStructureChainValid<ImageFormatProperties2, FilterCubicImageViewImageFormatPropertiesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<ImageCreateInfo, ImageDrmFormatModifierExplicitCreateInfoEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<ImageCreateInfo, ImageDrmFormatModifierListCreateInfoEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<ImageCreateInfo, ImageFormatListCreateInfoKHR>{ enum { value = true }; };
@@ -53475,6 +53639,8 @@ namespace VULKAN_HPP_NAMESPACE
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceConservativeRasterizationPropertiesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceCornerSampledImageFeaturesNV>{ enum { value = true }; };
   template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceCornerSampledImageFeaturesNV>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV>{ enum { value = true }; };
+  template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceDepthStencilResolvePropertiesKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceDescriptorIndexingFeaturesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceDescriptorIndexingFeaturesEXT>{ enum { value = true }; };
@@ -53496,6 +53662,7 @@ namespace VULKAN_HPP_NAMESPACE
   template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceFragmentShaderBarycentricFeaturesNV>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceIDProperties>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceImageFormatInfo2, PhysicalDeviceImageDrmFormatModifierInfoEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceImageFormatInfo2, PhysicalDeviceImageViewImageFormatInfoEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceInlineUniformBlockFeaturesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceInlineUniformBlockFeaturesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceInlineUniformBlockPropertiesEXT>{ enum { value = true }; };

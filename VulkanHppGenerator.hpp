@@ -108,7 +108,6 @@ class VulkanHppGenerator
 
     struct EnumData
     {
-      void addAlias(std::string const& valueName, std::string const& aliasName, bool bitmask, std::string const& prefix, std::string const& postfix, std::string const& tag);
       void addEnumValue(std::string const& valueName, bool bitmask, std::string const& prefix, std::string const& postfix, std::string const& tag);
 
       std::vector<std::pair<std::string, std::string>>  values;   // pairs of vulkan enum value and corresponding vk::-namespace enum value

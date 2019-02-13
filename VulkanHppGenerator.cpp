@@ -35,6 +35,7 @@ std::string determineCommandName(std::string const& vulkanCommandName, std::stri
 std::set<size_t> determineSkippedParams(size_t returnParamIndex, std::map<size_t, size_t> const& vectorParamIndices);
 bool determineStructureChaining(std::string const& structType, std::set<std::string> const& extendedStructs, std::map<std::string, std::string> const& structureAliases);
 void enterProtect(std::ostream &os, std::string const& protect);
+std::string findTag(std::set<std::string> const& tags, std::string const& name, std::string const& postfix = "");
 std::map<std::string, std::string> getAttributes(tinyxml2::XMLElement const* element);
 std::vector<tinyxml2::XMLElement const*> getChildElements(tinyxml2::XMLElement const* element);
 std::string getEnumPostfix(std::string const& name, std::set<std::string> const& tags, std::string & prefix);
@@ -254,6 +255,12 @@ void enterProtect(std::ostream &os, std::string const& protect)
   {
     os << "#ifdef " << protect << std::endl;
   }
+}
+
+std::string findTag(std::set<std::string> const& tags, std::string const& name, std::string const& postfix)
+{
+  auto tagIt = std::find_if(tags.begin(), tags.end(), [&name, &postfix](std::string const& t) { return endsWith(name, t + postfix); });
+  return (tagIt != tags.end()) ? *tagIt : "";
 }
 
 std::map<std::string, std::string> getAttributes(tinyxml2::XMLElement const* element)
@@ -1305,10 +1312,7 @@ std::vector<std::string> VulkanHppGenerator::readCommandSuccessCodes(std::map<st
     successCodes = tokenize(successcodesAttribute->second, ',');
     for (auto & code : successCodes)
     {
-      // find the tag in the code
-      auto tagIt = std::find_if(m_tags.begin(), m_tags.end(), [&code](std::string const& t) { return endsWith(code, t); });
-      std::string tag = (tagIt != m_tags.end()) ? *tagIt : "";
-
+      std::string tag = findTag(m_tags, code);
       // on each success code: prepend 'e', strip "VK_" and a tag, convert it to camel case, and add the tag again
       code = std::string("e") + toCamelCase(stripPostfix(stripPrefix(code, "VK_"), tag)) + tag;
     }
@@ -1386,8 +1390,7 @@ void VulkanHppGenerator::readEnum(tinyxml2::XMLElement const* element, EnumData 
   checkElements(getChildElements(element), {});
 
   std::string name = attributes.find("name")->second;
-  auto tagIt = std::find_if(m_tags.begin(), m_tags.end(), [&name, &postfix](std::string const& t) { return endsWith(name, t + postfix); });
-  std::string tag = (tagIt != m_tags.end()) ? *tagIt : "";
+  std::string tag = findTag(m_tags, name, postfix);
 
   auto aliasIt = attributes.find("alias");
   if (aliasIt != attributes.end())
@@ -1641,7 +1644,18 @@ void VulkanHppGenerator::readExtensionRequireEnum(tinyxml2::XMLElement const* el
     if (aliasIt != attributes.end())
     {
       checkAttributes(attributes, element->GetLineNum(), { { "alias",{} },{ "extends",{} },{ "name",{} } }, { { "comment",{} } });
-      enumIt->second.addAlias(nameIt->second, aliasIt->second, bitmask, prefix, postfix, tag);
+
+      // look for the aliased enum value
+      std::string alias = createEnumValueName(aliasIt->second, prefix, postfix, bitmask, findTag(m_tags, aliasIt->second));
+      auto valueIt = std::find_if(enumIt->second.values.begin(), enumIt->second.values.end(), [&alias](std::pair<std::string, std::string> const& value) { return value.second == alias; });
+      assert(valueIt != enumIt->second.values.end());
+
+      std::string name = createEnumValueName(nameIt->second, prefix, postfix, bitmask, tag);
+      if (valueIt->second != name)
+      {
+        // only add an alias if it's different from the aliased name
+        enumIt->second.aliases.push_back(std::make_pair(nameIt->second, name));
+      }
     }
     else
     {
@@ -4098,21 +4112,6 @@ void VulkanHppGenerator::writeUniqueTypes(std::ostream &os, std::string const& p
   }
   os << std::endl
     << "#endif /*VULKAN_HPP_NO_SMART_HANDLE*/" << std::endl;
-}
-
-void VulkanHppGenerator::EnumData::addAlias(std::string const &valueName, std::string const& aliasName, bool bitmask, std::string const& prefix, std::string const& postfix, std::string const& tag)
-{
-  // look for the aliased enum value
-  std::string alias = createEnumValueName(aliasName, prefix, postfix, bitmask, tag);
-  auto valueIt = std::find_if(values.begin(), values.end(), [&alias](std::pair<std::string, std::string> const& value) { return value.second == alias; });
-  assert(valueIt != values.end());
-
-  std::string name = createEnumValueName(valueName, prefix, postfix, bitmask, tag);
-  if (valueIt->second != name)
-  {
-    // only add an alias if it's different from the aliased name
-    aliases.push_back(std::make_pair(valueName, name));
-  }
 }
 
 void VulkanHppGenerator::EnumData::addEnumValue(std::string const &valueName, bool bitmask, std::string const& prefix, std::string const& postfix, std::string const& tag)

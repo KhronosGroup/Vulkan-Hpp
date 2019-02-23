@@ -665,13 +665,9 @@ void writeBitmaskToStringFunction(std::ostream & os, std::string const& bitmaskN
     std::string casesString;
     for (auto const& value : enumValues)
     {
-      if (!casesString.empty())
-      {
-        casesString += " | \";";
-      }
       casesString += replaceWithMap(caseTemplate, { { "typeName", enumName },{ "value", value.second },{ "valueString", value.second.substr(1) } });
+      casesString += " | \";";
     }
-    casesString += "\";";
 
     static const std::string bodyTemplate = R"(
     if ( !value ) return "{}";

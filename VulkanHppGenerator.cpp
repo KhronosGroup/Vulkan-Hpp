@@ -660,24 +660,19 @@ void writeBitmaskToStringFunction(std::ostream & os, std::string const& bitmaskN
   {
     // 'or' together all the bits in the value
     static const std::string caseTemplate = R"(
-    if ( value & ${typeName}::${value} ) result += "${valueString})";
+    if ( value & ${typeName}::${value} ) result += "${valueString} | ";)";
 
     std::string casesString;
     for (auto const& value : enumValues)
     {
-      if (!casesString.empty())
-      {
-        casesString += " | \";";
-      }
       casesString += replaceWithMap(caseTemplate, { { "typeName", enumName },{ "value", value.second },{ "valueString", value.second.substr(1) } });
     }
-    casesString += "\";";
 
     static const std::string bodyTemplate = R"(
     if ( !value ) return "{}";
     std::string result;
 ${cases}
-    return result;)";
+    return "{ " + result.substr(0, result.size() - 3) + " }";)";
     functionBody = replaceWithMap(bodyTemplate, { { "cases", casesString } });
   }
 

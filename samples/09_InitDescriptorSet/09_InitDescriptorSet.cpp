@@ -1,4 +1,4 @@
-// Copyright(c) 2018, NVIDIA CORPORATION. All rights reserved.
+// Copyright(c) 2018-2019, NVIDIA CORPORATION. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,8 +15,9 @@
 // VulkanHpp Samples : 09_InitDescriptorSet
 //                     Initialize a descriptor set
 
-#include <iostream>
+#include "..\utils\utils.hpp"
 #include "vulkan/vulkan.hpp"
+#include <iostream>
 
 #define GLM_FORCE_RADIANS
 #pragma warning(disable:4201)   // disable warning C4201: nonstandard extension used: nameless struct/union; needed to get glm/detail/type_vec?.hpp without warnings
@@ -29,46 +30,31 @@ int main(int /*argc*/, char * /*argv[]*/)
 {
   try
   {
-    vk::ApplicationInfo appInfo(AppName, 1, EngineName, 1, VK_API_VERSION_1_1);
-    vk::InstanceCreateInfo instanceCreateInfo({}, &appInfo);
-    vk::UniqueInstance instance = vk::createInstanceUnique(instanceCreateInfo);
+    vk::UniqueInstance instance = vk::su::createInstance(AppName, EngineName);
+#if !defined(NDEBUG)
+    vk::UniqueDebugReportCallbackEXT debugReportCallback = vk::su::createDebugReportCallback(instance);
+#endif
 
     std::vector<vk::PhysicalDevice> physicalDevices = instance->enumeratePhysicalDevices();
     assert(!physicalDevices.empty());
 
-    // determine a queueFamilyIndex that supports graphics
-    std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevices[0].getQueueFamilyProperties();
-    size_t graphicsQueueFamilyIndex = std::distance(queueFamilyProperties.begin(),
-      std::find_if(queueFamilyProperties.begin(),
-        queueFamilyProperties.end(),
-        [](vk::QueueFamilyProperties const& qfp) { return qfp.queueFlags & vk::QueueFlagBits::eGraphics; }));
+    vk::UniqueDevice device = vk::su::createDevice(physicalDevices[0], vk::su::findGraphicsQueueFamilyIndex(physicalDevices[0].getQueueFamilyProperties()));
 
-    // create a device
-    float queuePriority = 0.0f;
-    vk::DeviceQueueCreateInfo deviceQueueCreateInfo({}, static_cast<uint32_t>(graphicsQueueFamilyIndex), 1, &queuePriority);
-    vk::UniqueDevice device = physicalDevices[0].createDeviceUnique(vk::DeviceCreateInfo({}, 1, &deviceQueueCreateInfo, 0, nullptr));
+    vk::UniqueBuffer buffer = device->createBufferUnique(vk::BufferCreateInfo(vk::BufferCreateFlags(), sizeof(glm::mat4x4), vk::BufferUsageFlagBits::eUniformBuffer));
+    vk::UniqueDeviceMemory deviceMemory = vk::su::allocateMemory(device, physicalDevices[0].getMemoryProperties(), device->getBufferMemoryRequirements(buffer.get()), vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
 
-    glm::mat4x4 projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);
-    glm::mat4x4 view = glm::lookAt(glm::vec3(-5.0f, 3.0f, -10.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f));
-    glm::mat4x4 model = glm::mat4x4(1.0f);
-    glm::mat4x4 clip = glm::mat4x4(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 0.5f, 1.0f);   // vulkan clip space has inverted y and half z !
-    glm::mat4x4 mvpc = clip * projection * view * model;
-
-    vk::UniqueBuffer buffer = device->createBufferUnique(vk::BufferCreateInfo(vk::BufferCreateFlags(), sizeof(mvpc), vk::BufferUsageFlagBits::eUniformBuffer));
-
-    // create a DescriptorSetLayout
-    vk::DescriptorSetLayoutBinding descriptorSetLayoutBinding(0, vk::DescriptorType::eUniformBuffer, 1, vk::ShaderStageFlagBits::eVertex);
-    vk::UniqueDescriptorSetLayout descriptorSetLayout = device->createDescriptorSetLayoutUnique(vk::DescriptorSetLayoutCreateInfo({}, 1, &descriptorSetLayoutBinding));
+    vk::UniqueDescriptorSetLayout descriptorSetLayout = vk::su::createDescriptorSetLayout(device);
 
     /* VULKAN_HPP_KEY_START */
 
     // create a descriptor pool
     vk::DescriptorPoolSize poolSize(vk::DescriptorType::eUniformBuffer, 1);
-    vk::UniqueDescriptorPool descriptorPool = device->createDescriptorPoolUnique(vk::DescriptorPoolCreateInfo(vk::DescriptorPoolCreateFlags(), 1, 1, &poolSize));
+    vk::UniqueDescriptorPool descriptorPool = device->createDescriptorPoolUnique(vk::DescriptorPoolCreateInfo(vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet, 1, 1, &poolSize));
 
     // allocate a descriptor set
     std::vector<vk::UniqueDescriptorSet> descriptorSets = device->allocateDescriptorSetsUnique(vk::DescriptorSetAllocateInfo(descriptorPool.get(), 1, &descriptorSetLayout.get()));
 
+    device->bindBufferMemory(buffer.get(), deviceMemory.get(), 0);
     vk::DescriptorBufferInfo descriptorBufferInfo(buffer.get(), 0, sizeof(glm::mat4x4));
     device->updateDescriptorSets(vk::WriteDescriptorSet(descriptorSets[0].get(), 0, 0, 1, vk::DescriptorType::eUniformBuffer, nullptr, &descriptorBufferInfo), {});
 

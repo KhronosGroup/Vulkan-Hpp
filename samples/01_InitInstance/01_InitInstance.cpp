@@ -1,4 +1,4 @@
-// Copyright(c) 2018, NVIDIA CORPORATION. All rights reserved.
+// Copyright(c) 2018-2019, NVIDIA CORPORATION. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,10 +28,13 @@ int main(int /*argc*/, char * /*argv[]*/)
   try
   {
     // initialize the vk::ApplicationInfo structure
-    vk::ApplicationInfo appInfo(AppName, 1, EngineName, 1, VK_API_VERSION_1_1);
+    vk::ApplicationInfo applicationInfo(AppName, 1, EngineName, 1, VK_API_VERSION_1_1);
+
+    // initialize the vk::InstanceCreateInfo
+    vk::InstanceCreateInfo instanceCreateInfo({}, &applicationInfo);
 
     // create a UniqueInstance
-    vk::UniqueInstance instance = vk::createInstanceUnique(vk::InstanceCreateInfo(vk::InstanceCreateFlags(), &appInfo));
+    vk::UniqueInstance instance = vk::createInstanceUnique(instanceCreateInfo);
 
     // Note: No need to explicitly destroy the instance, as the corresponding destroy function is
     // called by the destructor of the UniqueInstance on leaving this scope.

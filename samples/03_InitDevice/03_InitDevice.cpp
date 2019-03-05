@@ -1,4 +1,4 @@
-// Copyright(c) 2018, NVIDIA CORPORATION. All rights reserved.
+// Copyright(c) 2018-2019, NVIDIA CORPORATION. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 // VulkanHpp Samples : 03_InitDevice
 //                     Create and destroy a device
 
+#include "..\utils\utils.hpp"
 #include "vulkan/vulkan.hpp"
 #include <iostream>
 
@@ -25,8 +26,11 @@ int main(int /*argc*/, char * /*argv[]*/)
 {
   try
   {
-    vk::ApplicationInfo appInfo(AppName, 1, EngineName, 1, VK_API_VERSION_1_1);
-    vk::UniqueInstance instance = vk::createInstanceUnique(vk::InstanceCreateInfo({}, &appInfo));
+    vk::UniqueInstance instance = vk::su::createInstance(AppName, EngineName);
+#if !defined(NDEBUG)
+    vk::UniqueDebugReportCallbackEXT debugReportCallback = vk::su::createDebugReportCallback(instance);
+#endif
+
     std::vector<vk::PhysicalDevice> physicalDevices = instance->enumeratePhysicalDevices();
     assert(!physicalDevices.empty());
 

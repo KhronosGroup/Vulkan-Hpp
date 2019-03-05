@@ -17,10 +17,12 @@ cmake_minimum_required(VERSION 3.2)
 project(11_InitShaders)
 
 set(HEADERS
+  ../utils/utils.hpp
 )
 
 set(SOURCES
   11_InitShaders.cpp
+  ../utils/utils.cpp
 )
 
 source_group(headers FILES ${HEADERS})

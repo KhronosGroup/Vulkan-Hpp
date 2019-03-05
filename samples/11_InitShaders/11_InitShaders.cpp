@@ -15,51 +15,13 @@
 // VulkanHpp Samples : 11_InitShaders
 //                     Initialize vertex and fragment shaders
 
-#include <iostream>
+#include "..\utils\utils.hpp"
 #include "vulkan/vulkan.hpp"
 #include "SPIRV/GlslangToSpv.h"
+#include <iostream>
 
 static char const* AppName = "11_InitShaders";
 static char const* EngineName = "Vulkan.hpp";
-
-static std::vector<char const*> getDeviceExtensions()
-{
-  std::vector<char const*> extensions;
-
-  extensions.push_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
-
-  return extensions;
-}
-
-static std::vector<char const*> getInstanceExtensions()
-{
-  std::vector<char const*> extensions;
-
-  extensions.push_back(VK_KHR_SURFACE_EXTENSION_NAME);
-#if  defined(VK_USE_PLATFORM_ANDROID_KHR)
-  extensions.push_back(VK_KHR_ANDROID_SURFACE_EXTENSION_NAME);
-#elif defined(VK_USE_PLATFORM_IOS_MVK)
-  extensions.push_back(VK_MVK_IOS_SURFACE_EXTENSION_NAME);
-#elif defined(VK_USE_PLATFORM_MACOS_MVK)
-  extensions.push_back(VK_MVK_MACOS_SURFACE_EXTENSION_NAME);
-#elif defined(VK_USE_PLATFORM_MIR_KHR)
-  extensions.push_back(VK_KHR_MIR_SURFACE_EXTENSION_NAME);
-#elif defined(VK_USE_PLATFORM_VI_NN)
-  extensions.push_back(VK_NN_VI_SURFACE_EXTENSION_NAME);
-#elif defined(VK_USE_PLATFORM_WAYLAND_KHR)
-  extensions.push_back(VK_KHR_WAYLAND_SURFACE_EXTENSION_NAME);
-#elif defined(VK_USE_PLATFORM_WIN32_KHR)
-  extensions.push_back(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
-#elif defined(VK_USE_PLATFORM_XCB_KHR)
-  extensions.push_back(VK_KHR_XCB_SURFACE_EXTENSION_NAME);
-#elif defined(VK_USE_PLATFORM_XLIB_KHR)
-  extensions.push_back(VK_KHR_XLIB_SURFACE_EXTENSION_NAME);
-#elif defined(VK_USE_PLATFORM_XLIB_XRANDR_EXT)
-  extensions.push_back(VK_EXT_ACQUIRE_XLIB_DISPLAY_EXTENSION_NAME);
-#endif
-
-  return extensions;
-}
 
 EShLanguage translateShaderStage(vk::ShaderStageFlagBits stage)
 {
@@ -219,28 +181,15 @@ int main(int /*argc*/, char * /*argv[]*/)
 {
   try
   {
-    // create an instance
-    vk::ApplicationInfo appInfo(AppName, 1, EngineName, 1, VK_API_VERSION_1_1);
-    std::vector<char const*> instanceExtensions = getInstanceExtensions();
-    vk::InstanceCreateInfo instanceCreateInfo({}, &appInfo, 0, nullptr, static_cast<uint32_t>(instanceExtensions.size()), instanceExtensions.data());
-    vk::UniqueInstance instance = vk::createInstanceUnique(instanceCreateInfo);
+    vk::UniqueInstance instance = vk::su::createInstance(AppName, EngineName, vk::su::getInstanceExtensions());
+#if !defined(NDEBUG)
+    vk::UniqueDebugReportCallbackEXT debugReportCallback = vk::su::createDebugReportCallback(instance);
+#endif
 
-    // get the physical devices
     std::vector<vk::PhysicalDevice> physicalDevices = instance->enumeratePhysicalDevices();
     assert(!physicalDevices.empty());
 
-    // determine a queueFamilyIndex that supports graphics
-    std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevices[0].getQueueFamilyProperties();
-    size_t graphicsQueueFamilyIndex = std::distance(queueFamilyProperties.begin(),
-      std::find_if(queueFamilyProperties.begin(),
-        queueFamilyProperties.end(),
-        [](vk::QueueFamilyProperties const& qfp) { return qfp.queueFlags & vk::QueueFlagBits::eGraphics; }));
-
-    // create a device
-    float queuePriority = 0.0f;
-    vk::DeviceQueueCreateInfo deviceQueueCreateInfo({}, static_cast<uint32_t>(graphicsQueueFamilyIndex), 1, &queuePriority);
-    std::vector<char const*> deviceExtensionNames = getDeviceExtensions();
-    vk::UniqueDevice device = physicalDevices[0].createDeviceUnique(vk::DeviceCreateInfo({}, 1, &deviceQueueCreateInfo, 0, nullptr, static_cast<uint32_t>(deviceExtensionNames.size()), deviceExtensionNames.data()));
+    vk::UniqueDevice device = vk::su::createDevice(physicalDevices[0], vk::su::findGraphicsQueueFamilyIndex(physicalDevices[0].getQueueFamilyProperties()), vk::su::getDeviceExtensions());
 
     /* VULKAN_HPP_KEY_START */
 

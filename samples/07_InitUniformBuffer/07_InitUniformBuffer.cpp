@@ -1,4 +1,4 @@
-// Copyright(c) 2018, NVIDIA CORPORATION. All rights reserved.
+// Copyright(c) 2018-2019, NVIDIA CORPORATION. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,8 +15,9 @@
 // VulkanHpp Samples : 07_InitUniformBuffer
 //                     Initialize a uniform buffer
 
-#include <iostream>
+#include "..\utils\utils.hpp"
 #include "vulkan/vulkan.hpp"
+#include <iostream>
 
 #define GLM_FORCE_RADIANS
 #pragma warning(disable:4201)   // disable warning C4201: nonstandard extension used: nameless struct/union; needed to get glm/detail/type_vec?.hpp without warnings
@@ -29,24 +30,15 @@ int main(int /*argc*/, char * /*argv[]*/)
 {
   try
   {
-    vk::ApplicationInfo appInfo(AppName, 1, EngineName, 1, VK_API_VERSION_1_1);
-    vk::InstanceCreateInfo instanceCreateInfo({}, &appInfo);
-    vk::UniqueInstance instance = vk::createInstanceUnique(instanceCreateInfo);
+    vk::UniqueInstance instance = vk::su::createInstance(AppName, EngineName);
+#if !defined(NDEBUG)
+    vk::UniqueDebugReportCallbackEXT debugReportCallback = vk::su::createDebugReportCallback(instance);
+#endif
 
     std::vector<vk::PhysicalDevice> physicalDevices = instance->enumeratePhysicalDevices();
     assert(!physicalDevices.empty());
 
-    // determine a queueFamilyIndex that supports graphics
-    std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevices[0].getQueueFamilyProperties();
-    size_t graphicsQueueFamilyIndex = std::distance(queueFamilyProperties.begin(),
-      std::find_if(queueFamilyProperties.begin(),
-        queueFamilyProperties.end(),
-        [](vk::QueueFamilyProperties const& qfp) { return qfp.queueFlags & vk::QueueFlagBits::eGraphics; }));
-
-    // create a device
-    float queuePriority = 0.0f;
-    vk::DeviceQueueCreateInfo deviceQueueCreateInfo({}, static_cast<uint32_t>(graphicsQueueFamilyIndex), 1, &queuePriority);
-    vk::UniqueDevice device = physicalDevices[0].createDeviceUnique(vk::DeviceCreateInfo({}, 1, &deviceQueueCreateInfo, 0, nullptr));
+    vk::UniqueDevice device = vk::su::createDevice(physicalDevices[0], vk::su::findGraphicsQueueFamilyIndex(physicalDevices[0].getQueueFamilyProperties()));
 
     /* VULKAN_HPP_KEY_START */
 

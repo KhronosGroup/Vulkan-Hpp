@@ -1,4 +1,4 @@
-// Copyright(c) 2018-2019, NVIDIA CORPORATION. All rights reserved.
+// Copyright(c) 2019, NVIDIA CORPORATION. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,18 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// VulkanHpp Samples : 10_InitRenderPass
-//                     Initialize a render pass
+// VulkanHpp Samples : 12_InitFrameBuffers
+//                     Initialize framebuffers
 
-#include "..\utils\utils.hpp"
+#include "../utils/utils.hpp"
 #include "vulkan/vulkan.hpp"
 #include <iostream>
 
-#define GLM_FORCE_RADIANS
-#pragma warning(disable:4201)   // disable warning C4201: nonstandard extension used: nameless struct/union; needed to get glm/detail/type_vec?.hpp without warnings
-#include <glm/gtc/matrix_transform.hpp>
-
-static char const* AppName = "10_InitRenderPass";
+static char const* AppName = "12_InitFrameBuffers";
 static char const* EngineName = "Vulkan.hpp";
 
 int main(int /*argc*/, char * /*argv[]*/)
@@ -51,26 +47,33 @@ int main(int /*argc*/, char * /*argv[]*/)
     vk::UniqueDevice device = vk::su::createDevice(physicalDevices[0], graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions());
 
     vk::Format colorFormat = vk::su::pickColorFormat(physicalDevices[0].getSurfaceFormatsKHR(surface.get()));
+    vk::UniqueSwapchainKHR swapChain = vk::su::createSwapChain(physicalDevices[0], surface, device, width, height, colorFormat, graphicsAndPresentQueueFamilyIndex.first, graphicsAndPresentQueueFamilyIndex.second);
+    std::vector<vk::UniqueImageView> swapChainImageViews = vk::su::createSwapChainImageViews(device, swapChain, colorFormat);
+
     vk::Format depthFormat = vk::Format::eD16Unorm;
+    vk::UniqueImage depthImage = vk::su::createImage(device, depthFormat, width, height);
+    vk::UniqueDeviceMemory depthMemory = vk::su::allocateMemory(device, physicalDevices[0].getMemoryProperties(), device->getImageMemoryRequirements(depthImage.get()), vk::MemoryPropertyFlagBits::eDeviceLocal);
+    device->bindImageMemory(depthImage.get(), depthMemory.get(), 0);
+    vk::UniqueImageView depthViewImage = vk::su::createImageView(device, depthImage, depthFormat);
 
-    /* VULKAN_HPP_KEY_START */
+    vk::UniqueRenderPass renderPass = vk::su::createRenderPass(device, colorFormat, depthFormat);
 
-    vk::AttachmentDescription attachmentDescriptions[2];
-    attachmentDescriptions[0] = vk::AttachmentDescription(vk::AttachmentDescriptionFlags(), colorFormat, vk::SampleCountFlagBits::e1, vk::AttachmentLoadOp::eClear,
-      vk::AttachmentStoreOp::eStore, vk::AttachmentLoadOp::eDontCare, vk::AttachmentStoreOp::eDontCare, vk::ImageLayout::eUndefined, vk::ImageLayout::ePresentSrcKHR);
-    attachmentDescriptions[1] = vk::AttachmentDescription(vk::AttachmentDescriptionFlags(), depthFormat, vk::SampleCountFlagBits::e1, vk::AttachmentLoadOp::eClear,
-      vk::AttachmentStoreOp::eDontCare, vk::AttachmentLoadOp::eDontCare, vk::AttachmentStoreOp::eDontCare, vk::ImageLayout::eUndefined, vk::ImageLayout::eDepthStencilAttachmentOptimal);
+    /* VULKAN_KEY_START */
 
-    vk::AttachmentReference colorReference(0, vk::ImageLayout::eColorAttachmentOptimal);
-    vk::AttachmentReference depthReference(1, vk::ImageLayout::eDepthStencilAttachmentOptimal);
-    vk::SubpassDescription subpass(vk::SubpassDescriptionFlags(), vk::PipelineBindPoint::eGraphics, 0, nullptr, 1, &colorReference, nullptr, &depthReference);
+    vk::ImageView attachments[2];
+    attachments[1] = depthViewImage.get();
 
-    vk::UniqueRenderPass renderPass = device->createRenderPassUnique(vk::RenderPassCreateInfo(vk::RenderPassCreateFlags(), 2, attachmentDescriptions, 1, &subpass));
+    std::vector<vk::UniqueFramebuffer> framebuffers;
+    framebuffers.reserve(swapChainImageViews.size());
+    for (auto const& view : swapChainImageViews)
+    {
+      attachments[0] = view.get();
+      framebuffers.push_back(device->createFramebufferUnique(vk::FramebufferCreateInfo(vk::FramebufferCreateFlags(), renderPass.get(), 2, attachments, width, height, 1)));
+    }
 
-    // Note: No need to explicitly destroy the RenderPass or the Semaphore, as the corresponding destroy
-    // functions are called by the destructor of the UniqueRenderPass and the UniqueSemaphore on leaving this scope.
+    // Note: No need to explicitly destroy the Framebuffers, as the destroy functions are called by the destructor of the UniqueFramebuffer on leaving this scope.
 
-    /* VULKAN_HPP_KEY_END */
+    /* VULKAN_KEY_END */
 
 #if defined(VK_USE_PLATFORM_WIN32_KHR)
     DestroyWindow(window);

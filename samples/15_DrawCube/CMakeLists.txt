@@ -14,15 +14,18 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(11_InitShaders)
+project(15_DrawCube)
 
 set(HEADERS
+  ../utils/geometries.hpp
+  ../utils/math.hpp
   ../utils/shaders.hpp
   ../utils/utils.hpp
 )
 
 set(SOURCES
-  11_InitShaders.cpp
+  15_DrawCube.cpp
+  ../utils/math.cpp
   ../utils/shaders.cpp
   ../utils/utils.cpp
 )
@@ -30,12 +33,12 @@ set(SOURCES
 source_group(headers FILES ${HEADERS})
 source_group(sources FILES ${SOURCES})
 
-add_executable(11_InitShaders
+add_executable(15_DrawCube
   ${HEADERS}
   ${SOURCES}
 )
 
-set_target_properties(11_InitShaders PROPERTIES FOLDER "Samples")
-target_include_directories(11_InitShaders PUBLIC ${CMAKE_SOURCE_DIR}/glslang)
-target_link_libraries(11_InitShaders PUBLIC glslang SPIRV "$ENV{VULKAN_SDK}/Lib/vulkan-1.lib"
+set_target_properties(15_DrawCube PROPERTIES FOLDER "Samples")
+target_include_directories(15_DrawCube PUBLIC ${CMAKE_SOURCE_DIR}/glslang)
+target_link_libraries(15_DrawCube PUBLIC glslang SPIRV "$ENV{VULKAN_SDK}/Lib/vulkan-1.lib"
 )

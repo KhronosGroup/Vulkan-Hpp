@@ -44,38 +44,24 @@ file(TO_NATIVE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/vulkan/vulkan.hpp vulkan_hpp)
 string(REPLACE "\\" "\\\\" vulkan_hpp ${vulkan_hpp})
 add_definitions(-DVULKAN_HPP_FILE="${vulkan_hpp}")
 
-set(HEADERS
-  VulkanHppGenerator.hpp
-)
-
-set(SOURCES
-  VulkanHppGenerator.cpp
-)
-
-set(TINYXML2_SOURCES
-  tinyxml2/tinyxml2.cpp
-)
-
-set(TINYXML2_HEADERS
-  tinyxml2/tinyxml2.h
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-source_group(TinyXML2\\headers FILES ${TINYXML2_HEADERS})
-source_group(TinyXML2\\sources FILES ${TINYXML2_SOURCES})
+find_package(tinyxml2 QUIET)
+if(NOT tinyxml2_FOUND)
+set(BUILD_STATIC_LIBS ON CACHE BOOL "")
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "")
+set(BUILD_TESTS OFF CACHE BOOL "")
+add_subdirectory(tinyxml2)
+endif()
 
 add_executable(VulkanHppGenerator
-  ${HEADERS}
-  ${SOURCES}
-  ${TINYXML2_SOURCES}
-  ${TINYXML2_HEADERS}
+  VulkanHppGenerator.hpp
+  VulkanHppGenerator.cpp
+)
+target_link_libraries(VulkanHppGenerator
+  PRIVATE
+  tinyxml2
 )
 
 set_property(TARGET VulkanHppGenerator PROPERTY CXX_STANDARD 11)
-
-target_include_directories(VulkanHppGenerator PRIVATE "${CMAKE_SOURCE_DIR}/tinyxml2")
 
 option (SAMPLES_BUILD OFF)
 if (SAMPLES_BUILD)

@@ -43,14 +43,14 @@ int main(int /*argc*/, char ** /*argv*/)
     glslang::InitializeProcess();
 
     std::vector<unsigned int> vertexShaderSPV;
-    bool ok = vk::su::GLSLtoSPV(vk::ShaderStageFlagBits::eVertex, vertexShaderText, vertexShaderSPV);
+    bool ok = vk::su::GLSLtoSPV(vk::ShaderStageFlagBits::eVertex, vertexShaderText_PC_C, vertexShaderSPV);
     assert(ok);
 
     vk::ShaderModuleCreateInfo vertexShaderModuleCreateInfo(vk::ShaderModuleCreateFlags(), vertexShaderSPV.size() * sizeof(unsigned int), vertexShaderSPV.data());
     vk::UniqueShaderModule vertexShaderModule = device->createShaderModuleUnique(vertexShaderModuleCreateInfo);
 
     std::vector<unsigned int> fragmentShaderSPV;
-    ok = vk::su::GLSLtoSPV(vk::ShaderStageFlagBits::eFragment, fragmentShaderText, fragmentShaderSPV);
+    ok = vk::su::GLSLtoSPV(vk::ShaderStageFlagBits::eFragment, fragmentShaderText_C_C, fragmentShaderSPV);
     assert(ok);
 
     vk::ShaderModuleCreateInfo fragmentShaderModuleCreateInfo(vk::ShaderModuleCreateFlags(), fragmentShaderSPV.size() * sizeof(unsigned int), fragmentShaderSPV.data());

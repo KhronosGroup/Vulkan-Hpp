@@ -34,16 +34,9 @@ int main(int /*argc*/, char ** /*argv*/)
     std::vector<vk::PhysicalDevice> physicalDevices = instance->enumeratePhysicalDevices();
     assert(!physicalDevices.empty());
 
-    uint32_t width = 500;
-    uint32_t height = 500;
-#if defined(VK_USE_PLATFORM_WIN32_KHR)
-    HWND window = vk::su::initializeWindow(AppName, AppName, width, height);
-    vk::UniqueSurfaceKHR surface = instance->createWin32SurfaceKHRUnique(vk::Win32SurfaceCreateInfoKHR({}, GetModuleHandle(nullptr), window));
-#else
-#pragma error "unhandled platform"
-#endif
+    vk::su::SurfaceData surfaceData(instance, AppName, AppName, vk::Extent2D(500, 500));
 
-    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex(physicalDevices[0], surface);
+    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex(physicalDevices[0], surfaceData.surface);
     vk::UniqueDevice device = vk::su::createDevice(physicalDevices[0], graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions());
 
     /* VULKAN_HPP_KEY_START */
@@ -64,7 +57,7 @@ int main(int /*argc*/, char ** /*argv*/)
     {
       throw std::runtime_error("DepthStencilAttachment is not supported for D16Unorm depth format.");
     }
-    vk::ImageCreateInfo imageCreateInfo(vk::ImageCreateFlags(), vk::ImageType::e2D, depthFormat, vk::Extent3D(width, height, 1), 1, 1, vk::SampleCountFlagBits::e1, tiling, vk::ImageUsageFlagBits::eDepthStencilAttachment);
+    vk::ImageCreateInfo imageCreateInfo(vk::ImageCreateFlags(), vk::ImageType::e2D, depthFormat, vk::Extent3D(surfaceData.extent, 1), 1, 1, vk::SampleCountFlagBits::e1, tiling, vk::ImageUsageFlagBits::eDepthStencilAttachment);
     vk::UniqueImage depthImage = device->createImageUnique(imageCreateInfo);
 
     vk::PhysicalDeviceMemoryProperties memoryProperties = physicalDevices[0].getMemoryProperties();
@@ -92,7 +85,7 @@ int main(int /*argc*/, char ** /*argv*/)
     /* VULKAN_HPP_KEY_END */
 
 #if defined(VK_USE_PLATFORM_WIN32_KHR)
-    DestroyWindow(window);
+    DestroyWindow(surfaceData.window);
 #else
 #pragma error "unhandled platform"
 #endif

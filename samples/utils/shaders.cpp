@@ -13,6 +13,7 @@
 // limitations under the License.
 //
 
+#include "shaders.hpp"
 #include "vulkan/vulkan.hpp"
 #include "SPIRV/GlslangToSpv.h"
 
@@ -183,6 +184,5 @@ namespace vk
 
       return device->createShaderModuleUnique(vk::ShaderModuleCreateInfo(vk::ShaderModuleCreateFlags(), shaderSPV.size() * sizeof(unsigned int), shaderSPV.data()));
     }
-
   }
 }

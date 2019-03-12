@@ -13,13 +13,13 @@
 // limitations under the License.
 //
 
-struct Vertex
+struct VertexPC
 {
   float x, y, z, w;   // Position
   float r, g, b, a;   // Color
 };
 
-static const Vertex coloredCubeData[] =
+static const VertexPC coloredCubeData[] =
 {
   // red face
   { -1.0f, -1.0f,  1.0f, 1.0f,    1.0f, 0.0f, 0.0f, 1.0f },

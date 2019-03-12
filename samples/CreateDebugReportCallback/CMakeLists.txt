@@ -1,4 +1,4 @@
-# Copyright(c) 2018-2019, NVIDIA CORPORATION. All rights reserved.
+# Copyright(c) 2019, NVIDIA CORPORATION. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,26 +14,24 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(09_InitDescriptorSet)
+project(CreateDebugReportCallback)
 
 set(HEADERS
-  ../utils/math.hpp
-  ../utils/utils.hpp
 )
 
 set(SOURCES
-  09_InitDescriptorSet.cpp
-  ../utils/math.cpp
-  ../utils/utils.cpp
+  CreateDebugReportCallback.cpp
 )
 
 source_group(headers FILES ${HEADERS})
 source_group(sources FILES ${SOURCES})
 
-add_executable(09_InitDescriptorSet
+add_executable(CreateDebugReportCallback
   ${HEADERS}
   ${SOURCES}
 )
 
-set_target_properties(09_InitDescriptorSet PROPERTIES FOLDER "Samples")
-target_link_libraries(09_InitDescriptorSet "$ENV{VULKAN_SDK}/Lib/vulkan-1.lib")
+set_target_properties(CreateDebugReportCallback PROPERTIES FOLDER "Samples")
+target_include_directories(CreateDebugReportCallback PUBLIC ${CMAKE_SOURCE_DIR}/glslang)
+target_link_libraries(CreateDebugReportCallback PUBLIC glslang SPIRV "$ENV{VULKAN_SDK}/Lib/vulkan-1.lib"
+)

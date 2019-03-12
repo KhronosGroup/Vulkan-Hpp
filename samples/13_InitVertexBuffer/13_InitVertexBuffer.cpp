@@ -35,16 +35,9 @@ int main(int /*argc*/, char ** /*argv*/)
     std::vector<vk::PhysicalDevice> physicalDevices = instance->enumeratePhysicalDevices();
     assert(!physicalDevices.empty());
 
-    uint32_t width = 64;
-    uint32_t height = 64;
-#if defined(VK_USE_PLATFORM_WIN32_KHR)
-    HWND window = vk::su::initializeWindow(AppName, AppName, width, height);
-    vk::UniqueSurfaceKHR surface = instance->createWin32SurfaceKHRUnique(vk::Win32SurfaceCreateInfoKHR({}, GetModuleHandle(nullptr), window));
-#else
-#pragma error "unhandled platform"
-#endif
+    vk::su::SurfaceData surfaceData(instance, AppName, AppName, vk::Extent2D(64, 64));
 
-    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex(physicalDevices[0], surface);
+    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex(physicalDevices[0], surfaceData.surface);
     vk::UniqueDevice device = vk::su::createDevice(physicalDevices[0], graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions());
 
     vk::UniqueCommandPool commandPool = vk::su::createCommandPool(device, graphicsAndPresentQueueFamilyIndex.first);
@@ -52,19 +45,14 @@ int main(int /*argc*/, char ** /*argv*/)
 
     vk::Queue graphicsQueue = device->getQueue(graphicsAndPresentQueueFamilyIndex.first, 0);
 
-    vk::Format colorFormat = vk::su::pickColorFormat(physicalDevices[0].getSurfaceFormatsKHR(surface.get()));
-    vk::UniqueSwapchainKHR swapChain = vk::su::createSwapChain(physicalDevices[0], surface, device, width, height, colorFormat, graphicsAndPresentQueueFamilyIndex.first, graphicsAndPresentQueueFamilyIndex.second);
-    std::vector<vk::UniqueImageView> swapChainImageViews = vk::su::createSwapChainImageViews(device, swapChain, colorFormat);
+    vk::su::SwapChainData swapChainData(physicalDevices[0], device, surfaceData.surface, surfaceData.extent, vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eTransferSrc
+      , graphicsAndPresentQueueFamilyIndex.first, graphicsAndPresentQueueFamilyIndex.second);
 
-    vk::Format depthFormat = vk::Format::eD16Unorm;
-    vk::UniqueImage depthImage = vk::su::createImage(device, depthFormat, width, height);
-    vk::UniqueDeviceMemory depthMemory = vk::su::allocateMemory(device, physicalDevices[0].getMemoryProperties(), device->getImageMemoryRequirements(depthImage.get()), vk::MemoryPropertyFlagBits::eDeviceLocal);
-    device->bindImageMemory(depthImage.get(), depthMemory.get(), 0);
-    vk::UniqueImageView depthViewImage = vk::su::createImageView(device, depthImage, depthFormat);
+    vk::su::DepthBufferData depthBufferData(physicalDevices[0], device, vk::Format::eD16Unorm, surfaceData.extent);
 
-    vk::UniqueRenderPass renderPass = vk::su::createRenderPass(device, colorFormat, depthFormat);
+    vk::UniqueRenderPass renderPass = vk::su::createRenderPass(device, swapChainData.colorFormat, depthBufferData.format);
 
-    std::vector<vk::UniqueFramebuffer> framebuffers = vk::su::createFramebuffers(device, renderPass, swapChainImageViews, depthViewImage, width, height);
+    std::vector<vk::UniqueFramebuffer> framebuffers = vk::su::createFramebuffers(device, renderPass, swapChainData.imageViews, depthBufferData.imageView, surfaceData.extent);
 
     /* VULKAN_KEY_START */
 
@@ -85,7 +73,7 @@ int main(int /*argc*/, char ** /*argv*/)
     device->bindBufferMemory(vertexBuffer.get(), deviceMemory.get(), 0);
 
     vk::UniqueSemaphore imageAcquiredSemaphore = device->createSemaphoreUnique(vk::SemaphoreCreateInfo(vk::SemaphoreCreateFlags()));
-    vk::ResultValue<uint32_t> currentBuffer = device->acquireNextImageKHR(swapChain.get(), vk::su::FenceTimeout, imageAcquiredSemaphore.get(), nullptr);
+    vk::ResultValue<uint32_t> currentBuffer = device->acquireNextImageKHR(swapChainData.swapChain.get(), vk::su::FenceTimeout, imageAcquiredSemaphore.get(), nullptr);
     assert(currentBuffer.result == vk::Result::eSuccess);
     assert(currentBuffer.value < framebuffers.size());
 
@@ -95,7 +83,7 @@ int main(int /*argc*/, char ** /*argv*/)
 
     commandBuffers[0]->begin(vk::CommandBufferBeginInfo(vk::CommandBufferUsageFlags()));
 
-    vk::RenderPassBeginInfo renderPassBeginInfo(renderPass.get(), framebuffers[currentBuffer.value].get(), vk::Rect2D(vk::Offset2D(0, 0), vk::Extent2D(width, height)), 2, clearValues);
+    vk::RenderPassBeginInfo renderPassBeginInfo(renderPass.get(), framebuffers[currentBuffer.value].get(), vk::Rect2D(vk::Offset2D(0, 0), surfaceData.extent), 2, clearValues);
     commandBuffers[0]->beginRenderPass(renderPassBeginInfo, vk::SubpassContents::eInline);
     
     VkDeviceSize offset = 0;
@@ -111,7 +99,7 @@ int main(int /*argc*/, char ** /*argv*/)
     /* VULKAN_KEY_END */
 
 #if defined(VK_USE_PLATFORM_WIN32_KHR)
-    DestroyWindow(window);
+    DestroyWindow(surfaceData.window);
 #else
 #pragma error "unhandled platform"
 #endif

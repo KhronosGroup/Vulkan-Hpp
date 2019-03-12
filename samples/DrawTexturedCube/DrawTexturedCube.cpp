@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// VulkanHpp Samples : 15_DrawCube
-//                     Draw a cube
+// VulkanHpp Samples : DrawTexturedCube
+//                     Draw a textured cube
 
 #include "../utils/geometries.hpp"
 #include "../utils/math.hpp"
@@ -23,13 +23,110 @@
 #include "SPIRV/GlslangToSpv.h"
 #include <iostream>
 
-static char const* AppName = "15_DrawCube";
+static char const* AppName = "DrawTexturedCube";
 static char const* EngineName = "Vulkan.hpp";
+
+// vertex shader with (P)osition and (T)exCoord in and (T)exCoord out
+const std::string vertexShaderText_PT_T = R"(
+#version 400
+
+#extension GL_ARB_separate_shader_objects : enable
+#extension GL_ARB_shading_language_420pack : enable
+
+layout (std140, binding = 0) uniform buffer
+{
+  mat4 mvp;
+} uniformBuffer;
+
+layout (location = 0) in vec4 pos;
+layout (location = 1) in vec2 inTexCoord;
+
+layout (location = 0) out vec2 outTexCoord;
+
+void main()
+{
+  outTexCoord = inTexCoord;
+  gl_Position = uniformBuffer.mvp * pos;
+}
+)";
+
+// fragment shader with (T)exCoord in and (C)olor out
+const std::string fragmentShaderText_T_C = R"(
+#version 400
+
+#extension GL_ARB_separate_shader_objects : enable
+#extension GL_ARB_shading_language_420pack : enable
+
+layout (binding = 1) uniform sampler2D tex;
+
+layout (location = 0) in vec2 inTexCoord;
+
+layout (location = 0) out vec4 outColor;
+
+void main()
+{
+  outColor = textureLod(tex, inTexCoord, 0.0f);
+}
+)";
+
+struct VertexPT
+{
+  float x, y, z, w;   // Position data
+  float u, v;         // texture u,v
+};
+
+static const VertexPT texturedCubeData[] =
+{
+  // left face
+  { -1.0f, -1.0f, -1.0f, 1.0f,    1.0f, 0.0f },
+  { -1.0f,  1.0f,  1.0f, 1.0f,    0.0f, 1.0f },
+  { -1.0f, -1.0f,  1.0f, 1.0f,    0.0f, 0.0f },
+  { -1.0f,  1.0f,  1.0f, 1.0f,    0.0f, 1.0f },
+  { -1.0f, -1.0f, -1.0f, 1.0f,    1.0f, 0.0f },
+  { -1.0f,  1.0f, -1.0f, 1.0f,    1.0f, 1.0f },
+  // front face
+  { -1.0f, -1.0f, -1.0f, 1.0f,    0.0f, 0.0f },
+  {  1.0f, -1.0f, -1.0f, 1.0f,    1.0f, 0.0f },
+  {  1.0f,  1.0f, -1.0f, 1.0f,    1.0f, 1.0f },
+  { -1.0f, -1.0f, -1.0f, 1.0f,    0.0f, 0.0f },
+  {  1.0f,  1.0f, -1.0f, 1.0f,    1.0f, 1.0f },
+  { -1.0f,  1.0f, -1.0f, 1.0f,    0.0f, 1.0f },
+  // top face
+  { -1.0f, -1.0f, -1.0f, 1.0f,    0.0f, 1.0f },
+  {  1.0f, -1.0f,  1.0f, 1.0f,    1.0f, 0.0f },
+  {  1.0f, -1.0f, -1.0f, 1.0f,    1.0f, 1.0f },
+  { -1.0f, -1.0f, -1.0f, 1.0f,    0.0f, 1.0f },
+  { -1.0f, -1.0f,  1.0f, 1.0f,    0.0f, 0.0f },
+  {  1.0f, -1.0f, -1.0f, 1.0f,    1.0f, 0.0f },
+  // bottom face
+  { -1.0f,  1.0f, -1.0f, 1.0f,    0.0f, 0.0f },
+  {  1.0f,  1.0f,  1.0f, 1.0f,    1.0f, 1.0f },
+  { -1.0f,  1.0f,  1.0f, 1.0f,    0.0f, 1.0f },
+  { -1.0f,  1.0f, -1.0f, 1.0f,    0.0f, 0.0f },
+  {  1.0f,  1.0f, -1.0f, 1.0f,    1.0f, 0.0f },
+  {  1.0f,  1.0f,  1.0f, 1.0f,    1.0f, 1.0f },
+  // right face
+  {  1.0f,  1.0f, -1.0f, 1.0f,    0.0f, 1.0f },
+  {  1.0f, -1.0f,  1.0f, 1.0f,    1.0f, 0.0f },
+  {  1.0f,  1.0f,  1.0f, 1.0f,    1.0f, 1.0f },
+  {  1.0f, -1.0f,  1.0f, 1.0f,    1.0f, 0.0f },
+  {  1.0f,  1.0f, -1.0f, 1.0f,    0.0f, 1.0f },
+  {  1.0f, -1.0f, -1.0f, 1.0f,    0.0f, 0.0f },
+  // back face
+  { -1.0f,  1.0f,  1.0f, 1.0f,    1.0f, 1.0f },
+  {  1.0f,  1.0f,  1.0f, 1.0f,    0.0f, 1.0f },
+  { -1.0f, -1.0f,  1.0f, 1.0f,    1.0f, 0.0f },
+  { -1.0f, -1.0f,  1.0f, 1.0f,    1.0f, 0.0f },
+  {  1.0f,  1.0f,  1.0f, 1.0f,    0.0f, 1.0f },
+  {  1.0f, -1.0f,  1.0f, 1.0f,    0.0f, 0.0f },
+};
 
 int main(int /*argc*/, char ** /*argv*/)
 {
   try
   {
+    bool textured = true;    // this is a textured sample !
+
     vk::UniqueInstance instance = vk::su::createInstance(AppName, EngineName, vk::su::getInstanceExtensions());
 #if !defined(NDEBUG)
     vk::UniqueDebugReportCallbackEXT debugReportCallback = vk::su::createDebugReportCallback(instance);
@@ -55,32 +152,38 @@ int main(int /*argc*/, char ** /*argv*/)
 
     vk::su::DepthBufferData depthBufferData(physicalDevices[0], device, vk::Format::eD16Unorm, surfaceData.extent);
 
+    vk::su::TextureData textureData(physicalDevices[0], device);
+
+    commandBuffers[0]->begin(vk::CommandBufferBeginInfo());
+    textureData.setCheckerboardTexture(device, commandBuffers[0]);
+
     vk::su::BufferData uniformBufferData(physicalDevices[0], device, sizeof(glm::mat4x4), vk::BufferUsageFlagBits::eUniformBuffer);
     vk::su::copyToDevice(device, uniformBufferData.deviceMemory, vk::su::createModelViewProjectionClipMatrix());
 
-    vk::UniqueDescriptorSetLayout descriptorSetLayout = vk::su::createDescriptorSetLayout(device);
+    vk::UniqueDescriptorSetLayout descriptorSetLayout = vk::su::createDescriptorSetLayout(device, textured);
     vk::UniquePipelineLayout pipelineLayout = device->createPipelineLayoutUnique(vk::PipelineLayoutCreateInfo(vk::PipelineLayoutCreateFlags(), 1, &descriptorSetLayout.get()));
 
     vk::UniqueRenderPass renderPass = vk::su::createRenderPass(device, vk::su::pickColorFormat(physicalDevices[0].getSurfaceFormatsKHR(surfaceData.surface.get())), depthBufferData.format);
 
     glslang::InitializeProcess();
-    vk::UniqueShaderModule vertexShaderModule = vk::su::createShaderModule(device, vk::ShaderStageFlagBits::eVertex, vertexShaderText_PC_C);
-    vk::UniqueShaderModule fragmentShaderModule = vk::su::createShaderModule(device, vk::ShaderStageFlagBits::eFragment, fragmentShaderText_C_C);
+    vk::UniqueShaderModule vertexShaderModule = vk::su::createShaderModule(device, vk::ShaderStageFlagBits::eVertex, vertexShaderText_PT_T);
+    vk::UniqueShaderModule fragmentShaderModule = vk::su::createShaderModule(device, vk::ShaderStageFlagBits::eFragment, fragmentShaderText_T_C);
     glslang::FinalizeProcess();
 
     std::vector<vk::UniqueFramebuffer> framebuffers = vk::su::createFramebuffers(device, renderPass, swapChainData.imageViews, depthBufferData.imageView, surfaceData.extent);
 
-    vk::su::BufferData vertexBufferData(physicalDevices[0], device, sizeof(coloredCubeData), vk::BufferUsageFlagBits::eVertexBuffer);
-    vk::su::copyToDevice(device, vertexBufferData.deviceMemory, coloredCubeData, sizeof(coloredCubeData) / sizeof(coloredCubeData[0]));
+    vk::su::BufferData vertexBufferData(physicalDevices[0], device, sizeof(texturedCubeData), vk::BufferUsageFlagBits::eVertexBuffer);
+    vk::su::copyToDevice(device, vertexBufferData.deviceMemory, texturedCubeData, sizeof(texturedCubeData) / sizeof(texturedCubeData[0]));
 
-    vk::UniqueDescriptorPool descriptorPool = vk::su::createDescriptorPool(device);
+    vk::UniqueDescriptorPool descriptorPool = vk::su::createDescriptorPool(device, textured);
     std::vector<vk::UniqueDescriptorSet> descriptorSets = device->allocateDescriptorSetsUnique(vk::DescriptorSetAllocateInfo(descriptorPool.get(), 1, &descriptorSetLayout.get()));
 
-    vk::DescriptorBufferInfo descriptorBufferInfo(uniformBufferData.buffer.get(), 0, sizeof(glm::mat4x4));
-    vk::su::updateDescriptorSets(device, descriptorSets[0], &descriptorBufferInfo);
+    vk::DescriptorBufferInfo bufferInfo(uniformBufferData.buffer.get(), 0, sizeof(glm::mat4x4));
+    vk::DescriptorImageInfo imageInfo(textureData.textureSampler.get(), textureData.imageData->imageView.get(), vk::ImageLayout::eShaderReadOnlyOptimal);
+    vk::su::updateDescriptorSets(device, descriptorSets[0], &bufferInfo, &imageInfo);
 
     vk::UniquePipelineCache pipelineCache = device->createPipelineCacheUnique(vk::PipelineCacheCreateInfo());
-    vk::UniquePipeline graphicsPipeline = vk::su::createGraphicsPipeline(device, pipelineCache, vertexShaderModule, fragmentShaderModule, sizeof(coloredCubeData[0]), pipelineLayout, renderPass);
+    vk::UniquePipeline graphicsPipeline = vk::su::createGraphicsPipeline(device, pipelineCache, vertexShaderModule, fragmentShaderModule, sizeof(texturedCubeData[0]), pipelineLayout, renderPass);
 
     /* VULKAN_KEY_START */
 
@@ -90,7 +193,7 @@ int main(int /*argc*/, char ** /*argv*/)
     assert(currentBuffer.result == vk::Result::eSuccess);
     assert(currentBuffer.value < framebuffers.size());
 
-    commandBuffers[0]->begin(vk::CommandBufferBeginInfo(vk::CommandBufferUsageFlags()));
+    // commandBuffers[0]->begin() has already been called above!
 
     vk::ClearValue clearValues[2];
     clearValues[0].color = vk::ClearColorValue(std::array<float, 4>({ 0.2f, 0.2f, 0.2f, 0.2f }));

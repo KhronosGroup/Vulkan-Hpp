@@ -22,6 +22,64 @@ namespace vk
   {
     const uint64_t FenceTimeout = 100000000;
 
+    struct BufferData
+    {
+      BufferData(vk::PhysicalDevice &physicalDevice, vk::UniqueDevice &device, vk::DeviceSize size, vk::BufferUsageFlags usage);
+
+      vk::UniqueBuffer        buffer;
+      vk::UniqueDeviceMemory  deviceMemory;
+    };
+
+    struct ImageData
+    {
+      ImageData(vk::PhysicalDevice &physicalDevice, vk::UniqueDevice & device, vk::Format format, vk::Extent2D const& extent, vk::ImageTiling tiling, vk::ImageUsageFlags usage
+        , vk::ImageLayout initialLayout, vk::MemoryPropertyFlags memoryProperties, vk::ImageAspectFlags aspectMask);
+
+      vk::Format              format;
+      vk::UniqueImage         image;
+      vk::UniqueDeviceMemory  deviceMemory;
+      vk::UniqueImageView     imageView;
+    };
+
+    struct DepthBufferData : public ImageData
+    {
+      DepthBufferData(vk::PhysicalDevice &physicalDevice, vk::UniqueDevice & device, vk::Format format, vk::Extent2D const& extent);
+    };
+
+    struct SurfaceData
+    {
+      SurfaceData(vk::UniqueInstance &instance, std::string const& className, std::string const& windowName, vk::Extent2D const& extent);
+
+      vk::Extent2D          extent;
+      HWND                  window;
+      vk::UniqueSurfaceKHR  surface;
+    };
+
+    struct SwapChainData
+    {
+      SwapChainData(vk::PhysicalDevice &physicalDevice, vk::UniqueDevice &device, vk::UniqueSurfaceKHR &surface, vk::Extent2D const& extent, vk::ImageUsageFlags usage, uint32_t graphicsFamilyIndex, uint32_t presentFamilyIndex);
+
+      vk::Format                        colorFormat;
+      vk::UniqueSwapchainKHR            swapChain;
+      std::vector<vk::Image>            images;
+      std::vector<vk::UniqueImageView>  imageViews;
+    };
+
+    struct TextureData
+    {
+      TextureData(vk::PhysicalDevice &physicalDevice, vk::UniqueDevice &device);
+
+      void setCheckerboardTexture(vk::UniqueDevice &device, vk::UniqueCommandBuffer &commandBuffer);
+
+      vk::Format                  format;
+      vk::Extent2D                extent;
+      bool                        needsStaging;
+      std::unique_ptr<BufferData> bufferData;
+      std::unique_ptr<ImageData>  imageData;
+      vk::UniqueSampler           textureSampler;
+    };
+
+
     template <typename TargetType, typename SourceType>
     VULKAN_HPP_INLINE TargetType checked_cast(SourceType value)
     {
@@ -55,25 +113,23 @@ namespace vk
     vk::UniqueDeviceMemory allocateMemory(vk::UniqueDevice &device, vk::PhysicalDeviceMemoryProperties const& memoryProperties, vk::MemoryRequirements const& memoryRequirements, vk::MemoryPropertyFlags memoryPropertyFlags);
     vk::UniqueCommandPool createCommandPool(vk::UniqueDevice &device, uint32_t queueFamilyIndex);
     vk::UniqueDebugReportCallbackEXT createDebugReportCallback(vk::UniqueInstance &instance);
-    vk::UniqueDescriptorSetLayout createDescriptorSetLayout(vk::UniqueDevice &device);
+    vk::UniqueDescriptorPool createDescriptorPool(vk::UniqueDevice &device, bool textured = false);
+    vk::UniqueDescriptorSetLayout createDescriptorSetLayout(vk::UniqueDevice &device, bool textured = false);
     vk::UniqueDevice createDevice(vk::PhysicalDevice physicalDevice, uint32_t queueFamilyIndex, std::vector<std::string> const& extensions = {});
-    std::vector<vk::UniqueFramebuffer> createFramebuffers(vk::UniqueDevice &device, vk::UniqueRenderPass &renderPass, std::vector<vk::UniqueImageView> const& imageViews, vk::UniqueImageView &depthImageView, int width, int height);
+    std::vector<vk::UniqueFramebuffer> createFramebuffers(vk::UniqueDevice &device, vk::UniqueRenderPass &renderPass, std::vector<vk::UniqueImageView> const& imageViews, vk::UniqueImageView &depthImageView, vk::Extent2D const& extent);
     vk::UniquePipeline createGraphicsPipeline(vk::UniqueDevice &device, vk::UniquePipelineCache &pipelineCache, vk::UniqueShaderModule &vertexShaderModule, vk::UniqueShaderModule &fragmentShaderModule, uint32_t vertexStride, vk::UniquePipelineLayout &pipelineLayout, vk::UniqueRenderPass &renderPass);
-    vk::UniqueInstance createInstance(std::string const& appName, std::string const& engineName, std::vector<std::string> const& extensions = {});
-    vk::UniqueImage createImage(vk::UniqueDevice &device, vk::Format format, uint32_t width, uint32_t height, vk::ImageTiling tiling = vk::ImageTiling::eOptimal);
-    vk::UniqueImageView createImageView(vk::UniqueDevice &device, vk::UniqueImage &image, vk::Format format);
+    vk::UniqueInstance createInstance(std::string const& appName, std::string const& engineName, std::vector<std::string> const& extensions = {}, uint32_t apiVersion = VK_API_VERSION_1_0);
     vk::UniqueRenderPass createRenderPass(vk::UniqueDevice &device, vk::Format colorFormat, vk::Format depthFormat);
-    vk::UniqueSwapchainKHR createSwapChain(vk::PhysicalDevice physicalDevice, vk::UniqueSurfaceKHR &surface, vk::UniqueDevice &device, uint32_t width, uint32_t height, vk::Format format, uint32_t graphicsQueueFamilyIndex, uint32_t presentQueueFamilyIndex);
-    std::vector<vk::UniqueImageView> createSwapChainImageViews(vk::UniqueDevice &device, vk::UniqueSwapchainKHR &swapChain, vk::Format format);
     VkBool32 debugReportCallback(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objectType, uint64_t object, size_t location, int32_t messageCode, const char* pLayerPrefix, const char* pMessage, void* pUserData);
     uint32_t findGraphicsQueueFamilyIndex(std::vector<vk::QueueFamilyProperties> const& queueFamilyProperties);
     std::pair<uint32_t, uint32_t> findGraphicsAndPresentQueueFamilyIndex(vk::PhysicalDevice physicalDevice, vk::UniqueSurfaceKHR & surface);
     uint32_t findMemoryType(vk::PhysicalDeviceMemoryProperties const& memoryProperties, uint32_t typeBits, vk::MemoryPropertyFlags requirementsMask);
     std::vector<std::string> getDeviceExtensions();
-    vk::ImageTiling getImageTiling(vk::FormatProperties const& formatProperties);
     std::vector<std::string> getInstanceExtensions();
     vk::Format pickColorFormat(std::vector<vk::SurfaceFormatKHR> const& formats);
+    void setImageLayout(vk::UniqueCommandBuffer &commandBuffer, vk::Image image, vk::ImageAspectFlags aspectFlags, vk::ImageLayout oldImageLayout, vk::ImageLayout newImageLayout, vk::PipelineStageFlags sourceStageMask, vk::PipelineStageFlags destinationStageMask);
     void submitAndWait(vk::UniqueDevice &device, vk::Queue queue, vk::UniqueCommandBuffer &commandBuffer);
+    void updateDescriptorSets(vk::UniqueDevice &device, vk::UniqueDescriptorSet &descriptorSet, vk::DescriptorBufferInfo const* descriptorBufferInfo, vk::DescriptorImageInfo const* descriptorImageInfo = nullptr);
 
 #if defined(VK_USE_PLATFORM_WIN32_KHR)
     HWND initializeWindow(std::string const& className, std::string const& windowName, LONG width, LONG height);

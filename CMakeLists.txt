@@ -46,10 +46,11 @@ add_definitions(-DVULKAN_HPP_FILE="${vulkan_hpp}")
 
 find_package(tinyxml2 QUIET)
 if(NOT tinyxml2_FOUND)
-set(BUILD_STATIC_LIBS ON CACHE BOOL "")
-set(BUILD_SHARED_LIBS OFF CACHE BOOL "")
-set(BUILD_TESTS OFF CACHE BOOL "")
-add_subdirectory(tinyxml2)
+add_library(tinyxml2
+  SHARED
+  tinyxml2/tinyxml2.hpp
+  tinyxml2/tinyxml2.cpp
+)
 endif()
 
 add_executable(VulkanHppGenerator

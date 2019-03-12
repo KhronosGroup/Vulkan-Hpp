@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// VulkanHpp Samples : DrawTexturedCube
-//                     Draw a textured cube
+// VulkanHpp Samples : DynamicUniform
+//                     Draw 2 Cubes using dynamic uniform buffer
 
 #include "../utils/geometries.hpp"
 #include "../utils/math.hpp"
@@ -23,110 +23,13 @@
 #include "SPIRV/GlslangToSpv.h"
 #include <iostream>
 
-static char const* AppName = "DrawTexturedCube";
+static char const* AppName = "DynamicUniform";
 static char const* EngineName = "Vulkan.hpp";
-
-// vertex shader with (P)osition and (T)exCoord in and (T)exCoord out
-const std::string vertexShaderText_PT_T = R"(
-#version 400
-
-#extension GL_ARB_separate_shader_objects : enable
-#extension GL_ARB_shading_language_420pack : enable
-
-layout (std140, binding = 0) uniform buffer
-{
-  mat4 mvp;
-} uniformBuffer;
-
-layout (location = 0) in vec4 pos;
-layout (location = 1) in vec2 inTexCoord;
-
-layout (location = 0) out vec2 outTexCoord;
-
-void main()
-{
-  outTexCoord = inTexCoord;
-  gl_Position = uniformBuffer.mvp * pos;
-}
-)";
-
-// fragment shader with (T)exCoord in and (C)olor out
-const std::string fragmentShaderText_T_C = R"(
-#version 400
-
-#extension GL_ARB_separate_shader_objects : enable
-#extension GL_ARB_shading_language_420pack : enable
-
-layout (binding = 1) uniform sampler2D tex;
-
-layout (location = 0) in vec2 inTexCoord;
-
-layout (location = 0) out vec4 outColor;
-
-void main()
-{
-  outColor = textureLod(tex, inTexCoord, 0.0f);
-}
-)";
-
-struct VertexPT
-{
-  float x, y, z, w;   // Position data
-  float u, v;         // texture u,v
-};
-
-static const VertexPT texturedCubeData[] =
-{
-  // left face
-  { -1.0f, -1.0f, -1.0f, 1.0f,    1.0f, 0.0f },
-  { -1.0f,  1.0f,  1.0f, 1.0f,    0.0f, 1.0f },
-  { -1.0f, -1.0f,  1.0f, 1.0f,    0.0f, 0.0f },
-  { -1.0f,  1.0f,  1.0f, 1.0f,    0.0f, 1.0f },
-  { -1.0f, -1.0f, -1.0f, 1.0f,    1.0f, 0.0f },
-  { -1.0f,  1.0f, -1.0f, 1.0f,    1.0f, 1.0f },
-  // front face
-  { -1.0f, -1.0f, -1.0f, 1.0f,    0.0f, 0.0f },
-  {  1.0f, -1.0f, -1.0f, 1.0f,    1.0f, 0.0f },
-  {  1.0f,  1.0f, -1.0f, 1.0f,    1.0f, 1.0f },
-  { -1.0f, -1.0f, -1.0f, 1.0f,    0.0f, 0.0f },
-  {  1.0f,  1.0f, -1.0f, 1.0f,    1.0f, 1.0f },
-  { -1.0f,  1.0f, -1.0f, 1.0f,    0.0f, 1.0f },
-  // top face
-  { -1.0f, -1.0f, -1.0f, 1.0f,    0.0f, 1.0f },
-  {  1.0f, -1.0f,  1.0f, 1.0f,    1.0f, 0.0f },
-  {  1.0f, -1.0f, -1.0f, 1.0f,    1.0f, 1.0f },
-  { -1.0f, -1.0f, -1.0f, 1.0f,    0.0f, 1.0f },
-  { -1.0f, -1.0f,  1.0f, 1.0f,    0.0f, 0.0f },
-  {  1.0f, -1.0f, -1.0f, 1.0f,    1.0f, 0.0f },
-  // bottom face
-  { -1.0f,  1.0f, -1.0f, 1.0f,    0.0f, 0.0f },
-  {  1.0f,  1.0f,  1.0f, 1.0f,    1.0f, 1.0f },
-  { -1.0f,  1.0f,  1.0f, 1.0f,    0.0f, 1.0f },
-  { -1.0f,  1.0f, -1.0f, 1.0f,    0.0f, 0.0f },
-  {  1.0f,  1.0f, -1.0f, 1.0f,    1.0f, 0.0f },
-  {  1.0f,  1.0f,  1.0f, 1.0f,    1.0f, 1.0f },
-  // right face
-  {  1.0f,  1.0f, -1.0f, 1.0f,    0.0f, 1.0f },
-  {  1.0f, -1.0f,  1.0f, 1.0f,    1.0f, 0.0f },
-  {  1.0f,  1.0f,  1.0f, 1.0f,    1.0f, 1.0f },
-  {  1.0f, -1.0f,  1.0f, 1.0f,    1.0f, 0.0f },
-  {  1.0f,  1.0f, -1.0f, 1.0f,    0.0f, 1.0f },
-  {  1.0f, -1.0f, -1.0f, 1.0f,    0.0f, 0.0f },
-  // back face
-  { -1.0f,  1.0f,  1.0f, 1.0f,    1.0f, 1.0f },
-  {  1.0f,  1.0f,  1.0f, 1.0f,    0.0f, 1.0f },
-  { -1.0f, -1.0f,  1.0f, 1.0f,    1.0f, 0.0f },
-  { -1.0f, -1.0f,  1.0f, 1.0f,    1.0f, 0.0f },
-  {  1.0f,  1.0f,  1.0f, 1.0f,    0.0f, 1.0f },
-  {  1.0f, -1.0f,  1.0f, 1.0f,    0.0f, 0.0f },
-};
 
 int main(int /*argc*/, char ** /*argv*/)
 {
   try
   {
-    bool textured = true;    // this is a textured sample !
-
     vk::UniqueInstance instance = vk::su::createInstance(AppName, EngineName, vk::su::getInstanceExtensions());
 #if !defined(NDEBUG)
     vk::UniqueDebugReportCallbackEXT debugReportCallback = vk::su::createDebugReportCallback(instance);
@@ -151,40 +54,60 @@ int main(int /*argc*/, char ** /*argv*/)
 
     vk::su::DepthBufferData depthBufferData(physicalDevices[0], device, vk::Format::eD16Unorm, surfaceData.extent);
 
-    vk::su::TextureData textureData(physicalDevices[0], device);
-
-    commandBuffers[0]->begin(vk::CommandBufferBeginInfo());
-    textureData.setCheckerboardTexture(device, commandBuffers[0]);
-
-    vk::su::BufferData uniformBufferData(physicalDevices[0], device, sizeof(glm::mat4x4), vk::BufferUsageFlagBits::eUniformBuffer);
-    vk::su::copyToDevice(device, uniformBufferData.deviceMemory, vk::su::createModelViewProjectionClipMatrix());
-
-    vk::UniqueDescriptorSetLayout descriptorSetLayout = vk::su::createDescriptorSetLayout(device, vk::DescriptorType::eUniformBuffer, textured);
-    vk::UniquePipelineLayout pipelineLayout = device->createPipelineLayoutUnique(vk::PipelineLayoutCreateInfo(vk::PipelineLayoutCreateFlags(), 1, &descriptorSetLayout.get()));
-
     vk::UniqueRenderPass renderPass = vk::su::createRenderPass(device, vk::su::pickColorFormat(physicalDevices[0].getSurfaceFormatsKHR(surfaceData.surface.get())), depthBufferData.format);
 
     glslang::InitializeProcess();
-    vk::UniqueShaderModule vertexShaderModule = vk::su::createShaderModule(device, vk::ShaderStageFlagBits::eVertex, vertexShaderText_PT_T);
-    vk::UniqueShaderModule fragmentShaderModule = vk::su::createShaderModule(device, vk::ShaderStageFlagBits::eFragment, fragmentShaderText_T_C);
+    vk::UniqueShaderModule vertexShaderModule = vk::su::createShaderModule(device, vk::ShaderStageFlagBits::eVertex, vertexShaderText_PC_C);
+    vk::UniqueShaderModule fragmentShaderModule = vk::su::createShaderModule(device, vk::ShaderStageFlagBits::eFragment, fragmentShaderText_C_C);
     glslang::FinalizeProcess();
 
     std::vector<vk::UniqueFramebuffer> framebuffers = vk::su::createFramebuffers(device, renderPass, swapChainData.imageViews, depthBufferData.imageView, surfaceData.extent);
 
-    vk::su::BufferData vertexBufferData(physicalDevices[0], device, sizeof(texturedCubeData), vk::BufferUsageFlagBits::eVertexBuffer);
-    vk::su::copyToDevice(device, vertexBufferData.deviceMemory, texturedCubeData, sizeof(texturedCubeData) / sizeof(texturedCubeData[0]));
-
-    vk::UniqueDescriptorPool descriptorPool = vk::su::createDescriptorPool(device, vk::DescriptorType::eUniformBuffer, textured);
-    std::vector<vk::UniqueDescriptorSet> descriptorSets = device->allocateDescriptorSetsUnique(vk::DescriptorSetAllocateInfo(descriptorPool.get(), 1, &descriptorSetLayout.get()));
-
-    vk::DescriptorBufferInfo bufferInfo(uniformBufferData.buffer.get(), 0, sizeof(glm::mat4x4));
-    vk::DescriptorImageInfo imageInfo(textureData.textureSampler.get(), textureData.imageData->imageView.get(), vk::ImageLayout::eShaderReadOnlyOptimal);
-    vk::su::updateDescriptorSets(device, descriptorSets[0], vk::DescriptorType::eUniformBuffer, &bufferInfo, &imageInfo);
-
-    vk::UniquePipelineCache pipelineCache = device->createPipelineCacheUnique(vk::PipelineCacheCreateInfo());
-    vk::UniquePipeline graphicsPipeline = vk::su::createGraphicsPipeline(device, pipelineCache, vertexShaderModule, fragmentShaderModule, sizeof(texturedCubeData[0]), pipelineLayout, renderPass);
+    vk::su::BufferData vertexBufferData(physicalDevices[0], device, sizeof(coloredCubeData), vk::BufferUsageFlagBits::eVertexBuffer);
+    vk::su::copyToDevice(device, vertexBufferData.deviceMemory, coloredCubeData, sizeof(coloredCubeData) / sizeof(coloredCubeData[0]));
 
     /* VULKAN_KEY_START */
+
+    vk::PhysicalDeviceLimits limits = physicalDevices[0].getProperties().limits;
+    if (limits.maxDescriptorSetUniformBuffersDynamic < 1)
+    {
+      std::cout << "No dynamic uniform buffers supported\n";
+      exit(-1);
+    }
+
+    /* Set up uniform buffer with 2 transform matrices in it */
+    glm::mat4x4 mvpcs[2];
+    glm::mat4x4 model = glm::mat4x4(1.0f);
+    glm::mat4x4 view = glm::lookAt(glm::vec3(0.0f, 3.0f, -10.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f));
+    glm::mat4x4 projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);
+    glm::mat4x4 clip = glm::mat4x4(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 0.5f, 1.0f);   // vulkan clip space has inverted y and half z !
+    mvpcs[0] = clip * projection * view * model;
+
+    model = glm::translate(model, glm::vec3(-1.5f, -1.5f, -1.5f));
+    mvpcs[1] = clip * projection * view * model;
+
+    VkDeviceSize bufferSize = sizeof(glm::mat4x4);
+    if (limits.minUniformBufferOffsetAlignment)
+    {
+      bufferSize = (bufferSize + limits.minUniformBufferOffsetAlignment - 1) & ~(limits.minUniformBufferOffsetAlignment - 1);
+    }
+
+    vk::su::BufferData uniformBufferData(physicalDevices[0], device, 2 * bufferSize, vk::BufferUsageFlagBits::eUniformBuffer);
+    vk::su::copyToDevice(device, uniformBufferData.deviceMemory, mvpcs, 2, bufferSize);
+
+    // create a DescriptorSetLayout with vk::DescriptorType::eUniformBufferDynamic
+    vk::UniqueDescriptorSetLayout descriptorSetLayout = vk::su::createDescriptorSetLayout(device, vk::DescriptorType::eUniformBufferDynamic);
+    vk::UniquePipelineLayout pipelineLayout = device->createPipelineLayoutUnique(vk::PipelineLayoutCreateInfo(vk::PipelineLayoutCreateFlags(), 1, &descriptorSetLayout.get()));
+
+    // create a DescriptorPool with vk::DescriptorType::eUniformBufferDynamic
+    vk::UniqueDescriptorPool descriptorPool = vk::su::createDescriptorPool(device, vk::DescriptorType::eUniformBufferDynamic);
+    std::vector<vk::UniqueDescriptorSet> descriptorSets = device->allocateDescriptorSetsUnique(vk::DescriptorSetAllocateInfo(descriptorPool.get(), 1, &descriptorSetLayout.get()));
+
+    vk::DescriptorBufferInfo descriptorBufferInfo(uniformBufferData.buffer.get(), 0, sizeof(glm::mat4x4));
+    vk::su::updateDescriptorSets(device, descriptorSets[0], vk::DescriptorType::eUniformBufferDynamic, &descriptorBufferInfo);
+
+    vk::UniquePipelineCache pipelineCache = device->createPipelineCacheUnique(vk::PipelineCacheCreateInfo());
+    vk::UniquePipeline graphicsPipeline = vk::su::createGraphicsPipeline(device, pipelineCache, vertexShaderModule, fragmentShaderModule, sizeof(coloredCubeData[0]), pipelineLayout, renderPass);
 
     // Get the index of the next available swapchain image:
     vk::UniqueSemaphore imageAcquiredSemaphore = device->createSemaphoreUnique(vk::SemaphoreCreateInfo());
@@ -192,7 +115,7 @@ int main(int /*argc*/, char ** /*argv*/)
     assert(currentBuffer.result == vk::Result::eSuccess);
     assert(currentBuffer.value < framebuffers.size());
 
-    // commandBuffers[0]->begin() has already been called above!
+    commandBuffers[0]->begin(vk::CommandBufferBeginInfo(vk::CommandBufferUsageFlags()));
 
     vk::ClearValue clearValues[2];
     clearValues[0].color = vk::ClearColorValue(std::array<float, 4>({ 0.2f, 0.2f, 0.2f, 0.2f }));
@@ -200,7 +123,6 @@ int main(int /*argc*/, char ** /*argv*/)
     vk::RenderPassBeginInfo renderPassBeginInfo(renderPass.get(), framebuffers[currentBuffer.value].get(), vk::Rect2D(vk::Offset2D(0, 0), surfaceData.extent), 2, clearValues);
     commandBuffers[0]->beginRenderPass(renderPassBeginInfo, vk::SubpassContents::eInline);
     commandBuffers[0]->bindPipeline(vk::PipelineBindPoint::eGraphics, graphicsPipeline.get());
-    commandBuffers[0]->bindDescriptorSets(vk::PipelineBindPoint::eGraphics, pipelineLayout.get(), 0, descriptorSets[0].get(), nullptr);
 
     vk::Viewport viewport(0.0f, 0.0f, static_cast<float>(surfaceData.extent.width), static_cast<float>(surfaceData.extent.height), 0.0f, 1.0f);
     commandBuffers[0]->setViewport(0, viewport);
@@ -208,10 +130,19 @@ int main(int /*argc*/, char ** /*argv*/)
     vk::Rect2D scissor(vk::Offset2D(0, 0), surfaceData.extent);
     commandBuffers[0]->setScissor(0, scissor);
 
-    vk::DeviceSize offset = 0;
-    commandBuffers[0]->bindVertexBuffers(0, vertexBufferData.buffer.get(), offset);
+    /* The first draw should use the first matrix in the buffer */
+    uint32_t dynamicOffset = 0;
+    commandBuffers[0]->bindDescriptorSets(vk::PipelineBindPoint::eGraphics, pipelineLayout.get(), 0, descriptorSets[0].get(), dynamicOffset);
 
+    vk::DeviceSize vertexOffset = 0;
+    commandBuffers[0]->bindVertexBuffers(0, vertexBufferData.buffer.get(), vertexOffset);
     commandBuffers[0]->draw(12 * 3, 1, 0, 0);
+
+    // the second draw should use the second matrix in the buffer;
+    dynamicOffset = (uint32_t)bufferSize;
+    commandBuffers[0]->bindDescriptorSets(vk::PipelineBindPoint::eGraphics, pipelineLayout.get(), 0, descriptorSets[0].get(), dynamicOffset);
+    commandBuffers[0]->draw(12 * 3, 1, 0, 0);
+
     commandBuffers[0]->endRenderPass();
     commandBuffers[0]->end();
 

@@ -91,10 +91,22 @@ namespace vk
     }
 
     template <class T>
-    void copyToDevice(vk::UniqueDevice &device, vk::UniqueDeviceMemory &memory, T const* pData, size_t count)
+    void copyToDevice(vk::UniqueDevice &device, vk::UniqueDeviceMemory &memory, T const* pData, size_t count, size_t stride = sizeof(T))
     {
-      uint8_t* deviceData = static_cast<uint8_t*>(device->mapMemory(memory.get(), 0, count * sizeof(T)));
-      memcpy(deviceData, pData, count * sizeof(T));
+      assert(sizeof(T) <= stride);
+      uint8_t* deviceData = static_cast<uint8_t*>(device->mapMemory(memory.get(), 0, count * stride));
+      if (stride == sizeof(T))
+      {
+        memcpy(deviceData, pData, count * sizeof(T));
+      }
+      else
+      {
+        for (size_t i = 0; i < count; i++)
+        {
+          memcpy(deviceData, &pData[i], sizeof(T));
+          deviceData += stride;
+        }
+      }
       device->unmapMemory(memory.get());
     }
 
@@ -113,8 +125,8 @@ namespace vk
     vk::UniqueDeviceMemory allocateMemory(vk::UniqueDevice &device, vk::PhysicalDeviceMemoryProperties const& memoryProperties, vk::MemoryRequirements const& memoryRequirements, vk::MemoryPropertyFlags memoryPropertyFlags);
     vk::UniqueCommandPool createCommandPool(vk::UniqueDevice &device, uint32_t queueFamilyIndex);
     vk::UniqueDebugReportCallbackEXT createDebugReportCallback(vk::UniqueInstance &instance);
-    vk::UniqueDescriptorPool createDescriptorPool(vk::UniqueDevice &device, bool textured = false);
-    vk::UniqueDescriptorSetLayout createDescriptorSetLayout(vk::UniqueDevice &device, bool textured = false);
+    vk::UniqueDescriptorPool createDescriptorPool(vk::UniqueDevice &device, vk::DescriptorType descriptorType = vk::DescriptorType::eUniformBuffer, bool textured = false);
+    vk::UniqueDescriptorSetLayout createDescriptorSetLayout(vk::UniqueDevice &device, vk::DescriptorType = vk::DescriptorType::eUniformBuffer, bool textured = false);
     vk::UniqueDevice createDevice(vk::PhysicalDevice physicalDevice, uint32_t queueFamilyIndex, std::vector<std::string> const& extensions = {});
     std::vector<vk::UniqueFramebuffer> createFramebuffers(vk::UniqueDevice &device, vk::UniqueRenderPass &renderPass, std::vector<vk::UniqueImageView> const& imageViews, vk::UniqueImageView &depthImageView, vk::Extent2D const& extent);
     vk::UniquePipeline createGraphicsPipeline(vk::UniqueDevice &device, vk::UniquePipelineCache &pipelineCache, vk::UniqueShaderModule &vertexShaderModule, vk::UniqueShaderModule &fragmentShaderModule, uint32_t vertexStride, vk::UniquePipelineLayout &pipelineLayout, vk::UniqueRenderPass &renderPass);
@@ -129,7 +141,7 @@ namespace vk
     vk::Format pickColorFormat(std::vector<vk::SurfaceFormatKHR> const& formats);
     void setImageLayout(vk::UniqueCommandBuffer &commandBuffer, vk::Image image, vk::ImageAspectFlags aspectFlags, vk::ImageLayout oldImageLayout, vk::ImageLayout newImageLayout, vk::PipelineStageFlags sourceStageMask, vk::PipelineStageFlags destinationStageMask);
     void submitAndWait(vk::UniqueDevice &device, vk::Queue queue, vk::UniqueCommandBuffer &commandBuffer);
-    void updateDescriptorSets(vk::UniqueDevice &device, vk::UniqueDescriptorSet &descriptorSet, vk::DescriptorBufferInfo const* descriptorBufferInfo, vk::DescriptorImageInfo const* descriptorImageInfo = nullptr);
+    void updateDescriptorSets(vk::UniqueDevice &device, vk::UniqueDescriptorSet &descriptorSet, vk::DescriptorType descriptorType, vk::DescriptorBufferInfo const* descriptorBufferInfo, vk::DescriptorImageInfo const* descriptorImageInfo = nullptr);
 
 #if defined(VK_USE_PLATFORM_WIN32_KHR)
     HWND initializeWindow(std::string const& className, std::string const& windowName, LONG width, LONG height);

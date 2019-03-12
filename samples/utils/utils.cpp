@@ -66,10 +66,10 @@ namespace vk
       return instance->createDebugReportCallbackEXTUnique(vk::DebugReportCallbackCreateInfoEXT(flags, &vk::su::debugReportCallback));
     }
 
-    vk::UniqueDescriptorPool createDescriptorPool(vk::UniqueDevice &device, bool textured)
+    vk::UniqueDescriptorPool createDescriptorPool(vk::UniqueDevice &device, vk::DescriptorType descriptorType, bool textured)
     {
       std::vector<vk::DescriptorPoolSize> poolSizes;
-      poolSizes.push_back(vk::DescriptorPoolSize(vk::DescriptorType::eUniformBuffer, 1));
+      poolSizes.push_back(vk::DescriptorPoolSize(descriptorType, 1));
       if (textured)
       {
         poolSizes.push_back(vk::DescriptorPoolSize(vk::DescriptorType::eCombinedImageSampler, 1));
@@ -78,10 +78,10 @@ namespace vk
       return device->createDescriptorPoolUnique(descriptorPoolCreateInfo);
     }
 
-    vk::UniqueDescriptorSetLayout createDescriptorSetLayout(vk::UniqueDevice &device, bool textured)
+    vk::UniqueDescriptorSetLayout createDescriptorSetLayout(vk::UniqueDevice &device, vk::DescriptorType descriptorType, bool textured)
     {
       std::vector<vk::DescriptorSetLayoutBinding> bindings;
-      bindings.push_back(vk::DescriptorSetLayoutBinding(0, vk::DescriptorType::eUniformBuffer, 1, vk::ShaderStageFlagBits::eVertex));
+      bindings.push_back(vk::DescriptorSetLayoutBinding(0, descriptorType, 1, vk::ShaderStageFlagBits::eVertex));
       if (textured)
       {
         bindings.push_back(vk::DescriptorSetLayoutBinding(1, vk::DescriptorType::eCombinedImageSampler, 1, vk::ShaderStageFlagBits::eFragment));
@@ -392,10 +392,10 @@ namespace vk
         ;
     }
 
-    void updateDescriptorSets(vk::UniqueDevice &device, vk::UniqueDescriptorSet &descriptorSet, vk::DescriptorBufferInfo const* descriptorBufferInfo, vk::DescriptorImageInfo const* descriptorImageInfo)
+    void updateDescriptorSets(vk::UniqueDevice &device, vk::UniqueDescriptorSet &descriptorSet, vk::DescriptorType descriptorType, vk::DescriptorBufferInfo const* descriptorBufferInfo, vk::DescriptorImageInfo const* descriptorImageInfo)
     {
       std::vector<vk::WriteDescriptorSet> writeDescriptorSets;
-      writeDescriptorSets.push_back(vk::WriteDescriptorSet(descriptorSet.get(), 0, 0, 1, vk::DescriptorType::eUniformBuffer, nullptr, descriptorBufferInfo, nullptr));
+      writeDescriptorSets.push_back(vk::WriteDescriptorSet(descriptorSet.get(), 0, 0, 1, descriptorType, nullptr, descriptorBufferInfo, nullptr));
       if (descriptorImageInfo)
       {
         writeDescriptorSets.push_back(vk::WriteDescriptorSet(descriptorSet.get(), 1, 0, 1, vk::DescriptorType::eCombinedImageSampler, descriptorImageInfo, nullptr, nullptr));

@@ -15,9 +15,6 @@
 // VulkanHpp Samples : Events
 //                     Use basic events
 
-#include "../utils/geometries.hpp"
-#include "../utils/math.hpp"
-#include "../utils/shaders.hpp"
 #include "../utils/utils.hpp"
 #include "vulkan/vulkan.hpp"
 #include "SPIRV/GlslangToSpv.h"
@@ -84,7 +81,7 @@ int main(int /*argc*/, char ** /*argv*/)
     device->resetFences(fence.get());
 
     // Note that stepping through this code in the debugger is a bad idea because the GPU can TDR waiting for the event.
-    // Execute the code from vkQueueSubmit through vkSetEvent without breakpoints
+    // Execute the code from vk::Queue::submit() through vk::Device::setEvent() without breakpoints
     waitDestinationStageMask = vk::PipelineStageFlagBits::eBottomOfPipe;
     graphicsQueue.submit(submitInfo, fence.get());
 
@@ -92,7 +89,7 @@ int main(int /*argc*/, char ** /*argv*/)
     result = device->waitForFences(fence.get(), true, vk::su::FenceTimeout);
     if (result != vk::Result::eTimeout)
     {
-      std::cout << "Didn't get expected timeout in vkWaitForFences, exiting\n";
+      std::cout << "Didn't get expected timeout in vk::Device::waitForFences, exiting\n";
       exit(-1);
     }
 
@@ -114,7 +111,7 @@ int main(int /*argc*/, char ** /*argv*/)
     commandBuffers[0]->setEvent(event.get(), vk::PipelineStageFlagBits::eBottomOfPipe);
     commandBuffers[0]->end();
 
-    // Look for the event on the CPU. It should be RESET since we haven't sent the command buffer yet.
+    // Look for the event on the CPU. It should be vk::Result::eEventReset since we haven't sent the command buffer yet.
     result = device->getEventStatus(event.get());
     assert(result == vk::Result::eEventReset);
 

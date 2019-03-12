@@ -28,6 +28,7 @@ set(SOURCES
   ../utils/math.cpp
   ../utils/shaders.cpp
   ../utils/utils.cpp
+  ../../glslang/StandAlone/ResourceLimits.cpp
 )
 
 source_group(headers FILES ${HEADERS})

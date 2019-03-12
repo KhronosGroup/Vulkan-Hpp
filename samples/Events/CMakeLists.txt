@@ -17,16 +17,11 @@ cmake_minimum_required(VERSION 3.2)
 project(Events)
 
 set(HEADERS
-  ../utils/geometries.hpp
-  ../utils/math.hpp
-  ../utils/shaders.hpp
   ../utils/utils.hpp
 )
 
 set(SOURCES
   Events.cpp
-  ../utils/math.cpp
-  ../utils/shaders.cpp
   ../utils/utils.cpp
 )
 

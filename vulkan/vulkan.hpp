@@ -54998,11 +54998,25 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     DispatchLoaderDynamic() = default;
 
+    // This interface is designed to be used for per-device function pointers in combination with a linked vulkan library.
+    DispatchLoaderDynamic(vk::Instance const& instance, vk::Device const& device = {})
+    {
+      init(instance, device);
+    }
+
+    // This interface is designed to be used for per-device function pointers in combination with a linked vulkan library.
+    void init(vk::Instance const& instance, vk::Device const& device = {})
+    {
+      init(instance, ::vkGetInstanceProcAddr, device, device ? ::vkGetDeviceProcAddr : nullptr);
+    }
+
+    // This interface does not require a linked vulkan library.
     DispatchLoaderDynamic( VkInstance instance, PFN_vkGetInstanceProcAddr getInstanceProcAddr, VkDevice device = VK_NULL_HANDLE, PFN_vkGetDeviceProcAddr getDeviceProcAddr = nullptr )
     {
       init( instance, getInstanceProcAddr, device, getDeviceProcAddr );
     }
 
+    // This interface does not require a linked vulkan library.
     void init( VkInstance instance, PFN_vkGetInstanceProcAddr getInstanceProcAddr, VkDevice device = VK_NULL_HANDLE, PFN_vkGetDeviceProcAddr getDeviceProcAddr = nullptr )
     {
       assert(instance && getInstanceProcAddr);

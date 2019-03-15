@@ -14,28 +14,27 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(11_InitShaders)
+project(13_InitVertexBuffer)
 
 set(HEADERS
-  ../utils/shaders.hpp
+  ../utils/geometries.hpp
   ../utils/utils.hpp
 )
 
 set(SOURCES
-  11_InitShaders.cpp
-  ../utils/shaders.cpp
+  13_InitVertexBuffer.cpp
   ../utils/utils.cpp
 )
 
 source_group(headers FILES ${HEADERS})
 source_group(sources FILES ${SOURCES})
 
-add_executable(11_InitShaders
+add_executable(13_InitVertexBuffer
   ${HEADERS}
   ${SOURCES}
 )
 
-set_target_properties(11_InitShaders PROPERTIES FOLDER "Samples")
-target_include_directories(11_InitShaders PUBLIC ${CMAKE_SOURCE_DIR}/glslang)
-target_link_libraries(11_InitShaders PUBLIC glslang SPIRV "$ENV{VULKAN_SDK}/Lib/vulkan-1.lib"
+set_target_properties(13_InitVertexBuffer PROPERTIES FOLDER "Samples")
+target_include_directories(13_InitVertexBuffer PUBLIC ${CMAKE_SOURCE_DIR}/glslang)
+target_link_libraries(13_InitVertexBuffer PUBLIC glslang SPIRV "$ENV{VULKAN_SDK}/Lib/vulkan-1.lib"
 )

@@ -42,30 +42,16 @@ int main(int /*argc*/, char * /*argv[]*/)
 
     /* VULKAN_HPP_KEY_START */
 
-    glm::mat4x4 projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);
-    glm::mat4x4 view = glm::lookAt(glm::vec3(-5.0f, 3.0f, -10.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f));
     glm::mat4x4 model = glm::mat4x4(1.0f);
+    glm::mat4x4 view = glm::lookAt(glm::vec3(-5.0f, 3.0f, -10.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f));
+    glm::mat4x4 projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);
     glm::mat4x4 clip = glm::mat4x4(1.0f, 0.0f, 0.0f, 0.0f,  0.0f, -1.0f, 0.0f, 0.0f,  0.0f, 0.0f, 0.5f, 0.0f,  0.0f, 0.0f, 0.5f, 1.0f);   // vulkan clip space has inverted y and half z !
     glm::mat4x4 mvpc = clip * projection * view * model;
 
     vk::UniqueBuffer uniformDataBuffer = device->createBufferUnique(vk::BufferCreateInfo(vk::BufferCreateFlags(), sizeof(mvpc), vk::BufferUsageFlagBits::eUniformBuffer));
 
     vk::MemoryRequirements memoryRequirements = device->getBufferMemoryRequirements(uniformDataBuffer.get());
-    uint32_t typeBits = memoryRequirements.memoryTypeBits;
-
-    vk::PhysicalDeviceMemoryProperties memoryProperties = physicalDevices[0].getMemoryProperties();
-    vk::MemoryPropertyFlags requirementsMask = vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent;
-    uint32_t typeIndex = uint32_t(~0);
-    for (uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++)
-    {
-      if ((typeBits & 1) && ((memoryProperties.memoryTypes[i].propertyFlags & requirementsMask) == requirementsMask))
-      {
-        typeIndex = i;
-        break;
-      }
-      typeBits >>= 1;
-    }
-    assert(typeIndex != ~0);
+    uint32_t typeIndex = vk::su::findMemoryType(physicalDevices[0].getMemoryProperties(), memoryRequirements.memoryTypeBits, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
     vk::UniqueDeviceMemory uniformDataMemory = device->allocateMemoryUnique(vk::MemoryAllocateInfo(memoryRequirements.size, typeIndex));
 
     uint8_t* pData = static_cast<uint8_t*>(device->mapMemory(uniformDataMemory.get(), 0, memoryRequirements.size));

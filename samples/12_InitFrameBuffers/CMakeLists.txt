@@ -14,28 +14,26 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(11_InitShaders)
+project(12_InitFrameBuffers)
 
 set(HEADERS
-  ../utils/shaders.hpp
   ../utils/utils.hpp
 )
 
 set(SOURCES
-  11_InitShaders.cpp
-  ../utils/shaders.cpp
+  12_InitFrameBuffers.cpp
   ../utils/utils.cpp
 )
 
 source_group(headers FILES ${HEADERS})
 source_group(sources FILES ${SOURCES})
 
-add_executable(11_InitShaders
+add_executable(12_InitFrameBuffers
   ${HEADERS}
   ${SOURCES}
 )
 
-set_target_properties(11_InitShaders PROPERTIES FOLDER "Samples")
-target_include_directories(11_InitShaders PUBLIC ${CMAKE_SOURCE_DIR}/glslang)
-target_link_libraries(11_InitShaders PUBLIC glslang SPIRV "$ENV{VULKAN_SDK}/Lib/vulkan-1.lib"
+set_target_properties(12_InitFrameBuffers PROPERTIES FOLDER "Samples")
+target_include_directories(12_InitFrameBuffers PUBLIC ${CMAKE_SOURCE_DIR}/glslang)
+target_link_libraries(12_InitFrameBuffers PUBLIC glslang SPIRV "$ENV{VULKAN_SDK}/Lib/vulkan-1.lib"
 )

@@ -43,6 +43,8 @@ int main(int /*argc*/, char * /*argv[]*/)
     vk::UniqueBuffer buffer = device->createBufferUnique(vk::BufferCreateInfo(vk::BufferCreateFlags(), sizeof(glm::mat4x4), vk::BufferUsageFlagBits::eUniformBuffer));
     vk::UniqueDeviceMemory deviceMemory = vk::su::allocateMemory(device, physicalDevices[0].getMemoryProperties(), device->getBufferMemoryRequirements(buffer.get()), vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
 
+    device->bindBufferMemory(buffer.get(), deviceMemory.get(), 0);
+
     vk::UniqueDescriptorSetLayout descriptorSetLayout = vk::su::createDescriptorSetLayout(device);
 
     /* VULKAN_HPP_KEY_START */
@@ -54,7 +56,6 @@ int main(int /*argc*/, char * /*argv[]*/)
     // allocate a descriptor set
     std::vector<vk::UniqueDescriptorSet> descriptorSets = device->allocateDescriptorSetsUnique(vk::DescriptorSetAllocateInfo(descriptorPool.get(), 1, &descriptorSetLayout.get()));
 
-    device->bindBufferMemory(buffer.get(), deviceMemory.get(), 0);
     vk::DescriptorBufferInfo descriptorBufferInfo(buffer.get(), 0, sizeof(glm::mat4x4));
     device->updateDescriptorSets(vk::WriteDescriptorSet(descriptorSets[0].get(), 0, 0, 1, vk::DescriptorType::eUniformBuffer, nullptr, &descriptorBufferInfo), {});
 

@@ -54,6 +54,12 @@ namespace vk
       return device->allocateMemoryUnique(vk::MemoryAllocateInfo(memoryRequirements.size, memoryTypeIndex));
     }
 
+    vk::UniqueCommandPool createCommandPool(vk::UniqueDevice &device, uint32_t queueFamilyIndex)
+    {
+      vk::CommandPoolCreateInfo commandPoolCreateInfo(vk::CommandPoolCreateFlagBits::eResetCommandBuffer, queueFamilyIndex);
+      return device->createCommandPoolUnique(commandPoolCreateInfo);
+    }
+
     vk::UniqueDebugReportCallbackEXT createDebugReportCallback(vk::UniqueInstance &instance)
     {
       vk::DebugReportFlagsEXT flags(vk::DebugReportFlagBitsEXT::eWarning | vk::DebugReportFlagBitsEXT::ePerformanceWarning | vk::DebugReportFlagBitsEXT::eError);
@@ -80,6 +86,76 @@ namespace vk
       vk::DeviceQueueCreateInfo deviceQueueCreateInfo(vk::DeviceQueueCreateFlags(), queueFamilyIndex, 1, &queuePriority);
       vk::DeviceCreateInfo deviceCreateInfo(vk::DeviceCreateFlags(), 1, &deviceQueueCreateInfo, 0, nullptr, checked_cast<uint32_t>(enabledExtensions.size()), enabledExtensions.data());
       return physicalDevice.createDeviceUnique(deviceCreateInfo);
+    }
+
+    std::vector<vk::UniqueFramebuffer> createFramebuffers(vk::UniqueDevice &device, vk::UniqueRenderPass &renderPass, std::vector<vk::UniqueImageView> const& imageViews, vk::UniqueImageView &depthImageView, int width, int height)
+    {
+      vk::ImageView attachments[2];
+      attachments[1] = depthImageView.get();
+
+      std::vector<vk::UniqueFramebuffer> framebuffers;
+      framebuffers.reserve(imageViews.size());
+      for (auto const& view : imageViews)
+      {
+        attachments[0] = view.get();
+        framebuffers.push_back(device->createFramebufferUnique(vk::FramebufferCreateInfo(vk::FramebufferCreateFlags(), renderPass.get(), 2, attachments, width, height, 1)));
+      }
+
+      return framebuffers;
+    }
+
+    vk::UniquePipeline createGraphicsPipeline(vk::UniqueDevice &device, vk::UniquePipelineCache &pipelineCache, vk::UniqueShaderModule &vertexShaderModule, vk::UniqueShaderModule &fragmentShaderModule, uint32_t vertexStride, vk::UniquePipelineLayout &pipelineLayout, vk::UniqueRenderPass &renderPass)
+    {
+      vk::PipelineShaderStageCreateInfo pipelineShaderStageCreateInfos[2] =
+      {
+        vk::PipelineShaderStageCreateInfo(vk::PipelineShaderStageCreateFlags(), vk::ShaderStageFlagBits::eVertex, vertexShaderModule.get(), "main"),
+        vk::PipelineShaderStageCreateInfo(vk::PipelineShaderStageCreateFlags(), vk::ShaderStageFlagBits::eFragment, fragmentShaderModule.get(), "main")
+      };
+
+      vk::VertexInputBindingDescription vertexInputBindingDescription(0, vertexStride);
+      vk::VertexInputAttributeDescription vertexInputAttributeDescriptions[2] =
+      {
+        vk::VertexInputAttributeDescription(0, 0, vk::Format::eR32G32B32A32Sfloat, 0),
+        vk::VertexInputAttributeDescription(1, 0, vk::Format::eR32G32B32A32Sfloat, 16)
+      };
+      vk::PipelineVertexInputStateCreateInfo pipelineVertexInputStateCreateInfo(vk::PipelineVertexInputStateCreateFlags(), 1, &vertexInputBindingDescription, 2, vertexInputAttributeDescriptions);
+
+      vk::PipelineInputAssemblyStateCreateInfo pipelineInputAssemblyStateCreateInfo(vk::PipelineInputAssemblyStateCreateFlags(), vk::PrimitiveTopology::eTriangleList);
+
+      vk::PipelineViewportStateCreateInfo pipelineViewportStateCreateInfo(vk::PipelineViewportStateCreateFlags(), 1, nullptr, 1, nullptr);
+
+      vk::PipelineRasterizationStateCreateInfo pipelineRasterizationStateCreateInfo(vk::PipelineRasterizationStateCreateFlags(), false, false, vk::PolygonMode::eFill, vk::CullModeFlagBits::eBack, vk::FrontFace::eClockwise, false, 0.0f, 0.0f, 0.0f, 1.0f);
+
+      vk::PipelineMultisampleStateCreateInfo pipelineMultisampleStateCreateInfo;
+
+      vk::StencilOpState stencilOpState(vk::StencilOp::eKeep, vk::StencilOp::eKeep, vk::StencilOp::eKeep, vk::CompareOp::eAlways);
+      vk::PipelineDepthStencilStateCreateInfo pipelineDepthStencilStateCreateInfo(vk::PipelineDepthStencilStateCreateFlags(), true, true, vk::CompareOp::eLessOrEqual, false, false, stencilOpState, stencilOpState);
+
+      vk::ColorComponentFlags colorComponentFlags(vk::ColorComponentFlagBits::eR | vk::ColorComponentFlagBits::eG | vk::ColorComponentFlagBits::eB | vk::ColorComponentFlagBits::eA);
+      vk::PipelineColorBlendAttachmentState pipelineColorBlendAttachmentState(false, vk::BlendFactor::eZero, vk::BlendFactor::eZero, vk::BlendOp::eAdd, vk::BlendFactor::eZero, vk::BlendFactor::eZero, vk::BlendOp::eAdd, colorComponentFlags);
+      vk::PipelineColorBlendStateCreateInfo pipelineColorBlendStateCreateInfo(vk::PipelineColorBlendStateCreateFlags(), false, vk::LogicOp::eNoOp, 1, &pipelineColorBlendAttachmentState, { { (1.0f, 1.0f, 1.0f, 1.0f) } });
+
+      vk::DynamicState dynamicStates[2] = { vk::DynamicState::eViewport, vk::DynamicState::eScissor };
+      vk::PipelineDynamicStateCreateInfo pipelineDynamicStateCreateInfo(vk::PipelineDynamicStateCreateFlags(), 2, dynamicStates);
+
+      vk::GraphicsPipelineCreateInfo graphicsPipelineCreateInfo(vk::PipelineCreateFlags(), 2, pipelineShaderStageCreateInfos, &pipelineVertexInputStateCreateInfo, &pipelineInputAssemblyStateCreateInfo, nullptr, &pipelineViewportStateCreateInfo, &pipelineRasterizationStateCreateInfo, &pipelineMultisampleStateCreateInfo, &pipelineDepthStencilStateCreateInfo, &pipelineColorBlendStateCreateInfo, &pipelineDynamicStateCreateInfo, pipelineLayout.get(), renderPass.get());
+
+      return device->createGraphicsPipelineUnique(pipelineCache.get(), graphicsPipelineCreateInfo);
+    }
+
+    vk::UniqueImage createImage(vk::UniqueDevice &device, vk::Format format, uint32_t width, uint32_t height, vk::ImageTiling tiling)
+    {
+      vk::Extent3D extend3D(width, height, 1);
+      vk::ImageCreateInfo imageCreateInfo({}, vk::ImageType::e2D, format, extend3D, 1, 1, vk::SampleCountFlagBits::e1, tiling, vk::ImageUsageFlagBits::eDepthStencilAttachment);
+      return device->createImageUnique(imageCreateInfo);
+    }
+
+    vk::UniqueImageView createImageView(vk::UniqueDevice &device, vk::UniqueImage &image, vk::Format format)
+    {
+      vk::ComponentMapping componentMapping(ComponentSwizzle::eR, ComponentSwizzle::eG, ComponentSwizzle::eB, ComponentSwizzle::eA);
+      vk::ImageSubresourceRange imageSubresourceRange(vk::ImageAspectFlagBits::eDepth, 0, 1, 0, 1);
+      vk::ImageViewCreateInfo imageViewCreateInfo(vk::ImageViewCreateFlags(), image.get(), vk::ImageViewType::e2D, format, componentMapping, imageSubresourceRange);
+      return device->createImageViewUnique(imageViewCreateInfo);
     }
 
     vk::UniqueInstance createInstance(std::string const& appName, std::string const& engineName, std::vector<std::string> const& extensions)
@@ -120,6 +196,74 @@ namespace vk
 #endif
 
       return instance;
+    }
+
+    vk::UniqueRenderPass createRenderPass(vk::UniqueDevice &device, vk::Format colorFormat, vk::Format depthFormat)
+    {
+      vk::AttachmentDescription attachmentDescriptions[2] =
+      {
+        vk::AttachmentDescription(vk::AttachmentDescriptionFlags(), colorFormat, vk::SampleCountFlagBits::e1, vk::AttachmentLoadOp::eClear, vk::AttachmentStoreOp::eStore, vk::AttachmentLoadOp::eDontCare, vk::AttachmentStoreOp::eDontCare, vk::ImageLayout::eUndefined, vk::ImageLayout::ePresentSrcKHR),
+        vk::AttachmentDescription(vk::AttachmentDescriptionFlags(), depthFormat, vk::SampleCountFlagBits::e1, vk::AttachmentLoadOp::eClear, vk::AttachmentStoreOp::eStore, vk::AttachmentLoadOp::eLoad, vk::AttachmentStoreOp::eStore, vk::ImageLayout::eUndefined, vk::ImageLayout::eDepthStencilAttachmentOptimal)
+      };
+      vk::AttachmentReference colorAttachment(0, vk::ImageLayout::eColorAttachmentOptimal);
+      vk::AttachmentReference depthAttachment(1, vk::ImageLayout::eDepthStencilAttachmentOptimal);
+      vk::SubpassDescription subpassDescription(vk::SubpassDescriptionFlags(), vk::PipelineBindPoint::eGraphics, 0, nullptr, 1, &colorAttachment, nullptr, &depthAttachment);
+      return device->createRenderPassUnique(vk::RenderPassCreateInfo(vk::RenderPassCreateFlags(), 2, attachmentDescriptions, 1, &subpassDescription));
+    }
+
+    vk::UniqueSwapchainKHR createSwapChain(vk::PhysicalDevice physicalDevice, vk::UniqueSurfaceKHR &surface, vk::UniqueDevice &device, uint32_t width, uint32_t height, vk::Format format, uint32_t graphicsQueueFamilyIndex, uint32_t presentQueueFamilyIndex)
+    {
+      vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR(surface.get());
+      VkExtent2D swapchainExtent;
+      if (surfaceCapabilities.currentExtent.width == std::numeric_limits<uint32_t>::max())
+      {
+        // If the surface size is undefined, the size is set to the size of the images requested.
+        swapchainExtent.width = clamp(width, surfaceCapabilities.minImageExtent.width, surfaceCapabilities.maxImageExtent.width);
+        swapchainExtent.height = clamp(height, surfaceCapabilities.minImageExtent.height, surfaceCapabilities.maxImageExtent.height);
+      }
+      else
+      {
+        // If the surface size is defined, the swap chain size must match
+        swapchainExtent = surfaceCapabilities.currentExtent;
+      }
+
+      vk::SurfaceTransformFlagBitsKHR preTransform = (surfaceCapabilities.supportedTransforms & vk::SurfaceTransformFlagBitsKHR::eIdentity) ? vk::SurfaceTransformFlagBitsKHR::eIdentity : surfaceCapabilities.currentTransform;
+
+      vk::CompositeAlphaFlagBitsKHR compositeAlpha =
+        (surfaceCapabilities.supportedCompositeAlpha & vk::CompositeAlphaFlagBitsKHR::ePreMultiplied) ? vk::CompositeAlphaFlagBitsKHR::ePreMultiplied :
+        (surfaceCapabilities.supportedCompositeAlpha & vk::CompositeAlphaFlagBitsKHR::ePostMultiplied) ? vk::CompositeAlphaFlagBitsKHR::ePostMultiplied :
+        (surfaceCapabilities.supportedCompositeAlpha & vk::CompositeAlphaFlagBitsKHR::eInherit) ? vk::CompositeAlphaFlagBitsKHR::eInherit : vk::CompositeAlphaFlagBitsKHR::eOpaque;
+
+      vk::SwapchainCreateInfoKHR swapChainCreateInfo({}, surface.get(), surfaceCapabilities.minImageCount, format, vk::ColorSpaceKHR::eSrgbNonlinear, swapchainExtent, 1,
+        vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eTransferSrc, vk::SharingMode::eExclusive, 0, nullptr, preTransform, compositeAlpha, vk::PresentModeKHR::eFifo, true,
+        nullptr);
+
+      uint32_t queueFamilyIndices[2] = { graphicsQueueFamilyIndex, presentQueueFamilyIndex };
+      if (graphicsQueueFamilyIndex != presentQueueFamilyIndex)
+      {
+        // If the graphics and present queues are from different queue families, we either have to explicitly transfer ownership of images between
+        // the queues, or we have to create the swapchain with imageSharingMode as vk::SharingMode::eConcurrent
+        swapChainCreateInfo.imageSharingMode = vk::SharingMode::eConcurrent;
+        swapChainCreateInfo.queueFamilyIndexCount = 2;
+        swapChainCreateInfo.pQueueFamilyIndices = queueFamilyIndices;
+      }
+      return device->createSwapchainKHRUnique(swapChainCreateInfo);
+    }
+
+    std::vector<vk::UniqueImageView> createSwapChainImageViews(vk::UniqueDevice &device, vk::UniqueSwapchainKHR &swapChain, vk::Format format)
+    {
+      std::vector<vk::Image> images = device->getSwapchainImagesKHR(swapChain.get());
+      std::vector<vk::UniqueImageView> imageViews;
+      imageViews.reserve(images.size());
+
+      vk::ComponentMapping componentMapping(ComponentSwizzle::eR, ComponentSwizzle::eG, ComponentSwizzle::eB, ComponentSwizzle::eA);
+      vk::ImageSubresourceRange imageSubresourceRange(vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1);
+
+      for (auto const& image : images)
+      {
+        imageViews.push_back(device->createImageViewUnique(vk::ImageViewCreateInfo(vk::ImageViewCreateFlags(), image, vk::ImageViewType::e2D, format, componentMapping, imageSubresourceRange)));
+      }
+      return imageViews;
     }
 
     VkBool32 debugReportCallback(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT /*objectType*/, uint64_t /*object*/, size_t /*location*/, int32_t /*messageCode*/, const char* /*pLayerPrefix*/, const char* pMessage, void* /*pUserData*/)
@@ -191,9 +335,41 @@ namespace vk
       throw std::runtime_error("Could not find queues for both graphics or present -> terminating");
     }
 
+    uint32_t findMemoryType(vk::PhysicalDeviceMemoryProperties const& memoryProperties, uint32_t typeBits, vk::MemoryPropertyFlags requirementsMask)
+    {
+      uint32_t typeIndex = uint32_t(~0);
+      for (uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++)
+      {
+        if ((typeBits & 1) && ((memoryProperties.memoryTypes[i].propertyFlags & requirementsMask) == requirementsMask))
+        {
+          typeIndex = i;
+          break;
+        }
+        typeBits >>= 1;
+      }
+      assert(typeIndex != ~0);
+      return typeIndex;
+    }
+
     std::vector<std::string> getDeviceExtensions()
     {
       return{ VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+    }
+
+    vk::ImageTiling getImageTiling(vk::FormatProperties const& formatProperties)
+    {
+      if (formatProperties.linearTilingFeatures & vk::FormatFeatureFlagBits::eDepthStencilAttachment)
+      {
+        return vk::ImageTiling::eLinear;
+      }
+      else if (formatProperties.optimalTilingFeatures & vk::FormatFeatureFlagBits::eDepthStencilAttachment)
+      {
+        return vk::ImageTiling::eOptimal;
+      }
+      else
+      {
+        throw std::runtime_error("DepthStencilAttachment is not supported for D16Unorm depth format.");
+      }
     }
 
     std::vector<std::string> getInstanceExtensions()
@@ -228,6 +404,15 @@ namespace vk
     {
       assert(!formats.empty());
       return (formats[0].format == vk::Format::eUndefined) ? vk::Format::eB8G8R8A8Unorm : formats[0].format;
+    }
+
+    void submitAndWait(vk::UniqueDevice &device, vk::Queue queue, vk::UniqueCommandBuffer &commandBuffer)
+    {
+      vk::UniqueFence fence = device->createFenceUnique(vk::FenceCreateInfo());
+      vk::PipelineStageFlags pipelineStageFlags = vk::PipelineStageFlagBits::eColorAttachmentOutput;
+      queue.submit(vk::SubmitInfo(0, nullptr, &pipelineStageFlags, 1, &commandBuffer.get()), fence.get());
+      while (vk::Result::eTimeout == device->waitForFences(fence.get(), VK_TRUE, vk::su::FenceTimeout))
+        ;
     }
 
 #if defined(VK_USE_PLATFORM_WIN32_KHR)

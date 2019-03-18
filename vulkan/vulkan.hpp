@@ -10519,19 +10519,41 @@ namespace VULKAN_HPP_NAMESPACE
   struct AcquireNextImageInfoKHR;
   struct AllocationCallbacks;
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
+  struct AndroidHardwareBufferFormatPropertiesANDROID;
+#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
+#ifdef VK_USE_PLATFORM_ANDROID_KHR
   struct AndroidHardwareBufferPropertiesANDROID;
+#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
+#ifdef VK_USE_PLATFORM_ANDROID_KHR
+  struct AndroidHardwareBufferUsageANDROID;
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
   struct AndroidSurfaceCreateInfoKHR;
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
+  struct ApplicationInfo;
+  struct AttachmentDescription;
+  struct AttachmentDescription2KHR;
+  struct AttachmentReference;
+  struct AttachmentReference2KHR;
+  struct AttachmentSampleLocationsEXT;
+  struct BaseInStructure;
+  struct BaseOutStructure;
   struct BindAccelerationStructureMemoryInfoNV;
+  struct BindBufferMemoryDeviceGroupInfo;
+  using BindBufferMemoryDeviceGroupInfoKHR = BindBufferMemoryDeviceGroupInfo;
   struct BindBufferMemoryInfo;
   using BindBufferMemoryInfoKHR = BindBufferMemoryInfo;
+  struct BindImageMemoryDeviceGroupInfo;
+  using BindImageMemoryDeviceGroupInfoKHR = BindImageMemoryDeviceGroupInfo;
   struct BindImageMemoryInfo;
   using BindImageMemoryInfoKHR = BindImageMemoryInfo;
+  struct BindImageMemorySwapchainInfoKHR;
+  struct BindImagePlaneMemoryInfo;
+  using BindImagePlaneMemoryInfoKHR = BindImagePlaneMemoryInfo;
   struct BindSparseInfo;
   struct BufferCopy;
   struct BufferCreateInfo;
+  struct BufferDeviceAddressCreateInfoEXT;
   struct BufferDeviceAddressInfoEXT;
   struct BufferImageCopy;
   struct BufferMemoryBarrier;
@@ -10544,16 +10566,25 @@ namespace VULKAN_HPP_NAMESPACE
   union ClearColorValue;
   struct ClearDepthStencilValue;
   struct ClearRect;
+  union ClearValue;
   struct CmdProcessCommandsInfoNVX;
   struct CmdReserveSpaceForCommandsInfoNVX;
+  struct CoarseSampleLocationNV;
   struct CoarseSampleOrderCustomNV;
   struct CommandBufferAllocateInfo;
   struct CommandBufferBeginInfo;
+  struct CommandBufferInheritanceConditionalRenderingInfoEXT;
+  struct CommandBufferInheritanceInfo;
   struct CommandPoolCreateInfo;
+  struct ComponentMapping;
   struct ComputePipelineCreateInfo;
   struct ConditionalRenderingBeginInfoEXT;
+  struct ConformanceVersionKHR;
   struct CooperativeMatrixPropertiesNV;
   struct CopyDescriptorSet;
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  struct D3D12FenceSubmitInfoKHR;
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
   struct DebugMarkerMarkerInfoEXT;
   struct DebugMarkerObjectNameInfoEXT;
   struct DebugMarkerObjectTagInfoEXT;
@@ -10563,21 +10594,51 @@ namespace VULKAN_HPP_NAMESPACE
   struct DebugUtilsMessengerCreateInfoEXT;
   struct DebugUtilsObjectNameInfoEXT;
   struct DebugUtilsObjectTagInfoEXT;
+  struct DedicatedAllocationBufferCreateInfoNV;
+  struct DedicatedAllocationImageCreateInfoNV;
+  struct DedicatedAllocationMemoryAllocateInfoNV;
+  struct DescriptorBufferInfo;
+  struct DescriptorImageInfo;
   struct DescriptorPoolCreateInfo;
+  struct DescriptorPoolInlineUniformBlockCreateInfoEXT;
+  struct DescriptorPoolSize;
   struct DescriptorSetAllocateInfo;
+  struct DescriptorSetLayoutBinding;
+  struct DescriptorSetLayoutBindingFlagsCreateInfoEXT;
   struct DescriptorSetLayoutCreateInfo;
   struct DescriptorSetLayoutSupport;
   using DescriptorSetLayoutSupportKHR = DescriptorSetLayoutSupport;
+  struct DescriptorSetVariableDescriptorCountAllocateInfoEXT;
+  struct DescriptorSetVariableDescriptorCountLayoutSupportEXT;
   struct DescriptorUpdateTemplateCreateInfo;
   using DescriptorUpdateTemplateCreateInfoKHR = DescriptorUpdateTemplateCreateInfo;
+  struct DescriptorUpdateTemplateEntry;
+  using DescriptorUpdateTemplateEntryKHR = DescriptorUpdateTemplateEntry;
   struct DeviceCreateInfo;
   struct DeviceEventInfoEXT;
   struct DeviceGeneratedCommandsFeaturesNVX;
   struct DeviceGeneratedCommandsLimitsNVX;
+  struct DeviceGroupBindSparseInfo;
+  using DeviceGroupBindSparseInfoKHR = DeviceGroupBindSparseInfo;
+  struct DeviceGroupCommandBufferBeginInfo;
+  using DeviceGroupCommandBufferBeginInfoKHR = DeviceGroupCommandBufferBeginInfo;
+  struct DeviceGroupDeviceCreateInfo;
+  using DeviceGroupDeviceCreateInfoKHR = DeviceGroupDeviceCreateInfo;
   struct DeviceGroupPresentCapabilitiesKHR;
+  struct DeviceGroupPresentInfoKHR;
+  struct DeviceGroupRenderPassBeginInfo;
+  using DeviceGroupRenderPassBeginInfoKHR = DeviceGroupRenderPassBeginInfo;
+  struct DeviceGroupSubmitInfo;
+  using DeviceGroupSubmitInfoKHR = DeviceGroupSubmitInfo;
+  struct DeviceGroupSwapchainCreateInfoKHR;
+  struct DeviceMemoryOverallocationCreateInfoAMD;
+  struct DeviceQueueCreateInfo;
+  struct DeviceQueueGlobalPriorityCreateInfoEXT;
   struct DeviceQueueInfo2;
+  struct DispatchIndirectCommand;
   struct DisplayEventInfoEXT;
   struct DisplayModeCreateInfoKHR;
+  struct DisplayModeParametersKHR;
   struct DisplayModeProperties2KHR;
   struct DisplayModePropertiesKHR;
   struct DisplayPlaneCapabilities2KHR;
@@ -10586,17 +10647,55 @@ namespace VULKAN_HPP_NAMESPACE
   struct DisplayPlaneProperties2KHR;
   struct DisplayPlanePropertiesKHR;
   struct DisplayPowerInfoEXT;
+  struct DisplayPresentInfoKHR;
   struct DisplayProperties2KHR;
   struct DisplayPropertiesKHR;
   struct DisplaySurfaceCreateInfoKHR;
+  struct DrawIndexedIndirectCommand;
+  struct DrawIndirectCommand;
+  struct DrawMeshTasksIndirectCommandNV;
+  struct DrmFormatModifierPropertiesEXT;
+  struct DrmFormatModifierPropertiesListEXT;
   struct EventCreateInfo;
+  struct ExportFenceCreateInfo;
+  using ExportFenceCreateInfoKHR = ExportFenceCreateInfo;
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  struct ExportFenceWin32HandleInfoKHR;
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+  struct ExportMemoryAllocateInfo;
+  using ExportMemoryAllocateInfoKHR = ExportMemoryAllocateInfo;
+  struct ExportMemoryAllocateInfoNV;
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  struct ExportMemoryWin32HandleInfoKHR;
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  struct ExportMemoryWin32HandleInfoNV;
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+  struct ExportSemaphoreCreateInfo;
+  using ExportSemaphoreCreateInfoKHR = ExportSemaphoreCreateInfo;
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  struct ExportSemaphoreWin32HandleInfoKHR;
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
   struct ExtensionProperties;
   struct Extent2D;
+  struct Extent3D;
   struct ExternalBufferProperties;
   using ExternalBufferPropertiesKHR = ExternalBufferProperties;
   struct ExternalFenceProperties;
   using ExternalFencePropertiesKHR = ExternalFenceProperties;
+#ifdef VK_USE_PLATFORM_ANDROID_KHR
+  struct ExternalFormatANDROID;
+#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
+  struct ExternalImageFormatProperties;
+  using ExternalImageFormatPropertiesKHR = ExternalImageFormatProperties;
   struct ExternalImageFormatPropertiesNV;
+  struct ExternalMemoryBufferCreateInfo;
+  using ExternalMemoryBufferCreateInfoKHR = ExternalMemoryBufferCreateInfo;
+  struct ExternalMemoryImageCreateInfo;
+  using ExternalMemoryImageCreateInfoKHR = ExternalMemoryImageCreateInfo;
+  struct ExternalMemoryImageCreateInfoNV;
+  struct ExternalMemoryProperties;
+  using ExternalMemoryPropertiesKHR = ExternalMemoryProperties;
   struct ExternalSemaphoreProperties;
   using ExternalSemaphorePropertiesKHR = ExternalSemaphoreProperties;
   struct FenceCreateInfo;
@@ -10604,10 +10703,15 @@ namespace VULKAN_HPP_NAMESPACE
 #ifdef VK_USE_PLATFORM_WIN32_KHR
   struct FenceGetWin32HandleInfoKHR;
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
+  struct FilterCubicImageViewImageFormatPropertiesEXT;
   struct FormatProperties;
   struct FormatProperties2;
   using FormatProperties2KHR = FormatProperties2;
   struct FramebufferCreateInfo;
+  struct GeometryAABBNV;
+  struct GeometryDataNV;
+  struct GeometryNV;
+  struct GeometryTrianglesNV;
   struct GraphicsPipelineCreateInfo;
   struct HdrMetadataEXT;
 #ifdef VK_USE_PLATFORM_IOS_MVK
@@ -10616,7 +10720,10 @@ namespace VULKAN_HPP_NAMESPACE
   struct ImageBlit;
   struct ImageCopy;
   struct ImageCreateInfo;
+  struct ImageDrmFormatModifierExplicitCreateInfoEXT;
+  struct ImageDrmFormatModifierListCreateInfoEXT;
   struct ImageDrmFormatModifierPropertiesEXT;
+  struct ImageFormatListCreateInfoKHR;
   struct ImageFormatProperties;
   struct ImageFormatProperties2;
   using ImageFormatProperties2KHR = ImageFormatProperties2;
@@ -10626,30 +10733,59 @@ namespace VULKAN_HPP_NAMESPACE
 #ifdef VK_USE_PLATFORM_FUCHSIA
   struct ImagePipeSurfaceCreateInfoFUCHSIA;
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
+  struct ImagePlaneMemoryRequirementsInfo;
+  using ImagePlaneMemoryRequirementsInfoKHR = ImagePlaneMemoryRequirementsInfo;
   struct ImageResolve;
   struct ImageSparseMemoryRequirementsInfo2;
   using ImageSparseMemoryRequirementsInfo2KHR = ImageSparseMemoryRequirementsInfo2;
+  struct ImageStencilUsageCreateInfoEXT;
   struct ImageSubresource;
+  struct ImageSubresourceLayers;
   struct ImageSubresourceRange;
+  struct ImageSwapchainCreateInfoKHR;
+  struct ImageViewASTCDecodeModeEXT;
   struct ImageViewCreateInfo;
   struct ImageViewHandleInfoNVX;
+  struct ImageViewUsageCreateInfo;
+  using ImageViewUsageCreateInfoKHR = ImageViewUsageCreateInfo;
+#ifdef VK_USE_PLATFORM_ANDROID_KHR
+  struct ImportAndroidHardwareBufferInfoANDROID;
+#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
   struct ImportFenceFdInfoKHR;
 #ifdef VK_USE_PLATFORM_WIN32_KHR
   struct ImportFenceWin32HandleInfoKHR;
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+  struct ImportMemoryFdInfoKHR;
+  struct ImportMemoryHostPointerInfoEXT;
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  struct ImportMemoryWin32HandleInfoKHR;
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  struct ImportMemoryWin32HandleInfoNV;
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
   struct ImportSemaphoreFdInfoKHR;
 #ifdef VK_USE_PLATFORM_WIN32_KHR
   struct ImportSemaphoreWin32HandleInfoKHR;
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
   struct IndirectCommandsLayoutCreateInfoNVX;
+  struct IndirectCommandsLayoutTokenNVX;
+  struct IndirectCommandsTokenNVX;
+  struct InputAttachmentAspectReference;
+  using InputAttachmentAspectReferenceKHR = InputAttachmentAspectReference;
   struct InstanceCreateInfo;
   struct LayerProperties;
 #ifdef VK_USE_PLATFORM_MACOS_MVK
   struct MacOSSurfaceCreateInfoMVK;
 #endif /*VK_USE_PLATFORM_MACOS_MVK*/
   struct MappedMemoryRange;
+  struct MemoryAllocateFlagsInfo;
+  using MemoryAllocateFlagsInfoKHR = MemoryAllocateFlagsInfo;
   struct MemoryAllocateInfo;
   struct MemoryBarrier;
+  struct MemoryDedicatedAllocateInfo;
+  using MemoryDedicatedAllocateInfoKHR = MemoryDedicatedAllocateInfo;
+  struct MemoryDedicatedRequirements;
+  using MemoryDedicatedRequirementsKHR = MemoryDedicatedRequirements;
   struct MemoryFdPropertiesKHR;
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
   struct MemoryGetAndroidHardwareBufferInfoANDROID;
@@ -10658,10 +10794,13 @@ namespace VULKAN_HPP_NAMESPACE
 #ifdef VK_USE_PLATFORM_WIN32_KHR
   struct MemoryGetWin32HandleInfoKHR;
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
+  struct MemoryHeap;
   struct MemoryHostPointerPropertiesEXT;
+  struct MemoryPriorityAllocateInfoEXT;
   struct MemoryRequirements;
   struct MemoryRequirements2;
   using MemoryRequirements2KHR = MemoryRequirements2;
+  struct MemoryType;
 #ifdef VK_USE_PLATFORM_WIN32_KHR
   struct MemoryWin32HandlePropertiesKHR;
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
@@ -10670,83 +10809,251 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_USE_PLATFORM_METAL_EXT*/
   struct MultisamplePropertiesEXT;
   struct ObjectTableCreateInfoNVX;
+  struct ObjectTableDescriptorSetEntryNVX;
   struct ObjectTableEntryNVX;
+  struct ObjectTableIndexBufferEntryNVX;
+  struct ObjectTablePipelineEntryNVX;
+  struct ObjectTablePushConstantEntryNVX;
+  struct ObjectTableVertexBufferEntryNVX;
+  struct Offset2D;
+  struct Offset3D;
   struct PastPresentationTimingGOOGLE;
+  struct PhysicalDevice16BitStorageFeatures;
+  using PhysicalDevice16BitStorageFeaturesKHR = PhysicalDevice16BitStorageFeatures;
+  struct PhysicalDevice8BitStorageFeaturesKHR;
+  struct PhysicalDeviceASTCDecodeFeaturesEXT;
+  struct PhysicalDeviceBlendOperationAdvancedFeaturesEXT;
+  struct PhysicalDeviceBlendOperationAdvancedPropertiesEXT;
+  struct PhysicalDeviceBufferAddressFeaturesEXT;
+  struct PhysicalDeviceComputeShaderDerivativesFeaturesNV;
+  struct PhysicalDeviceConditionalRenderingFeaturesEXT;
+  struct PhysicalDeviceConservativeRasterizationPropertiesEXT;
+  struct PhysicalDeviceCooperativeMatrixFeaturesNV;
+  struct PhysicalDeviceCooperativeMatrixPropertiesNV;
+  struct PhysicalDeviceCornerSampledImageFeaturesNV;
+  struct PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV;
+  struct PhysicalDeviceDepthClipEnableFeaturesEXT;
+  struct PhysicalDeviceDepthStencilResolvePropertiesKHR;
+  struct PhysicalDeviceDescriptorIndexingFeaturesEXT;
+  struct PhysicalDeviceDescriptorIndexingPropertiesEXT;
+  struct PhysicalDeviceDiscardRectanglePropertiesEXT;
+  struct PhysicalDeviceDriverPropertiesKHR;
+  struct PhysicalDeviceExclusiveScissorFeaturesNV;
   struct PhysicalDeviceExternalBufferInfo;
   using PhysicalDeviceExternalBufferInfoKHR = PhysicalDeviceExternalBufferInfo;
   struct PhysicalDeviceExternalFenceInfo;
   using PhysicalDeviceExternalFenceInfoKHR = PhysicalDeviceExternalFenceInfo;
+  struct PhysicalDeviceExternalImageFormatInfo;
+  using PhysicalDeviceExternalImageFormatInfoKHR = PhysicalDeviceExternalImageFormatInfo;
+  struct PhysicalDeviceExternalMemoryHostPropertiesEXT;
   struct PhysicalDeviceExternalSemaphoreInfo;
   using PhysicalDeviceExternalSemaphoreInfoKHR = PhysicalDeviceExternalSemaphoreInfo;
   struct PhysicalDeviceFeatures;
   struct PhysicalDeviceFeatures2;
   using PhysicalDeviceFeatures2KHR = PhysicalDeviceFeatures2;
+  struct PhysicalDeviceFloat16Int8FeaturesKHR;
+  struct PhysicalDeviceFloatControlsPropertiesKHR;
+  struct PhysicalDeviceFragmentDensityMapFeaturesEXT;
+  struct PhysicalDeviceFragmentDensityMapPropertiesEXT;
+  struct PhysicalDeviceFragmentShaderBarycentricFeaturesNV;
   struct PhysicalDeviceGroupProperties;
   using PhysicalDeviceGroupPropertiesKHR = PhysicalDeviceGroupProperties;
+  struct PhysicalDeviceIDProperties;
+  using PhysicalDeviceIDPropertiesKHR = PhysicalDeviceIDProperties;
+  struct PhysicalDeviceImageDrmFormatModifierInfoEXT;
   struct PhysicalDeviceImageFormatInfo2;
   using PhysicalDeviceImageFormatInfo2KHR = PhysicalDeviceImageFormatInfo2;
+  struct PhysicalDeviceImageViewImageFormatInfoEXT;
+  struct PhysicalDeviceInlineUniformBlockFeaturesEXT;
+  struct PhysicalDeviceInlineUniformBlockPropertiesEXT;
+  struct PhysicalDeviceLimits;
+  struct PhysicalDeviceMaintenance3Properties;
+  using PhysicalDeviceMaintenance3PropertiesKHR = PhysicalDeviceMaintenance3Properties;
+  struct PhysicalDeviceMemoryBudgetPropertiesEXT;
+  struct PhysicalDeviceMemoryPriorityFeaturesEXT;
   struct PhysicalDeviceMemoryProperties;
   struct PhysicalDeviceMemoryProperties2;
   using PhysicalDeviceMemoryProperties2KHR = PhysicalDeviceMemoryProperties2;
+  struct PhysicalDeviceMeshShaderFeaturesNV;
+  struct PhysicalDeviceMeshShaderPropertiesNV;
+  struct PhysicalDeviceMultiviewFeatures;
+  using PhysicalDeviceMultiviewFeaturesKHR = PhysicalDeviceMultiviewFeatures;
+  struct PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX;
+  struct PhysicalDeviceMultiviewProperties;
+  using PhysicalDeviceMultiviewPropertiesKHR = PhysicalDeviceMultiviewProperties;
+  struct PhysicalDevicePCIBusInfoPropertiesEXT;
+  struct PhysicalDevicePointClippingProperties;
+  using PhysicalDevicePointClippingPropertiesKHR = PhysicalDevicePointClippingProperties;
   struct PhysicalDeviceProperties;
   struct PhysicalDeviceProperties2;
   using PhysicalDeviceProperties2KHR = PhysicalDeviceProperties2;
+  struct PhysicalDeviceProtectedMemoryFeatures;
+  struct PhysicalDeviceProtectedMemoryProperties;
+  struct PhysicalDevicePushDescriptorPropertiesKHR;
+  struct PhysicalDeviceRayTracingPropertiesNV;
+  struct PhysicalDeviceRepresentativeFragmentTestFeaturesNV;
+  struct PhysicalDeviceSampleLocationsPropertiesEXT;
+  struct PhysicalDeviceSamplerFilterMinmaxPropertiesEXT;
+  struct PhysicalDeviceSamplerYcbcrConversionFeatures;
+  using PhysicalDeviceSamplerYcbcrConversionFeaturesKHR = PhysicalDeviceSamplerYcbcrConversionFeatures;
+  struct PhysicalDeviceScalarBlockLayoutFeaturesEXT;
+  struct PhysicalDeviceShaderAtomicInt64FeaturesKHR;
+  struct PhysicalDeviceShaderCorePropertiesAMD;
+  struct PhysicalDeviceShaderDrawParameterFeatures;
+  struct PhysicalDeviceShaderImageFootprintFeaturesNV;
+  struct PhysicalDeviceShadingRateImageFeaturesNV;
+  struct PhysicalDeviceShadingRateImagePropertiesNV;
   struct PhysicalDeviceSparseImageFormatInfo2;
   using PhysicalDeviceSparseImageFormatInfo2KHR = PhysicalDeviceSparseImageFormatInfo2;
+  struct PhysicalDeviceSparseProperties;
+  struct PhysicalDeviceSubgroupProperties;
   struct PhysicalDeviceSurfaceInfo2KHR;
+  struct PhysicalDeviceTransformFeedbackFeaturesEXT;
+  struct PhysicalDeviceTransformFeedbackPropertiesEXT;
+  struct PhysicalDeviceVariablePointerFeatures;
+  using PhysicalDeviceVariablePointerFeaturesKHR = PhysicalDeviceVariablePointerFeatures;
+  struct PhysicalDeviceVertexAttributeDivisorFeaturesEXT;
+  struct PhysicalDeviceVertexAttributeDivisorPropertiesEXT;
+  struct PhysicalDeviceVulkanMemoryModelFeaturesKHR;
+  struct PhysicalDeviceYcbcrImageArraysFeaturesEXT;
   struct PipelineCacheCreateInfo;
+  struct PipelineColorBlendAdvancedStateCreateInfoEXT;
+  struct PipelineColorBlendAttachmentState;
+  struct PipelineColorBlendStateCreateInfo;
+  struct PipelineCoverageModulationStateCreateInfoNV;
+  struct PipelineCoverageToColorStateCreateInfoNV;
+  struct PipelineDepthStencilStateCreateInfo;
+  struct PipelineDiscardRectangleStateCreateInfoEXT;
+  struct PipelineDynamicStateCreateInfo;
+  struct PipelineInputAssemblyStateCreateInfo;
   struct PipelineLayoutCreateInfo;
+  struct PipelineMultisampleStateCreateInfo;
+  struct PipelineRasterizationConservativeStateCreateInfoEXT;
+  struct PipelineRasterizationDepthClipStateCreateInfoEXT;
+  struct PipelineRasterizationStateCreateInfo;
+  struct PipelineRasterizationStateRasterizationOrderAMD;
+  struct PipelineRasterizationStateStreamCreateInfoEXT;
+  struct PipelineRepresentativeFragmentTestStateCreateInfoNV;
+  struct PipelineSampleLocationsStateCreateInfoEXT;
+  struct PipelineShaderStageCreateInfo;
+  struct PipelineTessellationDomainOriginStateCreateInfo;
+  using PipelineTessellationDomainOriginStateCreateInfoKHR = PipelineTessellationDomainOriginStateCreateInfo;
+  struct PipelineTessellationStateCreateInfo;
+  struct PipelineVertexInputDivisorStateCreateInfoEXT;
+  struct PipelineVertexInputStateCreateInfo;
+  struct PipelineViewportCoarseSampleOrderStateCreateInfoNV;
+  struct PipelineViewportExclusiveScissorStateCreateInfoNV;
+  struct PipelineViewportShadingRateImageStateCreateInfoNV;
+  struct PipelineViewportStateCreateInfo;
+  struct PipelineViewportSwizzleStateCreateInfoNV;
+  struct PipelineViewportWScalingStateCreateInfoNV;
   struct PresentInfoKHR;
+  struct PresentRegionKHR;
+  struct PresentRegionsKHR;
+  struct PresentTimeGOOGLE;
+  struct PresentTimesInfoGOOGLE;
+  struct ProtectedSubmitInfo;
+  struct PushConstantRange;
   struct QueryPoolCreateInfo;
+  struct QueueFamilyCheckpointPropertiesNV;
   struct QueueFamilyProperties;
   struct QueueFamilyProperties2;
   using QueueFamilyProperties2KHR = QueueFamilyProperties2;
   struct RayTracingPipelineCreateInfoNV;
+  struct RayTracingShaderGroupCreateInfoNV;
   struct Rect2D;
+  struct RectLayerKHR;
   struct RefreshCycleDurationGOOGLE;
   struct RenderPassBeginInfo;
   struct RenderPassCreateInfo;
   struct RenderPassCreateInfo2KHR;
+  struct RenderPassFragmentDensityMapCreateInfoEXT;
+  struct RenderPassInputAttachmentAspectCreateInfo;
+  using RenderPassInputAttachmentAspectCreateInfoKHR = RenderPassInputAttachmentAspectCreateInfo;
+  struct RenderPassMultiviewCreateInfo;
+  using RenderPassMultiviewCreateInfoKHR = RenderPassMultiviewCreateInfo;
+  struct RenderPassSampleLocationsBeginInfoEXT;
+  struct SampleLocationEXT;
   struct SampleLocationsInfoEXT;
   struct SamplerCreateInfo;
+  struct SamplerReductionModeCreateInfoEXT;
   struct SamplerYcbcrConversionCreateInfo;
   using SamplerYcbcrConversionCreateInfoKHR = SamplerYcbcrConversionCreateInfo;
+  struct SamplerYcbcrConversionImageFormatProperties;
+  using SamplerYcbcrConversionImageFormatPropertiesKHR = SamplerYcbcrConversionImageFormatProperties;
+  struct SamplerYcbcrConversionInfo;
+  using SamplerYcbcrConversionInfoKHR = SamplerYcbcrConversionInfo;
   struct SemaphoreCreateInfo;
   struct SemaphoreGetFdInfoKHR;
 #ifdef VK_USE_PLATFORM_WIN32_KHR
   struct SemaphoreGetWin32HandleInfoKHR;
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
   struct ShaderModuleCreateInfo;
+  struct ShaderModuleValidationCacheCreateInfoEXT;
+  struct ShaderResourceUsageAMD;
+  struct ShaderStatisticsInfoAMD;
   struct ShadingRatePaletteNV;
+  struct SharedPresentSurfaceCapabilitiesKHR;
+  struct SparseBufferMemoryBindInfo;
   struct SparseImageFormatProperties;
   struct SparseImageFormatProperties2;
   using SparseImageFormatProperties2KHR = SparseImageFormatProperties2;
+  struct SparseImageMemoryBind;
+  struct SparseImageMemoryBindInfo;
   struct SparseImageMemoryRequirements;
   struct SparseImageMemoryRequirements2;
   using SparseImageMemoryRequirements2KHR = SparseImageMemoryRequirements2;
+  struct SparseImageOpaqueMemoryBindInfo;
+  struct SparseMemoryBind;
+  struct SpecializationInfo;
+  struct SpecializationMapEntry;
+  struct StencilOpState;
   struct SubmitInfo;
   struct SubpassBeginInfoKHR;
+  struct SubpassDependency;
+  struct SubpassDependency2KHR;
+  struct SubpassDescription;
+  struct SubpassDescription2KHR;
+  struct SubpassDescriptionDepthStencilResolveKHR;
   struct SubpassEndInfoKHR;
+  struct SubpassSampleLocationsEXT;
   struct SubresourceLayout;
   struct SurfaceCapabilities2EXT;
   struct SurfaceCapabilities2KHR;
   struct SurfaceCapabilitiesKHR;
   struct SurfaceFormat2KHR;
   struct SurfaceFormatKHR;
+  struct SwapchainCounterCreateInfoEXT;
   struct SwapchainCreateInfoKHR;
+  struct TextureLODGatherFormatPropertiesAMD;
   struct ValidationCacheCreateInfoEXT;
+  struct ValidationFeaturesEXT;
+  struct ValidationFlagsEXT;
+  struct VertexInputAttributeDescription;
+  struct VertexInputBindingDescription;
+  struct VertexInputBindingDivisorDescriptionEXT;
 #ifdef VK_USE_PLATFORM_VI_NN
   struct ViSurfaceCreateInfoNN;
 #endif /*VK_USE_PLATFORM_VI_NN*/
   struct Viewport;
+  struct ViewportSwizzleNV;
   struct ViewportWScalingNV;
 #ifdef VK_USE_PLATFORM_WAYLAND_KHR
   struct WaylandSurfaceCreateInfoKHR;
 #endif /*VK_USE_PLATFORM_WAYLAND_KHR*/
 #ifdef VK_USE_PLATFORM_WIN32_KHR
+  struct Win32KeyedMutexAcquireReleaseInfoKHR;
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  struct Win32KeyedMutexAcquireReleaseInfoNV;
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+#ifdef VK_USE_PLATFORM_WIN32_KHR
   struct Win32SurfaceCreateInfoKHR;
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
   struct WriteDescriptorSet;
+  struct WriteDescriptorSetAccelerationStructureNV;
+  struct WriteDescriptorSetInlineUniformBlockEXT;
+  struct XYColorEXT;
 #ifdef VK_USE_PLATFORM_XCB_KHR
   struct XcbSurfaceCreateInfoKHR;
 #endif /*VK_USE_PLATFORM_XCB_KHR*/

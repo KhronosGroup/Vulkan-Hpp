@@ -1015,27 +1015,6 @@ std::string VulkanHppGenerator::generateCall(std::pair<std::string, CommandData>
   return call.str();
 }
 
-std::set<std::string> VulkanHppGenerator::gatherForwardDeclarations()
-{
-  // all structures in command parameters need to be forward declared
-  std::set<std::string> forwardDeclarations;
-  for (auto const& handle : m_handles)
-  {
-    for (auto const& command : handle.second.commands)
-    {
-      for (auto const& parameter : command.second.params)
-      {
-        auto structureIt = m_structures.find(parameter.type.type);
-        if (structureIt != m_structures.end())
-        {
-          forwardDeclarations.insert(parameter.type.type);
-        }
-      }
-    }
-  }
-  return forwardDeclarations;
-}
-
 std::string const& VulkanHppGenerator::getTypesafeCheck() const
 {
   return m_typesafeCheck;
@@ -1560,7 +1539,7 @@ void VulkanHppGenerator::readExtensionRequire(tinyxml2::XMLElement const* elemen
     }
     else if (value == "enum")
     {
-      readExtensionRequireEnum(child, tag);
+      readRequireEnum(child, tag);
     }
     else if (value == "type")
     {
@@ -1593,70 +1572,6 @@ void VulkanHppGenerator::readExtensionRequireCommand(tinyxml2::XMLElement const*
     auto const& commandsIt = handlesIt->second.commands.find(name);
     assert(commandsIt != handlesIt->second.commands.end());
     commandsIt->second.platform = platform;
-  }
-}
-
-void VulkanHppGenerator::readExtensionRequireEnum(tinyxml2::XMLElement const* element, std::string const& tag)
-{
-  std::map<std::string, std::string> attributes = getAttributes(element);
-  checkAttributes(attributes, element->GetLineNum(),
-  {
-    { "name",{} }
-  },
-  {
-    { "alias",{} },
-    { "bitpos",{} },
-    { "comment",{} },
-    { "dir",{ "-" } },
-    { "extends",{} },
-    { "extnumber",{} },
-    { "offset",{} },
-    { "value",{} }
-  });
-  checkElements(getChildElements(element), {});
-
-  // TODO process enums which don't extend existing enums
-  auto extendsIt = attributes.find("extends");
-  if (extendsIt != attributes.end())
-  {
-    bool bitmask = false;
-    std::string extends = extendsIt->second;
-    auto enumIt = m_enums.find(extends);
-    if (enumIt == m_enums.end())
-    {
-      enumIt = m_bitmaskBits.find(extends);
-      assert(enumIt != m_bitmaskBits.end());
-      bitmask = true;
-    }
-
-    std::string prefix = getEnumPrefix(enumIt->first, bitmask);
-    std::string postfix = getEnumPostfix(enumIt->first, m_tags, prefix);
-
-    auto nameIt = attributes.find("name");
-    assert(nameIt != attributes.end());
-
-    auto aliasIt = attributes.find("alias");
-    if (aliasIt != attributes.end())
-    {
-      checkAttributes(attributes, element->GetLineNum(), { { "alias",{} },{ "extends",{} },{ "name",{} } }, { { "comment",{} } });
-
-      // look for the aliased enum value
-      std::string alias = createEnumValueName(aliasIt->second, prefix, postfix, bitmask, findTag(m_tags, aliasIt->second));
-      auto valueIt = std::find_if(enumIt->second.values.begin(), enumIt->second.values.end(), [&alias](std::pair<std::string, std::string> const& value) { return value.second == alias; });
-      assert(valueIt != enumIt->second.values.end());
-
-      std::string name = createEnumValueName(nameIt->second, prefix, postfix, bitmask, tag);
-      if (valueIt->second != name)
-      {
-        // only add an alias if it's different from the aliased name
-        enumIt->second.aliases.push_back(std::make_pair(nameIt->second, name));
-      }
-    }
-    else
-    {
-      assert((attributes.find("bitpos") != attributes.end()) + (attributes.find("offset") != attributes.end()) + (attributes.find("value") != attributes.end()) == 1);
-      enumIt->second.addEnumValue(nameIt->second, bitmask, prefix, postfix, tag);
-    }
   }
 }
 
@@ -1734,46 +1649,8 @@ void VulkanHppGenerator::readFeatureRequire(tinyxml2::XMLElement const* element)
     std::string value = child->Value();
     if (value == "enum")
     {
-      readFeatureRequireEnum(child);
+      readRequireEnum(child, "");
     }
-  }
-}
-
-void VulkanHppGenerator::readFeatureRequireEnum(tinyxml2::XMLElement const* element)
-{
-  std::map<std::string, std::string> attributes = getAttributes(element);
-  checkAttributes(attributes, element->GetLineNum(),
-  {
-    { "name",{} }
-  },
-  {
-    { "bitpos",{} },
-    { "comment",{} },
-    { "dir", { "-" } },
-    { "extends",{} },
-    { "extnumber", {} },
-    { "offset", {} },
-    { "value",{} }
-  });
-  checkElements(getChildElements(element), {});
-
-  auto extendsAttribute = attributes.find("extends");
-  if (extendsAttribute != attributes.end())
-  {
-    bool bitmask = false;
-    assert(strncmp(extendsAttribute->second.c_str(), "Vk", 2) == 0);
-    std::string extends = extendsAttribute->second;
-    auto enumIt = m_enums.find(extends);
-    if (enumIt == m_enums.end())
-    {
-      enumIt = m_bitmaskBits.find(extends);
-      assert(enumIt != m_bitmaskBits.end());
-      bitmask = true;
-    }
-
-    std::string prefix = getEnumPrefix(enumIt->first, bitmask);
-    std::string postfix = getEnumPostfix(enumIt->first, m_tags, prefix);
-    enumIt->second.addEnumValue(attributes.find("name")->second, bitmask, prefix, postfix, "");
   }
 }
 
@@ -1871,6 +1748,75 @@ void VulkanHppGenerator::readPlatforms(tinyxml2::XMLElement const* element)
   }
 }
 
+void VulkanHppGenerator::readRequireEnum(tinyxml2::XMLElement const* element, std::string const& tag)
+{
+  std::map<std::string, std::string> attributes = getAttributes(element);
+  checkAttributes(attributes, element->GetLineNum(),
+  {
+    { "name",{} }
+  },
+  {
+    { "alias",{} },
+    { "bitpos",{} },
+    { "comment",{} },
+    { "dir",{ "-" } },
+    { "extends",{} },
+    { "extnumber",{} },
+    { "offset",{} },
+    { "value",{} }
+  });
+  checkElements(getChildElements(element), {});
+
+  // TODO process enums which don't extend existing enums
+  auto extendsIt = attributes.find("extends");
+  if (extendsIt != attributes.end())
+  {
+    bool bitmask = false;
+    std::string extends = extendsIt->second;
+    auto enumIt = m_enums.find(extends);
+    if (enumIt == m_enums.end())
+    {
+      enumIt = m_bitmaskBits.find(extends);
+      assert(enumIt != m_bitmaskBits.end());
+      bitmask = true;
+    }
+
+    std::string prefix = getEnumPrefix(enumIt->first, bitmask);
+    std::string postfix = getEnumPostfix(enumIt->first, m_tags, prefix);
+
+    auto nameIt = attributes.find("name");
+    assert(nameIt != attributes.end());
+
+    auto aliasIt = attributes.find("alias");
+    if (aliasIt != attributes.end())
+    {
+      checkAttributes(attributes, element->GetLineNum(), { { "alias",{} },{ "extends",{} },{ "name",{} } }, { { "comment",{} } });
+
+      // look for the aliased enum value
+      std::string alias = aliasIt->second;
+      auto valueIt = std::find_if(enumIt->second.values.begin(), enumIt->second.values.end(), [&alias](std::pair<std::string, std::string> const& value) { return value.first == alias; });
+      if (valueIt == enumIt->second.values.end())
+      {
+        // if the aliased enum value is not found in the values, look in the aliases as well!
+        valueIt = std::find_if(enumIt->second.aliases.begin(), enumIt->second.aliases.end(), [&alias](std::pair<std::string, std::string> const& value) { return value.first == alias; });
+        assert(valueIt != enumIt->second.aliases.end());
+      }
+
+      std::string name = createEnumValueName(nameIt->second, prefix, postfix, bitmask, tag);
+      if (valueIt->second != name)
+      {
+        // only add an alias if it's different from the aliased name
+        enumIt->second.aliases.push_back(std::make_pair(nameIt->second, name));
+      }
+    }
+    else
+    {
+      assert((attributes.find("bitpos") != attributes.end()) + (attributes.find("offset") != attributes.end()) + (attributes.find("value") != attributes.end()) == 1);
+      enumIt->second.addEnumValue(nameIt->second, bitmask, prefix, postfix, tag);
+    }
+  }
+}
+
 void VulkanHppGenerator::readStruct(tinyxml2::XMLElement const* element, bool isUnion, std::map<std::string, std::string> const& attributes)
 {
   checkAttributes(attributes, element->GetLineNum(),
@@ -1913,8 +1859,8 @@ void VulkanHppGenerator::readStructAlias(int lineNum, std::string const& name, s
   checkAlias(m_structures, alias, lineNum);
 
   auto structsIt = m_structures.find(alias);
-  assert((structsIt != m_structures.end()) && structsIt->second.alias.empty());
-  structsIt->second.alias = stripPrefix(name, "Vk");
+  assert((structsIt != m_structures.end()) && (std::find(structsIt->second.aliases.begin(), structsIt->second.aliases.end(), name) == structsIt->second.aliases.end()));
+  structsIt->second.aliases.push_back(name);
 
   assert(m_structureAliases.find(name) == m_structureAliases.end());
   m_structureAliases[name] = alias;
@@ -2598,20 +2544,18 @@ void VulkanHppGenerator::writeEnums(std::ostream & os) const
   }
 }
 
-void VulkanHppGenerator::writeForwardDeclarations(std::ostream & os, std::set<std::string> const& forwardDeclarations) const
+void VulkanHppGenerator::writeForwardDeclarations(std::ostream & os) const
 {
   os << std::endl;
-  for (auto const& fd : forwardDeclarations)
+  for (auto const& structure : m_structures)
   {
-    auto structureIt = m_structures.find(fd);
-    assert(structureIt != m_structures.end());
-    enterProtect(os, structureIt->second.protect);
-    os << "  " << (structureIt->second.isUnion ? "union" : "struct") << " " << stripPrefix(structureIt->first, "Vk") << ";" << std::endl;
-    if (!structureIt->second.alias.empty())
+    enterProtect(os, structure.second.protect);
+    os << "  " << (structure.second.isUnion ? "union" : "struct") << " " << stripPrefix(structure.first, "Vk") << ";" << std::endl;
+    for (std::string const& alias : structure.second.aliases)
     {
-      os << "  using " << stripPrefix(structureIt->second.alias, "Vk") << " = " << stripPrefix(structureIt->first, "Vk") << ";" << std::endl;
+      os << "  using " << stripPrefix(alias, "Vk") << " = " << stripPrefix(structure.first, "Vk") << ";" << std::endl;
     }
-    leaveProtect(os, structureIt->second.protect);
+    leaveProtect(os, structure.second.protect);
   }
 }
 
@@ -3971,7 +3915,7 @@ void VulkanHppGenerator::writeStructureChainValidation(std::ostream & os)
           errorString << extendName << " does not specify a struct in structextends field.";
 
           // check if symbol name is an alias to a struct
-          auto itAlias = std::find_if(m_structures.begin(), m_structures.end(), [&extendName](std::pair<std::string, StructureData> const &it) -> bool {return it.second.alias == extendName; });
+          auto itAlias = std::find_if(m_structures.begin(), m_structures.end(), [&extendName](std::pair<std::string, StructureData> const &it) -> bool {return std::find(it.second.aliases.begin(), it.second.aliases.end(), extendName) != it.second.aliases.end(); });
           if (itAlias != m_structures.end())
           {
             errorString << " The symbol is an alias and maps to " << itAlias->first << ".";
@@ -5100,8 +5044,6 @@ namespace std
 
     generator.checkCorrectness();
 
-    std::set<std::string> forwardDeclarations = generator.gatherForwardDeclarations();
-
     std::ofstream ofs(VULKAN_HPP_FILE);
     ofs << generator.getVulkanLicenseHeader() << std::endl
       << includes
@@ -5143,7 +5085,7 @@ namespace std
     generator.writeThrowExceptions(ofs);
     ofs << "#endif" << std::endl;
     ofs << structResultValue;
-    generator.writeForwardDeclarations(ofs, forwardDeclarations);
+    generator.writeForwardDeclarations(ofs);
     generator.writeHandles(ofs);
     generator.writeStructs(ofs);
     generator.writeHandlesCommandDefintions(ofs);

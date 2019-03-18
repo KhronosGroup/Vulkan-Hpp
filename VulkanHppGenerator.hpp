@@ -29,7 +29,6 @@ class VulkanHppGenerator
     }
 
     void checkCorrectness();
-    std::set<std::string> gatherForwardDeclarations();
     std::string const& getTypesafeCheck() const;
     std::string const& getVersion() const;
     std::string const& getVulkanLicenseHeader() const;
@@ -46,7 +45,7 @@ class VulkanHppGenerator
     void writeDispatchLoaderDynamic(std::ostream &os); // use vkGet*ProcAddress to get function pointers
     void writeDispatchLoaderStatic(std::ostream &os);  // use exported symbols from loader
     void writeEnums(std::ostream & os) const;
-    void writeForwardDeclarations(std::ostream & os, std::set<std::string> const& forwardDeclarations) const;
+    void writeForwardDeclarations(std::ostream & os) const;
     void writeHandles(std::ostream & os) const;
     void writeHandlesCommandDefintions(std::ostream & os) const;
     void writeResultExceptions(std::ostream & os) const;
@@ -142,7 +141,7 @@ class VulkanHppGenerator
       std::vector<MemberData>   members;
       std::string               protect;
       std::vector<std::string>  structExtends;
-      std::string               alias;
+      std::vector<std::string>  aliases;
       std::string               subStruct;
     };
 
@@ -172,13 +171,12 @@ class VulkanHppGenerator
     void readExtensionDisabledRequire(tinyxml2::XMLElement const* element);
     void readExtensionRequire(tinyxml2::XMLElement const* element, std::string const& platform, std::string const& tag);
     void readExtensionRequireCommand(tinyxml2::XMLElement const* element, std::string const& platform);
-    void readExtensionRequireEnum(tinyxml2::XMLElement const* element, std::string const& tag);
     void readExtensionRequireType(tinyxml2::XMLElement const* element, std::string const& platform);
     void readFeatureRequire(tinyxml2::XMLElement const* element);
-    void readFeatureRequireEnum(tinyxml2::XMLElement const* element);
     void readFuncpointer(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes);
     void readHandle(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes);
     void readPlatform(tinyxml2::XMLElement const* element);
+    void readRequireEnum(tinyxml2::XMLElement const* element, std::string const& tag);
     void readStruct(tinyxml2::XMLElement const* element, bool isUnion, std::map<std::string, std::string> const& attributes);
     void readStructAlias(int lineNum, std::string const& name, std::string const& alias, std::map<std::string, std::string> const& attributes);
     MemberData readStructMember(tinyxml2::XMLElement const* element);

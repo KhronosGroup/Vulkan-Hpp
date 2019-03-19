@@ -15,14 +15,14 @@
 // VulkanHpp Samples : 04_InitCommandBuffer
 //                     Create command buffer
 
-#include "..\utils\utils.hpp"
+#include "../utils/utils.hpp"
 #include "vulkan/vulkan.hpp"
 #include <iostream>
 
 static char const* AppName = "04_InitCommandBuffer";
 static char const* EngineName = "Vulkan.hpp";
 
-int main(int /*argc*/, char * /*argv[]*/)
+int main(int /*argc*/, char ** /*argv*/)
 {
   try
   {

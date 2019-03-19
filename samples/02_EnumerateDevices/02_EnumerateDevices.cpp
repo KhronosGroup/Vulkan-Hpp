@@ -15,14 +15,14 @@
 // VulkanHpp Samples : 02_EnumerateDevices
 //                     Enumerate physical devices
 
-#include "..\utils\utils.hpp"
+#include "../utils/utils.hpp"
 #include "vulkan/vulkan.hpp"
 #include <iostream>
 
 static char const* AppName = "02_EnumerateDevices";
 static char const* EngineName = "Vulkan.hpp";
 
-int main(int /*argc*/, char * /*argv[]*/)
+int main(int /*argc*/, char ** /*argv*/)
 {
   try
   {

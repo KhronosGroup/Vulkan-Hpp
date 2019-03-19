@@ -21,7 +21,7 @@
 static char const* AppName = "01_InitInstance";
 static char const* EngineName = "Vulkan.hpp";
 
-int main(int /*argc*/, char * /*argv[]*/)
+int main(int /*argc*/, char ** /*argv*/)
 {
   /* VULKAN_HPP_KEY_START */
 

@@ -15,8 +15,8 @@
 // VulkanHpp Samples : 11_InitShaders
 //                     Initialize vertex and fragment shaders
 
-#include "..\utils\shaders.hpp"
-#include "..\utils\utils.hpp"
+#include "../utils/shaders.hpp"
+#include "../utils/utils.hpp"
 #include "vulkan/vulkan.hpp"
 #include "SPIRV/GlslangToSpv.h"
 #include <iostream>
@@ -24,7 +24,7 @@
 static char const* AppName = "11_InitShaders";
 static char const* EngineName = "Vulkan.hpp";
 
-int main(int /*argc*/, char * /*argv[]*/)
+int main(int /*argc*/, char ** /*argv*/)
 {
   try
   {

@@ -22,7 +22,7 @@
 static char const* AppName = "12_InitFrameBuffers";
 static char const* EngineName = "Vulkan.hpp";
 
-int main(int /*argc*/, char * /*argv[]*/)
+int main(int /*argc*/, char ** /*argv*/)
 {
   try
   {

@@ -15,7 +15,7 @@
 // VulkanHpp Samples : 10_InitRenderPass
 //                     Initialize a render pass
 
-#include "..\utils\utils.hpp"
+#include "../utils/utils.hpp"
 #include "vulkan/vulkan.hpp"
 #include <iostream>
 
@@ -26,7 +26,7 @@
 static char const* AppName = "10_InitRenderPass";
 static char const* EngineName = "Vulkan.hpp";
 
-int main(int /*argc*/, char * /*argv[]*/)
+int main(int /*argc*/, char ** /*argv*/)
 {
   try
   {

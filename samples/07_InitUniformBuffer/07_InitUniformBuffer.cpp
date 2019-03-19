@@ -15,7 +15,7 @@
 // VulkanHpp Samples : 07_InitUniformBuffer
 //                     Initialize a uniform buffer
 
-#include "..\utils\utils.hpp"
+#include "../utils/utils.hpp"
 #include "vulkan/vulkan.hpp"
 #include <iostream>
 
@@ -26,7 +26,7 @@
 static char const* AppName = "07_InitUniformBuffer";
 static char const* EngineName = "Vulkan.hpp";
 
-int main(int /*argc*/, char * /*argv[]*/)
+int main(int /*argc*/, char ** /*argv*/)
 {
   try
   {

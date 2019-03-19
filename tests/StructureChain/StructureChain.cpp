@@ -29,7 +29,7 @@ static char const* EngineName = "Vulkan.hpp";
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
-int main(int /*argc*/, char * /*argv[]*/)
+int main(int /*argc*/, char ** /*argv*/)
 {
   try
   {

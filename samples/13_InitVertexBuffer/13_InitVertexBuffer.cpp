@@ -23,7 +23,7 @@
 static char const* AppName = "13_InitVertexBuffer";
 static char const* EngineName = "Vulkan.hpp";
 
-int main(int /*argc*/, char * /*argv[]*/)
+int main(int /*argc*/, char ** /*argv*/)
 {
   try
   {

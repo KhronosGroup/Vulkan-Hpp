@@ -14,6 +14,8 @@
 
 cmake_minimum_required(VERSION 3.2)
 
+find_package(Vulkan REQUIRED)
+
 project(Vulkan-Hpp_Samples)
 
 option (SAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP OFF)
@@ -30,7 +32,7 @@ if (SAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP)
   include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../Vulkan-Docs/include")
   include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 else()
-  include_directories("$ENV{VK_SDK_PATH}/include")
+  include_directories("${Vulkan_INCLUDE_DIRS}")
 endif()
 
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../glm")

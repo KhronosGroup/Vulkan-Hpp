@@ -35,5 +35,5 @@ add_executable(12_InitFrameBuffers
 
 set_target_properties(12_InitFrameBuffers PROPERTIES FOLDER "Samples")
 target_include_directories(12_InitFrameBuffers PUBLIC ${CMAKE_SOURCE_DIR}/glslang)
-target_link_libraries(12_InitFrameBuffers PUBLIC glslang SPIRV "$ENV{VULKAN_SDK}/Lib/vulkan-1.lib"
+target_link_libraries(12_InitFrameBuffers PUBLIC glslang SPIRV "${Vulkan_LIBRARIES}"
 )

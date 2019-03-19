@@ -34,4 +34,4 @@ add_executable(05_InitSwapchain
 )
 
 set_target_properties(05_InitSwapchain PROPERTIES FOLDER "Samples")
-target_link_libraries(05_InitSwapchain "$ENV{VULKAN_SDK}/Lib/vulkan-1.lib")
+target_link_libraries(05_InitSwapchain "${Vulkan_LIBRARIES}")

@@ -32,4 +32,4 @@ add_executable(NoExceptions
 )
 
 set_target_properties(NoExceptions PROPERTIES FOLDER "Tests")
-target_link_libraries(NoExceptions "$ENV{VULKAN_SDK}/Lib/vulkan-1.lib")
+target_link_libraries(NoExceptions "${Vulkan_LIBRARIES}")

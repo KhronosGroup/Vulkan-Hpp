@@ -32,4 +32,4 @@ add_executable(01_InitInstance
 )
 
 set_target_properties(01_InitInstance PROPERTIES FOLDER "Samples")
-target_link_libraries(01_InitInstance "$ENV{VULKAN_SDK}/Lib/vulkan-1.lib")
+target_link_libraries(01_InitInstance "${Vulkan_LIBRARIES}")

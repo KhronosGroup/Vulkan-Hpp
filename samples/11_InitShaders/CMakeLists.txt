@@ -37,5 +37,5 @@ add_executable(11_InitShaders
 
 set_target_properties(11_InitShaders PROPERTIES FOLDER "Samples")
 target_include_directories(11_InitShaders PUBLIC ${CMAKE_SOURCE_DIR}/glslang)
-target_link_libraries(11_InitShaders PUBLIC glslang SPIRV "$ENV{VULKAN_SDK}/Lib/vulkan-1.lib"
+target_link_libraries(11_InitShaders PUBLIC glslang SPIRV "${Vulkan_LIBRARIES}"
 )

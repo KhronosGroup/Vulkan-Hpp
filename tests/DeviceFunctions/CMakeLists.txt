@@ -32,4 +32,4 @@ add_executable(DeviceFunctions
 )
 
 set_target_properties(DeviceFunctions PROPERTIES FOLDER "Tests")
-target_link_libraries(DeviceFunctions "$ENV{VULKAN_SDK}/Lib/vulkan-1.lib")
+target_link_libraries(DeviceFunctions "${Vulkan_LIBRARIES}")

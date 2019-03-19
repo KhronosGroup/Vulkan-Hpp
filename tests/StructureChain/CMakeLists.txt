@@ -32,4 +32,4 @@ add_executable(StructureChain
 )
 
 set_target_properties(StructureChain PROPERTIES FOLDER "Tests")
-target_link_libraries(StructureChain "$ENV{VULKAN_SDK}/Lib/vulkan-1.lib")
+target_link_libraries(StructureChain "${Vulkan_LIBRARIES}")

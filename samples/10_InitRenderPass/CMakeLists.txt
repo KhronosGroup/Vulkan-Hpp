@@ -34,4 +34,4 @@ add_executable(10_InitRenderPass
 )
 
 set_target_properties(10_InitRenderPass PROPERTIES FOLDER "Samples")
-target_link_libraries(10_InitRenderPass "$ENV{VULKAN_SDK}/Lib/vulkan-1.lib")
+target_link_libraries(10_InitRenderPass "${Vulkan_LIBRARIES}")

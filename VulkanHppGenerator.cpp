@@ -758,6 +758,13 @@ std::pair<bool, std::string> writeFunctionBodyStandardReturn(std::string const& 
   return std::make_pair(castReturn, ret);
 }
 
+VulkanHppGenerator::VulkanHppGenerator()
+{
+  m_handles.insert(std::make_pair("", HandleData()));   // insert the default "handle" without class (for createInstance, and such)
+#if !defined(NDEBUG)
+#endif
+}
+
 bool VulkanHppGenerator::containsUnion(std::string const& type) const
 {
   // a simple recursive check if a type is or contains a union
@@ -826,13 +833,7 @@ std::string VulkanHppGenerator::defaultValue(std::string const& type) const
   }
   else
   {
-#if !defined(NDEBUG)
-    static const std::set<std::string> otherTypes =
-    {
-      "DWORD", "float", "HANDLE", "HINSTANCE", "HWND", "int", "int32_t", "size_t", "uint32_t", "uint64_t", "uint8_t", "Window", "xcb_window_t", "zx_handle_t"
-    };
-    assert(otherTypes.find(type) != otherTypes.end());
-#endif
+    assert(m_defaultZeroTypes.find(type) != m_defaultZeroTypes.end());
     return "0";
   }
 }
@@ -1817,6 +1818,19 @@ void VulkanHppGenerator::readRequireEnum(tinyxml2::XMLElement const* element, st
   }
 }
 
+#if !defined(NDEBUG)
+void VulkanHppGenerator::readRequires(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes)
+{
+  checkAttributes(attributes, element->GetLineNum(), { {"name", {}}, { "requires", {}} }, {});
+  checkElements(getChildElements(element), {});
+
+  auto nameIt = attributes.find("name");
+  assert(nameIt != attributes.end());
+  assert(m_defaultZeroTypes.find(nameIt->second) == m_defaultZeroTypes.end());
+  m_defaultZeroTypes.insert(nameIt->second);
+}
+#endif
+
 void VulkanHppGenerator::readStruct(tinyxml2::XMLElement const* element, bool isUnion, std::map<std::string, std::string> const& attributes)
 {
   checkAttributes(attributes, element->GetLineNum(),
@@ -2016,10 +2030,21 @@ void VulkanHppGenerator::readType(tinyxml2::XMLElement const* element)
       throw std::runtime_error("Spec error on line " + lineNumber + ": unknown category <" + categoryIt->second + ">");
     }
   }
+#if !defined(NDEBUG)
   else
   {
-    assert(attributes.find("name") != attributes.end());
+    auto requiresIt = attributes.find("requires");
+    if (requiresIt != attributes.end())
+    {
+      readRequires(element, attributes);
+    }
+    else
+    {
+      assert((attributes.size() == 1) && (attributes.begin()->first == "name") && (attributes.begin()->second == "int"));
+      m_defaultZeroTypes.insert("int");
+    }
   }
+#endif
 }
 
 void VulkanHppGenerator::readTypes(tinyxml2::XMLElement const* element)

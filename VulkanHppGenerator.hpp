@@ -23,10 +23,7 @@
 class VulkanHppGenerator
 {
   public:
-    VulkanHppGenerator()
-    {
-      m_handles.insert(std::make_pair("", HandleData()));   // insert the default "handle" without class (for createInstance, and such)
-    }
+    VulkanHppGenerator();
 
     void checkCorrectness();
     std::string const& getTypesafeCheck() const;
@@ -222,6 +219,9 @@ class VulkanHppGenerator
     void writeStructure(std::ostream & os, std::pair<std::string, StructureData> const& structure) const;
     void writeUnion(std::ostream & os, std::pair<std::string, StructureData> const& structure) const;
     void writeUniqueTypes(std::ostream &os, std::string const& parentType, std::set<std::string> const& childrenTypes) const;
+#if !defined(NDEBUG)
+    void readRequires(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes);
+#endif
 
   private:
     std::map<std::string, std::string>    m_baseTypes;
@@ -239,6 +239,7 @@ class VulkanHppGenerator
     std::string                           m_version;
     std::string                           m_vulkanLicenseHeader;
 #if !defined(NDEBUG)
+    std::set<std::string>                 m_defaultZeroTypes;
     std::set<std::string>                 m_defines;        // just used for verfication in readExtensionType
 #endif
 };

@@ -1587,26 +1587,35 @@ void VulkanHppGenerator::readExtensionRequireType(tinyxml2::XMLElement const* el
   {
     std::string name = attributes.find("name")->second;
 
-    assert(m_handles.find(name) == m_handles.end());
-    std::string protect = m_platforms.find(platform)->second;
-
     auto bmit = m_bitmasks.find(name);
     if (bmit != m_bitmasks.end())
     {
+      assert(bmit->second.platform.empty());
       bmit->second.platform = platform;
       assert(m_bitmaskBits.find(bmit->second.requires) != m_bitmaskBits.end());
     }
     else
     {
-      std::string strippedName = stripPrefix(name, "Vk");
-      std::map<std::string, StructureData>::iterator stit = m_structures.find(name);
-      if (stit != m_structures.end())
+      auto eit = m_enums.find(name);
+      if (eit != m_enums.end())
       {
-        stit->second.protect = protect;
+        assert(eit->second.platform.empty());
+        eit->second.platform = platform;
       }
       else
       {
-        assert((m_defines.find(strippedName) != m_defines.end()) || (m_enums.find(name) != m_enums.end()));
+        auto stit = m_structures.find(name);
+        if (stit != m_structures.end())
+        {
+          assert(stit->second.protect.empty());
+          assert(m_handles.find(name) == m_handles.end());
+          std::string protect = m_platforms.find(platform)->second;
+          stit->second.protect = protect;
+        }
+        else
+        {
+          assert((m_defines.find(name) != m_defines.end()));
+        }
       }
     }
   }
@@ -2548,13 +2557,18 @@ void VulkanHppGenerator::writeEnum(std::ostream & os, std::pair<std::string,Enum
     values += "\n  ";
   }
 
-  static const std::string enumTemplate = R"(
+  assert(m_platforms.find(enumData.second.platform) != m_platforms.end());
+  std::string const& protect = m_platforms.find(enumData.second.platform)->second;
+
+  static const std::string enumTemplate = R"(${enterProtect}
   enum class ${name}
   {${values}};
-)";
+${leaveProtect})";
 
   os << replaceWithMap(enumTemplate,
   {
+    { "enterProtect", protect.empty() ? "" : ("\n#ifdef " + protect) },
+    { "leaveProtect", protect.empty() ? "" : ("#endif /*" + protect + "*/\n") },
     { "name", stripPrefix(enumData.first, "Vk") },
     { "values", values },
   });

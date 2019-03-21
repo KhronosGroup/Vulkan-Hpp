@@ -60,7 +60,6 @@ std::string trimEnd(std::string const& input);
 void writeArgumentCount(std::ostream & os, size_t vectorIndex, std::string const& vectorName, std::string const& counterName, size_t returnParamIndex, size_t templateParamIndex, bool twoStep, bool singular);
 void writeBitmask(std::ostream & os, std::string const& bitmaskName, std::string const& bitmaskAlias, std::string const& enumName, std::vector<std::pair<std::string, std::string>> const& enumValues);
 void writeBitmaskToStringFunction(std::ostream & os, std::string const& flagsName, std::string const& enumName, std::vector<std::pair<std::string, std::string>> const& enumValues);
-void writeEnumToString(std::ostream & os, std::string const& enumName, std::vector<std::pair<std::string, std::string>> const& enumValues);
 std::string writeFunctionBodyEnhancedLocalReturnVariableSingular(std::ostream & os, std::string const& indentation, std::string const& typeName, std::string const&returnName, bool isStructureChain);
 std::pair<bool, std::string> writeFunctionBodyStandardReturn(std::string const& returnType);
 
@@ -682,43 +681,6 @@ ${cases}
   }
 )";
   os << replaceWithMap(toStringTemplate, { { "typeName", bitmaskName },{ "argumentName", enumValues.empty() ? " " : " value " },{ "functionBody", functionBody } });
-}
-
-void writeEnumToString(std::ostream & os, std::string const& enumName, std::vector<std::pair<std::string, std::string>> const& enumValues)
-{
-  std::string functionBody;
-  if (enumValues.empty())
-  {
-    functionBody = "\n    return \"(void)\";";
-  }
-  else
-  {
-    static const std::string caseTemplate = R"(      case ${type}::${value} : return "${valueText}";)";
-    std::ostringstream casesString;
-    for (auto const& value : enumValues)
-    {
-      casesString << replaceWithMap(caseTemplate, { { "type", enumName },{ "value", value.second },{ "valueText", value.second.substr(1) } }) << std::endl;
-    }
-
-    static const std::string switchTemplate = R"(
-    switch ( value )
-    {
-${cases}      default: return "invalid";
-    })";
-    functionBody = replaceWithMap(switchTemplate, { { "cases", casesString.str() } });
-  }
-
-  static const std::string enumToString = R"(
-  VULKAN_HPP_INLINE std::string to_string( ${typeName}${argumentName} )
-  {${functionBody}
-  }
-)";
-  os << replaceWithMap(enumToString,
-  {
-    { "typeName", enumName },
-    { "argumentName", enumValues.empty() ? "" : " value" },
-    { "functionBody", functionBody }
-  });
 }
 
 std::string writeFunctionBodyEnhancedLocalReturnVariableSingular(std::ostream & os, std::string const& indentation, std::string const& typeName, std::string const& returnName, bool isStructureChain)
@@ -2276,23 +2238,18 @@ void VulkanHppGenerator::writeBitmasks(std::ostream & os) const
 {
   for (auto const& bitmask : m_bitmasks)
   {
-    std::string protect = bitmask.second.platform.empty() ? "" : m_platforms.find(bitmask.second.platform)->second;
-    if (!protect.empty())
-    {
-      os << std::endl
-        << "#ifdef " << protect;
-    }
-
     auto bitmaskBits = m_bitmaskBits.find(bitmask.second.requires);
     assert(bitmaskBits != m_bitmaskBits.end());
+
+    os << std::endl;
+    writePlatformEnter(os, bitmask.second.platform);
     writeEnum(os, *bitmaskBits);
-    std::string strippedEnumName = stripPrefix(bitmaskBits->first, "Vk");
-    writeEnumToString(os, strippedEnumName, bitmaskBits->second.values);
+    writeEnumToString(os, *bitmaskBits);
     std::string strippedBitmaskName = stripPrefix(bitmask.first, "Vk");
+    std::string strippedEnumName = stripPrefix(bitmaskBits->first, "Vk");
     writeBitmask(os, strippedBitmaskName, bitmask.second.alias, strippedEnumName, bitmaskBits->second.values);
     writeBitmaskToStringFunction(os, strippedBitmaskName, strippedEnumName, bitmaskBits->second.values);
-
-    leaveProtect(os, protect);
+    writePlatformLeave(os, bitmask.second.platform);
   }
 }
 
@@ -2557,18 +2514,13 @@ void VulkanHppGenerator::writeEnum(std::ostream & os, std::pair<std::string,Enum
     values += "\n  ";
   }
 
-  assert(m_platforms.find(enumData.second.platform) != m_platforms.end());
-  std::string const& protect = m_platforms.find(enumData.second.platform)->second;
-
-  static const std::string enumTemplate = R"(${enterProtect}
-  enum class ${name}
+  static const std::string enumTemplate =
+R"(  enum class ${name}
   {${values}};
-${leaveProtect})";
+)";
 
   os << replaceWithMap(enumTemplate,
   {
-    { "enterProtect", protect.empty() ? "" : ("\n#ifdef " + protect) },
-    { "leaveProtect", protect.empty() ? "" : ("#endif /*" + protect + "*/\n") },
     { "name", stripPrefix(enumData.first, "Vk") },
     { "values", values },
   });
@@ -2578,9 +2530,50 @@ void VulkanHppGenerator::writeEnums(std::ostream & os) const
 {
   for (auto const& e : m_enums)
   {
+    os << std::endl;
+    writePlatformEnter(os, e.second.platform);
     writeEnum(os, e);
-    writeEnumToString(os, stripPrefix(e.first, "Vk"), e.second.values);
+    writeEnumToString(os, e);
+    writePlatformLeave(os, e.second.platform);
   }
+}
+
+void VulkanHppGenerator::writeEnumToString(std::ostream & os, std::pair<std::string, EnumData> const& enumData) const
+{
+  std::string enumName = stripPrefix(enumData.first, "Vk");
+  std::string functionBody;
+  if (enumData.second.values.empty())
+  {
+    functionBody = "\n    return \"(void)\";";
+  }
+  else
+  {
+    static const std::string caseTemplate = R"(      case ${type}::${value} : return "${valueText}";)";
+    std::ostringstream casesString;
+    for (auto const& value : enumData.second.values)
+    {
+      casesString << replaceWithMap(caseTemplate, { { "type", enumName },{ "value", value.second },{ "valueText", value.second.substr(1) } }) << std::endl;
+    }
+
+    static const std::string switchTemplate = R"(
+    switch ( value )
+    {
+${cases}      default: return "invalid";
+    })";
+    functionBody = replaceWithMap(switchTemplate, { { "cases", casesString.str() } });
+  }
+
+  static const std::string enumToString = R"(
+  VULKAN_HPP_INLINE std::string to_string( ${typeName}${argumentName} )
+  {${functionBody}
+  }
+)";
+  os << replaceWithMap(enumToString,
+  {
+    { "typeName", enumName },
+    { "argumentName", enumData.second.values.empty() ? "" : " value" },
+    { "functionBody", functionBody }
+  });
 }
 
 void VulkanHppGenerator::writeForwardDeclarations(std::ostream & os) const
@@ -3599,6 +3592,26 @@ void VulkanHppGenerator::writeResultExceptions(std::ostream & os) const
     }
   }
   os << std::endl;
+}
+
+void VulkanHppGenerator::writePlatformEnter(std::ostream & os, std::string const& platform) const
+{
+  if (!platform.empty())
+  {
+    auto it = m_platforms.find(platform);
+    assert((it != m_platforms.end()) && !it->second.empty());
+    os << "#ifdef " << it->second << std::endl;
+  }
+}
+
+void VulkanHppGenerator::writePlatformLeave(std::ostream & os, std::string const& platform) const
+{
+  if (!platform.empty())
+  {
+    auto it = m_platforms.find(platform);
+    assert((it != m_platforms.end()) && !it->second.empty());
+    os << "#endif /*" << it->second << "*/" << std::endl;
+  }
 }
 
 void VulkanHppGenerator::writeStruct(std::ostream & os, std::pair<std::string, StructureData> const& structure, std::set<std::string> & listedStructures) const

@@ -189,6 +189,7 @@ class VulkanHppGenerator
     void writeArgumentVulkanType(std::ostream & os, ParamData const& paramData) const;
     void writeCommand(std::ostream &os, std::string const& indentation, std::string const& name, std::pair<std::string, CommandData> const& commandData, bool definition) const;
     void writeEnum(std::ostream & os, std::pair<std::string,EnumData> const& enumData) const;
+    void writeEnumToString(std::ostream & os, std::pair<std::string, EnumData> const& enumData) const;
     void writeFunction(std::ostream & os, std::string const& indentation, std::string const& name, std::pair<std::string, CommandData> const& commandData, size_t returnParamIndex, size_t templateParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool twoStep, std::string const& enhancedReturnType, bool definition, bool enhanced, bool singular, bool unique, bool isStructureChain, bool withAllocator) const;
     void writeFunctionBodyEnhanced(std::ostream & os, std::string const& indentation, std::string const& commandName, std::pair<std::string, CommandData> const& commandData, size_t returnParamIndex, size_t templateParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool twoStep, std::string const& enhancedReturnType, bool singular, bool unique, bool isStructureChain, bool withAllocator) const;
     std::string writeFunctionBodyEnhancedLocalReturnVariable(std::ostream & os, std::string const& indentation, CommandData const& commandData, size_t returnParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool twoStep, std::string const& enhancedReturnType, bool singular, bool isStructureChain, bool withAllocator) const;
@@ -211,6 +212,8 @@ class VulkanHppGenerator
     void writeFunctionHeaderReturnType(std::ostream & os, CommandData const& commandData, size_t returnParamIndex, std::map<size_t, size_t> const& vectorParamIndices, std::string const& enhancedReturnType, bool enhanced, bool singular, bool unique, bool isStructureChain) const;
     void writeFunctionHeaderTemplate(std::ostream & os, std::string const& indentation, size_t returnParamIndex, size_t templateParamIndex, std::string const& enhancedReturnType, bool enhanced, bool singular, bool unique, bool withDefault, bool isStructureChain) const;
     void writeHandle(std::ostream & os, std::pair<std::string, HandleData> const& handle, std::set<std::string> & listedHandles) const;
+    void writePlatformEnter(std::ostream & os, std::string const& platform) const;
+    void writePlatformLeave(std::ostream & os, std::string const& platform) const;
     void writeStruct(std::ostream & os, std::pair<std::string, StructureData> const& structure, std::set<std::string> & listedStructures) const;
     void writeStructCompareOperators(std::ostream & os, std::pair<std::string, StructureData> const& structure) const;
     void writeStructConstructor(std::ostream & os, std::pair<std::string, StructureData> const& structData) const;

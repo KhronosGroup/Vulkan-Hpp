@@ -137,7 +137,7 @@ class VulkanHppGenerator
       bool                      returnedOnly;
       bool                      isUnion;
       std::vector<MemberData>   members;
-      std::string               protect;
+      std::string               platform;
       std::vector<std::string>  structExtends;
       std::vector<std::string>  aliases;
       std::string               subStruct;

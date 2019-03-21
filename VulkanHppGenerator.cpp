@@ -34,13 +34,11 @@ std::string createEnumValueName(std::string const& name, std::string const& pref
 std::string determineCommandName(std::string const& vulkanCommandName, std::string const& firstArgumentType);
 std::set<size_t> determineSkippedParams(size_t returnParamIndex, std::map<size_t, size_t> const& vectorParamIndices);
 bool determineStructureChaining(std::string const& structType, std::set<std::string> const& extendedStructs, std::map<std::string, std::string> const& structureAliases);
-void enterProtect(std::ostream &os, std::string const& protect);
 std::string findTag(std::set<std::string> const& tags, std::string const& name, std::string const& postfix = "");
 std::map<std::string, std::string> getAttributes(tinyxml2::XMLElement const* element);
 std::vector<tinyxml2::XMLElement const*> getChildElements(tinyxml2::XMLElement const* element);
 std::string getEnumPostfix(std::string const& name, std::set<std::string> const& tags, std::string & prefix);
 std::string getEnumPrefix(std::string const& name, bool bitmask);
-void leaveProtect(std::ostream &os, std::string const& protect);
 std::string readArraySize(tinyxml2::XMLNode const* node);
 void readStructStructExtends(std::map<std::string, std::string> const& attributes, std::vector<std::string> & structExtends, std::set<std::string> & extendedStructs);
 std::string readTypePostfix(tinyxml2::XMLNode const* node);
@@ -248,14 +246,6 @@ bool determineStructureChaining(std::string const& structType, std::set<std::str
   return isStructureChained;
 }
 
-void enterProtect(std::ostream &os, std::string const& protect)
-{
-  if (!protect.empty())
-  {
-    os << "#ifdef " << protect << std::endl;
-  }
-}
-
 std::string findTag(std::set<std::string> const& tags, std::string const& name, std::string const& postfix)
 {
   auto tagIt = std::find_if(tags.begin(), tags.end(), [&name, &postfix](std::string const& t) { return endsWith(name, t + postfix); });
@@ -340,14 +330,6 @@ std::string extractTag(std::string const& name, std::set<std::string> const& tag
   std::string tag = name.substr(tagStart + 1, tagEnd - tagStart - 1);
   assert(tags.find(tag) != tags.end());
   return tag;
-}
-
-void leaveProtect(std::ostream &os, std::string const& protect)
-{
-  if (!protect.empty())
-  {
-    os << "#endif /*" << protect << "*/" << std::endl;
-  }
 }
 
 std::string readArraySize(tinyxml2::XMLNode const* node)
@@ -1569,10 +1551,9 @@ void VulkanHppGenerator::readExtensionRequireType(tinyxml2::XMLElement const* el
         auto stit = m_structures.find(name);
         if (stit != m_structures.end())
         {
-          assert(stit->second.protect.empty());
           assert(m_handles.find(name) == m_handles.end());
-          std::string protect = m_platforms.find(platform)->second;
-          stit->second.protect = protect;
+          assert(stit->second.platform.empty());
+          stit->second.platform = platform;
         }
         else
         {
@@ -2255,11 +2236,6 @@ void VulkanHppGenerator::writeBitmasks(std::ostream & os) const
 
 void VulkanHppGenerator::writeCommand(std::ostream & os, std::string const& indentation, std::string const& name, std::pair<std::string, CommandData> const& commandData, bool definition) const
 {
-  os << std::endl;
-  assert(m_platforms.find(commandData.second.platform) != m_platforms.end());
-  std::string const& protect = m_platforms.find(commandData.second.platform)->second;
-  enterProtect(os, protect);
-
   bool twoStep = isTwoStepAlgorithm(commandData.second.params);
   std::map<size_t, size_t> vectorParamIndices = determineVectorParamIndices(commandData.second.params);
 
@@ -2354,8 +2330,6 @@ void VulkanHppGenerator::writeCommand(std::ostream & os, std::string const& inde
       << enhancedString
       << "#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/" << std::endl;
   }
-
-  leaveProtect(os, protect);
 }
 
 void VulkanHppGenerator::writeDispatchLoaderDynamic(std::ostream &os)
@@ -2369,10 +2343,9 @@ void VulkanHppGenerator::writeDispatchLoaderDynamic(std::ostream &os)
   {
     for (auto const& command : handle.second.commands)
     {
-      std::string const& protect = m_platforms.find(command.second.platform)->second;
-      enterProtect(os, protect);
+      writePlatformEnter(os, command.second.platform);
       os << "    PFN_" << command.first << " " << command.first << " = 0;" << std::endl;
-      leaveProtect(os, protect);
+      writePlatformLeave(os, command.second.platform);
     }
   }
 
@@ -2414,8 +2387,7 @@ void VulkanHppGenerator::writeDispatchLoaderDynamic(std::ostream &os)
     {
       if ((command.first != "vkGetDeviceProcAddr") && (command.first != "vkGetInstanceProcAddr"))
       {
-        std::string const& protect = m_platforms.find(command.second.platform)->second;
-        enterProtect(os, protect);
+        writePlatformEnter(os, command.second.platform);
         if (!command.second.params.empty()
           && m_handles.find(command.second.params[0].type.type) != m_handles.end()
           && command.second.params[0].type.type != "VkInstance"
@@ -2428,7 +2400,7 @@ void VulkanHppGenerator::writeDispatchLoaderDynamic(std::ostream &os)
         {
           os << "      " << command.first << " = PFN_" << command.first << "( vkGetInstanceProcAddr( instance, \"" << command.first << "\" ) );" << std::endl;
         }
-        leaveProtect(os, protect);
+        writePlatformLeave(os, command.second.platform);
       }
     }
   }
@@ -2438,12 +2410,12 @@ void VulkanHppGenerator::writeDispatchLoaderDynamic(std::ostream &os)
 
 void VulkanHppGenerator::writeDispatchLoaderStatic(std::ostream &os)
 {
-  static const std::string commandTemplate = R"(${enterProtect}
-    ${returnType} vk${commandName}( ${parameterList} ) const
+  static const std::string commandTemplate =
+    R"(    ${returnType} vk${commandName}( ${parameterList} ) const
     {
       return ::vk${commandName}( ${parameters} );
     }
-${leaveProtect})";
+)";
 
   std::ostringstream commands;
   for (auto const& handle : m_handles)
@@ -2468,16 +2440,16 @@ ${leaveProtect})";
         firstParam = false;
       }
 
-      std::string const& protect = m_platforms.find(command.second.platform)->second;
+      commands << std::endl;
+      writePlatformEnter(commands, command.second.platform);
       commands << replaceWithMap(commandTemplate,
       {
-        { "enterProtect", protect.empty() ? "" : ("\n#ifdef " + protect) },
         { "returnType", command.second.returnType },
         { "commandName", stripPrefix(command.first, "vk") },
         { "parameterList", parameterList },
         { "parameters", parameters },
-        { "leaveProtect", protect.empty() ? "" : ("#endif /*" + protect + "*/\n") }
       });
+      writePlatformLeave(commands, command.second.platform);
     }
   }
 
@@ -2581,13 +2553,13 @@ void VulkanHppGenerator::writeForwardDeclarations(std::ostream & os) const
   os << std::endl;
   for (auto const& structure : m_structures)
   {
-    enterProtect(os, structure.second.protect);
+    writePlatformEnter(os, structure.second.platform);
     os << "  " << (structure.second.isUnion ? "union" : "struct") << " " << stripPrefix(structure.first, "Vk") << ";" << std::endl;
     for (std::string const& alias : structure.second.aliases)
     {
       os << "  using " << stripPrefix(alias, "Vk") << " = " << stripPrefix(structure.first, "Vk") << ";" << std::endl;
     }
-    leaveProtect(os, structure.second.protect);
+    writePlatformLeave(os, structure.second.platform);
   }
 }
 
@@ -3405,7 +3377,10 @@ void VulkanHppGenerator::writeHandle(std::ostream & os, std::pair<std::string, H
 
           writeUniqueTypes(os, "", { "VkInstance" });
         }
+        os << std::endl;
+        writePlatformEnter(os, command.second.platform);
         writeCommand(os, "  ", commandName, command, false);
+        writePlatformLeave(os, command.second.platform);
       }
     }
     else
@@ -3425,6 +3400,8 @@ void VulkanHppGenerator::writeHandle(std::ostream & os, std::pair<std::string, H
       // list all the commands that are mapped to members of this class
       for (auto const& command : handleData.second.commands)
       {
+        commands << std::endl;
+        writePlatformEnter(commands, command.second.platform);
         std::string commandName = determineCommandName(command.first, command.second.params[0].type.type);
         writeCommand(commands, "    ", commandName, command, false);
 
@@ -3432,8 +3409,10 @@ void VulkanHppGenerator::writeHandle(std::ostream & os, std::pair<std::string, H
         if (!command.second.isAlias && (((command.first.substr(2, 7) == "Destroy") && (commandName != "destroy")) || (command.first.substr(2, 4) == "Free")))
         {
           commandName = (command.first.substr(2, 7) == "Destroy") ? "destroy" : "free";
+          commands << std::endl;
           writeCommand(commands, "    ", commandName, command, false);
         }
+        writePlatformLeave(commands, command.second.platform);
       }
 
       static const std::string templateString = R"(
@@ -3508,23 +3487,6 @@ ${commands}
         { "commands", commands.str() }
       });
 
-#if 0
-      // and finally the commands, that are member functions of this handle
-      for (auto const& command : handleData.second.commands)
-      {
-        std::string commandName = determineCommandName(command.first, command.second.params[0].type.type);
-        std::string strippedName = startLowerCase(stripPrefix(command.first, "vk"));
-        writeCommand(os, "  ", commandName, command, true);
-
-        // special handling for destroy functions
-        if (!command.second.isAlias && (((command.first.substr(2, 7) == "Destroy") && (commandName != "destroy")) || (command.first.substr(2, 4) == "Free")))
-        {
-          commandName = (command.first.substr(2, 7) == "Destroy") ? "destroy" : "free";
-          writeCommand(os, "  ", commandName, command, true);
-        }
-      }
-#endif
-
       if (!handleData.second.alias.empty())
       {
         os << "  using " << stripPrefix(handleData.second.alias, "Vk") << " = " << stripPrefix(handleData.first, "Vk") << ";" << std::endl;
@@ -3549,6 +3511,8 @@ void VulkanHppGenerator::writeHandlesCommandDefintions(std::ostream & os) const
     // finally the commands, that are member functions of this handle
     for (auto const& command : handle.second.commands)
     {
+      os << std::endl;
+      writePlatformEnter(os, command.second.platform);
       std::string commandName = determineCommandName(command.first, command.second.params[0].type.type);
       std::string strippedName = startLowerCase(stripPrefix(command.first, "vk"));
       writeCommand(os, "  ", commandName, command, true);
@@ -3557,8 +3521,10 @@ void VulkanHppGenerator::writeHandlesCommandDefintions(std::ostream & os) const
       if (!command.second.isAlias && (((command.first.substr(2, 7) == "Destroy") && (commandName != "destroy")) || (command.first.substr(2, 4) == "Free")))
       {
         commandName = (command.first.substr(2, 7) == "Destroy") ? "destroy" : "free";
+        os << std::endl;
         writeCommand(os, "  ", commandName, command, true);
       }
+      writePlatformLeave(os, command.second.platform);
     }
   }
   os << std::endl;
@@ -3919,8 +3885,8 @@ void VulkanHppGenerator::writeStructure(std::ostream & os, std::pair<std::string
   std::ostringstream members;
   writeStructMembers(members, structure.second);
 
-  static const std::string structureTemplate = R"(
-${enterProtect}  struct ${name}
+  static const std::string structureTemplate = 
+    R"(  struct ${name}
   {${constructorAndSetters}
     operator ${vkName} const&() const
     {
@@ -3934,18 +3900,19 @@ ${enterProtect}  struct ${name}
 ${compareOperators}
 ${members}  };
   static_assert( sizeof( ${name} ) == sizeof( ${vkName} ), "struct and wrapper have different size!" );
-${leaveProtect})";
+)";
 
+  os << std::endl;
+  writePlatformEnter(os, structure.second.platform);
   os << replaceWithMap(structureTemplate,
   {
-    { "enterProtect", structure.second.protect.empty() ? "" : ("#ifdef " + structure.second.protect + "\n") },
     { "name", stripPrefix(structure.first, "Vk") },
     { "constructorAndSetters", constructorAndSetters.str() },
     { "vkName", structure.first },
     { "compareOperators", compareOperators.str() },
     { "members", members.str() },
-    { "leaveProtect", structure.second.protect.empty() ? "" : ("#endif /*" + structure.second.protect + "*/\n") }
   });
+  writePlatformLeave(os, structure.second.platform);
 }
 
 void VulkanHppGenerator::writeStructureChainValidation(std::ostream & os)
@@ -3955,7 +3922,7 @@ void VulkanHppGenerator::writeStructureChainValidation(std::ostream & os)
   {
     if (!structure.second.structExtends.empty())
     {
-      enterProtect(os, structure.second.protect);
+      writePlatformEnter(os, structure.second.platform);
 
       // write out allowed structure chains
       for (auto extendName : structure.second.structExtends)
@@ -3976,19 +3943,19 @@ void VulkanHppGenerator::writeStructureChainValidation(std::ostream & os)
           errorString << std::endl;
           throw std::runtime_error(errorString.str());
         }
-        if (structure.second.protect != itExtend->second.protect)
+        if (structure.second.platform != itExtend->second.platform)
         {
-          enterProtect(os, itExtend->second.protect);
+          writePlatformEnter(os, itExtend->second.platform);
         }
 
         os << "  template <> struct isStructureChainValid<" << stripPrefix(extendName, "Vk") << ", " << stripPrefix(structure.first, "Vk") << ">{ enum { value = true }; };" << std::endl;
 
-        if (structure.second.protect != itExtend->second.protect)
+        if (structure.second.platform != itExtend->second.platform)
         {
-          leaveProtect(os, itExtend->second.protect);
+          writePlatformLeave(os, itExtend->second.platform);
         }
       }
-      leaveProtect(os, structure.second.protect);
+      writePlatformLeave(os, structure.second.platform);
     }
   }
 }

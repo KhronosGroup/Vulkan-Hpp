@@ -38,19 +38,12 @@ int main(int /*argc*/, char ** /*argv*/)
     std::vector<vk::PhysicalDevice> physicalDevices = instance->enumeratePhysicalDevices();
     assert(!physicalDevices.empty());
 
-    uint32_t width = 64;
-    uint32_t height = 64;
-#if defined(VK_USE_PLATFORM_WIN32_KHR)
-    HWND window = vk::su::initializeWindow(AppName, AppName, width, height);
-    vk::UniqueSurfaceKHR surface = instance->createWin32SurfaceKHRUnique(vk::Win32SurfaceCreateInfoKHR({}, GetModuleHandle(nullptr), window));
-#else
-#pragma error "unhandled platform"
-#endif
+    vk::su::SurfaceData surfaceData(instance, AppName, AppName, vk::Extent2D(64, 64));
 
-    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex(physicalDevices[0], surface);
+    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex(physicalDevices[0], surfaceData.surface);
     vk::UniqueDevice device = vk::su::createDevice(physicalDevices[0], graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions());
 
-    vk::Format colorFormat = vk::su::pickColorFormat(physicalDevices[0].getSurfaceFormatsKHR(surface.get()));
+    vk::Format colorFormat = vk::su::pickColorFormat(physicalDevices[0].getSurfaceFormatsKHR(surfaceData.surface.get()));
     vk::Format depthFormat = vk::Format::eD16Unorm;
 
     /* VULKAN_HPP_KEY_START */
@@ -73,7 +66,7 @@ int main(int /*argc*/, char ** /*argv*/)
     /* VULKAN_HPP_KEY_END */
 
 #if defined(VK_USE_PLATFORM_WIN32_KHR)
-    DestroyWindow(window);
+    DestroyWindow(surfaceData.window);
 #else
 #pragma error "unhandled platform"
 #endif

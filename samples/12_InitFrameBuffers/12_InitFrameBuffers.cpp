@@ -34,41 +34,29 @@ int main(int /*argc*/, char ** /*argv*/)
     std::vector<vk::PhysicalDevice> physicalDevices = instance->enumeratePhysicalDevices();
     assert(!physicalDevices.empty());
 
-    uint32_t width = 64;
-    uint32_t height = 64;
-#if defined(VK_USE_PLATFORM_WIN32_KHR)
-    HWND window = vk::su::initializeWindow(AppName, AppName, width, height);
-    vk::UniqueSurfaceKHR surface = instance->createWin32SurfaceKHRUnique(vk::Win32SurfaceCreateInfoKHR({}, GetModuleHandle(nullptr), window));
-#else
-#pragma error "unhandled platform"
-#endif
+    vk::su::SurfaceData surfaceData(instance, AppName, AppName, vk::Extent2D(64, 64));
 
-    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex(physicalDevices[0], surface);
+    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex(physicalDevices[0], surfaceData.surface);
     vk::UniqueDevice device = vk::su::createDevice(physicalDevices[0], graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions());
 
-    vk::Format colorFormat = vk::su::pickColorFormat(physicalDevices[0].getSurfaceFormatsKHR(surface.get()));
-    vk::UniqueSwapchainKHR swapChain = vk::su::createSwapChain(physicalDevices[0], surface, device, width, height, colorFormat, graphicsAndPresentQueueFamilyIndex.first, graphicsAndPresentQueueFamilyIndex.second);
-    std::vector<vk::UniqueImageView> swapChainImageViews = vk::su::createSwapChainImageViews(device, swapChain, colorFormat);
+    vk::su::SwapChainData swapChainData(physicalDevices[0], device, surfaceData.surface, surfaceData.extent, vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eTransferSrc
+      , graphicsAndPresentQueueFamilyIndex.first, graphicsAndPresentQueueFamilyIndex.second);
 
-    vk::Format depthFormat = vk::Format::eD16Unorm;
-    vk::UniqueImage depthImage = vk::su::createImage(device, depthFormat, width, height);
-    vk::UniqueDeviceMemory depthMemory = vk::su::allocateMemory(device, physicalDevices[0].getMemoryProperties(), device->getImageMemoryRequirements(depthImage.get()), vk::MemoryPropertyFlagBits::eDeviceLocal);
-    device->bindImageMemory(depthImage.get(), depthMemory.get(), 0);
-    vk::UniqueImageView depthViewImage = vk::su::createImageView(device, depthImage, depthFormat);
+    vk::su::DepthBufferData depthBufferData(physicalDevices[0], device, vk::Format::eD16Unorm, surfaceData.extent);
 
-    vk::UniqueRenderPass renderPass = vk::su::createRenderPass(device, colorFormat, depthFormat);
+    vk::UniqueRenderPass renderPass = vk::su::createRenderPass(device, swapChainData.colorFormat, depthBufferData.format);
 
     /* VULKAN_KEY_START */
 
     vk::ImageView attachments[2];
-    attachments[1] = depthViewImage.get();
+    attachments[1] = depthBufferData.imageView.get();
 
     std::vector<vk::UniqueFramebuffer> framebuffers;
-    framebuffers.reserve(swapChainImageViews.size());
-    for (auto const& view : swapChainImageViews)
+    framebuffers.reserve(swapChainData.imageViews.size());
+    for (auto const& view : swapChainData.imageViews)
     {
       attachments[0] = view.get();
-      framebuffers.push_back(device->createFramebufferUnique(vk::FramebufferCreateInfo(vk::FramebufferCreateFlags(), renderPass.get(), 2, attachments, width, height, 1)));
+      framebuffers.push_back(device->createFramebufferUnique(vk::FramebufferCreateInfo(vk::FramebufferCreateFlags(), renderPass.get(), 2, attachments, surfaceData.extent.width, surfaceData.extent.height, 1)));
     }
 
     // Note: No need to explicitly destroy the Framebuffers, as the destroy functions are called by the destructor of the UniqueFramebuffer on leaving this scope.
@@ -76,7 +64,7 @@ int main(int /*argc*/, char ** /*argv*/)
     /* VULKAN_KEY_END */
 
 #if defined(VK_USE_PLATFORM_WIN32_KHR)
-    DestroyWindow(window);
+    DestroyWindow(surfaceData.window);
 #else
 #pragma error "unhandled platform"
 #endif

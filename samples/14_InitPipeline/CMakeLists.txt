@@ -40,5 +40,5 @@ add_executable(14_InitPipeline
 
 set_target_properties(14_InitPipeline PROPERTIES FOLDER "Samples")
 target_include_directories(14_InitPipeline PUBLIC ${CMAKE_SOURCE_DIR}/glslang)
-target_link_libraries(14_InitPipeline PUBLIC glslang SPIRV "$ENV{VULKAN_SDK}/Lib/vulkan-1.lib"
+target_link_libraries(14_InitPipeline PUBLIC glslang SPIRV "${Vulkan_LIBRARIES}"
 )

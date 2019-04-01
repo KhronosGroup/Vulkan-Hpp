@@ -34,4 +34,4 @@ add_executable(08_InitPipelineLayout
 )
 
 set_target_properties(08_InitPipelineLayout PROPERTIES FOLDER "Samples")
-target_link_libraries(08_InitPipelineLayout "$ENV{VULKAN_SDK}/Lib/vulkan-1.lib")
+target_link_libraries(08_InitPipelineLayout "${Vulkan_LIBRARIES}")

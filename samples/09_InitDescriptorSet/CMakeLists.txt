@@ -36,4 +36,4 @@ add_executable(09_InitDescriptorSet
 )
 
 set_target_properties(09_InitDescriptorSet PROPERTIES FOLDER "Samples")
-target_link_libraries(09_InitDescriptorSet "$ENV{VULKAN_SDK}/Lib/vulkan-1.lib")
+target_link_libraries(09_InitDescriptorSet "${Vulkan_LIBRARIES}")

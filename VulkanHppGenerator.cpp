@@ -2901,7 +2901,7 @@ ${i}  ${type}* buffer = reinterpret_cast<${type}*>( reinterpret_cast<char*>( ${t
 ${i}  Result result = static_cast<Result>(d.vk${command}( m_device, ${arguments}, reinterpret_cast<Vk${type}*>( buffer ) ) );
 
 ${i}  ${Deleter}<${DeleterTemplate},Dispatch> deleter( *this, ${deleterArg}, d );
-${i}  for ( size_t i=0 ; i<${vectorSize} ; i++ )
+${i}  for ( size_t i=0 ; result == Result::eSuccess && i<${vectorSize} ; i++ )
 ${i}  {
 ${i}    ${typeVariable}s.push_back( UniqueHandle<${type}, Dispatch>( buffer[i], deleter ) );
 ${i}  }

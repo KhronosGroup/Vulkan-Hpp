@@ -48677,7 +48677,7 @@ namespace VULKAN_HPP_NAMESPACE
     Result result = static_cast<Result>(d.vkAllocateCommandBuffers( m_device, reinterpret_cast<const VkCommandBufferAllocateInfo*>( &allocateInfo ), reinterpret_cast<VkCommandBuffer*>( buffer ) ) );
 
     PoolFree<Device,CommandPool,Dispatch> deleter( *this, allocateInfo.commandPool, d );
-    for ( size_t i=0 ; i<allocateInfo.commandBufferCount ; i++ )
+    for ( size_t i=0 ; result == Result::eSuccess && i<allocateInfo.commandBufferCount ; i++ )
     {
       commandBuffers.push_back( UniqueHandle<CommandBuffer, Dispatch>( buffer[i], deleter ) );
     }
@@ -48694,7 +48694,7 @@ namespace VULKAN_HPP_NAMESPACE
     Result result = static_cast<Result>(d.vkAllocateCommandBuffers( m_device, reinterpret_cast<const VkCommandBufferAllocateInfo*>( &allocateInfo ), reinterpret_cast<VkCommandBuffer*>( buffer ) ) );
 
     PoolFree<Device,CommandPool,Dispatch> deleter( *this, allocateInfo.commandPool, d );
-    for ( size_t i=0 ; i<allocateInfo.commandBufferCount ; i++ )
+    for ( size_t i=0 ; result == Result::eSuccess && i<allocateInfo.commandBufferCount ; i++ )
     {
       commandBuffers.push_back( UniqueHandle<CommandBuffer, Dispatch>( buffer[i], deleter ) );
     }
@@ -48735,7 +48735,7 @@ namespace VULKAN_HPP_NAMESPACE
     Result result = static_cast<Result>(d.vkAllocateDescriptorSets( m_device, reinterpret_cast<const VkDescriptorSetAllocateInfo*>( &allocateInfo ), reinterpret_cast<VkDescriptorSet*>( buffer ) ) );
 
     PoolFree<Device,DescriptorPool,Dispatch> deleter( *this, allocateInfo.descriptorPool, d );
-    for ( size_t i=0 ; i<allocateInfo.descriptorSetCount ; i++ )
+    for ( size_t i=0 ; result == Result::eSuccess && i<allocateInfo.descriptorSetCount ; i++ )
     {
       descriptorSets.push_back( UniqueHandle<DescriptorSet, Dispatch>( buffer[i], deleter ) );
     }
@@ -48752,7 +48752,7 @@ namespace VULKAN_HPP_NAMESPACE
     Result result = static_cast<Result>(d.vkAllocateDescriptorSets( m_device, reinterpret_cast<const VkDescriptorSetAllocateInfo*>( &allocateInfo ), reinterpret_cast<VkDescriptorSet*>( buffer ) ) );
 
     PoolFree<Device,DescriptorPool,Dispatch> deleter( *this, allocateInfo.descriptorPool, d );
-    for ( size_t i=0 ; i<allocateInfo.descriptorSetCount ; i++ )
+    for ( size_t i=0 ; result == Result::eSuccess && i<allocateInfo.descriptorSetCount ; i++ )
     {
       descriptorSets.push_back( UniqueHandle<DescriptorSet, Dispatch>( buffer[i], deleter ) );
     }
@@ -49045,7 +49045,7 @@ namespace VULKAN_HPP_NAMESPACE
     Result result = static_cast<Result>(d.vkCreateComputePipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkComputePipelineCreateInfo*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( buffer ) ) );
 
     ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
-    for ( size_t i=0 ; i<createInfos.size() ; i++ )
+    for ( size_t i=0 ; result == Result::eSuccess && i<createInfos.size() ; i++ )
     {
       pipelines.push_back( UniqueHandle<Pipeline, Dispatch>( buffer[i], deleter ) );
     }
@@ -49062,7 +49062,7 @@ namespace VULKAN_HPP_NAMESPACE
     Result result = static_cast<Result>(d.vkCreateComputePipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkComputePipelineCreateInfo*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( buffer ) ) );
 
     ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
-    for ( size_t i=0 ; i<createInfos.size() ; i++ )
+    for ( size_t i=0 ; result == Result::eSuccess && i<createInfos.size() ; i++ )
     {
       pipelines.push_back( UniqueHandle<Pipeline, Dispatch>( buffer[i], deleter ) );
     }
@@ -49301,7 +49301,7 @@ namespace VULKAN_HPP_NAMESPACE
     Result result = static_cast<Result>(d.vkCreateGraphicsPipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkGraphicsPipelineCreateInfo*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( buffer ) ) );
 
     ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
-    for ( size_t i=0 ; i<createInfos.size() ; i++ )
+    for ( size_t i=0 ; result == Result::eSuccess && i<createInfos.size() ; i++ )
     {
       pipelines.push_back( UniqueHandle<Pipeline, Dispatch>( buffer[i], deleter ) );
     }
@@ -49318,7 +49318,7 @@ namespace VULKAN_HPP_NAMESPACE
     Result result = static_cast<Result>(d.vkCreateGraphicsPipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkGraphicsPipelineCreateInfo*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( buffer ) ) );
 
     ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
-    for ( size_t i=0 ; i<createInfos.size() ; i++ )
+    for ( size_t i=0 ; result == Result::eSuccess && i<createInfos.size() ; i++ )
     {
       pipelines.push_back( UniqueHandle<Pipeline, Dispatch>( buffer[i], deleter ) );
     }
@@ -49557,7 +49557,7 @@ namespace VULKAN_HPP_NAMESPACE
     Result result = static_cast<Result>(d.vkCreateRayTracingPipelinesNV( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkRayTracingPipelineCreateInfoNV*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( buffer ) ) );
 
     ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
-    for ( size_t i=0 ; i<createInfos.size() ; i++ )
+    for ( size_t i=0 ; result == Result::eSuccess && i<createInfos.size() ; i++ )
     {
       pipelines.push_back( UniqueHandle<Pipeline, Dispatch>( buffer[i], deleter ) );
     }
@@ -49574,7 +49574,7 @@ namespace VULKAN_HPP_NAMESPACE
     Result result = static_cast<Result>(d.vkCreateRayTracingPipelinesNV( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkRayTracingPipelineCreateInfoNV*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( buffer ) ) );
 
     ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
-    for ( size_t i=0 ; i<createInfos.size() ; i++ )
+    for ( size_t i=0 ; result == Result::eSuccess && i<createInfos.size() ; i++ )
     {
       pipelines.push_back( UniqueHandle<Pipeline, Dispatch>( buffer[i], deleter ) );
     }
@@ -49813,7 +49813,7 @@ namespace VULKAN_HPP_NAMESPACE
     Result result = static_cast<Result>(d.vkCreateSharedSwapchainsKHR( m_device, createInfos.size() , reinterpret_cast<const VkSwapchainCreateInfoKHR*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSwapchainKHR*>( buffer ) ) );
 
     ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
-    for ( size_t i=0 ; i<createInfos.size() ; i++ )
+    for ( size_t i=0 ; result == Result::eSuccess && i<createInfos.size() ; i++ )
     {
       swapchainKHRs.push_back( UniqueHandle<SwapchainKHR, Dispatch>( buffer[i], deleter ) );
     }
@@ -49830,7 +49830,7 @@ namespace VULKAN_HPP_NAMESPACE
     Result result = static_cast<Result>(d.vkCreateSharedSwapchainsKHR( m_device, createInfos.size() , reinterpret_cast<const VkSwapchainCreateInfoKHR*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSwapchainKHR*>( buffer ) ) );
 
     ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
-    for ( size_t i=0 ; i<createInfos.size() ; i++ )
+    for ( size_t i=0 ; result == Result::eSuccess && i<createInfos.size() ; i++ )
     {
       swapchainKHRs.push_back( UniqueHandle<SwapchainKHR, Dispatch>( buffer[i], deleter ) );
     }

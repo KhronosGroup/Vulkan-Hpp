@@ -41,5 +41,4 @@ add_executable(InitTexture
 
 set_target_properties(InitTexture PROPERTIES FOLDER "Samples")
 target_include_directories(InitTexture PUBLIC ${CMAKE_SOURCE_DIR}/glslang)
-target_link_libraries(InitTexture PUBLIC glslang SPIRV "$ENV{VULKAN_SDK}/Lib/vulkan-1.lib"
-)
+target_link_libraries(InitTexture PUBLIC glslang SPIRV "${Vulkan_LIBRARIES}")

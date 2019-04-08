@@ -34,6 +34,4 @@ add_executable(Events
 )
 
 set_target_properties(Events PROPERTIES FOLDER "Samples")
-target_include_directories(Events PUBLIC ${CMAKE_SOURCE_DIR}/glslang)
-target_link_libraries(Events PUBLIC glslang SPIRV "$ENV{VULKAN_SDK}/Lib/vulkan-1.lib"
-)
+target_link_libraries(Events PUBLIC "${Vulkan_LIBRARIES}")

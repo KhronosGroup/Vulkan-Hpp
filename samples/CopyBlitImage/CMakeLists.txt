@@ -34,6 +34,4 @@ add_executable(CopyBlitImage
 )
 
 set_target_properties(CopyBlitImage PROPERTIES FOLDER "Samples")
-target_include_directories(CopyBlitImage PUBLIC ${CMAKE_SOURCE_DIR}/glslang)
-target_link_libraries(CopyBlitImage PUBLIC glslang SPIRV "$ENV{VULKAN_SDK}/Lib/vulkan-1.lib"
-)
+target_link_libraries(CopyBlitImage PUBLIC "${Vulkan_LIBRARIES}")

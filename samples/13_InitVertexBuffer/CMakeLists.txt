@@ -35,6 +35,4 @@ add_executable(13_InitVertexBuffer
 )
 
 set_target_properties(13_InitVertexBuffer PROPERTIES FOLDER "Samples")
-target_include_directories(13_InitVertexBuffer PUBLIC ${CMAKE_SOURCE_DIR}/glslang)
-target_link_libraries(13_InitVertexBuffer PUBLIC glslang SPIRV "${Vulkan_LIBRARIES}"
-)
+target_link_libraries(13_InitVertexBuffer PUBLIC "${Vulkan_LIBRARIES}")

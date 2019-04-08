@@ -55,7 +55,7 @@ int main(int /*argc*/, char ** /*argv*/)
     vk::su::DepthBufferData depthBufferData(physicalDevices[0], device, vk::Format::eD16Unorm, surfaceData.extent);
 
     vk::su::BufferData uniformBufferData(physicalDevices[0], device, sizeof(glm::mat4x4), vk::BufferUsageFlagBits::eUniformBuffer);
-    vk::su::copyToDevice(device, uniformBufferData.deviceMemory, vk::su::createModelViewProjectionClipMatrix());
+    vk::su::copyToDevice(device, uniformBufferData.deviceMemory, vk::su::createModelViewProjectionClipMatrix(surfaceData.extent));
 
     vk::UniqueRenderPass renderPass = vk::su::createRenderPass(device, vk::su::pickColorFormat(physicalDevices[0].getSurfaceFormatsKHR(surfaceData.surface.get())), depthBufferData.format);
 
@@ -74,7 +74,7 @@ int main(int /*argc*/, char ** /*argv*/)
     vk::su::TextureData textureData(physicalDevices[0], device);
 
     commandBuffers[0]->begin(vk::CommandBufferBeginInfo());
-    textureData.setCheckerboardTexture(device, commandBuffers[0]);
+    textureData.setTexture(device, commandBuffers[0], vk::su::CheckerboardTextureCreator());
 
     vk::DescriptorSetLayoutBinding bindings[2] =
     {
@@ -109,7 +109,7 @@ int main(int /*argc*/, char ** /*argv*/)
     /* VULKAN_KEY_END */
 
     vk::UniquePipelineCache pipelineCache = device->createPipelineCacheUnique(vk::PipelineCacheCreateInfo());
-    vk::UniquePipeline graphicsPipeline = vk::su::createGraphicsPipeline(device, pipelineCache, vertexShaderModule, fragmentShaderModule, sizeof(texturedCubeData[0]), pipelineLayout, renderPass);
+    vk::UniquePipeline graphicsPipeline = vk::su::createGraphicsPipeline(device, pipelineCache, vertexShaderModule, fragmentShaderModule, sizeof(texturedCubeData[0]), true, pipelineLayout, renderPass);
 
     vk::UniqueSemaphore imageAcquiredSemaphore = device->createSemaphoreUnique(vk::SemaphoreCreateInfo());
     vk::ResultValue<uint32_t> currentBuffer = device->acquireNextImageKHR(swapChainData.swapChain.get(), vk::su::FenceTimeout, imageAcquiredSemaphore.get(), nullptr);

@@ -34,4 +34,4 @@ add_executable(EnumerateDevicesAdvanced
 )
 
 set_target_properties(EnumerateDevicesAdvanced PROPERTIES FOLDER "Samples")
-target_link_libraries(EnumerateDevicesAdvanced "$ENV{VULKAN_SDK}/Lib/vulkan-1.lib")
+target_link_libraries(EnumerateDevicesAdvanced "${Vulkan_LIBRARIES}")

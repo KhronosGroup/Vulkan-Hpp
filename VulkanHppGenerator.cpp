@@ -2899,11 +2899,13 @@ ${i}  std::vector<UniqueHandle<${type}, Dispatch>, Allocator> ${typeVariable}s${
 ${i}  ${typeVariable}s.reserve( ${vectorSize} );
 ${i}  ${type}* buffer = reinterpret_cast<${type}*>( reinterpret_cast<char*>( ${typeVariable}s.data() ) + ${vectorSize} * ( sizeof( UniqueHandle<${type}, Dispatch> ) - sizeof( ${type} ) ) );
 ${i}  Result result = static_cast<Result>(d.vk${command}( m_device, ${arguments}, reinterpret_cast<Vk${type}*>( buffer ) ) );
-
-${i}  ${Deleter}<${DeleterTemplate},Dispatch> deleter( *this, ${deleterArg}, d );
-${i}  for ( size_t i=0 ; i<${vectorSize} ; i++ )
+${i}  if (result == vk::Result::eSuccess)
 ${i}  {
-${i}    ${typeVariable}s.push_back( UniqueHandle<${type}, Dispatch>( buffer[i], deleter ) );
+${i}    ${Deleter}<${DeleterTemplate},Dispatch> deleter( *this, ${deleterArg}, d );
+${i}    for ( size_t i=0 ; i<${vectorSize} ; i++ )
+${i}    {
+${i}      ${typeVariable}s.push_back( UniqueHandle<${type}, Dispatch>( buffer[i], deleter ) );
+${i}    }
 ${i}  }
 
 ${i}  return createResultValue( result, ${typeVariable}s, VULKAN_HPP_NAMESPACE_STRING "::${class}::${commandName}Unique" );

@@ -14,7 +14,7 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(14_InitPipeline)
+project(InputAttachment)
 
 set(HEADERS
   ../utils/geometries.hpp
@@ -24,7 +24,7 @@ set(HEADERS
 )
 
 set(SOURCES
-  14_InitPipeline.cpp
+  InputAttachment.cpp
   ../utils/math.cpp
   ../utils/shaders.cpp
   ../utils/utils.cpp
@@ -34,12 +34,12 @@ set(SOURCES
 source_group(headers FILES ${HEADERS})
 source_group(sources FILES ${SOURCES})
 
-add_executable(14_InitPipeline
+add_executable(InputAttachment
   ${HEADERS}
   ${SOURCES}
 )
 
-set_target_properties(14_InitPipeline PROPERTIES FOLDER "Samples")
-target_include_directories(14_InitPipeline PUBLIC ${CMAKE_SOURCE_DIR}/glslang)
-target_link_libraries(14_InitPipeline PUBLIC glslang SPIRV "${Vulkan_LIBRARIES}"
+set_target_properties(InputAttachment PROPERTIES FOLDER "Samples")
+target_include_directories(InputAttachment PUBLIC ${CMAKE_SOURCE_DIR}/glslang)
+target_link_libraries(InputAttachment PUBLIC glslang SPIRV "$ENV{VULKAN_SDK}/Lib/vulkan-1.lib"
 )

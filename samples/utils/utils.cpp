@@ -130,13 +130,20 @@ namespace vk
         vk::PipelineShaderStageCreateInfo(vk::PipelineShaderStageCreateFlags(), vk::ShaderStageFlagBits::eFragment, fragmentShaderModule.get(), "main")
       };
 
-      vk::VertexInputBindingDescription vertexInputBindingDescription(0, vertexStride);
-      vk::VertexInputAttributeDescription vertexInputAttributeDescriptions[2] =
+      vk::PipelineVertexInputStateCreateInfo pipelineVertexInputStateCreateInfo;
+      if (0 < vertexStride)
       {
-        vk::VertexInputAttributeDescription(0, 0, vk::Format::eR32G32B32A32Sfloat, 0),
-        vk::VertexInputAttributeDescription(1, 0, vk::Format::eR32G32B32A32Sfloat, 16)
-      };
-      vk::PipelineVertexInputStateCreateInfo pipelineVertexInputStateCreateInfo(vk::PipelineVertexInputStateCreateFlags(), 1, &vertexInputBindingDescription, 2, vertexInputAttributeDescriptions);
+        vk::VertexInputBindingDescription vertexInputBindingDescription(0, vertexStride);
+        vk::VertexInputAttributeDescription vertexInputAttributeDescriptions[2] =
+        {
+          vk::VertexInputAttributeDescription(0, 0, vk::Format::eR32G32B32A32Sfloat, 0),
+          vk::VertexInputAttributeDescription(1, 0, vk::Format::eR32G32B32A32Sfloat, 16)
+        };
+        pipelineVertexInputStateCreateInfo.vertexBindingDescriptionCount = 1;
+        pipelineVertexInputStateCreateInfo.pVertexBindingDescriptions = &vertexInputBindingDescription;
+        pipelineVertexInputStateCreateInfo.vertexAttributeDescriptionCount = 2;
+        pipelineVertexInputStateCreateInfo.pVertexAttributeDescriptions = vertexInputAttributeDescriptions;
+      }
 
       vk::PipelineInputAssemblyStateCreateInfo pipelineInputAssemblyStateCreateInfo(vk::PipelineInputAssemblyStateCreateFlags(), vk::PrimitiveTopology::eTriangleList);
 

@@ -14,7 +14,7 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(InputAttachment)
+project(MultipleSets)
 
 set(HEADERS
   ../utils/geometries.hpp
@@ -24,7 +24,7 @@ set(HEADERS
 )
 
 set(SOURCES
-  InputAttachment.cpp
+  MultipleSets.cpp
   ../utils/math.cpp
   ../utils/shaders.cpp
   ../utils/utils.cpp
@@ -34,11 +34,11 @@ set(SOURCES
 source_group(headers FILES ${HEADERS})
 source_group(sources FILES ${SOURCES})
 
-add_executable(InputAttachment
+add_executable(MultipleSets
   ${HEADERS}
   ${SOURCES}
 )
 
-set_target_properties(InputAttachment PROPERTIES FOLDER "Samples")
-target_include_directories(InputAttachment PUBLIC ${CMAKE_SOURCE_DIR}/glslang)
-target_link_libraries(InputAttachment PUBLIC glslang SPIRV "${Vulkan_LIBRARIES}")
+set_target_properties(MultipleSets PROPERTIES FOLDER "Samples")
+target_include_directories(MultipleSets PUBLIC ${CMAKE_SOURCE_DIR}/glslang)
+target_link_libraries(MultipleSets PUBLIC glslang SPIRV "${Vulkan_LIBRARIES}")

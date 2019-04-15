@@ -17,7 +17,6 @@
 
 #include "../utils/utils.hpp"
 #include "vulkan/vulkan.hpp"
-#include "SPIRV/GlslangToSpv.h"
 #include <iostream>
 
 static char const* AppName = "Events";

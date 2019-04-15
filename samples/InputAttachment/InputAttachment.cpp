@@ -155,7 +155,7 @@ int main(int /*argc*/, char ** /*argv*/)
     device->updateDescriptorSets(vk::ArrayProxy<const vk::WriteDescriptorSet>(1, &writeDescriptorSet), nullptr);
 
     vk::UniquePipelineCache pipelineCache = device->createPipelineCacheUnique(vk::PipelineCacheCreateInfo());
-    vk::UniquePipeline graphicsPipeline = vk::su::createGraphicsPipeline(device, pipelineCache, vertexShaderModule, fragmentShaderModule, 0, pipelineLayout, renderPass);
+    vk::UniquePipeline graphicsPipeline = vk::su::createGraphicsPipeline(device, pipelineCache, vertexShaderModule, fragmentShaderModule, 0, false, pipelineLayout, renderPass);
 
     vk::UniqueSemaphore imageAcquiredSemaphore = device->createSemaphoreUnique(vk::SemaphoreCreateInfo());
 

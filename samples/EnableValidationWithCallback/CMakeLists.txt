@@ -32,6 +32,4 @@ add_executable(EnableValidationWithCallback
 )
 
 set_target_properties(EnableValidationWithCallback PROPERTIES FOLDER "Samples")
-target_include_directories(EnableValidationWithCallback PUBLIC ${CMAKE_SOURCE_DIR}/glslang)
-target_link_libraries(EnableValidationWithCallback PUBLIC glslang SPIRV "$ENV{VULKAN_SDK}/Lib/vulkan-1.lib"
-)
+target_link_libraries(EnableValidationWithCallback PUBLIC "${Vulkan_LIBRARIES}")

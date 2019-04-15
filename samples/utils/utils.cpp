@@ -35,21 +35,7 @@ namespace vk
   {
     vk::UniqueDeviceMemory allocateMemory(vk::UniqueDevice &device, vk::PhysicalDeviceMemoryProperties const& memoryProperties, vk::MemoryRequirements const& memoryRequirements, vk::MemoryPropertyFlags memoryPropertyFlags)
     {
-      uint32_t memoryTypeBits = memoryRequirements.memoryTypeBits;
-      uint32_t memoryTypeIndex = static_cast<uint32_t>(~0);
-      for (uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++)
-      {
-        if ((memoryTypeBits & 1) == 1)
-        {
-          if ((memoryProperties.memoryTypes[i].propertyFlags & memoryPropertyFlags) == memoryPropertyFlags)
-          {
-            memoryTypeIndex = i;
-            break;
-          }
-        }
-        memoryTypeBits >>= 1;
-      }
-      assert(memoryTypeIndex != ~0);
+      uint32_t memoryTypeIndex = findMemoryType(memoryProperties, memoryRequirements.memoryTypeBits, memoryPropertyFlags);
 
       return device->allocateMemoryUnique(vk::MemoryAllocateInfo(memoryRequirements.size, memoryTypeIndex));
     }
@@ -106,7 +92,7 @@ namespace vk
       return physicalDevice.createDeviceUnique(deviceCreateInfo);
     }
 
-    std::vector<vk::UniqueFramebuffer> createFramebuffers(vk::UniqueDevice &device, vk::UniqueRenderPass &renderPass, std::vector<vk::UniqueImageView> const& imageViews, vk::UniqueImageView &depthImageView, vk::Extent2D const& extent)
+    std::vector<vk::UniqueFramebuffer> createFramebuffers(vk::UniqueDevice &device, vk::UniqueRenderPass &renderPass, std::vector<vk::UniqueImageView> const& imageViews, vk::UniqueImageView const& depthImageView, vk::Extent2D const& extent)
     {
       vk::ImageView attachments[2];
       attachments[1] = depthImageView.get();
@@ -116,13 +102,13 @@ namespace vk
       for (auto const& view : imageViews)
       {
         attachments[0] = view.get();
-        framebuffers.push_back(device->createFramebufferUnique(vk::FramebufferCreateInfo(vk::FramebufferCreateFlags(), renderPass.get(), 2, attachments, extent.width, extent.height, 1)));
+        framebuffers.push_back(device->createFramebufferUnique(vk::FramebufferCreateInfo(vk::FramebufferCreateFlags(), renderPass.get(), depthImageView ? 2 : 1, attachments, extent.width, extent.height, 1)));
       }
 
       return framebuffers;
     }
 
-    vk::UniquePipeline createGraphicsPipeline(vk::UniqueDevice &device, vk::UniquePipelineCache &pipelineCache, vk::UniqueShaderModule &vertexShaderModule, vk::UniqueShaderModule &fragmentShaderModule, uint32_t vertexStride, vk::UniquePipelineLayout &pipelineLayout, vk::UniqueRenderPass &renderPass)
+    vk::UniquePipeline createGraphicsPipeline(vk::UniqueDevice &device, vk::UniquePipelineCache &pipelineCache, vk::UniqueShaderModule &vertexShaderModule, vk::UniqueShaderModule &fragmentShaderModule, uint32_t vertexStride, bool depthBuffered, vk::UniquePipelineLayout &pipelineLayout, vk::UniqueRenderPass &renderPass)
     {
       vk::PipelineShaderStageCreateInfo pipelineShaderStageCreateInfos[2] =
       {
@@ -154,7 +140,7 @@ namespace vk
       vk::PipelineMultisampleStateCreateInfo pipelineMultisampleStateCreateInfo;
 
       vk::StencilOpState stencilOpState(vk::StencilOp::eKeep, vk::StencilOp::eKeep, vk::StencilOp::eKeep, vk::CompareOp::eAlways);
-      vk::PipelineDepthStencilStateCreateInfo pipelineDepthStencilStateCreateInfo(vk::PipelineDepthStencilStateCreateFlags(), true, true, vk::CompareOp::eLessOrEqual, false, false, stencilOpState, stencilOpState);
+      vk::PipelineDepthStencilStateCreateInfo pipelineDepthStencilStateCreateInfo(vk::PipelineDepthStencilStateCreateFlags(), depthBuffered, depthBuffered, vk::CompareOp::eLessOrEqual, false, false, stencilOpState, stencilOpState);
 
       vk::ColorComponentFlags colorComponentFlags(vk::ColorComponentFlagBits::eR | vk::ColorComponentFlagBits::eG | vk::ColorComponentFlagBits::eB | vk::ColorComponentFlagBits::eA);
       vk::PipelineColorBlendAttachmentState pipelineColorBlendAttachmentState(false, vk::BlendFactor::eZero, vk::BlendFactor::eZero, vk::BlendOp::eAdd, vk::BlendFactor::eZero, vk::BlendFactor::eZero, vk::BlendOp::eAdd, colorComponentFlags);
@@ -208,17 +194,21 @@ namespace vk
       return instance;
     }
 
-    vk::UniqueRenderPass createRenderPass(vk::UniqueDevice &device, vk::Format colorFormat, vk::Format depthFormat)
+    vk::UniqueRenderPass createRenderPass(vk::UniqueDevice &device, vk::Format colorFormat, vk::Format depthFormat, vk::AttachmentLoadOp loadOp, vk::ImageLayout colorFinalLayout)
     {
-      vk::AttachmentDescription attachmentDescriptions[2] =
+      std::vector<vk::AttachmentDescription> attachmentDescriptions;
+      assert(colorFormat != vk::Format::eUndefined);
+      attachmentDescriptions.push_back(vk::AttachmentDescription(vk::AttachmentDescriptionFlags(), colorFormat, vk::SampleCountFlagBits::e1, loadOp, vk::AttachmentStoreOp::eStore,
+        vk::AttachmentLoadOp::eDontCare, vk::AttachmentStoreOp::eDontCare, vk::ImageLayout::eUndefined, colorFinalLayout));
+      if (depthFormat != vk::Format::eUndefined)
       {
-        vk::AttachmentDescription(vk::AttachmentDescriptionFlags(), colorFormat, vk::SampleCountFlagBits::e1, vk::AttachmentLoadOp::eClear, vk::AttachmentStoreOp::eStore, vk::AttachmentLoadOp::eDontCare, vk::AttachmentStoreOp::eDontCare, vk::ImageLayout::eUndefined, vk::ImageLayout::ePresentSrcKHR),
-        vk::AttachmentDescription(vk::AttachmentDescriptionFlags(), depthFormat, vk::SampleCountFlagBits::e1, vk::AttachmentLoadOp::eClear, vk::AttachmentStoreOp::eStore, vk::AttachmentLoadOp::eLoad, vk::AttachmentStoreOp::eStore, vk::ImageLayout::eUndefined, vk::ImageLayout::eDepthStencilAttachmentOptimal)
-      };
+        attachmentDescriptions.push_back(vk::AttachmentDescription(vk::AttachmentDescriptionFlags(), depthFormat, vk::SampleCountFlagBits::e1, loadOp, vk::AttachmentStoreOp::eStore,
+          vk::AttachmentLoadOp::eLoad, vk::AttachmentStoreOp::eStore, vk::ImageLayout::eUndefined, vk::ImageLayout::eDepthStencilAttachmentOptimal));
+      }
       vk::AttachmentReference colorAttachment(0, vk::ImageLayout::eColorAttachmentOptimal);
       vk::AttachmentReference depthAttachment(1, vk::ImageLayout::eDepthStencilAttachmentOptimal);
-      vk::SubpassDescription subpassDescription(vk::SubpassDescriptionFlags(), vk::PipelineBindPoint::eGraphics, 0, nullptr, 1, &colorAttachment, nullptr, &depthAttachment);
-      return device->createRenderPassUnique(vk::RenderPassCreateInfo(vk::RenderPassCreateFlags(), 2, attachmentDescriptions, 1, &subpassDescription));
+      vk::SubpassDescription subpassDescription(vk::SubpassDescriptionFlags(), vk::PipelineBindPoint::eGraphics, 0, nullptr, 1, &colorAttachment, nullptr, (depthFormat != vk::Format::eUndefined) ? &depthAttachment : nullptr);
+      return device->createRenderPassUnique(vk::RenderPassCreateInfo(vk::RenderPassCreateFlags(), static_cast<uint32_t>(attachmentDescriptions.size()), attachmentDescriptions.data(), 1, &subpassDescription));
     }
 
     VkBool32 debugReportCallback(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT /*objectType*/, uint64_t /*object*/, size_t /*location*/, int32_t /*messageCode*/, const char* /*pLayerPrefix*/, const char* pMessage, void* /*pUserData*/)
@@ -425,7 +415,7 @@ namespace vk
     ImageData::ImageData(vk::PhysicalDevice &physicalDevice, vk::UniqueDevice & device, vk::Format format_, vk::Extent2D const& extent, vk::ImageTiling tiling, vk::ImageUsageFlags usage, vk::ImageLayout initialLayout, vk::MemoryPropertyFlags memoryProperties, vk::ImageAspectFlags aspectMask)
       : format(format_)
     {
-      vk::ImageCreateInfo imageCreateInfo(vk::ImageCreateFlags(), vk::ImageType::e2D, format, vk::Extent3D(extent, 1), 1, 1, vk::SampleCountFlagBits::e1, tiling, usage, vk::SharingMode::eExclusive, 0, nullptr, initialLayout);
+      vk::ImageCreateInfo imageCreateInfo(vk::ImageCreateFlags(), vk::ImageType::e2D, format, vk::Extent3D(extent, 1), 1, 1, vk::SampleCountFlagBits::e1, tiling, usage | vk::ImageUsageFlagBits::eSampled, vk::SharingMode::eExclusive, 0, nullptr, initialLayout);
       image = device->createImageUnique(imageCreateInfo);
 
       deviceMemory = vk::su::allocateMemory(device, physicalDevice.getMemoryProperties(), device->getImageMemoryRequirements(image.get()), memoryProperties);
@@ -495,42 +485,8 @@ namespace vk
       }
     }
 
-    TextureData::TextureData(vk::PhysicalDevice &physicalDevice, vk::UniqueDevice &device)
-      : format(vk::Format::eR8G8B8A8Unorm)
-      , extent(256, 256)
+    void CheckerboardTextureCreator::operator()(void* data, vk::Extent2D &extent) const
     {
-      vk::PhysicalDeviceMemoryProperties memoryProperties = physicalDevice.getMemoryProperties();
-      vk::FormatProperties formatProperties = physicalDevice.getFormatProperties(format);
-
-      needsStaging = (formatProperties.linearTilingFeatures & vk::FormatFeatureFlagBits::eSampledImage) != vk::FormatFeatureFlagBits::eSampledImage;
-      vk::ImageTiling imageTiling;
-      vk::ImageUsageFlags usageFlags(vk::ImageUsageFlagBits::eSampled);
-      vk::ImageLayout initialLayout;
-      if (needsStaging)
-      {
-        bufferData = std::make_unique<BufferData>(physicalDevice, device, extent.width * extent.height * 4, vk::BufferUsageFlagBits::eTransferSrc);
-        imageTiling = vk::ImageTiling::eOptimal;
-        usageFlags |= vk::ImageUsageFlagBits::eTransferDst;
-        initialLayout = vk::ImageLayout::eUndefined;
-      }
-      else
-      {
-        imageTiling = vk::ImageTiling::eLinear;
-        initialLayout = vk::ImageLayout::ePreinitialized;
-      }
-      imageData = std::make_unique<ImageData>(physicalDevice, device, format, extent, imageTiling, usageFlags, initialLayout
-        , vk::MemoryPropertyFlagBits::eHostCoherent | vk::MemoryPropertyFlagBits::eHostVisible, vk::ImageAspectFlagBits::eColor);
-
-      textureSampler = device->createSamplerUnique(vk::SamplerCreateInfo(vk::SamplerCreateFlags(), vk::Filter::eNearest, vk::Filter::eNearest, vk::SamplerMipmapMode::eNearest,
-        vk::SamplerAddressMode::eClampToEdge, vk::SamplerAddressMode::eClampToEdge, vk::SamplerAddressMode::eClampToEdge, 0.0f, false, 1.0f, false, vk::CompareOp::eNever, 0.0f, 0.0f
-        , vk::BorderColor::eFloatOpaqueWhite));
-    }
-
-    void TextureData::setCheckerboardTexture(vk::UniqueDevice &device, vk::UniqueCommandBuffer &commandBuffer)
-    {
-      void* data = needsStaging
-        ? device->mapMemory(bufferData->deviceMemory.get(), 0, device->getBufferMemoryRequirements(bufferData->buffer.get()).size)
-        : device->mapMemory(imageData->deviceMemory.get(), 0, device->getImageMemoryRequirements(imageData->image.get()).size);
       // Checkerboard of 16x16 pixel squares
       unsigned char *pImageMemory = static_cast<unsigned char*>(data);
       for (uint32_t row = 0; row < extent.height; row++)
@@ -545,22 +501,39 @@ namespace vk
           pImageMemory += 4;
         }
       }
-      device->unmapMemory(needsStaging ? bufferData->deviceMemory.get() : imageData->deviceMemory.get());
+    }
 
+    TextureData::TextureData(vk::PhysicalDevice &physicalDevice, vk::UniqueDevice &device, vk::ImageUsageFlags usageFlags, vk::FormatFeatureFlags formatFeatureFlags)
+      : format(vk::Format::eR8G8B8A8Unorm)
+      , extent(256, 256)
+    {
+      vk::PhysicalDeviceMemoryProperties memoryProperties = physicalDevice.getMemoryProperties();
+      vk::FormatProperties formatProperties = physicalDevice.getFormatProperties(format);
+
+      formatFeatureFlags |= vk::FormatFeatureFlagBits::eSampledImage;
+      needsStaging = (formatProperties.linearTilingFeatures & formatFeatureFlags) != formatFeatureFlags;
+      vk::ImageTiling imageTiling;
+      vk::ImageLayout initialLayout;
+      vk::MemoryPropertyFlags requirements;
       if (needsStaging)
       {
-        // Since we're going to blit to the texture image, set its layout to eTransferDstOptimal
-        vk::su::setImageLayout(commandBuffer, imageData->image.get(), vk::ImageAspectFlagBits::eColor, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal, vk::PipelineStageFlagBits::eTopOfPipe, vk::PipelineStageFlagBits::eTransfer);
-        vk::BufferImageCopy copyRegion(0, extent.width, extent.height, vk::ImageSubresourceLayers(vk::ImageAspectFlagBits::eColor, 0, 0, 1), vk::Offset3D(0, 0, 0), vk::Extent3D(extent, 1));
-        commandBuffer->copyBufferToImage(bufferData->buffer.get(), imageData->image.get(), vk::ImageLayout::eTransferDstOptimal, copyRegion);
-        // Set the layout for the texture image from eTransferDstOptimal to SHADER_READ_ONLY
-        vk::su::setImageLayout(commandBuffer, imageData->image.get(), vk::ImageAspectFlagBits::eColor, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal, vk::PipelineStageFlagBits::eTransfer, vk::PipelineStageFlagBits::eFragmentShader);
+        assert((formatProperties.optimalTilingFeatures & formatFeatureFlags) == formatFeatureFlags);
+        bufferData = std::make_unique<BufferData>(physicalDevice, device, extent.width * extent.height * 4, vk::BufferUsageFlagBits::eTransferSrc);
+        imageTiling = vk::ImageTiling::eOptimal;
+        usageFlags |= vk::ImageUsageFlagBits::eTransferDst;
+        initialLayout = vk::ImageLayout::eUndefined;
       }
       else
       {
-        // If we can use the linear tiled image as a texture, just do it
-        vk::su::setImageLayout(commandBuffer, imageData->image.get(), vk::ImageAspectFlagBits::eColor, vk::ImageLayout::ePreinitialized, vk::ImageLayout::eShaderReadOnlyOptimal, vk::PipelineStageFlagBits::eHost, vk::PipelineStageFlagBits::eFragmentShader);
+        imageTiling = vk::ImageTiling::eLinear;
+        initialLayout = vk::ImageLayout::ePreinitialized;
+        requirements = vk::MemoryPropertyFlagBits::eHostCoherent | vk::MemoryPropertyFlagBits::eHostVisible;
       }
+      imageData = std::make_unique<ImageData>(physicalDevice, device, format, extent, imageTiling, usageFlags | vk::ImageUsageFlagBits::eSampled, initialLayout, requirements, vk::ImageAspectFlagBits::eColor);
+
+      textureSampler = device->createSamplerUnique(vk::SamplerCreateInfo(vk::SamplerCreateFlags(), vk::Filter::eNearest, vk::Filter::eNearest, vk::SamplerMipmapMode::eNearest,
+        vk::SamplerAddressMode::eClampToEdge, vk::SamplerAddressMode::eClampToEdge, vk::SamplerAddressMode::eClampToEdge, 0.0f, false, 1.0f, false, vk::CompareOp::eNever, 0.0f, 0.0f
+        , vk::BorderColor::eFloatOpaqueWhite));
     }
 
 #if defined(VK_USE_PLATFORM_WIN32_KHR)

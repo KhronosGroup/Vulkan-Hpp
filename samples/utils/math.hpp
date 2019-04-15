@@ -13,6 +13,7 @@
 // limitations under the License.
 //
 
+#include <vulkan/vulkan.hpp>
 #define GLM_FORCE_RADIANS
 #pragma warning(disable:4201)   // disable warning C4201: nonstandard extension used: nameless struct/union; needed to get glm/detail/type_vec?.hpp without warnings
 #include <glm/gtc/matrix_transform.hpp>
@@ -21,6 +22,6 @@ namespace vk
 {
   namespace su
   {
-    glm::mat4x4 createModelViewProjectionClipMatrix();
+    glm::mat4x4 createModelViewProjectionClipMatrix(vk::Extent2D const& extent);
   }
 }

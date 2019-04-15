@@ -14,31 +14,22 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(InputAttachment)
+project(InstanceExtensionProperties)
 
 set(HEADERS
-  ../utils/geometries.hpp
-  ../utils/math.hpp
-  ../utils/shaders.hpp
-  ../utils/utils.hpp
 )
 
 set(SOURCES
-  InputAttachment.cpp
-  ../utils/math.cpp
-  ../utils/shaders.cpp
-  ../utils/utils.cpp
-  ../../glslang/StandAlone/ResourceLimits.cpp
+  InstanceExtensionProperties.cpp
 )
 
 source_group(headers FILES ${HEADERS})
 source_group(sources FILES ${SOURCES})
 
-add_executable(InputAttachment
+add_executable(InstanceExtensionProperties
   ${HEADERS}
   ${SOURCES}
 )
 
-set_target_properties(InputAttachment PROPERTIES FOLDER "Samples")
-target_include_directories(InputAttachment PUBLIC ${CMAKE_SOURCE_DIR}/glslang)
-target_link_libraries(InputAttachment PUBLIC glslang SPIRV "${Vulkan_LIBRARIES}")
+set_target_properties(InstanceExtensionProperties PROPERTIES FOLDER "Samples")
+target_link_libraries(InstanceExtensionProperties PUBLIC "${Vulkan_LIBRARIES}")

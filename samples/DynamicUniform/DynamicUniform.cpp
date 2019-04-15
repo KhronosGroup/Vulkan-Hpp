@@ -83,7 +83,7 @@ int main(int /*argc*/, char ** /*argv*/)
     glm::mat4x4 clip = glm::mat4x4(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 0.5f, 1.0f);   // vulkan clip space has inverted y and half z !
     mvpcs[0] = clip * projection * view * model;
 
-    model = glm::translate(model, glm::vec3(-1.5f, -1.5f, -1.5f));
+    model = glm::translate(model, glm::vec3(-1.5f, 1.5f, -1.5f));
     mvpcs[1] = clip * projection * view * model;
 
     VkDeviceSize bufferSize = sizeof(glm::mat4x4);
@@ -107,7 +107,7 @@ int main(int /*argc*/, char ** /*argv*/)
     vk::su::updateDescriptorSets(device, descriptorSets[0], vk::DescriptorType::eUniformBufferDynamic, &descriptorBufferInfo);
 
     vk::UniquePipelineCache pipelineCache = device->createPipelineCacheUnique(vk::PipelineCacheCreateInfo());
-    vk::UniquePipeline graphicsPipeline = vk::su::createGraphicsPipeline(device, pipelineCache, vertexShaderModule, fragmentShaderModule, sizeof(coloredCubeData[0]), pipelineLayout, renderPass);
+    vk::UniquePipeline graphicsPipeline = vk::su::createGraphicsPipeline(device, pipelineCache, vertexShaderModule, fragmentShaderModule, sizeof(coloredCubeData[0]), true, pipelineLayout, renderPass);
 
     // Get the index of the next available swapchain image:
     vk::UniqueSemaphore imageAcquiredSemaphore = device->createSemaphoreUnique(vk::SemaphoreCreateInfo());

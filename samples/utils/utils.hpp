@@ -65,11 +65,40 @@ namespace vk
       std::vector<vk::UniqueImageView>  imageViews;
     };
 
+    class CheckerboardTextureCreator
+    {
+    public:
+      void operator()(void* data, vk::Extent2D &extent) const;
+    };
+
     struct TextureData
     {
-      TextureData(vk::PhysicalDevice &physicalDevice, vk::UniqueDevice &device);
+      TextureData(vk::PhysicalDevice &physicalDevice, vk::UniqueDevice &device, vk::ImageUsageFlags usageFlags = {}, vk::FormatFeatureFlags formatFeatureFlags = {});
 
-      void setCheckerboardTexture(vk::UniqueDevice &device, vk::UniqueCommandBuffer &commandBuffer);
+      template <typename TextureCreator>
+      void setTexture(vk::UniqueDevice &device, vk::UniqueCommandBuffer &commandBuffer, TextureCreator const& textureCreator)
+      {
+        void* data = needsStaging
+          ? device->mapMemory(bufferData->deviceMemory.get(), 0, device->getBufferMemoryRequirements(bufferData->buffer.get()).size)
+          : device->mapMemory(imageData->deviceMemory.get(), 0, device->getImageMemoryRequirements(imageData->image.get()).size);
+        textureCreator(data, extent);
+        device->unmapMemory(needsStaging ? bufferData->deviceMemory.get() : imageData->deviceMemory.get());
+
+        if (needsStaging)
+        {
+          // Since we're going to blit to the texture image, set its layout to eTransferDstOptimal
+          vk::su::setImageLayout(commandBuffer, imageData->image.get(), vk::ImageAspectFlagBits::eColor, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal, vk::PipelineStageFlagBits::eTopOfPipe, vk::PipelineStageFlagBits::eTransfer);
+          vk::BufferImageCopy copyRegion(0, extent.width, extent.height, vk::ImageSubresourceLayers(vk::ImageAspectFlagBits::eColor, 0, 0, 1), vk::Offset3D(0, 0, 0), vk::Extent3D(extent, 1));
+          commandBuffer->copyBufferToImage(bufferData->buffer.get(), imageData->image.get(), vk::ImageLayout::eTransferDstOptimal, copyRegion);
+          // Set the layout for the texture image from eTransferDstOptimal to SHADER_READ_ONLY
+          vk::su::setImageLayout(commandBuffer, imageData->image.get(), vk::ImageAspectFlagBits::eColor, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal, vk::PipelineStageFlagBits::eTransfer, vk::PipelineStageFlagBits::eFragmentShader);
+        }
+        else
+        {
+          // If we can use the linear tiled image as a texture, just do it
+          vk::su::setImageLayout(commandBuffer, imageData->image.get(), vk::ImageAspectFlagBits::eColor, vk::ImageLayout::ePreinitialized, vk::ImageLayout::eShaderReadOnlyOptimal, vk::PipelineStageFlagBits::eHost, vk::PipelineStageFlagBits::eFragmentShader);
+        }
+      }
 
       vk::Format                  format;
       vk::Extent2D                extent;
@@ -128,10 +157,10 @@ namespace vk
     vk::UniqueDescriptorPool createDescriptorPool(vk::UniqueDevice &device, vk::DescriptorType descriptorType = vk::DescriptorType::eUniformBuffer, bool textured = false);
     vk::UniqueDescriptorSetLayout createDescriptorSetLayout(vk::UniqueDevice &device, vk::DescriptorType = vk::DescriptorType::eUniformBuffer, bool textured = false);
     vk::UniqueDevice createDevice(vk::PhysicalDevice physicalDevice, uint32_t queueFamilyIndex, std::vector<std::string> const& extensions = {});
-    std::vector<vk::UniqueFramebuffer> createFramebuffers(vk::UniqueDevice &device, vk::UniqueRenderPass &renderPass, std::vector<vk::UniqueImageView> const& imageViews, vk::UniqueImageView &depthImageView, vk::Extent2D const& extent);
-    vk::UniquePipeline createGraphicsPipeline(vk::UniqueDevice &device, vk::UniquePipelineCache &pipelineCache, vk::UniqueShaderModule &vertexShaderModule, vk::UniqueShaderModule &fragmentShaderModule, uint32_t vertexStride, vk::UniquePipelineLayout &pipelineLayout, vk::UniqueRenderPass &renderPass);
+    std::vector<vk::UniqueFramebuffer> createFramebuffers(vk::UniqueDevice &device, vk::UniqueRenderPass &renderPass, std::vector<vk::UniqueImageView> const& imageViews, vk::UniqueImageView const& depthImageView, vk::Extent2D const& extent);
+    vk::UniquePipeline createGraphicsPipeline(vk::UniqueDevice &device, vk::UniquePipelineCache &pipelineCache, vk::UniqueShaderModule &vertexShaderModule, vk::UniqueShaderModule &fragmentShaderModule, uint32_t vertexStride, bool depthBuffered, vk::UniquePipelineLayout &pipelineLayout, vk::UniqueRenderPass &renderPass);
     vk::UniqueInstance createInstance(std::string const& appName, std::string const& engineName, std::vector<std::string> const& extensions = {}, uint32_t apiVersion = VK_API_VERSION_1_0);
-    vk::UniqueRenderPass createRenderPass(vk::UniqueDevice &device, vk::Format colorFormat, vk::Format depthFormat);
+    vk::UniqueRenderPass createRenderPass(vk::UniqueDevice &device, vk::Format colorFormat, vk::Format depthFormat, vk::AttachmentLoadOp loadOp = vk::AttachmentLoadOp::eClear, vk::ImageLayout colorFinalLayout = vk::ImageLayout::ePresentSrcKHR);
     VkBool32 debugReportCallback(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objectType, uint64_t object, size_t location, int32_t messageCode, const char* pLayerPrefix, const char* pMessage, void* pUserData);
     uint32_t findGraphicsQueueFamilyIndex(std::vector<vk::QueueFamilyProperties> const& queueFamilyProperties);
     std::pair<uint32_t, uint32_t> findGraphicsAndPresentQueueFamilyIndex(vk::PhysicalDevice physicalDevice, vk::UniqueSurfaceKHR & surface);

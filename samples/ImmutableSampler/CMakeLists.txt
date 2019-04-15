@@ -41,5 +41,4 @@ add_executable(ImmutableSampler
 
 set_target_properties(ImmutableSampler PROPERTIES FOLDER "Samples")
 target_include_directories(ImmutableSampler PUBLIC ${CMAKE_SOURCE_DIR}/glslang)
-target_link_libraries(ImmutableSampler PUBLIC glslang SPIRV "$ENV{VULKAN_SDK}/Lib/vulkan-1.lib"
-)
+target_link_libraries(ImmutableSampler PUBLIC glslang SPIRV "${Vulkan_LIBRARIES}")

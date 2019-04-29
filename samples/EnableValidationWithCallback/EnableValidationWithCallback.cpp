@@ -93,22 +93,11 @@ int main(int /*argc*/, char ** /*argv*/)
 
     // Use standard_validation meta layer that enables all recommended validation layers
     std::vector<char const*> instanceLayerNames;
-    instanceLayerNames.push_back("VK_LAYER_LUNARG_standard_validation");
+    instanceLayerNames.push_back("VK_LAYER_KHRONOS_validation");
     if (!checkLayers(instanceLayerNames, instanceLayerProperties))
     {
-      // If standard validation is not present, search instead for the individual layers that make it up, in the correct order.
-      instanceLayerNames.clear();
-      instanceLayerNames.push_back("VK_LAYER_GOOGLE_threading");
-      instanceLayerNames.push_back("VK_LAYER_LUNARG_parameter_validation");
-      instanceLayerNames.push_back("VK_LAYER_LUNARG_object_tracker");
-      instanceLayerNames.push_back("VK_LAYER_LUNARG_core_validation");
-      instanceLayerNames.push_back("VK_LAYER_GOOGLE_unique_objects");
-
-      if (!checkLayers(instanceLayerNames, instanceLayerProperties))
-      {
-        std::cout << "Set the environment variable VK_LAYER_PATH to point to the location of your layers" << std::endl;
-        exit(1);
-      }
+      std::cout << "Set the environment variable VK_LAYER_PATH to point to the location of your layers" << std::endl;
+      exit(1);
     }
 
     /* Enable debug callback extension */

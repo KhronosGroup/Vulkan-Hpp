@@ -159,7 +159,7 @@ int main(int /*argc*/, char ** /*argv*/)
 
     vk::UniqueSemaphore imageAcquiredSemaphore = device->createSemaphoreUnique(vk::SemaphoreCreateInfo());
 
-    vk::ResultValue<uint32_t> result = device->acquireNextImage2KHR(vk::AcquireNextImageInfoKHR(swapChainData.swapChain.get(), UINT64_MAX, imageAcquiredSemaphore.get()));
+    vk::ResultValue<uint32_t> result = device->acquireNextImage2KHR(vk::AcquireNextImageInfoKHR(swapChainData.swapChain.get(), UINT64_MAX, imageAcquiredSemaphore.get(), {}, 1));
     assert(result.result == vk::Result::eSuccess);
     uint32_t currentBuffer = result.value;
 

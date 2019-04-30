@@ -159,7 +159,7 @@ namespace vk
       std::vector<char const*> enabledLayers;
 #if !defined(NDEBUG)
       // Enable standard validation layer to find as much errors as possible!
-      enabledLayers.push_back("VK_LAYER_LUNARG_standard_validation");
+      enabledLayers.push_back("VK_LAYER_KHRONOS_validation");
 #endif
 
       std::vector<char const*> enabledExtensions;

@@ -15,6 +15,7 @@
 
 #include "utils.hpp"
 #include "vulkan/vulkan.hpp"
+#include <iomanip>
 
 PFN_vkCreateDebugReportCallbackEXT  pfnVkCreateDebugReportCallbackEXT;
 PFN_vkDestroyDebugReportCallbackEXT pfnVkDestroyDebugReportCallbackEXT;
@@ -64,7 +65,7 @@ namespace vk
       return device->createDescriptorPoolUnique(descriptorPoolCreateInfo);
     }
 
-    vk::UniqueDescriptorSetLayout createDescriptorSetLayout(vk::UniqueDevice &device, vk::DescriptorType descriptorType, bool textured)
+    vk::UniqueDescriptorSetLayout createDescriptorSetLayout(vk::UniqueDevice &device, vk::DescriptorType descriptorType, bool textured, vk::DescriptorSetLayoutCreateFlags flags)
     {
       std::vector<vk::DescriptorSetLayoutBinding> bindings;
       bindings.push_back(vk::DescriptorSetLayoutBinding(0, descriptorType, 1, vk::ShaderStageFlagBits::eVertex));
@@ -72,8 +73,7 @@ namespace vk
       {
         bindings.push_back(vk::DescriptorSetLayoutBinding(1, vk::DescriptorType::eCombinedImageSampler, 1, vk::ShaderStageFlagBits::eFragment));
       }
-      vk::DescriptorSetLayoutBinding descriptorSetLayoutBinding(0, vk::DescriptorType::eUniformBuffer, 1, vk::ShaderStageFlagBits::eVertex);
-      return device->createDescriptorSetLayoutUnique(vk::DescriptorSetLayoutCreateInfo({}, checked_cast<uint32_t>(bindings.size()), bindings.data()));
+      return device->createDescriptorSetLayoutUnique(vk::DescriptorSetLayoutCreateInfo(flags, checked_cast<uint32_t>(bindings.size()), bindings.data()));
     }
 
     vk::UniqueDevice createDevice(vk::PhysicalDevice physicalDevice, uint32_t queueFamilyIndex, std::vector<std::string> const& extensions)
@@ -108,7 +108,8 @@ namespace vk
       return framebuffers;
     }
 
-    vk::UniquePipeline createGraphicsPipeline(vk::UniqueDevice &device, vk::UniquePipelineCache &pipelineCache, vk::UniqueShaderModule &vertexShaderModule, vk::UniqueShaderModule &fragmentShaderModule, uint32_t vertexStride, bool depthBuffered, vk::UniquePipelineLayout &pipelineLayout, vk::UniqueRenderPass &renderPass)
+    vk::UniquePipeline createGraphicsPipeline(vk::UniqueDevice &device, vk::UniquePipelineCache &pipelineCache, vk::UniqueShaderModule &vertexShaderModule,
+      vk::UniqueShaderModule &fragmentShaderModule, uint32_t vertexStride, bool depthBuffered, bool textured, vk::UniquePipelineLayout &pipelineLayout, vk::UniqueRenderPass &renderPass)
     {
       vk::PipelineShaderStageCreateInfo pipelineShaderStageCreateInfos[2] =
       {
@@ -123,7 +124,7 @@ namespace vk
         vk::VertexInputAttributeDescription vertexInputAttributeDescriptions[2] =
         {
           vk::VertexInputAttributeDescription(0, 0, vk::Format::eR32G32B32A32Sfloat, 0),
-          vk::VertexInputAttributeDescription(1, 0, vk::Format::eR32G32B32A32Sfloat, 16)
+          vk::VertexInputAttributeDescription(1, 0, textured ? vk::Format::eR32G32Sfloat : vk::Format::eR32G32B32A32Sfloat, 16)
         };
         pipelineVertexInputStateCreateInfo.vertexBindingDescriptionCount = 1;
         pipelineVertexInputStateCreateInfo.pVertexBindingDescriptions = &vertexInputBindingDescription;
@@ -503,6 +504,27 @@ namespace vk
       }
     }
 
+    MonochromeTextureGenerator::MonochromeTextureGenerator(std::array<unsigned char, 3> const& rgb_)
+      : rgb(rgb_)
+    {}
+
+    void MonochromeTextureGenerator::operator()(void* data, vk::Extent2D &extent) const
+    {
+      // fill in with the monochrome color
+      unsigned char *pImageMemory = static_cast<unsigned char*>(data);
+      for (uint32_t row = 0; row < extent.height; row++)
+      {
+        for (uint32_t col = 0; col < extent.width; col++)
+        {
+          pImageMemory[0] = rgb[0];
+          pImageMemory[1] = rgb[1];
+          pImageMemory[2] = rgb[2];
+          pImageMemory[3] = 255;
+          pImageMemory += 4;
+        }
+      }
+    }
+
     TextureData::TextureData(vk::PhysicalDevice &physicalDevice, vk::UniqueDevice &device, vk::ImageUsageFlags usageFlags, vk::FormatFeatureFlags formatFeatureFlags)
       : format(vk::Format::eR8G8B8A8Unorm)
       , extent(256, 256)
@@ -534,6 +556,11 @@ namespace vk
       textureSampler = device->createSamplerUnique(vk::SamplerCreateInfo(vk::SamplerCreateFlags(), vk::Filter::eNearest, vk::Filter::eNearest, vk::SamplerMipmapMode::eNearest,
         vk::SamplerAddressMode::eClampToEdge, vk::SamplerAddressMode::eClampToEdge, vk::SamplerAddressMode::eClampToEdge, 0.0f, false, 1.0f, false, vk::CompareOp::eNever, 0.0f, 0.0f
         , vk::BorderColor::eFloatOpaqueWhite));
+    }
+
+    UUID::UUID(uint8_t data[VK_UUID_SIZE])
+    {
+      memcpy(m_data, data, VK_UUID_SIZE * sizeof(uint8_t));
     }
 
 #if defined(VK_USE_PLATFORM_WIN32_KHR)
@@ -587,4 +614,19 @@ namespace vk
 #pragma error "unhandled platform"
 #endif
   }
+}
+
+std::ostream& operator<<(std::ostream& os, vk::su::UUID const& uuid)
+{
+  os << std::setfill('0');
+  for (int j = 0; j < VK_UUID_SIZE; ++j)
+  {
+    os << std::hex << std::setw(2) << static_cast<uint32_t>(uuid.m_data[j]);
+    if (j == 3 || j == 5 || j == 7 || j == 9)
+    {
+      std::cout << '-';
+    }
+  }
+  os << std::setfill(' ');
+  return os;
 }

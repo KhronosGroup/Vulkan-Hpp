@@ -23,18 +23,6 @@
 static char const* AppName = "EnumerateDevicesAdvanced";
 static char const* EngineName = "Vulkan.hpp";
 
-void print_UUID(uint8_t *pipelineCacheUUID)
-{
-  for (int j = 0; j < VK_UUID_SIZE; ++j)
-  {
-    std::cout << std::setw(2) << (uint32_t)pipelineCacheUUID[j];
-    if (j == 3 || j == 5 || j == 7 || j == 9)
-    {
-      std::cout << '-';
-    }
-  }
-}
-
 int main(int /*argc*/, char ** /*argv*/)
 {
   try
@@ -70,12 +58,7 @@ int main(int /*argc*/, char ** /*argv*/)
 
       std::cout << "deviceName: " << properties.deviceName << '\n';
 
-      std::cout << "pipelineCacheUUID: ";
-      std::cout << std::setfill('0') << std::hex;
-      print_UUID(properties.pipelineCacheUUID);
-      std::cout << std::setfill(' ') << std::dec;
-      std::cout << '\n';
-      std::cout << '\n';
+      std::cout << "pipelineCacheUUID: " << vk::su::UUID(properties.pipelineCacheUUID) << "\n\n";
     }
 
     /* VULKAN_HPP_KEY_END */

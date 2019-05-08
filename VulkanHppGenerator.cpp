@@ -4197,8 +4197,6 @@ int main( int argc, char **argv )
       return m_ptr;
     }
 
-    using element_type = Type;
-
   private:
     uint32_t  m_count;
     T *       m_ptr;
@@ -4686,6 +4684,8 @@ int main( int argc, char **argv )
       std::swap(m_value, rhs.m_value);
       std::swap(static_cast<Deleter&>(*this), static_cast<Deleter&>(rhs));
     }
+
+    using element_type = Type;
 
   private:
     Type    m_value;

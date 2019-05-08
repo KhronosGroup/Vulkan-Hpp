@@ -4197,6 +4197,8 @@ int main( int argc, char **argv )
       return m_ptr;
     }
 
+    using element_type = Type;
+
   private:
     uint32_t  m_count;
     T *       m_ptr;

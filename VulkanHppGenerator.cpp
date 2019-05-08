@@ -4602,6 +4602,9 @@ int main( int argc, char **argv )
   private:
     using Deleter = typename UniqueHandleTraits<Type,Dispatch>::deleter;
   public:
+
+    using element_type = Type;
+
     explicit UniqueHandle( Type const& value = Type(), Deleter const& deleter = Deleter() )
       : Deleter( deleter)
       , m_value( value )
@@ -4684,8 +4687,6 @@ int main( int argc, char **argv )
       std::swap(m_value, rhs.m_value);
       std::swap(static_cast<Deleter&>(*this), static_cast<Deleter&>(rhs));
     }
-
-    using element_type = Type;
 
   private:
     Type    m_value;

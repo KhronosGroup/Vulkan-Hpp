@@ -107,7 +107,7 @@ int main(int /*argc*/, char ** /*argv*/)
     vk::su::updateDescriptorSets(device, descriptorSets[0], vk::DescriptorType::eUniformBufferDynamic, &descriptorBufferInfo);
 
     vk::UniquePipelineCache pipelineCache = device->createPipelineCacheUnique(vk::PipelineCacheCreateInfo());
-    vk::UniquePipeline graphicsPipeline = vk::su::createGraphicsPipeline(device, pipelineCache, vertexShaderModule, fragmentShaderModule, sizeof(coloredCubeData[0]), true, pipelineLayout, renderPass);
+    vk::UniquePipeline graphicsPipeline = vk::su::createGraphicsPipeline(device, pipelineCache, vertexShaderModule, fragmentShaderModule, sizeof(coloredCubeData[0]), true, false, pipelineLayout, renderPass);
 
     // Get the index of the next available swapchain image:
     vk::UniqueSemaphore imageAcquiredSemaphore = device->createSemaphoreUnique(vk::SemaphoreCreateInfo());

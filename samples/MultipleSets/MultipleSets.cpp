@@ -93,34 +93,6 @@ void main()
 }
 )";
 
-class MonochromeTextureGenerator
-{
-public:
-  MonochromeTextureGenerator(std::array<unsigned char, 3> const& rgb_)
-    : rgb(rgb_)
-  {}
-
-  void operator()(void* data, vk::Extent2D &extent) const
-  {
-    // fill in with the monochrome color
-    unsigned char *pImageMemory = static_cast<unsigned char*>(data);
-    for (uint32_t row = 0; row < extent.height; row++)
-    {
-      for (uint32_t col = 0; col < extent.width; col++)
-      {
-        pImageMemory[0] = rgb[0];
-        pImageMemory[1] = rgb[1];
-        pImageMemory[2] = rgb[2];
-        pImageMemory[3] = 255;
-        pImageMemory += 4;
-      }
-    }
-  }
-
-private:
-  std::array<unsigned char, 3> const& rgb;
-};
-
 int main(int /*argc*/, char ** /*argv*/)
 {
   try
@@ -152,7 +124,7 @@ int main(int /*argc*/, char ** /*argv*/)
     vk::su::TextureData textureData(physicalDevices[0], device);
 
     commandBuffers[0]->begin(vk::CommandBufferBeginInfo());
-    textureData.setTexture(device, commandBuffers[0], MonochromeTextureGenerator({ 118, 185, 0 }));
+    textureData.setTexture(device, commandBuffers[0], vk::su::MonochromeTextureGenerator({ 118, 185, 0 }));
 
     vk::su::BufferData uniformBufferData(physicalDevices[0], device, sizeof(glm::mat4x4), vk::BufferUsageFlagBits::eUniformBuffer);
     vk::su::copyToDevice(device, uniformBufferData.deviceMemory, vk::su::createModelViewProjectionClipMatrix(surfaceData.extent));
@@ -207,7 +179,7 @@ int main(int /*argc*/, char ** /*argv*/)
     /* VULKAN_KEY_END */
 
     vk::UniquePipelineCache pipelineCache = device->createPipelineCacheUnique(vk::PipelineCacheCreateInfo());
-    vk::UniquePipeline graphicsPipeline = vk::su::createGraphicsPipeline(device, pipelineCache, vertexShaderModule, fragmentShaderModule, sizeof(texturedCubeData[0]), true, pipelineLayout, renderPass);
+    vk::UniquePipeline graphicsPipeline = vk::su::createGraphicsPipeline(device, pipelineCache, vertexShaderModule, fragmentShaderModule, sizeof(texturedCubeData[0]), true, true, pipelineLayout, renderPass);
 
     // Get the index of the next available swapchain image:
     vk::UniqueSemaphore imageAcquiredSemaphore = device->createSemaphoreUnique(vk::SemaphoreCreateInfo());

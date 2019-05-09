@@ -71,6 +71,18 @@ namespace vk
       void operator()(void* data, vk::Extent2D &extent) const;
     };
 
+    class MonochromeTextureGenerator
+    {
+    public:
+      MonochromeTextureGenerator(std::array<unsigned char, 3> const& rgb_);
+
+      void operator()(void* data, vk::Extent2D &extent) const;
+
+    private:
+      std::array<unsigned char, 3> const& rgb;
+    };
+
+
     struct TextureData
     {
       TextureData(vk::PhysicalDevice &physicalDevice, vk::UniqueDevice &device, vk::ImageUsageFlags usageFlags = {}, vk::FormatFeatureFlags formatFeatureFlags = {});
@@ -106,6 +118,14 @@ namespace vk
       std::unique_ptr<BufferData> bufferData;
       std::unique_ptr<ImageData>  imageData;
       vk::UniqueSampler           textureSampler;
+    };
+
+    struct UUID
+    {
+    public:
+      UUID(uint8_t data[VK_UUID_SIZE]);
+
+      uint8_t m_data[VK_UUID_SIZE];
     };
 
 
@@ -155,10 +175,11 @@ namespace vk
     vk::UniqueCommandPool createCommandPool(vk::UniqueDevice &device, uint32_t queueFamilyIndex);
     vk::UniqueDebugReportCallbackEXT createDebugReportCallback(vk::UniqueInstance &instance);
     vk::UniqueDescriptorPool createDescriptorPool(vk::UniqueDevice &device, vk::DescriptorType descriptorType = vk::DescriptorType::eUniformBuffer, bool textured = false);
-    vk::UniqueDescriptorSetLayout createDescriptorSetLayout(vk::UniqueDevice &device, vk::DescriptorType = vk::DescriptorType::eUniformBuffer, bool textured = false);
+    vk::UniqueDescriptorSetLayout createDescriptorSetLayout(vk::UniqueDevice &device, vk::DescriptorType = vk::DescriptorType::eUniformBuffer, bool textured = false, vk::DescriptorSetLayoutCreateFlags flags = {});
     vk::UniqueDevice createDevice(vk::PhysicalDevice physicalDevice, uint32_t queueFamilyIndex, std::vector<std::string> const& extensions = {});
     std::vector<vk::UniqueFramebuffer> createFramebuffers(vk::UniqueDevice &device, vk::UniqueRenderPass &renderPass, std::vector<vk::UniqueImageView> const& imageViews, vk::UniqueImageView const& depthImageView, vk::Extent2D const& extent);
-    vk::UniquePipeline createGraphicsPipeline(vk::UniqueDevice &device, vk::UniquePipelineCache &pipelineCache, vk::UniqueShaderModule &vertexShaderModule, vk::UniqueShaderModule &fragmentShaderModule, uint32_t vertexStride, bool depthBuffered, vk::UniquePipelineLayout &pipelineLayout, vk::UniqueRenderPass &renderPass);
+    vk::UniquePipeline createGraphicsPipeline(vk::UniqueDevice &device, vk::UniquePipelineCache &pipelineCache, vk::UniqueShaderModule &vertexShaderModule,
+      vk::UniqueShaderModule &fragmentShaderModule, uint32_t vertexStride, bool depthBuffered, bool textured, vk::UniquePipelineLayout &pipelineLayout, vk::UniqueRenderPass &renderPass);
     vk::UniqueInstance createInstance(std::string const& appName, std::string const& engineName, std::vector<std::string> const& extensions = {}, uint32_t apiVersion = VK_API_VERSION_1_0);
     vk::UniqueRenderPass createRenderPass(vk::UniqueDevice &device, vk::Format colorFormat, vk::Format depthFormat, vk::AttachmentLoadOp loadOp = vk::AttachmentLoadOp::eClear, vk::ImageLayout colorFinalLayout = vk::ImageLayout::ePresentSrcKHR);
     VkBool32 debugReportCallback(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objectType, uint64_t object, size_t location, int32_t messageCode, const char* pLayerPrefix, const char* pMessage, void* pUserData);
@@ -179,3 +200,5 @@ namespace vk
 #endif
   }
 }
+
+std::ostream& operator<<(std::ostream& os, vk::su::UUID const& uuid);

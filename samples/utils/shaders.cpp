@@ -15,7 +15,7 @@
 
 #include "shaders.hpp"
 #include "vulkan/vulkan.hpp"
-#include "glslang/StandAlone/ResourceLimits.h"
+#include "StandAlone/ResourceLimits.h"
 #include "SPIRV/GlslangToSpv.h"
 
 namespace vk

@@ -508,8 +508,8 @@ namespace VULKAN_HPP_NAMESPACE
   {
   private:
     using Deleter = typename UniqueHandleTraits<Type,Dispatch>::deleter;
-  public:
 
+  public:
     using element_type = Type;
 
     explicit UniqueHandle( Type const& value = Type(), Deleter const& deleter = Deleter() )
@@ -598,6 +598,14 @@ namespace VULKAN_HPP_NAMESPACE
   private:
     Type    m_value;
   };
+
+  template <typename UniqueType>
+  VULKAN_HPP_INLINE std::vector<typename UniqueType::element_type> uniqueToRaw(std::vector<UniqueType> const& handles)
+  {
+    std::vector<typename UniqueType::element_type> newBuffer(handles.size());
+    std::transform(handles.begin(), handles.end(), newBuffer.begin(), [](UniqueType const& handle) { return handle.get(); });
+    return newBuffer;
+  }
 
   template <typename Type, typename Dispatch>
   VULKAN_HPP_INLINE void swap( UniqueHandle<Type,Dispatch> & lhs, UniqueHandle<Type,Dispatch> & rhs )

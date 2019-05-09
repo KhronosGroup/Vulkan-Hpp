@@ -4602,6 +4602,9 @@ int main( int argc, char **argv )
   private:
     using Deleter = typename UniqueHandleTraits<Type,Dispatch>::deleter;
   public:
+
+    using element_type = Type;
+
     explicit UniqueHandle( Type const& value = Type(), Deleter const& deleter = Deleter() )
       : Deleter( deleter)
       , m_value( value )

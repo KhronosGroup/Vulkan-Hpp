@@ -1426,7 +1426,7 @@ void VulkanHppGenerator::readExtensionDisabledRequire(tinyxml2::XMLElement const
 {
   checkAttributes(getAttributes(element), element->GetLineNum(), {}, {});
   std::vector<tinyxml2::XMLElement const*> children = getChildElements(element);
-  checkElements(children, { "command", "enum", "type" });
+  checkElements(children, { "command", "comment", "enum", "type" });
 
   for (auto child : children)
   {
@@ -1458,11 +1458,14 @@ void VulkanHppGenerator::readExtensionDisabledRequire(tinyxml2::XMLElement const
         m_structures.erase(nameAttribute->second);
       }
     }
-    else
+    else if (value == "enum")
     {
-      assert(value == "enum");
       std::map<std::string, std::string> attributes = getAttributes(child);
       checkAttributes(attributes, child->GetLineNum(), { { "name",{} } }, { { "bitpos",{} },{ "extends",{} },{ "offset",{} },{ "value",{} } });
+    }
+    else
+    {
+      assert(value == "comment");
     }
   }
 }

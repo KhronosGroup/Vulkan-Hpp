@@ -1426,7 +1426,7 @@ void VulkanHppGenerator::readExtensionDisabledRequire(tinyxml2::XMLElement const
 {
   checkAttributes(getAttributes(element), element->GetLineNum(), {}, {});
   std::vector<tinyxml2::XMLElement const*> children = getChildElements(element);
-  checkElements(children, { "command", "enum", "type" });
+  checkElements(children, { "command", "comment", "enum", "type" });
 
   for (auto child : children)
   {
@@ -1458,11 +1458,14 @@ void VulkanHppGenerator::readExtensionDisabledRequire(tinyxml2::XMLElement const
         m_structures.erase(nameAttribute->second);
       }
     }
-    else
+    else if (value == "enum")
     {
-      assert(value == "enum");
       std::map<std::string, std::string> attributes = getAttributes(child);
       checkAttributes(attributes, child->GetLineNum(), { { "name",{} } }, { { "bitpos",{} },{ "extends",{} },{ "offset",{} },{ "value",{} } });
+    }
+    else
+    {
+      assert(value == "comment");
     }
   }
 }
@@ -4617,8 +4620,8 @@ int main( int argc, char **argv )
   {
   private:
     using Deleter = typename UniqueHandleTraits<Type,Dispatch>::deleter;
-  public:
 
+  public:
     using element_type = Type;
 
     explicit UniqueHandle( Type const& value = Type(), Deleter const& deleter = Deleter() )
@@ -4707,6 +4710,14 @@ int main( int argc, char **argv )
   private:
     Type    m_value;
   };
+
+  template <typename UniqueType>
+  VULKAN_HPP_INLINE std::vector<typename UniqueType::element_type> uniqueToRaw(std::vector<UniqueType> const& handles)
+  {
+    std::vector<typename UniqueType::element_type> newBuffer(handles.size());
+    std::transform(handles.begin(), handles.end(), newBuffer.begin(), [](UniqueType const& handle) { return handle.get(); });
+    return newBuffer;
+  }
 
   template <typename Type, typename Dispatch>
   VULKAN_HPP_INLINE void swap( UniqueHandle<Type,Dispatch> & lhs, UniqueHandle<Type,Dispatch> & rhs )

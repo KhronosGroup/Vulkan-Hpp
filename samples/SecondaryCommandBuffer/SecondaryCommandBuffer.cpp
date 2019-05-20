@@ -49,8 +49,8 @@ int main(int /*argc*/, char ** /*argv*/)
     vk::Queue graphicsQueue = device->getQueue(graphicsAndPresentQueueFamilyIndex.first, 0);
     vk::Queue presentQueue = device->getQueue(graphicsAndPresentQueueFamilyIndex.second, 0);
 
-    vk::su::SwapChainData swapChainData(physicalDevices[0], device, surfaceData.surface, surfaceData.extent, vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eTransferSrc
-      , graphicsAndPresentQueueFamilyIndex.first, graphicsAndPresentQueueFamilyIndex.second);
+    vk::su::SwapChainData swapChainData(physicalDevices[0], device, *surfaceData.surface, surfaceData.extent, vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eTransferSrc,
+                                        vk::UniqueSwapchainKHR(), graphicsAndPresentQueueFamilyIndex.first, graphicsAndPresentQueueFamilyIndex.second);
 
     vk::su::DepthBufferData depthBufferData(physicalDevices[0], device, vk::Format::eD16Unorm, surfaceData.extent);
 
@@ -81,10 +81,10 @@ int main(int /*argc*/, char ** /*argv*/)
     commandBuffers[0]->begin(vk::CommandBufferBeginInfo());
 
     vk::su::TextureData greenTextureData(physicalDevices[0], device);
-    greenTextureData.setTexture(device, commandBuffers[0], vk::su::MonochromeTextureGenerator({ 118, 185, 0 }));
+    greenTextureData.setImage(device, commandBuffers[0], vk::su::MonochromeImageGenerator({ 118, 185, 0 }));
 
     vk::su::TextureData checkeredTextureData(physicalDevices[0], device);
-    checkeredTextureData.setTexture(device, commandBuffers[0], vk::su::CheckerboardTextureCreator());
+    checkeredTextureData.setImage(device, commandBuffers[0], vk::su::CheckerboardImageGenerator());
 
     // create two identical descriptor sets, each with a different texture but identical UBOs
     vk::UniqueDescriptorPool descriptorPool = vk::su::createDescriptorPool(device, { {vk::DescriptorType::eUniformBuffer, 2}, {vk::DescriptorType::eCombinedImageSampler, 2} });

@@ -58,7 +58,8 @@ namespace vk
 
     struct SwapChainData
     {
-      SwapChainData(vk::PhysicalDevice &physicalDevice, vk::UniqueDevice &device, vk::UniqueSurfaceKHR &surface, vk::Extent2D const& extent, vk::ImageUsageFlags usage, uint32_t graphicsFamilyIndex, uint32_t presentFamilyIndex);
+      SwapChainData(vk::PhysicalDevice const& physicalDevice, vk::UniqueDevice const& device, vk::SurfaceKHR const& surface, vk::Extent2D const& extent, vk::ImageUsageFlags usage,
+                    vk::UniqueSwapchainKHR const& oldSwapChain, uint32_t graphicsFamilyIndex, uint32_t presentFamilyIndex);
 
       vk::Format                        colorFormat;
       vk::UniqueSwapchainKHR            swapChain;
@@ -66,36 +67,49 @@ namespace vk
       std::vector<vk::UniqueImageView>  imageViews;
     };
 
-    class CheckerboardTextureCreator
+    class CheckerboardImageGenerator
     {
     public:
       void operator()(void* data, vk::Extent2D &extent) const;
     };
 
-    class MonochromeTextureGenerator
+    class MonochromeImageGenerator
     {
     public:
-      MonochromeTextureGenerator(std::array<unsigned char, 3> const& rgb_);
+      MonochromeImageGenerator(std::array<unsigned char, 3> const& rgb);
 
       void operator()(void* data, vk::Extent2D &extent) const;
 
     private:
-      std::array<unsigned char, 3> const& rgb;
+      std::array<unsigned char, 3> const& m_rgb;
+    };
+
+    class PixelsImageGenerator
+    {
+    public:
+      PixelsImageGenerator(vk::Extent2D const& extent, size_t channels, unsigned char const* pixels);
+
+      void operator()(void* data, vk::Extent2D & extent) const;
+
+      private:
+        vk::Extent2D          m_extent;
+        size_t                m_channels;
+        unsigned char const*  m_pixels;
     };
 
 
     struct TextureData
     {
-      TextureData(vk::PhysicalDevice &physicalDevice, vk::UniqueDevice &device, vk::Extent2D const& extent_ = {256, 256}, vk::ImageUsageFlags usageFlags = {},
-                  vk::FormatFeatureFlags formatFeatureFlags = {});
+      TextureData(vk::PhysicalDevice const& physicalDevice, vk::UniqueDevice const& device, vk::Extent2D const& extent_ = {256, 256}, vk::ImageUsageFlags usageFlags = {},
+                  vk::FormatFeatureFlags formatFeatureFlags = {}, bool anisotropyEnable = false);
 
-      template <typename TextureCreator>
-      void setTexture(vk::UniqueDevice &device, vk::UniqueCommandBuffer &commandBuffer, TextureCreator const& textureCreator)
+      template <typename ImageGenerator>
+      void setImage(vk::UniqueDevice const& device, vk::UniqueCommandBuffer &commandBuffer, ImageGenerator const& imageGenerator)
       {
         void* data = needsStaging
           ? device->mapMemory(stagingBufferData->deviceMemory.get(), 0, device->getBufferMemoryRequirements(stagingBufferData->buffer.get()).size)
           : device->mapMemory(imageData->deviceMemory.get(), 0, device->getImageMemoryRequirements(imageData->image.get()).size);
-        textureCreator(data, extent);
+        imageGenerator(data, extent);
         device->unmapMemory(needsStaging ? stagingBufferData->deviceMemory.get() : imageData->deviceMemory.get());
 
         if (needsStaging)
@@ -173,6 +187,16 @@ namespace vk
       return v < lo ? lo : hi < v ? hi : v;
     }
 
+    template <typename Func, typename... Args>
+    void oneTimeSubmit(vk::UniqueCommandBuffer const& commandBuffer, vk::Queue const& graphicsQueue, Func & func, Args... args)
+    {
+      commandBuffer->begin(vk::CommandBufferBeginInfo(vk::CommandBufferUsageFlagBits::eOneTimeSubmit));
+      func(args...);
+      commandBuffer->end();
+      graphicsQueue.submit(vk::SubmitInfo(0, nullptr, nullptr, 1, &(*commandBuffer)), nullptr);
+      graphicsQueue.waitIdle();
+    }
+
     vk::UniqueDeviceMemory allocateMemory(vk::UniqueDevice const& device, vk::PhysicalDeviceMemoryProperties const& memoryProperties, vk::MemoryRequirements const& memoryRequirements,
                                           vk::MemoryPropertyFlags memoryPropertyFlags);
     vk::UniqueCommandPool createCommandPool(vk::UniqueDevice &device, uint32_t queueFamilyIndex);
@@ -191,9 +215,10 @@ namespace vk
     uint32_t findMemoryType(vk::PhysicalDeviceMemoryProperties const& memoryProperties, uint32_t typeBits, vk::MemoryPropertyFlags requirementsMask);
     std::vector<std::string> getDeviceExtensions();
     std::vector<std::string> getInstanceExtensions();
+    vk::Format pickDepthFormat(vk::PhysicalDevice const& physicalDevice);
     vk::PresentModeKHR pickPresentMode(std::vector<vk::PresentModeKHR> const& presentModes);
     vk::SurfaceFormatKHR pickSurfaceFormat(std::vector<vk::SurfaceFormatKHR> const& formats);
-    void setImageLayout(vk::UniqueCommandBuffer &commandBuffer, vk::Image image, vk::Format format, vk::ImageLayout oldImageLayout, vk::ImageLayout newImageLayout);
+    void setImageLayout(vk::UniqueCommandBuffer const& commandBuffer, vk::Image image, vk::Format format, vk::ImageLayout oldImageLayout, vk::ImageLayout newImageLayout);
     void submitAndWait(vk::UniqueDevice &device, vk::Queue queue, vk::UniqueCommandBuffer &commandBuffer);
     void updateDescriptorSets(vk::UniqueDevice &device, vk::UniqueDescriptorSet &descriptorSet, vk::DescriptorType descriptorType, vk::DescriptorBufferInfo const* descriptorBufferInfo, vk::DescriptorImageInfo const* descriptorImageInfo = nullptr);
 

@@ -40,7 +40,7 @@ int main(int /*argc*/, char ** /*argv*/)
 
     vk::su::SurfaceData surfaceData(instance, AppName, AppName, vk::Extent2D(50, 50));
 
-    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex(physicalDevices[0], surfaceData.surface);
+    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex(physicalDevices[0], *surfaceData.surface);
     vk::UniqueDevice device = vk::su::createDevice(physicalDevices[0], graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions());
 
     vk::UniqueCommandPool commandPool = vk::su::createCommandPool(device, graphicsAndPresentQueueFamilyIndex.first);
@@ -116,16 +116,16 @@ int main(int /*argc*/, char ** /*argv*/)
     if (needsStaging)
     {
       // Since we're going to blit to the texture image, set its layout to eTransferDstOptimal
-      vk::su::setImageLayout(commandBuffers[0], image.get(), vk::ImageAspectFlagBits::eColor, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal, vk::PipelineStageFlagBits::eTopOfPipe, vk::PipelineStageFlagBits::eTransfer);
+      vk::su::setImageLayout(commandBuffers[0], image.get(), format, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal);
       vk::BufferImageCopy copyRegion(0, surfaceData.extent.width, surfaceData.extent.height, vk::ImageSubresourceLayers(vk::ImageAspectFlagBits::eColor, 0, 0, 1), vk::Offset3D(0, 0, 0), vk::Extent3D(surfaceData.extent, 1));
       commandBuffers[0]->copyBufferToImage(textureBuffer.get(), image.get(), vk::ImageLayout::eTransferDstOptimal, copyRegion);
       // Set the layout for the texture image from eTransferDstOptimal to SHADER_READ_ONLY
-      vk::su::setImageLayout(commandBuffers[0], image.get(), vk::ImageAspectFlagBits::eColor, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal, vk::PipelineStageFlagBits::eTransfer, vk::PipelineStageFlagBits::eFragmentShader);
+      vk::su::setImageLayout(commandBuffers[0], image.get(), format, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal);
     }
     else
     {
       // If we can use the linear tiled image as a texture, just do it
-      vk::su::setImageLayout(commandBuffers[0], image.get(), vk::ImageAspectFlagBits::eColor, vk::ImageLayout::ePreinitialized, vk::ImageLayout::eShaderReadOnlyOptimal, vk::PipelineStageFlagBits::eHost, vk::PipelineStageFlagBits::eFragmentShader);
+      vk::su::setImageLayout(commandBuffers[0], image.get(), format, vk::ImageLayout::ePreinitialized, vk::ImageLayout::eShaderReadOnlyOptimal);
     }
 
     commandBuffers[0]->end();

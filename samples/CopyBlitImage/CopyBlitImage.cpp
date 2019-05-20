@@ -42,7 +42,7 @@ int main(int /*argc*/, char ** /*argv*/)
       exit(-1);
     }
 
-    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex(physicalDevices[0], surfaceData.surface);
+    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex(physicalDevices[0], *surfaceData.surface);
     vk::UniqueDevice device = vk::su::createDevice(physicalDevices[0], graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions());
 
     vk::UniqueCommandPool commandPool = vk::su::createCommandPool(device, graphicsAndPresentQueueFamilyIndex.first);
@@ -68,8 +68,7 @@ int main(int /*argc*/, char ** /*argv*/)
     uint32_t currentBuffer = nextImage.value;
 
     commandBuffers[0]->begin(vk::CommandBufferBeginInfo());
-    vk::su::setImageLayout(commandBuffers[0], swapChainData.images[currentBuffer], vk::ImageAspectFlagBits::eColor, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal,
-      vk::PipelineStageFlagBits::eTopOfPipe, vk::PipelineStageFlagBits::eTransfer);
+    vk::su::setImageLayout(commandBuffers[0], swapChainData.images[currentBuffer], swapChainData.colorFormat, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal);
 
     // Create an image, map it, and write some values to the image
     vk::ImageCreateInfo imageCreateInfo(vk::ImageCreateFlags(), vk::ImageType::e2D, swapChainData.colorFormat, vk::Extent3D(surfaceData.extent, 1), 1, 1, vk::SampleCountFlagBits::e1, vk::ImageTiling::eLinear, vk::ImageUsageFlagBits::eTransferSrc);
@@ -82,8 +81,7 @@ int main(int /*argc*/, char ** /*argv*/)
     vk::UniqueDeviceMemory deviceMemory = device->allocateMemoryUnique(vk::MemoryAllocateInfo(memoryRequirements.size, memoryTypeIndex));
     device->bindImageMemory(blitSourceImage.get(), deviceMemory.get(), 0);
 
-    vk::su::setImageLayout(commandBuffers[0], blitSourceImage.get(), vk::ImageAspectFlagBits::eColor, vk::ImageLayout::eUndefined, vk::ImageLayout::eGeneral,
-      vk::PipelineStageFlagBits::eTopOfPipe, vk::PipelineStageFlagBits::eHost);
+    vk::su::setImageLayout(commandBuffers[0], blitSourceImage.get(), swapChainData.colorFormat, vk::ImageLayout::eUndefined, vk::ImageLayout::eGeneral);
 
     commandBuffers[0]->end();
 
@@ -120,8 +118,7 @@ int main(int /*argc*/, char ** /*argv*/)
     commandBuffers[0]->begin(vk::CommandBufferBeginInfo());
 
     // Intend to blit from this image, set the layout accordingly
-    vk::su::setImageLayout(commandBuffers[0], blitSourceImage.get(), vk::ImageAspectFlagBits::eColor, vk::ImageLayout::eGeneral, vk::ImageLayout::eTransferSrcOptimal,
-      vk::PipelineStageFlagBits::eHost, vk::PipelineStageFlagBits::eTransfer);
+    vk::su::setImageLayout(commandBuffers[0], blitSourceImage.get(), swapChainData.colorFormat, vk::ImageLayout::eGeneral, vk::ImageLayout::eTransferSrcOptimal);
 
     vk::Image blitDestinationImage = swapChainData.images[currentBuffer];
 

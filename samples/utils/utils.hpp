@@ -24,7 +24,8 @@ namespace vk
 
     struct BufferData
     {
-      BufferData(vk::PhysicalDevice &physicalDevice, vk::UniqueDevice &device, vk::DeviceSize size, vk::BufferUsageFlags usage);
+      BufferData(vk::PhysicalDevice const& physicalDevice, vk::UniqueDevice const& device, vk::DeviceSize size, vk::BufferUsageFlags usage,
+                 vk::MemoryPropertyFlags propertyFlags = vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
 
       vk::UniqueBuffer        buffer;
       vk::UniqueDeviceMemory  deviceMemory;
@@ -32,7 +33,7 @@ namespace vk
 
     struct ImageData
     {
-      ImageData(vk::PhysicalDevice &physicalDevice, vk::UniqueDevice & device, vk::Format format, vk::Extent2D const& extent, vk::ImageTiling tiling, vk::ImageUsageFlags usage
+      ImageData(vk::PhysicalDevice const& physicalDevice, vk::UniqueDevice const& device, vk::Format format, vk::Extent2D const& extent, vk::ImageTiling tiling, vk::ImageUsageFlags usage
         , vk::ImageLayout initialLayout, vk::MemoryPropertyFlags memoryProperties, vk::ImageAspectFlags aspectMask);
 
       vk::Format              format;
@@ -85,37 +86,38 @@ namespace vk
 
     struct TextureData
     {
-      TextureData(vk::PhysicalDevice &physicalDevice, vk::UniqueDevice &device, vk::ImageUsageFlags usageFlags = {}, vk::FormatFeatureFlags formatFeatureFlags = {});
+      TextureData(vk::PhysicalDevice &physicalDevice, vk::UniqueDevice &device, vk::Extent2D const& extent_ = {256, 256}, vk::ImageUsageFlags usageFlags = {},
+                  vk::FormatFeatureFlags formatFeatureFlags = {});
 
       template <typename TextureCreator>
       void setTexture(vk::UniqueDevice &device, vk::UniqueCommandBuffer &commandBuffer, TextureCreator const& textureCreator)
       {
         void* data = needsStaging
-          ? device->mapMemory(bufferData->deviceMemory.get(), 0, device->getBufferMemoryRequirements(bufferData->buffer.get()).size)
+          ? device->mapMemory(stagingBufferData->deviceMemory.get(), 0, device->getBufferMemoryRequirements(stagingBufferData->buffer.get()).size)
           : device->mapMemory(imageData->deviceMemory.get(), 0, device->getImageMemoryRequirements(imageData->image.get()).size);
         textureCreator(data, extent);
-        device->unmapMemory(needsStaging ? bufferData->deviceMemory.get() : imageData->deviceMemory.get());
+        device->unmapMemory(needsStaging ? stagingBufferData->deviceMemory.get() : imageData->deviceMemory.get());
 
         if (needsStaging)
         {
           // Since we're going to blit to the texture image, set its layout to eTransferDstOptimal
-          vk::su::setImageLayout(commandBuffer, imageData->image.get(), vk::ImageAspectFlagBits::eColor, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal, vk::PipelineStageFlagBits::eTopOfPipe, vk::PipelineStageFlagBits::eTransfer);
+          vk::su::setImageLayout(commandBuffer, imageData->image.get(), imageData->format, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal);
           vk::BufferImageCopy copyRegion(0, extent.width, extent.height, vk::ImageSubresourceLayers(vk::ImageAspectFlagBits::eColor, 0, 0, 1), vk::Offset3D(0, 0, 0), vk::Extent3D(extent, 1));
-          commandBuffer->copyBufferToImage(bufferData->buffer.get(), imageData->image.get(), vk::ImageLayout::eTransferDstOptimal, copyRegion);
+          commandBuffer->copyBufferToImage(stagingBufferData->buffer.get(), imageData->image.get(), vk::ImageLayout::eTransferDstOptimal, copyRegion);
           // Set the layout for the texture image from eTransferDstOptimal to SHADER_READ_ONLY
-          vk::su::setImageLayout(commandBuffer, imageData->image.get(), vk::ImageAspectFlagBits::eColor, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal, vk::PipelineStageFlagBits::eTransfer, vk::PipelineStageFlagBits::eFragmentShader);
+          vk::su::setImageLayout(commandBuffer, imageData->image.get(), imageData->format, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal);
         }
         else
         {
           // If we can use the linear tiled image as a texture, just do it
-          vk::su::setImageLayout(commandBuffer, imageData->image.get(), vk::ImageAspectFlagBits::eColor, vk::ImageLayout::ePreinitialized, vk::ImageLayout::eShaderReadOnlyOptimal, vk::PipelineStageFlagBits::eHost, vk::PipelineStageFlagBits::eFragmentShader);
+          vk::su::setImageLayout(commandBuffer, imageData->image.get(), imageData->format, vk::ImageLayout::ePreinitialized, vk::ImageLayout::eShaderReadOnlyOptimal);
         }
       }
 
       vk::Format                  format;
       vk::Extent2D                extent;
       bool                        needsStaging;
-      std::unique_ptr<BufferData> bufferData;
+      std::unique_ptr<BufferData> stagingBufferData;
       std::unique_ptr<ImageData>  imageData;
       vk::UniqueSampler           textureSampler;
     };
@@ -171,12 +173,13 @@ namespace vk
       return v < lo ? lo : hi < v ? hi : v;
     }
 
-    vk::UniqueDeviceMemory allocateMemory(vk::UniqueDevice &device, vk::PhysicalDeviceMemoryProperties const& memoryProperties, vk::MemoryRequirements const& memoryRequirements, vk::MemoryPropertyFlags memoryPropertyFlags);
+    vk::UniqueDeviceMemory allocateMemory(vk::UniqueDevice const& device, vk::PhysicalDeviceMemoryProperties const& memoryProperties, vk::MemoryRequirements const& memoryRequirements,
+                                          vk::MemoryPropertyFlags memoryPropertyFlags);
     vk::UniqueCommandPool createCommandPool(vk::UniqueDevice &device, uint32_t queueFamilyIndex);
     vk::UniqueDebugReportCallbackEXT createDebugReportCallback(vk::UniqueInstance &instance);
-    vk::UniqueDescriptorPool createDescriptorPool(vk::UniqueDevice &device, vk::DescriptorType descriptorType = vk::DescriptorType::eUniformBuffer, bool textured = false);
-    vk::UniqueDescriptorSetLayout createDescriptorSetLayout(vk::UniqueDevice &device, vk::DescriptorType = vk::DescriptorType::eUniformBuffer, bool textured = false, vk::DescriptorSetLayoutCreateFlags flags = {});
-    vk::UniqueDevice createDevice(vk::PhysicalDevice physicalDevice, uint32_t queueFamilyIndex, std::vector<std::string> const& extensions = {});
+    vk::UniqueDescriptorPool createDescriptorPool(vk::UniqueDevice &device, std::vector<vk::DescriptorPoolSize> const& poolSizes);
+    vk::UniqueDescriptorSetLayout createDescriptorSetLayout(vk::UniqueDevice &device, std::vector<std::pair<vk::DescriptorType, vk::ShaderStageFlags>> const& bindingData, vk::DescriptorSetLayoutCreateFlags flags = {});
+    vk::UniqueDevice createDevice(vk::PhysicalDevice physicalDevice, uint32_t queueFamilyIndex, std::vector<std::string> const& extensions = {}, vk::PhysicalDeviceFeatures const* physicalDeviceFeatures = nullptr, void const* pNext = nullptr);
     std::vector<vk::UniqueFramebuffer> createFramebuffers(vk::UniqueDevice &device, vk::UniqueRenderPass &renderPass, std::vector<vk::UniqueImageView> const& imageViews, vk::UniqueImageView const& depthImageView, vk::Extent2D const& extent);
     vk::UniquePipeline createGraphicsPipeline(vk::UniqueDevice &device, vk::UniquePipelineCache &pipelineCache, vk::UniqueShaderModule &vertexShaderModule,
       vk::UniqueShaderModule &fragmentShaderModule, uint32_t vertexStride, bool depthBuffered, bool textured, vk::UniquePipelineLayout &pipelineLayout, vk::UniqueRenderPass &renderPass);
@@ -184,12 +187,13 @@ namespace vk
     vk::UniqueRenderPass createRenderPass(vk::UniqueDevice &device, vk::Format colorFormat, vk::Format depthFormat, vk::AttachmentLoadOp loadOp = vk::AttachmentLoadOp::eClear, vk::ImageLayout colorFinalLayout = vk::ImageLayout::ePresentSrcKHR);
     VkBool32 debugReportCallback(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objectType, uint64_t object, size_t location, int32_t messageCode, const char* pLayerPrefix, const char* pMessage, void* pUserData);
     uint32_t findGraphicsQueueFamilyIndex(std::vector<vk::QueueFamilyProperties> const& queueFamilyProperties);
-    std::pair<uint32_t, uint32_t> findGraphicsAndPresentQueueFamilyIndex(vk::PhysicalDevice physicalDevice, vk::UniqueSurfaceKHR & surface);
+    std::pair<uint32_t, uint32_t> findGraphicsAndPresentQueueFamilyIndex(vk::PhysicalDevice physicalDevice, vk::SurfaceKHR const& surface);
     uint32_t findMemoryType(vk::PhysicalDeviceMemoryProperties const& memoryProperties, uint32_t typeBits, vk::MemoryPropertyFlags requirementsMask);
     std::vector<std::string> getDeviceExtensions();
     std::vector<std::string> getInstanceExtensions();
-    vk::Format pickColorFormat(std::vector<vk::SurfaceFormatKHR> const& formats);
-    void setImageLayout(vk::UniqueCommandBuffer &commandBuffer, vk::Image image, vk::ImageAspectFlags aspectFlags, vk::ImageLayout oldImageLayout, vk::ImageLayout newImageLayout, vk::PipelineStageFlags sourceStageMask, vk::PipelineStageFlags destinationStageMask);
+    vk::PresentModeKHR pickPresentMode(std::vector<vk::PresentModeKHR> const& presentModes);
+    vk::SurfaceFormatKHR pickSurfaceFormat(std::vector<vk::SurfaceFormatKHR> const& formats);
+    void setImageLayout(vk::UniqueCommandBuffer &commandBuffer, vk::Image image, vk::Format format, vk::ImageLayout oldImageLayout, vk::ImageLayout newImageLayout);
     void submitAndWait(vk::UniqueDevice &device, vk::Queue queue, vk::UniqueCommandBuffer &commandBuffer);
     void updateDescriptorSets(vk::UniqueDevice &device, vk::UniqueDescriptorSet &descriptorSet, vk::DescriptorType descriptorType, vk::DescriptorBufferInfo const* descriptorBufferInfo, vk::DescriptorImageInfo const* descriptorImageInfo = nullptr);
 

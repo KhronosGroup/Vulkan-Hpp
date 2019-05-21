@@ -41,6 +41,7 @@ class VulkanHppGenerator
     void writeBitmasks(std::ostream & os) const;
     void writeDispatchLoaderDynamic(std::ostream &os); // use vkGet*ProcAddress to get function pointers
     void writeDispatchLoaderStatic(std::ostream &os);  // use exported symbols from loader
+    void writeDispatchLoaderDefault(std::ostream &os);  // typedef to DispatchLoaderStatic or undefined type, based on VK_NO_PROTOTYPES
     void writeEnums(std::ostream & os) const;
     void writeForwardDeclarations(std::ostream & os) const;
     void writeHandles(std::ostream & os) const;

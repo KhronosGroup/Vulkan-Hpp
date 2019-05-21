@@ -2357,6 +2357,7 @@ void VulkanHppGenerator::writeDispatchLoaderDynamic(std::ostream &os)
   public:
     DispatchLoaderDynamic() = default;
 
+#if !defined(VK_NO_PROTOTYPES)
     // This interface is designed to be used for per-device function pointers in combination with a linked vulkan library.
     DispatchLoaderDynamic(vk::Instance const& instance, vk::Device const& device = {})
     {
@@ -2368,6 +2369,7 @@ void VulkanHppGenerator::writeDispatchLoaderDynamic(std::ostream &os)
     {
       init(instance, ::vkGetInstanceProcAddr, device, device ? ::vkGetDeviceProcAddr : nullptr);
     }
+#endif // !defined(VK_NO_PROTOTYPES)
 
     // This interface does not require a linked vulkan library.
     DispatchLoaderDynamic( VkInstance instance, PFN_vkGetInstanceProcAddr getInstanceProcAddr, VkDevice device = VK_NULL_HANDLE, PFN_vkGetDeviceProcAddr getDeviceProcAddr = nullptr )
@@ -2463,6 +2465,20 @@ void VulkanHppGenerator::writeDispatchLoaderStatic(std::ostream &os)
 )";
 
   os << replaceWithMap(dispatchTemplate, { { "commands", commands.str() } });
+}
+
+void VulkanHppGenerator::writeDispatchLoaderDefault(std::ostream &os)
+{
+  os << std::endl
+    << "#if !defined(VK_NO_PROTOTYPES)";
+  writeDispatchLoaderStatic(os);
+  os << R"(
+  typedef DispatchLoaderStatic DispatchLoaderDefault;
+#else // !defined(VK_NO_PROTOTYPES)
+  class NeedExplicitDispatchLoader;
+  typedef NeedExplicitDispatchLoader DispatchLoaderDefault;
+#endif
+)";
 }
 
 void VulkanHppGenerator::writeEnum(std::ostream & os, std::pair<std::string,EnumData> const& enumData) const
@@ -3343,7 +3359,7 @@ void VulkanHppGenerator::writeFunctionHeaderTemplate(std::ostream & os, std::str
       os << ", ";
     }
   }
-  os << "typename Dispatch" << (withDefault ? " = DispatchLoaderStatic" : "") << ">" << std::endl;
+  os << "typename Dispatch" << (withDefault ? " = DispatchLoaderDefault" : "") << ">" << std::endl;
 }
 
 void VulkanHppGenerator::writeHandle(std::ostream & os, std::pair<std::string, HandleData> const& handleData, std::set<std::string> & listedHandles) const
@@ -4076,7 +4092,7 @@ void VulkanHppGenerator::writeUniqueTypes(std::ostream &os, std::string const& p
 
     static const std::string uniqueTypesTemplate = R"(
   template <typename Dispatch> class UniqueHandleTraits<${type}, Dispatch> { public: using deleter = ${deleterType}${deleterAction}<${deleterParent}${deleterPool}, Dispatch>; };
-  using Unique${type} = UniqueHandle<${type}, DispatchLoaderStatic>;)";
+  using Unique${type} = UniqueHandle<${type}, DispatchLoaderDefault>;)";
 
     os << replaceWithMap(uniqueTypesTemplate,
     {
@@ -5101,7 +5117,7 @@ namespace std
       << classOptional
       << classStructureChain
       << classUniqueHandle;
-    generator.writeDispatchLoaderStatic(ofs);
+    generator.writeDispatchLoaderDefault(ofs);
     ofs << classObjectDestroy
       << classObjectFree
       << classPoolFree

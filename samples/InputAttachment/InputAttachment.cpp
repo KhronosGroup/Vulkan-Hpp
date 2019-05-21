@@ -75,7 +75,7 @@ int main(int /*argc*/, char ** /*argv*/)
 
     vk::su::SurfaceData surfaceData(instance, AppName, AppName, vk::Extent2D(500, 500));
 
-    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex(physicalDevices[0], surfaceData.surface);
+    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex(physicalDevices[0], *surfaceData.surface);
     vk::UniqueDevice device = vk::su::createDevice(physicalDevices[0], graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions());
 
     vk::UniqueCommandPool commandPool = vk::su::createCommandPool(device, graphicsAndPresentQueueFamilyIndex.first);
@@ -104,15 +104,13 @@ int main(int /*argc*/, char ** /*argv*/)
 
     // Set the image layout to TRANSFER_DST_OPTIMAL to be ready for clear
     commandBuffers[0]->begin(vk::CommandBufferBeginInfo());
-    vk::su::setImageLayout(commandBuffers[0], inputImage.get(), vk::ImageAspectFlagBits::eColor, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal,
-      vk::PipelineStageFlagBits::eTopOfPipe, vk::PipelineStageFlagBits::eTransfer);
+    vk::su::setImageLayout(commandBuffers[0], inputImage.get(), swapChainData.colorFormat, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal);
 
     commandBuffers[0]->clearColorImage(inputImage.get(), vk::ImageLayout::eTransferDstOptimal, vk::ClearColorValue(std::array<float, 4>({ {1.0f, 1.0f, 0.0f, 0.0f} })),
       vk::ImageSubresourceRange(vk::ImageAspectFlagBits::eColor, 0, VK_REMAINING_MIP_LEVELS, 0, VK_REMAINING_ARRAY_LAYERS));
 
     // Set the image layout to SHADER_READONLY_OPTIMAL for use by the shaders
-    vk::su::setImageLayout(commandBuffers[0], inputImage.get(), vk::ImageAspectFlagBits::eColor, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal,
-      vk::PipelineStageFlagBits::eTransfer, vk::PipelineStageFlagBits::eFragmentShader);
+    vk::su::setImageLayout(commandBuffers[0], inputImage.get(), swapChainData.colorFormat, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal);
 
     vk::ComponentMapping componentMapping(vk::ComponentSwizzle::eR, vk::ComponentSwizzle::eG, vk::ComponentSwizzle::eB, vk::ComponentSwizzle::eA);
     vk::ImageViewCreateInfo imageViewCreateInfo(vk::ImageViewCreateFlags(), inputImage.get(), vk::ImageViewType::e2D, swapChainData.colorFormat, componentMapping, vk::ImageSubresourceRange(vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1));

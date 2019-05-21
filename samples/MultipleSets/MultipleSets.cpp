@@ -53,23 +53,6 @@ void main()
 }
 )";
 
-const char *fragShaderText =
-"#version 400\n"
-"#extension GL_ARB_separate_shader_objects : enable\n"
-"#extension GL_ARB_shading_language_420pack : enable\n"
-"layout (location = 0) in vec4 inColor;\n"
-"layout (location = 1) in vec2 inTexCoords;\n"
-"layout (location = 0) out vec4 outColor;\n"
-"void main() {\n"
-"    vec4 resColor = inColor;\n"
-// Create a border to see the cube more easily
-"   if (inTexCoords.x < 0.01 || inTexCoords.x > 0.99)\n"
-"       resColor *= vec4(0.1, 0.1, 0.1, 1.0);\n"
-"   if (inTexCoords.y < 0.01 || inTexCoords.y > 0.99)\n"
-"       resColor *= vec4(0.1, 0.1, 0.1, 1.0);\n"
-"   outColor = resColor;\n"
-"}\n";
-
 const std::string fragmentShaderText = R"(
 #version 400
 
@@ -107,7 +90,7 @@ int main(int /*argc*/, char ** /*argv*/)
 
     vk::su::SurfaceData surfaceData(instance, AppName, AppName, vk::Extent2D(500, 500));
 
-    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex(physicalDevices[0], surfaceData.surface);
+    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex(physicalDevices[0], *surfaceData.surface);
     vk::UniqueDevice device = vk::su::createDevice(physicalDevices[0], graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions());
 
     vk::UniqueCommandPool commandPool = vk::su::createCommandPool(device, graphicsAndPresentQueueFamilyIndex.first);
@@ -129,7 +112,7 @@ int main(int /*argc*/, char ** /*argv*/)
     vk::su::BufferData uniformBufferData(physicalDevices[0], device, sizeof(glm::mat4x4), vk::BufferUsageFlagBits::eUniformBuffer);
     vk::su::copyToDevice(device, uniformBufferData.deviceMemory, vk::su::createModelViewProjectionClipMatrix(surfaceData.extent));
 
-    vk::UniqueRenderPass renderPass = vk::su::createRenderPass(device, vk::su::pickColorFormat(physicalDevices[0].getSurfaceFormatsKHR(surfaceData.surface.get())), depthBufferData.format);
+    vk::UniqueRenderPass renderPass = vk::su::createRenderPass(device, vk::su::pickSurfaceFormat(physicalDevices[0].getSurfaceFormatsKHR(surfaceData.surface.get())).format, depthBufferData.format);
 
     glslang::InitializeProcess();
     vk::UniqueShaderModule vertexShaderModule = vk::su::createShaderModule(device, vk::ShaderStageFlagBits::eVertex, vertexShaderText);

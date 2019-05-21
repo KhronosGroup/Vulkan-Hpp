@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// VulkanHpp Samples : DrawTexturedCube
-//                     Draw a textured cube
+// VulkanHpp Samples : SecondaryCommandBuffer
+//                     Draw several cubes using primary and secondary command buffers
 
 #include "../utils/geometries.hpp"
 #include "../utils/math.hpp"
@@ -23,7 +23,7 @@
 #include "SPIRV/GlslangToSpv.h"
 #include <iostream>
 
-static char const* AppName = "DrawTexturedCube";
+static char const* AppName = "SecondaryCommandBuffer";
 static char const* EngineName = "Vulkan.hpp";
 
 int main(int /*argc*/, char ** /*argv*/)
@@ -54,11 +54,6 @@ int main(int /*argc*/, char ** /*argv*/)
 
     vk::su::DepthBufferData depthBufferData(physicalDevices[0], device, vk::Format::eD16Unorm, surfaceData.extent);
 
-    vk::su::TextureData textureData(physicalDevices[0], device);
-
-    commandBuffers[0]->begin(vk::CommandBufferBeginInfo());
-    textureData.setTexture(device, commandBuffers[0], vk::su::CheckerboardTextureCreator());
-
     vk::su::BufferData uniformBufferData(physicalDevices[0], device, sizeof(glm::mat4x4), vk::BufferUsageFlagBits::eUniformBuffer);
     vk::su::copyToDevice(device, uniformBufferData.deviceMemory, vk::su::createModelViewProjectionClipMatrix(surfaceData.extent));
 
@@ -66,7 +61,8 @@ int main(int /*argc*/, char ** /*argv*/)
       { {vk::DescriptorType::eUniformBuffer, vk::ShaderStageFlagBits::eVertex}, {vk::DescriptorType::eCombinedImageSampler, vk::ShaderStageFlagBits::eFragment} });
     vk::UniquePipelineLayout pipelineLayout = device->createPipelineLayoutUnique(vk::PipelineLayoutCreateInfo(vk::PipelineLayoutCreateFlags(), 1, &descriptorSetLayout.get()));
 
-    vk::UniqueRenderPass renderPass = vk::su::createRenderPass(device, vk::su::pickSurfaceFormat(physicalDevices[0].getSurfaceFormatsKHR(surfaceData.surface.get())).format, depthBufferData.format);
+    vk::UniqueRenderPass renderPass = vk::su::createRenderPass(device, vk::su::pickSurfaceFormat(physicalDevices[0].getSurfaceFormatsKHR(surfaceData.surface.get())).format, depthBufferData.format,
+      vk::AttachmentLoadOp::eClear, vk::ImageLayout::eColorAttachmentOptimal);
 
     glslang::InitializeProcess();
     vk::UniqueShaderModule vertexShaderModule = vk::su::createShaderModule(device, vk::ShaderStageFlagBits::eVertex, vertexShaderText_PT_T);
@@ -78,17 +74,36 @@ int main(int /*argc*/, char ** /*argv*/)
     vk::su::BufferData vertexBufferData(physicalDevices[0], device, sizeof(texturedCubeData), vk::BufferUsageFlagBits::eVertexBuffer);
     vk::su::copyToDevice(device, vertexBufferData.deviceMemory, texturedCubeData, sizeof(texturedCubeData) / sizeof(texturedCubeData[0]));
 
-    vk::UniqueDescriptorPool descriptorPool = vk::su::createDescriptorPool(device, { {vk::DescriptorType::eUniformBuffer, 1}, {vk::DescriptorType::eCombinedImageSampler, 1} });
-    std::vector<vk::UniqueDescriptorSet> descriptorSets = device->allocateDescriptorSetsUnique(vk::DescriptorSetAllocateInfo(descriptorPool.get(), 1, &descriptorSetLayout.get()));
-
-    vk::DescriptorBufferInfo bufferInfo(uniformBufferData.buffer.get(), 0, sizeof(glm::mat4x4));
-    vk::DescriptorImageInfo imageInfo(textureData.textureSampler.get(), textureData.imageData->imageView.get(), vk::ImageLayout::eShaderReadOnlyOptimal);
-    vk::su::updateDescriptorSets(device, descriptorSets[0], vk::DescriptorType::eUniformBuffer, &bufferInfo, &imageInfo);
-
     vk::UniquePipelineCache pipelineCache = device->createPipelineCacheUnique(vk::PipelineCacheCreateInfo());
+
     vk::UniquePipeline graphicsPipeline = vk::su::createGraphicsPipeline(device, pipelineCache, vertexShaderModule, fragmentShaderModule, sizeof(texturedCubeData[0]), true, true, pipelineLayout, renderPass);
 
+    commandBuffers[0]->begin(vk::CommandBufferBeginInfo());
+
+    vk::su::TextureData greenTextureData(physicalDevices[0], device);
+    greenTextureData.setTexture(device, commandBuffers[0], vk::su::MonochromeTextureGenerator({ 118, 185, 0 }));
+
+    vk::su::TextureData checkeredTextureData(physicalDevices[0], device);
+    checkeredTextureData.setTexture(device, commandBuffers[0], vk::su::CheckerboardTextureCreator());
+
+    // create two identical descriptor sets, each with a different texture but identical UBOs
+    vk::UniqueDescriptorPool descriptorPool = vk::su::createDescriptorPool(device, { {vk::DescriptorType::eUniformBuffer, 2}, {vk::DescriptorType::eCombinedImageSampler, 2} });
+
+    vk::DescriptorSetLayout layouts[] = { descriptorSetLayout.get(), descriptorSetLayout.get() };
+    std::vector<vk::UniqueDescriptorSet> descriptorSets = device->allocateDescriptorSetsUnique(vk::DescriptorSetAllocateInfo(descriptorPool.get(), 2, layouts));
+    assert(descriptorSets.size() == 2);
+
+    vk::DescriptorBufferInfo bufferInfo(uniformBufferData.buffer.get(), 0, sizeof(glm::mat4x4));
+    vk::DescriptorImageInfo greenImageInfo(greenTextureData.textureSampler.get(), greenTextureData.imageData->imageView.get(), vk::ImageLayout::eShaderReadOnlyOptimal);
+    vk::su::updateDescriptorSets(device, descriptorSets[0], vk::DescriptorType::eUniformBuffer, &bufferInfo, &greenImageInfo);
+
+    vk::DescriptorImageInfo checkeredImageInfo(checkeredTextureData.textureSampler.get(), checkeredTextureData.imageData->imageView.get(), vk::ImageLayout::eShaderReadOnlyOptimal);
+    vk::su::updateDescriptorSets(device, descriptorSets[1], vk::DescriptorType::eUniformBuffer, &bufferInfo, &checkeredImageInfo);
+
     /* VULKAN_KEY_START */
+
+    // create four secondary command buffers, for each quadrant of the screen
+    std::vector<vk::UniqueCommandBuffer> secondaryCommandBuffers = device->allocateCommandBuffersUnique(vk::CommandBufferAllocateInfo(commandPool.get(), vk::CommandBufferLevel::eSecondary, 4));
 
     // Get the index of the next available swapchain image:
     vk::UniqueSemaphore imageAcquiredSemaphore = device->createSemaphoreUnique(vk::SemaphoreCreateInfo());
@@ -96,27 +111,45 @@ int main(int /*argc*/, char ** /*argv*/)
     assert(currentBuffer.result == vk::Result::eSuccess);
     assert(currentBuffer.value < framebuffers.size());
 
-    // commandBuffers[0]->begin() has already been called above!
+    vk::su::setImageLayout(commandBuffers[0], swapChainData.images[currentBuffer.value], swapChainData.colorFormat, vk::ImageLayout::eUndefined, vk::ImageLayout::eColorAttachmentOptimal);
+
+    const vk::DeviceSize offset = 0;
+    vk::Viewport viewport(0.0f, 0.0f, 200.0f, 200.0f, 0.0f, 1.0f);
+    vk::Rect2D scissor(vk::Offset2D(0, 0), vk::Extent2D(surfaceData.extent));
+
+    // now we record four separate command buffers, one for each quadrant of the screen
+    vk::CommandBufferInheritanceInfo commandBufferInheritanceInfo(renderPass.get(), 0, framebuffers[currentBuffer.value].get());
+    vk::CommandBufferBeginInfo secondaryBeginInfo(vk::CommandBufferUsageFlagBits::eOneTimeSubmit | vk::CommandBufferUsageFlagBits::eRenderPassContinue, &commandBufferInheritanceInfo);
+
+    for (int i = 0; i < 4; i++)
+    {
+      viewport.x = 25.0f + 250.0f * (i % 2);
+      viewport.y = 25.0f + 250.0f * (i / 2);
+
+      secondaryCommandBuffers[i]->begin(secondaryBeginInfo);
+      secondaryCommandBuffers[i]->bindPipeline(vk::PipelineBindPoint::eGraphics, graphicsPipeline.get());
+      secondaryCommandBuffers[i]->bindDescriptorSets(vk::PipelineBindPoint::eGraphics, pipelineLayout.get(), 0, descriptorSets[i == 0 || i == 3].get(), nullptr);
+      secondaryCommandBuffers[i]->bindVertexBuffers(0, vertexBufferData.buffer.get(), offset);
+      secondaryCommandBuffers[i]->setViewport(0, viewport);
+      secondaryCommandBuffers[i]->setScissor(0, scissor);
+      secondaryCommandBuffers[i]->draw(12 * 3, 1, 0, 0);
+      secondaryCommandBuffers[i]->end();
+    }
+
 
     vk::ClearValue clearValues[2];
     clearValues[0].color = vk::ClearColorValue(std::array<float, 4>({ 0.2f, 0.2f, 0.2f, 0.2f }));
     clearValues[1].depthStencil = vk::ClearDepthStencilValue(1.0f, 0);
+
     vk::RenderPassBeginInfo renderPassBeginInfo(renderPass.get(), framebuffers[currentBuffer.value].get(), vk::Rect2D(vk::Offset2D(0, 0), surfaceData.extent), 2, clearValues);
-    commandBuffers[0]->beginRenderPass(renderPassBeginInfo, vk::SubpassContents::eInline);
-    commandBuffers[0]->bindPipeline(vk::PipelineBindPoint::eGraphics, graphicsPipeline.get());
-    commandBuffers[0]->bindDescriptorSets(vk::PipelineBindPoint::eGraphics, pipelineLayout.get(), 0, descriptorSets[0].get(), nullptr);
-
-    vk::Viewport viewport(0.0f, 0.0f, static_cast<float>(surfaceData.extent.width), static_cast<float>(surfaceData.extent.height), 0.0f, 1.0f);
-    commandBuffers[0]->setViewport(0, viewport);
-
-    vk::Rect2D scissor(vk::Offset2D(0, 0), surfaceData.extent);
-    commandBuffers[0]->setScissor(0, scissor);
-
-    vk::DeviceSize offset = 0;
-    commandBuffers[0]->bindVertexBuffers(0, vertexBufferData.buffer.get(), offset);
-
-    commandBuffers[0]->draw(12 * 3, 1, 0, 0);
+    // specifying VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS means this render pass may ONLY call vkCmdExecuteCommands
+    commandBuffers[0]->beginRenderPass(renderPassBeginInfo, vk::SubpassContents::eSecondaryCommandBuffers);
+    commandBuffers[0]->executeCommands(vk::uniqueToRaw(secondaryCommandBuffers));
     commandBuffers[0]->endRenderPass();
+
+    vk::ImageMemoryBarrier prePresentBarrier(vk::AccessFlagBits::eColorAttachmentWrite, vk::AccessFlagBits::eMemoryRead, vk::ImageLayout::eColorAttachmentOptimal, vk::ImageLayout::ePresentSrcKHR,
+      VK_QUEUE_FAMILY_IGNORED, VK_QUEUE_FAMILY_IGNORED, swapChainData.images[currentBuffer.value], vk::ImageSubresourceRange(vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1));
+    commandBuffers[0]->pipelineBarrier(vk::PipelineStageFlagBits::eColorAttachmentOutput, vk::PipelineStageFlagBits::eBottomOfPipe, vk::DependencyFlags(), nullptr, nullptr, prePresentBarrier);
     commandBuffers[0]->end();
 
     vk::UniqueFence drawFence = device->createFenceUnique(vk::FenceCreateInfo());

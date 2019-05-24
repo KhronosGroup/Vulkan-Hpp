@@ -2380,8 +2380,8 @@ void VulkanHppGenerator::writeDispatchLoaderDynamic(std::ostream &os)
     // This interface does not require a linked vulkan library.
     void init( VkInstance instance, PFN_vkGetInstanceProcAddr getInstanceProcAddr, VkDevice device = VK_NULL_HANDLE, PFN_vkGetDeviceProcAddr getDeviceProcAddr = nullptr )
     {
-      assert(instance && getInstanceProcAddr);
-      assert(!!device == !!getDeviceProcAddr);
+      VULKAN_HPP_ASSERT(instance && getInstanceProcAddr);
+      VULKAN_HPP_ASSERT(!!device == !!getDeviceProcAddr);
       vkGetInstanceProcAddr = getInstanceProcAddr;
       vkGetDeviceProcAddr = getDeviceProcAddr ? getDeviceProcAddr : PFN_vkGetDeviceProcAddr( vkGetInstanceProcAddr( instance, "vkGetDeviceProcAddr") );
 )";

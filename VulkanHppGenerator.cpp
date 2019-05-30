@@ -4016,6 +4016,15 @@ void VulkanHppGenerator::writeUnion(std::ostream & os, std::pair<std::string, St
   bool firstTime = true;
   for (auto const& member : structure.second.members)
   {
+    // VkBool32 is aliased to uint32_t. Don't create a VkBool32 constructor if the union also contains a uint32_t constructor.
+    auto compareBool32Alias = [](MemberData const& member) { return member.type.type == std::string("uint32_t"); };
+    if (member.type.type == "VkBool32") {
+      if (std::find_if(structure.second.members.begin(), structure.second.members.end(), compareBool32Alias) != structure.second.members.end())
+      {
+        continue;
+      }
+    }
+
     // one constructor per union element
     os << "    " << stripPrefix(structure.first, "Vk") << "( " << (member.arraySize.empty() ? (member.type.compose() + " ") : ("const std::array<" + member.type.compose() + "," + member.arraySize + ">& ")) << member.name << "_";
 

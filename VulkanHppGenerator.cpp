@@ -2651,6 +2651,7 @@ void VulkanHppGenerator::writeFunctionBodyEnhanced(std::ostream & os, std::strin
 
     if ((commandData.second.returnType == "VkResult") || !commandData.second.successCodes.empty())
     {
+
       writeFunctionBodyEnhancedReturnResultValue(os, indentation, returnName, commandName, commandData, returnParamIndex, twoStep, singular, unique);
     }
     else if ((returnParamIndex != INVALID_INDEX) && (stripPrefix(commandData.second.returnType, "Vk") != enhancedReturnType))
@@ -2794,6 +2795,11 @@ void VulkanHppGenerator::writeFunctionBodyEnhancedReturnResultValue(std::ostream
 {
   std::string type = (returnParamIndex != INVALID_INDEX) ? commandData.second.params[returnParamIndex].type.type : "";
   std::string returnVectorName = (returnParamIndex != INVALID_INDEX) ? stripPostfix(stripPrefix(commandData.second.params[returnParamIndex].name, "p"), "s") : "";
+
+  if (commandData.second.returnType == "void") {
+    std::cerr << "warning: skipping writeFunctionBodyEnhancedReturnResultValue for function " << commandName << " because the returnType is void";
+    return;
+  }
 
   assert(m_commandToHandle.find(commandData.first) != m_commandToHandle.end());
   std::string const& handle = m_commandToHandle.find(commandData.first)->second;

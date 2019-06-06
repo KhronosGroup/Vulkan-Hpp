@@ -2083,7 +2083,7 @@ void VulkanHppGenerator::writeArgumentPlainType(std::ostream & os, ParamData con
       if (paramData.type.type == "char")
       {
         // it's a const pointer to char -> it's a string -> get the data via c_str()
-        os << parameterName << paramData.optional ? (" ? " + parameterName + "->c_str() : nullptr") : ".c_str()";
+        os << parameterName << (paramData.optional ? (" ? " + parameterName + "->c_str() : nullptr") : ".c_str()");
       }
       else
       {

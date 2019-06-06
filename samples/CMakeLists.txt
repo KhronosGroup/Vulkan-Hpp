@@ -29,7 +29,7 @@ endif()
 FILE (GLOB linkunits ${CMAKE_CURRENT_SOURCE_DIR}/*)
 
 if (SAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP)
-  include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../Vulkan-Docs/include")
+  include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../Vulkan-Headers/include")
   include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 else()
   include_directories("${Vulkan_INCLUDE_DIRS}")

@@ -55,10 +55,10 @@ class VulkanHppGenerator
     struct BitmaskData
     {
       BitmaskData(std::string const& r)
-        : requires(r)
+        : requirement(r)
       {}
 
-      std::string requires;   // original vulkan name: VK*FlagBits
+      std::string requirement;   // original vulkan name: VK*FlagBits
       std::string platform;
       std::string alias;      // original vulkan name
     };

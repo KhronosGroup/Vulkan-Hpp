@@ -1053,25 +1053,25 @@ void VulkanHppGenerator::readBitmask(tinyxml2::XMLElement const* element, std::m
 
     std::string name = children[1]->GetText();
 
-    std::string requires;
+    std::string requirement;
     auto requiresIt = attributes.find("requires");
     if (requiresIt != attributes.end())
     {
-      requires = requiresIt->second;
+      requirement = requiresIt->second;
     }
     else
     {
       // Generate FlagBits name and add it to the list of enums and vulkan types
-      requires = name;
-      size_t pos = requires.rfind("Flags");
+      requirement = name;
+      size_t pos = requirement.rfind("Flags");
       assert(pos != std::string::npos);
-      requires.replace(pos, 5, "FlagBits");
+      requirement.replace(pos, 5, "FlagBits");
 
-      assert(m_bitmaskBits.find(requires) == m_bitmaskBits.end());
-      m_bitmaskBits.insert(std::make_pair(requires, EnumData()));
+      assert(m_bitmaskBits.find(requirement) == m_bitmaskBits.end());
+      m_bitmaskBits.insert(std::make_pair(requirement, EnumData()));
     }
 
-    m_bitmasks.insert(std::make_pair(name, BitmaskData(requires)));
+    m_bitmasks.insert(std::make_pair(name, BitmaskData(requirement)));
   }
 }
 
@@ -1539,7 +1539,7 @@ void VulkanHppGenerator::readExtensionRequireType(tinyxml2::XMLElement const* el
     {
       assert(bmit->second.platform.empty());
       bmit->second.platform = platform;
-      assert(m_bitmaskBits.find(bmit->second.requires) != m_bitmaskBits.end());
+      assert(m_bitmaskBits.find(bmit->second.requirement) != m_bitmaskBits.end());
     }
     else
     {
@@ -2222,7 +2222,7 @@ void VulkanHppGenerator::writeBitmasks(std::ostream & os) const
 {
   for (auto const& bitmask : m_bitmasks)
   {
-    auto bitmaskBits = m_bitmaskBits.find(bitmask.second.requires);
+    auto bitmaskBits = m_bitmaskBits.find(bitmask.second.requirement);
     assert(bitmaskBits != m_bitmaskBits.end());
 
     os << std::endl;
@@ -3107,7 +3107,7 @@ void VulkanHppGenerator::writeFunctionHeaderArgumentEnhancedSimple(std::ostream 
     {
       // get the enum corresponding to this flag, to check if it's empty
       std::string strippedBitmaskName = stripPrefix(bitmasksIt->first, "Vk");
-      std::map<std::string, EnumData>::const_iterator enumIt = m_bitmaskBits.find(bitmasksIt->second.requires);
+      std::map<std::string, EnumData>::const_iterator enumIt = m_bitmaskBits.find(bitmasksIt->second.requirement);
       assert(enumIt != m_bitmaskBits.end());
       if (enumIt->second.values.empty())
       {
@@ -3270,7 +3270,7 @@ bool VulkanHppGenerator::writeFunctionHeaderArgumentStandard(std::ostream & os, 
     {
       // get the enum corresponding to this flag, to check if it's empty
       std::string strippedBitmaskName = stripPrefix(bitmasksIt->first, "Vk");
-      std::map<std::string, EnumData>::const_iterator enumIt = m_bitmaskBits.find(bitmasksIt->second.requires);
+      std::map<std::string, EnumData>::const_iterator enumIt = m_bitmaskBits.find(bitmasksIt->second.requirement);
       assert(enumIt != m_bitmaskBits.end());
       if (enumIt->second.values.empty())
       {

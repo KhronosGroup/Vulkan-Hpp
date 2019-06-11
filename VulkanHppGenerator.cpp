@@ -5111,6 +5111,7 @@ namespace std
     generator.checkCorrectness();
 
     std::ofstream ofs(VULKAN_HPP_FILE);
+    assert(!ofs.fail());
     ofs << generator.getVulkanLicenseHeader() << std::endl
       << includes
       << std::endl

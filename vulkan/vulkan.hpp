@@ -56,7 +56,7 @@
 # define VULKAN_HPP_ASSERT   assert
 #endif
 
-static_assert( VK_HEADER_VERSION ==  103 , "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION ==  108 , "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -1098,6 +1098,13 @@ namespace VULKAN_HPP_NAMESPACE
       return ::vkResetCommandBuffer( commandBuffer, flags );
     }
 
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+    VkResult vkAcquireFullScreenExclusiveModeEXT( VkDevice device, VkSwapchainKHR swapchain ) const
+    {
+      return ::vkAcquireFullScreenExclusiveModeEXT( device, swapchain );
+    }
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
     VkResult vkAcquireNextImage2KHR( VkDevice device, const VkAcquireNextImageInfoKHR* pAcquireInfo, uint32_t* pImageIndex ) const
     {
       return ::vkAcquireNextImage2KHR( device, pAcquireInfo, pImageIndex );
@@ -1565,6 +1572,13 @@ namespace VULKAN_HPP_NAMESPACE
       return ::vkGetDeviceGroupPresentCapabilitiesKHR( device, pDeviceGroupPresentCapabilities );
     }
 
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+    VkResult vkGetDeviceGroupSurfacePresentModes2EXT( VkDevice device, const VkPhysicalDeviceSurfaceInfo2KHR* pSurfaceInfo, VkDeviceGroupPresentModeFlagsKHR* pModes ) const
+    {
+      return ::vkGetDeviceGroupSurfacePresentModes2EXT( device, pSurfaceInfo, pModes );
+    }
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
     VkResult vkGetDeviceGroupSurfacePresentModesKHR( VkDevice device, VkSurfaceKHR surface, VkDeviceGroupPresentModeFlagsKHR* pModes ) const
     {
       return ::vkGetDeviceGroupSurfacePresentModesKHR( device, surface, pModes );
@@ -1826,6 +1840,13 @@ namespace VULKAN_HPP_NAMESPACE
       return ::vkRegisterObjectsNVX( device, objectTable, objectCount, ppObjectTableEntries, pObjectIndices );
     }
 
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+    VkResult vkReleaseFullScreenExclusiveModeEXT( VkDevice device, VkSwapchainKHR swapchain ) const
+    {
+      return ::vkReleaseFullScreenExclusiveModeEXT( device, swapchain );
+    }
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
     VkResult vkResetCommandPool( VkDevice device, VkCommandPool commandPool, VkCommandPoolResetFlags flags ) const
     {
       return ::vkResetCommandPool( device, commandPool, flags );
@@ -1846,6 +1867,11 @@ namespace VULKAN_HPP_NAMESPACE
       return ::vkResetFences( device, fenceCount, pFences );
     }
 
+    void vkResetQueryPoolEXT( VkDevice device, VkQueryPool queryPool, uint32_t firstQuery, uint32_t queryCount ) const
+    {
+      return ::vkResetQueryPoolEXT( device, queryPool, firstQuery, queryCount );
+    }
+
     VkResult vkSetDebugUtilsObjectNameEXT( VkDevice device, const VkDebugUtilsObjectNameInfoEXT* pNameInfo ) const
     {
       return ::vkSetDebugUtilsObjectNameEXT( device, pNameInfo );
@@ -1864,6 +1890,11 @@ namespace VULKAN_HPP_NAMESPACE
     void vkSetHdrMetadataEXT( VkDevice device, uint32_t swapchainCount, const VkSwapchainKHR* pSwapchains, const VkHdrMetadataEXT* pMetadata ) const
     {
       return ::vkSetHdrMetadataEXT( device, swapchainCount, pSwapchains, pMetadata );
+    }
+
+    void vkSetLocalDimmingAMD( VkDevice device, VkSwapchainKHR swapChain, VkBool32 localDimmingEnable ) const
+    {
+      return ::vkSetLocalDimmingAMD( device, swapChain, localDimmingEnable );
     }
 
     void vkTrimCommandPool( VkDevice device, VkCommandPool commandPool, VkCommandPoolTrimFlags flags ) const
@@ -1928,6 +1959,11 @@ namespace VULKAN_HPP_NAMESPACE
       return ::vkCreateDisplayPlaneSurfaceKHR( instance, pCreateInfo, pAllocator, pSurface );
     }
 
+    VkResult vkCreateHeadlessSurfaceEXT( VkInstance instance, const VkHeadlessSurfaceCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface ) const
+    {
+      return ::vkCreateHeadlessSurfaceEXT( instance, pCreateInfo, pAllocator, pSurface );
+    }
+
 #ifdef VK_USE_PLATFORM_IOS_MVK
     VkResult vkCreateIOSSurfaceMVK( VkInstance instance, const VkIOSSurfaceCreateInfoMVK* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface ) const
     {
@@ -1955,6 +1991,13 @@ namespace VULKAN_HPP_NAMESPACE
       return ::vkCreateMetalSurfaceEXT( instance, pCreateInfo, pAllocator, pSurface );
     }
 #endif /*VK_USE_PLATFORM_METAL_EXT*/
+
+#ifdef VK_USE_PLATFORM_GGP
+    VkResult vkCreateStreamDescriptorSurfaceGGP( VkInstance instance, const VkStreamDescriptorSurfaceCreateInfoGGP* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface ) const
+    {
+      return ::vkCreateStreamDescriptorSurfaceGGP( instance, pCreateInfo, pAllocator, pSurface );
+    }
+#endif /*VK_USE_PLATFORM_GGP*/
 
 #ifdef VK_USE_PLATFORM_VI_NN
     VkResult vkCreateViSurfaceNN( VkInstance instance, const VkViSurfaceCreateInfoNN* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface ) const
@@ -2278,6 +2321,11 @@ namespace VULKAN_HPP_NAMESPACE
       return ::vkGetPhysicalDeviceSparseImageFormatProperties2KHR( physicalDevice, pFormatInfo, pPropertyCount, pProperties );
     }
 
+    VkResult vkGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV( VkPhysicalDevice physicalDevice, uint32_t* pCombinationCount, VkFramebufferMixedSamplesCombinationNV* pCombinations ) const
+    {
+      return ::vkGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV( physicalDevice, pCombinationCount, pCombinations );
+    }
+
     VkResult vkGetPhysicalDeviceSurfaceCapabilities2EXT( VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, VkSurfaceCapabilities2EXT* pSurfaceCapabilities ) const
     {
       return ::vkGetPhysicalDeviceSurfaceCapabilities2EXT( physicalDevice, surface, pSurfaceCapabilities );
@@ -2302,6 +2350,13 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return ::vkGetPhysicalDeviceSurfaceFormatsKHR( physicalDevice, surface, pSurfaceFormatCount, pSurfaceFormats );
     }
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+    VkResult vkGetPhysicalDeviceSurfacePresentModes2EXT( VkPhysicalDevice physicalDevice, const VkPhysicalDeviceSurfaceInfo2KHR* pSurfaceInfo, uint32_t* pPresentModeCount, VkPresentModeKHR* pPresentModes ) const
+    {
+      return ::vkGetPhysicalDeviceSurfacePresentModes2EXT( physicalDevice, pSurfaceInfo, pPresentModeCount, pPresentModes );
+    }
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
     VkResult vkGetPhysicalDeviceSurfacePresentModesKHR( VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, uint32_t* pPresentModeCount, VkPresentModeKHR* pPresentModes ) const
     {
@@ -2827,7 +2882,7 @@ namespace VULKAN_HPP_NAMESPACE
     eSrgbNonlinear = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR,
     eDisplayP3NonlinearEXT = VK_COLOR_SPACE_DISPLAY_P3_NONLINEAR_EXT,
     eExtendedSrgbLinearEXT = VK_COLOR_SPACE_EXTENDED_SRGB_LINEAR_EXT,
-    eDciP3LinearEXT = VK_COLOR_SPACE_DCI_P3_LINEAR_EXT,
+    eDisplayP3LinearEXT = VK_COLOR_SPACE_DISPLAY_P3_LINEAR_EXT,
     eDciP3NonlinearEXT = VK_COLOR_SPACE_DCI_P3_NONLINEAR_EXT,
     eBt709LinearEXT = VK_COLOR_SPACE_BT709_LINEAR_EXT,
     eBt709NonlinearEXT = VK_COLOR_SPACE_BT709_NONLINEAR_EXT,
@@ -2839,7 +2894,9 @@ namespace VULKAN_HPP_NAMESPACE
     eAdobergbNonlinearEXT = VK_COLOR_SPACE_ADOBERGB_NONLINEAR_EXT,
     ePassThroughEXT = VK_COLOR_SPACE_PASS_THROUGH_EXT,
     eExtendedSrgbNonlinearEXT = VK_COLOR_SPACE_EXTENDED_SRGB_NONLINEAR_EXT,
-    eVkColorspaceSrgbNonlinear = VK_COLORSPACE_SRGB_NONLINEAR_KHR
+    eDisplayNativeAMD = VK_COLOR_SPACE_DISPLAY_NATIVE_AMD,
+    eVkColorspaceSrgbNonlinear = VK_COLORSPACE_SRGB_NONLINEAR_KHR,
+    eDciP3LinearEXT = VK_COLOR_SPACE_DCI_P3_LINEAR_EXT
   };
 
   VULKAN_HPP_INLINE std::string to_string( ColorSpaceKHR value )
@@ -2849,7 +2906,7 @@ namespace VULKAN_HPP_NAMESPACE
       case ColorSpaceKHR::eSrgbNonlinear : return "SrgbNonlinear";
       case ColorSpaceKHR::eDisplayP3NonlinearEXT : return "DisplayP3NonlinearEXT";
       case ColorSpaceKHR::eExtendedSrgbLinearEXT : return "ExtendedSrgbLinearEXT";
-      case ColorSpaceKHR::eDciP3LinearEXT : return "DciP3LinearEXT";
+      case ColorSpaceKHR::eDisplayP3LinearEXT : return "DisplayP3LinearEXT";
       case ColorSpaceKHR::eDciP3NonlinearEXT : return "DciP3NonlinearEXT";
       case ColorSpaceKHR::eBt709LinearEXT : return "Bt709LinearEXT";
       case ColorSpaceKHR::eBt709NonlinearEXT : return "Bt709NonlinearEXT";
@@ -2861,6 +2918,7 @@ namespace VULKAN_HPP_NAMESPACE
       case ColorSpaceKHR::eAdobergbNonlinearEXT : return "AdobergbNonlinearEXT";
       case ColorSpaceKHR::ePassThroughEXT : return "PassThroughEXT";
       case ColorSpaceKHR::eExtendedSrgbNonlinearEXT : return "ExtendedSrgbNonlinearEXT";
+      case ColorSpaceKHR::eDisplayNativeAMD : return "DisplayNativeAMD";
       default: return "invalid";
     }
   }
@@ -3019,6 +3077,22 @@ namespace VULKAN_HPP_NAMESPACE
       case CoverageModulationModeNV::eRgb : return "Rgb";
       case CoverageModulationModeNV::eAlpha : return "Alpha";
       case CoverageModulationModeNV::eRgba : return "Rgba";
+      default: return "invalid";
+    }
+  }
+
+  enum class CoverageReductionModeNV
+  {
+    eMerge = VK_COVERAGE_REDUCTION_MODE_MERGE_NV,
+    eTruncate = VK_COVERAGE_REDUCTION_MODE_TRUNCATE_NV
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( CoverageReductionModeNV value )
+  {
+    switch ( value )
+    {
+      case CoverageReductionModeNV::eMerge : return "Merge";
+      case CoverageReductionModeNV::eTruncate : return "Truncate";
       default: return "invalid";
     }
   }
@@ -3241,7 +3315,8 @@ namespace VULKAN_HPP_NAMESPACE
     eImaginationProprietary = VK_DRIVER_ID_IMAGINATION_PROPRIETARY_KHR,
     eQualcommProprietary = VK_DRIVER_ID_QUALCOMM_PROPRIETARY_KHR,
     eArmProprietary = VK_DRIVER_ID_ARM_PROPRIETARY_KHR,
-    eGooglePastel = VK_DRIVER_ID_GOOGLE_PASTEL_KHR
+    eGooglePastel = VK_DRIVER_ID_GOOGLE_PASTEL_KHR,
+    eGgpProprietary = VK_DRIVER_ID_GGP_PROPRIETARY_KHR
   };
 
   VULKAN_HPP_INLINE std::string to_string( DriverIdKHR value )
@@ -3258,6 +3333,7 @@ namespace VULKAN_HPP_NAMESPACE
       case DriverIdKHR::eQualcommProprietary : return "QualcommProprietary";
       case DriverIdKHR::eArmProprietary : return "ArmProprietary";
       case DriverIdKHR::eGooglePastel : return "GooglePastel";
+      case DriverIdKHR::eGgpProprietary : return "GgpProprietary";
       default: return "invalid";
     }
   }
@@ -3838,6 +3914,28 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid";
     }
   }
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  enum class FullScreenExclusiveEXT
+  {
+    eDefault = VK_FULL_SCREEN_EXCLUSIVE_DEFAULT_EXT,
+    eAllowed = VK_FULL_SCREEN_EXCLUSIVE_ALLOWED_EXT,
+    eDisallowed = VK_FULL_SCREEN_EXCLUSIVE_DISALLOWED_EXT,
+    eApplicationControlled = VK_FULL_SCREEN_EXCLUSIVE_APPLICATION_CONTROLLED_EXT
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( FullScreenExclusiveEXT value )
+  {
+    switch ( value )
+    {
+      case FullScreenExclusiveEXT::eDefault : return "Default";
+      case FullScreenExclusiveEXT::eAllowed : return "Allowed";
+      case FullScreenExclusiveEXT::eDisallowed : return "Disallowed";
+      case FullScreenExclusiveEXT::eApplicationControlled : return "ApplicationControlled";
+      default: return "invalid";
+    }
+  }
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
   enum class GeometryTypeNV
   {
@@ -4454,6 +4552,7 @@ namespace VULKAN_HPP_NAMESPACE
     eErrorFragmentationEXT = VK_ERROR_FRAGMENTATION_EXT,
     eErrorNotPermittedEXT = VK_ERROR_NOT_PERMITTED_EXT,
     eErrorInvalidDeviceAddressEXT = VK_ERROR_INVALID_DEVICE_ADDRESS_EXT,
+    eErrorFullScreenExclusiveModeLostEXT = VK_ERROR_FULL_SCREEN_EXCLUSIVE_MODE_LOST_EXT,
     eErrorOutOfPoolMemoryKHR = VK_ERROR_OUT_OF_POOL_MEMORY_KHR,
     eErrorInvalidExternalHandleKHR = VK_ERROR_INVALID_EXTERNAL_HANDLE_KHR
   };
@@ -4493,6 +4592,7 @@ namespace VULKAN_HPP_NAMESPACE
       case Result::eErrorFragmentationEXT : return "ErrorFragmentationEXT";
       case Result::eErrorNotPermittedEXT : return "ErrorNotPermittedEXT";
       case Result::eErrorInvalidDeviceAddressEXT : return "ErrorInvalidDeviceAddressEXT";
+      case Result::eErrorFullScreenExclusiveModeLostEXT : return "ErrorFullScreenExclusiveModeLostEXT";
       default: return "invalid";
     }
   }
@@ -4803,7 +4903,7 @@ namespace VULKAN_HPP_NAMESPACE
     eRenderPassMultiviewCreateInfo = VK_STRUCTURE_TYPE_RENDER_PASS_MULTIVIEW_CREATE_INFO,
     ePhysicalDeviceMultiviewFeatures = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTIVIEW_FEATURES,
     ePhysicalDeviceMultiviewProperties = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTIVIEW_PROPERTIES,
-    ePhysicalDeviceVariablePointerFeatures = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VARIABLE_POINTER_FEATURES,
+    ePhysicalDeviceVariablePointersFeatures = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VARIABLE_POINTERS_FEATURES,
     eProtectedSubmitInfo = VK_STRUCTURE_TYPE_PROTECTED_SUBMIT_INFO,
     ePhysicalDeviceProtectedMemoryFeatures = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROTECTED_MEMORY_FEATURES,
     ePhysicalDeviceProtectedMemoryProperties = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROTECTED_MEMORY_PROPERTIES,
@@ -4831,7 +4931,7 @@ namespace VULKAN_HPP_NAMESPACE
     eExternalSemaphoreProperties = VK_STRUCTURE_TYPE_EXTERNAL_SEMAPHORE_PROPERTIES,
     ePhysicalDeviceMaintenance3Properties = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_3_PROPERTIES,
     eDescriptorSetLayoutSupport = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_SUPPORT,
-    ePhysicalDeviceShaderDrawParameterFeatures = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_DRAW_PARAMETER_FEATURES,
+    ePhysicalDeviceShaderDrawParametersFeatures = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_DRAW_PARAMETERS_FEATURES,
     eSwapchainCreateInfoKHR = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
     ePresentInfoKHR = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
     eDeviceGroupPresentCapabilitiesKHR = VK_STRUCTURE_TYPE_DEVICE_GROUP_PRESENT_CAPABILITIES_KHR,
@@ -4861,6 +4961,7 @@ namespace VULKAN_HPP_NAMESPACE
     ePipelineRasterizationStateStreamCreateInfoEXT = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_STREAM_CREATE_INFO_EXT,
     eImageViewHandleInfoNVX = VK_STRUCTURE_TYPE_IMAGE_VIEW_HANDLE_INFO_NVX,
     eTextureLodGatherFormatPropertiesAMD = VK_STRUCTURE_TYPE_TEXTURE_LOD_GATHER_FORMAT_PROPERTIES_AMD,
+    eStreamDescriptorSurfaceCreateInfoGGP = VK_STRUCTURE_TYPE_STREAM_DESCRIPTOR_SURFACE_CREATE_INFO_GGP,
     ePhysicalDeviceCornerSampledImageFeaturesNV = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CORNER_SAMPLED_IMAGE_FEATURES_NV,
     eExternalMemoryImageCreateInfoNV = VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_IMAGE_CREATE_INFO_NV,
     eExportMemoryAllocateInfoNV = VK_STRUCTURE_TYPE_EXPORT_MEMORY_ALLOCATE_INFO_NV,
@@ -5008,6 +5109,8 @@ namespace VULKAN_HPP_NAMESPACE
     ePhysicalDeviceVertexAttributeDivisorPropertiesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES_EXT,
     ePipelineVertexInputDivisorStateCreateInfoEXT = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO_EXT,
     ePhysicalDeviceVertexAttributeDivisorFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES_EXT,
+    ePresentFrameTokenGGP = VK_STRUCTURE_TYPE_PRESENT_FRAME_TOKEN_GGP,
+    ePipelineCreationFeedbackCreateInfoEXT = VK_STRUCTURE_TYPE_PIPELINE_CREATION_FEEDBACK_CREATE_INFO_EXT,
     ePhysicalDeviceDriverPropertiesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DRIVER_PROPERTIES_KHR,
     ePhysicalDeviceFloatControlsPropertiesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FLOAT_CONTROLS_PROPERTIES_KHR,
     ePhysicalDeviceDepthStencilResolvePropertiesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEPTH_STENCIL_RESOLVE_PROPERTIES_KHR,
@@ -5023,6 +5126,8 @@ namespace VULKAN_HPP_NAMESPACE
     eQueueFamilyCheckpointPropertiesNV = VK_STRUCTURE_TYPE_QUEUE_FAMILY_CHECKPOINT_PROPERTIES_NV,
     ePhysicalDeviceVulkanMemoryModelFeaturesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_MEMORY_MODEL_FEATURES_KHR,
     ePhysicalDevicePciBusInfoPropertiesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PCI_BUS_INFO_PROPERTIES_EXT,
+    eDisplayNativeHdrSurfaceCapabilitiesAMD = VK_STRUCTURE_TYPE_DISPLAY_NATIVE_HDR_SURFACE_CAPABILITIES_AMD,
+    eSwapchainDisplayNativeHdrCreateInfoAMD = VK_STRUCTURE_TYPE_SWAPCHAIN_DISPLAY_NATIVE_HDR_CREATE_INFO_AMD,
     eImagepipeSurfaceCreateInfoFUCHSIA = VK_STRUCTURE_TYPE_IMAGEPIPE_SURFACE_CREATE_INFO_FUCHSIA,
     eMetalSurfaceCreateInfoEXT = VK_STRUCTURE_TYPE_METAL_SURFACE_CREATE_INFO_EXT,
     ePhysicalDeviceFragmentDensityMapFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_FEATURES_EXT,
@@ -5032,8 +5137,9 @@ namespace VULKAN_HPP_NAMESPACE
     ePhysicalDeviceMemoryBudgetPropertiesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_BUDGET_PROPERTIES_EXT,
     ePhysicalDeviceMemoryPriorityFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_PRIORITY_FEATURES_EXT,
     eMemoryPriorityAllocateInfoEXT = VK_STRUCTURE_TYPE_MEMORY_PRIORITY_ALLOCATE_INFO_EXT,
+    eSurfaceProtectedCapabilitiesKHR = VK_STRUCTURE_TYPE_SURFACE_PROTECTED_CAPABILITIES_KHR,
     ePhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEDICATED_ALLOCATION_IMAGE_ALIASING_FEATURES_NV,
-    ePhysicalDeviceBufferAddressFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BUFFER_ADDRESS_FEATURES_EXT,
+    ePhysicalDeviceBufferDeviceAddressFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES_EXT,
     eBufferDeviceAddressInfoEXT = VK_STRUCTURE_TYPE_BUFFER_DEVICE_ADDRESS_INFO_EXT,
     eBufferDeviceAddressCreateInfoEXT = VK_STRUCTURE_TYPE_BUFFER_DEVICE_ADDRESS_CREATE_INFO_EXT,
     eImageStencilUsageCreateInfoEXT = VK_STRUCTURE_TYPE_IMAGE_STENCIL_USAGE_CREATE_INFO_EXT,
@@ -5041,7 +5147,18 @@ namespace VULKAN_HPP_NAMESPACE
     ePhysicalDeviceCooperativeMatrixFeaturesNV = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COOPERATIVE_MATRIX_FEATURES_NV,
     eCooperativeMatrixPropertiesNV = VK_STRUCTURE_TYPE_COOPERATIVE_MATRIX_PROPERTIES_NV,
     ePhysicalDeviceCooperativeMatrixPropertiesNV = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COOPERATIVE_MATRIX_PROPERTIES_NV,
+    ePhysicalDeviceCoverageReductionModeFeaturesNV = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COVERAGE_REDUCTION_MODE_FEATURES_NV,
+    ePipelineCoverageReductionStateCreateInfoNV = VK_STRUCTURE_TYPE_PIPELINE_COVERAGE_REDUCTION_STATE_CREATE_INFO_NV,
+    eFramebufferMixedSamplesCombinationNV = VK_STRUCTURE_TYPE_FRAMEBUFFER_MIXED_SAMPLES_COMBINATION_NV,
     ePhysicalDeviceYcbcrImageArraysFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_YCBCR_IMAGE_ARRAYS_FEATURES_EXT,
+    ePhysicalDeviceUniformBufferStandardLayoutFeaturesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_UNIFORM_BUFFER_STANDARD_LAYOUT_FEATURES_KHR,
+    eSurfaceFullScreenExclusiveInfoEXT = VK_STRUCTURE_TYPE_SURFACE_FULL_SCREEN_EXCLUSIVE_INFO_EXT,
+    eSurfaceCapabilitiesFullScreenExclusiveEXT = VK_STRUCTURE_TYPE_SURFACE_CAPABILITIES_FULL_SCREEN_EXCLUSIVE_EXT,
+    eSurfaceFullScreenExclusiveWin32InfoEXT = VK_STRUCTURE_TYPE_SURFACE_FULL_SCREEN_EXCLUSIVE_WIN32_INFO_EXT,
+    eHeadlessSurfaceCreateInfoEXT = VK_STRUCTURE_TYPE_HEADLESS_SURFACE_CREATE_INFO_EXT,
+    ePhysicalDeviceHostQueryResetFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_HOST_QUERY_RESET_FEATURES_EXT,
+    ePhysicalDeviceVariablePointerFeatures = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VARIABLE_POINTER_FEATURES,
+    ePhysicalDeviceShaderDrawParameterFeatures = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_DRAW_PARAMETER_FEATURES,
     eDebugReportCreateInfoEXT = VK_STRUCTURE_TYPE_DEBUG_REPORT_CREATE_INFO_EXT,
     eRenderPassMultiviewCreateInfoKHR = VK_STRUCTURE_TYPE_RENDER_PASS_MULTIVIEW_CREATE_INFO_KHR,
     ePhysicalDeviceMultiviewFeaturesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTIVIEW_FEATURES_KHR,
@@ -5085,6 +5202,7 @@ namespace VULKAN_HPP_NAMESPACE
     eImageViewUsageCreateInfoKHR = VK_STRUCTURE_TYPE_IMAGE_VIEW_USAGE_CREATE_INFO_KHR,
     ePipelineTessellationDomainOriginStateCreateInfoKHR = VK_STRUCTURE_TYPE_PIPELINE_TESSELLATION_DOMAIN_ORIGIN_STATE_CREATE_INFO_KHR,
     ePhysicalDeviceVariablePointerFeaturesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VARIABLE_POINTER_FEATURES_KHR,
+    ePhysicalDeviceVariablePointersFeaturesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VARIABLE_POINTERS_FEATURES_KHR,
     eMemoryDedicatedRequirementsKHR = VK_STRUCTURE_TYPE_MEMORY_DEDICATED_REQUIREMENTS_KHR,
     eMemoryDedicatedAllocateInfoKHR = VK_STRUCTURE_TYPE_MEMORY_DEDICATED_ALLOCATE_INFO_KHR,
     eBufferMemoryRequirementsInfo2KHR = VK_STRUCTURE_TYPE_BUFFER_MEMORY_REQUIREMENTS_INFO_2_KHR,
@@ -5101,7 +5219,8 @@ namespace VULKAN_HPP_NAMESPACE
     eBindBufferMemoryInfoKHR = VK_STRUCTURE_TYPE_BIND_BUFFER_MEMORY_INFO_KHR,
     eBindImageMemoryInfoKHR = VK_STRUCTURE_TYPE_BIND_IMAGE_MEMORY_INFO_KHR,
     ePhysicalDeviceMaintenance3PropertiesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_3_PROPERTIES_KHR,
-    eDescriptorSetLayoutSupportKHR = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_SUPPORT_KHR
+    eDescriptorSetLayoutSupportKHR = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_SUPPORT_KHR,
+    ePhysicalDeviceBufferAddressFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BUFFER_ADDRESS_FEATURES_EXT
   };
 
   VULKAN_HPP_INLINE std::string to_string( StructureType value )
@@ -5193,7 +5312,7 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eRenderPassMultiviewCreateInfo : return "RenderPassMultiviewCreateInfo";
       case StructureType::ePhysicalDeviceMultiviewFeatures : return "PhysicalDeviceMultiviewFeatures";
       case StructureType::ePhysicalDeviceMultiviewProperties : return "PhysicalDeviceMultiviewProperties";
-      case StructureType::ePhysicalDeviceVariablePointerFeatures : return "PhysicalDeviceVariablePointerFeatures";
+      case StructureType::ePhysicalDeviceVariablePointersFeatures : return "PhysicalDeviceVariablePointersFeatures";
       case StructureType::eProtectedSubmitInfo : return "ProtectedSubmitInfo";
       case StructureType::ePhysicalDeviceProtectedMemoryFeatures : return "PhysicalDeviceProtectedMemoryFeatures";
       case StructureType::ePhysicalDeviceProtectedMemoryProperties : return "PhysicalDeviceProtectedMemoryProperties";
@@ -5221,7 +5340,7 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eExternalSemaphoreProperties : return "ExternalSemaphoreProperties";
       case StructureType::ePhysicalDeviceMaintenance3Properties : return "PhysicalDeviceMaintenance3Properties";
       case StructureType::eDescriptorSetLayoutSupport : return "DescriptorSetLayoutSupport";
-      case StructureType::ePhysicalDeviceShaderDrawParameterFeatures : return "PhysicalDeviceShaderDrawParameterFeatures";
+      case StructureType::ePhysicalDeviceShaderDrawParametersFeatures : return "PhysicalDeviceShaderDrawParametersFeatures";
       case StructureType::eSwapchainCreateInfoKHR : return "SwapchainCreateInfoKHR";
       case StructureType::ePresentInfoKHR : return "PresentInfoKHR";
       case StructureType::eDeviceGroupPresentCapabilitiesKHR : return "DeviceGroupPresentCapabilitiesKHR";
@@ -5251,6 +5370,7 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePipelineRasterizationStateStreamCreateInfoEXT : return "PipelineRasterizationStateStreamCreateInfoEXT";
       case StructureType::eImageViewHandleInfoNVX : return "ImageViewHandleInfoNVX";
       case StructureType::eTextureLodGatherFormatPropertiesAMD : return "TextureLodGatherFormatPropertiesAMD";
+      case StructureType::eStreamDescriptorSurfaceCreateInfoGGP : return "StreamDescriptorSurfaceCreateInfoGGP";
       case StructureType::ePhysicalDeviceCornerSampledImageFeaturesNV : return "PhysicalDeviceCornerSampledImageFeaturesNV";
       case StructureType::eExternalMemoryImageCreateInfoNV : return "ExternalMemoryImageCreateInfoNV";
       case StructureType::eExportMemoryAllocateInfoNV : return "ExportMemoryAllocateInfoNV";
@@ -5398,6 +5518,8 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceVertexAttributeDivisorPropertiesEXT : return "PhysicalDeviceVertexAttributeDivisorPropertiesEXT";
       case StructureType::ePipelineVertexInputDivisorStateCreateInfoEXT : return "PipelineVertexInputDivisorStateCreateInfoEXT";
       case StructureType::ePhysicalDeviceVertexAttributeDivisorFeaturesEXT : return "PhysicalDeviceVertexAttributeDivisorFeaturesEXT";
+      case StructureType::ePresentFrameTokenGGP : return "PresentFrameTokenGGP";
+      case StructureType::ePipelineCreationFeedbackCreateInfoEXT : return "PipelineCreationFeedbackCreateInfoEXT";
       case StructureType::ePhysicalDeviceDriverPropertiesKHR : return "PhysicalDeviceDriverPropertiesKHR";
       case StructureType::ePhysicalDeviceFloatControlsPropertiesKHR : return "PhysicalDeviceFloatControlsPropertiesKHR";
       case StructureType::ePhysicalDeviceDepthStencilResolvePropertiesKHR : return "PhysicalDeviceDepthStencilResolvePropertiesKHR";
@@ -5413,6 +5535,8 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eQueueFamilyCheckpointPropertiesNV : return "QueueFamilyCheckpointPropertiesNV";
       case StructureType::ePhysicalDeviceVulkanMemoryModelFeaturesKHR : return "PhysicalDeviceVulkanMemoryModelFeaturesKHR";
       case StructureType::ePhysicalDevicePciBusInfoPropertiesEXT : return "PhysicalDevicePciBusInfoPropertiesEXT";
+      case StructureType::eDisplayNativeHdrSurfaceCapabilitiesAMD : return "DisplayNativeHdrSurfaceCapabilitiesAMD";
+      case StructureType::eSwapchainDisplayNativeHdrCreateInfoAMD : return "SwapchainDisplayNativeHdrCreateInfoAMD";
       case StructureType::eImagepipeSurfaceCreateInfoFUCHSIA : return "ImagepipeSurfaceCreateInfoFUCHSIA";
       case StructureType::eMetalSurfaceCreateInfoEXT : return "MetalSurfaceCreateInfoEXT";
       case StructureType::ePhysicalDeviceFragmentDensityMapFeaturesEXT : return "PhysicalDeviceFragmentDensityMapFeaturesEXT";
@@ -5422,8 +5546,9 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceMemoryBudgetPropertiesEXT : return "PhysicalDeviceMemoryBudgetPropertiesEXT";
       case StructureType::ePhysicalDeviceMemoryPriorityFeaturesEXT : return "PhysicalDeviceMemoryPriorityFeaturesEXT";
       case StructureType::eMemoryPriorityAllocateInfoEXT : return "MemoryPriorityAllocateInfoEXT";
+      case StructureType::eSurfaceProtectedCapabilitiesKHR : return "SurfaceProtectedCapabilitiesKHR";
       case StructureType::ePhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV : return "PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV";
-      case StructureType::ePhysicalDeviceBufferAddressFeaturesEXT : return "PhysicalDeviceBufferAddressFeaturesEXT";
+      case StructureType::ePhysicalDeviceBufferDeviceAddressFeaturesEXT : return "PhysicalDeviceBufferDeviceAddressFeaturesEXT";
       case StructureType::eBufferDeviceAddressInfoEXT : return "BufferDeviceAddressInfoEXT";
       case StructureType::eBufferDeviceAddressCreateInfoEXT : return "BufferDeviceAddressCreateInfoEXT";
       case StructureType::eImageStencilUsageCreateInfoEXT : return "ImageStencilUsageCreateInfoEXT";
@@ -5431,7 +5556,16 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceCooperativeMatrixFeaturesNV : return "PhysicalDeviceCooperativeMatrixFeaturesNV";
       case StructureType::eCooperativeMatrixPropertiesNV : return "CooperativeMatrixPropertiesNV";
       case StructureType::ePhysicalDeviceCooperativeMatrixPropertiesNV : return "PhysicalDeviceCooperativeMatrixPropertiesNV";
+      case StructureType::ePhysicalDeviceCoverageReductionModeFeaturesNV : return "PhysicalDeviceCoverageReductionModeFeaturesNV";
+      case StructureType::ePipelineCoverageReductionStateCreateInfoNV : return "PipelineCoverageReductionStateCreateInfoNV";
+      case StructureType::eFramebufferMixedSamplesCombinationNV : return "FramebufferMixedSamplesCombinationNV";
       case StructureType::ePhysicalDeviceYcbcrImageArraysFeaturesEXT : return "PhysicalDeviceYcbcrImageArraysFeaturesEXT";
+      case StructureType::ePhysicalDeviceUniformBufferStandardLayoutFeaturesKHR : return "PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR";
+      case StructureType::eSurfaceFullScreenExclusiveInfoEXT : return "SurfaceFullScreenExclusiveInfoEXT";
+      case StructureType::eSurfaceCapabilitiesFullScreenExclusiveEXT : return "SurfaceCapabilitiesFullScreenExclusiveEXT";
+      case StructureType::eSurfaceFullScreenExclusiveWin32InfoEXT : return "SurfaceFullScreenExclusiveWin32InfoEXT";
+      case StructureType::eHeadlessSurfaceCreateInfoEXT : return "HeadlessSurfaceCreateInfoEXT";
+      case StructureType::ePhysicalDeviceHostQueryResetFeaturesEXT : return "PhysicalDeviceHostQueryResetFeaturesEXT";
       default: return "invalid";
     }
   }
@@ -7841,6 +7975,21 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
+  enum class HeadlessSurfaceCreateFlagBitsEXT
+  {};
+
+  VULKAN_HPP_INLINE std::string to_string( HeadlessSurfaceCreateFlagBitsEXT )
+  {
+    return "(void)";
+  }
+
+  using HeadlessSurfaceCreateFlagsEXT = Flags<HeadlessSurfaceCreateFlagBitsEXT, VkHeadlessSurfaceCreateFlagsEXT>;
+
+  VULKAN_HPP_INLINE std::string to_string( HeadlessSurfaceCreateFlagsEXT  )
+  {
+    return "{}";
+  }
+
 #ifdef VK_USE_PLATFORM_IOS_MVK
   enum class IOSSurfaceCreateFlagBitsMVK
   {};
@@ -8571,6 +8720,21 @@ namespace VULKAN_HPP_NAMESPACE
     return "{}";
   }
 
+  enum class PipelineCoverageReductionStateCreateFlagBitsNV
+  {};
+
+  VULKAN_HPP_INLINE std::string to_string( PipelineCoverageReductionStateCreateFlagBitsNV )
+  {
+    return "(void)";
+  }
+
+  using PipelineCoverageReductionStateCreateFlagsNV = Flags<PipelineCoverageReductionStateCreateFlagBitsNV, VkPipelineCoverageReductionStateCreateFlagsNV>;
+
+  VULKAN_HPP_INLINE std::string to_string( PipelineCoverageReductionStateCreateFlagsNV  )
+  {
+    return "{}";
+  }
+
   enum class PipelineCoverageToColorStateCreateFlagBitsNV
   {};
 
@@ -8643,6 +8807,55 @@ namespace VULKAN_HPP_NAMESPACE
     if ( value & PipelineCreateFlagBits::eViewIndexFromDeviceIndex ) result += "ViewIndexFromDeviceIndex | ";
     if ( value & PipelineCreateFlagBits::eDispatchBase ) result += "DispatchBase | ";
     if ( value & PipelineCreateFlagBits::eDeferCompileNV ) result += "DeferCompileNV | ";
+    return "{ " + result.substr(0, result.size() - 3) + " }";
+  }
+
+  enum class PipelineCreationFeedbackFlagBitsEXT
+  {
+    eValid = VK_PIPELINE_CREATION_FEEDBACK_VALID_BIT_EXT,
+    eApplicationPipelineCacheHit = VK_PIPELINE_CREATION_FEEDBACK_APPLICATION_PIPELINE_CACHE_HIT_BIT_EXT,
+    eBasePipelineAcceleration = VK_PIPELINE_CREATION_FEEDBACK_BASE_PIPELINE_ACCELERATION_BIT_EXT
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( PipelineCreationFeedbackFlagBitsEXT value )
+  {
+    switch ( value )
+    {
+      case PipelineCreationFeedbackFlagBitsEXT::eValid : return "Valid";
+      case PipelineCreationFeedbackFlagBitsEXT::eApplicationPipelineCacheHit : return "ApplicationPipelineCacheHit";
+      case PipelineCreationFeedbackFlagBitsEXT::eBasePipelineAcceleration : return "BasePipelineAcceleration";
+      default: return "invalid";
+    }
+  }
+
+  using PipelineCreationFeedbackFlagsEXT = Flags<PipelineCreationFeedbackFlagBitsEXT, VkPipelineCreationFeedbackFlagsEXT>;
+
+  VULKAN_HPP_INLINE PipelineCreationFeedbackFlagsEXT operator|( PipelineCreationFeedbackFlagBitsEXT bit0, PipelineCreationFeedbackFlagBitsEXT bit1 )
+  {
+    return PipelineCreationFeedbackFlagsEXT( bit0 ) | bit1;
+  }
+
+  VULKAN_HPP_INLINE PipelineCreationFeedbackFlagsEXT operator~( PipelineCreationFeedbackFlagBitsEXT bits )
+  {
+    return ~( PipelineCreationFeedbackFlagsEXT( bits ) );
+  }
+
+  template <> struct FlagTraits<PipelineCreationFeedbackFlagBitsEXT>
+  {
+    enum
+    {
+      allFlags = VkFlags(PipelineCreationFeedbackFlagBitsEXT::eValid) | VkFlags(PipelineCreationFeedbackFlagBitsEXT::eApplicationPipelineCacheHit) | VkFlags(PipelineCreationFeedbackFlagBitsEXT::eBasePipelineAcceleration)
+    };
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( PipelineCreationFeedbackFlagsEXT value  )
+  {
+    if ( !value ) return "{}";
+    std::string result;
+
+    if ( value & PipelineCreationFeedbackFlagBitsEXT::eValid ) result += "Valid | ";
+    if ( value & PipelineCreationFeedbackFlagBitsEXT::eApplicationPipelineCacheHit ) result += "ApplicationPipelineCacheHit | ";
+    if ( value & PipelineCreationFeedbackFlagBitsEXT::eBasePipelineAcceleration ) result += "BasePipelineAcceleration | ";
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
@@ -9709,6 +9922,23 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
+#ifdef VK_USE_PLATFORM_GGP
+  enum class StreamDescriptorSurfaceCreateFlagBitsGGP
+  {};
+
+  VULKAN_HPP_INLINE std::string to_string( StreamDescriptorSurfaceCreateFlagBitsGGP )
+  {
+    return "(void)";
+  }
+
+  using StreamDescriptorSurfaceCreateFlagsGGP = Flags<StreamDescriptorSurfaceCreateFlagBitsGGP, VkStreamDescriptorSurfaceCreateFlagsGGP>;
+
+  VULKAN_HPP_INLINE std::string to_string( StreamDescriptorSurfaceCreateFlagsGGP  )
+  {
+    return "{}";
+  }
+#endif /*VK_USE_PLATFORM_GGP*/
+
   enum class SubgroupFeatureFlagBits
   {
     eBasic = VK_SUBGROUP_FEATURE_BASIC_BIT,
@@ -10379,6 +10609,15 @@ namespace VULKAN_HPP_NAMESPACE
       : SystemError( make_error_code( Result::eErrorInvalidDeviceAddressEXT ), message ) {}
   };
 
+  class FullScreenExclusiveModeLostEXTError : public SystemError
+  {
+  public:
+    FullScreenExclusiveModeLostEXTError( std::string const& message )
+      : SystemError( make_error_code( Result::eErrorFullScreenExclusiveModeLostEXT ), message ) {}
+    FullScreenExclusiveModeLostEXTError( char const * message )
+      : SystemError( make_error_code( Result::eErrorFullScreenExclusiveModeLostEXT ), message ) {}
+  };
+
 
   VULKAN_HPP_INLINE void throwResultException( Result result, char const * message )
   {
@@ -10408,6 +10647,7 @@ namespace VULKAN_HPP_NAMESPACE
       case Result::eErrorFragmentationEXT: throw FragmentationEXTError( message );
       case Result::eErrorNotPermittedEXT: throw NotPermittedEXTError( message );
       case Result::eErrorInvalidDeviceAddressEXT: throw InvalidDeviceAddressEXTError( message );
+      case Result::eErrorFullScreenExclusiveModeLostEXT: throw FullScreenExclusiveModeLostEXTError( message );
       default: throw SystemError( make_error_code( result ) );
     }
   }
@@ -10659,6 +10899,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct DisplayModeParametersKHR;
   struct DisplayModeProperties2KHR;
   struct DisplayModePropertiesKHR;
+  struct DisplayNativeHdrSurfaceCapabilitiesAMD;
   struct DisplayPlaneCapabilities2KHR;
   struct DisplayPlaneCapabilitiesKHR;
   struct DisplayPlaneInfo2KHR;
@@ -10726,12 +10967,14 @@ namespace VULKAN_HPP_NAMESPACE
   struct FormatProperties2;
   using FormatProperties2KHR = FormatProperties2;
   struct FramebufferCreateInfo;
+  struct FramebufferMixedSamplesCombinationNV;
   struct GeometryAABBNV;
   struct GeometryDataNV;
   struct GeometryNV;
   struct GeometryTrianglesNV;
   struct GraphicsPipelineCreateInfo;
   struct HdrMetadataEXT;
+  struct HeadlessSurfaceCreateInfoEXT;
 #ifdef VK_USE_PLATFORM_IOS_MVK
   struct IOSSurfaceCreateInfoMVK;
 #endif /*VK_USE_PLATFORM_IOS_MVK*/
@@ -10842,13 +11085,15 @@ namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceASTCDecodeFeaturesEXT;
   struct PhysicalDeviceBlendOperationAdvancedFeaturesEXT;
   struct PhysicalDeviceBlendOperationAdvancedPropertiesEXT;
-  struct PhysicalDeviceBufferAddressFeaturesEXT;
+  struct PhysicalDeviceBufferDeviceAddressFeaturesEXT;
+  using PhysicalDeviceBufferAddressFeaturesEXT = PhysicalDeviceBufferDeviceAddressFeaturesEXT;
   struct PhysicalDeviceComputeShaderDerivativesFeaturesNV;
   struct PhysicalDeviceConditionalRenderingFeaturesEXT;
   struct PhysicalDeviceConservativeRasterizationPropertiesEXT;
   struct PhysicalDeviceCooperativeMatrixFeaturesNV;
   struct PhysicalDeviceCooperativeMatrixPropertiesNV;
   struct PhysicalDeviceCornerSampledImageFeaturesNV;
+  struct PhysicalDeviceCoverageReductionModeFeaturesNV;
   struct PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV;
   struct PhysicalDeviceDepthClipEnableFeaturesEXT;
   struct PhysicalDeviceDepthStencilResolvePropertiesKHR;
@@ -10876,6 +11121,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceFragmentShaderBarycentricFeaturesNV;
   struct PhysicalDeviceGroupProperties;
   using PhysicalDeviceGroupPropertiesKHR = PhysicalDeviceGroupProperties;
+  struct PhysicalDeviceHostQueryResetFeaturesEXT;
   struct PhysicalDeviceIDProperties;
   using PhysicalDeviceIDPropertiesKHR = PhysicalDeviceIDProperties;
   struct PhysicalDeviceImageDrmFormatModifierInfoEXT;
@@ -10917,7 +11163,8 @@ namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceScalarBlockLayoutFeaturesEXT;
   struct PhysicalDeviceShaderAtomicInt64FeaturesKHR;
   struct PhysicalDeviceShaderCorePropertiesAMD;
-  struct PhysicalDeviceShaderDrawParameterFeatures;
+  struct PhysicalDeviceShaderDrawParametersFeatures;
+  using PhysicalDeviceShaderDrawParameterFeatures = PhysicalDeviceShaderDrawParametersFeatures;
   struct PhysicalDeviceShaderImageFootprintFeaturesNV;
   struct PhysicalDeviceShadingRateImageFeaturesNV;
   struct PhysicalDeviceShadingRateImagePropertiesNV;
@@ -10928,8 +11175,11 @@ namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceSurfaceInfo2KHR;
   struct PhysicalDeviceTransformFeedbackFeaturesEXT;
   struct PhysicalDeviceTransformFeedbackPropertiesEXT;
-  struct PhysicalDeviceVariablePointerFeatures;
-  using PhysicalDeviceVariablePointerFeaturesKHR = PhysicalDeviceVariablePointerFeatures;
+  struct PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR;
+  struct PhysicalDeviceVariablePointersFeatures;
+  using PhysicalDeviceVariablePointersFeaturesKHR = PhysicalDeviceVariablePointersFeatures;
+  using PhysicalDeviceVariablePointerFeaturesKHR = PhysicalDeviceVariablePointersFeatures;
+  using PhysicalDeviceVariablePointerFeatures = PhysicalDeviceVariablePointersFeatures;
   struct PhysicalDeviceVertexAttributeDivisorFeaturesEXT;
   struct PhysicalDeviceVertexAttributeDivisorPropertiesEXT;
   struct PhysicalDeviceVulkanMemoryModelFeaturesKHR;
@@ -10939,7 +11189,10 @@ namespace VULKAN_HPP_NAMESPACE
   struct PipelineColorBlendAttachmentState;
   struct PipelineColorBlendStateCreateInfo;
   struct PipelineCoverageModulationStateCreateInfoNV;
+  struct PipelineCoverageReductionStateCreateInfoNV;
   struct PipelineCoverageToColorStateCreateInfoNV;
+  struct PipelineCreationFeedbackCreateInfoEXT;
+  struct PipelineCreationFeedbackEXT;
   struct PipelineDepthStencilStateCreateInfo;
   struct PipelineDiscardRectangleStateCreateInfoEXT;
   struct PipelineDynamicStateCreateInfo;
@@ -10965,6 +11218,9 @@ namespace VULKAN_HPP_NAMESPACE
   struct PipelineViewportStateCreateInfo;
   struct PipelineViewportSwizzleStateCreateInfoNV;
   struct PipelineViewportWScalingStateCreateInfoNV;
+#ifdef VK_USE_PLATFORM_GGP
+  struct PresentFrameTokenGGP;
+#endif /*VK_USE_PLATFORM_GGP*/
   struct PresentInfoKHR;
   struct PresentRegionKHR;
   struct PresentRegionsKHR;
@@ -11026,6 +11282,9 @@ namespace VULKAN_HPP_NAMESPACE
   struct SpecializationInfo;
   struct SpecializationMapEntry;
   struct StencilOpState;
+#ifdef VK_USE_PLATFORM_GGP
+  struct StreamDescriptorSurfaceCreateInfoGGP;
+#endif /*VK_USE_PLATFORM_GGP*/
   struct SubmitInfo;
   struct SubpassBeginInfoKHR;
   struct SubpassDependency;
@@ -11038,11 +11297,22 @@ namespace VULKAN_HPP_NAMESPACE
   struct SubresourceLayout;
   struct SurfaceCapabilities2EXT;
   struct SurfaceCapabilities2KHR;
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  struct SurfaceCapabilitiesFullScreenExclusiveEXT;
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
   struct SurfaceCapabilitiesKHR;
   struct SurfaceFormat2KHR;
   struct SurfaceFormatKHR;
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  struct SurfaceFullScreenExclusiveInfoEXT;
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  struct SurfaceFullScreenExclusiveWin32InfoEXT;
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+  struct SurfaceProtectedCapabilitiesKHR;
   struct SwapchainCounterCreateInfoEXT;
   struct SwapchainCreateInfoKHR;
+  struct SwapchainDisplayNativeHdrCreateInfoAMD;
   struct TextureLODGatherFormatPropertiesAMD;
   struct ValidationCacheCreateInfoEXT;
   struct ValidationFeaturesEXT;
@@ -13806,6 +14076,16 @@ namespace VULKAN_HPP_NAMESPACE
       return m_device < rhs.m_device;
     }
 
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template<typename Dispatch = DispatchLoaderDefault>
+    Result acquireFullScreenExclusiveModeEXT( SwapchainKHR swapchain, Dispatch const &d = Dispatch() ) const;
+#else
+    template<typename Dispatch = DispatchLoaderDefault>
+    ResultValueType<void>::type acquireFullScreenExclusiveModeEXT( SwapchainKHR swapchain, Dispatch const &d = Dispatch() ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
     template<typename Dispatch = DispatchLoaderDefault>
     Result acquireNextImage2KHR( const AcquireNextImageInfoKHR* pAcquireInfo, uint32_t* pImageIndex, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
@@ -14847,6 +15127,15 @@ namespace VULKAN_HPP_NAMESPACE
     ResultValueType<DeviceGroupPresentCapabilitiesKHR>::type getGroupPresentCapabilitiesKHR(Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+    template<typename Dispatch = DispatchLoaderDefault>
+    Result getGroupSurfacePresentModes2EXT( const PhysicalDeviceSurfaceInfo2KHR* pSurfaceInfo, DeviceGroupPresentModeFlagsKHR* pModes, Dispatch const &d = Dispatch() ) const;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template<typename Dispatch = DispatchLoaderDefault>
+    ResultValueType<DeviceGroupPresentModeFlagsKHR>::type getGroupSurfacePresentModes2EXT( const PhysicalDeviceSurfaceInfo2KHR & surfaceInfo, Dispatch const &d = Dispatch() ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
     template<typename Dispatch = DispatchLoaderDefault>
     Result getGroupSurfacePresentModesKHR( SurfaceKHR surface, DeviceGroupPresentModeFlagsKHR* pModes, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
@@ -15214,6 +15503,16 @@ namespace VULKAN_HPP_NAMESPACE
     ResultValueType<void>::type registerObjectsNVX( ObjectTableNVX objectTable, ArrayProxy<const ObjectTableEntryNVX* const> pObjectTableEntries, ArrayProxy<const uint32_t> objectIndices, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template<typename Dispatch = DispatchLoaderDefault>
+    Result releaseFullScreenExclusiveModeEXT( SwapchainKHR swapchain, Dispatch const &d = Dispatch() ) const;
+#else
+    template<typename Dispatch = DispatchLoaderDefault>
+    ResultValueType<void>::type releaseFullScreenExclusiveModeEXT( SwapchainKHR swapchain, Dispatch const &d = Dispatch() ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
 #ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = DispatchLoaderDefault>
     Result resetCommandPool( CommandPool commandPool, CommandPoolResetFlags flags, Dispatch const &d = Dispatch() ) const;
@@ -15246,6 +15545,9 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = DispatchLoaderDefault>
+    void resetQueryPoolEXT( QueryPool queryPool, uint32_t firstQuery, uint32_t queryCount, Dispatch const &d = Dispatch() ) const;
+
+    template<typename Dispatch = DispatchLoaderDefault>
     Result setDebugUtilsObjectNameEXT( const DebugUtilsObjectNameInfoEXT* pNameInfo, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = DispatchLoaderDefault>
@@ -15273,6 +15575,9 @@ namespace VULKAN_HPP_NAMESPACE
     template<typename Dispatch = DispatchLoaderDefault>
     void setHdrMetadataEXT( ArrayProxy<const SwapchainKHR> swapchains, ArrayProxy<const HdrMetadataEXT> metadata, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    template<typename Dispatch = DispatchLoaderDefault>
+    void setLocalDimmingAMD( SwapchainKHR swapChain, Bool32 localDimmingEnable, Dispatch const &d = Dispatch() ) const;
 
     template<typename Dispatch = DispatchLoaderDefault>
     void trimCommandPool( CommandPool commandPool, CommandPoolTrimFlags flags = CommandPoolTrimFlags(), Dispatch const &d = Dispatch() ) const;
@@ -15843,6 +16148,15 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = DispatchLoaderDefault>
+    Result getSupportedFramebufferMixedSamplesCombinationsNV( uint32_t* pCombinationCount, FramebufferMixedSamplesCombinationNV* pCombinations, Dispatch const &d = Dispatch() ) const;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template<typename Allocator = std::allocator<FramebufferMixedSamplesCombinationNV>, typename Dispatch = DispatchLoaderDefault>
+    typename ResultValueType<std::vector<FramebufferMixedSamplesCombinationNV,Allocator>>::type getSupportedFramebufferMixedSamplesCombinationsNV(Dispatch const &d = Dispatch() ) const;
+    template<typename Allocator = std::allocator<FramebufferMixedSamplesCombinationNV>, typename Dispatch = DispatchLoaderDefault>
+    typename ResultValueType<std::vector<FramebufferMixedSamplesCombinationNV,Allocator>>::type getSupportedFramebufferMixedSamplesCombinationsNV(Allocator const& vectorAllocator, Dispatch const &d ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    template<typename Dispatch = DispatchLoaderDefault>
     Result getSurfaceCapabilities2EXT( SurfaceKHR surface, SurfaceCapabilities2EXT* pSurfaceCapabilities, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = DispatchLoaderDefault>
@@ -15882,6 +16196,17 @@ namespace VULKAN_HPP_NAMESPACE
     template<typename Allocator = std::allocator<SurfaceFormatKHR>, typename Dispatch = DispatchLoaderDefault>
     typename ResultValueType<std::vector<SurfaceFormatKHR,Allocator>>::type getSurfaceFormatsKHR( SurfaceKHR surface, Allocator const& vectorAllocator, Dispatch const &d ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+    template<typename Dispatch = DispatchLoaderDefault>
+    Result getSurfacePresentModes2EXT( const PhysicalDeviceSurfaceInfo2KHR* pSurfaceInfo, uint32_t* pPresentModeCount, PresentModeKHR* pPresentModes, Dispatch const &d = Dispatch() ) const;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template<typename Allocator = std::allocator<PresentModeKHR>, typename Dispatch = DispatchLoaderDefault>
+    typename ResultValueType<std::vector<PresentModeKHR,Allocator>>::type getSurfacePresentModes2EXT( const PhysicalDeviceSurfaceInfo2KHR & surfaceInfo, Dispatch const &d = Dispatch() ) const;
+    template<typename Allocator = std::allocator<PresentModeKHR>, typename Dispatch = DispatchLoaderDefault>
+    typename ResultValueType<std::vector<PresentModeKHR,Allocator>>::type getSurfacePresentModes2EXT( const PhysicalDeviceSurfaceInfo2KHR & surfaceInfo, Allocator const& vectorAllocator, Dispatch const &d ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
     template<typename Dispatch = DispatchLoaderDefault>
     Result getSurfacePresentModesKHR( SurfaceKHR surface, uint32_t* pPresentModeCount, PresentModeKHR* pPresentModes, Dispatch const &d = Dispatch() ) const;
@@ -16068,6 +16393,17 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
+    template<typename Dispatch = DispatchLoaderDefault>
+    Result createHeadlessSurfaceEXT( const HeadlessSurfaceCreateInfoEXT* pCreateInfo, const AllocationCallbacks* pAllocator, SurfaceKHR* pSurface, Dispatch const &d = Dispatch() ) const;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template<typename Dispatch = DispatchLoaderDefault>
+    ResultValueType<SurfaceKHR>::type createHeadlessSurfaceEXT( const HeadlessSurfaceCreateInfoEXT & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+#ifndef VULKAN_HPP_NO_SMART_HANDLE
+    template<typename Dispatch = DispatchLoaderDefault>
+    typename ResultValueType<UniqueHandle<SurfaceKHR,Dispatch>>::type createHeadlessSurfaceEXTUnique( const HeadlessSurfaceCreateInfoEXT & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+#endif /*VULKAN_HPP_NO_SMART_HANDLE*/
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
 #ifdef VK_USE_PLATFORM_IOS_MVK
     template<typename Dispatch = DispatchLoaderDefault>
     Result createIOSSurfaceMVK( const IOSSurfaceCreateInfoMVK* pCreateInfo, const AllocationCallbacks* pAllocator, SurfaceKHR* pSurface, Dispatch const &d = Dispatch() ) const;
@@ -16119,6 +16455,19 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 #endif /*VK_USE_PLATFORM_METAL_EXT*/
+
+#ifdef VK_USE_PLATFORM_GGP
+    template<typename Dispatch = DispatchLoaderDefault>
+    Result createStreamDescriptorSurfaceGGP( const StreamDescriptorSurfaceCreateInfoGGP* pCreateInfo, const AllocationCallbacks* pAllocator, SurfaceKHR* pSurface, Dispatch const &d = Dispatch() ) const;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template<typename Dispatch = DispatchLoaderDefault>
+    ResultValueType<SurfaceKHR>::type createStreamDescriptorSurfaceGGP( const StreamDescriptorSurfaceCreateInfoGGP & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+#ifndef VULKAN_HPP_NO_SMART_HANDLE
+    template<typename Dispatch = DispatchLoaderDefault>
+    typename ResultValueType<UniqueHandle<SurfaceKHR,Dispatch>>::type createStreamDescriptorSurfaceGGPUnique( const StreamDescriptorSurfaceCreateInfoGGP & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
+#endif /*VULKAN_HPP_NO_SMART_HANDLE*/
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif /*VK_USE_PLATFORM_GGP*/
 
 #ifdef VK_USE_PLATFORM_VI_NN
     template<typename Dispatch = DispatchLoaderDefault>
@@ -19891,7 +20240,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct BufferDeviceAddressCreateInfoEXT
   {
-    BufferDeviceAddressCreateInfoEXT( DeviceSize deviceAddress_ = 0 )
+    BufferDeviceAddressCreateInfoEXT( DeviceAddress deviceAddress_ = 0 )
       : deviceAddress( deviceAddress_ )
     {}
 
@@ -19912,7 +20261,7 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    BufferDeviceAddressCreateInfoEXT & setDeviceAddress( DeviceSize deviceAddress_ )
+    BufferDeviceAddressCreateInfoEXT & setDeviceAddress( DeviceAddress deviceAddress_ )
     {
       deviceAddress = deviceAddress_;
       return *this;
@@ -19945,7 +20294,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   public:
     const void* pNext = nullptr;
-    DeviceSize deviceAddress;
+    DeviceAddress deviceAddress;
   };
   static_assert( sizeof( BufferDeviceAddressCreateInfoEXT ) == sizeof( VkBufferDeviceAddressCreateInfoEXT ), "struct and wrapper have different size!" );
 
@@ -26654,6 +27003,39 @@ namespace VULKAN_HPP_NAMESPACE
   };
   static_assert( sizeof( DisplayModeProperties2KHR ) == sizeof( VkDisplayModeProperties2KHR ), "struct and wrapper have different size!" );
 
+  struct DisplayNativeHdrSurfaceCapabilitiesAMD
+  {
+    operator VkDisplayNativeHdrSurfaceCapabilitiesAMD const&() const
+    {
+      return *reinterpret_cast<const VkDisplayNativeHdrSurfaceCapabilitiesAMD*>( this );
+    }
+
+    operator VkDisplayNativeHdrSurfaceCapabilitiesAMD &()
+    {
+      return *reinterpret_cast<VkDisplayNativeHdrSurfaceCapabilitiesAMD*>( this );
+    }
+
+    bool operator==( DisplayNativeHdrSurfaceCapabilitiesAMD const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( localDimmingSupport == rhs.localDimmingSupport );
+    }
+
+    bool operator!=( DisplayNativeHdrSurfaceCapabilitiesAMD const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::eDisplayNativeHdrSurfaceCapabilitiesAMD;
+
+  public:
+    void* pNext = nullptr;
+    Bool32 localDimmingSupport;
+  };
+  static_assert( sizeof( DisplayNativeHdrSurfaceCapabilitiesAMD ) == sizeof( VkDisplayNativeHdrSurfaceCapabilitiesAMD ), "struct and wrapper have different size!" );
+
   struct DisplayPlaneCapabilitiesKHR
   {
     operator VkDisplayPlaneCapabilitiesKHR const&() const
@@ -29031,6 +29413,45 @@ namespace VULKAN_HPP_NAMESPACE
   };
   static_assert( sizeof( FramebufferCreateInfo ) == sizeof( VkFramebufferCreateInfo ), "struct and wrapper have different size!" );
 
+  struct FramebufferMixedSamplesCombinationNV
+  {
+    operator VkFramebufferMixedSamplesCombinationNV const&() const
+    {
+      return *reinterpret_cast<const VkFramebufferMixedSamplesCombinationNV*>( this );
+    }
+
+    operator VkFramebufferMixedSamplesCombinationNV &()
+    {
+      return *reinterpret_cast<VkFramebufferMixedSamplesCombinationNV*>( this );
+    }
+
+    bool operator==( FramebufferMixedSamplesCombinationNV const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( coverageReductionMode == rhs.coverageReductionMode )
+          && ( rasterizationSamples == rhs.rasterizationSamples )
+          && ( depthStencilSamples == rhs.depthStencilSamples )
+          && ( colorSamples == rhs.colorSamples );
+    }
+
+    bool operator!=( FramebufferMixedSamplesCombinationNV const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::eFramebufferMixedSamplesCombinationNV;
+
+  public:
+    void* pNext = nullptr;
+    CoverageReductionModeNV coverageReductionMode;
+    SampleCountFlagBits rasterizationSamples;
+    SampleCountFlags depthStencilSamples;
+    SampleCountFlags colorSamples;
+  };
+  static_assert( sizeof( FramebufferMixedSamplesCombinationNV ) == sizeof( VkFramebufferMixedSamplesCombinationNV ), "struct and wrapper have different size!" );
+
   struct VertexInputBindingDescription
   {
     VertexInputBindingDescription( uint32_t binding_ = 0,
@@ -30873,6 +31294,66 @@ namespace VULKAN_HPP_NAMESPACE
     float maxFrameAverageLightLevel;
   };
   static_assert( sizeof( HdrMetadataEXT ) == sizeof( VkHdrMetadataEXT ), "struct and wrapper have different size!" );
+
+  struct HeadlessSurfaceCreateInfoEXT
+  {
+    HeadlessSurfaceCreateInfoEXT( HeadlessSurfaceCreateFlagsEXT flags_ = HeadlessSurfaceCreateFlagsEXT() )
+      : flags( flags_ )
+    {}
+
+    HeadlessSurfaceCreateInfoEXT( VkHeadlessSurfaceCreateInfoEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( HeadlessSurfaceCreateInfoEXT ) );
+    }
+
+    HeadlessSurfaceCreateInfoEXT& operator=( VkHeadlessSurfaceCreateInfoEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( HeadlessSurfaceCreateInfoEXT ) );
+      return *this;
+    }
+
+    HeadlessSurfaceCreateInfoEXT & setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    HeadlessSurfaceCreateInfoEXT & setFlags( HeadlessSurfaceCreateFlagsEXT flags_ )
+    {
+      flags = flags_;
+      return *this;
+    }
+
+    operator VkHeadlessSurfaceCreateInfoEXT const&() const
+    {
+      return *reinterpret_cast<const VkHeadlessSurfaceCreateInfoEXT*>( this );
+    }
+
+    operator VkHeadlessSurfaceCreateInfoEXT &()
+    {
+      return *reinterpret_cast<VkHeadlessSurfaceCreateInfoEXT*>( this );
+    }
+
+    bool operator==( HeadlessSurfaceCreateInfoEXT const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags );
+    }
+
+    bool operator!=( HeadlessSurfaceCreateInfoEXT const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::eHeadlessSurfaceCreateInfoEXT;
+
+  public:
+    const void* pNext = nullptr;
+    HeadlessSurfaceCreateFlagsEXT flags;
+  };
+  static_assert( sizeof( HeadlessSurfaceCreateInfoEXT ) == sizeof( VkHeadlessSurfaceCreateInfoEXT ), "struct and wrapper have different size!" );
 
 #ifdef VK_USE_PLATFORM_IOS_MVK
   struct IOSSurfaceCreateInfoMVK
@@ -35739,62 +36220,62 @@ namespace VULKAN_HPP_NAMESPACE
   };
   static_assert( sizeof( PhysicalDeviceBlendOperationAdvancedPropertiesEXT ) == sizeof( VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT ), "struct and wrapper have different size!" );
 
-  struct PhysicalDeviceBufferAddressFeaturesEXT
+  struct PhysicalDeviceBufferDeviceAddressFeaturesEXT
   {
-    PhysicalDeviceBufferAddressFeaturesEXT( Bool32 bufferDeviceAddress_ = 0,
-                                            Bool32 bufferDeviceAddressCaptureReplay_ = 0,
-                                            Bool32 bufferDeviceAddressMultiDevice_ = 0 )
+    PhysicalDeviceBufferDeviceAddressFeaturesEXT( Bool32 bufferDeviceAddress_ = 0,
+                                                  Bool32 bufferDeviceAddressCaptureReplay_ = 0,
+                                                  Bool32 bufferDeviceAddressMultiDevice_ = 0 )
       : bufferDeviceAddress( bufferDeviceAddress_ )
       , bufferDeviceAddressCaptureReplay( bufferDeviceAddressCaptureReplay_ )
       , bufferDeviceAddressMultiDevice( bufferDeviceAddressMultiDevice_ )
     {}
 
-    PhysicalDeviceBufferAddressFeaturesEXT( VkPhysicalDeviceBufferAddressFeaturesEXT const & rhs )
+    PhysicalDeviceBufferDeviceAddressFeaturesEXT( VkPhysicalDeviceBufferDeviceAddressFeaturesEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceBufferAddressFeaturesEXT ) );
+      memcpy( this, &rhs, sizeof( PhysicalDeviceBufferDeviceAddressFeaturesEXT ) );
     }
 
-    PhysicalDeviceBufferAddressFeaturesEXT& operator=( VkPhysicalDeviceBufferAddressFeaturesEXT const & rhs )
+    PhysicalDeviceBufferDeviceAddressFeaturesEXT& operator=( VkPhysicalDeviceBufferDeviceAddressFeaturesEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceBufferAddressFeaturesEXT ) );
+      memcpy( this, &rhs, sizeof( PhysicalDeviceBufferDeviceAddressFeaturesEXT ) );
       return *this;
     }
 
-    PhysicalDeviceBufferAddressFeaturesEXT & setPNext( void* pNext_ )
+    PhysicalDeviceBufferDeviceAddressFeaturesEXT & setPNext( void* pNext_ )
     {
       pNext = pNext_;
       return *this;
     }
 
-    PhysicalDeviceBufferAddressFeaturesEXT & setBufferDeviceAddress( Bool32 bufferDeviceAddress_ )
+    PhysicalDeviceBufferDeviceAddressFeaturesEXT & setBufferDeviceAddress( Bool32 bufferDeviceAddress_ )
     {
       bufferDeviceAddress = bufferDeviceAddress_;
       return *this;
     }
 
-    PhysicalDeviceBufferAddressFeaturesEXT & setBufferDeviceAddressCaptureReplay( Bool32 bufferDeviceAddressCaptureReplay_ )
+    PhysicalDeviceBufferDeviceAddressFeaturesEXT & setBufferDeviceAddressCaptureReplay( Bool32 bufferDeviceAddressCaptureReplay_ )
     {
       bufferDeviceAddressCaptureReplay = bufferDeviceAddressCaptureReplay_;
       return *this;
     }
 
-    PhysicalDeviceBufferAddressFeaturesEXT & setBufferDeviceAddressMultiDevice( Bool32 bufferDeviceAddressMultiDevice_ )
+    PhysicalDeviceBufferDeviceAddressFeaturesEXT & setBufferDeviceAddressMultiDevice( Bool32 bufferDeviceAddressMultiDevice_ )
     {
       bufferDeviceAddressMultiDevice = bufferDeviceAddressMultiDevice_;
       return *this;
     }
 
-    operator VkPhysicalDeviceBufferAddressFeaturesEXT const&() const
+    operator VkPhysicalDeviceBufferDeviceAddressFeaturesEXT const&() const
     {
-      return *reinterpret_cast<const VkPhysicalDeviceBufferAddressFeaturesEXT*>( this );
+      return *reinterpret_cast<const VkPhysicalDeviceBufferDeviceAddressFeaturesEXT*>( this );
     }
 
-    operator VkPhysicalDeviceBufferAddressFeaturesEXT &()
+    operator VkPhysicalDeviceBufferDeviceAddressFeaturesEXT &()
     {
-      return *reinterpret_cast<VkPhysicalDeviceBufferAddressFeaturesEXT*>( this );
+      return *reinterpret_cast<VkPhysicalDeviceBufferDeviceAddressFeaturesEXT*>( this );
     }
 
-    bool operator==( PhysicalDeviceBufferAddressFeaturesEXT const& rhs ) const
+    bool operator==( PhysicalDeviceBufferDeviceAddressFeaturesEXT const& rhs ) const
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
@@ -35803,13 +36284,13 @@ namespace VULKAN_HPP_NAMESPACE
           && ( bufferDeviceAddressMultiDevice == rhs.bufferDeviceAddressMultiDevice );
     }
 
-    bool operator!=( PhysicalDeviceBufferAddressFeaturesEXT const& rhs ) const
+    bool operator!=( PhysicalDeviceBufferDeviceAddressFeaturesEXT const& rhs ) const
     {
       return !operator==( rhs );
     }
 
   private:
-    StructureType sType = StructureType::ePhysicalDeviceBufferAddressFeaturesEXT;
+    StructureType sType = StructureType::ePhysicalDeviceBufferDeviceAddressFeaturesEXT;
 
   public:
     void* pNext = nullptr;
@@ -35817,7 +36298,7 @@ namespace VULKAN_HPP_NAMESPACE
     Bool32 bufferDeviceAddressCaptureReplay;
     Bool32 bufferDeviceAddressMultiDevice;
   };
-  static_assert( sizeof( PhysicalDeviceBufferAddressFeaturesEXT ) == sizeof( VkPhysicalDeviceBufferAddressFeaturesEXT ), "struct and wrapper have different size!" );
+  static_assert( sizeof( PhysicalDeviceBufferDeviceAddressFeaturesEXT ) == sizeof( VkPhysicalDeviceBufferDeviceAddressFeaturesEXT ), "struct and wrapper have different size!" );
 
   struct PhysicalDeviceComputeShaderDerivativesFeaturesNV
   {
@@ -36170,6 +36651,66 @@ namespace VULKAN_HPP_NAMESPACE
     Bool32 cornerSampledImage;
   };
   static_assert( sizeof( PhysicalDeviceCornerSampledImageFeaturesNV ) == sizeof( VkPhysicalDeviceCornerSampledImageFeaturesNV ), "struct and wrapper have different size!" );
+
+  struct PhysicalDeviceCoverageReductionModeFeaturesNV
+  {
+    PhysicalDeviceCoverageReductionModeFeaturesNV( Bool32 coverageReductionMode_ = 0 )
+      : coverageReductionMode( coverageReductionMode_ )
+    {}
+
+    PhysicalDeviceCoverageReductionModeFeaturesNV( VkPhysicalDeviceCoverageReductionModeFeaturesNV const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceCoverageReductionModeFeaturesNV ) );
+    }
+
+    PhysicalDeviceCoverageReductionModeFeaturesNV& operator=( VkPhysicalDeviceCoverageReductionModeFeaturesNV const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceCoverageReductionModeFeaturesNV ) );
+      return *this;
+    }
+
+    PhysicalDeviceCoverageReductionModeFeaturesNV & setPNext( void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PhysicalDeviceCoverageReductionModeFeaturesNV & setCoverageReductionMode( Bool32 coverageReductionMode_ )
+    {
+      coverageReductionMode = coverageReductionMode_;
+      return *this;
+    }
+
+    operator VkPhysicalDeviceCoverageReductionModeFeaturesNV const&() const
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceCoverageReductionModeFeaturesNV*>( this );
+    }
+
+    operator VkPhysicalDeviceCoverageReductionModeFeaturesNV &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceCoverageReductionModeFeaturesNV*>( this );
+    }
+
+    bool operator==( PhysicalDeviceCoverageReductionModeFeaturesNV const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( coverageReductionMode == rhs.coverageReductionMode );
+    }
+
+    bool operator!=( PhysicalDeviceCoverageReductionModeFeaturesNV const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::ePhysicalDeviceCoverageReductionModeFeaturesNV;
+
+  public:
+    void* pNext = nullptr;
+    Bool32 coverageReductionMode;
+  };
+  static_assert( sizeof( PhysicalDeviceCoverageReductionModeFeaturesNV ) == sizeof( VkPhysicalDeviceCoverageReductionModeFeaturesNV ), "struct and wrapper have different size!" );
 
   struct PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV
   {
@@ -37447,6 +37988,66 @@ namespace VULKAN_HPP_NAMESPACE
     Bool32 subsetAllocation;
   };
   static_assert( sizeof( PhysicalDeviceGroupProperties ) == sizeof( VkPhysicalDeviceGroupProperties ), "struct and wrapper have different size!" );
+
+  struct PhysicalDeviceHostQueryResetFeaturesEXT
+  {
+    PhysicalDeviceHostQueryResetFeaturesEXT( Bool32 hostQueryReset_ = 0 )
+      : hostQueryReset( hostQueryReset_ )
+    {}
+
+    PhysicalDeviceHostQueryResetFeaturesEXT( VkPhysicalDeviceHostQueryResetFeaturesEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceHostQueryResetFeaturesEXT ) );
+    }
+
+    PhysicalDeviceHostQueryResetFeaturesEXT& operator=( VkPhysicalDeviceHostQueryResetFeaturesEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceHostQueryResetFeaturesEXT ) );
+      return *this;
+    }
+
+    PhysicalDeviceHostQueryResetFeaturesEXT & setPNext( void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PhysicalDeviceHostQueryResetFeaturesEXT & setHostQueryReset( Bool32 hostQueryReset_ )
+    {
+      hostQueryReset = hostQueryReset_;
+      return *this;
+    }
+
+    operator VkPhysicalDeviceHostQueryResetFeaturesEXT const&() const
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceHostQueryResetFeaturesEXT*>( this );
+    }
+
+    operator VkPhysicalDeviceHostQueryResetFeaturesEXT &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceHostQueryResetFeaturesEXT*>( this );
+    }
+
+    bool operator==( PhysicalDeviceHostQueryResetFeaturesEXT const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( hostQueryReset == rhs.hostQueryReset );
+    }
+
+    bool operator!=( PhysicalDeviceHostQueryResetFeaturesEXT const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::ePhysicalDeviceHostQueryResetFeaturesEXT;
+
+  public:
+    void* pNext = nullptr;
+    Bool32 hostQueryReset;
+  };
+  static_assert( sizeof( PhysicalDeviceHostQueryResetFeaturesEXT ) == sizeof( VkPhysicalDeviceHostQueryResetFeaturesEXT ), "struct and wrapper have different size!" );
 
   struct PhysicalDeviceIDProperties
   {
@@ -39295,65 +39896,65 @@ namespace VULKAN_HPP_NAMESPACE
   };
   static_assert( sizeof( PhysicalDeviceShaderCorePropertiesAMD ) == sizeof( VkPhysicalDeviceShaderCorePropertiesAMD ), "struct and wrapper have different size!" );
 
-  struct PhysicalDeviceShaderDrawParameterFeatures
+  struct PhysicalDeviceShaderDrawParametersFeatures
   {
-    PhysicalDeviceShaderDrawParameterFeatures( Bool32 shaderDrawParameters_ = 0 )
+    PhysicalDeviceShaderDrawParametersFeatures( Bool32 shaderDrawParameters_ = 0 )
       : shaderDrawParameters( shaderDrawParameters_ )
     {}
 
-    PhysicalDeviceShaderDrawParameterFeatures( VkPhysicalDeviceShaderDrawParameterFeatures const & rhs )
+    PhysicalDeviceShaderDrawParametersFeatures( VkPhysicalDeviceShaderDrawParametersFeatures const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceShaderDrawParameterFeatures ) );
+      memcpy( this, &rhs, sizeof( PhysicalDeviceShaderDrawParametersFeatures ) );
     }
 
-    PhysicalDeviceShaderDrawParameterFeatures& operator=( VkPhysicalDeviceShaderDrawParameterFeatures const & rhs )
+    PhysicalDeviceShaderDrawParametersFeatures& operator=( VkPhysicalDeviceShaderDrawParametersFeatures const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceShaderDrawParameterFeatures ) );
+      memcpy( this, &rhs, sizeof( PhysicalDeviceShaderDrawParametersFeatures ) );
       return *this;
     }
 
-    PhysicalDeviceShaderDrawParameterFeatures & setPNext( void* pNext_ )
+    PhysicalDeviceShaderDrawParametersFeatures & setPNext( void* pNext_ )
     {
       pNext = pNext_;
       return *this;
     }
 
-    PhysicalDeviceShaderDrawParameterFeatures & setShaderDrawParameters( Bool32 shaderDrawParameters_ )
+    PhysicalDeviceShaderDrawParametersFeatures & setShaderDrawParameters( Bool32 shaderDrawParameters_ )
     {
       shaderDrawParameters = shaderDrawParameters_;
       return *this;
     }
 
-    operator VkPhysicalDeviceShaderDrawParameterFeatures const&() const
+    operator VkPhysicalDeviceShaderDrawParametersFeatures const&() const
     {
-      return *reinterpret_cast<const VkPhysicalDeviceShaderDrawParameterFeatures*>( this );
+      return *reinterpret_cast<const VkPhysicalDeviceShaderDrawParametersFeatures*>( this );
     }
 
-    operator VkPhysicalDeviceShaderDrawParameterFeatures &()
+    operator VkPhysicalDeviceShaderDrawParametersFeatures &()
     {
-      return *reinterpret_cast<VkPhysicalDeviceShaderDrawParameterFeatures*>( this );
+      return *reinterpret_cast<VkPhysicalDeviceShaderDrawParametersFeatures*>( this );
     }
 
-    bool operator==( PhysicalDeviceShaderDrawParameterFeatures const& rhs ) const
+    bool operator==( PhysicalDeviceShaderDrawParametersFeatures const& rhs ) const
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( shaderDrawParameters == rhs.shaderDrawParameters );
     }
 
-    bool operator!=( PhysicalDeviceShaderDrawParameterFeatures const& rhs ) const
+    bool operator!=( PhysicalDeviceShaderDrawParametersFeatures const& rhs ) const
     {
       return !operator==( rhs );
     }
 
   private:
-    StructureType sType = StructureType::ePhysicalDeviceShaderDrawParameterFeatures;
+    StructureType sType = StructureType::ePhysicalDeviceShaderDrawParametersFeatures;
 
   public:
     void* pNext = nullptr;
     Bool32 shaderDrawParameters;
   };
-  static_assert( sizeof( PhysicalDeviceShaderDrawParameterFeatures ) == sizeof( VkPhysicalDeviceShaderDrawParameterFeatures ), "struct and wrapper have different size!" );
+  static_assert( sizeof( PhysicalDeviceShaderDrawParametersFeatures ) == sizeof( VkPhysicalDeviceShaderDrawParametersFeatures ), "struct and wrapper have different size!" );
 
   struct PhysicalDeviceShaderImageFootprintFeaturesNV
   {
@@ -39842,54 +40443,114 @@ namespace VULKAN_HPP_NAMESPACE
   };
   static_assert( sizeof( PhysicalDeviceTransformFeedbackPropertiesEXT ) == sizeof( VkPhysicalDeviceTransformFeedbackPropertiesEXT ), "struct and wrapper have different size!" );
 
-  struct PhysicalDeviceVariablePointerFeatures
+  struct PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR
   {
-    PhysicalDeviceVariablePointerFeatures( Bool32 variablePointersStorageBuffer_ = 0,
-                                           Bool32 variablePointers_ = 0 )
-      : variablePointersStorageBuffer( variablePointersStorageBuffer_ )
-      , variablePointers( variablePointers_ )
+    PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR( Bool32 uniformBufferStandardLayout_ = 0 )
+      : uniformBufferStandardLayout( uniformBufferStandardLayout_ )
     {}
 
-    PhysicalDeviceVariablePointerFeatures( VkPhysicalDeviceVariablePointerFeatures const & rhs )
+    PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR( VkPhysicalDeviceUniformBufferStandardLayoutFeaturesKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceVariablePointerFeatures ) );
+      memcpy( this, &rhs, sizeof( PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR ) );
     }
 
-    PhysicalDeviceVariablePointerFeatures& operator=( VkPhysicalDeviceVariablePointerFeatures const & rhs )
+    PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR& operator=( VkPhysicalDeviceUniformBufferStandardLayoutFeaturesKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceVariablePointerFeatures ) );
+      memcpy( this, &rhs, sizeof( PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR ) );
       return *this;
     }
 
-    PhysicalDeviceVariablePointerFeatures & setPNext( void* pNext_ )
+    PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR & setPNext( void* pNext_ )
     {
       pNext = pNext_;
       return *this;
     }
 
-    PhysicalDeviceVariablePointerFeatures & setVariablePointersStorageBuffer( Bool32 variablePointersStorageBuffer_ )
+    PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR & setUniformBufferStandardLayout( Bool32 uniformBufferStandardLayout_ )
+    {
+      uniformBufferStandardLayout = uniformBufferStandardLayout_;
+      return *this;
+    }
+
+    operator VkPhysicalDeviceUniformBufferStandardLayoutFeaturesKHR const&() const
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceUniformBufferStandardLayoutFeaturesKHR*>( this );
+    }
+
+    operator VkPhysicalDeviceUniformBufferStandardLayoutFeaturesKHR &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceUniformBufferStandardLayoutFeaturesKHR*>( this );
+    }
+
+    bool operator==( PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( uniformBufferStandardLayout == rhs.uniformBufferStandardLayout );
+    }
+
+    bool operator!=( PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::ePhysicalDeviceUniformBufferStandardLayoutFeaturesKHR;
+
+  public:
+    void* pNext = nullptr;
+    Bool32 uniformBufferStandardLayout;
+  };
+  static_assert( sizeof( PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR ) == sizeof( VkPhysicalDeviceUniformBufferStandardLayoutFeaturesKHR ), "struct and wrapper have different size!" );
+
+  struct PhysicalDeviceVariablePointersFeatures
+  {
+    PhysicalDeviceVariablePointersFeatures( Bool32 variablePointersStorageBuffer_ = 0,
+                                            Bool32 variablePointers_ = 0 )
+      : variablePointersStorageBuffer( variablePointersStorageBuffer_ )
+      , variablePointers( variablePointers_ )
+    {}
+
+    PhysicalDeviceVariablePointersFeatures( VkPhysicalDeviceVariablePointersFeatures const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceVariablePointersFeatures ) );
+    }
+
+    PhysicalDeviceVariablePointersFeatures& operator=( VkPhysicalDeviceVariablePointersFeatures const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceVariablePointersFeatures ) );
+      return *this;
+    }
+
+    PhysicalDeviceVariablePointersFeatures & setPNext( void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PhysicalDeviceVariablePointersFeatures & setVariablePointersStorageBuffer( Bool32 variablePointersStorageBuffer_ )
     {
       variablePointersStorageBuffer = variablePointersStorageBuffer_;
       return *this;
     }
 
-    PhysicalDeviceVariablePointerFeatures & setVariablePointers( Bool32 variablePointers_ )
+    PhysicalDeviceVariablePointersFeatures & setVariablePointers( Bool32 variablePointers_ )
     {
       variablePointers = variablePointers_;
       return *this;
     }
 
-    operator VkPhysicalDeviceVariablePointerFeatures const&() const
+    operator VkPhysicalDeviceVariablePointersFeatures const&() const
     {
-      return *reinterpret_cast<const VkPhysicalDeviceVariablePointerFeatures*>( this );
+      return *reinterpret_cast<const VkPhysicalDeviceVariablePointersFeatures*>( this );
     }
 
-    operator VkPhysicalDeviceVariablePointerFeatures &()
+    operator VkPhysicalDeviceVariablePointersFeatures &()
     {
-      return *reinterpret_cast<VkPhysicalDeviceVariablePointerFeatures*>( this );
+      return *reinterpret_cast<VkPhysicalDeviceVariablePointersFeatures*>( this );
     }
 
-    bool operator==( PhysicalDeviceVariablePointerFeatures const& rhs ) const
+    bool operator==( PhysicalDeviceVariablePointersFeatures const& rhs ) const
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
@@ -39897,20 +40558,20 @@ namespace VULKAN_HPP_NAMESPACE
           && ( variablePointers == rhs.variablePointers );
     }
 
-    bool operator!=( PhysicalDeviceVariablePointerFeatures const& rhs ) const
+    bool operator!=( PhysicalDeviceVariablePointersFeatures const& rhs ) const
     {
       return !operator==( rhs );
     }
 
   private:
-    StructureType sType = StructureType::ePhysicalDeviceVariablePointerFeatures;
+    StructureType sType = StructureType::ePhysicalDeviceVariablePointersFeatures;
 
   public:
     void* pNext = nullptr;
     Bool32 variablePointersStorageBuffer;
     Bool32 variablePointers;
   };
-  static_assert( sizeof( PhysicalDeviceVariablePointerFeatures ) == sizeof( VkPhysicalDeviceVariablePointerFeatures ), "struct and wrapper have different size!" );
+  static_assert( sizeof( PhysicalDeviceVariablePointersFeatures ) == sizeof( VkPhysicalDeviceVariablePointersFeatures ), "struct and wrapper have different size!" );
 
   struct PhysicalDeviceVertexAttributeDivisorFeaturesEXT
   {
@@ -40415,6 +41076,76 @@ namespace VULKAN_HPP_NAMESPACE
   };
   static_assert( sizeof( PipelineCoverageModulationStateCreateInfoNV ) == sizeof( VkPipelineCoverageModulationStateCreateInfoNV ), "struct and wrapper have different size!" );
 
+  struct PipelineCoverageReductionStateCreateInfoNV
+  {
+    PipelineCoverageReductionStateCreateInfoNV( PipelineCoverageReductionStateCreateFlagsNV flags_ = PipelineCoverageReductionStateCreateFlagsNV(),
+                                                CoverageReductionModeNV coverageReductionMode_ = CoverageReductionModeNV::eMerge )
+      : flags( flags_ )
+      , coverageReductionMode( coverageReductionMode_ )
+    {}
+
+    PipelineCoverageReductionStateCreateInfoNV( VkPipelineCoverageReductionStateCreateInfoNV const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PipelineCoverageReductionStateCreateInfoNV ) );
+    }
+
+    PipelineCoverageReductionStateCreateInfoNV& operator=( VkPipelineCoverageReductionStateCreateInfoNV const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PipelineCoverageReductionStateCreateInfoNV ) );
+      return *this;
+    }
+
+    PipelineCoverageReductionStateCreateInfoNV & setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PipelineCoverageReductionStateCreateInfoNV & setFlags( PipelineCoverageReductionStateCreateFlagsNV flags_ )
+    {
+      flags = flags_;
+      return *this;
+    }
+
+    PipelineCoverageReductionStateCreateInfoNV & setCoverageReductionMode( CoverageReductionModeNV coverageReductionMode_ )
+    {
+      coverageReductionMode = coverageReductionMode_;
+      return *this;
+    }
+
+    operator VkPipelineCoverageReductionStateCreateInfoNV const&() const
+    {
+      return *reinterpret_cast<const VkPipelineCoverageReductionStateCreateInfoNV*>( this );
+    }
+
+    operator VkPipelineCoverageReductionStateCreateInfoNV &()
+    {
+      return *reinterpret_cast<VkPipelineCoverageReductionStateCreateInfoNV*>( this );
+    }
+
+    bool operator==( PipelineCoverageReductionStateCreateInfoNV const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( coverageReductionMode == rhs.coverageReductionMode );
+    }
+
+    bool operator!=( PipelineCoverageReductionStateCreateInfoNV const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::ePipelineCoverageReductionStateCreateInfoNV;
+
+  public:
+    const void* pNext = nullptr;
+    PipelineCoverageReductionStateCreateFlagsNV flags;
+    CoverageReductionModeNV coverageReductionMode;
+  };
+  static_assert( sizeof( PipelineCoverageReductionStateCreateInfoNV ) == sizeof( VkPipelineCoverageReductionStateCreateInfoNV ), "struct and wrapper have different size!" );
+
   struct PipelineCoverageToColorStateCreateInfoNV
   {
     PipelineCoverageToColorStateCreateInfoNV( PipelineCoverageToColorStateCreateFlagsNV flags_ = PipelineCoverageToColorStateCreateFlagsNV(),
@@ -40494,6 +41225,114 @@ namespace VULKAN_HPP_NAMESPACE
     uint32_t coverageToColorLocation;
   };
   static_assert( sizeof( PipelineCoverageToColorStateCreateInfoNV ) == sizeof( VkPipelineCoverageToColorStateCreateInfoNV ), "struct and wrapper have different size!" );
+
+  struct PipelineCreationFeedbackEXT
+  {
+    operator VkPipelineCreationFeedbackEXT const&() const
+    {
+      return *reinterpret_cast<const VkPipelineCreationFeedbackEXT*>( this );
+    }
+
+    operator VkPipelineCreationFeedbackEXT &()
+    {
+      return *reinterpret_cast<VkPipelineCreationFeedbackEXT*>( this );
+    }
+
+    bool operator==( PipelineCreationFeedbackEXT const& rhs ) const
+    {
+      return ( flags == rhs.flags )
+          && ( duration == rhs.duration );
+    }
+
+    bool operator!=( PipelineCreationFeedbackEXT const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+    PipelineCreationFeedbackFlagsEXT flags;
+    uint64_t duration;
+  };
+  static_assert( sizeof( PipelineCreationFeedbackEXT ) == sizeof( VkPipelineCreationFeedbackEXT ), "struct and wrapper have different size!" );
+
+  struct PipelineCreationFeedbackCreateInfoEXT
+  {
+    PipelineCreationFeedbackCreateInfoEXT( PipelineCreationFeedbackEXT* pPipelineCreationFeedback_ = nullptr,
+                                           uint32_t pipelineStageCreationFeedbackCount_ = 0,
+                                           PipelineCreationFeedbackEXT* pPipelineStageCreationFeedbacks_ = nullptr )
+      : pPipelineCreationFeedback( pPipelineCreationFeedback_ )
+      , pipelineStageCreationFeedbackCount( pipelineStageCreationFeedbackCount_ )
+      , pPipelineStageCreationFeedbacks( pPipelineStageCreationFeedbacks_ )
+    {}
+
+    PipelineCreationFeedbackCreateInfoEXT( VkPipelineCreationFeedbackCreateInfoEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PipelineCreationFeedbackCreateInfoEXT ) );
+    }
+
+    PipelineCreationFeedbackCreateInfoEXT& operator=( VkPipelineCreationFeedbackCreateInfoEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PipelineCreationFeedbackCreateInfoEXT ) );
+      return *this;
+    }
+
+    PipelineCreationFeedbackCreateInfoEXT & setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PipelineCreationFeedbackCreateInfoEXT & setPPipelineCreationFeedback( PipelineCreationFeedbackEXT* pPipelineCreationFeedback_ )
+    {
+      pPipelineCreationFeedback = pPipelineCreationFeedback_;
+      return *this;
+    }
+
+    PipelineCreationFeedbackCreateInfoEXT & setPipelineStageCreationFeedbackCount( uint32_t pipelineStageCreationFeedbackCount_ )
+    {
+      pipelineStageCreationFeedbackCount = pipelineStageCreationFeedbackCount_;
+      return *this;
+    }
+
+    PipelineCreationFeedbackCreateInfoEXT & setPPipelineStageCreationFeedbacks( PipelineCreationFeedbackEXT* pPipelineStageCreationFeedbacks_ )
+    {
+      pPipelineStageCreationFeedbacks = pPipelineStageCreationFeedbacks_;
+      return *this;
+    }
+
+    operator VkPipelineCreationFeedbackCreateInfoEXT const&() const
+    {
+      return *reinterpret_cast<const VkPipelineCreationFeedbackCreateInfoEXT*>( this );
+    }
+
+    operator VkPipelineCreationFeedbackCreateInfoEXT &()
+    {
+      return *reinterpret_cast<VkPipelineCreationFeedbackCreateInfoEXT*>( this );
+    }
+
+    bool operator==( PipelineCreationFeedbackCreateInfoEXT const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( pPipelineCreationFeedback == rhs.pPipelineCreationFeedback )
+          && ( pipelineStageCreationFeedbackCount == rhs.pipelineStageCreationFeedbackCount )
+          && ( pPipelineStageCreationFeedbacks == rhs.pPipelineStageCreationFeedbacks );
+    }
+
+    bool operator!=( PipelineCreationFeedbackCreateInfoEXT const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::ePipelineCreationFeedbackCreateInfoEXT;
+
+  public:
+    const void* pNext = nullptr;
+    PipelineCreationFeedbackEXT* pPipelineCreationFeedback;
+    uint32_t pipelineStageCreationFeedbackCount;
+    PipelineCreationFeedbackEXT* pPipelineStageCreationFeedbacks;
+  };
+  static_assert( sizeof( PipelineCreationFeedbackCreateInfoEXT ) == sizeof( VkPipelineCreationFeedbackCreateInfoEXT ), "struct and wrapper have different size!" );
 
   struct PipelineDiscardRectangleStateCreateInfoEXT
   {
@@ -41929,6 +42768,68 @@ namespace VULKAN_HPP_NAMESPACE
     const ViewportWScalingNV* pViewportWScalings;
   };
   static_assert( sizeof( PipelineViewportWScalingStateCreateInfoNV ) == sizeof( VkPipelineViewportWScalingStateCreateInfoNV ), "struct and wrapper have different size!" );
+
+#ifdef VK_USE_PLATFORM_GGP
+  struct PresentFrameTokenGGP
+  {
+    PresentFrameTokenGGP( GgpFrameToken frameToken_ = 0 )
+      : frameToken( frameToken_ )
+    {}
+
+    PresentFrameTokenGGP( VkPresentFrameTokenGGP const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PresentFrameTokenGGP ) );
+    }
+
+    PresentFrameTokenGGP& operator=( VkPresentFrameTokenGGP const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( PresentFrameTokenGGP ) );
+      return *this;
+    }
+
+    PresentFrameTokenGGP & setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PresentFrameTokenGGP & setFrameToken( GgpFrameToken frameToken_ )
+    {
+      frameToken = frameToken_;
+      return *this;
+    }
+
+    operator VkPresentFrameTokenGGP const&() const
+    {
+      return *reinterpret_cast<const VkPresentFrameTokenGGP*>( this );
+    }
+
+    operator VkPresentFrameTokenGGP &()
+    {
+      return *reinterpret_cast<VkPresentFrameTokenGGP*>( this );
+    }
+
+    bool operator==( PresentFrameTokenGGP const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( frameToken == rhs.frameToken );
+    }
+
+    bool operator!=( PresentFrameTokenGGP const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::ePresentFrameTokenGGP;
+
+  public:
+    const void* pNext = nullptr;
+    GgpFrameToken frameToken;
+  };
+  static_assert( sizeof( PresentFrameTokenGGP ) == sizeof( VkPresentFrameTokenGGP ), "struct and wrapper have different size!" );
+#endif /*VK_USE_PLATFORM_GGP*/
 
   struct PresentInfoKHR
   {
@@ -45233,6 +46134,78 @@ namespace VULKAN_HPP_NAMESPACE
   };
   static_assert( sizeof( SparseImageMemoryRequirements2 ) == sizeof( VkSparseImageMemoryRequirements2 ), "struct and wrapper have different size!" );
 
+#ifdef VK_USE_PLATFORM_GGP
+  struct StreamDescriptorSurfaceCreateInfoGGP
+  {
+    StreamDescriptorSurfaceCreateInfoGGP( StreamDescriptorSurfaceCreateFlagsGGP flags_ = StreamDescriptorSurfaceCreateFlagsGGP(),
+                                          GgpStreamDescriptor streamDescriptor_ = 0 )
+      : flags( flags_ )
+      , streamDescriptor( streamDescriptor_ )
+    {}
+
+    StreamDescriptorSurfaceCreateInfoGGP( VkStreamDescriptorSurfaceCreateInfoGGP const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( StreamDescriptorSurfaceCreateInfoGGP ) );
+    }
+
+    StreamDescriptorSurfaceCreateInfoGGP& operator=( VkStreamDescriptorSurfaceCreateInfoGGP const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( StreamDescriptorSurfaceCreateInfoGGP ) );
+      return *this;
+    }
+
+    StreamDescriptorSurfaceCreateInfoGGP & setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    StreamDescriptorSurfaceCreateInfoGGP & setFlags( StreamDescriptorSurfaceCreateFlagsGGP flags_ )
+    {
+      flags = flags_;
+      return *this;
+    }
+
+    StreamDescriptorSurfaceCreateInfoGGP & setStreamDescriptor( GgpStreamDescriptor streamDescriptor_ )
+    {
+      streamDescriptor = streamDescriptor_;
+      return *this;
+    }
+
+    operator VkStreamDescriptorSurfaceCreateInfoGGP const&() const
+    {
+      return *reinterpret_cast<const VkStreamDescriptorSurfaceCreateInfoGGP*>( this );
+    }
+
+    operator VkStreamDescriptorSurfaceCreateInfoGGP &()
+    {
+      return *reinterpret_cast<VkStreamDescriptorSurfaceCreateInfoGGP*>( this );
+    }
+
+    bool operator==( StreamDescriptorSurfaceCreateInfoGGP const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( streamDescriptor == rhs.streamDescriptor );
+    }
+
+    bool operator!=( StreamDescriptorSurfaceCreateInfoGGP const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::eStreamDescriptorSurfaceCreateInfoGGP;
+
+  public:
+    const void* pNext = nullptr;
+    StreamDescriptorSurfaceCreateFlagsGGP flags;
+    GgpStreamDescriptor streamDescriptor;
+  };
+  static_assert( sizeof( StreamDescriptorSurfaceCreateInfoGGP ) == sizeof( VkStreamDescriptorSurfaceCreateInfoGGP ), "struct and wrapper have different size!" );
+#endif /*VK_USE_PLATFORM_GGP*/
+
   struct SubmitInfo
   {
     SubmitInfo( uint32_t waitSemaphoreCount_ = 0,
@@ -45674,6 +46647,68 @@ namespace VULKAN_HPP_NAMESPACE
   };
   static_assert( sizeof( SurfaceCapabilities2KHR ) == sizeof( VkSurfaceCapabilities2KHR ), "struct and wrapper have different size!" );
 
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  struct SurfaceCapabilitiesFullScreenExclusiveEXT
+  {
+    SurfaceCapabilitiesFullScreenExclusiveEXT( Bool32 fullScreenExclusiveSupported_ = 0 )
+      : fullScreenExclusiveSupported( fullScreenExclusiveSupported_ )
+    {}
+
+    SurfaceCapabilitiesFullScreenExclusiveEXT( VkSurfaceCapabilitiesFullScreenExclusiveEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SurfaceCapabilitiesFullScreenExclusiveEXT ) );
+    }
+
+    SurfaceCapabilitiesFullScreenExclusiveEXT& operator=( VkSurfaceCapabilitiesFullScreenExclusiveEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SurfaceCapabilitiesFullScreenExclusiveEXT ) );
+      return *this;
+    }
+
+    SurfaceCapabilitiesFullScreenExclusiveEXT & setPNext( void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    SurfaceCapabilitiesFullScreenExclusiveEXT & setFullScreenExclusiveSupported( Bool32 fullScreenExclusiveSupported_ )
+    {
+      fullScreenExclusiveSupported = fullScreenExclusiveSupported_;
+      return *this;
+    }
+
+    operator VkSurfaceCapabilitiesFullScreenExclusiveEXT const&() const
+    {
+      return *reinterpret_cast<const VkSurfaceCapabilitiesFullScreenExclusiveEXT*>( this );
+    }
+
+    operator VkSurfaceCapabilitiesFullScreenExclusiveEXT &()
+    {
+      return *reinterpret_cast<VkSurfaceCapabilitiesFullScreenExclusiveEXT*>( this );
+    }
+
+    bool operator==( SurfaceCapabilitiesFullScreenExclusiveEXT const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( fullScreenExclusiveSupported == rhs.fullScreenExclusiveSupported );
+    }
+
+    bool operator!=( SurfaceCapabilitiesFullScreenExclusiveEXT const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::eSurfaceCapabilitiesFullScreenExclusiveEXT;
+
+  public:
+    void* pNext = nullptr;
+    Bool32 fullScreenExclusiveSupported;
+  };
+  static_assert( sizeof( SurfaceCapabilitiesFullScreenExclusiveEXT ) == sizeof( VkSurfaceCapabilitiesFullScreenExclusiveEXT ), "struct and wrapper have different size!" );
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
   struct SurfaceFormatKHR
   {
     operator VkSurfaceFormatKHR const&() const
@@ -45734,6 +46769,190 @@ namespace VULKAN_HPP_NAMESPACE
     SurfaceFormatKHR surfaceFormat;
   };
   static_assert( sizeof( SurfaceFormat2KHR ) == sizeof( VkSurfaceFormat2KHR ), "struct and wrapper have different size!" );
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  struct SurfaceFullScreenExclusiveInfoEXT
+  {
+    SurfaceFullScreenExclusiveInfoEXT( FullScreenExclusiveEXT fullScreenExclusive_ = FullScreenExclusiveEXT::eDefault )
+      : fullScreenExclusive( fullScreenExclusive_ )
+    {}
+
+    SurfaceFullScreenExclusiveInfoEXT( VkSurfaceFullScreenExclusiveInfoEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SurfaceFullScreenExclusiveInfoEXT ) );
+    }
+
+    SurfaceFullScreenExclusiveInfoEXT& operator=( VkSurfaceFullScreenExclusiveInfoEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SurfaceFullScreenExclusiveInfoEXT ) );
+      return *this;
+    }
+
+    SurfaceFullScreenExclusiveInfoEXT & setPNext( void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    SurfaceFullScreenExclusiveInfoEXT & setFullScreenExclusive( FullScreenExclusiveEXT fullScreenExclusive_ )
+    {
+      fullScreenExclusive = fullScreenExclusive_;
+      return *this;
+    }
+
+    operator VkSurfaceFullScreenExclusiveInfoEXT const&() const
+    {
+      return *reinterpret_cast<const VkSurfaceFullScreenExclusiveInfoEXT*>( this );
+    }
+
+    operator VkSurfaceFullScreenExclusiveInfoEXT &()
+    {
+      return *reinterpret_cast<VkSurfaceFullScreenExclusiveInfoEXT*>( this );
+    }
+
+    bool operator==( SurfaceFullScreenExclusiveInfoEXT const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( fullScreenExclusive == rhs.fullScreenExclusive );
+    }
+
+    bool operator!=( SurfaceFullScreenExclusiveInfoEXT const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::eSurfaceFullScreenExclusiveInfoEXT;
+
+  public:
+    void* pNext = nullptr;
+    FullScreenExclusiveEXT fullScreenExclusive;
+  };
+  static_assert( sizeof( SurfaceFullScreenExclusiveInfoEXT ) == sizeof( VkSurfaceFullScreenExclusiveInfoEXT ), "struct and wrapper have different size!" );
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  struct SurfaceFullScreenExclusiveWin32InfoEXT
+  {
+    SurfaceFullScreenExclusiveWin32InfoEXT( HMONITOR hmonitor_ = 0 )
+      : hmonitor( hmonitor_ )
+    {}
+
+    SurfaceFullScreenExclusiveWin32InfoEXT( VkSurfaceFullScreenExclusiveWin32InfoEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SurfaceFullScreenExclusiveWin32InfoEXT ) );
+    }
+
+    SurfaceFullScreenExclusiveWin32InfoEXT& operator=( VkSurfaceFullScreenExclusiveWin32InfoEXT const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SurfaceFullScreenExclusiveWin32InfoEXT ) );
+      return *this;
+    }
+
+    SurfaceFullScreenExclusiveWin32InfoEXT & setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    SurfaceFullScreenExclusiveWin32InfoEXT & setHmonitor( HMONITOR hmonitor_ )
+    {
+      hmonitor = hmonitor_;
+      return *this;
+    }
+
+    operator VkSurfaceFullScreenExclusiveWin32InfoEXT const&() const
+    {
+      return *reinterpret_cast<const VkSurfaceFullScreenExclusiveWin32InfoEXT*>( this );
+    }
+
+    operator VkSurfaceFullScreenExclusiveWin32InfoEXT &()
+    {
+      return *reinterpret_cast<VkSurfaceFullScreenExclusiveWin32InfoEXT*>( this );
+    }
+
+    bool operator==( SurfaceFullScreenExclusiveWin32InfoEXT const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( hmonitor == rhs.hmonitor );
+    }
+
+    bool operator!=( SurfaceFullScreenExclusiveWin32InfoEXT const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::eSurfaceFullScreenExclusiveWin32InfoEXT;
+
+  public:
+    const void* pNext = nullptr;
+    HMONITOR hmonitor;
+  };
+  static_assert( sizeof( SurfaceFullScreenExclusiveWin32InfoEXT ) == sizeof( VkSurfaceFullScreenExclusiveWin32InfoEXT ), "struct and wrapper have different size!" );
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
+  struct SurfaceProtectedCapabilitiesKHR
+  {
+    SurfaceProtectedCapabilitiesKHR( Bool32 supportsProtected_ = 0 )
+      : supportsProtected( supportsProtected_ )
+    {}
+
+    SurfaceProtectedCapabilitiesKHR( VkSurfaceProtectedCapabilitiesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SurfaceProtectedCapabilitiesKHR ) );
+    }
+
+    SurfaceProtectedCapabilitiesKHR& operator=( VkSurfaceProtectedCapabilitiesKHR const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SurfaceProtectedCapabilitiesKHR ) );
+      return *this;
+    }
+
+    SurfaceProtectedCapabilitiesKHR & setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    SurfaceProtectedCapabilitiesKHR & setSupportsProtected( Bool32 supportsProtected_ )
+    {
+      supportsProtected = supportsProtected_;
+      return *this;
+    }
+
+    operator VkSurfaceProtectedCapabilitiesKHR const&() const
+    {
+      return *reinterpret_cast<const VkSurfaceProtectedCapabilitiesKHR*>( this );
+    }
+
+    operator VkSurfaceProtectedCapabilitiesKHR &()
+    {
+      return *reinterpret_cast<VkSurfaceProtectedCapabilitiesKHR*>( this );
+    }
+
+    bool operator==( SurfaceProtectedCapabilitiesKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( supportsProtected == rhs.supportsProtected );
+    }
+
+    bool operator!=( SurfaceProtectedCapabilitiesKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::eSurfaceProtectedCapabilitiesKHR;
+
+  public:
+    const void* pNext = nullptr;
+    Bool32 supportsProtected;
+  };
+  static_assert( sizeof( SurfaceProtectedCapabilitiesKHR ) == sizeof( VkSurfaceProtectedCapabilitiesKHR ), "struct and wrapper have different size!" );
 
   struct SwapchainCounterCreateInfoEXT
   {
@@ -46004,6 +47223,66 @@ namespace VULKAN_HPP_NAMESPACE
     SwapchainKHR oldSwapchain;
   };
   static_assert( sizeof( SwapchainCreateInfoKHR ) == sizeof( VkSwapchainCreateInfoKHR ), "struct and wrapper have different size!" );
+
+  struct SwapchainDisplayNativeHdrCreateInfoAMD
+  {
+    SwapchainDisplayNativeHdrCreateInfoAMD( Bool32 localDimmingEnable_ = 0 )
+      : localDimmingEnable( localDimmingEnable_ )
+    {}
+
+    SwapchainDisplayNativeHdrCreateInfoAMD( VkSwapchainDisplayNativeHdrCreateInfoAMD const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SwapchainDisplayNativeHdrCreateInfoAMD ) );
+    }
+
+    SwapchainDisplayNativeHdrCreateInfoAMD& operator=( VkSwapchainDisplayNativeHdrCreateInfoAMD const & rhs )
+    {
+      memcpy( this, &rhs, sizeof( SwapchainDisplayNativeHdrCreateInfoAMD ) );
+      return *this;
+    }
+
+    SwapchainDisplayNativeHdrCreateInfoAMD & setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    SwapchainDisplayNativeHdrCreateInfoAMD & setLocalDimmingEnable( Bool32 localDimmingEnable_ )
+    {
+      localDimmingEnable = localDimmingEnable_;
+      return *this;
+    }
+
+    operator VkSwapchainDisplayNativeHdrCreateInfoAMD const&() const
+    {
+      return *reinterpret_cast<const VkSwapchainDisplayNativeHdrCreateInfoAMD*>( this );
+    }
+
+    operator VkSwapchainDisplayNativeHdrCreateInfoAMD &()
+    {
+      return *reinterpret_cast<VkSwapchainDisplayNativeHdrCreateInfoAMD*>( this );
+    }
+
+    bool operator==( SwapchainDisplayNativeHdrCreateInfoAMD const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( localDimmingEnable == rhs.localDimmingEnable );
+    }
+
+    bool operator!=( SwapchainDisplayNativeHdrCreateInfoAMD const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    StructureType sType = StructureType::eSwapchainDisplayNativeHdrCreateInfoAMD;
+
+  public:
+    const void* pNext = nullptr;
+    Bool32 localDimmingEnable;
+  };
+  static_assert( sizeof( SwapchainDisplayNativeHdrCreateInfoAMD ) == sizeof( VkSwapchainDisplayNativeHdrCreateInfoAMD ), "struct and wrapper have different size!" );
 
   struct TextureLODGatherFormatPropertiesAMD
   {
@@ -48634,6 +49913,23 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE Result Device::acquireFullScreenExclusiveModeEXT( SwapchainKHR swapchain, Dispatch const &d) const
+  {
+    return static_cast<Result>( d.vkAcquireFullScreenExclusiveModeEXT( m_device, static_cast<VkSwapchainKHR>( swapchain ) ) );
+  }
+#else
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE ResultValueType<void>::type Device::acquireFullScreenExclusiveModeEXT( SwapchainKHR swapchain, Dispatch const &d ) const
+  {
+    Result result = static_cast<Result>( d.vkAcquireFullScreenExclusiveModeEXT( m_device, static_cast<VkSwapchainKHR>( swapchain ) ) );
+    return createResultValue( result, VULKAN_HPP_NAMESPACE_STRING"::Device::acquireFullScreenExclusiveModeEXT" );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
   template<typename Dispatch>
   VULKAN_HPP_INLINE Result Device::acquireNextImage2KHR( const AcquireNextImageInfoKHR* pAcquireInfo, uint32_t* pImageIndex, Dispatch const &d) const
   {
@@ -51033,6 +52329,23 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE Result Device::getGroupSurfacePresentModes2EXT( const PhysicalDeviceSurfaceInfo2KHR* pSurfaceInfo, DeviceGroupPresentModeFlagsKHR* pModes, Dispatch const &d) const
+  {
+    return static_cast<Result>( d.vkGetDeviceGroupSurfacePresentModes2EXT( m_device, reinterpret_cast<const VkPhysicalDeviceSurfaceInfo2KHR*>( pSurfaceInfo ), reinterpret_cast<VkDeviceGroupPresentModeFlagsKHR*>( pModes ) ) );
+  }
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE ResultValueType<DeviceGroupPresentModeFlagsKHR>::type Device::getGroupSurfacePresentModes2EXT( const PhysicalDeviceSurfaceInfo2KHR & surfaceInfo, Dispatch const &d ) const
+  {
+    DeviceGroupPresentModeFlagsKHR modes;
+    Result result = static_cast<Result>( d.vkGetDeviceGroupSurfacePresentModes2EXT( m_device, reinterpret_cast<const VkPhysicalDeviceSurfaceInfo2KHR*>( &surfaceInfo ), reinterpret_cast<VkDeviceGroupPresentModeFlagsKHR*>( &modes ) ) );
+    return createResultValue( result, modes, VULKAN_HPP_NAMESPACE_STRING"::Device::getGroupSurfacePresentModes2EXT" );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
   template<typename Dispatch>
   VULKAN_HPP_INLINE Result Device::getGroupSurfacePresentModesKHR( SurfaceKHR surface, DeviceGroupPresentModeFlagsKHR* pModes, Dispatch const &d) const
   {
@@ -52018,6 +53331,23 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE Result Device::releaseFullScreenExclusiveModeEXT( SwapchainKHR swapchain, Dispatch const &d) const
+  {
+    return static_cast<Result>( d.vkReleaseFullScreenExclusiveModeEXT( m_device, static_cast<VkSwapchainKHR>( swapchain ) ) );
+  }
+#else
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE ResultValueType<void>::type Device::releaseFullScreenExclusiveModeEXT( SwapchainKHR swapchain, Dispatch const &d ) const
+  {
+    Result result = static_cast<Result>( d.vkReleaseFullScreenExclusiveModeEXT( m_device, static_cast<VkSwapchainKHR>( swapchain ) ) );
+    return createResultValue( result, VULKAN_HPP_NAMESPACE_STRING"::Device::releaseFullScreenExclusiveModeEXT" );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
 #ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template<typename Dispatch>
   VULKAN_HPP_INLINE Result Device::resetCommandPool( CommandPool commandPool, CommandPoolResetFlags flags, Dispatch const &d) const
@@ -52074,6 +53404,20 @@ namespace VULKAN_HPP_NAMESPACE
   {
     Result result = static_cast<Result>( d.vkResetFences( m_device, fences.size() , reinterpret_cast<const VkFence*>( fences.data() ) ) );
     return createResultValue( result, VULKAN_HPP_NAMESPACE_STRING"::Device::resetFences" );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE void Device::resetQueryPoolEXT( QueryPool queryPool, uint32_t firstQuery, uint32_t queryCount, Dispatch const &d) const
+  {
+    d.vkResetQueryPoolEXT( m_device, static_cast<VkQueryPool>( queryPool ), firstQuery, queryCount );
+  }
+#else
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE void Device::resetQueryPoolEXT( QueryPool queryPool, uint32_t firstQuery, uint32_t queryCount, Dispatch const &d ) const
+  {
+    d.vkResetQueryPoolEXT( m_device, static_cast<VkQueryPool>( queryPool ), firstQuery, queryCount );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -52138,6 +53482,20 @@ namespace VULKAN_HPP_NAMESPACE
     }
 #endif  /*VULKAN_HPP_NO_EXCEPTIONS*/
     d.vkSetHdrMetadataEXT( m_device, swapchains.size() , reinterpret_cast<const VkSwapchainKHR*>( swapchains.data() ), reinterpret_cast<const VkHdrMetadataEXT*>( metadata.data() ) );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE void Device::setLocalDimmingAMD( SwapchainKHR swapChain, Bool32 localDimmingEnable, Dispatch const &d) const
+  {
+    d.vkSetLocalDimmingAMD( m_device, static_cast<VkSwapchainKHR>( swapChain ), static_cast<VkBool32>( localDimmingEnable ) );
+  }
+#else
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE void Device::setLocalDimmingAMD( SwapchainKHR swapChain, Bool32 localDimmingEnable, Dispatch const &d ) const
+  {
+    d.vkSetLocalDimmingAMD( m_device, static_cast<VkSwapchainKHR>( swapChain ), static_cast<VkBool32>( localDimmingEnable ) );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -52366,6 +53724,32 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE Result Instance::createHeadlessSurfaceEXT( const HeadlessSurfaceCreateInfoEXT* pCreateInfo, const AllocationCallbacks* pAllocator, SurfaceKHR* pSurface, Dispatch const &d) const
+  {
+    return static_cast<Result>( d.vkCreateHeadlessSurfaceEXT( m_instance, reinterpret_cast<const VkHeadlessSurfaceCreateInfoEXT*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkSurfaceKHR*>( pSurface ) ) );
+  }
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE ResultValueType<SurfaceKHR>::type Instance::createHeadlessSurfaceEXT( const HeadlessSurfaceCreateInfoEXT & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  {
+    SurfaceKHR surface;
+    Result result = static_cast<Result>( d.vkCreateHeadlessSurfaceEXT( m_instance, reinterpret_cast<const VkHeadlessSurfaceCreateInfoEXT*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
+    return createResultValue( result, surface, VULKAN_HPP_NAMESPACE_STRING"::Instance::createHeadlessSurfaceEXT" );
+  }
+#ifndef VULKAN_HPP_NO_SMART_HANDLE
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<SurfaceKHR,Dispatch>>::type Instance::createHeadlessSurfaceEXTUnique( const HeadlessSurfaceCreateInfoEXT & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  {
+    SurfaceKHR surface;
+    Result result = static_cast<Result>( d.vkCreateHeadlessSurfaceEXT( m_instance, reinterpret_cast<const VkHeadlessSurfaceCreateInfoEXT*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
+
+    ObjectDestroy<Instance,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<SurfaceKHR,Dispatch>( result, surface, VULKAN_HPP_NAMESPACE_STRING"::Instance::createHeadlessSurfaceEXTUnique", deleter );
+  }
+#endif /*VULKAN_HPP_NO_SMART_HANDLE*/
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
 #ifdef VK_USE_PLATFORM_IOS_MVK
   template<typename Dispatch>
   VULKAN_HPP_INLINE Result Instance::createIOSSurfaceMVK( const IOSSurfaceCreateInfoMVK* pCreateInfo, const AllocationCallbacks* pAllocator, SurfaceKHR* pSurface, Dispatch const &d) const
@@ -52477,6 +53861,34 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 #endif /*VK_USE_PLATFORM_METAL_EXT*/
+
+#ifdef VK_USE_PLATFORM_GGP
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE Result Instance::createStreamDescriptorSurfaceGGP( const StreamDescriptorSurfaceCreateInfoGGP* pCreateInfo, const AllocationCallbacks* pAllocator, SurfaceKHR* pSurface, Dispatch const &d) const
+  {
+    return static_cast<Result>( d.vkCreateStreamDescriptorSurfaceGGP( m_instance, reinterpret_cast<const VkStreamDescriptorSurfaceCreateInfoGGP*>( pCreateInfo ), reinterpret_cast<const VkAllocationCallbacks*>( pAllocator ), reinterpret_cast<VkSurfaceKHR*>( pSurface ) ) );
+  }
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE ResultValueType<SurfaceKHR>::type Instance::createStreamDescriptorSurfaceGGP( const StreamDescriptorSurfaceCreateInfoGGP & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  {
+    SurfaceKHR surface;
+    Result result = static_cast<Result>( d.vkCreateStreamDescriptorSurfaceGGP( m_instance, reinterpret_cast<const VkStreamDescriptorSurfaceCreateInfoGGP*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
+    return createResultValue( result, surface, VULKAN_HPP_NAMESPACE_STRING"::Instance::createStreamDescriptorSurfaceGGP" );
+  }
+#ifndef VULKAN_HPP_NO_SMART_HANDLE
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<SurfaceKHR,Dispatch>>::type Instance::createStreamDescriptorSurfaceGGPUnique( const StreamDescriptorSurfaceCreateInfoGGP & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  {
+    SurfaceKHR surface;
+    Result result = static_cast<Result>( d.vkCreateStreamDescriptorSurfaceGGP( m_instance, reinterpret_cast<const VkStreamDescriptorSurfaceCreateInfoGGP*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkSurfaceKHR*>( &surface ) ) );
+
+    ObjectDestroy<Instance,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<SurfaceKHR,Dispatch>( result, surface, VULKAN_HPP_NAMESPACE_STRING"::Instance::createStreamDescriptorSurfaceGGPUnique", deleter );
+  }
+#endif /*VULKAN_HPP_NO_SMART_HANDLE*/
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif /*VK_USE_PLATFORM_GGP*/
 
 #ifdef VK_USE_PLATFORM_VI_NN
   template<typename Dispatch>
@@ -54273,6 +55685,58 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template<typename Dispatch>
+  VULKAN_HPP_INLINE Result PhysicalDevice::getSupportedFramebufferMixedSamplesCombinationsNV( uint32_t* pCombinationCount, FramebufferMixedSamplesCombinationNV* pCombinations, Dispatch const &d) const
+  {
+    return static_cast<Result>( d.vkGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV( m_physicalDevice, pCombinationCount, reinterpret_cast<VkFramebufferMixedSamplesCombinationNV*>( pCombinations ) ) );
+  }
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template<typename Allocator, typename Dispatch>
+  VULKAN_HPP_INLINE typename ResultValueType<std::vector<FramebufferMixedSamplesCombinationNV,Allocator>>::type PhysicalDevice::getSupportedFramebufferMixedSamplesCombinationsNV(Dispatch const &d ) const
+  {
+    std::vector<FramebufferMixedSamplesCombinationNV,Allocator> combinations;
+    uint32_t combinationCount;
+    Result result;
+    do
+    {
+      result = static_cast<Result>( d.vkGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV( m_physicalDevice, &combinationCount, nullptr ) );
+      if ( ( result == Result::eSuccess ) && combinationCount )
+      {
+        combinations.resize( combinationCount );
+        result = static_cast<Result>( d.vkGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV( m_physicalDevice, &combinationCount, reinterpret_cast<VkFramebufferMixedSamplesCombinationNV*>( combinations.data() ) ) );
+      }
+    } while ( result == Result::eIncomplete );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( combinationCount <= combinations.size() );
+      combinations.resize( combinationCount );
+    }
+    return createResultValue( result, combinations, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::getSupportedFramebufferMixedSamplesCombinationsNV" );
+  }
+  template<typename Allocator, typename Dispatch>
+  VULKAN_HPP_INLINE typename ResultValueType<std::vector<FramebufferMixedSamplesCombinationNV,Allocator>>::type PhysicalDevice::getSupportedFramebufferMixedSamplesCombinationsNV(Allocator const& vectorAllocator, Dispatch const &d ) const
+  {
+    std::vector<FramebufferMixedSamplesCombinationNV,Allocator> combinations( vectorAllocator );
+    uint32_t combinationCount;
+    Result result;
+    do
+    {
+      result = static_cast<Result>( d.vkGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV( m_physicalDevice, &combinationCount, nullptr ) );
+      if ( ( result == Result::eSuccess ) && combinationCount )
+      {
+        combinations.resize( combinationCount );
+        result = static_cast<Result>( d.vkGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV( m_physicalDevice, &combinationCount, reinterpret_cast<VkFramebufferMixedSamplesCombinationNV*>( combinations.data() ) ) );
+      }
+    } while ( result == Result::eIncomplete );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( combinationCount <= combinations.size() );
+      combinations.resize( combinationCount );
+    }
+    return createResultValue( result, combinations, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::getSupportedFramebufferMixedSamplesCombinationsNV" );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template<typename Dispatch>
   VULKAN_HPP_INLINE Result PhysicalDevice::getSurfaceCapabilities2EXT( SurfaceKHR surface, SurfaceCapabilities2EXT* pSurfaceCapabilities, Dispatch const &d) const
   {
     return static_cast<Result>( d.vkGetPhysicalDeviceSurfaceCapabilities2EXT( m_physicalDevice, static_cast<VkSurfaceKHR>( surface ), reinterpret_cast<VkSurfaceCapabilities2EXT*>( pSurfaceCapabilities ) ) );
@@ -54428,6 +55892,60 @@ namespace VULKAN_HPP_NAMESPACE
     return createResultValue( result, surfaceFormats, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::getSurfaceFormatsKHR" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE Result PhysicalDevice::getSurfacePresentModes2EXT( const PhysicalDeviceSurfaceInfo2KHR* pSurfaceInfo, uint32_t* pPresentModeCount, PresentModeKHR* pPresentModes, Dispatch const &d) const
+  {
+    return static_cast<Result>( d.vkGetPhysicalDeviceSurfacePresentModes2EXT( m_physicalDevice, reinterpret_cast<const VkPhysicalDeviceSurfaceInfo2KHR*>( pSurfaceInfo ), pPresentModeCount, reinterpret_cast<VkPresentModeKHR*>( pPresentModes ) ) );
+  }
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template<typename Allocator, typename Dispatch>
+  VULKAN_HPP_INLINE typename ResultValueType<std::vector<PresentModeKHR,Allocator>>::type PhysicalDevice::getSurfacePresentModes2EXT( const PhysicalDeviceSurfaceInfo2KHR & surfaceInfo, Dispatch const &d ) const
+  {
+    std::vector<PresentModeKHR,Allocator> presentModes;
+    uint32_t presentModeCount;
+    Result result;
+    do
+    {
+      result = static_cast<Result>( d.vkGetPhysicalDeviceSurfacePresentModes2EXT( m_physicalDevice, reinterpret_cast<const VkPhysicalDeviceSurfaceInfo2KHR*>( &surfaceInfo ), &presentModeCount, nullptr ) );
+      if ( ( result == Result::eSuccess ) && presentModeCount )
+      {
+        presentModes.resize( presentModeCount );
+        result = static_cast<Result>( d.vkGetPhysicalDeviceSurfacePresentModes2EXT( m_physicalDevice, reinterpret_cast<const VkPhysicalDeviceSurfaceInfo2KHR*>( &surfaceInfo ), &presentModeCount, reinterpret_cast<VkPresentModeKHR*>( presentModes.data() ) ) );
+      }
+    } while ( result == Result::eIncomplete );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( presentModeCount <= presentModes.size() );
+      presentModes.resize( presentModeCount );
+    }
+    return createResultValue( result, presentModes, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::getSurfacePresentModes2EXT" );
+  }
+  template<typename Allocator, typename Dispatch>
+  VULKAN_HPP_INLINE typename ResultValueType<std::vector<PresentModeKHR,Allocator>>::type PhysicalDevice::getSurfacePresentModes2EXT( const PhysicalDeviceSurfaceInfo2KHR & surfaceInfo, Allocator const& vectorAllocator, Dispatch const &d ) const
+  {
+    std::vector<PresentModeKHR,Allocator> presentModes( vectorAllocator );
+    uint32_t presentModeCount;
+    Result result;
+    do
+    {
+      result = static_cast<Result>( d.vkGetPhysicalDeviceSurfacePresentModes2EXT( m_physicalDevice, reinterpret_cast<const VkPhysicalDeviceSurfaceInfo2KHR*>( &surfaceInfo ), &presentModeCount, nullptr ) );
+      if ( ( result == Result::eSuccess ) && presentModeCount )
+      {
+        presentModes.resize( presentModeCount );
+        result = static_cast<Result>( d.vkGetPhysicalDeviceSurfacePresentModes2EXT( m_physicalDevice, reinterpret_cast<const VkPhysicalDeviceSurfaceInfo2KHR*>( &surfaceInfo ), &presentModeCount, reinterpret_cast<VkPresentModeKHR*>( presentModes.data() ) ) );
+      }
+    } while ( result == Result::eIncomplete );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( presentModeCount <= presentModes.size() );
+      presentModes.resize( presentModeCount );
+    }
+    return createResultValue( result, presentModes, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::getSurfacePresentModes2EXT" );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
   template<typename Dispatch>
   VULKAN_HPP_INLINE Result PhysicalDevice::getSurfacePresentModesKHR( SurfaceKHR surface, uint32_t* pPresentModeCount, PresentModeKHR* pPresentModes, Dispatch const &d) const
@@ -54747,6 +56265,7 @@ namespace VULKAN_HPP_NAMESPACE
   template <> struct isStructureChainValid<SwapchainCreateInfoKHR, DeviceGroupSwapchainCreateInfoKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<DeviceCreateInfo, DeviceMemoryOverallocationCreateInfoAMD>{ enum { value = true }; };
   template <> struct isStructureChainValid<DeviceQueueCreateInfo, DeviceQueueGlobalPriorityCreateInfoEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<SurfaceCapabilities2KHR, DisplayNativeHdrSurfaceCapabilitiesAMD>{ enum { value = true }; };
   template <> struct isStructureChainValid<PresentInfoKHR, DisplayPresentInfoKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<FormatProperties2, DrmFormatModifierPropertiesListEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<FenceCreateInfo, ExportFenceCreateInfo>{ enum { value = true }; };
@@ -54809,8 +56328,8 @@ namespace VULKAN_HPP_NAMESPACE
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceBlendOperationAdvancedFeaturesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceBlendOperationAdvancedFeaturesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceBlendOperationAdvancedPropertiesEXT>{ enum { value = true }; };
-  template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceBufferAddressFeaturesEXT>{ enum { value = true }; };
-  template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceBufferAddressFeaturesEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceBufferDeviceAddressFeaturesEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceBufferDeviceAddressFeaturesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceComputeShaderDerivativesFeaturesNV>{ enum { value = true }; };
   template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceComputeShaderDerivativesFeaturesNV>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceConditionalRenderingFeaturesEXT>{ enum { value = true }; };
@@ -54821,6 +56340,8 @@ namespace VULKAN_HPP_NAMESPACE
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceCooperativeMatrixPropertiesNV>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceCornerSampledImageFeaturesNV>{ enum { value = true }; };
   template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceCornerSampledImageFeaturesNV>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceCoverageReductionModeFeaturesNV>{ enum { value = true }; };
+  template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceCoverageReductionModeFeaturesNV>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV>{ enum { value = true }; };
   template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceDepthClipEnableFeaturesEXT>{ enum { value = true }; };
@@ -54844,6 +56365,8 @@ namespace VULKAN_HPP_NAMESPACE
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceFragmentDensityMapPropertiesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceFragmentShaderBarycentricFeaturesNV>{ enum { value = true }; };
   template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceFragmentShaderBarycentricFeaturesNV>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceHostQueryResetFeaturesEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceHostQueryResetFeaturesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceIDProperties>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceImageFormatInfo2, PhysicalDeviceImageDrmFormatModifierInfoEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceImageFormatInfo2, PhysicalDeviceImageViewImageFormatInfoEXT>{ enum { value = true }; };
@@ -54879,8 +56402,8 @@ namespace VULKAN_HPP_NAMESPACE
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceShaderAtomicInt64FeaturesKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceShaderAtomicInt64FeaturesKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceShaderCorePropertiesAMD>{ enum { value = true }; };
-  template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceShaderDrawParameterFeatures>{ enum { value = true }; };
-  template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceShaderDrawParameterFeatures>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceShaderDrawParametersFeatures>{ enum { value = true }; };
+  template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceShaderDrawParametersFeatures>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceShaderImageFootprintFeaturesNV>{ enum { value = true }; };
   template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceShaderImageFootprintFeaturesNV>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceShadingRateImageFeaturesNV>{ enum { value = true }; };
@@ -54890,8 +56413,10 @@ namespace VULKAN_HPP_NAMESPACE
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceTransformFeedbackFeaturesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceTransformFeedbackFeaturesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceTransformFeedbackPropertiesEXT>{ enum { value = true }; };
-  template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceVariablePointerFeatures>{ enum { value = true }; };
-  template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceVariablePointerFeatures>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceVariablePointersFeatures>{ enum { value = true }; };
+  template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceVariablePointersFeatures>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceVertexAttributeDivisorFeaturesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceVertexAttributeDivisorFeaturesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceVertexAttributeDivisorPropertiesEXT>{ enum { value = true }; };
@@ -54901,7 +56426,11 @@ namespace VULKAN_HPP_NAMESPACE
   template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceYcbcrImageArraysFeaturesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PipelineColorBlendStateCreateInfo, PipelineColorBlendAdvancedStateCreateInfoEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PipelineMultisampleStateCreateInfo, PipelineCoverageModulationStateCreateInfoNV>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PipelineMultisampleStateCreateInfo, PipelineCoverageReductionStateCreateInfoNV>{ enum { value = true }; };
   template <> struct isStructureChainValid<PipelineMultisampleStateCreateInfo, PipelineCoverageToColorStateCreateInfoNV>{ enum { value = true }; };
+  template <> struct isStructureChainValid<GraphicsPipelineCreateInfo, PipelineCreationFeedbackCreateInfoEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<ComputePipelineCreateInfo, PipelineCreationFeedbackCreateInfoEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<RayTracingPipelineCreateInfoNV, PipelineCreationFeedbackCreateInfoEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<GraphicsPipelineCreateInfo, PipelineDiscardRectangleStateCreateInfoEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PipelineRasterizationStateCreateInfo, PipelineRasterizationConservativeStateCreateInfoEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PipelineRasterizationStateCreateInfo, PipelineRasterizationDepthClipStateCreateInfoEXT>{ enum { value = true }; };
@@ -54916,6 +56445,9 @@ namespace VULKAN_HPP_NAMESPACE
   template <> struct isStructureChainValid<PipelineViewportStateCreateInfo, PipelineViewportShadingRateImageStateCreateInfoNV>{ enum { value = true }; };
   template <> struct isStructureChainValid<PipelineViewportStateCreateInfo, PipelineViewportSwizzleStateCreateInfoNV>{ enum { value = true }; };
   template <> struct isStructureChainValid<PipelineViewportStateCreateInfo, PipelineViewportWScalingStateCreateInfoNV>{ enum { value = true }; };
+#ifdef VK_USE_PLATFORM_GGP
+  template <> struct isStructureChainValid<PresentInfoKHR, PresentFrameTokenGGP>{ enum { value = true }; };
+#endif /*VK_USE_PLATFORM_GGP*/
   template <> struct isStructureChainValid<PresentInfoKHR, PresentRegionsKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<PresentInfoKHR, PresentTimesInfoGOOGLE>{ enum { value = true }; };
   template <> struct isStructureChainValid<SubmitInfo, ProtectedSubmitInfo>{ enum { value = true }; };
@@ -54932,7 +56464,20 @@ namespace VULKAN_HPP_NAMESPACE
   template <> struct isStructureChainValid<ShaderModuleCreateInfo, ShaderModuleValidationCacheCreateInfoEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<SurfaceCapabilities2KHR, SharedPresentSurfaceCapabilitiesKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<SubpassDescription2KHR, SubpassDescriptionDepthStencilResolveKHR>{ enum { value = true }; };
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  template <> struct isStructureChainValid<SurfaceCapabilities2KHR, SurfaceCapabilitiesFullScreenExclusiveEXT>{ enum { value = true }; };
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  template <> struct isStructureChainValid<PhysicalDeviceSurfaceInfo2KHR, SurfaceFullScreenExclusiveInfoEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<SwapchainCreateInfoKHR, SurfaceFullScreenExclusiveInfoEXT>{ enum { value = true }; };
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  template <> struct isStructureChainValid<PhysicalDeviceSurfaceInfo2KHR, SurfaceFullScreenExclusiveWin32InfoEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<SwapchainCreateInfoKHR, SurfaceFullScreenExclusiveWin32InfoEXT>{ enum { value = true }; };
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+  template <> struct isStructureChainValid<SurfaceCapabilities2KHR, SurfaceProtectedCapabilitiesKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<SwapchainCreateInfoKHR, SwapchainCounterCreateInfoEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<SwapchainCreateInfoKHR, SwapchainDisplayNativeHdrCreateInfoAMD>{ enum { value = true }; };
   template <> struct isStructureChainValid<ImageFormatProperties2, TextureLODGatherFormatPropertiesAMD>{ enum { value = true }; };
   template <> struct isStructureChainValid<InstanceCreateInfo, ValidationFeaturesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<InstanceCreateInfo, ValidationFlagsEXT>{ enum { value = true }; };
@@ -55044,6 +56589,9 @@ namespace VULKAN_HPP_NAMESPACE
     PFN_vkCmdWriteTimestamp vkCmdWriteTimestamp = 0;
     PFN_vkEndCommandBuffer vkEndCommandBuffer = 0;
     PFN_vkResetCommandBuffer vkResetCommandBuffer = 0;
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+    PFN_vkAcquireFullScreenExclusiveModeEXT vkAcquireFullScreenExclusiveModeEXT = 0;
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
     PFN_vkAcquireNextImage2KHR vkAcquireNextImage2KHR = 0;
     PFN_vkAcquireNextImageKHR vkAcquireNextImageKHR = 0;
     PFN_vkAllocateCommandBuffers vkAllocateCommandBuffers = 0;
@@ -55139,6 +56687,9 @@ namespace VULKAN_HPP_NAMESPACE
     PFN_vkGetDeviceGroupPeerMemoryFeatures vkGetDeviceGroupPeerMemoryFeatures = 0;
     PFN_vkGetDeviceGroupPeerMemoryFeaturesKHR vkGetDeviceGroupPeerMemoryFeaturesKHR = 0;
     PFN_vkGetDeviceGroupPresentCapabilitiesKHR vkGetDeviceGroupPresentCapabilitiesKHR = 0;
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+    PFN_vkGetDeviceGroupSurfacePresentModes2EXT vkGetDeviceGroupSurfacePresentModes2EXT = 0;
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
     PFN_vkGetDeviceGroupSurfacePresentModesKHR vkGetDeviceGroupSurfacePresentModesKHR = 0;
     PFN_vkGetDeviceMemoryCommitment vkGetDeviceMemoryCommitment = 0;
     PFN_vkGetDeviceProcAddr vkGetDeviceProcAddr = 0;
@@ -55204,14 +56755,19 @@ namespace VULKAN_HPP_NAMESPACE
     PFN_vkRegisterDeviceEventEXT vkRegisterDeviceEventEXT = 0;
     PFN_vkRegisterDisplayEventEXT vkRegisterDisplayEventEXT = 0;
     PFN_vkRegisterObjectsNVX vkRegisterObjectsNVX = 0;
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+    PFN_vkReleaseFullScreenExclusiveModeEXT vkReleaseFullScreenExclusiveModeEXT = 0;
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
     PFN_vkResetCommandPool vkResetCommandPool = 0;
     PFN_vkResetDescriptorPool vkResetDescriptorPool = 0;
     PFN_vkResetEvent vkResetEvent = 0;
     PFN_vkResetFences vkResetFences = 0;
+    PFN_vkResetQueryPoolEXT vkResetQueryPoolEXT = 0;
     PFN_vkSetDebugUtilsObjectNameEXT vkSetDebugUtilsObjectNameEXT = 0;
     PFN_vkSetDebugUtilsObjectTagEXT vkSetDebugUtilsObjectTagEXT = 0;
     PFN_vkSetEvent vkSetEvent = 0;
     PFN_vkSetHdrMetadataEXT vkSetHdrMetadataEXT = 0;
+    PFN_vkSetLocalDimmingAMD vkSetLocalDimmingAMD = 0;
     PFN_vkTrimCommandPool vkTrimCommandPool = 0;
     PFN_vkTrimCommandPoolKHR vkTrimCommandPoolKHR = 0;
     PFN_vkUnmapMemory vkUnmapMemory = 0;
@@ -55226,6 +56782,7 @@ namespace VULKAN_HPP_NAMESPACE
     PFN_vkCreateDebugReportCallbackEXT vkCreateDebugReportCallbackEXT = 0;
     PFN_vkCreateDebugUtilsMessengerEXT vkCreateDebugUtilsMessengerEXT = 0;
     PFN_vkCreateDisplayPlaneSurfaceKHR vkCreateDisplayPlaneSurfaceKHR = 0;
+    PFN_vkCreateHeadlessSurfaceEXT vkCreateHeadlessSurfaceEXT = 0;
 #ifdef VK_USE_PLATFORM_IOS_MVK
     PFN_vkCreateIOSSurfaceMVK vkCreateIOSSurfaceMVK = 0;
 #endif /*VK_USE_PLATFORM_IOS_MVK*/
@@ -55238,6 +56795,9 @@ namespace VULKAN_HPP_NAMESPACE
 #ifdef VK_USE_PLATFORM_METAL_EXT
     PFN_vkCreateMetalSurfaceEXT vkCreateMetalSurfaceEXT = 0;
 #endif /*VK_USE_PLATFORM_METAL_EXT*/
+#ifdef VK_USE_PLATFORM_GGP
+    PFN_vkCreateStreamDescriptorSurfaceGGP vkCreateStreamDescriptorSurfaceGGP = 0;
+#endif /*VK_USE_PLATFORM_GGP*/
 #ifdef VK_USE_PLATFORM_VI_NN
     PFN_vkCreateViSurfaceNN vkCreateViSurfaceNN = 0;
 #endif /*VK_USE_PLATFORM_VI_NN*/
@@ -55312,11 +56872,15 @@ namespace VULKAN_HPP_NAMESPACE
     PFN_vkGetPhysicalDeviceSparseImageFormatProperties vkGetPhysicalDeviceSparseImageFormatProperties = 0;
     PFN_vkGetPhysicalDeviceSparseImageFormatProperties2 vkGetPhysicalDeviceSparseImageFormatProperties2 = 0;
     PFN_vkGetPhysicalDeviceSparseImageFormatProperties2KHR vkGetPhysicalDeviceSparseImageFormatProperties2KHR = 0;
+    PFN_vkGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV vkGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV = 0;
     PFN_vkGetPhysicalDeviceSurfaceCapabilities2EXT vkGetPhysicalDeviceSurfaceCapabilities2EXT = 0;
     PFN_vkGetPhysicalDeviceSurfaceCapabilities2KHR vkGetPhysicalDeviceSurfaceCapabilities2KHR = 0;
     PFN_vkGetPhysicalDeviceSurfaceCapabilitiesKHR vkGetPhysicalDeviceSurfaceCapabilitiesKHR = 0;
     PFN_vkGetPhysicalDeviceSurfaceFormats2KHR vkGetPhysicalDeviceSurfaceFormats2KHR = 0;
     PFN_vkGetPhysicalDeviceSurfaceFormatsKHR vkGetPhysicalDeviceSurfaceFormatsKHR = 0;
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+    PFN_vkGetPhysicalDeviceSurfacePresentModes2EXT vkGetPhysicalDeviceSurfacePresentModes2EXT = 0;
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
     PFN_vkGetPhysicalDeviceSurfacePresentModesKHR vkGetPhysicalDeviceSurfacePresentModesKHR = 0;
     PFN_vkGetPhysicalDeviceSurfaceSupportKHR vkGetPhysicalDeviceSurfaceSupportKHR = 0;
 #ifdef VK_USE_PLATFORM_WAYLAND_KHR
@@ -55470,6 +57034,9 @@ namespace VULKAN_HPP_NAMESPACE
       vkCmdWriteTimestamp = PFN_vkCmdWriteTimestamp( device ? vkGetDeviceProcAddr( device, "vkCmdWriteTimestamp" ) : vkGetInstanceProcAddr( instance, "vkCmdWriteTimestamp" ) );
       vkEndCommandBuffer = PFN_vkEndCommandBuffer( device ? vkGetDeviceProcAddr( device, "vkEndCommandBuffer" ) : vkGetInstanceProcAddr( instance, "vkEndCommandBuffer" ) );
       vkResetCommandBuffer = PFN_vkResetCommandBuffer( device ? vkGetDeviceProcAddr( device, "vkResetCommandBuffer" ) : vkGetInstanceProcAddr( instance, "vkResetCommandBuffer" ) );
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+      vkAcquireFullScreenExclusiveModeEXT = PFN_vkAcquireFullScreenExclusiveModeEXT( device ? vkGetDeviceProcAddr( device, "vkAcquireFullScreenExclusiveModeEXT" ) : vkGetInstanceProcAddr( instance, "vkAcquireFullScreenExclusiveModeEXT" ) );
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
       vkAcquireNextImage2KHR = PFN_vkAcquireNextImage2KHR( device ? vkGetDeviceProcAddr( device, "vkAcquireNextImage2KHR" ) : vkGetInstanceProcAddr( instance, "vkAcquireNextImage2KHR" ) );
       vkAcquireNextImageKHR = PFN_vkAcquireNextImageKHR( device ? vkGetDeviceProcAddr( device, "vkAcquireNextImageKHR" ) : vkGetInstanceProcAddr( instance, "vkAcquireNextImageKHR" ) );
       vkAllocateCommandBuffers = PFN_vkAllocateCommandBuffers( device ? vkGetDeviceProcAddr( device, "vkAllocateCommandBuffers" ) : vkGetInstanceProcAddr( instance, "vkAllocateCommandBuffers" ) );
@@ -55565,6 +57132,9 @@ namespace VULKAN_HPP_NAMESPACE
       vkGetDeviceGroupPeerMemoryFeatures = PFN_vkGetDeviceGroupPeerMemoryFeatures( device ? vkGetDeviceProcAddr( device, "vkGetDeviceGroupPeerMemoryFeatures" ) : vkGetInstanceProcAddr( instance, "vkGetDeviceGroupPeerMemoryFeatures" ) );
       vkGetDeviceGroupPeerMemoryFeaturesKHR = PFN_vkGetDeviceGroupPeerMemoryFeaturesKHR( device ? vkGetDeviceProcAddr( device, "vkGetDeviceGroupPeerMemoryFeaturesKHR" ) : vkGetInstanceProcAddr( instance, "vkGetDeviceGroupPeerMemoryFeaturesKHR" ) );
       vkGetDeviceGroupPresentCapabilitiesKHR = PFN_vkGetDeviceGroupPresentCapabilitiesKHR( device ? vkGetDeviceProcAddr( device, "vkGetDeviceGroupPresentCapabilitiesKHR" ) : vkGetInstanceProcAddr( instance, "vkGetDeviceGroupPresentCapabilitiesKHR" ) );
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+      vkGetDeviceGroupSurfacePresentModes2EXT = PFN_vkGetDeviceGroupSurfacePresentModes2EXT( device ? vkGetDeviceProcAddr( device, "vkGetDeviceGroupSurfacePresentModes2EXT" ) : vkGetInstanceProcAddr( instance, "vkGetDeviceGroupSurfacePresentModes2EXT" ) );
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
       vkGetDeviceGroupSurfacePresentModesKHR = PFN_vkGetDeviceGroupSurfacePresentModesKHR( device ? vkGetDeviceProcAddr( device, "vkGetDeviceGroupSurfacePresentModesKHR" ) : vkGetInstanceProcAddr( instance, "vkGetDeviceGroupSurfacePresentModesKHR" ) );
       vkGetDeviceMemoryCommitment = PFN_vkGetDeviceMemoryCommitment( device ? vkGetDeviceProcAddr( device, "vkGetDeviceMemoryCommitment" ) : vkGetInstanceProcAddr( instance, "vkGetDeviceMemoryCommitment" ) );
       vkGetDeviceQueue = PFN_vkGetDeviceQueue( device ? vkGetDeviceProcAddr( device, "vkGetDeviceQueue" ) : vkGetInstanceProcAddr( instance, "vkGetDeviceQueue" ) );
@@ -55629,14 +57199,19 @@ namespace VULKAN_HPP_NAMESPACE
       vkRegisterDeviceEventEXT = PFN_vkRegisterDeviceEventEXT( device ? vkGetDeviceProcAddr( device, "vkRegisterDeviceEventEXT" ) : vkGetInstanceProcAddr( instance, "vkRegisterDeviceEventEXT" ) );
       vkRegisterDisplayEventEXT = PFN_vkRegisterDisplayEventEXT( device ? vkGetDeviceProcAddr( device, "vkRegisterDisplayEventEXT" ) : vkGetInstanceProcAddr( instance, "vkRegisterDisplayEventEXT" ) );
       vkRegisterObjectsNVX = PFN_vkRegisterObjectsNVX( device ? vkGetDeviceProcAddr( device, "vkRegisterObjectsNVX" ) : vkGetInstanceProcAddr( instance, "vkRegisterObjectsNVX" ) );
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+      vkReleaseFullScreenExclusiveModeEXT = PFN_vkReleaseFullScreenExclusiveModeEXT( device ? vkGetDeviceProcAddr( device, "vkReleaseFullScreenExclusiveModeEXT" ) : vkGetInstanceProcAddr( instance, "vkReleaseFullScreenExclusiveModeEXT" ) );
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
       vkResetCommandPool = PFN_vkResetCommandPool( device ? vkGetDeviceProcAddr( device, "vkResetCommandPool" ) : vkGetInstanceProcAddr( instance, "vkResetCommandPool" ) );
       vkResetDescriptorPool = PFN_vkResetDescriptorPool( device ? vkGetDeviceProcAddr( device, "vkResetDescriptorPool" ) : vkGetInstanceProcAddr( instance, "vkResetDescriptorPool" ) );
       vkResetEvent = PFN_vkResetEvent( device ? vkGetDeviceProcAddr( device, "vkResetEvent" ) : vkGetInstanceProcAddr( instance, "vkResetEvent" ) );
       vkResetFences = PFN_vkResetFences( device ? vkGetDeviceProcAddr( device, "vkResetFences" ) : vkGetInstanceProcAddr( instance, "vkResetFences" ) );
+      vkResetQueryPoolEXT = PFN_vkResetQueryPoolEXT( device ? vkGetDeviceProcAddr( device, "vkResetQueryPoolEXT" ) : vkGetInstanceProcAddr( instance, "vkResetQueryPoolEXT" ) );
       vkSetDebugUtilsObjectNameEXT = PFN_vkSetDebugUtilsObjectNameEXT( device ? vkGetDeviceProcAddr( device, "vkSetDebugUtilsObjectNameEXT" ) : vkGetInstanceProcAddr( instance, "vkSetDebugUtilsObjectNameEXT" ) );
       vkSetDebugUtilsObjectTagEXT = PFN_vkSetDebugUtilsObjectTagEXT( device ? vkGetDeviceProcAddr( device, "vkSetDebugUtilsObjectTagEXT" ) : vkGetInstanceProcAddr( instance, "vkSetDebugUtilsObjectTagEXT" ) );
       vkSetEvent = PFN_vkSetEvent( device ? vkGetDeviceProcAddr( device, "vkSetEvent" ) : vkGetInstanceProcAddr( instance, "vkSetEvent" ) );
       vkSetHdrMetadataEXT = PFN_vkSetHdrMetadataEXT( device ? vkGetDeviceProcAddr( device, "vkSetHdrMetadataEXT" ) : vkGetInstanceProcAddr( instance, "vkSetHdrMetadataEXT" ) );
+      vkSetLocalDimmingAMD = PFN_vkSetLocalDimmingAMD( device ? vkGetDeviceProcAddr( device, "vkSetLocalDimmingAMD" ) : vkGetInstanceProcAddr( instance, "vkSetLocalDimmingAMD" ) );
       vkTrimCommandPool = PFN_vkTrimCommandPool( device ? vkGetDeviceProcAddr( device, "vkTrimCommandPool" ) : vkGetInstanceProcAddr( instance, "vkTrimCommandPool" ) );
       vkTrimCommandPoolKHR = PFN_vkTrimCommandPoolKHR( device ? vkGetDeviceProcAddr( device, "vkTrimCommandPoolKHR" ) : vkGetInstanceProcAddr( instance, "vkTrimCommandPoolKHR" ) );
       vkUnmapMemory = PFN_vkUnmapMemory( device ? vkGetDeviceProcAddr( device, "vkUnmapMemory" ) : vkGetInstanceProcAddr( instance, "vkUnmapMemory" ) );
@@ -55651,6 +57226,7 @@ namespace VULKAN_HPP_NAMESPACE
       vkCreateDebugReportCallbackEXT = PFN_vkCreateDebugReportCallbackEXT( vkGetInstanceProcAddr( instance, "vkCreateDebugReportCallbackEXT" ) );
       vkCreateDebugUtilsMessengerEXT = PFN_vkCreateDebugUtilsMessengerEXT( vkGetInstanceProcAddr( instance, "vkCreateDebugUtilsMessengerEXT" ) );
       vkCreateDisplayPlaneSurfaceKHR = PFN_vkCreateDisplayPlaneSurfaceKHR( vkGetInstanceProcAddr( instance, "vkCreateDisplayPlaneSurfaceKHR" ) );
+      vkCreateHeadlessSurfaceEXT = PFN_vkCreateHeadlessSurfaceEXT( vkGetInstanceProcAddr( instance, "vkCreateHeadlessSurfaceEXT" ) );
 #ifdef VK_USE_PLATFORM_IOS_MVK
       vkCreateIOSSurfaceMVK = PFN_vkCreateIOSSurfaceMVK( vkGetInstanceProcAddr( instance, "vkCreateIOSSurfaceMVK" ) );
 #endif /*VK_USE_PLATFORM_IOS_MVK*/
@@ -55663,6 +57239,9 @@ namespace VULKAN_HPP_NAMESPACE
 #ifdef VK_USE_PLATFORM_METAL_EXT
       vkCreateMetalSurfaceEXT = PFN_vkCreateMetalSurfaceEXT( vkGetInstanceProcAddr( instance, "vkCreateMetalSurfaceEXT" ) );
 #endif /*VK_USE_PLATFORM_METAL_EXT*/
+#ifdef VK_USE_PLATFORM_GGP
+      vkCreateStreamDescriptorSurfaceGGP = PFN_vkCreateStreamDescriptorSurfaceGGP( vkGetInstanceProcAddr( instance, "vkCreateStreamDescriptorSurfaceGGP" ) );
+#endif /*VK_USE_PLATFORM_GGP*/
 #ifdef VK_USE_PLATFORM_VI_NN
       vkCreateViSurfaceNN = PFN_vkCreateViSurfaceNN( vkGetInstanceProcAddr( instance, "vkCreateViSurfaceNN" ) );
 #endif /*VK_USE_PLATFORM_VI_NN*/
@@ -55736,11 +57315,15 @@ namespace VULKAN_HPP_NAMESPACE
       vkGetPhysicalDeviceSparseImageFormatProperties = PFN_vkGetPhysicalDeviceSparseImageFormatProperties( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceSparseImageFormatProperties" ) );
       vkGetPhysicalDeviceSparseImageFormatProperties2 = PFN_vkGetPhysicalDeviceSparseImageFormatProperties2( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceSparseImageFormatProperties2" ) );
       vkGetPhysicalDeviceSparseImageFormatProperties2KHR = PFN_vkGetPhysicalDeviceSparseImageFormatProperties2KHR( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceSparseImageFormatProperties2KHR" ) );
+      vkGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV = PFN_vkGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV" ) );
       vkGetPhysicalDeviceSurfaceCapabilities2EXT = PFN_vkGetPhysicalDeviceSurfaceCapabilities2EXT( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceSurfaceCapabilities2EXT" ) );
       vkGetPhysicalDeviceSurfaceCapabilities2KHR = PFN_vkGetPhysicalDeviceSurfaceCapabilities2KHR( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceSurfaceCapabilities2KHR" ) );
       vkGetPhysicalDeviceSurfaceCapabilitiesKHR = PFN_vkGetPhysicalDeviceSurfaceCapabilitiesKHR( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceSurfaceCapabilitiesKHR" ) );
       vkGetPhysicalDeviceSurfaceFormats2KHR = PFN_vkGetPhysicalDeviceSurfaceFormats2KHR( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceSurfaceFormats2KHR" ) );
       vkGetPhysicalDeviceSurfaceFormatsKHR = PFN_vkGetPhysicalDeviceSurfaceFormatsKHR( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceSurfaceFormatsKHR" ) );
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+      vkGetPhysicalDeviceSurfacePresentModes2EXT = PFN_vkGetPhysicalDeviceSurfacePresentModes2EXT( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceSurfacePresentModes2EXT" ) );
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
       vkGetPhysicalDeviceSurfacePresentModesKHR = PFN_vkGetPhysicalDeviceSurfacePresentModesKHR( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceSurfacePresentModesKHR" ) );
       vkGetPhysicalDeviceSurfaceSupportKHR = PFN_vkGetPhysicalDeviceSurfaceSupportKHR( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceSurfaceSupportKHR" ) );
 #ifdef VK_USE_PLATFORM_WAYLAND_KHR

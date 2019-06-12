@@ -1053,25 +1053,25 @@ void VulkanHppGenerator::readBitmask(tinyxml2::XMLElement const* element, std::m
 
     std::string name = children[1]->GetText();
 
-    std::string requires;
+    std::string requirement;
     auto requiresIt = attributes.find("requires");
     if (requiresIt != attributes.end())
     {
-      requires = requiresIt->second;
+      requirement = requiresIt->second;
     }
     else
     {
       // Generate FlagBits name and add it to the list of enums and vulkan types
-      requires = name;
-      size_t pos = requires.rfind("Flags");
+      requirement = name;
+      size_t pos = requirement.rfind("Flags");
       assert(pos != std::string::npos);
-      requires.replace(pos, 5, "FlagBits");
+      requirement.replace(pos, 5, "FlagBits");
 
-      assert(m_bitmaskBits.find(requires) == m_bitmaskBits.end());
-      m_bitmaskBits.insert(std::make_pair(requires, EnumData()));
+      assert(m_bitmaskBits.find(requirement) == m_bitmaskBits.end());
+      m_bitmaskBits.insert(std::make_pair(requirement, EnumData()));
     }
 
-    m_bitmasks.insert(std::make_pair(name, BitmaskData(requires)));
+    m_bitmasks.insert(std::make_pair(name, BitmaskData(requirement)));
   }
 }
 
@@ -1539,7 +1539,7 @@ void VulkanHppGenerator::readExtensionRequireType(tinyxml2::XMLElement const* el
     {
       assert(bmit->second.platform.empty());
       bmit->second.platform = platform;
-      assert(m_bitmaskBits.find(bmit->second.requires) != m_bitmaskBits.end());
+      assert(m_bitmaskBits.find(bmit->second.requirement) != m_bitmaskBits.end());
     }
     else
     {
@@ -2083,7 +2083,7 @@ void VulkanHppGenerator::writeArgumentPlainType(std::ostream & os, ParamData con
       if (paramData.type.type == "char")
       {
         // it's a const pointer to char -> it's a string -> get the data via c_str()
-        os << parameterName << paramData.optional ? (" ? " + parameterName + "->c_str() : nullptr") : ".c_str()";
+        os << parameterName << (paramData.optional ? (" ? " + parameterName + "->c_str() : nullptr") : ".c_str()");
       }
       else
       {
@@ -2222,7 +2222,7 @@ void VulkanHppGenerator::writeBitmasks(std::ostream & os) const
 {
   for (auto const& bitmask : m_bitmasks)
   {
-    auto bitmaskBits = m_bitmaskBits.find(bitmask.second.requires);
+    auto bitmaskBits = m_bitmaskBits.find(bitmask.second.requirement);
     assert(bitmaskBits != m_bitmaskBits.end());
 
     os << std::endl;
@@ -2651,6 +2651,7 @@ void VulkanHppGenerator::writeFunctionBodyEnhanced(std::ostream & os, std::strin
 
     if ((commandData.second.returnType == "VkResult") || !commandData.second.successCodes.empty())
     {
+
       writeFunctionBodyEnhancedReturnResultValue(os, indentation, returnName, commandName, commandData, returnParamIndex, twoStep, singular, unique);
     }
     else if ((returnParamIndex != INVALID_INDEX) && (stripPrefix(commandData.second.returnType, "Vk") != enhancedReturnType))
@@ -2794,6 +2795,11 @@ void VulkanHppGenerator::writeFunctionBodyEnhancedReturnResultValue(std::ostream
 {
   std::string type = (returnParamIndex != INVALID_INDEX) ? commandData.second.params[returnParamIndex].type.type : "";
   std::string returnVectorName = (returnParamIndex != INVALID_INDEX) ? stripPostfix(stripPrefix(commandData.second.params[returnParamIndex].name, "p"), "s") : "";
+
+  if (commandData.second.returnType == "void") {
+    std::cerr << "warning: skipping writeFunctionBodyEnhancedReturnResultValue for function " << commandName << " because the returnType is void";
+    return;
+  }
 
   assert(m_commandToHandle.find(commandData.first) != m_commandToHandle.end());
   std::string const& handle = m_commandToHandle.find(commandData.first)->second;
@@ -3101,7 +3107,7 @@ void VulkanHppGenerator::writeFunctionHeaderArgumentEnhancedSimple(std::ostream 
     {
       // get the enum corresponding to this flag, to check if it's empty
       std::string strippedBitmaskName = stripPrefix(bitmasksIt->first, "Vk");
-      std::map<std::string, EnumData>::const_iterator enumIt = m_bitmaskBits.find(bitmasksIt->second.requires);
+      std::map<std::string, EnumData>::const_iterator enumIt = m_bitmaskBits.find(bitmasksIt->second.requirement);
       assert(enumIt != m_bitmaskBits.end());
       if (enumIt->second.values.empty())
       {
@@ -3264,7 +3270,7 @@ bool VulkanHppGenerator::writeFunctionHeaderArgumentStandard(std::ostream & os, 
     {
       // get the enum corresponding to this flag, to check if it's empty
       std::string strippedBitmaskName = stripPrefix(bitmasksIt->first, "Vk");
-      std::map<std::string, EnumData>::const_iterator enumIt = m_bitmaskBits.find(bitmasksIt->second.requires);
+      std::map<std::string, EnumData>::const_iterator enumIt = m_bitmaskBits.find(bitmasksIt->second.requirement);
       assert(enumIt != m_bitmaskBits.end());
       if (enumIt->second.values.empty())
       {
@@ -4016,6 +4022,15 @@ void VulkanHppGenerator::writeUnion(std::ostream & os, std::pair<std::string, St
   bool firstTime = true;
   for (auto const& member : structure.second.members)
   {
+    // VkBool32 is aliased to uint32_t. Don't create a VkBool32 constructor if the union also contains a uint32_t constructor.
+    auto compareBool32Alias = [](MemberData const& member) { return member.type.type == std::string("uint32_t"); };
+    if (member.type.type == "VkBool32") {
+      if (std::find_if(structure.second.members.begin(), structure.second.members.end(), compareBool32Alias) != structure.second.members.end())
+      {
+        continue;
+      }
+    }
+
     // one constructor per union element
     os << "    " << stripPrefix(structure.first, "Vk") << "( " << (member.arraySize.empty() ? (member.type.compose() + " ") : ("const std::array<" + member.type.compose() + "," + member.arraySize + ">& ")) << member.name << "_";
 
@@ -5096,6 +5111,7 @@ namespace std
     generator.checkCorrectness();
 
     std::ofstream ofs(VULKAN_HPP_FILE);
+    assert(!ofs.fail());
     ofs << generator.getVulkanLicenseHeader() << std::endl
       << includes
       << std::endl

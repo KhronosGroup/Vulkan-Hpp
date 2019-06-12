@@ -36,7 +36,7 @@ else(MSVC)
   add_compile_options(-Wall)
 endif(MSVC)
 
-file(TO_NATIVE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/Vulkan-Docs/xml/vk.xml vk_spec)
+file(TO_NATIVE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/Vulkan-Headers/registry/vk.xml vk_spec)
 string(REPLACE "\\" "\\\\" vk_spec ${vk_spec})
 add_definitions(-DVK_SPEC="${vk_spec}")
 

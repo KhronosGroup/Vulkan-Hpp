@@ -16720,12 +16720,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     GeometryTrianglesNV( VkGeometryTrianglesNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( GeometryTrianglesNV ) );
+      memcpy( (void*)this, &rhs, sizeof( GeometryTrianglesNV ) );
     }
 
     GeometryTrianglesNV& operator=( VkGeometryTrianglesNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( GeometryTrianglesNV ) );
+      memcpy( (void*)this, &rhs, sizeof( GeometryTrianglesNV ) );
       return *this;
     }
 
@@ -16866,12 +16866,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     GeometryAABBNV( VkGeometryAABBNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( GeometryAABBNV ) );
+      memcpy( (void*)this, &rhs, sizeof( GeometryAABBNV ) );
     }
 
     GeometryAABBNV& operator=( VkGeometryAABBNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( GeometryAABBNV ) );
+      memcpy( (void*)this, &rhs, sizeof( GeometryAABBNV ) );
       return *this;
     }
 
@@ -16952,12 +16952,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     GeometryDataNV( VkGeometryDataNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( GeometryDataNV ) );
+      memcpy( (void*)this, &rhs, sizeof( GeometryDataNV ) );
     }
 
     GeometryDataNV& operator=( VkGeometryDataNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( GeometryDataNV ) );
+      memcpy( (void*)this, &rhs, sizeof( GeometryDataNV ) );
       return *this;
     }
 
@@ -17011,12 +17011,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     GeometryNV( VkGeometryNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( GeometryNV ) );
+      memcpy( (void*)this, &rhs, sizeof( GeometryNV ) );
     }
 
     GeometryNV& operator=( VkGeometryNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( GeometryNV ) );
+      memcpy( (void*)this, &rhs, sizeof( GeometryNV ) );
       return *this;
     }
 
@@ -17095,12 +17095,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     AccelerationStructureInfoNV( VkAccelerationStructureInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( AccelerationStructureInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( AccelerationStructureInfoNV ) );
     }
 
     AccelerationStructureInfoNV& operator=( VkAccelerationStructureInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( AccelerationStructureInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( AccelerationStructureInfoNV ) );
       return *this;
     }
 
@@ -17189,12 +17189,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     AccelerationStructureCreateInfoNV( VkAccelerationStructureCreateInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( AccelerationStructureCreateInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( AccelerationStructureCreateInfoNV ) );
     }
 
     AccelerationStructureCreateInfoNV& operator=( VkAccelerationStructureCreateInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( AccelerationStructureCreateInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( AccelerationStructureCreateInfoNV ) );
       return *this;
     }
 
@@ -17259,12 +17259,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     AccelerationStructureMemoryRequirementsInfoNV( VkAccelerationStructureMemoryRequirementsInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( AccelerationStructureMemoryRequirementsInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( AccelerationStructureMemoryRequirementsInfoNV ) );
     }
 
     AccelerationStructureMemoryRequirementsInfoNV& operator=( VkAccelerationStructureMemoryRequirementsInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( AccelerationStructureMemoryRequirementsInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( AccelerationStructureMemoryRequirementsInfoNV ) );
       return *this;
     }
 
@@ -17335,12 +17335,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     AcquireNextImageInfoKHR( VkAcquireNextImageInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( AcquireNextImageInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( AcquireNextImageInfoKHR ) );
     }
 
     AcquireNextImageInfoKHR& operator=( VkAcquireNextImageInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( AcquireNextImageInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( AcquireNextImageInfoKHR ) );
       return *this;
     }
 
@@ -17437,12 +17437,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     AllocationCallbacks( VkAllocationCallbacks const & rhs )
     {
-      memcpy( this, &rhs, sizeof( AllocationCallbacks ) );
+      memcpy( (void*)this, &rhs, sizeof( AllocationCallbacks ) );
     }
 
     AllocationCallbacks& operator=( VkAllocationCallbacks const & rhs )
     {
-      memcpy( this, &rhs, sizeof( AllocationCallbacks ) );
+      memcpy( (void*)this, &rhs, sizeof( AllocationCallbacks ) );
       return *this;
     }
 
@@ -17530,12 +17530,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ComponentMapping( VkComponentMapping const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ComponentMapping ) );
+      memcpy( (void*)this, &rhs, sizeof( ComponentMapping ) );
     }
 
     ComponentMapping& operator=( VkComponentMapping const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ComponentMapping ) );
+      memcpy( (void*)this, &rhs, sizeof( ComponentMapping ) );
       return *this;
     }
 
@@ -17725,12 +17725,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     AndroidSurfaceCreateInfoKHR( VkAndroidSurfaceCreateInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( AndroidSurfaceCreateInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( AndroidSurfaceCreateInfoKHR ) );
     }
 
     AndroidSurfaceCreateInfoKHR& operator=( VkAndroidSurfaceCreateInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( AndroidSurfaceCreateInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( AndroidSurfaceCreateInfoKHR ) );
       return *this;
     }
 
@@ -17802,12 +17802,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ApplicationInfo( VkApplicationInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ApplicationInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( ApplicationInfo ) );
     }
 
     ApplicationInfo& operator=( VkApplicationInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ApplicationInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( ApplicationInfo ) );
       return *this;
     }
 
@@ -17910,12 +17910,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     AttachmentDescription( VkAttachmentDescription const & rhs )
     {
-      memcpy( this, &rhs, sizeof( AttachmentDescription ) );
+      memcpy( (void*)this, &rhs, sizeof( AttachmentDescription ) );
     }
 
     AttachmentDescription& operator=( VkAttachmentDescription const & rhs )
     {
-      memcpy( this, &rhs, sizeof( AttachmentDescription ) );
+      memcpy( (void*)this, &rhs, sizeof( AttachmentDescription ) );
       return *this;
     }
 
@@ -18037,12 +18037,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     AttachmentDescription2KHR( VkAttachmentDescription2KHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( AttachmentDescription2KHR ) );
+      memcpy( (void*)this, &rhs, sizeof( AttachmentDescription2KHR ) );
     }
 
     AttachmentDescription2KHR& operator=( VkAttachmentDescription2KHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( AttachmentDescription2KHR ) );
+      memcpy( (void*)this, &rhs, sizeof( AttachmentDescription2KHR ) );
       return *this;
     }
 
@@ -18163,12 +18163,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     AttachmentReference( VkAttachmentReference const & rhs )
     {
-      memcpy( this, &rhs, sizeof( AttachmentReference ) );
+      memcpy( (void*)this, &rhs, sizeof( AttachmentReference ) );
     }
 
     AttachmentReference& operator=( VkAttachmentReference const & rhs )
     {
-      memcpy( this, &rhs, sizeof( AttachmentReference ) );
+      memcpy( (void*)this, &rhs, sizeof( AttachmentReference ) );
       return *this;
     }
 
@@ -18222,12 +18222,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     AttachmentReference2KHR( VkAttachmentReference2KHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( AttachmentReference2KHR ) );
+      memcpy( (void*)this, &rhs, sizeof( AttachmentReference2KHR ) );
     }
 
     AttachmentReference2KHR& operator=( VkAttachmentReference2KHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( AttachmentReference2KHR ) );
+      memcpy( (void*)this, &rhs, sizeof( AttachmentReference2KHR ) );
       return *this;
     }
 
@@ -18300,12 +18300,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     Extent2D( VkExtent2D const & rhs )
     {
-      memcpy( this, &rhs, sizeof( Extent2D ) );
+      memcpy( (void*)this, &rhs, sizeof( Extent2D ) );
     }
 
     Extent2D& operator=( VkExtent2D const & rhs )
     {
-      memcpy( this, &rhs, sizeof( Extent2D ) );
+      memcpy( (void*)this, &rhs, sizeof( Extent2D ) );
       return *this;
     }
 
@@ -18357,12 +18357,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     SampleLocationEXT( VkSampleLocationEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SampleLocationEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( SampleLocationEXT ) );
     }
 
     SampleLocationEXT& operator=( VkSampleLocationEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SampleLocationEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( SampleLocationEXT ) );
       return *this;
     }
 
@@ -18418,12 +18418,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     SampleLocationsInfoEXT( VkSampleLocationsInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SampleLocationsInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( SampleLocationsInfoEXT ) );
     }
 
     SampleLocationsInfoEXT& operator=( VkSampleLocationsInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SampleLocationsInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( SampleLocationsInfoEXT ) );
       return *this;
     }
 
@@ -18504,12 +18504,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     AttachmentSampleLocationsEXT( VkAttachmentSampleLocationsEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( AttachmentSampleLocationsEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( AttachmentSampleLocationsEXT ) );
     }
 
     AttachmentSampleLocationsEXT& operator=( VkAttachmentSampleLocationsEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( AttachmentSampleLocationsEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( AttachmentSampleLocationsEXT ) );
       return *this;
     }
 
@@ -18558,12 +18558,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     BaseInStructure( VkBaseInStructure const & rhs )
     {
-      memcpy( this, &rhs, sizeof( BaseInStructure ) );
+      memcpy( (void*)this, &rhs, sizeof( BaseInStructure ) );
     }
 
     BaseInStructure& operator=( VkBaseInStructure const & rhs )
     {
-      memcpy( this, &rhs, sizeof( BaseInStructure ) );
+      memcpy( (void*)this, &rhs, sizeof( BaseInStructure ) );
       return *this;
     }
 
@@ -18606,12 +18606,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     BaseOutStructure( VkBaseOutStructure const & rhs )
     {
-      memcpy( this, &rhs, sizeof( BaseOutStructure ) );
+      memcpy( (void*)this, &rhs, sizeof( BaseOutStructure ) );
     }
 
     BaseOutStructure& operator=( VkBaseOutStructure const & rhs )
     {
-      memcpy( this, &rhs, sizeof( BaseOutStructure ) );
+      memcpy( (void*)this, &rhs, sizeof( BaseOutStructure ) );
       return *this;
     }
 
@@ -18663,12 +18663,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     BindAccelerationStructureMemoryInfoNV( VkBindAccelerationStructureMemoryInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( BindAccelerationStructureMemoryInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( BindAccelerationStructureMemoryInfoNV ) );
     }
 
     BindAccelerationStructureMemoryInfoNV& operator=( VkBindAccelerationStructureMemoryInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( BindAccelerationStructureMemoryInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( BindAccelerationStructureMemoryInfoNV ) );
       return *this;
     }
 
@@ -18757,12 +18757,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     BindBufferMemoryDeviceGroupInfo( VkBindBufferMemoryDeviceGroupInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( BindBufferMemoryDeviceGroupInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( BindBufferMemoryDeviceGroupInfo ) );
     }
 
     BindBufferMemoryDeviceGroupInfo& operator=( VkBindBufferMemoryDeviceGroupInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( BindBufferMemoryDeviceGroupInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( BindBufferMemoryDeviceGroupInfo ) );
       return *this;
     }
 
@@ -18829,12 +18829,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     BindBufferMemoryInfo( VkBindBufferMemoryInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( BindBufferMemoryInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( BindBufferMemoryInfo ) );
     }
 
     BindBufferMemoryInfo& operator=( VkBindBufferMemoryInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( BindBufferMemoryInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( BindBufferMemoryInfo ) );
       return *this;
     }
 
@@ -18907,12 +18907,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     Offset2D( VkOffset2D const & rhs )
     {
-      memcpy( this, &rhs, sizeof( Offset2D ) );
+      memcpy( (void*)this, &rhs, sizeof( Offset2D ) );
     }
 
     Offset2D& operator=( VkOffset2D const & rhs )
     {
-      memcpy( this, &rhs, sizeof( Offset2D ) );
+      memcpy( (void*)this, &rhs, sizeof( Offset2D ) );
       return *this;
     }
 
@@ -18964,12 +18964,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     Rect2D( VkRect2D const & rhs )
     {
-      memcpy( this, &rhs, sizeof( Rect2D ) );
+      memcpy( (void*)this, &rhs, sizeof( Rect2D ) );
     }
 
     Rect2D& operator=( VkRect2D const & rhs )
     {
-      memcpy( this, &rhs, sizeof( Rect2D ) );
+      memcpy( (void*)this, &rhs, sizeof( Rect2D ) );
       return *this;
     }
 
@@ -19025,12 +19025,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     BindImageMemoryDeviceGroupInfo( VkBindImageMemoryDeviceGroupInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( BindImageMemoryDeviceGroupInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( BindImageMemoryDeviceGroupInfo ) );
     }
 
     BindImageMemoryDeviceGroupInfo& operator=( VkBindImageMemoryDeviceGroupInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( BindImageMemoryDeviceGroupInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( BindImageMemoryDeviceGroupInfo ) );
       return *this;
     }
 
@@ -19113,12 +19113,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     BindImageMemoryInfo( VkBindImageMemoryInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( BindImageMemoryInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( BindImageMemoryInfo ) );
     }
 
     BindImageMemoryInfo& operator=( VkBindImageMemoryInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( BindImageMemoryInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( BindImageMemoryInfo ) );
       return *this;
     }
 
@@ -19191,12 +19191,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     BindImageMemorySwapchainInfoKHR( VkBindImageMemorySwapchainInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( BindImageMemorySwapchainInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( BindImageMemorySwapchainInfoKHR ) );
     }
 
     BindImageMemorySwapchainInfoKHR& operator=( VkBindImageMemorySwapchainInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( BindImageMemorySwapchainInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( BindImageMemorySwapchainInfoKHR ) );
       return *this;
     }
 
@@ -19259,12 +19259,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     BindImagePlaneMemoryInfo( VkBindImagePlaneMemoryInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( BindImagePlaneMemoryInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( BindImagePlaneMemoryInfo ) );
     }
 
     BindImagePlaneMemoryInfo& operator=( VkBindImagePlaneMemoryInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( BindImagePlaneMemoryInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( BindImagePlaneMemoryInfo ) );
       return *this;
     }
 
@@ -19327,12 +19327,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     SparseMemoryBind( VkSparseMemoryBind const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SparseMemoryBind ) );
+      memcpy( (void*)this, &rhs, sizeof( SparseMemoryBind ) );
     }
 
     SparseMemoryBind& operator=( VkSparseMemoryBind const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SparseMemoryBind ) );
+      memcpy( (void*)this, &rhs, sizeof( SparseMemoryBind ) );
       return *this;
     }
 
@@ -19410,12 +19410,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     SparseBufferMemoryBindInfo( VkSparseBufferMemoryBindInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SparseBufferMemoryBindInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( SparseBufferMemoryBindInfo ) );
     }
 
     SparseBufferMemoryBindInfo& operator=( VkSparseBufferMemoryBindInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SparseBufferMemoryBindInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( SparseBufferMemoryBindInfo ) );
       return *this;
     }
 
@@ -19477,12 +19477,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     SparseImageOpaqueMemoryBindInfo( VkSparseImageOpaqueMemoryBindInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SparseImageOpaqueMemoryBindInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( SparseImageOpaqueMemoryBindInfo ) );
     }
 
     SparseImageOpaqueMemoryBindInfo& operator=( VkSparseImageOpaqueMemoryBindInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SparseImageOpaqueMemoryBindInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( SparseImageOpaqueMemoryBindInfo ) );
       return *this;
     }
 
@@ -19544,12 +19544,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImageSubresource( VkImageSubresource const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImageSubresource ) );
+      memcpy( (void*)this, &rhs, sizeof( ImageSubresource ) );
     }
 
     ImageSubresource& operator=( VkImageSubresource const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImageSubresource ) );
+      memcpy( (void*)this, &rhs, sizeof( ImageSubresource ) );
       return *this;
     }
 
@@ -19618,12 +19618,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     Offset3D( VkOffset3D const & rhs )
     {
-      memcpy( this, &rhs, sizeof( Offset3D ) );
+      memcpy( (void*)this, &rhs, sizeof( Offset3D ) );
     }
 
     Offset3D& operator=( VkOffset3D const & rhs )
     {
-      memcpy( this, &rhs, sizeof( Offset3D ) );
+      memcpy( (void*)this, &rhs, sizeof( Offset3D ) );
       return *this;
     }
 
@@ -19692,12 +19692,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     Extent3D( VkExtent3D const & rhs )
     {
-      memcpy( this, &rhs, sizeof( Extent3D ) );
+      memcpy( (void*)this, &rhs, sizeof( Extent3D ) );
     }
 
     Extent3D& operator=( VkExtent3D const & rhs )
     {
-      memcpy( this, &rhs, sizeof( Extent3D ) );
+      memcpy( (void*)this, &rhs, sizeof( Extent3D ) );
       return *this;
     }
 
@@ -19765,12 +19765,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     SparseImageMemoryBind( VkSparseImageMemoryBind const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SparseImageMemoryBind ) );
+      memcpy( (void*)this, &rhs, sizeof( SparseImageMemoryBind ) );
     }
 
     SparseImageMemoryBind& operator=( VkSparseImageMemoryBind const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SparseImageMemoryBind ) );
+      memcpy( (void*)this, &rhs, sizeof( SparseImageMemoryBind ) );
       return *this;
     }
 
@@ -19856,12 +19856,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     SparseImageMemoryBindInfo( VkSparseImageMemoryBindInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SparseImageMemoryBindInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( SparseImageMemoryBindInfo ) );
     }
 
     SparseImageMemoryBindInfo& operator=( VkSparseImageMemoryBindInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SparseImageMemoryBindInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( SparseImageMemoryBindInfo ) );
       return *this;
     }
 
@@ -19937,12 +19937,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     BindSparseInfo( VkBindSparseInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( BindSparseInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( BindSparseInfo ) );
     }
 
     BindSparseInfo& operator=( VkBindSparseInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( BindSparseInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( BindSparseInfo ) );
       return *this;
     }
 
@@ -20073,12 +20073,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     BufferCopy( VkBufferCopy const & rhs )
     {
-      memcpy( this, &rhs, sizeof( BufferCopy ) );
+      memcpy( (void*)this, &rhs, sizeof( BufferCopy ) );
     }
 
     BufferCopy& operator=( VkBufferCopy const & rhs )
     {
-      memcpy( this, &rhs, sizeof( BufferCopy ) );
+      memcpy( (void*)this, &rhs, sizeof( BufferCopy ) );
       return *this;
     }
 
@@ -20146,12 +20146,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     BufferCreateInfo( VkBufferCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( BufferCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( BufferCreateInfo ) );
     }
 
     BufferCreateInfo& operator=( VkBufferCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( BufferCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( BufferCreateInfo ) );
       return *this;
     }
 
@@ -20246,12 +20246,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     BufferDeviceAddressCreateInfoEXT( VkBufferDeviceAddressCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( BufferDeviceAddressCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( BufferDeviceAddressCreateInfoEXT ) );
     }
 
     BufferDeviceAddressCreateInfoEXT& operator=( VkBufferDeviceAddressCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( BufferDeviceAddressCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( BufferDeviceAddressCreateInfoEXT ) );
       return *this;
     }
 
@@ -20306,12 +20306,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     BufferDeviceAddressInfoEXT( VkBufferDeviceAddressInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( BufferDeviceAddressInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( BufferDeviceAddressInfoEXT ) );
     }
 
     BufferDeviceAddressInfoEXT& operator=( VkBufferDeviceAddressInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( BufferDeviceAddressInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( BufferDeviceAddressInfoEXT ) );
       return *this;
     }
 
@@ -20372,12 +20372,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImageSubresourceLayers( VkImageSubresourceLayers const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImageSubresourceLayers ) );
+      memcpy( (void*)this, &rhs, sizeof( ImageSubresourceLayers ) );
     }
 
     ImageSubresourceLayers& operator=( VkImageSubresourceLayers const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImageSubresourceLayers ) );
+      memcpy( (void*)this, &rhs, sizeof( ImageSubresourceLayers ) );
       return *this;
     }
 
@@ -20453,12 +20453,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     BufferImageCopy( VkBufferImageCopy const & rhs )
     {
-      memcpy( this, &rhs, sizeof( BufferImageCopy ) );
+      memcpy( (void*)this, &rhs, sizeof( BufferImageCopy ) );
     }
 
     BufferImageCopy& operator=( VkBufferImageCopy const & rhs )
     {
-      memcpy( this, &rhs, sizeof( BufferImageCopy ) );
+      memcpy( (void*)this, &rhs, sizeof( BufferImageCopy ) );
       return *this;
     }
 
@@ -20552,12 +20552,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     BufferMemoryBarrier( VkBufferMemoryBarrier const & rhs )
     {
-      memcpy( this, &rhs, sizeof( BufferMemoryBarrier ) );
+      memcpy( (void*)this, &rhs, sizeof( BufferMemoryBarrier ) );
     }
 
     BufferMemoryBarrier& operator=( VkBufferMemoryBarrier const & rhs )
     {
-      memcpy( this, &rhs, sizeof( BufferMemoryBarrier ) );
+      memcpy( (void*)this, &rhs, sizeof( BufferMemoryBarrier ) );
       return *this;
     }
 
@@ -20660,12 +20660,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     BufferMemoryRequirementsInfo2( VkBufferMemoryRequirementsInfo2 const & rhs )
     {
-      memcpy( this, &rhs, sizeof( BufferMemoryRequirementsInfo2 ) );
+      memcpy( (void*)this, &rhs, sizeof( BufferMemoryRequirementsInfo2 ) );
     }
 
     BufferMemoryRequirementsInfo2& operator=( VkBufferMemoryRequirementsInfo2 const & rhs )
     {
-      memcpy( this, &rhs, sizeof( BufferMemoryRequirementsInfo2 ) );
+      memcpy( (void*)this, &rhs, sizeof( BufferMemoryRequirementsInfo2 ) );
       return *this;
     }
 
@@ -20728,12 +20728,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     BufferViewCreateInfo( VkBufferViewCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( BufferViewCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( BufferViewCreateInfo ) );
     }
 
     BufferViewCreateInfo& operator=( VkBufferViewCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( BufferViewCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( BufferViewCreateInfo ) );
       return *this;
     }
 
@@ -20820,12 +20820,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     CalibratedTimestampInfoEXT( VkCalibratedTimestampInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( CalibratedTimestampInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( CalibratedTimestampInfoEXT ) );
     }
 
     CalibratedTimestampInfoEXT& operator=( VkCalibratedTimestampInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( CalibratedTimestampInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( CalibratedTimestampInfoEXT ) );
       return *this;
     }
 
@@ -20967,12 +20967,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ClearDepthStencilValue( VkClearDepthStencilValue const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ClearDepthStencilValue ) );
+      memcpy( (void*)this, &rhs, sizeof( ClearDepthStencilValue ) );
     }
 
     ClearDepthStencilValue& operator=( VkClearDepthStencilValue const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ClearDepthStencilValue ) );
+      memcpy( (void*)this, &rhs, sizeof( ClearDepthStencilValue ) );
       return *this;
     }
 
@@ -21069,12 +21069,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ClearAttachment( VkClearAttachment const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ClearAttachment ) );
+      memcpy( (void*)this, &rhs, sizeof( ClearAttachment ) );
     }
 
     ClearAttachment& operator=( VkClearAttachment const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ClearAttachment ) );
+      memcpy( (void*)this, &rhs, sizeof( ClearAttachment ) );
       return *this;
     }
 
@@ -21124,12 +21124,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ClearRect( VkClearRect const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ClearRect ) );
+      memcpy( (void*)this, &rhs, sizeof( ClearRect ) );
     }
 
     ClearRect& operator=( VkClearRect const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ClearRect ) );
+      memcpy( (void*)this, &rhs, sizeof( ClearRect ) );
       return *this;
     }
 
@@ -21191,12 +21191,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     IndirectCommandsTokenNVX( VkIndirectCommandsTokenNVX const & rhs )
     {
-      memcpy( this, &rhs, sizeof( IndirectCommandsTokenNVX ) );
+      memcpy( (void*)this, &rhs, sizeof( IndirectCommandsTokenNVX ) );
     }
 
     IndirectCommandsTokenNVX& operator=( VkIndirectCommandsTokenNVX const & rhs )
     {
-      memcpy( this, &rhs, sizeof( IndirectCommandsTokenNVX ) );
+      memcpy( (void*)this, &rhs, sizeof( IndirectCommandsTokenNVX ) );
       return *this;
     }
 
@@ -21272,12 +21272,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     CmdProcessCommandsInfoNVX( VkCmdProcessCommandsInfoNVX const & rhs )
     {
-      memcpy( this, &rhs, sizeof( CmdProcessCommandsInfoNVX ) );
+      memcpy( (void*)this, &rhs, sizeof( CmdProcessCommandsInfoNVX ) );
     }
 
     CmdProcessCommandsInfoNVX& operator=( VkCmdProcessCommandsInfoNVX const & rhs )
     {
-      memcpy( this, &rhs, sizeof( CmdProcessCommandsInfoNVX ) );
+      memcpy( (void*)this, &rhs, sizeof( CmdProcessCommandsInfoNVX ) );
       return *this;
     }
 
@@ -21408,12 +21408,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     CmdReserveSpaceForCommandsInfoNVX( VkCmdReserveSpaceForCommandsInfoNVX const & rhs )
     {
-      memcpy( this, &rhs, sizeof( CmdReserveSpaceForCommandsInfoNVX ) );
+      memcpy( (void*)this, &rhs, sizeof( CmdReserveSpaceForCommandsInfoNVX ) );
     }
 
     CmdReserveSpaceForCommandsInfoNVX& operator=( VkCmdReserveSpaceForCommandsInfoNVX const & rhs )
     {
-      memcpy( this, &rhs, sizeof( CmdReserveSpaceForCommandsInfoNVX ) );
+      memcpy( (void*)this, &rhs, sizeof( CmdReserveSpaceForCommandsInfoNVX ) );
       return *this;
     }
 
@@ -21488,12 +21488,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     CoarseSampleLocationNV( VkCoarseSampleLocationNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( CoarseSampleLocationNV ) );
+      memcpy( (void*)this, &rhs, sizeof( CoarseSampleLocationNV ) );
     }
 
     CoarseSampleLocationNV& operator=( VkCoarseSampleLocationNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( CoarseSampleLocationNV ) );
+      memcpy( (void*)this, &rhs, sizeof( CoarseSampleLocationNV ) );
       return *this;
     }
 
@@ -21557,12 +21557,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     CoarseSampleOrderCustomNV( VkCoarseSampleOrderCustomNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( CoarseSampleOrderCustomNV ) );
+      memcpy( (void*)this, &rhs, sizeof( CoarseSampleOrderCustomNV ) );
     }
 
     CoarseSampleOrderCustomNV& operator=( VkCoarseSampleOrderCustomNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( CoarseSampleOrderCustomNV ) );
+      memcpy( (void*)this, &rhs, sizeof( CoarseSampleOrderCustomNV ) );
       return *this;
     }
 
@@ -21632,12 +21632,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     CommandBufferAllocateInfo( VkCommandBufferAllocateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( CommandBufferAllocateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( CommandBufferAllocateInfo ) );
     }
 
     CommandBufferAllocateInfo& operator=( VkCommandBufferAllocateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( CommandBufferAllocateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( CommandBufferAllocateInfo ) );
       return *this;
     }
 
@@ -21718,12 +21718,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     CommandBufferInheritanceInfo( VkCommandBufferInheritanceInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( CommandBufferInheritanceInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( CommandBufferInheritanceInfo ) );
     }
 
     CommandBufferInheritanceInfo& operator=( VkCommandBufferInheritanceInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( CommandBufferInheritanceInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( CommandBufferInheritanceInfo ) );
       return *this;
     }
 
@@ -21820,12 +21820,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     CommandBufferBeginInfo( VkCommandBufferBeginInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( CommandBufferBeginInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( CommandBufferBeginInfo ) );
     }
 
     CommandBufferBeginInfo& operator=( VkCommandBufferBeginInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( CommandBufferBeginInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( CommandBufferBeginInfo ) );
       return *this;
     }
 
@@ -21888,12 +21888,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     CommandBufferInheritanceConditionalRenderingInfoEXT( VkCommandBufferInheritanceConditionalRenderingInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( CommandBufferInheritanceConditionalRenderingInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( CommandBufferInheritanceConditionalRenderingInfoEXT ) );
     }
 
     CommandBufferInheritanceConditionalRenderingInfoEXT& operator=( VkCommandBufferInheritanceConditionalRenderingInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( CommandBufferInheritanceConditionalRenderingInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( CommandBufferInheritanceConditionalRenderingInfoEXT ) );
       return *this;
     }
 
@@ -21950,12 +21950,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     CommandPoolCreateInfo( VkCommandPoolCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( CommandPoolCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( CommandPoolCreateInfo ) );
     }
 
     CommandPoolCreateInfo& operator=( VkCommandPoolCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( CommandPoolCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( CommandPoolCreateInfo ) );
       return *this;
     }
 
@@ -22022,12 +22022,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     SpecializationMapEntry( VkSpecializationMapEntry const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SpecializationMapEntry ) );
+      memcpy( (void*)this, &rhs, sizeof( SpecializationMapEntry ) );
     }
 
     SpecializationMapEntry& operator=( VkSpecializationMapEntry const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SpecializationMapEntry ) );
+      memcpy( (void*)this, &rhs, sizeof( SpecializationMapEntry ) );
       return *this;
     }
 
@@ -22091,12 +22091,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     SpecializationInfo( VkSpecializationInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SpecializationInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( SpecializationInfo ) );
     }
 
     SpecializationInfo& operator=( VkSpecializationInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SpecializationInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( SpecializationInfo ) );
       return *this;
     }
 
@@ -22170,12 +22170,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineShaderStageCreateInfo( VkPipelineShaderStageCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineShaderStageCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineShaderStageCreateInfo ) );
     }
 
     PipelineShaderStageCreateInfo& operator=( VkPipelineShaderStageCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineShaderStageCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineShaderStageCreateInfo ) );
       return *this;
     }
 
@@ -22270,12 +22270,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ComputePipelineCreateInfo( VkComputePipelineCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ComputePipelineCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( ComputePipelineCreateInfo ) );
     }
 
     ComputePipelineCreateInfo& operator=( VkComputePipelineCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ComputePipelineCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( ComputePipelineCreateInfo ) );
       return *this;
     }
 
@@ -22366,12 +22366,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ConditionalRenderingBeginInfoEXT( VkConditionalRenderingBeginInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ConditionalRenderingBeginInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( ConditionalRenderingBeginInfoEXT ) );
     }
 
     ConditionalRenderingBeginInfoEXT& operator=( VkConditionalRenderingBeginInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ConditionalRenderingBeginInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( ConditionalRenderingBeginInfoEXT ) );
       return *this;
     }
 
@@ -22448,12 +22448,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ConformanceVersionKHR( VkConformanceVersionKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ConformanceVersionKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( ConformanceVersionKHR ) );
     }
 
     ConformanceVersionKHR& operator=( VkConformanceVersionKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ConformanceVersionKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( ConformanceVersionKHR ) );
       return *this;
     }
 
@@ -22533,12 +22533,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     CooperativeMatrixPropertiesNV( VkCooperativeMatrixPropertiesNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( CooperativeMatrixPropertiesNV ) );
+      memcpy( (void*)this, &rhs, sizeof( CooperativeMatrixPropertiesNV ) );
     }
 
     CooperativeMatrixPropertiesNV& operator=( VkCooperativeMatrixPropertiesNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( CooperativeMatrixPropertiesNV ) );
+      memcpy( (void*)this, &rhs, sizeof( CooperativeMatrixPropertiesNV ) );
       return *this;
     }
 
@@ -22661,12 +22661,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     CopyDescriptorSet( VkCopyDescriptorSet const & rhs )
     {
-      memcpy( this, &rhs, sizeof( CopyDescriptorSet ) );
+      memcpy( (void*)this, &rhs, sizeof( CopyDescriptorSet ) );
     }
 
     CopyDescriptorSet& operator=( VkCopyDescriptorSet const & rhs )
     {
-      memcpy( this, &rhs, sizeof( CopyDescriptorSet ) );
+      memcpy( (void*)this, &rhs, sizeof( CopyDescriptorSet ) );
       return *this;
     }
 
@@ -22776,12 +22776,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     D3D12FenceSubmitInfoKHR( VkD3D12FenceSubmitInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( D3D12FenceSubmitInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( D3D12FenceSubmitInfoKHR ) );
     }
 
     D3D12FenceSubmitInfoKHR& operator=( VkD3D12FenceSubmitInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( D3D12FenceSubmitInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( D3D12FenceSubmitInfoKHR ) );
       return *this;
     }
 
@@ -22864,12 +22864,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DebugMarkerMarkerInfoEXT( VkDebugMarkerMarkerInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DebugMarkerMarkerInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( DebugMarkerMarkerInfoEXT ) );
     }
 
     DebugMarkerMarkerInfoEXT& operator=( VkDebugMarkerMarkerInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DebugMarkerMarkerInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( DebugMarkerMarkerInfoEXT ) );
       return *this;
     }
 
@@ -22936,12 +22936,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DebugMarkerObjectNameInfoEXT( VkDebugMarkerObjectNameInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DebugMarkerObjectNameInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( DebugMarkerObjectNameInfoEXT ) );
     }
 
     DebugMarkerObjectNameInfoEXT& operator=( VkDebugMarkerObjectNameInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DebugMarkerObjectNameInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( DebugMarkerObjectNameInfoEXT ) );
       return *this;
     }
 
@@ -23020,12 +23020,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DebugMarkerObjectTagInfoEXT( VkDebugMarkerObjectTagInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DebugMarkerObjectTagInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( DebugMarkerObjectTagInfoEXT ) );
     }
 
     DebugMarkerObjectTagInfoEXT& operator=( VkDebugMarkerObjectTagInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DebugMarkerObjectTagInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( DebugMarkerObjectTagInfoEXT ) );
       return *this;
     }
 
@@ -23116,12 +23116,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DebugReportCallbackCreateInfoEXT( VkDebugReportCallbackCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DebugReportCallbackCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( DebugReportCallbackCreateInfoEXT ) );
     }
 
     DebugReportCallbackCreateInfoEXT& operator=( VkDebugReportCallbackCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DebugReportCallbackCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( DebugReportCallbackCreateInfoEXT ) );
       return *this;
     }
 
@@ -23195,12 +23195,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DebugUtilsLabelEXT( VkDebugUtilsLabelEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DebugUtilsLabelEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( DebugUtilsLabelEXT ) );
     }
 
     DebugUtilsLabelEXT& operator=( VkDebugUtilsLabelEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DebugUtilsLabelEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( DebugUtilsLabelEXT ) );
       return *this;
     }
 
@@ -23267,12 +23267,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DebugUtilsObjectNameInfoEXT( VkDebugUtilsObjectNameInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DebugUtilsObjectNameInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( DebugUtilsObjectNameInfoEXT ) );
     }
 
     DebugUtilsObjectNameInfoEXT& operator=( VkDebugUtilsObjectNameInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DebugUtilsObjectNameInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( DebugUtilsObjectNameInfoEXT ) );
       return *this;
     }
 
@@ -23361,12 +23361,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DebugUtilsMessengerCallbackDataEXT( VkDebugUtilsMessengerCallbackDataEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DebugUtilsMessengerCallbackDataEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( DebugUtilsMessengerCallbackDataEXT ) );
     }
 
     DebugUtilsMessengerCallbackDataEXT& operator=( VkDebugUtilsMessengerCallbackDataEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DebugUtilsMessengerCallbackDataEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( DebugUtilsMessengerCallbackDataEXT ) );
       return *this;
     }
 
@@ -23501,12 +23501,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DebugUtilsMessengerCreateInfoEXT( VkDebugUtilsMessengerCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DebugUtilsMessengerCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( DebugUtilsMessengerCreateInfoEXT ) );
     }
 
     DebugUtilsMessengerCreateInfoEXT& operator=( VkDebugUtilsMessengerCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DebugUtilsMessengerCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( DebugUtilsMessengerCreateInfoEXT ) );
       return *this;
     }
 
@@ -23601,12 +23601,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DebugUtilsObjectTagInfoEXT( VkDebugUtilsObjectTagInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DebugUtilsObjectTagInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( DebugUtilsObjectTagInfoEXT ) );
     }
 
     DebugUtilsObjectTagInfoEXT& operator=( VkDebugUtilsObjectTagInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DebugUtilsObjectTagInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( DebugUtilsObjectTagInfoEXT ) );
       return *this;
     }
 
@@ -23693,12 +23693,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DedicatedAllocationBufferCreateInfoNV( VkDedicatedAllocationBufferCreateInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DedicatedAllocationBufferCreateInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( DedicatedAllocationBufferCreateInfoNV ) );
     }
 
     DedicatedAllocationBufferCreateInfoNV& operator=( VkDedicatedAllocationBufferCreateInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DedicatedAllocationBufferCreateInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( DedicatedAllocationBufferCreateInfoNV ) );
       return *this;
     }
 
@@ -23753,12 +23753,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DedicatedAllocationImageCreateInfoNV( VkDedicatedAllocationImageCreateInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DedicatedAllocationImageCreateInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( DedicatedAllocationImageCreateInfoNV ) );
     }
 
     DedicatedAllocationImageCreateInfoNV& operator=( VkDedicatedAllocationImageCreateInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DedicatedAllocationImageCreateInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( DedicatedAllocationImageCreateInfoNV ) );
       return *this;
     }
 
@@ -23815,12 +23815,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DedicatedAllocationMemoryAllocateInfoNV( VkDedicatedAllocationMemoryAllocateInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DedicatedAllocationMemoryAllocateInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( DedicatedAllocationMemoryAllocateInfoNV ) );
     }
 
     DedicatedAllocationMemoryAllocateInfoNV& operator=( VkDedicatedAllocationMemoryAllocateInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DedicatedAllocationMemoryAllocateInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( DedicatedAllocationMemoryAllocateInfoNV ) );
       return *this;
     }
 
@@ -23887,12 +23887,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DescriptorBufferInfo( VkDescriptorBufferInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DescriptorBufferInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( DescriptorBufferInfo ) );
     }
 
     DescriptorBufferInfo& operator=( VkDescriptorBufferInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DescriptorBufferInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( DescriptorBufferInfo ) );
       return *this;
     }
 
@@ -23954,12 +23954,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DescriptorImageInfo( VkDescriptorImageInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DescriptorImageInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( DescriptorImageInfo ) );
     }
 
     DescriptorImageInfo& operator=( VkDescriptorImageInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DescriptorImageInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( DescriptorImageInfo ) );
       return *this;
     }
 
@@ -24019,12 +24019,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DescriptorPoolSize( VkDescriptorPoolSize const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DescriptorPoolSize ) );
+      memcpy( (void*)this, &rhs, sizeof( DescriptorPoolSize ) );
     }
 
     DescriptorPoolSize& operator=( VkDescriptorPoolSize const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DescriptorPoolSize ) );
+      memcpy( (void*)this, &rhs, sizeof( DescriptorPoolSize ) );
       return *this;
     }
 
@@ -24080,12 +24080,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DescriptorPoolCreateInfo( VkDescriptorPoolCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DescriptorPoolCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( DescriptorPoolCreateInfo ) );
     }
 
     DescriptorPoolCreateInfo& operator=( VkDescriptorPoolCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DescriptorPoolCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( DescriptorPoolCreateInfo ) );
       return *this;
     }
 
@@ -24164,12 +24164,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DescriptorPoolInlineUniformBlockCreateInfoEXT( VkDescriptorPoolInlineUniformBlockCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DescriptorPoolInlineUniformBlockCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( DescriptorPoolInlineUniformBlockCreateInfoEXT ) );
     }
 
     DescriptorPoolInlineUniformBlockCreateInfoEXT& operator=( VkDescriptorPoolInlineUniformBlockCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DescriptorPoolInlineUniformBlockCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( DescriptorPoolInlineUniformBlockCreateInfoEXT ) );
       return *this;
     }
 
@@ -24228,12 +24228,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DescriptorSetAllocateInfo( VkDescriptorSetAllocateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DescriptorSetAllocateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( DescriptorSetAllocateInfo ) );
     }
 
     DescriptorSetAllocateInfo& operator=( VkDescriptorSetAllocateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DescriptorSetAllocateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( DescriptorSetAllocateInfo ) );
       return *this;
     }
 
@@ -24312,12 +24312,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DescriptorSetLayoutBinding( VkDescriptorSetLayoutBinding const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DescriptorSetLayoutBinding ) );
+      memcpy( (void*)this, &rhs, sizeof( DescriptorSetLayoutBinding ) );
     }
 
     DescriptorSetLayoutBinding& operator=( VkDescriptorSetLayoutBinding const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DescriptorSetLayoutBinding ) );
+      memcpy( (void*)this, &rhs, sizeof( DescriptorSetLayoutBinding ) );
       return *this;
     }
 
@@ -24393,12 +24393,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DescriptorSetLayoutBindingFlagsCreateInfoEXT( VkDescriptorSetLayoutBindingFlagsCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DescriptorSetLayoutBindingFlagsCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( DescriptorSetLayoutBindingFlagsCreateInfoEXT ) );
     }
 
     DescriptorSetLayoutBindingFlagsCreateInfoEXT& operator=( VkDescriptorSetLayoutBindingFlagsCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DescriptorSetLayoutBindingFlagsCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( DescriptorSetLayoutBindingFlagsCreateInfoEXT ) );
       return *this;
     }
 
@@ -24465,12 +24465,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DescriptorSetLayoutCreateInfo( VkDescriptorSetLayoutCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DescriptorSetLayoutCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( DescriptorSetLayoutCreateInfo ) );
     }
 
     DescriptorSetLayoutCreateInfo& operator=( VkDescriptorSetLayoutCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DescriptorSetLayoutCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( DescriptorSetLayoutCreateInfo ) );
       return *this;
     }
 
@@ -24576,12 +24576,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DescriptorSetVariableDescriptorCountAllocateInfoEXT( VkDescriptorSetVariableDescriptorCountAllocateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DescriptorSetVariableDescriptorCountAllocateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( DescriptorSetVariableDescriptorCountAllocateInfoEXT ) );
     }
 
     DescriptorSetVariableDescriptorCountAllocateInfoEXT& operator=( VkDescriptorSetVariableDescriptorCountAllocateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DescriptorSetVariableDescriptorCountAllocateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( DescriptorSetVariableDescriptorCountAllocateInfoEXT ) );
       return *this;
     }
 
@@ -24687,12 +24687,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DescriptorUpdateTemplateEntry( VkDescriptorUpdateTemplateEntry const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DescriptorUpdateTemplateEntry ) );
+      memcpy( (void*)this, &rhs, sizeof( DescriptorUpdateTemplateEntry ) );
     }
 
     DescriptorUpdateTemplateEntry& operator=( VkDescriptorUpdateTemplateEntry const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DescriptorUpdateTemplateEntry ) );
+      memcpy( (void*)this, &rhs, sizeof( DescriptorUpdateTemplateEntry ) );
       return *this;
     }
 
@@ -24788,12 +24788,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DescriptorUpdateTemplateCreateInfo( VkDescriptorUpdateTemplateCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DescriptorUpdateTemplateCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( DescriptorUpdateTemplateCreateInfo ) );
     }
 
     DescriptorUpdateTemplateCreateInfo& operator=( VkDescriptorUpdateTemplateCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DescriptorUpdateTemplateCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( DescriptorUpdateTemplateCreateInfo ) );
       return *this;
     }
 
@@ -24910,12 +24910,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DeviceQueueCreateInfo( VkDeviceQueueCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DeviceQueueCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( DeviceQueueCreateInfo ) );
     }
 
     DeviceQueueCreateInfo& operator=( VkDeviceQueueCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DeviceQueueCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( DeviceQueueCreateInfo ) );
       return *this;
     }
 
@@ -25102,12 +25102,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceFeatures( VkPhysicalDeviceFeatures const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceFeatures ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceFeatures ) );
     }
 
     PhysicalDeviceFeatures& operator=( VkPhysicalDeviceFeatures const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceFeatures ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceFeatures ) );
       return *this;
     }
 
@@ -25595,12 +25595,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DeviceCreateInfo( VkDeviceCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DeviceCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( DeviceCreateInfo ) );
     }
 
     DeviceCreateInfo& operator=( VkDeviceCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DeviceCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( DeviceCreateInfo ) );
       return *this;
     }
 
@@ -25711,12 +25711,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DeviceEventInfoEXT( VkDeviceEventInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DeviceEventInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( DeviceEventInfoEXT ) );
     }
 
     DeviceEventInfoEXT& operator=( VkDeviceEventInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DeviceEventInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( DeviceEventInfoEXT ) );
       return *this;
     }
 
@@ -25771,12 +25771,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DeviceGeneratedCommandsFeaturesNVX( VkDeviceGeneratedCommandsFeaturesNVX const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DeviceGeneratedCommandsFeaturesNVX ) );
+      memcpy( (void*)this, &rhs, sizeof( DeviceGeneratedCommandsFeaturesNVX ) );
     }
 
     DeviceGeneratedCommandsFeaturesNVX& operator=( VkDeviceGeneratedCommandsFeaturesNVX const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DeviceGeneratedCommandsFeaturesNVX ) );
+      memcpy( (void*)this, &rhs, sizeof( DeviceGeneratedCommandsFeaturesNVX ) );
       return *this;
     }
 
@@ -25839,12 +25839,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DeviceGeneratedCommandsLimitsNVX( VkDeviceGeneratedCommandsLimitsNVX const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DeviceGeneratedCommandsLimitsNVX ) );
+      memcpy( (void*)this, &rhs, sizeof( DeviceGeneratedCommandsLimitsNVX ) );
     }
 
     DeviceGeneratedCommandsLimitsNVX& operator=( VkDeviceGeneratedCommandsLimitsNVX const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DeviceGeneratedCommandsLimitsNVX ) );
+      memcpy( (void*)this, &rhs, sizeof( DeviceGeneratedCommandsLimitsNVX ) );
       return *this;
     }
 
@@ -25933,12 +25933,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DeviceGroupBindSparseInfo( VkDeviceGroupBindSparseInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DeviceGroupBindSparseInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( DeviceGroupBindSparseInfo ) );
     }
 
     DeviceGroupBindSparseInfo& operator=( VkDeviceGroupBindSparseInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DeviceGroupBindSparseInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( DeviceGroupBindSparseInfo ) );
       return *this;
     }
 
@@ -26001,12 +26001,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DeviceGroupCommandBufferBeginInfo( VkDeviceGroupCommandBufferBeginInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DeviceGroupCommandBufferBeginInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( DeviceGroupCommandBufferBeginInfo ) );
     }
 
     DeviceGroupCommandBufferBeginInfo& operator=( VkDeviceGroupCommandBufferBeginInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DeviceGroupCommandBufferBeginInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( DeviceGroupCommandBufferBeginInfo ) );
       return *this;
     }
 
@@ -26063,12 +26063,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DeviceGroupDeviceCreateInfo( VkDeviceGroupDeviceCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DeviceGroupDeviceCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( DeviceGroupDeviceCreateInfo ) );
     }
 
     DeviceGroupDeviceCreateInfo& operator=( VkDeviceGroupDeviceCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DeviceGroupDeviceCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( DeviceGroupDeviceCreateInfo ) );
       return *this;
     }
 
@@ -26170,12 +26170,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DeviceGroupPresentInfoKHR( VkDeviceGroupPresentInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DeviceGroupPresentInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( DeviceGroupPresentInfoKHR ) );
     }
 
     DeviceGroupPresentInfoKHR& operator=( VkDeviceGroupPresentInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DeviceGroupPresentInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( DeviceGroupPresentInfoKHR ) );
       return *this;
     }
 
@@ -26250,12 +26250,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DeviceGroupRenderPassBeginInfo( VkDeviceGroupRenderPassBeginInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DeviceGroupRenderPassBeginInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( DeviceGroupRenderPassBeginInfo ) );
     }
 
     DeviceGroupRenderPassBeginInfo& operator=( VkDeviceGroupRenderPassBeginInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DeviceGroupRenderPassBeginInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( DeviceGroupRenderPassBeginInfo ) );
       return *this;
     }
 
@@ -26336,12 +26336,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DeviceGroupSubmitInfo( VkDeviceGroupSubmitInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DeviceGroupSubmitInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( DeviceGroupSubmitInfo ) );
     }
 
     DeviceGroupSubmitInfo& operator=( VkDeviceGroupSubmitInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DeviceGroupSubmitInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( DeviceGroupSubmitInfo ) );
       return *this;
     }
 
@@ -26436,12 +26436,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DeviceGroupSwapchainCreateInfoKHR( VkDeviceGroupSwapchainCreateInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DeviceGroupSwapchainCreateInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( DeviceGroupSwapchainCreateInfoKHR ) );
     }
 
     DeviceGroupSwapchainCreateInfoKHR& operator=( VkDeviceGroupSwapchainCreateInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DeviceGroupSwapchainCreateInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( DeviceGroupSwapchainCreateInfoKHR ) );
       return *this;
     }
 
@@ -26496,12 +26496,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DeviceMemoryOverallocationCreateInfoAMD( VkDeviceMemoryOverallocationCreateInfoAMD const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DeviceMemoryOverallocationCreateInfoAMD ) );
+      memcpy( (void*)this, &rhs, sizeof( DeviceMemoryOverallocationCreateInfoAMD ) );
     }
 
     DeviceMemoryOverallocationCreateInfoAMD& operator=( VkDeviceMemoryOverallocationCreateInfoAMD const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DeviceMemoryOverallocationCreateInfoAMD ) );
+      memcpy( (void*)this, &rhs, sizeof( DeviceMemoryOverallocationCreateInfoAMD ) );
       return *this;
     }
 
@@ -26556,12 +26556,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DeviceQueueGlobalPriorityCreateInfoEXT( VkDeviceQueueGlobalPriorityCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DeviceQueueGlobalPriorityCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( DeviceQueueGlobalPriorityCreateInfoEXT ) );
     }
 
     DeviceQueueGlobalPriorityCreateInfoEXT& operator=( VkDeviceQueueGlobalPriorityCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DeviceQueueGlobalPriorityCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( DeviceQueueGlobalPriorityCreateInfoEXT ) );
       return *this;
     }
 
@@ -26620,12 +26620,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DeviceQueueInfo2( VkDeviceQueueInfo2 const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DeviceQueueInfo2 ) );
+      memcpy( (void*)this, &rhs, sizeof( DeviceQueueInfo2 ) );
     }
 
     DeviceQueueInfo2& operator=( VkDeviceQueueInfo2 const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DeviceQueueInfo2 ) );
+      memcpy( (void*)this, &rhs, sizeof( DeviceQueueInfo2 ) );
       return *this;
     }
 
@@ -26700,12 +26700,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DispatchIndirectCommand( VkDispatchIndirectCommand const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DispatchIndirectCommand ) );
+      memcpy( (void*)this, &rhs, sizeof( DispatchIndirectCommand ) );
     }
 
     DispatchIndirectCommand& operator=( VkDispatchIndirectCommand const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DispatchIndirectCommand ) );
+      memcpy( (void*)this, &rhs, sizeof( DispatchIndirectCommand ) );
       return *this;
     }
 
@@ -26763,12 +26763,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DisplayEventInfoEXT( VkDisplayEventInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DisplayEventInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( DisplayEventInfoEXT ) );
     }
 
     DisplayEventInfoEXT& operator=( VkDisplayEventInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DisplayEventInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( DisplayEventInfoEXT ) );
       return *this;
     }
 
@@ -26825,12 +26825,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DisplayModeParametersKHR( VkDisplayModeParametersKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DisplayModeParametersKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( DisplayModeParametersKHR ) );
     }
 
     DisplayModeParametersKHR& operator=( VkDisplayModeParametersKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DisplayModeParametersKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( DisplayModeParametersKHR ) );
       return *this;
     }
 
@@ -26882,12 +26882,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DisplayModeCreateInfoKHR( VkDisplayModeCreateInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DisplayModeCreateInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( DisplayModeCreateInfoKHR ) );
     }
 
     DisplayModeCreateInfoKHR& operator=( VkDisplayModeCreateInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DisplayModeCreateInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( DisplayModeCreateInfoKHR ) );
       return *this;
     }
 
@@ -27121,12 +27121,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DisplayPlaneInfo2KHR( VkDisplayPlaneInfo2KHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DisplayPlaneInfo2KHR ) );
+      memcpy( (void*)this, &rhs, sizeof( DisplayPlaneInfo2KHR ) );
     }
 
     DisplayPlaneInfo2KHR& operator=( VkDisplayPlaneInfo2KHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DisplayPlaneInfo2KHR ) );
+      memcpy( (void*)this, &rhs, sizeof( DisplayPlaneInfo2KHR ) );
       return *this;
     }
 
@@ -27250,12 +27250,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DisplayPowerInfoEXT( VkDisplayPowerInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DisplayPowerInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( DisplayPowerInfoEXT ) );
     }
 
     DisplayPowerInfoEXT& operator=( VkDisplayPowerInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DisplayPowerInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( DisplayPowerInfoEXT ) );
       return *this;
     }
 
@@ -27314,12 +27314,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DisplayPresentInfoKHR( VkDisplayPresentInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DisplayPresentInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( DisplayPresentInfoKHR ) );
     }
 
     DisplayPresentInfoKHR& operator=( VkDisplayPresentInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DisplayPresentInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( DisplayPresentInfoKHR ) );
       return *this;
     }
 
@@ -27475,12 +27475,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DisplaySurfaceCreateInfoKHR( VkDisplaySurfaceCreateInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DisplaySurfaceCreateInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( DisplaySurfaceCreateInfoKHR ) );
     }
 
     DisplaySurfaceCreateInfoKHR& operator=( VkDisplaySurfaceCreateInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DisplaySurfaceCreateInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( DisplaySurfaceCreateInfoKHR ) );
       return *this;
     }
 
@@ -27599,12 +27599,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DrawIndexedIndirectCommand( VkDrawIndexedIndirectCommand const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DrawIndexedIndirectCommand ) );
+      memcpy( (void*)this, &rhs, sizeof( DrawIndexedIndirectCommand ) );
     }
 
     DrawIndexedIndirectCommand& operator=( VkDrawIndexedIndirectCommand const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DrawIndexedIndirectCommand ) );
+      memcpy( (void*)this, &rhs, sizeof( DrawIndexedIndirectCommand ) );
       return *this;
     }
 
@@ -27684,12 +27684,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DrawIndirectCommand( VkDrawIndirectCommand const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DrawIndirectCommand ) );
+      memcpy( (void*)this, &rhs, sizeof( DrawIndirectCommand ) );
     }
 
     DrawIndirectCommand& operator=( VkDrawIndirectCommand const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DrawIndirectCommand ) );
+      memcpy( (void*)this, &rhs, sizeof( DrawIndirectCommand ) );
       return *this;
     }
 
@@ -27757,12 +27757,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     DrawMeshTasksIndirectCommandNV( VkDrawMeshTasksIndirectCommandNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DrawMeshTasksIndirectCommandNV ) );
+      memcpy( (void*)this, &rhs, sizeof( DrawMeshTasksIndirectCommandNV ) );
     }
 
     DrawMeshTasksIndirectCommandNV& operator=( VkDrawMeshTasksIndirectCommandNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( DrawMeshTasksIndirectCommandNV ) );
+      memcpy( (void*)this, &rhs, sizeof( DrawMeshTasksIndirectCommandNV ) );
       return *this;
     }
 
@@ -27877,12 +27877,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     EventCreateInfo( VkEventCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( EventCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( EventCreateInfo ) );
     }
 
     EventCreateInfo& operator=( VkEventCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( EventCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( EventCreateInfo ) );
       return *this;
     }
 
@@ -27937,12 +27937,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ExportFenceCreateInfo( VkExportFenceCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ExportFenceCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( ExportFenceCreateInfo ) );
     }
 
     ExportFenceCreateInfo& operator=( VkExportFenceCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ExportFenceCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( ExportFenceCreateInfo ) );
       return *this;
     }
 
@@ -28002,12 +28002,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ExportFenceWin32HandleInfoKHR( VkExportFenceWin32HandleInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ExportFenceWin32HandleInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( ExportFenceWin32HandleInfoKHR ) );
     }
 
     ExportFenceWin32HandleInfoKHR& operator=( VkExportFenceWin32HandleInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ExportFenceWin32HandleInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( ExportFenceWin32HandleInfoKHR ) );
       return *this;
     }
 
@@ -28079,12 +28079,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ExportMemoryAllocateInfo( VkExportMemoryAllocateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ExportMemoryAllocateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( ExportMemoryAllocateInfo ) );
     }
 
     ExportMemoryAllocateInfo& operator=( VkExportMemoryAllocateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ExportMemoryAllocateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( ExportMemoryAllocateInfo ) );
       return *this;
     }
 
@@ -28139,12 +28139,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ExportMemoryAllocateInfoNV( VkExportMemoryAllocateInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ExportMemoryAllocateInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( ExportMemoryAllocateInfoNV ) );
     }
 
     ExportMemoryAllocateInfoNV& operator=( VkExportMemoryAllocateInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ExportMemoryAllocateInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( ExportMemoryAllocateInfoNV ) );
       return *this;
     }
 
@@ -28204,12 +28204,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ExportMemoryWin32HandleInfoKHR( VkExportMemoryWin32HandleInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ExportMemoryWin32HandleInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( ExportMemoryWin32HandleInfoKHR ) );
     }
 
     ExportMemoryWin32HandleInfoKHR& operator=( VkExportMemoryWin32HandleInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ExportMemoryWin32HandleInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( ExportMemoryWin32HandleInfoKHR ) );
       return *this;
     }
 
@@ -28284,12 +28284,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ExportMemoryWin32HandleInfoNV( VkExportMemoryWin32HandleInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ExportMemoryWin32HandleInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( ExportMemoryWin32HandleInfoNV ) );
     }
 
     ExportMemoryWin32HandleInfoNV& operator=( VkExportMemoryWin32HandleInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ExportMemoryWin32HandleInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( ExportMemoryWin32HandleInfoNV ) );
       return *this;
     }
 
@@ -28353,12 +28353,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ExportSemaphoreCreateInfo( VkExportSemaphoreCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ExportSemaphoreCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( ExportSemaphoreCreateInfo ) );
     }
 
     ExportSemaphoreCreateInfo& operator=( VkExportSemaphoreCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ExportSemaphoreCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( ExportSemaphoreCreateInfo ) );
       return *this;
     }
 
@@ -28418,12 +28418,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ExportSemaphoreWin32HandleInfoKHR( VkExportSemaphoreWin32HandleInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ExportSemaphoreWin32HandleInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( ExportSemaphoreWin32HandleInfoKHR ) );
     }
 
     ExportSemaphoreWin32HandleInfoKHR& operator=( VkExportSemaphoreWin32HandleInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ExportSemaphoreWin32HandleInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( ExportSemaphoreWin32HandleInfoKHR ) );
       return *this;
     }
 
@@ -28624,12 +28624,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ExternalFormatANDROID( VkExternalFormatANDROID const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ExternalFormatANDROID ) );
+      memcpy( (void*)this, &rhs, sizeof( ExternalFormatANDROID ) );
     }
 
     ExternalFormatANDROID& operator=( VkExternalFormatANDROID const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ExternalFormatANDROID ) );
+      memcpy( (void*)this, &rhs, sizeof( ExternalFormatANDROID ) );
       return *this;
     }
 
@@ -28784,12 +28784,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ExternalMemoryBufferCreateInfo( VkExternalMemoryBufferCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ExternalMemoryBufferCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( ExternalMemoryBufferCreateInfo ) );
     }
 
     ExternalMemoryBufferCreateInfo& operator=( VkExternalMemoryBufferCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ExternalMemoryBufferCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( ExternalMemoryBufferCreateInfo ) );
       return *this;
     }
 
@@ -28844,12 +28844,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ExternalMemoryImageCreateInfo( VkExternalMemoryImageCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ExternalMemoryImageCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( ExternalMemoryImageCreateInfo ) );
     }
 
     ExternalMemoryImageCreateInfo& operator=( VkExternalMemoryImageCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ExternalMemoryImageCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( ExternalMemoryImageCreateInfo ) );
       return *this;
     }
 
@@ -28904,12 +28904,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ExternalMemoryImageCreateInfoNV( VkExternalMemoryImageCreateInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ExternalMemoryImageCreateInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( ExternalMemoryImageCreateInfoNV ) );
     }
 
     ExternalMemoryImageCreateInfoNV& operator=( VkExternalMemoryImageCreateInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ExternalMemoryImageCreateInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( ExternalMemoryImageCreateInfoNV ) );
       return *this;
     }
 
@@ -29001,12 +29001,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     FenceCreateInfo( VkFenceCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( FenceCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( FenceCreateInfo ) );
     }
 
     FenceCreateInfo& operator=( VkFenceCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( FenceCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( FenceCreateInfo ) );
       return *this;
     }
 
@@ -29063,12 +29063,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     FenceGetFdInfoKHR( VkFenceGetFdInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( FenceGetFdInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( FenceGetFdInfoKHR ) );
     }
 
     FenceGetFdInfoKHR& operator=( VkFenceGetFdInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( FenceGetFdInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( FenceGetFdInfoKHR ) );
       return *this;
     }
 
@@ -29134,12 +29134,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     FenceGetWin32HandleInfoKHR( VkFenceGetWin32HandleInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( FenceGetWin32HandleInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( FenceGetWin32HandleInfoKHR ) );
     }
 
     FenceGetWin32HandleInfoKHR& operator=( VkFenceGetWin32HandleInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( FenceGetWin32HandleInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( FenceGetWin32HandleInfoKHR ) );
       return *this;
     }
 
@@ -29313,12 +29313,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     FramebufferCreateInfo( VkFramebufferCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( FramebufferCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( FramebufferCreateInfo ) );
     }
 
     FramebufferCreateInfo& operator=( VkFramebufferCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( FramebufferCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( FramebufferCreateInfo ) );
       return *this;
     }
 
@@ -29464,12 +29464,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     VertexInputBindingDescription( VkVertexInputBindingDescription const & rhs )
     {
-      memcpy( this, &rhs, sizeof( VertexInputBindingDescription ) );
+      memcpy( (void*)this, &rhs, sizeof( VertexInputBindingDescription ) );
     }
 
     VertexInputBindingDescription& operator=( VkVertexInputBindingDescription const & rhs )
     {
-      memcpy( this, &rhs, sizeof( VertexInputBindingDescription ) );
+      memcpy( (void*)this, &rhs, sizeof( VertexInputBindingDescription ) );
       return *this;
     }
 
@@ -29533,12 +29533,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     VertexInputAttributeDescription( VkVertexInputAttributeDescription const & rhs )
     {
-      memcpy( this, &rhs, sizeof( VertexInputAttributeDescription ) );
+      memcpy( (void*)this, &rhs, sizeof( VertexInputAttributeDescription ) );
     }
 
     VertexInputAttributeDescription& operator=( VkVertexInputAttributeDescription const & rhs )
     {
-      memcpy( this, &rhs, sizeof( VertexInputAttributeDescription ) );
+      memcpy( (void*)this, &rhs, sizeof( VertexInputAttributeDescription ) );
       return *this;
     }
 
@@ -29612,12 +29612,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineVertexInputStateCreateInfo( VkPipelineVertexInputStateCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineVertexInputStateCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineVertexInputStateCreateInfo ) );
     }
 
     PipelineVertexInputStateCreateInfo& operator=( VkPipelineVertexInputStateCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineVertexInputStateCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineVertexInputStateCreateInfo ) );
       return *this;
     }
 
@@ -29708,12 +29708,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineInputAssemblyStateCreateInfo( VkPipelineInputAssemblyStateCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineInputAssemblyStateCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineInputAssemblyStateCreateInfo ) );
     }
 
     PipelineInputAssemblyStateCreateInfo& operator=( VkPipelineInputAssemblyStateCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineInputAssemblyStateCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineInputAssemblyStateCreateInfo ) );
       return *this;
     }
 
@@ -29786,12 +29786,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineTessellationStateCreateInfo( VkPipelineTessellationStateCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineTessellationStateCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineTessellationStateCreateInfo ) );
     }
 
     PipelineTessellationStateCreateInfo& operator=( VkPipelineTessellationStateCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineTessellationStateCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineTessellationStateCreateInfo ) );
       return *this;
     }
 
@@ -29864,12 +29864,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     Viewport( VkViewport const & rhs )
     {
-      memcpy( this, &rhs, sizeof( Viewport ) );
+      memcpy( (void*)this, &rhs, sizeof( Viewport ) );
     }
 
     Viewport& operator=( VkViewport const & rhs )
     {
-      memcpy( this, &rhs, sizeof( Viewport ) );
+      memcpy( (void*)this, &rhs, sizeof( Viewport ) );
       return *this;
     }
 
@@ -29959,12 +29959,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineViewportStateCreateInfo( VkPipelineViewportStateCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineViewportStateCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineViewportStateCreateInfo ) );
     }
 
     PipelineViewportStateCreateInfo& operator=( VkPipelineViewportStateCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineViewportStateCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineViewportStateCreateInfo ) );
       return *this;
     }
 
@@ -30071,12 +30071,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineRasterizationStateCreateInfo( VkPipelineRasterizationStateCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineRasterizationStateCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineRasterizationStateCreateInfo ) );
     }
 
     PipelineRasterizationStateCreateInfo& operator=( VkPipelineRasterizationStateCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineRasterizationStateCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineRasterizationStateCreateInfo ) );
       return *this;
     }
 
@@ -30223,12 +30223,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineMultisampleStateCreateInfo( VkPipelineMultisampleStateCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineMultisampleStateCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineMultisampleStateCreateInfo ) );
     }
 
     PipelineMultisampleStateCreateInfo& operator=( VkPipelineMultisampleStateCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineMultisampleStateCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineMultisampleStateCreateInfo ) );
       return *this;
     }
 
@@ -30343,12 +30343,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     StencilOpState( VkStencilOpState const & rhs )
     {
-      memcpy( this, &rhs, sizeof( StencilOpState ) );
+      memcpy( (void*)this, &rhs, sizeof( StencilOpState ) );
     }
 
     StencilOpState& operator=( VkStencilOpState const & rhs )
     {
-      memcpy( this, &rhs, sizeof( StencilOpState ) );
+      memcpy( (void*)this, &rhs, sizeof( StencilOpState ) );
       return *this;
     }
 
@@ -30456,12 +30456,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineDepthStencilStateCreateInfo( VkPipelineDepthStencilStateCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineDepthStencilStateCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineDepthStencilStateCreateInfo ) );
     }
 
     PipelineDepthStencilStateCreateInfo& operator=( VkPipelineDepthStencilStateCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineDepthStencilStateCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineDepthStencilStateCreateInfo ) );
       return *this;
     }
 
@@ -30602,12 +30602,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineColorBlendAttachmentState( VkPipelineColorBlendAttachmentState const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineColorBlendAttachmentState ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineColorBlendAttachmentState ) );
     }
 
     PipelineColorBlendAttachmentState& operator=( VkPipelineColorBlendAttachmentState const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineColorBlendAttachmentState ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineColorBlendAttachmentState ) );
       return *this;
     }
 
@@ -30716,12 +30716,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineColorBlendStateCreateInfo( VkPipelineColorBlendStateCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineColorBlendStateCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineColorBlendStateCreateInfo ) );
     }
 
     PipelineColorBlendStateCreateInfo& operator=( VkPipelineColorBlendStateCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineColorBlendStateCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineColorBlendStateCreateInfo ) );
       return *this;
     }
 
@@ -30820,12 +30820,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineDynamicStateCreateInfo( VkPipelineDynamicStateCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineDynamicStateCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineDynamicStateCreateInfo ) );
     }
 
     PipelineDynamicStateCreateInfo& operator=( VkPipelineDynamicStateCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineDynamicStateCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineDynamicStateCreateInfo ) );
       return *this;
     }
 
@@ -30928,12 +30928,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     GraphicsPipelineCreateInfo( VkGraphicsPipelineCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( GraphicsPipelineCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( GraphicsPipelineCreateInfo ) );
     }
 
     GraphicsPipelineCreateInfo& operator=( VkGraphicsPipelineCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( GraphicsPipelineCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( GraphicsPipelineCreateInfo ) );
       return *this;
     }
 
@@ -31118,12 +31118,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     XYColorEXT( VkXYColorEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( XYColorEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( XYColorEXT ) );
     }
 
     XYColorEXT& operator=( VkXYColorEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( XYColorEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( XYColorEXT ) );
       return *this;
     }
 
@@ -31187,12 +31187,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     HdrMetadataEXT( VkHdrMetadataEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( HdrMetadataEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( HdrMetadataEXT ) );
     }
 
     HdrMetadataEXT& operator=( VkHdrMetadataEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( HdrMetadataEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( HdrMetadataEXT ) );
       return *this;
     }
 
@@ -31303,12 +31303,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     HeadlessSurfaceCreateInfoEXT( VkHeadlessSurfaceCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( HeadlessSurfaceCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( HeadlessSurfaceCreateInfoEXT ) );
     }
 
     HeadlessSurfaceCreateInfoEXT& operator=( VkHeadlessSurfaceCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( HeadlessSurfaceCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( HeadlessSurfaceCreateInfoEXT ) );
       return *this;
     }
 
@@ -31366,12 +31366,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     IOSSurfaceCreateInfoMVK( VkIOSSurfaceCreateInfoMVK const & rhs )
     {
-      memcpy( this, &rhs, sizeof( IOSSurfaceCreateInfoMVK ) );
+      memcpy( (void*)this, &rhs, sizeof( IOSSurfaceCreateInfoMVK ) );
     }
 
     IOSSurfaceCreateInfoMVK& operator=( VkIOSSurfaceCreateInfoMVK const & rhs )
     {
-      memcpy( this, &rhs, sizeof( IOSSurfaceCreateInfoMVK ) );
+      memcpy( (void*)this, &rhs, sizeof( IOSSurfaceCreateInfoMVK ) );
       return *this;
     }
 
@@ -31442,12 +31442,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImageBlit( VkImageBlit const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImageBlit ) );
+      memcpy( (void*)this, &rhs, sizeof( ImageBlit ) );
     }
 
     ImageBlit& operator=( VkImageBlit const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImageBlit ) );
+      memcpy( (void*)this, &rhs, sizeof( ImageBlit ) );
       return *this;
     }
 
@@ -31521,12 +31521,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImageCopy( VkImageCopy const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImageCopy ) );
+      memcpy( (void*)this, &rhs, sizeof( ImageCopy ) );
     }
 
     ImageCopy& operator=( VkImageCopy const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImageCopy ) );
+      memcpy( (void*)this, &rhs, sizeof( ImageCopy ) );
       return *this;
     }
 
@@ -31624,12 +31624,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImageCreateInfo( VkImageCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImageCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( ImageCreateInfo ) );
     }
 
     ImageCreateInfo& operator=( VkImageCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImageCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( ImageCreateInfo ) );
       return *this;
     }
 
@@ -31818,12 +31818,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImageDrmFormatModifierExplicitCreateInfoEXT( VkImageDrmFormatModifierExplicitCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImageDrmFormatModifierExplicitCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( ImageDrmFormatModifierExplicitCreateInfoEXT ) );
     }
 
     ImageDrmFormatModifierExplicitCreateInfoEXT& operator=( VkImageDrmFormatModifierExplicitCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImageDrmFormatModifierExplicitCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( ImageDrmFormatModifierExplicitCreateInfoEXT ) );
       return *this;
     }
 
@@ -31896,12 +31896,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImageDrmFormatModifierListCreateInfoEXT( VkImageDrmFormatModifierListCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImageDrmFormatModifierListCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( ImageDrmFormatModifierListCreateInfoEXT ) );
     }
 
     ImageDrmFormatModifierListCreateInfoEXT& operator=( VkImageDrmFormatModifierListCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImageDrmFormatModifierListCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( ImageDrmFormatModifierListCreateInfoEXT ) );
       return *this;
     }
 
@@ -31999,12 +31999,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImageFormatListCreateInfoKHR( VkImageFormatListCreateInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImageFormatListCreateInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( ImageFormatListCreateInfoKHR ) );
     }
 
     ImageFormatListCreateInfoKHR& operator=( VkImageFormatListCreateInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImageFormatListCreateInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( ImageFormatListCreateInfoKHR ) );
       return *this;
     }
 
@@ -32108,12 +32108,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImageSubresourceRange( VkImageSubresourceRange const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImageSubresourceRange ) );
+      memcpy( (void*)this, &rhs, sizeof( ImageSubresourceRange ) );
     }
 
     ImageSubresourceRange& operator=( VkImageSubresourceRange const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImageSubresourceRange ) );
+      memcpy( (void*)this, &rhs, sizeof( ImageSubresourceRange ) );
       return *this;
     }
 
@@ -32201,12 +32201,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImageMemoryBarrier( VkImageMemoryBarrier const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImageMemoryBarrier ) );
+      memcpy( (void*)this, &rhs, sizeof( ImageMemoryBarrier ) );
     }
 
     ImageMemoryBarrier& operator=( VkImageMemoryBarrier const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImageMemoryBarrier ) );
+      memcpy( (void*)this, &rhs, sizeof( ImageMemoryBarrier ) );
       return *this;
     }
 
@@ -32317,12 +32317,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImageMemoryRequirementsInfo2( VkImageMemoryRequirementsInfo2 const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImageMemoryRequirementsInfo2 ) );
+      memcpy( (void*)this, &rhs, sizeof( ImageMemoryRequirementsInfo2 ) );
     }
 
     ImageMemoryRequirementsInfo2& operator=( VkImageMemoryRequirementsInfo2 const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImageMemoryRequirementsInfo2 ) );
+      memcpy( (void*)this, &rhs, sizeof( ImageMemoryRequirementsInfo2 ) );
       return *this;
     }
 
@@ -32380,12 +32380,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImagePipeSurfaceCreateInfoFUCHSIA( VkImagePipeSurfaceCreateInfoFUCHSIA const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImagePipeSurfaceCreateInfoFUCHSIA ) );
+      memcpy( (void*)this, &rhs, sizeof( ImagePipeSurfaceCreateInfoFUCHSIA ) );
     }
 
     ImagePipeSurfaceCreateInfoFUCHSIA& operator=( VkImagePipeSurfaceCreateInfoFUCHSIA const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImagePipeSurfaceCreateInfoFUCHSIA ) );
+      memcpy( (void*)this, &rhs, sizeof( ImagePipeSurfaceCreateInfoFUCHSIA ) );
       return *this;
     }
 
@@ -32449,12 +32449,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImagePlaneMemoryRequirementsInfo( VkImagePlaneMemoryRequirementsInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImagePlaneMemoryRequirementsInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( ImagePlaneMemoryRequirementsInfo ) );
     }
 
     ImagePlaneMemoryRequirementsInfo& operator=( VkImagePlaneMemoryRequirementsInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImagePlaneMemoryRequirementsInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( ImagePlaneMemoryRequirementsInfo ) );
       return *this;
     }
 
@@ -32517,12 +32517,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImageResolve( VkImageResolve const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImageResolve ) );
+      memcpy( (void*)this, &rhs, sizeof( ImageResolve ) );
     }
 
     ImageResolve& operator=( VkImageResolve const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImageResolve ) );
+      memcpy( (void*)this, &rhs, sizeof( ImageResolve ) );
       return *this;
     }
 
@@ -32596,12 +32596,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImageSparseMemoryRequirementsInfo2( VkImageSparseMemoryRequirementsInfo2 const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImageSparseMemoryRequirementsInfo2 ) );
+      memcpy( (void*)this, &rhs, sizeof( ImageSparseMemoryRequirementsInfo2 ) );
     }
 
     ImageSparseMemoryRequirementsInfo2& operator=( VkImageSparseMemoryRequirementsInfo2 const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImageSparseMemoryRequirementsInfo2 ) );
+      memcpy( (void*)this, &rhs, sizeof( ImageSparseMemoryRequirementsInfo2 ) );
       return *this;
     }
 
@@ -32656,12 +32656,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImageStencilUsageCreateInfoEXT( VkImageStencilUsageCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImageStencilUsageCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( ImageStencilUsageCreateInfoEXT ) );
     }
 
     ImageStencilUsageCreateInfoEXT& operator=( VkImageStencilUsageCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImageStencilUsageCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( ImageStencilUsageCreateInfoEXT ) );
       return *this;
     }
 
@@ -32716,12 +32716,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImageSwapchainCreateInfoKHR( VkImageSwapchainCreateInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImageSwapchainCreateInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( ImageSwapchainCreateInfoKHR ) );
     }
 
     ImageSwapchainCreateInfoKHR& operator=( VkImageSwapchainCreateInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImageSwapchainCreateInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( ImageSwapchainCreateInfoKHR ) );
       return *this;
     }
 
@@ -32776,12 +32776,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImageViewASTCDecodeModeEXT( VkImageViewASTCDecodeModeEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImageViewASTCDecodeModeEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( ImageViewASTCDecodeModeEXT ) );
     }
 
     ImageViewASTCDecodeModeEXT& operator=( VkImageViewASTCDecodeModeEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImageViewASTCDecodeModeEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( ImageViewASTCDecodeModeEXT ) );
       return *this;
     }
 
@@ -32846,12 +32846,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImageViewCreateInfo( VkImageViewCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImageViewCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( ImageViewCreateInfo ) );
     }
 
     ImageViewCreateInfo& operator=( VkImageViewCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImageViewCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( ImageViewCreateInfo ) );
       return *this;
     }
 
@@ -32950,12 +32950,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImageViewHandleInfoNVX( VkImageViewHandleInfoNVX const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImageViewHandleInfoNVX ) );
+      memcpy( (void*)this, &rhs, sizeof( ImageViewHandleInfoNVX ) );
     }
 
     ImageViewHandleInfoNVX& operator=( VkImageViewHandleInfoNVX const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImageViewHandleInfoNVX ) );
+      memcpy( (void*)this, &rhs, sizeof( ImageViewHandleInfoNVX ) );
       return *this;
     }
 
@@ -33026,12 +33026,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImageViewUsageCreateInfo( VkImageViewUsageCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImageViewUsageCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( ImageViewUsageCreateInfo ) );
     }
 
     ImageViewUsageCreateInfo& operator=( VkImageViewUsageCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImageViewUsageCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( ImageViewUsageCreateInfo ) );
       return *this;
     }
 
@@ -33087,12 +33087,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImportAndroidHardwareBufferInfoANDROID( VkImportAndroidHardwareBufferInfoANDROID const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImportAndroidHardwareBufferInfoANDROID ) );
+      memcpy( (void*)this, &rhs, sizeof( ImportAndroidHardwareBufferInfoANDROID ) );
     }
 
     ImportAndroidHardwareBufferInfoANDROID& operator=( VkImportAndroidHardwareBufferInfoANDROID const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImportAndroidHardwareBufferInfoANDROID ) );
+      memcpy( (void*)this, &rhs, sizeof( ImportAndroidHardwareBufferInfoANDROID ) );
       return *this;
     }
 
@@ -33154,12 +33154,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImportFenceFdInfoKHR( VkImportFenceFdInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImportFenceFdInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( ImportFenceFdInfoKHR ) );
     }
 
     ImportFenceFdInfoKHR& operator=( VkImportFenceFdInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImportFenceFdInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( ImportFenceFdInfoKHR ) );
       return *this;
     }
 
@@ -33247,12 +33247,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImportFenceWin32HandleInfoKHR( VkImportFenceWin32HandleInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImportFenceWin32HandleInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( ImportFenceWin32HandleInfoKHR ) );
     }
 
     ImportFenceWin32HandleInfoKHR& operator=( VkImportFenceWin32HandleInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImportFenceWin32HandleInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( ImportFenceWin32HandleInfoKHR ) );
       return *this;
     }
 
@@ -33342,12 +33342,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImportMemoryFdInfoKHR( VkImportMemoryFdInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImportMemoryFdInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( ImportMemoryFdInfoKHR ) );
     }
 
     ImportMemoryFdInfoKHR& operator=( VkImportMemoryFdInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImportMemoryFdInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( ImportMemoryFdInfoKHR ) );
       return *this;
     }
 
@@ -33412,12 +33412,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImportMemoryHostPointerInfoEXT( VkImportMemoryHostPointerInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImportMemoryHostPointerInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( ImportMemoryHostPointerInfoEXT ) );
     }
 
     ImportMemoryHostPointerInfoEXT& operator=( VkImportMemoryHostPointerInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImportMemoryHostPointerInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( ImportMemoryHostPointerInfoEXT ) );
       return *this;
     }
 
@@ -33485,12 +33485,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImportMemoryWin32HandleInfoKHR( VkImportMemoryWin32HandleInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImportMemoryWin32HandleInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( ImportMemoryWin32HandleInfoKHR ) );
     }
 
     ImportMemoryWin32HandleInfoKHR& operator=( VkImportMemoryWin32HandleInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImportMemoryWin32HandleInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( ImportMemoryWin32HandleInfoKHR ) );
       return *this;
     }
 
@@ -33565,12 +33565,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImportMemoryWin32HandleInfoNV( VkImportMemoryWin32HandleInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImportMemoryWin32HandleInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( ImportMemoryWin32HandleInfoNV ) );
     }
 
     ImportMemoryWin32HandleInfoNV& operator=( VkImportMemoryWin32HandleInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImportMemoryWin32HandleInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( ImportMemoryWin32HandleInfoNV ) );
       return *this;
     }
 
@@ -33640,12 +33640,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImportSemaphoreFdInfoKHR( VkImportSemaphoreFdInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImportSemaphoreFdInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( ImportSemaphoreFdInfoKHR ) );
     }
 
     ImportSemaphoreFdInfoKHR& operator=( VkImportSemaphoreFdInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImportSemaphoreFdInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( ImportSemaphoreFdInfoKHR ) );
       return *this;
     }
 
@@ -33733,12 +33733,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImportSemaphoreWin32HandleInfoKHR( VkImportSemaphoreWin32HandleInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImportSemaphoreWin32HandleInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( ImportSemaphoreWin32HandleInfoKHR ) );
     }
 
     ImportSemaphoreWin32HandleInfoKHR& operator=( VkImportSemaphoreWin32HandleInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ImportSemaphoreWin32HandleInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( ImportSemaphoreWin32HandleInfoKHR ) );
       return *this;
     }
 
@@ -33832,12 +33832,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     IndirectCommandsLayoutTokenNVX( VkIndirectCommandsLayoutTokenNVX const & rhs )
     {
-      memcpy( this, &rhs, sizeof( IndirectCommandsLayoutTokenNVX ) );
+      memcpy( (void*)this, &rhs, sizeof( IndirectCommandsLayoutTokenNVX ) );
     }
 
     IndirectCommandsLayoutTokenNVX& operator=( VkIndirectCommandsLayoutTokenNVX const & rhs )
     {
-      memcpy( this, &rhs, sizeof( IndirectCommandsLayoutTokenNVX ) );
+      memcpy( (void*)this, &rhs, sizeof( IndirectCommandsLayoutTokenNVX ) );
       return *this;
     }
 
@@ -33909,12 +33909,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     IndirectCommandsLayoutCreateInfoNVX( VkIndirectCommandsLayoutCreateInfoNVX const & rhs )
     {
-      memcpy( this, &rhs, sizeof( IndirectCommandsLayoutCreateInfoNVX ) );
+      memcpy( (void*)this, &rhs, sizeof( IndirectCommandsLayoutCreateInfoNVX ) );
     }
 
     IndirectCommandsLayoutCreateInfoNVX& operator=( VkIndirectCommandsLayoutCreateInfoNVX const & rhs )
     {
-      memcpy( this, &rhs, sizeof( IndirectCommandsLayoutCreateInfoNVX ) );
+      memcpy( (void*)this, &rhs, sizeof( IndirectCommandsLayoutCreateInfoNVX ) );
       return *this;
     }
 
@@ -33997,12 +33997,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     InputAttachmentAspectReference( VkInputAttachmentAspectReference const & rhs )
     {
-      memcpy( this, &rhs, sizeof( InputAttachmentAspectReference ) );
+      memcpy( (void*)this, &rhs, sizeof( InputAttachmentAspectReference ) );
     }
 
     InputAttachmentAspectReference& operator=( VkInputAttachmentAspectReference const & rhs )
     {
-      memcpy( this, &rhs, sizeof( InputAttachmentAspectReference ) );
+      memcpy( (void*)this, &rhs, sizeof( InputAttachmentAspectReference ) );
       return *this;
     }
 
@@ -34070,12 +34070,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     InstanceCreateInfo( VkInstanceCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( InstanceCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( InstanceCreateInfo ) );
     }
 
     InstanceCreateInfo& operator=( VkInstanceCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( InstanceCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( InstanceCreateInfo ) );
       return *this;
     }
 
@@ -34205,12 +34205,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     MacOSSurfaceCreateInfoMVK( VkMacOSSurfaceCreateInfoMVK const & rhs )
     {
-      memcpy( this, &rhs, sizeof( MacOSSurfaceCreateInfoMVK ) );
+      memcpy( (void*)this, &rhs, sizeof( MacOSSurfaceCreateInfoMVK ) );
     }
 
     MacOSSurfaceCreateInfoMVK& operator=( VkMacOSSurfaceCreateInfoMVK const & rhs )
     {
-      memcpy( this, &rhs, sizeof( MacOSSurfaceCreateInfoMVK ) );
+      memcpy( (void*)this, &rhs, sizeof( MacOSSurfaceCreateInfoMVK ) );
       return *this;
     }
 
@@ -34278,12 +34278,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     MappedMemoryRange( VkMappedMemoryRange const & rhs )
     {
-      memcpy( this, &rhs, sizeof( MappedMemoryRange ) );
+      memcpy( (void*)this, &rhs, sizeof( MappedMemoryRange ) );
     }
 
     MappedMemoryRange& operator=( VkMappedMemoryRange const & rhs )
     {
-      memcpy( this, &rhs, sizeof( MappedMemoryRange ) );
+      memcpy( (void*)this, &rhs, sizeof( MappedMemoryRange ) );
       return *this;
     }
 
@@ -34356,12 +34356,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     MemoryAllocateFlagsInfo( VkMemoryAllocateFlagsInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( MemoryAllocateFlagsInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( MemoryAllocateFlagsInfo ) );
     }
 
     MemoryAllocateFlagsInfo& operator=( VkMemoryAllocateFlagsInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( MemoryAllocateFlagsInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( MemoryAllocateFlagsInfo ) );
       return *this;
     }
 
@@ -34426,12 +34426,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     MemoryAllocateInfo( VkMemoryAllocateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( MemoryAllocateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( MemoryAllocateInfo ) );
     }
 
     MemoryAllocateInfo& operator=( VkMemoryAllocateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( MemoryAllocateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( MemoryAllocateInfo ) );
       return *this;
     }
 
@@ -34496,12 +34496,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     MemoryBarrier( VkMemoryBarrier const & rhs )
     {
-      memcpy( this, &rhs, sizeof( MemoryBarrier ) );
+      memcpy( (void*)this, &rhs, sizeof( MemoryBarrier ) );
     }
 
     MemoryBarrier& operator=( VkMemoryBarrier const & rhs )
     {
-      memcpy( this, &rhs, sizeof( MemoryBarrier ) );
+      memcpy( (void*)this, &rhs, sizeof( MemoryBarrier ) );
       return *this;
     }
 
@@ -34566,12 +34566,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     MemoryDedicatedAllocateInfo( VkMemoryDedicatedAllocateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( MemoryDedicatedAllocateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( MemoryDedicatedAllocateInfo ) );
     }
 
     MemoryDedicatedAllocateInfo& operator=( VkMemoryDedicatedAllocateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( MemoryDedicatedAllocateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( MemoryDedicatedAllocateInfo ) );
       return *this;
     }
 
@@ -34703,12 +34703,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     MemoryGetAndroidHardwareBufferInfoANDROID( VkMemoryGetAndroidHardwareBufferInfoANDROID const & rhs )
     {
-      memcpy( this, &rhs, sizeof( MemoryGetAndroidHardwareBufferInfoANDROID ) );
+      memcpy( (void*)this, &rhs, sizeof( MemoryGetAndroidHardwareBufferInfoANDROID ) );
     }
 
     MemoryGetAndroidHardwareBufferInfoANDROID& operator=( VkMemoryGetAndroidHardwareBufferInfoANDROID const & rhs )
     {
-      memcpy( this, &rhs, sizeof( MemoryGetAndroidHardwareBufferInfoANDROID ) );
+      memcpy( (void*)this, &rhs, sizeof( MemoryGetAndroidHardwareBufferInfoANDROID ) );
       return *this;
     }
 
@@ -34766,12 +34766,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     MemoryGetFdInfoKHR( VkMemoryGetFdInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( MemoryGetFdInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( MemoryGetFdInfoKHR ) );
     }
 
     MemoryGetFdInfoKHR& operator=( VkMemoryGetFdInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( MemoryGetFdInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( MemoryGetFdInfoKHR ) );
       return *this;
     }
 
@@ -34837,12 +34837,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     MemoryGetWin32HandleInfoKHR( VkMemoryGetWin32HandleInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( MemoryGetWin32HandleInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( MemoryGetWin32HandleInfoKHR ) );
     }
 
     MemoryGetWin32HandleInfoKHR& operator=( VkMemoryGetWin32HandleInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( MemoryGetWin32HandleInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( MemoryGetWin32HandleInfoKHR ) );
       return *this;
     }
 
@@ -34967,12 +34967,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     MemoryPriorityAllocateInfoEXT( VkMemoryPriorityAllocateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( MemoryPriorityAllocateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( MemoryPriorityAllocateInfoEXT ) );
     }
 
     MemoryPriorityAllocateInfoEXT& operator=( VkMemoryPriorityAllocateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( MemoryPriorityAllocateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( MemoryPriorityAllocateInfoEXT ) );
       return *this;
     }
 
@@ -35156,12 +35156,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     MetalSurfaceCreateInfoEXT( VkMetalSurfaceCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( MetalSurfaceCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( MetalSurfaceCreateInfoEXT ) );
     }
 
     MetalSurfaceCreateInfoEXT& operator=( VkMetalSurfaceCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( MetalSurfaceCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( MetalSurfaceCreateInfoEXT ) );
       return *this;
     }
 
@@ -35274,12 +35274,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ObjectTableCreateInfoNVX( VkObjectTableCreateInfoNVX const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ObjectTableCreateInfoNVX ) );
+      memcpy( (void*)this, &rhs, sizeof( ObjectTableCreateInfoNVX ) );
     }
 
     ObjectTableCreateInfoNVX& operator=( VkObjectTableCreateInfoNVX const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ObjectTableCreateInfoNVX ) );
+      memcpy( (void*)this, &rhs, sizeof( ObjectTableCreateInfoNVX ) );
       return *this;
     }
 
@@ -35400,12 +35400,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ObjectTableEntryNVX( VkObjectTableEntryNVX const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ObjectTableEntryNVX ) );
+      memcpy( (void*)this, &rhs, sizeof( ObjectTableEntryNVX ) );
     }
 
     ObjectTableEntryNVX& operator=( VkObjectTableEntryNVX const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ObjectTableEntryNVX ) );
+      memcpy( (void*)this, &rhs, sizeof( ObjectTableEntryNVX ) );
       return *this;
     }
 
@@ -35470,12 +35470,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ObjectTableDescriptorSetEntryNVX( VkObjectTableDescriptorSetEntryNVX const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ObjectTableDescriptorSetEntryNVX ) );
+      memcpy( (void*)this, &rhs, sizeof( ObjectTableDescriptorSetEntryNVX ) );
     }
 
     ObjectTableDescriptorSetEntryNVX& operator=( VkObjectTableDescriptorSetEntryNVX const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ObjectTableDescriptorSetEntryNVX ) );
+      memcpy( (void*)this, &rhs, sizeof( ObjectTableDescriptorSetEntryNVX ) );
       return *this;
     }
 
@@ -35556,12 +35556,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ObjectTableIndexBufferEntryNVX( VkObjectTableIndexBufferEntryNVX const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ObjectTableIndexBufferEntryNVX ) );
+      memcpy( (void*)this, &rhs, sizeof( ObjectTableIndexBufferEntryNVX ) );
     }
 
     ObjectTableIndexBufferEntryNVX& operator=( VkObjectTableIndexBufferEntryNVX const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ObjectTableIndexBufferEntryNVX ) );
+      memcpy( (void*)this, &rhs, sizeof( ObjectTableIndexBufferEntryNVX ) );
       return *this;
     }
 
@@ -35638,12 +35638,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ObjectTablePipelineEntryNVX( VkObjectTablePipelineEntryNVX const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ObjectTablePipelineEntryNVX ) );
+      memcpy( (void*)this, &rhs, sizeof( ObjectTablePipelineEntryNVX ) );
     }
 
     ObjectTablePipelineEntryNVX& operator=( VkObjectTablePipelineEntryNVX const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ObjectTablePipelineEntryNVX ) );
+      memcpy( (void*)this, &rhs, sizeof( ObjectTablePipelineEntryNVX ) );
       return *this;
     }
 
@@ -35716,12 +35716,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ObjectTablePushConstantEntryNVX( VkObjectTablePushConstantEntryNVX const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ObjectTablePushConstantEntryNVX ) );
+      memcpy( (void*)this, &rhs, sizeof( ObjectTablePushConstantEntryNVX ) );
     }
 
     ObjectTablePushConstantEntryNVX& operator=( VkObjectTablePushConstantEntryNVX const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ObjectTablePushConstantEntryNVX ) );
+      memcpy( (void*)this, &rhs, sizeof( ObjectTablePushConstantEntryNVX ) );
       return *this;
     }
 
@@ -35798,12 +35798,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ObjectTableVertexBufferEntryNVX( VkObjectTableVertexBufferEntryNVX const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ObjectTableVertexBufferEntryNVX ) );
+      memcpy( (void*)this, &rhs, sizeof( ObjectTableVertexBufferEntryNVX ) );
     }
 
     ObjectTableVertexBufferEntryNVX& operator=( VkObjectTableVertexBufferEntryNVX const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ObjectTableVertexBufferEntryNVX ) );
+      memcpy( (void*)this, &rhs, sizeof( ObjectTableVertexBufferEntryNVX ) );
       return *this;
     }
 
@@ -35901,12 +35901,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDevice16BitStorageFeatures( VkPhysicalDevice16BitStorageFeatures const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDevice16BitStorageFeatures ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDevice16BitStorageFeatures ) );
     }
 
     PhysicalDevice16BitStorageFeatures& operator=( VkPhysicalDevice16BitStorageFeatures const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDevice16BitStorageFeatures ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDevice16BitStorageFeatures ) );
       return *this;
     }
 
@@ -35989,12 +35989,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDevice8BitStorageFeaturesKHR( VkPhysicalDevice8BitStorageFeaturesKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDevice8BitStorageFeaturesKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDevice8BitStorageFeaturesKHR ) );
     }
 
     PhysicalDevice8BitStorageFeaturesKHR& operator=( VkPhysicalDevice8BitStorageFeaturesKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDevice8BitStorageFeaturesKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDevice8BitStorageFeaturesKHR ) );
       return *this;
     }
 
@@ -36065,12 +36065,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceASTCDecodeFeaturesEXT( VkPhysicalDeviceASTCDecodeFeaturesEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceASTCDecodeFeaturesEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceASTCDecodeFeaturesEXT ) );
     }
 
     PhysicalDeviceASTCDecodeFeaturesEXT& operator=( VkPhysicalDeviceASTCDecodeFeaturesEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceASTCDecodeFeaturesEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceASTCDecodeFeaturesEXT ) );
       return *this;
     }
 
@@ -36125,12 +36125,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceBlendOperationAdvancedFeaturesEXT( VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceBlendOperationAdvancedFeaturesEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceBlendOperationAdvancedFeaturesEXT ) );
     }
 
     PhysicalDeviceBlendOperationAdvancedFeaturesEXT& operator=( VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceBlendOperationAdvancedFeaturesEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceBlendOperationAdvancedFeaturesEXT ) );
       return *this;
     }
 
@@ -36232,12 +36232,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceBufferDeviceAddressFeaturesEXT( VkPhysicalDeviceBufferDeviceAddressFeaturesEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceBufferDeviceAddressFeaturesEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceBufferDeviceAddressFeaturesEXT ) );
     }
 
     PhysicalDeviceBufferDeviceAddressFeaturesEXT& operator=( VkPhysicalDeviceBufferDeviceAddressFeaturesEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceBufferDeviceAddressFeaturesEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceBufferDeviceAddressFeaturesEXT ) );
       return *this;
     }
 
@@ -36310,12 +36310,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceComputeShaderDerivativesFeaturesNV( VkPhysicalDeviceComputeShaderDerivativesFeaturesNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceComputeShaderDerivativesFeaturesNV ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceComputeShaderDerivativesFeaturesNV ) );
     }
 
     PhysicalDeviceComputeShaderDerivativesFeaturesNV& operator=( VkPhysicalDeviceComputeShaderDerivativesFeaturesNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceComputeShaderDerivativesFeaturesNV ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceComputeShaderDerivativesFeaturesNV ) );
       return *this;
     }
 
@@ -36380,12 +36380,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceConditionalRenderingFeaturesEXT( VkPhysicalDeviceConditionalRenderingFeaturesEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceConditionalRenderingFeaturesEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceConditionalRenderingFeaturesEXT ) );
     }
 
     PhysicalDeviceConditionalRenderingFeaturesEXT& operator=( VkPhysicalDeviceConditionalRenderingFeaturesEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceConditionalRenderingFeaturesEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceConditionalRenderingFeaturesEXT ) );
       return *this;
     }
 
@@ -36499,12 +36499,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceCooperativeMatrixFeaturesNV( VkPhysicalDeviceCooperativeMatrixFeaturesNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceCooperativeMatrixFeaturesNV ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceCooperativeMatrixFeaturesNV ) );
     }
 
     PhysicalDeviceCooperativeMatrixFeaturesNV& operator=( VkPhysicalDeviceCooperativeMatrixFeaturesNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceCooperativeMatrixFeaturesNV ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceCooperativeMatrixFeaturesNV ) );
       return *this;
     }
 
@@ -36600,12 +36600,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceCornerSampledImageFeaturesNV( VkPhysicalDeviceCornerSampledImageFeaturesNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceCornerSampledImageFeaturesNV ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceCornerSampledImageFeaturesNV ) );
     }
 
     PhysicalDeviceCornerSampledImageFeaturesNV& operator=( VkPhysicalDeviceCornerSampledImageFeaturesNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceCornerSampledImageFeaturesNV ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceCornerSampledImageFeaturesNV ) );
       return *this;
     }
 
@@ -36660,12 +36660,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceCoverageReductionModeFeaturesNV( VkPhysicalDeviceCoverageReductionModeFeaturesNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceCoverageReductionModeFeaturesNV ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceCoverageReductionModeFeaturesNV ) );
     }
 
     PhysicalDeviceCoverageReductionModeFeaturesNV& operator=( VkPhysicalDeviceCoverageReductionModeFeaturesNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceCoverageReductionModeFeaturesNV ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceCoverageReductionModeFeaturesNV ) );
       return *this;
     }
 
@@ -36720,12 +36720,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV( VkPhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV ) );
     }
 
     PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV& operator=( VkPhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV ) );
       return *this;
     }
 
@@ -36780,12 +36780,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceDepthClipEnableFeaturesEXT( VkPhysicalDeviceDepthClipEnableFeaturesEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceDepthClipEnableFeaturesEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceDepthClipEnableFeaturesEXT ) );
     }
 
     PhysicalDeviceDepthClipEnableFeaturesEXT& operator=( VkPhysicalDeviceDepthClipEnableFeaturesEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceDepthClipEnableFeaturesEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceDepthClipEnableFeaturesEXT ) );
       return *this;
     }
 
@@ -36917,12 +36917,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceDescriptorIndexingFeaturesEXT( VkPhysicalDeviceDescriptorIndexingFeaturesEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceDescriptorIndexingFeaturesEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceDescriptorIndexingFeaturesEXT ) );
     }
 
     PhysicalDeviceDescriptorIndexingFeaturesEXT& operator=( VkPhysicalDeviceDescriptorIndexingFeaturesEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceDescriptorIndexingFeaturesEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceDescriptorIndexingFeaturesEXT ) );
       return *this;
     }
 
@@ -37278,12 +37278,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceExclusiveScissorFeaturesNV( VkPhysicalDeviceExclusiveScissorFeaturesNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceExclusiveScissorFeaturesNV ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceExclusiveScissorFeaturesNV ) );
     }
 
     PhysicalDeviceExclusiveScissorFeaturesNV& operator=( VkPhysicalDeviceExclusiveScissorFeaturesNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceExclusiveScissorFeaturesNV ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceExclusiveScissorFeaturesNV ) );
       return *this;
     }
 
@@ -37342,12 +37342,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceExternalBufferInfo( VkPhysicalDeviceExternalBufferInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceExternalBufferInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceExternalBufferInfo ) );
     }
 
     PhysicalDeviceExternalBufferInfo& operator=( VkPhysicalDeviceExternalBufferInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceExternalBufferInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceExternalBufferInfo ) );
       return *this;
     }
 
@@ -37418,12 +37418,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceExternalFenceInfo( VkPhysicalDeviceExternalFenceInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceExternalFenceInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceExternalFenceInfo ) );
     }
 
     PhysicalDeviceExternalFenceInfo& operator=( VkPhysicalDeviceExternalFenceInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceExternalFenceInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceExternalFenceInfo ) );
       return *this;
     }
 
@@ -37478,12 +37478,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceExternalImageFormatInfo( VkPhysicalDeviceExternalImageFormatInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceExternalImageFormatInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceExternalImageFormatInfo ) );
     }
 
     PhysicalDeviceExternalImageFormatInfo& operator=( VkPhysicalDeviceExternalImageFormatInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceExternalImageFormatInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceExternalImageFormatInfo ) );
       return *this;
     }
 
@@ -37571,12 +37571,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceExternalSemaphoreInfo( VkPhysicalDeviceExternalSemaphoreInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceExternalSemaphoreInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceExternalSemaphoreInfo ) );
     }
 
     PhysicalDeviceExternalSemaphoreInfo& operator=( VkPhysicalDeviceExternalSemaphoreInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceExternalSemaphoreInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceExternalSemaphoreInfo ) );
       return *this;
     }
 
@@ -37631,12 +37631,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceFeatures2( VkPhysicalDeviceFeatures2 const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceFeatures2 ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceFeatures2 ) );
     }
 
     PhysicalDeviceFeatures2& operator=( VkPhysicalDeviceFeatures2 const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceFeatures2 ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceFeatures2 ) );
       return *this;
     }
 
@@ -37693,12 +37693,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceFloat16Int8FeaturesKHR( VkPhysicalDeviceFloat16Int8FeaturesKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceFloat16Int8FeaturesKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceFloat16Int8FeaturesKHR ) );
     }
 
     PhysicalDeviceFloat16Int8FeaturesKHR& operator=( VkPhysicalDeviceFloat16Int8FeaturesKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceFloat16Int8FeaturesKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceFloat16Int8FeaturesKHR ) );
       return *this;
     }
 
@@ -37900,12 +37900,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceFragmentShaderBarycentricFeaturesNV( VkPhysicalDeviceFragmentShaderBarycentricFeaturesNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceFragmentShaderBarycentricFeaturesNV ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceFragmentShaderBarycentricFeaturesNV ) );
     }
 
     PhysicalDeviceFragmentShaderBarycentricFeaturesNV& operator=( VkPhysicalDeviceFragmentShaderBarycentricFeaturesNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceFragmentShaderBarycentricFeaturesNV ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceFragmentShaderBarycentricFeaturesNV ) );
       return *this;
     }
 
@@ -37997,12 +37997,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceHostQueryResetFeaturesEXT( VkPhysicalDeviceHostQueryResetFeaturesEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceHostQueryResetFeaturesEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceHostQueryResetFeaturesEXT ) );
     }
 
     PhysicalDeviceHostQueryResetFeaturesEXT& operator=( VkPhysicalDeviceHostQueryResetFeaturesEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceHostQueryResetFeaturesEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceHostQueryResetFeaturesEXT ) );
       return *this;
     }
 
@@ -38104,12 +38104,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceImageDrmFormatModifierInfoEXT( VkPhysicalDeviceImageDrmFormatModifierInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceImageDrmFormatModifierInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceImageDrmFormatModifierInfoEXT ) );
     }
 
     PhysicalDeviceImageDrmFormatModifierInfoEXT& operator=( VkPhysicalDeviceImageDrmFormatModifierInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceImageDrmFormatModifierInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceImageDrmFormatModifierInfoEXT ) );
       return *this;
     }
 
@@ -38196,12 +38196,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceImageFormatInfo2( VkPhysicalDeviceImageFormatInfo2 const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceImageFormatInfo2 ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceImageFormatInfo2 ) );
     }
 
     PhysicalDeviceImageFormatInfo2& operator=( VkPhysicalDeviceImageFormatInfo2 const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceImageFormatInfo2 ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceImageFormatInfo2 ) );
       return *this;
     }
 
@@ -38288,12 +38288,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceImageViewImageFormatInfoEXT( VkPhysicalDeviceImageViewImageFormatInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceImageViewImageFormatInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceImageViewImageFormatInfoEXT ) );
     }
 
     PhysicalDeviceImageViewImageFormatInfoEXT& operator=( VkPhysicalDeviceImageViewImageFormatInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceImageViewImageFormatInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceImageViewImageFormatInfoEXT ) );
       return *this;
     }
 
@@ -38350,12 +38350,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceInlineUniformBlockFeaturesEXT( VkPhysicalDeviceInlineUniformBlockFeaturesEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceInlineUniformBlockFeaturesEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceInlineUniformBlockFeaturesEXT ) );
     }
 
     PhysicalDeviceInlineUniformBlockFeaturesEXT& operator=( VkPhysicalDeviceInlineUniformBlockFeaturesEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceInlineUniformBlockFeaturesEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceInlineUniformBlockFeaturesEXT ) );
       return *this;
     }
 
@@ -38765,12 +38765,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceMemoryPriorityFeaturesEXT( VkPhysicalDeviceMemoryPriorityFeaturesEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceMemoryPriorityFeaturesEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceMemoryPriorityFeaturesEXT ) );
     }
 
     PhysicalDeviceMemoryPriorityFeaturesEXT& operator=( VkPhysicalDeviceMemoryPriorityFeaturesEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceMemoryPriorityFeaturesEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceMemoryPriorityFeaturesEXT ) );
       return *this;
     }
 
@@ -38892,12 +38892,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceMeshShaderFeaturesNV( VkPhysicalDeviceMeshShaderFeaturesNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceMeshShaderFeaturesNV ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceMeshShaderFeaturesNV ) );
     }
 
     PhysicalDeviceMeshShaderFeaturesNV& operator=( VkPhysicalDeviceMeshShaderFeaturesNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceMeshShaderFeaturesNV ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceMeshShaderFeaturesNV ) );
       return *this;
     }
 
@@ -39021,12 +39021,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceMultiviewFeatures( VkPhysicalDeviceMultiviewFeatures const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceMultiviewFeatures ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceMultiviewFeatures ) );
     }
 
     PhysicalDeviceMultiviewFeatures& operator=( VkPhysicalDeviceMultiviewFeatures const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceMultiviewFeatures ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceMultiviewFeatures ) );
       return *this;
     }
 
@@ -39346,12 +39346,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceProtectedMemoryFeatures( VkPhysicalDeviceProtectedMemoryFeatures const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceProtectedMemoryFeatures ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceProtectedMemoryFeatures ) );
     }
 
     PhysicalDeviceProtectedMemoryFeatures& operator=( VkPhysicalDeviceProtectedMemoryFeatures const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceProtectedMemoryFeatures ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceProtectedMemoryFeatures ) );
       return *this;
     }
 
@@ -39519,12 +39519,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceRepresentativeFragmentTestFeaturesNV( VkPhysicalDeviceRepresentativeFragmentTestFeaturesNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceRepresentativeFragmentTestFeaturesNV ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceRepresentativeFragmentTestFeaturesNV ) );
     }
 
     PhysicalDeviceRepresentativeFragmentTestFeaturesNV& operator=( VkPhysicalDeviceRepresentativeFragmentTestFeaturesNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceRepresentativeFragmentTestFeaturesNV ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceRepresentativeFragmentTestFeaturesNV ) );
       return *this;
     }
 
@@ -39655,12 +39655,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceSamplerYcbcrConversionFeatures( VkPhysicalDeviceSamplerYcbcrConversionFeatures const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceSamplerYcbcrConversionFeatures ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceSamplerYcbcrConversionFeatures ) );
     }
 
     PhysicalDeviceSamplerYcbcrConversionFeatures& operator=( VkPhysicalDeviceSamplerYcbcrConversionFeatures const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceSamplerYcbcrConversionFeatures ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceSamplerYcbcrConversionFeatures ) );
       return *this;
     }
 
@@ -39715,12 +39715,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceScalarBlockLayoutFeaturesEXT( VkPhysicalDeviceScalarBlockLayoutFeaturesEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceScalarBlockLayoutFeaturesEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceScalarBlockLayoutFeaturesEXT ) );
     }
 
     PhysicalDeviceScalarBlockLayoutFeaturesEXT& operator=( VkPhysicalDeviceScalarBlockLayoutFeaturesEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceScalarBlockLayoutFeaturesEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceScalarBlockLayoutFeaturesEXT ) );
       return *this;
     }
 
@@ -39777,12 +39777,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceShaderAtomicInt64FeaturesKHR( VkPhysicalDeviceShaderAtomicInt64FeaturesKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceShaderAtomicInt64FeaturesKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceShaderAtomicInt64FeaturesKHR ) );
     }
 
     PhysicalDeviceShaderAtomicInt64FeaturesKHR& operator=( VkPhysicalDeviceShaderAtomicInt64FeaturesKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceShaderAtomicInt64FeaturesKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceShaderAtomicInt64FeaturesKHR ) );
       return *this;
     }
 
@@ -39904,12 +39904,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceShaderDrawParametersFeatures( VkPhysicalDeviceShaderDrawParametersFeatures const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceShaderDrawParametersFeatures ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceShaderDrawParametersFeatures ) );
     }
 
     PhysicalDeviceShaderDrawParametersFeatures& operator=( VkPhysicalDeviceShaderDrawParametersFeatures const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceShaderDrawParametersFeatures ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceShaderDrawParametersFeatures ) );
       return *this;
     }
 
@@ -39964,12 +39964,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceShaderImageFootprintFeaturesNV( VkPhysicalDeviceShaderImageFootprintFeaturesNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceShaderImageFootprintFeaturesNV ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceShaderImageFootprintFeaturesNV ) );
     }
 
     PhysicalDeviceShaderImageFootprintFeaturesNV& operator=( VkPhysicalDeviceShaderImageFootprintFeaturesNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceShaderImageFootprintFeaturesNV ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceShaderImageFootprintFeaturesNV ) );
       return *this;
     }
 
@@ -40026,12 +40026,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceShadingRateImageFeaturesNV( VkPhysicalDeviceShadingRateImageFeaturesNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceShadingRateImageFeaturesNV ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceShadingRateImageFeaturesNV ) );
     }
 
     PhysicalDeviceShadingRateImageFeaturesNV& operator=( VkPhysicalDeviceShadingRateImageFeaturesNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceShadingRateImageFeaturesNV ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceShadingRateImageFeaturesNV ) );
       return *this;
     }
 
@@ -40139,12 +40139,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceSparseImageFormatInfo2( VkPhysicalDeviceSparseImageFormatInfo2 const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceSparseImageFormatInfo2 ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceSparseImageFormatInfo2 ) );
     }
 
     PhysicalDeviceSparseImageFormatInfo2& operator=( VkPhysicalDeviceSparseImageFormatInfo2 const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceSparseImageFormatInfo2 ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceSparseImageFormatInfo2 ) );
       return *this;
     }
 
@@ -40270,12 +40270,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceSurfaceInfo2KHR( VkPhysicalDeviceSurfaceInfo2KHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceSurfaceInfo2KHR ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceSurfaceInfo2KHR ) );
     }
 
     PhysicalDeviceSurfaceInfo2KHR& operator=( VkPhysicalDeviceSurfaceInfo2KHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceSurfaceInfo2KHR ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceSurfaceInfo2KHR ) );
       return *this;
     }
 
@@ -40332,12 +40332,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceTransformFeedbackFeaturesEXT( VkPhysicalDeviceTransformFeedbackFeaturesEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceTransformFeedbackFeaturesEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceTransformFeedbackFeaturesEXT ) );
     }
 
     PhysicalDeviceTransformFeedbackFeaturesEXT& operator=( VkPhysicalDeviceTransformFeedbackFeaturesEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceTransformFeedbackFeaturesEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceTransformFeedbackFeaturesEXT ) );
       return *this;
     }
 
@@ -40451,12 +40451,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR( VkPhysicalDeviceUniformBufferStandardLayoutFeaturesKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR ) );
     }
 
     PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR& operator=( VkPhysicalDeviceUniformBufferStandardLayoutFeaturesKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR ) );
       return *this;
     }
 
@@ -40513,12 +40513,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceVariablePointersFeatures( VkPhysicalDeviceVariablePointersFeatures const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceVariablePointersFeatures ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceVariablePointersFeatures ) );
     }
 
     PhysicalDeviceVariablePointersFeatures& operator=( VkPhysicalDeviceVariablePointersFeatures const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceVariablePointersFeatures ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceVariablePointersFeatures ) );
       return *this;
     }
 
@@ -40583,12 +40583,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceVertexAttributeDivisorFeaturesEXT( VkPhysicalDeviceVertexAttributeDivisorFeaturesEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceVertexAttributeDivisorFeaturesEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceVertexAttributeDivisorFeaturesEXT ) );
     }
 
     PhysicalDeviceVertexAttributeDivisorFeaturesEXT& operator=( VkPhysicalDeviceVertexAttributeDivisorFeaturesEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceVertexAttributeDivisorFeaturesEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceVertexAttributeDivisorFeaturesEXT ) );
       return *this;
     }
 
@@ -40688,12 +40688,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceVulkanMemoryModelFeaturesKHR( VkPhysicalDeviceVulkanMemoryModelFeaturesKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceVulkanMemoryModelFeaturesKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceVulkanMemoryModelFeaturesKHR ) );
     }
 
     PhysicalDeviceVulkanMemoryModelFeaturesKHR& operator=( VkPhysicalDeviceVulkanMemoryModelFeaturesKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceVulkanMemoryModelFeaturesKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceVulkanMemoryModelFeaturesKHR ) );
       return *this;
     }
 
@@ -40764,12 +40764,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceYcbcrImageArraysFeaturesEXT( VkPhysicalDeviceYcbcrImageArraysFeaturesEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceYcbcrImageArraysFeaturesEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceYcbcrImageArraysFeaturesEXT ) );
     }
 
     PhysicalDeviceYcbcrImageArraysFeaturesEXT& operator=( VkPhysicalDeviceYcbcrImageArraysFeaturesEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceYcbcrImageArraysFeaturesEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PhysicalDeviceYcbcrImageArraysFeaturesEXT ) );
       return *this;
     }
 
@@ -40828,12 +40828,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineCacheCreateInfo( VkPipelineCacheCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineCacheCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineCacheCreateInfo ) );
     }
 
     PipelineCacheCreateInfo& operator=( VkPipelineCacheCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineCacheCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineCacheCreateInfo ) );
       return *this;
     }
 
@@ -40908,12 +40908,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineColorBlendAdvancedStateCreateInfoEXT( VkPipelineColorBlendAdvancedStateCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineColorBlendAdvancedStateCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineColorBlendAdvancedStateCreateInfoEXT ) );
     }
 
     PipelineColorBlendAdvancedStateCreateInfoEXT& operator=( VkPipelineColorBlendAdvancedStateCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineColorBlendAdvancedStateCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineColorBlendAdvancedStateCreateInfoEXT ) );
       return *this;
     }
 
@@ -40992,12 +40992,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineCoverageModulationStateCreateInfoNV( VkPipelineCoverageModulationStateCreateInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineCoverageModulationStateCreateInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineCoverageModulationStateCreateInfoNV ) );
     }
 
     PipelineCoverageModulationStateCreateInfoNV& operator=( VkPipelineCoverageModulationStateCreateInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineCoverageModulationStateCreateInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineCoverageModulationStateCreateInfoNV ) );
       return *this;
     }
 
@@ -41086,12 +41086,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineCoverageReductionStateCreateInfoNV( VkPipelineCoverageReductionStateCreateInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineCoverageReductionStateCreateInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineCoverageReductionStateCreateInfoNV ) );
     }
 
     PipelineCoverageReductionStateCreateInfoNV& operator=( VkPipelineCoverageReductionStateCreateInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineCoverageReductionStateCreateInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineCoverageReductionStateCreateInfoNV ) );
       return *this;
     }
 
@@ -41158,12 +41158,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineCoverageToColorStateCreateInfoNV( VkPipelineCoverageToColorStateCreateInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineCoverageToColorStateCreateInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineCoverageToColorStateCreateInfoNV ) );
     }
 
     PipelineCoverageToColorStateCreateInfoNV& operator=( VkPipelineCoverageToColorStateCreateInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineCoverageToColorStateCreateInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineCoverageToColorStateCreateInfoNV ) );
       return *this;
     }
 
@@ -41266,12 +41266,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineCreationFeedbackCreateInfoEXT( VkPipelineCreationFeedbackCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineCreationFeedbackCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineCreationFeedbackCreateInfoEXT ) );
     }
 
     PipelineCreationFeedbackCreateInfoEXT& operator=( VkPipelineCreationFeedbackCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineCreationFeedbackCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineCreationFeedbackCreateInfoEXT ) );
       return *this;
     }
 
@@ -41348,12 +41348,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineDiscardRectangleStateCreateInfoEXT( VkPipelineDiscardRectangleStateCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineDiscardRectangleStateCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineDiscardRectangleStateCreateInfoEXT ) );
     }
 
     PipelineDiscardRectangleStateCreateInfoEXT& operator=( VkPipelineDiscardRectangleStateCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineDiscardRectangleStateCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineDiscardRectangleStateCreateInfoEXT ) );
       return *this;
     }
 
@@ -41436,12 +41436,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PushConstantRange( VkPushConstantRange const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PushConstantRange ) );
+      memcpy( (void*)this, &rhs, sizeof( PushConstantRange ) );
     }
 
     PushConstantRange& operator=( VkPushConstantRange const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PushConstantRange ) );
+      memcpy( (void*)this, &rhs, sizeof( PushConstantRange ) );
       return *this;
     }
 
@@ -41507,12 +41507,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineLayoutCreateInfo( VkPipelineLayoutCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineLayoutCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineLayoutCreateInfo ) );
     }
 
     PipelineLayoutCreateInfo& operator=( VkPipelineLayoutCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineLayoutCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineLayoutCreateInfo ) );
       return *this;
     }
 
@@ -41603,12 +41603,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineRasterizationConservativeStateCreateInfoEXT( VkPipelineRasterizationConservativeStateCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineRasterizationConservativeStateCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineRasterizationConservativeStateCreateInfoEXT ) );
     }
 
     PipelineRasterizationConservativeStateCreateInfoEXT& operator=( VkPipelineRasterizationConservativeStateCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineRasterizationConservativeStateCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineRasterizationConservativeStateCreateInfoEXT ) );
       return *this;
     }
 
@@ -41681,12 +41681,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineRasterizationDepthClipStateCreateInfoEXT( VkPipelineRasterizationDepthClipStateCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineRasterizationDepthClipStateCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineRasterizationDepthClipStateCreateInfoEXT ) );
     }
 
     PipelineRasterizationDepthClipStateCreateInfoEXT& operator=( VkPipelineRasterizationDepthClipStateCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineRasterizationDepthClipStateCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineRasterizationDepthClipStateCreateInfoEXT ) );
       return *this;
     }
 
@@ -41749,12 +41749,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineRasterizationStateRasterizationOrderAMD( VkPipelineRasterizationStateRasterizationOrderAMD const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineRasterizationStateRasterizationOrderAMD ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineRasterizationStateRasterizationOrderAMD ) );
     }
 
     PipelineRasterizationStateRasterizationOrderAMD& operator=( VkPipelineRasterizationStateRasterizationOrderAMD const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineRasterizationStateRasterizationOrderAMD ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineRasterizationStateRasterizationOrderAMD ) );
       return *this;
     }
 
@@ -41811,12 +41811,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineRasterizationStateStreamCreateInfoEXT( VkPipelineRasterizationStateStreamCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineRasterizationStateStreamCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineRasterizationStateStreamCreateInfoEXT ) );
     }
 
     PipelineRasterizationStateStreamCreateInfoEXT& operator=( VkPipelineRasterizationStateStreamCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineRasterizationStateStreamCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineRasterizationStateStreamCreateInfoEXT ) );
       return *this;
     }
 
@@ -41879,12 +41879,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineRepresentativeFragmentTestStateCreateInfoNV( VkPipelineRepresentativeFragmentTestStateCreateInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineRepresentativeFragmentTestStateCreateInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineRepresentativeFragmentTestStateCreateInfoNV ) );
     }
 
     PipelineRepresentativeFragmentTestStateCreateInfoNV& operator=( VkPipelineRepresentativeFragmentTestStateCreateInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineRepresentativeFragmentTestStateCreateInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineRepresentativeFragmentTestStateCreateInfoNV ) );
       return *this;
     }
 
@@ -41941,12 +41941,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineSampleLocationsStateCreateInfoEXT( VkPipelineSampleLocationsStateCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineSampleLocationsStateCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineSampleLocationsStateCreateInfoEXT ) );
     }
 
     PipelineSampleLocationsStateCreateInfoEXT& operator=( VkPipelineSampleLocationsStateCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineSampleLocationsStateCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineSampleLocationsStateCreateInfoEXT ) );
       return *this;
     }
 
@@ -42009,12 +42009,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineTessellationDomainOriginStateCreateInfo( VkPipelineTessellationDomainOriginStateCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineTessellationDomainOriginStateCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineTessellationDomainOriginStateCreateInfo ) );
     }
 
     PipelineTessellationDomainOriginStateCreateInfo& operator=( VkPipelineTessellationDomainOriginStateCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineTessellationDomainOriginStateCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineTessellationDomainOriginStateCreateInfo ) );
       return *this;
     }
 
@@ -42071,12 +42071,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     VertexInputBindingDivisorDescriptionEXT( VkVertexInputBindingDivisorDescriptionEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( VertexInputBindingDivisorDescriptionEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( VertexInputBindingDivisorDescriptionEXT ) );
     }
 
     VertexInputBindingDivisorDescriptionEXT& operator=( VkVertexInputBindingDivisorDescriptionEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( VertexInputBindingDivisorDescriptionEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( VertexInputBindingDivisorDescriptionEXT ) );
       return *this;
     }
 
@@ -42128,12 +42128,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineVertexInputDivisorStateCreateInfoEXT( VkPipelineVertexInputDivisorStateCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineVertexInputDivisorStateCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineVertexInputDivisorStateCreateInfoEXT ) );
     }
 
     PipelineVertexInputDivisorStateCreateInfoEXT& operator=( VkPipelineVertexInputDivisorStateCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineVertexInputDivisorStateCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineVertexInputDivisorStateCreateInfoEXT ) );
       return *this;
     }
 
@@ -42200,12 +42200,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineViewportCoarseSampleOrderStateCreateInfoNV( VkPipelineViewportCoarseSampleOrderStateCreateInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineViewportCoarseSampleOrderStateCreateInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineViewportCoarseSampleOrderStateCreateInfoNV ) );
     }
 
     PipelineViewportCoarseSampleOrderStateCreateInfoNV& operator=( VkPipelineViewportCoarseSampleOrderStateCreateInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineViewportCoarseSampleOrderStateCreateInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineViewportCoarseSampleOrderStateCreateInfoNV ) );
       return *this;
     }
 
@@ -42278,12 +42278,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineViewportExclusiveScissorStateCreateInfoNV( VkPipelineViewportExclusiveScissorStateCreateInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineViewportExclusiveScissorStateCreateInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineViewportExclusiveScissorStateCreateInfoNV ) );
     }
 
     PipelineViewportExclusiveScissorStateCreateInfoNV& operator=( VkPipelineViewportExclusiveScissorStateCreateInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineViewportExclusiveScissorStateCreateInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineViewportExclusiveScissorStateCreateInfoNV ) );
       return *this;
     }
 
@@ -42348,12 +42348,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ShadingRatePaletteNV( VkShadingRatePaletteNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ShadingRatePaletteNV ) );
+      memcpy( (void*)this, &rhs, sizeof( ShadingRatePaletteNV ) );
     }
 
     ShadingRatePaletteNV& operator=( VkShadingRatePaletteNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ShadingRatePaletteNV ) );
+      memcpy( (void*)this, &rhs, sizeof( ShadingRatePaletteNV ) );
       return *this;
     }
 
@@ -42407,12 +42407,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineViewportShadingRateImageStateCreateInfoNV( VkPipelineViewportShadingRateImageStateCreateInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineViewportShadingRateImageStateCreateInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineViewportShadingRateImageStateCreateInfoNV ) );
     }
 
     PipelineViewportShadingRateImageStateCreateInfoNV& operator=( VkPipelineViewportShadingRateImageStateCreateInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineViewportShadingRateImageStateCreateInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineViewportShadingRateImageStateCreateInfoNV ) );
       return *this;
     }
 
@@ -42489,12 +42489,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ViewportSwizzleNV( VkViewportSwizzleNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ViewportSwizzleNV ) );
+      memcpy( (void*)this, &rhs, sizeof( ViewportSwizzleNV ) );
     }
 
     ViewportSwizzleNV& operator=( VkViewportSwizzleNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ViewportSwizzleNV ) );
+      memcpy( (void*)this, &rhs, sizeof( ViewportSwizzleNV ) );
       return *this;
     }
 
@@ -42564,12 +42564,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineViewportSwizzleStateCreateInfoNV( VkPipelineViewportSwizzleStateCreateInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineViewportSwizzleStateCreateInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineViewportSwizzleStateCreateInfoNV ) );
     }
 
     PipelineViewportSwizzleStateCreateInfoNV& operator=( VkPipelineViewportSwizzleStateCreateInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineViewportSwizzleStateCreateInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineViewportSwizzleStateCreateInfoNV ) );
       return *this;
     }
 
@@ -42642,12 +42642,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ViewportWScalingNV( VkViewportWScalingNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ViewportWScalingNV ) );
+      memcpy( (void*)this, &rhs, sizeof( ViewportWScalingNV ) );
     }
 
     ViewportWScalingNV& operator=( VkViewportWScalingNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ViewportWScalingNV ) );
+      memcpy( (void*)this, &rhs, sizeof( ViewportWScalingNV ) );
       return *this;
     }
 
@@ -42701,12 +42701,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineViewportWScalingStateCreateInfoNV( VkPipelineViewportWScalingStateCreateInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineViewportWScalingStateCreateInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineViewportWScalingStateCreateInfoNV ) );
     }
 
     PipelineViewportWScalingStateCreateInfoNV& operator=( VkPipelineViewportWScalingStateCreateInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PipelineViewportWScalingStateCreateInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( PipelineViewportWScalingStateCreateInfoNV ) );
       return *this;
     }
 
@@ -42778,12 +42778,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PresentFrameTokenGGP( VkPresentFrameTokenGGP const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PresentFrameTokenGGP ) );
+      memcpy( (void*)this, &rhs, sizeof( PresentFrameTokenGGP ) );
     }
 
     PresentFrameTokenGGP& operator=( VkPresentFrameTokenGGP const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PresentFrameTokenGGP ) );
+      memcpy( (void*)this, &rhs, sizeof( PresentFrameTokenGGP ) );
       return *this;
     }
 
@@ -42849,12 +42849,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PresentInfoKHR( VkPresentInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PresentInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( PresentInfoKHR ) );
     }
 
     PresentInfoKHR& operator=( VkPresentInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PresentInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( PresentInfoKHR ) );
       return *this;
     }
 
@@ -42960,12 +42960,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     RectLayerKHR( VkRectLayerKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( RectLayerKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( RectLayerKHR ) );
     }
 
     RectLayerKHR& operator=( VkRectLayerKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( RectLayerKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( RectLayerKHR ) );
       return *this;
     }
 
@@ -43025,12 +43025,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PresentRegionKHR( VkPresentRegionKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PresentRegionKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( PresentRegionKHR ) );
     }
 
     PresentRegionKHR& operator=( VkPresentRegionKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PresentRegionKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( PresentRegionKHR ) );
       return *this;
     }
 
@@ -43082,12 +43082,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PresentRegionsKHR( VkPresentRegionsKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PresentRegionsKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( PresentRegionsKHR ) );
     }
 
     PresentRegionsKHR& operator=( VkPresentRegionsKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PresentRegionsKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( PresentRegionsKHR ) );
       return *this;
     }
 
@@ -43152,12 +43152,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PresentTimeGOOGLE( VkPresentTimeGOOGLE const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PresentTimeGOOGLE ) );
+      memcpy( (void*)this, &rhs, sizeof( PresentTimeGOOGLE ) );
     }
 
     PresentTimeGOOGLE& operator=( VkPresentTimeGOOGLE const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PresentTimeGOOGLE ) );
+      memcpy( (void*)this, &rhs, sizeof( PresentTimeGOOGLE ) );
       return *this;
     }
 
@@ -43209,12 +43209,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     PresentTimesInfoGOOGLE( VkPresentTimesInfoGOOGLE const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PresentTimesInfoGOOGLE ) );
+      memcpy( (void*)this, &rhs, sizeof( PresentTimesInfoGOOGLE ) );
     }
 
     PresentTimesInfoGOOGLE& operator=( VkPresentTimesInfoGOOGLE const & rhs )
     {
-      memcpy( this, &rhs, sizeof( PresentTimesInfoGOOGLE ) );
+      memcpy( (void*)this, &rhs, sizeof( PresentTimesInfoGOOGLE ) );
       return *this;
     }
 
@@ -43277,12 +43277,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ProtectedSubmitInfo( VkProtectedSubmitInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ProtectedSubmitInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( ProtectedSubmitInfo ) );
     }
 
     ProtectedSubmitInfo& operator=( VkProtectedSubmitInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ProtectedSubmitInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( ProtectedSubmitInfo ) );
       return *this;
     }
 
@@ -43343,12 +43343,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     QueryPoolCreateInfo( VkQueryPoolCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( QueryPoolCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( QueryPoolCreateInfo ) );
     }
 
     QueryPoolCreateInfo& operator=( VkQueryPoolCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( QueryPoolCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( QueryPoolCreateInfo ) );
       return *this;
     }
 
@@ -43533,12 +43533,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     RayTracingShaderGroupCreateInfoNV( VkRayTracingShaderGroupCreateInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( RayTracingShaderGroupCreateInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( RayTracingShaderGroupCreateInfoNV ) );
     }
 
     RayTracingShaderGroupCreateInfoNV& operator=( VkRayTracingShaderGroupCreateInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( RayTracingShaderGroupCreateInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( RayTracingShaderGroupCreateInfoNV ) );
       return *this;
     }
 
@@ -43641,12 +43641,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     RayTracingPipelineCreateInfoNV( VkRayTracingPipelineCreateInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( RayTracingPipelineCreateInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( RayTracingPipelineCreateInfoNV ) );
     }
 
     RayTracingPipelineCreateInfoNV& operator=( VkRayTracingPipelineCreateInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( RayTracingPipelineCreateInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( RayTracingPipelineCreateInfoNV ) );
       return *this;
     }
 
@@ -43799,12 +43799,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     RenderPassBeginInfo( VkRenderPassBeginInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( RenderPassBeginInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( RenderPassBeginInfo ) );
     }
 
     RenderPassBeginInfo& operator=( VkRenderPassBeginInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( RenderPassBeginInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( RenderPassBeginInfo ) );
       return *this;
     }
 
@@ -43909,12 +43909,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     SubpassDescription( VkSubpassDescription const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SubpassDescription ) );
+      memcpy( (void*)this, &rhs, sizeof( SubpassDescription ) );
     }
 
     SubpassDescription& operator=( VkSubpassDescription const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SubpassDescription ) );
+      memcpy( (void*)this, &rhs, sizeof( SubpassDescription ) );
       return *this;
     }
 
@@ -44040,12 +44040,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     SubpassDependency( VkSubpassDependency const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SubpassDependency ) );
+      memcpy( (void*)this, &rhs, sizeof( SubpassDependency ) );
     }
 
     SubpassDependency& operator=( VkSubpassDependency const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SubpassDependency ) );
+      memcpy( (void*)this, &rhs, sizeof( SubpassDependency ) );
       return *this;
     }
 
@@ -44147,12 +44147,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     RenderPassCreateInfo( VkRenderPassCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( RenderPassCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( RenderPassCreateInfo ) );
     }
 
     RenderPassCreateInfo& operator=( VkRenderPassCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( RenderPassCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( RenderPassCreateInfo ) );
       return *this;
     }
 
@@ -44275,12 +44275,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     SubpassDescription2KHR( VkSubpassDescription2KHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SubpassDescription2KHR ) );
+      memcpy( (void*)this, &rhs, sizeof( SubpassDescription2KHR ) );
     }
 
     SubpassDescription2KHR& operator=( VkSubpassDescription2KHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SubpassDescription2KHR ) );
+      memcpy( (void*)this, &rhs, sizeof( SubpassDescription2KHR ) );
       return *this;
     }
 
@@ -44429,12 +44429,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     SubpassDependency2KHR( VkSubpassDependency2KHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SubpassDependency2KHR ) );
+      memcpy( (void*)this, &rhs, sizeof( SubpassDependency2KHR ) );
     }
 
     SubpassDependency2KHR& operator=( VkSubpassDependency2KHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SubpassDependency2KHR ) );
+      memcpy( (void*)this, &rhs, sizeof( SubpassDependency2KHR ) );
       return *this;
     }
 
@@ -44561,12 +44561,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     RenderPassCreateInfo2KHR( VkRenderPassCreateInfo2KHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( RenderPassCreateInfo2KHR ) );
+      memcpy( (void*)this, &rhs, sizeof( RenderPassCreateInfo2KHR ) );
     }
 
     RenderPassCreateInfo2KHR& operator=( VkRenderPassCreateInfo2KHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( RenderPassCreateInfo2KHR ) );
+      memcpy( (void*)this, &rhs, sizeof( RenderPassCreateInfo2KHR ) );
       return *this;
     }
 
@@ -44685,12 +44685,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     RenderPassFragmentDensityMapCreateInfoEXT( VkRenderPassFragmentDensityMapCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( RenderPassFragmentDensityMapCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( RenderPassFragmentDensityMapCreateInfoEXT ) );
     }
 
     RenderPassFragmentDensityMapCreateInfoEXT& operator=( VkRenderPassFragmentDensityMapCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( RenderPassFragmentDensityMapCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( RenderPassFragmentDensityMapCreateInfoEXT ) );
       return *this;
     }
 
@@ -44747,12 +44747,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     RenderPassInputAttachmentAspectCreateInfo( VkRenderPassInputAttachmentAspectCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( RenderPassInputAttachmentAspectCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( RenderPassInputAttachmentAspectCreateInfo ) );
     }
 
     RenderPassInputAttachmentAspectCreateInfo& operator=( VkRenderPassInputAttachmentAspectCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( RenderPassInputAttachmentAspectCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( RenderPassInputAttachmentAspectCreateInfo ) );
       return *this;
     }
 
@@ -44825,12 +44825,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     RenderPassMultiviewCreateInfo( VkRenderPassMultiviewCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( RenderPassMultiviewCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( RenderPassMultiviewCreateInfo ) );
     }
 
     RenderPassMultiviewCreateInfo& operator=( VkRenderPassMultiviewCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( RenderPassMultiviewCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( RenderPassMultiviewCreateInfo ) );
       return *this;
     }
 
@@ -44927,12 +44927,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     SubpassSampleLocationsEXT( VkSubpassSampleLocationsEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SubpassSampleLocationsEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( SubpassSampleLocationsEXT ) );
     }
 
     SubpassSampleLocationsEXT& operator=( VkSubpassSampleLocationsEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SubpassSampleLocationsEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( SubpassSampleLocationsEXT ) );
       return *this;
     }
 
@@ -44988,12 +44988,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     RenderPassSampleLocationsBeginInfoEXT( VkRenderPassSampleLocationsBeginInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( RenderPassSampleLocationsBeginInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( RenderPassSampleLocationsBeginInfoEXT ) );
     }
 
     RenderPassSampleLocationsBeginInfoEXT& operator=( VkRenderPassSampleLocationsBeginInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( RenderPassSampleLocationsBeginInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( RenderPassSampleLocationsBeginInfoEXT ) );
       return *this;
     }
 
@@ -45102,12 +45102,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     SamplerCreateInfo( VkSamplerCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SamplerCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( SamplerCreateInfo ) );
     }
 
     SamplerCreateInfo& operator=( VkSamplerCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SamplerCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( SamplerCreateInfo ) );
       return *this;
     }
 
@@ -45282,12 +45282,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     SamplerReductionModeCreateInfoEXT( VkSamplerReductionModeCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SamplerReductionModeCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( SamplerReductionModeCreateInfoEXT ) );
     }
 
     SamplerReductionModeCreateInfoEXT& operator=( VkSamplerReductionModeCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SamplerReductionModeCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( SamplerReductionModeCreateInfoEXT ) );
       return *this;
     }
 
@@ -45356,12 +45356,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     SamplerYcbcrConversionCreateInfo( VkSamplerYcbcrConversionCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SamplerYcbcrConversionCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( SamplerYcbcrConversionCreateInfo ) );
     }
 
     SamplerYcbcrConversionCreateInfo& operator=( VkSamplerYcbcrConversionCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SamplerYcbcrConversionCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( SamplerYcbcrConversionCreateInfo ) );
       return *this;
     }
 
@@ -45505,12 +45505,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     SamplerYcbcrConversionInfo( VkSamplerYcbcrConversionInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SamplerYcbcrConversionInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( SamplerYcbcrConversionInfo ) );
     }
 
     SamplerYcbcrConversionInfo& operator=( VkSamplerYcbcrConversionInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SamplerYcbcrConversionInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( SamplerYcbcrConversionInfo ) );
       return *this;
     }
 
@@ -45565,12 +45565,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     SemaphoreCreateInfo( VkSemaphoreCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SemaphoreCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( SemaphoreCreateInfo ) );
     }
 
     SemaphoreCreateInfo& operator=( VkSemaphoreCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SemaphoreCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( SemaphoreCreateInfo ) );
       return *this;
     }
 
@@ -45627,12 +45627,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     SemaphoreGetFdInfoKHR( VkSemaphoreGetFdInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SemaphoreGetFdInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( SemaphoreGetFdInfoKHR ) );
     }
 
     SemaphoreGetFdInfoKHR& operator=( VkSemaphoreGetFdInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SemaphoreGetFdInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( SemaphoreGetFdInfoKHR ) );
       return *this;
     }
 
@@ -45698,12 +45698,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     SemaphoreGetWin32HandleInfoKHR( VkSemaphoreGetWin32HandleInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SemaphoreGetWin32HandleInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( SemaphoreGetWin32HandleInfoKHR ) );
     }
 
     SemaphoreGetWin32HandleInfoKHR& operator=( VkSemaphoreGetWin32HandleInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SemaphoreGetWin32HandleInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( SemaphoreGetWin32HandleInfoKHR ) );
       return *this;
     }
 
@@ -45771,12 +45771,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ShaderModuleCreateInfo( VkShaderModuleCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ShaderModuleCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( ShaderModuleCreateInfo ) );
     }
 
     ShaderModuleCreateInfo& operator=( VkShaderModuleCreateInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ShaderModuleCreateInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( ShaderModuleCreateInfo ) );
       return *this;
     }
 
@@ -45847,12 +45847,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ShaderModuleValidationCacheCreateInfoEXT( VkShaderModuleValidationCacheCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ShaderModuleValidationCacheCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( ShaderModuleValidationCacheCreateInfoEXT ) );
     }
 
     ShaderModuleValidationCacheCreateInfoEXT& operator=( VkShaderModuleValidationCacheCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ShaderModuleValidationCacheCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( ShaderModuleValidationCacheCreateInfoEXT ) );
       return *this;
     }
 
@@ -46145,12 +46145,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     StreamDescriptorSurfaceCreateInfoGGP( VkStreamDescriptorSurfaceCreateInfoGGP const & rhs )
     {
-      memcpy( this, &rhs, sizeof( StreamDescriptorSurfaceCreateInfoGGP ) );
+      memcpy( (void*)this, &rhs, sizeof( StreamDescriptorSurfaceCreateInfoGGP ) );
     }
 
     StreamDescriptorSurfaceCreateInfoGGP& operator=( VkStreamDescriptorSurfaceCreateInfoGGP const & rhs )
     {
-      memcpy( this, &rhs, sizeof( StreamDescriptorSurfaceCreateInfoGGP ) );
+      memcpy( (void*)this, &rhs, sizeof( StreamDescriptorSurfaceCreateInfoGGP ) );
       return *this;
     }
 
@@ -46226,12 +46226,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     SubmitInfo( VkSubmitInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SubmitInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( SubmitInfo ) );
     }
 
     SubmitInfo& operator=( VkSubmitInfo const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SubmitInfo ) );
+      memcpy( (void*)this, &rhs, sizeof( SubmitInfo ) );
       return *this;
     }
 
@@ -46334,12 +46334,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     SubpassBeginInfoKHR( VkSubpassBeginInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SubpassBeginInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( SubpassBeginInfoKHR ) );
     }
 
     SubpassBeginInfoKHR& operator=( VkSubpassBeginInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SubpassBeginInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( SubpassBeginInfoKHR ) );
       return *this;
     }
 
@@ -46398,12 +46398,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     SubpassDescriptionDepthStencilResolveKHR( VkSubpassDescriptionDepthStencilResolveKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SubpassDescriptionDepthStencilResolveKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( SubpassDescriptionDepthStencilResolveKHR ) );
     }
 
     SubpassDescriptionDepthStencilResolveKHR& operator=( VkSubpassDescriptionDepthStencilResolveKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SubpassDescriptionDepthStencilResolveKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( SubpassDescriptionDepthStencilResolveKHR ) );
       return *this;
     }
 
@@ -46473,12 +46473,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     SubpassEndInfoKHR( VkSubpassEndInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SubpassEndInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( SubpassEndInfoKHR ) );
     }
 
     SubpassEndInfoKHR& operator=( VkSubpassEndInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SubpassEndInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( SubpassEndInfoKHR ) );
       return *this;
     }
 
@@ -46656,12 +46656,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     SurfaceCapabilitiesFullScreenExclusiveEXT( VkSurfaceCapabilitiesFullScreenExclusiveEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SurfaceCapabilitiesFullScreenExclusiveEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( SurfaceCapabilitiesFullScreenExclusiveEXT ) );
     }
 
     SurfaceCapabilitiesFullScreenExclusiveEXT& operator=( VkSurfaceCapabilitiesFullScreenExclusiveEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SurfaceCapabilitiesFullScreenExclusiveEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( SurfaceCapabilitiesFullScreenExclusiveEXT ) );
       return *this;
     }
 
@@ -46779,12 +46779,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     SurfaceFullScreenExclusiveInfoEXT( VkSurfaceFullScreenExclusiveInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SurfaceFullScreenExclusiveInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( SurfaceFullScreenExclusiveInfoEXT ) );
     }
 
     SurfaceFullScreenExclusiveInfoEXT& operator=( VkSurfaceFullScreenExclusiveInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SurfaceFullScreenExclusiveInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( SurfaceFullScreenExclusiveInfoEXT ) );
       return *this;
     }
 
@@ -46841,12 +46841,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     SurfaceFullScreenExclusiveWin32InfoEXT( VkSurfaceFullScreenExclusiveWin32InfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SurfaceFullScreenExclusiveWin32InfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( SurfaceFullScreenExclusiveWin32InfoEXT ) );
     }
 
     SurfaceFullScreenExclusiveWin32InfoEXT& operator=( VkSurfaceFullScreenExclusiveWin32InfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SurfaceFullScreenExclusiveWin32InfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( SurfaceFullScreenExclusiveWin32InfoEXT ) );
       return *this;
     }
 
@@ -46902,12 +46902,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     SurfaceProtectedCapabilitiesKHR( VkSurfaceProtectedCapabilitiesKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SurfaceProtectedCapabilitiesKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( SurfaceProtectedCapabilitiesKHR ) );
     }
 
     SurfaceProtectedCapabilitiesKHR& operator=( VkSurfaceProtectedCapabilitiesKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SurfaceProtectedCapabilitiesKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( SurfaceProtectedCapabilitiesKHR ) );
       return *this;
     }
 
@@ -46962,12 +46962,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     SwapchainCounterCreateInfoEXT( VkSwapchainCounterCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SwapchainCounterCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( SwapchainCounterCreateInfoEXT ) );
     }
 
     SwapchainCounterCreateInfoEXT& operator=( VkSwapchainCounterCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SwapchainCounterCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( SwapchainCounterCreateInfoEXT ) );
       return *this;
     }
 
@@ -47052,12 +47052,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     SwapchainCreateInfoKHR( VkSwapchainCreateInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SwapchainCreateInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( SwapchainCreateInfoKHR ) );
     }
 
     SwapchainCreateInfoKHR& operator=( VkSwapchainCreateInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SwapchainCreateInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( SwapchainCreateInfoKHR ) );
       return *this;
     }
 
@@ -47232,12 +47232,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     SwapchainDisplayNativeHdrCreateInfoAMD( VkSwapchainDisplayNativeHdrCreateInfoAMD const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SwapchainDisplayNativeHdrCreateInfoAMD ) );
+      memcpy( (void*)this, &rhs, sizeof( SwapchainDisplayNativeHdrCreateInfoAMD ) );
     }
 
     SwapchainDisplayNativeHdrCreateInfoAMD& operator=( VkSwapchainDisplayNativeHdrCreateInfoAMD const & rhs )
     {
-      memcpy( this, &rhs, sizeof( SwapchainDisplayNativeHdrCreateInfoAMD ) );
+      memcpy( (void*)this, &rhs, sizeof( SwapchainDisplayNativeHdrCreateInfoAMD ) );
       return *this;
     }
 
@@ -47329,12 +47329,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ValidationCacheCreateInfoEXT( VkValidationCacheCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ValidationCacheCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( ValidationCacheCreateInfoEXT ) );
     }
 
     ValidationCacheCreateInfoEXT& operator=( VkValidationCacheCreateInfoEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ValidationCacheCreateInfoEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( ValidationCacheCreateInfoEXT ) );
       return *this;
     }
 
@@ -47411,12 +47411,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ValidationFeaturesEXT( VkValidationFeaturesEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ValidationFeaturesEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( ValidationFeaturesEXT ) );
     }
 
     ValidationFeaturesEXT& operator=( VkValidationFeaturesEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ValidationFeaturesEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( ValidationFeaturesEXT ) );
       return *this;
     }
 
@@ -47497,12 +47497,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ValidationFlagsEXT( VkValidationFlagsEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ValidationFlagsEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( ValidationFlagsEXT ) );
     }
 
     ValidationFlagsEXT& operator=( VkValidationFlagsEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ValidationFlagsEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( ValidationFlagsEXT ) );
       return *this;
     }
 
@@ -47568,12 +47568,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     ViSurfaceCreateInfoNN( VkViSurfaceCreateInfoNN const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ViSurfaceCreateInfoNN ) );
+      memcpy( (void*)this, &rhs, sizeof( ViSurfaceCreateInfoNN ) );
     }
 
     ViSurfaceCreateInfoNN& operator=( VkViSurfaceCreateInfoNN const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ViSurfaceCreateInfoNN ) );
+      memcpy( (void*)this, &rhs, sizeof( ViSurfaceCreateInfoNN ) );
       return *this;
     }
 
@@ -47642,12 +47642,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     WaylandSurfaceCreateInfoKHR( VkWaylandSurfaceCreateInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( WaylandSurfaceCreateInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( WaylandSurfaceCreateInfoKHR ) );
     }
 
     WaylandSurfaceCreateInfoKHR& operator=( VkWaylandSurfaceCreateInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( WaylandSurfaceCreateInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( WaylandSurfaceCreateInfoKHR ) );
       return *this;
     }
 
@@ -47732,12 +47732,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     Win32KeyedMutexAcquireReleaseInfoKHR( VkWin32KeyedMutexAcquireReleaseInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( Win32KeyedMutexAcquireReleaseInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( Win32KeyedMutexAcquireReleaseInfoKHR ) );
     }
 
     Win32KeyedMutexAcquireReleaseInfoKHR& operator=( VkWin32KeyedMutexAcquireReleaseInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( Win32KeyedMutexAcquireReleaseInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( Win32KeyedMutexAcquireReleaseInfoKHR ) );
       return *this;
     }
 
@@ -47854,12 +47854,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     Win32KeyedMutexAcquireReleaseInfoNV( VkWin32KeyedMutexAcquireReleaseInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( Win32KeyedMutexAcquireReleaseInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( Win32KeyedMutexAcquireReleaseInfoNV ) );
     }
 
     Win32KeyedMutexAcquireReleaseInfoNV& operator=( VkWin32KeyedMutexAcquireReleaseInfoNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( Win32KeyedMutexAcquireReleaseInfoNV ) );
+      memcpy( (void*)this, &rhs, sizeof( Win32KeyedMutexAcquireReleaseInfoNV ) );
       return *this;
     }
 
@@ -47968,12 +47968,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     Win32SurfaceCreateInfoKHR( VkWin32SurfaceCreateInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( Win32SurfaceCreateInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( Win32SurfaceCreateInfoKHR ) );
     }
 
     Win32SurfaceCreateInfoKHR& operator=( VkWin32SurfaceCreateInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( Win32SurfaceCreateInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( Win32SurfaceCreateInfoKHR ) );
       return *this;
     }
 
@@ -48059,12 +48059,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     WriteDescriptorSet( VkWriteDescriptorSet const & rhs )
     {
-      memcpy( this, &rhs, sizeof( WriteDescriptorSet ) );
+      memcpy( (void*)this, &rhs, sizeof( WriteDescriptorSet ) );
     }
 
     WriteDescriptorSet& operator=( VkWriteDescriptorSet const & rhs )
     {
-      memcpy( this, &rhs, sizeof( WriteDescriptorSet ) );
+      memcpy( (void*)this, &rhs, sizeof( WriteDescriptorSet ) );
       return *this;
     }
 
@@ -48177,12 +48177,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     WriteDescriptorSetAccelerationStructureNV( VkWriteDescriptorSetAccelerationStructureNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( WriteDescriptorSetAccelerationStructureNV ) );
+      memcpy( (void*)this, &rhs, sizeof( WriteDescriptorSetAccelerationStructureNV ) );
     }
 
     WriteDescriptorSetAccelerationStructureNV& operator=( VkWriteDescriptorSetAccelerationStructureNV const & rhs )
     {
-      memcpy( this, &rhs, sizeof( WriteDescriptorSetAccelerationStructureNV ) );
+      memcpy( (void*)this, &rhs, sizeof( WriteDescriptorSetAccelerationStructureNV ) );
       return *this;
     }
 
@@ -48247,12 +48247,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     WriteDescriptorSetInlineUniformBlockEXT( VkWriteDescriptorSetInlineUniformBlockEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( WriteDescriptorSetInlineUniformBlockEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( WriteDescriptorSetInlineUniformBlockEXT ) );
     }
 
     WriteDescriptorSetInlineUniformBlockEXT& operator=( VkWriteDescriptorSetInlineUniformBlockEXT const & rhs )
     {
-      memcpy( this, &rhs, sizeof( WriteDescriptorSetInlineUniformBlockEXT ) );
+      memcpy( (void*)this, &rhs, sizeof( WriteDescriptorSetInlineUniformBlockEXT ) );
       return *this;
     }
 
@@ -48320,12 +48320,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     XcbSurfaceCreateInfoKHR( VkXcbSurfaceCreateInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( XcbSurfaceCreateInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( XcbSurfaceCreateInfoKHR ) );
     }
 
     XcbSurfaceCreateInfoKHR& operator=( VkXcbSurfaceCreateInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( XcbSurfaceCreateInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( XcbSurfaceCreateInfoKHR ) );
       return *this;
     }
 
@@ -48402,12 +48402,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     XlibSurfaceCreateInfoKHR( VkXlibSurfaceCreateInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( XlibSurfaceCreateInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( XlibSurfaceCreateInfoKHR ) );
     }
 
     XlibSurfaceCreateInfoKHR& operator=( VkXlibSurfaceCreateInfoKHR const & rhs )
     {
-      memcpy( this, &rhs, sizeof( XlibSurfaceCreateInfoKHR ) );
+      memcpy( (void*)this, &rhs, sizeof( XlibSurfaceCreateInfoKHR ) );
       return *this;
     }
 

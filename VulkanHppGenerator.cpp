@@ -3765,12 +3765,12 @@ ${initializers}    {${copyOps}}
 ${subStructConstructor}
     ${name}( Vk${name} const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ${name} ) );
+      memcpy( (void*)this, &rhs, sizeof( ${name} ) );
     }
 
     ${name}& operator=( Vk${name} const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ${name} ) );
+      memcpy( (void*)this, &rhs, sizeof( ${name} ) );
       return *this;
     }
 )";

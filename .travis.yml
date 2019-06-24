@@ -1,24 +1,36 @@
 # Build Configuration for Travis CI
 # https://travis-ci.org
 
-dist: precise
+dist: trusty
 sudo: false
 language: cpp
-compiler:
-  - gcc
+
+matrix:
+  include:
+    - os: linux
+      addons:
+        apt:
+          sources:
+          - ubuntu-toolchain-r-test
+          packages:
+          - gcc-5
+          - g++-5
+      env: GCC_VERSION=5
+      compiler: gcc-5
+
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - gcc-8
+            - g++-8
+      env: GCC_VERSION=8
+      compiler: gcc-8
+
 install:
-- if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
-addons:
-  apt:
-    sources:
-    - ubuntu-toolchain-r-test
-    - llvm-toolchain-precise
-    - george-edison55-precise-backports # cmake 3.2.3 / doxygen 1.8.3
-    packages:
-    - gcc-5
-    - g++-5
-    - cmake
-    - cmake-data
+  - if [[ "${GCC_VERSION}" != "" ]]; then export CXX="g++-${GCC_VERSION}"; export CC="gcc-${GCC_VERSION}"; fi
 
 script:
   - cmake --version
@@ -26,11 +38,12 @@ script:
   - make -C /tmp/build
   - /tmp/build/VulkanHppGenerator
   - echo "#include \"vulkan.hpp\"" > /tmp/test.cpp
-  - echo "void myCreateInstance()" >> /tmp/test.cpp
+  - echo "int myCreateInstance()" >> /tmp/test.cpp
   - echo "{" >> /tmp/test.cpp
   - echo "    vk::Instance inst;" >> /tmp/test.cpp
   - echo "    auto const inst_info = vk::InstanceCreateInfo();" >> /tmp/test.cpp
   - echo "    vk::Result result = vk::createInstance(&inst_info, nullptr, &inst);" >> /tmp/test.cpp
+  - echo "    return static_cast<int> (result);" >> /tmp/test.cpp
   - echo "}" >> /tmp/test.cpp
   - cat /tmp/test.cpp
-  - ${CXX} -std=c++11 -Ivulkan -IVulkan-Headers/include -c /tmp/test.cpp
+  - ${CXX} -std=c++11 -Wall -Ivulkan -IVulkan-Headers/include -c /tmp/test.cpp

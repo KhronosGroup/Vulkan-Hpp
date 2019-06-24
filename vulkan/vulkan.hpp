@@ -56921,7 +56921,7 @@ namespace VULKAN_HPP_NAMESPACE
     // This interface is designed to be used for per-device function pointers in combination with a linked vulkan library.
     void init(vk::Instance const& instance, vk::Device const& device = {})
     {
-      init(instance, ::vkGetInstanceProcAddr, device, device ? ::vkGetDeviceProcAddr : nullptr);
+      init(static_cast<VkInstance>(instance), ::vkGetInstanceProcAddr, static_cast<VkDevice>(device), device ? ::vkGetDeviceProcAddr : nullptr);
     }
 #endif // !defined(VK_NO_PROTOTYPES)
 

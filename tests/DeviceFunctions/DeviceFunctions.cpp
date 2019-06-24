@@ -27,11 +27,10 @@ int main(int /*argc*/, char ** /*argv*/)
   {
     vk::ApplicationInfo appInfo(AppName, 1, EngineName, 1, VK_API_VERSION_1_1);
     vk::UniqueInstance instance = vk::createInstanceUnique(vk::InstanceCreateInfo({}, &appInfo));
-    std::vector<vk::PhysicalDevice> physicalDevices = instance->enumeratePhysicalDevices();
-    assert(!physicalDevices.empty());
+    vk::PhysicalDevice physicalDevice = instance->enumeratePhysicalDevices().front();
 
     // get the QueueFamilyProperties of the first PhysicalDevice
-    std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevices[0].getQueueFamilyProperties();
+    std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
 
     // get the first index into queueFamiliyProperties which supports graphics
     size_t graphicsQueueFamilyIndex = std::distance(queueFamilyProperties.begin(),
@@ -43,18 +42,18 @@ int main(int /*argc*/, char ** /*argv*/)
     // create a UniqueDevice
     float queuePriority = 0.0f;
     vk::DeviceQueueCreateInfo deviceQueueCreateInfo(vk::DeviceQueueCreateFlags(), static_cast<uint32_t>(graphicsQueueFamilyIndex), 1, &queuePriority);
-    vk::UniqueDevice device = physicalDevices[0].createDeviceUnique(vk::DeviceCreateInfo(vk::DeviceCreateFlags(), 1, &deviceQueueCreateInfo));
+    vk::UniqueDevice device = physicalDevice.createDeviceUnique(vk::DeviceCreateInfo(vk::DeviceCreateFlags(), 1, &deviceQueueCreateInfo));
 
     std::vector<uint8_t> data;
     device->getAccelerationStructureHandleNV<uint8_t>({}, data, vk::DispatchLoaderDynamic());
 
     std::vector<vk::UniqueCommandBuffer>::allocator_type vectorAllocator;
-    std::vector<vk::UniqueCommandBuffer> commandBuffers = device->allocateCommandBuffersUnique({}, vectorAllocator, vk::DispatchLoaderStatic());
+    vk::UniqueCommandBuffer commandBuffer = std::move(device->allocateCommandBuffersUnique({}, vectorAllocator, vk::DispatchLoaderStatic()).front());
 
-    commandBuffers[0]->begin(nullptr);
+    commandBuffer->begin(nullptr);
 
     std::vector<vk::UniqueHandle<vk::CommandBuffer, vk::DispatchLoaderDynamic>>::allocator_type dynamicVectorAllocator;
-    std::vector<vk::UniqueHandle<vk::CommandBuffer, vk::DispatchLoaderDynamic>> dynamicCommandBuffers = device->allocateCommandBuffersUnique({}, dynamicVectorAllocator, vk::DispatchLoaderDynamic());
+    vk::UniqueHandle<vk::CommandBuffer, vk::DispatchLoaderDynamic> dynamicCommandBuffer = std::move(device->allocateCommandBuffersUnique({}, dynamicVectorAllocator, vk::DispatchLoaderDynamic()).front());
   }
   catch (vk::SystemError err)
   {

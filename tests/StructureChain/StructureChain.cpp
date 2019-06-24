@@ -35,7 +35,7 @@ int main(int /*argc*/, char ** /*argv*/)
   {
     vk::ApplicationInfo appInfo(AppName, 1, EngineName, 1, VK_API_VERSION_1_1);
     vk::UniqueInstance instance = vk::createInstanceUnique(vk::InstanceCreateInfo({}, &appInfo));
-    std::vector<vk::PhysicalDevice> physicalDevices = instance->enumeratePhysicalDevices();
+    vk::PhysicalDevice physicalDevice = instance->enumeratePhysicalDevices().front();
 
     // some valid StructureChains
     vk::StructureChain<vk::PhysicalDeviceProperties2> sc0;
@@ -53,24 +53,22 @@ int main(int /*argc*/, char ** /*argv*/)
     //vk::StructureChain<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceIDProperties, vk::PhysicalDeviceIDProperties> x;
     //vk::StructureChain<vk::PhysicalDeviceIDProperties, vk::PhysicalDeviceProperties2> x;
 
-    vk::PhysicalDevice & pd = physicalDevices[0];
-
     // simple call, passing structures in
     vk::PhysicalDeviceFeatures2 pdf;
-    pd.getFeatures2(&pdf);
+    physicalDevice.getFeatures2(&pdf);
 
     // simple calls, getting structure back
-    vk::PhysicalDeviceFeatures2 a = pd.getFeatures2();
-    vk::PhysicalDeviceFeatures2 b = pd.getFeatures2(vk::DispatchLoaderStatic());
+    vk::PhysicalDeviceFeatures2 a = physicalDevice.getFeatures2();
+    vk::PhysicalDeviceFeatures2 b = physicalDevice.getFeatures2(vk::DispatchLoaderStatic());
     
     // complex calls, getting StructureChain back
-    auto c = pd.getFeatures2<vk::PhysicalDeviceFeatures2, vk::PhysicalDeviceVariablePointerFeatures>();
+    auto c = physicalDevice.getFeatures2<vk::PhysicalDeviceFeatures2, vk::PhysicalDeviceVariablePointerFeatures>();
     vk::PhysicalDeviceFeatures2 & c0 = c.get<vk::PhysicalDeviceFeatures2>();
     vk::PhysicalDeviceVariablePointerFeatures & c1 = c.get<vk::PhysicalDeviceVariablePointerFeatures>();
 
     auto t0 = c.get<vk::PhysicalDeviceFeatures2, vk::PhysicalDeviceVariablePointerFeatures>();
     
-    auto d = pd.getFeatures2<vk::PhysicalDeviceFeatures2, vk::PhysicalDeviceVariablePointerFeatures>(vk::DispatchLoaderStatic());
+    auto d = physicalDevice.getFeatures2<vk::PhysicalDeviceFeatures2, vk::PhysicalDeviceVariablePointerFeatures>(vk::DispatchLoaderStatic());
     vk::PhysicalDeviceFeatures2 & d0 = d.get<vk::PhysicalDeviceFeatures2>();
     vk::PhysicalDeviceVariablePointerFeatures & d1 = d.get<vk::PhysicalDeviceVariablePointerFeatures>();
 
@@ -78,7 +76,7 @@ int main(int /*argc*/, char ** /*argv*/)
 
     using StructureChain = vk::StructureChain<vk::QueueFamilyProperties2, vk::QueueFamilyCheckpointPropertiesNV>;
     using AllocatorType = std::vector<StructureChain>::allocator_type;
-    auto qfd = pd.getQueueFamilyProperties2<StructureChain, AllocatorType>(vk::DispatchLoaderStatic());
+    auto qfd = physicalDevice.getQueueFamilyProperties2<StructureChain, AllocatorType>(vk::DispatchLoaderStatic());
   }
   catch (vk::SystemError err)
   {

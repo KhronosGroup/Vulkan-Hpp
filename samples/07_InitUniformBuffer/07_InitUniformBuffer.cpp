@@ -35,10 +35,9 @@ int main(int /*argc*/, char ** /*argv*/)
     vk::UniqueDebugReportCallbackEXT debugReportCallback = vk::su::createDebugReportCallback(instance);
 #endif
 
-    std::vector<vk::PhysicalDevice> physicalDevices = instance->enumeratePhysicalDevices();
-    assert(!physicalDevices.empty());
+    vk::PhysicalDevice physicalDevice = instance->enumeratePhysicalDevices().front();
 
-    vk::UniqueDevice device = vk::su::createDevice(physicalDevices[0], vk::su::findGraphicsQueueFamilyIndex(physicalDevices[0].getQueueFamilyProperties()));
+    vk::UniqueDevice device = vk::su::createDevice(physicalDevice, vk::su::findGraphicsQueueFamilyIndex(physicalDevice.getQueueFamilyProperties()));
 
     /* VULKAN_HPP_KEY_START */
 
@@ -51,7 +50,7 @@ int main(int /*argc*/, char ** /*argv*/)
     vk::UniqueBuffer uniformDataBuffer = device->createBufferUnique(vk::BufferCreateInfo(vk::BufferCreateFlags(), sizeof(mvpc), vk::BufferUsageFlagBits::eUniformBuffer));
 
     vk::MemoryRequirements memoryRequirements = device->getBufferMemoryRequirements(uniformDataBuffer.get());
-    uint32_t typeIndex = vk::su::findMemoryType(physicalDevices[0].getMemoryProperties(), memoryRequirements.memoryTypeBits, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
+    uint32_t typeIndex = vk::su::findMemoryType(physicalDevice.getMemoryProperties(), memoryRequirements.memoryTypeBits, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
     vk::UniqueDeviceMemory uniformDataMemory = device->allocateMemoryUnique(vk::MemoryAllocateInfo(memoryRequirements.size, typeIndex));
 
     uint8_t* pData = static_cast<uint8_t*>(device->mapMemory(uniformDataMemory.get(), 0, memoryRequirements.size));

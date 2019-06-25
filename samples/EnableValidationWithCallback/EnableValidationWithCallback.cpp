@@ -109,10 +109,9 @@ int main(int /*argc*/, char ** /*argv*/)
       vk::su::checked_cast<uint32_t>(instanceExtensionNames.size()) , instanceExtensionNames.data() );
     vk::UniqueInstance instance = vk::createInstanceUnique(instanceCreateInfo);
 
-    std::vector<vk::PhysicalDevice> physicalDevices = instance->enumeratePhysicalDevices();
-    assert(!physicalDevices.empty());
+    vk::PhysicalDevice physicalDevice = instance->enumeratePhysicalDevices().front();
 
-    std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevices[0].getQueueFamilyProperties();
+    std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
     assert(!queueFamilyProperties.empty());
 
     auto qfpIt = std::find_if(queueFamilyProperties.begin(), queueFamilyProperties.end(), [](vk::QueueFamilyProperties const& qfp) { return !!(qfp.queueFlags & vk::QueueFlagBits::eGraphics); });
@@ -121,7 +120,7 @@ int main(int /*argc*/, char ** /*argv*/)
 
     float queuePriority = 0.0f;
     vk::DeviceQueueCreateInfo deviceQueueCreateInfo(vk::DeviceQueueCreateFlags(), queueFamilyIndex, 1, &queuePriority);
-    vk::UniqueDevice device = physicalDevices[0].createDeviceUnique(vk::DeviceCreateInfo(vk::DeviceCreateFlags(), 1, &deviceQueueCreateInfo));
+    vk::UniqueDevice device = physicalDevice.createDeviceUnique(vk::DeviceCreateInfo(vk::DeviceCreateFlags(), 1, &deviceQueueCreateInfo));
 
     pfnVkCreateDebugReportCallbackEXT = reinterpret_cast<PFN_vkCreateDebugReportCallbackEXT>(instance->getProcAddr("vkCreateDebugReportCallbackEXT"));
     if (!pfnVkCreateDebugReportCallbackEXT)

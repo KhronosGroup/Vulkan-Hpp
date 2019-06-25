@@ -31,28 +31,27 @@ int main(int /*argc*/, char ** /*argv*/)
     vk::UniqueDebugReportCallbackEXT debugReportCallback = vk::su::createDebugReportCallback(instance);
 #endif
 
-    std::vector<vk::PhysicalDevice> physicalDevices = instance->enumeratePhysicalDevices();
-    assert(!physicalDevices.empty());
+    vk::PhysicalDevice physicalDevice = instance->enumeratePhysicalDevices().front();
 
-    uint32_t graphicsQueueFamilyIndex = vk::su::findGraphicsQueueFamilyIndex(physicalDevices[0].getQueueFamilyProperties());
-    vk::UniqueDevice device = vk::su::createDevice(physicalDevices[0], graphicsQueueFamilyIndex);
+    uint32_t graphicsQueueFamilyIndex = vk::su::findGraphicsQueueFamilyIndex(physicalDevice.getQueueFamilyProperties());
+    vk::UniqueDevice device = vk::su::createDevice(physicalDevice, graphicsQueueFamilyIndex);
 
     vk::UniqueCommandPool commandPool = vk::su::createCommandPool(device, graphicsQueueFamilyIndex);
-    std::vector<vk::UniqueCommandBuffer> commandBuffers = device->allocateCommandBuffersUnique(vk::CommandBufferAllocateInfo(commandPool.get(), vk::CommandBufferLevel::ePrimary, 1));
+    vk::UniqueCommandBuffer commandBuffer = std::move(device->allocateCommandBuffersUnique(vk::CommandBufferAllocateInfo(commandPool.get(), vk::CommandBufferLevel::ePrimary, 1)).front());
 
     vk::Queue graphicsQueue = device->getQueue(graphicsQueueFamilyIndex, 0);
 
     /* VULKAN_KEY_START */
 
     // Start with a trivial command buffer and make sure fence wait doesn't time out
-    commandBuffers[0]->begin(vk::CommandBufferBeginInfo(vk::CommandBufferUsageFlags()));
-    commandBuffers[0]->setViewport(0, vk::Viewport(0.0f, 0.0f, 10.0f, 10.0f, 0.0f, 1.0f));
-    commandBuffers[0]->end();
+    commandBuffer->begin(vk::CommandBufferBeginInfo(vk::CommandBufferUsageFlags()));
+    commandBuffer->setViewport(0, vk::Viewport(0.0f, 0.0f, 10.0f, 10.0f, 0.0f, 1.0f));
+    commandBuffer->end();
 
     vk::UniqueFence fence = device->createFenceUnique(vk::FenceCreateInfo());
 
     vk::PipelineStageFlags waitDestinationStageMask(vk::PipelineStageFlagBits::eColorAttachmentOutput);
-    vk::SubmitInfo submitInfo(0, nullptr, &waitDestinationStageMask, 1, &commandBuffers[0].get());
+    vk::SubmitInfo submitInfo(0, nullptr, &waitDestinationStageMask, 1, &commandBuffer.get());
     graphicsQueue.submit(submitInfo, fence.get());
 
     // Make sure timeout is long enough for a simple command buffer without waiting for an event
@@ -73,10 +72,10 @@ int main(int /*argc*/, char ** /*argv*/)
     // Now create an event and wait for it on the GPU
     vk::UniqueEvent event = device->createEventUnique(vk::EventCreateInfo(vk::EventCreateFlags()));
 
-    commandBuffers[0]->reset(vk::CommandBufferResetFlags());
-    commandBuffers[0]->begin(vk::CommandBufferBeginInfo());
-    commandBuffers[0]->waitEvents(event.get(), vk::PipelineStageFlagBits::eHost, vk::PipelineStageFlagBits::eBottomOfPipe, nullptr, nullptr, nullptr);
-    commandBuffers[0]->end();
+    commandBuffer->reset(vk::CommandBufferResetFlags());
+    commandBuffer->begin(vk::CommandBufferBeginInfo());
+    commandBuffer->waitEvents(event.get(), vk::PipelineStageFlagBits::eHost, vk::PipelineStageFlagBits::eBottomOfPipe, nullptr, nullptr, nullptr);
+    commandBuffer->end();
     device->resetFences(fence.get());
 
     // Note that stepping through this code in the debugger is a bad idea because the GPU can TDR waiting for the event.
@@ -101,14 +100,14 @@ int main(int /*argc*/, char ** /*argv*/)
     } while (result == vk::Result::eTimeout);
     assert(result == vk::Result::eSuccess);
 
-    commandBuffers[0]->reset({});
+    commandBuffer->reset({});
     device->resetFences(fence.get());
     device->resetEvent(event.get());
 
     // Now set the event from the GPU and wait on the CPU
-    commandBuffers[0]->begin(vk::CommandBufferBeginInfo());
-    commandBuffers[0]->setEvent(event.get(), vk::PipelineStageFlagBits::eBottomOfPipe);
-    commandBuffers[0]->end();
+    commandBuffer->begin(vk::CommandBufferBeginInfo());
+    commandBuffer->setEvent(event.get(), vk::PipelineStageFlagBits::eBottomOfPipe);
+    commandBuffer->end();
 
     // Look for the event on the CPU. It should be vk::Result::eEventReset since we haven't sent the command buffer yet.
     result = device->getEventStatus(event.get());

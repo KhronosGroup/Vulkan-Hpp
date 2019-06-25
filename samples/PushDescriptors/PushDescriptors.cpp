@@ -48,11 +48,10 @@ int main(int /*argc*/, char ** /*argv*/)
     vk::UniqueDebugReportCallbackEXT debugReportCallback = vk::su::createDebugReportCallback(instance);
 #endif
 
-    std::vector<vk::PhysicalDevice> physicalDevices = instance->enumeratePhysicalDevices();
-    assert(!physicalDevices.empty());
+    vk::PhysicalDevice physicalDevice = instance->enumeratePhysicalDevices().front();
 
     // Once instance is created, need to make sure the extension is available
-    extensionProperties = physicalDevices[0].enumerateDeviceExtensionProperties();
+    extensionProperties = physicalDevice.enumerateDeviceExtensionProperties();
     if (std::find_if(extensionProperties.begin(), extensionProperties.end(), [](auto ep) { return (strcmp(ep.extensionName,VK_KHR_PUSH_DESCRIPTOR_EXTENSION_NAME) == 0); }) == extensionProperties.end())
     {
       std::cout << "No extension for push descriptors" << std::endl;
@@ -64,34 +63,34 @@ int main(int /*argc*/, char ** /*argv*/)
 
     vk::su::SurfaceData surfaceData(instance, AppName, AppName, vk::Extent2D(500, 500));
 
-    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex(physicalDevices[0], *surfaceData.surface);
-    vk::UniqueDevice device = vk::su::createDevice(physicalDevices[0], graphicsAndPresentQueueFamilyIndex.first, deviceExtensions);
+    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex(physicalDevice, *surfaceData.surface);
+    vk::UniqueDevice device = vk::su::createDevice(physicalDevice, graphicsAndPresentQueueFamilyIndex.first, deviceExtensions);
 
     vk::UniqueCommandPool commandPool = vk::su::createCommandPool(device, graphicsAndPresentQueueFamilyIndex.first);
-    std::vector<vk::UniqueCommandBuffer> commandBuffers = device->allocateCommandBuffersUnique(vk::CommandBufferAllocateInfo(commandPool.get(), vk::CommandBufferLevel::ePrimary, 1));
+    vk::UniqueCommandBuffer commandBuffer = std::move(device->allocateCommandBuffersUnique(vk::CommandBufferAllocateInfo(commandPool.get(), vk::CommandBufferLevel::ePrimary, 1)).front());
 
     vk::Queue graphicsQueue = device->getQueue(graphicsAndPresentQueueFamilyIndex.first, 0);
     vk::Queue presentQueue = device->getQueue(graphicsAndPresentQueueFamilyIndex.second, 0);
 
-    vk::su::SwapChainData swapChainData(physicalDevices[0], device, surfaceData.surface, surfaceData.extent, vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eTransferSrc
-      , graphicsAndPresentQueueFamilyIndex.first, graphicsAndPresentQueueFamilyIndex.second);
+    vk::su::SwapChainData swapChainData(physicalDevice, device, *surfaceData.surface, surfaceData.extent, vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eTransferSrc,
+                                        vk::UniqueSwapchainKHR(), graphicsAndPresentQueueFamilyIndex.first, graphicsAndPresentQueueFamilyIndex.second);
 
-    vk::su::DepthBufferData depthBufferData(physicalDevices[0], device, vk::Format::eD16Unorm, surfaceData.extent);
+    vk::su::DepthBufferData depthBufferData(physicalDevice, device, vk::Format::eD16Unorm, surfaceData.extent);
 
-    vk::su::TextureData textureData(physicalDevices[0], device);
-    commandBuffers[0]->begin(vk::CommandBufferBeginInfo());
-    textureData.setTexture(device, commandBuffers[0], vk::su::CheckerboardTextureCreator());
+    vk::su::TextureData textureData(physicalDevice, device);
+    commandBuffer->begin(vk::CommandBufferBeginInfo());
+    textureData.setImage(device, commandBuffer, vk::su::CheckerboardImageGenerator());
 
-    vk::su::BufferData uniformBufferData(physicalDevices[0], device, sizeof(glm::mat4x4), vk::BufferUsageFlagBits::eUniformBuffer);
+    vk::su::BufferData uniformBufferData(physicalDevice, device, sizeof(glm::mat4x4), vk::BufferUsageFlagBits::eUniformBuffer);
     vk::su::copyToDevice(device, uniformBufferData.deviceMemory, vk::su::createModelViewProjectionClipMatrix(surfaceData.extent));
 
     // Need to specify that descriptor set layout will be for push descriptors
     vk::UniqueDescriptorSetLayout descriptorSetLayout = vk::su::createDescriptorSetLayout(device,
-      { {vk::DescriptorType::eUniformBuffer, vk::ShaderStageFlagBits::eVertex}, {vk::DescriptorType::eCombinedImageSampler, vk::ShaderStageFlagBits::eFragment} },
+      { {vk::DescriptorType::eUniformBuffer, 1, vk::ShaderStageFlagBits::eVertex}, {vk::DescriptorType::eCombinedImageSampler, 1, vk::ShaderStageFlagBits::eFragment} },
       vk::DescriptorSetLayoutCreateFlagBits::ePushDescriptorKHR);
     vk::UniquePipelineLayout pipelineLayout = device->createPipelineLayoutUnique(vk::PipelineLayoutCreateInfo(vk::PipelineLayoutCreateFlags(), 1, &descriptorSetLayout.get()));
 
-    vk::UniqueRenderPass renderPass = vk::su::createRenderPass(device, vk::su::pickSurfaceFormat(physicalDevices[0].getSurfaceFormatsKHR(surfaceData.surface.get())).format, depthBufferData.format);
+    vk::UniqueRenderPass renderPass = vk::su::createRenderPass(device, vk::su::pickSurfaceFormat(physicalDevice.getSurfaceFormatsKHR(surfaceData.surface.get())).format, depthBufferData.format);
 
     glslang::InitializeProcess();
     vk::UniqueShaderModule vertexShaderModule = vk::su::createShaderModule(device, vk::ShaderStageFlagBits::eVertex, vertexShaderText_PT_T);
@@ -100,11 +99,13 @@ int main(int /*argc*/, char ** /*argv*/)
 
     std::vector<vk::UniqueFramebuffer> framebuffers = vk::su::createFramebuffers(device, renderPass, swapChainData.imageViews, depthBufferData.imageView, surfaceData.extent);
 
-    vk::su::BufferData vertexBufferData(physicalDevices[0], device, sizeof(texturedCubeData), vk::BufferUsageFlagBits::eVertexBuffer);
+    vk::su::BufferData vertexBufferData(physicalDevice, device, sizeof(texturedCubeData), vk::BufferUsageFlagBits::eVertexBuffer);
     vk::su::copyToDevice(device, vertexBufferData.deviceMemory, texturedCubeData, sizeof(texturedCubeData) / sizeof(texturedCubeData[0]));
 
     vk::UniquePipelineCache pipelineCache = device->createPipelineCacheUnique(vk::PipelineCacheCreateInfo());
-    vk::UniquePipeline graphicsPipeline = vk::su::createGraphicsPipeline(device, pipelineCache, vertexShaderModule, fragmentShaderModule, sizeof(texturedCubeData[0]), true, true, pipelineLayout, renderPass);
+    vk::UniquePipeline graphicsPipeline = vk::su::createGraphicsPipeline(device, pipelineCache, std::make_pair(*vertexShaderModule, nullptr), std::make_pair(*fragmentShaderModule, nullptr),
+                                                                         sizeof(texturedCubeData[0]), { { vk::Format::eR32G32B32A32Sfloat, 0 }, { vk::Format::eR32G32Sfloat, 16 } },
+                                                                         vk::FrontFace::eClockwise, true, pipelineLayout, renderPass);
 
     // Get the index of the next available swapchain image:
     vk::UniqueSemaphore imageAcquiredSemaphore = device->createSemaphoreUnique(vk::SemaphoreCreateInfo());
@@ -116,8 +117,8 @@ int main(int /*argc*/, char ** /*argv*/)
     clearValues[0].color = vk::ClearColorValue(std::array<float, 4>({ 0.2f, 0.2f, 0.2f, 0.2f }));
     clearValues[1].depthStencil = vk::ClearDepthStencilValue(1.0f, 0);
     vk::RenderPassBeginInfo renderPassBeginInfo(renderPass.get(), framebuffers[currentBuffer.value].get(), vk::Rect2D(vk::Offset2D(0, 0), surfaceData.extent), 2, clearValues);
-    commandBuffers[0]->beginRenderPass(renderPassBeginInfo, vk::SubpassContents::eInline);
-    commandBuffers[0]->bindPipeline(vk::PipelineBindPoint::eGraphics, graphicsPipeline.get());
+    commandBuffer->beginRenderPass(renderPassBeginInfo, vk::SubpassContents::eInline);
+    commandBuffer->bindPipeline(vk::PipelineBindPoint::eGraphics, graphicsPipeline.get());
 
     vk::DescriptorBufferInfo bufferInfo(uniformBufferData.buffer.get(), 0, sizeof(glm::mat4x4));
     vk::DescriptorImageInfo imageInfo(textureData.textureSampler.get(), textureData.imageData->imageView.get(), vk::ImageLayout::eShaderReadOnlyOptimal);
@@ -128,25 +129,20 @@ int main(int /*argc*/, char ** /*argv*/)
     };
 
     // this call is from an extension and needs the dynamic dispatcher !!
-    commandBuffers[0]->pushDescriptorSetKHR(vk::PipelineBindPoint::eGraphics, *pipelineLayout, 0, { 2, writeDescriptorSets }, vk::DispatchLoaderDynamic(*instance, *device));
+    commandBuffer->pushDescriptorSetKHR(vk::PipelineBindPoint::eGraphics, *pipelineLayout, 0, { 2, writeDescriptorSets }, vk::DispatchLoaderDynamic(*instance, *device));
 
-    vk::DeviceSize offset = 0;
-    commandBuffers[0]->bindVertexBuffers(0, vertexBufferData.buffer.get(), offset);
+    commandBuffer->bindVertexBuffers(0, *vertexBufferData.buffer, {0});
+    commandBuffer->setViewport(0, vk::Viewport(0.0f, 0.0f, static_cast<float>(surfaceData.extent.width), static_cast<float>(surfaceData.extent.height), 0.0f, 1.0f));
+    commandBuffer->setScissor(0, vk::Rect2D(vk::Offset2D(0, 0), surfaceData.extent));
 
-    vk::Viewport viewport(0.0f, 0.0f, static_cast<float>(surfaceData.extent.width), static_cast<float>(surfaceData.extent.height), 0.0f, 1.0f);
-    commandBuffers[0]->setViewport(0, viewport);
-
-    vk::Rect2D scissor(vk::Offset2D(0, 0), surfaceData.extent);
-    commandBuffers[0]->setScissor(0, scissor);
-
-    commandBuffers[0]->draw(12 * 3, 1, 0, 0);
-    commandBuffers[0]->endRenderPass();
-    commandBuffers[0]->end();
+    commandBuffer->draw(12 * 3, 1, 0, 0);
+    commandBuffer->endRenderPass();
+    commandBuffer->end();
 
     vk::UniqueFence drawFence = device->createFenceUnique(vk::FenceCreateInfo());
 
     vk::PipelineStageFlags waitDestinationStageMask(vk::PipelineStageFlagBits::eColorAttachmentOutput);
-    vk::SubmitInfo submitInfo(1, &imageAcquiredSemaphore.get(), &waitDestinationStageMask, 1, &commandBuffers[0].get());
+    vk::SubmitInfo submitInfo(1, &imageAcquiredSemaphore.get(), &waitDestinationStageMask, 1, &commandBuffer.get());
     graphicsQueue.submit(submitInfo, drawFence.get());
 
     while (vk::Result::eTimeout == device->waitForFences(drawFence.get(), VK_TRUE, vk::su::FenceTimeout))

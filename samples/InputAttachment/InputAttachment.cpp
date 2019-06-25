@@ -63,10 +63,9 @@ int main(int /*argc*/, char ** /*argv*/)
     vk::UniqueDebugReportCallbackEXT debugReportCallback = vk::su::createDebugReportCallback(instance);
 #endif
 
-    std::vector<vk::PhysicalDevice> physicalDevices = instance->enumeratePhysicalDevices();
-    assert(!physicalDevices.empty());
+    vk::PhysicalDevice physicalDevice = instance->enumeratePhysicalDevices().front();
 
-    vk::FormatProperties formatProperties = physicalDevices[0].getFormatProperties(vk::Format::eR8G8B8A8Unorm);
+    vk::FormatProperties formatProperties = physicalDevice.getFormatProperties(vk::Format::eR8G8B8A8Unorm);
     if (!(formatProperties.optimalTilingFeatures & vk::FormatFeatureFlagBits::eColorAttachment))
     {
       std::cout << "vk::Format::eR8G8B8A8Unorm format unsupported for input attachment\n";
@@ -75,17 +74,17 @@ int main(int /*argc*/, char ** /*argv*/)
 
     vk::su::SurfaceData surfaceData(instance, AppName, AppName, vk::Extent2D(500, 500));
 
-    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex(physicalDevices[0], *surfaceData.surface);
-    vk::UniqueDevice device = vk::su::createDevice(physicalDevices[0], graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions());
+    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex(physicalDevice, *surfaceData.surface);
+    vk::UniqueDevice device = vk::su::createDevice(physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions());
 
     vk::UniqueCommandPool commandPool = vk::su::createCommandPool(device, graphicsAndPresentQueueFamilyIndex.first);
-    std::vector<vk::UniqueCommandBuffer> commandBuffers = device->allocateCommandBuffersUnique(vk::CommandBufferAllocateInfo(commandPool.get(), vk::CommandBufferLevel::ePrimary, 1));
+    vk::UniqueCommandBuffer commandBuffer = std::move(device->allocateCommandBuffersUnique(vk::CommandBufferAllocateInfo(commandPool.get(), vk::CommandBufferLevel::ePrimary, 1)).front());
 
     vk::Queue graphicsQueue = device->getQueue(graphicsAndPresentQueueFamilyIndex.first, 0);
     vk::Queue presentQueue = device->getQueue(graphicsAndPresentQueueFamilyIndex.second, 0);
 
-    vk::su::SwapChainData swapChainData(physicalDevices[0], device, surfaceData.surface, surfaceData.extent, vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eTransferSrc,
-      graphicsAndPresentQueueFamilyIndex.first, graphicsAndPresentQueueFamilyIndex.second);
+    vk::su::SwapChainData swapChainData(physicalDevice, device, *surfaceData.surface, surfaceData.extent, vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eTransferSrc,
+                                        vk::UniqueSwapchainKHR(), graphicsAndPresentQueueFamilyIndex.first, graphicsAndPresentQueueFamilyIndex.second);
 
     /* VULKAN_KEY_START */
 
@@ -98,19 +97,19 @@ int main(int /*argc*/, char ** /*argv*/)
       vk::SampleCountFlagBits::e1, vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eInputAttachment | vk::ImageUsageFlagBits::eTransferDst));
 
     vk::MemoryRequirements memoryRequirements = device->getImageMemoryRequirements(inputImage.get());
-    uint32_t memoryTypeIndex = vk::su::findMemoryType(physicalDevices[0].getMemoryProperties(), memoryRequirements.memoryTypeBits, vk::MemoryPropertyFlags());
+    uint32_t memoryTypeIndex = vk::su::findMemoryType(physicalDevice.getMemoryProperties(), memoryRequirements.memoryTypeBits, vk::MemoryPropertyFlags());
     vk::UniqueDeviceMemory inputMemory = device->allocateMemoryUnique(vk::MemoryAllocateInfo(memoryRequirements.size, memoryTypeIndex));
     device->bindImageMemory(inputImage.get(), inputMemory.get(), 0);
 
     // Set the image layout to TRANSFER_DST_OPTIMAL to be ready for clear
-    commandBuffers[0]->begin(vk::CommandBufferBeginInfo());
-    vk::su::setImageLayout(commandBuffers[0], inputImage.get(), swapChainData.colorFormat, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal);
+    commandBuffer->begin(vk::CommandBufferBeginInfo());
+    vk::su::setImageLayout(commandBuffer, inputImage.get(), swapChainData.colorFormat, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal);
 
-    commandBuffers[0]->clearColorImage(inputImage.get(), vk::ImageLayout::eTransferDstOptimal, vk::ClearColorValue(std::array<float, 4>({ {1.0f, 1.0f, 0.0f, 0.0f} })),
+    commandBuffer->clearColorImage(inputImage.get(), vk::ImageLayout::eTransferDstOptimal, vk::ClearColorValue(std::array<float, 4>({ {1.0f, 1.0f, 0.0f, 0.0f} })),
       vk::ImageSubresourceRange(vk::ImageAspectFlagBits::eColor, 0, VK_REMAINING_MIP_LEVELS, 0, VK_REMAINING_ARRAY_LAYERS));
 
     // Set the image layout to SHADER_READONLY_OPTIMAL for use by the shaders
-    vk::su::setImageLayout(commandBuffers[0], inputImage.get(), swapChainData.colorFormat, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal);
+    vk::su::setImageLayout(commandBuffer, inputImage.get(), swapChainData.colorFormat, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal);
 
     vk::ComponentMapping componentMapping(vk::ComponentSwizzle::eR, vk::ComponentSwizzle::eG, vk::ComponentSwizzle::eB, vk::ComponentSwizzle::eA);
     vk::ImageViewCreateInfo imageViewCreateInfo(vk::ImageViewCreateFlags(), inputImage.get(), vk::ImageViewType::e2D, swapChainData.colorFormat, componentMapping, vk::ImageSubresourceRange(vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1));
@@ -146,14 +145,15 @@ int main(int /*argc*/, char ** /*argv*/)
     vk::DescriptorPoolSize poolSize(vk::DescriptorType::eInputAttachment, 1);
     vk::UniqueDescriptorPool descriptorPool = device->createDescriptorPoolUnique(vk::DescriptorPoolCreateInfo(vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet, 1, 1, &poolSize));
 
-    std::vector<vk::UniqueDescriptorSet> descriptorSets = device->allocateDescriptorSetsUnique(vk::DescriptorSetAllocateInfo(descriptorPool.get(), 1, &descriptorSetLayout.get()));
+    vk::UniqueDescriptorSet descriptorSet = std::move(device->allocateDescriptorSetsUnique(vk::DescriptorSetAllocateInfo(*descriptorPool, 1, &*descriptorSetLayout)).front());
 
     vk::DescriptorImageInfo inputImageInfo(nullptr, inputAttachmentView.get(), vk::ImageLayout::eShaderReadOnlyOptimal);
-    vk::WriteDescriptorSet writeDescriptorSet(descriptorSets[0].get(), 0, 0, 1, vk::DescriptorType::eInputAttachment, &inputImageInfo);
+    vk::WriteDescriptorSet writeDescriptorSet(descriptorSet.get(), 0, 0, 1, vk::DescriptorType::eInputAttachment, &inputImageInfo);
     device->updateDescriptorSets(vk::ArrayProxy<const vk::WriteDescriptorSet>(1, &writeDescriptorSet), nullptr);
 
     vk::UniquePipelineCache pipelineCache = device->createPipelineCacheUnique(vk::PipelineCacheCreateInfo());
-    vk::UniquePipeline graphicsPipeline = vk::su::createGraphicsPipeline(device, pipelineCache, vertexShaderModule, fragmentShaderModule, 0, false, false, pipelineLayout, renderPass);
+    vk::UniquePipeline graphicsPipeline = vk::su::createGraphicsPipeline(device, pipelineCache, std::make_pair(*vertexShaderModule, nullptr), std::make_pair(*fragmentShaderModule, nullptr), 0, {},
+                                                                         vk::FrontFace::eClockwise, false, pipelineLayout, renderPass);
 
     vk::UniqueSemaphore imageAcquiredSemaphore = device->createSemaphoreUnique(vk::SemaphoreCreateInfo());
 
@@ -163,23 +163,20 @@ int main(int /*argc*/, char ** /*argv*/)
 
     vk::ClearValue clearValue;
     clearValue.color = vk::ClearColorValue(std::array<float, 4>({ 0.2f, 0.2f, 0.2f, 0.2f }));
-    commandBuffers[0]->beginRenderPass(vk::RenderPassBeginInfo(renderPass.get(), framebuffers[currentBuffer].get(), vk::Rect2D(vk::Offset2D(0, 0), surfaceData.extent), 1, &clearValue), vk::SubpassContents::eInline);
-    commandBuffers[0]->bindPipeline(vk::PipelineBindPoint::eGraphics, graphicsPipeline.get());
-    commandBuffers[0]->bindDescriptorSets(vk::PipelineBindPoint::eGraphics, pipelineLayout.get(), 0, descriptorSets[0].get(), nullptr);
+    commandBuffer->beginRenderPass(vk::RenderPassBeginInfo(renderPass.get(), framebuffers[currentBuffer].get(), vk::Rect2D(vk::Offset2D(0, 0), surfaceData.extent), 1, &clearValue), vk::SubpassContents::eInline);
+    commandBuffer->bindPipeline(vk::PipelineBindPoint::eGraphics, graphicsPipeline.get());
+    commandBuffer->bindDescriptorSets(vk::PipelineBindPoint::eGraphics, pipelineLayout.get(), 0, descriptorSet.get(), nullptr);
 
-    vk::Viewport viewport(0.0f, 0.0f, static_cast<float>(surfaceData.extent.width), static_cast<float>(surfaceData.extent.height), 0.0f, 1.0f);
-    commandBuffers[0]->setViewport(0, viewport);
+    commandBuffer->setViewport(0, vk::Viewport(0.0f, 0.0f, static_cast<float>(surfaceData.extent.width), static_cast<float>(surfaceData.extent.height), 0.0f, 1.0f));
+    commandBuffer->setScissor(0, vk::Rect2D(vk::Offset2D(0, 0), surfaceData.extent));
 
-    vk::Rect2D scissor(vk::Offset2D(0, 0), surfaceData.extent);
-    commandBuffers[0]->setScissor(0, scissor);
-
-    commandBuffers[0]->draw(3, 1, 0, 0);
-    commandBuffers[0]->endRenderPass();
-    commandBuffers[0]->end();
+    commandBuffer->draw(3, 1, 0, 0);
+    commandBuffer->endRenderPass();
+    commandBuffer->end();
 
     /* VULKAN_KEY_END */
 
-    vk::su::submitAndWait(device, graphicsQueue, commandBuffers[0]);
+    vk::su::submitAndWait(device, graphicsQueue, commandBuffer);
 
     presentQueue.presentKHR(vk::PresentInfoKHR(0, nullptr, 1, &swapChainData.swapChain.get(), &currentBuffer));
     Sleep(1000);

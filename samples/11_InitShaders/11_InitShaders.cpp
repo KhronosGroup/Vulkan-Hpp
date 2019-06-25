@@ -33,10 +33,9 @@ int main(int /*argc*/, char ** /*argv*/)
     vk::UniqueDebugReportCallbackEXT debugReportCallback = vk::su::createDebugReportCallback(instance);
 #endif
 
-    std::vector<vk::PhysicalDevice> physicalDevices = instance->enumeratePhysicalDevices();
-    assert(!physicalDevices.empty());
+    vk::PhysicalDevice physicalDevice = instance->enumeratePhysicalDevices().front();
 
-    vk::UniqueDevice device = vk::su::createDevice(physicalDevices[0], vk::su::findGraphicsQueueFamilyIndex(physicalDevices[0].getQueueFamilyProperties()));
+    vk::UniqueDevice device = vk::su::createDevice(physicalDevice, vk::su::findGraphicsQueueFamilyIndex(physicalDevice.getQueueFamilyProperties()));
 
     /* VULKAN_HPP_KEY_START */
 

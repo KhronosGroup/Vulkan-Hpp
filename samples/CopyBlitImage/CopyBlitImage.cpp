@@ -30,33 +30,32 @@ int main(int /*argc*/, char ** /*argv*/)
     vk::UniqueDebugReportCallbackEXT debugReportCallback = vk::su::createDebugReportCallback(instance);
 #endif
 
-    std::vector<vk::PhysicalDevice> physicalDevices = instance->enumeratePhysicalDevices();
-    assert(!physicalDevices.empty());
+    vk::PhysicalDevice physicalDevice = instance->enumeratePhysicalDevices().front();
 
     vk::su::SurfaceData surfaceData(instance, AppName, AppName, vk::Extent2D(640, 640));
 
-    vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevices[0].getSurfaceCapabilitiesKHR(surfaceData.surface.get());
+    vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR(surfaceData.surface.get());
     if (!(surfaceCapabilities.supportedUsageFlags & vk::ImageUsageFlagBits::eTransferDst))
     {
       std::cout << "Surface cannot be destination of blit - abort \n";
       exit(-1);
     }
 
-    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex(physicalDevices[0], *surfaceData.surface);
-    vk::UniqueDevice device = vk::su::createDevice(physicalDevices[0], graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions());
+    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex(physicalDevice, *surfaceData.surface);
+    vk::UniqueDevice device = vk::su::createDevice(physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions());
 
     vk::UniqueCommandPool commandPool = vk::su::createCommandPool(device, graphicsAndPresentQueueFamilyIndex.first);
-    std::vector<vk::UniqueCommandBuffer> commandBuffers = device->allocateCommandBuffersUnique(vk::CommandBufferAllocateInfo(commandPool.get(), vk::CommandBufferLevel::ePrimary, 1));
+    vk::UniqueCommandBuffer commandBuffer = std::move(device->allocateCommandBuffersUnique(vk::CommandBufferAllocateInfo(commandPool.get(), vk::CommandBufferLevel::ePrimary, 1)).front());
 
     vk::Queue graphicsQueue = device->getQueue(graphicsAndPresentQueueFamilyIndex.first, 0);
     vk::Queue presentQueue = device->getQueue(graphicsAndPresentQueueFamilyIndex.second, 0);
 
-    vk::su::SwapChainData swapChainData(physicalDevices[0], device, surfaceData.surface, surfaceData.extent, vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eTransferDst
-      , graphicsAndPresentQueueFamilyIndex.first, graphicsAndPresentQueueFamilyIndex.second);
+    vk::su::SwapChainData swapChainData(physicalDevice, device, *surfaceData.surface, surfaceData.extent, vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eTransferDst,
+                                        vk::UniqueSwapchainKHR(), graphicsAndPresentQueueFamilyIndex.first, graphicsAndPresentQueueFamilyIndex.second);
 
     /* VULKAN_KEY_START */
 
-    vk::FormatProperties formatProperties = physicalDevices[0].getFormatProperties(swapChainData.colorFormat);
+    vk::FormatProperties formatProperties = physicalDevice.getFormatProperties(swapChainData.colorFormat);
     assert((formatProperties.linearTilingFeatures & vk::FormatFeatureFlagBits::eBlitSrc) && "Format cannot be used as transfer source");
 
     vk::UniqueSemaphore imageAcquiredSemaphore = device->createSemaphoreUnique(vk::SemaphoreCreateInfo());
@@ -67,28 +66,28 @@ int main(int /*argc*/, char ** /*argv*/)
     assert(nextImage.value < swapChainData.images.size());
     uint32_t currentBuffer = nextImage.value;
 
-    commandBuffers[0]->begin(vk::CommandBufferBeginInfo());
-    vk::su::setImageLayout(commandBuffers[0], swapChainData.images[currentBuffer], swapChainData.colorFormat, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal);
+    commandBuffer->begin(vk::CommandBufferBeginInfo());
+    vk::su::setImageLayout(commandBuffer, swapChainData.images[currentBuffer], swapChainData.colorFormat, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal);
 
     // Create an image, map it, and write some values to the image
     vk::ImageCreateInfo imageCreateInfo(vk::ImageCreateFlags(), vk::ImageType::e2D, swapChainData.colorFormat, vk::Extent3D(surfaceData.extent, 1), 1, 1, vk::SampleCountFlagBits::e1, vk::ImageTiling::eLinear, vk::ImageUsageFlagBits::eTransferSrc);
     vk::UniqueImage blitSourceImage = device->createImageUnique(imageCreateInfo);
 
-    vk::PhysicalDeviceMemoryProperties memoryProperties = physicalDevices[0].getMemoryProperties();
+    vk::PhysicalDeviceMemoryProperties memoryProperties = physicalDevice.getMemoryProperties();
     vk::MemoryRequirements memoryRequirements = device->getImageMemoryRequirements(blitSourceImage.get());
     uint32_t memoryTypeIndex = vk::su::findMemoryType(memoryProperties, memoryRequirements.memoryTypeBits, vk::MemoryPropertyFlagBits::eHostVisible);
 
     vk::UniqueDeviceMemory deviceMemory = device->allocateMemoryUnique(vk::MemoryAllocateInfo(memoryRequirements.size, memoryTypeIndex));
     device->bindImageMemory(blitSourceImage.get(), deviceMemory.get(), 0);
 
-    vk::su::setImageLayout(commandBuffers[0], blitSourceImage.get(), swapChainData.colorFormat, vk::ImageLayout::eUndefined, vk::ImageLayout::eGeneral);
+    vk::su::setImageLayout(commandBuffer, blitSourceImage.get(), swapChainData.colorFormat, vk::ImageLayout::eUndefined, vk::ImageLayout::eGeneral);
 
-    commandBuffers[0]->end();
+    commandBuffer->end();
 
     /* Queue the command buffer for execution */
     vk::UniqueFence commandFence = device->createFenceUnique({});
     vk::PipelineStageFlags pipeStageFlags(vk::PipelineStageFlagBits::eColorAttachmentOutput);
-    graphicsQueue.submit(vk::SubmitInfo(1, &imageAcquiredSemaphore.get(), &pipeStageFlags, 1, &commandBuffers[0].get()), commandFence.get());
+    graphicsQueue.submit(vk::SubmitInfo(1, &imageAcquiredSemaphore.get(), &pipeStageFlags, 1, &commandBuffer.get()), commandFence.get());
 
     /* Make sure command buffer is finished before mapping */
     while (device->waitForFences(commandFence.get(), true, vk::su::FenceTimeout) == vk::Result::eTimeout)
@@ -114,35 +113,35 @@ int main(int /*argc*/, char ** /*argv*/)
     device->flushMappedMemoryRanges(vk::MappedMemoryRange(deviceMemory.get(), 0, memoryRequirements.size));
     device->unmapMemory(deviceMemory.get());
 
-    commandBuffers[0]->reset({});
-    commandBuffers[0]->begin(vk::CommandBufferBeginInfo());
+    commandBuffer->reset({});
+    commandBuffer->begin(vk::CommandBufferBeginInfo());
 
     // Intend to blit from this image, set the layout accordingly
-    vk::su::setImageLayout(commandBuffers[0], blitSourceImage.get(), swapChainData.colorFormat, vk::ImageLayout::eGeneral, vk::ImageLayout::eTransferSrcOptimal);
+    vk::su::setImageLayout(commandBuffer, blitSourceImage.get(), swapChainData.colorFormat, vk::ImageLayout::eGeneral, vk::ImageLayout::eTransferSrcOptimal);
 
     vk::Image blitDestinationImage = swapChainData.images[currentBuffer];
 
     // Do a 32x32 blit to all of the dst image - should get big squares
     vk::ImageSubresourceLayers imageSubresourceLayers(vk::ImageAspectFlagBits::eColor, 0, 0, 1);
     vk::ImageBlit imageBlit(imageSubresourceLayers, { { vk::Offset3D(0, 0, 0), vk::Offset3D(32, 32, 1) } }, imageSubresourceLayers, { { vk::Offset3D(0, 0, 0), vk::Offset3D(surfaceData.extent.width, surfaceData.extent.height, 1) } });
-    commandBuffers[0]->blitImage(blitSourceImage.get(), vk::ImageLayout::eTransferSrcOptimal, blitDestinationImage, vk::ImageLayout::eTransferDstOptimal, imageBlit, vk::Filter::eLinear);
+    commandBuffer->blitImage(blitSourceImage.get(), vk::ImageLayout::eTransferSrcOptimal, blitDestinationImage, vk::ImageLayout::eTransferDstOptimal, imageBlit, vk::Filter::eLinear);
 
     // Use a barrier to make sure the blit is finished before the copy starts
     vk::ImageMemoryBarrier memoryBarrier(vk::AccessFlagBits::eTransferWrite, vk::AccessFlagBits::eMemoryRead, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eTransferDstOptimal,
       VK_QUEUE_FAMILY_IGNORED, VK_QUEUE_FAMILY_IGNORED, blitDestinationImage, vk::ImageSubresourceRange(vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1));
-    commandBuffers[0]->pipelineBarrier(vk::PipelineStageFlagBits::eTransfer, vk::PipelineStageFlagBits::eTransfer, vk::DependencyFlags(), nullptr, nullptr, memoryBarrier);
+    commandBuffer->pipelineBarrier(vk::PipelineStageFlagBits::eTransfer, vk::PipelineStageFlagBits::eTransfer, vk::DependencyFlags(), nullptr, nullptr, memoryBarrier);
 
     // Do a image copy to part of the dst image - checks should stay small
     vk::ImageCopy imageCopy(imageSubresourceLayers, vk::Offset3D(), imageSubresourceLayers, vk::Offset3D(256, 256, 0), vk::Extent3D(128, 128, 1));
-    commandBuffers[0]->copyImage(blitSourceImage.get(), vk::ImageLayout::eTransferSrcOptimal, blitDestinationImage, vk::ImageLayout::eTransferDstOptimal, imageCopy);
+    commandBuffer->copyImage(blitSourceImage.get(), vk::ImageLayout::eTransferSrcOptimal, blitDestinationImage, vk::ImageLayout::eTransferDstOptimal, imageCopy);
 
     vk::ImageMemoryBarrier prePresentBarrier(vk::AccessFlagBits::eTransferWrite, vk::AccessFlagBits::eMemoryRead, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::ePresentSrcKHR,
       VK_QUEUE_FAMILY_IGNORED, VK_QUEUE_FAMILY_IGNORED, swapChainData.images[currentBuffer], vk::ImageSubresourceRange(vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1));
-    commandBuffers[0]->pipelineBarrier(vk::PipelineStageFlagBits::eTransfer, vk::PipelineStageFlagBits::eTopOfPipe, vk::DependencyFlags(), nullptr, nullptr, prePresentBarrier);
-    commandBuffers[0]->end();
+    commandBuffer->pipelineBarrier(vk::PipelineStageFlagBits::eTransfer, vk::PipelineStageFlagBits::eTopOfPipe, vk::DependencyFlags(), nullptr, nullptr, prePresentBarrier);
+    commandBuffer->end();
 
     vk::UniqueFence drawFence = device->createFenceUnique({});
-    graphicsQueue.submit(vk::SubmitInfo(0, nullptr, nullptr, 1, &commandBuffers[0].get()), drawFence.get());
+    graphicsQueue.submit(vk::SubmitInfo(0, nullptr, nullptr, 1, &commandBuffer.get()), drawFence.get());
     graphicsQueue.waitIdle();
 
     /* Make sure command buffer is finished before presenting */

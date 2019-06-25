@@ -3765,12 +3765,12 @@ ${initializers}    {${copyOps}}
 ${subStructConstructor}
     ${name}( Vk${name} const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ${name} ) );
+      *reinterpret_cast<Vk${name}*>(this) = rhs;
     }
 
     ${name}& operator=( Vk${name} const & rhs )
     {
-      memcpy( this, &rhs, sizeof( ${name} ) );
+      *reinterpret_cast<Vk${name}*>(this) = rhs;
       return *this;
     }
 )";

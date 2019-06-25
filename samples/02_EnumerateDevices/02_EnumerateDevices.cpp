@@ -34,7 +34,7 @@ int main(int /*argc*/, char ** /*argv*/)
     /* VULKAN_HPP_KEY_START */
 
     // enumerate the physicalDevices
-    std::vector<vk::PhysicalDevice> physicalDevices = instance->enumeratePhysicalDevices();
+    vk::PhysicalDevice physicalDevice = instance->enumeratePhysicalDevices().front();
 
     // Note: PhysicalDevices are not created, but just enumerated. Therefore, there is nothing like a UniquePhysicalDevice.
     // A PhysicalDevice is unique by definition, and there's no need to destroy it.

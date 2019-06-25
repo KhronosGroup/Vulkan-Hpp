@@ -35,16 +35,15 @@ int main(int /*argc*/, char ** /*argv*/)
     vk::UniqueDebugReportCallbackEXT debugReportCallback = vk::su::createDebugReportCallback(instance);
 #endif
 
-    std::vector<vk::PhysicalDevice> physicalDevices = instance->enumeratePhysicalDevices();
-    assert(!physicalDevices.empty());
+    vk::PhysicalDevice physicalDevice = instance->enumeratePhysicalDevices().front();
 
     vk::su::SurfaceData surfaceData(instance, AppName, AppName, vk::Extent2D(50, 50));
 
-    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex(physicalDevices[0], *surfaceData.surface);
-    vk::UniqueDevice device = vk::su::createDevice(physicalDevices[0], graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions());
+    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex(physicalDevice, *surfaceData.surface);
+    vk::UniqueDevice device = vk::su::createDevice(physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions());
 
     vk::UniqueCommandPool commandPool = vk::su::createCommandPool(device, graphicsAndPresentQueueFamilyIndex.first);
-    std::vector<vk::UniqueCommandBuffer> commandBuffers = device->allocateCommandBuffersUnique(vk::CommandBufferAllocateInfo(commandPool.get(), vk::CommandBufferLevel::ePrimary, 1));
+    vk::UniqueCommandBuffer commandBuffer = std::move(device->allocateCommandBuffersUnique(vk::CommandBufferAllocateInfo(commandPool.get(), vk::CommandBufferLevel::ePrimary, 1)).front());
 
     vk::Queue graphicsQueue = device->getQueue(graphicsAndPresentQueueFamilyIndex.first, 0);
     vk::Queue presentQueue = device->getQueue(graphicsAndPresentQueueFamilyIndex.second, 0);
@@ -52,7 +51,7 @@ int main(int /*argc*/, char ** /*argv*/)
     /* VULKAN_KEY_START */
 
     vk::Format format = vk::Format::eR8G8B8A8Unorm;
-    vk::FormatProperties formatProperties = physicalDevices[0].getFormatProperties(format);
+    vk::FormatProperties formatProperties = physicalDevice.getFormatProperties(format);
 
     // See if we can use a linear tiled image for a texture, if not, we will need a staging buffer for the texture data
     bool needsStaging = !(formatProperties.linearTilingFeatures & vk::FormatFeatureFlagBits::eSampledImage);
@@ -63,7 +62,7 @@ int main(int /*argc*/, char ** /*argv*/)
       vk::SharingMode::eExclusive, 0, nullptr, needsStaging ? vk::ImageLayout::eUndefined : vk::ImageLayout::ePreinitialized));
 
     vk::MemoryRequirements memoryRequirements = device->getImageMemoryRequirements(image.get());
-    uint32_t memoryTypeIndex = vk::su::findMemoryType(physicalDevices[0].getMemoryProperties(), memoryRequirements.memoryTypeBits,
+    uint32_t memoryTypeIndex = vk::su::findMemoryType(physicalDevice.getMemoryProperties(), memoryRequirements.memoryTypeBits,
       needsStaging ? vk::MemoryPropertyFlags() : (vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent));
 
     // allocate memory
@@ -80,7 +79,7 @@ int main(int /*argc*/, char ** /*argv*/)
       textureBuffer = device->createBufferUnique(vk::BufferCreateInfo(vk::BufferCreateFlags(), surfaceData.extent.width * surfaceData.extent.height * 4, vk::BufferUsageFlagBits::eTransferSrc));
 
       memoryRequirements = device->getBufferMemoryRequirements(textureBuffer.get());
-      memoryTypeIndex = vk::su::findMemoryType(physicalDevices[0].getMemoryProperties(), memoryRequirements.memoryTypeBits, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
+      memoryTypeIndex = vk::su::findMemoryType(physicalDevice.getMemoryProperties(), memoryRequirements.memoryTypeBits, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
 
       // allocate memory
       textureBufferMemory = device->allocateMemoryUnique(vk::MemoryAllocateInfo(memoryRequirements.size, memoryTypeIndex));
@@ -112,24 +111,24 @@ int main(int /*argc*/, char ** /*argv*/)
 
     device->unmapMemory(needsStaging ? textureBufferMemory.get() : imageMemory.get());
 
-    commandBuffers[0]->begin(vk::CommandBufferBeginInfo());
+    commandBuffer->begin(vk::CommandBufferBeginInfo());
     if (needsStaging)
     {
       // Since we're going to blit to the texture image, set its layout to eTransferDstOptimal
-      vk::su::setImageLayout(commandBuffers[0], image.get(), format, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal);
+      vk::su::setImageLayout(commandBuffer, image.get(), format, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal);
       vk::BufferImageCopy copyRegion(0, surfaceData.extent.width, surfaceData.extent.height, vk::ImageSubresourceLayers(vk::ImageAspectFlagBits::eColor, 0, 0, 1), vk::Offset3D(0, 0, 0), vk::Extent3D(surfaceData.extent, 1));
-      commandBuffers[0]->copyBufferToImage(textureBuffer.get(), image.get(), vk::ImageLayout::eTransferDstOptimal, copyRegion);
+      commandBuffer->copyBufferToImage(textureBuffer.get(), image.get(), vk::ImageLayout::eTransferDstOptimal, copyRegion);
       // Set the layout for the texture image from eTransferDstOptimal to SHADER_READ_ONLY
-      vk::su::setImageLayout(commandBuffers[0], image.get(), format, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal);
+      vk::su::setImageLayout(commandBuffer, image.get(), format, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal);
     }
     else
     {
       // If we can use the linear tiled image as a texture, just do it
-      vk::su::setImageLayout(commandBuffers[0], image.get(), format, vk::ImageLayout::ePreinitialized, vk::ImageLayout::eShaderReadOnlyOptimal);
+      vk::su::setImageLayout(commandBuffer, image.get(), format, vk::ImageLayout::ePreinitialized, vk::ImageLayout::eShaderReadOnlyOptimal);
     }
 
-    commandBuffers[0]->end();
-    vk::su::submitAndWait(device, graphicsQueue, commandBuffers[0]);
+    commandBuffer->end();
+    vk::su::submitAndWait(device, graphicsQueue, commandBuffer);
 
     vk::UniqueSampler sampler = device->createSamplerUnique(vk::SamplerCreateInfo(vk::SamplerCreateFlags(), vk::Filter::eNearest, vk::Filter::eNearest, vk::SamplerMipmapMode::eNearest,
       vk::SamplerAddressMode::eClampToEdge, vk::SamplerAddressMode::eClampToEdge, vk::SamplerAddressMode::eClampToEdge, 0.0f, false, 1.0f, false, vk::CompareOp::eNever, 0.0f, 0.0f,

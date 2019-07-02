@@ -527,8 +527,8 @@ namespace vk
         ;
     }
 
-    void updateDescriptorSets(vk::UniqueDevice const& device, vk::UniqueDescriptorSet const& descriptorSet, std::map<vk::DescriptorType, vk::UniqueBuffer const&> const& bufferData,
-                              vk::su::TextureData const& textureData)
+    void updateDescriptorSets(vk::UniqueDevice const& device, vk::UniqueDescriptorSet const& descriptorSet,
+                              std::vector<std::tuple<vk::DescriptorType, vk::UniqueBuffer const&, vk::UniqueBufferView const&>> const& bufferData, vk::su::TextureData const& textureData)
     {
       std::vector<vk::DescriptorBufferInfo> bufferInfos;
       bufferInfos.reserve(bufferData.size());
@@ -538,8 +538,8 @@ namespace vk
       uint32_t dstBinding = 0;
       for (auto const& bd : bufferData)
       {
-        bufferInfos.push_back(vk::DescriptorBufferInfo(*bd.second, 0, VK_WHOLE_SIZE));
-        writeDescriptorSets.push_back(vk::WriteDescriptorSet(*descriptorSet, dstBinding++, 0, 1, bd.first, nullptr, &bufferInfos.back()));
+        bufferInfos.push_back(vk::DescriptorBufferInfo(*std::get<1>(bd), 0, VK_WHOLE_SIZE));
+        writeDescriptorSets.push_back(vk::WriteDescriptorSet(*descriptorSet, dstBinding++, 0, 1, std::get<0>(bd), nullptr, &bufferInfos.back(), std::get<2>(bd) ? &*std::get<2>(bd) : nullptr));
       }
 
       vk::DescriptorImageInfo imageInfo(*textureData.textureSampler, *textureData.imageData->imageView, vk::ImageLayout::eShaderReadOnlyOptimal);
@@ -548,7 +548,8 @@ namespace vk
       device->updateDescriptorSets(writeDescriptorSets, nullptr);
     }
 
-    void updateDescriptorSets(vk::UniqueDevice const& device, vk::UniqueDescriptorSet const& descriptorSet, std::map<vk::DescriptorType, vk::UniqueBuffer const&> const& bufferData,
+    void updateDescriptorSets(vk::UniqueDevice const& device, vk::UniqueDescriptorSet const& descriptorSet,
+                              std::vector<std::tuple<vk::DescriptorType, vk::UniqueBuffer const&, vk::UniqueBufferView const&>> const& bufferData,
                               std::vector<vk::su::TextureData> const& textureData)
     {
       std::vector<vk::DescriptorBufferInfo> bufferInfos;
@@ -559,8 +560,8 @@ namespace vk
       uint32_t dstBinding = 0;
       for (auto const& bd : bufferData)
       {
-        bufferInfos.push_back(vk::DescriptorBufferInfo(*bd.second, 0, VK_WHOLE_SIZE));
-        writeDescriptorSets.push_back(vk::WriteDescriptorSet(*descriptorSet, dstBinding++, 0, 1, bd.first, nullptr, &bufferInfos.back()));
+        bufferInfos.push_back(vk::DescriptorBufferInfo(*std::get<1>(bd), 0, VK_WHOLE_SIZE));
+        writeDescriptorSets.push_back(vk::WriteDescriptorSet(*descriptorSet, dstBinding++, 0, 1, std::get<0>(bd), nullptr, &bufferInfos.back(), std::get<2>(bd) ? &*std::get<2>(bd) : nullptr));
       }
 
       std::vector<vk::DescriptorImageInfo> imageInfos;

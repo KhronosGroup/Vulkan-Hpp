@@ -6564,10 +6564,8 @@ namespace VULKAN_HPP_NAMESPACE
     if ( !value ) return "{}";
     std::string result;
 
-    if ( value & CullModeFlagBits::eNone ) result += "None | ";
     if ( value & CullModeFlagBits::eFront ) result += "Front | ";
     if ( value & CullModeFlagBits::eBack ) result += "Back | ";
-    if ( value & CullModeFlagBits::eFrontAndBack ) result += "FrontAndBack | ";
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
@@ -9502,7 +9500,6 @@ namespace VULKAN_HPP_NAMESPACE
     if ( !value ) return "{}";
     std::string result;
 
-    if ( value & ResolveModeFlagBitsKHR::eNone ) result += "None | ";
     if ( value & ResolveModeFlagBitsKHR::eSampleZero ) result += "SampleZero | ";
     if ( value & ResolveModeFlagBitsKHR::eAverage ) result += "Average | ";
     if ( value & ResolveModeFlagBitsKHR::eMin ) result += "Min | ";
@@ -9768,8 +9765,6 @@ namespace VULKAN_HPP_NAMESPACE
     if ( value & ShaderStageFlagBits::eGeometry ) result += "Geometry | ";
     if ( value & ShaderStageFlagBits::eFragment ) result += "Fragment | ";
     if ( value & ShaderStageFlagBits::eCompute ) result += "Compute | ";
-    if ( value & ShaderStageFlagBits::eAllGraphics ) result += "AllGraphics | ";
-    if ( value & ShaderStageFlagBits::eAll ) result += "All | ";
     if ( value & ShaderStageFlagBits::eRaygenNV ) result += "RaygenNV | ";
     if ( value & ShaderStageFlagBits::eAnyHitNV ) result += "AnyHitNV | ";
     if ( value & ShaderStageFlagBits::eClosestHitNV ) result += "ClosestHitNV | ";
@@ -9918,7 +9913,6 @@ namespace VULKAN_HPP_NAMESPACE
 
     if ( value & StencilFaceFlagBits::eFront ) result += "Front | ";
     if ( value & StencilFaceFlagBits::eBack ) result += "Back | ";
-    if ( value & StencilFaceFlagBits::eVkStencilFrontAndBack ) result += "VkStencilFrontAndBack | ";
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 

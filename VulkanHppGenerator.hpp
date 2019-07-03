@@ -103,13 +103,26 @@ class VulkanHppGenerator
       bool                      isAlias;
     };
 
+    struct EnumValueData
+    {
+      EnumValueData(std::string const& vulkan, std::string const& vk, bool singleBit_)
+        : vulkanValue(vulkan)
+        , vkValue(vk)
+        , singleBit(singleBit_)
+      {}
+
+      std::string vulkanValue;
+      std::string vkValue;
+      bool        singleBit;
+    };
+
     struct EnumData
     {
-      void addEnumValue(std::string const& valueName, bool bitmask, std::string const& prefix, std::string const& postfix, std::string const& tag);
+      void addEnumValue(std::string const& valueName, bool bitmask, bool bitpos, std::string const& prefix, std::string const& postfix, std::string const& tag);
 
       std::vector<std::pair<std::string, std::string>>  aliases;  // pairs of vulkan enum value and corresponding vk::-namespace enum value
       std::string                                       platform;
-      std::vector<std::pair<std::string, std::string>>  values;   // pairs of vulkan enum value and corresponding vk::-namespace enum value
+      std::vector<EnumValueData>                        values;
     };
 
     struct HandleData
@@ -188,6 +201,8 @@ class VulkanHppGenerator
     void writeArguments(std::ostream & os, CommandData const& commandData, size_t returnParamIndex, size_t templateParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool twoStep, bool firstCall, bool singular, size_t from, size_t to) const;
     void writeArgumentVector(std::ostream & os, size_t paramIndex, ParamData const& paramData, size_t returnParamIndex, size_t templateParamIndex, bool twoStep, bool firstCall, bool singular) const;
     void writeArgumentVulkanType(std::ostream & os, ParamData const& paramData) const;
+    void writeBitmask(std::ostream & os, std::string const& bitmaskName, std::string const& bitmaskAlias, std::string const& enumName, std::vector<EnumValueData> const& enumValues) const;
+    void writeBitmaskToStringFunction(std::ostream & os, std::string const& flagsName, std::string const& enumName, std::vector<EnumValueData> const& enumValues) const;
     void writeCommand(std::ostream &os, std::string const& indentation, std::string const& name, std::pair<std::string, CommandData> const& commandData, bool definition) const;
     void writeEnum(std::ostream & os, std::pair<std::string,EnumData> const& enumData) const;
     void writeEnumToString(std::ostream & os, std::pair<std::string, EnumData> const& enumData) const;

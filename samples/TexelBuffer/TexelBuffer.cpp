@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// VulkanHpp Samples : DynamicUniform
-//                     Draw 2 Cubes using dynamic uniform buffer
+// VulkanHpp Samples : TexelBuffer
+//                     Use a texel buffer to draw a green triangle.
 
 #include "../utils/geometries.hpp"
 #include "../utils/math.hpp"
@@ -23,11 +23,38 @@
 #include "SPIRV/GlslangToSpv.h"
 #include <iostream>
 
-static char const* AppName = "DynamicUniform";
+static char const* AppName = "TexelBuffer";
 static char const* EngineName = "Vulkan.hpp";
+
+static const std::string vertexShaderText = R"(
+#version 400
+
+#extension GL_ARB_separate_shader_objects : enable
+#extension GL_ARB_shading_language_420pack : enable
+
+layout (binding = 0) uniform samplerBuffer texels;
+layout (location = 0) out vec4 outColor;
+
+vec2 vertices[3];
+
+void main()
+{
+  float r = texelFetch(texels, 0).r;
+  float g = texelFetch(texels, 1).r;
+  float b = texelFetch(texels, 2).r;
+  outColor = vec4(r, g, b, 1.0);
+
+  vertices[0] = vec2(-1.0, -1.0);
+  vertices[1] = vec2( 1.0, -1.0);
+  vertices[2] = vec2( 0.0,  1.0);
+  gl_Position = vec4(vertices[gl_VertexIndex % 3], 0.0, 1.0);
+}
+)";
 
 int main(int /*argc*/, char ** /*argv*/)
 {
+  const float texels[] = {118.0f / 255.0f, 185.0f / 255.0f, 0.0f};
+
   try
   {
     vk::UniqueInstance instance = vk::su::createInstance(AppName, EngineName, vk::su::getInstanceExtensions());
@@ -36,6 +63,21 @@ int main(int /*argc*/, char ** /*argv*/)
 #endif
 
     vk::PhysicalDevice physicalDevice = instance->enumeratePhysicalDevices().front();
+
+    vk::PhysicalDeviceProperties physicalDeviceProperties = physicalDevice.getProperties();
+    if (physicalDeviceProperties.limits.maxTexelBufferElements < 4)
+    {
+      std::cout << "maxTexelBufferElements too small\n";
+      exit(-1);
+    }
+
+    vk::Format texelFormat = vk::Format::eR32Sfloat;
+    vk::FormatProperties formatProperties = physicalDevice.getFormatProperties(texelFormat);
+    if (!(formatProperties.bufferFeatures & vk::FormatFeatureFlagBits::eUniformTexelBuffer))
+    {
+      std::cout << "R32_SFLOAT format unsupported for texel buffer\n";
+      exit(-1);
+    }
 
     vk::su::SurfaceData surfaceData(instance, AppName, AppName, vk::Extent2D(500, 500));
 
@@ -51,93 +93,53 @@ int main(int /*argc*/, char ** /*argv*/)
     vk::su::SwapChainData swapChainData(physicalDevice, device, *surfaceData.surface, surfaceData.extent, vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eTransferSrc,
                                         vk::UniqueSwapchainKHR(), graphicsAndPresentQueueFamilyIndex.first, graphicsAndPresentQueueFamilyIndex.second);
 
-    vk::su::DepthBufferData depthBufferData(physicalDevice, device, vk::Format::eD16Unorm, surfaceData.extent);
+    vk::su::BufferData texelBufferData(physicalDevice, device, sizeof(texels), vk::BufferUsageFlagBits::eUniformTexelBuffer);
+    texelBufferData.upload(device, texels);
 
-    vk::UniqueRenderPass renderPass = vk::su::createRenderPass(device, vk::su::pickSurfaceFormat(physicalDevice.getSurfaceFormatsKHR(surfaceData.surface.get())).format, depthBufferData.format);
+    vk::UniqueBufferView texelBufferView = device->createBufferViewUnique(vk::BufferViewCreateInfo({}, *texelBufferData.buffer, texelFormat, 0, sizeof(texels)));
+
+    vk::UniqueDescriptorSetLayout descriptorSetLayout = vk::su::createDescriptorSetLayout(device, { {vk::DescriptorType::eUniformTexelBuffer, 1, vk::ShaderStageFlagBits::eVertex} });
+    vk::UniquePipelineLayout pipelineLayout = device->createPipelineLayoutUnique(vk::PipelineLayoutCreateInfo(vk::PipelineLayoutCreateFlags(), 1, &descriptorSetLayout.get()));
+
+    vk::UniqueRenderPass renderPass = vk::su::createRenderPass(device, vk::su::pickSurfaceFormat(physicalDevice.getSurfaceFormatsKHR(surfaceData.surface.get())).format, vk::Format::eUndefined);
 
     glslang::InitializeProcess();
-    vk::UniqueShaderModule vertexShaderModule = vk::su::createShaderModule(device, vk::ShaderStageFlagBits::eVertex, vertexShaderText_PC_C);
+    vk::UniqueShaderModule vertexShaderModule = vk::su::createShaderModule(device, vk::ShaderStageFlagBits::eVertex, vertexShaderText);
     vk::UniqueShaderModule fragmentShaderModule = vk::su::createShaderModule(device, vk::ShaderStageFlagBits::eFragment, fragmentShaderText_C_C);
     glslang::FinalizeProcess();
 
-    std::vector<vk::UniqueFramebuffer> framebuffers = vk::su::createFramebuffers(device, renderPass, swapChainData.imageViews, depthBufferData.imageView, surfaceData.extent);
+    std::vector<vk::UniqueFramebuffer> framebuffers = vk::su::createFramebuffers(device, renderPass, swapChainData.imageViews, vk::UniqueImageView(), surfaceData.extent);
 
-    vk::su::BufferData vertexBufferData(physicalDevice, device, sizeof(coloredCubeData), vk::BufferUsageFlagBits::eVertexBuffer);
-    vk::su::copyToDevice(device, vertexBufferData.deviceMemory, coloredCubeData, sizeof(coloredCubeData) / sizeof(coloredCubeData[0]));
-
-    /* VULKAN_KEY_START */
-
-    vk::PhysicalDeviceLimits limits = physicalDevice.getProperties().limits;
-    if (limits.maxDescriptorSetUniformBuffersDynamic < 1)
-    {
-      std::cout << "No dynamic uniform buffers supported\n";
-      exit(-1);
-    }
-
-    /* Set up uniform buffer with 2 transform matrices in it */
-    glm::mat4x4 mvpcs[2];
-    glm::mat4x4 model = glm::mat4x4(1.0f);
-    glm::mat4x4 view = glm::lookAt(glm::vec3(0.0f, 3.0f, -10.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f));
-    glm::mat4x4 projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);
-    glm::mat4x4 clip = glm::mat4x4(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 0.5f, 1.0f);   // vulkan clip space has inverted y and half z !
-    mvpcs[0] = clip * projection * view * model;
-
-    model = glm::translate(model, glm::vec3(-1.5f, 1.5f, -1.5f));
-    mvpcs[1] = clip * projection * view * model;
-
-    VkDeviceSize bufferSize = sizeof(glm::mat4x4);
-    if (limits.minUniformBufferOffsetAlignment)
-    {
-      bufferSize = (bufferSize + limits.minUniformBufferOffsetAlignment - 1) & ~(limits.minUniformBufferOffsetAlignment - 1);
-    }
-
-    vk::su::BufferData uniformBufferData(physicalDevice, device, 2 * bufferSize, vk::BufferUsageFlagBits::eUniformBuffer);
-    vk::su::copyToDevice(device, uniformBufferData.deviceMemory, mvpcs, 2, bufferSize);
-
-    // create a DescriptorSetLayout with vk::DescriptorType::eUniformBufferDynamic
-    vk::UniqueDescriptorSetLayout descriptorSetLayout = vk::su::createDescriptorSetLayout(device, { {vk::DescriptorType::eUniformBufferDynamic, 1, vk::ShaderStageFlagBits::eVertex} });
-    vk::UniquePipelineLayout pipelineLayout = device->createPipelineLayoutUnique(vk::PipelineLayoutCreateInfo(vk::PipelineLayoutCreateFlags(), 1, &descriptorSetLayout.get()));
-
-    // create a DescriptorPool with vk::DescriptorType::eUniformBufferDynamic
-    vk::UniqueDescriptorPool descriptorPool = vk::su::createDescriptorPool(device, { { vk::DescriptorType::eUniformBufferDynamic, 1 } });
+    vk::UniqueDescriptorPool descriptorPool = vk::su::createDescriptorPool(device, { {vk::DescriptorType::eUniformTexelBuffer, 1} });
     vk::UniqueDescriptorSet descriptorSet = std::move(device->allocateDescriptorSetsUnique(vk::DescriptorSetAllocateInfo(*descriptorPool, 1, &*descriptorSetLayout)).front());
-
-    vk::su::updateDescriptorSets(device, descriptorSet, {{vk::DescriptorType::eUniformBufferDynamic, uniformBufferData.buffer, vk::UniqueBufferView()}}, {});
+    vk::su::updateDescriptorSets(device, descriptorSet, {{vk::DescriptorType::eUniformTexelBuffer, texelBufferData.buffer, texelBufferView}}, {});
 
     vk::UniquePipelineCache pipelineCache = device->createPipelineCacheUnique(vk::PipelineCacheCreateInfo());
     vk::UniquePipeline graphicsPipeline = vk::su::createGraphicsPipeline(device, pipelineCache, std::make_pair(*vertexShaderModule, nullptr), std::make_pair(*fragmentShaderModule, nullptr),
-                                                                         sizeof(coloredCubeData[0]), { { vk::Format::eR32G32B32A32Sfloat, 0 }, { vk::Format::eR32G32B32A32Sfloat, 16 } },
-                                                                         vk::FrontFace::eClockwise, true, pipelineLayout, renderPass);
+                                                                         0, {}, vk::FrontFace::eClockwise, false, pipelineLayout, renderPass);
+
+    /* VULKAN_KEY_START */
+
     // Get the index of the next available swapchain image:
     vk::UniqueSemaphore imageAcquiredSemaphore = device->createSemaphoreUnique(vk::SemaphoreCreateInfo());
     vk::ResultValue<uint32_t> currentBuffer = device->acquireNextImageKHR(swapChainData.swapChain.get(), vk::su::FenceTimeout, imageAcquiredSemaphore.get(), nullptr);
     assert(currentBuffer.result == vk::Result::eSuccess);
     assert(currentBuffer.value < framebuffers.size());
 
-    commandBuffer->begin(vk::CommandBufferBeginInfo(vk::CommandBufferUsageFlags()));
+    commandBuffer->begin(vk::CommandBufferBeginInfo());
 
-    vk::ClearValue clearValues[2];
-    clearValues[0].color = vk::ClearColorValue(std::array<float, 4>({ 0.2f, 0.2f, 0.2f, 0.2f }));
-    clearValues[1].depthStencil = vk::ClearDepthStencilValue(1.0f, 0);
-    vk::RenderPassBeginInfo renderPassBeginInfo(renderPass.get(), framebuffers[currentBuffer.value].get(), vk::Rect2D(vk::Offset2D(0, 0), surfaceData.extent), 2, clearValues);
+    vk::ClearValue clearValue;
+    clearValue.color = vk::ClearColorValue(std::array<float, 4>({ 0.2f, 0.2f, 0.2f, 0.2f }));
+    vk::RenderPassBeginInfo renderPassBeginInfo(renderPass.get(), framebuffers[currentBuffer.value].get(), vk::Rect2D(vk::Offset2D(0, 0), surfaceData.extent), 1, &clearValue);
+
     commandBuffer->beginRenderPass(renderPassBeginInfo, vk::SubpassContents::eInline);
     commandBuffer->bindPipeline(vk::PipelineBindPoint::eGraphics, graphicsPipeline.get());
+    commandBuffer->bindDescriptorSets(vk::PipelineBindPoint::eGraphics, pipelineLayout.get(), 0, descriptorSet.get(), nullptr);
 
     commandBuffer->setViewport(0, vk::Viewport(0.0f, 0.0f, static_cast<float>(surfaceData.extent.width), static_cast<float>(surfaceData.extent.height), 0.0f, 1.0f));
     commandBuffer->setScissor(0, vk::Rect2D(vk::Offset2D(0, 0), surfaceData.extent));
 
-    /* The first draw should use the first matrix in the buffer */
-    uint32_t dynamicOffset = 0;
-    commandBuffer->bindDescriptorSets(vk::PipelineBindPoint::eGraphics, pipelineLayout.get(), 0, descriptorSet.get(), dynamicOffset);
-
-    commandBuffer->bindVertexBuffers(0, *vertexBufferData.buffer, {0});
-    commandBuffer->draw(12 * 3, 1, 0, 0);
-
-    // the second draw should use the second matrix in the buffer;
-    dynamicOffset = (uint32_t)bufferSize;
-    commandBuffer->bindDescriptorSets(vk::PipelineBindPoint::eGraphics, pipelineLayout.get(), 0, descriptorSet.get(), dynamicOffset);
-    commandBuffer->draw(12 * 3, 1, 0, 0);
-
+    commandBuffer->draw(3, 1, 0, 0);
     commandBuffer->endRenderPass();
     commandBuffer->end();
 

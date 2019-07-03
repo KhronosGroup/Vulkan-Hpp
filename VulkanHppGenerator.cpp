@@ -56,8 +56,6 @@ std::vector<std::string> tokenize(std::string tokenString, char separator);
 std::string trim(std::string const& input);
 std::string trimEnd(std::string const& input);
 void writeArgumentCount(std::ostream & os, size_t vectorIndex, std::string const& vectorName, std::string const& counterName, size_t returnParamIndex, size_t templateParamIndex, bool twoStep, bool singular);
-void writeBitmask(std::ostream & os, std::string const& bitmaskName, std::string const& bitmaskAlias, std::string const& enumName, std::vector<std::pair<std::string, std::string>> const& enumValues);
-void writeBitmaskToStringFunction(std::ostream & os, std::string const& flagsName, std::string const& enumName, std::vector<std::pair<std::string, std::string>> const& enumValues);
 std::string writeFunctionBodyEnhancedLocalReturnVariableSingular(std::ostream & os, std::string const& indentation, std::string const& typeName, std::string const&returnName, bool isStructureChain);
 std::pair<bool, std::string> writeFunctionBodyStandardReturn(std::string const& returnType);
 
@@ -582,89 +580,6 @@ void writeArgumentCount(std::ostream & os, size_t vectorIndex, std::string const
   }
 }
 
-void writeBitmask(std::ostream & os, std::string const& bitmaskName, std::string const& bitmaskAlias, std::string const& enumName, std::vector<std::pair<std::string, std::string>> const& enumValues)
-{
-  // each Flags class is using the class 'Flags' with the corresponding FlagBits enum as the template parameter
-  os << std::endl
-    << "  using " << bitmaskName << " = Flags<" << enumName << ", Vk" << bitmaskName << ">;" << std::endl;
-
-  if (!enumValues.empty())
-  {
-    std::string allFlags;
-    for (auto const& value : enumValues)
-    {
-      if (!allFlags.empty())
-      {
-        allFlags += " | ";
-      }
-      allFlags += "VkFlags(" + enumName + "::" + value.second + ")";
-    }
-
-    static const std::string bitmaskOperatorsTemplate = R"(
-  VULKAN_HPP_INLINE ${bitmaskName} operator|( ${enumName} bit0, ${enumName} bit1 )
-  {
-    return ${bitmaskName}( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE ${bitmaskName} operator~( ${enumName} bits )
-  {
-    return ~( ${bitmaskName}( bits ) );
-  }
-
-  template <> struct FlagTraits<${enumName}>
-  {
-    enum
-    {
-      allFlags = ${allFlags}
-    };
-  };
-)";
-
-    os << replaceWithMap(bitmaskOperatorsTemplate, { { "bitmaskName", bitmaskName },{ "enumName", enumName },{ "allFlags", allFlags } });
-  }
-
-  if (!bitmaskAlias.empty())
-  {
-    os << std::endl
-      << "  using " << stripPrefix(bitmaskAlias, "Vk") << " = " << bitmaskName << ";" << std::endl;
-  }
-}
-
-void writeBitmaskToStringFunction(std::ostream & os, std::string const& bitmaskName, std::string const& enumName, std::vector<std::pair<std::string, std::string>> const& enumValues)
-{
-  std::string functionBody;
-  if (enumValues.empty())
-  {
-    functionBody = "\n    return \"{}\";";
-  }
-  else
-  {
-    // 'or' together all the bits in the value
-    static const std::string caseTemplate = R"(
-    if ( value & ${typeName}::${value} ) result += "${valueString} | ";)";
-
-    std::string casesString;
-    for (auto const& value : enumValues)
-    {
-      casesString += replaceWithMap(caseTemplate, { { "typeName", enumName },{ "value", value.second },{ "valueString", value.second.substr(1) } });
-    }
-
-    static const std::string bodyTemplate = R"(
-    if ( !value ) return "{}";
-    std::string result;
-${cases}
-    return "{ " + result.substr(0, result.size() - 3) + " }";)";
-    functionBody = replaceWithMap(bodyTemplate, { { "cases", casesString } });
-  }
-
-  static const std::string toStringTemplate = R"(
-  VULKAN_HPP_INLINE std::string to_string( ${typeName}${argumentName} )
-  {${functionBody}
-  }
-)";
-  os << replaceWithMap(toStringTemplate, { { "typeName", bitmaskName },{ "argumentName", enumValues.empty() ? " " : " value " },{ "functionBody", functionBody } });
-}
-
 std::string writeFunctionBodyEnhancedLocalReturnVariableSingular(std::ostream & os, std::string const& indentation, std::string const& typeName, std::string const& returnName, bool isStructureChain)
 {
   std::string adjustedReturnName = stripPluralS(returnName);
@@ -758,14 +673,14 @@ std::string VulkanHppGenerator::defaultValue(std::string const& type) const
       auto const& bitmaskBitIt = m_bitmaskBits.find(type);
       if (bitmaskBitIt != m_bitmaskBits.end())
       {
-        return stripPrefix(type, "Vk") + (bitmaskBitIt->second.values.empty() ? "()" : ("::" + bitmaskBitIt->second.values.front().second));
+        return stripPrefix(type, "Vk") + (bitmaskBitIt->second.values.empty() ? "()" : ("::" + bitmaskBitIt->second.values.front().vkValue));
       }
       else
       {
         auto const& enumIt = m_enums.find(type);
         if (enumIt != m_enums.end())
         {
-          return stripPrefix(type, "Vk") + (enumIt->second.values.empty() ? "()" : ("::" + enumIt->second.values.front().second));
+          return stripPrefix(type, "Vk") + (enumIt->second.values.empty() ? "()" : ("::" + enumIt->second.values.front().vkValue));
         }
         else
         {
@@ -1314,13 +1229,13 @@ void VulkanHppGenerator::readEnum(tinyxml2::XMLElement const* element, EnumData 
   auto aliasIt = attributes.find("alias");
   if (aliasIt != attributes.end())
   {
-    auto enumIt = std::find_if(enumData.values.begin(), enumData.values.end(), [&aliasIt](std::pair<std::string, std::string> const& value) { return value.first == aliasIt->second; });
+    auto enumIt = std::find_if(enumData.values.begin(), enumData.values.end(), [&aliasIt](EnumValueData const& evd) { return evd.vulkanValue == aliasIt->second; });
     assert(enumIt != enumData.values.end());
     enumData.aliases.push_back(std::make_pair(name, createEnumValueName(name, prefix, postfix, bitmask, tag)));
   }
   else
   {
-    enumData.addEnumValue(name, bitmask, prefix, postfix, tag);
+    enumData.addEnumValue(name, bitmask, attributes.find("bitpos") != attributes.end(), prefix, postfix, tag);
   }
 }
 
@@ -1749,17 +1664,23 @@ void VulkanHppGenerator::readRequireEnum(tinyxml2::XMLElement const* element, st
       checkAttributes(attributes, element->GetLineNum(), { { "alias",{} },{ "extends",{} },{ "name",{} } }, { { "comment",{} } });
 
       // look for the aliased enum value
-      std::string alias = aliasIt->second;
-      auto valueIt = std::find_if(enumIt->second.values.begin(), enumIt->second.values.end(), [&alias](std::pair<std::string, std::string> const& value) { return value.first == alias; });
+      std::string vulkanAlias = aliasIt->second;
+      std::string vkAlias;
+      auto valueIt = std::find_if(enumIt->second.values.begin(), enumIt->second.values.end(), [&vulkanAlias](EnumValueData const& evd) { return evd.vulkanValue == vulkanAlias; });
       if (valueIt == enumIt->second.values.end())
       {
         // if the aliased enum value is not found in the values, look in the aliases as well!
-        valueIt = std::find_if(enumIt->second.aliases.begin(), enumIt->second.aliases.end(), [&alias](std::pair<std::string, std::string> const& value) { return value.first == alias; });
-        assert(valueIt != enumIt->second.aliases.end());
+        auto aIt = std::find_if(enumIt->second.aliases.begin(), enumIt->second.aliases.end(), [&vulkanAlias](std::pair<std::string, std::string> const& value) { return value.first == vulkanAlias; });
+        assert(aIt != enumIt->second.aliases.end());
+        vkAlias = aIt->second;
+      }
+      else
+      {
+        vkAlias = valueIt->vkValue;
       }
 
       std::string name = createEnumValueName(nameIt->second, prefix, postfix, bitmask, tag);
-      if (valueIt->second != name)
+      if (vkAlias != name)
       {
         // only add an alias if it's different from the aliased name
         enumIt->second.aliases.push_back(std::make_pair(nameIt->second, name));
@@ -1768,7 +1689,7 @@ void VulkanHppGenerator::readRequireEnum(tinyxml2::XMLElement const* element, st
     else
     {
       assert((attributes.find("bitpos") != attributes.end()) + (attributes.find("offset") != attributes.end()) + (attributes.find("value") != attributes.end()) == 1);
-      enumIt->second.addEnumValue(nameIt->second, bitmask, prefix, postfix, tag);
+      enumIt->second.addEnumValue(nameIt->second, bitmask, attributes.find("bitpos") != attributes.end(), prefix, postfix, tag);
     }
   }
 }
@@ -2237,6 +2158,92 @@ void VulkanHppGenerator::writeBitmasks(std::ostream & os) const
   }
 }
 
+void VulkanHppGenerator::writeBitmask(std::ostream & os, std::string const& bitmaskName, std::string const& bitmaskAlias, std::string const& enumName, std::vector<EnumValueData> const& enumValues) const
+{
+  // each Flags class is using the class 'Flags' with the corresponding FlagBits enum as the template parameter
+  os << std::endl
+    << "  using " << bitmaskName << " = Flags<" << enumName << ", Vk" << bitmaskName << ">;" << std::endl;
+
+  if (!enumValues.empty())
+  {
+    std::string allFlags;
+    for (auto const& value : enumValues)
+    {
+      if (!allFlags.empty())
+      {
+        allFlags += " | ";
+      }
+      allFlags += "VkFlags(" + enumName + "::" + value.vkValue + ")";
+    }
+
+    static const std::string bitmaskOperatorsTemplate = R"(
+  VULKAN_HPP_INLINE ${bitmaskName} operator|( ${enumName} bit0, ${enumName} bit1 )
+  {
+    return ${bitmaskName}( bit0 ) | bit1;
+  }
+
+  VULKAN_HPP_INLINE ${bitmaskName} operator~( ${enumName} bits )
+  {
+    return ~( ${bitmaskName}( bits ) );
+  }
+
+  template <> struct FlagTraits<${enumName}>
+  {
+    enum
+    {
+      allFlags = ${allFlags}
+    };
+  };
+)";
+
+    os << replaceWithMap(bitmaskOperatorsTemplate, { { "bitmaskName", bitmaskName },{ "enumName", enumName },{ "allFlags", allFlags } });
+  }
+
+  if (!bitmaskAlias.empty())
+  {
+    os << std::endl
+      << "  using " << stripPrefix(bitmaskAlias, "Vk") << " = " << bitmaskName << ";" << std::endl;
+  }
+}
+
+void VulkanHppGenerator::writeBitmaskToStringFunction(std::ostream & os, std::string const& bitmaskName, std::string const& enumName, std::vector<EnumValueData> const& enumValues) const
+{
+  std::string functionBody;
+  if (enumValues.empty())
+  {
+    functionBody = "\n    return \"{}\";";
+  }
+  else
+  {
+    // 'or' together all the bits in the value
+    static const std::string caseTemplate = R"(
+    if ( value & ${typeName}::${value} ) result += "${valueString} | ";)";
+
+    std::string casesString;
+    for (auto const& evd : enumValues)
+    {
+      if (evd.singleBit)
+      {
+        casesString += replaceWithMap(caseTemplate, {{ "typeName", enumName },{ "value", evd.vkValue },{ "valueString", evd.vkValue.substr(1) }});
+      }
+    }
+
+    static const std::string bodyTemplate = R"(
+    if ( !value ) return "{}";
+    std::string result;
+${cases}
+    return "{ " + result.substr(0, result.size() - 3) + " }";)";
+    functionBody = replaceWithMap(bodyTemplate, { { "cases", casesString } });
+  }
+
+  static const std::string toStringTemplate = R"(
+  VULKAN_HPP_INLINE std::string to_string( ${typeName}${argumentName} )
+  {${functionBody}
+  }
+)";
+  os << replaceWithMap(toStringTemplate, { { "typeName", bitmaskName },{ "argumentName", enumValues.empty() ? " " : " value " },{ "functionBody", functionBody } });
+}
+
 void VulkanHppGenerator::writeCommand(std::ostream & os, std::string const& indentation, std::string const& name, std::pair<std::string, CommandData> const& commandData, bool definition) const
 {
   bool twoStep = isTwoStepAlgorithm(commandData.second.params);
@@ -2490,7 +2497,7 @@ void VulkanHppGenerator::writeEnum(std::ostream & os, std::pair<std::string,Enum
     {
       values += ",";
     }
-    values += "\n    " + value.second + " = " + value.first;
+    values += "\n    " + value.vkValue + " = " + value.vulkanValue;
   }
   for (auto const& value : enumData.second.aliases)
   {
@@ -2543,7 +2550,7 @@ void VulkanHppGenerator::writeEnumToString(std::ostream & os, std::pair<std::str
     std::ostringstream casesString;
     for (auto const& value : enumData.second.values)
     {
-      casesString << replaceWithMap(caseTemplate, { { "type", enumName },{ "value", value.second },{ "valueText", value.second.substr(1) } }) << std::endl;
+      casesString << replaceWithMap(caseTemplate, { { "type", enumName },{ "value", value.vkValue },{ "valueText", value.vkValue.substr(1) } }) << std::endl;
     }
 
     static const std::string switchTemplate = R"(
@@ -3574,13 +3581,13 @@ void VulkanHppGenerator::writeResultExceptions(std::ostream & os) const
   auto enumData = m_enums.find("VkResult");
   for (auto const& value : enumData->second.values)
   {
-    if (beginsWith(value.second, "eError"))
+    if (beginsWith(value.vkValue, "eError"))
     {
       os << replaceWithMap(templateString,
       {
-        { "className", stripPrefix(value.second, "eError") + "Error" },
+        { "className", stripPrefix(value.vkValue, "eError") + "Error" },
         { "enumName", stripPrefix(enumData->first, "Vk") },
-        { "enumMemberName", value.second }
+        { "enumMemberName", value.vkValue }
       });
     }
   }
@@ -3821,10 +3828,10 @@ void VulkanHppGenerator::writeStructMembers(std::ostream & os, StructureData con
       if (!member.values.empty())
       {
         assert(!member.values.empty() && beginsWith(member.values, "VK_STRUCTURE_TYPE"));
-        auto nameIt = std::find_if(enumIt->second.values.begin(), enumIt->second.values.end(), [&member](std::pair<std::string, std::string> const& value) { return member.values == value.first; });
+        auto nameIt = std::find_if(enumIt->second.values.begin(), enumIt->second.values.end(), [&member](EnumValueData const& evd) { return member.values == evd.vulkanValue; });
         assert(nameIt != enumIt->second.values.end());
         os << "  private:" << std::endl
-          << "    StructureType sType = StructureType::" << nameIt->second << ";" << std::endl
+          << "    StructureType sType = StructureType::" << nameIt->vkValue << ";" << std::endl
           << std::endl
           << "  public:" << std::endl;
       }
@@ -3994,9 +4001,9 @@ void VulkanHppGenerator::writeThrowExceptions(std::ostream & os) const
   std::string casesString;
   for (auto const& value : enumData->second.values)
   {
-    if (beginsWith(value.second, "eError"))
+    if (beginsWith(value.vkValue, "eError"))
     {
-      casesString += "      case Result::" + value.second + ": throw " + stripPrefix(value.second, "eError") + "Error( message );\n";
+      casesString += "      case Result::" + value.vkValue + ": throw " + stripPrefix(value.vkValue, "eError") + "Error( message );\n";
     }
   }
 
@@ -4122,18 +4129,18 @@ void VulkanHppGenerator::writeUniqueTypes(std::ostream &os, std::string const& p
     << "#endif /*VULKAN_HPP_NO_SMART_HANDLE*/" << std::endl;
 }
 
-void VulkanHppGenerator::EnumData::addEnumValue(std::string const &valueName, bool bitmask, std::string const& prefix, std::string const& postfix, std::string const& tag)
+void VulkanHppGenerator::EnumData::addEnumValue(std::string const &valueName, bool bitmask, bool bitpos, std::string const& prefix, std::string const& postfix, std::string const& tag)
 {
   std::string translatedName = createEnumValueName(valueName, prefix, postfix, bitmask, tag);
 
-  auto it = std::find_if(values.begin(), values.end(), [&translatedName](std::pair<std::string, std::string> const& value) { return value.second == translatedName; });
+  auto it = std::find_if(values.begin(), values.end(), [&translatedName](EnumValueData const& evd) { return evd.vkValue == translatedName; });
   if (it == values.end())
   {
-    values.push_back(std::make_pair(valueName, translatedName));
+    values.push_back(EnumValueData(valueName, translatedName, bitpos));
   }
   else
   {
-    assert(it->first == valueName);
+    assert(it->vulkanValue == valueName);
   }
 }
 

@@ -3446,6 +3446,9 @@ void VulkanHppGenerator::writeHandle(std::ostream & os, std::pair<std::string, H
   class ${className}
   {
   public:
+    using CType = Vk${className};
+
+  public:
     VULKAN_HPP_CONSTEXPR ${className}()
       : m_${memberName}(VK_NULL_HANDLE)
     {}

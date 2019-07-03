@@ -11352,6 +11352,9 @@ namespace VULKAN_HPP_NAMESPACE
   class SurfaceKHR
   {
   public:
+    using CType = VkSurfaceKHR;
+
+  public:
     VULKAN_HPP_CONSTEXPR SurfaceKHR()
       : m_surfaceKHR(VK_NULL_HANDLE)
     {}
@@ -11415,6 +11418,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   class DebugReportCallbackEXT
   {
+  public:
+    using CType = VkDebugReportCallbackEXT;
+
   public:
     VULKAN_HPP_CONSTEXPR DebugReportCallbackEXT()
       : m_debugReportCallbackEXT(VK_NULL_HANDLE)
@@ -11480,6 +11486,9 @@ namespace VULKAN_HPP_NAMESPACE
   class DebugUtilsMessengerEXT
   {
   public:
+    using CType = VkDebugUtilsMessengerEXT;
+
+  public:
     VULKAN_HPP_CONSTEXPR DebugUtilsMessengerEXT()
       : m_debugUtilsMessengerEXT(VK_NULL_HANDLE)
     {}
@@ -11543,6 +11552,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   class DisplayKHR
   {
+  public:
+    using CType = VkDisplayKHR;
+
   public:
     VULKAN_HPP_CONSTEXPR DisplayKHR()
       : m_displayKHR(VK_NULL_HANDLE)
@@ -11608,6 +11620,9 @@ namespace VULKAN_HPP_NAMESPACE
   class SwapchainKHR
   {
   public:
+    using CType = VkSwapchainKHR;
+
+  public:
     VULKAN_HPP_CONSTEXPR SwapchainKHR()
       : m_swapchainKHR(VK_NULL_HANDLE)
     {}
@@ -11671,6 +11686,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   class Semaphore
   {
+  public:
+    using CType = VkSemaphore;
+
   public:
     VULKAN_HPP_CONSTEXPR Semaphore()
       : m_semaphore(VK_NULL_HANDLE)
@@ -11736,6 +11754,9 @@ namespace VULKAN_HPP_NAMESPACE
   class Fence
   {
   public:
+    using CType = VkFence;
+
+  public:
     VULKAN_HPP_CONSTEXPR Fence()
       : m_fence(VK_NULL_HANDLE)
     {}
@@ -11799,6 +11820,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   class QueryPool
   {
+  public:
+    using CType = VkQueryPool;
+
   public:
     VULKAN_HPP_CONSTEXPR QueryPool()
       : m_queryPool(VK_NULL_HANDLE)
@@ -11864,6 +11888,9 @@ namespace VULKAN_HPP_NAMESPACE
   class Buffer
   {
   public:
+    using CType = VkBuffer;
+
+  public:
     VULKAN_HPP_CONSTEXPR Buffer()
       : m_buffer(VK_NULL_HANDLE)
     {}
@@ -11927,6 +11954,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   class PipelineLayout
   {
+  public:
+    using CType = VkPipelineLayout;
+
   public:
     VULKAN_HPP_CONSTEXPR PipelineLayout()
       : m_pipelineLayout(VK_NULL_HANDLE)
@@ -11992,6 +12022,9 @@ namespace VULKAN_HPP_NAMESPACE
   class DescriptorSet
   {
   public:
+    using CType = VkDescriptorSet;
+
+  public:
     VULKAN_HPP_CONSTEXPR DescriptorSet()
       : m_descriptorSet(VK_NULL_HANDLE)
     {}
@@ -12055,6 +12088,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   class Pipeline
   {
+  public:
+    using CType = VkPipeline;
+
   public:
     VULKAN_HPP_CONSTEXPR Pipeline()
       : m_pipeline(VK_NULL_HANDLE)
@@ -12120,6 +12156,9 @@ namespace VULKAN_HPP_NAMESPACE
   class ImageView
   {
   public:
+    using CType = VkImageView;
+
+  public:
     VULKAN_HPP_CONSTEXPR ImageView()
       : m_imageView(VK_NULL_HANDLE)
     {}
@@ -12183,6 +12222,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   class Image
   {
+  public:
+    using CType = VkImage;
+
   public:
     VULKAN_HPP_CONSTEXPR Image()
       : m_image(VK_NULL_HANDLE)
@@ -12248,6 +12290,9 @@ namespace VULKAN_HPP_NAMESPACE
   class AccelerationStructureNV
   {
   public:
+    using CType = VkAccelerationStructureNV;
+
+  public:
     VULKAN_HPP_CONSTEXPR AccelerationStructureNV()
       : m_accelerationStructureNV(VK_NULL_HANDLE)
     {}
@@ -12311,6 +12356,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   class DescriptorUpdateTemplate
   {
+  public:
+    using CType = VkDescriptorUpdateTemplate;
+
   public:
     VULKAN_HPP_CONSTEXPR DescriptorUpdateTemplate()
       : m_descriptorUpdateTemplate(VK_NULL_HANDLE)
@@ -12377,6 +12425,9 @@ namespace VULKAN_HPP_NAMESPACE
   class Event
   {
   public:
+    using CType = VkEvent;
+
+  public:
     VULKAN_HPP_CONSTEXPR Event()
       : m_event(VK_NULL_HANDLE)
     {}
@@ -12440,6 +12491,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   class CommandBuffer
   {
+  public:
+    using CType = VkCommandBuffer;
+
   public:
     VULKAN_HPP_CONSTEXPR CommandBuffer()
       : m_commandBuffer(VK_NULL_HANDLE)
@@ -12959,6 +13013,9 @@ namespace VULKAN_HPP_NAMESPACE
   class DeviceMemory
   {
   public:
+    using CType = VkDeviceMemory;
+
+  public:
     VULKAN_HPP_CONSTEXPR DeviceMemory()
       : m_deviceMemory(VK_NULL_HANDLE)
     {}
@@ -13022,6 +13079,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   class BufferView
   {
+  public:
+    using CType = VkBufferView;
+
   public:
     VULKAN_HPP_CONSTEXPR BufferView()
       : m_bufferView(VK_NULL_HANDLE)
@@ -13087,6 +13147,9 @@ namespace VULKAN_HPP_NAMESPACE
   class CommandPool
   {
   public:
+    using CType = VkCommandPool;
+
+  public:
     VULKAN_HPP_CONSTEXPR CommandPool()
       : m_commandPool(VK_NULL_HANDLE)
     {}
@@ -13150,6 +13213,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   class PipelineCache
   {
+  public:
+    using CType = VkPipelineCache;
+
   public:
     VULKAN_HPP_CONSTEXPR PipelineCache()
       : m_pipelineCache(VK_NULL_HANDLE)
@@ -13215,6 +13281,9 @@ namespace VULKAN_HPP_NAMESPACE
   class DescriptorPool
   {
   public:
+    using CType = VkDescriptorPool;
+
+  public:
     VULKAN_HPP_CONSTEXPR DescriptorPool()
       : m_descriptorPool(VK_NULL_HANDLE)
     {}
@@ -13278,6 +13347,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   class DescriptorSetLayout
   {
+  public:
+    using CType = VkDescriptorSetLayout;
+
   public:
     VULKAN_HPP_CONSTEXPR DescriptorSetLayout()
       : m_descriptorSetLayout(VK_NULL_HANDLE)
@@ -13343,6 +13415,9 @@ namespace VULKAN_HPP_NAMESPACE
   class Framebuffer
   {
   public:
+    using CType = VkFramebuffer;
+
+  public:
     VULKAN_HPP_CONSTEXPR Framebuffer()
       : m_framebuffer(VK_NULL_HANDLE)
     {}
@@ -13406,6 +13481,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   class IndirectCommandsLayoutNVX
   {
+  public:
+    using CType = VkIndirectCommandsLayoutNVX;
+
   public:
     VULKAN_HPP_CONSTEXPR IndirectCommandsLayoutNVX()
       : m_indirectCommandsLayoutNVX(VK_NULL_HANDLE)
@@ -13471,6 +13549,9 @@ namespace VULKAN_HPP_NAMESPACE
   class ObjectTableNVX
   {
   public:
+    using CType = VkObjectTableNVX;
+
+  public:
     VULKAN_HPP_CONSTEXPR ObjectTableNVX()
       : m_objectTableNVX(VK_NULL_HANDLE)
     {}
@@ -13534,6 +13615,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   class RenderPass
   {
+  public:
+    using CType = VkRenderPass;
+
   public:
     VULKAN_HPP_CONSTEXPR RenderPass()
       : m_renderPass(VK_NULL_HANDLE)
@@ -13599,6 +13683,9 @@ namespace VULKAN_HPP_NAMESPACE
   class Sampler
   {
   public:
+    using CType = VkSampler;
+
+  public:
     VULKAN_HPP_CONSTEXPR Sampler()
       : m_sampler(VK_NULL_HANDLE)
     {}
@@ -13662,6 +13749,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   class SamplerYcbcrConversion
   {
+  public:
+    using CType = VkSamplerYcbcrConversion;
+
   public:
     VULKAN_HPP_CONSTEXPR SamplerYcbcrConversion()
       : m_samplerYcbcrConversion(VK_NULL_HANDLE)
@@ -13728,6 +13818,9 @@ namespace VULKAN_HPP_NAMESPACE
   class ShaderModule
   {
   public:
+    using CType = VkShaderModule;
+
+  public:
     VULKAN_HPP_CONSTEXPR ShaderModule()
       : m_shaderModule(VK_NULL_HANDLE)
     {}
@@ -13792,6 +13885,9 @@ namespace VULKAN_HPP_NAMESPACE
   class ValidationCacheEXT
   {
   public:
+    using CType = VkValidationCacheEXT;
+
+  public:
     VULKAN_HPP_CONSTEXPR ValidationCacheEXT()
       : m_validationCacheEXT(VK_NULL_HANDLE)
     {}
@@ -13855,6 +13951,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   class Queue
   {
+  public:
+    using CType = VkQueue;
+
   public:
     VULKAN_HPP_CONSTEXPR Queue()
       : m_queue(VK_NULL_HANDLE)
@@ -14034,6 +14133,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   class Device
   {
+  public:
+    using CType = VkDevice;
+
   public:
     VULKAN_HPP_CONSTEXPR Device()
       : m_device(VK_NULL_HANDLE)
@@ -15638,6 +15740,9 @@ namespace VULKAN_HPP_NAMESPACE
   class DisplayModeKHR
   {
   public:
+    using CType = VkDisplayModeKHR;
+
+  public:
     VULKAN_HPP_CONSTEXPR DisplayModeKHR()
       : m_displayModeKHR(VK_NULL_HANDLE)
     {}
@@ -15706,6 +15811,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   class PhysicalDevice
   {
+  public:
+    using CType = VkPhysicalDevice;
+
   public:
     VULKAN_HPP_CONSTEXPR PhysicalDevice()
       : m_physicalDevice(VK_NULL_HANDLE)
@@ -16305,6 +16413,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   class Instance
   {
+  public:
+    using CType = VkInstance;
+
   public:
     VULKAN_HPP_CONSTEXPR Instance()
       : m_instance(VK_NULL_HANDLE)

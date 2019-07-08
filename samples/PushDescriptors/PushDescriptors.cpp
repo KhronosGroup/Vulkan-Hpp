@@ -43,7 +43,7 @@ int main(int /*argc*/, char ** /*argv*/)
     std::vector<std::string> instanceExtensions = vk::su::getInstanceExtensions();
     instanceExtensions.push_back(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME);
 
-    vk::UniqueInstance instance = vk::su::createInstance(AppName, EngineName, instanceExtensions);
+    vk::UniqueInstance instance = vk::su::createInstance(AppName, EngineName, {}, instanceExtensions);
 #if !defined(NDEBUG)
     vk::UniqueDebugReportCallbackEXT debugReportCallback = vk::su::createDebugReportCallback(instance);
 #endif

@@ -22,37 +22,6 @@
 #include "vulkan/vulkan.hpp"
 #include "SPIRV/GlslangToSpv.h"
 
-// For timestamp code (getMilliseconds)
-#ifdef WIN32
-#include <Windows.h>
-#else
-#include <sys/time.h>
-#endif
-
-typedef unsigned long long timestamp_t;
-timestamp_t getMilliseconds()
-{
-#ifdef WIN32
-  LARGE_INTEGER frequency;
-  BOOL useQPC = QueryPerformanceFrequency(&frequency);
-  if (useQPC)
-  {
-    LARGE_INTEGER now;
-    QueryPerformanceCounter(&now);
-    return (1000LL * now.QuadPart) / frequency.QuadPart;
-  }
-  else
-  {
-    return GetTickCount();
-  }
-#else
-  struct timeval now;
-  gettimeofday(&now, NULL);
-  return (now.tv_usec / 1000) + (timestamp_t)now.tv_sec;
-#endif
-}
-
-
 static char const* AppName = "PipelineDerivative";
 static char const* EngineName = "Vulkan.hpp";
 
@@ -60,7 +29,7 @@ int main(int /*argc*/, char ** /*argv*/)
 {
   try
   {
-    vk::UniqueInstance instance = vk::su::createInstance(AppName, EngineName, vk::su::getInstanceExtensions());
+    vk::UniqueInstance instance = vk::su::createInstance(AppName, EngineName, {}, vk::su::getInstanceExtensions());
 #if !defined(NDEBUG)
     vk::UniqueDebugReportCallbackEXT debugReportCallback = vk::su::createDebugReportCallback(instance);
 #endif

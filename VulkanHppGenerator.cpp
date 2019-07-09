@@ -3455,6 +3455,8 @@ void VulkanHppGenerator::writeHandle(std::ostream & os, std::pair<std::string, H
   public:
     using CType = Vk${className};
 
+    static VULKAN_HPP_CONST_OR_CONSTEXPR ObjectType objectType = ObjectType::e${className};
+
   public:
     VULKAN_HPP_CONSTEXPR ${className}()
       : m_${memberName}(VK_NULL_HANDLE)
@@ -3516,6 +3518,12 @@ ${commands}
     Vk${className} m_${memberName};
   };
   static_assert( sizeof( ${className} ) == sizeof( Vk${className} ), "handle and wrapper have different size!" );
+
+  template <>
+  struct cpp_type<ObjectType::e${className}>
+  {
+    using type = ${className};
+  };
 )";
 
       os << replaceWithMap(templateString, {
@@ -4810,8 +4818,10 @@ int main( int argc, char **argv )
 
 #if defined(_MSC_VER) && (_MSC_VER <= 1800)
 # define VULKAN_HPP_CONSTEXPR
+# define VULKAN_HPP_CONST_OR_CONSTEXPR  const
 #else
 # define VULKAN_HPP_CONSTEXPR constexpr
+# define VULKAN_HPP_CONST_OR_CONSTEXPR  constexpr
 #endif
 
 #if !defined(VULKAN_HPP_NAMESPACE)
@@ -5052,6 +5062,13 @@ namespace std
 #endif
 )";
 
+  static const std::string typeTraits = R"(
+  template<ObjectType value>
+  struct cpp_type
+  {
+  };
+)";
+
   try {
     tinyxml2::XMLDocument doc;
 
@@ -5150,6 +5167,7 @@ namespace std
       << std::endl;
     generator.writeBaseTypes(ofs);
     generator.writeEnums(ofs);
+    ofs << typeTraits;
     generator.writeBitmasks(ofs);
     ofs << "} // namespace VULKAN_HPP_NAMESPACE" << std::endl
       << is_error_code_enum

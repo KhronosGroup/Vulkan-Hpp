@@ -169,12 +169,21 @@ namespace vk
       return device->createGraphicsPipelineUnique(pipelineCache.get(), graphicsPipelineCreateInfo);
     }
 
-    vk::UniqueInstance createInstance(std::string const& appName, std::string const& engineName, std::vector<std::string> const& extensions, uint32_t apiVersion)
+    vk::UniqueInstance createInstance(std::string const& appName, std::string const& engineName, std::vector<std::string> const& layers, std::vector<std::string> const& extensions,
+                                      uint32_t apiVersion)
     {
       std::vector<char const*> enabledLayers;
+      enabledLayers.reserve(layers.size());
+      for (auto const& layer : layers)
+      {
+        enabledLayers.push_back(layer.data());
+      }
 #if !defined(NDEBUG)
       // Enable standard validation layer to find as much errors as possible!
-      enabledLayers.push_back("VK_LAYER_KHRONOS_validation");
+      if (std::find(layers.begin(), layers.end(), "VK_LAYER_KHRONOS_validation") == layers.end())
+      {
+        enabledLayers.push_back("VK_LAYER_KHRONOS_validation");
+      }
 #endif
 
       std::vector<char const*> enabledExtensions;
@@ -823,15 +832,15 @@ namespace vk
 
 std::ostream& operator<<(std::ostream& os, vk::su::UUID const& uuid)
 {
-  os << std::setfill('0');
+  os << std::setfill('0') << std::hex;
   for (int j = 0; j < VK_UUID_SIZE; ++j)
   {
-    os << std::hex << std::setw(2) << static_cast<uint32_t>(uuid.m_data[j]);
+    os << std::setw(2) << static_cast<uint32_t>(uuid.m_data[j]);
     if (j == 3 || j == 5 || j == 7 || j == 9)
     {
       std::cout << '-';
     }
   }
-  os << std::setfill(' ');
+  os << std::setfill(' ') << std::dec;
   return os;
 }

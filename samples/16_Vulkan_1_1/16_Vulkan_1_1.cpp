@@ -54,7 +54,7 @@ int main(int /*argc*/, char ** /*argv*/)
       (loader_major_version == desiredMajorVersion && loader_minor_version >= desiredMinorVersion))
     {
       // Create the instance
-      vk::UniqueInstance instance = vk::su::createInstance(AppName, EngineName, vk::su::getInstanceExtensions(), desiredVersion);
+      vk::UniqueInstance instance = vk::su::createInstance(AppName, EngineName, {}, vk::su::getInstanceExtensions(), desiredVersion);
 #if !defined(NDEBUG)
       vk::UniqueDebugReportCallbackEXT debugReportCallback = vk::su::createDebugReportCallback(instance);
 #endif

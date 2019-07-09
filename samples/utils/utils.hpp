@@ -42,34 +42,34 @@ namespace vk
       }
 
       template <typename DataType>
-      void upload(vk::UniqueDevice const& device, std::vector<DataType> const& data) const
+      void upload(vk::UniqueDevice const& device, std::vector<DataType> const& data, size_t stride = 0) const
       {
-        assert((m_propertyFlags & vk::MemoryPropertyFlagBits::eHostCoherent) && (m_propertyFlags & vk::MemoryPropertyFlagBits::eHostVisible));
+        assert(m_propertyFlags & vk::MemoryPropertyFlagBits::eHostVisible);
 
-        size_t dataSize = data.size() * sizeof(DataType);
-        assert(dataSize <= m_size);
+        size_t elementSize = stride ? stride : sizeof(DataType);
+        assert(sizeof(DataType) <= elementSize);
 
-        void* dataPtr = device->mapMemory(*this->deviceMemory, 0, dataSize);
-        memcpy(dataPtr, data.data(), dataSize);
-        device->unmapMemory(*this->deviceMemory);
+        copyToDevice(device, deviceMemory, data.data(), data.size(), elementSize);
       }
 
       template <typename DataType>
-      void upload(vk::PhysicalDevice const& physicalDevice, vk::UniqueDevice const& device, vk::UniqueCommandPool const& commandPool, vk::Queue queue, std::vector<DataType> const& data) const
+      void upload(vk::PhysicalDevice const& physicalDevice, vk::UniqueDevice const& device, vk::UniqueCommandPool const& commandPool, vk::Queue queue, std::vector<DataType> const& data,
+                  size_t stride) const
       {
         assert(m_usage & vk::BufferUsageFlagBits::eTransferDst);
         assert(m_propertyFlags & vk::MemoryPropertyFlagBits::eDeviceLocal);
 
-        size_t dataSize = data.size() * sizeof(DataType);
+        size_t elementSize = stride ? stride : sizeof(DataType);
+        assert(sizeof(DataType) <= elementSize);
+
+        size_t dataSize = data.size() * elementSize;
         assert(dataSize <= m_size);
 
         vk::su::BufferData stagingBuffer(physicalDevice, device, dataSize, vk::BufferUsageFlagBits::eTransferSrc);
-        void* dataPtr = device->mapMemory(*stagingBuffer.deviceMemory, 0, dataSize);
-        memcpy(dataPtr, data.data(), dataSize);
-        device->unmapMemory(*stagingBuffer.deviceMemory);
+        copyToDevice(device, stagingBuffer.deviceMemory, data.data(), data.size(), elementSize);
 
-        vk::UniqueCommandBuffer commandBuffer = std::move(device->allocateCommandBuffersUnique(vk::CommandBufferAllocateInfo(*commandPool, vk::CommandBufferLevel::ePrimary, 1)).front());
-        vk::su::oneTimeSubmit(commandBuffer, queue, [&]() { commandBuffer->copyBuffer(*stagingBuffer.buffer, *this->buffer, vk::BufferCopy(0, 0, dataSize)); });
+        vk::su::oneTimeSubmit(device, commandPool, queue,
+                              [&](vk::UniqueCommandBuffer const& commandBuffer) { commandBuffer->copyBuffer(*stagingBuffer.buffer, *this->buffer, vk::BufferCopy(0, 0, dataSize)); });
       }
 
       vk::UniqueBuffer        buffer;
@@ -120,8 +120,14 @@ namespace vk
 
     class CheckerboardImageGenerator
     {
-      public:
+    public:
+      CheckerboardImageGenerator(std::array<uint8_t, 3> const& rgb0 = {0, 0, 0}, std::array<uint8_t, 3> const& rgb1 = {255, 255, 255});
+
       void operator()(void* data, vk::Extent2D &extent) const;
+
+    private:
+      std::array<uint8_t, 3> const& m_rgb0;
+      std::array<uint8_t, 3> const& m_rgb1;
     };
 
     class MonochromeImageGenerator
@@ -207,7 +213,7 @@ namespace vk
     }
 
     template <class T>
-    void copyToDevice(vk::UniqueDevice &device, vk::UniqueDeviceMemory &memory, T const* pData, size_t count, size_t stride = sizeof(T))
+    void copyToDevice(vk::UniqueDevice const& device, vk::UniqueDeviceMemory const& memory, T const* pData, size_t count, size_t stride = sizeof(T))
     {
       assert(sizeof(T) <= stride);
       uint8_t* deviceData = static_cast<uint8_t*>(device->mapMemory(memory.get(), 0, count * stride));
@@ -227,7 +233,7 @@ namespace vk
     }
 
     template <class T>
-    void copyToDevice(vk::UniqueDevice &device, vk::UniqueDeviceMemory &memory, T const& data)
+    void copyToDevice(vk::UniqueDevice const& device, vk::UniqueDeviceMemory const& memory, T const& data)
     {
       copyToDevice<T>(device, memory, &data, 1);
     }
@@ -238,14 +244,21 @@ namespace vk
       return v < lo ? lo : hi < v ? hi : v;
     }
 
-    template <typename Func, typename... Args>
-    void oneTimeSubmit(vk::UniqueCommandBuffer const& commandBuffer, vk::Queue const& queue, Func const& func, Args... args)
+    template <typename Func>
+    void oneTimeSubmit(vk::UniqueCommandBuffer const& commandBuffer, vk::Queue const& queue, Func const& func)
     {
       commandBuffer->begin(vk::CommandBufferBeginInfo(vk::CommandBufferUsageFlagBits::eOneTimeSubmit));
-      func(args...);
+      func(commandBuffer);
       commandBuffer->end();
       queue.submit(vk::SubmitInfo(0, nullptr, nullptr, 1, &(*commandBuffer)), nullptr);
       queue.waitIdle();
+    }
+
+    template <typename Func>
+    void oneTimeSubmit(vk::UniqueDevice const& device, vk::UniqueCommandPool const& commandPool, vk::Queue const& queue, Func const& func)
+    {
+      vk::UniqueCommandBuffer commandBuffer = std::move(device->allocateCommandBuffersUnique(vk::CommandBufferAllocateInfo(*commandPool, vk::CommandBufferLevel::ePrimary, 1)).front());
+      oneTimeSubmit(commandBuffer, queue, func);
     }
 
     vk::UniqueDeviceMemory allocateMemory(vk::UniqueDevice const& device, vk::PhysicalDeviceMemoryProperties const& memoryProperties, vk::MemoryRequirements const& memoryRequirements,
@@ -277,10 +290,11 @@ namespace vk
     void setImageLayout(vk::UniqueCommandBuffer const& commandBuffer, vk::Image image, vk::Format format, vk::ImageLayout oldImageLayout, vk::ImageLayout newImageLayout);
     void submitAndWait(vk::UniqueDevice &device, vk::Queue queue, vk::UniqueCommandBuffer &commandBuffer);
     void updateDescriptorSets(vk::UniqueDevice const& device, vk::UniqueDescriptorSet const& descriptorSet,
-                              std::vector<std::tuple<vk::DescriptorType, vk::UniqueBuffer const&, vk::UniqueBufferView const&>> const& bufferData, vk::su::TextureData const& textureData);
+                              std::vector<std::tuple<vk::DescriptorType, vk::UniqueBuffer const&, vk::UniqueBufferView const&>> const& bufferData, vk::su::TextureData const& textureData,
+                              uint32_t bindingOffset = 0);
     void updateDescriptorSets(vk::UniqueDevice const& device, vk::UniqueDescriptorSet const& descriptorSet,
                               std::vector<std::tuple<vk::DescriptorType, vk::UniqueBuffer const&, vk::UniqueBufferView const&>> const& bufferData,
-                              std::vector<vk::su::TextureData> const& textureData);
+                              std::vector<vk::su::TextureData> const& textureData, uint32_t bindingOffset = 0);
 
 #if defined(VK_USE_PLATFORM_WIN32_KHR)
     HWND initializeWindow(std::string const& className, std::string const& windowName, LONG width, LONG height);

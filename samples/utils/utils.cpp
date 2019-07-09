@@ -537,14 +537,15 @@ namespace vk
     }
 
     void updateDescriptorSets(vk::UniqueDevice const& device, vk::UniqueDescriptorSet const& descriptorSet,
-                              std::vector<std::tuple<vk::DescriptorType, vk::UniqueBuffer const&, vk::UniqueBufferView const&>> const& bufferData, vk::su::TextureData const& textureData)
+                              std::vector<std::tuple<vk::DescriptorType, vk::UniqueBuffer const&, vk::UniqueBufferView const&>> const& bufferData, vk::su::TextureData const& textureData,
+                              uint32_t bindingOffset)
     {
       std::vector<vk::DescriptorBufferInfo> bufferInfos;
       bufferInfos.reserve(bufferData.size());
 
       std::vector<vk::WriteDescriptorSet> writeDescriptorSets;
       writeDescriptorSets.reserve(bufferData.size() + 1);
-      uint32_t dstBinding = 0;
+      uint32_t dstBinding = bindingOffset;
       for (auto const& bd : bufferData)
       {
         bufferInfos.push_back(vk::DescriptorBufferInfo(*std::get<1>(bd), 0, VK_WHOLE_SIZE));
@@ -559,14 +560,14 @@ namespace vk
 
     void updateDescriptorSets(vk::UniqueDevice const& device, vk::UniqueDescriptorSet const& descriptorSet,
                               std::vector<std::tuple<vk::DescriptorType, vk::UniqueBuffer const&, vk::UniqueBufferView const&>> const& bufferData,
-                              std::vector<vk::su::TextureData> const& textureData)
+                              std::vector<vk::su::TextureData> const& textureData, uint32_t bindingOffset)
     {
       std::vector<vk::DescriptorBufferInfo> bufferInfos;
       bufferInfos.reserve(bufferData.size());
 
       std::vector<vk::WriteDescriptorSet> writeDescriptorSets;
       writeDescriptorSets.reserve(bufferData.size() + textureData.empty() ? 0 : 1);
-      uint32_t dstBinding = 0;
+      uint32_t dstBinding = bindingOffset;
       for (auto const& bd : bufferData)
       {
         bufferInfos.push_back(vk::DescriptorBufferInfo(*std::get<1>(bd), 0, VK_WHOLE_SIZE));
@@ -684,18 +685,23 @@ namespace vk
       }
     }
 
+    CheckerboardImageGenerator::CheckerboardImageGenerator(std::array<uint8_t, 3> const& rgb0, std::array<uint8_t, 3> const& rgb1)
+      : m_rgb0(rgb0)
+      , m_rgb1(rgb1)
+    {}
+
     void CheckerboardImageGenerator::operator()(void* data, vk::Extent2D &extent) const
     {
       // Checkerboard of 16x16 pixel squares
-      unsigned char *pImageMemory = static_cast<unsigned char*>(data);
+      uint8_t *pImageMemory = static_cast<uint8_t *>(data);
       for (uint32_t row = 0; row < extent.height; row++)
       {
         for (uint32_t col = 0; col < extent.width; col++)
         {
-          unsigned char rgb = (((row & 0x10) == 0) ^ ((col & 0x10) == 0)) * 255;
-          pImageMemory[0] = rgb;
-          pImageMemory[1] = rgb;
-          pImageMemory[2] = rgb;
+          std::array<uint8_t, 3> const& rgb = (((row & 0x10) == 0) ^ ((col & 0x10) == 0)) ? m_rgb1 : m_rgb0;
+          pImageMemory[0] = rgb[0];
+          pImageMemory[1] = rgb[1];
+          pImageMemory[2] = rgb[2];
           pImageMemory[3] = 255;
           pImageMemory += 4;
         }

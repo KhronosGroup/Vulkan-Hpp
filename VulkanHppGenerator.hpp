@@ -165,6 +165,9 @@ class VulkanHppGenerator
     std::string determineSubStruct(std::pair<std::string, StructureData> const& structure) const;
     size_t determineTemplateParamIndex(std::vector<ParamData> const& params, std::map<size_t, size_t> const& vectorParamIndices) const;
     std::map<size_t, size_t> determineVectorParamIndices(std::vector<ParamData> const& params) const;
+    std::string generateArgumentPlainType(ParamData const& paramData) const;
+    std::string generateArgumentVector(size_t paramIndex, ParamData const& paramData, size_t returnParamIndex, size_t templateParamIndex, bool twoStep, bool firstCall, bool singular) const;
+    std::string generateArgumentVulkanType(ParamData const& paramData) const;
     std::string generateCall(std::pair<std::string, CommandData> const& commandData, size_t returnParamIndex, size_t templateParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool twoStep, bool firstCall, bool singular) const;
     bool isTwoStepAlgorithm(std::vector<ParamData> const& params) const;
     void linkCommandToHandle(std::string const& name, CommandData const& commandData);
@@ -197,10 +200,7 @@ class VulkanHppGenerator
     void readType(tinyxml2::XMLElement const* element);
     void registerDeleter(std::string const& name, std::pair<std::string, CommandData> const& commandData);
     void unlinkCommandFromHandle(std::string const& name);
-    void writeArgumentPlainType(std::ostream & os, ParamData const& paramData) const;
     void writeArguments(std::ostream & os, CommandData const& commandData, size_t returnParamIndex, size_t templateParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool twoStep, bool firstCall, bool singular, size_t from, size_t to) const;
-    void writeArgumentVector(std::ostream & os, size_t paramIndex, ParamData const& paramData, size_t returnParamIndex, size_t templateParamIndex, bool twoStep, bool firstCall, bool singular) const;
-    void writeArgumentVulkanType(std::ostream & os, ParamData const& paramData) const;
     void writeBitmask(std::ostream & os, std::string const& bitmaskName, std::string const& bitmaskAlias, std::string const& enumName, std::vector<EnumValueData> const& enumValues) const;
     void writeBitmaskToStringFunction(std::ostream & os, std::string const& flagsName, std::string const& enumName, std::vector<EnumValueData> const& enumValues) const;
     void writeCommand(std::ostream &os, std::string const& indentation, std::string const& name, std::pair<std::string, CommandData> const& commandData, bool definition) const;
@@ -232,9 +232,10 @@ class VulkanHppGenerator
     void writePlatformLeave(std::ostream & os, std::string const& platform) const;
     void writeStruct(std::ostream & os, std::pair<std::string, StructureData> const& structure, std::set<std::string> & listedStructures) const;
     void writeStructCompareOperators(std::ostream & os, std::pair<std::string, StructureData> const& structure) const;
-    void writeStructConstructor(std::ostream & os, std::pair<std::string, StructureData> const& structData) const;
+    std::string writeStructConstructor(std::pair<std::string, StructureData> const& structData, std::string const& prefix, bool withLayoutStructure) const;
     std::string writeStructConstructorArgument(bool & listedArgument, std::string const& indentation, MemberData const& memberData) const;
-    void writeStructMembers(std::ostream & os, StructureData const& structData) const;
+    std::string writeStructCopyConstructors(std::string const& vkName, bool withLayoutStructure) const;
+    std::string writeStructMembers(StructureData const& structData, std::string const& prefix) const;
     void writeStructSetter(std::ostream & os, std::string const& structureName, MemberData const& memberData) const;
     void writeStructure(std::ostream & os, std::pair<std::string, StructureData> const& structure) const;
     void writeUnion(std::ostream & os, std::pair<std::string, StructureData> const& structure) const;

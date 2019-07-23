@@ -30,11 +30,15 @@ void checkAttributes(std::map<std::string, std::string> const& attributes, int l
 void checkElements(std::vector<tinyxml2::XMLElement const*> const& elements, std::set<std::string> const& values);
 void checkEmptyElement(tinyxml2::XMLElement const* element);
 void checkOrderedElements(std::vector<tinyxml2::XMLElement const*> const& elements, std::vector<std::string> const& values);
+void cleanup(std::string const& fileName);
 std::string createEnumValueName(std::string const& name, std::string const& prefix, std::string const& postfix, bool bitmask, std::string const& tag);
 std::string determineCommandName(std::string const& vulkanCommandName, std::string const& firstArgumentType);
 std::set<size_t> determineSkippedParams(size_t returnParamIndex, std::map<size_t, size_t> const& vectorParamIndices);
 bool determineStructureChaining(std::string const& structType, std::set<std::string> const& extendedStructs, std::map<std::string, std::string> const& structureAliases);
 std::string findTag(std::set<std::string> const& tags, std::string const& name, std::string const& postfix = "");
+std::string generateArgumentCount(size_t vectorIndex, std::string const& vectorName, std::string const& counterName, size_t returnParamIndex, size_t templateParamIndex, bool twoStep, bool singular);
+std::string generateFunctionBodyEnhancedLocalReturnVariableSingular(std::string const& indentation, std::string const& typeName, std::string & returnName, bool isStructureChain);
+std::string generateReinterpretCast(bool leadingConst, std::string const& type, bool trailingPointerToConst);
 std::map<std::string, std::string> getAttributes(tinyxml2::XMLElement const* element);
 std::vector<tinyxml2::XMLElement const*> getChildElements(tinyxml2::XMLElement const* element);
 std::string getEnumPostfix(std::string const& name, std::set<std::string> const& tags, std::string & prefix);
@@ -49,14 +53,11 @@ std::string startUpperCase(std::string const& input);
 std::string stripPostfix(std::string const& value, std::string const& postfix);
 std::string stripPluralS(std::string const& name);
 std::string stripPrefix(std::string const& value, std::string const& prefix);
-std::string writeReinterpretCast(bool leadingConst, std::string const& type, bool trailingPointerToConst);
 std::string toCamelCase(std::string const& value);
 std::string toUpperCase(std::string const& name);
 std::vector<std::string> tokenize(std::string tokenString, char separator);
 std::string trim(std::string const& input);
 std::string trimEnd(std::string const& input);
-void writeArgumentCount(std::ostream & os, size_t vectorIndex, std::string const& vectorName, std::string const& counterName, size_t returnParamIndex, size_t templateParamIndex, bool twoStep, bool singular);
-std::string writeFunctionBodyEnhancedLocalReturnVariableSingular(std::ostream & os, std::string const& indentation, std::string const& typeName, std::string const&returnName, bool isStructureChain);
 std::pair<bool, std::string> writeFunctionBodyStandardReturn(std::string const& returnType);
 
 bool beginsWith(std::string const& text, std::string const& prefix)
@@ -171,6 +172,39 @@ void checkOrderedElements(std::vector<tinyxml2::XMLElement const*> const& elemen
   }
 }
 
+void cleanup(std::string const& fileName)
+{
+  // get the generated file back for some cosmetics
+  std::ifstream ifs(fileName);
+  assert(!ifs.fail());
+
+  std::stringbuf file;
+  ifs >> &file;
+  ifs.close();
+  std::string fileString = file.str();
+
+  std::map<std::string,std::string> replacements =
+  {
+    { "\n\n\n",   "\n\n" },
+    { "{\n\n",    "{\n" },
+    { "\n\n  }",  "\n  }" }
+  };
+  for (auto const& repl : replacements)
+  {
+    std::string::size_type pos = fileString.find(repl.first);
+    while (pos != std::string::npos)
+    {
+      fileString.replace(pos, repl.first.length(), repl.second);
+      pos = fileString.find(repl.first, pos);
+    }
+  }
+
+  std::ofstream ofs(VULKAN_HPP_FILE);
+  assert(!ofs.fail());
+  ofs << fileString;
+  ofs.close();
+}
+
 std::string createEnumValueName(std::string const& name, std::string const& prefix, std::string const& postfix, bool bitmask, std::string const& tag)
 {
   std::string result = "e" + toCamelCase(stripPostfix(stripPrefix(name, prefix), postfix));
@@ -248,6 +282,79 @@ std::string findTag(std::set<std::string> const& tags, std::string const& name, 
 {
   auto tagIt = std::find_if(tags.begin(), tags.end(), [&name, &postfix](std::string const& t) { return endsWith(name, t + postfix); });
   return (tagIt != tags.end()) ? *tagIt : "";
+}
+
+std::string generateArgumentCount(size_t vectorIndex, std::string const& vectorName, std::string const& counterName, size_t returnParamIndex, size_t templateParamIndex, bool twoStep, bool singular)
+{
+  std::string argumentCount;
+
+  // this parameter is a count parameter for a vector parameter
+  if ((returnParamIndex == vectorIndex) && twoStep)
+  {
+    // the corresponding vector parameter is the return parameter and it's a two-step algorithm
+    // -> use the pointer to a local variable named like the counter parameter without leading 'p'
+    assert((counterName[0] == 'p') && isupper(counterName[1]));
+    argumentCount = "&" + startLowerCase(stripPrefix(counterName, "p"));
+  }
+  else
+  {
+    // the corresponding vector parameter is not the return parameter, or it's not a two-step algorithm
+    if (singular)
+    {
+      // for the singular version, the count is just 1.
+      argumentCount = "1 ";
+    }
+    else
+    {
+      // for the non-singular version, the count is the size of the vector parameter
+      // -> use the vector parameter name without leading 'p' to get the size (in number of elements, not in bytes)
+      assert(vectorName[0] == 'p');
+      argumentCount = startLowerCase(stripPrefix(vectorName, "p")) + ".size() ";
+    }
+    if (templateParamIndex == vectorIndex)
+    {
+      // if the vector parameter is templatized -> multiply by the size of that type to get the size in bytes
+      argumentCount += "* sizeof( T ) ";
+    }
+  }
+  return argumentCount;
+}
+
+std::string generateFunctionBodyEnhancedLocalReturnVariableSingular(std::string const& indentation, std::string const& typeName, std::string & returnName, bool isStructureChain)
+{
+  std::string returnVariable;
+
+  returnName = stripPluralS(returnName);
+  if (isStructureChain)
+  {
+    // For StructureChains use the template parameters
+    returnVariable =
+      "StructureChain<X, Y, Z...> structureChain;\n" +
+      indentation + "  " + typeName + "& " + returnName + " = structureChain.template get<" + typeName + ">()";
+    returnName = "structureChain";
+  }
+  else
+  {
+    // in singular case, just use the return parameters pure type for the return variable
+    returnVariable = typeName + " " + returnName;
+  }
+  return returnVariable;
+}
+
+std::string generateReinterpretCast(bool leadingConst, std::string const& type, bool trailingPointerToConst)
+{
+  std::string reinterpretCast = "reinterpret_cast<";
+  if (leadingConst)
+  {
+    reinterpretCast += "const ";
+  }
+  reinterpretCast += type;
+  if (trailingPointerToConst)
+  {
+    reinterpretCast += "* const";
+  }
+  reinterpretCast += "*>";
+  return reinterpretCast;
 }
 
 std::map<std::string, std::string> getAttributes(tinyxml2::XMLElement const* element)
@@ -450,22 +557,6 @@ std::string stripPrefix(std::string const& value, std::string const& prefix)
   return strippedValue;
 }
 
-std::string writeReinterpretCast(bool leadingConst, std::string const& type, bool trailingPointerToConst)
-{
-  std::string reinterpretCast = "reinterpret_cast<";
-  if (leadingConst)
-  {
-    reinterpretCast += "const ";
-  }
-  reinterpretCast += type;
-  if (trailingPointerToConst)
-  {
-    reinterpretCast += "* const";
-  }
-  reinterpretCast += "*>";
-  return reinterpretCast;
-}
-
 std::string toCamelCase(std::string const& value)
 {
   assert(!value.empty() && (isupper(value[0]) || isdigit(value[0])));
@@ -547,57 +638,6 @@ std::string trimEnd(std::string const& input)
   return result;
 }
 
-void writeArgumentCount(std::ostream & os, size_t vectorIndex, std::string const& vectorName, std::string const& counterName, size_t returnParamIndex, size_t templateParamIndex, bool twoStep, bool singular)
-{
-  // this parameter is a count parameter for a vector parameter
-  if ((returnParamIndex == vectorIndex) && twoStep)
-  {
-    // the corresponding vector parameter is the return parameter and it's a two-step algorithm
-    // -> use the pointer to a local variable named like the counter parameter without leading 'p'
-    assert((counterName[0] == 'p') && isupper(counterName[1]));
-    os << "&" << startLowerCase(stripPrefix(counterName, "p"));
-  }
-  else
-  {
-    // the corresponding vector parameter is not the return parameter, or it's not a two-step algorithm
-    if (singular)
-    {
-      // for the singular version, the count is just 1.
-      os << "1 ";
-    }
-    else
-    {
-      // for the non-singular version, the count is the size of the vector parameter
-      // -> use the vector parameter name without leading 'p' to get the size (in number of elements, not in bytes)
-      assert(vectorName[0] == 'p');
-      os << startLowerCase(stripPrefix(vectorName, "p")) << ".size() ";
-    }
-    if (templateParamIndex == vectorIndex)
-    {
-      // if the vector parameter is templatized -> multiply by the size of that type to get the size in bytes
-      os << "* sizeof( T ) ";
-    }
-  }
-}
-
-std::string writeFunctionBodyEnhancedLocalReturnVariableSingular(std::ostream & os, std::string const& indentation, std::string const& typeName, std::string const& returnName, bool isStructureChain)
-{
-  std::string adjustedReturnName = stripPluralS(returnName);
-  if (isStructureChain)
-  {
-    // For StructureChains use the template parameters
-    os << "StructureChain<X, Y, Z...> structureChain;" << std::endl;
-    os << indentation << "  " << typeName << "& " << adjustedReturnName << " = structureChain.template get<" << typeName << ">()";
-    adjustedReturnName = "structureChain";
-  }
-  else
-  {
-    // in singular case, just use the return parameters pure type for the return variable
-    os << typeName << " " << adjustedReturnName;
-  }
-  return adjustedReturnName;
-}
-
 std::pair<bool, std::string> writeFunctionBodyStandardReturn(std::string const& returnType)
 {
   bool castReturn = false;
@@ -673,19 +713,19 @@ std::string VulkanHppGenerator::defaultValue(std::string const& type) const
       auto const& bitmaskBitIt = m_bitmaskBits.find(type);
       if (bitmaskBitIt != m_bitmaskBits.end())
       {
-        return stripPrefix(type, "Vk") + (bitmaskBitIt->second.values.empty() ? "()" : ("::" + bitmaskBitIt->second.values.front().vkValue));
+        return "vk::" + stripPrefix(type, "Vk") + (bitmaskBitIt->second.values.empty() ? "()" : ("::" + bitmaskBitIt->second.values.front().vkValue));
       }
       else
       {
         auto const& enumIt = m_enums.find(type);
         if (enumIt != m_enums.end())
         {
-          return stripPrefix(type, "Vk") + (enumIt->second.values.empty() ? "()" : ("::" + enumIt->second.values.front().vkValue));
+          return "vk::" + stripPrefix(type, "Vk") + (enumIt->second.values.empty() ? "()" : ("::" + enumIt->second.values.front().vkValue));
         }
         else
         {
           assert((m_bitmasks.find(type) != m_bitmasks.end()) || (m_handles.find(type) != m_handles.end()) || (m_structures.find(type) != m_structures.end()));
-          return stripPrefix(type, "Vk") + "()";
+          return "vk::" + stripPrefix(type, "Vk") + "()";
         }
       }
     }
@@ -850,6 +890,77 @@ std::map<size_t, size_t> VulkanHppGenerator::determineVectorParamIndices(std::ve
   return vectorParamIndices;
 }
 
+std::string VulkanHppGenerator::generateArgumentPlainType(ParamData const& paramData) const
+{
+  std::string argument;
+
+  // this parameter is just a plain type
+  if (!paramData.type.postfix.empty())
+  {
+    assert(paramData.type.postfix.back() == '*');
+    // it's a pointer
+    std::string parameterName = startLowerCase(stripPrefix(paramData.name, "p"));
+    if (paramData.type.prefix.find("const") != std::string::npos)
+    {
+      // it's a const pointer
+      if (paramData.type.type == "char")
+      {
+        // it's a const pointer to char -> it's a string -> get the data via c_str()
+        argument = parameterName + (paramData.optional ? (" ? " + parameterName + "->c_str() : nullptr") : ".c_str()");
+      }
+      else
+      {
+        // it's const pointer to something else -> just use the name
+        assert(!paramData.optional);
+        argument = paramData.name;
+      }
+    }
+    else
+    {
+      // it's a non-const pointer, and char is the only type that occurs -> use the address of the parameter
+      assert(paramData.type.type.find("char") == std::string::npos);
+      argument = "&" + parameterName;
+    }
+  }
+  else
+  {
+    // it's a plain parameter -> just use its name
+    argument = paramData.name;
+  }
+  return argument;
+}
+
+std::string VulkanHppGenerator::generateArgumentVulkanType(ParamData const& paramData) const
+{
+  std::string argument;
+
+  // this parameter is a vulkan type
+  if (!paramData.type.postfix.empty())
+  {
+    assert(paramData.type.postfix.back() == '*');
+    // it's a pointer -> needs a reinterpret cast to the vulkan type
+    std::string parameterName = startLowerCase(stripPrefix(paramData.name, "p"));
+    argument = generateReinterpretCast(paramData.type.prefix.find("const") != std::string::npos, paramData.type.type, false) + "( ";
+    if (paramData.optional)
+    {
+      // for an optional parameter, we need also a static_cast from optional type to const-pointer to pure type
+      argument += "static_cast<const " + stripPrefix(paramData.type.type, "Vk") + "*>( " + parameterName + " )";
+    }
+    else
+    {
+      // other parameters can just use the pointer
+      argument += "&" + parameterName;
+    }
+    argument += " )";
+  }
+  else
+  {
+    // a non-pointer parameter needs a static_cast from vk::-type to vulkan type
+    argument = "static_cast<" + paramData.type.type + ">( " + paramData.name + " )";
+  }
+  return argument;
+}
+
 std::string VulkanHppGenerator::generateCall(std::pair<std::string, CommandData> const& commandData, size_t returnParamIndex, size_t templateParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool twoStep, bool firstCall, bool singular) const
 {
   std::ostringstream call;
@@ -888,6 +999,42 @@ std::string const& VulkanHppGenerator::getVersion() const
 std::string const& VulkanHppGenerator::getVulkanLicenseHeader() const
 {
   return m_vulkanLicenseHeader;
+}
+
+std::string VulkanHppGenerator::generateArgumentVector(size_t paramIndex, ParamData const& paramData, size_t returnParamIndex, size_t templateParamIndex, bool twoStep, bool firstCall, bool singular) const
+{
+  std::string argumentVector;
+
+  // this parameter is a vector parameter
+  assert(paramData.type.postfix.back() == '*');
+  if ((returnParamIndex == paramIndex) && twoStep && firstCall)
+  {
+    // this parameter is the return parameter, and it's the first call of a two-step algorithm -> just just nullptr
+    argumentVector = "nullptr";
+  }
+  else
+  {
+    std::string parameterName = startLowerCase(stripPrefix(paramData.name, "p"));
+    if (beginsWith(paramData.type.type, "Vk") || (paramIndex == templateParamIndex))
+    {
+      // CHECK for !commandData.params[it->first].optional
+
+      // this parameter is a vulkan type or a templated type -> need to reinterpret cast
+      argumentVector = generateReinterpretCast(paramData.type.prefix.find("const") == 0, paramData.type.type, paramData.type.postfix.rfind("* const") != std::string::npos) + "( " + (singular ? ("&" + stripPluralS(parameterName)) : (parameterName + ".data()")) + " )";
+    }
+    else if (paramData.type.type == "char")
+    {
+      // the parameter is a vector to char -> it might be optional
+      // besides that, the parameter now is a std::string -> get the pointer via c_str()
+      argumentVector = parameterName + (paramData.optional ? (" ? " + parameterName + "->c_str() : nullptr") : ".c_str()");
+    }
+    else
+    {
+      // this parameter is just a vetor -> get the pointer to its data
+      argumentVector = parameterName + ".data()";
+    }
+  }
+  return argumentVector;
 }
 
 bool VulkanHppGenerator::isTwoStepAlgorithm(std::vector<ParamData> const& params) const
@@ -1990,43 +2137,6 @@ void VulkanHppGenerator::unlinkCommandFromHandle(std::string const& name)
   handlesIt->second.commands.erase(it);
 }
 
-void VulkanHppGenerator::writeArgumentPlainType(std::ostream & os, ParamData const& paramData) const
-{
-  // this parameter is just a plain type
-  if (!paramData.type.postfix.empty())
-  {
-    assert(paramData.type.postfix.back() == '*');
-    // it's a pointer
-    std::string parameterName = startLowerCase(stripPrefix(paramData.name, "p"));
-    if (paramData.type.prefix.find("const") != std::string::npos)
-    {
-      // it's a const pointer
-      if (paramData.type.type == "char")
-      {
-        // it's a const pointer to char -> it's a string -> get the data via c_str()
-        os << parameterName << (paramData.optional ? (" ? " + parameterName + "->c_str() : nullptr") : ".c_str()");
-      }
-      else
-      {
-        // it's const pointer to something else -> just use the name
-        assert(!paramData.optional);
-        os << paramData.name;
-      }
-    }
-    else
-    {
-      // it's a non-const pointer, and char is the only type that occurs -> use the address of the parameter
-      assert(paramData.type.type.find("char") == std::string::npos);
-      os << "&" << parameterName;
-    }
-  }
-  else
-  {
-    // it's a plain parameter -> just use its name
-    os << paramData.name;
-  }
-}
-
 void VulkanHppGenerator::writeArguments(std::ostream & os, CommandData const& commandData, size_t returnParamIndex, size_t templateParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool twoStep, bool firstCall, bool singular, size_t from, size_t to) const
 {
   assert(from <= to);
@@ -2042,88 +2152,25 @@ void VulkanHppGenerator::writeArguments(std::ostream & os, CommandData const& co
     auto it = vectorParamIndices.find(i);
     if (it != vectorParamIndices.end())
     {
-      writeArgumentVector(os, it->first, commandData.params[it->first], returnParamIndex, templateParamIndex, twoStep, firstCall, singular);
+      os << generateArgumentVector(it->first, commandData.params[it->first], returnParamIndex, templateParamIndex, twoStep, firstCall, singular);
     }
     else
     {
       it = find_if(vectorParamIndices.begin(), vectorParamIndices.end(), [i](std::pair<size_t, size_t> const& vpi) { return vpi.second == i; });
       if (it != vectorParamIndices.end())
       {
-        writeArgumentCount(os, it->first, commandData.params[it->first].name, commandData.params[it->second].name, returnParamIndex, templateParamIndex, twoStep, singular);
+        os << generateArgumentCount(it->first, commandData.params[it->first].name, commandData.params[it->second].name, returnParamIndex, templateParamIndex, twoStep, singular);
       }
       else if (beginsWith(commandData.params[i].type.type, "Vk"))
       {
-        writeArgumentVulkanType(os, commandData.params[i]);
+        os << generateArgumentVulkanType(commandData.params[i]);
       }
       else
       {
-        writeArgumentPlainType(os, commandData.params[i]);
+        os << generateArgumentPlainType(commandData.params[i]);
       }
     }
     encounteredArgument = true;
-  }
-}
-
-void VulkanHppGenerator::writeArgumentVector(std::ostream & os, size_t paramIndex, ParamData const& paramData, size_t returnParamIndex, size_t templateParamIndex, bool twoStep, bool firstCall, bool singular) const
-{
-  // this parameter is a vector parameter
-  assert(paramData.type.postfix.back() == '*');
-  if ((returnParamIndex == paramIndex) && twoStep && firstCall)
-  {
-    // this parameter is the return parameter, and it's the first call of a two-step algorithm -> just just nullptr
-    os << "nullptr";
-  }
-  else
-  {
-    std::string parameterName = startLowerCase(stripPrefix(paramData.name, "p"));
-    if (beginsWith(paramData.type.type, "Vk") || (paramIndex == templateParamIndex))
-    {
-      // CHECK for !commandData.params[it->first].optional
-
-      // this parameter is a vulkan type or a templated type -> need to reinterpret cast
-      os << writeReinterpretCast(paramData.type.prefix.find("const") == 0, paramData.type.type, paramData.type.postfix.rfind("* const") != std::string::npos);
-      os << "( " << (singular ? ("&" + stripPluralS(parameterName)) : (parameterName + ".data()")) << " )";
-    }
-    else if (paramData.type.type == "char")
-    {
-      // the parameter is a vector to char -> it might be optional
-      // besides that, the parameter now is a std::string -> get the pointer via c_str()
-      os << parameterName << (paramData.optional ? (" ? " + parameterName + "->c_str() : nullptr") : ".c_str()");
-    }
-    else
-    {
-      // this parameter is just a vetor -> get the pointer to its data
-      os << parameterName << ".data()";
-    }
-  }
-}
-
-void VulkanHppGenerator::writeArgumentVulkanType(std::ostream & os, ParamData const& paramData) const
-{
-  // this parameter is a vulkan type
-  if (!paramData.type.postfix.empty())
-  {
-    assert(paramData.type.postfix.back() == '*');
-    // it's a pointer -> needs a reinterpret cast to the vulkan type
-    std::string parameterName = startLowerCase(stripPrefix(paramData.name, "p"));
-    os << writeReinterpretCast(paramData.type.prefix.find("const") != std::string::npos, paramData.type.type, false);
-    os << "( ";
-    if (paramData.optional)
-    {
-      // for an optional parameter, we need also a static_cast from optional type to const-pointer to pure type
-      os << "static_cast<const " << stripPrefix(paramData.type.type, "Vk") << "*>( " << parameterName << " )";
-    }
-    else
-    {
-      // other parameters can just use the pointer
-      os << "&" << parameterName;
-    }
-    os << " )";
-  }
-  else
-  {
-    // a non-pointer parameter needs a static_cast from vk::-type to vulkan type
-    os << "static_cast<" << paramData.type.type << ">( " << paramData.name << " )";
   }
 }
 
@@ -2681,7 +2728,7 @@ std::string VulkanHppGenerator::writeFunctionBodyEnhancedLocalReturnVariable(std
     os << indentation << "  ";
     if (singular)
     {
-      returnName = writeFunctionBodyEnhancedLocalReturnVariableSingular(os, indentation, pureReturnType, returnName, isStructureChain);
+      os << generateFunctionBodyEnhancedLocalReturnVariableSingular(indentation, pureReturnType, returnName, isStructureChain);
     }
     else
     {
@@ -3015,7 +3062,7 @@ std::string VulkanHppGenerator::writeFunctionBodyStandardArgument(TypeData const
     {
       assert(typeData.postfix.back() == '*');
       // it's a pointer -> need to reinterpret_cast it
-      argument += writeReinterpretCast(typeData.prefix.find("const") == 0, typeData.type, typeData.postfix.find("* const") != std::string::npos);
+      argument += generateReinterpretCast(typeData.prefix.find("const") == 0, typeData.type, typeData.postfix.find("* const") != std::string::npos);
     }
     else
     {
@@ -3691,10 +3738,12 @@ void VulkanHppGenerator::writeStructCompareOperators(std::ostream & os, std::pai
   os << replaceWithMap(compareTemplate, { { "name", stripPrefix(structData.first, "Vk") }, { "compareMembers", compareMembers } });
 }
 
-void VulkanHppGenerator::writeStructConstructor(std::ostream & os, std::pair<std::string, StructureData> const& structData) const
+std::string VulkanHppGenerator::writeStructConstructor(std::pair<std::string, StructureData> const& structData, std::string const& prefix, bool withLayoutStructure) const
 {
+  std::ostringstream os;
+
   // the constructor with all the elements as arguments, with defaults
-  std::string ctorOpening = "    " + stripPrefix(structData.first, "Vk") + "( ";
+  std::string ctorOpening = prefix + stripPrefix(structData.first, "Vk") + "( ";
   std::string indentation(ctorOpening.size(), ' ');
 
   std::string arguments, initializers, copyOps;
@@ -3708,10 +3757,20 @@ void VulkanHppGenerator::writeStructConstructor(std::ostream & os, std::pair<std
     // gather the initializers; skip members 'pNext' and 'sType', they are directly set by initializers
     if ((member.name != "pNext") && (member.name != "sType"))
     {
-      if (member.arraySize.empty())
+      if (withLayoutStructure)
+      {
+        // withLayoutStructure means: we pass the arguments into the layout::class
+        if (!firstArgument)
+        {
+          initializers += ", ";
+        }
+        initializers += member.name + "_";
+        firstArgument = false;
+      }
+      else if (member.arraySize.empty())
       {
         // here, we can only handle non-array arguments
-        static const std::string templateString = "      ${sep} ${memberName}( ${value} )\n";
+        static const std::string templateString = prefix + "  ${sep} ${memberName}( ${value} )\n";
         initializers += replaceWithMap(templateString, { { "sep", firstArgument ? ":" : "," },{ "memberName", member.name },{ "value", member.name + "_" } });
         firstArgument = false;
       }
@@ -3719,27 +3778,27 @@ void VulkanHppGenerator::writeStructConstructor(std::ostream & os, std::pair<std
       {
         // here we can handle the arrays, copying over from argument (with trailing '_') to member
         // size is arraySize times sizeof type
-        static const std::string templateString = "\n      memcpy( &${member}, ${member}_.data(), ${arraySize} * sizeof( ${type} ) );";
+        static const std::string templateString = "\n" + prefix + "  memcpy( &${member}, ${member}_.data(), ${arraySize} * sizeof( ${type} ) );";
         copyOps += replaceWithMap(templateString, { { "member", member.name },{ "arraySize", member.arraySize },{ "type", member.type.compose() } });
       }
     }
   }
   if (!copyOps.empty())
   {
-    copyOps += "\n    ";
+    copyOps += "\n" + prefix;
   }
 
-  std::ostringstream subStructConstructor;
+  std::string subStructConstructor;
   if (!structData.second.subStruct.empty())
   {
     auto const& subStruct = m_structures.find(structData.second.subStruct);
     assert(subStruct != m_structures.end());
 
     std::string subStructArgumentName = startLowerCase(stripPrefix(subStruct->first, "Vk"));
-    ctorOpening = "    explicit " + stripPrefix(structData.first, "Vk") + "( ";
+    ctorOpening = prefix + "explicit " + stripPrefix(structData.first, "Vk") + "( ";
     indentation = std::string(ctorOpening.size(), ' ');
 
-    static const std::string copyTemplate = "      ${sep} ${member}( ${value} )\n";
+    static const std::string copyTemplate = prefix + "  ${sep} ${member}( ${value} )\n";
     std::string subCopies;
     firstArgument = true;
     for (size_t i = 0; i < subStruct->second.members.size(); i++)
@@ -3766,41 +3825,39 @@ void VulkanHppGenerator::writeStructConstructor(std::ostream & os, std::pair<std
 
     std::string constructorTemplate = R"(
     explicit ${type}( ${subType} const& ${subTypeName}${subArguments} )
-${subCopies}    {}
+${subCopies}
+    {}
 )";
-    subStructConstructor << replaceWithMap(constructorTemplate,
-    {
-      { "type", stripPrefix(structData.first, "Vk") },
-      { "subType", stripPrefix(subStruct->first, "Vk") },
-      { "subTypeName", subStructArgumentName },
-      { "subArguments", subArguments },
-      { "subCopies", subCopies }
-    });
+    subStructConstructor = replaceWithMap(constructorTemplate,
+                           {
+                             { "type", stripPrefix(structData.first, "Vk") },
+                             { "subType", stripPrefix(subStruct->first, "Vk") },
+                             { "subTypeName", subStructArgumentName },
+                             { "subArguments", subArguments },
+                             { "subCopies", subCopies }
+                           });
   }
 
-  static std::string constructorTemplate = R"(    ${name}( ${arguments} )
-${initializers}    {${copyOps}}
-${subStructConstructor}
-    ${name}( Vk${name} const & rhs )
-    {
-      *reinterpret_cast<Vk${name}*>(this) = rhs;
-    }
-
-    ${name}& operator=( Vk${name} const & rhs )
-    {
-      *reinterpret_cast<Vk${name}*>(this) = rhs;
-      return *this;
-    }
-)";
-
-  os << replaceWithMap(constructorTemplate,
+  std::string structConstructor = prefix + stripPrefix(structData.first, "Vk") + (arguments.empty() ? "()\n" : std::string("( " + arguments + " )")) + "\n";
+  if (withLayoutStructure)
   {
-    { "name", stripPrefix(structData.first, "Vk") },
-    { "arguments", arguments },
-    { "initializers", initializers },
-    { "copyOps", copyOps },
-    { "subStructConstructor", subStructConstructor.str() }
-  });
+    structConstructor += prefix + "  : layout::" + stripPrefix(structData.first, "Vk") + "( " + initializers + " )\n" + prefix + "{}\n";
+  }
+  else
+  {
+    structConstructor += initializers;
+    if (copyOps.empty())
+    {
+      structConstructor += prefix + "{}\n";
+    }
+    else
+    {
+      structConstructor += prefix + "{\n" + copyOps + "\n" + prefix + "}\n";
+    }
+    structConstructor += subStructConstructor;
+  }
+
+  return structConstructor;
 }
 
 std::string VulkanHppGenerator::writeStructConstructorArgument(bool & listedArgument, std::string const& indentation, MemberData const& memberData) const
@@ -3827,44 +3884,67 @@ std::string VulkanHppGenerator::writeStructConstructorArgument(bool & listedArgu
   return argument;
 }
 
-void VulkanHppGenerator::writeStructMembers(std::ostream & os, StructureData const& structData) const
+std::string VulkanHppGenerator::writeStructCopyConstructors(std::string const& name, bool withLayoutStructure) const
 {
-  auto enumIt = m_enums.find("VkStructureType");
-  assert(enumIt != m_enums.end());
+  static const std::string templateString = R"(
+    ${name}( Vk${name} const & rhs )
+    {
+      *reinterpret_cast<Vk${name}*>(this) = rhs;
+    }
+
+    ${name}& operator=( Vk${name} const & rhs )
+    {
+      *reinterpret_cast<Vk${name}*>(this) = rhs;
+      return *this;
+    }
+)";
+  static const std::string layoutTemplateString = R"(
+    ${name}( Vk${name} const & rhs )
+      : layout::${name}( rhs )
+    {}
+
+    ${name}& operator=( Vk${name} const & rhs )
+    {
+      *reinterpret_cast<Vk${name}*>(this) = rhs;
+      return *this;
+    }
+)";
+
+  std::ostringstream os;
+  os << replaceWithMap(withLayoutStructure ? layoutTemplateString : templateString, { { "name", name } });
+  return os.str();
+}
+
+std::string VulkanHppGenerator::writeStructMembers(StructureData const& structData, std::string const& prefix) const
+{
+  std::ostringstream os;
+
   for (auto const& member : structData.members)
   {
-    if (member.type.type == "VkStructureType")
+    os << prefix << member.type.compose() << " " << member.name;
+    if (member.name == "sType")           // special handling for sType
     {
-      assert(member.name == "sType");
+      auto enumIt = m_enums.find("VkStructureType");
+      assert(enumIt != m_enums.end());
       if (!member.values.empty())
       {
-        assert(!member.values.empty() && beginsWith(member.values, "VK_STRUCTURE_TYPE"));
+        assert(beginsWith(member.values, "VK_STRUCTURE_TYPE"));
         auto nameIt = std::find_if(enumIt->second.values.begin(), enumIt->second.values.end(), [&member](EnumValueData const& evd) { return member.values == evd.vulkanValue; });
         assert(nameIt != enumIt->second.values.end());
-        os << "  private:" << std::endl
-          << "    StructureType sType = StructureType::" << nameIt->vkValue << ";" << std::endl
-          << std::endl
-          << "  public:" << std::endl;
-      }
-      else
-      {
-        os << "    StructureType sType;" << std::endl;
+        os << " = StructureType::" << nameIt->vkValue;
       }
     }
-    else
+    else if (member.name == "pNext")      // special handling for pNext
     {
-      os << "    " << member.type.compose() << " " << member.name;
-      if (member.name == "pNext")
-      {
-        os << " = nullptr";
-      }
-      else if (!member.arraySize.empty())
-      {
-        os << "[" << member.arraySize << "]";
-      }
-      os << ";" << std::endl;
+      os << " = nullptr";
     }
+    else if (!member.arraySize.empty())   // special handling for arrays
+    {
+      os << "[" << member.arraySize << "]";
+    }
+    os << ";" << std::endl;
   }
+  return os.str();
 }
 
 void VulkanHppGenerator::writeStructs(std::ostream & os) const
@@ -3906,12 +3986,53 @@ void VulkanHppGenerator::writeStructSetter(std::ostream & os, std::string const&
 
 void VulkanHppGenerator::writeStructure(std::ostream & os, std::pair<std::string, StructureData> const& structure) const
 {
+  os << std::endl;
+  writePlatformEnter(os, structure.second.platform);
+
+  std::string baseClass;
+  bool withLayoutStructure = (!structure.second.members.empty() && (structure.second.members.front().name == "sType"));
+  if (withLayoutStructure)
+  {
+    baseClass = " : public layout::" + stripPrefix(structure.first, "Vk");
+    static const std::string layoutStructureTemplate = R"(
+  namespace layout
+  {
+    struct ${name}
+    {
+    protected:
+${constructor}
+
+      ${name}( Vk${name} const & rhs )
+      {
+        *reinterpret_cast<Vk${name}*>(this) = rhs;
+      }
+
+      ${name}& operator=( Vk${name} const & rhs )
+      {
+        *reinterpret_cast<Vk${name}*>(this) = rhs;
+        return *this;
+      }
+
+    public:
+${members}    };
+    static_assert( sizeof( ${name} ) == sizeof( Vk${name} ), "layout struct and wrapper have different size!" );
+  }
+)";
+
+    os << replaceWithMap(layoutStructureTemplate,
+                        {
+                          { "name",        stripPrefix(structure.first, "Vk") },
+                          { "constructor", writeStructConstructor(structure, "      ", false)},
+                          { "members",     writeStructMembers(structure.second, "      ")}
+                        });
+  }
+
   // only structs that are not returnedOnly get a constructor!
   std::ostringstream constructorAndSetters;
   if (!structure.second.returnedOnly)
   {
-    constructorAndSetters << std::endl;
-    writeStructConstructor(constructorAndSetters, structure);
+    constructorAndSetters << writeStructConstructor(structure, "    ", withLayoutStructure);
+    constructorAndSetters << writeStructCopyConstructors(stripPrefix(structure.first, "Vk"), withLayoutStructure);
     for (auto const& member : structure.second.members)
     {
       writeStructSetter(constructorAndSetters, stripPrefix(structure.first, "Vk"), member);
@@ -3927,12 +4048,22 @@ void VulkanHppGenerator::writeStructure(std::ostream & os, std::pair<std::string
   }
 
   // the member variables
-  std::ostringstream members;
-  writeStructMembers(members, structure.second);
+  std::string members;
+  if (withLayoutStructure)
+  {
+    // hide sType when a layout structure is used to keep standard_layout
+    members = "\n  private:\n    using layout::" + stripPrefix(structure.first, "Vk") + "::sType;\n";
+  }
+  else
+  {
+    members = "\n  public:\n" + writeStructMembers(structure.second, "    ");
+  }
 
-  static const std::string structureTemplate = 
-    R"(  struct ${name}
-  {${constructorAndSetters}
+  static const std::string structureTemplate = R"(
+  struct ${name}${baseClass}
+  {
+${constructorAndSetters}
+
     operator ${vkName} const&() const
     {
       return *reinterpret_cast<const ${vkName}*>( this );
@@ -3942,21 +4073,24 @@ void VulkanHppGenerator::writeStructure(std::ostream & os, std::pair<std::string
     {
       return *reinterpret_cast<${vkName}*>( this );
     }
+
 ${compareOperators}
-${members}  };
+
+${members}
+  };
   static_assert( sizeof( ${name} ) == sizeof( ${vkName} ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<${name}>::value, "struct wrapper is not a standard layout!" );
 )";
 
-  os << std::endl;
-  writePlatformEnter(os, structure.second.platform);
   os << replaceWithMap(structureTemplate,
-  {
-    { "name", stripPrefix(structure.first, "Vk") },
-    { "constructorAndSetters", constructorAndSetters.str() },
-    { "vkName", structure.first },
-    { "compareOperators", compareOperators.str() },
-    { "members", members.str() },
-  });
+                       {
+                         { "name",                   stripPrefix(structure.first, "Vk") },
+                         { "baseClass",              baseClass },
+                         { "constructorAndSetters",  constructorAndSetters.str() },
+                         { "vkName",                 structure.first },
+                         { "compareOperators",       compareOperators.str() },
+                         { "members",                members }
+                       });
   writePlatformLeave(os, structure.second.platform);
 }
 
@@ -4157,7 +4291,7 @@ void VulkanHppGenerator::EnumData::addEnumValue(std::string const &valueName, bo
 
 std::string VulkanHppGenerator::TypeData::compose() const
 {
-  return prefix + (prefix.empty() ? "" : " ") + stripPrefix(type, "Vk") + postfix;
+  return prefix + (prefix.empty() ? "" : " ") + ((type.substr(0, 2) == "Vk") ? "vk::" : "") + stripPrefix(type, "Vk") + postfix;
 }
 
 int main( int argc, char **argv )
@@ -5191,6 +5325,10 @@ namespace std
 
     ofs << "} // namespace VULKAN_HPP_NAMESPACE" << std::endl
       << "#endif" << std::endl;
+
+    ofs.close();
+
+    cleanup(VULKAN_HPP_FILE);
   }
   catch (std::exception const& e)
   {

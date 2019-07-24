@@ -56,7 +56,7 @@
 # define VULKAN_HPP_ASSERT   assert
 #endif
 
-static_assert( VK_HEADER_VERSION ==  108 , "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION ==  116 , "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -1020,6 +1020,21 @@ namespace VULKAN_HPP_NAMESPACE
       return ::vkCmdSetLineWidth( commandBuffer, lineWidth );
     }
 
+    VkResult vkCmdSetPerformanceMarkerINTEL( VkCommandBuffer commandBuffer, const VkPerformanceMarkerInfoINTEL* pMarkerInfo ) const
+    {
+      return ::vkCmdSetPerformanceMarkerINTEL( commandBuffer, pMarkerInfo );
+    }
+
+    VkResult vkCmdSetPerformanceOverrideINTEL( VkCommandBuffer commandBuffer, const VkPerformanceOverrideInfoINTEL* pOverrideInfo ) const
+    {
+      return ::vkCmdSetPerformanceOverrideINTEL( commandBuffer, pOverrideInfo );
+    }
+
+    VkResult vkCmdSetPerformanceStreamMarkerINTEL( VkCommandBuffer commandBuffer, const VkPerformanceStreamMarkerInfoINTEL* pMarkerInfo ) const
+    {
+      return ::vkCmdSetPerformanceStreamMarkerINTEL( commandBuffer, pMarkerInfo );
+    }
+
     void vkCmdSetSampleLocationsEXT( VkCommandBuffer commandBuffer, const VkSampleLocationsInfoEXT* pSampleLocationsInfo ) const
     {
       return ::vkCmdSetSampleLocationsEXT( commandBuffer, pSampleLocationsInfo );
@@ -1115,6 +1130,11 @@ namespace VULKAN_HPP_NAMESPACE
     VkResult vkAcquireNextImageKHR( VkDevice device, VkSwapchainKHR swapchain, uint64_t timeout, VkSemaphore semaphore, VkFence fence, uint32_t* pImageIndex ) const
     {
       return ::vkAcquireNextImageKHR( device, swapchain, timeout, semaphore, fence, pImageIndex );
+    }
+
+    VkResult vkAcquirePerformanceConfigurationINTEL( VkDevice device, const VkPerformanceConfigurationAcquireInfoINTEL* pAcquireInfo, VkPerformanceConfigurationINTEL* pConfiguration ) const
+    {
+      return ::vkAcquirePerformanceConfigurationINTEL( device, pAcquireInfo, pConfiguration );
     }
 
     VkResult vkAllocateCommandBuffers( VkDevice device, const VkCommandBufferAllocateInfo* pAllocateInfo, VkCommandBuffer* pCommandBuffers ) const
@@ -1721,6 +1741,11 @@ namespace VULKAN_HPP_NAMESPACE
       return ::vkGetPastPresentationTimingGOOGLE( device, swapchain, pPresentationTimingCount, pPresentationTimings );
     }
 
+    VkResult vkGetPerformanceParameterINTEL( VkDevice device, VkPerformanceParameterTypeINTEL parameter, VkPerformanceValueINTEL* pValue ) const
+    {
+      return ::vkGetPerformanceParameterINTEL( device, parameter, pValue );
+    }
+
     VkResult vkGetPipelineCacheData( VkDevice device, VkPipelineCache pipelineCache, size_t* pDataSize, void* pData ) const
     {
       return ::vkGetPipelineCacheData( device, pipelineCache, pDataSize, pData );
@@ -1807,6 +1832,11 @@ namespace VULKAN_HPP_NAMESPACE
     }
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
+    VkResult vkInitializePerformanceApiINTEL( VkDevice device, const VkInitializePerformanceApiInfoINTEL* pInitializeInfo ) const
+    {
+      return ::vkInitializePerformanceApiINTEL( device, pInitializeInfo );
+    }
+
     VkResult vkInvalidateMappedMemoryRanges( VkDevice device, uint32_t memoryRangeCount, const VkMappedMemoryRange* pMemoryRanges ) const
     {
       return ::vkInvalidateMappedMemoryRanges( device, memoryRangeCount, pMemoryRanges );
@@ -1848,6 +1878,11 @@ namespace VULKAN_HPP_NAMESPACE
       return ::vkReleaseFullScreenExclusiveModeEXT( device, swapchain );
     }
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
+    VkResult vkReleasePerformanceConfigurationINTEL( VkDevice device, VkPerformanceConfigurationINTEL configuration ) const
+    {
+      return ::vkReleasePerformanceConfigurationINTEL( device, configuration );
+    }
 
     VkResult vkResetCommandPool( VkDevice device, VkCommandPool commandPool, VkCommandPoolResetFlags flags ) const
     {
@@ -1907,6 +1942,11 @@ namespace VULKAN_HPP_NAMESPACE
     void vkTrimCommandPoolKHR( VkDevice device, VkCommandPool commandPool, VkCommandPoolTrimFlags flags ) const
     {
       return ::vkTrimCommandPoolKHR( device, commandPool, flags );
+    }
+
+    void vkUninitializePerformanceApiINTEL( VkDevice device ) const
+    {
+      return ::vkUninitializePerformanceApiINTEL( device );
     }
 
     void vkUnmapMemory( VkDevice device, VkDeviceMemory memory ) const
@@ -2438,6 +2478,11 @@ namespace VULKAN_HPP_NAMESPACE
     VkResult vkQueuePresentKHR( VkQueue queue, const VkPresentInfoKHR* pPresentInfo ) const
     {
       return ::vkQueuePresentKHR( queue, pPresentInfo );
+    }
+
+    VkResult vkQueueSetPerformanceConfigurationINTEL( VkQueue queue, VkPerformanceConfigurationINTEL configuration ) const
+    {
+      return ::vkQueueSetPerformanceConfigurationINTEL( queue, configuration );
     }
 
     VkResult vkQueueSubmit( VkQueue queue, uint32_t submitCount, const VkSubmitInfo* pSubmits, VkFence fence ) const
@@ -3317,8 +3362,9 @@ namespace VULKAN_HPP_NAMESPACE
     eImaginationProprietary = VK_DRIVER_ID_IMAGINATION_PROPRIETARY_KHR,
     eQualcommProprietary = VK_DRIVER_ID_QUALCOMM_PROPRIETARY_KHR,
     eArmProprietary = VK_DRIVER_ID_ARM_PROPRIETARY_KHR,
-    eGooglePastel = VK_DRIVER_ID_GOOGLE_PASTEL_KHR,
-    eGgpProprietary = VK_DRIVER_ID_GGP_PROPRIETARY_KHR
+    eGoogleSwiftshader = VK_DRIVER_ID_GOOGLE_SWIFTSHADER_KHR,
+    eGgpProprietary = VK_DRIVER_ID_GGP_PROPRIETARY_KHR,
+    eBroadcomProprietary = VK_DRIVER_ID_BROADCOM_PROPRIETARY_KHR
   };
 
   VULKAN_HPP_INLINE std::string to_string( DriverIdKHR value )
@@ -3334,8 +3380,9 @@ namespace VULKAN_HPP_NAMESPACE
       case DriverIdKHR::eImaginationProprietary : return "ImaginationProprietary";
       case DriverIdKHR::eQualcommProprietary : return "QualcommProprietary";
       case DriverIdKHR::eArmProprietary : return "ArmProprietary";
-      case DriverIdKHR::eGooglePastel : return "GooglePastel";
+      case DriverIdKHR::eGoogleSwiftshader : return "GoogleSwiftshader";
       case DriverIdKHR::eGgpProprietary : return "GgpProprietary";
+      case DriverIdKHR::eBroadcomProprietary : return "BroadcomProprietary";
       default: return "invalid";
     }
   }
@@ -4245,6 +4292,7 @@ namespace VULKAN_HPP_NAMESPACE
     eDebugUtilsMessengerEXT = VK_OBJECT_TYPE_DEBUG_UTILS_MESSENGER_EXT,
     eValidationCacheEXT = VK_OBJECT_TYPE_VALIDATION_CACHE_EXT,
     eAccelerationStructureNV = VK_OBJECT_TYPE_ACCELERATION_STRUCTURE_NV,
+    ePerformanceConfigurationINTEL = VK_OBJECT_TYPE_PERFORMANCE_CONFIGURATION_INTEL,
     eDescriptorUpdateTemplateKHR = VK_OBJECT_TYPE_DESCRIPTOR_UPDATE_TEMPLATE_KHR,
     eSamplerYcbcrConversionKHR = VK_OBJECT_TYPE_SAMPLER_YCBCR_CONVERSION_KHR
   };
@@ -4291,6 +4339,75 @@ namespace VULKAN_HPP_NAMESPACE
       case ObjectType::eDebugUtilsMessengerEXT : return "DebugUtilsMessengerEXT";
       case ObjectType::eValidationCacheEXT : return "ValidationCacheEXT";
       case ObjectType::eAccelerationStructureNV : return "AccelerationStructureNV";
+      case ObjectType::ePerformanceConfigurationINTEL : return "PerformanceConfigurationINTEL";
+      default: return "invalid";
+    }
+  }
+
+  enum class PerformanceConfigurationTypeINTEL
+  {
+    eCommandQueueMetricsDiscoveryActivated = VK_PERFORMANCE_CONFIGURATION_TYPE_COMMAND_QUEUE_METRICS_DISCOVERY_ACTIVATED_INTEL
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( PerformanceConfigurationTypeINTEL value )
+  {
+    switch ( value )
+    {
+      case PerformanceConfigurationTypeINTEL::eCommandQueueMetricsDiscoveryActivated : return "CommandQueueMetricsDiscoveryActivated";
+      default: return "invalid";
+    }
+  }
+
+  enum class PerformanceOverrideTypeINTEL
+  {
+    eNullHardware = VK_PERFORMANCE_OVERRIDE_TYPE_NULL_HARDWARE_INTEL,
+    eFlushGpuCaches = VK_PERFORMANCE_OVERRIDE_TYPE_FLUSH_GPU_CACHES_INTEL
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( PerformanceOverrideTypeINTEL value )
+  {
+    switch ( value )
+    {
+      case PerformanceOverrideTypeINTEL::eNullHardware : return "NullHardware";
+      case PerformanceOverrideTypeINTEL::eFlushGpuCaches : return "FlushGpuCaches";
+      default: return "invalid";
+    }
+  }
+
+  enum class PerformanceParameterTypeINTEL
+  {
+    eHwCountersSupported = VK_PERFORMANCE_PARAMETER_TYPE_HW_COUNTERS_SUPPORTED_INTEL,
+    eStreamMarkerValidBits = VK_PERFORMANCE_PARAMETER_TYPE_STREAM_MARKER_VALID_BITS_INTEL
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( PerformanceParameterTypeINTEL value )
+  {
+    switch ( value )
+    {
+      case PerformanceParameterTypeINTEL::eHwCountersSupported : return "HwCountersSupported";
+      case PerformanceParameterTypeINTEL::eStreamMarkerValidBits : return "StreamMarkerValidBits";
+      default: return "invalid";
+    }
+  }
+
+  enum class PerformanceValueTypeINTEL
+  {
+    eUint32 = VK_PERFORMANCE_VALUE_TYPE_UINT32_INTEL,
+    eUint64 = VK_PERFORMANCE_VALUE_TYPE_UINT64_INTEL,
+    eFloat = VK_PERFORMANCE_VALUE_TYPE_FLOAT_INTEL,
+    eBool = VK_PERFORMANCE_VALUE_TYPE_BOOL_INTEL,
+    eString = VK_PERFORMANCE_VALUE_TYPE_STRING_INTEL
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( PerformanceValueTypeINTEL value )
+  {
+    switch ( value )
+    {
+      case PerformanceValueTypeINTEL::eUint32 : return "Uint32";
+      case PerformanceValueTypeINTEL::eUint64 : return "Uint64";
+      case PerformanceValueTypeINTEL::eFloat : return "Float";
+      case PerformanceValueTypeINTEL::eBool : return "Bool";
+      case PerformanceValueTypeINTEL::eString : return "String";
       default: return "invalid";
     }
   }
@@ -4445,13 +4562,28 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
+  enum class QueryPoolSamplingModeINTEL
+  {
+    eManual = VK_QUERY_POOL_SAMPLING_MODE_MANUAL_INTEL
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( QueryPoolSamplingModeINTEL value )
+  {
+    switch ( value )
+    {
+      case QueryPoolSamplingModeINTEL::eManual : return "Manual";
+      default: return "invalid";
+    }
+  }
+
   enum class QueryType
   {
     eOcclusion = VK_QUERY_TYPE_OCCLUSION,
     ePipelineStatistics = VK_QUERY_TYPE_PIPELINE_STATISTICS,
     eTimestamp = VK_QUERY_TYPE_TIMESTAMP,
     eTransformFeedbackStreamEXT = VK_QUERY_TYPE_TRANSFORM_FEEDBACK_STREAM_EXT,
-    eAccelerationStructureCompactedSizeNV = VK_QUERY_TYPE_ACCELERATION_STRUCTURE_COMPACTED_SIZE_NV
+    eAccelerationStructureCompactedSizeNV = VK_QUERY_TYPE_ACCELERATION_STRUCTURE_COMPACTED_SIZE_NV,
+    ePerformanceQueryINTEL = VK_QUERY_TYPE_PERFORMANCE_QUERY_INTEL
   };
 
   VULKAN_HPP_INLINE std::string to_string( QueryType value )
@@ -4463,6 +4595,7 @@ namespace VULKAN_HPP_NAMESPACE
       case QueryType::eTimestamp : return "Timestamp";
       case QueryType::eTransformFeedbackStreamEXT : return "TransformFeedbackStreamEXT";
       case QueryType::eAccelerationStructureCompactedSizeNV : return "AccelerationStructureCompactedSizeNV";
+      case QueryType::ePerformanceQueryINTEL : return "PerformanceQueryINTEL";
       default: return "invalid";
     }
   }
@@ -4716,6 +4849,24 @@ namespace VULKAN_HPP_NAMESPACE
       case ScopeNV::eWorkgroup : return "Workgroup";
       case ScopeNV::eSubgroup : return "Subgroup";
       case ScopeNV::eQueueFamily : return "QueueFamily";
+      default: return "invalid";
+    }
+  }
+
+  enum class ShaderFloatControlsIndependenceKHR
+  {
+    e32BitOnly = VK_SHADER_FLOAT_CONTROLS_INDEPENDENCE_32_BIT_ONLY_KHR,
+    eAll = VK_SHADER_FLOAT_CONTROLS_INDEPENDENCE_ALL_KHR,
+    eNone = VK_SHADER_FLOAT_CONTROLS_INDEPENDENCE_NONE_KHR
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( ShaderFloatControlsIndependenceKHR value )
+  {
+    switch ( value )
+    {
+      case ShaderFloatControlsIndependenceKHR::e32BitOnly : return "32BitOnly";
+      case ShaderFloatControlsIndependenceKHR::eAll : return "All";
+      case ShaderFloatControlsIndependenceKHR::eNone : return "None";
       default: return "invalid";
     }
   }
@@ -4992,7 +5143,7 @@ namespace VULKAN_HPP_NAMESPACE
     eCommandBufferInheritanceConditionalRenderingInfoEXT = VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_CONDITIONAL_RENDERING_INFO_EXT,
     ePhysicalDeviceConditionalRenderingFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CONDITIONAL_RENDERING_FEATURES_EXT,
     eConditionalRenderingBeginInfoEXT = VK_STRUCTURE_TYPE_CONDITIONAL_RENDERING_BEGIN_INFO_EXT,
-    ePhysicalDeviceFloat16Int8FeaturesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FLOAT16_INT8_FEATURES_KHR,
+    ePhysicalDeviceShaderFloat16Int8FeaturesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_FLOAT16_INT8_FEATURES_KHR,
     ePresentRegionsKHR = VK_STRUCTURE_TYPE_PRESENT_REGIONS_KHR,
     eObjectTableCreateInfoNVX = VK_STRUCTURE_TYPE_OBJECT_TABLE_CREATE_INFO_NVX,
     eIndirectCommandsLayoutCreateInfoNVX = VK_STRUCTURE_TYPE_INDIRECT_COMMANDS_LAYOUT_CREATE_INFO_NVX,
@@ -5016,6 +5167,10 @@ namespace VULKAN_HPP_NAMESPACE
     ePhysicalDeviceDepthClipEnableFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEPTH_CLIP_ENABLE_FEATURES_EXT,
     ePipelineRasterizationDepthClipStateCreateInfoEXT = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_DEPTH_CLIP_STATE_CREATE_INFO_EXT,
     eHdrMetadataEXT = VK_STRUCTURE_TYPE_HDR_METADATA_EXT,
+    ePhysicalDeviceImagelessFramebufferFeaturesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGELESS_FRAMEBUFFER_FEATURES_KHR,
+    eFramebufferAttachmentsCreateInfoKHR = VK_STRUCTURE_TYPE_FRAMEBUFFER_ATTACHMENTS_CREATE_INFO_KHR,
+    eFramebufferAttachmentImageInfoKHR = VK_STRUCTURE_TYPE_FRAMEBUFFER_ATTACHMENT_IMAGE_INFO_KHR,
+    eRenderPassAttachmentBeginInfoKHR = VK_STRUCTURE_TYPE_RENDER_PASS_ATTACHMENT_BEGIN_INFO_KHR,
     eAttachmentDescription2KHR = VK_STRUCTURE_TYPE_ATTACHMENT_DESCRIPTION_2_KHR,
     eAttachmentReference2KHR = VK_STRUCTURE_TYPE_ATTACHMENT_REFERENCE_2_KHR,
     eSubpassDescription2KHR = VK_STRUCTURE_TYPE_SUBPASS_DESCRIPTION_2_KHR,
@@ -5067,6 +5222,8 @@ namespace VULKAN_HPP_NAMESPACE
     ePipelineColorBlendAdvancedStateCreateInfoEXT = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_ADVANCED_STATE_CREATE_INFO_EXT,
     ePipelineCoverageToColorStateCreateInfoNV = VK_STRUCTURE_TYPE_PIPELINE_COVERAGE_TO_COLOR_STATE_CREATE_INFO_NV,
     ePipelineCoverageModulationStateCreateInfoNV = VK_STRUCTURE_TYPE_PIPELINE_COVERAGE_MODULATION_STATE_CREATE_INFO_NV,
+    ePhysicalDeviceShaderSmBuiltinsFeaturesNV = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_SM_BUILTINS_FEATURES_NV,
+    ePhysicalDeviceShaderSmBuiltinsPropertiesNV = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_SM_BUILTINS_PROPERTIES_NV,
     eDrmFormatModifierPropertiesListEXT = VK_STRUCTURE_TYPE_DRM_FORMAT_MODIFIER_PROPERTIES_LIST_EXT,
     eDrmFormatModifierPropertiesEXT = VK_STRUCTURE_TYPE_DRM_FORMAT_MODIFIER_PROPERTIES_EXT,
     ePhysicalDeviceImageDrmFormatModifierInfoEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_DRM_FORMAT_MODIFIER_INFO_EXT,
@@ -5126,6 +5283,13 @@ namespace VULKAN_HPP_NAMESPACE
     ePhysicalDeviceExclusiveScissorFeaturesNV = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXCLUSIVE_SCISSOR_FEATURES_NV,
     eCheckpointDataNV = VK_STRUCTURE_TYPE_CHECKPOINT_DATA_NV,
     eQueueFamilyCheckpointPropertiesNV = VK_STRUCTURE_TYPE_QUEUE_FAMILY_CHECKPOINT_PROPERTIES_NV,
+    ePhysicalDeviceShaderIntegerFunctions2FeaturesINTEL = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_INTEGER_FUNCTIONS_2_FEATURES_INTEL,
+    eQueryPoolCreateInfoINTEL = VK_STRUCTURE_TYPE_QUERY_POOL_CREATE_INFO_INTEL,
+    eInitializePerformanceApiInfoINTEL = VK_STRUCTURE_TYPE_INITIALIZE_PERFORMANCE_API_INFO_INTEL,
+    ePerformanceMarkerInfoINTEL = VK_STRUCTURE_TYPE_PERFORMANCE_MARKER_INFO_INTEL,
+    ePerformanceStreamMarkerInfoINTEL = VK_STRUCTURE_TYPE_PERFORMANCE_STREAM_MARKER_INFO_INTEL,
+    ePerformanceOverrideInfoINTEL = VK_STRUCTURE_TYPE_PERFORMANCE_OVERRIDE_INFO_INTEL,
+    ePerformanceConfigurationAcquireInfoINTEL = VK_STRUCTURE_TYPE_PERFORMANCE_CONFIGURATION_ACQUIRE_INFO_INTEL,
     ePhysicalDeviceVulkanMemoryModelFeaturesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_MEMORY_MODEL_FEATURES_KHR,
     ePhysicalDevicePciBusInfoPropertiesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PCI_BUS_INFO_PROPERTIES_EXT,
     eDisplayNativeHdrSurfaceCapabilitiesAMD = VK_STRUCTURE_TYPE_DISPLAY_NATIVE_HDR_SURFACE_CAPABILITIES_AMD,
@@ -5136,6 +5300,8 @@ namespace VULKAN_HPP_NAMESPACE
     ePhysicalDeviceFragmentDensityMapPropertiesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_PROPERTIES_EXT,
     eRenderPassFragmentDensityMapCreateInfoEXT = VK_STRUCTURE_TYPE_RENDER_PASS_FRAGMENT_DENSITY_MAP_CREATE_INFO_EXT,
     ePhysicalDeviceScalarBlockLayoutFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SCALAR_BLOCK_LAYOUT_FEATURES_EXT,
+    ePhysicalDeviceSubgroupSizeControlPropertiesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBGROUP_SIZE_CONTROL_PROPERTIES_EXT,
+    ePipelineShaderStageRequiredSubgroupSizeCreateInfoEXT = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_REQUIRED_SUBGROUP_SIZE_CREATE_INFO_EXT,
     ePhysicalDeviceMemoryBudgetPropertiesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_BUDGET_PROPERTIES_EXT,
     ePhysicalDeviceMemoryPriorityFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_PRIORITY_FEATURES_EXT,
     eMemoryPriorityAllocateInfoEXT = VK_STRUCTURE_TYPE_MEMORY_PRIORITY_ALLOCATE_INFO_EXT,
@@ -5152,6 +5318,7 @@ namespace VULKAN_HPP_NAMESPACE
     ePhysicalDeviceCoverageReductionModeFeaturesNV = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COVERAGE_REDUCTION_MODE_FEATURES_NV,
     ePipelineCoverageReductionStateCreateInfoNV = VK_STRUCTURE_TYPE_PIPELINE_COVERAGE_REDUCTION_STATE_CREATE_INFO_NV,
     eFramebufferMixedSamplesCombinationNV = VK_STRUCTURE_TYPE_FRAMEBUFFER_MIXED_SAMPLES_COMBINATION_NV,
+    ePhysicalDeviceFragmentShaderInterlockFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADER_INTERLOCK_FEATURES_EXT,
     ePhysicalDeviceYcbcrImageArraysFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_YCBCR_IMAGE_ARRAYS_FEATURES_EXT,
     ePhysicalDeviceUniformBufferStandardLayoutFeaturesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_UNIFORM_BUFFER_STANDARD_LAYOUT_FEATURES_KHR,
     eSurfaceFullScreenExclusiveInfoEXT = VK_STRUCTURE_TYPE_SURFACE_FULL_SCREEN_EXCLUSIVE_INFO_EXT,
@@ -5159,6 +5326,9 @@ namespace VULKAN_HPP_NAMESPACE
     eSurfaceFullScreenExclusiveWin32InfoEXT = VK_STRUCTURE_TYPE_SURFACE_FULL_SCREEN_EXCLUSIVE_WIN32_INFO_EXT,
     eHeadlessSurfaceCreateInfoEXT = VK_STRUCTURE_TYPE_HEADLESS_SURFACE_CREATE_INFO_EXT,
     ePhysicalDeviceHostQueryResetFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_HOST_QUERY_RESET_FEATURES_EXT,
+    ePhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_DEMOTE_TO_HELPER_INVOCATION_FEATURES_EXT,
+    ePhysicalDeviceTexelBufferAlignmentFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_FEATURES_EXT,
+    ePhysicalDeviceTexelBufferAlignmentPropertiesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_PROPERTIES_EXT,
     ePhysicalDeviceVariablePointerFeatures = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VARIABLE_POINTER_FEATURES,
     ePhysicalDeviceShaderDrawParameterFeatures = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_DRAW_PARAMETER_FEATURES,
     eDebugReportCreateInfoEXT = VK_STRUCTURE_TYPE_DEBUG_REPORT_CREATE_INFO_EXT,
@@ -5194,6 +5364,7 @@ namespace VULKAN_HPP_NAMESPACE
     ePhysicalDeviceExternalSemaphoreInfoKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_SEMAPHORE_INFO_KHR,
     eExternalSemaphorePropertiesKHR = VK_STRUCTURE_TYPE_EXTERNAL_SEMAPHORE_PROPERTIES_KHR,
     eExportSemaphoreCreateInfoKHR = VK_STRUCTURE_TYPE_EXPORT_SEMAPHORE_CREATE_INFO_KHR,
+    ePhysicalDeviceFloat16Int8FeaturesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FLOAT16_INT8_FEATURES_KHR,
     ePhysicalDevice16BitStorageFeaturesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_16BIT_STORAGE_FEATURES_KHR,
     eDescriptorUpdateTemplateCreateInfoKHR = VK_STRUCTURE_TYPE_DESCRIPTOR_UPDATE_TEMPLATE_CREATE_INFO_KHR,
     ePhysicalDeviceExternalFenceInfoKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_FENCE_INFO_KHR,
@@ -5401,7 +5572,7 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eCommandBufferInheritanceConditionalRenderingInfoEXT : return "CommandBufferInheritanceConditionalRenderingInfoEXT";
       case StructureType::ePhysicalDeviceConditionalRenderingFeaturesEXT : return "PhysicalDeviceConditionalRenderingFeaturesEXT";
       case StructureType::eConditionalRenderingBeginInfoEXT : return "ConditionalRenderingBeginInfoEXT";
-      case StructureType::ePhysicalDeviceFloat16Int8FeaturesKHR : return "PhysicalDeviceFloat16Int8FeaturesKHR";
+      case StructureType::ePhysicalDeviceShaderFloat16Int8FeaturesKHR : return "PhysicalDeviceShaderFloat16Int8FeaturesKHR";
       case StructureType::ePresentRegionsKHR : return "PresentRegionsKHR";
       case StructureType::eObjectTableCreateInfoNVX : return "ObjectTableCreateInfoNVX";
       case StructureType::eIndirectCommandsLayoutCreateInfoNVX : return "IndirectCommandsLayoutCreateInfoNVX";
@@ -5425,6 +5596,10 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceDepthClipEnableFeaturesEXT : return "PhysicalDeviceDepthClipEnableFeaturesEXT";
       case StructureType::ePipelineRasterizationDepthClipStateCreateInfoEXT : return "PipelineRasterizationDepthClipStateCreateInfoEXT";
       case StructureType::eHdrMetadataEXT : return "HdrMetadataEXT";
+      case StructureType::ePhysicalDeviceImagelessFramebufferFeaturesKHR : return "PhysicalDeviceImagelessFramebufferFeaturesKHR";
+      case StructureType::eFramebufferAttachmentsCreateInfoKHR : return "FramebufferAttachmentsCreateInfoKHR";
+      case StructureType::eFramebufferAttachmentImageInfoKHR : return "FramebufferAttachmentImageInfoKHR";
+      case StructureType::eRenderPassAttachmentBeginInfoKHR : return "RenderPassAttachmentBeginInfoKHR";
       case StructureType::eAttachmentDescription2KHR : return "AttachmentDescription2KHR";
       case StructureType::eAttachmentReference2KHR : return "AttachmentReference2KHR";
       case StructureType::eSubpassDescription2KHR : return "SubpassDescription2KHR";
@@ -5476,6 +5651,8 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePipelineColorBlendAdvancedStateCreateInfoEXT : return "PipelineColorBlendAdvancedStateCreateInfoEXT";
       case StructureType::ePipelineCoverageToColorStateCreateInfoNV : return "PipelineCoverageToColorStateCreateInfoNV";
       case StructureType::ePipelineCoverageModulationStateCreateInfoNV : return "PipelineCoverageModulationStateCreateInfoNV";
+      case StructureType::ePhysicalDeviceShaderSmBuiltinsFeaturesNV : return "PhysicalDeviceShaderSmBuiltinsFeaturesNV";
+      case StructureType::ePhysicalDeviceShaderSmBuiltinsPropertiesNV : return "PhysicalDeviceShaderSmBuiltinsPropertiesNV";
       case StructureType::eDrmFormatModifierPropertiesListEXT : return "DrmFormatModifierPropertiesListEXT";
       case StructureType::eDrmFormatModifierPropertiesEXT : return "DrmFormatModifierPropertiesEXT";
       case StructureType::ePhysicalDeviceImageDrmFormatModifierInfoEXT : return "PhysicalDeviceImageDrmFormatModifierInfoEXT";
@@ -5535,6 +5712,13 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceExclusiveScissorFeaturesNV : return "PhysicalDeviceExclusiveScissorFeaturesNV";
       case StructureType::eCheckpointDataNV : return "CheckpointDataNV";
       case StructureType::eQueueFamilyCheckpointPropertiesNV : return "QueueFamilyCheckpointPropertiesNV";
+      case StructureType::ePhysicalDeviceShaderIntegerFunctions2FeaturesINTEL : return "PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL";
+      case StructureType::eQueryPoolCreateInfoINTEL : return "QueryPoolCreateInfoINTEL";
+      case StructureType::eInitializePerformanceApiInfoINTEL : return "InitializePerformanceApiInfoINTEL";
+      case StructureType::ePerformanceMarkerInfoINTEL : return "PerformanceMarkerInfoINTEL";
+      case StructureType::ePerformanceStreamMarkerInfoINTEL : return "PerformanceStreamMarkerInfoINTEL";
+      case StructureType::ePerformanceOverrideInfoINTEL : return "PerformanceOverrideInfoINTEL";
+      case StructureType::ePerformanceConfigurationAcquireInfoINTEL : return "PerformanceConfigurationAcquireInfoINTEL";
       case StructureType::ePhysicalDeviceVulkanMemoryModelFeaturesKHR : return "PhysicalDeviceVulkanMemoryModelFeaturesKHR";
       case StructureType::ePhysicalDevicePciBusInfoPropertiesEXT : return "PhysicalDevicePciBusInfoPropertiesEXT";
       case StructureType::eDisplayNativeHdrSurfaceCapabilitiesAMD : return "DisplayNativeHdrSurfaceCapabilitiesAMD";
@@ -5545,6 +5729,8 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceFragmentDensityMapPropertiesEXT : return "PhysicalDeviceFragmentDensityMapPropertiesEXT";
       case StructureType::eRenderPassFragmentDensityMapCreateInfoEXT : return "RenderPassFragmentDensityMapCreateInfoEXT";
       case StructureType::ePhysicalDeviceScalarBlockLayoutFeaturesEXT : return "PhysicalDeviceScalarBlockLayoutFeaturesEXT";
+      case StructureType::ePhysicalDeviceSubgroupSizeControlPropertiesEXT : return "PhysicalDeviceSubgroupSizeControlPropertiesEXT";
+      case StructureType::ePipelineShaderStageRequiredSubgroupSizeCreateInfoEXT : return "PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT";
       case StructureType::ePhysicalDeviceMemoryBudgetPropertiesEXT : return "PhysicalDeviceMemoryBudgetPropertiesEXT";
       case StructureType::ePhysicalDeviceMemoryPriorityFeaturesEXT : return "PhysicalDeviceMemoryPriorityFeaturesEXT";
       case StructureType::eMemoryPriorityAllocateInfoEXT : return "MemoryPriorityAllocateInfoEXT";
@@ -5561,6 +5747,7 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceCoverageReductionModeFeaturesNV : return "PhysicalDeviceCoverageReductionModeFeaturesNV";
       case StructureType::ePipelineCoverageReductionStateCreateInfoNV : return "PipelineCoverageReductionStateCreateInfoNV";
       case StructureType::eFramebufferMixedSamplesCombinationNV : return "FramebufferMixedSamplesCombinationNV";
+      case StructureType::ePhysicalDeviceFragmentShaderInterlockFeaturesEXT : return "PhysicalDeviceFragmentShaderInterlockFeaturesEXT";
       case StructureType::ePhysicalDeviceYcbcrImageArraysFeaturesEXT : return "PhysicalDeviceYcbcrImageArraysFeaturesEXT";
       case StructureType::ePhysicalDeviceUniformBufferStandardLayoutFeaturesKHR : return "PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR";
       case StructureType::eSurfaceFullScreenExclusiveInfoEXT : return "SurfaceFullScreenExclusiveInfoEXT";
@@ -5568,6 +5755,9 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eSurfaceFullScreenExclusiveWin32InfoEXT : return "SurfaceFullScreenExclusiveWin32InfoEXT";
       case StructureType::eHeadlessSurfaceCreateInfoEXT : return "HeadlessSurfaceCreateInfoEXT";
       case StructureType::ePhysicalDeviceHostQueryResetFeaturesEXT : return "PhysicalDeviceHostQueryResetFeaturesEXT";
+      case StructureType::ePhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT : return "PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT";
+      case StructureType::ePhysicalDeviceTexelBufferAlignmentFeaturesEXT : return "PhysicalDeviceTexelBufferAlignmentFeaturesEXT";
+      case StructureType::ePhysicalDeviceTexelBufferAlignmentPropertiesEXT : return "PhysicalDeviceTexelBufferAlignmentPropertiesEXT";
       default: return "invalid";
     }
   }
@@ -7868,18 +8058,46 @@ namespace VULKAN_HPP_NAMESPACE
   }
 
   enum class FramebufferCreateFlagBits
-  {};
-
-  VULKAN_HPP_INLINE std::string to_string( FramebufferCreateFlagBits )
   {
-    return "(void)";
+    eImagelessKHR = VK_FRAMEBUFFER_CREATE_IMAGELESS_BIT_KHR
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( FramebufferCreateFlagBits value )
+  {
+    switch ( value )
+    {
+      case FramebufferCreateFlagBits::eImagelessKHR : return "ImagelessKHR";
+      default: return "invalid";
+    }
   }
 
   using FramebufferCreateFlags = Flags<FramebufferCreateFlagBits, VkFramebufferCreateFlags>;
 
-  VULKAN_HPP_INLINE std::string to_string( FramebufferCreateFlags  )
+  VULKAN_HPP_INLINE FramebufferCreateFlags operator|( FramebufferCreateFlagBits bit0, FramebufferCreateFlagBits bit1 )
   {
-    return "{}";
+    return FramebufferCreateFlags( bit0 ) | bit1;
+  }
+
+  VULKAN_HPP_INLINE FramebufferCreateFlags operator~( FramebufferCreateFlagBits bits )
+  {
+    return ~( FramebufferCreateFlags( bits ) );
+  }
+
+  template <> struct FlagTraits<FramebufferCreateFlagBits>
+  {
+    enum
+    {
+      allFlags = VkFlags(FramebufferCreateFlagBits::eImagelessKHR)
+    };
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( FramebufferCreateFlags value  )
+  {
+    if ( !value ) return "{}";
+    std::string result;
+
+    if ( value & FramebufferCreateFlagBits::eImagelessKHR ) result += "ImagelessKHR | ";
+    return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
   enum class GeometryFlagBitsNV
@@ -9015,18 +9233,49 @@ namespace VULKAN_HPP_NAMESPACE
   }
 
   enum class PipelineShaderStageCreateFlagBits
-  {};
-
-  VULKAN_HPP_INLINE std::string to_string( PipelineShaderStageCreateFlagBits )
   {
-    return "(void)";
+    eAllowVaryingSubgroupSizeEXT = VK_PIPELINE_SHADER_STAGE_CREATE_ALLOW_VARYING_SUBGROUP_SIZE_BIT_EXT,
+    eRequireFullSubgroupsEXT = VK_PIPELINE_SHADER_STAGE_CREATE_REQUIRE_FULL_SUBGROUPS_BIT_EXT
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( PipelineShaderStageCreateFlagBits value )
+  {
+    switch ( value )
+    {
+      case PipelineShaderStageCreateFlagBits::eAllowVaryingSubgroupSizeEXT : return "AllowVaryingSubgroupSizeEXT";
+      case PipelineShaderStageCreateFlagBits::eRequireFullSubgroupsEXT : return "RequireFullSubgroupsEXT";
+      default: return "invalid";
+    }
   }
 
   using PipelineShaderStageCreateFlags = Flags<PipelineShaderStageCreateFlagBits, VkPipelineShaderStageCreateFlags>;
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineShaderStageCreateFlags  )
+  VULKAN_HPP_INLINE PipelineShaderStageCreateFlags operator|( PipelineShaderStageCreateFlagBits bit0, PipelineShaderStageCreateFlagBits bit1 )
   {
-    return "{}";
+    return PipelineShaderStageCreateFlags( bit0 ) | bit1;
+  }
+
+  VULKAN_HPP_INLINE PipelineShaderStageCreateFlags operator~( PipelineShaderStageCreateFlagBits bits )
+  {
+    return ~( PipelineShaderStageCreateFlags( bits ) );
+  }
+
+  template <> struct FlagTraits<PipelineShaderStageCreateFlagBits>
+  {
+    enum
+    {
+      allFlags = VkFlags(PipelineShaderStageCreateFlagBits::eAllowVaryingSubgroupSizeEXT) | VkFlags(PipelineShaderStageCreateFlagBits::eRequireFullSubgroupsEXT)
+    };
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( PipelineShaderStageCreateFlags value  )
+  {
+    if ( !value ) return "{}";
+    std::string result;
+
+    if ( value & PipelineShaderStageCreateFlagBits::eAllowVaryingSubgroupSizeEXT ) result += "AllowVaryingSubgroupSizeEXT | ";
+    if ( value & PipelineShaderStageCreateFlagBits::eRequireFullSubgroupsEXT ) result += "RequireFullSubgroupsEXT | ";
+    return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
   enum class PipelineStageFlagBits
@@ -10966,6 +11215,8 @@ namespace VULKAN_HPP_NAMESPACE
   struct FormatProperties;
   struct FormatProperties2;
   using FormatProperties2KHR = FormatProperties2;
+  struct FramebufferAttachmentImageInfoKHR;
+  struct FramebufferAttachmentsCreateInfoKHR;
   struct FramebufferCreateInfo;
   struct FramebufferMixedSamplesCombinationNV;
   struct GeometryAABBNV;
@@ -11031,6 +11282,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct IndirectCommandsLayoutCreateInfoNVX;
   struct IndirectCommandsLayoutTokenNVX;
   struct IndirectCommandsTokenNVX;
+  struct InitializePerformanceApiInfoINTEL;
   struct InputAttachmentAspectReference;
   using InputAttachmentAspectReferenceKHR = InputAttachmentAspectReference;
   struct InstanceCreateInfo;
@@ -11079,6 +11331,12 @@ namespace VULKAN_HPP_NAMESPACE
   struct Offset2D;
   struct Offset3D;
   struct PastPresentationTimingGOOGLE;
+  struct PerformanceConfigurationAcquireInfoINTEL;
+  struct PerformanceMarkerInfoINTEL;
+  struct PerformanceOverrideInfoINTEL;
+  struct PerformanceStreamMarkerInfoINTEL;
+  union PerformanceValueDataINTEL;
+  struct PerformanceValueINTEL;
   struct PhysicalDevice16BitStorageFeatures;
   using PhysicalDevice16BitStorageFeaturesKHR = PhysicalDevice16BitStorageFeatures;
   struct PhysicalDevice8BitStorageFeaturesKHR;
@@ -11114,11 +11372,11 @@ namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceFeatures;
   struct PhysicalDeviceFeatures2;
   using PhysicalDeviceFeatures2KHR = PhysicalDeviceFeatures2;
-  struct PhysicalDeviceFloat16Int8FeaturesKHR;
   struct PhysicalDeviceFloatControlsPropertiesKHR;
   struct PhysicalDeviceFragmentDensityMapFeaturesEXT;
   struct PhysicalDeviceFragmentDensityMapPropertiesEXT;
   struct PhysicalDeviceFragmentShaderBarycentricFeaturesNV;
+  struct PhysicalDeviceFragmentShaderInterlockFeaturesEXT;
   struct PhysicalDeviceGroupProperties;
   using PhysicalDeviceGroupPropertiesKHR = PhysicalDeviceGroupProperties;
   struct PhysicalDeviceHostQueryResetFeaturesEXT;
@@ -11128,6 +11386,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceImageFormatInfo2;
   using PhysicalDeviceImageFormatInfo2KHR = PhysicalDeviceImageFormatInfo2;
   struct PhysicalDeviceImageViewImageFormatInfoEXT;
+  struct PhysicalDeviceImagelessFramebufferFeaturesKHR;
   struct PhysicalDeviceInlineUniformBlockFeaturesEXT;
   struct PhysicalDeviceInlineUniformBlockPropertiesEXT;
   struct PhysicalDeviceLimits;
@@ -11163,16 +11422,25 @@ namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceScalarBlockLayoutFeaturesEXT;
   struct PhysicalDeviceShaderAtomicInt64FeaturesKHR;
   struct PhysicalDeviceShaderCorePropertiesAMD;
+  struct PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT;
   struct PhysicalDeviceShaderDrawParametersFeatures;
   using PhysicalDeviceShaderDrawParameterFeatures = PhysicalDeviceShaderDrawParametersFeatures;
+  struct PhysicalDeviceShaderFloat16Int8FeaturesKHR;
+  using PhysicalDeviceFloat16Int8FeaturesKHR = PhysicalDeviceShaderFloat16Int8FeaturesKHR;
   struct PhysicalDeviceShaderImageFootprintFeaturesNV;
+  struct PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL;
+  struct PhysicalDeviceShaderSMBuiltinsFeaturesNV;
+  struct PhysicalDeviceShaderSMBuiltinsPropertiesNV;
   struct PhysicalDeviceShadingRateImageFeaturesNV;
   struct PhysicalDeviceShadingRateImagePropertiesNV;
   struct PhysicalDeviceSparseImageFormatInfo2;
   using PhysicalDeviceSparseImageFormatInfo2KHR = PhysicalDeviceSparseImageFormatInfo2;
   struct PhysicalDeviceSparseProperties;
   struct PhysicalDeviceSubgroupProperties;
+  struct PhysicalDeviceSubgroupSizeControlPropertiesEXT;
   struct PhysicalDeviceSurfaceInfo2KHR;
+  struct PhysicalDeviceTexelBufferAlignmentFeaturesEXT;
+  struct PhysicalDeviceTexelBufferAlignmentPropertiesEXT;
   struct PhysicalDeviceTransformFeedbackFeaturesEXT;
   struct PhysicalDeviceTransformFeedbackPropertiesEXT;
   struct PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR;
@@ -11207,6 +11475,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct PipelineRepresentativeFragmentTestStateCreateInfoNV;
   struct PipelineSampleLocationsStateCreateInfoEXT;
   struct PipelineShaderStageCreateInfo;
+  struct PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT;
   struct PipelineTessellationDomainOriginStateCreateInfo;
   using PipelineTessellationDomainOriginStateCreateInfoKHR = PipelineTessellationDomainOriginStateCreateInfo;
   struct PipelineTessellationStateCreateInfo;
@@ -11229,6 +11498,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct ProtectedSubmitInfo;
   struct PushConstantRange;
   struct QueryPoolCreateInfo;
+  struct QueryPoolCreateInfoINTEL;
   struct QueueFamilyCheckpointPropertiesNV;
   struct QueueFamilyProperties;
   struct QueueFamilyProperties2;
@@ -11238,6 +11508,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct Rect2D;
   struct RectLayerKHR;
   struct RefreshCycleDurationGOOGLE;
+  struct RenderPassAttachmentBeginInfoKHR;
   struct RenderPassBeginInfo;
   struct RenderPassCreateInfo;
   struct RenderPassCreateInfo2KHR;
@@ -11872,6 +12143,81 @@ namespace VULKAN_HPP_NAMESPACE
   struct cpp_type<ObjectType::eFence>
   {
     using type = Fence;
+  };
+
+  class PerformanceConfigurationINTEL
+  {
+  public:
+    using CType = VkPerformanceConfigurationINTEL;
+
+    static VULKAN_HPP_CONST_OR_CONSTEXPR ObjectType objectType = ObjectType::ePerformanceConfigurationINTEL;
+
+  public:
+    VULKAN_HPP_CONSTEXPR PerformanceConfigurationINTEL()
+      : m_performanceConfigurationINTEL(VK_NULL_HANDLE)
+    {}
+
+    VULKAN_HPP_CONSTEXPR PerformanceConfigurationINTEL( std::nullptr_t )
+      : m_performanceConfigurationINTEL(VK_NULL_HANDLE)
+    {}
+
+    VULKAN_HPP_TYPESAFE_EXPLICIT PerformanceConfigurationINTEL( VkPerformanceConfigurationINTEL performanceConfigurationINTEL )
+      : m_performanceConfigurationINTEL( performanceConfigurationINTEL )
+    {}
+
+#if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
+    PerformanceConfigurationINTEL & operator=(VkPerformanceConfigurationINTEL performanceConfigurationINTEL)
+    {
+      m_performanceConfigurationINTEL = performanceConfigurationINTEL;
+      return *this; 
+    }
+#endif
+
+    PerformanceConfigurationINTEL & operator=( std::nullptr_t )
+    {
+      m_performanceConfigurationINTEL = VK_NULL_HANDLE;
+      return *this;
+    }
+
+    bool operator==( PerformanceConfigurationINTEL const & rhs ) const
+    {
+      return m_performanceConfigurationINTEL == rhs.m_performanceConfigurationINTEL;
+    }
+
+    bool operator!=(PerformanceConfigurationINTEL const & rhs ) const
+    {
+      return m_performanceConfigurationINTEL != rhs.m_performanceConfigurationINTEL;
+    }
+
+    bool operator<(PerformanceConfigurationINTEL const & rhs ) const
+    {
+      return m_performanceConfigurationINTEL < rhs.m_performanceConfigurationINTEL;
+    }
+
+    VULKAN_HPP_TYPESAFE_EXPLICIT operator VkPerformanceConfigurationINTEL() const
+    {
+      return m_performanceConfigurationINTEL;
+    }
+
+    explicit operator bool() const
+    {
+      return m_performanceConfigurationINTEL != VK_NULL_HANDLE;
+    }
+
+    bool operator!() const
+    {
+      return m_performanceConfigurationINTEL == VK_NULL_HANDLE;
+    }
+
+  private:
+    VkPerformanceConfigurationINTEL m_performanceConfigurationINTEL;
+  };
+  static_assert( sizeof( PerformanceConfigurationINTEL ) == sizeof( VkPerformanceConfigurationINTEL ), "handle and wrapper have different size!" );
+
+  template <>
+  struct cpp_type<ObjectType::ePerformanceConfigurationINTEL>
+  {
+    using type = PerformanceConfigurationINTEL;
   };
 
   class QueryPool
@@ -13037,6 +13383,27 @@ namespace VULKAN_HPP_NAMESPACE
 
     template<typename Dispatch = DispatchLoaderDefault>
     void setLineWidth( float lineWidth, Dispatch const &d = Dispatch() ) const;
+
+    template<typename Dispatch = DispatchLoaderDefault>
+    Result setPerformanceMarkerINTEL( const vk::PerformanceMarkerInfoINTEL* pMarkerInfo, Dispatch const &d = Dispatch() ) const;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template<typename Dispatch = DispatchLoaderDefault>
+    ResultValueType<void>::type setPerformanceMarkerINTEL( const PerformanceMarkerInfoINTEL & markerInfo, Dispatch const &d = Dispatch() ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    template<typename Dispatch = DispatchLoaderDefault>
+    Result setPerformanceOverrideINTEL( const vk::PerformanceOverrideInfoINTEL* pOverrideInfo, Dispatch const &d = Dispatch() ) const;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template<typename Dispatch = DispatchLoaderDefault>
+    ResultValueType<void>::type setPerformanceOverrideINTEL( const PerformanceOverrideInfoINTEL & overrideInfo, Dispatch const &d = Dispatch() ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    template<typename Dispatch = DispatchLoaderDefault>
+    Result setPerformanceStreamMarkerINTEL( const vk::PerformanceStreamMarkerInfoINTEL* pMarkerInfo, Dispatch const &d = Dispatch() ) const;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template<typename Dispatch = DispatchLoaderDefault>
+    ResultValueType<void>::type setPerformanceStreamMarkerINTEL( const PerformanceStreamMarkerInfoINTEL & markerInfo, Dispatch const &d = Dispatch() ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = DispatchLoaderDefault>
     void setSampleLocationsEXT( const vk::SampleLocationsInfoEXT* pSampleLocationsInfo, Dispatch const &d = Dispatch() ) const;
@@ -14294,6 +14661,14 @@ namespace VULKAN_HPP_NAMESPACE
     Result presentKHR( const PresentInfoKHR & presentInfo, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
+#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template<typename Dispatch = DispatchLoaderDefault>
+    Result setPerformanceConfigurationINTEL( vk::PerformanceConfigurationINTEL configuration, Dispatch const &d = Dispatch() ) const;
+#else
+    template<typename Dispatch = DispatchLoaderDefault>
+    ResultValueType<void>::type setPerformanceConfigurationINTEL( vk::PerformanceConfigurationINTEL configuration, Dispatch const &d = Dispatch() ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
     template<typename Dispatch = DispatchLoaderDefault>
     Result submit( uint32_t submitCount, const vk::SubmitInfo* pSubmits, vk::Fence fence, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
@@ -14466,6 +14841,13 @@ namespace VULKAN_HPP_NAMESPACE
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = DispatchLoaderDefault>
     ResultValue<uint32_t> acquireNextImageKHR( vk::SwapchainKHR swapchain, uint64_t timeout, vk::Semaphore semaphore, vk::Fence fence, Dispatch const &d = Dispatch() ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    template<typename Dispatch = DispatchLoaderDefault>
+    Result acquirePerformanceConfigurationINTEL( const vk::PerformanceConfigurationAcquireInfoINTEL* pAcquireInfo, vk::PerformanceConfigurationINTEL* pConfiguration, Dispatch const &d = Dispatch() ) const;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template<typename Dispatch = DispatchLoaderDefault>
+    ResultValueType<vk::PerformanceConfigurationINTEL>::type acquirePerformanceConfigurationINTEL( const PerformanceConfigurationAcquireInfoINTEL & acquireInfo, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = DispatchLoaderDefault>
@@ -15701,6 +16083,13 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = DispatchLoaderDefault>
+    Result getPerformanceParameterINTEL( vk::PerformanceParameterTypeINTEL parameter, vk::PerformanceValueINTEL* pValue, Dispatch const &d = Dispatch() ) const;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template<typename Dispatch = DispatchLoaderDefault>
+    ResultValueType<vk::PerformanceValueINTEL>::type getPerformanceParameterINTEL( vk::PerformanceParameterTypeINTEL parameter, Dispatch const &d = Dispatch() ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    template<typename Dispatch = DispatchLoaderDefault>
     Result getPipelineCacheData( vk::PipelineCache pipelineCache, size_t* pDataSize, void* pData, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Allocator = std::allocator<uint8_t>, typename Dispatch = DispatchLoaderDefault>
@@ -15823,6 +16212,13 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
     template<typename Dispatch = DispatchLoaderDefault>
+    Result initializePerformanceApiINTEL( const vk::InitializePerformanceApiInfoINTEL* pInitializeInfo, Dispatch const &d = Dispatch() ) const;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template<typename Dispatch = DispatchLoaderDefault>
+    ResultValueType<void>::type initializePerformanceApiINTEL( const InitializePerformanceApiInfoINTEL & initializeInfo, Dispatch const &d = Dispatch() ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    template<typename Dispatch = DispatchLoaderDefault>
     Result invalidateMappedMemoryRanges( uint32_t memoryRangeCount, const vk::MappedMemoryRange* pMemoryRanges, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = DispatchLoaderDefault>
@@ -15880,6 +16276,14 @@ namespace VULKAN_HPP_NAMESPACE
     ResultValueType<void>::type releaseFullScreenExclusiveModeEXT( vk::SwapchainKHR swapchain, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
+#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template<typename Dispatch = DispatchLoaderDefault>
+    Result releasePerformanceConfigurationINTEL( vk::PerformanceConfigurationINTEL configuration, Dispatch const &d = Dispatch() ) const;
+#else
+    template<typename Dispatch = DispatchLoaderDefault>
+    ResultValueType<void>::type releasePerformanceConfigurationINTEL( vk::PerformanceConfigurationINTEL configuration, Dispatch const &d = Dispatch() ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
 #ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = DispatchLoaderDefault>
@@ -15952,6 +16356,9 @@ namespace VULKAN_HPP_NAMESPACE
 
     template<typename Dispatch = DispatchLoaderDefault>
     void trimCommandPoolKHR( vk::CommandPool commandPool, vk::CommandPoolTrimFlags flags = CommandPoolTrimFlags(), Dispatch const &d = Dispatch() ) const;
+
+    template<typename Dispatch = DispatchLoaderDefault>
+    void uninitializePerformanceApiINTEL(Dispatch const &d = Dispatch() ) const;
 
     template<typename Dispatch = DispatchLoaderDefault>
     void unmapMemory( vk::DeviceMemory memory, Dispatch const &d = Dispatch() ) const;
@@ -32907,6 +33314,251 @@ namespace VULKAN_HPP_NAMESPACE
 
   namespace layout
   {
+    struct FramebufferAttachmentImageInfoKHR
+    {
+    protected:
+      FramebufferAttachmentImageInfoKHR( vk::ImageCreateFlags flags_ = vk::ImageCreateFlags(),
+                                         vk::ImageUsageFlags usage_ = vk::ImageUsageFlags(),
+                                         uint32_t width_ = 0,
+                                         uint32_t height_ = 0,
+                                         uint32_t layerCount_ = 0,
+                                         uint32_t viewFormatCount_ = 0,
+                                         const vk::Format* pViewFormats_ = nullptr )
+        : flags( flags_ )
+        , usage( usage_ )
+        , width( width_ )
+        , height( height_ )
+        , layerCount( layerCount_ )
+        , viewFormatCount( viewFormatCount_ )
+        , pViewFormats( pViewFormats_ )
+      {}
+
+      FramebufferAttachmentImageInfoKHR( VkFramebufferAttachmentImageInfoKHR const & rhs )
+      {
+        *reinterpret_cast<VkFramebufferAttachmentImageInfoKHR*>(this) = rhs;
+      }
+
+      FramebufferAttachmentImageInfoKHR& operator=( VkFramebufferAttachmentImageInfoKHR const & rhs )
+      {
+        *reinterpret_cast<VkFramebufferAttachmentImageInfoKHR*>(this) = rhs;
+        return *this;
+      }
+
+    public:
+      vk::StructureType sType = StructureType::eFramebufferAttachmentImageInfoKHR;
+      const void* pNext = nullptr;
+      vk::ImageCreateFlags flags;
+      vk::ImageUsageFlags usage;
+      uint32_t width;
+      uint32_t height;
+      uint32_t layerCount;
+      uint32_t viewFormatCount;
+      const vk::Format* pViewFormats;
+    };
+    static_assert( sizeof( FramebufferAttachmentImageInfoKHR ) == sizeof( VkFramebufferAttachmentImageInfoKHR ), "layout struct and wrapper have different size!" );
+  }
+
+  struct FramebufferAttachmentImageInfoKHR : public layout::FramebufferAttachmentImageInfoKHR
+  {
+    FramebufferAttachmentImageInfoKHR( vk::ImageCreateFlags flags_ = vk::ImageCreateFlags(),
+                                       vk::ImageUsageFlags usage_ = vk::ImageUsageFlags(),
+                                       uint32_t width_ = 0,
+                                       uint32_t height_ = 0,
+                                       uint32_t layerCount_ = 0,
+                                       uint32_t viewFormatCount_ = 0,
+                                       const vk::Format* pViewFormats_ = nullptr )
+      : layout::FramebufferAttachmentImageInfoKHR( flags_, usage_, width_, height_, layerCount_, viewFormatCount_, pViewFormats_ )
+    {}
+
+    FramebufferAttachmentImageInfoKHR( VkFramebufferAttachmentImageInfoKHR const & rhs )
+      : layout::FramebufferAttachmentImageInfoKHR( rhs )
+    {}
+
+    FramebufferAttachmentImageInfoKHR& operator=( VkFramebufferAttachmentImageInfoKHR const & rhs )
+    {
+      *reinterpret_cast<VkFramebufferAttachmentImageInfoKHR*>(this) = rhs;
+      return *this;
+    }
+
+    FramebufferAttachmentImageInfoKHR & setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    FramebufferAttachmentImageInfoKHR & setFlags( vk::ImageCreateFlags flags_ )
+    {
+      flags = flags_;
+      return *this;
+    }
+
+    FramebufferAttachmentImageInfoKHR & setUsage( vk::ImageUsageFlags usage_ )
+    {
+      usage = usage_;
+      return *this;
+    }
+
+    FramebufferAttachmentImageInfoKHR & setWidth( uint32_t width_ )
+    {
+      width = width_;
+      return *this;
+    }
+
+    FramebufferAttachmentImageInfoKHR & setHeight( uint32_t height_ )
+    {
+      height = height_;
+      return *this;
+    }
+
+    FramebufferAttachmentImageInfoKHR & setLayerCount( uint32_t layerCount_ )
+    {
+      layerCount = layerCount_;
+      return *this;
+    }
+
+    FramebufferAttachmentImageInfoKHR & setViewFormatCount( uint32_t viewFormatCount_ )
+    {
+      viewFormatCount = viewFormatCount_;
+      return *this;
+    }
+
+    FramebufferAttachmentImageInfoKHR & setPViewFormats( const vk::Format* pViewFormats_ )
+    {
+      pViewFormats = pViewFormats_;
+      return *this;
+    }
+
+    operator VkFramebufferAttachmentImageInfoKHR const&() const
+    {
+      return *reinterpret_cast<const VkFramebufferAttachmentImageInfoKHR*>( this );
+    }
+
+    operator VkFramebufferAttachmentImageInfoKHR &()
+    {
+      return *reinterpret_cast<VkFramebufferAttachmentImageInfoKHR*>( this );
+    }
+
+    bool operator==( FramebufferAttachmentImageInfoKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( usage == rhs.usage )
+          && ( width == rhs.width )
+          && ( height == rhs.height )
+          && ( layerCount == rhs.layerCount )
+          && ( viewFormatCount == rhs.viewFormatCount )
+          && ( pViewFormats == rhs.pViewFormats );
+    }
+
+    bool operator!=( FramebufferAttachmentImageInfoKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    using layout::FramebufferAttachmentImageInfoKHR::sType;
+  };
+  static_assert( sizeof( FramebufferAttachmentImageInfoKHR ) == sizeof( VkFramebufferAttachmentImageInfoKHR ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<FramebufferAttachmentImageInfoKHR>::value, "struct wrapper is not a standard layout!" );
+
+  namespace layout
+  {
+    struct FramebufferAttachmentsCreateInfoKHR
+    {
+    protected:
+      FramebufferAttachmentsCreateInfoKHR( uint32_t attachmentImageInfoCount_ = 0,
+                                           const vk::FramebufferAttachmentImageInfoKHR* pAttachmentImageInfos_ = nullptr )
+        : attachmentImageInfoCount( attachmentImageInfoCount_ )
+        , pAttachmentImageInfos( pAttachmentImageInfos_ )
+      {}
+
+      FramebufferAttachmentsCreateInfoKHR( VkFramebufferAttachmentsCreateInfoKHR const & rhs )
+      {
+        *reinterpret_cast<VkFramebufferAttachmentsCreateInfoKHR*>(this) = rhs;
+      }
+
+      FramebufferAttachmentsCreateInfoKHR& operator=( VkFramebufferAttachmentsCreateInfoKHR const & rhs )
+      {
+        *reinterpret_cast<VkFramebufferAttachmentsCreateInfoKHR*>(this) = rhs;
+        return *this;
+      }
+
+    public:
+      vk::StructureType sType = StructureType::eFramebufferAttachmentsCreateInfoKHR;
+      const void* pNext = nullptr;
+      uint32_t attachmentImageInfoCount;
+      const vk::FramebufferAttachmentImageInfoKHR* pAttachmentImageInfos;
+    };
+    static_assert( sizeof( FramebufferAttachmentsCreateInfoKHR ) == sizeof( VkFramebufferAttachmentsCreateInfoKHR ), "layout struct and wrapper have different size!" );
+  }
+
+  struct FramebufferAttachmentsCreateInfoKHR : public layout::FramebufferAttachmentsCreateInfoKHR
+  {
+    FramebufferAttachmentsCreateInfoKHR( uint32_t attachmentImageInfoCount_ = 0,
+                                         const vk::FramebufferAttachmentImageInfoKHR* pAttachmentImageInfos_ = nullptr )
+      : layout::FramebufferAttachmentsCreateInfoKHR( attachmentImageInfoCount_, pAttachmentImageInfos_ )
+    {}
+
+    FramebufferAttachmentsCreateInfoKHR( VkFramebufferAttachmentsCreateInfoKHR const & rhs )
+      : layout::FramebufferAttachmentsCreateInfoKHR( rhs )
+    {}
+
+    FramebufferAttachmentsCreateInfoKHR& operator=( VkFramebufferAttachmentsCreateInfoKHR const & rhs )
+    {
+      *reinterpret_cast<VkFramebufferAttachmentsCreateInfoKHR*>(this) = rhs;
+      return *this;
+    }
+
+    FramebufferAttachmentsCreateInfoKHR & setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    FramebufferAttachmentsCreateInfoKHR & setAttachmentImageInfoCount( uint32_t attachmentImageInfoCount_ )
+    {
+      attachmentImageInfoCount = attachmentImageInfoCount_;
+      return *this;
+    }
+
+    FramebufferAttachmentsCreateInfoKHR & setPAttachmentImageInfos( const vk::FramebufferAttachmentImageInfoKHR* pAttachmentImageInfos_ )
+    {
+      pAttachmentImageInfos = pAttachmentImageInfos_;
+      return *this;
+    }
+
+    operator VkFramebufferAttachmentsCreateInfoKHR const&() const
+    {
+      return *reinterpret_cast<const VkFramebufferAttachmentsCreateInfoKHR*>( this );
+    }
+
+    operator VkFramebufferAttachmentsCreateInfoKHR &()
+    {
+      return *reinterpret_cast<VkFramebufferAttachmentsCreateInfoKHR*>( this );
+    }
+
+    bool operator==( FramebufferAttachmentsCreateInfoKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( attachmentImageInfoCount == rhs.attachmentImageInfoCount )
+          && ( pAttachmentImageInfos == rhs.pAttachmentImageInfos );
+    }
+
+    bool operator!=( FramebufferAttachmentsCreateInfoKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    using layout::FramebufferAttachmentsCreateInfoKHR::sType;
+  };
+  static_assert( sizeof( FramebufferAttachmentsCreateInfoKHR ) == sizeof( VkFramebufferAttachmentsCreateInfoKHR ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<FramebufferAttachmentsCreateInfoKHR>::value, "struct wrapper is not a standard layout!" );
+
+  namespace layout
+  {
     struct FramebufferCreateInfo
     {
     protected:
@@ -38773,6 +39425,90 @@ namespace VULKAN_HPP_NAMESPACE
   static_assert( sizeof( IndirectCommandsLayoutCreateInfoNVX ) == sizeof( VkIndirectCommandsLayoutCreateInfoNVX ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<IndirectCommandsLayoutCreateInfoNVX>::value, "struct wrapper is not a standard layout!" );
 
+  namespace layout
+  {
+    struct InitializePerformanceApiInfoINTEL
+    {
+    protected:
+      InitializePerformanceApiInfoINTEL( void* pUserData_ = nullptr )
+        : pUserData( pUserData_ )
+      {}
+
+      InitializePerformanceApiInfoINTEL( VkInitializePerformanceApiInfoINTEL const & rhs )
+      {
+        *reinterpret_cast<VkInitializePerformanceApiInfoINTEL*>(this) = rhs;
+      }
+
+      InitializePerformanceApiInfoINTEL& operator=( VkInitializePerformanceApiInfoINTEL const & rhs )
+      {
+        *reinterpret_cast<VkInitializePerformanceApiInfoINTEL*>(this) = rhs;
+        return *this;
+      }
+
+    public:
+      vk::StructureType sType = StructureType::eInitializePerformanceApiInfoINTEL;
+      const void* pNext = nullptr;
+      void* pUserData;
+    };
+    static_assert( sizeof( InitializePerformanceApiInfoINTEL ) == sizeof( VkInitializePerformanceApiInfoINTEL ), "layout struct and wrapper have different size!" );
+  }
+
+  struct InitializePerformanceApiInfoINTEL : public layout::InitializePerformanceApiInfoINTEL
+  {
+    InitializePerformanceApiInfoINTEL( void* pUserData_ = nullptr )
+      : layout::InitializePerformanceApiInfoINTEL( pUserData_ )
+    {}
+
+    InitializePerformanceApiInfoINTEL( VkInitializePerformanceApiInfoINTEL const & rhs )
+      : layout::InitializePerformanceApiInfoINTEL( rhs )
+    {}
+
+    InitializePerformanceApiInfoINTEL& operator=( VkInitializePerformanceApiInfoINTEL const & rhs )
+    {
+      *reinterpret_cast<VkInitializePerformanceApiInfoINTEL*>(this) = rhs;
+      return *this;
+    }
+
+    InitializePerformanceApiInfoINTEL & setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    InitializePerformanceApiInfoINTEL & setPUserData( void* pUserData_ )
+    {
+      pUserData = pUserData_;
+      return *this;
+    }
+
+    operator VkInitializePerformanceApiInfoINTEL const&() const
+    {
+      return *reinterpret_cast<const VkInitializePerformanceApiInfoINTEL*>( this );
+    }
+
+    operator VkInitializePerformanceApiInfoINTEL &()
+    {
+      return *reinterpret_cast<VkInitializePerformanceApiInfoINTEL*>( this );
+    }
+
+    bool operator==( InitializePerformanceApiInfoINTEL const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( pUserData == rhs.pUserData );
+    }
+
+    bool operator!=( InitializePerformanceApiInfoINTEL const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    using layout::InitializePerformanceApiInfoINTEL::sType;
+  };
+  static_assert( sizeof( InitializePerformanceApiInfoINTEL ) == sizeof( VkInitializePerformanceApiInfoINTEL ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<InitializePerformanceApiInfoINTEL>::value, "struct wrapper is not a standard layout!" );
+
   struct InputAttachmentAspectReference
   {
     InputAttachmentAspectReference( uint32_t subpass_ = 0,
@@ -41195,6 +41931,488 @@ namespace VULKAN_HPP_NAMESPACE
   };
   static_assert( sizeof( PastPresentationTimingGOOGLE ) == sizeof( VkPastPresentationTimingGOOGLE ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<PastPresentationTimingGOOGLE>::value, "struct wrapper is not a standard layout!" );
+
+  namespace layout
+  {
+    struct PerformanceConfigurationAcquireInfoINTEL
+    {
+    protected:
+      PerformanceConfigurationAcquireInfoINTEL( vk::PerformanceConfigurationTypeINTEL type_ = vk::PerformanceConfigurationTypeINTEL::eCommandQueueMetricsDiscoveryActivated )
+        : type( type_ )
+      {}
+
+      PerformanceConfigurationAcquireInfoINTEL( VkPerformanceConfigurationAcquireInfoINTEL const & rhs )
+      {
+        *reinterpret_cast<VkPerformanceConfigurationAcquireInfoINTEL*>(this) = rhs;
+      }
+
+      PerformanceConfigurationAcquireInfoINTEL& operator=( VkPerformanceConfigurationAcquireInfoINTEL const & rhs )
+      {
+        *reinterpret_cast<VkPerformanceConfigurationAcquireInfoINTEL*>(this) = rhs;
+        return *this;
+      }
+
+    public:
+      vk::StructureType sType = StructureType::ePerformanceConfigurationAcquireInfoINTEL;
+      const void* pNext = nullptr;
+      vk::PerformanceConfigurationTypeINTEL type;
+    };
+    static_assert( sizeof( PerformanceConfigurationAcquireInfoINTEL ) == sizeof( VkPerformanceConfigurationAcquireInfoINTEL ), "layout struct and wrapper have different size!" );
+  }
+
+  struct PerformanceConfigurationAcquireInfoINTEL : public layout::PerformanceConfigurationAcquireInfoINTEL
+  {
+    PerformanceConfigurationAcquireInfoINTEL( vk::PerformanceConfigurationTypeINTEL type_ = vk::PerformanceConfigurationTypeINTEL::eCommandQueueMetricsDiscoveryActivated )
+      : layout::PerformanceConfigurationAcquireInfoINTEL( type_ )
+    {}
+
+    PerformanceConfigurationAcquireInfoINTEL( VkPerformanceConfigurationAcquireInfoINTEL const & rhs )
+      : layout::PerformanceConfigurationAcquireInfoINTEL( rhs )
+    {}
+
+    PerformanceConfigurationAcquireInfoINTEL& operator=( VkPerformanceConfigurationAcquireInfoINTEL const & rhs )
+    {
+      *reinterpret_cast<VkPerformanceConfigurationAcquireInfoINTEL*>(this) = rhs;
+      return *this;
+    }
+
+    PerformanceConfigurationAcquireInfoINTEL & setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PerformanceConfigurationAcquireInfoINTEL & setType( vk::PerformanceConfigurationTypeINTEL type_ )
+    {
+      type = type_;
+      return *this;
+    }
+
+    operator VkPerformanceConfigurationAcquireInfoINTEL const&() const
+    {
+      return *reinterpret_cast<const VkPerformanceConfigurationAcquireInfoINTEL*>( this );
+    }
+
+    operator VkPerformanceConfigurationAcquireInfoINTEL &()
+    {
+      return *reinterpret_cast<VkPerformanceConfigurationAcquireInfoINTEL*>( this );
+    }
+
+    bool operator==( PerformanceConfigurationAcquireInfoINTEL const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( type == rhs.type );
+    }
+
+    bool operator!=( PerformanceConfigurationAcquireInfoINTEL const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    using layout::PerformanceConfigurationAcquireInfoINTEL::sType;
+  };
+  static_assert( sizeof( PerformanceConfigurationAcquireInfoINTEL ) == sizeof( VkPerformanceConfigurationAcquireInfoINTEL ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<PerformanceConfigurationAcquireInfoINTEL>::value, "struct wrapper is not a standard layout!" );
+
+  namespace layout
+  {
+    struct PerformanceMarkerInfoINTEL
+    {
+    protected:
+      PerformanceMarkerInfoINTEL( uint64_t marker_ = 0 )
+        : marker( marker_ )
+      {}
+
+      PerformanceMarkerInfoINTEL( VkPerformanceMarkerInfoINTEL const & rhs )
+      {
+        *reinterpret_cast<VkPerformanceMarkerInfoINTEL*>(this) = rhs;
+      }
+
+      PerformanceMarkerInfoINTEL& operator=( VkPerformanceMarkerInfoINTEL const & rhs )
+      {
+        *reinterpret_cast<VkPerformanceMarkerInfoINTEL*>(this) = rhs;
+        return *this;
+      }
+
+    public:
+      vk::StructureType sType = StructureType::ePerformanceMarkerInfoINTEL;
+      const void* pNext = nullptr;
+      uint64_t marker;
+    };
+    static_assert( sizeof( PerformanceMarkerInfoINTEL ) == sizeof( VkPerformanceMarkerInfoINTEL ), "layout struct and wrapper have different size!" );
+  }
+
+  struct PerformanceMarkerInfoINTEL : public layout::PerformanceMarkerInfoINTEL
+  {
+    PerformanceMarkerInfoINTEL( uint64_t marker_ = 0 )
+      : layout::PerformanceMarkerInfoINTEL( marker_ )
+    {}
+
+    PerformanceMarkerInfoINTEL( VkPerformanceMarkerInfoINTEL const & rhs )
+      : layout::PerformanceMarkerInfoINTEL( rhs )
+    {}
+
+    PerformanceMarkerInfoINTEL& operator=( VkPerformanceMarkerInfoINTEL const & rhs )
+    {
+      *reinterpret_cast<VkPerformanceMarkerInfoINTEL*>(this) = rhs;
+      return *this;
+    }
+
+    PerformanceMarkerInfoINTEL & setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PerformanceMarkerInfoINTEL & setMarker( uint64_t marker_ )
+    {
+      marker = marker_;
+      return *this;
+    }
+
+    operator VkPerformanceMarkerInfoINTEL const&() const
+    {
+      return *reinterpret_cast<const VkPerformanceMarkerInfoINTEL*>( this );
+    }
+
+    operator VkPerformanceMarkerInfoINTEL &()
+    {
+      return *reinterpret_cast<VkPerformanceMarkerInfoINTEL*>( this );
+    }
+
+    bool operator==( PerformanceMarkerInfoINTEL const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( marker == rhs.marker );
+    }
+
+    bool operator!=( PerformanceMarkerInfoINTEL const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    using layout::PerformanceMarkerInfoINTEL::sType;
+  };
+  static_assert( sizeof( PerformanceMarkerInfoINTEL ) == sizeof( VkPerformanceMarkerInfoINTEL ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<PerformanceMarkerInfoINTEL>::value, "struct wrapper is not a standard layout!" );
+
+  namespace layout
+  {
+    struct PerformanceOverrideInfoINTEL
+    {
+    protected:
+      PerformanceOverrideInfoINTEL( vk::PerformanceOverrideTypeINTEL type_ = vk::PerformanceOverrideTypeINTEL::eNullHardware,
+                                    vk::Bool32 enable_ = 0,
+                                    uint64_t parameter_ = 0 )
+        : type( type_ )
+        , enable( enable_ )
+        , parameter( parameter_ )
+      {}
+
+      PerformanceOverrideInfoINTEL( VkPerformanceOverrideInfoINTEL const & rhs )
+      {
+        *reinterpret_cast<VkPerformanceOverrideInfoINTEL*>(this) = rhs;
+      }
+
+      PerformanceOverrideInfoINTEL& operator=( VkPerformanceOverrideInfoINTEL const & rhs )
+      {
+        *reinterpret_cast<VkPerformanceOverrideInfoINTEL*>(this) = rhs;
+        return *this;
+      }
+
+    public:
+      vk::StructureType sType = StructureType::ePerformanceOverrideInfoINTEL;
+      const void* pNext = nullptr;
+      vk::PerformanceOverrideTypeINTEL type;
+      vk::Bool32 enable;
+      uint64_t parameter;
+    };
+    static_assert( sizeof( PerformanceOverrideInfoINTEL ) == sizeof( VkPerformanceOverrideInfoINTEL ), "layout struct and wrapper have different size!" );
+  }
+
+  struct PerformanceOverrideInfoINTEL : public layout::PerformanceOverrideInfoINTEL
+  {
+    PerformanceOverrideInfoINTEL( vk::PerformanceOverrideTypeINTEL type_ = vk::PerformanceOverrideTypeINTEL::eNullHardware,
+                                  vk::Bool32 enable_ = 0,
+                                  uint64_t parameter_ = 0 )
+      : layout::PerformanceOverrideInfoINTEL( type_, enable_, parameter_ )
+    {}
+
+    PerformanceOverrideInfoINTEL( VkPerformanceOverrideInfoINTEL const & rhs )
+      : layout::PerformanceOverrideInfoINTEL( rhs )
+    {}
+
+    PerformanceOverrideInfoINTEL& operator=( VkPerformanceOverrideInfoINTEL const & rhs )
+    {
+      *reinterpret_cast<VkPerformanceOverrideInfoINTEL*>(this) = rhs;
+      return *this;
+    }
+
+    PerformanceOverrideInfoINTEL & setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PerformanceOverrideInfoINTEL & setType( vk::PerformanceOverrideTypeINTEL type_ )
+    {
+      type = type_;
+      return *this;
+    }
+
+    PerformanceOverrideInfoINTEL & setEnable( vk::Bool32 enable_ )
+    {
+      enable = enable_;
+      return *this;
+    }
+
+    PerformanceOverrideInfoINTEL & setParameter( uint64_t parameter_ )
+    {
+      parameter = parameter_;
+      return *this;
+    }
+
+    operator VkPerformanceOverrideInfoINTEL const&() const
+    {
+      return *reinterpret_cast<const VkPerformanceOverrideInfoINTEL*>( this );
+    }
+
+    operator VkPerformanceOverrideInfoINTEL &()
+    {
+      return *reinterpret_cast<VkPerformanceOverrideInfoINTEL*>( this );
+    }
+
+    bool operator==( PerformanceOverrideInfoINTEL const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( type == rhs.type )
+          && ( enable == rhs.enable )
+          && ( parameter == rhs.parameter );
+    }
+
+    bool operator!=( PerformanceOverrideInfoINTEL const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    using layout::PerformanceOverrideInfoINTEL::sType;
+  };
+  static_assert( sizeof( PerformanceOverrideInfoINTEL ) == sizeof( VkPerformanceOverrideInfoINTEL ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<PerformanceOverrideInfoINTEL>::value, "struct wrapper is not a standard layout!" );
+
+  namespace layout
+  {
+    struct PerformanceStreamMarkerInfoINTEL
+    {
+    protected:
+      PerformanceStreamMarkerInfoINTEL( uint32_t marker_ = 0 )
+        : marker( marker_ )
+      {}
+
+      PerformanceStreamMarkerInfoINTEL( VkPerformanceStreamMarkerInfoINTEL const & rhs )
+      {
+        *reinterpret_cast<VkPerformanceStreamMarkerInfoINTEL*>(this) = rhs;
+      }
+
+      PerformanceStreamMarkerInfoINTEL& operator=( VkPerformanceStreamMarkerInfoINTEL const & rhs )
+      {
+        *reinterpret_cast<VkPerformanceStreamMarkerInfoINTEL*>(this) = rhs;
+        return *this;
+      }
+
+    public:
+      vk::StructureType sType = StructureType::ePerformanceStreamMarkerInfoINTEL;
+      const void* pNext = nullptr;
+      uint32_t marker;
+    };
+    static_assert( sizeof( PerformanceStreamMarkerInfoINTEL ) == sizeof( VkPerformanceStreamMarkerInfoINTEL ), "layout struct and wrapper have different size!" );
+  }
+
+  struct PerformanceStreamMarkerInfoINTEL : public layout::PerformanceStreamMarkerInfoINTEL
+  {
+    PerformanceStreamMarkerInfoINTEL( uint32_t marker_ = 0 )
+      : layout::PerformanceStreamMarkerInfoINTEL( marker_ )
+    {}
+
+    PerformanceStreamMarkerInfoINTEL( VkPerformanceStreamMarkerInfoINTEL const & rhs )
+      : layout::PerformanceStreamMarkerInfoINTEL( rhs )
+    {}
+
+    PerformanceStreamMarkerInfoINTEL& operator=( VkPerformanceStreamMarkerInfoINTEL const & rhs )
+    {
+      *reinterpret_cast<VkPerformanceStreamMarkerInfoINTEL*>(this) = rhs;
+      return *this;
+    }
+
+    PerformanceStreamMarkerInfoINTEL & setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PerformanceStreamMarkerInfoINTEL & setMarker( uint32_t marker_ )
+    {
+      marker = marker_;
+      return *this;
+    }
+
+    operator VkPerformanceStreamMarkerInfoINTEL const&() const
+    {
+      return *reinterpret_cast<const VkPerformanceStreamMarkerInfoINTEL*>( this );
+    }
+
+    operator VkPerformanceStreamMarkerInfoINTEL &()
+    {
+      return *reinterpret_cast<VkPerformanceStreamMarkerInfoINTEL*>( this );
+    }
+
+    bool operator==( PerformanceStreamMarkerInfoINTEL const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( marker == rhs.marker );
+    }
+
+    bool operator!=( PerformanceStreamMarkerInfoINTEL const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    using layout::PerformanceStreamMarkerInfoINTEL::sType;
+  };
+  static_assert( sizeof( PerformanceStreamMarkerInfoINTEL ) == sizeof( VkPerformanceStreamMarkerInfoINTEL ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<PerformanceStreamMarkerInfoINTEL>::value, "struct wrapper is not a standard layout!" );
+
+  union PerformanceValueDataINTEL
+  {
+    PerformanceValueDataINTEL( uint32_t value32_ = 0 )
+    {
+      value32 = value32_;
+    }
+
+    PerformanceValueDataINTEL( uint64_t value64_ )
+    {
+      value64 = value64_;
+    }
+
+    PerformanceValueDataINTEL( float valueFloat_ )
+    {
+      valueFloat = valueFloat_;
+    }
+
+    PerformanceValueDataINTEL( const char* valueString_ )
+    {
+      valueString = valueString_;
+    }
+
+    PerformanceValueDataINTEL & setValue32( uint32_t value32_ )
+    {
+      value32 = value32_;
+      return *this;
+    }
+
+    PerformanceValueDataINTEL & setValue64( uint64_t value64_ )
+    {
+      value64 = value64_;
+      return *this;
+    }
+
+    PerformanceValueDataINTEL & setValueFloat( float valueFloat_ )
+    {
+      valueFloat = valueFloat_;
+      return *this;
+    }
+
+    PerformanceValueDataINTEL & setValueBool( vk::Bool32 valueBool_ )
+    {
+      valueBool = valueBool_;
+      return *this;
+    }
+
+    PerformanceValueDataINTEL & setValueString( const char* valueString_ )
+    {
+      valueString = valueString_;
+      return *this;
+    }
+    operator VkPerformanceValueDataINTEL const&() const
+    {
+      return *reinterpret_cast<const VkPerformanceValueDataINTEL*>(this);
+    }
+
+    operator VkPerformanceValueDataINTEL &()
+    {
+      return *reinterpret_cast<VkPerformanceValueDataINTEL*>(this);
+    }
+
+#ifdef VULKAN_HPP_HAS_UNRESTRICTED_UNIONS
+    uint32_t value32;
+    uint64_t value64;
+    float valueFloat;
+    vk::Bool32 valueBool;
+    const char* valueString;
+#else
+    uint32_t value32;
+    uint64_t value64;
+    float valueFloat;
+    Vkvk::Bool32 valueBool;
+    const char* valueString;
+#endif  /*VULKAN_HPP_HAS_UNRESTRICTED_UNIONS*/
+  };
+
+  struct PerformanceValueINTEL
+  {
+    PerformanceValueINTEL( vk::PerformanceValueTypeINTEL type_ = vk::PerformanceValueTypeINTEL::eUint32,
+                           vk::PerformanceValueDataINTEL data_ = vk::PerformanceValueDataINTEL() )
+        : type( type_ )
+        , data( data_ )
+    {}
+
+    PerformanceValueINTEL( VkPerformanceValueINTEL const & rhs )
+    {
+      *reinterpret_cast<VkPerformanceValueINTEL*>(this) = rhs;
+    }
+
+    PerformanceValueINTEL& operator=( VkPerformanceValueINTEL const & rhs )
+    {
+      *reinterpret_cast<VkPerformanceValueINTEL*>(this) = rhs;
+      return *this;
+    }
+
+    PerformanceValueINTEL & setType( vk::PerformanceValueTypeINTEL type_ )
+    {
+      type = type_;
+      return *this;
+    }
+
+    PerformanceValueINTEL & setData( vk::PerformanceValueDataINTEL data_ )
+    {
+      data = data_;
+      return *this;
+    }
+
+    operator VkPerformanceValueINTEL const&() const
+    {
+      return *reinterpret_cast<const VkPerformanceValueINTEL*>( this );
+    }
+
+    operator VkPerformanceValueINTEL &()
+    {
+      return *reinterpret_cast<VkPerformanceValueINTEL*>( this );
+    }
+
+  public:
+    vk::PerformanceValueTypeINTEL type;
+    vk::PerformanceValueDataINTEL data;
+  };
+  static_assert( sizeof( PerformanceValueINTEL ) == sizeof( VkPerformanceValueINTEL ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<PerformanceValueINTEL>::value, "struct wrapper is not a standard layout!" );
 
   namespace layout
   {
@@ -43765,106 +44983,11 @@ namespace VULKAN_HPP_NAMESPACE
 
   namespace layout
   {
-    struct PhysicalDeviceFloat16Int8FeaturesKHR
-    {
-    protected:
-      PhysicalDeviceFloat16Int8FeaturesKHR( vk::Bool32 shaderFloat16_ = 0,
-                                            vk::Bool32 shaderInt8_ = 0 )
-        : shaderFloat16( shaderFloat16_ )
-        , shaderInt8( shaderInt8_ )
-      {}
-
-      PhysicalDeviceFloat16Int8FeaturesKHR( VkPhysicalDeviceFloat16Int8FeaturesKHR const & rhs )
-      {
-        *reinterpret_cast<VkPhysicalDeviceFloat16Int8FeaturesKHR*>(this) = rhs;
-      }
-
-      PhysicalDeviceFloat16Int8FeaturesKHR& operator=( VkPhysicalDeviceFloat16Int8FeaturesKHR const & rhs )
-      {
-        *reinterpret_cast<VkPhysicalDeviceFloat16Int8FeaturesKHR*>(this) = rhs;
-        return *this;
-      }
-
-    public:
-      vk::StructureType sType = StructureType::ePhysicalDeviceFloat16Int8FeaturesKHR;
-      void* pNext = nullptr;
-      vk::Bool32 shaderFloat16;
-      vk::Bool32 shaderInt8;
-    };
-    static_assert( sizeof( PhysicalDeviceFloat16Int8FeaturesKHR ) == sizeof( VkPhysicalDeviceFloat16Int8FeaturesKHR ), "layout struct and wrapper have different size!" );
-  }
-
-  struct PhysicalDeviceFloat16Int8FeaturesKHR : public layout::PhysicalDeviceFloat16Int8FeaturesKHR
-  {
-    PhysicalDeviceFloat16Int8FeaturesKHR( vk::Bool32 shaderFloat16_ = 0,
-                                          vk::Bool32 shaderInt8_ = 0 )
-      : layout::PhysicalDeviceFloat16Int8FeaturesKHR( shaderFloat16_, shaderInt8_ )
-    {}
-
-    PhysicalDeviceFloat16Int8FeaturesKHR( VkPhysicalDeviceFloat16Int8FeaturesKHR const & rhs )
-      : layout::PhysicalDeviceFloat16Int8FeaturesKHR( rhs )
-    {}
-
-    PhysicalDeviceFloat16Int8FeaturesKHR& operator=( VkPhysicalDeviceFloat16Int8FeaturesKHR const & rhs )
-    {
-      *reinterpret_cast<VkPhysicalDeviceFloat16Int8FeaturesKHR*>(this) = rhs;
-      return *this;
-    }
-
-    PhysicalDeviceFloat16Int8FeaturesKHR & setPNext( void* pNext_ )
-    {
-      pNext = pNext_;
-      return *this;
-    }
-
-    PhysicalDeviceFloat16Int8FeaturesKHR & setShaderFloat16( vk::Bool32 shaderFloat16_ )
-    {
-      shaderFloat16 = shaderFloat16_;
-      return *this;
-    }
-
-    PhysicalDeviceFloat16Int8FeaturesKHR & setShaderInt8( vk::Bool32 shaderInt8_ )
-    {
-      shaderInt8 = shaderInt8_;
-      return *this;
-    }
-
-    operator VkPhysicalDeviceFloat16Int8FeaturesKHR const&() const
-    {
-      return *reinterpret_cast<const VkPhysicalDeviceFloat16Int8FeaturesKHR*>( this );
-    }
-
-    operator VkPhysicalDeviceFloat16Int8FeaturesKHR &()
-    {
-      return *reinterpret_cast<VkPhysicalDeviceFloat16Int8FeaturesKHR*>( this );
-    }
-
-    bool operator==( PhysicalDeviceFloat16Int8FeaturesKHR const& rhs ) const
-    {
-      return ( sType == rhs.sType )
-          && ( pNext == rhs.pNext )
-          && ( shaderFloat16 == rhs.shaderFloat16 )
-          && ( shaderInt8 == rhs.shaderInt8 );
-    }
-
-    bool operator!=( PhysicalDeviceFloat16Int8FeaturesKHR const& rhs ) const
-    {
-      return !operator==( rhs );
-    }
-
-  private:
-    using layout::PhysicalDeviceFloat16Int8FeaturesKHR::sType;
-  };
-  static_assert( sizeof( PhysicalDeviceFloat16Int8FeaturesKHR ) == sizeof( VkPhysicalDeviceFloat16Int8FeaturesKHR ), "struct and wrapper have different size!" );
-  static_assert( std::is_standard_layout<PhysicalDeviceFloat16Int8FeaturesKHR>::value, "struct wrapper is not a standard layout!" );
-
-  namespace layout
-  {
     struct PhysicalDeviceFloatControlsPropertiesKHR
     {
     protected:
-      PhysicalDeviceFloatControlsPropertiesKHR( vk::Bool32 separateDenormSettings_ = 0,
-                                                vk::Bool32 separateRoundingModeSettings_ = 0,
+      PhysicalDeviceFloatControlsPropertiesKHR( vk::ShaderFloatControlsIndependenceKHR denormBehaviorIndependence_ = vk::ShaderFloatControlsIndependenceKHR::e32BitOnly,
+                                                vk::ShaderFloatControlsIndependenceKHR roundingModeIndependence_ = vk::ShaderFloatControlsIndependenceKHR::e32BitOnly,
                                                 vk::Bool32 shaderSignedZeroInfNanPreserveFloat16_ = 0,
                                                 vk::Bool32 shaderSignedZeroInfNanPreserveFloat32_ = 0,
                                                 vk::Bool32 shaderSignedZeroInfNanPreserveFloat64_ = 0,
@@ -43880,8 +45003,8 @@ namespace VULKAN_HPP_NAMESPACE
                                                 vk::Bool32 shaderRoundingModeRTZFloat16_ = 0,
                                                 vk::Bool32 shaderRoundingModeRTZFloat32_ = 0,
                                                 vk::Bool32 shaderRoundingModeRTZFloat64_ = 0 )
-        : separateDenormSettings( separateDenormSettings_ )
-        , separateRoundingModeSettings( separateRoundingModeSettings_ )
+        : denormBehaviorIndependence( denormBehaviorIndependence_ )
+        , roundingModeIndependence( roundingModeIndependence_ )
         , shaderSignedZeroInfNanPreserveFloat16( shaderSignedZeroInfNanPreserveFloat16_ )
         , shaderSignedZeroInfNanPreserveFloat32( shaderSignedZeroInfNanPreserveFloat32_ )
         , shaderSignedZeroInfNanPreserveFloat64( shaderSignedZeroInfNanPreserveFloat64_ )
@@ -43913,8 +45036,8 @@ namespace VULKAN_HPP_NAMESPACE
     public:
       vk::StructureType sType = StructureType::ePhysicalDeviceFloatControlsPropertiesKHR;
       void* pNext = nullptr;
-      vk::Bool32 separateDenormSettings;
-      vk::Bool32 separateRoundingModeSettings;
+      vk::ShaderFloatControlsIndependenceKHR denormBehaviorIndependence;
+      vk::ShaderFloatControlsIndependenceKHR roundingModeIndependence;
       vk::Bool32 shaderSignedZeroInfNanPreserveFloat16;
       vk::Bool32 shaderSignedZeroInfNanPreserveFloat32;
       vk::Bool32 shaderSignedZeroInfNanPreserveFloat64;
@@ -43950,8 +45073,8 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
-          && ( separateDenormSettings == rhs.separateDenormSettings )
-          && ( separateRoundingModeSettings == rhs.separateRoundingModeSettings )
+          && ( denormBehaviorIndependence == rhs.denormBehaviorIndependence )
+          && ( roundingModeIndependence == rhs.roundingModeIndependence )
           && ( shaderSignedZeroInfNanPreserveFloat16 == rhs.shaderSignedZeroInfNanPreserveFloat16 )
           && ( shaderSignedZeroInfNanPreserveFloat32 == rhs.shaderSignedZeroInfNanPreserveFloat32 )
           && ( shaderSignedZeroInfNanPreserveFloat64 == rhs.shaderSignedZeroInfNanPreserveFloat64 )
@@ -44195,6 +45318,112 @@ namespace VULKAN_HPP_NAMESPACE
   };
   static_assert( sizeof( PhysicalDeviceFragmentShaderBarycentricFeaturesNV ) == sizeof( VkPhysicalDeviceFragmentShaderBarycentricFeaturesNV ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<PhysicalDeviceFragmentShaderBarycentricFeaturesNV>::value, "struct wrapper is not a standard layout!" );
+
+  namespace layout
+  {
+    struct PhysicalDeviceFragmentShaderInterlockFeaturesEXT
+    {
+    protected:
+      PhysicalDeviceFragmentShaderInterlockFeaturesEXT( vk::Bool32 fragmentShaderSampleInterlock_ = 0,
+                                                        vk::Bool32 fragmentShaderPixelInterlock_ = 0,
+                                                        vk::Bool32 fragmentShaderShadingRateInterlock_ = 0 )
+        : fragmentShaderSampleInterlock( fragmentShaderSampleInterlock_ )
+        , fragmentShaderPixelInterlock( fragmentShaderPixelInterlock_ )
+        , fragmentShaderShadingRateInterlock( fragmentShaderShadingRateInterlock_ )
+      {}
+
+      PhysicalDeviceFragmentShaderInterlockFeaturesEXT( VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT const & rhs )
+      {
+        *reinterpret_cast<VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT*>(this) = rhs;
+      }
+
+      PhysicalDeviceFragmentShaderInterlockFeaturesEXT& operator=( VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT const & rhs )
+      {
+        *reinterpret_cast<VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT*>(this) = rhs;
+        return *this;
+      }
+
+    public:
+      vk::StructureType sType = StructureType::ePhysicalDeviceFragmentShaderInterlockFeaturesEXT;
+      void* pNext = nullptr;
+      vk::Bool32 fragmentShaderSampleInterlock;
+      vk::Bool32 fragmentShaderPixelInterlock;
+      vk::Bool32 fragmentShaderShadingRateInterlock;
+    };
+    static_assert( sizeof( PhysicalDeviceFragmentShaderInterlockFeaturesEXT ) == sizeof( VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT ), "layout struct and wrapper have different size!" );
+  }
+
+  struct PhysicalDeviceFragmentShaderInterlockFeaturesEXT : public layout::PhysicalDeviceFragmentShaderInterlockFeaturesEXT
+  {
+    PhysicalDeviceFragmentShaderInterlockFeaturesEXT( vk::Bool32 fragmentShaderSampleInterlock_ = 0,
+                                                      vk::Bool32 fragmentShaderPixelInterlock_ = 0,
+                                                      vk::Bool32 fragmentShaderShadingRateInterlock_ = 0 )
+      : layout::PhysicalDeviceFragmentShaderInterlockFeaturesEXT( fragmentShaderSampleInterlock_, fragmentShaderPixelInterlock_, fragmentShaderShadingRateInterlock_ )
+    {}
+
+    PhysicalDeviceFragmentShaderInterlockFeaturesEXT( VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT const & rhs )
+      : layout::PhysicalDeviceFragmentShaderInterlockFeaturesEXT( rhs )
+    {}
+
+    PhysicalDeviceFragmentShaderInterlockFeaturesEXT& operator=( VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT const & rhs )
+    {
+      *reinterpret_cast<VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT*>(this) = rhs;
+      return *this;
+    }
+
+    PhysicalDeviceFragmentShaderInterlockFeaturesEXT & setPNext( void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PhysicalDeviceFragmentShaderInterlockFeaturesEXT & setFragmentShaderSampleInterlock( vk::Bool32 fragmentShaderSampleInterlock_ )
+    {
+      fragmentShaderSampleInterlock = fragmentShaderSampleInterlock_;
+      return *this;
+    }
+
+    PhysicalDeviceFragmentShaderInterlockFeaturesEXT & setFragmentShaderPixelInterlock( vk::Bool32 fragmentShaderPixelInterlock_ )
+    {
+      fragmentShaderPixelInterlock = fragmentShaderPixelInterlock_;
+      return *this;
+    }
+
+    PhysicalDeviceFragmentShaderInterlockFeaturesEXT & setFragmentShaderShadingRateInterlock( vk::Bool32 fragmentShaderShadingRateInterlock_ )
+    {
+      fragmentShaderShadingRateInterlock = fragmentShaderShadingRateInterlock_;
+      return *this;
+    }
+
+    operator VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT const&() const
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT*>( this );
+    }
+
+    operator VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT*>( this );
+    }
+
+    bool operator==( PhysicalDeviceFragmentShaderInterlockFeaturesEXT const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( fragmentShaderSampleInterlock == rhs.fragmentShaderSampleInterlock )
+          && ( fragmentShaderPixelInterlock == rhs.fragmentShaderPixelInterlock )
+          && ( fragmentShaderShadingRateInterlock == rhs.fragmentShaderShadingRateInterlock );
+    }
+
+    bool operator!=( PhysicalDeviceFragmentShaderInterlockFeaturesEXT const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    using layout::PhysicalDeviceFragmentShaderInterlockFeaturesEXT::sType;
+  };
+  static_assert( sizeof( PhysicalDeviceFragmentShaderInterlockFeaturesEXT ) == sizeof( VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<PhysicalDeviceFragmentShaderInterlockFeaturesEXT>::value, "struct wrapper is not a standard layout!" );
 
   namespace layout
   {
@@ -44752,6 +45981,90 @@ namespace VULKAN_HPP_NAMESPACE
   };
   static_assert( sizeof( PhysicalDeviceImageViewImageFormatInfoEXT ) == sizeof( VkPhysicalDeviceImageViewImageFormatInfoEXT ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<PhysicalDeviceImageViewImageFormatInfoEXT>::value, "struct wrapper is not a standard layout!" );
+
+  namespace layout
+  {
+    struct PhysicalDeviceImagelessFramebufferFeaturesKHR
+    {
+    protected:
+      PhysicalDeviceImagelessFramebufferFeaturesKHR( vk::Bool32 imagelessFramebuffer_ = 0 )
+        : imagelessFramebuffer( imagelessFramebuffer_ )
+      {}
+
+      PhysicalDeviceImagelessFramebufferFeaturesKHR( VkPhysicalDeviceImagelessFramebufferFeaturesKHR const & rhs )
+      {
+        *reinterpret_cast<VkPhysicalDeviceImagelessFramebufferFeaturesKHR*>(this) = rhs;
+      }
+
+      PhysicalDeviceImagelessFramebufferFeaturesKHR& operator=( VkPhysicalDeviceImagelessFramebufferFeaturesKHR const & rhs )
+      {
+        *reinterpret_cast<VkPhysicalDeviceImagelessFramebufferFeaturesKHR*>(this) = rhs;
+        return *this;
+      }
+
+    public:
+      vk::StructureType sType = StructureType::ePhysicalDeviceImagelessFramebufferFeaturesKHR;
+      void* pNext = nullptr;
+      vk::Bool32 imagelessFramebuffer;
+    };
+    static_assert( sizeof( PhysicalDeviceImagelessFramebufferFeaturesKHR ) == sizeof( VkPhysicalDeviceImagelessFramebufferFeaturesKHR ), "layout struct and wrapper have different size!" );
+  }
+
+  struct PhysicalDeviceImagelessFramebufferFeaturesKHR : public layout::PhysicalDeviceImagelessFramebufferFeaturesKHR
+  {
+    PhysicalDeviceImagelessFramebufferFeaturesKHR( vk::Bool32 imagelessFramebuffer_ = 0 )
+      : layout::PhysicalDeviceImagelessFramebufferFeaturesKHR( imagelessFramebuffer_ )
+    {}
+
+    PhysicalDeviceImagelessFramebufferFeaturesKHR( VkPhysicalDeviceImagelessFramebufferFeaturesKHR const & rhs )
+      : layout::PhysicalDeviceImagelessFramebufferFeaturesKHR( rhs )
+    {}
+
+    PhysicalDeviceImagelessFramebufferFeaturesKHR& operator=( VkPhysicalDeviceImagelessFramebufferFeaturesKHR const & rhs )
+    {
+      *reinterpret_cast<VkPhysicalDeviceImagelessFramebufferFeaturesKHR*>(this) = rhs;
+      return *this;
+    }
+
+    PhysicalDeviceImagelessFramebufferFeaturesKHR & setPNext( void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PhysicalDeviceImagelessFramebufferFeaturesKHR & setImagelessFramebuffer( vk::Bool32 imagelessFramebuffer_ )
+    {
+      imagelessFramebuffer = imagelessFramebuffer_;
+      return *this;
+    }
+
+    operator VkPhysicalDeviceImagelessFramebufferFeaturesKHR const&() const
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceImagelessFramebufferFeaturesKHR*>( this );
+    }
+
+    operator VkPhysicalDeviceImagelessFramebufferFeaturesKHR &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceImagelessFramebufferFeaturesKHR*>( this );
+    }
+
+    bool operator==( PhysicalDeviceImagelessFramebufferFeaturesKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( imagelessFramebuffer == rhs.imagelessFramebuffer );
+    }
+
+    bool operator!=( PhysicalDeviceImagelessFramebufferFeaturesKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    using layout::PhysicalDeviceImagelessFramebufferFeaturesKHR::sType;
+  };
+  static_assert( sizeof( PhysicalDeviceImagelessFramebufferFeaturesKHR ) == sizeof( VkPhysicalDeviceImagelessFramebufferFeaturesKHR ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<PhysicalDeviceImagelessFramebufferFeaturesKHR>::value, "struct wrapper is not a standard layout!" );
 
   namespace layout
   {
@@ -47040,6 +48353,90 @@ namespace VULKAN_HPP_NAMESPACE
 
   namespace layout
   {
+    struct PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT
+    {
+    protected:
+      PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT( vk::Bool32 shaderDemoteToHelperInvocation_ = 0 )
+        : shaderDemoteToHelperInvocation( shaderDemoteToHelperInvocation_ )
+      {}
+
+      PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT( VkPhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT const & rhs )
+      {
+        *reinterpret_cast<VkPhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT*>(this) = rhs;
+      }
+
+      PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT& operator=( VkPhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT const & rhs )
+      {
+        *reinterpret_cast<VkPhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT*>(this) = rhs;
+        return *this;
+      }
+
+    public:
+      vk::StructureType sType = StructureType::ePhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT;
+      void* pNext = nullptr;
+      vk::Bool32 shaderDemoteToHelperInvocation;
+    };
+    static_assert( sizeof( PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT ) == sizeof( VkPhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT ), "layout struct and wrapper have different size!" );
+  }
+
+  struct PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT : public layout::PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT
+  {
+    PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT( vk::Bool32 shaderDemoteToHelperInvocation_ = 0 )
+      : layout::PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT( shaderDemoteToHelperInvocation_ )
+    {}
+
+    PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT( VkPhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT const & rhs )
+      : layout::PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT( rhs )
+    {}
+
+    PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT& operator=( VkPhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT const & rhs )
+    {
+      *reinterpret_cast<VkPhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT*>(this) = rhs;
+      return *this;
+    }
+
+    PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT & setPNext( void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT & setShaderDemoteToHelperInvocation( vk::Bool32 shaderDemoteToHelperInvocation_ )
+    {
+      shaderDemoteToHelperInvocation = shaderDemoteToHelperInvocation_;
+      return *this;
+    }
+
+    operator VkPhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT const&() const
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT*>( this );
+    }
+
+    operator VkPhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT*>( this );
+    }
+
+    bool operator==( PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( shaderDemoteToHelperInvocation == rhs.shaderDemoteToHelperInvocation );
+    }
+
+    bool operator!=( PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    using layout::PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT::sType;
+  };
+  static_assert( sizeof( PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT ) == sizeof( VkPhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT>::value, "struct wrapper is not a standard layout!" );
+
+  namespace layout
+  {
     struct PhysicalDeviceShaderDrawParametersFeatures
     {
     protected:
@@ -47124,6 +48521,101 @@ namespace VULKAN_HPP_NAMESPACE
 
   namespace layout
   {
+    struct PhysicalDeviceShaderFloat16Int8FeaturesKHR
+    {
+    protected:
+      PhysicalDeviceShaderFloat16Int8FeaturesKHR( vk::Bool32 shaderFloat16_ = 0,
+                                                  vk::Bool32 shaderInt8_ = 0 )
+        : shaderFloat16( shaderFloat16_ )
+        , shaderInt8( shaderInt8_ )
+      {}
+
+      PhysicalDeviceShaderFloat16Int8FeaturesKHR( VkPhysicalDeviceShaderFloat16Int8FeaturesKHR const & rhs )
+      {
+        *reinterpret_cast<VkPhysicalDeviceShaderFloat16Int8FeaturesKHR*>(this) = rhs;
+      }
+
+      PhysicalDeviceShaderFloat16Int8FeaturesKHR& operator=( VkPhysicalDeviceShaderFloat16Int8FeaturesKHR const & rhs )
+      {
+        *reinterpret_cast<VkPhysicalDeviceShaderFloat16Int8FeaturesKHR*>(this) = rhs;
+        return *this;
+      }
+
+    public:
+      vk::StructureType sType = StructureType::ePhysicalDeviceShaderFloat16Int8FeaturesKHR;
+      void* pNext = nullptr;
+      vk::Bool32 shaderFloat16;
+      vk::Bool32 shaderInt8;
+    };
+    static_assert( sizeof( PhysicalDeviceShaderFloat16Int8FeaturesKHR ) == sizeof( VkPhysicalDeviceShaderFloat16Int8FeaturesKHR ), "layout struct and wrapper have different size!" );
+  }
+
+  struct PhysicalDeviceShaderFloat16Int8FeaturesKHR : public layout::PhysicalDeviceShaderFloat16Int8FeaturesKHR
+  {
+    PhysicalDeviceShaderFloat16Int8FeaturesKHR( vk::Bool32 shaderFloat16_ = 0,
+                                                vk::Bool32 shaderInt8_ = 0 )
+      : layout::PhysicalDeviceShaderFloat16Int8FeaturesKHR( shaderFloat16_, shaderInt8_ )
+    {}
+
+    PhysicalDeviceShaderFloat16Int8FeaturesKHR( VkPhysicalDeviceShaderFloat16Int8FeaturesKHR const & rhs )
+      : layout::PhysicalDeviceShaderFloat16Int8FeaturesKHR( rhs )
+    {}
+
+    PhysicalDeviceShaderFloat16Int8FeaturesKHR& operator=( VkPhysicalDeviceShaderFloat16Int8FeaturesKHR const & rhs )
+    {
+      *reinterpret_cast<VkPhysicalDeviceShaderFloat16Int8FeaturesKHR*>(this) = rhs;
+      return *this;
+    }
+
+    PhysicalDeviceShaderFloat16Int8FeaturesKHR & setPNext( void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderFloat16Int8FeaturesKHR & setShaderFloat16( vk::Bool32 shaderFloat16_ )
+    {
+      shaderFloat16 = shaderFloat16_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderFloat16Int8FeaturesKHR & setShaderInt8( vk::Bool32 shaderInt8_ )
+    {
+      shaderInt8 = shaderInt8_;
+      return *this;
+    }
+
+    operator VkPhysicalDeviceShaderFloat16Int8FeaturesKHR const&() const
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceShaderFloat16Int8FeaturesKHR*>( this );
+    }
+
+    operator VkPhysicalDeviceShaderFloat16Int8FeaturesKHR &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceShaderFloat16Int8FeaturesKHR*>( this );
+    }
+
+    bool operator==( PhysicalDeviceShaderFloat16Int8FeaturesKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( shaderFloat16 == rhs.shaderFloat16 )
+          && ( shaderInt8 == rhs.shaderInt8 );
+    }
+
+    bool operator!=( PhysicalDeviceShaderFloat16Int8FeaturesKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    using layout::PhysicalDeviceShaderFloat16Int8FeaturesKHR::sType;
+  };
+  static_assert( sizeof( PhysicalDeviceShaderFloat16Int8FeaturesKHR ) == sizeof( VkPhysicalDeviceShaderFloat16Int8FeaturesKHR ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<PhysicalDeviceShaderFloat16Int8FeaturesKHR>::value, "struct wrapper is not a standard layout!" );
+
+  namespace layout
+  {
     struct PhysicalDeviceShaderImageFootprintFeaturesNV
     {
     protected:
@@ -47205,6 +48697,236 @@ namespace VULKAN_HPP_NAMESPACE
   };
   static_assert( sizeof( PhysicalDeviceShaderImageFootprintFeaturesNV ) == sizeof( VkPhysicalDeviceShaderImageFootprintFeaturesNV ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<PhysicalDeviceShaderImageFootprintFeaturesNV>::value, "struct wrapper is not a standard layout!" );
+
+  namespace layout
+  {
+    struct PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL
+    {
+    protected:
+      PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL( vk::Bool32 shaderIntegerFunctions2_ = 0 )
+        : shaderIntegerFunctions2( shaderIntegerFunctions2_ )
+      {}
+
+      PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL( VkPhysicalDeviceShaderIntegerFunctions2FeaturesINTEL const & rhs )
+      {
+        *reinterpret_cast<VkPhysicalDeviceShaderIntegerFunctions2FeaturesINTEL*>(this) = rhs;
+      }
+
+      PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL& operator=( VkPhysicalDeviceShaderIntegerFunctions2FeaturesINTEL const & rhs )
+      {
+        *reinterpret_cast<VkPhysicalDeviceShaderIntegerFunctions2FeaturesINTEL*>(this) = rhs;
+        return *this;
+      }
+
+    public:
+      vk::StructureType sType = StructureType::ePhysicalDeviceShaderIntegerFunctions2FeaturesINTEL;
+      void* pNext = nullptr;
+      vk::Bool32 shaderIntegerFunctions2;
+    };
+    static_assert( sizeof( PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL ) == sizeof( VkPhysicalDeviceShaderIntegerFunctions2FeaturesINTEL ), "layout struct and wrapper have different size!" );
+  }
+
+  struct PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL : public layout::PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL
+  {
+    PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL( vk::Bool32 shaderIntegerFunctions2_ = 0 )
+      : layout::PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL( shaderIntegerFunctions2_ )
+    {}
+
+    PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL( VkPhysicalDeviceShaderIntegerFunctions2FeaturesINTEL const & rhs )
+      : layout::PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL( rhs )
+    {}
+
+    PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL& operator=( VkPhysicalDeviceShaderIntegerFunctions2FeaturesINTEL const & rhs )
+    {
+      *reinterpret_cast<VkPhysicalDeviceShaderIntegerFunctions2FeaturesINTEL*>(this) = rhs;
+      return *this;
+    }
+
+    PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL & setPNext( void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL & setShaderIntegerFunctions2( vk::Bool32 shaderIntegerFunctions2_ )
+    {
+      shaderIntegerFunctions2 = shaderIntegerFunctions2_;
+      return *this;
+    }
+
+    operator VkPhysicalDeviceShaderIntegerFunctions2FeaturesINTEL const&() const
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceShaderIntegerFunctions2FeaturesINTEL*>( this );
+    }
+
+    operator VkPhysicalDeviceShaderIntegerFunctions2FeaturesINTEL &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceShaderIntegerFunctions2FeaturesINTEL*>( this );
+    }
+
+    bool operator==( PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( shaderIntegerFunctions2 == rhs.shaderIntegerFunctions2 );
+    }
+
+    bool operator!=( PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    using layout::PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL::sType;
+  };
+  static_assert( sizeof( PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL ) == sizeof( VkPhysicalDeviceShaderIntegerFunctions2FeaturesINTEL ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL>::value, "struct wrapper is not a standard layout!" );
+
+  namespace layout
+  {
+    struct PhysicalDeviceShaderSMBuiltinsFeaturesNV
+    {
+    protected:
+      PhysicalDeviceShaderSMBuiltinsFeaturesNV( vk::Bool32 shaderSMBuiltins_ = 0 )
+        : shaderSMBuiltins( shaderSMBuiltins_ )
+      {}
+
+      PhysicalDeviceShaderSMBuiltinsFeaturesNV( VkPhysicalDeviceShaderSMBuiltinsFeaturesNV const & rhs )
+      {
+        *reinterpret_cast<VkPhysicalDeviceShaderSMBuiltinsFeaturesNV*>(this) = rhs;
+      }
+
+      PhysicalDeviceShaderSMBuiltinsFeaturesNV& operator=( VkPhysicalDeviceShaderSMBuiltinsFeaturesNV const & rhs )
+      {
+        *reinterpret_cast<VkPhysicalDeviceShaderSMBuiltinsFeaturesNV*>(this) = rhs;
+        return *this;
+      }
+
+    public:
+      vk::StructureType sType = StructureType::ePhysicalDeviceShaderSmBuiltinsFeaturesNV;
+      void* pNext = nullptr;
+      vk::Bool32 shaderSMBuiltins;
+    };
+    static_assert( sizeof( PhysicalDeviceShaderSMBuiltinsFeaturesNV ) == sizeof( VkPhysicalDeviceShaderSMBuiltinsFeaturesNV ), "layout struct and wrapper have different size!" );
+  }
+
+  struct PhysicalDeviceShaderSMBuiltinsFeaturesNV : public layout::PhysicalDeviceShaderSMBuiltinsFeaturesNV
+  {
+    PhysicalDeviceShaderSMBuiltinsFeaturesNV( vk::Bool32 shaderSMBuiltins_ = 0 )
+      : layout::PhysicalDeviceShaderSMBuiltinsFeaturesNV( shaderSMBuiltins_ )
+    {}
+
+    PhysicalDeviceShaderSMBuiltinsFeaturesNV( VkPhysicalDeviceShaderSMBuiltinsFeaturesNV const & rhs )
+      : layout::PhysicalDeviceShaderSMBuiltinsFeaturesNV( rhs )
+    {}
+
+    PhysicalDeviceShaderSMBuiltinsFeaturesNV& operator=( VkPhysicalDeviceShaderSMBuiltinsFeaturesNV const & rhs )
+    {
+      *reinterpret_cast<VkPhysicalDeviceShaderSMBuiltinsFeaturesNV*>(this) = rhs;
+      return *this;
+    }
+
+    PhysicalDeviceShaderSMBuiltinsFeaturesNV & setPNext( void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderSMBuiltinsFeaturesNV & setShaderSMBuiltins( vk::Bool32 shaderSMBuiltins_ )
+    {
+      shaderSMBuiltins = shaderSMBuiltins_;
+      return *this;
+    }
+
+    operator VkPhysicalDeviceShaderSMBuiltinsFeaturesNV const&() const
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceShaderSMBuiltinsFeaturesNV*>( this );
+    }
+
+    operator VkPhysicalDeviceShaderSMBuiltinsFeaturesNV &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceShaderSMBuiltinsFeaturesNV*>( this );
+    }
+
+    bool operator==( PhysicalDeviceShaderSMBuiltinsFeaturesNV const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( shaderSMBuiltins == rhs.shaderSMBuiltins );
+    }
+
+    bool operator!=( PhysicalDeviceShaderSMBuiltinsFeaturesNV const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    using layout::PhysicalDeviceShaderSMBuiltinsFeaturesNV::sType;
+  };
+  static_assert( sizeof( PhysicalDeviceShaderSMBuiltinsFeaturesNV ) == sizeof( VkPhysicalDeviceShaderSMBuiltinsFeaturesNV ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<PhysicalDeviceShaderSMBuiltinsFeaturesNV>::value, "struct wrapper is not a standard layout!" );
+
+  namespace layout
+  {
+    struct PhysicalDeviceShaderSMBuiltinsPropertiesNV
+    {
+    protected:
+      PhysicalDeviceShaderSMBuiltinsPropertiesNV( uint32_t shaderSMCount_ = 0,
+                                                  uint32_t shaderWarpsPerSM_ = 0 )
+        : shaderSMCount( shaderSMCount_ )
+        , shaderWarpsPerSM( shaderWarpsPerSM_ )
+      {}
+
+      PhysicalDeviceShaderSMBuiltinsPropertiesNV( VkPhysicalDeviceShaderSMBuiltinsPropertiesNV const & rhs )
+      {
+        *reinterpret_cast<VkPhysicalDeviceShaderSMBuiltinsPropertiesNV*>(this) = rhs;
+      }
+
+      PhysicalDeviceShaderSMBuiltinsPropertiesNV& operator=( VkPhysicalDeviceShaderSMBuiltinsPropertiesNV const & rhs )
+      {
+        *reinterpret_cast<VkPhysicalDeviceShaderSMBuiltinsPropertiesNV*>(this) = rhs;
+        return *this;
+      }
+
+    public:
+      vk::StructureType sType = StructureType::ePhysicalDeviceShaderSmBuiltinsPropertiesNV;
+      void* pNext = nullptr;
+      uint32_t shaderSMCount;
+      uint32_t shaderWarpsPerSM;
+    };
+    static_assert( sizeof( PhysicalDeviceShaderSMBuiltinsPropertiesNV ) == sizeof( VkPhysicalDeviceShaderSMBuiltinsPropertiesNV ), "layout struct and wrapper have different size!" );
+  }
+
+  struct PhysicalDeviceShaderSMBuiltinsPropertiesNV : public layout::PhysicalDeviceShaderSMBuiltinsPropertiesNV
+  {
+    operator VkPhysicalDeviceShaderSMBuiltinsPropertiesNV const&() const
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceShaderSMBuiltinsPropertiesNV*>( this );
+    }
+
+    operator VkPhysicalDeviceShaderSMBuiltinsPropertiesNV &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceShaderSMBuiltinsPropertiesNV*>( this );
+    }
+
+    bool operator==( PhysicalDeviceShaderSMBuiltinsPropertiesNV const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( shaderSMCount == rhs.shaderSMCount )
+          && ( shaderWarpsPerSM == rhs.shaderWarpsPerSM );
+    }
+
+    bool operator!=( PhysicalDeviceShaderSMBuiltinsPropertiesNV const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    using layout::PhysicalDeviceShaderSMBuiltinsPropertiesNV::sType;
+  };
+  static_assert( sizeof( PhysicalDeviceShaderSMBuiltinsPropertiesNV ) == sizeof( VkPhysicalDeviceShaderSMBuiltinsPropertiesNV ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<PhysicalDeviceShaderSMBuiltinsPropertiesNV>::value, "struct wrapper is not a standard layout!" );
 
   namespace layout
   {
@@ -47567,6 +49289,76 @@ namespace VULKAN_HPP_NAMESPACE
 
   namespace layout
   {
+    struct PhysicalDeviceSubgroupSizeControlPropertiesEXT
+    {
+    protected:
+      PhysicalDeviceSubgroupSizeControlPropertiesEXT( uint32_t minSubgroupSize_ = 0,
+                                                      uint32_t maxSubgroupSize_ = 0,
+                                                      uint32_t maxComputeWorkgroupSubgroups_ = 0,
+                                                      vk::ShaderStageFlags requiredSubgroupSizeStages_ = vk::ShaderStageFlags() )
+        : minSubgroupSize( minSubgroupSize_ )
+        , maxSubgroupSize( maxSubgroupSize_ )
+        , maxComputeWorkgroupSubgroups( maxComputeWorkgroupSubgroups_ )
+        , requiredSubgroupSizeStages( requiredSubgroupSizeStages_ )
+      {}
+
+      PhysicalDeviceSubgroupSizeControlPropertiesEXT( VkPhysicalDeviceSubgroupSizeControlPropertiesEXT const & rhs )
+      {
+        *reinterpret_cast<VkPhysicalDeviceSubgroupSizeControlPropertiesEXT*>(this) = rhs;
+      }
+
+      PhysicalDeviceSubgroupSizeControlPropertiesEXT& operator=( VkPhysicalDeviceSubgroupSizeControlPropertiesEXT const & rhs )
+      {
+        *reinterpret_cast<VkPhysicalDeviceSubgroupSizeControlPropertiesEXT*>(this) = rhs;
+        return *this;
+      }
+
+    public:
+      vk::StructureType sType = StructureType::ePhysicalDeviceSubgroupSizeControlPropertiesEXT;
+      void* pNext = nullptr;
+      uint32_t minSubgroupSize;
+      uint32_t maxSubgroupSize;
+      uint32_t maxComputeWorkgroupSubgroups;
+      vk::ShaderStageFlags requiredSubgroupSizeStages;
+    };
+    static_assert( sizeof( PhysicalDeviceSubgroupSizeControlPropertiesEXT ) == sizeof( VkPhysicalDeviceSubgroupSizeControlPropertiesEXT ), "layout struct and wrapper have different size!" );
+  }
+
+  struct PhysicalDeviceSubgroupSizeControlPropertiesEXT : public layout::PhysicalDeviceSubgroupSizeControlPropertiesEXT
+  {
+    operator VkPhysicalDeviceSubgroupSizeControlPropertiesEXT const&() const
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceSubgroupSizeControlPropertiesEXT*>( this );
+    }
+
+    operator VkPhysicalDeviceSubgroupSizeControlPropertiesEXT &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceSubgroupSizeControlPropertiesEXT*>( this );
+    }
+
+    bool operator==( PhysicalDeviceSubgroupSizeControlPropertiesEXT const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( minSubgroupSize == rhs.minSubgroupSize )
+          && ( maxSubgroupSize == rhs.maxSubgroupSize )
+          && ( maxComputeWorkgroupSubgroups == rhs.maxComputeWorkgroupSubgroups )
+          && ( requiredSubgroupSizeStages == rhs.requiredSubgroupSizeStages );
+    }
+
+    bool operator!=( PhysicalDeviceSubgroupSizeControlPropertiesEXT const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    using layout::PhysicalDeviceSubgroupSizeControlPropertiesEXT::sType;
+  };
+  static_assert( sizeof( PhysicalDeviceSubgroupSizeControlPropertiesEXT ) == sizeof( VkPhysicalDeviceSubgroupSizeControlPropertiesEXT ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<PhysicalDeviceSubgroupSizeControlPropertiesEXT>::value, "struct wrapper is not a standard layout!" );
+
+  namespace layout
+  {
     struct PhysicalDeviceSurfaceInfo2KHR
     {
     protected:
@@ -47648,6 +49440,160 @@ namespace VULKAN_HPP_NAMESPACE
   };
   static_assert( sizeof( PhysicalDeviceSurfaceInfo2KHR ) == sizeof( VkPhysicalDeviceSurfaceInfo2KHR ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<PhysicalDeviceSurfaceInfo2KHR>::value, "struct wrapper is not a standard layout!" );
+
+  namespace layout
+  {
+    struct PhysicalDeviceTexelBufferAlignmentFeaturesEXT
+    {
+    protected:
+      PhysicalDeviceTexelBufferAlignmentFeaturesEXT( vk::Bool32 texelBufferAlignment_ = 0 )
+        : texelBufferAlignment( texelBufferAlignment_ )
+      {}
+
+      PhysicalDeviceTexelBufferAlignmentFeaturesEXT( VkPhysicalDeviceTexelBufferAlignmentFeaturesEXT const & rhs )
+      {
+        *reinterpret_cast<VkPhysicalDeviceTexelBufferAlignmentFeaturesEXT*>(this) = rhs;
+      }
+
+      PhysicalDeviceTexelBufferAlignmentFeaturesEXT& operator=( VkPhysicalDeviceTexelBufferAlignmentFeaturesEXT const & rhs )
+      {
+        *reinterpret_cast<VkPhysicalDeviceTexelBufferAlignmentFeaturesEXT*>(this) = rhs;
+        return *this;
+      }
+
+    public:
+      vk::StructureType sType = StructureType::ePhysicalDeviceTexelBufferAlignmentFeaturesEXT;
+      void* pNext = nullptr;
+      vk::Bool32 texelBufferAlignment;
+    };
+    static_assert( sizeof( PhysicalDeviceTexelBufferAlignmentFeaturesEXT ) == sizeof( VkPhysicalDeviceTexelBufferAlignmentFeaturesEXT ), "layout struct and wrapper have different size!" );
+  }
+
+  struct PhysicalDeviceTexelBufferAlignmentFeaturesEXT : public layout::PhysicalDeviceTexelBufferAlignmentFeaturesEXT
+  {
+    PhysicalDeviceTexelBufferAlignmentFeaturesEXT( vk::Bool32 texelBufferAlignment_ = 0 )
+      : layout::PhysicalDeviceTexelBufferAlignmentFeaturesEXT( texelBufferAlignment_ )
+    {}
+
+    PhysicalDeviceTexelBufferAlignmentFeaturesEXT( VkPhysicalDeviceTexelBufferAlignmentFeaturesEXT const & rhs )
+      : layout::PhysicalDeviceTexelBufferAlignmentFeaturesEXT( rhs )
+    {}
+
+    PhysicalDeviceTexelBufferAlignmentFeaturesEXT& operator=( VkPhysicalDeviceTexelBufferAlignmentFeaturesEXT const & rhs )
+    {
+      *reinterpret_cast<VkPhysicalDeviceTexelBufferAlignmentFeaturesEXT*>(this) = rhs;
+      return *this;
+    }
+
+    PhysicalDeviceTexelBufferAlignmentFeaturesEXT & setPNext( void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PhysicalDeviceTexelBufferAlignmentFeaturesEXT & setTexelBufferAlignment( vk::Bool32 texelBufferAlignment_ )
+    {
+      texelBufferAlignment = texelBufferAlignment_;
+      return *this;
+    }
+
+    operator VkPhysicalDeviceTexelBufferAlignmentFeaturesEXT const&() const
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceTexelBufferAlignmentFeaturesEXT*>( this );
+    }
+
+    operator VkPhysicalDeviceTexelBufferAlignmentFeaturesEXT &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceTexelBufferAlignmentFeaturesEXT*>( this );
+    }
+
+    bool operator==( PhysicalDeviceTexelBufferAlignmentFeaturesEXT const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( texelBufferAlignment == rhs.texelBufferAlignment );
+    }
+
+    bool operator!=( PhysicalDeviceTexelBufferAlignmentFeaturesEXT const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    using layout::PhysicalDeviceTexelBufferAlignmentFeaturesEXT::sType;
+  };
+  static_assert( sizeof( PhysicalDeviceTexelBufferAlignmentFeaturesEXT ) == sizeof( VkPhysicalDeviceTexelBufferAlignmentFeaturesEXT ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<PhysicalDeviceTexelBufferAlignmentFeaturesEXT>::value, "struct wrapper is not a standard layout!" );
+
+  namespace layout
+  {
+    struct PhysicalDeviceTexelBufferAlignmentPropertiesEXT
+    {
+    protected:
+      PhysicalDeviceTexelBufferAlignmentPropertiesEXT( vk::DeviceSize storageTexelBufferOffsetAlignmentBytes_ = 0,
+                                                       vk::Bool32 storageTexelBufferOffsetSingleTexelAlignment_ = 0,
+                                                       vk::DeviceSize uniformTexelBufferOffsetAlignmentBytes_ = 0,
+                                                       vk::Bool32 uniformTexelBufferOffsetSingleTexelAlignment_ = 0 )
+        : storageTexelBufferOffsetAlignmentBytes( storageTexelBufferOffsetAlignmentBytes_ )
+        , storageTexelBufferOffsetSingleTexelAlignment( storageTexelBufferOffsetSingleTexelAlignment_ )
+        , uniformTexelBufferOffsetAlignmentBytes( uniformTexelBufferOffsetAlignmentBytes_ )
+        , uniformTexelBufferOffsetSingleTexelAlignment( uniformTexelBufferOffsetSingleTexelAlignment_ )
+      {}
+
+      PhysicalDeviceTexelBufferAlignmentPropertiesEXT( VkPhysicalDeviceTexelBufferAlignmentPropertiesEXT const & rhs )
+      {
+        *reinterpret_cast<VkPhysicalDeviceTexelBufferAlignmentPropertiesEXT*>(this) = rhs;
+      }
+
+      PhysicalDeviceTexelBufferAlignmentPropertiesEXT& operator=( VkPhysicalDeviceTexelBufferAlignmentPropertiesEXT const & rhs )
+      {
+        *reinterpret_cast<VkPhysicalDeviceTexelBufferAlignmentPropertiesEXT*>(this) = rhs;
+        return *this;
+      }
+
+    public:
+      vk::StructureType sType = StructureType::ePhysicalDeviceTexelBufferAlignmentPropertiesEXT;
+      void* pNext = nullptr;
+      vk::DeviceSize storageTexelBufferOffsetAlignmentBytes;
+      vk::Bool32 storageTexelBufferOffsetSingleTexelAlignment;
+      vk::DeviceSize uniformTexelBufferOffsetAlignmentBytes;
+      vk::Bool32 uniformTexelBufferOffsetSingleTexelAlignment;
+    };
+    static_assert( sizeof( PhysicalDeviceTexelBufferAlignmentPropertiesEXT ) == sizeof( VkPhysicalDeviceTexelBufferAlignmentPropertiesEXT ), "layout struct and wrapper have different size!" );
+  }
+
+  struct PhysicalDeviceTexelBufferAlignmentPropertiesEXT : public layout::PhysicalDeviceTexelBufferAlignmentPropertiesEXT
+  {
+    operator VkPhysicalDeviceTexelBufferAlignmentPropertiesEXT const&() const
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceTexelBufferAlignmentPropertiesEXT*>( this );
+    }
+
+    operator VkPhysicalDeviceTexelBufferAlignmentPropertiesEXT &()
+    {
+      return *reinterpret_cast<VkPhysicalDeviceTexelBufferAlignmentPropertiesEXT*>( this );
+    }
+
+    bool operator==( PhysicalDeviceTexelBufferAlignmentPropertiesEXT const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( storageTexelBufferOffsetAlignmentBytes == rhs.storageTexelBufferOffsetAlignmentBytes )
+          && ( storageTexelBufferOffsetSingleTexelAlignment == rhs.storageTexelBufferOffsetSingleTexelAlignment )
+          && ( uniformTexelBufferOffsetAlignmentBytes == rhs.uniformTexelBufferOffsetAlignmentBytes )
+          && ( uniformTexelBufferOffsetSingleTexelAlignment == rhs.uniformTexelBufferOffsetSingleTexelAlignment );
+    }
+
+    bool operator!=( PhysicalDeviceTexelBufferAlignmentPropertiesEXT const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    using layout::PhysicalDeviceTexelBufferAlignmentPropertiesEXT::sType;
+  };
+  static_assert( sizeof( PhysicalDeviceTexelBufferAlignmentPropertiesEXT ) == sizeof( VkPhysicalDeviceTexelBufferAlignmentPropertiesEXT ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<PhysicalDeviceTexelBufferAlignmentPropertiesEXT>::value, "struct wrapper is not a standard layout!" );
 
   namespace layout
   {
@@ -49912,6 +51858,64 @@ namespace VULKAN_HPP_NAMESPACE
 
   namespace layout
   {
+    struct PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT
+    {
+    protected:
+      PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT( uint32_t requiredSubgroupSize_ = 0 )
+        : requiredSubgroupSize( requiredSubgroupSize_ )
+      {}
+
+      PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT( VkPipelineShaderStageRequiredSubgroupSizeCreateInfoEXT const & rhs )
+      {
+        *reinterpret_cast<VkPipelineShaderStageRequiredSubgroupSizeCreateInfoEXT*>(this) = rhs;
+      }
+
+      PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT& operator=( VkPipelineShaderStageRequiredSubgroupSizeCreateInfoEXT const & rhs )
+      {
+        *reinterpret_cast<VkPipelineShaderStageRequiredSubgroupSizeCreateInfoEXT*>(this) = rhs;
+        return *this;
+      }
+
+    public:
+      vk::StructureType sType = StructureType::ePipelineShaderStageRequiredSubgroupSizeCreateInfoEXT;
+      void* pNext = nullptr;
+      uint32_t requiredSubgroupSize;
+    };
+    static_assert( sizeof( PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT ) == sizeof( VkPipelineShaderStageRequiredSubgroupSizeCreateInfoEXT ), "layout struct and wrapper have different size!" );
+  }
+
+  struct PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT : public layout::PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT
+  {
+    operator VkPipelineShaderStageRequiredSubgroupSizeCreateInfoEXT const&() const
+    {
+      return *reinterpret_cast<const VkPipelineShaderStageRequiredSubgroupSizeCreateInfoEXT*>( this );
+    }
+
+    operator VkPipelineShaderStageRequiredSubgroupSizeCreateInfoEXT &()
+    {
+      return *reinterpret_cast<VkPipelineShaderStageRequiredSubgroupSizeCreateInfoEXT*>( this );
+    }
+
+    bool operator==( PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( requiredSubgroupSize == rhs.requiredSubgroupSize );
+    }
+
+    bool operator!=( PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    using layout::PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT::sType;
+  };
+  static_assert( sizeof( PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT ) == sizeof( VkPipelineShaderStageRequiredSubgroupSizeCreateInfoEXT ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT>::value, "struct wrapper is not a standard layout!" );
+
+  namespace layout
+  {
     struct PipelineTessellationDomainOriginStateCreateInfo
     {
     protected:
@@ -51678,6 +53682,90 @@ namespace VULKAN_HPP_NAMESPACE
 
   namespace layout
   {
+    struct QueryPoolCreateInfoINTEL
+    {
+    protected:
+      QueryPoolCreateInfoINTEL( vk::QueryPoolSamplingModeINTEL performanceCountersSampling_ = vk::QueryPoolSamplingModeINTEL::eManual )
+        : performanceCountersSampling( performanceCountersSampling_ )
+      {}
+
+      QueryPoolCreateInfoINTEL( VkQueryPoolCreateInfoINTEL const & rhs )
+      {
+        *reinterpret_cast<VkQueryPoolCreateInfoINTEL*>(this) = rhs;
+      }
+
+      QueryPoolCreateInfoINTEL& operator=( VkQueryPoolCreateInfoINTEL const & rhs )
+      {
+        *reinterpret_cast<VkQueryPoolCreateInfoINTEL*>(this) = rhs;
+        return *this;
+      }
+
+    public:
+      vk::StructureType sType = StructureType::eQueryPoolCreateInfoINTEL;
+      const void* pNext = nullptr;
+      vk::QueryPoolSamplingModeINTEL performanceCountersSampling;
+    };
+    static_assert( sizeof( QueryPoolCreateInfoINTEL ) == sizeof( VkQueryPoolCreateInfoINTEL ), "layout struct and wrapper have different size!" );
+  }
+
+  struct QueryPoolCreateInfoINTEL : public layout::QueryPoolCreateInfoINTEL
+  {
+    QueryPoolCreateInfoINTEL( vk::QueryPoolSamplingModeINTEL performanceCountersSampling_ = vk::QueryPoolSamplingModeINTEL::eManual )
+      : layout::QueryPoolCreateInfoINTEL( performanceCountersSampling_ )
+    {}
+
+    QueryPoolCreateInfoINTEL( VkQueryPoolCreateInfoINTEL const & rhs )
+      : layout::QueryPoolCreateInfoINTEL( rhs )
+    {}
+
+    QueryPoolCreateInfoINTEL& operator=( VkQueryPoolCreateInfoINTEL const & rhs )
+    {
+      *reinterpret_cast<VkQueryPoolCreateInfoINTEL*>(this) = rhs;
+      return *this;
+    }
+
+    QueryPoolCreateInfoINTEL & setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    QueryPoolCreateInfoINTEL & setPerformanceCountersSampling( vk::QueryPoolSamplingModeINTEL performanceCountersSampling_ )
+    {
+      performanceCountersSampling = performanceCountersSampling_;
+      return *this;
+    }
+
+    operator VkQueryPoolCreateInfoINTEL const&() const
+    {
+      return *reinterpret_cast<const VkQueryPoolCreateInfoINTEL*>( this );
+    }
+
+    operator VkQueryPoolCreateInfoINTEL &()
+    {
+      return *reinterpret_cast<VkQueryPoolCreateInfoINTEL*>( this );
+    }
+
+    bool operator==( QueryPoolCreateInfoINTEL const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( performanceCountersSampling == rhs.performanceCountersSampling );
+    }
+
+    bool operator!=( QueryPoolCreateInfoINTEL const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    using layout::QueryPoolCreateInfoINTEL::sType;
+  };
+  static_assert( sizeof( QueryPoolCreateInfoINTEL ) == sizeof( VkQueryPoolCreateInfoINTEL ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<QueryPoolCreateInfoINTEL>::value, "struct wrapper is not a standard layout!" );
+
+  namespace layout
+  {
     struct QueueFamilyCheckpointPropertiesNV
     {
     protected:
@@ -52153,6 +54241,101 @@ namespace VULKAN_HPP_NAMESPACE
   };
   static_assert( sizeof( RefreshCycleDurationGOOGLE ) == sizeof( VkRefreshCycleDurationGOOGLE ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<RefreshCycleDurationGOOGLE>::value, "struct wrapper is not a standard layout!" );
+
+  namespace layout
+  {
+    struct RenderPassAttachmentBeginInfoKHR
+    {
+    protected:
+      RenderPassAttachmentBeginInfoKHR( uint32_t attachmentCount_ = 0,
+                                        const vk::ImageView* pAttachments_ = nullptr )
+        : attachmentCount( attachmentCount_ )
+        , pAttachments( pAttachments_ )
+      {}
+
+      RenderPassAttachmentBeginInfoKHR( VkRenderPassAttachmentBeginInfoKHR const & rhs )
+      {
+        *reinterpret_cast<VkRenderPassAttachmentBeginInfoKHR*>(this) = rhs;
+      }
+
+      RenderPassAttachmentBeginInfoKHR& operator=( VkRenderPassAttachmentBeginInfoKHR const & rhs )
+      {
+        *reinterpret_cast<VkRenderPassAttachmentBeginInfoKHR*>(this) = rhs;
+        return *this;
+      }
+
+    public:
+      vk::StructureType sType = StructureType::eRenderPassAttachmentBeginInfoKHR;
+      const void* pNext = nullptr;
+      uint32_t attachmentCount;
+      const vk::ImageView* pAttachments;
+    };
+    static_assert( sizeof( RenderPassAttachmentBeginInfoKHR ) == sizeof( VkRenderPassAttachmentBeginInfoKHR ), "layout struct and wrapper have different size!" );
+  }
+
+  struct RenderPassAttachmentBeginInfoKHR : public layout::RenderPassAttachmentBeginInfoKHR
+  {
+    RenderPassAttachmentBeginInfoKHR( uint32_t attachmentCount_ = 0,
+                                      const vk::ImageView* pAttachments_ = nullptr )
+      : layout::RenderPassAttachmentBeginInfoKHR( attachmentCount_, pAttachments_ )
+    {}
+
+    RenderPassAttachmentBeginInfoKHR( VkRenderPassAttachmentBeginInfoKHR const & rhs )
+      : layout::RenderPassAttachmentBeginInfoKHR( rhs )
+    {}
+
+    RenderPassAttachmentBeginInfoKHR& operator=( VkRenderPassAttachmentBeginInfoKHR const & rhs )
+    {
+      *reinterpret_cast<VkRenderPassAttachmentBeginInfoKHR*>(this) = rhs;
+      return *this;
+    }
+
+    RenderPassAttachmentBeginInfoKHR & setPNext( const void* pNext_ )
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    RenderPassAttachmentBeginInfoKHR & setAttachmentCount( uint32_t attachmentCount_ )
+    {
+      attachmentCount = attachmentCount_;
+      return *this;
+    }
+
+    RenderPassAttachmentBeginInfoKHR & setPAttachments( const vk::ImageView* pAttachments_ )
+    {
+      pAttachments = pAttachments_;
+      return *this;
+    }
+
+    operator VkRenderPassAttachmentBeginInfoKHR const&() const
+    {
+      return *reinterpret_cast<const VkRenderPassAttachmentBeginInfoKHR*>( this );
+    }
+
+    operator VkRenderPassAttachmentBeginInfoKHR &()
+    {
+      return *reinterpret_cast<VkRenderPassAttachmentBeginInfoKHR*>( this );
+    }
+
+    bool operator==( RenderPassAttachmentBeginInfoKHR const& rhs ) const
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( attachmentCount == rhs.attachmentCount )
+          && ( pAttachments == rhs.pAttachments );
+    }
+
+    bool operator!=( RenderPassAttachmentBeginInfoKHR const& rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    using layout::RenderPassAttachmentBeginInfoKHR::sType;
+  };
+  static_assert( sizeof( RenderPassAttachmentBeginInfoKHR ) == sizeof( VkRenderPassAttachmentBeginInfoKHR ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<RenderPassAttachmentBeginInfoKHR>::value, "struct wrapper is not a standard layout!" );
 
   namespace layout
   {
@@ -59481,6 +61664,48 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template<typename Dispatch>
+  VULKAN_HPP_INLINE Result CommandBuffer::setPerformanceMarkerINTEL( const vk::PerformanceMarkerInfoINTEL* pMarkerInfo, Dispatch const &d) const
+  {
+    return static_cast<Result>( d.vkCmdSetPerformanceMarkerINTEL( m_commandBuffer, reinterpret_cast<const VkPerformanceMarkerInfoINTEL*>( pMarkerInfo ) ) );
+  }
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE ResultValueType<void>::type CommandBuffer::setPerformanceMarkerINTEL( const PerformanceMarkerInfoINTEL & markerInfo, Dispatch const &d ) const
+  {
+    Result result = static_cast<Result>( d.vkCmdSetPerformanceMarkerINTEL( m_commandBuffer, reinterpret_cast<const VkPerformanceMarkerInfoINTEL*>( &markerInfo ) ) );
+    return createResultValue( result, VULKAN_HPP_NAMESPACE_STRING"::CommandBuffer::setPerformanceMarkerINTEL" );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE Result CommandBuffer::setPerformanceOverrideINTEL( const vk::PerformanceOverrideInfoINTEL* pOverrideInfo, Dispatch const &d) const
+  {
+    return static_cast<Result>( d.vkCmdSetPerformanceOverrideINTEL( m_commandBuffer, reinterpret_cast<const VkPerformanceOverrideInfoINTEL*>( pOverrideInfo ) ) );
+  }
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE ResultValueType<void>::type CommandBuffer::setPerformanceOverrideINTEL( const PerformanceOverrideInfoINTEL & overrideInfo, Dispatch const &d ) const
+  {
+    Result result = static_cast<Result>( d.vkCmdSetPerformanceOverrideINTEL( m_commandBuffer, reinterpret_cast<const VkPerformanceOverrideInfoINTEL*>( &overrideInfo ) ) );
+    return createResultValue( result, VULKAN_HPP_NAMESPACE_STRING"::CommandBuffer::setPerformanceOverrideINTEL" );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE Result CommandBuffer::setPerformanceStreamMarkerINTEL( const vk::PerformanceStreamMarkerInfoINTEL* pMarkerInfo, Dispatch const &d) const
+  {
+    return static_cast<Result>( d.vkCmdSetPerformanceStreamMarkerINTEL( m_commandBuffer, reinterpret_cast<const VkPerformanceStreamMarkerInfoINTEL*>( pMarkerInfo ) ) );
+  }
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE ResultValueType<void>::type CommandBuffer::setPerformanceStreamMarkerINTEL( const PerformanceStreamMarkerInfoINTEL & markerInfo, Dispatch const &d ) const
+  {
+    Result result = static_cast<Result>( d.vkCmdSetPerformanceStreamMarkerINTEL( m_commandBuffer, reinterpret_cast<const VkPerformanceStreamMarkerInfoINTEL*>( &markerInfo ) ) );
+    return createResultValue( result, VULKAN_HPP_NAMESPACE_STRING"::CommandBuffer::setPerformanceStreamMarkerINTEL" );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template<typename Dispatch>
   VULKAN_HPP_INLINE void CommandBuffer::setSampleLocationsEXT( const vk::SampleLocationsInfoEXT* pSampleLocationsInfo, Dispatch const &d) const
   {
     d.vkCmdSetSampleLocationsEXT( m_commandBuffer, reinterpret_cast<const VkSampleLocationsInfoEXT*>( pSampleLocationsInfo ) );
@@ -59742,6 +61967,21 @@ namespace VULKAN_HPP_NAMESPACE
     uint32_t imageIndex;
     Result result = static_cast<Result>( d.vkAcquireNextImageKHR( m_device, static_cast<VkSwapchainKHR>( swapchain ), timeout, static_cast<VkSemaphore>( semaphore ), static_cast<VkFence>( fence ), &imageIndex ) );
     return createResultValue( result, imageIndex, VULKAN_HPP_NAMESPACE_STRING"::Device::acquireNextImageKHR", { Result::eSuccess, Result::eTimeout, Result::eNotReady, Result::eSuboptimalKHR } );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE Result Device::acquirePerformanceConfigurationINTEL( const vk::PerformanceConfigurationAcquireInfoINTEL* pAcquireInfo, vk::PerformanceConfigurationINTEL* pConfiguration, Dispatch const &d) const
+  {
+    return static_cast<Result>( d.vkAcquirePerformanceConfigurationINTEL( m_device, reinterpret_cast<const VkPerformanceConfigurationAcquireInfoINTEL*>( pAcquireInfo ), reinterpret_cast<VkPerformanceConfigurationINTEL*>( pConfiguration ) ) );
+  }
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE ResultValueType<vk::PerformanceConfigurationINTEL>::type Device::acquirePerformanceConfigurationINTEL( const PerformanceConfigurationAcquireInfoINTEL & acquireInfo, Dispatch const &d ) const
+  {
+    vk::PerformanceConfigurationINTEL configuration;
+    Result result = static_cast<Result>( d.vkAcquirePerformanceConfigurationINTEL( m_device, reinterpret_cast<const VkPerformanceConfigurationAcquireInfoINTEL*>( &acquireInfo ), reinterpret_cast<VkPerformanceConfigurationINTEL*>( &configuration ) ) );
+    return createResultValue( result, configuration, VULKAN_HPP_NAMESPACE_STRING"::Device::acquirePerformanceConfigurationINTEL" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -62620,6 +64860,21 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template<typename Dispatch>
+  VULKAN_HPP_INLINE Result Device::getPerformanceParameterINTEL( vk::PerformanceParameterTypeINTEL parameter, vk::PerformanceValueINTEL* pValue, Dispatch const &d) const
+  {
+    return static_cast<Result>( d.vkGetPerformanceParameterINTEL( m_device, static_cast<VkPerformanceParameterTypeINTEL>( parameter ), reinterpret_cast<VkPerformanceValueINTEL*>( pValue ) ) );
+  }
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE ResultValueType<vk::PerformanceValueINTEL>::type Device::getPerformanceParameterINTEL( vk::PerformanceParameterTypeINTEL parameter, Dispatch const &d ) const
+  {
+    vk::PerformanceValueINTEL value;
+    Result result = static_cast<Result>( d.vkGetPerformanceParameterINTEL( m_device, static_cast<VkPerformanceParameterTypeINTEL>( parameter ), reinterpret_cast<VkPerformanceValueINTEL*>( &value ) ) );
+    return createResultValue( result, value, VULKAN_HPP_NAMESPACE_STRING"::Device::getPerformanceParameterINTEL" );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template<typename Dispatch>
   VULKAN_HPP_INLINE Result Device::getPipelineCacheData( vk::PipelineCache pipelineCache, size_t* pDataSize, void* pData, Dispatch const &d) const
   {
     return static_cast<Result>( d.vkGetPipelineCacheData( m_device, static_cast<VkPipelineCache>( pipelineCache ), pDataSize, pData ) );
@@ -63008,6 +65263,20 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
   template<typename Dispatch>
+  VULKAN_HPP_INLINE Result Device::initializePerformanceApiINTEL( const vk::InitializePerformanceApiInfoINTEL* pInitializeInfo, Dispatch const &d) const
+  {
+    return static_cast<Result>( d.vkInitializePerformanceApiINTEL( m_device, reinterpret_cast<const VkInitializePerformanceApiInfoINTEL*>( pInitializeInfo ) ) );
+  }
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE ResultValueType<void>::type Device::initializePerformanceApiINTEL( const InitializePerformanceApiInfoINTEL & initializeInfo, Dispatch const &d ) const
+  {
+    Result result = static_cast<Result>( d.vkInitializePerformanceApiINTEL( m_device, reinterpret_cast<const VkInitializePerformanceApiInfoINTEL*>( &initializeInfo ) ) );
+    return createResultValue( result, VULKAN_HPP_NAMESPACE_STRING"::Device::initializePerformanceApiINTEL" );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template<typename Dispatch>
   VULKAN_HPP_INLINE Result Device::invalidateMappedMemoryRanges( uint32_t memoryRangeCount, const vk::MappedMemoryRange* pMemoryRanges, Dispatch const &d) const
   {
     return static_cast<Result>( d.vkInvalidateMappedMemoryRanges( m_device, memoryRangeCount, reinterpret_cast<const VkMappedMemoryRange*>( pMemoryRanges ) ) );
@@ -63132,6 +65401,21 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
+#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE Result Device::releasePerformanceConfigurationINTEL( vk::PerformanceConfigurationINTEL configuration, Dispatch const &d) const
+  {
+    return static_cast<Result>( d.vkReleasePerformanceConfigurationINTEL( m_device, static_cast<VkPerformanceConfigurationINTEL>( configuration ) ) );
+  }
+#else
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE ResultValueType<void>::type Device::releasePerformanceConfigurationINTEL( vk::PerformanceConfigurationINTEL configuration, Dispatch const &d ) const
+  {
+    Result result = static_cast<Result>( d.vkReleasePerformanceConfigurationINTEL( m_device, static_cast<VkPerformanceConfigurationINTEL>( configuration ) ) );
+    return createResultValue( result, VULKAN_HPP_NAMESPACE_STRING"::Device::releasePerformanceConfigurationINTEL" );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
 #ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template<typename Dispatch>
@@ -63309,6 +65593,20 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE void Device::trimCommandPoolKHR( vk::CommandPool commandPool, vk::CommandPoolTrimFlags flags, Dispatch const &d ) const
   {
     d.vkTrimCommandPoolKHR( m_device, static_cast<VkCommandPool>( commandPool ), static_cast<VkCommandPoolTrimFlags>( flags ) );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE void Device::uninitializePerformanceApiINTEL(Dispatch const &d) const
+  {
+    d.vkUninitializePerformanceApiINTEL( m_device );
+  }
+#else
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE void Device::uninitializePerformanceApiINTEL(Dispatch const &d ) const
+  {
+    d.vkUninitializePerformanceApiINTEL( m_device );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -65988,6 +68286,21 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
+#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE Result Queue::setPerformanceConfigurationINTEL( vk::PerformanceConfigurationINTEL configuration, Dispatch const &d) const
+  {
+    return static_cast<Result>( d.vkQueueSetPerformanceConfigurationINTEL( m_queue, static_cast<VkPerformanceConfigurationINTEL>( configuration ) ) );
+  }
+#else
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE ResultValueType<void>::type Queue::setPerformanceConfigurationINTEL( vk::PerformanceConfigurationINTEL configuration, Dispatch const &d ) const
+  {
+    Result result = static_cast<Result>( d.vkQueueSetPerformanceConfigurationINTEL( m_queue, static_cast<VkPerformanceConfigurationINTEL>( configuration ) ) );
+    return createResultValue( result, VULKAN_HPP_NAMESPACE_STRING"::Queue::setPerformanceConfigurationINTEL" );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
   template<typename Dispatch>
   VULKAN_HPP_INLINE Result Queue::submit( uint32_t submitCount, const vk::SubmitInfo* pSubmits, vk::Fence fence, Dispatch const &d) const
   {
@@ -66078,6 +68391,7 @@ namespace VULKAN_HPP_NAMESPACE
   template <> struct isStructureChainValid<ImageCreateInfo, ExternalMemoryImageCreateInfo>{ enum { value = true }; };
   template <> struct isStructureChainValid<ImageCreateInfo, ExternalMemoryImageCreateInfoNV>{ enum { value = true }; };
   template <> struct isStructureChainValid<ImageFormatProperties2, FilterCubicImageViewImageFormatPropertiesEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<FramebufferCreateInfo, FramebufferAttachmentsCreateInfoKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<ImageCreateInfo, ImageDrmFormatModifierExplicitCreateInfoEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<ImageCreateInfo, ImageDrmFormatModifierListCreateInfoEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<ImageCreateInfo, ImageFormatListCreateInfoKHR>{ enum { value = true }; };
@@ -66142,19 +68456,21 @@ namespace VULKAN_HPP_NAMESPACE
   template <> struct isStructureChainValid<PhysicalDeviceImageFormatInfo2, PhysicalDeviceExternalImageFormatInfo>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceExternalMemoryHostPropertiesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceFeatures2>{ enum { value = true }; };
-  template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceFloat16Int8FeaturesKHR>{ enum { value = true }; };
-  template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceFloat16Int8FeaturesKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceFloatControlsPropertiesKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceFragmentDensityMapFeaturesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceFragmentDensityMapFeaturesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceFragmentDensityMapPropertiesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceFragmentShaderBarycentricFeaturesNV>{ enum { value = true }; };
   template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceFragmentShaderBarycentricFeaturesNV>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceFragmentShaderInterlockFeaturesEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceFragmentShaderInterlockFeaturesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceHostQueryResetFeaturesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceHostQueryResetFeaturesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceIDProperties>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceImageFormatInfo2, PhysicalDeviceImageDrmFormatModifierInfoEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceImageFormatInfo2, PhysicalDeviceImageViewImageFormatInfoEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceImagelessFramebufferFeaturesKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceImagelessFramebufferFeaturesKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceInlineUniformBlockFeaturesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceInlineUniformBlockFeaturesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceInlineUniformBlockPropertiesEXT>{ enum { value = true }; };
@@ -66187,14 +68503,27 @@ namespace VULKAN_HPP_NAMESPACE
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceShaderAtomicInt64FeaturesKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceShaderAtomicInt64FeaturesKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceShaderCorePropertiesAMD>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceShaderDrawParametersFeatures>{ enum { value = true }; };
   template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceShaderDrawParametersFeatures>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceShaderFloat16Int8FeaturesKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceShaderFloat16Int8FeaturesKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceShaderImageFootprintFeaturesNV>{ enum { value = true }; };
   template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceShaderImageFootprintFeaturesNV>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL>{ enum { value = true }; };
+  template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceShaderSMBuiltinsFeaturesNV>{ enum { value = true }; };
+  template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceShaderSMBuiltinsFeaturesNV>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceShaderSMBuiltinsPropertiesNV>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceShadingRateImageFeaturesNV>{ enum { value = true }; };
   template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceShadingRateImageFeaturesNV>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceShadingRateImagePropertiesNV>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceSubgroupProperties>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceSubgroupSizeControlPropertiesEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceTexelBufferAlignmentFeaturesEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceTexelBufferAlignmentFeaturesEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceTexelBufferAlignmentPropertiesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceTransformFeedbackFeaturesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceTransformFeedbackFeaturesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceTransformFeedbackPropertiesEXT>{ enum { value = true }; };
@@ -66223,6 +68552,7 @@ namespace VULKAN_HPP_NAMESPACE
   template <> struct isStructureChainValid<PipelineRasterizationStateCreateInfo, PipelineRasterizationStateStreamCreateInfoEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<GraphicsPipelineCreateInfo, PipelineRepresentativeFragmentTestStateCreateInfoNV>{ enum { value = true }; };
   template <> struct isStructureChainValid<PipelineMultisampleStateCreateInfo, PipelineSampleLocationsStateCreateInfoEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PipelineShaderStageCreateInfo, PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PipelineTessellationStateCreateInfo, PipelineTessellationDomainOriginStateCreateInfo>{ enum { value = true }; };
   template <> struct isStructureChainValid<PipelineVertexInputStateCreateInfo, PipelineVertexInputDivisorStateCreateInfoEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PipelineViewportStateCreateInfo, PipelineViewportCoarseSampleOrderStateCreateInfoNV>{ enum { value = true }; };
@@ -66237,6 +68567,7 @@ namespace VULKAN_HPP_NAMESPACE
   template <> struct isStructureChainValid<PresentInfoKHR, PresentTimesInfoGOOGLE>{ enum { value = true }; };
   template <> struct isStructureChainValid<SubmitInfo, ProtectedSubmitInfo>{ enum { value = true }; };
   template <> struct isStructureChainValid<QueueFamilyProperties2, QueueFamilyCheckpointPropertiesNV>{ enum { value = true }; };
+  template <> struct isStructureChainValid<RenderPassBeginInfo, RenderPassAttachmentBeginInfoKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<RenderPassCreateInfo, RenderPassFragmentDensityMapCreateInfoEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<RenderPassCreateInfo, RenderPassInputAttachmentAspectCreateInfo>{ enum { value = true }; };
   template <> struct isStructureChainValid<RenderPassCreateInfo, RenderPassMultiviewCreateInfo>{ enum { value = true }; };
@@ -66358,6 +68689,9 @@ namespace VULKAN_HPP_NAMESPACE
     PFN_vkCmdSetEvent vkCmdSetEvent = 0;
     PFN_vkCmdSetExclusiveScissorNV vkCmdSetExclusiveScissorNV = 0;
     PFN_vkCmdSetLineWidth vkCmdSetLineWidth = 0;
+    PFN_vkCmdSetPerformanceMarkerINTEL vkCmdSetPerformanceMarkerINTEL = 0;
+    PFN_vkCmdSetPerformanceOverrideINTEL vkCmdSetPerformanceOverrideINTEL = 0;
+    PFN_vkCmdSetPerformanceStreamMarkerINTEL vkCmdSetPerformanceStreamMarkerINTEL = 0;
     PFN_vkCmdSetSampleLocationsEXT vkCmdSetSampleLocationsEXT = 0;
     PFN_vkCmdSetScissor vkCmdSetScissor = 0;
     PFN_vkCmdSetStencilCompareMask vkCmdSetStencilCompareMask = 0;
@@ -66379,6 +68713,7 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
     PFN_vkAcquireNextImage2KHR vkAcquireNextImage2KHR = 0;
     PFN_vkAcquireNextImageKHR vkAcquireNextImageKHR = 0;
+    PFN_vkAcquirePerformanceConfigurationINTEL vkAcquirePerformanceConfigurationINTEL = 0;
     PFN_vkAllocateCommandBuffers vkAllocateCommandBuffers = 0;
     PFN_vkAllocateDescriptorSets vkAllocateDescriptorSets = 0;
     PFN_vkAllocateMemory vkAllocateMemory = 0;
@@ -66511,6 +68846,7 @@ namespace VULKAN_HPP_NAMESPACE
     PFN_vkGetMemoryWin32HandlePropertiesKHR vkGetMemoryWin32HandlePropertiesKHR = 0;
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
     PFN_vkGetPastPresentationTimingGOOGLE vkGetPastPresentationTimingGOOGLE = 0;
+    PFN_vkGetPerformanceParameterINTEL vkGetPerformanceParameterINTEL = 0;
     PFN_vkGetPipelineCacheData vkGetPipelineCacheData = 0;
     PFN_vkGetQueryPoolResults vkGetQueryPoolResults = 0;
     PFN_vkGetRayTracingShaderGroupHandlesNV vkGetRayTracingShaderGroupHandlesNV = 0;
@@ -66533,6 +68869,7 @@ namespace VULKAN_HPP_NAMESPACE
 #ifdef VK_USE_PLATFORM_WIN32_KHR
     PFN_vkImportSemaphoreWin32HandleKHR vkImportSemaphoreWin32HandleKHR = 0;
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
+    PFN_vkInitializePerformanceApiINTEL vkInitializePerformanceApiINTEL = 0;
     PFN_vkInvalidateMappedMemoryRanges vkInvalidateMappedMemoryRanges = 0;
     PFN_vkMapMemory vkMapMemory = 0;
     PFN_vkMergePipelineCaches vkMergePipelineCaches = 0;
@@ -66543,6 +68880,7 @@ namespace VULKAN_HPP_NAMESPACE
 #ifdef VK_USE_PLATFORM_WIN32_KHR
     PFN_vkReleaseFullScreenExclusiveModeEXT vkReleaseFullScreenExclusiveModeEXT = 0;
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
+    PFN_vkReleasePerformanceConfigurationINTEL vkReleasePerformanceConfigurationINTEL = 0;
     PFN_vkResetCommandPool vkResetCommandPool = 0;
     PFN_vkResetDescriptorPool vkResetDescriptorPool = 0;
     PFN_vkResetEvent vkResetEvent = 0;
@@ -66555,6 +68893,7 @@ namespace VULKAN_HPP_NAMESPACE
     PFN_vkSetLocalDimmingAMD vkSetLocalDimmingAMD = 0;
     PFN_vkTrimCommandPool vkTrimCommandPool = 0;
     PFN_vkTrimCommandPoolKHR vkTrimCommandPoolKHR = 0;
+    PFN_vkUninitializePerformanceApiINTEL vkUninitializePerformanceApiINTEL = 0;
     PFN_vkUnmapMemory vkUnmapMemory = 0;
     PFN_vkUnregisterObjectsNVX vkUnregisterObjectsNVX = 0;
     PFN_vkUpdateDescriptorSetWithTemplate vkUpdateDescriptorSetWithTemplate = 0;
@@ -66690,6 +69029,7 @@ namespace VULKAN_HPP_NAMESPACE
     PFN_vkQueueEndDebugUtilsLabelEXT vkQueueEndDebugUtilsLabelEXT = 0;
     PFN_vkQueueInsertDebugUtilsLabelEXT vkQueueInsertDebugUtilsLabelEXT = 0;
     PFN_vkQueuePresentKHR vkQueuePresentKHR = 0;
+    PFN_vkQueueSetPerformanceConfigurationINTEL vkQueueSetPerformanceConfigurationINTEL = 0;
     PFN_vkQueueSubmit vkQueueSubmit = 0;
     PFN_vkQueueWaitIdle vkQueueWaitIdle = 0;
 
@@ -66803,6 +69143,9 @@ namespace VULKAN_HPP_NAMESPACE
       vkCmdSetEvent = PFN_vkCmdSetEvent( device ? vkGetDeviceProcAddr( device, "vkCmdSetEvent" ) : vkGetInstanceProcAddr( instance, "vkCmdSetEvent" ) );
       vkCmdSetExclusiveScissorNV = PFN_vkCmdSetExclusiveScissorNV( device ? vkGetDeviceProcAddr( device, "vkCmdSetExclusiveScissorNV" ) : vkGetInstanceProcAddr( instance, "vkCmdSetExclusiveScissorNV" ) );
       vkCmdSetLineWidth = PFN_vkCmdSetLineWidth( device ? vkGetDeviceProcAddr( device, "vkCmdSetLineWidth" ) : vkGetInstanceProcAddr( instance, "vkCmdSetLineWidth" ) );
+      vkCmdSetPerformanceMarkerINTEL = PFN_vkCmdSetPerformanceMarkerINTEL( device ? vkGetDeviceProcAddr( device, "vkCmdSetPerformanceMarkerINTEL" ) : vkGetInstanceProcAddr( instance, "vkCmdSetPerformanceMarkerINTEL" ) );
+      vkCmdSetPerformanceOverrideINTEL = PFN_vkCmdSetPerformanceOverrideINTEL( device ? vkGetDeviceProcAddr( device, "vkCmdSetPerformanceOverrideINTEL" ) : vkGetInstanceProcAddr( instance, "vkCmdSetPerformanceOverrideINTEL" ) );
+      vkCmdSetPerformanceStreamMarkerINTEL = PFN_vkCmdSetPerformanceStreamMarkerINTEL( device ? vkGetDeviceProcAddr( device, "vkCmdSetPerformanceStreamMarkerINTEL" ) : vkGetInstanceProcAddr( instance, "vkCmdSetPerformanceStreamMarkerINTEL" ) );
       vkCmdSetSampleLocationsEXT = PFN_vkCmdSetSampleLocationsEXT( device ? vkGetDeviceProcAddr( device, "vkCmdSetSampleLocationsEXT" ) : vkGetInstanceProcAddr( instance, "vkCmdSetSampleLocationsEXT" ) );
       vkCmdSetScissor = PFN_vkCmdSetScissor( device ? vkGetDeviceProcAddr( device, "vkCmdSetScissor" ) : vkGetInstanceProcAddr( instance, "vkCmdSetScissor" ) );
       vkCmdSetStencilCompareMask = PFN_vkCmdSetStencilCompareMask( device ? vkGetDeviceProcAddr( device, "vkCmdSetStencilCompareMask" ) : vkGetInstanceProcAddr( instance, "vkCmdSetStencilCompareMask" ) );
@@ -66824,6 +69167,7 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
       vkAcquireNextImage2KHR = PFN_vkAcquireNextImage2KHR( device ? vkGetDeviceProcAddr( device, "vkAcquireNextImage2KHR" ) : vkGetInstanceProcAddr( instance, "vkAcquireNextImage2KHR" ) );
       vkAcquireNextImageKHR = PFN_vkAcquireNextImageKHR( device ? vkGetDeviceProcAddr( device, "vkAcquireNextImageKHR" ) : vkGetInstanceProcAddr( instance, "vkAcquireNextImageKHR" ) );
+      vkAcquirePerformanceConfigurationINTEL = PFN_vkAcquirePerformanceConfigurationINTEL( device ? vkGetDeviceProcAddr( device, "vkAcquirePerformanceConfigurationINTEL" ) : vkGetInstanceProcAddr( instance, "vkAcquirePerformanceConfigurationINTEL" ) );
       vkAllocateCommandBuffers = PFN_vkAllocateCommandBuffers( device ? vkGetDeviceProcAddr( device, "vkAllocateCommandBuffers" ) : vkGetInstanceProcAddr( instance, "vkAllocateCommandBuffers" ) );
       vkAllocateDescriptorSets = PFN_vkAllocateDescriptorSets( device ? vkGetDeviceProcAddr( device, "vkAllocateDescriptorSets" ) : vkGetInstanceProcAddr( instance, "vkAllocateDescriptorSets" ) );
       vkAllocateMemory = PFN_vkAllocateMemory( device ? vkGetDeviceProcAddr( device, "vkAllocateMemory" ) : vkGetInstanceProcAddr( instance, "vkAllocateMemory" ) );
@@ -66955,6 +69299,7 @@ namespace VULKAN_HPP_NAMESPACE
       vkGetMemoryWin32HandlePropertiesKHR = PFN_vkGetMemoryWin32HandlePropertiesKHR( device ? vkGetDeviceProcAddr( device, "vkGetMemoryWin32HandlePropertiesKHR" ) : vkGetInstanceProcAddr( instance, "vkGetMemoryWin32HandlePropertiesKHR" ) );
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
       vkGetPastPresentationTimingGOOGLE = PFN_vkGetPastPresentationTimingGOOGLE( device ? vkGetDeviceProcAddr( device, "vkGetPastPresentationTimingGOOGLE" ) : vkGetInstanceProcAddr( instance, "vkGetPastPresentationTimingGOOGLE" ) );
+      vkGetPerformanceParameterINTEL = PFN_vkGetPerformanceParameterINTEL( device ? vkGetDeviceProcAddr( device, "vkGetPerformanceParameterINTEL" ) : vkGetInstanceProcAddr( instance, "vkGetPerformanceParameterINTEL" ) );
       vkGetPipelineCacheData = PFN_vkGetPipelineCacheData( device ? vkGetDeviceProcAddr( device, "vkGetPipelineCacheData" ) : vkGetInstanceProcAddr( instance, "vkGetPipelineCacheData" ) );
       vkGetQueryPoolResults = PFN_vkGetQueryPoolResults( device ? vkGetDeviceProcAddr( device, "vkGetQueryPoolResults" ) : vkGetInstanceProcAddr( instance, "vkGetQueryPoolResults" ) );
       vkGetRayTracingShaderGroupHandlesNV = PFN_vkGetRayTracingShaderGroupHandlesNV( device ? vkGetDeviceProcAddr( device, "vkGetRayTracingShaderGroupHandlesNV" ) : vkGetInstanceProcAddr( instance, "vkGetRayTracingShaderGroupHandlesNV" ) );
@@ -66977,6 +69322,7 @@ namespace VULKAN_HPP_NAMESPACE
 #ifdef VK_USE_PLATFORM_WIN32_KHR
       vkImportSemaphoreWin32HandleKHR = PFN_vkImportSemaphoreWin32HandleKHR( device ? vkGetDeviceProcAddr( device, "vkImportSemaphoreWin32HandleKHR" ) : vkGetInstanceProcAddr( instance, "vkImportSemaphoreWin32HandleKHR" ) );
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
+      vkInitializePerformanceApiINTEL = PFN_vkInitializePerformanceApiINTEL( device ? vkGetDeviceProcAddr( device, "vkInitializePerformanceApiINTEL" ) : vkGetInstanceProcAddr( instance, "vkInitializePerformanceApiINTEL" ) );
       vkInvalidateMappedMemoryRanges = PFN_vkInvalidateMappedMemoryRanges( device ? vkGetDeviceProcAddr( device, "vkInvalidateMappedMemoryRanges" ) : vkGetInstanceProcAddr( instance, "vkInvalidateMappedMemoryRanges" ) );
       vkMapMemory = PFN_vkMapMemory( device ? vkGetDeviceProcAddr( device, "vkMapMemory" ) : vkGetInstanceProcAddr( instance, "vkMapMemory" ) );
       vkMergePipelineCaches = PFN_vkMergePipelineCaches( device ? vkGetDeviceProcAddr( device, "vkMergePipelineCaches" ) : vkGetInstanceProcAddr( instance, "vkMergePipelineCaches" ) );
@@ -66987,6 +69333,7 @@ namespace VULKAN_HPP_NAMESPACE
 #ifdef VK_USE_PLATFORM_WIN32_KHR
       vkReleaseFullScreenExclusiveModeEXT = PFN_vkReleaseFullScreenExclusiveModeEXT( device ? vkGetDeviceProcAddr( device, "vkReleaseFullScreenExclusiveModeEXT" ) : vkGetInstanceProcAddr( instance, "vkReleaseFullScreenExclusiveModeEXT" ) );
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
+      vkReleasePerformanceConfigurationINTEL = PFN_vkReleasePerformanceConfigurationINTEL( device ? vkGetDeviceProcAddr( device, "vkReleasePerformanceConfigurationINTEL" ) : vkGetInstanceProcAddr( instance, "vkReleasePerformanceConfigurationINTEL" ) );
       vkResetCommandPool = PFN_vkResetCommandPool( device ? vkGetDeviceProcAddr( device, "vkResetCommandPool" ) : vkGetInstanceProcAddr( instance, "vkResetCommandPool" ) );
       vkResetDescriptorPool = PFN_vkResetDescriptorPool( device ? vkGetDeviceProcAddr( device, "vkResetDescriptorPool" ) : vkGetInstanceProcAddr( instance, "vkResetDescriptorPool" ) );
       vkResetEvent = PFN_vkResetEvent( device ? vkGetDeviceProcAddr( device, "vkResetEvent" ) : vkGetInstanceProcAddr( instance, "vkResetEvent" ) );
@@ -66999,6 +69346,7 @@ namespace VULKAN_HPP_NAMESPACE
       vkSetLocalDimmingAMD = PFN_vkSetLocalDimmingAMD( device ? vkGetDeviceProcAddr( device, "vkSetLocalDimmingAMD" ) : vkGetInstanceProcAddr( instance, "vkSetLocalDimmingAMD" ) );
       vkTrimCommandPool = PFN_vkTrimCommandPool( device ? vkGetDeviceProcAddr( device, "vkTrimCommandPool" ) : vkGetInstanceProcAddr( instance, "vkTrimCommandPool" ) );
       vkTrimCommandPoolKHR = PFN_vkTrimCommandPoolKHR( device ? vkGetDeviceProcAddr( device, "vkTrimCommandPoolKHR" ) : vkGetInstanceProcAddr( instance, "vkTrimCommandPoolKHR" ) );
+      vkUninitializePerformanceApiINTEL = PFN_vkUninitializePerformanceApiINTEL( device ? vkGetDeviceProcAddr( device, "vkUninitializePerformanceApiINTEL" ) : vkGetInstanceProcAddr( instance, "vkUninitializePerformanceApiINTEL" ) );
       vkUnmapMemory = PFN_vkUnmapMemory( device ? vkGetDeviceProcAddr( device, "vkUnmapMemory" ) : vkGetInstanceProcAddr( instance, "vkUnmapMemory" ) );
       vkUnregisterObjectsNVX = PFN_vkUnregisterObjectsNVX( device ? vkGetDeviceProcAddr( device, "vkUnregisterObjectsNVX" ) : vkGetInstanceProcAddr( instance, "vkUnregisterObjectsNVX" ) );
       vkUpdateDescriptorSetWithTemplate = PFN_vkUpdateDescriptorSetWithTemplate( device ? vkGetDeviceProcAddr( device, "vkUpdateDescriptorSetWithTemplate" ) : vkGetInstanceProcAddr( instance, "vkUpdateDescriptorSetWithTemplate" ) );
@@ -67133,6 +69481,7 @@ namespace VULKAN_HPP_NAMESPACE
       vkQueueEndDebugUtilsLabelEXT = PFN_vkQueueEndDebugUtilsLabelEXT( device ? vkGetDeviceProcAddr( device, "vkQueueEndDebugUtilsLabelEXT" ) : vkGetInstanceProcAddr( instance, "vkQueueEndDebugUtilsLabelEXT" ) );
       vkQueueInsertDebugUtilsLabelEXT = PFN_vkQueueInsertDebugUtilsLabelEXT( device ? vkGetDeviceProcAddr( device, "vkQueueInsertDebugUtilsLabelEXT" ) : vkGetInstanceProcAddr( instance, "vkQueueInsertDebugUtilsLabelEXT" ) );
       vkQueuePresentKHR = PFN_vkQueuePresentKHR( device ? vkGetDeviceProcAddr( device, "vkQueuePresentKHR" ) : vkGetInstanceProcAddr( instance, "vkQueuePresentKHR" ) );
+      vkQueueSetPerformanceConfigurationINTEL = PFN_vkQueueSetPerformanceConfigurationINTEL( device ? vkGetDeviceProcAddr( device, "vkQueueSetPerformanceConfigurationINTEL" ) : vkGetInstanceProcAddr( instance, "vkQueueSetPerformanceConfigurationINTEL" ) );
       vkQueueSubmit = PFN_vkQueueSubmit( device ? vkGetDeviceProcAddr( device, "vkQueueSubmit" ) : vkGetInstanceProcAddr( instance, "vkQueueSubmit" ) );
       vkQueueWaitIdle = PFN_vkQueueWaitIdle( device ? vkGetDeviceProcAddr( device, "vkQueueWaitIdle" ) : vkGetInstanceProcAddr( instance, "vkQueueWaitIdle" ) );
     }

@@ -4933,7 +4933,7 @@ int main( int argc, char **argv )
 #endif
 
 #if !defined(VULKAN_HPP_INLINE)
-# if defined(__clang___)
+# if defined(__clang__)
 #  if __has_attribute(always_inline)
 #   define VULKAN_HPP_INLINE __attribute__((always_inline)) __inline__
 #  else

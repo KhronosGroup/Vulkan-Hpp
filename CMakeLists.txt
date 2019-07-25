@@ -79,6 +79,7 @@ target_include_directories(VulkanHppGenerator PRIVATE "${CMAKE_SOURCE_DIR}/tinyx
 
 option (SAMPLES_BUILD OFF)
 if (SAMPLES_BUILD)
+  add_subdirectory(glfw)
   add_subdirectory(glslang)
   add_subdirectory(samples)
 endif (SAMPLES_BUILD)

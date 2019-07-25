@@ -33,6 +33,14 @@ namespace vk
         case vk::ShaderStageFlagBits::eGeometry:                return EShLangGeometry;
         case vk::ShaderStageFlagBits::eFragment:                return EShLangFragment;
         case vk::ShaderStageFlagBits::eCompute:                 return EShLangCompute;
+        case vk::ShaderStageFlagBits::eRaygenNV:                return EShLangRayGenNV;
+        case vk::ShaderStageFlagBits::eAnyHitNV:                return EShLangAnyHitNV;
+        case vk::ShaderStageFlagBits::eClosestHitNV:            return EShLangClosestHitNV;
+        case vk::ShaderStageFlagBits::eMissNV:                  return EShLangMissNV;
+        case vk::ShaderStageFlagBits::eIntersectionNV:          return EShLangIntersectNV;
+        case vk::ShaderStageFlagBits::eCallableNV:              return EShLangCallableNV;
+        case vk::ShaderStageFlagBits::eTaskNV:                  return EShLangTaskNV;
+        case vk::ShaderStageFlagBits::eMeshNV:                  return EShLangMeshNV;
         default:
           assert(false && "Unknown shader stage");
           return EShLangVertex;

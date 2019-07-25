@@ -1516,12 +1516,8 @@ void VulkanHppGenerator::readExtensionDisabledRequire(tinyxml2::XMLElement const
       else
       {
         // a type simply needs to be removed from the structs and vkTypes sets
-        assert(m_structures.find(nameAttribute->second) != m_structures.end() ||
-               m_bitmasks.find(nameAttribute->second) != m_bitmasks.end() ||
-               m_bitmaskBits.find(nameAttribute->second) != m_bitmaskBits.end());
+        assert(m_structures.find(nameAttribute->second) != m_structures.end());
         m_structures.erase(nameAttribute->second);
-        m_bitmasks.erase(nameAttribute->second);
-        m_bitmaskBits.erase(nameAttribute->second);
       }
     }
     else if (value == "enum")

@@ -4175,40 +4175,42 @@ void VulkanHppGenerator::writeUnion(std::ostream & os, std::pair<std::string, St
     << "  union " << stripPrefix(structure.first, "Vk") << std::endl
     << "  {" << std::endl;
 
-  bool firstTime = true;
-  for (auto const& member : structure.second.members)
+  if (!structure.second.returnedOnly)
   {
-    // VkBool32 is aliased to uint32_t. Don't create a VkBool32 constructor if the union also contains a uint32_t constructor.
-    auto compareBool32Alias = [](MemberData const& member) { return member.type.type == std::string("uint32_t"); };
-    if (member.type.type == "VkBool32") {
-      if (std::find_if(structure.second.members.begin(), structure.second.members.end(), compareBool32Alias) != structure.second.members.end())
-      {
-        continue;
-      }
-    }
-
-    // one constructor per union element
-    os << "    " << stripPrefix(structure.first, "Vk") << "( " << (member.arraySize.empty() ? (member.type.compose() + " ") : ("const std::array<" + member.type.compose() + "," + member.arraySize + ">& ")) << member.name << "_";
-
-    // just the very first constructor gets default arguments
-    if (firstTime)
+    bool firstTime = true;
+    for (auto const& member : structure.second.members)
     {
-      std::string value = defaultValue(member.type.type);
-      os << (member.arraySize.empty() ? (" = " + value) : (" = { { " + value + " } }"));
-      firstTime = false;
-    }
-    os << " )" << std::endl
-      << "    {" << std::endl
-      << "      " << (member.arraySize.empty() ? (member.name + " = " + member.name + "_") : ("memcpy( " + member.name + ", " + member.name + "_.data(), " + member.arraySize + " * sizeof( " + member.type.compose() + " ) )")) << ";" << std::endl
-      << "    }" << std::endl
-      << std::endl;
-  }
+      // VkBool32 is aliased to uint32_t. Don't create a VkBool32 constructor if the union also contains a uint32_t constructor.
+      auto compareBool32Alias = [](MemberData const& member) { return member.type.type == std::string("uint32_t"); };
+      if (member.type.type == "VkBool32") {
+        if (std::find_if(structure.second.members.begin(), structure.second.members.end(), compareBool32Alias) != structure.second.members.end())
+        {
+          continue;
+        }
+      }
 
-  // one setter per union element
-  assert(!structure.second.returnedOnly);
-  for (auto const& member : structure.second.members)
-  {
-    writeStructSetter(os, stripPrefix(structure.first, "Vk"), member);
+      // one constructor per union element
+      os << "    " << stripPrefix(structure.first, "Vk") << "( " << (member.arraySize.empty() ? (member.type.compose() + " ") : ("const std::array<" + member.type.compose() + "," + member.arraySize + ">& ")) << member.name << "_";
+
+      // just the very first constructor gets default arguments
+      if (firstTime)
+      {
+        std::string value = defaultValue(member.type.type);
+        os << (member.arraySize.empty() ? (" = " + value) : (" = { { " + value + " } }"));
+        firstTime = false;
+      }
+      os << " )" << std::endl
+        << "    {" << std::endl
+        << "      " << (member.arraySize.empty() ? (member.name + " = " + member.name + "_") : ("memcpy( " + member.name + ", " + member.name + "_.data(), " + member.arraySize + " * sizeof( " + member.type.compose() + " ) )")) << ";" << std::endl
+        << "    }" << std::endl
+        << std::endl;
+    }
+
+    // one setter per union element
+    for (auto const& member : structure.second.members)
+    {
+      writeStructSetter(os, stripPrefix(structure.first, "Vk"), member);
+    }
   }
 
   // the implicit cast operators to the native type

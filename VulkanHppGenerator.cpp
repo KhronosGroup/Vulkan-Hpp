@@ -4205,7 +4205,6 @@ void VulkanHppGenerator::writeUnion(std::ostream & os, std::pair<std::string, St
   }
 
   // one setter per union element
-  assert(!structure.second.returnedOnly);
   for (auto const& member : structure.second.members)
   {
     writeStructSetter(os, stripPrefix(structure.first, "Vk"), member);

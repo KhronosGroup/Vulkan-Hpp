@@ -4231,18 +4231,18 @@ void VulkanHppGenerator::writeUnion(std::ostream & os, std::pair<std::string, St
   if (needsUnrestrictedUnions)
   {
     os << "#ifdef VULKAN_HPP_HAS_UNRESTRICTED_UNIONS" << std::endl;
-    for (auto const& member : structure.second.members)
-    {
-      os << "    " << member.type.compose() << " " << member.name << (member.arraySize.empty() ? "" : ("[" + member.arraySize + "]")) << ";" << std::endl;
-    }
-    os << "#else" << std::endl;
   }
   for (auto const& member : structure.second.members)
   {
-    os << "    " << (beginsWith(member.type.type, "Vk") ? "Vk" : "") << member.type.compose() << " " << member.name << (member.arraySize.empty() ? "" : ("[" + member.arraySize + "]")) << ";" << std::endl;
+    os << "    " << member.type.compose() << " " << member.name << (member.arraySize.empty() ? "" : ("[" + member.arraySize + "]")) << ";" << std::endl;
   }
   if (needsUnrestrictedUnions)
   {
+    os << "#else" << std::endl;
+    for (auto const& member : structure.second.members)
+    {
+      os << "    " << member.type.prefix + (member.type.prefix.empty() ? "" : " ") + member.type.type + member.type.postfix << " " << member.name << (member.arraySize.empty() ? "" : ("[" + member.arraySize + "]")) << ";" << std::endl;
+    }
     os << "#endif  /*VULKAN_HPP_HAS_UNRESTRICTED_UNIONS*/" << std::endl;
   }
   os << "  };" << std::endl;

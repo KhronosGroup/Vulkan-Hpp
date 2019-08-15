@@ -25,6 +25,19 @@ class VulkanHppGenerator
   public:
     VulkanHppGenerator();
 
+    void appendBaseTypes(std::string & str) const;
+    void appendBitmasks(std::string & str) const;
+    void appendDispatchLoaderDynamic(std::string & str); // use vkGet*ProcAddress to get function pointers
+    void appendDispatchLoaderStatic(std::string & str);  // use exported symbols from loader
+    void appendDispatchLoaderDefault(std::string & str);  // typedef to DispatchLoaderStatic or undefined type, based on VK_NO_PROTOTYPES
+    void appendEnums(std::string & str) const;
+    void appendForwardDeclarations(std::string & str) const;
+    void appendHandles(std::string & str) const;
+    void appendHandlesCommandDefintions(std::string & str) const;
+    void appendResultExceptions(std::string & str) const;
+    void appendStructs(std::string & str) const;
+    void appendStructureChainValidation(std::string & str);
+    void appendThrowExceptions(std::string & str) const;
     void checkCorrectness();
     std::string const& getTypesafeCheck() const;
     std::string const& getVersion() const;
@@ -37,19 +50,6 @@ class VulkanHppGenerator
     void readPlatforms(tinyxml2::XMLElement const* element);
     void readTags(tinyxml2::XMLElement const* element);
     void readTypes(tinyxml2::XMLElement const* element);
-    void writeBaseTypes(std::ostream & os) const;
-    void writeBitmasks(std::ostream & os) const;
-    void writeDispatchLoaderDynamic(std::ostream &os); // use vkGet*ProcAddress to get function pointers
-    void writeDispatchLoaderStatic(std::ostream &os);  // use exported symbols from loader
-    void writeDispatchLoaderDefault(std::ostream &os);  // typedef to DispatchLoaderStatic or undefined type, based on VK_NO_PROTOTYPES
-    void writeEnums(std::ostream & os) const;
-    void writeForwardDeclarations(std::ostream & os) const;
-    void writeHandles(std::ostream & os) const;
-    void writeHandlesCommandDefintions(std::ostream & os) const;
-    void writeResultExceptions(std::ostream & os) const;
-    void writeStructs(std::ostream & os) const;
-    void writeStructureChainValidation(std::ostream & os);
-    void writeThrowExceptions(std::ostream& os) const;
 
   private:
     struct BitmaskData
@@ -158,6 +158,50 @@ class VulkanHppGenerator
     };
 
   private:
+    void appendArgumentPlainType(std::string & str, ParamData const& paramData) const;
+    void appendArguments(std::string & str, CommandData const& commandData, size_t returnParamIndex, size_t templateParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool twoStep, bool firstCall, bool singular, size_t from, size_t to) const;
+    void appendArgumentVector(std::string & str, size_t paramIndex, ParamData const& paramData, size_t returnParamIndex, size_t templateParamIndex, bool twoStep, bool firstCall, bool singular) const;
+    void appendArgumentVulkanType(std::string & str, ParamData const& paramData) const;
+    void appendBitmask(std::string & os, std::string const& bitmaskName, std::string const& bitmaskAlias, std::string const& enumName, std::vector<EnumValueData> const& enumValues) const;
+    void appendBitmaskToStringFunction(std::string & str, std::string const& flagsName, std::string const& enumName, std::vector<EnumValueData> const& enumValues) const;
+    void appendCall(std::string &str, std::pair<std::string, CommandData> const& commandData, size_t returnParamIndex, size_t templateParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool twoStep, bool firstCall, bool singular) const;
+    void appendCommand(std::string & str, std::string const& indentation, std::string const& name, std::pair<std::string, CommandData> const& commandData, bool definition) const;
+    void appendEnum(std::string & str, std::pair<std::string, EnumData> const& enumData) const;
+    void appendEnumToString(std::string & str, std::pair<std::string, EnumData> const& enumData) const;
+    void appendFunction(std::string & str, std::string const& indentation, std::string const& name, std::pair<std::string, CommandData> const& commandData, size_t returnParamIndex, size_t templateParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool twoStep, std::string const& enhancedReturnType, bool definition, bool enhanced, bool singular, bool unique, bool isStructureChain, bool withAllocator) const;
+    void appendFunctionBodyEnhanced(std::string & str, std::string const& indentation, std::string const& commandName, std::pair<std::string, CommandData> const& commandData, size_t returnParamIndex, size_t templateParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool twoStep, std::string const& enhancedReturnType, bool singular, bool unique, bool isStructureChain, bool withAllocator) const;
+    std::string appendFunctionBodyEnhancedLocalReturnVariable(std::string & str, std::string const& indentation, CommandData const& commandData, size_t returnParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool twoStep, std::string const& enhancedReturnType, bool singular, bool isStructureChain, bool withAllocator) const;
+    void appendFunctionBodyEnhancedLocalReturnVariableVectorSize(std::string & str, std::vector<ParamData> const& params, std::pair<size_t, size_t> const& vectorParamIndex, size_t returnParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool withAllocator) const;
+    void appendFunctionBodyEnhancedMultiVectorSizeCheck(std::string & str, std::string const& indentation, std::string const& commandName, std::pair<std::string, CommandData> const& commandData, size_t returnParamIndex, std::map<size_t, size_t> const& vectorParamIndices) const;
+    void appendFunctionBodyEnhancedReturnResultValue(std::string & str, std::string const& indentation, std::string const& returnName, std::string const& commandName, std::pair<std::string, CommandData> const& commandData, size_t returnParamIndex, bool twoStep, bool singular, bool unique) const;
+    void appendFunctionBodyEnhancedSingleStep(std::string & str, std::string const& indentation, std::pair<std::string, CommandData> const& commandData, size_t returnParamIndex, size_t templateParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool singular) const;
+    void appendFunctionBodyEnhancedTwoStep(std::string & str, std::string const& indentation, std::pair<std::string, CommandData> const& commandData, size_t returnParamIndex, size_t templateParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool singular, std::string const& returnName) const;
+    void appendFunctionBodyEnhancedVectorOfUniqueHandles(std::string & str, std::string const& indentation, std::string const& commandName, std::pair<std::string, CommandData> const& commandData, size_t returnParamIndex, size_t templateParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool twoStep, bool singular, bool withAllocator) const;
+    void appendFunctionBodyStandard(std::string & str, std::string const& indentation, std::pair<std::string, CommandData> const& commandData) const;
+    void appendFunctionBodyStandardArgument(std::string & str, TypeData const& typeData, std::string const& name) const;
+    bool appendFunctionHeaderArgumentEnhanced(std::string & str, ParamData const& param, size_t paramIndex, std::map<size_t, size_t> const& vectorParamIndices, bool skip, bool argEncountered, bool isTemplateParam, bool isLastArgument, bool singular, bool withDefaults, bool withAllocator) const;
+    void appendFunctionHeaderArgumentEnhancedPointer(std::string & str, ParamData const& param, std::string const& strippedParameterName, bool withDefaults, bool withAllocator) const;
+    void appendFunctionHeaderArgumentEnhancedSimple(std::string & str, ParamData const& param, bool lastArgument, bool withDefaults, bool withAllocator) const;
+    void appendFunctionHeaderArgumentEnhancedVector(std::string & str, ParamData const& param, std::string const& strippedParameterName, bool hasSizeParam, bool isTemplateParam, bool singular, bool withDefaults, bool withAllocator) const;
+    void appendFunctionHeaderArguments(std::string & str, std::pair<std::string, CommandData> const& commandData, size_t returnParamIndex, size_t templateParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool enhanced, bool singular, bool withDefaults, bool withAllocator) const;
+    void appendFunctionHeaderArgumentsEnhanced(std::string & str, std::pair<std::string, CommandData> const& commandData, size_t returnParamIndex, size_t templateParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool singular, bool withDefaults, bool withAllocator) const;
+    void appendFunctionHeaderArgumentsStandard(std::string & str, std::pair<std::string, CommandData> const& commandData, bool withDefaults) const;
+    bool appendFunctionHeaderArgumentStandard(std::string & str, ParamData const& param, bool argEncountered, bool isLastArgument, bool withDefaults) const;
+    void appendFunctionHeaderReturnType(std::string & str, CommandData const& commandData, size_t returnParamIndex, std::map<size_t, size_t> const& vectorParamIndices, std::string const& enhancedReturnType, bool enhanced, bool singular, bool unique, bool isStructureChain) const;
+    void appendFunctionHeaderTemplate(std::string & str, std::string const& indentation, size_t returnParamIndex, size_t templateParamIndex, std::string const& enhancedReturnType, bool enhanced, bool singular, bool unique, bool withDefault, bool isStructureChain) const;
+    void appendHandle(std::string & str, std::pair<std::string, HandleData> const& handle, std::set<std::string> & listedHandles) const;
+    void appendPlatformEnter(std::string & str, std::string const& platform) const;
+    void appendPlatformLeave(std::string & str, std::string const& platform) const;
+    void appendStruct(std::string & str, std::pair<std::string, StructureData> const& structure, std::set<std::string> & listedStructures) const;
+    void appendStructCompareOperators(std::string & str, std::pair<std::string, StructureData> const& structure) const;
+    std::string appendStructConstructor(std::pair<std::string, StructureData> const& structData, std::string const& prefix, bool withLayoutStructure) const;
+    bool appendStructConstructorArgument(std::string & str, bool listedArgument, std::string const& indentation, MemberData const& memberData) const;
+    void appendStructCopyConstructors(std::string & str, std::string const& vkName, bool withLayoutStructure) const;
+    void appendStructMembers(std::string & str, StructureData const& structData, std::string const& prefix) const;
+    void appendStructSetter(std::string & str, std::string const& structureName, MemberData const& memberData) const;
+    void appendStructure(std::string & str, std::pair<std::string, StructureData> const& structure) const;
+    void appendUnion(std::string & str, std::pair<std::string, StructureData> const& structure) const;
+    void appendUniqueTypes(std::string &str, std::string const& parentType, std::set<std::string> const& childrenTypes) const;
     bool containsUnion(std::string const& type) const;
     std::string defaultValue(std::string const& type) const;
     std::string determineEnhancedReturnType(CommandData const& commandData, size_t returnParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool twoStep, bool isStructureChain) const;
@@ -165,10 +209,6 @@ class VulkanHppGenerator
     std::string determineSubStruct(std::pair<std::string, StructureData> const& structure) const;
     size_t determineTemplateParamIndex(std::vector<ParamData> const& params, std::map<size_t, size_t> const& vectorParamIndices) const;
     std::map<size_t, size_t> determineVectorParamIndices(std::vector<ParamData> const& params) const;
-    std::string generateArgumentPlainType(ParamData const& paramData) const;
-    std::string generateArgumentVector(size_t paramIndex, ParamData const& paramData, size_t returnParamIndex, size_t templateParamIndex, bool twoStep, bool firstCall, bool singular) const;
-    std::string generateArgumentVulkanType(ParamData const& paramData) const;
-    std::string generateCall(std::pair<std::string, CommandData> const& commandData, size_t returnParamIndex, size_t templateParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool twoStep, bool firstCall, bool singular) const;
     bool isTwoStepAlgorithm(std::vector<ParamData> const& params) const;
     void linkCommandToHandle(std::string const& name, CommandData const& commandData);
     void readBaseType(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes);
@@ -200,46 +240,6 @@ class VulkanHppGenerator
     void readType(tinyxml2::XMLElement const* element);
     void registerDeleter(std::string const& name, std::pair<std::string, CommandData> const& commandData);
     void unlinkCommandFromHandle(std::string const& name);
-    void writeArguments(std::ostream & os, CommandData const& commandData, size_t returnParamIndex, size_t templateParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool twoStep, bool firstCall, bool singular, size_t from, size_t to) const;
-    void writeBitmask(std::ostream & os, std::string const& bitmaskName, std::string const& bitmaskAlias, std::string const& enumName, std::vector<EnumValueData> const& enumValues) const;
-    void writeBitmaskToStringFunction(std::ostream & os, std::string const& flagsName, std::string const& enumName, std::vector<EnumValueData> const& enumValues) const;
-    void writeCommand(std::ostream &os, std::string const& indentation, std::string const& name, std::pair<std::string, CommandData> const& commandData, bool definition) const;
-    void writeEnum(std::ostream & os, std::pair<std::string,EnumData> const& enumData) const;
-    void writeEnumToString(std::ostream & os, std::pair<std::string, EnumData> const& enumData) const;
-    void writeFunction(std::ostream & os, std::string const& indentation, std::string const& name, std::pair<std::string, CommandData> const& commandData, size_t returnParamIndex, size_t templateParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool twoStep, std::string const& enhancedReturnType, bool definition, bool enhanced, bool singular, bool unique, bool isStructureChain, bool withAllocator) const;
-    void writeFunctionBodyEnhanced(std::ostream & os, std::string const& indentation, std::string const& commandName, std::pair<std::string, CommandData> const& commandData, size_t returnParamIndex, size_t templateParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool twoStep, std::string const& enhancedReturnType, bool singular, bool unique, bool isStructureChain, bool withAllocator) const;
-    std::string writeFunctionBodyEnhancedLocalReturnVariable(std::ostream & os, std::string const& indentation, CommandData const& commandData, size_t returnParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool twoStep, std::string const& enhancedReturnType, bool singular, bool isStructureChain, bool withAllocator) const;
-    void writeFunctionBodyEnhancedLocalReturnVariableVectorSize(std::ostream & os, std::vector<ParamData> const& params, std::pair<size_t, size_t> const& vectorParamIndex, size_t returnParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool withAllocator) const;
-    void writeFunctionBodyEnhancedMultiVectorSizeCheck(std::ostream & os, std::string const& indentation, std::string const& commandName, std::pair<std::string, CommandData> const& commandData, size_t returnParamIndex, std::map<size_t, size_t> const& vectorParamIndices) const;
-    void writeFunctionBodyEnhancedReturnResultValue(std::ostream & os, std::string const& indentation, std::string const& returnName, std::string const& commandName, std::pair<std::string, CommandData> const& commandData, size_t returnParamIndex, bool twoStep, bool singular, bool unique) const;
-    void writeFunctionBodyEnhancedSingleStep(std::ostream & os, std::string const& indentation, std::pair<std::string, CommandData> const& commandData, size_t returnParamIndex, size_t templateParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool singular) const;
-    void writeFunctionBodyEnhancedTwoStep(std::ostream & os, std::string const& indentation, std::pair<std::string, CommandData> const& commandData, size_t returnParamIndex, size_t templateParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool singular, std::string const& returnName) const;
-    void writeFunctionBodyEnhancedVectorOfUniqueHandles(std::ostream & os, std::string const& indentation, std::string const& commandName, std::pair<std::string, CommandData> const& commandData, size_t returnParamIndex, size_t templateParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool twoStep, bool singular, bool withAllocator) const;
-    void writeFunctionBodyStandard(std::ostream & os, std::string const& indentation, std::pair<std::string, CommandData> const& commandData) const;
-    std::string writeFunctionBodyStandardArgument(TypeData const& typeData, std::string const& name) const;
-    bool writeFunctionHeaderArgumentEnhanced(std::ostream & os, ParamData const& param, size_t paramIndex, std::map<size_t, size_t> const& vectorParamIndices, bool skip, bool argEncountered, bool isTemplateParam, bool isLastArgument, bool singular, bool withDefaults, bool withAllocator) const;
-    void writeFunctionHeaderArgumentEnhancedPointer(std::ostream & os, ParamData const& param, std::string const& strippedParameterName, bool withDefaults, bool withAllocator) const;
-    void writeFunctionHeaderArgumentEnhancedSimple(std::ostream & os, ParamData const& param, bool lastArgument, bool withDefaults, bool withAllocator) const;
-    void writeFunctionHeaderArgumentEnhancedVector(std::ostream & os, ParamData const& param, std::string const& strippedParameterName, bool hasSizeParam, bool isTemplateParam, bool singular, bool withDefaults, bool withAllocator) const;
-    void writeFunctionHeaderArguments(std::ostream & os, std::pair<std::string, CommandData> const& commandData, size_t returnParamIndex, size_t templateParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool enhanced, bool singular, bool withDefaults, bool withAllocator) const;
-    void writeFunctionHeaderArgumentsEnhanced(std::ostream & os, std::pair<std::string, CommandData> const& commandData, size_t returnParamIndex, size_t templateParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool singular, bool withDefaults, bool withAllocator) const;
-    void writeFunctionHeaderArgumentsStandard(std::ostream & os, std::pair<std::string, CommandData> const& commandData, bool withDefaults) const;
-    bool writeFunctionHeaderArgumentStandard(std::ostream & os, ParamData const& param, bool argEncountered, bool isLastArgument, bool withDefaults) const;
-    void writeFunctionHeaderReturnType(std::ostream & os, CommandData const& commandData, size_t returnParamIndex, std::map<size_t, size_t> const& vectorParamIndices, std::string const& enhancedReturnType, bool enhanced, bool singular, bool unique, bool isStructureChain) const;
-    void writeFunctionHeaderTemplate(std::ostream & os, std::string const& indentation, size_t returnParamIndex, size_t templateParamIndex, std::string const& enhancedReturnType, bool enhanced, bool singular, bool unique, bool withDefault, bool isStructureChain) const;
-    void writeHandle(std::ostream & os, std::pair<std::string, HandleData> const& handle, std::set<std::string> & listedHandles) const;
-    void writePlatformEnter(std::ostream & os, std::string const& platform) const;
-    void writePlatformLeave(std::ostream & os, std::string const& platform) const;
-    void writeStruct(std::ostream & os, std::pair<std::string, StructureData> const& structure, std::set<std::string> & listedStructures) const;
-    void writeStructCompareOperators(std::ostream & os, std::pair<std::string, StructureData> const& structure) const;
-    std::string writeStructConstructor(std::pair<std::string, StructureData> const& structData, std::string const& prefix, bool withLayoutStructure) const;
-    std::string writeStructConstructorArgument(bool & listedArgument, std::string const& indentation, MemberData const& memberData) const;
-    std::string writeStructCopyConstructors(std::string const& vkName, bool withLayoutStructure) const;
-    std::string writeStructMembers(StructureData const& structData, std::string const& prefix) const;
-    void writeStructSetter(std::ostream & os, std::string const& structureName, MemberData const& memberData) const;
-    void writeStructure(std::ostream & os, std::pair<std::string, StructureData> const& structure) const;
-    void writeUnion(std::ostream & os, std::pair<std::string, StructureData> const& structure) const;
-    void writeUniqueTypes(std::ostream &os, std::string const& parentType, std::set<std::string> const& childrenTypes) const;
 #if !defined(NDEBUG)
     void readRequires(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes);
 #endif

@@ -100,7 +100,7 @@ static_assert( VK_HEADER_VERSION ==  116 , "Wrong VK_HEADER_VERSION!" );
 #endif
 
 #if !defined(VULKAN_HPP_INLINE)
-# if defined(__clang___)
+# if defined(__clang__)
 #  if __has_attribute(always_inline)
 #   define VULKAN_HPP_INLINE __attribute__((always_inline)) __inline__
 #  else
@@ -22818,8 +22818,8 @@ namespace VULKAN_HPP_NAMESPACE
     vk::ClearColorValue color;
     vk::ClearDepthStencilValue depthStencil;
 #else
-    Vkvk::ClearColorValue color;
-    Vkvk::ClearDepthStencilValue depthStencil;
+    VkClearColorValue color;
+    VkClearDepthStencilValue depthStencil;
 #endif  /*VULKAN_HPP_HAS_UNRESTRICTED_UNIONS*/
   };
 
@@ -42361,7 +42361,7 @@ namespace VULKAN_HPP_NAMESPACE
     uint32_t value32;
     uint64_t value64;
     float valueFloat;
-    Vkvk::Bool32 valueBool;
+    VkBool32 valueBool;
     const char* valueString;
 #endif  /*VULKAN_HPP_HAS_UNRESTRICTED_UNIONS*/
   };

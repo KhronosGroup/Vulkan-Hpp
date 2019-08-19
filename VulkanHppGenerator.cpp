@@ -1812,33 +1812,15 @@ void VulkanHppGenerator::readRequireEnum(tinyxml2::XMLElement const* element, st
     auto aliasIt = attributes.find("alias");
     if (aliasIt != attributes.end())
     {
+      // add this enum name to the list of aliases
       checkAttributes(attributes, element->GetLineNum(), { { "alias",{} },{ "extends",{} },{ "name",{} } }, { { "comment",{} } });
-
-      // look for the aliased enum value
-      std::string vulkanAlias = aliasIt->second;
-      std::string vkAlias;
-      auto valueIt = std::find_if(enumIt->second.values.begin(), enumIt->second.values.end(), [&vulkanAlias](EnumValueData const& evd) { return evd.vulkanValue == vulkanAlias; });
-      if (valueIt == enumIt->second.values.end())
-      {
-        // if the aliased enum value is not found in the values, look in the aliases as well!
-        auto aIt = std::find_if(enumIt->second.aliases.begin(), enumIt->second.aliases.end(), [&vulkanAlias](std::pair<std::string, std::string> const& value) { return value.first == vulkanAlias; });
-        assert(aIt != enumIt->second.aliases.end());
-        vkAlias = aIt->second;
-      }
-      else
-      {
-        vkAlias = valueIt->vkValue;
-      }
-
-      std::string name = createEnumValueName(nameIt->second, prefix, postfix, bitmask, tag);
-      if (vkAlias != name)
-      {
-        // only add an alias if it's different from the aliased name
-        enumIt->second.aliases.push_back(std::make_pair(nameIt->second, name));
-      }
+      std::string valueName = createEnumValueName(nameIt->second, prefix, postfix, bitmask, tag);
+      assert(std::find_if(enumIt->second.aliases.begin(), enumIt->second.aliases.end(), [&valueName](std::pair<std::string, std::string> const& aliasPair) { return valueName == aliasPair.second; }) == enumIt->second.aliases.end());
+      enumIt->second.aliases.push_back(std::make_pair(nameIt->second, valueName));
     }
     else
     {
+      // add this enum name to the list of values
       assert((attributes.find("bitpos") != attributes.end()) + (attributes.find("offset") != attributes.end()) + (attributes.find("value") != attributes.end()) == 1);
       enumIt->second.addEnumValue(nameIt->second, bitmask, attributes.find("bitpos") != attributes.end(), prefix, postfix, tag);
     }
@@ -2552,11 +2534,15 @@ void VulkanHppGenerator::writeEnum(std::ostream & os, std::pair<std::string,Enum
   }
   for (auto const& value : enumData.second.aliases)
   {
-    if (!values.empty())
+    // make sure to only list alias values that differ from all non-alias values
+    if (std::find_if(enumData.second.values.begin(), enumData.second.values.end(), [&value](EnumValueData const& evd) { return value.second == evd.vkValue; }) == enumData.second.values.end())
     {
-      values += ",";
+      if (!values.empty())
+      {
+        values += ",";
+      }
+      values += "\n    " + value.second + " = " + value.first;
     }
-    values += "\n    " + value.second + " = " + value.first;
   }
   if (!values.empty())
   {

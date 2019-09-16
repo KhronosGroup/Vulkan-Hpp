@@ -2346,48 +2346,51 @@ std::string VulkanHppGenerator::appendStructConstructor(std::pair<std::string, S
   std::string arguments, initializers, copyOps;
   bool listedArgument = false;
   bool firstArgument = true;
-  for (auto const& member : structData.second.members)
+  if (!structData.second.returnedOnly)
   {
-    // gather the arguments
-    listedArgument = appendStructConstructorArgument(arguments, listedArgument, indentation, member);
-
-    // gather the initializers; skip members 'pNext' and 'sType', they are directly set by initializers
-    if ((member.name != "pNext") && (member.name != "sType"))
+    for (auto const& member : structData.second.members)
     {
-      if (withLayoutStructure)
+      // gather the arguments
+      listedArgument = appendStructConstructorArgument(arguments, listedArgument, indentation, member);
+
+      // gather the initializers; skip members 'pNext' and 'sType', they are directly set by initializers
+      if ((member.name != "pNext") && (member.name != "sType"))
       {
-        // withLayoutStructure means: we pass the arguments into the layout::class
-        if (!firstArgument)
+        if (withLayoutStructure)
         {
-          initializers += ", ";
+          // withLayoutStructure means: we pass the arguments into the layout::class
+          if (!firstArgument)
+          {
+            initializers += ", ";
+          }
+          initializers += member.name + "_";
+          firstArgument = false;
         }
-        initializers += member.name + "_";
-        firstArgument = false;
-      }
-      else if (member.arraySize.empty())
-      {
-        // here, we can only handle non-array arguments
-        initializers += prefix + "  " + (firstArgument ? ":" : ",") + " " + member.name + "( " + member.name + "_ )\n";
-        firstArgument = false;
-      }
-      else
-      {
-        // here we can handle the arrays, copying over from argument (with trailing '_') to member
-        // size is arraySize times sizeof type
-        copyOps += "\n"
-          + prefix + "  memcpy( &" + member.name + ", " + member.name + "_.data(), " + member.arraySize + " * sizeof( " + member.type.compose() + " ) );";
+        else if (member.arraySize.empty())
+        {
+          // here, we can only handle non-array arguments
+          initializers += prefix + "  " + (firstArgument ? ":" : ",") + " " + member.name + "( " + member.name + "_ )\n";
+          firstArgument = false;
+        }
+        else
+        {
+          // here we can handle the arrays, copying over from argument (with trailing '_') to member
+          // size is arraySize times sizeof type
+          copyOps += "\n"
+            + prefix + "  memcpy( &" + member.name + ", " + member.name + "_.data(), " + member.arraySize + " * sizeof( " + member.type.compose() + " ) );";
+        }
       }
     }
-  }
-  if (!copyOps.empty())
-  {
-    copyOps += "\n" + prefix;
+    if (!copyOps.empty())
+    {
+      copyOps += "\n" + prefix;
+    }
   }
 
-  std::string structConstructor = prefix + stripPrefix(structData.first, "Vk") + (arguments.empty() ? "()\n" : std::string("( " + arguments + " )")) + "\n";
+  std::string structConstructor = prefix + stripPrefix(structData.first, "Vk") + (arguments.empty() ? "()" : std::string("( " + arguments + " )")) + "\n";
   if (withLayoutStructure)
   {
-    structConstructor += prefix + "  : layout::" + stripPrefix(structData.first, "Vk") + "( " + initializers + " )\n" + prefix + "{}\n";
+    structConstructor += prefix + "  : layout::" + stripPrefix(structData.first, "Vk") + (initializers.empty() ? "()" : std::string("( " + initializers + " )")) + "\n" + prefix + "{}\n";
   }
   else
   {
@@ -2479,7 +2482,7 @@ void VulkanHppGenerator::appendStructCopyConstructors(std::string & str, std::st
 
     ${name}& operator=( Vk${name} const & rhs )
     {
-      *reinterpret_cast<Vk${name}*>(this) = rhs;
+      layout::${name}::operator=(rhs);
       return *this;
     }
 )";
@@ -2596,12 +2599,11 @@ ${members}    };
       });
   }
 
-  // only structs that are not returnedOnly get a constructor!
-  std::string constructorAndSetters;
+  std::string constructorAndSetters = appendStructConstructor(structure, "    ", withLayoutStructure);
+  appendStructCopyConstructors(constructorAndSetters, stripPrefix(structure.first, "Vk"), withLayoutStructure);
   if (!structure.second.returnedOnly)
   {
-    constructorAndSetters += appendStructConstructor(structure, "    ", withLayoutStructure);
-    appendStructCopyConstructors(constructorAndSetters, stripPrefix(structure.first, "Vk"), withLayoutStructure);
+    // only structs that are not returnedOnly get setters!
     for (auto const& member : structure.second.members)
     {
       appendStructSetter(constructorAndSetters, stripPrefix(structure.first, "Vk"), member);

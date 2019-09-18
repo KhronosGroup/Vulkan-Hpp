@@ -17790,7 +17790,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     GeometryTrianglesNV& operator=( VkGeometryTrianglesNV const & rhs )
     {
-      *reinterpret_cast<VkGeometryTrianglesNV*>(this) = rhs;
+      layout::GeometryTrianglesNV::operator=(rhs);
       return *this;
     }
 
@@ -17956,7 +17956,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     GeometryAABBNV& operator=( VkGeometryAABBNV const & rhs )
     {
-      *reinterpret_cast<VkGeometryAABBNV*>(this) = rhs;
+      layout::GeometryAABBNV::operator=(rhs);
       return *this;
     }
 
@@ -18128,7 +18128,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     GeometryNV& operator=( VkGeometryNV const & rhs )
     {
-      *reinterpret_cast<VkGeometryNV*>(this) = rhs;
+      layout::GeometryNV::operator=(rhs);
       return *this;
     }
 
@@ -18242,7 +18242,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     AccelerationStructureInfoNV& operator=( VkAccelerationStructureInfoNV const & rhs )
     {
-      *reinterpret_cast<VkAccelerationStructureInfoNV*>(this) = rhs;
+      layout::AccelerationStructureInfoNV::operator=(rhs);
       return *this;
     }
 
@@ -18358,7 +18358,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     AccelerationStructureCreateInfoNV& operator=( VkAccelerationStructureCreateInfoNV const & rhs )
     {
-      *reinterpret_cast<VkAccelerationStructureCreateInfoNV*>(this) = rhs;
+      layout::AccelerationStructureCreateInfoNV::operator=(rhs);
       return *this;
     }
 
@@ -18453,7 +18453,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     AccelerationStructureMemoryRequirementsInfoNV& operator=( VkAccelerationStructureMemoryRequirementsInfoNV const & rhs )
     {
-      *reinterpret_cast<VkAccelerationStructureMemoryRequirementsInfoNV*>(this) = rhs;
+      layout::AccelerationStructureMemoryRequirementsInfoNV::operator=(rhs);
       return *this;
     }
 
@@ -18560,7 +18560,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     AcquireNextImageInfoKHR& operator=( VkAcquireNextImageInfoKHR const & rhs )
     {
-      *reinterpret_cast<VkAcquireNextImageInfoKHR*>(this) = rhs;
+      layout::AcquireNextImageInfoKHR::operator=(rhs);
       return *this;
     }
 
@@ -18817,22 +18817,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct AndroidHardwareBufferFormatPropertiesANDROID
     {
     protected:
-      AndroidHardwareBufferFormatPropertiesANDROID( vk::Format format_ = vk::Format::eUndefined,
-                                                    uint64_t externalFormat_ = 0,
-                                                    vk::FormatFeatureFlags formatFeatures_ = vk::FormatFeatureFlags(),
-                                                    vk::ComponentMapping samplerYcbcrConversionComponents_ = vk::ComponentMapping(),
-                                                    vk::SamplerYcbcrModelConversion suggestedYcbcrModel_ = vk::SamplerYcbcrModelConversion::eRgbIdentity,
-                                                    vk::SamplerYcbcrRange suggestedYcbcrRange_ = vk::SamplerYcbcrRange::eItuFull,
-                                                    vk::ChromaLocation suggestedXChromaOffset_ = vk::ChromaLocation::eCositedEven,
-                                                    vk::ChromaLocation suggestedYChromaOffset_ = vk::ChromaLocation::eCositedEven )
-        : format( format_ )
-        , externalFormat( externalFormat_ )
-        , formatFeatures( formatFeatures_ )
-        , samplerYcbcrConversionComponents( samplerYcbcrConversionComponents_ )
-        , suggestedYcbcrModel( suggestedYcbcrModel_ )
-        , suggestedYcbcrRange( suggestedYcbcrRange_ )
-        , suggestedXChromaOffset( suggestedXChromaOffset_ )
-        , suggestedYChromaOffset( suggestedYChromaOffset_ )
+      AndroidHardwareBufferFormatPropertiesANDROID()
       {}
 
       AndroidHardwareBufferFormatPropertiesANDROID( VkAndroidHardwareBufferFormatPropertiesANDROID const & rhs )
@@ -18863,6 +18848,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct AndroidHardwareBufferFormatPropertiesANDROID : public layout::AndroidHardwareBufferFormatPropertiesANDROID
   {
+    AndroidHardwareBufferFormatPropertiesANDROID()
+      : layout::AndroidHardwareBufferFormatPropertiesANDROID()
+    {}
+
+    AndroidHardwareBufferFormatPropertiesANDROID( VkAndroidHardwareBufferFormatPropertiesANDROID const & rhs )
+      : layout::AndroidHardwareBufferFormatPropertiesANDROID( rhs )
+    {}
+
+    AndroidHardwareBufferFormatPropertiesANDROID& operator=( VkAndroidHardwareBufferFormatPropertiesANDROID const & rhs )
+    {
+      layout::AndroidHardwareBufferFormatPropertiesANDROID::operator=(rhs);
+      return *this;
+    }
+
     operator VkAndroidHardwareBufferFormatPropertiesANDROID const&() const
     {
       return *reinterpret_cast<const VkAndroidHardwareBufferFormatPropertiesANDROID*>( this );
@@ -18906,10 +18905,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct AndroidHardwareBufferPropertiesANDROID
     {
     protected:
-      AndroidHardwareBufferPropertiesANDROID( vk::DeviceSize allocationSize_ = 0,
-                                              uint32_t memoryTypeBits_ = 0 )
-        : allocationSize( allocationSize_ )
-        , memoryTypeBits( memoryTypeBits_ )
+      AndroidHardwareBufferPropertiesANDROID()
       {}
 
       AndroidHardwareBufferPropertiesANDROID( VkAndroidHardwareBufferPropertiesANDROID const & rhs )
@@ -18934,6 +18930,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct AndroidHardwareBufferPropertiesANDROID : public layout::AndroidHardwareBufferPropertiesANDROID
   {
+    AndroidHardwareBufferPropertiesANDROID()
+      : layout::AndroidHardwareBufferPropertiesANDROID()
+    {}
+
+    AndroidHardwareBufferPropertiesANDROID( VkAndroidHardwareBufferPropertiesANDROID const & rhs )
+      : layout::AndroidHardwareBufferPropertiesANDROID( rhs )
+    {}
+
+    AndroidHardwareBufferPropertiesANDROID& operator=( VkAndroidHardwareBufferPropertiesANDROID const & rhs )
+    {
+      layout::AndroidHardwareBufferPropertiesANDROID::operator=(rhs);
+      return *this;
+    }
+
     operator VkAndroidHardwareBufferPropertiesANDROID const&() const
     {
       return *reinterpret_cast<const VkAndroidHardwareBufferPropertiesANDROID*>( this );
@@ -18971,8 +18981,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct AndroidHardwareBufferUsageANDROID
     {
     protected:
-      AndroidHardwareBufferUsageANDROID( uint64_t androidHardwareBufferUsage_ = 0 )
-        : androidHardwareBufferUsage( androidHardwareBufferUsage_ )
+      AndroidHardwareBufferUsageANDROID()
       {}
 
       AndroidHardwareBufferUsageANDROID( VkAndroidHardwareBufferUsageANDROID const & rhs )
@@ -18996,6 +19005,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct AndroidHardwareBufferUsageANDROID : public layout::AndroidHardwareBufferUsageANDROID
   {
+    AndroidHardwareBufferUsageANDROID()
+      : layout::AndroidHardwareBufferUsageANDROID()
+    {}
+
+    AndroidHardwareBufferUsageANDROID( VkAndroidHardwareBufferUsageANDROID const & rhs )
+      : layout::AndroidHardwareBufferUsageANDROID( rhs )
+    {}
+
+    AndroidHardwareBufferUsageANDROID& operator=( VkAndroidHardwareBufferUsageANDROID const & rhs )
+    {
+      layout::AndroidHardwareBufferUsageANDROID::operator=(rhs);
+      return *this;
+    }
+
     operator VkAndroidHardwareBufferUsageANDROID const&() const
     {
       return *reinterpret_cast<const VkAndroidHardwareBufferUsageANDROID*>( this );
@@ -19071,7 +19094,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     AndroidSurfaceCreateInfoKHR& operator=( VkAndroidSurfaceCreateInfoKHR const & rhs )
     {
-      *reinterpret_cast<VkAndroidSurfaceCreateInfoKHR*>(this) = rhs;
+      layout::AndroidSurfaceCreateInfoKHR::operator=(rhs);
       return *this;
     }
 
@@ -19179,7 +19202,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ApplicationInfo& operator=( VkApplicationInfo const & rhs )
     {
-      *reinterpret_cast<VkApplicationInfo*>(this) = rhs;
+      layout::ApplicationInfo::operator=(rhs);
       return *this;
     }
 
@@ -19452,7 +19475,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     AttachmentDescription2KHR& operator=( VkAttachmentDescription2KHR const & rhs )
     {
-      *reinterpret_cast<VkAttachmentDescription2KHR*>(this) = rhs;
+      layout::AttachmentDescription2KHR::operator=(rhs);
       return *this;
     }
 
@@ -19659,7 +19682,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     AttachmentReference2KHR& operator=( VkAttachmentReference2KHR const & rhs )
     {
-      *reinterpret_cast<VkAttachmentReference2KHR*>(this) = rhs;
+      layout::AttachmentReference2KHR::operator=(rhs);
       return *this;
     }
 
@@ -19887,7 +19910,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     SampleLocationsInfoEXT& operator=( VkSampleLocationsInfoEXT const & rhs )
     {
-      *reinterpret_cast<VkSampleLocationsInfoEXT*>(this) = rhs;
+      layout::SampleLocationsInfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -20017,7 +20040,6 @@ namespace VULKAN_HPP_NAMESPACE
     {
     protected:
       BaseInStructure()
-
       {}
 
       BaseInStructure( VkBaseInStructure const & rhs )
@@ -20041,8 +20063,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct BaseInStructure : public layout::BaseInStructure
   {
     BaseInStructure()
-
-      : layout::BaseInStructure(  )
+      : layout::BaseInStructure()
     {}
 
     BaseInStructure( VkBaseInStructure const & rhs )
@@ -20051,7 +20072,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     BaseInStructure& operator=( VkBaseInStructure const & rhs )
     {
-      *reinterpret_cast<VkBaseInStructure*>(this) = rhs;
+      layout::BaseInStructure::operator=(rhs);
       return *this;
     }
 
@@ -20094,7 +20115,6 @@ namespace VULKAN_HPP_NAMESPACE
     {
     protected:
       BaseOutStructure()
-
       {}
 
       BaseOutStructure( VkBaseOutStructure const & rhs )
@@ -20118,8 +20138,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct BaseOutStructure : public layout::BaseOutStructure
   {
     BaseOutStructure()
-
-      : layout::BaseOutStructure(  )
+      : layout::BaseOutStructure()
     {}
 
     BaseOutStructure( VkBaseOutStructure const & rhs )
@@ -20128,7 +20147,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     BaseOutStructure& operator=( VkBaseOutStructure const & rhs )
     {
-      *reinterpret_cast<VkBaseOutStructure*>(this) = rhs;
+      layout::BaseOutStructure::operator=(rhs);
       return *this;
     }
 
@@ -20221,7 +20240,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     BindAccelerationStructureMemoryInfoNV& operator=( VkBindAccelerationStructureMemoryInfoNV const & rhs )
     {
-      *reinterpret_cast<VkBindAccelerationStructureMemoryInfoNV*>(this) = rhs;
+      layout::BindAccelerationStructureMemoryInfoNV::operator=(rhs);
       return *this;
     }
 
@@ -20337,7 +20356,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     BindBufferMemoryDeviceGroupInfo& operator=( VkBindBufferMemoryDeviceGroupInfo const & rhs )
     {
-      *reinterpret_cast<VkBindBufferMemoryDeviceGroupInfo*>(this) = rhs;
+      layout::BindBufferMemoryDeviceGroupInfo::operator=(rhs);
       return *this;
     }
 
@@ -20436,7 +20455,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     BindBufferMemoryInfo& operator=( VkBindBufferMemoryInfo const & rhs )
     {
-      *reinterpret_cast<VkBindBufferMemoryInfo*>(this) = rhs;
+      layout::BindBufferMemoryInfo::operator=(rhs);
       return *this;
     }
 
@@ -20664,7 +20683,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     BindImageMemoryDeviceGroupInfo& operator=( VkBindImageMemoryDeviceGroupInfo const & rhs )
     {
-      *reinterpret_cast<VkBindImageMemoryDeviceGroupInfo*>(this) = rhs;
+      layout::BindImageMemoryDeviceGroupInfo::operator=(rhs);
       return *this;
     }
 
@@ -20777,7 +20796,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     BindImageMemoryInfo& operator=( VkBindImageMemoryInfo const & rhs )
     {
-      *reinterpret_cast<VkBindImageMemoryInfo*>(this) = rhs;
+      layout::BindImageMemoryInfo::operator=(rhs);
       return *this;
     }
 
@@ -20879,7 +20898,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     BindImageMemorySwapchainInfoKHR& operator=( VkBindImageMemorySwapchainInfoKHR const & rhs )
     {
-      *reinterpret_cast<VkBindImageMemorySwapchainInfoKHR*>(this) = rhs;
+      layout::BindImageMemorySwapchainInfoKHR::operator=(rhs);
       return *this;
     }
 
@@ -20970,7 +20989,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     BindImagePlaneMemoryInfo& operator=( VkBindImagePlaneMemoryInfo const & rhs )
     {
-      *reinterpret_cast<VkBindImagePlaneMemoryInfo*>(this) = rhs;
+      layout::BindImagePlaneMemoryInfo::operator=(rhs);
       return *this;
     }
 
@@ -21706,7 +21725,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     BindSparseInfo& operator=( VkBindSparseInfo const & rhs )
     {
-      *reinterpret_cast<VkBindSparseInfo*>(this) = rhs;
+      layout::BindSparseInfo::operator=(rhs);
       return *this;
     }
 
@@ -21942,7 +21961,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     BufferCreateInfo& operator=( VkBufferCreateInfo const & rhs )
     {
-      *reinterpret_cast<VkBufferCreateInfo*>(this) = rhs;
+      layout::BufferCreateInfo::operator=(rhs);
       return *this;
     }
 
@@ -22061,7 +22080,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     BufferDeviceAddressCreateInfoEXT& operator=( VkBufferDeviceAddressCreateInfoEXT const & rhs )
     {
-      *reinterpret_cast<VkBufferDeviceAddressCreateInfoEXT*>(this) = rhs;
+      layout::BufferDeviceAddressCreateInfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -22145,7 +22164,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     BufferDeviceAddressInfoEXT& operator=( VkBufferDeviceAddressInfoEXT const & rhs )
     {
-      *reinterpret_cast<VkBufferDeviceAddressInfoEXT*>(this) = rhs;
+      layout::BufferDeviceAddressInfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -22431,7 +22450,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     BufferMemoryBarrier& operator=( VkBufferMemoryBarrier const & rhs )
     {
-      *reinterpret_cast<VkBufferMemoryBarrier*>(this) = rhs;
+      layout::BufferMemoryBarrier::operator=(rhs);
       return *this;
     }
 
@@ -22557,7 +22576,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     BufferMemoryRequirementsInfo2& operator=( VkBufferMemoryRequirementsInfo2 const & rhs )
     {
-      *reinterpret_cast<VkBufferMemoryRequirementsInfo2*>(this) = rhs;
+      layout::BufferMemoryRequirementsInfo2::operator=(rhs);
       return *this;
     }
 
@@ -22657,7 +22676,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     BufferViewCreateInfo& operator=( VkBufferViewCreateInfo const & rhs )
     {
-      *reinterpret_cast<VkBufferViewCreateInfo*>(this) = rhs;
+      layout::BufferViewCreateInfo::operator=(rhs);
       return *this;
     }
 
@@ -22769,7 +22788,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     CalibratedTimestampInfoEXT& operator=( VkCalibratedTimestampInfoEXT const & rhs )
     {
-      *reinterpret_cast<VkCalibratedTimestampInfoEXT*>(this) = rhs;
+      layout::CalibratedTimestampInfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -22818,10 +22837,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct CheckpointDataNV
     {
     protected:
-      CheckpointDataNV( vk::PipelineStageFlagBits stage_ = vk::PipelineStageFlagBits::eTopOfPipe,
-                        void* pCheckpointMarker_ = nullptr )
-        : stage( stage_ )
-        , pCheckpointMarker( pCheckpointMarker_ )
+      CheckpointDataNV()
       {}
 
       CheckpointDataNV( VkCheckpointDataNV const & rhs )
@@ -22846,6 +22862,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct CheckpointDataNV : public layout::CheckpointDataNV
   {
+    CheckpointDataNV()
+      : layout::CheckpointDataNV()
+    {}
+
+    CheckpointDataNV( VkCheckpointDataNV const & rhs )
+      : layout::CheckpointDataNV( rhs )
+    {}
+
+    CheckpointDataNV& operator=( VkCheckpointDataNV const & rhs )
+    {
+      layout::CheckpointDataNV::operator=(rhs);
+      return *this;
+    }
+
     operator VkCheckpointDataNV const&() const
     {
       return *reinterpret_cast<const VkCheckpointDataNV*>( this );
@@ -23296,7 +23326,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     CmdProcessCommandsInfoNVX& operator=( VkCmdProcessCommandsInfoNVX const & rhs )
     {
-      *reinterpret_cast<VkCmdProcessCommandsInfoNVX*>(this) = rhs;
+      layout::CmdProcessCommandsInfoNVX::operator=(rhs);
       return *this;
     }
 
@@ -23451,7 +23481,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     CmdReserveSpaceForCommandsInfoNVX& operator=( VkCmdReserveSpaceForCommandsInfoNVX const & rhs )
     {
-      *reinterpret_cast<VkCmdReserveSpaceForCommandsInfoNVX*>(this) = rhs;
+      layout::CmdReserveSpaceForCommandsInfoNVX::operator=(rhs);
       return *this;
     }
 
@@ -23705,7 +23735,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     CommandBufferAllocateInfo& operator=( VkCommandBufferAllocateInfo const & rhs )
     {
-      *reinterpret_cast<VkCommandBufferAllocateInfo*>(this) = rhs;
+      layout::CommandBufferAllocateInfo::operator=(rhs);
       return *this;
     }
 
@@ -23823,7 +23853,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     CommandBufferInheritanceInfo& operator=( VkCommandBufferInheritanceInfo const & rhs )
     {
-      *reinterpret_cast<VkCommandBufferInheritanceInfo*>(this) = rhs;
+      layout::CommandBufferInheritanceInfo::operator=(rhs);
       return *this;
     }
 
@@ -23946,7 +23976,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     CommandBufferBeginInfo& operator=( VkCommandBufferBeginInfo const & rhs )
     {
-      *reinterpret_cast<VkCommandBufferBeginInfo*>(this) = rhs;
+      layout::CommandBufferBeginInfo::operator=(rhs);
       return *this;
     }
 
@@ -24037,7 +24067,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     CommandBufferInheritanceConditionalRenderingInfoEXT& operator=( VkCommandBufferInheritanceConditionalRenderingInfoEXT const & rhs )
     {
-      *reinterpret_cast<VkCommandBufferInheritanceConditionalRenderingInfoEXT*>(this) = rhs;
+      layout::CommandBufferInheritanceConditionalRenderingInfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -24125,7 +24155,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     CommandPoolCreateInfo& operator=( VkCommandPoolCreateInfo const & rhs )
     {
-      *reinterpret_cast<VkCommandPoolCreateInfo*>(this) = rhs;
+      layout::CommandPoolCreateInfo::operator=(rhs);
       return *this;
     }
 
@@ -24380,7 +24410,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineShaderStageCreateInfo& operator=( VkPipelineShaderStageCreateInfo const & rhs )
     {
-      *reinterpret_cast<VkPipelineShaderStageCreateInfo*>(this) = rhs;
+      layout::PipelineShaderStageCreateInfo::operator=(rhs);
       return *this;
     }
 
@@ -24508,7 +24538,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ComputePipelineCreateInfo& operator=( VkComputePipelineCreateInfo const & rhs )
     {
-      *reinterpret_cast<VkComputePipelineCreateInfo*>(this) = rhs;
+      layout::ComputePipelineCreateInfo::operator=(rhs);
       return *this;
     }
 
@@ -24628,7 +24658,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ConditionalRenderingBeginInfoEXT& operator=( VkConditionalRenderingBeginInfoEXT const & rhs )
     {
-      *reinterpret_cast<VkConditionalRenderingBeginInfoEXT*>(this) = rhs;
+      layout::ConditionalRenderingBeginInfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -24833,7 +24863,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     CooperativeMatrixPropertiesNV& operator=( VkCooperativeMatrixPropertiesNV const & rhs )
     {
-      *reinterpret_cast<VkCooperativeMatrixPropertiesNV*>(this) = rhs;
+      layout::CooperativeMatrixPropertiesNV::operator=(rhs);
       return *this;
     }
 
@@ -24990,7 +25020,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     CopyDescriptorSet& operator=( VkCopyDescriptorSet const & rhs )
     {
-      *reinterpret_cast<VkCopyDescriptorSet*>(this) = rhs;
+      layout::CopyDescriptorSet::operator=(rhs);
       return *this;
     }
 
@@ -25130,7 +25160,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     D3D12FenceSubmitInfoKHR& operator=( VkD3D12FenceSubmitInfoKHR const & rhs )
     {
-      *reinterpret_cast<VkD3D12FenceSubmitInfoKHR*>(this) = rhs;
+      layout::D3D12FenceSubmitInfoKHR::operator=(rhs);
       return *this;
     }
 
@@ -25242,7 +25272,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DebugMarkerMarkerInfoEXT& operator=( VkDebugMarkerMarkerInfoEXT const & rhs )
     {
-      *reinterpret_cast<VkDebugMarkerMarkerInfoEXT*>(this) = rhs;
+      layout::DebugMarkerMarkerInfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -25341,7 +25371,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DebugMarkerObjectNameInfoEXT& operator=( VkDebugMarkerObjectNameInfoEXT const & rhs )
     {
-      *reinterpret_cast<VkDebugMarkerObjectNameInfoEXT*>(this) = rhs;
+      layout::DebugMarkerObjectNameInfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -25455,7 +25485,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DebugMarkerObjectTagInfoEXT& operator=( VkDebugMarkerObjectTagInfoEXT const & rhs )
     {
-      *reinterpret_cast<VkDebugMarkerObjectTagInfoEXT*>(this) = rhs;
+      layout::DebugMarkerObjectTagInfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -25575,7 +25605,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DebugReportCallbackCreateInfoEXT& operator=( VkDebugReportCallbackCreateInfoEXT const & rhs )
     {
-      *reinterpret_cast<VkDebugReportCallbackCreateInfoEXT*>(this) = rhs;
+      layout::DebugReportCallbackCreateInfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -25679,7 +25709,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DebugUtilsLabelEXT& operator=( VkDebugUtilsLabelEXT const & rhs )
     {
-      *reinterpret_cast<VkDebugUtilsLabelEXT*>(this) = rhs;
+      layout::DebugUtilsLabelEXT::operator=(rhs);
       return *this;
     }
 
@@ -25778,7 +25808,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DebugUtilsObjectNameInfoEXT& operator=( VkDebugUtilsObjectNameInfoEXT const & rhs )
     {
-      *reinterpret_cast<VkDebugUtilsObjectNameInfoEXT*>(this) = rhs;
+      layout::DebugUtilsObjectNameInfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -25912,7 +25942,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DebugUtilsMessengerCallbackDataEXT& operator=( VkDebugUtilsMessengerCallbackDataEXT const & rhs )
     {
-      *reinterpret_cast<VkDebugUtilsMessengerCallbackDataEXT*>(this) = rhs;
+      layout::DebugUtilsMessengerCallbackDataEXT::operator=(rhs);
       return *this;
     }
 
@@ -26075,7 +26105,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DebugUtilsMessengerCreateInfoEXT& operator=( VkDebugUtilsMessengerCreateInfoEXT const & rhs )
     {
-      *reinterpret_cast<VkDebugUtilsMessengerCreateInfoEXT*>(this) = rhs;
+      layout::DebugUtilsMessengerCreateInfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -26203,7 +26233,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DebugUtilsObjectTagInfoEXT& operator=( VkDebugUtilsObjectTagInfoEXT const & rhs )
     {
-      *reinterpret_cast<VkDebugUtilsObjectTagInfoEXT*>(this) = rhs;
+      layout::DebugUtilsObjectTagInfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -26315,7 +26345,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DedicatedAllocationBufferCreateInfoNV& operator=( VkDedicatedAllocationBufferCreateInfoNV const & rhs )
     {
-      *reinterpret_cast<VkDedicatedAllocationBufferCreateInfoNV*>(this) = rhs;
+      layout::DedicatedAllocationBufferCreateInfoNV::operator=(rhs);
       return *this;
     }
 
@@ -26399,7 +26429,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DedicatedAllocationImageCreateInfoNV& operator=( VkDedicatedAllocationImageCreateInfoNV const & rhs )
     {
-      *reinterpret_cast<VkDedicatedAllocationImageCreateInfoNV*>(this) = rhs;
+      layout::DedicatedAllocationImageCreateInfoNV::operator=(rhs);
       return *this;
     }
 
@@ -26487,7 +26517,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DedicatedAllocationMemoryAllocateInfoNV& operator=( VkDedicatedAllocationMemoryAllocateInfoNV const & rhs )
     {
-      *reinterpret_cast<VkDedicatedAllocationMemoryAllocateInfoNV*>(this) = rhs;
+      layout::DedicatedAllocationMemoryAllocateInfoNV::operator=(rhs);
       return *this;
     }
 
@@ -26787,7 +26817,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DescriptorPoolCreateInfo& operator=( VkDescriptorPoolCreateInfo const & rhs )
     {
-      *reinterpret_cast<VkDescriptorPoolCreateInfo*>(this) = rhs;
+      layout::DescriptorPoolCreateInfo::operator=(rhs);
       return *this;
     }
 
@@ -26892,7 +26922,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DescriptorPoolInlineUniformBlockCreateInfoEXT& operator=( VkDescriptorPoolInlineUniformBlockCreateInfoEXT const & rhs )
     {
-      *reinterpret_cast<VkDescriptorPoolInlineUniformBlockCreateInfoEXT*>(this) = rhs;
+      layout::DescriptorPoolInlineUniformBlockCreateInfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -26984,7 +27014,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DescriptorSetAllocateInfo& operator=( VkDescriptorSetAllocateInfo const & rhs )
     {
-      *reinterpret_cast<VkDescriptorSetAllocateInfo*>(this) = rhs;
+      layout::DescriptorSetAllocateInfo::operator=(rhs);
       return *this;
     }
 
@@ -27175,7 +27205,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DescriptorSetLayoutBindingFlagsCreateInfoEXT& operator=( VkDescriptorSetLayoutBindingFlagsCreateInfoEXT const & rhs )
     {
-      *reinterpret_cast<VkDescriptorSetLayoutBindingFlagsCreateInfoEXT*>(this) = rhs;
+      layout::DescriptorSetLayoutBindingFlagsCreateInfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -27274,7 +27304,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DescriptorSetLayoutCreateInfo& operator=( VkDescriptorSetLayoutCreateInfo const & rhs )
     {
-      *reinterpret_cast<VkDescriptorSetLayoutCreateInfo*>(this) = rhs;
+      layout::DescriptorSetLayoutCreateInfo::operator=(rhs);
       return *this;
     }
 
@@ -27337,8 +27367,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct DescriptorSetLayoutSupport
     {
     protected:
-      DescriptorSetLayoutSupport( vk::Bool32 supported_ = 0 )
-        : supported( supported_ )
+      DescriptorSetLayoutSupport()
       {}
 
       DescriptorSetLayoutSupport( VkDescriptorSetLayoutSupport const & rhs )
@@ -27362,6 +27391,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DescriptorSetLayoutSupport : public layout::DescriptorSetLayoutSupport
   {
+    DescriptorSetLayoutSupport()
+      : layout::DescriptorSetLayoutSupport()
+    {}
+
+    DescriptorSetLayoutSupport( VkDescriptorSetLayoutSupport const & rhs )
+      : layout::DescriptorSetLayoutSupport( rhs )
+    {}
+
+    DescriptorSetLayoutSupport& operator=( VkDescriptorSetLayoutSupport const & rhs )
+    {
+      layout::DescriptorSetLayoutSupport::operator=(rhs);
+      return *this;
+    }
+
     operator VkDescriptorSetLayoutSupport const&() const
     {
       return *reinterpret_cast<const VkDescriptorSetLayoutSupport*>( this );
@@ -27434,7 +27477,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DescriptorSetVariableDescriptorCountAllocateInfoEXT& operator=( VkDescriptorSetVariableDescriptorCountAllocateInfoEXT const & rhs )
     {
-      *reinterpret_cast<VkDescriptorSetVariableDescriptorCountAllocateInfoEXT*>(this) = rhs;
+      layout::DescriptorSetVariableDescriptorCountAllocateInfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -27490,8 +27533,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct DescriptorSetVariableDescriptorCountLayoutSupportEXT
     {
     protected:
-      DescriptorSetVariableDescriptorCountLayoutSupportEXT( uint32_t maxVariableDescriptorCount_ = 0 )
-        : maxVariableDescriptorCount( maxVariableDescriptorCount_ )
+      DescriptorSetVariableDescriptorCountLayoutSupportEXT()
       {}
 
       DescriptorSetVariableDescriptorCountLayoutSupportEXT( VkDescriptorSetVariableDescriptorCountLayoutSupportEXT const & rhs )
@@ -27515,6 +27557,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DescriptorSetVariableDescriptorCountLayoutSupportEXT : public layout::DescriptorSetVariableDescriptorCountLayoutSupportEXT
   {
+    DescriptorSetVariableDescriptorCountLayoutSupportEXT()
+      : layout::DescriptorSetVariableDescriptorCountLayoutSupportEXT()
+    {}
+
+    DescriptorSetVariableDescriptorCountLayoutSupportEXT( VkDescriptorSetVariableDescriptorCountLayoutSupportEXT const & rhs )
+      : layout::DescriptorSetVariableDescriptorCountLayoutSupportEXT( rhs )
+    {}
+
+    DescriptorSetVariableDescriptorCountLayoutSupportEXT& operator=( VkDescriptorSetVariableDescriptorCountLayoutSupportEXT const & rhs )
+    {
+      layout::DescriptorSetVariableDescriptorCountLayoutSupportEXT::operator=(rhs);
+      return *this;
+    }
+
     operator VkDescriptorSetVariableDescriptorCountLayoutSupportEXT const&() const
     {
       return *reinterpret_cast<const VkDescriptorSetVariableDescriptorCountLayoutSupportEXT*>( this );
@@ -27710,7 +27766,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DescriptorUpdateTemplateCreateInfo& operator=( VkDescriptorUpdateTemplateCreateInfo const & rhs )
     {
-      *reinterpret_cast<VkDescriptorUpdateTemplateCreateInfo*>(this) = rhs;
+      layout::DescriptorUpdateTemplateCreateInfo::operator=(rhs);
       return *this;
     }
 
@@ -27855,7 +27911,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DeviceQueueCreateInfo& operator=( VkDeviceQueueCreateInfo const & rhs )
     {
-      *reinterpret_cast<VkDeviceQueueCreateInfo*>(this) = rhs;
+      layout::DeviceQueueCreateInfo::operator=(rhs);
       return *this;
     }
 
@@ -28577,7 +28633,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DeviceCreateInfo& operator=( VkDeviceCreateInfo const & rhs )
     {
-      *reinterpret_cast<VkDeviceCreateInfo*>(this) = rhs;
+      layout::DeviceCreateInfo::operator=(rhs);
       return *this;
     }
 
@@ -28710,7 +28766,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DeviceEventInfoEXT& operator=( VkDeviceEventInfoEXT const & rhs )
     {
-      *reinterpret_cast<VkDeviceEventInfoEXT*>(this) = rhs;
+      layout::DeviceEventInfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -28794,7 +28850,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DeviceGeneratedCommandsFeaturesNVX& operator=( VkDeviceGeneratedCommandsFeaturesNVX const & rhs )
     {
-      *reinterpret_cast<VkDeviceGeneratedCommandsFeaturesNVX*>(this) = rhs;
+      layout::DeviceGeneratedCommandsFeaturesNVX::operator=(rhs);
       return *this;
     }
 
@@ -28894,7 +28950,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DeviceGeneratedCommandsLimitsNVX& operator=( VkDeviceGeneratedCommandsLimitsNVX const & rhs )
     {
-      *reinterpret_cast<VkDeviceGeneratedCommandsLimitsNVX*>(this) = rhs;
+      layout::DeviceGeneratedCommandsLimitsNVX::operator=(rhs);
       return *this;
     }
 
@@ -29010,7 +29066,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DeviceGroupBindSparseInfo& operator=( VkDeviceGroupBindSparseInfo const & rhs )
     {
-      *reinterpret_cast<VkDeviceGroupBindSparseInfo*>(this) = rhs;
+      layout::DeviceGroupBindSparseInfo::operator=(rhs);
       return *this;
     }
 
@@ -29101,7 +29157,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DeviceGroupCommandBufferBeginInfo& operator=( VkDeviceGroupCommandBufferBeginInfo const & rhs )
     {
-      *reinterpret_cast<VkDeviceGroupCommandBufferBeginInfo*>(this) = rhs;
+      layout::DeviceGroupCommandBufferBeginInfo::operator=(rhs);
       return *this;
     }
 
@@ -29189,7 +29245,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DeviceGroupDeviceCreateInfo& operator=( VkDeviceGroupDeviceCreateInfo const & rhs )
     {
-      *reinterpret_cast<VkDeviceGroupDeviceCreateInfo*>(this) = rhs;
+      layout::DeviceGroupDeviceCreateInfo::operator=(rhs);
       return *this;
     }
 
@@ -29245,13 +29301,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct DeviceGroupPresentCapabilitiesKHR
     {
     protected:
-      DeviceGroupPresentCapabilitiesKHR( std::array<uint32_t,VK_MAX_DEVICE_GROUP_SIZE> const& presentMask_ = { { 0 } },
-                                         vk::DeviceGroupPresentModeFlagsKHR modes_ = vk::DeviceGroupPresentModeFlagsKHR() )
-        : modes( modes_ )
-      {
-        memcpy( &presentMask, presentMask_.data(), VK_MAX_DEVICE_GROUP_SIZE * sizeof( uint32_t ) );
-      
-      }
+      DeviceGroupPresentCapabilitiesKHR()
+      {}
 
       DeviceGroupPresentCapabilitiesKHR( VkDeviceGroupPresentCapabilitiesKHR const & rhs )
       {
@@ -29275,6 +29326,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DeviceGroupPresentCapabilitiesKHR : public layout::DeviceGroupPresentCapabilitiesKHR
   {
+    DeviceGroupPresentCapabilitiesKHR()
+      : layout::DeviceGroupPresentCapabilitiesKHR()
+    {}
+
+    DeviceGroupPresentCapabilitiesKHR( VkDeviceGroupPresentCapabilitiesKHR const & rhs )
+      : layout::DeviceGroupPresentCapabilitiesKHR( rhs )
+    {}
+
+    DeviceGroupPresentCapabilitiesKHR& operator=( VkDeviceGroupPresentCapabilitiesKHR const & rhs )
+    {
+      layout::DeviceGroupPresentCapabilitiesKHR::operator=(rhs);
+      return *this;
+    }
+
     operator VkDeviceGroupPresentCapabilitiesKHR const&() const
     {
       return *reinterpret_cast<const VkDeviceGroupPresentCapabilitiesKHR*>( this );
@@ -29352,7 +29417,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DeviceGroupPresentInfoKHR& operator=( VkDeviceGroupPresentInfoKHR const & rhs )
     {
-      *reinterpret_cast<VkDeviceGroupPresentInfoKHR*>(this) = rhs;
+      layout::DeviceGroupPresentInfoKHR::operator=(rhs);
       return *this;
     }
 
@@ -29458,7 +29523,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DeviceGroupRenderPassBeginInfo& operator=( VkDeviceGroupRenderPassBeginInfo const & rhs )
     {
-      *reinterpret_cast<VkDeviceGroupRenderPassBeginInfo*>(this) = rhs;
+      layout::DeviceGroupRenderPassBeginInfo::operator=(rhs);
       return *this;
     }
 
@@ -29576,7 +29641,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DeviceGroupSubmitInfo& operator=( VkDeviceGroupSubmitInfo const & rhs )
     {
-      *reinterpret_cast<VkDeviceGroupSubmitInfo*>(this) = rhs;
+      layout::DeviceGroupSubmitInfo::operator=(rhs);
       return *this;
     }
 
@@ -29695,7 +29760,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DeviceGroupSwapchainCreateInfoKHR& operator=( VkDeviceGroupSwapchainCreateInfoKHR const & rhs )
     {
-      *reinterpret_cast<VkDeviceGroupSwapchainCreateInfoKHR*>(this) = rhs;
+      layout::DeviceGroupSwapchainCreateInfoKHR::operator=(rhs);
       return *this;
     }
 
@@ -29779,7 +29844,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DeviceMemoryOverallocationCreateInfoAMD& operator=( VkDeviceMemoryOverallocationCreateInfoAMD const & rhs )
     {
-      *reinterpret_cast<VkDeviceMemoryOverallocationCreateInfoAMD*>(this) = rhs;
+      layout::DeviceMemoryOverallocationCreateInfoAMD::operator=(rhs);
       return *this;
     }
 
@@ -29863,7 +29928,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DeviceQueueGlobalPriorityCreateInfoEXT& operator=( VkDeviceQueueGlobalPriorityCreateInfoEXT const & rhs )
     {
-      *reinterpret_cast<VkDeviceQueueGlobalPriorityCreateInfoEXT*>(this) = rhs;
+      layout::DeviceQueueGlobalPriorityCreateInfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -29955,7 +30020,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DeviceQueueInfo2& operator=( VkDeviceQueueInfo2 const & rhs )
     {
-      *reinterpret_cast<VkDeviceQueueInfo2*>(this) = rhs;
+      layout::DeviceQueueInfo2::operator=(rhs);
       return *this;
     }
 
@@ -30122,7 +30187,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DisplayEventInfoEXT& operator=( VkDisplayEventInfoEXT const & rhs )
     {
-      *reinterpret_cast<VkDisplayEventInfoEXT*>(this) = rhs;
+      layout::DisplayEventInfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -30269,7 +30334,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DisplayModeCreateInfoKHR& operator=( VkDisplayModeCreateInfoKHR const & rhs )
     {
-      *reinterpret_cast<VkDisplayModeCreateInfoKHR*>(this) = rhs;
+      layout::DisplayModeCreateInfoKHR::operator=(rhs);
       return *this;
     }
 
@@ -30322,6 +30387,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DisplayModePropertiesKHR
   {
+    DisplayModePropertiesKHR()
+    {}
+
+    DisplayModePropertiesKHR( VkDisplayModePropertiesKHR const & rhs )
+    {
+      *reinterpret_cast<VkDisplayModePropertiesKHR*>(this) = rhs;
+    }
+
+    DisplayModePropertiesKHR& operator=( VkDisplayModePropertiesKHR const & rhs )
+    {
+      *reinterpret_cast<VkDisplayModePropertiesKHR*>(this) = rhs;
+      return *this;
+    }
+
     operator VkDisplayModePropertiesKHR const&() const
     {
       return *reinterpret_cast<const VkDisplayModePropertiesKHR*>( this );
@@ -30355,8 +30434,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct DisplayModeProperties2KHR
     {
     protected:
-      DisplayModeProperties2KHR( vk::DisplayModePropertiesKHR displayModeProperties_ = vk::DisplayModePropertiesKHR() )
-        : displayModeProperties( displayModeProperties_ )
+      DisplayModeProperties2KHR()
       {}
 
       DisplayModeProperties2KHR( VkDisplayModeProperties2KHR const & rhs )
@@ -30380,6 +30458,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DisplayModeProperties2KHR : public layout::DisplayModeProperties2KHR
   {
+    DisplayModeProperties2KHR()
+      : layout::DisplayModeProperties2KHR()
+    {}
+
+    DisplayModeProperties2KHR( VkDisplayModeProperties2KHR const & rhs )
+      : layout::DisplayModeProperties2KHR( rhs )
+    {}
+
+    DisplayModeProperties2KHR& operator=( VkDisplayModeProperties2KHR const & rhs )
+    {
+      layout::DisplayModeProperties2KHR::operator=(rhs);
+      return *this;
+    }
+
     operator VkDisplayModeProperties2KHR const&() const
     {
       return *reinterpret_cast<const VkDisplayModeProperties2KHR*>( this );
@@ -30413,8 +30505,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct DisplayNativeHdrSurfaceCapabilitiesAMD
     {
     protected:
-      DisplayNativeHdrSurfaceCapabilitiesAMD( vk::Bool32 localDimmingSupport_ = 0 )
-        : localDimmingSupport( localDimmingSupport_ )
+      DisplayNativeHdrSurfaceCapabilitiesAMD()
       {}
 
       DisplayNativeHdrSurfaceCapabilitiesAMD( VkDisplayNativeHdrSurfaceCapabilitiesAMD const & rhs )
@@ -30438,6 +30529,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DisplayNativeHdrSurfaceCapabilitiesAMD : public layout::DisplayNativeHdrSurfaceCapabilitiesAMD
   {
+    DisplayNativeHdrSurfaceCapabilitiesAMD()
+      : layout::DisplayNativeHdrSurfaceCapabilitiesAMD()
+    {}
+
+    DisplayNativeHdrSurfaceCapabilitiesAMD( VkDisplayNativeHdrSurfaceCapabilitiesAMD const & rhs )
+      : layout::DisplayNativeHdrSurfaceCapabilitiesAMD( rhs )
+    {}
+
+    DisplayNativeHdrSurfaceCapabilitiesAMD& operator=( VkDisplayNativeHdrSurfaceCapabilitiesAMD const & rhs )
+    {
+      layout::DisplayNativeHdrSurfaceCapabilitiesAMD::operator=(rhs);
+      return *this;
+    }
+
     operator VkDisplayNativeHdrSurfaceCapabilitiesAMD const&() const
     {
       return *reinterpret_cast<const VkDisplayNativeHdrSurfaceCapabilitiesAMD*>( this );
@@ -30468,6 +30573,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DisplayPlaneCapabilitiesKHR
   {
+    DisplayPlaneCapabilitiesKHR()
+    {}
+
+    DisplayPlaneCapabilitiesKHR( VkDisplayPlaneCapabilitiesKHR const & rhs )
+    {
+      *reinterpret_cast<VkDisplayPlaneCapabilitiesKHR*>(this) = rhs;
+    }
+
+    DisplayPlaneCapabilitiesKHR& operator=( VkDisplayPlaneCapabilitiesKHR const & rhs )
+    {
+      *reinterpret_cast<VkDisplayPlaneCapabilitiesKHR*>(this) = rhs;
+      return *this;
+    }
+
     operator VkDisplayPlaneCapabilitiesKHR const&() const
     {
       return *reinterpret_cast<const VkDisplayPlaneCapabilitiesKHR*>( this );
@@ -30515,8 +30634,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct DisplayPlaneCapabilities2KHR
     {
     protected:
-      DisplayPlaneCapabilities2KHR( vk::DisplayPlaneCapabilitiesKHR capabilities_ = vk::DisplayPlaneCapabilitiesKHR() )
-        : capabilities( capabilities_ )
+      DisplayPlaneCapabilities2KHR()
       {}
 
       DisplayPlaneCapabilities2KHR( VkDisplayPlaneCapabilities2KHR const & rhs )
@@ -30540,6 +30658,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DisplayPlaneCapabilities2KHR : public layout::DisplayPlaneCapabilities2KHR
   {
+    DisplayPlaneCapabilities2KHR()
+      : layout::DisplayPlaneCapabilities2KHR()
+    {}
+
+    DisplayPlaneCapabilities2KHR( VkDisplayPlaneCapabilities2KHR const & rhs )
+      : layout::DisplayPlaneCapabilities2KHR( rhs )
+    {}
+
+    DisplayPlaneCapabilities2KHR& operator=( VkDisplayPlaneCapabilities2KHR const & rhs )
+    {
+      layout::DisplayPlaneCapabilities2KHR::operator=(rhs);
+      return *this;
+    }
+
     operator VkDisplayPlaneCapabilities2KHR const&() const
     {
       return *reinterpret_cast<const VkDisplayPlaneCapabilities2KHR*>( this );
@@ -30612,7 +30744,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DisplayPlaneInfo2KHR& operator=( VkDisplayPlaneInfo2KHR const & rhs )
     {
-      *reinterpret_cast<VkDisplayPlaneInfo2KHR*>(this) = rhs;
+      layout::DisplayPlaneInfo2KHR::operator=(rhs);
       return *this;
     }
 
@@ -30665,6 +30797,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DisplayPlanePropertiesKHR
   {
+    DisplayPlanePropertiesKHR()
+    {}
+
+    DisplayPlanePropertiesKHR( VkDisplayPlanePropertiesKHR const & rhs )
+    {
+      *reinterpret_cast<VkDisplayPlanePropertiesKHR*>(this) = rhs;
+    }
+
+    DisplayPlanePropertiesKHR& operator=( VkDisplayPlanePropertiesKHR const & rhs )
+    {
+      *reinterpret_cast<VkDisplayPlanePropertiesKHR*>(this) = rhs;
+      return *this;
+    }
+
     operator VkDisplayPlanePropertiesKHR const&() const
     {
       return *reinterpret_cast<const VkDisplayPlanePropertiesKHR*>( this );
@@ -30698,8 +30844,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct DisplayPlaneProperties2KHR
     {
     protected:
-      DisplayPlaneProperties2KHR( vk::DisplayPlanePropertiesKHR displayPlaneProperties_ = vk::DisplayPlanePropertiesKHR() )
-        : displayPlaneProperties( displayPlaneProperties_ )
+      DisplayPlaneProperties2KHR()
       {}
 
       DisplayPlaneProperties2KHR( VkDisplayPlaneProperties2KHR const & rhs )
@@ -30723,6 +30868,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DisplayPlaneProperties2KHR : public layout::DisplayPlaneProperties2KHR
   {
+    DisplayPlaneProperties2KHR()
+      : layout::DisplayPlaneProperties2KHR()
+    {}
+
+    DisplayPlaneProperties2KHR( VkDisplayPlaneProperties2KHR const & rhs )
+      : layout::DisplayPlaneProperties2KHR( rhs )
+    {}
+
+    DisplayPlaneProperties2KHR& operator=( VkDisplayPlaneProperties2KHR const & rhs )
+    {
+      layout::DisplayPlaneProperties2KHR::operator=(rhs);
+      return *this;
+    }
+
     operator VkDisplayPlaneProperties2KHR const&() const
     {
       return *reinterpret_cast<const VkDisplayPlaneProperties2KHR*>( this );
@@ -30791,7 +30950,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DisplayPowerInfoEXT& operator=( VkDisplayPowerInfoEXT const & rhs )
     {
-      *reinterpret_cast<VkDisplayPowerInfoEXT*>(this) = rhs;
+      layout::DisplayPowerInfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -30883,7 +31042,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DisplayPresentInfoKHR& operator=( VkDisplayPresentInfoKHR const & rhs )
     {
-      *reinterpret_cast<VkDisplayPresentInfoKHR*>(this) = rhs;
+      layout::DisplayPresentInfoKHR::operator=(rhs);
       return *this;
     }
 
@@ -30943,6 +31102,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DisplayPropertiesKHR
   {
+    DisplayPropertiesKHR()
+    {}
+
+    DisplayPropertiesKHR( VkDisplayPropertiesKHR const & rhs )
+    {
+      *reinterpret_cast<VkDisplayPropertiesKHR*>(this) = rhs;
+    }
+
+    DisplayPropertiesKHR& operator=( VkDisplayPropertiesKHR const & rhs )
+    {
+      *reinterpret_cast<VkDisplayPropertiesKHR*>(this) = rhs;
+      return *this;
+    }
+
     operator VkDisplayPropertiesKHR const&() const
     {
       return *reinterpret_cast<const VkDisplayPropertiesKHR*>( this );
@@ -30986,8 +31159,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct DisplayProperties2KHR
     {
     protected:
-      DisplayProperties2KHR( vk::DisplayPropertiesKHR displayProperties_ = vk::DisplayPropertiesKHR() )
-        : displayProperties( displayProperties_ )
+      DisplayProperties2KHR()
       {}
 
       DisplayProperties2KHR( VkDisplayProperties2KHR const & rhs )
@@ -31011,6 +31183,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DisplayProperties2KHR : public layout::DisplayProperties2KHR
   {
+    DisplayProperties2KHR()
+      : layout::DisplayProperties2KHR()
+    {}
+
+    DisplayProperties2KHR( VkDisplayProperties2KHR const & rhs )
+      : layout::DisplayProperties2KHR( rhs )
+    {}
+
+    DisplayProperties2KHR& operator=( VkDisplayProperties2KHR const & rhs )
+    {
+      layout::DisplayProperties2KHR::operator=(rhs);
+      return *this;
+    }
+
     operator VkDisplayProperties2KHR const&() const
     {
       return *reinterpret_cast<const VkDisplayProperties2KHR*>( this );
@@ -31107,7 +31293,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DisplaySurfaceCreateInfoKHR& operator=( VkDisplaySurfaceCreateInfoKHR const & rhs )
     {
-      *reinterpret_cast<VkDisplaySurfaceCreateInfoKHR*>(this) = rhs;
+      layout::DisplaySurfaceCreateInfoKHR::operator=(rhs);
       return *this;
     }
 
@@ -31429,6 +31615,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DrmFormatModifierPropertiesEXT
   {
+    DrmFormatModifierPropertiesEXT()
+    {}
+
+    DrmFormatModifierPropertiesEXT( VkDrmFormatModifierPropertiesEXT const & rhs )
+    {
+      *reinterpret_cast<VkDrmFormatModifierPropertiesEXT*>(this) = rhs;
+    }
+
+    DrmFormatModifierPropertiesEXT& operator=( VkDrmFormatModifierPropertiesEXT const & rhs )
+    {
+      *reinterpret_cast<VkDrmFormatModifierPropertiesEXT*>(this) = rhs;
+      return *this;
+    }
+
     operator VkDrmFormatModifierPropertiesEXT const&() const
     {
       return *reinterpret_cast<const VkDrmFormatModifierPropertiesEXT*>( this );
@@ -31464,10 +31664,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct DrmFormatModifierPropertiesListEXT
     {
     protected:
-      DrmFormatModifierPropertiesListEXT( uint32_t drmFormatModifierCount_ = 0,
-                                          vk::DrmFormatModifierPropertiesEXT* pDrmFormatModifierProperties_ = nullptr )
-        : drmFormatModifierCount( drmFormatModifierCount_ )
-        , pDrmFormatModifierProperties( pDrmFormatModifierProperties_ )
+      DrmFormatModifierPropertiesListEXT()
       {}
 
       DrmFormatModifierPropertiesListEXT( VkDrmFormatModifierPropertiesListEXT const & rhs )
@@ -31492,6 +31689,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DrmFormatModifierPropertiesListEXT : public layout::DrmFormatModifierPropertiesListEXT
   {
+    DrmFormatModifierPropertiesListEXT()
+      : layout::DrmFormatModifierPropertiesListEXT()
+    {}
+
+    DrmFormatModifierPropertiesListEXT( VkDrmFormatModifierPropertiesListEXT const & rhs )
+      : layout::DrmFormatModifierPropertiesListEXT( rhs )
+    {}
+
+    DrmFormatModifierPropertiesListEXT& operator=( VkDrmFormatModifierPropertiesListEXT const & rhs )
+    {
+      layout::DrmFormatModifierPropertiesListEXT::operator=(rhs);
+      return *this;
+    }
+
     operator VkDrmFormatModifierPropertiesListEXT const&() const
     {
       return *reinterpret_cast<const VkDrmFormatModifierPropertiesListEXT*>( this );
@@ -31561,7 +31772,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     EventCreateInfo& operator=( VkEventCreateInfo const & rhs )
     {
-      *reinterpret_cast<VkEventCreateInfo*>(this) = rhs;
+      layout::EventCreateInfo::operator=(rhs);
       return *this;
     }
 
@@ -31645,7 +31856,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ExportFenceCreateInfo& operator=( VkExportFenceCreateInfo const & rhs )
     {
-      *reinterpret_cast<VkExportFenceCreateInfo*>(this) = rhs;
+      layout::ExportFenceCreateInfo::operator=(rhs);
       return *this;
     }
 
@@ -31739,7 +31950,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ExportFenceWin32HandleInfoKHR& operator=( VkExportFenceWin32HandleInfoKHR const & rhs )
     {
-      *reinterpret_cast<VkExportFenceWin32HandleInfoKHR*>(this) = rhs;
+      layout::ExportFenceWin32HandleInfoKHR::operator=(rhs);
       return *this;
     }
 
@@ -31838,7 +32049,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ExportMemoryAllocateInfo& operator=( VkExportMemoryAllocateInfo const & rhs )
     {
-      *reinterpret_cast<VkExportMemoryAllocateInfo*>(this) = rhs;
+      layout::ExportMemoryAllocateInfo::operator=(rhs);
       return *this;
     }
 
@@ -31922,7 +32133,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ExportMemoryAllocateInfoNV& operator=( VkExportMemoryAllocateInfoNV const & rhs )
     {
-      *reinterpret_cast<VkExportMemoryAllocateInfoNV*>(this) = rhs;
+      layout::ExportMemoryAllocateInfoNV::operator=(rhs);
       return *this;
     }
 
@@ -32016,7 +32227,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ExportMemoryWin32HandleInfoKHR& operator=( VkExportMemoryWin32HandleInfoKHR const & rhs )
     {
-      *reinterpret_cast<VkExportMemoryWin32HandleInfoKHR*>(this) = rhs;
+      layout::ExportMemoryWin32HandleInfoKHR::operator=(rhs);
       return *this;
     }
 
@@ -32121,7 +32332,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ExportMemoryWin32HandleInfoNV& operator=( VkExportMemoryWin32HandleInfoNV const & rhs )
     {
-      *reinterpret_cast<VkExportMemoryWin32HandleInfoNV*>(this) = rhs;
+      layout::ExportMemoryWin32HandleInfoNV::operator=(rhs);
       return *this;
     }
 
@@ -32213,7 +32424,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ExportSemaphoreCreateInfo& operator=( VkExportSemaphoreCreateInfo const & rhs )
     {
-      *reinterpret_cast<VkExportSemaphoreCreateInfo*>(this) = rhs;
+      layout::ExportSemaphoreCreateInfo::operator=(rhs);
       return *this;
     }
 
@@ -32307,7 +32518,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ExportSemaphoreWin32HandleInfoKHR& operator=( VkExportSemaphoreWin32HandleInfoKHR const & rhs )
     {
-      *reinterpret_cast<VkExportSemaphoreWin32HandleInfoKHR*>(this) = rhs;
+      layout::ExportSemaphoreWin32HandleInfoKHR::operator=(rhs);
       return *this;
     }
 
@@ -32368,6 +32579,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ExtensionProperties
   {
+    ExtensionProperties()
+    {}
+
+    ExtensionProperties( VkExtensionProperties const & rhs )
+    {
+      *reinterpret_cast<VkExtensionProperties*>(this) = rhs;
+    }
+
+    ExtensionProperties& operator=( VkExtensionProperties const & rhs )
+    {
+      *reinterpret_cast<VkExtensionProperties*>(this) = rhs;
+      return *this;
+    }
+
     operator VkExtensionProperties const&() const
     {
       return *reinterpret_cast<const VkExtensionProperties*>( this );
@@ -32398,6 +32623,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ExternalMemoryProperties
   {
+    ExternalMemoryProperties()
+    {}
+
+    ExternalMemoryProperties( VkExternalMemoryProperties const & rhs )
+    {
+      *reinterpret_cast<VkExternalMemoryProperties*>(this) = rhs;
+    }
+
+    ExternalMemoryProperties& operator=( VkExternalMemoryProperties const & rhs )
+    {
+      *reinterpret_cast<VkExternalMemoryProperties*>(this) = rhs;
+      return *this;
+    }
+
     operator VkExternalMemoryProperties const&() const
     {
       return *reinterpret_cast<const VkExternalMemoryProperties*>( this );
@@ -32433,8 +32672,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct ExternalBufferProperties
     {
     protected:
-      ExternalBufferProperties( vk::ExternalMemoryProperties externalMemoryProperties_ = vk::ExternalMemoryProperties() )
-        : externalMemoryProperties( externalMemoryProperties_ )
+      ExternalBufferProperties()
       {}
 
       ExternalBufferProperties( VkExternalBufferProperties const & rhs )
@@ -32458,6 +32696,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ExternalBufferProperties : public layout::ExternalBufferProperties
   {
+    ExternalBufferProperties()
+      : layout::ExternalBufferProperties()
+    {}
+
+    ExternalBufferProperties( VkExternalBufferProperties const & rhs )
+      : layout::ExternalBufferProperties( rhs )
+    {}
+
+    ExternalBufferProperties& operator=( VkExternalBufferProperties const & rhs )
+    {
+      layout::ExternalBufferProperties::operator=(rhs);
+      return *this;
+    }
+
     operator VkExternalBufferProperties const&() const
     {
       return *reinterpret_cast<const VkExternalBufferProperties*>( this );
@@ -32491,12 +32743,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct ExternalFenceProperties
     {
     protected:
-      ExternalFenceProperties( vk::ExternalFenceHandleTypeFlags exportFromImportedHandleTypes_ = vk::ExternalFenceHandleTypeFlags(),
-                               vk::ExternalFenceHandleTypeFlags compatibleHandleTypes_ = vk::ExternalFenceHandleTypeFlags(),
-                               vk::ExternalFenceFeatureFlags externalFenceFeatures_ = vk::ExternalFenceFeatureFlags() )
-        : exportFromImportedHandleTypes( exportFromImportedHandleTypes_ )
-        , compatibleHandleTypes( compatibleHandleTypes_ )
-        , externalFenceFeatures( externalFenceFeatures_ )
+      ExternalFenceProperties()
       {}
 
       ExternalFenceProperties( VkExternalFenceProperties const & rhs )
@@ -32522,6 +32769,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ExternalFenceProperties : public layout::ExternalFenceProperties
   {
+    ExternalFenceProperties()
+      : layout::ExternalFenceProperties()
+    {}
+
+    ExternalFenceProperties( VkExternalFenceProperties const & rhs )
+      : layout::ExternalFenceProperties( rhs )
+    {}
+
+    ExternalFenceProperties& operator=( VkExternalFenceProperties const & rhs )
+    {
+      layout::ExternalFenceProperties::operator=(rhs);
+      return *this;
+    }
+
     operator VkExternalFenceProperties const&() const
     {
       return *reinterpret_cast<const VkExternalFenceProperties*>( this );
@@ -32594,7 +32855,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ExternalFormatANDROID& operator=( VkExternalFormatANDROID const & rhs )
     {
-      *reinterpret_cast<VkExternalFormatANDROID*>(this) = rhs;
+      layout::ExternalFormatANDROID::operator=(rhs);
       return *this;
     }
 
@@ -32644,8 +32905,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct ExternalImageFormatProperties
     {
     protected:
-      ExternalImageFormatProperties( vk::ExternalMemoryProperties externalMemoryProperties_ = vk::ExternalMemoryProperties() )
-        : externalMemoryProperties( externalMemoryProperties_ )
+      ExternalImageFormatProperties()
       {}
 
       ExternalImageFormatProperties( VkExternalImageFormatProperties const & rhs )
@@ -32669,6 +32929,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ExternalImageFormatProperties : public layout::ExternalImageFormatProperties
   {
+    ExternalImageFormatProperties()
+      : layout::ExternalImageFormatProperties()
+    {}
+
+    ExternalImageFormatProperties( VkExternalImageFormatProperties const & rhs )
+      : layout::ExternalImageFormatProperties( rhs )
+    {}
+
+    ExternalImageFormatProperties& operator=( VkExternalImageFormatProperties const & rhs )
+    {
+      layout::ExternalImageFormatProperties::operator=(rhs);
+      return *this;
+    }
+
     operator VkExternalImageFormatProperties const&() const
     {
       return *reinterpret_cast<const VkExternalImageFormatProperties*>( this );
@@ -32699,6 +32973,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ImageFormatProperties
   {
+    ImageFormatProperties()
+    {}
+
+    ImageFormatProperties( VkImageFormatProperties const & rhs )
+    {
+      *reinterpret_cast<VkImageFormatProperties*>(this) = rhs;
+    }
+
+    ImageFormatProperties& operator=( VkImageFormatProperties const & rhs )
+    {
+      *reinterpret_cast<VkImageFormatProperties*>(this) = rhs;
+      return *this;
+    }
+
     operator VkImageFormatProperties const&() const
     {
       return *reinterpret_cast<const VkImageFormatProperties*>( this );
@@ -32735,6 +33023,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ExternalImageFormatPropertiesNV
   {
+    ExternalImageFormatPropertiesNV()
+    {}
+
+    ExternalImageFormatPropertiesNV( VkExternalImageFormatPropertiesNV const & rhs )
+    {
+      *reinterpret_cast<VkExternalImageFormatPropertiesNV*>(this) = rhs;
+    }
+
+    ExternalImageFormatPropertiesNV& operator=( VkExternalImageFormatPropertiesNV const & rhs )
+    {
+      *reinterpret_cast<VkExternalImageFormatPropertiesNV*>(this) = rhs;
+      return *this;
+    }
+
     operator VkExternalImageFormatPropertiesNV const&() const
     {
       return *reinterpret_cast<const VkExternalImageFormatPropertiesNV*>( this );
@@ -32807,7 +33109,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ExternalMemoryBufferCreateInfo& operator=( VkExternalMemoryBufferCreateInfo const & rhs )
     {
-      *reinterpret_cast<VkExternalMemoryBufferCreateInfo*>(this) = rhs;
+      layout::ExternalMemoryBufferCreateInfo::operator=(rhs);
       return *this;
     }
 
@@ -32891,7 +33193,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ExternalMemoryImageCreateInfo& operator=( VkExternalMemoryImageCreateInfo const & rhs )
     {
-      *reinterpret_cast<VkExternalMemoryImageCreateInfo*>(this) = rhs;
+      layout::ExternalMemoryImageCreateInfo::operator=(rhs);
       return *this;
     }
 
@@ -32975,7 +33277,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ExternalMemoryImageCreateInfoNV& operator=( VkExternalMemoryImageCreateInfoNV const & rhs )
     {
-      *reinterpret_cast<VkExternalMemoryImageCreateInfoNV*>(this) = rhs;
+      layout::ExternalMemoryImageCreateInfoNV::operator=(rhs);
       return *this;
     }
 
@@ -33024,12 +33326,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct ExternalSemaphoreProperties
     {
     protected:
-      ExternalSemaphoreProperties( vk::ExternalSemaphoreHandleTypeFlags exportFromImportedHandleTypes_ = vk::ExternalSemaphoreHandleTypeFlags(),
-                                   vk::ExternalSemaphoreHandleTypeFlags compatibleHandleTypes_ = vk::ExternalSemaphoreHandleTypeFlags(),
-                                   vk::ExternalSemaphoreFeatureFlags externalSemaphoreFeatures_ = vk::ExternalSemaphoreFeatureFlags() )
-        : exportFromImportedHandleTypes( exportFromImportedHandleTypes_ )
-        , compatibleHandleTypes( compatibleHandleTypes_ )
-        , externalSemaphoreFeatures( externalSemaphoreFeatures_ )
+      ExternalSemaphoreProperties()
       {}
 
       ExternalSemaphoreProperties( VkExternalSemaphoreProperties const & rhs )
@@ -33055,6 +33352,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ExternalSemaphoreProperties : public layout::ExternalSemaphoreProperties
   {
+    ExternalSemaphoreProperties()
+      : layout::ExternalSemaphoreProperties()
+    {}
+
+    ExternalSemaphoreProperties( VkExternalSemaphoreProperties const & rhs )
+      : layout::ExternalSemaphoreProperties( rhs )
+    {}
+
+    ExternalSemaphoreProperties& operator=( VkExternalSemaphoreProperties const & rhs )
+    {
+      layout::ExternalSemaphoreProperties::operator=(rhs);
+      return *this;
+    }
+
     operator VkExternalSemaphoreProperties const&() const
     {
       return *reinterpret_cast<const VkExternalSemaphoreProperties*>( this );
@@ -33125,7 +33436,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     FenceCreateInfo& operator=( VkFenceCreateInfo const & rhs )
     {
-      *reinterpret_cast<VkFenceCreateInfo*>(this) = rhs;
+      layout::FenceCreateInfo::operator=(rhs);
       return *this;
     }
 
@@ -33213,7 +33524,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     FenceGetFdInfoKHR& operator=( VkFenceGetFdInfoKHR const & rhs )
     {
-      *reinterpret_cast<VkFenceGetFdInfoKHR*>(this) = rhs;
+      layout::FenceGetFdInfoKHR::operator=(rhs);
       return *this;
     }
 
@@ -33310,7 +33621,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     FenceGetWin32HandleInfoKHR& operator=( VkFenceGetWin32HandleInfoKHR const & rhs )
     {
-      *reinterpret_cast<VkFenceGetWin32HandleInfoKHR*>(this) = rhs;
+      layout::FenceGetWin32HandleInfoKHR::operator=(rhs);
       return *this;
     }
 
@@ -33367,10 +33678,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct FilterCubicImageViewImageFormatPropertiesEXT
     {
     protected:
-      FilterCubicImageViewImageFormatPropertiesEXT( vk::Bool32 filterCubic_ = 0,
-                                                    vk::Bool32 filterCubicMinmax_ = 0 )
-        : filterCubic( filterCubic_ )
-        , filterCubicMinmax( filterCubicMinmax_ )
+      FilterCubicImageViewImageFormatPropertiesEXT()
       {}
 
       FilterCubicImageViewImageFormatPropertiesEXT( VkFilterCubicImageViewImageFormatPropertiesEXT const & rhs )
@@ -33395,6 +33703,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct FilterCubicImageViewImageFormatPropertiesEXT : public layout::FilterCubicImageViewImageFormatPropertiesEXT
   {
+    FilterCubicImageViewImageFormatPropertiesEXT()
+      : layout::FilterCubicImageViewImageFormatPropertiesEXT()
+    {}
+
+    FilterCubicImageViewImageFormatPropertiesEXT( VkFilterCubicImageViewImageFormatPropertiesEXT const & rhs )
+      : layout::FilterCubicImageViewImageFormatPropertiesEXT( rhs )
+    {}
+
+    FilterCubicImageViewImageFormatPropertiesEXT& operator=( VkFilterCubicImageViewImageFormatPropertiesEXT const & rhs )
+    {
+      layout::FilterCubicImageViewImageFormatPropertiesEXT::operator=(rhs);
+      return *this;
+    }
+
     operator VkFilterCubicImageViewImageFormatPropertiesEXT const&() const
     {
       return *reinterpret_cast<const VkFilterCubicImageViewImageFormatPropertiesEXT*>( this );
@@ -33426,6 +33748,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct FormatProperties
   {
+    FormatProperties()
+    {}
+
+    FormatProperties( VkFormatProperties const & rhs )
+    {
+      *reinterpret_cast<VkFormatProperties*>(this) = rhs;
+    }
+
+    FormatProperties& operator=( VkFormatProperties const & rhs )
+    {
+      *reinterpret_cast<VkFormatProperties*>(this) = rhs;
+      return *this;
+    }
+
     operator VkFormatProperties const&() const
     {
       return *reinterpret_cast<const VkFormatProperties*>( this );
@@ -33461,8 +33797,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct FormatProperties2
     {
     protected:
-      FormatProperties2( vk::FormatProperties formatProperties_ = vk::FormatProperties() )
-        : formatProperties( formatProperties_ )
+      FormatProperties2()
       {}
 
       FormatProperties2( VkFormatProperties2 const & rhs )
@@ -33486,6 +33821,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct FormatProperties2 : public layout::FormatProperties2
   {
+    FormatProperties2()
+      : layout::FormatProperties2()
+    {}
+
+    FormatProperties2( VkFormatProperties2 const & rhs )
+      : layout::FormatProperties2( rhs )
+    {}
+
+    FormatProperties2& operator=( VkFormatProperties2 const & rhs )
+    {
+      layout::FormatProperties2::operator=(rhs);
+      return *this;
+    }
+
     operator VkFormatProperties2 const&() const
     {
       return *reinterpret_cast<const VkFormatProperties2*>( this );
@@ -33578,7 +33927,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     FramebufferAttachmentImageInfoKHR& operator=( VkFramebufferAttachmentImageInfoKHR const & rhs )
     {
-      *reinterpret_cast<VkFramebufferAttachmentImageInfoKHR*>(this) = rhs;
+      layout::FramebufferAttachmentImageInfoKHR::operator=(rhs);
       return *this;
     }
 
@@ -33708,7 +34057,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     FramebufferAttachmentsCreateInfoKHR& operator=( VkFramebufferAttachmentsCreateInfoKHR const & rhs )
     {
-      *reinterpret_cast<VkFramebufferAttachmentsCreateInfoKHR*>(this) = rhs;
+      layout::FramebufferAttachmentsCreateInfoKHR::operator=(rhs);
       return *this;
     }
 
@@ -33823,7 +34172,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     FramebufferCreateInfo& operator=( VkFramebufferCreateInfo const & rhs )
     {
-      *reinterpret_cast<VkFramebufferCreateInfo*>(this) = rhs;
+      layout::FramebufferCreateInfo::operator=(rhs);
       return *this;
     }
 
@@ -33914,14 +34263,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct FramebufferMixedSamplesCombinationNV
     {
     protected:
-      FramebufferMixedSamplesCombinationNV( vk::CoverageReductionModeNV coverageReductionMode_ = vk::CoverageReductionModeNV::eMerge,
-                                            vk::SampleCountFlagBits rasterizationSamples_ = vk::SampleCountFlagBits::e1,
-                                            vk::SampleCountFlags depthStencilSamples_ = vk::SampleCountFlags(),
-                                            vk::SampleCountFlags colorSamples_ = vk::SampleCountFlags() )
-        : coverageReductionMode( coverageReductionMode_ )
-        , rasterizationSamples( rasterizationSamples_ )
-        , depthStencilSamples( depthStencilSamples_ )
-        , colorSamples( colorSamples_ )
+      FramebufferMixedSamplesCombinationNV()
       {}
 
       FramebufferMixedSamplesCombinationNV( VkFramebufferMixedSamplesCombinationNV const & rhs )
@@ -33948,6 +34290,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct FramebufferMixedSamplesCombinationNV : public layout::FramebufferMixedSamplesCombinationNV
   {
+    FramebufferMixedSamplesCombinationNV()
+      : layout::FramebufferMixedSamplesCombinationNV()
+    {}
+
+    FramebufferMixedSamplesCombinationNV( VkFramebufferMixedSamplesCombinationNV const & rhs )
+      : layout::FramebufferMixedSamplesCombinationNV( rhs )
+    {}
+
+    FramebufferMixedSamplesCombinationNV& operator=( VkFramebufferMixedSamplesCombinationNV const & rhs )
+    {
+      layout::FramebufferMixedSamplesCombinationNV::operator=(rhs);
+      return *this;
+    }
+
     operator VkFramebufferMixedSamplesCombinationNV const&() const
     {
       return *reinterpret_cast<const VkFramebufferMixedSamplesCombinationNV*>( this );
@@ -34183,7 +34539,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineVertexInputStateCreateInfo& operator=( VkPipelineVertexInputStateCreateInfo const & rhs )
     {
-      *reinterpret_cast<VkPipelineVertexInputStateCreateInfo*>(this) = rhs;
+      layout::PipelineVertexInputStateCreateInfo::operator=(rhs);
       return *this;
     }
 
@@ -34303,7 +34659,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineInputAssemblyStateCreateInfo& operator=( VkPipelineInputAssemblyStateCreateInfo const & rhs )
     {
-      *reinterpret_cast<VkPipelineInputAssemblyStateCreateInfo*>(this) = rhs;
+      layout::PipelineInputAssemblyStateCreateInfo::operator=(rhs);
       return *this;
     }
 
@@ -34405,7 +34761,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineTessellationStateCreateInfo& operator=( VkPipelineTessellationStateCreateInfo const & rhs )
     {
-      *reinterpret_cast<VkPipelineTessellationStateCreateInfo*>(this) = rhs;
+      layout::PipelineTessellationStateCreateInfo::operator=(rhs);
       return *this;
     }
 
@@ -34611,7 +34967,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineViewportStateCreateInfo& operator=( VkPipelineViewportStateCreateInfo const & rhs )
     {
-      *reinterpret_cast<VkPipelineViewportStateCreateInfo*>(this) = rhs;
+      layout::PipelineViewportStateCreateInfo::operator=(rhs);
       return *this;
     }
 
@@ -34763,7 +35119,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineRasterizationStateCreateInfo& operator=( VkPipelineRasterizationStateCreateInfo const & rhs )
     {
-      *reinterpret_cast<VkPipelineRasterizationStateCreateInfo*>(this) = rhs;
+      layout::PipelineRasterizationStateCreateInfo::operator=(rhs);
       return *this;
     }
 
@@ -34941,7 +35297,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineMultisampleStateCreateInfo& operator=( VkPipelineMultisampleStateCreateInfo const & rhs )
     {
-      *reinterpret_cast<VkPipelineMultisampleStateCreateInfo*>(this) = rhs;
+      layout::PipelineMultisampleStateCreateInfo::operator=(rhs);
       return *this;
     }
 
@@ -35212,7 +35568,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineDepthStencilStateCreateInfo& operator=( VkPipelineDepthStencilStateCreateInfo const & rhs )
     {
-      *reinterpret_cast<VkPipelineDepthStencilStateCreateInfo*>(this) = rhs;
+      layout::PipelineDepthStencilStateCreateInfo::operator=(rhs);
       return *this;
     }
 
@@ -35500,7 +35856,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineColorBlendStateCreateInfo& operator=( VkPipelineColorBlendStateCreateInfo const & rhs )
     {
-      *reinterpret_cast<VkPipelineColorBlendStateCreateInfo*>(this) = rhs;
+      layout::PipelineColorBlendStateCreateInfo::operator=(rhs);
       return *this;
     }
 
@@ -35627,7 +35983,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineDynamicStateCreateInfo& operator=( VkPipelineDynamicStateCreateInfo const & rhs )
     {
-      *reinterpret_cast<VkPipelineDynamicStateCreateInfo*>(this) = rhs;
+      layout::PipelineDynamicStateCreateInfo::operator=(rhs);
       return *this;
     }
 
@@ -35789,7 +36145,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     GraphicsPipelineCreateInfo& operator=( VkGraphicsPipelineCreateInfo const & rhs )
     {
-      *reinterpret_cast<VkGraphicsPipelineCreateInfo*>(this) = rhs;
+      layout::GraphicsPipelineCreateInfo::operator=(rhs);
       return *this;
     }
 
@@ -36072,7 +36428,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     HdrMetadataEXT& operator=( VkHdrMetadataEXT const & rhs )
     {
-      *reinterpret_cast<VkHdrMetadataEXT*>(this) = rhs;
+      layout::HdrMetadataEXT::operator=(rhs);
       return *this;
     }
 
@@ -36205,7 +36561,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     HeadlessSurfaceCreateInfoEXT& operator=( VkHeadlessSurfaceCreateInfoEXT const & rhs )
     {
-      *reinterpret_cast<VkHeadlessSurfaceCreateInfoEXT*>(this) = rhs;
+      layout::HeadlessSurfaceCreateInfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -36295,7 +36651,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     IOSSurfaceCreateInfoMVK& operator=( VkIOSSurfaceCreateInfoMVK const & rhs )
     {
-      *reinterpret_cast<VkIOSSurfaceCreateInfoMVK*>(this) = rhs;
+      layout::IOSSurfaceCreateInfoMVK::operator=(rhs);
       return *this;
     }
 
@@ -36605,7 +36961,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImageCreateInfo& operator=( VkImageCreateInfo const & rhs )
     {
-      *reinterpret_cast<VkImageCreateInfo*>(this) = rhs;
+      layout::ImageCreateInfo::operator=(rhs);
       return *this;
     }
 
@@ -36735,6 +37091,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SubresourceLayout
   {
+    SubresourceLayout()
+    {}
+
+    SubresourceLayout( VkSubresourceLayout const & rhs )
+    {
+      *reinterpret_cast<VkSubresourceLayout*>(this) = rhs;
+    }
+
+    SubresourceLayout& operator=( VkSubresourceLayout const & rhs )
+    {
+      *reinterpret_cast<VkSubresourceLayout*>(this) = rhs;
+      return *this;
+    }
+
     operator VkSubresourceLayout const&() const
     {
       return *reinterpret_cast<const VkSubresourceLayout*>( this );
@@ -36817,7 +37187,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImageDrmFormatModifierExplicitCreateInfoEXT& operator=( VkImageDrmFormatModifierExplicitCreateInfoEXT const & rhs )
     {
-      *reinterpret_cast<VkImageDrmFormatModifierExplicitCreateInfoEXT*>(this) = rhs;
+      layout::ImageDrmFormatModifierExplicitCreateInfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -36919,7 +37289,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImageDrmFormatModifierListCreateInfoEXT& operator=( VkImageDrmFormatModifierListCreateInfoEXT const & rhs )
     {
-      *reinterpret_cast<VkImageDrmFormatModifierListCreateInfoEXT*>(this) = rhs;
+      layout::ImageDrmFormatModifierListCreateInfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -36975,8 +37345,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct ImageDrmFormatModifierPropertiesEXT
     {
     protected:
-      ImageDrmFormatModifierPropertiesEXT( uint64_t drmFormatModifier_ = 0 )
-        : drmFormatModifier( drmFormatModifier_ )
+      ImageDrmFormatModifierPropertiesEXT()
       {}
 
       ImageDrmFormatModifierPropertiesEXT( VkImageDrmFormatModifierPropertiesEXT const & rhs )
@@ -37000,6 +37369,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ImageDrmFormatModifierPropertiesEXT : public layout::ImageDrmFormatModifierPropertiesEXT
   {
+    ImageDrmFormatModifierPropertiesEXT()
+      : layout::ImageDrmFormatModifierPropertiesEXT()
+    {}
+
+    ImageDrmFormatModifierPropertiesEXT( VkImageDrmFormatModifierPropertiesEXT const & rhs )
+      : layout::ImageDrmFormatModifierPropertiesEXT( rhs )
+    {}
+
+    ImageDrmFormatModifierPropertiesEXT& operator=( VkImageDrmFormatModifierPropertiesEXT const & rhs )
+    {
+      layout::ImageDrmFormatModifierPropertiesEXT::operator=(rhs);
+      return *this;
+    }
+
     operator VkImageDrmFormatModifierPropertiesEXT const&() const
     {
       return *reinterpret_cast<const VkImageDrmFormatModifierPropertiesEXT*>( this );
@@ -37072,7 +37455,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImageFormatListCreateInfoKHR& operator=( VkImageFormatListCreateInfoKHR const & rhs )
     {
-      *reinterpret_cast<VkImageFormatListCreateInfoKHR*>(this) = rhs;
+      layout::ImageFormatListCreateInfoKHR::operator=(rhs);
       return *this;
     }
 
@@ -37128,8 +37511,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct ImageFormatProperties2
     {
     protected:
-      ImageFormatProperties2( vk::ImageFormatProperties imageFormatProperties_ = vk::ImageFormatProperties() )
-        : imageFormatProperties( imageFormatProperties_ )
+      ImageFormatProperties2()
       {}
 
       ImageFormatProperties2( VkImageFormatProperties2 const & rhs )
@@ -37153,6 +37535,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ImageFormatProperties2 : public layout::ImageFormatProperties2
   {
+    ImageFormatProperties2()
+      : layout::ImageFormatProperties2()
+    {}
+
+    ImageFormatProperties2( VkImageFormatProperties2 const & rhs )
+      : layout::ImageFormatProperties2( rhs )
+    {}
+
+    ImageFormatProperties2& operator=( VkImageFormatProperties2 const & rhs )
+    {
+      layout::ImageFormatProperties2::operator=(rhs);
+      return *this;
+    }
+
     operator VkImageFormatProperties2 const&() const
     {
       return *reinterpret_cast<const VkImageFormatProperties2*>( this );
@@ -37338,7 +37734,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImageMemoryBarrier& operator=( VkImageMemoryBarrier const & rhs )
     {
-      *reinterpret_cast<VkImageMemoryBarrier*>(this) = rhs;
+      layout::ImageMemoryBarrier::operator=(rhs);
       return *this;
     }
 
@@ -37471,7 +37867,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImageMemoryRequirementsInfo2& operator=( VkImageMemoryRequirementsInfo2 const & rhs )
     {
-      *reinterpret_cast<VkImageMemoryRequirementsInfo2*>(this) = rhs;
+      layout::ImageMemoryRequirementsInfo2::operator=(rhs);
       return *this;
     }
 
@@ -37561,7 +37957,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImagePipeSurfaceCreateInfoFUCHSIA& operator=( VkImagePipeSurfaceCreateInfoFUCHSIA const & rhs )
     {
-      *reinterpret_cast<VkImagePipeSurfaceCreateInfoFUCHSIA*>(this) = rhs;
+      layout::ImagePipeSurfaceCreateInfoFUCHSIA::operator=(rhs);
       return *this;
     }
 
@@ -37653,7 +38049,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImagePlaneMemoryRequirementsInfo& operator=( VkImagePlaneMemoryRequirementsInfo const & rhs )
     {
-      *reinterpret_cast<VkImagePlaneMemoryRequirementsInfo*>(this) = rhs;
+      layout::ImagePlaneMemoryRequirementsInfo::operator=(rhs);
       return *this;
     }
 
@@ -37826,7 +38222,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImageSparseMemoryRequirementsInfo2& operator=( VkImageSparseMemoryRequirementsInfo2 const & rhs )
     {
-      *reinterpret_cast<VkImageSparseMemoryRequirementsInfo2*>(this) = rhs;
+      layout::ImageSparseMemoryRequirementsInfo2::operator=(rhs);
       return *this;
     }
 
@@ -37910,7 +38306,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImageStencilUsageCreateInfoEXT& operator=( VkImageStencilUsageCreateInfoEXT const & rhs )
     {
-      *reinterpret_cast<VkImageStencilUsageCreateInfoEXT*>(this) = rhs;
+      layout::ImageStencilUsageCreateInfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -37994,7 +38390,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImageSwapchainCreateInfoKHR& operator=( VkImageSwapchainCreateInfoKHR const & rhs )
     {
-      *reinterpret_cast<VkImageSwapchainCreateInfoKHR*>(this) = rhs;
+      layout::ImageSwapchainCreateInfoKHR::operator=(rhs);
       return *this;
     }
 
@@ -38078,7 +38474,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImageViewASTCDecodeModeEXT& operator=( VkImageViewASTCDecodeModeEXT const & rhs )
     {
-      *reinterpret_cast<VkImageViewASTCDecodeModeEXT*>(this) = rhs;
+      layout::ImageViewASTCDecodeModeEXT::operator=(rhs);
       return *this;
     }
 
@@ -38182,7 +38578,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImageViewCreateInfo& operator=( VkImageViewCreateInfo const & rhs )
     {
-      *reinterpret_cast<VkImageViewCreateInfo*>(this) = rhs;
+      layout::ImageViewCreateInfo::operator=(rhs);
       return *this;
     }
 
@@ -38309,7 +38705,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImageViewHandleInfoNVX& operator=( VkImageViewHandleInfoNVX const & rhs )
     {
-      *reinterpret_cast<VkImageViewHandleInfoNVX*>(this) = rhs;
+      layout::ImageViewHandleInfoNVX::operator=(rhs);
       return *this;
     }
 
@@ -38407,7 +38803,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImageViewUsageCreateInfo& operator=( VkImageViewUsageCreateInfo const & rhs )
     {
-      *reinterpret_cast<VkImageViewUsageCreateInfo*>(this) = rhs;
+      layout::ImageViewUsageCreateInfo::operator=(rhs);
       return *this;
     }
 
@@ -38493,7 +38889,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImportAndroidHardwareBufferInfoANDROID& operator=( VkImportAndroidHardwareBufferInfoANDROID const & rhs )
     {
-      *reinterpret_cast<VkImportAndroidHardwareBufferInfoANDROID*>(this) = rhs;
+      layout::ImportAndroidHardwareBufferInfoANDROID::operator=(rhs);
       return *this;
     }
 
@@ -38590,7 +38986,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImportFenceFdInfoKHR& operator=( VkImportFenceFdInfoKHR const & rhs )
     {
-      *reinterpret_cast<VkImportFenceFdInfoKHR*>(this) = rhs;
+      layout::ImportFenceFdInfoKHR::operator=(rhs);
       return *this;
     }
 
@@ -38713,7 +39109,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImportFenceWin32HandleInfoKHR& operator=( VkImportFenceWin32HandleInfoKHR const & rhs )
     {
-      *reinterpret_cast<VkImportFenceWin32HandleInfoKHR*>(this) = rhs;
+      layout::ImportFenceWin32HandleInfoKHR::operator=(rhs);
       return *this;
     }
 
@@ -38830,7 +39226,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImportMemoryFdInfoKHR& operator=( VkImportMemoryFdInfoKHR const & rhs )
     {
-      *reinterpret_cast<VkImportMemoryFdInfoKHR*>(this) = rhs;
+      layout::ImportMemoryFdInfoKHR::operator=(rhs);
       return *this;
     }
 
@@ -38925,7 +39321,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImportMemoryHostPointerInfoEXT& operator=( VkImportMemoryHostPointerInfoEXT const & rhs )
     {
-      *reinterpret_cast<VkImportMemoryHostPointerInfoEXT*>(this) = rhs;
+      layout::ImportMemoryHostPointerInfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -39026,7 +39422,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImportMemoryWin32HandleInfoKHR& operator=( VkImportMemoryWin32HandleInfoKHR const & rhs )
     {
-      *reinterpret_cast<VkImportMemoryWin32HandleInfoKHR*>(this) = rhs;
+      layout::ImportMemoryWin32HandleInfoKHR::operator=(rhs);
       return *this;
     }
 
@@ -39131,7 +39527,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImportMemoryWin32HandleInfoNV& operator=( VkImportMemoryWin32HandleInfoNV const & rhs )
     {
-      *reinterpret_cast<VkImportMemoryWin32HandleInfoNV*>(this) = rhs;
+      layout::ImportMemoryWin32HandleInfoNV::operator=(rhs);
       return *this;
     }
 
@@ -39235,7 +39631,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImportSemaphoreFdInfoKHR& operator=( VkImportSemaphoreFdInfoKHR const & rhs )
     {
-      *reinterpret_cast<VkImportSemaphoreFdInfoKHR*>(this) = rhs;
+      layout::ImportSemaphoreFdInfoKHR::operator=(rhs);
       return *this;
     }
 
@@ -39358,7 +39754,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImportSemaphoreWin32HandleInfoKHR& operator=( VkImportSemaphoreWin32HandleInfoKHR const & rhs )
     {
-      *reinterpret_cast<VkImportSemaphoreWin32HandleInfoKHR*>(this) = rhs;
+      layout::ImportSemaphoreWin32HandleInfoKHR::operator=(rhs);
       return *this;
     }
 
@@ -39562,7 +39958,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     IndirectCommandsLayoutCreateInfoNVX& operator=( VkIndirectCommandsLayoutCreateInfoNVX const & rhs )
     {
-      *reinterpret_cast<VkIndirectCommandsLayoutCreateInfoNVX*>(this) = rhs;
+      layout::IndirectCommandsLayoutCreateInfoNVX::operator=(rhs);
       return *this;
     }
 
@@ -39667,7 +40063,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     InitializePerformanceApiInfoINTEL& operator=( VkInitializePerformanceApiInfoINTEL const & rhs )
     {
-      *reinterpret_cast<VkInitializePerformanceApiInfoINTEL*>(this) = rhs;
+      layout::InitializePerformanceApiInfoINTEL::operator=(rhs);
       return *this;
     }
 
@@ -39840,7 +40236,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     InstanceCreateInfo& operator=( VkInstanceCreateInfo const & rhs )
     {
-      *reinterpret_cast<VkInstanceCreateInfo*>(this) = rhs;
+      layout::InstanceCreateInfo::operator=(rhs);
       return *this;
     }
 
@@ -39921,6 +40317,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct LayerProperties
   {
+    LayerProperties()
+    {}
+
+    LayerProperties( VkLayerProperties const & rhs )
+    {
+      *reinterpret_cast<VkLayerProperties*>(this) = rhs;
+    }
+
+    LayerProperties& operator=( VkLayerProperties const & rhs )
+    {
+      *reinterpret_cast<VkLayerProperties*>(this) = rhs;
+      return *this;
+    }
+
     operator VkLayerProperties const&() const
     {
       return *reinterpret_cast<const VkLayerProperties*>( this );
@@ -39999,7 +40409,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     MacOSSurfaceCreateInfoMVK& operator=( VkMacOSSurfaceCreateInfoMVK const & rhs )
     {
-      *reinterpret_cast<VkMacOSSurfaceCreateInfoMVK*>(this) = rhs;
+      layout::MacOSSurfaceCreateInfoMVK::operator=(rhs);
       return *this;
     }
 
@@ -40099,7 +40509,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     MappedMemoryRange& operator=( VkMappedMemoryRange const & rhs )
     {
-      *reinterpret_cast<VkMappedMemoryRange*>(this) = rhs;
+      layout::MappedMemoryRange::operator=(rhs);
       return *this;
     }
 
@@ -40201,7 +40611,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     MemoryAllocateFlagsInfo& operator=( VkMemoryAllocateFlagsInfo const & rhs )
     {
-      *reinterpret_cast<VkMemoryAllocateFlagsInfo*>(this) = rhs;
+      layout::MemoryAllocateFlagsInfo::operator=(rhs);
       return *this;
     }
 
@@ -40296,7 +40706,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     MemoryAllocateInfo& operator=( VkMemoryAllocateInfo const & rhs )
     {
-      *reinterpret_cast<VkMemoryAllocateInfo*>(this) = rhs;
+      layout::MemoryAllocateInfo::operator=(rhs);
       return *this;
     }
 
@@ -40391,7 +40801,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     MemoryBarrier& operator=( VkMemoryBarrier const & rhs )
     {
-      *reinterpret_cast<VkMemoryBarrier*>(this) = rhs;
+      layout::MemoryBarrier::operator=(rhs);
       return *this;
     }
 
@@ -40486,7 +40896,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     MemoryDedicatedAllocateInfo& operator=( VkMemoryDedicatedAllocateInfo const & rhs )
     {
-      *reinterpret_cast<VkMemoryDedicatedAllocateInfo*>(this) = rhs;
+      layout::MemoryDedicatedAllocateInfo::operator=(rhs);
       return *this;
     }
 
@@ -40542,10 +40952,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct MemoryDedicatedRequirements
     {
     protected:
-      MemoryDedicatedRequirements( vk::Bool32 prefersDedicatedAllocation_ = 0,
-                                   vk::Bool32 requiresDedicatedAllocation_ = 0 )
-        : prefersDedicatedAllocation( prefersDedicatedAllocation_ )
-        , requiresDedicatedAllocation( requiresDedicatedAllocation_ )
+      MemoryDedicatedRequirements()
       {}
 
       MemoryDedicatedRequirements( VkMemoryDedicatedRequirements const & rhs )
@@ -40570,6 +40977,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct MemoryDedicatedRequirements : public layout::MemoryDedicatedRequirements
   {
+    MemoryDedicatedRequirements()
+      : layout::MemoryDedicatedRequirements()
+    {}
+
+    MemoryDedicatedRequirements( VkMemoryDedicatedRequirements const & rhs )
+      : layout::MemoryDedicatedRequirements( rhs )
+    {}
+
+    MemoryDedicatedRequirements& operator=( VkMemoryDedicatedRequirements const & rhs )
+    {
+      layout::MemoryDedicatedRequirements::operator=(rhs);
+      return *this;
+    }
+
     operator VkMemoryDedicatedRequirements const&() const
     {
       return *reinterpret_cast<const VkMemoryDedicatedRequirements*>( this );
@@ -40604,8 +41025,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct MemoryFdPropertiesKHR
     {
     protected:
-      MemoryFdPropertiesKHR( uint32_t memoryTypeBits_ = 0 )
-        : memoryTypeBits( memoryTypeBits_ )
+      MemoryFdPropertiesKHR()
       {}
 
       MemoryFdPropertiesKHR( VkMemoryFdPropertiesKHR const & rhs )
@@ -40629,6 +41049,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct MemoryFdPropertiesKHR : public layout::MemoryFdPropertiesKHR
   {
+    MemoryFdPropertiesKHR()
+      : layout::MemoryFdPropertiesKHR()
+    {}
+
+    MemoryFdPropertiesKHR( VkMemoryFdPropertiesKHR const & rhs )
+      : layout::MemoryFdPropertiesKHR( rhs )
+    {}
+
+    MemoryFdPropertiesKHR& operator=( VkMemoryFdPropertiesKHR const & rhs )
+    {
+      layout::MemoryFdPropertiesKHR::operator=(rhs);
+      return *this;
+    }
+
     operator VkMemoryFdPropertiesKHR const&() const
     {
       return *reinterpret_cast<const VkMemoryFdPropertiesKHR*>( this );
@@ -40699,7 +41133,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     MemoryGetAndroidHardwareBufferInfoANDROID& operator=( VkMemoryGetAndroidHardwareBufferInfoANDROID const & rhs )
     {
-      *reinterpret_cast<VkMemoryGetAndroidHardwareBufferInfoANDROID*>(this) = rhs;
+      layout::MemoryGetAndroidHardwareBufferInfoANDROID::operator=(rhs);
       return *this;
     }
 
@@ -40788,7 +41222,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     MemoryGetFdInfoKHR& operator=( VkMemoryGetFdInfoKHR const & rhs )
     {
-      *reinterpret_cast<VkMemoryGetFdInfoKHR*>(this) = rhs;
+      layout::MemoryGetFdInfoKHR::operator=(rhs);
       return *this;
     }
 
@@ -40885,7 +41319,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     MemoryGetWin32HandleInfoKHR& operator=( VkMemoryGetWin32HandleInfoKHR const & rhs )
     {
-      *reinterpret_cast<VkMemoryGetWin32HandleInfoKHR*>(this) = rhs;
+      layout::MemoryGetWin32HandleInfoKHR::operator=(rhs);
       return *this;
     }
 
@@ -40939,6 +41373,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct MemoryHeap
   {
+    MemoryHeap()
+    {}
+
+    MemoryHeap( VkMemoryHeap const & rhs )
+    {
+      *reinterpret_cast<VkMemoryHeap*>(this) = rhs;
+    }
+
+    MemoryHeap& operator=( VkMemoryHeap const & rhs )
+    {
+      *reinterpret_cast<VkMemoryHeap*>(this) = rhs;
+      return *this;
+    }
+
     operator VkMemoryHeap const&() const
     {
       return *reinterpret_cast<const VkMemoryHeap*>( this );
@@ -40972,8 +41420,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct MemoryHostPointerPropertiesEXT
     {
     protected:
-      MemoryHostPointerPropertiesEXT( uint32_t memoryTypeBits_ = 0 )
-        : memoryTypeBits( memoryTypeBits_ )
+      MemoryHostPointerPropertiesEXT()
       {}
 
       MemoryHostPointerPropertiesEXT( VkMemoryHostPointerPropertiesEXT const & rhs )
@@ -40997,6 +41444,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct MemoryHostPointerPropertiesEXT : public layout::MemoryHostPointerPropertiesEXT
   {
+    MemoryHostPointerPropertiesEXT()
+      : layout::MemoryHostPointerPropertiesEXT()
+    {}
+
+    MemoryHostPointerPropertiesEXT( VkMemoryHostPointerPropertiesEXT const & rhs )
+      : layout::MemoryHostPointerPropertiesEXT( rhs )
+    {}
+
+    MemoryHostPointerPropertiesEXT& operator=( VkMemoryHostPointerPropertiesEXT const & rhs )
+    {
+      layout::MemoryHostPointerPropertiesEXT::operator=(rhs);
+      return *this;
+    }
+
     operator VkMemoryHostPointerPropertiesEXT const&() const
     {
       return *reinterpret_cast<const VkMemoryHostPointerPropertiesEXT*>( this );
@@ -41065,7 +41526,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     MemoryPriorityAllocateInfoEXT& operator=( VkMemoryPriorityAllocateInfoEXT const & rhs )
     {
-      *reinterpret_cast<VkMemoryPriorityAllocateInfoEXT*>(this) = rhs;
+      layout::MemoryPriorityAllocateInfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -41111,6 +41572,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct MemoryRequirements
   {
+    MemoryRequirements()
+    {}
+
+    MemoryRequirements( VkMemoryRequirements const & rhs )
+    {
+      *reinterpret_cast<VkMemoryRequirements*>(this) = rhs;
+    }
+
+    MemoryRequirements& operator=( VkMemoryRequirements const & rhs )
+    {
+      *reinterpret_cast<VkMemoryRequirements*>(this) = rhs;
+      return *this;
+    }
+
     operator VkMemoryRequirements const&() const
     {
       return *reinterpret_cast<const VkMemoryRequirements*>( this );
@@ -41146,8 +41621,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct MemoryRequirements2
     {
     protected:
-      MemoryRequirements2( vk::MemoryRequirements memoryRequirements_ = vk::MemoryRequirements() )
-        : memoryRequirements( memoryRequirements_ )
+      MemoryRequirements2()
       {}
 
       MemoryRequirements2( VkMemoryRequirements2 const & rhs )
@@ -41171,6 +41645,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct MemoryRequirements2 : public layout::MemoryRequirements2
   {
+    MemoryRequirements2()
+      : layout::MemoryRequirements2()
+    {}
+
+    MemoryRequirements2( VkMemoryRequirements2 const & rhs )
+      : layout::MemoryRequirements2( rhs )
+    {}
+
+    MemoryRequirements2& operator=( VkMemoryRequirements2 const & rhs )
+    {
+      layout::MemoryRequirements2::operator=(rhs);
+      return *this;
+    }
+
     operator VkMemoryRequirements2 const&() const
     {
       return *reinterpret_cast<const VkMemoryRequirements2*>( this );
@@ -41201,6 +41689,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct MemoryType
   {
+    MemoryType()
+    {}
+
+    MemoryType( VkMemoryType const & rhs )
+    {
+      *reinterpret_cast<VkMemoryType*>(this) = rhs;
+    }
+
+    MemoryType& operator=( VkMemoryType const & rhs )
+    {
+      *reinterpret_cast<VkMemoryType*>(this) = rhs;
+      return *this;
+    }
+
     operator VkMemoryType const&() const
     {
       return *reinterpret_cast<const VkMemoryType*>( this );
@@ -41236,8 +41738,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct MemoryWin32HandlePropertiesKHR
     {
     protected:
-      MemoryWin32HandlePropertiesKHR( uint32_t memoryTypeBits_ = 0 )
-        : memoryTypeBits( memoryTypeBits_ )
+      MemoryWin32HandlePropertiesKHR()
       {}
 
       MemoryWin32HandlePropertiesKHR( VkMemoryWin32HandlePropertiesKHR const & rhs )
@@ -41261,6 +41762,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct MemoryWin32HandlePropertiesKHR : public layout::MemoryWin32HandlePropertiesKHR
   {
+    MemoryWin32HandlePropertiesKHR()
+      : layout::MemoryWin32HandlePropertiesKHR()
+    {}
+
+    MemoryWin32HandlePropertiesKHR( VkMemoryWin32HandlePropertiesKHR const & rhs )
+      : layout::MemoryWin32HandlePropertiesKHR( rhs )
+    {}
+
+    MemoryWin32HandlePropertiesKHR& operator=( VkMemoryWin32HandlePropertiesKHR const & rhs )
+    {
+      layout::MemoryWin32HandlePropertiesKHR::operator=(rhs);
+      return *this;
+    }
+
     operator VkMemoryWin32HandlePropertiesKHR const&() const
     {
       return *reinterpret_cast<const VkMemoryWin32HandlePropertiesKHR*>( this );
@@ -41336,7 +41851,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     MetalSurfaceCreateInfoEXT& operator=( VkMetalSurfaceCreateInfoEXT const & rhs )
     {
-      *reinterpret_cast<VkMetalSurfaceCreateInfoEXT*>(this) = rhs;
+      layout::MetalSurfaceCreateInfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -41393,8 +41908,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct MultisamplePropertiesEXT
     {
     protected:
-      MultisamplePropertiesEXT( vk::Extent2D maxSampleLocationGridSize_ = vk::Extent2D() )
-        : maxSampleLocationGridSize( maxSampleLocationGridSize_ )
+      MultisamplePropertiesEXT()
       {}
 
       MultisamplePropertiesEXT( VkMultisamplePropertiesEXT const & rhs )
@@ -41418,6 +41932,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct MultisamplePropertiesEXT : public layout::MultisamplePropertiesEXT
   {
+    MultisamplePropertiesEXT()
+      : layout::MultisamplePropertiesEXT()
+    {}
+
+    MultisamplePropertiesEXT( VkMultisamplePropertiesEXT const & rhs )
+      : layout::MultisamplePropertiesEXT( rhs )
+    {}
+
+    MultisamplePropertiesEXT& operator=( VkMultisamplePropertiesEXT const & rhs )
+    {
+      layout::MultisamplePropertiesEXT::operator=(rhs);
+      return *this;
+    }
+
     operator VkMultisamplePropertiesEXT const&() const
     {
       return *reinterpret_cast<const VkMultisamplePropertiesEXT*>( this );
@@ -41518,7 +42046,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ObjectTableCreateInfoNVX& operator=( VkObjectTableCreateInfoNVX const & rhs )
     {
-      *reinterpret_cast<VkObjectTableCreateInfoNVX*>(this) = rhs;
+      layout::ObjectTableCreateInfoNVX::operator=(rhs);
       return *this;
     }
 
@@ -42095,6 +42623,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PastPresentationTimingGOOGLE
   {
+    PastPresentationTimingGOOGLE()
+    {}
+
+    PastPresentationTimingGOOGLE( VkPastPresentationTimingGOOGLE const & rhs )
+    {
+      *reinterpret_cast<VkPastPresentationTimingGOOGLE*>(this) = rhs;
+    }
+
+    PastPresentationTimingGOOGLE& operator=( VkPastPresentationTimingGOOGLE const & rhs )
+    {
+      *reinterpret_cast<VkPastPresentationTimingGOOGLE*>(this) = rhs;
+      return *this;
+    }
+
     operator VkPastPresentationTimingGOOGLE const&() const
     {
       return *reinterpret_cast<const VkPastPresentationTimingGOOGLE*>( this );
@@ -42169,7 +42711,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PerformanceConfigurationAcquireInfoINTEL& operator=( VkPerformanceConfigurationAcquireInfoINTEL const & rhs )
     {
-      *reinterpret_cast<VkPerformanceConfigurationAcquireInfoINTEL*>(this) = rhs;
+      layout::PerformanceConfigurationAcquireInfoINTEL::operator=(rhs);
       return *this;
     }
 
@@ -42253,7 +42795,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PerformanceMarkerInfoINTEL& operator=( VkPerformanceMarkerInfoINTEL const & rhs )
     {
-      *reinterpret_cast<VkPerformanceMarkerInfoINTEL*>(this) = rhs;
+      layout::PerformanceMarkerInfoINTEL::operator=(rhs);
       return *this;
     }
 
@@ -42345,7 +42887,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PerformanceOverrideInfoINTEL& operator=( VkPerformanceOverrideInfoINTEL const & rhs )
     {
-      *reinterpret_cast<VkPerformanceOverrideInfoINTEL*>(this) = rhs;
+      layout::PerformanceOverrideInfoINTEL::operator=(rhs);
       return *this;
     }
 
@@ -42443,7 +42985,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PerformanceStreamMarkerInfoINTEL& operator=( VkPerformanceStreamMarkerInfoINTEL const & rhs )
     {
-      *reinterpret_cast<VkPerformanceStreamMarkerInfoINTEL*>(this) = rhs;
+      layout::PerformanceStreamMarkerInfoINTEL::operator=(rhs);
       return *this;
     }
 
@@ -42663,7 +43205,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDevice16BitStorageFeatures& operator=( VkPhysicalDevice16BitStorageFeatures const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDevice16BitStorageFeatures*>(this) = rhs;
+      layout::PhysicalDevice16BitStorageFeatures::operator=(rhs);
       return *this;
     }
 
@@ -42776,7 +43318,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDevice8BitStorageFeaturesKHR& operator=( VkPhysicalDevice8BitStorageFeaturesKHR const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDevice8BitStorageFeaturesKHR*>(this) = rhs;
+      layout::PhysicalDevice8BitStorageFeaturesKHR::operator=(rhs);
       return *this;
     }
 
@@ -42874,7 +43416,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceASTCDecodeFeaturesEXT& operator=( VkPhysicalDeviceASTCDecodeFeaturesEXT const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceASTCDecodeFeaturesEXT*>(this) = rhs;
+      layout::PhysicalDeviceASTCDecodeFeaturesEXT::operator=(rhs);
       return *this;
     }
 
@@ -42958,7 +43500,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceBlendOperationAdvancedFeaturesEXT& operator=( VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT*>(this) = rhs;
+      layout::PhysicalDeviceBlendOperationAdvancedFeaturesEXT::operator=(rhs);
       return *this;
     }
 
@@ -43007,18 +43549,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceBlendOperationAdvancedPropertiesEXT
     {
     protected:
-      PhysicalDeviceBlendOperationAdvancedPropertiesEXT( uint32_t advancedBlendMaxColorAttachments_ = 0,
-                                                         vk::Bool32 advancedBlendIndependentBlend_ = 0,
-                                                         vk::Bool32 advancedBlendNonPremultipliedSrcColor_ = 0,
-                                                         vk::Bool32 advancedBlendNonPremultipliedDstColor_ = 0,
-                                                         vk::Bool32 advancedBlendCorrelatedOverlap_ = 0,
-                                                         vk::Bool32 advancedBlendAllOperations_ = 0 )
-        : advancedBlendMaxColorAttachments( advancedBlendMaxColorAttachments_ )
-        , advancedBlendIndependentBlend( advancedBlendIndependentBlend_ )
-        , advancedBlendNonPremultipliedSrcColor( advancedBlendNonPremultipliedSrcColor_ )
-        , advancedBlendNonPremultipliedDstColor( advancedBlendNonPremultipliedDstColor_ )
-        , advancedBlendCorrelatedOverlap( advancedBlendCorrelatedOverlap_ )
-        , advancedBlendAllOperations( advancedBlendAllOperations_ )
+      PhysicalDeviceBlendOperationAdvancedPropertiesEXT()
       {}
 
       PhysicalDeviceBlendOperationAdvancedPropertiesEXT( VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT const & rhs )
@@ -43047,6 +43578,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceBlendOperationAdvancedPropertiesEXT : public layout::PhysicalDeviceBlendOperationAdvancedPropertiesEXT
   {
+    PhysicalDeviceBlendOperationAdvancedPropertiesEXT()
+      : layout::PhysicalDeviceBlendOperationAdvancedPropertiesEXT()
+    {}
+
+    PhysicalDeviceBlendOperationAdvancedPropertiesEXT( VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT const & rhs )
+      : layout::PhysicalDeviceBlendOperationAdvancedPropertiesEXT( rhs )
+    {}
+
+    PhysicalDeviceBlendOperationAdvancedPropertiesEXT& operator=( VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT const & rhs )
+    {
+      layout::PhysicalDeviceBlendOperationAdvancedPropertiesEXT::operator=(rhs);
+      return *this;
+    }
+
     operator VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT*>( this );
@@ -43128,7 +43673,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceBufferDeviceAddressFeaturesEXT& operator=( VkPhysicalDeviceBufferDeviceAddressFeaturesEXT const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceBufferDeviceAddressFeaturesEXT*>(this) = rhs;
+      layout::PhysicalDeviceBufferDeviceAddressFeaturesEXT::operator=(rhs);
       return *this;
     }
 
@@ -43230,7 +43775,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceComputeShaderDerivativesFeaturesNV& operator=( VkPhysicalDeviceComputeShaderDerivativesFeaturesNV const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceComputeShaderDerivativesFeaturesNV*>(this) = rhs;
+      layout::PhysicalDeviceComputeShaderDerivativesFeaturesNV::operator=(rhs);
       return *this;
     }
 
@@ -43325,7 +43870,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceConditionalRenderingFeaturesEXT& operator=( VkPhysicalDeviceConditionalRenderingFeaturesEXT const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceConditionalRenderingFeaturesEXT*>(this) = rhs;
+      layout::PhysicalDeviceConditionalRenderingFeaturesEXT::operator=(rhs);
       return *this;
     }
 
@@ -43381,24 +43926,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceConservativeRasterizationPropertiesEXT
     {
     protected:
-      PhysicalDeviceConservativeRasterizationPropertiesEXT( float primitiveOverestimationSize_ = 0,
-                                                            float maxExtraPrimitiveOverestimationSize_ = 0,
-                                                            float extraPrimitiveOverestimationSizeGranularity_ = 0,
-                                                            vk::Bool32 primitiveUnderestimation_ = 0,
-                                                            vk::Bool32 conservativePointAndLineRasterization_ = 0,
-                                                            vk::Bool32 degenerateTrianglesRasterized_ = 0,
-                                                            vk::Bool32 degenerateLinesRasterized_ = 0,
-                                                            vk::Bool32 fullyCoveredFragmentShaderInputVariable_ = 0,
-                                                            vk::Bool32 conservativeRasterizationPostDepthCoverage_ = 0 )
-        : primitiveOverestimationSize( primitiveOverestimationSize_ )
-        , maxExtraPrimitiveOverestimationSize( maxExtraPrimitiveOverestimationSize_ )
-        , extraPrimitiveOverestimationSizeGranularity( extraPrimitiveOverestimationSizeGranularity_ )
-        , primitiveUnderestimation( primitiveUnderestimation_ )
-        , conservativePointAndLineRasterization( conservativePointAndLineRasterization_ )
-        , degenerateTrianglesRasterized( degenerateTrianglesRasterized_ )
-        , degenerateLinesRasterized( degenerateLinesRasterized_ )
-        , fullyCoveredFragmentShaderInputVariable( fullyCoveredFragmentShaderInputVariable_ )
-        , conservativeRasterizationPostDepthCoverage( conservativeRasterizationPostDepthCoverage_ )
+      PhysicalDeviceConservativeRasterizationPropertiesEXT()
       {}
 
       PhysicalDeviceConservativeRasterizationPropertiesEXT( VkPhysicalDeviceConservativeRasterizationPropertiesEXT const & rhs )
@@ -43430,6 +43958,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceConservativeRasterizationPropertiesEXT : public layout::PhysicalDeviceConservativeRasterizationPropertiesEXT
   {
+    PhysicalDeviceConservativeRasterizationPropertiesEXT()
+      : layout::PhysicalDeviceConservativeRasterizationPropertiesEXT()
+    {}
+
+    PhysicalDeviceConservativeRasterizationPropertiesEXT( VkPhysicalDeviceConservativeRasterizationPropertiesEXT const & rhs )
+      : layout::PhysicalDeviceConservativeRasterizationPropertiesEXT( rhs )
+    {}
+
+    PhysicalDeviceConservativeRasterizationPropertiesEXT& operator=( VkPhysicalDeviceConservativeRasterizationPropertiesEXT const & rhs )
+    {
+      layout::PhysicalDeviceConservativeRasterizationPropertiesEXT::operator=(rhs);
+      return *this;
+    }
+
     operator VkPhysicalDeviceConservativeRasterizationPropertiesEXT const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceConservativeRasterizationPropertiesEXT*>( this );
@@ -43510,7 +44052,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceCooperativeMatrixFeaturesNV& operator=( VkPhysicalDeviceCooperativeMatrixFeaturesNV const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceCooperativeMatrixFeaturesNV*>(this) = rhs;
+      layout::PhysicalDeviceCooperativeMatrixFeaturesNV::operator=(rhs);
       return *this;
     }
 
@@ -43566,8 +44108,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceCooperativeMatrixPropertiesNV
     {
     protected:
-      PhysicalDeviceCooperativeMatrixPropertiesNV( vk::ShaderStageFlags cooperativeMatrixSupportedStages_ = vk::ShaderStageFlags() )
-        : cooperativeMatrixSupportedStages( cooperativeMatrixSupportedStages_ )
+      PhysicalDeviceCooperativeMatrixPropertiesNV()
       {}
 
       PhysicalDeviceCooperativeMatrixPropertiesNV( VkPhysicalDeviceCooperativeMatrixPropertiesNV const & rhs )
@@ -43591,6 +44132,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceCooperativeMatrixPropertiesNV : public layout::PhysicalDeviceCooperativeMatrixPropertiesNV
   {
+    PhysicalDeviceCooperativeMatrixPropertiesNV()
+      : layout::PhysicalDeviceCooperativeMatrixPropertiesNV()
+    {}
+
+    PhysicalDeviceCooperativeMatrixPropertiesNV( VkPhysicalDeviceCooperativeMatrixPropertiesNV const & rhs )
+      : layout::PhysicalDeviceCooperativeMatrixPropertiesNV( rhs )
+    {}
+
+    PhysicalDeviceCooperativeMatrixPropertiesNV& operator=( VkPhysicalDeviceCooperativeMatrixPropertiesNV const & rhs )
+    {
+      layout::PhysicalDeviceCooperativeMatrixPropertiesNV::operator=(rhs);
+      return *this;
+    }
+
     operator VkPhysicalDeviceCooperativeMatrixPropertiesNV const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceCooperativeMatrixPropertiesNV*>( this );
@@ -43659,7 +44214,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceCornerSampledImageFeaturesNV& operator=( VkPhysicalDeviceCornerSampledImageFeaturesNV const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceCornerSampledImageFeaturesNV*>(this) = rhs;
+      layout::PhysicalDeviceCornerSampledImageFeaturesNV::operator=(rhs);
       return *this;
     }
 
@@ -43743,7 +44298,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceCoverageReductionModeFeaturesNV& operator=( VkPhysicalDeviceCoverageReductionModeFeaturesNV const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceCoverageReductionModeFeaturesNV*>(this) = rhs;
+      layout::PhysicalDeviceCoverageReductionModeFeaturesNV::operator=(rhs);
       return *this;
     }
 
@@ -43827,7 +44382,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV& operator=( VkPhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV*>(this) = rhs;
+      layout::PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV::operator=(rhs);
       return *this;
     }
 
@@ -43911,7 +44466,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceDepthClipEnableFeaturesEXT& operator=( VkPhysicalDeviceDepthClipEnableFeaturesEXT const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceDepthClipEnableFeaturesEXT*>(this) = rhs;
+      layout::PhysicalDeviceDepthClipEnableFeaturesEXT::operator=(rhs);
       return *this;
     }
 
@@ -43960,14 +44515,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceDepthStencilResolvePropertiesKHR
     {
     protected:
-      PhysicalDeviceDepthStencilResolvePropertiesKHR( vk::ResolveModeFlagsKHR supportedDepthResolveModes_ = vk::ResolveModeFlagsKHR(),
-                                                      vk::ResolveModeFlagsKHR supportedStencilResolveModes_ = vk::ResolveModeFlagsKHR(),
-                                                      vk::Bool32 independentResolveNone_ = 0,
-                                                      vk::Bool32 independentResolve_ = 0 )
-        : supportedDepthResolveModes( supportedDepthResolveModes_ )
-        , supportedStencilResolveModes( supportedStencilResolveModes_ )
-        , independentResolveNone( independentResolveNone_ )
-        , independentResolve( independentResolve_ )
+      PhysicalDeviceDepthStencilResolvePropertiesKHR()
       {}
 
       PhysicalDeviceDepthStencilResolvePropertiesKHR( VkPhysicalDeviceDepthStencilResolvePropertiesKHR const & rhs )
@@ -43994,6 +44542,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceDepthStencilResolvePropertiesKHR : public layout::PhysicalDeviceDepthStencilResolvePropertiesKHR
   {
+    PhysicalDeviceDepthStencilResolvePropertiesKHR()
+      : layout::PhysicalDeviceDepthStencilResolvePropertiesKHR()
+    {}
+
+    PhysicalDeviceDepthStencilResolvePropertiesKHR( VkPhysicalDeviceDepthStencilResolvePropertiesKHR const & rhs )
+      : layout::PhysicalDeviceDepthStencilResolvePropertiesKHR( rhs )
+    {}
+
+    PhysicalDeviceDepthStencilResolvePropertiesKHR& operator=( VkPhysicalDeviceDepthStencilResolvePropertiesKHR const & rhs )
+    {
+      layout::PhysicalDeviceDepthStencilResolvePropertiesKHR::operator=(rhs);
+      return *this;
+    }
+
     operator VkPhysicalDeviceDepthStencilResolvePropertiesKHR const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceDepthStencilResolvePropertiesKHR*>( this );
@@ -44141,7 +44703,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceDescriptorIndexingFeaturesEXT& operator=( VkPhysicalDeviceDescriptorIndexingFeaturesEXT const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceDescriptorIndexingFeaturesEXT*>(this) = rhs;
+      layout::PhysicalDeviceDescriptorIndexingFeaturesEXT::operator=(rhs);
       return *this;
     }
 
@@ -44323,52 +44885,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceDescriptorIndexingPropertiesEXT
     {
     protected:
-      PhysicalDeviceDescriptorIndexingPropertiesEXT( uint32_t maxUpdateAfterBindDescriptorsInAllPools_ = 0,
-                                                     vk::Bool32 shaderUniformBufferArrayNonUniformIndexingNative_ = 0,
-                                                     vk::Bool32 shaderSampledImageArrayNonUniformIndexingNative_ = 0,
-                                                     vk::Bool32 shaderStorageBufferArrayNonUniformIndexingNative_ = 0,
-                                                     vk::Bool32 shaderStorageImageArrayNonUniformIndexingNative_ = 0,
-                                                     vk::Bool32 shaderInputAttachmentArrayNonUniformIndexingNative_ = 0,
-                                                     vk::Bool32 robustBufferAccessUpdateAfterBind_ = 0,
-                                                     vk::Bool32 quadDivergentImplicitLod_ = 0,
-                                                     uint32_t maxPerStageDescriptorUpdateAfterBindSamplers_ = 0,
-                                                     uint32_t maxPerStageDescriptorUpdateAfterBindUniformBuffers_ = 0,
-                                                     uint32_t maxPerStageDescriptorUpdateAfterBindStorageBuffers_ = 0,
-                                                     uint32_t maxPerStageDescriptorUpdateAfterBindSampledImages_ = 0,
-                                                     uint32_t maxPerStageDescriptorUpdateAfterBindStorageImages_ = 0,
-                                                     uint32_t maxPerStageDescriptorUpdateAfterBindInputAttachments_ = 0,
-                                                     uint32_t maxPerStageUpdateAfterBindResources_ = 0,
-                                                     uint32_t maxDescriptorSetUpdateAfterBindSamplers_ = 0,
-                                                     uint32_t maxDescriptorSetUpdateAfterBindUniformBuffers_ = 0,
-                                                     uint32_t maxDescriptorSetUpdateAfterBindUniformBuffersDynamic_ = 0,
-                                                     uint32_t maxDescriptorSetUpdateAfterBindStorageBuffers_ = 0,
-                                                     uint32_t maxDescriptorSetUpdateAfterBindStorageBuffersDynamic_ = 0,
-                                                     uint32_t maxDescriptorSetUpdateAfterBindSampledImages_ = 0,
-                                                     uint32_t maxDescriptorSetUpdateAfterBindStorageImages_ = 0,
-                                                     uint32_t maxDescriptorSetUpdateAfterBindInputAttachments_ = 0 )
-        : maxUpdateAfterBindDescriptorsInAllPools( maxUpdateAfterBindDescriptorsInAllPools_ )
-        , shaderUniformBufferArrayNonUniformIndexingNative( shaderUniformBufferArrayNonUniformIndexingNative_ )
-        , shaderSampledImageArrayNonUniformIndexingNative( shaderSampledImageArrayNonUniformIndexingNative_ )
-        , shaderStorageBufferArrayNonUniformIndexingNative( shaderStorageBufferArrayNonUniformIndexingNative_ )
-        , shaderStorageImageArrayNonUniformIndexingNative( shaderStorageImageArrayNonUniformIndexingNative_ )
-        , shaderInputAttachmentArrayNonUniformIndexingNative( shaderInputAttachmentArrayNonUniformIndexingNative_ )
-        , robustBufferAccessUpdateAfterBind( robustBufferAccessUpdateAfterBind_ )
-        , quadDivergentImplicitLod( quadDivergentImplicitLod_ )
-        , maxPerStageDescriptorUpdateAfterBindSamplers( maxPerStageDescriptorUpdateAfterBindSamplers_ )
-        , maxPerStageDescriptorUpdateAfterBindUniformBuffers( maxPerStageDescriptorUpdateAfterBindUniformBuffers_ )
-        , maxPerStageDescriptorUpdateAfterBindStorageBuffers( maxPerStageDescriptorUpdateAfterBindStorageBuffers_ )
-        , maxPerStageDescriptorUpdateAfterBindSampledImages( maxPerStageDescriptorUpdateAfterBindSampledImages_ )
-        , maxPerStageDescriptorUpdateAfterBindStorageImages( maxPerStageDescriptorUpdateAfterBindStorageImages_ )
-        , maxPerStageDescriptorUpdateAfterBindInputAttachments( maxPerStageDescriptorUpdateAfterBindInputAttachments_ )
-        , maxPerStageUpdateAfterBindResources( maxPerStageUpdateAfterBindResources_ )
-        , maxDescriptorSetUpdateAfterBindSamplers( maxDescriptorSetUpdateAfterBindSamplers_ )
-        , maxDescriptorSetUpdateAfterBindUniformBuffers( maxDescriptorSetUpdateAfterBindUniformBuffers_ )
-        , maxDescriptorSetUpdateAfterBindUniformBuffersDynamic( maxDescriptorSetUpdateAfterBindUniformBuffersDynamic_ )
-        , maxDescriptorSetUpdateAfterBindStorageBuffers( maxDescriptorSetUpdateAfterBindStorageBuffers_ )
-        , maxDescriptorSetUpdateAfterBindStorageBuffersDynamic( maxDescriptorSetUpdateAfterBindStorageBuffersDynamic_ )
-        , maxDescriptorSetUpdateAfterBindSampledImages( maxDescriptorSetUpdateAfterBindSampledImages_ )
-        , maxDescriptorSetUpdateAfterBindStorageImages( maxDescriptorSetUpdateAfterBindStorageImages_ )
-        , maxDescriptorSetUpdateAfterBindInputAttachments( maxDescriptorSetUpdateAfterBindInputAttachments_ )
+      PhysicalDeviceDescriptorIndexingPropertiesEXT()
       {}
 
       PhysicalDeviceDescriptorIndexingPropertiesEXT( VkPhysicalDeviceDescriptorIndexingPropertiesEXT const & rhs )
@@ -44414,6 +44931,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceDescriptorIndexingPropertiesEXT : public layout::PhysicalDeviceDescriptorIndexingPropertiesEXT
   {
+    PhysicalDeviceDescriptorIndexingPropertiesEXT()
+      : layout::PhysicalDeviceDescriptorIndexingPropertiesEXT()
+    {}
+
+    PhysicalDeviceDescriptorIndexingPropertiesEXT( VkPhysicalDeviceDescriptorIndexingPropertiesEXT const & rhs )
+      : layout::PhysicalDeviceDescriptorIndexingPropertiesEXT( rhs )
+    {}
+
+    PhysicalDeviceDescriptorIndexingPropertiesEXT& operator=( VkPhysicalDeviceDescriptorIndexingPropertiesEXT const & rhs )
+    {
+      layout::PhysicalDeviceDescriptorIndexingPropertiesEXT::operator=(rhs);
+      return *this;
+    }
+
     operator VkPhysicalDeviceDescriptorIndexingPropertiesEXT const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceDescriptorIndexingPropertiesEXT*>( this );
@@ -44469,8 +45000,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceDiscardRectanglePropertiesEXT
     {
     protected:
-      PhysicalDeviceDiscardRectanglePropertiesEXT( uint32_t maxDiscardRectangles_ = 0 )
-        : maxDiscardRectangles( maxDiscardRectangles_ )
+      PhysicalDeviceDiscardRectanglePropertiesEXT()
       {}
 
       PhysicalDeviceDiscardRectanglePropertiesEXT( VkPhysicalDeviceDiscardRectanglePropertiesEXT const & rhs )
@@ -44494,6 +45024,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceDiscardRectanglePropertiesEXT : public layout::PhysicalDeviceDiscardRectanglePropertiesEXT
   {
+    PhysicalDeviceDiscardRectanglePropertiesEXT()
+      : layout::PhysicalDeviceDiscardRectanglePropertiesEXT()
+    {}
+
+    PhysicalDeviceDiscardRectanglePropertiesEXT( VkPhysicalDeviceDiscardRectanglePropertiesEXT const & rhs )
+      : layout::PhysicalDeviceDiscardRectanglePropertiesEXT( rhs )
+    {}
+
+    PhysicalDeviceDiscardRectanglePropertiesEXT& operator=( VkPhysicalDeviceDiscardRectanglePropertiesEXT const & rhs )
+    {
+      layout::PhysicalDeviceDiscardRectanglePropertiesEXT::operator=(rhs);
+      return *this;
+    }
+
     operator VkPhysicalDeviceDiscardRectanglePropertiesEXT const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceDiscardRectanglePropertiesEXT*>( this );
@@ -44527,17 +45071,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceDriverPropertiesKHR
     {
     protected:
-      PhysicalDeviceDriverPropertiesKHR( vk::DriverIdKHR driverID_ = vk::DriverIdKHR::eAmdProprietary,
-                                         std::array<char,VK_MAX_DRIVER_NAME_SIZE_KHR> const& driverName_ = { { 0 } },
-                                         std::array<char,VK_MAX_DRIVER_INFO_SIZE_KHR> const& driverInfo_ = { { 0 } },
-                                         vk::ConformanceVersionKHR conformanceVersion_ = vk::ConformanceVersionKHR() )
-        : driverID( driverID_ )
-        , conformanceVersion( conformanceVersion_ )
-      {
-        memcpy( &driverName, driverName_.data(), VK_MAX_DRIVER_NAME_SIZE_KHR * sizeof( char ) );
-        memcpy( &driverInfo, driverInfo_.data(), VK_MAX_DRIVER_INFO_SIZE_KHR * sizeof( char ) );
-      
-      }
+      PhysicalDeviceDriverPropertiesKHR()
+      {}
 
       PhysicalDeviceDriverPropertiesKHR( VkPhysicalDeviceDriverPropertiesKHR const & rhs )
       {
@@ -44563,6 +45098,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceDriverPropertiesKHR : public layout::PhysicalDeviceDriverPropertiesKHR
   {
+    PhysicalDeviceDriverPropertiesKHR()
+      : layout::PhysicalDeviceDriverPropertiesKHR()
+    {}
+
+    PhysicalDeviceDriverPropertiesKHR( VkPhysicalDeviceDriverPropertiesKHR const & rhs )
+      : layout::PhysicalDeviceDriverPropertiesKHR( rhs )
+    {}
+
+    PhysicalDeviceDriverPropertiesKHR& operator=( VkPhysicalDeviceDriverPropertiesKHR const & rhs )
+    {
+      layout::PhysicalDeviceDriverPropertiesKHR::operator=(rhs);
+      return *this;
+    }
+
     operator VkPhysicalDeviceDriverPropertiesKHR const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceDriverPropertiesKHR*>( this );
@@ -44634,7 +45183,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceExclusiveScissorFeaturesNV& operator=( VkPhysicalDeviceExclusiveScissorFeaturesNV const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceExclusiveScissorFeaturesNV*>(this) = rhs;
+      layout::PhysicalDeviceExclusiveScissorFeaturesNV::operator=(rhs);
       return *this;
     }
 
@@ -44726,7 +45275,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceExternalBufferInfo& operator=( VkPhysicalDeviceExternalBufferInfo const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceExternalBufferInfo*>(this) = rhs;
+      layout::PhysicalDeviceExternalBufferInfo::operator=(rhs);
       return *this;
     }
 
@@ -44824,7 +45373,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceExternalFenceInfo& operator=( VkPhysicalDeviceExternalFenceInfo const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceExternalFenceInfo*>(this) = rhs;
+      layout::PhysicalDeviceExternalFenceInfo::operator=(rhs);
       return *this;
     }
 
@@ -44908,7 +45457,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceExternalImageFormatInfo& operator=( VkPhysicalDeviceExternalImageFormatInfo const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceExternalImageFormatInfo*>(this) = rhs;
+      layout::PhysicalDeviceExternalImageFormatInfo::operator=(rhs);
       return *this;
     }
 
@@ -44957,8 +45506,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceExternalMemoryHostPropertiesEXT
     {
     protected:
-      PhysicalDeviceExternalMemoryHostPropertiesEXT( vk::DeviceSize minImportedHostPointerAlignment_ = 0 )
-        : minImportedHostPointerAlignment( minImportedHostPointerAlignment_ )
+      PhysicalDeviceExternalMemoryHostPropertiesEXT()
       {}
 
       PhysicalDeviceExternalMemoryHostPropertiesEXT( VkPhysicalDeviceExternalMemoryHostPropertiesEXT const & rhs )
@@ -44982,6 +45530,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceExternalMemoryHostPropertiesEXT : public layout::PhysicalDeviceExternalMemoryHostPropertiesEXT
   {
+    PhysicalDeviceExternalMemoryHostPropertiesEXT()
+      : layout::PhysicalDeviceExternalMemoryHostPropertiesEXT()
+    {}
+
+    PhysicalDeviceExternalMemoryHostPropertiesEXT( VkPhysicalDeviceExternalMemoryHostPropertiesEXT const & rhs )
+      : layout::PhysicalDeviceExternalMemoryHostPropertiesEXT( rhs )
+    {}
+
+    PhysicalDeviceExternalMemoryHostPropertiesEXT& operator=( VkPhysicalDeviceExternalMemoryHostPropertiesEXT const & rhs )
+    {
+      layout::PhysicalDeviceExternalMemoryHostPropertiesEXT::operator=(rhs);
+      return *this;
+    }
+
     operator VkPhysicalDeviceExternalMemoryHostPropertiesEXT const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceExternalMemoryHostPropertiesEXT*>( this );
@@ -45050,7 +45612,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceExternalSemaphoreInfo& operator=( VkPhysicalDeviceExternalSemaphoreInfo const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceExternalSemaphoreInfo*>(this) = rhs;
+      layout::PhysicalDeviceExternalSemaphoreInfo::operator=(rhs);
       return *this;
     }
 
@@ -45134,7 +45696,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceFeatures2& operator=( VkPhysicalDeviceFeatures2 const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceFeatures2*>(this) = rhs;
+      layout::PhysicalDeviceFeatures2::operator=(rhs);
       return *this;
     }
 
@@ -45183,40 +45745,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceFloatControlsPropertiesKHR
     {
     protected:
-      PhysicalDeviceFloatControlsPropertiesKHR( vk::ShaderFloatControlsIndependenceKHR denormBehaviorIndependence_ = vk::ShaderFloatControlsIndependenceKHR::e32BitOnly,
-                                                vk::ShaderFloatControlsIndependenceKHR roundingModeIndependence_ = vk::ShaderFloatControlsIndependenceKHR::e32BitOnly,
-                                                vk::Bool32 shaderSignedZeroInfNanPreserveFloat16_ = 0,
-                                                vk::Bool32 shaderSignedZeroInfNanPreserveFloat32_ = 0,
-                                                vk::Bool32 shaderSignedZeroInfNanPreserveFloat64_ = 0,
-                                                vk::Bool32 shaderDenormPreserveFloat16_ = 0,
-                                                vk::Bool32 shaderDenormPreserveFloat32_ = 0,
-                                                vk::Bool32 shaderDenormPreserveFloat64_ = 0,
-                                                vk::Bool32 shaderDenormFlushToZeroFloat16_ = 0,
-                                                vk::Bool32 shaderDenormFlushToZeroFloat32_ = 0,
-                                                vk::Bool32 shaderDenormFlushToZeroFloat64_ = 0,
-                                                vk::Bool32 shaderRoundingModeRTEFloat16_ = 0,
-                                                vk::Bool32 shaderRoundingModeRTEFloat32_ = 0,
-                                                vk::Bool32 shaderRoundingModeRTEFloat64_ = 0,
-                                                vk::Bool32 shaderRoundingModeRTZFloat16_ = 0,
-                                                vk::Bool32 shaderRoundingModeRTZFloat32_ = 0,
-                                                vk::Bool32 shaderRoundingModeRTZFloat64_ = 0 )
-        : denormBehaviorIndependence( denormBehaviorIndependence_ )
-        , roundingModeIndependence( roundingModeIndependence_ )
-        , shaderSignedZeroInfNanPreserveFloat16( shaderSignedZeroInfNanPreserveFloat16_ )
-        , shaderSignedZeroInfNanPreserveFloat32( shaderSignedZeroInfNanPreserveFloat32_ )
-        , shaderSignedZeroInfNanPreserveFloat64( shaderSignedZeroInfNanPreserveFloat64_ )
-        , shaderDenormPreserveFloat16( shaderDenormPreserveFloat16_ )
-        , shaderDenormPreserveFloat32( shaderDenormPreserveFloat32_ )
-        , shaderDenormPreserveFloat64( shaderDenormPreserveFloat64_ )
-        , shaderDenormFlushToZeroFloat16( shaderDenormFlushToZeroFloat16_ )
-        , shaderDenormFlushToZeroFloat32( shaderDenormFlushToZeroFloat32_ )
-        , shaderDenormFlushToZeroFloat64( shaderDenormFlushToZeroFloat64_ )
-        , shaderRoundingModeRTEFloat16( shaderRoundingModeRTEFloat16_ )
-        , shaderRoundingModeRTEFloat32( shaderRoundingModeRTEFloat32_ )
-        , shaderRoundingModeRTEFloat64( shaderRoundingModeRTEFloat64_ )
-        , shaderRoundingModeRTZFloat16( shaderRoundingModeRTZFloat16_ )
-        , shaderRoundingModeRTZFloat32( shaderRoundingModeRTZFloat32_ )
-        , shaderRoundingModeRTZFloat64( shaderRoundingModeRTZFloat64_ )
+      PhysicalDeviceFloatControlsPropertiesKHR()
       {}
 
       PhysicalDeviceFloatControlsPropertiesKHR( VkPhysicalDeviceFloatControlsPropertiesKHR const & rhs )
@@ -45256,6 +45785,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceFloatControlsPropertiesKHR : public layout::PhysicalDeviceFloatControlsPropertiesKHR
   {
+    PhysicalDeviceFloatControlsPropertiesKHR()
+      : layout::PhysicalDeviceFloatControlsPropertiesKHR()
+    {}
+
+    PhysicalDeviceFloatControlsPropertiesKHR( VkPhysicalDeviceFloatControlsPropertiesKHR const & rhs )
+      : layout::PhysicalDeviceFloatControlsPropertiesKHR( rhs )
+    {}
+
+    PhysicalDeviceFloatControlsPropertiesKHR& operator=( VkPhysicalDeviceFloatControlsPropertiesKHR const & rhs )
+    {
+      layout::PhysicalDeviceFloatControlsPropertiesKHR::operator=(rhs);
+      return *this;
+    }
+
     operator VkPhysicalDeviceFloatControlsPropertiesKHR const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceFloatControlsPropertiesKHR*>( this );
@@ -45305,12 +45848,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceFragmentDensityMapFeaturesEXT
     {
     protected:
-      PhysicalDeviceFragmentDensityMapFeaturesEXT( vk::Bool32 fragmentDensityMap_ = 0,
-                                                   vk::Bool32 fragmentDensityMapDynamic_ = 0,
-                                                   vk::Bool32 fragmentDensityMapNonSubsampledImages_ = 0 )
-        : fragmentDensityMap( fragmentDensityMap_ )
-        , fragmentDensityMapDynamic( fragmentDensityMapDynamic_ )
-        , fragmentDensityMapNonSubsampledImages( fragmentDensityMapNonSubsampledImages_ )
+      PhysicalDeviceFragmentDensityMapFeaturesEXT()
       {}
 
       PhysicalDeviceFragmentDensityMapFeaturesEXT( VkPhysicalDeviceFragmentDensityMapFeaturesEXT const & rhs )
@@ -45336,6 +45874,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceFragmentDensityMapFeaturesEXT : public layout::PhysicalDeviceFragmentDensityMapFeaturesEXT
   {
+    PhysicalDeviceFragmentDensityMapFeaturesEXT()
+      : layout::PhysicalDeviceFragmentDensityMapFeaturesEXT()
+    {}
+
+    PhysicalDeviceFragmentDensityMapFeaturesEXT( VkPhysicalDeviceFragmentDensityMapFeaturesEXT const & rhs )
+      : layout::PhysicalDeviceFragmentDensityMapFeaturesEXT( rhs )
+    {}
+
+    PhysicalDeviceFragmentDensityMapFeaturesEXT& operator=( VkPhysicalDeviceFragmentDensityMapFeaturesEXT const & rhs )
+    {
+      layout::PhysicalDeviceFragmentDensityMapFeaturesEXT::operator=(rhs);
+      return *this;
+    }
+
     operator VkPhysicalDeviceFragmentDensityMapFeaturesEXT const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceFragmentDensityMapFeaturesEXT*>( this );
@@ -45371,12 +45923,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceFragmentDensityMapPropertiesEXT
     {
     protected:
-      PhysicalDeviceFragmentDensityMapPropertiesEXT( vk::Extent2D minFragmentDensityTexelSize_ = vk::Extent2D(),
-                                                     vk::Extent2D maxFragmentDensityTexelSize_ = vk::Extent2D(),
-                                                     vk::Bool32 fragmentDensityInvocations_ = 0 )
-        : minFragmentDensityTexelSize( minFragmentDensityTexelSize_ )
-        , maxFragmentDensityTexelSize( maxFragmentDensityTexelSize_ )
-        , fragmentDensityInvocations( fragmentDensityInvocations_ )
+      PhysicalDeviceFragmentDensityMapPropertiesEXT()
       {}
 
       PhysicalDeviceFragmentDensityMapPropertiesEXT( VkPhysicalDeviceFragmentDensityMapPropertiesEXT const & rhs )
@@ -45402,6 +45949,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceFragmentDensityMapPropertiesEXT : public layout::PhysicalDeviceFragmentDensityMapPropertiesEXT
   {
+    PhysicalDeviceFragmentDensityMapPropertiesEXT()
+      : layout::PhysicalDeviceFragmentDensityMapPropertiesEXT()
+    {}
+
+    PhysicalDeviceFragmentDensityMapPropertiesEXT( VkPhysicalDeviceFragmentDensityMapPropertiesEXT const & rhs )
+      : layout::PhysicalDeviceFragmentDensityMapPropertiesEXT( rhs )
+    {}
+
+    PhysicalDeviceFragmentDensityMapPropertiesEXT& operator=( VkPhysicalDeviceFragmentDensityMapPropertiesEXT const & rhs )
+    {
+      layout::PhysicalDeviceFragmentDensityMapPropertiesEXT::operator=(rhs);
+      return *this;
+    }
+
     operator VkPhysicalDeviceFragmentDensityMapPropertiesEXT const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceFragmentDensityMapPropertiesEXT*>( this );
@@ -45472,7 +46033,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceFragmentShaderBarycentricFeaturesNV& operator=( VkPhysicalDeviceFragmentShaderBarycentricFeaturesNV const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceFragmentShaderBarycentricFeaturesNV*>(this) = rhs;
+      layout::PhysicalDeviceFragmentShaderBarycentricFeaturesNV::operator=(rhs);
       return *this;
     }
 
@@ -45564,7 +46125,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceFragmentShaderInterlockFeaturesEXT& operator=( VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT*>(this) = rhs;
+      layout::PhysicalDeviceFragmentShaderInterlockFeaturesEXT::operator=(rhs);
       return *this;
     }
 
@@ -45627,15 +46188,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceGroupProperties
     {
     protected:
-      PhysicalDeviceGroupProperties( uint32_t physicalDeviceCount_ = 0,
-                                     std::array<vk::PhysicalDevice,VK_MAX_DEVICE_GROUP_SIZE> const& physicalDevices_ = { { vk::PhysicalDevice() } },
-                                     vk::Bool32 subsetAllocation_ = 0 )
-        : physicalDeviceCount( physicalDeviceCount_ )
-        , subsetAllocation( subsetAllocation_ )
-      {
-        memcpy( &physicalDevices, physicalDevices_.data(), VK_MAX_DEVICE_GROUP_SIZE * sizeof( vk::PhysicalDevice ) );
-      
-      }
+      PhysicalDeviceGroupProperties()
+      {}
 
       PhysicalDeviceGroupProperties( VkPhysicalDeviceGroupProperties const & rhs )
       {
@@ -45660,6 +46214,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceGroupProperties : public layout::PhysicalDeviceGroupProperties
   {
+    PhysicalDeviceGroupProperties()
+      : layout::PhysicalDeviceGroupProperties()
+    {}
+
+    PhysicalDeviceGroupProperties( VkPhysicalDeviceGroupProperties const & rhs )
+      : layout::PhysicalDeviceGroupProperties( rhs )
+    {}
+
+    PhysicalDeviceGroupProperties& operator=( VkPhysicalDeviceGroupProperties const & rhs )
+    {
+      layout::PhysicalDeviceGroupProperties::operator=(rhs);
+      return *this;
+    }
+
     operator VkPhysicalDeviceGroupProperties const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceGroupProperties*>( this );
@@ -45730,7 +46298,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceHostQueryResetFeaturesEXT& operator=( VkPhysicalDeviceHostQueryResetFeaturesEXT const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceHostQueryResetFeaturesEXT*>(this) = rhs;
+      layout::PhysicalDeviceHostQueryResetFeaturesEXT::operator=(rhs);
       return *this;
     }
 
@@ -45779,19 +46347,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceIDProperties
     {
     protected:
-      PhysicalDeviceIDProperties( std::array<uint8_t,VK_UUID_SIZE> const& deviceUUID_ = { { 0 } },
-                                  std::array<uint8_t,VK_UUID_SIZE> const& driverUUID_ = { { 0 } },
-                                  std::array<uint8_t,VK_LUID_SIZE> const& deviceLUID_ = { { 0 } },
-                                  uint32_t deviceNodeMask_ = 0,
-                                  vk::Bool32 deviceLUIDValid_ = 0 )
-        : deviceNodeMask( deviceNodeMask_ )
-        , deviceLUIDValid( deviceLUIDValid_ )
-      {
-        memcpy( &deviceUUID, deviceUUID_.data(), VK_UUID_SIZE * sizeof( uint8_t ) );
-        memcpy( &driverUUID, driverUUID_.data(), VK_UUID_SIZE * sizeof( uint8_t ) );
-        memcpy( &deviceLUID, deviceLUID_.data(), VK_LUID_SIZE * sizeof( uint8_t ) );
-      
-      }
+      PhysicalDeviceIDProperties()
+      {}
 
       PhysicalDeviceIDProperties( VkPhysicalDeviceIDProperties const & rhs )
       {
@@ -45818,6 +46375,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceIDProperties : public layout::PhysicalDeviceIDProperties
   {
+    PhysicalDeviceIDProperties()
+      : layout::PhysicalDeviceIDProperties()
+    {}
+
+    PhysicalDeviceIDProperties( VkPhysicalDeviceIDProperties const & rhs )
+      : layout::PhysicalDeviceIDProperties( rhs )
+    {}
+
+    PhysicalDeviceIDProperties& operator=( VkPhysicalDeviceIDProperties const & rhs )
+    {
+      layout::PhysicalDeviceIDProperties::operator=(rhs);
+      return *this;
+    }
+
     operator VkPhysicalDeviceIDProperties const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceIDProperties*>( this );
@@ -45902,7 +46473,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceImageDrmFormatModifierInfoEXT& operator=( VkPhysicalDeviceImageDrmFormatModifierInfoEXT const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceImageDrmFormatModifierInfoEXT*>(this) = rhs;
+      layout::PhysicalDeviceImageDrmFormatModifierInfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -46023,7 +46594,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceImageFormatInfo2& operator=( VkPhysicalDeviceImageFormatInfo2 const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceImageFormatInfo2*>(this) = rhs;
+      layout::PhysicalDeviceImageFormatInfo2::operator=(rhs);
       return *this;
     }
 
@@ -46135,7 +46706,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceImageViewImageFormatInfoEXT& operator=( VkPhysicalDeviceImageViewImageFormatInfoEXT const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceImageViewImageFormatInfoEXT*>(this) = rhs;
+      layout::PhysicalDeviceImageViewImageFormatInfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -46219,7 +46790,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceImagelessFramebufferFeaturesKHR& operator=( VkPhysicalDeviceImagelessFramebufferFeaturesKHR const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceImagelessFramebufferFeaturesKHR*>(this) = rhs;
+      layout::PhysicalDeviceImagelessFramebufferFeaturesKHR::operator=(rhs);
       return *this;
     }
 
@@ -46303,7 +46874,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceIndexTypeUint8FeaturesEXT& operator=( VkPhysicalDeviceIndexTypeUint8FeaturesEXT const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceIndexTypeUint8FeaturesEXT*>(this) = rhs;
+      layout::PhysicalDeviceIndexTypeUint8FeaturesEXT::operator=(rhs);
       return *this;
     }
 
@@ -46391,7 +46962,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceInlineUniformBlockFeaturesEXT& operator=( VkPhysicalDeviceInlineUniformBlockFeaturesEXT const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceInlineUniformBlockFeaturesEXT*>(this) = rhs;
+      layout::PhysicalDeviceInlineUniformBlockFeaturesEXT::operator=(rhs);
       return *this;
     }
 
@@ -46447,16 +47018,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceInlineUniformBlockPropertiesEXT
     {
     protected:
-      PhysicalDeviceInlineUniformBlockPropertiesEXT( uint32_t maxInlineUniformBlockSize_ = 0,
-                                                     uint32_t maxPerStageDescriptorInlineUniformBlocks_ = 0,
-                                                     uint32_t maxPerStageDescriptorUpdateAfterBindInlineUniformBlocks_ = 0,
-                                                     uint32_t maxDescriptorSetInlineUniformBlocks_ = 0,
-                                                     uint32_t maxDescriptorSetUpdateAfterBindInlineUniformBlocks_ = 0 )
-        : maxInlineUniformBlockSize( maxInlineUniformBlockSize_ )
-        , maxPerStageDescriptorInlineUniformBlocks( maxPerStageDescriptorInlineUniformBlocks_ )
-        , maxPerStageDescriptorUpdateAfterBindInlineUniformBlocks( maxPerStageDescriptorUpdateAfterBindInlineUniformBlocks_ )
-        , maxDescriptorSetInlineUniformBlocks( maxDescriptorSetInlineUniformBlocks_ )
-        , maxDescriptorSetUpdateAfterBindInlineUniformBlocks( maxDescriptorSetUpdateAfterBindInlineUniformBlocks_ )
+      PhysicalDeviceInlineUniformBlockPropertiesEXT()
       {}
 
       PhysicalDeviceInlineUniformBlockPropertiesEXT( VkPhysicalDeviceInlineUniformBlockPropertiesEXT const & rhs )
@@ -46484,6 +47046,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceInlineUniformBlockPropertiesEXT : public layout::PhysicalDeviceInlineUniformBlockPropertiesEXT
   {
+    PhysicalDeviceInlineUniformBlockPropertiesEXT()
+      : layout::PhysicalDeviceInlineUniformBlockPropertiesEXT()
+    {}
+
+    PhysicalDeviceInlineUniformBlockPropertiesEXT( VkPhysicalDeviceInlineUniformBlockPropertiesEXT const & rhs )
+      : layout::PhysicalDeviceInlineUniformBlockPropertiesEXT( rhs )
+    {}
+
+    PhysicalDeviceInlineUniformBlockPropertiesEXT& operator=( VkPhysicalDeviceInlineUniformBlockPropertiesEXT const & rhs )
+    {
+      layout::PhysicalDeviceInlineUniformBlockPropertiesEXT::operator=(rhs);
+      return *this;
+    }
+
     operator VkPhysicalDeviceInlineUniformBlockPropertiesEXT const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceInlineUniformBlockPropertiesEXT*>( this );
@@ -46518,6 +47094,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceLimits
   {
+    PhysicalDeviceLimits()
+    {}
+
+    PhysicalDeviceLimits( VkPhysicalDeviceLimits const & rhs )
+    {
+      *reinterpret_cast<VkPhysicalDeviceLimits*>(this) = rhs;
+    }
+
+    PhysicalDeviceLimits& operator=( VkPhysicalDeviceLimits const & rhs )
+    {
+      *reinterpret_cast<VkPhysicalDeviceLimits*>(this) = rhs;
+      return *this;
+    }
+
     operator VkPhysicalDeviceLimits const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceLimits*>( this );
@@ -46814,7 +47404,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceLineRasterizationFeaturesEXT& operator=( VkPhysicalDeviceLineRasterizationFeaturesEXT const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceLineRasterizationFeaturesEXT*>(this) = rhs;
+      layout::PhysicalDeviceLineRasterizationFeaturesEXT::operator=(rhs);
       return *this;
     }
 
@@ -46898,8 +47488,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceLineRasterizationPropertiesEXT
     {
     protected:
-      PhysicalDeviceLineRasterizationPropertiesEXT( uint32_t lineSubPixelPrecisionBits_ = 0 )
-        : lineSubPixelPrecisionBits( lineSubPixelPrecisionBits_ )
+      PhysicalDeviceLineRasterizationPropertiesEXT()
       {}
 
       PhysicalDeviceLineRasterizationPropertiesEXT( VkPhysicalDeviceLineRasterizationPropertiesEXT const & rhs )
@@ -46923,6 +47512,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceLineRasterizationPropertiesEXT : public layout::PhysicalDeviceLineRasterizationPropertiesEXT
   {
+    PhysicalDeviceLineRasterizationPropertiesEXT()
+      : layout::PhysicalDeviceLineRasterizationPropertiesEXT()
+    {}
+
+    PhysicalDeviceLineRasterizationPropertiesEXT( VkPhysicalDeviceLineRasterizationPropertiesEXT const & rhs )
+      : layout::PhysicalDeviceLineRasterizationPropertiesEXT( rhs )
+    {}
+
+    PhysicalDeviceLineRasterizationPropertiesEXT& operator=( VkPhysicalDeviceLineRasterizationPropertiesEXT const & rhs )
+    {
+      layout::PhysicalDeviceLineRasterizationPropertiesEXT::operator=(rhs);
+      return *this;
+    }
+
     operator VkPhysicalDeviceLineRasterizationPropertiesEXT const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceLineRasterizationPropertiesEXT*>( this );
@@ -46956,10 +47559,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceMaintenance3Properties
     {
     protected:
-      PhysicalDeviceMaintenance3Properties( uint32_t maxPerSetDescriptors_ = 0,
-                                            vk::DeviceSize maxMemoryAllocationSize_ = 0 )
-        : maxPerSetDescriptors( maxPerSetDescriptors_ )
-        , maxMemoryAllocationSize( maxMemoryAllocationSize_ )
+      PhysicalDeviceMaintenance3Properties()
       {}
 
       PhysicalDeviceMaintenance3Properties( VkPhysicalDeviceMaintenance3Properties const & rhs )
@@ -46984,6 +47584,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceMaintenance3Properties : public layout::PhysicalDeviceMaintenance3Properties
   {
+    PhysicalDeviceMaintenance3Properties()
+      : layout::PhysicalDeviceMaintenance3Properties()
+    {}
+
+    PhysicalDeviceMaintenance3Properties( VkPhysicalDeviceMaintenance3Properties const & rhs )
+      : layout::PhysicalDeviceMaintenance3Properties( rhs )
+    {}
+
+    PhysicalDeviceMaintenance3Properties& operator=( VkPhysicalDeviceMaintenance3Properties const & rhs )
+    {
+      layout::PhysicalDeviceMaintenance3Properties::operator=(rhs);
+      return *this;
+    }
+
     operator VkPhysicalDeviceMaintenance3Properties const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceMaintenance3Properties*>( this );
@@ -47018,13 +47632,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceMemoryBudgetPropertiesEXT
     {
     protected:
-      PhysicalDeviceMemoryBudgetPropertiesEXT( std::array<vk::DeviceSize,VK_MAX_MEMORY_HEAPS> const& heapBudget_ = { { 0 } },
-                                               std::array<vk::DeviceSize,VK_MAX_MEMORY_HEAPS> const& heapUsage_ = { { 0 } } )
-      {
-        memcpy( &heapBudget, heapBudget_.data(), VK_MAX_MEMORY_HEAPS * sizeof( vk::DeviceSize ) );
-        memcpy( &heapUsage, heapUsage_.data(), VK_MAX_MEMORY_HEAPS * sizeof( vk::DeviceSize ) );
-      
-      }
+      PhysicalDeviceMemoryBudgetPropertiesEXT()
+      {}
 
       PhysicalDeviceMemoryBudgetPropertiesEXT( VkPhysicalDeviceMemoryBudgetPropertiesEXT const & rhs )
       {
@@ -47048,6 +47657,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceMemoryBudgetPropertiesEXT : public layout::PhysicalDeviceMemoryBudgetPropertiesEXT
   {
+    PhysicalDeviceMemoryBudgetPropertiesEXT()
+      : layout::PhysicalDeviceMemoryBudgetPropertiesEXT()
+    {}
+
+    PhysicalDeviceMemoryBudgetPropertiesEXT( VkPhysicalDeviceMemoryBudgetPropertiesEXT const & rhs )
+      : layout::PhysicalDeviceMemoryBudgetPropertiesEXT( rhs )
+    {}
+
+    PhysicalDeviceMemoryBudgetPropertiesEXT& operator=( VkPhysicalDeviceMemoryBudgetPropertiesEXT const & rhs )
+    {
+      layout::PhysicalDeviceMemoryBudgetPropertiesEXT::operator=(rhs);
+      return *this;
+    }
+
     operator VkPhysicalDeviceMemoryBudgetPropertiesEXT const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceMemoryBudgetPropertiesEXT*>( this );
@@ -47117,7 +47740,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceMemoryPriorityFeaturesEXT& operator=( VkPhysicalDeviceMemoryPriorityFeaturesEXT const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceMemoryPriorityFeaturesEXT*>(this) = rhs;
+      layout::PhysicalDeviceMemoryPriorityFeaturesEXT::operator=(rhs);
       return *this;
     }
 
@@ -47163,6 +47786,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceMemoryProperties
   {
+    PhysicalDeviceMemoryProperties()
+    {}
+
+    PhysicalDeviceMemoryProperties( VkPhysicalDeviceMemoryProperties const & rhs )
+    {
+      *reinterpret_cast<VkPhysicalDeviceMemoryProperties*>(this) = rhs;
+    }
+
+    PhysicalDeviceMemoryProperties& operator=( VkPhysicalDeviceMemoryProperties const & rhs )
+    {
+      *reinterpret_cast<VkPhysicalDeviceMemoryProperties*>(this) = rhs;
+      return *this;
+    }
+
     operator VkPhysicalDeviceMemoryProperties const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceMemoryProperties*>( this );
@@ -47200,8 +47837,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceMemoryProperties2
     {
     protected:
-      PhysicalDeviceMemoryProperties2( vk::PhysicalDeviceMemoryProperties memoryProperties_ = vk::PhysicalDeviceMemoryProperties() )
-        : memoryProperties( memoryProperties_ )
+      PhysicalDeviceMemoryProperties2()
       {}
 
       PhysicalDeviceMemoryProperties2( VkPhysicalDeviceMemoryProperties2 const & rhs )
@@ -47225,6 +47861,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceMemoryProperties2 : public layout::PhysicalDeviceMemoryProperties2
   {
+    PhysicalDeviceMemoryProperties2()
+      : layout::PhysicalDeviceMemoryProperties2()
+    {}
+
+    PhysicalDeviceMemoryProperties2( VkPhysicalDeviceMemoryProperties2 const & rhs )
+      : layout::PhysicalDeviceMemoryProperties2( rhs )
+    {}
+
+    PhysicalDeviceMemoryProperties2& operator=( VkPhysicalDeviceMemoryProperties2 const & rhs )
+    {
+      layout::PhysicalDeviceMemoryProperties2::operator=(rhs);
+      return *this;
+    }
+
     operator VkPhysicalDeviceMemoryProperties2 const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceMemoryProperties2*>( this );
@@ -47297,7 +47947,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceMeshShaderFeaturesNV& operator=( VkPhysicalDeviceMeshShaderFeaturesNV const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceMeshShaderFeaturesNV*>(this) = rhs;
+      layout::PhysicalDeviceMeshShaderFeaturesNV::operator=(rhs);
       return *this;
     }
 
@@ -47353,35 +48003,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceMeshShaderPropertiesNV
     {
     protected:
-      PhysicalDeviceMeshShaderPropertiesNV( uint32_t maxDrawMeshTasksCount_ = 0,
-                                            uint32_t maxTaskWorkGroupInvocations_ = 0,
-                                            std::array<uint32_t,3> const& maxTaskWorkGroupSize_ = { { 0 } },
-                                            uint32_t maxTaskTotalMemorySize_ = 0,
-                                            uint32_t maxTaskOutputCount_ = 0,
-                                            uint32_t maxMeshWorkGroupInvocations_ = 0,
-                                            std::array<uint32_t,3> const& maxMeshWorkGroupSize_ = { { 0 } },
-                                            uint32_t maxMeshTotalMemorySize_ = 0,
-                                            uint32_t maxMeshOutputVertices_ = 0,
-                                            uint32_t maxMeshOutputPrimitives_ = 0,
-                                            uint32_t maxMeshMultiviewViewCount_ = 0,
-                                            uint32_t meshOutputPerVertexGranularity_ = 0,
-                                            uint32_t meshOutputPerPrimitiveGranularity_ = 0 )
-        : maxDrawMeshTasksCount( maxDrawMeshTasksCount_ )
-        , maxTaskWorkGroupInvocations( maxTaskWorkGroupInvocations_ )
-        , maxTaskTotalMemorySize( maxTaskTotalMemorySize_ )
-        , maxTaskOutputCount( maxTaskOutputCount_ )
-        , maxMeshWorkGroupInvocations( maxMeshWorkGroupInvocations_ )
-        , maxMeshTotalMemorySize( maxMeshTotalMemorySize_ )
-        , maxMeshOutputVertices( maxMeshOutputVertices_ )
-        , maxMeshOutputPrimitives( maxMeshOutputPrimitives_ )
-        , maxMeshMultiviewViewCount( maxMeshMultiviewViewCount_ )
-        , meshOutputPerVertexGranularity( meshOutputPerVertexGranularity_ )
-        , meshOutputPerPrimitiveGranularity( meshOutputPerPrimitiveGranularity_ )
-      {
-        memcpy( &maxTaskWorkGroupSize, maxTaskWorkGroupSize_.data(), 3 * sizeof( uint32_t ) );
-        memcpy( &maxMeshWorkGroupSize, maxMeshWorkGroupSize_.data(), 3 * sizeof( uint32_t ) );
-      
-      }
+      PhysicalDeviceMeshShaderPropertiesNV()
+      {}
 
       PhysicalDeviceMeshShaderPropertiesNV( VkPhysicalDeviceMeshShaderPropertiesNV const & rhs )
       {
@@ -47416,6 +48039,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceMeshShaderPropertiesNV : public layout::PhysicalDeviceMeshShaderPropertiesNV
   {
+    PhysicalDeviceMeshShaderPropertiesNV()
+      : layout::PhysicalDeviceMeshShaderPropertiesNV()
+    {}
+
+    PhysicalDeviceMeshShaderPropertiesNV( VkPhysicalDeviceMeshShaderPropertiesNV const & rhs )
+      : layout::PhysicalDeviceMeshShaderPropertiesNV( rhs )
+    {}
+
+    PhysicalDeviceMeshShaderPropertiesNV& operator=( VkPhysicalDeviceMeshShaderPropertiesNV const & rhs )
+    {
+      layout::PhysicalDeviceMeshShaderPropertiesNV::operator=(rhs);
+      return *this;
+    }
+
     operator VkPhysicalDeviceMeshShaderPropertiesNV const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceMeshShaderPropertiesNV*>( this );
@@ -47504,7 +48141,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceMultiviewFeatures& operator=( VkPhysicalDeviceMultiviewFeatures const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceMultiviewFeatures*>(this) = rhs;
+      layout::PhysicalDeviceMultiviewFeatures::operator=(rhs);
       return *this;
     }
 
@@ -47567,8 +48204,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX
     {
     protected:
-      PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX( vk::Bool32 perViewPositionAllComponents_ = 0 )
-        : perViewPositionAllComponents( perViewPositionAllComponents_ )
+      PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX()
       {}
 
       PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX( VkPhysicalDeviceMultiviewPerViewAttributesPropertiesNVX const & rhs )
@@ -47592,6 +48228,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX : public layout::PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX
   {
+    PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX()
+      : layout::PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX()
+    {}
+
+    PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX( VkPhysicalDeviceMultiviewPerViewAttributesPropertiesNVX const & rhs )
+      : layout::PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX( rhs )
+    {}
+
+    PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX& operator=( VkPhysicalDeviceMultiviewPerViewAttributesPropertiesNVX const & rhs )
+    {
+      layout::PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX::operator=(rhs);
+      return *this;
+    }
+
     operator VkPhysicalDeviceMultiviewPerViewAttributesPropertiesNVX const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceMultiviewPerViewAttributesPropertiesNVX*>( this );
@@ -47625,10 +48275,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceMultiviewProperties
     {
     protected:
-      PhysicalDeviceMultiviewProperties( uint32_t maxMultiviewViewCount_ = 0,
-                                         uint32_t maxMultiviewInstanceIndex_ = 0 )
-        : maxMultiviewViewCount( maxMultiviewViewCount_ )
-        , maxMultiviewInstanceIndex( maxMultiviewInstanceIndex_ )
+      PhysicalDeviceMultiviewProperties()
       {}
 
       PhysicalDeviceMultiviewProperties( VkPhysicalDeviceMultiviewProperties const & rhs )
@@ -47653,6 +48300,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceMultiviewProperties : public layout::PhysicalDeviceMultiviewProperties
   {
+    PhysicalDeviceMultiviewProperties()
+      : layout::PhysicalDeviceMultiviewProperties()
+    {}
+
+    PhysicalDeviceMultiviewProperties( VkPhysicalDeviceMultiviewProperties const & rhs )
+      : layout::PhysicalDeviceMultiviewProperties( rhs )
+    {}
+
+    PhysicalDeviceMultiviewProperties& operator=( VkPhysicalDeviceMultiviewProperties const & rhs )
+    {
+      layout::PhysicalDeviceMultiviewProperties::operator=(rhs);
+      return *this;
+    }
+
     operator VkPhysicalDeviceMultiviewProperties const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceMultiviewProperties*>( this );
@@ -47687,14 +48348,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDevicePCIBusInfoPropertiesEXT
     {
     protected:
-      PhysicalDevicePCIBusInfoPropertiesEXT( uint32_t pciDomain_ = 0,
-                                             uint32_t pciBus_ = 0,
-                                             uint32_t pciDevice_ = 0,
-                                             uint32_t pciFunction_ = 0 )
-        : pciDomain( pciDomain_ )
-        , pciBus( pciBus_ )
-        , pciDevice( pciDevice_ )
-        , pciFunction( pciFunction_ )
+      PhysicalDevicePCIBusInfoPropertiesEXT()
       {}
 
       PhysicalDevicePCIBusInfoPropertiesEXT( VkPhysicalDevicePCIBusInfoPropertiesEXT const & rhs )
@@ -47721,6 +48375,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDevicePCIBusInfoPropertiesEXT : public layout::PhysicalDevicePCIBusInfoPropertiesEXT
   {
+    PhysicalDevicePCIBusInfoPropertiesEXT()
+      : layout::PhysicalDevicePCIBusInfoPropertiesEXT()
+    {}
+
+    PhysicalDevicePCIBusInfoPropertiesEXT( VkPhysicalDevicePCIBusInfoPropertiesEXT const & rhs )
+      : layout::PhysicalDevicePCIBusInfoPropertiesEXT( rhs )
+    {}
+
+    PhysicalDevicePCIBusInfoPropertiesEXT& operator=( VkPhysicalDevicePCIBusInfoPropertiesEXT const & rhs )
+    {
+      layout::PhysicalDevicePCIBusInfoPropertiesEXT::operator=(rhs);
+      return *this;
+    }
+
     operator VkPhysicalDevicePCIBusInfoPropertiesEXT const&() const
     {
       return *reinterpret_cast<const VkPhysicalDevicePCIBusInfoPropertiesEXT*>( this );
@@ -47792,7 +48460,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDevicePipelineExecutablePropertiesFeaturesKHR& operator=( VkPhysicalDevicePipelineExecutablePropertiesFeaturesKHR const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDevicePipelineExecutablePropertiesFeaturesKHR*>(this) = rhs;
+      layout::PhysicalDevicePipelineExecutablePropertiesFeaturesKHR::operator=(rhs);
       return *this;
     }
 
@@ -47841,8 +48509,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDevicePointClippingProperties
     {
     protected:
-      PhysicalDevicePointClippingProperties( vk::PointClippingBehavior pointClippingBehavior_ = vk::PointClippingBehavior::eAllClipPlanes )
-        : pointClippingBehavior( pointClippingBehavior_ )
+      PhysicalDevicePointClippingProperties()
       {}
 
       PhysicalDevicePointClippingProperties( VkPhysicalDevicePointClippingProperties const & rhs )
@@ -47866,6 +48533,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDevicePointClippingProperties : public layout::PhysicalDevicePointClippingProperties
   {
+    PhysicalDevicePointClippingProperties()
+      : layout::PhysicalDevicePointClippingProperties()
+    {}
+
+    PhysicalDevicePointClippingProperties( VkPhysicalDevicePointClippingProperties const & rhs )
+      : layout::PhysicalDevicePointClippingProperties( rhs )
+    {}
+
+    PhysicalDevicePointClippingProperties& operator=( VkPhysicalDevicePointClippingProperties const & rhs )
+    {
+      layout::PhysicalDevicePointClippingProperties::operator=(rhs);
+      return *this;
+    }
+
     operator VkPhysicalDevicePointClippingProperties const&() const
     {
       return *reinterpret_cast<const VkPhysicalDevicePointClippingProperties*>( this );
@@ -47896,6 +48577,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceSparseProperties
   {
+    PhysicalDeviceSparseProperties()
+    {}
+
+    PhysicalDeviceSparseProperties( VkPhysicalDeviceSparseProperties const & rhs )
+    {
+      *reinterpret_cast<VkPhysicalDeviceSparseProperties*>(this) = rhs;
+    }
+
+    PhysicalDeviceSparseProperties& operator=( VkPhysicalDeviceSparseProperties const & rhs )
+    {
+      *reinterpret_cast<VkPhysicalDeviceSparseProperties*>(this) = rhs;
+      return *this;
+    }
+
     operator VkPhysicalDeviceSparseProperties const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceSparseProperties*>( this );
@@ -47932,6 +48627,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceProperties
   {
+    PhysicalDeviceProperties()
+    {}
+
+    PhysicalDeviceProperties( VkPhysicalDeviceProperties const & rhs )
+    {
+      *reinterpret_cast<VkPhysicalDeviceProperties*>(this) = rhs;
+    }
+
+    PhysicalDeviceProperties& operator=( VkPhysicalDeviceProperties const & rhs )
+    {
+      *reinterpret_cast<VkPhysicalDeviceProperties*>(this) = rhs;
+      return *this;
+    }
+
     operator VkPhysicalDeviceProperties const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceProperties*>( this );
@@ -47979,8 +48688,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceProperties2
     {
     protected:
-      PhysicalDeviceProperties2( vk::PhysicalDeviceProperties properties_ = vk::PhysicalDeviceProperties() )
-        : properties( properties_ )
+      PhysicalDeviceProperties2()
       {}
 
       PhysicalDeviceProperties2( VkPhysicalDeviceProperties2 const & rhs )
@@ -48004,6 +48712,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceProperties2 : public layout::PhysicalDeviceProperties2
   {
+    PhysicalDeviceProperties2()
+      : layout::PhysicalDeviceProperties2()
+    {}
+
+    PhysicalDeviceProperties2( VkPhysicalDeviceProperties2 const & rhs )
+      : layout::PhysicalDeviceProperties2( rhs )
+    {}
+
+    PhysicalDeviceProperties2& operator=( VkPhysicalDeviceProperties2 const & rhs )
+    {
+      layout::PhysicalDeviceProperties2::operator=(rhs);
+      return *this;
+    }
+
     operator VkPhysicalDeviceProperties2 const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceProperties2*>( this );
@@ -48072,7 +48794,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceProtectedMemoryFeatures& operator=( VkPhysicalDeviceProtectedMemoryFeatures const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceProtectedMemoryFeatures*>(this) = rhs;
+      layout::PhysicalDeviceProtectedMemoryFeatures::operator=(rhs);
       return *this;
     }
 
@@ -48121,8 +48843,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceProtectedMemoryProperties
     {
     protected:
-      PhysicalDeviceProtectedMemoryProperties( vk::Bool32 protectedNoFault_ = 0 )
-        : protectedNoFault( protectedNoFault_ )
+      PhysicalDeviceProtectedMemoryProperties()
       {}
 
       PhysicalDeviceProtectedMemoryProperties( VkPhysicalDeviceProtectedMemoryProperties const & rhs )
@@ -48146,6 +48867,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceProtectedMemoryProperties : public layout::PhysicalDeviceProtectedMemoryProperties
   {
+    PhysicalDeviceProtectedMemoryProperties()
+      : layout::PhysicalDeviceProtectedMemoryProperties()
+    {}
+
+    PhysicalDeviceProtectedMemoryProperties( VkPhysicalDeviceProtectedMemoryProperties const & rhs )
+      : layout::PhysicalDeviceProtectedMemoryProperties( rhs )
+    {}
+
+    PhysicalDeviceProtectedMemoryProperties& operator=( VkPhysicalDeviceProtectedMemoryProperties const & rhs )
+    {
+      layout::PhysicalDeviceProtectedMemoryProperties::operator=(rhs);
+      return *this;
+    }
+
     operator VkPhysicalDeviceProtectedMemoryProperties const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceProtectedMemoryProperties*>( this );
@@ -48179,8 +48914,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDevicePushDescriptorPropertiesKHR
     {
     protected:
-      PhysicalDevicePushDescriptorPropertiesKHR( uint32_t maxPushDescriptors_ = 0 )
-        : maxPushDescriptors( maxPushDescriptors_ )
+      PhysicalDevicePushDescriptorPropertiesKHR()
       {}
 
       PhysicalDevicePushDescriptorPropertiesKHR( VkPhysicalDevicePushDescriptorPropertiesKHR const & rhs )
@@ -48204,6 +48938,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDevicePushDescriptorPropertiesKHR : public layout::PhysicalDevicePushDescriptorPropertiesKHR
   {
+    PhysicalDevicePushDescriptorPropertiesKHR()
+      : layout::PhysicalDevicePushDescriptorPropertiesKHR()
+    {}
+
+    PhysicalDevicePushDescriptorPropertiesKHR( VkPhysicalDevicePushDescriptorPropertiesKHR const & rhs )
+      : layout::PhysicalDevicePushDescriptorPropertiesKHR( rhs )
+    {}
+
+    PhysicalDevicePushDescriptorPropertiesKHR& operator=( VkPhysicalDevicePushDescriptorPropertiesKHR const & rhs )
+    {
+      layout::PhysicalDevicePushDescriptorPropertiesKHR::operator=(rhs);
+      return *this;
+    }
+
     operator VkPhysicalDevicePushDescriptorPropertiesKHR const&() const
     {
       return *reinterpret_cast<const VkPhysicalDevicePushDescriptorPropertiesKHR*>( this );
@@ -48237,22 +48985,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceRayTracingPropertiesNV
     {
     protected:
-      PhysicalDeviceRayTracingPropertiesNV( uint32_t shaderGroupHandleSize_ = 0,
-                                            uint32_t maxRecursionDepth_ = 0,
-                                            uint32_t maxShaderGroupStride_ = 0,
-                                            uint32_t shaderGroupBaseAlignment_ = 0,
-                                            uint64_t maxGeometryCount_ = 0,
-                                            uint64_t maxInstanceCount_ = 0,
-                                            uint64_t maxTriangleCount_ = 0,
-                                            uint32_t maxDescriptorSetAccelerationStructures_ = 0 )
-        : shaderGroupHandleSize( shaderGroupHandleSize_ )
-        , maxRecursionDepth( maxRecursionDepth_ )
-        , maxShaderGroupStride( maxShaderGroupStride_ )
-        , shaderGroupBaseAlignment( shaderGroupBaseAlignment_ )
-        , maxGeometryCount( maxGeometryCount_ )
-        , maxInstanceCount( maxInstanceCount_ )
-        , maxTriangleCount( maxTriangleCount_ )
-        , maxDescriptorSetAccelerationStructures( maxDescriptorSetAccelerationStructures_ )
+      PhysicalDeviceRayTracingPropertiesNV()
       {}
 
       PhysicalDeviceRayTracingPropertiesNV( VkPhysicalDeviceRayTracingPropertiesNV const & rhs )
@@ -48283,6 +49016,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceRayTracingPropertiesNV : public layout::PhysicalDeviceRayTracingPropertiesNV
   {
+    PhysicalDeviceRayTracingPropertiesNV()
+      : layout::PhysicalDeviceRayTracingPropertiesNV()
+    {}
+
+    PhysicalDeviceRayTracingPropertiesNV( VkPhysicalDeviceRayTracingPropertiesNV const & rhs )
+      : layout::PhysicalDeviceRayTracingPropertiesNV( rhs )
+    {}
+
+    PhysicalDeviceRayTracingPropertiesNV& operator=( VkPhysicalDeviceRayTracingPropertiesNV const & rhs )
+    {
+      layout::PhysicalDeviceRayTracingPropertiesNV::operator=(rhs);
+      return *this;
+    }
+
     operator VkPhysicalDeviceRayTracingPropertiesNV const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceRayTracingPropertiesNV*>( this );
@@ -48358,7 +49105,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceRepresentativeFragmentTestFeaturesNV& operator=( VkPhysicalDeviceRepresentativeFragmentTestFeaturesNV const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceRepresentativeFragmentTestFeaturesNV*>(this) = rhs;
+      layout::PhysicalDeviceRepresentativeFragmentTestFeaturesNV::operator=(rhs);
       return *this;
     }
 
@@ -48407,19 +49154,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceSampleLocationsPropertiesEXT
     {
     protected:
-      PhysicalDeviceSampleLocationsPropertiesEXT( vk::SampleCountFlags sampleLocationSampleCounts_ = vk::SampleCountFlags(),
-                                                  vk::Extent2D maxSampleLocationGridSize_ = vk::Extent2D(),
-                                                  std::array<float,2> const& sampleLocationCoordinateRange_ = { { 0 } },
-                                                  uint32_t sampleLocationSubPixelBits_ = 0,
-                                                  vk::Bool32 variableSampleLocations_ = 0 )
-        : sampleLocationSampleCounts( sampleLocationSampleCounts_ )
-        , maxSampleLocationGridSize( maxSampleLocationGridSize_ )
-        , sampleLocationSubPixelBits( sampleLocationSubPixelBits_ )
-        , variableSampleLocations( variableSampleLocations_ )
-      {
-        memcpy( &sampleLocationCoordinateRange, sampleLocationCoordinateRange_.data(), 2 * sizeof( float ) );
-      
-      }
+      PhysicalDeviceSampleLocationsPropertiesEXT()
+      {}
 
       PhysicalDeviceSampleLocationsPropertiesEXT( VkPhysicalDeviceSampleLocationsPropertiesEXT const & rhs )
       {
@@ -48446,6 +49182,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceSampleLocationsPropertiesEXT : public layout::PhysicalDeviceSampleLocationsPropertiesEXT
   {
+    PhysicalDeviceSampleLocationsPropertiesEXT()
+      : layout::PhysicalDeviceSampleLocationsPropertiesEXT()
+    {}
+
+    PhysicalDeviceSampleLocationsPropertiesEXT( VkPhysicalDeviceSampleLocationsPropertiesEXT const & rhs )
+      : layout::PhysicalDeviceSampleLocationsPropertiesEXT( rhs )
+    {}
+
+    PhysicalDeviceSampleLocationsPropertiesEXT& operator=( VkPhysicalDeviceSampleLocationsPropertiesEXT const & rhs )
+    {
+      layout::PhysicalDeviceSampleLocationsPropertiesEXT::operator=(rhs);
+      return *this;
+    }
+
     operator VkPhysicalDeviceSampleLocationsPropertiesEXT const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceSampleLocationsPropertiesEXT*>( this );
@@ -48483,10 +49233,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceSamplerFilterMinmaxPropertiesEXT
     {
     protected:
-      PhysicalDeviceSamplerFilterMinmaxPropertiesEXT( vk::Bool32 filterMinmaxSingleComponentFormats_ = 0,
-                                                      vk::Bool32 filterMinmaxImageComponentMapping_ = 0 )
-        : filterMinmaxSingleComponentFormats( filterMinmaxSingleComponentFormats_ )
-        , filterMinmaxImageComponentMapping( filterMinmaxImageComponentMapping_ )
+      PhysicalDeviceSamplerFilterMinmaxPropertiesEXT()
       {}
 
       PhysicalDeviceSamplerFilterMinmaxPropertiesEXT( VkPhysicalDeviceSamplerFilterMinmaxPropertiesEXT const & rhs )
@@ -48511,6 +49258,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceSamplerFilterMinmaxPropertiesEXT : public layout::PhysicalDeviceSamplerFilterMinmaxPropertiesEXT
   {
+    PhysicalDeviceSamplerFilterMinmaxPropertiesEXT()
+      : layout::PhysicalDeviceSamplerFilterMinmaxPropertiesEXT()
+    {}
+
+    PhysicalDeviceSamplerFilterMinmaxPropertiesEXT( VkPhysicalDeviceSamplerFilterMinmaxPropertiesEXT const & rhs )
+      : layout::PhysicalDeviceSamplerFilterMinmaxPropertiesEXT( rhs )
+    {}
+
+    PhysicalDeviceSamplerFilterMinmaxPropertiesEXT& operator=( VkPhysicalDeviceSamplerFilterMinmaxPropertiesEXT const & rhs )
+    {
+      layout::PhysicalDeviceSamplerFilterMinmaxPropertiesEXT::operator=(rhs);
+      return *this;
+    }
+
     operator VkPhysicalDeviceSamplerFilterMinmaxPropertiesEXT const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceSamplerFilterMinmaxPropertiesEXT*>( this );
@@ -48580,7 +49341,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceSamplerYcbcrConversionFeatures& operator=( VkPhysicalDeviceSamplerYcbcrConversionFeatures const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceSamplerYcbcrConversionFeatures*>(this) = rhs;
+      layout::PhysicalDeviceSamplerYcbcrConversionFeatures::operator=(rhs);
       return *this;
     }
 
@@ -48664,7 +49425,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceScalarBlockLayoutFeaturesEXT& operator=( VkPhysicalDeviceScalarBlockLayoutFeaturesEXT const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceScalarBlockLayoutFeaturesEXT*>(this) = rhs;
+      layout::PhysicalDeviceScalarBlockLayoutFeaturesEXT::operator=(rhs);
       return *this;
     }
 
@@ -48752,7 +49513,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceShaderAtomicInt64FeaturesKHR& operator=( VkPhysicalDeviceShaderAtomicInt64FeaturesKHR const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceShaderAtomicInt64FeaturesKHR*>(this) = rhs;
+      layout::PhysicalDeviceShaderAtomicInt64FeaturesKHR::operator=(rhs);
       return *this;
     }
 
@@ -48808,10 +49569,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceShaderCoreProperties2AMD
     {
     protected:
-      PhysicalDeviceShaderCoreProperties2AMD( vk::ShaderCorePropertiesFlagsAMD shaderCoreFeatures_ = vk::ShaderCorePropertiesFlagsAMD(),
-                                              uint32_t activeComputeUnitCount_ = 0 )
-        : shaderCoreFeatures( shaderCoreFeatures_ )
-        , activeComputeUnitCount( activeComputeUnitCount_ )
+      PhysicalDeviceShaderCoreProperties2AMD()
       {}
 
       PhysicalDeviceShaderCoreProperties2AMD( VkPhysicalDeviceShaderCoreProperties2AMD const & rhs )
@@ -48836,6 +49594,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceShaderCoreProperties2AMD : public layout::PhysicalDeviceShaderCoreProperties2AMD
   {
+    PhysicalDeviceShaderCoreProperties2AMD()
+      : layout::PhysicalDeviceShaderCoreProperties2AMD()
+    {}
+
+    PhysicalDeviceShaderCoreProperties2AMD( VkPhysicalDeviceShaderCoreProperties2AMD const & rhs )
+      : layout::PhysicalDeviceShaderCoreProperties2AMD( rhs )
+    {}
+
+    PhysicalDeviceShaderCoreProperties2AMD& operator=( VkPhysicalDeviceShaderCoreProperties2AMD const & rhs )
+    {
+      layout::PhysicalDeviceShaderCoreProperties2AMD::operator=(rhs);
+      return *this;
+    }
+
     operator VkPhysicalDeviceShaderCoreProperties2AMD const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceShaderCoreProperties2AMD*>( this );
@@ -48870,34 +49642,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceShaderCorePropertiesAMD
     {
     protected:
-      PhysicalDeviceShaderCorePropertiesAMD( uint32_t shaderEngineCount_ = 0,
-                                             uint32_t shaderArraysPerEngineCount_ = 0,
-                                             uint32_t computeUnitsPerShaderArray_ = 0,
-                                             uint32_t simdPerComputeUnit_ = 0,
-                                             uint32_t wavefrontsPerSimd_ = 0,
-                                             uint32_t wavefrontSize_ = 0,
-                                             uint32_t sgprsPerSimd_ = 0,
-                                             uint32_t minSgprAllocation_ = 0,
-                                             uint32_t maxSgprAllocation_ = 0,
-                                             uint32_t sgprAllocationGranularity_ = 0,
-                                             uint32_t vgprsPerSimd_ = 0,
-                                             uint32_t minVgprAllocation_ = 0,
-                                             uint32_t maxVgprAllocation_ = 0,
-                                             uint32_t vgprAllocationGranularity_ = 0 )
-        : shaderEngineCount( shaderEngineCount_ )
-        , shaderArraysPerEngineCount( shaderArraysPerEngineCount_ )
-        , computeUnitsPerShaderArray( computeUnitsPerShaderArray_ )
-        , simdPerComputeUnit( simdPerComputeUnit_ )
-        , wavefrontsPerSimd( wavefrontsPerSimd_ )
-        , wavefrontSize( wavefrontSize_ )
-        , sgprsPerSimd( sgprsPerSimd_ )
-        , minSgprAllocation( minSgprAllocation_ )
-        , maxSgprAllocation( maxSgprAllocation_ )
-        , sgprAllocationGranularity( sgprAllocationGranularity_ )
-        , vgprsPerSimd( vgprsPerSimd_ )
-        , minVgprAllocation( minVgprAllocation_ )
-        , maxVgprAllocation( maxVgprAllocation_ )
-        , vgprAllocationGranularity( vgprAllocationGranularity_ )
+      PhysicalDeviceShaderCorePropertiesAMD()
       {}
 
       PhysicalDeviceShaderCorePropertiesAMD( VkPhysicalDeviceShaderCorePropertiesAMD const & rhs )
@@ -48934,6 +49679,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceShaderCorePropertiesAMD : public layout::PhysicalDeviceShaderCorePropertiesAMD
   {
+    PhysicalDeviceShaderCorePropertiesAMD()
+      : layout::PhysicalDeviceShaderCorePropertiesAMD()
+    {}
+
+    PhysicalDeviceShaderCorePropertiesAMD( VkPhysicalDeviceShaderCorePropertiesAMD const & rhs )
+      : layout::PhysicalDeviceShaderCorePropertiesAMD( rhs )
+    {}
+
+    PhysicalDeviceShaderCorePropertiesAMD& operator=( VkPhysicalDeviceShaderCorePropertiesAMD const & rhs )
+    {
+      layout::PhysicalDeviceShaderCorePropertiesAMD::operator=(rhs);
+      return *this;
+    }
+
     operator VkPhysicalDeviceShaderCorePropertiesAMD const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceShaderCorePropertiesAMD*>( this );
@@ -49015,7 +49774,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT& operator=( VkPhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT*>(this) = rhs;
+      layout::PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT::operator=(rhs);
       return *this;
     }
 
@@ -49099,7 +49858,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceShaderDrawParametersFeatures& operator=( VkPhysicalDeviceShaderDrawParametersFeatures const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceShaderDrawParametersFeatures*>(this) = rhs;
+      layout::PhysicalDeviceShaderDrawParametersFeatures::operator=(rhs);
       return *this;
     }
 
@@ -49187,7 +49946,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceShaderFloat16Int8FeaturesKHR& operator=( VkPhysicalDeviceShaderFloat16Int8FeaturesKHR const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceShaderFloat16Int8FeaturesKHR*>(this) = rhs;
+      layout::PhysicalDeviceShaderFloat16Int8FeaturesKHR::operator=(rhs);
       return *this;
     }
 
@@ -49278,7 +50037,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceShaderImageFootprintFeaturesNV& operator=( VkPhysicalDeviceShaderImageFootprintFeaturesNV const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceShaderImageFootprintFeaturesNV*>(this) = rhs;
+      layout::PhysicalDeviceShaderImageFootprintFeaturesNV::operator=(rhs);
       return *this;
     }
 
@@ -49362,7 +50121,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL& operator=( VkPhysicalDeviceShaderIntegerFunctions2FeaturesINTEL const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceShaderIntegerFunctions2FeaturesINTEL*>(this) = rhs;
+      layout::PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL::operator=(rhs);
       return *this;
     }
 
@@ -49446,7 +50205,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceShaderSMBuiltinsFeaturesNV& operator=( VkPhysicalDeviceShaderSMBuiltinsFeaturesNV const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceShaderSMBuiltinsFeaturesNV*>(this) = rhs;
+      layout::PhysicalDeviceShaderSMBuiltinsFeaturesNV::operator=(rhs);
       return *this;
     }
 
@@ -49495,10 +50254,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceShaderSMBuiltinsPropertiesNV
     {
     protected:
-      PhysicalDeviceShaderSMBuiltinsPropertiesNV( uint32_t shaderSMCount_ = 0,
-                                                  uint32_t shaderWarpsPerSM_ = 0 )
-        : shaderSMCount( shaderSMCount_ )
-        , shaderWarpsPerSM( shaderWarpsPerSM_ )
+      PhysicalDeviceShaderSMBuiltinsPropertiesNV()
       {}
 
       PhysicalDeviceShaderSMBuiltinsPropertiesNV( VkPhysicalDeviceShaderSMBuiltinsPropertiesNV const & rhs )
@@ -49523,6 +50279,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceShaderSMBuiltinsPropertiesNV : public layout::PhysicalDeviceShaderSMBuiltinsPropertiesNV
   {
+    PhysicalDeviceShaderSMBuiltinsPropertiesNV()
+      : layout::PhysicalDeviceShaderSMBuiltinsPropertiesNV()
+    {}
+
+    PhysicalDeviceShaderSMBuiltinsPropertiesNV( VkPhysicalDeviceShaderSMBuiltinsPropertiesNV const & rhs )
+      : layout::PhysicalDeviceShaderSMBuiltinsPropertiesNV( rhs )
+    {}
+
+    PhysicalDeviceShaderSMBuiltinsPropertiesNV& operator=( VkPhysicalDeviceShaderSMBuiltinsPropertiesNV const & rhs )
+    {
+      layout::PhysicalDeviceShaderSMBuiltinsPropertiesNV::operator=(rhs);
+      return *this;
+    }
+
     operator VkPhysicalDeviceShaderSMBuiltinsPropertiesNV const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceShaderSMBuiltinsPropertiesNV*>( this );
@@ -49596,7 +50366,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceShadingRateImageFeaturesNV& operator=( VkPhysicalDeviceShadingRateImageFeaturesNV const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceShadingRateImageFeaturesNV*>(this) = rhs;
+      layout::PhysicalDeviceShadingRateImageFeaturesNV::operator=(rhs);
       return *this;
     }
 
@@ -49652,12 +50422,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceShadingRateImagePropertiesNV
     {
     protected:
-      PhysicalDeviceShadingRateImagePropertiesNV( vk::Extent2D shadingRateTexelSize_ = vk::Extent2D(),
-                                                  uint32_t shadingRatePaletteSize_ = 0,
-                                                  uint32_t shadingRateMaxCoarseSamples_ = 0 )
-        : shadingRateTexelSize( shadingRateTexelSize_ )
-        , shadingRatePaletteSize( shadingRatePaletteSize_ )
-        , shadingRateMaxCoarseSamples( shadingRateMaxCoarseSamples_ )
+      PhysicalDeviceShadingRateImagePropertiesNV()
       {}
 
       PhysicalDeviceShadingRateImagePropertiesNV( VkPhysicalDeviceShadingRateImagePropertiesNV const & rhs )
@@ -49683,6 +50448,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceShadingRateImagePropertiesNV : public layout::PhysicalDeviceShadingRateImagePropertiesNV
   {
+    PhysicalDeviceShadingRateImagePropertiesNV()
+      : layout::PhysicalDeviceShadingRateImagePropertiesNV()
+    {}
+
+    PhysicalDeviceShadingRateImagePropertiesNV( VkPhysicalDeviceShadingRateImagePropertiesNV const & rhs )
+      : layout::PhysicalDeviceShadingRateImagePropertiesNV( rhs )
+    {}
+
+    PhysicalDeviceShadingRateImagePropertiesNV& operator=( VkPhysicalDeviceShadingRateImagePropertiesNV const & rhs )
+    {
+      layout::PhysicalDeviceShadingRateImagePropertiesNV::operator=(rhs);
+      return *this;
+    }
+
     operator VkPhysicalDeviceShadingRateImagePropertiesNV const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceShadingRateImagePropertiesNV*>( this );
@@ -49769,7 +50548,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceSparseImageFormatInfo2& operator=( VkPhysicalDeviceSparseImageFormatInfo2 const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceSparseImageFormatInfo2*>(this) = rhs;
+      layout::PhysicalDeviceSparseImageFormatInfo2::operator=(rhs);
       return *this;
     }
 
@@ -49846,14 +50625,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceSubgroupProperties
     {
     protected:
-      PhysicalDeviceSubgroupProperties( uint32_t subgroupSize_ = 0,
-                                        vk::ShaderStageFlags supportedStages_ = vk::ShaderStageFlags(),
-                                        vk::SubgroupFeatureFlags supportedOperations_ = vk::SubgroupFeatureFlags(),
-                                        vk::Bool32 quadOperationsInAllStages_ = 0 )
-        : subgroupSize( subgroupSize_ )
-        , supportedStages( supportedStages_ )
-        , supportedOperations( supportedOperations_ )
-        , quadOperationsInAllStages( quadOperationsInAllStages_ )
+      PhysicalDeviceSubgroupProperties()
       {}
 
       PhysicalDeviceSubgroupProperties( VkPhysicalDeviceSubgroupProperties const & rhs )
@@ -49880,6 +50652,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceSubgroupProperties : public layout::PhysicalDeviceSubgroupProperties
   {
+    PhysicalDeviceSubgroupProperties()
+      : layout::PhysicalDeviceSubgroupProperties()
+    {}
+
+    PhysicalDeviceSubgroupProperties( VkPhysicalDeviceSubgroupProperties const & rhs )
+      : layout::PhysicalDeviceSubgroupProperties( rhs )
+    {}
+
+    PhysicalDeviceSubgroupProperties& operator=( VkPhysicalDeviceSubgroupProperties const & rhs )
+    {
+      layout::PhysicalDeviceSubgroupProperties::operator=(rhs);
+      return *this;
+    }
+
     operator VkPhysicalDeviceSubgroupProperties const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceSubgroupProperties*>( this );
@@ -49955,7 +50741,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceSubgroupSizeControlFeaturesEXT& operator=( VkPhysicalDeviceSubgroupSizeControlFeaturesEXT const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceSubgroupSizeControlFeaturesEXT*>(this) = rhs;
+      layout::PhysicalDeviceSubgroupSizeControlFeaturesEXT::operator=(rhs);
       return *this;
     }
 
@@ -50011,14 +50797,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceSubgroupSizeControlPropertiesEXT
     {
     protected:
-      PhysicalDeviceSubgroupSizeControlPropertiesEXT( uint32_t minSubgroupSize_ = 0,
-                                                      uint32_t maxSubgroupSize_ = 0,
-                                                      uint32_t maxComputeWorkgroupSubgroups_ = 0,
-                                                      vk::ShaderStageFlags requiredSubgroupSizeStages_ = vk::ShaderStageFlags() )
-        : minSubgroupSize( minSubgroupSize_ )
-        , maxSubgroupSize( maxSubgroupSize_ )
-        , maxComputeWorkgroupSubgroups( maxComputeWorkgroupSubgroups_ )
-        , requiredSubgroupSizeStages( requiredSubgroupSizeStages_ )
+      PhysicalDeviceSubgroupSizeControlPropertiesEXT()
       {}
 
       PhysicalDeviceSubgroupSizeControlPropertiesEXT( VkPhysicalDeviceSubgroupSizeControlPropertiesEXT const & rhs )
@@ -50045,6 +50824,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceSubgroupSizeControlPropertiesEXT : public layout::PhysicalDeviceSubgroupSizeControlPropertiesEXT
   {
+    PhysicalDeviceSubgroupSizeControlPropertiesEXT()
+      : layout::PhysicalDeviceSubgroupSizeControlPropertiesEXT()
+    {}
+
+    PhysicalDeviceSubgroupSizeControlPropertiesEXT( VkPhysicalDeviceSubgroupSizeControlPropertiesEXT const & rhs )
+      : layout::PhysicalDeviceSubgroupSizeControlPropertiesEXT( rhs )
+    {}
+
+    PhysicalDeviceSubgroupSizeControlPropertiesEXT& operator=( VkPhysicalDeviceSubgroupSizeControlPropertiesEXT const & rhs )
+    {
+      layout::PhysicalDeviceSubgroupSizeControlPropertiesEXT::operator=(rhs);
+      return *this;
+    }
+
     operator VkPhysicalDeviceSubgroupSizeControlPropertiesEXT const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceSubgroupSizeControlPropertiesEXT*>( this );
@@ -50116,7 +50909,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceSurfaceInfo2KHR& operator=( VkPhysicalDeviceSurfaceInfo2KHR const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceSurfaceInfo2KHR*>(this) = rhs;
+      layout::PhysicalDeviceSurfaceInfo2KHR::operator=(rhs);
       return *this;
     }
 
@@ -50200,7 +50993,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceTexelBufferAlignmentFeaturesEXT& operator=( VkPhysicalDeviceTexelBufferAlignmentFeaturesEXT const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceTexelBufferAlignmentFeaturesEXT*>(this) = rhs;
+      layout::PhysicalDeviceTexelBufferAlignmentFeaturesEXT::operator=(rhs);
       return *this;
     }
 
@@ -50249,14 +51042,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceTexelBufferAlignmentPropertiesEXT
     {
     protected:
-      PhysicalDeviceTexelBufferAlignmentPropertiesEXT( vk::DeviceSize storageTexelBufferOffsetAlignmentBytes_ = 0,
-                                                       vk::Bool32 storageTexelBufferOffsetSingleTexelAlignment_ = 0,
-                                                       vk::DeviceSize uniformTexelBufferOffsetAlignmentBytes_ = 0,
-                                                       vk::Bool32 uniformTexelBufferOffsetSingleTexelAlignment_ = 0 )
-        : storageTexelBufferOffsetAlignmentBytes( storageTexelBufferOffsetAlignmentBytes_ )
-        , storageTexelBufferOffsetSingleTexelAlignment( storageTexelBufferOffsetSingleTexelAlignment_ )
-        , uniformTexelBufferOffsetAlignmentBytes( uniformTexelBufferOffsetAlignmentBytes_ )
-        , uniformTexelBufferOffsetSingleTexelAlignment( uniformTexelBufferOffsetSingleTexelAlignment_ )
+      PhysicalDeviceTexelBufferAlignmentPropertiesEXT()
       {}
 
       PhysicalDeviceTexelBufferAlignmentPropertiesEXT( VkPhysicalDeviceTexelBufferAlignmentPropertiesEXT const & rhs )
@@ -50283,6 +51069,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceTexelBufferAlignmentPropertiesEXT : public layout::PhysicalDeviceTexelBufferAlignmentPropertiesEXT
   {
+    PhysicalDeviceTexelBufferAlignmentPropertiesEXT()
+      : layout::PhysicalDeviceTexelBufferAlignmentPropertiesEXT()
+    {}
+
+    PhysicalDeviceTexelBufferAlignmentPropertiesEXT( VkPhysicalDeviceTexelBufferAlignmentPropertiesEXT const & rhs )
+      : layout::PhysicalDeviceTexelBufferAlignmentPropertiesEXT( rhs )
+    {}
+
+    PhysicalDeviceTexelBufferAlignmentPropertiesEXT& operator=( VkPhysicalDeviceTexelBufferAlignmentPropertiesEXT const & rhs )
+    {
+      layout::PhysicalDeviceTexelBufferAlignmentPropertiesEXT::operator=(rhs);
+      return *this;
+    }
+
     operator VkPhysicalDeviceTexelBufferAlignmentPropertiesEXT const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceTexelBufferAlignmentPropertiesEXT*>( this );
@@ -50354,7 +51154,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT& operator=( VkPhysicalDeviceTextureCompressionASTCHDRFeaturesEXT const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceTextureCompressionASTCHDRFeaturesEXT*>(this) = rhs;
+      layout::PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT::operator=(rhs);
       return *this;
     }
 
@@ -50442,7 +51242,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceTransformFeedbackFeaturesEXT& operator=( VkPhysicalDeviceTransformFeedbackFeaturesEXT const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceTransformFeedbackFeaturesEXT*>(this) = rhs;
+      layout::PhysicalDeviceTransformFeedbackFeaturesEXT::operator=(rhs);
       return *this;
     }
 
@@ -50498,26 +51298,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceTransformFeedbackPropertiesEXT
     {
     protected:
-      PhysicalDeviceTransformFeedbackPropertiesEXT( uint32_t maxTransformFeedbackStreams_ = 0,
-                                                    uint32_t maxTransformFeedbackBuffers_ = 0,
-                                                    vk::DeviceSize maxTransformFeedbackBufferSize_ = 0,
-                                                    uint32_t maxTransformFeedbackStreamDataSize_ = 0,
-                                                    uint32_t maxTransformFeedbackBufferDataSize_ = 0,
-                                                    uint32_t maxTransformFeedbackBufferDataStride_ = 0,
-                                                    vk::Bool32 transformFeedbackQueries_ = 0,
-                                                    vk::Bool32 transformFeedbackStreamsLinesTriangles_ = 0,
-                                                    vk::Bool32 transformFeedbackRasterizationStreamSelect_ = 0,
-                                                    vk::Bool32 transformFeedbackDraw_ = 0 )
-        : maxTransformFeedbackStreams( maxTransformFeedbackStreams_ )
-        , maxTransformFeedbackBuffers( maxTransformFeedbackBuffers_ )
-        , maxTransformFeedbackBufferSize( maxTransformFeedbackBufferSize_ )
-        , maxTransformFeedbackStreamDataSize( maxTransformFeedbackStreamDataSize_ )
-        , maxTransformFeedbackBufferDataSize( maxTransformFeedbackBufferDataSize_ )
-        , maxTransformFeedbackBufferDataStride( maxTransformFeedbackBufferDataStride_ )
-        , transformFeedbackQueries( transformFeedbackQueries_ )
-        , transformFeedbackStreamsLinesTriangles( transformFeedbackStreamsLinesTriangles_ )
-        , transformFeedbackRasterizationStreamSelect( transformFeedbackRasterizationStreamSelect_ )
-        , transformFeedbackDraw( transformFeedbackDraw_ )
+      PhysicalDeviceTransformFeedbackPropertiesEXT()
       {}
 
       PhysicalDeviceTransformFeedbackPropertiesEXT( VkPhysicalDeviceTransformFeedbackPropertiesEXT const & rhs )
@@ -50550,6 +51331,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceTransformFeedbackPropertiesEXT : public layout::PhysicalDeviceTransformFeedbackPropertiesEXT
   {
+    PhysicalDeviceTransformFeedbackPropertiesEXT()
+      : layout::PhysicalDeviceTransformFeedbackPropertiesEXT()
+    {}
+
+    PhysicalDeviceTransformFeedbackPropertiesEXT( VkPhysicalDeviceTransformFeedbackPropertiesEXT const & rhs )
+      : layout::PhysicalDeviceTransformFeedbackPropertiesEXT( rhs )
+    {}
+
+    PhysicalDeviceTransformFeedbackPropertiesEXT& operator=( VkPhysicalDeviceTransformFeedbackPropertiesEXT const & rhs )
+    {
+      layout::PhysicalDeviceTransformFeedbackPropertiesEXT::operator=(rhs);
+      return *this;
+    }
+
     operator VkPhysicalDeviceTransformFeedbackPropertiesEXT const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceTransformFeedbackPropertiesEXT*>( this );
@@ -50627,7 +51422,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR& operator=( VkPhysicalDeviceUniformBufferStandardLayoutFeaturesKHR const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceUniformBufferStandardLayoutFeaturesKHR*>(this) = rhs;
+      layout::PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR::operator=(rhs);
       return *this;
     }
 
@@ -50715,7 +51510,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceVariablePointersFeatures& operator=( VkPhysicalDeviceVariablePointersFeatures const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceVariablePointersFeatures*>(this) = rhs;
+      layout::PhysicalDeviceVariablePointersFeatures::operator=(rhs);
       return *this;
     }
 
@@ -50810,7 +51605,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceVertexAttributeDivisorFeaturesEXT& operator=( VkPhysicalDeviceVertexAttributeDivisorFeaturesEXT const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceVertexAttributeDivisorFeaturesEXT*>(this) = rhs;
+      layout::PhysicalDeviceVertexAttributeDivisorFeaturesEXT::operator=(rhs);
       return *this;
     }
 
@@ -50866,8 +51661,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceVertexAttributeDivisorPropertiesEXT
     {
     protected:
-      PhysicalDeviceVertexAttributeDivisorPropertiesEXT( uint32_t maxVertexAttribDivisor_ = 0 )
-        : maxVertexAttribDivisor( maxVertexAttribDivisor_ )
+      PhysicalDeviceVertexAttributeDivisorPropertiesEXT()
       {}
 
       PhysicalDeviceVertexAttributeDivisorPropertiesEXT( VkPhysicalDeviceVertexAttributeDivisorPropertiesEXT const & rhs )
@@ -50891,6 +51685,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceVertexAttributeDivisorPropertiesEXT : public layout::PhysicalDeviceVertexAttributeDivisorPropertiesEXT
   {
+    PhysicalDeviceVertexAttributeDivisorPropertiesEXT()
+      : layout::PhysicalDeviceVertexAttributeDivisorPropertiesEXT()
+    {}
+
+    PhysicalDeviceVertexAttributeDivisorPropertiesEXT( VkPhysicalDeviceVertexAttributeDivisorPropertiesEXT const & rhs )
+      : layout::PhysicalDeviceVertexAttributeDivisorPropertiesEXT( rhs )
+    {}
+
+    PhysicalDeviceVertexAttributeDivisorPropertiesEXT& operator=( VkPhysicalDeviceVertexAttributeDivisorPropertiesEXT const & rhs )
+    {
+      layout::PhysicalDeviceVertexAttributeDivisorPropertiesEXT::operator=(rhs);
+      return *this;
+    }
+
     operator VkPhysicalDeviceVertexAttributeDivisorPropertiesEXT const&() const
     {
       return *reinterpret_cast<const VkPhysicalDeviceVertexAttributeDivisorPropertiesEXT*>( this );
@@ -50967,7 +51775,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceVulkanMemoryModelFeaturesKHR& operator=( VkPhysicalDeviceVulkanMemoryModelFeaturesKHR const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceVulkanMemoryModelFeaturesKHR*>(this) = rhs;
+      layout::PhysicalDeviceVulkanMemoryModelFeaturesKHR::operator=(rhs);
       return *this;
     }
 
@@ -51065,7 +51873,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceYcbcrImageArraysFeaturesEXT& operator=( VkPhysicalDeviceYcbcrImageArraysFeaturesEXT const & rhs )
     {
-      *reinterpret_cast<VkPhysicalDeviceYcbcrImageArraysFeaturesEXT*>(this) = rhs;
+      layout::PhysicalDeviceYcbcrImageArraysFeaturesEXT::operator=(rhs);
       return *this;
     }
 
@@ -51157,7 +51965,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineCacheCreateInfo& operator=( VkPipelineCacheCreateInfo const & rhs )
     {
-      *reinterpret_cast<VkPipelineCacheCreateInfo*>(this) = rhs;
+      layout::PipelineCacheCreateInfo::operator=(rhs);
       return *this;
     }
 
@@ -51263,7 +52071,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineColorBlendAdvancedStateCreateInfoEXT& operator=( VkPipelineColorBlendAdvancedStateCreateInfoEXT const & rhs )
     {
-      *reinterpret_cast<VkPipelineColorBlendAdvancedStateCreateInfoEXT*>(this) = rhs;
+      layout::PipelineColorBlendAdvancedStateCreateInfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -51361,7 +52169,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineCompilerControlCreateInfoAMD& operator=( VkPipelineCompilerControlCreateInfoAMD const & rhs )
     {
-      *reinterpret_cast<VkPipelineCompilerControlCreateInfoAMD*>(this) = rhs;
+      layout::PipelineCompilerControlCreateInfoAMD::operator=(rhs);
       return *this;
     }
 
@@ -51461,7 +52269,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineCoverageModulationStateCreateInfoNV& operator=( VkPipelineCoverageModulationStateCreateInfoNV const & rhs )
     {
-      *reinterpret_cast<VkPipelineCoverageModulationStateCreateInfoNV*>(this) = rhs;
+      layout::PipelineCoverageModulationStateCreateInfoNV::operator=(rhs);
       return *this;
     }
 
@@ -51577,7 +52385,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineCoverageReductionStateCreateInfoNV& operator=( VkPipelineCoverageReductionStateCreateInfoNV const & rhs )
     {
-      *reinterpret_cast<VkPipelineCoverageReductionStateCreateInfoNV*>(this) = rhs;
+      layout::PipelineCoverageReductionStateCreateInfoNV::operator=(rhs);
       return *this;
     }
 
@@ -51676,7 +52484,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineCoverageToColorStateCreateInfoNV& operator=( VkPipelineCoverageToColorStateCreateInfoNV const & rhs )
     {
-      *reinterpret_cast<VkPipelineCoverageToColorStateCreateInfoNV*>(this) = rhs;
+      layout::PipelineCoverageToColorStateCreateInfoNV::operator=(rhs);
       return *this;
     }
 
@@ -51736,6 +52544,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineCreationFeedbackEXT
   {
+    PipelineCreationFeedbackEXT()
+    {}
+
+    PipelineCreationFeedbackEXT( VkPipelineCreationFeedbackEXT const & rhs )
+    {
+      *reinterpret_cast<VkPipelineCreationFeedbackEXT*>(this) = rhs;
+    }
+
+    PipelineCreationFeedbackEXT& operator=( VkPipelineCreationFeedbackEXT const & rhs )
+    {
+      *reinterpret_cast<VkPipelineCreationFeedbackEXT*>(this) = rhs;
+      return *this;
+    }
+
     operator VkPipelineCreationFeedbackEXT const&() const
     {
       return *reinterpret_cast<const VkPipelineCreationFeedbackEXT*>( this );
@@ -51812,7 +52634,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineCreationFeedbackCreateInfoEXT& operator=( VkPipelineCreationFeedbackCreateInfoEXT const & rhs )
     {
-      *reinterpret_cast<VkPipelineCreationFeedbackCreateInfoEXT*>(this) = rhs;
+      layout::PipelineCreationFeedbackCreateInfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -51922,7 +52744,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineDiscardRectangleStateCreateInfoEXT& operator=( VkPipelineDiscardRectangleStateCreateInfoEXT const & rhs )
     {
-      *reinterpret_cast<VkPipelineDiscardRectangleStateCreateInfoEXT*>(this) = rhs;
+      layout::PipelineDiscardRectangleStateCreateInfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -52031,7 +52853,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineExecutableInfoKHR& operator=( VkPipelineExecutableInfoKHR const & rhs )
     {
-      *reinterpret_cast<VkPipelineExecutableInfoKHR*>(this) = rhs;
+      layout::PipelineExecutableInfoKHR::operator=(rhs);
       return *this;
     }
 
@@ -52140,7 +52962,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineExecutableInternalRepresentationKHR& operator=( VkPipelineExecutableInternalRepresentationKHR const & rhs )
     {
-      *reinterpret_cast<VkPipelineExecutableInternalRepresentationKHR*>(this) = rhs;
+      layout::PipelineExecutableInternalRepresentationKHR::operator=(rhs);
       return *this;
     }
 
@@ -52217,17 +53039,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct PipelineExecutablePropertiesKHR
     {
     protected:
-      PipelineExecutablePropertiesKHR( vk::ShaderStageFlags stages_ = vk::ShaderStageFlags(),
-                                       std::array<char,VK_MAX_DESCRIPTION_SIZE> const& name_ = { { 0 } },
-                                       std::array<char,VK_MAX_DESCRIPTION_SIZE> const& description_ = { { 0 } },
-                                       uint32_t subgroupSize_ = 0 )
-        : stages( stages_ )
-        , subgroupSize( subgroupSize_ )
-      {
-        memcpy( &name, name_.data(), VK_MAX_DESCRIPTION_SIZE * sizeof( char ) );
-        memcpy( &description, description_.data(), VK_MAX_DESCRIPTION_SIZE * sizeof( char ) );
-      
-      }
+      PipelineExecutablePropertiesKHR()
+      {}
 
       PipelineExecutablePropertiesKHR( VkPipelineExecutablePropertiesKHR const & rhs )
       {
@@ -52253,6 +53066,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineExecutablePropertiesKHR : public layout::PipelineExecutablePropertiesKHR
   {
+    PipelineExecutablePropertiesKHR()
+      : layout::PipelineExecutablePropertiesKHR()
+    {}
+
+    PipelineExecutablePropertiesKHR( VkPipelineExecutablePropertiesKHR const & rhs )
+      : layout::PipelineExecutablePropertiesKHR( rhs )
+    {}
+
+    PipelineExecutablePropertiesKHR& operator=( VkPipelineExecutablePropertiesKHR const & rhs )
+    {
+      layout::PipelineExecutablePropertiesKHR::operator=(rhs);
+      return *this;
+    }
+
     operator VkPipelineExecutablePropertiesKHR const&() const
     {
       return *reinterpret_cast<const VkPipelineExecutablePropertiesKHR*>( this );
@@ -52314,17 +53141,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct PipelineExecutableStatisticKHR
     {
     protected:
-      PipelineExecutableStatisticKHR( std::array<char,VK_MAX_DESCRIPTION_SIZE> const& name_ = { { 0 } },
-                                      std::array<char,VK_MAX_DESCRIPTION_SIZE> const& description_ = { { 0 } },
-                                      vk::PipelineExecutableStatisticFormatKHR format_ = vk::PipelineExecutableStatisticFormatKHR::eBool32,
-                                      vk::PipelineExecutableStatisticValueKHR value_ = vk::PipelineExecutableStatisticValueKHR() )
-        : format( format_ )
-        , value( value_ )
-      {
-        memcpy( &name, name_.data(), VK_MAX_DESCRIPTION_SIZE * sizeof( char ) );
-        memcpy( &description, description_.data(), VK_MAX_DESCRIPTION_SIZE * sizeof( char ) );
-      
-      }
+      PipelineExecutableStatisticKHR()
+      {}
 
       PipelineExecutableStatisticKHR( VkPipelineExecutableStatisticKHR const & rhs )
       {
@@ -52350,6 +53168,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineExecutableStatisticKHR : public layout::PipelineExecutableStatisticKHR
   {
+    PipelineExecutableStatisticKHR()
+      : layout::PipelineExecutableStatisticKHR()
+    {}
+
+    PipelineExecutableStatisticKHR( VkPipelineExecutableStatisticKHR const & rhs )
+      : layout::PipelineExecutableStatisticKHR( rhs )
+    {}
+
+    PipelineExecutableStatisticKHR& operator=( VkPipelineExecutableStatisticKHR const & rhs )
+    {
+      layout::PipelineExecutableStatisticKHR::operator=(rhs);
+      return *this;
+    }
+
     operator VkPipelineExecutableStatisticKHR const&() const
     {
       return *reinterpret_cast<const VkPipelineExecutableStatisticKHR*>( this );
@@ -52406,7 +53238,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineInfoKHR& operator=( VkPipelineInfoKHR const & rhs )
     {
-      *reinterpret_cast<VkPipelineInfoKHR*>(this) = rhs;
+      layout::PipelineInfoKHR::operator=(rhs);
       return *this;
     }
 
@@ -52575,7 +53407,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineLayoutCreateInfo& operator=( VkPipelineLayoutCreateInfo const & rhs )
     {
-      *reinterpret_cast<VkPipelineLayoutCreateInfo*>(this) = rhs;
+      layout::PipelineLayoutCreateInfo::operator=(rhs);
       return *this;
     }
 
@@ -52695,7 +53527,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineRasterizationConservativeStateCreateInfoEXT& operator=( VkPipelineRasterizationConservativeStateCreateInfoEXT const & rhs )
     {
-      *reinterpret_cast<VkPipelineRasterizationConservativeStateCreateInfoEXT*>(this) = rhs;
+      layout::PipelineRasterizationConservativeStateCreateInfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -52797,7 +53629,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineRasterizationDepthClipStateCreateInfoEXT& operator=( VkPipelineRasterizationDepthClipStateCreateInfoEXT const & rhs )
     {
-      *reinterpret_cast<VkPipelineRasterizationDepthClipStateCreateInfoEXT*>(this) = rhs;
+      layout::PipelineRasterizationDepthClipStateCreateInfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -52900,7 +53732,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineRasterizationLineStateCreateInfoEXT& operator=( VkPipelineRasterizationLineStateCreateInfoEXT const & rhs )
     {
-      *reinterpret_cast<VkPipelineRasterizationLineStateCreateInfoEXT*>(this) = rhs;
+      layout::PipelineRasterizationLineStateCreateInfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -53005,7 +53837,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineRasterizationStateRasterizationOrderAMD& operator=( VkPipelineRasterizationStateRasterizationOrderAMD const & rhs )
     {
-      *reinterpret_cast<VkPipelineRasterizationStateRasterizationOrderAMD*>(this) = rhs;
+      layout::PipelineRasterizationStateRasterizationOrderAMD::operator=(rhs);
       return *this;
     }
 
@@ -53093,7 +53925,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineRasterizationStateStreamCreateInfoEXT& operator=( VkPipelineRasterizationStateStreamCreateInfoEXT const & rhs )
     {
-      *reinterpret_cast<VkPipelineRasterizationStateStreamCreateInfoEXT*>(this) = rhs;
+      layout::PipelineRasterizationStateStreamCreateInfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -53184,7 +54016,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineRepresentativeFragmentTestStateCreateInfoNV& operator=( VkPipelineRepresentativeFragmentTestStateCreateInfoNV const & rhs )
     {
-      *reinterpret_cast<VkPipelineRepresentativeFragmentTestStateCreateInfoNV*>(this) = rhs;
+      layout::PipelineRepresentativeFragmentTestStateCreateInfoNV::operator=(rhs);
       return *this;
     }
 
@@ -53272,7 +54104,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineSampleLocationsStateCreateInfoEXT& operator=( VkPipelineSampleLocationsStateCreateInfoEXT const & rhs )
     {
-      *reinterpret_cast<VkPipelineSampleLocationsStateCreateInfoEXT*>(this) = rhs;
+      layout::PipelineSampleLocationsStateCreateInfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -53328,8 +54160,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT
     {
     protected:
-      PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT( uint32_t requiredSubgroupSize_ = 0 )
-        : requiredSubgroupSize( requiredSubgroupSize_ )
+      PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT()
       {}
 
       PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT( VkPipelineShaderStageRequiredSubgroupSizeCreateInfoEXT const & rhs )
@@ -53353,6 +54184,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT : public layout::PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT
   {
+    PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT()
+      : layout::PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT()
+    {}
+
+    PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT( VkPipelineShaderStageRequiredSubgroupSizeCreateInfoEXT const & rhs )
+      : layout::PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT( rhs )
+    {}
+
+    PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT& operator=( VkPipelineShaderStageRequiredSubgroupSizeCreateInfoEXT const & rhs )
+    {
+      layout::PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT::operator=(rhs);
+      return *this;
+    }
+
     operator VkPipelineShaderStageRequiredSubgroupSizeCreateInfoEXT const&() const
     {
       return *reinterpret_cast<const VkPipelineShaderStageRequiredSubgroupSizeCreateInfoEXT*>( this );
@@ -53421,7 +54266,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineTessellationDomainOriginStateCreateInfo& operator=( VkPipelineTessellationDomainOriginStateCreateInfo const & rhs )
     {
-      *reinterpret_cast<VkPipelineTessellationDomainOriginStateCreateInfo*>(this) = rhs;
+      layout::PipelineTessellationDomainOriginStateCreateInfo::operator=(rhs);
       return *this;
     }
 
@@ -53568,7 +54413,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineVertexInputDivisorStateCreateInfoEXT& operator=( VkPipelineVertexInputDivisorStateCreateInfoEXT const & rhs )
     {
-      *reinterpret_cast<VkPipelineVertexInputDivisorStateCreateInfoEXT*>(this) = rhs;
+      layout::PipelineVertexInputDivisorStateCreateInfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -53667,7 +54512,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineViewportCoarseSampleOrderStateCreateInfoNV& operator=( VkPipelineViewportCoarseSampleOrderStateCreateInfoNV const & rhs )
     {
-      *reinterpret_cast<VkPipelineViewportCoarseSampleOrderStateCreateInfoNV*>(this) = rhs;
+      layout::PipelineViewportCoarseSampleOrderStateCreateInfoNV::operator=(rhs);
       return *this;
     }
 
@@ -53769,7 +54614,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineViewportExclusiveScissorStateCreateInfoNV& operator=( VkPipelineViewportExclusiveScissorStateCreateInfoNV const & rhs )
     {
-      *reinterpret_cast<VkPipelineViewportExclusiveScissorStateCreateInfoNV*>(this) = rhs;
+      layout::PipelineViewportExclusiveScissorStateCreateInfoNV::operator=(rhs);
       return *this;
     }
 
@@ -53927,7 +54772,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineViewportShadingRateImageStateCreateInfoNV& operator=( VkPipelineViewportShadingRateImageStateCreateInfoNV const & rhs )
     {
-      *reinterpret_cast<VkPipelineViewportShadingRateImageStateCreateInfoNV*>(this) = rhs;
+      layout::PipelineViewportShadingRateImageStateCreateInfoNV::operator=(rhs);
       return *this;
     }
 
@@ -54112,7 +54957,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineViewportSwizzleStateCreateInfoNV& operator=( VkPipelineViewportSwizzleStateCreateInfoNV const & rhs )
     {
-      *reinterpret_cast<VkPipelineViewportSwizzleStateCreateInfoNV*>(this) = rhs;
+      layout::PipelineViewportSwizzleStateCreateInfoNV::operator=(rhs);
       return *this;
     }
 
@@ -54277,7 +55122,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineViewportWScalingStateCreateInfoNV& operator=( VkPipelineViewportWScalingStateCreateInfoNV const & rhs )
     {
-      *reinterpret_cast<VkPipelineViewportWScalingStateCreateInfoNV*>(this) = rhs;
+      layout::PipelineViewportWScalingStateCreateInfoNV::operator=(rhs);
       return *this;
     }
 
@@ -54377,7 +55222,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PresentFrameTokenGGP& operator=( VkPresentFrameTokenGGP const & rhs )
     {
-      *reinterpret_cast<VkPresentFrameTokenGGP*>(this) = rhs;
+      layout::PresentFrameTokenGGP::operator=(rhs);
       return *this;
     }
 
@@ -54482,7 +55327,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PresentInfoKHR& operator=( VkPresentInfoKHR const & rhs )
     {
-      *reinterpret_cast<VkPresentInfoKHR*>(this) = rhs;
+      layout::PresentInfoKHR::operator=(rhs);
       return *this;
     }
 
@@ -54740,7 +55585,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PresentRegionsKHR& operator=( VkPresentRegionsKHR const & rhs )
     {
-      *reinterpret_cast<VkPresentRegionsKHR*>(this) = rhs;
+      layout::PresentRegionsKHR::operator=(rhs);
       return *this;
     }
 
@@ -54894,7 +55739,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PresentTimesInfoGOOGLE& operator=( VkPresentTimesInfoGOOGLE const & rhs )
     {
-      *reinterpret_cast<VkPresentTimesInfoGOOGLE*>(this) = rhs;
+      layout::PresentTimesInfoGOOGLE::operator=(rhs);
       return *this;
     }
 
@@ -54985,7 +55830,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ProtectedSubmitInfo& operator=( VkProtectedSubmitInfo const & rhs )
     {
-      *reinterpret_cast<VkProtectedSubmitInfo*>(this) = rhs;
+      layout::ProtectedSubmitInfo::operator=(rhs);
       return *this;
     }
 
@@ -55081,7 +55926,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     QueryPoolCreateInfo& operator=( VkQueryPoolCreateInfo const & rhs )
     {
-      *reinterpret_cast<VkQueryPoolCreateInfo*>(this) = rhs;
+      layout::QueryPoolCreateInfo::operator=(rhs);
       return *this;
     }
 
@@ -55186,7 +56031,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     QueryPoolCreateInfoINTEL& operator=( VkQueryPoolCreateInfoINTEL const & rhs )
     {
-      *reinterpret_cast<VkQueryPoolCreateInfoINTEL*>(this) = rhs;
+      layout::QueryPoolCreateInfoINTEL::operator=(rhs);
       return *this;
     }
 
@@ -55235,8 +56080,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct QueueFamilyCheckpointPropertiesNV
     {
     protected:
-      QueueFamilyCheckpointPropertiesNV( vk::PipelineStageFlags checkpointExecutionStageMask_ = vk::PipelineStageFlags() )
-        : checkpointExecutionStageMask( checkpointExecutionStageMask_ )
+      QueueFamilyCheckpointPropertiesNV()
       {}
 
       QueueFamilyCheckpointPropertiesNV( VkQueueFamilyCheckpointPropertiesNV const & rhs )
@@ -55260,6 +56104,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct QueueFamilyCheckpointPropertiesNV : public layout::QueueFamilyCheckpointPropertiesNV
   {
+    QueueFamilyCheckpointPropertiesNV()
+      : layout::QueueFamilyCheckpointPropertiesNV()
+    {}
+
+    QueueFamilyCheckpointPropertiesNV( VkQueueFamilyCheckpointPropertiesNV const & rhs )
+      : layout::QueueFamilyCheckpointPropertiesNV( rhs )
+    {}
+
+    QueueFamilyCheckpointPropertiesNV& operator=( VkQueueFamilyCheckpointPropertiesNV const & rhs )
+    {
+      layout::QueueFamilyCheckpointPropertiesNV::operator=(rhs);
+      return *this;
+    }
+
     operator VkQueueFamilyCheckpointPropertiesNV const&() const
     {
       return *reinterpret_cast<const VkQueueFamilyCheckpointPropertiesNV*>( this );
@@ -55290,6 +56148,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct QueueFamilyProperties
   {
+    QueueFamilyProperties()
+    {}
+
+    QueueFamilyProperties( VkQueueFamilyProperties const & rhs )
+    {
+      *reinterpret_cast<VkQueueFamilyProperties*>(this) = rhs;
+    }
+
+    QueueFamilyProperties& operator=( VkQueueFamilyProperties const & rhs )
+    {
+      *reinterpret_cast<VkQueueFamilyProperties*>(this) = rhs;
+      return *this;
+    }
+
     operator VkQueueFamilyProperties const&() const
     {
       return *reinterpret_cast<const VkQueueFamilyProperties*>( this );
@@ -55327,8 +56199,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct QueueFamilyProperties2
     {
     protected:
-      QueueFamilyProperties2( vk::QueueFamilyProperties queueFamilyProperties_ = vk::QueueFamilyProperties() )
-        : queueFamilyProperties( queueFamilyProperties_ )
+      QueueFamilyProperties2()
       {}
 
       QueueFamilyProperties2( VkQueueFamilyProperties2 const & rhs )
@@ -55352,6 +56223,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct QueueFamilyProperties2 : public layout::QueueFamilyProperties2
   {
+    QueueFamilyProperties2()
+      : layout::QueueFamilyProperties2()
+    {}
+
+    QueueFamilyProperties2( VkQueueFamilyProperties2 const & rhs )
+      : layout::QueueFamilyProperties2( rhs )
+    {}
+
+    QueueFamilyProperties2& operator=( VkQueueFamilyProperties2 const & rhs )
+    {
+      layout::QueueFamilyProperties2::operator=(rhs);
+      return *this;
+    }
+
     operator VkQueueFamilyProperties2 const&() const
     {
       return *reinterpret_cast<const VkQueueFamilyProperties2*>( this );
@@ -55436,7 +56321,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     RayTracingShaderGroupCreateInfoNV& operator=( VkRayTracingShaderGroupCreateInfoNV const & rhs )
     {
-      *reinterpret_cast<VkRayTracingShaderGroupCreateInfoNV*>(this) = rhs;
+      layout::RayTracingShaderGroupCreateInfoNV::operator=(rhs);
       return *this;
     }
 
@@ -55580,7 +56465,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     RayTracingPipelineCreateInfoNV& operator=( VkRayTracingPipelineCreateInfoNV const & rhs )
     {
-      *reinterpret_cast<VkRayTracingPipelineCreateInfoNV*>(this) = rhs;
+      layout::RayTracingPipelineCreateInfoNV::operator=(rhs);
       return *this;
     }
 
@@ -55682,6 +56567,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct RefreshCycleDurationGOOGLE
   {
+    RefreshCycleDurationGOOGLE()
+    {}
+
+    RefreshCycleDurationGOOGLE( VkRefreshCycleDurationGOOGLE const & rhs )
+    {
+      *reinterpret_cast<VkRefreshCycleDurationGOOGLE*>(this) = rhs;
+    }
+
+    RefreshCycleDurationGOOGLE& operator=( VkRefreshCycleDurationGOOGLE const & rhs )
+    {
+      *reinterpret_cast<VkRefreshCycleDurationGOOGLE*>(this) = rhs;
+      return *this;
+    }
+
     operator VkRefreshCycleDurationGOOGLE const&() const
     {
       return *reinterpret_cast<const VkRefreshCycleDurationGOOGLE*>( this );
@@ -55752,7 +56651,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     RenderPassAttachmentBeginInfoKHR& operator=( VkRenderPassAttachmentBeginInfoKHR const & rhs )
     {
-      *reinterpret_cast<VkRenderPassAttachmentBeginInfoKHR*>(this) = rhs;
+      layout::RenderPassAttachmentBeginInfoKHR::operator=(rhs);
       return *this;
     }
 
@@ -55859,7 +56758,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     RenderPassBeginInfo& operator=( VkRenderPassBeginInfo const & rhs )
     {
-      *reinterpret_cast<VkRenderPassBeginInfo*>(this) = rhs;
+      layout::RenderPassBeginInfo::operator=(rhs);
       return *this;
     }
 
@@ -56243,7 +57142,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     RenderPassCreateInfo& operator=( VkRenderPassCreateInfo const & rhs )
     {
-      *reinterpret_cast<VkRenderPassCreateInfo*>(this) = rhs;
+      layout::RenderPassCreateInfo::operator=(rhs);
       return *this;
     }
 
@@ -56409,7 +57308,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     SubpassDescription2KHR& operator=( VkSubpassDescription2KHR const & rhs )
     {
-      *reinterpret_cast<VkSubpassDescription2KHR*>(this) = rhs;
+      layout::SubpassDescription2KHR::operator=(rhs);
       return *this;
     }
 
@@ -56591,7 +57490,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     SubpassDependency2KHR& operator=( VkSubpassDependency2KHR const & rhs )
     {
-      *reinterpret_cast<VkSubpassDependency2KHR*>(this) = rhs;
+      layout::SubpassDependency2KHR::operator=(rhs);
       return *this;
     }
 
@@ -56756,7 +57655,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     RenderPassCreateInfo2KHR& operator=( VkRenderPassCreateInfo2KHR const & rhs )
     {
-      *reinterpret_cast<VkRenderPassCreateInfo2KHR*>(this) = rhs;
+      layout::RenderPassCreateInfo2KHR::operator=(rhs);
       return *this;
     }
 
@@ -56896,7 +57795,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     RenderPassFragmentDensityMapCreateInfoEXT& operator=( VkRenderPassFragmentDensityMapCreateInfoEXT const & rhs )
     {
-      *reinterpret_cast<VkRenderPassFragmentDensityMapCreateInfoEXT*>(this) = rhs;
+      layout::RenderPassFragmentDensityMapCreateInfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -56984,7 +57883,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     RenderPassInputAttachmentAspectCreateInfo& operator=( VkRenderPassInputAttachmentAspectCreateInfo const & rhs )
     {
-      *reinterpret_cast<VkRenderPassInputAttachmentAspectCreateInfo*>(this) = rhs;
+      layout::RenderPassInputAttachmentAspectCreateInfo::operator=(rhs);
       return *this;
     }
 
@@ -57095,7 +57994,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     RenderPassMultiviewCreateInfo& operator=( VkRenderPassMultiviewCreateInfo const & rhs )
     {
-      *reinterpret_cast<VkRenderPassMultiviewCreateInfo*>(this) = rhs;
+      layout::RenderPassMultiviewCreateInfo::operator=(rhs);
       return *this;
     }
 
@@ -57285,7 +58184,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     RenderPassSampleLocationsBeginInfoEXT& operator=( VkRenderPassSampleLocationsBeginInfoEXT const & rhs )
     {
-      *reinterpret_cast<VkRenderPassSampleLocationsBeginInfoEXT*>(this) = rhs;
+      layout::RenderPassSampleLocationsBeginInfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -57450,7 +58349,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     SamplerCreateInfo& operator=( VkSamplerCreateInfo const & rhs )
     {
-      *reinterpret_cast<VkSamplerCreateInfo*>(this) = rhs;
+      layout::SamplerCreateInfo::operator=(rhs);
       return *this;
     }
 
@@ -57639,7 +58538,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     SamplerReductionModeCreateInfoEXT& operator=( VkSamplerReductionModeCreateInfoEXT const & rhs )
     {
-      *reinterpret_cast<VkSamplerReductionModeCreateInfoEXT*>(this) = rhs;
+      layout::SamplerReductionModeCreateInfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -57751,7 +58650,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     SamplerYcbcrConversionCreateInfo& operator=( VkSamplerYcbcrConversionCreateInfo const & rhs )
     {
-      *reinterpret_cast<VkSamplerYcbcrConversionCreateInfo*>(this) = rhs;
+      layout::SamplerYcbcrConversionCreateInfo::operator=(rhs);
       return *this;
     }
 
@@ -57849,8 +58748,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct SamplerYcbcrConversionImageFormatProperties
     {
     protected:
-      SamplerYcbcrConversionImageFormatProperties( uint32_t combinedImageSamplerDescriptorCount_ = 0 )
-        : combinedImageSamplerDescriptorCount( combinedImageSamplerDescriptorCount_ )
+      SamplerYcbcrConversionImageFormatProperties()
       {}
 
       SamplerYcbcrConversionImageFormatProperties( VkSamplerYcbcrConversionImageFormatProperties const & rhs )
@@ -57874,6 +58772,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SamplerYcbcrConversionImageFormatProperties : public layout::SamplerYcbcrConversionImageFormatProperties
   {
+    SamplerYcbcrConversionImageFormatProperties()
+      : layout::SamplerYcbcrConversionImageFormatProperties()
+    {}
+
+    SamplerYcbcrConversionImageFormatProperties( VkSamplerYcbcrConversionImageFormatProperties const & rhs )
+      : layout::SamplerYcbcrConversionImageFormatProperties( rhs )
+    {}
+
+    SamplerYcbcrConversionImageFormatProperties& operator=( VkSamplerYcbcrConversionImageFormatProperties const & rhs )
+    {
+      layout::SamplerYcbcrConversionImageFormatProperties::operator=(rhs);
+      return *this;
+    }
+
     operator VkSamplerYcbcrConversionImageFormatProperties const&() const
     {
       return *reinterpret_cast<const VkSamplerYcbcrConversionImageFormatProperties*>( this );
@@ -57942,7 +58854,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     SamplerYcbcrConversionInfo& operator=( VkSamplerYcbcrConversionInfo const & rhs )
     {
-      *reinterpret_cast<VkSamplerYcbcrConversionInfo*>(this) = rhs;
+      layout::SamplerYcbcrConversionInfo::operator=(rhs);
       return *this;
     }
 
@@ -58026,7 +58938,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     SemaphoreCreateInfo& operator=( VkSemaphoreCreateInfo const & rhs )
     {
-      *reinterpret_cast<VkSemaphoreCreateInfo*>(this) = rhs;
+      layout::SemaphoreCreateInfo::operator=(rhs);
       return *this;
     }
 
@@ -58114,7 +59026,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     SemaphoreGetFdInfoKHR& operator=( VkSemaphoreGetFdInfoKHR const & rhs )
     {
-      *reinterpret_cast<VkSemaphoreGetFdInfoKHR*>(this) = rhs;
+      layout::SemaphoreGetFdInfoKHR::operator=(rhs);
       return *this;
     }
 
@@ -58211,7 +59123,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     SemaphoreGetWin32HandleInfoKHR& operator=( VkSemaphoreGetWin32HandleInfoKHR const & rhs )
     {
-      *reinterpret_cast<VkSemaphoreGetWin32HandleInfoKHR*>(this) = rhs;
+      layout::SemaphoreGetWin32HandleInfoKHR::operator=(rhs);
       return *this;
     }
 
@@ -58311,7 +59223,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ShaderModuleCreateInfo& operator=( VkShaderModuleCreateInfo const & rhs )
     {
-      *reinterpret_cast<VkShaderModuleCreateInfo*>(this) = rhs;
+      layout::ShaderModuleCreateInfo::operator=(rhs);
       return *this;
     }
 
@@ -58409,7 +59321,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ShaderModuleValidationCacheCreateInfoEXT& operator=( VkShaderModuleValidationCacheCreateInfoEXT const & rhs )
     {
-      *reinterpret_cast<VkShaderModuleValidationCacheCreateInfoEXT*>(this) = rhs;
+      layout::ShaderModuleValidationCacheCreateInfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -58455,6 +59367,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ShaderResourceUsageAMD
   {
+    ShaderResourceUsageAMD()
+    {}
+
+    ShaderResourceUsageAMD( VkShaderResourceUsageAMD const & rhs )
+    {
+      *reinterpret_cast<VkShaderResourceUsageAMD*>(this) = rhs;
+    }
+
+    ShaderResourceUsageAMD& operator=( VkShaderResourceUsageAMD const & rhs )
+    {
+      *reinterpret_cast<VkShaderResourceUsageAMD*>(this) = rhs;
+      return *this;
+    }
+
     operator VkShaderResourceUsageAMD const&() const
     {
       return *reinterpret_cast<const VkShaderResourceUsageAMD*>( this );
@@ -58491,6 +59417,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ShaderStatisticsInfoAMD
   {
+    ShaderStatisticsInfoAMD()
+    {}
+
+    ShaderStatisticsInfoAMD( VkShaderStatisticsInfoAMD const & rhs )
+    {
+      *reinterpret_cast<VkShaderStatisticsInfoAMD*>(this) = rhs;
+    }
+
+    ShaderStatisticsInfoAMD& operator=( VkShaderStatisticsInfoAMD const & rhs )
+    {
+      *reinterpret_cast<VkShaderStatisticsInfoAMD*>(this) = rhs;
+      return *this;
+    }
+
     operator VkShaderStatisticsInfoAMD const&() const
     {
       return *reinterpret_cast<const VkShaderStatisticsInfoAMD*>( this );
@@ -58534,8 +59474,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct SharedPresentSurfaceCapabilitiesKHR
     {
     protected:
-      SharedPresentSurfaceCapabilitiesKHR( vk::ImageUsageFlags sharedPresentSupportedUsageFlags_ = vk::ImageUsageFlags() )
-        : sharedPresentSupportedUsageFlags( sharedPresentSupportedUsageFlags_ )
+      SharedPresentSurfaceCapabilitiesKHR()
       {}
 
       SharedPresentSurfaceCapabilitiesKHR( VkSharedPresentSurfaceCapabilitiesKHR const & rhs )
@@ -58559,6 +59498,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SharedPresentSurfaceCapabilitiesKHR : public layout::SharedPresentSurfaceCapabilitiesKHR
   {
+    SharedPresentSurfaceCapabilitiesKHR()
+      : layout::SharedPresentSurfaceCapabilitiesKHR()
+    {}
+
+    SharedPresentSurfaceCapabilitiesKHR( VkSharedPresentSurfaceCapabilitiesKHR const & rhs )
+      : layout::SharedPresentSurfaceCapabilitiesKHR( rhs )
+    {}
+
+    SharedPresentSurfaceCapabilitiesKHR& operator=( VkSharedPresentSurfaceCapabilitiesKHR const & rhs )
+    {
+      layout::SharedPresentSurfaceCapabilitiesKHR::operator=(rhs);
+      return *this;
+    }
+
     operator VkSharedPresentSurfaceCapabilitiesKHR const&() const
     {
       return *reinterpret_cast<const VkSharedPresentSurfaceCapabilitiesKHR*>( this );
@@ -58589,6 +59542,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SparseImageFormatProperties
   {
+    SparseImageFormatProperties()
+    {}
+
+    SparseImageFormatProperties( VkSparseImageFormatProperties const & rhs )
+    {
+      *reinterpret_cast<VkSparseImageFormatProperties*>(this) = rhs;
+    }
+
+    SparseImageFormatProperties& operator=( VkSparseImageFormatProperties const & rhs )
+    {
+      *reinterpret_cast<VkSparseImageFormatProperties*>(this) = rhs;
+      return *this;
+    }
+
     operator VkSparseImageFormatProperties const&() const
     {
       return *reinterpret_cast<const VkSparseImageFormatProperties*>( this );
@@ -58624,8 +59591,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct SparseImageFormatProperties2
     {
     protected:
-      SparseImageFormatProperties2( vk::SparseImageFormatProperties properties_ = vk::SparseImageFormatProperties() )
-        : properties( properties_ )
+      SparseImageFormatProperties2()
       {}
 
       SparseImageFormatProperties2( VkSparseImageFormatProperties2 const & rhs )
@@ -58649,6 +59615,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SparseImageFormatProperties2 : public layout::SparseImageFormatProperties2
   {
+    SparseImageFormatProperties2()
+      : layout::SparseImageFormatProperties2()
+    {}
+
+    SparseImageFormatProperties2( VkSparseImageFormatProperties2 const & rhs )
+      : layout::SparseImageFormatProperties2( rhs )
+    {}
+
+    SparseImageFormatProperties2& operator=( VkSparseImageFormatProperties2 const & rhs )
+    {
+      layout::SparseImageFormatProperties2::operator=(rhs);
+      return *this;
+    }
+
     operator VkSparseImageFormatProperties2 const&() const
     {
       return *reinterpret_cast<const VkSparseImageFormatProperties2*>( this );
@@ -58679,6 +59659,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SparseImageMemoryRequirements
   {
+    SparseImageMemoryRequirements()
+    {}
+
+    SparseImageMemoryRequirements( VkSparseImageMemoryRequirements const & rhs )
+    {
+      *reinterpret_cast<VkSparseImageMemoryRequirements*>(this) = rhs;
+    }
+
+    SparseImageMemoryRequirements& operator=( VkSparseImageMemoryRequirements const & rhs )
+    {
+      *reinterpret_cast<VkSparseImageMemoryRequirements*>(this) = rhs;
+      return *this;
+    }
+
     operator VkSparseImageMemoryRequirements const&() const
     {
       return *reinterpret_cast<const VkSparseImageMemoryRequirements*>( this );
@@ -58718,8 +59712,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct SparseImageMemoryRequirements2
     {
     protected:
-      SparseImageMemoryRequirements2( vk::SparseImageMemoryRequirements memoryRequirements_ = vk::SparseImageMemoryRequirements() )
-        : memoryRequirements( memoryRequirements_ )
+      SparseImageMemoryRequirements2()
       {}
 
       SparseImageMemoryRequirements2( VkSparseImageMemoryRequirements2 const & rhs )
@@ -58743,6 +59736,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SparseImageMemoryRequirements2 : public layout::SparseImageMemoryRequirements2
   {
+    SparseImageMemoryRequirements2()
+      : layout::SparseImageMemoryRequirements2()
+    {}
+
+    SparseImageMemoryRequirements2( VkSparseImageMemoryRequirements2 const & rhs )
+      : layout::SparseImageMemoryRequirements2( rhs )
+    {}
+
+    SparseImageMemoryRequirements2& operator=( VkSparseImageMemoryRequirements2 const & rhs )
+    {
+      layout::SparseImageMemoryRequirements2::operator=(rhs);
+      return *this;
+    }
+
     operator VkSparseImageMemoryRequirements2 const&() const
     {
       return *reinterpret_cast<const VkSparseImageMemoryRequirements2*>( this );
@@ -58817,7 +59824,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     StreamDescriptorSurfaceCreateInfoGGP& operator=( VkStreamDescriptorSurfaceCreateInfoGGP const & rhs )
     {
-      *reinterpret_cast<VkStreamDescriptorSurfaceCreateInfoGGP*>(this) = rhs;
+      layout::StreamDescriptorSurfaceCreateInfoGGP::operator=(rhs);
       return *this;
     }
 
@@ -58933,7 +59940,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     SubmitInfo& operator=( VkSubmitInfo const & rhs )
     {
-      *reinterpret_cast<VkSubmitInfo*>(this) = rhs;
+      layout::SubmitInfo::operator=(rhs);
       return *this;
     }
 
@@ -59059,7 +60066,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     SubpassBeginInfoKHR& operator=( VkSubpassBeginInfoKHR const & rhs )
     {
-      *reinterpret_cast<VkSubpassBeginInfoKHR*>(this) = rhs;
+      layout::SubpassBeginInfoKHR::operator=(rhs);
       return *this;
     }
 
@@ -59151,7 +60158,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     SubpassDescriptionDepthStencilResolveKHR& operator=( VkSubpassDescriptionDepthStencilResolveKHR const & rhs )
     {
-      *reinterpret_cast<VkSubpassDescriptionDepthStencilResolveKHR*>(this) = rhs;
+      layout::SubpassDescriptionDepthStencilResolveKHR::operator=(rhs);
       return *this;
     }
 
@@ -59215,7 +60222,6 @@ namespace VULKAN_HPP_NAMESPACE
     {
     protected:
       SubpassEndInfoKHR()
-
       {}
 
       SubpassEndInfoKHR( VkSubpassEndInfoKHR const & rhs )
@@ -59239,8 +60245,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct SubpassEndInfoKHR : public layout::SubpassEndInfoKHR
   {
     SubpassEndInfoKHR()
-
-      : layout::SubpassEndInfoKHR(  )
+      : layout::SubpassEndInfoKHR()
     {}
 
     SubpassEndInfoKHR( VkSubpassEndInfoKHR const & rhs )
@@ -59249,7 +60254,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     SubpassEndInfoKHR& operator=( VkSubpassEndInfoKHR const & rhs )
     {
-      *reinterpret_cast<VkSubpassEndInfoKHR*>(this) = rhs;
+      layout::SubpassEndInfoKHR::operator=(rhs);
       return *this;
     }
 
@@ -59291,28 +60296,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct SurfaceCapabilities2EXT
     {
     protected:
-      SurfaceCapabilities2EXT( uint32_t minImageCount_ = 0,
-                               uint32_t maxImageCount_ = 0,
-                               vk::Extent2D currentExtent_ = vk::Extent2D(),
-                               vk::Extent2D minImageExtent_ = vk::Extent2D(),
-                               vk::Extent2D maxImageExtent_ = vk::Extent2D(),
-                               uint32_t maxImageArrayLayers_ = 0,
-                               vk::SurfaceTransformFlagsKHR supportedTransforms_ = vk::SurfaceTransformFlagsKHR(),
-                               vk::SurfaceTransformFlagBitsKHR currentTransform_ = vk::SurfaceTransformFlagBitsKHR::eIdentity,
-                               vk::CompositeAlphaFlagsKHR supportedCompositeAlpha_ = vk::CompositeAlphaFlagsKHR(),
-                               vk::ImageUsageFlags supportedUsageFlags_ = vk::ImageUsageFlags(),
-                               vk::SurfaceCounterFlagsEXT supportedSurfaceCounters_ = vk::SurfaceCounterFlagsEXT() )
-        : minImageCount( minImageCount_ )
-        , maxImageCount( maxImageCount_ )
-        , currentExtent( currentExtent_ )
-        , minImageExtent( minImageExtent_ )
-        , maxImageExtent( maxImageExtent_ )
-        , maxImageArrayLayers( maxImageArrayLayers_ )
-        , supportedTransforms( supportedTransforms_ )
-        , currentTransform( currentTransform_ )
-        , supportedCompositeAlpha( supportedCompositeAlpha_ )
-        , supportedUsageFlags( supportedUsageFlags_ )
-        , supportedSurfaceCounters( supportedSurfaceCounters_ )
+      SurfaceCapabilities2EXT()
       {}
 
       SurfaceCapabilities2EXT( VkSurfaceCapabilities2EXT const & rhs )
@@ -59346,6 +60330,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SurfaceCapabilities2EXT : public layout::SurfaceCapabilities2EXT
   {
+    SurfaceCapabilities2EXT()
+      : layout::SurfaceCapabilities2EXT()
+    {}
+
+    SurfaceCapabilities2EXT( VkSurfaceCapabilities2EXT const & rhs )
+      : layout::SurfaceCapabilities2EXT( rhs )
+    {}
+
+    SurfaceCapabilities2EXT& operator=( VkSurfaceCapabilities2EXT const & rhs )
+    {
+      layout::SurfaceCapabilities2EXT::operator=(rhs);
+      return *this;
+    }
+
     operator VkSurfaceCapabilities2EXT const&() const
     {
       return *reinterpret_cast<const VkSurfaceCapabilities2EXT*>( this );
@@ -59386,6 +60384,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SurfaceCapabilitiesKHR
   {
+    SurfaceCapabilitiesKHR()
+    {}
+
+    SurfaceCapabilitiesKHR( VkSurfaceCapabilitiesKHR const & rhs )
+    {
+      *reinterpret_cast<VkSurfaceCapabilitiesKHR*>(this) = rhs;
+    }
+
+    SurfaceCapabilitiesKHR& operator=( VkSurfaceCapabilitiesKHR const & rhs )
+    {
+      *reinterpret_cast<VkSurfaceCapabilitiesKHR*>(this) = rhs;
+      return *this;
+    }
+
     operator VkSurfaceCapabilitiesKHR const&() const
     {
       return *reinterpret_cast<const VkSurfaceCapabilitiesKHR*>( this );
@@ -59435,8 +60447,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct SurfaceCapabilities2KHR
     {
     protected:
-      SurfaceCapabilities2KHR( vk::SurfaceCapabilitiesKHR surfaceCapabilities_ = vk::SurfaceCapabilitiesKHR() )
-        : surfaceCapabilities( surfaceCapabilities_ )
+      SurfaceCapabilities2KHR()
       {}
 
       SurfaceCapabilities2KHR( VkSurfaceCapabilities2KHR const & rhs )
@@ -59460,6 +60471,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SurfaceCapabilities2KHR : public layout::SurfaceCapabilities2KHR
   {
+    SurfaceCapabilities2KHR()
+      : layout::SurfaceCapabilities2KHR()
+    {}
+
+    SurfaceCapabilities2KHR( VkSurfaceCapabilities2KHR const & rhs )
+      : layout::SurfaceCapabilities2KHR( rhs )
+    {}
+
+    SurfaceCapabilities2KHR& operator=( VkSurfaceCapabilities2KHR const & rhs )
+    {
+      layout::SurfaceCapabilities2KHR::operator=(rhs);
+      return *this;
+    }
+
     operator VkSurfaceCapabilities2KHR const&() const
     {
       return *reinterpret_cast<const VkSurfaceCapabilities2KHR*>( this );
@@ -59530,7 +60555,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     SurfaceCapabilitiesFullScreenExclusiveEXT& operator=( VkSurfaceCapabilitiesFullScreenExclusiveEXT const & rhs )
     {
-      *reinterpret_cast<VkSurfaceCapabilitiesFullScreenExclusiveEXT*>(this) = rhs;
+      layout::SurfaceCapabilitiesFullScreenExclusiveEXT::operator=(rhs);
       return *this;
     }
 
@@ -59577,6 +60602,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SurfaceFormatKHR
   {
+    SurfaceFormatKHR()
+    {}
+
+    SurfaceFormatKHR( VkSurfaceFormatKHR const & rhs )
+    {
+      *reinterpret_cast<VkSurfaceFormatKHR*>(this) = rhs;
+    }
+
+    SurfaceFormatKHR& operator=( VkSurfaceFormatKHR const & rhs )
+    {
+      *reinterpret_cast<VkSurfaceFormatKHR*>(this) = rhs;
+      return *this;
+    }
+
     operator VkSurfaceFormatKHR const&() const
     {
       return *reinterpret_cast<const VkSurfaceFormatKHR*>( this );
@@ -59610,8 +60649,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct SurfaceFormat2KHR
     {
     protected:
-      SurfaceFormat2KHR( vk::SurfaceFormatKHR surfaceFormat_ = vk::SurfaceFormatKHR() )
-        : surfaceFormat( surfaceFormat_ )
+      SurfaceFormat2KHR()
       {}
 
       SurfaceFormat2KHR( VkSurfaceFormat2KHR const & rhs )
@@ -59635,6 +60673,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SurfaceFormat2KHR : public layout::SurfaceFormat2KHR
   {
+    SurfaceFormat2KHR()
+      : layout::SurfaceFormat2KHR()
+    {}
+
+    SurfaceFormat2KHR( VkSurfaceFormat2KHR const & rhs )
+      : layout::SurfaceFormat2KHR( rhs )
+    {}
+
+    SurfaceFormat2KHR& operator=( VkSurfaceFormat2KHR const & rhs )
+    {
+      layout::SurfaceFormat2KHR::operator=(rhs);
+      return *this;
+    }
+
     operator VkSurfaceFormat2KHR const&() const
     {
       return *reinterpret_cast<const VkSurfaceFormat2KHR*>( this );
@@ -59705,7 +60757,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     SurfaceFullScreenExclusiveInfoEXT& operator=( VkSurfaceFullScreenExclusiveInfoEXT const & rhs )
     {
-      *reinterpret_cast<VkSurfaceFullScreenExclusiveInfoEXT*>(this) = rhs;
+      layout::SurfaceFullScreenExclusiveInfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -59792,7 +60844,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     SurfaceFullScreenExclusiveWin32InfoEXT& operator=( VkSurfaceFullScreenExclusiveWin32InfoEXT const & rhs )
     {
-      *reinterpret_cast<VkSurfaceFullScreenExclusiveWin32InfoEXT*>(this) = rhs;
+      layout::SurfaceFullScreenExclusiveWin32InfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -59877,7 +60929,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     SurfaceProtectedCapabilitiesKHR& operator=( VkSurfaceProtectedCapabilitiesKHR const & rhs )
     {
-      *reinterpret_cast<VkSurfaceProtectedCapabilitiesKHR*>(this) = rhs;
+      layout::SurfaceProtectedCapabilitiesKHR::operator=(rhs);
       return *this;
     }
 
@@ -59961,7 +61013,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     SwapchainCounterCreateInfoEXT& operator=( VkSwapchainCounterCreateInfoEXT const & rhs )
     {
-      *reinterpret_cast<VkSwapchainCounterCreateInfoEXT*>(this) = rhs;
+      layout::SwapchainCounterCreateInfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -60105,7 +61157,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     SwapchainCreateInfoKHR& operator=( VkSwapchainCreateInfoKHR const & rhs )
     {
-      *reinterpret_cast<VkSwapchainCreateInfoKHR*>(this) = rhs;
+      layout::SwapchainCreateInfoKHR::operator=(rhs);
       return *this;
     }
 
@@ -60294,7 +61346,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     SwapchainDisplayNativeHdrCreateInfoAMD& operator=( VkSwapchainDisplayNativeHdrCreateInfoAMD const & rhs )
     {
-      *reinterpret_cast<VkSwapchainDisplayNativeHdrCreateInfoAMD*>(this) = rhs;
+      layout::SwapchainDisplayNativeHdrCreateInfoAMD::operator=(rhs);
       return *this;
     }
 
@@ -60343,8 +61395,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct TextureLODGatherFormatPropertiesAMD
     {
     protected:
-      TextureLODGatherFormatPropertiesAMD( vk::Bool32 supportsTextureGatherLODBiasAMD_ = 0 )
-        : supportsTextureGatherLODBiasAMD( supportsTextureGatherLODBiasAMD_ )
+      TextureLODGatherFormatPropertiesAMD()
       {}
 
       TextureLODGatherFormatPropertiesAMD( VkTextureLODGatherFormatPropertiesAMD const & rhs )
@@ -60368,6 +61419,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct TextureLODGatherFormatPropertiesAMD : public layout::TextureLODGatherFormatPropertiesAMD
   {
+    TextureLODGatherFormatPropertiesAMD()
+      : layout::TextureLODGatherFormatPropertiesAMD()
+    {}
+
+    TextureLODGatherFormatPropertiesAMD( VkTextureLODGatherFormatPropertiesAMD const & rhs )
+      : layout::TextureLODGatherFormatPropertiesAMD( rhs )
+    {}
+
+    TextureLODGatherFormatPropertiesAMD& operator=( VkTextureLODGatherFormatPropertiesAMD const & rhs )
+    {
+      layout::TextureLODGatherFormatPropertiesAMD::operator=(rhs);
+      return *this;
+    }
+
     operator VkTextureLODGatherFormatPropertiesAMD const&() const
     {
       return *reinterpret_cast<const VkTextureLODGatherFormatPropertiesAMD*>( this );
@@ -60444,7 +61509,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ValidationCacheCreateInfoEXT& operator=( VkValidationCacheCreateInfoEXT const & rhs )
     {
-      *reinterpret_cast<VkValidationCacheCreateInfoEXT*>(this) = rhs;
+      layout::ValidationCacheCreateInfoEXT::operator=(rhs);
       return *this;
     }
 
@@ -60554,7 +61619,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ValidationFeaturesEXT& operator=( VkValidationFeaturesEXT const & rhs )
     {
-      *reinterpret_cast<VkValidationFeaturesEXT*>(this) = rhs;
+      layout::ValidationFeaturesEXT::operator=(rhs);
       return *this;
     }
 
@@ -60663,7 +61728,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ValidationFlagsEXT& operator=( VkValidationFlagsEXT const & rhs )
     {
-      *reinterpret_cast<VkValidationFlagsEXT*>(this) = rhs;
+      layout::ValidationFlagsEXT::operator=(rhs);
       return *this;
     }
 
@@ -60760,7 +61825,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ViSurfaceCreateInfoNN& operator=( VkViSurfaceCreateInfoNN const & rhs )
     {
-      *reinterpret_cast<VkViSurfaceCreateInfoNN*>(this) = rhs;
+      layout::ViSurfaceCreateInfoNN::operator=(rhs);
       return *this;
     }
 
@@ -60862,7 +61927,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     WaylandSurfaceCreateInfoKHR& operator=( VkWaylandSurfaceCreateInfoKHR const & rhs )
     {
-      *reinterpret_cast<VkWaylandSurfaceCreateInfoKHR*>(this) = rhs;
+      layout::WaylandSurfaceCreateInfoKHR::operator=(rhs);
       return *this;
     }
 
@@ -60987,7 +62052,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     Win32KeyedMutexAcquireReleaseInfoKHR& operator=( VkWin32KeyedMutexAcquireReleaseInfoKHR const & rhs )
     {
-      *reinterpret_cast<VkWin32KeyedMutexAcquireReleaseInfoKHR*>(this) = rhs;
+      layout::Win32KeyedMutexAcquireReleaseInfoKHR::operator=(rhs);
       return *this;
     }
 
@@ -61140,7 +62205,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     Win32KeyedMutexAcquireReleaseInfoNV& operator=( VkWin32KeyedMutexAcquireReleaseInfoNV const & rhs )
     {
-      *reinterpret_cast<VkWin32KeyedMutexAcquireReleaseInfoNV*>(this) = rhs;
+      layout::Win32KeyedMutexAcquireReleaseInfoNV::operator=(rhs);
       return *this;
     }
 
@@ -61277,7 +62342,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     Win32SurfaceCreateInfoKHR& operator=( VkWin32SurfaceCreateInfoKHR const & rhs )
     {
-      *reinterpret_cast<VkWin32SurfaceCreateInfoKHR*>(this) = rhs;
+      layout::Win32SurfaceCreateInfoKHR::operator=(rhs);
       return *this;
     }
 
@@ -61404,7 +62469,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     WriteDescriptorSet& operator=( VkWriteDescriptorSet const & rhs )
     {
-      *reinterpret_cast<VkWriteDescriptorSet*>(this) = rhs;
+      layout::WriteDescriptorSet::operator=(rhs);
       return *this;
     }
 
@@ -61541,7 +62606,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     WriteDescriptorSetAccelerationStructureNV& operator=( VkWriteDescriptorSetAccelerationStructureNV const & rhs )
     {
-      *reinterpret_cast<VkWriteDescriptorSetAccelerationStructureNV*>(this) = rhs;
+      layout::WriteDescriptorSetAccelerationStructureNV::operator=(rhs);
       return *this;
     }
 
@@ -61636,7 +62701,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     WriteDescriptorSetInlineUniformBlockEXT& operator=( VkWriteDescriptorSetInlineUniformBlockEXT const & rhs )
     {
-      *reinterpret_cast<VkWriteDescriptorSetInlineUniformBlockEXT*>(this) = rhs;
+      layout::WriteDescriptorSetInlineUniformBlockEXT::operator=(rhs);
       return *this;
     }
 
@@ -61737,7 +62802,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     XcbSurfaceCreateInfoKHR& operator=( VkXcbSurfaceCreateInfoKHR const & rhs )
     {
-      *reinterpret_cast<VkXcbSurfaceCreateInfoKHR*>(this) = rhs;
+      layout::XcbSurfaceCreateInfoKHR::operator=(rhs);
       return *this;
     }
 
@@ -61846,7 +62911,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     XlibSurfaceCreateInfoKHR& operator=( VkXlibSurfaceCreateInfoKHR const & rhs )
     {
-      *reinterpret_cast<VkXlibSurfaceCreateInfoKHR*>(this) = rhs;
+      layout::XlibSurfaceCreateInfoKHR::operator=(rhs);
       return *this;
     }
 

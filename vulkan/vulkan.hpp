@@ -121,12 +121,18 @@ static_assert( VK_HEADER_VERSION ==  120 , "Wrong VK_HEADER_VERSION!" );
 # define VULKAN_HPP_TYPESAFE_EXPLICIT explicit
 #endif
 
-#if defined(_MSC_VER) && (_MSC_VER <= 1800)
-# define VULKAN_HPP_CONSTEXPR
-# define VULKAN_HPP_CONST_OR_CONSTEXPR  const
-#else
+#if defined(__cpp_constexpr)
 # define VULKAN_HPP_CONSTEXPR constexpr
+# if __cpp_constexpr >= 201304
+#  define VULKAN_HPP_CONSTEXPR_14  constexpr
+# else
+#  define VULKAN_HPP_CONSTEXPR_14
+# endif
 # define VULKAN_HPP_CONST_OR_CONSTEXPR  constexpr
+#else
+# define VULKAN_HPP_CONSTEXPR
+# define VULKAN_HPP_CONSTEXPR_14
+# define VULKAN_HPP_CONST_OR_CONSTEXPR  const
 #endif
 
 #if !defined(VULKAN_HPP_NAMESPACE)
@@ -242,23 +248,19 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     VULKAN_HPP_CONSTEXPR Flags()
       : m_mask(0)
-    {
-    }
+    {}
 
-    Flags(BitType bit)
+    VULKAN_HPP_CONSTEXPR Flags(BitType bit)
       : m_mask(static_cast<MaskType>(bit))
-    {
-    }
+    {}
 
-    Flags(Flags<BitType> const& rhs)
+    VULKAN_HPP_CONSTEXPR Flags(Flags<BitType> const& rhs)
       : m_mask(rhs.m_mask)
-    {
-    }
+    {}
 
-    explicit Flags(MaskType flags)
+    VULKAN_HPP_CONSTEXPR explicit Flags(MaskType flags)
       : m_mask(flags)
-    {
-    }
+    {}
 
     Flags<BitType> & operator=(Flags<BitType> const& rhs)
     {
@@ -2625,6 +2627,24 @@ namespace VULKAN_HPP_NAMESPACE
       OwnerType m_owner;
       PoolType m_pool;
       Dispatch const* m_dispatch;
+  };
+
+  template <typename T, size_t N, size_t I>
+  class ConstExpressionArrayCopy
+  {
+    public:
+      VULKAN_HPP_CONSTEXPR static void copy(T dst[N], std::array<T,N> const& src)
+      {
+        dst[I] = src[I];
+        ConstExpressionArrayCopy<T, N, I - 1>::copy(dst, src);
+      }
+  };
+
+  template <typename T, size_t N>
+  class ConstExpressionArrayCopy<T, N, 0>
+  {
+    public:
+      VULKAN_HPP_CONSTEXPR static void copy(T /*dst*/[N], std::array<T,N> const& /*src*/) {}
   };
 
   using Bool32 = uint32_t;
@@ -17715,17 +17735,17 @@ namespace VULKAN_HPP_NAMESPACE
     struct GeometryTrianglesNV
     {
     protected:
-      GeometryTrianglesNV( vk::Buffer vertexData_ = vk::Buffer(),
-                           vk::DeviceSize vertexOffset_ = 0,
-                           uint32_t vertexCount_ = 0,
-                           vk::DeviceSize vertexStride_ = 0,
-                           vk::Format vertexFormat_ = vk::Format::eUndefined,
-                           vk::Buffer indexData_ = vk::Buffer(),
-                           vk::DeviceSize indexOffset_ = 0,
-                           uint32_t indexCount_ = 0,
-                           vk::IndexType indexType_ = vk::IndexType::eUint16,
-                           vk::Buffer transformData_ = vk::Buffer(),
-                           vk::DeviceSize transformOffset_ = 0 )
+      VULKAN_HPP_CONSTEXPR GeometryTrianglesNV( vk::Buffer vertexData_ = vk::Buffer(),
+                                                vk::DeviceSize vertexOffset_ = 0,
+                                                uint32_t vertexCount_ = 0,
+                                                vk::DeviceSize vertexStride_ = 0,
+                                                vk::Format vertexFormat_ = vk::Format::eUndefined,
+                                                vk::Buffer indexData_ = vk::Buffer(),
+                                                vk::DeviceSize indexOffset_ = 0,
+                                                uint32_t indexCount_ = 0,
+                                                vk::IndexType indexType_ = vk::IndexType::eUint16,
+                                                vk::Buffer transformData_ = vk::Buffer(),
+                                                vk::DeviceSize transformOffset_ = 0 )
         : vertexData( vertexData_ )
         , vertexOffset( vertexOffset_ )
         , vertexCount( vertexCount_ )
@@ -17770,17 +17790,17 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct GeometryTrianglesNV : public layout::GeometryTrianglesNV
   {
-    GeometryTrianglesNV( vk::Buffer vertexData_ = vk::Buffer(),
-                         vk::DeviceSize vertexOffset_ = 0,
-                         uint32_t vertexCount_ = 0,
-                         vk::DeviceSize vertexStride_ = 0,
-                         vk::Format vertexFormat_ = vk::Format::eUndefined,
-                         vk::Buffer indexData_ = vk::Buffer(),
-                         vk::DeviceSize indexOffset_ = 0,
-                         uint32_t indexCount_ = 0,
-                         vk::IndexType indexType_ = vk::IndexType::eUint16,
-                         vk::Buffer transformData_ = vk::Buffer(),
-                         vk::DeviceSize transformOffset_ = 0 )
+    VULKAN_HPP_CONSTEXPR GeometryTrianglesNV( vk::Buffer vertexData_ = vk::Buffer(),
+                                              vk::DeviceSize vertexOffset_ = 0,
+                                              uint32_t vertexCount_ = 0,
+                                              vk::DeviceSize vertexStride_ = 0,
+                                              vk::Format vertexFormat_ = vk::Format::eUndefined,
+                                              vk::Buffer indexData_ = vk::Buffer(),
+                                              vk::DeviceSize indexOffset_ = 0,
+                                              uint32_t indexCount_ = 0,
+                                              vk::IndexType indexType_ = vk::IndexType::eUint16,
+                                              vk::Buffer transformData_ = vk::Buffer(),
+                                              vk::DeviceSize transformOffset_ = 0 )
       : layout::GeometryTrianglesNV( vertexData_, vertexOffset_, vertexCount_, vertexStride_, vertexFormat_, indexData_, indexOffset_, indexCount_, indexType_, transformData_, transformOffset_ )
     {}
 
@@ -17909,10 +17929,10 @@ namespace VULKAN_HPP_NAMESPACE
     struct GeometryAABBNV
     {
     protected:
-      GeometryAABBNV( vk::Buffer aabbData_ = vk::Buffer(),
-                      uint32_t numAABBs_ = 0,
-                      uint32_t stride_ = 0,
-                      vk::DeviceSize offset_ = 0 )
+      VULKAN_HPP_CONSTEXPR GeometryAABBNV( vk::Buffer aabbData_ = vk::Buffer(),
+                                           uint32_t numAABBs_ = 0,
+                                           uint32_t stride_ = 0,
+                                           vk::DeviceSize offset_ = 0 )
         : aabbData( aabbData_ )
         , numAABBs( numAABBs_ )
         , stride( stride_ )
@@ -17943,10 +17963,10 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct GeometryAABBNV : public layout::GeometryAABBNV
   {
-    GeometryAABBNV( vk::Buffer aabbData_ = vk::Buffer(),
-                    uint32_t numAABBs_ = 0,
-                    uint32_t stride_ = 0,
-                    vk::DeviceSize offset_ = 0 )
+    VULKAN_HPP_CONSTEXPR GeometryAABBNV( vk::Buffer aabbData_ = vk::Buffer(),
+                                         uint32_t numAABBs_ = 0,
+                                         uint32_t stride_ = 0,
+                                         vk::DeviceSize offset_ = 0 )
       : layout::GeometryAABBNV( aabbData_, numAABBs_, stride_, offset_ )
     {}
 
@@ -18023,8 +18043,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct GeometryDataNV
   {
-    GeometryDataNV( vk::GeometryTrianglesNV triangles_ = vk::GeometryTrianglesNV(),
-                    vk::GeometryAABBNV aabbs_ = vk::GeometryAABBNV() )
+    VULKAN_HPP_CONSTEXPR GeometryDataNV( vk::GeometryTrianglesNV triangles_ = vk::GeometryTrianglesNV(),
+                                         vk::GeometryAABBNV aabbs_ = vk::GeometryAABBNV() )
       : triangles( triangles_ )
       , aabbs( aabbs_ )
     {}
@@ -18085,9 +18105,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct GeometryNV
     {
     protected:
-      GeometryNV( vk::GeometryTypeNV geometryType_ = vk::GeometryTypeNV::eTriangles,
-                  vk::GeometryDataNV geometry_ = vk::GeometryDataNV(),
-                  vk::GeometryFlagsNV flags_ = vk::GeometryFlagsNV() )
+      VULKAN_HPP_CONSTEXPR GeometryNV( vk::GeometryTypeNV geometryType_ = vk::GeometryTypeNV::eTriangles,
+                                       vk::GeometryDataNV geometry_ = vk::GeometryDataNV(),
+                                       vk::GeometryFlagsNV flags_ = vk::GeometryFlagsNV() )
         : geometryType( geometryType_ )
         , geometry( geometry_ )
         , flags( flags_ )
@@ -18116,9 +18136,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct GeometryNV : public layout::GeometryNV
   {
-    GeometryNV( vk::GeometryTypeNV geometryType_ = vk::GeometryTypeNV::eTriangles,
-                vk::GeometryDataNV geometry_ = vk::GeometryDataNV(),
-                vk::GeometryFlagsNV flags_ = vk::GeometryFlagsNV() )
+    VULKAN_HPP_CONSTEXPR GeometryNV( vk::GeometryTypeNV geometryType_ = vk::GeometryTypeNV::eTriangles,
+                                     vk::GeometryDataNV geometry_ = vk::GeometryDataNV(),
+                                     vk::GeometryFlagsNV flags_ = vk::GeometryFlagsNV() )
       : layout::GeometryNV( geometryType_, geometry_, flags_ )
     {}
 
@@ -18191,11 +18211,11 @@ namespace VULKAN_HPP_NAMESPACE
     struct AccelerationStructureInfoNV
     {
     protected:
-      AccelerationStructureInfoNV( vk::AccelerationStructureTypeNV type_ = vk::AccelerationStructureTypeNV::eTopLevel,
-                                   vk::BuildAccelerationStructureFlagsNV flags_ = vk::BuildAccelerationStructureFlagsNV(),
-                                   uint32_t instanceCount_ = 0,
-                                   uint32_t geometryCount_ = 0,
-                                   const vk::GeometryNV* pGeometries_ = nullptr )
+      VULKAN_HPP_CONSTEXPR AccelerationStructureInfoNV( vk::AccelerationStructureTypeNV type_ = vk::AccelerationStructureTypeNV::eTopLevel,
+                                                        vk::BuildAccelerationStructureFlagsNV flags_ = vk::BuildAccelerationStructureFlagsNV(),
+                                                        uint32_t instanceCount_ = 0,
+                                                        uint32_t geometryCount_ = 0,
+                                                        const vk::GeometryNV* pGeometries_ = nullptr )
         : type( type_ )
         , flags( flags_ )
         , instanceCount( instanceCount_ )
@@ -18228,11 +18248,11 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct AccelerationStructureInfoNV : public layout::AccelerationStructureInfoNV
   {
-    AccelerationStructureInfoNV( vk::AccelerationStructureTypeNV type_ = vk::AccelerationStructureTypeNV::eTopLevel,
-                                 vk::BuildAccelerationStructureFlagsNV flags_ = vk::BuildAccelerationStructureFlagsNV(),
-                                 uint32_t instanceCount_ = 0,
-                                 uint32_t geometryCount_ = 0,
-                                 const vk::GeometryNV* pGeometries_ = nullptr )
+    VULKAN_HPP_CONSTEXPR AccelerationStructureInfoNV( vk::AccelerationStructureTypeNV type_ = vk::AccelerationStructureTypeNV::eTopLevel,
+                                                      vk::BuildAccelerationStructureFlagsNV flags_ = vk::BuildAccelerationStructureFlagsNV(),
+                                                      uint32_t instanceCount_ = 0,
+                                                      uint32_t geometryCount_ = 0,
+                                                      const vk::GeometryNV* pGeometries_ = nullptr )
       : layout::AccelerationStructureInfoNV( type_, flags_, instanceCount_, geometryCount_, pGeometries_ )
     {}
 
@@ -18319,8 +18339,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct AccelerationStructureCreateInfoNV
     {
     protected:
-      AccelerationStructureCreateInfoNV( vk::DeviceSize compactedSize_ = 0,
-                                         vk::AccelerationStructureInfoNV info_ = vk::AccelerationStructureInfoNV() )
+      VULKAN_HPP_CONSTEXPR AccelerationStructureCreateInfoNV( vk::DeviceSize compactedSize_ = 0,
+                                                              vk::AccelerationStructureInfoNV info_ = vk::AccelerationStructureInfoNV() )
         : compactedSize( compactedSize_ )
         , info( info_ )
       {}
@@ -18347,8 +18367,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct AccelerationStructureCreateInfoNV : public layout::AccelerationStructureCreateInfoNV
   {
-    AccelerationStructureCreateInfoNV( vk::DeviceSize compactedSize_ = 0,
-                                       vk::AccelerationStructureInfoNV info_ = vk::AccelerationStructureInfoNV() )
+    VULKAN_HPP_CONSTEXPR AccelerationStructureCreateInfoNV( vk::DeviceSize compactedSize_ = 0,
+                                                            vk::AccelerationStructureInfoNV info_ = vk::AccelerationStructureInfoNV() )
       : layout::AccelerationStructureCreateInfoNV( compactedSize_, info_ )
     {}
 
@@ -18414,8 +18434,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct AccelerationStructureMemoryRequirementsInfoNV
     {
     protected:
-      AccelerationStructureMemoryRequirementsInfoNV( vk::AccelerationStructureMemoryRequirementsTypeNV type_ = vk::AccelerationStructureMemoryRequirementsTypeNV::eObject,
-                                                     vk::AccelerationStructureNV accelerationStructure_ = vk::AccelerationStructureNV() )
+      VULKAN_HPP_CONSTEXPR AccelerationStructureMemoryRequirementsInfoNV( vk::AccelerationStructureMemoryRequirementsTypeNV type_ = vk::AccelerationStructureMemoryRequirementsTypeNV::eObject,
+                                                                          vk::AccelerationStructureNV accelerationStructure_ = vk::AccelerationStructureNV() )
         : type( type_ )
         , accelerationStructure( accelerationStructure_ )
       {}
@@ -18442,8 +18462,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct AccelerationStructureMemoryRequirementsInfoNV : public layout::AccelerationStructureMemoryRequirementsInfoNV
   {
-    AccelerationStructureMemoryRequirementsInfoNV( vk::AccelerationStructureMemoryRequirementsTypeNV type_ = vk::AccelerationStructureMemoryRequirementsTypeNV::eObject,
-                                                   vk::AccelerationStructureNV accelerationStructure_ = vk::AccelerationStructureNV() )
+    VULKAN_HPP_CONSTEXPR AccelerationStructureMemoryRequirementsInfoNV( vk::AccelerationStructureMemoryRequirementsTypeNV type_ = vk::AccelerationStructureMemoryRequirementsTypeNV::eObject,
+                                                                        vk::AccelerationStructureNV accelerationStructure_ = vk::AccelerationStructureNV() )
       : layout::AccelerationStructureMemoryRequirementsInfoNV( type_, accelerationStructure_ )
     {}
 
@@ -18509,11 +18529,11 @@ namespace VULKAN_HPP_NAMESPACE
     struct AcquireNextImageInfoKHR
     {
     protected:
-      AcquireNextImageInfoKHR( vk::SwapchainKHR swapchain_ = vk::SwapchainKHR(),
-                               uint64_t timeout_ = 0,
-                               vk::Semaphore semaphore_ = vk::Semaphore(),
-                               vk::Fence fence_ = vk::Fence(),
-                               uint32_t deviceMask_ = 0 )
+      VULKAN_HPP_CONSTEXPR AcquireNextImageInfoKHR( vk::SwapchainKHR swapchain_ = vk::SwapchainKHR(),
+                                                    uint64_t timeout_ = 0,
+                                                    vk::Semaphore semaphore_ = vk::Semaphore(),
+                                                    vk::Fence fence_ = vk::Fence(),
+                                                    uint32_t deviceMask_ = 0 )
         : swapchain( swapchain_ )
         , timeout( timeout_ )
         , semaphore( semaphore_ )
@@ -18546,11 +18566,11 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct AcquireNextImageInfoKHR : public layout::AcquireNextImageInfoKHR
   {
-    AcquireNextImageInfoKHR( vk::SwapchainKHR swapchain_ = vk::SwapchainKHR(),
-                             uint64_t timeout_ = 0,
-                             vk::Semaphore semaphore_ = vk::Semaphore(),
-                             vk::Fence fence_ = vk::Fence(),
-                             uint32_t deviceMask_ = 0 )
+    VULKAN_HPP_CONSTEXPR AcquireNextImageInfoKHR( vk::SwapchainKHR swapchain_ = vk::SwapchainKHR(),
+                                                  uint64_t timeout_ = 0,
+                                                  vk::Semaphore semaphore_ = vk::Semaphore(),
+                                                  vk::Fence fence_ = vk::Fence(),
+                                                  uint32_t deviceMask_ = 0 )
       : layout::AcquireNextImageInfoKHR( swapchain_, timeout_, semaphore_, fence_, deviceMask_ )
     {}
 
@@ -18634,12 +18654,12 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct AllocationCallbacks
   {
-    AllocationCallbacks( void* pUserData_ = nullptr,
-                         PFN_vkAllocationFunction pfnAllocation_ = nullptr,
-                         PFN_vkReallocationFunction pfnReallocation_ = nullptr,
-                         PFN_vkFreeFunction pfnFree_ = nullptr,
-                         PFN_vkInternalAllocationNotification pfnInternalAllocation_ = nullptr,
-                         PFN_vkInternalFreeNotification pfnInternalFree_ = nullptr )
+    VULKAN_HPP_CONSTEXPR AllocationCallbacks( void* pUserData_ = nullptr,
+                                              PFN_vkAllocationFunction pfnAllocation_ = nullptr,
+                                              PFN_vkReallocationFunction pfnReallocation_ = nullptr,
+                                              PFN_vkFreeFunction pfnFree_ = nullptr,
+                                              PFN_vkInternalAllocationNotification pfnInternalAllocation_ = nullptr,
+                                              PFN_vkInternalFreeNotification pfnInternalFree_ = nullptr )
       : pUserData( pUserData_ )
       , pfnAllocation( pfnAllocation_ )
       , pfnReallocation( pfnReallocation_ )
@@ -18733,10 +18753,10 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ComponentMapping
   {
-    ComponentMapping( vk::ComponentSwizzle r_ = vk::ComponentSwizzle::eIdentity,
-                      vk::ComponentSwizzle g_ = vk::ComponentSwizzle::eIdentity,
-                      vk::ComponentSwizzle b_ = vk::ComponentSwizzle::eIdentity,
-                      vk::ComponentSwizzle a_ = vk::ComponentSwizzle::eIdentity )
+    VULKAN_HPP_CONSTEXPR ComponentMapping( vk::ComponentSwizzle r_ = vk::ComponentSwizzle::eIdentity,
+                                           vk::ComponentSwizzle g_ = vk::ComponentSwizzle::eIdentity,
+                                           vk::ComponentSwizzle b_ = vk::ComponentSwizzle::eIdentity,
+                                           vk::ComponentSwizzle a_ = vk::ComponentSwizzle::eIdentity )
       : r( r_ )
       , g( g_ )
       , b( b_ )
@@ -19055,8 +19075,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct AndroidSurfaceCreateInfoKHR
     {
     protected:
-      AndroidSurfaceCreateInfoKHR( vk::AndroidSurfaceCreateFlagsKHR flags_ = vk::AndroidSurfaceCreateFlagsKHR(),
-                                   struct ANativeWindow* window_ = nullptr )
+      VULKAN_HPP_CONSTEXPR AndroidSurfaceCreateInfoKHR( vk::AndroidSurfaceCreateFlagsKHR flags_ = vk::AndroidSurfaceCreateFlagsKHR(),
+                                                        struct ANativeWindow* window_ = nullptr )
         : flags( flags_ )
         , window( window_ )
       {}
@@ -19083,8 +19103,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct AndroidSurfaceCreateInfoKHR : public layout::AndroidSurfaceCreateInfoKHR
   {
-    AndroidSurfaceCreateInfoKHR( vk::AndroidSurfaceCreateFlagsKHR flags_ = vk::AndroidSurfaceCreateFlagsKHR(),
-                                 struct ANativeWindow* window_ = nullptr )
+    VULKAN_HPP_CONSTEXPR AndroidSurfaceCreateInfoKHR( vk::AndroidSurfaceCreateFlagsKHR flags_ = vk::AndroidSurfaceCreateFlagsKHR(),
+                                                      struct ANativeWindow* window_ = nullptr )
       : layout::AndroidSurfaceCreateInfoKHR( flags_, window_ )
     {}
 
@@ -19151,11 +19171,11 @@ namespace VULKAN_HPP_NAMESPACE
     struct ApplicationInfo
     {
     protected:
-      ApplicationInfo( const char* pApplicationName_ = nullptr,
-                       uint32_t applicationVersion_ = 0,
-                       const char* pEngineName_ = nullptr,
-                       uint32_t engineVersion_ = 0,
-                       uint32_t apiVersion_ = 0 )
+      VULKAN_HPP_CONSTEXPR ApplicationInfo( const char* pApplicationName_ = nullptr,
+                                            uint32_t applicationVersion_ = 0,
+                                            const char* pEngineName_ = nullptr,
+                                            uint32_t engineVersion_ = 0,
+                                            uint32_t apiVersion_ = 0 )
         : pApplicationName( pApplicationName_ )
         , applicationVersion( applicationVersion_ )
         , pEngineName( pEngineName_ )
@@ -19188,11 +19208,11 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ApplicationInfo : public layout::ApplicationInfo
   {
-    ApplicationInfo( const char* pApplicationName_ = nullptr,
-                     uint32_t applicationVersion_ = 0,
-                     const char* pEngineName_ = nullptr,
-                     uint32_t engineVersion_ = 0,
-                     uint32_t apiVersion_ = 0 )
+    VULKAN_HPP_CONSTEXPR ApplicationInfo( const char* pApplicationName_ = nullptr,
+                                          uint32_t applicationVersion_ = 0,
+                                          const char* pEngineName_ = nullptr,
+                                          uint32_t engineVersion_ = 0,
+                                          uint32_t apiVersion_ = 0 )
       : layout::ApplicationInfo( pApplicationName_, applicationVersion_, pEngineName_, engineVersion_, apiVersion_ )
     {}
 
@@ -19276,15 +19296,15 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct AttachmentDescription
   {
-    AttachmentDescription( vk::AttachmentDescriptionFlags flags_ = vk::AttachmentDescriptionFlags(),
-                           vk::Format format_ = vk::Format::eUndefined,
-                           vk::SampleCountFlagBits samples_ = vk::SampleCountFlagBits::e1,
-                           vk::AttachmentLoadOp loadOp_ = vk::AttachmentLoadOp::eLoad,
-                           vk::AttachmentStoreOp storeOp_ = vk::AttachmentStoreOp::eStore,
-                           vk::AttachmentLoadOp stencilLoadOp_ = vk::AttachmentLoadOp::eLoad,
-                           vk::AttachmentStoreOp stencilStoreOp_ = vk::AttachmentStoreOp::eStore,
-                           vk::ImageLayout initialLayout_ = vk::ImageLayout::eUndefined,
-                           vk::ImageLayout finalLayout_ = vk::ImageLayout::eUndefined )
+    VULKAN_HPP_CONSTEXPR AttachmentDescription( vk::AttachmentDescriptionFlags flags_ = vk::AttachmentDescriptionFlags(),
+                                                vk::Format format_ = vk::Format::eUndefined,
+                                                vk::SampleCountFlagBits samples_ = vk::SampleCountFlagBits::e1,
+                                                vk::AttachmentLoadOp loadOp_ = vk::AttachmentLoadOp::eLoad,
+                                                vk::AttachmentStoreOp storeOp_ = vk::AttachmentStoreOp::eStore,
+                                                vk::AttachmentLoadOp stencilLoadOp_ = vk::AttachmentLoadOp::eLoad,
+                                                vk::AttachmentStoreOp stencilStoreOp_ = vk::AttachmentStoreOp::eStore,
+                                                vk::ImageLayout initialLayout_ = vk::ImageLayout::eUndefined,
+                                                vk::ImageLayout finalLayout_ = vk::ImageLayout::eUndefined )
       : flags( flags_ )
       , format( format_ )
       , samples( samples_ )
@@ -19408,15 +19428,15 @@ namespace VULKAN_HPP_NAMESPACE
     struct AttachmentDescription2KHR
     {
     protected:
-      AttachmentDescription2KHR( vk::AttachmentDescriptionFlags flags_ = vk::AttachmentDescriptionFlags(),
-                                 vk::Format format_ = vk::Format::eUndefined,
-                                 vk::SampleCountFlagBits samples_ = vk::SampleCountFlagBits::e1,
-                                 vk::AttachmentLoadOp loadOp_ = vk::AttachmentLoadOp::eLoad,
-                                 vk::AttachmentStoreOp storeOp_ = vk::AttachmentStoreOp::eStore,
-                                 vk::AttachmentLoadOp stencilLoadOp_ = vk::AttachmentLoadOp::eLoad,
-                                 vk::AttachmentStoreOp stencilStoreOp_ = vk::AttachmentStoreOp::eStore,
-                                 vk::ImageLayout initialLayout_ = vk::ImageLayout::eUndefined,
-                                 vk::ImageLayout finalLayout_ = vk::ImageLayout::eUndefined )
+      VULKAN_HPP_CONSTEXPR AttachmentDescription2KHR( vk::AttachmentDescriptionFlags flags_ = vk::AttachmentDescriptionFlags(),
+                                                      vk::Format format_ = vk::Format::eUndefined,
+                                                      vk::SampleCountFlagBits samples_ = vk::SampleCountFlagBits::e1,
+                                                      vk::AttachmentLoadOp loadOp_ = vk::AttachmentLoadOp::eLoad,
+                                                      vk::AttachmentStoreOp storeOp_ = vk::AttachmentStoreOp::eStore,
+                                                      vk::AttachmentLoadOp stencilLoadOp_ = vk::AttachmentLoadOp::eLoad,
+                                                      vk::AttachmentStoreOp stencilStoreOp_ = vk::AttachmentStoreOp::eStore,
+                                                      vk::ImageLayout initialLayout_ = vk::ImageLayout::eUndefined,
+                                                      vk::ImageLayout finalLayout_ = vk::ImageLayout::eUndefined )
         : flags( flags_ )
         , format( format_ )
         , samples( samples_ )
@@ -19457,15 +19477,15 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct AttachmentDescription2KHR : public layout::AttachmentDescription2KHR
   {
-    AttachmentDescription2KHR( vk::AttachmentDescriptionFlags flags_ = vk::AttachmentDescriptionFlags(),
-                               vk::Format format_ = vk::Format::eUndefined,
-                               vk::SampleCountFlagBits samples_ = vk::SampleCountFlagBits::e1,
-                               vk::AttachmentLoadOp loadOp_ = vk::AttachmentLoadOp::eLoad,
-                               vk::AttachmentStoreOp storeOp_ = vk::AttachmentStoreOp::eStore,
-                               vk::AttachmentLoadOp stencilLoadOp_ = vk::AttachmentLoadOp::eLoad,
-                               vk::AttachmentStoreOp stencilStoreOp_ = vk::AttachmentStoreOp::eStore,
-                               vk::ImageLayout initialLayout_ = vk::ImageLayout::eUndefined,
-                               vk::ImageLayout finalLayout_ = vk::ImageLayout::eUndefined )
+    VULKAN_HPP_CONSTEXPR AttachmentDescription2KHR( vk::AttachmentDescriptionFlags flags_ = vk::AttachmentDescriptionFlags(),
+                                                    vk::Format format_ = vk::Format::eUndefined,
+                                                    vk::SampleCountFlagBits samples_ = vk::SampleCountFlagBits::e1,
+                                                    vk::AttachmentLoadOp loadOp_ = vk::AttachmentLoadOp::eLoad,
+                                                    vk::AttachmentStoreOp storeOp_ = vk::AttachmentStoreOp::eStore,
+                                                    vk::AttachmentLoadOp stencilLoadOp_ = vk::AttachmentLoadOp::eLoad,
+                                                    vk::AttachmentStoreOp stencilStoreOp_ = vk::AttachmentStoreOp::eStore,
+                                                    vk::ImageLayout initialLayout_ = vk::ImageLayout::eUndefined,
+                                                    vk::ImageLayout finalLayout_ = vk::ImageLayout::eUndefined )
       : layout::AttachmentDescription2KHR( flags_, format_, samples_, loadOp_, storeOp_, stencilLoadOp_, stencilStoreOp_, initialLayout_, finalLayout_ )
     {}
 
@@ -19577,8 +19597,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct AttachmentReference
   {
-    AttachmentReference( uint32_t attachment_ = 0,
-                         vk::ImageLayout layout_ = vk::ImageLayout::eUndefined )
+    VULKAN_HPP_CONSTEXPR AttachmentReference( uint32_t attachment_ = 0,
+                                              vk::ImageLayout layout_ = vk::ImageLayout::eUndefined )
       : attachment( attachment_ )
       , layout( layout_ )
     {}
@@ -19639,9 +19659,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct AttachmentReference2KHR
     {
     protected:
-      AttachmentReference2KHR( uint32_t attachment_ = 0,
-                               vk::ImageLayout layout_ = vk::ImageLayout::eUndefined,
-                               vk::ImageAspectFlags aspectMask_ = vk::ImageAspectFlags() )
+      VULKAN_HPP_CONSTEXPR AttachmentReference2KHR( uint32_t attachment_ = 0,
+                                                    vk::ImageLayout layout_ = vk::ImageLayout::eUndefined,
+                                                    vk::ImageAspectFlags aspectMask_ = vk::ImageAspectFlags() )
         : attachment( attachment_ )
         , layout( layout_ )
         , aspectMask( aspectMask_ )
@@ -19670,9 +19690,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct AttachmentReference2KHR : public layout::AttachmentReference2KHR
   {
-    AttachmentReference2KHR( uint32_t attachment_ = 0,
-                             vk::ImageLayout layout_ = vk::ImageLayout::eUndefined,
-                             vk::ImageAspectFlags aspectMask_ = vk::ImageAspectFlags() )
+    VULKAN_HPP_CONSTEXPR AttachmentReference2KHR( uint32_t attachment_ = 0,
+                                                  vk::ImageLayout layout_ = vk::ImageLayout::eUndefined,
+                                                  vk::ImageAspectFlags aspectMask_ = vk::ImageAspectFlags() )
       : layout::AttachmentReference2KHR( attachment_, layout_, aspectMask_ )
     {}
 
@@ -19742,8 +19762,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct Extent2D
   {
-    Extent2D( uint32_t width_ = 0,
-              uint32_t height_ = 0 )
+    VULKAN_HPP_CONSTEXPR Extent2D( uint32_t width_ = 0,
+                                   uint32_t height_ = 0 )
       : width( width_ )
       , height( height_ )
     {}
@@ -19801,8 +19821,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SampleLocationEXT
   {
-    SampleLocationEXT( float x_ = 0,
-                       float y_ = 0 )
+    VULKAN_HPP_CONSTEXPR SampleLocationEXT( float x_ = 0,
+                                            float y_ = 0 )
       : x( x_ )
       , y( y_ )
     {}
@@ -19863,10 +19883,10 @@ namespace VULKAN_HPP_NAMESPACE
     struct SampleLocationsInfoEXT
     {
     protected:
-      SampleLocationsInfoEXT( vk::SampleCountFlagBits sampleLocationsPerPixel_ = vk::SampleCountFlagBits::e1,
-                              vk::Extent2D sampleLocationGridSize_ = vk::Extent2D(),
-                              uint32_t sampleLocationsCount_ = 0,
-                              const vk::SampleLocationEXT* pSampleLocations_ = nullptr )
+      VULKAN_HPP_CONSTEXPR SampleLocationsInfoEXT( vk::SampleCountFlagBits sampleLocationsPerPixel_ = vk::SampleCountFlagBits::e1,
+                                                   vk::Extent2D sampleLocationGridSize_ = vk::Extent2D(),
+                                                   uint32_t sampleLocationsCount_ = 0,
+                                                   const vk::SampleLocationEXT* pSampleLocations_ = nullptr )
         : sampleLocationsPerPixel( sampleLocationsPerPixel_ )
         , sampleLocationGridSize( sampleLocationGridSize_ )
         , sampleLocationsCount( sampleLocationsCount_ )
@@ -19897,10 +19917,10 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SampleLocationsInfoEXT : public layout::SampleLocationsInfoEXT
   {
-    SampleLocationsInfoEXT( vk::SampleCountFlagBits sampleLocationsPerPixel_ = vk::SampleCountFlagBits::e1,
-                            vk::Extent2D sampleLocationGridSize_ = vk::Extent2D(),
-                            uint32_t sampleLocationsCount_ = 0,
-                            const vk::SampleLocationEXT* pSampleLocations_ = nullptr )
+    VULKAN_HPP_CONSTEXPR SampleLocationsInfoEXT( vk::SampleCountFlagBits sampleLocationsPerPixel_ = vk::SampleCountFlagBits::e1,
+                                                 vk::Extent2D sampleLocationGridSize_ = vk::Extent2D(),
+                                                 uint32_t sampleLocationsCount_ = 0,
+                                                 const vk::SampleLocationEXT* pSampleLocations_ = nullptr )
       : layout::SampleLocationsInfoEXT( sampleLocationsPerPixel_, sampleLocationGridSize_, sampleLocationsCount_, pSampleLocations_ )
     {}
 
@@ -19977,8 +19997,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct AttachmentSampleLocationsEXT
   {
-    AttachmentSampleLocationsEXT( uint32_t attachmentIndex_ = 0,
-                                  vk::SampleLocationsInfoEXT sampleLocationsInfo_ = vk::SampleLocationsInfoEXT() )
+    VULKAN_HPP_CONSTEXPR AttachmentSampleLocationsEXT( uint32_t attachmentIndex_ = 0,
+                                                       vk::SampleLocationsInfoEXT sampleLocationsInfo_ = vk::SampleLocationsInfoEXT() )
       : attachmentIndex( attachmentIndex_ )
       , sampleLocationsInfo( sampleLocationsInfo_ )
     {}
@@ -20189,11 +20209,11 @@ namespace VULKAN_HPP_NAMESPACE
     struct BindAccelerationStructureMemoryInfoNV
     {
     protected:
-      BindAccelerationStructureMemoryInfoNV( vk::AccelerationStructureNV accelerationStructure_ = vk::AccelerationStructureNV(),
-                                             vk::DeviceMemory memory_ = vk::DeviceMemory(),
-                                             vk::DeviceSize memoryOffset_ = 0,
-                                             uint32_t deviceIndexCount_ = 0,
-                                             const uint32_t* pDeviceIndices_ = nullptr )
+      VULKAN_HPP_CONSTEXPR BindAccelerationStructureMemoryInfoNV( vk::AccelerationStructureNV accelerationStructure_ = vk::AccelerationStructureNV(),
+                                                                  vk::DeviceMemory memory_ = vk::DeviceMemory(),
+                                                                  vk::DeviceSize memoryOffset_ = 0,
+                                                                  uint32_t deviceIndexCount_ = 0,
+                                                                  const uint32_t* pDeviceIndices_ = nullptr )
         : accelerationStructure( accelerationStructure_ )
         , memory( memory_ )
         , memoryOffset( memoryOffset_ )
@@ -20226,11 +20246,11 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct BindAccelerationStructureMemoryInfoNV : public layout::BindAccelerationStructureMemoryInfoNV
   {
-    BindAccelerationStructureMemoryInfoNV( vk::AccelerationStructureNV accelerationStructure_ = vk::AccelerationStructureNV(),
-                                           vk::DeviceMemory memory_ = vk::DeviceMemory(),
-                                           vk::DeviceSize memoryOffset_ = 0,
-                                           uint32_t deviceIndexCount_ = 0,
-                                           const uint32_t* pDeviceIndices_ = nullptr )
+    VULKAN_HPP_CONSTEXPR BindAccelerationStructureMemoryInfoNV( vk::AccelerationStructureNV accelerationStructure_ = vk::AccelerationStructureNV(),
+                                                                vk::DeviceMemory memory_ = vk::DeviceMemory(),
+                                                                vk::DeviceSize memoryOffset_ = 0,
+                                                                uint32_t deviceIndexCount_ = 0,
+                                                                const uint32_t* pDeviceIndices_ = nullptr )
       : layout::BindAccelerationStructureMemoryInfoNV( accelerationStructure_, memory_, memoryOffset_, deviceIndexCount_, pDeviceIndices_ )
     {}
 
@@ -20317,8 +20337,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct BindBufferMemoryDeviceGroupInfo
     {
     protected:
-      BindBufferMemoryDeviceGroupInfo( uint32_t deviceIndexCount_ = 0,
-                                       const uint32_t* pDeviceIndices_ = nullptr )
+      VULKAN_HPP_CONSTEXPR BindBufferMemoryDeviceGroupInfo( uint32_t deviceIndexCount_ = 0,
+                                                            const uint32_t* pDeviceIndices_ = nullptr )
         : deviceIndexCount( deviceIndexCount_ )
         , pDeviceIndices( pDeviceIndices_ )
       {}
@@ -20345,8 +20365,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct BindBufferMemoryDeviceGroupInfo : public layout::BindBufferMemoryDeviceGroupInfo
   {
-    BindBufferMemoryDeviceGroupInfo( uint32_t deviceIndexCount_ = 0,
-                                     const uint32_t* pDeviceIndices_ = nullptr )
+    VULKAN_HPP_CONSTEXPR BindBufferMemoryDeviceGroupInfo( uint32_t deviceIndexCount_ = 0,
+                                                          const uint32_t* pDeviceIndices_ = nullptr )
       : layout::BindBufferMemoryDeviceGroupInfo( deviceIndexCount_, pDeviceIndices_ )
     {}
 
@@ -20412,9 +20432,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct BindBufferMemoryInfo
     {
     protected:
-      BindBufferMemoryInfo( vk::Buffer buffer_ = vk::Buffer(),
-                            vk::DeviceMemory memory_ = vk::DeviceMemory(),
-                            vk::DeviceSize memoryOffset_ = 0 )
+      VULKAN_HPP_CONSTEXPR BindBufferMemoryInfo( vk::Buffer buffer_ = vk::Buffer(),
+                                                 vk::DeviceMemory memory_ = vk::DeviceMemory(),
+                                                 vk::DeviceSize memoryOffset_ = 0 )
         : buffer( buffer_ )
         , memory( memory_ )
         , memoryOffset( memoryOffset_ )
@@ -20443,9 +20463,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct BindBufferMemoryInfo : public layout::BindBufferMemoryInfo
   {
-    BindBufferMemoryInfo( vk::Buffer buffer_ = vk::Buffer(),
-                          vk::DeviceMemory memory_ = vk::DeviceMemory(),
-                          vk::DeviceSize memoryOffset_ = 0 )
+    VULKAN_HPP_CONSTEXPR BindBufferMemoryInfo( vk::Buffer buffer_ = vk::Buffer(),
+                                               vk::DeviceMemory memory_ = vk::DeviceMemory(),
+                                               vk::DeviceSize memoryOffset_ = 0 )
       : layout::BindBufferMemoryInfo( buffer_, memory_, memoryOffset_ )
     {}
 
@@ -20515,8 +20535,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct Offset2D
   {
-    Offset2D( int32_t x_ = 0,
-              int32_t y_ = 0 )
+    VULKAN_HPP_CONSTEXPR Offset2D( int32_t x_ = 0,
+                                   int32_t y_ = 0 )
       : x( x_ )
       , y( y_ )
     {}
@@ -20574,8 +20594,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct Rect2D
   {
-    Rect2D( vk::Offset2D offset_ = vk::Offset2D(),
-            vk::Extent2D extent_ = vk::Extent2D() )
+    VULKAN_HPP_CONSTEXPR Rect2D( vk::Offset2D offset_ = vk::Offset2D(),
+                                 vk::Extent2D extent_ = vk::Extent2D() )
       : offset( offset_ )
       , extent( extent_ )
     {}
@@ -20636,10 +20656,10 @@ namespace VULKAN_HPP_NAMESPACE
     struct BindImageMemoryDeviceGroupInfo
     {
     protected:
-      BindImageMemoryDeviceGroupInfo( uint32_t deviceIndexCount_ = 0,
-                                      const uint32_t* pDeviceIndices_ = nullptr,
-                                      uint32_t splitInstanceBindRegionCount_ = 0,
-                                      const vk::Rect2D* pSplitInstanceBindRegions_ = nullptr )
+      VULKAN_HPP_CONSTEXPR BindImageMemoryDeviceGroupInfo( uint32_t deviceIndexCount_ = 0,
+                                                           const uint32_t* pDeviceIndices_ = nullptr,
+                                                           uint32_t splitInstanceBindRegionCount_ = 0,
+                                                           const vk::Rect2D* pSplitInstanceBindRegions_ = nullptr )
         : deviceIndexCount( deviceIndexCount_ )
         , pDeviceIndices( pDeviceIndices_ )
         , splitInstanceBindRegionCount( splitInstanceBindRegionCount_ )
@@ -20670,10 +20690,10 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct BindImageMemoryDeviceGroupInfo : public layout::BindImageMemoryDeviceGroupInfo
   {
-    BindImageMemoryDeviceGroupInfo( uint32_t deviceIndexCount_ = 0,
-                                    const uint32_t* pDeviceIndices_ = nullptr,
-                                    uint32_t splitInstanceBindRegionCount_ = 0,
-                                    const vk::Rect2D* pSplitInstanceBindRegions_ = nullptr )
+    VULKAN_HPP_CONSTEXPR BindImageMemoryDeviceGroupInfo( uint32_t deviceIndexCount_ = 0,
+                                                         const uint32_t* pDeviceIndices_ = nullptr,
+                                                         uint32_t splitInstanceBindRegionCount_ = 0,
+                                                         const vk::Rect2D* pSplitInstanceBindRegions_ = nullptr )
       : layout::BindImageMemoryDeviceGroupInfo( deviceIndexCount_, pDeviceIndices_, splitInstanceBindRegionCount_, pSplitInstanceBindRegions_ )
     {}
 
@@ -20753,9 +20773,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct BindImageMemoryInfo
     {
     protected:
-      BindImageMemoryInfo( vk::Image image_ = vk::Image(),
-                           vk::DeviceMemory memory_ = vk::DeviceMemory(),
-                           vk::DeviceSize memoryOffset_ = 0 )
+      VULKAN_HPP_CONSTEXPR BindImageMemoryInfo( vk::Image image_ = vk::Image(),
+                                                vk::DeviceMemory memory_ = vk::DeviceMemory(),
+                                                vk::DeviceSize memoryOffset_ = 0 )
         : image( image_ )
         , memory( memory_ )
         , memoryOffset( memoryOffset_ )
@@ -20784,9 +20804,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct BindImageMemoryInfo : public layout::BindImageMemoryInfo
   {
-    BindImageMemoryInfo( vk::Image image_ = vk::Image(),
-                         vk::DeviceMemory memory_ = vk::DeviceMemory(),
-                         vk::DeviceSize memoryOffset_ = 0 )
+    VULKAN_HPP_CONSTEXPR BindImageMemoryInfo( vk::Image image_ = vk::Image(),
+                                              vk::DeviceMemory memory_ = vk::DeviceMemory(),
+                                              vk::DeviceSize memoryOffset_ = 0 )
       : layout::BindImageMemoryInfo( image_, memory_, memoryOffset_ )
     {}
 
@@ -20859,8 +20879,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct BindImageMemorySwapchainInfoKHR
     {
     protected:
-      BindImageMemorySwapchainInfoKHR( vk::SwapchainKHR swapchain_ = vk::SwapchainKHR(),
-                                       uint32_t imageIndex_ = 0 )
+      VULKAN_HPP_CONSTEXPR BindImageMemorySwapchainInfoKHR( vk::SwapchainKHR swapchain_ = vk::SwapchainKHR(),
+                                                            uint32_t imageIndex_ = 0 )
         : swapchain( swapchain_ )
         , imageIndex( imageIndex_ )
       {}
@@ -20887,8 +20907,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct BindImageMemorySwapchainInfoKHR : public layout::BindImageMemorySwapchainInfoKHR
   {
-    BindImageMemorySwapchainInfoKHR( vk::SwapchainKHR swapchain_ = vk::SwapchainKHR(),
-                                     uint32_t imageIndex_ = 0 )
+    VULKAN_HPP_CONSTEXPR BindImageMemorySwapchainInfoKHR( vk::SwapchainKHR swapchain_ = vk::SwapchainKHR(),
+                                                          uint32_t imageIndex_ = 0 )
       : layout::BindImageMemorySwapchainInfoKHR( swapchain_, imageIndex_ )
     {}
 
@@ -20954,7 +20974,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct BindImagePlaneMemoryInfo
     {
     protected:
-      BindImagePlaneMemoryInfo( vk::ImageAspectFlagBits planeAspect_ = vk::ImageAspectFlagBits::eColor )
+      VULKAN_HPP_CONSTEXPR BindImagePlaneMemoryInfo( vk::ImageAspectFlagBits planeAspect_ = vk::ImageAspectFlagBits::eColor )
         : planeAspect( planeAspect_ )
       {}
 
@@ -20979,7 +20999,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct BindImagePlaneMemoryInfo : public layout::BindImagePlaneMemoryInfo
   {
-    BindImagePlaneMemoryInfo( vk::ImageAspectFlagBits planeAspect_ = vk::ImageAspectFlagBits::eColor )
+    VULKAN_HPP_CONSTEXPR BindImagePlaneMemoryInfo( vk::ImageAspectFlagBits planeAspect_ = vk::ImageAspectFlagBits::eColor )
       : layout::BindImagePlaneMemoryInfo( planeAspect_ )
     {}
 
@@ -21035,11 +21055,11 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SparseMemoryBind
   {
-    SparseMemoryBind( vk::DeviceSize resourceOffset_ = 0,
-                      vk::DeviceSize size_ = 0,
-                      vk::DeviceMemory memory_ = vk::DeviceMemory(),
-                      vk::DeviceSize memoryOffset_ = 0,
-                      vk::SparseMemoryBindFlags flags_ = vk::SparseMemoryBindFlags() )
+    VULKAN_HPP_CONSTEXPR SparseMemoryBind( vk::DeviceSize resourceOffset_ = 0,
+                                           vk::DeviceSize size_ = 0,
+                                           vk::DeviceMemory memory_ = vk::DeviceMemory(),
+                                           vk::DeviceSize memoryOffset_ = 0,
+                                           vk::SparseMemoryBindFlags flags_ = vk::SparseMemoryBindFlags() )
       : resourceOffset( resourceOffset_ )
       , size( size_ )
       , memory( memory_ )
@@ -21124,9 +21144,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SparseBufferMemoryBindInfo
   {
-    SparseBufferMemoryBindInfo( vk::Buffer buffer_ = vk::Buffer(),
-                                uint32_t bindCount_ = 0,
-                                const vk::SparseMemoryBind* pBinds_ = nullptr )
+    VULKAN_HPP_CONSTEXPR SparseBufferMemoryBindInfo( vk::Buffer buffer_ = vk::Buffer(),
+                                                     uint32_t bindCount_ = 0,
+                                                     const vk::SparseMemoryBind* pBinds_ = nullptr )
       : buffer( buffer_ )
       , bindCount( bindCount_ )
       , pBinds( pBinds_ )
@@ -21193,9 +21213,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SparseImageOpaqueMemoryBindInfo
   {
-    SparseImageOpaqueMemoryBindInfo( vk::Image image_ = vk::Image(),
-                                     uint32_t bindCount_ = 0,
-                                     const vk::SparseMemoryBind* pBinds_ = nullptr )
+    VULKAN_HPP_CONSTEXPR SparseImageOpaqueMemoryBindInfo( vk::Image image_ = vk::Image(),
+                                                          uint32_t bindCount_ = 0,
+                                                          const vk::SparseMemoryBind* pBinds_ = nullptr )
       : image( image_ )
       , bindCount( bindCount_ )
       , pBinds( pBinds_ )
@@ -21262,9 +21282,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ImageSubresource
   {
-    ImageSubresource( vk::ImageAspectFlags aspectMask_ = vk::ImageAspectFlags(),
-                      uint32_t mipLevel_ = 0,
-                      uint32_t arrayLayer_ = 0 )
+    VULKAN_HPP_CONSTEXPR ImageSubresource( vk::ImageAspectFlags aspectMask_ = vk::ImageAspectFlags(),
+                                           uint32_t mipLevel_ = 0,
+                                           uint32_t arrayLayer_ = 0 )
       : aspectMask( aspectMask_ )
       , mipLevel( mipLevel_ )
       , arrayLayer( arrayLayer_ )
@@ -21331,9 +21351,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct Offset3D
   {
-    Offset3D( int32_t x_ = 0,
-              int32_t y_ = 0,
-              int32_t z_ = 0 )
+    VULKAN_HPP_CONSTEXPR Offset3D( int32_t x_ = 0,
+                                   int32_t y_ = 0,
+                                   int32_t z_ = 0 )
       : x( x_ )
       , y( y_ )
       , z( z_ )
@@ -21407,9 +21427,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct Extent3D
   {
-    Extent3D( uint32_t width_ = 0,
-              uint32_t height_ = 0,
-              uint32_t depth_ = 0 )
+    VULKAN_HPP_CONSTEXPR Extent3D( uint32_t width_ = 0,
+                                   uint32_t height_ = 0,
+                                   uint32_t depth_ = 0 )
       : width( width_ )
       , height( height_ )
       , depth( depth_ )
@@ -21483,12 +21503,12 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SparseImageMemoryBind
   {
-    SparseImageMemoryBind( vk::ImageSubresource subresource_ = vk::ImageSubresource(),
-                           vk::Offset3D offset_ = vk::Offset3D(),
-                           vk::Extent3D extent_ = vk::Extent3D(),
-                           vk::DeviceMemory memory_ = vk::DeviceMemory(),
-                           vk::DeviceSize memoryOffset_ = 0,
-                           vk::SparseMemoryBindFlags flags_ = vk::SparseMemoryBindFlags() )
+    VULKAN_HPP_CONSTEXPR SparseImageMemoryBind( vk::ImageSubresource subresource_ = vk::ImageSubresource(),
+                                                vk::Offset3D offset_ = vk::Offset3D(),
+                                                vk::Extent3D extent_ = vk::Extent3D(),
+                                                vk::DeviceMemory memory_ = vk::DeviceMemory(),
+                                                vk::DeviceSize memoryOffset_ = 0,
+                                                vk::SparseMemoryBindFlags flags_ = vk::SparseMemoryBindFlags() )
       : subresource( subresource_ )
       , offset( offset_ )
       , extent( extent_ )
@@ -21582,9 +21602,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SparseImageMemoryBindInfo
   {
-    SparseImageMemoryBindInfo( vk::Image image_ = vk::Image(),
-                               uint32_t bindCount_ = 0,
-                               const vk::SparseImageMemoryBind* pBinds_ = nullptr )
+    VULKAN_HPP_CONSTEXPR SparseImageMemoryBindInfo( vk::Image image_ = vk::Image(),
+                                                    uint32_t bindCount_ = 0,
+                                                    const vk::SparseImageMemoryBind* pBinds_ = nullptr )
       : image( image_ )
       , bindCount( bindCount_ )
       , pBinds( pBinds_ )
@@ -21654,16 +21674,16 @@ namespace VULKAN_HPP_NAMESPACE
     struct BindSparseInfo
     {
     protected:
-      BindSparseInfo( uint32_t waitSemaphoreCount_ = 0,
-                      const vk::Semaphore* pWaitSemaphores_ = nullptr,
-                      uint32_t bufferBindCount_ = 0,
-                      const vk::SparseBufferMemoryBindInfo* pBufferBinds_ = nullptr,
-                      uint32_t imageOpaqueBindCount_ = 0,
-                      const vk::SparseImageOpaqueMemoryBindInfo* pImageOpaqueBinds_ = nullptr,
-                      uint32_t imageBindCount_ = 0,
-                      const vk::SparseImageMemoryBindInfo* pImageBinds_ = nullptr,
-                      uint32_t signalSemaphoreCount_ = 0,
-                      const vk::Semaphore* pSignalSemaphores_ = nullptr )
+      VULKAN_HPP_CONSTEXPR BindSparseInfo( uint32_t waitSemaphoreCount_ = 0,
+                                           const vk::Semaphore* pWaitSemaphores_ = nullptr,
+                                           uint32_t bufferBindCount_ = 0,
+                                           const vk::SparseBufferMemoryBindInfo* pBufferBinds_ = nullptr,
+                                           uint32_t imageOpaqueBindCount_ = 0,
+                                           const vk::SparseImageOpaqueMemoryBindInfo* pImageOpaqueBinds_ = nullptr,
+                                           uint32_t imageBindCount_ = 0,
+                                           const vk::SparseImageMemoryBindInfo* pImageBinds_ = nullptr,
+                                           uint32_t signalSemaphoreCount_ = 0,
+                                           const vk::Semaphore* pSignalSemaphores_ = nullptr )
         : waitSemaphoreCount( waitSemaphoreCount_ )
         , pWaitSemaphores( pWaitSemaphores_ )
         , bufferBindCount( bufferBindCount_ )
@@ -21706,16 +21726,16 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct BindSparseInfo : public layout::BindSparseInfo
   {
-    BindSparseInfo( uint32_t waitSemaphoreCount_ = 0,
-                    const vk::Semaphore* pWaitSemaphores_ = nullptr,
-                    uint32_t bufferBindCount_ = 0,
-                    const vk::SparseBufferMemoryBindInfo* pBufferBinds_ = nullptr,
-                    uint32_t imageOpaqueBindCount_ = 0,
-                    const vk::SparseImageOpaqueMemoryBindInfo* pImageOpaqueBinds_ = nullptr,
-                    uint32_t imageBindCount_ = 0,
-                    const vk::SparseImageMemoryBindInfo* pImageBinds_ = nullptr,
-                    uint32_t signalSemaphoreCount_ = 0,
-                    const vk::Semaphore* pSignalSemaphores_ = nullptr )
+    VULKAN_HPP_CONSTEXPR BindSparseInfo( uint32_t waitSemaphoreCount_ = 0,
+                                         const vk::Semaphore* pWaitSemaphores_ = nullptr,
+                                         uint32_t bufferBindCount_ = 0,
+                                         const vk::SparseBufferMemoryBindInfo* pBufferBinds_ = nullptr,
+                                         uint32_t imageOpaqueBindCount_ = 0,
+                                         const vk::SparseImageOpaqueMemoryBindInfo* pImageOpaqueBinds_ = nullptr,
+                                         uint32_t imageBindCount_ = 0,
+                                         const vk::SparseImageMemoryBindInfo* pImageBinds_ = nullptr,
+                                         uint32_t signalSemaphoreCount_ = 0,
+                                         const vk::Semaphore* pSignalSemaphores_ = nullptr )
       : layout::BindSparseInfo( waitSemaphoreCount_, pWaitSemaphores_, bufferBindCount_, pBufferBinds_, imageOpaqueBindCount_, pImageOpaqueBinds_, imageBindCount_, pImageBinds_, signalSemaphoreCount_, pSignalSemaphores_ )
     {}
 
@@ -21834,9 +21854,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct BufferCopy
   {
-    BufferCopy( vk::DeviceSize srcOffset_ = 0,
-                vk::DeviceSize dstOffset_ = 0,
-                vk::DeviceSize size_ = 0 )
+    VULKAN_HPP_CONSTEXPR BufferCopy( vk::DeviceSize srcOffset_ = 0,
+                                     vk::DeviceSize dstOffset_ = 0,
+                                     vk::DeviceSize size_ = 0 )
       : srcOffset( srcOffset_ )
       , dstOffset( dstOffset_ )
       , size( size_ )
@@ -21906,12 +21926,12 @@ namespace VULKAN_HPP_NAMESPACE
     struct BufferCreateInfo
     {
     protected:
-      BufferCreateInfo( vk::BufferCreateFlags flags_ = vk::BufferCreateFlags(),
-                        vk::DeviceSize size_ = 0,
-                        vk::BufferUsageFlags usage_ = vk::BufferUsageFlags(),
-                        vk::SharingMode sharingMode_ = vk::SharingMode::eExclusive,
-                        uint32_t queueFamilyIndexCount_ = 0,
-                        const uint32_t* pQueueFamilyIndices_ = nullptr )
+      VULKAN_HPP_CONSTEXPR BufferCreateInfo( vk::BufferCreateFlags flags_ = vk::BufferCreateFlags(),
+                                             vk::DeviceSize size_ = 0,
+                                             vk::BufferUsageFlags usage_ = vk::BufferUsageFlags(),
+                                             vk::SharingMode sharingMode_ = vk::SharingMode::eExclusive,
+                                             uint32_t queueFamilyIndexCount_ = 0,
+                                             const uint32_t* pQueueFamilyIndices_ = nullptr )
         : flags( flags_ )
         , size( size_ )
         , usage( usage_ )
@@ -21946,12 +21966,12 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct BufferCreateInfo : public layout::BufferCreateInfo
   {
-    BufferCreateInfo( vk::BufferCreateFlags flags_ = vk::BufferCreateFlags(),
-                      vk::DeviceSize size_ = 0,
-                      vk::BufferUsageFlags usage_ = vk::BufferUsageFlags(),
-                      vk::SharingMode sharingMode_ = vk::SharingMode::eExclusive,
-                      uint32_t queueFamilyIndexCount_ = 0,
-                      const uint32_t* pQueueFamilyIndices_ = nullptr )
+    VULKAN_HPP_CONSTEXPR BufferCreateInfo( vk::BufferCreateFlags flags_ = vk::BufferCreateFlags(),
+                                           vk::DeviceSize size_ = 0,
+                                           vk::BufferUsageFlags usage_ = vk::BufferUsageFlags(),
+                                           vk::SharingMode sharingMode_ = vk::SharingMode::eExclusive,
+                                           uint32_t queueFamilyIndexCount_ = 0,
+                                           const uint32_t* pQueueFamilyIndices_ = nullptr )
       : layout::BufferCreateInfo( flags_, size_, usage_, sharingMode_, queueFamilyIndexCount_, pQueueFamilyIndices_ )
     {}
 
@@ -22045,7 +22065,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct BufferDeviceAddressCreateInfoEXT
     {
     protected:
-      BufferDeviceAddressCreateInfoEXT( vk::DeviceAddress deviceAddress_ = 0 )
+      VULKAN_HPP_CONSTEXPR BufferDeviceAddressCreateInfoEXT( vk::DeviceAddress deviceAddress_ = 0 )
         : deviceAddress( deviceAddress_ )
       {}
 
@@ -22070,7 +22090,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct BufferDeviceAddressCreateInfoEXT : public layout::BufferDeviceAddressCreateInfoEXT
   {
-    BufferDeviceAddressCreateInfoEXT( vk::DeviceAddress deviceAddress_ = 0 )
+    VULKAN_HPP_CONSTEXPR BufferDeviceAddressCreateInfoEXT( vk::DeviceAddress deviceAddress_ = 0 )
       : layout::BufferDeviceAddressCreateInfoEXT( deviceAddress_ )
     {}
 
@@ -22129,7 +22149,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct BufferDeviceAddressInfoEXT
     {
     protected:
-      BufferDeviceAddressInfoEXT( vk::Buffer buffer_ = vk::Buffer() )
+      VULKAN_HPP_CONSTEXPR BufferDeviceAddressInfoEXT( vk::Buffer buffer_ = vk::Buffer() )
         : buffer( buffer_ )
       {}
 
@@ -22154,7 +22174,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct BufferDeviceAddressInfoEXT : public layout::BufferDeviceAddressInfoEXT
   {
-    BufferDeviceAddressInfoEXT( vk::Buffer buffer_ = vk::Buffer() )
+    VULKAN_HPP_CONSTEXPR BufferDeviceAddressInfoEXT( vk::Buffer buffer_ = vk::Buffer() )
       : layout::BufferDeviceAddressInfoEXT( buffer_ )
     {}
 
@@ -22210,10 +22230,10 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ImageSubresourceLayers
   {
-    ImageSubresourceLayers( vk::ImageAspectFlags aspectMask_ = vk::ImageAspectFlags(),
-                            uint32_t mipLevel_ = 0,
-                            uint32_t baseArrayLayer_ = 0,
-                            uint32_t layerCount_ = 0 )
+    VULKAN_HPP_CONSTEXPR ImageSubresourceLayers( vk::ImageAspectFlags aspectMask_ = vk::ImageAspectFlags(),
+                                                 uint32_t mipLevel_ = 0,
+                                                 uint32_t baseArrayLayer_ = 0,
+                                                 uint32_t layerCount_ = 0 )
       : aspectMask( aspectMask_ )
       , mipLevel( mipLevel_ )
       , baseArrayLayer( baseArrayLayer_ )
@@ -22289,12 +22309,12 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct BufferImageCopy
   {
-    BufferImageCopy( vk::DeviceSize bufferOffset_ = 0,
-                     uint32_t bufferRowLength_ = 0,
-                     uint32_t bufferImageHeight_ = 0,
-                     vk::ImageSubresourceLayers imageSubresource_ = vk::ImageSubresourceLayers(),
-                     vk::Offset3D imageOffset_ = vk::Offset3D(),
-                     vk::Extent3D imageExtent_ = vk::Extent3D() )
+    VULKAN_HPP_CONSTEXPR BufferImageCopy( vk::DeviceSize bufferOffset_ = 0,
+                                          uint32_t bufferRowLength_ = 0,
+                                          uint32_t bufferImageHeight_ = 0,
+                                          vk::ImageSubresourceLayers imageSubresource_ = vk::ImageSubresourceLayers(),
+                                          vk::Offset3D imageOffset_ = vk::Offset3D(),
+                                          vk::Extent3D imageExtent_ = vk::Extent3D() )
       : bufferOffset( bufferOffset_ )
       , bufferRowLength( bufferRowLength_ )
       , bufferImageHeight( bufferImageHeight_ )
@@ -22391,13 +22411,13 @@ namespace VULKAN_HPP_NAMESPACE
     struct BufferMemoryBarrier
     {
     protected:
-      BufferMemoryBarrier( vk::AccessFlags srcAccessMask_ = vk::AccessFlags(),
-                           vk::AccessFlags dstAccessMask_ = vk::AccessFlags(),
-                           uint32_t srcQueueFamilyIndex_ = 0,
-                           uint32_t dstQueueFamilyIndex_ = 0,
-                           vk::Buffer buffer_ = vk::Buffer(),
-                           vk::DeviceSize offset_ = 0,
-                           vk::DeviceSize size_ = 0 )
+      VULKAN_HPP_CONSTEXPR BufferMemoryBarrier( vk::AccessFlags srcAccessMask_ = vk::AccessFlags(),
+                                                vk::AccessFlags dstAccessMask_ = vk::AccessFlags(),
+                                                uint32_t srcQueueFamilyIndex_ = 0,
+                                                uint32_t dstQueueFamilyIndex_ = 0,
+                                                vk::Buffer buffer_ = vk::Buffer(),
+                                                vk::DeviceSize offset_ = 0,
+                                                vk::DeviceSize size_ = 0 )
         : srcAccessMask( srcAccessMask_ )
         , dstAccessMask( dstAccessMask_ )
         , srcQueueFamilyIndex( srcQueueFamilyIndex_ )
@@ -22434,13 +22454,13 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct BufferMemoryBarrier : public layout::BufferMemoryBarrier
   {
-    BufferMemoryBarrier( vk::AccessFlags srcAccessMask_ = vk::AccessFlags(),
-                         vk::AccessFlags dstAccessMask_ = vk::AccessFlags(),
-                         uint32_t srcQueueFamilyIndex_ = 0,
-                         uint32_t dstQueueFamilyIndex_ = 0,
-                         vk::Buffer buffer_ = vk::Buffer(),
-                         vk::DeviceSize offset_ = 0,
-                         vk::DeviceSize size_ = 0 )
+    VULKAN_HPP_CONSTEXPR BufferMemoryBarrier( vk::AccessFlags srcAccessMask_ = vk::AccessFlags(),
+                                              vk::AccessFlags dstAccessMask_ = vk::AccessFlags(),
+                                              uint32_t srcQueueFamilyIndex_ = 0,
+                                              uint32_t dstQueueFamilyIndex_ = 0,
+                                              vk::Buffer buffer_ = vk::Buffer(),
+                                              vk::DeviceSize offset_ = 0,
+                                              vk::DeviceSize size_ = 0 )
       : layout::BufferMemoryBarrier( srcAccessMask_, dstAccessMask_, srcQueueFamilyIndex_, dstQueueFamilyIndex_, buffer_, offset_, size_ )
     {}
 
@@ -22541,7 +22561,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct BufferMemoryRequirementsInfo2
     {
     protected:
-      BufferMemoryRequirementsInfo2( vk::Buffer buffer_ = vk::Buffer() )
+      VULKAN_HPP_CONSTEXPR BufferMemoryRequirementsInfo2( vk::Buffer buffer_ = vk::Buffer() )
         : buffer( buffer_ )
       {}
 
@@ -22566,7 +22586,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct BufferMemoryRequirementsInfo2 : public layout::BufferMemoryRequirementsInfo2
   {
-    BufferMemoryRequirementsInfo2( vk::Buffer buffer_ = vk::Buffer() )
+    VULKAN_HPP_CONSTEXPR BufferMemoryRequirementsInfo2( vk::Buffer buffer_ = vk::Buffer() )
       : layout::BufferMemoryRequirementsInfo2( buffer_ )
     {}
 
@@ -22625,11 +22645,11 @@ namespace VULKAN_HPP_NAMESPACE
     struct BufferViewCreateInfo
     {
     protected:
-      BufferViewCreateInfo( vk::BufferViewCreateFlags flags_ = vk::BufferViewCreateFlags(),
-                            vk::Buffer buffer_ = vk::Buffer(),
-                            vk::Format format_ = vk::Format::eUndefined,
-                            vk::DeviceSize offset_ = 0,
-                            vk::DeviceSize range_ = 0 )
+      VULKAN_HPP_CONSTEXPR BufferViewCreateInfo( vk::BufferViewCreateFlags flags_ = vk::BufferViewCreateFlags(),
+                                                 vk::Buffer buffer_ = vk::Buffer(),
+                                                 vk::Format format_ = vk::Format::eUndefined,
+                                                 vk::DeviceSize offset_ = 0,
+                                                 vk::DeviceSize range_ = 0 )
         : flags( flags_ )
         , buffer( buffer_ )
         , format( format_ )
@@ -22662,11 +22682,11 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct BufferViewCreateInfo : public layout::BufferViewCreateInfo
   {
-    BufferViewCreateInfo( vk::BufferViewCreateFlags flags_ = vk::BufferViewCreateFlags(),
-                          vk::Buffer buffer_ = vk::Buffer(),
-                          vk::Format format_ = vk::Format::eUndefined,
-                          vk::DeviceSize offset_ = 0,
-                          vk::DeviceSize range_ = 0 )
+    VULKAN_HPP_CONSTEXPR BufferViewCreateInfo( vk::BufferViewCreateFlags flags_ = vk::BufferViewCreateFlags(),
+                                               vk::Buffer buffer_ = vk::Buffer(),
+                                               vk::Format format_ = vk::Format::eUndefined,
+                                               vk::DeviceSize offset_ = 0,
+                                               vk::DeviceSize range_ = 0 )
       : layout::BufferViewCreateInfo( flags_, buffer_, format_, offset_, range_ )
     {}
 
@@ -22753,7 +22773,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct CalibratedTimestampInfoEXT
     {
     protected:
-      CalibratedTimestampInfoEXT( vk::TimeDomainEXT timeDomain_ = vk::TimeDomainEXT::eDevice )
+      VULKAN_HPP_CONSTEXPR CalibratedTimestampInfoEXT( vk::TimeDomainEXT timeDomain_ = vk::TimeDomainEXT::eDevice )
         : timeDomain( timeDomain_ )
       {}
 
@@ -22778,7 +22798,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct CalibratedTimestampInfoEXT : public layout::CalibratedTimestampInfoEXT
   {
-    CalibratedTimestampInfoEXT( vk::TimeDomainEXT timeDomain_ = vk::TimeDomainEXT::eDevice )
+    VULKAN_HPP_CONSTEXPR CalibratedTimestampInfoEXT( vk::TimeDomainEXT timeDomain_ = vk::TimeDomainEXT::eDevice )
       : layout::CalibratedTimestampInfoEXT( timeDomain_ )
     {}
 
@@ -22956,8 +22976,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ClearDepthStencilValue
   {
-    ClearDepthStencilValue( float depth_ = 0,
-                            uint32_t stencil_ = 0 )
+    VULKAN_HPP_CONSTEXPR ClearDepthStencilValue( float depth_ = 0,
+                                                 uint32_t stencil_ = 0 )
       : depth( depth_ )
       , stencil( stencil_ )
     {}
@@ -23114,9 +23134,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ClearRect
   {
-    ClearRect( vk::Rect2D rect_ = vk::Rect2D(),
-               uint32_t baseArrayLayer_ = 0,
-               uint32_t layerCount_ = 0 )
+    VULKAN_HPP_CONSTEXPR ClearRect( vk::Rect2D rect_ = vk::Rect2D(),
+                                    uint32_t baseArrayLayer_ = 0,
+                                    uint32_t layerCount_ = 0 )
       : rect( rect_ )
       , baseArrayLayer( baseArrayLayer_ )
       , layerCount( layerCount_ )
@@ -23183,9 +23203,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct IndirectCommandsTokenNVX
   {
-    IndirectCommandsTokenNVX( vk::IndirectCommandsTokenTypeNVX tokenType_ = vk::IndirectCommandsTokenTypeNVX::ePipeline,
-                              vk::Buffer buffer_ = vk::Buffer(),
-                              vk::DeviceSize offset_ = 0 )
+    VULKAN_HPP_CONSTEXPR IndirectCommandsTokenNVX( vk::IndirectCommandsTokenTypeNVX tokenType_ = vk::IndirectCommandsTokenTypeNVX::ePipeline,
+                                                   vk::Buffer buffer_ = vk::Buffer(),
+                                                   vk::DeviceSize offset_ = 0 )
       : tokenType( tokenType_ )
       , buffer( buffer_ )
       , offset( offset_ )
@@ -23255,16 +23275,16 @@ namespace VULKAN_HPP_NAMESPACE
     struct CmdProcessCommandsInfoNVX
     {
     protected:
-      CmdProcessCommandsInfoNVX( vk::ObjectTableNVX objectTable_ = vk::ObjectTableNVX(),
-                                 vk::IndirectCommandsLayoutNVX indirectCommandsLayout_ = vk::IndirectCommandsLayoutNVX(),
-                                 uint32_t indirectCommandsTokenCount_ = 0,
-                                 const vk::IndirectCommandsTokenNVX* pIndirectCommandsTokens_ = nullptr,
-                                 uint32_t maxSequencesCount_ = 0,
-                                 vk::CommandBuffer targetCommandBuffer_ = vk::CommandBuffer(),
-                                 vk::Buffer sequencesCountBuffer_ = vk::Buffer(),
-                                 vk::DeviceSize sequencesCountOffset_ = 0,
-                                 vk::Buffer sequencesIndexBuffer_ = vk::Buffer(),
-                                 vk::DeviceSize sequencesIndexOffset_ = 0 )
+      VULKAN_HPP_CONSTEXPR CmdProcessCommandsInfoNVX( vk::ObjectTableNVX objectTable_ = vk::ObjectTableNVX(),
+                                                      vk::IndirectCommandsLayoutNVX indirectCommandsLayout_ = vk::IndirectCommandsLayoutNVX(),
+                                                      uint32_t indirectCommandsTokenCount_ = 0,
+                                                      const vk::IndirectCommandsTokenNVX* pIndirectCommandsTokens_ = nullptr,
+                                                      uint32_t maxSequencesCount_ = 0,
+                                                      vk::CommandBuffer targetCommandBuffer_ = vk::CommandBuffer(),
+                                                      vk::Buffer sequencesCountBuffer_ = vk::Buffer(),
+                                                      vk::DeviceSize sequencesCountOffset_ = 0,
+                                                      vk::Buffer sequencesIndexBuffer_ = vk::Buffer(),
+                                                      vk::DeviceSize sequencesIndexOffset_ = 0 )
         : objectTable( objectTable_ )
         , indirectCommandsLayout( indirectCommandsLayout_ )
         , indirectCommandsTokenCount( indirectCommandsTokenCount_ )
@@ -23307,16 +23327,16 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct CmdProcessCommandsInfoNVX : public layout::CmdProcessCommandsInfoNVX
   {
-    CmdProcessCommandsInfoNVX( vk::ObjectTableNVX objectTable_ = vk::ObjectTableNVX(),
-                               vk::IndirectCommandsLayoutNVX indirectCommandsLayout_ = vk::IndirectCommandsLayoutNVX(),
-                               uint32_t indirectCommandsTokenCount_ = 0,
-                               const vk::IndirectCommandsTokenNVX* pIndirectCommandsTokens_ = nullptr,
-                               uint32_t maxSequencesCount_ = 0,
-                               vk::CommandBuffer targetCommandBuffer_ = vk::CommandBuffer(),
-                               vk::Buffer sequencesCountBuffer_ = vk::Buffer(),
-                               vk::DeviceSize sequencesCountOffset_ = 0,
-                               vk::Buffer sequencesIndexBuffer_ = vk::Buffer(),
-                               vk::DeviceSize sequencesIndexOffset_ = 0 )
+    VULKAN_HPP_CONSTEXPR CmdProcessCommandsInfoNVX( vk::ObjectTableNVX objectTable_ = vk::ObjectTableNVX(),
+                                                    vk::IndirectCommandsLayoutNVX indirectCommandsLayout_ = vk::IndirectCommandsLayoutNVX(),
+                                                    uint32_t indirectCommandsTokenCount_ = 0,
+                                                    const vk::IndirectCommandsTokenNVX* pIndirectCommandsTokens_ = nullptr,
+                                                    uint32_t maxSequencesCount_ = 0,
+                                                    vk::CommandBuffer targetCommandBuffer_ = vk::CommandBuffer(),
+                                                    vk::Buffer sequencesCountBuffer_ = vk::Buffer(),
+                                                    vk::DeviceSize sequencesCountOffset_ = 0,
+                                                    vk::Buffer sequencesIndexBuffer_ = vk::Buffer(),
+                                                    vk::DeviceSize sequencesIndexOffset_ = 0 )
       : layout::CmdProcessCommandsInfoNVX( objectTable_, indirectCommandsLayout_, indirectCommandsTokenCount_, pIndirectCommandsTokens_, maxSequencesCount_, targetCommandBuffer_, sequencesCountBuffer_, sequencesCountOffset_, sequencesIndexBuffer_, sequencesIndexOffset_ )
     {}
 
@@ -23438,9 +23458,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct CmdReserveSpaceForCommandsInfoNVX
     {
     protected:
-      CmdReserveSpaceForCommandsInfoNVX( vk::ObjectTableNVX objectTable_ = vk::ObjectTableNVX(),
-                                         vk::IndirectCommandsLayoutNVX indirectCommandsLayout_ = vk::IndirectCommandsLayoutNVX(),
-                                         uint32_t maxSequencesCount_ = 0 )
+      VULKAN_HPP_CONSTEXPR CmdReserveSpaceForCommandsInfoNVX( vk::ObjectTableNVX objectTable_ = vk::ObjectTableNVX(),
+                                                              vk::IndirectCommandsLayoutNVX indirectCommandsLayout_ = vk::IndirectCommandsLayoutNVX(),
+                                                              uint32_t maxSequencesCount_ = 0 )
         : objectTable( objectTable_ )
         , indirectCommandsLayout( indirectCommandsLayout_ )
         , maxSequencesCount( maxSequencesCount_ )
@@ -23469,9 +23489,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct CmdReserveSpaceForCommandsInfoNVX : public layout::CmdReserveSpaceForCommandsInfoNVX
   {
-    CmdReserveSpaceForCommandsInfoNVX( vk::ObjectTableNVX objectTable_ = vk::ObjectTableNVX(),
-                                       vk::IndirectCommandsLayoutNVX indirectCommandsLayout_ = vk::IndirectCommandsLayoutNVX(),
-                                       uint32_t maxSequencesCount_ = 0 )
+    VULKAN_HPP_CONSTEXPR CmdReserveSpaceForCommandsInfoNVX( vk::ObjectTableNVX objectTable_ = vk::ObjectTableNVX(),
+                                                            vk::IndirectCommandsLayoutNVX indirectCommandsLayout_ = vk::IndirectCommandsLayoutNVX(),
+                                                            uint32_t maxSequencesCount_ = 0 )
       : layout::CmdReserveSpaceForCommandsInfoNVX( objectTable_, indirectCommandsLayout_, maxSequencesCount_ )
     {}
 
@@ -23541,9 +23561,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct CoarseSampleLocationNV
   {
-    CoarseSampleLocationNV( uint32_t pixelX_ = 0,
-                            uint32_t pixelY_ = 0,
-                            uint32_t sample_ = 0 )
+    VULKAN_HPP_CONSTEXPR CoarseSampleLocationNV( uint32_t pixelX_ = 0,
+                                                 uint32_t pixelY_ = 0,
+                                                 uint32_t sample_ = 0 )
       : pixelX( pixelX_ )
       , pixelY( pixelY_ )
       , sample( sample_ )
@@ -23610,10 +23630,10 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct CoarseSampleOrderCustomNV
   {
-    CoarseSampleOrderCustomNV( vk::ShadingRatePaletteEntryNV shadingRate_ = vk::ShadingRatePaletteEntryNV::eNoInvocations,
-                               uint32_t sampleCount_ = 0,
-                               uint32_t sampleLocationCount_ = 0,
-                               const vk::CoarseSampleLocationNV* pSampleLocations_ = nullptr )
+    VULKAN_HPP_CONSTEXPR CoarseSampleOrderCustomNV( vk::ShadingRatePaletteEntryNV shadingRate_ = vk::ShadingRatePaletteEntryNV::eNoInvocations,
+                                                    uint32_t sampleCount_ = 0,
+                                                    uint32_t sampleLocationCount_ = 0,
+                                                    const vk::CoarseSampleLocationNV* pSampleLocations_ = nullptr )
       : shadingRate( shadingRate_ )
       , sampleCount( sampleCount_ )
       , sampleLocationCount( sampleLocationCount_ )
@@ -23692,9 +23712,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct CommandBufferAllocateInfo
     {
     protected:
-      CommandBufferAllocateInfo( vk::CommandPool commandPool_ = vk::CommandPool(),
-                                 vk::CommandBufferLevel level_ = vk::CommandBufferLevel::ePrimary,
-                                 uint32_t commandBufferCount_ = 0 )
+      VULKAN_HPP_CONSTEXPR CommandBufferAllocateInfo( vk::CommandPool commandPool_ = vk::CommandPool(),
+                                                      vk::CommandBufferLevel level_ = vk::CommandBufferLevel::ePrimary,
+                                                      uint32_t commandBufferCount_ = 0 )
         : commandPool( commandPool_ )
         , level( level_ )
         , commandBufferCount( commandBufferCount_ )
@@ -23723,9 +23743,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct CommandBufferAllocateInfo : public layout::CommandBufferAllocateInfo
   {
-    CommandBufferAllocateInfo( vk::CommandPool commandPool_ = vk::CommandPool(),
-                               vk::CommandBufferLevel level_ = vk::CommandBufferLevel::ePrimary,
-                               uint32_t commandBufferCount_ = 0 )
+    VULKAN_HPP_CONSTEXPR CommandBufferAllocateInfo( vk::CommandPool commandPool_ = vk::CommandPool(),
+                                                    vk::CommandBufferLevel level_ = vk::CommandBufferLevel::ePrimary,
+                                                    uint32_t commandBufferCount_ = 0 )
       : layout::CommandBufferAllocateInfo( commandPool_, level_, commandBufferCount_ )
     {}
 
@@ -23798,12 +23818,12 @@ namespace VULKAN_HPP_NAMESPACE
     struct CommandBufferInheritanceInfo
     {
     protected:
-      CommandBufferInheritanceInfo( vk::RenderPass renderPass_ = vk::RenderPass(),
-                                    uint32_t subpass_ = 0,
-                                    vk::Framebuffer framebuffer_ = vk::Framebuffer(),
-                                    vk::Bool32 occlusionQueryEnable_ = 0,
-                                    vk::QueryControlFlags queryFlags_ = vk::QueryControlFlags(),
-                                    vk::QueryPipelineStatisticFlags pipelineStatistics_ = vk::QueryPipelineStatisticFlags() )
+      VULKAN_HPP_CONSTEXPR CommandBufferInheritanceInfo( vk::RenderPass renderPass_ = vk::RenderPass(),
+                                                         uint32_t subpass_ = 0,
+                                                         vk::Framebuffer framebuffer_ = vk::Framebuffer(),
+                                                         vk::Bool32 occlusionQueryEnable_ = 0,
+                                                         vk::QueryControlFlags queryFlags_ = vk::QueryControlFlags(),
+                                                         vk::QueryPipelineStatisticFlags pipelineStatistics_ = vk::QueryPipelineStatisticFlags() )
         : renderPass( renderPass_ )
         , subpass( subpass_ )
         , framebuffer( framebuffer_ )
@@ -23838,12 +23858,12 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct CommandBufferInheritanceInfo : public layout::CommandBufferInheritanceInfo
   {
-    CommandBufferInheritanceInfo( vk::RenderPass renderPass_ = vk::RenderPass(),
-                                  uint32_t subpass_ = 0,
-                                  vk::Framebuffer framebuffer_ = vk::Framebuffer(),
-                                  vk::Bool32 occlusionQueryEnable_ = 0,
-                                  vk::QueryControlFlags queryFlags_ = vk::QueryControlFlags(),
-                                  vk::QueryPipelineStatisticFlags pipelineStatistics_ = vk::QueryPipelineStatisticFlags() )
+    VULKAN_HPP_CONSTEXPR CommandBufferInheritanceInfo( vk::RenderPass renderPass_ = vk::RenderPass(),
+                                                       uint32_t subpass_ = 0,
+                                                       vk::Framebuffer framebuffer_ = vk::Framebuffer(),
+                                                       vk::Bool32 occlusionQueryEnable_ = 0,
+                                                       vk::QueryControlFlags queryFlags_ = vk::QueryControlFlags(),
+                                                       vk::QueryPipelineStatisticFlags pipelineStatistics_ = vk::QueryPipelineStatisticFlags() )
       : layout::CommandBufferInheritanceInfo( renderPass_, subpass_, framebuffer_, occlusionQueryEnable_, queryFlags_, pipelineStatistics_ )
     {}
 
@@ -23937,8 +23957,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct CommandBufferBeginInfo
     {
     protected:
-      CommandBufferBeginInfo( vk::CommandBufferUsageFlags flags_ = vk::CommandBufferUsageFlags(),
-                              const vk::CommandBufferInheritanceInfo* pInheritanceInfo_ = nullptr )
+      VULKAN_HPP_CONSTEXPR CommandBufferBeginInfo( vk::CommandBufferUsageFlags flags_ = vk::CommandBufferUsageFlags(),
+                                                   const vk::CommandBufferInheritanceInfo* pInheritanceInfo_ = nullptr )
         : flags( flags_ )
         , pInheritanceInfo( pInheritanceInfo_ )
       {}
@@ -23965,8 +23985,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct CommandBufferBeginInfo : public layout::CommandBufferBeginInfo
   {
-    CommandBufferBeginInfo( vk::CommandBufferUsageFlags flags_ = vk::CommandBufferUsageFlags(),
-                            const vk::CommandBufferInheritanceInfo* pInheritanceInfo_ = nullptr )
+    VULKAN_HPP_CONSTEXPR CommandBufferBeginInfo( vk::CommandBufferUsageFlags flags_ = vk::CommandBufferUsageFlags(),
+                                                 const vk::CommandBufferInheritanceInfo* pInheritanceInfo_ = nullptr )
       : layout::CommandBufferBeginInfo( flags_, pInheritanceInfo_ )
     {}
 
@@ -24032,7 +24052,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct CommandBufferInheritanceConditionalRenderingInfoEXT
     {
     protected:
-      CommandBufferInheritanceConditionalRenderingInfoEXT( vk::Bool32 conditionalRenderingEnable_ = 0 )
+      VULKAN_HPP_CONSTEXPR CommandBufferInheritanceConditionalRenderingInfoEXT( vk::Bool32 conditionalRenderingEnable_ = 0 )
         : conditionalRenderingEnable( conditionalRenderingEnable_ )
       {}
 
@@ -24057,7 +24077,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct CommandBufferInheritanceConditionalRenderingInfoEXT : public layout::CommandBufferInheritanceConditionalRenderingInfoEXT
   {
-    CommandBufferInheritanceConditionalRenderingInfoEXT( vk::Bool32 conditionalRenderingEnable_ = 0 )
+    VULKAN_HPP_CONSTEXPR CommandBufferInheritanceConditionalRenderingInfoEXT( vk::Bool32 conditionalRenderingEnable_ = 0 )
       : layout::CommandBufferInheritanceConditionalRenderingInfoEXT( conditionalRenderingEnable_ )
     {}
 
@@ -24116,8 +24136,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct CommandPoolCreateInfo
     {
     protected:
-      CommandPoolCreateInfo( vk::CommandPoolCreateFlags flags_ = vk::CommandPoolCreateFlags(),
-                             uint32_t queueFamilyIndex_ = 0 )
+      VULKAN_HPP_CONSTEXPR CommandPoolCreateInfo( vk::CommandPoolCreateFlags flags_ = vk::CommandPoolCreateFlags(),
+                                                  uint32_t queueFamilyIndex_ = 0 )
         : flags( flags_ )
         , queueFamilyIndex( queueFamilyIndex_ )
       {}
@@ -24144,8 +24164,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct CommandPoolCreateInfo : public layout::CommandPoolCreateInfo
   {
-    CommandPoolCreateInfo( vk::CommandPoolCreateFlags flags_ = vk::CommandPoolCreateFlags(),
-                           uint32_t queueFamilyIndex_ = 0 )
+    VULKAN_HPP_CONSTEXPR CommandPoolCreateInfo( vk::CommandPoolCreateFlags flags_ = vk::CommandPoolCreateFlags(),
+                                                uint32_t queueFamilyIndex_ = 0 )
       : layout::CommandPoolCreateInfo( flags_, queueFamilyIndex_ )
     {}
 
@@ -24208,9 +24228,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SpecializationMapEntry
   {
-    SpecializationMapEntry( uint32_t constantID_ = 0,
-                            uint32_t offset_ = 0,
-                            size_t size_ = 0 )
+    VULKAN_HPP_CONSTEXPR SpecializationMapEntry( uint32_t constantID_ = 0,
+                                                 uint32_t offset_ = 0,
+                                                 size_t size_ = 0 )
       : constantID( constantID_ )
       , offset( offset_ )
       , size( size_ )
@@ -24277,10 +24297,10 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SpecializationInfo
   {
-    SpecializationInfo( uint32_t mapEntryCount_ = 0,
-                        const vk::SpecializationMapEntry* pMapEntries_ = nullptr,
-                        size_t dataSize_ = 0,
-                        const void* pData_ = nullptr )
+    VULKAN_HPP_CONSTEXPR SpecializationInfo( uint32_t mapEntryCount_ = 0,
+                                             const vk::SpecializationMapEntry* pMapEntries_ = nullptr,
+                                             size_t dataSize_ = 0,
+                                             const void* pData_ = nullptr )
       : mapEntryCount( mapEntryCount_ )
       , pMapEntries( pMapEntries_ )
       , dataSize( dataSize_ )
@@ -24359,11 +24379,11 @@ namespace VULKAN_HPP_NAMESPACE
     struct PipelineShaderStageCreateInfo
     {
     protected:
-      PipelineShaderStageCreateInfo( vk::PipelineShaderStageCreateFlags flags_ = vk::PipelineShaderStageCreateFlags(),
-                                     vk::ShaderStageFlagBits stage_ = vk::ShaderStageFlagBits::eVertex,
-                                     vk::ShaderModule module_ = vk::ShaderModule(),
-                                     const char* pName_ = nullptr,
-                                     const vk::SpecializationInfo* pSpecializationInfo_ = nullptr )
+      VULKAN_HPP_CONSTEXPR PipelineShaderStageCreateInfo( vk::PipelineShaderStageCreateFlags flags_ = vk::PipelineShaderStageCreateFlags(),
+                                                          vk::ShaderStageFlagBits stage_ = vk::ShaderStageFlagBits::eVertex,
+                                                          vk::ShaderModule module_ = vk::ShaderModule(),
+                                                          const char* pName_ = nullptr,
+                                                          const vk::SpecializationInfo* pSpecializationInfo_ = nullptr )
         : flags( flags_ )
         , stage( stage_ )
         , module( module_ )
@@ -24396,11 +24416,11 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineShaderStageCreateInfo : public layout::PipelineShaderStageCreateInfo
   {
-    PipelineShaderStageCreateInfo( vk::PipelineShaderStageCreateFlags flags_ = vk::PipelineShaderStageCreateFlags(),
-                                   vk::ShaderStageFlagBits stage_ = vk::ShaderStageFlagBits::eVertex,
-                                   vk::ShaderModule module_ = vk::ShaderModule(),
-                                   const char* pName_ = nullptr,
-                                   const vk::SpecializationInfo* pSpecializationInfo_ = nullptr )
+    VULKAN_HPP_CONSTEXPR PipelineShaderStageCreateInfo( vk::PipelineShaderStageCreateFlags flags_ = vk::PipelineShaderStageCreateFlags(),
+                                                        vk::ShaderStageFlagBits stage_ = vk::ShaderStageFlagBits::eVertex,
+                                                        vk::ShaderModule module_ = vk::ShaderModule(),
+                                                        const char* pName_ = nullptr,
+                                                        const vk::SpecializationInfo* pSpecializationInfo_ = nullptr )
       : layout::PipelineShaderStageCreateInfo( flags_, stage_, module_, pName_, pSpecializationInfo_ )
     {}
 
@@ -24487,11 +24507,11 @@ namespace VULKAN_HPP_NAMESPACE
     struct ComputePipelineCreateInfo
     {
     protected:
-      ComputePipelineCreateInfo( vk::PipelineCreateFlags flags_ = vk::PipelineCreateFlags(),
-                                 vk::PipelineShaderStageCreateInfo stage_ = vk::PipelineShaderStageCreateInfo(),
-                                 vk::PipelineLayout layout_ = vk::PipelineLayout(),
-                                 vk::Pipeline basePipelineHandle_ = vk::Pipeline(),
-                                 int32_t basePipelineIndex_ = 0 )
+      VULKAN_HPP_CONSTEXPR ComputePipelineCreateInfo( vk::PipelineCreateFlags flags_ = vk::PipelineCreateFlags(),
+                                                      vk::PipelineShaderStageCreateInfo stage_ = vk::PipelineShaderStageCreateInfo(),
+                                                      vk::PipelineLayout layout_ = vk::PipelineLayout(),
+                                                      vk::Pipeline basePipelineHandle_ = vk::Pipeline(),
+                                                      int32_t basePipelineIndex_ = 0 )
         : flags( flags_ )
         , stage( stage_ )
         , layout( layout_ )
@@ -24524,11 +24544,11 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ComputePipelineCreateInfo : public layout::ComputePipelineCreateInfo
   {
-    ComputePipelineCreateInfo( vk::PipelineCreateFlags flags_ = vk::PipelineCreateFlags(),
-                               vk::PipelineShaderStageCreateInfo stage_ = vk::PipelineShaderStageCreateInfo(),
-                               vk::PipelineLayout layout_ = vk::PipelineLayout(),
-                               vk::Pipeline basePipelineHandle_ = vk::Pipeline(),
-                               int32_t basePipelineIndex_ = 0 )
+    VULKAN_HPP_CONSTEXPR ComputePipelineCreateInfo( vk::PipelineCreateFlags flags_ = vk::PipelineCreateFlags(),
+                                                    vk::PipelineShaderStageCreateInfo stage_ = vk::PipelineShaderStageCreateInfo(),
+                                                    vk::PipelineLayout layout_ = vk::PipelineLayout(),
+                                                    vk::Pipeline basePipelineHandle_ = vk::Pipeline(),
+                                                    int32_t basePipelineIndex_ = 0 )
       : layout::ComputePipelineCreateInfo( flags_, stage_, layout_, basePipelineHandle_, basePipelineIndex_ )
     {}
 
@@ -24615,9 +24635,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct ConditionalRenderingBeginInfoEXT
     {
     protected:
-      ConditionalRenderingBeginInfoEXT( vk::Buffer buffer_ = vk::Buffer(),
-                                        vk::DeviceSize offset_ = 0,
-                                        vk::ConditionalRenderingFlagsEXT flags_ = vk::ConditionalRenderingFlagsEXT() )
+      VULKAN_HPP_CONSTEXPR ConditionalRenderingBeginInfoEXT( vk::Buffer buffer_ = vk::Buffer(),
+                                                             vk::DeviceSize offset_ = 0,
+                                                             vk::ConditionalRenderingFlagsEXT flags_ = vk::ConditionalRenderingFlagsEXT() )
         : buffer( buffer_ )
         , offset( offset_ )
         , flags( flags_ )
@@ -24646,9 +24666,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ConditionalRenderingBeginInfoEXT : public layout::ConditionalRenderingBeginInfoEXT
   {
-    ConditionalRenderingBeginInfoEXT( vk::Buffer buffer_ = vk::Buffer(),
-                                      vk::DeviceSize offset_ = 0,
-                                      vk::ConditionalRenderingFlagsEXT flags_ = vk::ConditionalRenderingFlagsEXT() )
+    VULKAN_HPP_CONSTEXPR ConditionalRenderingBeginInfoEXT( vk::Buffer buffer_ = vk::Buffer(),
+                                                           vk::DeviceSize offset_ = 0,
+                                                           vk::ConditionalRenderingFlagsEXT flags_ = vk::ConditionalRenderingFlagsEXT() )
       : layout::ConditionalRenderingBeginInfoEXT( buffer_, offset_, flags_ )
     {}
 
@@ -24718,10 +24738,10 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ConformanceVersionKHR
   {
-    ConformanceVersionKHR( uint8_t major_ = 0,
-                           uint8_t minor_ = 0,
-                           uint8_t subminor_ = 0,
-                           uint8_t patch_ = 0 )
+    VULKAN_HPP_CONSTEXPR ConformanceVersionKHR( uint8_t major_ = 0,
+                                                uint8_t minor_ = 0,
+                                                uint8_t subminor_ = 0,
+                                                uint8_t patch_ = 0 )
       : major( major_ )
       , minor( minor_ )
       , subminor( subminor_ )
@@ -24800,14 +24820,14 @@ namespace VULKAN_HPP_NAMESPACE
     struct CooperativeMatrixPropertiesNV
     {
     protected:
-      CooperativeMatrixPropertiesNV( uint32_t MSize_ = 0,
-                                     uint32_t NSize_ = 0,
-                                     uint32_t KSize_ = 0,
-                                     vk::ComponentTypeNV AType_ = vk::ComponentTypeNV::eFloat16,
-                                     vk::ComponentTypeNV BType_ = vk::ComponentTypeNV::eFloat16,
-                                     vk::ComponentTypeNV CType_ = vk::ComponentTypeNV::eFloat16,
-                                     vk::ComponentTypeNV DType_ = vk::ComponentTypeNV::eFloat16,
-                                     vk::ScopeNV scope_ = vk::ScopeNV::eDevice )
+      VULKAN_HPP_CONSTEXPR CooperativeMatrixPropertiesNV( uint32_t MSize_ = 0,
+                                                          uint32_t NSize_ = 0,
+                                                          uint32_t KSize_ = 0,
+                                                          vk::ComponentTypeNV AType_ = vk::ComponentTypeNV::eFloat16,
+                                                          vk::ComponentTypeNV BType_ = vk::ComponentTypeNV::eFloat16,
+                                                          vk::ComponentTypeNV CType_ = vk::ComponentTypeNV::eFloat16,
+                                                          vk::ComponentTypeNV DType_ = vk::ComponentTypeNV::eFloat16,
+                                                          vk::ScopeNV scope_ = vk::ScopeNV::eDevice )
         : MSize( MSize_ )
         , NSize( NSize_ )
         , KSize( KSize_ )
@@ -24846,14 +24866,14 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct CooperativeMatrixPropertiesNV : public layout::CooperativeMatrixPropertiesNV
   {
-    CooperativeMatrixPropertiesNV( uint32_t MSize_ = 0,
-                                   uint32_t NSize_ = 0,
-                                   uint32_t KSize_ = 0,
-                                   vk::ComponentTypeNV AType_ = vk::ComponentTypeNV::eFloat16,
-                                   vk::ComponentTypeNV BType_ = vk::ComponentTypeNV::eFloat16,
-                                   vk::ComponentTypeNV CType_ = vk::ComponentTypeNV::eFloat16,
-                                   vk::ComponentTypeNV DType_ = vk::ComponentTypeNV::eFloat16,
-                                   vk::ScopeNV scope_ = vk::ScopeNV::eDevice )
+    VULKAN_HPP_CONSTEXPR CooperativeMatrixPropertiesNV( uint32_t MSize_ = 0,
+                                                        uint32_t NSize_ = 0,
+                                                        uint32_t KSize_ = 0,
+                                                        vk::ComponentTypeNV AType_ = vk::ComponentTypeNV::eFloat16,
+                                                        vk::ComponentTypeNV BType_ = vk::ComponentTypeNV::eFloat16,
+                                                        vk::ComponentTypeNV CType_ = vk::ComponentTypeNV::eFloat16,
+                                                        vk::ComponentTypeNV DType_ = vk::ComponentTypeNV::eFloat16,
+                                                        vk::ScopeNV scope_ = vk::ScopeNV::eDevice )
       : layout::CooperativeMatrixPropertiesNV( MSize_, NSize_, KSize_, AType_, BType_, CType_, DType_, scope_ )
     {}
 
@@ -24961,13 +24981,13 @@ namespace VULKAN_HPP_NAMESPACE
     struct CopyDescriptorSet
     {
     protected:
-      CopyDescriptorSet( vk::DescriptorSet srcSet_ = vk::DescriptorSet(),
-                         uint32_t srcBinding_ = 0,
-                         uint32_t srcArrayElement_ = 0,
-                         vk::DescriptorSet dstSet_ = vk::DescriptorSet(),
-                         uint32_t dstBinding_ = 0,
-                         uint32_t dstArrayElement_ = 0,
-                         uint32_t descriptorCount_ = 0 )
+      VULKAN_HPP_CONSTEXPR CopyDescriptorSet( vk::DescriptorSet srcSet_ = vk::DescriptorSet(),
+                                              uint32_t srcBinding_ = 0,
+                                              uint32_t srcArrayElement_ = 0,
+                                              vk::DescriptorSet dstSet_ = vk::DescriptorSet(),
+                                              uint32_t dstBinding_ = 0,
+                                              uint32_t dstArrayElement_ = 0,
+                                              uint32_t descriptorCount_ = 0 )
         : srcSet( srcSet_ )
         , srcBinding( srcBinding_ )
         , srcArrayElement( srcArrayElement_ )
@@ -25004,13 +25024,13 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct CopyDescriptorSet : public layout::CopyDescriptorSet
   {
-    CopyDescriptorSet( vk::DescriptorSet srcSet_ = vk::DescriptorSet(),
-                       uint32_t srcBinding_ = 0,
-                       uint32_t srcArrayElement_ = 0,
-                       vk::DescriptorSet dstSet_ = vk::DescriptorSet(),
-                       uint32_t dstBinding_ = 0,
-                       uint32_t dstArrayElement_ = 0,
-                       uint32_t descriptorCount_ = 0 )
+    VULKAN_HPP_CONSTEXPR CopyDescriptorSet( vk::DescriptorSet srcSet_ = vk::DescriptorSet(),
+                                            uint32_t srcBinding_ = 0,
+                                            uint32_t srcArrayElement_ = 0,
+                                            vk::DescriptorSet dstSet_ = vk::DescriptorSet(),
+                                            uint32_t dstBinding_ = 0,
+                                            uint32_t dstArrayElement_ = 0,
+                                            uint32_t descriptorCount_ = 0 )
       : layout::CopyDescriptorSet( srcSet_, srcBinding_, srcArrayElement_, dstSet_, dstBinding_, dstArrayElement_, descriptorCount_ )
     {}
 
@@ -25113,10 +25133,10 @@ namespace VULKAN_HPP_NAMESPACE
     struct D3D12FenceSubmitInfoKHR
     {
     protected:
-      D3D12FenceSubmitInfoKHR( uint32_t waitSemaphoreValuesCount_ = 0,
-                               const uint64_t* pWaitSemaphoreValues_ = nullptr,
-                               uint32_t signalSemaphoreValuesCount_ = 0,
-                               const uint64_t* pSignalSemaphoreValues_ = nullptr )
+      VULKAN_HPP_CONSTEXPR D3D12FenceSubmitInfoKHR( uint32_t waitSemaphoreValuesCount_ = 0,
+                                                    const uint64_t* pWaitSemaphoreValues_ = nullptr,
+                                                    uint32_t signalSemaphoreValuesCount_ = 0,
+                                                    const uint64_t* pSignalSemaphoreValues_ = nullptr )
         : waitSemaphoreValuesCount( waitSemaphoreValuesCount_ )
         , pWaitSemaphoreValues( pWaitSemaphoreValues_ )
         , signalSemaphoreValuesCount( signalSemaphoreValuesCount_ )
@@ -25147,10 +25167,10 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct D3D12FenceSubmitInfoKHR : public layout::D3D12FenceSubmitInfoKHR
   {
-    D3D12FenceSubmitInfoKHR( uint32_t waitSemaphoreValuesCount_ = 0,
-                             const uint64_t* pWaitSemaphoreValues_ = nullptr,
-                             uint32_t signalSemaphoreValuesCount_ = 0,
-                             const uint64_t* pSignalSemaphoreValues_ = nullptr )
+    VULKAN_HPP_CONSTEXPR D3D12FenceSubmitInfoKHR( uint32_t waitSemaphoreValuesCount_ = 0,
+                                                  const uint64_t* pWaitSemaphoreValues_ = nullptr,
+                                                  uint32_t signalSemaphoreValuesCount_ = 0,
+                                                  const uint64_t* pSignalSemaphoreValues_ = nullptr )
       : layout::D3D12FenceSubmitInfoKHR( waitSemaphoreValuesCount_, pWaitSemaphoreValues_, signalSemaphoreValuesCount_, pSignalSemaphoreValues_ )
     {}
 
@@ -25231,12 +25251,12 @@ namespace VULKAN_HPP_NAMESPACE
     struct DebugMarkerMarkerInfoEXT
     {
     protected:
-      DebugMarkerMarkerInfoEXT( const char* pMarkerName_ = nullptr,
-                                std::array<float,4> const& color_ = { { 0 } } )
+      VULKAN_HPP_CONSTEXPR_14 DebugMarkerMarkerInfoEXT( const char* pMarkerName_ = nullptr,
+                                                        std::array<float,4> const& color_ = { { 0 } } )
         : pMarkerName( pMarkerName_ )
+        , color{}
       {
-        memcpy( &color, color_.data(), 4 * sizeof( float ) );
-      
+        vk::ConstExpressionArrayCopy<float,4,4>::copy( color, color_ );
       }
 
       DebugMarkerMarkerInfoEXT( VkDebugMarkerMarkerInfoEXT const & rhs )
@@ -25261,8 +25281,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DebugMarkerMarkerInfoEXT : public layout::DebugMarkerMarkerInfoEXT
   {
-    DebugMarkerMarkerInfoEXT( const char* pMarkerName_ = nullptr,
-                              std::array<float,4> const& color_ = { { 0 } } )
+    VULKAN_HPP_CONSTEXPR_14 DebugMarkerMarkerInfoEXT( const char* pMarkerName_ = nullptr,
+                                                      std::array<float,4> const& color_ = { { 0 } } )
       : layout::DebugMarkerMarkerInfoEXT( pMarkerName_, color_ )
     {}
 
@@ -25328,9 +25348,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct DebugMarkerObjectNameInfoEXT
     {
     protected:
-      DebugMarkerObjectNameInfoEXT( vk::DebugReportObjectTypeEXT objectType_ = vk::DebugReportObjectTypeEXT::eUnknown,
-                                    uint64_t object_ = 0,
-                                    const char* pObjectName_ = nullptr )
+      VULKAN_HPP_CONSTEXPR DebugMarkerObjectNameInfoEXT( vk::DebugReportObjectTypeEXT objectType_ = vk::DebugReportObjectTypeEXT::eUnknown,
+                                                         uint64_t object_ = 0,
+                                                         const char* pObjectName_ = nullptr )
         : objectType( objectType_ )
         , object( object_ )
         , pObjectName( pObjectName_ )
@@ -25359,9 +25379,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DebugMarkerObjectNameInfoEXT : public layout::DebugMarkerObjectNameInfoEXT
   {
-    DebugMarkerObjectNameInfoEXT( vk::DebugReportObjectTypeEXT objectType_ = vk::DebugReportObjectTypeEXT::eUnknown,
-                                  uint64_t object_ = 0,
-                                  const char* pObjectName_ = nullptr )
+    VULKAN_HPP_CONSTEXPR DebugMarkerObjectNameInfoEXT( vk::DebugReportObjectTypeEXT objectType_ = vk::DebugReportObjectTypeEXT::eUnknown,
+                                                       uint64_t object_ = 0,
+                                                       const char* pObjectName_ = nullptr )
       : layout::DebugMarkerObjectNameInfoEXT( objectType_, object_, pObjectName_ )
     {}
 
@@ -25434,11 +25454,11 @@ namespace VULKAN_HPP_NAMESPACE
     struct DebugMarkerObjectTagInfoEXT
     {
     protected:
-      DebugMarkerObjectTagInfoEXT( vk::DebugReportObjectTypeEXT objectType_ = vk::DebugReportObjectTypeEXT::eUnknown,
-                                   uint64_t object_ = 0,
-                                   uint64_t tagName_ = 0,
-                                   size_t tagSize_ = 0,
-                                   const void* pTag_ = nullptr )
+      VULKAN_HPP_CONSTEXPR DebugMarkerObjectTagInfoEXT( vk::DebugReportObjectTypeEXT objectType_ = vk::DebugReportObjectTypeEXT::eUnknown,
+                                                        uint64_t object_ = 0,
+                                                        uint64_t tagName_ = 0,
+                                                        size_t tagSize_ = 0,
+                                                        const void* pTag_ = nullptr )
         : objectType( objectType_ )
         , object( object_ )
         , tagName( tagName_ )
@@ -25471,11 +25491,11 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DebugMarkerObjectTagInfoEXT : public layout::DebugMarkerObjectTagInfoEXT
   {
-    DebugMarkerObjectTagInfoEXT( vk::DebugReportObjectTypeEXT objectType_ = vk::DebugReportObjectTypeEXT::eUnknown,
-                                 uint64_t object_ = 0,
-                                 uint64_t tagName_ = 0,
-                                 size_t tagSize_ = 0,
-                                 const void* pTag_ = nullptr )
+    VULKAN_HPP_CONSTEXPR DebugMarkerObjectTagInfoEXT( vk::DebugReportObjectTypeEXT objectType_ = vk::DebugReportObjectTypeEXT::eUnknown,
+                                                      uint64_t object_ = 0,
+                                                      uint64_t tagName_ = 0,
+                                                      size_t tagSize_ = 0,
+                                                      const void* pTag_ = nullptr )
       : layout::DebugMarkerObjectTagInfoEXT( objectType_, object_, tagName_, tagSize_, pTag_ )
     {}
 
@@ -25562,9 +25582,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct DebugReportCallbackCreateInfoEXT
     {
     protected:
-      DebugReportCallbackCreateInfoEXT( vk::DebugReportFlagsEXT flags_ = vk::DebugReportFlagsEXT(),
-                                        PFN_vkDebugReportCallbackEXT pfnCallback_ = nullptr,
-                                        void* pUserData_ = nullptr )
+      VULKAN_HPP_CONSTEXPR DebugReportCallbackCreateInfoEXT( vk::DebugReportFlagsEXT flags_ = vk::DebugReportFlagsEXT(),
+                                                             PFN_vkDebugReportCallbackEXT pfnCallback_ = nullptr,
+                                                             void* pUserData_ = nullptr )
         : flags( flags_ )
         , pfnCallback( pfnCallback_ )
         , pUserData( pUserData_ )
@@ -25593,9 +25613,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DebugReportCallbackCreateInfoEXT : public layout::DebugReportCallbackCreateInfoEXT
   {
-    DebugReportCallbackCreateInfoEXT( vk::DebugReportFlagsEXT flags_ = vk::DebugReportFlagsEXT(),
-                                      PFN_vkDebugReportCallbackEXT pfnCallback_ = nullptr,
-                                      void* pUserData_ = nullptr )
+    VULKAN_HPP_CONSTEXPR DebugReportCallbackCreateInfoEXT( vk::DebugReportFlagsEXT flags_ = vk::DebugReportFlagsEXT(),
+                                                           PFN_vkDebugReportCallbackEXT pfnCallback_ = nullptr,
+                                                           void* pUserData_ = nullptr )
       : layout::DebugReportCallbackCreateInfoEXT( flags_, pfnCallback_, pUserData_ )
     {}
 
@@ -25668,12 +25688,12 @@ namespace VULKAN_HPP_NAMESPACE
     struct DebugUtilsLabelEXT
     {
     protected:
-      DebugUtilsLabelEXT( const char* pLabelName_ = nullptr,
-                          std::array<float,4> const& color_ = { { 0 } } )
+      VULKAN_HPP_CONSTEXPR_14 DebugUtilsLabelEXT( const char* pLabelName_ = nullptr,
+                                                  std::array<float,4> const& color_ = { { 0 } } )
         : pLabelName( pLabelName_ )
+        , color{}
       {
-        memcpy( &color, color_.data(), 4 * sizeof( float ) );
-      
+        vk::ConstExpressionArrayCopy<float,4,4>::copy( color, color_ );
       }
 
       DebugUtilsLabelEXT( VkDebugUtilsLabelEXT const & rhs )
@@ -25698,8 +25718,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DebugUtilsLabelEXT : public layout::DebugUtilsLabelEXT
   {
-    DebugUtilsLabelEXT( const char* pLabelName_ = nullptr,
-                        std::array<float,4> const& color_ = { { 0 } } )
+    VULKAN_HPP_CONSTEXPR_14 DebugUtilsLabelEXT( const char* pLabelName_ = nullptr,
+                                                std::array<float,4> const& color_ = { { 0 } } )
       : layout::DebugUtilsLabelEXT( pLabelName_, color_ )
     {}
 
@@ -25765,9 +25785,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct DebugUtilsObjectNameInfoEXT
     {
     protected:
-      DebugUtilsObjectNameInfoEXT( vk::ObjectType objectType_ = vk::ObjectType::eUnknown,
-                                   uint64_t objectHandle_ = 0,
-                                   const char* pObjectName_ = nullptr )
+      VULKAN_HPP_CONSTEXPR DebugUtilsObjectNameInfoEXT( vk::ObjectType objectType_ = vk::ObjectType::eUnknown,
+                                                        uint64_t objectHandle_ = 0,
+                                                        const char* pObjectName_ = nullptr )
         : objectType( objectType_ )
         , objectHandle( objectHandle_ )
         , pObjectName( pObjectName_ )
@@ -25796,9 +25816,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DebugUtilsObjectNameInfoEXT : public layout::DebugUtilsObjectNameInfoEXT
   {
-    DebugUtilsObjectNameInfoEXT( vk::ObjectType objectType_ = vk::ObjectType::eUnknown,
-                                 uint64_t objectHandle_ = 0,
-                                 const char* pObjectName_ = nullptr )
+    VULKAN_HPP_CONSTEXPR DebugUtilsObjectNameInfoEXT( vk::ObjectType objectType_ = vk::ObjectType::eUnknown,
+                                                      uint64_t objectHandle_ = 0,
+                                                      const char* pObjectName_ = nullptr )
       : layout::DebugUtilsObjectNameInfoEXT( objectType_, objectHandle_, pObjectName_ )
     {}
 
@@ -25871,16 +25891,16 @@ namespace VULKAN_HPP_NAMESPACE
     struct DebugUtilsMessengerCallbackDataEXT
     {
     protected:
-      DebugUtilsMessengerCallbackDataEXT( vk::DebugUtilsMessengerCallbackDataFlagsEXT flags_ = vk::DebugUtilsMessengerCallbackDataFlagsEXT(),
-                                          const char* pMessageIdName_ = nullptr,
-                                          int32_t messageIdNumber_ = 0,
-                                          const char* pMessage_ = nullptr,
-                                          uint32_t queueLabelCount_ = 0,
-                                          const vk::DebugUtilsLabelEXT* pQueueLabels_ = nullptr,
-                                          uint32_t cmdBufLabelCount_ = 0,
-                                          const vk::DebugUtilsLabelEXT* pCmdBufLabels_ = nullptr,
-                                          uint32_t objectCount_ = 0,
-                                          const vk::DebugUtilsObjectNameInfoEXT* pObjects_ = nullptr )
+      VULKAN_HPP_CONSTEXPR DebugUtilsMessengerCallbackDataEXT( vk::DebugUtilsMessengerCallbackDataFlagsEXT flags_ = vk::DebugUtilsMessengerCallbackDataFlagsEXT(),
+                                                               const char* pMessageIdName_ = nullptr,
+                                                               int32_t messageIdNumber_ = 0,
+                                                               const char* pMessage_ = nullptr,
+                                                               uint32_t queueLabelCount_ = 0,
+                                                               const vk::DebugUtilsLabelEXT* pQueueLabels_ = nullptr,
+                                                               uint32_t cmdBufLabelCount_ = 0,
+                                                               const vk::DebugUtilsLabelEXT* pCmdBufLabels_ = nullptr,
+                                                               uint32_t objectCount_ = 0,
+                                                               const vk::DebugUtilsObjectNameInfoEXT* pObjects_ = nullptr )
         : flags( flags_ )
         , pMessageIdName( pMessageIdName_ )
         , messageIdNumber( messageIdNumber_ )
@@ -25923,16 +25943,16 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DebugUtilsMessengerCallbackDataEXT : public layout::DebugUtilsMessengerCallbackDataEXT
   {
-    DebugUtilsMessengerCallbackDataEXT( vk::DebugUtilsMessengerCallbackDataFlagsEXT flags_ = vk::DebugUtilsMessengerCallbackDataFlagsEXT(),
-                                        const char* pMessageIdName_ = nullptr,
-                                        int32_t messageIdNumber_ = 0,
-                                        const char* pMessage_ = nullptr,
-                                        uint32_t queueLabelCount_ = 0,
-                                        const vk::DebugUtilsLabelEXT* pQueueLabels_ = nullptr,
-                                        uint32_t cmdBufLabelCount_ = 0,
-                                        const vk::DebugUtilsLabelEXT* pCmdBufLabels_ = nullptr,
-                                        uint32_t objectCount_ = 0,
-                                        const vk::DebugUtilsObjectNameInfoEXT* pObjects_ = nullptr )
+    VULKAN_HPP_CONSTEXPR DebugUtilsMessengerCallbackDataEXT( vk::DebugUtilsMessengerCallbackDataFlagsEXT flags_ = vk::DebugUtilsMessengerCallbackDataFlagsEXT(),
+                                                             const char* pMessageIdName_ = nullptr,
+                                                             int32_t messageIdNumber_ = 0,
+                                                             const char* pMessage_ = nullptr,
+                                                             uint32_t queueLabelCount_ = 0,
+                                                             const vk::DebugUtilsLabelEXT* pQueueLabels_ = nullptr,
+                                                             uint32_t cmdBufLabelCount_ = 0,
+                                                             const vk::DebugUtilsLabelEXT* pCmdBufLabels_ = nullptr,
+                                                             uint32_t objectCount_ = 0,
+                                                             const vk::DebugUtilsObjectNameInfoEXT* pObjects_ = nullptr )
       : layout::DebugUtilsMessengerCallbackDataEXT( flags_, pMessageIdName_, messageIdNumber_, pMessage_, queueLabelCount_, pQueueLabels_, cmdBufLabelCount_, pCmdBufLabels_, objectCount_, pObjects_ )
     {}
 
@@ -26054,11 +26074,11 @@ namespace VULKAN_HPP_NAMESPACE
     struct DebugUtilsMessengerCreateInfoEXT
     {
     protected:
-      DebugUtilsMessengerCreateInfoEXT( vk::DebugUtilsMessengerCreateFlagsEXT flags_ = vk::DebugUtilsMessengerCreateFlagsEXT(),
-                                        vk::DebugUtilsMessageSeverityFlagsEXT messageSeverity_ = vk::DebugUtilsMessageSeverityFlagsEXT(),
-                                        vk::DebugUtilsMessageTypeFlagsEXT messageType_ = vk::DebugUtilsMessageTypeFlagsEXT(),
-                                        PFN_vkDebugUtilsMessengerCallbackEXT pfnUserCallback_ = nullptr,
-                                        void* pUserData_ = nullptr )
+      VULKAN_HPP_CONSTEXPR DebugUtilsMessengerCreateInfoEXT( vk::DebugUtilsMessengerCreateFlagsEXT flags_ = vk::DebugUtilsMessengerCreateFlagsEXT(),
+                                                             vk::DebugUtilsMessageSeverityFlagsEXT messageSeverity_ = vk::DebugUtilsMessageSeverityFlagsEXT(),
+                                                             vk::DebugUtilsMessageTypeFlagsEXT messageType_ = vk::DebugUtilsMessageTypeFlagsEXT(),
+                                                             PFN_vkDebugUtilsMessengerCallbackEXT pfnUserCallback_ = nullptr,
+                                                             void* pUserData_ = nullptr )
         : flags( flags_ )
         , messageSeverity( messageSeverity_ )
         , messageType( messageType_ )
@@ -26091,11 +26111,11 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DebugUtilsMessengerCreateInfoEXT : public layout::DebugUtilsMessengerCreateInfoEXT
   {
-    DebugUtilsMessengerCreateInfoEXT( vk::DebugUtilsMessengerCreateFlagsEXT flags_ = vk::DebugUtilsMessengerCreateFlagsEXT(),
-                                      vk::DebugUtilsMessageSeverityFlagsEXT messageSeverity_ = vk::DebugUtilsMessageSeverityFlagsEXT(),
-                                      vk::DebugUtilsMessageTypeFlagsEXT messageType_ = vk::DebugUtilsMessageTypeFlagsEXT(),
-                                      PFN_vkDebugUtilsMessengerCallbackEXT pfnUserCallback_ = nullptr,
-                                      void* pUserData_ = nullptr )
+    VULKAN_HPP_CONSTEXPR DebugUtilsMessengerCreateInfoEXT( vk::DebugUtilsMessengerCreateFlagsEXT flags_ = vk::DebugUtilsMessengerCreateFlagsEXT(),
+                                                           vk::DebugUtilsMessageSeverityFlagsEXT messageSeverity_ = vk::DebugUtilsMessageSeverityFlagsEXT(),
+                                                           vk::DebugUtilsMessageTypeFlagsEXT messageType_ = vk::DebugUtilsMessageTypeFlagsEXT(),
+                                                           PFN_vkDebugUtilsMessengerCallbackEXT pfnUserCallback_ = nullptr,
+                                                           void* pUserData_ = nullptr )
       : layout::DebugUtilsMessengerCreateInfoEXT( flags_, messageSeverity_, messageType_, pfnUserCallback_, pUserData_ )
     {}
 
@@ -26182,11 +26202,11 @@ namespace VULKAN_HPP_NAMESPACE
     struct DebugUtilsObjectTagInfoEXT
     {
     protected:
-      DebugUtilsObjectTagInfoEXT( vk::ObjectType objectType_ = vk::ObjectType::eUnknown,
-                                  uint64_t objectHandle_ = 0,
-                                  uint64_t tagName_ = 0,
-                                  size_t tagSize_ = 0,
-                                  const void* pTag_ = nullptr )
+      VULKAN_HPP_CONSTEXPR DebugUtilsObjectTagInfoEXT( vk::ObjectType objectType_ = vk::ObjectType::eUnknown,
+                                                       uint64_t objectHandle_ = 0,
+                                                       uint64_t tagName_ = 0,
+                                                       size_t tagSize_ = 0,
+                                                       const void* pTag_ = nullptr )
         : objectType( objectType_ )
         , objectHandle( objectHandle_ )
         , tagName( tagName_ )
@@ -26219,11 +26239,11 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DebugUtilsObjectTagInfoEXT : public layout::DebugUtilsObjectTagInfoEXT
   {
-    DebugUtilsObjectTagInfoEXT( vk::ObjectType objectType_ = vk::ObjectType::eUnknown,
-                                uint64_t objectHandle_ = 0,
-                                uint64_t tagName_ = 0,
-                                size_t tagSize_ = 0,
-                                const void* pTag_ = nullptr )
+    VULKAN_HPP_CONSTEXPR DebugUtilsObjectTagInfoEXT( vk::ObjectType objectType_ = vk::ObjectType::eUnknown,
+                                                     uint64_t objectHandle_ = 0,
+                                                     uint64_t tagName_ = 0,
+                                                     size_t tagSize_ = 0,
+                                                     const void* pTag_ = nullptr )
       : layout::DebugUtilsObjectTagInfoEXT( objectType_, objectHandle_, tagName_, tagSize_, pTag_ )
     {}
 
@@ -26310,7 +26330,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct DedicatedAllocationBufferCreateInfoNV
     {
     protected:
-      DedicatedAllocationBufferCreateInfoNV( vk::Bool32 dedicatedAllocation_ = 0 )
+      VULKAN_HPP_CONSTEXPR DedicatedAllocationBufferCreateInfoNV( vk::Bool32 dedicatedAllocation_ = 0 )
         : dedicatedAllocation( dedicatedAllocation_ )
       {}
 
@@ -26335,7 +26355,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DedicatedAllocationBufferCreateInfoNV : public layout::DedicatedAllocationBufferCreateInfoNV
   {
-    DedicatedAllocationBufferCreateInfoNV( vk::Bool32 dedicatedAllocation_ = 0 )
+    VULKAN_HPP_CONSTEXPR DedicatedAllocationBufferCreateInfoNV( vk::Bool32 dedicatedAllocation_ = 0 )
       : layout::DedicatedAllocationBufferCreateInfoNV( dedicatedAllocation_ )
     {}
 
@@ -26394,7 +26414,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct DedicatedAllocationImageCreateInfoNV
     {
     protected:
-      DedicatedAllocationImageCreateInfoNV( vk::Bool32 dedicatedAllocation_ = 0 )
+      VULKAN_HPP_CONSTEXPR DedicatedAllocationImageCreateInfoNV( vk::Bool32 dedicatedAllocation_ = 0 )
         : dedicatedAllocation( dedicatedAllocation_ )
       {}
 
@@ -26419,7 +26439,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DedicatedAllocationImageCreateInfoNV : public layout::DedicatedAllocationImageCreateInfoNV
   {
-    DedicatedAllocationImageCreateInfoNV( vk::Bool32 dedicatedAllocation_ = 0 )
+    VULKAN_HPP_CONSTEXPR DedicatedAllocationImageCreateInfoNV( vk::Bool32 dedicatedAllocation_ = 0 )
       : layout::DedicatedAllocationImageCreateInfoNV( dedicatedAllocation_ )
     {}
 
@@ -26478,8 +26498,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct DedicatedAllocationMemoryAllocateInfoNV
     {
     protected:
-      DedicatedAllocationMemoryAllocateInfoNV( vk::Image image_ = vk::Image(),
-                                               vk::Buffer buffer_ = vk::Buffer() )
+      VULKAN_HPP_CONSTEXPR DedicatedAllocationMemoryAllocateInfoNV( vk::Image image_ = vk::Image(),
+                                                                    vk::Buffer buffer_ = vk::Buffer() )
         : image( image_ )
         , buffer( buffer_ )
       {}
@@ -26506,8 +26526,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DedicatedAllocationMemoryAllocateInfoNV : public layout::DedicatedAllocationMemoryAllocateInfoNV
   {
-    DedicatedAllocationMemoryAllocateInfoNV( vk::Image image_ = vk::Image(),
-                                             vk::Buffer buffer_ = vk::Buffer() )
+    VULKAN_HPP_CONSTEXPR DedicatedAllocationMemoryAllocateInfoNV( vk::Image image_ = vk::Image(),
+                                                                  vk::Buffer buffer_ = vk::Buffer() )
       : layout::DedicatedAllocationMemoryAllocateInfoNV( image_, buffer_ )
     {}
 
@@ -26570,9 +26590,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DescriptorBufferInfo
   {
-    DescriptorBufferInfo( vk::Buffer buffer_ = vk::Buffer(),
-                          vk::DeviceSize offset_ = 0,
-                          vk::DeviceSize range_ = 0 )
+    VULKAN_HPP_CONSTEXPR DescriptorBufferInfo( vk::Buffer buffer_ = vk::Buffer(),
+                                               vk::DeviceSize offset_ = 0,
+                                               vk::DeviceSize range_ = 0 )
       : buffer( buffer_ )
       , offset( offset_ )
       , range( range_ )
@@ -26639,9 +26659,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DescriptorImageInfo
   {
-    DescriptorImageInfo( vk::Sampler sampler_ = vk::Sampler(),
-                         vk::ImageView imageView_ = vk::ImageView(),
-                         vk::ImageLayout imageLayout_ = vk::ImageLayout::eUndefined )
+    VULKAN_HPP_CONSTEXPR DescriptorImageInfo( vk::Sampler sampler_ = vk::Sampler(),
+                                              vk::ImageView imageView_ = vk::ImageView(),
+                                              vk::ImageLayout imageLayout_ = vk::ImageLayout::eUndefined )
       : sampler( sampler_ )
       , imageView( imageView_ )
       , imageLayout( imageLayout_ )
@@ -26708,8 +26728,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DescriptorPoolSize
   {
-    DescriptorPoolSize( vk::DescriptorType type_ = vk::DescriptorType::eSampler,
-                        uint32_t descriptorCount_ = 0 )
+    VULKAN_HPP_CONSTEXPR DescriptorPoolSize( vk::DescriptorType type_ = vk::DescriptorType::eSampler,
+                                             uint32_t descriptorCount_ = 0 )
       : type( type_ )
       , descriptorCount( descriptorCount_ )
     {}
@@ -26770,10 +26790,10 @@ namespace VULKAN_HPP_NAMESPACE
     struct DescriptorPoolCreateInfo
     {
     protected:
-      DescriptorPoolCreateInfo( vk::DescriptorPoolCreateFlags flags_ = vk::DescriptorPoolCreateFlags(),
-                                uint32_t maxSets_ = 0,
-                                uint32_t poolSizeCount_ = 0,
-                                const vk::DescriptorPoolSize* pPoolSizes_ = nullptr )
+      VULKAN_HPP_CONSTEXPR DescriptorPoolCreateInfo( vk::DescriptorPoolCreateFlags flags_ = vk::DescriptorPoolCreateFlags(),
+                                                     uint32_t maxSets_ = 0,
+                                                     uint32_t poolSizeCount_ = 0,
+                                                     const vk::DescriptorPoolSize* pPoolSizes_ = nullptr )
         : flags( flags_ )
         , maxSets( maxSets_ )
         , poolSizeCount( poolSizeCount_ )
@@ -26804,10 +26824,10 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DescriptorPoolCreateInfo : public layout::DescriptorPoolCreateInfo
   {
-    DescriptorPoolCreateInfo( vk::DescriptorPoolCreateFlags flags_ = vk::DescriptorPoolCreateFlags(),
-                              uint32_t maxSets_ = 0,
-                              uint32_t poolSizeCount_ = 0,
-                              const vk::DescriptorPoolSize* pPoolSizes_ = nullptr )
+    VULKAN_HPP_CONSTEXPR DescriptorPoolCreateInfo( vk::DescriptorPoolCreateFlags flags_ = vk::DescriptorPoolCreateFlags(),
+                                                   uint32_t maxSets_ = 0,
+                                                   uint32_t poolSizeCount_ = 0,
+                                                   const vk::DescriptorPoolSize* pPoolSizes_ = nullptr )
       : layout::DescriptorPoolCreateInfo( flags_, maxSets_, poolSizeCount_, pPoolSizes_ )
     {}
 
@@ -26887,7 +26907,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct DescriptorPoolInlineUniformBlockCreateInfoEXT
     {
     protected:
-      DescriptorPoolInlineUniformBlockCreateInfoEXT( uint32_t maxInlineUniformBlockBindings_ = 0 )
+      VULKAN_HPP_CONSTEXPR DescriptorPoolInlineUniformBlockCreateInfoEXT( uint32_t maxInlineUniformBlockBindings_ = 0 )
         : maxInlineUniformBlockBindings( maxInlineUniformBlockBindings_ )
       {}
 
@@ -26912,7 +26932,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DescriptorPoolInlineUniformBlockCreateInfoEXT : public layout::DescriptorPoolInlineUniformBlockCreateInfoEXT
   {
-    DescriptorPoolInlineUniformBlockCreateInfoEXT( uint32_t maxInlineUniformBlockBindings_ = 0 )
+    VULKAN_HPP_CONSTEXPR DescriptorPoolInlineUniformBlockCreateInfoEXT( uint32_t maxInlineUniformBlockBindings_ = 0 )
       : layout::DescriptorPoolInlineUniformBlockCreateInfoEXT( maxInlineUniformBlockBindings_ )
     {}
 
@@ -26971,9 +26991,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct DescriptorSetAllocateInfo
     {
     protected:
-      DescriptorSetAllocateInfo( vk::DescriptorPool descriptorPool_ = vk::DescriptorPool(),
-                                 uint32_t descriptorSetCount_ = 0,
-                                 const vk::DescriptorSetLayout* pSetLayouts_ = nullptr )
+      VULKAN_HPP_CONSTEXPR DescriptorSetAllocateInfo( vk::DescriptorPool descriptorPool_ = vk::DescriptorPool(),
+                                                      uint32_t descriptorSetCount_ = 0,
+                                                      const vk::DescriptorSetLayout* pSetLayouts_ = nullptr )
         : descriptorPool( descriptorPool_ )
         , descriptorSetCount( descriptorSetCount_ )
         , pSetLayouts( pSetLayouts_ )
@@ -27002,9 +27022,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DescriptorSetAllocateInfo : public layout::DescriptorSetAllocateInfo
   {
-    DescriptorSetAllocateInfo( vk::DescriptorPool descriptorPool_ = vk::DescriptorPool(),
-                               uint32_t descriptorSetCount_ = 0,
-                               const vk::DescriptorSetLayout* pSetLayouts_ = nullptr )
+    VULKAN_HPP_CONSTEXPR DescriptorSetAllocateInfo( vk::DescriptorPool descriptorPool_ = vk::DescriptorPool(),
+                                                    uint32_t descriptorSetCount_ = 0,
+                                                    const vk::DescriptorSetLayout* pSetLayouts_ = nullptr )
       : layout::DescriptorSetAllocateInfo( descriptorPool_, descriptorSetCount_, pSetLayouts_ )
     {}
 
@@ -27074,11 +27094,11 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DescriptorSetLayoutBinding
   {
-    DescriptorSetLayoutBinding( uint32_t binding_ = 0,
-                                vk::DescriptorType descriptorType_ = vk::DescriptorType::eSampler,
-                                uint32_t descriptorCount_ = 0,
-                                vk::ShaderStageFlags stageFlags_ = vk::ShaderStageFlags(),
-                                const vk::Sampler* pImmutableSamplers_ = nullptr )
+    VULKAN_HPP_CONSTEXPR DescriptorSetLayoutBinding( uint32_t binding_ = 0,
+                                                     vk::DescriptorType descriptorType_ = vk::DescriptorType::eSampler,
+                                                     uint32_t descriptorCount_ = 0,
+                                                     vk::ShaderStageFlags stageFlags_ = vk::ShaderStageFlags(),
+                                                     const vk::Sampler* pImmutableSamplers_ = nullptr )
       : binding( binding_ )
       , descriptorType( descriptorType_ )
       , descriptorCount( descriptorCount_ )
@@ -27166,8 +27186,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct DescriptorSetLayoutBindingFlagsCreateInfoEXT
     {
     protected:
-      DescriptorSetLayoutBindingFlagsCreateInfoEXT( uint32_t bindingCount_ = 0,
-                                                    const vk::DescriptorBindingFlagsEXT* pBindingFlags_ = nullptr )
+      VULKAN_HPP_CONSTEXPR DescriptorSetLayoutBindingFlagsCreateInfoEXT( uint32_t bindingCount_ = 0,
+                                                                         const vk::DescriptorBindingFlagsEXT* pBindingFlags_ = nullptr )
         : bindingCount( bindingCount_ )
         , pBindingFlags( pBindingFlags_ )
       {}
@@ -27194,8 +27214,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DescriptorSetLayoutBindingFlagsCreateInfoEXT : public layout::DescriptorSetLayoutBindingFlagsCreateInfoEXT
   {
-    DescriptorSetLayoutBindingFlagsCreateInfoEXT( uint32_t bindingCount_ = 0,
-                                                  const vk::DescriptorBindingFlagsEXT* pBindingFlags_ = nullptr )
+    VULKAN_HPP_CONSTEXPR DescriptorSetLayoutBindingFlagsCreateInfoEXT( uint32_t bindingCount_ = 0,
+                                                                       const vk::DescriptorBindingFlagsEXT* pBindingFlags_ = nullptr )
       : layout::DescriptorSetLayoutBindingFlagsCreateInfoEXT( bindingCount_, pBindingFlags_ )
     {}
 
@@ -27261,9 +27281,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct DescriptorSetLayoutCreateInfo
     {
     protected:
-      DescriptorSetLayoutCreateInfo( vk::DescriptorSetLayoutCreateFlags flags_ = vk::DescriptorSetLayoutCreateFlags(),
-                                     uint32_t bindingCount_ = 0,
-                                     const vk::DescriptorSetLayoutBinding* pBindings_ = nullptr )
+      VULKAN_HPP_CONSTEXPR DescriptorSetLayoutCreateInfo( vk::DescriptorSetLayoutCreateFlags flags_ = vk::DescriptorSetLayoutCreateFlags(),
+                                                          uint32_t bindingCount_ = 0,
+                                                          const vk::DescriptorSetLayoutBinding* pBindings_ = nullptr )
         : flags( flags_ )
         , bindingCount( bindingCount_ )
         , pBindings( pBindings_ )
@@ -27292,9 +27312,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DescriptorSetLayoutCreateInfo : public layout::DescriptorSetLayoutCreateInfo
   {
-    DescriptorSetLayoutCreateInfo( vk::DescriptorSetLayoutCreateFlags flags_ = vk::DescriptorSetLayoutCreateFlags(),
-                                   uint32_t bindingCount_ = 0,
-                                   const vk::DescriptorSetLayoutBinding* pBindings_ = nullptr )
+    VULKAN_HPP_CONSTEXPR DescriptorSetLayoutCreateInfo( vk::DescriptorSetLayoutCreateFlags flags_ = vk::DescriptorSetLayoutCreateFlags(),
+                                                        uint32_t bindingCount_ = 0,
+                                                        const vk::DescriptorSetLayoutBinding* pBindings_ = nullptr )
       : layout::DescriptorSetLayoutCreateInfo( flags_, bindingCount_, pBindings_ )
     {}
 
@@ -27438,8 +27458,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct DescriptorSetVariableDescriptorCountAllocateInfoEXT
     {
     protected:
-      DescriptorSetVariableDescriptorCountAllocateInfoEXT( uint32_t descriptorSetCount_ = 0,
-                                                           const uint32_t* pDescriptorCounts_ = nullptr )
+      VULKAN_HPP_CONSTEXPR DescriptorSetVariableDescriptorCountAllocateInfoEXT( uint32_t descriptorSetCount_ = 0,
+                                                                                const uint32_t* pDescriptorCounts_ = nullptr )
         : descriptorSetCount( descriptorSetCount_ )
         , pDescriptorCounts( pDescriptorCounts_ )
       {}
@@ -27466,8 +27486,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DescriptorSetVariableDescriptorCountAllocateInfoEXT : public layout::DescriptorSetVariableDescriptorCountAllocateInfoEXT
   {
-    DescriptorSetVariableDescriptorCountAllocateInfoEXT( uint32_t descriptorSetCount_ = 0,
-                                                         const uint32_t* pDescriptorCounts_ = nullptr )
+    VULKAN_HPP_CONSTEXPR DescriptorSetVariableDescriptorCountAllocateInfoEXT( uint32_t descriptorSetCount_ = 0,
+                                                                              const uint32_t* pDescriptorCounts_ = nullptr )
       : layout::DescriptorSetVariableDescriptorCountAllocateInfoEXT( descriptorSetCount_, pDescriptorCounts_ )
     {}
 
@@ -27601,12 +27621,12 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DescriptorUpdateTemplateEntry
   {
-    DescriptorUpdateTemplateEntry( uint32_t dstBinding_ = 0,
-                                   uint32_t dstArrayElement_ = 0,
-                                   uint32_t descriptorCount_ = 0,
-                                   vk::DescriptorType descriptorType_ = vk::DescriptorType::eSampler,
-                                   size_t offset_ = 0,
-                                   size_t stride_ = 0 )
+    VULKAN_HPP_CONSTEXPR DescriptorUpdateTemplateEntry( uint32_t dstBinding_ = 0,
+                                                        uint32_t dstArrayElement_ = 0,
+                                                        uint32_t descriptorCount_ = 0,
+                                                        vk::DescriptorType descriptorType_ = vk::DescriptorType::eSampler,
+                                                        size_t offset_ = 0,
+                                                        size_t stride_ = 0 )
       : dstBinding( dstBinding_ )
       , dstArrayElement( dstArrayElement_ )
       , descriptorCount( descriptorCount_ )
@@ -27703,14 +27723,14 @@ namespace VULKAN_HPP_NAMESPACE
     struct DescriptorUpdateTemplateCreateInfo
     {
     protected:
-      DescriptorUpdateTemplateCreateInfo( vk::DescriptorUpdateTemplateCreateFlags flags_ = vk::DescriptorUpdateTemplateCreateFlags(),
-                                          uint32_t descriptorUpdateEntryCount_ = 0,
-                                          const vk::DescriptorUpdateTemplateEntry* pDescriptorUpdateEntries_ = nullptr,
-                                          vk::DescriptorUpdateTemplateType templateType_ = vk::DescriptorUpdateTemplateType::eDescriptorSet,
-                                          vk::DescriptorSetLayout descriptorSetLayout_ = vk::DescriptorSetLayout(),
-                                          vk::PipelineBindPoint pipelineBindPoint_ = vk::PipelineBindPoint::eGraphics,
-                                          vk::PipelineLayout pipelineLayout_ = vk::PipelineLayout(),
-                                          uint32_t set_ = 0 )
+      VULKAN_HPP_CONSTEXPR DescriptorUpdateTemplateCreateInfo( vk::DescriptorUpdateTemplateCreateFlags flags_ = vk::DescriptorUpdateTemplateCreateFlags(),
+                                                               uint32_t descriptorUpdateEntryCount_ = 0,
+                                                               const vk::DescriptorUpdateTemplateEntry* pDescriptorUpdateEntries_ = nullptr,
+                                                               vk::DescriptorUpdateTemplateType templateType_ = vk::DescriptorUpdateTemplateType::eDescriptorSet,
+                                                               vk::DescriptorSetLayout descriptorSetLayout_ = vk::DescriptorSetLayout(),
+                                                               vk::PipelineBindPoint pipelineBindPoint_ = vk::PipelineBindPoint::eGraphics,
+                                                               vk::PipelineLayout pipelineLayout_ = vk::PipelineLayout(),
+                                                               uint32_t set_ = 0 )
         : flags( flags_ )
         , descriptorUpdateEntryCount( descriptorUpdateEntryCount_ )
         , pDescriptorUpdateEntries( pDescriptorUpdateEntries_ )
@@ -27749,14 +27769,14 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DescriptorUpdateTemplateCreateInfo : public layout::DescriptorUpdateTemplateCreateInfo
   {
-    DescriptorUpdateTemplateCreateInfo( vk::DescriptorUpdateTemplateCreateFlags flags_ = vk::DescriptorUpdateTemplateCreateFlags(),
-                                        uint32_t descriptorUpdateEntryCount_ = 0,
-                                        const vk::DescriptorUpdateTemplateEntry* pDescriptorUpdateEntries_ = nullptr,
-                                        vk::DescriptorUpdateTemplateType templateType_ = vk::DescriptorUpdateTemplateType::eDescriptorSet,
-                                        vk::DescriptorSetLayout descriptorSetLayout_ = vk::DescriptorSetLayout(),
-                                        vk::PipelineBindPoint pipelineBindPoint_ = vk::PipelineBindPoint::eGraphics,
-                                        vk::PipelineLayout pipelineLayout_ = vk::PipelineLayout(),
-                                        uint32_t set_ = 0 )
+    VULKAN_HPP_CONSTEXPR DescriptorUpdateTemplateCreateInfo( vk::DescriptorUpdateTemplateCreateFlags flags_ = vk::DescriptorUpdateTemplateCreateFlags(),
+                                                             uint32_t descriptorUpdateEntryCount_ = 0,
+                                                             const vk::DescriptorUpdateTemplateEntry* pDescriptorUpdateEntries_ = nullptr,
+                                                             vk::DescriptorUpdateTemplateType templateType_ = vk::DescriptorUpdateTemplateType::eDescriptorSet,
+                                                             vk::DescriptorSetLayout descriptorSetLayout_ = vk::DescriptorSetLayout(),
+                                                             vk::PipelineBindPoint pipelineBindPoint_ = vk::PipelineBindPoint::eGraphics,
+                                                             vk::PipelineLayout pipelineLayout_ = vk::PipelineLayout(),
+                                                             uint32_t set_ = 0 )
       : layout::DescriptorUpdateTemplateCreateInfo( flags_, descriptorUpdateEntryCount_, pDescriptorUpdateEntries_, templateType_, descriptorSetLayout_, pipelineBindPoint_, pipelineLayout_, set_ )
     {}
 
@@ -27864,10 +27884,10 @@ namespace VULKAN_HPP_NAMESPACE
     struct DeviceQueueCreateInfo
     {
     protected:
-      DeviceQueueCreateInfo( vk::DeviceQueueCreateFlags flags_ = vk::DeviceQueueCreateFlags(),
-                             uint32_t queueFamilyIndex_ = 0,
-                             uint32_t queueCount_ = 0,
-                             const float* pQueuePriorities_ = nullptr )
+      VULKAN_HPP_CONSTEXPR DeviceQueueCreateInfo( vk::DeviceQueueCreateFlags flags_ = vk::DeviceQueueCreateFlags(),
+                                                  uint32_t queueFamilyIndex_ = 0,
+                                                  uint32_t queueCount_ = 0,
+                                                  const float* pQueuePriorities_ = nullptr )
         : flags( flags_ )
         , queueFamilyIndex( queueFamilyIndex_ )
         , queueCount( queueCount_ )
@@ -27898,10 +27918,10 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DeviceQueueCreateInfo : public layout::DeviceQueueCreateInfo
   {
-    DeviceQueueCreateInfo( vk::DeviceQueueCreateFlags flags_ = vk::DeviceQueueCreateFlags(),
-                           uint32_t queueFamilyIndex_ = 0,
-                           uint32_t queueCount_ = 0,
-                           const float* pQueuePriorities_ = nullptr )
+    VULKAN_HPP_CONSTEXPR DeviceQueueCreateInfo( vk::DeviceQueueCreateFlags flags_ = vk::DeviceQueueCreateFlags(),
+                                                uint32_t queueFamilyIndex_ = 0,
+                                                uint32_t queueCount_ = 0,
+                                                const float* pQueuePriorities_ = nullptr )
       : layout::DeviceQueueCreateInfo( flags_, queueFamilyIndex_, queueCount_, pQueuePriorities_ )
     {}
 
@@ -27978,61 +27998,61 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceFeatures
   {
-    PhysicalDeviceFeatures( vk::Bool32 robustBufferAccess_ = 0,
-                            vk::Bool32 fullDrawIndexUint32_ = 0,
-                            vk::Bool32 imageCubeArray_ = 0,
-                            vk::Bool32 independentBlend_ = 0,
-                            vk::Bool32 geometryShader_ = 0,
-                            vk::Bool32 tessellationShader_ = 0,
-                            vk::Bool32 sampleRateShading_ = 0,
-                            vk::Bool32 dualSrcBlend_ = 0,
-                            vk::Bool32 logicOp_ = 0,
-                            vk::Bool32 multiDrawIndirect_ = 0,
-                            vk::Bool32 drawIndirectFirstInstance_ = 0,
-                            vk::Bool32 depthClamp_ = 0,
-                            vk::Bool32 depthBiasClamp_ = 0,
-                            vk::Bool32 fillModeNonSolid_ = 0,
-                            vk::Bool32 depthBounds_ = 0,
-                            vk::Bool32 wideLines_ = 0,
-                            vk::Bool32 largePoints_ = 0,
-                            vk::Bool32 alphaToOne_ = 0,
-                            vk::Bool32 multiViewport_ = 0,
-                            vk::Bool32 samplerAnisotropy_ = 0,
-                            vk::Bool32 textureCompressionETC2_ = 0,
-                            vk::Bool32 textureCompressionASTC_LDR_ = 0,
-                            vk::Bool32 textureCompressionBC_ = 0,
-                            vk::Bool32 occlusionQueryPrecise_ = 0,
-                            vk::Bool32 pipelineStatisticsQuery_ = 0,
-                            vk::Bool32 vertexPipelineStoresAndAtomics_ = 0,
-                            vk::Bool32 fragmentStoresAndAtomics_ = 0,
-                            vk::Bool32 shaderTessellationAndGeometryPointSize_ = 0,
-                            vk::Bool32 shaderImageGatherExtended_ = 0,
-                            vk::Bool32 shaderStorageImageExtendedFormats_ = 0,
-                            vk::Bool32 shaderStorageImageMultisample_ = 0,
-                            vk::Bool32 shaderStorageImageReadWithoutFormat_ = 0,
-                            vk::Bool32 shaderStorageImageWriteWithoutFormat_ = 0,
-                            vk::Bool32 shaderUniformBufferArrayDynamicIndexing_ = 0,
-                            vk::Bool32 shaderSampledImageArrayDynamicIndexing_ = 0,
-                            vk::Bool32 shaderStorageBufferArrayDynamicIndexing_ = 0,
-                            vk::Bool32 shaderStorageImageArrayDynamicIndexing_ = 0,
-                            vk::Bool32 shaderClipDistance_ = 0,
-                            vk::Bool32 shaderCullDistance_ = 0,
-                            vk::Bool32 shaderFloat64_ = 0,
-                            vk::Bool32 shaderInt64_ = 0,
-                            vk::Bool32 shaderInt16_ = 0,
-                            vk::Bool32 shaderResourceResidency_ = 0,
-                            vk::Bool32 shaderResourceMinLod_ = 0,
-                            vk::Bool32 sparseBinding_ = 0,
-                            vk::Bool32 sparseResidencyBuffer_ = 0,
-                            vk::Bool32 sparseResidencyImage2D_ = 0,
-                            vk::Bool32 sparseResidencyImage3D_ = 0,
-                            vk::Bool32 sparseResidency2Samples_ = 0,
-                            vk::Bool32 sparseResidency4Samples_ = 0,
-                            vk::Bool32 sparseResidency8Samples_ = 0,
-                            vk::Bool32 sparseResidency16Samples_ = 0,
-                            vk::Bool32 sparseResidencyAliased_ = 0,
-                            vk::Bool32 variableMultisampleRate_ = 0,
-                            vk::Bool32 inheritedQueries_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceFeatures( vk::Bool32 robustBufferAccess_ = 0,
+                                                 vk::Bool32 fullDrawIndexUint32_ = 0,
+                                                 vk::Bool32 imageCubeArray_ = 0,
+                                                 vk::Bool32 independentBlend_ = 0,
+                                                 vk::Bool32 geometryShader_ = 0,
+                                                 vk::Bool32 tessellationShader_ = 0,
+                                                 vk::Bool32 sampleRateShading_ = 0,
+                                                 vk::Bool32 dualSrcBlend_ = 0,
+                                                 vk::Bool32 logicOp_ = 0,
+                                                 vk::Bool32 multiDrawIndirect_ = 0,
+                                                 vk::Bool32 drawIndirectFirstInstance_ = 0,
+                                                 vk::Bool32 depthClamp_ = 0,
+                                                 vk::Bool32 depthBiasClamp_ = 0,
+                                                 vk::Bool32 fillModeNonSolid_ = 0,
+                                                 vk::Bool32 depthBounds_ = 0,
+                                                 vk::Bool32 wideLines_ = 0,
+                                                 vk::Bool32 largePoints_ = 0,
+                                                 vk::Bool32 alphaToOne_ = 0,
+                                                 vk::Bool32 multiViewport_ = 0,
+                                                 vk::Bool32 samplerAnisotropy_ = 0,
+                                                 vk::Bool32 textureCompressionETC2_ = 0,
+                                                 vk::Bool32 textureCompressionASTC_LDR_ = 0,
+                                                 vk::Bool32 textureCompressionBC_ = 0,
+                                                 vk::Bool32 occlusionQueryPrecise_ = 0,
+                                                 vk::Bool32 pipelineStatisticsQuery_ = 0,
+                                                 vk::Bool32 vertexPipelineStoresAndAtomics_ = 0,
+                                                 vk::Bool32 fragmentStoresAndAtomics_ = 0,
+                                                 vk::Bool32 shaderTessellationAndGeometryPointSize_ = 0,
+                                                 vk::Bool32 shaderImageGatherExtended_ = 0,
+                                                 vk::Bool32 shaderStorageImageExtendedFormats_ = 0,
+                                                 vk::Bool32 shaderStorageImageMultisample_ = 0,
+                                                 vk::Bool32 shaderStorageImageReadWithoutFormat_ = 0,
+                                                 vk::Bool32 shaderStorageImageWriteWithoutFormat_ = 0,
+                                                 vk::Bool32 shaderUniformBufferArrayDynamicIndexing_ = 0,
+                                                 vk::Bool32 shaderSampledImageArrayDynamicIndexing_ = 0,
+                                                 vk::Bool32 shaderStorageBufferArrayDynamicIndexing_ = 0,
+                                                 vk::Bool32 shaderStorageImageArrayDynamicIndexing_ = 0,
+                                                 vk::Bool32 shaderClipDistance_ = 0,
+                                                 vk::Bool32 shaderCullDistance_ = 0,
+                                                 vk::Bool32 shaderFloat64_ = 0,
+                                                 vk::Bool32 shaderInt64_ = 0,
+                                                 vk::Bool32 shaderInt16_ = 0,
+                                                 vk::Bool32 shaderResourceResidency_ = 0,
+                                                 vk::Bool32 shaderResourceMinLod_ = 0,
+                                                 vk::Bool32 sparseBinding_ = 0,
+                                                 vk::Bool32 sparseResidencyBuffer_ = 0,
+                                                 vk::Bool32 sparseResidencyImage2D_ = 0,
+                                                 vk::Bool32 sparseResidencyImage3D_ = 0,
+                                                 vk::Bool32 sparseResidency2Samples_ = 0,
+                                                 vk::Bool32 sparseResidency4Samples_ = 0,
+                                                 vk::Bool32 sparseResidency8Samples_ = 0,
+                                                 vk::Bool32 sparseResidency16Samples_ = 0,
+                                                 vk::Bool32 sparseResidencyAliased_ = 0,
+                                                 vk::Bool32 variableMultisampleRate_ = 0,
+                                                 vk::Bool32 inheritedQueries_ = 0 )
       : robustBufferAccess( robustBufferAccess_ )
       , fullDrawIndexUint32( fullDrawIndexUint32_ )
       , imageCubeArray( imageCubeArray_ )
@@ -28570,14 +28590,14 @@ namespace VULKAN_HPP_NAMESPACE
     struct DeviceCreateInfo
     {
     protected:
-      DeviceCreateInfo( vk::DeviceCreateFlags flags_ = vk::DeviceCreateFlags(),
-                        uint32_t queueCreateInfoCount_ = 0,
-                        const vk::DeviceQueueCreateInfo* pQueueCreateInfos_ = nullptr,
-                        uint32_t enabledLayerCount_ = 0,
-                        const char* const* ppEnabledLayerNames_ = nullptr,
-                        uint32_t enabledExtensionCount_ = 0,
-                        const char* const* ppEnabledExtensionNames_ = nullptr,
-                        const vk::PhysicalDeviceFeatures* pEnabledFeatures_ = nullptr )
+      VULKAN_HPP_CONSTEXPR DeviceCreateInfo( vk::DeviceCreateFlags flags_ = vk::DeviceCreateFlags(),
+                                             uint32_t queueCreateInfoCount_ = 0,
+                                             const vk::DeviceQueueCreateInfo* pQueueCreateInfos_ = nullptr,
+                                             uint32_t enabledLayerCount_ = 0,
+                                             const char* const* ppEnabledLayerNames_ = nullptr,
+                                             uint32_t enabledExtensionCount_ = 0,
+                                             const char* const* ppEnabledExtensionNames_ = nullptr,
+                                             const vk::PhysicalDeviceFeatures* pEnabledFeatures_ = nullptr )
         : flags( flags_ )
         , queueCreateInfoCount( queueCreateInfoCount_ )
         , pQueueCreateInfos( pQueueCreateInfos_ )
@@ -28616,14 +28636,14 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DeviceCreateInfo : public layout::DeviceCreateInfo
   {
-    DeviceCreateInfo( vk::DeviceCreateFlags flags_ = vk::DeviceCreateFlags(),
-                      uint32_t queueCreateInfoCount_ = 0,
-                      const vk::DeviceQueueCreateInfo* pQueueCreateInfos_ = nullptr,
-                      uint32_t enabledLayerCount_ = 0,
-                      const char* const* ppEnabledLayerNames_ = nullptr,
-                      uint32_t enabledExtensionCount_ = 0,
-                      const char* const* ppEnabledExtensionNames_ = nullptr,
-                      const vk::PhysicalDeviceFeatures* pEnabledFeatures_ = nullptr )
+    VULKAN_HPP_CONSTEXPR DeviceCreateInfo( vk::DeviceCreateFlags flags_ = vk::DeviceCreateFlags(),
+                                           uint32_t queueCreateInfoCount_ = 0,
+                                           const vk::DeviceQueueCreateInfo* pQueueCreateInfos_ = nullptr,
+                                           uint32_t enabledLayerCount_ = 0,
+                                           const char* const* ppEnabledLayerNames_ = nullptr,
+                                           uint32_t enabledExtensionCount_ = 0,
+                                           const char* const* ppEnabledExtensionNames_ = nullptr,
+                                           const vk::PhysicalDeviceFeatures* pEnabledFeatures_ = nullptr )
       : layout::DeviceCreateInfo( flags_, queueCreateInfoCount_, pQueueCreateInfos_, enabledLayerCount_, ppEnabledLayerNames_, enabledExtensionCount_, ppEnabledExtensionNames_, pEnabledFeatures_ )
     {}
 
@@ -28731,7 +28751,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct DeviceEventInfoEXT
     {
     protected:
-      DeviceEventInfoEXT( vk::DeviceEventTypeEXT deviceEvent_ = vk::DeviceEventTypeEXT::eDisplayHotplug )
+      VULKAN_HPP_CONSTEXPR DeviceEventInfoEXT( vk::DeviceEventTypeEXT deviceEvent_ = vk::DeviceEventTypeEXT::eDisplayHotplug )
         : deviceEvent( deviceEvent_ )
       {}
 
@@ -28756,7 +28776,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DeviceEventInfoEXT : public layout::DeviceEventInfoEXT
   {
-    DeviceEventInfoEXT( vk::DeviceEventTypeEXT deviceEvent_ = vk::DeviceEventTypeEXT::eDisplayHotplug )
+    VULKAN_HPP_CONSTEXPR DeviceEventInfoEXT( vk::DeviceEventTypeEXT deviceEvent_ = vk::DeviceEventTypeEXT::eDisplayHotplug )
       : layout::DeviceEventInfoEXT( deviceEvent_ )
     {}
 
@@ -28815,7 +28835,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct DeviceGeneratedCommandsFeaturesNVX
     {
     protected:
-      DeviceGeneratedCommandsFeaturesNVX( vk::Bool32 computeBindingPointSupport_ = 0 )
+      VULKAN_HPP_CONSTEXPR DeviceGeneratedCommandsFeaturesNVX( vk::Bool32 computeBindingPointSupport_ = 0 )
         : computeBindingPointSupport( computeBindingPointSupport_ )
       {}
 
@@ -28840,7 +28860,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DeviceGeneratedCommandsFeaturesNVX : public layout::DeviceGeneratedCommandsFeaturesNVX
   {
-    DeviceGeneratedCommandsFeaturesNVX( vk::Bool32 computeBindingPointSupport_ = 0 )
+    VULKAN_HPP_CONSTEXPR DeviceGeneratedCommandsFeaturesNVX( vk::Bool32 computeBindingPointSupport_ = 0 )
       : layout::DeviceGeneratedCommandsFeaturesNVX( computeBindingPointSupport_ )
     {}
 
@@ -28899,11 +28919,11 @@ namespace VULKAN_HPP_NAMESPACE
     struct DeviceGeneratedCommandsLimitsNVX
     {
     protected:
-      DeviceGeneratedCommandsLimitsNVX( uint32_t maxIndirectCommandsLayoutTokenCount_ = 0,
-                                        uint32_t maxObjectEntryCounts_ = 0,
-                                        uint32_t minSequenceCountBufferOffsetAlignment_ = 0,
-                                        uint32_t minSequenceIndexBufferOffsetAlignment_ = 0,
-                                        uint32_t minCommandsTokenBufferOffsetAlignment_ = 0 )
+      VULKAN_HPP_CONSTEXPR DeviceGeneratedCommandsLimitsNVX( uint32_t maxIndirectCommandsLayoutTokenCount_ = 0,
+                                                             uint32_t maxObjectEntryCounts_ = 0,
+                                                             uint32_t minSequenceCountBufferOffsetAlignment_ = 0,
+                                                             uint32_t minSequenceIndexBufferOffsetAlignment_ = 0,
+                                                             uint32_t minCommandsTokenBufferOffsetAlignment_ = 0 )
         : maxIndirectCommandsLayoutTokenCount( maxIndirectCommandsLayoutTokenCount_ )
         , maxObjectEntryCounts( maxObjectEntryCounts_ )
         , minSequenceCountBufferOffsetAlignment( minSequenceCountBufferOffsetAlignment_ )
@@ -28936,11 +28956,11 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DeviceGeneratedCommandsLimitsNVX : public layout::DeviceGeneratedCommandsLimitsNVX
   {
-    DeviceGeneratedCommandsLimitsNVX( uint32_t maxIndirectCommandsLayoutTokenCount_ = 0,
-                                      uint32_t maxObjectEntryCounts_ = 0,
-                                      uint32_t minSequenceCountBufferOffsetAlignment_ = 0,
-                                      uint32_t minSequenceIndexBufferOffsetAlignment_ = 0,
-                                      uint32_t minCommandsTokenBufferOffsetAlignment_ = 0 )
+    VULKAN_HPP_CONSTEXPR DeviceGeneratedCommandsLimitsNVX( uint32_t maxIndirectCommandsLayoutTokenCount_ = 0,
+                                                           uint32_t maxObjectEntryCounts_ = 0,
+                                                           uint32_t minSequenceCountBufferOffsetAlignment_ = 0,
+                                                           uint32_t minSequenceIndexBufferOffsetAlignment_ = 0,
+                                                           uint32_t minCommandsTokenBufferOffsetAlignment_ = 0 )
       : layout::DeviceGeneratedCommandsLimitsNVX( maxIndirectCommandsLayoutTokenCount_, maxObjectEntryCounts_, minSequenceCountBufferOffsetAlignment_, minSequenceIndexBufferOffsetAlignment_, minCommandsTokenBufferOffsetAlignment_ )
     {}
 
@@ -29027,8 +29047,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct DeviceGroupBindSparseInfo
     {
     protected:
-      DeviceGroupBindSparseInfo( uint32_t resourceDeviceIndex_ = 0,
-                                 uint32_t memoryDeviceIndex_ = 0 )
+      VULKAN_HPP_CONSTEXPR DeviceGroupBindSparseInfo( uint32_t resourceDeviceIndex_ = 0,
+                                                      uint32_t memoryDeviceIndex_ = 0 )
         : resourceDeviceIndex( resourceDeviceIndex_ )
         , memoryDeviceIndex( memoryDeviceIndex_ )
       {}
@@ -29055,8 +29075,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DeviceGroupBindSparseInfo : public layout::DeviceGroupBindSparseInfo
   {
-    DeviceGroupBindSparseInfo( uint32_t resourceDeviceIndex_ = 0,
-                               uint32_t memoryDeviceIndex_ = 0 )
+    VULKAN_HPP_CONSTEXPR DeviceGroupBindSparseInfo( uint32_t resourceDeviceIndex_ = 0,
+                                                    uint32_t memoryDeviceIndex_ = 0 )
       : layout::DeviceGroupBindSparseInfo( resourceDeviceIndex_, memoryDeviceIndex_ )
     {}
 
@@ -29122,7 +29142,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct DeviceGroupCommandBufferBeginInfo
     {
     protected:
-      DeviceGroupCommandBufferBeginInfo( uint32_t deviceMask_ = 0 )
+      VULKAN_HPP_CONSTEXPR DeviceGroupCommandBufferBeginInfo( uint32_t deviceMask_ = 0 )
         : deviceMask( deviceMask_ )
       {}
 
@@ -29147,7 +29167,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DeviceGroupCommandBufferBeginInfo : public layout::DeviceGroupCommandBufferBeginInfo
   {
-    DeviceGroupCommandBufferBeginInfo( uint32_t deviceMask_ = 0 )
+    VULKAN_HPP_CONSTEXPR DeviceGroupCommandBufferBeginInfo( uint32_t deviceMask_ = 0 )
       : layout::DeviceGroupCommandBufferBeginInfo( deviceMask_ )
     {}
 
@@ -29206,8 +29226,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct DeviceGroupDeviceCreateInfo
     {
     protected:
-      DeviceGroupDeviceCreateInfo( uint32_t physicalDeviceCount_ = 0,
-                                   const vk::PhysicalDevice* pPhysicalDevices_ = nullptr )
+      VULKAN_HPP_CONSTEXPR DeviceGroupDeviceCreateInfo( uint32_t physicalDeviceCount_ = 0,
+                                                        const vk::PhysicalDevice* pPhysicalDevices_ = nullptr )
         : physicalDeviceCount( physicalDeviceCount_ )
         , pPhysicalDevices( pPhysicalDevices_ )
       {}
@@ -29234,8 +29254,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DeviceGroupDeviceCreateInfo : public layout::DeviceGroupDeviceCreateInfo
   {
-    DeviceGroupDeviceCreateInfo( uint32_t physicalDeviceCount_ = 0,
-                                 const vk::PhysicalDevice* pPhysicalDevices_ = nullptr )
+    VULKAN_HPP_CONSTEXPR DeviceGroupDeviceCreateInfo( uint32_t physicalDeviceCount_ = 0,
+                                                      const vk::PhysicalDevice* pPhysicalDevices_ = nullptr )
       : layout::DeviceGroupDeviceCreateInfo( physicalDeviceCount_, pPhysicalDevices_ )
     {}
 
@@ -29374,9 +29394,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct DeviceGroupPresentInfoKHR
     {
     protected:
-      DeviceGroupPresentInfoKHR( uint32_t swapchainCount_ = 0,
-                                 const uint32_t* pDeviceMasks_ = nullptr,
-                                 vk::DeviceGroupPresentModeFlagBitsKHR mode_ = vk::DeviceGroupPresentModeFlagBitsKHR::eLocal )
+      VULKAN_HPP_CONSTEXPR DeviceGroupPresentInfoKHR( uint32_t swapchainCount_ = 0,
+                                                      const uint32_t* pDeviceMasks_ = nullptr,
+                                                      vk::DeviceGroupPresentModeFlagBitsKHR mode_ = vk::DeviceGroupPresentModeFlagBitsKHR::eLocal )
         : swapchainCount( swapchainCount_ )
         , pDeviceMasks( pDeviceMasks_ )
         , mode( mode_ )
@@ -29405,9 +29425,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DeviceGroupPresentInfoKHR : public layout::DeviceGroupPresentInfoKHR
   {
-    DeviceGroupPresentInfoKHR( uint32_t swapchainCount_ = 0,
-                               const uint32_t* pDeviceMasks_ = nullptr,
-                               vk::DeviceGroupPresentModeFlagBitsKHR mode_ = vk::DeviceGroupPresentModeFlagBitsKHR::eLocal )
+    VULKAN_HPP_CONSTEXPR DeviceGroupPresentInfoKHR( uint32_t swapchainCount_ = 0,
+                                                    const uint32_t* pDeviceMasks_ = nullptr,
+                                                    vk::DeviceGroupPresentModeFlagBitsKHR mode_ = vk::DeviceGroupPresentModeFlagBitsKHR::eLocal )
       : layout::DeviceGroupPresentInfoKHR( swapchainCount_, pDeviceMasks_, mode_ )
     {}
 
@@ -29480,9 +29500,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct DeviceGroupRenderPassBeginInfo
     {
     protected:
-      DeviceGroupRenderPassBeginInfo( uint32_t deviceMask_ = 0,
-                                      uint32_t deviceRenderAreaCount_ = 0,
-                                      const vk::Rect2D* pDeviceRenderAreas_ = nullptr )
+      VULKAN_HPP_CONSTEXPR DeviceGroupRenderPassBeginInfo( uint32_t deviceMask_ = 0,
+                                                           uint32_t deviceRenderAreaCount_ = 0,
+                                                           const vk::Rect2D* pDeviceRenderAreas_ = nullptr )
         : deviceMask( deviceMask_ )
         , deviceRenderAreaCount( deviceRenderAreaCount_ )
         , pDeviceRenderAreas( pDeviceRenderAreas_ )
@@ -29511,9 +29531,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DeviceGroupRenderPassBeginInfo : public layout::DeviceGroupRenderPassBeginInfo
   {
-    DeviceGroupRenderPassBeginInfo( uint32_t deviceMask_ = 0,
-                                    uint32_t deviceRenderAreaCount_ = 0,
-                                    const vk::Rect2D* pDeviceRenderAreas_ = nullptr )
+    VULKAN_HPP_CONSTEXPR DeviceGroupRenderPassBeginInfo( uint32_t deviceMask_ = 0,
+                                                         uint32_t deviceRenderAreaCount_ = 0,
+                                                         const vk::Rect2D* pDeviceRenderAreas_ = nullptr )
       : layout::DeviceGroupRenderPassBeginInfo( deviceMask_, deviceRenderAreaCount_, pDeviceRenderAreas_ )
     {}
 
@@ -29586,12 +29606,12 @@ namespace VULKAN_HPP_NAMESPACE
     struct DeviceGroupSubmitInfo
     {
     protected:
-      DeviceGroupSubmitInfo( uint32_t waitSemaphoreCount_ = 0,
-                             const uint32_t* pWaitSemaphoreDeviceIndices_ = nullptr,
-                             uint32_t commandBufferCount_ = 0,
-                             const uint32_t* pCommandBufferDeviceMasks_ = nullptr,
-                             uint32_t signalSemaphoreCount_ = 0,
-                             const uint32_t* pSignalSemaphoreDeviceIndices_ = nullptr )
+      VULKAN_HPP_CONSTEXPR DeviceGroupSubmitInfo( uint32_t waitSemaphoreCount_ = 0,
+                                                  const uint32_t* pWaitSemaphoreDeviceIndices_ = nullptr,
+                                                  uint32_t commandBufferCount_ = 0,
+                                                  const uint32_t* pCommandBufferDeviceMasks_ = nullptr,
+                                                  uint32_t signalSemaphoreCount_ = 0,
+                                                  const uint32_t* pSignalSemaphoreDeviceIndices_ = nullptr )
         : waitSemaphoreCount( waitSemaphoreCount_ )
         , pWaitSemaphoreDeviceIndices( pWaitSemaphoreDeviceIndices_ )
         , commandBufferCount( commandBufferCount_ )
@@ -29626,12 +29646,12 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DeviceGroupSubmitInfo : public layout::DeviceGroupSubmitInfo
   {
-    DeviceGroupSubmitInfo( uint32_t waitSemaphoreCount_ = 0,
-                           const uint32_t* pWaitSemaphoreDeviceIndices_ = nullptr,
-                           uint32_t commandBufferCount_ = 0,
-                           const uint32_t* pCommandBufferDeviceMasks_ = nullptr,
-                           uint32_t signalSemaphoreCount_ = 0,
-                           const uint32_t* pSignalSemaphoreDeviceIndices_ = nullptr )
+    VULKAN_HPP_CONSTEXPR DeviceGroupSubmitInfo( uint32_t waitSemaphoreCount_ = 0,
+                                                const uint32_t* pWaitSemaphoreDeviceIndices_ = nullptr,
+                                                uint32_t commandBufferCount_ = 0,
+                                                const uint32_t* pCommandBufferDeviceMasks_ = nullptr,
+                                                uint32_t signalSemaphoreCount_ = 0,
+                                                const uint32_t* pSignalSemaphoreDeviceIndices_ = nullptr )
       : layout::DeviceGroupSubmitInfo( waitSemaphoreCount_, pWaitSemaphoreDeviceIndices_, commandBufferCount_, pCommandBufferDeviceMasks_, signalSemaphoreCount_, pSignalSemaphoreDeviceIndices_ )
     {}
 
@@ -29725,7 +29745,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct DeviceGroupSwapchainCreateInfoKHR
     {
     protected:
-      DeviceGroupSwapchainCreateInfoKHR( vk::DeviceGroupPresentModeFlagsKHR modes_ = vk::DeviceGroupPresentModeFlagsKHR() )
+      VULKAN_HPP_CONSTEXPR DeviceGroupSwapchainCreateInfoKHR( vk::DeviceGroupPresentModeFlagsKHR modes_ = vk::DeviceGroupPresentModeFlagsKHR() )
         : modes( modes_ )
       {}
 
@@ -29750,7 +29770,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DeviceGroupSwapchainCreateInfoKHR : public layout::DeviceGroupSwapchainCreateInfoKHR
   {
-    DeviceGroupSwapchainCreateInfoKHR( vk::DeviceGroupPresentModeFlagsKHR modes_ = vk::DeviceGroupPresentModeFlagsKHR() )
+    VULKAN_HPP_CONSTEXPR DeviceGroupSwapchainCreateInfoKHR( vk::DeviceGroupPresentModeFlagsKHR modes_ = vk::DeviceGroupPresentModeFlagsKHR() )
       : layout::DeviceGroupSwapchainCreateInfoKHR( modes_ )
     {}
 
@@ -29809,7 +29829,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct DeviceMemoryOverallocationCreateInfoAMD
     {
     protected:
-      DeviceMemoryOverallocationCreateInfoAMD( vk::MemoryOverallocationBehaviorAMD overallocationBehavior_ = vk::MemoryOverallocationBehaviorAMD::eDefault )
+      VULKAN_HPP_CONSTEXPR DeviceMemoryOverallocationCreateInfoAMD( vk::MemoryOverallocationBehaviorAMD overallocationBehavior_ = vk::MemoryOverallocationBehaviorAMD::eDefault )
         : overallocationBehavior( overallocationBehavior_ )
       {}
 
@@ -29834,7 +29854,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DeviceMemoryOverallocationCreateInfoAMD : public layout::DeviceMemoryOverallocationCreateInfoAMD
   {
-    DeviceMemoryOverallocationCreateInfoAMD( vk::MemoryOverallocationBehaviorAMD overallocationBehavior_ = vk::MemoryOverallocationBehaviorAMD::eDefault )
+    VULKAN_HPP_CONSTEXPR DeviceMemoryOverallocationCreateInfoAMD( vk::MemoryOverallocationBehaviorAMD overallocationBehavior_ = vk::MemoryOverallocationBehaviorAMD::eDefault )
       : layout::DeviceMemoryOverallocationCreateInfoAMD( overallocationBehavior_ )
     {}
 
@@ -29893,7 +29913,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct DeviceQueueGlobalPriorityCreateInfoEXT
     {
     protected:
-      DeviceQueueGlobalPriorityCreateInfoEXT( vk::QueueGlobalPriorityEXT globalPriority_ = vk::QueueGlobalPriorityEXT::eLow )
+      VULKAN_HPP_CONSTEXPR DeviceQueueGlobalPriorityCreateInfoEXT( vk::QueueGlobalPriorityEXT globalPriority_ = vk::QueueGlobalPriorityEXT::eLow )
         : globalPriority( globalPriority_ )
       {}
 
@@ -29918,7 +29938,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DeviceQueueGlobalPriorityCreateInfoEXT : public layout::DeviceQueueGlobalPriorityCreateInfoEXT
   {
-    DeviceQueueGlobalPriorityCreateInfoEXT( vk::QueueGlobalPriorityEXT globalPriority_ = vk::QueueGlobalPriorityEXT::eLow )
+    VULKAN_HPP_CONSTEXPR DeviceQueueGlobalPriorityCreateInfoEXT( vk::QueueGlobalPriorityEXT globalPriority_ = vk::QueueGlobalPriorityEXT::eLow )
       : layout::DeviceQueueGlobalPriorityCreateInfoEXT( globalPriority_ )
     {}
 
@@ -29977,9 +29997,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct DeviceQueueInfo2
     {
     protected:
-      DeviceQueueInfo2( vk::DeviceQueueCreateFlags flags_ = vk::DeviceQueueCreateFlags(),
-                        uint32_t queueFamilyIndex_ = 0,
-                        uint32_t queueIndex_ = 0 )
+      VULKAN_HPP_CONSTEXPR DeviceQueueInfo2( vk::DeviceQueueCreateFlags flags_ = vk::DeviceQueueCreateFlags(),
+                                             uint32_t queueFamilyIndex_ = 0,
+                                             uint32_t queueIndex_ = 0 )
         : flags( flags_ )
         , queueFamilyIndex( queueFamilyIndex_ )
         , queueIndex( queueIndex_ )
@@ -30008,9 +30028,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DeviceQueueInfo2 : public layout::DeviceQueueInfo2
   {
-    DeviceQueueInfo2( vk::DeviceQueueCreateFlags flags_ = vk::DeviceQueueCreateFlags(),
-                      uint32_t queueFamilyIndex_ = 0,
-                      uint32_t queueIndex_ = 0 )
+    VULKAN_HPP_CONSTEXPR DeviceQueueInfo2( vk::DeviceQueueCreateFlags flags_ = vk::DeviceQueueCreateFlags(),
+                                           uint32_t queueFamilyIndex_ = 0,
+                                           uint32_t queueIndex_ = 0 )
       : layout::DeviceQueueInfo2( flags_, queueFamilyIndex_, queueIndex_ )
     {}
 
@@ -30080,9 +30100,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DispatchIndirectCommand
   {
-    DispatchIndirectCommand( uint32_t x_ = 0,
-                             uint32_t y_ = 0,
-                             uint32_t z_ = 0 )
+    VULKAN_HPP_CONSTEXPR DispatchIndirectCommand( uint32_t x_ = 0,
+                                                  uint32_t y_ = 0,
+                                                  uint32_t z_ = 0 )
       : x( x_ )
       , y( y_ )
       , z( z_ )
@@ -30152,7 +30172,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct DisplayEventInfoEXT
     {
     protected:
-      DisplayEventInfoEXT( vk::DisplayEventTypeEXT displayEvent_ = vk::DisplayEventTypeEXT::eFirstPixelOut )
+      VULKAN_HPP_CONSTEXPR DisplayEventInfoEXT( vk::DisplayEventTypeEXT displayEvent_ = vk::DisplayEventTypeEXT::eFirstPixelOut )
         : displayEvent( displayEvent_ )
       {}
 
@@ -30177,7 +30197,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DisplayEventInfoEXT : public layout::DisplayEventInfoEXT
   {
-    DisplayEventInfoEXT( vk::DisplayEventTypeEXT displayEvent_ = vk::DisplayEventTypeEXT::eFirstPixelOut )
+    VULKAN_HPP_CONSTEXPR DisplayEventInfoEXT( vk::DisplayEventTypeEXT displayEvent_ = vk::DisplayEventTypeEXT::eFirstPixelOut )
       : layout::DisplayEventInfoEXT( displayEvent_ )
     {}
 
@@ -30233,8 +30253,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DisplayModeParametersKHR
   {
-    DisplayModeParametersKHR( vk::Extent2D visibleRegion_ = vk::Extent2D(),
-                              uint32_t refreshRate_ = 0 )
+    VULKAN_HPP_CONSTEXPR DisplayModeParametersKHR( vk::Extent2D visibleRegion_ = vk::Extent2D(),
+                                                   uint32_t refreshRate_ = 0 )
       : visibleRegion( visibleRegion_ )
       , refreshRate( refreshRate_ )
     {}
@@ -30295,8 +30315,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct DisplayModeCreateInfoKHR
     {
     protected:
-      DisplayModeCreateInfoKHR( vk::DisplayModeCreateFlagsKHR flags_ = vk::DisplayModeCreateFlagsKHR(),
-                                vk::DisplayModeParametersKHR parameters_ = vk::DisplayModeParametersKHR() )
+      VULKAN_HPP_CONSTEXPR DisplayModeCreateInfoKHR( vk::DisplayModeCreateFlagsKHR flags_ = vk::DisplayModeCreateFlagsKHR(),
+                                                     vk::DisplayModeParametersKHR parameters_ = vk::DisplayModeParametersKHR() )
         : flags( flags_ )
         , parameters( parameters_ )
       {}
@@ -30323,8 +30343,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DisplayModeCreateInfoKHR : public layout::DisplayModeCreateInfoKHR
   {
-    DisplayModeCreateInfoKHR( vk::DisplayModeCreateFlagsKHR flags_ = vk::DisplayModeCreateFlagsKHR(),
-                              vk::DisplayModeParametersKHR parameters_ = vk::DisplayModeParametersKHR() )
+    VULKAN_HPP_CONSTEXPR DisplayModeCreateInfoKHR( vk::DisplayModeCreateFlagsKHR flags_ = vk::DisplayModeCreateFlagsKHR(),
+                                                   vk::DisplayModeParametersKHR parameters_ = vk::DisplayModeParametersKHR() )
       : layout::DisplayModeCreateInfoKHR( flags_, parameters_ )
     {}
 
@@ -30705,8 +30725,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct DisplayPlaneInfo2KHR
     {
     protected:
-      DisplayPlaneInfo2KHR( vk::DisplayModeKHR mode_ = vk::DisplayModeKHR(),
-                            uint32_t planeIndex_ = 0 )
+      VULKAN_HPP_CONSTEXPR DisplayPlaneInfo2KHR( vk::DisplayModeKHR mode_ = vk::DisplayModeKHR(),
+                                                 uint32_t planeIndex_ = 0 )
         : mode( mode_ )
         , planeIndex( planeIndex_ )
       {}
@@ -30733,8 +30753,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DisplayPlaneInfo2KHR : public layout::DisplayPlaneInfo2KHR
   {
-    DisplayPlaneInfo2KHR( vk::DisplayModeKHR mode_ = vk::DisplayModeKHR(),
-                          uint32_t planeIndex_ = 0 )
+    VULKAN_HPP_CONSTEXPR DisplayPlaneInfo2KHR( vk::DisplayModeKHR mode_ = vk::DisplayModeKHR(),
+                                               uint32_t planeIndex_ = 0 )
       : layout::DisplayPlaneInfo2KHR( mode_, planeIndex_ )
     {}
 
@@ -30915,7 +30935,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct DisplayPowerInfoEXT
     {
     protected:
-      DisplayPowerInfoEXT( vk::DisplayPowerStateEXT powerState_ = vk::DisplayPowerStateEXT::eOff )
+      VULKAN_HPP_CONSTEXPR DisplayPowerInfoEXT( vk::DisplayPowerStateEXT powerState_ = vk::DisplayPowerStateEXT::eOff )
         : powerState( powerState_ )
       {}
 
@@ -30940,7 +30960,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DisplayPowerInfoEXT : public layout::DisplayPowerInfoEXT
   {
-    DisplayPowerInfoEXT( vk::DisplayPowerStateEXT powerState_ = vk::DisplayPowerStateEXT::eOff )
+    VULKAN_HPP_CONSTEXPR DisplayPowerInfoEXT( vk::DisplayPowerStateEXT powerState_ = vk::DisplayPowerStateEXT::eOff )
       : layout::DisplayPowerInfoEXT( powerState_ )
     {}
 
@@ -30999,9 +31019,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct DisplayPresentInfoKHR
     {
     protected:
-      DisplayPresentInfoKHR( vk::Rect2D srcRect_ = vk::Rect2D(),
-                             vk::Rect2D dstRect_ = vk::Rect2D(),
-                             vk::Bool32 persistent_ = 0 )
+      VULKAN_HPP_CONSTEXPR DisplayPresentInfoKHR( vk::Rect2D srcRect_ = vk::Rect2D(),
+                                                  vk::Rect2D dstRect_ = vk::Rect2D(),
+                                                  vk::Bool32 persistent_ = 0 )
         : srcRect( srcRect_ )
         , dstRect( dstRect_ )
         , persistent( persistent_ )
@@ -31030,9 +31050,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DisplayPresentInfoKHR : public layout::DisplayPresentInfoKHR
   {
-    DisplayPresentInfoKHR( vk::Rect2D srcRect_ = vk::Rect2D(),
-                           vk::Rect2D dstRect_ = vk::Rect2D(),
-                           vk::Bool32 persistent_ = 0 )
+    VULKAN_HPP_CONSTEXPR DisplayPresentInfoKHR( vk::Rect2D srcRect_ = vk::Rect2D(),
+                                                vk::Rect2D dstRect_ = vk::Rect2D(),
+                                                vk::Bool32 persistent_ = 0 )
       : layout::DisplayPresentInfoKHR( srcRect_, dstRect_, persistent_ )
     {}
 
@@ -31230,14 +31250,14 @@ namespace VULKAN_HPP_NAMESPACE
     struct DisplaySurfaceCreateInfoKHR
     {
     protected:
-      DisplaySurfaceCreateInfoKHR( vk::DisplaySurfaceCreateFlagsKHR flags_ = vk::DisplaySurfaceCreateFlagsKHR(),
-                                   vk::DisplayModeKHR displayMode_ = vk::DisplayModeKHR(),
-                                   uint32_t planeIndex_ = 0,
-                                   uint32_t planeStackIndex_ = 0,
-                                   vk::SurfaceTransformFlagBitsKHR transform_ = vk::SurfaceTransformFlagBitsKHR::eIdentity,
-                                   float globalAlpha_ = 0,
-                                   vk::DisplayPlaneAlphaFlagBitsKHR alphaMode_ = vk::DisplayPlaneAlphaFlagBitsKHR::eOpaque,
-                                   vk::Extent2D imageExtent_ = vk::Extent2D() )
+      VULKAN_HPP_CONSTEXPR DisplaySurfaceCreateInfoKHR( vk::DisplaySurfaceCreateFlagsKHR flags_ = vk::DisplaySurfaceCreateFlagsKHR(),
+                                                        vk::DisplayModeKHR displayMode_ = vk::DisplayModeKHR(),
+                                                        uint32_t planeIndex_ = 0,
+                                                        uint32_t planeStackIndex_ = 0,
+                                                        vk::SurfaceTransformFlagBitsKHR transform_ = vk::SurfaceTransformFlagBitsKHR::eIdentity,
+                                                        float globalAlpha_ = 0,
+                                                        vk::DisplayPlaneAlphaFlagBitsKHR alphaMode_ = vk::DisplayPlaneAlphaFlagBitsKHR::eOpaque,
+                                                        vk::Extent2D imageExtent_ = vk::Extent2D() )
         : flags( flags_ )
         , displayMode( displayMode_ )
         , planeIndex( planeIndex_ )
@@ -31276,14 +31296,14 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DisplaySurfaceCreateInfoKHR : public layout::DisplaySurfaceCreateInfoKHR
   {
-    DisplaySurfaceCreateInfoKHR( vk::DisplaySurfaceCreateFlagsKHR flags_ = vk::DisplaySurfaceCreateFlagsKHR(),
-                                 vk::DisplayModeKHR displayMode_ = vk::DisplayModeKHR(),
-                                 uint32_t planeIndex_ = 0,
-                                 uint32_t planeStackIndex_ = 0,
-                                 vk::SurfaceTransformFlagBitsKHR transform_ = vk::SurfaceTransformFlagBitsKHR::eIdentity,
-                                 float globalAlpha_ = 0,
-                                 vk::DisplayPlaneAlphaFlagBitsKHR alphaMode_ = vk::DisplayPlaneAlphaFlagBitsKHR::eOpaque,
-                                 vk::Extent2D imageExtent_ = vk::Extent2D() )
+    VULKAN_HPP_CONSTEXPR DisplaySurfaceCreateInfoKHR( vk::DisplaySurfaceCreateFlagsKHR flags_ = vk::DisplaySurfaceCreateFlagsKHR(),
+                                                      vk::DisplayModeKHR displayMode_ = vk::DisplayModeKHR(),
+                                                      uint32_t planeIndex_ = 0,
+                                                      uint32_t planeStackIndex_ = 0,
+                                                      vk::SurfaceTransformFlagBitsKHR transform_ = vk::SurfaceTransformFlagBitsKHR::eIdentity,
+                                                      float globalAlpha_ = 0,
+                                                      vk::DisplayPlaneAlphaFlagBitsKHR alphaMode_ = vk::DisplayPlaneAlphaFlagBitsKHR::eOpaque,
+                                                      vk::Extent2D imageExtent_ = vk::Extent2D() )
       : layout::DisplaySurfaceCreateInfoKHR( flags_, displayMode_, planeIndex_, planeStackIndex_, transform_, globalAlpha_, alphaMode_, imageExtent_ )
     {}
 
@@ -31388,11 +31408,11 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DrawIndexedIndirectCommand
   {
-    DrawIndexedIndirectCommand( uint32_t indexCount_ = 0,
-                                uint32_t instanceCount_ = 0,
-                                uint32_t firstIndex_ = 0,
-                                int32_t vertexOffset_ = 0,
-                                uint32_t firstInstance_ = 0 )
+    VULKAN_HPP_CONSTEXPR DrawIndexedIndirectCommand( uint32_t indexCount_ = 0,
+                                                     uint32_t instanceCount_ = 0,
+                                                     uint32_t firstIndex_ = 0,
+                                                     int32_t vertexOffset_ = 0,
+                                                     uint32_t firstInstance_ = 0 )
       : indexCount( indexCount_ )
       , instanceCount( instanceCount_ )
       , firstIndex( firstIndex_ )
@@ -31477,10 +31497,10 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DrawIndirectCommand
   {
-    DrawIndirectCommand( uint32_t vertexCount_ = 0,
-                         uint32_t instanceCount_ = 0,
-                         uint32_t firstVertex_ = 0,
-                         uint32_t firstInstance_ = 0 )
+    VULKAN_HPP_CONSTEXPR DrawIndirectCommand( uint32_t vertexCount_ = 0,
+                                              uint32_t instanceCount_ = 0,
+                                              uint32_t firstVertex_ = 0,
+                                              uint32_t firstInstance_ = 0 )
       : vertexCount( vertexCount_ )
       , instanceCount( instanceCount_ )
       , firstVertex( firstVertex_ )
@@ -31556,8 +31576,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DrawMeshTasksIndirectCommandNV
   {
-    DrawMeshTasksIndirectCommandNV( uint32_t taskCount_ = 0,
-                                    uint32_t firstTask_ = 0 )
+    VULKAN_HPP_CONSTEXPR DrawMeshTasksIndirectCommandNV( uint32_t taskCount_ = 0,
+                                                         uint32_t firstTask_ = 0 )
       : taskCount( taskCount_ )
       , firstTask( firstTask_ )
     {}
@@ -31737,7 +31757,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct EventCreateInfo
     {
     protected:
-      EventCreateInfo( vk::EventCreateFlags flags_ = vk::EventCreateFlags() )
+      VULKAN_HPP_CONSTEXPR EventCreateInfo( vk::EventCreateFlags flags_ = vk::EventCreateFlags() )
         : flags( flags_ )
       {}
 
@@ -31762,7 +31782,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct EventCreateInfo : public layout::EventCreateInfo
   {
-    EventCreateInfo( vk::EventCreateFlags flags_ = vk::EventCreateFlags() )
+    VULKAN_HPP_CONSTEXPR EventCreateInfo( vk::EventCreateFlags flags_ = vk::EventCreateFlags() )
       : layout::EventCreateInfo( flags_ )
     {}
 
@@ -31821,7 +31841,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct ExportFenceCreateInfo
     {
     protected:
-      ExportFenceCreateInfo( vk::ExternalFenceHandleTypeFlags handleTypes_ = vk::ExternalFenceHandleTypeFlags() )
+      VULKAN_HPP_CONSTEXPR ExportFenceCreateInfo( vk::ExternalFenceHandleTypeFlags handleTypes_ = vk::ExternalFenceHandleTypeFlags() )
         : handleTypes( handleTypes_ )
       {}
 
@@ -31846,7 +31866,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ExportFenceCreateInfo : public layout::ExportFenceCreateInfo
   {
-    ExportFenceCreateInfo( vk::ExternalFenceHandleTypeFlags handleTypes_ = vk::ExternalFenceHandleTypeFlags() )
+    VULKAN_HPP_CONSTEXPR ExportFenceCreateInfo( vk::ExternalFenceHandleTypeFlags handleTypes_ = vk::ExternalFenceHandleTypeFlags() )
       : layout::ExportFenceCreateInfo( handleTypes_ )
     {}
 
@@ -31907,9 +31927,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct ExportFenceWin32HandleInfoKHR
     {
     protected:
-      ExportFenceWin32HandleInfoKHR( const SECURITY_ATTRIBUTES* pAttributes_ = nullptr,
-                                     DWORD dwAccess_ = 0,
-                                     LPCWSTR name_ = nullptr )
+      VULKAN_HPP_CONSTEXPR ExportFenceWin32HandleInfoKHR( const SECURITY_ATTRIBUTES* pAttributes_ = nullptr,
+                                                          DWORD dwAccess_ = 0,
+                                                          LPCWSTR name_ = nullptr )
         : pAttributes( pAttributes_ )
         , dwAccess( dwAccess_ )
         , name( name_ )
@@ -31938,9 +31958,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ExportFenceWin32HandleInfoKHR : public layout::ExportFenceWin32HandleInfoKHR
   {
-    ExportFenceWin32HandleInfoKHR( const SECURITY_ATTRIBUTES* pAttributes_ = nullptr,
-                                   DWORD dwAccess_ = 0,
-                                   LPCWSTR name_ = nullptr )
+    VULKAN_HPP_CONSTEXPR ExportFenceWin32HandleInfoKHR( const SECURITY_ATTRIBUTES* pAttributes_ = nullptr,
+                                                        DWORD dwAccess_ = 0,
+                                                        LPCWSTR name_ = nullptr )
       : layout::ExportFenceWin32HandleInfoKHR( pAttributes_, dwAccess_, name_ )
     {}
 
@@ -32014,7 +32034,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct ExportMemoryAllocateInfo
     {
     protected:
-      ExportMemoryAllocateInfo( vk::ExternalMemoryHandleTypeFlags handleTypes_ = vk::ExternalMemoryHandleTypeFlags() )
+      VULKAN_HPP_CONSTEXPR ExportMemoryAllocateInfo( vk::ExternalMemoryHandleTypeFlags handleTypes_ = vk::ExternalMemoryHandleTypeFlags() )
         : handleTypes( handleTypes_ )
       {}
 
@@ -32039,7 +32059,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ExportMemoryAllocateInfo : public layout::ExportMemoryAllocateInfo
   {
-    ExportMemoryAllocateInfo( vk::ExternalMemoryHandleTypeFlags handleTypes_ = vk::ExternalMemoryHandleTypeFlags() )
+    VULKAN_HPP_CONSTEXPR ExportMemoryAllocateInfo( vk::ExternalMemoryHandleTypeFlags handleTypes_ = vk::ExternalMemoryHandleTypeFlags() )
       : layout::ExportMemoryAllocateInfo( handleTypes_ )
     {}
 
@@ -32098,7 +32118,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct ExportMemoryAllocateInfoNV
     {
     protected:
-      ExportMemoryAllocateInfoNV( vk::ExternalMemoryHandleTypeFlagsNV handleTypes_ = vk::ExternalMemoryHandleTypeFlagsNV() )
+      VULKAN_HPP_CONSTEXPR ExportMemoryAllocateInfoNV( vk::ExternalMemoryHandleTypeFlagsNV handleTypes_ = vk::ExternalMemoryHandleTypeFlagsNV() )
         : handleTypes( handleTypes_ )
       {}
 
@@ -32123,7 +32143,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ExportMemoryAllocateInfoNV : public layout::ExportMemoryAllocateInfoNV
   {
-    ExportMemoryAllocateInfoNV( vk::ExternalMemoryHandleTypeFlagsNV handleTypes_ = vk::ExternalMemoryHandleTypeFlagsNV() )
+    VULKAN_HPP_CONSTEXPR ExportMemoryAllocateInfoNV( vk::ExternalMemoryHandleTypeFlagsNV handleTypes_ = vk::ExternalMemoryHandleTypeFlagsNV() )
       : layout::ExportMemoryAllocateInfoNV( handleTypes_ )
     {}
 
@@ -32184,9 +32204,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct ExportMemoryWin32HandleInfoKHR
     {
     protected:
-      ExportMemoryWin32HandleInfoKHR( const SECURITY_ATTRIBUTES* pAttributes_ = nullptr,
-                                      DWORD dwAccess_ = 0,
-                                      LPCWSTR name_ = nullptr )
+      VULKAN_HPP_CONSTEXPR ExportMemoryWin32HandleInfoKHR( const SECURITY_ATTRIBUTES* pAttributes_ = nullptr,
+                                                           DWORD dwAccess_ = 0,
+                                                           LPCWSTR name_ = nullptr )
         : pAttributes( pAttributes_ )
         , dwAccess( dwAccess_ )
         , name( name_ )
@@ -32215,9 +32235,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ExportMemoryWin32HandleInfoKHR : public layout::ExportMemoryWin32HandleInfoKHR
   {
-    ExportMemoryWin32HandleInfoKHR( const SECURITY_ATTRIBUTES* pAttributes_ = nullptr,
-                                    DWORD dwAccess_ = 0,
-                                    LPCWSTR name_ = nullptr )
+    VULKAN_HPP_CONSTEXPR ExportMemoryWin32HandleInfoKHR( const SECURITY_ATTRIBUTES* pAttributes_ = nullptr,
+                                                         DWORD dwAccess_ = 0,
+                                                         LPCWSTR name_ = nullptr )
       : layout::ExportMemoryWin32HandleInfoKHR( pAttributes_, dwAccess_, name_ )
     {}
 
@@ -32293,8 +32313,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct ExportMemoryWin32HandleInfoNV
     {
     protected:
-      ExportMemoryWin32HandleInfoNV( const SECURITY_ATTRIBUTES* pAttributes_ = nullptr,
-                                     DWORD dwAccess_ = 0 )
+      VULKAN_HPP_CONSTEXPR ExportMemoryWin32HandleInfoNV( const SECURITY_ATTRIBUTES* pAttributes_ = nullptr,
+                                                          DWORD dwAccess_ = 0 )
         : pAttributes( pAttributes_ )
         , dwAccess( dwAccess_ )
       {}
@@ -32321,8 +32341,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ExportMemoryWin32HandleInfoNV : public layout::ExportMemoryWin32HandleInfoNV
   {
-    ExportMemoryWin32HandleInfoNV( const SECURITY_ATTRIBUTES* pAttributes_ = nullptr,
-                                   DWORD dwAccess_ = 0 )
+    VULKAN_HPP_CONSTEXPR ExportMemoryWin32HandleInfoNV( const SECURITY_ATTRIBUTES* pAttributes_ = nullptr,
+                                                        DWORD dwAccess_ = 0 )
       : layout::ExportMemoryWin32HandleInfoNV( pAttributes_, dwAccess_ )
     {}
 
@@ -32389,7 +32409,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct ExportSemaphoreCreateInfo
     {
     protected:
-      ExportSemaphoreCreateInfo( vk::ExternalSemaphoreHandleTypeFlags handleTypes_ = vk::ExternalSemaphoreHandleTypeFlags() )
+      VULKAN_HPP_CONSTEXPR ExportSemaphoreCreateInfo( vk::ExternalSemaphoreHandleTypeFlags handleTypes_ = vk::ExternalSemaphoreHandleTypeFlags() )
         : handleTypes( handleTypes_ )
       {}
 
@@ -32414,7 +32434,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ExportSemaphoreCreateInfo : public layout::ExportSemaphoreCreateInfo
   {
-    ExportSemaphoreCreateInfo( vk::ExternalSemaphoreHandleTypeFlags handleTypes_ = vk::ExternalSemaphoreHandleTypeFlags() )
+    VULKAN_HPP_CONSTEXPR ExportSemaphoreCreateInfo( vk::ExternalSemaphoreHandleTypeFlags handleTypes_ = vk::ExternalSemaphoreHandleTypeFlags() )
       : layout::ExportSemaphoreCreateInfo( handleTypes_ )
     {}
 
@@ -32475,9 +32495,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct ExportSemaphoreWin32HandleInfoKHR
     {
     protected:
-      ExportSemaphoreWin32HandleInfoKHR( const SECURITY_ATTRIBUTES* pAttributes_ = nullptr,
-                                         DWORD dwAccess_ = 0,
-                                         LPCWSTR name_ = nullptr )
+      VULKAN_HPP_CONSTEXPR ExportSemaphoreWin32HandleInfoKHR( const SECURITY_ATTRIBUTES* pAttributes_ = nullptr,
+                                                              DWORD dwAccess_ = 0,
+                                                              LPCWSTR name_ = nullptr )
         : pAttributes( pAttributes_ )
         , dwAccess( dwAccess_ )
         , name( name_ )
@@ -32506,9 +32526,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ExportSemaphoreWin32HandleInfoKHR : public layout::ExportSemaphoreWin32HandleInfoKHR
   {
-    ExportSemaphoreWin32HandleInfoKHR( const SECURITY_ATTRIBUTES* pAttributes_ = nullptr,
-                                       DWORD dwAccess_ = 0,
-                                       LPCWSTR name_ = nullptr )
+    VULKAN_HPP_CONSTEXPR ExportSemaphoreWin32HandleInfoKHR( const SECURITY_ATTRIBUTES* pAttributes_ = nullptr,
+                                                            DWORD dwAccess_ = 0,
+                                                            LPCWSTR name_ = nullptr )
       : layout::ExportSemaphoreWin32HandleInfoKHR( pAttributes_, dwAccess_, name_ )
     {}
 
@@ -32820,7 +32840,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct ExternalFormatANDROID
     {
     protected:
-      ExternalFormatANDROID( uint64_t externalFormat_ = 0 )
+      VULKAN_HPP_CONSTEXPR ExternalFormatANDROID( uint64_t externalFormat_ = 0 )
         : externalFormat( externalFormat_ )
       {}
 
@@ -32845,7 +32865,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ExternalFormatANDROID : public layout::ExternalFormatANDROID
   {
-    ExternalFormatANDROID( uint64_t externalFormat_ = 0 )
+    VULKAN_HPP_CONSTEXPR ExternalFormatANDROID( uint64_t externalFormat_ = 0 )
       : layout::ExternalFormatANDROID( externalFormat_ )
     {}
 
@@ -33074,7 +33094,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct ExternalMemoryBufferCreateInfo
     {
     protected:
-      ExternalMemoryBufferCreateInfo( vk::ExternalMemoryHandleTypeFlags handleTypes_ = vk::ExternalMemoryHandleTypeFlags() )
+      VULKAN_HPP_CONSTEXPR ExternalMemoryBufferCreateInfo( vk::ExternalMemoryHandleTypeFlags handleTypes_ = vk::ExternalMemoryHandleTypeFlags() )
         : handleTypes( handleTypes_ )
       {}
 
@@ -33099,7 +33119,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ExternalMemoryBufferCreateInfo : public layout::ExternalMemoryBufferCreateInfo
   {
-    ExternalMemoryBufferCreateInfo( vk::ExternalMemoryHandleTypeFlags handleTypes_ = vk::ExternalMemoryHandleTypeFlags() )
+    VULKAN_HPP_CONSTEXPR ExternalMemoryBufferCreateInfo( vk::ExternalMemoryHandleTypeFlags handleTypes_ = vk::ExternalMemoryHandleTypeFlags() )
       : layout::ExternalMemoryBufferCreateInfo( handleTypes_ )
     {}
 
@@ -33158,7 +33178,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct ExternalMemoryImageCreateInfo
     {
     protected:
-      ExternalMemoryImageCreateInfo( vk::ExternalMemoryHandleTypeFlags handleTypes_ = vk::ExternalMemoryHandleTypeFlags() )
+      VULKAN_HPP_CONSTEXPR ExternalMemoryImageCreateInfo( vk::ExternalMemoryHandleTypeFlags handleTypes_ = vk::ExternalMemoryHandleTypeFlags() )
         : handleTypes( handleTypes_ )
       {}
 
@@ -33183,7 +33203,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ExternalMemoryImageCreateInfo : public layout::ExternalMemoryImageCreateInfo
   {
-    ExternalMemoryImageCreateInfo( vk::ExternalMemoryHandleTypeFlags handleTypes_ = vk::ExternalMemoryHandleTypeFlags() )
+    VULKAN_HPP_CONSTEXPR ExternalMemoryImageCreateInfo( vk::ExternalMemoryHandleTypeFlags handleTypes_ = vk::ExternalMemoryHandleTypeFlags() )
       : layout::ExternalMemoryImageCreateInfo( handleTypes_ )
     {}
 
@@ -33242,7 +33262,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct ExternalMemoryImageCreateInfoNV
     {
     protected:
-      ExternalMemoryImageCreateInfoNV( vk::ExternalMemoryHandleTypeFlagsNV handleTypes_ = vk::ExternalMemoryHandleTypeFlagsNV() )
+      VULKAN_HPP_CONSTEXPR ExternalMemoryImageCreateInfoNV( vk::ExternalMemoryHandleTypeFlagsNV handleTypes_ = vk::ExternalMemoryHandleTypeFlagsNV() )
         : handleTypes( handleTypes_ )
       {}
 
@@ -33267,7 +33287,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ExternalMemoryImageCreateInfoNV : public layout::ExternalMemoryImageCreateInfoNV
   {
-    ExternalMemoryImageCreateInfoNV( vk::ExternalMemoryHandleTypeFlagsNV handleTypes_ = vk::ExternalMemoryHandleTypeFlagsNV() )
+    VULKAN_HPP_CONSTEXPR ExternalMemoryImageCreateInfoNV( vk::ExternalMemoryHandleTypeFlagsNV handleTypes_ = vk::ExternalMemoryHandleTypeFlagsNV() )
       : layout::ExternalMemoryImageCreateInfoNV( handleTypes_ )
     {}
 
@@ -33401,7 +33421,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct FenceCreateInfo
     {
     protected:
-      FenceCreateInfo( vk::FenceCreateFlags flags_ = vk::FenceCreateFlags() )
+      VULKAN_HPP_CONSTEXPR FenceCreateInfo( vk::FenceCreateFlags flags_ = vk::FenceCreateFlags() )
         : flags( flags_ )
       {}
 
@@ -33426,7 +33446,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct FenceCreateInfo : public layout::FenceCreateInfo
   {
-    FenceCreateInfo( vk::FenceCreateFlags flags_ = vk::FenceCreateFlags() )
+    VULKAN_HPP_CONSTEXPR FenceCreateInfo( vk::FenceCreateFlags flags_ = vk::FenceCreateFlags() )
       : layout::FenceCreateInfo( flags_ )
     {}
 
@@ -33485,8 +33505,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct FenceGetFdInfoKHR
     {
     protected:
-      FenceGetFdInfoKHR( vk::Fence fence_ = vk::Fence(),
-                         vk::ExternalFenceHandleTypeFlagBits handleType_ = vk::ExternalFenceHandleTypeFlagBits::eOpaqueFd )
+      VULKAN_HPP_CONSTEXPR FenceGetFdInfoKHR( vk::Fence fence_ = vk::Fence(),
+                                              vk::ExternalFenceHandleTypeFlagBits handleType_ = vk::ExternalFenceHandleTypeFlagBits::eOpaqueFd )
         : fence( fence_ )
         , handleType( handleType_ )
       {}
@@ -33513,8 +33533,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct FenceGetFdInfoKHR : public layout::FenceGetFdInfoKHR
   {
-    FenceGetFdInfoKHR( vk::Fence fence_ = vk::Fence(),
-                       vk::ExternalFenceHandleTypeFlagBits handleType_ = vk::ExternalFenceHandleTypeFlagBits::eOpaqueFd )
+    VULKAN_HPP_CONSTEXPR FenceGetFdInfoKHR( vk::Fence fence_ = vk::Fence(),
+                                            vk::ExternalFenceHandleTypeFlagBits handleType_ = vk::ExternalFenceHandleTypeFlagBits::eOpaqueFd )
       : layout::FenceGetFdInfoKHR( fence_, handleType_ )
     {}
 
@@ -33582,8 +33602,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct FenceGetWin32HandleInfoKHR
     {
     protected:
-      FenceGetWin32HandleInfoKHR( vk::Fence fence_ = vk::Fence(),
-                                  vk::ExternalFenceHandleTypeFlagBits handleType_ = vk::ExternalFenceHandleTypeFlagBits::eOpaqueFd )
+      VULKAN_HPP_CONSTEXPR FenceGetWin32HandleInfoKHR( vk::Fence fence_ = vk::Fence(),
+                                                       vk::ExternalFenceHandleTypeFlagBits handleType_ = vk::ExternalFenceHandleTypeFlagBits::eOpaqueFd )
         : fence( fence_ )
         , handleType( handleType_ )
       {}
@@ -33610,8 +33630,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct FenceGetWin32HandleInfoKHR : public layout::FenceGetWin32HandleInfoKHR
   {
-    FenceGetWin32HandleInfoKHR( vk::Fence fence_ = vk::Fence(),
-                                vk::ExternalFenceHandleTypeFlagBits handleType_ = vk::ExternalFenceHandleTypeFlagBits::eOpaqueFd )
+    VULKAN_HPP_CONSTEXPR FenceGetWin32HandleInfoKHR( vk::Fence fence_ = vk::Fence(),
+                                                     vk::ExternalFenceHandleTypeFlagBits handleType_ = vk::ExternalFenceHandleTypeFlagBits::eOpaqueFd )
       : layout::FenceGetWin32HandleInfoKHR( fence_, handleType_ )
     {}
 
@@ -33868,13 +33888,13 @@ namespace VULKAN_HPP_NAMESPACE
     struct FramebufferAttachmentImageInfoKHR
     {
     protected:
-      FramebufferAttachmentImageInfoKHR( vk::ImageCreateFlags flags_ = vk::ImageCreateFlags(),
-                                         vk::ImageUsageFlags usage_ = vk::ImageUsageFlags(),
-                                         uint32_t width_ = 0,
-                                         uint32_t height_ = 0,
-                                         uint32_t layerCount_ = 0,
-                                         uint32_t viewFormatCount_ = 0,
-                                         const vk::Format* pViewFormats_ = nullptr )
+      VULKAN_HPP_CONSTEXPR FramebufferAttachmentImageInfoKHR( vk::ImageCreateFlags flags_ = vk::ImageCreateFlags(),
+                                                              vk::ImageUsageFlags usage_ = vk::ImageUsageFlags(),
+                                                              uint32_t width_ = 0,
+                                                              uint32_t height_ = 0,
+                                                              uint32_t layerCount_ = 0,
+                                                              uint32_t viewFormatCount_ = 0,
+                                                              const vk::Format* pViewFormats_ = nullptr )
         : flags( flags_ )
         , usage( usage_ )
         , width( width_ )
@@ -33911,13 +33931,13 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct FramebufferAttachmentImageInfoKHR : public layout::FramebufferAttachmentImageInfoKHR
   {
-    FramebufferAttachmentImageInfoKHR( vk::ImageCreateFlags flags_ = vk::ImageCreateFlags(),
-                                       vk::ImageUsageFlags usage_ = vk::ImageUsageFlags(),
-                                       uint32_t width_ = 0,
-                                       uint32_t height_ = 0,
-                                       uint32_t layerCount_ = 0,
-                                       uint32_t viewFormatCount_ = 0,
-                                       const vk::Format* pViewFormats_ = nullptr )
+    VULKAN_HPP_CONSTEXPR FramebufferAttachmentImageInfoKHR( vk::ImageCreateFlags flags_ = vk::ImageCreateFlags(),
+                                                            vk::ImageUsageFlags usage_ = vk::ImageUsageFlags(),
+                                                            uint32_t width_ = 0,
+                                                            uint32_t height_ = 0,
+                                                            uint32_t layerCount_ = 0,
+                                                            uint32_t viewFormatCount_ = 0,
+                                                            const vk::Format* pViewFormats_ = nullptr )
       : layout::FramebufferAttachmentImageInfoKHR( flags_, usage_, width_, height_, layerCount_, viewFormatCount_, pViewFormats_ )
     {}
 
@@ -34018,8 +34038,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct FramebufferAttachmentsCreateInfoKHR
     {
     protected:
-      FramebufferAttachmentsCreateInfoKHR( uint32_t attachmentImageInfoCount_ = 0,
-                                           const vk::FramebufferAttachmentImageInfoKHR* pAttachmentImageInfos_ = nullptr )
+      VULKAN_HPP_CONSTEXPR FramebufferAttachmentsCreateInfoKHR( uint32_t attachmentImageInfoCount_ = 0,
+                                                                const vk::FramebufferAttachmentImageInfoKHR* pAttachmentImageInfos_ = nullptr )
         : attachmentImageInfoCount( attachmentImageInfoCount_ )
         , pAttachmentImageInfos( pAttachmentImageInfos_ )
       {}
@@ -34046,8 +34066,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct FramebufferAttachmentsCreateInfoKHR : public layout::FramebufferAttachmentsCreateInfoKHR
   {
-    FramebufferAttachmentsCreateInfoKHR( uint32_t attachmentImageInfoCount_ = 0,
-                                         const vk::FramebufferAttachmentImageInfoKHR* pAttachmentImageInfos_ = nullptr )
+    VULKAN_HPP_CONSTEXPR FramebufferAttachmentsCreateInfoKHR( uint32_t attachmentImageInfoCount_ = 0,
+                                                              const vk::FramebufferAttachmentImageInfoKHR* pAttachmentImageInfos_ = nullptr )
       : layout::FramebufferAttachmentsCreateInfoKHR( attachmentImageInfoCount_, pAttachmentImageInfos_ )
     {}
 
@@ -34113,13 +34133,13 @@ namespace VULKAN_HPP_NAMESPACE
     struct FramebufferCreateInfo
     {
     protected:
-      FramebufferCreateInfo( vk::FramebufferCreateFlags flags_ = vk::FramebufferCreateFlags(),
-                             vk::RenderPass renderPass_ = vk::RenderPass(),
-                             uint32_t attachmentCount_ = 0,
-                             const vk::ImageView* pAttachments_ = nullptr,
-                             uint32_t width_ = 0,
-                             uint32_t height_ = 0,
-                             uint32_t layers_ = 0 )
+      VULKAN_HPP_CONSTEXPR FramebufferCreateInfo( vk::FramebufferCreateFlags flags_ = vk::FramebufferCreateFlags(),
+                                                  vk::RenderPass renderPass_ = vk::RenderPass(),
+                                                  uint32_t attachmentCount_ = 0,
+                                                  const vk::ImageView* pAttachments_ = nullptr,
+                                                  uint32_t width_ = 0,
+                                                  uint32_t height_ = 0,
+                                                  uint32_t layers_ = 0 )
         : flags( flags_ )
         , renderPass( renderPass_ )
         , attachmentCount( attachmentCount_ )
@@ -34156,13 +34176,13 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct FramebufferCreateInfo : public layout::FramebufferCreateInfo
   {
-    FramebufferCreateInfo( vk::FramebufferCreateFlags flags_ = vk::FramebufferCreateFlags(),
-                           vk::RenderPass renderPass_ = vk::RenderPass(),
-                           uint32_t attachmentCount_ = 0,
-                           const vk::ImageView* pAttachments_ = nullptr,
-                           uint32_t width_ = 0,
-                           uint32_t height_ = 0,
-                           uint32_t layers_ = 0 )
+    VULKAN_HPP_CONSTEXPR FramebufferCreateInfo( vk::FramebufferCreateFlags flags_ = vk::FramebufferCreateFlags(),
+                                                vk::RenderPass renderPass_ = vk::RenderPass(),
+                                                uint32_t attachmentCount_ = 0,
+                                                const vk::ImageView* pAttachments_ = nullptr,
+                                                uint32_t width_ = 0,
+                                                uint32_t height_ = 0,
+                                                uint32_t layers_ = 0 )
       : layout::FramebufferCreateInfo( flags_, renderPass_, attachmentCount_, pAttachments_, width_, height_, layers_ )
     {}
 
@@ -34337,9 +34357,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct VertexInputBindingDescription
   {
-    VertexInputBindingDescription( uint32_t binding_ = 0,
-                                   uint32_t stride_ = 0,
-                                   vk::VertexInputRate inputRate_ = vk::VertexInputRate::eVertex )
+    VULKAN_HPP_CONSTEXPR VertexInputBindingDescription( uint32_t binding_ = 0,
+                                                        uint32_t stride_ = 0,
+                                                        vk::VertexInputRate inputRate_ = vk::VertexInputRate::eVertex )
       : binding( binding_ )
       , stride( stride_ )
       , inputRate( inputRate_ )
@@ -34406,10 +34426,10 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct VertexInputAttributeDescription
   {
-    VertexInputAttributeDescription( uint32_t location_ = 0,
-                                     uint32_t binding_ = 0,
-                                     vk::Format format_ = vk::Format::eUndefined,
-                                     uint32_t offset_ = 0 )
+    VULKAN_HPP_CONSTEXPR VertexInputAttributeDescription( uint32_t location_ = 0,
+                                                          uint32_t binding_ = 0,
+                                                          vk::Format format_ = vk::Format::eUndefined,
+                                                          uint32_t offset_ = 0 )
       : location( location_ )
       , binding( binding_ )
       , format( format_ )
@@ -34488,11 +34508,11 @@ namespace VULKAN_HPP_NAMESPACE
     struct PipelineVertexInputStateCreateInfo
     {
     protected:
-      PipelineVertexInputStateCreateInfo( vk::PipelineVertexInputStateCreateFlags flags_ = vk::PipelineVertexInputStateCreateFlags(),
-                                          uint32_t vertexBindingDescriptionCount_ = 0,
-                                          const vk::VertexInputBindingDescription* pVertexBindingDescriptions_ = nullptr,
-                                          uint32_t vertexAttributeDescriptionCount_ = 0,
-                                          const vk::VertexInputAttributeDescription* pVertexAttributeDescriptions_ = nullptr )
+      VULKAN_HPP_CONSTEXPR PipelineVertexInputStateCreateInfo( vk::PipelineVertexInputStateCreateFlags flags_ = vk::PipelineVertexInputStateCreateFlags(),
+                                                               uint32_t vertexBindingDescriptionCount_ = 0,
+                                                               const vk::VertexInputBindingDescription* pVertexBindingDescriptions_ = nullptr,
+                                                               uint32_t vertexAttributeDescriptionCount_ = 0,
+                                                               const vk::VertexInputAttributeDescription* pVertexAttributeDescriptions_ = nullptr )
         : flags( flags_ )
         , vertexBindingDescriptionCount( vertexBindingDescriptionCount_ )
         , pVertexBindingDescriptions( pVertexBindingDescriptions_ )
@@ -34525,11 +34545,11 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineVertexInputStateCreateInfo : public layout::PipelineVertexInputStateCreateInfo
   {
-    PipelineVertexInputStateCreateInfo( vk::PipelineVertexInputStateCreateFlags flags_ = vk::PipelineVertexInputStateCreateFlags(),
-                                        uint32_t vertexBindingDescriptionCount_ = 0,
-                                        const vk::VertexInputBindingDescription* pVertexBindingDescriptions_ = nullptr,
-                                        uint32_t vertexAttributeDescriptionCount_ = 0,
-                                        const vk::VertexInputAttributeDescription* pVertexAttributeDescriptions_ = nullptr )
+    VULKAN_HPP_CONSTEXPR PipelineVertexInputStateCreateInfo( vk::PipelineVertexInputStateCreateFlags flags_ = vk::PipelineVertexInputStateCreateFlags(),
+                                                             uint32_t vertexBindingDescriptionCount_ = 0,
+                                                             const vk::VertexInputBindingDescription* pVertexBindingDescriptions_ = nullptr,
+                                                             uint32_t vertexAttributeDescriptionCount_ = 0,
+                                                             const vk::VertexInputAttributeDescription* pVertexAttributeDescriptions_ = nullptr )
       : layout::PipelineVertexInputStateCreateInfo( flags_, vertexBindingDescriptionCount_, pVertexBindingDescriptions_, vertexAttributeDescriptionCount_, pVertexAttributeDescriptions_ )
     {}
 
@@ -34616,9 +34636,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct PipelineInputAssemblyStateCreateInfo
     {
     protected:
-      PipelineInputAssemblyStateCreateInfo( vk::PipelineInputAssemblyStateCreateFlags flags_ = vk::PipelineInputAssemblyStateCreateFlags(),
-                                            vk::PrimitiveTopology topology_ = vk::PrimitiveTopology::ePointList,
-                                            vk::Bool32 primitiveRestartEnable_ = 0 )
+      VULKAN_HPP_CONSTEXPR PipelineInputAssemblyStateCreateInfo( vk::PipelineInputAssemblyStateCreateFlags flags_ = vk::PipelineInputAssemblyStateCreateFlags(),
+                                                                 vk::PrimitiveTopology topology_ = vk::PrimitiveTopology::ePointList,
+                                                                 vk::Bool32 primitiveRestartEnable_ = 0 )
         : flags( flags_ )
         , topology( topology_ )
         , primitiveRestartEnable( primitiveRestartEnable_ )
@@ -34647,9 +34667,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineInputAssemblyStateCreateInfo : public layout::PipelineInputAssemblyStateCreateInfo
   {
-    PipelineInputAssemblyStateCreateInfo( vk::PipelineInputAssemblyStateCreateFlags flags_ = vk::PipelineInputAssemblyStateCreateFlags(),
-                                          vk::PrimitiveTopology topology_ = vk::PrimitiveTopology::ePointList,
-                                          vk::Bool32 primitiveRestartEnable_ = 0 )
+    VULKAN_HPP_CONSTEXPR PipelineInputAssemblyStateCreateInfo( vk::PipelineInputAssemblyStateCreateFlags flags_ = vk::PipelineInputAssemblyStateCreateFlags(),
+                                                               vk::PrimitiveTopology topology_ = vk::PrimitiveTopology::ePointList,
+                                                               vk::Bool32 primitiveRestartEnable_ = 0 )
       : layout::PipelineInputAssemblyStateCreateInfo( flags_, topology_, primitiveRestartEnable_ )
     {}
 
@@ -34722,8 +34742,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct PipelineTessellationStateCreateInfo
     {
     protected:
-      PipelineTessellationStateCreateInfo( vk::PipelineTessellationStateCreateFlags flags_ = vk::PipelineTessellationStateCreateFlags(),
-                                           uint32_t patchControlPoints_ = 0 )
+      VULKAN_HPP_CONSTEXPR PipelineTessellationStateCreateInfo( vk::PipelineTessellationStateCreateFlags flags_ = vk::PipelineTessellationStateCreateFlags(),
+                                                                uint32_t patchControlPoints_ = 0 )
         : flags( flags_ )
         , patchControlPoints( patchControlPoints_ )
       {}
@@ -34750,8 +34770,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineTessellationStateCreateInfo : public layout::PipelineTessellationStateCreateInfo
   {
-    PipelineTessellationStateCreateInfo( vk::PipelineTessellationStateCreateFlags flags_ = vk::PipelineTessellationStateCreateFlags(),
-                                         uint32_t patchControlPoints_ = 0 )
+    VULKAN_HPP_CONSTEXPR PipelineTessellationStateCreateInfo( vk::PipelineTessellationStateCreateFlags flags_ = vk::PipelineTessellationStateCreateFlags(),
+                                                              uint32_t patchControlPoints_ = 0 )
       : layout::PipelineTessellationStateCreateInfo( flags_, patchControlPoints_ )
     {}
 
@@ -34814,12 +34834,12 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct Viewport
   {
-    Viewport( float x_ = 0,
-              float y_ = 0,
-              float width_ = 0,
-              float height_ = 0,
-              float minDepth_ = 0,
-              float maxDepth_ = 0 )
+    VULKAN_HPP_CONSTEXPR Viewport( float x_ = 0,
+                                   float y_ = 0,
+                                   float width_ = 0,
+                                   float height_ = 0,
+                                   float minDepth_ = 0,
+                                   float maxDepth_ = 0 )
       : x( x_ )
       , y( y_ )
       , width( width_ )
@@ -34916,11 +34936,11 @@ namespace VULKAN_HPP_NAMESPACE
     struct PipelineViewportStateCreateInfo
     {
     protected:
-      PipelineViewportStateCreateInfo( vk::PipelineViewportStateCreateFlags flags_ = vk::PipelineViewportStateCreateFlags(),
-                                       uint32_t viewportCount_ = 0,
-                                       const vk::Viewport* pViewports_ = nullptr,
-                                       uint32_t scissorCount_ = 0,
-                                       const vk::Rect2D* pScissors_ = nullptr )
+      VULKAN_HPP_CONSTEXPR PipelineViewportStateCreateInfo( vk::PipelineViewportStateCreateFlags flags_ = vk::PipelineViewportStateCreateFlags(),
+                                                            uint32_t viewportCount_ = 0,
+                                                            const vk::Viewport* pViewports_ = nullptr,
+                                                            uint32_t scissorCount_ = 0,
+                                                            const vk::Rect2D* pScissors_ = nullptr )
         : flags( flags_ )
         , viewportCount( viewportCount_ )
         , pViewports( pViewports_ )
@@ -34953,11 +34973,11 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineViewportStateCreateInfo : public layout::PipelineViewportStateCreateInfo
   {
-    PipelineViewportStateCreateInfo( vk::PipelineViewportStateCreateFlags flags_ = vk::PipelineViewportStateCreateFlags(),
-                                     uint32_t viewportCount_ = 0,
-                                     const vk::Viewport* pViewports_ = nullptr,
-                                     uint32_t scissorCount_ = 0,
-                                     const vk::Rect2D* pScissors_ = nullptr )
+    VULKAN_HPP_CONSTEXPR PipelineViewportStateCreateInfo( vk::PipelineViewportStateCreateFlags flags_ = vk::PipelineViewportStateCreateFlags(),
+                                                          uint32_t viewportCount_ = 0,
+                                                          const vk::Viewport* pViewports_ = nullptr,
+                                                          uint32_t scissorCount_ = 0,
+                                                          const vk::Rect2D* pScissors_ = nullptr )
       : layout::PipelineViewportStateCreateInfo( flags_, viewportCount_, pViewports_, scissorCount_, pScissors_ )
     {}
 
@@ -35044,17 +35064,17 @@ namespace VULKAN_HPP_NAMESPACE
     struct PipelineRasterizationStateCreateInfo
     {
     protected:
-      PipelineRasterizationStateCreateInfo( vk::PipelineRasterizationStateCreateFlags flags_ = vk::PipelineRasterizationStateCreateFlags(),
-                                            vk::Bool32 depthClampEnable_ = 0,
-                                            vk::Bool32 rasterizerDiscardEnable_ = 0,
-                                            vk::PolygonMode polygonMode_ = vk::PolygonMode::eFill,
-                                            vk::CullModeFlags cullMode_ = vk::CullModeFlags(),
-                                            vk::FrontFace frontFace_ = vk::FrontFace::eCounterClockwise,
-                                            vk::Bool32 depthBiasEnable_ = 0,
-                                            float depthBiasConstantFactor_ = 0,
-                                            float depthBiasClamp_ = 0,
-                                            float depthBiasSlopeFactor_ = 0,
-                                            float lineWidth_ = 0 )
+      VULKAN_HPP_CONSTEXPR PipelineRasterizationStateCreateInfo( vk::PipelineRasterizationStateCreateFlags flags_ = vk::PipelineRasterizationStateCreateFlags(),
+                                                                 vk::Bool32 depthClampEnable_ = 0,
+                                                                 vk::Bool32 rasterizerDiscardEnable_ = 0,
+                                                                 vk::PolygonMode polygonMode_ = vk::PolygonMode::eFill,
+                                                                 vk::CullModeFlags cullMode_ = vk::CullModeFlags(),
+                                                                 vk::FrontFace frontFace_ = vk::FrontFace::eCounterClockwise,
+                                                                 vk::Bool32 depthBiasEnable_ = 0,
+                                                                 float depthBiasConstantFactor_ = 0,
+                                                                 float depthBiasClamp_ = 0,
+                                                                 float depthBiasSlopeFactor_ = 0,
+                                                                 float lineWidth_ = 0 )
         : flags( flags_ )
         , depthClampEnable( depthClampEnable_ )
         , rasterizerDiscardEnable( rasterizerDiscardEnable_ )
@@ -35099,17 +35119,17 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineRasterizationStateCreateInfo : public layout::PipelineRasterizationStateCreateInfo
   {
-    PipelineRasterizationStateCreateInfo( vk::PipelineRasterizationStateCreateFlags flags_ = vk::PipelineRasterizationStateCreateFlags(),
-                                          vk::Bool32 depthClampEnable_ = 0,
-                                          vk::Bool32 rasterizerDiscardEnable_ = 0,
-                                          vk::PolygonMode polygonMode_ = vk::PolygonMode::eFill,
-                                          vk::CullModeFlags cullMode_ = vk::CullModeFlags(),
-                                          vk::FrontFace frontFace_ = vk::FrontFace::eCounterClockwise,
-                                          vk::Bool32 depthBiasEnable_ = 0,
-                                          float depthBiasConstantFactor_ = 0,
-                                          float depthBiasClamp_ = 0,
-                                          float depthBiasSlopeFactor_ = 0,
-                                          float lineWidth_ = 0 )
+    VULKAN_HPP_CONSTEXPR PipelineRasterizationStateCreateInfo( vk::PipelineRasterizationStateCreateFlags flags_ = vk::PipelineRasterizationStateCreateFlags(),
+                                                               vk::Bool32 depthClampEnable_ = 0,
+                                                               vk::Bool32 rasterizerDiscardEnable_ = 0,
+                                                               vk::PolygonMode polygonMode_ = vk::PolygonMode::eFill,
+                                                               vk::CullModeFlags cullMode_ = vk::CullModeFlags(),
+                                                               vk::FrontFace frontFace_ = vk::FrontFace::eCounterClockwise,
+                                                               vk::Bool32 depthBiasEnable_ = 0,
+                                                               float depthBiasConstantFactor_ = 0,
+                                                               float depthBiasClamp_ = 0,
+                                                               float depthBiasSlopeFactor_ = 0,
+                                                               float lineWidth_ = 0 )
       : layout::PipelineRasterizationStateCreateInfo( flags_, depthClampEnable_, rasterizerDiscardEnable_, polygonMode_, cullMode_, frontFace_, depthBiasEnable_, depthBiasConstantFactor_, depthBiasClamp_, depthBiasSlopeFactor_, lineWidth_ )
     {}
 
@@ -35238,13 +35258,13 @@ namespace VULKAN_HPP_NAMESPACE
     struct PipelineMultisampleStateCreateInfo
     {
     protected:
-      PipelineMultisampleStateCreateInfo( vk::PipelineMultisampleStateCreateFlags flags_ = vk::PipelineMultisampleStateCreateFlags(),
-                                          vk::SampleCountFlagBits rasterizationSamples_ = vk::SampleCountFlagBits::e1,
-                                          vk::Bool32 sampleShadingEnable_ = 0,
-                                          float minSampleShading_ = 0,
-                                          const vk::SampleMask* pSampleMask_ = nullptr,
-                                          vk::Bool32 alphaToCoverageEnable_ = 0,
-                                          vk::Bool32 alphaToOneEnable_ = 0 )
+      VULKAN_HPP_CONSTEXPR PipelineMultisampleStateCreateInfo( vk::PipelineMultisampleStateCreateFlags flags_ = vk::PipelineMultisampleStateCreateFlags(),
+                                                               vk::SampleCountFlagBits rasterizationSamples_ = vk::SampleCountFlagBits::e1,
+                                                               vk::Bool32 sampleShadingEnable_ = 0,
+                                                               float minSampleShading_ = 0,
+                                                               const vk::SampleMask* pSampleMask_ = nullptr,
+                                                               vk::Bool32 alphaToCoverageEnable_ = 0,
+                                                               vk::Bool32 alphaToOneEnable_ = 0 )
         : flags( flags_ )
         , rasterizationSamples( rasterizationSamples_ )
         , sampleShadingEnable( sampleShadingEnable_ )
@@ -35281,13 +35301,13 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineMultisampleStateCreateInfo : public layout::PipelineMultisampleStateCreateInfo
   {
-    PipelineMultisampleStateCreateInfo( vk::PipelineMultisampleStateCreateFlags flags_ = vk::PipelineMultisampleStateCreateFlags(),
-                                        vk::SampleCountFlagBits rasterizationSamples_ = vk::SampleCountFlagBits::e1,
-                                        vk::Bool32 sampleShadingEnable_ = 0,
-                                        float minSampleShading_ = 0,
-                                        const vk::SampleMask* pSampleMask_ = nullptr,
-                                        vk::Bool32 alphaToCoverageEnable_ = 0,
-                                        vk::Bool32 alphaToOneEnable_ = 0 )
+    VULKAN_HPP_CONSTEXPR PipelineMultisampleStateCreateInfo( vk::PipelineMultisampleStateCreateFlags flags_ = vk::PipelineMultisampleStateCreateFlags(),
+                                                             vk::SampleCountFlagBits rasterizationSamples_ = vk::SampleCountFlagBits::e1,
+                                                             vk::Bool32 sampleShadingEnable_ = 0,
+                                                             float minSampleShading_ = 0,
+                                                             const vk::SampleMask* pSampleMask_ = nullptr,
+                                                             vk::Bool32 alphaToCoverageEnable_ = 0,
+                                                             vk::Bool32 alphaToOneEnable_ = 0 )
       : layout::PipelineMultisampleStateCreateInfo( flags_, rasterizationSamples_, sampleShadingEnable_, minSampleShading_, pSampleMask_, alphaToCoverageEnable_, alphaToOneEnable_ )
     {}
 
@@ -35385,13 +35405,13 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct StencilOpState
   {
-    StencilOpState( vk::StencilOp failOp_ = vk::StencilOp::eKeep,
-                    vk::StencilOp passOp_ = vk::StencilOp::eKeep,
-                    vk::StencilOp depthFailOp_ = vk::StencilOp::eKeep,
-                    vk::CompareOp compareOp_ = vk::CompareOp::eNever,
-                    uint32_t compareMask_ = 0,
-                    uint32_t writeMask_ = 0,
-                    uint32_t reference_ = 0 )
+    VULKAN_HPP_CONSTEXPR StencilOpState( vk::StencilOp failOp_ = vk::StencilOp::eKeep,
+                                         vk::StencilOp passOp_ = vk::StencilOp::eKeep,
+                                         vk::StencilOp depthFailOp_ = vk::StencilOp::eKeep,
+                                         vk::CompareOp compareOp_ = vk::CompareOp::eNever,
+                                         uint32_t compareMask_ = 0,
+                                         uint32_t writeMask_ = 0,
+                                         uint32_t reference_ = 0 )
       : failOp( failOp_ )
       , passOp( passOp_ )
       , depthFailOp( depthFailOp_ )
@@ -35497,16 +35517,16 @@ namespace VULKAN_HPP_NAMESPACE
     struct PipelineDepthStencilStateCreateInfo
     {
     protected:
-      PipelineDepthStencilStateCreateInfo( vk::PipelineDepthStencilStateCreateFlags flags_ = vk::PipelineDepthStencilStateCreateFlags(),
-                                           vk::Bool32 depthTestEnable_ = 0,
-                                           vk::Bool32 depthWriteEnable_ = 0,
-                                           vk::CompareOp depthCompareOp_ = vk::CompareOp::eNever,
-                                           vk::Bool32 depthBoundsTestEnable_ = 0,
-                                           vk::Bool32 stencilTestEnable_ = 0,
-                                           vk::StencilOpState front_ = vk::StencilOpState(),
-                                           vk::StencilOpState back_ = vk::StencilOpState(),
-                                           float minDepthBounds_ = 0,
-                                           float maxDepthBounds_ = 0 )
+      VULKAN_HPP_CONSTEXPR PipelineDepthStencilStateCreateInfo( vk::PipelineDepthStencilStateCreateFlags flags_ = vk::PipelineDepthStencilStateCreateFlags(),
+                                                                vk::Bool32 depthTestEnable_ = 0,
+                                                                vk::Bool32 depthWriteEnable_ = 0,
+                                                                vk::CompareOp depthCompareOp_ = vk::CompareOp::eNever,
+                                                                vk::Bool32 depthBoundsTestEnable_ = 0,
+                                                                vk::Bool32 stencilTestEnable_ = 0,
+                                                                vk::StencilOpState front_ = vk::StencilOpState(),
+                                                                vk::StencilOpState back_ = vk::StencilOpState(),
+                                                                float minDepthBounds_ = 0,
+                                                                float maxDepthBounds_ = 0 )
         : flags( flags_ )
         , depthTestEnable( depthTestEnable_ )
         , depthWriteEnable( depthWriteEnable_ )
@@ -35549,16 +35569,16 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineDepthStencilStateCreateInfo : public layout::PipelineDepthStencilStateCreateInfo
   {
-    PipelineDepthStencilStateCreateInfo( vk::PipelineDepthStencilStateCreateFlags flags_ = vk::PipelineDepthStencilStateCreateFlags(),
-                                         vk::Bool32 depthTestEnable_ = 0,
-                                         vk::Bool32 depthWriteEnable_ = 0,
-                                         vk::CompareOp depthCompareOp_ = vk::CompareOp::eNever,
-                                         vk::Bool32 depthBoundsTestEnable_ = 0,
-                                         vk::Bool32 stencilTestEnable_ = 0,
-                                         vk::StencilOpState front_ = vk::StencilOpState(),
-                                         vk::StencilOpState back_ = vk::StencilOpState(),
-                                         float minDepthBounds_ = 0,
-                                         float maxDepthBounds_ = 0 )
+    VULKAN_HPP_CONSTEXPR PipelineDepthStencilStateCreateInfo( vk::PipelineDepthStencilStateCreateFlags flags_ = vk::PipelineDepthStencilStateCreateFlags(),
+                                                              vk::Bool32 depthTestEnable_ = 0,
+                                                              vk::Bool32 depthWriteEnable_ = 0,
+                                                              vk::CompareOp depthCompareOp_ = vk::CompareOp::eNever,
+                                                              vk::Bool32 depthBoundsTestEnable_ = 0,
+                                                              vk::Bool32 stencilTestEnable_ = 0,
+                                                              vk::StencilOpState front_ = vk::StencilOpState(),
+                                                              vk::StencilOpState back_ = vk::StencilOpState(),
+                                                              float minDepthBounds_ = 0,
+                                                              float maxDepthBounds_ = 0 )
       : layout::PipelineDepthStencilStateCreateInfo( flags_, depthTestEnable_, depthWriteEnable_, depthCompareOp_, depthBoundsTestEnable_, stencilTestEnable_, front_, back_, minDepthBounds_, maxDepthBounds_ )
     {}
 
@@ -35677,14 +35697,14 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineColorBlendAttachmentState
   {
-    PipelineColorBlendAttachmentState( vk::Bool32 blendEnable_ = 0,
-                                       vk::BlendFactor srcColorBlendFactor_ = vk::BlendFactor::eZero,
-                                       vk::BlendFactor dstColorBlendFactor_ = vk::BlendFactor::eZero,
-                                       vk::BlendOp colorBlendOp_ = vk::BlendOp::eAdd,
-                                       vk::BlendFactor srcAlphaBlendFactor_ = vk::BlendFactor::eZero,
-                                       vk::BlendFactor dstAlphaBlendFactor_ = vk::BlendFactor::eZero,
-                                       vk::BlendOp alphaBlendOp_ = vk::BlendOp::eAdd,
-                                       vk::ColorComponentFlags colorWriteMask_ = vk::ColorComponentFlags() )
+    VULKAN_HPP_CONSTEXPR PipelineColorBlendAttachmentState( vk::Bool32 blendEnable_ = 0,
+                                                            vk::BlendFactor srcColorBlendFactor_ = vk::BlendFactor::eZero,
+                                                            vk::BlendFactor dstColorBlendFactor_ = vk::BlendFactor::eZero,
+                                                            vk::BlendOp colorBlendOp_ = vk::BlendOp::eAdd,
+                                                            vk::BlendFactor srcAlphaBlendFactor_ = vk::BlendFactor::eZero,
+                                                            vk::BlendFactor dstAlphaBlendFactor_ = vk::BlendFactor::eZero,
+                                                            vk::BlendOp alphaBlendOp_ = vk::BlendOp::eAdd,
+                                                            vk::ColorComponentFlags colorWriteMask_ = vk::ColorComponentFlags() )
       : blendEnable( blendEnable_ )
       , srcColorBlendFactor( srcColorBlendFactor_ )
       , dstColorBlendFactor( dstColorBlendFactor_ )
@@ -35799,20 +35819,20 @@ namespace VULKAN_HPP_NAMESPACE
     struct PipelineColorBlendStateCreateInfo
     {
     protected:
-      PipelineColorBlendStateCreateInfo( vk::PipelineColorBlendStateCreateFlags flags_ = vk::PipelineColorBlendStateCreateFlags(),
-                                         vk::Bool32 logicOpEnable_ = 0,
-                                         vk::LogicOp logicOp_ = vk::LogicOp::eClear,
-                                         uint32_t attachmentCount_ = 0,
-                                         const vk::PipelineColorBlendAttachmentState* pAttachments_ = nullptr,
-                                         std::array<float,4> const& blendConstants_ = { { 0 } } )
+      VULKAN_HPP_CONSTEXPR_14 PipelineColorBlendStateCreateInfo( vk::PipelineColorBlendStateCreateFlags flags_ = vk::PipelineColorBlendStateCreateFlags(),
+                                                                 vk::Bool32 logicOpEnable_ = 0,
+                                                                 vk::LogicOp logicOp_ = vk::LogicOp::eClear,
+                                                                 uint32_t attachmentCount_ = 0,
+                                                                 const vk::PipelineColorBlendAttachmentState* pAttachments_ = nullptr,
+                                                                 std::array<float,4> const& blendConstants_ = { { 0 } } )
         : flags( flags_ )
         , logicOpEnable( logicOpEnable_ )
         , logicOp( logicOp_ )
         , attachmentCount( attachmentCount_ )
         , pAttachments( pAttachments_ )
+        , blendConstants{}
       {
-        memcpy( &blendConstants, blendConstants_.data(), 4 * sizeof( float ) );
-      
+        vk::ConstExpressionArrayCopy<float,4,4>::copy( blendConstants, blendConstants_ );
       }
 
       PipelineColorBlendStateCreateInfo( VkPipelineColorBlendStateCreateInfo const & rhs )
@@ -35841,12 +35861,12 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineColorBlendStateCreateInfo : public layout::PipelineColorBlendStateCreateInfo
   {
-    PipelineColorBlendStateCreateInfo( vk::PipelineColorBlendStateCreateFlags flags_ = vk::PipelineColorBlendStateCreateFlags(),
-                                       vk::Bool32 logicOpEnable_ = 0,
-                                       vk::LogicOp logicOp_ = vk::LogicOp::eClear,
-                                       uint32_t attachmentCount_ = 0,
-                                       const vk::PipelineColorBlendAttachmentState* pAttachments_ = nullptr,
-                                       std::array<float,4> const& blendConstants_ = { { 0 } } )
+    VULKAN_HPP_CONSTEXPR_14 PipelineColorBlendStateCreateInfo( vk::PipelineColorBlendStateCreateFlags flags_ = vk::PipelineColorBlendStateCreateFlags(),
+                                                               vk::Bool32 logicOpEnable_ = 0,
+                                                               vk::LogicOp logicOp_ = vk::LogicOp::eClear,
+                                                               uint32_t attachmentCount_ = 0,
+                                                               const vk::PipelineColorBlendAttachmentState* pAttachments_ = nullptr,
+                                                               std::array<float,4> const& blendConstants_ = { { 0 } } )
       : layout::PipelineColorBlendStateCreateInfo( flags_, logicOpEnable_, logicOp_, attachmentCount_, pAttachments_, blendConstants_ )
     {}
 
@@ -35940,9 +35960,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct PipelineDynamicStateCreateInfo
     {
     protected:
-      PipelineDynamicStateCreateInfo( vk::PipelineDynamicStateCreateFlags flags_ = vk::PipelineDynamicStateCreateFlags(),
-                                      uint32_t dynamicStateCount_ = 0,
-                                      const vk::DynamicState* pDynamicStates_ = nullptr )
+      VULKAN_HPP_CONSTEXPR PipelineDynamicStateCreateInfo( vk::PipelineDynamicStateCreateFlags flags_ = vk::PipelineDynamicStateCreateFlags(),
+                                                           uint32_t dynamicStateCount_ = 0,
+                                                           const vk::DynamicState* pDynamicStates_ = nullptr )
         : flags( flags_ )
         , dynamicStateCount( dynamicStateCount_ )
         , pDynamicStates( pDynamicStates_ )
@@ -35971,9 +35991,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineDynamicStateCreateInfo : public layout::PipelineDynamicStateCreateInfo
   {
-    PipelineDynamicStateCreateInfo( vk::PipelineDynamicStateCreateFlags flags_ = vk::PipelineDynamicStateCreateFlags(),
-                                    uint32_t dynamicStateCount_ = 0,
-                                    const vk::DynamicState* pDynamicStates_ = nullptr )
+    VULKAN_HPP_CONSTEXPR PipelineDynamicStateCreateInfo( vk::PipelineDynamicStateCreateFlags flags_ = vk::PipelineDynamicStateCreateFlags(),
+                                                         uint32_t dynamicStateCount_ = 0,
+                                                         const vk::DynamicState* pDynamicStates_ = nullptr )
       : layout::PipelineDynamicStateCreateInfo( flags_, dynamicStateCount_, pDynamicStates_ )
     {}
 
@@ -36046,23 +36066,23 @@ namespace VULKAN_HPP_NAMESPACE
     struct GraphicsPipelineCreateInfo
     {
     protected:
-      GraphicsPipelineCreateInfo( vk::PipelineCreateFlags flags_ = vk::PipelineCreateFlags(),
-                                  uint32_t stageCount_ = 0,
-                                  const vk::PipelineShaderStageCreateInfo* pStages_ = nullptr,
-                                  const vk::PipelineVertexInputStateCreateInfo* pVertexInputState_ = nullptr,
-                                  const vk::PipelineInputAssemblyStateCreateInfo* pInputAssemblyState_ = nullptr,
-                                  const vk::PipelineTessellationStateCreateInfo* pTessellationState_ = nullptr,
-                                  const vk::PipelineViewportStateCreateInfo* pViewportState_ = nullptr,
-                                  const vk::PipelineRasterizationStateCreateInfo* pRasterizationState_ = nullptr,
-                                  const vk::PipelineMultisampleStateCreateInfo* pMultisampleState_ = nullptr,
-                                  const vk::PipelineDepthStencilStateCreateInfo* pDepthStencilState_ = nullptr,
-                                  const vk::PipelineColorBlendStateCreateInfo* pColorBlendState_ = nullptr,
-                                  const vk::PipelineDynamicStateCreateInfo* pDynamicState_ = nullptr,
-                                  vk::PipelineLayout layout_ = vk::PipelineLayout(),
-                                  vk::RenderPass renderPass_ = vk::RenderPass(),
-                                  uint32_t subpass_ = 0,
-                                  vk::Pipeline basePipelineHandle_ = vk::Pipeline(),
-                                  int32_t basePipelineIndex_ = 0 )
+      VULKAN_HPP_CONSTEXPR GraphicsPipelineCreateInfo( vk::PipelineCreateFlags flags_ = vk::PipelineCreateFlags(),
+                                                       uint32_t stageCount_ = 0,
+                                                       const vk::PipelineShaderStageCreateInfo* pStages_ = nullptr,
+                                                       const vk::PipelineVertexInputStateCreateInfo* pVertexInputState_ = nullptr,
+                                                       const vk::PipelineInputAssemblyStateCreateInfo* pInputAssemblyState_ = nullptr,
+                                                       const vk::PipelineTessellationStateCreateInfo* pTessellationState_ = nullptr,
+                                                       const vk::PipelineViewportStateCreateInfo* pViewportState_ = nullptr,
+                                                       const vk::PipelineRasterizationStateCreateInfo* pRasterizationState_ = nullptr,
+                                                       const vk::PipelineMultisampleStateCreateInfo* pMultisampleState_ = nullptr,
+                                                       const vk::PipelineDepthStencilStateCreateInfo* pDepthStencilState_ = nullptr,
+                                                       const vk::PipelineColorBlendStateCreateInfo* pColorBlendState_ = nullptr,
+                                                       const vk::PipelineDynamicStateCreateInfo* pDynamicState_ = nullptr,
+                                                       vk::PipelineLayout layout_ = vk::PipelineLayout(),
+                                                       vk::RenderPass renderPass_ = vk::RenderPass(),
+                                                       uint32_t subpass_ = 0,
+                                                       vk::Pipeline basePipelineHandle_ = vk::Pipeline(),
+                                                       int32_t basePipelineIndex_ = 0 )
         : flags( flags_ )
         , stageCount( stageCount_ )
         , pStages( pStages_ )
@@ -36119,23 +36139,23 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct GraphicsPipelineCreateInfo : public layout::GraphicsPipelineCreateInfo
   {
-    GraphicsPipelineCreateInfo( vk::PipelineCreateFlags flags_ = vk::PipelineCreateFlags(),
-                                uint32_t stageCount_ = 0,
-                                const vk::PipelineShaderStageCreateInfo* pStages_ = nullptr,
-                                const vk::PipelineVertexInputStateCreateInfo* pVertexInputState_ = nullptr,
-                                const vk::PipelineInputAssemblyStateCreateInfo* pInputAssemblyState_ = nullptr,
-                                const vk::PipelineTessellationStateCreateInfo* pTessellationState_ = nullptr,
-                                const vk::PipelineViewportStateCreateInfo* pViewportState_ = nullptr,
-                                const vk::PipelineRasterizationStateCreateInfo* pRasterizationState_ = nullptr,
-                                const vk::PipelineMultisampleStateCreateInfo* pMultisampleState_ = nullptr,
-                                const vk::PipelineDepthStencilStateCreateInfo* pDepthStencilState_ = nullptr,
-                                const vk::PipelineColorBlendStateCreateInfo* pColorBlendState_ = nullptr,
-                                const vk::PipelineDynamicStateCreateInfo* pDynamicState_ = nullptr,
-                                vk::PipelineLayout layout_ = vk::PipelineLayout(),
-                                vk::RenderPass renderPass_ = vk::RenderPass(),
-                                uint32_t subpass_ = 0,
-                                vk::Pipeline basePipelineHandle_ = vk::Pipeline(),
-                                int32_t basePipelineIndex_ = 0 )
+    VULKAN_HPP_CONSTEXPR GraphicsPipelineCreateInfo( vk::PipelineCreateFlags flags_ = vk::PipelineCreateFlags(),
+                                                     uint32_t stageCount_ = 0,
+                                                     const vk::PipelineShaderStageCreateInfo* pStages_ = nullptr,
+                                                     const vk::PipelineVertexInputStateCreateInfo* pVertexInputState_ = nullptr,
+                                                     const vk::PipelineInputAssemblyStateCreateInfo* pInputAssemblyState_ = nullptr,
+                                                     const vk::PipelineTessellationStateCreateInfo* pTessellationState_ = nullptr,
+                                                     const vk::PipelineViewportStateCreateInfo* pViewportState_ = nullptr,
+                                                     const vk::PipelineRasterizationStateCreateInfo* pRasterizationState_ = nullptr,
+                                                     const vk::PipelineMultisampleStateCreateInfo* pMultisampleState_ = nullptr,
+                                                     const vk::PipelineDepthStencilStateCreateInfo* pDepthStencilState_ = nullptr,
+                                                     const vk::PipelineColorBlendStateCreateInfo* pColorBlendState_ = nullptr,
+                                                     const vk::PipelineDynamicStateCreateInfo* pDynamicState_ = nullptr,
+                                                     vk::PipelineLayout layout_ = vk::PipelineLayout(),
+                                                     vk::RenderPass renderPass_ = vk::RenderPass(),
+                                                     uint32_t subpass_ = 0,
+                                                     vk::Pipeline basePipelineHandle_ = vk::Pipeline(),
+                                                     int32_t basePipelineIndex_ = 0 )
       : layout::GraphicsPipelineCreateInfo( flags_, stageCount_, pStages_, pVertexInputState_, pInputAssemblyState_, pTessellationState_, pViewportState_, pRasterizationState_, pMultisampleState_, pDepthStencilState_, pColorBlendState_, pDynamicState_, layout_, renderPass_, subpass_, basePipelineHandle_, basePipelineIndex_ )
     {}
 
@@ -36303,8 +36323,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct XYColorEXT
   {
-    XYColorEXT( float x_ = 0,
-                float y_ = 0 )
+    VULKAN_HPP_CONSTEXPR XYColorEXT( float x_ = 0,
+                                     float y_ = 0 )
       : x( x_ )
       , y( y_ )
     {}
@@ -36365,14 +36385,14 @@ namespace VULKAN_HPP_NAMESPACE
     struct HdrMetadataEXT
     {
     protected:
-      HdrMetadataEXT( vk::XYColorEXT displayPrimaryRed_ = vk::XYColorEXT(),
-                      vk::XYColorEXT displayPrimaryGreen_ = vk::XYColorEXT(),
-                      vk::XYColorEXT displayPrimaryBlue_ = vk::XYColorEXT(),
-                      vk::XYColorEXT whitePoint_ = vk::XYColorEXT(),
-                      float maxLuminance_ = 0,
-                      float minLuminance_ = 0,
-                      float maxContentLightLevel_ = 0,
-                      float maxFrameAverageLightLevel_ = 0 )
+      VULKAN_HPP_CONSTEXPR HdrMetadataEXT( vk::XYColorEXT displayPrimaryRed_ = vk::XYColorEXT(),
+                                           vk::XYColorEXT displayPrimaryGreen_ = vk::XYColorEXT(),
+                                           vk::XYColorEXT displayPrimaryBlue_ = vk::XYColorEXT(),
+                                           vk::XYColorEXT whitePoint_ = vk::XYColorEXT(),
+                                           float maxLuminance_ = 0,
+                                           float minLuminance_ = 0,
+                                           float maxContentLightLevel_ = 0,
+                                           float maxFrameAverageLightLevel_ = 0 )
         : displayPrimaryRed( displayPrimaryRed_ )
         , displayPrimaryGreen( displayPrimaryGreen_ )
         , displayPrimaryBlue( displayPrimaryBlue_ )
@@ -36411,14 +36431,14 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct HdrMetadataEXT : public layout::HdrMetadataEXT
   {
-    HdrMetadataEXT( vk::XYColorEXT displayPrimaryRed_ = vk::XYColorEXT(),
-                    vk::XYColorEXT displayPrimaryGreen_ = vk::XYColorEXT(),
-                    vk::XYColorEXT displayPrimaryBlue_ = vk::XYColorEXT(),
-                    vk::XYColorEXT whitePoint_ = vk::XYColorEXT(),
-                    float maxLuminance_ = 0,
-                    float minLuminance_ = 0,
-                    float maxContentLightLevel_ = 0,
-                    float maxFrameAverageLightLevel_ = 0 )
+    VULKAN_HPP_CONSTEXPR HdrMetadataEXT( vk::XYColorEXT displayPrimaryRed_ = vk::XYColorEXT(),
+                                         vk::XYColorEXT displayPrimaryGreen_ = vk::XYColorEXT(),
+                                         vk::XYColorEXT displayPrimaryBlue_ = vk::XYColorEXT(),
+                                         vk::XYColorEXT whitePoint_ = vk::XYColorEXT(),
+                                         float maxLuminance_ = 0,
+                                         float minLuminance_ = 0,
+                                         float maxContentLightLevel_ = 0,
+                                         float maxFrameAverageLightLevel_ = 0 )
       : layout::HdrMetadataEXT( displayPrimaryRed_, displayPrimaryGreen_, displayPrimaryBlue_, whitePoint_, maxLuminance_, minLuminance_, maxContentLightLevel_, maxFrameAverageLightLevel_ )
     {}
 
@@ -36526,7 +36546,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct HeadlessSurfaceCreateInfoEXT
     {
     protected:
-      HeadlessSurfaceCreateInfoEXT( vk::HeadlessSurfaceCreateFlagsEXT flags_ = vk::HeadlessSurfaceCreateFlagsEXT() )
+      VULKAN_HPP_CONSTEXPR HeadlessSurfaceCreateInfoEXT( vk::HeadlessSurfaceCreateFlagsEXT flags_ = vk::HeadlessSurfaceCreateFlagsEXT() )
         : flags( flags_ )
       {}
 
@@ -36551,7 +36571,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct HeadlessSurfaceCreateInfoEXT : public layout::HeadlessSurfaceCreateInfoEXT
   {
-    HeadlessSurfaceCreateInfoEXT( vk::HeadlessSurfaceCreateFlagsEXT flags_ = vk::HeadlessSurfaceCreateFlagsEXT() )
+    VULKAN_HPP_CONSTEXPR HeadlessSurfaceCreateInfoEXT( vk::HeadlessSurfaceCreateFlagsEXT flags_ = vk::HeadlessSurfaceCreateFlagsEXT() )
       : layout::HeadlessSurfaceCreateInfoEXT( flags_ )
     {}
 
@@ -36612,8 +36632,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct IOSSurfaceCreateInfoMVK
     {
     protected:
-      IOSSurfaceCreateInfoMVK( vk::IOSSurfaceCreateFlagsMVK flags_ = vk::IOSSurfaceCreateFlagsMVK(),
-                               const void* pView_ = nullptr )
+      VULKAN_HPP_CONSTEXPR IOSSurfaceCreateInfoMVK( vk::IOSSurfaceCreateFlagsMVK flags_ = vk::IOSSurfaceCreateFlagsMVK(),
+                                                    const void* pView_ = nullptr )
         : flags( flags_ )
         , pView( pView_ )
       {}
@@ -36640,8 +36660,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct IOSSurfaceCreateInfoMVK : public layout::IOSSurfaceCreateInfoMVK
   {
-    IOSSurfaceCreateInfoMVK( vk::IOSSurfaceCreateFlagsMVK flags_ = vk::IOSSurfaceCreateFlagsMVK(),
-                             const void* pView_ = nullptr )
+    VULKAN_HPP_CONSTEXPR IOSSurfaceCreateInfoMVK( vk::IOSSurfaceCreateFlagsMVK flags_ = vk::IOSSurfaceCreateFlagsMVK(),
+                                                  const void* pView_ = nullptr )
       : layout::IOSSurfaceCreateInfoMVK( flags_, pView_ )
     {}
 
@@ -36705,16 +36725,17 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ImageBlit
   {
-    ImageBlit( vk::ImageSubresourceLayers srcSubresource_ = vk::ImageSubresourceLayers(),
-               std::array<vk::Offset3D,2> const& srcOffsets_ = { { vk::Offset3D() } },
-               vk::ImageSubresourceLayers dstSubresource_ = vk::ImageSubresourceLayers(),
-               std::array<vk::Offset3D,2> const& dstOffsets_ = { { vk::Offset3D() } } )
+    VULKAN_HPP_CONSTEXPR_14 ImageBlit( vk::ImageSubresourceLayers srcSubresource_ = vk::ImageSubresourceLayers(),
+                                       std::array<vk::Offset3D,2> const& srcOffsets_ = { { vk::Offset3D() } },
+                                       vk::ImageSubresourceLayers dstSubresource_ = vk::ImageSubresourceLayers(),
+                                       std::array<vk::Offset3D,2> const& dstOffsets_ = { { vk::Offset3D() } } )
       : srcSubresource( srcSubresource_ )
+      , srcOffsets{}
       , dstSubresource( dstSubresource_ )
+      , dstOffsets{}
     {
-      memcpy( &srcOffsets, srcOffsets_.data(), 2 * sizeof( vk::Offset3D ) );
-      memcpy( &dstOffsets, dstOffsets_.data(), 2 * sizeof( vk::Offset3D ) );
-    
+      vk::ConstExpressionArrayCopy<vk::Offset3D,2,2>::copy( srcOffsets, srcOffsets_ );
+      vk::ConstExpressionArrayCopy<vk::Offset3D,2,2>::copy( dstOffsets, dstOffsets_ );
     }
 
     ImageBlit( VkImageBlit const & rhs )
@@ -36786,11 +36807,11 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ImageCopy
   {
-    ImageCopy( vk::ImageSubresourceLayers srcSubresource_ = vk::ImageSubresourceLayers(),
-               vk::Offset3D srcOffset_ = vk::Offset3D(),
-               vk::ImageSubresourceLayers dstSubresource_ = vk::ImageSubresourceLayers(),
-               vk::Offset3D dstOffset_ = vk::Offset3D(),
-               vk::Extent3D extent_ = vk::Extent3D() )
+    VULKAN_HPP_CONSTEXPR ImageCopy( vk::ImageSubresourceLayers srcSubresource_ = vk::ImageSubresourceLayers(),
+                                    vk::Offset3D srcOffset_ = vk::Offset3D(),
+                                    vk::ImageSubresourceLayers dstSubresource_ = vk::ImageSubresourceLayers(),
+                                    vk::Offset3D dstOffset_ = vk::Offset3D(),
+                                    vk::Extent3D extent_ = vk::Extent3D() )
       : srcSubresource( srcSubresource_ )
       , srcOffset( srcOffset_ )
       , dstSubresource( dstSubresource_ )
@@ -36878,19 +36899,19 @@ namespace VULKAN_HPP_NAMESPACE
     struct ImageCreateInfo
     {
     protected:
-      ImageCreateInfo( vk::ImageCreateFlags flags_ = vk::ImageCreateFlags(),
-                       vk::ImageType imageType_ = vk::ImageType::e1D,
-                       vk::Format format_ = vk::Format::eUndefined,
-                       vk::Extent3D extent_ = vk::Extent3D(),
-                       uint32_t mipLevels_ = 0,
-                       uint32_t arrayLayers_ = 0,
-                       vk::SampleCountFlagBits samples_ = vk::SampleCountFlagBits::e1,
-                       vk::ImageTiling tiling_ = vk::ImageTiling::eOptimal,
-                       vk::ImageUsageFlags usage_ = vk::ImageUsageFlags(),
-                       vk::SharingMode sharingMode_ = vk::SharingMode::eExclusive,
-                       uint32_t queueFamilyIndexCount_ = 0,
-                       const uint32_t* pQueueFamilyIndices_ = nullptr,
-                       vk::ImageLayout initialLayout_ = vk::ImageLayout::eUndefined )
+      VULKAN_HPP_CONSTEXPR ImageCreateInfo( vk::ImageCreateFlags flags_ = vk::ImageCreateFlags(),
+                                            vk::ImageType imageType_ = vk::ImageType::e1D,
+                                            vk::Format format_ = vk::Format::eUndefined,
+                                            vk::Extent3D extent_ = vk::Extent3D(),
+                                            uint32_t mipLevels_ = 0,
+                                            uint32_t arrayLayers_ = 0,
+                                            vk::SampleCountFlagBits samples_ = vk::SampleCountFlagBits::e1,
+                                            vk::ImageTiling tiling_ = vk::ImageTiling::eOptimal,
+                                            vk::ImageUsageFlags usage_ = vk::ImageUsageFlags(),
+                                            vk::SharingMode sharingMode_ = vk::SharingMode::eExclusive,
+                                            uint32_t queueFamilyIndexCount_ = 0,
+                                            const uint32_t* pQueueFamilyIndices_ = nullptr,
+                                            vk::ImageLayout initialLayout_ = vk::ImageLayout::eUndefined )
         : flags( flags_ )
         , imageType( imageType_ )
         , format( format_ )
@@ -36939,19 +36960,19 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ImageCreateInfo : public layout::ImageCreateInfo
   {
-    ImageCreateInfo( vk::ImageCreateFlags flags_ = vk::ImageCreateFlags(),
-                     vk::ImageType imageType_ = vk::ImageType::e1D,
-                     vk::Format format_ = vk::Format::eUndefined,
-                     vk::Extent3D extent_ = vk::Extent3D(),
-                     uint32_t mipLevels_ = 0,
-                     uint32_t arrayLayers_ = 0,
-                     vk::SampleCountFlagBits samples_ = vk::SampleCountFlagBits::e1,
-                     vk::ImageTiling tiling_ = vk::ImageTiling::eOptimal,
-                     vk::ImageUsageFlags usage_ = vk::ImageUsageFlags(),
-                     vk::SharingMode sharingMode_ = vk::SharingMode::eExclusive,
-                     uint32_t queueFamilyIndexCount_ = 0,
-                     const uint32_t* pQueueFamilyIndices_ = nullptr,
-                     vk::ImageLayout initialLayout_ = vk::ImageLayout::eUndefined )
+    VULKAN_HPP_CONSTEXPR ImageCreateInfo( vk::ImageCreateFlags flags_ = vk::ImageCreateFlags(),
+                                          vk::ImageType imageType_ = vk::ImageType::e1D,
+                                          vk::Format format_ = vk::Format::eUndefined,
+                                          vk::Extent3D extent_ = vk::Extent3D(),
+                                          uint32_t mipLevels_ = 0,
+                                          uint32_t arrayLayers_ = 0,
+                                          vk::SampleCountFlagBits samples_ = vk::SampleCountFlagBits::e1,
+                                          vk::ImageTiling tiling_ = vk::ImageTiling::eOptimal,
+                                          vk::ImageUsageFlags usage_ = vk::ImageUsageFlags(),
+                                          vk::SharingMode sharingMode_ = vk::SharingMode::eExclusive,
+                                          uint32_t queueFamilyIndexCount_ = 0,
+                                          const uint32_t* pQueueFamilyIndices_ = nullptr,
+                                          vk::ImageLayout initialLayout_ = vk::ImageLayout::eUndefined )
       : layout::ImageCreateInfo( flags_, imageType_, format_, extent_, mipLevels_, arrayLayers_, samples_, tiling_, usage_, sharingMode_, queueFamilyIndexCount_, pQueueFamilyIndices_, initialLayout_ )
     {}
 
@@ -37144,9 +37165,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct ImageDrmFormatModifierExplicitCreateInfoEXT
     {
     protected:
-      ImageDrmFormatModifierExplicitCreateInfoEXT( uint64_t drmFormatModifier_ = 0,
-                                                   uint32_t drmFormatModifierPlaneCount_ = 0,
-                                                   const vk::SubresourceLayout* pPlaneLayouts_ = nullptr )
+      VULKAN_HPP_CONSTEXPR ImageDrmFormatModifierExplicitCreateInfoEXT( uint64_t drmFormatModifier_ = 0,
+                                                                        uint32_t drmFormatModifierPlaneCount_ = 0,
+                                                                        const vk::SubresourceLayout* pPlaneLayouts_ = nullptr )
         : drmFormatModifier( drmFormatModifier_ )
         , drmFormatModifierPlaneCount( drmFormatModifierPlaneCount_ )
         , pPlaneLayouts( pPlaneLayouts_ )
@@ -37175,9 +37196,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ImageDrmFormatModifierExplicitCreateInfoEXT : public layout::ImageDrmFormatModifierExplicitCreateInfoEXT
   {
-    ImageDrmFormatModifierExplicitCreateInfoEXT( uint64_t drmFormatModifier_ = 0,
-                                                 uint32_t drmFormatModifierPlaneCount_ = 0,
-                                                 const vk::SubresourceLayout* pPlaneLayouts_ = nullptr )
+    VULKAN_HPP_CONSTEXPR ImageDrmFormatModifierExplicitCreateInfoEXT( uint64_t drmFormatModifier_ = 0,
+                                                                      uint32_t drmFormatModifierPlaneCount_ = 0,
+                                                                      const vk::SubresourceLayout* pPlaneLayouts_ = nullptr )
       : layout::ImageDrmFormatModifierExplicitCreateInfoEXT( drmFormatModifier_, drmFormatModifierPlaneCount_, pPlaneLayouts_ )
     {}
 
@@ -37250,8 +37271,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct ImageDrmFormatModifierListCreateInfoEXT
     {
     protected:
-      ImageDrmFormatModifierListCreateInfoEXT( uint32_t drmFormatModifierCount_ = 0,
-                                               const uint64_t* pDrmFormatModifiers_ = nullptr )
+      VULKAN_HPP_CONSTEXPR ImageDrmFormatModifierListCreateInfoEXT( uint32_t drmFormatModifierCount_ = 0,
+                                                                    const uint64_t* pDrmFormatModifiers_ = nullptr )
         : drmFormatModifierCount( drmFormatModifierCount_ )
         , pDrmFormatModifiers( pDrmFormatModifiers_ )
       {}
@@ -37278,8 +37299,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ImageDrmFormatModifierListCreateInfoEXT : public layout::ImageDrmFormatModifierListCreateInfoEXT
   {
-    ImageDrmFormatModifierListCreateInfoEXT( uint32_t drmFormatModifierCount_ = 0,
-                                             const uint64_t* pDrmFormatModifiers_ = nullptr )
+    VULKAN_HPP_CONSTEXPR ImageDrmFormatModifierListCreateInfoEXT( uint32_t drmFormatModifierCount_ = 0,
+                                                                  const uint64_t* pDrmFormatModifiers_ = nullptr )
       : layout::ImageDrmFormatModifierListCreateInfoEXT( drmFormatModifierCount_, pDrmFormatModifiers_ )
     {}
 
@@ -37416,8 +37437,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct ImageFormatListCreateInfoKHR
     {
     protected:
-      ImageFormatListCreateInfoKHR( uint32_t viewFormatCount_ = 0,
-                                    const vk::Format* pViewFormats_ = nullptr )
+      VULKAN_HPP_CONSTEXPR ImageFormatListCreateInfoKHR( uint32_t viewFormatCount_ = 0,
+                                                         const vk::Format* pViewFormats_ = nullptr )
         : viewFormatCount( viewFormatCount_ )
         , pViewFormats( pViewFormats_ )
       {}
@@ -37444,8 +37465,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ImageFormatListCreateInfoKHR : public layout::ImageFormatListCreateInfoKHR
   {
-    ImageFormatListCreateInfoKHR( uint32_t viewFormatCount_ = 0,
-                                  const vk::Format* pViewFormats_ = nullptr )
+    VULKAN_HPP_CONSTEXPR ImageFormatListCreateInfoKHR( uint32_t viewFormatCount_ = 0,
+                                                       const vk::Format* pViewFormats_ = nullptr )
       : layout::ImageFormatListCreateInfoKHR( viewFormatCount_, pViewFormats_ )
     {}
 
@@ -37579,11 +37600,11 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ImageSubresourceRange
   {
-    ImageSubresourceRange( vk::ImageAspectFlags aspectMask_ = vk::ImageAspectFlags(),
-                           uint32_t baseMipLevel_ = 0,
-                           uint32_t levelCount_ = 0,
-                           uint32_t baseArrayLayer_ = 0,
-                           uint32_t layerCount_ = 0 )
+    VULKAN_HPP_CONSTEXPR ImageSubresourceRange( vk::ImageAspectFlags aspectMask_ = vk::ImageAspectFlags(),
+                                                uint32_t baseMipLevel_ = 0,
+                                                uint32_t levelCount_ = 0,
+                                                uint32_t baseArrayLayer_ = 0,
+                                                uint32_t layerCount_ = 0 )
       : aspectMask( aspectMask_ )
       , baseMipLevel( baseMipLevel_ )
       , levelCount( levelCount_ )
@@ -37671,14 +37692,14 @@ namespace VULKAN_HPP_NAMESPACE
     struct ImageMemoryBarrier
     {
     protected:
-      ImageMemoryBarrier( vk::AccessFlags srcAccessMask_ = vk::AccessFlags(),
-                          vk::AccessFlags dstAccessMask_ = vk::AccessFlags(),
-                          vk::ImageLayout oldLayout_ = vk::ImageLayout::eUndefined,
-                          vk::ImageLayout newLayout_ = vk::ImageLayout::eUndefined,
-                          uint32_t srcQueueFamilyIndex_ = 0,
-                          uint32_t dstQueueFamilyIndex_ = 0,
-                          vk::Image image_ = vk::Image(),
-                          vk::ImageSubresourceRange subresourceRange_ = vk::ImageSubresourceRange() )
+      VULKAN_HPP_CONSTEXPR ImageMemoryBarrier( vk::AccessFlags srcAccessMask_ = vk::AccessFlags(),
+                                               vk::AccessFlags dstAccessMask_ = vk::AccessFlags(),
+                                               vk::ImageLayout oldLayout_ = vk::ImageLayout::eUndefined,
+                                               vk::ImageLayout newLayout_ = vk::ImageLayout::eUndefined,
+                                               uint32_t srcQueueFamilyIndex_ = 0,
+                                               uint32_t dstQueueFamilyIndex_ = 0,
+                                               vk::Image image_ = vk::Image(),
+                                               vk::ImageSubresourceRange subresourceRange_ = vk::ImageSubresourceRange() )
         : srcAccessMask( srcAccessMask_ )
         , dstAccessMask( dstAccessMask_ )
         , oldLayout( oldLayout_ )
@@ -37717,14 +37738,14 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ImageMemoryBarrier : public layout::ImageMemoryBarrier
   {
-    ImageMemoryBarrier( vk::AccessFlags srcAccessMask_ = vk::AccessFlags(),
-                        vk::AccessFlags dstAccessMask_ = vk::AccessFlags(),
-                        vk::ImageLayout oldLayout_ = vk::ImageLayout::eUndefined,
-                        vk::ImageLayout newLayout_ = vk::ImageLayout::eUndefined,
-                        uint32_t srcQueueFamilyIndex_ = 0,
-                        uint32_t dstQueueFamilyIndex_ = 0,
-                        vk::Image image_ = vk::Image(),
-                        vk::ImageSubresourceRange subresourceRange_ = vk::ImageSubresourceRange() )
+    VULKAN_HPP_CONSTEXPR ImageMemoryBarrier( vk::AccessFlags srcAccessMask_ = vk::AccessFlags(),
+                                             vk::AccessFlags dstAccessMask_ = vk::AccessFlags(),
+                                             vk::ImageLayout oldLayout_ = vk::ImageLayout::eUndefined,
+                                             vk::ImageLayout newLayout_ = vk::ImageLayout::eUndefined,
+                                             uint32_t srcQueueFamilyIndex_ = 0,
+                                             uint32_t dstQueueFamilyIndex_ = 0,
+                                             vk::Image image_ = vk::Image(),
+                                             vk::ImageSubresourceRange subresourceRange_ = vk::ImageSubresourceRange() )
       : layout::ImageMemoryBarrier( srcAccessMask_, dstAccessMask_, oldLayout_, newLayout_, srcQueueFamilyIndex_, dstQueueFamilyIndex_, image_, subresourceRange_ )
     {}
 
@@ -37832,7 +37853,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct ImageMemoryRequirementsInfo2
     {
     protected:
-      ImageMemoryRequirementsInfo2( vk::Image image_ = vk::Image() )
+      VULKAN_HPP_CONSTEXPR ImageMemoryRequirementsInfo2( vk::Image image_ = vk::Image() )
         : image( image_ )
       {}
 
@@ -37857,7 +37878,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ImageMemoryRequirementsInfo2 : public layout::ImageMemoryRequirementsInfo2
   {
-    ImageMemoryRequirementsInfo2( vk::Image image_ = vk::Image() )
+    VULKAN_HPP_CONSTEXPR ImageMemoryRequirementsInfo2( vk::Image image_ = vk::Image() )
       : layout::ImageMemoryRequirementsInfo2( image_ )
     {}
 
@@ -37918,8 +37939,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct ImagePipeSurfaceCreateInfoFUCHSIA
     {
     protected:
-      ImagePipeSurfaceCreateInfoFUCHSIA( vk::ImagePipeSurfaceCreateFlagsFUCHSIA flags_ = vk::ImagePipeSurfaceCreateFlagsFUCHSIA(),
-                                         zx_handle_t imagePipeHandle_ = 0 )
+      VULKAN_HPP_CONSTEXPR ImagePipeSurfaceCreateInfoFUCHSIA( vk::ImagePipeSurfaceCreateFlagsFUCHSIA flags_ = vk::ImagePipeSurfaceCreateFlagsFUCHSIA(),
+                                                              zx_handle_t imagePipeHandle_ = 0 )
         : flags( flags_ )
         , imagePipeHandle( imagePipeHandle_ )
       {}
@@ -37946,8 +37967,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ImagePipeSurfaceCreateInfoFUCHSIA : public layout::ImagePipeSurfaceCreateInfoFUCHSIA
   {
-    ImagePipeSurfaceCreateInfoFUCHSIA( vk::ImagePipeSurfaceCreateFlagsFUCHSIA flags_ = vk::ImagePipeSurfaceCreateFlagsFUCHSIA(),
-                                       zx_handle_t imagePipeHandle_ = 0 )
+    VULKAN_HPP_CONSTEXPR ImagePipeSurfaceCreateInfoFUCHSIA( vk::ImagePipeSurfaceCreateFlagsFUCHSIA flags_ = vk::ImagePipeSurfaceCreateFlagsFUCHSIA(),
+                                                            zx_handle_t imagePipeHandle_ = 0 )
       : layout::ImagePipeSurfaceCreateInfoFUCHSIA( flags_, imagePipeHandle_ )
     {}
 
@@ -38014,7 +38035,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct ImagePlaneMemoryRequirementsInfo
     {
     protected:
-      ImagePlaneMemoryRequirementsInfo( vk::ImageAspectFlagBits planeAspect_ = vk::ImageAspectFlagBits::eColor )
+      VULKAN_HPP_CONSTEXPR ImagePlaneMemoryRequirementsInfo( vk::ImageAspectFlagBits planeAspect_ = vk::ImageAspectFlagBits::eColor )
         : planeAspect( planeAspect_ )
       {}
 
@@ -38039,7 +38060,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ImagePlaneMemoryRequirementsInfo : public layout::ImagePlaneMemoryRequirementsInfo
   {
-    ImagePlaneMemoryRequirementsInfo( vk::ImageAspectFlagBits planeAspect_ = vk::ImageAspectFlagBits::eColor )
+    VULKAN_HPP_CONSTEXPR ImagePlaneMemoryRequirementsInfo( vk::ImageAspectFlagBits planeAspect_ = vk::ImageAspectFlagBits::eColor )
       : layout::ImagePlaneMemoryRequirementsInfo( planeAspect_ )
     {}
 
@@ -38095,11 +38116,11 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ImageResolve
   {
-    ImageResolve( vk::ImageSubresourceLayers srcSubresource_ = vk::ImageSubresourceLayers(),
-                  vk::Offset3D srcOffset_ = vk::Offset3D(),
-                  vk::ImageSubresourceLayers dstSubresource_ = vk::ImageSubresourceLayers(),
-                  vk::Offset3D dstOffset_ = vk::Offset3D(),
-                  vk::Extent3D extent_ = vk::Extent3D() )
+    VULKAN_HPP_CONSTEXPR ImageResolve( vk::ImageSubresourceLayers srcSubresource_ = vk::ImageSubresourceLayers(),
+                                       vk::Offset3D srcOffset_ = vk::Offset3D(),
+                                       vk::ImageSubresourceLayers dstSubresource_ = vk::ImageSubresourceLayers(),
+                                       vk::Offset3D dstOffset_ = vk::Offset3D(),
+                                       vk::Extent3D extent_ = vk::Extent3D() )
       : srcSubresource( srcSubresource_ )
       , srcOffset( srcOffset_ )
       , dstSubresource( dstSubresource_ )
@@ -38187,7 +38208,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct ImageSparseMemoryRequirementsInfo2
     {
     protected:
-      ImageSparseMemoryRequirementsInfo2( vk::Image image_ = vk::Image() )
+      VULKAN_HPP_CONSTEXPR ImageSparseMemoryRequirementsInfo2( vk::Image image_ = vk::Image() )
         : image( image_ )
       {}
 
@@ -38212,7 +38233,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ImageSparseMemoryRequirementsInfo2 : public layout::ImageSparseMemoryRequirementsInfo2
   {
-    ImageSparseMemoryRequirementsInfo2( vk::Image image_ = vk::Image() )
+    VULKAN_HPP_CONSTEXPR ImageSparseMemoryRequirementsInfo2( vk::Image image_ = vk::Image() )
       : layout::ImageSparseMemoryRequirementsInfo2( image_ )
     {}
 
@@ -38271,7 +38292,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct ImageStencilUsageCreateInfoEXT
     {
     protected:
-      ImageStencilUsageCreateInfoEXT( vk::ImageUsageFlags stencilUsage_ = vk::ImageUsageFlags() )
+      VULKAN_HPP_CONSTEXPR ImageStencilUsageCreateInfoEXT( vk::ImageUsageFlags stencilUsage_ = vk::ImageUsageFlags() )
         : stencilUsage( stencilUsage_ )
       {}
 
@@ -38296,7 +38317,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ImageStencilUsageCreateInfoEXT : public layout::ImageStencilUsageCreateInfoEXT
   {
-    ImageStencilUsageCreateInfoEXT( vk::ImageUsageFlags stencilUsage_ = vk::ImageUsageFlags() )
+    VULKAN_HPP_CONSTEXPR ImageStencilUsageCreateInfoEXT( vk::ImageUsageFlags stencilUsage_ = vk::ImageUsageFlags() )
       : layout::ImageStencilUsageCreateInfoEXT( stencilUsage_ )
     {}
 
@@ -38355,7 +38376,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct ImageSwapchainCreateInfoKHR
     {
     protected:
-      ImageSwapchainCreateInfoKHR( vk::SwapchainKHR swapchain_ = vk::SwapchainKHR() )
+      VULKAN_HPP_CONSTEXPR ImageSwapchainCreateInfoKHR( vk::SwapchainKHR swapchain_ = vk::SwapchainKHR() )
         : swapchain( swapchain_ )
       {}
 
@@ -38380,7 +38401,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ImageSwapchainCreateInfoKHR : public layout::ImageSwapchainCreateInfoKHR
   {
-    ImageSwapchainCreateInfoKHR( vk::SwapchainKHR swapchain_ = vk::SwapchainKHR() )
+    VULKAN_HPP_CONSTEXPR ImageSwapchainCreateInfoKHR( vk::SwapchainKHR swapchain_ = vk::SwapchainKHR() )
       : layout::ImageSwapchainCreateInfoKHR( swapchain_ )
     {}
 
@@ -38439,7 +38460,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct ImageViewASTCDecodeModeEXT
     {
     protected:
-      ImageViewASTCDecodeModeEXT( vk::Format decodeMode_ = vk::Format::eUndefined )
+      VULKAN_HPP_CONSTEXPR ImageViewASTCDecodeModeEXT( vk::Format decodeMode_ = vk::Format::eUndefined )
         : decodeMode( decodeMode_ )
       {}
 
@@ -38464,7 +38485,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ImageViewASTCDecodeModeEXT : public layout::ImageViewASTCDecodeModeEXT
   {
-    ImageViewASTCDecodeModeEXT( vk::Format decodeMode_ = vk::Format::eUndefined )
+    VULKAN_HPP_CONSTEXPR ImageViewASTCDecodeModeEXT( vk::Format decodeMode_ = vk::Format::eUndefined )
       : layout::ImageViewASTCDecodeModeEXT( decodeMode_ )
     {}
 
@@ -38523,12 +38544,12 @@ namespace VULKAN_HPP_NAMESPACE
     struct ImageViewCreateInfo
     {
     protected:
-      ImageViewCreateInfo( vk::ImageViewCreateFlags flags_ = vk::ImageViewCreateFlags(),
-                           vk::Image image_ = vk::Image(),
-                           vk::ImageViewType viewType_ = vk::ImageViewType::e1D,
-                           vk::Format format_ = vk::Format::eUndefined,
-                           vk::ComponentMapping components_ = vk::ComponentMapping(),
-                           vk::ImageSubresourceRange subresourceRange_ = vk::ImageSubresourceRange() )
+      VULKAN_HPP_CONSTEXPR ImageViewCreateInfo( vk::ImageViewCreateFlags flags_ = vk::ImageViewCreateFlags(),
+                                                vk::Image image_ = vk::Image(),
+                                                vk::ImageViewType viewType_ = vk::ImageViewType::e1D,
+                                                vk::Format format_ = vk::Format::eUndefined,
+                                                vk::ComponentMapping components_ = vk::ComponentMapping(),
+                                                vk::ImageSubresourceRange subresourceRange_ = vk::ImageSubresourceRange() )
         : flags( flags_ )
         , image( image_ )
         , viewType( viewType_ )
@@ -38563,12 +38584,12 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ImageViewCreateInfo : public layout::ImageViewCreateInfo
   {
-    ImageViewCreateInfo( vk::ImageViewCreateFlags flags_ = vk::ImageViewCreateFlags(),
-                         vk::Image image_ = vk::Image(),
-                         vk::ImageViewType viewType_ = vk::ImageViewType::e1D,
-                         vk::Format format_ = vk::Format::eUndefined,
-                         vk::ComponentMapping components_ = vk::ComponentMapping(),
-                         vk::ImageSubresourceRange subresourceRange_ = vk::ImageSubresourceRange() )
+    VULKAN_HPP_CONSTEXPR ImageViewCreateInfo( vk::ImageViewCreateFlags flags_ = vk::ImageViewCreateFlags(),
+                                              vk::Image image_ = vk::Image(),
+                                              vk::ImageViewType viewType_ = vk::ImageViewType::e1D,
+                                              vk::Format format_ = vk::Format::eUndefined,
+                                              vk::ComponentMapping components_ = vk::ComponentMapping(),
+                                              vk::ImageSubresourceRange subresourceRange_ = vk::ImageSubresourceRange() )
       : layout::ImageViewCreateInfo( flags_, image_, viewType_, format_, components_, subresourceRange_ )
     {}
 
@@ -38662,9 +38683,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct ImageViewHandleInfoNVX
     {
     protected:
-      ImageViewHandleInfoNVX( vk::ImageView imageView_ = vk::ImageView(),
-                              vk::DescriptorType descriptorType_ = vk::DescriptorType::eSampler,
-                              vk::Sampler sampler_ = vk::Sampler() )
+      VULKAN_HPP_CONSTEXPR ImageViewHandleInfoNVX( vk::ImageView imageView_ = vk::ImageView(),
+                                                   vk::DescriptorType descriptorType_ = vk::DescriptorType::eSampler,
+                                                   vk::Sampler sampler_ = vk::Sampler() )
         : imageView( imageView_ )
         , descriptorType( descriptorType_ )
         , sampler( sampler_ )
@@ -38693,9 +38714,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ImageViewHandleInfoNVX : public layout::ImageViewHandleInfoNVX
   {
-    ImageViewHandleInfoNVX( vk::ImageView imageView_ = vk::ImageView(),
-                            vk::DescriptorType descriptorType_ = vk::DescriptorType::eSampler,
-                            vk::Sampler sampler_ = vk::Sampler() )
+    VULKAN_HPP_CONSTEXPR ImageViewHandleInfoNVX( vk::ImageView imageView_ = vk::ImageView(),
+                                                 vk::DescriptorType descriptorType_ = vk::DescriptorType::eSampler,
+                                                 vk::Sampler sampler_ = vk::Sampler() )
       : layout::ImageViewHandleInfoNVX( imageView_, descriptorType_, sampler_ )
     {}
 
@@ -38768,7 +38789,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct ImageViewUsageCreateInfo
     {
     protected:
-      ImageViewUsageCreateInfo( vk::ImageUsageFlags usage_ = vk::ImageUsageFlags() )
+      VULKAN_HPP_CONSTEXPR ImageViewUsageCreateInfo( vk::ImageUsageFlags usage_ = vk::ImageUsageFlags() )
         : usage( usage_ )
       {}
 
@@ -38793,7 +38814,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ImageViewUsageCreateInfo : public layout::ImageViewUsageCreateInfo
   {
-    ImageViewUsageCreateInfo( vk::ImageUsageFlags usage_ = vk::ImageUsageFlags() )
+    VULKAN_HPP_CONSTEXPR ImageViewUsageCreateInfo( vk::ImageUsageFlags usage_ = vk::ImageUsageFlags() )
       : layout::ImageViewUsageCreateInfo( usage_ )
     {}
 
@@ -38854,7 +38875,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct ImportAndroidHardwareBufferInfoANDROID
     {
     protected:
-      ImportAndroidHardwareBufferInfoANDROID( struct AHardwareBuffer* buffer_ = nullptr )
+      VULKAN_HPP_CONSTEXPR ImportAndroidHardwareBufferInfoANDROID( struct AHardwareBuffer* buffer_ = nullptr )
         : buffer( buffer_ )
       {}
 
@@ -38879,7 +38900,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ImportAndroidHardwareBufferInfoANDROID : public layout::ImportAndroidHardwareBufferInfoANDROID
   {
-    ImportAndroidHardwareBufferInfoANDROID( struct AHardwareBuffer* buffer_ = nullptr )
+    VULKAN_HPP_CONSTEXPR ImportAndroidHardwareBufferInfoANDROID( struct AHardwareBuffer* buffer_ = nullptr )
       : layout::ImportAndroidHardwareBufferInfoANDROID( buffer_ )
     {}
 
@@ -38939,10 +38960,10 @@ namespace VULKAN_HPP_NAMESPACE
     struct ImportFenceFdInfoKHR
     {
     protected:
-      ImportFenceFdInfoKHR( vk::Fence fence_ = vk::Fence(),
-                            vk::FenceImportFlags flags_ = vk::FenceImportFlags(),
-                            vk::ExternalFenceHandleTypeFlagBits handleType_ = vk::ExternalFenceHandleTypeFlagBits::eOpaqueFd,
-                            int fd_ = 0 )
+      VULKAN_HPP_CONSTEXPR ImportFenceFdInfoKHR( vk::Fence fence_ = vk::Fence(),
+                                                 vk::FenceImportFlags flags_ = vk::FenceImportFlags(),
+                                                 vk::ExternalFenceHandleTypeFlagBits handleType_ = vk::ExternalFenceHandleTypeFlagBits::eOpaqueFd,
+                                                 int fd_ = 0 )
         : fence( fence_ )
         , flags( flags_ )
         , handleType( handleType_ )
@@ -38973,10 +38994,10 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ImportFenceFdInfoKHR : public layout::ImportFenceFdInfoKHR
   {
-    ImportFenceFdInfoKHR( vk::Fence fence_ = vk::Fence(),
-                          vk::FenceImportFlags flags_ = vk::FenceImportFlags(),
-                          vk::ExternalFenceHandleTypeFlagBits handleType_ = vk::ExternalFenceHandleTypeFlagBits::eOpaqueFd,
-                          int fd_ = 0 )
+    VULKAN_HPP_CONSTEXPR ImportFenceFdInfoKHR( vk::Fence fence_ = vk::Fence(),
+                                               vk::FenceImportFlags flags_ = vk::FenceImportFlags(),
+                                               vk::ExternalFenceHandleTypeFlagBits handleType_ = vk::ExternalFenceHandleTypeFlagBits::eOpaqueFd,
+                                               int fd_ = 0 )
       : layout::ImportFenceFdInfoKHR( fence_, flags_, handleType_, fd_ )
     {}
 
@@ -39058,11 +39079,11 @@ namespace VULKAN_HPP_NAMESPACE
     struct ImportFenceWin32HandleInfoKHR
     {
     protected:
-      ImportFenceWin32HandleInfoKHR( vk::Fence fence_ = vk::Fence(),
-                                     vk::FenceImportFlags flags_ = vk::FenceImportFlags(),
-                                     vk::ExternalFenceHandleTypeFlagBits handleType_ = vk::ExternalFenceHandleTypeFlagBits::eOpaqueFd,
-                                     HANDLE handle_ = 0,
-                                     LPCWSTR name_ = nullptr )
+      VULKAN_HPP_CONSTEXPR ImportFenceWin32HandleInfoKHR( vk::Fence fence_ = vk::Fence(),
+                                                          vk::FenceImportFlags flags_ = vk::FenceImportFlags(),
+                                                          vk::ExternalFenceHandleTypeFlagBits handleType_ = vk::ExternalFenceHandleTypeFlagBits::eOpaqueFd,
+                                                          HANDLE handle_ = 0,
+                                                          LPCWSTR name_ = nullptr )
         : fence( fence_ )
         , flags( flags_ )
         , handleType( handleType_ )
@@ -39095,11 +39116,11 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ImportFenceWin32HandleInfoKHR : public layout::ImportFenceWin32HandleInfoKHR
   {
-    ImportFenceWin32HandleInfoKHR( vk::Fence fence_ = vk::Fence(),
-                                   vk::FenceImportFlags flags_ = vk::FenceImportFlags(),
-                                   vk::ExternalFenceHandleTypeFlagBits handleType_ = vk::ExternalFenceHandleTypeFlagBits::eOpaqueFd,
-                                   HANDLE handle_ = 0,
-                                   LPCWSTR name_ = nullptr )
+    VULKAN_HPP_CONSTEXPR ImportFenceWin32HandleInfoKHR( vk::Fence fence_ = vk::Fence(),
+                                                        vk::FenceImportFlags flags_ = vk::FenceImportFlags(),
+                                                        vk::ExternalFenceHandleTypeFlagBits handleType_ = vk::ExternalFenceHandleTypeFlagBits::eOpaqueFd,
+                                                        HANDLE handle_ = 0,
+                                                        LPCWSTR name_ = nullptr )
       : layout::ImportFenceWin32HandleInfoKHR( fence_, flags_, handleType_, handle_, name_ )
     {}
 
@@ -39187,8 +39208,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct ImportMemoryFdInfoKHR
     {
     protected:
-      ImportMemoryFdInfoKHR( vk::ExternalMemoryHandleTypeFlagBits handleType_ = vk::ExternalMemoryHandleTypeFlagBits::eOpaqueFd,
-                             int fd_ = 0 )
+      VULKAN_HPP_CONSTEXPR ImportMemoryFdInfoKHR( vk::ExternalMemoryHandleTypeFlagBits handleType_ = vk::ExternalMemoryHandleTypeFlagBits::eOpaqueFd,
+                                                  int fd_ = 0 )
         : handleType( handleType_ )
         , fd( fd_ )
       {}
@@ -39215,8 +39236,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ImportMemoryFdInfoKHR : public layout::ImportMemoryFdInfoKHR
   {
-    ImportMemoryFdInfoKHR( vk::ExternalMemoryHandleTypeFlagBits handleType_ = vk::ExternalMemoryHandleTypeFlagBits::eOpaqueFd,
-                           int fd_ = 0 )
+    VULKAN_HPP_CONSTEXPR ImportMemoryFdInfoKHR( vk::ExternalMemoryHandleTypeFlagBits handleType_ = vk::ExternalMemoryHandleTypeFlagBits::eOpaqueFd,
+                                                int fd_ = 0 )
       : layout::ImportMemoryFdInfoKHR( handleType_, fd_ )
     {}
 
@@ -39282,8 +39303,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct ImportMemoryHostPointerInfoEXT
     {
     protected:
-      ImportMemoryHostPointerInfoEXT( vk::ExternalMemoryHandleTypeFlagBits handleType_ = vk::ExternalMemoryHandleTypeFlagBits::eOpaqueFd,
-                                      void* pHostPointer_ = nullptr )
+      VULKAN_HPP_CONSTEXPR ImportMemoryHostPointerInfoEXT( vk::ExternalMemoryHandleTypeFlagBits handleType_ = vk::ExternalMemoryHandleTypeFlagBits::eOpaqueFd,
+                                                           void* pHostPointer_ = nullptr )
         : handleType( handleType_ )
         , pHostPointer( pHostPointer_ )
       {}
@@ -39310,8 +39331,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ImportMemoryHostPointerInfoEXT : public layout::ImportMemoryHostPointerInfoEXT
   {
-    ImportMemoryHostPointerInfoEXT( vk::ExternalMemoryHandleTypeFlagBits handleType_ = vk::ExternalMemoryHandleTypeFlagBits::eOpaqueFd,
-                                    void* pHostPointer_ = nullptr )
+    VULKAN_HPP_CONSTEXPR ImportMemoryHostPointerInfoEXT( vk::ExternalMemoryHandleTypeFlagBits handleType_ = vk::ExternalMemoryHandleTypeFlagBits::eOpaqueFd,
+                                                         void* pHostPointer_ = nullptr )
       : layout::ImportMemoryHostPointerInfoEXT( handleType_, pHostPointer_ )
     {}
 
@@ -39379,9 +39400,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct ImportMemoryWin32HandleInfoKHR
     {
     protected:
-      ImportMemoryWin32HandleInfoKHR( vk::ExternalMemoryHandleTypeFlagBits handleType_ = vk::ExternalMemoryHandleTypeFlagBits::eOpaqueFd,
-                                      HANDLE handle_ = 0,
-                                      LPCWSTR name_ = nullptr )
+      VULKAN_HPP_CONSTEXPR ImportMemoryWin32HandleInfoKHR( vk::ExternalMemoryHandleTypeFlagBits handleType_ = vk::ExternalMemoryHandleTypeFlagBits::eOpaqueFd,
+                                                           HANDLE handle_ = 0,
+                                                           LPCWSTR name_ = nullptr )
         : handleType( handleType_ )
         , handle( handle_ )
         , name( name_ )
@@ -39410,9 +39431,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ImportMemoryWin32HandleInfoKHR : public layout::ImportMemoryWin32HandleInfoKHR
   {
-    ImportMemoryWin32HandleInfoKHR( vk::ExternalMemoryHandleTypeFlagBits handleType_ = vk::ExternalMemoryHandleTypeFlagBits::eOpaqueFd,
-                                    HANDLE handle_ = 0,
-                                    LPCWSTR name_ = nullptr )
+    VULKAN_HPP_CONSTEXPR ImportMemoryWin32HandleInfoKHR( vk::ExternalMemoryHandleTypeFlagBits handleType_ = vk::ExternalMemoryHandleTypeFlagBits::eOpaqueFd,
+                                                         HANDLE handle_ = 0,
+                                                         LPCWSTR name_ = nullptr )
       : layout::ImportMemoryWin32HandleInfoKHR( handleType_, handle_, name_ )
     {}
 
@@ -39488,8 +39509,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct ImportMemoryWin32HandleInfoNV
     {
     protected:
-      ImportMemoryWin32HandleInfoNV( vk::ExternalMemoryHandleTypeFlagsNV handleType_ = vk::ExternalMemoryHandleTypeFlagsNV(),
-                                     HANDLE handle_ = 0 )
+      VULKAN_HPP_CONSTEXPR ImportMemoryWin32HandleInfoNV( vk::ExternalMemoryHandleTypeFlagsNV handleType_ = vk::ExternalMemoryHandleTypeFlagsNV(),
+                                                          HANDLE handle_ = 0 )
         : handleType( handleType_ )
         , handle( handle_ )
       {}
@@ -39516,8 +39537,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ImportMemoryWin32HandleInfoNV : public layout::ImportMemoryWin32HandleInfoNV
   {
-    ImportMemoryWin32HandleInfoNV( vk::ExternalMemoryHandleTypeFlagsNV handleType_ = vk::ExternalMemoryHandleTypeFlagsNV(),
-                                   HANDLE handle_ = 0 )
+    VULKAN_HPP_CONSTEXPR ImportMemoryWin32HandleInfoNV( vk::ExternalMemoryHandleTypeFlagsNV handleType_ = vk::ExternalMemoryHandleTypeFlagsNV(),
+                                                        HANDLE handle_ = 0 )
       : layout::ImportMemoryWin32HandleInfoNV( handleType_, handle_ )
     {}
 
@@ -39584,10 +39605,10 @@ namespace VULKAN_HPP_NAMESPACE
     struct ImportSemaphoreFdInfoKHR
     {
     protected:
-      ImportSemaphoreFdInfoKHR( vk::Semaphore semaphore_ = vk::Semaphore(),
-                                vk::SemaphoreImportFlags flags_ = vk::SemaphoreImportFlags(),
-                                vk::ExternalSemaphoreHandleTypeFlagBits handleType_ = vk::ExternalSemaphoreHandleTypeFlagBits::eOpaqueFd,
-                                int fd_ = 0 )
+      VULKAN_HPP_CONSTEXPR ImportSemaphoreFdInfoKHR( vk::Semaphore semaphore_ = vk::Semaphore(),
+                                                     vk::SemaphoreImportFlags flags_ = vk::SemaphoreImportFlags(),
+                                                     vk::ExternalSemaphoreHandleTypeFlagBits handleType_ = vk::ExternalSemaphoreHandleTypeFlagBits::eOpaqueFd,
+                                                     int fd_ = 0 )
         : semaphore( semaphore_ )
         , flags( flags_ )
         , handleType( handleType_ )
@@ -39618,10 +39639,10 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ImportSemaphoreFdInfoKHR : public layout::ImportSemaphoreFdInfoKHR
   {
-    ImportSemaphoreFdInfoKHR( vk::Semaphore semaphore_ = vk::Semaphore(),
-                              vk::SemaphoreImportFlags flags_ = vk::SemaphoreImportFlags(),
-                              vk::ExternalSemaphoreHandleTypeFlagBits handleType_ = vk::ExternalSemaphoreHandleTypeFlagBits::eOpaqueFd,
-                              int fd_ = 0 )
+    VULKAN_HPP_CONSTEXPR ImportSemaphoreFdInfoKHR( vk::Semaphore semaphore_ = vk::Semaphore(),
+                                                   vk::SemaphoreImportFlags flags_ = vk::SemaphoreImportFlags(),
+                                                   vk::ExternalSemaphoreHandleTypeFlagBits handleType_ = vk::ExternalSemaphoreHandleTypeFlagBits::eOpaqueFd,
+                                                   int fd_ = 0 )
       : layout::ImportSemaphoreFdInfoKHR( semaphore_, flags_, handleType_, fd_ )
     {}
 
@@ -39703,11 +39724,11 @@ namespace VULKAN_HPP_NAMESPACE
     struct ImportSemaphoreWin32HandleInfoKHR
     {
     protected:
-      ImportSemaphoreWin32HandleInfoKHR( vk::Semaphore semaphore_ = vk::Semaphore(),
-                                         vk::SemaphoreImportFlags flags_ = vk::SemaphoreImportFlags(),
-                                         vk::ExternalSemaphoreHandleTypeFlagBits handleType_ = vk::ExternalSemaphoreHandleTypeFlagBits::eOpaqueFd,
-                                         HANDLE handle_ = 0,
-                                         LPCWSTR name_ = nullptr )
+      VULKAN_HPP_CONSTEXPR ImportSemaphoreWin32HandleInfoKHR( vk::Semaphore semaphore_ = vk::Semaphore(),
+                                                              vk::SemaphoreImportFlags flags_ = vk::SemaphoreImportFlags(),
+                                                              vk::ExternalSemaphoreHandleTypeFlagBits handleType_ = vk::ExternalSemaphoreHandleTypeFlagBits::eOpaqueFd,
+                                                              HANDLE handle_ = 0,
+                                                              LPCWSTR name_ = nullptr )
         : semaphore( semaphore_ )
         , flags( flags_ )
         , handleType( handleType_ )
@@ -39740,11 +39761,11 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ImportSemaphoreWin32HandleInfoKHR : public layout::ImportSemaphoreWin32HandleInfoKHR
   {
-    ImportSemaphoreWin32HandleInfoKHR( vk::Semaphore semaphore_ = vk::Semaphore(),
-                                       vk::SemaphoreImportFlags flags_ = vk::SemaphoreImportFlags(),
-                                       vk::ExternalSemaphoreHandleTypeFlagBits handleType_ = vk::ExternalSemaphoreHandleTypeFlagBits::eOpaqueFd,
-                                       HANDLE handle_ = 0,
-                                       LPCWSTR name_ = nullptr )
+    VULKAN_HPP_CONSTEXPR ImportSemaphoreWin32HandleInfoKHR( vk::Semaphore semaphore_ = vk::Semaphore(),
+                                                            vk::SemaphoreImportFlags flags_ = vk::SemaphoreImportFlags(),
+                                                            vk::ExternalSemaphoreHandleTypeFlagBits handleType_ = vk::ExternalSemaphoreHandleTypeFlagBits::eOpaqueFd,
+                                                            HANDLE handle_ = 0,
+                                                            LPCWSTR name_ = nullptr )
       : layout::ImportSemaphoreWin32HandleInfoKHR( semaphore_, flags_, handleType_, handle_, name_ )
     {}
 
@@ -39829,10 +39850,10 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct IndirectCommandsLayoutTokenNVX
   {
-    IndirectCommandsLayoutTokenNVX( vk::IndirectCommandsTokenTypeNVX tokenType_ = vk::IndirectCommandsTokenTypeNVX::ePipeline,
-                                    uint32_t bindingUnit_ = 0,
-                                    uint32_t dynamicCount_ = 0,
-                                    uint32_t divisor_ = 0 )
+    VULKAN_HPP_CONSTEXPR IndirectCommandsLayoutTokenNVX( vk::IndirectCommandsTokenTypeNVX tokenType_ = vk::IndirectCommandsTokenTypeNVX::ePipeline,
+                                                         uint32_t bindingUnit_ = 0,
+                                                         uint32_t dynamicCount_ = 0,
+                                                         uint32_t divisor_ = 0 )
       : tokenType( tokenType_ )
       , bindingUnit( bindingUnit_ )
       , dynamicCount( dynamicCount_ )
@@ -39911,10 +39932,10 @@ namespace VULKAN_HPP_NAMESPACE
     struct IndirectCommandsLayoutCreateInfoNVX
     {
     protected:
-      IndirectCommandsLayoutCreateInfoNVX( vk::PipelineBindPoint pipelineBindPoint_ = vk::PipelineBindPoint::eGraphics,
-                                           vk::IndirectCommandsLayoutUsageFlagsNVX flags_ = vk::IndirectCommandsLayoutUsageFlagsNVX(),
-                                           uint32_t tokenCount_ = 0,
-                                           const vk::IndirectCommandsLayoutTokenNVX* pTokens_ = nullptr )
+      VULKAN_HPP_CONSTEXPR IndirectCommandsLayoutCreateInfoNVX( vk::PipelineBindPoint pipelineBindPoint_ = vk::PipelineBindPoint::eGraphics,
+                                                                vk::IndirectCommandsLayoutUsageFlagsNVX flags_ = vk::IndirectCommandsLayoutUsageFlagsNVX(),
+                                                                uint32_t tokenCount_ = 0,
+                                                                const vk::IndirectCommandsLayoutTokenNVX* pTokens_ = nullptr )
         : pipelineBindPoint( pipelineBindPoint_ )
         , flags( flags_ )
         , tokenCount( tokenCount_ )
@@ -39945,10 +39966,10 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct IndirectCommandsLayoutCreateInfoNVX : public layout::IndirectCommandsLayoutCreateInfoNVX
   {
-    IndirectCommandsLayoutCreateInfoNVX( vk::PipelineBindPoint pipelineBindPoint_ = vk::PipelineBindPoint::eGraphics,
-                                         vk::IndirectCommandsLayoutUsageFlagsNVX flags_ = vk::IndirectCommandsLayoutUsageFlagsNVX(),
-                                         uint32_t tokenCount_ = 0,
-                                         const vk::IndirectCommandsLayoutTokenNVX* pTokens_ = nullptr )
+    VULKAN_HPP_CONSTEXPR IndirectCommandsLayoutCreateInfoNVX( vk::PipelineBindPoint pipelineBindPoint_ = vk::PipelineBindPoint::eGraphics,
+                                                              vk::IndirectCommandsLayoutUsageFlagsNVX flags_ = vk::IndirectCommandsLayoutUsageFlagsNVX(),
+                                                              uint32_t tokenCount_ = 0,
+                                                              const vk::IndirectCommandsLayoutTokenNVX* pTokens_ = nullptr )
       : layout::IndirectCommandsLayoutCreateInfoNVX( pipelineBindPoint_, flags_, tokenCount_, pTokens_ )
     {}
 
@@ -40028,7 +40049,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct InitializePerformanceApiInfoINTEL
     {
     protected:
-      InitializePerformanceApiInfoINTEL( void* pUserData_ = nullptr )
+      VULKAN_HPP_CONSTEXPR InitializePerformanceApiInfoINTEL( void* pUserData_ = nullptr )
         : pUserData( pUserData_ )
       {}
 
@@ -40053,7 +40074,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct InitializePerformanceApiInfoINTEL : public layout::InitializePerformanceApiInfoINTEL
   {
-    InitializePerformanceApiInfoINTEL( void* pUserData_ = nullptr )
+    VULKAN_HPP_CONSTEXPR InitializePerformanceApiInfoINTEL( void* pUserData_ = nullptr )
       : layout::InitializePerformanceApiInfoINTEL( pUserData_ )
     {}
 
@@ -40109,9 +40130,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct InputAttachmentAspectReference
   {
-    InputAttachmentAspectReference( uint32_t subpass_ = 0,
-                                    uint32_t inputAttachmentIndex_ = 0,
-                                    vk::ImageAspectFlags aspectMask_ = vk::ImageAspectFlags() )
+    VULKAN_HPP_CONSTEXPR InputAttachmentAspectReference( uint32_t subpass_ = 0,
+                                                         uint32_t inputAttachmentIndex_ = 0,
+                                                         vk::ImageAspectFlags aspectMask_ = vk::ImageAspectFlags() )
       : subpass( subpass_ )
       , inputAttachmentIndex( inputAttachmentIndex_ )
       , aspectMask( aspectMask_ )
@@ -40181,12 +40202,12 @@ namespace VULKAN_HPP_NAMESPACE
     struct InstanceCreateInfo
     {
     protected:
-      InstanceCreateInfo( vk::InstanceCreateFlags flags_ = vk::InstanceCreateFlags(),
-                          const vk::ApplicationInfo* pApplicationInfo_ = nullptr,
-                          uint32_t enabledLayerCount_ = 0,
-                          const char* const* ppEnabledLayerNames_ = nullptr,
-                          uint32_t enabledExtensionCount_ = 0,
-                          const char* const* ppEnabledExtensionNames_ = nullptr )
+      VULKAN_HPP_CONSTEXPR InstanceCreateInfo( vk::InstanceCreateFlags flags_ = vk::InstanceCreateFlags(),
+                                               const vk::ApplicationInfo* pApplicationInfo_ = nullptr,
+                                               uint32_t enabledLayerCount_ = 0,
+                                               const char* const* ppEnabledLayerNames_ = nullptr,
+                                               uint32_t enabledExtensionCount_ = 0,
+                                               const char* const* ppEnabledExtensionNames_ = nullptr )
         : flags( flags_ )
         , pApplicationInfo( pApplicationInfo_ )
         , enabledLayerCount( enabledLayerCount_ )
@@ -40221,12 +40242,12 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct InstanceCreateInfo : public layout::InstanceCreateInfo
   {
-    InstanceCreateInfo( vk::InstanceCreateFlags flags_ = vk::InstanceCreateFlags(),
-                        const vk::ApplicationInfo* pApplicationInfo_ = nullptr,
-                        uint32_t enabledLayerCount_ = 0,
-                        const char* const* ppEnabledLayerNames_ = nullptr,
-                        uint32_t enabledExtensionCount_ = 0,
-                        const char* const* ppEnabledExtensionNames_ = nullptr )
+    VULKAN_HPP_CONSTEXPR InstanceCreateInfo( vk::InstanceCreateFlags flags_ = vk::InstanceCreateFlags(),
+                                             const vk::ApplicationInfo* pApplicationInfo_ = nullptr,
+                                             uint32_t enabledLayerCount_ = 0,
+                                             const char* const* ppEnabledLayerNames_ = nullptr,
+                                             uint32_t enabledExtensionCount_ = 0,
+                                             const char* const* ppEnabledExtensionNames_ = nullptr )
       : layout::InstanceCreateInfo( flags_, pApplicationInfo_, enabledLayerCount_, ppEnabledLayerNames_, enabledExtensionCount_, ppEnabledExtensionNames_ )
     {}
 
@@ -40370,8 +40391,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct MacOSSurfaceCreateInfoMVK
     {
     protected:
-      MacOSSurfaceCreateInfoMVK( vk::MacOSSurfaceCreateFlagsMVK flags_ = vk::MacOSSurfaceCreateFlagsMVK(),
-                                 const void* pView_ = nullptr )
+      VULKAN_HPP_CONSTEXPR MacOSSurfaceCreateInfoMVK( vk::MacOSSurfaceCreateFlagsMVK flags_ = vk::MacOSSurfaceCreateFlagsMVK(),
+                                                      const void* pView_ = nullptr )
         : flags( flags_ )
         , pView( pView_ )
       {}
@@ -40398,8 +40419,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct MacOSSurfaceCreateInfoMVK : public layout::MacOSSurfaceCreateInfoMVK
   {
-    MacOSSurfaceCreateInfoMVK( vk::MacOSSurfaceCreateFlagsMVK flags_ = vk::MacOSSurfaceCreateFlagsMVK(),
-                               const void* pView_ = nullptr )
+    VULKAN_HPP_CONSTEXPR MacOSSurfaceCreateInfoMVK( vk::MacOSSurfaceCreateFlagsMVK flags_ = vk::MacOSSurfaceCreateFlagsMVK(),
+                                                    const void* pView_ = nullptr )
       : layout::MacOSSurfaceCreateInfoMVK( flags_, pView_ )
     {}
 
@@ -40466,9 +40487,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct MappedMemoryRange
     {
     protected:
-      MappedMemoryRange( vk::DeviceMemory memory_ = vk::DeviceMemory(),
-                         vk::DeviceSize offset_ = 0,
-                         vk::DeviceSize size_ = 0 )
+      VULKAN_HPP_CONSTEXPR MappedMemoryRange( vk::DeviceMemory memory_ = vk::DeviceMemory(),
+                                              vk::DeviceSize offset_ = 0,
+                                              vk::DeviceSize size_ = 0 )
         : memory( memory_ )
         , offset( offset_ )
         , size( size_ )
@@ -40497,9 +40518,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct MappedMemoryRange : public layout::MappedMemoryRange
   {
-    MappedMemoryRange( vk::DeviceMemory memory_ = vk::DeviceMemory(),
-                       vk::DeviceSize offset_ = 0,
-                       vk::DeviceSize size_ = 0 )
+    VULKAN_HPP_CONSTEXPR MappedMemoryRange( vk::DeviceMemory memory_ = vk::DeviceMemory(),
+                                            vk::DeviceSize offset_ = 0,
+                                            vk::DeviceSize size_ = 0 )
       : layout::MappedMemoryRange( memory_, offset_, size_ )
     {}
 
@@ -40572,8 +40593,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct MemoryAllocateFlagsInfo
     {
     protected:
-      MemoryAllocateFlagsInfo( vk::MemoryAllocateFlags flags_ = vk::MemoryAllocateFlags(),
-                               uint32_t deviceMask_ = 0 )
+      VULKAN_HPP_CONSTEXPR MemoryAllocateFlagsInfo( vk::MemoryAllocateFlags flags_ = vk::MemoryAllocateFlags(),
+                                                    uint32_t deviceMask_ = 0 )
         : flags( flags_ )
         , deviceMask( deviceMask_ )
       {}
@@ -40600,8 +40621,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct MemoryAllocateFlagsInfo : public layout::MemoryAllocateFlagsInfo
   {
-    MemoryAllocateFlagsInfo( vk::MemoryAllocateFlags flags_ = vk::MemoryAllocateFlags(),
-                             uint32_t deviceMask_ = 0 )
+    VULKAN_HPP_CONSTEXPR MemoryAllocateFlagsInfo( vk::MemoryAllocateFlags flags_ = vk::MemoryAllocateFlags(),
+                                                  uint32_t deviceMask_ = 0 )
       : layout::MemoryAllocateFlagsInfo( flags_, deviceMask_ )
     {}
 
@@ -40667,8 +40688,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct MemoryAllocateInfo
     {
     protected:
-      MemoryAllocateInfo( vk::DeviceSize allocationSize_ = 0,
-                          uint32_t memoryTypeIndex_ = 0 )
+      VULKAN_HPP_CONSTEXPR MemoryAllocateInfo( vk::DeviceSize allocationSize_ = 0,
+                                               uint32_t memoryTypeIndex_ = 0 )
         : allocationSize( allocationSize_ )
         , memoryTypeIndex( memoryTypeIndex_ )
       {}
@@ -40695,8 +40716,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct MemoryAllocateInfo : public layout::MemoryAllocateInfo
   {
-    MemoryAllocateInfo( vk::DeviceSize allocationSize_ = 0,
-                        uint32_t memoryTypeIndex_ = 0 )
+    VULKAN_HPP_CONSTEXPR MemoryAllocateInfo( vk::DeviceSize allocationSize_ = 0,
+                                             uint32_t memoryTypeIndex_ = 0 )
       : layout::MemoryAllocateInfo( allocationSize_, memoryTypeIndex_ )
     {}
 
@@ -40762,8 +40783,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct MemoryBarrier
     {
     protected:
-      MemoryBarrier( vk::AccessFlags srcAccessMask_ = vk::AccessFlags(),
-                     vk::AccessFlags dstAccessMask_ = vk::AccessFlags() )
+      VULKAN_HPP_CONSTEXPR MemoryBarrier( vk::AccessFlags srcAccessMask_ = vk::AccessFlags(),
+                                          vk::AccessFlags dstAccessMask_ = vk::AccessFlags() )
         : srcAccessMask( srcAccessMask_ )
         , dstAccessMask( dstAccessMask_ )
       {}
@@ -40790,8 +40811,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct MemoryBarrier : public layout::MemoryBarrier
   {
-    MemoryBarrier( vk::AccessFlags srcAccessMask_ = vk::AccessFlags(),
-                   vk::AccessFlags dstAccessMask_ = vk::AccessFlags() )
+    VULKAN_HPP_CONSTEXPR MemoryBarrier( vk::AccessFlags srcAccessMask_ = vk::AccessFlags(),
+                                        vk::AccessFlags dstAccessMask_ = vk::AccessFlags() )
       : layout::MemoryBarrier( srcAccessMask_, dstAccessMask_ )
     {}
 
@@ -40857,8 +40878,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct MemoryDedicatedAllocateInfo
     {
     protected:
-      MemoryDedicatedAllocateInfo( vk::Image image_ = vk::Image(),
-                                   vk::Buffer buffer_ = vk::Buffer() )
+      VULKAN_HPP_CONSTEXPR MemoryDedicatedAllocateInfo( vk::Image image_ = vk::Image(),
+                                                        vk::Buffer buffer_ = vk::Buffer() )
         : image( image_ )
         , buffer( buffer_ )
       {}
@@ -40885,8 +40906,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct MemoryDedicatedAllocateInfo : public layout::MemoryDedicatedAllocateInfo
   {
-    MemoryDedicatedAllocateInfo( vk::Image image_ = vk::Image(),
-                                 vk::Buffer buffer_ = vk::Buffer() )
+    VULKAN_HPP_CONSTEXPR MemoryDedicatedAllocateInfo( vk::Image image_ = vk::Image(),
+                                                      vk::Buffer buffer_ = vk::Buffer() )
       : layout::MemoryDedicatedAllocateInfo( image_, buffer_ )
     {}
 
@@ -41098,7 +41119,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct MemoryGetAndroidHardwareBufferInfoANDROID
     {
     protected:
-      MemoryGetAndroidHardwareBufferInfoANDROID( vk::DeviceMemory memory_ = vk::DeviceMemory() )
+      VULKAN_HPP_CONSTEXPR MemoryGetAndroidHardwareBufferInfoANDROID( vk::DeviceMemory memory_ = vk::DeviceMemory() )
         : memory( memory_ )
       {}
 
@@ -41123,7 +41144,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct MemoryGetAndroidHardwareBufferInfoANDROID : public layout::MemoryGetAndroidHardwareBufferInfoANDROID
   {
-    MemoryGetAndroidHardwareBufferInfoANDROID( vk::DeviceMemory memory_ = vk::DeviceMemory() )
+    VULKAN_HPP_CONSTEXPR MemoryGetAndroidHardwareBufferInfoANDROID( vk::DeviceMemory memory_ = vk::DeviceMemory() )
       : layout::MemoryGetAndroidHardwareBufferInfoANDROID( memory_ )
     {}
 
@@ -41183,8 +41204,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct MemoryGetFdInfoKHR
     {
     protected:
-      MemoryGetFdInfoKHR( vk::DeviceMemory memory_ = vk::DeviceMemory(),
-                          vk::ExternalMemoryHandleTypeFlagBits handleType_ = vk::ExternalMemoryHandleTypeFlagBits::eOpaqueFd )
+      VULKAN_HPP_CONSTEXPR MemoryGetFdInfoKHR( vk::DeviceMemory memory_ = vk::DeviceMemory(),
+                                               vk::ExternalMemoryHandleTypeFlagBits handleType_ = vk::ExternalMemoryHandleTypeFlagBits::eOpaqueFd )
         : memory( memory_ )
         , handleType( handleType_ )
       {}
@@ -41211,8 +41232,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct MemoryGetFdInfoKHR : public layout::MemoryGetFdInfoKHR
   {
-    MemoryGetFdInfoKHR( vk::DeviceMemory memory_ = vk::DeviceMemory(),
-                        vk::ExternalMemoryHandleTypeFlagBits handleType_ = vk::ExternalMemoryHandleTypeFlagBits::eOpaqueFd )
+    VULKAN_HPP_CONSTEXPR MemoryGetFdInfoKHR( vk::DeviceMemory memory_ = vk::DeviceMemory(),
+                                             vk::ExternalMemoryHandleTypeFlagBits handleType_ = vk::ExternalMemoryHandleTypeFlagBits::eOpaqueFd )
       : layout::MemoryGetFdInfoKHR( memory_, handleType_ )
     {}
 
@@ -41280,8 +41301,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct MemoryGetWin32HandleInfoKHR
     {
     protected:
-      MemoryGetWin32HandleInfoKHR( vk::DeviceMemory memory_ = vk::DeviceMemory(),
-                                   vk::ExternalMemoryHandleTypeFlagBits handleType_ = vk::ExternalMemoryHandleTypeFlagBits::eOpaqueFd )
+      VULKAN_HPP_CONSTEXPR MemoryGetWin32HandleInfoKHR( vk::DeviceMemory memory_ = vk::DeviceMemory(),
+                                                        vk::ExternalMemoryHandleTypeFlagBits handleType_ = vk::ExternalMemoryHandleTypeFlagBits::eOpaqueFd )
         : memory( memory_ )
         , handleType( handleType_ )
       {}
@@ -41308,8 +41329,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct MemoryGetWin32HandleInfoKHR : public layout::MemoryGetWin32HandleInfoKHR
   {
-    MemoryGetWin32HandleInfoKHR( vk::DeviceMemory memory_ = vk::DeviceMemory(),
-                                 vk::ExternalMemoryHandleTypeFlagBits handleType_ = vk::ExternalMemoryHandleTypeFlagBits::eOpaqueFd )
+    VULKAN_HPP_CONSTEXPR MemoryGetWin32HandleInfoKHR( vk::DeviceMemory memory_ = vk::DeviceMemory(),
+                                                      vk::ExternalMemoryHandleTypeFlagBits handleType_ = vk::ExternalMemoryHandleTypeFlagBits::eOpaqueFd )
       : layout::MemoryGetWin32HandleInfoKHR( memory_, handleType_ )
     {}
 
@@ -41491,7 +41512,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct MemoryPriorityAllocateInfoEXT
     {
     protected:
-      MemoryPriorityAllocateInfoEXT( float priority_ = 0 )
+      VULKAN_HPP_CONSTEXPR MemoryPriorityAllocateInfoEXT( float priority_ = 0 )
         : priority( priority_ )
       {}
 
@@ -41516,7 +41537,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct MemoryPriorityAllocateInfoEXT : public layout::MemoryPriorityAllocateInfoEXT
   {
-    MemoryPriorityAllocateInfoEXT( float priority_ = 0 )
+    VULKAN_HPP_CONSTEXPR MemoryPriorityAllocateInfoEXT( float priority_ = 0 )
       : layout::MemoryPriorityAllocateInfoEXT( priority_ )
     {}
 
@@ -41812,8 +41833,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct MetalSurfaceCreateInfoEXT
     {
     protected:
-      MetalSurfaceCreateInfoEXT( vk::MetalSurfaceCreateFlagsEXT flags_ = vk::MetalSurfaceCreateFlagsEXT(),
-                                 const CAMetalLayer* pLayer_ = nullptr )
+      VULKAN_HPP_CONSTEXPR MetalSurfaceCreateInfoEXT( vk::MetalSurfaceCreateFlagsEXT flags_ = vk::MetalSurfaceCreateFlagsEXT(),
+                                                      const CAMetalLayer* pLayer_ = nullptr )
         : flags( flags_ )
         , pLayer( pLayer_ )
       {}
@@ -41840,8 +41861,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct MetalSurfaceCreateInfoEXT : public layout::MetalSurfaceCreateInfoEXT
   {
-    MetalSurfaceCreateInfoEXT( vk::MetalSurfaceCreateFlagsEXT flags_ = vk::MetalSurfaceCreateFlagsEXT(),
-                               const CAMetalLayer* pLayer_ = nullptr )
+    VULKAN_HPP_CONSTEXPR MetalSurfaceCreateInfoEXT( vk::MetalSurfaceCreateFlagsEXT flags_ = vk::MetalSurfaceCreateFlagsEXT(),
+                                                    const CAMetalLayer* pLayer_ = nullptr )
       : layout::MetalSurfaceCreateInfoEXT( flags_, pLayer_ )
     {}
 
@@ -41979,15 +42000,15 @@ namespace VULKAN_HPP_NAMESPACE
     struct ObjectTableCreateInfoNVX
     {
     protected:
-      ObjectTableCreateInfoNVX( uint32_t objectCount_ = 0,
-                                const vk::ObjectEntryTypeNVX* pObjectEntryTypes_ = nullptr,
-                                const uint32_t* pObjectEntryCounts_ = nullptr,
-                                const vk::ObjectEntryUsageFlagsNVX* pObjectEntryUsageFlags_ = nullptr,
-                                uint32_t maxUniformBuffersPerDescriptor_ = 0,
-                                uint32_t maxStorageBuffersPerDescriptor_ = 0,
-                                uint32_t maxStorageImagesPerDescriptor_ = 0,
-                                uint32_t maxSampledImagesPerDescriptor_ = 0,
-                                uint32_t maxPipelineLayouts_ = 0 )
+      VULKAN_HPP_CONSTEXPR ObjectTableCreateInfoNVX( uint32_t objectCount_ = 0,
+                                                     const vk::ObjectEntryTypeNVX* pObjectEntryTypes_ = nullptr,
+                                                     const uint32_t* pObjectEntryCounts_ = nullptr,
+                                                     const vk::ObjectEntryUsageFlagsNVX* pObjectEntryUsageFlags_ = nullptr,
+                                                     uint32_t maxUniformBuffersPerDescriptor_ = 0,
+                                                     uint32_t maxStorageBuffersPerDescriptor_ = 0,
+                                                     uint32_t maxStorageImagesPerDescriptor_ = 0,
+                                                     uint32_t maxSampledImagesPerDescriptor_ = 0,
+                                                     uint32_t maxPipelineLayouts_ = 0 )
         : objectCount( objectCount_ )
         , pObjectEntryTypes( pObjectEntryTypes_ )
         , pObjectEntryCounts( pObjectEntryCounts_ )
@@ -42028,15 +42049,15 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ObjectTableCreateInfoNVX : public layout::ObjectTableCreateInfoNVX
   {
-    ObjectTableCreateInfoNVX( uint32_t objectCount_ = 0,
-                              const vk::ObjectEntryTypeNVX* pObjectEntryTypes_ = nullptr,
-                              const uint32_t* pObjectEntryCounts_ = nullptr,
-                              const vk::ObjectEntryUsageFlagsNVX* pObjectEntryUsageFlags_ = nullptr,
-                              uint32_t maxUniformBuffersPerDescriptor_ = 0,
-                              uint32_t maxStorageBuffersPerDescriptor_ = 0,
-                              uint32_t maxStorageImagesPerDescriptor_ = 0,
-                              uint32_t maxSampledImagesPerDescriptor_ = 0,
-                              uint32_t maxPipelineLayouts_ = 0 )
+    VULKAN_HPP_CONSTEXPR ObjectTableCreateInfoNVX( uint32_t objectCount_ = 0,
+                                                   const vk::ObjectEntryTypeNVX* pObjectEntryTypes_ = nullptr,
+                                                   const uint32_t* pObjectEntryCounts_ = nullptr,
+                                                   const vk::ObjectEntryUsageFlagsNVX* pObjectEntryUsageFlags_ = nullptr,
+                                                   uint32_t maxUniformBuffersPerDescriptor_ = 0,
+                                                   uint32_t maxStorageBuffersPerDescriptor_ = 0,
+                                                   uint32_t maxStorageImagesPerDescriptor_ = 0,
+                                                   uint32_t maxSampledImagesPerDescriptor_ = 0,
+                                                   uint32_t maxPipelineLayouts_ = 0 )
       : layout::ObjectTableCreateInfoNVX( objectCount_, pObjectEntryTypes_, pObjectEntryCounts_, pObjectEntryUsageFlags_, maxUniformBuffersPerDescriptor_, maxStorageBuffersPerDescriptor_, maxStorageImagesPerDescriptor_, maxSampledImagesPerDescriptor_, maxPipelineLayouts_ )
     {}
 
@@ -42148,8 +42169,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ObjectTableEntryNVX
   {
-    ObjectTableEntryNVX( vk::ObjectEntryTypeNVX type_ = vk::ObjectEntryTypeNVX::eDescriptorSet,
-                         vk::ObjectEntryUsageFlagsNVX flags_ = vk::ObjectEntryUsageFlagsNVX() )
+    VULKAN_HPP_CONSTEXPR ObjectTableEntryNVX( vk::ObjectEntryTypeNVX type_ = vk::ObjectEntryTypeNVX::eDescriptorSet,
+                                              vk::ObjectEntryUsageFlagsNVX flags_ = vk::ObjectEntryUsageFlagsNVX() )
       : type( type_ )
       , flags( flags_ )
     {}
@@ -42207,10 +42228,10 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ObjectTableDescriptorSetEntryNVX
   {
-    ObjectTableDescriptorSetEntryNVX( vk::ObjectEntryTypeNVX type_ = vk::ObjectEntryTypeNVX::eDescriptorSet,
-                                      vk::ObjectEntryUsageFlagsNVX flags_ = vk::ObjectEntryUsageFlagsNVX(),
-                                      vk::PipelineLayout pipelineLayout_ = vk::PipelineLayout(),
-                                      vk::DescriptorSet descriptorSet_ = vk::DescriptorSet() )
+    VULKAN_HPP_CONSTEXPR ObjectTableDescriptorSetEntryNVX( vk::ObjectEntryTypeNVX type_ = vk::ObjectEntryTypeNVX::eDescriptorSet,
+                                                           vk::ObjectEntryUsageFlagsNVX flags_ = vk::ObjectEntryUsageFlagsNVX(),
+                                                           vk::PipelineLayout pipelineLayout_ = vk::PipelineLayout(),
+                                                           vk::DescriptorSet descriptorSet_ = vk::DescriptorSet() )
       : type( type_ )
       , flags( flags_ )
       , pipelineLayout( pipelineLayout_ )
@@ -42295,10 +42316,10 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ObjectTableIndexBufferEntryNVX
   {
-    ObjectTableIndexBufferEntryNVX( vk::ObjectEntryTypeNVX type_ = vk::ObjectEntryTypeNVX::eDescriptorSet,
-                                    vk::ObjectEntryUsageFlagsNVX flags_ = vk::ObjectEntryUsageFlagsNVX(),
-                                    vk::Buffer buffer_ = vk::Buffer(),
-                                    vk::IndexType indexType_ = vk::IndexType::eUint16 )
+    VULKAN_HPP_CONSTEXPR ObjectTableIndexBufferEntryNVX( vk::ObjectEntryTypeNVX type_ = vk::ObjectEntryTypeNVX::eDescriptorSet,
+                                                         vk::ObjectEntryUsageFlagsNVX flags_ = vk::ObjectEntryUsageFlagsNVX(),
+                                                         vk::Buffer buffer_ = vk::Buffer(),
+                                                         vk::IndexType indexType_ = vk::IndexType::eUint16 )
       : type( type_ )
       , flags( flags_ )
       , buffer( buffer_ )
@@ -42383,9 +42404,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ObjectTablePipelineEntryNVX
   {
-    ObjectTablePipelineEntryNVX( vk::ObjectEntryTypeNVX type_ = vk::ObjectEntryTypeNVX::eDescriptorSet,
-                                 vk::ObjectEntryUsageFlagsNVX flags_ = vk::ObjectEntryUsageFlagsNVX(),
-                                 vk::Pipeline pipeline_ = vk::Pipeline() )
+    VULKAN_HPP_CONSTEXPR ObjectTablePipelineEntryNVX( vk::ObjectEntryTypeNVX type_ = vk::ObjectEntryTypeNVX::eDescriptorSet,
+                                                      vk::ObjectEntryUsageFlagsNVX flags_ = vk::ObjectEntryUsageFlagsNVX(),
+                                                      vk::Pipeline pipeline_ = vk::Pipeline() )
       : type( type_ )
       , flags( flags_ )
       , pipeline( pipeline_ )
@@ -42459,10 +42480,10 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ObjectTablePushConstantEntryNVX
   {
-    ObjectTablePushConstantEntryNVX( vk::ObjectEntryTypeNVX type_ = vk::ObjectEntryTypeNVX::eDescriptorSet,
-                                     vk::ObjectEntryUsageFlagsNVX flags_ = vk::ObjectEntryUsageFlagsNVX(),
-                                     vk::PipelineLayout pipelineLayout_ = vk::PipelineLayout(),
-                                     vk::ShaderStageFlags stageFlags_ = vk::ShaderStageFlags() )
+    VULKAN_HPP_CONSTEXPR ObjectTablePushConstantEntryNVX( vk::ObjectEntryTypeNVX type_ = vk::ObjectEntryTypeNVX::eDescriptorSet,
+                                                          vk::ObjectEntryUsageFlagsNVX flags_ = vk::ObjectEntryUsageFlagsNVX(),
+                                                          vk::PipelineLayout pipelineLayout_ = vk::PipelineLayout(),
+                                                          vk::ShaderStageFlags stageFlags_ = vk::ShaderStageFlags() )
       : type( type_ )
       , flags( flags_ )
       , pipelineLayout( pipelineLayout_ )
@@ -42547,9 +42568,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ObjectTableVertexBufferEntryNVX
   {
-    ObjectTableVertexBufferEntryNVX( vk::ObjectEntryTypeNVX type_ = vk::ObjectEntryTypeNVX::eDescriptorSet,
-                                     vk::ObjectEntryUsageFlagsNVX flags_ = vk::ObjectEntryUsageFlagsNVX(),
-                                     vk::Buffer buffer_ = vk::Buffer() )
+    VULKAN_HPP_CONSTEXPR ObjectTableVertexBufferEntryNVX( vk::ObjectEntryTypeNVX type_ = vk::ObjectEntryTypeNVX::eDescriptorSet,
+                                                          vk::ObjectEntryUsageFlagsNVX flags_ = vk::ObjectEntryUsageFlagsNVX(),
+                                                          vk::Buffer buffer_ = vk::Buffer() )
       : type( type_ )
       , flags( flags_ )
       , buffer( buffer_ )
@@ -42676,7 +42697,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PerformanceConfigurationAcquireInfoINTEL
     {
     protected:
-      PerformanceConfigurationAcquireInfoINTEL( vk::PerformanceConfigurationTypeINTEL type_ = vk::PerformanceConfigurationTypeINTEL::eCommandQueueMetricsDiscoveryActivated )
+      VULKAN_HPP_CONSTEXPR PerformanceConfigurationAcquireInfoINTEL( vk::PerformanceConfigurationTypeINTEL type_ = vk::PerformanceConfigurationTypeINTEL::eCommandQueueMetricsDiscoveryActivated )
         : type( type_ )
       {}
 
@@ -42701,7 +42722,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PerformanceConfigurationAcquireInfoINTEL : public layout::PerformanceConfigurationAcquireInfoINTEL
   {
-    PerformanceConfigurationAcquireInfoINTEL( vk::PerformanceConfigurationTypeINTEL type_ = vk::PerformanceConfigurationTypeINTEL::eCommandQueueMetricsDiscoveryActivated )
+    VULKAN_HPP_CONSTEXPR PerformanceConfigurationAcquireInfoINTEL( vk::PerformanceConfigurationTypeINTEL type_ = vk::PerformanceConfigurationTypeINTEL::eCommandQueueMetricsDiscoveryActivated )
       : layout::PerformanceConfigurationAcquireInfoINTEL( type_ )
     {}
 
@@ -42760,7 +42781,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PerformanceMarkerInfoINTEL
     {
     protected:
-      PerformanceMarkerInfoINTEL( uint64_t marker_ = 0 )
+      VULKAN_HPP_CONSTEXPR PerformanceMarkerInfoINTEL( uint64_t marker_ = 0 )
         : marker( marker_ )
       {}
 
@@ -42785,7 +42806,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PerformanceMarkerInfoINTEL : public layout::PerformanceMarkerInfoINTEL
   {
-    PerformanceMarkerInfoINTEL( uint64_t marker_ = 0 )
+    VULKAN_HPP_CONSTEXPR PerformanceMarkerInfoINTEL( uint64_t marker_ = 0 )
       : layout::PerformanceMarkerInfoINTEL( marker_ )
     {}
 
@@ -42844,9 +42865,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct PerformanceOverrideInfoINTEL
     {
     protected:
-      PerformanceOverrideInfoINTEL( vk::PerformanceOverrideTypeINTEL type_ = vk::PerformanceOverrideTypeINTEL::eNullHardware,
-                                    vk::Bool32 enable_ = 0,
-                                    uint64_t parameter_ = 0 )
+      VULKAN_HPP_CONSTEXPR PerformanceOverrideInfoINTEL( vk::PerformanceOverrideTypeINTEL type_ = vk::PerformanceOverrideTypeINTEL::eNullHardware,
+                                                         vk::Bool32 enable_ = 0,
+                                                         uint64_t parameter_ = 0 )
         : type( type_ )
         , enable( enable_ )
         , parameter( parameter_ )
@@ -42875,9 +42896,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PerformanceOverrideInfoINTEL : public layout::PerformanceOverrideInfoINTEL
   {
-    PerformanceOverrideInfoINTEL( vk::PerformanceOverrideTypeINTEL type_ = vk::PerformanceOverrideTypeINTEL::eNullHardware,
-                                  vk::Bool32 enable_ = 0,
-                                  uint64_t parameter_ = 0 )
+    VULKAN_HPP_CONSTEXPR PerformanceOverrideInfoINTEL( vk::PerformanceOverrideTypeINTEL type_ = vk::PerformanceOverrideTypeINTEL::eNullHardware,
+                                                       vk::Bool32 enable_ = 0,
+                                                       uint64_t parameter_ = 0 )
       : layout::PerformanceOverrideInfoINTEL( type_, enable_, parameter_ )
     {}
 
@@ -42950,7 +42971,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PerformanceStreamMarkerInfoINTEL
     {
     protected:
-      PerformanceStreamMarkerInfoINTEL( uint32_t marker_ = 0 )
+      VULKAN_HPP_CONSTEXPR PerformanceStreamMarkerInfoINTEL( uint32_t marker_ = 0 )
         : marker( marker_ )
       {}
 
@@ -42975,7 +42996,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PerformanceStreamMarkerInfoINTEL : public layout::PerformanceStreamMarkerInfoINTEL
   {
-    PerformanceStreamMarkerInfoINTEL( uint32_t marker_ = 0 )
+    VULKAN_HPP_CONSTEXPR PerformanceStreamMarkerInfoINTEL( uint32_t marker_ = 0 )
       : layout::PerformanceStreamMarkerInfoINTEL( marker_ )
     {}
 
@@ -43158,10 +43179,10 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDevice16BitStorageFeatures
     {
     protected:
-      PhysicalDevice16BitStorageFeatures( vk::Bool32 storageBuffer16BitAccess_ = 0,
-                                          vk::Bool32 uniformAndStorageBuffer16BitAccess_ = 0,
-                                          vk::Bool32 storagePushConstant16_ = 0,
-                                          vk::Bool32 storageInputOutput16_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDevice16BitStorageFeatures( vk::Bool32 storageBuffer16BitAccess_ = 0,
+                                                               vk::Bool32 uniformAndStorageBuffer16BitAccess_ = 0,
+                                                               vk::Bool32 storagePushConstant16_ = 0,
+                                                               vk::Bool32 storageInputOutput16_ = 0 )
         : storageBuffer16BitAccess( storageBuffer16BitAccess_ )
         , uniformAndStorageBuffer16BitAccess( uniformAndStorageBuffer16BitAccess_ )
         , storagePushConstant16( storagePushConstant16_ )
@@ -43192,10 +43213,10 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDevice16BitStorageFeatures : public layout::PhysicalDevice16BitStorageFeatures
   {
-    PhysicalDevice16BitStorageFeatures( vk::Bool32 storageBuffer16BitAccess_ = 0,
-                                        vk::Bool32 uniformAndStorageBuffer16BitAccess_ = 0,
-                                        vk::Bool32 storagePushConstant16_ = 0,
-                                        vk::Bool32 storageInputOutput16_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDevice16BitStorageFeatures( vk::Bool32 storageBuffer16BitAccess_ = 0,
+                                                             vk::Bool32 uniformAndStorageBuffer16BitAccess_ = 0,
+                                                             vk::Bool32 storagePushConstant16_ = 0,
+                                                             vk::Bool32 storageInputOutput16_ = 0 )
       : layout::PhysicalDevice16BitStorageFeatures( storageBuffer16BitAccess_, uniformAndStorageBuffer16BitAccess_, storagePushConstant16_, storageInputOutput16_ )
     {}
 
@@ -43275,9 +43296,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDevice8BitStorageFeaturesKHR
     {
     protected:
-      PhysicalDevice8BitStorageFeaturesKHR( vk::Bool32 storageBuffer8BitAccess_ = 0,
-                                            vk::Bool32 uniformAndStorageBuffer8BitAccess_ = 0,
-                                            vk::Bool32 storagePushConstant8_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDevice8BitStorageFeaturesKHR( vk::Bool32 storageBuffer8BitAccess_ = 0,
+                                                                 vk::Bool32 uniformAndStorageBuffer8BitAccess_ = 0,
+                                                                 vk::Bool32 storagePushConstant8_ = 0 )
         : storageBuffer8BitAccess( storageBuffer8BitAccess_ )
         , uniformAndStorageBuffer8BitAccess( uniformAndStorageBuffer8BitAccess_ )
         , storagePushConstant8( storagePushConstant8_ )
@@ -43306,9 +43327,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDevice8BitStorageFeaturesKHR : public layout::PhysicalDevice8BitStorageFeaturesKHR
   {
-    PhysicalDevice8BitStorageFeaturesKHR( vk::Bool32 storageBuffer8BitAccess_ = 0,
-                                          vk::Bool32 uniformAndStorageBuffer8BitAccess_ = 0,
-                                          vk::Bool32 storagePushConstant8_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDevice8BitStorageFeaturesKHR( vk::Bool32 storageBuffer8BitAccess_ = 0,
+                                                               vk::Bool32 uniformAndStorageBuffer8BitAccess_ = 0,
+                                                               vk::Bool32 storagePushConstant8_ = 0 )
       : layout::PhysicalDevice8BitStorageFeaturesKHR( storageBuffer8BitAccess_, uniformAndStorageBuffer8BitAccess_, storagePushConstant8_ )
     {}
 
@@ -43381,7 +43402,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceASTCDecodeFeaturesEXT
     {
     protected:
-      PhysicalDeviceASTCDecodeFeaturesEXT( vk::Bool32 decodeModeSharedExponent_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceASTCDecodeFeaturesEXT( vk::Bool32 decodeModeSharedExponent_ = 0 )
         : decodeModeSharedExponent( decodeModeSharedExponent_ )
       {}
 
@@ -43406,7 +43427,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceASTCDecodeFeaturesEXT : public layout::PhysicalDeviceASTCDecodeFeaturesEXT
   {
-    PhysicalDeviceASTCDecodeFeaturesEXT( vk::Bool32 decodeModeSharedExponent_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceASTCDecodeFeaturesEXT( vk::Bool32 decodeModeSharedExponent_ = 0 )
       : layout::PhysicalDeviceASTCDecodeFeaturesEXT( decodeModeSharedExponent_ )
     {}
 
@@ -43465,7 +43486,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceBlendOperationAdvancedFeaturesEXT
     {
     protected:
-      PhysicalDeviceBlendOperationAdvancedFeaturesEXT( vk::Bool32 advancedBlendCoherentOperations_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceBlendOperationAdvancedFeaturesEXT( vk::Bool32 advancedBlendCoherentOperations_ = 0 )
         : advancedBlendCoherentOperations( advancedBlendCoherentOperations_ )
       {}
 
@@ -43490,7 +43511,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceBlendOperationAdvancedFeaturesEXT : public layout::PhysicalDeviceBlendOperationAdvancedFeaturesEXT
   {
-    PhysicalDeviceBlendOperationAdvancedFeaturesEXT( vk::Bool32 advancedBlendCoherentOperations_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceBlendOperationAdvancedFeaturesEXT( vk::Bool32 advancedBlendCoherentOperations_ = 0 )
       : layout::PhysicalDeviceBlendOperationAdvancedFeaturesEXT( advancedBlendCoherentOperations_ )
     {}
 
@@ -43630,9 +43651,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceBufferDeviceAddressFeaturesEXT
     {
     protected:
-      PhysicalDeviceBufferDeviceAddressFeaturesEXT( vk::Bool32 bufferDeviceAddress_ = 0,
-                                                    vk::Bool32 bufferDeviceAddressCaptureReplay_ = 0,
-                                                    vk::Bool32 bufferDeviceAddressMultiDevice_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceBufferDeviceAddressFeaturesEXT( vk::Bool32 bufferDeviceAddress_ = 0,
+                                                                         vk::Bool32 bufferDeviceAddressCaptureReplay_ = 0,
+                                                                         vk::Bool32 bufferDeviceAddressMultiDevice_ = 0 )
         : bufferDeviceAddress( bufferDeviceAddress_ )
         , bufferDeviceAddressCaptureReplay( bufferDeviceAddressCaptureReplay_ )
         , bufferDeviceAddressMultiDevice( bufferDeviceAddressMultiDevice_ )
@@ -43661,9 +43682,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceBufferDeviceAddressFeaturesEXT : public layout::PhysicalDeviceBufferDeviceAddressFeaturesEXT
   {
-    PhysicalDeviceBufferDeviceAddressFeaturesEXT( vk::Bool32 bufferDeviceAddress_ = 0,
-                                                  vk::Bool32 bufferDeviceAddressCaptureReplay_ = 0,
-                                                  vk::Bool32 bufferDeviceAddressMultiDevice_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceBufferDeviceAddressFeaturesEXT( vk::Bool32 bufferDeviceAddress_ = 0,
+                                                                       vk::Bool32 bufferDeviceAddressCaptureReplay_ = 0,
+                                                                       vk::Bool32 bufferDeviceAddressMultiDevice_ = 0 )
       : layout::PhysicalDeviceBufferDeviceAddressFeaturesEXT( bufferDeviceAddress_, bufferDeviceAddressCaptureReplay_, bufferDeviceAddressMultiDevice_ )
     {}
 
@@ -43736,8 +43757,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceComputeShaderDerivativesFeaturesNV
     {
     protected:
-      PhysicalDeviceComputeShaderDerivativesFeaturesNV( vk::Bool32 computeDerivativeGroupQuads_ = 0,
-                                                        vk::Bool32 computeDerivativeGroupLinear_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceComputeShaderDerivativesFeaturesNV( vk::Bool32 computeDerivativeGroupQuads_ = 0,
+                                                                             vk::Bool32 computeDerivativeGroupLinear_ = 0 )
         : computeDerivativeGroupQuads( computeDerivativeGroupQuads_ )
         , computeDerivativeGroupLinear( computeDerivativeGroupLinear_ )
       {}
@@ -43764,8 +43785,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceComputeShaderDerivativesFeaturesNV : public layout::PhysicalDeviceComputeShaderDerivativesFeaturesNV
   {
-    PhysicalDeviceComputeShaderDerivativesFeaturesNV( vk::Bool32 computeDerivativeGroupQuads_ = 0,
-                                                      vk::Bool32 computeDerivativeGroupLinear_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceComputeShaderDerivativesFeaturesNV( vk::Bool32 computeDerivativeGroupQuads_ = 0,
+                                                                           vk::Bool32 computeDerivativeGroupLinear_ = 0 )
       : layout::PhysicalDeviceComputeShaderDerivativesFeaturesNV( computeDerivativeGroupQuads_, computeDerivativeGroupLinear_ )
     {}
 
@@ -43831,8 +43852,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceConditionalRenderingFeaturesEXT
     {
     protected:
-      PhysicalDeviceConditionalRenderingFeaturesEXT( vk::Bool32 conditionalRendering_ = 0,
-                                                     vk::Bool32 inheritedConditionalRendering_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceConditionalRenderingFeaturesEXT( vk::Bool32 conditionalRendering_ = 0,
+                                                                          vk::Bool32 inheritedConditionalRendering_ = 0 )
         : conditionalRendering( conditionalRendering_ )
         , inheritedConditionalRendering( inheritedConditionalRendering_ )
       {}
@@ -43859,8 +43880,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceConditionalRenderingFeaturesEXT : public layout::PhysicalDeviceConditionalRenderingFeaturesEXT
   {
-    PhysicalDeviceConditionalRenderingFeaturesEXT( vk::Bool32 conditionalRendering_ = 0,
-                                                   vk::Bool32 inheritedConditionalRendering_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceConditionalRenderingFeaturesEXT( vk::Bool32 conditionalRendering_ = 0,
+                                                                        vk::Bool32 inheritedConditionalRendering_ = 0 )
       : layout::PhysicalDeviceConditionalRenderingFeaturesEXT( conditionalRendering_, inheritedConditionalRendering_ )
     {}
 
@@ -44013,8 +44034,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceCooperativeMatrixFeaturesNV
     {
     protected:
-      PhysicalDeviceCooperativeMatrixFeaturesNV( vk::Bool32 cooperativeMatrix_ = 0,
-                                                 vk::Bool32 cooperativeMatrixRobustBufferAccess_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceCooperativeMatrixFeaturesNV( vk::Bool32 cooperativeMatrix_ = 0,
+                                                                      vk::Bool32 cooperativeMatrixRobustBufferAccess_ = 0 )
         : cooperativeMatrix( cooperativeMatrix_ )
         , cooperativeMatrixRobustBufferAccess( cooperativeMatrixRobustBufferAccess_ )
       {}
@@ -44041,8 +44062,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceCooperativeMatrixFeaturesNV : public layout::PhysicalDeviceCooperativeMatrixFeaturesNV
   {
-    PhysicalDeviceCooperativeMatrixFeaturesNV( vk::Bool32 cooperativeMatrix_ = 0,
-                                               vk::Bool32 cooperativeMatrixRobustBufferAccess_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceCooperativeMatrixFeaturesNV( vk::Bool32 cooperativeMatrix_ = 0,
+                                                                    vk::Bool32 cooperativeMatrixRobustBufferAccess_ = 0 )
       : layout::PhysicalDeviceCooperativeMatrixFeaturesNV( cooperativeMatrix_, cooperativeMatrixRobustBufferAccess_ )
     {}
 
@@ -44179,7 +44200,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceCornerSampledImageFeaturesNV
     {
     protected:
-      PhysicalDeviceCornerSampledImageFeaturesNV( vk::Bool32 cornerSampledImage_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceCornerSampledImageFeaturesNV( vk::Bool32 cornerSampledImage_ = 0 )
         : cornerSampledImage( cornerSampledImage_ )
       {}
 
@@ -44204,7 +44225,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceCornerSampledImageFeaturesNV : public layout::PhysicalDeviceCornerSampledImageFeaturesNV
   {
-    PhysicalDeviceCornerSampledImageFeaturesNV( vk::Bool32 cornerSampledImage_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceCornerSampledImageFeaturesNV( vk::Bool32 cornerSampledImage_ = 0 )
       : layout::PhysicalDeviceCornerSampledImageFeaturesNV( cornerSampledImage_ )
     {}
 
@@ -44263,7 +44284,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceCoverageReductionModeFeaturesNV
     {
     protected:
-      PhysicalDeviceCoverageReductionModeFeaturesNV( vk::Bool32 coverageReductionMode_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceCoverageReductionModeFeaturesNV( vk::Bool32 coverageReductionMode_ = 0 )
         : coverageReductionMode( coverageReductionMode_ )
       {}
 
@@ -44288,7 +44309,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceCoverageReductionModeFeaturesNV : public layout::PhysicalDeviceCoverageReductionModeFeaturesNV
   {
-    PhysicalDeviceCoverageReductionModeFeaturesNV( vk::Bool32 coverageReductionMode_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceCoverageReductionModeFeaturesNV( vk::Bool32 coverageReductionMode_ = 0 )
       : layout::PhysicalDeviceCoverageReductionModeFeaturesNV( coverageReductionMode_ )
     {}
 
@@ -44347,7 +44368,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV
     {
     protected:
-      PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV( vk::Bool32 dedicatedAllocationImageAliasing_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV( vk::Bool32 dedicatedAllocationImageAliasing_ = 0 )
         : dedicatedAllocationImageAliasing( dedicatedAllocationImageAliasing_ )
       {}
 
@@ -44372,7 +44393,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV : public layout::PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV
   {
-    PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV( vk::Bool32 dedicatedAllocationImageAliasing_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV( vk::Bool32 dedicatedAllocationImageAliasing_ = 0 )
       : layout::PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV( dedicatedAllocationImageAliasing_ )
     {}
 
@@ -44431,7 +44452,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceDepthClipEnableFeaturesEXT
     {
     protected:
-      PhysicalDeviceDepthClipEnableFeaturesEXT( vk::Bool32 depthClipEnable_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceDepthClipEnableFeaturesEXT( vk::Bool32 depthClipEnable_ = 0 )
         : depthClipEnable( depthClipEnable_ )
       {}
 
@@ -44456,7 +44477,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceDepthClipEnableFeaturesEXT : public layout::PhysicalDeviceDepthClipEnableFeaturesEXT
   {
-    PhysicalDeviceDepthClipEnableFeaturesEXT( vk::Bool32 depthClipEnable_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceDepthClipEnableFeaturesEXT( vk::Bool32 depthClipEnable_ = 0 )
       : layout::PhysicalDeviceDepthClipEnableFeaturesEXT( depthClipEnable_ )
     {}
 
@@ -44592,26 +44613,26 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceDescriptorIndexingFeaturesEXT
     {
     protected:
-      PhysicalDeviceDescriptorIndexingFeaturesEXT( vk::Bool32 shaderInputAttachmentArrayDynamicIndexing_ = 0,
-                                                   vk::Bool32 shaderUniformTexelBufferArrayDynamicIndexing_ = 0,
-                                                   vk::Bool32 shaderStorageTexelBufferArrayDynamicIndexing_ = 0,
-                                                   vk::Bool32 shaderUniformBufferArrayNonUniformIndexing_ = 0,
-                                                   vk::Bool32 shaderSampledImageArrayNonUniformIndexing_ = 0,
-                                                   vk::Bool32 shaderStorageBufferArrayNonUniformIndexing_ = 0,
-                                                   vk::Bool32 shaderStorageImageArrayNonUniformIndexing_ = 0,
-                                                   vk::Bool32 shaderInputAttachmentArrayNonUniformIndexing_ = 0,
-                                                   vk::Bool32 shaderUniformTexelBufferArrayNonUniformIndexing_ = 0,
-                                                   vk::Bool32 shaderStorageTexelBufferArrayNonUniformIndexing_ = 0,
-                                                   vk::Bool32 descriptorBindingUniformBufferUpdateAfterBind_ = 0,
-                                                   vk::Bool32 descriptorBindingSampledImageUpdateAfterBind_ = 0,
-                                                   vk::Bool32 descriptorBindingStorageImageUpdateAfterBind_ = 0,
-                                                   vk::Bool32 descriptorBindingStorageBufferUpdateAfterBind_ = 0,
-                                                   vk::Bool32 descriptorBindingUniformTexelBufferUpdateAfterBind_ = 0,
-                                                   vk::Bool32 descriptorBindingStorageTexelBufferUpdateAfterBind_ = 0,
-                                                   vk::Bool32 descriptorBindingUpdateUnusedWhilePending_ = 0,
-                                                   vk::Bool32 descriptorBindingPartiallyBound_ = 0,
-                                                   vk::Bool32 descriptorBindingVariableDescriptorCount_ = 0,
-                                                   vk::Bool32 runtimeDescriptorArray_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceDescriptorIndexingFeaturesEXT( vk::Bool32 shaderInputAttachmentArrayDynamicIndexing_ = 0,
+                                                                        vk::Bool32 shaderUniformTexelBufferArrayDynamicIndexing_ = 0,
+                                                                        vk::Bool32 shaderStorageTexelBufferArrayDynamicIndexing_ = 0,
+                                                                        vk::Bool32 shaderUniformBufferArrayNonUniformIndexing_ = 0,
+                                                                        vk::Bool32 shaderSampledImageArrayNonUniformIndexing_ = 0,
+                                                                        vk::Bool32 shaderStorageBufferArrayNonUniformIndexing_ = 0,
+                                                                        vk::Bool32 shaderStorageImageArrayNonUniformIndexing_ = 0,
+                                                                        vk::Bool32 shaderInputAttachmentArrayNonUniformIndexing_ = 0,
+                                                                        vk::Bool32 shaderUniformTexelBufferArrayNonUniformIndexing_ = 0,
+                                                                        vk::Bool32 shaderStorageTexelBufferArrayNonUniformIndexing_ = 0,
+                                                                        vk::Bool32 descriptorBindingUniformBufferUpdateAfterBind_ = 0,
+                                                                        vk::Bool32 descriptorBindingSampledImageUpdateAfterBind_ = 0,
+                                                                        vk::Bool32 descriptorBindingStorageImageUpdateAfterBind_ = 0,
+                                                                        vk::Bool32 descriptorBindingStorageBufferUpdateAfterBind_ = 0,
+                                                                        vk::Bool32 descriptorBindingUniformTexelBufferUpdateAfterBind_ = 0,
+                                                                        vk::Bool32 descriptorBindingStorageTexelBufferUpdateAfterBind_ = 0,
+                                                                        vk::Bool32 descriptorBindingUpdateUnusedWhilePending_ = 0,
+                                                                        vk::Bool32 descriptorBindingPartiallyBound_ = 0,
+                                                                        vk::Bool32 descriptorBindingVariableDescriptorCount_ = 0,
+                                                                        vk::Bool32 runtimeDescriptorArray_ = 0 )
         : shaderInputAttachmentArrayDynamicIndexing( shaderInputAttachmentArrayDynamicIndexing_ )
         , shaderUniformTexelBufferArrayDynamicIndexing( shaderUniformTexelBufferArrayDynamicIndexing_ )
         , shaderStorageTexelBufferArrayDynamicIndexing( shaderStorageTexelBufferArrayDynamicIndexing_ )
@@ -44674,26 +44695,26 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceDescriptorIndexingFeaturesEXT : public layout::PhysicalDeviceDescriptorIndexingFeaturesEXT
   {
-    PhysicalDeviceDescriptorIndexingFeaturesEXT( vk::Bool32 shaderInputAttachmentArrayDynamicIndexing_ = 0,
-                                                 vk::Bool32 shaderUniformTexelBufferArrayDynamicIndexing_ = 0,
-                                                 vk::Bool32 shaderStorageTexelBufferArrayDynamicIndexing_ = 0,
-                                                 vk::Bool32 shaderUniformBufferArrayNonUniformIndexing_ = 0,
-                                                 vk::Bool32 shaderSampledImageArrayNonUniformIndexing_ = 0,
-                                                 vk::Bool32 shaderStorageBufferArrayNonUniformIndexing_ = 0,
-                                                 vk::Bool32 shaderStorageImageArrayNonUniformIndexing_ = 0,
-                                                 vk::Bool32 shaderInputAttachmentArrayNonUniformIndexing_ = 0,
-                                                 vk::Bool32 shaderUniformTexelBufferArrayNonUniformIndexing_ = 0,
-                                                 vk::Bool32 shaderStorageTexelBufferArrayNonUniformIndexing_ = 0,
-                                                 vk::Bool32 descriptorBindingUniformBufferUpdateAfterBind_ = 0,
-                                                 vk::Bool32 descriptorBindingSampledImageUpdateAfterBind_ = 0,
-                                                 vk::Bool32 descriptorBindingStorageImageUpdateAfterBind_ = 0,
-                                                 vk::Bool32 descriptorBindingStorageBufferUpdateAfterBind_ = 0,
-                                                 vk::Bool32 descriptorBindingUniformTexelBufferUpdateAfterBind_ = 0,
-                                                 vk::Bool32 descriptorBindingStorageTexelBufferUpdateAfterBind_ = 0,
-                                                 vk::Bool32 descriptorBindingUpdateUnusedWhilePending_ = 0,
-                                                 vk::Bool32 descriptorBindingPartiallyBound_ = 0,
-                                                 vk::Bool32 descriptorBindingVariableDescriptorCount_ = 0,
-                                                 vk::Bool32 runtimeDescriptorArray_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceDescriptorIndexingFeaturesEXT( vk::Bool32 shaderInputAttachmentArrayDynamicIndexing_ = 0,
+                                                                      vk::Bool32 shaderUniformTexelBufferArrayDynamicIndexing_ = 0,
+                                                                      vk::Bool32 shaderStorageTexelBufferArrayDynamicIndexing_ = 0,
+                                                                      vk::Bool32 shaderUniformBufferArrayNonUniformIndexing_ = 0,
+                                                                      vk::Bool32 shaderSampledImageArrayNonUniformIndexing_ = 0,
+                                                                      vk::Bool32 shaderStorageBufferArrayNonUniformIndexing_ = 0,
+                                                                      vk::Bool32 shaderStorageImageArrayNonUniformIndexing_ = 0,
+                                                                      vk::Bool32 shaderInputAttachmentArrayNonUniformIndexing_ = 0,
+                                                                      vk::Bool32 shaderUniformTexelBufferArrayNonUniformIndexing_ = 0,
+                                                                      vk::Bool32 shaderStorageTexelBufferArrayNonUniformIndexing_ = 0,
+                                                                      vk::Bool32 descriptorBindingUniformBufferUpdateAfterBind_ = 0,
+                                                                      vk::Bool32 descriptorBindingSampledImageUpdateAfterBind_ = 0,
+                                                                      vk::Bool32 descriptorBindingStorageImageUpdateAfterBind_ = 0,
+                                                                      vk::Bool32 descriptorBindingStorageBufferUpdateAfterBind_ = 0,
+                                                                      vk::Bool32 descriptorBindingUniformTexelBufferUpdateAfterBind_ = 0,
+                                                                      vk::Bool32 descriptorBindingStorageTexelBufferUpdateAfterBind_ = 0,
+                                                                      vk::Bool32 descriptorBindingUpdateUnusedWhilePending_ = 0,
+                                                                      vk::Bool32 descriptorBindingPartiallyBound_ = 0,
+                                                                      vk::Bool32 descriptorBindingVariableDescriptorCount_ = 0,
+                                                                      vk::Bool32 runtimeDescriptorArray_ = 0 )
       : layout::PhysicalDeviceDescriptorIndexingFeaturesEXT( shaderInputAttachmentArrayDynamicIndexing_, shaderUniformTexelBufferArrayDynamicIndexing_, shaderStorageTexelBufferArrayDynamicIndexing_, shaderUniformBufferArrayNonUniformIndexing_, shaderSampledImageArrayNonUniformIndexing_, shaderStorageBufferArrayNonUniformIndexing_, shaderStorageImageArrayNonUniformIndexing_, shaderInputAttachmentArrayNonUniformIndexing_, shaderUniformTexelBufferArrayNonUniformIndexing_, shaderStorageTexelBufferArrayNonUniformIndexing_, descriptorBindingUniformBufferUpdateAfterBind_, descriptorBindingSampledImageUpdateAfterBind_, descriptorBindingStorageImageUpdateAfterBind_, descriptorBindingStorageBufferUpdateAfterBind_, descriptorBindingUniformTexelBufferUpdateAfterBind_, descriptorBindingStorageTexelBufferUpdateAfterBind_, descriptorBindingUpdateUnusedWhilePending_, descriptorBindingPartiallyBound_, descriptorBindingVariableDescriptorCount_, runtimeDescriptorArray_ )
     {}
 
@@ -45148,7 +45169,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceExclusiveScissorFeaturesNV
     {
     protected:
-      PhysicalDeviceExclusiveScissorFeaturesNV( vk::Bool32 exclusiveScissor_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceExclusiveScissorFeaturesNV( vk::Bool32 exclusiveScissor_ = 0 )
         : exclusiveScissor( exclusiveScissor_ )
       {}
 
@@ -45173,7 +45194,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceExclusiveScissorFeaturesNV : public layout::PhysicalDeviceExclusiveScissorFeaturesNV
   {
-    PhysicalDeviceExclusiveScissorFeaturesNV( vk::Bool32 exclusiveScissor_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceExclusiveScissorFeaturesNV( vk::Bool32 exclusiveScissor_ = 0 )
       : layout::PhysicalDeviceExclusiveScissorFeaturesNV( exclusiveScissor_ )
     {}
 
@@ -45232,9 +45253,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceExternalBufferInfo
     {
     protected:
-      PhysicalDeviceExternalBufferInfo( vk::BufferCreateFlags flags_ = vk::BufferCreateFlags(),
-                                        vk::BufferUsageFlags usage_ = vk::BufferUsageFlags(),
-                                        vk::ExternalMemoryHandleTypeFlagBits handleType_ = vk::ExternalMemoryHandleTypeFlagBits::eOpaqueFd )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceExternalBufferInfo( vk::BufferCreateFlags flags_ = vk::BufferCreateFlags(),
+                                                             vk::BufferUsageFlags usage_ = vk::BufferUsageFlags(),
+                                                             vk::ExternalMemoryHandleTypeFlagBits handleType_ = vk::ExternalMemoryHandleTypeFlagBits::eOpaqueFd )
         : flags( flags_ )
         , usage( usage_ )
         , handleType( handleType_ )
@@ -45263,9 +45284,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceExternalBufferInfo : public layout::PhysicalDeviceExternalBufferInfo
   {
-    PhysicalDeviceExternalBufferInfo( vk::BufferCreateFlags flags_ = vk::BufferCreateFlags(),
-                                      vk::BufferUsageFlags usage_ = vk::BufferUsageFlags(),
-                                      vk::ExternalMemoryHandleTypeFlagBits handleType_ = vk::ExternalMemoryHandleTypeFlagBits::eOpaqueFd )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceExternalBufferInfo( vk::BufferCreateFlags flags_ = vk::BufferCreateFlags(),
+                                                           vk::BufferUsageFlags usage_ = vk::BufferUsageFlags(),
+                                                           vk::ExternalMemoryHandleTypeFlagBits handleType_ = vk::ExternalMemoryHandleTypeFlagBits::eOpaqueFd )
       : layout::PhysicalDeviceExternalBufferInfo( flags_, usage_, handleType_ )
     {}
 
@@ -45338,7 +45359,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceExternalFenceInfo
     {
     protected:
-      PhysicalDeviceExternalFenceInfo( vk::ExternalFenceHandleTypeFlagBits handleType_ = vk::ExternalFenceHandleTypeFlagBits::eOpaqueFd )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceExternalFenceInfo( vk::ExternalFenceHandleTypeFlagBits handleType_ = vk::ExternalFenceHandleTypeFlagBits::eOpaqueFd )
         : handleType( handleType_ )
       {}
 
@@ -45363,7 +45384,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceExternalFenceInfo : public layout::PhysicalDeviceExternalFenceInfo
   {
-    PhysicalDeviceExternalFenceInfo( vk::ExternalFenceHandleTypeFlagBits handleType_ = vk::ExternalFenceHandleTypeFlagBits::eOpaqueFd )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceExternalFenceInfo( vk::ExternalFenceHandleTypeFlagBits handleType_ = vk::ExternalFenceHandleTypeFlagBits::eOpaqueFd )
       : layout::PhysicalDeviceExternalFenceInfo( handleType_ )
     {}
 
@@ -45422,7 +45443,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceExternalImageFormatInfo
     {
     protected:
-      PhysicalDeviceExternalImageFormatInfo( vk::ExternalMemoryHandleTypeFlagBits handleType_ = vk::ExternalMemoryHandleTypeFlagBits::eOpaqueFd )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceExternalImageFormatInfo( vk::ExternalMemoryHandleTypeFlagBits handleType_ = vk::ExternalMemoryHandleTypeFlagBits::eOpaqueFd )
         : handleType( handleType_ )
       {}
 
@@ -45447,7 +45468,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceExternalImageFormatInfo : public layout::PhysicalDeviceExternalImageFormatInfo
   {
-    PhysicalDeviceExternalImageFormatInfo( vk::ExternalMemoryHandleTypeFlagBits handleType_ = vk::ExternalMemoryHandleTypeFlagBits::eOpaqueFd )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceExternalImageFormatInfo( vk::ExternalMemoryHandleTypeFlagBits handleType_ = vk::ExternalMemoryHandleTypeFlagBits::eOpaqueFd )
       : layout::PhysicalDeviceExternalImageFormatInfo( handleType_ )
     {}
 
@@ -45577,7 +45598,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceExternalSemaphoreInfo
     {
     protected:
-      PhysicalDeviceExternalSemaphoreInfo( vk::ExternalSemaphoreHandleTypeFlagBits handleType_ = vk::ExternalSemaphoreHandleTypeFlagBits::eOpaqueFd )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceExternalSemaphoreInfo( vk::ExternalSemaphoreHandleTypeFlagBits handleType_ = vk::ExternalSemaphoreHandleTypeFlagBits::eOpaqueFd )
         : handleType( handleType_ )
       {}
 
@@ -45602,7 +45623,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceExternalSemaphoreInfo : public layout::PhysicalDeviceExternalSemaphoreInfo
   {
-    PhysicalDeviceExternalSemaphoreInfo( vk::ExternalSemaphoreHandleTypeFlagBits handleType_ = vk::ExternalSemaphoreHandleTypeFlagBits::eOpaqueFd )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceExternalSemaphoreInfo( vk::ExternalSemaphoreHandleTypeFlagBits handleType_ = vk::ExternalSemaphoreHandleTypeFlagBits::eOpaqueFd )
       : layout::PhysicalDeviceExternalSemaphoreInfo( handleType_ )
     {}
 
@@ -45661,7 +45682,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceFeatures2
     {
     protected:
-      PhysicalDeviceFeatures2( vk::PhysicalDeviceFeatures features_ = vk::PhysicalDeviceFeatures() )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceFeatures2( vk::PhysicalDeviceFeatures features_ = vk::PhysicalDeviceFeatures() )
         : features( features_ )
       {}
 
@@ -45686,7 +45707,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceFeatures2 : public layout::PhysicalDeviceFeatures2
   {
-    PhysicalDeviceFeatures2( vk::PhysicalDeviceFeatures features_ = vk::PhysicalDeviceFeatures() )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceFeatures2( vk::PhysicalDeviceFeatures features_ = vk::PhysicalDeviceFeatures() )
       : layout::PhysicalDeviceFeatures2( features_ )
     {}
 
@@ -45998,7 +46019,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceFragmentShaderBarycentricFeaturesNV
     {
     protected:
-      PhysicalDeviceFragmentShaderBarycentricFeaturesNV( vk::Bool32 fragmentShaderBarycentric_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceFragmentShaderBarycentricFeaturesNV( vk::Bool32 fragmentShaderBarycentric_ = 0 )
         : fragmentShaderBarycentric( fragmentShaderBarycentric_ )
       {}
 
@@ -46023,7 +46044,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceFragmentShaderBarycentricFeaturesNV : public layout::PhysicalDeviceFragmentShaderBarycentricFeaturesNV
   {
-    PhysicalDeviceFragmentShaderBarycentricFeaturesNV( vk::Bool32 fragmentShaderBarycentric_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceFragmentShaderBarycentricFeaturesNV( vk::Bool32 fragmentShaderBarycentric_ = 0 )
       : layout::PhysicalDeviceFragmentShaderBarycentricFeaturesNV( fragmentShaderBarycentric_ )
     {}
 
@@ -46082,9 +46103,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceFragmentShaderInterlockFeaturesEXT
     {
     protected:
-      PhysicalDeviceFragmentShaderInterlockFeaturesEXT( vk::Bool32 fragmentShaderSampleInterlock_ = 0,
-                                                        vk::Bool32 fragmentShaderPixelInterlock_ = 0,
-                                                        vk::Bool32 fragmentShaderShadingRateInterlock_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceFragmentShaderInterlockFeaturesEXT( vk::Bool32 fragmentShaderSampleInterlock_ = 0,
+                                                                             vk::Bool32 fragmentShaderPixelInterlock_ = 0,
+                                                                             vk::Bool32 fragmentShaderShadingRateInterlock_ = 0 )
         : fragmentShaderSampleInterlock( fragmentShaderSampleInterlock_ )
         , fragmentShaderPixelInterlock( fragmentShaderPixelInterlock_ )
         , fragmentShaderShadingRateInterlock( fragmentShaderShadingRateInterlock_ )
@@ -46113,9 +46134,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceFragmentShaderInterlockFeaturesEXT : public layout::PhysicalDeviceFragmentShaderInterlockFeaturesEXT
   {
-    PhysicalDeviceFragmentShaderInterlockFeaturesEXT( vk::Bool32 fragmentShaderSampleInterlock_ = 0,
-                                                      vk::Bool32 fragmentShaderPixelInterlock_ = 0,
-                                                      vk::Bool32 fragmentShaderShadingRateInterlock_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceFragmentShaderInterlockFeaturesEXT( vk::Bool32 fragmentShaderSampleInterlock_ = 0,
+                                                                           vk::Bool32 fragmentShaderPixelInterlock_ = 0,
+                                                                           vk::Bool32 fragmentShaderShadingRateInterlock_ = 0 )
       : layout::PhysicalDeviceFragmentShaderInterlockFeaturesEXT( fragmentShaderSampleInterlock_, fragmentShaderPixelInterlock_, fragmentShaderShadingRateInterlock_ )
     {}
 
@@ -46263,7 +46284,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceHostQueryResetFeaturesEXT
     {
     protected:
-      PhysicalDeviceHostQueryResetFeaturesEXT( vk::Bool32 hostQueryReset_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceHostQueryResetFeaturesEXT( vk::Bool32 hostQueryReset_ = 0 )
         : hostQueryReset( hostQueryReset_ )
       {}
 
@@ -46288,7 +46309,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceHostQueryResetFeaturesEXT : public layout::PhysicalDeviceHostQueryResetFeaturesEXT
   {
-    PhysicalDeviceHostQueryResetFeaturesEXT( vk::Bool32 hostQueryReset_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceHostQueryResetFeaturesEXT( vk::Bool32 hostQueryReset_ = 0 )
       : layout::PhysicalDeviceHostQueryResetFeaturesEXT( hostQueryReset_ )
     {}
 
@@ -46426,10 +46447,10 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceImageDrmFormatModifierInfoEXT
     {
     protected:
-      PhysicalDeviceImageDrmFormatModifierInfoEXT( uint64_t drmFormatModifier_ = 0,
-                                                   vk::SharingMode sharingMode_ = vk::SharingMode::eExclusive,
-                                                   uint32_t queueFamilyIndexCount_ = 0,
-                                                   const uint32_t* pQueueFamilyIndices_ = nullptr )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceImageDrmFormatModifierInfoEXT( uint64_t drmFormatModifier_ = 0,
+                                                                        vk::SharingMode sharingMode_ = vk::SharingMode::eExclusive,
+                                                                        uint32_t queueFamilyIndexCount_ = 0,
+                                                                        const uint32_t* pQueueFamilyIndices_ = nullptr )
         : drmFormatModifier( drmFormatModifier_ )
         , sharingMode( sharingMode_ )
         , queueFamilyIndexCount( queueFamilyIndexCount_ )
@@ -46460,10 +46481,10 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceImageDrmFormatModifierInfoEXT : public layout::PhysicalDeviceImageDrmFormatModifierInfoEXT
   {
-    PhysicalDeviceImageDrmFormatModifierInfoEXT( uint64_t drmFormatModifier_ = 0,
-                                                 vk::SharingMode sharingMode_ = vk::SharingMode::eExclusive,
-                                                 uint32_t queueFamilyIndexCount_ = 0,
-                                                 const uint32_t* pQueueFamilyIndices_ = nullptr )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceImageDrmFormatModifierInfoEXT( uint64_t drmFormatModifier_ = 0,
+                                                                      vk::SharingMode sharingMode_ = vk::SharingMode::eExclusive,
+                                                                      uint32_t queueFamilyIndexCount_ = 0,
+                                                                      const uint32_t* pQueueFamilyIndices_ = nullptr )
       : layout::PhysicalDeviceImageDrmFormatModifierInfoEXT( drmFormatModifier_, sharingMode_, queueFamilyIndexCount_, pQueueFamilyIndices_ )
     {}
 
@@ -46543,11 +46564,11 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceImageFormatInfo2
     {
     protected:
-      PhysicalDeviceImageFormatInfo2( vk::Format format_ = vk::Format::eUndefined,
-                                      vk::ImageType type_ = vk::ImageType::e1D,
-                                      vk::ImageTiling tiling_ = vk::ImageTiling::eOptimal,
-                                      vk::ImageUsageFlags usage_ = vk::ImageUsageFlags(),
-                                      vk::ImageCreateFlags flags_ = vk::ImageCreateFlags() )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceImageFormatInfo2( vk::Format format_ = vk::Format::eUndefined,
+                                                           vk::ImageType type_ = vk::ImageType::e1D,
+                                                           vk::ImageTiling tiling_ = vk::ImageTiling::eOptimal,
+                                                           vk::ImageUsageFlags usage_ = vk::ImageUsageFlags(),
+                                                           vk::ImageCreateFlags flags_ = vk::ImageCreateFlags() )
         : format( format_ )
         , type( type_ )
         , tiling( tiling_ )
@@ -46580,11 +46601,11 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceImageFormatInfo2 : public layout::PhysicalDeviceImageFormatInfo2
   {
-    PhysicalDeviceImageFormatInfo2( vk::Format format_ = vk::Format::eUndefined,
-                                    vk::ImageType type_ = vk::ImageType::e1D,
-                                    vk::ImageTiling tiling_ = vk::ImageTiling::eOptimal,
-                                    vk::ImageUsageFlags usage_ = vk::ImageUsageFlags(),
-                                    vk::ImageCreateFlags flags_ = vk::ImageCreateFlags() )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceImageFormatInfo2( vk::Format format_ = vk::Format::eUndefined,
+                                                         vk::ImageType type_ = vk::ImageType::e1D,
+                                                         vk::ImageTiling tiling_ = vk::ImageTiling::eOptimal,
+                                                         vk::ImageUsageFlags usage_ = vk::ImageUsageFlags(),
+                                                         vk::ImageCreateFlags flags_ = vk::ImageCreateFlags() )
       : layout::PhysicalDeviceImageFormatInfo2( format_, type_, tiling_, usage_, flags_ )
     {}
 
@@ -46671,7 +46692,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceImageViewImageFormatInfoEXT
     {
     protected:
-      PhysicalDeviceImageViewImageFormatInfoEXT( vk::ImageViewType imageViewType_ = vk::ImageViewType::e1D )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceImageViewImageFormatInfoEXT( vk::ImageViewType imageViewType_ = vk::ImageViewType::e1D )
         : imageViewType( imageViewType_ )
       {}
 
@@ -46696,7 +46717,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceImageViewImageFormatInfoEXT : public layout::PhysicalDeviceImageViewImageFormatInfoEXT
   {
-    PhysicalDeviceImageViewImageFormatInfoEXT( vk::ImageViewType imageViewType_ = vk::ImageViewType::e1D )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceImageViewImageFormatInfoEXT( vk::ImageViewType imageViewType_ = vk::ImageViewType::e1D )
       : layout::PhysicalDeviceImageViewImageFormatInfoEXT( imageViewType_ )
     {}
 
@@ -46755,7 +46776,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceImagelessFramebufferFeaturesKHR
     {
     protected:
-      PhysicalDeviceImagelessFramebufferFeaturesKHR( vk::Bool32 imagelessFramebuffer_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceImagelessFramebufferFeaturesKHR( vk::Bool32 imagelessFramebuffer_ = 0 )
         : imagelessFramebuffer( imagelessFramebuffer_ )
       {}
 
@@ -46780,7 +46801,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceImagelessFramebufferFeaturesKHR : public layout::PhysicalDeviceImagelessFramebufferFeaturesKHR
   {
-    PhysicalDeviceImagelessFramebufferFeaturesKHR( vk::Bool32 imagelessFramebuffer_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceImagelessFramebufferFeaturesKHR( vk::Bool32 imagelessFramebuffer_ = 0 )
       : layout::PhysicalDeviceImagelessFramebufferFeaturesKHR( imagelessFramebuffer_ )
     {}
 
@@ -46839,7 +46860,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceIndexTypeUint8FeaturesEXT
     {
     protected:
-      PhysicalDeviceIndexTypeUint8FeaturesEXT( vk::Bool32 indexTypeUint8_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceIndexTypeUint8FeaturesEXT( vk::Bool32 indexTypeUint8_ = 0 )
         : indexTypeUint8( indexTypeUint8_ )
       {}
 
@@ -46864,7 +46885,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceIndexTypeUint8FeaturesEXT : public layout::PhysicalDeviceIndexTypeUint8FeaturesEXT
   {
-    PhysicalDeviceIndexTypeUint8FeaturesEXT( vk::Bool32 indexTypeUint8_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceIndexTypeUint8FeaturesEXT( vk::Bool32 indexTypeUint8_ = 0 )
       : layout::PhysicalDeviceIndexTypeUint8FeaturesEXT( indexTypeUint8_ )
     {}
 
@@ -46923,8 +46944,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceInlineUniformBlockFeaturesEXT
     {
     protected:
-      PhysicalDeviceInlineUniformBlockFeaturesEXT( vk::Bool32 inlineUniformBlock_ = 0,
-                                                   vk::Bool32 descriptorBindingInlineUniformBlockUpdateAfterBind_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceInlineUniformBlockFeaturesEXT( vk::Bool32 inlineUniformBlock_ = 0,
+                                                                        vk::Bool32 descriptorBindingInlineUniformBlockUpdateAfterBind_ = 0 )
         : inlineUniformBlock( inlineUniformBlock_ )
         , descriptorBindingInlineUniformBlockUpdateAfterBind( descriptorBindingInlineUniformBlockUpdateAfterBind_ )
       {}
@@ -46951,8 +46972,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceInlineUniformBlockFeaturesEXT : public layout::PhysicalDeviceInlineUniformBlockFeaturesEXT
   {
-    PhysicalDeviceInlineUniformBlockFeaturesEXT( vk::Bool32 inlineUniformBlock_ = 0,
-                                                 vk::Bool32 descriptorBindingInlineUniformBlockUpdateAfterBind_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceInlineUniformBlockFeaturesEXT( vk::Bool32 inlineUniformBlock_ = 0,
+                                                                      vk::Bool32 descriptorBindingInlineUniformBlockUpdateAfterBind_ = 0 )
       : layout::PhysicalDeviceInlineUniformBlockFeaturesEXT( inlineUniformBlock_, descriptorBindingInlineUniformBlockUpdateAfterBind_ )
     {}
 
@@ -47349,12 +47370,12 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceLineRasterizationFeaturesEXT
     {
     protected:
-      PhysicalDeviceLineRasterizationFeaturesEXT( vk::Bool32 rectangularLines_ = 0,
-                                                  vk::Bool32 bresenhamLines_ = 0,
-                                                  vk::Bool32 smoothLines_ = 0,
-                                                  vk::Bool32 stippledRectangularLines_ = 0,
-                                                  vk::Bool32 stippledBresenhamLines_ = 0,
-                                                  vk::Bool32 stippledSmoothLines_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceLineRasterizationFeaturesEXT( vk::Bool32 rectangularLines_ = 0,
+                                                                       vk::Bool32 bresenhamLines_ = 0,
+                                                                       vk::Bool32 smoothLines_ = 0,
+                                                                       vk::Bool32 stippledRectangularLines_ = 0,
+                                                                       vk::Bool32 stippledBresenhamLines_ = 0,
+                                                                       vk::Bool32 stippledSmoothLines_ = 0 )
         : rectangularLines( rectangularLines_ )
         , bresenhamLines( bresenhamLines_ )
         , smoothLines( smoothLines_ )
@@ -47389,12 +47410,12 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceLineRasterizationFeaturesEXT : public layout::PhysicalDeviceLineRasterizationFeaturesEXT
   {
-    PhysicalDeviceLineRasterizationFeaturesEXT( vk::Bool32 rectangularLines_ = 0,
-                                                vk::Bool32 bresenhamLines_ = 0,
-                                                vk::Bool32 smoothLines_ = 0,
-                                                vk::Bool32 stippledRectangularLines_ = 0,
-                                                vk::Bool32 stippledBresenhamLines_ = 0,
-                                                vk::Bool32 stippledSmoothLines_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceLineRasterizationFeaturesEXT( vk::Bool32 rectangularLines_ = 0,
+                                                                     vk::Bool32 bresenhamLines_ = 0,
+                                                                     vk::Bool32 smoothLines_ = 0,
+                                                                     vk::Bool32 stippledRectangularLines_ = 0,
+                                                                     vk::Bool32 stippledBresenhamLines_ = 0,
+                                                                     vk::Bool32 stippledSmoothLines_ = 0 )
       : layout::PhysicalDeviceLineRasterizationFeaturesEXT( rectangularLines_, bresenhamLines_, smoothLines_, stippledRectangularLines_, stippledBresenhamLines_, stippledSmoothLines_ )
     {}
 
@@ -47705,7 +47726,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceMemoryPriorityFeaturesEXT
     {
     protected:
-      PhysicalDeviceMemoryPriorityFeaturesEXT( vk::Bool32 memoryPriority_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceMemoryPriorityFeaturesEXT( vk::Bool32 memoryPriority_ = 0 )
         : memoryPriority( memoryPriority_ )
       {}
 
@@ -47730,7 +47751,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceMemoryPriorityFeaturesEXT : public layout::PhysicalDeviceMemoryPriorityFeaturesEXT
   {
-    PhysicalDeviceMemoryPriorityFeaturesEXT( vk::Bool32 memoryPriority_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceMemoryPriorityFeaturesEXT( vk::Bool32 memoryPriority_ = 0 )
       : layout::PhysicalDeviceMemoryPriorityFeaturesEXT( memoryPriority_ )
     {}
 
@@ -47908,8 +47929,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceMeshShaderFeaturesNV
     {
     protected:
-      PhysicalDeviceMeshShaderFeaturesNV( vk::Bool32 taskShader_ = 0,
-                                          vk::Bool32 meshShader_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceMeshShaderFeaturesNV( vk::Bool32 taskShader_ = 0,
+                                                               vk::Bool32 meshShader_ = 0 )
         : taskShader( taskShader_ )
         , meshShader( meshShader_ )
       {}
@@ -47936,8 +47957,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceMeshShaderFeaturesNV : public layout::PhysicalDeviceMeshShaderFeaturesNV
   {
-    PhysicalDeviceMeshShaderFeaturesNV( vk::Bool32 taskShader_ = 0,
-                                        vk::Bool32 meshShader_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceMeshShaderFeaturesNV( vk::Bool32 taskShader_ = 0,
+                                                             vk::Bool32 meshShader_ = 0 )
       : layout::PhysicalDeviceMeshShaderFeaturesNV( taskShader_, meshShader_ )
     {}
 
@@ -48098,9 +48119,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceMultiviewFeatures
     {
     protected:
-      PhysicalDeviceMultiviewFeatures( vk::Bool32 multiview_ = 0,
-                                       vk::Bool32 multiviewGeometryShader_ = 0,
-                                       vk::Bool32 multiviewTessellationShader_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceMultiviewFeatures( vk::Bool32 multiview_ = 0,
+                                                            vk::Bool32 multiviewGeometryShader_ = 0,
+                                                            vk::Bool32 multiviewTessellationShader_ = 0 )
         : multiview( multiview_ )
         , multiviewGeometryShader( multiviewGeometryShader_ )
         , multiviewTessellationShader( multiviewTessellationShader_ )
@@ -48129,9 +48150,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceMultiviewFeatures : public layout::PhysicalDeviceMultiviewFeatures
   {
-    PhysicalDeviceMultiviewFeatures( vk::Bool32 multiview_ = 0,
-                                     vk::Bool32 multiviewGeometryShader_ = 0,
-                                     vk::Bool32 multiviewTessellationShader_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceMultiviewFeatures( vk::Bool32 multiview_ = 0,
+                                                          vk::Bool32 multiviewGeometryShader_ = 0,
+                                                          vk::Bool32 multiviewTessellationShader_ = 0 )
       : layout::PhysicalDeviceMultiviewFeatures( multiview_, multiviewGeometryShader_, multiviewTessellationShader_ )
     {}
 
@@ -48425,7 +48446,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDevicePipelineExecutablePropertiesFeaturesKHR
     {
     protected:
-      PhysicalDevicePipelineExecutablePropertiesFeaturesKHR( vk::Bool32 pipelineExecutableInfo_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDevicePipelineExecutablePropertiesFeaturesKHR( vk::Bool32 pipelineExecutableInfo_ = 0 )
         : pipelineExecutableInfo( pipelineExecutableInfo_ )
       {}
 
@@ -48450,7 +48471,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDevicePipelineExecutablePropertiesFeaturesKHR : public layout::PhysicalDevicePipelineExecutablePropertiesFeaturesKHR
   {
-    PhysicalDevicePipelineExecutablePropertiesFeaturesKHR( vk::Bool32 pipelineExecutableInfo_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDevicePipelineExecutablePropertiesFeaturesKHR( vk::Bool32 pipelineExecutableInfo_ = 0 )
       : layout::PhysicalDevicePipelineExecutablePropertiesFeaturesKHR( pipelineExecutableInfo_ )
     {}
 
@@ -48759,7 +48780,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceProtectedMemoryFeatures
     {
     protected:
-      PhysicalDeviceProtectedMemoryFeatures( vk::Bool32 protectedMemory_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceProtectedMemoryFeatures( vk::Bool32 protectedMemory_ = 0 )
         : protectedMemory( protectedMemory_ )
       {}
 
@@ -48784,7 +48805,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceProtectedMemoryFeatures : public layout::PhysicalDeviceProtectedMemoryFeatures
   {
-    PhysicalDeviceProtectedMemoryFeatures( vk::Bool32 protectedMemory_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceProtectedMemoryFeatures( vk::Bool32 protectedMemory_ = 0 )
       : layout::PhysicalDeviceProtectedMemoryFeatures( protectedMemory_ )
     {}
 
@@ -49070,7 +49091,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceRepresentativeFragmentTestFeaturesNV
     {
     protected:
-      PhysicalDeviceRepresentativeFragmentTestFeaturesNV( vk::Bool32 representativeFragmentTest_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceRepresentativeFragmentTestFeaturesNV( vk::Bool32 representativeFragmentTest_ = 0 )
         : representativeFragmentTest( representativeFragmentTest_ )
       {}
 
@@ -49095,7 +49116,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceRepresentativeFragmentTestFeaturesNV : public layout::PhysicalDeviceRepresentativeFragmentTestFeaturesNV
   {
-    PhysicalDeviceRepresentativeFragmentTestFeaturesNV( vk::Bool32 representativeFragmentTest_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceRepresentativeFragmentTestFeaturesNV( vk::Bool32 representativeFragmentTest_ = 0 )
       : layout::PhysicalDeviceRepresentativeFragmentTestFeaturesNV( representativeFragmentTest_ )
     {}
 
@@ -49306,7 +49327,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceSamplerYcbcrConversionFeatures
     {
     protected:
-      PhysicalDeviceSamplerYcbcrConversionFeatures( vk::Bool32 samplerYcbcrConversion_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceSamplerYcbcrConversionFeatures( vk::Bool32 samplerYcbcrConversion_ = 0 )
         : samplerYcbcrConversion( samplerYcbcrConversion_ )
       {}
 
@@ -49331,7 +49352,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceSamplerYcbcrConversionFeatures : public layout::PhysicalDeviceSamplerYcbcrConversionFeatures
   {
-    PhysicalDeviceSamplerYcbcrConversionFeatures( vk::Bool32 samplerYcbcrConversion_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceSamplerYcbcrConversionFeatures( vk::Bool32 samplerYcbcrConversion_ = 0 )
       : layout::PhysicalDeviceSamplerYcbcrConversionFeatures( samplerYcbcrConversion_ )
     {}
 
@@ -49390,7 +49411,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceScalarBlockLayoutFeaturesEXT
     {
     protected:
-      PhysicalDeviceScalarBlockLayoutFeaturesEXT( vk::Bool32 scalarBlockLayout_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceScalarBlockLayoutFeaturesEXT( vk::Bool32 scalarBlockLayout_ = 0 )
         : scalarBlockLayout( scalarBlockLayout_ )
       {}
 
@@ -49415,7 +49436,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceScalarBlockLayoutFeaturesEXT : public layout::PhysicalDeviceScalarBlockLayoutFeaturesEXT
   {
-    PhysicalDeviceScalarBlockLayoutFeaturesEXT( vk::Bool32 scalarBlockLayout_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceScalarBlockLayoutFeaturesEXT( vk::Bool32 scalarBlockLayout_ = 0 )
       : layout::PhysicalDeviceScalarBlockLayoutFeaturesEXT( scalarBlockLayout_ )
     {}
 
@@ -49474,8 +49495,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceShaderAtomicInt64FeaturesKHR
     {
     protected:
-      PhysicalDeviceShaderAtomicInt64FeaturesKHR( vk::Bool32 shaderBufferInt64Atomics_ = 0,
-                                                  vk::Bool32 shaderSharedInt64Atomics_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceShaderAtomicInt64FeaturesKHR( vk::Bool32 shaderBufferInt64Atomics_ = 0,
+                                                                       vk::Bool32 shaderSharedInt64Atomics_ = 0 )
         : shaderBufferInt64Atomics( shaderBufferInt64Atomics_ )
         , shaderSharedInt64Atomics( shaderSharedInt64Atomics_ )
       {}
@@ -49502,8 +49523,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceShaderAtomicInt64FeaturesKHR : public layout::PhysicalDeviceShaderAtomicInt64FeaturesKHR
   {
-    PhysicalDeviceShaderAtomicInt64FeaturesKHR( vk::Bool32 shaderBufferInt64Atomics_ = 0,
-                                                vk::Bool32 shaderSharedInt64Atomics_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceShaderAtomicInt64FeaturesKHR( vk::Bool32 shaderBufferInt64Atomics_ = 0,
+                                                                     vk::Bool32 shaderSharedInt64Atomics_ = 0 )
       : layout::PhysicalDeviceShaderAtomicInt64FeaturesKHR( shaderBufferInt64Atomics_, shaderSharedInt64Atomics_ )
     {}
 
@@ -49739,7 +49760,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT
     {
     protected:
-      PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT( vk::Bool32 shaderDemoteToHelperInvocation_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT( vk::Bool32 shaderDemoteToHelperInvocation_ = 0 )
         : shaderDemoteToHelperInvocation( shaderDemoteToHelperInvocation_ )
       {}
 
@@ -49764,7 +49785,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT : public layout::PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT
   {
-    PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT( vk::Bool32 shaderDemoteToHelperInvocation_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT( vk::Bool32 shaderDemoteToHelperInvocation_ = 0 )
       : layout::PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT( shaderDemoteToHelperInvocation_ )
     {}
 
@@ -49823,7 +49844,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceShaderDrawParametersFeatures
     {
     protected:
-      PhysicalDeviceShaderDrawParametersFeatures( vk::Bool32 shaderDrawParameters_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceShaderDrawParametersFeatures( vk::Bool32 shaderDrawParameters_ = 0 )
         : shaderDrawParameters( shaderDrawParameters_ )
       {}
 
@@ -49848,7 +49869,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceShaderDrawParametersFeatures : public layout::PhysicalDeviceShaderDrawParametersFeatures
   {
-    PhysicalDeviceShaderDrawParametersFeatures( vk::Bool32 shaderDrawParameters_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceShaderDrawParametersFeatures( vk::Bool32 shaderDrawParameters_ = 0 )
       : layout::PhysicalDeviceShaderDrawParametersFeatures( shaderDrawParameters_ )
     {}
 
@@ -49907,8 +49928,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceShaderFloat16Int8FeaturesKHR
     {
     protected:
-      PhysicalDeviceShaderFloat16Int8FeaturesKHR( vk::Bool32 shaderFloat16_ = 0,
-                                                  vk::Bool32 shaderInt8_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceShaderFloat16Int8FeaturesKHR( vk::Bool32 shaderFloat16_ = 0,
+                                                                       vk::Bool32 shaderInt8_ = 0 )
         : shaderFloat16( shaderFloat16_ )
         , shaderInt8( shaderInt8_ )
       {}
@@ -49935,8 +49956,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceShaderFloat16Int8FeaturesKHR : public layout::PhysicalDeviceShaderFloat16Int8FeaturesKHR
   {
-    PhysicalDeviceShaderFloat16Int8FeaturesKHR( vk::Bool32 shaderFloat16_ = 0,
-                                                vk::Bool32 shaderInt8_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceShaderFloat16Int8FeaturesKHR( vk::Bool32 shaderFloat16_ = 0,
+                                                                     vk::Bool32 shaderInt8_ = 0 )
       : layout::PhysicalDeviceShaderFloat16Int8FeaturesKHR( shaderFloat16_, shaderInt8_ )
     {}
 
@@ -50002,7 +50023,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceShaderImageFootprintFeaturesNV
     {
     protected:
-      PhysicalDeviceShaderImageFootprintFeaturesNV( vk::Bool32 imageFootprint_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceShaderImageFootprintFeaturesNV( vk::Bool32 imageFootprint_ = 0 )
         : imageFootprint( imageFootprint_ )
       {}
 
@@ -50027,7 +50048,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceShaderImageFootprintFeaturesNV : public layout::PhysicalDeviceShaderImageFootprintFeaturesNV
   {
-    PhysicalDeviceShaderImageFootprintFeaturesNV( vk::Bool32 imageFootprint_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceShaderImageFootprintFeaturesNV( vk::Bool32 imageFootprint_ = 0 )
       : layout::PhysicalDeviceShaderImageFootprintFeaturesNV( imageFootprint_ )
     {}
 
@@ -50086,7 +50107,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL
     {
     protected:
-      PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL( vk::Bool32 shaderIntegerFunctions2_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL( vk::Bool32 shaderIntegerFunctions2_ = 0 )
         : shaderIntegerFunctions2( shaderIntegerFunctions2_ )
       {}
 
@@ -50111,7 +50132,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL : public layout::PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL
   {
-    PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL( vk::Bool32 shaderIntegerFunctions2_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL( vk::Bool32 shaderIntegerFunctions2_ = 0 )
       : layout::PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL( shaderIntegerFunctions2_ )
     {}
 
@@ -50170,7 +50191,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceShaderSMBuiltinsFeaturesNV
     {
     protected:
-      PhysicalDeviceShaderSMBuiltinsFeaturesNV( vk::Bool32 shaderSMBuiltins_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceShaderSMBuiltinsFeaturesNV( vk::Bool32 shaderSMBuiltins_ = 0 )
         : shaderSMBuiltins( shaderSMBuiltins_ )
       {}
 
@@ -50195,7 +50216,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceShaderSMBuiltinsFeaturesNV : public layout::PhysicalDeviceShaderSMBuiltinsFeaturesNV
   {
-    PhysicalDeviceShaderSMBuiltinsFeaturesNV( vk::Bool32 shaderSMBuiltins_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceShaderSMBuiltinsFeaturesNV( vk::Bool32 shaderSMBuiltins_ = 0 )
       : layout::PhysicalDeviceShaderSMBuiltinsFeaturesNV( shaderSMBuiltins_ )
     {}
 
@@ -50327,8 +50348,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceShadingRateImageFeaturesNV
     {
     protected:
-      PhysicalDeviceShadingRateImageFeaturesNV( vk::Bool32 shadingRateImage_ = 0,
-                                                vk::Bool32 shadingRateCoarseSampleOrder_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceShadingRateImageFeaturesNV( vk::Bool32 shadingRateImage_ = 0,
+                                                                     vk::Bool32 shadingRateCoarseSampleOrder_ = 0 )
         : shadingRateImage( shadingRateImage_ )
         , shadingRateCoarseSampleOrder( shadingRateCoarseSampleOrder_ )
       {}
@@ -50355,8 +50376,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceShadingRateImageFeaturesNV : public layout::PhysicalDeviceShadingRateImageFeaturesNV
   {
-    PhysicalDeviceShadingRateImageFeaturesNV( vk::Bool32 shadingRateImage_ = 0,
-                                              vk::Bool32 shadingRateCoarseSampleOrder_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceShadingRateImageFeaturesNV( vk::Bool32 shadingRateImage_ = 0,
+                                                                   vk::Bool32 shadingRateCoarseSampleOrder_ = 0 )
       : layout::PhysicalDeviceShadingRateImageFeaturesNV( shadingRateImage_, shadingRateCoarseSampleOrder_ )
     {}
 
@@ -50497,11 +50518,11 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceSparseImageFormatInfo2
     {
     protected:
-      PhysicalDeviceSparseImageFormatInfo2( vk::Format format_ = vk::Format::eUndefined,
-                                            vk::ImageType type_ = vk::ImageType::e1D,
-                                            vk::SampleCountFlagBits samples_ = vk::SampleCountFlagBits::e1,
-                                            vk::ImageUsageFlags usage_ = vk::ImageUsageFlags(),
-                                            vk::ImageTiling tiling_ = vk::ImageTiling::eOptimal )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceSparseImageFormatInfo2( vk::Format format_ = vk::Format::eUndefined,
+                                                                 vk::ImageType type_ = vk::ImageType::e1D,
+                                                                 vk::SampleCountFlagBits samples_ = vk::SampleCountFlagBits::e1,
+                                                                 vk::ImageUsageFlags usage_ = vk::ImageUsageFlags(),
+                                                                 vk::ImageTiling tiling_ = vk::ImageTiling::eOptimal )
         : format( format_ )
         , type( type_ )
         , samples( samples_ )
@@ -50534,11 +50555,11 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceSparseImageFormatInfo2 : public layout::PhysicalDeviceSparseImageFormatInfo2
   {
-    PhysicalDeviceSparseImageFormatInfo2( vk::Format format_ = vk::Format::eUndefined,
-                                          vk::ImageType type_ = vk::ImageType::e1D,
-                                          vk::SampleCountFlagBits samples_ = vk::SampleCountFlagBits::e1,
-                                          vk::ImageUsageFlags usage_ = vk::ImageUsageFlags(),
-                                          vk::ImageTiling tiling_ = vk::ImageTiling::eOptimal )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceSparseImageFormatInfo2( vk::Format format_ = vk::Format::eUndefined,
+                                                               vk::ImageType type_ = vk::ImageType::e1D,
+                                                               vk::SampleCountFlagBits samples_ = vk::SampleCountFlagBits::e1,
+                                                               vk::ImageUsageFlags usage_ = vk::ImageUsageFlags(),
+                                                               vk::ImageTiling tiling_ = vk::ImageTiling::eOptimal )
       : layout::PhysicalDeviceSparseImageFormatInfo2( format_, type_, samples_, usage_, tiling_ )
     {}
 
@@ -50702,8 +50723,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceSubgroupSizeControlFeaturesEXT
     {
     protected:
-      PhysicalDeviceSubgroupSizeControlFeaturesEXT( vk::Bool32 subgroupSizeControl_ = 0,
-                                                    vk::Bool32 computeFullSubgroups_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceSubgroupSizeControlFeaturesEXT( vk::Bool32 subgroupSizeControl_ = 0,
+                                                                         vk::Bool32 computeFullSubgroups_ = 0 )
         : subgroupSizeControl( subgroupSizeControl_ )
         , computeFullSubgroups( computeFullSubgroups_ )
       {}
@@ -50730,8 +50751,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceSubgroupSizeControlFeaturesEXT : public layout::PhysicalDeviceSubgroupSizeControlFeaturesEXT
   {
-    PhysicalDeviceSubgroupSizeControlFeaturesEXT( vk::Bool32 subgroupSizeControl_ = 0,
-                                                  vk::Bool32 computeFullSubgroups_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceSubgroupSizeControlFeaturesEXT( vk::Bool32 subgroupSizeControl_ = 0,
+                                                                       vk::Bool32 computeFullSubgroups_ = 0 )
       : layout::PhysicalDeviceSubgroupSizeControlFeaturesEXT( subgroupSizeControl_, computeFullSubgroups_ )
     {}
 
@@ -50874,7 +50895,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceSurfaceInfo2KHR
     {
     protected:
-      PhysicalDeviceSurfaceInfo2KHR( vk::SurfaceKHR surface_ = vk::SurfaceKHR() )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceSurfaceInfo2KHR( vk::SurfaceKHR surface_ = vk::SurfaceKHR() )
         : surface( surface_ )
       {}
 
@@ -50899,7 +50920,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceSurfaceInfo2KHR : public layout::PhysicalDeviceSurfaceInfo2KHR
   {
-    PhysicalDeviceSurfaceInfo2KHR( vk::SurfaceKHR surface_ = vk::SurfaceKHR() )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceSurfaceInfo2KHR( vk::SurfaceKHR surface_ = vk::SurfaceKHR() )
       : layout::PhysicalDeviceSurfaceInfo2KHR( surface_ )
     {}
 
@@ -50958,7 +50979,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceTexelBufferAlignmentFeaturesEXT
     {
     protected:
-      PhysicalDeviceTexelBufferAlignmentFeaturesEXT( vk::Bool32 texelBufferAlignment_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceTexelBufferAlignmentFeaturesEXT( vk::Bool32 texelBufferAlignment_ = 0 )
         : texelBufferAlignment( texelBufferAlignment_ )
       {}
 
@@ -50983,7 +51004,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceTexelBufferAlignmentFeaturesEXT : public layout::PhysicalDeviceTexelBufferAlignmentFeaturesEXT
   {
-    PhysicalDeviceTexelBufferAlignmentFeaturesEXT( vk::Bool32 texelBufferAlignment_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceTexelBufferAlignmentFeaturesEXT( vk::Bool32 texelBufferAlignment_ = 0 )
       : layout::PhysicalDeviceTexelBufferAlignmentFeaturesEXT( texelBufferAlignment_ )
     {}
 
@@ -51119,7 +51140,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT
     {
     protected:
-      PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT( vk::Bool32 textureCompressionASTC_HDR_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT( vk::Bool32 textureCompressionASTC_HDR_ = 0 )
         : textureCompressionASTC_HDR( textureCompressionASTC_HDR_ )
       {}
 
@@ -51144,7 +51165,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT : public layout::PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT
   {
-    PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT( vk::Bool32 textureCompressionASTC_HDR_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT( vk::Bool32 textureCompressionASTC_HDR_ = 0 )
       : layout::PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT( textureCompressionASTC_HDR_ )
     {}
 
@@ -51203,8 +51224,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceTransformFeedbackFeaturesEXT
     {
     protected:
-      PhysicalDeviceTransformFeedbackFeaturesEXT( vk::Bool32 transformFeedback_ = 0,
-                                                  vk::Bool32 geometryStreams_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceTransformFeedbackFeaturesEXT( vk::Bool32 transformFeedback_ = 0,
+                                                                       vk::Bool32 geometryStreams_ = 0 )
         : transformFeedback( transformFeedback_ )
         , geometryStreams( geometryStreams_ )
       {}
@@ -51231,8 +51252,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceTransformFeedbackFeaturesEXT : public layout::PhysicalDeviceTransformFeedbackFeaturesEXT
   {
-    PhysicalDeviceTransformFeedbackFeaturesEXT( vk::Bool32 transformFeedback_ = 0,
-                                                vk::Bool32 geometryStreams_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceTransformFeedbackFeaturesEXT( vk::Bool32 transformFeedback_ = 0,
+                                                                     vk::Bool32 geometryStreams_ = 0 )
       : layout::PhysicalDeviceTransformFeedbackFeaturesEXT( transformFeedback_, geometryStreams_ )
     {}
 
@@ -51387,7 +51408,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR
     {
     protected:
-      PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR( vk::Bool32 uniformBufferStandardLayout_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR( vk::Bool32 uniformBufferStandardLayout_ = 0 )
         : uniformBufferStandardLayout( uniformBufferStandardLayout_ )
       {}
 
@@ -51412,7 +51433,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR : public layout::PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR
   {
-    PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR( vk::Bool32 uniformBufferStandardLayout_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR( vk::Bool32 uniformBufferStandardLayout_ = 0 )
       : layout::PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR( uniformBufferStandardLayout_ )
     {}
 
@@ -51471,8 +51492,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceVariablePointersFeatures
     {
     protected:
-      PhysicalDeviceVariablePointersFeatures( vk::Bool32 variablePointersStorageBuffer_ = 0,
-                                              vk::Bool32 variablePointers_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceVariablePointersFeatures( vk::Bool32 variablePointersStorageBuffer_ = 0,
+                                                                   vk::Bool32 variablePointers_ = 0 )
         : variablePointersStorageBuffer( variablePointersStorageBuffer_ )
         , variablePointers( variablePointers_ )
       {}
@@ -51499,8 +51520,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceVariablePointersFeatures : public layout::PhysicalDeviceVariablePointersFeatures
   {
-    PhysicalDeviceVariablePointersFeatures( vk::Bool32 variablePointersStorageBuffer_ = 0,
-                                            vk::Bool32 variablePointers_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceVariablePointersFeatures( vk::Bool32 variablePointersStorageBuffer_ = 0,
+                                                                 vk::Bool32 variablePointers_ = 0 )
       : layout::PhysicalDeviceVariablePointersFeatures( variablePointersStorageBuffer_, variablePointers_ )
     {}
 
@@ -51566,8 +51587,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceVertexAttributeDivisorFeaturesEXT
     {
     protected:
-      PhysicalDeviceVertexAttributeDivisorFeaturesEXT( vk::Bool32 vertexAttributeInstanceRateDivisor_ = 0,
-                                                       vk::Bool32 vertexAttributeInstanceRateZeroDivisor_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceVertexAttributeDivisorFeaturesEXT( vk::Bool32 vertexAttributeInstanceRateDivisor_ = 0,
+                                                                            vk::Bool32 vertexAttributeInstanceRateZeroDivisor_ = 0 )
         : vertexAttributeInstanceRateDivisor( vertexAttributeInstanceRateDivisor_ )
         , vertexAttributeInstanceRateZeroDivisor( vertexAttributeInstanceRateZeroDivisor_ )
       {}
@@ -51594,8 +51615,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceVertexAttributeDivisorFeaturesEXT : public layout::PhysicalDeviceVertexAttributeDivisorFeaturesEXT
   {
-    PhysicalDeviceVertexAttributeDivisorFeaturesEXT( vk::Bool32 vertexAttributeInstanceRateDivisor_ = 0,
-                                                     vk::Bool32 vertexAttributeInstanceRateZeroDivisor_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceVertexAttributeDivisorFeaturesEXT( vk::Bool32 vertexAttributeInstanceRateDivisor_ = 0,
+                                                                          vk::Bool32 vertexAttributeInstanceRateZeroDivisor_ = 0 )
       : layout::PhysicalDeviceVertexAttributeDivisorFeaturesEXT( vertexAttributeInstanceRateDivisor_, vertexAttributeInstanceRateZeroDivisor_ )
     {}
 
@@ -51732,9 +51753,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceVulkanMemoryModelFeaturesKHR
     {
     protected:
-      PhysicalDeviceVulkanMemoryModelFeaturesKHR( vk::Bool32 vulkanMemoryModel_ = 0,
-                                                  vk::Bool32 vulkanMemoryModelDeviceScope_ = 0,
-                                                  vk::Bool32 vulkanMemoryModelAvailabilityVisibilityChains_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceVulkanMemoryModelFeaturesKHR( vk::Bool32 vulkanMemoryModel_ = 0,
+                                                                       vk::Bool32 vulkanMemoryModelDeviceScope_ = 0,
+                                                                       vk::Bool32 vulkanMemoryModelAvailabilityVisibilityChains_ = 0 )
         : vulkanMemoryModel( vulkanMemoryModel_ )
         , vulkanMemoryModelDeviceScope( vulkanMemoryModelDeviceScope_ )
         , vulkanMemoryModelAvailabilityVisibilityChains( vulkanMemoryModelAvailabilityVisibilityChains_ )
@@ -51763,9 +51784,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceVulkanMemoryModelFeaturesKHR : public layout::PhysicalDeviceVulkanMemoryModelFeaturesKHR
   {
-    PhysicalDeviceVulkanMemoryModelFeaturesKHR( vk::Bool32 vulkanMemoryModel_ = 0,
-                                                vk::Bool32 vulkanMemoryModelDeviceScope_ = 0,
-                                                vk::Bool32 vulkanMemoryModelAvailabilityVisibilityChains_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceVulkanMemoryModelFeaturesKHR( vk::Bool32 vulkanMemoryModel_ = 0,
+                                                                     vk::Bool32 vulkanMemoryModelDeviceScope_ = 0,
+                                                                     vk::Bool32 vulkanMemoryModelAvailabilityVisibilityChains_ = 0 )
       : layout::PhysicalDeviceVulkanMemoryModelFeaturesKHR( vulkanMemoryModel_, vulkanMemoryModelDeviceScope_, vulkanMemoryModelAvailabilityVisibilityChains_ )
     {}
 
@@ -51838,7 +51859,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PhysicalDeviceYcbcrImageArraysFeaturesEXT
     {
     protected:
-      PhysicalDeviceYcbcrImageArraysFeaturesEXT( vk::Bool32 ycbcrImageArrays_ = 0 )
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceYcbcrImageArraysFeaturesEXT( vk::Bool32 ycbcrImageArrays_ = 0 )
         : ycbcrImageArrays( ycbcrImageArrays_ )
       {}
 
@@ -51863,7 +51884,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceYcbcrImageArraysFeaturesEXT : public layout::PhysicalDeviceYcbcrImageArraysFeaturesEXT
   {
-    PhysicalDeviceYcbcrImageArraysFeaturesEXT( vk::Bool32 ycbcrImageArrays_ = 0 )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceYcbcrImageArraysFeaturesEXT( vk::Bool32 ycbcrImageArrays_ = 0 )
       : layout::PhysicalDeviceYcbcrImageArraysFeaturesEXT( ycbcrImageArrays_ )
     {}
 
@@ -51922,9 +51943,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct PipelineCacheCreateInfo
     {
     protected:
-      PipelineCacheCreateInfo( vk::PipelineCacheCreateFlags flags_ = vk::PipelineCacheCreateFlags(),
-                               size_t initialDataSize_ = 0,
-                               const void* pInitialData_ = nullptr )
+      VULKAN_HPP_CONSTEXPR PipelineCacheCreateInfo( vk::PipelineCacheCreateFlags flags_ = vk::PipelineCacheCreateFlags(),
+                                                    size_t initialDataSize_ = 0,
+                                                    const void* pInitialData_ = nullptr )
         : flags( flags_ )
         , initialDataSize( initialDataSize_ )
         , pInitialData( pInitialData_ )
@@ -51953,9 +51974,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineCacheCreateInfo : public layout::PipelineCacheCreateInfo
   {
-    PipelineCacheCreateInfo( vk::PipelineCacheCreateFlags flags_ = vk::PipelineCacheCreateFlags(),
-                             size_t initialDataSize_ = 0,
-                             const void* pInitialData_ = nullptr )
+    VULKAN_HPP_CONSTEXPR PipelineCacheCreateInfo( vk::PipelineCacheCreateFlags flags_ = vk::PipelineCacheCreateFlags(),
+                                                  size_t initialDataSize_ = 0,
+                                                  const void* pInitialData_ = nullptr )
       : layout::PipelineCacheCreateInfo( flags_, initialDataSize_, pInitialData_ )
     {}
 
@@ -52028,9 +52049,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct PipelineColorBlendAdvancedStateCreateInfoEXT
     {
     protected:
-      PipelineColorBlendAdvancedStateCreateInfoEXT( vk::Bool32 srcPremultiplied_ = 0,
-                                                    vk::Bool32 dstPremultiplied_ = 0,
-                                                    vk::BlendOverlapEXT blendOverlap_ = vk::BlendOverlapEXT::eUncorrelated )
+      VULKAN_HPP_CONSTEXPR PipelineColorBlendAdvancedStateCreateInfoEXT( vk::Bool32 srcPremultiplied_ = 0,
+                                                                         vk::Bool32 dstPremultiplied_ = 0,
+                                                                         vk::BlendOverlapEXT blendOverlap_ = vk::BlendOverlapEXT::eUncorrelated )
         : srcPremultiplied( srcPremultiplied_ )
         , dstPremultiplied( dstPremultiplied_ )
         , blendOverlap( blendOverlap_ )
@@ -52059,9 +52080,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineColorBlendAdvancedStateCreateInfoEXT : public layout::PipelineColorBlendAdvancedStateCreateInfoEXT
   {
-    PipelineColorBlendAdvancedStateCreateInfoEXT( vk::Bool32 srcPremultiplied_ = 0,
-                                                  vk::Bool32 dstPremultiplied_ = 0,
-                                                  vk::BlendOverlapEXT blendOverlap_ = vk::BlendOverlapEXT::eUncorrelated )
+    VULKAN_HPP_CONSTEXPR PipelineColorBlendAdvancedStateCreateInfoEXT( vk::Bool32 srcPremultiplied_ = 0,
+                                                                       vk::Bool32 dstPremultiplied_ = 0,
+                                                                       vk::BlendOverlapEXT blendOverlap_ = vk::BlendOverlapEXT::eUncorrelated )
       : layout::PipelineColorBlendAdvancedStateCreateInfoEXT( srcPremultiplied_, dstPremultiplied_, blendOverlap_ )
     {}
 
@@ -52134,7 +52155,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PipelineCompilerControlCreateInfoAMD
     {
     protected:
-      PipelineCompilerControlCreateInfoAMD( vk::PipelineCompilerControlFlagsAMD compilerControlFlags_ = vk::PipelineCompilerControlFlagsAMD() )
+      VULKAN_HPP_CONSTEXPR PipelineCompilerControlCreateInfoAMD( vk::PipelineCompilerControlFlagsAMD compilerControlFlags_ = vk::PipelineCompilerControlFlagsAMD() )
         : compilerControlFlags( compilerControlFlags_ )
       {}
 
@@ -52159,7 +52180,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineCompilerControlCreateInfoAMD : public layout::PipelineCompilerControlCreateInfoAMD
   {
-    PipelineCompilerControlCreateInfoAMD( vk::PipelineCompilerControlFlagsAMD compilerControlFlags_ = vk::PipelineCompilerControlFlagsAMD() )
+    VULKAN_HPP_CONSTEXPR PipelineCompilerControlCreateInfoAMD( vk::PipelineCompilerControlFlagsAMD compilerControlFlags_ = vk::PipelineCompilerControlFlagsAMD() )
       : layout::PipelineCompilerControlCreateInfoAMD( compilerControlFlags_ )
     {}
 
@@ -52218,11 +52239,11 @@ namespace VULKAN_HPP_NAMESPACE
     struct PipelineCoverageModulationStateCreateInfoNV
     {
     protected:
-      PipelineCoverageModulationStateCreateInfoNV( vk::PipelineCoverageModulationStateCreateFlagsNV flags_ = vk::PipelineCoverageModulationStateCreateFlagsNV(),
-                                                   vk::CoverageModulationModeNV coverageModulationMode_ = vk::CoverageModulationModeNV::eNone,
-                                                   vk::Bool32 coverageModulationTableEnable_ = 0,
-                                                   uint32_t coverageModulationTableCount_ = 0,
-                                                   const float* pCoverageModulationTable_ = nullptr )
+      VULKAN_HPP_CONSTEXPR PipelineCoverageModulationStateCreateInfoNV( vk::PipelineCoverageModulationStateCreateFlagsNV flags_ = vk::PipelineCoverageModulationStateCreateFlagsNV(),
+                                                                        vk::CoverageModulationModeNV coverageModulationMode_ = vk::CoverageModulationModeNV::eNone,
+                                                                        vk::Bool32 coverageModulationTableEnable_ = 0,
+                                                                        uint32_t coverageModulationTableCount_ = 0,
+                                                                        const float* pCoverageModulationTable_ = nullptr )
         : flags( flags_ )
         , coverageModulationMode( coverageModulationMode_ )
         , coverageModulationTableEnable( coverageModulationTableEnable_ )
@@ -52255,11 +52276,11 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineCoverageModulationStateCreateInfoNV : public layout::PipelineCoverageModulationStateCreateInfoNV
   {
-    PipelineCoverageModulationStateCreateInfoNV( vk::PipelineCoverageModulationStateCreateFlagsNV flags_ = vk::PipelineCoverageModulationStateCreateFlagsNV(),
-                                                 vk::CoverageModulationModeNV coverageModulationMode_ = vk::CoverageModulationModeNV::eNone,
-                                                 vk::Bool32 coverageModulationTableEnable_ = 0,
-                                                 uint32_t coverageModulationTableCount_ = 0,
-                                                 const float* pCoverageModulationTable_ = nullptr )
+    VULKAN_HPP_CONSTEXPR PipelineCoverageModulationStateCreateInfoNV( vk::PipelineCoverageModulationStateCreateFlagsNV flags_ = vk::PipelineCoverageModulationStateCreateFlagsNV(),
+                                                                      vk::CoverageModulationModeNV coverageModulationMode_ = vk::CoverageModulationModeNV::eNone,
+                                                                      vk::Bool32 coverageModulationTableEnable_ = 0,
+                                                                      uint32_t coverageModulationTableCount_ = 0,
+                                                                      const float* pCoverageModulationTable_ = nullptr )
       : layout::PipelineCoverageModulationStateCreateInfoNV( flags_, coverageModulationMode_, coverageModulationTableEnable_, coverageModulationTableCount_, pCoverageModulationTable_ )
     {}
 
@@ -52346,8 +52367,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct PipelineCoverageReductionStateCreateInfoNV
     {
     protected:
-      PipelineCoverageReductionStateCreateInfoNV( vk::PipelineCoverageReductionStateCreateFlagsNV flags_ = vk::PipelineCoverageReductionStateCreateFlagsNV(),
-                                                  vk::CoverageReductionModeNV coverageReductionMode_ = vk::CoverageReductionModeNV::eMerge )
+      VULKAN_HPP_CONSTEXPR PipelineCoverageReductionStateCreateInfoNV( vk::PipelineCoverageReductionStateCreateFlagsNV flags_ = vk::PipelineCoverageReductionStateCreateFlagsNV(),
+                                                                       vk::CoverageReductionModeNV coverageReductionMode_ = vk::CoverageReductionModeNV::eMerge )
         : flags( flags_ )
         , coverageReductionMode( coverageReductionMode_ )
       {}
@@ -52374,8 +52395,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineCoverageReductionStateCreateInfoNV : public layout::PipelineCoverageReductionStateCreateInfoNV
   {
-    PipelineCoverageReductionStateCreateInfoNV( vk::PipelineCoverageReductionStateCreateFlagsNV flags_ = vk::PipelineCoverageReductionStateCreateFlagsNV(),
-                                                vk::CoverageReductionModeNV coverageReductionMode_ = vk::CoverageReductionModeNV::eMerge )
+    VULKAN_HPP_CONSTEXPR PipelineCoverageReductionStateCreateInfoNV( vk::PipelineCoverageReductionStateCreateFlagsNV flags_ = vk::PipelineCoverageReductionStateCreateFlagsNV(),
+                                                                     vk::CoverageReductionModeNV coverageReductionMode_ = vk::CoverageReductionModeNV::eMerge )
       : layout::PipelineCoverageReductionStateCreateInfoNV( flags_, coverageReductionMode_ )
     {}
 
@@ -52441,9 +52462,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct PipelineCoverageToColorStateCreateInfoNV
     {
     protected:
-      PipelineCoverageToColorStateCreateInfoNV( vk::PipelineCoverageToColorStateCreateFlagsNV flags_ = vk::PipelineCoverageToColorStateCreateFlagsNV(),
-                                                vk::Bool32 coverageToColorEnable_ = 0,
-                                                uint32_t coverageToColorLocation_ = 0 )
+      VULKAN_HPP_CONSTEXPR PipelineCoverageToColorStateCreateInfoNV( vk::PipelineCoverageToColorStateCreateFlagsNV flags_ = vk::PipelineCoverageToColorStateCreateFlagsNV(),
+                                                                     vk::Bool32 coverageToColorEnable_ = 0,
+                                                                     uint32_t coverageToColorLocation_ = 0 )
         : flags( flags_ )
         , coverageToColorEnable( coverageToColorEnable_ )
         , coverageToColorLocation( coverageToColorLocation_ )
@@ -52472,9 +52493,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineCoverageToColorStateCreateInfoNV : public layout::PipelineCoverageToColorStateCreateInfoNV
   {
-    PipelineCoverageToColorStateCreateInfoNV( vk::PipelineCoverageToColorStateCreateFlagsNV flags_ = vk::PipelineCoverageToColorStateCreateFlagsNV(),
-                                              vk::Bool32 coverageToColorEnable_ = 0,
-                                              uint32_t coverageToColorLocation_ = 0 )
+    VULKAN_HPP_CONSTEXPR PipelineCoverageToColorStateCreateInfoNV( vk::PipelineCoverageToColorStateCreateFlagsNV flags_ = vk::PipelineCoverageToColorStateCreateFlagsNV(),
+                                                                   vk::Bool32 coverageToColorEnable_ = 0,
+                                                                   uint32_t coverageToColorLocation_ = 0 )
       : layout::PipelineCoverageToColorStateCreateInfoNV( flags_, coverageToColorEnable_, coverageToColorLocation_ )
     {}
 
@@ -52591,9 +52612,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct PipelineCreationFeedbackCreateInfoEXT
     {
     protected:
-      PipelineCreationFeedbackCreateInfoEXT( vk::PipelineCreationFeedbackEXT* pPipelineCreationFeedback_ = nullptr,
-                                             uint32_t pipelineStageCreationFeedbackCount_ = 0,
-                                             vk::PipelineCreationFeedbackEXT* pPipelineStageCreationFeedbacks_ = nullptr )
+      VULKAN_HPP_CONSTEXPR PipelineCreationFeedbackCreateInfoEXT( vk::PipelineCreationFeedbackEXT* pPipelineCreationFeedback_ = nullptr,
+                                                                  uint32_t pipelineStageCreationFeedbackCount_ = 0,
+                                                                  vk::PipelineCreationFeedbackEXT* pPipelineStageCreationFeedbacks_ = nullptr )
         : pPipelineCreationFeedback( pPipelineCreationFeedback_ )
         , pipelineStageCreationFeedbackCount( pipelineStageCreationFeedbackCount_ )
         , pPipelineStageCreationFeedbacks( pPipelineStageCreationFeedbacks_ )
@@ -52622,9 +52643,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineCreationFeedbackCreateInfoEXT : public layout::PipelineCreationFeedbackCreateInfoEXT
   {
-    PipelineCreationFeedbackCreateInfoEXT( vk::PipelineCreationFeedbackEXT* pPipelineCreationFeedback_ = nullptr,
-                                           uint32_t pipelineStageCreationFeedbackCount_ = 0,
-                                           vk::PipelineCreationFeedbackEXT* pPipelineStageCreationFeedbacks_ = nullptr )
+    VULKAN_HPP_CONSTEXPR PipelineCreationFeedbackCreateInfoEXT( vk::PipelineCreationFeedbackEXT* pPipelineCreationFeedback_ = nullptr,
+                                                                uint32_t pipelineStageCreationFeedbackCount_ = 0,
+                                                                vk::PipelineCreationFeedbackEXT* pPipelineStageCreationFeedbacks_ = nullptr )
       : layout::PipelineCreationFeedbackCreateInfoEXT( pPipelineCreationFeedback_, pipelineStageCreationFeedbackCount_, pPipelineStageCreationFeedbacks_ )
     {}
 
@@ -52697,10 +52718,10 @@ namespace VULKAN_HPP_NAMESPACE
     struct PipelineDiscardRectangleStateCreateInfoEXT
     {
     protected:
-      PipelineDiscardRectangleStateCreateInfoEXT( vk::PipelineDiscardRectangleStateCreateFlagsEXT flags_ = vk::PipelineDiscardRectangleStateCreateFlagsEXT(),
-                                                  vk::DiscardRectangleModeEXT discardRectangleMode_ = vk::DiscardRectangleModeEXT::eInclusive,
-                                                  uint32_t discardRectangleCount_ = 0,
-                                                  const vk::Rect2D* pDiscardRectangles_ = nullptr )
+      VULKAN_HPP_CONSTEXPR PipelineDiscardRectangleStateCreateInfoEXT( vk::PipelineDiscardRectangleStateCreateFlagsEXT flags_ = vk::PipelineDiscardRectangleStateCreateFlagsEXT(),
+                                                                       vk::DiscardRectangleModeEXT discardRectangleMode_ = vk::DiscardRectangleModeEXT::eInclusive,
+                                                                       uint32_t discardRectangleCount_ = 0,
+                                                                       const vk::Rect2D* pDiscardRectangles_ = nullptr )
         : flags( flags_ )
         , discardRectangleMode( discardRectangleMode_ )
         , discardRectangleCount( discardRectangleCount_ )
@@ -52731,10 +52752,10 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineDiscardRectangleStateCreateInfoEXT : public layout::PipelineDiscardRectangleStateCreateInfoEXT
   {
-    PipelineDiscardRectangleStateCreateInfoEXT( vk::PipelineDiscardRectangleStateCreateFlagsEXT flags_ = vk::PipelineDiscardRectangleStateCreateFlagsEXT(),
-                                                vk::DiscardRectangleModeEXT discardRectangleMode_ = vk::DiscardRectangleModeEXT::eInclusive,
-                                                uint32_t discardRectangleCount_ = 0,
-                                                const vk::Rect2D* pDiscardRectangles_ = nullptr )
+    VULKAN_HPP_CONSTEXPR PipelineDiscardRectangleStateCreateInfoEXT( vk::PipelineDiscardRectangleStateCreateFlagsEXT flags_ = vk::PipelineDiscardRectangleStateCreateFlagsEXT(),
+                                                                     vk::DiscardRectangleModeEXT discardRectangleMode_ = vk::DiscardRectangleModeEXT::eInclusive,
+                                                                     uint32_t discardRectangleCount_ = 0,
+                                                                     const vk::Rect2D* pDiscardRectangles_ = nullptr )
       : layout::PipelineDiscardRectangleStateCreateInfoEXT( flags_, discardRectangleMode_, discardRectangleCount_, pDiscardRectangles_ )
     {}
 
@@ -52814,8 +52835,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct PipelineExecutableInfoKHR
     {
     protected:
-      PipelineExecutableInfoKHR( vk::Pipeline pipeline_ = vk::Pipeline(),
-                                 uint32_t executableIndex_ = 0 )
+      VULKAN_HPP_CONSTEXPR PipelineExecutableInfoKHR( vk::Pipeline pipeline_ = vk::Pipeline(),
+                                                      uint32_t executableIndex_ = 0 )
         : pipeline( pipeline_ )
         , executableIndex( executableIndex_ )
       {}
@@ -52842,8 +52863,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineExecutableInfoKHR : public layout::PipelineExecutableInfoKHR
   {
-    PipelineExecutableInfoKHR( vk::Pipeline pipeline_ = vk::Pipeline(),
-                               uint32_t executableIndex_ = 0 )
+    VULKAN_HPP_CONSTEXPR PipelineExecutableInfoKHR( vk::Pipeline pipeline_ = vk::Pipeline(),
+                                                    uint32_t executableIndex_ = 0 )
       : layout::PipelineExecutableInfoKHR( pipeline_, executableIndex_ )
     {}
 
@@ -52909,18 +52930,19 @@ namespace VULKAN_HPP_NAMESPACE
     struct PipelineExecutableInternalRepresentationKHR
     {
     protected:
-      PipelineExecutableInternalRepresentationKHR( std::array<char,VK_MAX_DESCRIPTION_SIZE> const& name_ = { { 0 } },
-                                                   std::array<char,VK_MAX_DESCRIPTION_SIZE> const& description_ = { { 0 } },
-                                                   vk::Bool32 isText_ = 0,
-                                                   size_t dataSize_ = 0,
-                                                   void* pData_ = nullptr )
-        : isText( isText_ )
+      VULKAN_HPP_CONSTEXPR_14 PipelineExecutableInternalRepresentationKHR( std::array<char,VK_MAX_DESCRIPTION_SIZE> const& name_ = { { 0 } },
+                                                                           std::array<char,VK_MAX_DESCRIPTION_SIZE> const& description_ = { { 0 } },
+                                                                           vk::Bool32 isText_ = 0,
+                                                                           size_t dataSize_ = 0,
+                                                                           void* pData_ = nullptr )
+        : name{}
+        , description{}
+        , isText( isText_ )
         , dataSize( dataSize_ )
         , pData( pData_ )
       {
-        memcpy( &name, name_.data(), VK_MAX_DESCRIPTION_SIZE * sizeof( char ) );
-        memcpy( &description, description_.data(), VK_MAX_DESCRIPTION_SIZE * sizeof( char ) );
-      
+        vk::ConstExpressionArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( name, name_ );
+        vk::ConstExpressionArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( description, description_ );
       }
 
       PipelineExecutableInternalRepresentationKHR( VkPipelineExecutableInternalRepresentationKHR const & rhs )
@@ -52948,11 +52970,11 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineExecutableInternalRepresentationKHR : public layout::PipelineExecutableInternalRepresentationKHR
   {
-    PipelineExecutableInternalRepresentationKHR( std::array<char,VK_MAX_DESCRIPTION_SIZE> const& name_ = { { 0 } },
-                                                 std::array<char,VK_MAX_DESCRIPTION_SIZE> const& description_ = { { 0 } },
-                                                 vk::Bool32 isText_ = 0,
-                                                 size_t dataSize_ = 0,
-                                                 void* pData_ = nullptr )
+    VULKAN_HPP_CONSTEXPR_14 PipelineExecutableInternalRepresentationKHR( std::array<char,VK_MAX_DESCRIPTION_SIZE> const& name_ = { { 0 } },
+                                                                         std::array<char,VK_MAX_DESCRIPTION_SIZE> const& description_ = { { 0 } },
+                                                                         vk::Bool32 isText_ = 0,
+                                                                         size_t dataSize_ = 0,
+                                                                         void* pData_ = nullptr )
       : layout::PipelineExecutableInternalRepresentationKHR( name_, description_, isText_, dataSize_, pData_ )
     {}
 
@@ -53203,7 +53225,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PipelineInfoKHR
     {
     protected:
-      PipelineInfoKHR( vk::Pipeline pipeline_ = vk::Pipeline() )
+      VULKAN_HPP_CONSTEXPR PipelineInfoKHR( vk::Pipeline pipeline_ = vk::Pipeline() )
         : pipeline( pipeline_ )
       {}
 
@@ -53228,7 +53250,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineInfoKHR : public layout::PipelineInfoKHR
   {
-    PipelineInfoKHR( vk::Pipeline pipeline_ = vk::Pipeline() )
+    VULKAN_HPP_CONSTEXPR PipelineInfoKHR( vk::Pipeline pipeline_ = vk::Pipeline() )
       : layout::PipelineInfoKHR( pipeline_ )
     {}
 
@@ -53284,9 +53306,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PushConstantRange
   {
-    PushConstantRange( vk::ShaderStageFlags stageFlags_ = vk::ShaderStageFlags(),
-                       uint32_t offset_ = 0,
-                       uint32_t size_ = 0 )
+    VULKAN_HPP_CONSTEXPR PushConstantRange( vk::ShaderStageFlags stageFlags_ = vk::ShaderStageFlags(),
+                                            uint32_t offset_ = 0,
+                                            uint32_t size_ = 0 )
       : stageFlags( stageFlags_ )
       , offset( offset_ )
       , size( size_ )
@@ -53356,11 +53378,11 @@ namespace VULKAN_HPP_NAMESPACE
     struct PipelineLayoutCreateInfo
     {
     protected:
-      PipelineLayoutCreateInfo( vk::PipelineLayoutCreateFlags flags_ = vk::PipelineLayoutCreateFlags(),
-                                uint32_t setLayoutCount_ = 0,
-                                const vk::DescriptorSetLayout* pSetLayouts_ = nullptr,
-                                uint32_t pushConstantRangeCount_ = 0,
-                                const vk::PushConstantRange* pPushConstantRanges_ = nullptr )
+      VULKAN_HPP_CONSTEXPR PipelineLayoutCreateInfo( vk::PipelineLayoutCreateFlags flags_ = vk::PipelineLayoutCreateFlags(),
+                                                     uint32_t setLayoutCount_ = 0,
+                                                     const vk::DescriptorSetLayout* pSetLayouts_ = nullptr,
+                                                     uint32_t pushConstantRangeCount_ = 0,
+                                                     const vk::PushConstantRange* pPushConstantRanges_ = nullptr )
         : flags( flags_ )
         , setLayoutCount( setLayoutCount_ )
         , pSetLayouts( pSetLayouts_ )
@@ -53393,11 +53415,11 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineLayoutCreateInfo : public layout::PipelineLayoutCreateInfo
   {
-    PipelineLayoutCreateInfo( vk::PipelineLayoutCreateFlags flags_ = vk::PipelineLayoutCreateFlags(),
-                              uint32_t setLayoutCount_ = 0,
-                              const vk::DescriptorSetLayout* pSetLayouts_ = nullptr,
-                              uint32_t pushConstantRangeCount_ = 0,
-                              const vk::PushConstantRange* pPushConstantRanges_ = nullptr )
+    VULKAN_HPP_CONSTEXPR PipelineLayoutCreateInfo( vk::PipelineLayoutCreateFlags flags_ = vk::PipelineLayoutCreateFlags(),
+                                                   uint32_t setLayoutCount_ = 0,
+                                                   const vk::DescriptorSetLayout* pSetLayouts_ = nullptr,
+                                                   uint32_t pushConstantRangeCount_ = 0,
+                                                   const vk::PushConstantRange* pPushConstantRanges_ = nullptr )
       : layout::PipelineLayoutCreateInfo( flags_, setLayoutCount_, pSetLayouts_, pushConstantRangeCount_, pPushConstantRanges_ )
     {}
 
@@ -53484,9 +53506,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct PipelineRasterizationConservativeStateCreateInfoEXT
     {
     protected:
-      PipelineRasterizationConservativeStateCreateInfoEXT( vk::PipelineRasterizationConservativeStateCreateFlagsEXT flags_ = vk::PipelineRasterizationConservativeStateCreateFlagsEXT(),
-                                                           vk::ConservativeRasterizationModeEXT conservativeRasterizationMode_ = vk::ConservativeRasterizationModeEXT::eDisabled,
-                                                           float extraPrimitiveOverestimationSize_ = 0 )
+      VULKAN_HPP_CONSTEXPR PipelineRasterizationConservativeStateCreateInfoEXT( vk::PipelineRasterizationConservativeStateCreateFlagsEXT flags_ = vk::PipelineRasterizationConservativeStateCreateFlagsEXT(),
+                                                                                vk::ConservativeRasterizationModeEXT conservativeRasterizationMode_ = vk::ConservativeRasterizationModeEXT::eDisabled,
+                                                                                float extraPrimitiveOverestimationSize_ = 0 )
         : flags( flags_ )
         , conservativeRasterizationMode( conservativeRasterizationMode_ )
         , extraPrimitiveOverestimationSize( extraPrimitiveOverestimationSize_ )
@@ -53515,9 +53537,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineRasterizationConservativeStateCreateInfoEXT : public layout::PipelineRasterizationConservativeStateCreateInfoEXT
   {
-    PipelineRasterizationConservativeStateCreateInfoEXT( vk::PipelineRasterizationConservativeStateCreateFlagsEXT flags_ = vk::PipelineRasterizationConservativeStateCreateFlagsEXT(),
-                                                         vk::ConservativeRasterizationModeEXT conservativeRasterizationMode_ = vk::ConservativeRasterizationModeEXT::eDisabled,
-                                                         float extraPrimitiveOverestimationSize_ = 0 )
+    VULKAN_HPP_CONSTEXPR PipelineRasterizationConservativeStateCreateInfoEXT( vk::PipelineRasterizationConservativeStateCreateFlagsEXT flags_ = vk::PipelineRasterizationConservativeStateCreateFlagsEXT(),
+                                                                              vk::ConservativeRasterizationModeEXT conservativeRasterizationMode_ = vk::ConservativeRasterizationModeEXT::eDisabled,
+                                                                              float extraPrimitiveOverestimationSize_ = 0 )
       : layout::PipelineRasterizationConservativeStateCreateInfoEXT( flags_, conservativeRasterizationMode_, extraPrimitiveOverestimationSize_ )
     {}
 
@@ -53590,8 +53612,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct PipelineRasterizationDepthClipStateCreateInfoEXT
     {
     protected:
-      PipelineRasterizationDepthClipStateCreateInfoEXT( vk::PipelineRasterizationDepthClipStateCreateFlagsEXT flags_ = vk::PipelineRasterizationDepthClipStateCreateFlagsEXT(),
-                                                        vk::Bool32 depthClipEnable_ = 0 )
+      VULKAN_HPP_CONSTEXPR PipelineRasterizationDepthClipStateCreateInfoEXT( vk::PipelineRasterizationDepthClipStateCreateFlagsEXT flags_ = vk::PipelineRasterizationDepthClipStateCreateFlagsEXT(),
+                                                                             vk::Bool32 depthClipEnable_ = 0 )
         : flags( flags_ )
         , depthClipEnable( depthClipEnable_ )
       {}
@@ -53618,8 +53640,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineRasterizationDepthClipStateCreateInfoEXT : public layout::PipelineRasterizationDepthClipStateCreateInfoEXT
   {
-    PipelineRasterizationDepthClipStateCreateInfoEXT( vk::PipelineRasterizationDepthClipStateCreateFlagsEXT flags_ = vk::PipelineRasterizationDepthClipStateCreateFlagsEXT(),
-                                                      vk::Bool32 depthClipEnable_ = 0 )
+    VULKAN_HPP_CONSTEXPR PipelineRasterizationDepthClipStateCreateInfoEXT( vk::PipelineRasterizationDepthClipStateCreateFlagsEXT flags_ = vk::PipelineRasterizationDepthClipStateCreateFlagsEXT(),
+                                                                           vk::Bool32 depthClipEnable_ = 0 )
       : layout::PipelineRasterizationDepthClipStateCreateInfoEXT( flags_, depthClipEnable_ )
     {}
 
@@ -53685,10 +53707,10 @@ namespace VULKAN_HPP_NAMESPACE
     struct PipelineRasterizationLineStateCreateInfoEXT
     {
     protected:
-      PipelineRasterizationLineStateCreateInfoEXT( vk::LineRasterizationModeEXT lineRasterizationMode_ = vk::LineRasterizationModeEXT::eDefault,
-                                                   vk::Bool32 stippledLineEnable_ = 0,
-                                                   uint32_t lineStippleFactor_ = 0,
-                                                   uint16_t lineStipplePattern_ = 0 )
+      VULKAN_HPP_CONSTEXPR PipelineRasterizationLineStateCreateInfoEXT( vk::LineRasterizationModeEXT lineRasterizationMode_ = vk::LineRasterizationModeEXT::eDefault,
+                                                                        vk::Bool32 stippledLineEnable_ = 0,
+                                                                        uint32_t lineStippleFactor_ = 0,
+                                                                        uint16_t lineStipplePattern_ = 0 )
         : lineRasterizationMode( lineRasterizationMode_ )
         , stippledLineEnable( stippledLineEnable_ )
         , lineStippleFactor( lineStippleFactor_ )
@@ -53719,10 +53741,10 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineRasterizationLineStateCreateInfoEXT : public layout::PipelineRasterizationLineStateCreateInfoEXT
   {
-    PipelineRasterizationLineStateCreateInfoEXT( vk::LineRasterizationModeEXT lineRasterizationMode_ = vk::LineRasterizationModeEXT::eDefault,
-                                                 vk::Bool32 stippledLineEnable_ = 0,
-                                                 uint32_t lineStippleFactor_ = 0,
-                                                 uint16_t lineStipplePattern_ = 0 )
+    VULKAN_HPP_CONSTEXPR PipelineRasterizationLineStateCreateInfoEXT( vk::LineRasterizationModeEXT lineRasterizationMode_ = vk::LineRasterizationModeEXT::eDefault,
+                                                                      vk::Bool32 stippledLineEnable_ = 0,
+                                                                      uint32_t lineStippleFactor_ = 0,
+                                                                      uint16_t lineStipplePattern_ = 0 )
       : layout::PipelineRasterizationLineStateCreateInfoEXT( lineRasterizationMode_, stippledLineEnable_, lineStippleFactor_, lineStipplePattern_ )
     {}
 
@@ -53802,7 +53824,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PipelineRasterizationStateRasterizationOrderAMD
     {
     protected:
-      PipelineRasterizationStateRasterizationOrderAMD( vk::RasterizationOrderAMD rasterizationOrder_ = vk::RasterizationOrderAMD::eStrict )
+      VULKAN_HPP_CONSTEXPR PipelineRasterizationStateRasterizationOrderAMD( vk::RasterizationOrderAMD rasterizationOrder_ = vk::RasterizationOrderAMD::eStrict )
         : rasterizationOrder( rasterizationOrder_ )
       {}
 
@@ -53827,7 +53849,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineRasterizationStateRasterizationOrderAMD : public layout::PipelineRasterizationStateRasterizationOrderAMD
   {
-    PipelineRasterizationStateRasterizationOrderAMD( vk::RasterizationOrderAMD rasterizationOrder_ = vk::RasterizationOrderAMD::eStrict )
+    VULKAN_HPP_CONSTEXPR PipelineRasterizationStateRasterizationOrderAMD( vk::RasterizationOrderAMD rasterizationOrder_ = vk::RasterizationOrderAMD::eStrict )
       : layout::PipelineRasterizationStateRasterizationOrderAMD( rasterizationOrder_ )
     {}
 
@@ -53886,8 +53908,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct PipelineRasterizationStateStreamCreateInfoEXT
     {
     protected:
-      PipelineRasterizationStateStreamCreateInfoEXT( vk::PipelineRasterizationStateStreamCreateFlagsEXT flags_ = vk::PipelineRasterizationStateStreamCreateFlagsEXT(),
-                                                     uint32_t rasterizationStream_ = 0 )
+      VULKAN_HPP_CONSTEXPR PipelineRasterizationStateStreamCreateInfoEXT( vk::PipelineRasterizationStateStreamCreateFlagsEXT flags_ = vk::PipelineRasterizationStateStreamCreateFlagsEXT(),
+                                                                          uint32_t rasterizationStream_ = 0 )
         : flags( flags_ )
         , rasterizationStream( rasterizationStream_ )
       {}
@@ -53914,8 +53936,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineRasterizationStateStreamCreateInfoEXT : public layout::PipelineRasterizationStateStreamCreateInfoEXT
   {
-    PipelineRasterizationStateStreamCreateInfoEXT( vk::PipelineRasterizationStateStreamCreateFlagsEXT flags_ = vk::PipelineRasterizationStateStreamCreateFlagsEXT(),
-                                                   uint32_t rasterizationStream_ = 0 )
+    VULKAN_HPP_CONSTEXPR PipelineRasterizationStateStreamCreateInfoEXT( vk::PipelineRasterizationStateStreamCreateFlagsEXT flags_ = vk::PipelineRasterizationStateStreamCreateFlagsEXT(),
+                                                                        uint32_t rasterizationStream_ = 0 )
       : layout::PipelineRasterizationStateStreamCreateInfoEXT( flags_, rasterizationStream_ )
     {}
 
@@ -53981,7 +54003,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PipelineRepresentativeFragmentTestStateCreateInfoNV
     {
     protected:
-      PipelineRepresentativeFragmentTestStateCreateInfoNV( vk::Bool32 representativeFragmentTestEnable_ = 0 )
+      VULKAN_HPP_CONSTEXPR PipelineRepresentativeFragmentTestStateCreateInfoNV( vk::Bool32 representativeFragmentTestEnable_ = 0 )
         : representativeFragmentTestEnable( representativeFragmentTestEnable_ )
       {}
 
@@ -54006,7 +54028,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineRepresentativeFragmentTestStateCreateInfoNV : public layout::PipelineRepresentativeFragmentTestStateCreateInfoNV
   {
-    PipelineRepresentativeFragmentTestStateCreateInfoNV( vk::Bool32 representativeFragmentTestEnable_ = 0 )
+    VULKAN_HPP_CONSTEXPR PipelineRepresentativeFragmentTestStateCreateInfoNV( vk::Bool32 representativeFragmentTestEnable_ = 0 )
       : layout::PipelineRepresentativeFragmentTestStateCreateInfoNV( representativeFragmentTestEnable_ )
     {}
 
@@ -54065,8 +54087,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct PipelineSampleLocationsStateCreateInfoEXT
     {
     protected:
-      PipelineSampleLocationsStateCreateInfoEXT( vk::Bool32 sampleLocationsEnable_ = 0,
-                                                 vk::SampleLocationsInfoEXT sampleLocationsInfo_ = vk::SampleLocationsInfoEXT() )
+      VULKAN_HPP_CONSTEXPR PipelineSampleLocationsStateCreateInfoEXT( vk::Bool32 sampleLocationsEnable_ = 0,
+                                                                      vk::SampleLocationsInfoEXT sampleLocationsInfo_ = vk::SampleLocationsInfoEXT() )
         : sampleLocationsEnable( sampleLocationsEnable_ )
         , sampleLocationsInfo( sampleLocationsInfo_ )
       {}
@@ -54093,8 +54115,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineSampleLocationsStateCreateInfoEXT : public layout::PipelineSampleLocationsStateCreateInfoEXT
   {
-    PipelineSampleLocationsStateCreateInfoEXT( vk::Bool32 sampleLocationsEnable_ = 0,
-                                               vk::SampleLocationsInfoEXT sampleLocationsInfo_ = vk::SampleLocationsInfoEXT() )
+    VULKAN_HPP_CONSTEXPR PipelineSampleLocationsStateCreateInfoEXT( vk::Bool32 sampleLocationsEnable_ = 0,
+                                                                    vk::SampleLocationsInfoEXT sampleLocationsInfo_ = vk::SampleLocationsInfoEXT() )
       : layout::PipelineSampleLocationsStateCreateInfoEXT( sampleLocationsEnable_, sampleLocationsInfo_ )
     {}
 
@@ -54231,7 +54253,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PipelineTessellationDomainOriginStateCreateInfo
     {
     protected:
-      PipelineTessellationDomainOriginStateCreateInfo( vk::TessellationDomainOrigin domainOrigin_ = vk::TessellationDomainOrigin::eUpperLeft )
+      VULKAN_HPP_CONSTEXPR PipelineTessellationDomainOriginStateCreateInfo( vk::TessellationDomainOrigin domainOrigin_ = vk::TessellationDomainOrigin::eUpperLeft )
         : domainOrigin( domainOrigin_ )
       {}
 
@@ -54256,7 +54278,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineTessellationDomainOriginStateCreateInfo : public layout::PipelineTessellationDomainOriginStateCreateInfo
   {
-    PipelineTessellationDomainOriginStateCreateInfo( vk::TessellationDomainOrigin domainOrigin_ = vk::TessellationDomainOrigin::eUpperLeft )
+    VULKAN_HPP_CONSTEXPR PipelineTessellationDomainOriginStateCreateInfo( vk::TessellationDomainOrigin domainOrigin_ = vk::TessellationDomainOrigin::eUpperLeft )
       : layout::PipelineTessellationDomainOriginStateCreateInfo( domainOrigin_ )
     {}
 
@@ -54312,8 +54334,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct VertexInputBindingDivisorDescriptionEXT
   {
-    VertexInputBindingDivisorDescriptionEXT( uint32_t binding_ = 0,
-                                             uint32_t divisor_ = 0 )
+    VULKAN_HPP_CONSTEXPR VertexInputBindingDivisorDescriptionEXT( uint32_t binding_ = 0,
+                                                                  uint32_t divisor_ = 0 )
       : binding( binding_ )
       , divisor( divisor_ )
     {}
@@ -54374,8 +54396,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct PipelineVertexInputDivisorStateCreateInfoEXT
     {
     protected:
-      PipelineVertexInputDivisorStateCreateInfoEXT( uint32_t vertexBindingDivisorCount_ = 0,
-                                                    const vk::VertexInputBindingDivisorDescriptionEXT* pVertexBindingDivisors_ = nullptr )
+      VULKAN_HPP_CONSTEXPR PipelineVertexInputDivisorStateCreateInfoEXT( uint32_t vertexBindingDivisorCount_ = 0,
+                                                                         const vk::VertexInputBindingDivisorDescriptionEXT* pVertexBindingDivisors_ = nullptr )
         : vertexBindingDivisorCount( vertexBindingDivisorCount_ )
         , pVertexBindingDivisors( pVertexBindingDivisors_ )
       {}
@@ -54402,8 +54424,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineVertexInputDivisorStateCreateInfoEXT : public layout::PipelineVertexInputDivisorStateCreateInfoEXT
   {
-    PipelineVertexInputDivisorStateCreateInfoEXT( uint32_t vertexBindingDivisorCount_ = 0,
-                                                  const vk::VertexInputBindingDivisorDescriptionEXT* pVertexBindingDivisors_ = nullptr )
+    VULKAN_HPP_CONSTEXPR PipelineVertexInputDivisorStateCreateInfoEXT( uint32_t vertexBindingDivisorCount_ = 0,
+                                                                       const vk::VertexInputBindingDivisorDescriptionEXT* pVertexBindingDivisors_ = nullptr )
       : layout::PipelineVertexInputDivisorStateCreateInfoEXT( vertexBindingDivisorCount_, pVertexBindingDivisors_ )
     {}
 
@@ -54469,9 +54491,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct PipelineViewportCoarseSampleOrderStateCreateInfoNV
     {
     protected:
-      PipelineViewportCoarseSampleOrderStateCreateInfoNV( vk::CoarseSampleOrderTypeNV sampleOrderType_ = vk::CoarseSampleOrderTypeNV::eDefault,
-                                                          uint32_t customSampleOrderCount_ = 0,
-                                                          const vk::CoarseSampleOrderCustomNV* pCustomSampleOrders_ = nullptr )
+      VULKAN_HPP_CONSTEXPR PipelineViewportCoarseSampleOrderStateCreateInfoNV( vk::CoarseSampleOrderTypeNV sampleOrderType_ = vk::CoarseSampleOrderTypeNV::eDefault,
+                                                                               uint32_t customSampleOrderCount_ = 0,
+                                                                               const vk::CoarseSampleOrderCustomNV* pCustomSampleOrders_ = nullptr )
         : sampleOrderType( sampleOrderType_ )
         , customSampleOrderCount( customSampleOrderCount_ )
         , pCustomSampleOrders( pCustomSampleOrders_ )
@@ -54500,9 +54522,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineViewportCoarseSampleOrderStateCreateInfoNV : public layout::PipelineViewportCoarseSampleOrderStateCreateInfoNV
   {
-    PipelineViewportCoarseSampleOrderStateCreateInfoNV( vk::CoarseSampleOrderTypeNV sampleOrderType_ = vk::CoarseSampleOrderTypeNV::eDefault,
-                                                        uint32_t customSampleOrderCount_ = 0,
-                                                        const vk::CoarseSampleOrderCustomNV* pCustomSampleOrders_ = nullptr )
+    VULKAN_HPP_CONSTEXPR PipelineViewportCoarseSampleOrderStateCreateInfoNV( vk::CoarseSampleOrderTypeNV sampleOrderType_ = vk::CoarseSampleOrderTypeNV::eDefault,
+                                                                             uint32_t customSampleOrderCount_ = 0,
+                                                                             const vk::CoarseSampleOrderCustomNV* pCustomSampleOrders_ = nullptr )
       : layout::PipelineViewportCoarseSampleOrderStateCreateInfoNV( sampleOrderType_, customSampleOrderCount_, pCustomSampleOrders_ )
     {}
 
@@ -54575,8 +54597,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct PipelineViewportExclusiveScissorStateCreateInfoNV
     {
     protected:
-      PipelineViewportExclusiveScissorStateCreateInfoNV( uint32_t exclusiveScissorCount_ = 0,
-                                                         const vk::Rect2D* pExclusiveScissors_ = nullptr )
+      VULKAN_HPP_CONSTEXPR PipelineViewportExclusiveScissorStateCreateInfoNV( uint32_t exclusiveScissorCount_ = 0,
+                                                                              const vk::Rect2D* pExclusiveScissors_ = nullptr )
         : exclusiveScissorCount( exclusiveScissorCount_ )
         , pExclusiveScissors( pExclusiveScissors_ )
       {}
@@ -54603,8 +54625,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineViewportExclusiveScissorStateCreateInfoNV : public layout::PipelineViewportExclusiveScissorStateCreateInfoNV
   {
-    PipelineViewportExclusiveScissorStateCreateInfoNV( uint32_t exclusiveScissorCount_ = 0,
-                                                       const vk::Rect2D* pExclusiveScissors_ = nullptr )
+    VULKAN_HPP_CONSTEXPR PipelineViewportExclusiveScissorStateCreateInfoNV( uint32_t exclusiveScissorCount_ = 0,
+                                                                            const vk::Rect2D* pExclusiveScissors_ = nullptr )
       : layout::PipelineViewportExclusiveScissorStateCreateInfoNV( exclusiveScissorCount_, pExclusiveScissors_ )
     {}
 
@@ -54667,8 +54689,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ShadingRatePaletteNV
   {
-    ShadingRatePaletteNV( uint32_t shadingRatePaletteEntryCount_ = 0,
-                          const vk::ShadingRatePaletteEntryNV* pShadingRatePaletteEntries_ = nullptr )
+    VULKAN_HPP_CONSTEXPR ShadingRatePaletteNV( uint32_t shadingRatePaletteEntryCount_ = 0,
+                                               const vk::ShadingRatePaletteEntryNV* pShadingRatePaletteEntries_ = nullptr )
       : shadingRatePaletteEntryCount( shadingRatePaletteEntryCount_ )
       , pShadingRatePaletteEntries( pShadingRatePaletteEntries_ )
     {}
@@ -54729,9 +54751,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct PipelineViewportShadingRateImageStateCreateInfoNV
     {
     protected:
-      PipelineViewportShadingRateImageStateCreateInfoNV( vk::Bool32 shadingRateImageEnable_ = 0,
-                                                         uint32_t viewportCount_ = 0,
-                                                         const vk::ShadingRatePaletteNV* pShadingRatePalettes_ = nullptr )
+      VULKAN_HPP_CONSTEXPR PipelineViewportShadingRateImageStateCreateInfoNV( vk::Bool32 shadingRateImageEnable_ = 0,
+                                                                              uint32_t viewportCount_ = 0,
+                                                                              const vk::ShadingRatePaletteNV* pShadingRatePalettes_ = nullptr )
         : shadingRateImageEnable( shadingRateImageEnable_ )
         , viewportCount( viewportCount_ )
         , pShadingRatePalettes( pShadingRatePalettes_ )
@@ -54760,9 +54782,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineViewportShadingRateImageStateCreateInfoNV : public layout::PipelineViewportShadingRateImageStateCreateInfoNV
   {
-    PipelineViewportShadingRateImageStateCreateInfoNV( vk::Bool32 shadingRateImageEnable_ = 0,
-                                                       uint32_t viewportCount_ = 0,
-                                                       const vk::ShadingRatePaletteNV* pShadingRatePalettes_ = nullptr )
+    VULKAN_HPP_CONSTEXPR PipelineViewportShadingRateImageStateCreateInfoNV( vk::Bool32 shadingRateImageEnable_ = 0,
+                                                                            uint32_t viewportCount_ = 0,
+                                                                            const vk::ShadingRatePaletteNV* pShadingRatePalettes_ = nullptr )
       : layout::PipelineViewportShadingRateImageStateCreateInfoNV( shadingRateImageEnable_, viewportCount_, pShadingRatePalettes_ )
     {}
 
@@ -54832,10 +54854,10 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ViewportSwizzleNV
   {
-    ViewportSwizzleNV( vk::ViewportCoordinateSwizzleNV x_ = vk::ViewportCoordinateSwizzleNV::ePositiveX,
-                       vk::ViewportCoordinateSwizzleNV y_ = vk::ViewportCoordinateSwizzleNV::ePositiveX,
-                       vk::ViewportCoordinateSwizzleNV z_ = vk::ViewportCoordinateSwizzleNV::ePositiveX,
-                       vk::ViewportCoordinateSwizzleNV w_ = vk::ViewportCoordinateSwizzleNV::ePositiveX )
+    VULKAN_HPP_CONSTEXPR ViewportSwizzleNV( vk::ViewportCoordinateSwizzleNV x_ = vk::ViewportCoordinateSwizzleNV::ePositiveX,
+                                            vk::ViewportCoordinateSwizzleNV y_ = vk::ViewportCoordinateSwizzleNV::ePositiveX,
+                                            vk::ViewportCoordinateSwizzleNV z_ = vk::ViewportCoordinateSwizzleNV::ePositiveX,
+                                            vk::ViewportCoordinateSwizzleNV w_ = vk::ViewportCoordinateSwizzleNV::ePositiveX )
       : x( x_ )
       , y( y_ )
       , z( z_ )
@@ -54914,9 +54936,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct PipelineViewportSwizzleStateCreateInfoNV
     {
     protected:
-      PipelineViewportSwizzleStateCreateInfoNV( vk::PipelineViewportSwizzleStateCreateFlagsNV flags_ = vk::PipelineViewportSwizzleStateCreateFlagsNV(),
-                                                uint32_t viewportCount_ = 0,
-                                                const vk::ViewportSwizzleNV* pViewportSwizzles_ = nullptr )
+      VULKAN_HPP_CONSTEXPR PipelineViewportSwizzleStateCreateInfoNV( vk::PipelineViewportSwizzleStateCreateFlagsNV flags_ = vk::PipelineViewportSwizzleStateCreateFlagsNV(),
+                                                                     uint32_t viewportCount_ = 0,
+                                                                     const vk::ViewportSwizzleNV* pViewportSwizzles_ = nullptr )
         : flags( flags_ )
         , viewportCount( viewportCount_ )
         , pViewportSwizzles( pViewportSwizzles_ )
@@ -54945,9 +54967,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineViewportSwizzleStateCreateInfoNV : public layout::PipelineViewportSwizzleStateCreateInfoNV
   {
-    PipelineViewportSwizzleStateCreateInfoNV( vk::PipelineViewportSwizzleStateCreateFlagsNV flags_ = vk::PipelineViewportSwizzleStateCreateFlagsNV(),
-                                              uint32_t viewportCount_ = 0,
-                                              const vk::ViewportSwizzleNV* pViewportSwizzles_ = nullptr )
+    VULKAN_HPP_CONSTEXPR PipelineViewportSwizzleStateCreateInfoNV( vk::PipelineViewportSwizzleStateCreateFlagsNV flags_ = vk::PipelineViewportSwizzleStateCreateFlagsNV(),
+                                                                   uint32_t viewportCount_ = 0,
+                                                                   const vk::ViewportSwizzleNV* pViewportSwizzles_ = nullptr )
       : layout::PipelineViewportSwizzleStateCreateInfoNV( flags_, viewportCount_, pViewportSwizzles_ )
     {}
 
@@ -55017,8 +55039,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ViewportWScalingNV
   {
-    ViewportWScalingNV( float xcoeff_ = 0,
-                        float ycoeff_ = 0 )
+    VULKAN_HPP_CONSTEXPR ViewportWScalingNV( float xcoeff_ = 0,
+                                             float ycoeff_ = 0 )
       : xcoeff( xcoeff_ )
       , ycoeff( ycoeff_ )
     {}
@@ -55079,9 +55101,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct PipelineViewportWScalingStateCreateInfoNV
     {
     protected:
-      PipelineViewportWScalingStateCreateInfoNV( vk::Bool32 viewportWScalingEnable_ = 0,
-                                                 uint32_t viewportCount_ = 0,
-                                                 const vk::ViewportWScalingNV* pViewportWScalings_ = nullptr )
+      VULKAN_HPP_CONSTEXPR PipelineViewportWScalingStateCreateInfoNV( vk::Bool32 viewportWScalingEnable_ = 0,
+                                                                      uint32_t viewportCount_ = 0,
+                                                                      const vk::ViewportWScalingNV* pViewportWScalings_ = nullptr )
         : viewportWScalingEnable( viewportWScalingEnable_ )
         , viewportCount( viewportCount_ )
         , pViewportWScalings( pViewportWScalings_ )
@@ -55110,9 +55132,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineViewportWScalingStateCreateInfoNV : public layout::PipelineViewportWScalingStateCreateInfoNV
   {
-    PipelineViewportWScalingStateCreateInfoNV( vk::Bool32 viewportWScalingEnable_ = 0,
-                                               uint32_t viewportCount_ = 0,
-                                               const vk::ViewportWScalingNV* pViewportWScalings_ = nullptr )
+    VULKAN_HPP_CONSTEXPR PipelineViewportWScalingStateCreateInfoNV( vk::Bool32 viewportWScalingEnable_ = 0,
+                                                                    uint32_t viewportCount_ = 0,
+                                                                    const vk::ViewportWScalingNV* pViewportWScalings_ = nullptr )
       : layout::PipelineViewportWScalingStateCreateInfoNV( viewportWScalingEnable_, viewportCount_, pViewportWScalings_ )
     {}
 
@@ -55187,7 +55209,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct PresentFrameTokenGGP
     {
     protected:
-      PresentFrameTokenGGP( GgpFrameToken frameToken_ = 0 )
+      VULKAN_HPP_CONSTEXPR PresentFrameTokenGGP( GgpFrameToken frameToken_ = 0 )
         : frameToken( frameToken_ )
       {}
 
@@ -55212,7 +55234,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PresentFrameTokenGGP : public layout::PresentFrameTokenGGP
   {
-    PresentFrameTokenGGP( GgpFrameToken frameToken_ = 0 )
+    VULKAN_HPP_CONSTEXPR PresentFrameTokenGGP( GgpFrameToken frameToken_ = 0 )
       : layout::PresentFrameTokenGGP( frameToken_ )
     {}
 
@@ -55272,12 +55294,12 @@ namespace VULKAN_HPP_NAMESPACE
     struct PresentInfoKHR
     {
     protected:
-      PresentInfoKHR( uint32_t waitSemaphoreCount_ = 0,
-                      const vk::Semaphore* pWaitSemaphores_ = nullptr,
-                      uint32_t swapchainCount_ = 0,
-                      const vk::SwapchainKHR* pSwapchains_ = nullptr,
-                      const uint32_t* pImageIndices_ = nullptr,
-                      vk::Result* pResults_ = nullptr )
+      VULKAN_HPP_CONSTEXPR PresentInfoKHR( uint32_t waitSemaphoreCount_ = 0,
+                                           const vk::Semaphore* pWaitSemaphores_ = nullptr,
+                                           uint32_t swapchainCount_ = 0,
+                                           const vk::SwapchainKHR* pSwapchains_ = nullptr,
+                                           const uint32_t* pImageIndices_ = nullptr,
+                                           vk::Result* pResults_ = nullptr )
         : waitSemaphoreCount( waitSemaphoreCount_ )
         , pWaitSemaphores( pWaitSemaphores_ )
         , swapchainCount( swapchainCount_ )
@@ -55312,12 +55334,12 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PresentInfoKHR : public layout::PresentInfoKHR
   {
-    PresentInfoKHR( uint32_t waitSemaphoreCount_ = 0,
-                    const vk::Semaphore* pWaitSemaphores_ = nullptr,
-                    uint32_t swapchainCount_ = 0,
-                    const vk::SwapchainKHR* pSwapchains_ = nullptr,
-                    const uint32_t* pImageIndices_ = nullptr,
-                    vk::Result* pResults_ = nullptr )
+    VULKAN_HPP_CONSTEXPR PresentInfoKHR( uint32_t waitSemaphoreCount_ = 0,
+                                         const vk::Semaphore* pWaitSemaphores_ = nullptr,
+                                         uint32_t swapchainCount_ = 0,
+                                         const vk::SwapchainKHR* pSwapchains_ = nullptr,
+                                         const uint32_t* pImageIndices_ = nullptr,
+                                         vk::Result* pResults_ = nullptr )
       : layout::PresentInfoKHR( waitSemaphoreCount_, pWaitSemaphores_, swapchainCount_, pSwapchains_, pImageIndices_, pResults_ )
     {}
 
@@ -55408,9 +55430,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct RectLayerKHR
   {
-    RectLayerKHR( vk::Offset2D offset_ = vk::Offset2D(),
-                  vk::Extent2D extent_ = vk::Extent2D(),
-                  uint32_t layer_ = 0 )
+    VULKAN_HPP_CONSTEXPR RectLayerKHR( vk::Offset2D offset_ = vk::Offset2D(),
+                                       vk::Extent2D extent_ = vk::Extent2D(),
+                                       uint32_t layer_ = 0 )
       : offset( offset_ )
       , extent( extent_ )
       , layer( layer_ )
@@ -55484,8 +55506,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PresentRegionKHR
   {
-    PresentRegionKHR( uint32_t rectangleCount_ = 0,
-                      const vk::RectLayerKHR* pRectangles_ = nullptr )
+    VULKAN_HPP_CONSTEXPR PresentRegionKHR( uint32_t rectangleCount_ = 0,
+                                           const vk::RectLayerKHR* pRectangles_ = nullptr )
       : rectangleCount( rectangleCount_ )
       , pRectangles( pRectangles_ )
     {}
@@ -55546,8 +55568,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct PresentRegionsKHR
     {
     protected:
-      PresentRegionsKHR( uint32_t swapchainCount_ = 0,
-                         const vk::PresentRegionKHR* pRegions_ = nullptr )
+      VULKAN_HPP_CONSTEXPR PresentRegionsKHR( uint32_t swapchainCount_ = 0,
+                                              const vk::PresentRegionKHR* pRegions_ = nullptr )
         : swapchainCount( swapchainCount_ )
         , pRegions( pRegions_ )
       {}
@@ -55574,8 +55596,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PresentRegionsKHR : public layout::PresentRegionsKHR
   {
-    PresentRegionsKHR( uint32_t swapchainCount_ = 0,
-                       const vk::PresentRegionKHR* pRegions_ = nullptr )
+    VULKAN_HPP_CONSTEXPR PresentRegionsKHR( uint32_t swapchainCount_ = 0,
+                                            const vk::PresentRegionKHR* pRegions_ = nullptr )
       : layout::PresentRegionsKHR( swapchainCount_, pRegions_ )
     {}
 
@@ -55638,8 +55660,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PresentTimeGOOGLE
   {
-    PresentTimeGOOGLE( uint32_t presentID_ = 0,
-                       uint64_t desiredPresentTime_ = 0 )
+    VULKAN_HPP_CONSTEXPR PresentTimeGOOGLE( uint32_t presentID_ = 0,
+                                            uint64_t desiredPresentTime_ = 0 )
       : presentID( presentID_ )
       , desiredPresentTime( desiredPresentTime_ )
     {}
@@ -55700,8 +55722,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct PresentTimesInfoGOOGLE
     {
     protected:
-      PresentTimesInfoGOOGLE( uint32_t swapchainCount_ = 0,
-                              const vk::PresentTimeGOOGLE* pTimes_ = nullptr )
+      VULKAN_HPP_CONSTEXPR PresentTimesInfoGOOGLE( uint32_t swapchainCount_ = 0,
+                                                   const vk::PresentTimeGOOGLE* pTimes_ = nullptr )
         : swapchainCount( swapchainCount_ )
         , pTimes( pTimes_ )
       {}
@@ -55728,8 +55750,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PresentTimesInfoGOOGLE : public layout::PresentTimesInfoGOOGLE
   {
-    PresentTimesInfoGOOGLE( uint32_t swapchainCount_ = 0,
-                            const vk::PresentTimeGOOGLE* pTimes_ = nullptr )
+    VULKAN_HPP_CONSTEXPR PresentTimesInfoGOOGLE( uint32_t swapchainCount_ = 0,
+                                                 const vk::PresentTimeGOOGLE* pTimes_ = nullptr )
       : layout::PresentTimesInfoGOOGLE( swapchainCount_, pTimes_ )
     {}
 
@@ -55795,7 +55817,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct ProtectedSubmitInfo
     {
     protected:
-      ProtectedSubmitInfo( vk::Bool32 protectedSubmit_ = 0 )
+      VULKAN_HPP_CONSTEXPR ProtectedSubmitInfo( vk::Bool32 protectedSubmit_ = 0 )
         : protectedSubmit( protectedSubmit_ )
       {}
 
@@ -55820,7 +55842,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ProtectedSubmitInfo : public layout::ProtectedSubmitInfo
   {
-    ProtectedSubmitInfo( vk::Bool32 protectedSubmit_ = 0 )
+    VULKAN_HPP_CONSTEXPR ProtectedSubmitInfo( vk::Bool32 protectedSubmit_ = 0 )
       : layout::ProtectedSubmitInfo( protectedSubmit_ )
     {}
 
@@ -55879,10 +55901,10 @@ namespace VULKAN_HPP_NAMESPACE
     struct QueryPoolCreateInfo
     {
     protected:
-      QueryPoolCreateInfo( vk::QueryPoolCreateFlags flags_ = vk::QueryPoolCreateFlags(),
-                           vk::QueryType queryType_ = vk::QueryType::eOcclusion,
-                           uint32_t queryCount_ = 0,
-                           vk::QueryPipelineStatisticFlags pipelineStatistics_ = vk::QueryPipelineStatisticFlags() )
+      VULKAN_HPP_CONSTEXPR QueryPoolCreateInfo( vk::QueryPoolCreateFlags flags_ = vk::QueryPoolCreateFlags(),
+                                                vk::QueryType queryType_ = vk::QueryType::eOcclusion,
+                                                uint32_t queryCount_ = 0,
+                                                vk::QueryPipelineStatisticFlags pipelineStatistics_ = vk::QueryPipelineStatisticFlags() )
         : flags( flags_ )
         , queryType( queryType_ )
         , queryCount( queryCount_ )
@@ -55913,10 +55935,10 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct QueryPoolCreateInfo : public layout::QueryPoolCreateInfo
   {
-    QueryPoolCreateInfo( vk::QueryPoolCreateFlags flags_ = vk::QueryPoolCreateFlags(),
-                         vk::QueryType queryType_ = vk::QueryType::eOcclusion,
-                         uint32_t queryCount_ = 0,
-                         vk::QueryPipelineStatisticFlags pipelineStatistics_ = vk::QueryPipelineStatisticFlags() )
+    VULKAN_HPP_CONSTEXPR QueryPoolCreateInfo( vk::QueryPoolCreateFlags flags_ = vk::QueryPoolCreateFlags(),
+                                              vk::QueryType queryType_ = vk::QueryType::eOcclusion,
+                                              uint32_t queryCount_ = 0,
+                                              vk::QueryPipelineStatisticFlags pipelineStatistics_ = vk::QueryPipelineStatisticFlags() )
       : layout::QueryPoolCreateInfo( flags_, queryType_, queryCount_, pipelineStatistics_ )
     {}
 
@@ -55996,7 +56018,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct QueryPoolCreateInfoINTEL
     {
     protected:
-      QueryPoolCreateInfoINTEL( vk::QueryPoolSamplingModeINTEL performanceCountersSampling_ = vk::QueryPoolSamplingModeINTEL::eManual )
+      VULKAN_HPP_CONSTEXPR QueryPoolCreateInfoINTEL( vk::QueryPoolSamplingModeINTEL performanceCountersSampling_ = vk::QueryPoolSamplingModeINTEL::eManual )
         : performanceCountersSampling( performanceCountersSampling_ )
       {}
 
@@ -56021,7 +56043,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct QueryPoolCreateInfoINTEL : public layout::QueryPoolCreateInfoINTEL
   {
-    QueryPoolCreateInfoINTEL( vk::QueryPoolSamplingModeINTEL performanceCountersSampling_ = vk::QueryPoolSamplingModeINTEL::eManual )
+    VULKAN_HPP_CONSTEXPR QueryPoolCreateInfoINTEL( vk::QueryPoolSamplingModeINTEL performanceCountersSampling_ = vk::QueryPoolSamplingModeINTEL::eManual )
       : layout::QueryPoolCreateInfoINTEL( performanceCountersSampling_ )
     {}
 
@@ -56270,11 +56292,11 @@ namespace VULKAN_HPP_NAMESPACE
     struct RayTracingShaderGroupCreateInfoNV
     {
     protected:
-      RayTracingShaderGroupCreateInfoNV( vk::RayTracingShaderGroupTypeNV type_ = vk::RayTracingShaderGroupTypeNV::eGeneral,
-                                         uint32_t generalShader_ = 0,
-                                         uint32_t closestHitShader_ = 0,
-                                         uint32_t anyHitShader_ = 0,
-                                         uint32_t intersectionShader_ = 0 )
+      VULKAN_HPP_CONSTEXPR RayTracingShaderGroupCreateInfoNV( vk::RayTracingShaderGroupTypeNV type_ = vk::RayTracingShaderGroupTypeNV::eGeneral,
+                                                              uint32_t generalShader_ = 0,
+                                                              uint32_t closestHitShader_ = 0,
+                                                              uint32_t anyHitShader_ = 0,
+                                                              uint32_t intersectionShader_ = 0 )
         : type( type_ )
         , generalShader( generalShader_ )
         , closestHitShader( closestHitShader_ )
@@ -56307,11 +56329,11 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct RayTracingShaderGroupCreateInfoNV : public layout::RayTracingShaderGroupCreateInfoNV
   {
-    RayTracingShaderGroupCreateInfoNV( vk::RayTracingShaderGroupTypeNV type_ = vk::RayTracingShaderGroupTypeNV::eGeneral,
-                                       uint32_t generalShader_ = 0,
-                                       uint32_t closestHitShader_ = 0,
-                                       uint32_t anyHitShader_ = 0,
-                                       uint32_t intersectionShader_ = 0 )
+    VULKAN_HPP_CONSTEXPR RayTracingShaderGroupCreateInfoNV( vk::RayTracingShaderGroupTypeNV type_ = vk::RayTracingShaderGroupTypeNV::eGeneral,
+                                                            uint32_t generalShader_ = 0,
+                                                            uint32_t closestHitShader_ = 0,
+                                                            uint32_t anyHitShader_ = 0,
+                                                            uint32_t intersectionShader_ = 0 )
       : layout::RayTracingShaderGroupCreateInfoNV( type_, generalShader_, closestHitShader_, anyHitShader_, intersectionShader_ )
     {}
 
@@ -56398,15 +56420,15 @@ namespace VULKAN_HPP_NAMESPACE
     struct RayTracingPipelineCreateInfoNV
     {
     protected:
-      RayTracingPipelineCreateInfoNV( vk::PipelineCreateFlags flags_ = vk::PipelineCreateFlags(),
-                                      uint32_t stageCount_ = 0,
-                                      const vk::PipelineShaderStageCreateInfo* pStages_ = nullptr,
-                                      uint32_t groupCount_ = 0,
-                                      const vk::RayTracingShaderGroupCreateInfoNV* pGroups_ = nullptr,
-                                      uint32_t maxRecursionDepth_ = 0,
-                                      vk::PipelineLayout layout_ = vk::PipelineLayout(),
-                                      vk::Pipeline basePipelineHandle_ = vk::Pipeline(),
-                                      int32_t basePipelineIndex_ = 0 )
+      VULKAN_HPP_CONSTEXPR RayTracingPipelineCreateInfoNV( vk::PipelineCreateFlags flags_ = vk::PipelineCreateFlags(),
+                                                           uint32_t stageCount_ = 0,
+                                                           const vk::PipelineShaderStageCreateInfo* pStages_ = nullptr,
+                                                           uint32_t groupCount_ = 0,
+                                                           const vk::RayTracingShaderGroupCreateInfoNV* pGroups_ = nullptr,
+                                                           uint32_t maxRecursionDepth_ = 0,
+                                                           vk::PipelineLayout layout_ = vk::PipelineLayout(),
+                                                           vk::Pipeline basePipelineHandle_ = vk::Pipeline(),
+                                                           int32_t basePipelineIndex_ = 0 )
         : flags( flags_ )
         , stageCount( stageCount_ )
         , pStages( pStages_ )
@@ -56447,15 +56469,15 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct RayTracingPipelineCreateInfoNV : public layout::RayTracingPipelineCreateInfoNV
   {
-    RayTracingPipelineCreateInfoNV( vk::PipelineCreateFlags flags_ = vk::PipelineCreateFlags(),
-                                    uint32_t stageCount_ = 0,
-                                    const vk::PipelineShaderStageCreateInfo* pStages_ = nullptr,
-                                    uint32_t groupCount_ = 0,
-                                    const vk::RayTracingShaderGroupCreateInfoNV* pGroups_ = nullptr,
-                                    uint32_t maxRecursionDepth_ = 0,
-                                    vk::PipelineLayout layout_ = vk::PipelineLayout(),
-                                    vk::Pipeline basePipelineHandle_ = vk::Pipeline(),
-                                    int32_t basePipelineIndex_ = 0 )
+    VULKAN_HPP_CONSTEXPR RayTracingPipelineCreateInfoNV( vk::PipelineCreateFlags flags_ = vk::PipelineCreateFlags(),
+                                                         uint32_t stageCount_ = 0,
+                                                         const vk::PipelineShaderStageCreateInfo* pStages_ = nullptr,
+                                                         uint32_t groupCount_ = 0,
+                                                         const vk::RayTracingShaderGroupCreateInfoNV* pGroups_ = nullptr,
+                                                         uint32_t maxRecursionDepth_ = 0,
+                                                         vk::PipelineLayout layout_ = vk::PipelineLayout(),
+                                                         vk::Pipeline basePipelineHandle_ = vk::Pipeline(),
+                                                         int32_t basePipelineIndex_ = 0 )
       : layout::RayTracingPipelineCreateInfoNV( flags_, stageCount_, pStages_, groupCount_, pGroups_, maxRecursionDepth_, layout_, basePipelineHandle_, basePipelineIndex_ )
     {}
 
@@ -56612,8 +56634,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct RenderPassAttachmentBeginInfoKHR
     {
     protected:
-      RenderPassAttachmentBeginInfoKHR( uint32_t attachmentCount_ = 0,
-                                        const vk::ImageView* pAttachments_ = nullptr )
+      VULKAN_HPP_CONSTEXPR RenderPassAttachmentBeginInfoKHR( uint32_t attachmentCount_ = 0,
+                                                             const vk::ImageView* pAttachments_ = nullptr )
         : attachmentCount( attachmentCount_ )
         , pAttachments( pAttachments_ )
       {}
@@ -56640,8 +56662,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct RenderPassAttachmentBeginInfoKHR : public layout::RenderPassAttachmentBeginInfoKHR
   {
-    RenderPassAttachmentBeginInfoKHR( uint32_t attachmentCount_ = 0,
-                                      const vk::ImageView* pAttachments_ = nullptr )
+    VULKAN_HPP_CONSTEXPR RenderPassAttachmentBeginInfoKHR( uint32_t attachmentCount_ = 0,
+                                                           const vk::ImageView* pAttachments_ = nullptr )
       : layout::RenderPassAttachmentBeginInfoKHR( attachmentCount_, pAttachments_ )
     {}
 
@@ -56707,11 +56729,11 @@ namespace VULKAN_HPP_NAMESPACE
     struct RenderPassBeginInfo
     {
     protected:
-      RenderPassBeginInfo( vk::RenderPass renderPass_ = vk::RenderPass(),
-                           vk::Framebuffer framebuffer_ = vk::Framebuffer(),
-                           vk::Rect2D renderArea_ = vk::Rect2D(),
-                           uint32_t clearValueCount_ = 0,
-                           const vk::ClearValue* pClearValues_ = nullptr )
+      VULKAN_HPP_CONSTEXPR RenderPassBeginInfo( vk::RenderPass renderPass_ = vk::RenderPass(),
+                                                vk::Framebuffer framebuffer_ = vk::Framebuffer(),
+                                                vk::Rect2D renderArea_ = vk::Rect2D(),
+                                                uint32_t clearValueCount_ = 0,
+                                                const vk::ClearValue* pClearValues_ = nullptr )
         : renderPass( renderPass_ )
         , framebuffer( framebuffer_ )
         , renderArea( renderArea_ )
@@ -56744,11 +56766,11 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct RenderPassBeginInfo : public layout::RenderPassBeginInfo
   {
-    RenderPassBeginInfo( vk::RenderPass renderPass_ = vk::RenderPass(),
-                         vk::Framebuffer framebuffer_ = vk::Framebuffer(),
-                         vk::Rect2D renderArea_ = vk::Rect2D(),
-                         uint32_t clearValueCount_ = 0,
-                         const vk::ClearValue* pClearValues_ = nullptr )
+    VULKAN_HPP_CONSTEXPR RenderPassBeginInfo( vk::RenderPass renderPass_ = vk::RenderPass(),
+                                              vk::Framebuffer framebuffer_ = vk::Framebuffer(),
+                                              vk::Rect2D renderArea_ = vk::Rect2D(),
+                                              uint32_t clearValueCount_ = 0,
+                                              const vk::ClearValue* pClearValues_ = nullptr )
       : layout::RenderPassBeginInfo( renderPass_, framebuffer_, renderArea_, clearValueCount_, pClearValues_ )
     {}
 
@@ -56832,16 +56854,16 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SubpassDescription
   {
-    SubpassDescription( vk::SubpassDescriptionFlags flags_ = vk::SubpassDescriptionFlags(),
-                        vk::PipelineBindPoint pipelineBindPoint_ = vk::PipelineBindPoint::eGraphics,
-                        uint32_t inputAttachmentCount_ = 0,
-                        const vk::AttachmentReference* pInputAttachments_ = nullptr,
-                        uint32_t colorAttachmentCount_ = 0,
-                        const vk::AttachmentReference* pColorAttachments_ = nullptr,
-                        const vk::AttachmentReference* pResolveAttachments_ = nullptr,
-                        const vk::AttachmentReference* pDepthStencilAttachment_ = nullptr,
-                        uint32_t preserveAttachmentCount_ = 0,
-                        const uint32_t* pPreserveAttachments_ = nullptr )
+    VULKAN_HPP_CONSTEXPR SubpassDescription( vk::SubpassDescriptionFlags flags_ = vk::SubpassDescriptionFlags(),
+                                             vk::PipelineBindPoint pipelineBindPoint_ = vk::PipelineBindPoint::eGraphics,
+                                             uint32_t inputAttachmentCount_ = 0,
+                                             const vk::AttachmentReference* pInputAttachments_ = nullptr,
+                                             uint32_t colorAttachmentCount_ = 0,
+                                             const vk::AttachmentReference* pColorAttachments_ = nullptr,
+                                             const vk::AttachmentReference* pResolveAttachments_ = nullptr,
+                                             const vk::AttachmentReference* pDepthStencilAttachment_ = nullptr,
+                                             uint32_t preserveAttachmentCount_ = 0,
+                                             const uint32_t* pPreserveAttachments_ = nullptr )
       : flags( flags_ )
       , pipelineBindPoint( pipelineBindPoint_ )
       , inputAttachmentCount( inputAttachmentCount_ )
@@ -56971,13 +56993,13 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SubpassDependency
   {
-    SubpassDependency( uint32_t srcSubpass_ = 0,
-                       uint32_t dstSubpass_ = 0,
-                       vk::PipelineStageFlags srcStageMask_ = vk::PipelineStageFlags(),
-                       vk::PipelineStageFlags dstStageMask_ = vk::PipelineStageFlags(),
-                       vk::AccessFlags srcAccessMask_ = vk::AccessFlags(),
-                       vk::AccessFlags dstAccessMask_ = vk::AccessFlags(),
-                       vk::DependencyFlags dependencyFlags_ = vk::DependencyFlags() )
+    VULKAN_HPP_CONSTEXPR SubpassDependency( uint32_t srcSubpass_ = 0,
+                                            uint32_t dstSubpass_ = 0,
+                                            vk::PipelineStageFlags srcStageMask_ = vk::PipelineStageFlags(),
+                                            vk::PipelineStageFlags dstStageMask_ = vk::PipelineStageFlags(),
+                                            vk::AccessFlags srcAccessMask_ = vk::AccessFlags(),
+                                            vk::AccessFlags dstAccessMask_ = vk::AccessFlags(),
+                                            vk::DependencyFlags dependencyFlags_ = vk::DependencyFlags() )
       : srcSubpass( srcSubpass_ )
       , dstSubpass( dstSubpass_ )
       , srcStageMask( srcStageMask_ )
@@ -57083,13 +57105,13 @@ namespace VULKAN_HPP_NAMESPACE
     struct RenderPassCreateInfo
     {
     protected:
-      RenderPassCreateInfo( vk::RenderPassCreateFlags flags_ = vk::RenderPassCreateFlags(),
-                            uint32_t attachmentCount_ = 0,
-                            const vk::AttachmentDescription* pAttachments_ = nullptr,
-                            uint32_t subpassCount_ = 0,
-                            const vk::SubpassDescription* pSubpasses_ = nullptr,
-                            uint32_t dependencyCount_ = 0,
-                            const vk::SubpassDependency* pDependencies_ = nullptr )
+      VULKAN_HPP_CONSTEXPR RenderPassCreateInfo( vk::RenderPassCreateFlags flags_ = vk::RenderPassCreateFlags(),
+                                                 uint32_t attachmentCount_ = 0,
+                                                 const vk::AttachmentDescription* pAttachments_ = nullptr,
+                                                 uint32_t subpassCount_ = 0,
+                                                 const vk::SubpassDescription* pSubpasses_ = nullptr,
+                                                 uint32_t dependencyCount_ = 0,
+                                                 const vk::SubpassDependency* pDependencies_ = nullptr )
         : flags( flags_ )
         , attachmentCount( attachmentCount_ )
         , pAttachments( pAttachments_ )
@@ -57126,13 +57148,13 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct RenderPassCreateInfo : public layout::RenderPassCreateInfo
   {
-    RenderPassCreateInfo( vk::RenderPassCreateFlags flags_ = vk::RenderPassCreateFlags(),
-                          uint32_t attachmentCount_ = 0,
-                          const vk::AttachmentDescription* pAttachments_ = nullptr,
-                          uint32_t subpassCount_ = 0,
-                          const vk::SubpassDescription* pSubpasses_ = nullptr,
-                          uint32_t dependencyCount_ = 0,
-                          const vk::SubpassDependency* pDependencies_ = nullptr )
+    VULKAN_HPP_CONSTEXPR RenderPassCreateInfo( vk::RenderPassCreateFlags flags_ = vk::RenderPassCreateFlags(),
+                                               uint32_t attachmentCount_ = 0,
+                                               const vk::AttachmentDescription* pAttachments_ = nullptr,
+                                               uint32_t subpassCount_ = 0,
+                                               const vk::SubpassDescription* pSubpasses_ = nullptr,
+                                               uint32_t dependencyCount_ = 0,
+                                               const vk::SubpassDependency* pDependencies_ = nullptr )
       : layout::RenderPassCreateInfo( flags_, attachmentCount_, pAttachments_, subpassCount_, pSubpasses_, dependencyCount_, pDependencies_ )
     {}
 
@@ -57233,17 +57255,17 @@ namespace VULKAN_HPP_NAMESPACE
     struct SubpassDescription2KHR
     {
     protected:
-      SubpassDescription2KHR( vk::SubpassDescriptionFlags flags_ = vk::SubpassDescriptionFlags(),
-                              vk::PipelineBindPoint pipelineBindPoint_ = vk::PipelineBindPoint::eGraphics,
-                              uint32_t viewMask_ = 0,
-                              uint32_t inputAttachmentCount_ = 0,
-                              const vk::AttachmentReference2KHR* pInputAttachments_ = nullptr,
-                              uint32_t colorAttachmentCount_ = 0,
-                              const vk::AttachmentReference2KHR* pColorAttachments_ = nullptr,
-                              const vk::AttachmentReference2KHR* pResolveAttachments_ = nullptr,
-                              const vk::AttachmentReference2KHR* pDepthStencilAttachment_ = nullptr,
-                              uint32_t preserveAttachmentCount_ = 0,
-                              const uint32_t* pPreserveAttachments_ = nullptr )
+      VULKAN_HPP_CONSTEXPR SubpassDescription2KHR( vk::SubpassDescriptionFlags flags_ = vk::SubpassDescriptionFlags(),
+                                                   vk::PipelineBindPoint pipelineBindPoint_ = vk::PipelineBindPoint::eGraphics,
+                                                   uint32_t viewMask_ = 0,
+                                                   uint32_t inputAttachmentCount_ = 0,
+                                                   const vk::AttachmentReference2KHR* pInputAttachments_ = nullptr,
+                                                   uint32_t colorAttachmentCount_ = 0,
+                                                   const vk::AttachmentReference2KHR* pColorAttachments_ = nullptr,
+                                                   const vk::AttachmentReference2KHR* pResolveAttachments_ = nullptr,
+                                                   const vk::AttachmentReference2KHR* pDepthStencilAttachment_ = nullptr,
+                                                   uint32_t preserveAttachmentCount_ = 0,
+                                                   const uint32_t* pPreserveAttachments_ = nullptr )
         : flags( flags_ )
         , pipelineBindPoint( pipelineBindPoint_ )
         , viewMask( viewMask_ )
@@ -57288,17 +57310,17 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SubpassDescription2KHR : public layout::SubpassDescription2KHR
   {
-    SubpassDescription2KHR( vk::SubpassDescriptionFlags flags_ = vk::SubpassDescriptionFlags(),
-                            vk::PipelineBindPoint pipelineBindPoint_ = vk::PipelineBindPoint::eGraphics,
-                            uint32_t viewMask_ = 0,
-                            uint32_t inputAttachmentCount_ = 0,
-                            const vk::AttachmentReference2KHR* pInputAttachments_ = nullptr,
-                            uint32_t colorAttachmentCount_ = 0,
-                            const vk::AttachmentReference2KHR* pColorAttachments_ = nullptr,
-                            const vk::AttachmentReference2KHR* pResolveAttachments_ = nullptr,
-                            const vk::AttachmentReference2KHR* pDepthStencilAttachment_ = nullptr,
-                            uint32_t preserveAttachmentCount_ = 0,
-                            const uint32_t* pPreserveAttachments_ = nullptr )
+    VULKAN_HPP_CONSTEXPR SubpassDescription2KHR( vk::SubpassDescriptionFlags flags_ = vk::SubpassDescriptionFlags(),
+                                                 vk::PipelineBindPoint pipelineBindPoint_ = vk::PipelineBindPoint::eGraphics,
+                                                 uint32_t viewMask_ = 0,
+                                                 uint32_t inputAttachmentCount_ = 0,
+                                                 const vk::AttachmentReference2KHR* pInputAttachments_ = nullptr,
+                                                 uint32_t colorAttachmentCount_ = 0,
+                                                 const vk::AttachmentReference2KHR* pColorAttachments_ = nullptr,
+                                                 const vk::AttachmentReference2KHR* pResolveAttachments_ = nullptr,
+                                                 const vk::AttachmentReference2KHR* pDepthStencilAttachment_ = nullptr,
+                                                 uint32_t preserveAttachmentCount_ = 0,
+                                                 const uint32_t* pPreserveAttachments_ = nullptr )
       : layout::SubpassDescription2KHR( flags_, pipelineBindPoint_, viewMask_, inputAttachmentCount_, pInputAttachments_, colorAttachmentCount_, pColorAttachments_, pResolveAttachments_, pDepthStencilAttachment_, preserveAttachmentCount_, pPreserveAttachments_ )
     {}
 
@@ -57427,14 +57449,14 @@ namespace VULKAN_HPP_NAMESPACE
     struct SubpassDependency2KHR
     {
     protected:
-      SubpassDependency2KHR( uint32_t srcSubpass_ = 0,
-                             uint32_t dstSubpass_ = 0,
-                             vk::PipelineStageFlags srcStageMask_ = vk::PipelineStageFlags(),
-                             vk::PipelineStageFlags dstStageMask_ = vk::PipelineStageFlags(),
-                             vk::AccessFlags srcAccessMask_ = vk::AccessFlags(),
-                             vk::AccessFlags dstAccessMask_ = vk::AccessFlags(),
-                             vk::DependencyFlags dependencyFlags_ = vk::DependencyFlags(),
-                             int32_t viewOffset_ = 0 )
+      VULKAN_HPP_CONSTEXPR SubpassDependency2KHR( uint32_t srcSubpass_ = 0,
+                                                  uint32_t dstSubpass_ = 0,
+                                                  vk::PipelineStageFlags srcStageMask_ = vk::PipelineStageFlags(),
+                                                  vk::PipelineStageFlags dstStageMask_ = vk::PipelineStageFlags(),
+                                                  vk::AccessFlags srcAccessMask_ = vk::AccessFlags(),
+                                                  vk::AccessFlags dstAccessMask_ = vk::AccessFlags(),
+                                                  vk::DependencyFlags dependencyFlags_ = vk::DependencyFlags(),
+                                                  int32_t viewOffset_ = 0 )
         : srcSubpass( srcSubpass_ )
         , dstSubpass( dstSubpass_ )
         , srcStageMask( srcStageMask_ )
@@ -57473,14 +57495,14 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SubpassDependency2KHR : public layout::SubpassDependency2KHR
   {
-    SubpassDependency2KHR( uint32_t srcSubpass_ = 0,
-                           uint32_t dstSubpass_ = 0,
-                           vk::PipelineStageFlags srcStageMask_ = vk::PipelineStageFlags(),
-                           vk::PipelineStageFlags dstStageMask_ = vk::PipelineStageFlags(),
-                           vk::AccessFlags srcAccessMask_ = vk::AccessFlags(),
-                           vk::AccessFlags dstAccessMask_ = vk::AccessFlags(),
-                           vk::DependencyFlags dependencyFlags_ = vk::DependencyFlags(),
-                           int32_t viewOffset_ = 0 )
+    VULKAN_HPP_CONSTEXPR SubpassDependency2KHR( uint32_t srcSubpass_ = 0,
+                                                uint32_t dstSubpass_ = 0,
+                                                vk::PipelineStageFlags srcStageMask_ = vk::PipelineStageFlags(),
+                                                vk::PipelineStageFlags dstStageMask_ = vk::PipelineStageFlags(),
+                                                vk::AccessFlags srcAccessMask_ = vk::AccessFlags(),
+                                                vk::AccessFlags dstAccessMask_ = vk::AccessFlags(),
+                                                vk::DependencyFlags dependencyFlags_ = vk::DependencyFlags(),
+                                                int32_t viewOffset_ = 0 )
       : layout::SubpassDependency2KHR( srcSubpass_, dstSubpass_, srcStageMask_, dstStageMask_, srcAccessMask_, dstAccessMask_, dependencyFlags_, viewOffset_ )
     {}
 
@@ -57588,15 +57610,15 @@ namespace VULKAN_HPP_NAMESPACE
     struct RenderPassCreateInfo2KHR
     {
     protected:
-      RenderPassCreateInfo2KHR( vk::RenderPassCreateFlags flags_ = vk::RenderPassCreateFlags(),
-                                uint32_t attachmentCount_ = 0,
-                                const vk::AttachmentDescription2KHR* pAttachments_ = nullptr,
-                                uint32_t subpassCount_ = 0,
-                                const vk::SubpassDescription2KHR* pSubpasses_ = nullptr,
-                                uint32_t dependencyCount_ = 0,
-                                const vk::SubpassDependency2KHR* pDependencies_ = nullptr,
-                                uint32_t correlatedViewMaskCount_ = 0,
-                                const uint32_t* pCorrelatedViewMasks_ = nullptr )
+      VULKAN_HPP_CONSTEXPR RenderPassCreateInfo2KHR( vk::RenderPassCreateFlags flags_ = vk::RenderPassCreateFlags(),
+                                                     uint32_t attachmentCount_ = 0,
+                                                     const vk::AttachmentDescription2KHR* pAttachments_ = nullptr,
+                                                     uint32_t subpassCount_ = 0,
+                                                     const vk::SubpassDescription2KHR* pSubpasses_ = nullptr,
+                                                     uint32_t dependencyCount_ = 0,
+                                                     const vk::SubpassDependency2KHR* pDependencies_ = nullptr,
+                                                     uint32_t correlatedViewMaskCount_ = 0,
+                                                     const uint32_t* pCorrelatedViewMasks_ = nullptr )
         : flags( flags_ )
         , attachmentCount( attachmentCount_ )
         , pAttachments( pAttachments_ )
@@ -57637,15 +57659,15 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct RenderPassCreateInfo2KHR : public layout::RenderPassCreateInfo2KHR
   {
-    RenderPassCreateInfo2KHR( vk::RenderPassCreateFlags flags_ = vk::RenderPassCreateFlags(),
-                              uint32_t attachmentCount_ = 0,
-                              const vk::AttachmentDescription2KHR* pAttachments_ = nullptr,
-                              uint32_t subpassCount_ = 0,
-                              const vk::SubpassDescription2KHR* pSubpasses_ = nullptr,
-                              uint32_t dependencyCount_ = 0,
-                              const vk::SubpassDependency2KHR* pDependencies_ = nullptr,
-                              uint32_t correlatedViewMaskCount_ = 0,
-                              const uint32_t* pCorrelatedViewMasks_ = nullptr )
+    VULKAN_HPP_CONSTEXPR RenderPassCreateInfo2KHR( vk::RenderPassCreateFlags flags_ = vk::RenderPassCreateFlags(),
+                                                   uint32_t attachmentCount_ = 0,
+                                                   const vk::AttachmentDescription2KHR* pAttachments_ = nullptr,
+                                                   uint32_t subpassCount_ = 0,
+                                                   const vk::SubpassDescription2KHR* pSubpasses_ = nullptr,
+                                                   uint32_t dependencyCount_ = 0,
+                                                   const vk::SubpassDependency2KHR* pDependencies_ = nullptr,
+                                                   uint32_t correlatedViewMaskCount_ = 0,
+                                                   const uint32_t* pCorrelatedViewMasks_ = nullptr )
       : layout::RenderPassCreateInfo2KHR( flags_, attachmentCount_, pAttachments_, subpassCount_, pSubpasses_, dependencyCount_, pDependencies_, correlatedViewMaskCount_, pCorrelatedViewMasks_ )
     {}
 
@@ -57760,7 +57782,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct RenderPassFragmentDensityMapCreateInfoEXT
     {
     protected:
-      RenderPassFragmentDensityMapCreateInfoEXT( vk::AttachmentReference fragmentDensityMapAttachment_ = vk::AttachmentReference() )
+      VULKAN_HPP_CONSTEXPR RenderPassFragmentDensityMapCreateInfoEXT( vk::AttachmentReference fragmentDensityMapAttachment_ = vk::AttachmentReference() )
         : fragmentDensityMapAttachment( fragmentDensityMapAttachment_ )
       {}
 
@@ -57785,7 +57807,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct RenderPassFragmentDensityMapCreateInfoEXT : public layout::RenderPassFragmentDensityMapCreateInfoEXT
   {
-    RenderPassFragmentDensityMapCreateInfoEXT( vk::AttachmentReference fragmentDensityMapAttachment_ = vk::AttachmentReference() )
+    VULKAN_HPP_CONSTEXPR RenderPassFragmentDensityMapCreateInfoEXT( vk::AttachmentReference fragmentDensityMapAttachment_ = vk::AttachmentReference() )
       : layout::RenderPassFragmentDensityMapCreateInfoEXT( fragmentDensityMapAttachment_ )
     {}
 
@@ -57844,8 +57866,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct RenderPassInputAttachmentAspectCreateInfo
     {
     protected:
-      RenderPassInputAttachmentAspectCreateInfo( uint32_t aspectReferenceCount_ = 0,
-                                                 const vk::InputAttachmentAspectReference* pAspectReferences_ = nullptr )
+      VULKAN_HPP_CONSTEXPR RenderPassInputAttachmentAspectCreateInfo( uint32_t aspectReferenceCount_ = 0,
+                                                                      const vk::InputAttachmentAspectReference* pAspectReferences_ = nullptr )
         : aspectReferenceCount( aspectReferenceCount_ )
         , pAspectReferences( pAspectReferences_ )
       {}
@@ -57872,8 +57894,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct RenderPassInputAttachmentAspectCreateInfo : public layout::RenderPassInputAttachmentAspectCreateInfo
   {
-    RenderPassInputAttachmentAspectCreateInfo( uint32_t aspectReferenceCount_ = 0,
-                                               const vk::InputAttachmentAspectReference* pAspectReferences_ = nullptr )
+    VULKAN_HPP_CONSTEXPR RenderPassInputAttachmentAspectCreateInfo( uint32_t aspectReferenceCount_ = 0,
+                                                                    const vk::InputAttachmentAspectReference* pAspectReferences_ = nullptr )
       : layout::RenderPassInputAttachmentAspectCreateInfo( aspectReferenceCount_, pAspectReferences_ )
     {}
 
@@ -57939,12 +57961,12 @@ namespace VULKAN_HPP_NAMESPACE
     struct RenderPassMultiviewCreateInfo
     {
     protected:
-      RenderPassMultiviewCreateInfo( uint32_t subpassCount_ = 0,
-                                     const uint32_t* pViewMasks_ = nullptr,
-                                     uint32_t dependencyCount_ = 0,
-                                     const int32_t* pViewOffsets_ = nullptr,
-                                     uint32_t correlationMaskCount_ = 0,
-                                     const uint32_t* pCorrelationMasks_ = nullptr )
+      VULKAN_HPP_CONSTEXPR RenderPassMultiviewCreateInfo( uint32_t subpassCount_ = 0,
+                                                          const uint32_t* pViewMasks_ = nullptr,
+                                                          uint32_t dependencyCount_ = 0,
+                                                          const int32_t* pViewOffsets_ = nullptr,
+                                                          uint32_t correlationMaskCount_ = 0,
+                                                          const uint32_t* pCorrelationMasks_ = nullptr )
         : subpassCount( subpassCount_ )
         , pViewMasks( pViewMasks_ )
         , dependencyCount( dependencyCount_ )
@@ -57979,12 +58001,12 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct RenderPassMultiviewCreateInfo : public layout::RenderPassMultiviewCreateInfo
   {
-    RenderPassMultiviewCreateInfo( uint32_t subpassCount_ = 0,
-                                   const uint32_t* pViewMasks_ = nullptr,
-                                   uint32_t dependencyCount_ = 0,
-                                   const int32_t* pViewOffsets_ = nullptr,
-                                   uint32_t correlationMaskCount_ = 0,
-                                   const uint32_t* pCorrelationMasks_ = nullptr )
+    VULKAN_HPP_CONSTEXPR RenderPassMultiviewCreateInfo( uint32_t subpassCount_ = 0,
+                                                        const uint32_t* pViewMasks_ = nullptr,
+                                                        uint32_t dependencyCount_ = 0,
+                                                        const int32_t* pViewOffsets_ = nullptr,
+                                                        uint32_t correlationMaskCount_ = 0,
+                                                        const uint32_t* pCorrelationMasks_ = nullptr )
       : layout::RenderPassMultiviewCreateInfo( subpassCount_, pViewMasks_, dependencyCount_, pViewOffsets_, correlationMaskCount_, pCorrelationMasks_ )
     {}
 
@@ -58075,8 +58097,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SubpassSampleLocationsEXT
   {
-    SubpassSampleLocationsEXT( uint32_t subpassIndex_ = 0,
-                               vk::SampleLocationsInfoEXT sampleLocationsInfo_ = vk::SampleLocationsInfoEXT() )
+    VULKAN_HPP_CONSTEXPR SubpassSampleLocationsEXT( uint32_t subpassIndex_ = 0,
+                                                    vk::SampleLocationsInfoEXT sampleLocationsInfo_ = vk::SampleLocationsInfoEXT() )
       : subpassIndex( subpassIndex_ )
       , sampleLocationsInfo( sampleLocationsInfo_ )
     {}
@@ -58137,10 +58159,10 @@ namespace VULKAN_HPP_NAMESPACE
     struct RenderPassSampleLocationsBeginInfoEXT
     {
     protected:
-      RenderPassSampleLocationsBeginInfoEXT( uint32_t attachmentInitialSampleLocationsCount_ = 0,
-                                             const vk::AttachmentSampleLocationsEXT* pAttachmentInitialSampleLocations_ = nullptr,
-                                             uint32_t postSubpassSampleLocationsCount_ = 0,
-                                             const vk::SubpassSampleLocationsEXT* pPostSubpassSampleLocations_ = nullptr )
+      VULKAN_HPP_CONSTEXPR RenderPassSampleLocationsBeginInfoEXT( uint32_t attachmentInitialSampleLocationsCount_ = 0,
+                                                                  const vk::AttachmentSampleLocationsEXT* pAttachmentInitialSampleLocations_ = nullptr,
+                                                                  uint32_t postSubpassSampleLocationsCount_ = 0,
+                                                                  const vk::SubpassSampleLocationsEXT* pPostSubpassSampleLocations_ = nullptr )
         : attachmentInitialSampleLocationsCount( attachmentInitialSampleLocationsCount_ )
         , pAttachmentInitialSampleLocations( pAttachmentInitialSampleLocations_ )
         , postSubpassSampleLocationsCount( postSubpassSampleLocationsCount_ )
@@ -58171,10 +58193,10 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct RenderPassSampleLocationsBeginInfoEXT : public layout::RenderPassSampleLocationsBeginInfoEXT
   {
-    RenderPassSampleLocationsBeginInfoEXT( uint32_t attachmentInitialSampleLocationsCount_ = 0,
-                                           const vk::AttachmentSampleLocationsEXT* pAttachmentInitialSampleLocations_ = nullptr,
-                                           uint32_t postSubpassSampleLocationsCount_ = 0,
-                                           const vk::SubpassSampleLocationsEXT* pPostSubpassSampleLocations_ = nullptr )
+    VULKAN_HPP_CONSTEXPR RenderPassSampleLocationsBeginInfoEXT( uint32_t attachmentInitialSampleLocationsCount_ = 0,
+                                                                const vk::AttachmentSampleLocationsEXT* pAttachmentInitialSampleLocations_ = nullptr,
+                                                                uint32_t postSubpassSampleLocationsCount_ = 0,
+                                                                const vk::SubpassSampleLocationsEXT* pPostSubpassSampleLocations_ = nullptr )
       : layout::RenderPassSampleLocationsBeginInfoEXT( attachmentInitialSampleLocationsCount_, pAttachmentInitialSampleLocations_, postSubpassSampleLocationsCount_, pPostSubpassSampleLocations_ )
     {}
 
@@ -58254,22 +58276,22 @@ namespace VULKAN_HPP_NAMESPACE
     struct SamplerCreateInfo
     {
     protected:
-      SamplerCreateInfo( vk::SamplerCreateFlags flags_ = vk::SamplerCreateFlags(),
-                         vk::Filter magFilter_ = vk::Filter::eNearest,
-                         vk::Filter minFilter_ = vk::Filter::eNearest,
-                         vk::SamplerMipmapMode mipmapMode_ = vk::SamplerMipmapMode::eNearest,
-                         vk::SamplerAddressMode addressModeU_ = vk::SamplerAddressMode::eRepeat,
-                         vk::SamplerAddressMode addressModeV_ = vk::SamplerAddressMode::eRepeat,
-                         vk::SamplerAddressMode addressModeW_ = vk::SamplerAddressMode::eRepeat,
-                         float mipLodBias_ = 0,
-                         vk::Bool32 anisotropyEnable_ = 0,
-                         float maxAnisotropy_ = 0,
-                         vk::Bool32 compareEnable_ = 0,
-                         vk::CompareOp compareOp_ = vk::CompareOp::eNever,
-                         float minLod_ = 0,
-                         float maxLod_ = 0,
-                         vk::BorderColor borderColor_ = vk::BorderColor::eFloatTransparentBlack,
-                         vk::Bool32 unnormalizedCoordinates_ = 0 )
+      VULKAN_HPP_CONSTEXPR SamplerCreateInfo( vk::SamplerCreateFlags flags_ = vk::SamplerCreateFlags(),
+                                              vk::Filter magFilter_ = vk::Filter::eNearest,
+                                              vk::Filter minFilter_ = vk::Filter::eNearest,
+                                              vk::SamplerMipmapMode mipmapMode_ = vk::SamplerMipmapMode::eNearest,
+                                              vk::SamplerAddressMode addressModeU_ = vk::SamplerAddressMode::eRepeat,
+                                              vk::SamplerAddressMode addressModeV_ = vk::SamplerAddressMode::eRepeat,
+                                              vk::SamplerAddressMode addressModeW_ = vk::SamplerAddressMode::eRepeat,
+                                              float mipLodBias_ = 0,
+                                              vk::Bool32 anisotropyEnable_ = 0,
+                                              float maxAnisotropy_ = 0,
+                                              vk::Bool32 compareEnable_ = 0,
+                                              vk::CompareOp compareOp_ = vk::CompareOp::eNever,
+                                              float minLod_ = 0,
+                                              float maxLod_ = 0,
+                                              vk::BorderColor borderColor_ = vk::BorderColor::eFloatTransparentBlack,
+                                              vk::Bool32 unnormalizedCoordinates_ = 0 )
         : flags( flags_ )
         , magFilter( magFilter_ )
         , minFilter( minFilter_ )
@@ -58324,22 +58346,22 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SamplerCreateInfo : public layout::SamplerCreateInfo
   {
-    SamplerCreateInfo( vk::SamplerCreateFlags flags_ = vk::SamplerCreateFlags(),
-                       vk::Filter magFilter_ = vk::Filter::eNearest,
-                       vk::Filter minFilter_ = vk::Filter::eNearest,
-                       vk::SamplerMipmapMode mipmapMode_ = vk::SamplerMipmapMode::eNearest,
-                       vk::SamplerAddressMode addressModeU_ = vk::SamplerAddressMode::eRepeat,
-                       vk::SamplerAddressMode addressModeV_ = vk::SamplerAddressMode::eRepeat,
-                       vk::SamplerAddressMode addressModeW_ = vk::SamplerAddressMode::eRepeat,
-                       float mipLodBias_ = 0,
-                       vk::Bool32 anisotropyEnable_ = 0,
-                       float maxAnisotropy_ = 0,
-                       vk::Bool32 compareEnable_ = 0,
-                       vk::CompareOp compareOp_ = vk::CompareOp::eNever,
-                       float minLod_ = 0,
-                       float maxLod_ = 0,
-                       vk::BorderColor borderColor_ = vk::BorderColor::eFloatTransparentBlack,
-                       vk::Bool32 unnormalizedCoordinates_ = 0 )
+    VULKAN_HPP_CONSTEXPR SamplerCreateInfo( vk::SamplerCreateFlags flags_ = vk::SamplerCreateFlags(),
+                                            vk::Filter magFilter_ = vk::Filter::eNearest,
+                                            vk::Filter minFilter_ = vk::Filter::eNearest,
+                                            vk::SamplerMipmapMode mipmapMode_ = vk::SamplerMipmapMode::eNearest,
+                                            vk::SamplerAddressMode addressModeU_ = vk::SamplerAddressMode::eRepeat,
+                                            vk::SamplerAddressMode addressModeV_ = vk::SamplerAddressMode::eRepeat,
+                                            vk::SamplerAddressMode addressModeW_ = vk::SamplerAddressMode::eRepeat,
+                                            float mipLodBias_ = 0,
+                                            vk::Bool32 anisotropyEnable_ = 0,
+                                            float maxAnisotropy_ = 0,
+                                            vk::Bool32 compareEnable_ = 0,
+                                            vk::CompareOp compareOp_ = vk::CompareOp::eNever,
+                                            float minLod_ = 0,
+                                            float maxLod_ = 0,
+                                            vk::BorderColor borderColor_ = vk::BorderColor::eFloatTransparentBlack,
+                                            vk::Bool32 unnormalizedCoordinates_ = 0 )
       : layout::SamplerCreateInfo( flags_, magFilter_, minFilter_, mipmapMode_, addressModeU_, addressModeV_, addressModeW_, mipLodBias_, anisotropyEnable_, maxAnisotropy_, compareEnable_, compareOp_, minLod_, maxLod_, borderColor_, unnormalizedCoordinates_ )
     {}
 
@@ -58503,7 +58525,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct SamplerReductionModeCreateInfoEXT
     {
     protected:
-      SamplerReductionModeCreateInfoEXT( vk::SamplerReductionModeEXT reductionMode_ = vk::SamplerReductionModeEXT::eWeightedAverage )
+      VULKAN_HPP_CONSTEXPR SamplerReductionModeCreateInfoEXT( vk::SamplerReductionModeEXT reductionMode_ = vk::SamplerReductionModeEXT::eWeightedAverage )
         : reductionMode( reductionMode_ )
       {}
 
@@ -58528,7 +58550,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SamplerReductionModeCreateInfoEXT : public layout::SamplerReductionModeCreateInfoEXT
   {
-    SamplerReductionModeCreateInfoEXT( vk::SamplerReductionModeEXT reductionMode_ = vk::SamplerReductionModeEXT::eWeightedAverage )
+    VULKAN_HPP_CONSTEXPR SamplerReductionModeCreateInfoEXT( vk::SamplerReductionModeEXT reductionMode_ = vk::SamplerReductionModeEXT::eWeightedAverage )
       : layout::SamplerReductionModeCreateInfoEXT( reductionMode_ )
     {}
 
@@ -58587,14 +58609,14 @@ namespace VULKAN_HPP_NAMESPACE
     struct SamplerYcbcrConversionCreateInfo
     {
     protected:
-      SamplerYcbcrConversionCreateInfo( vk::Format format_ = vk::Format::eUndefined,
-                                        vk::SamplerYcbcrModelConversion ycbcrModel_ = vk::SamplerYcbcrModelConversion::eRgbIdentity,
-                                        vk::SamplerYcbcrRange ycbcrRange_ = vk::SamplerYcbcrRange::eItuFull,
-                                        vk::ComponentMapping components_ = vk::ComponentMapping(),
-                                        vk::ChromaLocation xChromaOffset_ = vk::ChromaLocation::eCositedEven,
-                                        vk::ChromaLocation yChromaOffset_ = vk::ChromaLocation::eCositedEven,
-                                        vk::Filter chromaFilter_ = vk::Filter::eNearest,
-                                        vk::Bool32 forceExplicitReconstruction_ = 0 )
+      VULKAN_HPP_CONSTEXPR SamplerYcbcrConversionCreateInfo( vk::Format format_ = vk::Format::eUndefined,
+                                                             vk::SamplerYcbcrModelConversion ycbcrModel_ = vk::SamplerYcbcrModelConversion::eRgbIdentity,
+                                                             vk::SamplerYcbcrRange ycbcrRange_ = vk::SamplerYcbcrRange::eItuFull,
+                                                             vk::ComponentMapping components_ = vk::ComponentMapping(),
+                                                             vk::ChromaLocation xChromaOffset_ = vk::ChromaLocation::eCositedEven,
+                                                             vk::ChromaLocation yChromaOffset_ = vk::ChromaLocation::eCositedEven,
+                                                             vk::Filter chromaFilter_ = vk::Filter::eNearest,
+                                                             vk::Bool32 forceExplicitReconstruction_ = 0 )
         : format( format_ )
         , ycbcrModel( ycbcrModel_ )
         , ycbcrRange( ycbcrRange_ )
@@ -58633,14 +58655,14 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SamplerYcbcrConversionCreateInfo : public layout::SamplerYcbcrConversionCreateInfo
   {
-    SamplerYcbcrConversionCreateInfo( vk::Format format_ = vk::Format::eUndefined,
-                                      vk::SamplerYcbcrModelConversion ycbcrModel_ = vk::SamplerYcbcrModelConversion::eRgbIdentity,
-                                      vk::SamplerYcbcrRange ycbcrRange_ = vk::SamplerYcbcrRange::eItuFull,
-                                      vk::ComponentMapping components_ = vk::ComponentMapping(),
-                                      vk::ChromaLocation xChromaOffset_ = vk::ChromaLocation::eCositedEven,
-                                      vk::ChromaLocation yChromaOffset_ = vk::ChromaLocation::eCositedEven,
-                                      vk::Filter chromaFilter_ = vk::Filter::eNearest,
-                                      vk::Bool32 forceExplicitReconstruction_ = 0 )
+    VULKAN_HPP_CONSTEXPR SamplerYcbcrConversionCreateInfo( vk::Format format_ = vk::Format::eUndefined,
+                                                           vk::SamplerYcbcrModelConversion ycbcrModel_ = vk::SamplerYcbcrModelConversion::eRgbIdentity,
+                                                           vk::SamplerYcbcrRange ycbcrRange_ = vk::SamplerYcbcrRange::eItuFull,
+                                                           vk::ComponentMapping components_ = vk::ComponentMapping(),
+                                                           vk::ChromaLocation xChromaOffset_ = vk::ChromaLocation::eCositedEven,
+                                                           vk::ChromaLocation yChromaOffset_ = vk::ChromaLocation::eCositedEven,
+                                                           vk::Filter chromaFilter_ = vk::Filter::eNearest,
+                                                           vk::Bool32 forceExplicitReconstruction_ = 0 )
       : layout::SamplerYcbcrConversionCreateInfo( format_, ycbcrModel_, ycbcrRange_, components_, xChromaOffset_, yChromaOffset_, chromaFilter_, forceExplicitReconstruction_ )
     {}
 
@@ -58819,7 +58841,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct SamplerYcbcrConversionInfo
     {
     protected:
-      SamplerYcbcrConversionInfo( vk::SamplerYcbcrConversion conversion_ = vk::SamplerYcbcrConversion() )
+      VULKAN_HPP_CONSTEXPR SamplerYcbcrConversionInfo( vk::SamplerYcbcrConversion conversion_ = vk::SamplerYcbcrConversion() )
         : conversion( conversion_ )
       {}
 
@@ -58844,7 +58866,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SamplerYcbcrConversionInfo : public layout::SamplerYcbcrConversionInfo
   {
-    SamplerYcbcrConversionInfo( vk::SamplerYcbcrConversion conversion_ = vk::SamplerYcbcrConversion() )
+    VULKAN_HPP_CONSTEXPR SamplerYcbcrConversionInfo( vk::SamplerYcbcrConversion conversion_ = vk::SamplerYcbcrConversion() )
       : layout::SamplerYcbcrConversionInfo( conversion_ )
     {}
 
@@ -58903,7 +58925,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct SemaphoreCreateInfo
     {
     protected:
-      SemaphoreCreateInfo( vk::SemaphoreCreateFlags flags_ = vk::SemaphoreCreateFlags() )
+      VULKAN_HPP_CONSTEXPR SemaphoreCreateInfo( vk::SemaphoreCreateFlags flags_ = vk::SemaphoreCreateFlags() )
         : flags( flags_ )
       {}
 
@@ -58928,7 +58950,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SemaphoreCreateInfo : public layout::SemaphoreCreateInfo
   {
-    SemaphoreCreateInfo( vk::SemaphoreCreateFlags flags_ = vk::SemaphoreCreateFlags() )
+    VULKAN_HPP_CONSTEXPR SemaphoreCreateInfo( vk::SemaphoreCreateFlags flags_ = vk::SemaphoreCreateFlags() )
       : layout::SemaphoreCreateInfo( flags_ )
     {}
 
@@ -58987,8 +59009,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct SemaphoreGetFdInfoKHR
     {
     protected:
-      SemaphoreGetFdInfoKHR( vk::Semaphore semaphore_ = vk::Semaphore(),
-                             vk::ExternalSemaphoreHandleTypeFlagBits handleType_ = vk::ExternalSemaphoreHandleTypeFlagBits::eOpaqueFd )
+      VULKAN_HPP_CONSTEXPR SemaphoreGetFdInfoKHR( vk::Semaphore semaphore_ = vk::Semaphore(),
+                                                  vk::ExternalSemaphoreHandleTypeFlagBits handleType_ = vk::ExternalSemaphoreHandleTypeFlagBits::eOpaqueFd )
         : semaphore( semaphore_ )
         , handleType( handleType_ )
       {}
@@ -59015,8 +59037,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SemaphoreGetFdInfoKHR : public layout::SemaphoreGetFdInfoKHR
   {
-    SemaphoreGetFdInfoKHR( vk::Semaphore semaphore_ = vk::Semaphore(),
-                           vk::ExternalSemaphoreHandleTypeFlagBits handleType_ = vk::ExternalSemaphoreHandleTypeFlagBits::eOpaqueFd )
+    VULKAN_HPP_CONSTEXPR SemaphoreGetFdInfoKHR( vk::Semaphore semaphore_ = vk::Semaphore(),
+                                                vk::ExternalSemaphoreHandleTypeFlagBits handleType_ = vk::ExternalSemaphoreHandleTypeFlagBits::eOpaqueFd )
       : layout::SemaphoreGetFdInfoKHR( semaphore_, handleType_ )
     {}
 
@@ -59084,8 +59106,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct SemaphoreGetWin32HandleInfoKHR
     {
     protected:
-      SemaphoreGetWin32HandleInfoKHR( vk::Semaphore semaphore_ = vk::Semaphore(),
-                                      vk::ExternalSemaphoreHandleTypeFlagBits handleType_ = vk::ExternalSemaphoreHandleTypeFlagBits::eOpaqueFd )
+      VULKAN_HPP_CONSTEXPR SemaphoreGetWin32HandleInfoKHR( vk::Semaphore semaphore_ = vk::Semaphore(),
+                                                           vk::ExternalSemaphoreHandleTypeFlagBits handleType_ = vk::ExternalSemaphoreHandleTypeFlagBits::eOpaqueFd )
         : semaphore( semaphore_ )
         , handleType( handleType_ )
       {}
@@ -59112,8 +59134,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SemaphoreGetWin32HandleInfoKHR : public layout::SemaphoreGetWin32HandleInfoKHR
   {
-    SemaphoreGetWin32HandleInfoKHR( vk::Semaphore semaphore_ = vk::Semaphore(),
-                                    vk::ExternalSemaphoreHandleTypeFlagBits handleType_ = vk::ExternalSemaphoreHandleTypeFlagBits::eOpaqueFd )
+    VULKAN_HPP_CONSTEXPR SemaphoreGetWin32HandleInfoKHR( vk::Semaphore semaphore_ = vk::Semaphore(),
+                                                         vk::ExternalSemaphoreHandleTypeFlagBits handleType_ = vk::ExternalSemaphoreHandleTypeFlagBits::eOpaqueFd )
       : layout::SemaphoreGetWin32HandleInfoKHR( semaphore_, handleType_ )
     {}
 
@@ -59180,9 +59202,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct ShaderModuleCreateInfo
     {
     protected:
-      ShaderModuleCreateInfo( vk::ShaderModuleCreateFlags flags_ = vk::ShaderModuleCreateFlags(),
-                              size_t codeSize_ = 0,
-                              const uint32_t* pCode_ = nullptr )
+      VULKAN_HPP_CONSTEXPR ShaderModuleCreateInfo( vk::ShaderModuleCreateFlags flags_ = vk::ShaderModuleCreateFlags(),
+                                                   size_t codeSize_ = 0,
+                                                   const uint32_t* pCode_ = nullptr )
         : flags( flags_ )
         , codeSize( codeSize_ )
         , pCode( pCode_ )
@@ -59211,9 +59233,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ShaderModuleCreateInfo : public layout::ShaderModuleCreateInfo
   {
-    ShaderModuleCreateInfo( vk::ShaderModuleCreateFlags flags_ = vk::ShaderModuleCreateFlags(),
-                            size_t codeSize_ = 0,
-                            const uint32_t* pCode_ = nullptr )
+    VULKAN_HPP_CONSTEXPR ShaderModuleCreateInfo( vk::ShaderModuleCreateFlags flags_ = vk::ShaderModuleCreateFlags(),
+                                                 size_t codeSize_ = 0,
+                                                 const uint32_t* pCode_ = nullptr )
       : layout::ShaderModuleCreateInfo( flags_, codeSize_, pCode_ )
     {}
 
@@ -59286,7 +59308,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct ShaderModuleValidationCacheCreateInfoEXT
     {
     protected:
-      ShaderModuleValidationCacheCreateInfoEXT( vk::ValidationCacheEXT validationCache_ = vk::ValidationCacheEXT() )
+      VULKAN_HPP_CONSTEXPR ShaderModuleValidationCacheCreateInfoEXT( vk::ValidationCacheEXT validationCache_ = vk::ValidationCacheEXT() )
         : validationCache( validationCache_ )
       {}
 
@@ -59311,7 +59333,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ShaderModuleValidationCacheCreateInfoEXT : public layout::ShaderModuleValidationCacheCreateInfoEXT
   {
-    ShaderModuleValidationCacheCreateInfoEXT( vk::ValidationCacheEXT validationCache_ = vk::ValidationCacheEXT() )
+    VULKAN_HPP_CONSTEXPR ShaderModuleValidationCacheCreateInfoEXT( vk::ValidationCacheEXT validationCache_ = vk::ValidationCacheEXT() )
       : layout::ShaderModuleValidationCacheCreateInfoEXT( validationCache_ )
     {}
 
@@ -59785,8 +59807,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct StreamDescriptorSurfaceCreateInfoGGP
     {
     protected:
-      StreamDescriptorSurfaceCreateInfoGGP( vk::StreamDescriptorSurfaceCreateFlagsGGP flags_ = vk::StreamDescriptorSurfaceCreateFlagsGGP(),
-                                            GgpStreamDescriptor streamDescriptor_ = 0 )
+      VULKAN_HPP_CONSTEXPR StreamDescriptorSurfaceCreateInfoGGP( vk::StreamDescriptorSurfaceCreateFlagsGGP flags_ = vk::StreamDescriptorSurfaceCreateFlagsGGP(),
+                                                                 GgpStreamDescriptor streamDescriptor_ = 0 )
         : flags( flags_ )
         , streamDescriptor( streamDescriptor_ )
       {}
@@ -59813,8 +59835,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct StreamDescriptorSurfaceCreateInfoGGP : public layout::StreamDescriptorSurfaceCreateInfoGGP
   {
-    StreamDescriptorSurfaceCreateInfoGGP( vk::StreamDescriptorSurfaceCreateFlagsGGP flags_ = vk::StreamDescriptorSurfaceCreateFlagsGGP(),
-                                          GgpStreamDescriptor streamDescriptor_ = 0 )
+    VULKAN_HPP_CONSTEXPR StreamDescriptorSurfaceCreateInfoGGP( vk::StreamDescriptorSurfaceCreateFlagsGGP flags_ = vk::StreamDescriptorSurfaceCreateFlagsGGP(),
+                                                               GgpStreamDescriptor streamDescriptor_ = 0 )
       : layout::StreamDescriptorSurfaceCreateInfoGGP( flags_, streamDescriptor_ )
     {}
 
@@ -59881,13 +59903,13 @@ namespace VULKAN_HPP_NAMESPACE
     struct SubmitInfo
     {
     protected:
-      SubmitInfo( uint32_t waitSemaphoreCount_ = 0,
-                  const vk::Semaphore* pWaitSemaphores_ = nullptr,
-                  const vk::PipelineStageFlags* pWaitDstStageMask_ = nullptr,
-                  uint32_t commandBufferCount_ = 0,
-                  const vk::CommandBuffer* pCommandBuffers_ = nullptr,
-                  uint32_t signalSemaphoreCount_ = 0,
-                  const vk::Semaphore* pSignalSemaphores_ = nullptr )
+      VULKAN_HPP_CONSTEXPR SubmitInfo( uint32_t waitSemaphoreCount_ = 0,
+                                       const vk::Semaphore* pWaitSemaphores_ = nullptr,
+                                       const vk::PipelineStageFlags* pWaitDstStageMask_ = nullptr,
+                                       uint32_t commandBufferCount_ = 0,
+                                       const vk::CommandBuffer* pCommandBuffers_ = nullptr,
+                                       uint32_t signalSemaphoreCount_ = 0,
+                                       const vk::Semaphore* pSignalSemaphores_ = nullptr )
         : waitSemaphoreCount( waitSemaphoreCount_ )
         , pWaitSemaphores( pWaitSemaphores_ )
         , pWaitDstStageMask( pWaitDstStageMask_ )
@@ -59924,13 +59946,13 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SubmitInfo : public layout::SubmitInfo
   {
-    SubmitInfo( uint32_t waitSemaphoreCount_ = 0,
-                const vk::Semaphore* pWaitSemaphores_ = nullptr,
-                const vk::PipelineStageFlags* pWaitDstStageMask_ = nullptr,
-                uint32_t commandBufferCount_ = 0,
-                const vk::CommandBuffer* pCommandBuffers_ = nullptr,
-                uint32_t signalSemaphoreCount_ = 0,
-                const vk::Semaphore* pSignalSemaphores_ = nullptr )
+    VULKAN_HPP_CONSTEXPR SubmitInfo( uint32_t waitSemaphoreCount_ = 0,
+                                     const vk::Semaphore* pWaitSemaphores_ = nullptr,
+                                     const vk::PipelineStageFlags* pWaitDstStageMask_ = nullptr,
+                                     uint32_t commandBufferCount_ = 0,
+                                     const vk::CommandBuffer* pCommandBuffers_ = nullptr,
+                                     uint32_t signalSemaphoreCount_ = 0,
+                                     const vk::Semaphore* pSignalSemaphores_ = nullptr )
       : layout::SubmitInfo( waitSemaphoreCount_, pWaitSemaphores_, pWaitDstStageMask_, commandBufferCount_, pCommandBuffers_, signalSemaphoreCount_, pSignalSemaphores_ )
     {}
 
@@ -60031,7 +60053,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct SubpassBeginInfoKHR
     {
     protected:
-      SubpassBeginInfoKHR( vk::SubpassContents contents_ = vk::SubpassContents::eInline )
+      VULKAN_HPP_CONSTEXPR SubpassBeginInfoKHR( vk::SubpassContents contents_ = vk::SubpassContents::eInline )
         : contents( contents_ )
       {}
 
@@ -60056,7 +60078,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SubpassBeginInfoKHR : public layout::SubpassBeginInfoKHR
   {
-    SubpassBeginInfoKHR( vk::SubpassContents contents_ = vk::SubpassContents::eInline )
+    VULKAN_HPP_CONSTEXPR SubpassBeginInfoKHR( vk::SubpassContents contents_ = vk::SubpassContents::eInline )
       : layout::SubpassBeginInfoKHR( contents_ )
     {}
 
@@ -60115,9 +60137,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct SubpassDescriptionDepthStencilResolveKHR
     {
     protected:
-      SubpassDescriptionDepthStencilResolveKHR( vk::ResolveModeFlagBitsKHR depthResolveMode_ = vk::ResolveModeFlagBitsKHR::eNone,
-                                                vk::ResolveModeFlagBitsKHR stencilResolveMode_ = vk::ResolveModeFlagBitsKHR::eNone,
-                                                const vk::AttachmentReference2KHR* pDepthStencilResolveAttachment_ = nullptr )
+      VULKAN_HPP_CONSTEXPR SubpassDescriptionDepthStencilResolveKHR( vk::ResolveModeFlagBitsKHR depthResolveMode_ = vk::ResolveModeFlagBitsKHR::eNone,
+                                                                     vk::ResolveModeFlagBitsKHR stencilResolveMode_ = vk::ResolveModeFlagBitsKHR::eNone,
+                                                                     const vk::AttachmentReference2KHR* pDepthStencilResolveAttachment_ = nullptr )
         : depthResolveMode( depthResolveMode_ )
         , stencilResolveMode( stencilResolveMode_ )
         , pDepthStencilResolveAttachment( pDepthStencilResolveAttachment_ )
@@ -60146,9 +60168,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SubpassDescriptionDepthStencilResolveKHR : public layout::SubpassDescriptionDepthStencilResolveKHR
   {
-    SubpassDescriptionDepthStencilResolveKHR( vk::ResolveModeFlagBitsKHR depthResolveMode_ = vk::ResolveModeFlagBitsKHR::eNone,
-                                              vk::ResolveModeFlagBitsKHR stencilResolveMode_ = vk::ResolveModeFlagBitsKHR::eNone,
-                                              const vk::AttachmentReference2KHR* pDepthStencilResolveAttachment_ = nullptr )
+    VULKAN_HPP_CONSTEXPR SubpassDescriptionDepthStencilResolveKHR( vk::ResolveModeFlagBitsKHR depthResolveMode_ = vk::ResolveModeFlagBitsKHR::eNone,
+                                                                   vk::ResolveModeFlagBitsKHR stencilResolveMode_ = vk::ResolveModeFlagBitsKHR::eNone,
+                                                                   const vk::AttachmentReference2KHR* pDepthStencilResolveAttachment_ = nullptr )
       : layout::SubpassDescriptionDepthStencilResolveKHR( depthResolveMode_, stencilResolveMode_, pDepthStencilResolveAttachment_ )
     {}
 
@@ -60221,7 +60243,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct SubpassEndInfoKHR
     {
     protected:
-      SubpassEndInfoKHR()
+      VULKAN_HPP_CONSTEXPR SubpassEndInfoKHR()
       {}
 
       SubpassEndInfoKHR( VkSubpassEndInfoKHR const & rhs )
@@ -60244,7 +60266,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SubpassEndInfoKHR : public layout::SubpassEndInfoKHR
   {
-    SubpassEndInfoKHR()
+    VULKAN_HPP_CONSTEXPR SubpassEndInfoKHR()
       : layout::SubpassEndInfoKHR()
     {}
 
@@ -60520,7 +60542,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct SurfaceCapabilitiesFullScreenExclusiveEXT
     {
     protected:
-      SurfaceCapabilitiesFullScreenExclusiveEXT( vk::Bool32 fullScreenExclusiveSupported_ = 0 )
+      VULKAN_HPP_CONSTEXPR SurfaceCapabilitiesFullScreenExclusiveEXT( vk::Bool32 fullScreenExclusiveSupported_ = 0 )
         : fullScreenExclusiveSupported( fullScreenExclusiveSupported_ )
       {}
 
@@ -60545,7 +60567,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SurfaceCapabilitiesFullScreenExclusiveEXT : public layout::SurfaceCapabilitiesFullScreenExclusiveEXT
   {
-    SurfaceCapabilitiesFullScreenExclusiveEXT( vk::Bool32 fullScreenExclusiveSupported_ = 0 )
+    VULKAN_HPP_CONSTEXPR SurfaceCapabilitiesFullScreenExclusiveEXT( vk::Bool32 fullScreenExclusiveSupported_ = 0 )
       : layout::SurfaceCapabilitiesFullScreenExclusiveEXT( fullScreenExclusiveSupported_ )
     {}
 
@@ -60722,7 +60744,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct SurfaceFullScreenExclusiveInfoEXT
     {
     protected:
-      SurfaceFullScreenExclusiveInfoEXT( vk::FullScreenExclusiveEXT fullScreenExclusive_ = vk::FullScreenExclusiveEXT::eDefault )
+      VULKAN_HPP_CONSTEXPR SurfaceFullScreenExclusiveInfoEXT( vk::FullScreenExclusiveEXT fullScreenExclusive_ = vk::FullScreenExclusiveEXT::eDefault )
         : fullScreenExclusive( fullScreenExclusive_ )
       {}
 
@@ -60747,7 +60769,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SurfaceFullScreenExclusiveInfoEXT : public layout::SurfaceFullScreenExclusiveInfoEXT
   {
-    SurfaceFullScreenExclusiveInfoEXT( vk::FullScreenExclusiveEXT fullScreenExclusive_ = vk::FullScreenExclusiveEXT::eDefault )
+    VULKAN_HPP_CONSTEXPR SurfaceFullScreenExclusiveInfoEXT( vk::FullScreenExclusiveEXT fullScreenExclusive_ = vk::FullScreenExclusiveEXT::eDefault )
       : layout::SurfaceFullScreenExclusiveInfoEXT( fullScreenExclusive_ )
     {}
 
@@ -60809,7 +60831,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct SurfaceFullScreenExclusiveWin32InfoEXT
     {
     protected:
-      SurfaceFullScreenExclusiveWin32InfoEXT( HMONITOR hmonitor_ = 0 )
+      VULKAN_HPP_CONSTEXPR SurfaceFullScreenExclusiveWin32InfoEXT( HMONITOR hmonitor_ = 0 )
         : hmonitor( hmonitor_ )
       {}
 
@@ -60834,7 +60856,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SurfaceFullScreenExclusiveWin32InfoEXT : public layout::SurfaceFullScreenExclusiveWin32InfoEXT
   {
-    SurfaceFullScreenExclusiveWin32InfoEXT( HMONITOR hmonitor_ = 0 )
+    VULKAN_HPP_CONSTEXPR SurfaceFullScreenExclusiveWin32InfoEXT( HMONITOR hmonitor_ = 0 )
       : layout::SurfaceFullScreenExclusiveWin32InfoEXT( hmonitor_ )
     {}
 
@@ -60894,7 +60916,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct SurfaceProtectedCapabilitiesKHR
     {
     protected:
-      SurfaceProtectedCapabilitiesKHR( vk::Bool32 supportsProtected_ = 0 )
+      VULKAN_HPP_CONSTEXPR SurfaceProtectedCapabilitiesKHR( vk::Bool32 supportsProtected_ = 0 )
         : supportsProtected( supportsProtected_ )
       {}
 
@@ -60919,7 +60941,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SurfaceProtectedCapabilitiesKHR : public layout::SurfaceProtectedCapabilitiesKHR
   {
-    SurfaceProtectedCapabilitiesKHR( vk::Bool32 supportsProtected_ = 0 )
+    VULKAN_HPP_CONSTEXPR SurfaceProtectedCapabilitiesKHR( vk::Bool32 supportsProtected_ = 0 )
       : layout::SurfaceProtectedCapabilitiesKHR( supportsProtected_ )
     {}
 
@@ -60978,7 +61000,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct SwapchainCounterCreateInfoEXT
     {
     protected:
-      SwapchainCounterCreateInfoEXT( vk::SurfaceCounterFlagsEXT surfaceCounters_ = vk::SurfaceCounterFlagsEXT() )
+      VULKAN_HPP_CONSTEXPR SwapchainCounterCreateInfoEXT( vk::SurfaceCounterFlagsEXT surfaceCounters_ = vk::SurfaceCounterFlagsEXT() )
         : surfaceCounters( surfaceCounters_ )
       {}
 
@@ -61003,7 +61025,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SwapchainCounterCreateInfoEXT : public layout::SwapchainCounterCreateInfoEXT
   {
-    SwapchainCounterCreateInfoEXT( vk::SurfaceCounterFlagsEXT surfaceCounters_ = vk::SurfaceCounterFlagsEXT() )
+    VULKAN_HPP_CONSTEXPR SwapchainCounterCreateInfoEXT( vk::SurfaceCounterFlagsEXT surfaceCounters_ = vk::SurfaceCounterFlagsEXT() )
       : layout::SwapchainCounterCreateInfoEXT( surfaceCounters_ )
     {}
 
@@ -61062,22 +61084,22 @@ namespace VULKAN_HPP_NAMESPACE
     struct SwapchainCreateInfoKHR
     {
     protected:
-      SwapchainCreateInfoKHR( vk::SwapchainCreateFlagsKHR flags_ = vk::SwapchainCreateFlagsKHR(),
-                              vk::SurfaceKHR surface_ = vk::SurfaceKHR(),
-                              uint32_t minImageCount_ = 0,
-                              vk::Format imageFormat_ = vk::Format::eUndefined,
-                              vk::ColorSpaceKHR imageColorSpace_ = vk::ColorSpaceKHR::eSrgbNonlinear,
-                              vk::Extent2D imageExtent_ = vk::Extent2D(),
-                              uint32_t imageArrayLayers_ = 0,
-                              vk::ImageUsageFlags imageUsage_ = vk::ImageUsageFlags(),
-                              vk::SharingMode imageSharingMode_ = vk::SharingMode::eExclusive,
-                              uint32_t queueFamilyIndexCount_ = 0,
-                              const uint32_t* pQueueFamilyIndices_ = nullptr,
-                              vk::SurfaceTransformFlagBitsKHR preTransform_ = vk::SurfaceTransformFlagBitsKHR::eIdentity,
-                              vk::CompositeAlphaFlagBitsKHR compositeAlpha_ = vk::CompositeAlphaFlagBitsKHR::eOpaque,
-                              vk::PresentModeKHR presentMode_ = vk::PresentModeKHR::eImmediate,
-                              vk::Bool32 clipped_ = 0,
-                              vk::SwapchainKHR oldSwapchain_ = vk::SwapchainKHR() )
+      VULKAN_HPP_CONSTEXPR SwapchainCreateInfoKHR( vk::SwapchainCreateFlagsKHR flags_ = vk::SwapchainCreateFlagsKHR(),
+                                                   vk::SurfaceKHR surface_ = vk::SurfaceKHR(),
+                                                   uint32_t minImageCount_ = 0,
+                                                   vk::Format imageFormat_ = vk::Format::eUndefined,
+                                                   vk::ColorSpaceKHR imageColorSpace_ = vk::ColorSpaceKHR::eSrgbNonlinear,
+                                                   vk::Extent2D imageExtent_ = vk::Extent2D(),
+                                                   uint32_t imageArrayLayers_ = 0,
+                                                   vk::ImageUsageFlags imageUsage_ = vk::ImageUsageFlags(),
+                                                   vk::SharingMode imageSharingMode_ = vk::SharingMode::eExclusive,
+                                                   uint32_t queueFamilyIndexCount_ = 0,
+                                                   const uint32_t* pQueueFamilyIndices_ = nullptr,
+                                                   vk::SurfaceTransformFlagBitsKHR preTransform_ = vk::SurfaceTransformFlagBitsKHR::eIdentity,
+                                                   vk::CompositeAlphaFlagBitsKHR compositeAlpha_ = vk::CompositeAlphaFlagBitsKHR::eOpaque,
+                                                   vk::PresentModeKHR presentMode_ = vk::PresentModeKHR::eImmediate,
+                                                   vk::Bool32 clipped_ = 0,
+                                                   vk::SwapchainKHR oldSwapchain_ = vk::SwapchainKHR() )
         : flags( flags_ )
         , surface( surface_ )
         , minImageCount( minImageCount_ )
@@ -61132,22 +61154,22 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SwapchainCreateInfoKHR : public layout::SwapchainCreateInfoKHR
   {
-    SwapchainCreateInfoKHR( vk::SwapchainCreateFlagsKHR flags_ = vk::SwapchainCreateFlagsKHR(),
-                            vk::SurfaceKHR surface_ = vk::SurfaceKHR(),
-                            uint32_t minImageCount_ = 0,
-                            vk::Format imageFormat_ = vk::Format::eUndefined,
-                            vk::ColorSpaceKHR imageColorSpace_ = vk::ColorSpaceKHR::eSrgbNonlinear,
-                            vk::Extent2D imageExtent_ = vk::Extent2D(),
-                            uint32_t imageArrayLayers_ = 0,
-                            vk::ImageUsageFlags imageUsage_ = vk::ImageUsageFlags(),
-                            vk::SharingMode imageSharingMode_ = vk::SharingMode::eExclusive,
-                            uint32_t queueFamilyIndexCount_ = 0,
-                            const uint32_t* pQueueFamilyIndices_ = nullptr,
-                            vk::SurfaceTransformFlagBitsKHR preTransform_ = vk::SurfaceTransformFlagBitsKHR::eIdentity,
-                            vk::CompositeAlphaFlagBitsKHR compositeAlpha_ = vk::CompositeAlphaFlagBitsKHR::eOpaque,
-                            vk::PresentModeKHR presentMode_ = vk::PresentModeKHR::eImmediate,
-                            vk::Bool32 clipped_ = 0,
-                            vk::SwapchainKHR oldSwapchain_ = vk::SwapchainKHR() )
+    VULKAN_HPP_CONSTEXPR SwapchainCreateInfoKHR( vk::SwapchainCreateFlagsKHR flags_ = vk::SwapchainCreateFlagsKHR(),
+                                                 vk::SurfaceKHR surface_ = vk::SurfaceKHR(),
+                                                 uint32_t minImageCount_ = 0,
+                                                 vk::Format imageFormat_ = vk::Format::eUndefined,
+                                                 vk::ColorSpaceKHR imageColorSpace_ = vk::ColorSpaceKHR::eSrgbNonlinear,
+                                                 vk::Extent2D imageExtent_ = vk::Extent2D(),
+                                                 uint32_t imageArrayLayers_ = 0,
+                                                 vk::ImageUsageFlags imageUsage_ = vk::ImageUsageFlags(),
+                                                 vk::SharingMode imageSharingMode_ = vk::SharingMode::eExclusive,
+                                                 uint32_t queueFamilyIndexCount_ = 0,
+                                                 const uint32_t* pQueueFamilyIndices_ = nullptr,
+                                                 vk::SurfaceTransformFlagBitsKHR preTransform_ = vk::SurfaceTransformFlagBitsKHR::eIdentity,
+                                                 vk::CompositeAlphaFlagBitsKHR compositeAlpha_ = vk::CompositeAlphaFlagBitsKHR::eOpaque,
+                                                 vk::PresentModeKHR presentMode_ = vk::PresentModeKHR::eImmediate,
+                                                 vk::Bool32 clipped_ = 0,
+                                                 vk::SwapchainKHR oldSwapchain_ = vk::SwapchainKHR() )
       : layout::SwapchainCreateInfoKHR( flags_, surface_, minImageCount_, imageFormat_, imageColorSpace_, imageExtent_, imageArrayLayers_, imageUsage_, imageSharingMode_, queueFamilyIndexCount_, pQueueFamilyIndices_, preTransform_, compositeAlpha_, presentMode_, clipped_, oldSwapchain_ )
     {}
 
@@ -61311,7 +61333,7 @@ namespace VULKAN_HPP_NAMESPACE
     struct SwapchainDisplayNativeHdrCreateInfoAMD
     {
     protected:
-      SwapchainDisplayNativeHdrCreateInfoAMD( vk::Bool32 localDimmingEnable_ = 0 )
+      VULKAN_HPP_CONSTEXPR SwapchainDisplayNativeHdrCreateInfoAMD( vk::Bool32 localDimmingEnable_ = 0 )
         : localDimmingEnable( localDimmingEnable_ )
       {}
 
@@ -61336,7 +61358,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SwapchainDisplayNativeHdrCreateInfoAMD : public layout::SwapchainDisplayNativeHdrCreateInfoAMD
   {
-    SwapchainDisplayNativeHdrCreateInfoAMD( vk::Bool32 localDimmingEnable_ = 0 )
+    VULKAN_HPP_CONSTEXPR SwapchainDisplayNativeHdrCreateInfoAMD( vk::Bool32 localDimmingEnable_ = 0 )
       : layout::SwapchainDisplayNativeHdrCreateInfoAMD( localDimmingEnable_ )
     {}
 
@@ -61466,9 +61488,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct ValidationCacheCreateInfoEXT
     {
     protected:
-      ValidationCacheCreateInfoEXT( vk::ValidationCacheCreateFlagsEXT flags_ = vk::ValidationCacheCreateFlagsEXT(),
-                                    size_t initialDataSize_ = 0,
-                                    const void* pInitialData_ = nullptr )
+      VULKAN_HPP_CONSTEXPR ValidationCacheCreateInfoEXT( vk::ValidationCacheCreateFlagsEXT flags_ = vk::ValidationCacheCreateFlagsEXT(),
+                                                         size_t initialDataSize_ = 0,
+                                                         const void* pInitialData_ = nullptr )
         : flags( flags_ )
         , initialDataSize( initialDataSize_ )
         , pInitialData( pInitialData_ )
@@ -61497,9 +61519,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ValidationCacheCreateInfoEXT : public layout::ValidationCacheCreateInfoEXT
   {
-    ValidationCacheCreateInfoEXT( vk::ValidationCacheCreateFlagsEXT flags_ = vk::ValidationCacheCreateFlagsEXT(),
-                                  size_t initialDataSize_ = 0,
-                                  const void* pInitialData_ = nullptr )
+    VULKAN_HPP_CONSTEXPR ValidationCacheCreateInfoEXT( vk::ValidationCacheCreateFlagsEXT flags_ = vk::ValidationCacheCreateFlagsEXT(),
+                                                       size_t initialDataSize_ = 0,
+                                                       const void* pInitialData_ = nullptr )
       : layout::ValidationCacheCreateInfoEXT( flags_, initialDataSize_, pInitialData_ )
     {}
 
@@ -61572,10 +61594,10 @@ namespace VULKAN_HPP_NAMESPACE
     struct ValidationFeaturesEXT
     {
     protected:
-      ValidationFeaturesEXT( uint32_t enabledValidationFeatureCount_ = 0,
-                             const vk::ValidationFeatureEnableEXT* pEnabledValidationFeatures_ = nullptr,
-                             uint32_t disabledValidationFeatureCount_ = 0,
-                             const vk::ValidationFeatureDisableEXT* pDisabledValidationFeatures_ = nullptr )
+      VULKAN_HPP_CONSTEXPR ValidationFeaturesEXT( uint32_t enabledValidationFeatureCount_ = 0,
+                                                  const vk::ValidationFeatureEnableEXT* pEnabledValidationFeatures_ = nullptr,
+                                                  uint32_t disabledValidationFeatureCount_ = 0,
+                                                  const vk::ValidationFeatureDisableEXT* pDisabledValidationFeatures_ = nullptr )
         : enabledValidationFeatureCount( enabledValidationFeatureCount_ )
         , pEnabledValidationFeatures( pEnabledValidationFeatures_ )
         , disabledValidationFeatureCount( disabledValidationFeatureCount_ )
@@ -61606,10 +61628,10 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ValidationFeaturesEXT : public layout::ValidationFeaturesEXT
   {
-    ValidationFeaturesEXT( uint32_t enabledValidationFeatureCount_ = 0,
-                           const vk::ValidationFeatureEnableEXT* pEnabledValidationFeatures_ = nullptr,
-                           uint32_t disabledValidationFeatureCount_ = 0,
-                           const vk::ValidationFeatureDisableEXT* pDisabledValidationFeatures_ = nullptr )
+    VULKAN_HPP_CONSTEXPR ValidationFeaturesEXT( uint32_t enabledValidationFeatureCount_ = 0,
+                                                const vk::ValidationFeatureEnableEXT* pEnabledValidationFeatures_ = nullptr,
+                                                uint32_t disabledValidationFeatureCount_ = 0,
+                                                const vk::ValidationFeatureDisableEXT* pDisabledValidationFeatures_ = nullptr )
       : layout::ValidationFeaturesEXT( enabledValidationFeatureCount_, pEnabledValidationFeatures_, disabledValidationFeatureCount_, pDisabledValidationFeatures_ )
     {}
 
@@ -61689,8 +61711,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct ValidationFlagsEXT
     {
     protected:
-      ValidationFlagsEXT( uint32_t disabledValidationCheckCount_ = 0,
-                          const vk::ValidationCheckEXT* pDisabledValidationChecks_ = nullptr )
+      VULKAN_HPP_CONSTEXPR ValidationFlagsEXT( uint32_t disabledValidationCheckCount_ = 0,
+                                               const vk::ValidationCheckEXT* pDisabledValidationChecks_ = nullptr )
         : disabledValidationCheckCount( disabledValidationCheckCount_ )
         , pDisabledValidationChecks( pDisabledValidationChecks_ )
       {}
@@ -61717,8 +61739,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ValidationFlagsEXT : public layout::ValidationFlagsEXT
   {
-    ValidationFlagsEXT( uint32_t disabledValidationCheckCount_ = 0,
-                        const vk::ValidationCheckEXT* pDisabledValidationChecks_ = nullptr )
+    VULKAN_HPP_CONSTEXPR ValidationFlagsEXT( uint32_t disabledValidationCheckCount_ = 0,
+                                             const vk::ValidationCheckEXT* pDisabledValidationChecks_ = nullptr )
       : layout::ValidationFlagsEXT( disabledValidationCheckCount_, pDisabledValidationChecks_ )
     {}
 
@@ -61786,8 +61808,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct ViSurfaceCreateInfoNN
     {
     protected:
-      ViSurfaceCreateInfoNN( vk::ViSurfaceCreateFlagsNN flags_ = vk::ViSurfaceCreateFlagsNN(),
-                             void* window_ = nullptr )
+      VULKAN_HPP_CONSTEXPR ViSurfaceCreateInfoNN( vk::ViSurfaceCreateFlagsNN flags_ = vk::ViSurfaceCreateFlagsNN(),
+                                                  void* window_ = nullptr )
         : flags( flags_ )
         , window( window_ )
       {}
@@ -61814,8 +61836,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ViSurfaceCreateInfoNN : public layout::ViSurfaceCreateInfoNN
   {
-    ViSurfaceCreateInfoNN( vk::ViSurfaceCreateFlagsNN flags_ = vk::ViSurfaceCreateFlagsNN(),
-                           void* window_ = nullptr )
+    VULKAN_HPP_CONSTEXPR ViSurfaceCreateInfoNN( vk::ViSurfaceCreateFlagsNN flags_ = vk::ViSurfaceCreateFlagsNN(),
+                                                void* window_ = nullptr )
       : layout::ViSurfaceCreateInfoNN( flags_, window_ )
     {}
 
@@ -61884,9 +61906,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct WaylandSurfaceCreateInfoKHR
     {
     protected:
-      WaylandSurfaceCreateInfoKHR( vk::WaylandSurfaceCreateFlagsKHR flags_ = vk::WaylandSurfaceCreateFlagsKHR(),
-                                   struct wl_display* display_ = nullptr,
-                                   struct wl_surface* surface_ = nullptr )
+      VULKAN_HPP_CONSTEXPR WaylandSurfaceCreateInfoKHR( vk::WaylandSurfaceCreateFlagsKHR flags_ = vk::WaylandSurfaceCreateFlagsKHR(),
+                                                        struct wl_display* display_ = nullptr,
+                                                        struct wl_surface* surface_ = nullptr )
         : flags( flags_ )
         , display( display_ )
         , surface( surface_ )
@@ -61915,9 +61937,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct WaylandSurfaceCreateInfoKHR : public layout::WaylandSurfaceCreateInfoKHR
   {
-    WaylandSurfaceCreateInfoKHR( vk::WaylandSurfaceCreateFlagsKHR flags_ = vk::WaylandSurfaceCreateFlagsKHR(),
-                                 struct wl_display* display_ = nullptr,
-                                 struct wl_surface* surface_ = nullptr )
+    VULKAN_HPP_CONSTEXPR WaylandSurfaceCreateInfoKHR( vk::WaylandSurfaceCreateFlagsKHR flags_ = vk::WaylandSurfaceCreateFlagsKHR(),
+                                                      struct wl_display* display_ = nullptr,
+                                                      struct wl_surface* surface_ = nullptr )
       : layout::WaylandSurfaceCreateInfoKHR( flags_, display_, surface_ )
     {}
 
@@ -61993,13 +62015,13 @@ namespace VULKAN_HPP_NAMESPACE
     struct Win32KeyedMutexAcquireReleaseInfoKHR
     {
     protected:
-      Win32KeyedMutexAcquireReleaseInfoKHR( uint32_t acquireCount_ = 0,
-                                            const vk::DeviceMemory* pAcquireSyncs_ = nullptr,
-                                            const uint64_t* pAcquireKeys_ = nullptr,
-                                            const uint32_t* pAcquireTimeouts_ = nullptr,
-                                            uint32_t releaseCount_ = 0,
-                                            const vk::DeviceMemory* pReleaseSyncs_ = nullptr,
-                                            const uint64_t* pReleaseKeys_ = nullptr )
+      VULKAN_HPP_CONSTEXPR Win32KeyedMutexAcquireReleaseInfoKHR( uint32_t acquireCount_ = 0,
+                                                                 const vk::DeviceMemory* pAcquireSyncs_ = nullptr,
+                                                                 const uint64_t* pAcquireKeys_ = nullptr,
+                                                                 const uint32_t* pAcquireTimeouts_ = nullptr,
+                                                                 uint32_t releaseCount_ = 0,
+                                                                 const vk::DeviceMemory* pReleaseSyncs_ = nullptr,
+                                                                 const uint64_t* pReleaseKeys_ = nullptr )
         : acquireCount( acquireCount_ )
         , pAcquireSyncs( pAcquireSyncs_ )
         , pAcquireKeys( pAcquireKeys_ )
@@ -62036,13 +62058,13 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct Win32KeyedMutexAcquireReleaseInfoKHR : public layout::Win32KeyedMutexAcquireReleaseInfoKHR
   {
-    Win32KeyedMutexAcquireReleaseInfoKHR( uint32_t acquireCount_ = 0,
-                                          const vk::DeviceMemory* pAcquireSyncs_ = nullptr,
-                                          const uint64_t* pAcquireKeys_ = nullptr,
-                                          const uint32_t* pAcquireTimeouts_ = nullptr,
-                                          uint32_t releaseCount_ = 0,
-                                          const vk::DeviceMemory* pReleaseSyncs_ = nullptr,
-                                          const uint64_t* pReleaseKeys_ = nullptr )
+    VULKAN_HPP_CONSTEXPR Win32KeyedMutexAcquireReleaseInfoKHR( uint32_t acquireCount_ = 0,
+                                                               const vk::DeviceMemory* pAcquireSyncs_ = nullptr,
+                                                               const uint64_t* pAcquireKeys_ = nullptr,
+                                                               const uint32_t* pAcquireTimeouts_ = nullptr,
+                                                               uint32_t releaseCount_ = 0,
+                                                               const vk::DeviceMemory* pReleaseSyncs_ = nullptr,
+                                                               const uint64_t* pReleaseKeys_ = nullptr )
       : layout::Win32KeyedMutexAcquireReleaseInfoKHR( acquireCount_, pAcquireSyncs_, pAcquireKeys_, pAcquireTimeouts_, releaseCount_, pReleaseSyncs_, pReleaseKeys_ )
     {}
 
@@ -62146,13 +62168,13 @@ namespace VULKAN_HPP_NAMESPACE
     struct Win32KeyedMutexAcquireReleaseInfoNV
     {
     protected:
-      Win32KeyedMutexAcquireReleaseInfoNV( uint32_t acquireCount_ = 0,
-                                           const vk::DeviceMemory* pAcquireSyncs_ = nullptr,
-                                           const uint64_t* pAcquireKeys_ = nullptr,
-                                           const uint32_t* pAcquireTimeoutMilliseconds_ = nullptr,
-                                           uint32_t releaseCount_ = 0,
-                                           const vk::DeviceMemory* pReleaseSyncs_ = nullptr,
-                                           const uint64_t* pReleaseKeys_ = nullptr )
+      VULKAN_HPP_CONSTEXPR Win32KeyedMutexAcquireReleaseInfoNV( uint32_t acquireCount_ = 0,
+                                                                const vk::DeviceMemory* pAcquireSyncs_ = nullptr,
+                                                                const uint64_t* pAcquireKeys_ = nullptr,
+                                                                const uint32_t* pAcquireTimeoutMilliseconds_ = nullptr,
+                                                                uint32_t releaseCount_ = 0,
+                                                                const vk::DeviceMemory* pReleaseSyncs_ = nullptr,
+                                                                const uint64_t* pReleaseKeys_ = nullptr )
         : acquireCount( acquireCount_ )
         , pAcquireSyncs( pAcquireSyncs_ )
         , pAcquireKeys( pAcquireKeys_ )
@@ -62189,13 +62211,13 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct Win32KeyedMutexAcquireReleaseInfoNV : public layout::Win32KeyedMutexAcquireReleaseInfoNV
   {
-    Win32KeyedMutexAcquireReleaseInfoNV( uint32_t acquireCount_ = 0,
-                                         const vk::DeviceMemory* pAcquireSyncs_ = nullptr,
-                                         const uint64_t* pAcquireKeys_ = nullptr,
-                                         const uint32_t* pAcquireTimeoutMilliseconds_ = nullptr,
-                                         uint32_t releaseCount_ = 0,
-                                         const vk::DeviceMemory* pReleaseSyncs_ = nullptr,
-                                         const uint64_t* pReleaseKeys_ = nullptr )
+    VULKAN_HPP_CONSTEXPR Win32KeyedMutexAcquireReleaseInfoNV( uint32_t acquireCount_ = 0,
+                                                              const vk::DeviceMemory* pAcquireSyncs_ = nullptr,
+                                                              const uint64_t* pAcquireKeys_ = nullptr,
+                                                              const uint32_t* pAcquireTimeoutMilliseconds_ = nullptr,
+                                                              uint32_t releaseCount_ = 0,
+                                                              const vk::DeviceMemory* pReleaseSyncs_ = nullptr,
+                                                              const uint64_t* pReleaseKeys_ = nullptr )
       : layout::Win32KeyedMutexAcquireReleaseInfoNV( acquireCount_, pAcquireSyncs_, pAcquireKeys_, pAcquireTimeoutMilliseconds_, releaseCount_, pReleaseSyncs_, pReleaseKeys_ )
     {}
 
@@ -62299,9 +62321,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct Win32SurfaceCreateInfoKHR
     {
     protected:
-      Win32SurfaceCreateInfoKHR( vk::Win32SurfaceCreateFlagsKHR flags_ = vk::Win32SurfaceCreateFlagsKHR(),
-                                 HINSTANCE hinstance_ = 0,
-                                 HWND hwnd_ = 0 )
+      VULKAN_HPP_CONSTEXPR Win32SurfaceCreateInfoKHR( vk::Win32SurfaceCreateFlagsKHR flags_ = vk::Win32SurfaceCreateFlagsKHR(),
+                                                      HINSTANCE hinstance_ = 0,
+                                                      HWND hwnd_ = 0 )
         : flags( flags_ )
         , hinstance( hinstance_ )
         , hwnd( hwnd_ )
@@ -62330,9 +62352,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct Win32SurfaceCreateInfoKHR : public layout::Win32SurfaceCreateInfoKHR
   {
-    Win32SurfaceCreateInfoKHR( vk::Win32SurfaceCreateFlagsKHR flags_ = vk::Win32SurfaceCreateFlagsKHR(),
-                               HINSTANCE hinstance_ = 0,
-                               HWND hwnd_ = 0 )
+    VULKAN_HPP_CONSTEXPR Win32SurfaceCreateInfoKHR( vk::Win32SurfaceCreateFlagsKHR flags_ = vk::Win32SurfaceCreateFlagsKHR(),
+                                                    HINSTANCE hinstance_ = 0,
+                                                    HWND hwnd_ = 0 )
       : layout::Win32SurfaceCreateInfoKHR( flags_, hinstance_, hwnd_ )
     {}
 
@@ -62406,14 +62428,14 @@ namespace VULKAN_HPP_NAMESPACE
     struct WriteDescriptorSet
     {
     protected:
-      WriteDescriptorSet( vk::DescriptorSet dstSet_ = vk::DescriptorSet(),
-                          uint32_t dstBinding_ = 0,
-                          uint32_t dstArrayElement_ = 0,
-                          uint32_t descriptorCount_ = 0,
-                          vk::DescriptorType descriptorType_ = vk::DescriptorType::eSampler,
-                          const vk::DescriptorImageInfo* pImageInfo_ = nullptr,
-                          const vk::DescriptorBufferInfo* pBufferInfo_ = nullptr,
-                          const vk::BufferView* pTexelBufferView_ = nullptr )
+      VULKAN_HPP_CONSTEXPR WriteDescriptorSet( vk::DescriptorSet dstSet_ = vk::DescriptorSet(),
+                                               uint32_t dstBinding_ = 0,
+                                               uint32_t dstArrayElement_ = 0,
+                                               uint32_t descriptorCount_ = 0,
+                                               vk::DescriptorType descriptorType_ = vk::DescriptorType::eSampler,
+                                               const vk::DescriptorImageInfo* pImageInfo_ = nullptr,
+                                               const vk::DescriptorBufferInfo* pBufferInfo_ = nullptr,
+                                               const vk::BufferView* pTexelBufferView_ = nullptr )
         : dstSet( dstSet_ )
         , dstBinding( dstBinding_ )
         , dstArrayElement( dstArrayElement_ )
@@ -62452,14 +62474,14 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct WriteDescriptorSet : public layout::WriteDescriptorSet
   {
-    WriteDescriptorSet( vk::DescriptorSet dstSet_ = vk::DescriptorSet(),
-                        uint32_t dstBinding_ = 0,
-                        uint32_t dstArrayElement_ = 0,
-                        uint32_t descriptorCount_ = 0,
-                        vk::DescriptorType descriptorType_ = vk::DescriptorType::eSampler,
-                        const vk::DescriptorImageInfo* pImageInfo_ = nullptr,
-                        const vk::DescriptorBufferInfo* pBufferInfo_ = nullptr,
-                        const vk::BufferView* pTexelBufferView_ = nullptr )
+    VULKAN_HPP_CONSTEXPR WriteDescriptorSet( vk::DescriptorSet dstSet_ = vk::DescriptorSet(),
+                                             uint32_t dstBinding_ = 0,
+                                             uint32_t dstArrayElement_ = 0,
+                                             uint32_t descriptorCount_ = 0,
+                                             vk::DescriptorType descriptorType_ = vk::DescriptorType::eSampler,
+                                             const vk::DescriptorImageInfo* pImageInfo_ = nullptr,
+                                             const vk::DescriptorBufferInfo* pBufferInfo_ = nullptr,
+                                             const vk::BufferView* pTexelBufferView_ = nullptr )
       : layout::WriteDescriptorSet( dstSet_, dstBinding_, dstArrayElement_, descriptorCount_, descriptorType_, pImageInfo_, pBufferInfo_, pTexelBufferView_ )
     {}
 
@@ -62567,8 +62589,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct WriteDescriptorSetAccelerationStructureNV
     {
     protected:
-      WriteDescriptorSetAccelerationStructureNV( uint32_t accelerationStructureCount_ = 0,
-                                                 const vk::AccelerationStructureNV* pAccelerationStructures_ = nullptr )
+      VULKAN_HPP_CONSTEXPR WriteDescriptorSetAccelerationStructureNV( uint32_t accelerationStructureCount_ = 0,
+                                                                      const vk::AccelerationStructureNV* pAccelerationStructures_ = nullptr )
         : accelerationStructureCount( accelerationStructureCount_ )
         , pAccelerationStructures( pAccelerationStructures_ )
       {}
@@ -62595,8 +62617,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct WriteDescriptorSetAccelerationStructureNV : public layout::WriteDescriptorSetAccelerationStructureNV
   {
-    WriteDescriptorSetAccelerationStructureNV( uint32_t accelerationStructureCount_ = 0,
-                                               const vk::AccelerationStructureNV* pAccelerationStructures_ = nullptr )
+    VULKAN_HPP_CONSTEXPR WriteDescriptorSetAccelerationStructureNV( uint32_t accelerationStructureCount_ = 0,
+                                                                    const vk::AccelerationStructureNV* pAccelerationStructures_ = nullptr )
       : layout::WriteDescriptorSetAccelerationStructureNV( accelerationStructureCount_, pAccelerationStructures_ )
     {}
 
@@ -62662,8 +62684,8 @@ namespace VULKAN_HPP_NAMESPACE
     struct WriteDescriptorSetInlineUniformBlockEXT
     {
     protected:
-      WriteDescriptorSetInlineUniformBlockEXT( uint32_t dataSize_ = 0,
-                                               const void* pData_ = nullptr )
+      VULKAN_HPP_CONSTEXPR WriteDescriptorSetInlineUniformBlockEXT( uint32_t dataSize_ = 0,
+                                                                    const void* pData_ = nullptr )
         : dataSize( dataSize_ )
         , pData( pData_ )
       {}
@@ -62690,8 +62712,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct WriteDescriptorSetInlineUniformBlockEXT : public layout::WriteDescriptorSetInlineUniformBlockEXT
   {
-    WriteDescriptorSetInlineUniformBlockEXT( uint32_t dataSize_ = 0,
-                                             const void* pData_ = nullptr )
+    VULKAN_HPP_CONSTEXPR WriteDescriptorSetInlineUniformBlockEXT( uint32_t dataSize_ = 0,
+                                                                  const void* pData_ = nullptr )
       : layout::WriteDescriptorSetInlineUniformBlockEXT( dataSize_, pData_ )
     {}
 
@@ -62759,9 +62781,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct XcbSurfaceCreateInfoKHR
     {
     protected:
-      XcbSurfaceCreateInfoKHR( vk::XcbSurfaceCreateFlagsKHR flags_ = vk::XcbSurfaceCreateFlagsKHR(),
-                               xcb_connection_t* connection_ = nullptr,
-                               xcb_window_t window_ = 0 )
+      VULKAN_HPP_CONSTEXPR XcbSurfaceCreateInfoKHR( vk::XcbSurfaceCreateFlagsKHR flags_ = vk::XcbSurfaceCreateFlagsKHR(),
+                                                    xcb_connection_t* connection_ = nullptr,
+                                                    xcb_window_t window_ = 0 )
         : flags( flags_ )
         , connection( connection_ )
         , window( window_ )
@@ -62790,9 +62812,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct XcbSurfaceCreateInfoKHR : public layout::XcbSurfaceCreateInfoKHR
   {
-    XcbSurfaceCreateInfoKHR( vk::XcbSurfaceCreateFlagsKHR flags_ = vk::XcbSurfaceCreateFlagsKHR(),
-                             xcb_connection_t* connection_ = nullptr,
-                             xcb_window_t window_ = 0 )
+    VULKAN_HPP_CONSTEXPR XcbSurfaceCreateInfoKHR( vk::XcbSurfaceCreateFlagsKHR flags_ = vk::XcbSurfaceCreateFlagsKHR(),
+                                                  xcb_connection_t* connection_ = nullptr,
+                                                  xcb_window_t window_ = 0 )
       : layout::XcbSurfaceCreateInfoKHR( flags_, connection_, window_ )
     {}
 
@@ -62868,9 +62890,9 @@ namespace VULKAN_HPP_NAMESPACE
     struct XlibSurfaceCreateInfoKHR
     {
     protected:
-      XlibSurfaceCreateInfoKHR( vk::XlibSurfaceCreateFlagsKHR flags_ = vk::XlibSurfaceCreateFlagsKHR(),
-                                Display* dpy_ = nullptr,
-                                Window window_ = 0 )
+      VULKAN_HPP_CONSTEXPR XlibSurfaceCreateInfoKHR( vk::XlibSurfaceCreateFlagsKHR flags_ = vk::XlibSurfaceCreateFlagsKHR(),
+                                                     Display* dpy_ = nullptr,
+                                                     Window window_ = 0 )
         : flags( flags_ )
         , dpy( dpy_ )
         , window( window_ )
@@ -62899,9 +62921,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct XlibSurfaceCreateInfoKHR : public layout::XlibSurfaceCreateInfoKHR
   {
-    XlibSurfaceCreateInfoKHR( vk::XlibSurfaceCreateFlagsKHR flags_ = vk::XlibSurfaceCreateFlagsKHR(),
-                              Display* dpy_ = nullptr,
-                              Window window_ = 0 )
+    VULKAN_HPP_CONSTEXPR XlibSurfaceCreateInfoKHR( vk::XlibSurfaceCreateFlagsKHR flags_ = vk::XlibSurfaceCreateFlagsKHR(),
+                                                   Display* dpy_ = nullptr,
+                                                   Window window_ = 0 )
       : layout::XlibSurfaceCreateInfoKHR( flags_, dpy_, window_ )
     {}
 

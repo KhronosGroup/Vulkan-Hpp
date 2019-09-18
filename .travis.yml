@@ -47,3 +47,4 @@ script:
   - echo "}" >> /tmp/test.cpp
   - cat /tmp/test.cpp
   - ${CXX} -std=c++11 -Wall -Ivulkan -IVulkan-Headers/include -c /tmp/test.cpp
+  - ${CXX} -std=c++14 -Wall -Ivulkan -IVulkan-Headers/include -c /tmp/test.cpp

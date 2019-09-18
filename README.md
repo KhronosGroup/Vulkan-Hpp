@@ -364,6 +364,10 @@ vk::DispatchLoaderDynamic dldid(instance, device);
 device.getQueue(graphics_queue_family_index, 0, &graphics_queue, dldid);
 ```
 
+### Samples
+
+When you configure your project using CMake, you can enable SAMPLES_BUILD, getting you a port of most of the LunarG samples and one sample named RayTracing featuring the VK_NV_ray_tracing extension.
+
 ## See Also
 
 Feel free to submit a PR to add to this list.

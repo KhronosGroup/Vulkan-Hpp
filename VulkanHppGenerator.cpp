@@ -2340,8 +2340,11 @@ void VulkanHppGenerator::appendStructCompareOperators(std::string & str, std::pa
 std::string VulkanHppGenerator::appendStructConstructor(std::pair<std::string, StructureData> const& structData, std::string const& prefix, bool withLayoutStructure) const
 {
   // the constructor with all the elements as arguments, with defaults
-  std::string ctorOpening = prefix + stripPrefix(structData.first, "Vk") + "( ";
-  std::string indentation(ctorOpening.size(), ' ');
+  // returnedOnly structs and structs with a union (and VkBaseInStructure and VkBaseOutStructure) can't be a constexpr!
+  bool isConstExpression = !structData.second.returnedOnly && !containsUnion(structData.first) && (structData.first != "VkBaseInStructure") && (structData.first != "VkBaseOutStructure");
+  std::string constexprString = isConstExpression ? (std::string("VULKAN_HPP_CONSTEXPR") + (containsArray(structData.first) ? "_14 " : " ")) : "";
+  std::string ctorOpening = prefix + constexprString + stripPrefix(structData.first, "Vk");
+  std::string indentation(ctorOpening.size() + 2, ' ');
 
   std::string arguments, initializers, copyOps;
   bool listedArgument = false;
@@ -2375,19 +2378,17 @@ std::string VulkanHppGenerator::appendStructConstructor(std::pair<std::string, S
         else
         {
           // here we can handle the arrays, copying over from argument (with trailing '_') to member
-          // size is arraySize times sizeof type
-          copyOps += "\n"
-            + prefix + "  memcpy( &" + member.name + ", " + member.name + "_.data(), " + member.arraySize + " * sizeof( " + member.type.compose() + " ) );";
+          initializers += prefix + "  " + (firstArgument ? ":" : ",") + " " + member.name + "{}\n"; // need to initialize the array
+          firstArgument = false;
+
+          std::string type = (member.type.type.substr(0, 2) == "Vk") ? ("vk::" + stripPrefix(member.type.type, "Vk")) : member.type.type;
+          copyOps += prefix + "  vk::ConstExpressionArrayCopy<" + type + "," + member.arraySize + "," + member.arraySize + ">::copy( " + member.name + ", " + member.name + "_ );\n";
         }
       }
     }
-    if (!copyOps.empty())
-    {
-      copyOps += "\n" + prefix;
-    }
   }
 
-  std::string structConstructor = prefix + stripPrefix(structData.first, "Vk") + (arguments.empty() ? "()" : std::string("( " + arguments + " )")) + "\n";
+  std::string structConstructor = ctorOpening + (arguments.empty() ? "()" : std::string("( " + arguments + " )")) + "\n";
   if (withLayoutStructure)
   {
     structConstructor += prefix + "  : layout::" + stripPrefix(structData.first, "Vk") + (initializers.empty() ? "()" : std::string("( " + initializers + " )")) + "\n" + prefix + "{}\n";
@@ -2401,7 +2402,7 @@ std::string VulkanHppGenerator::appendStructConstructor(std::pair<std::string, S
     }
     else
     {
-      structConstructor += prefix + "{\n" + copyOps + "\n" + prefix + "}\n";
+      structConstructor += prefix + "{\n" + copyOps + prefix + "}\n";
     }
 
     if (!structData.second.subStruct.empty())
@@ -2852,6 +2853,21 @@ void VulkanHppGenerator::EnumData::addEnumValue(std::string const &valueName, bo
   {
     assert(it->vulkanValue == valueName);
   }
+}
+
+bool VulkanHppGenerator::containsArray(std::string const& type) const
+{
+  // a simple recursive check if a type is or contains an array
+  auto structureIt = m_structures.find(type);
+  bool found = false;
+  if (structureIt != m_structures.end())
+  {
+    for (auto memberIt = structureIt->second.members.begin(); memberIt != structureIt->second.members.end() && !found; ++memberIt)
+    {
+      found = !memberIt->arraySize.empty();
+    }
+  }
+  return found;
 }
 
 bool VulkanHppGenerator::containsUnion(std::string const& type) const
@@ -4290,23 +4306,19 @@ int main( int argc, char **argv )
   public:
     VULKAN_HPP_CONSTEXPR Flags()
       : m_mask(0)
-    {
-    }
+    {}
 
-    Flags(BitType bit)
+    VULKAN_HPP_CONSTEXPR Flags(BitType bit)
       : m_mask(static_cast<MaskType>(bit))
-    {
-    }
+    {}
 
-    Flags(Flags<BitType> const& rhs)
+    VULKAN_HPP_CONSTEXPR Flags(Flags<BitType> const& rhs)
       : m_mask(rhs.m_mask)
-    {
-    }
+    {}
 
-    explicit Flags(MaskType flags)
+    VULKAN_HPP_CONSTEXPR explicit Flags(MaskType flags)
       : m_mask(flags)
-    {
-    }
+    {}
 
     Flags<BitType> & operator=(Flags<BitType> const& rhs)
     {
@@ -4782,6 +4794,26 @@ int main( int argc, char **argv )
 #endif
 )";
 
+static const std::string constExpressionArrayCopy = R"(
+  template <typename T, size_t N, size_t I>
+  class ConstExpressionArrayCopy
+  {
+    public:
+      VULKAN_HPP_CONSTEXPR static void copy(T dst[N], std::array<T,N> const& src)
+      {
+        dst[I] = src[I];
+        ConstExpressionArrayCopy<T, N, I - 1>::copy(dst, src);
+      }
+  };
+
+  template <typename T, size_t N>
+  class ConstExpressionArrayCopy<T, N, 0>
+  {
+    public:
+      VULKAN_HPP_CONSTEXPR static void copy(T /*dst*/[N], std::array<T,N> const& /*src*/) {}
+  };
+)";
+
   static const std::string defines = R"(
 // <tuple> includes <sys/sysmacros.h> through some other header
 // this results in major(x) being resolved to gnu_dev_major(x)
@@ -4838,12 +4870,18 @@ int main( int argc, char **argv )
 # define VULKAN_HPP_TYPESAFE_EXPLICIT explicit
 #endif
 
-#if defined(_MSC_VER) && (_MSC_VER <= 1800)
-# define VULKAN_HPP_CONSTEXPR
-# define VULKAN_HPP_CONST_OR_CONSTEXPR  const
-#else
+#if defined(__cpp_constexpr)
 # define VULKAN_HPP_CONSTEXPR constexpr
+# if __cpp_constexpr >= 201304
+#  define VULKAN_HPP_CONSTEXPR_14  constexpr
+# else
+#  define VULKAN_HPP_CONSTEXPR_14
+# endif
 # define VULKAN_HPP_CONST_OR_CONSTEXPR  constexpr
+#else
+# define VULKAN_HPP_CONSTEXPR
+# define VULKAN_HPP_CONSTEXPR_14
+# define VULKAN_HPP_CONST_OR_CONSTEXPR  const
 #endif
 
 #if !defined(VULKAN_HPP_NAMESPACE)
@@ -5178,6 +5216,7 @@ namespace std
     str += classObjectDestroy
       + classObjectFree
       + classPoolFree
+      + constExpressionArrayCopy
       + "\n";
     generator.appendBaseTypes(str);
     generator.appendEnums(str);

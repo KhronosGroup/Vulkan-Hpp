@@ -29,6 +29,10 @@ source_group(sources FILES ${SOURCES})
 add_executable(DispatchLoaderDynamic
   ${HEADERS}
   ${SOURCES}
-)
+  )
+
+if (UNIX)
+  target_link_libraries(DispatchLoaderDynamic "-ldl")
+endif()
 
 set_target_properties(DispatchLoaderDynamic PROPERTIES FOLDER "Tests")

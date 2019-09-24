@@ -26,75 +26,36 @@ int main(int /*argc*/, char ** /*argv*/)
 {
   try
   {
-    // empty DispatchLoaderDynamic, used for init calls later on
     vk::DispatchLoaderDynamic dld0;
+    vk::DynamicLoader dl;
+    PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr = dl.getProcAddress<PFN_vkGetInstanceProcAddr>("vkGetInstanceProcAddr");
 
-    HMODULE vulkanDll = LoadLibrary("C:/Windows/System32/vulkan-1.dll");
-    if (vulkanDll)
-    {
-      // create a dispatcher, based on vkInstance/vkGetInstanceProcAddr only
-      PFN_vkCreateInstance vkCreateInstance = PFN_vkCreateInstance(GetProcAddress(vulkanDll, "vkCreateInstance"));
-      assert(vkCreateInstance);
+  // empty DispatchLoaderDynamic, used for init calls later on
+    vk::DispatchLoaderDynamic dld_boot(vkGetInstanceProcAddr);
+    vk::Instance instance = vk::createInstance({}, nullptr, dld_boot);
 
-      VkInstanceCreateInfo vkInstanceCreateInfo = {};
-      vkInstanceCreateInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-      VkInstance vkInstance;
-      VkResult vkResult = vkCreateInstance(&vkInstanceCreateInfo, nullptr, &vkInstance);
-      assert(vkResult == VK_SUCCESS);
+    vk::DispatchLoaderDynamic dld1(instance, vkGetInstanceProcAddr);
 
-      PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr = PFN_vkGetInstanceProcAddr(GetProcAddress(vulkanDll, "vkGetInstanceProcAddr"));
-      assert(vkGetInstanceProcAddr);
+    // compare to the empty dispatcher, and init the empty dispatcher the same way
+    assert(memcmp(&dld0, &dld1, sizeof(vk::DispatchLoaderDynamic)) != 0);
+    dld0.init(instance, vkGetInstanceProcAddr);
+    assert(memcmp(&dld0, &dld1, sizeof(vk::DispatchLoaderDynamic)) == 0);
 
-      vk::DispatchLoaderDynamic dld1(vkInstance, vkGetInstanceProcAddr);
+    // create a dispatcher, based on additional vkDevice/vkGetDeviceProcAddr
+    std::vector<vk::PhysicalDevice> physicalDevices = instance.enumeratePhysicalDevices(dld1);
 
-      // compare to the empty dispatcher, and init the empty dispatcher the same way
-      assert(memcmp(&dld0, &dld1, sizeof(vk::DispatchLoaderDynamic)) != 0);
-      dld0.init(vkInstance, vkGetInstanceProcAddr);
-      assert(memcmp(&dld0, &dld1, sizeof(vk::DispatchLoaderDynamic)) == 0);
+    assert(!physicalDevices.empty());
+
+    vk::Device device = physicalDevices[0].createDevice({}, nullptr, dld1);
+
+    // device specialization functions
+    vk::DispatchLoaderDynamic dld2(instance, vkGetInstanceProcAddr, device);
 
 
-      // create a dispatcher, based on additional vkDevice/vkGetDeviceProcAddr
-      PFN_vkEnumeratePhysicalDevices vkEnumeratePhysicalDevices = PFN_vkEnumeratePhysicalDevices(GetProcAddress(vulkanDll, "vkEnumeratePhysicalDevices"));
-      assert(vkEnumeratePhysicalDevices);
-
-      std::vector<VkPhysicalDevice> physicalDevices;
-      uint32_t physicalDeviceCount;
-      do
-      {
-        vkResult = vkEnumeratePhysicalDevices(vkInstance, &physicalDeviceCount, nullptr);
-        if ((vkResult == VK_SUCCESS) && physicalDeviceCount)
-        {
-          physicalDevices.resize(physicalDeviceCount);
-          vkResult = vkEnumeratePhysicalDevices(vkInstance, &physicalDeviceCount, physicalDevices.data());
-        }
-      } while (vkResult != VK_SUCCESS);
-      assert(vkResult == VK_SUCCESS);
-      assert(physicalDeviceCount <= physicalDevices.size());
-      if (physicalDeviceCount < physicalDevices.size())
-      {
-        physicalDevices.resize(physicalDeviceCount);
-      }
-      assert(!physicalDevices.empty());
-
-      PFN_vkCreateDevice vkCreateDevice = PFN_vkCreateDevice(GetProcAddress(vulkanDll, "vkCreateDevice"));
-      assert(vkCreateDevice);
-
-      VkDeviceCreateInfo vkDeviceCreateInfo = {};
-      vkDeviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-      VkDevice vkDevice;
-      vkResult = vkCreateDevice(physicalDevices[0], &vkDeviceCreateInfo, nullptr, &vkDevice);
-      assert(vkResult == VK_SUCCESS);
-
-      PFN_vkGetDeviceProcAddr vkGetDeviceProcAddr = PFN_vkGetDeviceProcAddr(GetProcAddress(vulkanDll, "vkGetDeviceProcAddr"));
-      vk::DispatchLoaderDynamic dld2(vkInstance, vkGetInstanceProcAddr, vkDevice, vkGetDeviceProcAddr);
-
-      // compare to "simpler" dispatcher and make them equal
-      assert(memcmp(&dld0, &dld2, sizeof(vk::DispatchLoaderDynamic)) != 0);
-      dld0.init(vkInstance, vkGetInstanceProcAddr, vkDevice, vkGetDeviceProcAddr);
-      assert(memcmp(&dld0, &dld2, sizeof(vk::DispatchLoaderDynamic)) == 0);
-
-      FreeLibrary(vulkanDll);
-    }
+    // compare to "simpler" dispatcher and make them equal
+    assert(memcmp(&dld0, &dld2, sizeof(vk::DispatchLoaderDynamic)) != 0);
+    dld0.init(instance, vkGetInstanceProcAddr, device);
+    assert(memcmp(&dld0, &dld2, sizeof(vk::DispatchLoaderDynamic)) == 0);
   }
   catch (vk::SystemError err)
   {

@@ -1016,6 +1016,66 @@ void VulkanHppGenerator::appendCommand(std::string & str, std::string const& ind
 void VulkanHppGenerator::appendDispatchLoaderDynamic(std::string & str)
 {
   str += R"(
+  class DynamicLoader
+  {
+  public:
+    DynamicLoader() : m_success( false )
+    {
+#if defined(__linux__)
+      m_library = dlopen( "libvulkan.so", RTLD_NOW | RTLD_LOCAL );
+#elif defined(_WIN32)
+      m_library = LoadLibrary( "vulkan-1.dll" );
+#else
+      assert( false && "unsupported platform" );
+#endif
+
+      m_success = m_library != 0;
+#ifndef VULKAN_HPP_NO_EXCEPTIONS
+      if ( !m_success )
+      {
+        // NOTE there should be an InitializationFailedError, but msvc insists on the symbol does not exist within the scope of this function.
+        throw std::runtime_error( "Failed to load vulkan library!" );
+      }
+#endif
+    }
+
+    ~DynamicLoader()
+    {
+      if ( m_library )
+      {
+#if defined(__linux__)
+        dlclose( m_library );
+#elif defined(_WIN32)
+        FreeLibrary( m_library );
+#endif
+      }
+    }
+
+    template <typename T>
+    T getProcAddress( const char* function ) const
+    {
+#if defined(__linux__)
+      return (T)dlsym( m_library, function );
+#elif defined(_WIN32)
+      return (T)GetProcAddress( m_library, function );
+#endif
+    }
+
+    bool success() const { return m_success; }
+
+  private:
+    bool m_success;
+#if defined(__linux__)
+    void *m_library;
+#elif defined(_WIN32)
+    HMODULE m_library;
+#else
+#error unsupported platform
+#endif
+  };
+
+)";
+  str += R"(
   class DispatchLoaderDynamic
   {
   public:
@@ -1052,6 +1112,21 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic(std::string & str)
     }
 #endif // !defined(VK_NO_PROTOTYPES)
 
+    DispatchLoaderDynamic(PFN_vkGetInstanceProcAddr getInstanceProcAddr)
+    {
+      init(getInstanceProcAddr);
+    }
+
+    void init( PFN_vkGetInstanceProcAddr getInstanceProcAddr )
+    {
+      VULKAN_HPP_ASSERT(getInstanceProcAddr);
+
+      vkGetInstanceProcAddr = getInstanceProcAddr;
+      vkEnumerateInstanceExtensionProperties = PFN_vkEnumerateInstanceExtensionProperties( vkGetInstanceProcAddr( NULL, "vkEnumerateInstanceExtensionProperties" ) );
+      vkEnumerateInstanceLayerProperties = PFN_vkEnumerateInstanceLayerProperties( vkGetInstanceProcAddr( NULL, "vkEnumerateInstanceLayerProperties" ) );
+      vkCreateInstance = PFN_vkCreateInstance( vkGetInstanceProcAddr( NULL, "vkCreateInstance" ) );
+    }
+
     // This interface does not require a linked vulkan library.
     DispatchLoaderDynamic( VkInstance instance, PFN_vkGetInstanceProcAddr getInstanceProcAddr, VkDevice device = VK_NULL_HANDLE, PFN_vkGetDeviceProcAddr getDeviceProcAddr = nullptr )
     {
@@ -1062,7 +1137,6 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic(std::string & str)
     void init( VkInstance instance, PFN_vkGetInstanceProcAddr getInstanceProcAddr, VkDevice device = VK_NULL_HANDLE, PFN_vkGetDeviceProcAddr getDeviceProcAddr = nullptr )
     {
       VULKAN_HPP_ASSERT(instance && getInstanceProcAddr);
-      VULKAN_HPP_ASSERT(!!device == !!getDeviceProcAddr);
       vkGetInstanceProcAddr = getInstanceProcAddr;
       vkGetDeviceProcAddr = getDeviceProcAddr ? getDeviceProcAddr : PFN_vkGetDeviceProcAddr( vkGetInstanceProcAddr( instance, "vkGetDeviceProcAddr") );
 )";
@@ -4990,6 +5064,10 @@ static const std::string constExpressionArrayCopy = R"(
 #if !defined(VULKAN_HPP_ASSERT)
 # include <cassert>
 # define VULKAN_HPP_ASSERT   assert
+#endif
+
+#if defined(__linux__)
+# include <dlfcn.h>
 #endif
 )";
 

@@ -41,6 +41,13 @@ int main(int /*argc*/, char ** /*argv*/)
     desiredVersionString += ".";
     desiredVersionString += std::to_string(desiredMinorVersion);
 
+#if (VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1)
+    // initialize the DipatchLoaderDynamic to use
+    static vk::DynamicLoader dl;
+    PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr = dl.getProcAddress<PFN_vkGetInstanceProcAddr>("vkGetInstanceProcAddr");
+    VULKAN_HPP_DEFAULT_DISPATCHER.init(vkGetInstanceProcAddr);
+#endif
+
     // Determine what API version is available
     uint32_t apiVersion = vk::enumerateInstanceVersion();
 

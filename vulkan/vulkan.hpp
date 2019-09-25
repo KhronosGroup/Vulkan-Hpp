@@ -72072,9 +72072,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_ASSERT(getInstanceProcAddr);
 
       vkGetInstanceProcAddr = getInstanceProcAddr;
+      vkCreateInstance = PFN_vkCreateInstance( vkGetInstanceProcAddr( NULL, "vkCreateInstance" ) );
       vkEnumerateInstanceExtensionProperties = PFN_vkEnumerateInstanceExtensionProperties( vkGetInstanceProcAddr( NULL, "vkEnumerateInstanceExtensionProperties" ) );
       vkEnumerateInstanceLayerProperties = PFN_vkEnumerateInstanceLayerProperties( vkGetInstanceProcAddr( NULL, "vkEnumerateInstanceLayerProperties" ) );
-      vkCreateInstance = PFN_vkCreateInstance( vkGetInstanceProcAddr( NULL, "vkCreateInstance" ) );
+      vkEnumerateInstanceVersion = PFN_vkEnumerateInstanceVersion( vkGetInstanceProcAddr( NULL, "vkEnumerateInstanceVersion" ) );
     }
 
     // This interface does not require a linked vulkan library.
@@ -72096,10 +72097,6 @@ namespace VULKAN_HPP_NAMESPACE
 
     void init( vk::Instance instance )
     {
-      vkCreateInstance = PFN_vkCreateInstance( vkGetInstanceProcAddr( instance, "vkCreateInstance" ) );
-      vkEnumerateInstanceExtensionProperties = PFN_vkEnumerateInstanceExtensionProperties( vkGetInstanceProcAddr( instance, "vkEnumerateInstanceExtensionProperties" ) );
-      vkEnumerateInstanceLayerProperties = PFN_vkEnumerateInstanceLayerProperties( vkGetInstanceProcAddr( instance, "vkEnumerateInstanceLayerProperties" ) );
-      vkEnumerateInstanceVersion = PFN_vkEnumerateInstanceVersion( vkGetInstanceProcAddr( instance, "vkEnumerateInstanceVersion" ) );
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
       vkCreateAndroidSurfaceKHR = PFN_vkCreateAndroidSurfaceKHR( vkGetInstanceProcAddr( instance, "vkCreateAndroidSurfaceKHR" ) );
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/

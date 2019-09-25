@@ -21,6 +21,8 @@
 #include <iostream>
 #include <sstream>
 
+using namespace std::string_literals;
+
 static char const* AppName = "EnableValidationWithCallback";
 static char const* EngineName = "Vulkan.hpp";
 
@@ -41,45 +43,44 @@ VKAPI_ATTR void VKAPI_CALL vkDestroyDebugUtilsMessengerEXT(VkInstance instance, 
 VkBool32 debugMessageFunc(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageTypes,
   VkDebugUtilsMessengerCallbackDataEXT const * pCallbackData, void * /*pUserData*/)
 {
-  std::ostringstream message;
+  std::string message;
 
-  message << vk::to_string(static_cast<vk::DebugUtilsMessageSeverityFlagBitsEXT>(messageSeverity)) << ": " << vk::to_string(static_cast<vk::DebugUtilsMessageTypeFlagsEXT>(messageTypes)) << ":\n";
-  message << "\t" << "messageIDName   = <" << pCallbackData->pMessageIdName << ">\n";
-  message << "\t" << "messageIdNumber = " << pCallbackData->messageIdNumber << "\n";
-  message << "\t" << "message         = <" << pCallbackData->pMessage << ">\n";
+  message += vk::to_string(static_cast<vk::DebugUtilsMessageSeverityFlagBitsEXT>(messageSeverity)) + ": " + vk::to_string(static_cast<vk::DebugUtilsMessageTypeFlagsEXT>(messageTypes)) + ":\n";
+  message += "\t"s + "messageIDName   = <" + pCallbackData->pMessageIdName + ">\n";
+  message += "\t"s + "messageIdNumber = " + std::to_string(pCallbackData->messageIdNumber) + "\n";
+  message += "\t"s + "message         = <" + pCallbackData->pMessage + ">\n";
   if (0 < pCallbackData->queueLabelCount)
   {
-    message << "\t" << "Queue Labels:\n";
+    message += "\t"s + "Queue Labels:\n";
     for (uint8_t i = 0; i < pCallbackData->queueLabelCount; i++)
     {
-      message << "\t\t" << "lableName = <" << pCallbackData->pQueueLabels[i].pLabelName << ">\n";
+      message += "\t\t"s + "lableName = <" + pCallbackData->pQueueLabels[i].pLabelName + ">\n";
     }
   }
   if (0 < pCallbackData->cmdBufLabelCount)
   {
-    message << "\t" << "CommandBuffer Labels:\n";
+    message += "\t"s + "CommandBuffer Labels:\n";
     for (uint8_t i = 0; i < pCallbackData->cmdBufLabelCount; i++)
     {
-      message << "\t\t" << "labelName = <" << pCallbackData->pCmdBufLabels[i].pLabelName << ">\n";
+      message += "\t\t"s + "labelName = <" + pCallbackData->pCmdBufLabels[i].pLabelName + ">\n";
     }
   }
   if (0 < pCallbackData->objectCount)
   {
-    message << "\t" << "Objects:\n";
     for (uint8_t i = 0; i < pCallbackData->objectCount; i++)
     {
-      message << "\t\t" << "Object " << i << "\n";
-      message << "\t\t\t" << "objectType   = " << vk::to_string(static_cast<vk::ObjectType>(pCallbackData->pObjects[i].objectType)) << "\n";
-      message << "\t\t\t" << "objectHandle = " << pCallbackData->pObjects[i].objectHandle << "\n";
+      message += "\t"s + "Object " + std::to_string(i) + "\n";
+      message += "\t\t"s + "objectType   = " + vk::to_string(static_cast<vk::ObjectType>(pCallbackData->pObjects[i].objectType)) + "\n";
+      message += "\t\t"s + "objectHandle = " + std::to_string(pCallbackData->pObjects[i].objectHandle) + "\n";
       if (pCallbackData->pObjects[i].pObjectName)
       {
-        message << "\t\t\t" << "objectName   = <" << pCallbackData->pObjects[i].pObjectName << ">\n";
+        message += "\t\t"s + "objectName   = <" + pCallbackData->pObjects[i].pObjectName + ">\n";
       }
   }
 }
 
 #ifdef _WIN32
-  MessageBox(NULL, message.str().c_str(), "Alert", MB_OK);
+  MessageBox(NULL, message.c_str(), "Alert", MB_OK);
 #else
   std::cout << message.str() << std::endl;
 #endif

@@ -1093,6 +1093,49 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic(std::string & str)
     }
   }
 
+  std::string emptyFunctions;
+  std::string strDeviceFunctions;
+  std::string strDeviceFunctionsInstance;
+  std::string strInstanceFunctions;
+  for (auto const& handle : m_handles)
+  {
+    for (auto const& command : handle.second.commands)
+    {
+      if ((command.first != "vkGetInstanceProcAddr"))
+      {
+        std::string enter, leave;
+        appendPlatformEnter(enter, command.second.platform);
+        appendPlatformLeave(leave, command.second.platform);
+
+        if (handle.first.empty())
+        {
+          emptyFunctions += enter;
+          emptyFunctions += "      " + command.first + " = PFN_" + command.first + "( vkGetInstanceProcAddr( NULL, \"" + command.first + "\" ) );\n";
+          emptyFunctions += leave;
+        }
+        else if (!command.second.params.empty()
+          && m_handles.find(command.second.params[0].type.type) != m_handles.end()
+          && command.second.params[0].type.type != "VkInstance"
+          && command.second.params[0].type.type != "VkPhysicalDevice")
+        {
+          strDeviceFunctions += enter;
+          strDeviceFunctions += "      " + command.first + " = PFN_" + command.first + "( vkGetDeviceProcAddr( device, \"" + command.first + "\" ) );\n";
+          strDeviceFunctions += leave;
+
+          strDeviceFunctionsInstance += enter;
+          strDeviceFunctionsInstance += "      " + command.first + " = PFN_" + command.first + "( vkGetInstanceProcAddr( instance, \"" + command.first + "\" ) );\n";
+          strDeviceFunctionsInstance += leave;
+        }
+        else
+        {
+          strInstanceFunctions += enter;
+          strInstanceFunctions += "      " + command.first + " = PFN_" + command.first + "( vkGetInstanceProcAddr( instance, \"" + command.first + "\" ) );\n";
+          strInstanceFunctions += leave;
+        }
+      }
+    }
+  }
+
   // append initialization function to fetch function pointers
   str += R"(
   public:
@@ -1122,10 +1165,11 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic(std::string & str)
       VULKAN_HPP_ASSERT(getInstanceProcAddr);
 
       vkGetInstanceProcAddr = getInstanceProcAddr;
-      vkEnumerateInstanceExtensionProperties = PFN_vkEnumerateInstanceExtensionProperties( vkGetInstanceProcAddr( NULL, "vkEnumerateInstanceExtensionProperties" ) );
-      vkEnumerateInstanceLayerProperties = PFN_vkEnumerateInstanceLayerProperties( vkGetInstanceProcAddr( NULL, "vkEnumerateInstanceLayerProperties" ) );
-      vkCreateInstance = PFN_vkCreateInstance( vkGetInstanceProcAddr( NULL, "vkCreateInstance" ) );
-    }
+)";
+
+  str += emptyFunctions;
+
+  str += R"(    }
 
     // This interface does not require a linked vulkan library.
     DispatchLoaderDynamic( VkInstance instance, PFN_vkGetInstanceProcAddr getInstanceProcAddr, VkDevice device = VK_NULL_HANDLE, PFN_vkGetDeviceProcAddr getDeviceProcAddr = nullptr )
@@ -1147,44 +1191,6 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic(std::string & str)
     void init( vk::Instance instance )
     {
 )";
-
-  std::string strDeviceFunctions;
-  std::string strDeviceFunctionsInstance;
-  std::string strInstanceFunctions;
-  for (auto const& handle : m_handles)
-  {
-    for (auto const& command : handle.second.commands)
-    {
-      if ((command.first != "vkGetInstanceProcAddr"))
-      {
-        std::string enter, leave;
-        appendPlatformEnter(enter, command.second.platform);
-        appendPlatformLeave(leave, command.second.platform);
-
-        if (!command.second.params.empty()
-          && m_handles.find(command.second.params[0].type.type) != m_handles.end()
-          && command.second.params[0].type.type != "VkInstance"
-          && command.second.params[0].type.type != "VkPhysicalDevice")
-        {
-          strDeviceFunctions += enter;
-          strDeviceFunctions += "      " + command.first + " = PFN_" + command.first
-            + "( vkGetDeviceProcAddr( device, \"" + command.first + "\" ) );\n";
-          strDeviceFunctions += leave;
-
-          strDeviceFunctionsInstance += enter;
-          strDeviceFunctionsInstance += "      " + command.first + " = PFN_" + command.first
-            + "( vkGetInstanceProcAddr( instance, \"" + command.first + "\" ) );\n";
-          strDeviceFunctionsInstance += leave;
-        }
-        else
-        {
-          strInstanceFunctions += enter;
-          strInstanceFunctions += "      " + command.first + " = PFN_" + command.first + "( vkGetInstanceProcAddr( instance, \"" + command.first + "\" ) );\n";
-          strInstanceFunctions += leave;
-        }
-      }
-    }
-  }
 
   str += strInstanceFunctions;
   str += strDeviceFunctionsInstance;

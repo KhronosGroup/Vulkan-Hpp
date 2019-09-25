@@ -12,16 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// VulkanHpp Samples : EnableValidationWithCallback
-//                     Show how to enable validation layers and provide callback
+// VulkanHpp Samples : CreateDebugReportMessenger
+//                     Draw a cube
 
-#include "../utils/utils.hpp"
 #include "vulkan/vulkan.hpp"
-#include <algorithm>
 #include <iostream>
 #include <sstream>
 
-static char const* AppName = "EnableValidationWithCallback";
+static char const* AppName = "CreateDebugReportMessenger";
 static char const* EngineName = "Vulkan.hpp";
 
 PFN_vkCreateDebugUtilsMessengerEXT pfnVkCreateDebugUtilsMessengerEXT;
@@ -39,7 +37,7 @@ VKAPI_ATTR void VKAPI_CALL vkDestroyDebugUtilsMessengerEXT(VkInstance instance, 
 
 
 VkBool32 debugMessageFunc(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageTypes,
-  VkDebugUtilsMessengerCallbackDataEXT const * pCallbackData, void * /*pUserData*/)
+                          VkDebugUtilsMessengerCallbackDataEXT const * pCallbackData, void * /*pUserData*/)
 {
   std::ostringstream message;
 
@@ -75,8 +73,8 @@ VkBool32 debugMessageFunc(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity
       {
         message << "\t\t\t" << "objectName   = <" << pCallbackData->pObjects[i].pObjectName << ">\n";
       }
+    }
   }
-}
 
 #ifdef _WIN32
   MessageBox(NULL, message.str().c_str(), "Alert", MB_OK);
@@ -87,40 +85,25 @@ VkBool32 debugMessageFunc(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity
   return false;
 }
 
-bool checkLayers(std::vector<char const*> const& layers, std::vector<vk::LayerProperties> const& properties)
-{
-  // return true if all layers are listed in the properties
-  return std::all_of(layers.begin(), layers.end(), [&properties](char const* name)
-  {
-    return std::find_if(properties.begin(), properties.end(), [&name](vk::LayerProperties const& property) { return strcmp(property.layerName, name) == 0; }) != properties.end();
-  });
-}
 
 int main(int /*argc*/, char ** /*argv*/)
 {
   try
   {
-    std::vector<vk::LayerProperties> instanceLayerProperties = vk::enumerateInstanceLayerProperties();
-
     /* VULKAN_KEY_START */
 
-    // Use standard_validation meta layer that enables all recommended validation layers
-    std::vector<char const*> instanceLayerNames;
-    instanceLayerNames.push_back("VK_LAYER_KHRONOS_validation");
-    if (!checkLayers(instanceLayerNames, instanceLayerProperties))
+    std::vector<vk::ExtensionProperties> props = vk::enumerateInstanceExtensionProperties();
+
+    auto propsIterator = std::find_if(props.begin(), props.end(), [](vk::ExtensionProperties const& ep) { return strcmp(ep.extensionName, VK_EXT_DEBUG_UTILS_EXTENSION_NAME) == 0; });
+    if (propsIterator == props.end())
     {
-      std::cout << "Set the environment variable VK_LAYER_PATH to point to the location of your layers" << std::endl;
+      std::cout << "Something went very wrong, cannot find " << VK_EXT_DEBUG_UTILS_EXTENSION_NAME << " extension" << std::endl;
       exit(1);
     }
 
-    /* Enable debug callback extension */
-    std::vector<char const*> instanceExtensionNames;
-    instanceExtensionNames.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
-
     vk::ApplicationInfo applicationInfo(AppName, 1, EngineName, 1, VK_API_VERSION_1_1);
-    vk::InstanceCreateInfo instanceCreateInfo( vk::InstanceCreateFlags(), &applicationInfo, vk::su::checked_cast<uint32_t>(instanceLayerNames.size()), instanceLayerNames.data(),
-      vk::su::checked_cast<uint32_t>(instanceExtensionNames.size()) , instanceExtensionNames.data() );
-    vk::UniqueInstance instance = vk::createInstanceUnique(instanceCreateInfo);
+    const char *extensionName = VK_EXT_DEBUG_UTILS_EXTENSION_NAME;
+    vk::UniqueInstance instance = vk::createInstanceUnique(vk::InstanceCreateInfo(vk::InstanceCreateFlags(), &applicationInfo, 0, nullptr, 1, &extensionName));
 
     pfnVkCreateDebugUtilsMessengerEXT = reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>(instance->getProcAddr("vkCreateDebugUtilsMessengerEXT"));
     if (!pfnVkCreateDebugUtilsMessengerEXT)
@@ -139,27 +122,6 @@ int main(int /*argc*/, char ** /*argv*/)
     vk::DebugUtilsMessageSeverityFlagsEXT severityFlags(vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning | vk::DebugUtilsMessageSeverityFlagBitsEXT::eError);
     vk::DebugUtilsMessageTypeFlagsEXT messageTypeFlags(vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral | vk::DebugUtilsMessageTypeFlagBitsEXT::ePerformance | vk::DebugUtilsMessageTypeFlagBitsEXT::eValidation);
     vk::UniqueDebugUtilsMessengerEXT debugUtilsMessenger = instance->createDebugUtilsMessengerEXTUnique(vk::DebugUtilsMessengerCreateInfoEXT({}, severityFlags, messageTypeFlags, &debugMessageFunc));
-
-    vk::PhysicalDevice physicalDevice = instance->enumeratePhysicalDevices().front();
-
-    std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
-    assert(!queueFamilyProperties.empty());
-
-    auto qfpIt = std::find_if(queueFamilyProperties.begin(), queueFamilyProperties.end(), [](vk::QueueFamilyProperties const& qfp) { return !!(qfp.queueFlags & vk::QueueFlagBits::eGraphics); });
-    assert(qfpIt != queueFamilyProperties.end());
-    uint32_t queueFamilyIndex = static_cast<uint32_t>(std::distance(queueFamilyProperties.begin(), qfpIt));
-
-    float queuePriority = 0.0f;
-    vk::DeviceQueueCreateInfo deviceQueueCreateInfo(vk::DeviceQueueCreateFlags(), queueFamilyIndex, 1, &queuePriority);
-    vk::UniqueDevice device = physicalDevice.createDeviceUnique(vk::DeviceCreateInfo(vk::DeviceCreateFlags(), 1, &deviceQueueCreateInfo));
-
-    // Create a command pool (not a UniqueCommandPool, for testing purposes!
-    vk::CommandPool commandPool = device->createCommandPool(vk::CommandPoolCreateInfo(vk::CommandPoolCreateFlags(), queueFamilyIndex));
-
-    // The commandPool is not destroyed automatically (as it's not a UniqueCommandPool.
-    // That is, the device is destroyed before the commmand pool and will trigger a validation error.
-    std::cout << "*** INTENTIONALLY calling vkDestroyDevice before destroying command pool ***\n";
-    std::cout << "*** The following error message is EXPECTED ***\n";
 
     /* VULKAN_KEY_END */
   }

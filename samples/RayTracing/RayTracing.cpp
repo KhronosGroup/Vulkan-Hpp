@@ -650,7 +650,7 @@ int main(int /*argc*/, char** /*argv*/)
 
     vk::UniqueInstance instance = vk::su::createInstance(AppName, EngineName, {}, instanceExtensions);
 #if !defined(NDEBUG)
-    vk::UniqueDebugReportCallbackEXT debugReport = vk::su::createDebugReportCallback(instance);
+    vk::UniqueDebugUtilsMessengerEXT debugUtilsMessenger = vk::su::createDebugUtilsMessenger(instance);
 #endif
 
     vk::PhysicalDevice physicalDevice = instance->enumeratePhysicalDevices().front();

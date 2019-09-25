@@ -2534,9 +2534,12 @@ namespace VULKAN_HPP_NAMESPACE
 
 #if !defined(VULKAN_HPP_DEFAULT_DISPATCHER)
 # if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
-  #define VULKAN_HPP_DEFAULT_DISPATCHER ::vk::defaultDispatchLoaderDynamic
+#  define VULKAN_HPP_DEFAULT_DISPATCHER ::vk::defaultDispatchLoaderDynamic
+#  define VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE namespace vk { DispatchLoaderDynamic defaultDispatchLoaderDynamic; }
+  extern DispatchLoaderDynamic defaultDispatchLoaderDynamic;
 # else 
 #  define VULKAN_HPP_DEFAULT_DISPATCHER ::vk::DispatchLoaderStatic()
+#  define VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 # endif
 #endif
 
@@ -72825,8 +72828,6 @@ namespace VULKAN_HPP_NAMESPACE
       vkQueueWaitIdle = PFN_vkQueueWaitIdle( vkGetDeviceProcAddr( device, "vkQueueWaitIdle" ) );
     }
   };
-
-#define VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE namespace vk { DispatchLoaderDynamic defaultDispatchLoaderDynamic; }
 
 } // namespace VULKAN_HPP_NAMESPACE
 #endif

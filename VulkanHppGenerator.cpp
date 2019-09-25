@@ -1100,13 +1100,13 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic(std::string & str)
 
 #if !defined(VK_NO_PROTOTYPES)
     // This interface is designed to be used for per-device function pointers in combination with a linked vulkan library.
-    DispatchLoaderDynamic(vk::Instance const& instance, vk::Device const& device = {})
+    DispatchLoaderDynamic(vk::Instance const& instance, vk::Device const& device)
     {
       init(instance, device);
     }
 
     // This interface is designed to be used for per-device function pointers in combination with a linked vulkan library.
-    void init(vk::Instance const& instance, vk::Device const& device = {})
+    void init(vk::Instance const& instance, vk::Device const& device)
     {
       init(static_cast<VkInstance>(instance), ::vkGetInstanceProcAddr, static_cast<VkDevice>(device), device ? ::vkGetDeviceProcAddr : nullptr);
     }
@@ -1134,47 +1134,75 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic(std::string & str)
     }
 
     // This interface does not require a linked vulkan library.
-    void init( VkInstance instance, PFN_vkGetInstanceProcAddr getInstanceProcAddr, VkDevice device = VK_NULL_HANDLE, PFN_vkGetDeviceProcAddr getDeviceProcAddr = nullptr )
+    void init( VkInstance instance, PFN_vkGetInstanceProcAddr getInstanceProcAddr, VkDevice device = VK_NULL_HANDLE, PFN_vkGetDeviceProcAddr /*getDeviceProcAddr*/ = nullptr )
     {
       VULKAN_HPP_ASSERT(instance && getInstanceProcAddr);
       vkGetInstanceProcAddr = getInstanceProcAddr;
-      vkGetDeviceProcAddr = getDeviceProcAddr ? getDeviceProcAddr : PFN_vkGetDeviceProcAddr( vkGetInstanceProcAddr( instance, "vkGetDeviceProcAddr") );
+      init( vk::Instance(instance) );
+      if (device) {
+        init( vk::Device(device) );
+      }
+    }
+
+    void init( vk::Instance instance )
+    {
 )";
 
+  std::string strDeviceFunctions;
+  std::string strDeviceFunctionsInstance;
+  std::string strInstanceFunctions;
   for (auto const& handle : m_handles)
   {
     for (auto const& command : handle.second.commands)
     {
-      if ((command.first != "vkGetDeviceProcAddr") && (command.first != "vkGetInstanceProcAddr"))
+      if ((command.first != "vkGetInstanceProcAddr"))
       {
         std::string enter, leave;
         appendPlatformEnter(enter, command.second.platform);
         appendPlatformLeave(leave, command.second.platform);
 
-        str += enter;
         if (!command.second.params.empty()
           && m_handles.find(command.second.params[0].type.type) != m_handles.end()
           && command.second.params[0].type.type != "VkInstance"
           && command.second.params[0].type.type != "VkPhysicalDevice")
         {
-          str += "      " + command.first + " = PFN_" + command.first
-            + "( device ? vkGetDeviceProcAddr( device, \"" + command.first + "\" ) : vkGetInstanceProcAddr( instance, \"" + command.first + "\" ) );\n";
+          strDeviceFunctions += enter;
+          strDeviceFunctions += "      " + command.first + " = PFN_" + command.first
+            + "( vkGetDeviceProcAddr( device, \"" + command.first + "\" ) );\n";
+          strDeviceFunctions += leave;
+
+          strDeviceFunctionsInstance += enter;
+          strDeviceFunctionsInstance += "      " + command.first + " = PFN_" + command.first
+            + "( vkGetInstanceProcAddr( instance, \"" + command.first + "\" ) );\n";
+          strDeviceFunctionsInstance += leave;
         }
         else
         {
-          str += "      " + command.first + " = PFN_" + command.first + "( vkGetInstanceProcAddr( instance, \"" + command.first + "\" ) );\n";
+          strInstanceFunctions += enter;
+          strInstanceFunctions += "      " + command.first + " = PFN_" + command.first + "( vkGetInstanceProcAddr( instance, \"" + command.first + "\" ) );\n";
+          strInstanceFunctions += leave;
         }
-        str += leave;
       }
     }
   }
-  str += "    }\n"
-    "  };\n";
+
+  str += strInstanceFunctions;
+  str += strDeviceFunctionsInstance;
+  str += "    }\n\n";
+  str += "    void init( vk::Device device )\n    {\n";
+  str += strDeviceFunctions;
+  str += R"(    }
+  };
+
+#define VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE namespace vk { DispatchLoaderDynamic defaultDispatchLoaderDynamic; }
+
+)";
 }
 
 void VulkanHppGenerator::appendDispatchLoaderStatic(std::string & str)
 {
   str += R"(
+#if !defined(VK_NO_PROTOTYPES)
   class DispatchLoaderStatic
   {
   public:)";
@@ -1211,19 +1239,35 @@ void VulkanHppGenerator::appendDispatchLoaderStatic(std::string & str)
       appendPlatformLeave(str, command.second.platform);
     }
   }
-  str += "  };\n";
+  str += "  };\n#endif\n";
 }
 
 void VulkanHppGenerator::appendDispatchLoaderDefault(std::string & str)
 {
   str += "\n"
-    "#if !defined(VK_NO_PROTOTYPES)";
-  appendDispatchLoaderStatic(str);
-  str += R"(
-  typedef DispatchLoaderStatic DispatchLoaderDefault;
-#else // !defined(VK_NO_PROTOTYPES)
-  class NeedExplicitDispatchLoader;
-  typedef NeedExplicitDispatchLoader DispatchLoaderDefault;
+    R"(  class DispatchLoaderDynamic;
+#if !defined(VULKAN_HPP_DISPATCH_LOADER_DYNAMIC)
+# if defined(VK_NO_PROTOTYPES)
+#  define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1
+# else 
+#  define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 0
+# endif
+#endif
+
+#if !defined(VULKAN_HPP_DEFAULT_DISPATCHER)
+# if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
+  #define VULKAN_HPP_DEFAULT_DISPATCHER ::vk::defaultDispatchLoaderDynamic
+# else 
+#  define VULKAN_HPP_DEFAULT_DISPATCHER ::vk::DispatchLoaderStatic()
+# endif
+#endif
+
+#if !defined(VULKAN_HPP_DEFAULT_DISPATCHER_TYPE)
+# if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
+  #define VULKAN_HPP_DEFAULT_DISPATCHER_TYPE ::vk::DispatchLoaderDynamic
+# else 
+#  define VULKAN_HPP_DEFAULT_DISPATCHER_TYPE ::vk::DispatchLoaderStatic
+# endif
 #endif
 )";
 }
@@ -1950,7 +1994,7 @@ void VulkanHppGenerator::appendFunctionHeaderArgumentsEnhanced(std::string & str
   str += "Dispatch const &d";
   if (withDefaults && !withAllocator)
   {
-    str += " = Dispatch()";
+    str += " = VULKAN_HPP_DEFAULT_DISPATCHER";
   }
   str += " ";
 }
@@ -1977,7 +2021,7 @@ void VulkanHppGenerator::appendFunctionHeaderArgumentsStandard(std::string & str
   str += "Dispatch const &d";
   if (withDefaults)
   {
-    str += " = Dispatch() ";
+    str += " = VULKAN_HPP_DEFAULT_DISPATCHER ";
   }
 }
 
@@ -2087,7 +2131,7 @@ void VulkanHppGenerator::appendFunctionHeaderTemplate(std::string & str, std::st
       str += ", ";
     }
   }
-  str += std::string("typename Dispatch") + (withDefault ? " = DispatchLoaderDefault" : "") + ">\n";
+  str += std::string("typename Dispatch") + (withDefault ? " = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE" : "") + ">\n";
 }
 
 void VulkanHppGenerator::appendHandle(std::string & str, std::pair<std::string, HandleData> const& handleData, std::set<std::string> & listedHandles) const
@@ -2908,7 +2952,7 @@ void VulkanHppGenerator::appendUniqueTypes(std::string & str, std::string const&
     std::string deleterPool = handleIt->second.deletePool.empty() ? "" : ", " + stripPrefix(handleIt->second.deletePool, "Vk");
     str += "\n"
       "  template <typename Dispatch> class UniqueHandleTraits<" + type + ", Dispatch> { public: using deleter = " + deleterType + deleterAction + "<" + deleterParent + deleterPool + ", Dispatch>; };\n"
-      "  using Unique" + type + " = UniqueHandle<" + type + ", DispatchLoaderDefault>;";
+      "  using Unique" + type + " = UniqueHandle<" + type + ", VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;";
   }
   str += "\n"
     "#endif /*VULKAN_HPP_NO_SMART_HANDLE*/\n";
@@ -4501,7 +4545,7 @@ int main( int argc, char **argv )
   class ObjectDestroy
   {
     public:
-      ObjectDestroy( OwnerType owner = OwnerType(), Optional<const AllocationCallbacks> allocationCallbacks = nullptr, Dispatch const &dispatch = Dispatch() )
+      ObjectDestroy( OwnerType owner = OwnerType(), Optional<const AllocationCallbacks> allocationCallbacks = nullptr, Dispatch const &dispatch = VULKAN_HPP_DEFAULT_DISPATCHER )
         : m_owner( owner )
         , m_allocationCallbacks( allocationCallbacks )
         , m_dispatch( &dispatch )
@@ -4529,7 +4573,7 @@ int main( int argc, char **argv )
   class ObjectDestroy<NoParent,Dispatch>
   {
     public:
-      ObjectDestroy( Optional<const AllocationCallbacks> allocationCallbacks = nullptr, Dispatch const &dispatch = Dispatch() )
+      ObjectDestroy( Optional<const AllocationCallbacks> allocationCallbacks = nullptr, Dispatch const &dispatch = VULKAN_HPP_DEFAULT_DISPATCHER )
         : m_allocationCallbacks( allocationCallbacks )
         , m_dispatch( &dispatch )
       {}
@@ -4554,7 +4598,7 @@ int main( int argc, char **argv )
   class ObjectFree
   {
     public:
-      ObjectFree( OwnerType owner = OwnerType(), Optional<const AllocationCallbacks> allocationCallbacks = nullptr, Dispatch const &dispatch = Dispatch() )
+      ObjectFree( OwnerType owner = OwnerType(), Optional<const AllocationCallbacks> allocationCallbacks = nullptr, Dispatch const &dispatch = VULKAN_HPP_DEFAULT_DISPATCHER )
         : m_owner( owner )
         , m_allocationCallbacks( allocationCallbacks )
         , m_dispatch( &dispatch )
@@ -4600,7 +4644,7 @@ int main( int argc, char **argv )
   class PoolFree
   {
     public:
-      PoolFree( OwnerType owner = OwnerType(), PoolType pool = PoolType(), Dispatch const &dispatch = Dispatch() )
+      PoolFree( OwnerType owner = OwnerType(), PoolType pool = PoolType(), Dispatch const &dispatch = VULKAN_HPP_DEFAULT_DISPATCHER )
         : m_owner( owner )
         , m_pool( pool )
         , m_dispatch( &dispatch )
@@ -5290,6 +5334,7 @@ namespace std
       + classOptional
       + classStructureChain
       + classUniqueHandle;
+    generator.appendDispatchLoaderStatic(str);
     generator.appendDispatchLoaderDefault(str);
     str += classObjectDestroy
       + classObjectFree

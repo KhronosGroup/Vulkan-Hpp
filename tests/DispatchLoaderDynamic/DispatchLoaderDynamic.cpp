@@ -15,47 +15,41 @@
 // VulkanHpp Samples : DispatchLoaderDynamic
 //                     Compile test on DispatchLoaderDynamic functions
 
+#define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1
+
+#include <vulkan/vulkan.h>
 #include "vulkan/vulkan.hpp"
+
 #include <iostream>
 #include <map>
 
 static char const* AppName = "DispatchLoaderDynamic";
 static char const* EngineName = "Vulkan.hpp";
 
+
+VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE;
+
 int main(int /*argc*/, char ** /*argv*/)
 {
   try
   {
-    vk::DispatchLoaderDynamic dld0;
     vk::DynamicLoader dl;
     PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr = dl.getProcAddress<PFN_vkGetInstanceProcAddr>("vkGetInstanceProcAddr");
+    VULKAN_HPP_DEFAULT_DISPATCHER.init(vkGetInstanceProcAddr);
 
-  // empty DispatchLoaderDynamic, used for init calls later on
-    vk::DispatchLoaderDynamic dld_boot(vkGetInstanceProcAddr);
-    vk::Instance instance = vk::createInstance({}, nullptr, dld_boot);
+    vk::Instance instance = vk::createInstance({}, nullptr);
 
-    vk::DispatchLoaderDynamic dld1(instance, vkGetInstanceProcAddr);
-
-    // compare to the empty dispatcher, and init the empty dispatcher the same way
-    assert(memcmp(&dld0, &dld1, sizeof(vk::DispatchLoaderDynamic)) != 0);
-    dld0.init(instance, vkGetInstanceProcAddr);
-    assert(memcmp(&dld0, &dld1, sizeof(vk::DispatchLoaderDynamic)) == 0);
+    // initialize function pointers for instance
+    VULKAN_HPP_DEFAULT_DISPATCHER.init(instance);
 
     // create a dispatcher, based on additional vkDevice/vkGetDeviceProcAddr
-    std::vector<vk::PhysicalDevice> physicalDevices = instance.enumeratePhysicalDevices(dld1);
-
+    std::vector<vk::PhysicalDevice> physicalDevices = instance.enumeratePhysicalDevices();
     assert(!physicalDevices.empty());
 
-    vk::Device device = physicalDevices[0].createDevice({}, nullptr, dld1);
+    vk::Device device = physicalDevices[0].createDevice({}, nullptr);
 
-    // device specialization functions
-    vk::DispatchLoaderDynamic dld2(instance, vkGetInstanceProcAddr, device);
-
-
-    // compare to "simpler" dispatcher and make them equal
-    assert(memcmp(&dld0, &dld2, sizeof(vk::DispatchLoaderDynamic)) != 0);
-    dld0.init(instance, vkGetInstanceProcAddr, device);
-    assert(memcmp(&dld0, &dld2, sizeof(vk::DispatchLoaderDynamic)) == 0);
+    // function pointer specialization for device
+    VULKAN_HPP_DEFAULT_DISPATCHER.init(device);
   }
   catch (vk::SystemError err)
   {

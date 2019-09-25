@@ -18,17 +18,17 @@
 #include <iomanip>
 #include <numeric>
 
-PFN_vkCreateDebugReportCallbackEXT  pfnVkCreateDebugReportCallbackEXT;
-PFN_vkDestroyDebugReportCallbackEXT pfnVkDestroyDebugReportCallbackEXT;
+PFN_vkCreateDebugUtilsMessengerEXT pfnVkCreateDebugUtilsMessengerEXT;
+PFN_vkDestroyDebugUtilsMessengerEXT pfnVkDestroyDebugUtilsMessengerEXT;
 
-VKAPI_ATTR VkResult VKAPI_CALL vkCreateDebugReportCallbackEXT(VkInstance instance, const VkDebugReportCallbackCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugReportCallbackEXT* pCallback)
+VKAPI_ATTR VkResult VKAPI_CALL vkCreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pMessenger)
 {
-  return pfnVkCreateDebugReportCallbackEXT(instance, pCreateInfo, pAllocator, pCallback);
+  return pfnVkCreateDebugUtilsMessengerEXT(instance, pCreateInfo, pAllocator, pMessenger);
 }
 
-VKAPI_ATTR void VKAPI_CALL vkDestroyDebugReportCallbackEXT(VkInstance instance, VkDebugReportCallbackEXT callback, const VkAllocationCallbacks* pAllocator)
+VKAPI_ATTR void VKAPI_CALL vkDestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT messenger, VkAllocationCallbacks const * pAllocator)
 {
-  pfnVkDestroyDebugReportCallbackEXT(instance, callback, pAllocator);
+  return pfnVkDestroyDebugUtilsMessengerEXT(instance, messenger, pAllocator);
 }
 
 namespace vk
@@ -49,10 +49,11 @@ namespace vk
       return device->createCommandPoolUnique(commandPoolCreateInfo);
     }
 
-    vk::UniqueDebugReportCallbackEXT createDebugReportCallback(vk::UniqueInstance &instance)
+    vk::UniqueDebugUtilsMessengerEXT createDebugUtilsMessenger(vk::UniqueInstance &instance)
     {
-      vk::DebugReportFlagsEXT flags(vk::DebugReportFlagBitsEXT::eWarning | vk::DebugReportFlagBitsEXT::ePerformanceWarning | vk::DebugReportFlagBitsEXT::eError);
-      return instance->createDebugReportCallbackEXTUnique(vk::DebugReportCallbackCreateInfoEXT(flags, &vk::su::debugReportCallback));
+      vk::DebugUtilsMessageSeverityFlagsEXT severityFlags(vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning | vk::DebugUtilsMessageSeverityFlagBitsEXT::eError);
+      vk::DebugUtilsMessageTypeFlagsEXT messageTypeFlags(vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral | vk::DebugUtilsMessageTypeFlagBitsEXT::ePerformance | vk::DebugUtilsMessageTypeFlagBitsEXT::eValidation);
+      return instance->createDebugUtilsMessengerEXTUnique(vk::DebugUtilsMessengerCreateInfoEXT({}, severityFlags, messageTypeFlags, &vk::su::debugUtilsMessengerCallback));
     }
 
     vk::UniqueDescriptorPool createDescriptorPool(vk::UniqueDevice &device, std::vector<vk::DescriptorPoolSize> const& poolSizes)
@@ -193,9 +194,9 @@ namespace vk
         enabledExtensions.push_back(ext.data());
       }
 #if !defined(NDEBUG)
-      if (std::find(extensions.begin(), extensions.end(), VK_EXT_DEBUG_REPORT_EXTENSION_NAME) == extensions.end())
+      if (std::find(extensions.begin(), extensions.end(), VK_EXT_DEBUG_UTILS_EXTENSION_NAME) == extensions.end())
       {
-        enabledExtensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
+        enabledExtensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
       }
 #endif
 
@@ -208,9 +209,9 @@ namespace vk
       static bool initialized = false;
       if (!initialized)
       {
-        pfnVkCreateDebugReportCallbackEXT = reinterpret_cast<PFN_vkCreateDebugReportCallbackEXT>(instance->getProcAddr("vkCreateDebugReportCallbackEXT"));
-        pfnVkDestroyDebugReportCallbackEXT = reinterpret_cast<PFN_vkDestroyDebugReportCallbackEXT>(instance->getProcAddr("vkDestroyDebugReportCallbackEXT"));
-        assert(pfnVkCreateDebugReportCallbackEXT && pfnVkDestroyDebugReportCallbackEXT);
+        pfnVkCreateDebugUtilsMessengerEXT = reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>(instance->getProcAddr("vkCreateDebugUtilsMessengerEXT"));
+        pfnVkDestroyDebugUtilsMessengerEXT = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(instance->getProcAddr("vkDestroyDebugUtilsMessengerEXT"));
+        assert(pfnVkCreateDebugUtilsMessengerEXT && pfnVkDestroyDebugUtilsMessengerEXT);
         initialized = true;
       }
 #endif
@@ -238,30 +239,43 @@ namespace vk
                                                                      &subpassDescription));
     }
 
-    VkBool32 debugReportCallback(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT /*objectType*/, uint64_t /*object*/, size_t /*location*/, int32_t /*messageCode*/, const char* /*pLayerPrefix*/, const char* pMessage, void* /*pUserData*/)
+    VkBool32 debugUtilsMessengerCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageTypes,
+                                         VkDebugUtilsMessengerCallbackDataEXT const * pCallbackData, void * /*pUserData*/)
     {
-      switch (flags)
+      std::cerr << vk::to_string(static_cast<vk::DebugUtilsMessageSeverityFlagBitsEXT>(messageSeverity)) << ": " << vk::to_string(static_cast<vk::DebugUtilsMessageTypeFlagsEXT>(messageTypes)) << ":\n";
+      std::cerr << "\t" << "messageIDName   = <" << pCallbackData->pMessageIdName << ">\n";
+      std::cerr << "\t" << "messageIdNumber = " << pCallbackData->messageIdNumber << "\n";
+      std::cerr << "\t" << "message         = <" << pCallbackData->pMessage << ">\n";
+      if (0 < pCallbackData->queueLabelCount)
       {
-        case VK_DEBUG_REPORT_INFORMATION_BIT_EXT:
-          std::cerr << "INFORMATION: ";
-          break;
-        case VK_DEBUG_REPORT_WARNING_BIT_EXT:
-          std::cerr << "WARNING: ";
-          break;
-        case VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT:
-          std::cerr << "PERFORMANCE WARNING: ";
-          break;
-        case VK_DEBUG_REPORT_ERROR_BIT_EXT:
-          std::cerr << "ERROR: ";
-          break;
-        case VK_DEBUG_REPORT_DEBUG_BIT_EXT:
-          std::cerr << "DEBUG: ";
-          break;
-        default:
-          std::cerr << "unknown flag (" << flags << "): ";
-          break;
+        std::cerr << "\t" << "Queue Labels:\n";
+        for (uint8_t i = 0; i < pCallbackData->queueLabelCount; i++)
+        {
+          std::cerr << "\t\t" << "lableName = <" << pCallbackData->pQueueLabels[i].pLabelName << ">\n";
+        }
       }
-      std::cerr << pMessage << std::endl;
+      if (0 < pCallbackData->cmdBufLabelCount)
+      {
+        std::cerr << "\t" << "CommandBuffer Labels:\n";
+        for (uint8_t i = 0; i < pCallbackData->cmdBufLabelCount; i++)
+        {
+          std::cerr << "\t\t" << "labelName = <" << pCallbackData->pCmdBufLabels[i].pLabelName << ">\n";
+        }
+      }
+      if (0 < pCallbackData->objectCount)
+      {
+        std::cerr << "\t" << "Objects:\n";
+        for (uint8_t i = 0; i < pCallbackData->objectCount; i++)
+        {
+          std::cerr << "\t\t" << "Object " << i << "\n";
+          std::cerr << "\t\t\t" << "objectType   = " << vk::to_string(static_cast<vk::ObjectType>(pCallbackData->pObjects[i].objectType)) << "\n";
+          std::cerr << "\t\t\t" << "objectHandle = " << pCallbackData->pObjects[i].objectHandle << "\n";
+          if (pCallbackData->pObjects[i].pObjectName)
+          {
+            std::cerr << "\t\t\t" << "objectName   = <" << pCallbackData->pObjects[i].pObjectName << ">\n";
+          }
+        }
+      }
       return VK_TRUE;
     }
 

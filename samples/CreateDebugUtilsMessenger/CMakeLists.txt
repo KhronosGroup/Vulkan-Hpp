@@ -14,22 +14,22 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(CreateDebugReportCallback)
+project(CreateDebugUtilsMessenger)
 
 set(HEADERS
 )
 
 set(SOURCES
-  CreateDebugReportCallback.cpp
+  CreateDebugUtilsMessenger.cpp
 )
 
 source_group(headers FILES ${HEADERS})
 source_group(sources FILES ${SOURCES})
 
-add_executable(CreateDebugReportCallback
+add_executable(CreateDebugUtilsMessenger
   ${HEADERS}
   ${SOURCES}
 )
 
-set_target_properties(CreateDebugReportCallback PROPERTIES FOLDER "Samples")
-target_link_libraries(CreateDebugReportCallback PUBLIC "${Vulkan_LIBRARIES}")
+set_target_properties(CreateDebugUtilsMessenger PROPERTIES FOLDER "Samples")
+target_link_libraries(CreateDebugUtilsMessenger PUBLIC "${Vulkan_LIBRARIES}")

@@ -56,7 +56,7 @@ int main(int /*argc*/, char ** /*argv*/)
       // Create the instance
       vk::UniqueInstance instance = vk::su::createInstance(AppName, EngineName, {}, vk::su::getInstanceExtensions(), desiredVersion);
 #if !defined(NDEBUG)
-      vk::UniqueDebugReportCallbackEXT debugReportCallback = vk::su::createDebugReportCallback(instance);
+      vk::UniqueDebugUtilsMessengerEXT debugUtilsMessenger = vk::su::createDebugUtilsMessenger(instance);
 #endif
 
       // Get the list of physical devices

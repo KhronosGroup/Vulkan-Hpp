@@ -2659,7 +2659,7 @@ namespace VULKAN_HPP_NAMESPACE
     public:
       VULKAN_HPP_CONSTEXPR static void copy(T dst[N], std::array<T,N> const& src)
       {
-        dst[I] = src[I];
+        dst[I-1] = src[I-1];
         ConstExpressionArrayCopy<T, N, I - 1>::copy(dst, src);
       }
   };

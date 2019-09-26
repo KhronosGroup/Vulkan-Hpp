@@ -30,6 +30,13 @@ int main(int /*argc*/, char ** /*argv*/)
 {
   try
   {
+#if (VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1)
+    // initialize the DipatchLoaderDynamic to use
+    static vk::DynamicLoader dl;
+    PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr = dl.getProcAddress<PFN_vkGetInstanceProcAddr>("vkGetInstanceProcAddr");
+    VULKAN_HPP_DEFAULT_DISPATCHER.init(vkGetInstanceProcAddr);
+#endif
+
     /* VULKAN_KEY_START */
 
     // To use PUSH_DESCRIPTOR, you must also specify GET_PHYSICAL_DEVICE_PROPERTIES_2

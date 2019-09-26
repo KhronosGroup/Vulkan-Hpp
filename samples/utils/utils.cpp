@@ -18,6 +18,9 @@
 #include <iomanip>
 #include <numeric>
 
+#if (VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1)
+VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
+#elif !defined(NDEBUG)
 PFN_vkCreateDebugUtilsMessengerEXT pfnVkCreateDebugUtilsMessengerEXT;
 PFN_vkDestroyDebugUtilsMessengerEXT pfnVkDestroyDebugUtilsMessengerEXT;
 
@@ -30,6 +33,7 @@ VKAPI_ATTR void VKAPI_CALL vkDestroyDebugUtilsMessengerEXT(VkInstance instance, 
 {
   return pfnVkDestroyDebugUtilsMessengerEXT(instance, messenger, pAllocator);
 }
+#endif
 
 namespace vk
 {
@@ -173,6 +177,12 @@ namespace vk
     vk::UniqueInstance createInstance(std::string const& appName, std::string const& engineName, std::vector<std::string> const& layers, std::vector<std::string> const& extensions,
                                       uint32_t apiVersion)
     {
+#if (VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1)
+      static vk::DynamicLoader dl;
+      PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr = dl.getProcAddress<PFN_vkGetInstanceProcAddr>("vkGetInstanceProcAddr");
+      VULKAN_HPP_DEFAULT_DISPATCHER.init(vkGetInstanceProcAddr);
+#endif
+
       std::vector<char const*> enabledLayers;
       enabledLayers.reserve(layers.size());
       for (auto const& layer : layers)
@@ -205,7 +215,11 @@ namespace vk
       vk::UniqueInstance instance = vk::createInstanceUnique(vk::InstanceCreateInfo({}, &applicationInfo, checked_cast<uint32_t>(enabledLayers.size()), enabledLayers.data(),
                                                                                     checked_cast<uint32_t>(enabledExtensions.size()), enabledExtensions.data()));
 
-#if !defined(NDEBUG)
+#if (VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1)
+      // initialize function pointers for instance
+      VULKAN_HPP_DEFAULT_DISPATCHER.init(*instance);
+#else
+# if !defined(NDEBUG)
       static bool initialized = false;
       if (!initialized)
       {
@@ -214,6 +228,7 @@ namespace vk
         assert(pfnVkCreateDebugUtilsMessengerEXT && pfnVkDestroyDebugUtilsMessengerEXT);
         initialized = true;
       }
+# endif
 #endif
 
       return instance;

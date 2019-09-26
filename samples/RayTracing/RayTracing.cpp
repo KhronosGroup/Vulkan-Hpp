@@ -62,15 +62,14 @@ static_assert(sizeof(GeometryInstanceData) == 64, "GeometryInstanceData structur
 
 struct AccelerationStructureData
 {
-  vk::UniqueHandle<vk::AccelerationStructureNV, vk::DispatchLoaderDynamic>  acclerationStructure;
-  std::unique_ptr<vk::su::BufferData>                                       scratchBufferData;
-  std::unique_ptr<vk::su::BufferData>                                       resultBufferData;
-  std::unique_ptr<vk::su::BufferData>                                       instanceBufferData;
+  vk::UniqueAccelerationStructureNV   acclerationStructure;
+  std::unique_ptr<vk::su::BufferData> scratchBufferData;
+  std::unique_ptr<vk::su::BufferData> resultBufferData;
+  std::unique_ptr<vk::su::BufferData> instanceBufferData;
 };
 
 AccelerationStructureData createAccelerationStructureData(vk::PhysicalDevice const& physicalDevice, vk::UniqueDevice const& device, vk::UniqueCommandBuffer const& commandBuffer,
-                                                          std::vector<std::pair<vk::AccelerationStructureNV, glm::mat4x4>> const& instances, std::vector<vk::GeometryNV> const& geometries,
-                                                          vk::DispatchLoaderDynamic const& dispatchLoader)
+                                                          std::vector<std::pair<vk::AccelerationStructureNV, glm::mat4x4>> const& instances, std::vector<vk::GeometryNV> const& geometries)
 {
   assert(instances.empty() ^ geometries.empty());
 
@@ -79,10 +78,10 @@ AccelerationStructureData createAccelerationStructureData(vk::PhysicalDevice con
   vk::AccelerationStructureTypeNV accelerationStructureType = instances.empty() ? vk::AccelerationStructureTypeNV::eBottomLevel : vk::AccelerationStructureTypeNV::eTopLevel;
   vk::AccelerationStructureInfoNV accelerationStructureInfo(accelerationStructureType, {}, vk::su::checked_cast<uint32_t>(instances.size()),
                                                             vk::su::checked_cast<uint32_t>(geometries.size()), geometries.data());
-  accelerationStructureData.acclerationStructure = device->createAccelerationStructureNVUnique(vk::AccelerationStructureCreateInfoNV(0, accelerationStructureInfo), nullptr, dispatchLoader);
+  accelerationStructureData.acclerationStructure = device->createAccelerationStructureNVUnique(vk::AccelerationStructureCreateInfoNV(0, accelerationStructureInfo));
 
   vk::AccelerationStructureMemoryRequirementsInfoNV objectRequirements(vk::AccelerationStructureMemoryRequirementsTypeNV::eObject, *accelerationStructureData.acclerationStructure);
-  vk::DeviceSize resultSizeInBytes = device->getAccelerationStructureMemoryRequirementsNV(objectRequirements, dispatchLoader).memoryRequirements.size;
+  vk::DeviceSize resultSizeInBytes = device->getAccelerationStructureMemoryRequirementsNV(objectRequirements).memoryRequirements.size;
   assert(0 < resultSizeInBytes);
   accelerationStructureData.resultBufferData = std::make_unique<vk::su::BufferData>(physicalDevice, device, resultSizeInBytes, vk::BufferUsageFlagBits::eRayTracingNV,
                                                                                     vk::MemoryPropertyFlagBits::eDeviceLocal);
@@ -92,8 +91,8 @@ AccelerationStructureData createAccelerationStructureData(vk::PhysicalDevice con
   vk::AccelerationStructureMemoryRequirementsInfoNV updateScratchRequirements(vk::AccelerationStructureMemoryRequirementsTypeNV::eUpdateScratch,
                                                                               *accelerationStructureData.acclerationStructure);
   vk::DeviceSize scratchSizeInBytes = 
-    std::max(device->getAccelerationStructureMemoryRequirementsNV(buildScratchRequirements, dispatchLoader).memoryRequirements.size,
-             device->getAccelerationStructureMemoryRequirementsNV(updateScratchRequirements, dispatchLoader).memoryRequirements.size);
+    std::max(device->getAccelerationStructureMemoryRequirementsNV(buildScratchRequirements).memoryRequirements.size,
+             device->getAccelerationStructureMemoryRequirementsNV(updateScratchRequirements).memoryRequirements.size);
   assert(0 < scratchSizeInBytes);
 
   accelerationStructureData.scratchBufferData = std::make_unique<vk::su::BufferData>(physicalDevice, device, scratchSizeInBytes, vk::BufferUsageFlagBits::eRayTracingNV,
@@ -108,7 +107,7 @@ AccelerationStructureData createAccelerationStructureData(vk::PhysicalDevice con
     for(size_t i = 0; i < instances.size(); i++)
     {
       uint64_t accelerationStructureHandle = 0;
-      device->getAccelerationStructureHandleNV(instances[i].first, sizeof(uint64_t), &accelerationStructureHandle, dispatchLoader);
+      device->getAccelerationStructureHandleNV(instances[i].first, sizeof(uint64_t), &accelerationStructureHandle);
 
       // For each instance we set its instance index to its index i in the instance vector, and set
       // its hit group index to 2*i. The hit group index defines which entry of the shader binding
@@ -122,12 +121,12 @@ AccelerationStructureData createAccelerationStructureData(vk::PhysicalDevice con
   }
 
   device->bindAccelerationStructureMemoryNV(vk::BindAccelerationStructureMemoryInfoNV(*accelerationStructureData.acclerationStructure,
-                                                                                      *accelerationStructureData.resultBufferData->deviceMemory), dispatchLoader);
+                                                                                      *accelerationStructureData.resultBufferData->deviceMemory));
 
   commandBuffer->buildAccelerationStructureNV(vk::AccelerationStructureInfoNV(accelerationStructureType, {}, vk::su::checked_cast<uint32_t>(instances.size()),
                                                                               vk::su::checked_cast<uint32_t>(geometries.size()), geometries.data()),
                                               accelerationStructureData.instanceBufferData ? *accelerationStructureData.instanceBufferData->buffer : nullptr, 0, false,
-                                              *accelerationStructureData.acclerationStructure, nullptr, *accelerationStructureData.scratchBufferData->buffer, 0, dispatchLoader);
+                                              *accelerationStructureData.acclerationStructure, nullptr, *accelerationStructureData.scratchBufferData->buffer, 0);
 
   commandBuffer->pipelineBarrier(vk::PipelineStageFlagBits::eAccelerationStructureBuildNV, vk::PipelineStageFlagBits::eAccelerationStructureBuildNV, {},
                                  vk::MemoryBarrier(vk::AccessFlagBits::eAccelerationStructureWriteNV | vk::AccessFlagBits::eAccelerationStructureReadNV,
@@ -804,8 +803,6 @@ int main(int /*argc*/, char** /*argv*/)
                                                           { vk::DescriptorType::eStorageBuffer, materialBufferData.buffer, vk::UniqueBufferView() } }, textures);
 
     // RayTracing specific stuff
-    // we need a dynamic DispatchLoader for the extension functions
-    vk::DispatchLoaderDynamic dispatchLoader(*instance, *device);
 
     // create acceleration structures: one top-level, and just one bottom-level
     AccelerationStructureData topLevelAS, bottomLevelAS;
@@ -815,11 +812,10 @@ int main(int /*argc*/, char** /*argv*/)
                             vk::GeometryDataNV geometryDataNV(vk::GeometryTrianglesNV(*vertexBufferData.buffer, 0, vk::su::checked_cast<uint32_t>(vertices.size()), VertexStride,
                                                                                       vk::Format::eR32G32B32Sfloat, *indexBufferData.buffer, 0,
                                                                                       vk::su::checked_cast<uint32_t>(indices.size()), vk::IndexType::eUint32), {});
-                            bottomLevelAS = createAccelerationStructureData(physicalDevice, device, commandBuffer, {}, {vk::GeometryNV(vk::GeometryTypeNV::eTriangles, geometryDataNV)},
-                                                                            dispatchLoader);
+                            bottomLevelAS = createAccelerationStructureData(physicalDevice, device, commandBuffer, {}, {vk::GeometryNV(vk::GeometryTypeNV::eTriangles, geometryDataNV)});
 
                             topLevelAS = createAccelerationStructureData(physicalDevice, device, commandBuffer, {std::make_pair(*bottomLevelAS.acclerationStructure, transform)},
-                                                                         std::vector<vk::GeometryNV>(), dispatchLoader);
+                                                                         std::vector<vk::GeometryNV>());
                           });
 
     // create raytracing descriptor set
@@ -916,7 +912,7 @@ int main(int /*argc*/, char** /*argv*/)
     uint32_t maxRecursionDepth = 2;
     vk::RayTracingPipelineCreateInfoNV rayTracingPipelineCreateInfo({}, static_cast<uint32_t>(shaderStages.size()), shaderStages.data(), static_cast<uint32_t>(shaderGroups.size()),
                                                                     shaderGroups.data(), maxRecursionDepth, *rayTracingPipelineLayout);
-    vk::UniqueHandle<vk::Pipeline, vk::DispatchLoaderDynamic> rayTracingPipeline = device->createRayTracingPipelineNVUnique(nullptr, rayTracingPipelineCreateInfo, nullptr, dispatchLoader);
+    vk::UniquePipeline rayTracingPipeline = device->createRayTracingPipelineNVUnique(nullptr, rayTracingPipelineCreateInfo);
 
     uint32_t shaderGroupHandleSize = physicalDevice.getProperties2<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceRayTracingPropertiesNV>().get<vk::PhysicalDeviceRayTracingPropertiesNV>().shaderGroupHandleSize;
     assert(!(shaderGroupHandleSize % 16));
@@ -924,7 +920,7 @@ int main(int /*argc*/, char** /*argv*/)
 
     // with 5 shaders, we need a buffer to hold 5 shaderGroupHandles
     std::vector<uint8_t> shaderHandleStorage(shaderBindingTableSize);
-    device->getRayTracingShaderGroupHandlesNV<uint8_t>(*rayTracingPipeline, 0, 5, shaderHandleStorage, dispatchLoader);
+    device->getRayTracingShaderGroupHandlesNV<uint8_t>(*rayTracingPipeline, 0, 5, shaderHandleStorage);
 
     vk::su::BufferData shaderBindingTableBufferData(physicalDevice, device, shaderBindingTableSize, vk::BufferUsageFlagBits::eTransferDst, vk::MemoryPropertyFlagBits::eHostVisible);
     shaderBindingTableBufferData.upload(device, shaderHandleStorage);
@@ -1024,7 +1020,7 @@ int main(int /*argc*/, char** /*argv*/)
         VkDeviceSize hitGroupStride = shaderGroupHandleSize;
 
         commandBuffer->traceRaysNV(*shaderBindingTableBufferData.buffer, rayGenOffset, *shaderBindingTableBufferData.buffer, missOffset, missStride, *shaderBindingTableBufferData.buffer,
-                                   hitGroupOffset, hitGroupStride, nullptr, 0, 0, windowExtent.width, windowExtent.height, 1, dispatchLoader);
+                                   hitGroupOffset, hitGroupStride, nullptr, 0, 0, windowExtent.width, windowExtent.height, 1);
       }
 
       commandBuffer->endRenderPass();

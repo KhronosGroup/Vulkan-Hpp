@@ -364,6 +364,29 @@ vk::DispatchLoaderDynamic dldid(instance, device);
 device.getQueue(graphics_queue_family_index, 0, &graphics_queue, dldid);
 ```
 
+To use the ```DispatchLoaderDynamic``` as the default dispatcher (means: you don't need to explicitly add it to every function call),  you need to  ```#define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1```, and have the macro ```VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE``` excactly once in your source code to provide storage for that default dispatcher. Then you can use it by the macro ```VULKAN_HPP_DEFAULT_DISPATCHER```, as is shown in the code snippets below.
+To ease creating such a ```DispatchLoaderDynamic```, there is a little helper class ```DynamicLoader```.
+Creating a full featured ```DispatchLoaderDynamic``` is a two- to three-step process:
+1. initialize it with a function pointer of type PFN_vkGetInstanceProcAddr, to get the instance independent function pointers:
+```c++
+    vk::DynamicLoader dl;
+    PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr = dl.getProcAddress<PFN_vkGetInstanceProcAddr>("vkGetInstanceProcAddr");
+    VULKAN_HPP_DEFAULT_DISPATCHER.init(vkGetInstanceProcAddr);
+```
+2. initialize it with a vk::Instance to get all the other function pointers:
+```c++
+    vk::Instance instance = vk::createInstance({}, nullptr);
+    VULKAN_HPP_DEFAULT_DISPATCHER.init(instance);
+```
+3. optionally initialize it with a vk::Device to get device-specific function pointers
+```c++
+    std::vector<vk::PhysicalDevice> physicalDevices = instance.enumeratePhysicalDevices();
+    assert(!physicalDevices.empty());
+    vk::Device device = physicalDevices[0].createDevice({}, nullptr);
+    VULKAN_HPP_DEFAULT_DISPATCHER.init(device);
+```
+After the second step above, the dispatcher is fully functional. Adding the third step can potentially result in more efficient code.
+
 ### Samples
 
 When you configure your project using CMake, you can enable SAMPLES_BUILD, getting you a port of most of the LunarG samples and one sample named RayTracing featuring the VK_NV_ray_tracing extension.

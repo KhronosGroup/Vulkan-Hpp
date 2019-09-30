@@ -71556,6 +71556,11 @@ namespace VULKAN_HPP_NAMESPACE
   template <> struct isStructureChainValid<WriteDescriptorSet, WriteDescriptorSetAccelerationStructureNV>{ enum { value = true }; };
   template <> struct isStructureChainValid<WriteDescriptorSet, WriteDescriptorSetInlineUniformBlockEXT>{ enum { value = true }; };
 
+#if !defined(VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL)
+# define VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL  1
+#endif
+
+#if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL
   class DynamicLoader
   {
   public:
@@ -71613,6 +71618,7 @@ namespace VULKAN_HPP_NAMESPACE
 #error unsupported platform
 #endif
   };
+#endif
 
   class DispatchLoaderDynamic
   {

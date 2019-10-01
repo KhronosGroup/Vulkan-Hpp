@@ -1016,6 +1016,11 @@ void VulkanHppGenerator::appendCommand(std::string & str, std::string const& ind
 void VulkanHppGenerator::appendDispatchLoaderDynamic(std::string & str)
 {
   str += R"(
+#if !defined(VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL)
+# define VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL  1
+#endif
+
+#if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL
   class DynamicLoader
   {
   public:
@@ -1073,6 +1078,7 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic(std::string & str)
 #error unsupported platform
 #endif
   };
+#endif
 
 )";
   str += R"(

@@ -835,16 +835,6 @@ void VulkanHppGenerator::appendBitmask(std::string & str, std::string const& bit
     }
 
     static const std::string bitmaskOperatorsTemplate = R"(
-  VULKAN_HPP_INLINE ${bitmaskName} operator|( ${enumName} bit0, ${enumName} bit1 )
-  {
-    return ${bitmaskName}( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE ${bitmaskName} operator~( ${enumName} bits )
-  {
-    return ~( ${bitmaskName}( bits ) );
-  }
-
   template <> struct FlagTraits<${enumName}>
   {
     enum
@@ -852,6 +842,36 @@ void VulkanHppGenerator::appendBitmask(std::string & str, std::string const& bit
       allFlags = ${allFlags}
     };
   };
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ${bitmaskName} operator|( ${enumName} bit0, ${enumName} bit1 )
+  {
+    return ${bitmaskName}( bit0 ) | bit1;
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ${bitmaskName} operator&( ${enumName} bit0, ${enumName} bit1 )
+  {
+    return ${bitmaskName}( bit0 ) & bit1;
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ${bitmaskName} operator^( ${enumName} bit0, ${enumName} bit1 )
+  {
+    return ${bitmaskName}( bit0 ) ^ bit1;
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ${bitmaskName} operator~( ${enumName} bits )
+  {
+    return ~( ${bitmaskName}( bits ) );
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( ${enumName} bit0, ${enumName} bit1 )
+  {
+    return ${bitmaskName}( bit0 ) == bit1;
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( ${enumName} bit0, ${enumName} bit1 )
+  {
+    return ${bitmaskName}( bit0 ) != bit1;
+  }
 )";
 
     str += replaceWithMap(bitmaskOperatorsTemplate, { { "bitmaskName", bitmaskName },{ "enumName", enumName },{ "allFlags", allFlags } });
@@ -4475,55 +4495,47 @@ int main( int argc, char **argv )
       return *this;
     }
 
-    Flags<BitType> operator|(Flags<BitType> const& rhs) const
+    VULKAN_HPP_CONSTEXPR Flags<BitType> operator|(Flags<BitType> const& rhs) const
     {
-      Flags<BitType> result(*this);
-      result |= rhs;
-      return result;
+      return Flags<BitType>(m_mask | rhs.m_mask);
     }
 
-    Flags<BitType> operator&(Flags<BitType> const& rhs) const
+    VULKAN_HPP_CONSTEXPR Flags<BitType> operator&(Flags<BitType> const& rhs) const
     {
-      Flags<BitType> result(*this);
-      result &= rhs;
-      return result;
+      return Flags<BitType>(m_mask & rhs.m_mask);
     }
 
-    Flags<BitType> operator^(Flags<BitType> const& rhs) const
+    VULKAN_HPP_CONSTEXPR Flags<BitType> operator^(Flags<BitType> const& rhs) const
     {
-      Flags<BitType> result(*this);
-      result ^= rhs;
-      return result;
+      return Flags<BitType>(m_mask ^ rhs.m_mask);
     }
 
-    bool operator!() const
+    VULKAN_HPP_CONSTEXPR bool operator!() const
     {
       return !m_mask;
     }
 
-    Flags<BitType> operator~() const
+    VULKAN_HPP_CONSTEXPR Flags<BitType> operator~() const
     {
-      Flags<BitType> result(*this);
-      result.m_mask ^= FlagTraits<BitType>::allFlags;
-      return result;
+      return Flags<BitType>(m_mask ^ FlagTraits<BitType>::allFlags);
     }
 
-    bool operator==(Flags<BitType> const& rhs) const
+    VULKAN_HPP_CONSTEXPR bool operator==(Flags<BitType> const& rhs) const
     {
       return m_mask == rhs.m_mask;
     }
 
-    bool operator!=(Flags<BitType> const& rhs) const
+    VULKAN_HPP_CONSTEXPR bool operator!=(Flags<BitType> const& rhs) const
     {
       return m_mask != rhs.m_mask;
     }
 
-    explicit operator bool() const
+    explicit VULKAN_HPP_CONSTEXPR operator bool() const
     {
       return !!m_mask;
     }
 
-    explicit operator MaskType() const
+    explicit VULKAN_HPP_CONSTEXPR operator MaskType() const
     {
         return m_mask;
     }
@@ -4533,21 +4545,33 @@ int main( int argc, char **argv )
   };
 
   template <typename BitType>
-  Flags<BitType> operator|(BitType bit, Flags<BitType> const& flags)
+  VULKAN_HPP_CONSTEXPR Flags<BitType> operator|(BitType bit, Flags<BitType> const& flags)
   {
     return flags | bit;
   }
 
   template <typename BitType>
-  Flags<BitType> operator&(BitType bit, Flags<BitType> const& flags)
+  VULKAN_HPP_CONSTEXPR Flags<BitType> operator&(BitType bit, Flags<BitType> const& flags)
   {
     return flags & bit;
   }
 
   template <typename BitType>
-  Flags<BitType> operator^(BitType bit, Flags<BitType> const& flags)
+  VULKAN_HPP_CONSTEXPR Flags<BitType> operator^(BitType bit, Flags<BitType> const& flags)
   {
     return flags ^ bit;
+  }
+
+  template <typename BitType>
+  VULKAN_HPP_CONSTEXPR bool operator==(BitType bit, Flags<BitType> const& flags)
+  {
+    return flags == bit;
+  }
+
+  template <typename BitType>
+  VULKAN_HPP_CONSTEXPR bool operator!=(BitType bit, Flags<BitType> const& flags)
+  {
+    return flags != bit;
   }
 )";
 
@@ -5378,7 +5402,7 @@ namespace std
     str += "} // namespace VULKAN_HPP_NAMESPACE\n"
       "#endif\n";
 
-    //assert(str.length() < estimatedLength);
+    assert(str.length() < estimatedLength);
     cleanup(str);
 
     std::ofstream ofs(VULKAN_HPP_FILE);

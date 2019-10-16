@@ -1048,6 +1048,8 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic(std::string & str)
     {
 #if defined(__linux__)
       m_library = dlopen( "libvulkan.so", RTLD_NOW | RTLD_LOCAL );
+#elif defined(__APPLE__)
+      m_library = dlopen( "libvulkan.dylib", RTLD_NOW | RTLD_LOCAL );
 #elif defined(_WIN32)
       m_library = LoadLibrary( "vulkan-1.dll" );
 #else
@@ -1068,7 +1070,7 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic(std::string & str)
     {
       if ( m_library )
       {
-#if defined(__linux__)
+#if defined(__linux__) || defined(__APPLE__)
         dlclose( m_library );
 #elif defined(_WIN32)
         FreeLibrary( m_library );
@@ -1079,7 +1081,7 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic(std::string & str)
     template <typename T>
     T getProcAddress( const char* function ) const
     {
-#if defined(__linux__)
+#if defined(__linux__) || defined(__APPLE__)
       return (T)dlsym( m_library, function );
 #elif defined(_WIN32)
       return (T)GetProcAddress( m_library, function );
@@ -1090,7 +1092,7 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic(std::string & str)
 
   private:
     bool m_success;
-#if defined(__linux__)
+#if defined(__linux__) || defined(__APPLE__)
     void *m_library;
 #elif defined(_WIN32)
     HMODULE m_library;
@@ -5147,7 +5149,7 @@ static const std::string constExpressionArrayCopy = R"(
 # define VULKAN_HPP_ASSERT   assert
 #endif
 
-#if defined(__linux__)
+#if defined(__linux__) || defined(__APPLE__)
 # include <dlfcn.h>
 #endif
 )";

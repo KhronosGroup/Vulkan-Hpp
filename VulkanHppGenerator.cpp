@@ -1045,7 +1045,7 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic(std::string & str)
   {
   public:
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
-    DynamicLoader() : m_success( false ) VULKAN_HPP_NOEXCEPT
+    DynamicLoader() VULKAN_HPP_NOEXCEPT : m_success( false )
 #else
     DynamicLoader() : m_success( false )
 #endif
@@ -2479,7 +2479,13 @@ void VulkanHppGenerator::appendStructCompareOperators(std::string & str, std::pa
     compareMembers += intro;
     if (member.arraySize.empty())
     {
-      compareMembers += "( " + member.name + " == rhs." + member.name + " )";
+      if (m_bitmaskBits.find(member.type.type) != m_bitmaskBits.end()) {
+        compareMembers += "vk::operator==( " + member.name + ", " + member.name + " )";
+      }
+      else
+      {
+        compareMembers += "( " + member.name + " == rhs." + member.name + " )";
+      }
     }
     else
     {
@@ -5184,7 +5190,7 @@ namespace std
   struct ResultValue
   {
 #ifdef VULKAN_HPP_HAS_NOEXCEPT
-    ResultValue( Result r, T & v ) VULKAN_HPP_NOEXCEPT(VULKAN_HPP_NOEXCEPT(value(v)))
+    ResultValue( Result r, T & v ) VULKAN_HPP_NOEXCEPT(VULKAN_HPP_NOEXCEPT(T(v)))
 #else
     ResultValue( Result r, T & v )
 #endif
@@ -5193,7 +5199,7 @@ namespace std
     {}
 
 #ifdef VULKAN_HPP_HAS_NOEXCEPT
-    ResultValue( Result r, T && v ) VULKAN_HPP_NOEXCEPT(VULKAN_HPP_NOEXCEPT(value(std::move(v))))
+    ResultValue( Result r, T && v ) VULKAN_HPP_NOEXCEPT(VULKAN_HPP_NOEXCEPT(T(std::move(v))))
 #else
     ResultValue( Result r, T && v )
 #endif

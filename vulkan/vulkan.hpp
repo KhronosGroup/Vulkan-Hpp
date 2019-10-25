@@ -60,7 +60,7 @@
 # include <dlfcn.h>
 #endif
 
-static_assert( VK_HEADER_VERSION ==  123 , "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION ==  126 , "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -1810,6 +1810,11 @@ namespace VULKAN_HPP_NAMESPACE
       return ::vkGetRenderAreaGranularity( device, renderPass, pGranularity );
     }
 
+    VkResult vkGetSemaphoreCounterValueKHR( VkDevice device, VkSemaphore semaphore, uint64_t* pValue ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkGetSemaphoreCounterValueKHR( device, semaphore, pValue );
+    }
+
     VkResult vkGetSemaphoreFdKHR( VkDevice device, const VkSemaphoreGetFdInfoKHR* pGetFdInfo, int* pFd ) const VULKAN_HPP_NOEXCEPT
     {
       return ::vkGetSemaphoreFdKHR( device, pGetFdInfo, pFd );
@@ -1973,6 +1978,11 @@ namespace VULKAN_HPP_NAMESPACE
       return ::vkSetLocalDimmingAMD( device, swapChain, localDimmingEnable );
     }
 
+    VkResult vkSignalSemaphoreKHR( VkDevice device, const VkSemaphoreSignalInfoKHR* pSignalInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkSignalSemaphoreKHR( device, pSignalInfo );
+    }
+
     void vkTrimCommandPool( VkDevice device, VkCommandPool commandPool, VkCommandPoolTrimFlags flags ) const VULKAN_HPP_NOEXCEPT
     {
       return ::vkTrimCommandPool( device, commandPool, flags );
@@ -2016,6 +2026,11 @@ namespace VULKAN_HPP_NAMESPACE
     VkResult vkWaitForFences( VkDevice device, uint32_t fenceCount, const VkFence* pFences, VkBool32 waitAll, uint64_t timeout ) const VULKAN_HPP_NOEXCEPT
     {
       return ::vkWaitForFences( device, fenceCount, pFences, waitAll, timeout );
+    }
+
+    VkResult vkWaitSemaphoresKHR( VkDevice device, const VkSemaphoreWaitInfoKHR* pWaitInfo, uint64_t timeout ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkWaitSemaphoresKHR( device, pWaitInfo, timeout );
     }
 
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
@@ -5006,6 +5021,22 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
+  enum class SemaphoreTypeKHR
+  {
+    eBinary = VK_SEMAPHORE_TYPE_BINARY_KHR,
+    eTimeline = VK_SEMAPHORE_TYPE_TIMELINE_KHR
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( SemaphoreTypeKHR value )
+  {
+    switch ( value )
+    {
+      case SemaphoreTypeKHR::eBinary : return "Binary";
+      case SemaphoreTypeKHR::eTimeline : return "Timeline";
+      default: return "invalid";
+    }
+  }
+
   enum class ShaderFloatControlsIndependenceKHR
   {
     e32BitOnly = VK_SHADER_FLOAT_CONTROLS_INDEPENDENCE_32_BIT_ONLY_KHR,
@@ -5417,6 +5448,7 @@ namespace VULKAN_HPP_NAMESPACE
     eMemoryHostPointerPropertiesEXT = VK_STRUCTURE_TYPE_MEMORY_HOST_POINTER_PROPERTIES_EXT,
     ePhysicalDeviceExternalMemoryHostPropertiesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_MEMORY_HOST_PROPERTIES_EXT,
     ePhysicalDeviceShaderAtomicInt64FeaturesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_ATOMIC_INT64_FEATURES_KHR,
+    ePhysicalDeviceShaderClockFeaturesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CLOCK_FEATURES_KHR,
     ePipelineCompilerControlCreateInfoAMD = VK_STRUCTURE_TYPE_PIPELINE_COMPILER_CONTROL_CREATE_INFO_AMD,
     eCalibratedTimestampInfoEXT = VK_STRUCTURE_TYPE_CALIBRATED_TIMESTAMP_INFO_EXT,
     ePhysicalDeviceShaderCorePropertiesAMD = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_AMD,
@@ -5439,6 +5471,12 @@ namespace VULKAN_HPP_NAMESPACE
     ePhysicalDeviceExclusiveScissorFeaturesNV = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXCLUSIVE_SCISSOR_FEATURES_NV,
     eCheckpointDataNV = VK_STRUCTURE_TYPE_CHECKPOINT_DATA_NV,
     eQueueFamilyCheckpointPropertiesNV = VK_STRUCTURE_TYPE_QUEUE_FAMILY_CHECKPOINT_PROPERTIES_NV,
+    ePhysicalDeviceTimelineSemaphoreFeaturesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_FEATURES_KHR,
+    ePhysicalDeviceTimelineSemaphorePropertiesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_PROPERTIES_KHR,
+    eSemaphoreTypeCreateInfoKHR = VK_STRUCTURE_TYPE_SEMAPHORE_TYPE_CREATE_INFO_KHR,
+    eTimelineSemaphoreSubmitInfoKHR = VK_STRUCTURE_TYPE_TIMELINE_SEMAPHORE_SUBMIT_INFO_KHR,
+    eSemaphoreWaitInfoKHR = VK_STRUCTURE_TYPE_SEMAPHORE_WAIT_INFO_KHR,
+    eSemaphoreSignalInfoKHR = VK_STRUCTURE_TYPE_SEMAPHORE_SIGNAL_INFO_KHR,
     ePhysicalDeviceShaderIntegerFunctions2FeaturesINTEL = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_INTEGER_FUNCTIONS_2_FEATURES_INTEL,
     eQueryPoolCreateInfoINTEL = VK_STRUCTURE_TYPE_QUERY_POOL_CREATE_INFO_INTEL,
     eInitializePerformanceApiInfoINTEL = VK_STRUCTURE_TYPE_INITIALIZE_PERFORMANCE_API_INFO_INTEL,
@@ -5862,6 +5900,7 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eMemoryHostPointerPropertiesEXT : return "MemoryHostPointerPropertiesEXT";
       case StructureType::ePhysicalDeviceExternalMemoryHostPropertiesEXT : return "PhysicalDeviceExternalMemoryHostPropertiesEXT";
       case StructureType::ePhysicalDeviceShaderAtomicInt64FeaturesKHR : return "PhysicalDeviceShaderAtomicInt64FeaturesKHR";
+      case StructureType::ePhysicalDeviceShaderClockFeaturesKHR : return "PhysicalDeviceShaderClockFeaturesKHR";
       case StructureType::ePipelineCompilerControlCreateInfoAMD : return "PipelineCompilerControlCreateInfoAMD";
       case StructureType::eCalibratedTimestampInfoEXT : return "CalibratedTimestampInfoEXT";
       case StructureType::ePhysicalDeviceShaderCorePropertiesAMD : return "PhysicalDeviceShaderCorePropertiesAMD";
@@ -5884,6 +5923,12 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceExclusiveScissorFeaturesNV : return "PhysicalDeviceExclusiveScissorFeaturesNV";
       case StructureType::eCheckpointDataNV : return "CheckpointDataNV";
       case StructureType::eQueueFamilyCheckpointPropertiesNV : return "QueueFamilyCheckpointPropertiesNV";
+      case StructureType::ePhysicalDeviceTimelineSemaphoreFeaturesKHR : return "PhysicalDeviceTimelineSemaphoreFeaturesKHR";
+      case StructureType::ePhysicalDeviceTimelineSemaphorePropertiesKHR : return "PhysicalDeviceTimelineSemaphorePropertiesKHR";
+      case StructureType::eSemaphoreTypeCreateInfoKHR : return "SemaphoreTypeCreateInfoKHR";
+      case StructureType::eTimelineSemaphoreSubmitInfoKHR : return "TimelineSemaphoreSubmitInfoKHR";
+      case StructureType::eSemaphoreWaitInfoKHR : return "SemaphoreWaitInfoKHR";
+      case StructureType::eSemaphoreSignalInfoKHR : return "SemaphoreSignalInfoKHR";
       case StructureType::ePhysicalDeviceShaderIntegerFunctions2FeaturesINTEL : return "PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL";
       case StructureType::eQueryPoolCreateInfoINTEL : return "QueryPoolCreateInfoINTEL";
       case StructureType::eInitializePerformanceApiInfoINTEL : return "InitializePerformanceApiInfoINTEL";
@@ -11325,6 +11370,69 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
+  enum class SemaphoreWaitFlagBitsKHR
+  {
+    eAny = VK_SEMAPHORE_WAIT_ANY_BIT_KHR
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( SemaphoreWaitFlagBitsKHR value )
+  {
+    switch ( value )
+    {
+      case SemaphoreWaitFlagBitsKHR::eAny : return "Any";
+      default: return "invalid";
+    }
+  }
+
+  using SemaphoreWaitFlagsKHR = Flags<SemaphoreWaitFlagBitsKHR, VkSemaphoreWaitFlagsKHR>;
+
+  template <> struct FlagTraits<SemaphoreWaitFlagBitsKHR>
+  {
+    enum
+    {
+      allFlags = VkFlags(SemaphoreWaitFlagBitsKHR::eAny)
+    };
+  };
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SemaphoreWaitFlagsKHR operator|( SemaphoreWaitFlagBitsKHR bit0, SemaphoreWaitFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
+  {
+    return SemaphoreWaitFlagsKHR( bit0 ) | bit1;
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SemaphoreWaitFlagsKHR operator&( SemaphoreWaitFlagBitsKHR bit0, SemaphoreWaitFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
+  {
+    return SemaphoreWaitFlagsKHR( bit0 ) & bit1;
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SemaphoreWaitFlagsKHR operator^( SemaphoreWaitFlagBitsKHR bit0, SemaphoreWaitFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
+  {
+    return SemaphoreWaitFlagsKHR( bit0 ) ^ bit1;
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SemaphoreWaitFlagsKHR operator~( SemaphoreWaitFlagBitsKHR bits ) VULKAN_HPP_NOEXCEPT
+  {
+    return ~( SemaphoreWaitFlagsKHR( bits ) );
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( SemaphoreWaitFlagBitsKHR bit0, SemaphoreWaitFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
+  {
+    return SemaphoreWaitFlagsKHR( bit0 ) == bit1;
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( SemaphoreWaitFlagBitsKHR bit0, SemaphoreWaitFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
+  {
+    return SemaphoreWaitFlagsKHR( bit0 ) != bit1;
+  }
+
+  VULKAN_HPP_INLINE std::string to_string( SemaphoreWaitFlagsKHR value  )
+  {
+    if ( !value ) return "{}";
+    std::string result;
+
+    if ( value & SemaphoreWaitFlagBitsKHR::eAny ) result += "Any | ";
+    return "{ " + result.substr(0, result.size() - 3) + " }";
+  }
+
   enum class ShaderCorePropertiesFlagBitsAMD
   {};
 
@@ -13016,6 +13124,7 @@ namespace VULKAN_HPP_NAMESPACE
   using PhysicalDeviceSamplerYcbcrConversionFeaturesKHR = PhysicalDeviceSamplerYcbcrConversionFeatures;
   struct PhysicalDeviceScalarBlockLayoutFeaturesEXT;
   struct PhysicalDeviceShaderAtomicInt64FeaturesKHR;
+  struct PhysicalDeviceShaderClockFeaturesKHR;
   struct PhysicalDeviceShaderCoreProperties2AMD;
   struct PhysicalDeviceShaderCorePropertiesAMD;
   struct PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT;
@@ -13040,6 +13149,8 @@ namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceTexelBufferAlignmentFeaturesEXT;
   struct PhysicalDeviceTexelBufferAlignmentPropertiesEXT;
   struct PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT;
+  struct PhysicalDeviceTimelineSemaphoreFeaturesKHR;
+  struct PhysicalDeviceTimelineSemaphorePropertiesKHR;
   struct PhysicalDeviceTransformFeedbackFeaturesEXT;
   struct PhysicalDeviceTransformFeedbackPropertiesEXT;
   struct PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR;
@@ -13140,6 +13251,9 @@ namespace VULKAN_HPP_NAMESPACE
 #ifdef VK_USE_PLATFORM_WIN32_KHR
   struct SemaphoreGetWin32HandleInfoKHR;
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
+  struct SemaphoreSignalInfoKHR;
+  struct SemaphoreTypeCreateInfoKHR;
+  struct SemaphoreWaitInfoKHR;
   struct ShaderModuleCreateInfo;
   struct ShaderModuleValidationCacheCreateInfoEXT;
   struct ShaderResourceUsageAMD;
@@ -13192,6 +13306,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct SwapchainCreateInfoKHR;
   struct SwapchainDisplayNativeHdrCreateInfoAMD;
   struct TextureLODGatherFormatPropertiesAMD;
+  struct TimelineSemaphoreSubmitInfoKHR;
   struct ValidationCacheCreateInfoEXT;
   struct ValidationFeaturesEXT;
   struct ValidationFlagsEXT;
@@ -17764,6 +17879,13 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    Result getSemaphoreCounterValueKHR( vk::Semaphore semaphore, uint64_t* pValue, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    ResultValueType<uint64_t>::type getSemaphoreCounterValueKHR( vk::Semaphore semaphore, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     Result getSemaphoreFdKHR( const vk::SemaphoreGetFdInfoKHR* pGetFdInfo, int* pFd, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
@@ -17989,6 +18111,13 @@ namespace VULKAN_HPP_NAMESPACE
     void setLocalDimmingAMD( vk::SwapchainKHR swapChain, vk::Bool32 localDimmingEnable, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const VULKAN_HPP_NOEXCEPT;
 
     template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    Result signalSemaphoreKHR( const vk::SemaphoreSignalInfoKHR* pSignalInfo, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    ResultValueType<void>::type signalSemaphoreKHR( const SemaphoreSignalInfoKHR & signalInfo, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     void trimCommandPool( vk::CommandPool commandPool, vk::CommandPoolTrimFlags flags = CommandPoolTrimFlags(), Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const VULKAN_HPP_NOEXCEPT;
 
     template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
@@ -18025,6 +18154,13 @@ namespace VULKAN_HPP_NAMESPACE
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     Result waitForFences( ArrayProxy<const vk::Fence> fences, vk::Bool32 waitAll, uint64_t timeout, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    Result waitSemaphoresKHR( const vk::SemaphoreWaitInfoKHR* pWaitInfo, uint64_t timeout, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    Result waitSemaphoresKHR( const SemaphoreWaitInfoKHR & waitInfo, uint64_t timeout, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkDevice() const VULKAN_HPP_NOEXCEPT
@@ -51084,6 +51220,101 @@ namespace VULKAN_HPP_NAMESPACE
 
   namespace layout
   {
+    struct PhysicalDeviceShaderClockFeaturesKHR
+    {
+    protected:
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceShaderClockFeaturesKHR( vk::Bool32 shaderSubgroupClock_ = 0,
+                                                                 vk::Bool32 shaderDeviceClock_ = 0 ) VULKAN_HPP_NOEXCEPT
+        : shaderSubgroupClock( shaderSubgroupClock_ )
+        , shaderDeviceClock( shaderDeviceClock_ )
+      {}
+
+      PhysicalDeviceShaderClockFeaturesKHR( VkPhysicalDeviceShaderClockFeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+      {
+        *reinterpret_cast<VkPhysicalDeviceShaderClockFeaturesKHR*>(this) = rhs;
+      }
+
+      PhysicalDeviceShaderClockFeaturesKHR& operator=( VkPhysicalDeviceShaderClockFeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+      {
+        *reinterpret_cast<VkPhysicalDeviceShaderClockFeaturesKHR*>(this) = rhs;
+        return *this;
+      }
+
+    public:
+      vk::StructureType sType = StructureType::ePhysicalDeviceShaderClockFeaturesKHR;
+      void* pNext = nullptr;
+      vk::Bool32 shaderSubgroupClock;
+      vk::Bool32 shaderDeviceClock;
+    };
+    static_assert( sizeof( PhysicalDeviceShaderClockFeaturesKHR ) == sizeof( VkPhysicalDeviceShaderClockFeaturesKHR ), "layout struct and wrapper have different size!" );
+  }
+
+  struct PhysicalDeviceShaderClockFeaturesKHR : public layout::PhysicalDeviceShaderClockFeaturesKHR
+  {
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceShaderClockFeaturesKHR( vk::Bool32 shaderSubgroupClock_ = 0,
+                                                               vk::Bool32 shaderDeviceClock_ = 0 ) VULKAN_HPP_NOEXCEPT
+      : layout::PhysicalDeviceShaderClockFeaturesKHR( shaderSubgroupClock_, shaderDeviceClock_ )
+    {}
+
+    PhysicalDeviceShaderClockFeaturesKHR( VkPhysicalDeviceShaderClockFeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+      : layout::PhysicalDeviceShaderClockFeaturesKHR( rhs )
+    {}
+
+    PhysicalDeviceShaderClockFeaturesKHR& operator=( VkPhysicalDeviceShaderClockFeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      layout::PhysicalDeviceShaderClockFeaturesKHR::operator=(rhs);
+      return *this;
+    }
+
+    PhysicalDeviceShaderClockFeaturesKHR & setPNext( void* pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderClockFeaturesKHR & setShaderSubgroupClock( vk::Bool32 shaderSubgroupClock_ ) VULKAN_HPP_NOEXCEPT
+    {
+      shaderSubgroupClock = shaderSubgroupClock_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderClockFeaturesKHR & setShaderDeviceClock( vk::Bool32 shaderDeviceClock_ ) VULKAN_HPP_NOEXCEPT
+    {
+      shaderDeviceClock = shaderDeviceClock_;
+      return *this;
+    }
+
+    operator VkPhysicalDeviceShaderClockFeaturesKHR const&() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceShaderClockFeaturesKHR*>( this );
+    }
+
+    operator VkPhysicalDeviceShaderClockFeaturesKHR &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDeviceShaderClockFeaturesKHR*>( this );
+    }
+
+    bool operator==( PhysicalDeviceShaderClockFeaturesKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( shaderSubgroupClock == rhs.shaderSubgroupClock )
+          && ( shaderDeviceClock == rhs.shaderDeviceClock );
+    }
+
+    bool operator!=( PhysicalDeviceShaderClockFeaturesKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    using layout::PhysicalDeviceShaderClockFeaturesKHR::sType;
+  };
+  static_assert( sizeof( PhysicalDeviceShaderClockFeaturesKHR ) == sizeof( VkPhysicalDeviceShaderClockFeaturesKHR ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<PhysicalDeviceShaderClockFeaturesKHR>::value, "struct wrapper is not a standard layout!" );
+
+  namespace layout
+  {
     struct PhysicalDeviceShaderCoreProperties2AMD
     {
     protected:
@@ -52799,6 +53030,161 @@ namespace VULKAN_HPP_NAMESPACE
   };
   static_assert( sizeof( PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT ) == sizeof( VkPhysicalDeviceTextureCompressionASTCHDRFeaturesEXT ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT>::value, "struct wrapper is not a standard layout!" );
+
+  namespace layout
+  {
+    struct PhysicalDeviceTimelineSemaphoreFeaturesKHR
+    {
+    protected:
+      VULKAN_HPP_CONSTEXPR PhysicalDeviceTimelineSemaphoreFeaturesKHR( vk::Bool32 timelineSemaphore_ = 0 ) VULKAN_HPP_NOEXCEPT
+        : timelineSemaphore( timelineSemaphore_ )
+      {}
+
+      PhysicalDeviceTimelineSemaphoreFeaturesKHR( VkPhysicalDeviceTimelineSemaphoreFeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+      {
+        *reinterpret_cast<VkPhysicalDeviceTimelineSemaphoreFeaturesKHR*>(this) = rhs;
+      }
+
+      PhysicalDeviceTimelineSemaphoreFeaturesKHR& operator=( VkPhysicalDeviceTimelineSemaphoreFeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+      {
+        *reinterpret_cast<VkPhysicalDeviceTimelineSemaphoreFeaturesKHR*>(this) = rhs;
+        return *this;
+      }
+
+    public:
+      vk::StructureType sType = StructureType::ePhysicalDeviceTimelineSemaphoreFeaturesKHR;
+      void* pNext = nullptr;
+      vk::Bool32 timelineSemaphore;
+    };
+    static_assert( sizeof( PhysicalDeviceTimelineSemaphoreFeaturesKHR ) == sizeof( VkPhysicalDeviceTimelineSemaphoreFeaturesKHR ), "layout struct and wrapper have different size!" );
+  }
+
+  struct PhysicalDeviceTimelineSemaphoreFeaturesKHR : public layout::PhysicalDeviceTimelineSemaphoreFeaturesKHR
+  {
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceTimelineSemaphoreFeaturesKHR( vk::Bool32 timelineSemaphore_ = 0 ) VULKAN_HPP_NOEXCEPT
+      : layout::PhysicalDeviceTimelineSemaphoreFeaturesKHR( timelineSemaphore_ )
+    {}
+
+    PhysicalDeviceTimelineSemaphoreFeaturesKHR( VkPhysicalDeviceTimelineSemaphoreFeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+      : layout::PhysicalDeviceTimelineSemaphoreFeaturesKHR( rhs )
+    {}
+
+    PhysicalDeviceTimelineSemaphoreFeaturesKHR& operator=( VkPhysicalDeviceTimelineSemaphoreFeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      layout::PhysicalDeviceTimelineSemaphoreFeaturesKHR::operator=(rhs);
+      return *this;
+    }
+
+    PhysicalDeviceTimelineSemaphoreFeaturesKHR & setPNext( void* pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PhysicalDeviceTimelineSemaphoreFeaturesKHR & setTimelineSemaphore( vk::Bool32 timelineSemaphore_ ) VULKAN_HPP_NOEXCEPT
+    {
+      timelineSemaphore = timelineSemaphore_;
+      return *this;
+    }
+
+    operator VkPhysicalDeviceTimelineSemaphoreFeaturesKHR const&() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceTimelineSemaphoreFeaturesKHR*>( this );
+    }
+
+    operator VkPhysicalDeviceTimelineSemaphoreFeaturesKHR &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDeviceTimelineSemaphoreFeaturesKHR*>( this );
+    }
+
+    bool operator==( PhysicalDeviceTimelineSemaphoreFeaturesKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( timelineSemaphore == rhs.timelineSemaphore );
+    }
+
+    bool operator!=( PhysicalDeviceTimelineSemaphoreFeaturesKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    using layout::PhysicalDeviceTimelineSemaphoreFeaturesKHR::sType;
+  };
+  static_assert( sizeof( PhysicalDeviceTimelineSemaphoreFeaturesKHR ) == sizeof( VkPhysicalDeviceTimelineSemaphoreFeaturesKHR ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<PhysicalDeviceTimelineSemaphoreFeaturesKHR>::value, "struct wrapper is not a standard layout!" );
+
+  namespace layout
+  {
+    struct PhysicalDeviceTimelineSemaphorePropertiesKHR
+    {
+    protected:
+      PhysicalDeviceTimelineSemaphorePropertiesKHR() VULKAN_HPP_NOEXCEPT
+      {}
+
+      PhysicalDeviceTimelineSemaphorePropertiesKHR( VkPhysicalDeviceTimelineSemaphorePropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+      {
+        *reinterpret_cast<VkPhysicalDeviceTimelineSemaphorePropertiesKHR*>(this) = rhs;
+      }
+
+      PhysicalDeviceTimelineSemaphorePropertiesKHR& operator=( VkPhysicalDeviceTimelineSemaphorePropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+      {
+        *reinterpret_cast<VkPhysicalDeviceTimelineSemaphorePropertiesKHR*>(this) = rhs;
+        return *this;
+      }
+
+    public:
+      vk::StructureType sType = StructureType::ePhysicalDeviceTimelineSemaphorePropertiesKHR;
+      void* pNext = nullptr;
+      uint64_t maxTimelineSemaphoreValueDifference;
+    };
+    static_assert( sizeof( PhysicalDeviceTimelineSemaphorePropertiesKHR ) == sizeof( VkPhysicalDeviceTimelineSemaphorePropertiesKHR ), "layout struct and wrapper have different size!" );
+  }
+
+  struct PhysicalDeviceTimelineSemaphorePropertiesKHR : public layout::PhysicalDeviceTimelineSemaphorePropertiesKHR
+  {
+    PhysicalDeviceTimelineSemaphorePropertiesKHR() VULKAN_HPP_NOEXCEPT
+      : layout::PhysicalDeviceTimelineSemaphorePropertiesKHR()
+    {}
+
+    PhysicalDeviceTimelineSemaphorePropertiesKHR( VkPhysicalDeviceTimelineSemaphorePropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+      : layout::PhysicalDeviceTimelineSemaphorePropertiesKHR( rhs )
+    {}
+
+    PhysicalDeviceTimelineSemaphorePropertiesKHR& operator=( VkPhysicalDeviceTimelineSemaphorePropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      layout::PhysicalDeviceTimelineSemaphorePropertiesKHR::operator=(rhs);
+      return *this;
+    }
+
+    operator VkPhysicalDeviceTimelineSemaphorePropertiesKHR const&() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceTimelineSemaphorePropertiesKHR*>( this );
+    }
+
+    operator VkPhysicalDeviceTimelineSemaphorePropertiesKHR &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDeviceTimelineSemaphorePropertiesKHR*>( this );
+    }
+
+    bool operator==( PhysicalDeviceTimelineSemaphorePropertiesKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( maxTimelineSemaphoreValueDifference == rhs.maxTimelineSemaphoreValueDifference );
+    }
+
+    bool operator!=( PhysicalDeviceTimelineSemaphorePropertiesKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    using layout::PhysicalDeviceTimelineSemaphorePropertiesKHR::sType;
+  };
+  static_assert( sizeof( PhysicalDeviceTimelineSemaphorePropertiesKHR ) == sizeof( VkPhysicalDeviceTimelineSemaphorePropertiesKHR ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<PhysicalDeviceTimelineSemaphorePropertiesKHR>::value, "struct wrapper is not a standard layout!" );
 
   namespace layout
   {
@@ -60780,6 +61166,313 @@ namespace VULKAN_HPP_NAMESPACE
 
   namespace layout
   {
+    struct SemaphoreSignalInfoKHR
+    {
+    protected:
+      VULKAN_HPP_CONSTEXPR SemaphoreSignalInfoKHR( vk::Semaphore semaphore_ = vk::Semaphore(),
+                                                   uint64_t value_ = 0 ) VULKAN_HPP_NOEXCEPT
+        : semaphore( semaphore_ )
+        , value( value_ )
+      {}
+
+      SemaphoreSignalInfoKHR( VkSemaphoreSignalInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+      {
+        *reinterpret_cast<VkSemaphoreSignalInfoKHR*>(this) = rhs;
+      }
+
+      SemaphoreSignalInfoKHR& operator=( VkSemaphoreSignalInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+      {
+        *reinterpret_cast<VkSemaphoreSignalInfoKHR*>(this) = rhs;
+        return *this;
+      }
+
+    public:
+      vk::StructureType sType = StructureType::eSemaphoreSignalInfoKHR;
+      const void* pNext = nullptr;
+      vk::Semaphore semaphore;
+      uint64_t value;
+    };
+    static_assert( sizeof( SemaphoreSignalInfoKHR ) == sizeof( VkSemaphoreSignalInfoKHR ), "layout struct and wrapper have different size!" );
+  }
+
+  struct SemaphoreSignalInfoKHR : public layout::SemaphoreSignalInfoKHR
+  {
+    VULKAN_HPP_CONSTEXPR SemaphoreSignalInfoKHR( vk::Semaphore semaphore_ = vk::Semaphore(),
+                                                 uint64_t value_ = 0 ) VULKAN_HPP_NOEXCEPT
+      : layout::SemaphoreSignalInfoKHR( semaphore_, value_ )
+    {}
+
+    SemaphoreSignalInfoKHR( VkSemaphoreSignalInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+      : layout::SemaphoreSignalInfoKHR( rhs )
+    {}
+
+    SemaphoreSignalInfoKHR& operator=( VkSemaphoreSignalInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      layout::SemaphoreSignalInfoKHR::operator=(rhs);
+      return *this;
+    }
+
+    SemaphoreSignalInfoKHR & setPNext( const void* pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    SemaphoreSignalInfoKHR & setSemaphore( vk::Semaphore semaphore_ ) VULKAN_HPP_NOEXCEPT
+    {
+      semaphore = semaphore_;
+      return *this;
+    }
+
+    SemaphoreSignalInfoKHR & setValue( uint64_t value_ ) VULKAN_HPP_NOEXCEPT
+    {
+      value = value_;
+      return *this;
+    }
+
+    operator VkSemaphoreSignalInfoKHR const&() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkSemaphoreSignalInfoKHR*>( this );
+    }
+
+    operator VkSemaphoreSignalInfoKHR &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkSemaphoreSignalInfoKHR*>( this );
+    }
+
+    bool operator==( SemaphoreSignalInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( semaphore == rhs.semaphore )
+          && ( value == rhs.value );
+    }
+
+    bool operator!=( SemaphoreSignalInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    using layout::SemaphoreSignalInfoKHR::sType;
+  };
+  static_assert( sizeof( SemaphoreSignalInfoKHR ) == sizeof( VkSemaphoreSignalInfoKHR ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<SemaphoreSignalInfoKHR>::value, "struct wrapper is not a standard layout!" );
+
+  namespace layout
+  {
+    struct SemaphoreTypeCreateInfoKHR
+    {
+    protected:
+      VULKAN_HPP_CONSTEXPR SemaphoreTypeCreateInfoKHR( vk::SemaphoreTypeKHR semaphoreType_ = vk::SemaphoreTypeKHR::eBinary,
+                                                       uint64_t initialValue_ = 0 ) VULKAN_HPP_NOEXCEPT
+        : semaphoreType( semaphoreType_ )
+        , initialValue( initialValue_ )
+      {}
+
+      SemaphoreTypeCreateInfoKHR( VkSemaphoreTypeCreateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+      {
+        *reinterpret_cast<VkSemaphoreTypeCreateInfoKHR*>(this) = rhs;
+      }
+
+      SemaphoreTypeCreateInfoKHR& operator=( VkSemaphoreTypeCreateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+      {
+        *reinterpret_cast<VkSemaphoreTypeCreateInfoKHR*>(this) = rhs;
+        return *this;
+      }
+
+    public:
+      vk::StructureType sType = StructureType::eSemaphoreTypeCreateInfoKHR;
+      const void* pNext = nullptr;
+      vk::SemaphoreTypeKHR semaphoreType;
+      uint64_t initialValue;
+    };
+    static_assert( sizeof( SemaphoreTypeCreateInfoKHR ) == sizeof( VkSemaphoreTypeCreateInfoKHR ), "layout struct and wrapper have different size!" );
+  }
+
+  struct SemaphoreTypeCreateInfoKHR : public layout::SemaphoreTypeCreateInfoKHR
+  {
+    VULKAN_HPP_CONSTEXPR SemaphoreTypeCreateInfoKHR( vk::SemaphoreTypeKHR semaphoreType_ = vk::SemaphoreTypeKHR::eBinary,
+                                                     uint64_t initialValue_ = 0 ) VULKAN_HPP_NOEXCEPT
+      : layout::SemaphoreTypeCreateInfoKHR( semaphoreType_, initialValue_ )
+    {}
+
+    SemaphoreTypeCreateInfoKHR( VkSemaphoreTypeCreateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+      : layout::SemaphoreTypeCreateInfoKHR( rhs )
+    {}
+
+    SemaphoreTypeCreateInfoKHR& operator=( VkSemaphoreTypeCreateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      layout::SemaphoreTypeCreateInfoKHR::operator=(rhs);
+      return *this;
+    }
+
+    SemaphoreTypeCreateInfoKHR & setPNext( const void* pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    SemaphoreTypeCreateInfoKHR & setSemaphoreType( vk::SemaphoreTypeKHR semaphoreType_ ) VULKAN_HPP_NOEXCEPT
+    {
+      semaphoreType = semaphoreType_;
+      return *this;
+    }
+
+    SemaphoreTypeCreateInfoKHR & setInitialValue( uint64_t initialValue_ ) VULKAN_HPP_NOEXCEPT
+    {
+      initialValue = initialValue_;
+      return *this;
+    }
+
+    operator VkSemaphoreTypeCreateInfoKHR const&() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkSemaphoreTypeCreateInfoKHR*>( this );
+    }
+
+    operator VkSemaphoreTypeCreateInfoKHR &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkSemaphoreTypeCreateInfoKHR*>( this );
+    }
+
+    bool operator==( SemaphoreTypeCreateInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( semaphoreType == rhs.semaphoreType )
+          && ( initialValue == rhs.initialValue );
+    }
+
+    bool operator!=( SemaphoreTypeCreateInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    using layout::SemaphoreTypeCreateInfoKHR::sType;
+  };
+  static_assert( sizeof( SemaphoreTypeCreateInfoKHR ) == sizeof( VkSemaphoreTypeCreateInfoKHR ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<SemaphoreTypeCreateInfoKHR>::value, "struct wrapper is not a standard layout!" );
+
+  namespace layout
+  {
+    struct SemaphoreWaitInfoKHR
+    {
+    protected:
+      VULKAN_HPP_CONSTEXPR SemaphoreWaitInfoKHR( vk::SemaphoreWaitFlagsKHR flags_ = vk::SemaphoreWaitFlagsKHR(),
+                                                 uint32_t semaphoreCount_ = 0,
+                                                 const vk::Semaphore* pSemaphores_ = nullptr,
+                                                 const uint64_t* pValues_ = nullptr ) VULKAN_HPP_NOEXCEPT
+        : flags( flags_ )
+        , semaphoreCount( semaphoreCount_ )
+        , pSemaphores( pSemaphores_ )
+        , pValues( pValues_ )
+      {}
+
+      SemaphoreWaitInfoKHR( VkSemaphoreWaitInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+      {
+        *reinterpret_cast<VkSemaphoreWaitInfoKHR*>(this) = rhs;
+      }
+
+      SemaphoreWaitInfoKHR& operator=( VkSemaphoreWaitInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+      {
+        *reinterpret_cast<VkSemaphoreWaitInfoKHR*>(this) = rhs;
+        return *this;
+      }
+
+    public:
+      vk::StructureType sType = StructureType::eSemaphoreWaitInfoKHR;
+      const void* pNext = nullptr;
+      vk::SemaphoreWaitFlagsKHR flags;
+      uint32_t semaphoreCount;
+      const vk::Semaphore* pSemaphores;
+      const uint64_t* pValues;
+    };
+    static_assert( sizeof( SemaphoreWaitInfoKHR ) == sizeof( VkSemaphoreWaitInfoKHR ), "layout struct and wrapper have different size!" );
+  }
+
+  struct SemaphoreWaitInfoKHR : public layout::SemaphoreWaitInfoKHR
+  {
+    VULKAN_HPP_CONSTEXPR SemaphoreWaitInfoKHR( vk::SemaphoreWaitFlagsKHR flags_ = vk::SemaphoreWaitFlagsKHR(),
+                                               uint32_t semaphoreCount_ = 0,
+                                               const vk::Semaphore* pSemaphores_ = nullptr,
+                                               const uint64_t* pValues_ = nullptr ) VULKAN_HPP_NOEXCEPT
+      : layout::SemaphoreWaitInfoKHR( flags_, semaphoreCount_, pSemaphores_, pValues_ )
+    {}
+
+    SemaphoreWaitInfoKHR( VkSemaphoreWaitInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+      : layout::SemaphoreWaitInfoKHR( rhs )
+    {}
+
+    SemaphoreWaitInfoKHR& operator=( VkSemaphoreWaitInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      layout::SemaphoreWaitInfoKHR::operator=(rhs);
+      return *this;
+    }
+
+    SemaphoreWaitInfoKHR & setPNext( const void* pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    SemaphoreWaitInfoKHR & setFlags( vk::SemaphoreWaitFlagsKHR flags_ ) VULKAN_HPP_NOEXCEPT
+    {
+      flags = flags_;
+      return *this;
+    }
+
+    SemaphoreWaitInfoKHR & setSemaphoreCount( uint32_t semaphoreCount_ ) VULKAN_HPP_NOEXCEPT
+    {
+      semaphoreCount = semaphoreCount_;
+      return *this;
+    }
+
+    SemaphoreWaitInfoKHR & setPSemaphores( const vk::Semaphore* pSemaphores_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pSemaphores = pSemaphores_;
+      return *this;
+    }
+
+    SemaphoreWaitInfoKHR & setPValues( const uint64_t* pValues_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pValues = pValues_;
+      return *this;
+    }
+
+    operator VkSemaphoreWaitInfoKHR const&() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkSemaphoreWaitInfoKHR*>( this );
+    }
+
+    operator VkSemaphoreWaitInfoKHR &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkSemaphoreWaitInfoKHR*>( this );
+    }
+
+    bool operator==( SemaphoreWaitInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( semaphoreCount == rhs.semaphoreCount )
+          && ( pSemaphores == rhs.pSemaphores )
+          && ( pValues == rhs.pValues );
+    }
+
+    bool operator!=( SemaphoreWaitInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    using layout::SemaphoreWaitInfoKHR::sType;
+  };
+  static_assert( sizeof( SemaphoreWaitInfoKHR ) == sizeof( VkSemaphoreWaitInfoKHR ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<SemaphoreWaitInfoKHR>::value, "struct wrapper is not a standard layout!" );
+
+  namespace layout
+  {
     struct ShaderModuleCreateInfo
     {
     protected:
@@ -63063,6 +63756,123 @@ namespace VULKAN_HPP_NAMESPACE
   };
   static_assert( sizeof( TextureLODGatherFormatPropertiesAMD ) == sizeof( VkTextureLODGatherFormatPropertiesAMD ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<TextureLODGatherFormatPropertiesAMD>::value, "struct wrapper is not a standard layout!" );
+
+  namespace layout
+  {
+    struct TimelineSemaphoreSubmitInfoKHR
+    {
+    protected:
+      VULKAN_HPP_CONSTEXPR TimelineSemaphoreSubmitInfoKHR( uint32_t waitSemaphoreValueCount_ = 0,
+                                                           const uint64_t* pWaitSemaphoreValues_ = nullptr,
+                                                           uint32_t signalSemaphoreValueCount_ = 0,
+                                                           const uint64_t* pSignalSemaphoreValues_ = nullptr ) VULKAN_HPP_NOEXCEPT
+        : waitSemaphoreValueCount( waitSemaphoreValueCount_ )
+        , pWaitSemaphoreValues( pWaitSemaphoreValues_ )
+        , signalSemaphoreValueCount( signalSemaphoreValueCount_ )
+        , pSignalSemaphoreValues( pSignalSemaphoreValues_ )
+      {}
+
+      TimelineSemaphoreSubmitInfoKHR( VkTimelineSemaphoreSubmitInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+      {
+        *reinterpret_cast<VkTimelineSemaphoreSubmitInfoKHR*>(this) = rhs;
+      }
+
+      TimelineSemaphoreSubmitInfoKHR& operator=( VkTimelineSemaphoreSubmitInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+      {
+        *reinterpret_cast<VkTimelineSemaphoreSubmitInfoKHR*>(this) = rhs;
+        return *this;
+      }
+
+    public:
+      vk::StructureType sType = StructureType::eTimelineSemaphoreSubmitInfoKHR;
+      const void* pNext = nullptr;
+      uint32_t waitSemaphoreValueCount;
+      const uint64_t* pWaitSemaphoreValues;
+      uint32_t signalSemaphoreValueCount;
+      const uint64_t* pSignalSemaphoreValues;
+    };
+    static_assert( sizeof( TimelineSemaphoreSubmitInfoKHR ) == sizeof( VkTimelineSemaphoreSubmitInfoKHR ), "layout struct and wrapper have different size!" );
+  }
+
+  struct TimelineSemaphoreSubmitInfoKHR : public layout::TimelineSemaphoreSubmitInfoKHR
+  {
+    VULKAN_HPP_CONSTEXPR TimelineSemaphoreSubmitInfoKHR( uint32_t waitSemaphoreValueCount_ = 0,
+                                                         const uint64_t* pWaitSemaphoreValues_ = nullptr,
+                                                         uint32_t signalSemaphoreValueCount_ = 0,
+                                                         const uint64_t* pSignalSemaphoreValues_ = nullptr ) VULKAN_HPP_NOEXCEPT
+      : layout::TimelineSemaphoreSubmitInfoKHR( waitSemaphoreValueCount_, pWaitSemaphoreValues_, signalSemaphoreValueCount_, pSignalSemaphoreValues_ )
+    {}
+
+    TimelineSemaphoreSubmitInfoKHR( VkTimelineSemaphoreSubmitInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+      : layout::TimelineSemaphoreSubmitInfoKHR( rhs )
+    {}
+
+    TimelineSemaphoreSubmitInfoKHR& operator=( VkTimelineSemaphoreSubmitInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      layout::TimelineSemaphoreSubmitInfoKHR::operator=(rhs);
+      return *this;
+    }
+
+    TimelineSemaphoreSubmitInfoKHR & setPNext( const void* pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    TimelineSemaphoreSubmitInfoKHR & setWaitSemaphoreValueCount( uint32_t waitSemaphoreValueCount_ ) VULKAN_HPP_NOEXCEPT
+    {
+      waitSemaphoreValueCount = waitSemaphoreValueCount_;
+      return *this;
+    }
+
+    TimelineSemaphoreSubmitInfoKHR & setPWaitSemaphoreValues( const uint64_t* pWaitSemaphoreValues_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pWaitSemaphoreValues = pWaitSemaphoreValues_;
+      return *this;
+    }
+
+    TimelineSemaphoreSubmitInfoKHR & setSignalSemaphoreValueCount( uint32_t signalSemaphoreValueCount_ ) VULKAN_HPP_NOEXCEPT
+    {
+      signalSemaphoreValueCount = signalSemaphoreValueCount_;
+      return *this;
+    }
+
+    TimelineSemaphoreSubmitInfoKHR & setPSignalSemaphoreValues( const uint64_t* pSignalSemaphoreValues_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pSignalSemaphoreValues = pSignalSemaphoreValues_;
+      return *this;
+    }
+
+    operator VkTimelineSemaphoreSubmitInfoKHR const&() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkTimelineSemaphoreSubmitInfoKHR*>( this );
+    }
+
+    operator VkTimelineSemaphoreSubmitInfoKHR &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkTimelineSemaphoreSubmitInfoKHR*>( this );
+    }
+
+    bool operator==( TimelineSemaphoreSubmitInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( waitSemaphoreValueCount == rhs.waitSemaphoreValueCount )
+          && ( pWaitSemaphoreValues == rhs.pWaitSemaphoreValues )
+          && ( signalSemaphoreValueCount == rhs.signalSemaphoreValueCount )
+          && ( pSignalSemaphoreValues == rhs.pSignalSemaphoreValues );
+    }
+
+    bool operator!=( TimelineSemaphoreSubmitInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+
+  private:
+    using layout::TimelineSemaphoreSubmitInfoKHR::sType;
+  };
+  static_assert( sizeof( TimelineSemaphoreSubmitInfoKHR ) == sizeof( VkTimelineSemaphoreSubmitInfoKHR ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<TimelineSemaphoreSubmitInfoKHR>::value, "struct wrapper is not a standard layout!" );
 
   namespace layout
   {
@@ -69289,6 +70099,21 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template<typename Dispatch>
+  VULKAN_HPP_INLINE Result Device::getSemaphoreCounterValueKHR( vk::Semaphore semaphore, uint64_t* pValue, Dispatch const &d) const
+  {
+    return static_cast<Result>( d.vkGetSemaphoreCounterValueKHR( m_device, static_cast<VkSemaphore>( semaphore ), pValue ) );
+  }
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE ResultValueType<uint64_t>::type Device::getSemaphoreCounterValueKHR( vk::Semaphore semaphore, Dispatch const &d ) const
+  {
+    uint64_t value;
+    Result result = static_cast<Result>( d.vkGetSemaphoreCounterValueKHR( m_device, static_cast<VkSemaphore>( semaphore ), &value ) );
+    return createResultValue( result, value, VULKAN_HPP_NAMESPACE_STRING"::Device::getSemaphoreCounterValueKHR" );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template<typename Dispatch>
   VULKAN_HPP_INLINE Result Device::getSemaphoreFdKHR( const vk::SemaphoreGetFdInfoKHR* pGetFdInfo, int* pFd, Dispatch const &d) const
   {
     return static_cast<Result>( d.vkGetSemaphoreFdKHR( m_device, reinterpret_cast<const VkSemaphoreGetFdInfoKHR*>( pGetFdInfo ), pFd ) );
@@ -69872,6 +70697,20 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE Result Device::signalSemaphoreKHR( const vk::SemaphoreSignalInfoKHR* pSignalInfo, Dispatch const &d) const
+  {
+    return static_cast<Result>( d.vkSignalSemaphoreKHR( m_device, reinterpret_cast<const VkSemaphoreSignalInfoKHR*>( pSignalInfo ) ) );
+  }
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE ResultValueType<void>::type Device::signalSemaphoreKHR( const SemaphoreSignalInfoKHR & signalInfo, Dispatch const &d ) const
+  {
+    Result result = static_cast<Result>( d.vkSignalSemaphoreKHR( m_device, reinterpret_cast<const VkSemaphoreSignalInfoKHR*>( &signalInfo ) ) );
+    return createResultValue( result, VULKAN_HPP_NAMESPACE_STRING"::Device::signalSemaphoreKHR" );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
 #ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template<typename Dispatch>
   VULKAN_HPP_INLINE void Device::trimCommandPool( vk::CommandPool commandPool, vk::CommandPoolTrimFlags flags, Dispatch const &d) const VULKAN_HPP_NOEXCEPT
@@ -70002,6 +70841,20 @@ namespace VULKAN_HPP_NAMESPACE
   {
     Result result = static_cast<Result>( d.vkWaitForFences( m_device, fences.size() , reinterpret_cast<const VkFence*>( fences.data() ), static_cast<VkBool32>( waitAll ), timeout ) );
     return createResultValue( result, VULKAN_HPP_NAMESPACE_STRING"::Device::waitForFences", { Result::eSuccess, Result::eTimeout } );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE Result Device::waitSemaphoresKHR( const vk::SemaphoreWaitInfoKHR* pWaitInfo, uint64_t timeout, Dispatch const &d) const
+  {
+    return static_cast<Result>( d.vkWaitSemaphoresKHR( m_device, reinterpret_cast<const VkSemaphoreWaitInfoKHR*>( pWaitInfo ), timeout ) );
+  }
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE Result Device::waitSemaphoresKHR( const SemaphoreWaitInfoKHR & waitInfo, uint64_t timeout, Dispatch const &d ) const
+  {
+    Result result = static_cast<Result>( d.vkWaitSemaphoresKHR( m_device, reinterpret_cast<const VkSemaphoreWaitInfoKHR*>( &waitInfo ), timeout ) );
+    return createResultValue( result, VULKAN_HPP_NAMESPACE_STRING"::Device::waitSemaphoresKHR", { Result::eSuccess, Result::eTimeout } );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -72815,6 +73668,8 @@ namespace VULKAN_HPP_NAMESPACE
   template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceScalarBlockLayoutFeaturesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceShaderAtomicInt64FeaturesKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceShaderAtomicInt64FeaturesKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceShaderClockFeaturesKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceShaderClockFeaturesKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceShaderCoreProperties2AMD>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceShaderCorePropertiesAMD>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT>{ enum { value = true }; };
@@ -72844,6 +73699,9 @@ namespace VULKAN_HPP_NAMESPACE
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceTexelBufferAlignmentPropertiesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceTimelineSemaphoreFeaturesKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceTimelineSemaphoreFeaturesKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceTimelineSemaphorePropertiesKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceTransformFeedbackFeaturesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceTransformFeedbackFeaturesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceTransformFeedbackPropertiesEXT>{ enum { value = true }; };
@@ -72892,6 +73750,7 @@ namespace VULKAN_HPP_NAMESPACE
   template <> struct isStructureChainValid<QueueFamilyProperties2, QueueFamilyCheckpointPropertiesNV>{ enum { value = true }; };
   template <> struct isStructureChainValid<RenderPassBeginInfo, RenderPassAttachmentBeginInfoKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<RenderPassCreateInfo, RenderPassFragmentDensityMapCreateInfoEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<RenderPassCreateInfo2KHR, RenderPassFragmentDensityMapCreateInfoEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<RenderPassCreateInfo, RenderPassInputAttachmentAspectCreateInfo>{ enum { value = true }; };
   template <> struct isStructureChainValid<RenderPassCreateInfo, RenderPassMultiviewCreateInfo>{ enum { value = true }; };
   template <> struct isStructureChainValid<RenderPassBeginInfo, RenderPassSampleLocationsBeginInfoEXT>{ enum { value = true }; };
@@ -72900,6 +73759,8 @@ namespace VULKAN_HPP_NAMESPACE
   template <> struct isStructureChainValid<ImageFormatProperties2, SamplerYcbcrConversionImageFormatProperties>{ enum { value = true }; };
   template <> struct isStructureChainValid<SamplerCreateInfo, SamplerYcbcrConversionInfo>{ enum { value = true }; };
   template <> struct isStructureChainValid<ImageViewCreateInfo, SamplerYcbcrConversionInfo>{ enum { value = true }; };
+  template <> struct isStructureChainValid<SemaphoreCreateInfo, SemaphoreTypeCreateInfoKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceExternalSemaphoreInfo, SemaphoreTypeCreateInfoKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<ShaderModuleCreateInfo, ShaderModuleValidationCacheCreateInfoEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<SurfaceCapabilities2KHR, SharedPresentSurfaceCapabilitiesKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<SubpassDescription2KHR, SubpassDescriptionDepthStencilResolveKHR>{ enum { value = true }; };
@@ -72918,6 +73779,8 @@ namespace VULKAN_HPP_NAMESPACE
   template <> struct isStructureChainValid<SwapchainCreateInfoKHR, SwapchainCounterCreateInfoEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<SwapchainCreateInfoKHR, SwapchainDisplayNativeHdrCreateInfoAMD>{ enum { value = true }; };
   template <> struct isStructureChainValid<ImageFormatProperties2, TextureLODGatherFormatPropertiesAMD>{ enum { value = true }; };
+  template <> struct isStructureChainValid<SubmitInfo, TimelineSemaphoreSubmitInfoKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<BindSparseInfo, TimelineSemaphoreSubmitInfoKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<InstanceCreateInfo, ValidationFeaturesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<InstanceCreateInfo, ValidationFlagsEXT>{ enum { value = true }; };
 #ifdef VK_USE_PLATFORM_WIN32_KHR
@@ -73249,6 +74112,7 @@ namespace VULKAN_HPP_NAMESPACE
     PFN_vkGetRayTracingShaderGroupHandlesNV vkGetRayTracingShaderGroupHandlesNV = 0;
     PFN_vkGetRefreshCycleDurationGOOGLE vkGetRefreshCycleDurationGOOGLE = 0;
     PFN_vkGetRenderAreaGranularity vkGetRenderAreaGranularity = 0;
+    PFN_vkGetSemaphoreCounterValueKHR vkGetSemaphoreCounterValueKHR = 0;
     PFN_vkGetSemaphoreFdKHR vkGetSemaphoreFdKHR = 0;
 #ifdef VK_USE_PLATFORM_WIN32_KHR
     PFN_vkGetSemaphoreWin32HandleKHR vkGetSemaphoreWin32HandleKHR = 0;
@@ -73288,6 +74152,7 @@ namespace VULKAN_HPP_NAMESPACE
     PFN_vkSetEvent vkSetEvent = 0;
     PFN_vkSetHdrMetadataEXT vkSetHdrMetadataEXT = 0;
     PFN_vkSetLocalDimmingAMD vkSetLocalDimmingAMD = 0;
+    PFN_vkSignalSemaphoreKHR vkSignalSemaphoreKHR = 0;
     PFN_vkTrimCommandPool vkTrimCommandPool = 0;
     PFN_vkTrimCommandPoolKHR vkTrimCommandPoolKHR = 0;
     PFN_vkUninitializePerformanceApiINTEL vkUninitializePerformanceApiINTEL = 0;
@@ -73297,6 +74162,7 @@ namespace VULKAN_HPP_NAMESPACE
     PFN_vkUpdateDescriptorSetWithTemplateKHR vkUpdateDescriptorSetWithTemplateKHR = 0;
     PFN_vkUpdateDescriptorSets vkUpdateDescriptorSets = 0;
     PFN_vkWaitForFences vkWaitForFences = 0;
+    PFN_vkWaitSemaphoresKHR vkWaitSemaphoresKHR = 0;
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
     PFN_vkCreateAndroidSurfaceKHR vkCreateAndroidSurfaceKHR = 0;
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
@@ -73847,6 +74713,7 @@ namespace VULKAN_HPP_NAMESPACE
       vkGetRayTracingShaderGroupHandlesNV = PFN_vkGetRayTracingShaderGroupHandlesNV( vkGetInstanceProcAddr( instance, "vkGetRayTracingShaderGroupHandlesNV" ) );
       vkGetRefreshCycleDurationGOOGLE = PFN_vkGetRefreshCycleDurationGOOGLE( vkGetInstanceProcAddr( instance, "vkGetRefreshCycleDurationGOOGLE" ) );
       vkGetRenderAreaGranularity = PFN_vkGetRenderAreaGranularity( vkGetInstanceProcAddr( instance, "vkGetRenderAreaGranularity" ) );
+      vkGetSemaphoreCounterValueKHR = PFN_vkGetSemaphoreCounterValueKHR( vkGetInstanceProcAddr( instance, "vkGetSemaphoreCounterValueKHR" ) );
       vkGetSemaphoreFdKHR = PFN_vkGetSemaphoreFdKHR( vkGetInstanceProcAddr( instance, "vkGetSemaphoreFdKHR" ) );
 #ifdef VK_USE_PLATFORM_WIN32_KHR
       vkGetSemaphoreWin32HandleKHR = PFN_vkGetSemaphoreWin32HandleKHR( vkGetInstanceProcAddr( instance, "vkGetSemaphoreWin32HandleKHR" ) );
@@ -73886,6 +74753,7 @@ namespace VULKAN_HPP_NAMESPACE
       vkSetEvent = PFN_vkSetEvent( vkGetInstanceProcAddr( instance, "vkSetEvent" ) );
       vkSetHdrMetadataEXT = PFN_vkSetHdrMetadataEXT( vkGetInstanceProcAddr( instance, "vkSetHdrMetadataEXT" ) );
       vkSetLocalDimmingAMD = PFN_vkSetLocalDimmingAMD( vkGetInstanceProcAddr( instance, "vkSetLocalDimmingAMD" ) );
+      vkSignalSemaphoreKHR = PFN_vkSignalSemaphoreKHR( vkGetInstanceProcAddr( instance, "vkSignalSemaphoreKHR" ) );
       vkTrimCommandPool = PFN_vkTrimCommandPool( vkGetInstanceProcAddr( instance, "vkTrimCommandPool" ) );
       vkTrimCommandPoolKHR = PFN_vkTrimCommandPoolKHR( vkGetInstanceProcAddr( instance, "vkTrimCommandPoolKHR" ) );
       vkUninitializePerformanceApiINTEL = PFN_vkUninitializePerformanceApiINTEL( vkGetInstanceProcAddr( instance, "vkUninitializePerformanceApiINTEL" ) );
@@ -73895,6 +74763,7 @@ namespace VULKAN_HPP_NAMESPACE
       vkUpdateDescriptorSetWithTemplateKHR = PFN_vkUpdateDescriptorSetWithTemplateKHR( vkGetInstanceProcAddr( instance, "vkUpdateDescriptorSetWithTemplateKHR" ) );
       vkUpdateDescriptorSets = PFN_vkUpdateDescriptorSets( vkGetInstanceProcAddr( instance, "vkUpdateDescriptorSets" ) );
       vkWaitForFences = PFN_vkWaitForFences( vkGetInstanceProcAddr( instance, "vkWaitForFences" ) );
+      vkWaitSemaphoresKHR = PFN_vkWaitSemaphoresKHR( vkGetInstanceProcAddr( instance, "vkWaitSemaphoresKHR" ) );
       vkGetQueueCheckpointDataNV = PFN_vkGetQueueCheckpointDataNV( vkGetInstanceProcAddr( instance, "vkGetQueueCheckpointDataNV" ) );
       vkQueueBeginDebugUtilsLabelEXT = PFN_vkQueueBeginDebugUtilsLabelEXT( vkGetInstanceProcAddr( instance, "vkQueueBeginDebugUtilsLabelEXT" ) );
       vkQueueBindSparse = PFN_vkQueueBindSparse( vkGetInstanceProcAddr( instance, "vkQueueBindSparse" ) );
@@ -74151,6 +75020,7 @@ namespace VULKAN_HPP_NAMESPACE
       vkGetRayTracingShaderGroupHandlesNV = PFN_vkGetRayTracingShaderGroupHandlesNV( vkGetDeviceProcAddr( device, "vkGetRayTracingShaderGroupHandlesNV" ) );
       vkGetRefreshCycleDurationGOOGLE = PFN_vkGetRefreshCycleDurationGOOGLE( vkGetDeviceProcAddr( device, "vkGetRefreshCycleDurationGOOGLE" ) );
       vkGetRenderAreaGranularity = PFN_vkGetRenderAreaGranularity( vkGetDeviceProcAddr( device, "vkGetRenderAreaGranularity" ) );
+      vkGetSemaphoreCounterValueKHR = PFN_vkGetSemaphoreCounterValueKHR( vkGetDeviceProcAddr( device, "vkGetSemaphoreCounterValueKHR" ) );
       vkGetSemaphoreFdKHR = PFN_vkGetSemaphoreFdKHR( vkGetDeviceProcAddr( device, "vkGetSemaphoreFdKHR" ) );
 #ifdef VK_USE_PLATFORM_WIN32_KHR
       vkGetSemaphoreWin32HandleKHR = PFN_vkGetSemaphoreWin32HandleKHR( vkGetDeviceProcAddr( device, "vkGetSemaphoreWin32HandleKHR" ) );
@@ -74190,6 +75060,7 @@ namespace VULKAN_HPP_NAMESPACE
       vkSetEvent = PFN_vkSetEvent( vkGetDeviceProcAddr( device, "vkSetEvent" ) );
       vkSetHdrMetadataEXT = PFN_vkSetHdrMetadataEXT( vkGetDeviceProcAddr( device, "vkSetHdrMetadataEXT" ) );
       vkSetLocalDimmingAMD = PFN_vkSetLocalDimmingAMD( vkGetDeviceProcAddr( device, "vkSetLocalDimmingAMD" ) );
+      vkSignalSemaphoreKHR = PFN_vkSignalSemaphoreKHR( vkGetDeviceProcAddr( device, "vkSignalSemaphoreKHR" ) );
       vkTrimCommandPool = PFN_vkTrimCommandPool( vkGetDeviceProcAddr( device, "vkTrimCommandPool" ) );
       vkTrimCommandPoolKHR = PFN_vkTrimCommandPoolKHR( vkGetDeviceProcAddr( device, "vkTrimCommandPoolKHR" ) );
       vkUninitializePerformanceApiINTEL = PFN_vkUninitializePerformanceApiINTEL( vkGetDeviceProcAddr( device, "vkUninitializePerformanceApiINTEL" ) );
@@ -74199,6 +75070,7 @@ namespace VULKAN_HPP_NAMESPACE
       vkUpdateDescriptorSetWithTemplateKHR = PFN_vkUpdateDescriptorSetWithTemplateKHR( vkGetDeviceProcAddr( device, "vkUpdateDescriptorSetWithTemplateKHR" ) );
       vkUpdateDescriptorSets = PFN_vkUpdateDescriptorSets( vkGetDeviceProcAddr( device, "vkUpdateDescriptorSets" ) );
       vkWaitForFences = PFN_vkWaitForFences( vkGetDeviceProcAddr( device, "vkWaitForFences" ) );
+      vkWaitSemaphoresKHR = PFN_vkWaitSemaphoresKHR( vkGetDeviceProcAddr( device, "vkWaitSemaphoresKHR" ) );
       vkGetQueueCheckpointDataNV = PFN_vkGetQueueCheckpointDataNV( vkGetDeviceProcAddr( device, "vkGetQueueCheckpointDataNV" ) );
       vkQueueBeginDebugUtilsLabelEXT = PFN_vkQueueBeginDebugUtilsLabelEXT( vkGetDeviceProcAddr( device, "vkQueueBeginDebugUtilsLabelEXT" ) );
       vkQueueBindSparse = PFN_vkQueueBindSparse( vkGetDeviceProcAddr( device, "vkQueueBindSparse" ) );

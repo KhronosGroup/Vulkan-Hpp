@@ -12598,7 +12598,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct ResultValue
   {
 #ifdef VULKAN_HPP_HAS_NOEXCEPT
-    ResultValue( Result r, T & v ) VULKAN_HPP_NOEXCEPT(VULKAN_HPP_NOEXCEPT(value(v)))
+    ResultValue( Result r, T & v ) VULKAN_HPP_NOEXCEPT(VULKAN_HPP_NOEXCEPT(T(v)))
 #else
     ResultValue( Result r, T & v )
 #endif
@@ -12607,7 +12607,7 @@ namespace VULKAN_HPP_NAMESPACE
     {}
 
 #ifdef VULKAN_HPP_HAS_NOEXCEPT
-    ResultValue( Result r, T && v ) VULKAN_HPP_NOEXCEPT(VULKAN_HPP_NOEXCEPT(value(std::move(v))))
+    ResultValue( Result r, T && v ) VULKAN_HPP_NOEXCEPT(VULKAN_HPP_NOEXCEPT(T(std::move(v))))
 #else
     ResultValue( Result r, T && v )
 #endif
@@ -20944,7 +20944,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return ( flags == rhs.flags )
           && ( format == rhs.format )
-          && ( samples == rhs.samples )
+          && vk::operator==( samples, samples )
           && ( loadOp == rhs.loadOp )
           && ( storeOp == rhs.storeOp )
           && ( stencilLoadOp == rhs.stencilLoadOp )
@@ -21124,7 +21124,7 @@ namespace VULKAN_HPP_NAMESPACE
           && ( pNext == rhs.pNext )
           && ( flags == rhs.flags )
           && ( format == rhs.format )
-          && ( samples == rhs.samples )
+          && vk::operator==( samples, samples )
           && ( loadOp == rhs.loadOp )
           && ( storeOp == rhs.storeOp )
           && ( stencilLoadOp == rhs.stencilLoadOp )
@@ -21527,7 +21527,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
-          && ( sampleLocationsPerPixel == rhs.sampleLocationsPerPixel )
+          && vk::operator==( sampleLocationsPerPixel, sampleLocationsPerPixel )
           && ( sampleLocationGridSize == rhs.sampleLocationGridSize )
           && ( sampleLocationsCount == rhs.sampleLocationsCount )
           && ( pSampleLocations == rhs.pSampleLocations );
@@ -22588,7 +22588,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
-          && ( planeAspect == rhs.planeAspect );
+          && vk::operator==( planeAspect, planeAspect );
     }
 
     bool operator!=( BindImagePlaneMemoryInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
@@ -24459,7 +24459,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
-          && ( stage == rhs.stage )
+          && vk::operator==( stage, stage )
           && ( pCheckpointMarker == rhs.pCheckpointMarker );
     }
 
@@ -26034,7 +26034,7 @@ namespace VULKAN_HPP_NAMESPACE
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( flags == rhs.flags )
-          && ( stage == rhs.stage )
+          && vk::operator==( stage, stage )
           && ( module == rhs.module )
           && ( pName == rhs.pName )
           && ( pSpecializationInfo == rhs.pSpecializationInfo );
@@ -31030,7 +31030,7 @@ namespace VULKAN_HPP_NAMESPACE
           && ( pNext == rhs.pNext )
           && ( swapchainCount == rhs.swapchainCount )
           && ( pDeviceMasks == rhs.pDeviceMasks )
-          && ( mode == rhs.mode );
+          && vk::operator==( mode, mode );
     }
 
     bool operator!=( DeviceGroupPresentInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
@@ -32938,9 +32938,9 @@ namespace VULKAN_HPP_NAMESPACE
           && ( displayMode == rhs.displayMode )
           && ( planeIndex == rhs.planeIndex )
           && ( planeStackIndex == rhs.planeStackIndex )
-          && ( transform == rhs.transform )
+          && vk::operator==( transform, transform )
           && ( globalAlpha == rhs.globalAlpha )
-          && ( alphaMode == rhs.alphaMode )
+          && vk::operator==( alphaMode, alphaMode )
           && ( imageExtent == rhs.imageExtent );
     }
 
@@ -35130,7 +35130,7 @@ namespace VULKAN_HPP_NAMESPACE
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( fence == rhs.fence )
-          && ( handleType == rhs.handleType );
+          && vk::operator==( handleType, handleType );
     }
 
     bool operator!=( FenceGetFdInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
@@ -35227,7 +35227,7 @@ namespace VULKAN_HPP_NAMESPACE
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( fence == rhs.fence )
-          && ( handleType == rhs.handleType );
+          && vk::operator==( handleType, handleType );
     }
 
     bool operator!=( FenceGetWin32HandleInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
@@ -35888,7 +35888,7 @@ namespace VULKAN_HPP_NAMESPACE
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( coverageReductionMode == rhs.coverageReductionMode )
-          && ( rasterizationSamples == rhs.rasterizationSamples )
+          && vk::operator==( rasterizationSamples, rasterizationSamples )
           && ( depthStencilSamples == rhs.depthStencilSamples )
           && ( colorSamples == rhs.colorSamples );
     }
@@ -36933,7 +36933,7 @@ namespace VULKAN_HPP_NAMESPACE
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( flags == rhs.flags )
-          && ( rasterizationSamples == rhs.rasterizationSamples )
+          && vk::operator==( rasterizationSamples, rasterizationSamples )
           && ( sampleShadingEnable == rhs.sampleShadingEnable )
           && ( minSampleShading == rhs.minSampleShading )
           && ( pSampleMask == rhs.pSampleMask )
@@ -38639,7 +38639,7 @@ namespace VULKAN_HPP_NAMESPACE
           && ( extent == rhs.extent )
           && ( mipLevels == rhs.mipLevels )
           && ( arrayLayers == rhs.arrayLayers )
-          && ( samples == rhs.samples )
+          && vk::operator==( samples, samples )
           && ( tiling == rhs.tiling )
           && ( usage == rhs.usage )
           && ( sharingMode == rhs.sharingMode )
@@ -39649,7 +39649,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
-          && ( planeAspect == rhs.planeAspect );
+          && vk::operator==( planeAspect, planeAspect );
     }
 
     bool operator!=( ImagePlaneMemoryRequirementsInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
@@ -40606,7 +40606,7 @@ namespace VULKAN_HPP_NAMESPACE
           && ( pNext == rhs.pNext )
           && ( fence == rhs.fence )
           && ( flags == rhs.flags )
-          && ( handleType == rhs.handleType )
+          && vk::operator==( handleType, handleType )
           && ( fd == rhs.fd );
     }
 
@@ -40735,7 +40735,7 @@ namespace VULKAN_HPP_NAMESPACE
           && ( pNext == rhs.pNext )
           && ( fence == rhs.fence )
           && ( flags == rhs.flags )
-          && ( handleType == rhs.handleType )
+          && vk::operator==( handleType, handleType )
           && ( handle == rhs.handle )
           && ( name == rhs.name );
     }
@@ -40832,7 +40832,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
-          && ( handleType == rhs.handleType )
+          && vk::operator==( handleType, handleType )
           && ( fd == rhs.fd );
     }
 
@@ -40927,7 +40927,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
-          && ( handleType == rhs.handleType )
+          && vk::operator==( handleType, handleType )
           && ( pHostPointer == rhs.pHostPointer );
     }
 
@@ -41034,7 +41034,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
-          && ( handleType == rhs.handleType )
+          && vk::operator==( handleType, handleType )
           && ( handle == rhs.handle )
           && ( name == rhs.name );
     }
@@ -41251,7 +41251,7 @@ namespace VULKAN_HPP_NAMESPACE
           && ( pNext == rhs.pNext )
           && ( semaphore == rhs.semaphore )
           && ( flags == rhs.flags )
-          && ( handleType == rhs.handleType )
+          && vk::operator==( handleType, handleType )
           && ( fd == rhs.fd );
     }
 
@@ -41380,7 +41380,7 @@ namespace VULKAN_HPP_NAMESPACE
           && ( pNext == rhs.pNext )
           && ( semaphore == rhs.semaphore )
           && ( flags == rhs.flags )
-          && ( handleType == rhs.handleType )
+          && vk::operator==( handleType, handleType )
           && ( handle == rhs.handle )
           && ( name == rhs.name );
     }
@@ -42829,7 +42829,7 @@ namespace VULKAN_HPP_NAMESPACE
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( memory == rhs.memory )
-          && ( handleType == rhs.handleType );
+          && vk::operator==( handleType, handleType );
     }
 
     bool operator!=( MemoryGetFdInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
@@ -42926,7 +42926,7 @@ namespace VULKAN_HPP_NAMESPACE
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( memory == rhs.memory )
-          && ( handleType == rhs.handleType );
+          && vk::operator==( handleType, handleType );
     }
 
     bool operator!=( MemoryGetWin32HandleInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
@@ -46973,7 +46973,7 @@ namespace VULKAN_HPP_NAMESPACE
           && ( pNext == rhs.pNext )
           && ( flags == rhs.flags )
           && ( usage == rhs.usage )
-          && ( handleType == rhs.handleType );
+          && vk::operator==( handleType, handleType );
     }
 
     bool operator!=( PhysicalDeviceExternalBufferInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
@@ -47057,7 +47057,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
-          && ( handleType == rhs.handleType );
+          && vk::operator==( handleType, handleType );
     }
 
     bool operator!=( PhysicalDeviceExternalFenceInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
@@ -47141,7 +47141,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
-          && ( handleType == rhs.handleType );
+          && vk::operator==( handleType, handleType );
     }
 
     bool operator!=( PhysicalDeviceExternalImageFormatInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
@@ -47296,7 +47296,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
-          && ( handleType == rhs.handleType );
+          && vk::operator==( handleType, handleType );
     }
 
     bool operator!=( PhysicalDeviceExternalSemaphoreInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
@@ -52437,7 +52437,7 @@ namespace VULKAN_HPP_NAMESPACE
           && ( pNext == rhs.pNext )
           && ( format == rhs.format )
           && ( type == rhs.type )
-          && ( samples == rhs.samples )
+          && vk::operator==( samples, samples )
           && ( usage == rhs.usage )
           && ( tiling == rhs.tiling );
     }
@@ -61052,7 +61052,7 @@ namespace VULKAN_HPP_NAMESPACE
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( semaphore == rhs.semaphore )
-          && ( handleType == rhs.handleType );
+          && vk::operator==( handleType, handleType );
     }
 
     bool operator!=( SemaphoreGetFdInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
@@ -61149,7 +61149,7 @@ namespace VULKAN_HPP_NAMESPACE
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( semaphore == rhs.semaphore )
-          && ( handleType == rhs.handleType );
+          && vk::operator==( handleType, handleType );
     }
 
     bool operator!=( SemaphoreGetWin32HandleInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
@@ -62496,8 +62496,8 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
-          && ( depthResolveMode == rhs.depthResolveMode )
-          && ( stencilResolveMode == rhs.stencilResolveMode )
+          && vk::operator==( depthResolveMode, depthResolveMode )
+          && vk::operator==( stencilResolveMode, stencilResolveMode )
           && ( pDepthStencilResolveAttachment == rhs.pDepthStencilResolveAttachment );
     }
 
@@ -62661,7 +62661,7 @@ namespace VULKAN_HPP_NAMESPACE
           && ( maxImageExtent == rhs.maxImageExtent )
           && ( maxImageArrayLayers == rhs.maxImageArrayLayers )
           && ( supportedTransforms == rhs.supportedTransforms )
-          && ( currentTransform == rhs.currentTransform )
+          && vk::operator==( currentTransform, currentTransform )
           && ( supportedCompositeAlpha == rhs.supportedCompositeAlpha )
           && ( supportedUsageFlags == rhs.supportedUsageFlags )
           && ( supportedSurfaceCounters == rhs.supportedSurfaceCounters );
@@ -62713,7 +62713,7 @@ namespace VULKAN_HPP_NAMESPACE
           && ( maxImageExtent == rhs.maxImageExtent )
           && ( maxImageArrayLayers == rhs.maxImageArrayLayers )
           && ( supportedTransforms == rhs.supportedTransforms )
-          && ( currentTransform == rhs.currentTransform )
+          && vk::operator==( currentTransform, currentTransform )
           && ( supportedCompositeAlpha == rhs.supportedCompositeAlpha )
           && ( supportedUsageFlags == rhs.supportedUsageFlags );
     }
@@ -63584,8 +63584,8 @@ namespace VULKAN_HPP_NAMESPACE
           && ( imageSharingMode == rhs.imageSharingMode )
           && ( queueFamilyIndexCount == rhs.queueFamilyIndexCount )
           && ( pQueueFamilyIndices == rhs.pQueueFamilyIndices )
-          && ( preTransform == rhs.preTransform )
-          && ( compositeAlpha == rhs.compositeAlpha )
+          && vk::operator==( preTransform, preTransform )
+          && vk::operator==( compositeAlpha, compositeAlpha )
           && ( presentMode == rhs.presentMode )
           && ( clipped == rhs.clipped )
           && ( oldSwapchain == rhs.oldSwapchain );
@@ -73801,7 +73801,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
   public:
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
-    DynamicLoader() : m_success( false ) VULKAN_HPP_NOEXCEPT
+    DynamicLoader() VULKAN_HPP_NOEXCEPT : m_success( false )
 #else
     DynamicLoader() : m_success( false )
 #endif

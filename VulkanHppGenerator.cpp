@@ -2480,7 +2480,7 @@ void VulkanHppGenerator::appendStructCompareOperators(std::string & str, std::pa
     if (member.arraySize.empty())
     {
       if (m_bitmaskBits.find(member.type.type) != m_bitmaskBits.end()) {
-        compareMembers += "vk::operator==( " + member.name + ", " + member.name + " )";
+        compareMembers += "vk::operator==( " + member.name + ", rhs." + member.name + " )";
       }
       else
       {

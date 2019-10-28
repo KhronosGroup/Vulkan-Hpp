@@ -12,15 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// VulkanHpp Samples : InstanceExtensionProperties
-//                     Get global extension properties to know what extension are available to enable at CreateInstance time.
+// VulkanHpp Samples : InstanceVersion
+//                     Get the version of instance-level functionality supported by the implementation.
 
 #include "vulkan/vulkan.hpp"
 #include <iostream>
 #include <sstream>
 
-static char const* AppName = "InstanceExtensionProperties";
+static char const* AppName = "InstanceVersion";
 static char const* EngineName = "Vulkan.hpp";
+
+std::string decodeAPIVersion(uint32_t apiVersion)
+{
+  return std::to_string(VK_VERSION_MAJOR(apiVersion)) + "." + std::to_string(VK_VERSION_MINOR(apiVersion)) + "." + std::to_string(VK_VERSION_PATCH(apiVersion));
+}
 
 int main(int /*argc*/, char ** /*argv*/)
 {
@@ -28,19 +33,8 @@ int main(int /*argc*/, char ** /*argv*/)
   {
     /* VULKAN_KEY_START */
 
-    std::vector<vk::ExtensionProperties> extensionProperties = vk::enumerateInstanceExtensionProperties();
-
-    // sort the extensions alphabetically
-
-    std::sort(extensionProperties.begin(), extensionProperties.end(), [](vk::ExtensionProperties const& a, vk::ExtensionProperties const& b) { return strcmp(a.extensionName, b.extensionName) < 0; });
-
-    std::cout << "Instance Extensions:" << std::endl;
-    for (auto const& ep : extensionProperties)
-    {
-      std::cout << ep.extensionName << ":" << std::endl;
-      std::cout << "\tVersion: " << ep.specVersion << std::endl;
-      std::cout << std::endl;
-    }
+    uint32_t apiVersion = vk::enumerateInstanceVersion();
+    std::cout << "APIVersion = " << decodeAPIVersion(apiVersion);
 
     /* VULKAN_KEY_END */
   }

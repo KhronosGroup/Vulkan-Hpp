@@ -974,11 +974,13 @@ int main(int /*argc*/, char** /*argv*/)
       uniformBufferData.upload(device, uniformBufferObject);
 
       // frame begin
-      while (vk::Result::eTimeout == device->waitForFences(*perFrameData[frameIndex].fence, VK_TRUE, vk::su::FenceTimeout))
-        ;
       vk::ResultValue<uint32_t> rv = device->acquireNextImageKHR(*swapChainData.swapChain, UINT64_MAX, *perFrameData[frameIndex].presentCompleteSemaphore, nullptr);
       assert(rv.result == vk::Result::eSuccess);
       uint32_t backBufferIndex = rv.value;
+
+      while (vk::Result::eTimeout == device->waitForFences(*perFrameData[frameIndex].fence, VK_TRUE, vk::su::FenceTimeout))
+        ;
+      device->resetFences(*perFrameData[frameIndex].fence);
 
       commandBuffer->begin(vk::CommandBufferBeginInfo(vk::CommandBufferUsageFlagBits::eOneTimeSubmit));
 
@@ -1027,12 +1029,9 @@ int main(int /*argc*/, char** /*argv*/)
 
       // frame end
       commandBuffer->end();
-      device->resetFences(*perFrameData[frameIndex].fence);
       const vk::PipelineStageFlags waitDstStageMask = vk::PipelineStageFlagBits::eColorAttachmentOutput;
       graphicsQueue.submit(vk::SubmitInfo(1, &(*perFrameData[frameIndex].presentCompleteSemaphore), &waitDstStageMask, 1, &(*commandBuffer), 1,
                                           &(*perFrameData[frameIndex].renderCompleteSemaphore)), *perFrameData[frameIndex].fence);
-      while (vk::Result::eTimeout == device->waitForFences(*perFrameData[frameIndex].fence, VK_TRUE, vk::su::FenceTimeout))
-        ;
       presentQueue.presentKHR(vk::PresentInfoKHR(1, &(*perFrameData[frameIndex].renderCompleteSemaphore), 1, &(*swapChainData.swapChain), &backBufferIndex));
       frameIndex = (frameIndex + 1) % IMGUI_VK_QUEUED_FRAMES;
 

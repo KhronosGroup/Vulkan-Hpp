@@ -47,6 +47,11 @@ namespace vk
       return device->allocateMemoryUnique(vk::MemoryAllocateInfo(memoryRequirements.size, memoryTypeIndex));
     }
 
+    bool contains(std::vector<vk::ExtensionProperties> const& extensionProperties, std::string const& extensionName)
+    {
+      return std::find_if(extensionProperties.begin(), extensionProperties.end(), [&extensionName](vk::ExtensionProperties const& ep) { return extensionName == ep.extensionName; }) != extensionProperties.end();
+    }
+
     vk::UniqueCommandPool createCommandPool(vk::UniqueDevice &device, uint32_t queueFamilyIndex)
     {
       vk::CommandPoolCreateInfo commandPoolCreateInfo(vk::CommandPoolCreateFlagBits::eResetCommandBuffer, queueFamilyIndex);
@@ -195,6 +200,10 @@ namespace vk
       {
         enabledLayers.push_back("VK_LAYER_KHRONOS_validation");
       }
+      if (std::find(layers.begin(), layers.end(), "VK_LAYER_LUNARG_assistant_layer") == layers.end())
+      {
+        enabledLayers.push_back("VK_LAYER_LUNARG_assistant_layer");
+      }
 #endif
 
       std::vector<char const*> enabledExtensions;
@@ -212,8 +221,8 @@ namespace vk
 
       // create a UniqueInstance
       vk::ApplicationInfo applicationInfo(appName.c_str(), 1, engineName.c_str(), 1, apiVersion);
-      vk::UniqueInstance instance = vk::createInstanceUnique(vk::InstanceCreateInfo({}, &applicationInfo, checked_cast<uint32_t>(enabledLayers.size()), enabledLayers.data(),
-                                                                                    checked_cast<uint32_t>(enabledExtensions.size()), enabledExtensions.data()));
+      vk::InstanceCreateInfo instanceCreateInfo({}, &applicationInfo, checked_cast<uint32_t>(enabledLayers.size()), enabledLayers.data(), checked_cast<uint32_t>(enabledExtensions.size()), enabledExtensions.data());
+      vk::UniqueInstance instance = vk::createInstanceUnique(instanceCreateInfo);
 
 #if (VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1)
       // initialize function pointers for instance
@@ -807,7 +816,7 @@ namespace vk
                                                                          16.0f, false, vk::CompareOp::eNever, 0.0f, 0.0f, vk::BorderColor::eFloatOpaqueBlack));
     }
 
-    UUID::UUID(uint8_t data[VK_UUID_SIZE])
+    UUID::UUID(uint8_t const data[VK_UUID_SIZE])
     {
       memcpy(m_data, data, VK_UUID_SIZE * sizeof(uint8_t));
     }

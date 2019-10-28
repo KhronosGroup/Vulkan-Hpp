@@ -103,7 +103,9 @@ namespace vk
       SurfaceData(vk::UniqueInstance &instance, std::string const& className, std::string const& windowName, vk::Extent2D const& extent);
 
       vk::Extent2D          extent;
+#if defined(VK_USE_PLATFORM_WIN32_KHR)
       HWND                  window;
+#endif
       vk::UniqueSurfaceKHR  surface;
     };
 
@@ -196,7 +198,7 @@ namespace vk
     struct UUID
     {
       public:
-      UUID(uint8_t data[VK_UUID_SIZE]);
+      UUID(uint8_t const data[VK_UUID_SIZE]);
 
       uint8_t m_data[VK_UUID_SIZE];
     };
@@ -263,6 +265,7 @@ namespace vk
 
     vk::UniqueDeviceMemory allocateMemory(vk::UniqueDevice const& device, vk::PhysicalDeviceMemoryProperties const& memoryProperties, vk::MemoryRequirements const& memoryRequirements,
                                           vk::MemoryPropertyFlags memoryPropertyFlags);
+    bool contains(std::vector<vk::ExtensionProperties> const& extensionProperties, std::string const& extensionName);
     vk::UniqueCommandPool createCommandPool(vk::UniqueDevice &device, uint32_t queueFamilyIndex);
     vk::UniqueDebugUtilsMessengerEXT createDebugUtilsMessenger(vk::UniqueInstance &instance);
     vk::UniqueDescriptorPool createDescriptorPool(vk::UniqueDevice &device, std::vector<vk::DescriptorPoolSize> const& poolSizes);
@@ -299,7 +302,7 @@ namespace vk
 #if defined(VK_USE_PLATFORM_WIN32_KHR)
     HWND initializeWindow(std::string const& className, std::string const& windowName, LONG width, LONG height);
 #else
-#pragma error "unhandled platform"
+# error "unhandled platform"
 #endif
   }
 }

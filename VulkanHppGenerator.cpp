@@ -4383,7 +4383,7 @@ int main( int argc, char **argv )
       , m_ptr(nullptr)
     {}
 
-    ArrayProxy(T & ptr) VULKAN_HPP_NOEXCEPT
+    ArrayProxy(typename std::remove_reference<T>::type & ptr) VULKAN_HPP_NOEXCEPT
       : m_count(1)
       , m_ptr(&ptr)
     {}
@@ -4417,7 +4417,7 @@ int main( int argc, char **argv )
       , m_ptr(data.data())
     {}
 
-    ArrayProxy(std::initializer_list<T> const& data) VULKAN_HPP_NOEXCEPT
+    ArrayProxy(std::initializer_list<typename std::remove_reference<T>::type> const& data) VULKAN_HPP_NOEXCEPT
       : m_count(static_cast<uint32_t>(data.end() - data.begin()))
       , m_ptr(data.begin())
     {}

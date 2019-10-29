@@ -36,13 +36,21 @@ else(MSVC)
   add_compile_options(-Wall)
 endif(MSVC)
 
-file(TO_NATIVE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/Vulkan-Headers/registry/vk.xml vk_spec)
+if (NOT DEFINED VULKAN_HPP_VULKAN_HEADERS_SRC_DIR)
+  set(VULKAN_HPP_VULKAN_HEADERS_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Vulkan-Headers")
+endif()
+file(TO_NATIVE_PATH ${VULKAN_HPP_VULKAN_HEADERS_SRC_DIR}/registry/vk.xml vk_spec)
 string(REPLACE "\\" "\\\\" vk_spec ${vk_spec})
 add_definitions(-DVK_SPEC="${vk_spec}")
 
-file(TO_NATIVE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/vulkan/vulkan.hpp vulkan_hpp)
+if (NOT DEFINED VULKAN_HPP_PATH)
+  set(VULKAN_HPP_PATH "${CMAKE_CURRENT_SOURCE_DIR}/vulkan")
+endif()
+file(TO_NATIVE_PATH ${VULKAN_HPP_PATH}/vulkan.hpp vulkan_hpp)
 string(REPLACE "\\" "\\\\" vulkan_hpp ${vulkan_hpp})
 add_definitions(-DVULKAN_HPP_FILE="${vulkan_hpp}")
+include_directories(${VULKAN_HPP_PATH})
+
 
 set(HEADERS
   VulkanHppGenerator.hpp

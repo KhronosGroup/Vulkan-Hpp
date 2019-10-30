@@ -1403,6 +1403,24 @@ void VulkanHppGenerator::appendForwardDeclarations(std::string & str) const
   }
 }
 
+bool needsMultiVectorSizeCheck(size_t returnParamIndex, std::map<size_t, size_t> const& vectorParamIndices)
+{
+  for (std::map<size_t, size_t>::const_iterator it0 = vectorParamIndices.begin(); it0 != vectorParamIndices.end(); ++it0)
+  {
+    if (it0->first != returnParamIndex)
+    {
+      for (std::map<size_t, size_t>::const_iterator it1 = std::next(it0); it1 != vectorParamIndices.end(); ++it1)
+      {
+        if ((it1->first != returnParamIndex) && (it0->second == it1->second))
+        {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}
+
 void VulkanHppGenerator::appendFunction(std::string & str, std::string const& indentation, std::string const& name, std::pair<std::string, CommandData> const& commandData, size_t returnParamIndex, size_t templateParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool twoStep, std::string const& enhancedReturnType, bool definition, bool enhanced, bool singular, bool unique, bool isStructureChain, bool withAllocator) const
 {
   appendFunctionHeaderTemplate(str, indentation, returnParamIndex, templateParamIndex, enhancedReturnType, enhanced, singular, unique, !definition, isStructureChain);
@@ -1428,9 +1446,9 @@ void VulkanHppGenerator::appendFunction(std::string & str, std::string const& in
   appendFunctionHeaderArguments(str, commandData, returnParamIndex, templateParamIndex, vectorParamIndices, enhanced, singular, !definition, withAllocator);
 
   // Any function that originally does not return VkResult can be marked noexcept,
-  // if it is enhanced it musnt't include anything with an Allocator
+  // if it is enhanced it musnt't include anything with an Allocator or needs size checks on multiple vectors
   bool hasAllocator = enhancedReturnType.find("Allocator") != std::string::npos;
-  if (commandData.second.returnType != "VkResult" && (!enhanced || !hasAllocator))
+  if (commandData.second.returnType != "VkResult" && !(enhanced && (hasAllocator || needsMultiVectorSizeCheck(returnParamIndex, vectorParamIndices))))
   {
     str += " VULKAN_HPP_NOEXCEPT";
   }

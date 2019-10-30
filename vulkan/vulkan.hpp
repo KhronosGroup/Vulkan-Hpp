@@ -14787,7 +14787,7 @@ namespace VULKAN_HPP_NAMESPACE
     void beginTransformFeedbackEXT( uint32_t firstCounterBuffer, uint32_t counterBufferCount, const vk::Buffer* pCounterBuffers, const vk::DeviceSize* pCounterBufferOffsets, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    void beginTransformFeedbackEXT( uint32_t firstCounterBuffer, ArrayProxy<const vk::Buffer> counterBuffers, ArrayProxy<const vk::DeviceSize> counterBufferOffsets, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const VULKAN_HPP_NOEXCEPT;
+    void beginTransformFeedbackEXT( uint32_t firstCounterBuffer, ArrayProxy<const vk::Buffer> counterBuffers, ArrayProxy<const vk::DeviceSize> counterBufferOffsets, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
@@ -14810,14 +14810,14 @@ namespace VULKAN_HPP_NAMESPACE
     void bindTransformFeedbackBuffersEXT( uint32_t firstBinding, uint32_t bindingCount, const vk::Buffer* pBuffers, const vk::DeviceSize* pOffsets, const vk::DeviceSize* pSizes, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    void bindTransformFeedbackBuffersEXT( uint32_t firstBinding, ArrayProxy<const vk::Buffer> buffers, ArrayProxy<const vk::DeviceSize> offsets, ArrayProxy<const vk::DeviceSize> sizes, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const VULKAN_HPP_NOEXCEPT;
+    void bindTransformFeedbackBuffersEXT( uint32_t firstBinding, ArrayProxy<const vk::Buffer> buffers, ArrayProxy<const vk::DeviceSize> offsets, ArrayProxy<const vk::DeviceSize> sizes, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     void bindVertexBuffers( uint32_t firstBinding, uint32_t bindingCount, const vk::Buffer* pBuffers, const vk::DeviceSize* pOffsets, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    void bindVertexBuffers( uint32_t firstBinding, ArrayProxy<const vk::Buffer> buffers, ArrayProxy<const vk::DeviceSize> offsets, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const VULKAN_HPP_NOEXCEPT;
+    void bindVertexBuffers( uint32_t firstBinding, ArrayProxy<const vk::Buffer> buffers, ArrayProxy<const vk::DeviceSize> offsets, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
@@ -14980,7 +14980,7 @@ namespace VULKAN_HPP_NAMESPACE
     void endTransformFeedbackEXT( uint32_t firstCounterBuffer, uint32_t counterBufferCount, const vk::Buffer* pCounterBuffers, const vk::DeviceSize* pCounterBufferOffsets, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    void endTransformFeedbackEXT( uint32_t firstCounterBuffer, ArrayProxy<const vk::Buffer> counterBuffers, ArrayProxy<const vk::DeviceSize> counterBufferOffsets, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const VULKAN_HPP_NOEXCEPT;
+    void endTransformFeedbackEXT( uint32_t firstCounterBuffer, ArrayProxy<const vk::Buffer> counterBuffers, ArrayProxy<const vk::DeviceSize> counterBufferOffsets, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
@@ -18104,7 +18104,7 @@ namespace VULKAN_HPP_NAMESPACE
     void setHdrMetadataEXT( uint32_t swapchainCount, const vk::SwapchainKHR* pSwapchains, const vk::HdrMetadataEXT* pMetadata, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    void setHdrMetadataEXT( ArrayProxy<const vk::SwapchainKHR> swapchains, ArrayProxy<const vk::HdrMetadataEXT> metadata, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const VULKAN_HPP_NOEXCEPT;
+    void setHdrMetadataEXT( ArrayProxy<const vk::SwapchainKHR> swapchains, ArrayProxy<const vk::HdrMetadataEXT> metadata, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
@@ -19119,7 +19119,7 @@ namespace VULKAN_HPP_NAMESPACE
     void debugReportMessageEXT( vk::DebugReportFlagsEXT flags, vk::DebugReportObjectTypeEXT objectType, uint64_t object, size_t location, int32_t messageCode, const char* pLayerPrefix, const char* pMessage, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    void debugReportMessageEXT( vk::DebugReportFlagsEXT flags, vk::DebugReportObjectTypeEXT objectType, uint64_t object, size_t location, int32_t messageCode, const std::string & layerPrefix, const std::string & message, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const VULKAN_HPP_NOEXCEPT;
+    void debugReportMessageEXT( vk::DebugReportFlagsEXT flags, vk::DebugReportObjectTypeEXT objectType, uint64_t object, size_t location, int32_t messageCode, const std::string & layerPrefix, const std::string & message, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
@@ -65629,7 +65629,7 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE void CommandBuffer::beginTransformFeedbackEXT( uint32_t firstCounterBuffer, ArrayProxy<const vk::Buffer> counterBuffers, ArrayProxy<const vk::DeviceSize> counterBufferOffsets, Dispatch const &d ) const VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_INLINE void CommandBuffer::beginTransformFeedbackEXT( uint32_t firstCounterBuffer, ArrayProxy<const vk::Buffer> counterBuffers, ArrayProxy<const vk::DeviceSize> counterBufferOffsets, Dispatch const &d ) const
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
     VULKAN_HPP_ASSERT( counterBuffers.size() == counterBufferOffsets.size() );
@@ -65705,7 +65705,7 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE void CommandBuffer::bindTransformFeedbackBuffersEXT( uint32_t firstBinding, ArrayProxy<const vk::Buffer> buffers, ArrayProxy<const vk::DeviceSize> offsets, ArrayProxy<const vk::DeviceSize> sizes, Dispatch const &d ) const VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_INLINE void CommandBuffer::bindTransformFeedbackBuffersEXT( uint32_t firstBinding, ArrayProxy<const vk::Buffer> buffers, ArrayProxy<const vk::DeviceSize> offsets, ArrayProxy<const vk::DeviceSize> sizes, Dispatch const &d ) const
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
     VULKAN_HPP_ASSERT( buffers.size() == offsets.size() );
@@ -65742,7 +65742,7 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE void CommandBuffer::bindVertexBuffers( uint32_t firstBinding, ArrayProxy<const vk::Buffer> buffers, ArrayProxy<const vk::DeviceSize> offsets, Dispatch const &d ) const VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_INLINE void CommandBuffer::bindVertexBuffers( uint32_t firstBinding, ArrayProxy<const vk::Buffer> buffers, ArrayProxy<const vk::DeviceSize> offsets, Dispatch const &d ) const
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
     VULKAN_HPP_ASSERT( buffers.size() == offsets.size() );
@@ -66255,7 +66255,7 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE void CommandBuffer::endTransformFeedbackEXT( uint32_t firstCounterBuffer, ArrayProxy<const vk::Buffer> counterBuffers, ArrayProxy<const vk::DeviceSize> counterBufferOffsets, Dispatch const &d ) const VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_INLINE void CommandBuffer::endTransformFeedbackEXT( uint32_t firstCounterBuffer, ArrayProxy<const vk::Buffer> counterBuffers, ArrayProxy<const vk::DeviceSize> counterBufferOffsets, Dispatch const &d ) const
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
     VULKAN_HPP_ASSERT( counterBuffers.size() == counterBufferOffsets.size() );
@@ -70669,7 +70669,7 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE void Device::setHdrMetadataEXT( ArrayProxy<const vk::SwapchainKHR> swapchains, ArrayProxy<const vk::HdrMetadataEXT> metadata, Dispatch const &d ) const VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_INLINE void Device::setHdrMetadataEXT( ArrayProxy<const vk::SwapchainKHR> swapchains, ArrayProxy<const vk::HdrMetadataEXT> metadata, Dispatch const &d ) const
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
     VULKAN_HPP_ASSERT( swapchains.size() == metadata.size() );
@@ -71277,7 +71277,7 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE void Instance::debugReportMessageEXT( vk::DebugReportFlagsEXT flags, vk::DebugReportObjectTypeEXT objectType, uint64_t object, size_t location, int32_t messageCode, const std::string & layerPrefix, const std::string & message, Dispatch const &d ) const VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_INLINE void Instance::debugReportMessageEXT( vk::DebugReportFlagsEXT flags, vk::DebugReportObjectTypeEXT objectType, uint64_t object, size_t location, int32_t messageCode, const std::string & layerPrefix, const std::string & message, Dispatch const &d ) const
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
     VULKAN_HPP_ASSERT( layerPrefix.size() == message.size() );

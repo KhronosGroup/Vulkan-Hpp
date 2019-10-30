@@ -113,3 +113,7 @@ option (TESTS_BUILD OFF)
 if (TESTS_BUILD)
   add_subdirectory(tests)
 endif (TESTS_BUILD)
+
+if (${VULKAN_HPP_INSTALL})
+  install(FILES ${vulkan_hpp} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/vulkan)
+endif()

@@ -217,6 +217,26 @@ To create a device you can now just write:
 vk::Device device = physicalDevice.createDevice(createInfo);
 ```
 
+Some functions allow more than just `vk::Result::eSuccess` to be considered as a success code. For those functions, we always return a `ResultValue<SomeType>`. An example is `acquireNextImage2KHR`, that can be used like this:
+
+```C++
+vk::ResultValue<uint32_t> result = device->acquireNextImage2KHR(acquireNextImageInfo);
+switch (result.result)
+{
+	case vk::Result::eSuccess:
+		currentBuffer = result.value;
+		break;
+	case vk::Result::eTimeout:
+	case vk::Result::eNotReady:
+	case vk::Result::eSuboptimalKHR:
+		// do something meaningfull
+		break;
+	default:
+		// should not happen, as other return codes are considered to be an error and throw an exception
+		break;
+}
+```
+
 If exception handling is disabled by defining `VULKAN_HPP_NO_EXCEPTIONS` the type of `ResultValue<SomeType>::type` is a struct holding a `vk::Result` and a `SomeType`. This struct supports unpacking the return values by using `std::tie`.
 
 In case you don’t want to use the `vk::ArrayProxy` and return value transformation you can still call the plain C-style function. Below are three examples showing the 3 ways to use the API:
@@ -280,8 +300,8 @@ Finally, the last code example is using exceptions and return value transformati
  ShaderModule shader1;
  ShaderModule shader2;
  try {
-   myHandle = device.createShaderModule({...});
-   myHandle2 = device.createShaderModule({...});
+   shader1 = device.createShaderModule({...});
+   shader2 = device.createShaderModule({...});
  } catch(std::exception const &e) {
    // handle error and free resources
  }

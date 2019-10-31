@@ -52,12 +52,16 @@ set(SOURCES
   VulkanHppGenerator.cpp
 )
 
+if (NOT DEFINED VULKAN_HPP_TINYXML2_SRC_DIR)
+  set(VULKAN_HPP_TINYXML2_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/tinyxml2")
+endif()
+
 set(TINYXML2_SOURCES
-  tinyxml2/tinyxml2.cpp
+  ${VULKAN_HPP_TINYXML2_SRC_DIR}/tinyxml2.cpp
 )
 
 set(TINYXML2_HEADERS
-  tinyxml2/tinyxml2.h
+  ${VULKAN_HPP_TINYXML2_SRC_DIR}/tinyxml2.h
 )
 
 source_group(headers FILES ${HEADERS})
@@ -75,7 +79,7 @@ add_executable(VulkanHppGenerator
 
 set_property(TARGET VulkanHppGenerator PROPERTY CXX_STANDARD 11)
 
-target_include_directories(VulkanHppGenerator PRIVATE "${CMAKE_SOURCE_DIR}/tinyxml2")
+target_include_directories(VulkanHppGenerator PRIVATE ${VULKAN_HPP_TINYXML2_SRC_DIR})
 
 option (SAMPLES_BUILD OFF)
 if (SAMPLES_BUILD)

@@ -990,7 +990,9 @@ void VulkanHppGenerator::appendCommand(std::string & str, std::string const& ind
   assert(m_commandToHandle.find(commandData.first) != m_commandToHandle.end());
   auto handleIt = m_handles.find(m_commandToHandle.find(commandData.first)->second);
   assert(handleIt != m_handles.end());
-  if ((!handleIt->second.deleteCommand.empty() || specialWriteUnique) && ((commandData.first.substr(2, 8) == "Allocate") || (commandData.first.substr(2, 6) == "Create")))
+  if ((!handleIt->second.deleteCommand.empty() || specialWriteUnique)
+    && ((commandData.first.substr(2, 8) == "Allocate") || (commandData.first.substr(2, 6) == "Create")
+      || ((commandData.first.substr(2, 8) == "Register") && (returnParamIndex + 1 == commandData.second.params.size()))))
   {
     enhanced += "#ifndef VULKAN_HPP_NO_SMART_HANDLE\n";
     appendFunction(enhanced, indentation, name, commandData, returnParamIndex, templateParamIndex, vectorParamIndices, twoStep, enhancedReturnType, definition, true, false, true, false, false);

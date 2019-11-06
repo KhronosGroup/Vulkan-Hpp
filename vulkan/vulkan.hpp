@@ -18010,6 +18010,10 @@ namespace VULKAN_HPP_NAMESPACE
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     ResultValueType<vk::Fence>::type registerEventEXT( const DeviceEventInfoEXT & deviceEventInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
+#ifndef VULKAN_HPP_NO_SMART_HANDLE
+    template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    typename ResultValueType<UniqueHandle<Fence,Dispatch>>::type registerEventEXTUnique( const DeviceEventInfoEXT & deviceEventInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
+#endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
@@ -18017,6 +18021,10 @@ namespace VULKAN_HPP_NAMESPACE
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     ResultValueType<vk::Fence>::type registerDisplayEventEXT( vk::DisplayKHR display, const DisplayEventInfoEXT & displayEventInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
+#ifndef VULKAN_HPP_NO_SMART_HANDLE
+    template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    typename ResultValueType<UniqueHandle<Fence,Dispatch>>::type registerDisplayEventEXTUnique( vk::DisplayKHR display, const DisplayEventInfoEXT & displayEventInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
+#endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
@@ -70475,6 +70483,17 @@ namespace VULKAN_HPP_NAMESPACE
     Result result = static_cast<Result>( d.vkRegisterDeviceEventEXT( m_device, reinterpret_cast<const VkDeviceEventInfoEXT*>( &deviceEventInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkFence*>( &fence ) ) );
     return createResultValue( result, fence, VULKAN_HPP_NAMESPACE_STRING"::Device::registerEventEXT" );
   }
+#ifndef VULKAN_HPP_NO_SMART_HANDLE
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<Fence,Dispatch>>::type Device::registerEventEXTUnique( const DeviceEventInfoEXT & deviceEventInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  {
+    vk::Fence fence;
+    Result result = static_cast<Result>( d.vkRegisterDeviceEventEXT( m_device, reinterpret_cast<const VkDeviceEventInfoEXT*>( &deviceEventInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkFence*>( &fence ) ) );
+
+    ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<Fence,Dispatch>( result, fence, VULKAN_HPP_NAMESPACE_STRING"::Device::registerEventEXTUnique", deleter );
+  }
+#endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template<typename Dispatch>
@@ -70490,6 +70509,17 @@ namespace VULKAN_HPP_NAMESPACE
     Result result = static_cast<Result>( d.vkRegisterDisplayEventEXT( m_device, static_cast<VkDisplayKHR>( display ), reinterpret_cast<const VkDisplayEventInfoEXT*>( &displayEventInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkFence*>( &fence ) ) );
     return createResultValue( result, fence, VULKAN_HPP_NAMESPACE_STRING"::Device::registerDisplayEventEXT" );
   }
+#ifndef VULKAN_HPP_NO_SMART_HANDLE
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<Fence,Dispatch>>::type Device::registerDisplayEventEXTUnique( vk::DisplayKHR display, const DisplayEventInfoEXT & displayEventInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  {
+    vk::Fence fence;
+    Result result = static_cast<Result>( d.vkRegisterDisplayEventEXT( m_device, static_cast<VkDisplayKHR>( display ), reinterpret_cast<const VkDisplayEventInfoEXT*>( &displayEventInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkFence*>( &fence ) ) );
+
+    ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
+    return createResultValue<Fence,Dispatch>( result, fence, VULKAN_HPP_NAMESPACE_STRING"::Device::registerDisplayEventEXTUnique", deleter );
+  }
+#endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template<typename Dispatch>

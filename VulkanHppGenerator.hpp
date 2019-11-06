@@ -194,10 +194,10 @@ class VulkanHppGenerator
     void appendPlatformLeave(std::string & str, std::string const& platform) const;
     void appendStruct(std::string & str, std::pair<std::string, StructureData> const& structure, std::set<std::string> & listedStructures) const;
     void appendStructCompareOperators(std::string & str, std::pair<std::string, StructureData> const& structure) const;
-    std::string appendStructConstructor(std::pair<std::string, StructureData> const& structData, std::string const& prefix, bool withLayoutStructure) const;
+    std::string appendStructConstructor(std::pair<std::string, StructureData> const& structData, std::string const& prefix) const;
     bool appendStructConstructorArgument(std::string & str, bool listedArgument, std::string const& indentation, MemberData const& memberData) const;
-    void appendStructCopyConstructors(std::string & str, std::string const& vkName, bool withLayoutStructure) const;
-    void appendStructMembers(std::string & str, StructureData const& structData, std::string const& prefix) const;
+    void appendStructCopyConstructors(std::string & str, std::string const& vkName) const;
+    void appendStructMembers(std::string & str, std::pair<std::string,StructureData> const& structData, std::string const& prefix) const;
     void appendStructSetter(std::string & str, std::string const& structureName, MemberData const& memberData) const;
     void appendStructure(std::string & str, std::pair<std::string, StructureData> const& structure) const;
     void appendUnion(std::string & str, std::pair<std::string, StructureData> const& structure) const;

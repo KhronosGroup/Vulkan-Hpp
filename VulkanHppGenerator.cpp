@@ -61,6 +61,8 @@ std::vector<std::string> tokenize(std::string tokenString, char separator);
 std::string trim(std::string const& input);
 std::string trimEnd(std::string const& input);
 
+const std::set<std::string> nonConstSTypeStructs = { "VkBaseInStructure", "VkBaseOutStructure" };
+
 void appendArgumentCount(std::string & str, size_t vectorIndex, std::string const& vectorName, std::string const& counterName, size_t returnParamIndex, size_t templateParamIndex, bool twoStep, bool singular)
 {
   // this parameter is a count parameter for a vector parameter
@@ -2529,7 +2531,7 @@ void VulkanHppGenerator::appendStructCompareOperators(std::string & str, std::pa
   str += replaceWithMap(compareTemplate, { { "name", stripPrefix(structData.first, "Vk") }, { "compareMembers", compareMembers } });
 }
 
-std::string VulkanHppGenerator::appendStructConstructor(std::pair<std::string, StructureData> const& structData, std::string const& prefix, bool withLayoutStructure) const
+std::string VulkanHppGenerator::appendStructConstructor(std::pair<std::string, StructureData> const& structData, std::string const& prefix) const
 {
   // the constructor with all the elements as arguments, with defaults
   // returnedOnly structs and structs with a union (and VkBaseInStructure and VkBaseOutStructure) can't be a constexpr!
@@ -2541,95 +2543,86 @@ std::string VulkanHppGenerator::appendStructConstructor(std::pair<std::string, S
   std::string arguments, initializers, copyOps;
   bool listedArgument = false;
   bool firstArgument = true;
-  if (!structData.second.returnedOnly)
+  for (auto const& member : structData.second.members)
   {
-    for (auto const& member : structData.second.members)
+    // gather the arguments
+    listedArgument = appendStructConstructorArgument(arguments, listedArgument, indentation, member);
+
+    // gather the initializers; skip members 'pNext' and 'sType', they are directly set by initializers
+    if ((member.name != "pNext") && (member.name != "sType"))
     {
-      // gather the arguments
-      listedArgument = appendStructConstructorArgument(arguments, listedArgument, indentation, member);
-
-      // gather the initializers; skip members 'pNext' and 'sType', they are directly set by initializers
-      if ((member.name != "pNext") && (member.name != "sType"))
+      if (member.arraySize.empty())
       {
-        if (withLayoutStructure)
-        {
-          // withLayoutStructure means: we pass the arguments into the layout::class
-          if (!firstArgument)
-          {
-            initializers += ", ";
-          }
-          initializers += member.name + "_";
-          firstArgument = false;
-        }
-        else if (member.arraySize.empty())
-        {
-          // here, we can only handle non-array arguments
-          initializers += prefix + "  " + (firstArgument ? ":" : ",") + " " + member.name + "( " + member.name + "_ )\n";
-          firstArgument = false;
-        }
-        else
-        {
-          // here we can handle the arrays, copying over from argument (with trailing '_') to member
-          initializers += prefix + "  " + (firstArgument ? ":" : ",") + " " + member.name + "{}\n"; // need to initialize the array
-          firstArgument = false;
+        // here, we can only handle non-array arguments
+        initializers += prefix + "  " + (firstArgument ? ":" : ",") + " " + member.name + "( " + member.name + "_ )\n";
+        firstArgument = false;
+      }
+      else
+      {
+        // here we can handle the arrays, copying over from argument (with trailing '_') to member
+        initializers += prefix + "  " + (firstArgument ? ":" : ",") + " " + member.name + "{}\n"; // need to initialize the array
+        firstArgument = false;
 
-          std::string type = (member.type.type.substr(0, 2) == "Vk") ? ("vk::" + stripPrefix(member.type.type, "Vk")) : member.type.type;
-          copyOps += prefix + "  vk::ConstExpressionArrayCopy<" + type + "," + member.arraySize + "," + member.arraySize + ">::copy( " + member.name + ", " + member.name + "_ );\n";
-        }
+        std::string type = (member.type.type.substr(0, 2) == "Vk") ? ("vk::" + stripPrefix(member.type.type, "Vk")) : member.type.type;
+        copyOps += prefix + "  vk::ConstExpressionArrayCopy<" + type + "," + member.arraySize + "," + member.arraySize + ">::copy( " + member.name + ", " + member.name + "_ );\n";
       }
     }
   }
 
   std::string structConstructor = ctorOpening + (arguments.empty() ? "()" : std::string("( " + arguments + " )")) + " VULKAN_HPP_NOEXCEPT\n";
-  if (withLayoutStructure)
+  structConstructor += initializers;
+  if (copyOps.empty())
   {
-    structConstructor += prefix + "  : layout::" + stripPrefix(structData.first, "Vk") + (initializers.empty() ? "()" : std::string("( " + initializers + " )")) + "\n" + prefix + "{}\n";
+    structConstructor += prefix + "{}\n";
   }
   else
   {
-    structConstructor += initializers;
-    if (copyOps.empty())
+    structConstructor += prefix + "{\n" + copyOps + prefix + "}\n";
+  }
+
+  if (!structData.second.subStruct.empty())
+  {
+    auto const& subStruct = m_structures.find(structData.second.subStruct);
+    assert(subStruct != m_structures.end());
+
+    std::string subStructArgumentName = startLowerCase(stripPrefix(subStruct->first, "Vk"));
+    ctorOpening = prefix + "explicit " + stripPrefix(structData.first, "Vk") + "( ";
+    indentation = std::string(ctorOpening.size(), ' ');
+
+    std::string subCopies;
+    firstArgument = true;
+    for (size_t i = 0; i < subStruct->second.members.size(); i++)
     {
-      structConstructor += prefix + "{}\n";
+      assert(structData.second.members[i].arraySize.empty());
+      subCopies += prefix + "  " + (firstArgument ? ":" : ",") + " " + structData.second.members[i].name + "( " + subStructArgumentName + "." + subStruct->second.members[i].name + " )\n";
+      firstArgument = false;
     }
-    else
+
+    std::string subArguments;
+    listedArgument = true;
+    for (size_t i = subStruct->second.members.size(); i < structData.second.members.size(); i++)
     {
-      structConstructor += prefix + "{\n" + copyOps + prefix + "}\n";
+      listedArgument = appendStructConstructorArgument(subArguments, listedArgument, indentation, structData.second.members[i]);
+
+      assert(structData.second.members[i].arraySize.empty());
+      subCopies += prefix + "  , " + structData.second.members[i].name + "( " + structData.second.members[i].name + "_ )\n";
     }
 
-    if (!structData.second.subStruct.empty())
-    {
-      auto const& subStruct = m_structures.find(structData.second.subStruct);
-      assert(subStruct != m_structures.end());
+    structConstructor += "\n"
+      "    explicit " + stripPrefix(structData.first, "Vk") + "( " + stripPrefix(subStruct->first, "Vk") + " const& " + subStructArgumentName + subArguments + " )\n"
+      + subCopies +
+      "    {}\n";
+  }
 
-      std::string subStructArgumentName = startLowerCase(stripPrefix(subStruct->first, "Vk"));
-      ctorOpening = prefix + "explicit " + stripPrefix(structData.first, "Vk") + "( ";
-      indentation = std::string(ctorOpening.size(), ' ');
-
-      std::string subCopies;
-      firstArgument = true;
-      for (size_t i = 0; i < subStruct->second.members.size(); i++)
-      {
-        assert(structData.second.members[i].arraySize.empty());
-        subCopies += prefix + "  " + (firstArgument ? ":" : ",") + " " + structData.second.members[i].name + "( " + subStructArgumentName + "." + subStruct->second.members[i].name + " )\n";
-        firstArgument = false;
-      }
-
-      std::string subArguments;
-      listedArgument = true;
-      for (size_t i = subStruct->second.members.size(); i < structData.second.members.size(); i++)
-      {
-        listedArgument = appendStructConstructorArgument(subArguments, listedArgument, indentation, structData.second.members[i]);
-
-        assert(structData.second.members[i].arraySize.empty());
-        subCopies += prefix + "  , " + structData.second.members[i].name + "( " + structData.second.members[i].name + "_ )\n";
-      }
-
-      structConstructor += "\n"
-        "    explicit " + stripPrefix(structData.first, "Vk") + "( " + stripPrefix(subStruct->first, "Vk") + " const& " + subStructArgumentName + subArguments + " )\n"
-        + subCopies +
-        "    {}\n";
-    }
+  // we need a copy constructor if there is constant sType in this struct
+  if ((nonConstSTypeStructs.find(structData.first) == nonConstSTypeStructs.end()) && !structData.second.members.empty() && (structData.second.members.front().name == "sType"))
+  {
+    structConstructor += "\n" + prefix + "vk::" + stripPrefix(structData.first, "Vk") + " & operator=( vk::" + stripPrefix(structData.first, "Vk") + " const & rhs ) VULKAN_HPP_NOEXCEPT\n";
+    structConstructor += prefix + "{\n";
+    assert((2 <= structData.second.members.size()) && (structData.second.members[1].name == "pNext"));
+    structConstructor += prefix + "  memcpy( &pNext, &rhs.pNext, sizeof( vk::" + stripPrefix(structData.first, "Vk") + " ) - sizeof( vk::StructureType ) );\n";
+    structConstructor += prefix + "  return *this;\n";
+    structConstructor += prefix + "}\n";
   }
 
   return structConstructor;
@@ -2654,40 +2647,34 @@ bool VulkanHppGenerator::appendStructConstructorArgument(std::string & str, bool
   return listedArgument;
 }
 
-void VulkanHppGenerator::appendStructCopyConstructors(std::string & str, std::string const& name, bool withLayoutStructure) const
+void VulkanHppGenerator::appendStructCopyConstructors(std::string & str, std::string const& name) const
 {
   static const std::string templateString = R"(
     ${name}( Vk${name} const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      *reinterpret_cast<Vk${name}*>(this) = rhs;
+      *this = rhs;
     }
 
     ${name}& operator=( Vk${name} const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      *reinterpret_cast<Vk${name}*>(this) = rhs;
-      return *this;
-    }
-)";
-  static const std::string layoutTemplateString = R"(
-    ${name}( Vk${name} const & rhs ) VULKAN_HPP_NOEXCEPT
-      : layout::${name}( rhs )
-    {}
-
-    ${name}& operator=( Vk${name} const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      layout::${name}::operator=(rhs);
+      *this = *reinterpret_cast<vk::${name} const *>(&rhs);
       return *this;
     }
 )";
 
-  str += replaceWithMap(withLayoutStructure ? layoutTemplateString : templateString, { { "name", name } });
+  str += replaceWithMap(templateString, { { "name", name } });
 }
 
-void VulkanHppGenerator::appendStructMembers(std::string & str, StructureData const& structData, std::string const& prefix) const
+void VulkanHppGenerator::appendStructMembers(std::string & str, std::pair<std::string,StructureData> const& structData, std::string const& prefix) const
 {
-  for (auto const& member : structData.members)
+  for (auto const& member : structData.second.members)
   {
-    str += prefix + member.type.compose() + " " + member.name;
+    str += prefix;
+    if ((member.name == "sType") && (nonConstSTypeStructs.find(structData.first) == nonConstSTypeStructs.end()))  // special handling for sType and some nasty little structs that don't get a const sType
+    {
+      str += "const ";
+    }
+    str += member.type.compose() + " " + member.name;
     if (member.name == "sType")           // special handling for sType
     {
       auto enumIt = m_enums.find("VkStructureType");
@@ -2751,49 +2738,8 @@ void VulkanHppGenerator::appendStructure(std::string & str, std::pair<std::strin
   str += "\n";
   appendPlatformEnter(str, structure.second.platform);
 
-  std::string baseClass;
-  bool withLayoutStructure = (!structure.second.members.empty() && (structure.second.members.front().name == "sType"));
-  if (withLayoutStructure)
-  {
-    baseClass = " : public layout::" + stripPrefix(structure.first, "Vk");
-    static const std::string layoutStructureTemplate = R"(
-  namespace layout
-  {
-    struct ${name}
-    {
-    protected:
-${constructor}
-
-      ${name}( Vk${name} const & rhs ) VULKAN_HPP_NOEXCEPT
-      {
-        *reinterpret_cast<Vk${name}*>(this) = rhs;
-      }
-
-      ${name}& operator=( Vk${name} const & rhs ) VULKAN_HPP_NOEXCEPT
-      {
-        *reinterpret_cast<Vk${name}*>(this) = rhs;
-        return *this;
-      }
-
-    public:
-${members}    };
-    static_assert( sizeof( ${name} ) == sizeof( Vk${name} ), "layout struct and wrapper have different size!" );
-  }
-)";
-
-    std::string members;
-    appendStructMembers(members, structure.second, "      ");
-
-    str += replaceWithMap(layoutStructureTemplate,
-      {
-        { "name",        stripPrefix(structure.first, "Vk") },
-        { "constructor", appendStructConstructor(structure, "      ", false)},
-        { "members",     members}
-      });
-  }
-
-  std::string constructorAndSetters = appendStructConstructor(structure, "    ", withLayoutStructure);
-  appendStructCopyConstructors(constructorAndSetters, stripPrefix(structure.first, "Vk"), withLayoutStructure);
+  std::string constructorAndSetters = appendStructConstructor(structure, "    ");
+  appendStructCopyConstructors(constructorAndSetters, stripPrefix(structure.first, "Vk"));
   if (!structure.second.returnedOnly)
   {
     // only structs that are not returnedOnly get setters!
@@ -2812,20 +2758,11 @@ ${members}    };
   }
 
   // the member variables
-  std::string members;
-  if (withLayoutStructure)
-  {
-    // hide sType when a layout structure is used to keep standard_layout
-    members = "\n  private:\n    using layout::" + stripPrefix(structure.first, "Vk") + "::sType;\n";
-  }
-  else
-  {
-    members = "\n  public:\n";
-    appendStructMembers(members, structure.second, "    ");
-  }
+  std::string members = "\n  public:\n";
+  appendStructMembers(members, structure, "    ");
 
   static const std::string structureTemplate = R"(
-  struct ${name}${baseClass}
+  struct ${name}
   {
 ${constructorAndSetters}
 
@@ -2850,7 +2787,6 @@ ${members}
   str += replaceWithMap(structureTemplate,
     {
       { "name",                   stripPrefix(structure.first, "Vk") },
-      { "baseClass",              baseClass },
       { "constructorAndSetters",  constructorAndSetters },
       { "vkName",                 structure.first },
       { "compareOperators",       compareOperators },

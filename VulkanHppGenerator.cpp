@@ -1220,14 +1220,16 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic(std::string & str)
       }
     }
 
-    void init( vk::Instance instance ) VULKAN_HPP_NOEXCEPT
+    void init( vk::Instance instanceCpp ) VULKAN_HPP_NOEXCEPT
     {
+      VkInstance instance = static_cast<VkInstance>(instanceCpp);
 )";
 
   str += strInstanceFunctions;
   str += strDeviceFunctionsInstance;
   str += "    }\n\n";
-  str += "    void init( vk::Device device ) VULKAN_HPP_NOEXCEPT\n    {\n";
+  str += "    void init( vk::Device deviceCpp ) VULKAN_HPP_NOEXCEPT\n    {\n";
+  str += "      VkDevice device = static_cast<VkDevice>(deviceCpp);\n";
   str += strDeviceFunctions;
   str += R"(    }
   };

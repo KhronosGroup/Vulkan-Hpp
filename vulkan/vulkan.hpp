@@ -74346,8 +74346,9 @@ namespace VULKAN_HPP_NAMESPACE
       }
     }
 
-    void init( vk::Instance instance ) VULKAN_HPP_NOEXCEPT
+    void init( vk::Instance instanceCpp ) VULKAN_HPP_NOEXCEPT
     {
+      VkInstance instance = static_cast<VkInstance>(instanceCpp);
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
       vkCreateAndroidSurfaceKHR = PFN_vkCreateAndroidSurfaceKHR( vkGetInstanceProcAddr( instance, "vkCreateAndroidSurfaceKHR" ) );
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
@@ -74775,8 +74776,9 @@ namespace VULKAN_HPP_NAMESPACE
       vkQueueWaitIdle = PFN_vkQueueWaitIdle( vkGetInstanceProcAddr( instance, "vkQueueWaitIdle" ) );
     }
 
-    void init( vk::Device device ) VULKAN_HPP_NOEXCEPT
+    void init( vk::Device deviceCpp ) VULKAN_HPP_NOEXCEPT
     {
+      VkDevice device = static_cast<VkDevice>(deviceCpp);
       vkBeginCommandBuffer = PFN_vkBeginCommandBuffer( vkGetDeviceProcAddr( device, "vkBeginCommandBuffer" ) );
       vkCmdBeginConditionalRenderingEXT = PFN_vkCmdBeginConditionalRenderingEXT( vkGetDeviceProcAddr( device, "vkCmdBeginConditionalRenderingEXT" ) );
       vkCmdBeginDebugUtilsLabelEXT = PFN_vkCmdBeginDebugUtilsLabelEXT( vkGetDeviceProcAddr( device, "vkCmdBeginDebugUtilsLabelEXT" ) );

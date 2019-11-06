@@ -89,6 +89,19 @@ set_property(TARGET VulkanHppGenerator PROPERTY CXX_STANDARD 11)
 
 target_include_directories(VulkanHppGenerator PRIVATE ${VULKAN_HPP_TINYXML2_SRC_DIR})
 
+option (VULKAN_HPP_RUN_GENERATOR "Run the HPP generator" OFF)
+if (VULKAN_HPP_RUN_GENERATOR)
+  add_custom_command(
+    COMMAND VulkanHppGenerator
+    OUTPUT "${vulkan_hpp}"
+    WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+    COMMENT "run VulkanHppGenerator"
+    DEPENDS VulkanHppGenerator "${vk_spec}")
+
+  add_custom_target(build_vulkan_hpp ALL
+    DEPENDS "${vulkan_hpp}" "${vk_spec}")
+endif()
+
 option (SAMPLES_BUILD OFF)
 if (SAMPLES_BUILD)
   add_subdirectory(glfw)

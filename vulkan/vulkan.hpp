@@ -73811,7 +73811,7 @@ namespace VULKAN_HPP_NAMESPACE
 #elif defined(__APPLE__)
       m_library = dlopen( "libvulkan.dylib", RTLD_NOW | RTLD_LOCAL );
 #elif defined(_WIN32)
-      m_library = LoadLibrary( "vulkan-1.dll" );
+      m_library = LoadLibrary( TEXT( "vulkan-1.dll" ) );
 #else
       assert( false && "unsupported platform" );
 #endif

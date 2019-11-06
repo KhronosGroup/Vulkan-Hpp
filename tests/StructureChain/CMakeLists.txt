@@ -31,5 +31,8 @@ add_executable(StructureChain
   ${SOURCES}
 )
 
+if (UNIX)
+  target_link_libraries(StructureChain "-ldl")
+endif()
+
 set_target_properties(StructureChain PROPERTIES FOLDER "Tests")
-target_link_libraries(StructureChain "${Vulkan_LIBRARIES}")

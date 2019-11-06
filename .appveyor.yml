@@ -9,11 +9,18 @@ configuration:
 
 environment:
   matrix:
-    - GENERATOR: Visual Studio 15 2017
+    - GENERATOR: Visual Studio 14 2015
+      GENERATOR_ARCH: Win32
       RAW_PLATFORM: x86
-    - GENERATOR: Visual Studio 15 2017 Win64
+    - GENERATOR: Visual Studio 14 2015
+      GENERATOR_ARCH: x64
       RAW_PLATFORM: amd64
-
+    - GENERATOR: Visual Studio 15 2017
+      GENERATOR_ARCH: Win32
+      RAW_PLATFORM: x86
+    - GENERATOR: Visual Studio 15 2017
+      GENERATOR_ARCH: x64
+      RAW_PLATFORM: amd64
 
 install:
   - git submodule update --init --recursive
@@ -27,17 +34,7 @@ before_build:
 build_script:
   - mkdir appveyor-build
   - cd appveyor-build
-  - cmake .. "-G%GENERATOR%"
-  - cmake --build . --config %CONFIGURATION%
+  - cmake ..\tests -G "%GENERATOR%" -A %GENERATOR_ARCH% -DTESTS_BUILD_WITH_LOCAL_VULKAN_HPP=1 -DTESTS_BUILD_ONLY_DYNAMIC=1
 
 test_script:
-  - "%CONFIGURATION%\\VulkanHppGenerator"
-  - ps: Write-Output "#include ""vulkan.hpp""" | Out-File -FilePath test.cpp
-  - ps: Write-Output "int myCreateInstance()" | Out-File -FilePath test.cpp -Append
-  - ps: Write-Output "{" | Out-File -FilePath test.cpp -Append
-  - ps: Write-Output "    vk::Instance inst;" | Out-File -FilePath test.cpp -Append
-  - ps: Write-Output "    auto const inst_info = vk::InstanceCreateInfo();" | Out-File -FilePath test.cpp -Append
-  - ps: Write-Output "    vk::Result result = vk::createInstance(&inst_info, nullptr, &inst);" | Out-File -FilePath test.cpp -Append
-  - ps: Write-Output "    return static_cast<int> (result);" | Out-File -FilePath test.cpp -Append
-  - ps: Write-Output "}" | Out-File -FilePath test.cpp -Append
-  - cl.exe -I../vulkan -I../Vulkan-Headers/include /EHsc -c test.cpp
+  - cmake --build . --config %CONFIGURATION%

@@ -14,11 +14,15 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-find_package(Vulkan REQUIRED)
-
 project(Vulkan-Hpp_Tests)
 
+
 option (TESTS_BUILD_WITH_LOCAL_VULKAN_HPP OFF)
+option (TESTS_BUILD_ONLY_DYNAMIC OFF)
+
+if (NOT (TESTS_BUILD_ONLY_DYNAMIC AND TESTS_BUILD_WITH_LOCAL_VULKAN_HPP))
+  find_package(Vulkan REQUIRED)
+endif()
 
 if (WIN32)
   add_definitions(-DNOMINMAX -DVK_USE_PLATFORM_WIN32_KHR)

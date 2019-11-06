@@ -15,6 +15,8 @@
 // VulkanHpp Tests : StructureChain
 //                   Compile-test for StructureChains
 
+#define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1
+
 #include "vulkan/vulkan.hpp"
 #include <iostream>
 
@@ -29,10 +31,16 @@ static char const* EngineName = "Vulkan.hpp";
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
+VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE;
+
 int main(int /*argc*/, char ** /*argv*/)
 {
   try
   {
+    vk::DynamicLoader dl;
+    PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr = dl.getProcAddress<PFN_vkGetInstanceProcAddr>("vkGetInstanceProcAddr");
+    VULKAN_HPP_DEFAULT_DISPATCHER.init(vkGetInstanceProcAddr);
+
     vk::ApplicationInfo appInfo(AppName, 1, EngineName, 1, VK_API_VERSION_1_1);
     vk::UniqueInstance instance = vk::createInstanceUnique(vk::InstanceCreateInfo({}, &appInfo));
     vk::PhysicalDevice physicalDevice = instance->enumeratePhysicalDevices().front();
@@ -46,7 +54,7 @@ int main(int /*argc*/, char ** /*argv*/)
     vk::StructureChain<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceIDProperties, vk::PhysicalDevicePushDescriptorPropertiesKHR> sc6;
     vk::StructureChain<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceIDProperties, vk::PhysicalDeviceMaintenance3Properties, vk::PhysicalDevicePushDescriptorPropertiesKHR> sc7;
 
-    // some not valid StructureChains
+    // some invalid StructureChains
     //vk::StructureChain<vk::PhysicalDeviceIDProperties, vk::PhysicalDeviceMaintenance3Properties> x;
     //vk::StructureChain<vk::PhysicalDeviceIDProperties, vk::PhysicalDeviceMaintenance3Properties, vk::PhysicalDevicePushDescriptorPropertiesKHR> x;
     //vk::StructureChain<vk::PhysicalDeviceIDProperties, vk::PhysicalDevicePushDescriptorPropertiesKHR, vk::PhysicalDeviceMaintenance3Properties> x;
@@ -59,16 +67,14 @@ int main(int /*argc*/, char ** /*argv*/)
 
     // simple calls, getting structure back
     vk::PhysicalDeviceFeatures2 a = physicalDevice.getFeatures2();
-    vk::PhysicalDeviceFeatures2 b = physicalDevice.getFeatures2(vk::DispatchLoaderStatic());
     
     // complex calls, getting StructureChain back
     auto c = physicalDevice.getFeatures2<vk::PhysicalDeviceFeatures2, vk::PhysicalDeviceVariablePointerFeatures>();
     vk::PhysicalDeviceFeatures2 & c0 = c.get<vk::PhysicalDeviceFeatures2>();
-    vk::PhysicalDeviceVariablePointerFeatures & c1 = c.get<vk::PhysicalDeviceVariablePointerFeatures>();
 
     auto t0 = c.get<vk::PhysicalDeviceFeatures2, vk::PhysicalDeviceVariablePointerFeatures>();
     
-    auto d = physicalDevice.getFeatures2<vk::PhysicalDeviceFeatures2, vk::PhysicalDeviceVariablePointerFeatures>(vk::DispatchLoaderStatic());
+    auto d = physicalDevice.getFeatures2<vk::PhysicalDeviceFeatures2, vk::PhysicalDeviceVariablePointerFeatures>();
     vk::PhysicalDeviceFeatures2 & d0 = d.get<vk::PhysicalDeviceFeatures2>();
     vk::PhysicalDeviceVariablePointerFeatures & d1 = d.get<vk::PhysicalDeviceVariablePointerFeatures>();
 
@@ -76,7 +82,7 @@ int main(int /*argc*/, char ** /*argv*/)
 
     using StructureChain = vk::StructureChain<vk::QueueFamilyProperties2, vk::QueueFamilyCheckpointPropertiesNV>;
     using AllocatorType = std::vector<StructureChain>::allocator_type;
-    auto qfd = physicalDevice.getQueueFamilyProperties2<StructureChain, AllocatorType>(vk::DispatchLoaderStatic());
+    auto qfd = physicalDevice.getQueueFamilyProperties2<StructureChain, AllocatorType>(VULKAN_HPP_DEFAULT_DISPATCHER);
   }
   catch (vk::SystemError err)
   {

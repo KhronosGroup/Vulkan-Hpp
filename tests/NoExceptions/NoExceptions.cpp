@@ -17,12 +17,15 @@
 //                     Note: this is _no_ functional test!! Don't ever code this way!!
 
 #define VULKAN_HPP_NO_EXCEPTIONS
+#define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1
 
 #include "vulkan/vulkan.hpp"
 #include <iostream>
 
 static char const* AppName = "DeviceFunctions";
 static char const* EngineName = "Vulkan.hpp";
+
+VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE;
 
 int main(int /*argc*/, char ** /*argv*/)
 {

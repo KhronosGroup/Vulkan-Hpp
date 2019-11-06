@@ -14,22 +14,24 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(DeviceFunctions)
+if (NOT TESTS_BUILD_ONLY_DYNAMIC)
+	project(DeviceFunctions)
 
-set(HEADERS
-)
+	set(HEADERS
+	)
 
-set(SOURCES
-  DeviceFunctions.cpp
-)
+	set(SOURCES
+	  DeviceFunctions.cpp
+	)
 
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
+	source_group(headers FILES ${HEADERS})
+	source_group(sources FILES ${SOURCES})
 
-add_executable(DeviceFunctions
-  ${HEADERS}
-  ${SOURCES}
-)
+	add_executable(DeviceFunctions
+	  ${HEADERS}
+	  ${SOURCES}
+	)
 
-set_target_properties(DeviceFunctions PROPERTIES FOLDER "Tests")
-target_link_libraries(DeviceFunctions "${Vulkan_LIBRARIES}")
+	set_target_properties(DeviceFunctions PROPERTIES FOLDER "Tests")
+	target_link_libraries(DeviceFunctions "${Vulkan_LIBRARIES}")
+endif()

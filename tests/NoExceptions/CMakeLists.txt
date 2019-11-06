@@ -31,5 +31,8 @@ add_executable(NoExceptions
   ${SOURCES}
 )
 
+if (UNIX)
+  target_link_libraries(NoExceptions "-ldl")
+endif()
+
 set_target_properties(NoExceptions PROPERTIES FOLDER "Tests")
-target_link_libraries(NoExceptions "${Vulkan_LIBRARIES}")

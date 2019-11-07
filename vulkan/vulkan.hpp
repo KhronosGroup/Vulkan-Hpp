@@ -12558,7 +12558,7 @@ namespace VULKAN_HPP_NAMESPACE
       : SystemError( make_error_code( Result::eErrorFullScreenExclusiveModeLostEXT ), message ) {}
   };
 
-  VULKAN_HPP_INLINE void throwResultException( Result result, char const * message )
+  [[noreturn]] static void throwResultException( Result result, char const * message )
   {
     switch ( result )
     {

@@ -2847,7 +2847,7 @@ void VulkanHppGenerator::appendThrowExceptions(std::string & str) const
   auto enumData = m_enums.find("VkResult");
 
   str += "\n"
-    "  VULKAN_HPP_INLINE void throwResultException( Result result, char const * message )\n"
+    "  [[noreturn]] static void throwResultException( Result result, char const * message )\n"
     "  {\n"
     "    switch ( result )\n"
     "    {\n";

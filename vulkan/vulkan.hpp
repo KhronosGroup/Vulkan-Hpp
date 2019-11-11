@@ -56,8 +56,18 @@
 # define VULKAN_HPP_ASSERT   assert
 #endif
 
-#if defined(__linux__) || defined(__APPLE__)
-# include <dlfcn.h>
+#if !defined(VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL)
+# define VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL 1
+#endif
+
+#if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL == 1
+#  if defined(__linux__) || defined(__APPLE__)
+#   include <dlfcn.h>
+#  endif
+
+#  if defined(_WIN32)
+#   include <windows.h>
+#  endif
 #endif
 
 static_assert( VK_HEADER_VERSION ==  126 , "Wrong VK_HEADER_VERSION!" );
@@ -66833,10 +66843,6 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
   template <> struct isStructureChainValid<WriteDescriptorSet, WriteDescriptorSetAccelerationStructureNV>{ enum { value = true }; };
   template <> struct isStructureChainValid<WriteDescriptorSet, WriteDescriptorSetInlineUniformBlockEXT>{ enum { value = true }; };
-
-#if !defined(VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL)
-# define VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL  1
-#endif
 
 #if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL
   class DynamicLoader

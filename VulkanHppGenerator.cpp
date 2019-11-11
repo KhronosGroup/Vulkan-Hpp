@@ -1040,10 +1040,6 @@ void VulkanHppGenerator::appendCommand(std::string & str, std::string const& ind
 void VulkanHppGenerator::appendDispatchLoaderDynamic(std::string & str)
 {
   str += R"(
-#if !defined(VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL)
-# define VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL  1
-#endif
-
 #if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL
   class DynamicLoader
   {
@@ -5127,9 +5123,20 @@ static const std::string constExpressionArrayCopy = R"(
 # define VULKAN_HPP_ASSERT   assert
 #endif
 
-#if defined(__linux__) || defined(__APPLE__)
-# include <dlfcn.h>
+#if !defined(VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL)
+# define VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL 1
 #endif
+
+#if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL == 1
+#  if defined(__linux__) || defined(__APPLE__)
+#   include <dlfcn.h>
+#  endif
+
+#  if defined(_WIN32)
+#   include <windows.h>
+#  endif
+#endif
+
 )";
 
   static const std::string is_error_code_enum = R"(

@@ -1483,6 +1483,10 @@ void VulkanHppGenerator::appendFunctionBodyEnhanced(std::string & str, std::stri
   {
     appendFunctionBodyEnhancedVectorOfUniqueHandles(str, indentation, commandName, commandData, returnParamIndex, templateParamIndex, vectorParamIndices, twoStep, singular, withAllocator);
   }
+  else if (isStructureChain && (vectorParamIndices.find(returnParamIndex) != vectorParamIndices.end()))
+  {
+    appendFunctionBodyEnhancedVectorOfStructureChain(str, indentation, commandData, returnParamIndex, vectorParamIndices, withAllocator);
+  }
   else
   {
     if (1 < vectorParamIndices.size())
@@ -1776,6 +1780,46 @@ ${i}  ${call2};
       { "call1", call1 },
       { "call2", call2 },
       { "i", indentation }
+    });
+}
+
+void VulkanHppGenerator::appendFunctionBodyEnhancedVectorOfStructureChain(std::string & str, std::string const& indentation, std::pair<std::string,CommandData> const& commandData, size_t returnParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool withAllocator) const
+{
+  std::string const stringTemplate =
+    R"(${i}  std::vector<StructureChain,Allocator> ${returnName}${vectorAllocator};
+${i}  uint32_t ${sizeName};
+${i}  d.${commandName}( m_${handleName}, &${sizeName}, nullptr );
+${i}  ${returnName}.resize( ${sizeName} );
+${i}  std::vector<vk::${returnType}> localVector( ${sizeName} );
+${i}  for ( uint32_t i = 0; i < ${sizeName} ; i++ )
+${i}  {
+${i}    localVector[i].pNext = ${returnName}[i].template get<vk::${returnType}>().pNext;
+${i}  }
+${i}  d.${commandName}( m_${handleName}, &${sizeName}, reinterpret_cast<${VkReturnType}*>( localVector.data() ) );
+${i}  for ( uint32_t i = 0; i < ${sizeName} ; i++ )
+${i}  {
+${i}    ${returnName}[i].template get<vk::${returnType}>() = localVector[i];
+${i}  }
+${i}  return ${returnName};
+)";
+
+  // local count variable to hold the size of the vector to fill
+  std::map<size_t, size_t>::const_iterator returnit = vectorParamIndices.find(returnParamIndex);
+  assert(returnit != vectorParamIndices.end() && (returnit->second != INVALID_INDEX));
+
+  assert(m_commandToHandle.find(commandData.first)->second == commandData.second.params[0].type.type); // make sure, the first argument is the handle
+  assert(commandData.second.params.size() == 3);    // make sure, there are three args: the handle, the pointer to size, and the data pointer
+
+  str += replaceWithMap(stringTemplate,
+    {
+      { "commandName", commandData.first},
+      { "handleName",  startLowerCase(stripPrefix(commandData.second.params[0].type.type, "Vk")) },
+      { "i", indentation },
+      { "returnName", startLowerCase(stripPrefix(commandData.second.params[returnParamIndex].name, "p")) },
+      { "returnType", stripPrefix(commandData.second.params[returnParamIndex].type.type, "Vk")},
+      { "sizeName", startLowerCase(stripPrefix(commandData.second.params[returnit->second].name, "p"))},
+      { "vectorAllocator", withAllocator ? "( vectorAllocator )" : "" },
+      { "VkReturnType", commandData.second.params[returnParamIndex].type.type}
     });
 }
 

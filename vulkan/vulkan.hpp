@@ -65829,7 +65829,16 @@ namespace VULKAN_HPP_NAMESPACE
     uint32_t queueFamilyPropertyCount;
     d.vkGetPhysicalDeviceQueueFamilyProperties2( m_physicalDevice, &queueFamilyPropertyCount, nullptr );
     queueFamilyProperties.resize( queueFamilyPropertyCount );
-    d.vkGetPhysicalDeviceQueueFamilyProperties2( m_physicalDevice, &queueFamilyPropertyCount, reinterpret_cast<VkQueueFamilyProperties2*>( queueFamilyProperties.data() ) );
+    std::vector<vk::QueueFamilyProperties2> localVector( queueFamilyPropertyCount );
+    for ( uint32_t i = 0; i < queueFamilyPropertyCount ; i++ )
+    {
+      localVector[i].pNext = queueFamilyProperties[i].template get<vk::QueueFamilyProperties2>().pNext;
+    }
+    d.vkGetPhysicalDeviceQueueFamilyProperties2( m_physicalDevice, &queueFamilyPropertyCount, reinterpret_cast<VkQueueFamilyProperties2*>( localVector.data() ) );
+    for ( uint32_t i = 0; i < queueFamilyPropertyCount ; i++ )
+    {
+      queueFamilyProperties[i].template get<vk::QueueFamilyProperties2>() = localVector[i];
+    }
     return queueFamilyProperties;
   }
   template<typename StructureChain, typename Allocator, typename Dispatch>
@@ -65839,7 +65848,16 @@ namespace VULKAN_HPP_NAMESPACE
     uint32_t queueFamilyPropertyCount;
     d.vkGetPhysicalDeviceQueueFamilyProperties2( m_physicalDevice, &queueFamilyPropertyCount, nullptr );
     queueFamilyProperties.resize( queueFamilyPropertyCount );
-    d.vkGetPhysicalDeviceQueueFamilyProperties2( m_physicalDevice, &queueFamilyPropertyCount, reinterpret_cast<VkQueueFamilyProperties2*>( queueFamilyProperties.data() ) );
+    std::vector<vk::QueueFamilyProperties2> localVector( queueFamilyPropertyCount );
+    for ( uint32_t i = 0; i < queueFamilyPropertyCount ; i++ )
+    {
+      localVector[i].pNext = queueFamilyProperties[i].template get<vk::QueueFamilyProperties2>().pNext;
+    }
+    d.vkGetPhysicalDeviceQueueFamilyProperties2( m_physicalDevice, &queueFamilyPropertyCount, reinterpret_cast<VkQueueFamilyProperties2*>( localVector.data() ) );
+    for ( uint32_t i = 0; i < queueFamilyPropertyCount ; i++ )
+    {
+      queueFamilyProperties[i].template get<vk::QueueFamilyProperties2>() = localVector[i];
+    }
     return queueFamilyProperties;
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -65877,7 +65895,16 @@ namespace VULKAN_HPP_NAMESPACE
     uint32_t queueFamilyPropertyCount;
     d.vkGetPhysicalDeviceQueueFamilyProperties2KHR( m_physicalDevice, &queueFamilyPropertyCount, nullptr );
     queueFamilyProperties.resize( queueFamilyPropertyCount );
-    d.vkGetPhysicalDeviceQueueFamilyProperties2KHR( m_physicalDevice, &queueFamilyPropertyCount, reinterpret_cast<VkQueueFamilyProperties2*>( queueFamilyProperties.data() ) );
+    std::vector<vk::QueueFamilyProperties2> localVector( queueFamilyPropertyCount );
+    for ( uint32_t i = 0; i < queueFamilyPropertyCount ; i++ )
+    {
+      localVector[i].pNext = queueFamilyProperties[i].template get<vk::QueueFamilyProperties2>().pNext;
+    }
+    d.vkGetPhysicalDeviceQueueFamilyProperties2KHR( m_physicalDevice, &queueFamilyPropertyCount, reinterpret_cast<VkQueueFamilyProperties2*>( localVector.data() ) );
+    for ( uint32_t i = 0; i < queueFamilyPropertyCount ; i++ )
+    {
+      queueFamilyProperties[i].template get<vk::QueueFamilyProperties2>() = localVector[i];
+    }
     return queueFamilyProperties;
   }
   template<typename StructureChain, typename Allocator, typename Dispatch>
@@ -65887,7 +65914,16 @@ namespace VULKAN_HPP_NAMESPACE
     uint32_t queueFamilyPropertyCount;
     d.vkGetPhysicalDeviceQueueFamilyProperties2KHR( m_physicalDevice, &queueFamilyPropertyCount, nullptr );
     queueFamilyProperties.resize( queueFamilyPropertyCount );
-    d.vkGetPhysicalDeviceQueueFamilyProperties2KHR( m_physicalDevice, &queueFamilyPropertyCount, reinterpret_cast<VkQueueFamilyProperties2*>( queueFamilyProperties.data() ) );
+    std::vector<vk::QueueFamilyProperties2> localVector( queueFamilyPropertyCount );
+    for ( uint32_t i = 0; i < queueFamilyPropertyCount ; i++ )
+    {
+      localVector[i].pNext = queueFamilyProperties[i].template get<vk::QueueFamilyProperties2>().pNext;
+    }
+    d.vkGetPhysicalDeviceQueueFamilyProperties2KHR( m_physicalDevice, &queueFamilyPropertyCount, reinterpret_cast<VkQueueFamilyProperties2*>( localVector.data() ) );
+    for ( uint32_t i = 0; i < queueFamilyPropertyCount ; i++ )
+    {
+      queueFamilyProperties[i].template get<vk::QueueFamilyProperties2>() = localVector[i];
+    }
     return queueFamilyProperties;
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/

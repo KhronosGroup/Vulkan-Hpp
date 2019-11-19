@@ -19325,7 +19325,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::GeometryTrianglesNV & operator=( vk::GeometryTrianglesNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::GeometryTrianglesNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::GeometryTrianglesNV ) - offsetof( GeometryTrianglesNV, pNext ) );
       return *this;
     }
 
@@ -19476,7 +19476,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::GeometryAABBNV & operator=( vk::GeometryAABBNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::GeometryAABBNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::GeometryAABBNV ) - offsetof( GeometryAABBNV, pNext ) );
       return *this;
     }
 
@@ -19628,7 +19628,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::GeometryNV & operator=( vk::GeometryNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::GeometryNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::GeometryNV ) - offsetof( GeometryNV, pNext ) );
       return *this;
     }
 
@@ -19717,7 +19717,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::AccelerationStructureInfoNV & operator=( vk::AccelerationStructureInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::AccelerationStructureInfoNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::AccelerationStructureInfoNV ) - offsetof( AccelerationStructureInfoNV, pNext ) );
       return *this;
     }
 
@@ -19816,7 +19816,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::AccelerationStructureCreateInfoNV & operator=( vk::AccelerationStructureCreateInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::AccelerationStructureCreateInfoNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::AccelerationStructureCreateInfoNV ) - offsetof( AccelerationStructureCreateInfoNV, pNext ) );
       return *this;
     }
 
@@ -19891,7 +19891,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::AccelerationStructureMemoryRequirementsInfoNV & operator=( vk::AccelerationStructureMemoryRequirementsInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::AccelerationStructureMemoryRequirementsInfoNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::AccelerationStructureMemoryRequirementsInfoNV ) - offsetof( AccelerationStructureMemoryRequirementsInfoNV, pNext ) );
       return *this;
     }
 
@@ -19972,7 +19972,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::AcquireNextImageInfoKHR & operator=( vk::AcquireNextImageInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::AcquireNextImageInfoKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::AcquireNextImageInfoKHR ) - offsetof( AcquireNextImageInfoKHR, pNext ) );
       return *this;
     }
 
@@ -20263,7 +20263,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::AndroidHardwareBufferFormatPropertiesANDROID & operator=( vk::AndroidHardwareBufferFormatPropertiesANDROID const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::AndroidHardwareBufferFormatPropertiesANDROID ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::AndroidHardwareBufferFormatPropertiesANDROID ) - offsetof( AndroidHardwareBufferFormatPropertiesANDROID, pNext ) );
       return *this;
     }
 
@@ -20335,7 +20335,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::AndroidHardwareBufferPropertiesANDROID & operator=( vk::AndroidHardwareBufferPropertiesANDROID const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::AndroidHardwareBufferPropertiesANDROID ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::AndroidHardwareBufferPropertiesANDROID ) - offsetof( AndroidHardwareBufferPropertiesANDROID, pNext ) );
       return *this;
     }
 
@@ -20393,7 +20393,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::AndroidHardwareBufferUsageANDROID & operator=( vk::AndroidHardwareBufferUsageANDROID const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::AndroidHardwareBufferUsageANDROID ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::AndroidHardwareBufferUsageANDROID ) - offsetof( AndroidHardwareBufferUsageANDROID, pNext ) );
       return *this;
     }
 
@@ -20451,7 +20451,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::AndroidSurfaceCreateInfoKHR & operator=( vk::AndroidSurfaceCreateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::AndroidSurfaceCreateInfoKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::AndroidSurfaceCreateInfoKHR ) - offsetof( AndroidSurfaceCreateInfoKHR, pNext ) );
       return *this;
     }
 
@@ -20533,7 +20533,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ApplicationInfo & operator=( vk::ApplicationInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ApplicationInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ApplicationInfo ) - offsetof( ApplicationInfo, pNext ) );
       return *this;
     }
 
@@ -20775,7 +20775,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::AttachmentDescription2KHR & operator=( vk::AttachmentDescription2KHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::AttachmentDescription2KHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::AttachmentDescription2KHR ) - offsetof( AttachmentDescription2KHR, pNext ) );
       return *this;
     }
 
@@ -20967,7 +20967,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::AttachmentReference2KHR & operator=( vk::AttachmentReference2KHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::AttachmentReference2KHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::AttachmentReference2KHR ) - offsetof( AttachmentReference2KHR, pNext ) );
       return *this;
     }
 
@@ -21172,7 +21172,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::SampleLocationsInfoEXT & operator=( vk::SampleLocationsInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::SampleLocationsInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::SampleLocationsInfoEXT ) - offsetof( SampleLocationsInfoEXT, pNext ) );
       return *this;
     }
 
@@ -21428,7 +21428,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::BindAccelerationStructureMemoryInfoNV & operator=( vk::BindAccelerationStructureMemoryInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::BindAccelerationStructureMemoryInfoNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::BindAccelerationStructureMemoryInfoNV ) - offsetof( BindAccelerationStructureMemoryInfoNV, pNext ) );
       return *this;
     }
 
@@ -21527,7 +21527,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::BindBufferMemoryDeviceGroupInfo & operator=( vk::BindBufferMemoryDeviceGroupInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::BindBufferMemoryDeviceGroupInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::BindBufferMemoryDeviceGroupInfo ) - offsetof( BindBufferMemoryDeviceGroupInfo, pNext ) );
       return *this;
     }
 
@@ -21604,7 +21604,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::BindBufferMemoryInfo & operator=( vk::BindBufferMemoryInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::BindBufferMemoryInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::BindBufferMemoryInfo ) - offsetof( BindBufferMemoryInfo, pNext ) );
       return *this;
     }
 
@@ -21809,7 +21809,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::BindImageMemoryDeviceGroupInfo & operator=( vk::BindImageMemoryDeviceGroupInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::BindImageMemoryDeviceGroupInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::BindImageMemoryDeviceGroupInfo ) - offsetof( BindImageMemoryDeviceGroupInfo, pNext ) );
       return *this;
     }
 
@@ -21902,7 +21902,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::BindImageMemoryInfo & operator=( vk::BindImageMemoryInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::BindImageMemoryInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::BindImageMemoryInfo ) - offsetof( BindImageMemoryInfo, pNext ) );
       return *this;
     }
 
@@ -21985,7 +21985,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::BindImageMemorySwapchainInfoKHR & operator=( vk::BindImageMemorySwapchainInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::BindImageMemorySwapchainInfoKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::BindImageMemorySwapchainInfoKHR ) - offsetof( BindImageMemorySwapchainInfoKHR, pNext ) );
       return *this;
     }
 
@@ -22058,7 +22058,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::BindImagePlaneMemoryInfo & operator=( vk::BindImagePlaneMemoryInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::BindImagePlaneMemoryInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::BindImagePlaneMemoryInfo ) - offsetof( BindImagePlaneMemoryInfo, pNext ) );
       return *this;
     }
 
@@ -22757,7 +22757,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::BindSparseInfo & operator=( vk::BindSparseInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::BindSparseInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::BindSparseInfo ) - offsetof( BindSparseInfo, pNext ) );
       return *this;
     }
 
@@ -22973,7 +22973,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::BufferCreateInfo & operator=( vk::BufferCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::BufferCreateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::BufferCreateInfo ) - offsetof( BufferCreateInfo, pNext ) );
       return *this;
     }
 
@@ -23078,7 +23078,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::BufferDeviceAddressCreateInfoEXT & operator=( vk::BufferDeviceAddressCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::BufferDeviceAddressCreateInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::BufferDeviceAddressCreateInfoEXT ) - offsetof( BufferDeviceAddressCreateInfoEXT, pNext ) );
       return *this;
     }
 
@@ -23143,7 +23143,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::BufferDeviceAddressInfoEXT & operator=( vk::BufferDeviceAddressInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::BufferDeviceAddressInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::BufferDeviceAddressInfoEXT ) - offsetof( BufferDeviceAddressInfoEXT, pNext ) );
       return *this;
     }
 
@@ -23398,7 +23398,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::BufferMemoryBarrier & operator=( vk::BufferMemoryBarrier const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::BufferMemoryBarrier ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::BufferMemoryBarrier ) - offsetof( BufferMemoryBarrier, pNext ) );
       return *this;
     }
 
@@ -23511,7 +23511,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::BufferMemoryRequirementsInfo2 & operator=( vk::BufferMemoryRequirementsInfo2 const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::BufferMemoryRequirementsInfo2 ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::BufferMemoryRequirementsInfo2 ) - offsetof( BufferMemoryRequirementsInfo2, pNext ) );
       return *this;
     }
 
@@ -23584,7 +23584,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::BufferViewCreateInfo & operator=( vk::BufferViewCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::BufferViewCreateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::BufferViewCreateInfo ) - offsetof( BufferViewCreateInfo, pNext ) );
       return *this;
     }
 
@@ -23681,7 +23681,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::CalibratedTimestampInfoEXT & operator=( vk::CalibratedTimestampInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::CalibratedTimestampInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::CalibratedTimestampInfoEXT ) - offsetof( CalibratedTimestampInfoEXT, pNext ) );
       return *this;
     }
 
@@ -23748,7 +23748,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::CheckpointDataNV & operator=( vk::CheckpointDataNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::CheckpointDataNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::CheckpointDataNV ) - offsetof( CheckpointDataNV, pNext ) );
       return *this;
     }
 
@@ -24166,7 +24166,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::CmdProcessCommandsInfoNVX & operator=( vk::CmdProcessCommandsInfoNVX const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::CmdProcessCommandsInfoNVX ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::CmdProcessCommandsInfoNVX ) - offsetof( CmdProcessCommandsInfoNVX, pNext ) );
       return *this;
     }
 
@@ -24307,7 +24307,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::CmdReserveSpaceForCommandsInfoNVX & operator=( vk::CmdReserveSpaceForCommandsInfoNVX const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::CmdReserveSpaceForCommandsInfoNVX ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::CmdReserveSpaceForCommandsInfoNVX ) - offsetof( CmdReserveSpaceForCommandsInfoNVX, pNext ) );
       return *this;
     }
 
@@ -24540,7 +24540,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::CommandBufferAllocateInfo & operator=( vk::CommandBufferAllocateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::CommandBufferAllocateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::CommandBufferAllocateInfo ) - offsetof( CommandBufferAllocateInfo, pNext ) );
       return *this;
     }
 
@@ -24631,7 +24631,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::CommandBufferInheritanceInfo & operator=( vk::CommandBufferInheritanceInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::CommandBufferInheritanceInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::CommandBufferInheritanceInfo ) - offsetof( CommandBufferInheritanceInfo, pNext ) );
       return *this;
     }
 
@@ -24738,7 +24738,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::CommandBufferBeginInfo & operator=( vk::CommandBufferBeginInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::CommandBufferBeginInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::CommandBufferBeginInfo ) - offsetof( CommandBufferBeginInfo, pNext ) );
       return *this;
     }
 
@@ -24811,7 +24811,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::CommandBufferInheritanceConditionalRenderingInfoEXT & operator=( vk::CommandBufferInheritanceConditionalRenderingInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::CommandBufferInheritanceConditionalRenderingInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::CommandBufferInheritanceConditionalRenderingInfoEXT ) - offsetof( CommandBufferInheritanceConditionalRenderingInfoEXT, pNext ) );
       return *this;
     }
 
@@ -24878,7 +24878,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::CommandPoolCreateInfo & operator=( vk::CommandPoolCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::CommandPoolCreateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::CommandPoolCreateInfo ) - offsetof( CommandPoolCreateInfo, pNext ) );
       return *this;
     }
 
@@ -25107,7 +25107,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PipelineShaderStageCreateInfo & operator=( vk::PipelineShaderStageCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineShaderStageCreateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineShaderStageCreateInfo ) - offsetof( PipelineShaderStageCreateInfo, pNext ) );
       return *this;
     }
 
@@ -25212,7 +25212,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ComputePipelineCreateInfo & operator=( vk::ComputePipelineCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ComputePipelineCreateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ComputePipelineCreateInfo ) - offsetof( ComputePipelineCreateInfo, pNext ) );
       return *this;
     }
 
@@ -25313,7 +25313,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ConditionalRenderingBeginInfoEXT & operator=( vk::ConditionalRenderingBeginInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ConditionalRenderingBeginInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ConditionalRenderingBeginInfoEXT ) - offsetof( ConditionalRenderingBeginInfoEXT, pNext ) );
       return *this;
     }
 
@@ -25487,7 +25487,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::CooperativeMatrixPropertiesNV & operator=( vk::CooperativeMatrixPropertiesNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::CooperativeMatrixPropertiesNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::CooperativeMatrixPropertiesNV ) - offsetof( CooperativeMatrixPropertiesNV, pNext ) );
       return *this;
     }
 
@@ -25620,7 +25620,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::CopyDescriptorSet & operator=( vk::CopyDescriptorSet const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::CopyDescriptorSet ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::CopyDescriptorSet ) - offsetof( CopyDescriptorSet, pNext ) );
       return *this;
     }
 
@@ -25741,7 +25741,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::D3D12FenceSubmitInfoKHR & operator=( vk::D3D12FenceSubmitInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::D3D12FenceSubmitInfoKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::D3D12FenceSubmitInfoKHR ) - offsetof( D3D12FenceSubmitInfoKHR, pNext ) );
       return *this;
     }
 
@@ -25835,7 +25835,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DebugMarkerMarkerInfoEXT & operator=( vk::DebugMarkerMarkerInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DebugMarkerMarkerInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DebugMarkerMarkerInfoEXT ) - offsetof( DebugMarkerMarkerInfoEXT, pNext ) );
       return *this;
     }
 
@@ -25912,7 +25912,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DebugMarkerObjectNameInfoEXT & operator=( vk::DebugMarkerObjectNameInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DebugMarkerObjectNameInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DebugMarkerObjectNameInfoEXT ) - offsetof( DebugMarkerObjectNameInfoEXT, pNext ) );
       return *this;
     }
 
@@ -26001,7 +26001,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DebugMarkerObjectTagInfoEXT & operator=( vk::DebugMarkerObjectTagInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DebugMarkerObjectTagInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DebugMarkerObjectTagInfoEXT ) - offsetof( DebugMarkerObjectTagInfoEXT, pNext ) );
       return *this;
     }
 
@@ -26102,7 +26102,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DebugReportCallbackCreateInfoEXT & operator=( vk::DebugReportCallbackCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DebugReportCallbackCreateInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DebugReportCallbackCreateInfoEXT ) - offsetof( DebugReportCallbackCreateInfoEXT, pNext ) );
       return *this;
     }
 
@@ -26187,7 +26187,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DebugUtilsLabelEXT & operator=( vk::DebugUtilsLabelEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DebugUtilsLabelEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DebugUtilsLabelEXT ) - offsetof( DebugUtilsLabelEXT, pNext ) );
       return *this;
     }
 
@@ -26264,7 +26264,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DebugUtilsObjectNameInfoEXT & operator=( vk::DebugUtilsObjectNameInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DebugUtilsObjectNameInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DebugUtilsObjectNameInfoEXT ) - offsetof( DebugUtilsObjectNameInfoEXT, pNext ) );
       return *this;
     }
 
@@ -26363,7 +26363,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DebugUtilsMessengerCallbackDataEXT & operator=( vk::DebugUtilsMessengerCallbackDataEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DebugUtilsMessengerCallbackDataEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DebugUtilsMessengerCallbackDataEXT ) - offsetof( DebugUtilsMessengerCallbackDataEXT, pNext ) );
       return *this;
     }
 
@@ -26508,7 +26508,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DebugUtilsMessengerCreateInfoEXT & operator=( vk::DebugUtilsMessengerCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DebugUtilsMessengerCreateInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DebugUtilsMessengerCreateInfoEXT ) - offsetof( DebugUtilsMessengerCreateInfoEXT, pNext ) );
       return *this;
     }
 
@@ -26613,7 +26613,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DebugUtilsObjectTagInfoEXT & operator=( vk::DebugUtilsObjectTagInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DebugUtilsObjectTagInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DebugUtilsObjectTagInfoEXT ) - offsetof( DebugUtilsObjectTagInfoEXT, pNext ) );
       return *this;
     }
 
@@ -26710,7 +26710,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DedicatedAllocationBufferCreateInfoNV & operator=( vk::DedicatedAllocationBufferCreateInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DedicatedAllocationBufferCreateInfoNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DedicatedAllocationBufferCreateInfoNV ) - offsetof( DedicatedAllocationBufferCreateInfoNV, pNext ) );
       return *this;
     }
 
@@ -26775,7 +26775,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DedicatedAllocationImageCreateInfoNV & operator=( vk::DedicatedAllocationImageCreateInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DedicatedAllocationImageCreateInfoNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DedicatedAllocationImageCreateInfoNV ) - offsetof( DedicatedAllocationImageCreateInfoNV, pNext ) );
       return *this;
     }
 
@@ -26842,7 +26842,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DedicatedAllocationMemoryAllocateInfoNV & operator=( vk::DedicatedAllocationMemoryAllocateInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DedicatedAllocationMemoryAllocateInfoNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DedicatedAllocationMemoryAllocateInfoNV ) - offsetof( DedicatedAllocationMemoryAllocateInfoNV, pNext ) );
       return *this;
     }
 
@@ -27118,7 +27118,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DescriptorPoolCreateInfo & operator=( vk::DescriptorPoolCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DescriptorPoolCreateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DescriptorPoolCreateInfo ) - offsetof( DescriptorPoolCreateInfo, pNext ) );
       return *this;
     }
 
@@ -27207,7 +27207,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DescriptorPoolInlineUniformBlockCreateInfoEXT & operator=( vk::DescriptorPoolInlineUniformBlockCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DescriptorPoolInlineUniformBlockCreateInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DescriptorPoolInlineUniformBlockCreateInfoEXT ) - offsetof( DescriptorPoolInlineUniformBlockCreateInfoEXT, pNext ) );
       return *this;
     }
 
@@ -27276,7 +27276,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DescriptorSetAllocateInfo & operator=( vk::DescriptorSetAllocateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DescriptorSetAllocateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DescriptorSetAllocateInfo ) - offsetof( DescriptorSetAllocateInfo, pNext ) );
       return *this;
     }
 
@@ -27448,7 +27448,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DescriptorSetLayoutBindingFlagsCreateInfoEXT & operator=( vk::DescriptorSetLayoutBindingFlagsCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DescriptorSetLayoutBindingFlagsCreateInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DescriptorSetLayoutBindingFlagsCreateInfoEXT ) - offsetof( DescriptorSetLayoutBindingFlagsCreateInfoEXT, pNext ) );
       return *this;
     }
 
@@ -27525,7 +27525,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DescriptorSetLayoutCreateInfo & operator=( vk::DescriptorSetLayoutCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DescriptorSetLayoutCreateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DescriptorSetLayoutCreateInfo ) - offsetof( DescriptorSetLayoutCreateInfo, pNext ) );
       return *this;
     }
 
@@ -27606,7 +27606,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DescriptorSetLayoutSupport & operator=( vk::DescriptorSetLayoutSupport const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DescriptorSetLayoutSupport ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DescriptorSetLayoutSupport ) - offsetof( DescriptorSetLayoutSupport, pNext ) );
       return *this;
     }
 
@@ -27661,7 +27661,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DescriptorSetVariableDescriptorCountAllocateInfoEXT & operator=( vk::DescriptorSetVariableDescriptorCountAllocateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DescriptorSetVariableDescriptorCountAllocateInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DescriptorSetVariableDescriptorCountAllocateInfoEXT ) - offsetof( DescriptorSetVariableDescriptorCountAllocateInfoEXT, pNext ) );
       return *this;
     }
 
@@ -27734,7 +27734,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DescriptorSetVariableDescriptorCountLayoutSupportEXT & operator=( vk::DescriptorSetVariableDescriptorCountLayoutSupportEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DescriptorSetVariableDescriptorCountLayoutSupportEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DescriptorSetVariableDescriptorCountLayoutSupportEXT ) - offsetof( DescriptorSetVariableDescriptorCountLayoutSupportEXT, pNext ) );
       return *this;
     }
 
@@ -27900,7 +27900,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DescriptorUpdateTemplateCreateInfo & operator=( vk::DescriptorUpdateTemplateCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DescriptorUpdateTemplateCreateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DescriptorUpdateTemplateCreateInfo ) - offsetof( DescriptorUpdateTemplateCreateInfo, pNext ) );
       return *this;
     }
 
@@ -28027,7 +28027,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DeviceQueueCreateInfo & operator=( vk::DeviceQueueCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DeviceQueueCreateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DeviceQueueCreateInfo ) - offsetof( DeviceQueueCreateInfo, pNext ) );
       return *this;
     }
 
@@ -28719,7 +28719,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DeviceCreateInfo & operator=( vk::DeviceCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DeviceCreateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DeviceCreateInfo ) - offsetof( DeviceCreateInfo, pNext ) );
       return *this;
     }
 
@@ -28840,7 +28840,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DeviceEventInfoEXT & operator=( vk::DeviceEventInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DeviceEventInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DeviceEventInfoEXT ) - offsetof( DeviceEventInfoEXT, pNext ) );
       return *this;
     }
 
@@ -28905,7 +28905,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DeviceGeneratedCommandsFeaturesNVX & operator=( vk::DeviceGeneratedCommandsFeaturesNVX const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DeviceGeneratedCommandsFeaturesNVX ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DeviceGeneratedCommandsFeaturesNVX ) - offsetof( DeviceGeneratedCommandsFeaturesNVX, pNext ) );
       return *this;
     }
 
@@ -28978,7 +28978,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DeviceGeneratedCommandsLimitsNVX & operator=( vk::DeviceGeneratedCommandsLimitsNVX const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DeviceGeneratedCommandsLimitsNVX ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DeviceGeneratedCommandsLimitsNVX ) - offsetof( DeviceGeneratedCommandsLimitsNVX, pNext ) );
       return *this;
     }
 
@@ -29077,7 +29077,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DeviceGroupBindSparseInfo & operator=( vk::DeviceGroupBindSparseInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DeviceGroupBindSparseInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DeviceGroupBindSparseInfo ) - offsetof( DeviceGroupBindSparseInfo, pNext ) );
       return *this;
     }
 
@@ -29150,7 +29150,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DeviceGroupCommandBufferBeginInfo & operator=( vk::DeviceGroupCommandBufferBeginInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DeviceGroupCommandBufferBeginInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DeviceGroupCommandBufferBeginInfo ) - offsetof( DeviceGroupCommandBufferBeginInfo, pNext ) );
       return *this;
     }
 
@@ -29217,7 +29217,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DeviceGroupDeviceCreateInfo & operator=( vk::DeviceGroupDeviceCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DeviceGroupDeviceCreateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DeviceGroupDeviceCreateInfo ) - offsetof( DeviceGroupDeviceCreateInfo, pNext ) );
       return *this;
     }
 
@@ -29294,7 +29294,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DeviceGroupPresentCapabilitiesKHR & operator=( vk::DeviceGroupPresentCapabilitiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DeviceGroupPresentCapabilitiesKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DeviceGroupPresentCapabilitiesKHR ) - offsetof( DeviceGroupPresentCapabilitiesKHR, pNext ) );
       return *this;
     }
 
@@ -29353,7 +29353,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DeviceGroupPresentInfoKHR & operator=( vk::DeviceGroupPresentInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DeviceGroupPresentInfoKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DeviceGroupPresentInfoKHR ) - offsetof( DeviceGroupPresentInfoKHR, pNext ) );
       return *this;
     }
 
@@ -29438,7 +29438,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DeviceGroupRenderPassBeginInfo & operator=( vk::DeviceGroupRenderPassBeginInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DeviceGroupRenderPassBeginInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DeviceGroupRenderPassBeginInfo ) - offsetof( DeviceGroupRenderPassBeginInfo, pNext ) );
       return *this;
     }
 
@@ -29529,7 +29529,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DeviceGroupSubmitInfo & operator=( vk::DeviceGroupSubmitInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DeviceGroupSubmitInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DeviceGroupSubmitInfo ) - offsetof( DeviceGroupSubmitInfo, pNext ) );
       return *this;
     }
 
@@ -29634,7 +29634,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DeviceGroupSwapchainCreateInfoKHR & operator=( vk::DeviceGroupSwapchainCreateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DeviceGroupSwapchainCreateInfoKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DeviceGroupSwapchainCreateInfoKHR ) - offsetof( DeviceGroupSwapchainCreateInfoKHR, pNext ) );
       return *this;
     }
 
@@ -29699,7 +29699,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DeviceMemoryOverallocationCreateInfoAMD & operator=( vk::DeviceMemoryOverallocationCreateInfoAMD const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DeviceMemoryOverallocationCreateInfoAMD ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DeviceMemoryOverallocationCreateInfoAMD ) - offsetof( DeviceMemoryOverallocationCreateInfoAMD, pNext ) );
       return *this;
     }
 
@@ -29764,7 +29764,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DeviceQueueGlobalPriorityCreateInfoEXT & operator=( vk::DeviceQueueGlobalPriorityCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DeviceQueueGlobalPriorityCreateInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DeviceQueueGlobalPriorityCreateInfoEXT ) - offsetof( DeviceQueueGlobalPriorityCreateInfoEXT, pNext ) );
       return *this;
     }
 
@@ -29833,7 +29833,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DeviceQueueInfo2 & operator=( vk::DeviceQueueInfo2 const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DeviceQueueInfo2 ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DeviceQueueInfo2 ) - offsetof( DeviceQueueInfo2, pNext ) );
       return *this;
     }
 
@@ -29983,7 +29983,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DisplayEventInfoEXT & operator=( vk::DisplayEventInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DisplayEventInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DisplayEventInfoEXT ) - offsetof( DisplayEventInfoEXT, pNext ) );
       return *this;
     }
 
@@ -30109,7 +30109,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DisplayModeCreateInfoKHR & operator=( vk::DisplayModeCreateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DisplayModeCreateInfoKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DisplayModeCreateInfoKHR ) - offsetof( DisplayModeCreateInfoKHR, pNext ) );
       return *this;
     }
 
@@ -30229,7 +30229,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DisplayModeProperties2KHR & operator=( vk::DisplayModeProperties2KHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DisplayModeProperties2KHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DisplayModeProperties2KHR ) - offsetof( DisplayModeProperties2KHR, pNext ) );
       return *this;
     }
 
@@ -30282,7 +30282,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DisplayNativeHdrSurfaceCapabilitiesAMD & operator=( vk::DisplayNativeHdrSurfaceCapabilitiesAMD const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DisplayNativeHdrSurfaceCapabilitiesAMD ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DisplayNativeHdrSurfaceCapabilitiesAMD ) - offsetof( DisplayNativeHdrSurfaceCapabilitiesAMD, pNext ) );
       return *this;
     }
 
@@ -30410,7 +30410,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DisplayPlaneCapabilities2KHR & operator=( vk::DisplayPlaneCapabilities2KHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DisplayPlaneCapabilities2KHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DisplayPlaneCapabilities2KHR ) - offsetof( DisplayPlaneCapabilities2KHR, pNext ) );
       return *this;
     }
 
@@ -30465,7 +30465,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DisplayPlaneInfo2KHR & operator=( vk::DisplayPlaneInfo2KHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DisplayPlaneInfo2KHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DisplayPlaneInfo2KHR ) - offsetof( DisplayPlaneInfo2KHR, pNext ) );
       return *this;
     }
 
@@ -30585,7 +30585,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DisplayPlaneProperties2KHR & operator=( vk::DisplayPlaneProperties2KHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DisplayPlaneProperties2KHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DisplayPlaneProperties2KHR ) - offsetof( DisplayPlaneProperties2KHR, pNext ) );
       return *this;
     }
 
@@ -30638,7 +30638,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DisplayPowerInfoEXT & operator=( vk::DisplayPowerInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DisplayPowerInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DisplayPowerInfoEXT ) - offsetof( DisplayPowerInfoEXT, pNext ) );
       return *this;
     }
 
@@ -30707,7 +30707,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DisplayPresentInfoKHR & operator=( vk::DisplayPresentInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DisplayPresentInfoKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DisplayPresentInfoKHR ) - offsetof( DisplayPresentInfoKHR, pNext ) );
       return *this;
     }
 
@@ -30855,7 +30855,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DisplayProperties2KHR & operator=( vk::DisplayProperties2KHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DisplayProperties2KHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DisplayProperties2KHR ) - offsetof( DisplayProperties2KHR, pNext ) );
       return *this;
     }
 
@@ -30922,7 +30922,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DisplaySurfaceCreateInfoKHR & operator=( vk::DisplaySurfaceCreateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DisplaySurfaceCreateInfoKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DisplaySurfaceCreateInfoKHR ) - offsetof( DisplaySurfaceCreateInfoKHR, pNext ) );
       return *this;
     }
 
@@ -31323,7 +31323,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::DrmFormatModifierPropertiesListEXT & operator=( vk::DrmFormatModifierPropertiesListEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::DrmFormatModifierPropertiesListEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::DrmFormatModifierPropertiesListEXT ) - offsetof( DrmFormatModifierPropertiesListEXT, pNext ) );
       return *this;
     }
 
@@ -31378,7 +31378,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::EventCreateInfo & operator=( vk::EventCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::EventCreateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::EventCreateInfo ) - offsetof( EventCreateInfo, pNext ) );
       return *this;
     }
 
@@ -31443,7 +31443,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ExportFenceCreateInfo & operator=( vk::ExportFenceCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ExportFenceCreateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ExportFenceCreateInfo ) - offsetof( ExportFenceCreateInfo, pNext ) );
       return *this;
     }
 
@@ -31514,7 +31514,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ExportFenceWin32HandleInfoKHR & operator=( vk::ExportFenceWin32HandleInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ExportFenceWin32HandleInfoKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ExportFenceWin32HandleInfoKHR ) - offsetof( ExportFenceWin32HandleInfoKHR, pNext ) );
       return *this;
     }
 
@@ -31596,7 +31596,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ExportMemoryAllocateInfo & operator=( vk::ExportMemoryAllocateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ExportMemoryAllocateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ExportMemoryAllocateInfo ) - offsetof( ExportMemoryAllocateInfo, pNext ) );
       return *this;
     }
 
@@ -31661,7 +31661,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ExportMemoryAllocateInfoNV & operator=( vk::ExportMemoryAllocateInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ExportMemoryAllocateInfoNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ExportMemoryAllocateInfoNV ) - offsetof( ExportMemoryAllocateInfoNV, pNext ) );
       return *this;
     }
 
@@ -31732,7 +31732,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ExportMemoryWin32HandleInfoKHR & operator=( vk::ExportMemoryWin32HandleInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ExportMemoryWin32HandleInfoKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ExportMemoryWin32HandleInfoKHR ) - offsetof( ExportMemoryWin32HandleInfoKHR, pNext ) );
       return *this;
     }
 
@@ -31818,7 +31818,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ExportMemoryWin32HandleInfoNV & operator=( vk::ExportMemoryWin32HandleInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ExportMemoryWin32HandleInfoNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ExportMemoryWin32HandleInfoNV ) - offsetof( ExportMemoryWin32HandleInfoNV, pNext ) );
       return *this;
     }
 
@@ -31892,7 +31892,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ExportSemaphoreCreateInfo & operator=( vk::ExportSemaphoreCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ExportSemaphoreCreateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ExportSemaphoreCreateInfo ) - offsetof( ExportSemaphoreCreateInfo, pNext ) );
       return *this;
     }
 
@@ -31963,7 +31963,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ExportSemaphoreWin32HandleInfoKHR & operator=( vk::ExportSemaphoreWin32HandleInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ExportSemaphoreWin32HandleInfoKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ExportSemaphoreWin32HandleInfoKHR ) - offsetof( ExportSemaphoreWin32HandleInfoKHR, pNext ) );
       return *this;
     }
 
@@ -32145,7 +32145,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ExternalBufferProperties & operator=( vk::ExternalBufferProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ExternalBufferProperties ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ExternalBufferProperties ) - offsetof( ExternalBufferProperties, pNext ) );
       return *this;
     }
 
@@ -32202,7 +32202,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ExternalFenceProperties & operator=( vk::ExternalFenceProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ExternalFenceProperties ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ExternalFenceProperties ) - offsetof( ExternalFenceProperties, pNext ) );
       return *this;
     }
 
@@ -32261,7 +32261,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ExternalFormatANDROID & operator=( vk::ExternalFormatANDROID const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ExternalFormatANDROID ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ExternalFormatANDROID ) - offsetof( ExternalFormatANDROID, pNext ) );
       return *this;
     }
 
@@ -32327,7 +32327,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ExternalImageFormatProperties & operator=( vk::ExternalImageFormatProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ExternalImageFormatProperties ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ExternalImageFormatProperties ) - offsetof( ExternalImageFormatProperties, pNext ) );
       return *this;
     }
 
@@ -32494,7 +32494,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ExternalMemoryBufferCreateInfo & operator=( vk::ExternalMemoryBufferCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ExternalMemoryBufferCreateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ExternalMemoryBufferCreateInfo ) - offsetof( ExternalMemoryBufferCreateInfo, pNext ) );
       return *this;
     }
 
@@ -32559,7 +32559,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ExternalMemoryImageCreateInfo & operator=( vk::ExternalMemoryImageCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ExternalMemoryImageCreateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ExternalMemoryImageCreateInfo ) - offsetof( ExternalMemoryImageCreateInfo, pNext ) );
       return *this;
     }
 
@@ -32624,7 +32624,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ExternalMemoryImageCreateInfoNV & operator=( vk::ExternalMemoryImageCreateInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ExternalMemoryImageCreateInfoNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ExternalMemoryImageCreateInfoNV ) - offsetof( ExternalMemoryImageCreateInfoNV, pNext ) );
       return *this;
     }
 
@@ -32693,7 +32693,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ExternalSemaphoreProperties & operator=( vk::ExternalSemaphoreProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ExternalSemaphoreProperties ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ExternalSemaphoreProperties ) - offsetof( ExternalSemaphoreProperties, pNext ) );
       return *this;
     }
 
@@ -32750,7 +32750,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::FenceCreateInfo & operator=( vk::FenceCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::FenceCreateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::FenceCreateInfo ) - offsetof( FenceCreateInfo, pNext ) );
       return *this;
     }
 
@@ -32817,7 +32817,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::FenceGetFdInfoKHR & operator=( vk::FenceGetFdInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::FenceGetFdInfoKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::FenceGetFdInfoKHR ) - offsetof( FenceGetFdInfoKHR, pNext ) );
       return *this;
     }
 
@@ -32894,7 +32894,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::FenceGetWin32HandleInfoKHR & operator=( vk::FenceGetWin32HandleInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::FenceGetWin32HandleInfoKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::FenceGetWin32HandleInfoKHR ) - offsetof( FenceGetWin32HandleInfoKHR, pNext ) );
       return *this;
     }
 
@@ -32970,7 +32970,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::FilterCubicImageViewImageFormatPropertiesEXT & operator=( vk::FilterCubicImageViewImageFormatPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::FilterCubicImageViewImageFormatPropertiesEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::FilterCubicImageViewImageFormatPropertiesEXT ) - offsetof( FilterCubicImageViewImageFormatPropertiesEXT, pNext ) );
       return *this;
     }
 
@@ -33076,7 +33076,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::FormatProperties2 & operator=( vk::FormatProperties2 const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::FormatProperties2 ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::FormatProperties2 ) - offsetof( FormatProperties2, pNext ) );
       return *this;
     }
 
@@ -33141,7 +33141,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::FramebufferAttachmentImageInfoKHR & operator=( vk::FramebufferAttachmentImageInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::FramebufferAttachmentImageInfoKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::FramebufferAttachmentImageInfoKHR ) - offsetof( FramebufferAttachmentImageInfoKHR, pNext ) );
       return *this;
     }
 
@@ -33256,7 +33256,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::FramebufferAttachmentsCreateInfoKHR & operator=( vk::FramebufferAttachmentsCreateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::FramebufferAttachmentsCreateInfoKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::FramebufferAttachmentsCreateInfoKHR ) - offsetof( FramebufferAttachmentsCreateInfoKHR, pNext ) );
       return *this;
     }
 
@@ -33341,7 +33341,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::FramebufferCreateInfo & operator=( vk::FramebufferCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::FramebufferCreateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::FramebufferCreateInfo ) - offsetof( FramebufferCreateInfo, pNext ) );
       return *this;
     }
 
@@ -33460,7 +33460,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::FramebufferMixedSamplesCombinationNV & operator=( vk::FramebufferMixedSamplesCombinationNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::FramebufferMixedSamplesCombinationNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::FramebufferMixedSamplesCombinationNV ) - offsetof( FramebufferMixedSamplesCombinationNV, pNext ) );
       return *this;
     }
 
@@ -33675,7 +33675,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PipelineVertexInputStateCreateInfo & operator=( vk::PipelineVertexInputStateCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineVertexInputStateCreateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineVertexInputStateCreateInfo ) - offsetof( PipelineVertexInputStateCreateInfo, pNext ) );
       return *this;
     }
 
@@ -33776,7 +33776,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PipelineInputAssemblyStateCreateInfo & operator=( vk::PipelineInputAssemblyStateCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineInputAssemblyStateCreateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineInputAssemblyStateCreateInfo ) - offsetof( PipelineInputAssemblyStateCreateInfo, pNext ) );
       return *this;
     }
 
@@ -33859,7 +33859,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PipelineTessellationStateCreateInfo & operator=( vk::PipelineTessellationStateCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineTessellationStateCreateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineTessellationStateCreateInfo ) - offsetof( PipelineTessellationStateCreateInfo, pNext ) );
       return *this;
     }
 
@@ -34039,7 +34039,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PipelineViewportStateCreateInfo & operator=( vk::PipelineViewportStateCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineViewportStateCreateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineViewportStateCreateInfo ) - offsetof( PipelineViewportStateCreateInfo, pNext ) );
       return *this;
     }
 
@@ -34156,7 +34156,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PipelineRasterizationStateCreateInfo & operator=( vk::PipelineRasterizationStateCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineRasterizationStateCreateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineRasterizationStateCreateInfo ) - offsetof( PipelineRasterizationStateCreateInfo, pNext ) );
       return *this;
     }
 
@@ -34313,7 +34313,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PipelineMultisampleStateCreateInfo & operator=( vk::PipelineMultisampleStateCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineMultisampleStateCreateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineMultisampleStateCreateInfo ) - offsetof( PipelineMultisampleStateCreateInfo, pNext ) );
       return *this;
     }
 
@@ -34553,7 +34553,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PipelineDepthStencilStateCreateInfo & operator=( vk::PipelineDepthStencilStateCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineDepthStencilStateCreateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineDepthStencilStateCreateInfo ) - offsetof( PipelineDepthStencilStateCreateInfo, pNext ) );
       return *this;
     }
 
@@ -34821,7 +34821,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PipelineColorBlendStateCreateInfo & operator=( vk::PipelineColorBlendStateCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineColorBlendStateCreateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineColorBlendStateCreateInfo ) - offsetof( PipelineColorBlendStateCreateInfo, pNext ) );
       return *this;
     }
 
@@ -34930,7 +34930,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PipelineDynamicStateCreateInfo & operator=( vk::PipelineDynamicStateCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineDynamicStateCreateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineDynamicStateCreateInfo ) - offsetof( PipelineDynamicStateCreateInfo, pNext ) );
       return *this;
     }
 
@@ -35043,7 +35043,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::GraphicsPipelineCreateInfo & operator=( vk::GraphicsPipelineCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::GraphicsPipelineCreateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::GraphicsPipelineCreateInfo ) - offsetof( GraphicsPipelineCreateInfo, pNext ) );
       return *this;
     }
 
@@ -35309,7 +35309,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::HdrMetadataEXT & operator=( vk::HdrMetadataEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::HdrMetadataEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::HdrMetadataEXT ) - offsetof( HdrMetadataEXT, pNext ) );
       return *this;
     }
 
@@ -35430,7 +35430,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::HeadlessSurfaceCreateInfoEXT & operator=( vk::HeadlessSurfaceCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::HeadlessSurfaceCreateInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::HeadlessSurfaceCreateInfoEXT ) - offsetof( HeadlessSurfaceCreateInfoEXT, pNext ) );
       return *this;
     }
 
@@ -35499,7 +35499,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::IOSSurfaceCreateInfoMVK & operator=( vk::IOSSurfaceCreateInfoMVK const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::IOSSurfaceCreateInfoMVK ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::IOSSurfaceCreateInfoMVK ) - offsetof( IOSSurfaceCreateInfoMVK, pNext ) );
       return *this;
     }
 
@@ -35768,7 +35768,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ImageCreateInfo & operator=( vk::ImageCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImageCreateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImageCreateInfo ) - offsetof( ImageCreateInfo, pNext ) );
       return *this;
     }
 
@@ -35992,7 +35992,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ImageDrmFormatModifierExplicitCreateInfoEXT & operator=( vk::ImageDrmFormatModifierExplicitCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImageDrmFormatModifierExplicitCreateInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImageDrmFormatModifierExplicitCreateInfoEXT ) - offsetof( ImageDrmFormatModifierExplicitCreateInfoEXT, pNext ) );
       return *this;
     }
 
@@ -36075,7 +36075,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ImageDrmFormatModifierListCreateInfoEXT & operator=( vk::ImageDrmFormatModifierListCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImageDrmFormatModifierListCreateInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImageDrmFormatModifierListCreateInfoEXT ) - offsetof( ImageDrmFormatModifierListCreateInfoEXT, pNext ) );
       return *this;
     }
 
@@ -36148,7 +36148,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ImageDrmFormatModifierPropertiesEXT & operator=( vk::ImageDrmFormatModifierPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImageDrmFormatModifierPropertiesEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImageDrmFormatModifierPropertiesEXT ) - offsetof( ImageDrmFormatModifierPropertiesEXT, pNext ) );
       return *this;
     }
 
@@ -36203,7 +36203,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ImageFormatListCreateInfoKHR & operator=( vk::ImageFormatListCreateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImageFormatListCreateInfoKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImageFormatListCreateInfoKHR ) - offsetof( ImageFormatListCreateInfoKHR, pNext ) );
       return *this;
     }
 
@@ -36276,7 +36276,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ImageFormatProperties2 & operator=( vk::ImageFormatProperties2 const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImageFormatProperties2 ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImageFormatProperties2 ) - offsetof( ImageFormatProperties2, pNext ) );
       return *this;
     }
 
@@ -36432,7 +36432,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ImageMemoryBarrier & operator=( vk::ImageMemoryBarrier const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImageMemoryBarrier ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImageMemoryBarrier ) - offsetof( ImageMemoryBarrier, pNext ) );
       return *this;
     }
 
@@ -36553,7 +36553,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ImageMemoryRequirementsInfo2 & operator=( vk::ImageMemoryRequirementsInfo2 const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImageMemoryRequirementsInfo2 ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImageMemoryRequirementsInfo2 ) - offsetof( ImageMemoryRequirementsInfo2, pNext ) );
       return *this;
     }
 
@@ -36622,7 +36622,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ImagePipeSurfaceCreateInfoFUCHSIA & operator=( vk::ImagePipeSurfaceCreateInfoFUCHSIA const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImagePipeSurfaceCreateInfoFUCHSIA ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImagePipeSurfaceCreateInfoFUCHSIA ) - offsetof( ImagePipeSurfaceCreateInfoFUCHSIA, pNext ) );
       return *this;
     }
 
@@ -36696,7 +36696,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ImagePlaneMemoryRequirementsInfo & operator=( vk::ImagePlaneMemoryRequirementsInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImagePlaneMemoryRequirementsInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImagePlaneMemoryRequirementsInfo ) - offsetof( ImagePlaneMemoryRequirementsInfo, pNext ) );
       return *this;
     }
 
@@ -36850,7 +36850,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ImageSparseMemoryRequirementsInfo2 & operator=( vk::ImageSparseMemoryRequirementsInfo2 const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImageSparseMemoryRequirementsInfo2 ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImageSparseMemoryRequirementsInfo2 ) - offsetof( ImageSparseMemoryRequirementsInfo2, pNext ) );
       return *this;
     }
 
@@ -36915,7 +36915,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ImageStencilUsageCreateInfoEXT & operator=( vk::ImageStencilUsageCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImageStencilUsageCreateInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImageStencilUsageCreateInfoEXT ) - offsetof( ImageStencilUsageCreateInfoEXT, pNext ) );
       return *this;
     }
 
@@ -36980,7 +36980,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ImageSwapchainCreateInfoKHR & operator=( vk::ImageSwapchainCreateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImageSwapchainCreateInfoKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImageSwapchainCreateInfoKHR ) - offsetof( ImageSwapchainCreateInfoKHR, pNext ) );
       return *this;
     }
 
@@ -37045,7 +37045,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ImageViewASTCDecodeModeEXT & operator=( vk::ImageViewASTCDecodeModeEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImageViewASTCDecodeModeEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImageViewASTCDecodeModeEXT ) - offsetof( ImageViewASTCDecodeModeEXT, pNext ) );
       return *this;
     }
 
@@ -37120,7 +37120,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ImageViewCreateInfo & operator=( vk::ImageViewCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImageViewCreateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImageViewCreateInfo ) - offsetof( ImageViewCreateInfo, pNext ) );
       return *this;
     }
 
@@ -37229,7 +37229,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ImageViewHandleInfoNVX & operator=( vk::ImageViewHandleInfoNVX const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImageViewHandleInfoNVX ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImageViewHandleInfoNVX ) - offsetof( ImageViewHandleInfoNVX, pNext ) );
       return *this;
     }
 
@@ -37310,7 +37310,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ImageViewUsageCreateInfo & operator=( vk::ImageViewUsageCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImageViewUsageCreateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImageViewUsageCreateInfo ) - offsetof( ImageViewUsageCreateInfo, pNext ) );
       return *this;
     }
 
@@ -37377,7 +37377,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ImportAndroidHardwareBufferInfoANDROID & operator=( vk::ImportAndroidHardwareBufferInfoANDROID const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImportAndroidHardwareBufferInfoANDROID ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImportAndroidHardwareBufferInfoANDROID ) - offsetof( ImportAndroidHardwareBufferInfoANDROID, pNext ) );
       return *this;
     }
 
@@ -37449,7 +37449,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ImportFenceFdInfoKHR & operator=( vk::ImportFenceFdInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImportFenceFdInfoKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImportFenceFdInfoKHR ) - offsetof( ImportFenceFdInfoKHR, pNext ) );
       return *this;
     }
 
@@ -37548,7 +37548,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ImportFenceWin32HandleInfoKHR & operator=( vk::ImportFenceWin32HandleInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImportFenceWin32HandleInfoKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImportFenceWin32HandleInfoKHR ) - offsetof( ImportFenceWin32HandleInfoKHR, pNext ) );
       return *this;
     }
 
@@ -37648,7 +37648,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ImportMemoryFdInfoKHR & operator=( vk::ImportMemoryFdInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImportMemoryFdInfoKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImportMemoryFdInfoKHR ) - offsetof( ImportMemoryFdInfoKHR, pNext ) );
       return *this;
     }
 
@@ -37723,7 +37723,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ImportMemoryHostPointerInfoEXT & operator=( vk::ImportMemoryHostPointerInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImportMemoryHostPointerInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImportMemoryHostPointerInfoEXT ) - offsetof( ImportMemoryHostPointerInfoEXT, pNext ) );
       return *this;
     }
 
@@ -37802,7 +37802,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ImportMemoryWin32HandleInfoKHR & operator=( vk::ImportMemoryWin32HandleInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImportMemoryWin32HandleInfoKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImportMemoryWin32HandleInfoKHR ) - offsetof( ImportMemoryWin32HandleInfoKHR, pNext ) );
       return *this;
     }
 
@@ -37888,7 +37888,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ImportMemoryWin32HandleInfoNV & operator=( vk::ImportMemoryWin32HandleInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImportMemoryWin32HandleInfoNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImportMemoryWin32HandleInfoNV ) - offsetof( ImportMemoryWin32HandleInfoNV, pNext ) );
       return *this;
     }
 
@@ -37968,7 +37968,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ImportSemaphoreFdInfoKHR & operator=( vk::ImportSemaphoreFdInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImportSemaphoreFdInfoKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImportSemaphoreFdInfoKHR ) - offsetof( ImportSemaphoreFdInfoKHR, pNext ) );
       return *this;
     }
 
@@ -38067,7 +38067,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ImportSemaphoreWin32HandleInfoKHR & operator=( vk::ImportSemaphoreWin32HandleInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImportSemaphoreWin32HandleInfoKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ImportSemaphoreWin32HandleInfoKHR ) - offsetof( ImportSemaphoreWin32HandleInfoKHR, pNext ) );
       return *this;
     }
 
@@ -38250,7 +38250,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::IndirectCommandsLayoutCreateInfoNVX & operator=( vk::IndirectCommandsLayoutCreateInfoNVX const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::IndirectCommandsLayoutCreateInfoNVX ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::IndirectCommandsLayoutCreateInfoNVX ) - offsetof( IndirectCommandsLayoutCreateInfoNVX, pNext ) );
       return *this;
     }
 
@@ -38339,7 +38339,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::InitializePerformanceApiInfoINTEL & operator=( vk::InitializePerformanceApiInfoINTEL const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::InitializePerformanceApiInfoINTEL ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::InitializePerformanceApiInfoINTEL ) - offsetof( InitializePerformanceApiInfoINTEL, pNext ) );
       return *this;
     }
 
@@ -38483,7 +38483,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::InstanceCreateInfo & operator=( vk::InstanceCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::InstanceCreateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::InstanceCreateInfo ) - offsetof( InstanceCreateInfo, pNext ) );
       return *this;
     }
 
@@ -38650,7 +38650,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::MacOSSurfaceCreateInfoMVK & operator=( vk::MacOSSurfaceCreateInfoMVK const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::MacOSSurfaceCreateInfoMVK ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::MacOSSurfaceCreateInfoMVK ) - offsetof( MacOSSurfaceCreateInfoMVK, pNext ) );
       return *this;
     }
 
@@ -38728,7 +38728,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::MappedMemoryRange & operator=( vk::MappedMemoryRange const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::MappedMemoryRange ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::MappedMemoryRange ) - offsetof( MappedMemoryRange, pNext ) );
       return *this;
     }
 
@@ -38811,7 +38811,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::MemoryAllocateFlagsInfo & operator=( vk::MemoryAllocateFlagsInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::MemoryAllocateFlagsInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::MemoryAllocateFlagsInfo ) - offsetof( MemoryAllocateFlagsInfo, pNext ) );
       return *this;
     }
 
@@ -38886,7 +38886,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::MemoryAllocateInfo & operator=( vk::MemoryAllocateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::MemoryAllocateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::MemoryAllocateInfo ) - offsetof( MemoryAllocateInfo, pNext ) );
       return *this;
     }
 
@@ -38961,7 +38961,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::MemoryBarrier & operator=( vk::MemoryBarrier const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::MemoryBarrier ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::MemoryBarrier ) - offsetof( MemoryBarrier, pNext ) );
       return *this;
     }
 
@@ -39036,7 +39036,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::MemoryDedicatedAllocateInfo & operator=( vk::MemoryDedicatedAllocateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::MemoryDedicatedAllocateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::MemoryDedicatedAllocateInfo ) - offsetof( MemoryDedicatedAllocateInfo, pNext ) );
       return *this;
     }
 
@@ -39111,7 +39111,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::MemoryDedicatedRequirements & operator=( vk::MemoryDedicatedRequirements const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::MemoryDedicatedRequirements ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::MemoryDedicatedRequirements ) - offsetof( MemoryDedicatedRequirements, pNext ) );
       return *this;
     }
 
@@ -39166,7 +39166,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::MemoryFdPropertiesKHR & operator=( vk::MemoryFdPropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::MemoryFdPropertiesKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::MemoryFdPropertiesKHR ) - offsetof( MemoryFdPropertiesKHR, pNext ) );
       return *this;
     }
 
@@ -39221,7 +39221,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::MemoryGetAndroidHardwareBufferInfoANDROID & operator=( vk::MemoryGetAndroidHardwareBufferInfoANDROID const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::MemoryGetAndroidHardwareBufferInfoANDROID ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::MemoryGetAndroidHardwareBufferInfoANDROID ) - offsetof( MemoryGetAndroidHardwareBufferInfoANDROID, pNext ) );
       return *this;
     }
 
@@ -39289,7 +39289,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::MemoryGetFdInfoKHR & operator=( vk::MemoryGetFdInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::MemoryGetFdInfoKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::MemoryGetFdInfoKHR ) - offsetof( MemoryGetFdInfoKHR, pNext ) );
       return *this;
     }
 
@@ -39366,7 +39366,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::MemoryGetWin32HandleInfoKHR & operator=( vk::MemoryGetWin32HandleInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::MemoryGetWin32HandleInfoKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::MemoryGetWin32HandleInfoKHR ) - offsetof( MemoryGetWin32HandleInfoKHR, pNext ) );
       return *this;
     }
 
@@ -39487,7 +39487,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::MemoryHostPointerPropertiesEXT & operator=( vk::MemoryHostPointerPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::MemoryHostPointerPropertiesEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::MemoryHostPointerPropertiesEXT ) - offsetof( MemoryHostPointerPropertiesEXT, pNext ) );
       return *this;
     }
 
@@ -39540,7 +39540,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::MemoryPriorityAllocateInfoEXT & operator=( vk::MemoryPriorityAllocateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::MemoryPriorityAllocateInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::MemoryPriorityAllocateInfoEXT ) - offsetof( MemoryPriorityAllocateInfoEXT, pNext ) );
       return *this;
     }
 
@@ -39656,7 +39656,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::MemoryRequirements2 & operator=( vk::MemoryRequirements2 const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::MemoryRequirements2 ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::MemoryRequirements2 ) - offsetof( MemoryRequirements2, pNext ) );
       return *this;
     }
 
@@ -39758,7 +39758,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::MemoryWin32HandlePropertiesKHR & operator=( vk::MemoryWin32HandlePropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::MemoryWin32HandlePropertiesKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::MemoryWin32HandlePropertiesKHR ) - offsetof( MemoryWin32HandlePropertiesKHR, pNext ) );
       return *this;
     }
 
@@ -39816,7 +39816,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::MetalSurfaceCreateInfoEXT & operator=( vk::MetalSurfaceCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::MetalSurfaceCreateInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::MetalSurfaceCreateInfoEXT ) - offsetof( MetalSurfaceCreateInfoEXT, pNext ) );
       return *this;
     }
 
@@ -39890,7 +39890,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::MultisamplePropertiesEXT & operator=( vk::MultisamplePropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::MultisamplePropertiesEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::MultisamplePropertiesEXT ) - offsetof( MultisamplePropertiesEXT, pNext ) );
       return *this;
     }
 
@@ -39959,7 +39959,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ObjectTableCreateInfoNVX & operator=( vk::ObjectTableCreateInfoNVX const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ObjectTableCreateInfoNVX ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ObjectTableCreateInfoNVX ) - offsetof( ObjectTableCreateInfoNVX, pNext ) );
       return *this;
     }
 
@@ -40622,7 +40622,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PerformanceConfigurationAcquireInfoINTEL & operator=( vk::PerformanceConfigurationAcquireInfoINTEL const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PerformanceConfigurationAcquireInfoINTEL ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PerformanceConfigurationAcquireInfoINTEL ) - offsetof( PerformanceConfigurationAcquireInfoINTEL, pNext ) );
       return *this;
     }
 
@@ -40687,7 +40687,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PerformanceMarkerInfoINTEL & operator=( vk::PerformanceMarkerInfoINTEL const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PerformanceMarkerInfoINTEL ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PerformanceMarkerInfoINTEL ) - offsetof( PerformanceMarkerInfoINTEL, pNext ) );
       return *this;
     }
 
@@ -40756,7 +40756,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PerformanceOverrideInfoINTEL & operator=( vk::PerformanceOverrideInfoINTEL const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PerformanceOverrideInfoINTEL ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PerformanceOverrideInfoINTEL ) - offsetof( PerformanceOverrideInfoINTEL, pNext ) );
       return *this;
     }
 
@@ -40837,7 +40837,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PerformanceStreamMarkerInfoINTEL & operator=( vk::PerformanceStreamMarkerInfoINTEL const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PerformanceStreamMarkerInfoINTEL ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PerformanceStreamMarkerInfoINTEL ) - offsetof( PerformanceStreamMarkerInfoINTEL, pNext ) );
       return *this;
     }
 
@@ -41032,7 +41032,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDevice16BitStorageFeatures & operator=( vk::PhysicalDevice16BitStorageFeatures const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDevice16BitStorageFeatures ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDevice16BitStorageFeatures ) - offsetof( PhysicalDevice16BitStorageFeatures, pNext ) );
       return *this;
     }
 
@@ -41125,7 +41125,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDevice8BitStorageFeaturesKHR & operator=( vk::PhysicalDevice8BitStorageFeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDevice8BitStorageFeaturesKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDevice8BitStorageFeaturesKHR ) - offsetof( PhysicalDevice8BitStorageFeaturesKHR, pNext ) );
       return *this;
     }
 
@@ -41206,7 +41206,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceASTCDecodeFeaturesEXT & operator=( vk::PhysicalDeviceASTCDecodeFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceASTCDecodeFeaturesEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceASTCDecodeFeaturesEXT ) - offsetof( PhysicalDeviceASTCDecodeFeaturesEXT, pNext ) );
       return *this;
     }
 
@@ -41271,7 +41271,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceBlendOperationAdvancedFeaturesEXT & operator=( vk::PhysicalDeviceBlendOperationAdvancedFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceBlendOperationAdvancedFeaturesEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceBlendOperationAdvancedFeaturesEXT ) - offsetof( PhysicalDeviceBlendOperationAdvancedFeaturesEXT, pNext ) );
       return *this;
     }
 
@@ -41346,7 +41346,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceBlendOperationAdvancedPropertiesEXT & operator=( vk::PhysicalDeviceBlendOperationAdvancedPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceBlendOperationAdvancedPropertiesEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceBlendOperationAdvancedPropertiesEXT ) - offsetof( PhysicalDeviceBlendOperationAdvancedPropertiesEXT, pNext ) );
       return *this;
     }
 
@@ -41413,7 +41413,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceBufferDeviceAddressFeaturesEXT & operator=( vk::PhysicalDeviceBufferDeviceAddressFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceBufferDeviceAddressFeaturesEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceBufferDeviceAddressFeaturesEXT ) - offsetof( PhysicalDeviceBufferDeviceAddressFeaturesEXT, pNext ) );
       return *this;
     }
 
@@ -41494,7 +41494,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceCoherentMemoryFeaturesAMD & operator=( vk::PhysicalDeviceCoherentMemoryFeaturesAMD const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceCoherentMemoryFeaturesAMD ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceCoherentMemoryFeaturesAMD ) - offsetof( PhysicalDeviceCoherentMemoryFeaturesAMD, pNext ) );
       return *this;
     }
 
@@ -41561,7 +41561,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceComputeShaderDerivativesFeaturesNV & operator=( vk::PhysicalDeviceComputeShaderDerivativesFeaturesNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceComputeShaderDerivativesFeaturesNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceComputeShaderDerivativesFeaturesNV ) - offsetof( PhysicalDeviceComputeShaderDerivativesFeaturesNV, pNext ) );
       return *this;
     }
 
@@ -41636,7 +41636,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceConditionalRenderingFeaturesEXT & operator=( vk::PhysicalDeviceConditionalRenderingFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceConditionalRenderingFeaturesEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceConditionalRenderingFeaturesEXT ) - offsetof( PhysicalDeviceConditionalRenderingFeaturesEXT, pNext ) );
       return *this;
     }
 
@@ -41725,7 +41725,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceConservativeRasterizationPropertiesEXT & operator=( vk::PhysicalDeviceConservativeRasterizationPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceConservativeRasterizationPropertiesEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceConservativeRasterizationPropertiesEXT ) - offsetof( PhysicalDeviceConservativeRasterizationPropertiesEXT, pNext ) );
       return *this;
     }
 
@@ -41796,7 +41796,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceCooperativeMatrixFeaturesNV & operator=( vk::PhysicalDeviceCooperativeMatrixFeaturesNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceCooperativeMatrixFeaturesNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceCooperativeMatrixFeaturesNV ) - offsetof( PhysicalDeviceCooperativeMatrixFeaturesNV, pNext ) );
       return *this;
     }
 
@@ -41869,7 +41869,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceCooperativeMatrixPropertiesNV & operator=( vk::PhysicalDeviceCooperativeMatrixPropertiesNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceCooperativeMatrixPropertiesNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceCooperativeMatrixPropertiesNV ) - offsetof( PhysicalDeviceCooperativeMatrixPropertiesNV, pNext ) );
       return *this;
     }
 
@@ -41922,7 +41922,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceCornerSampledImageFeaturesNV & operator=( vk::PhysicalDeviceCornerSampledImageFeaturesNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceCornerSampledImageFeaturesNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceCornerSampledImageFeaturesNV ) - offsetof( PhysicalDeviceCornerSampledImageFeaturesNV, pNext ) );
       return *this;
     }
 
@@ -41987,7 +41987,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceCoverageReductionModeFeaturesNV & operator=( vk::PhysicalDeviceCoverageReductionModeFeaturesNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceCoverageReductionModeFeaturesNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceCoverageReductionModeFeaturesNV ) - offsetof( PhysicalDeviceCoverageReductionModeFeaturesNV, pNext ) );
       return *this;
     }
 
@@ -42052,7 +42052,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV & operator=( vk::PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV ) - offsetof( PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV, pNext ) );
       return *this;
     }
 
@@ -42117,7 +42117,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceDepthClipEnableFeaturesEXT & operator=( vk::PhysicalDeviceDepthClipEnableFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceDepthClipEnableFeaturesEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceDepthClipEnableFeaturesEXT ) - offsetof( PhysicalDeviceDepthClipEnableFeaturesEXT, pNext ) );
       return *this;
     }
 
@@ -42188,7 +42188,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceDepthStencilResolvePropertiesKHR & operator=( vk::PhysicalDeviceDepthStencilResolvePropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceDepthStencilResolvePropertiesKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceDepthStencilResolvePropertiesKHR ) - offsetof( PhysicalDeviceDepthStencilResolvePropertiesKHR, pNext ) );
       return *this;
     }
 
@@ -42285,7 +42285,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceDescriptorIndexingFeaturesEXT & operator=( vk::PhysicalDeviceDescriptorIndexingFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceDescriptorIndexingFeaturesEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceDescriptorIndexingFeaturesEXT ) - offsetof( PhysicalDeviceDescriptorIndexingFeaturesEXT, pNext ) );
       return *this;
     }
 
@@ -42546,7 +42546,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceDescriptorIndexingPropertiesEXT & operator=( vk::PhysicalDeviceDescriptorIndexingPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceDescriptorIndexingPropertiesEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceDescriptorIndexingPropertiesEXT ) - offsetof( PhysicalDeviceDescriptorIndexingPropertiesEXT, pNext ) );
       return *this;
     }
 
@@ -42643,7 +42643,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceDiscardRectanglePropertiesEXT & operator=( vk::PhysicalDeviceDiscardRectanglePropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceDiscardRectanglePropertiesEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceDiscardRectanglePropertiesEXT ) - offsetof( PhysicalDeviceDiscardRectanglePropertiesEXT, pNext ) );
       return *this;
     }
 
@@ -42705,7 +42705,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceDriverPropertiesKHR & operator=( vk::PhysicalDeviceDriverPropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceDriverPropertiesKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceDriverPropertiesKHR ) - offsetof( PhysicalDeviceDriverPropertiesKHR, pNext ) );
       return *this;
     }
 
@@ -42764,7 +42764,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceExclusiveScissorFeaturesNV & operator=( vk::PhysicalDeviceExclusiveScissorFeaturesNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceExclusiveScissorFeaturesNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceExclusiveScissorFeaturesNV ) - offsetof( PhysicalDeviceExclusiveScissorFeaturesNV, pNext ) );
       return *this;
     }
 
@@ -42833,7 +42833,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceExternalBufferInfo & operator=( vk::PhysicalDeviceExternalBufferInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceExternalBufferInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceExternalBufferInfo ) - offsetof( PhysicalDeviceExternalBufferInfo, pNext ) );
       return *this;
     }
 
@@ -42914,7 +42914,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceExternalFenceInfo & operator=( vk::PhysicalDeviceExternalFenceInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceExternalFenceInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceExternalFenceInfo ) - offsetof( PhysicalDeviceExternalFenceInfo, pNext ) );
       return *this;
     }
 
@@ -42979,7 +42979,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceExternalImageFormatInfo & operator=( vk::PhysicalDeviceExternalImageFormatInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceExternalImageFormatInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceExternalImageFormatInfo ) - offsetof( PhysicalDeviceExternalImageFormatInfo, pNext ) );
       return *this;
     }
 
@@ -43044,7 +43044,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceExternalMemoryHostPropertiesEXT & operator=( vk::PhysicalDeviceExternalMemoryHostPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceExternalMemoryHostPropertiesEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceExternalMemoryHostPropertiesEXT ) - offsetof( PhysicalDeviceExternalMemoryHostPropertiesEXT, pNext ) );
       return *this;
     }
 
@@ -43097,7 +43097,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceExternalSemaphoreInfo & operator=( vk::PhysicalDeviceExternalSemaphoreInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceExternalSemaphoreInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceExternalSemaphoreInfo ) - offsetof( PhysicalDeviceExternalSemaphoreInfo, pNext ) );
       return *this;
     }
 
@@ -43162,7 +43162,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceFeatures2 & operator=( vk::PhysicalDeviceFeatures2 const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceFeatures2 ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceFeatures2 ) - offsetof( PhysicalDeviceFeatures2, pNext ) );
       return *this;
     }
 
@@ -43259,7 +43259,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceFloatControlsPropertiesKHR & operator=( vk::PhysicalDeviceFloatControlsPropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceFloatControlsPropertiesKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceFloatControlsPropertiesKHR ) - offsetof( PhysicalDeviceFloatControlsPropertiesKHR, pNext ) );
       return *this;
     }
 
@@ -43348,7 +43348,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceFragmentDensityMapFeaturesEXT & operator=( vk::PhysicalDeviceFragmentDensityMapFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceFragmentDensityMapFeaturesEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceFragmentDensityMapFeaturesEXT ) - offsetof( PhysicalDeviceFragmentDensityMapFeaturesEXT, pNext ) );
       return *this;
     }
 
@@ -43409,7 +43409,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceFragmentDensityMapPropertiesEXT & operator=( vk::PhysicalDeviceFragmentDensityMapPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceFragmentDensityMapPropertiesEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceFragmentDensityMapPropertiesEXT ) - offsetof( PhysicalDeviceFragmentDensityMapPropertiesEXT, pNext ) );
       return *this;
     }
 
@@ -43466,7 +43466,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceFragmentShaderBarycentricFeaturesNV & operator=( vk::PhysicalDeviceFragmentShaderBarycentricFeaturesNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceFragmentShaderBarycentricFeaturesNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceFragmentShaderBarycentricFeaturesNV ) - offsetof( PhysicalDeviceFragmentShaderBarycentricFeaturesNV, pNext ) );
       return *this;
     }
 
@@ -43535,7 +43535,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceFragmentShaderInterlockFeaturesEXT & operator=( vk::PhysicalDeviceFragmentShaderInterlockFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceFragmentShaderInterlockFeaturesEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceFragmentShaderInterlockFeaturesEXT ) - offsetof( PhysicalDeviceFragmentShaderInterlockFeaturesEXT, pNext ) );
       return *this;
     }
 
@@ -43622,7 +43622,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceGroupProperties & operator=( vk::PhysicalDeviceGroupProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceGroupProperties ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceGroupProperties ) - offsetof( PhysicalDeviceGroupProperties, pNext ) );
       return *this;
     }
 
@@ -43679,7 +43679,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceHostQueryResetFeaturesEXT & operator=( vk::PhysicalDeviceHostQueryResetFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceHostQueryResetFeaturesEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceHostQueryResetFeaturesEXT ) - offsetof( PhysicalDeviceHostQueryResetFeaturesEXT, pNext ) );
       return *this;
     }
 
@@ -43756,7 +43756,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceIDProperties & operator=( vk::PhysicalDeviceIDProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceIDProperties ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceIDProperties ) - offsetof( PhysicalDeviceIDProperties, pNext ) );
       return *this;
     }
 
@@ -43823,7 +43823,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceImageDrmFormatModifierInfoEXT & operator=( vk::PhysicalDeviceImageDrmFormatModifierInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceImageDrmFormatModifierInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceImageDrmFormatModifierInfoEXT ) - offsetof( PhysicalDeviceImageDrmFormatModifierInfoEXT, pNext ) );
       return *this;
     }
 
@@ -43920,7 +43920,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceImageFormatInfo2 & operator=( vk::PhysicalDeviceImageFormatInfo2 const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceImageFormatInfo2 ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceImageFormatInfo2 ) - offsetof( PhysicalDeviceImageFormatInfo2, pNext ) );
       return *this;
     }
 
@@ -44017,7 +44017,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceImageViewImageFormatInfoEXT & operator=( vk::PhysicalDeviceImageViewImageFormatInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceImageViewImageFormatInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceImageViewImageFormatInfoEXT ) - offsetof( PhysicalDeviceImageViewImageFormatInfoEXT, pNext ) );
       return *this;
     }
 
@@ -44082,7 +44082,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceImagelessFramebufferFeaturesKHR & operator=( vk::PhysicalDeviceImagelessFramebufferFeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceImagelessFramebufferFeaturesKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceImagelessFramebufferFeaturesKHR ) - offsetof( PhysicalDeviceImagelessFramebufferFeaturesKHR, pNext ) );
       return *this;
     }
 
@@ -44147,7 +44147,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceIndexTypeUint8FeaturesEXT & operator=( vk::PhysicalDeviceIndexTypeUint8FeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceIndexTypeUint8FeaturesEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceIndexTypeUint8FeaturesEXT ) - offsetof( PhysicalDeviceIndexTypeUint8FeaturesEXT, pNext ) );
       return *this;
     }
 
@@ -44214,7 +44214,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceInlineUniformBlockFeaturesEXT & operator=( vk::PhysicalDeviceInlineUniformBlockFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceInlineUniformBlockFeaturesEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceInlineUniformBlockFeaturesEXT ) - offsetof( PhysicalDeviceInlineUniformBlockFeaturesEXT, pNext ) );
       return *this;
     }
 
@@ -44295,7 +44295,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceInlineUniformBlockPropertiesEXT & operator=( vk::PhysicalDeviceInlineUniformBlockPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceInlineUniformBlockPropertiesEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceInlineUniformBlockPropertiesEXT ) - offsetof( PhysicalDeviceInlineUniformBlockPropertiesEXT, pNext ) );
       return *this;
     }
 
@@ -44836,7 +44836,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceLineRasterizationFeaturesEXT & operator=( vk::PhysicalDeviceLineRasterizationFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceLineRasterizationFeaturesEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceLineRasterizationFeaturesEXT ) - offsetof( PhysicalDeviceLineRasterizationFeaturesEXT, pNext ) );
       return *this;
     }
 
@@ -44941,7 +44941,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceLineRasterizationPropertiesEXT & operator=( vk::PhysicalDeviceLineRasterizationPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceLineRasterizationPropertiesEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceLineRasterizationPropertiesEXT ) - offsetof( PhysicalDeviceLineRasterizationPropertiesEXT, pNext ) );
       return *this;
     }
 
@@ -44996,7 +44996,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceMaintenance3Properties & operator=( vk::PhysicalDeviceMaintenance3Properties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceMaintenance3Properties ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceMaintenance3Properties ) - offsetof( PhysicalDeviceMaintenance3Properties, pNext ) );
       return *this;
     }
 
@@ -45056,7 +45056,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceMemoryBudgetPropertiesEXT & operator=( vk::PhysicalDeviceMemoryBudgetPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceMemoryBudgetPropertiesEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceMemoryBudgetPropertiesEXT ) - offsetof( PhysicalDeviceMemoryBudgetPropertiesEXT, pNext ) );
       return *this;
     }
 
@@ -45111,7 +45111,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceMemoryPriorityFeaturesEXT & operator=( vk::PhysicalDeviceMemoryPriorityFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceMemoryPriorityFeaturesEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceMemoryPriorityFeaturesEXT ) - offsetof( PhysicalDeviceMemoryPriorityFeaturesEXT, pNext ) );
       return *this;
     }
 
@@ -45234,7 +45234,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceMemoryProperties2 & operator=( vk::PhysicalDeviceMemoryProperties2 const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceMemoryProperties2 ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceMemoryProperties2 ) - offsetof( PhysicalDeviceMemoryProperties2, pNext ) );
       return *this;
     }
 
@@ -45289,7 +45289,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceMeshShaderFeaturesNV & operator=( vk::PhysicalDeviceMeshShaderFeaturesNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceMeshShaderFeaturesNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceMeshShaderFeaturesNV ) - offsetof( PhysicalDeviceMeshShaderFeaturesNV, pNext ) );
       return *this;
     }
 
@@ -45389,7 +45389,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceMeshShaderPropertiesNV & operator=( vk::PhysicalDeviceMeshShaderPropertiesNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceMeshShaderPropertiesNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceMeshShaderPropertiesNV ) - offsetof( PhysicalDeviceMeshShaderPropertiesNV, pNext ) );
       return *this;
     }
 
@@ -45470,7 +45470,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceMultiviewFeatures & operator=( vk::PhysicalDeviceMultiviewFeatures const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceMultiviewFeatures ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceMultiviewFeatures ) - offsetof( PhysicalDeviceMultiviewFeatures, pNext ) );
       return *this;
     }
 
@@ -45551,7 +45551,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX & operator=( vk::PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX ) - offsetof( PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX, pNext ) );
       return *this;
     }
 
@@ -45606,7 +45606,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceMultiviewProperties & operator=( vk::PhysicalDeviceMultiviewProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceMultiviewProperties ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceMultiviewProperties ) - offsetof( PhysicalDeviceMultiviewProperties, pNext ) );
       return *this;
     }
 
@@ -45667,7 +45667,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDevicePCIBusInfoPropertiesEXT & operator=( vk::PhysicalDevicePCIBusInfoPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDevicePCIBusInfoPropertiesEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDevicePCIBusInfoPropertiesEXT ) - offsetof( PhysicalDevicePCIBusInfoPropertiesEXT, pNext ) );
       return *this;
     }
 
@@ -45726,7 +45726,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDevicePipelineExecutablePropertiesFeaturesKHR & operator=( vk::PhysicalDevicePipelineExecutablePropertiesFeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDevicePipelineExecutablePropertiesFeaturesKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDevicePipelineExecutablePropertiesFeaturesKHR ) - offsetof( PhysicalDevicePipelineExecutablePropertiesFeaturesKHR, pNext ) );
       return *this;
     }
 
@@ -45791,7 +45791,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDevicePointClippingProperties & operator=( vk::PhysicalDevicePointClippingProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDevicePointClippingProperties ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDevicePointClippingProperties ) - offsetof( PhysicalDevicePointClippingProperties, pNext ) );
       return *this;
     }
 
@@ -45981,7 +45981,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceProperties2 & operator=( vk::PhysicalDeviceProperties2 const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceProperties2 ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceProperties2 ) - offsetof( PhysicalDeviceProperties2, pNext ) );
       return *this;
     }
 
@@ -46034,7 +46034,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceProtectedMemoryFeatures & operator=( vk::PhysicalDeviceProtectedMemoryFeatures const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceProtectedMemoryFeatures ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceProtectedMemoryFeatures ) - offsetof( PhysicalDeviceProtectedMemoryFeatures, pNext ) );
       return *this;
     }
 
@@ -46099,7 +46099,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceProtectedMemoryProperties & operator=( vk::PhysicalDeviceProtectedMemoryProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceProtectedMemoryProperties ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceProtectedMemoryProperties ) - offsetof( PhysicalDeviceProtectedMemoryProperties, pNext ) );
       return *this;
     }
 
@@ -46152,7 +46152,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDevicePushDescriptorPropertiesKHR & operator=( vk::PhysicalDevicePushDescriptorPropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDevicePushDescriptorPropertiesKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDevicePushDescriptorPropertiesKHR ) - offsetof( PhysicalDevicePushDescriptorPropertiesKHR, pNext ) );
       return *this;
     }
 
@@ -46219,7 +46219,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceRayTracingPropertiesNV & operator=( vk::PhysicalDeviceRayTracingPropertiesNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceRayTracingPropertiesNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceRayTracingPropertiesNV ) - offsetof( PhysicalDeviceRayTracingPropertiesNV, pNext ) );
       return *this;
     }
 
@@ -46286,7 +46286,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceRepresentativeFragmentTestFeaturesNV & operator=( vk::PhysicalDeviceRepresentativeFragmentTestFeaturesNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceRepresentativeFragmentTestFeaturesNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceRepresentativeFragmentTestFeaturesNV ) - offsetof( PhysicalDeviceRepresentativeFragmentTestFeaturesNV, pNext ) );
       return *this;
     }
 
@@ -46361,7 +46361,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceSampleLocationsPropertiesEXT & operator=( vk::PhysicalDeviceSampleLocationsPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceSampleLocationsPropertiesEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceSampleLocationsPropertiesEXT ) - offsetof( PhysicalDeviceSampleLocationsPropertiesEXT, pNext ) );
       return *this;
     }
 
@@ -46424,7 +46424,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceSamplerFilterMinmaxPropertiesEXT & operator=( vk::PhysicalDeviceSamplerFilterMinmaxPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceSamplerFilterMinmaxPropertiesEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceSamplerFilterMinmaxPropertiesEXT ) - offsetof( PhysicalDeviceSamplerFilterMinmaxPropertiesEXT, pNext ) );
       return *this;
     }
 
@@ -46479,7 +46479,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceSamplerYcbcrConversionFeatures & operator=( vk::PhysicalDeviceSamplerYcbcrConversionFeatures const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceSamplerYcbcrConversionFeatures ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceSamplerYcbcrConversionFeatures ) - offsetof( PhysicalDeviceSamplerYcbcrConversionFeatures, pNext ) );
       return *this;
     }
 
@@ -46544,7 +46544,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceScalarBlockLayoutFeaturesEXT & operator=( vk::PhysicalDeviceScalarBlockLayoutFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceScalarBlockLayoutFeaturesEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceScalarBlockLayoutFeaturesEXT ) - offsetof( PhysicalDeviceScalarBlockLayoutFeaturesEXT, pNext ) );
       return *this;
     }
 
@@ -46611,7 +46611,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceShaderAtomicInt64FeaturesKHR & operator=( vk::PhysicalDeviceShaderAtomicInt64FeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceShaderAtomicInt64FeaturesKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceShaderAtomicInt64FeaturesKHR ) - offsetof( PhysicalDeviceShaderAtomicInt64FeaturesKHR, pNext ) );
       return *this;
     }
 
@@ -46686,7 +46686,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceShaderClockFeaturesKHR & operator=( vk::PhysicalDeviceShaderClockFeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceShaderClockFeaturesKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceShaderClockFeaturesKHR ) - offsetof( PhysicalDeviceShaderClockFeaturesKHR, pNext ) );
       return *this;
     }
 
@@ -46761,7 +46761,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceShaderCoreProperties2AMD & operator=( vk::PhysicalDeviceShaderCoreProperties2AMD const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceShaderCoreProperties2AMD ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceShaderCoreProperties2AMD ) - offsetof( PhysicalDeviceShaderCoreProperties2AMD, pNext ) );
       return *this;
     }
 
@@ -46842,7 +46842,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceShaderCorePropertiesAMD & operator=( vk::PhysicalDeviceShaderCorePropertiesAMD const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceShaderCorePropertiesAMD ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceShaderCorePropertiesAMD ) - offsetof( PhysicalDeviceShaderCorePropertiesAMD, pNext ) );
       return *this;
     }
 
@@ -46921,7 +46921,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT & operator=( vk::PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT ) - offsetof( PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT, pNext ) );
       return *this;
     }
 
@@ -46986,7 +46986,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceShaderDrawParametersFeatures & operator=( vk::PhysicalDeviceShaderDrawParametersFeatures const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceShaderDrawParametersFeatures ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceShaderDrawParametersFeatures ) - offsetof( PhysicalDeviceShaderDrawParametersFeatures, pNext ) );
       return *this;
     }
 
@@ -47053,7 +47053,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceShaderFloat16Int8FeaturesKHR & operator=( vk::PhysicalDeviceShaderFloat16Int8FeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceShaderFloat16Int8FeaturesKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceShaderFloat16Int8FeaturesKHR ) - offsetof( PhysicalDeviceShaderFloat16Int8FeaturesKHR, pNext ) );
       return *this;
     }
 
@@ -47126,7 +47126,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceShaderImageFootprintFeaturesNV & operator=( vk::PhysicalDeviceShaderImageFootprintFeaturesNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceShaderImageFootprintFeaturesNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceShaderImageFootprintFeaturesNV ) - offsetof( PhysicalDeviceShaderImageFootprintFeaturesNV, pNext ) );
       return *this;
     }
 
@@ -47191,7 +47191,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL & operator=( vk::PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL ) - offsetof( PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL, pNext ) );
       return *this;
     }
 
@@ -47256,7 +47256,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceShaderSMBuiltinsFeaturesNV & operator=( vk::PhysicalDeviceShaderSMBuiltinsFeaturesNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceShaderSMBuiltinsFeaturesNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceShaderSMBuiltinsFeaturesNV ) - offsetof( PhysicalDeviceShaderSMBuiltinsFeaturesNV, pNext ) );
       return *this;
     }
 
@@ -47323,7 +47323,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceShaderSMBuiltinsPropertiesNV & operator=( vk::PhysicalDeviceShaderSMBuiltinsPropertiesNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceShaderSMBuiltinsPropertiesNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceShaderSMBuiltinsPropertiesNV ) - offsetof( PhysicalDeviceShaderSMBuiltinsPropertiesNV, pNext ) );
       return *this;
     }
 
@@ -47378,7 +47378,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceShaderSubgroupExtendedTypesFeaturesKHR & operator=( vk::PhysicalDeviceShaderSubgroupExtendedTypesFeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceShaderSubgroupExtendedTypesFeaturesKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceShaderSubgroupExtendedTypesFeaturesKHR ) - offsetof( PhysicalDeviceShaderSubgroupExtendedTypesFeaturesKHR, pNext ) );
       return *this;
     }
 
@@ -47445,7 +47445,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceShadingRateImageFeaturesNV & operator=( vk::PhysicalDeviceShadingRateImageFeaturesNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceShadingRateImageFeaturesNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceShadingRateImageFeaturesNV ) - offsetof( PhysicalDeviceShadingRateImageFeaturesNV, pNext ) );
       return *this;
     }
 
@@ -47522,7 +47522,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceShadingRateImagePropertiesNV & operator=( vk::PhysicalDeviceShadingRateImagePropertiesNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceShadingRateImagePropertiesNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceShadingRateImagePropertiesNV ) - offsetof( PhysicalDeviceShadingRateImagePropertiesNV, pNext ) );
       return *this;
     }
 
@@ -47587,7 +47587,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceSparseImageFormatInfo2 & operator=( vk::PhysicalDeviceSparseImageFormatInfo2 const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceSparseImageFormatInfo2 ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceSparseImageFormatInfo2 ) - offsetof( PhysicalDeviceSparseImageFormatInfo2, pNext ) );
       return *this;
     }
 
@@ -47690,7 +47690,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceSubgroupProperties & operator=( vk::PhysicalDeviceSubgroupProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceSubgroupProperties ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceSubgroupProperties ) - offsetof( PhysicalDeviceSubgroupProperties, pNext ) );
       return *this;
     }
 
@@ -47751,7 +47751,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceSubgroupSizeControlFeaturesEXT & operator=( vk::PhysicalDeviceSubgroupSizeControlFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceSubgroupSizeControlFeaturesEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceSubgroupSizeControlFeaturesEXT ) - offsetof( PhysicalDeviceSubgroupSizeControlFeaturesEXT, pNext ) );
       return *this;
     }
 
@@ -47830,7 +47830,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceSubgroupSizeControlPropertiesEXT & operator=( vk::PhysicalDeviceSubgroupSizeControlPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceSubgroupSizeControlPropertiesEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceSubgroupSizeControlPropertiesEXT ) - offsetof( PhysicalDeviceSubgroupSizeControlPropertiesEXT, pNext ) );
       return *this;
     }
 
@@ -47889,7 +47889,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceSurfaceInfo2KHR & operator=( vk::PhysicalDeviceSurfaceInfo2KHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceSurfaceInfo2KHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceSurfaceInfo2KHR ) - offsetof( PhysicalDeviceSurfaceInfo2KHR, pNext ) );
       return *this;
     }
 
@@ -47954,7 +47954,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceTexelBufferAlignmentFeaturesEXT & operator=( vk::PhysicalDeviceTexelBufferAlignmentFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceTexelBufferAlignmentFeaturesEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceTexelBufferAlignmentFeaturesEXT ) - offsetof( PhysicalDeviceTexelBufferAlignmentFeaturesEXT, pNext ) );
       return *this;
     }
 
@@ -48025,7 +48025,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceTexelBufferAlignmentPropertiesEXT & operator=( vk::PhysicalDeviceTexelBufferAlignmentPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceTexelBufferAlignmentPropertiesEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceTexelBufferAlignmentPropertiesEXT ) - offsetof( PhysicalDeviceTexelBufferAlignmentPropertiesEXT, pNext ) );
       return *this;
     }
 
@@ -48084,7 +48084,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT & operator=( vk::PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT ) - offsetof( PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT, pNext ) );
       return *this;
     }
 
@@ -48149,7 +48149,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceTimelineSemaphoreFeaturesKHR & operator=( vk::PhysicalDeviceTimelineSemaphoreFeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceTimelineSemaphoreFeaturesKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceTimelineSemaphoreFeaturesKHR ) - offsetof( PhysicalDeviceTimelineSemaphoreFeaturesKHR, pNext ) );
       return *this;
     }
 
@@ -48214,7 +48214,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceTimelineSemaphorePropertiesKHR & operator=( vk::PhysicalDeviceTimelineSemaphorePropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceTimelineSemaphorePropertiesKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceTimelineSemaphorePropertiesKHR ) - offsetof( PhysicalDeviceTimelineSemaphorePropertiesKHR, pNext ) );
       return *this;
     }
 
@@ -48269,7 +48269,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceTransformFeedbackFeaturesEXT & operator=( vk::PhysicalDeviceTransformFeedbackFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceTransformFeedbackFeaturesEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceTransformFeedbackFeaturesEXT ) - offsetof( PhysicalDeviceTransformFeedbackFeaturesEXT, pNext ) );
       return *this;
     }
 
@@ -48360,7 +48360,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceTransformFeedbackPropertiesEXT & operator=( vk::PhysicalDeviceTransformFeedbackPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceTransformFeedbackPropertiesEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceTransformFeedbackPropertiesEXT ) - offsetof( PhysicalDeviceTransformFeedbackPropertiesEXT, pNext ) );
       return *this;
     }
 
@@ -48431,7 +48431,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR & operator=( vk::PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR ) - offsetof( PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR, pNext ) );
       return *this;
     }
 
@@ -48498,7 +48498,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceVariablePointersFeatures & operator=( vk::PhysicalDeviceVariablePointersFeatures const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceVariablePointersFeatures ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceVariablePointersFeatures ) - offsetof( PhysicalDeviceVariablePointersFeatures, pNext ) );
       return *this;
     }
 
@@ -48573,7 +48573,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceVertexAttributeDivisorFeaturesEXT & operator=( vk::PhysicalDeviceVertexAttributeDivisorFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceVertexAttributeDivisorFeaturesEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceVertexAttributeDivisorFeaturesEXT ) - offsetof( PhysicalDeviceVertexAttributeDivisorFeaturesEXT, pNext ) );
       return *this;
     }
 
@@ -48646,7 +48646,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceVertexAttributeDivisorPropertiesEXT & operator=( vk::PhysicalDeviceVertexAttributeDivisorPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceVertexAttributeDivisorPropertiesEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceVertexAttributeDivisorPropertiesEXT ) - offsetof( PhysicalDeviceVertexAttributeDivisorPropertiesEXT, pNext ) );
       return *this;
     }
 
@@ -48703,7 +48703,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceVulkanMemoryModelFeaturesKHR & operator=( vk::PhysicalDeviceVulkanMemoryModelFeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceVulkanMemoryModelFeaturesKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceVulkanMemoryModelFeaturesKHR ) - offsetof( PhysicalDeviceVulkanMemoryModelFeaturesKHR, pNext ) );
       return *this;
     }
 
@@ -48784,7 +48784,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PhysicalDeviceYcbcrImageArraysFeaturesEXT & operator=( vk::PhysicalDeviceYcbcrImageArraysFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceYcbcrImageArraysFeaturesEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PhysicalDeviceYcbcrImageArraysFeaturesEXT ) - offsetof( PhysicalDeviceYcbcrImageArraysFeaturesEXT, pNext ) );
       return *this;
     }
 
@@ -48853,7 +48853,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PipelineCacheCreateInfo & operator=( vk::PipelineCacheCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineCacheCreateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineCacheCreateInfo ) - offsetof( PipelineCacheCreateInfo, pNext ) );
       return *this;
     }
 
@@ -48938,7 +48938,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PipelineColorBlendAdvancedStateCreateInfoEXT & operator=( vk::PipelineColorBlendAdvancedStateCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineColorBlendAdvancedStateCreateInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineColorBlendAdvancedStateCreateInfoEXT ) - offsetof( PipelineColorBlendAdvancedStateCreateInfoEXT, pNext ) );
       return *this;
     }
 
@@ -49019,7 +49019,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PipelineCompilerControlCreateInfoAMD & operator=( vk::PipelineCompilerControlCreateInfoAMD const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineCompilerControlCreateInfoAMD ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineCompilerControlCreateInfoAMD ) - offsetof( PipelineCompilerControlCreateInfoAMD, pNext ) );
       return *this;
     }
 
@@ -49092,7 +49092,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PipelineCoverageModulationStateCreateInfoNV & operator=( vk::PipelineCoverageModulationStateCreateInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineCoverageModulationStateCreateInfoNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineCoverageModulationStateCreateInfoNV ) - offsetof( PipelineCoverageModulationStateCreateInfoNV, pNext ) );
       return *this;
     }
 
@@ -49191,7 +49191,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PipelineCoverageReductionStateCreateInfoNV & operator=( vk::PipelineCoverageReductionStateCreateInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineCoverageReductionStateCreateInfoNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineCoverageReductionStateCreateInfoNV ) - offsetof( PipelineCoverageReductionStateCreateInfoNV, pNext ) );
       return *this;
     }
 
@@ -49268,7 +49268,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PipelineCoverageToColorStateCreateInfoNV & operator=( vk::PipelineCoverageToColorStateCreateInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineCoverageToColorStateCreateInfoNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineCoverageToColorStateCreateInfoNV ) - offsetof( PipelineCoverageToColorStateCreateInfoNV, pNext ) );
       return *this;
     }
 
@@ -49400,7 +49400,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PipelineCreationFeedbackCreateInfoEXT & operator=( vk::PipelineCreationFeedbackCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineCreationFeedbackCreateInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineCreationFeedbackCreateInfoEXT ) - offsetof( PipelineCreationFeedbackCreateInfoEXT, pNext ) );
       return *this;
     }
 
@@ -49487,7 +49487,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PipelineDiscardRectangleStateCreateInfoEXT & operator=( vk::PipelineDiscardRectangleStateCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineDiscardRectangleStateCreateInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineDiscardRectangleStateCreateInfoEXT ) - offsetof( PipelineDiscardRectangleStateCreateInfoEXT, pNext ) );
       return *this;
     }
 
@@ -49578,7 +49578,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PipelineExecutableInfoKHR & operator=( vk::PipelineExecutableInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineExecutableInfoKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineExecutableInfoKHR ) - offsetof( PipelineExecutableInfoKHR, pNext ) );
       return *this;
     }
 
@@ -49662,7 +49662,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PipelineExecutableInternalRepresentationKHR & operator=( vk::PipelineExecutableInternalRepresentationKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineExecutableInternalRepresentationKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineExecutableInternalRepresentationKHR ) - offsetof( PipelineExecutableInternalRepresentationKHR, pNext ) );
       return *this;
     }
 
@@ -49768,7 +49768,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PipelineExecutablePropertiesKHR & operator=( vk::PipelineExecutablePropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineExecutablePropertiesKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineExecutablePropertiesKHR ) - offsetof( PipelineExecutablePropertiesKHR, pNext ) );
       return *this;
     }
 
@@ -49861,7 +49861,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PipelineExecutableStatisticKHR & operator=( vk::PipelineExecutableStatisticKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineExecutableStatisticKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineExecutableStatisticKHR ) - offsetof( PipelineExecutableStatisticKHR, pNext ) );
       return *this;
     }
 
@@ -49905,7 +49905,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PipelineInfoKHR & operator=( vk::PipelineInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineInfoKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineInfoKHR ) - offsetof( PipelineInfoKHR, pNext ) );
       return *this;
     }
 
@@ -50047,7 +50047,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PipelineLayoutCreateInfo & operator=( vk::PipelineLayoutCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineLayoutCreateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineLayoutCreateInfo ) - offsetof( PipelineLayoutCreateInfo, pNext ) );
       return *this;
     }
 
@@ -50148,7 +50148,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PipelineRasterizationConservativeStateCreateInfoEXT & operator=( vk::PipelineRasterizationConservativeStateCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineRasterizationConservativeStateCreateInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineRasterizationConservativeStateCreateInfoEXT ) - offsetof( PipelineRasterizationConservativeStateCreateInfoEXT, pNext ) );
       return *this;
     }
 
@@ -50231,7 +50231,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PipelineRasterizationDepthClipStateCreateInfoEXT & operator=( vk::PipelineRasterizationDepthClipStateCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineRasterizationDepthClipStateCreateInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineRasterizationDepthClipStateCreateInfoEXT ) - offsetof( PipelineRasterizationDepthClipStateCreateInfoEXT, pNext ) );
       return *this;
     }
 
@@ -50310,7 +50310,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PipelineRasterizationLineStateCreateInfoEXT & operator=( vk::PipelineRasterizationLineStateCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineRasterizationLineStateCreateInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineRasterizationLineStateCreateInfoEXT ) - offsetof( PipelineRasterizationLineStateCreateInfoEXT, pNext ) );
       return *this;
     }
 
@@ -50399,7 +50399,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PipelineRasterizationStateRasterizationOrderAMD & operator=( vk::PipelineRasterizationStateRasterizationOrderAMD const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineRasterizationStateRasterizationOrderAMD ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineRasterizationStateRasterizationOrderAMD ) - offsetof( PipelineRasterizationStateRasterizationOrderAMD, pNext ) );
       return *this;
     }
 
@@ -50466,7 +50466,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PipelineRasterizationStateStreamCreateInfoEXT & operator=( vk::PipelineRasterizationStateStreamCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineRasterizationStateStreamCreateInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineRasterizationStateStreamCreateInfoEXT ) - offsetof( PipelineRasterizationStateStreamCreateInfoEXT, pNext ) );
       return *this;
     }
 
@@ -50539,7 +50539,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PipelineRepresentativeFragmentTestStateCreateInfoNV & operator=( vk::PipelineRepresentativeFragmentTestStateCreateInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineRepresentativeFragmentTestStateCreateInfoNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineRepresentativeFragmentTestStateCreateInfoNV ) - offsetof( PipelineRepresentativeFragmentTestStateCreateInfoNV, pNext ) );
       return *this;
     }
 
@@ -50606,7 +50606,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PipelineSampleLocationsStateCreateInfoEXT & operator=( vk::PipelineSampleLocationsStateCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineSampleLocationsStateCreateInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineSampleLocationsStateCreateInfoEXT ) - offsetof( PipelineSampleLocationsStateCreateInfoEXT, pNext ) );
       return *this;
     }
 
@@ -50679,7 +50679,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT & operator=( vk::PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT ) - offsetof( PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT, pNext ) );
       return *this;
     }
 
@@ -50732,7 +50732,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PipelineTessellationDomainOriginStateCreateInfo & operator=( vk::PipelineTessellationDomainOriginStateCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineTessellationDomainOriginStateCreateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineTessellationDomainOriginStateCreateInfo ) - offsetof( PipelineTessellationDomainOriginStateCreateInfo, pNext ) );
       return *this;
     }
 
@@ -50858,7 +50858,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PipelineVertexInputDivisorStateCreateInfoEXT & operator=( vk::PipelineVertexInputDivisorStateCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineVertexInputDivisorStateCreateInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineVertexInputDivisorStateCreateInfoEXT ) - offsetof( PipelineVertexInputDivisorStateCreateInfoEXT, pNext ) );
       return *this;
     }
 
@@ -50935,7 +50935,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PipelineViewportCoarseSampleOrderStateCreateInfoNV & operator=( vk::PipelineViewportCoarseSampleOrderStateCreateInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineViewportCoarseSampleOrderStateCreateInfoNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineViewportCoarseSampleOrderStateCreateInfoNV ) - offsetof( PipelineViewportCoarseSampleOrderStateCreateInfoNV, pNext ) );
       return *this;
     }
 
@@ -51018,7 +51018,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PipelineViewportExclusiveScissorStateCreateInfoNV & operator=( vk::PipelineViewportExclusiveScissorStateCreateInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineViewportExclusiveScissorStateCreateInfoNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineViewportExclusiveScissorStateCreateInfoNV ) - offsetof( PipelineViewportExclusiveScissorStateCreateInfoNV, pNext ) );
       return *this;
     }
 
@@ -51154,7 +51154,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PipelineViewportShadingRateImageStateCreateInfoNV & operator=( vk::PipelineViewportShadingRateImageStateCreateInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineViewportShadingRateImageStateCreateInfoNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineViewportShadingRateImageStateCreateInfoNV ) - offsetof( PipelineViewportShadingRateImageStateCreateInfoNV, pNext ) );
       return *this;
     }
 
@@ -51318,7 +51318,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PipelineViewportSwizzleStateCreateInfoNV & operator=( vk::PipelineViewportSwizzleStateCreateInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineViewportSwizzleStateCreateInfoNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineViewportSwizzleStateCreateInfoNV ) - offsetof( PipelineViewportSwizzleStateCreateInfoNV, pNext ) );
       return *this;
     }
 
@@ -51462,7 +51462,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PipelineViewportWScalingStateCreateInfoNV & operator=( vk::PipelineViewportWScalingStateCreateInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineViewportWScalingStateCreateInfoNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PipelineViewportWScalingStateCreateInfoNV ) - offsetof( PipelineViewportWScalingStateCreateInfoNV, pNext ) );
       return *this;
     }
 
@@ -51545,7 +51545,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PresentFrameTokenGGP & operator=( vk::PresentFrameTokenGGP const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PresentFrameTokenGGP ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PresentFrameTokenGGP ) - offsetof( PresentFrameTokenGGP, pNext ) );
       return *this;
     }
 
@@ -51621,7 +51621,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PresentInfoKHR & operator=( vk::PresentInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PresentInfoKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PresentInfoKHR ) - offsetof( PresentInfoKHR, pNext ) );
       return *this;
     }
 
@@ -51863,7 +51863,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PresentRegionsKHR & operator=( vk::PresentRegionsKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PresentRegionsKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PresentRegionsKHR ) - offsetof( PresentRegionsKHR, pNext ) );
       return *this;
     }
 
@@ -51997,7 +51997,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::PresentTimesInfoGOOGLE & operator=( vk::PresentTimesInfoGOOGLE const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::PresentTimesInfoGOOGLE ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::PresentTimesInfoGOOGLE ) - offsetof( PresentTimesInfoGOOGLE, pNext ) );
       return *this;
     }
 
@@ -52070,7 +52070,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ProtectedSubmitInfo & operator=( vk::ProtectedSubmitInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ProtectedSubmitInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ProtectedSubmitInfo ) - offsetof( ProtectedSubmitInfo, pNext ) );
       return *this;
     }
 
@@ -52141,7 +52141,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::QueryPoolCreateInfo & operator=( vk::QueryPoolCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::QueryPoolCreateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::QueryPoolCreateInfo ) - offsetof( QueryPoolCreateInfo, pNext ) );
       return *this;
     }
 
@@ -52230,7 +52230,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::QueryPoolCreateInfoINTEL & operator=( vk::QueryPoolCreateInfoINTEL const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::QueryPoolCreateInfoINTEL ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::QueryPoolCreateInfoINTEL ) - offsetof( QueryPoolCreateInfoINTEL, pNext ) );
       return *this;
     }
 
@@ -52295,7 +52295,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::QueueFamilyCheckpointPropertiesNV & operator=( vk::QueueFamilyCheckpointPropertiesNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::QueueFamilyCheckpointPropertiesNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::QueueFamilyCheckpointPropertiesNV ) - offsetof( QueueFamilyCheckpointPropertiesNV, pNext ) );
       return *this;
     }
 
@@ -52403,7 +52403,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::QueueFamilyProperties2 & operator=( vk::QueueFamilyProperties2 const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::QueueFamilyProperties2 ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::QueueFamilyProperties2 ) - offsetof( QueueFamilyProperties2, pNext ) );
       return *this;
     }
 
@@ -52464,7 +52464,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::RayTracingShaderGroupCreateInfoNV & operator=( vk::RayTracingShaderGroupCreateInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::RayTracingShaderGroupCreateInfoNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::RayTracingShaderGroupCreateInfoNV ) - offsetof( RayTracingShaderGroupCreateInfoNV, pNext ) );
       return *this;
     }
 
@@ -52577,7 +52577,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::RayTracingPipelineCreateInfoNV & operator=( vk::RayTracingPipelineCreateInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::RayTracingPipelineCreateInfoNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::RayTracingPipelineCreateInfoNV ) - offsetof( RayTracingPipelineCreateInfoNV, pNext ) );
       return *this;
     }
 
@@ -52751,7 +52751,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::RenderPassAttachmentBeginInfoKHR & operator=( vk::RenderPassAttachmentBeginInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::RenderPassAttachmentBeginInfoKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::RenderPassAttachmentBeginInfoKHR ) - offsetof( RenderPassAttachmentBeginInfoKHR, pNext ) );
       return *this;
     }
 
@@ -52832,7 +52832,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::RenderPassBeginInfo & operator=( vk::RenderPassBeginInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::RenderPassBeginInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::RenderPassBeginInfo ) - offsetof( RenderPassBeginInfo, pNext ) );
       return *this;
     }
 
@@ -53189,7 +53189,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::RenderPassCreateInfo & operator=( vk::RenderPassCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::RenderPassCreateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::RenderPassCreateInfo ) - offsetof( RenderPassCreateInfo, pNext ) );
       return *this;
     }
 
@@ -53322,7 +53322,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::SubpassDescription2KHR & operator=( vk::SubpassDescription2KHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::SubpassDescription2KHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::SubpassDescription2KHR ) - offsetof( SubpassDescription2KHR, pNext ) );
       return *this;
     }
 
@@ -53481,7 +53481,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::SubpassDependency2KHR & operator=( vk::SubpassDependency2KHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::SubpassDependency2KHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::SubpassDependency2KHR ) - offsetof( SubpassDependency2KHR, pNext ) );
       return *this;
     }
 
@@ -53618,7 +53618,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::RenderPassCreateInfo2KHR & operator=( vk::RenderPassCreateInfo2KHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::RenderPassCreateInfo2KHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::RenderPassCreateInfo2KHR ) - offsetof( RenderPassCreateInfo2KHR, pNext ) );
       return *this;
     }
 
@@ -53747,7 +53747,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::RenderPassFragmentDensityMapCreateInfoEXT & operator=( vk::RenderPassFragmentDensityMapCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::RenderPassFragmentDensityMapCreateInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::RenderPassFragmentDensityMapCreateInfoEXT ) - offsetof( RenderPassFragmentDensityMapCreateInfoEXT, pNext ) );
       return *this;
     }
 
@@ -53814,7 +53814,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::RenderPassInputAttachmentAspectCreateInfo & operator=( vk::RenderPassInputAttachmentAspectCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::RenderPassInputAttachmentAspectCreateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::RenderPassInputAttachmentAspectCreateInfo ) - offsetof( RenderPassInputAttachmentAspectCreateInfo, pNext ) );
       return *this;
     }
 
@@ -53897,7 +53897,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::RenderPassMultiviewCreateInfo & operator=( vk::RenderPassMultiviewCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::RenderPassMultiviewCreateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::RenderPassMultiviewCreateInfo ) - offsetof( RenderPassMultiviewCreateInfo, pNext ) );
       return *this;
     }
 
@@ -54067,7 +54067,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::RenderPassSampleLocationsBeginInfoEXT & operator=( vk::RenderPassSampleLocationsBeginInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::RenderPassSampleLocationsBeginInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::RenderPassSampleLocationsBeginInfoEXT ) - offsetof( RenderPassSampleLocationsBeginInfoEXT, pNext ) );
       return *this;
     }
 
@@ -54186,7 +54186,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::SamplerCreateInfo & operator=( vk::SamplerCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::SamplerCreateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::SamplerCreateInfo ) - offsetof( SamplerCreateInfo, pNext ) );
       return *this;
     }
 
@@ -54371,7 +54371,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::SamplerReductionModeCreateInfoEXT & operator=( vk::SamplerReductionModeCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::SamplerReductionModeCreateInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::SamplerReductionModeCreateInfoEXT ) - offsetof( SamplerReductionModeCreateInfoEXT, pNext ) );
       return *this;
     }
 
@@ -54450,7 +54450,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::SamplerYcbcrConversionCreateInfo & operator=( vk::SamplerYcbcrConversionCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::SamplerYcbcrConversionCreateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::SamplerYcbcrConversionCreateInfo ) - offsetof( SamplerYcbcrConversionCreateInfo, pNext ) );
       return *this;
     }
 
@@ -54571,7 +54571,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::SamplerYcbcrConversionImageFormatProperties & operator=( vk::SamplerYcbcrConversionImageFormatProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::SamplerYcbcrConversionImageFormatProperties ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::SamplerYcbcrConversionImageFormatProperties ) - offsetof( SamplerYcbcrConversionImageFormatProperties, pNext ) );
       return *this;
     }
 
@@ -54624,7 +54624,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::SamplerYcbcrConversionInfo & operator=( vk::SamplerYcbcrConversionInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::SamplerYcbcrConversionInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::SamplerYcbcrConversionInfo ) - offsetof( SamplerYcbcrConversionInfo, pNext ) );
       return *this;
     }
 
@@ -54689,7 +54689,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::SemaphoreCreateInfo & operator=( vk::SemaphoreCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::SemaphoreCreateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::SemaphoreCreateInfo ) - offsetof( SemaphoreCreateInfo, pNext ) );
       return *this;
     }
 
@@ -54756,7 +54756,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::SemaphoreGetFdInfoKHR & operator=( vk::SemaphoreGetFdInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::SemaphoreGetFdInfoKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::SemaphoreGetFdInfoKHR ) - offsetof( SemaphoreGetFdInfoKHR, pNext ) );
       return *this;
     }
 
@@ -54833,7 +54833,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::SemaphoreGetWin32HandleInfoKHR & operator=( vk::SemaphoreGetWin32HandleInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::SemaphoreGetWin32HandleInfoKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::SemaphoreGetWin32HandleInfoKHR ) - offsetof( SemaphoreGetWin32HandleInfoKHR, pNext ) );
       return *this;
     }
 
@@ -54909,7 +54909,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::SemaphoreSignalInfoKHR & operator=( vk::SemaphoreSignalInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::SemaphoreSignalInfoKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::SemaphoreSignalInfoKHR ) - offsetof( SemaphoreSignalInfoKHR, pNext ) );
       return *this;
     }
 
@@ -54984,7 +54984,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::SemaphoreTypeCreateInfoKHR & operator=( vk::SemaphoreTypeCreateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::SemaphoreTypeCreateInfoKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::SemaphoreTypeCreateInfoKHR ) - offsetof( SemaphoreTypeCreateInfoKHR, pNext ) );
       return *this;
     }
 
@@ -55063,7 +55063,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::SemaphoreWaitInfoKHR & operator=( vk::SemaphoreWaitInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::SemaphoreWaitInfoKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::SemaphoreWaitInfoKHR ) - offsetof( SemaphoreWaitInfoKHR, pNext ) );
       return *this;
     }
 
@@ -55156,7 +55156,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ShaderModuleCreateInfo & operator=( vk::ShaderModuleCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ShaderModuleCreateInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ShaderModuleCreateInfo ) - offsetof( ShaderModuleCreateInfo, pNext ) );
       return *this;
     }
 
@@ -55237,7 +55237,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ShaderModuleValidationCacheCreateInfoEXT & operator=( vk::ShaderModuleValidationCacheCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ShaderModuleValidationCacheCreateInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ShaderModuleValidationCacheCreateInfoEXT ) - offsetof( ShaderModuleValidationCacheCreateInfoEXT, pNext ) );
       return *this;
     }
 
@@ -55430,7 +55430,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::SharedPresentSurfaceCapabilitiesKHR & operator=( vk::SharedPresentSurfaceCapabilitiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::SharedPresentSurfaceCapabilitiesKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::SharedPresentSurfaceCapabilitiesKHR ) - offsetof( SharedPresentSurfaceCapabilitiesKHR, pNext ) );
       return *this;
     }
 
@@ -55534,7 +55534,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::SparseImageFormatProperties2 & operator=( vk::SparseImageFormatProperties2 const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::SparseImageFormatProperties2 ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::SparseImageFormatProperties2 ) - offsetof( SparseImageFormatProperties2, pNext ) );
       return *this;
     }
 
@@ -55646,7 +55646,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::SparseImageMemoryRequirements2 & operator=( vk::SparseImageMemoryRequirements2 const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::SparseImageMemoryRequirements2 ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::SparseImageMemoryRequirements2 ) - offsetof( SparseImageMemoryRequirements2, pNext ) );
       return *this;
     }
 
@@ -55703,7 +55703,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::StreamDescriptorSurfaceCreateInfoGGP & operator=( vk::StreamDescriptorSurfaceCreateInfoGGP const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::StreamDescriptorSurfaceCreateInfoGGP ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::StreamDescriptorSurfaceCreateInfoGGP ) - offsetof( StreamDescriptorSurfaceCreateInfoGGP, pNext ) );
       return *this;
     }
 
@@ -55789,7 +55789,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::SubmitInfo & operator=( vk::SubmitInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::SubmitInfo ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::SubmitInfo ) - offsetof( SubmitInfo, pNext ) );
       return *this;
     }
 
@@ -55902,7 +55902,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::SubpassBeginInfoKHR & operator=( vk::SubpassBeginInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::SubpassBeginInfoKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::SubpassBeginInfoKHR ) - offsetof( SubpassBeginInfoKHR, pNext ) );
       return *this;
     }
 
@@ -55971,7 +55971,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::SubpassDescriptionDepthStencilResolveKHR & operator=( vk::SubpassDescriptionDepthStencilResolveKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::SubpassDescriptionDepthStencilResolveKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::SubpassDescriptionDepthStencilResolveKHR ) - offsetof( SubpassDescriptionDepthStencilResolveKHR, pNext ) );
       return *this;
     }
 
@@ -56051,7 +56051,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::SubpassEndInfoKHR & operator=( vk::SubpassEndInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::SubpassEndInfoKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::SubpassEndInfoKHR ) - offsetof( SubpassEndInfoKHR, pNext ) );
       return *this;
     }
 
@@ -56128,7 +56128,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::SurfaceCapabilities2EXT & operator=( vk::SurfaceCapabilities2EXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::SurfaceCapabilities2EXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::SurfaceCapabilities2EXT ) - offsetof( SurfaceCapabilities2EXT, pNext ) );
       return *this;
     }
 
@@ -56280,7 +56280,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::SurfaceCapabilities2KHR & operator=( vk::SurfaceCapabilities2KHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::SurfaceCapabilities2KHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::SurfaceCapabilities2KHR ) - offsetof( SurfaceCapabilities2KHR, pNext ) );
       return *this;
     }
 
@@ -56335,7 +56335,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::SurfaceCapabilitiesFullScreenExclusiveEXT & operator=( vk::SurfaceCapabilitiesFullScreenExclusiveEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::SurfaceCapabilitiesFullScreenExclusiveEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::SurfaceCapabilitiesFullScreenExclusiveEXT ) - offsetof( SurfaceCapabilitiesFullScreenExclusiveEXT, pNext ) );
       return *this;
     }
 
@@ -56448,7 +56448,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::SurfaceFormat2KHR & operator=( vk::SurfaceFormat2KHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::SurfaceFormat2KHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::SurfaceFormat2KHR ) - offsetof( SurfaceFormat2KHR, pNext ) );
       return *this;
     }
 
@@ -56503,7 +56503,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::SurfaceFullScreenExclusiveInfoEXT & operator=( vk::SurfaceFullScreenExclusiveInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::SurfaceFullScreenExclusiveInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::SurfaceFullScreenExclusiveInfoEXT ) - offsetof( SurfaceFullScreenExclusiveInfoEXT, pNext ) );
       return *this;
     }
 
@@ -56571,7 +56571,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::SurfaceFullScreenExclusiveWin32InfoEXT & operator=( vk::SurfaceFullScreenExclusiveWin32InfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::SurfaceFullScreenExclusiveWin32InfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::SurfaceFullScreenExclusiveWin32InfoEXT ) - offsetof( SurfaceFullScreenExclusiveWin32InfoEXT, pNext ) );
       return *this;
     }
 
@@ -56637,7 +56637,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::SurfaceProtectedCapabilitiesKHR & operator=( vk::SurfaceProtectedCapabilitiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::SurfaceProtectedCapabilitiesKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::SurfaceProtectedCapabilitiesKHR ) - offsetof( SurfaceProtectedCapabilitiesKHR, pNext ) );
       return *this;
     }
 
@@ -56702,7 +56702,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::SwapchainCounterCreateInfoEXT & operator=( vk::SwapchainCounterCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::SwapchainCounterCreateInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::SwapchainCounterCreateInfoEXT ) - offsetof( SwapchainCounterCreateInfoEXT, pNext ) );
       return *this;
     }
 
@@ -56797,7 +56797,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::SwapchainCreateInfoKHR & operator=( vk::SwapchainCreateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::SwapchainCreateInfoKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::SwapchainCreateInfoKHR ) - offsetof( SwapchainCreateInfoKHR, pNext ) );
       return *this;
     }
 
@@ -56982,7 +56982,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::SwapchainDisplayNativeHdrCreateInfoAMD & operator=( vk::SwapchainDisplayNativeHdrCreateInfoAMD const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::SwapchainDisplayNativeHdrCreateInfoAMD ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::SwapchainDisplayNativeHdrCreateInfoAMD ) - offsetof( SwapchainDisplayNativeHdrCreateInfoAMD, pNext ) );
       return *this;
     }
 
@@ -57047,7 +57047,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::TextureLODGatherFormatPropertiesAMD & operator=( vk::TextureLODGatherFormatPropertiesAMD const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::TextureLODGatherFormatPropertiesAMD ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::TextureLODGatherFormatPropertiesAMD ) - offsetof( TextureLODGatherFormatPropertiesAMD, pNext ) );
       return *this;
     }
 
@@ -57106,7 +57106,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::TimelineSemaphoreSubmitInfoKHR & operator=( vk::TimelineSemaphoreSubmitInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::TimelineSemaphoreSubmitInfoKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::TimelineSemaphoreSubmitInfoKHR ) - offsetof( TimelineSemaphoreSubmitInfoKHR, pNext ) );
       return *this;
     }
 
@@ -57199,7 +57199,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ValidationCacheCreateInfoEXT & operator=( vk::ValidationCacheCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ValidationCacheCreateInfoEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ValidationCacheCreateInfoEXT ) - offsetof( ValidationCacheCreateInfoEXT, pNext ) );
       return *this;
     }
 
@@ -57286,7 +57286,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ValidationFeaturesEXT & operator=( vk::ValidationFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ValidationFeaturesEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ValidationFeaturesEXT ) - offsetof( ValidationFeaturesEXT, pNext ) );
       return *this;
     }
 
@@ -57377,7 +57377,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ValidationFlagsEXT & operator=( vk::ValidationFlagsEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ValidationFlagsEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ValidationFlagsEXT ) - offsetof( ValidationFlagsEXT, pNext ) );
       return *this;
     }
 
@@ -57454,7 +57454,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::ViSurfaceCreateInfoNN & operator=( vk::ViSurfaceCreateInfoNN const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::ViSurfaceCreateInfoNN ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::ViSurfaceCreateInfoNN ) - offsetof( ViSurfaceCreateInfoNN, pNext ) );
       return *this;
     }
 
@@ -57534,7 +57534,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::WaylandSurfaceCreateInfoKHR & operator=( vk::WaylandSurfaceCreateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::WaylandSurfaceCreateInfoKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::WaylandSurfaceCreateInfoKHR ) - offsetof( WaylandSurfaceCreateInfoKHR, pNext ) );
       return *this;
     }
 
@@ -57630,7 +57630,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::Win32KeyedMutexAcquireReleaseInfoKHR & operator=( vk::Win32KeyedMutexAcquireReleaseInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::Win32KeyedMutexAcquireReleaseInfoKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::Win32KeyedMutexAcquireReleaseInfoKHR ) - offsetof( Win32KeyedMutexAcquireReleaseInfoKHR, pNext ) );
       return *this;
     }
 
@@ -57758,7 +57758,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::Win32KeyedMutexAcquireReleaseInfoNV & operator=( vk::Win32KeyedMutexAcquireReleaseInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::Win32KeyedMutexAcquireReleaseInfoNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::Win32KeyedMutexAcquireReleaseInfoNV ) - offsetof( Win32KeyedMutexAcquireReleaseInfoNV, pNext ) );
       return *this;
     }
 
@@ -57878,7 +57878,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::Win32SurfaceCreateInfoKHR & operator=( vk::Win32SurfaceCreateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::Win32SurfaceCreateInfoKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::Win32SurfaceCreateInfoKHR ) - offsetof( Win32SurfaceCreateInfoKHR, pNext ) );
       return *this;
     }
 
@@ -57974,7 +57974,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::WriteDescriptorSet & operator=( vk::WriteDescriptorSet const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::WriteDescriptorSet ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::WriteDescriptorSet ) - offsetof( WriteDescriptorSet, pNext ) );
       return *this;
     }
 
@@ -58097,7 +58097,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::WriteDescriptorSetAccelerationStructureNV & operator=( vk::WriteDescriptorSetAccelerationStructureNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::WriteDescriptorSetAccelerationStructureNV ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::WriteDescriptorSetAccelerationStructureNV ) - offsetof( WriteDescriptorSetAccelerationStructureNV, pNext ) );
       return *this;
     }
 
@@ -58172,7 +58172,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::WriteDescriptorSetInlineUniformBlockEXT & operator=( vk::WriteDescriptorSetInlineUniformBlockEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::WriteDescriptorSetInlineUniformBlockEXT ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::WriteDescriptorSetInlineUniformBlockEXT ) - offsetof( WriteDescriptorSetInlineUniformBlockEXT, pNext ) );
       return *this;
     }
 
@@ -58251,7 +58251,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::XcbSurfaceCreateInfoKHR & operator=( vk::XcbSurfaceCreateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::XcbSurfaceCreateInfoKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::XcbSurfaceCreateInfoKHR ) - offsetof( XcbSurfaceCreateInfoKHR, pNext ) );
       return *this;
     }
 
@@ -58339,7 +58339,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     vk::XlibSurfaceCreateInfoKHR & operator=( vk::XlibSurfaceCreateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( vk::XlibSurfaceCreateInfoKHR ) - sizeof( vk::StructureType ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( vk::XlibSurfaceCreateInfoKHR ) - offsetof( XlibSurfaceCreateInfoKHR, pNext ) );
       return *this;
     }
 

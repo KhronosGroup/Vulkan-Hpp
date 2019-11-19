@@ -2659,12 +2659,16 @@ std::string VulkanHppGenerator::appendStructConstructor(std::pair<std::string, S
   // we need a copy constructor if there is constant sType in this struct
   if ((nonConstSTypeStructs.find(structData.first) == nonConstSTypeStructs.end()) && !structData.second.members.empty() && (structData.second.members.front().name == "sType"))
   {
-    structConstructor += "\n" + prefix + "vk::" + stripPrefix(structData.first, "Vk") + " & operator=( vk::" + stripPrefix(structData.first, "Vk") + " const & rhs ) VULKAN_HPP_NOEXCEPT\n";
-    structConstructor += prefix + "{\n";
     assert((2 <= structData.second.members.size()) && (structData.second.members[1].name == "pNext"));
-    structConstructor += prefix + "  memcpy( &pNext, &rhs.pNext, sizeof( vk::" + stripPrefix(structData.first, "Vk") + " ) - sizeof( vk::StructureType ) );\n";
-    structConstructor += prefix + "  return *this;\n";
-    structConstructor += prefix + "}\n";
+
+    static const std::string stringTemplate = R"(
+${prefix}vk::${structName} & operator=( vk::${structName} const & rhs ) VULKAN_HPP_NOEXCEPT
+${prefix}{
+${prefix}  memcpy( &pNext, &rhs.pNext, sizeof( vk::${structName} ) - offsetof( ${structName}, pNext ) );
+${prefix}  return *this;
+${prefix}}
+)";
+    structConstructor += replaceWithMap(stringTemplate, { {"prefix", prefix }, { "structName", stripPrefix(structData.first, "Vk") } });
   }
 
   return structConstructor;

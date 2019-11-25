@@ -54,7 +54,7 @@ VkBool32 debugMessageFunc(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity
     message += "\t"s + "Queue Labels:\n";
     for (uint8_t i = 0; i < pCallbackData->queueLabelCount; i++)
     {
-      message += "\t\t"s + "lableName = <" + pCallbackData->pQueueLabels[i].pLabelName + ">\n";
+      message += "\t\t"s + "labelName = <" + pCallbackData->pQueueLabels[i].pLabelName + ">\n";
     }
   }
   if (0 < pCallbackData->cmdBufLabelCount)

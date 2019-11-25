@@ -275,7 +275,7 @@ namespace vk
         std::cerr << "\t" << "Queue Labels:\n";
         for (uint8_t i = 0; i < pCallbackData->queueLabelCount; i++)
         {
-          std::cerr << "\t\t" << "lableName = <" << pCallbackData->pQueueLabels[i].pLabelName << ">\n";
+          std::cerr << "\t\t" << "labelName = <" << pCallbackData->pQueueLabels[i].pLabelName << ">\n";
         }
       }
       if (0 < pCallbackData->cmdBufLabelCount)

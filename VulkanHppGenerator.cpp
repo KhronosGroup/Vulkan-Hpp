@@ -4739,6 +4739,18 @@ int main( int argc, char **argv )
     static const bool valid = true;
   };
 
+  template<typename Type, class...>
+  struct isPartOfStructureChain
+  {
+    static const bool valid = false;
+  };
+
+  template<typename Type, typename Head, typename... Tail>
+  struct isPartOfStructureChain<Type, Head, Tail...>
+  {
+    static const bool valid = std::is_same<Type, Head>::value || isPartOfStructureChain<Type, Tail...>::valid;
+  };
+
   template <class Element>
   class StructureChainElement
   {
@@ -4783,6 +4795,45 @@ int main( int argc, char **argv )
             std::make_tuple(get<ClassTypeA>(),get<ClassTypeB>()),
             std::make_tuple(get<ClassTypes>()...)
         );
+    }
+
+    template<typename ClassType>
+    void unlink() VULKAN_HPP_NOEXCEPT
+    {
+      static_assert(isPartOfStructureChain<ClassType, StructureElements...>::valid, "Can't unlink Structure that's not part of this StructureChain!");
+      static_assert(!std::is_same<ClassType, typename std::tuple_element<0, std::tuple<StructureElements...>>::type>::value, "It's not allowed to unlink the first element!");
+      VkBaseOutStructure * ptr = reinterpret_cast<VkBaseOutStructure*>(&get<ClassType>());
+      assert(ptr != nullptr);
+      VkBaseOutStructure ** ppNext = &(reinterpret_cast<VkBaseOutStructure*>(this)->pNext);
+      assert(*ppNext != nullptr);
+      while (*ppNext != ptr)
+      {
+        ppNext = &(*ppNext)->pNext;
+        assert(*ppNext != nullptr);   // fires, if the ClassType member has already been unlinked !
+      }
+      assert(*ppNext == ptr);
+      *ppNext = (*ppNext)->pNext;
+    }
+
+    template <typename ClassType>
+    void relink() VULKAN_HPP_NOEXCEPT
+    {
+      static_assert(isPartOfStructureChain<ClassType, StructureElements...>::valid, "Can't relink Structure that's not part of this StructureChain!");
+      static_assert(!std::is_same<ClassType, typename std::tuple_element<0, std::tuple<StructureElements...>>::type>::value, "It's not allowed to have the first element unlinked!");
+      VkBaseOutStructure * ptr = reinterpret_cast<VkBaseOutStructure*>(&get<ClassType>());
+      assert(ptr != nullptr);
+      VkBaseOutStructure ** ppNext = &(reinterpret_cast<VkBaseOutStructure*>(this)->pNext);
+      assert(*ppNext != nullptr);
+#if !defined(NDEBUG)
+      while (*ppNext)
+      {
+        assert(*ppNext != ptr);   // fires, if the ClassType member has not been unlinked before
+        ppNext = &(*ppNext)->pNext;
+      }
+      ppNext = &(reinterpret_cast<VkBaseOutStructure*>(this)->pNext);
+#endif
+      ptr->pNext = *ppNext;
+      *ppNext = ptr;
     }
 
   private:

@@ -43,6 +43,7 @@ int main(int /*argc*/, char ** /*argv*/)
 
     vk::ApplicationInfo appInfo(AppName, 1, EngineName, 1, VK_API_VERSION_1_1);
     vk::UniqueInstance instance = vk::createInstanceUnique(vk::InstanceCreateInfo({}, &appInfo));
+    VULKAN_HPP_DEFAULT_DISPATCHER.init(*instance);
     vk::PhysicalDevice physicalDevice = instance->enumeratePhysicalDevices().front();
 
     // some valid StructureChains
@@ -60,6 +61,22 @@ int main(int /*argc*/, char ** /*argv*/)
     //vk::StructureChain<vk::PhysicalDeviceIDProperties, vk::PhysicalDevicePushDescriptorPropertiesKHR, vk::PhysicalDeviceMaintenance3Properties> x;
     //vk::StructureChain<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceIDProperties, vk::PhysicalDeviceIDProperties> x;
     //vk::StructureChain<vk::PhysicalDeviceIDProperties, vk::PhysicalDeviceProperties2> x;
+
+    // unlink a struct from a StructureChain
+    sc7.unlink<vk::PhysicalDeviceMaintenance3Properties>();
+
+    // some invalid unlink calls
+    //sc7.unlink<vk::PhysicalDeviceMaintenance3Properties>();   // assertion fires on trying to unlink some already unlinked structure
+    //sc7.unlink<vk::PhysicalDeviceProperties2>();
+    //sc1.unlink<vk::PhysicalDeviceMaintenance3Properties>();
+
+    // re-link a struct
+    sc7.relink<vk::PhysicalDeviceMaintenance3Properties>();
+
+    // invalid re-linking
+    //sc7.relink<vk::PhysicalDeviceProperties2>();
+    //sc1.relink<vk::PhysicalDeviceMaintenance3Properties>();
+    //sc1.relink<vk::PhysicalDeviceIDProperties>();             // assertion fires on trying to relink some structure that hasn't been unlinked
 
     // simple call, passing structures in
     vk::PhysicalDeviceFeatures2 pdf;

@@ -191,6 +191,9 @@ vk::StructureChain<vk::MemoryAllocateInfo, vk::MemoryDedicatedAllocateInfo> c = 
 };
 ```
 
+If one of the structures of a StructureChain is to be removed, maybe due to some optional settings, you can use the function ```vk::StructureChain::unlink<ClassType>()```. It modifies the StructureChain such that the specified structure isn't part of the pNext-chain any more. Note, that the actual memory layout of the StructureChain is not modified by that function.
+In case that very same structure has to be re-added to the StructureChain again, use ```vk::StructureChain::relink<ClassType>()```.
+
 Sometimes the user has to pass a preallocated structure chain to query information. For those cases there are two corresponding getter functions. One with a variadic template generating a structure chain of at least two elements to construct the return value:
 
 ```

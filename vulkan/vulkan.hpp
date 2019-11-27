@@ -6317,16 +6317,6 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( AccessFlags( bits ) );
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( AccessFlagBits bit0, AccessFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return AccessFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( AccessFlagBits bit0, AccessFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return AccessFlags( bit0 ) != bit1;
-  }
-
   VULKAN_HPP_INLINE std::string to_string( AccessFlags value  )
   {
     if ( !value ) return "{}";
@@ -6424,16 +6414,6 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( AttachmentDescriptionFlags( bits ) );
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( AttachmentDescriptionFlagBits bit0, AttachmentDescriptionFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return AttachmentDescriptionFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( AttachmentDescriptionFlagBits bit0, AttachmentDescriptionFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return AttachmentDescriptionFlags( bit0 ) != bit1;
-  }
-
   VULKAN_HPP_INLINE std::string to_string( AttachmentDescriptionFlags value  )
   {
     if ( !value ) return "{}";
@@ -6493,16 +6473,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR BufferCreateFlags operator~( BufferCreateFlagBits bits ) VULKAN_HPP_NOEXCEPT
   {
     return ~( BufferCreateFlags( bits ) );
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( BufferCreateFlagBits bit0, BufferCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return BufferCreateFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( BufferCreateFlagBits bit0, BufferCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return BufferCreateFlags( bit0 ) != bit1;
   }
 
   VULKAN_HPP_INLINE std::string to_string( BufferCreateFlags value  )
@@ -6586,16 +6556,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR BufferUsageFlags operator~( BufferUsageFlagBits bits ) VULKAN_HPP_NOEXCEPT
   {
     return ~( BufferUsageFlags( bits ) );
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( BufferUsageFlagBits bit0, BufferUsageFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return BufferUsageFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( BufferUsageFlagBits bit0, BufferUsageFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return BufferUsageFlags( bit0 ) != bit1;
   }
 
   VULKAN_HPP_INLINE std::string to_string( BufferUsageFlags value  )
@@ -6687,16 +6647,6 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( BuildAccelerationStructureFlagsNV( bits ) );
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( BuildAccelerationStructureFlagBitsNV bit0, BuildAccelerationStructureFlagBitsNV bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return BuildAccelerationStructureFlagsNV( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( BuildAccelerationStructureFlagBitsNV bit0, BuildAccelerationStructureFlagBitsNV bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return BuildAccelerationStructureFlagsNV( bit0 ) != bit1;
-  }
-
   VULKAN_HPP_INLINE std::string to_string( BuildAccelerationStructureFlagsNV value  )
   {
     if ( !value ) return "{}";
@@ -6760,16 +6710,6 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( ColorComponentFlags( bits ) );
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( ColorComponentFlagBits bit0, ColorComponentFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ColorComponentFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( ColorComponentFlagBits bit0, ColorComponentFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ColorComponentFlags( bit0 ) != bit1;
-  }
-
   VULKAN_HPP_INLINE std::string to_string( ColorComponentFlags value  )
   {
     if ( !value ) return "{}";
@@ -6824,16 +6764,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR CommandBufferResetFlags operator~( CommandBufferResetFlagBits bits ) VULKAN_HPP_NOEXCEPT
   {
     return ~( CommandBufferResetFlags( bits ) );
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( CommandBufferResetFlagBits bit0, CommandBufferResetFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return CommandBufferResetFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( CommandBufferResetFlagBits bit0, CommandBufferResetFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return CommandBufferResetFlags( bit0 ) != bit1;
   }
 
   VULKAN_HPP_INLINE std::string to_string( CommandBufferResetFlags value  )
@@ -6891,16 +6821,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR CommandBufferUsageFlags operator~( CommandBufferUsageFlagBits bits ) VULKAN_HPP_NOEXCEPT
   {
     return ~( CommandBufferUsageFlags( bits ) );
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( CommandBufferUsageFlagBits bit0, CommandBufferUsageFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return CommandBufferUsageFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( CommandBufferUsageFlagBits bit0, CommandBufferUsageFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return CommandBufferUsageFlags( bit0 ) != bit1;
   }
 
   VULKAN_HPP_INLINE std::string to_string( CommandBufferUsageFlags value  )
@@ -6962,16 +6882,6 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( CommandPoolCreateFlags( bits ) );
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( CommandPoolCreateFlagBits bit0, CommandPoolCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return CommandPoolCreateFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( CommandPoolCreateFlagBits bit0, CommandPoolCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return CommandPoolCreateFlags( bit0 ) != bit1;
-  }
-
   VULKAN_HPP_INLINE std::string to_string( CommandPoolCreateFlags value  )
   {
     if ( !value ) return "{}";
@@ -7025,16 +6935,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR CommandPoolResetFlags operator~( CommandPoolResetFlagBits bits ) VULKAN_HPP_NOEXCEPT
   {
     return ~( CommandPoolResetFlags( bits ) );
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( CommandPoolResetFlagBits bit0, CommandPoolResetFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return CommandPoolResetFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( CommandPoolResetFlagBits bit0, CommandPoolResetFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return CommandPoolResetFlags( bit0 ) != bit1;
   }
 
   VULKAN_HPP_INLINE std::string to_string( CommandPoolResetFlags value  )
@@ -7113,16 +7013,6 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( CompositeAlphaFlagsKHR( bits ) );
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( CompositeAlphaFlagBitsKHR bit0, CompositeAlphaFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return CompositeAlphaFlagsKHR( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( CompositeAlphaFlagBitsKHR bit0, CompositeAlphaFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return CompositeAlphaFlagsKHR( bit0 ) != bit1;
-  }
-
   VULKAN_HPP_INLINE std::string to_string( CompositeAlphaFlagsKHR value  )
   {
     if ( !value ) return "{}";
@@ -7177,16 +7067,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ConditionalRenderingFlagsEXT operator~( ConditionalRenderingFlagBitsEXT bits ) VULKAN_HPP_NOEXCEPT
   {
     return ~( ConditionalRenderingFlagsEXT( bits ) );
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( ConditionalRenderingFlagBitsEXT bit0, ConditionalRenderingFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ConditionalRenderingFlagsEXT( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( ConditionalRenderingFlagBitsEXT bit0, ConditionalRenderingFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ConditionalRenderingFlagsEXT( bit0 ) != bit1;
   }
 
   VULKAN_HPP_INLINE std::string to_string( ConditionalRenderingFlagsEXT value  )
@@ -7246,16 +7126,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR CullModeFlags operator~( CullModeFlagBits bits ) VULKAN_HPP_NOEXCEPT
   {
     return ~( CullModeFlags( bits ) );
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( CullModeFlagBits bit0, CullModeFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return CullModeFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( CullModeFlagBits bit0, CullModeFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return CullModeFlags( bit0 ) != bit1;
   }
 
   VULKAN_HPP_INLINE std::string to_string( CullModeFlags value  )
@@ -7318,16 +7188,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DebugReportFlagsEXT operator~( DebugReportFlagBitsEXT bits ) VULKAN_HPP_NOEXCEPT
   {
     return ~( DebugReportFlagsEXT( bits ) );
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( DebugReportFlagBitsEXT bit0, DebugReportFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DebugReportFlagsEXT( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( DebugReportFlagBitsEXT bit0, DebugReportFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DebugReportFlagsEXT( bit0 ) != bit1;
   }
 
   VULKAN_HPP_INLINE std::string to_string( DebugReportFlagsEXT value  )
@@ -7393,16 +7253,6 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( DebugUtilsMessageSeverityFlagsEXT( bits ) );
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( DebugUtilsMessageSeverityFlagBitsEXT bit0, DebugUtilsMessageSeverityFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DebugUtilsMessageSeverityFlagsEXT( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( DebugUtilsMessageSeverityFlagBitsEXT bit0, DebugUtilsMessageSeverityFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DebugUtilsMessageSeverityFlagsEXT( bit0 ) != bit1;
-  }
-
   VULKAN_HPP_INLINE std::string to_string( DebugUtilsMessageSeverityFlagsEXT value  )
   {
     if ( !value ) return "{}";
@@ -7461,16 +7311,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DebugUtilsMessageTypeFlagsEXT operator~( DebugUtilsMessageTypeFlagBitsEXT bits ) VULKAN_HPP_NOEXCEPT
   {
     return ~( DebugUtilsMessageTypeFlagsEXT( bits ) );
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( DebugUtilsMessageTypeFlagBitsEXT bit0, DebugUtilsMessageTypeFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DebugUtilsMessageTypeFlagsEXT( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( DebugUtilsMessageTypeFlagBitsEXT bit0, DebugUtilsMessageTypeFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DebugUtilsMessageTypeFlagsEXT( bit0 ) != bit1;
   }
 
   VULKAN_HPP_INLINE std::string to_string( DebugUtilsMessageTypeFlagsEXT value  )
@@ -7564,16 +7404,6 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( DependencyFlags( bits ) );
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( DependencyFlagBits bit0, DependencyFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DependencyFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( DependencyFlagBits bit0, DependencyFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DependencyFlags( bit0 ) != bit1;
-  }
-
   VULKAN_HPP_INLINE std::string to_string( DependencyFlags value  )
   {
     if ( !value ) return "{}";
@@ -7635,16 +7465,6 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( DescriptorBindingFlagsEXT( bits ) );
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( DescriptorBindingFlagBitsEXT bit0, DescriptorBindingFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DescriptorBindingFlagsEXT( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( DescriptorBindingFlagBitsEXT bit0, DescriptorBindingFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DescriptorBindingFlagsEXT( bit0 ) != bit1;
-  }
-
   VULKAN_HPP_INLINE std::string to_string( DescriptorBindingFlagsEXT value  )
   {
     if ( !value ) return "{}";
@@ -7701,16 +7521,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DescriptorPoolCreateFlags operator~( DescriptorPoolCreateFlagBits bits ) VULKAN_HPP_NOEXCEPT
   {
     return ~( DescriptorPoolCreateFlags( bits ) );
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( DescriptorPoolCreateFlagBits bit0, DescriptorPoolCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DescriptorPoolCreateFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( DescriptorPoolCreateFlagBits bit0, DescriptorPoolCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DescriptorPoolCreateFlags( bit0 ) != bit1;
   }
 
   VULKAN_HPP_INLINE std::string to_string( DescriptorPoolCreateFlags value  )
@@ -7782,16 +7592,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DescriptorSetLayoutCreateFlags operator~( DescriptorSetLayoutCreateFlagBits bits ) VULKAN_HPP_NOEXCEPT
   {
     return ~( DescriptorSetLayoutCreateFlags( bits ) );
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( DescriptorSetLayoutCreateFlagBits bit0, DescriptorSetLayoutCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DescriptorSetLayoutCreateFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( DescriptorSetLayoutCreateFlagBits bit0, DescriptorSetLayoutCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DescriptorSetLayoutCreateFlags( bit0 ) != bit1;
   }
 
   VULKAN_HPP_INLINE std::string to_string( DescriptorSetLayoutCreateFlags value  )
@@ -7886,16 +7686,6 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( DeviceGroupPresentModeFlagsKHR( bits ) );
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( DeviceGroupPresentModeFlagBitsKHR bit0, DeviceGroupPresentModeFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DeviceGroupPresentModeFlagsKHR( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( DeviceGroupPresentModeFlagBitsKHR bit0, DeviceGroupPresentModeFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DeviceGroupPresentModeFlagsKHR( bit0 ) != bit1;
-  }
-
   VULKAN_HPP_INLINE std::string to_string( DeviceGroupPresentModeFlagsKHR value  )
   {
     if ( !value ) return "{}";
@@ -7950,16 +7740,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DeviceQueueCreateFlags operator~( DeviceQueueCreateFlagBits bits ) VULKAN_HPP_NOEXCEPT
   {
     return ~( DeviceQueueCreateFlags( bits ) );
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( DeviceQueueCreateFlagBits bit0, DeviceQueueCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DeviceQueueCreateFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( DeviceQueueCreateFlagBits bit0, DeviceQueueCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DeviceQueueCreateFlags( bit0 ) != bit1;
   }
 
   VULKAN_HPP_INLINE std::string to_string( DeviceQueueCreateFlags value  )
@@ -8034,16 +7814,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DisplayPlaneAlphaFlagsKHR operator~( DisplayPlaneAlphaFlagBitsKHR bits ) VULKAN_HPP_NOEXCEPT
   {
     return ~( DisplayPlaneAlphaFlagsKHR( bits ) );
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( DisplayPlaneAlphaFlagBitsKHR bit0, DisplayPlaneAlphaFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DisplayPlaneAlphaFlagsKHR( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( DisplayPlaneAlphaFlagBitsKHR bit0, DisplayPlaneAlphaFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DisplayPlaneAlphaFlagsKHR( bit0 ) != bit1;
   }
 
   VULKAN_HPP_INLINE std::string to_string( DisplayPlaneAlphaFlagsKHR value  )
@@ -8136,16 +7906,6 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( ExternalFenceFeatureFlags( bits ) );
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( ExternalFenceFeatureFlagBits bit0, ExternalFenceFeatureFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ExternalFenceFeatureFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( ExternalFenceFeatureFlagBits bit0, ExternalFenceFeatureFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ExternalFenceFeatureFlags( bit0 ) != bit1;
-  }
-
   using ExternalFenceFeatureFlagsKHR = ExternalFenceFeatureFlags;
 
   VULKAN_HPP_INLINE std::string to_string( ExternalFenceFeatureFlags value  )
@@ -8210,16 +7970,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ExternalFenceHandleTypeFlags operator~( ExternalFenceHandleTypeFlagBits bits ) VULKAN_HPP_NOEXCEPT
   {
     return ~( ExternalFenceHandleTypeFlags( bits ) );
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( ExternalFenceHandleTypeFlagBits bit0, ExternalFenceHandleTypeFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ExternalFenceHandleTypeFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( ExternalFenceHandleTypeFlagBits bit0, ExternalFenceHandleTypeFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ExternalFenceHandleTypeFlags( bit0 ) != bit1;
   }
 
   using ExternalFenceHandleTypeFlagsKHR = ExternalFenceHandleTypeFlags;
@@ -8287,16 +8037,6 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( ExternalMemoryFeatureFlags( bits ) );
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( ExternalMemoryFeatureFlagBits bit0, ExternalMemoryFeatureFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ExternalMemoryFeatureFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( ExternalMemoryFeatureFlagBits bit0, ExternalMemoryFeatureFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ExternalMemoryFeatureFlags( bit0 ) != bit1;
-  }
-
   using ExternalMemoryFeatureFlagsKHR = ExternalMemoryFeatureFlags;
 
   VULKAN_HPP_INLINE std::string to_string( ExternalMemoryFeatureFlags value  )
@@ -8356,16 +8096,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ExternalMemoryFeatureFlagsNV operator~( ExternalMemoryFeatureFlagBitsNV bits ) VULKAN_HPP_NOEXCEPT
   {
     return ~( ExternalMemoryFeatureFlagsNV( bits ) );
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( ExternalMemoryFeatureFlagBitsNV bit0, ExternalMemoryFeatureFlagBitsNV bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ExternalMemoryFeatureFlagsNV( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( ExternalMemoryFeatureFlagBitsNV bit0, ExternalMemoryFeatureFlagBitsNV bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ExternalMemoryFeatureFlagsNV( bit0 ) != bit1;
   }
 
   VULKAN_HPP_INLINE std::string to_string( ExternalMemoryFeatureFlagsNV value  )
@@ -8450,16 +8180,6 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( ExternalMemoryHandleTypeFlags( bits ) );
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( ExternalMemoryHandleTypeFlagBits bit0, ExternalMemoryHandleTypeFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ExternalMemoryHandleTypeFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( ExternalMemoryHandleTypeFlagBits bit0, ExternalMemoryHandleTypeFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ExternalMemoryHandleTypeFlags( bit0 ) != bit1;
-  }
-
   using ExternalMemoryHandleTypeFlagsKHR = ExternalMemoryHandleTypeFlags;
 
   VULKAN_HPP_INLINE std::string to_string( ExternalMemoryHandleTypeFlags value  )
@@ -8531,16 +8251,6 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( ExternalMemoryHandleTypeFlagsNV( bits ) );
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( ExternalMemoryHandleTypeFlagBitsNV bit0, ExternalMemoryHandleTypeFlagBitsNV bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ExternalMemoryHandleTypeFlagsNV( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( ExternalMemoryHandleTypeFlagBitsNV bit0, ExternalMemoryHandleTypeFlagBitsNV bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ExternalMemoryHandleTypeFlagsNV( bit0 ) != bit1;
-  }
-
   VULKAN_HPP_INLINE std::string to_string( ExternalMemoryHandleTypeFlagsNV value  )
   {
     if ( !value ) return "{}";
@@ -8599,16 +8309,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ExternalSemaphoreFeatureFlags operator~( ExternalSemaphoreFeatureFlagBits bits ) VULKAN_HPP_NOEXCEPT
   {
     return ~( ExternalSemaphoreFeatureFlags( bits ) );
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( ExternalSemaphoreFeatureFlagBits bit0, ExternalSemaphoreFeatureFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ExternalSemaphoreFeatureFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( ExternalSemaphoreFeatureFlagBits bit0, ExternalSemaphoreFeatureFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ExternalSemaphoreFeatureFlags( bit0 ) != bit1;
   }
 
   using ExternalSemaphoreFeatureFlagsKHR = ExternalSemaphoreFeatureFlags;
@@ -8680,16 +8380,6 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( ExternalSemaphoreHandleTypeFlags( bits ) );
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( ExternalSemaphoreHandleTypeFlagBits bit0, ExternalSemaphoreHandleTypeFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ExternalSemaphoreHandleTypeFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( ExternalSemaphoreHandleTypeFlagBits bit0, ExternalSemaphoreHandleTypeFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ExternalSemaphoreHandleTypeFlags( bit0 ) != bit1;
-  }
-
   using ExternalSemaphoreHandleTypeFlagsKHR = ExternalSemaphoreHandleTypeFlags;
 
   VULKAN_HPP_INLINE std::string to_string( ExternalSemaphoreHandleTypeFlags value  )
@@ -8749,16 +8439,6 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( FenceCreateFlags( bits ) );
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( FenceCreateFlagBits bit0, FenceCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return FenceCreateFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( FenceCreateFlagBits bit0, FenceCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return FenceCreateFlags( bit0 ) != bit1;
-  }
-
   VULKAN_HPP_INLINE std::string to_string( FenceCreateFlags value  )
   {
     if ( !value ) return "{}";
@@ -8811,16 +8491,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR FenceImportFlags operator~( FenceImportFlagBits bits ) VULKAN_HPP_NOEXCEPT
   {
     return ~( FenceImportFlags( bits ) );
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( FenceImportFlagBits bit0, FenceImportFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return FenceImportFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( FenceImportFlagBits bit0, FenceImportFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return FenceImportFlags( bit0 ) != bit1;
   }
 
   using FenceImportFlagsKHR = FenceImportFlags;
@@ -8936,16 +8606,6 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( FormatFeatureFlags( bits ) );
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( FormatFeatureFlagBits bit0, FormatFeatureFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return FormatFeatureFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( FormatFeatureFlagBits bit0, FormatFeatureFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return FormatFeatureFlags( bit0 ) != bit1;
-  }
-
   VULKAN_HPP_INLINE std::string to_string( FormatFeatureFlags value  )
   {
     if ( !value ) return "{}";
@@ -9023,16 +8683,6 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( FramebufferCreateFlags( bits ) );
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( FramebufferCreateFlagBits bit0, FramebufferCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return FramebufferCreateFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( FramebufferCreateFlagBits bit0, FramebufferCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return FramebufferCreateFlags( bit0 ) != bit1;
-  }
-
   VULKAN_HPP_INLINE std::string to_string( FramebufferCreateFlags value  )
   {
     if ( !value ) return "{}";
@@ -9086,16 +8736,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR GeometryFlagsNV operator~( GeometryFlagBitsNV bits ) VULKAN_HPP_NOEXCEPT
   {
     return ~( GeometryFlagsNV( bits ) );
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( GeometryFlagBitsNV bit0, GeometryFlagBitsNV bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return GeometryFlagsNV( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( GeometryFlagBitsNV bit0, GeometryFlagBitsNV bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return GeometryFlagsNV( bit0 ) != bit1;
   }
 
   VULKAN_HPP_INLINE std::string to_string( GeometryFlagsNV value  )
@@ -9156,16 +8796,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR GeometryInstanceFlagsNV operator~( GeometryInstanceFlagBitsNV bits ) VULKAN_HPP_NOEXCEPT
   {
     return ~( GeometryInstanceFlagsNV( bits ) );
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( GeometryInstanceFlagBitsNV bit0, GeometryInstanceFlagBitsNV bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return GeometryInstanceFlagsNV( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( GeometryInstanceFlagBitsNV bit0, GeometryInstanceFlagBitsNV bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return GeometryInstanceFlagsNV( bit0 ) != bit1;
   }
 
   VULKAN_HPP_INLINE std::string to_string( GeometryInstanceFlagsNV value  )
@@ -9279,16 +8909,6 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( ImageAspectFlags( bits ) );
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( ImageAspectFlagBits bit0, ImageAspectFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ImageAspectFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( ImageAspectFlagBits bit0, ImageAspectFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ImageAspectFlags( bit0 ) != bit1;
-  }
-
   VULKAN_HPP_INLINE std::string to_string( ImageAspectFlags value  )
   {
     if ( !value ) return "{}";
@@ -9384,16 +9004,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ImageCreateFlags operator~( ImageCreateFlagBits bits ) VULKAN_HPP_NOEXCEPT
   {
     return ~( ImageCreateFlags( bits ) );
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( ImageCreateFlagBits bit0, ImageCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ImageCreateFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( ImageCreateFlagBits bit0, ImageCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ImageCreateFlags( bit0 ) != bit1;
   }
 
   VULKAN_HPP_INLINE std::string to_string( ImageCreateFlags value  )
@@ -9498,16 +9108,6 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( ImageUsageFlags( bits ) );
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( ImageUsageFlagBits bit0, ImageUsageFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ImageUsageFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( ImageUsageFlagBits bit0, ImageUsageFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ImageUsageFlags( bit0 ) != bit1;
-  }
-
   VULKAN_HPP_INLINE std::string to_string( ImageUsageFlags value  )
   {
     if ( !value ) return "{}";
@@ -9570,16 +9170,6 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( ImageViewCreateFlags( bits ) );
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( ImageViewCreateFlagBits bit0, ImageViewCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ImageViewCreateFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( ImageViewCreateFlagBits bit0, ImageViewCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ImageViewCreateFlags( bit0 ) != bit1;
-  }
-
   VULKAN_HPP_INLINE std::string to_string( ImageViewCreateFlags value  )
   {
     if ( !value ) return "{}";
@@ -9637,16 +9227,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR IndirectCommandsLayoutUsageFlagsNVX operator~( IndirectCommandsLayoutUsageFlagBitsNVX bits ) VULKAN_HPP_NOEXCEPT
   {
     return ~( IndirectCommandsLayoutUsageFlagsNVX( bits ) );
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( IndirectCommandsLayoutUsageFlagBitsNVX bit0, IndirectCommandsLayoutUsageFlagBitsNVX bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return IndirectCommandsLayoutUsageFlagsNVX( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( IndirectCommandsLayoutUsageFlagBitsNVX bit0, IndirectCommandsLayoutUsageFlagBitsNVX bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return IndirectCommandsLayoutUsageFlagsNVX( bit0 ) != bit1;
   }
 
   VULKAN_HPP_INLINE std::string to_string( IndirectCommandsLayoutUsageFlagsNVX value  )
@@ -9738,16 +9318,6 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( MemoryAllocateFlags( bits ) );
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( MemoryAllocateFlagBits bit0, MemoryAllocateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return MemoryAllocateFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( MemoryAllocateFlagBits bit0, MemoryAllocateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return MemoryAllocateFlags( bit0 ) != bit1;
-  }
-
   using MemoryAllocateFlagsKHR = MemoryAllocateFlags;
 
   VULKAN_HPP_INLINE std::string to_string( MemoryAllocateFlags value  )
@@ -9804,16 +9374,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR MemoryHeapFlags operator~( MemoryHeapFlagBits bits ) VULKAN_HPP_NOEXCEPT
   {
     return ~( MemoryHeapFlags( bits ) );
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( MemoryHeapFlagBits bit0, MemoryHeapFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return MemoryHeapFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( MemoryHeapFlagBits bit0, MemoryHeapFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return MemoryHeapFlags( bit0 ) != bit1;
   }
 
   VULKAN_HPP_INLINE std::string to_string( MemoryHeapFlags value  )
@@ -9899,16 +9459,6 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( MemoryPropertyFlags( bits ) );
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( MemoryPropertyFlagBits bit0, MemoryPropertyFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return MemoryPropertyFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( MemoryPropertyFlagBits bit0, MemoryPropertyFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return MemoryPropertyFlags( bit0 ) != bit1;
-  }
-
   VULKAN_HPP_INLINE std::string to_string( MemoryPropertyFlags value  )
   {
     if ( !value ) return "{}";
@@ -9988,16 +9538,6 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( ObjectEntryUsageFlagsNVX( bits ) );
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( ObjectEntryUsageFlagBitsNVX bit0, ObjectEntryUsageFlagBitsNVX bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ObjectEntryUsageFlagsNVX( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( ObjectEntryUsageFlagBitsNVX bit0, ObjectEntryUsageFlagBitsNVX bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ObjectEntryUsageFlagsNVX( bit0 ) != bit1;
-  }
-
   VULKAN_HPP_INLINE std::string to_string( ObjectEntryUsageFlagsNVX value  )
   {
     if ( !value ) return "{}";
@@ -10060,16 +9600,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PeerMemoryFeatureFlags operator~( PeerMemoryFeatureFlagBits bits ) VULKAN_HPP_NOEXCEPT
   {
     return ~( PeerMemoryFeatureFlags( bits ) );
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( PeerMemoryFeatureFlagBits bit0, PeerMemoryFeatureFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return PeerMemoryFeatureFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( PeerMemoryFeatureFlagBits bit0, PeerMemoryFeatureFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return PeerMemoryFeatureFlags( bit0 ) != bit1;
   }
 
   using PeerMemoryFeatureFlagsKHR = PeerMemoryFeatureFlags;
@@ -10236,16 +9766,6 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( PipelineCreateFlags( bits ) );
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( PipelineCreateFlagBits bit0, PipelineCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return PipelineCreateFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( PipelineCreateFlagBits bit0, PipelineCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return PipelineCreateFlags( bit0 ) != bit1;
-  }
-
   VULKAN_HPP_INLINE std::string to_string( PipelineCreateFlags value  )
   {
     if ( !value ) return "{}";
@@ -10308,16 +9828,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineCreationFeedbackFlagsEXT operator~( PipelineCreationFeedbackFlagBitsEXT bits ) VULKAN_HPP_NOEXCEPT
   {
     return ~( PipelineCreationFeedbackFlagsEXT( bits ) );
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( PipelineCreationFeedbackFlagBitsEXT bit0, PipelineCreationFeedbackFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return PipelineCreationFeedbackFlagsEXT( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( PipelineCreationFeedbackFlagBitsEXT bit0, PipelineCreationFeedbackFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return PipelineCreationFeedbackFlagsEXT( bit0 ) != bit1;
   }
 
   VULKAN_HPP_INLINE std::string to_string( PipelineCreationFeedbackFlagsEXT value  )
@@ -10527,16 +10037,6 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( PipelineShaderStageCreateFlags( bits ) );
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( PipelineShaderStageCreateFlagBits bit0, PipelineShaderStageCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return PipelineShaderStageCreateFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( PipelineShaderStageCreateFlagBits bit0, PipelineShaderStageCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return PipelineShaderStageCreateFlags( bit0 ) != bit1;
-  }
-
   VULKAN_HPP_INLINE std::string to_string( PipelineShaderStageCreateFlags value  )
   {
     if ( !value ) return "{}";
@@ -10639,16 +10139,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineStageFlags operator~( PipelineStageFlagBits bits ) VULKAN_HPP_NOEXCEPT
   {
     return ~( PipelineStageFlags( bits ) );
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( PipelineStageFlagBits bit0, PipelineStageFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return PipelineStageFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( PipelineStageFlagBits bit0, PipelineStageFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return PipelineStageFlags( bit0 ) != bit1;
   }
 
   VULKAN_HPP_INLINE std::string to_string( PipelineStageFlags value  )
@@ -10789,16 +10279,6 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( QueryControlFlags( bits ) );
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( QueryControlFlagBits bit0, QueryControlFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return QueryControlFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( QueryControlFlagBits bit0, QueryControlFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return QueryControlFlags( bit0 ) != bit1;
-  }
-
   VULKAN_HPP_INLINE std::string to_string( QueryControlFlags value  )
   {
     if ( !value ) return "{}";
@@ -10870,16 +10350,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR QueryPipelineStatisticFlags operator~( QueryPipelineStatisticFlagBits bits ) VULKAN_HPP_NOEXCEPT
   {
     return ~( QueryPipelineStatisticFlags( bits ) );
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( QueryPipelineStatisticFlagBits bit0, QueryPipelineStatisticFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return QueryPipelineStatisticFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( QueryPipelineStatisticFlagBits bit0, QueryPipelineStatisticFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return QueryPipelineStatisticFlags( bit0 ) != bit1;
   }
 
   VULKAN_HPP_INLINE std::string to_string( QueryPipelineStatisticFlags value  )
@@ -10966,16 +10436,6 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( QueryResultFlags( bits ) );
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( QueryResultFlagBits bit0, QueryResultFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return QueryResultFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( QueryResultFlagBits bit0, QueryResultFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return QueryResultFlags( bit0 ) != bit1;
-  }
-
   VULKAN_HPP_INLINE std::string to_string( QueryResultFlags value  )
   {
     if ( !value ) return "{}";
@@ -11038,16 +10498,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR QueueFlags operator~( QueueFlagBits bits ) VULKAN_HPP_NOEXCEPT
   {
     return ~( QueueFlags( bits ) );
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( QueueFlagBits bit0, QueueFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return QueueFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( QueueFlagBits bit0, QueueFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return QueueFlags( bit0 ) != bit1;
   }
 
   VULKAN_HPP_INLINE std::string to_string( QueueFlags value  )
@@ -11130,16 +10580,6 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( ResolveModeFlagsKHR( bits ) );
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( ResolveModeFlagBitsKHR bit0, ResolveModeFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ResolveModeFlagsKHR( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( ResolveModeFlagBitsKHR bit0, ResolveModeFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ResolveModeFlagsKHR( bit0 ) != bit1;
-  }
-
   VULKAN_HPP_INLINE std::string to_string( ResolveModeFlagsKHR value  )
   {
     if ( !value ) return "{}";
@@ -11208,16 +10648,6 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( SampleCountFlags( bits ) );
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( SampleCountFlagBits bit0, SampleCountFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SampleCountFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( SampleCountFlagBits bit0, SampleCountFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SampleCountFlags( bit0 ) != bit1;
-  }
-
   VULKAN_HPP_INLINE std::string to_string( SampleCountFlags value  )
   {
     if ( !value ) return "{}";
@@ -11277,16 +10707,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SamplerCreateFlags operator~( SamplerCreateFlagBits bits ) VULKAN_HPP_NOEXCEPT
   {
     return ~( SamplerCreateFlags( bits ) );
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( SamplerCreateFlagBits bit0, SamplerCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SamplerCreateFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( SamplerCreateFlagBits bit0, SamplerCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SamplerCreateFlags( bit0 ) != bit1;
   }
 
   VULKAN_HPP_INLINE std::string to_string( SamplerCreateFlags value  )
@@ -11359,16 +10779,6 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( SemaphoreImportFlags( bits ) );
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( SemaphoreImportFlagBits bit0, SemaphoreImportFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SemaphoreImportFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( SemaphoreImportFlagBits bit0, SemaphoreImportFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SemaphoreImportFlags( bit0 ) != bit1;
-  }
-
   using SemaphoreImportFlagsKHR = SemaphoreImportFlags;
 
   VULKAN_HPP_INLINE std::string to_string( SemaphoreImportFlags value  )
@@ -11422,16 +10832,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SemaphoreWaitFlagsKHR operator~( SemaphoreWaitFlagBitsKHR bits ) VULKAN_HPP_NOEXCEPT
   {
     return ~( SemaphoreWaitFlagsKHR( bits ) );
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( SemaphoreWaitFlagBitsKHR bit0, SemaphoreWaitFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SemaphoreWaitFlagsKHR( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( SemaphoreWaitFlagBitsKHR bit0, SemaphoreWaitFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SemaphoreWaitFlagsKHR( bit0 ) != bit1;
   }
 
   VULKAN_HPP_INLINE std::string to_string( SemaphoreWaitFlagsKHR value  )
@@ -11547,16 +10947,6 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( ShaderStageFlags( bits ) );
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( ShaderStageFlagBits bit0, ShaderStageFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ShaderStageFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( ShaderStageFlagBits bit0, ShaderStageFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ShaderStageFlags( bit0 ) != bit1;
-  }
-
   VULKAN_HPP_INLINE std::string to_string( ShaderStageFlags value  )
   {
     if ( !value ) return "{}";
@@ -11627,16 +11017,6 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( SparseImageFormatFlags( bits ) );
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( SparseImageFormatFlagBits bit0, SparseImageFormatFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SparseImageFormatFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( SparseImageFormatFlagBits bit0, SparseImageFormatFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SparseImageFormatFlags( bit0 ) != bit1;
-  }
-
   VULKAN_HPP_INLINE std::string to_string( SparseImageFormatFlags value  )
   {
     if ( !value ) return "{}";
@@ -11690,16 +11070,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SparseMemoryBindFlags operator~( SparseMemoryBindFlagBits bits ) VULKAN_HPP_NOEXCEPT
   {
     return ~( SparseMemoryBindFlags( bits ) );
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( SparseMemoryBindFlagBits bit0, SparseMemoryBindFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SparseMemoryBindFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( SparseMemoryBindFlagBits bit0, SparseMemoryBindFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SparseMemoryBindFlags( bit0 ) != bit1;
   }
 
   VULKAN_HPP_INLINE std::string to_string( SparseMemoryBindFlags value  )
@@ -11758,16 +11128,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR StencilFaceFlags operator~( StencilFaceFlagBits bits ) VULKAN_HPP_NOEXCEPT
   {
     return ~( StencilFaceFlags( bits ) );
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( StencilFaceFlagBits bit0, StencilFaceFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return StencilFaceFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( StencilFaceFlagBits bit0, StencilFaceFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return StencilFaceFlags( bit0 ) != bit1;
   }
 
   VULKAN_HPP_INLINE std::string to_string( StencilFaceFlags value  )
@@ -11857,16 +11217,6 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( SubgroupFeatureFlags( bits ) );
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( SubgroupFeatureFlagBits bit0, SubgroupFeatureFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SubgroupFeatureFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( SubgroupFeatureFlagBits bit0, SubgroupFeatureFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SubgroupFeatureFlags( bit0 ) != bit1;
-  }
-
   VULKAN_HPP_INLINE std::string to_string( SubgroupFeatureFlags value  )
   {
     if ( !value ) return "{}";
@@ -11930,16 +11280,6 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( SubpassDescriptionFlags( bits ) );
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( SubpassDescriptionFlagBits bit0, SubpassDescriptionFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SubpassDescriptionFlags( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( SubpassDescriptionFlagBits bit0, SubpassDescriptionFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SubpassDescriptionFlags( bit0 ) != bit1;
-  }
-
   VULKAN_HPP_INLINE std::string to_string( SubpassDescriptionFlags value  )
   {
     if ( !value ) return "{}";
@@ -11992,16 +11332,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SurfaceCounterFlagsEXT operator~( SurfaceCounterFlagBitsEXT bits ) VULKAN_HPP_NOEXCEPT
   {
     return ~( SurfaceCounterFlagsEXT( bits ) );
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( SurfaceCounterFlagBitsEXT bit0, SurfaceCounterFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SurfaceCounterFlagsEXT( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( SurfaceCounterFlagBitsEXT bit0, SurfaceCounterFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SurfaceCounterFlagsEXT( bit0 ) != bit1;
   }
 
   VULKAN_HPP_INLINE std::string to_string( SurfaceCounterFlagsEXT value  )
@@ -12073,16 +11403,6 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( SurfaceTransformFlagsKHR( bits ) );
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( SurfaceTransformFlagBitsKHR bit0, SurfaceTransformFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SurfaceTransformFlagsKHR( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( SurfaceTransformFlagBitsKHR bit0, SurfaceTransformFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SurfaceTransformFlagsKHR( bit0 ) != bit1;
-  }
-
   VULKAN_HPP_INLINE std::string to_string( SurfaceTransformFlagsKHR value  )
   {
     if ( !value ) return "{}";
@@ -12146,16 +11466,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SwapchainCreateFlagsKHR operator~( SwapchainCreateFlagBitsKHR bits ) VULKAN_HPP_NOEXCEPT
   {
     return ~( SwapchainCreateFlagsKHR( bits ) );
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( SwapchainCreateFlagBitsKHR bit0, SwapchainCreateFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SwapchainCreateFlagsKHR( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( SwapchainCreateFlagBitsKHR bit0, SwapchainCreateFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SwapchainCreateFlagsKHR( bit0 ) != bit1;
   }
 
   VULKAN_HPP_INLINE std::string to_string( SwapchainCreateFlagsKHR value  )
@@ -20723,7 +20033,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return ( flags == rhs.flags )
           && ( format == rhs.format )
-          && vk::operator==( samples, rhs.samples )
+          && ( samples == rhs.samples )
           && ( loadOp == rhs.loadOp )
           && ( storeOp == rhs.storeOp )
           && ( stencilLoadOp == rhs.stencilLoadOp )
@@ -20866,7 +20176,7 @@ namespace VULKAN_HPP_NAMESPACE
           && ( pNext == rhs.pNext )
           && ( flags == rhs.flags )
           && ( format == rhs.format )
-          && vk::operator==( samples, rhs.samples )
+          && ( samples == rhs.samples )
           && ( loadOp == rhs.loadOp )
           && ( storeOp == rhs.storeOp )
           && ( stencilLoadOp == rhs.stencilLoadOp )
@@ -21231,7 +20541,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
-          && vk::operator==( sampleLocationsPerPixel, rhs.sampleLocationsPerPixel )
+          && ( sampleLocationsPerPixel == rhs.sampleLocationsPerPixel )
           && ( sampleLocationGridSize == rhs.sampleLocationGridSize )
           && ( sampleLocationsCount == rhs.sampleLocationsCount )
           && ( pSampleLocations == rhs.pSampleLocations );
@@ -22099,7 +21409,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
-          && vk::operator==( planeAspect, rhs.planeAspect );
+          && ( planeAspect == rhs.planeAspect );
     }
 
     bool operator!=( BindImagePlaneMemoryInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
@@ -23777,7 +23087,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
-          && vk::operator==( stage, rhs.stage )
+          && ( stage == rhs.stage )
           && ( pCheckpointMarker == rhs.pCheckpointMarker );
     }
 
@@ -25173,7 +24483,7 @@ namespace VULKAN_HPP_NAMESPACE
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( flags == rhs.flags )
-          && vk::operator==( stage, rhs.stage )
+          && ( stage == rhs.stage )
           && ( module == rhs.module )
           && ( pName == rhs.pName )
           && ( pSpecializationInfo == rhs.pSpecializationInfo );
@@ -29408,7 +28718,7 @@ namespace VULKAN_HPP_NAMESPACE
           && ( pNext == rhs.pNext )
           && ( swapchainCount == rhs.swapchainCount )
           && ( pDeviceMasks == rhs.pDeviceMasks )
-          && vk::operator==( mode, rhs.mode );
+          && ( mode == rhs.mode );
     }
 
     bool operator!=( DeviceGroupPresentInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
@@ -31009,9 +30319,9 @@ namespace VULKAN_HPP_NAMESPACE
           && ( displayMode == rhs.displayMode )
           && ( planeIndex == rhs.planeIndex )
           && ( planeStackIndex == rhs.planeStackIndex )
-          && vk::operator==( transform, rhs.transform )
+          && ( transform == rhs.transform )
           && ( globalAlpha == rhs.globalAlpha )
-          && vk::operator==( alphaMode, rhs.alphaMode )
+          && ( alphaMode == rhs.alphaMode )
           && ( imageExtent == rhs.imageExtent );
     }
 
@@ -32865,7 +32175,7 @@ namespace VULKAN_HPP_NAMESPACE
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( fence == rhs.fence )
-          && vk::operator==( handleType, rhs.handleType );
+          && ( handleType == rhs.handleType );
     }
 
     bool operator!=( FenceGetFdInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
@@ -32942,7 +32252,7 @@ namespace VULKAN_HPP_NAMESPACE
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( fence == rhs.fence )
-          && vk::operator==( handleType, rhs.handleType );
+          && ( handleType == rhs.handleType );
     }
 
     bool operator!=( FenceGetWin32HandleInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
@@ -33490,7 +32800,7 @@ namespace VULKAN_HPP_NAMESPACE
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( coverageReductionMode == rhs.coverageReductionMode )
-          && vk::operator==( rasterizationSamples, rhs.rasterizationSamples )
+          && ( rasterizationSamples == rhs.rasterizationSamples )
           && ( depthStencilSamples == rhs.depthStencilSamples )
           && ( colorSamples == rhs.colorSamples );
     }
@@ -34391,7 +33701,7 @@ namespace VULKAN_HPP_NAMESPACE
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( flags == rhs.flags )
-          && vk::operator==( rasterizationSamples, rhs.rasterizationSamples )
+          && ( rasterizationSamples == rhs.rasterizationSamples )
           && ( sampleShadingEnable == rhs.sampleShadingEnable )
           && ( minSampleShading == rhs.minSampleShading )
           && ( pSampleMask == rhs.pSampleMask )
@@ -35887,7 +35197,7 @@ namespace VULKAN_HPP_NAMESPACE
           && ( extent == rhs.extent )
           && ( mipLevels == rhs.mipLevels )
           && ( arrayLayers == rhs.arrayLayers )
-          && vk::operator==( samples, rhs.samples )
+          && ( samples == rhs.samples )
           && ( tiling == rhs.tiling )
           && ( usage == rhs.usage )
           && ( sharingMode == rhs.sharingMode )
@@ -36737,7 +36047,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
-          && vk::operator==( planeAspect, rhs.planeAspect );
+          && ( planeAspect == rhs.planeAspect );
     }
 
     bool operator!=( ImagePlaneMemoryRequirementsInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
@@ -37510,7 +36820,7 @@ namespace VULKAN_HPP_NAMESPACE
           && ( pNext == rhs.pNext )
           && ( fence == rhs.fence )
           && ( flags == rhs.flags )
-          && vk::operator==( handleType, rhs.handleType )
+          && ( handleType == rhs.handleType )
           && ( fd == rhs.fd );
     }
 
@@ -37615,7 +36925,7 @@ namespace VULKAN_HPP_NAMESPACE
           && ( pNext == rhs.pNext )
           && ( fence == rhs.fence )
           && ( flags == rhs.flags )
-          && vk::operator==( handleType, rhs.handleType )
+          && ( handleType == rhs.handleType )
           && ( handle == rhs.handle )
           && ( name == rhs.name );
     }
@@ -37695,7 +37005,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
-          && vk::operator==( handleType, rhs.handleType )
+          && ( handleType == rhs.handleType )
           && ( fd == rhs.fd );
     }
 
@@ -37770,7 +37080,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
-          && vk::operator==( handleType, rhs.handleType )
+          && ( handleType == rhs.handleType )
           && ( pHostPointer == rhs.pHostPointer );
     }
 
@@ -37855,7 +37165,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
-          && vk::operator==( handleType, rhs.handleType )
+          && ( handleType == rhs.handleType )
           && ( handle == rhs.handle )
           && ( name == rhs.name );
     }
@@ -38029,7 +37339,7 @@ namespace VULKAN_HPP_NAMESPACE
           && ( pNext == rhs.pNext )
           && ( semaphore == rhs.semaphore )
           && ( flags == rhs.flags )
-          && vk::operator==( handleType, rhs.handleType )
+          && ( handleType == rhs.handleType )
           && ( fd == rhs.fd );
     }
 
@@ -38134,7 +37444,7 @@ namespace VULKAN_HPP_NAMESPACE
           && ( pNext == rhs.pNext )
           && ( semaphore == rhs.semaphore )
           && ( flags == rhs.flags )
-          && vk::operator==( handleType, rhs.handleType )
+          && ( handleType == rhs.handleType )
           && ( handle == rhs.handle )
           && ( name == rhs.name );
     }
@@ -39337,7 +38647,7 @@ namespace VULKAN_HPP_NAMESPACE
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( memory == rhs.memory )
-          && vk::operator==( handleType, rhs.handleType );
+          && ( handleType == rhs.handleType );
     }
 
     bool operator!=( MemoryGetFdInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
@@ -39414,7 +38724,7 @@ namespace VULKAN_HPP_NAMESPACE
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( memory == rhs.memory )
-          && vk::operator==( handleType, rhs.handleType );
+          && ( handleType == rhs.handleType );
     }
 
     bool operator!=( MemoryGetWin32HandleInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
@@ -42888,7 +42198,7 @@ namespace VULKAN_HPP_NAMESPACE
           && ( pNext == rhs.pNext )
           && ( flags == rhs.flags )
           && ( usage == rhs.usage )
-          && vk::operator==( handleType, rhs.handleType );
+          && ( handleType == rhs.handleType );
     }
 
     bool operator!=( PhysicalDeviceExternalBufferInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
@@ -42955,7 +42265,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
-          && vk::operator==( handleType, rhs.handleType );
+          && ( handleType == rhs.handleType );
     }
 
     bool operator!=( PhysicalDeviceExternalFenceInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
@@ -43020,7 +42330,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
-          && vk::operator==( handleType, rhs.handleType );
+          && ( handleType == rhs.handleType );
     }
 
     bool operator!=( PhysicalDeviceExternalImageFormatInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
@@ -43138,7 +42448,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
-          && vk::operator==( handleType, rhs.handleType );
+          && ( handleType == rhs.handleType );
     }
 
     bool operator!=( PhysicalDeviceExternalSemaphoreInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
@@ -47654,7 +46964,7 @@ namespace VULKAN_HPP_NAMESPACE
           && ( pNext == rhs.pNext )
           && ( format == rhs.format )
           && ( type == rhs.type )
-          && vk::operator==( samples, rhs.samples )
+          && ( samples == rhs.samples )
           && ( usage == rhs.usage )
           && ( tiling == rhs.tiling );
     }
@@ -54804,7 +54114,7 @@ namespace VULKAN_HPP_NAMESPACE
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( semaphore == rhs.semaphore )
-          && vk::operator==( handleType, rhs.handleType );
+          && ( handleType == rhs.handleType );
     }
 
     bool operator!=( SemaphoreGetFdInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
@@ -54881,7 +54191,7 @@ namespace VULKAN_HPP_NAMESPACE
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( semaphore == rhs.semaphore )
-          && vk::operator==( handleType, rhs.handleType );
+          && ( handleType == rhs.handleType );
     }
 
     bool operator!=( SemaphoreGetWin32HandleInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
@@ -56024,8 +55334,8 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
-          && vk::operator==( depthResolveMode, rhs.depthResolveMode )
-          && vk::operator==( stencilResolveMode, rhs.stencilResolveMode )
+          && ( depthResolveMode == rhs.depthResolveMode )
+          && ( stencilResolveMode == rhs.stencilResolveMode )
           && ( pDepthStencilResolveAttachment == rhs.pDepthStencilResolveAttachment );
     }
 
@@ -56164,7 +55474,7 @@ namespace VULKAN_HPP_NAMESPACE
           && ( maxImageExtent == rhs.maxImageExtent )
           && ( maxImageArrayLayers == rhs.maxImageArrayLayers )
           && ( supportedTransforms == rhs.supportedTransforms )
-          && vk::operator==( currentTransform, rhs.currentTransform )
+          && ( currentTransform == rhs.currentTransform )
           && ( supportedCompositeAlpha == rhs.supportedCompositeAlpha )
           && ( supportedUsageFlags == rhs.supportedUsageFlags )
           && ( supportedSurfaceCounters == rhs.supportedSurfaceCounters );
@@ -56247,7 +55557,7 @@ namespace VULKAN_HPP_NAMESPACE
           && ( maxImageExtent == rhs.maxImageExtent )
           && ( maxImageArrayLayers == rhs.maxImageArrayLayers )
           && ( supportedTransforms == rhs.supportedTransforms )
-          && vk::operator==( currentTransform, rhs.currentTransform )
+          && ( currentTransform == rhs.currentTransform )
           && ( supportedCompositeAlpha == rhs.supportedCompositeAlpha )
           && ( supportedUsageFlags == rhs.supportedUsageFlags );
     }
@@ -56939,8 +56249,8 @@ namespace VULKAN_HPP_NAMESPACE
           && ( imageSharingMode == rhs.imageSharingMode )
           && ( queueFamilyIndexCount == rhs.queueFamilyIndexCount )
           && ( pQueueFamilyIndices == rhs.pQueueFamilyIndices )
-          && vk::operator==( preTransform, rhs.preTransform )
-          && vk::operator==( compositeAlpha, rhs.compositeAlpha )
+          && ( preTransform == rhs.preTransform )
+          && ( compositeAlpha == rhs.compositeAlpha )
           && ( presentMode == rhs.presentMode )
           && ( clipped == rhs.clipped )
           && ( oldSwapchain == rhs.oldSwapchain );

@@ -864,16 +864,6 @@ void VulkanHppGenerator::appendBitmask(std::string & str, std::string const& bit
   {
     return ~( ${bitmaskName}( bits ) );
   }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator==( ${enumName} bit0, ${enumName} bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ${bitmaskName}( bit0 ) == bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR bool operator!=( ${enumName} bit0, ${enumName} bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ${bitmaskName}( bit0 ) != bit1;
-  }
 )";
 
     str += replaceWithMap(bitmaskOperatorsTemplate, { { "bitmaskName", bitmaskName },{ "enumName", enumName },{ "allFlags", allFlags } });
@@ -2543,13 +2533,7 @@ void VulkanHppGenerator::appendStructCompareOperators(std::string & str, std::pa
     compareMembers += intro;
     if (member.arraySize.empty())
     {
-      if (m_bitmaskBits.find(member.type.type) != m_bitmaskBits.end()) {
-        compareMembers += "vk::operator==( " + member.name + ", rhs." + member.name + " )";
-      }
-      else
-      {
-        compareMembers += "( " + member.name + " == rhs." + member.name + " )";
-      }
+      compareMembers += "( " + member.name + " == rhs." + member.name + " )";
     }
     else
     {

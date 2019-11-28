@@ -594,7 +594,12 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     using element_type = Type;
 
-    explicit UniqueHandle( Type const& value = Type(), Deleter const& deleter = Deleter() ) VULKAN_HPP_NOEXCEPT
+    UniqueHandle()
+      : Deleter()
+      , m_value()
+    {}
+
+    explicit UniqueHandle( Type const& value, Deleter const& deleter = Deleter() ) VULKAN_HPP_NOEXCEPT
       : Deleter( deleter)
       , m_value( value )
     {}
@@ -2646,7 +2651,13 @@ namespace VULKAN_HPP_NAMESPACE
   class ObjectDestroy
   {
     public:
-      ObjectDestroy( OwnerType owner = OwnerType(), Optional<const AllocationCallbacks> allocationCallbacks = nullptr, Dispatch const &dispatch = VULKAN_HPP_DEFAULT_DISPATCHER ) VULKAN_HPP_NOEXCEPT
+      ObjectDestroy()
+        : m_owner()
+        , m_allocationCallbacks( nullptr )
+        , m_dispatch( nullptr )
+      {}
+
+      ObjectDestroy( OwnerType owner, Optional<const AllocationCallbacks> allocationCallbacks, Dispatch const &dispatch ) VULKAN_HPP_NOEXCEPT
         : m_owner( owner )
         , m_allocationCallbacks( allocationCallbacks )
         , m_dispatch( &dispatch )
@@ -2659,6 +2670,7 @@ namespace VULKAN_HPP_NAMESPACE
       template <typename T>
       void destroy(T t) VULKAN_HPP_NOEXCEPT
       {
+        assert( m_owner && m_dispatch );
         m_owner.destroy( t, m_allocationCallbacks, *m_dispatch );
       }
 
@@ -2674,6 +2686,11 @@ namespace VULKAN_HPP_NAMESPACE
   class ObjectDestroy<NoParent,Dispatch>
   {
     public:
+      ObjectDestroy()
+        : m_allocationCallbacks( nullptr )
+        , m_dispatch( nullptr )
+      {}
+
       ObjectDestroy( Optional<const AllocationCallbacks> allocationCallbacks = nullptr, Dispatch const &dispatch = VULKAN_HPP_DEFAULT_DISPATCHER ) VULKAN_HPP_NOEXCEPT
         : m_allocationCallbacks( allocationCallbacks )
         , m_dispatch( &dispatch )
@@ -2685,6 +2702,7 @@ namespace VULKAN_HPP_NAMESPACE
       template <typename T>
       void destroy(T t) VULKAN_HPP_NOEXCEPT
       {
+        assert( m_dispatch );
         t.destroy( m_allocationCallbacks, *m_dispatch );
       }
 
@@ -2697,7 +2715,13 @@ namespace VULKAN_HPP_NAMESPACE
   class ObjectFree
   {
     public:
-      ObjectFree( OwnerType owner = OwnerType(), Optional<const AllocationCallbacks> allocationCallbacks = nullptr, Dispatch const &dispatch = VULKAN_HPP_DEFAULT_DISPATCHER ) VULKAN_HPP_NOEXCEPT
+      ObjectFree()
+        : m_owner()
+        , m_allocationCallbacks( nullptr )
+        , m_dispatch( nullptr )
+      {}
+
+      ObjectFree( OwnerType owner, Optional<const AllocationCallbacks> allocationCallbacks, Dispatch const &dispatch ) VULKAN_HPP_NOEXCEPT
         : m_owner( owner )
         , m_allocationCallbacks( allocationCallbacks )
         , m_dispatch( &dispatch )
@@ -2710,6 +2734,7 @@ namespace VULKAN_HPP_NAMESPACE
       template <typename T>
       void destroy(T t) VULKAN_HPP_NOEXCEPT
       {
+        assert( m_owner && m_dispatch );
         m_owner.free( t, m_allocationCallbacks, *m_dispatch );
       }
 

@@ -354,7 +354,7 @@ std::pair<bool, std::string> generateFunctionBodyStandardReturn(std::string cons
     castReturn = beginsWith(returnType, "Vk");
     if (castReturn)
     {
-      // the return-type is a vulkan type -> need to cast to vk::-type
+      // the return-type is a vulkan type -> need to cast to VULKAN_HPP_NAMESPACE-type
       ret += "static_cast<" + stripPrefix(returnType, "Vk") + ">( ";
     }
   }
@@ -781,7 +781,7 @@ void VulkanHppGenerator::appendArgumentVulkanType(std::string & str, ParamData c
   }
   else
   {
-    // a non-pointer parameter needs a static_cast from vk::-type to vulkan type
+    // a non-pointer parameter needs a static_cast from VULKAN_HPP_NAMESPACE-type to vulkan type
     str += "static_cast<" + paramData.type.type + ">( " + paramData.name + " )";
   }
 }
@@ -1165,13 +1165,13 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic(std::string & str)
 
 #if !defined(VK_NO_PROTOTYPES)
     // This interface is designed to be used for per-device function pointers in combination with a linked vulkan library.
-    DispatchLoaderDynamic(vk::Instance const& instance, vk::Device const& device) VULKAN_HPP_NOEXCEPT
+    DispatchLoaderDynamic(VULKAN_HPP_NAMESPACE::Instance const& instance, VULKAN_HPP_NAMESPACE::Device const& device) VULKAN_HPP_NOEXCEPT
     {
       init(instance, device);
     }
 
     // This interface is designed to be used for per-device function pointers in combination with a linked vulkan library.
-    void init(vk::Instance const& instance, vk::Device const& device) VULKAN_HPP_NOEXCEPT
+    void init(VULKAN_HPP_NAMESPACE::Instance const& instance, VULKAN_HPP_NAMESPACE::Device const& device) VULKAN_HPP_NOEXCEPT
     {
       init(static_cast<VkInstance>(instance), ::vkGetInstanceProcAddr, static_cast<VkDevice>(device), device ? ::vkGetDeviceProcAddr : nullptr);
     }
@@ -1204,13 +1204,13 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic(std::string & str)
     {
       VULKAN_HPP_ASSERT(instance && getInstanceProcAddr);
       vkGetInstanceProcAddr = getInstanceProcAddr;
-      init( vk::Instance(instance) );
+      init( VULKAN_HPP_NAMESPACE::Instance(instance) );
       if (device) {
-        init( vk::Device(device) );
+        init( VULKAN_HPP_NAMESPACE::Device(device) );
       }
     }
 
-    void init( vk::Instance instanceCpp ) VULKAN_HPP_NOEXCEPT
+    void init( VULKAN_HPP_NAMESPACE::Instance instanceCpp ) VULKAN_HPP_NOEXCEPT
     {
       VkInstance instance = static_cast<VkInstance>(instanceCpp);
 )";
@@ -1218,7 +1218,7 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic(std::string & str)
   str += strInstanceFunctions;
   str += strDeviceFunctionsInstance;
   str += "    }\n\n";
-  str += "    void init( vk::Device deviceCpp ) VULKAN_HPP_NOEXCEPT\n    {\n";
+  str += "    void init( VULKAN_HPP_NAMESPACE::Device deviceCpp ) VULKAN_HPP_NOEXCEPT\n    {\n";
   str += "      VkDevice device = static_cast<VkDevice>(deviceCpp);\n";
   str += strDeviceFunctions;
   str += R"(    }
@@ -1284,20 +1284,20 @@ void VulkanHppGenerator::appendDispatchLoaderDefault(std::string & str)
 
 #if !defined(VULKAN_HPP_DEFAULT_DISPATCHER)
 # if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
-#  define VULKAN_HPP_DEFAULT_DISPATCHER ::vk::defaultDispatchLoaderDynamic
-#  define VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE namespace vk { DispatchLoaderDynamic defaultDispatchLoaderDynamic; }
+#  define VULKAN_HPP_DEFAULT_DISPATCHER ::VULKAN_HPP_NAMESPACE::defaultDispatchLoaderDynamic
+#  define VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE namespace VULKAN_HPP_NAMESPACE { DispatchLoaderDynamic defaultDispatchLoaderDynamic; }
   extern DispatchLoaderDynamic defaultDispatchLoaderDynamic;
 # else
-#  define VULKAN_HPP_DEFAULT_DISPATCHER ::vk::DispatchLoaderStatic()
+#  define VULKAN_HPP_DEFAULT_DISPATCHER ::VULKAN_HPP_NAMESPACE::DispatchLoaderStatic()
 #  define VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 # endif
 #endif
 
 #if !defined(VULKAN_HPP_DEFAULT_DISPATCHER_TYPE)
 # if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
-  #define VULKAN_HPP_DEFAULT_DISPATCHER_TYPE ::vk::DispatchLoaderDynamic
+  #define VULKAN_HPP_DEFAULT_DISPATCHER_TYPE ::VULKAN_HPP_NAMESPACE::DispatchLoaderDynamic
 # else
-#  define VULKAN_HPP_DEFAULT_DISPATCHER_TYPE ::vk::DispatchLoaderStatic
+#  define VULKAN_HPP_DEFAULT_DISPATCHER_TYPE ::VULKAN_HPP_NAMESPACE::DispatchLoaderStatic
 # endif
 #endif
 )";
@@ -1776,15 +1776,15 @@ void VulkanHppGenerator::appendFunctionBodyEnhancedVectorOfStructureChain(std::s
 ${i}  uint32_t ${sizeName};
 ${i}  d.${commandName}( m_${handleName}, &${sizeName}, nullptr );
 ${i}  ${returnName}.resize( ${sizeName} );
-${i}  std::vector<vk::${returnType}> localVector( ${sizeName} );
+${i}  std::vector<VULKAN_HPP_NAMESPACE::${returnType}> localVector( ${sizeName} );
 ${i}  for ( uint32_t i = 0; i < ${sizeName} ; i++ )
 ${i}  {
-${i}    localVector[i].pNext = ${returnName}[i].template get<vk::${returnType}>().pNext;
+${i}    localVector[i].pNext = ${returnName}[i].template get<VULKAN_HPP_NAMESPACE::${returnType}>().pNext;
 ${i}  }
 ${i}  d.${commandName}( m_${handleName}, &${sizeName}, reinterpret_cast<${VkReturnType}*>( localVector.data() ) );
 ${i}  for ( uint32_t i = 0; i < ${sizeName} ; i++ )
 ${i}  {
-${i}    ${returnName}[i].template get<vk::${returnType}>() = localVector[i];
+${i}    ${returnName}[i].template get<VULKAN_HPP_NAMESPACE::${returnType}>() = localVector[i];
 ${i}  }
 ${i}  return ${returnName};
 )";
@@ -1817,7 +1817,7 @@ ${i}  std::vector<UniqueHandle<${type}, Dispatch>, Allocator> ${typeVariable}s${
 ${i}  ${typeVariable}s.reserve( ${vectorSize} );
 ${i}  ${type}* buffer = reinterpret_cast<${type}*>( reinterpret_cast<char*>( ${typeVariable}s.data() ) + ${vectorSize} * ( sizeof( UniqueHandle<${type}, Dispatch> ) - sizeof( ${type} ) ) );
 ${i}  Result result = static_cast<Result>(d.vk${command}( m_device, ${arguments}, reinterpret_cast<Vk${type}*>( buffer ) ) );
-${i}  if (result == vk::Result::eSuccess)
+${i}  if (result == VULKAN_HPP_NAMESPACE::Result::eSuccess)
 ${i}  {
 ${i}    ${Deleter}<${DeleterTemplate},Dispatch> deleter( *this, ${deleterArg}, d );
 ${i}    for ( size_t i=0 ; i<${vectorSize} ; i++ )
@@ -2589,8 +2589,8 @@ std::string VulkanHppGenerator::appendStructConstructor(std::pair<std::string, S
         initializers += prefix + "  " + (firstArgument ? ":" : ",") + " " + member.name + "{}\n"; // need to initialize the array
         firstArgument = false;
 
-        std::string type = (member.type.type.substr(0, 2) == "Vk") ? ("vk::" + stripPrefix(member.type.type, "Vk")) : member.type.type;
-        copyOps += prefix + "  vk::ConstExpressionArrayCopy<" + type + "," + member.arraySize + "," + member.arraySize + ">::copy( " + member.name + ", " + member.name + "_ );\n";
+        std::string type = (member.type.type.substr(0, 2) == "Vk") ? ("VULKAN_HPP_NAMESPACE::" + stripPrefix(member.type.type, "Vk")) : member.type.type;
+        copyOps += prefix + "  VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<" + type + "," + member.arraySize + "," + member.arraySize + ">::copy( " + member.name + ", " + member.name + "_ );\n";
       }
     }
   }
@@ -2646,9 +2646,9 @@ std::string VulkanHppGenerator::appendStructConstructor(std::pair<std::string, S
     assert((2 <= structData.second.members.size()) && (structData.second.members[1].name == "pNext"));
 
     static const std::string stringTemplate = R"(
-${prefix}vk::${structName} & operator=( vk::${structName} const & rhs ) VULKAN_HPP_NOEXCEPT
+${prefix}VULKAN_HPP_NAMESPACE::${structName} & operator=( VULKAN_HPP_NAMESPACE::${structName} const & rhs ) VULKAN_HPP_NOEXCEPT
 ${prefix}{
-${prefix}  memcpy( &pNext, &rhs.pNext, sizeof( vk::${structName} ) - offsetof( ${structName}, pNext ) );
+${prefix}  memcpy( &pNext, &rhs.pNext, sizeof( VULKAN_HPP_NAMESPACE::${structName} ) - offsetof( ${structName}, pNext ) );
 ${prefix}  return *this;
 ${prefix}}
 )";
@@ -2687,7 +2687,7 @@ void VulkanHppGenerator::appendStructCopyConstructors(std::string & str, std::st
 
     ${name}& operator=( Vk${name} const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      *this = *reinterpret_cast<vk::${name} const *>(&rhs);
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::${name} const *>(&rhs);
       return *this;
     }
 )";
@@ -3077,19 +3077,19 @@ std::string VulkanHppGenerator::defaultValue(std::string const& type) const
       auto const& bitmaskBitIt = m_bitmaskBits.find(type);
       if (bitmaskBitIt != m_bitmaskBits.end())
       {
-        return "vk::" + stripPrefix(type, "Vk") + (bitmaskBitIt->second.values.empty() ? "()" : ("::" + bitmaskBitIt->second.values.front().vkValue));
+        return "VULKAN_HPP_NAMESPACE::" + stripPrefix(type, "Vk") + (bitmaskBitIt->second.values.empty() ? "()" : ("::" + bitmaskBitIt->second.values.front().vkValue));
       }
       else
       {
         auto const& enumIt = m_enums.find(type);
         if (enumIt != m_enums.end())
         {
-          return "vk::" + stripPrefix(type, "Vk") + (enumIt->second.values.empty() ? "()" : ("::" + enumIt->second.values.front().vkValue));
+          return "VULKAN_HPP_NAMESPACE::" + stripPrefix(type, "Vk") + (enumIt->second.values.empty() ? "()" : ("::" + enumIt->second.values.front().vkValue));
         }
         else
         {
           assert((m_bitmasks.find(type) != m_bitmasks.end()) || (m_handles.find(type) != m_handles.end()) || (m_structures.find(type) != m_structures.end()));
-          return "vk::" + stripPrefix(type, "Vk") + "()";
+          return "VULKAN_HPP_NAMESPACE::" + stripPrefix(type, "Vk") + "()";
         }
       }
     }
@@ -4353,7 +4353,7 @@ void VulkanHppGenerator::unlinkCommandFromHandle(std::string const& name)
 
 std::string VulkanHppGenerator::TypeData::compose() const
 {
-  return prefix + (prefix.empty() ? "" : " ") + ((type.substr(0, 2) == "Vk") ? "vk::" : "") + stripPrefix(type, "Vk") + postfix;
+  return prefix + (prefix.empty() ? "" : " ") + ((type.substr(0, 2) == "Vk") ? "VULKAN_HPP_NAMESPACE::" : "") + stripPrefix(type, "Vk") + postfix;
 }
 
 int main( int argc, char **argv )
@@ -5064,7 +5064,7 @@ static const std::string constExpressionArrayCopy = R"(
 #endif
 
 // Windows defines MemoryBarrier which is deprecated and collides
-// with the vk::MemoryBarrier struct.
+// with the VULKAN_HPP_NAMESPACE::MemoryBarrier struct.
 #if defined(MemoryBarrier)
   #undef MemoryBarrier
 #endif

@@ -410,9 +410,11 @@ Creating a full featured ```DispatchLoaderDynamic``` is a two- to three-step pro
 ```
 After the second step above, the dispatcher is fully functional. Adding the third step can potentially result in more efficient code.
 
-### Samples
+### Samples and Tests
 
-When you configure your project using CMake, you can enable SAMPLES_BUILD, getting you a port of most of the LunarG samples and one sample named RayTracing featuring the VK_NV_ray_tracing extension.
+When you configure your project using CMake, you can enable SAMPLES_BUILD to add some sample projects to your solution. Most of them are ports from the LunarG samples, but there are some more, like CreateDebugUtilsMessenger, InstanceVersion, PhysicalDeviceDisplayProperties, PhysicalDeviceExtensions, PhysicalDeviceFeatures, PhysicalDeviceGroups, PhysicalDeviceMemoryProperties, PhysicalDeviceProperties, PhysicalDeviceQueueFamilyProperties, and RayTracing. All those samples should just compile and run.
+When you configure your project using CMake, you can enable TESTS_BUILD to add some test projects to your solution. Those tests are just compilation tests and are not required to run.
+
 
 ## See Also
 

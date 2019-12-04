@@ -4629,7 +4629,7 @@ int main( int argc, char **argv )
         , m_dispatch( nullptr )
       {}
 
-      ObjectDestroy( Optional<const AllocationCallbacks> allocationCallbacks = nullptr, Dispatch const &dispatch = VULKAN_HPP_DEFAULT_DISPATCHER ) VULKAN_HPP_NOEXCEPT
+      ObjectDestroy( Optional<const AllocationCallbacks> allocationCallbacks, Dispatch const &dispatch = VULKAN_HPP_DEFAULT_DISPATCHER ) VULKAN_HPP_NOEXCEPT
         : m_allocationCallbacks( allocationCallbacks )
         , m_dispatch( &dispatch )
       {}

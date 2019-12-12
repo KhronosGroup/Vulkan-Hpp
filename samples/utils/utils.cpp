@@ -188,19 +188,27 @@ namespace vk
       VULKAN_HPP_DEFAULT_DISPATCHER.init(vkGetInstanceProcAddr);
 #endif
 
+#if !defined(NDEBUG)
+      std::vector<vk::LayerProperties> layerProperties = vk::enumerateInstanceLayerProperties();
+      std::vector<vk::ExtensionProperties> extensionProperties = vk::enumerateInstanceExtensionProperties();
+#endif
+
       std::vector<char const*> enabledLayers;
       enabledLayers.reserve(layers.size());
       for (auto const& layer : layers)
       {
+        assert(std::find_if(layerProperties.begin(), layerProperties.end(), [layer](vk::LayerProperties const& lp) { return layer == lp.layerName; }) != layerProperties.end());
         enabledLayers.push_back(layer.data());
       }
 #if !defined(NDEBUG)
       // Enable standard validation layer to find as much errors as possible!
-      if (std::find(layers.begin(), layers.end(), "VK_LAYER_KHRONOS_validation") == layers.end())
+      if (std::find(layers.begin(), layers.end(), "VK_LAYER_KHRONOS_validation") == layers.end()
+        && std::find_if(layerProperties.begin(), layerProperties.end(), [](vk::LayerProperties const& lp) { return (strcmp("VK_LAYER_KHRONOS_validation", lp.layerName) == 0); }) != layerProperties.end())
       {
         enabledLayers.push_back("VK_LAYER_KHRONOS_validation");
       }
-      if (std::find(layers.begin(), layers.end(), "VK_LAYER_LUNARG_assistant_layer") == layers.end())
+      if (std::find(layers.begin(), layers.end(), "VK_LAYER_LUNARG_assistant_layer") == layers.end()
+        && std::find_if(layerProperties.begin(), layerProperties.end(), [](vk::LayerProperties const& lp) { return (strcmp("VK_LAYER_LUNARG_assistant_layer", lp.layerName) == 0); }) != layerProperties.end())
       {
         enabledLayers.push_back("VK_LAYER_LUNARG_assistant_layer");
       }
@@ -210,10 +218,12 @@ namespace vk
       enabledExtensions.reserve(extensions.size());
       for (auto const& ext : extensions)
       {
+        assert(std::find_if(extensionProperties.begin(), extensionProperties.end(), [ext](vk::ExtensionProperties const& ep) { return ext == ep.extensionName; }) != extensionProperties.end());
         enabledExtensions.push_back(ext.data());
       }
 #if !defined(NDEBUG)
-      if (std::find(extensions.begin(), extensions.end(), VK_EXT_DEBUG_UTILS_EXTENSION_NAME) == extensions.end())
+      if (std::find(extensions.begin(), extensions.end(), VK_EXT_DEBUG_UTILS_EXTENSION_NAME) == extensions.end()
+        && std::find_if(extensionProperties.begin(), extensionProperties.end(), [](vk::ExtensionProperties const& ep) { return (strcmp(VK_EXT_DEBUG_UTILS_EXTENSION_NAME, ep.extensionName) == 0); }) != extensionProperties.end())
       {
         enabledExtensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
       }

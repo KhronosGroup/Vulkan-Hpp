@@ -2666,12 +2666,13 @@ bool VulkanHppGenerator::appendStructConstructorArgument(std::string & str, bool
     str += (listedArgument ? (",\n" + indentation) : "");
     if (memberData.arraySize.empty())
     {
-      str += memberData.type.compose() + " " + memberData.name + "_ = " + ((!memberData.type.postfix.empty() && memberData.type.postfix.back() == '*') ? "nullptr" : defaultValue(memberData.type.type));
+      str += memberData.type.compose() + " ";
     }
     else
     {
-      str += "std::array<" + memberData.type.compose() + "," + memberData.arraySize + "> const& " + memberData.name + "_ = { { " + defaultValue(memberData.type.type) + " } }";
+      str += "std::array<" + memberData.type.compose() + "," + memberData.arraySize + "> const& ";
     }
+    str += memberData.name + "_ = {}";
     listedArgument = true;
   }
   return listedArgument;
@@ -2716,14 +2717,20 @@ void VulkanHppGenerator::appendStructMembers(std::string & str, std::pair<std::s
         assert(nameIt != enumIt->second.values.end());
         str += " = StructureType::" + nameIt->vkValue;
       }
+      else
+      {
+        // special handling for those nasty structs with an unspecified value for sType
+        str += " = {}";
+      }
     }
-    else if (member.name == "pNext")      // special handling for pNext
+    else
     {
-      str += " = nullptr";
-    }
-    else if (!member.arraySize.empty())   // special handling for arrays
-    {
-      str += "[" + member.arraySize + "]";
+      if (!member.arraySize.empty())
+      {
+        str += "[" + member.arraySize + "]";
+      }
+      // as we don't have any meaningful default initialization values, everything can be initialized by just '{}' !
+      str += " = {}";
     }
     str += ";\n";
   }
@@ -2917,8 +2924,7 @@ void VulkanHppGenerator::appendUnion(std::string & str, std::pair<std::string, S
       // just the very first constructor gets default arguments
       if (firstTime)
       {
-        std::string value = defaultValue(member.type.type);
-        str += (member.arraySize.empty() ? (" = " + value) : (" = { { " + value + " } }"));
+        str += " = {}";
         firstTime = false;
       }
       str += " )\n"
@@ -3056,48 +3062,6 @@ void VulkanHppGenerator::checkCorrectness()
         throw std::runtime_error("Spec error on command Vk" + startUpperCase(command.first) + " : missing successcodes on command returning VkResult!");
       }
     }
-  }
-}
-
-std::string VulkanHppGenerator::defaultValue(std::string const& type) const
-{
-  if (beginsWith(type, "PFN_vk") || (type == "LPCWSTR"))
-  {
-    return "nullptr";
-  }
-  else if (beginsWith(type, "Vk"))
-  {
-    auto const baseTypeIt = m_baseTypes.find(type);
-    if (baseTypeIt != m_baseTypes.end())
-    {
-      return "0";
-    }
-    else
-    {
-      auto const& bitmaskBitIt = m_bitmaskBits.find(type);
-      if (bitmaskBitIt != m_bitmaskBits.end())
-      {
-        return "VULKAN_HPP_NAMESPACE::" + stripPrefix(type, "Vk") + (bitmaskBitIt->second.values.empty() ? "()" : ("::" + bitmaskBitIt->second.values.front().vkValue));
-      }
-      else
-      {
-        auto const& enumIt = m_enums.find(type);
-        if (enumIt != m_enums.end())
-        {
-          return "VULKAN_HPP_NAMESPACE::" + stripPrefix(type, "Vk") + (enumIt->second.values.empty() ? "()" : ("::" + enumIt->second.values.front().vkValue));
-        }
-        else
-        {
-          assert((m_bitmasks.find(type) != m_bitmasks.end()) || (m_handles.find(type) != m_handles.end()) || (m_structures.find(type) != m_structures.end()));
-          return "VULKAN_HPP_NAMESPACE::" + stripPrefix(type, "Vk") + "()";
-        }
-      }
-    }
-  }
-  else
-  {
-    assert(m_defaultZeroTypes.find(type) != m_defaultZeroTypes.end());
-    return "0";
   }
 }
 
@@ -4067,8 +4031,6 @@ void VulkanHppGenerator::readRequires(tinyxml2::XMLElement const* element, std::
 
   auto nameIt = attributes.find("name");
   assert(nameIt != attributes.end());
-  assert(m_defaultZeroTypes.find(nameIt->second) == m_defaultZeroTypes.end());
-  m_defaultZeroTypes.insert(nameIt->second);
 }
 #endif
 
@@ -4278,7 +4240,6 @@ void VulkanHppGenerator::readType(tinyxml2::XMLElement const* element)
     else
     {
       assert((attributes.size() == 1) && (attributes.begin()->first == "name") && (attributes.begin()->second == "int"));
-      m_defaultZeroTypes.insert("int");
     }
   }
 #endif

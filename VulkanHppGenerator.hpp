@@ -146,6 +146,7 @@ class VulkanHppGenerator
     {
       StructureData()
         : returnedOnly(false)
+        , isUnion(false)
       {}
 
       bool                      returnedOnly;
@@ -205,7 +206,6 @@ class VulkanHppGenerator
     void appendUniqueTypes(std::string &str, std::string const& parentType, std::set<std::string> const& childrenTypes) const;
     bool containsArray(std::string const& type) const;
     bool containsUnion(std::string const& type) const;
-    std::string defaultValue(std::string const& type) const;
     std::string determineEnhancedReturnType(CommandData const& commandData, size_t returnParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool twoStep, bool isStructureChain) const;
     size_t determineReturnParamIndex(CommandData const& commandData, std::map<size_t, size_t> const& vectorParamIndices, bool twoStep) const;
     std::string determineSubStruct(std::pair<std::string, StructureData> const& structure) const;
@@ -262,7 +262,6 @@ class VulkanHppGenerator
     std::string                           m_version;
     std::string                           m_vulkanLicenseHeader;
 #if !defined(NDEBUG)
-    std::set<std::string>                 m_defaultZeroTypes;
     std::set<std::string>                 m_defines;        // just used for verfication in readExtensionType
 #endif
 };

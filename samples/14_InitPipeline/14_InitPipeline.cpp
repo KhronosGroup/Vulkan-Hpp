@@ -94,7 +94,12 @@ int main(int /*argc*/, char ** /*argv*/)
       1.0f                                          // lineWidth
     );
 
-    vk::PipelineMultisampleStateCreateInfo pipelineMultisampleStateCreateInfo;
+    vk::PipelineMultisampleStateCreateInfo pipelineMultisampleStateCreateInfo
+    (
+      vk::PipelineMultisampleStateCreateFlags(),  // flags
+      vk::SampleCountFlagBits::e1                 // rasterizationSamples
+                                                  // other values can be default
+    );
 
     vk::StencilOpState stencilOpState(vk::StencilOp::eKeep, vk::StencilOp::eKeep, vk::StencilOp::eKeep, vk::CompareOp::eAlways);
     vk::PipelineDepthStencilStateCreateInfo pipelineDepthStencilStateCreateInfo

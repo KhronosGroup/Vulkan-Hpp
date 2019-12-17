@@ -517,6 +517,7 @@ namespace vk
           destinationAccessMask = vk::AccessFlagBits::eDepthStencilAttachmentRead | vk::AccessFlagBits::eDepthStencilAttachmentWrite;
           break;
         case vk::ImageLayout::eGeneral:   // empty destinationAccessMask
+        case vk::ImageLayout::ePresentSrcKHR:
           break;
         case vk::ImageLayout::eShaderReadOnlyOptimal:
           destinationAccessMask = vk::AccessFlagBits::eShaderRead;
@@ -543,6 +544,9 @@ namespace vk
           break;
         case vk::ImageLayout::eGeneral:
           destinationStage = vk::PipelineStageFlagBits::eHost;
+          break;
+        case vk::ImageLayout::ePresentSrcKHR:
+          destinationStage = vk::PipelineStageFlagBits::eBottomOfPipe;
           break;
         case vk::ImageLayout::eShaderReadOnlyOptimal:
           destinationStage = vk::PipelineStageFlagBits::eFragmentShader;

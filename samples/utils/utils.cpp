@@ -20,19 +20,6 @@
 
 #if (VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1)
 VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
-#elif !defined(NDEBUG)
-PFN_vkCreateDebugUtilsMessengerEXT pfnVkCreateDebugUtilsMessengerEXT;
-PFN_vkDestroyDebugUtilsMessengerEXT pfnVkDestroyDebugUtilsMessengerEXT;
-
-VKAPI_ATTR VkResult VKAPI_CALL vkCreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pMessenger)
-{
-  return pfnVkCreateDebugUtilsMessengerEXT(instance, pCreateInfo, pAllocator, pMessenger);
-}
-
-VKAPI_ATTR void VKAPI_CALL vkDestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT messenger, VkAllocationCallbacks const * pAllocator)
-{
-  return pfnVkDestroyDebugUtilsMessengerEXT(instance, messenger, pAllocator);
-}
 #endif
 
 namespace vk
@@ -231,23 +218,25 @@ namespace vk
 
       // create a UniqueInstance
       vk::ApplicationInfo applicationInfo(appName.c_str(), 1, engineName.c_str(), 1, apiVersion);
-      vk::InstanceCreateInfo instanceCreateInfo({}, &applicationInfo, checked_cast<uint32_t>(enabledLayers.size()), enabledLayers.data(), checked_cast<uint32_t>(enabledExtensions.size()), enabledExtensions.data());
-      vk::UniqueInstance instance = vk::createInstanceUnique(instanceCreateInfo);
+#if defined(NDEBUG)
+      // in non-debug mode just use the InstanceCreateInfo for instance creation
+      vk::StructureChain<vk::InstanceCreateInfo> instanceCreateInfo({ {}, &applicationInfo, checked_cast<uint32_t>(enabledLayers.size()), enabledLayers.data(),
+                                                                      checked_cast<uint32_t>(enabledExtensions.size()), enabledExtensions.data() });
+#else
+      // in debug mode, addionally use the debugUtilsMessengerCallback in instance creation!
+      vk::DebugUtilsMessageSeverityFlagsEXT severityFlags(vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning | vk::DebugUtilsMessageSeverityFlagBitsEXT::eError);
+      vk::DebugUtilsMessageTypeFlagsEXT messageTypeFlags(vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral | vk::DebugUtilsMessageTypeFlagBitsEXT::ePerformance | vk::DebugUtilsMessageTypeFlagBitsEXT::eValidation);
+      vk::StructureChain<vk::InstanceCreateInfo, vk::DebugUtilsMessengerCreateInfoEXT> instanceCreateInfo
+      (
+        { {}, &applicationInfo, checked_cast<uint32_t>(enabledLayers.size()), enabledLayers.data(), checked_cast<uint32_t>(enabledExtensions.size()), enabledExtensions.data() },
+        { {}, severityFlags, messageTypeFlags, &vk::su::debugUtilsMessengerCallback }
+      );
+#endif
+      vk::UniqueInstance instance = vk::createInstanceUnique(instanceCreateInfo.get<vk::InstanceCreateInfo>());
 
 #if (VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1)
       // initialize function pointers for instance
       VULKAN_HPP_DEFAULT_DISPATCHER.init(*instance);
-#else
-# if !defined(NDEBUG)
-      static bool initialized = false;
-      if (!initialized)
-      {
-        pfnVkCreateDebugUtilsMessengerEXT = reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>(instance->getProcAddr("vkCreateDebugUtilsMessengerEXT"));
-        pfnVkDestroyDebugUtilsMessengerEXT = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(instance->getProcAddr("vkDestroyDebugUtilsMessengerEXT"));
-        assert(pfnVkCreateDebugUtilsMessengerEXT && pfnVkDestroyDebugUtilsMessengerEXT);
-        initialized = true;
-      }
-# endif
 #endif
 
       return instance;

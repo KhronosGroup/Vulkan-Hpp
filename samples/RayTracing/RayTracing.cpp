@@ -837,36 +837,48 @@ int main(int /*argc*/, char** /*argv*/)
     bindings.push_back(vk::DescriptorSetLayoutBinding(3, vk::DescriptorType::eStorageBuffer, 1, vk::ShaderStageFlagBits::eClosestHitNV));   // vertex buffer
     bindings.push_back(vk::DescriptorSetLayoutBinding(4, vk::DescriptorType::eStorageBuffer, 1, vk::ShaderStageFlagBits::eClosestHitNV));   // index buffer
     bindings.push_back(vk::DescriptorSetLayoutBinding(5, vk::DescriptorType::eStorageBuffer, 1, vk::ShaderStageFlagBits::eClosestHitNV));   // material buffer
-    bindings.push_back(vk::DescriptorSetLayoutBinding(6, vk::DescriptorType::eCombinedImageSampler, static_cast<uint32_t>(textures.size()), vk::ShaderStageFlagBits::eClosestHitNV));   // textures
+    bindings.push_back(vk::DescriptorSetLayoutBinding(6, vk::DescriptorType::eCombinedImageSampler, vk::su::checked_cast<uint32_t>(textures.size()), vk::ShaderStageFlagBits::eClosestHitNV));   // textures
 
     std::vector<vk::DescriptorPoolSize> descriptorPoolSizes;
     descriptorPoolSizes.reserve(bindings.size());
     for (const auto& b : bindings)
     {
-      descriptorPoolSizes.push_back(vk::DescriptorPoolSize(b.descriptorType, b.descriptorCount));
+      descriptorPoolSizes.push_back(vk::DescriptorPoolSize(b.descriptorType, vk::su::checked_cast<uint32_t>(swapChainData.images.size()) * b.descriptorCount));
     }
-    vk::UniqueDescriptorPool rayTracingDescriptorPool = device->createDescriptorPoolUnique(vk::DescriptorPoolCreateInfo(vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet, 1,
-                                                                                                                        static_cast<uint32_t>(descriptorPoolSizes.size()),
-                                                                                                                        descriptorPoolSizes.data()));
+    vk::DescriptorPoolCreateInfo descriptorPoolCreateInfo(vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet, vk::su::checked_cast<uint32_t>(swapChainData.images.size()),
+                                                          vk::su::checked_cast<uint32_t>(descriptorPoolSizes.size()), descriptorPoolSizes.data());
+    vk::UniqueDescriptorPool rayTracingDescriptorPool = device->createDescriptorPoolUnique(descriptorPoolCreateInfo);
     vk::UniqueDescriptorSetLayout rayTracingDescriptorSetLayout = device->createDescriptorSetLayoutUnique(vk::DescriptorSetLayoutCreateInfo({}, static_cast<uint32_t>(bindings.size()),
                                                                                                                                             bindings.data()));
-    vk::UniqueDescriptorSet rayTracingDescriptorSet = std::move(device->allocateDescriptorSetsUnique(vk::DescriptorSetAllocateInfo(*rayTracingDescriptorPool, 1,
-                                                                                                                                   &*rayTracingDescriptorSetLayout)).front());
+    std::vector<vk::DescriptorSetLayout> layouts;
+    for (size_t i = 0; i < swapChainData.images.size(); i++)
+    {
+      layouts.push_back(*rayTracingDescriptorSetLayout);
+    }
+    vk::DescriptorSetAllocateInfo descriptorSetAllocateInfo(*rayTracingDescriptorPool, vk::su::checked_cast<uint32_t>(layouts.size()), layouts.data());
+    std::vector<vk::UniqueDescriptorSet> rayTracingDescriptorSets = device->allocateDescriptorSetsUnique(descriptorSetAllocateInfo);
 
     // Bind ray tracing specific descriptor sets into pNext of a vk::WriteDescriptorSet
     vk::WriteDescriptorSetAccelerationStructureNV writeDescriptorSetAcceleration(1, &*topLevelAS.acclerationStructure);
-    vk::WriteDescriptorSet accelerationDescriptionSet(*rayTracingDescriptorSet, 0, 0, 1, bindings[0].descriptorType);
-    accelerationDescriptionSet.pNext = &writeDescriptorSetAcceleration;
-    device->updateDescriptorSets(accelerationDescriptionSet, {});
+    std::vector<vk::WriteDescriptorSet> accelerationDescriptionSets;
+    for (size_t i = 0; i < rayTracingDescriptorSets.size(); i++)
+    {
+      accelerationDescriptionSets.push_back(vk::WriteDescriptorSet(*rayTracingDescriptorSets[i], 0, 0, 1, bindings[0].descriptorType));
+      accelerationDescriptionSets.back().pNext = &writeDescriptorSetAcceleration;
+    }
+    device->updateDescriptorSets(accelerationDescriptionSets, {});
 
     // Bind all the other buffers and images, starting with dstBinding == 2 (dstBinding == 1 is used by the backBuffer view)
-    vk::su::updateDescriptorSets(device, rayTracingDescriptorSet,
+    for (size_t i = 0; i < rayTracingDescriptorSets.size(); i++)
+    {
+      vk::su::updateDescriptorSets(device, rayTracingDescriptorSets[i],
                                   {
                                     { bindings[2].descriptorType, uniformBufferData.buffer, vk::UniqueBufferView() },
                                     { bindings[3].descriptorType, vertexBufferData.buffer, vk::UniqueBufferView() },
                                     { bindings[4].descriptorType, indexBufferData.buffer, vk::UniqueBufferView() },
                                     { bindings[5].descriptorType, materialBufferData.buffer, vk::UniqueBufferView() }
                                   }, textures, 2);
+    }
 
     // create the ray-tracing shader modules
     glslang::InitializeProcess();
@@ -998,22 +1010,19 @@ int main(int /*argc*/, char** /*argv*/)
         commandBuffer->bindVertexBuffers(0, *vertexBufferData.buffer, {0});
         commandBuffer->bindIndexBuffer(*indexBufferData.buffer, 0, vk::IndexType::eUint32);
         commandBuffer->drawIndexed(vk::su::checked_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
+
+        commandBuffer->endRenderPass();
       }
       else
       {
-        vk::ImageMemoryBarrier imageMemoryBarrier({}, vk::AccessFlagBits::eShaderWrite, vk::ImageLayout::eUndefined, vk::ImageLayout::ePresentSrcKHR, VK_QUEUE_FAMILY_IGNORED,
-                                                  VK_QUEUE_FAMILY_IGNORED, swapChainData.images[backBufferIndex], vk::ImageSubresourceRange(vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1));
-        commandBuffer->pipelineBarrier(vk::PipelineStageFlagBits::eAllCommands, vk::PipelineStageFlagBits::eAllCommands, {}, nullptr, nullptr, imageMemoryBarrier);
-
         vk::DescriptorImageInfo imageInfo(nullptr, *swapChainData.imageViews[backBufferIndex], vk::ImageLayout::eGeneral);
-        device->updateDescriptorSets(vk::WriteDescriptorSet(*rayTracingDescriptorSet, 1, 0, 1, bindings[1].descriptorType, &imageInfo), {});
+        device->updateDescriptorSets(vk::WriteDescriptorSet(*rayTracingDescriptorSets[backBufferIndex], 1, 0, 1, bindings[1].descriptorType, &imageInfo), {});
 
-        commandBuffer->beginRenderPass(vk::RenderPassBeginInfo(*renderPass, *framebuffers[backBufferIndex], vk::Rect2D(vk::Offset2D(0, 0), windowExtent),
-                                                               static_cast<uint32_t>(clearValues.size()), clearValues.data()), vk::SubpassContents::eInline);
+        vk::su::setImageLayout(commandBuffer, swapChainData.images[backBufferIndex], surfaceFormat.format, vk::ImageLayout::eUndefined, vk::ImageLayout::eGeneral);
 
         commandBuffer->bindPipeline(vk::PipelineBindPoint::eRayTracingNV, *rayTracingPipeline);
 
-        commandBuffer->bindDescriptorSets(vk::PipelineBindPoint::eRayTracingNV, *rayTracingPipelineLayout, 0, *rayTracingDescriptorSet, nullptr);
+        commandBuffer->bindDescriptorSets(vk::PipelineBindPoint::eRayTracingNV, *rayTracingPipelineLayout, 0, *rayTracingDescriptorSets[backBufferIndex], nullptr);
 
         VkDeviceSize rayGenOffset = 0;                        // starting with raygen
         VkDeviceSize missOffset = shaderGroupHandleSize;      // after raygen
@@ -1023,9 +1032,9 @@ int main(int /*argc*/, char** /*argv*/)
 
         commandBuffer->traceRaysNV(*shaderBindingTableBufferData.buffer, rayGenOffset, *shaderBindingTableBufferData.buffer, missOffset, missStride, *shaderBindingTableBufferData.buffer,
                                    hitGroupOffset, hitGroupStride, nullptr, 0, 0, windowExtent.width, windowExtent.height, 1);
-      }
 
-      commandBuffer->endRenderPass();
+        vk::su::setImageLayout(commandBuffer, swapChainData.images[backBufferIndex], surfaceFormat.format, vk::ImageLayout::eGeneral, vk::ImageLayout::ePresentSrcKHR);
+      }
 
       // frame end
       commandBuffer->end();

@@ -40,5 +40,6 @@ add_executable(SecondaryCommandBuffer
 )
 
 set_target_properties(SecondaryCommandBuffer PROPERTIES FOLDER "Samples")
+target_compile_definitions(SecondaryCommandBuffer PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)
 target_include_directories(SecondaryCommandBuffer PUBLIC ${CMAKE_SOURCE_DIR}/glslang)
-target_link_libraries(SecondaryCommandBuffer PUBLIC glslang SPIRV "${Vulkan_LIBRARIES}")
+target_link_libraries(SecondaryCommandBuffer PUBLIC glslang SPIRV)

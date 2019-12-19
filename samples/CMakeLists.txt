@@ -26,8 +26,6 @@ else()
   message(FATAL_ERROR, "unhandled platform !")
 endif()
 
-add_definitions(-DVULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)
-
 FILE (GLOB linkunits ${CMAKE_CURRENT_SOURCE_DIR}/*)
 
 if (SAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP)

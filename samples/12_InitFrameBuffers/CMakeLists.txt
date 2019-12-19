@@ -34,4 +34,4 @@ add_executable(12_InitFrameBuffers
 )
 
 set_target_properties(12_InitFrameBuffers PROPERTIES FOLDER "Samples")
-target_link_libraries(12_InitFrameBuffers PUBLIC "${Vulkan_LIBRARIES}")
+target_compile_definitions(12_InitFrameBuffers PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)

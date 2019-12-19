@@ -40,5 +40,6 @@ add_executable(OcclusionQuery
 )
 
 set_target_properties(OcclusionQuery PROPERTIES FOLDER "Samples")
+target_compile_definitions(OcclusionQuery PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)
 target_include_directories(OcclusionQuery PUBLIC ${CMAKE_SOURCE_DIR}/glslang)
-target_link_libraries(OcclusionQuery PUBLIC glslang SPIRV "${Vulkan_LIBRARIES}")
+target_link_libraries(OcclusionQuery PUBLIC glslang SPIRV)

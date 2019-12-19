@@ -34,4 +34,4 @@ add_executable(05_InitSwapchain
 )
 
 set_target_properties(05_InitSwapchain PROPERTIES FOLDER "Samples")
-target_link_libraries(05_InitSwapchain "${Vulkan_LIBRARIES}")
+target_compile_definitions(05_InitSwapchain PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)

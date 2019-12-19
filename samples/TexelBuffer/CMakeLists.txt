@@ -40,5 +40,6 @@ add_executable(TexelBuffer
 )
 
 set_target_properties(TexelBuffer PROPERTIES FOLDER "Samples")
+target_compile_definitions(TexelBuffer PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)
 target_include_directories(TexelBuffer PUBLIC ${CMAKE_SOURCE_DIR}/glslang)
-target_link_libraries(TexelBuffer PUBLIC glslang SPIRV "${Vulkan_LIBRARIES}")
+target_link_libraries(TexelBuffer PUBLIC glslang SPIRV)

@@ -37,6 +37,6 @@ add_executable(11_InitShaders
 )
 
 set_target_properties(11_InitShaders PROPERTIES FOLDER "Samples")
+target_compile_definitions(11_InitShaders PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)
 target_include_directories(11_InitShaders PUBLIC ${CMAKE_SOURCE_DIR}/glslang)
-target_link_libraries(11_InitShaders PUBLIC glslang SPIRV "${Vulkan_LIBRARIES}"
-)
+target_link_libraries(11_InitShaders PUBLIC glslang SPIRV)

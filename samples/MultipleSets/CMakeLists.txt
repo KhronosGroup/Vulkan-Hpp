@@ -40,5 +40,6 @@ add_executable(MultipleSets
 )
 
 set_target_properties(MultipleSets PROPERTIES FOLDER "Samples")
+target_compile_definitions(MultipleSets PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)
 target_include_directories(MultipleSets PUBLIC ${CMAKE_SOURCE_DIR}/glslang)
-target_link_libraries(MultipleSets PUBLIC glslang SPIRV "${Vulkan_LIBRARIES}")
+target_link_libraries(MultipleSets PUBLIC glslang SPIRV)

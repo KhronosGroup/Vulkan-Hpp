@@ -34,4 +34,4 @@ add_executable(Events
 )
 
 set_target_properties(Events PROPERTIES FOLDER "Samples")
-target_link_libraries(Events PUBLIC "${Vulkan_LIBRARIES}")
+target_compile_definitions(Events PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)

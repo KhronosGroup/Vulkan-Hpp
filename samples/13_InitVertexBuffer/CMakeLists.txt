@@ -35,4 +35,4 @@ add_executable(13_InitVertexBuffer
 )
 
 set_target_properties(13_InitVertexBuffer PROPERTIES FOLDER "Samples")
-target_link_libraries(13_InitVertexBuffer PUBLIC "${Vulkan_LIBRARIES}")
+target_compile_definitions(13_InitVertexBuffer PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)

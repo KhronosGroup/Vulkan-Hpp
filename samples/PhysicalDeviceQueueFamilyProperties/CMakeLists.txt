@@ -34,5 +34,4 @@ add_executable(PhysicalDeviceQueueFamilyProperties
 )
 
 set_target_properties(PhysicalDeviceQueueFamilyProperties PROPERTIES FOLDER "Samples")
-target_link_libraries(PhysicalDeviceQueueFamilyProperties PUBLIC "$ENV{VULKAN_SDK}/Lib/vulkan-1.lib"
-)
+target_compile_definitions(PhysicalDeviceQueueFamilyProperties PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)

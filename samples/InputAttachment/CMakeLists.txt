@@ -40,5 +40,6 @@ add_executable(InputAttachment
 )
 
 set_target_properties(InputAttachment PROPERTIES FOLDER "Samples")
+target_compile_definitions(InputAttachment PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)
 target_include_directories(InputAttachment PUBLIC ${CMAKE_SOURCE_DIR}/glslang)
-target_link_libraries(InputAttachment PUBLIC glslang SPIRV "${Vulkan_LIBRARIES}")
+target_link_libraries(InputAttachment PUBLIC glslang SPIRV)

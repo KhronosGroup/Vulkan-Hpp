@@ -1054,7 +1054,7 @@ int main(int /*argc*/, char** /*argv*/)
     // Cleanup
     device->waitIdle();
     swapChainData.swapChain.reset();    // need to reset swapChain before destroying the surface !
-    vkDestroySurfaceKHR(*instance, surface, nullptr);
+    VULKAN_HPP_DEFAULT_DISPATCHER.vkDestroySurfaceKHR(*instance, surface, nullptr);
     glfwDestroyWindow(window);
     glfwTerminate();
   }

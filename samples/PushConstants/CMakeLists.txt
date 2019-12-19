@@ -40,5 +40,6 @@ add_executable(PushConstants
 )
 
 set_target_properties(PushConstants PROPERTIES FOLDER "Samples")
+target_compile_definitions(PushConstants PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)
 target_include_directories(PushConstants PUBLIC ${CMAKE_SOURCE_DIR}/glslang)
-target_link_libraries(PushConstants PUBLIC glslang SPIRV "${Vulkan_LIBRARIES}")
+target_link_libraries(PushConstants PUBLIC glslang SPIRV)

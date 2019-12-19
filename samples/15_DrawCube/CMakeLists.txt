@@ -40,6 +40,6 @@ add_executable(15_DrawCube
 )
 
 set_target_properties(15_DrawCube PROPERTIES FOLDER "Samples")
+target_compile_definitions(15_DrawCube PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)
 target_include_directories(15_DrawCube PUBLIC ${CMAKE_SOURCE_DIR}/glslang)
-target_link_libraries(15_DrawCube PUBLIC glslang SPIRV "${Vulkan_LIBRARIES}"
-)
+target_link_libraries(15_DrawCube PUBLIC glslang SPIRV)

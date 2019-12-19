@@ -34,4 +34,4 @@ add_executable(CopyBlitImage
 )
 
 set_target_properties(CopyBlitImage PROPERTIES FOLDER "Samples")
-target_link_libraries(CopyBlitImage PUBLIC "${Vulkan_LIBRARIES}")
+target_compile_definitions(CopyBlitImage PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)

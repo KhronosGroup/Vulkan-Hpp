@@ -34,4 +34,4 @@ add_executable(06_InitDepthBuffer
 )
 
 set_target_properties(06_InitDepthBuffer PROPERTIES FOLDER "Samples")
-target_link_libraries(06_InitDepthBuffer "${Vulkan_LIBRARIES}")
+target_compile_definitions(06_InitDepthBuffer PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)

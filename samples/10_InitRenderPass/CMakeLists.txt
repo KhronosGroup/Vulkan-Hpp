@@ -34,4 +34,4 @@ add_executable(10_InitRenderPass
 )
 
 set_target_properties(10_InitRenderPass PROPERTIES FOLDER "Samples")
-target_link_libraries(10_InitRenderPass "${Vulkan_LIBRARIES}")
+target_compile_definitions(10_InitRenderPass PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)

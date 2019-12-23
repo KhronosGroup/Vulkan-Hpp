@@ -34,4 +34,4 @@ add_executable(04_InitCommandBuffer
 )
 
 set_target_properties(04_InitCommandBuffer PROPERTIES FOLDER "Samples")
-target_link_libraries(04_InitCommandBuffer "${Vulkan_LIBRARIES}")
+target_compile_definitions(04_InitCommandBuffer PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)

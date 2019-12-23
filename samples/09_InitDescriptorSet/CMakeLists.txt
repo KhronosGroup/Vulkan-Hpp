@@ -36,4 +36,4 @@ add_executable(09_InitDescriptorSet
 )
 
 set_target_properties(09_InitDescriptorSet PROPERTIES FOLDER "Samples")
-target_link_libraries(09_InitDescriptorSet "${Vulkan_LIBRARIES}")
+target_compile_definitions(09_InitDescriptorSet PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)

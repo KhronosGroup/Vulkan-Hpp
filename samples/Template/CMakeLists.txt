@@ -40,5 +40,6 @@ add_executable(Template
 )
 
 set_target_properties(Template PROPERTIES FOLDER "Samples")
+target_compile_definitions(Template PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)
 target_include_directories(Template PUBLIC ${CMAKE_SOURCE_DIR}/glslang)
-target_link_libraries(Template PUBLIC glslang SPIRV "${Vulkan_LIBRARIES}")
+target_link_libraries(Template PUBLIC glslang SPIRV)

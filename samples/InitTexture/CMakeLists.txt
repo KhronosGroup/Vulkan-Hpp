@@ -40,5 +40,6 @@ add_executable(InitTexture
 )
 
 set_target_properties(InitTexture PROPERTIES FOLDER "Samples")
+target_compile_definitions(InitTexture PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)
 target_include_directories(InitTexture PUBLIC ${CMAKE_SOURCE_DIR}/glslang)
-target_link_libraries(InitTexture PUBLIC glslang SPIRV "${Vulkan_LIBRARIES}")
+target_link_libraries(InitTexture PUBLIC glslang SPIRV)

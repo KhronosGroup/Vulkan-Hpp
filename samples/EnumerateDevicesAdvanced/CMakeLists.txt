@@ -34,4 +34,4 @@ add_executable(EnumerateDevicesAdvanced
 )
 
 set_target_properties(EnumerateDevicesAdvanced PROPERTIES FOLDER "Samples")
-target_link_libraries(EnumerateDevicesAdvanced "${Vulkan_LIBRARIES}")
+target_compile_definitions(EnumerateDevicesAdvanced PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)

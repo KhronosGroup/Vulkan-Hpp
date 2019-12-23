@@ -40,5 +40,6 @@ add_executable(PipelineCache
 )
 
 set_target_properties(PipelineCache PROPERTIES FOLDER "Samples")
+target_compile_definitions(PipelineCache PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)
 target_include_directories(PipelineCache PUBLIC ${CMAKE_SOURCE_DIR}/glslang)
-target_link_libraries(PipelineCache PUBLIC glslang SPIRV "${Vulkan_LIBRARIES}")
+target_link_libraries(PipelineCache PUBLIC glslang SPIRV)

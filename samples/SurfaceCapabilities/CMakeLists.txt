@@ -34,5 +34,4 @@ add_executable(SurfaceCapabilities
 )
 
 set_target_properties(SurfaceCapabilities PROPERTIES FOLDER "Samples")
-target_link_libraries(SurfaceCapabilities PUBLIC "$ENV{VULKAN_SDK}/Lib/vulkan-1.lib"
-)
+target_compile_definitions(SurfaceCapabilities PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)

@@ -34,4 +34,4 @@ add_executable(16_Vulkan_1_1
 )
 
 set_target_properties(16_Vulkan_1_1 PROPERTIES FOLDER "Samples")
-target_link_libraries(16_Vulkan_1_1 PUBLIC "${Vulkan_LIBRARIES}")
+target_compile_definitions(16_Vulkan_1_1 PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)

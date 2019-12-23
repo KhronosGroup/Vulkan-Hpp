@@ -34,4 +34,4 @@ add_executable(08_InitPipelineLayout
 )
 
 set_target_properties(08_InitPipelineLayout PROPERTIES FOLDER "Samples")
-target_link_libraries(08_InitPipelineLayout "${Vulkan_LIBRARIES}")
+target_compile_definitions(08_InitPipelineLayout PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)

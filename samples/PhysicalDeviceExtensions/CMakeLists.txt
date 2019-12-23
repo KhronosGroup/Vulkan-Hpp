@@ -34,5 +34,4 @@ add_executable(PhysicalDeviceExtensions
 )
 
 set_target_properties(PhysicalDeviceExtensions PROPERTIES FOLDER "Samples")
-target_link_libraries(PhysicalDeviceExtensions PUBLIC "$ENV{VULKAN_SDK}/Lib/vulkan-1.lib"
-)
+target_compile_definitions(PhysicalDeviceExtensions PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)

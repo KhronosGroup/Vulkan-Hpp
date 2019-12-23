@@ -40,5 +40,6 @@ add_executable(DrawTexturedCube
 )
 
 set_target_properties(DrawTexturedCube PROPERTIES FOLDER "Samples")
+target_compile_definitions(DrawTexturedCube PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)
 target_include_directories(DrawTexturedCube PUBLIC ${CMAKE_SOURCE_DIR}/glslang)
-target_link_libraries(DrawTexturedCube PUBLIC glslang SPIRV "${Vulkan_LIBRARIES}")
+target_link_libraries(DrawTexturedCube PUBLIC glslang SPIRV)

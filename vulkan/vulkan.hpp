@@ -66779,7 +66779,10 @@ namespace VULKAN_HPP_NAMESPACE
     // This interface is designed to be used for per-device function pointers in combination with a linked vulkan library.
     void init(VULKAN_HPP_NAMESPACE::Instance const& instance, VULKAN_HPP_NAMESPACE::Device const& device) VULKAN_HPP_NOEXCEPT
     {
-      init(static_cast<VkInstance>(instance), ::vkGetInstanceProcAddr, static_cast<VkDevice>(device), device ? ::vkGetDeviceProcAddr : nullptr);
+      static vk::DynamicLoader dl;
+      PFN_vkGetInstanceProcAddr getInstanceProcAddr = dl.getProcAddress<PFN_vkGetInstanceProcAddr>("vkGetInstanceProcAddr");
+      PFN_vkGetDeviceProcAddr getDeviceProcAddr = dl.getProcAddress<PFN_vkGetDeviceProcAddr>("vkGetDeviceProcAddr");
+      init(static_cast<VkInstance>(instance), getInstanceProcAddr, static_cast<VkDevice>(device), device ? getDeviceProcAddr : nullptr);
     }
 #endif // !defined(VK_NO_PROTOTYPES)
 

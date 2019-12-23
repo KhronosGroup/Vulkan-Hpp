@@ -34,5 +34,4 @@ add_executable(PhysicalDeviceMemoryProperties
 )
 
 set_target_properties(PhysicalDeviceMemoryProperties PROPERTIES FOLDER "Samples")
-target_link_libraries(PhysicalDeviceMemoryProperties PUBLIC "$ENV{VULKAN_SDK}/Lib/vulkan-1.lib"
-)
+target_compile_definitions(PhysicalDeviceMemoryProperties PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)

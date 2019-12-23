@@ -26,8 +26,6 @@ set(SOURCES
 source_group(headers FILES ${HEADERS})
 source_group(sources FILES ${SOURCES})
 
-add_definitions(-DVULKAN_HPP_DISPATCH_LOADER_DYNAMIC=0)
-
 add_executable(InstanceExtensionProperties
   ${HEADERS}
   ${SOURCES}

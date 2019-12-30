@@ -82,7 +82,7 @@ VkBool32 debugMessageFunc(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity
 #ifdef _WIN32
   MessageBox(NULL, message.c_str(), "Alert", MB_OK);
 #else
-  std::cout << message.str() << std::endl;
+  std::cout << message << std::endl;
 #endif
 
   return false;

@@ -70,7 +70,7 @@
 #  endif
 #endif
 
-static_assert( VK_HEADER_VERSION ==  126 , "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION ==  130 , "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -1227,6 +1227,11 @@ namespace VULKAN_HPP_NAMESPACE
       return ::vkAcquirePerformanceConfigurationINTEL( device, pAcquireInfo, pConfiguration );
     }
 
+    VkResult vkAcquireProfilingLockKHR( VkDevice device, const VkAcquireProfilingLockInfoKHR* pInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkAcquireProfilingLockKHR( device, pInfo );
+    }
+
     VkResult vkAllocateCommandBuffers( VkDevice device, const VkCommandBufferAllocateInfo* pAllocateInfo, VkCommandBuffer* pCommandBuffers ) const VULKAN_HPP_NOEXCEPT
     {
       return ::vkAllocateCommandBuffers( device, pAllocateInfo, pCommandBuffers );
@@ -1634,9 +1639,14 @@ namespace VULKAN_HPP_NAMESPACE
     }
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
-    VkDeviceAddress vkGetBufferDeviceAddressEXT( VkDevice device, const VkBufferDeviceAddressInfoEXT* pInfo ) const VULKAN_HPP_NOEXCEPT
+    VkDeviceAddress vkGetBufferDeviceAddressEXT( VkDevice device, const VkBufferDeviceAddressInfoKHR* pInfo ) const VULKAN_HPP_NOEXCEPT
     {
       return ::vkGetBufferDeviceAddressEXT( device, pInfo );
+    }
+
+    VkDeviceAddress vkGetBufferDeviceAddressKHR( VkDevice device, const VkBufferDeviceAddressInfoKHR* pInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkGetBufferDeviceAddressKHR( device, pInfo );
     }
 
     void vkGetBufferMemoryRequirements( VkDevice device, VkBuffer buffer, VkMemoryRequirements* pMemoryRequirements ) const VULKAN_HPP_NOEXCEPT
@@ -1652,6 +1662,11 @@ namespace VULKAN_HPP_NAMESPACE
     void vkGetBufferMemoryRequirements2KHR( VkDevice device, const VkBufferMemoryRequirementsInfo2* pInfo, VkMemoryRequirements2* pMemoryRequirements ) const VULKAN_HPP_NOEXCEPT
     {
       return ::vkGetBufferMemoryRequirements2KHR( device, pInfo, pMemoryRequirements );
+    }
+
+    uint64_t vkGetBufferOpaqueCaptureAddressKHR( VkDevice device, const VkBufferDeviceAddressInfoKHR* pInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkGetBufferOpaqueCaptureAddressKHR( device, pInfo );
     }
 
     VkResult vkGetCalibratedTimestampsEXT( VkDevice device, uint32_t timestampCount, const VkCalibratedTimestampInfoEXT* pTimestampInfos, uint64_t* pTimestamps, uint64_t* pMaxDeviation ) const VULKAN_HPP_NOEXCEPT
@@ -1699,6 +1714,11 @@ namespace VULKAN_HPP_NAMESPACE
     void vkGetDeviceMemoryCommitment( VkDevice device, VkDeviceMemory memory, VkDeviceSize* pCommittedMemoryInBytes ) const VULKAN_HPP_NOEXCEPT
     {
       return ::vkGetDeviceMemoryCommitment( device, memory, pCommittedMemoryInBytes );
+    }
+
+    uint64_t vkGetDeviceMemoryOpaqueCaptureAddressKHR( VkDevice device, const VkDeviceMemoryOpaqueCaptureAddressInfoKHR* pInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkGetDeviceMemoryOpaqueCaptureAddressKHR( device, pInfo );
     }
 
     PFN_vkVoidFunction vkGetDeviceProcAddr( VkDevice device, const char* pName ) const VULKAN_HPP_NOEXCEPT
@@ -1994,6 +2014,11 @@ namespace VULKAN_HPP_NAMESPACE
       return ::vkReleasePerformanceConfigurationINTEL( device, configuration );
     }
 
+    void vkReleaseProfilingLockKHR( VkDevice device ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkReleaseProfilingLockKHR( device );
+    }
+
     VkResult vkResetCommandPool( VkDevice device, VkCommandPool commandPool, VkCommandPoolResetFlags flags ) const VULKAN_HPP_NOEXCEPT
     {
       return ::vkResetCommandPool( device, commandPool, flags );
@@ -2273,6 +2298,11 @@ namespace VULKAN_HPP_NAMESPACE
       return ::vkEnumerateDeviceLayerProperties( physicalDevice, pPropertyCount, pProperties );
     }
 
+    VkResult vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR( VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, uint32_t* pCounterCount, VkPerformanceCounterKHR* pCounters, VkPerformanceCounterDescriptionKHR* pCounterDescriptions ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR( physicalDevice, queueFamilyIndex, pCounterCount, pCounters, pCounterDescriptions );
+    }
+
     VkResult vkGetDisplayModeProperties2KHR( VkPhysicalDevice physicalDevice, VkDisplayKHR display, uint32_t* pPropertyCount, VkDisplayModeProperties2KHR* pProperties ) const VULKAN_HPP_NOEXCEPT
     {
       return ::vkGetDisplayModeProperties2KHR( physicalDevice, display, pPropertyCount, pProperties );
@@ -2453,6 +2483,11 @@ namespace VULKAN_HPP_NAMESPACE
       return ::vkGetPhysicalDeviceProperties2KHR( physicalDevice, pProperties );
     }
 
+    void vkGetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR( VkPhysicalDevice physicalDevice, const VkQueryPoolPerformanceCreateInfoKHR* pPerformanceQueryCreateInfo, uint32_t* pNumPasses ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkGetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR( physicalDevice, pPerformanceQueryCreateInfo, pNumPasses );
+    }
+
     void vkGetPhysicalDeviceQueueFamilyProperties( VkPhysicalDevice physicalDevice, uint32_t* pQueueFamilyPropertyCount, VkQueueFamilyProperties* pQueueFamilyProperties ) const VULKAN_HPP_NOEXCEPT
     {
       return ::vkGetPhysicalDeviceQueueFamilyProperties( physicalDevice, pQueueFamilyPropertyCount, pQueueFamilyProperties );
@@ -2528,6 +2563,11 @@ namespace VULKAN_HPP_NAMESPACE
     VkResult vkGetPhysicalDeviceSurfaceSupportKHR( VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, VkSurfaceKHR surface, VkBool32* pSupported ) const VULKAN_HPP_NOEXCEPT
     {
       return ::vkGetPhysicalDeviceSurfaceSupportKHR( physicalDevice, queueFamilyIndex, surface, pSupported );
+    }
+
+    VkResult vkGetPhysicalDeviceToolPropertiesEXT( VkPhysicalDevice physicalDevice, uint32_t* pToolCount, VkPhysicalDeviceToolPropertiesEXT* pToolProperties ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkGetPhysicalDeviceToolPropertiesEXT( physicalDevice, pToolCount, pToolProperties );
     }
 
 #ifdef VK_USE_PLATFORM_WAYLAND_KHR
@@ -2657,7 +2697,7 @@ namespace VULKAN_HPP_NAMESPACE
         , m_dispatch( nullptr )
       {}
 
-      ObjectDestroy( OwnerType owner, Optional<const AllocationCallbacks> allocationCallbacks, Dispatch const &dispatch ) VULKAN_HPP_NOEXCEPT
+      ObjectDestroy( OwnerType owner, Optional<const AllocationCallbacks> allocationCallbacks = nullptr, Dispatch const &dispatch = Dispatch() ) VULKAN_HPP_NOEXCEPT
         : m_owner( owner )
         , m_allocationCallbacks( allocationCallbacks )
         , m_dispatch( &dispatch )
@@ -4230,6 +4270,10 @@ namespace VULKAN_HPP_NAMESPACE
     eSharedPresentKHR = VK_IMAGE_LAYOUT_SHARED_PRESENT_KHR,
     eShadingRateOptimalNV = VK_IMAGE_LAYOUT_SHADING_RATE_OPTIMAL_NV,
     eFragmentDensityMapOptimalEXT = VK_IMAGE_LAYOUT_FRAGMENT_DENSITY_MAP_OPTIMAL_EXT,
+    eDepthAttachmentOptimalKHR = VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL_KHR,
+    eDepthReadOnlyOptimalKHR = VK_IMAGE_LAYOUT_DEPTH_READ_ONLY_OPTIMAL_KHR,
+    eStencilAttachmentOptimalKHR = VK_IMAGE_LAYOUT_STENCIL_ATTACHMENT_OPTIMAL_KHR,
+    eStencilReadOnlyOptimalKHR = VK_IMAGE_LAYOUT_STENCIL_READ_ONLY_OPTIMAL_KHR,
     eDepthReadOnlyStencilAttachmentOptimalKHR = VK_IMAGE_LAYOUT_DEPTH_READ_ONLY_STENCIL_ATTACHMENT_OPTIMAL_KHR,
     eDepthAttachmentStencilReadOnlyOptimalKHR = VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL_KHR
   };
@@ -4253,6 +4297,10 @@ namespace VULKAN_HPP_NAMESPACE
       case ImageLayout::eSharedPresentKHR : return "SharedPresentKHR";
       case ImageLayout::eShadingRateOptimalNV : return "ShadingRateOptimalNV";
       case ImageLayout::eFragmentDensityMapOptimalEXT : return "FragmentDensityMapOptimalEXT";
+      case ImageLayout::eDepthAttachmentOptimalKHR : return "DepthAttachmentOptimalKHR";
+      case ImageLayout::eDepthReadOnlyOptimalKHR : return "DepthReadOnlyOptimalKHR";
+      case ImageLayout::eStencilAttachmentOptimalKHR : return "StencilAttachmentOptimalKHR";
+      case ImageLayout::eStencilReadOnlyOptimalKHR : return "StencilReadOnlyOptimalKHR";
       default: return "invalid";
     }
   }
@@ -4591,6 +4639,82 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
+  enum class PerformanceCounterScopeKHR
+  {
+    eVkQueryScopeCommandBuffer = VK_QUERY_SCOPE_COMMAND_BUFFER_KHR,
+    eVkQueryScopeRenderPass = VK_QUERY_SCOPE_RENDER_PASS_KHR,
+    eVkQueryScopeCommand = VK_QUERY_SCOPE_COMMAND_KHR
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( PerformanceCounterScopeKHR value )
+  {
+    switch ( value )
+    {
+      case PerformanceCounterScopeKHR::eVkQueryScopeCommandBuffer : return "VkQueryScopeCommandBuffer";
+      case PerformanceCounterScopeKHR::eVkQueryScopeRenderPass : return "VkQueryScopeRenderPass";
+      case PerformanceCounterScopeKHR::eVkQueryScopeCommand : return "VkQueryScopeCommand";
+      default: return "invalid";
+    }
+  }
+
+  enum class PerformanceCounterStorageKHR
+  {
+    eInt32 = VK_PERFORMANCE_COUNTER_STORAGE_INT32_KHR,
+    eInt64 = VK_PERFORMANCE_COUNTER_STORAGE_INT64_KHR,
+    eUint32 = VK_PERFORMANCE_COUNTER_STORAGE_UINT32_KHR,
+    eUint64 = VK_PERFORMANCE_COUNTER_STORAGE_UINT64_KHR,
+    eFloat32 = VK_PERFORMANCE_COUNTER_STORAGE_FLOAT32_KHR,
+    eFloat64 = VK_PERFORMANCE_COUNTER_STORAGE_FLOAT64_KHR
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( PerformanceCounterStorageKHR value )
+  {
+    switch ( value )
+    {
+      case PerformanceCounterStorageKHR::eInt32 : return "Int32";
+      case PerformanceCounterStorageKHR::eInt64 : return "Int64";
+      case PerformanceCounterStorageKHR::eUint32 : return "Uint32";
+      case PerformanceCounterStorageKHR::eUint64 : return "Uint64";
+      case PerformanceCounterStorageKHR::eFloat32 : return "Float32";
+      case PerformanceCounterStorageKHR::eFloat64 : return "Float64";
+      default: return "invalid";
+    }
+  }
+
+  enum class PerformanceCounterUnitKHR
+  {
+    eGeneric = VK_PERFORMANCE_COUNTER_UNIT_GENERIC_KHR,
+    ePercentage = VK_PERFORMANCE_COUNTER_UNIT_PERCENTAGE_KHR,
+    eNanoseconds = VK_PERFORMANCE_COUNTER_UNIT_NANOSECONDS_KHR,
+    eBytes = VK_PERFORMANCE_COUNTER_UNIT_BYTES_KHR,
+    eBytesPerSecond = VK_PERFORMANCE_COUNTER_UNIT_BYTES_PER_SECOND_KHR,
+    eKelvin = VK_PERFORMANCE_COUNTER_UNIT_KELVIN_KHR,
+    eWatts = VK_PERFORMANCE_COUNTER_UNIT_WATTS_KHR,
+    eVolts = VK_PERFORMANCE_COUNTER_UNIT_VOLTS_KHR,
+    eAmps = VK_PERFORMANCE_COUNTER_UNIT_AMPS_KHR,
+    eHertz = VK_PERFORMANCE_COUNTER_UNIT_HERTZ_KHR,
+    eCycles = VK_PERFORMANCE_COUNTER_UNIT_CYCLES_KHR
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( PerformanceCounterUnitKHR value )
+  {
+    switch ( value )
+    {
+      case PerformanceCounterUnitKHR::eGeneric : return "Generic";
+      case PerformanceCounterUnitKHR::ePercentage : return "Percentage";
+      case PerformanceCounterUnitKHR::eNanoseconds : return "Nanoseconds";
+      case PerformanceCounterUnitKHR::eBytes : return "Bytes";
+      case PerformanceCounterUnitKHR::eBytesPerSecond : return "BytesPerSecond";
+      case PerformanceCounterUnitKHR::eKelvin : return "Kelvin";
+      case PerformanceCounterUnitKHR::eWatts : return "Watts";
+      case PerformanceCounterUnitKHR::eVolts : return "Volts";
+      case PerformanceCounterUnitKHR::eAmps : return "Amps";
+      case PerformanceCounterUnitKHR::eHertz : return "Hertz";
+      case PerformanceCounterUnitKHR::eCycles : return "Cycles";
+      default: return "invalid";
+    }
+  }
+
   enum class PerformanceOverrideTypeINTEL
   {
     eNullHardware = VK_PERFORMANCE_OVERRIDE_TYPE_NULL_HARDWARE_INTEL,
@@ -4835,6 +4959,7 @@ namespace VULKAN_HPP_NAMESPACE
     ePipelineStatistics = VK_QUERY_TYPE_PIPELINE_STATISTICS,
     eTimestamp = VK_QUERY_TYPE_TIMESTAMP,
     eTransformFeedbackStreamEXT = VK_QUERY_TYPE_TRANSFORM_FEEDBACK_STREAM_EXT,
+    ePerformanceQueryKHR = VK_QUERY_TYPE_PERFORMANCE_QUERY_KHR,
     eAccelerationStructureCompactedSizeNV = VK_QUERY_TYPE_ACCELERATION_STRUCTURE_COMPACTED_SIZE_NV,
     ePerformanceQueryINTEL = VK_QUERY_TYPE_PERFORMANCE_QUERY_INTEL
   };
@@ -4847,6 +4972,7 @@ namespace VULKAN_HPP_NAMESPACE
       case QueryType::ePipelineStatistics : return "PipelineStatistics";
       case QueryType::eTimestamp : return "Timestamp";
       case QueryType::eTransformFeedbackStreamEXT : return "TransformFeedbackStreamEXT";
+      case QueryType::ePerformanceQueryKHR : return "PerformanceQueryKHR";
       case QueryType::eAccelerationStructureCompactedSizeNV : return "AccelerationStructureCompactedSizeNV";
       case QueryType::ePerformanceQueryINTEL : return "PerformanceQueryINTEL";
       default: return "invalid";
@@ -4939,10 +5065,11 @@ namespace VULKAN_HPP_NAMESPACE
     eErrorInvalidDrmFormatModifierPlaneLayoutEXT = VK_ERROR_INVALID_DRM_FORMAT_MODIFIER_PLANE_LAYOUT_EXT,
     eErrorFragmentationEXT = VK_ERROR_FRAGMENTATION_EXT,
     eErrorNotPermittedEXT = VK_ERROR_NOT_PERMITTED_EXT,
-    eErrorInvalidDeviceAddressEXT = VK_ERROR_INVALID_DEVICE_ADDRESS_EXT,
     eErrorFullScreenExclusiveModeLostEXT = VK_ERROR_FULL_SCREEN_EXCLUSIVE_MODE_LOST_EXT,
+    eErrorInvalidOpaqueCaptureAddressKHR = VK_ERROR_INVALID_OPAQUE_CAPTURE_ADDRESS_KHR,
     eErrorOutOfPoolMemoryKHR = VK_ERROR_OUT_OF_POOL_MEMORY_KHR,
-    eErrorInvalidExternalHandleKHR = VK_ERROR_INVALID_EXTERNAL_HANDLE_KHR
+    eErrorInvalidExternalHandleKHR = VK_ERROR_INVALID_EXTERNAL_HANDLE_KHR,
+    eErrorInvalidDeviceAddressEXT = VK_ERROR_INVALID_DEVICE_ADDRESS_EXT
   };
 
   VULKAN_HPP_INLINE std::string to_string( Result value )
@@ -4979,8 +5106,8 @@ namespace VULKAN_HPP_NAMESPACE
       case Result::eErrorInvalidDrmFormatModifierPlaneLayoutEXT : return "ErrorInvalidDrmFormatModifierPlaneLayoutEXT";
       case Result::eErrorFragmentationEXT : return "ErrorFragmentationEXT";
       case Result::eErrorNotPermittedEXT : return "ErrorNotPermittedEXT";
-      case Result::eErrorInvalidDeviceAddressEXT : return "ErrorInvalidDeviceAddressEXT";
       case Result::eErrorFullScreenExclusiveModeLostEXT : return "ErrorFullScreenExclusiveModeLostEXT";
+      case Result::eErrorInvalidOpaqueCaptureAddressKHR : return "ErrorInvalidOpaqueCaptureAddressKHR";
       default: return "invalid";
     }
   }
@@ -5455,6 +5582,13 @@ namespace VULKAN_HPP_NAMESPACE
     eFenceGetWin32HandleInfoKHR = VK_STRUCTURE_TYPE_FENCE_GET_WIN32_HANDLE_INFO_KHR,
     eImportFenceFdInfoKHR = VK_STRUCTURE_TYPE_IMPORT_FENCE_FD_INFO_KHR,
     eFenceGetFdInfoKHR = VK_STRUCTURE_TYPE_FENCE_GET_FD_INFO_KHR,
+    ePhysicalDevicePerformanceQueryFeaturesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PERFORMANCE_QUERY_FEATURES_KHR,
+    ePhysicalDevicePerformanceQueryPropertiesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PERFORMANCE_QUERY_PROPERTIES_KHR,
+    eQueryPoolPerformanceCreateInfoKHR = VK_STRUCTURE_TYPE_QUERY_POOL_PERFORMANCE_CREATE_INFO_KHR,
+    ePerformanceQuerySubmitInfoKHR = VK_STRUCTURE_TYPE_PERFORMANCE_QUERY_SUBMIT_INFO_KHR,
+    eAcquireProfilingLockInfoKHR = VK_STRUCTURE_TYPE_ACQUIRE_PROFILING_LOCK_INFO_KHR,
+    ePerformanceCounterKHR = VK_STRUCTURE_TYPE_PERFORMANCE_COUNTER_KHR,
+    ePerformanceCounterDescriptionKHR = VK_STRUCTURE_TYPE_PERFORMANCE_COUNTER_DESCRIPTION_KHR,
     ePhysicalDeviceSurfaceInfo2KHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SURFACE_INFO_2_KHR,
     eSurfaceCapabilities2KHR = VK_STRUCTURE_TYPE_SURFACE_CAPABILITIES_2_KHR,
     eSurfaceFormat2KHR = VK_STRUCTURE_TYPE_SURFACE_FORMAT_2_KHR,
@@ -5590,9 +5724,12 @@ namespace VULKAN_HPP_NAMESPACE
     eMemoryPriorityAllocateInfoEXT = VK_STRUCTURE_TYPE_MEMORY_PRIORITY_ALLOCATE_INFO_EXT,
     eSurfaceProtectedCapabilitiesKHR = VK_STRUCTURE_TYPE_SURFACE_PROTECTED_CAPABILITIES_KHR,
     ePhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEDICATED_ALLOCATION_IMAGE_ALIASING_FEATURES_NV,
+    ePhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SEPARATE_DEPTH_STENCIL_LAYOUTS_FEATURES_KHR,
+    eAttachmentReferenceStencilLayoutKHR = VK_STRUCTURE_TYPE_ATTACHMENT_REFERENCE_STENCIL_LAYOUT_KHR,
+    eAttachmentDescriptionStencilLayoutKHR = VK_STRUCTURE_TYPE_ATTACHMENT_DESCRIPTION_STENCIL_LAYOUT_KHR,
     ePhysicalDeviceBufferDeviceAddressFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES_EXT,
-    eBufferDeviceAddressInfoEXT = VK_STRUCTURE_TYPE_BUFFER_DEVICE_ADDRESS_INFO_EXT,
     eBufferDeviceAddressCreateInfoEXT = VK_STRUCTURE_TYPE_BUFFER_DEVICE_ADDRESS_CREATE_INFO_EXT,
+    ePhysicalDeviceToolPropertiesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TOOL_PROPERTIES_EXT,
     eImageStencilUsageCreateInfoEXT = VK_STRUCTURE_TYPE_IMAGE_STENCIL_USAGE_CREATE_INFO_EXT,
     eValidationFeaturesEXT = VK_STRUCTURE_TYPE_VALIDATION_FEATURES_EXT,
     ePhysicalDeviceCooperativeMatrixFeaturesNV = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COOPERATIVE_MATRIX_FEATURES_NV,
@@ -5608,6 +5745,11 @@ namespace VULKAN_HPP_NAMESPACE
     eSurfaceCapabilitiesFullScreenExclusiveEXT = VK_STRUCTURE_TYPE_SURFACE_CAPABILITIES_FULL_SCREEN_EXCLUSIVE_EXT,
     eSurfaceFullScreenExclusiveWin32InfoEXT = VK_STRUCTURE_TYPE_SURFACE_FULL_SCREEN_EXCLUSIVE_WIN32_INFO_EXT,
     eHeadlessSurfaceCreateInfoEXT = VK_STRUCTURE_TYPE_HEADLESS_SURFACE_CREATE_INFO_EXT,
+    ePhysicalDeviceBufferDeviceAddressFeaturesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES_KHR,
+    eBufferDeviceAddressInfoKHR = VK_STRUCTURE_TYPE_BUFFER_DEVICE_ADDRESS_INFO_KHR,
+    eBufferOpaqueCaptureAddressCreateInfoKHR = VK_STRUCTURE_TYPE_BUFFER_OPAQUE_CAPTURE_ADDRESS_CREATE_INFO_KHR,
+    eMemoryOpaqueCaptureAddressAllocateInfoKHR = VK_STRUCTURE_TYPE_MEMORY_OPAQUE_CAPTURE_ADDRESS_ALLOCATE_INFO_KHR,
+    eDeviceMemoryOpaqueCaptureAddressInfoKHR = VK_STRUCTURE_TYPE_DEVICE_MEMORY_OPAQUE_CAPTURE_ADDRESS_INFO_KHR,
     ePhysicalDeviceLineRasterizationFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_LINE_RASTERIZATION_FEATURES_EXT,
     ePipelineRasterizationLineStateCreateInfoEXT = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_LINE_STATE_CREATE_INFO_EXT,
     ePhysicalDeviceLineRasterizationPropertiesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_LINE_RASTERIZATION_PROPERTIES_EXT,
@@ -5686,7 +5828,8 @@ namespace VULKAN_HPP_NAMESPACE
     eBindImageMemoryInfoKHR = VK_STRUCTURE_TYPE_BIND_IMAGE_MEMORY_INFO_KHR,
     ePhysicalDeviceMaintenance3PropertiesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_3_PROPERTIES_KHR,
     eDescriptorSetLayoutSupportKHR = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_SUPPORT_KHR,
-    ePhysicalDeviceBufferAddressFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BUFFER_ADDRESS_FEATURES_EXT
+    ePhysicalDeviceBufferAddressFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BUFFER_ADDRESS_FEATURES_EXT,
+    eBufferDeviceAddressInfoEXT = VK_STRUCTURE_TYPE_BUFFER_DEVICE_ADDRESS_INFO_EXT
   };
 
   VULKAN_HPP_INLINE std::string to_string( StructureType value )
@@ -5907,6 +6050,13 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eFenceGetWin32HandleInfoKHR : return "FenceGetWin32HandleInfoKHR";
       case StructureType::eImportFenceFdInfoKHR : return "ImportFenceFdInfoKHR";
       case StructureType::eFenceGetFdInfoKHR : return "FenceGetFdInfoKHR";
+      case StructureType::ePhysicalDevicePerformanceQueryFeaturesKHR : return "PhysicalDevicePerformanceQueryFeaturesKHR";
+      case StructureType::ePhysicalDevicePerformanceQueryPropertiesKHR : return "PhysicalDevicePerformanceQueryPropertiesKHR";
+      case StructureType::eQueryPoolPerformanceCreateInfoKHR : return "QueryPoolPerformanceCreateInfoKHR";
+      case StructureType::ePerformanceQuerySubmitInfoKHR : return "PerformanceQuerySubmitInfoKHR";
+      case StructureType::eAcquireProfilingLockInfoKHR : return "AcquireProfilingLockInfoKHR";
+      case StructureType::ePerformanceCounterKHR : return "PerformanceCounterKHR";
+      case StructureType::ePerformanceCounterDescriptionKHR : return "PerformanceCounterDescriptionKHR";
       case StructureType::ePhysicalDeviceSurfaceInfo2KHR : return "PhysicalDeviceSurfaceInfo2KHR";
       case StructureType::eSurfaceCapabilities2KHR : return "SurfaceCapabilities2KHR";
       case StructureType::eSurfaceFormat2KHR : return "SurfaceFormat2KHR";
@@ -6042,9 +6192,12 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eMemoryPriorityAllocateInfoEXT : return "MemoryPriorityAllocateInfoEXT";
       case StructureType::eSurfaceProtectedCapabilitiesKHR : return "SurfaceProtectedCapabilitiesKHR";
       case StructureType::ePhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV : return "PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV";
+      case StructureType::ePhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR : return "PhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR";
+      case StructureType::eAttachmentReferenceStencilLayoutKHR : return "AttachmentReferenceStencilLayoutKHR";
+      case StructureType::eAttachmentDescriptionStencilLayoutKHR : return "AttachmentDescriptionStencilLayoutKHR";
       case StructureType::ePhysicalDeviceBufferDeviceAddressFeaturesEXT : return "PhysicalDeviceBufferDeviceAddressFeaturesEXT";
-      case StructureType::eBufferDeviceAddressInfoEXT : return "BufferDeviceAddressInfoEXT";
       case StructureType::eBufferDeviceAddressCreateInfoEXT : return "BufferDeviceAddressCreateInfoEXT";
+      case StructureType::ePhysicalDeviceToolPropertiesEXT : return "PhysicalDeviceToolPropertiesEXT";
       case StructureType::eImageStencilUsageCreateInfoEXT : return "ImageStencilUsageCreateInfoEXT";
       case StructureType::eValidationFeaturesEXT : return "ValidationFeaturesEXT";
       case StructureType::ePhysicalDeviceCooperativeMatrixFeaturesNV : return "PhysicalDeviceCooperativeMatrixFeaturesNV";
@@ -6060,6 +6213,11 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eSurfaceCapabilitiesFullScreenExclusiveEXT : return "SurfaceCapabilitiesFullScreenExclusiveEXT";
       case StructureType::eSurfaceFullScreenExclusiveWin32InfoEXT : return "SurfaceFullScreenExclusiveWin32InfoEXT";
       case StructureType::eHeadlessSurfaceCreateInfoEXT : return "HeadlessSurfaceCreateInfoEXT";
+      case StructureType::ePhysicalDeviceBufferDeviceAddressFeaturesKHR : return "PhysicalDeviceBufferDeviceAddressFeaturesKHR";
+      case StructureType::eBufferDeviceAddressInfoKHR : return "BufferDeviceAddressInfoKHR";
+      case StructureType::eBufferOpaqueCaptureAddressCreateInfoKHR : return "BufferOpaqueCaptureAddressCreateInfoKHR";
+      case StructureType::eMemoryOpaqueCaptureAddressAllocateInfoKHR : return "MemoryOpaqueCaptureAddressAllocateInfoKHR";
+      case StructureType::eDeviceMemoryOpaqueCaptureAddressInfoKHR : return "DeviceMemoryOpaqueCaptureAddressInfoKHR";
       case StructureType::ePhysicalDeviceLineRasterizationFeaturesEXT : return "PhysicalDeviceLineRasterizationFeaturesEXT";
       case StructureType::ePipelineRasterizationLineStateCreateInfoEXT : return "PipelineRasterizationLineStateCreateInfoEXT";
       case StructureType::ePhysicalDeviceLineRasterizationPropertiesEXT : return "PhysicalDeviceLineRasterizationPropertiesEXT";
@@ -6429,6 +6587,21 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
+  enum class AcquireProfilingLockFlagBitsKHR
+  {};
+
+  VULKAN_HPP_INLINE std::string to_string( AcquireProfilingLockFlagBitsKHR )
+  {
+    return "(void)";
+  }
+
+  using AcquireProfilingLockFlagsKHR = Flags<AcquireProfilingLockFlagBitsKHR, VkAcquireProfilingLockFlagsKHR>;
+
+  VULKAN_HPP_INLINE std::string to_string( AcquireProfilingLockFlagsKHR  )
+  {
+    return "{}";
+  }
+
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
   enum class AndroidSurfaceCreateFlagBitsKHR
   {};
@@ -6505,6 +6678,7 @@ namespace VULKAN_HPP_NAMESPACE
     eSparseResidency = VK_BUFFER_CREATE_SPARSE_RESIDENCY_BIT,
     eSparseAliased = VK_BUFFER_CREATE_SPARSE_ALIASED_BIT,
     eProtected = VK_BUFFER_CREATE_PROTECTED_BIT,
+    eDeviceAddressCaptureReplayKHR = VK_BUFFER_CREATE_DEVICE_ADDRESS_CAPTURE_REPLAY_BIT_KHR,
     eDeviceAddressCaptureReplayEXT = VK_BUFFER_CREATE_DEVICE_ADDRESS_CAPTURE_REPLAY_BIT_EXT
   };
 
@@ -6516,7 +6690,7 @@ namespace VULKAN_HPP_NAMESPACE
       case BufferCreateFlagBits::eSparseResidency : return "SparseResidency";
       case BufferCreateFlagBits::eSparseAliased : return "SparseAliased";
       case BufferCreateFlagBits::eProtected : return "Protected";
-      case BufferCreateFlagBits::eDeviceAddressCaptureReplayEXT : return "DeviceAddressCaptureReplayEXT";
+      case BufferCreateFlagBits::eDeviceAddressCaptureReplayKHR : return "DeviceAddressCaptureReplayKHR";
       default: return "invalid";
     }
   }
@@ -6527,7 +6701,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
     enum
     {
-      allFlags = VkFlags(BufferCreateFlagBits::eSparseBinding) | VkFlags(BufferCreateFlagBits::eSparseResidency) | VkFlags(BufferCreateFlagBits::eSparseAliased) | VkFlags(BufferCreateFlagBits::eProtected) | VkFlags(BufferCreateFlagBits::eDeviceAddressCaptureReplayEXT)
+      allFlags = VkFlags(BufferCreateFlagBits::eSparseBinding) | VkFlags(BufferCreateFlagBits::eSparseResidency) | VkFlags(BufferCreateFlagBits::eSparseAliased) | VkFlags(BufferCreateFlagBits::eProtected) | VkFlags(BufferCreateFlagBits::eDeviceAddressCaptureReplayKHR)
     };
   };
 
@@ -6560,7 +6734,7 @@ namespace VULKAN_HPP_NAMESPACE
     if ( value & BufferCreateFlagBits::eSparseResidency ) result += "SparseResidency | ";
     if ( value & BufferCreateFlagBits::eSparseAliased ) result += "SparseAliased | ";
     if ( value & BufferCreateFlagBits::eProtected ) result += "Protected | ";
-    if ( value & BufferCreateFlagBits::eDeviceAddressCaptureReplayEXT ) result += "DeviceAddressCaptureReplayEXT | ";
+    if ( value & BufferCreateFlagBits::eDeviceAddressCaptureReplayKHR ) result += "DeviceAddressCaptureReplayKHR | ";
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
@@ -6579,6 +6753,7 @@ namespace VULKAN_HPP_NAMESPACE
     eTransformFeedbackCounterBufferEXT = VK_BUFFER_USAGE_TRANSFORM_FEEDBACK_COUNTER_BUFFER_BIT_EXT,
     eConditionalRenderingEXT = VK_BUFFER_USAGE_CONDITIONAL_RENDERING_BIT_EXT,
     eRayTracingNV = VK_BUFFER_USAGE_RAY_TRACING_BIT_NV,
+    eShaderDeviceAddressKHR = VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT_KHR,
     eShaderDeviceAddressEXT = VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT_EXT
   };
 
@@ -6599,7 +6774,7 @@ namespace VULKAN_HPP_NAMESPACE
       case BufferUsageFlagBits::eTransformFeedbackCounterBufferEXT : return "TransformFeedbackCounterBufferEXT";
       case BufferUsageFlagBits::eConditionalRenderingEXT : return "ConditionalRenderingEXT";
       case BufferUsageFlagBits::eRayTracingNV : return "RayTracingNV";
-      case BufferUsageFlagBits::eShaderDeviceAddressEXT : return "ShaderDeviceAddressEXT";
+      case BufferUsageFlagBits::eShaderDeviceAddressKHR : return "ShaderDeviceAddressKHR";
       default: return "invalid";
     }
   }
@@ -6610,7 +6785,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
     enum
     {
-      allFlags = VkFlags(BufferUsageFlagBits::eTransferSrc) | VkFlags(BufferUsageFlagBits::eTransferDst) | VkFlags(BufferUsageFlagBits::eUniformTexelBuffer) | VkFlags(BufferUsageFlagBits::eStorageTexelBuffer) | VkFlags(BufferUsageFlagBits::eUniformBuffer) | VkFlags(BufferUsageFlagBits::eStorageBuffer) | VkFlags(BufferUsageFlagBits::eIndexBuffer) | VkFlags(BufferUsageFlagBits::eVertexBuffer) | VkFlags(BufferUsageFlagBits::eIndirectBuffer) | VkFlags(BufferUsageFlagBits::eTransformFeedbackBufferEXT) | VkFlags(BufferUsageFlagBits::eTransformFeedbackCounterBufferEXT) | VkFlags(BufferUsageFlagBits::eConditionalRenderingEXT) | VkFlags(BufferUsageFlagBits::eRayTracingNV) | VkFlags(BufferUsageFlagBits::eShaderDeviceAddressEXT)
+      allFlags = VkFlags(BufferUsageFlagBits::eTransferSrc) | VkFlags(BufferUsageFlagBits::eTransferDst) | VkFlags(BufferUsageFlagBits::eUniformTexelBuffer) | VkFlags(BufferUsageFlagBits::eStorageTexelBuffer) | VkFlags(BufferUsageFlagBits::eUniformBuffer) | VkFlags(BufferUsageFlagBits::eStorageBuffer) | VkFlags(BufferUsageFlagBits::eIndexBuffer) | VkFlags(BufferUsageFlagBits::eVertexBuffer) | VkFlags(BufferUsageFlagBits::eIndirectBuffer) | VkFlags(BufferUsageFlagBits::eTransformFeedbackBufferEXT) | VkFlags(BufferUsageFlagBits::eTransformFeedbackCounterBufferEXT) | VkFlags(BufferUsageFlagBits::eConditionalRenderingEXT) | VkFlags(BufferUsageFlagBits::eRayTracingNV) | VkFlags(BufferUsageFlagBits::eShaderDeviceAddressKHR)
     };
   };
 
@@ -6652,7 +6827,7 @@ namespace VULKAN_HPP_NAMESPACE
     if ( value & BufferUsageFlagBits::eTransformFeedbackCounterBufferEXT ) result += "TransformFeedbackCounterBufferEXT | ";
     if ( value & BufferUsageFlagBits::eConditionalRenderingEXT ) result += "ConditionalRenderingEXT | ";
     if ( value & BufferUsageFlagBits::eRayTracingNV ) result += "RayTracingNV | ";
-    if ( value & BufferUsageFlagBits::eShaderDeviceAddressEXT ) result += "ShaderDeviceAddressEXT | ";
+    if ( value & BufferUsageFlagBits::eShaderDeviceAddressKHR ) result += "ShaderDeviceAddressKHR | ";
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
@@ -9352,6 +9527,8 @@ namespace VULKAN_HPP_NAMESPACE
   enum class MemoryAllocateFlagBits
   {
     eDeviceMask = VK_MEMORY_ALLOCATE_DEVICE_MASK_BIT,
+    eDeviceAddressKHR = VK_MEMORY_ALLOCATE_DEVICE_ADDRESS_BIT_KHR,
+    eDeviceAddressCaptureReplayKHR = VK_MEMORY_ALLOCATE_DEVICE_ADDRESS_CAPTURE_REPLAY_BIT_KHR,
     eDeviceMaskKHR = VK_MEMORY_ALLOCATE_DEVICE_MASK_BIT_KHR
   };
 
@@ -9360,6 +9537,8 @@ namespace VULKAN_HPP_NAMESPACE
     switch ( value )
     {
       case MemoryAllocateFlagBits::eDeviceMask : return "DeviceMask";
+      case MemoryAllocateFlagBits::eDeviceAddressKHR : return "DeviceAddressKHR";
+      case MemoryAllocateFlagBits::eDeviceAddressCaptureReplayKHR : return "DeviceAddressCaptureReplayKHR";
       default: return "invalid";
     }
   }
@@ -9370,7 +9549,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
     enum
     {
-      allFlags = VkFlags(MemoryAllocateFlagBits::eDeviceMask)
+      allFlags = VkFlags(MemoryAllocateFlagBits::eDeviceMask) | VkFlags(MemoryAllocateFlagBits::eDeviceAddressKHR) | VkFlags(MemoryAllocateFlagBits::eDeviceAddressCaptureReplayKHR)
     };
   };
 
@@ -9402,6 +9581,8 @@ namespace VULKAN_HPP_NAMESPACE
     std::string result;
 
     if ( value & MemoryAllocateFlagBits::eDeviceMask ) result += "DeviceMask | ";
+    if ( value & MemoryAllocateFlagBits::eDeviceAddressKHR ) result += "DeviceAddressKHR | ";
+    if ( value & MemoryAllocateFlagBits::eDeviceAddressCaptureReplayKHR ) result += "DeviceAddressCaptureReplayKHR | ";
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
@@ -9692,6 +9873,62 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
+  enum class PerformanceCounterDescriptionFlagBitsKHR
+  {
+    ePerformanceImpacting = VK_PERFORMANCE_COUNTER_DESCRIPTION_PERFORMANCE_IMPACTING_KHR,
+    eConcurrentlyImpacted = VK_PERFORMANCE_COUNTER_DESCRIPTION_CONCURRENTLY_IMPACTED_KHR
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( PerformanceCounterDescriptionFlagBitsKHR value )
+  {
+    switch ( value )
+    {
+      case PerformanceCounterDescriptionFlagBitsKHR::ePerformanceImpacting : return "PerformanceImpacting";
+      case PerformanceCounterDescriptionFlagBitsKHR::eConcurrentlyImpacted : return "ConcurrentlyImpacted";
+      default: return "invalid";
+    }
+  }
+
+  using PerformanceCounterDescriptionFlagsKHR = Flags<PerformanceCounterDescriptionFlagBitsKHR, VkPerformanceCounterDescriptionFlagsKHR>;
+
+  template <> struct FlagTraits<PerformanceCounterDescriptionFlagBitsKHR>
+  {
+    enum
+    {
+      allFlags = VkFlags(PerformanceCounterDescriptionFlagBitsKHR::ePerformanceImpacting) | VkFlags(PerformanceCounterDescriptionFlagBitsKHR::eConcurrentlyImpacted)
+    };
+  };
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PerformanceCounterDescriptionFlagsKHR operator|( PerformanceCounterDescriptionFlagBitsKHR bit0, PerformanceCounterDescriptionFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
+  {
+    return PerformanceCounterDescriptionFlagsKHR( bit0 ) | bit1;
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PerformanceCounterDescriptionFlagsKHR operator&( PerformanceCounterDescriptionFlagBitsKHR bit0, PerformanceCounterDescriptionFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
+  {
+    return PerformanceCounterDescriptionFlagsKHR( bit0 ) & bit1;
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PerformanceCounterDescriptionFlagsKHR operator^( PerformanceCounterDescriptionFlagBitsKHR bit0, PerformanceCounterDescriptionFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
+  {
+    return PerformanceCounterDescriptionFlagsKHR( bit0 ) ^ bit1;
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PerformanceCounterDescriptionFlagsKHR operator~( PerformanceCounterDescriptionFlagBitsKHR bits ) VULKAN_HPP_NOEXCEPT
+  {
+    return ~( PerformanceCounterDescriptionFlagsKHR( bits ) );
+  }
+
+  VULKAN_HPP_INLINE std::string to_string( PerformanceCounterDescriptionFlagsKHR value  )
+  {
+    if ( !value ) return "{}";
+    std::string result;
+
+    if ( value & PerformanceCounterDescriptionFlagBitsKHR::ePerformanceImpacting ) result += "PerformanceImpacting | ";
+    if ( value & PerformanceCounterDescriptionFlagBitsKHR::eConcurrentlyImpacted ) result += "ConcurrentlyImpacted | ";
+    return "{ " + result.substr(0, result.size() - 3) + " }";
+  }
+
   enum class PipelineCacheCreateFlagBits
   {};
 
@@ -9788,7 +10025,7 @@ namespace VULKAN_HPP_NAMESPACE
     eAllowDerivatives = VK_PIPELINE_CREATE_ALLOW_DERIVATIVES_BIT,
     eDerivative = VK_PIPELINE_CREATE_DERIVATIVE_BIT,
     eViewIndexFromDeviceIndex = VK_PIPELINE_CREATE_VIEW_INDEX_FROM_DEVICE_INDEX_BIT,
-    eDispatchBase = VK_PIPELINE_CREATE_DISPATCH_BASE,
+    eDispatchBase = VK_PIPELINE_CREATE_DISPATCH_BASE_BIT,
     eDeferCompileNV = VK_PIPELINE_CREATE_DEFER_COMPILE_BIT_NV,
     eCaptureStatisticsKHR = VK_PIPELINE_CREATE_CAPTURE_STATISTICS_BIT_KHR,
     eCaptureInternalRepresentationsKHR = VK_PIPELINE_CREATE_CAPTURE_INTERNAL_REPRESENTATIONS_BIT_KHR,
@@ -11555,6 +11792,77 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
+  enum class ToolPurposeFlagBitsEXT
+  {
+    eValidation = VK_TOOL_PURPOSE_VALIDATION_BIT_EXT,
+    eProfiling = VK_TOOL_PURPOSE_PROFILING_BIT_EXT,
+    eTracing = VK_TOOL_PURPOSE_TRACING_BIT_EXT,
+    eAdditionalFeatures = VK_TOOL_PURPOSE_ADDITIONAL_FEATURES_BIT_EXT,
+    eModifyingFeatures = VK_TOOL_PURPOSE_MODIFYING_FEATURES_BIT_EXT,
+    eDebugReporting = VK_TOOL_PURPOSE_DEBUG_REPORTING_BIT_EXT,
+    eDebugMarkers = VK_TOOL_PURPOSE_DEBUG_MARKERS_BIT_EXT
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( ToolPurposeFlagBitsEXT value )
+  {
+    switch ( value )
+    {
+      case ToolPurposeFlagBitsEXT::eValidation : return "Validation";
+      case ToolPurposeFlagBitsEXT::eProfiling : return "Profiling";
+      case ToolPurposeFlagBitsEXT::eTracing : return "Tracing";
+      case ToolPurposeFlagBitsEXT::eAdditionalFeatures : return "AdditionalFeatures";
+      case ToolPurposeFlagBitsEXT::eModifyingFeatures : return "ModifyingFeatures";
+      case ToolPurposeFlagBitsEXT::eDebugReporting : return "DebugReporting";
+      case ToolPurposeFlagBitsEXT::eDebugMarkers : return "DebugMarkers";
+      default: return "invalid";
+    }
+  }
+
+  using ToolPurposeFlagsEXT = Flags<ToolPurposeFlagBitsEXT, VkToolPurposeFlagsEXT>;
+
+  template <> struct FlagTraits<ToolPurposeFlagBitsEXT>
+  {
+    enum
+    {
+      allFlags = VkFlags(ToolPurposeFlagBitsEXT::eValidation) | VkFlags(ToolPurposeFlagBitsEXT::eProfiling) | VkFlags(ToolPurposeFlagBitsEXT::eTracing) | VkFlags(ToolPurposeFlagBitsEXT::eAdditionalFeatures) | VkFlags(ToolPurposeFlagBitsEXT::eModifyingFeatures) | VkFlags(ToolPurposeFlagBitsEXT::eDebugReporting) | VkFlags(ToolPurposeFlagBitsEXT::eDebugMarkers)
+    };
+  };
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ToolPurposeFlagsEXT operator|( ToolPurposeFlagBitsEXT bit0, ToolPurposeFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
+  {
+    return ToolPurposeFlagsEXT( bit0 ) | bit1;
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ToolPurposeFlagsEXT operator&( ToolPurposeFlagBitsEXT bit0, ToolPurposeFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
+  {
+    return ToolPurposeFlagsEXT( bit0 ) & bit1;
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ToolPurposeFlagsEXT operator^( ToolPurposeFlagBitsEXT bit0, ToolPurposeFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
+  {
+    return ToolPurposeFlagsEXT( bit0 ) ^ bit1;
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ToolPurposeFlagsEXT operator~( ToolPurposeFlagBitsEXT bits ) VULKAN_HPP_NOEXCEPT
+  {
+    return ~( ToolPurposeFlagsEXT( bits ) );
+  }
+
+  VULKAN_HPP_INLINE std::string to_string( ToolPurposeFlagsEXT value  )
+  {
+    if ( !value ) return "{}";
+    std::string result;
+
+    if ( value & ToolPurposeFlagBitsEXT::eValidation ) result += "Validation | ";
+    if ( value & ToolPurposeFlagBitsEXT::eProfiling ) result += "Profiling | ";
+    if ( value & ToolPurposeFlagBitsEXT::eTracing ) result += "Tracing | ";
+    if ( value & ToolPurposeFlagBitsEXT::eAdditionalFeatures ) result += "AdditionalFeatures | ";
+    if ( value & ToolPurposeFlagBitsEXT::eModifyingFeatures ) result += "ModifyingFeatures | ";
+    if ( value & ToolPurposeFlagBitsEXT::eDebugReporting ) result += "DebugReporting | ";
+    if ( value & ToolPurposeFlagBitsEXT::eDebugMarkers ) result += "DebugMarkers | ";
+    return "{ " + result.substr(0, result.size() - 3) + " }";
+  }
+
   enum class ValidationCacheCreateFlagBitsEXT
   {};
 
@@ -11936,15 +12244,6 @@ namespace VULKAN_HPP_NAMESPACE
       : SystemError( make_error_code( Result::eErrorNotPermittedEXT ), message ) {}
   };
 
-  class InvalidDeviceAddressEXTError : public SystemError
-  {
-  public:
-    InvalidDeviceAddressEXTError( std::string const& message )
-      : SystemError( make_error_code( Result::eErrorInvalidDeviceAddressEXT ), message ) {}
-    InvalidDeviceAddressEXTError( char const * message )
-      : SystemError( make_error_code( Result::eErrorInvalidDeviceAddressEXT ), message ) {}
-  };
-
   class FullScreenExclusiveModeLostEXTError : public SystemError
   {
   public:
@@ -11952,6 +12251,15 @@ namespace VULKAN_HPP_NAMESPACE
       : SystemError( make_error_code( Result::eErrorFullScreenExclusiveModeLostEXT ), message ) {}
     FullScreenExclusiveModeLostEXTError( char const * message )
       : SystemError( make_error_code( Result::eErrorFullScreenExclusiveModeLostEXT ), message ) {}
+  };
+
+  class InvalidOpaqueCaptureAddressKHRError : public SystemError
+  {
+  public:
+    InvalidOpaqueCaptureAddressKHRError( std::string const& message )
+      : SystemError( make_error_code( Result::eErrorInvalidOpaqueCaptureAddressKHR ), message ) {}
+    InvalidOpaqueCaptureAddressKHRError( char const * message )
+      : SystemError( make_error_code( Result::eErrorInvalidOpaqueCaptureAddressKHR ), message ) {}
   };
 
   [[noreturn]] static void throwResultException( Result result, char const * message )
@@ -11981,8 +12289,8 @@ namespace VULKAN_HPP_NAMESPACE
       case Result::eErrorInvalidDrmFormatModifierPlaneLayoutEXT: throw InvalidDrmFormatModifierPlaneLayoutEXTError( message );
       case Result::eErrorFragmentationEXT: throw FragmentationEXTError( message );
       case Result::eErrorNotPermittedEXT: throw NotPermittedEXTError( message );
-      case Result::eErrorInvalidDeviceAddressEXT: throw InvalidDeviceAddressEXTError( message );
       case Result::eErrorFullScreenExclusiveModeLostEXT: throw FullScreenExclusiveModeLostEXTError( message );
+      case Result::eErrorInvalidOpaqueCaptureAddressKHR: throw InvalidOpaqueCaptureAddressKHRError( message );
       default: throw SystemError( make_error_code( result ) );
     }
   }
@@ -12118,6 +12426,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct AccelerationStructureInfoNV;
   struct AccelerationStructureMemoryRequirementsInfoNV;
   struct AcquireNextImageInfoKHR;
+  struct AcquireProfilingLockInfoKHR;
   struct AllocationCallbacks;
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
   struct AndroidHardwareBufferFormatPropertiesANDROID;
@@ -12134,8 +12443,10 @@ namespace VULKAN_HPP_NAMESPACE
   struct ApplicationInfo;
   struct AttachmentDescription;
   struct AttachmentDescription2KHR;
+  struct AttachmentDescriptionStencilLayoutKHR;
   struct AttachmentReference;
   struct AttachmentReference2KHR;
+  struct AttachmentReferenceStencilLayoutKHR;
   struct AttachmentSampleLocationsEXT;
   struct BaseInStructure;
   struct BaseOutStructure;
@@ -12155,11 +12466,13 @@ namespace VULKAN_HPP_NAMESPACE
   struct BufferCopy;
   struct BufferCreateInfo;
   struct BufferDeviceAddressCreateInfoEXT;
-  struct BufferDeviceAddressInfoEXT;
+  struct BufferDeviceAddressInfoKHR;
+  using BufferDeviceAddressInfoEXT = BufferDeviceAddressInfoKHR;
   struct BufferImageCopy;
   struct BufferMemoryBarrier;
   struct BufferMemoryRequirementsInfo2;
   using BufferMemoryRequirementsInfo2KHR = BufferMemoryRequirementsInfo2;
+  struct BufferOpaqueCaptureAddressCreateInfoKHR;
   struct BufferViewCreateInfo;
   struct CalibratedTimestampInfoEXT;
   struct CheckpointDataNV;
@@ -12232,6 +12545,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct DeviceGroupSubmitInfo;
   using DeviceGroupSubmitInfoKHR = DeviceGroupSubmitInfo;
   struct DeviceGroupSwapchainCreateInfoKHR;
+  struct DeviceMemoryOpaqueCaptureAddressInfoKHR;
   struct DeviceMemoryOverallocationCreateInfoAMD;
   struct DeviceQueueCreateInfo;
   struct DeviceQueueGlobalPriorityCreateInfoEXT;
@@ -12403,6 +12717,7 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
   struct MemoryHeap;
   struct MemoryHostPointerPropertiesEXT;
+  struct MemoryOpaqueCaptureAddressAllocateInfoKHR;
   struct MemoryPriorityAllocateInfoEXT;
   struct MemoryRequirements;
   struct MemoryRequirements2;
@@ -12426,8 +12741,12 @@ namespace VULKAN_HPP_NAMESPACE
   struct Offset3D;
   struct PastPresentationTimingGOOGLE;
   struct PerformanceConfigurationAcquireInfoINTEL;
+  struct PerformanceCounterDescriptionKHR;
+  struct PerformanceCounterKHR;
+  union PerformanceCounterResultKHR;
   struct PerformanceMarkerInfoINTEL;
   struct PerformanceOverrideInfoINTEL;
+  struct PerformanceQuerySubmitInfoKHR;
   struct PerformanceStreamMarkerInfoINTEL;
   union PerformanceValueDataINTEL;
   struct PerformanceValueINTEL;
@@ -12439,6 +12758,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceBlendOperationAdvancedPropertiesEXT;
   struct PhysicalDeviceBufferDeviceAddressFeaturesEXT;
   using PhysicalDeviceBufferAddressFeaturesEXT = PhysicalDeviceBufferDeviceAddressFeaturesEXT;
+  struct PhysicalDeviceBufferDeviceAddressFeaturesKHR;
   struct PhysicalDeviceCoherentMemoryFeaturesAMD;
   struct PhysicalDeviceComputeShaderDerivativesFeaturesNV;
   struct PhysicalDeviceConditionalRenderingFeaturesEXT;
@@ -12503,6 +12823,8 @@ namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceMultiviewProperties;
   using PhysicalDeviceMultiviewPropertiesKHR = PhysicalDeviceMultiviewProperties;
   struct PhysicalDevicePCIBusInfoPropertiesEXT;
+  struct PhysicalDevicePerformanceQueryFeaturesKHR;
+  struct PhysicalDevicePerformanceQueryPropertiesKHR;
   struct PhysicalDevicePipelineExecutablePropertiesFeaturesKHR;
   struct PhysicalDevicePointClippingProperties;
   using PhysicalDevicePointClippingPropertiesKHR = PhysicalDevicePointClippingProperties;
@@ -12519,6 +12841,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceSamplerYcbcrConversionFeatures;
   using PhysicalDeviceSamplerYcbcrConversionFeaturesKHR = PhysicalDeviceSamplerYcbcrConversionFeatures;
   struct PhysicalDeviceScalarBlockLayoutFeaturesEXT;
+  struct PhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR;
   struct PhysicalDeviceShaderAtomicInt64FeaturesKHR;
   struct PhysicalDeviceShaderClockFeaturesKHR;
   struct PhysicalDeviceShaderCoreProperties2AMD;
@@ -12547,6 +12870,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT;
   struct PhysicalDeviceTimelineSemaphoreFeaturesKHR;
   struct PhysicalDeviceTimelineSemaphorePropertiesKHR;
+  struct PhysicalDeviceToolPropertiesEXT;
   struct PhysicalDeviceTransformFeedbackFeaturesEXT;
   struct PhysicalDeviceTransformFeedbackPropertiesEXT;
   struct PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR;
@@ -12613,6 +12937,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct PushConstantRange;
   struct QueryPoolCreateInfo;
   struct QueryPoolCreateInfoINTEL;
+  struct QueryPoolPerformanceCreateInfoKHR;
   struct QueueFamilyCheckpointPropertiesNV;
   struct QueueFamilyProperties;
   struct QueueFamilyProperties2;
@@ -15972,6 +16297,13 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    Result acquireProfilingLockKHR( const VULKAN_HPP_NAMESPACE::AcquireProfilingLockInfoKHR* pInfo, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    ResultValueType<void>::type acquireProfilingLockKHR( const AcquireProfilingLockInfoKHR & info, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     Result allocateCommandBuffers( const VULKAN_HPP_NAMESPACE::CommandBufferAllocateInfo* pAllocateInfo, VULKAN_HPP_NAMESPACE::CommandBuffer* pCommandBuffers, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Allocator = std::allocator<CommandBuffer>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
@@ -16921,10 +17253,17 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
     template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    DeviceAddress getBufferAddressEXT( const VULKAN_HPP_NAMESPACE::BufferDeviceAddressInfoEXT* pInfo, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const VULKAN_HPP_NOEXCEPT;
+    DeviceAddress getBufferAddressEXT( const VULKAN_HPP_NAMESPACE::BufferDeviceAddressInfoKHR* pInfo, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    DeviceAddress getBufferAddressEXT( const BufferDeviceAddressInfoEXT & info, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const VULKAN_HPP_NOEXCEPT;
+    DeviceAddress getBufferAddressEXT( const BufferDeviceAddressInfoKHR & info, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const VULKAN_HPP_NOEXCEPT;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    DeviceAddress getBufferAddressKHR( const VULKAN_HPP_NAMESPACE::BufferDeviceAddressInfoKHR* pInfo, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    DeviceAddress getBufferAddressKHR( const BufferDeviceAddressInfoKHR & info, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const VULKAN_HPP_NOEXCEPT;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
@@ -16950,6 +17289,13 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_NAMESPACE::MemoryRequirements2 getBufferMemoryRequirements2KHR( const BufferMemoryRequirementsInfo2 & info, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const VULKAN_HPP_NOEXCEPT;
     template<typename X, typename Y, typename ...Z, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     StructureChain<X, Y, Z...> getBufferMemoryRequirements2KHR( const BufferMemoryRequirementsInfo2 & info, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const VULKAN_HPP_NOEXCEPT;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    uint64_t getBufferOpaqueCaptureAddressKHR( const VULKAN_HPP_NAMESPACE::BufferDeviceAddressInfoKHR* pInfo, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    uint64_t getBufferOpaqueCaptureAddressKHR( const BufferDeviceAddressInfoKHR & info, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const VULKAN_HPP_NOEXCEPT;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
@@ -17019,6 +17365,13 @@ namespace VULKAN_HPP_NAMESPACE
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     VULKAN_HPP_NAMESPACE::DeviceSize getMemoryCommitment( VULKAN_HPP_NAMESPACE::DeviceMemory memory, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const VULKAN_HPP_NOEXCEPT;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    uint64_t getMemoryOpaqueCaptureAddressKHR( const VULKAN_HPP_NAMESPACE::DeviceMemoryOpaqueCaptureAddressInfoKHR* pInfo, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    uint64_t getMemoryOpaqueCaptureAddressKHR( const DeviceMemoryOpaqueCaptureAddressInfoKHR & info, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const VULKAN_HPP_NOEXCEPT;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
@@ -17448,6 +17801,9 @@ namespace VULKAN_HPP_NAMESPACE
     ResultValueType<void>::type releasePerformanceConfigurationINTEL( VULKAN_HPP_NAMESPACE::PerformanceConfigurationINTEL configuration, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
+    template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void releaseProfilingLockKHR(Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const VULKAN_HPP_NOEXCEPT;
+
 #ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     Result resetCommandPool( VULKAN_HPP_NAMESPACE::CommandPool commandPool, VULKAN_HPP_NAMESPACE::CommandPoolResetFlags flags, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
@@ -17768,6 +18124,15 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    Result enumerateQueueFamilyPerformanceQueryCountersKHR( uint32_t queueFamilyIndex, uint32_t* pCounterCount, VULKAN_HPP_NAMESPACE::PerformanceCounterKHR* pCounters, VULKAN_HPP_NAMESPACE::PerformanceCounterDescriptionKHR* pCounterDescriptions, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template<typename Allocator = std::allocator<PerformanceCounterDescriptionKHR>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    typename ResultValueType<std::vector<PerformanceCounterDescriptionKHR,Allocator>>::type enumerateQueueFamilyPerformanceQueryCountersKHR( uint32_t queueFamilyIndex, ArrayProxy<VULKAN_HPP_NAMESPACE::PerformanceCounterKHR> counters, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
+    template<typename Allocator = std::allocator<PerformanceCounterDescriptionKHR>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    typename ResultValueType<std::vector<PerformanceCounterDescriptionKHR,Allocator>>::type enumerateQueueFamilyPerformanceQueryCountersKHR( uint32_t queueFamilyIndex, ArrayProxy<VULKAN_HPP_NAMESPACE::PerformanceCounterKHR> counters, Allocator const& vectorAllocator, Dispatch const &d ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     Result getDisplayModeProperties2KHR( VULKAN_HPP_NAMESPACE::DisplayKHR display, uint32_t* pPropertyCount, VULKAN_HPP_NAMESPACE::DisplayModeProperties2KHR* pProperties, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Allocator = std::allocator<DisplayModeProperties2KHR>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
@@ -18060,6 +18425,13 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void getQueueFamilyPerformanceQueryPassesKHR( const VULKAN_HPP_NAMESPACE::QueryPoolPerformanceCreateInfoKHR* pPerformanceQueryCreateInfo, uint32_t* pNumPasses, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    uint32_t getQueueFamilyPerformanceQueryPassesKHR( const QueryPoolPerformanceCreateInfoKHR & performanceQueryCreateInfo, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const VULKAN_HPP_NOEXCEPT;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     void getQueueFamilyProperties( uint32_t* pQueueFamilyPropertyCount, VULKAN_HPP_NAMESPACE::QueueFamilyProperties* pQueueFamilyProperties, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Allocator = std::allocator<QueueFamilyProperties>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
@@ -18196,6 +18568,15 @@ namespace VULKAN_HPP_NAMESPACE
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     ResultValueType<VULKAN_HPP_NAMESPACE::Bool32>::type getSurfaceSupportKHR( uint32_t queueFamilyIndex, VULKAN_HPP_NAMESPACE::SurfaceKHR surface, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    Result getToolPropertiesEXT( uint32_t* pToolCount, VULKAN_HPP_NAMESPACE::PhysicalDeviceToolPropertiesEXT* pToolProperties, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template<typename Allocator = std::allocator<PhysicalDeviceToolPropertiesEXT>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    typename ResultValueType<std::vector<PhysicalDeviceToolPropertiesEXT,Allocator>>::type getToolPropertiesEXT(Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
+    template<typename Allocator = std::allocator<PhysicalDeviceToolPropertiesEXT>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    typename ResultValueType<std::vector<PhysicalDeviceToolPropertiesEXT,Allocator>>::type getToolPropertiesEXT(Allocator const& vectorAllocator, Dispatch const &d ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
 #ifdef VK_USE_PLATFORM_WAYLAND_KHR
@@ -19447,6 +19828,81 @@ namespace VULKAN_HPP_NAMESPACE
   static_assert( sizeof( AcquireNextImageInfoKHR ) == sizeof( VkAcquireNextImageInfoKHR ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<AcquireNextImageInfoKHR>::value, "struct wrapper is not a standard layout!" );
 
+  struct AcquireProfilingLockInfoKHR
+  {
+    VULKAN_HPP_CONSTEXPR AcquireProfilingLockInfoKHR( VULKAN_HPP_NAMESPACE::AcquireProfilingLockFlagsKHR flags_ = {},
+                                                      uint64_t timeout_ = {} ) VULKAN_HPP_NOEXCEPT
+      : flags( flags_ )
+      , timeout( timeout_ )
+    {}
+
+    VULKAN_HPP_NAMESPACE::AcquireProfilingLockInfoKHR & operator=( VULKAN_HPP_NAMESPACE::AcquireProfilingLockInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( &pNext, &rhs.pNext, sizeof( VULKAN_HPP_NAMESPACE::AcquireProfilingLockInfoKHR ) - offsetof( AcquireProfilingLockInfoKHR, pNext ) );
+      return *this;
+    }
+
+    AcquireProfilingLockInfoKHR( VkAcquireProfilingLockInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = rhs;
+    }
+
+    AcquireProfilingLockInfoKHR& operator=( VkAcquireProfilingLockInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::AcquireProfilingLockInfoKHR const *>(&rhs);
+      return *this;
+    }
+
+    AcquireProfilingLockInfoKHR & setPNext( const void* pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    AcquireProfilingLockInfoKHR & setFlags( VULKAN_HPP_NAMESPACE::AcquireProfilingLockFlagsKHR flags_ ) VULKAN_HPP_NOEXCEPT
+    {
+      flags = flags_;
+      return *this;
+    }
+
+    AcquireProfilingLockInfoKHR & setTimeout( uint64_t timeout_ ) VULKAN_HPP_NOEXCEPT
+    {
+      timeout = timeout_;
+      return *this;
+    }
+
+    operator VkAcquireProfilingLockInfoKHR const&() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkAcquireProfilingLockInfoKHR*>( this );
+    }
+
+    operator VkAcquireProfilingLockInfoKHR &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkAcquireProfilingLockInfoKHR*>( this );
+    }
+
+    bool operator==( AcquireProfilingLockInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( timeout == rhs.timeout );
+    }
+
+    bool operator!=( AcquireProfilingLockInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+
+  public:
+    const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eAcquireProfilingLockInfoKHR;
+    const void* pNext = {};
+    VULKAN_HPP_NAMESPACE::AcquireProfilingLockFlagsKHR flags = {};
+    uint64_t timeout = {};
+  };
+  static_assert( sizeof( AcquireProfilingLockInfoKHR ) == sizeof( VkAcquireProfilingLockInfoKHR ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<AcquireProfilingLockInfoKHR>::value, "struct wrapper is not a standard layout!" );
+
   struct AllocationCallbacks
   {
     VULKAN_HPP_CONSTEXPR AllocationCallbacks( void* pUserData_ = {},
@@ -20282,6 +20738,81 @@ namespace VULKAN_HPP_NAMESPACE
   static_assert( sizeof( AttachmentDescription2KHR ) == sizeof( VkAttachmentDescription2KHR ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<AttachmentDescription2KHR>::value, "struct wrapper is not a standard layout!" );
 
+  struct AttachmentDescriptionStencilLayoutKHR
+  {
+    VULKAN_HPP_CONSTEXPR AttachmentDescriptionStencilLayoutKHR( VULKAN_HPP_NAMESPACE::ImageLayout stencilInitialLayout_ = {},
+                                                                VULKAN_HPP_NAMESPACE::ImageLayout stencilFinalLayout_ = {} ) VULKAN_HPP_NOEXCEPT
+      : stencilInitialLayout( stencilInitialLayout_ )
+      , stencilFinalLayout( stencilFinalLayout_ )
+    {}
+
+    VULKAN_HPP_NAMESPACE::AttachmentDescriptionStencilLayoutKHR & operator=( VULKAN_HPP_NAMESPACE::AttachmentDescriptionStencilLayoutKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( &pNext, &rhs.pNext, sizeof( VULKAN_HPP_NAMESPACE::AttachmentDescriptionStencilLayoutKHR ) - offsetof( AttachmentDescriptionStencilLayoutKHR, pNext ) );
+      return *this;
+    }
+
+    AttachmentDescriptionStencilLayoutKHR( VkAttachmentDescriptionStencilLayoutKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = rhs;
+    }
+
+    AttachmentDescriptionStencilLayoutKHR& operator=( VkAttachmentDescriptionStencilLayoutKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::AttachmentDescriptionStencilLayoutKHR const *>(&rhs);
+      return *this;
+    }
+
+    AttachmentDescriptionStencilLayoutKHR & setPNext( void* pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    AttachmentDescriptionStencilLayoutKHR & setStencilInitialLayout( VULKAN_HPP_NAMESPACE::ImageLayout stencilInitialLayout_ ) VULKAN_HPP_NOEXCEPT
+    {
+      stencilInitialLayout = stencilInitialLayout_;
+      return *this;
+    }
+
+    AttachmentDescriptionStencilLayoutKHR & setStencilFinalLayout( VULKAN_HPP_NAMESPACE::ImageLayout stencilFinalLayout_ ) VULKAN_HPP_NOEXCEPT
+    {
+      stencilFinalLayout = stencilFinalLayout_;
+      return *this;
+    }
+
+    operator VkAttachmentDescriptionStencilLayoutKHR const&() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkAttachmentDescriptionStencilLayoutKHR*>( this );
+    }
+
+    operator VkAttachmentDescriptionStencilLayoutKHR &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkAttachmentDescriptionStencilLayoutKHR*>( this );
+    }
+
+    bool operator==( AttachmentDescriptionStencilLayoutKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( stencilInitialLayout == rhs.stencilInitialLayout )
+          && ( stencilFinalLayout == rhs.stencilFinalLayout );
+    }
+
+    bool operator!=( AttachmentDescriptionStencilLayoutKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+
+  public:
+    const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eAttachmentDescriptionStencilLayoutKHR;
+    void* pNext = {};
+    VULKAN_HPP_NAMESPACE::ImageLayout stencilInitialLayout = {};
+    VULKAN_HPP_NAMESPACE::ImageLayout stencilFinalLayout = {};
+  };
+  static_assert( sizeof( AttachmentDescriptionStencilLayoutKHR ) == sizeof( VkAttachmentDescriptionStencilLayoutKHR ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<AttachmentDescriptionStencilLayoutKHR>::value, "struct wrapper is not a standard layout!" );
+
   struct AttachmentReference
   {
     VULKAN_HPP_CONSTEXPR AttachmentReference( uint32_t attachment_ = {},
@@ -20425,6 +20956,71 @@ namespace VULKAN_HPP_NAMESPACE
   };
   static_assert( sizeof( AttachmentReference2KHR ) == sizeof( VkAttachmentReference2KHR ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<AttachmentReference2KHR>::value, "struct wrapper is not a standard layout!" );
+
+  struct AttachmentReferenceStencilLayoutKHR
+  {
+    VULKAN_HPP_CONSTEXPR AttachmentReferenceStencilLayoutKHR( VULKAN_HPP_NAMESPACE::ImageLayout stencilLayout_ = {} ) VULKAN_HPP_NOEXCEPT
+      : stencilLayout( stencilLayout_ )
+    {}
+
+    VULKAN_HPP_NAMESPACE::AttachmentReferenceStencilLayoutKHR & operator=( VULKAN_HPP_NAMESPACE::AttachmentReferenceStencilLayoutKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( &pNext, &rhs.pNext, sizeof( VULKAN_HPP_NAMESPACE::AttachmentReferenceStencilLayoutKHR ) - offsetof( AttachmentReferenceStencilLayoutKHR, pNext ) );
+      return *this;
+    }
+
+    AttachmentReferenceStencilLayoutKHR( VkAttachmentReferenceStencilLayoutKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = rhs;
+    }
+
+    AttachmentReferenceStencilLayoutKHR& operator=( VkAttachmentReferenceStencilLayoutKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::AttachmentReferenceStencilLayoutKHR const *>(&rhs);
+      return *this;
+    }
+
+    AttachmentReferenceStencilLayoutKHR & setPNext( void* pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    AttachmentReferenceStencilLayoutKHR & setStencilLayout( VULKAN_HPP_NAMESPACE::ImageLayout stencilLayout_ ) VULKAN_HPP_NOEXCEPT
+    {
+      stencilLayout = stencilLayout_;
+      return *this;
+    }
+
+    operator VkAttachmentReferenceStencilLayoutKHR const&() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkAttachmentReferenceStencilLayoutKHR*>( this );
+    }
+
+    operator VkAttachmentReferenceStencilLayoutKHR &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkAttachmentReferenceStencilLayoutKHR*>( this );
+    }
+
+    bool operator==( AttachmentReferenceStencilLayoutKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( stencilLayout == rhs.stencilLayout );
+    }
+
+    bool operator!=( AttachmentReferenceStencilLayoutKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+
+  public:
+    const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eAttachmentReferenceStencilLayoutKHR;
+    void* pNext = {};
+    VULKAN_HPP_NAMESPACE::ImageLayout stencilLayout = {};
+  };
+  static_assert( sizeof( AttachmentReferenceStencilLayoutKHR ) == sizeof( VkAttachmentReferenceStencilLayoutKHR ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<AttachmentReferenceStencilLayoutKHR>::value, "struct wrapper is not a standard layout!" );
 
   struct Extent2D
   {
@@ -22521,70 +23117,70 @@ namespace VULKAN_HPP_NAMESPACE
   static_assert( sizeof( BufferDeviceAddressCreateInfoEXT ) == sizeof( VkBufferDeviceAddressCreateInfoEXT ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<BufferDeviceAddressCreateInfoEXT>::value, "struct wrapper is not a standard layout!" );
 
-  struct BufferDeviceAddressInfoEXT
+  struct BufferDeviceAddressInfoKHR
   {
-    VULKAN_HPP_CONSTEXPR BufferDeviceAddressInfoEXT( VULKAN_HPP_NAMESPACE::Buffer buffer_ = {} ) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR BufferDeviceAddressInfoKHR( VULKAN_HPP_NAMESPACE::Buffer buffer_ = {} ) VULKAN_HPP_NOEXCEPT
       : buffer( buffer_ )
     {}
 
-    VULKAN_HPP_NAMESPACE::BufferDeviceAddressInfoEXT & operator=( VULKAN_HPP_NAMESPACE::BufferDeviceAddressInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_NAMESPACE::BufferDeviceAddressInfoKHR & operator=( VULKAN_HPP_NAMESPACE::BufferDeviceAddressInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( &pNext, &rhs.pNext, sizeof( VULKAN_HPP_NAMESPACE::BufferDeviceAddressInfoEXT ) - offsetof( BufferDeviceAddressInfoEXT, pNext ) );
+      memcpy( &pNext, &rhs.pNext, sizeof( VULKAN_HPP_NAMESPACE::BufferDeviceAddressInfoKHR ) - offsetof( BufferDeviceAddressInfoKHR, pNext ) );
       return *this;
     }
 
-    BufferDeviceAddressInfoEXT( VkBufferDeviceAddressInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
+    BufferDeviceAddressInfoKHR( VkBufferDeviceAddressInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
     }
 
-    BufferDeviceAddressInfoEXT& operator=( VkBufferDeviceAddressInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
+    BufferDeviceAddressInfoKHR& operator=( VkBufferDeviceAddressInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::BufferDeviceAddressInfoEXT const *>(&rhs);
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::BufferDeviceAddressInfoKHR const *>(&rhs);
       return *this;
     }
 
-    BufferDeviceAddressInfoEXT & setPNext( const void* pNext_ ) VULKAN_HPP_NOEXCEPT
+    BufferDeviceAddressInfoKHR & setPNext( const void* pNext_ ) VULKAN_HPP_NOEXCEPT
     {
       pNext = pNext_;
       return *this;
     }
 
-    BufferDeviceAddressInfoEXT & setBuffer( VULKAN_HPP_NAMESPACE::Buffer buffer_ ) VULKAN_HPP_NOEXCEPT
+    BufferDeviceAddressInfoKHR & setBuffer( VULKAN_HPP_NAMESPACE::Buffer buffer_ ) VULKAN_HPP_NOEXCEPT
     {
       buffer = buffer_;
       return *this;
     }
 
-    operator VkBufferDeviceAddressInfoEXT const&() const VULKAN_HPP_NOEXCEPT
+    operator VkBufferDeviceAddressInfoKHR const&() const VULKAN_HPP_NOEXCEPT
     {
-      return *reinterpret_cast<const VkBufferDeviceAddressInfoEXT*>( this );
+      return *reinterpret_cast<const VkBufferDeviceAddressInfoKHR*>( this );
     }
 
-    operator VkBufferDeviceAddressInfoEXT &() VULKAN_HPP_NOEXCEPT
+    operator VkBufferDeviceAddressInfoKHR &() VULKAN_HPP_NOEXCEPT
     {
-      return *reinterpret_cast<VkBufferDeviceAddressInfoEXT*>( this );
+      return *reinterpret_cast<VkBufferDeviceAddressInfoKHR*>( this );
     }
 
-    bool operator==( BufferDeviceAddressInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
+    bool operator==( BufferDeviceAddressInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( buffer == rhs.buffer );
     }
 
-    bool operator!=( BufferDeviceAddressInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
+    bool operator!=( BufferDeviceAddressInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return !operator==( rhs );
     }
 
   public:
-    const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eBufferDeviceAddressInfoEXT;
+    const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eBufferDeviceAddressInfoKHR;
     const void* pNext = {};
     VULKAN_HPP_NAMESPACE::Buffer buffer = {};
   };
-  static_assert( sizeof( BufferDeviceAddressInfoEXT ) == sizeof( VkBufferDeviceAddressInfoEXT ), "struct and wrapper have different size!" );
-  static_assert( std::is_standard_layout<BufferDeviceAddressInfoEXT>::value, "struct wrapper is not a standard layout!" );
+  static_assert( sizeof( BufferDeviceAddressInfoKHR ) == sizeof( VkBufferDeviceAddressInfoKHR ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<BufferDeviceAddressInfoKHR>::value, "struct wrapper is not a standard layout!" );
 
   struct ImageSubresourceLayers
   {
@@ -22953,6 +23549,71 @@ namespace VULKAN_HPP_NAMESPACE
   };
   static_assert( sizeof( BufferMemoryRequirementsInfo2 ) == sizeof( VkBufferMemoryRequirementsInfo2 ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<BufferMemoryRequirementsInfo2>::value, "struct wrapper is not a standard layout!" );
+
+  struct BufferOpaqueCaptureAddressCreateInfoKHR
+  {
+    VULKAN_HPP_CONSTEXPR BufferOpaqueCaptureAddressCreateInfoKHR( uint64_t opaqueCaptureAddress_ = {} ) VULKAN_HPP_NOEXCEPT
+      : opaqueCaptureAddress( opaqueCaptureAddress_ )
+    {}
+
+    VULKAN_HPP_NAMESPACE::BufferOpaqueCaptureAddressCreateInfoKHR & operator=( VULKAN_HPP_NAMESPACE::BufferOpaqueCaptureAddressCreateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( &pNext, &rhs.pNext, sizeof( VULKAN_HPP_NAMESPACE::BufferOpaqueCaptureAddressCreateInfoKHR ) - offsetof( BufferOpaqueCaptureAddressCreateInfoKHR, pNext ) );
+      return *this;
+    }
+
+    BufferOpaqueCaptureAddressCreateInfoKHR( VkBufferOpaqueCaptureAddressCreateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = rhs;
+    }
+
+    BufferOpaqueCaptureAddressCreateInfoKHR& operator=( VkBufferOpaqueCaptureAddressCreateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::BufferOpaqueCaptureAddressCreateInfoKHR const *>(&rhs);
+      return *this;
+    }
+
+    BufferOpaqueCaptureAddressCreateInfoKHR & setPNext( const void* pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    BufferOpaqueCaptureAddressCreateInfoKHR & setOpaqueCaptureAddress( uint64_t opaqueCaptureAddress_ ) VULKAN_HPP_NOEXCEPT
+    {
+      opaqueCaptureAddress = opaqueCaptureAddress_;
+      return *this;
+    }
+
+    operator VkBufferOpaqueCaptureAddressCreateInfoKHR const&() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkBufferOpaqueCaptureAddressCreateInfoKHR*>( this );
+    }
+
+    operator VkBufferOpaqueCaptureAddressCreateInfoKHR &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkBufferOpaqueCaptureAddressCreateInfoKHR*>( this );
+    }
+
+    bool operator==( BufferOpaqueCaptureAddressCreateInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( opaqueCaptureAddress == rhs.opaqueCaptureAddress );
+    }
+
+    bool operator!=( BufferOpaqueCaptureAddressCreateInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+
+  public:
+    const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eBufferOpaqueCaptureAddressCreateInfoKHR;
+    const void* pNext = {};
+    uint64_t opaqueCaptureAddress = {};
+  };
+  static_assert( sizeof( BufferOpaqueCaptureAddressCreateInfoKHR ) == sizeof( VkBufferOpaqueCaptureAddressCreateInfoKHR ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<BufferOpaqueCaptureAddressCreateInfoKHR>::value, "struct wrapper is not a standard layout!" );
 
   struct BufferViewCreateInfo
   {
@@ -29076,6 +29737,71 @@ namespace VULKAN_HPP_NAMESPACE
   };
   static_assert( sizeof( DeviceGroupSwapchainCreateInfoKHR ) == sizeof( VkDeviceGroupSwapchainCreateInfoKHR ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<DeviceGroupSwapchainCreateInfoKHR>::value, "struct wrapper is not a standard layout!" );
+
+  struct DeviceMemoryOpaqueCaptureAddressInfoKHR
+  {
+    VULKAN_HPP_CONSTEXPR DeviceMemoryOpaqueCaptureAddressInfoKHR( VULKAN_HPP_NAMESPACE::DeviceMemory memory_ = {} ) VULKAN_HPP_NOEXCEPT
+      : memory( memory_ )
+    {}
+
+    VULKAN_HPP_NAMESPACE::DeviceMemoryOpaqueCaptureAddressInfoKHR & operator=( VULKAN_HPP_NAMESPACE::DeviceMemoryOpaqueCaptureAddressInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( &pNext, &rhs.pNext, sizeof( VULKAN_HPP_NAMESPACE::DeviceMemoryOpaqueCaptureAddressInfoKHR ) - offsetof( DeviceMemoryOpaqueCaptureAddressInfoKHR, pNext ) );
+      return *this;
+    }
+
+    DeviceMemoryOpaqueCaptureAddressInfoKHR( VkDeviceMemoryOpaqueCaptureAddressInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = rhs;
+    }
+
+    DeviceMemoryOpaqueCaptureAddressInfoKHR& operator=( VkDeviceMemoryOpaqueCaptureAddressInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::DeviceMemoryOpaqueCaptureAddressInfoKHR const *>(&rhs);
+      return *this;
+    }
+
+    DeviceMemoryOpaqueCaptureAddressInfoKHR & setPNext( const void* pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    DeviceMemoryOpaqueCaptureAddressInfoKHR & setMemory( VULKAN_HPP_NAMESPACE::DeviceMemory memory_ ) VULKAN_HPP_NOEXCEPT
+    {
+      memory = memory_;
+      return *this;
+    }
+
+    operator VkDeviceMemoryOpaqueCaptureAddressInfoKHR const&() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkDeviceMemoryOpaqueCaptureAddressInfoKHR*>( this );
+    }
+
+    operator VkDeviceMemoryOpaqueCaptureAddressInfoKHR &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkDeviceMemoryOpaqueCaptureAddressInfoKHR*>( this );
+    }
+
+    bool operator==( DeviceMemoryOpaqueCaptureAddressInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( memory == rhs.memory );
+    }
+
+    bool operator!=( DeviceMemoryOpaqueCaptureAddressInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+
+  public:
+    const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDeviceMemoryOpaqueCaptureAddressInfoKHR;
+    const void* pNext = {};
+    VULKAN_HPP_NAMESPACE::DeviceMemory memory = {};
+  };
+  static_assert( sizeof( DeviceMemoryOpaqueCaptureAddressInfoKHR ) == sizeof( VkDeviceMemoryOpaqueCaptureAddressInfoKHR ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<DeviceMemoryOpaqueCaptureAddressInfoKHR>::value, "struct wrapper is not a standard layout!" );
 
   struct DeviceMemoryOverallocationCreateInfoAMD
   {
@@ -38918,6 +39644,71 @@ namespace VULKAN_HPP_NAMESPACE
   static_assert( sizeof( MemoryHostPointerPropertiesEXT ) == sizeof( VkMemoryHostPointerPropertiesEXT ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<MemoryHostPointerPropertiesEXT>::value, "struct wrapper is not a standard layout!" );
 
+  struct MemoryOpaqueCaptureAddressAllocateInfoKHR
+  {
+    VULKAN_HPP_CONSTEXPR MemoryOpaqueCaptureAddressAllocateInfoKHR( uint64_t opaqueCaptureAddress_ = {} ) VULKAN_HPP_NOEXCEPT
+      : opaqueCaptureAddress( opaqueCaptureAddress_ )
+    {}
+
+    VULKAN_HPP_NAMESPACE::MemoryOpaqueCaptureAddressAllocateInfoKHR & operator=( VULKAN_HPP_NAMESPACE::MemoryOpaqueCaptureAddressAllocateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( &pNext, &rhs.pNext, sizeof( VULKAN_HPP_NAMESPACE::MemoryOpaqueCaptureAddressAllocateInfoKHR ) - offsetof( MemoryOpaqueCaptureAddressAllocateInfoKHR, pNext ) );
+      return *this;
+    }
+
+    MemoryOpaqueCaptureAddressAllocateInfoKHR( VkMemoryOpaqueCaptureAddressAllocateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = rhs;
+    }
+
+    MemoryOpaqueCaptureAddressAllocateInfoKHR& operator=( VkMemoryOpaqueCaptureAddressAllocateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::MemoryOpaqueCaptureAddressAllocateInfoKHR const *>(&rhs);
+      return *this;
+    }
+
+    MemoryOpaqueCaptureAddressAllocateInfoKHR & setPNext( const void* pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    MemoryOpaqueCaptureAddressAllocateInfoKHR & setOpaqueCaptureAddress( uint64_t opaqueCaptureAddress_ ) VULKAN_HPP_NOEXCEPT
+    {
+      opaqueCaptureAddress = opaqueCaptureAddress_;
+      return *this;
+    }
+
+    operator VkMemoryOpaqueCaptureAddressAllocateInfoKHR const&() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkMemoryOpaqueCaptureAddressAllocateInfoKHR*>( this );
+    }
+
+    operator VkMemoryOpaqueCaptureAddressAllocateInfoKHR &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkMemoryOpaqueCaptureAddressAllocateInfoKHR*>( this );
+    }
+
+    bool operator==( MemoryOpaqueCaptureAddressAllocateInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( opaqueCaptureAddress == rhs.opaqueCaptureAddress );
+    }
+
+    bool operator!=( MemoryOpaqueCaptureAddressAllocateInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+
+  public:
+    const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eMemoryOpaqueCaptureAddressAllocateInfoKHR;
+    const void* pNext = {};
+    uint64_t opaqueCaptureAddress = {};
+  };
+  static_assert( sizeof( MemoryOpaqueCaptureAddressAllocateInfoKHR ) == sizeof( VkMemoryOpaqueCaptureAddressAllocateInfoKHR ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<MemoryOpaqueCaptureAddressAllocateInfoKHR>::value, "struct wrapper is not a standard layout!" );
+
   struct MemoryPriorityAllocateInfoEXT
   {
     VULKAN_HPP_CONSTEXPR MemoryPriorityAllocateInfoEXT( float priority_ = {} ) VULKAN_HPP_NOEXCEPT
@@ -40065,6 +40856,227 @@ namespace VULKAN_HPP_NAMESPACE
   static_assert( sizeof( PerformanceConfigurationAcquireInfoINTEL ) == sizeof( VkPerformanceConfigurationAcquireInfoINTEL ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<PerformanceConfigurationAcquireInfoINTEL>::value, "struct wrapper is not a standard layout!" );
 
+  struct PerformanceCounterDescriptionKHR
+  {
+    PerformanceCounterDescriptionKHR( VULKAN_HPP_NAMESPACE::PerformanceCounterDescriptionFlagsKHR flags_ = {},
+                                      std::array<char,VK_MAX_DESCRIPTION_SIZE> const& name_ = {},
+                                      std::array<char,VK_MAX_DESCRIPTION_SIZE> const& category_ = {},
+                                      std::array<char,VK_MAX_DESCRIPTION_SIZE> const& description_ = {} ) VULKAN_HPP_NOEXCEPT
+      : flags( flags_ )
+      , name{}
+      , category{}
+      , description{}
+    {
+      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( name, name_ );
+      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( category, category_ );
+      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( description, description_ );
+    }
+
+    VULKAN_HPP_NAMESPACE::PerformanceCounterDescriptionKHR & operator=( VULKAN_HPP_NAMESPACE::PerformanceCounterDescriptionKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( &pNext, &rhs.pNext, sizeof( VULKAN_HPP_NAMESPACE::PerformanceCounterDescriptionKHR ) - offsetof( PerformanceCounterDescriptionKHR, pNext ) );
+      return *this;
+    }
+
+    PerformanceCounterDescriptionKHR( VkPerformanceCounterDescriptionKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = rhs;
+    }
+
+    PerformanceCounterDescriptionKHR& operator=( VkPerformanceCounterDescriptionKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::PerformanceCounterDescriptionKHR const *>(&rhs);
+      return *this;
+    }
+
+    operator VkPerformanceCounterDescriptionKHR const&() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkPerformanceCounterDescriptionKHR*>( this );
+    }
+
+    operator VkPerformanceCounterDescriptionKHR &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPerformanceCounterDescriptionKHR*>( this );
+    }
+
+    bool operator==( PerformanceCounterDescriptionKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( flags == rhs.flags )
+          && ( memcmp( name, rhs.name, VK_MAX_DESCRIPTION_SIZE * sizeof( char ) ) == 0 )
+          && ( memcmp( category, rhs.category, VK_MAX_DESCRIPTION_SIZE * sizeof( char ) ) == 0 )
+          && ( memcmp( description, rhs.description, VK_MAX_DESCRIPTION_SIZE * sizeof( char ) ) == 0 );
+    }
+
+    bool operator!=( PerformanceCounterDescriptionKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+
+  public:
+    const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePerformanceCounterDescriptionKHR;
+    const void* pNext = {};
+    VULKAN_HPP_NAMESPACE::PerformanceCounterDescriptionFlagsKHR flags = {};
+    char name[VK_MAX_DESCRIPTION_SIZE] = {};
+    char category[VK_MAX_DESCRIPTION_SIZE] = {};
+    char description[VK_MAX_DESCRIPTION_SIZE] = {};
+  };
+  static_assert( sizeof( PerformanceCounterDescriptionKHR ) == sizeof( VkPerformanceCounterDescriptionKHR ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<PerformanceCounterDescriptionKHR>::value, "struct wrapper is not a standard layout!" );
+
+  struct PerformanceCounterKHR
+  {
+    PerformanceCounterKHR( VULKAN_HPP_NAMESPACE::PerformanceCounterUnitKHR unit_ = {},
+                           VULKAN_HPP_NAMESPACE::PerformanceCounterScopeKHR scope_ = {},
+                           VULKAN_HPP_NAMESPACE::PerformanceCounterStorageKHR storage_ = {},
+                           std::array<uint8_t,VK_UUID_SIZE> const& uuid_ = {} ) VULKAN_HPP_NOEXCEPT
+      : unit( unit_ )
+      , scope( scope_ )
+      , storage( storage_ )
+      , uuid{}
+    {
+      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<uint8_t,VK_UUID_SIZE,VK_UUID_SIZE>::copy( uuid, uuid_ );
+    }
+
+    VULKAN_HPP_NAMESPACE::PerformanceCounterKHR & operator=( VULKAN_HPP_NAMESPACE::PerformanceCounterKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( &pNext, &rhs.pNext, sizeof( VULKAN_HPP_NAMESPACE::PerformanceCounterKHR ) - offsetof( PerformanceCounterKHR, pNext ) );
+      return *this;
+    }
+
+    PerformanceCounterKHR( VkPerformanceCounterKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = rhs;
+    }
+
+    PerformanceCounterKHR& operator=( VkPerformanceCounterKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::PerformanceCounterKHR const *>(&rhs);
+      return *this;
+    }
+
+    operator VkPerformanceCounterKHR const&() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkPerformanceCounterKHR*>( this );
+    }
+
+    operator VkPerformanceCounterKHR &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPerformanceCounterKHR*>( this );
+    }
+
+    bool operator==( PerformanceCounterKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( unit == rhs.unit )
+          && ( scope == rhs.scope )
+          && ( storage == rhs.storage )
+          && ( memcmp( uuid, rhs.uuid, VK_UUID_SIZE * sizeof( uint8_t ) ) == 0 );
+    }
+
+    bool operator!=( PerformanceCounterKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+
+  public:
+    const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePerformanceCounterKHR;
+    const void* pNext = {};
+    VULKAN_HPP_NAMESPACE::PerformanceCounterUnitKHR unit = {};
+    VULKAN_HPP_NAMESPACE::PerformanceCounterScopeKHR scope = {};
+    VULKAN_HPP_NAMESPACE::PerformanceCounterStorageKHR storage = {};
+    uint8_t uuid[VK_UUID_SIZE] = {};
+  };
+  static_assert( sizeof( PerformanceCounterKHR ) == sizeof( VkPerformanceCounterKHR ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<PerformanceCounterKHR>::value, "struct wrapper is not a standard layout!" );
+
+  union PerformanceCounterResultKHR
+  {
+    PerformanceCounterResultKHR( int32_t int32_ = {} )
+    {
+      int32 = int32_;
+    }
+
+    PerformanceCounterResultKHR( int64_t int64_ )
+    {
+      int64 = int64_;
+    }
+
+    PerformanceCounterResultKHR( uint32_t uint32_ )
+    {
+      uint32 = uint32_;
+    }
+
+    PerformanceCounterResultKHR( uint64_t uint64_ )
+    {
+      uint64 = uint64_;
+    }
+
+    PerformanceCounterResultKHR( float float32_ )
+    {
+      float32 = float32_;
+    }
+
+    PerformanceCounterResultKHR( double float64_ )
+    {
+      float64 = float64_;
+    }
+
+    PerformanceCounterResultKHR & setInt32( int32_t int32_ ) VULKAN_HPP_NOEXCEPT
+    {
+      int32 = int32_;
+      return *this;
+    }
+
+    PerformanceCounterResultKHR & setInt64( int64_t int64_ ) VULKAN_HPP_NOEXCEPT
+    {
+      int64 = int64_;
+      return *this;
+    }
+
+    PerformanceCounterResultKHR & setUint32( uint32_t uint32_ ) VULKAN_HPP_NOEXCEPT
+    {
+      uint32 = uint32_;
+      return *this;
+    }
+
+    PerformanceCounterResultKHR & setUint64( uint64_t uint64_ ) VULKAN_HPP_NOEXCEPT
+    {
+      uint64 = uint64_;
+      return *this;
+    }
+
+    PerformanceCounterResultKHR & setFloat32( float float32_ ) VULKAN_HPP_NOEXCEPT
+    {
+      float32 = float32_;
+      return *this;
+    }
+
+    PerformanceCounterResultKHR & setFloat64( double float64_ ) VULKAN_HPP_NOEXCEPT
+    {
+      float64 = float64_;
+      return *this;
+    }
+    operator VkPerformanceCounterResultKHR const&() const
+    {
+      return *reinterpret_cast<const VkPerformanceCounterResultKHR*>(this);
+    }
+
+    operator VkPerformanceCounterResultKHR &()
+    {
+      return *reinterpret_cast<VkPerformanceCounterResultKHR*>(this);
+    }
+
+    int32_t int32;
+    int64_t int64;
+    uint32_t uint32;
+    uint64_t uint64;
+    float float32;
+    double float64;
+  };
+
   struct PerformanceMarkerInfoINTEL
   {
     VULKAN_HPP_CONSTEXPR PerformanceMarkerInfoINTEL( uint64_t marker_ = {} ) VULKAN_HPP_NOEXCEPT
@@ -40214,6 +41226,71 @@ namespace VULKAN_HPP_NAMESPACE
   };
   static_assert( sizeof( PerformanceOverrideInfoINTEL ) == sizeof( VkPerformanceOverrideInfoINTEL ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<PerformanceOverrideInfoINTEL>::value, "struct wrapper is not a standard layout!" );
+
+  struct PerformanceQuerySubmitInfoKHR
+  {
+    VULKAN_HPP_CONSTEXPR PerformanceQuerySubmitInfoKHR( uint32_t counterPassIndex_ = {} ) VULKAN_HPP_NOEXCEPT
+      : counterPassIndex( counterPassIndex_ )
+    {}
+
+    VULKAN_HPP_NAMESPACE::PerformanceQuerySubmitInfoKHR & operator=( VULKAN_HPP_NAMESPACE::PerformanceQuerySubmitInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( &pNext, &rhs.pNext, sizeof( VULKAN_HPP_NAMESPACE::PerformanceQuerySubmitInfoKHR ) - offsetof( PerformanceQuerySubmitInfoKHR, pNext ) );
+      return *this;
+    }
+
+    PerformanceQuerySubmitInfoKHR( VkPerformanceQuerySubmitInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = rhs;
+    }
+
+    PerformanceQuerySubmitInfoKHR& operator=( VkPerformanceQuerySubmitInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::PerformanceQuerySubmitInfoKHR const *>(&rhs);
+      return *this;
+    }
+
+    PerformanceQuerySubmitInfoKHR & setPNext( const void* pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PerformanceQuerySubmitInfoKHR & setCounterPassIndex( uint32_t counterPassIndex_ ) VULKAN_HPP_NOEXCEPT
+    {
+      counterPassIndex = counterPassIndex_;
+      return *this;
+    }
+
+    operator VkPerformanceQuerySubmitInfoKHR const&() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkPerformanceQuerySubmitInfoKHR*>( this );
+    }
+
+    operator VkPerformanceQuerySubmitInfoKHR &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPerformanceQuerySubmitInfoKHR*>( this );
+    }
+
+    bool operator==( PerformanceQuerySubmitInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( counterPassIndex == rhs.counterPassIndex );
+    }
+
+    bool operator!=( PerformanceQuerySubmitInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+
+  public:
+    const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePerformanceQuerySubmitInfoKHR;
+    const void* pNext = {};
+    uint32_t counterPassIndex = {};
+  };
+  static_assert( sizeof( PerformanceQuerySubmitInfoKHR ) == sizeof( VkPerformanceQuerySubmitInfoKHR ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<PerformanceQuerySubmitInfoKHR>::value, "struct wrapper is not a standard layout!" );
 
   struct PerformanceStreamMarkerInfoINTEL
   {
@@ -40871,6 +41948,91 @@ namespace VULKAN_HPP_NAMESPACE
   };
   static_assert( sizeof( PhysicalDeviceBufferDeviceAddressFeaturesEXT ) == sizeof( VkPhysicalDeviceBufferDeviceAddressFeaturesEXT ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<PhysicalDeviceBufferDeviceAddressFeaturesEXT>::value, "struct wrapper is not a standard layout!" );
+
+  struct PhysicalDeviceBufferDeviceAddressFeaturesKHR
+  {
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceBufferDeviceAddressFeaturesKHR( VULKAN_HPP_NAMESPACE::Bool32 bufferDeviceAddress_ = {},
+                                                                       VULKAN_HPP_NAMESPACE::Bool32 bufferDeviceAddressCaptureReplay_ = {},
+                                                                       VULKAN_HPP_NAMESPACE::Bool32 bufferDeviceAddressMultiDevice_ = {} ) VULKAN_HPP_NOEXCEPT
+      : bufferDeviceAddress( bufferDeviceAddress_ )
+      , bufferDeviceAddressCaptureReplay( bufferDeviceAddressCaptureReplay_ )
+      , bufferDeviceAddressMultiDevice( bufferDeviceAddressMultiDevice_ )
+    {}
+
+    VULKAN_HPP_NAMESPACE::PhysicalDeviceBufferDeviceAddressFeaturesKHR & operator=( VULKAN_HPP_NAMESPACE::PhysicalDeviceBufferDeviceAddressFeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( &pNext, &rhs.pNext, sizeof( VULKAN_HPP_NAMESPACE::PhysicalDeviceBufferDeviceAddressFeaturesKHR ) - offsetof( PhysicalDeviceBufferDeviceAddressFeaturesKHR, pNext ) );
+      return *this;
+    }
+
+    PhysicalDeviceBufferDeviceAddressFeaturesKHR( VkPhysicalDeviceBufferDeviceAddressFeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = rhs;
+    }
+
+    PhysicalDeviceBufferDeviceAddressFeaturesKHR& operator=( VkPhysicalDeviceBufferDeviceAddressFeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::PhysicalDeviceBufferDeviceAddressFeaturesKHR const *>(&rhs);
+      return *this;
+    }
+
+    PhysicalDeviceBufferDeviceAddressFeaturesKHR & setPNext( void* pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PhysicalDeviceBufferDeviceAddressFeaturesKHR & setBufferDeviceAddress( VULKAN_HPP_NAMESPACE::Bool32 bufferDeviceAddress_ ) VULKAN_HPP_NOEXCEPT
+    {
+      bufferDeviceAddress = bufferDeviceAddress_;
+      return *this;
+    }
+
+    PhysicalDeviceBufferDeviceAddressFeaturesKHR & setBufferDeviceAddressCaptureReplay( VULKAN_HPP_NAMESPACE::Bool32 bufferDeviceAddressCaptureReplay_ ) VULKAN_HPP_NOEXCEPT
+    {
+      bufferDeviceAddressCaptureReplay = bufferDeviceAddressCaptureReplay_;
+      return *this;
+    }
+
+    PhysicalDeviceBufferDeviceAddressFeaturesKHR & setBufferDeviceAddressMultiDevice( VULKAN_HPP_NAMESPACE::Bool32 bufferDeviceAddressMultiDevice_ ) VULKAN_HPP_NOEXCEPT
+    {
+      bufferDeviceAddressMultiDevice = bufferDeviceAddressMultiDevice_;
+      return *this;
+    }
+
+    operator VkPhysicalDeviceBufferDeviceAddressFeaturesKHR const&() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceBufferDeviceAddressFeaturesKHR*>( this );
+    }
+
+    operator VkPhysicalDeviceBufferDeviceAddressFeaturesKHR &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDeviceBufferDeviceAddressFeaturesKHR*>( this );
+    }
+
+    bool operator==( PhysicalDeviceBufferDeviceAddressFeaturesKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( bufferDeviceAddress == rhs.bufferDeviceAddress )
+          && ( bufferDeviceAddressCaptureReplay == rhs.bufferDeviceAddressCaptureReplay )
+          && ( bufferDeviceAddressMultiDevice == rhs.bufferDeviceAddressMultiDevice );
+    }
+
+    bool operator!=( PhysicalDeviceBufferDeviceAddressFeaturesKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+
+  public:
+    const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceBufferDeviceAddressFeaturesKHR;
+    void* pNext = {};
+    VULKAN_HPP_NAMESPACE::Bool32 bufferDeviceAddress = {};
+    VULKAN_HPP_NAMESPACE::Bool32 bufferDeviceAddressCaptureReplay = {};
+    VULKAN_HPP_NAMESPACE::Bool32 bufferDeviceAddressMultiDevice = {};
+  };
+  static_assert( sizeof( PhysicalDeviceBufferDeviceAddressFeaturesKHR ) == sizeof( VkPhysicalDeviceBufferDeviceAddressFeaturesKHR ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<PhysicalDeviceBufferDeviceAddressFeaturesKHR>::value, "struct wrapper is not a standard layout!" );
 
   struct PhysicalDeviceCoherentMemoryFeaturesAMD
   {
@@ -45104,6 +46266,134 @@ namespace VULKAN_HPP_NAMESPACE
   static_assert( sizeof( PhysicalDevicePCIBusInfoPropertiesEXT ) == sizeof( VkPhysicalDevicePCIBusInfoPropertiesEXT ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<PhysicalDevicePCIBusInfoPropertiesEXT>::value, "struct wrapper is not a standard layout!" );
 
+  struct PhysicalDevicePerformanceQueryFeaturesKHR
+  {
+    VULKAN_HPP_CONSTEXPR PhysicalDevicePerformanceQueryFeaturesKHR( VULKAN_HPP_NAMESPACE::Bool32 performanceCounterQueryPools_ = {},
+                                                                    VULKAN_HPP_NAMESPACE::Bool32 performanceCounterMultipleQueryPools_ = {} ) VULKAN_HPP_NOEXCEPT
+      : performanceCounterQueryPools( performanceCounterQueryPools_ )
+      , performanceCounterMultipleQueryPools( performanceCounterMultipleQueryPools_ )
+    {}
+
+    VULKAN_HPP_NAMESPACE::PhysicalDevicePerformanceQueryFeaturesKHR & operator=( VULKAN_HPP_NAMESPACE::PhysicalDevicePerformanceQueryFeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( &pNext, &rhs.pNext, sizeof( VULKAN_HPP_NAMESPACE::PhysicalDevicePerformanceQueryFeaturesKHR ) - offsetof( PhysicalDevicePerformanceQueryFeaturesKHR, pNext ) );
+      return *this;
+    }
+
+    PhysicalDevicePerformanceQueryFeaturesKHR( VkPhysicalDevicePerformanceQueryFeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = rhs;
+    }
+
+    PhysicalDevicePerformanceQueryFeaturesKHR& operator=( VkPhysicalDevicePerformanceQueryFeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::PhysicalDevicePerformanceQueryFeaturesKHR const *>(&rhs);
+      return *this;
+    }
+
+    PhysicalDevicePerformanceQueryFeaturesKHR & setPNext( void* pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PhysicalDevicePerformanceQueryFeaturesKHR & setPerformanceCounterQueryPools( VULKAN_HPP_NAMESPACE::Bool32 performanceCounterQueryPools_ ) VULKAN_HPP_NOEXCEPT
+    {
+      performanceCounterQueryPools = performanceCounterQueryPools_;
+      return *this;
+    }
+
+    PhysicalDevicePerformanceQueryFeaturesKHR & setPerformanceCounterMultipleQueryPools( VULKAN_HPP_NAMESPACE::Bool32 performanceCounterMultipleQueryPools_ ) VULKAN_HPP_NOEXCEPT
+    {
+      performanceCounterMultipleQueryPools = performanceCounterMultipleQueryPools_;
+      return *this;
+    }
+
+    operator VkPhysicalDevicePerformanceQueryFeaturesKHR const&() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkPhysicalDevicePerformanceQueryFeaturesKHR*>( this );
+    }
+
+    operator VkPhysicalDevicePerformanceQueryFeaturesKHR &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDevicePerformanceQueryFeaturesKHR*>( this );
+    }
+
+    bool operator==( PhysicalDevicePerformanceQueryFeaturesKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( performanceCounterQueryPools == rhs.performanceCounterQueryPools )
+          && ( performanceCounterMultipleQueryPools == rhs.performanceCounterMultipleQueryPools );
+    }
+
+    bool operator!=( PhysicalDevicePerformanceQueryFeaturesKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+
+  public:
+    const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDevicePerformanceQueryFeaturesKHR;
+    void* pNext = {};
+    VULKAN_HPP_NAMESPACE::Bool32 performanceCounterQueryPools = {};
+    VULKAN_HPP_NAMESPACE::Bool32 performanceCounterMultipleQueryPools = {};
+  };
+  static_assert( sizeof( PhysicalDevicePerformanceQueryFeaturesKHR ) == sizeof( VkPhysicalDevicePerformanceQueryFeaturesKHR ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<PhysicalDevicePerformanceQueryFeaturesKHR>::value, "struct wrapper is not a standard layout!" );
+
+  struct PhysicalDevicePerformanceQueryPropertiesKHR
+  {
+    PhysicalDevicePerformanceQueryPropertiesKHR( VULKAN_HPP_NAMESPACE::Bool32 allowCommandBufferQueryCopies_ = {} ) VULKAN_HPP_NOEXCEPT
+      : allowCommandBufferQueryCopies( allowCommandBufferQueryCopies_ )
+    {}
+
+    VULKAN_HPP_NAMESPACE::PhysicalDevicePerformanceQueryPropertiesKHR & operator=( VULKAN_HPP_NAMESPACE::PhysicalDevicePerformanceQueryPropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( &pNext, &rhs.pNext, sizeof( VULKAN_HPP_NAMESPACE::PhysicalDevicePerformanceQueryPropertiesKHR ) - offsetof( PhysicalDevicePerformanceQueryPropertiesKHR, pNext ) );
+      return *this;
+    }
+
+    PhysicalDevicePerformanceQueryPropertiesKHR( VkPhysicalDevicePerformanceQueryPropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = rhs;
+    }
+
+    PhysicalDevicePerformanceQueryPropertiesKHR& operator=( VkPhysicalDevicePerformanceQueryPropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::PhysicalDevicePerformanceQueryPropertiesKHR const *>(&rhs);
+      return *this;
+    }
+
+    operator VkPhysicalDevicePerformanceQueryPropertiesKHR const&() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkPhysicalDevicePerformanceQueryPropertiesKHR*>( this );
+    }
+
+    operator VkPhysicalDevicePerformanceQueryPropertiesKHR &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDevicePerformanceQueryPropertiesKHR*>( this );
+    }
+
+    bool operator==( PhysicalDevicePerformanceQueryPropertiesKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( allowCommandBufferQueryCopies == rhs.allowCommandBufferQueryCopies );
+    }
+
+    bool operator!=( PhysicalDevicePerformanceQueryPropertiesKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+
+  public:
+    const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDevicePerformanceQueryPropertiesKHR;
+    void* pNext = {};
+    VULKAN_HPP_NAMESPACE::Bool32 allowCommandBufferQueryCopies = {};
+  };
+  static_assert( sizeof( PhysicalDevicePerformanceQueryPropertiesKHR ) == sizeof( VkPhysicalDevicePerformanceQueryPropertiesKHR ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<PhysicalDevicePerformanceQueryPropertiesKHR>::value, "struct wrapper is not a standard layout!" );
+
   struct PhysicalDevicePipelineExecutablePropertiesFeaturesKHR
   {
     VULKAN_HPP_CONSTEXPR PhysicalDevicePipelineExecutablePropertiesFeaturesKHR( VULKAN_HPP_NAMESPACE::Bool32 pipelineExecutableInfo_ = {} ) VULKAN_HPP_NOEXCEPT
@@ -45986,6 +47276,71 @@ namespace VULKAN_HPP_NAMESPACE
   };
   static_assert( sizeof( PhysicalDeviceScalarBlockLayoutFeaturesEXT ) == sizeof( VkPhysicalDeviceScalarBlockLayoutFeaturesEXT ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<PhysicalDeviceScalarBlockLayoutFeaturesEXT>::value, "struct wrapper is not a standard layout!" );
+
+  struct PhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR
+  {
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR( VULKAN_HPP_NAMESPACE::Bool32 separateDepthStencilLayouts_ = {} ) VULKAN_HPP_NOEXCEPT
+      : separateDepthStencilLayouts( separateDepthStencilLayouts_ )
+    {}
+
+    VULKAN_HPP_NAMESPACE::PhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR & operator=( VULKAN_HPP_NAMESPACE::PhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( &pNext, &rhs.pNext, sizeof( VULKAN_HPP_NAMESPACE::PhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR ) - offsetof( PhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR, pNext ) );
+      return *this;
+    }
+
+    PhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR( VkPhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = rhs;
+    }
+
+    PhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR& operator=( VkPhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::PhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR const *>(&rhs);
+      return *this;
+    }
+
+    PhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR & setPNext( void* pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR & setSeparateDepthStencilLayouts( VULKAN_HPP_NAMESPACE::Bool32 separateDepthStencilLayouts_ ) VULKAN_HPP_NOEXCEPT
+    {
+      separateDepthStencilLayouts = separateDepthStencilLayouts_;
+      return *this;
+    }
+
+    operator VkPhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR const&() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR*>( this );
+    }
+
+    operator VkPhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR*>( this );
+    }
+
+    bool operator==( PhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( separateDepthStencilLayouts == rhs.separateDepthStencilLayouts );
+    }
+
+    bool operator!=( PhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+
+  public:
+    const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR;
+    void* pNext = {};
+    VULKAN_HPP_NAMESPACE::Bool32 separateDepthStencilLayouts = {};
+  };
+  static_assert( sizeof( PhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR ) == sizeof( VkPhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<PhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR>::value, "struct wrapper is not a standard layout!" );
 
   struct PhysicalDeviceShaderAtomicInt64FeaturesKHR
   {
@@ -47485,7 +48840,7 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT & setPNext( const void* pNext_ ) VULKAN_HPP_NOEXCEPT
+    PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT & setPNext( void* pNext_ ) VULKAN_HPP_NOEXCEPT
     {
       pNext = pNext_;
       return *this;
@@ -47521,7 +48876,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceTextureCompressionAstcHdrFeaturesEXT;
-    const void* pNext = {};
+    void* pNext = {};
     VULKAN_HPP_NAMESPACE::Bool32 textureCompressionASTC_HDR = {};
   };
   static_assert( sizeof( PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT ) == sizeof( VkPhysicalDeviceTextureCompressionASTCHDRFeaturesEXT ), "struct and wrapper have different size!" );
@@ -47644,6 +48999,80 @@ namespace VULKAN_HPP_NAMESPACE
   };
   static_assert( sizeof( PhysicalDeviceTimelineSemaphorePropertiesKHR ) == sizeof( VkPhysicalDeviceTimelineSemaphorePropertiesKHR ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<PhysicalDeviceTimelineSemaphorePropertiesKHR>::value, "struct wrapper is not a standard layout!" );
+
+  struct PhysicalDeviceToolPropertiesEXT
+  {
+    PhysicalDeviceToolPropertiesEXT( std::array<char,VK_MAX_EXTENSION_NAME_SIZE> const& name_ = {},
+                                     std::array<char,VK_MAX_EXTENSION_NAME_SIZE> const& version_ = {},
+                                     VULKAN_HPP_NAMESPACE::ToolPurposeFlagsEXT purposes_ = {},
+                                     std::array<char,VK_MAX_DESCRIPTION_SIZE> const& description_ = {},
+                                     std::array<char,VK_MAX_EXTENSION_NAME_SIZE> const& layer_ = {} ) VULKAN_HPP_NOEXCEPT
+      : name{}
+      , version{}
+      , purposes( purposes_ )
+      , description{}
+      , layer{}
+    {
+      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<char,VK_MAX_EXTENSION_NAME_SIZE,VK_MAX_EXTENSION_NAME_SIZE>::copy( name, name_ );
+      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<char,VK_MAX_EXTENSION_NAME_SIZE,VK_MAX_EXTENSION_NAME_SIZE>::copy( version, version_ );
+      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( description, description_ );
+      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<char,VK_MAX_EXTENSION_NAME_SIZE,VK_MAX_EXTENSION_NAME_SIZE>::copy( layer, layer_ );
+    }
+
+    VULKAN_HPP_NAMESPACE::PhysicalDeviceToolPropertiesEXT & operator=( VULKAN_HPP_NAMESPACE::PhysicalDeviceToolPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( &pNext, &rhs.pNext, sizeof( VULKAN_HPP_NAMESPACE::PhysicalDeviceToolPropertiesEXT ) - offsetof( PhysicalDeviceToolPropertiesEXT, pNext ) );
+      return *this;
+    }
+
+    PhysicalDeviceToolPropertiesEXT( VkPhysicalDeviceToolPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = rhs;
+    }
+
+    PhysicalDeviceToolPropertiesEXT& operator=( VkPhysicalDeviceToolPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::PhysicalDeviceToolPropertiesEXT const *>(&rhs);
+      return *this;
+    }
+
+    operator VkPhysicalDeviceToolPropertiesEXT const&() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceToolPropertiesEXT*>( this );
+    }
+
+    operator VkPhysicalDeviceToolPropertiesEXT &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDeviceToolPropertiesEXT*>( this );
+    }
+
+    bool operator==( PhysicalDeviceToolPropertiesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( memcmp( name, rhs.name, VK_MAX_EXTENSION_NAME_SIZE * sizeof( char ) ) == 0 )
+          && ( memcmp( version, rhs.version, VK_MAX_EXTENSION_NAME_SIZE * sizeof( char ) ) == 0 )
+          && ( purposes == rhs.purposes )
+          && ( memcmp( description, rhs.description, VK_MAX_DESCRIPTION_SIZE * sizeof( char ) ) == 0 )
+          && ( memcmp( layer, rhs.layer, VK_MAX_EXTENSION_NAME_SIZE * sizeof( char ) ) == 0 );
+    }
+
+    bool operator!=( PhysicalDeviceToolPropertiesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+
+  public:
+    const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceToolPropertiesEXT;
+    void* pNext = {};
+    char name[VK_MAX_EXTENSION_NAME_SIZE] = {};
+    char version[VK_MAX_EXTENSION_NAME_SIZE] = {};
+    VULKAN_HPP_NAMESPACE::ToolPurposeFlagsEXT purposes = {};
+    char description[VK_MAX_DESCRIPTION_SIZE] = {};
+    char layer[VK_MAX_EXTENSION_NAME_SIZE] = {};
+  };
+  static_assert( sizeof( PhysicalDeviceToolPropertiesEXT ) == sizeof( VkPhysicalDeviceToolPropertiesEXT ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<PhysicalDeviceToolPropertiesEXT>::value, "struct wrapper is not a standard layout!" );
 
   struct PhysicalDeviceTransformFeedbackFeaturesEXT
   {
@@ -49031,11 +50460,11 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineExecutableInternalRepresentationKHR
   {
-    VULKAN_HPP_CONSTEXPR_14 PipelineExecutableInternalRepresentationKHR( std::array<char,VK_MAX_DESCRIPTION_SIZE> const& name_ = {},
-                                                                         std::array<char,VK_MAX_DESCRIPTION_SIZE> const& description_ = {},
-                                                                         VULKAN_HPP_NAMESPACE::Bool32 isText_ = {},
-                                                                         size_t dataSize_ = {},
-                                                                         void* pData_ = {} ) VULKAN_HPP_NOEXCEPT
+    PipelineExecutableInternalRepresentationKHR( std::array<char,VK_MAX_DESCRIPTION_SIZE> const& name_ = {},
+                                                 std::array<char,VK_MAX_DESCRIPTION_SIZE> const& description_ = {},
+                                                 VULKAN_HPP_NAMESPACE::Bool32 isText_ = {},
+                                                 size_t dataSize_ = {},
+                                                 void* pData_ = {} ) VULKAN_HPP_NOEXCEPT
       : name{}
       , description{}
       , isText( isText_ )
@@ -49060,42 +50489,6 @@ namespace VULKAN_HPP_NAMESPACE
     PipelineExecutableInternalRepresentationKHR& operator=( VkPipelineExecutableInternalRepresentationKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::PipelineExecutableInternalRepresentationKHR const *>(&rhs);
-      return *this;
-    }
-
-    PipelineExecutableInternalRepresentationKHR & setPNext( void* pNext_ ) VULKAN_HPP_NOEXCEPT
-    {
-      pNext = pNext_;
-      return *this;
-    }
-
-    PipelineExecutableInternalRepresentationKHR & setName( std::array<char,VK_MAX_DESCRIPTION_SIZE> name_ ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( name, name_.data(), VK_MAX_DESCRIPTION_SIZE * sizeof( char ) );
-      return *this;
-    }
-
-    PipelineExecutableInternalRepresentationKHR & setDescription( std::array<char,VK_MAX_DESCRIPTION_SIZE> description_ ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( description, description_.data(), VK_MAX_DESCRIPTION_SIZE * sizeof( char ) );
-      return *this;
-    }
-
-    PipelineExecutableInternalRepresentationKHR & setIsText( VULKAN_HPP_NAMESPACE::Bool32 isText_ ) VULKAN_HPP_NOEXCEPT
-    {
-      isText = isText_;
-      return *this;
-    }
-
-    PipelineExecutableInternalRepresentationKHR & setDataSize( size_t dataSize_ ) VULKAN_HPP_NOEXCEPT
-    {
-      dataSize = dataSize_;
-      return *this;
-    }
-
-    PipelineExecutableInternalRepresentationKHR & setPData( void* pData_ ) VULKAN_HPP_NOEXCEPT
-    {
-      pData = pData_;
       return *this;
     }
 
@@ -51672,6 +53065,91 @@ namespace VULKAN_HPP_NAMESPACE
   };
   static_assert( sizeof( QueryPoolCreateInfoINTEL ) == sizeof( VkQueryPoolCreateInfoINTEL ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<QueryPoolCreateInfoINTEL>::value, "struct wrapper is not a standard layout!" );
+
+  struct QueryPoolPerformanceCreateInfoKHR
+  {
+    VULKAN_HPP_CONSTEXPR QueryPoolPerformanceCreateInfoKHR( uint32_t queueFamilyIndex_ = {},
+                                                            uint32_t counterIndexCount_ = {},
+                                                            const uint32_t* pCounterIndices_ = {} ) VULKAN_HPP_NOEXCEPT
+      : queueFamilyIndex( queueFamilyIndex_ )
+      , counterIndexCount( counterIndexCount_ )
+      , pCounterIndices( pCounterIndices_ )
+    {}
+
+    VULKAN_HPP_NAMESPACE::QueryPoolPerformanceCreateInfoKHR & operator=( VULKAN_HPP_NAMESPACE::QueryPoolPerformanceCreateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( &pNext, &rhs.pNext, sizeof( VULKAN_HPP_NAMESPACE::QueryPoolPerformanceCreateInfoKHR ) - offsetof( QueryPoolPerformanceCreateInfoKHR, pNext ) );
+      return *this;
+    }
+
+    QueryPoolPerformanceCreateInfoKHR( VkQueryPoolPerformanceCreateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = rhs;
+    }
+
+    QueryPoolPerformanceCreateInfoKHR& operator=( VkQueryPoolPerformanceCreateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::QueryPoolPerformanceCreateInfoKHR const *>(&rhs);
+      return *this;
+    }
+
+    QueryPoolPerformanceCreateInfoKHR & setPNext( const void* pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    QueryPoolPerformanceCreateInfoKHR & setQueueFamilyIndex( uint32_t queueFamilyIndex_ ) VULKAN_HPP_NOEXCEPT
+    {
+      queueFamilyIndex = queueFamilyIndex_;
+      return *this;
+    }
+
+    QueryPoolPerformanceCreateInfoKHR & setCounterIndexCount( uint32_t counterIndexCount_ ) VULKAN_HPP_NOEXCEPT
+    {
+      counterIndexCount = counterIndexCount_;
+      return *this;
+    }
+
+    QueryPoolPerformanceCreateInfoKHR & setPCounterIndices( const uint32_t* pCounterIndices_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pCounterIndices = pCounterIndices_;
+      return *this;
+    }
+
+    operator VkQueryPoolPerformanceCreateInfoKHR const&() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkQueryPoolPerformanceCreateInfoKHR*>( this );
+    }
+
+    operator VkQueryPoolPerformanceCreateInfoKHR &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkQueryPoolPerformanceCreateInfoKHR*>( this );
+    }
+
+    bool operator==( QueryPoolPerformanceCreateInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( queueFamilyIndex == rhs.queueFamilyIndex )
+          && ( counterIndexCount == rhs.counterIndexCount )
+          && ( pCounterIndices == rhs.pCounterIndices );
+    }
+
+    bool operator!=( QueryPoolPerformanceCreateInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+
+  public:
+    const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eQueryPoolPerformanceCreateInfoKHR;
+    const void* pNext = {};
+    uint32_t queueFamilyIndex = {};
+    uint32_t counterIndexCount = {};
+    const uint32_t* pCounterIndices = {};
+  };
+  static_assert( sizeof( QueryPoolPerformanceCreateInfoKHR ) == sizeof( VkQueryPoolPerformanceCreateInfoKHR ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<QueryPoolPerformanceCreateInfoKHR>::value, "struct wrapper is not a standard layout!" );
 
   struct QueueFamilyCheckpointPropertiesNV
   {
@@ -59360,6 +60838,20 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template<typename Dispatch>
+  VULKAN_HPP_INLINE Result Device::acquireProfilingLockKHR( const VULKAN_HPP_NAMESPACE::AcquireProfilingLockInfoKHR* pInfo, Dispatch const &d) const
+  {
+    return static_cast<Result>( d.vkAcquireProfilingLockKHR( m_device, reinterpret_cast<const VkAcquireProfilingLockInfoKHR*>( pInfo ) ) );
+  }
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE ResultValueType<void>::type Device::acquireProfilingLockKHR( const AcquireProfilingLockInfoKHR & info, Dispatch const &d ) const
+  {
+    Result result = static_cast<Result>( d.vkAcquireProfilingLockKHR( m_device, reinterpret_cast<const VkAcquireProfilingLockInfoKHR*>( &info ) ) );
+    return createResultValue( result, VULKAN_HPP_NAMESPACE_STRING"::Device::acquireProfilingLockKHR" );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template<typename Dispatch>
   VULKAN_HPP_INLINE Result Device::allocateCommandBuffers( const VULKAN_HPP_NAMESPACE::CommandBufferAllocateInfo* pAllocateInfo, VULKAN_HPP_NAMESPACE::CommandBuffer* pCommandBuffers, Dispatch const &d) const
   {
     return static_cast<Result>( d.vkAllocateCommandBuffers( m_device, reinterpret_cast<const VkCommandBufferAllocateInfo*>( pAllocateInfo ), reinterpret_cast<VkCommandBuffer*>( pCommandBuffers ) ) );
@@ -61541,15 +63033,28 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
   template<typename Dispatch>
-  VULKAN_HPP_INLINE DeviceAddress Device::getBufferAddressEXT( const VULKAN_HPP_NAMESPACE::BufferDeviceAddressInfoEXT* pInfo, Dispatch const &d) const VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_INLINE DeviceAddress Device::getBufferAddressEXT( const VULKAN_HPP_NAMESPACE::BufferDeviceAddressInfoKHR* pInfo, Dispatch const &d) const VULKAN_HPP_NOEXCEPT
   {
-    return static_cast<DeviceAddress>( d.vkGetBufferDeviceAddressEXT( m_device, reinterpret_cast<const VkBufferDeviceAddressInfoEXT*>( pInfo ) ) );
+    return static_cast<DeviceAddress>( d.vkGetBufferDeviceAddressEXT( m_device, reinterpret_cast<const VkBufferDeviceAddressInfoKHR*>( pInfo ) ) );
   }
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template<typename Dispatch>
-  VULKAN_HPP_INLINE DeviceAddress Device::getBufferAddressEXT( const BufferDeviceAddressInfoEXT & info, Dispatch const &d ) const VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_INLINE DeviceAddress Device::getBufferAddressEXT( const BufferDeviceAddressInfoKHR & info, Dispatch const &d ) const VULKAN_HPP_NOEXCEPT
   {
-    return d.vkGetBufferDeviceAddressEXT( m_device, reinterpret_cast<const VkBufferDeviceAddressInfoEXT*>( &info ) );
+    return d.vkGetBufferDeviceAddressEXT( m_device, reinterpret_cast<const VkBufferDeviceAddressInfoKHR*>( &info ) );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE DeviceAddress Device::getBufferAddressKHR( const VULKAN_HPP_NAMESPACE::BufferDeviceAddressInfoKHR* pInfo, Dispatch const &d) const VULKAN_HPP_NOEXCEPT
+  {
+    return static_cast<DeviceAddress>( d.vkGetBufferDeviceAddressKHR( m_device, reinterpret_cast<const VkBufferDeviceAddressInfoKHR*>( pInfo ) ) );
+  }
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE DeviceAddress Device::getBufferAddressKHR( const BufferDeviceAddressInfoKHR & info, Dispatch const &d ) const VULKAN_HPP_NOEXCEPT
+  {
+    return d.vkGetBufferDeviceAddressKHR( m_device, reinterpret_cast<const VkBufferDeviceAddressInfoKHR*>( &info ) );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -61611,6 +63116,19 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_NAMESPACE::MemoryRequirements2& memoryRequirements = structureChain.template get<VULKAN_HPP_NAMESPACE::MemoryRequirements2>();
     d.vkGetBufferMemoryRequirements2KHR( m_device, reinterpret_cast<const VkBufferMemoryRequirementsInfo2*>( &info ), reinterpret_cast<VkMemoryRequirements2*>( &memoryRequirements ) );
     return structureChain;
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE uint64_t Device::getBufferOpaqueCaptureAddressKHR( const VULKAN_HPP_NAMESPACE::BufferDeviceAddressInfoKHR* pInfo, Dispatch const &d) const VULKAN_HPP_NOEXCEPT
+  {
+    return d.vkGetBufferOpaqueCaptureAddressKHR( m_device, reinterpret_cast<const VkBufferDeviceAddressInfoKHR*>( pInfo ) );
+  }
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE uint64_t Device::getBufferOpaqueCaptureAddressKHR( const BufferDeviceAddressInfoKHR & info, Dispatch const &d ) const VULKAN_HPP_NOEXCEPT
+  {
+    return d.vkGetBufferOpaqueCaptureAddressKHR( m_device, reinterpret_cast<const VkBufferDeviceAddressInfoKHR*>( &info ) );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -61772,6 +63290,19 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_NAMESPACE::DeviceSize committedMemoryInBytes;
     d.vkGetDeviceMemoryCommitment( m_device, static_cast<VkDeviceMemory>( memory ), reinterpret_cast<VkDeviceSize*>( &committedMemoryInBytes ) );
     return committedMemoryInBytes;
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE uint64_t Device::getMemoryOpaqueCaptureAddressKHR( const VULKAN_HPP_NAMESPACE::DeviceMemoryOpaqueCaptureAddressInfoKHR* pInfo, Dispatch const &d) const VULKAN_HPP_NOEXCEPT
+  {
+    return d.vkGetDeviceMemoryOpaqueCaptureAddressKHR( m_device, reinterpret_cast<const VkDeviceMemoryOpaqueCaptureAddressInfoKHR*>( pInfo ) );
+  }
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE uint64_t Device::getMemoryOpaqueCaptureAddressKHR( const DeviceMemoryOpaqueCaptureAddressInfoKHR & info, Dispatch const &d ) const VULKAN_HPP_NOEXCEPT
+  {
+    return d.vkGetDeviceMemoryOpaqueCaptureAddressKHR( m_device, reinterpret_cast<const VkDeviceMemoryOpaqueCaptureAddressInfoKHR*>( &info ) );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -62986,6 +64517,20 @@ namespace VULKAN_HPP_NAMESPACE
 
 #ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template<typename Dispatch>
+  VULKAN_HPP_INLINE void Device::releaseProfilingLockKHR(Dispatch const &d) const VULKAN_HPP_NOEXCEPT
+  {
+    d.vkReleaseProfilingLockKHR( m_device );
+  }
+#else
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE void Device::releaseProfilingLockKHR(Dispatch const &d ) const VULKAN_HPP_NOEXCEPT
+  {
+    d.vkReleaseProfilingLockKHR( m_device );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template<typename Dispatch>
   VULKAN_HPP_INLINE Result Device::resetCommandPool( VULKAN_HPP_NAMESPACE::CommandPool commandPool, VULKAN_HPP_NAMESPACE::CommandPoolResetFlags flags, Dispatch const &d) const
   {
     return static_cast<Result>( d.vkResetCommandPool( m_device, static_cast<VkCommandPool>( commandPool ), static_cast<VkCommandPoolResetFlags>( flags ) ) );
@@ -64165,6 +65710,58 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template<typename Dispatch>
+  VULKAN_HPP_INLINE Result PhysicalDevice::enumerateQueueFamilyPerformanceQueryCountersKHR( uint32_t queueFamilyIndex, uint32_t* pCounterCount, VULKAN_HPP_NAMESPACE::PerformanceCounterKHR* pCounters, VULKAN_HPP_NAMESPACE::PerformanceCounterDescriptionKHR* pCounterDescriptions, Dispatch const &d) const
+  {
+    return static_cast<Result>( d.vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR( m_physicalDevice, queueFamilyIndex, pCounterCount, reinterpret_cast<VkPerformanceCounterKHR*>( pCounters ), reinterpret_cast<VkPerformanceCounterDescriptionKHR*>( pCounterDescriptions ) ) );
+  }
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template<typename Allocator, typename Dispatch>
+  VULKAN_HPP_INLINE typename ResultValueType<std::vector<PerformanceCounterDescriptionKHR,Allocator>>::type PhysicalDevice::enumerateQueueFamilyPerformanceQueryCountersKHR( uint32_t queueFamilyIndex, ArrayProxy<VULKAN_HPP_NAMESPACE::PerformanceCounterKHR> counters, Dispatch const &d ) const
+  {
+    std::vector<PerformanceCounterDescriptionKHR,Allocator> counterDescriptions;
+    uint32_t counterCount;
+    Result result;
+    do
+    {
+      result = static_cast<Result>( d.vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR( m_physicalDevice, queueFamilyIndex, counters.size() , reinterpret_cast<VkPerformanceCounterKHR*>( counters.data() ), nullptr ) );
+      if ( ( result == Result::eSuccess ) && counterCount )
+      {
+        counterDescriptions.resize( counterCount );
+        result = static_cast<Result>( d.vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR( m_physicalDevice, queueFamilyIndex, counters.size() , reinterpret_cast<VkPerformanceCounterKHR*>( counters.data() ), reinterpret_cast<VkPerformanceCounterDescriptionKHR*>( counterDescriptions.data() ) ) );
+      }
+    } while ( result == Result::eIncomplete );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( counterCount <= counterDescriptions.size() );
+      counterDescriptions.resize( counterCount );
+    }
+    return createResultValue( result, counterDescriptions, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::enumerateQueueFamilyPerformanceQueryCountersKHR" );
+  }
+  template<typename Allocator, typename Dispatch>
+  VULKAN_HPP_INLINE typename ResultValueType<std::vector<PerformanceCounterDescriptionKHR,Allocator>>::type PhysicalDevice::enumerateQueueFamilyPerformanceQueryCountersKHR( uint32_t queueFamilyIndex, ArrayProxy<VULKAN_HPP_NAMESPACE::PerformanceCounterKHR> counters, Allocator const& vectorAllocator, Dispatch const &d ) const
+  {
+    std::vector<PerformanceCounterDescriptionKHR,Allocator> counterDescriptions( vectorAllocator );
+    uint32_t counterCount;
+    Result result;
+    do
+    {
+      result = static_cast<Result>( d.vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR( m_physicalDevice, queueFamilyIndex, counters.size() , reinterpret_cast<VkPerformanceCounterKHR*>( counters.data() ), nullptr ) );
+      if ( ( result == Result::eSuccess ) && counterCount )
+      {
+        counterDescriptions.resize( counterCount );
+        result = static_cast<Result>( d.vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR( m_physicalDevice, queueFamilyIndex, counters.size() , reinterpret_cast<VkPerformanceCounterKHR*>( counters.data() ), reinterpret_cast<VkPerformanceCounterDescriptionKHR*>( counterDescriptions.data() ) ) );
+      }
+    } while ( result == Result::eIncomplete );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( counterCount <= counterDescriptions.size() );
+      counterDescriptions.resize( counterCount );
+    }
+    return createResultValue( result, counterDescriptions, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::enumerateQueueFamilyPerformanceQueryCountersKHR" );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template<typename Dispatch>
   VULKAN_HPP_INLINE Result PhysicalDevice::getDisplayModeProperties2KHR( VULKAN_HPP_NAMESPACE::DisplayKHR display, uint32_t* pPropertyCount, VULKAN_HPP_NAMESPACE::DisplayModeProperties2KHR* pProperties, Dispatch const &d) const
   {
     return static_cast<Result>( d.vkGetDisplayModeProperties2KHR( m_physicalDevice, static_cast<VkDisplayKHR>( display ), pPropertyCount, reinterpret_cast<VkDisplayModeProperties2KHR*>( pProperties ) ) );
@@ -65155,6 +66752,21 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template<typename Dispatch>
+  VULKAN_HPP_INLINE void PhysicalDevice::getQueueFamilyPerformanceQueryPassesKHR( const VULKAN_HPP_NAMESPACE::QueryPoolPerformanceCreateInfoKHR* pPerformanceQueryCreateInfo, uint32_t* pNumPasses, Dispatch const &d) const VULKAN_HPP_NOEXCEPT
+  {
+    d.vkGetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR( m_physicalDevice, reinterpret_cast<const VkQueryPoolPerformanceCreateInfoKHR*>( pPerformanceQueryCreateInfo ), pNumPasses );
+  }
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE uint32_t PhysicalDevice::getQueueFamilyPerformanceQueryPassesKHR( const QueryPoolPerformanceCreateInfoKHR & performanceQueryCreateInfo, Dispatch const &d ) const VULKAN_HPP_NOEXCEPT
+  {
+    uint32_t numPasses;
+    d.vkGetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR( m_physicalDevice, reinterpret_cast<const VkQueryPoolPerformanceCreateInfoKHR*>( &performanceQueryCreateInfo ), &numPasses );
+    return numPasses;
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template<typename Dispatch>
   VULKAN_HPP_INLINE void PhysicalDevice::getQueueFamilyProperties( uint32_t* pQueueFamilyPropertyCount, VULKAN_HPP_NAMESPACE::QueueFamilyProperties* pQueueFamilyProperties, Dispatch const &d) const VULKAN_HPP_NOEXCEPT
   {
     d.vkGetPhysicalDeviceQueueFamilyProperties( m_physicalDevice, pQueueFamilyPropertyCount, reinterpret_cast<VkQueueFamilyProperties*>( pQueueFamilyProperties ) );
@@ -65728,6 +67340,58 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE Result PhysicalDevice::getToolPropertiesEXT( uint32_t* pToolCount, VULKAN_HPP_NAMESPACE::PhysicalDeviceToolPropertiesEXT* pToolProperties, Dispatch const &d) const
+  {
+    return static_cast<Result>( d.vkGetPhysicalDeviceToolPropertiesEXT( m_physicalDevice, pToolCount, reinterpret_cast<VkPhysicalDeviceToolPropertiesEXT*>( pToolProperties ) ) );
+  }
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template<typename Allocator, typename Dispatch>
+  VULKAN_HPP_INLINE typename ResultValueType<std::vector<PhysicalDeviceToolPropertiesEXT,Allocator>>::type PhysicalDevice::getToolPropertiesEXT(Dispatch const &d ) const
+  {
+    std::vector<PhysicalDeviceToolPropertiesEXT,Allocator> toolProperties;
+    uint32_t toolCount;
+    Result result;
+    do
+    {
+      result = static_cast<Result>( d.vkGetPhysicalDeviceToolPropertiesEXT( m_physicalDevice, &toolCount, nullptr ) );
+      if ( ( result == Result::eSuccess ) && toolCount )
+      {
+        toolProperties.resize( toolCount );
+        result = static_cast<Result>( d.vkGetPhysicalDeviceToolPropertiesEXT( m_physicalDevice, &toolCount, reinterpret_cast<VkPhysicalDeviceToolPropertiesEXT*>( toolProperties.data() ) ) );
+      }
+    } while ( result == Result::eIncomplete );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( toolCount <= toolProperties.size() );
+      toolProperties.resize( toolCount );
+    }
+    return createResultValue( result, toolProperties, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::getToolPropertiesEXT" );
+  }
+  template<typename Allocator, typename Dispatch>
+  VULKAN_HPP_INLINE typename ResultValueType<std::vector<PhysicalDeviceToolPropertiesEXT,Allocator>>::type PhysicalDevice::getToolPropertiesEXT(Allocator const& vectorAllocator, Dispatch const &d ) const
+  {
+    std::vector<PhysicalDeviceToolPropertiesEXT,Allocator> toolProperties( vectorAllocator );
+    uint32_t toolCount;
+    Result result;
+    do
+    {
+      result = static_cast<Result>( d.vkGetPhysicalDeviceToolPropertiesEXT( m_physicalDevice, &toolCount, nullptr ) );
+      if ( ( result == Result::eSuccess ) && toolCount )
+      {
+        toolProperties.resize( toolCount );
+        result = static_cast<Result>( d.vkGetPhysicalDeviceToolPropertiesEXT( m_physicalDevice, &toolCount, reinterpret_cast<VkPhysicalDeviceToolPropertiesEXT*>( toolProperties.data() ) ) );
+      }
+    } while ( result == Result::eIncomplete );
+    if ( result == Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( toolCount <= toolProperties.size() );
+      toolProperties.resize( toolCount );
+    }
+    return createResultValue( result, toolProperties, VULKAN_HPP_NAMESPACE_STRING"::PhysicalDevice::getToolPropertiesEXT" );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
 #ifdef VK_USE_PLATFORM_WAYLAND_KHR
   template<typename Dispatch>
   VULKAN_HPP_INLINE Bool32 PhysicalDevice::getWaylandPresentationSupportKHR( uint32_t queueFamilyIndex, struct wl_display* display, Dispatch const &d) const VULKAN_HPP_NOEXCEPT
@@ -65967,11 +67631,14 @@ namespace VULKAN_HPP_NAMESPACE
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
   template <> struct isStructureChainValid<ImageFormatProperties2, AndroidHardwareBufferUsageANDROID>{ enum { value = true }; };
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
+  template <> struct isStructureChainValid<AttachmentDescription2KHR, AttachmentDescriptionStencilLayoutKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<AttachmentReference2KHR, AttachmentReferenceStencilLayoutKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<BindBufferMemoryInfo, BindBufferMemoryDeviceGroupInfo>{ enum { value = true }; };
   template <> struct isStructureChainValid<BindImageMemoryInfo, BindImageMemoryDeviceGroupInfo>{ enum { value = true }; };
   template <> struct isStructureChainValid<BindImageMemoryInfo, BindImageMemorySwapchainInfoKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<BindImageMemoryInfo, BindImagePlaneMemoryInfo>{ enum { value = true }; };
   template <> struct isStructureChainValid<BufferCreateInfo, BufferDeviceAddressCreateInfoEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<BufferCreateInfo, BufferOpaqueCaptureAddressCreateInfoKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<CommandBufferInheritanceInfo, CommandBufferInheritanceConditionalRenderingInfoEXT>{ enum { value = true }; };
 #ifdef VK_USE_PLATFORM_WIN32_KHR
   template <> struct isStructureChainValid<SubmitInfo, D3D12FenceSubmitInfoKHR>{ enum { value = true }; };
@@ -66048,7 +67715,9 @@ namespace VULKAN_HPP_NAMESPACE
   template <> struct isStructureChainValid<MemoryAllocateInfo, MemoryAllocateFlagsInfo>{ enum { value = true }; };
   template <> struct isStructureChainValid<MemoryAllocateInfo, MemoryDedicatedAllocateInfo>{ enum { value = true }; };
   template <> struct isStructureChainValid<MemoryRequirements2, MemoryDedicatedRequirements>{ enum { value = true }; };
+  template <> struct isStructureChainValid<MemoryAllocateInfo, MemoryOpaqueCaptureAddressAllocateInfoKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<MemoryAllocateInfo, MemoryPriorityAllocateInfoEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<SubmitInfo, PerformanceQuerySubmitInfoKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDevice16BitStorageFeatures>{ enum { value = true }; };
   template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDevice16BitStorageFeatures>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDevice8BitStorageFeaturesKHR>{ enum { value = true }; };
@@ -66060,6 +67729,8 @@ namespace VULKAN_HPP_NAMESPACE
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceBlendOperationAdvancedPropertiesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceBufferDeviceAddressFeaturesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceBufferDeviceAddressFeaturesEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceBufferDeviceAddressFeaturesKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceBufferDeviceAddressFeaturesKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceCoherentMemoryFeaturesAMD>{ enum { value = true }; };
   template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceCoherentMemoryFeaturesAMD>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceComputeShaderDerivativesFeaturesNV>{ enum { value = true }; };
@@ -66124,6 +67795,9 @@ namespace VULKAN_HPP_NAMESPACE
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDeviceMultiviewProperties>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDevicePCIBusInfoPropertiesEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDevicePerformanceQueryFeaturesKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDevicePerformanceQueryFeaturesKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDevicePerformanceQueryPropertiesKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDevicePipelineExecutablePropertiesFeaturesKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDevicePipelineExecutablePropertiesFeaturesKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceProperties2, PhysicalDevicePointClippingProperties>{ enum { value = true }; };
@@ -66140,6 +67814,8 @@ namespace VULKAN_HPP_NAMESPACE
   template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceSamplerYcbcrConversionFeatures>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceScalarBlockLayoutFeaturesEXT>{ enum { value = true }; };
   template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceScalarBlockLayoutFeaturesEXT>{ enum { value = true }; };
+  template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR>{ enum { value = true }; };
+  template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceShaderAtomicInt64FeaturesKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<DeviceCreateInfo, PhysicalDeviceShaderAtomicInt64FeaturesKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<PhysicalDeviceFeatures2, PhysicalDeviceShaderClockFeaturesKHR>{ enum { value = true }; };
@@ -66221,6 +67897,7 @@ namespace VULKAN_HPP_NAMESPACE
   template <> struct isStructureChainValid<PresentInfoKHR, PresentRegionsKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<PresentInfoKHR, PresentTimesInfoGOOGLE>{ enum { value = true }; };
   template <> struct isStructureChainValid<SubmitInfo, ProtectedSubmitInfo>{ enum { value = true }; };
+  template <> struct isStructureChainValid<QueryPoolCreateInfo, QueryPoolPerformanceCreateInfoKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<QueueFamilyProperties2, QueueFamilyCheckpointPropertiesNV>{ enum { value = true }; };
   template <> struct isStructureChainValid<RenderPassBeginInfo, RenderPassAttachmentBeginInfoKHR>{ enum { value = true }; };
   template <> struct isStructureChainValid<RenderPassCreateInfo, RenderPassFragmentDensityMapCreateInfoEXT>{ enum { value = true }; };
@@ -66441,6 +68118,7 @@ namespace VULKAN_HPP_NAMESPACE
     PFN_vkAcquireNextImage2KHR vkAcquireNextImage2KHR = 0;
     PFN_vkAcquireNextImageKHR vkAcquireNextImageKHR = 0;
     PFN_vkAcquirePerformanceConfigurationINTEL vkAcquirePerformanceConfigurationINTEL = 0;
+    PFN_vkAcquireProfilingLockKHR vkAcquireProfilingLockKHR = 0;
     PFN_vkAllocateCommandBuffers vkAllocateCommandBuffers = 0;
     PFN_vkAllocateDescriptorSets vkAllocateDescriptorSets = 0;
     PFN_vkAllocateMemory vkAllocateMemory = 0;
@@ -66525,9 +68203,11 @@ namespace VULKAN_HPP_NAMESPACE
     PFN_vkGetAndroidHardwareBufferPropertiesANDROID vkGetAndroidHardwareBufferPropertiesANDROID = 0;
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
     PFN_vkGetBufferDeviceAddressEXT vkGetBufferDeviceAddressEXT = 0;
+    PFN_vkGetBufferDeviceAddressKHR vkGetBufferDeviceAddressKHR = 0;
     PFN_vkGetBufferMemoryRequirements vkGetBufferMemoryRequirements = 0;
     PFN_vkGetBufferMemoryRequirements2 vkGetBufferMemoryRequirements2 = 0;
     PFN_vkGetBufferMemoryRequirements2KHR vkGetBufferMemoryRequirements2KHR = 0;
+    PFN_vkGetBufferOpaqueCaptureAddressKHR vkGetBufferOpaqueCaptureAddressKHR = 0;
     PFN_vkGetCalibratedTimestampsEXT vkGetCalibratedTimestampsEXT = 0;
     PFN_vkGetDescriptorSetLayoutSupport vkGetDescriptorSetLayoutSupport = 0;
     PFN_vkGetDescriptorSetLayoutSupportKHR vkGetDescriptorSetLayoutSupportKHR = 0;
@@ -66539,6 +68219,7 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
     PFN_vkGetDeviceGroupSurfacePresentModesKHR vkGetDeviceGroupSurfacePresentModesKHR = 0;
     PFN_vkGetDeviceMemoryCommitment vkGetDeviceMemoryCommitment = 0;
+    PFN_vkGetDeviceMemoryOpaqueCaptureAddressKHR vkGetDeviceMemoryOpaqueCaptureAddressKHR = 0;
     PFN_vkGetDeviceProcAddr vkGetDeviceProcAddr = 0;
     PFN_vkGetDeviceQueue vkGetDeviceQueue = 0;
     PFN_vkGetDeviceQueue2 vkGetDeviceQueue2 = 0;
@@ -66612,6 +68293,7 @@ namespace VULKAN_HPP_NAMESPACE
     PFN_vkReleaseFullScreenExclusiveModeEXT vkReleaseFullScreenExclusiveModeEXT = 0;
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
     PFN_vkReleasePerformanceConfigurationINTEL vkReleasePerformanceConfigurationINTEL = 0;
+    PFN_vkReleaseProfilingLockKHR vkReleaseProfilingLockKHR = 0;
     PFN_vkResetCommandPool vkResetCommandPool = 0;
     PFN_vkResetDescriptorPool vkResetDescriptorPool = 0;
     PFN_vkResetEvent vkResetEvent = 0;
@@ -66687,6 +68369,7 @@ namespace VULKAN_HPP_NAMESPACE
     PFN_vkCreateDisplayModeKHR vkCreateDisplayModeKHR = 0;
     PFN_vkEnumerateDeviceExtensionProperties vkEnumerateDeviceExtensionProperties = 0;
     PFN_vkEnumerateDeviceLayerProperties vkEnumerateDeviceLayerProperties = 0;
+    PFN_vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR = 0;
     PFN_vkGetDisplayModeProperties2KHR vkGetDisplayModeProperties2KHR = 0;
     PFN_vkGetDisplayModePropertiesKHR vkGetDisplayModePropertiesKHR = 0;
     PFN_vkGetDisplayPlaneCapabilities2KHR vkGetDisplayPlaneCapabilities2KHR = 0;
@@ -66723,6 +68406,7 @@ namespace VULKAN_HPP_NAMESPACE
     PFN_vkGetPhysicalDeviceProperties vkGetPhysicalDeviceProperties = 0;
     PFN_vkGetPhysicalDeviceProperties2 vkGetPhysicalDeviceProperties2 = 0;
     PFN_vkGetPhysicalDeviceProperties2KHR vkGetPhysicalDeviceProperties2KHR = 0;
+    PFN_vkGetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR vkGetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR = 0;
     PFN_vkGetPhysicalDeviceQueueFamilyProperties vkGetPhysicalDeviceQueueFamilyProperties = 0;
     PFN_vkGetPhysicalDeviceQueueFamilyProperties2 vkGetPhysicalDeviceQueueFamilyProperties2 = 0;
     PFN_vkGetPhysicalDeviceQueueFamilyProperties2KHR vkGetPhysicalDeviceQueueFamilyProperties2KHR = 0;
@@ -66740,6 +68424,7 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
     PFN_vkGetPhysicalDeviceSurfacePresentModesKHR vkGetPhysicalDeviceSurfacePresentModesKHR = 0;
     PFN_vkGetPhysicalDeviceSurfaceSupportKHR vkGetPhysicalDeviceSurfaceSupportKHR = 0;
+    PFN_vkGetPhysicalDeviceToolPropertiesEXT vkGetPhysicalDeviceToolPropertiesEXT = 0;
 #ifdef VK_USE_PLATFORM_WAYLAND_KHR
     PFN_vkGetPhysicalDeviceWaylandPresentationSupportKHR vkGetPhysicalDeviceWaylandPresentationSupportKHR = 0;
 #endif /*VK_USE_PLATFORM_WAYLAND_KHR*/
@@ -66875,6 +68560,7 @@ namespace VULKAN_HPP_NAMESPACE
       vkCreateDisplayModeKHR = PFN_vkCreateDisplayModeKHR( vkGetInstanceProcAddr( instance, "vkCreateDisplayModeKHR" ) );
       vkEnumerateDeviceExtensionProperties = PFN_vkEnumerateDeviceExtensionProperties( vkGetInstanceProcAddr( instance, "vkEnumerateDeviceExtensionProperties" ) );
       vkEnumerateDeviceLayerProperties = PFN_vkEnumerateDeviceLayerProperties( vkGetInstanceProcAddr( instance, "vkEnumerateDeviceLayerProperties" ) );
+      vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR = PFN_vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR( vkGetInstanceProcAddr( instance, "vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR" ) );
       vkGetDisplayModeProperties2KHR = PFN_vkGetDisplayModeProperties2KHR( vkGetInstanceProcAddr( instance, "vkGetDisplayModeProperties2KHR" ) );
       vkGetDisplayModePropertiesKHR = PFN_vkGetDisplayModePropertiesKHR( vkGetInstanceProcAddr( instance, "vkGetDisplayModePropertiesKHR" ) );
       vkGetDisplayPlaneCapabilities2KHR = PFN_vkGetDisplayPlaneCapabilities2KHR( vkGetInstanceProcAddr( instance, "vkGetDisplayPlaneCapabilities2KHR" ) );
@@ -66911,6 +68597,7 @@ namespace VULKAN_HPP_NAMESPACE
       vkGetPhysicalDeviceProperties = PFN_vkGetPhysicalDeviceProperties( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceProperties" ) );
       vkGetPhysicalDeviceProperties2 = PFN_vkGetPhysicalDeviceProperties2( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceProperties2" ) );
       vkGetPhysicalDeviceProperties2KHR = PFN_vkGetPhysicalDeviceProperties2KHR( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceProperties2KHR" ) );
+      vkGetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR = PFN_vkGetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR" ) );
       vkGetPhysicalDeviceQueueFamilyProperties = PFN_vkGetPhysicalDeviceQueueFamilyProperties( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceQueueFamilyProperties" ) );
       vkGetPhysicalDeviceQueueFamilyProperties2 = PFN_vkGetPhysicalDeviceQueueFamilyProperties2( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceQueueFamilyProperties2" ) );
       vkGetPhysicalDeviceQueueFamilyProperties2KHR = PFN_vkGetPhysicalDeviceQueueFamilyProperties2KHR( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceQueueFamilyProperties2KHR" ) );
@@ -66928,6 +68615,7 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
       vkGetPhysicalDeviceSurfacePresentModesKHR = PFN_vkGetPhysicalDeviceSurfacePresentModesKHR( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceSurfacePresentModesKHR" ) );
       vkGetPhysicalDeviceSurfaceSupportKHR = PFN_vkGetPhysicalDeviceSurfaceSupportKHR( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceSurfaceSupportKHR" ) );
+      vkGetPhysicalDeviceToolPropertiesEXT = PFN_vkGetPhysicalDeviceToolPropertiesEXT( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceToolPropertiesEXT" ) );
 #ifdef VK_USE_PLATFORM_WAYLAND_KHR
       vkGetPhysicalDeviceWaylandPresentationSupportKHR = PFN_vkGetPhysicalDeviceWaylandPresentationSupportKHR( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceWaylandPresentationSupportKHR" ) );
 #endif /*VK_USE_PLATFORM_WAYLAND_KHR*/
@@ -67046,6 +68734,7 @@ namespace VULKAN_HPP_NAMESPACE
       vkAcquireNextImage2KHR = PFN_vkAcquireNextImage2KHR( vkGetInstanceProcAddr( instance, "vkAcquireNextImage2KHR" ) );
       vkAcquireNextImageKHR = PFN_vkAcquireNextImageKHR( vkGetInstanceProcAddr( instance, "vkAcquireNextImageKHR" ) );
       vkAcquirePerformanceConfigurationINTEL = PFN_vkAcquirePerformanceConfigurationINTEL( vkGetInstanceProcAddr( instance, "vkAcquirePerformanceConfigurationINTEL" ) );
+      vkAcquireProfilingLockKHR = PFN_vkAcquireProfilingLockKHR( vkGetInstanceProcAddr( instance, "vkAcquireProfilingLockKHR" ) );
       vkAllocateCommandBuffers = PFN_vkAllocateCommandBuffers( vkGetInstanceProcAddr( instance, "vkAllocateCommandBuffers" ) );
       vkAllocateDescriptorSets = PFN_vkAllocateDescriptorSets( vkGetInstanceProcAddr( instance, "vkAllocateDescriptorSets" ) );
       vkAllocateMemory = PFN_vkAllocateMemory( vkGetInstanceProcAddr( instance, "vkAllocateMemory" ) );
@@ -67130,9 +68819,11 @@ namespace VULKAN_HPP_NAMESPACE
       vkGetAndroidHardwareBufferPropertiesANDROID = PFN_vkGetAndroidHardwareBufferPropertiesANDROID( vkGetInstanceProcAddr( instance, "vkGetAndroidHardwareBufferPropertiesANDROID" ) );
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
       vkGetBufferDeviceAddressEXT = PFN_vkGetBufferDeviceAddressEXT( vkGetInstanceProcAddr( instance, "vkGetBufferDeviceAddressEXT" ) );
+      vkGetBufferDeviceAddressKHR = PFN_vkGetBufferDeviceAddressKHR( vkGetInstanceProcAddr( instance, "vkGetBufferDeviceAddressKHR" ) );
       vkGetBufferMemoryRequirements = PFN_vkGetBufferMemoryRequirements( vkGetInstanceProcAddr( instance, "vkGetBufferMemoryRequirements" ) );
       vkGetBufferMemoryRequirements2 = PFN_vkGetBufferMemoryRequirements2( vkGetInstanceProcAddr( instance, "vkGetBufferMemoryRequirements2" ) );
       vkGetBufferMemoryRequirements2KHR = PFN_vkGetBufferMemoryRequirements2KHR( vkGetInstanceProcAddr( instance, "vkGetBufferMemoryRequirements2KHR" ) );
+      vkGetBufferOpaqueCaptureAddressKHR = PFN_vkGetBufferOpaqueCaptureAddressKHR( vkGetInstanceProcAddr( instance, "vkGetBufferOpaqueCaptureAddressKHR" ) );
       vkGetCalibratedTimestampsEXT = PFN_vkGetCalibratedTimestampsEXT( vkGetInstanceProcAddr( instance, "vkGetCalibratedTimestampsEXT" ) );
       vkGetDescriptorSetLayoutSupport = PFN_vkGetDescriptorSetLayoutSupport( vkGetInstanceProcAddr( instance, "vkGetDescriptorSetLayoutSupport" ) );
       vkGetDescriptorSetLayoutSupportKHR = PFN_vkGetDescriptorSetLayoutSupportKHR( vkGetInstanceProcAddr( instance, "vkGetDescriptorSetLayoutSupportKHR" ) );
@@ -67144,6 +68835,7 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
       vkGetDeviceGroupSurfacePresentModesKHR = PFN_vkGetDeviceGroupSurfacePresentModesKHR( vkGetInstanceProcAddr( instance, "vkGetDeviceGroupSurfacePresentModesKHR" ) );
       vkGetDeviceMemoryCommitment = PFN_vkGetDeviceMemoryCommitment( vkGetInstanceProcAddr( instance, "vkGetDeviceMemoryCommitment" ) );
+      vkGetDeviceMemoryOpaqueCaptureAddressKHR = PFN_vkGetDeviceMemoryOpaqueCaptureAddressKHR( vkGetInstanceProcAddr( instance, "vkGetDeviceMemoryOpaqueCaptureAddressKHR" ) );
       vkGetDeviceProcAddr = PFN_vkGetDeviceProcAddr( vkGetInstanceProcAddr( instance, "vkGetDeviceProcAddr" ) );
       vkGetDeviceQueue = PFN_vkGetDeviceQueue( vkGetInstanceProcAddr( instance, "vkGetDeviceQueue" ) );
       vkGetDeviceQueue2 = PFN_vkGetDeviceQueue2( vkGetInstanceProcAddr( instance, "vkGetDeviceQueue2" ) );
@@ -67217,6 +68909,7 @@ namespace VULKAN_HPP_NAMESPACE
       vkReleaseFullScreenExclusiveModeEXT = PFN_vkReleaseFullScreenExclusiveModeEXT( vkGetInstanceProcAddr( instance, "vkReleaseFullScreenExclusiveModeEXT" ) );
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
       vkReleasePerformanceConfigurationINTEL = PFN_vkReleasePerformanceConfigurationINTEL( vkGetInstanceProcAddr( instance, "vkReleasePerformanceConfigurationINTEL" ) );
+      vkReleaseProfilingLockKHR = PFN_vkReleaseProfilingLockKHR( vkGetInstanceProcAddr( instance, "vkReleaseProfilingLockKHR" ) );
       vkResetCommandPool = PFN_vkResetCommandPool( vkGetInstanceProcAddr( instance, "vkResetCommandPool" ) );
       vkResetDescriptorPool = PFN_vkResetDescriptorPool( vkGetInstanceProcAddr( instance, "vkResetDescriptorPool" ) );
       vkResetEvent = PFN_vkResetEvent( vkGetInstanceProcAddr( instance, "vkResetEvent" ) );
@@ -67354,6 +69047,7 @@ namespace VULKAN_HPP_NAMESPACE
       vkAcquireNextImage2KHR = PFN_vkAcquireNextImage2KHR( vkGetDeviceProcAddr( device, "vkAcquireNextImage2KHR" ) );
       vkAcquireNextImageKHR = PFN_vkAcquireNextImageKHR( vkGetDeviceProcAddr( device, "vkAcquireNextImageKHR" ) );
       vkAcquirePerformanceConfigurationINTEL = PFN_vkAcquirePerformanceConfigurationINTEL( vkGetDeviceProcAddr( device, "vkAcquirePerformanceConfigurationINTEL" ) );
+      vkAcquireProfilingLockKHR = PFN_vkAcquireProfilingLockKHR( vkGetDeviceProcAddr( device, "vkAcquireProfilingLockKHR" ) );
       vkAllocateCommandBuffers = PFN_vkAllocateCommandBuffers( vkGetDeviceProcAddr( device, "vkAllocateCommandBuffers" ) );
       vkAllocateDescriptorSets = PFN_vkAllocateDescriptorSets( vkGetDeviceProcAddr( device, "vkAllocateDescriptorSets" ) );
       vkAllocateMemory = PFN_vkAllocateMemory( vkGetDeviceProcAddr( device, "vkAllocateMemory" ) );
@@ -67438,9 +69132,11 @@ namespace VULKAN_HPP_NAMESPACE
       vkGetAndroidHardwareBufferPropertiesANDROID = PFN_vkGetAndroidHardwareBufferPropertiesANDROID( vkGetDeviceProcAddr( device, "vkGetAndroidHardwareBufferPropertiesANDROID" ) );
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
       vkGetBufferDeviceAddressEXT = PFN_vkGetBufferDeviceAddressEXT( vkGetDeviceProcAddr( device, "vkGetBufferDeviceAddressEXT" ) );
+      vkGetBufferDeviceAddressKHR = PFN_vkGetBufferDeviceAddressKHR( vkGetDeviceProcAddr( device, "vkGetBufferDeviceAddressKHR" ) );
       vkGetBufferMemoryRequirements = PFN_vkGetBufferMemoryRequirements( vkGetDeviceProcAddr( device, "vkGetBufferMemoryRequirements" ) );
       vkGetBufferMemoryRequirements2 = PFN_vkGetBufferMemoryRequirements2( vkGetDeviceProcAddr( device, "vkGetBufferMemoryRequirements2" ) );
       vkGetBufferMemoryRequirements2KHR = PFN_vkGetBufferMemoryRequirements2KHR( vkGetDeviceProcAddr( device, "vkGetBufferMemoryRequirements2KHR" ) );
+      vkGetBufferOpaqueCaptureAddressKHR = PFN_vkGetBufferOpaqueCaptureAddressKHR( vkGetDeviceProcAddr( device, "vkGetBufferOpaqueCaptureAddressKHR" ) );
       vkGetCalibratedTimestampsEXT = PFN_vkGetCalibratedTimestampsEXT( vkGetDeviceProcAddr( device, "vkGetCalibratedTimestampsEXT" ) );
       vkGetDescriptorSetLayoutSupport = PFN_vkGetDescriptorSetLayoutSupport( vkGetDeviceProcAddr( device, "vkGetDescriptorSetLayoutSupport" ) );
       vkGetDescriptorSetLayoutSupportKHR = PFN_vkGetDescriptorSetLayoutSupportKHR( vkGetDeviceProcAddr( device, "vkGetDescriptorSetLayoutSupportKHR" ) );
@@ -67452,6 +69148,7 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
       vkGetDeviceGroupSurfacePresentModesKHR = PFN_vkGetDeviceGroupSurfacePresentModesKHR( vkGetDeviceProcAddr( device, "vkGetDeviceGroupSurfacePresentModesKHR" ) );
       vkGetDeviceMemoryCommitment = PFN_vkGetDeviceMemoryCommitment( vkGetDeviceProcAddr( device, "vkGetDeviceMemoryCommitment" ) );
+      vkGetDeviceMemoryOpaqueCaptureAddressKHR = PFN_vkGetDeviceMemoryOpaqueCaptureAddressKHR( vkGetDeviceProcAddr( device, "vkGetDeviceMemoryOpaqueCaptureAddressKHR" ) );
       vkGetDeviceProcAddr = PFN_vkGetDeviceProcAddr( vkGetDeviceProcAddr( device, "vkGetDeviceProcAddr" ) );
       vkGetDeviceQueue = PFN_vkGetDeviceQueue( vkGetDeviceProcAddr( device, "vkGetDeviceQueue" ) );
       vkGetDeviceQueue2 = PFN_vkGetDeviceQueue2( vkGetDeviceProcAddr( device, "vkGetDeviceQueue2" ) );
@@ -67525,6 +69222,7 @@ namespace VULKAN_HPP_NAMESPACE
       vkReleaseFullScreenExclusiveModeEXT = PFN_vkReleaseFullScreenExclusiveModeEXT( vkGetDeviceProcAddr( device, "vkReleaseFullScreenExclusiveModeEXT" ) );
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
       vkReleasePerformanceConfigurationINTEL = PFN_vkReleasePerformanceConfigurationINTEL( vkGetDeviceProcAddr( device, "vkReleasePerformanceConfigurationINTEL" ) );
+      vkReleaseProfilingLockKHR = PFN_vkReleaseProfilingLockKHR( vkGetDeviceProcAddr( device, "vkReleaseProfilingLockKHR" ) );
       vkResetCommandPool = PFN_vkResetCommandPool( vkGetDeviceProcAddr( device, "vkResetCommandPool" ) );
       vkResetDescriptorPool = PFN_vkResetDescriptorPool( vkGetDeviceProcAddr( device, "vkResetDescriptorPool" ) );
       vkResetEvent = PFN_vkResetEvent( vkGetDeviceProcAddr( device, "vkResetEvent" ) );

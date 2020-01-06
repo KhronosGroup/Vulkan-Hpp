@@ -122,9 +122,10 @@ namespace vk
 
       std::vector<vk::VertexInputAttributeDescription> vertexInputAttributeDescriptions;
       vk::PipelineVertexInputStateCreateInfo pipelineVertexInputStateCreateInfo;
+      vk::VertexInputBindingDescription vertexInputBindingDescription(0, vertexStride);
+      
       if (0 < vertexStride)
       {
-        vk::VertexInputBindingDescription vertexInputBindingDescription(0, vertexStride);
         vertexInputAttributeDescriptions.reserve(vertexInputAttributeFormatOffset.size());
         for (uint32_t i=0 ; i<vertexInputAttributeFormatOffset.size() ; i++)
         {

@@ -5212,12 +5212,14 @@ static const std::string constExpressionArrayCopy = R"(
 )";
 
   static const std::string is_error_code_enum = R"(
+#ifndef VULKAN_HPP_NO_EXCEPTIONS
 namespace std
 {
   template <>
   struct is_error_code_enum<VULKAN_HPP_NAMESPACE::Result> : public true_type
   {};
 }
+#endif
 )";
 
   static const std::string structResultValue = R"(

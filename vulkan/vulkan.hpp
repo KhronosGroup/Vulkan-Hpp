@@ -11964,12 +11964,14 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_USE_PLATFORM_XLIB_KHR*/
 } // namespace VULKAN_HPP_NAMESPACE
 
+#ifndef VULKAN_HPP_NO_EXCEPTIONS
 namespace std
 {
   template <>
   struct is_error_code_enum<VULKAN_HPP_NAMESPACE::Result> : public true_type
   {};
 }
+#endif
 
 namespace VULKAN_HPP_NAMESPACE
 {

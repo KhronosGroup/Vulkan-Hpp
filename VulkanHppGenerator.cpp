@@ -803,7 +803,10 @@ void VulkanHppGenerator::appendBitmasks(std::string & str) const
   for (auto const& bitmask : m_bitmasks)
   {
     auto bitmaskBits = m_bitmaskBits.find(bitmask.second.requirement);
-    assert(bitmaskBits != m_bitmaskBits.end());
+    if (bitmaskBits == m_bitmaskBits.end())
+    {
+      throw std::runtime_error( bitmask.first + " references the undefined requirement '" + bitmask.second.requirement + "'");
+    }
 
     std::string strippedBitmaskName = stripPrefix(bitmask.first, "Vk");
     std::string strippedEnumName = stripPrefix(bitmaskBits->first, "Vk");

@@ -44202,7 +44202,7 @@ namespace VULKAN_HPP_NAMESPACE
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( physicalDeviceCount == rhs.physicalDeviceCount )
-          && ( memcmp( physicalDevices, rhs.physicalDevices, VK_MAX_DEVICE_GROUP_SIZE * sizeof( VULKAN_HPP_NAMESPACE::PhysicalDevice ) ) == 0 )
+          && ( memcmp( physicalDevices, rhs.physicalDevices, std::min<uint32_t>( VK_MAX_DEVICE_GROUP_SIZE, physicalDeviceCount ) * sizeof( VULKAN_HPP_NAMESPACE::PhysicalDevice ) ) == 0 )
           && ( subsetAllocation == rhs.subsetAllocation );
     }
 
@@ -45757,9 +45757,9 @@ namespace VULKAN_HPP_NAMESPACE
     bool operator==( PhysicalDeviceMemoryProperties const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( memoryTypeCount == rhs.memoryTypeCount )
-          && ( memcmp( memoryTypes, rhs.memoryTypes, VK_MAX_MEMORY_TYPES * sizeof( VULKAN_HPP_NAMESPACE::MemoryType ) ) == 0 )
+          && ( memcmp( memoryTypes, rhs.memoryTypes, std::min<uint32_t>( VK_MAX_MEMORY_TYPES, memoryTypeCount ) * sizeof( VULKAN_HPP_NAMESPACE::MemoryType ) ) == 0 )
           && ( memoryHeapCount == rhs.memoryHeapCount )
-          && ( memcmp( memoryHeaps, rhs.memoryHeaps, VK_MAX_MEMORY_HEAPS * sizeof( VULKAN_HPP_NAMESPACE::MemoryHeap ) ) == 0 );
+          && ( memcmp( memoryHeaps, rhs.memoryHeaps, std::min<uint32_t>( VK_MAX_MEMORY_HEAPS, memoryHeapCount ) * sizeof( VULKAN_HPP_NAMESPACE::MemoryHeap ) ) == 0 );
     }
 
     bool operator!=( PhysicalDeviceMemoryProperties const& rhs ) const VULKAN_HPP_NOEXCEPT

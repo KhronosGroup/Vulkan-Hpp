@@ -2531,8 +2531,9 @@ void VulkanHppGenerator::appendStructCompareOperators(std::string & str, std::pa
   // two structs are compared by comparing each of the elements
   std::string compareMembers;
   std::string intro = "";
-  for (auto const& member : structData.second.members)
+  for (size_t i = 0; i < structData.second.members.size(); i++)
   {
+    MemberData const& member = structData.second.members[i];
     compareMembers += intro;
     if (member.arraySize.empty())
     {
@@ -2540,7 +2541,13 @@ void VulkanHppGenerator::appendStructCompareOperators(std::string & str, std::pa
     }
     else
     {
-      compareMembers += "( memcmp( " + member.name + ", rhs." + member.name + ", " + member.arraySize + " * sizeof( " + member.type.compose() + " ) ) == 0 )";
+      std::string arraySize = member.arraySize;
+      if ((0 < i) && ((stripPostfix(member.name, "s") + "Count") == structData.second.members[i - 1].name))
+      {
+        assert(structData.second.members[i - 1].type.type == "uint32_t");   // make sure, it's an unsigned type, so we don't need to clamp here
+        arraySize = "std::min<" + structData.second.members[i-1].type.type + ">( " + arraySize + ", " + structData.second.members[i - 1].name + " )";
+      }
+      compareMembers += "( memcmp( " + member.name + ", rhs." + member.name + ", " + arraySize + " * sizeof( " + member.type.compose() + " ) ) == 0 )";
     }
     intro = "\n          && ";
   }

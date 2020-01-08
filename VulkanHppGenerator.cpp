@@ -3655,6 +3655,7 @@ void VulkanHppGenerator::readExtension(tinyxml2::XMLElement const* element)
     { "provisional",{} },
     { "requires",{} },
     { "requiresCore",{} },
+    { "specialuse", {} },
     { "type",{ "device", "instance" } }
   });
   std::vector<tinyxml2::XMLElement const*> children = getChildElements(element);

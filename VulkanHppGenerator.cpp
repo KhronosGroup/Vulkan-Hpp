@@ -1585,7 +1585,7 @@ void VulkanHppGenerator::appendFunctionBodyEnhancedLocalReturnVariableVectorSize
     // -> look for it and get it's actual size
     for (auto const& vpi : vectorParamIndices)
     {
-      if ((vpi.first != vectorParamIndex.first) || (vpi.second != vectorParamIndex.second))
+      if ((vpi.first != vectorParamIndex.first) && (vpi.second == vectorParamIndex.second))
       {
         size = startLowerCase(stripPrefix(params[vpi.first].name, "p")) + ".size()";
         break;

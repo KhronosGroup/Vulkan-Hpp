@@ -3806,10 +3806,23 @@ void VulkanHppGenerator::readExtensionRequireType(tinyxml2::XMLElement const* el
   checkElements(getChildElements(element), {});
 
   // add the protect-string to the appropriate type: enum, flag, handle, scalar, or struct
+  std::string name = attributes.find("name")->second;
+
+  auto handleIt = m_handles.find(name);
+  if (handleIt != m_handles.end())
+  {
+    assert(beginsWith(name, "Vk"));
+    auto objectTypeIt = m_enums.find("VkObjectType");
+    assert(objectTypeIt != m_enums.end());
+    std::string objectTypeName = "e" + stripPrefix(handleIt->first, "Vk");
+    if (std::find_if(objectTypeIt->second.values.begin(), objectTypeIt->second.values.end(), [objectTypeName](EnumValueData const& evd) {return evd.vkValue == objectTypeName; }) == objectTypeIt->second.values.end())
+    {
+      throw std::runtime_error("Spec error on line " + std::to_string(element->GetLineNum()) + ": missing entry in VkObjectType enum for handle <" + name + ">.");
+    }
+  }
+
   if (!platform.empty())
   {
-    std::string name = attributes.find("name")->second;
-
     auto bmit = m_bitmasks.find(name);
     if (bmit != m_bitmasks.end())
     {

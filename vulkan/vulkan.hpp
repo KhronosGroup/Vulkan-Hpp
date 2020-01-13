@@ -2863,21 +2863,49 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   template <typename T, size_t N, size_t I>
-  class ConstExpressionArrayCopy
+  class ConstExpression1DArrayCopy
   {
     public:
       VULKAN_HPP_CONSTEXPR_14 static void copy(T dst[N], std::array<T,N> const& src) VULKAN_HPP_NOEXCEPT
       {
         dst[I-1] = src[I-1];
-        ConstExpressionArrayCopy<T, N, I - 1>::copy(dst, src);
+        ConstExpression1DArrayCopy<T, N, I - 1>::copy(dst, src);
       }
   };
 
   template <typename T, size_t N>
-  class ConstExpressionArrayCopy<T, N, 0>
+  class ConstExpression1DArrayCopy<T, N, 0>
   {
     public:
       VULKAN_HPP_CONSTEXPR_14 static void copy(T /*dst*/[N], std::array<T,N> const& /*src*/) VULKAN_HPP_NOEXCEPT {}
+  };
+
+  template <typename T, size_t N, size_t M, size_t I, size_t J>
+  class ConstExpression2DArrayCopy
+  {
+  public:
+    VULKAN_HPP_CONSTEXPR_14 static void copy(T dst[N][M], std::array<std::array<T,M>, N> const& src) VULKAN_HPP_NOEXCEPT
+    {
+      dst[I - 1][J - 1] = src[I - 1][J - 1];
+      ConstExpression2DArrayCopy<T, N, M, I, J - 1>::copy(dst, src);
+    }
+  };
+
+  template <typename T, size_t N, size_t M, size_t I>
+  class ConstExpression2DArrayCopy<T, N, M, I, 0>
+  {
+  public:
+    VULKAN_HPP_CONSTEXPR_14 static void copy(T dst[N][M], std::array<std::array<T, M>, N> const& src) VULKAN_HPP_NOEXCEPT
+    {
+      ConstExpression2DArrayCopy<T, N, M, I - 1, M>::copy(dst, src);
+    }
+  };
+
+  template <typename T, size_t N, size_t M>
+  class ConstExpression2DArrayCopy<T, N, M, 0, 0>
+  {
+  public:
+    VULKAN_HPP_CONSTEXPR_14 static void copy(T /*dst*/[N][M], std::array<std::array<T, M>, N> const& /*src*/) VULKAN_HPP_NOEXCEPT {}
   };
 
   using Bool32 = uint32_t;
@@ -2915,6 +2943,96 @@ namespace VULKAN_HPP_NAMESPACE
     {
       case AccelerationStructureTypeNV::eTopLevel : return "TopLevel";
       case AccelerationStructureTypeNV::eBottomLevel : return "BottomLevel";
+      default: return "invalid";
+    }
+  }
+
+  enum class AccessFlagBits
+  {
+    eIndirectCommandRead = VK_ACCESS_INDIRECT_COMMAND_READ_BIT,
+    eIndexRead = VK_ACCESS_INDEX_READ_BIT,
+    eVertexAttributeRead = VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT,
+    eUniformRead = VK_ACCESS_UNIFORM_READ_BIT,
+    eInputAttachmentRead = VK_ACCESS_INPUT_ATTACHMENT_READ_BIT,
+    eShaderRead = VK_ACCESS_SHADER_READ_BIT,
+    eShaderWrite = VK_ACCESS_SHADER_WRITE_BIT,
+    eColorAttachmentRead = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT,
+    eColorAttachmentWrite = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
+    eDepthStencilAttachmentRead = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT,
+    eDepthStencilAttachmentWrite = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT,
+    eTransferRead = VK_ACCESS_TRANSFER_READ_BIT,
+    eTransferWrite = VK_ACCESS_TRANSFER_WRITE_BIT,
+    eHostRead = VK_ACCESS_HOST_READ_BIT,
+    eHostWrite = VK_ACCESS_HOST_WRITE_BIT,
+    eMemoryRead = VK_ACCESS_MEMORY_READ_BIT,
+    eMemoryWrite = VK_ACCESS_MEMORY_WRITE_BIT,
+    eTransformFeedbackWriteEXT = VK_ACCESS_TRANSFORM_FEEDBACK_WRITE_BIT_EXT,
+    eTransformFeedbackCounterReadEXT = VK_ACCESS_TRANSFORM_FEEDBACK_COUNTER_READ_BIT_EXT,
+    eTransformFeedbackCounterWriteEXT = VK_ACCESS_TRANSFORM_FEEDBACK_COUNTER_WRITE_BIT_EXT,
+    eConditionalRenderingReadEXT = VK_ACCESS_CONDITIONAL_RENDERING_READ_BIT_EXT,
+    eCommandProcessReadNVX = VK_ACCESS_COMMAND_PROCESS_READ_BIT_NVX,
+    eCommandProcessWriteNVX = VK_ACCESS_COMMAND_PROCESS_WRITE_BIT_NVX,
+    eColorAttachmentReadNoncoherentEXT = VK_ACCESS_COLOR_ATTACHMENT_READ_NONCOHERENT_BIT_EXT,
+    eShadingRateImageReadNV = VK_ACCESS_SHADING_RATE_IMAGE_READ_BIT_NV,
+    eAccelerationStructureReadNV = VK_ACCESS_ACCELERATION_STRUCTURE_READ_BIT_NV,
+    eAccelerationStructureWriteNV = VK_ACCESS_ACCELERATION_STRUCTURE_WRITE_BIT_NV,
+    eFragmentDensityMapReadEXT = VK_ACCESS_FRAGMENT_DENSITY_MAP_READ_BIT_EXT
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( AccessFlagBits value )
+  {
+    switch ( value )
+    {
+      case AccessFlagBits::eIndirectCommandRead : return "IndirectCommandRead";
+      case AccessFlagBits::eIndexRead : return "IndexRead";
+      case AccessFlagBits::eVertexAttributeRead : return "VertexAttributeRead";
+      case AccessFlagBits::eUniformRead : return "UniformRead";
+      case AccessFlagBits::eInputAttachmentRead : return "InputAttachmentRead";
+      case AccessFlagBits::eShaderRead : return "ShaderRead";
+      case AccessFlagBits::eShaderWrite : return "ShaderWrite";
+      case AccessFlagBits::eColorAttachmentRead : return "ColorAttachmentRead";
+      case AccessFlagBits::eColorAttachmentWrite : return "ColorAttachmentWrite";
+      case AccessFlagBits::eDepthStencilAttachmentRead : return "DepthStencilAttachmentRead";
+      case AccessFlagBits::eDepthStencilAttachmentWrite : return "DepthStencilAttachmentWrite";
+      case AccessFlagBits::eTransferRead : return "TransferRead";
+      case AccessFlagBits::eTransferWrite : return "TransferWrite";
+      case AccessFlagBits::eHostRead : return "HostRead";
+      case AccessFlagBits::eHostWrite : return "HostWrite";
+      case AccessFlagBits::eMemoryRead : return "MemoryRead";
+      case AccessFlagBits::eMemoryWrite : return "MemoryWrite";
+      case AccessFlagBits::eTransformFeedbackWriteEXT : return "TransformFeedbackWriteEXT";
+      case AccessFlagBits::eTransformFeedbackCounterReadEXT : return "TransformFeedbackCounterReadEXT";
+      case AccessFlagBits::eTransformFeedbackCounterWriteEXT : return "TransformFeedbackCounterWriteEXT";
+      case AccessFlagBits::eConditionalRenderingReadEXT : return "ConditionalRenderingReadEXT";
+      case AccessFlagBits::eCommandProcessReadNVX : return "CommandProcessReadNVX";
+      case AccessFlagBits::eCommandProcessWriteNVX : return "CommandProcessWriteNVX";
+      case AccessFlagBits::eColorAttachmentReadNoncoherentEXT : return "ColorAttachmentReadNoncoherentEXT";
+      case AccessFlagBits::eShadingRateImageReadNV : return "ShadingRateImageReadNV";
+      case AccessFlagBits::eAccelerationStructureReadNV : return "AccelerationStructureReadNV";
+      case AccessFlagBits::eAccelerationStructureWriteNV : return "AccelerationStructureWriteNV";
+      case AccessFlagBits::eFragmentDensityMapReadEXT : return "FragmentDensityMapReadEXT";
+      default: return "invalid";
+    }
+  }
+
+  enum class AcquireProfilingLockFlagBitsKHR
+  {};
+
+  VULKAN_HPP_INLINE std::string to_string( AcquireProfilingLockFlagBitsKHR )
+  {
+    return "(void)";
+  }
+
+  enum class AttachmentDescriptionFlagBits
+  {
+    eMayAlias = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( AttachmentDescriptionFlagBits value )
+  {
+    switch ( value )
+    {
+      case AttachmentDescriptionFlagBits::eMayAlias : return "MayAlias";
       default: return "invalid";
     }
   }
@@ -3159,6 +3277,100 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
+  enum class BufferCreateFlagBits
+  {
+    eSparseBinding = VK_BUFFER_CREATE_SPARSE_BINDING_BIT,
+    eSparseResidency = VK_BUFFER_CREATE_SPARSE_RESIDENCY_BIT,
+    eSparseAliased = VK_BUFFER_CREATE_SPARSE_ALIASED_BIT,
+    eProtected = VK_BUFFER_CREATE_PROTECTED_BIT,
+    eDeviceAddressCaptureReplayKHR = VK_BUFFER_CREATE_DEVICE_ADDRESS_CAPTURE_REPLAY_BIT_KHR,
+    eDeviceAddressCaptureReplayEXT = VK_BUFFER_CREATE_DEVICE_ADDRESS_CAPTURE_REPLAY_BIT_EXT
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( BufferCreateFlagBits value )
+  {
+    switch ( value )
+    {
+      case BufferCreateFlagBits::eSparseBinding : return "SparseBinding";
+      case BufferCreateFlagBits::eSparseResidency : return "SparseResidency";
+      case BufferCreateFlagBits::eSparseAliased : return "SparseAliased";
+      case BufferCreateFlagBits::eProtected : return "Protected";
+      case BufferCreateFlagBits::eDeviceAddressCaptureReplayKHR : return "DeviceAddressCaptureReplayKHR";
+      default: return "invalid";
+    }
+  }
+
+  enum class BufferUsageFlagBits
+  {
+    eTransferSrc = VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+    eTransferDst = VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+    eUniformTexelBuffer = VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT,
+    eStorageTexelBuffer = VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT,
+    eUniformBuffer = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+    eStorageBuffer = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,
+    eIndexBuffer = VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
+    eVertexBuffer = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+    eIndirectBuffer = VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT,
+    eTransformFeedbackBufferEXT = VK_BUFFER_USAGE_TRANSFORM_FEEDBACK_BUFFER_BIT_EXT,
+    eTransformFeedbackCounterBufferEXT = VK_BUFFER_USAGE_TRANSFORM_FEEDBACK_COUNTER_BUFFER_BIT_EXT,
+    eConditionalRenderingEXT = VK_BUFFER_USAGE_CONDITIONAL_RENDERING_BIT_EXT,
+    eRayTracingNV = VK_BUFFER_USAGE_RAY_TRACING_BIT_NV,
+    eShaderDeviceAddressKHR = VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT_KHR,
+    eShaderDeviceAddressEXT = VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT_EXT
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( BufferUsageFlagBits value )
+  {
+    switch ( value )
+    {
+      case BufferUsageFlagBits::eTransferSrc : return "TransferSrc";
+      case BufferUsageFlagBits::eTransferDst : return "TransferDst";
+      case BufferUsageFlagBits::eUniformTexelBuffer : return "UniformTexelBuffer";
+      case BufferUsageFlagBits::eStorageTexelBuffer : return "StorageTexelBuffer";
+      case BufferUsageFlagBits::eUniformBuffer : return "UniformBuffer";
+      case BufferUsageFlagBits::eStorageBuffer : return "StorageBuffer";
+      case BufferUsageFlagBits::eIndexBuffer : return "IndexBuffer";
+      case BufferUsageFlagBits::eVertexBuffer : return "VertexBuffer";
+      case BufferUsageFlagBits::eIndirectBuffer : return "IndirectBuffer";
+      case BufferUsageFlagBits::eTransformFeedbackBufferEXT : return "TransformFeedbackBufferEXT";
+      case BufferUsageFlagBits::eTransformFeedbackCounterBufferEXT : return "TransformFeedbackCounterBufferEXT";
+      case BufferUsageFlagBits::eConditionalRenderingEXT : return "ConditionalRenderingEXT";
+      case BufferUsageFlagBits::eRayTracingNV : return "RayTracingNV";
+      case BufferUsageFlagBits::eShaderDeviceAddressKHR : return "ShaderDeviceAddressKHR";
+      default: return "invalid";
+    }
+  }
+
+  enum class BufferViewCreateFlagBits
+  {};
+
+  VULKAN_HPP_INLINE std::string to_string( BufferViewCreateFlagBits )
+  {
+    return "(void)";
+  }
+
+  enum class BuildAccelerationStructureFlagBitsNV
+  {
+    eAllowUpdate = VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_UPDATE_BIT_NV,
+    eAllowCompaction = VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_COMPACTION_BIT_NV,
+    ePreferFastTrace = VK_BUILD_ACCELERATION_STRUCTURE_PREFER_FAST_TRACE_BIT_NV,
+    ePreferFastBuild = VK_BUILD_ACCELERATION_STRUCTURE_PREFER_FAST_BUILD_BIT_NV,
+    eLowMemory = VK_BUILD_ACCELERATION_STRUCTURE_LOW_MEMORY_BIT_NV
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( BuildAccelerationStructureFlagBitsNV value )
+  {
+    switch ( value )
+    {
+      case BuildAccelerationStructureFlagBitsNV::eAllowUpdate : return "AllowUpdate";
+      case BuildAccelerationStructureFlagBitsNV::eAllowCompaction : return "AllowCompaction";
+      case BuildAccelerationStructureFlagBitsNV::ePreferFastTrace : return "PreferFastTrace";
+      case BuildAccelerationStructureFlagBitsNV::ePreferFastBuild : return "PreferFastBuild";
+      case BuildAccelerationStructureFlagBitsNV::eLowMemory : return "LowMemory";
+      default: return "invalid";
+    }
+  }
+
   enum class ChromaLocation
   {
     eCositedEven = VK_CHROMA_LOCATION_COSITED_EVEN,
@@ -3166,6 +3378,7 @@ namespace VULKAN_HPP_NAMESPACE
     eCositedEvenKHR = VK_CHROMA_LOCATION_COSITED_EVEN_KHR,
     eMidpointKHR = VK_CHROMA_LOCATION_MIDPOINT_KHR
   };
+  using ChromaLocationKHR = ChromaLocation;
 
   VULKAN_HPP_INLINE std::string to_string( ChromaLocation value )
   {
@@ -3193,6 +3406,26 @@ namespace VULKAN_HPP_NAMESPACE
       case CoarseSampleOrderTypeNV::eCustom : return "Custom";
       case CoarseSampleOrderTypeNV::ePixelMajor : return "PixelMajor";
       case CoarseSampleOrderTypeNV::eSampleMajor : return "SampleMajor";
+      default: return "invalid";
+    }
+  }
+
+  enum class ColorComponentFlagBits
+  {
+    eR = VK_COLOR_COMPONENT_R_BIT,
+    eG = VK_COLOR_COMPONENT_G_BIT,
+    eB = VK_COLOR_COMPONENT_B_BIT,
+    eA = VK_COLOR_COMPONENT_A_BIT
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( ColorComponentFlagBits value )
+  {
+    switch ( value )
+    {
+      case ColorComponentFlagBits::eR : return "R";
+      case ColorComponentFlagBits::eG : return "G";
+      case ColorComponentFlagBits::eB : return "B";
+      case ColorComponentFlagBits::eA : return "A";
       default: return "invalid";
     }
   }
@@ -3255,6 +3488,70 @@ namespace VULKAN_HPP_NAMESPACE
     {
       case CommandBufferLevel::ePrimary : return "Primary";
       case CommandBufferLevel::eSecondary : return "Secondary";
+      default: return "invalid";
+    }
+  }
+
+  enum class CommandBufferResetFlagBits
+  {
+    eReleaseResources = VK_COMMAND_BUFFER_RESET_RELEASE_RESOURCES_BIT
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( CommandBufferResetFlagBits value )
+  {
+    switch ( value )
+    {
+      case CommandBufferResetFlagBits::eReleaseResources : return "ReleaseResources";
+      default: return "invalid";
+    }
+  }
+
+  enum class CommandBufferUsageFlagBits
+  {
+    eOneTimeSubmit = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT,
+    eRenderPassContinue = VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT,
+    eSimultaneousUse = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( CommandBufferUsageFlagBits value )
+  {
+    switch ( value )
+    {
+      case CommandBufferUsageFlagBits::eOneTimeSubmit : return "OneTimeSubmit";
+      case CommandBufferUsageFlagBits::eRenderPassContinue : return "RenderPassContinue";
+      case CommandBufferUsageFlagBits::eSimultaneousUse : return "SimultaneousUse";
+      default: return "invalid";
+    }
+  }
+
+  enum class CommandPoolCreateFlagBits
+  {
+    eTransient = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT,
+    eResetCommandBuffer = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
+    eProtected = VK_COMMAND_POOL_CREATE_PROTECTED_BIT
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( CommandPoolCreateFlagBits value )
+  {
+    switch ( value )
+    {
+      case CommandPoolCreateFlagBits::eTransient : return "Transient";
+      case CommandPoolCreateFlagBits::eResetCommandBuffer : return "ResetCommandBuffer";
+      case CommandPoolCreateFlagBits::eProtected : return "Protected";
+      default: return "invalid";
+    }
+  }
+
+  enum class CommandPoolResetFlagBits
+  {
+    eReleaseResources = VK_COMMAND_POOL_RESET_RELEASE_RESOURCES_BIT
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( CommandPoolResetFlagBits value )
+  {
+    switch ( value )
+    {
+      case CommandPoolResetFlagBits::eReleaseResources : return "ReleaseResources";
       default: return "invalid";
     }
   }
@@ -3347,6 +3644,40 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
+  enum class CompositeAlphaFlagBitsKHR
+  {
+    eOpaque = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
+    ePreMultiplied = VK_COMPOSITE_ALPHA_PRE_MULTIPLIED_BIT_KHR,
+    ePostMultiplied = VK_COMPOSITE_ALPHA_POST_MULTIPLIED_BIT_KHR,
+    eInherit = VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( CompositeAlphaFlagBitsKHR value )
+  {
+    switch ( value )
+    {
+      case CompositeAlphaFlagBitsKHR::eOpaque : return "Opaque";
+      case CompositeAlphaFlagBitsKHR::ePreMultiplied : return "PreMultiplied";
+      case CompositeAlphaFlagBitsKHR::ePostMultiplied : return "PostMultiplied";
+      case CompositeAlphaFlagBitsKHR::eInherit : return "Inherit";
+      default: return "invalid";
+    }
+  }
+
+  enum class ConditionalRenderingFlagBitsEXT
+  {
+    eInverted = VK_CONDITIONAL_RENDERING_INVERTED_BIT_EXT
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( ConditionalRenderingFlagBitsEXT value )
+  {
+    switch ( value )
+    {
+      case ConditionalRenderingFlagBitsEXT::eInverted : return "Inverted";
+      default: return "invalid";
+    }
+  }
+
   enum class ConservativeRasterizationModeEXT
   {
     eDisabled = VK_CONSERVATIVE_RASTERIZATION_MODE_DISABLED_EXT,
@@ -3413,6 +3744,48 @@ namespace VULKAN_HPP_NAMESPACE
     {
       case CoverageReductionModeNV::eMerge : return "Merge";
       case CoverageReductionModeNV::eTruncate : return "Truncate";
+      default: return "invalid";
+    }
+  }
+
+  enum class CullModeFlagBits
+  {
+    eNone = VK_CULL_MODE_NONE,
+    eFront = VK_CULL_MODE_FRONT_BIT,
+    eBack = VK_CULL_MODE_BACK_BIT,
+    eFrontAndBack = VK_CULL_MODE_FRONT_AND_BACK
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( CullModeFlagBits value )
+  {
+    switch ( value )
+    {
+      case CullModeFlagBits::eNone : return "None";
+      case CullModeFlagBits::eFront : return "Front";
+      case CullModeFlagBits::eBack : return "Back";
+      case CullModeFlagBits::eFrontAndBack : return "FrontAndBack";
+      default: return "invalid";
+    }
+  }
+
+  enum class DebugReportFlagBitsEXT
+  {
+    eInformation = VK_DEBUG_REPORT_INFORMATION_BIT_EXT,
+    eWarning = VK_DEBUG_REPORT_WARNING_BIT_EXT,
+    ePerformanceWarning = VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT,
+    eError = VK_DEBUG_REPORT_ERROR_BIT_EXT,
+    eDebug = VK_DEBUG_REPORT_DEBUG_BIT_EXT
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( DebugReportFlagBitsEXT value )
+  {
+    switch ( value )
+    {
+      case DebugReportFlagBitsEXT::eInformation : return "Information";
+      case DebugReportFlagBitsEXT::eWarning : return "Warning";
+      case DebugReportFlagBitsEXT::ePerformanceWarning : return "PerformanceWarning";
+      case DebugReportFlagBitsEXT::eError : return "Error";
+      case DebugReportFlagBitsEXT::eDebug : return "Debug";
       default: return "invalid";
     }
   }
@@ -3507,6 +3880,116 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
+  enum class DebugUtilsMessageSeverityFlagBitsEXT
+  {
+    eVerbose = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT,
+    eInfo = VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT,
+    eWarning = VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT,
+    eError = VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( DebugUtilsMessageSeverityFlagBitsEXT value )
+  {
+    switch ( value )
+    {
+      case DebugUtilsMessageSeverityFlagBitsEXT::eVerbose : return "Verbose";
+      case DebugUtilsMessageSeverityFlagBitsEXT::eInfo : return "Info";
+      case DebugUtilsMessageSeverityFlagBitsEXT::eWarning : return "Warning";
+      case DebugUtilsMessageSeverityFlagBitsEXT::eError : return "Error";
+      default: return "invalid";
+    }
+  }
+
+  enum class DebugUtilsMessageTypeFlagBitsEXT
+  {
+    eGeneral = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT,
+    eValidation = VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT,
+    ePerformance = VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( DebugUtilsMessageTypeFlagBitsEXT value )
+  {
+    switch ( value )
+    {
+      case DebugUtilsMessageTypeFlagBitsEXT::eGeneral : return "General";
+      case DebugUtilsMessageTypeFlagBitsEXT::eValidation : return "Validation";
+      case DebugUtilsMessageTypeFlagBitsEXT::ePerformance : return "Performance";
+      default: return "invalid";
+    }
+  }
+
+  enum class DependencyFlagBits
+  {
+    eByRegion = VK_DEPENDENCY_BY_REGION_BIT,
+    eDeviceGroup = VK_DEPENDENCY_DEVICE_GROUP_BIT,
+    eViewLocal = VK_DEPENDENCY_VIEW_LOCAL_BIT,
+    eViewLocalKHR = VK_DEPENDENCY_VIEW_LOCAL_BIT_KHR,
+    eDeviceGroupKHR = VK_DEPENDENCY_DEVICE_GROUP_BIT_KHR
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( DependencyFlagBits value )
+  {
+    switch ( value )
+    {
+      case DependencyFlagBits::eByRegion : return "ByRegion";
+      case DependencyFlagBits::eDeviceGroup : return "DeviceGroup";
+      case DependencyFlagBits::eViewLocal : return "ViewLocal";
+      default: return "invalid";
+    }
+  }
+
+  enum class DescriptorBindingFlagBitsEXT
+  {
+    eUpdateAfterBind = VK_DESCRIPTOR_BINDING_UPDATE_AFTER_BIND_BIT_EXT,
+    eUpdateUnusedWhilePending = VK_DESCRIPTOR_BINDING_UPDATE_UNUSED_WHILE_PENDING_BIT_EXT,
+    ePartiallyBound = VK_DESCRIPTOR_BINDING_PARTIALLY_BOUND_BIT_EXT,
+    eVariableDescriptorCount = VK_DESCRIPTOR_BINDING_VARIABLE_DESCRIPTOR_COUNT_BIT_EXT
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( DescriptorBindingFlagBitsEXT value )
+  {
+    switch ( value )
+    {
+      case DescriptorBindingFlagBitsEXT::eUpdateAfterBind : return "UpdateAfterBind";
+      case DescriptorBindingFlagBitsEXT::eUpdateUnusedWhilePending : return "UpdateUnusedWhilePending";
+      case DescriptorBindingFlagBitsEXT::ePartiallyBound : return "PartiallyBound";
+      case DescriptorBindingFlagBitsEXT::eVariableDescriptorCount : return "VariableDescriptorCount";
+      default: return "invalid";
+    }
+  }
+
+  enum class DescriptorPoolCreateFlagBits
+  {
+    eFreeDescriptorSet = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT,
+    eUpdateAfterBindEXT = VK_DESCRIPTOR_POOL_CREATE_UPDATE_AFTER_BIND_BIT_EXT
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( DescriptorPoolCreateFlagBits value )
+  {
+    switch ( value )
+    {
+      case DescriptorPoolCreateFlagBits::eFreeDescriptorSet : return "FreeDescriptorSet";
+      case DescriptorPoolCreateFlagBits::eUpdateAfterBindEXT : return "UpdateAfterBindEXT";
+      default: return "invalid";
+    }
+  }
+
+  enum class DescriptorSetLayoutCreateFlagBits
+  {
+    ePushDescriptorKHR = VK_DESCRIPTOR_SET_LAYOUT_CREATE_PUSH_DESCRIPTOR_BIT_KHR,
+    eUpdateAfterBindPoolEXT = VK_DESCRIPTOR_SET_LAYOUT_CREATE_UPDATE_AFTER_BIND_POOL_BIT_EXT
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( DescriptorSetLayoutCreateFlagBits value )
+  {
+    switch ( value )
+    {
+      case DescriptorSetLayoutCreateFlagBits::ePushDescriptorKHR : return "PushDescriptorKHR";
+      case DescriptorSetLayoutCreateFlagBits::eUpdateAfterBindPoolEXT : return "UpdateAfterBindPoolEXT";
+      default: return "invalid";
+    }
+  }
+
   enum class DescriptorType
   {
     eSampler = VK_DESCRIPTOR_TYPE_SAMPLER,
@@ -3551,6 +4034,7 @@ namespace VULKAN_HPP_NAMESPACE
     ePushDescriptorsKHR = VK_DESCRIPTOR_UPDATE_TEMPLATE_TYPE_PUSH_DESCRIPTORS_KHR,
     eDescriptorSetKHR = VK_DESCRIPTOR_UPDATE_TEMPLATE_TYPE_DESCRIPTOR_SET_KHR
   };
+  using DescriptorUpdateTemplateTypeKHR = DescriptorUpdateTemplateType;
 
   VULKAN_HPP_INLINE std::string to_string( DescriptorUpdateTemplateType value )
   {
@@ -3560,6 +4044,14 @@ namespace VULKAN_HPP_NAMESPACE
       case DescriptorUpdateTemplateType::ePushDescriptorsKHR : return "PushDescriptorsKHR";
       default: return "invalid";
     }
+  }
+
+  enum class DeviceCreateFlagBits
+  {};
+
+  VULKAN_HPP_INLINE std::string to_string( DeviceCreateFlagBits )
+  {
+    return "(void)";
   }
 
   enum class DeviceEventTypeEXT
@@ -3572,6 +4064,40 @@ namespace VULKAN_HPP_NAMESPACE
     switch ( value )
     {
       case DeviceEventTypeEXT::eDisplayHotplug : return "DisplayHotplug";
+      default: return "invalid";
+    }
+  }
+
+  enum class DeviceGroupPresentModeFlagBitsKHR
+  {
+    eLocal = VK_DEVICE_GROUP_PRESENT_MODE_LOCAL_BIT_KHR,
+    eRemote = VK_DEVICE_GROUP_PRESENT_MODE_REMOTE_BIT_KHR,
+    eSum = VK_DEVICE_GROUP_PRESENT_MODE_SUM_BIT_KHR,
+    eLocalMultiDevice = VK_DEVICE_GROUP_PRESENT_MODE_LOCAL_MULTI_DEVICE_BIT_KHR
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( DeviceGroupPresentModeFlagBitsKHR value )
+  {
+    switch ( value )
+    {
+      case DeviceGroupPresentModeFlagBitsKHR::eLocal : return "Local";
+      case DeviceGroupPresentModeFlagBitsKHR::eRemote : return "Remote";
+      case DeviceGroupPresentModeFlagBitsKHR::eSum : return "Sum";
+      case DeviceGroupPresentModeFlagBitsKHR::eLocalMultiDevice : return "LocalMultiDevice";
+      default: return "invalid";
+    }
+  }
+
+  enum class DeviceQueueCreateFlagBits
+  {
+    eProtected = VK_DEVICE_QUEUE_CREATE_PROTECTED_BIT
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( DeviceQueueCreateFlagBits value )
+  {
+    switch ( value )
+    {
+      case DeviceQueueCreateFlagBits::eProtected : return "Protected";
       default: return "invalid";
     }
   }
@@ -3602,6 +4128,26 @@ namespace VULKAN_HPP_NAMESPACE
     switch ( value )
     {
       case DisplayEventTypeEXT::eFirstPixelOut : return "FirstPixelOut";
+      default: return "invalid";
+    }
+  }
+
+  enum class DisplayPlaneAlphaFlagBitsKHR
+  {
+    eOpaque = VK_DISPLAY_PLANE_ALPHA_OPAQUE_BIT_KHR,
+    eGlobal = VK_DISPLAY_PLANE_ALPHA_GLOBAL_BIT_KHR,
+    ePerPixel = VK_DISPLAY_PLANE_ALPHA_PER_PIXEL_BIT_KHR,
+    ePerPixelPremultiplied = VK_DISPLAY_PLANE_ALPHA_PER_PIXEL_PREMULTIPLIED_BIT_KHR
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( DisplayPlaneAlphaFlagBitsKHR value )
+  {
+    switch ( value )
+    {
+      case DisplayPlaneAlphaFlagBitsKHR::eOpaque : return "Opaque";
+      case DisplayPlaneAlphaFlagBitsKHR::eGlobal : return "Global";
+      case DisplayPlaneAlphaFlagBitsKHR::ePerPixel : return "PerPixel";
+      case DisplayPlaneAlphaFlagBitsKHR::ePerPixelPremultiplied : return "PerPixelPremultiplied";
       default: return "invalid";
     }
   }
@@ -3700,6 +4246,229 @@ namespace VULKAN_HPP_NAMESPACE
       case DynamicState::eViewportCoarseSampleOrderNV : return "ViewportCoarseSampleOrderNV";
       case DynamicState::eExclusiveScissorNV : return "ExclusiveScissorNV";
       case DynamicState::eLineStippleEXT : return "LineStippleEXT";
+      default: return "invalid";
+    }
+  }
+
+  enum class ExternalFenceFeatureFlagBits
+  {
+    eExportable = VK_EXTERNAL_FENCE_FEATURE_EXPORTABLE_BIT,
+    eImportable = VK_EXTERNAL_FENCE_FEATURE_IMPORTABLE_BIT,
+    eExportableKHR = VK_EXTERNAL_FENCE_FEATURE_EXPORTABLE_BIT_KHR,
+    eImportableKHR = VK_EXTERNAL_FENCE_FEATURE_IMPORTABLE_BIT_KHR
+  };
+  using ExternalFenceFeatureFlagBitsKHR = ExternalFenceFeatureFlagBits;
+
+  VULKAN_HPP_INLINE std::string to_string( ExternalFenceFeatureFlagBits value )
+  {
+    switch ( value )
+    {
+      case ExternalFenceFeatureFlagBits::eExportable : return "Exportable";
+      case ExternalFenceFeatureFlagBits::eImportable : return "Importable";
+      default: return "invalid";
+    }
+  }
+
+  enum class ExternalFenceHandleTypeFlagBits
+  {
+    eOpaqueFd = VK_EXTERNAL_FENCE_HANDLE_TYPE_OPAQUE_FD_BIT,
+    eOpaqueWin32 = VK_EXTERNAL_FENCE_HANDLE_TYPE_OPAQUE_WIN32_BIT,
+    eOpaqueWin32Kmt = VK_EXTERNAL_FENCE_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT,
+    eSyncFd = VK_EXTERNAL_FENCE_HANDLE_TYPE_SYNC_FD_BIT,
+    eOpaqueFdKHR = VK_EXTERNAL_FENCE_HANDLE_TYPE_OPAQUE_FD_BIT_KHR,
+    eOpaqueWin32KHR = VK_EXTERNAL_FENCE_HANDLE_TYPE_OPAQUE_WIN32_BIT_KHR,
+    eOpaqueWin32KmtKHR = VK_EXTERNAL_FENCE_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT_KHR,
+    eSyncFdKHR = VK_EXTERNAL_FENCE_HANDLE_TYPE_SYNC_FD_BIT_KHR
+  };
+  using ExternalFenceHandleTypeFlagBitsKHR = ExternalFenceHandleTypeFlagBits;
+
+  VULKAN_HPP_INLINE std::string to_string( ExternalFenceHandleTypeFlagBits value )
+  {
+    switch ( value )
+    {
+      case ExternalFenceHandleTypeFlagBits::eOpaqueFd : return "OpaqueFd";
+      case ExternalFenceHandleTypeFlagBits::eOpaqueWin32 : return "OpaqueWin32";
+      case ExternalFenceHandleTypeFlagBits::eOpaqueWin32Kmt : return "OpaqueWin32Kmt";
+      case ExternalFenceHandleTypeFlagBits::eSyncFd : return "SyncFd";
+      default: return "invalid";
+    }
+  }
+
+  enum class ExternalMemoryFeatureFlagBits
+  {
+    eDedicatedOnly = VK_EXTERNAL_MEMORY_FEATURE_DEDICATED_ONLY_BIT,
+    eExportable = VK_EXTERNAL_MEMORY_FEATURE_EXPORTABLE_BIT,
+    eImportable = VK_EXTERNAL_MEMORY_FEATURE_IMPORTABLE_BIT,
+    eDedicatedOnlyKHR = VK_EXTERNAL_MEMORY_FEATURE_DEDICATED_ONLY_BIT_KHR,
+    eExportableKHR = VK_EXTERNAL_MEMORY_FEATURE_EXPORTABLE_BIT_KHR,
+    eImportableKHR = VK_EXTERNAL_MEMORY_FEATURE_IMPORTABLE_BIT_KHR
+  };
+  using ExternalMemoryFeatureFlagBitsKHR = ExternalMemoryFeatureFlagBits;
+
+  VULKAN_HPP_INLINE std::string to_string( ExternalMemoryFeatureFlagBits value )
+  {
+    switch ( value )
+    {
+      case ExternalMemoryFeatureFlagBits::eDedicatedOnly : return "DedicatedOnly";
+      case ExternalMemoryFeatureFlagBits::eExportable : return "Exportable";
+      case ExternalMemoryFeatureFlagBits::eImportable : return "Importable";
+      default: return "invalid";
+    }
+  }
+
+  enum class ExternalMemoryFeatureFlagBitsNV
+  {
+    eDedicatedOnly = VK_EXTERNAL_MEMORY_FEATURE_DEDICATED_ONLY_BIT_NV,
+    eExportable = VK_EXTERNAL_MEMORY_FEATURE_EXPORTABLE_BIT_NV,
+    eImportable = VK_EXTERNAL_MEMORY_FEATURE_IMPORTABLE_BIT_NV
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( ExternalMemoryFeatureFlagBitsNV value )
+  {
+    switch ( value )
+    {
+      case ExternalMemoryFeatureFlagBitsNV::eDedicatedOnly : return "DedicatedOnly";
+      case ExternalMemoryFeatureFlagBitsNV::eExportable : return "Exportable";
+      case ExternalMemoryFeatureFlagBitsNV::eImportable : return "Importable";
+      default: return "invalid";
+    }
+  }
+
+  enum class ExternalMemoryHandleTypeFlagBits
+  {
+    eOpaqueFd = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT,
+    eOpaqueWin32 = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_BIT,
+    eOpaqueWin32Kmt = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT,
+    eD3D11Texture = VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D11_TEXTURE_BIT,
+    eD3D11TextureKmt = VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D11_TEXTURE_KMT_BIT,
+    eD3D12Heap = VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D12_HEAP_BIT,
+    eD3D12Resource = VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D12_RESOURCE_BIT,
+    eDmaBufEXT = VK_EXTERNAL_MEMORY_HANDLE_TYPE_DMA_BUF_BIT_EXT,
+    eAndroidHardwareBufferANDROID = VK_EXTERNAL_MEMORY_HANDLE_TYPE_ANDROID_HARDWARE_BUFFER_BIT_ANDROID,
+    eHostAllocationEXT = VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_ALLOCATION_BIT_EXT,
+    eHostMappedForeignMemoryEXT = VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_MAPPED_FOREIGN_MEMORY_BIT_EXT,
+    eOpaqueFdKHR = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT_KHR,
+    eOpaqueWin32KHR = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_BIT_KHR,
+    eOpaqueWin32KmtKHR = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT_KHR,
+    eD3D11TextureKHR = VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D11_TEXTURE_BIT_KHR,
+    eD3D11TextureKmtKHR = VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D11_TEXTURE_KMT_BIT_KHR,
+    eD3D12HeapKHR = VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D12_HEAP_BIT_KHR,
+    eD3D12ResourceKHR = VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D12_RESOURCE_BIT_KHR
+  };
+  using ExternalMemoryHandleTypeFlagBitsKHR = ExternalMemoryHandleTypeFlagBits;
+
+  VULKAN_HPP_INLINE std::string to_string( ExternalMemoryHandleTypeFlagBits value )
+  {
+    switch ( value )
+    {
+      case ExternalMemoryHandleTypeFlagBits::eOpaqueFd : return "OpaqueFd";
+      case ExternalMemoryHandleTypeFlagBits::eOpaqueWin32 : return "OpaqueWin32";
+      case ExternalMemoryHandleTypeFlagBits::eOpaqueWin32Kmt : return "OpaqueWin32Kmt";
+      case ExternalMemoryHandleTypeFlagBits::eD3D11Texture : return "D3D11Texture";
+      case ExternalMemoryHandleTypeFlagBits::eD3D11TextureKmt : return "D3D11TextureKmt";
+      case ExternalMemoryHandleTypeFlagBits::eD3D12Heap : return "D3D12Heap";
+      case ExternalMemoryHandleTypeFlagBits::eD3D12Resource : return "D3D12Resource";
+      case ExternalMemoryHandleTypeFlagBits::eDmaBufEXT : return "DmaBufEXT";
+      case ExternalMemoryHandleTypeFlagBits::eAndroidHardwareBufferANDROID : return "AndroidHardwareBufferANDROID";
+      case ExternalMemoryHandleTypeFlagBits::eHostAllocationEXT : return "HostAllocationEXT";
+      case ExternalMemoryHandleTypeFlagBits::eHostMappedForeignMemoryEXT : return "HostMappedForeignMemoryEXT";
+      default: return "invalid";
+    }
+  }
+
+  enum class ExternalMemoryHandleTypeFlagBitsNV
+  {
+    eOpaqueWin32 = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_BIT_NV,
+    eOpaqueWin32Kmt = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT_NV,
+    eD3D11Image = VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D11_IMAGE_BIT_NV,
+    eD3D11ImageKmt = VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D11_IMAGE_KMT_BIT_NV
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( ExternalMemoryHandleTypeFlagBitsNV value )
+  {
+    switch ( value )
+    {
+      case ExternalMemoryHandleTypeFlagBitsNV::eOpaqueWin32 : return "OpaqueWin32";
+      case ExternalMemoryHandleTypeFlagBitsNV::eOpaqueWin32Kmt : return "OpaqueWin32Kmt";
+      case ExternalMemoryHandleTypeFlagBitsNV::eD3D11Image : return "D3D11Image";
+      case ExternalMemoryHandleTypeFlagBitsNV::eD3D11ImageKmt : return "D3D11ImageKmt";
+      default: return "invalid";
+    }
+  }
+
+  enum class ExternalSemaphoreFeatureFlagBits
+  {
+    eExportable = VK_EXTERNAL_SEMAPHORE_FEATURE_EXPORTABLE_BIT,
+    eImportable = VK_EXTERNAL_SEMAPHORE_FEATURE_IMPORTABLE_BIT,
+    eExportableKHR = VK_EXTERNAL_SEMAPHORE_FEATURE_EXPORTABLE_BIT_KHR,
+    eImportableKHR = VK_EXTERNAL_SEMAPHORE_FEATURE_IMPORTABLE_BIT_KHR
+  };
+  using ExternalSemaphoreFeatureFlagBitsKHR = ExternalSemaphoreFeatureFlagBits;
+
+  VULKAN_HPP_INLINE std::string to_string( ExternalSemaphoreFeatureFlagBits value )
+  {
+    switch ( value )
+    {
+      case ExternalSemaphoreFeatureFlagBits::eExportable : return "Exportable";
+      case ExternalSemaphoreFeatureFlagBits::eImportable : return "Importable";
+      default: return "invalid";
+    }
+  }
+
+  enum class ExternalSemaphoreHandleTypeFlagBits
+  {
+    eOpaqueFd = VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_FD_BIT,
+    eOpaqueWin32 = VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32_BIT,
+    eOpaqueWin32Kmt = VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT,
+    eD3D12Fence = VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_D3D12_FENCE_BIT,
+    eSyncFd = VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_SYNC_FD_BIT,
+    eOpaqueFdKHR = VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_FD_BIT_KHR,
+    eOpaqueWin32KHR = VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32_BIT_KHR,
+    eOpaqueWin32KmtKHR = VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT_KHR,
+    eD3D12FenceKHR = VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_D3D12_FENCE_BIT_KHR,
+    eSyncFdKHR = VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_SYNC_FD_BIT_KHR
+  };
+  using ExternalSemaphoreHandleTypeFlagBitsKHR = ExternalSemaphoreHandleTypeFlagBits;
+
+  VULKAN_HPP_INLINE std::string to_string( ExternalSemaphoreHandleTypeFlagBits value )
+  {
+    switch ( value )
+    {
+      case ExternalSemaphoreHandleTypeFlagBits::eOpaqueFd : return "OpaqueFd";
+      case ExternalSemaphoreHandleTypeFlagBits::eOpaqueWin32 : return "OpaqueWin32";
+      case ExternalSemaphoreHandleTypeFlagBits::eOpaqueWin32Kmt : return "OpaqueWin32Kmt";
+      case ExternalSemaphoreHandleTypeFlagBits::eD3D12Fence : return "D3D12Fence";
+      case ExternalSemaphoreHandleTypeFlagBits::eSyncFd : return "SyncFd";
+      default: return "invalid";
+    }
+  }
+
+  enum class FenceCreateFlagBits
+  {
+    eSignaled = VK_FENCE_CREATE_SIGNALED_BIT
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( FenceCreateFlagBits value )
+  {
+    switch ( value )
+    {
+      case FenceCreateFlagBits::eSignaled : return "Signaled";
+      default: return "invalid";
+    }
+  }
+
+  enum class FenceImportFlagBits
+  {
+    eTemporary = VK_FENCE_IMPORT_TEMPORARY_BIT,
+    eTemporaryKHR = VK_FENCE_IMPORT_TEMPORARY_BIT_KHR
+  };
+  using FenceImportFlagBitsKHR = FenceImportFlagBits;
+
+  VULKAN_HPP_INLINE std::string to_string( FenceImportFlagBits value )
+  {
+    switch ( value )
+    {
+      case FenceImportFlagBits::eTemporary : return "Temporary";
       default: return "invalid";
     }
   }
@@ -4251,6 +5020,92 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
+  enum class FormatFeatureFlagBits
+  {
+    eSampledImage = VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT,
+    eStorageImage = VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT,
+    eStorageImageAtomic = VK_FORMAT_FEATURE_STORAGE_IMAGE_ATOMIC_BIT,
+    eUniformTexelBuffer = VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
+    eStorageTexelBuffer = VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_BIT,
+    eStorageTexelBufferAtomic = VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_ATOMIC_BIT,
+    eVertexBuffer = VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT,
+    eColorAttachment = VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT,
+    eColorAttachmentBlend = VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BLEND_BIT,
+    eDepthStencilAttachment = VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT,
+    eBlitSrc = VK_FORMAT_FEATURE_BLIT_SRC_BIT,
+    eBlitDst = VK_FORMAT_FEATURE_BLIT_DST_BIT,
+    eSampledImageFilterLinear = VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT,
+    eTransferSrc = VK_FORMAT_FEATURE_TRANSFER_SRC_BIT,
+    eTransferDst = VK_FORMAT_FEATURE_TRANSFER_DST_BIT,
+    eMidpointChromaSamples = VK_FORMAT_FEATURE_MIDPOINT_CHROMA_SAMPLES_BIT,
+    eSampledImageYcbcrConversionLinearFilter = VK_FORMAT_FEATURE_SAMPLED_IMAGE_YCBCR_CONVERSION_LINEAR_FILTER_BIT,
+    eSampledImageYcbcrConversionSeparateReconstructionFilter = VK_FORMAT_FEATURE_SAMPLED_IMAGE_YCBCR_CONVERSION_SEPARATE_RECONSTRUCTION_FILTER_BIT,
+    eSampledImageYcbcrConversionChromaReconstructionExplicit = VK_FORMAT_FEATURE_SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_BIT,
+    eSampledImageYcbcrConversionChromaReconstructionExplicitForceable = VK_FORMAT_FEATURE_SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_FORCEABLE_BIT,
+    eDisjoint = VK_FORMAT_FEATURE_DISJOINT_BIT,
+    eCositedChromaSamples = VK_FORMAT_FEATURE_COSITED_CHROMA_SAMPLES_BIT,
+    eSampledImageFilterCubicIMG = VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_CUBIC_BIT_IMG,
+    eSampledImageFilterMinmaxEXT = VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_MINMAX_BIT_EXT,
+    eFragmentDensityMapEXT = VK_FORMAT_FEATURE_FRAGMENT_DENSITY_MAP_BIT_EXT,
+    eTransferSrcKHR = VK_FORMAT_FEATURE_TRANSFER_SRC_BIT_KHR,
+    eTransferDstKHR = VK_FORMAT_FEATURE_TRANSFER_DST_BIT_KHR,
+    eMidpointChromaSamplesKHR = VK_FORMAT_FEATURE_MIDPOINT_CHROMA_SAMPLES_BIT_KHR,
+    eSampledImageYcbcrConversionLinearFilterKHR = VK_FORMAT_FEATURE_SAMPLED_IMAGE_YCBCR_CONVERSION_LINEAR_FILTER_BIT_KHR,
+    eSampledImageYcbcrConversionSeparateReconstructionFilterKHR = VK_FORMAT_FEATURE_SAMPLED_IMAGE_YCBCR_CONVERSION_SEPARATE_RECONSTRUCTION_FILTER_BIT_KHR,
+    eSampledImageYcbcrConversionChromaReconstructionExplicitKHR = VK_FORMAT_FEATURE_SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_BIT_KHR,
+    eSampledImageYcbcrConversionChromaReconstructionExplicitForceableKHR = VK_FORMAT_FEATURE_SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_FORCEABLE_BIT_KHR,
+    eDisjointKHR = VK_FORMAT_FEATURE_DISJOINT_BIT_KHR,
+    eCositedChromaSamplesKHR = VK_FORMAT_FEATURE_COSITED_CHROMA_SAMPLES_BIT_KHR,
+    eSampledImageFilterCubicEXT = VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_CUBIC_BIT_EXT
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( FormatFeatureFlagBits value )
+  {
+    switch ( value )
+    {
+      case FormatFeatureFlagBits::eSampledImage : return "SampledImage";
+      case FormatFeatureFlagBits::eStorageImage : return "StorageImage";
+      case FormatFeatureFlagBits::eStorageImageAtomic : return "StorageImageAtomic";
+      case FormatFeatureFlagBits::eUniformTexelBuffer : return "UniformTexelBuffer";
+      case FormatFeatureFlagBits::eStorageTexelBuffer : return "StorageTexelBuffer";
+      case FormatFeatureFlagBits::eStorageTexelBufferAtomic : return "StorageTexelBufferAtomic";
+      case FormatFeatureFlagBits::eVertexBuffer : return "VertexBuffer";
+      case FormatFeatureFlagBits::eColorAttachment : return "ColorAttachment";
+      case FormatFeatureFlagBits::eColorAttachmentBlend : return "ColorAttachmentBlend";
+      case FormatFeatureFlagBits::eDepthStencilAttachment : return "DepthStencilAttachment";
+      case FormatFeatureFlagBits::eBlitSrc : return "BlitSrc";
+      case FormatFeatureFlagBits::eBlitDst : return "BlitDst";
+      case FormatFeatureFlagBits::eSampledImageFilterLinear : return "SampledImageFilterLinear";
+      case FormatFeatureFlagBits::eTransferSrc : return "TransferSrc";
+      case FormatFeatureFlagBits::eTransferDst : return "TransferDst";
+      case FormatFeatureFlagBits::eMidpointChromaSamples : return "MidpointChromaSamples";
+      case FormatFeatureFlagBits::eSampledImageYcbcrConversionLinearFilter : return "SampledImageYcbcrConversionLinearFilter";
+      case FormatFeatureFlagBits::eSampledImageYcbcrConversionSeparateReconstructionFilter : return "SampledImageYcbcrConversionSeparateReconstructionFilter";
+      case FormatFeatureFlagBits::eSampledImageYcbcrConversionChromaReconstructionExplicit : return "SampledImageYcbcrConversionChromaReconstructionExplicit";
+      case FormatFeatureFlagBits::eSampledImageYcbcrConversionChromaReconstructionExplicitForceable : return "SampledImageYcbcrConversionChromaReconstructionExplicitForceable";
+      case FormatFeatureFlagBits::eDisjoint : return "Disjoint";
+      case FormatFeatureFlagBits::eCositedChromaSamples : return "CositedChromaSamples";
+      case FormatFeatureFlagBits::eSampledImageFilterCubicIMG : return "SampledImageFilterCubicIMG";
+      case FormatFeatureFlagBits::eSampledImageFilterMinmaxEXT : return "SampledImageFilterMinmaxEXT";
+      case FormatFeatureFlagBits::eFragmentDensityMapEXT : return "FragmentDensityMapEXT";
+      default: return "invalid";
+    }
+  }
+
+  enum class FramebufferCreateFlagBits
+  {
+    eImagelessKHR = VK_FRAMEBUFFER_CREATE_IMAGELESS_BIT_KHR
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( FramebufferCreateFlagBits value )
+  {
+    switch ( value )
+    {
+      case FramebufferCreateFlagBits::eImagelessKHR : return "ImagelessKHR";
+      default: return "invalid";
+    }
+  }
+
   enum class FrontFace
   {
     eCounterClockwise = VK_FRONT_FACE_COUNTER_CLOCKWISE,
@@ -4289,6 +5144,42 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
+  enum class GeometryFlagBitsNV
+  {
+    eOpaque = VK_GEOMETRY_OPAQUE_BIT_NV,
+    eNoDuplicateAnyHitInvocation = VK_GEOMETRY_NO_DUPLICATE_ANY_HIT_INVOCATION_BIT_NV
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( GeometryFlagBitsNV value )
+  {
+    switch ( value )
+    {
+      case GeometryFlagBitsNV::eOpaque : return "Opaque";
+      case GeometryFlagBitsNV::eNoDuplicateAnyHitInvocation : return "NoDuplicateAnyHitInvocation";
+      default: return "invalid";
+    }
+  }
+
+  enum class GeometryInstanceFlagBitsNV
+  {
+    eTriangleCullDisable = VK_GEOMETRY_INSTANCE_TRIANGLE_CULL_DISABLE_BIT_NV,
+    eTriangleFrontCounterclockwise = VK_GEOMETRY_INSTANCE_TRIANGLE_FRONT_COUNTERCLOCKWISE_BIT_NV,
+    eForceOpaque = VK_GEOMETRY_INSTANCE_FORCE_OPAQUE_BIT_NV,
+    eForceNoOpaque = VK_GEOMETRY_INSTANCE_FORCE_NO_OPAQUE_BIT_NV
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( GeometryInstanceFlagBitsNV value )
+  {
+    switch ( value )
+    {
+      case GeometryInstanceFlagBitsNV::eTriangleCullDisable : return "TriangleCullDisable";
+      case GeometryInstanceFlagBitsNV::eTriangleFrontCounterclockwise : return "TriangleFrontCounterclockwise";
+      case GeometryInstanceFlagBitsNV::eForceOpaque : return "ForceOpaque";
+      case GeometryInstanceFlagBitsNV::eForceNoOpaque : return "ForceNoOpaque";
+      default: return "invalid";
+    }
+  }
+
   enum class GeometryTypeNV
   {
     eTriangles = VK_GEOMETRY_TYPE_TRIANGLES_NV,
@@ -4301,6 +5192,91 @@ namespace VULKAN_HPP_NAMESPACE
     {
       case GeometryTypeNV::eTriangles : return "Triangles";
       case GeometryTypeNV::eAabbs : return "Aabbs";
+      default: return "invalid";
+    }
+  }
+
+  enum class ImageAspectFlagBits
+  {
+    eColor = VK_IMAGE_ASPECT_COLOR_BIT,
+    eDepth = VK_IMAGE_ASPECT_DEPTH_BIT,
+    eStencil = VK_IMAGE_ASPECT_STENCIL_BIT,
+    eMetadata = VK_IMAGE_ASPECT_METADATA_BIT,
+    ePlane0 = VK_IMAGE_ASPECT_PLANE_0_BIT,
+    ePlane1 = VK_IMAGE_ASPECT_PLANE_1_BIT,
+    ePlane2 = VK_IMAGE_ASPECT_PLANE_2_BIT,
+    eMemoryPlane0EXT = VK_IMAGE_ASPECT_MEMORY_PLANE_0_BIT_EXT,
+    eMemoryPlane1EXT = VK_IMAGE_ASPECT_MEMORY_PLANE_1_BIT_EXT,
+    eMemoryPlane2EXT = VK_IMAGE_ASPECT_MEMORY_PLANE_2_BIT_EXT,
+    eMemoryPlane3EXT = VK_IMAGE_ASPECT_MEMORY_PLANE_3_BIT_EXT,
+    ePlane0KHR = VK_IMAGE_ASPECT_PLANE_0_BIT_KHR,
+    ePlane1KHR = VK_IMAGE_ASPECT_PLANE_1_BIT_KHR,
+    ePlane2KHR = VK_IMAGE_ASPECT_PLANE_2_BIT_KHR
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( ImageAspectFlagBits value )
+  {
+    switch ( value )
+    {
+      case ImageAspectFlagBits::eColor : return "Color";
+      case ImageAspectFlagBits::eDepth : return "Depth";
+      case ImageAspectFlagBits::eStencil : return "Stencil";
+      case ImageAspectFlagBits::eMetadata : return "Metadata";
+      case ImageAspectFlagBits::ePlane0 : return "Plane0";
+      case ImageAspectFlagBits::ePlane1 : return "Plane1";
+      case ImageAspectFlagBits::ePlane2 : return "Plane2";
+      case ImageAspectFlagBits::eMemoryPlane0EXT : return "MemoryPlane0EXT";
+      case ImageAspectFlagBits::eMemoryPlane1EXT : return "MemoryPlane1EXT";
+      case ImageAspectFlagBits::eMemoryPlane2EXT : return "MemoryPlane2EXT";
+      case ImageAspectFlagBits::eMemoryPlane3EXT : return "MemoryPlane3EXT";
+      default: return "invalid";
+    }
+  }
+
+  enum class ImageCreateFlagBits
+  {
+    eSparseBinding = VK_IMAGE_CREATE_SPARSE_BINDING_BIT,
+    eSparseResidency = VK_IMAGE_CREATE_SPARSE_RESIDENCY_BIT,
+    eSparseAliased = VK_IMAGE_CREATE_SPARSE_ALIASED_BIT,
+    eMutableFormat = VK_IMAGE_CREATE_MUTABLE_FORMAT_BIT,
+    eCubeCompatible = VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT,
+    eAlias = VK_IMAGE_CREATE_ALIAS_BIT,
+    eSplitInstanceBindRegions = VK_IMAGE_CREATE_SPLIT_INSTANCE_BIND_REGIONS_BIT,
+    e2DArrayCompatible = VK_IMAGE_CREATE_2D_ARRAY_COMPATIBLE_BIT,
+    eBlockTexelViewCompatible = VK_IMAGE_CREATE_BLOCK_TEXEL_VIEW_COMPATIBLE_BIT,
+    eExtendedUsage = VK_IMAGE_CREATE_EXTENDED_USAGE_BIT,
+    eProtected = VK_IMAGE_CREATE_PROTECTED_BIT,
+    eDisjoint = VK_IMAGE_CREATE_DISJOINT_BIT,
+    eCornerSampledNV = VK_IMAGE_CREATE_CORNER_SAMPLED_BIT_NV,
+    eSampleLocationsCompatibleDepthEXT = VK_IMAGE_CREATE_SAMPLE_LOCATIONS_COMPATIBLE_DEPTH_BIT_EXT,
+    eSubsampledEXT = VK_IMAGE_CREATE_SUBSAMPLED_BIT_EXT,
+    eSplitInstanceBindRegionsKHR = VK_IMAGE_CREATE_SPLIT_INSTANCE_BIND_REGIONS_BIT_KHR,
+    e2DArrayCompatibleKHR = VK_IMAGE_CREATE_2D_ARRAY_COMPATIBLE_BIT_KHR,
+    eBlockTexelViewCompatibleKHR = VK_IMAGE_CREATE_BLOCK_TEXEL_VIEW_COMPATIBLE_BIT_KHR,
+    eExtendedUsageKHR = VK_IMAGE_CREATE_EXTENDED_USAGE_BIT_KHR,
+    eDisjointKHR = VK_IMAGE_CREATE_DISJOINT_BIT_KHR,
+    eAliasKHR = VK_IMAGE_CREATE_ALIAS_BIT_KHR
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( ImageCreateFlagBits value )
+  {
+    switch ( value )
+    {
+      case ImageCreateFlagBits::eSparseBinding : return "SparseBinding";
+      case ImageCreateFlagBits::eSparseResidency : return "SparseResidency";
+      case ImageCreateFlagBits::eSparseAliased : return "SparseAliased";
+      case ImageCreateFlagBits::eMutableFormat : return "MutableFormat";
+      case ImageCreateFlagBits::eCubeCompatible : return "CubeCompatible";
+      case ImageCreateFlagBits::eAlias : return "Alias";
+      case ImageCreateFlagBits::eSplitInstanceBindRegions : return "SplitInstanceBindRegions";
+      case ImageCreateFlagBits::e2DArrayCompatible : return "2DArrayCompatible";
+      case ImageCreateFlagBits::eBlockTexelViewCompatible : return "BlockTexelViewCompatible";
+      case ImageCreateFlagBits::eExtendedUsage : return "ExtendedUsage";
+      case ImageCreateFlagBits::eProtected : return "Protected";
+      case ImageCreateFlagBits::eDisjoint : return "Disjoint";
+      case ImageCreateFlagBits::eCornerSampledNV : return "CornerSampledNV";
+      case ImageCreateFlagBits::eSampleLocationsCompatibleDepthEXT : return "SampleLocationsCompatibleDepthEXT";
+      case ImageCreateFlagBits::eSubsampledEXT : return "SubsampledEXT";
       default: return "invalid";
     }
   }
@@ -4393,6 +5369,52 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
+  enum class ImageUsageFlagBits
+  {
+    eTransferSrc = VK_IMAGE_USAGE_TRANSFER_SRC_BIT,
+    eTransferDst = VK_IMAGE_USAGE_TRANSFER_DST_BIT,
+    eSampled = VK_IMAGE_USAGE_SAMPLED_BIT,
+    eStorage = VK_IMAGE_USAGE_STORAGE_BIT,
+    eColorAttachment = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
+    eDepthStencilAttachment = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
+    eTransientAttachment = VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT,
+    eInputAttachment = VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT,
+    eShadingRateImageNV = VK_IMAGE_USAGE_SHADING_RATE_IMAGE_BIT_NV,
+    eFragmentDensityMapEXT = VK_IMAGE_USAGE_FRAGMENT_DENSITY_MAP_BIT_EXT
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( ImageUsageFlagBits value )
+  {
+    switch ( value )
+    {
+      case ImageUsageFlagBits::eTransferSrc : return "TransferSrc";
+      case ImageUsageFlagBits::eTransferDst : return "TransferDst";
+      case ImageUsageFlagBits::eSampled : return "Sampled";
+      case ImageUsageFlagBits::eStorage : return "Storage";
+      case ImageUsageFlagBits::eColorAttachment : return "ColorAttachment";
+      case ImageUsageFlagBits::eDepthStencilAttachment : return "DepthStencilAttachment";
+      case ImageUsageFlagBits::eTransientAttachment : return "TransientAttachment";
+      case ImageUsageFlagBits::eInputAttachment : return "InputAttachment";
+      case ImageUsageFlagBits::eShadingRateImageNV : return "ShadingRateImageNV";
+      case ImageUsageFlagBits::eFragmentDensityMapEXT : return "FragmentDensityMapEXT";
+      default: return "invalid";
+    }
+  }
+
+  enum class ImageViewCreateFlagBits
+  {
+    eFragmentDensityMapDynamicEXT = VK_IMAGE_VIEW_CREATE_FRAGMENT_DENSITY_MAP_DYNAMIC_BIT_EXT
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( ImageViewCreateFlagBits value )
+  {
+    switch ( value )
+    {
+      case ImageViewCreateFlagBits::eFragmentDensityMapDynamicEXT : return "FragmentDensityMapDynamicEXT";
+      default: return "invalid";
+    }
+  }
+
   enum class ImageViewType
   {
     e1D = VK_IMAGE_VIEW_TYPE_1D,
@@ -4439,6 +5461,26 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
+  enum class IndirectCommandsLayoutUsageFlagBitsNVX
+  {
+    eUnorderedSequences = VK_INDIRECT_COMMANDS_LAYOUT_USAGE_UNORDERED_SEQUENCES_BIT_NVX,
+    eSparseSequences = VK_INDIRECT_COMMANDS_LAYOUT_USAGE_SPARSE_SEQUENCES_BIT_NVX,
+    eEmptyExecutions = VK_INDIRECT_COMMANDS_LAYOUT_USAGE_EMPTY_EXECUTIONS_BIT_NVX,
+    eIndexedSequences = VK_INDIRECT_COMMANDS_LAYOUT_USAGE_INDEXED_SEQUENCES_BIT_NVX
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( IndirectCommandsLayoutUsageFlagBitsNVX value )
+  {
+    switch ( value )
+    {
+      case IndirectCommandsLayoutUsageFlagBitsNVX::eUnorderedSequences : return "UnorderedSequences";
+      case IndirectCommandsLayoutUsageFlagBitsNVX::eSparseSequences : return "SparseSequences";
+      case IndirectCommandsLayoutUsageFlagBitsNVX::eEmptyExecutions : return "EmptyExecutions";
+      case IndirectCommandsLayoutUsageFlagBitsNVX::eIndexedSequences : return "IndexedSequences";
+      default: return "invalid";
+    }
+  }
+
   enum class IndirectCommandsTokenTypeNVX
   {
     ePipeline = VK_INDIRECT_COMMANDS_TOKEN_TYPE_PIPELINE_NVX,
@@ -4465,6 +5507,14 @@ namespace VULKAN_HPP_NAMESPACE
       case IndirectCommandsTokenTypeNVX::eDispatch : return "Dispatch";
       default: return "invalid";
     }
+  }
+
+  enum class InstanceCreateFlagBits
+  {};
+
+  VULKAN_HPP_INLINE std::string to_string( InstanceCreateFlagBits )
+  {
+    return "(void)";
   }
 
   enum class InternalAllocationType
@@ -4545,6 +5595,43 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
+  enum class MemoryAllocateFlagBits
+  {
+    eDeviceMask = VK_MEMORY_ALLOCATE_DEVICE_MASK_BIT,
+    eDeviceAddressKHR = VK_MEMORY_ALLOCATE_DEVICE_ADDRESS_BIT_KHR,
+    eDeviceAddressCaptureReplayKHR = VK_MEMORY_ALLOCATE_DEVICE_ADDRESS_CAPTURE_REPLAY_BIT_KHR,
+    eDeviceMaskKHR = VK_MEMORY_ALLOCATE_DEVICE_MASK_BIT_KHR
+  };
+  using MemoryAllocateFlagBitsKHR = MemoryAllocateFlagBits;
+
+  VULKAN_HPP_INLINE std::string to_string( MemoryAllocateFlagBits value )
+  {
+    switch ( value )
+    {
+      case MemoryAllocateFlagBits::eDeviceMask : return "DeviceMask";
+      case MemoryAllocateFlagBits::eDeviceAddressKHR : return "DeviceAddressKHR";
+      case MemoryAllocateFlagBits::eDeviceAddressCaptureReplayKHR : return "DeviceAddressCaptureReplayKHR";
+      default: return "invalid";
+    }
+  }
+
+  enum class MemoryHeapFlagBits
+  {
+    eDeviceLocal = VK_MEMORY_HEAP_DEVICE_LOCAL_BIT,
+    eMultiInstance = VK_MEMORY_HEAP_MULTI_INSTANCE_BIT,
+    eMultiInstanceKHR = VK_MEMORY_HEAP_MULTI_INSTANCE_BIT_KHR
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( MemoryHeapFlagBits value )
+  {
+    switch ( value )
+    {
+      case MemoryHeapFlagBits::eDeviceLocal : return "DeviceLocal";
+      case MemoryHeapFlagBits::eMultiInstance : return "MultiInstance";
+      default: return "invalid";
+    }
+  }
+
   enum class MemoryOverallocationBehaviorAMD
   {
     eDefault = VK_MEMORY_OVERALLOCATION_BEHAVIOR_DEFAULT_AMD,
@@ -4559,6 +5646,34 @@ namespace VULKAN_HPP_NAMESPACE
       case MemoryOverallocationBehaviorAMD::eDefault : return "Default";
       case MemoryOverallocationBehaviorAMD::eAllowed : return "Allowed";
       case MemoryOverallocationBehaviorAMD::eDisallowed : return "Disallowed";
+      default: return "invalid";
+    }
+  }
+
+  enum class MemoryPropertyFlagBits
+  {
+    eDeviceLocal = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+    eHostVisible = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
+    eHostCoherent = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+    eHostCached = VK_MEMORY_PROPERTY_HOST_CACHED_BIT,
+    eLazilyAllocated = VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT,
+    eProtected = VK_MEMORY_PROPERTY_PROTECTED_BIT,
+    eDeviceCoherentAMD = VK_MEMORY_PROPERTY_DEVICE_COHERENT_BIT_AMD,
+    eDeviceUncachedAMD = VK_MEMORY_PROPERTY_DEVICE_UNCACHED_BIT_AMD
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( MemoryPropertyFlagBits value )
+  {
+    switch ( value )
+    {
+      case MemoryPropertyFlagBits::eDeviceLocal : return "DeviceLocal";
+      case MemoryPropertyFlagBits::eHostVisible : return "HostVisible";
+      case MemoryPropertyFlagBits::eHostCoherent : return "HostCoherent";
+      case MemoryPropertyFlagBits::eHostCached : return "HostCached";
+      case MemoryPropertyFlagBits::eLazilyAllocated : return "LazilyAllocated";
+      case MemoryPropertyFlagBits::eProtected : return "Protected";
+      case MemoryPropertyFlagBits::eDeviceCoherentAMD : return "DeviceCoherentAMD";
+      case MemoryPropertyFlagBits::eDeviceUncachedAMD : return "DeviceUncachedAMD";
       default: return "invalid";
     }
   }
@@ -4581,6 +5696,22 @@ namespace VULKAN_HPP_NAMESPACE
       case ObjectEntryTypeNVX::eIndexBuffer : return "IndexBuffer";
       case ObjectEntryTypeNVX::eVertexBuffer : return "VertexBuffer";
       case ObjectEntryTypeNVX::ePushConstant : return "PushConstant";
+      default: return "invalid";
+    }
+  }
+
+  enum class ObjectEntryUsageFlagBitsNVX
+  {
+    eGraphics = VK_OBJECT_ENTRY_USAGE_GRAPHICS_BIT_NVX,
+    eCompute = VK_OBJECT_ENTRY_USAGE_COMPUTE_BIT_NVX
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( ObjectEntryUsageFlagBitsNVX value )
+  {
+    switch ( value )
+    {
+      case ObjectEntryUsageFlagBitsNVX::eGraphics : return "Graphics";
+      case ObjectEntryUsageFlagBitsNVX::eCompute : return "Compute";
       default: return "invalid";
     }
   }
@@ -4677,6 +5808,31 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
+  enum class PeerMemoryFeatureFlagBits
+  {
+    eCopySrc = VK_PEER_MEMORY_FEATURE_COPY_SRC_BIT,
+    eCopyDst = VK_PEER_MEMORY_FEATURE_COPY_DST_BIT,
+    eGenericSrc = VK_PEER_MEMORY_FEATURE_GENERIC_SRC_BIT,
+    eGenericDst = VK_PEER_MEMORY_FEATURE_GENERIC_DST_BIT,
+    eCopySrcKHR = VK_PEER_MEMORY_FEATURE_COPY_SRC_BIT_KHR,
+    eCopyDstKHR = VK_PEER_MEMORY_FEATURE_COPY_DST_BIT_KHR,
+    eGenericSrcKHR = VK_PEER_MEMORY_FEATURE_GENERIC_SRC_BIT_KHR,
+    eGenericDstKHR = VK_PEER_MEMORY_FEATURE_GENERIC_DST_BIT_KHR
+  };
+  using PeerMemoryFeatureFlagBitsKHR = PeerMemoryFeatureFlagBits;
+
+  VULKAN_HPP_INLINE std::string to_string( PeerMemoryFeatureFlagBits value )
+  {
+    switch ( value )
+    {
+      case PeerMemoryFeatureFlagBits::eCopySrc : return "CopySrc";
+      case PeerMemoryFeatureFlagBits::eCopyDst : return "CopyDst";
+      case PeerMemoryFeatureFlagBits::eGenericSrc : return "GenericSrc";
+      case PeerMemoryFeatureFlagBits::eGenericDst : return "GenericDst";
+      default: return "invalid";
+    }
+  }
+
   enum class PerformanceConfigurationTypeINTEL
   {
     eCommandQueueMetricsDiscoveryActivated = VK_PERFORMANCE_CONFIGURATION_TYPE_COMMAND_QUEUE_METRICS_DISCOVERY_ACTIVATED_INTEL
@@ -4687,6 +5843,22 @@ namespace VULKAN_HPP_NAMESPACE
     switch ( value )
     {
       case PerformanceConfigurationTypeINTEL::eCommandQueueMetricsDiscoveryActivated : return "CommandQueueMetricsDiscoveryActivated";
+      default: return "invalid";
+    }
+  }
+
+  enum class PerformanceCounterDescriptionFlagBitsKHR
+  {
+    ePerformanceImpacting = VK_PERFORMANCE_COUNTER_DESCRIPTION_PERFORMANCE_IMPACTING_KHR,
+    eConcurrentlyImpacted = VK_PERFORMANCE_COUNTER_DESCRIPTION_CONCURRENTLY_IMPACTED_KHR
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( PerformanceCounterDescriptionFlagBitsKHR value )
+  {
+    switch ( value )
+    {
+      case PerformanceCounterDescriptionFlagBitsKHR::ePerformanceImpacting : return "PerformanceImpacting";
+      case PerformanceCounterDescriptionFlagBitsKHR::eConcurrentlyImpacted : return "ConcurrentlyImpacted";
       default: return "invalid";
     }
   }
@@ -4861,6 +6033,14 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
+  enum class PipelineCacheCreateFlagBits
+  {};
+
+  VULKAN_HPP_INLINE std::string to_string( PipelineCacheCreateFlagBits )
+  {
+    return "(void)";
+  }
+
   enum class PipelineCacheHeaderVersion
   {
     eOne = VK_PIPELINE_CACHE_HEADER_VERSION_ONE
@@ -4873,6 +6053,86 @@ namespace VULKAN_HPP_NAMESPACE
       case PipelineCacheHeaderVersion::eOne : return "One";
       default: return "invalid";
     }
+  }
+
+  enum class PipelineColorBlendStateCreateFlagBits
+  {};
+
+  VULKAN_HPP_INLINE std::string to_string( PipelineColorBlendStateCreateFlagBits )
+  {
+    return "(void)";
+  }
+
+  enum class PipelineCompilerControlFlagBitsAMD
+  {};
+
+  VULKAN_HPP_INLINE std::string to_string( PipelineCompilerControlFlagBitsAMD )
+  {
+    return "(void)";
+  }
+
+  enum class PipelineCreateFlagBits
+  {
+    eDisableOptimization = VK_PIPELINE_CREATE_DISABLE_OPTIMIZATION_BIT,
+    eAllowDerivatives = VK_PIPELINE_CREATE_ALLOW_DERIVATIVES_BIT,
+    eDerivative = VK_PIPELINE_CREATE_DERIVATIVE_BIT,
+    eViewIndexFromDeviceIndex = VK_PIPELINE_CREATE_VIEW_INDEX_FROM_DEVICE_INDEX_BIT,
+    eDispatchBase = VK_PIPELINE_CREATE_DISPATCH_BASE_BIT,
+    eDeferCompileNV = VK_PIPELINE_CREATE_DEFER_COMPILE_BIT_NV,
+    eCaptureStatisticsKHR = VK_PIPELINE_CREATE_CAPTURE_STATISTICS_BIT_KHR,
+    eCaptureInternalRepresentationsKHR = VK_PIPELINE_CREATE_CAPTURE_INTERNAL_REPRESENTATIONS_BIT_KHR,
+    eViewIndexFromDeviceIndexKHR = VK_PIPELINE_CREATE_VIEW_INDEX_FROM_DEVICE_INDEX_BIT_KHR,
+    eDispatchBaseKHR = VK_PIPELINE_CREATE_DISPATCH_BASE_KHR
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( PipelineCreateFlagBits value )
+  {
+    switch ( value )
+    {
+      case PipelineCreateFlagBits::eDisableOptimization : return "DisableOptimization";
+      case PipelineCreateFlagBits::eAllowDerivatives : return "AllowDerivatives";
+      case PipelineCreateFlagBits::eDerivative : return "Derivative";
+      case PipelineCreateFlagBits::eViewIndexFromDeviceIndex : return "ViewIndexFromDeviceIndex";
+      case PipelineCreateFlagBits::eDispatchBase : return "DispatchBase";
+      case PipelineCreateFlagBits::eDeferCompileNV : return "DeferCompileNV";
+      case PipelineCreateFlagBits::eCaptureStatisticsKHR : return "CaptureStatisticsKHR";
+      case PipelineCreateFlagBits::eCaptureInternalRepresentationsKHR : return "CaptureInternalRepresentationsKHR";
+      default: return "invalid";
+    }
+  }
+
+  enum class PipelineCreationFeedbackFlagBitsEXT
+  {
+    eValid = VK_PIPELINE_CREATION_FEEDBACK_VALID_BIT_EXT,
+    eApplicationPipelineCacheHit = VK_PIPELINE_CREATION_FEEDBACK_APPLICATION_PIPELINE_CACHE_HIT_BIT_EXT,
+    eBasePipelineAcceleration = VK_PIPELINE_CREATION_FEEDBACK_BASE_PIPELINE_ACCELERATION_BIT_EXT
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( PipelineCreationFeedbackFlagBitsEXT value )
+  {
+    switch ( value )
+    {
+      case PipelineCreationFeedbackFlagBitsEXT::eValid : return "Valid";
+      case PipelineCreationFeedbackFlagBitsEXT::eApplicationPipelineCacheHit : return "ApplicationPipelineCacheHit";
+      case PipelineCreationFeedbackFlagBitsEXT::eBasePipelineAcceleration : return "BasePipelineAcceleration";
+      default: return "invalid";
+    }
+  }
+
+  enum class PipelineDepthStencilStateCreateFlagBits
+  {};
+
+  VULKAN_HPP_INLINE std::string to_string( PipelineDepthStencilStateCreateFlagBits )
+  {
+    return "(void)";
+  }
+
+  enum class PipelineDynamicStateCreateFlagBits
+  {};
+
+  VULKAN_HPP_INLINE std::string to_string( PipelineDynamicStateCreateFlagBits )
+  {
+    return "(void)";
   }
 
   enum class PipelineExecutableStatisticFormatKHR
@@ -4895,6 +6155,142 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
+  enum class PipelineInputAssemblyStateCreateFlagBits
+  {};
+
+  VULKAN_HPP_INLINE std::string to_string( PipelineInputAssemblyStateCreateFlagBits )
+  {
+    return "(void)";
+  }
+
+  enum class PipelineLayoutCreateFlagBits
+  {};
+
+  VULKAN_HPP_INLINE std::string to_string( PipelineLayoutCreateFlagBits )
+  {
+    return "(void)";
+  }
+
+  enum class PipelineMultisampleStateCreateFlagBits
+  {};
+
+  VULKAN_HPP_INLINE std::string to_string( PipelineMultisampleStateCreateFlagBits )
+  {
+    return "(void)";
+  }
+
+  enum class PipelineRasterizationStateCreateFlagBits
+  {};
+
+  VULKAN_HPP_INLINE std::string to_string( PipelineRasterizationStateCreateFlagBits )
+  {
+    return "(void)";
+  }
+
+  enum class PipelineShaderStageCreateFlagBits
+  {
+    eAllowVaryingSubgroupSizeEXT = VK_PIPELINE_SHADER_STAGE_CREATE_ALLOW_VARYING_SUBGROUP_SIZE_BIT_EXT,
+    eRequireFullSubgroupsEXT = VK_PIPELINE_SHADER_STAGE_CREATE_REQUIRE_FULL_SUBGROUPS_BIT_EXT
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( PipelineShaderStageCreateFlagBits value )
+  {
+    switch ( value )
+    {
+      case PipelineShaderStageCreateFlagBits::eAllowVaryingSubgroupSizeEXT : return "AllowVaryingSubgroupSizeEXT";
+      case PipelineShaderStageCreateFlagBits::eRequireFullSubgroupsEXT : return "RequireFullSubgroupsEXT";
+      default: return "invalid";
+    }
+  }
+
+  enum class PipelineStageFlagBits
+  {
+    eTopOfPipe = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+    eDrawIndirect = VK_PIPELINE_STAGE_DRAW_INDIRECT_BIT,
+    eVertexInput = VK_PIPELINE_STAGE_VERTEX_INPUT_BIT,
+    eVertexShader = VK_PIPELINE_STAGE_VERTEX_SHADER_BIT,
+    eTessellationControlShader = VK_PIPELINE_STAGE_TESSELLATION_CONTROL_SHADER_BIT,
+    eTessellationEvaluationShader = VK_PIPELINE_STAGE_TESSELLATION_EVALUATION_SHADER_BIT,
+    eGeometryShader = VK_PIPELINE_STAGE_GEOMETRY_SHADER_BIT,
+    eFragmentShader = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
+    eEarlyFragmentTests = VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT,
+    eLateFragmentTests = VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT,
+    eColorAttachmentOutput = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+    eComputeShader = VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+    eTransfer = VK_PIPELINE_STAGE_TRANSFER_BIT,
+    eBottomOfPipe = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
+    eHost = VK_PIPELINE_STAGE_HOST_BIT,
+    eAllGraphics = VK_PIPELINE_STAGE_ALL_GRAPHICS_BIT,
+    eAllCommands = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
+    eTransformFeedbackEXT = VK_PIPELINE_STAGE_TRANSFORM_FEEDBACK_BIT_EXT,
+    eConditionalRenderingEXT = VK_PIPELINE_STAGE_CONDITIONAL_RENDERING_BIT_EXT,
+    eCommandProcessNVX = VK_PIPELINE_STAGE_COMMAND_PROCESS_BIT_NVX,
+    eShadingRateImageNV = VK_PIPELINE_STAGE_SHADING_RATE_IMAGE_BIT_NV,
+    eRayTracingShaderNV = VK_PIPELINE_STAGE_RAY_TRACING_SHADER_BIT_NV,
+    eAccelerationStructureBuildNV = VK_PIPELINE_STAGE_ACCELERATION_STRUCTURE_BUILD_BIT_NV,
+    eTaskShaderNV = VK_PIPELINE_STAGE_TASK_SHADER_BIT_NV,
+    eMeshShaderNV = VK_PIPELINE_STAGE_MESH_SHADER_BIT_NV,
+    eFragmentDensityProcessEXT = VK_PIPELINE_STAGE_FRAGMENT_DENSITY_PROCESS_BIT_EXT
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( PipelineStageFlagBits value )
+  {
+    switch ( value )
+    {
+      case PipelineStageFlagBits::eTopOfPipe : return "TopOfPipe";
+      case PipelineStageFlagBits::eDrawIndirect : return "DrawIndirect";
+      case PipelineStageFlagBits::eVertexInput : return "VertexInput";
+      case PipelineStageFlagBits::eVertexShader : return "VertexShader";
+      case PipelineStageFlagBits::eTessellationControlShader : return "TessellationControlShader";
+      case PipelineStageFlagBits::eTessellationEvaluationShader : return "TessellationEvaluationShader";
+      case PipelineStageFlagBits::eGeometryShader : return "GeometryShader";
+      case PipelineStageFlagBits::eFragmentShader : return "FragmentShader";
+      case PipelineStageFlagBits::eEarlyFragmentTests : return "EarlyFragmentTests";
+      case PipelineStageFlagBits::eLateFragmentTests : return "LateFragmentTests";
+      case PipelineStageFlagBits::eColorAttachmentOutput : return "ColorAttachmentOutput";
+      case PipelineStageFlagBits::eComputeShader : return "ComputeShader";
+      case PipelineStageFlagBits::eTransfer : return "Transfer";
+      case PipelineStageFlagBits::eBottomOfPipe : return "BottomOfPipe";
+      case PipelineStageFlagBits::eHost : return "Host";
+      case PipelineStageFlagBits::eAllGraphics : return "AllGraphics";
+      case PipelineStageFlagBits::eAllCommands : return "AllCommands";
+      case PipelineStageFlagBits::eTransformFeedbackEXT : return "TransformFeedbackEXT";
+      case PipelineStageFlagBits::eConditionalRenderingEXT : return "ConditionalRenderingEXT";
+      case PipelineStageFlagBits::eCommandProcessNVX : return "CommandProcessNVX";
+      case PipelineStageFlagBits::eShadingRateImageNV : return "ShadingRateImageNV";
+      case PipelineStageFlagBits::eRayTracingShaderNV : return "RayTracingShaderNV";
+      case PipelineStageFlagBits::eAccelerationStructureBuildNV : return "AccelerationStructureBuildNV";
+      case PipelineStageFlagBits::eTaskShaderNV : return "TaskShaderNV";
+      case PipelineStageFlagBits::eMeshShaderNV : return "MeshShaderNV";
+      case PipelineStageFlagBits::eFragmentDensityProcessEXT : return "FragmentDensityProcessEXT";
+      default: return "invalid";
+    }
+  }
+
+  enum class PipelineTessellationStateCreateFlagBits
+  {};
+
+  VULKAN_HPP_INLINE std::string to_string( PipelineTessellationStateCreateFlagBits )
+  {
+    return "(void)";
+  }
+
+  enum class PipelineVertexInputStateCreateFlagBits
+  {};
+
+  VULKAN_HPP_INLINE std::string to_string( PipelineVertexInputStateCreateFlagBits )
+  {
+    return "(void)";
+  }
+
+  enum class PipelineViewportStateCreateFlagBits
+  {};
+
+  VULKAN_HPP_INLINE std::string to_string( PipelineViewportStateCreateFlagBits )
+  {
+    return "(void)";
+  }
+
   enum class PointClippingBehavior
   {
     eAllClipPlanes = VK_POINT_CLIPPING_BEHAVIOR_ALL_CLIP_PLANES,
@@ -4902,6 +6298,7 @@ namespace VULKAN_HPP_NAMESPACE
     eAllClipPlanesKHR = VK_POINT_CLIPPING_BEHAVIOR_ALL_CLIP_PLANES_KHR,
     eUserClipPlanesOnlyKHR = VK_POINT_CLIPPING_BEHAVIOR_USER_CLIP_PLANES_ONLY_KHR
   };
+  using PointClippingBehaviorKHR = PointClippingBehavior;
 
   VULKAN_HPP_INLINE std::string to_string( PointClippingBehavior value )
   {
@@ -4991,6 +6388,62 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
+  enum class QueryControlFlagBits
+  {
+    ePrecise = VK_QUERY_CONTROL_PRECISE_BIT
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( QueryControlFlagBits value )
+  {
+    switch ( value )
+    {
+      case QueryControlFlagBits::ePrecise : return "Precise";
+      default: return "invalid";
+    }
+  }
+
+  enum class QueryPipelineStatisticFlagBits
+  {
+    eInputAssemblyVertices = VK_QUERY_PIPELINE_STATISTIC_INPUT_ASSEMBLY_VERTICES_BIT,
+    eInputAssemblyPrimitives = VK_QUERY_PIPELINE_STATISTIC_INPUT_ASSEMBLY_PRIMITIVES_BIT,
+    eVertexShaderInvocations = VK_QUERY_PIPELINE_STATISTIC_VERTEX_SHADER_INVOCATIONS_BIT,
+    eGeometryShaderInvocations = VK_QUERY_PIPELINE_STATISTIC_GEOMETRY_SHADER_INVOCATIONS_BIT,
+    eGeometryShaderPrimitives = VK_QUERY_PIPELINE_STATISTIC_GEOMETRY_SHADER_PRIMITIVES_BIT,
+    eClippingInvocations = VK_QUERY_PIPELINE_STATISTIC_CLIPPING_INVOCATIONS_BIT,
+    eClippingPrimitives = VK_QUERY_PIPELINE_STATISTIC_CLIPPING_PRIMITIVES_BIT,
+    eFragmentShaderInvocations = VK_QUERY_PIPELINE_STATISTIC_FRAGMENT_SHADER_INVOCATIONS_BIT,
+    eTessellationControlShaderPatches = VK_QUERY_PIPELINE_STATISTIC_TESSELLATION_CONTROL_SHADER_PATCHES_BIT,
+    eTessellationEvaluationShaderInvocations = VK_QUERY_PIPELINE_STATISTIC_TESSELLATION_EVALUATION_SHADER_INVOCATIONS_BIT,
+    eComputeShaderInvocations = VK_QUERY_PIPELINE_STATISTIC_COMPUTE_SHADER_INVOCATIONS_BIT
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( QueryPipelineStatisticFlagBits value )
+  {
+    switch ( value )
+    {
+      case QueryPipelineStatisticFlagBits::eInputAssemblyVertices : return "InputAssemblyVertices";
+      case QueryPipelineStatisticFlagBits::eInputAssemblyPrimitives : return "InputAssemblyPrimitives";
+      case QueryPipelineStatisticFlagBits::eVertexShaderInvocations : return "VertexShaderInvocations";
+      case QueryPipelineStatisticFlagBits::eGeometryShaderInvocations : return "GeometryShaderInvocations";
+      case QueryPipelineStatisticFlagBits::eGeometryShaderPrimitives : return "GeometryShaderPrimitives";
+      case QueryPipelineStatisticFlagBits::eClippingInvocations : return "ClippingInvocations";
+      case QueryPipelineStatisticFlagBits::eClippingPrimitives : return "ClippingPrimitives";
+      case QueryPipelineStatisticFlagBits::eFragmentShaderInvocations : return "FragmentShaderInvocations";
+      case QueryPipelineStatisticFlagBits::eTessellationControlShaderPatches : return "TessellationControlShaderPatches";
+      case QueryPipelineStatisticFlagBits::eTessellationEvaluationShaderInvocations : return "TessellationEvaluationShaderInvocations";
+      case QueryPipelineStatisticFlagBits::eComputeShaderInvocations : return "ComputeShaderInvocations";
+      default: return "invalid";
+    }
+  }
+
+  enum class QueryPoolCreateFlagBits
+  {};
+
+  VULKAN_HPP_INLINE std::string to_string( QueryPoolCreateFlagBits )
+  {
+    return "(void)";
+  }
+
   enum class QueryPoolSamplingModeINTEL
   {
     eManual = VK_QUERY_POOL_SAMPLING_MODE_MANUAL_INTEL
@@ -5001,6 +6454,26 @@ namespace VULKAN_HPP_NAMESPACE
     switch ( value )
     {
       case QueryPoolSamplingModeINTEL::eManual : return "Manual";
+      default: return "invalid";
+    }
+  }
+
+  enum class QueryResultFlagBits
+  {
+    e64 = VK_QUERY_RESULT_64_BIT,
+    eWait = VK_QUERY_RESULT_WAIT_BIT,
+    eWithAvailability = VK_QUERY_RESULT_WITH_AVAILABILITY_BIT,
+    ePartial = VK_QUERY_RESULT_PARTIAL_BIT
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( QueryResultFlagBits value )
+  {
+    switch ( value )
+    {
+      case QueryResultFlagBits::e64 : return "64";
+      case QueryResultFlagBits::eWait : return "Wait";
+      case QueryResultFlagBits::eWithAvailability : return "WithAvailability";
+      case QueryResultFlagBits::ePartial : return "Partial";
       default: return "invalid";
     }
   }
@@ -5027,6 +6500,28 @@ namespace VULKAN_HPP_NAMESPACE
       case QueryType::ePerformanceQueryKHR : return "PerformanceQueryKHR";
       case QueryType::eAccelerationStructureCompactedSizeNV : return "AccelerationStructureCompactedSizeNV";
       case QueryType::ePerformanceQueryINTEL : return "PerformanceQueryINTEL";
+      default: return "invalid";
+    }
+  }
+
+  enum class QueueFlagBits
+  {
+    eGraphics = VK_QUEUE_GRAPHICS_BIT,
+    eCompute = VK_QUEUE_COMPUTE_BIT,
+    eTransfer = VK_QUEUE_TRANSFER_BIT,
+    eSparseBinding = VK_QUEUE_SPARSE_BINDING_BIT,
+    eProtected = VK_QUEUE_PROTECTED_BIT
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( QueueFlagBits value )
+  {
+    switch ( value )
+    {
+      case QueueFlagBits::eGraphics : return "Graphics";
+      case QueueFlagBits::eCompute : return "Compute";
+      case QueueFlagBits::eTransfer : return "Transfer";
+      case QueueFlagBits::eSparseBinding : return "SparseBinding";
+      case QueueFlagBits::eProtected : return "Protected";
       default: return "invalid";
     }
   }
@@ -5081,6 +6576,36 @@ namespace VULKAN_HPP_NAMESPACE
       case RayTracingShaderGroupTypeNV::eGeneral : return "General";
       case RayTracingShaderGroupTypeNV::eTrianglesHitGroup : return "TrianglesHitGroup";
       case RayTracingShaderGroupTypeNV::eProceduralHitGroup : return "ProceduralHitGroup";
+      default: return "invalid";
+    }
+  }
+
+  enum class RenderPassCreateFlagBits
+  {};
+
+  VULKAN_HPP_INLINE std::string to_string( RenderPassCreateFlagBits )
+  {
+    return "(void)";
+  }
+
+  enum class ResolveModeFlagBitsKHR
+  {
+    eNone = VK_RESOLVE_MODE_NONE_KHR,
+    eSampleZero = VK_RESOLVE_MODE_SAMPLE_ZERO_BIT_KHR,
+    eAverage = VK_RESOLVE_MODE_AVERAGE_BIT_KHR,
+    eMin = VK_RESOLVE_MODE_MIN_BIT_KHR,
+    eMax = VK_RESOLVE_MODE_MAX_BIT_KHR
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( ResolveModeFlagBitsKHR value )
+  {
+    switch ( value )
+    {
+      case ResolveModeFlagBitsKHR::eNone : return "None";
+      case ResolveModeFlagBitsKHR::eSampleZero : return "SampleZero";
+      case ResolveModeFlagBitsKHR::eAverage : return "Average";
+      case ResolveModeFlagBitsKHR::eMin : return "Min";
+      case ResolveModeFlagBitsKHR::eMax : return "Max";
       default: return "invalid";
     }
   }
@@ -5164,6 +6689,32 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
+  enum class SampleCountFlagBits
+  {
+    e1 = VK_SAMPLE_COUNT_1_BIT,
+    e2 = VK_SAMPLE_COUNT_2_BIT,
+    e4 = VK_SAMPLE_COUNT_4_BIT,
+    e8 = VK_SAMPLE_COUNT_8_BIT,
+    e16 = VK_SAMPLE_COUNT_16_BIT,
+    e32 = VK_SAMPLE_COUNT_32_BIT,
+    e64 = VK_SAMPLE_COUNT_64_BIT
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( SampleCountFlagBits value )
+  {
+    switch ( value )
+    {
+      case SampleCountFlagBits::e1 : return "1";
+      case SampleCountFlagBits::e2 : return "2";
+      case SampleCountFlagBits::e4 : return "4";
+      case SampleCountFlagBits::e8 : return "8";
+      case SampleCountFlagBits::e16 : return "16";
+      case SampleCountFlagBits::e32 : return "32";
+      case SampleCountFlagBits::e64 : return "64";
+      default: return "invalid";
+    }
+  }
+
   enum class SamplerAddressMode
   {
     eRepeat = VK_SAMPLER_ADDRESS_MODE_REPEAT,
@@ -5183,6 +6734,22 @@ namespace VULKAN_HPP_NAMESPACE
       case SamplerAddressMode::eClampToEdge : return "ClampToEdge";
       case SamplerAddressMode::eClampToBorder : return "ClampToBorder";
       case SamplerAddressMode::eMirrorClampToEdge : return "MirrorClampToEdge";
+      default: return "invalid";
+    }
+  }
+
+  enum class SamplerCreateFlagBits
+  {
+    eSubsampledEXT = VK_SAMPLER_CREATE_SUBSAMPLED_BIT_EXT,
+    eSubsampledCoarseReconstructionEXT = VK_SAMPLER_CREATE_SUBSAMPLED_COARSE_RECONSTRUCTION_BIT_EXT
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( SamplerCreateFlagBits value )
+  {
+    switch ( value )
+    {
+      case SamplerCreateFlagBits::eSubsampledEXT : return "SubsampledEXT";
+      case SamplerCreateFlagBits::eSubsampledCoarseReconstructionEXT : return "SubsampledCoarseReconstructionEXT";
       default: return "invalid";
     }
   }
@@ -5234,6 +6801,7 @@ namespace VULKAN_HPP_NAMESPACE
     eYcbcr601KHR = VK_SAMPLER_YCBCR_MODEL_CONVERSION_YCBCR_601_KHR,
     eYcbcr2020KHR = VK_SAMPLER_YCBCR_MODEL_CONVERSION_YCBCR_2020_KHR
   };
+  using SamplerYcbcrModelConversionKHR = SamplerYcbcrModelConversion;
 
   VULKAN_HPP_INLINE std::string to_string( SamplerYcbcrModelConversion value )
   {
@@ -5255,6 +6823,7 @@ namespace VULKAN_HPP_NAMESPACE
     eItuFullKHR = VK_SAMPLER_YCBCR_RANGE_ITU_FULL_KHR,
     eItuNarrowKHR = VK_SAMPLER_YCBCR_RANGE_ITU_NARROW_KHR
   };
+  using SamplerYcbcrRangeKHR = SamplerYcbcrRange;
 
   VULKAN_HPP_INLINE std::string to_string( SamplerYcbcrRange value )
   {
@@ -5286,6 +6855,30 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
+  enum class SemaphoreCreateFlagBits
+  {};
+
+  VULKAN_HPP_INLINE std::string to_string( SemaphoreCreateFlagBits )
+  {
+    return "(void)";
+  }
+
+  enum class SemaphoreImportFlagBits
+  {
+    eTemporary = VK_SEMAPHORE_IMPORT_TEMPORARY_BIT,
+    eTemporaryKHR = VK_SEMAPHORE_IMPORT_TEMPORARY_BIT_KHR
+  };
+  using SemaphoreImportFlagBitsKHR = SemaphoreImportFlagBits;
+
+  VULKAN_HPP_INLINE std::string to_string( SemaphoreImportFlagBits value )
+  {
+    switch ( value )
+    {
+      case SemaphoreImportFlagBits::eTemporary : return "Temporary";
+      default: return "invalid";
+    }
+  }
+
   enum class SemaphoreTypeKHR
   {
     eBinary = VK_SEMAPHORE_TYPE_BINARY_KHR,
@@ -5300,6 +6893,28 @@ namespace VULKAN_HPP_NAMESPACE
       case SemaphoreTypeKHR::eTimeline : return "Timeline";
       default: return "invalid";
     }
+  }
+
+  enum class SemaphoreWaitFlagBitsKHR
+  {
+    eAny = VK_SEMAPHORE_WAIT_ANY_BIT_KHR
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( SemaphoreWaitFlagBitsKHR value )
+  {
+    switch ( value )
+    {
+      case SemaphoreWaitFlagBitsKHR::eAny : return "Any";
+      default: return "invalid";
+    }
+  }
+
+  enum class ShaderCorePropertiesFlagBitsAMD
+  {};
+
+  VULKAN_HPP_INLINE std::string to_string( ShaderCorePropertiesFlagBitsAMD )
+  {
+    return "(void)";
   }
 
   enum class ShaderFloatControlsIndependenceKHR
@@ -5334,6 +6949,58 @@ namespace VULKAN_HPP_NAMESPACE
       case ShaderInfoTypeAMD::eStatistics : return "Statistics";
       case ShaderInfoTypeAMD::eBinary : return "Binary";
       case ShaderInfoTypeAMD::eDisassembly : return "Disassembly";
+      default: return "invalid";
+    }
+  }
+
+  enum class ShaderModuleCreateFlagBits
+  {};
+
+  VULKAN_HPP_INLINE std::string to_string( ShaderModuleCreateFlagBits )
+  {
+    return "(void)";
+  }
+
+  enum class ShaderStageFlagBits
+  {
+    eVertex = VK_SHADER_STAGE_VERTEX_BIT,
+    eTessellationControl = VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT,
+    eTessellationEvaluation = VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT,
+    eGeometry = VK_SHADER_STAGE_GEOMETRY_BIT,
+    eFragment = VK_SHADER_STAGE_FRAGMENT_BIT,
+    eCompute = VK_SHADER_STAGE_COMPUTE_BIT,
+    eAllGraphics = VK_SHADER_STAGE_ALL_GRAPHICS,
+    eAll = VK_SHADER_STAGE_ALL,
+    eRaygenNV = VK_SHADER_STAGE_RAYGEN_BIT_NV,
+    eAnyHitNV = VK_SHADER_STAGE_ANY_HIT_BIT_NV,
+    eClosestHitNV = VK_SHADER_STAGE_CLOSEST_HIT_BIT_NV,
+    eMissNV = VK_SHADER_STAGE_MISS_BIT_NV,
+    eIntersectionNV = VK_SHADER_STAGE_INTERSECTION_BIT_NV,
+    eCallableNV = VK_SHADER_STAGE_CALLABLE_BIT_NV,
+    eTaskNV = VK_SHADER_STAGE_TASK_BIT_NV,
+    eMeshNV = VK_SHADER_STAGE_MESH_BIT_NV
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( ShaderStageFlagBits value )
+  {
+    switch ( value )
+    {
+      case ShaderStageFlagBits::eVertex : return "Vertex";
+      case ShaderStageFlagBits::eTessellationControl : return "TessellationControl";
+      case ShaderStageFlagBits::eTessellationEvaluation : return "TessellationEvaluation";
+      case ShaderStageFlagBits::eGeometry : return "Geometry";
+      case ShaderStageFlagBits::eFragment : return "Fragment";
+      case ShaderStageFlagBits::eCompute : return "Compute";
+      case ShaderStageFlagBits::eAllGraphics : return "AllGraphics";
+      case ShaderStageFlagBits::eAll : return "All";
+      case ShaderStageFlagBits::eRaygenNV : return "RaygenNV";
+      case ShaderStageFlagBits::eAnyHitNV : return "AnyHitNV";
+      case ShaderStageFlagBits::eClosestHitNV : return "ClosestHitNV";
+      case ShaderStageFlagBits::eMissNV : return "MissNV";
+      case ShaderStageFlagBits::eIntersectionNV : return "IntersectionNV";
+      case ShaderStageFlagBits::eCallableNV : return "CallableNV";
+      case ShaderStageFlagBits::eTaskNV : return "TaskNV";
+      case ShaderStageFlagBits::eMeshNV : return "MeshNV";
       default: return "invalid";
     }
   }
@@ -5386,6 +7053,57 @@ namespace VULKAN_HPP_NAMESPACE
     {
       case SharingMode::eExclusive : return "Exclusive";
       case SharingMode::eConcurrent : return "Concurrent";
+      default: return "invalid";
+    }
+  }
+
+  enum class SparseImageFormatFlagBits
+  {
+    eSingleMiptail = VK_SPARSE_IMAGE_FORMAT_SINGLE_MIPTAIL_BIT,
+    eAlignedMipSize = VK_SPARSE_IMAGE_FORMAT_ALIGNED_MIP_SIZE_BIT,
+    eNonstandardBlockSize = VK_SPARSE_IMAGE_FORMAT_NONSTANDARD_BLOCK_SIZE_BIT
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( SparseImageFormatFlagBits value )
+  {
+    switch ( value )
+    {
+      case SparseImageFormatFlagBits::eSingleMiptail : return "SingleMiptail";
+      case SparseImageFormatFlagBits::eAlignedMipSize : return "AlignedMipSize";
+      case SparseImageFormatFlagBits::eNonstandardBlockSize : return "NonstandardBlockSize";
+      default: return "invalid";
+    }
+  }
+
+  enum class SparseMemoryBindFlagBits
+  {
+    eMetadata = VK_SPARSE_MEMORY_BIND_METADATA_BIT
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( SparseMemoryBindFlagBits value )
+  {
+    switch ( value )
+    {
+      case SparseMemoryBindFlagBits::eMetadata : return "Metadata";
+      default: return "invalid";
+    }
+  }
+
+  enum class StencilFaceFlagBits
+  {
+    eFront = VK_STENCIL_FACE_FRONT_BIT,
+    eBack = VK_STENCIL_FACE_BACK_BIT,
+    eFrontAndBack = VK_STENCIL_FACE_FRONT_AND_BACK,
+    eVkStencilFrontAndBack = VK_STENCIL_FRONT_AND_BACK
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( StencilFaceFlagBits value )
+  {
+    switch ( value )
+    {
+      case StencilFaceFlagBits::eFront : return "Front";
+      case StencilFaceFlagBits::eBack : return "Back";
+      case StencilFaceFlagBits::eFrontAndBack : return "FrontAndBack";
       default: return "invalid";
     }
   }
@@ -6288,6 +8006,36 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
+  enum class SubgroupFeatureFlagBits
+  {
+    eBasic = VK_SUBGROUP_FEATURE_BASIC_BIT,
+    eVote = VK_SUBGROUP_FEATURE_VOTE_BIT,
+    eArithmetic = VK_SUBGROUP_FEATURE_ARITHMETIC_BIT,
+    eBallot = VK_SUBGROUP_FEATURE_BALLOT_BIT,
+    eShuffle = VK_SUBGROUP_FEATURE_SHUFFLE_BIT,
+    eShuffleRelative = VK_SUBGROUP_FEATURE_SHUFFLE_RELATIVE_BIT,
+    eClustered = VK_SUBGROUP_FEATURE_CLUSTERED_BIT,
+    eQuad = VK_SUBGROUP_FEATURE_QUAD_BIT,
+    ePartitionedNV = VK_SUBGROUP_FEATURE_PARTITIONED_BIT_NV
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( SubgroupFeatureFlagBits value )
+  {
+    switch ( value )
+    {
+      case SubgroupFeatureFlagBits::eBasic : return "Basic";
+      case SubgroupFeatureFlagBits::eVote : return "Vote";
+      case SubgroupFeatureFlagBits::eArithmetic : return "Arithmetic";
+      case SubgroupFeatureFlagBits::eBallot : return "Ballot";
+      case SubgroupFeatureFlagBits::eShuffle : return "Shuffle";
+      case SubgroupFeatureFlagBits::eShuffleRelative : return "ShuffleRelative";
+      case SubgroupFeatureFlagBits::eClustered : return "Clustered";
+      case SubgroupFeatureFlagBits::eQuad : return "Quad";
+      case SubgroupFeatureFlagBits::ePartitionedNV : return "PartitionedNV";
+      default: return "invalid";
+    }
+  }
+
   enum class SubpassContents
   {
     eInline = VK_SUBPASS_CONTENTS_INLINE,
@@ -6300,6 +8048,84 @@ namespace VULKAN_HPP_NAMESPACE
     {
       case SubpassContents::eInline : return "Inline";
       case SubpassContents::eSecondaryCommandBuffers : return "SecondaryCommandBuffers";
+      default: return "invalid";
+    }
+  }
+
+  enum class SubpassDescriptionFlagBits
+  {
+    ePerViewAttributesNVX = VK_SUBPASS_DESCRIPTION_PER_VIEW_ATTRIBUTES_BIT_NVX,
+    ePerViewPositionXOnlyNVX = VK_SUBPASS_DESCRIPTION_PER_VIEW_POSITION_X_ONLY_BIT_NVX
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( SubpassDescriptionFlagBits value )
+  {
+    switch ( value )
+    {
+      case SubpassDescriptionFlagBits::ePerViewAttributesNVX : return "PerViewAttributesNVX";
+      case SubpassDescriptionFlagBits::ePerViewPositionXOnlyNVX : return "PerViewPositionXOnlyNVX";
+      default: return "invalid";
+    }
+  }
+
+  enum class SurfaceCounterFlagBitsEXT
+  {
+    eVblank = VK_SURFACE_COUNTER_VBLANK_EXT
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( SurfaceCounterFlagBitsEXT value )
+  {
+    switch ( value )
+    {
+      case SurfaceCounterFlagBitsEXT::eVblank : return "Vblank";
+      default: return "invalid";
+    }
+  }
+
+  enum class SurfaceTransformFlagBitsKHR
+  {
+    eIdentity = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR,
+    eRotate90 = VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR,
+    eRotate180 = VK_SURFACE_TRANSFORM_ROTATE_180_BIT_KHR,
+    eRotate270 = VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR,
+    eHorizontalMirror = VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_BIT_KHR,
+    eHorizontalMirrorRotate90 = VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_90_BIT_KHR,
+    eHorizontalMirrorRotate180 = VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_180_BIT_KHR,
+    eHorizontalMirrorRotate270 = VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_270_BIT_KHR,
+    eInherit = VK_SURFACE_TRANSFORM_INHERIT_BIT_KHR
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( SurfaceTransformFlagBitsKHR value )
+  {
+    switch ( value )
+    {
+      case SurfaceTransformFlagBitsKHR::eIdentity : return "Identity";
+      case SurfaceTransformFlagBitsKHR::eRotate90 : return "Rotate90";
+      case SurfaceTransformFlagBitsKHR::eRotate180 : return "Rotate180";
+      case SurfaceTransformFlagBitsKHR::eRotate270 : return "Rotate270";
+      case SurfaceTransformFlagBitsKHR::eHorizontalMirror : return "HorizontalMirror";
+      case SurfaceTransformFlagBitsKHR::eHorizontalMirrorRotate90 : return "HorizontalMirrorRotate90";
+      case SurfaceTransformFlagBitsKHR::eHorizontalMirrorRotate180 : return "HorizontalMirrorRotate180";
+      case SurfaceTransformFlagBitsKHR::eHorizontalMirrorRotate270 : return "HorizontalMirrorRotate270";
+      case SurfaceTransformFlagBitsKHR::eInherit : return "Inherit";
+      default: return "invalid";
+    }
+  }
+
+  enum class SwapchainCreateFlagBitsKHR
+  {
+    eSplitInstanceBindRegions = VK_SWAPCHAIN_CREATE_SPLIT_INSTANCE_BIND_REGIONS_BIT_KHR,
+    eProtected = VK_SWAPCHAIN_CREATE_PROTECTED_BIT_KHR,
+    eMutableFormat = VK_SWAPCHAIN_CREATE_MUTABLE_FORMAT_BIT_KHR
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( SwapchainCreateFlagBitsKHR value )
+  {
+    switch ( value )
+    {
+      case SwapchainCreateFlagBitsKHR::eSplitInstanceBindRegions : return "SplitInstanceBindRegions";
+      case SwapchainCreateFlagBitsKHR::eProtected : return "Protected";
+      case SwapchainCreateFlagBitsKHR::eMutableFormat : return "MutableFormat";
       default: return "invalid";
     }
   }
@@ -6333,6 +8159,7 @@ namespace VULKAN_HPP_NAMESPACE
     eUpperLeftKHR = VK_TESSELLATION_DOMAIN_ORIGIN_UPPER_LEFT_KHR,
     eLowerLeftKHR = VK_TESSELLATION_DOMAIN_ORIGIN_LOWER_LEFT_KHR
   };
+  using TessellationDomainOriginKHR = TessellationDomainOrigin;
 
   VULKAN_HPP_INLINE std::string to_string( TessellationDomainOrigin value )
   {
@@ -6360,6 +8187,32 @@ namespace VULKAN_HPP_NAMESPACE
       case TimeDomainEXT::eClockMonotonic : return "ClockMonotonic";
       case TimeDomainEXT::eClockMonotonicRaw : return "ClockMonotonicRaw";
       case TimeDomainEXT::eQueryPerformanceCounter : return "QueryPerformanceCounter";
+      default: return "invalid";
+    }
+  }
+
+  enum class ToolPurposeFlagBitsEXT
+  {
+    eValidation = VK_TOOL_PURPOSE_VALIDATION_BIT_EXT,
+    eProfiling = VK_TOOL_PURPOSE_PROFILING_BIT_EXT,
+    eTracing = VK_TOOL_PURPOSE_TRACING_BIT_EXT,
+    eAdditionalFeatures = VK_TOOL_PURPOSE_ADDITIONAL_FEATURES_BIT_EXT,
+    eModifyingFeatures = VK_TOOL_PURPOSE_MODIFYING_FEATURES_BIT_EXT,
+    eDebugReporting = VK_TOOL_PURPOSE_DEBUG_REPORTING_BIT_EXT,
+    eDebugMarkers = VK_TOOL_PURPOSE_DEBUG_MARKERS_BIT_EXT
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( ToolPurposeFlagBitsEXT value )
+  {
+    switch ( value )
+    {
+      case ToolPurposeFlagBitsEXT::eValidation : return "Validation";
+      case ToolPurposeFlagBitsEXT::eProfiling : return "Profiling";
+      case ToolPurposeFlagBitsEXT::eTracing : return "Tracing";
+      case ToolPurposeFlagBitsEXT::eAdditionalFeatures : return "AdditionalFeatures";
+      case ToolPurposeFlagBitsEXT::eModifyingFeatures : return "ModifyingFeatures";
+      case ToolPurposeFlagBitsEXT::eDebugReporting : return "DebugReporting";
+      case ToolPurposeFlagBitsEXT::eDebugMarkers : return "DebugMarkers";
       default: return "invalid";
     }
   }
@@ -6505,74 +8358,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
   };
 
-  enum class AccessFlagBits
-  {
-    eIndirectCommandRead = VK_ACCESS_INDIRECT_COMMAND_READ_BIT,
-    eIndexRead = VK_ACCESS_INDEX_READ_BIT,
-    eVertexAttributeRead = VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT,
-    eUniformRead = VK_ACCESS_UNIFORM_READ_BIT,
-    eInputAttachmentRead = VK_ACCESS_INPUT_ATTACHMENT_READ_BIT,
-    eShaderRead = VK_ACCESS_SHADER_READ_BIT,
-    eShaderWrite = VK_ACCESS_SHADER_WRITE_BIT,
-    eColorAttachmentRead = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT,
-    eColorAttachmentWrite = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
-    eDepthStencilAttachmentRead = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT,
-    eDepthStencilAttachmentWrite = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT,
-    eTransferRead = VK_ACCESS_TRANSFER_READ_BIT,
-    eTransferWrite = VK_ACCESS_TRANSFER_WRITE_BIT,
-    eHostRead = VK_ACCESS_HOST_READ_BIT,
-    eHostWrite = VK_ACCESS_HOST_WRITE_BIT,
-    eMemoryRead = VK_ACCESS_MEMORY_READ_BIT,
-    eMemoryWrite = VK_ACCESS_MEMORY_WRITE_BIT,
-    eTransformFeedbackWriteEXT = VK_ACCESS_TRANSFORM_FEEDBACK_WRITE_BIT_EXT,
-    eTransformFeedbackCounterReadEXT = VK_ACCESS_TRANSFORM_FEEDBACK_COUNTER_READ_BIT_EXT,
-    eTransformFeedbackCounterWriteEXT = VK_ACCESS_TRANSFORM_FEEDBACK_COUNTER_WRITE_BIT_EXT,
-    eConditionalRenderingReadEXT = VK_ACCESS_CONDITIONAL_RENDERING_READ_BIT_EXT,
-    eCommandProcessReadNVX = VK_ACCESS_COMMAND_PROCESS_READ_BIT_NVX,
-    eCommandProcessWriteNVX = VK_ACCESS_COMMAND_PROCESS_WRITE_BIT_NVX,
-    eColorAttachmentReadNoncoherentEXT = VK_ACCESS_COLOR_ATTACHMENT_READ_NONCOHERENT_BIT_EXT,
-    eShadingRateImageReadNV = VK_ACCESS_SHADING_RATE_IMAGE_READ_BIT_NV,
-    eAccelerationStructureReadNV = VK_ACCESS_ACCELERATION_STRUCTURE_READ_BIT_NV,
-    eAccelerationStructureWriteNV = VK_ACCESS_ACCELERATION_STRUCTURE_WRITE_BIT_NV,
-    eFragmentDensityMapReadEXT = VK_ACCESS_FRAGMENT_DENSITY_MAP_READ_BIT_EXT
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( AccessFlagBits value )
-  {
-    switch ( value )
-    {
-      case AccessFlagBits::eIndirectCommandRead : return "IndirectCommandRead";
-      case AccessFlagBits::eIndexRead : return "IndexRead";
-      case AccessFlagBits::eVertexAttributeRead : return "VertexAttributeRead";
-      case AccessFlagBits::eUniformRead : return "UniformRead";
-      case AccessFlagBits::eInputAttachmentRead : return "InputAttachmentRead";
-      case AccessFlagBits::eShaderRead : return "ShaderRead";
-      case AccessFlagBits::eShaderWrite : return "ShaderWrite";
-      case AccessFlagBits::eColorAttachmentRead : return "ColorAttachmentRead";
-      case AccessFlagBits::eColorAttachmentWrite : return "ColorAttachmentWrite";
-      case AccessFlagBits::eDepthStencilAttachmentRead : return "DepthStencilAttachmentRead";
-      case AccessFlagBits::eDepthStencilAttachmentWrite : return "DepthStencilAttachmentWrite";
-      case AccessFlagBits::eTransferRead : return "TransferRead";
-      case AccessFlagBits::eTransferWrite : return "TransferWrite";
-      case AccessFlagBits::eHostRead : return "HostRead";
-      case AccessFlagBits::eHostWrite : return "HostWrite";
-      case AccessFlagBits::eMemoryRead : return "MemoryRead";
-      case AccessFlagBits::eMemoryWrite : return "MemoryWrite";
-      case AccessFlagBits::eTransformFeedbackWriteEXT : return "TransformFeedbackWriteEXT";
-      case AccessFlagBits::eTransformFeedbackCounterReadEXT : return "TransformFeedbackCounterReadEXT";
-      case AccessFlagBits::eTransformFeedbackCounterWriteEXT : return "TransformFeedbackCounterWriteEXT";
-      case AccessFlagBits::eConditionalRenderingReadEXT : return "ConditionalRenderingReadEXT";
-      case AccessFlagBits::eCommandProcessReadNVX : return "CommandProcessReadNVX";
-      case AccessFlagBits::eCommandProcessWriteNVX : return "CommandProcessWriteNVX";
-      case AccessFlagBits::eColorAttachmentReadNoncoherentEXT : return "ColorAttachmentReadNoncoherentEXT";
-      case AccessFlagBits::eShadingRateImageReadNV : return "ShadingRateImageReadNV";
-      case AccessFlagBits::eAccelerationStructureReadNV : return "AccelerationStructureReadNV";
-      case AccessFlagBits::eAccelerationStructureWriteNV : return "AccelerationStructureWriteNV";
-      case AccessFlagBits::eFragmentDensityMapReadEXT : return "FragmentDensityMapReadEXT";
-      default: return "invalid";
-    }
-  }
-
   using AccessFlags = Flags<AccessFlagBits, VkAccessFlags>;
 
   template <> struct FlagTraits<AccessFlagBits>
@@ -6639,14 +8424,6 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  enum class AcquireProfilingLockFlagBitsKHR
-  {};
-
-  VULKAN_HPP_INLINE std::string to_string( AcquireProfilingLockFlagBitsKHR )
-  {
-    return "(void)";
-  }
-
   using AcquireProfilingLockFlagsKHR = Flags<AcquireProfilingLockFlagBitsKHR, VkAcquireProfilingLockFlagsKHR>;
 
   VULKAN_HPP_INLINE std::string to_string( AcquireProfilingLockFlagsKHR  )
@@ -6670,20 +8447,6 @@ namespace VULKAN_HPP_NAMESPACE
     return "{}";
   }
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
-
-  enum class AttachmentDescriptionFlagBits
-  {
-    eMayAlias = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( AttachmentDescriptionFlagBits value )
-  {
-    switch ( value )
-    {
-      case AttachmentDescriptionFlagBits::eMayAlias : return "MayAlias";
-      default: return "invalid";
-    }
-  }
 
   using AttachmentDescriptionFlags = Flags<AttachmentDescriptionFlagBits, VkAttachmentDescriptionFlags>;
 
@@ -6722,29 +8485,6 @@ namespace VULKAN_HPP_NAMESPACE
 
     if ( value & AttachmentDescriptionFlagBits::eMayAlias ) result += "MayAlias | ";
     return "{ " + result.substr(0, result.size() - 3) + " }";
-  }
-
-  enum class BufferCreateFlagBits
-  {
-    eSparseBinding = VK_BUFFER_CREATE_SPARSE_BINDING_BIT,
-    eSparseResidency = VK_BUFFER_CREATE_SPARSE_RESIDENCY_BIT,
-    eSparseAliased = VK_BUFFER_CREATE_SPARSE_ALIASED_BIT,
-    eProtected = VK_BUFFER_CREATE_PROTECTED_BIT,
-    eDeviceAddressCaptureReplayKHR = VK_BUFFER_CREATE_DEVICE_ADDRESS_CAPTURE_REPLAY_BIT_KHR,
-    eDeviceAddressCaptureReplayEXT = VK_BUFFER_CREATE_DEVICE_ADDRESS_CAPTURE_REPLAY_BIT_EXT
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( BufferCreateFlagBits value )
-  {
-    switch ( value )
-    {
-      case BufferCreateFlagBits::eSparseBinding : return "SparseBinding";
-      case BufferCreateFlagBits::eSparseResidency : return "SparseResidency";
-      case BufferCreateFlagBits::eSparseAliased : return "SparseAliased";
-      case BufferCreateFlagBits::eProtected : return "Protected";
-      case BufferCreateFlagBits::eDeviceAddressCaptureReplayKHR : return "DeviceAddressCaptureReplayKHR";
-      default: return "invalid";
-    }
   }
 
   using BufferCreateFlags = Flags<BufferCreateFlagBits, VkBufferCreateFlags>;
@@ -6788,47 +8528,6 @@ namespace VULKAN_HPP_NAMESPACE
     if ( value & BufferCreateFlagBits::eProtected ) result += "Protected | ";
     if ( value & BufferCreateFlagBits::eDeviceAddressCaptureReplayKHR ) result += "DeviceAddressCaptureReplayKHR | ";
     return "{ " + result.substr(0, result.size() - 3) + " }";
-  }
-
-  enum class BufferUsageFlagBits
-  {
-    eTransferSrc = VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-    eTransferDst = VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-    eUniformTexelBuffer = VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT,
-    eStorageTexelBuffer = VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT,
-    eUniformBuffer = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-    eStorageBuffer = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,
-    eIndexBuffer = VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
-    eVertexBuffer = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
-    eIndirectBuffer = VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT,
-    eTransformFeedbackBufferEXT = VK_BUFFER_USAGE_TRANSFORM_FEEDBACK_BUFFER_BIT_EXT,
-    eTransformFeedbackCounterBufferEXT = VK_BUFFER_USAGE_TRANSFORM_FEEDBACK_COUNTER_BUFFER_BIT_EXT,
-    eConditionalRenderingEXT = VK_BUFFER_USAGE_CONDITIONAL_RENDERING_BIT_EXT,
-    eRayTracingNV = VK_BUFFER_USAGE_RAY_TRACING_BIT_NV,
-    eShaderDeviceAddressKHR = VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT_KHR,
-    eShaderDeviceAddressEXT = VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT_EXT
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( BufferUsageFlagBits value )
-  {
-    switch ( value )
-    {
-      case BufferUsageFlagBits::eTransferSrc : return "TransferSrc";
-      case BufferUsageFlagBits::eTransferDst : return "TransferDst";
-      case BufferUsageFlagBits::eUniformTexelBuffer : return "UniformTexelBuffer";
-      case BufferUsageFlagBits::eStorageTexelBuffer : return "StorageTexelBuffer";
-      case BufferUsageFlagBits::eUniformBuffer : return "UniformBuffer";
-      case BufferUsageFlagBits::eStorageBuffer : return "StorageBuffer";
-      case BufferUsageFlagBits::eIndexBuffer : return "IndexBuffer";
-      case BufferUsageFlagBits::eVertexBuffer : return "VertexBuffer";
-      case BufferUsageFlagBits::eIndirectBuffer : return "IndirectBuffer";
-      case BufferUsageFlagBits::eTransformFeedbackBufferEXT : return "TransformFeedbackBufferEXT";
-      case BufferUsageFlagBits::eTransformFeedbackCounterBufferEXT : return "TransformFeedbackCounterBufferEXT";
-      case BufferUsageFlagBits::eConditionalRenderingEXT : return "ConditionalRenderingEXT";
-      case BufferUsageFlagBits::eRayTracingNV : return "RayTracingNV";
-      case BufferUsageFlagBits::eShaderDeviceAddressKHR : return "ShaderDeviceAddressKHR";
-      default: return "invalid";
-    }
   }
 
   using BufferUsageFlags = Flags<BufferUsageFlagBits, VkBufferUsageFlags>;
@@ -6883,41 +8582,11 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  enum class BufferViewCreateFlagBits
-  {};
-
-  VULKAN_HPP_INLINE std::string to_string( BufferViewCreateFlagBits )
-  {
-    return "(void)";
-  }
-
   using BufferViewCreateFlags = Flags<BufferViewCreateFlagBits, VkBufferViewCreateFlags>;
 
   VULKAN_HPP_INLINE std::string to_string( BufferViewCreateFlags  )
   {
     return "{}";
-  }
-
-  enum class BuildAccelerationStructureFlagBitsNV
-  {
-    eAllowUpdate = VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_UPDATE_BIT_NV,
-    eAllowCompaction = VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_COMPACTION_BIT_NV,
-    ePreferFastTrace = VK_BUILD_ACCELERATION_STRUCTURE_PREFER_FAST_TRACE_BIT_NV,
-    ePreferFastBuild = VK_BUILD_ACCELERATION_STRUCTURE_PREFER_FAST_BUILD_BIT_NV,
-    eLowMemory = VK_BUILD_ACCELERATION_STRUCTURE_LOW_MEMORY_BIT_NV
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( BuildAccelerationStructureFlagBitsNV value )
-  {
-    switch ( value )
-    {
-      case BuildAccelerationStructureFlagBitsNV::eAllowUpdate : return "AllowUpdate";
-      case BuildAccelerationStructureFlagBitsNV::eAllowCompaction : return "AllowCompaction";
-      case BuildAccelerationStructureFlagBitsNV::ePreferFastTrace : return "PreferFastTrace";
-      case BuildAccelerationStructureFlagBitsNV::ePreferFastBuild : return "PreferFastBuild";
-      case BuildAccelerationStructureFlagBitsNV::eLowMemory : return "LowMemory";
-      default: return "invalid";
-    }
   }
 
   using BuildAccelerationStructureFlagsNV = Flags<BuildAccelerationStructureFlagBitsNV, VkBuildAccelerationStructureFlagsNV>;
@@ -6963,26 +8632,6 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  enum class ColorComponentFlagBits
-  {
-    eR = VK_COLOR_COMPONENT_R_BIT,
-    eG = VK_COLOR_COMPONENT_G_BIT,
-    eB = VK_COLOR_COMPONENT_B_BIT,
-    eA = VK_COLOR_COMPONENT_A_BIT
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( ColorComponentFlagBits value )
-  {
-    switch ( value )
-    {
-      case ColorComponentFlagBits::eR : return "R";
-      case ColorComponentFlagBits::eG : return "G";
-      case ColorComponentFlagBits::eB : return "B";
-      case ColorComponentFlagBits::eA : return "A";
-      default: return "invalid";
-    }
-  }
-
   using ColorComponentFlags = Flags<ColorComponentFlagBits, VkColorComponentFlags>;
 
   template <> struct FlagTraits<ColorComponentFlagBits>
@@ -7025,20 +8674,6 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  enum class CommandBufferResetFlagBits
-  {
-    eReleaseResources = VK_COMMAND_BUFFER_RESET_RELEASE_RESOURCES_BIT
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( CommandBufferResetFlagBits value )
-  {
-    switch ( value )
-    {
-      case CommandBufferResetFlagBits::eReleaseResources : return "ReleaseResources";
-      default: return "invalid";
-    }
-  }
-
   using CommandBufferResetFlags = Flags<CommandBufferResetFlagBits, VkCommandBufferResetFlags>;
 
   template <> struct FlagTraits<CommandBufferResetFlagBits>
@@ -7076,24 +8711,6 @@ namespace VULKAN_HPP_NAMESPACE
 
     if ( value & CommandBufferResetFlagBits::eReleaseResources ) result += "ReleaseResources | ";
     return "{ " + result.substr(0, result.size() - 3) + " }";
-  }
-
-  enum class CommandBufferUsageFlagBits
-  {
-    eOneTimeSubmit = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT,
-    eRenderPassContinue = VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT,
-    eSimultaneousUse = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( CommandBufferUsageFlagBits value )
-  {
-    switch ( value )
-    {
-      case CommandBufferUsageFlagBits::eOneTimeSubmit : return "OneTimeSubmit";
-      case CommandBufferUsageFlagBits::eRenderPassContinue : return "RenderPassContinue";
-      case CommandBufferUsageFlagBits::eSimultaneousUse : return "SimultaneousUse";
-      default: return "invalid";
-    }
   }
 
   using CommandBufferUsageFlags = Flags<CommandBufferUsageFlagBits, VkCommandBufferUsageFlags>;
@@ -7137,24 +8754,6 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  enum class CommandPoolCreateFlagBits
-  {
-    eTransient = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT,
-    eResetCommandBuffer = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
-    eProtected = VK_COMMAND_POOL_CREATE_PROTECTED_BIT
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( CommandPoolCreateFlagBits value )
-  {
-    switch ( value )
-    {
-      case CommandPoolCreateFlagBits::eTransient : return "Transient";
-      case CommandPoolCreateFlagBits::eResetCommandBuffer : return "ResetCommandBuffer";
-      case CommandPoolCreateFlagBits::eProtected : return "Protected";
-      default: return "invalid";
-    }
-  }
-
   using CommandPoolCreateFlags = Flags<CommandPoolCreateFlagBits, VkCommandPoolCreateFlags>;
 
   template <> struct FlagTraits<CommandPoolCreateFlagBits>
@@ -7194,20 +8793,6 @@ namespace VULKAN_HPP_NAMESPACE
     if ( value & CommandPoolCreateFlagBits::eResetCommandBuffer ) result += "ResetCommandBuffer | ";
     if ( value & CommandPoolCreateFlagBits::eProtected ) result += "Protected | ";
     return "{ " + result.substr(0, result.size() - 3) + " }";
-  }
-
-  enum class CommandPoolResetFlagBits
-  {
-    eReleaseResources = VK_COMMAND_POOL_RESET_RELEASE_RESOURCES_BIT
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( CommandPoolResetFlagBits value )
-  {
-    switch ( value )
-    {
-      case CommandPoolResetFlagBits::eReleaseResources : return "ReleaseResources";
-      default: return "invalid";
-    }
   }
 
   using CommandPoolResetFlags = Flags<CommandPoolResetFlagBits, VkCommandPoolResetFlags>;
@@ -7266,26 +8851,6 @@ namespace VULKAN_HPP_NAMESPACE
     return "{}";
   }
 
-  enum class CompositeAlphaFlagBitsKHR
-  {
-    eOpaque = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
-    ePreMultiplied = VK_COMPOSITE_ALPHA_PRE_MULTIPLIED_BIT_KHR,
-    ePostMultiplied = VK_COMPOSITE_ALPHA_POST_MULTIPLIED_BIT_KHR,
-    eInherit = VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( CompositeAlphaFlagBitsKHR value )
-  {
-    switch ( value )
-    {
-      case CompositeAlphaFlagBitsKHR::eOpaque : return "Opaque";
-      case CompositeAlphaFlagBitsKHR::ePreMultiplied : return "PreMultiplied";
-      case CompositeAlphaFlagBitsKHR::ePostMultiplied : return "PostMultiplied";
-      case CompositeAlphaFlagBitsKHR::eInherit : return "Inherit";
-      default: return "invalid";
-    }
-  }
-
   using CompositeAlphaFlagsKHR = Flags<CompositeAlphaFlagBitsKHR, VkCompositeAlphaFlagsKHR>;
 
   template <> struct FlagTraits<CompositeAlphaFlagBitsKHR>
@@ -7328,20 +8893,6 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  enum class ConditionalRenderingFlagBitsEXT
-  {
-    eInverted = VK_CONDITIONAL_RENDERING_INVERTED_BIT_EXT
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( ConditionalRenderingFlagBitsEXT value )
-  {
-    switch ( value )
-    {
-      case ConditionalRenderingFlagBitsEXT::eInverted : return "Inverted";
-      default: return "invalid";
-    }
-  }
-
   using ConditionalRenderingFlagsEXT = Flags<ConditionalRenderingFlagBitsEXT, VkConditionalRenderingFlagsEXT>;
 
   template <> struct FlagTraits<ConditionalRenderingFlagBitsEXT>
@@ -7379,26 +8930,6 @@ namespace VULKAN_HPP_NAMESPACE
 
     if ( value & ConditionalRenderingFlagBitsEXT::eInverted ) result += "Inverted | ";
     return "{ " + result.substr(0, result.size() - 3) + " }";
-  }
-
-  enum class CullModeFlagBits
-  {
-    eNone = VK_CULL_MODE_NONE,
-    eFront = VK_CULL_MODE_FRONT_BIT,
-    eBack = VK_CULL_MODE_BACK_BIT,
-    eFrontAndBack = VK_CULL_MODE_FRONT_AND_BACK
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( CullModeFlagBits value )
-  {
-    switch ( value )
-    {
-      case CullModeFlagBits::eNone : return "None";
-      case CullModeFlagBits::eFront : return "Front";
-      case CullModeFlagBits::eBack : return "Back";
-      case CullModeFlagBits::eFrontAndBack : return "FrontAndBack";
-      default: return "invalid";
-    }
   }
 
   using CullModeFlags = Flags<CullModeFlagBits, VkCullModeFlags>;
@@ -7439,28 +8970,6 @@ namespace VULKAN_HPP_NAMESPACE
     if ( value & CullModeFlagBits::eFront ) result += "Front | ";
     if ( value & CullModeFlagBits::eBack ) result += "Back | ";
     return "{ " + result.substr(0, result.size() - 3) + " }";
-  }
-
-  enum class DebugReportFlagBitsEXT
-  {
-    eInformation = VK_DEBUG_REPORT_INFORMATION_BIT_EXT,
-    eWarning = VK_DEBUG_REPORT_WARNING_BIT_EXT,
-    ePerformanceWarning = VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT,
-    eError = VK_DEBUG_REPORT_ERROR_BIT_EXT,
-    eDebug = VK_DEBUG_REPORT_DEBUG_BIT_EXT
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( DebugReportFlagBitsEXT value )
-  {
-    switch ( value )
-    {
-      case DebugReportFlagBitsEXT::eInformation : return "Information";
-      case DebugReportFlagBitsEXT::eWarning : return "Warning";
-      case DebugReportFlagBitsEXT::ePerformanceWarning : return "PerformanceWarning";
-      case DebugReportFlagBitsEXT::eError : return "Error";
-      case DebugReportFlagBitsEXT::eDebug : return "Debug";
-      default: return "invalid";
-    }
   }
 
   using DebugReportFlagsEXT = Flags<DebugReportFlagBitsEXT, VkDebugReportFlagsEXT>;
@@ -7506,26 +9015,6 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  enum class DebugUtilsMessageSeverityFlagBitsEXT
-  {
-    eVerbose = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT,
-    eInfo = VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT,
-    eWarning = VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT,
-    eError = VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( DebugUtilsMessageSeverityFlagBitsEXT value )
-  {
-    switch ( value )
-    {
-      case DebugUtilsMessageSeverityFlagBitsEXT::eVerbose : return "Verbose";
-      case DebugUtilsMessageSeverityFlagBitsEXT::eInfo : return "Info";
-      case DebugUtilsMessageSeverityFlagBitsEXT::eWarning : return "Warning";
-      case DebugUtilsMessageSeverityFlagBitsEXT::eError : return "Error";
-      default: return "invalid";
-    }
-  }
-
   using DebugUtilsMessageSeverityFlagsEXT = Flags<DebugUtilsMessageSeverityFlagBitsEXT, VkDebugUtilsMessageSeverityFlagsEXT>;
 
   template <> struct FlagTraits<DebugUtilsMessageSeverityFlagBitsEXT>
@@ -7566,24 +9055,6 @@ namespace VULKAN_HPP_NAMESPACE
     if ( value & DebugUtilsMessageSeverityFlagBitsEXT::eWarning ) result += "Warning | ";
     if ( value & DebugUtilsMessageSeverityFlagBitsEXT::eError ) result += "Error | ";
     return "{ " + result.substr(0, result.size() - 3) + " }";
-  }
-
-  enum class DebugUtilsMessageTypeFlagBitsEXT
-  {
-    eGeneral = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT,
-    eValidation = VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT,
-    ePerformance = VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( DebugUtilsMessageTypeFlagBitsEXT value )
-  {
-    switch ( value )
-    {
-      case DebugUtilsMessageTypeFlagBitsEXT::eGeneral : return "General";
-      case DebugUtilsMessageTypeFlagBitsEXT::eValidation : return "Validation";
-      case DebugUtilsMessageTypeFlagBitsEXT::ePerformance : return "Performance";
-      default: return "invalid";
-    }
   }
 
   using DebugUtilsMessageTypeFlagsEXT = Flags<DebugUtilsMessageTypeFlagBitsEXT, VkDebugUtilsMessageTypeFlagsEXT>;
@@ -7657,26 +9128,6 @@ namespace VULKAN_HPP_NAMESPACE
     return "{}";
   }
 
-  enum class DependencyFlagBits
-  {
-    eByRegion = VK_DEPENDENCY_BY_REGION_BIT,
-    eDeviceGroup = VK_DEPENDENCY_DEVICE_GROUP_BIT,
-    eViewLocal = VK_DEPENDENCY_VIEW_LOCAL_BIT,
-    eViewLocalKHR = VK_DEPENDENCY_VIEW_LOCAL_BIT_KHR,
-    eDeviceGroupKHR = VK_DEPENDENCY_DEVICE_GROUP_BIT_KHR
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( DependencyFlagBits value )
-  {
-    switch ( value )
-    {
-      case DependencyFlagBits::eByRegion : return "ByRegion";
-      case DependencyFlagBits::eDeviceGroup : return "DeviceGroup";
-      case DependencyFlagBits::eViewLocal : return "ViewLocal";
-      default: return "invalid";
-    }
-  }
-
   using DependencyFlags = Flags<DependencyFlagBits, VkDependencyFlags>;
 
   template <> struct FlagTraits<DependencyFlagBits>
@@ -7716,26 +9167,6 @@ namespace VULKAN_HPP_NAMESPACE
     if ( value & DependencyFlagBits::eDeviceGroup ) result += "DeviceGroup | ";
     if ( value & DependencyFlagBits::eViewLocal ) result += "ViewLocal | ";
     return "{ " + result.substr(0, result.size() - 3) + " }";
-  }
-
-  enum class DescriptorBindingFlagBitsEXT
-  {
-    eUpdateAfterBind = VK_DESCRIPTOR_BINDING_UPDATE_AFTER_BIND_BIT_EXT,
-    eUpdateUnusedWhilePending = VK_DESCRIPTOR_BINDING_UPDATE_UNUSED_WHILE_PENDING_BIT_EXT,
-    ePartiallyBound = VK_DESCRIPTOR_BINDING_PARTIALLY_BOUND_BIT_EXT,
-    eVariableDescriptorCount = VK_DESCRIPTOR_BINDING_VARIABLE_DESCRIPTOR_COUNT_BIT_EXT
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( DescriptorBindingFlagBitsEXT value )
-  {
-    switch ( value )
-    {
-      case DescriptorBindingFlagBitsEXT::eUpdateAfterBind : return "UpdateAfterBind";
-      case DescriptorBindingFlagBitsEXT::eUpdateUnusedWhilePending : return "UpdateUnusedWhilePending";
-      case DescriptorBindingFlagBitsEXT::ePartiallyBound : return "PartiallyBound";
-      case DescriptorBindingFlagBitsEXT::eVariableDescriptorCount : return "VariableDescriptorCount";
-      default: return "invalid";
-    }
   }
 
   using DescriptorBindingFlagsEXT = Flags<DescriptorBindingFlagBitsEXT, VkDescriptorBindingFlagsEXT>;
@@ -7778,22 +9209,6 @@ namespace VULKAN_HPP_NAMESPACE
     if ( value & DescriptorBindingFlagBitsEXT::ePartiallyBound ) result += "PartiallyBound | ";
     if ( value & DescriptorBindingFlagBitsEXT::eVariableDescriptorCount ) result += "VariableDescriptorCount | ";
     return "{ " + result.substr(0, result.size() - 3) + " }";
-  }
-
-  enum class DescriptorPoolCreateFlagBits
-  {
-    eFreeDescriptorSet = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT,
-    eUpdateAfterBindEXT = VK_DESCRIPTOR_POOL_CREATE_UPDATE_AFTER_BIND_BIT_EXT
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( DescriptorPoolCreateFlagBits value )
-  {
-    switch ( value )
-    {
-      case DescriptorPoolCreateFlagBits::eFreeDescriptorSet : return "FreeDescriptorSet";
-      case DescriptorPoolCreateFlagBits::eUpdateAfterBindEXT : return "UpdateAfterBindEXT";
-      default: return "invalid";
-    }
   }
 
   using DescriptorPoolCreateFlags = Flags<DescriptorPoolCreateFlagBits, VkDescriptorPoolCreateFlags>;
@@ -7849,22 +9264,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE std::string to_string( DescriptorPoolResetFlags  )
   {
     return "{}";
-  }
-
-  enum class DescriptorSetLayoutCreateFlagBits
-  {
-    ePushDescriptorKHR = VK_DESCRIPTOR_SET_LAYOUT_CREATE_PUSH_DESCRIPTOR_BIT_KHR,
-    eUpdateAfterBindPoolEXT = VK_DESCRIPTOR_SET_LAYOUT_CREATE_UPDATE_AFTER_BIND_POOL_BIT_EXT
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( DescriptorSetLayoutCreateFlagBits value )
-  {
-    switch ( value )
-    {
-      case DescriptorSetLayoutCreateFlagBits::ePushDescriptorKHR : return "PushDescriptorKHR";
-      case DescriptorSetLayoutCreateFlagBits::eUpdateAfterBindPoolEXT : return "UpdateAfterBindPoolEXT";
-      default: return "invalid";
-    }
   }
 
   using DescriptorSetLayoutCreateFlags = Flags<DescriptorSetLayoutCreateFlagBits, VkDescriptorSetLayoutCreateFlags>;
@@ -7924,39 +9323,11 @@ namespace VULKAN_HPP_NAMESPACE
     return "{}";
   }
 
-  enum class DeviceCreateFlagBits
-  {};
-
-  VULKAN_HPP_INLINE std::string to_string( DeviceCreateFlagBits )
-  {
-    return "(void)";
-  }
-
   using DeviceCreateFlags = Flags<DeviceCreateFlagBits, VkDeviceCreateFlags>;
 
   VULKAN_HPP_INLINE std::string to_string( DeviceCreateFlags  )
   {
     return "{}";
-  }
-
-  enum class DeviceGroupPresentModeFlagBitsKHR
-  {
-    eLocal = VK_DEVICE_GROUP_PRESENT_MODE_LOCAL_BIT_KHR,
-    eRemote = VK_DEVICE_GROUP_PRESENT_MODE_REMOTE_BIT_KHR,
-    eSum = VK_DEVICE_GROUP_PRESENT_MODE_SUM_BIT_KHR,
-    eLocalMultiDevice = VK_DEVICE_GROUP_PRESENT_MODE_LOCAL_MULTI_DEVICE_BIT_KHR
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( DeviceGroupPresentModeFlagBitsKHR value )
-  {
-    switch ( value )
-    {
-      case DeviceGroupPresentModeFlagBitsKHR::eLocal : return "Local";
-      case DeviceGroupPresentModeFlagBitsKHR::eRemote : return "Remote";
-      case DeviceGroupPresentModeFlagBitsKHR::eSum : return "Sum";
-      case DeviceGroupPresentModeFlagBitsKHR::eLocalMultiDevice : return "LocalMultiDevice";
-      default: return "invalid";
-    }
   }
 
   using DeviceGroupPresentModeFlagsKHR = Flags<DeviceGroupPresentModeFlagBitsKHR, VkDeviceGroupPresentModeFlagsKHR>;
@@ -7999,20 +9370,6 @@ namespace VULKAN_HPP_NAMESPACE
     if ( value & DeviceGroupPresentModeFlagBitsKHR::eSum ) result += "Sum | ";
     if ( value & DeviceGroupPresentModeFlagBitsKHR::eLocalMultiDevice ) result += "LocalMultiDevice | ";
     return "{ " + result.substr(0, result.size() - 3) + " }";
-  }
-
-  enum class DeviceQueueCreateFlagBits
-  {
-    eProtected = VK_DEVICE_QUEUE_CREATE_PROTECTED_BIT
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( DeviceQueueCreateFlagBits value )
-  {
-    switch ( value )
-    {
-      case DeviceQueueCreateFlagBits::eProtected : return "Protected";
-      default: return "invalid";
-    }
   }
 
   using DeviceQueueCreateFlags = Flags<DeviceQueueCreateFlagBits, VkDeviceQueueCreateFlags>;
@@ -8067,26 +9424,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE std::string to_string( DisplayModeCreateFlagsKHR  )
   {
     return "{}";
-  }
-
-  enum class DisplayPlaneAlphaFlagBitsKHR
-  {
-    eOpaque = VK_DISPLAY_PLANE_ALPHA_OPAQUE_BIT_KHR,
-    eGlobal = VK_DISPLAY_PLANE_ALPHA_GLOBAL_BIT_KHR,
-    ePerPixel = VK_DISPLAY_PLANE_ALPHA_PER_PIXEL_BIT_KHR,
-    ePerPixelPremultiplied = VK_DISPLAY_PLANE_ALPHA_PER_PIXEL_PREMULTIPLIED_BIT_KHR
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( DisplayPlaneAlphaFlagBitsKHR value )
-  {
-    switch ( value )
-    {
-      case DisplayPlaneAlphaFlagBitsKHR::eOpaque : return "Opaque";
-      case DisplayPlaneAlphaFlagBitsKHR::eGlobal : return "Global";
-      case DisplayPlaneAlphaFlagBitsKHR::ePerPixel : return "PerPixel";
-      case DisplayPlaneAlphaFlagBitsKHR::ePerPixelPremultiplied : return "PerPixelPremultiplied";
-      default: return "invalid";
-    }
   }
 
   using DisplayPlaneAlphaFlagsKHR = Flags<DisplayPlaneAlphaFlagBitsKHR, VkDisplayPlaneAlphaFlagsKHR>;
@@ -8161,24 +9498,6 @@ namespace VULKAN_HPP_NAMESPACE
     return "{}";
   }
 
-  enum class ExternalFenceFeatureFlagBits
-  {
-    eExportable = VK_EXTERNAL_FENCE_FEATURE_EXPORTABLE_BIT,
-    eImportable = VK_EXTERNAL_FENCE_FEATURE_IMPORTABLE_BIT,
-    eExportableKHR = VK_EXTERNAL_FENCE_FEATURE_EXPORTABLE_BIT_KHR,
-    eImportableKHR = VK_EXTERNAL_FENCE_FEATURE_IMPORTABLE_BIT_KHR
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( ExternalFenceFeatureFlagBits value )
-  {
-    switch ( value )
-    {
-      case ExternalFenceFeatureFlagBits::eExportable : return "Exportable";
-      case ExternalFenceFeatureFlagBits::eImportable : return "Importable";
-      default: return "invalid";
-    }
-  }
-
   using ExternalFenceFeatureFlags = Flags<ExternalFenceFeatureFlagBits, VkExternalFenceFeatureFlags>;
 
   template <> struct FlagTraits<ExternalFenceFeatureFlagBits>
@@ -8219,30 +9538,6 @@ namespace VULKAN_HPP_NAMESPACE
     if ( value & ExternalFenceFeatureFlagBits::eExportable ) result += "Exportable | ";
     if ( value & ExternalFenceFeatureFlagBits::eImportable ) result += "Importable | ";
     return "{ " + result.substr(0, result.size() - 3) + " }";
-  }
-
-  enum class ExternalFenceHandleTypeFlagBits
-  {
-    eOpaqueFd = VK_EXTERNAL_FENCE_HANDLE_TYPE_OPAQUE_FD_BIT,
-    eOpaqueWin32 = VK_EXTERNAL_FENCE_HANDLE_TYPE_OPAQUE_WIN32_BIT,
-    eOpaqueWin32Kmt = VK_EXTERNAL_FENCE_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT,
-    eSyncFd = VK_EXTERNAL_FENCE_HANDLE_TYPE_SYNC_FD_BIT,
-    eOpaqueFdKHR = VK_EXTERNAL_FENCE_HANDLE_TYPE_OPAQUE_FD_BIT_KHR,
-    eOpaqueWin32KHR = VK_EXTERNAL_FENCE_HANDLE_TYPE_OPAQUE_WIN32_BIT_KHR,
-    eOpaqueWin32KmtKHR = VK_EXTERNAL_FENCE_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT_KHR,
-    eSyncFdKHR = VK_EXTERNAL_FENCE_HANDLE_TYPE_SYNC_FD_BIT_KHR
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( ExternalFenceHandleTypeFlagBits value )
-  {
-    switch ( value )
-    {
-      case ExternalFenceHandleTypeFlagBits::eOpaqueFd : return "OpaqueFd";
-      case ExternalFenceHandleTypeFlagBits::eOpaqueWin32 : return "OpaqueWin32";
-      case ExternalFenceHandleTypeFlagBits::eOpaqueWin32Kmt : return "OpaqueWin32Kmt";
-      case ExternalFenceHandleTypeFlagBits::eSyncFd : return "SyncFd";
-      default: return "invalid";
-    }
   }
 
   using ExternalFenceHandleTypeFlags = Flags<ExternalFenceHandleTypeFlagBits, VkExternalFenceHandleTypeFlags>;
@@ -8289,27 +9584,6 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  enum class ExternalMemoryFeatureFlagBits
-  {
-    eDedicatedOnly = VK_EXTERNAL_MEMORY_FEATURE_DEDICATED_ONLY_BIT,
-    eExportable = VK_EXTERNAL_MEMORY_FEATURE_EXPORTABLE_BIT,
-    eImportable = VK_EXTERNAL_MEMORY_FEATURE_IMPORTABLE_BIT,
-    eDedicatedOnlyKHR = VK_EXTERNAL_MEMORY_FEATURE_DEDICATED_ONLY_BIT_KHR,
-    eExportableKHR = VK_EXTERNAL_MEMORY_FEATURE_EXPORTABLE_BIT_KHR,
-    eImportableKHR = VK_EXTERNAL_MEMORY_FEATURE_IMPORTABLE_BIT_KHR
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( ExternalMemoryFeatureFlagBits value )
-  {
-    switch ( value )
-    {
-      case ExternalMemoryFeatureFlagBits::eDedicatedOnly : return "DedicatedOnly";
-      case ExternalMemoryFeatureFlagBits::eExportable : return "Exportable";
-      case ExternalMemoryFeatureFlagBits::eImportable : return "Importable";
-      default: return "invalid";
-    }
-  }
-
   using ExternalMemoryFeatureFlags = Flags<ExternalMemoryFeatureFlagBits, VkExternalMemoryFeatureFlags>;
 
   template <> struct FlagTraits<ExternalMemoryFeatureFlagBits>
@@ -8353,24 +9627,6 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  enum class ExternalMemoryFeatureFlagBitsNV
-  {
-    eDedicatedOnly = VK_EXTERNAL_MEMORY_FEATURE_DEDICATED_ONLY_BIT_NV,
-    eExportable = VK_EXTERNAL_MEMORY_FEATURE_EXPORTABLE_BIT_NV,
-    eImportable = VK_EXTERNAL_MEMORY_FEATURE_IMPORTABLE_BIT_NV
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( ExternalMemoryFeatureFlagBitsNV value )
-  {
-    switch ( value )
-    {
-      case ExternalMemoryFeatureFlagBitsNV::eDedicatedOnly : return "DedicatedOnly";
-      case ExternalMemoryFeatureFlagBitsNV::eExportable : return "Exportable";
-      case ExternalMemoryFeatureFlagBitsNV::eImportable : return "Importable";
-      default: return "invalid";
-    }
-  }
-
   using ExternalMemoryFeatureFlagsNV = Flags<ExternalMemoryFeatureFlagBitsNV, VkExternalMemoryFeatureFlagsNV>;
 
   template <> struct FlagTraits<ExternalMemoryFeatureFlagBitsNV>
@@ -8410,47 +9666,6 @@ namespace VULKAN_HPP_NAMESPACE
     if ( value & ExternalMemoryFeatureFlagBitsNV::eExportable ) result += "Exportable | ";
     if ( value & ExternalMemoryFeatureFlagBitsNV::eImportable ) result += "Importable | ";
     return "{ " + result.substr(0, result.size() - 3) + " }";
-  }
-
-  enum class ExternalMemoryHandleTypeFlagBits
-  {
-    eOpaqueFd = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT,
-    eOpaqueWin32 = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_BIT,
-    eOpaqueWin32Kmt = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT,
-    eD3D11Texture = VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D11_TEXTURE_BIT,
-    eD3D11TextureKmt = VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D11_TEXTURE_KMT_BIT,
-    eD3D12Heap = VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D12_HEAP_BIT,
-    eD3D12Resource = VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D12_RESOURCE_BIT,
-    eDmaBufEXT = VK_EXTERNAL_MEMORY_HANDLE_TYPE_DMA_BUF_BIT_EXT,
-    eAndroidHardwareBufferANDROID = VK_EXTERNAL_MEMORY_HANDLE_TYPE_ANDROID_HARDWARE_BUFFER_BIT_ANDROID,
-    eHostAllocationEXT = VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_ALLOCATION_BIT_EXT,
-    eHostMappedForeignMemoryEXT = VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_MAPPED_FOREIGN_MEMORY_BIT_EXT,
-    eOpaqueFdKHR = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT_KHR,
-    eOpaqueWin32KHR = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_BIT_KHR,
-    eOpaqueWin32KmtKHR = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT_KHR,
-    eD3D11TextureKHR = VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D11_TEXTURE_BIT_KHR,
-    eD3D11TextureKmtKHR = VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D11_TEXTURE_KMT_BIT_KHR,
-    eD3D12HeapKHR = VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D12_HEAP_BIT_KHR,
-    eD3D12ResourceKHR = VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D12_RESOURCE_BIT_KHR
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( ExternalMemoryHandleTypeFlagBits value )
-  {
-    switch ( value )
-    {
-      case ExternalMemoryHandleTypeFlagBits::eOpaqueFd : return "OpaqueFd";
-      case ExternalMemoryHandleTypeFlagBits::eOpaqueWin32 : return "OpaqueWin32";
-      case ExternalMemoryHandleTypeFlagBits::eOpaqueWin32Kmt : return "OpaqueWin32Kmt";
-      case ExternalMemoryHandleTypeFlagBits::eD3D11Texture : return "D3D11Texture";
-      case ExternalMemoryHandleTypeFlagBits::eD3D11TextureKmt : return "D3D11TextureKmt";
-      case ExternalMemoryHandleTypeFlagBits::eD3D12Heap : return "D3D12Heap";
-      case ExternalMemoryHandleTypeFlagBits::eD3D12Resource : return "D3D12Resource";
-      case ExternalMemoryHandleTypeFlagBits::eDmaBufEXT : return "DmaBufEXT";
-      case ExternalMemoryHandleTypeFlagBits::eAndroidHardwareBufferANDROID : return "AndroidHardwareBufferANDROID";
-      case ExternalMemoryHandleTypeFlagBits::eHostAllocationEXT : return "HostAllocationEXT";
-      case ExternalMemoryHandleTypeFlagBits::eHostMappedForeignMemoryEXT : return "HostMappedForeignMemoryEXT";
-      default: return "invalid";
-    }
   }
 
   using ExternalMemoryHandleTypeFlags = Flags<ExternalMemoryHandleTypeFlagBits, VkExternalMemoryHandleTypeFlags>;
@@ -8504,26 +9719,6 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  enum class ExternalMemoryHandleTypeFlagBitsNV
-  {
-    eOpaqueWin32 = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_BIT_NV,
-    eOpaqueWin32Kmt = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT_NV,
-    eD3D11Image = VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D11_IMAGE_BIT_NV,
-    eD3D11ImageKmt = VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D11_IMAGE_KMT_BIT_NV
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( ExternalMemoryHandleTypeFlagBitsNV value )
-  {
-    switch ( value )
-    {
-      case ExternalMemoryHandleTypeFlagBitsNV::eOpaqueWin32 : return "OpaqueWin32";
-      case ExternalMemoryHandleTypeFlagBitsNV::eOpaqueWin32Kmt : return "OpaqueWin32Kmt";
-      case ExternalMemoryHandleTypeFlagBitsNV::eD3D11Image : return "D3D11Image";
-      case ExternalMemoryHandleTypeFlagBitsNV::eD3D11ImageKmt : return "D3D11ImageKmt";
-      default: return "invalid";
-    }
-  }
-
   using ExternalMemoryHandleTypeFlagsNV = Flags<ExternalMemoryHandleTypeFlagBitsNV, VkExternalMemoryHandleTypeFlagsNV>;
 
   template <> struct FlagTraits<ExternalMemoryHandleTypeFlagBitsNV>
@@ -8566,24 +9761,6 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  enum class ExternalSemaphoreFeatureFlagBits
-  {
-    eExportable = VK_EXTERNAL_SEMAPHORE_FEATURE_EXPORTABLE_BIT,
-    eImportable = VK_EXTERNAL_SEMAPHORE_FEATURE_IMPORTABLE_BIT,
-    eExportableKHR = VK_EXTERNAL_SEMAPHORE_FEATURE_EXPORTABLE_BIT_KHR,
-    eImportableKHR = VK_EXTERNAL_SEMAPHORE_FEATURE_IMPORTABLE_BIT_KHR
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( ExternalSemaphoreFeatureFlagBits value )
-  {
-    switch ( value )
-    {
-      case ExternalSemaphoreFeatureFlagBits::eExportable : return "Exportable";
-      case ExternalSemaphoreFeatureFlagBits::eImportable : return "Importable";
-      default: return "invalid";
-    }
-  }
-
   using ExternalSemaphoreFeatureFlags = Flags<ExternalSemaphoreFeatureFlagBits, VkExternalSemaphoreFeatureFlags>;
 
   template <> struct FlagTraits<ExternalSemaphoreFeatureFlagBits>
@@ -8624,33 +9801,6 @@ namespace VULKAN_HPP_NAMESPACE
     if ( value & ExternalSemaphoreFeatureFlagBits::eExportable ) result += "Exportable | ";
     if ( value & ExternalSemaphoreFeatureFlagBits::eImportable ) result += "Importable | ";
     return "{ " + result.substr(0, result.size() - 3) + " }";
-  }
-
-  enum class ExternalSemaphoreHandleTypeFlagBits
-  {
-    eOpaqueFd = VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_FD_BIT,
-    eOpaqueWin32 = VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32_BIT,
-    eOpaqueWin32Kmt = VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT,
-    eD3D12Fence = VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_D3D12_FENCE_BIT,
-    eSyncFd = VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_SYNC_FD_BIT,
-    eOpaqueFdKHR = VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_FD_BIT_KHR,
-    eOpaqueWin32KHR = VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32_BIT_KHR,
-    eOpaqueWin32KmtKHR = VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT_KHR,
-    eD3D12FenceKHR = VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_D3D12_FENCE_BIT_KHR,
-    eSyncFdKHR = VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_SYNC_FD_BIT_KHR
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( ExternalSemaphoreHandleTypeFlagBits value )
-  {
-    switch ( value )
-    {
-      case ExternalSemaphoreHandleTypeFlagBits::eOpaqueFd : return "OpaqueFd";
-      case ExternalSemaphoreHandleTypeFlagBits::eOpaqueWin32 : return "OpaqueWin32";
-      case ExternalSemaphoreHandleTypeFlagBits::eOpaqueWin32Kmt : return "OpaqueWin32Kmt";
-      case ExternalSemaphoreHandleTypeFlagBits::eD3D12Fence : return "D3D12Fence";
-      case ExternalSemaphoreHandleTypeFlagBits::eSyncFd : return "SyncFd";
-      default: return "invalid";
-    }
   }
 
   using ExternalSemaphoreHandleTypeFlags = Flags<ExternalSemaphoreHandleTypeFlagBits, VkExternalSemaphoreHandleTypeFlags>;
@@ -8698,20 +9848,6 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  enum class FenceCreateFlagBits
-  {
-    eSignaled = VK_FENCE_CREATE_SIGNALED_BIT
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( FenceCreateFlagBits value )
-  {
-    switch ( value )
-    {
-      case FenceCreateFlagBits::eSignaled : return "Signaled";
-      default: return "invalid";
-    }
-  }
-
   using FenceCreateFlags = Flags<FenceCreateFlagBits, VkFenceCreateFlags>;
 
   template <> struct FlagTraits<FenceCreateFlagBits>
@@ -8749,21 +9885,6 @@ namespace VULKAN_HPP_NAMESPACE
 
     if ( value & FenceCreateFlagBits::eSignaled ) result += "Signaled | ";
     return "{ " + result.substr(0, result.size() - 3) + " }";
-  }
-
-  enum class FenceImportFlagBits
-  {
-    eTemporary = VK_FENCE_IMPORT_TEMPORARY_BIT,
-    eTemporaryKHR = VK_FENCE_IMPORT_TEMPORARY_BIT_KHR
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( FenceImportFlagBits value )
-  {
-    switch ( value )
-    {
-      case FenceImportFlagBits::eTemporary : return "Temporary";
-      default: return "invalid";
-    }
   }
 
   using FenceImportFlags = Flags<FenceImportFlagBits, VkFenceImportFlags>;
@@ -8805,78 +9926,6 @@ namespace VULKAN_HPP_NAMESPACE
 
     if ( value & FenceImportFlagBits::eTemporary ) result += "Temporary | ";
     return "{ " + result.substr(0, result.size() - 3) + " }";
-  }
-
-  enum class FormatFeatureFlagBits
-  {
-    eSampledImage = VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT,
-    eStorageImage = VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT,
-    eStorageImageAtomic = VK_FORMAT_FEATURE_STORAGE_IMAGE_ATOMIC_BIT,
-    eUniformTexelBuffer = VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
-    eStorageTexelBuffer = VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_BIT,
-    eStorageTexelBufferAtomic = VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_ATOMIC_BIT,
-    eVertexBuffer = VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT,
-    eColorAttachment = VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT,
-    eColorAttachmentBlend = VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BLEND_BIT,
-    eDepthStencilAttachment = VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT,
-    eBlitSrc = VK_FORMAT_FEATURE_BLIT_SRC_BIT,
-    eBlitDst = VK_FORMAT_FEATURE_BLIT_DST_BIT,
-    eSampledImageFilterLinear = VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT,
-    eTransferSrc = VK_FORMAT_FEATURE_TRANSFER_SRC_BIT,
-    eTransferDst = VK_FORMAT_FEATURE_TRANSFER_DST_BIT,
-    eMidpointChromaSamples = VK_FORMAT_FEATURE_MIDPOINT_CHROMA_SAMPLES_BIT,
-    eSampledImageYcbcrConversionLinearFilter = VK_FORMAT_FEATURE_SAMPLED_IMAGE_YCBCR_CONVERSION_LINEAR_FILTER_BIT,
-    eSampledImageYcbcrConversionSeparateReconstructionFilter = VK_FORMAT_FEATURE_SAMPLED_IMAGE_YCBCR_CONVERSION_SEPARATE_RECONSTRUCTION_FILTER_BIT,
-    eSampledImageYcbcrConversionChromaReconstructionExplicit = VK_FORMAT_FEATURE_SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_BIT,
-    eSampledImageYcbcrConversionChromaReconstructionExplicitForceable = VK_FORMAT_FEATURE_SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_FORCEABLE_BIT,
-    eDisjoint = VK_FORMAT_FEATURE_DISJOINT_BIT,
-    eCositedChromaSamples = VK_FORMAT_FEATURE_COSITED_CHROMA_SAMPLES_BIT,
-    eSampledImageFilterCubicIMG = VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_CUBIC_BIT_IMG,
-    eSampledImageFilterMinmaxEXT = VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_MINMAX_BIT_EXT,
-    eFragmentDensityMapEXT = VK_FORMAT_FEATURE_FRAGMENT_DENSITY_MAP_BIT_EXT,
-    eTransferSrcKHR = VK_FORMAT_FEATURE_TRANSFER_SRC_BIT_KHR,
-    eTransferDstKHR = VK_FORMAT_FEATURE_TRANSFER_DST_BIT_KHR,
-    eMidpointChromaSamplesKHR = VK_FORMAT_FEATURE_MIDPOINT_CHROMA_SAMPLES_BIT_KHR,
-    eSampledImageYcbcrConversionLinearFilterKHR = VK_FORMAT_FEATURE_SAMPLED_IMAGE_YCBCR_CONVERSION_LINEAR_FILTER_BIT_KHR,
-    eSampledImageYcbcrConversionSeparateReconstructionFilterKHR = VK_FORMAT_FEATURE_SAMPLED_IMAGE_YCBCR_CONVERSION_SEPARATE_RECONSTRUCTION_FILTER_BIT_KHR,
-    eSampledImageYcbcrConversionChromaReconstructionExplicitKHR = VK_FORMAT_FEATURE_SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_BIT_KHR,
-    eSampledImageYcbcrConversionChromaReconstructionExplicitForceableKHR = VK_FORMAT_FEATURE_SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_FORCEABLE_BIT_KHR,
-    eDisjointKHR = VK_FORMAT_FEATURE_DISJOINT_BIT_KHR,
-    eCositedChromaSamplesKHR = VK_FORMAT_FEATURE_COSITED_CHROMA_SAMPLES_BIT_KHR,
-    eSampledImageFilterCubicEXT = VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_CUBIC_BIT_EXT
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( FormatFeatureFlagBits value )
-  {
-    switch ( value )
-    {
-      case FormatFeatureFlagBits::eSampledImage : return "SampledImage";
-      case FormatFeatureFlagBits::eStorageImage : return "StorageImage";
-      case FormatFeatureFlagBits::eStorageImageAtomic : return "StorageImageAtomic";
-      case FormatFeatureFlagBits::eUniformTexelBuffer : return "UniformTexelBuffer";
-      case FormatFeatureFlagBits::eStorageTexelBuffer : return "StorageTexelBuffer";
-      case FormatFeatureFlagBits::eStorageTexelBufferAtomic : return "StorageTexelBufferAtomic";
-      case FormatFeatureFlagBits::eVertexBuffer : return "VertexBuffer";
-      case FormatFeatureFlagBits::eColorAttachment : return "ColorAttachment";
-      case FormatFeatureFlagBits::eColorAttachmentBlend : return "ColorAttachmentBlend";
-      case FormatFeatureFlagBits::eDepthStencilAttachment : return "DepthStencilAttachment";
-      case FormatFeatureFlagBits::eBlitSrc : return "BlitSrc";
-      case FormatFeatureFlagBits::eBlitDst : return "BlitDst";
-      case FormatFeatureFlagBits::eSampledImageFilterLinear : return "SampledImageFilterLinear";
-      case FormatFeatureFlagBits::eTransferSrc : return "TransferSrc";
-      case FormatFeatureFlagBits::eTransferDst : return "TransferDst";
-      case FormatFeatureFlagBits::eMidpointChromaSamples : return "MidpointChromaSamples";
-      case FormatFeatureFlagBits::eSampledImageYcbcrConversionLinearFilter : return "SampledImageYcbcrConversionLinearFilter";
-      case FormatFeatureFlagBits::eSampledImageYcbcrConversionSeparateReconstructionFilter : return "SampledImageYcbcrConversionSeparateReconstructionFilter";
-      case FormatFeatureFlagBits::eSampledImageYcbcrConversionChromaReconstructionExplicit : return "SampledImageYcbcrConversionChromaReconstructionExplicit";
-      case FormatFeatureFlagBits::eSampledImageYcbcrConversionChromaReconstructionExplicitForceable : return "SampledImageYcbcrConversionChromaReconstructionExplicitForceable";
-      case FormatFeatureFlagBits::eDisjoint : return "Disjoint";
-      case FormatFeatureFlagBits::eCositedChromaSamples : return "CositedChromaSamples";
-      case FormatFeatureFlagBits::eSampledImageFilterCubicIMG : return "SampledImageFilterCubicIMG";
-      case FormatFeatureFlagBits::eSampledImageFilterMinmaxEXT : return "SampledImageFilterMinmaxEXT";
-      case FormatFeatureFlagBits::eFragmentDensityMapEXT : return "FragmentDensityMapEXT";
-      default: return "invalid";
-    }
   }
 
   using FormatFeatureFlags = Flags<FormatFeatureFlagBits, VkFormatFeatureFlags>;
@@ -8942,20 +9991,6 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  enum class FramebufferCreateFlagBits
-  {
-    eImagelessKHR = VK_FRAMEBUFFER_CREATE_IMAGELESS_BIT_KHR
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( FramebufferCreateFlagBits value )
-  {
-    switch ( value )
-    {
-      case FramebufferCreateFlagBits::eImagelessKHR : return "ImagelessKHR";
-      default: return "invalid";
-    }
-  }
-
   using FramebufferCreateFlags = Flags<FramebufferCreateFlagBits, VkFramebufferCreateFlags>;
 
   template <> struct FlagTraits<FramebufferCreateFlagBits>
@@ -8993,22 +10028,6 @@ namespace VULKAN_HPP_NAMESPACE
 
     if ( value & FramebufferCreateFlagBits::eImagelessKHR ) result += "ImagelessKHR | ";
     return "{ " + result.substr(0, result.size() - 3) + " }";
-  }
-
-  enum class GeometryFlagBitsNV
-  {
-    eOpaque = VK_GEOMETRY_OPAQUE_BIT_NV,
-    eNoDuplicateAnyHitInvocation = VK_GEOMETRY_NO_DUPLICATE_ANY_HIT_INVOCATION_BIT_NV
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( GeometryFlagBitsNV value )
-  {
-    switch ( value )
-    {
-      case GeometryFlagBitsNV::eOpaque : return "Opaque";
-      case GeometryFlagBitsNV::eNoDuplicateAnyHitInvocation : return "NoDuplicateAnyHitInvocation";
-      default: return "invalid";
-    }
   }
 
   using GeometryFlagsNV = Flags<GeometryFlagBitsNV, VkGeometryFlagsNV>;
@@ -9049,26 +10068,6 @@ namespace VULKAN_HPP_NAMESPACE
     if ( value & GeometryFlagBitsNV::eOpaque ) result += "Opaque | ";
     if ( value & GeometryFlagBitsNV::eNoDuplicateAnyHitInvocation ) result += "NoDuplicateAnyHitInvocation | ";
     return "{ " + result.substr(0, result.size() - 3) + " }";
-  }
-
-  enum class GeometryInstanceFlagBitsNV
-  {
-    eTriangleCullDisable = VK_GEOMETRY_INSTANCE_TRIANGLE_CULL_DISABLE_BIT_NV,
-    eTriangleFrontCounterclockwise = VK_GEOMETRY_INSTANCE_TRIANGLE_FRONT_COUNTERCLOCKWISE_BIT_NV,
-    eForceOpaque = VK_GEOMETRY_INSTANCE_FORCE_OPAQUE_BIT_NV,
-    eForceNoOpaque = VK_GEOMETRY_INSTANCE_FORCE_NO_OPAQUE_BIT_NV
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( GeometryInstanceFlagBitsNV value )
-  {
-    switch ( value )
-    {
-      case GeometryInstanceFlagBitsNV::eTriangleCullDisable : return "TriangleCullDisable";
-      case GeometryInstanceFlagBitsNV::eTriangleFrontCounterclockwise : return "TriangleFrontCounterclockwise";
-      case GeometryInstanceFlagBitsNV::eForceOpaque : return "ForceOpaque";
-      case GeometryInstanceFlagBitsNV::eForceNoOpaque : return "ForceNoOpaque";
-      default: return "invalid";
-    }
   }
 
   using GeometryInstanceFlagsNV = Flags<GeometryInstanceFlagBitsNV, VkGeometryInstanceFlagsNV>;
@@ -9145,43 +10144,6 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /*VK_USE_PLATFORM_IOS_MVK*/
 
-  enum class ImageAspectFlagBits
-  {
-    eColor = VK_IMAGE_ASPECT_COLOR_BIT,
-    eDepth = VK_IMAGE_ASPECT_DEPTH_BIT,
-    eStencil = VK_IMAGE_ASPECT_STENCIL_BIT,
-    eMetadata = VK_IMAGE_ASPECT_METADATA_BIT,
-    ePlane0 = VK_IMAGE_ASPECT_PLANE_0_BIT,
-    ePlane1 = VK_IMAGE_ASPECT_PLANE_1_BIT,
-    ePlane2 = VK_IMAGE_ASPECT_PLANE_2_BIT,
-    eMemoryPlane0EXT = VK_IMAGE_ASPECT_MEMORY_PLANE_0_BIT_EXT,
-    eMemoryPlane1EXT = VK_IMAGE_ASPECT_MEMORY_PLANE_1_BIT_EXT,
-    eMemoryPlane2EXT = VK_IMAGE_ASPECT_MEMORY_PLANE_2_BIT_EXT,
-    eMemoryPlane3EXT = VK_IMAGE_ASPECT_MEMORY_PLANE_3_BIT_EXT,
-    ePlane0KHR = VK_IMAGE_ASPECT_PLANE_0_BIT_KHR,
-    ePlane1KHR = VK_IMAGE_ASPECT_PLANE_1_BIT_KHR,
-    ePlane2KHR = VK_IMAGE_ASPECT_PLANE_2_BIT_KHR
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( ImageAspectFlagBits value )
-  {
-    switch ( value )
-    {
-      case ImageAspectFlagBits::eColor : return "Color";
-      case ImageAspectFlagBits::eDepth : return "Depth";
-      case ImageAspectFlagBits::eStencil : return "Stencil";
-      case ImageAspectFlagBits::eMetadata : return "Metadata";
-      case ImageAspectFlagBits::ePlane0 : return "Plane0";
-      case ImageAspectFlagBits::ePlane1 : return "Plane1";
-      case ImageAspectFlagBits::ePlane2 : return "Plane2";
-      case ImageAspectFlagBits::eMemoryPlane0EXT : return "MemoryPlane0EXT";
-      case ImageAspectFlagBits::eMemoryPlane1EXT : return "MemoryPlane1EXT";
-      case ImageAspectFlagBits::eMemoryPlane2EXT : return "MemoryPlane2EXT";
-      case ImageAspectFlagBits::eMemoryPlane3EXT : return "MemoryPlane3EXT";
-      default: return "invalid";
-    }
-  }
-
   using ImageAspectFlags = Flags<ImageAspectFlagBits, VkImageAspectFlags>;
 
   template <> struct FlagTraits<ImageAspectFlagBits>
@@ -9229,54 +10191,6 @@ namespace VULKAN_HPP_NAMESPACE
     if ( value & ImageAspectFlagBits::eMemoryPlane2EXT ) result += "MemoryPlane2EXT | ";
     if ( value & ImageAspectFlagBits::eMemoryPlane3EXT ) result += "MemoryPlane3EXT | ";
     return "{ " + result.substr(0, result.size() - 3) + " }";
-  }
-
-  enum class ImageCreateFlagBits
-  {
-    eSparseBinding = VK_IMAGE_CREATE_SPARSE_BINDING_BIT,
-    eSparseResidency = VK_IMAGE_CREATE_SPARSE_RESIDENCY_BIT,
-    eSparseAliased = VK_IMAGE_CREATE_SPARSE_ALIASED_BIT,
-    eMutableFormat = VK_IMAGE_CREATE_MUTABLE_FORMAT_BIT,
-    eCubeCompatible = VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT,
-    eAlias = VK_IMAGE_CREATE_ALIAS_BIT,
-    eSplitInstanceBindRegions = VK_IMAGE_CREATE_SPLIT_INSTANCE_BIND_REGIONS_BIT,
-    e2DArrayCompatible = VK_IMAGE_CREATE_2D_ARRAY_COMPATIBLE_BIT,
-    eBlockTexelViewCompatible = VK_IMAGE_CREATE_BLOCK_TEXEL_VIEW_COMPATIBLE_BIT,
-    eExtendedUsage = VK_IMAGE_CREATE_EXTENDED_USAGE_BIT,
-    eProtected = VK_IMAGE_CREATE_PROTECTED_BIT,
-    eDisjoint = VK_IMAGE_CREATE_DISJOINT_BIT,
-    eCornerSampledNV = VK_IMAGE_CREATE_CORNER_SAMPLED_BIT_NV,
-    eSampleLocationsCompatibleDepthEXT = VK_IMAGE_CREATE_SAMPLE_LOCATIONS_COMPATIBLE_DEPTH_BIT_EXT,
-    eSubsampledEXT = VK_IMAGE_CREATE_SUBSAMPLED_BIT_EXT,
-    eSplitInstanceBindRegionsKHR = VK_IMAGE_CREATE_SPLIT_INSTANCE_BIND_REGIONS_BIT_KHR,
-    e2DArrayCompatibleKHR = VK_IMAGE_CREATE_2D_ARRAY_COMPATIBLE_BIT_KHR,
-    eBlockTexelViewCompatibleKHR = VK_IMAGE_CREATE_BLOCK_TEXEL_VIEW_COMPATIBLE_BIT_KHR,
-    eExtendedUsageKHR = VK_IMAGE_CREATE_EXTENDED_USAGE_BIT_KHR,
-    eDisjointKHR = VK_IMAGE_CREATE_DISJOINT_BIT_KHR,
-    eAliasKHR = VK_IMAGE_CREATE_ALIAS_BIT_KHR
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( ImageCreateFlagBits value )
-  {
-    switch ( value )
-    {
-      case ImageCreateFlagBits::eSparseBinding : return "SparseBinding";
-      case ImageCreateFlagBits::eSparseResidency : return "SparseResidency";
-      case ImageCreateFlagBits::eSparseAliased : return "SparseAliased";
-      case ImageCreateFlagBits::eMutableFormat : return "MutableFormat";
-      case ImageCreateFlagBits::eCubeCompatible : return "CubeCompatible";
-      case ImageCreateFlagBits::eAlias : return "Alias";
-      case ImageCreateFlagBits::eSplitInstanceBindRegions : return "SplitInstanceBindRegions";
-      case ImageCreateFlagBits::e2DArrayCompatible : return "2DArrayCompatible";
-      case ImageCreateFlagBits::eBlockTexelViewCompatible : return "BlockTexelViewCompatible";
-      case ImageCreateFlagBits::eExtendedUsage : return "ExtendedUsage";
-      case ImageCreateFlagBits::eProtected : return "Protected";
-      case ImageCreateFlagBits::eDisjoint : return "Disjoint";
-      case ImageCreateFlagBits::eCornerSampledNV : return "CornerSampledNV";
-      case ImageCreateFlagBits::eSampleLocationsCompatibleDepthEXT : return "SampleLocationsCompatibleDepthEXT";
-      case ImageCreateFlagBits::eSubsampledEXT : return "SubsampledEXT";
-      default: return "invalid";
-    }
   }
 
   using ImageCreateFlags = Flags<ImageCreateFlagBits, VkImageCreateFlags>;
@@ -9349,38 +10263,6 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
 
-  enum class ImageUsageFlagBits
-  {
-    eTransferSrc = VK_IMAGE_USAGE_TRANSFER_SRC_BIT,
-    eTransferDst = VK_IMAGE_USAGE_TRANSFER_DST_BIT,
-    eSampled = VK_IMAGE_USAGE_SAMPLED_BIT,
-    eStorage = VK_IMAGE_USAGE_STORAGE_BIT,
-    eColorAttachment = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
-    eDepthStencilAttachment = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
-    eTransientAttachment = VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT,
-    eInputAttachment = VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT,
-    eShadingRateImageNV = VK_IMAGE_USAGE_SHADING_RATE_IMAGE_BIT_NV,
-    eFragmentDensityMapEXT = VK_IMAGE_USAGE_FRAGMENT_DENSITY_MAP_BIT_EXT
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( ImageUsageFlagBits value )
-  {
-    switch ( value )
-    {
-      case ImageUsageFlagBits::eTransferSrc : return "TransferSrc";
-      case ImageUsageFlagBits::eTransferDst : return "TransferDst";
-      case ImageUsageFlagBits::eSampled : return "Sampled";
-      case ImageUsageFlagBits::eStorage : return "Storage";
-      case ImageUsageFlagBits::eColorAttachment : return "ColorAttachment";
-      case ImageUsageFlagBits::eDepthStencilAttachment : return "DepthStencilAttachment";
-      case ImageUsageFlagBits::eTransientAttachment : return "TransientAttachment";
-      case ImageUsageFlagBits::eInputAttachment : return "InputAttachment";
-      case ImageUsageFlagBits::eShadingRateImageNV : return "ShadingRateImageNV";
-      case ImageUsageFlagBits::eFragmentDensityMapEXT : return "FragmentDensityMapEXT";
-      default: return "invalid";
-    }
-  }
-
   using ImageUsageFlags = Flags<ImageUsageFlagBits, VkImageUsageFlags>;
 
   template <> struct FlagTraits<ImageUsageFlagBits>
@@ -9429,20 +10311,6 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  enum class ImageViewCreateFlagBits
-  {
-    eFragmentDensityMapDynamicEXT = VK_IMAGE_VIEW_CREATE_FRAGMENT_DENSITY_MAP_DYNAMIC_BIT_EXT
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( ImageViewCreateFlagBits value )
-  {
-    switch ( value )
-    {
-      case ImageViewCreateFlagBits::eFragmentDensityMapDynamicEXT : return "FragmentDensityMapDynamicEXT";
-      default: return "invalid";
-    }
-  }
-
   using ImageViewCreateFlags = Flags<ImageViewCreateFlagBits, VkImageViewCreateFlags>;
 
   template <> struct FlagTraits<ImageViewCreateFlagBits>
@@ -9480,26 +10348,6 @@ namespace VULKAN_HPP_NAMESPACE
 
     if ( value & ImageViewCreateFlagBits::eFragmentDensityMapDynamicEXT ) result += "FragmentDensityMapDynamicEXT | ";
     return "{ " + result.substr(0, result.size() - 3) + " }";
-  }
-
-  enum class IndirectCommandsLayoutUsageFlagBitsNVX
-  {
-    eUnorderedSequences = VK_INDIRECT_COMMANDS_LAYOUT_USAGE_UNORDERED_SEQUENCES_BIT_NVX,
-    eSparseSequences = VK_INDIRECT_COMMANDS_LAYOUT_USAGE_SPARSE_SEQUENCES_BIT_NVX,
-    eEmptyExecutions = VK_INDIRECT_COMMANDS_LAYOUT_USAGE_EMPTY_EXECUTIONS_BIT_NVX,
-    eIndexedSequences = VK_INDIRECT_COMMANDS_LAYOUT_USAGE_INDEXED_SEQUENCES_BIT_NVX
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( IndirectCommandsLayoutUsageFlagBitsNVX value )
-  {
-    switch ( value )
-    {
-      case IndirectCommandsLayoutUsageFlagBitsNVX::eUnorderedSequences : return "UnorderedSequences";
-      case IndirectCommandsLayoutUsageFlagBitsNVX::eSparseSequences : return "SparseSequences";
-      case IndirectCommandsLayoutUsageFlagBitsNVX::eEmptyExecutions : return "EmptyExecutions";
-      case IndirectCommandsLayoutUsageFlagBitsNVX::eIndexedSequences : return "IndexedSequences";
-      default: return "invalid";
-    }
   }
 
   using IndirectCommandsLayoutUsageFlagsNVX = Flags<IndirectCommandsLayoutUsageFlagBitsNVX, VkIndirectCommandsLayoutUsageFlagsNVX>;
@@ -9544,14 +10392,6 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  enum class InstanceCreateFlagBits
-  {};
-
-  VULKAN_HPP_INLINE std::string to_string( InstanceCreateFlagBits )
-  {
-    return "(void)";
-  }
-
   using InstanceCreateFlags = Flags<InstanceCreateFlagBits, VkInstanceCreateFlags>;
 
   VULKAN_HPP_INLINE std::string to_string( InstanceCreateFlags  )
@@ -9575,25 +10415,6 @@ namespace VULKAN_HPP_NAMESPACE
     return "{}";
   }
 #endif /*VK_USE_PLATFORM_MACOS_MVK*/
-
-  enum class MemoryAllocateFlagBits
-  {
-    eDeviceMask = VK_MEMORY_ALLOCATE_DEVICE_MASK_BIT,
-    eDeviceAddressKHR = VK_MEMORY_ALLOCATE_DEVICE_ADDRESS_BIT_KHR,
-    eDeviceAddressCaptureReplayKHR = VK_MEMORY_ALLOCATE_DEVICE_ADDRESS_CAPTURE_REPLAY_BIT_KHR,
-    eDeviceMaskKHR = VK_MEMORY_ALLOCATE_DEVICE_MASK_BIT_KHR
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( MemoryAllocateFlagBits value )
-  {
-    switch ( value )
-    {
-      case MemoryAllocateFlagBits::eDeviceMask : return "DeviceMask";
-      case MemoryAllocateFlagBits::eDeviceAddressKHR : return "DeviceAddressKHR";
-      case MemoryAllocateFlagBits::eDeviceAddressCaptureReplayKHR : return "DeviceAddressCaptureReplayKHR";
-      default: return "invalid";
-    }
-  }
 
   using MemoryAllocateFlags = Flags<MemoryAllocateFlagBits, VkMemoryAllocateFlags>;
 
@@ -9636,23 +10457,6 @@ namespace VULKAN_HPP_NAMESPACE
     if ( value & MemoryAllocateFlagBits::eDeviceAddressKHR ) result += "DeviceAddressKHR | ";
     if ( value & MemoryAllocateFlagBits::eDeviceAddressCaptureReplayKHR ) result += "DeviceAddressCaptureReplayKHR | ";
     return "{ " + result.substr(0, result.size() - 3) + " }";
-  }
-
-  enum class MemoryHeapFlagBits
-  {
-    eDeviceLocal = VK_MEMORY_HEAP_DEVICE_LOCAL_BIT,
-    eMultiInstance = VK_MEMORY_HEAP_MULTI_INSTANCE_BIT,
-    eMultiInstanceKHR = VK_MEMORY_HEAP_MULTI_INSTANCE_BIT_KHR
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( MemoryHeapFlagBits value )
-  {
-    switch ( value )
-    {
-      case MemoryHeapFlagBits::eDeviceLocal : return "DeviceLocal";
-      case MemoryHeapFlagBits::eMultiInstance : return "MultiInstance";
-      default: return "invalid";
-    }
   }
 
   using MemoryHeapFlags = Flags<MemoryHeapFlagBits, VkMemoryHeapFlags>;
@@ -9708,34 +10512,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE std::string to_string( MemoryMapFlags  )
   {
     return "{}";
-  }
-
-  enum class MemoryPropertyFlagBits
-  {
-    eDeviceLocal = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-    eHostVisible = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
-    eHostCoherent = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-    eHostCached = VK_MEMORY_PROPERTY_HOST_CACHED_BIT,
-    eLazilyAllocated = VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT,
-    eProtected = VK_MEMORY_PROPERTY_PROTECTED_BIT,
-    eDeviceCoherentAMD = VK_MEMORY_PROPERTY_DEVICE_COHERENT_BIT_AMD,
-    eDeviceUncachedAMD = VK_MEMORY_PROPERTY_DEVICE_UNCACHED_BIT_AMD
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( MemoryPropertyFlagBits value )
-  {
-    switch ( value )
-    {
-      case MemoryPropertyFlagBits::eDeviceLocal : return "DeviceLocal";
-      case MemoryPropertyFlagBits::eHostVisible : return "HostVisible";
-      case MemoryPropertyFlagBits::eHostCoherent : return "HostCoherent";
-      case MemoryPropertyFlagBits::eHostCached : return "HostCached";
-      case MemoryPropertyFlagBits::eLazilyAllocated : return "LazilyAllocated";
-      case MemoryPropertyFlagBits::eProtected : return "Protected";
-      case MemoryPropertyFlagBits::eDeviceCoherentAMD : return "DeviceCoherentAMD";
-      case MemoryPropertyFlagBits::eDeviceUncachedAMD : return "DeviceUncachedAMD";
-      default: return "invalid";
-    }
   }
 
   using MemoryPropertyFlags = Flags<MemoryPropertyFlagBits, VkMemoryPropertyFlags>;
@@ -9801,22 +10577,6 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /*VK_USE_PLATFORM_METAL_EXT*/
 
-  enum class ObjectEntryUsageFlagBitsNVX
-  {
-    eGraphics = VK_OBJECT_ENTRY_USAGE_GRAPHICS_BIT_NVX,
-    eCompute = VK_OBJECT_ENTRY_USAGE_COMPUTE_BIT_NVX
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( ObjectEntryUsageFlagBitsNVX value )
-  {
-    switch ( value )
-    {
-      case ObjectEntryUsageFlagBitsNVX::eGraphics : return "Graphics";
-      case ObjectEntryUsageFlagBitsNVX::eCompute : return "Compute";
-      default: return "invalid";
-    }
-  }
-
   using ObjectEntryUsageFlagsNVX = Flags<ObjectEntryUsageFlagBitsNVX, VkObjectEntryUsageFlagsNVX>;
 
   template <> struct FlagTraits<ObjectEntryUsageFlagBitsNVX>
@@ -9855,30 +10615,6 @@ namespace VULKAN_HPP_NAMESPACE
     if ( value & ObjectEntryUsageFlagBitsNVX::eGraphics ) result += "Graphics | ";
     if ( value & ObjectEntryUsageFlagBitsNVX::eCompute ) result += "Compute | ";
     return "{ " + result.substr(0, result.size() - 3) + " }";
-  }
-
-  enum class PeerMemoryFeatureFlagBits
-  {
-    eCopySrc = VK_PEER_MEMORY_FEATURE_COPY_SRC_BIT,
-    eCopyDst = VK_PEER_MEMORY_FEATURE_COPY_DST_BIT,
-    eGenericSrc = VK_PEER_MEMORY_FEATURE_GENERIC_SRC_BIT,
-    eGenericDst = VK_PEER_MEMORY_FEATURE_GENERIC_DST_BIT,
-    eCopySrcKHR = VK_PEER_MEMORY_FEATURE_COPY_SRC_BIT_KHR,
-    eCopyDstKHR = VK_PEER_MEMORY_FEATURE_COPY_DST_BIT_KHR,
-    eGenericSrcKHR = VK_PEER_MEMORY_FEATURE_GENERIC_SRC_BIT_KHR,
-    eGenericDstKHR = VK_PEER_MEMORY_FEATURE_GENERIC_DST_BIT_KHR
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( PeerMemoryFeatureFlagBits value )
-  {
-    switch ( value )
-    {
-      case PeerMemoryFeatureFlagBits::eCopySrc : return "CopySrc";
-      case PeerMemoryFeatureFlagBits::eCopyDst : return "CopyDst";
-      case PeerMemoryFeatureFlagBits::eGenericSrc : return "GenericSrc";
-      case PeerMemoryFeatureFlagBits::eGenericDst : return "GenericDst";
-      default: return "invalid";
-    }
   }
 
   using PeerMemoryFeatureFlags = Flags<PeerMemoryFeatureFlagBits, VkPeerMemoryFeatureFlags>;
@@ -9925,22 +10661,6 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  enum class PerformanceCounterDescriptionFlagBitsKHR
-  {
-    ePerformanceImpacting = VK_PERFORMANCE_COUNTER_DESCRIPTION_PERFORMANCE_IMPACTING_KHR,
-    eConcurrentlyImpacted = VK_PERFORMANCE_COUNTER_DESCRIPTION_CONCURRENTLY_IMPACTED_KHR
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( PerformanceCounterDescriptionFlagBitsKHR value )
-  {
-    switch ( value )
-    {
-      case PerformanceCounterDescriptionFlagBitsKHR::ePerformanceImpacting : return "PerformanceImpacting";
-      case PerformanceCounterDescriptionFlagBitsKHR::eConcurrentlyImpacted : return "ConcurrentlyImpacted";
-      default: return "invalid";
-    }
-  }
-
   using PerformanceCounterDescriptionFlagsKHR = Flags<PerformanceCounterDescriptionFlagBitsKHR, VkPerformanceCounterDescriptionFlagsKHR>;
 
   template <> struct FlagTraits<PerformanceCounterDescriptionFlagBitsKHR>
@@ -9981,14 +10701,6 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  enum class PipelineCacheCreateFlagBits
-  {};
-
-  VULKAN_HPP_INLINE std::string to_string( PipelineCacheCreateFlagBits )
-  {
-    return "(void)";
-  }
-
   using PipelineCacheCreateFlags = Flags<PipelineCacheCreateFlagBits, VkPipelineCacheCreateFlags>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineCacheCreateFlags  )
@@ -9996,27 +10708,11 @@ namespace VULKAN_HPP_NAMESPACE
     return "{}";
   }
 
-  enum class PipelineColorBlendStateCreateFlagBits
-  {};
-
-  VULKAN_HPP_INLINE std::string to_string( PipelineColorBlendStateCreateFlagBits )
-  {
-    return "(void)";
-  }
-
   using PipelineColorBlendStateCreateFlags = Flags<PipelineColorBlendStateCreateFlagBits, VkPipelineColorBlendStateCreateFlags>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineColorBlendStateCreateFlags  )
   {
     return "{}";
-  }
-
-  enum class PipelineCompilerControlFlagBitsAMD
-  {};
-
-  VULKAN_HPP_INLINE std::string to_string( PipelineCompilerControlFlagBitsAMD )
-  {
-    return "(void)";
   }
 
   using PipelineCompilerControlFlagsAMD = Flags<PipelineCompilerControlFlagBitsAMD, VkPipelineCompilerControlFlagsAMD>;
@@ -10071,36 +10767,6 @@ namespace VULKAN_HPP_NAMESPACE
     return "{}";
   }
 
-  enum class PipelineCreateFlagBits
-  {
-    eDisableOptimization = VK_PIPELINE_CREATE_DISABLE_OPTIMIZATION_BIT,
-    eAllowDerivatives = VK_PIPELINE_CREATE_ALLOW_DERIVATIVES_BIT,
-    eDerivative = VK_PIPELINE_CREATE_DERIVATIVE_BIT,
-    eViewIndexFromDeviceIndex = VK_PIPELINE_CREATE_VIEW_INDEX_FROM_DEVICE_INDEX_BIT,
-    eDispatchBase = VK_PIPELINE_CREATE_DISPATCH_BASE_BIT,
-    eDeferCompileNV = VK_PIPELINE_CREATE_DEFER_COMPILE_BIT_NV,
-    eCaptureStatisticsKHR = VK_PIPELINE_CREATE_CAPTURE_STATISTICS_BIT_KHR,
-    eCaptureInternalRepresentationsKHR = VK_PIPELINE_CREATE_CAPTURE_INTERNAL_REPRESENTATIONS_BIT_KHR,
-    eViewIndexFromDeviceIndexKHR = VK_PIPELINE_CREATE_VIEW_INDEX_FROM_DEVICE_INDEX_BIT_KHR,
-    eDispatchBaseKHR = VK_PIPELINE_CREATE_DISPATCH_BASE_KHR
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( PipelineCreateFlagBits value )
-  {
-    switch ( value )
-    {
-      case PipelineCreateFlagBits::eDisableOptimization : return "DisableOptimization";
-      case PipelineCreateFlagBits::eAllowDerivatives : return "AllowDerivatives";
-      case PipelineCreateFlagBits::eDerivative : return "Derivative";
-      case PipelineCreateFlagBits::eViewIndexFromDeviceIndex : return "ViewIndexFromDeviceIndex";
-      case PipelineCreateFlagBits::eDispatchBase : return "DispatchBase";
-      case PipelineCreateFlagBits::eDeferCompileNV : return "DeferCompileNV";
-      case PipelineCreateFlagBits::eCaptureStatisticsKHR : return "CaptureStatisticsKHR";
-      case PipelineCreateFlagBits::eCaptureInternalRepresentationsKHR : return "CaptureInternalRepresentationsKHR";
-      default: return "invalid";
-    }
-  }
-
   using PipelineCreateFlags = Flags<PipelineCreateFlagBits, VkPipelineCreateFlags>;
 
   template <> struct FlagTraits<PipelineCreateFlagBits>
@@ -10147,24 +10813,6 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  enum class PipelineCreationFeedbackFlagBitsEXT
-  {
-    eValid = VK_PIPELINE_CREATION_FEEDBACK_VALID_BIT_EXT,
-    eApplicationPipelineCacheHit = VK_PIPELINE_CREATION_FEEDBACK_APPLICATION_PIPELINE_CACHE_HIT_BIT_EXT,
-    eBasePipelineAcceleration = VK_PIPELINE_CREATION_FEEDBACK_BASE_PIPELINE_ACCELERATION_BIT_EXT
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( PipelineCreationFeedbackFlagBitsEXT value )
-  {
-    switch ( value )
-    {
-      case PipelineCreationFeedbackFlagBitsEXT::eValid : return "Valid";
-      case PipelineCreationFeedbackFlagBitsEXT::eApplicationPipelineCacheHit : return "ApplicationPipelineCacheHit";
-      case PipelineCreationFeedbackFlagBitsEXT::eBasePipelineAcceleration : return "BasePipelineAcceleration";
-      default: return "invalid";
-    }
-  }
-
   using PipelineCreationFeedbackFlagsEXT = Flags<PipelineCreationFeedbackFlagBitsEXT, VkPipelineCreationFeedbackFlagsEXT>;
 
   template <> struct FlagTraits<PipelineCreationFeedbackFlagBitsEXT>
@@ -10206,14 +10854,6 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  enum class PipelineDepthStencilStateCreateFlagBits
-  {};
-
-  VULKAN_HPP_INLINE std::string to_string( PipelineDepthStencilStateCreateFlagBits )
-  {
-    return "(void)";
-  }
-
   using PipelineDepthStencilStateCreateFlags = Flags<PipelineDepthStencilStateCreateFlagBits, VkPipelineDepthStencilStateCreateFlags>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineDepthStencilStateCreateFlags  )
@@ -10236,27 +10876,11 @@ namespace VULKAN_HPP_NAMESPACE
     return "{}";
   }
 
-  enum class PipelineDynamicStateCreateFlagBits
-  {};
-
-  VULKAN_HPP_INLINE std::string to_string( PipelineDynamicStateCreateFlagBits )
-  {
-    return "(void)";
-  }
-
   using PipelineDynamicStateCreateFlags = Flags<PipelineDynamicStateCreateFlagBits, VkPipelineDynamicStateCreateFlags>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineDynamicStateCreateFlags  )
   {
     return "{}";
-  }
-
-  enum class PipelineInputAssemblyStateCreateFlagBits
-  {};
-
-  VULKAN_HPP_INLINE std::string to_string( PipelineInputAssemblyStateCreateFlagBits )
-  {
-    return "(void)";
   }
 
   using PipelineInputAssemblyStateCreateFlags = Flags<PipelineInputAssemblyStateCreateFlagBits, VkPipelineInputAssemblyStateCreateFlags>;
@@ -10266,27 +10890,11 @@ namespace VULKAN_HPP_NAMESPACE
     return "{}";
   }
 
-  enum class PipelineLayoutCreateFlagBits
-  {};
-
-  VULKAN_HPP_INLINE std::string to_string( PipelineLayoutCreateFlagBits )
-  {
-    return "(void)";
-  }
-
   using PipelineLayoutCreateFlags = Flags<PipelineLayoutCreateFlagBits, VkPipelineLayoutCreateFlags>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineLayoutCreateFlags  )
   {
     return "{}";
-  }
-
-  enum class PipelineMultisampleStateCreateFlagBits
-  {};
-
-  VULKAN_HPP_INLINE std::string to_string( PipelineMultisampleStateCreateFlagBits )
-  {
-    return "(void)";
   }
 
   using PipelineMultisampleStateCreateFlags = Flags<PipelineMultisampleStateCreateFlagBits, VkPipelineMultisampleStateCreateFlags>;
@@ -10326,14 +10934,6 @@ namespace VULKAN_HPP_NAMESPACE
     return "{}";
   }
 
-  enum class PipelineRasterizationStateCreateFlagBits
-  {};
-
-  VULKAN_HPP_INLINE std::string to_string( PipelineRasterizationStateCreateFlagBits )
-  {
-    return "(void)";
-  }
-
   using PipelineRasterizationStateCreateFlags = Flags<PipelineRasterizationStateCreateFlagBits, VkPipelineRasterizationStateCreateFlags>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineRasterizationStateCreateFlags  )
@@ -10354,22 +10954,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE std::string to_string( PipelineRasterizationStateStreamCreateFlagsEXT  )
   {
     return "{}";
-  }
-
-  enum class PipelineShaderStageCreateFlagBits
-  {
-    eAllowVaryingSubgroupSizeEXT = VK_PIPELINE_SHADER_STAGE_CREATE_ALLOW_VARYING_SUBGROUP_SIZE_BIT_EXT,
-    eRequireFullSubgroupsEXT = VK_PIPELINE_SHADER_STAGE_CREATE_REQUIRE_FULL_SUBGROUPS_BIT_EXT
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( PipelineShaderStageCreateFlagBits value )
-  {
-    switch ( value )
-    {
-      case PipelineShaderStageCreateFlagBits::eAllowVaryingSubgroupSizeEXT : return "AllowVaryingSubgroupSizeEXT";
-      case PipelineShaderStageCreateFlagBits::eRequireFullSubgroupsEXT : return "RequireFullSubgroupsEXT";
-      default: return "invalid";
-    }
   }
 
   using PipelineShaderStageCreateFlags = Flags<PipelineShaderStageCreateFlagBits, VkPipelineShaderStageCreateFlags>;
@@ -10410,70 +10994,6 @@ namespace VULKAN_HPP_NAMESPACE
     if ( value & PipelineShaderStageCreateFlagBits::eAllowVaryingSubgroupSizeEXT ) result += "AllowVaryingSubgroupSizeEXT | ";
     if ( value & PipelineShaderStageCreateFlagBits::eRequireFullSubgroupsEXT ) result += "RequireFullSubgroupsEXT | ";
     return "{ " + result.substr(0, result.size() - 3) + " }";
-  }
-
-  enum class PipelineStageFlagBits
-  {
-    eTopOfPipe = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
-    eDrawIndirect = VK_PIPELINE_STAGE_DRAW_INDIRECT_BIT,
-    eVertexInput = VK_PIPELINE_STAGE_VERTEX_INPUT_BIT,
-    eVertexShader = VK_PIPELINE_STAGE_VERTEX_SHADER_BIT,
-    eTessellationControlShader = VK_PIPELINE_STAGE_TESSELLATION_CONTROL_SHADER_BIT,
-    eTessellationEvaluationShader = VK_PIPELINE_STAGE_TESSELLATION_EVALUATION_SHADER_BIT,
-    eGeometryShader = VK_PIPELINE_STAGE_GEOMETRY_SHADER_BIT,
-    eFragmentShader = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
-    eEarlyFragmentTests = VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT,
-    eLateFragmentTests = VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT,
-    eColorAttachmentOutput = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-    eComputeShader = VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
-    eTransfer = VK_PIPELINE_STAGE_TRANSFER_BIT,
-    eBottomOfPipe = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
-    eHost = VK_PIPELINE_STAGE_HOST_BIT,
-    eAllGraphics = VK_PIPELINE_STAGE_ALL_GRAPHICS_BIT,
-    eAllCommands = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
-    eTransformFeedbackEXT = VK_PIPELINE_STAGE_TRANSFORM_FEEDBACK_BIT_EXT,
-    eConditionalRenderingEXT = VK_PIPELINE_STAGE_CONDITIONAL_RENDERING_BIT_EXT,
-    eCommandProcessNVX = VK_PIPELINE_STAGE_COMMAND_PROCESS_BIT_NVX,
-    eShadingRateImageNV = VK_PIPELINE_STAGE_SHADING_RATE_IMAGE_BIT_NV,
-    eRayTracingShaderNV = VK_PIPELINE_STAGE_RAY_TRACING_SHADER_BIT_NV,
-    eAccelerationStructureBuildNV = VK_PIPELINE_STAGE_ACCELERATION_STRUCTURE_BUILD_BIT_NV,
-    eTaskShaderNV = VK_PIPELINE_STAGE_TASK_SHADER_BIT_NV,
-    eMeshShaderNV = VK_PIPELINE_STAGE_MESH_SHADER_BIT_NV,
-    eFragmentDensityProcessEXT = VK_PIPELINE_STAGE_FRAGMENT_DENSITY_PROCESS_BIT_EXT
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( PipelineStageFlagBits value )
-  {
-    switch ( value )
-    {
-      case PipelineStageFlagBits::eTopOfPipe : return "TopOfPipe";
-      case PipelineStageFlagBits::eDrawIndirect : return "DrawIndirect";
-      case PipelineStageFlagBits::eVertexInput : return "VertexInput";
-      case PipelineStageFlagBits::eVertexShader : return "VertexShader";
-      case PipelineStageFlagBits::eTessellationControlShader : return "TessellationControlShader";
-      case PipelineStageFlagBits::eTessellationEvaluationShader : return "TessellationEvaluationShader";
-      case PipelineStageFlagBits::eGeometryShader : return "GeometryShader";
-      case PipelineStageFlagBits::eFragmentShader : return "FragmentShader";
-      case PipelineStageFlagBits::eEarlyFragmentTests : return "EarlyFragmentTests";
-      case PipelineStageFlagBits::eLateFragmentTests : return "LateFragmentTests";
-      case PipelineStageFlagBits::eColorAttachmentOutput : return "ColorAttachmentOutput";
-      case PipelineStageFlagBits::eComputeShader : return "ComputeShader";
-      case PipelineStageFlagBits::eTransfer : return "Transfer";
-      case PipelineStageFlagBits::eBottomOfPipe : return "BottomOfPipe";
-      case PipelineStageFlagBits::eHost : return "Host";
-      case PipelineStageFlagBits::eAllGraphics : return "AllGraphics";
-      case PipelineStageFlagBits::eAllCommands : return "AllCommands";
-      case PipelineStageFlagBits::eTransformFeedbackEXT : return "TransformFeedbackEXT";
-      case PipelineStageFlagBits::eConditionalRenderingEXT : return "ConditionalRenderingEXT";
-      case PipelineStageFlagBits::eCommandProcessNVX : return "CommandProcessNVX";
-      case PipelineStageFlagBits::eShadingRateImageNV : return "ShadingRateImageNV";
-      case PipelineStageFlagBits::eRayTracingShaderNV : return "RayTracingShaderNV";
-      case PipelineStageFlagBits::eAccelerationStructureBuildNV : return "AccelerationStructureBuildNV";
-      case PipelineStageFlagBits::eTaskShaderNV : return "TaskShaderNV";
-      case PipelineStageFlagBits::eMeshShaderNV : return "MeshShaderNV";
-      case PipelineStageFlagBits::eFragmentDensityProcessEXT : return "FragmentDensityProcessEXT";
-      default: return "invalid";
-    }
   }
 
   using PipelineStageFlags = Flags<PipelineStageFlagBits, VkPipelineStageFlags>;
@@ -10540,14 +11060,6 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  enum class PipelineTessellationStateCreateFlagBits
-  {};
-
-  VULKAN_HPP_INLINE std::string to_string( PipelineTessellationStateCreateFlagBits )
-  {
-    return "(void)";
-  }
-
   using PipelineTessellationStateCreateFlags = Flags<PipelineTessellationStateCreateFlagBits, VkPipelineTessellationStateCreateFlags>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineTessellationStateCreateFlags  )
@@ -10555,27 +11067,11 @@ namespace VULKAN_HPP_NAMESPACE
     return "{}";
   }
 
-  enum class PipelineVertexInputStateCreateFlagBits
-  {};
-
-  VULKAN_HPP_INLINE std::string to_string( PipelineVertexInputStateCreateFlagBits )
-  {
-    return "(void)";
-  }
-
   using PipelineVertexInputStateCreateFlags = Flags<PipelineVertexInputStateCreateFlagBits, VkPipelineVertexInputStateCreateFlags>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineVertexInputStateCreateFlags  )
   {
     return "{}";
-  }
-
-  enum class PipelineViewportStateCreateFlagBits
-  {};
-
-  VULKAN_HPP_INLINE std::string to_string( PipelineViewportStateCreateFlagBits )
-  {
-    return "(void)";
   }
 
   using PipelineViewportStateCreateFlags = Flags<PipelineViewportStateCreateFlagBits, VkPipelineViewportStateCreateFlags>;
@@ -10598,20 +11094,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE std::string to_string( PipelineViewportSwizzleStateCreateFlagsNV  )
   {
     return "{}";
-  }
-
-  enum class QueryControlFlagBits
-  {
-    ePrecise = VK_QUERY_CONTROL_PRECISE_BIT
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( QueryControlFlagBits value )
-  {
-    switch ( value )
-    {
-      case QueryControlFlagBits::ePrecise : return "Precise";
-      default: return "invalid";
-    }
   }
 
   using QueryControlFlags = Flags<QueryControlFlagBits, VkQueryControlFlags>;
@@ -10651,40 +11133,6 @@ namespace VULKAN_HPP_NAMESPACE
 
     if ( value & QueryControlFlagBits::ePrecise ) result += "Precise | ";
     return "{ " + result.substr(0, result.size() - 3) + " }";
-  }
-
-  enum class QueryPipelineStatisticFlagBits
-  {
-    eInputAssemblyVertices = VK_QUERY_PIPELINE_STATISTIC_INPUT_ASSEMBLY_VERTICES_BIT,
-    eInputAssemblyPrimitives = VK_QUERY_PIPELINE_STATISTIC_INPUT_ASSEMBLY_PRIMITIVES_BIT,
-    eVertexShaderInvocations = VK_QUERY_PIPELINE_STATISTIC_VERTEX_SHADER_INVOCATIONS_BIT,
-    eGeometryShaderInvocations = VK_QUERY_PIPELINE_STATISTIC_GEOMETRY_SHADER_INVOCATIONS_BIT,
-    eGeometryShaderPrimitives = VK_QUERY_PIPELINE_STATISTIC_GEOMETRY_SHADER_PRIMITIVES_BIT,
-    eClippingInvocations = VK_QUERY_PIPELINE_STATISTIC_CLIPPING_INVOCATIONS_BIT,
-    eClippingPrimitives = VK_QUERY_PIPELINE_STATISTIC_CLIPPING_PRIMITIVES_BIT,
-    eFragmentShaderInvocations = VK_QUERY_PIPELINE_STATISTIC_FRAGMENT_SHADER_INVOCATIONS_BIT,
-    eTessellationControlShaderPatches = VK_QUERY_PIPELINE_STATISTIC_TESSELLATION_CONTROL_SHADER_PATCHES_BIT,
-    eTessellationEvaluationShaderInvocations = VK_QUERY_PIPELINE_STATISTIC_TESSELLATION_EVALUATION_SHADER_INVOCATIONS_BIT,
-    eComputeShaderInvocations = VK_QUERY_PIPELINE_STATISTIC_COMPUTE_SHADER_INVOCATIONS_BIT
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( QueryPipelineStatisticFlagBits value )
-  {
-    switch ( value )
-    {
-      case QueryPipelineStatisticFlagBits::eInputAssemblyVertices : return "InputAssemblyVertices";
-      case QueryPipelineStatisticFlagBits::eInputAssemblyPrimitives : return "InputAssemblyPrimitives";
-      case QueryPipelineStatisticFlagBits::eVertexShaderInvocations : return "VertexShaderInvocations";
-      case QueryPipelineStatisticFlagBits::eGeometryShaderInvocations : return "GeometryShaderInvocations";
-      case QueryPipelineStatisticFlagBits::eGeometryShaderPrimitives : return "GeometryShaderPrimitives";
-      case QueryPipelineStatisticFlagBits::eClippingInvocations : return "ClippingInvocations";
-      case QueryPipelineStatisticFlagBits::eClippingPrimitives : return "ClippingPrimitives";
-      case QueryPipelineStatisticFlagBits::eFragmentShaderInvocations : return "FragmentShaderInvocations";
-      case QueryPipelineStatisticFlagBits::eTessellationControlShaderPatches : return "TessellationControlShaderPatches";
-      case QueryPipelineStatisticFlagBits::eTessellationEvaluationShaderInvocations : return "TessellationEvaluationShaderInvocations";
-      case QueryPipelineStatisticFlagBits::eComputeShaderInvocations : return "ComputeShaderInvocations";
-      default: return "invalid";
-    }
   }
 
   using QueryPipelineStatisticFlags = Flags<QueryPipelineStatisticFlagBits, VkQueryPipelineStatisticFlags>;
@@ -10736,39 +11184,11 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  enum class QueryPoolCreateFlagBits
-  {};
-
-  VULKAN_HPP_INLINE std::string to_string( QueryPoolCreateFlagBits )
-  {
-    return "(void)";
-  }
-
   using QueryPoolCreateFlags = Flags<QueryPoolCreateFlagBits, VkQueryPoolCreateFlags>;
 
   VULKAN_HPP_INLINE std::string to_string( QueryPoolCreateFlags  )
   {
     return "{}";
-  }
-
-  enum class QueryResultFlagBits
-  {
-    e64 = VK_QUERY_RESULT_64_BIT,
-    eWait = VK_QUERY_RESULT_WAIT_BIT,
-    eWithAvailability = VK_QUERY_RESULT_WITH_AVAILABILITY_BIT,
-    ePartial = VK_QUERY_RESULT_PARTIAL_BIT
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( QueryResultFlagBits value )
-  {
-    switch ( value )
-    {
-      case QueryResultFlagBits::e64 : return "64";
-      case QueryResultFlagBits::eWait : return "Wait";
-      case QueryResultFlagBits::eWithAvailability : return "WithAvailability";
-      case QueryResultFlagBits::ePartial : return "Partial";
-      default: return "invalid";
-    }
   }
 
   using QueryResultFlags = Flags<QueryResultFlagBits, VkQueryResultFlags>;
@@ -10811,28 +11231,6 @@ namespace VULKAN_HPP_NAMESPACE
     if ( value & QueryResultFlagBits::eWithAvailability ) result += "WithAvailability | ";
     if ( value & QueryResultFlagBits::ePartial ) result += "Partial | ";
     return "{ " + result.substr(0, result.size() - 3) + " }";
-  }
-
-  enum class QueueFlagBits
-  {
-    eGraphics = VK_QUEUE_GRAPHICS_BIT,
-    eCompute = VK_QUEUE_COMPUTE_BIT,
-    eTransfer = VK_QUEUE_TRANSFER_BIT,
-    eSparseBinding = VK_QUEUE_SPARSE_BINDING_BIT,
-    eProtected = VK_QUEUE_PROTECTED_BIT
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( QueueFlagBits value )
-  {
-    switch ( value )
-    {
-      case QueueFlagBits::eGraphics : return "Graphics";
-      case QueueFlagBits::eCompute : return "Compute";
-      case QueueFlagBits::eTransfer : return "Transfer";
-      case QueueFlagBits::eSparseBinding : return "SparseBinding";
-      case QueueFlagBits::eProtected : return "Protected";
-      default: return "invalid";
-    }
   }
 
   using QueueFlags = Flags<QueueFlagBits, VkQueueFlags>;
@@ -10878,41 +11276,11 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  enum class RenderPassCreateFlagBits
-  {};
-
-  VULKAN_HPP_INLINE std::string to_string( RenderPassCreateFlagBits )
-  {
-    return "(void)";
-  }
-
   using RenderPassCreateFlags = Flags<RenderPassCreateFlagBits, VkRenderPassCreateFlags>;
 
   VULKAN_HPP_INLINE std::string to_string( RenderPassCreateFlags  )
   {
     return "{}";
-  }
-
-  enum class ResolveModeFlagBitsKHR
-  {
-    eNone = VK_RESOLVE_MODE_NONE_KHR,
-    eSampleZero = VK_RESOLVE_MODE_SAMPLE_ZERO_BIT_KHR,
-    eAverage = VK_RESOLVE_MODE_AVERAGE_BIT_KHR,
-    eMin = VK_RESOLVE_MODE_MIN_BIT_KHR,
-    eMax = VK_RESOLVE_MODE_MAX_BIT_KHR
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( ResolveModeFlagBitsKHR value )
-  {
-    switch ( value )
-    {
-      case ResolveModeFlagBitsKHR::eNone : return "None";
-      case ResolveModeFlagBitsKHR::eSampleZero : return "SampleZero";
-      case ResolveModeFlagBitsKHR::eAverage : return "Average";
-      case ResolveModeFlagBitsKHR::eMin : return "Min";
-      case ResolveModeFlagBitsKHR::eMax : return "Max";
-      default: return "invalid";
-    }
   }
 
   using ResolveModeFlagsKHR = Flags<ResolveModeFlagBitsKHR, VkResolveModeFlagsKHR>;
@@ -10955,32 +11323,6 @@ namespace VULKAN_HPP_NAMESPACE
     if ( value & ResolveModeFlagBitsKHR::eMin ) result += "Min | ";
     if ( value & ResolveModeFlagBitsKHR::eMax ) result += "Max | ";
     return "{ " + result.substr(0, result.size() - 3) + " }";
-  }
-
-  enum class SampleCountFlagBits
-  {
-    e1 = VK_SAMPLE_COUNT_1_BIT,
-    e2 = VK_SAMPLE_COUNT_2_BIT,
-    e4 = VK_SAMPLE_COUNT_4_BIT,
-    e8 = VK_SAMPLE_COUNT_8_BIT,
-    e16 = VK_SAMPLE_COUNT_16_BIT,
-    e32 = VK_SAMPLE_COUNT_32_BIT,
-    e64 = VK_SAMPLE_COUNT_64_BIT
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( SampleCountFlagBits value )
-  {
-    switch ( value )
-    {
-      case SampleCountFlagBits::e1 : return "1";
-      case SampleCountFlagBits::e2 : return "2";
-      case SampleCountFlagBits::e4 : return "4";
-      case SampleCountFlagBits::e8 : return "8";
-      case SampleCountFlagBits::e16 : return "16";
-      case SampleCountFlagBits::e32 : return "32";
-      case SampleCountFlagBits::e64 : return "64";
-      default: return "invalid";
-    }
   }
 
   using SampleCountFlags = Flags<SampleCountFlagBits, VkSampleCountFlags>;
@@ -11028,22 +11370,6 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  enum class SamplerCreateFlagBits
-  {
-    eSubsampledEXT = VK_SAMPLER_CREATE_SUBSAMPLED_BIT_EXT,
-    eSubsampledCoarseReconstructionEXT = VK_SAMPLER_CREATE_SUBSAMPLED_COARSE_RECONSTRUCTION_BIT_EXT
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( SamplerCreateFlagBits value )
-  {
-    switch ( value )
-    {
-      case SamplerCreateFlagBits::eSubsampledEXT : return "SubsampledEXT";
-      case SamplerCreateFlagBits::eSubsampledCoarseReconstructionEXT : return "SubsampledCoarseReconstructionEXT";
-      default: return "invalid";
-    }
-  }
-
   using SamplerCreateFlags = Flags<SamplerCreateFlagBits, VkSamplerCreateFlags>;
 
   template <> struct FlagTraits<SamplerCreateFlagBits>
@@ -11084,34 +11410,11 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  enum class SemaphoreCreateFlagBits
-  {};
-
-  VULKAN_HPP_INLINE std::string to_string( SemaphoreCreateFlagBits )
-  {
-    return "(void)";
-  }
-
   using SemaphoreCreateFlags = Flags<SemaphoreCreateFlagBits, VkSemaphoreCreateFlags>;
 
   VULKAN_HPP_INLINE std::string to_string( SemaphoreCreateFlags  )
   {
     return "{}";
-  }
-
-  enum class SemaphoreImportFlagBits
-  {
-    eTemporary = VK_SEMAPHORE_IMPORT_TEMPORARY_BIT,
-    eTemporaryKHR = VK_SEMAPHORE_IMPORT_TEMPORARY_BIT_KHR
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( SemaphoreImportFlagBits value )
-  {
-    switch ( value )
-    {
-      case SemaphoreImportFlagBits::eTemporary : return "Temporary";
-      default: return "invalid";
-    }
   }
 
   using SemaphoreImportFlags = Flags<SemaphoreImportFlagBits, VkSemaphoreImportFlags>;
@@ -11155,20 +11458,6 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  enum class SemaphoreWaitFlagBitsKHR
-  {
-    eAny = VK_SEMAPHORE_WAIT_ANY_BIT_KHR
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( SemaphoreWaitFlagBitsKHR value )
-  {
-    switch ( value )
-    {
-      case SemaphoreWaitFlagBitsKHR::eAny : return "Any";
-      default: return "invalid";
-    }
-  }
-
   using SemaphoreWaitFlagsKHR = Flags<SemaphoreWaitFlagBitsKHR, VkSemaphoreWaitFlagsKHR>;
 
   template <> struct FlagTraits<SemaphoreWaitFlagBitsKHR>
@@ -11208,14 +11497,6 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  enum class ShaderCorePropertiesFlagBitsAMD
-  {};
-
-  VULKAN_HPP_INLINE std::string to_string( ShaderCorePropertiesFlagBitsAMD )
-  {
-    return "(void)";
-  }
-
   using ShaderCorePropertiesFlagsAMD = Flags<ShaderCorePropertiesFlagBitsAMD, VkShaderCorePropertiesFlagsAMD>;
 
   VULKAN_HPP_INLINE std::string to_string( ShaderCorePropertiesFlagsAMD  )
@@ -11223,63 +11504,11 @@ namespace VULKAN_HPP_NAMESPACE
     return "{}";
   }
 
-  enum class ShaderModuleCreateFlagBits
-  {};
-
-  VULKAN_HPP_INLINE std::string to_string( ShaderModuleCreateFlagBits )
-  {
-    return "(void)";
-  }
-
   using ShaderModuleCreateFlags = Flags<ShaderModuleCreateFlagBits, VkShaderModuleCreateFlags>;
 
   VULKAN_HPP_INLINE std::string to_string( ShaderModuleCreateFlags  )
   {
     return "{}";
-  }
-
-  enum class ShaderStageFlagBits
-  {
-    eVertex = VK_SHADER_STAGE_VERTEX_BIT,
-    eTessellationControl = VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT,
-    eTessellationEvaluation = VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT,
-    eGeometry = VK_SHADER_STAGE_GEOMETRY_BIT,
-    eFragment = VK_SHADER_STAGE_FRAGMENT_BIT,
-    eCompute = VK_SHADER_STAGE_COMPUTE_BIT,
-    eAllGraphics = VK_SHADER_STAGE_ALL_GRAPHICS,
-    eAll = VK_SHADER_STAGE_ALL,
-    eRaygenNV = VK_SHADER_STAGE_RAYGEN_BIT_NV,
-    eAnyHitNV = VK_SHADER_STAGE_ANY_HIT_BIT_NV,
-    eClosestHitNV = VK_SHADER_STAGE_CLOSEST_HIT_BIT_NV,
-    eMissNV = VK_SHADER_STAGE_MISS_BIT_NV,
-    eIntersectionNV = VK_SHADER_STAGE_INTERSECTION_BIT_NV,
-    eCallableNV = VK_SHADER_STAGE_CALLABLE_BIT_NV,
-    eTaskNV = VK_SHADER_STAGE_TASK_BIT_NV,
-    eMeshNV = VK_SHADER_STAGE_MESH_BIT_NV
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( ShaderStageFlagBits value )
-  {
-    switch ( value )
-    {
-      case ShaderStageFlagBits::eVertex : return "Vertex";
-      case ShaderStageFlagBits::eTessellationControl : return "TessellationControl";
-      case ShaderStageFlagBits::eTessellationEvaluation : return "TessellationEvaluation";
-      case ShaderStageFlagBits::eGeometry : return "Geometry";
-      case ShaderStageFlagBits::eFragment : return "Fragment";
-      case ShaderStageFlagBits::eCompute : return "Compute";
-      case ShaderStageFlagBits::eAllGraphics : return "AllGraphics";
-      case ShaderStageFlagBits::eAll : return "All";
-      case ShaderStageFlagBits::eRaygenNV : return "RaygenNV";
-      case ShaderStageFlagBits::eAnyHitNV : return "AnyHitNV";
-      case ShaderStageFlagBits::eClosestHitNV : return "ClosestHitNV";
-      case ShaderStageFlagBits::eMissNV : return "MissNV";
-      case ShaderStageFlagBits::eIntersectionNV : return "IntersectionNV";
-      case ShaderStageFlagBits::eCallableNV : return "CallableNV";
-      case ShaderStageFlagBits::eTaskNV : return "TaskNV";
-      case ShaderStageFlagBits::eMeshNV : return "MeshNV";
-      default: return "invalid";
-    }
   }
 
   using ShaderStageFlags = Flags<ShaderStageFlagBits, VkShaderStageFlags>;
@@ -11334,24 +11563,6 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  enum class SparseImageFormatFlagBits
-  {
-    eSingleMiptail = VK_SPARSE_IMAGE_FORMAT_SINGLE_MIPTAIL_BIT,
-    eAlignedMipSize = VK_SPARSE_IMAGE_FORMAT_ALIGNED_MIP_SIZE_BIT,
-    eNonstandardBlockSize = VK_SPARSE_IMAGE_FORMAT_NONSTANDARD_BLOCK_SIZE_BIT
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( SparseImageFormatFlagBits value )
-  {
-    switch ( value )
-    {
-      case SparseImageFormatFlagBits::eSingleMiptail : return "SingleMiptail";
-      case SparseImageFormatFlagBits::eAlignedMipSize : return "AlignedMipSize";
-      case SparseImageFormatFlagBits::eNonstandardBlockSize : return "NonstandardBlockSize";
-      default: return "invalid";
-    }
-  }
-
   using SparseImageFormatFlags = Flags<SparseImageFormatFlagBits, VkSparseImageFormatFlags>;
 
   template <> struct FlagTraits<SparseImageFormatFlagBits>
@@ -11393,20 +11604,6 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  enum class SparseMemoryBindFlagBits
-  {
-    eMetadata = VK_SPARSE_MEMORY_BIND_METADATA_BIT
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( SparseMemoryBindFlagBits value )
-  {
-    switch ( value )
-    {
-      case SparseMemoryBindFlagBits::eMetadata : return "Metadata";
-      default: return "invalid";
-    }
-  }
-
   using SparseMemoryBindFlags = Flags<SparseMemoryBindFlagBits, VkSparseMemoryBindFlags>;
 
   template <> struct FlagTraits<SparseMemoryBindFlagBits>
@@ -11444,25 +11641,6 @@ namespace VULKAN_HPP_NAMESPACE
 
     if ( value & SparseMemoryBindFlagBits::eMetadata ) result += "Metadata | ";
     return "{ " + result.substr(0, result.size() - 3) + " }";
-  }
-
-  enum class StencilFaceFlagBits
-  {
-    eFront = VK_STENCIL_FACE_FRONT_BIT,
-    eBack = VK_STENCIL_FACE_BACK_BIT,
-    eFrontAndBack = VK_STENCIL_FACE_FRONT_AND_BACK,
-    eVkStencilFrontAndBack = VK_STENCIL_FRONT_AND_BACK
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( StencilFaceFlagBits value )
-  {
-    switch ( value )
-    {
-      case StencilFaceFlagBits::eFront : return "Front";
-      case StencilFaceFlagBits::eBack : return "Back";
-      case StencilFaceFlagBits::eFrontAndBack : return "FrontAndBack";
-      default: return "invalid";
-    }
   }
 
   using StencilFaceFlags = Flags<StencilFaceFlagBits, VkStencilFaceFlags>;
@@ -11522,36 +11700,6 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /*VK_USE_PLATFORM_GGP*/
 
-  enum class SubgroupFeatureFlagBits
-  {
-    eBasic = VK_SUBGROUP_FEATURE_BASIC_BIT,
-    eVote = VK_SUBGROUP_FEATURE_VOTE_BIT,
-    eArithmetic = VK_SUBGROUP_FEATURE_ARITHMETIC_BIT,
-    eBallot = VK_SUBGROUP_FEATURE_BALLOT_BIT,
-    eShuffle = VK_SUBGROUP_FEATURE_SHUFFLE_BIT,
-    eShuffleRelative = VK_SUBGROUP_FEATURE_SHUFFLE_RELATIVE_BIT,
-    eClustered = VK_SUBGROUP_FEATURE_CLUSTERED_BIT,
-    eQuad = VK_SUBGROUP_FEATURE_QUAD_BIT,
-    ePartitionedNV = VK_SUBGROUP_FEATURE_PARTITIONED_BIT_NV
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( SubgroupFeatureFlagBits value )
-  {
-    switch ( value )
-    {
-      case SubgroupFeatureFlagBits::eBasic : return "Basic";
-      case SubgroupFeatureFlagBits::eVote : return "Vote";
-      case SubgroupFeatureFlagBits::eArithmetic : return "Arithmetic";
-      case SubgroupFeatureFlagBits::eBallot : return "Ballot";
-      case SubgroupFeatureFlagBits::eShuffle : return "Shuffle";
-      case SubgroupFeatureFlagBits::eShuffleRelative : return "ShuffleRelative";
-      case SubgroupFeatureFlagBits::eClustered : return "Clustered";
-      case SubgroupFeatureFlagBits::eQuad : return "Quad";
-      case SubgroupFeatureFlagBits::ePartitionedNV : return "PartitionedNV";
-      default: return "invalid";
-    }
-  }
-
   using SubgroupFeatureFlags = Flags<SubgroupFeatureFlagBits, VkSubgroupFeatureFlags>;
 
   template <> struct FlagTraits<SubgroupFeatureFlagBits>
@@ -11599,22 +11747,6 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  enum class SubpassDescriptionFlagBits
-  {
-    ePerViewAttributesNVX = VK_SUBPASS_DESCRIPTION_PER_VIEW_ATTRIBUTES_BIT_NVX,
-    ePerViewPositionXOnlyNVX = VK_SUBPASS_DESCRIPTION_PER_VIEW_POSITION_X_ONLY_BIT_NVX
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( SubpassDescriptionFlagBits value )
-  {
-    switch ( value )
-    {
-      case SubpassDescriptionFlagBits::ePerViewAttributesNVX : return "PerViewAttributesNVX";
-      case SubpassDescriptionFlagBits::ePerViewPositionXOnlyNVX : return "PerViewPositionXOnlyNVX";
-      default: return "invalid";
-    }
-  }
-
   using SubpassDescriptionFlags = Flags<SubpassDescriptionFlagBits, VkSubpassDescriptionFlags>;
 
   template <> struct FlagTraits<SubpassDescriptionFlagBits>
@@ -11655,20 +11787,6 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  enum class SurfaceCounterFlagBitsEXT
-  {
-    eVblank = VK_SURFACE_COUNTER_VBLANK_EXT
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( SurfaceCounterFlagBitsEXT value )
-  {
-    switch ( value )
-    {
-      case SurfaceCounterFlagBitsEXT::eVblank : return "Vblank";
-      default: return "invalid";
-    }
-  }
-
   using SurfaceCounterFlagsEXT = Flags<SurfaceCounterFlagBitsEXT, VkSurfaceCounterFlagsEXT>;
 
   template <> struct FlagTraits<SurfaceCounterFlagBitsEXT>
@@ -11706,36 +11824,6 @@ namespace VULKAN_HPP_NAMESPACE
 
     if ( value & SurfaceCounterFlagBitsEXT::eVblank ) result += "Vblank | ";
     return "{ " + result.substr(0, result.size() - 3) + " }";
-  }
-
-  enum class SurfaceTransformFlagBitsKHR
-  {
-    eIdentity = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR,
-    eRotate90 = VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR,
-    eRotate180 = VK_SURFACE_TRANSFORM_ROTATE_180_BIT_KHR,
-    eRotate270 = VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR,
-    eHorizontalMirror = VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_BIT_KHR,
-    eHorizontalMirrorRotate90 = VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_90_BIT_KHR,
-    eHorizontalMirrorRotate180 = VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_180_BIT_KHR,
-    eHorizontalMirrorRotate270 = VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_270_BIT_KHR,
-    eInherit = VK_SURFACE_TRANSFORM_INHERIT_BIT_KHR
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( SurfaceTransformFlagBitsKHR value )
-  {
-    switch ( value )
-    {
-      case SurfaceTransformFlagBitsKHR::eIdentity : return "Identity";
-      case SurfaceTransformFlagBitsKHR::eRotate90 : return "Rotate90";
-      case SurfaceTransformFlagBitsKHR::eRotate180 : return "Rotate180";
-      case SurfaceTransformFlagBitsKHR::eRotate270 : return "Rotate270";
-      case SurfaceTransformFlagBitsKHR::eHorizontalMirror : return "HorizontalMirror";
-      case SurfaceTransformFlagBitsKHR::eHorizontalMirrorRotate90 : return "HorizontalMirrorRotate90";
-      case SurfaceTransformFlagBitsKHR::eHorizontalMirrorRotate180 : return "HorizontalMirrorRotate180";
-      case SurfaceTransformFlagBitsKHR::eHorizontalMirrorRotate270 : return "HorizontalMirrorRotate270";
-      case SurfaceTransformFlagBitsKHR::eInherit : return "Inherit";
-      default: return "invalid";
-    }
   }
 
   using SurfaceTransformFlagsKHR = Flags<SurfaceTransformFlagBitsKHR, VkSurfaceTransformFlagsKHR>;
@@ -11785,24 +11873,6 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  enum class SwapchainCreateFlagBitsKHR
-  {
-    eSplitInstanceBindRegions = VK_SWAPCHAIN_CREATE_SPLIT_INSTANCE_BIND_REGIONS_BIT_KHR,
-    eProtected = VK_SWAPCHAIN_CREATE_PROTECTED_BIT_KHR,
-    eMutableFormat = VK_SWAPCHAIN_CREATE_MUTABLE_FORMAT_BIT_KHR
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( SwapchainCreateFlagBitsKHR value )
-  {
-    switch ( value )
-    {
-      case SwapchainCreateFlagBitsKHR::eSplitInstanceBindRegions : return "SplitInstanceBindRegions";
-      case SwapchainCreateFlagBitsKHR::eProtected : return "Protected";
-      case SwapchainCreateFlagBitsKHR::eMutableFormat : return "MutableFormat";
-      default: return "invalid";
-    }
-  }
-
   using SwapchainCreateFlagsKHR = Flags<SwapchainCreateFlagBitsKHR, VkSwapchainCreateFlagsKHR>;
 
   template <> struct FlagTraits<SwapchainCreateFlagBitsKHR>
@@ -11842,32 +11912,6 @@ namespace VULKAN_HPP_NAMESPACE
     if ( value & SwapchainCreateFlagBitsKHR::eProtected ) result += "Protected | ";
     if ( value & SwapchainCreateFlagBitsKHR::eMutableFormat ) result += "MutableFormat | ";
     return "{ " + result.substr(0, result.size() - 3) + " }";
-  }
-
-  enum class ToolPurposeFlagBitsEXT
-  {
-    eValidation = VK_TOOL_PURPOSE_VALIDATION_BIT_EXT,
-    eProfiling = VK_TOOL_PURPOSE_PROFILING_BIT_EXT,
-    eTracing = VK_TOOL_PURPOSE_TRACING_BIT_EXT,
-    eAdditionalFeatures = VK_TOOL_PURPOSE_ADDITIONAL_FEATURES_BIT_EXT,
-    eModifyingFeatures = VK_TOOL_PURPOSE_MODIFYING_FEATURES_BIT_EXT,
-    eDebugReporting = VK_TOOL_PURPOSE_DEBUG_REPORTING_BIT_EXT,
-    eDebugMarkers = VK_TOOL_PURPOSE_DEBUG_MARKERS_BIT_EXT
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( ToolPurposeFlagBitsEXT value )
-  {
-    switch ( value )
-    {
-      case ToolPurposeFlagBitsEXT::eValidation : return "Validation";
-      case ToolPurposeFlagBitsEXT::eProfiling : return "Profiling";
-      case ToolPurposeFlagBitsEXT::eTracing : return "Tracing";
-      case ToolPurposeFlagBitsEXT::eAdditionalFeatures : return "AdditionalFeatures";
-      case ToolPurposeFlagBitsEXT::eModifyingFeatures : return "ModifyingFeatures";
-      case ToolPurposeFlagBitsEXT::eDebugReporting : return "DebugReporting";
-      case ToolPurposeFlagBitsEXT::eDebugMarkers : return "DebugMarkers";
-      default: return "invalid";
-    }
   }
 
   using ToolPurposeFlagsEXT = Flags<ToolPurposeFlagBitsEXT, VkToolPurposeFlagsEXT>;
@@ -16230,6 +16274,7 @@ namespace VULKAN_HPP_NAMESPACE
   using UniqueDescriptorSetLayout = UniqueHandle<DescriptorSetLayout, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
   template <typename Dispatch> class UniqueHandleTraits<DescriptorUpdateTemplate, Dispatch> { public: using deleter = ObjectDestroy<Device, Dispatch>; };
   using UniqueDescriptorUpdateTemplate = UniqueHandle<DescriptorUpdateTemplate, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+  using UniqueDescriptorUpdateTemplateKHR = UniqueHandle<DescriptorUpdateTemplate, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
   template <typename Dispatch> class UniqueHandleTraits<DeviceMemory, Dispatch> { public: using deleter = ObjectFree<Device, Dispatch>; };
   using UniqueDeviceMemory = UniqueHandle<DeviceMemory, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
   template <typename Dispatch> class UniqueHandleTraits<Event, Dispatch> { public: using deleter = ObjectDestroy<Device, Dispatch>; };
@@ -16260,6 +16305,7 @@ namespace VULKAN_HPP_NAMESPACE
   using UniqueSampler = UniqueHandle<Sampler, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
   template <typename Dispatch> class UniqueHandleTraits<SamplerYcbcrConversion, Dispatch> { public: using deleter = ObjectDestroy<Device, Dispatch>; };
   using UniqueSamplerYcbcrConversion = UniqueHandle<SamplerYcbcrConversion, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+  using UniqueSamplerYcbcrConversionKHR = UniqueHandle<SamplerYcbcrConversion, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
   template <typename Dispatch> class UniqueHandleTraits<Semaphore, Dispatch> { public: using deleter = ObjectDestroy<Device, Dispatch>; };
   using UniqueSemaphore = UniqueHandle<Semaphore, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
   template <typename Dispatch> class UniqueHandleTraits<ShaderModule, Dispatch> { public: using deleter = ObjectDestroy<Device, Dispatch>; };
@@ -23930,6 +23976,13 @@ namespace VULKAN_HPP_NAMESPACE
       memcpy( uint32, uint32_.data(), 4 * sizeof( uint32_t ) );
       return *this;
     }
+
+    VULKAN_HPP_NAMESPACE::ClearColorValue & operator=( VULKAN_HPP_NAMESPACE::ClearColorValue const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( VULKAN_HPP_NAMESPACE::ClearColorValue ) );
+      return *this;
+    }
+
     operator VkClearColorValue const&() const
     {
       return *reinterpret_cast<const VkClearColorValue*>(this);
@@ -24027,6 +24080,13 @@ namespace VULKAN_HPP_NAMESPACE
       depthStencil = depthStencil_;
       return *this;
     }
+
+    VULKAN_HPP_NAMESPACE::ClearValue & operator=( VULKAN_HPP_NAMESPACE::ClearValue const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( VULKAN_HPP_NAMESPACE::ClearValue ) );
+      return *this;
+    }
+
     operator VkClearValue const&() const
     {
       return *reinterpret_cast<const VkClearValue*>(this);
@@ -25931,7 +25991,7 @@ namespace VULKAN_HPP_NAMESPACE
       : pMarkerName( pMarkerName_ )
       , color{}
     {
-      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<float,4,4>::copy( color, color_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,4,4>::copy( color, color_ );
     }
 
     VULKAN_HPP_NAMESPACE::DebugMarkerMarkerInfoEXT & operator=( VULKAN_HPP_NAMESPACE::DebugMarkerMarkerInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -26283,7 +26343,7 @@ namespace VULKAN_HPP_NAMESPACE
       : pLabelName( pLabelName_ )
       , color{}
     {
-      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<float,4,4>::copy( color, color_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,4,4>::copy( color, color_ );
     }
 
     VULKAN_HPP_NAMESPACE::DebugUtilsLabelEXT & operator=( VULKAN_HPP_NAMESPACE::DebugUtilsLabelEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -29390,7 +29450,7 @@ namespace VULKAN_HPP_NAMESPACE
       : presentMask{}
       , modes( modes_ )
     {
-      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<uint32_t,VK_MAX_DEVICE_GROUP_SIZE,VK_MAX_DEVICE_GROUP_SIZE>::copy( presentMask, presentMask_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,VK_MAX_DEVICE_GROUP_SIZE,VK_MAX_DEVICE_GROUP_SIZE>::copy( presentMask, presentMask_ );
     }
 
     VULKAN_HPP_NAMESPACE::DeviceGroupPresentCapabilitiesKHR & operator=( VULKAN_HPP_NAMESPACE::DeviceGroupPresentCapabilitiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -32210,7 +32270,7 @@ namespace VULKAN_HPP_NAMESPACE
       : extensionName{}
       , specVersion( specVersion_ )
     {
-      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<char,VK_MAX_EXTENSION_NAME_SIZE,VK_MAX_EXTENSION_NAME_SIZE>::copy( extensionName, extensionName_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_EXTENSION_NAME_SIZE,VK_MAX_EXTENSION_NAME_SIZE>::copy( extensionName, extensionName_ );
     }
 
     ExtensionProperties( VkExtensionProperties const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -34982,7 +35042,7 @@ namespace VULKAN_HPP_NAMESPACE
       , pAttachments( pAttachments_ )
       , blendConstants{}
     {
-      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<float,4,4>::copy( blendConstants, blendConstants_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,4,4>::copy( blendConstants, blendConstants_ );
     }
 
     VULKAN_HPP_NAMESPACE::PipelineColorBlendStateCreateInfo & operator=( VULKAN_HPP_NAMESPACE::PipelineColorBlendStateCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -35742,8 +35802,8 @@ namespace VULKAN_HPP_NAMESPACE
       , dstSubresource( dstSubresource_ )
       , dstOffsets{}
     {
-      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<VULKAN_HPP_NAMESPACE::Offset3D,2,2>::copy( srcOffsets, srcOffsets_ );
-      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<VULKAN_HPP_NAMESPACE::Offset3D,2,2>::copy( dstOffsets, dstOffsets_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::Offset3D,2,2>::copy( srcOffsets, srcOffsets_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::Offset3D,2,2>::copy( dstOffsets, dstOffsets_ );
     }
 
     ImageBlit( VkImageBlit const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -38757,8 +38817,8 @@ namespace VULKAN_HPP_NAMESPACE
       , implementationVersion( implementationVersion_ )
       , description{}
     {
-      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<char,VK_MAX_EXTENSION_NAME_SIZE,VK_MAX_EXTENSION_NAME_SIZE>::copy( layerName, layerName_ );
-      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( description, description_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_EXTENSION_NAME_SIZE,VK_MAX_EXTENSION_NAME_SIZE>::copy( layerName, layerName_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( description, description_ );
     }
 
     LayerProperties( VkLayerProperties const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -40921,9 +40981,9 @@ namespace VULKAN_HPP_NAMESPACE
       , category{}
       , description{}
     {
-      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( name, name_ );
-      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( category, category_ );
-      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( description, description_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( name, name_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( category, category_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( description, description_ );
     }
 
     VULKAN_HPP_NAMESPACE::PerformanceCounterDescriptionKHR & operator=( VULKAN_HPP_NAMESPACE::PerformanceCounterDescriptionKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -40990,7 +41050,7 @@ namespace VULKAN_HPP_NAMESPACE
       , storage( storage_ )
       , uuid{}
     {
-      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<uint8_t,VK_UUID_SIZE,VK_UUID_SIZE>::copy( uuid, uuid_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint8_t,VK_UUID_SIZE,VK_UUID_SIZE>::copy( uuid, uuid_ );
     }
 
     VULKAN_HPP_NAMESPACE::PerformanceCounterKHR & operator=( VULKAN_HPP_NAMESPACE::PerformanceCounterKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -41113,6 +41173,13 @@ namespace VULKAN_HPP_NAMESPACE
       float64 = float64_;
       return *this;
     }
+
+    VULKAN_HPP_NAMESPACE::PerformanceCounterResultKHR & operator=( VULKAN_HPP_NAMESPACE::PerformanceCounterResultKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( VULKAN_HPP_NAMESPACE::PerformanceCounterResultKHR ) );
+      return *this;
+    }
+
     operator VkPerformanceCounterResultKHR const&() const
     {
       return *reinterpret_cast<const VkPerformanceCounterResultKHR*>(this);
@@ -41462,6 +41529,13 @@ namespace VULKAN_HPP_NAMESPACE
       valueString = valueString_;
       return *this;
     }
+
+    VULKAN_HPP_NAMESPACE::PerformanceValueDataINTEL & operator=( VULKAN_HPP_NAMESPACE::PerformanceValueDataINTEL const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( VULKAN_HPP_NAMESPACE::PerformanceValueDataINTEL ) );
+      return *this;
+    }
+
     operator VkPerformanceValueDataINTEL const&() const
     {
       return *reinterpret_cast<const VkPerformanceValueDataINTEL*>(this);
@@ -43301,8 +43375,8 @@ namespace VULKAN_HPP_NAMESPACE
       , driverInfo{}
       , conformanceVersion( conformanceVersion_ )
     {
-      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<char,VK_MAX_DRIVER_NAME_SIZE_KHR,VK_MAX_DRIVER_NAME_SIZE_KHR>::copy( driverName, driverName_ );
-      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<char,VK_MAX_DRIVER_INFO_SIZE_KHR,VK_MAX_DRIVER_INFO_SIZE_KHR>::copy( driverInfo, driverInfo_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DRIVER_NAME_SIZE_KHR,VK_MAX_DRIVER_NAME_SIZE_KHR>::copy( driverName, driverName_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DRIVER_INFO_SIZE_KHR,VK_MAX_DRIVER_INFO_SIZE_KHR>::copy( driverInfo, driverInfo_ );
     }
 
     VULKAN_HPP_NAMESPACE::PhysicalDeviceDriverPropertiesKHR & operator=( VULKAN_HPP_NAMESPACE::PhysicalDeviceDriverPropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -44219,7 +44293,7 @@ namespace VULKAN_HPP_NAMESPACE
       , physicalDevices{}
       , subsetAllocation( subsetAllocation_ )
     {
-      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<VULKAN_HPP_NAMESPACE::PhysicalDevice,VK_MAX_DEVICE_GROUP_SIZE,VK_MAX_DEVICE_GROUP_SIZE>::copy( physicalDevices, physicalDevices_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::PhysicalDevice,VK_MAX_DEVICE_GROUP_SIZE,VK_MAX_DEVICE_GROUP_SIZE>::copy( physicalDevices, physicalDevices_ );
     }
 
     VULKAN_HPP_NAMESPACE::PhysicalDeviceGroupProperties & operator=( VULKAN_HPP_NAMESPACE::PhysicalDeviceGroupProperties const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -44351,9 +44425,9 @@ namespace VULKAN_HPP_NAMESPACE
       , deviceNodeMask( deviceNodeMask_ )
       , deviceLUIDValid( deviceLUIDValid_ )
     {
-      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<uint8_t,VK_UUID_SIZE,VK_UUID_SIZE>::copy( deviceUUID, deviceUUID_ );
-      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<uint8_t,VK_UUID_SIZE,VK_UUID_SIZE>::copy( driverUUID, driverUUID_ );
-      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<uint8_t,VK_LUID_SIZE,VK_LUID_SIZE>::copy( deviceLUID, deviceLUID_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint8_t,VK_UUID_SIZE,VK_UUID_SIZE>::copy( deviceUUID, deviceUUID_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint8_t,VK_UUID_SIZE,VK_UUID_SIZE>::copy( driverUUID, driverUUID_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint8_t,VK_LUID_SIZE,VK_LUID_SIZE>::copy( deviceLUID, deviceLUID_ );
     }
 
     VULKAN_HPP_NAMESPACE::PhysicalDeviceIDProperties & operator=( VULKAN_HPP_NAMESPACE::PhysicalDeviceIDProperties const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -45165,12 +45239,12 @@ namespace VULKAN_HPP_NAMESPACE
       , optimalBufferCopyRowPitchAlignment( optimalBufferCopyRowPitchAlignment_ )
       , nonCoherentAtomSize( nonCoherentAtomSize_ )
     {
-      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<uint32_t,3,3>::copy( maxComputeWorkGroupCount, maxComputeWorkGroupCount_ );
-      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<uint32_t,3,3>::copy( maxComputeWorkGroupSize, maxComputeWorkGroupSize_ );
-      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<uint32_t,2,2>::copy( maxViewportDimensions, maxViewportDimensions_ );
-      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<float,2,2>::copy( viewportBoundsRange, viewportBoundsRange_ );
-      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<float,2,2>::copy( pointSizeRange, pointSizeRange_ );
-      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<float,2,2>::copy( lineWidthRange, lineWidthRange_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,3,3>::copy( maxComputeWorkGroupCount, maxComputeWorkGroupCount_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,3,3>::copy( maxComputeWorkGroupSize, maxComputeWorkGroupSize_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,2,2>::copy( maxViewportDimensions, maxViewportDimensions_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,2,2>::copy( viewportBoundsRange, viewportBoundsRange_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,2,2>::copy( pointSizeRange, pointSizeRange_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,2,2>::copy( lineWidthRange, lineWidthRange_ );
     }
 
     PhysicalDeviceLimits( VkPhysicalDeviceLimits const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -45652,8 +45726,8 @@ namespace VULKAN_HPP_NAMESPACE
       : heapBudget{}
       , heapUsage{}
     {
-      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<VULKAN_HPP_NAMESPACE::DeviceSize,VK_MAX_MEMORY_HEAPS,VK_MAX_MEMORY_HEAPS>::copy( heapBudget, heapBudget_ );
-      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<VULKAN_HPP_NAMESPACE::DeviceSize,VK_MAX_MEMORY_HEAPS,VK_MAX_MEMORY_HEAPS>::copy( heapUsage, heapUsage_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::DeviceSize,VK_MAX_MEMORY_HEAPS,VK_MAX_MEMORY_HEAPS>::copy( heapBudget, heapBudget_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::DeviceSize,VK_MAX_MEMORY_HEAPS,VK_MAX_MEMORY_HEAPS>::copy( heapUsage, heapUsage_ );
     }
 
     VULKAN_HPP_NAMESPACE::PhysicalDeviceMemoryBudgetPropertiesEXT & operator=( VULKAN_HPP_NAMESPACE::PhysicalDeviceMemoryBudgetPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -45781,8 +45855,8 @@ namespace VULKAN_HPP_NAMESPACE
       , memoryHeapCount( memoryHeapCount_ )
       , memoryHeaps{}
     {
-      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<VULKAN_HPP_NAMESPACE::MemoryType,VK_MAX_MEMORY_TYPES,VK_MAX_MEMORY_TYPES>::copy( memoryTypes, memoryTypes_ );
-      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<VULKAN_HPP_NAMESPACE::MemoryHeap,VK_MAX_MEMORY_HEAPS,VK_MAX_MEMORY_HEAPS>::copy( memoryHeaps, memoryHeaps_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::MemoryType,VK_MAX_MEMORY_TYPES,VK_MAX_MEMORY_TYPES>::copy( memoryTypes, memoryTypes_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::MemoryHeap,VK_MAX_MEMORY_HEAPS,VK_MAX_MEMORY_HEAPS>::copy( memoryHeaps, memoryHeaps_ );
     }
 
     PhysicalDeviceMemoryProperties( VkPhysicalDeviceMemoryProperties const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -45985,8 +46059,8 @@ namespace VULKAN_HPP_NAMESPACE
       , meshOutputPerVertexGranularity( meshOutputPerVertexGranularity_ )
       , meshOutputPerPrimitiveGranularity( meshOutputPerPrimitiveGranularity_ )
     {
-      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<uint32_t,3,3>::copy( maxTaskWorkGroupSize, maxTaskWorkGroupSize_ );
-      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<uint32_t,3,3>::copy( maxMeshWorkGroupSize, maxMeshWorkGroupSize_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,3,3>::copy( maxTaskWorkGroupSize, maxTaskWorkGroupSize_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,3,3>::copy( maxMeshWorkGroupSize, maxMeshWorkGroupSize_ );
     }
 
     VULKAN_HPP_NAMESPACE::PhysicalDeviceMeshShaderPropertiesNV & operator=( VULKAN_HPP_NAMESPACE::PhysicalDeviceMeshShaderPropertiesNV const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -46646,8 +46720,8 @@ namespace VULKAN_HPP_NAMESPACE
       , limits( limits_ )
       , sparseProperties( sparseProperties_ )
     {
-      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<char,VK_MAX_PHYSICAL_DEVICE_NAME_SIZE,VK_MAX_PHYSICAL_DEVICE_NAME_SIZE>::copy( deviceName, deviceName_ );
-      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<uint8_t,VK_UUID_SIZE,VK_UUID_SIZE>::copy( pipelineCacheUUID, pipelineCacheUUID_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_PHYSICAL_DEVICE_NAME_SIZE,VK_MAX_PHYSICAL_DEVICE_NAME_SIZE>::copy( deviceName, deviceName_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint8_t,VK_UUID_SIZE,VK_UUID_SIZE>::copy( pipelineCacheUUID, pipelineCacheUUID_ );
     }
 
     PhysicalDeviceProperties( VkPhysicalDeviceProperties const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -47086,7 +47160,7 @@ namespace VULKAN_HPP_NAMESPACE
       , sampleLocationSubPixelBits( sampleLocationSubPixelBits_ )
       , variableSampleLocations( variableSampleLocations_ )
     {
-      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<float,2,2>::copy( sampleLocationCoordinateRange, sampleLocationCoordinateRange_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,2,2>::copy( sampleLocationCoordinateRange, sampleLocationCoordinateRange_ );
     }
 
     VULKAN_HPP_NAMESPACE::PhysicalDeviceSampleLocationsPropertiesEXT & operator=( VULKAN_HPP_NAMESPACE::PhysicalDeviceSampleLocationsPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -49067,10 +49141,10 @@ namespace VULKAN_HPP_NAMESPACE
       , description{}
       , layer{}
     {
-      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<char,VK_MAX_EXTENSION_NAME_SIZE,VK_MAX_EXTENSION_NAME_SIZE>::copy( name, name_ );
-      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<char,VK_MAX_EXTENSION_NAME_SIZE,VK_MAX_EXTENSION_NAME_SIZE>::copy( version, version_ );
-      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( description, description_ );
-      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<char,VK_MAX_EXTENSION_NAME_SIZE,VK_MAX_EXTENSION_NAME_SIZE>::copy( layer, layer_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_EXTENSION_NAME_SIZE,VK_MAX_EXTENSION_NAME_SIZE>::copy( name, name_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_EXTENSION_NAME_SIZE,VK_MAX_EXTENSION_NAME_SIZE>::copy( version, version_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( description, description_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_EXTENSION_NAME_SIZE,VK_MAX_EXTENSION_NAME_SIZE>::copy( layer, layer_ );
     }
 
     VULKAN_HPP_NAMESPACE::PhysicalDeviceToolPropertiesEXT & operator=( VULKAN_HPP_NAMESPACE::PhysicalDeviceToolPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -50525,8 +50599,8 @@ namespace VULKAN_HPP_NAMESPACE
       , dataSize( dataSize_ )
       , pData( pData_ )
     {
-      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( name, name_ );
-      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( description, description_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( name, name_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( description, description_ );
     }
 
     VULKAN_HPP_NAMESPACE::PipelineExecutableInternalRepresentationKHR & operator=( VULKAN_HPP_NAMESPACE::PipelineExecutableInternalRepresentationKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -50595,8 +50669,8 @@ namespace VULKAN_HPP_NAMESPACE
       , description{}
       , subgroupSize( subgroupSize_ )
     {
-      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( name, name_ );
-      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( description, description_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( name, name_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( description, description_ );
     }
 
     VULKAN_HPP_NAMESPACE::PipelineExecutablePropertiesKHR & operator=( VULKAN_HPP_NAMESPACE::PipelineExecutablePropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -50654,6 +50728,12 @@ namespace VULKAN_HPP_NAMESPACE
 
   union PipelineExecutableStatisticValueKHR
   {
+    VULKAN_HPP_NAMESPACE::PipelineExecutableStatisticValueKHR & operator=( VULKAN_HPP_NAMESPACE::PipelineExecutableStatisticValueKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( VULKAN_HPP_NAMESPACE::PipelineExecutableStatisticValueKHR ) );
+      return *this;
+    }
+
     operator VkPipelineExecutableStatisticValueKHR const&() const
     {
       return *reinterpret_cast<const VkPipelineExecutableStatisticValueKHR*>(this);
@@ -50688,8 +50768,8 @@ namespace VULKAN_HPP_NAMESPACE
       , format( format_ )
       , value( value_ )
     {
-      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( name, name_ );
-      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( description, description_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( name, name_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( description, description_ );
     }
 
     VULKAN_HPP_NAMESPACE::PipelineExecutableStatisticKHR & operator=( VULKAN_HPP_NAMESPACE::PipelineExecutableStatisticKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -56288,7 +56368,7 @@ namespace VULKAN_HPP_NAMESPACE
       , numAvailableSgprs( numAvailableSgprs_ )
       , computeWorkGroupSize{}
     {
-      VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<uint32_t,3,3>::copy( computeWorkGroupSize, computeWorkGroupSize_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,3,3>::copy( computeWorkGroupSize, computeWorkGroupSize_ );
     }
 
     ShaderStatisticsInfoAMD( VkShaderStatisticsInfoAMD const & rhs ) VULKAN_HPP_NOEXCEPT

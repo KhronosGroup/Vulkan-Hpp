@@ -83,11 +83,11 @@ class VulkanHppGenerator
         : optional(false)
       {}
 
-      TypeData    type;
-      std::string name;
-      std::string arraySize;
-      std::string len;
-      bool        optional;
+      TypeData                  type;
+      std::string               name;
+      std::vector<std::string>  arraySizes;
+      std::string               len;
+      bool                      optional;
     };
 
     struct CommandData
@@ -120,7 +120,9 @@ class VulkanHppGenerator
     {
       void addEnumValue(std::string const& valueName, bool bitmask, bool bitpos, std::string const& prefix, std::string const& postfix, std::string const& tag);
 
+      std::string                                       alias;    // alias for this enum
       std::vector<std::pair<std::string, std::string>>  aliases;  // pairs of vulkan enum value and corresponding vk::-namespace enum value
+      bool                                              isBitmask = false;
       std::string                                       platform;
       std::vector<EnumValueData>                        values;
     };
@@ -136,10 +138,11 @@ class VulkanHppGenerator
 
     struct MemberData
     {
-      TypeData    type;
-      std::string name;
-      std::string arraySize;
-      std::string values;
+      TypeData                  type;
+      std::string               name;
+      std::vector<std::string>  arraySizes;
+      std::string               bitCount;
+      std::string               values;
     };
 
     struct StructureData
@@ -240,6 +243,7 @@ class VulkanHppGenerator
     std::vector<MemberData> readStructMembers(std::vector<tinyxml2::XMLElement const*> const& children);
     void readTag(tinyxml2::XMLElement const* element);
     void readType(tinyxml2::XMLElement const* element);
+    void readTypeEnum(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes);
     void registerDeleter(std::string const& name, std::pair<std::string, CommandData> const& commandData);
     void unlinkCommandFromHandle(std::string const& name);
 #if !defined(NDEBUG)
@@ -248,7 +252,6 @@ class VulkanHppGenerator
 
   private:
     std::map<std::string, std::string>    m_baseTypes;
-    std::map<std::string, EnumData>       m_bitmaskBits;
     std::map<std::string, BitmaskData>    m_bitmasks;
     std::map<std::string, std::string>    m_commandToHandle;
     std::map<std::string, EnumData>       m_enums;

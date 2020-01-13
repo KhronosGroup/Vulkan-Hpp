@@ -35,6 +35,8 @@ void checkElements(std::vector<tinyxml2::XMLElement const*> const& elements, std
 void checkEmptyElement(tinyxml2::XMLElement const* element);
 void checkOrderedElements(std::vector<tinyxml2::XMLElement const*> const& elements, std::vector<std::string> const& values);
 void cleanup(std::stringstream & ss);
+std::string constructArraySize(std::vector<std::string> const& sizes);
+std::string constructStandardArray(std::string const& type, std::vector<std::string> const& sizes);
 std::string createEnumValueName(std::string const& name, std::string const& prefix, std::string const& postfix, bool bitmask, std::string const& tag);
 std::string determineCommandName(std::string const& vulkanCommandName, std::string const& firstArgumentType);
 std::set<size_t> determineSkippedParams(size_t returnParamIndex, std::map<size_t, size_t> const& vectorParamIndices);
@@ -45,7 +47,7 @@ std::map<std::string, std::string> getAttributes(tinyxml2::XMLElement const* ele
 std::vector<tinyxml2::XMLElement const*> getChildElements(tinyxml2::XMLElement const* element);
 std::string getEnumPostfix(std::string const& name, std::set<std::string> const& tags, std::string & prefix);
 std::string getEnumPrefix(std::string const& name, bool bitmask);
-std::string readArraySize(tinyxml2::XMLNode const* node);
+std::pair<std::vector<std::string>, std::string> readModifier(tinyxml2::XMLNode const* node);
 void readStructStructExtends(std::map<std::string, std::string> const& attributes, std::vector<std::string> & structExtends, std::set<std::string> & extendedStructs);
 std::string readTypePostfix(tinyxml2::XMLNode const* node);
 std::string readTypePrefix(tinyxml2::XMLNode const* node);
@@ -263,6 +265,36 @@ void cleanup(std::string &str)
   }
 }
 
+std::string constructArraySize(std::vector<std::string> const& sizes)
+{
+  std::string arraySize;
+  for (auto const& s : sizes)
+  {
+    arraySize += s + " * ";
+  }
+  return arraySize.substr(0, arraySize.length() - 3);
+}
+
+std::string constructCArraySizes(std::vector<std::string> const& sizes)
+{
+  std::string arraySizes;
+  for (auto const& s : sizes)
+  {
+    arraySizes += "[" + s + "]";
+  }
+  return arraySizes;
+}
+
+std::string constructStandardArray(std::string const& type, std::vector<std::string> const& sizes)
+{
+  std::string arrayString = "std::array<" + type + "," + sizes.back() + ">";
+  for (size_t i = sizes.size() - 2; i < sizes.size(); i--)
+  {
+    arrayString = "std::array<" + arrayString + "," + sizes[i] + ">";
+  }
+  return arrayString;
+}
+
 std::string createEnumValueName(std::string const& name, std::string const& prefix, std::string const& postfix, bool bitmask, std::string const& tag)
 {
   std::string result = "e" + toCamelCase(stripPostfix(stripPrefix(name, prefix), postfix));
@@ -441,19 +473,36 @@ std::string extractTag(std::string const& name, std::set<std::string> const& tag
   return tag;
 }
 
-std::string readArraySize(tinyxml2::XMLNode const* node)
+std::pair<std::vector<std::string>, std::string> readModifiers(tinyxml2::XMLNode const* node)
 {
+  std::vector<std::string> arraySizes;
+  std::string bitCount;
   if (node && node->ToText())
   {
     // following the name there might be some array size
     assert(!node->ToElement());
-    std::string arraySize = node->Value();
-    if ((arraySize.front() == '[') && (arraySize.back() == ']'))
+    std::string value = node->Value();
+    assert(!value.empty());
+    if (value[0] == '[')
     {
-      return arraySize.substr(1, arraySize.length() - 2);
+      std::string::size_type endPos = 0;
+      while (endPos + 1 != value.length())
+      {
+        std::string::size_type startPos = value.find('[', endPos);
+        assert(startPos != std::string::npos);
+        endPos = value.find(']', startPos);
+        assert(endPos != std::string::npos);
+        assert(startPos + 2 <= endPos);
+        arraySizes.push_back(value.substr(startPos + 1, endPos - startPos - 1));
+      }
+    }
+    else
+    {
+      assert(value[0] == ':');
+      bitCount = value.substr(1);
     }
   }
-  return "";
+  return std::make_pair(arraySizes, bitCount);;
 }
 
 void readStructStructExtends(std::map<std::string, std::string> const& attributes, std::vector<std::string> & structExtends, std::set<std::string> & extendedStructs)
@@ -802,21 +851,20 @@ void VulkanHppGenerator::appendBitmasks(std::string & str) const
 {
   for (auto const& bitmask : m_bitmasks)
   {
-    auto bitmaskBits = m_bitmaskBits.find(bitmask.second.requirement);
-    if (bitmaskBits == m_bitmaskBits.end())
+    auto bitmaskBits = m_enums.find(bitmask.second.requirement);
+    bool hasBits = (bitmaskBits != m_enums.end());
+    if (!bitmask.second.requirement.empty() && !hasBits)
     {
-      throw std::runtime_error( bitmask.first + " references the undefined requirement '" + bitmask.second.requirement + "'");
+      throw std::runtime_error(bitmask.first + " references the undefined requirement '" + bitmask.second.requirement + "'");
     }
 
     std::string strippedBitmaskName = stripPrefix(bitmask.first, "Vk");
-    std::string strippedEnumName = stripPrefix(bitmaskBits->first, "Vk");
+    std::string strippedEnumName = hasBits ? stripPrefix(bitmaskBits->first, "Vk") : "";
 
     str += "\n";
     appendPlatformEnter(str, bitmask.second.platform);
-    appendEnum(str, *bitmaskBits);
-    appendEnumToString(str, *bitmaskBits);
-    appendBitmask(str, strippedBitmaskName, bitmask.second.alias, strippedEnumName, bitmaskBits->second.values);
-    appendBitmaskToStringFunction(str, strippedBitmaskName, strippedEnumName, bitmaskBits->second.values);
+    appendBitmask(str, strippedBitmaskName, bitmask.second.alias, strippedEnumName, hasBits ? bitmaskBits->second.values : std::vector<EnumValueData>());
+    appendBitmaskToStringFunction(str, strippedBitmaskName, strippedEnumName, hasBits ? bitmaskBits->second.values : std::vector<EnumValueData>());
     appendPlatformLeave(str, bitmask.second.platform);
   }
 }
@@ -824,8 +872,32 @@ void VulkanHppGenerator::appendBitmasks(std::string & str) const
 void VulkanHppGenerator::appendBitmask(std::string & str, std::string const& bitmaskName, std::string const& bitmaskAlias, std::string const& enumName, std::vector<EnumValueData> const& enumValues) const
 {
   // each Flags class is using the class 'Flags' with the corresponding FlagBits enum as the template parameter
+  // if there's no enum for the FlagBits, introduce an artificial empty one
+  std::string emptyEnumName;
+  if (enumName.empty())
+  {
+    emptyEnumName = bitmaskName;
+    size_t pos = emptyEnumName.rfind("Flags");
+    assert(pos != std::string::npos);
+    emptyEnumName.replace(pos, 5, "FlagBits");
+
+    // if this emptyEnumName is not in the list of enums, list it here
+    if (m_enums.find("Vk" + emptyEnumName) == m_enums.end())
+    {
+      const std::string templateString = R"x(  enum class ${enumName}
+  {};
+
+  VULKAN_HPP_INLINE std::string to_string( ${enumName} )
+  {
+    return "(void)";
+  }
+)x";
+
+      str += replaceWithMap(templateString, { { "enumName", emptyEnumName } });
+    }
+  }
   str += "\n"
-    "  using " + bitmaskName + " = Flags<" + enumName + ", Vk" + bitmaskName + ">;\n";
+    "  using " + bitmaskName + " = Flags<" + (enumName.empty() ? emptyEnumName : enumName) + ", Vk" + bitmaskName + ">;\n";
 
   if (!enumValues.empty())
   {
@@ -1254,11 +1326,7 @@ void VulkanHppGenerator::appendDispatchLoaderStatic(std::string & str)
           parameterList += ", ";
           parameters += ", ";
         }
-        parameterList += param.type.prefix + (param.type.prefix.empty() ? "" : " ") + param.type.type + param.type.postfix + " " + param.name;
-        if (!param.arraySize.empty())
-        {
-          parameterList += "[" + param.arraySize + "]";
-        }
+        parameterList += param.type.prefix + (param.type.prefix.empty() ? "" : " ") + param.type.type + param.type.postfix + " " + param.name + constructCArraySizes(param.arraySizes);
         parameters += param.name;
         firstParam = false;
       }
@@ -1343,6 +1411,11 @@ void VulkanHppGenerator::appendEnum(std::string & str, std::pair<std::string, En
   }
 
   str += "};\n";
+
+  if (!enumData.second.alias.empty())
+  {
+    str += "  using " + stripPrefix(enumData.second.alias, "Vk") + " = " + stripPrefix(enumData.first, "Vk") + ";\n";
+  }
 }
 
 void VulkanHppGenerator::appendEnums(std::string & str) const
@@ -1977,11 +2050,7 @@ void VulkanHppGenerator::appendFunctionHeaderArgumentEnhancedPointer(std::string
 
 void VulkanHppGenerator::appendFunctionHeaderArgumentEnhancedSimple(std::string & str, ParamData const& param, bool lastArgument, bool withDefaults, bool withAllocator) const
 {
-  str += param.type.compose() + " " + param.name;
-  if (!param.arraySize.empty())
-  {
-    str += "[" + param.arraySize + "]";
-  }
+  str += param.type.compose() + " " + param.name + constructCArraySizes(param.arraySizes);
 
   if (withDefaults && lastArgument && !withAllocator)
   {
@@ -1991,9 +2060,9 @@ void VulkanHppGenerator::appendFunctionHeaderArgumentEnhancedSimple(std::string 
     {
       // get the enum corresponding to this flag, to check if it's empty
       std::string strippedBitmaskName = stripPrefix(bitmasksIt->first, "Vk");
-      std::map<std::string, EnumData>::const_iterator enumIt = m_bitmaskBits.find(bitmasksIt->second.requirement);
-      assert(enumIt != m_bitmaskBits.end());
-      if (enumIt->second.values.empty())
+      std::map<std::string, EnumData>::const_iterator enumIt = m_enums.find(bitmasksIt->second.requirement);
+      assert((enumIt == m_enums.end()) || (enumIt->second.isBitmask));
+      if ((enumIt == m_enums.end()) || (enumIt->second.values.empty()))
       {
         // there are no bits in this flag -> provide the default
         str += " = " + stripPrefix(param.type.type, "Vk") + "()";
@@ -2140,11 +2209,7 @@ bool VulkanHppGenerator::appendFunctionHeaderArgumentStandard(std::string & str,
     str += ",";
   }
 
-  str += " " + param.type.compose() + " " + param.name;
-  if (!param.arraySize.empty())
-  {
-    str += "[" + param.arraySize + "]";
-  }
+  str += " " + param.type.compose() + " " + param.name + constructCArraySizes(param.arraySizes);
 
   if (withDefaults && isLastArgument)
   {
@@ -2154,9 +2219,9 @@ bool VulkanHppGenerator::appendFunctionHeaderArgumentStandard(std::string & str,
     {
       // get the enum corresponding to this flag, to check if it's empty
       std::string strippedBitmaskName = stripPrefix(bitmasksIt->first, "Vk");
-      std::map<std::string, EnumData>::const_iterator enumIt = m_bitmaskBits.find(bitmasksIt->second.requirement);
-      assert(enumIt != m_bitmaskBits.end());
-      if (enumIt->second.values.empty())
+      std::map<std::string, EnumData>::const_iterator enumIt = m_enums.find(bitmasksIt->second.requirement);
+      assert((enumIt == m_enums.end()) || (enumIt->second.isBitmask));
+      if ((enumIt == m_enums.end()) || (enumIt->second.values.empty()))
       {
         // there are no bits in this flag -> provide the default
         str += " = " + stripPrefix(param.type.type, "Vk") + "()";
@@ -2538,13 +2603,13 @@ void VulkanHppGenerator::appendStructCompareOperators(std::string & str, std::pa
   {
     MemberData const& member = structData.second.members[i];
     compareMembers += intro;
-    if (member.arraySize.empty())
+    if (member.arraySizes.empty())
     {
       compareMembers += "( " + member.name + " == rhs." + member.name + " )";
     }
     else
     {
-      std::string arraySize = member.arraySize;
+      std::string arraySize = constructArraySize(member.arraySizes);
       if ((0 < i) && ((stripPostfix(member.name, "s") + "Count") == structData.second.members[i - 1].name))
       {
         assert(structData.second.members[i - 1].type.type == "uint32_t");   // make sure, it's an unsigned type, so we don't need to clamp here
@@ -2590,7 +2655,7 @@ std::string VulkanHppGenerator::appendStructConstructor(std::pair<std::string, S
     // gather the initializers; skip members 'pNext' and 'sType', they are directly set by initializers
     if ((member.name != "pNext") && (member.name != "sType"))
     {
-      if (member.arraySize.empty())
+      if (member.arraySizes.empty())
       {
         // here, we can only handle non-array arguments
         initializers += prefix + "  " + (firstArgument ? ":" : ",") + " " + member.name + "( " + member.name + "_ )\n";
@@ -2603,7 +2668,12 @@ std::string VulkanHppGenerator::appendStructConstructor(std::pair<std::string, S
         firstArgument = false;
 
         std::string type = (member.type.type.substr(0, 2) == "Vk") ? ("VULKAN_HPP_NAMESPACE::" + stripPrefix(member.type.type, "Vk")) : member.type.type;
-        copyOps += prefix + "  VULKAN_HPP_NAMESPACE::ConstExpressionArrayCopy<" + type + "," + member.arraySize + "," + member.arraySize + ">::copy( " + member.name + ", " + member.name + "_ );\n";
+        std::string arraySizes;
+        for (auto const& as : member.arraySizes)
+        {
+          arraySizes += "," + as;
+        }
+        copyOps += prefix + "  VULKAN_HPP_NAMESPACE::ConstExpression" + std::to_string(member.arraySizes.size()) + "DArrayCopy<" + type + arraySizes + arraySizes + ">::copy( " + member.name + ", " + member.name + "_ );\n";
       }
     }
   }
@@ -2632,7 +2702,7 @@ std::string VulkanHppGenerator::appendStructConstructor(std::pair<std::string, S
     firstArgument = true;
     for (size_t i = 0; i < subStruct->second.members.size(); i++)
     {
-      assert(structData.second.members[i].arraySize.empty());
+      assert(structData.second.members[i].arraySizes.empty());
       subCopies += prefix + "  " + (firstArgument ? ":" : ",") + " " + structData.second.members[i].name + "( " + subStructArgumentName + "." + subStruct->second.members[i].name + " )\n";
       firstArgument = false;
     }
@@ -2643,7 +2713,7 @@ std::string VulkanHppGenerator::appendStructConstructor(std::pair<std::string, S
     {
       listedArgument = appendStructConstructorArgument(subArguments, listedArgument, indentation, structData.second.members[i]);
 
-      assert(structData.second.members[i].arraySize.empty());
+      assert(structData.second.members[i].arraySizes.empty());
       subCopies += prefix + "  , " + structData.second.members[i].name + "( " + structData.second.members[i].name + "_ )\n";
     }
 
@@ -2677,13 +2747,13 @@ bool VulkanHppGenerator::appendStructConstructorArgument(std::string & str, bool
   if ((memberData.name != "pNext") && (memberData.name != "sType"))
   {
     str += (listedArgument ? (",\n" + indentation) : "");
-    if (memberData.arraySize.empty())
+    if (memberData.arraySizes.empty())
     {
       str += memberData.type.compose() + " ";
     }
     else
     {
-      str += "std::array<" + memberData.type.compose() + "," + memberData.arraySize + "> const& ";
+      str += constructStandardArray(memberData.type.compose(), memberData.arraySizes) + " const& ";
     }
     str += memberData.name + "_ = {}";
     listedArgument = true;
@@ -2718,7 +2788,16 @@ void VulkanHppGenerator::appendStructMembers(std::string & str, std::pair<std::s
     {
       str += "const ";
     }
-    str += member.type.compose() + " " + member.name;
+    if (!member.bitCount.empty() && beginsWith(member.type.type, "Vk"))
+    {
+      assert(member.type.prefix.empty() && member.type.postfix.empty());    // never encounterd a different case
+      str += member.type.type;
+    }
+    else
+    {
+      str += member.type.compose();
+    }
+    str += " " + member.name;
     if (member.name == "sType")           // special handling for sType
     {
       auto enumIt = m_enums.find("VkStructureType");
@@ -2738,12 +2817,16 @@ void VulkanHppGenerator::appendStructMembers(std::string & str, std::pair<std::s
     }
     else
     {
-      if (!member.arraySize.empty())
-      {
-        str += "[" + member.arraySize + "]";
-      }
       // as we don't have any meaningful default initialization values, everything can be initialized by just '{}' !
-      str += " = {}";
+      assert(member.arraySizes.empty() || member.bitCount.empty());
+      if (!member.bitCount.empty())
+      {
+        str += " : " + member.bitCount;   // except for bitfield members, where no default member initializatin is supported (up to C++20)
+      }
+      else
+      {
+        str += constructCArraySizes(member.arraySizes) + " = {}";
+      }
     }
     str += ";\n";
   }
@@ -2762,20 +2845,35 @@ void VulkanHppGenerator::appendStructSetter(std::string & str, std::string const
 {
   if (memberData.type.type != "VkStructureType") // filter out StructureType, which is supposed to be immutable !
   {
-    std::string memberType = memberData.arraySize.empty() ? memberData.type.compose() : "std::array<" + memberData.type.compose() + "," + memberData.arraySize + ">";
+    std::string memberType;
+    if (memberData.arraySizes.empty())
+    {
+      memberType = memberData.type.compose();
+    }
+    else
+    {
+      memberType = constructStandardArray(memberData.type.compose(), memberData.arraySizes);
+    }
 
     // copy over the argument, either by assigning simple data, or by memcpy array data
     str += "\n"
       "    " + structureName + " & set" + startUpperCase(memberData.name) + "( " + memberType + " " + memberData.name + "_ ) VULKAN_HPP_NOEXCEPT\n"
       "    {\n"
       "      ";
-    if (memberData.arraySize.empty())
+    if (memberData.arraySizes.empty())
     {
-      str += memberData.name + " = " + memberData.name + "_";
+      if (!memberData.bitCount.empty() && beginsWith(memberData.type.type, "Vk"))
+      {
+        str += memberData.name + " = " + "*reinterpret_cast<" + memberData.type.type + "*>(&" + memberData.name + "_)";
+      }
+      else
+      {
+        str += memberData.name + " = " + memberData.name + "_";
+      }
     }
     else
     {
-      str += "memcpy( " + memberData.name + ", " + memberData.name + "_.data(), " + memberData.arraySize + " * sizeof( " + memberData.type.compose() + " ) )";
+      str += "memcpy( " + memberData.name + ", " + memberData.name + "_.data(), " + constructArraySize(memberData.arraySizes) + " * sizeof( " + memberData.type.compose() + " ) )";
     }
     str += ";\n"
       "      return *this;\n"
@@ -2919,7 +3017,7 @@ void VulkanHppGenerator::appendUnion(std::string & str, std::pair<std::string, S
 
   if (!structure.second.returnedOnly)
   {
-    bool firstTime = true;
+    bool firstMember = true;
     for (auto const& member : structure.second.members)
     {
       // VkBool32 is aliased to uint32_t. Don't create a VkBool32 constructor if the union also contains a uint32_t constructor.
@@ -2931,20 +3029,34 @@ void VulkanHppGenerator::appendUnion(std::string & str, std::pair<std::string, S
         }
       }
 
-      // one constructor per union element
-      str += "    " + stripPrefix(structure.first, "Vk") + "( " + (member.arraySize.empty() ? (member.type.compose() + " ") : ("const std::array<" + member.type.compose() + "," + member.arraySize + ">& ")) + member.name + "_";
-
-      // just the very first constructor gets default arguments
-      if (firstTime)
+      static const std::string constructorTemplate = R"(
+    ${unionName}( ${memberType} ${memberName}_${defaultAssignment} )
+    {
+      ${memberAssignment};
+    }
+)";
+      std::string memberAssignment, memberType;
+      if (member.arraySizes.empty())
       {
-        str += " = {}";
-        firstTime = false;
+        memberAssignment = member.name + " = " + member.name + "_";
+        memberType = member.type.compose();
       }
-      str += " )\n"
-        "    {\n"
-        "      " + (member.arraySize.empty() ? (member.name + " = " + member.name + "_") : ("memcpy( " + member.name + ", " + member.name + "_.data(), " + member.arraySize + " * sizeof( " + member.type.compose() + " ) )")) + ";\n"
-        "    }\n"
-        "\n";
+      else
+      {
+        std::string arraySize = constructArraySize(member.arraySizes);
+        memberAssignment = "memcpy( " + member.name + ", " + member.name + "_.data(), " + arraySize + " * sizeof( " + member.type.compose() + " ) )";
+        memberType = "const " + constructStandardArray(member.type.compose(), member.arraySizes) + "&";
+      }
+
+      str += replaceWithMap(constructorTemplate,
+        {
+          { "defaultAssignment",  firstMember ? " = {}" : "" },
+          { "memberAssignment",   memberAssignment },
+          { "memberName",         member.name },
+          { "memberType",         memberType },
+          { "unionName",          stripPrefix(structure.first, "Vk") }
+        });
+      firstMember = false;
     }
 
     // one setter per union element
@@ -2954,17 +3066,26 @@ void VulkanHppGenerator::appendUnion(std::string & str, std::pair<std::string, S
     }
   }
 
-  // the implicit cast operators to the native type
-  str += "    operator " + structure.first + " const&() const\n"
-    "    {\n"
-    "      return *reinterpret_cast<const " + structure.first + "*>(this);\n"
-    "    }\n"
-    "\n"
-    "    operator " + structure.first + " &()\n"
-    "    {\n"
-    "      return *reinterpret_cast<" + structure.first + "*>(this);\n"
-    "    }\n"
-    "\n";
+  // assignment operator
+  static const std::string operatorsTemplate = R"(
+    VULKAN_HPP_NAMESPACE::${unionName} & operator=( VULKAN_HPP_NAMESPACE::${unionName} const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( VULKAN_HPP_NAMESPACE::${unionName} ) );
+      return *this;
+    }
+
+    operator Vk${unionName} const&() const
+    {
+      return *reinterpret_cast<const Vk${unionName}*>(this);
+    }
+
+    operator Vk${unionName} &()
+    {
+      return *reinterpret_cast<Vk${unionName}*>(this);
+    }
+
+)";
+  str += replaceWithMap(operatorsTemplate, { { "unionName", stripPrefix(structure.first, "Vk") } });
 
   // the union member variables
   // if there's at least one Vk... type in this union, check for unrestricted unions support
@@ -2975,14 +3096,14 @@ void VulkanHppGenerator::appendUnion(std::string & str, std::pair<std::string, S
   }
   for (auto const& member : structure.second.members)
   {
-    str += "    " + member.type.compose() + " " + member.name + (member.arraySize.empty() ? "" : ("[" + member.arraySize + "]")) + ";\n";
+    str += "    " + member.type.compose() + " " + member.name + constructCArraySizes(member.arraySizes) + ";\n";
   }
   if (needsUnrestrictedUnions)
   {
     str += "#else\n";
     for (auto const& member : structure.second.members)
     {
-      str += "    " + member.type.prefix + (member.type.prefix.empty() ? "" : " ") + member.type.type + member.type.postfix + " " + member.name + (member.arraySize.empty() ? "" : ("[" + member.arraySize + "]")) + ";\n";
+      str += "    " + member.type.prefix + (member.type.prefix.empty() ? "" : " ") + member.type.type + member.type.postfix + " " + member.name + constructCArraySizes(member.arraySizes) + ";\n";
     }
     str += "#endif  /*VULKAN_HPP_HAS_UNRESTRICTED_UNIONS*/\n";
   }
@@ -3012,6 +3133,12 @@ void VulkanHppGenerator::appendUniqueTypes(std::string & str, std::string const&
     str += "\n"
       "  template <typename Dispatch> class UniqueHandleTraits<" + type + ", Dispatch> { public: using deleter = " + deleterType + deleterAction + "<" + deleterParent + deleterPool + ", Dispatch>; };\n"
       "  using Unique" + type + " = UniqueHandle<" + type + ", VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;";
+
+    if (!handleIt->second.alias.empty())
+    {
+      str += "\n"
+        "  using Unique" + stripPrefix(handleIt->second.alias, "Vk") + " = UniqueHandle<" + type + ", VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;";
+    }
   }
   str += "\n"
     "#endif /*VULKAN_HPP_NO_SMART_HANDLE*/\n";
@@ -3041,7 +3168,7 @@ bool VulkanHppGenerator::containsArray(std::string const& type) const
   {
     for (auto memberIt = structureIt->second.members.begin(); memberIt != structureIt->second.members.end() && !found; ++memberIt)
     {
-      found = !memberIt->arraySize.empty();
+      found = !memberIt->arraySizes.empty();
     }
   }
   return found;
@@ -3094,10 +3221,10 @@ std::string VulkanHppGenerator::determineEnhancedReturnType(CommandData const& c
     && ((commandData.returnType == "void")
       || ((commandData.returnType == "VkResult")
         && ((commandData.successCodes.size() == 1)
-          || ((commandData.successCodes.size() == 2)
-            && (commandData.successCodes[1] == "eIncomplete")
-            && twoStep)))))
+          || ((commandData.successCodes.size() == 2) && (commandData.successCodes[1] == "eIncomplete") && twoStep)
+          || ((commandData.successCodes.size() == 3) && (commandData.successCodes[1] == "eOperationDeferredKHR") && (commandData.successCodes[2] == "eOperationNotDeferredKHR"))))))
   {
+    assert(commandData.successCodes.empty() || (commandData.successCodes[0] == "eSuccess"));
     if (vectorParamIndices.find(returnParamIndex) != vectorParamIndices.end())
     {
       enhancedReturnType = (commandData.params[returnParamIndex].type.type == "void")
@@ -3330,17 +3457,6 @@ void VulkanHppGenerator::readBitmask(tinyxml2::XMLElement const* element, std::m
     {
       requirement = requiresIt->second;
     }
-    else
-    {
-      // Generate FlagBits name and add it to the list of enums and vulkan types
-      requirement = name;
-      size_t pos = requirement.rfind("Flags");
-      assert(pos != std::string::npos);
-      requirement.replace(pos, 5, "FlagBits");
-
-      assert(m_bitmaskBits.find(requirement) == m_bitmaskBits.end());
-      m_bitmaskBits.insert(std::make_pair(requirement, EnumData()));
-    }
 
     m_bitmasks.insert(std::make_pair(name, BitmaskData(requirement)));
   }
@@ -3452,7 +3568,9 @@ VulkanHppGenerator::ParamData VulkanHppGenerator::readCommandParam(tinyxml2::XML
     if (value == "name")
     {
       paramData.name = child->GetText();
-      paramData.arraySize = readArraySize(child->NextSibling());
+      std::string bitCount;
+      std::tie(paramData.arraySizes, bitCount) = readModifiers(child->NextSibling());
+      assert(bitCount.empty());
     }
     else if (value == "type")
     {
@@ -3608,12 +3726,19 @@ void VulkanHppGenerator::readEnums(tinyxml2::XMLElement const* element)
   {
     checkAttributes(attributes, element->GetLineNum(), { { "name",{} },{ "type",{ "bitmask", "enum" } } }, { { "comment",{} } });   // re-check with type as required
 
-    // ad an empty EnumData on this name into the enums map
-    EnumData enumData;
+    // get the EnumData entry in enum map
+    std::map<std::string, EnumData>::iterator it = m_enums.find(name);
+    if (it == m_enums.end())
+    {
+      // well, some enums are not listed in the <types> section
+      it = m_enums.insert(std::make_pair(name, EnumData())).first;
+    }
+    assert(it->second.values.empty());
+
+    // mark it as a bitmap, if it is one
     std::string type = attributes.find("type")->second;
     bool bitmask = (type == "bitmask");
-    std::map<std::string, EnumData>::iterator it = bitmask ? m_bitmaskBits.insert(std::make_pair(name, enumData)).first : m_enums.insert(std::make_pair(name, enumData)).first;
-    assert(it->second.values.empty());
+    it->second.isBitmask = bitmask;
 
     std::string prefix = getEnumPrefix(name, bitmask);
     std::string postfix = getEnumPostfix(name, m_tags, prefix);
@@ -3728,10 +3853,10 @@ void VulkanHppGenerator::readExtensionDisabledRequire(tinyxml2::XMLElement const
         // a type simply needs to be removed from the structs and vkTypes sets
         assert(m_structures.find(nameAttribute->second) != m_structures.end() ||
                m_bitmasks.find(nameAttribute->second) != m_bitmasks.end() ||
-               m_bitmaskBits.find(nameAttribute->second) != m_bitmaskBits.end());
+               m_enums.find(nameAttribute->second) != m_enums.end());
         m_structures.erase(nameAttribute->second);
         m_bitmasks.erase(nameAttribute->second);
-        m_bitmaskBits.erase(nameAttribute->second);
+        m_enums.erase(nameAttribute->second);
       }
     }
     else if (value == "enum")
@@ -3828,7 +3953,7 @@ void VulkanHppGenerator::readExtensionRequireType(tinyxml2::XMLElement const* el
     {
       assert(bmit->second.platform.empty());
       bmit->second.platform = platform;
-      assert(m_bitmaskBits.find(bmit->second.requirement) != m_bitmaskBits.end());
+      assert((m_enums.find(bmit->second.requirement) == m_enums.end()) || (m_enums.find(bmit->second.requirement)->second.isBitmask));
     }
     else
     {
@@ -4016,17 +4141,11 @@ void VulkanHppGenerator::readRequireEnum(tinyxml2::XMLElement const* element, st
   auto extendsIt = attributes.find("extends");
   if (extendsIt != attributes.end())
   {
-    bool bitmask = false;
     std::string extends = extendsIt->second;
     auto enumIt = m_enums.find(extends);
-    if (enumIt == m_enums.end())
-    {
-      enumIt = m_bitmaskBits.find(extends);
-      assert(enumIt != m_bitmaskBits.end());
-      bitmask = true;
-    }
+    assert(enumIt != m_enums.end());
 
-    std::string prefix = getEnumPrefix(enumIt->first, bitmask);
+    std::string prefix = getEnumPrefix(enumIt->first, enumIt->second.isBitmask);
     std::string postfix = getEnumPostfix(enumIt->first, m_tags, prefix);
 
     auto nameIt = attributes.find("name");
@@ -4037,7 +4156,7 @@ void VulkanHppGenerator::readRequireEnum(tinyxml2::XMLElement const* element, st
     {
       // add this enum name to the list of aliases
       checkAttributes(attributes, element->GetLineNum(), { { "alias",{} },{ "extends",{} },{ "name",{} } }, { { "comment",{} } });
-      std::string valueName = createEnumValueName(nameIt->second, prefix, postfix, bitmask, tag);
+      std::string valueName = createEnumValueName(nameIt->second, prefix, postfix, enumIt->second.isBitmask, tag);
       assert(std::find_if(enumIt->second.aliases.begin(), enumIt->second.aliases.end(), [&valueName](std::pair<std::string, std::string> const& aliasPair) { return valueName == aliasPair.second; }) == enumIt->second.aliases.end());
       enumIt->second.aliases.push_back(std::make_pair(nameIt->second, valueName));
     }
@@ -4045,7 +4164,7 @@ void VulkanHppGenerator::readRequireEnum(tinyxml2::XMLElement const* element, st
     {
       // add this enum name to the list of values
       assert((attributes.find("bitpos") != attributes.end()) + (attributes.find("offset") != attributes.end()) + (attributes.find("value") != attributes.end()) == 1);
-      enumIt->second.addEnumValue(nameIt->second, bitmask, attributes.find("bitpos") != attributes.end(), prefix, postfix, tag);
+      enumIt->second.addEnumValue(nameIt->second, enumIt->second.isBitmask, attributes.find("bitpos") != attributes.end(), prefix, postfix, tag);
     }
   }
 }
@@ -4142,12 +4261,12 @@ VulkanHppGenerator::MemberData VulkanHppGenerator::readStructMember(tinyxml2::XM
     {
       assert(child->PreviousSibling() && (strcmp(child->PreviousSibling()->Value(), "[") == 0)
         && child->NextSibling() && (strcmp(child->NextSibling()->Value(), "]") == 0));
-      memberData.arraySize = child->GetText();
+      memberData.arraySizes.push_back(child->GetText());
     }
     else if (value == "name")
     {
       memberData.name = child->GetText();
-      memberData.arraySize = readArraySize(child->NextSibling());
+      std::tie(memberData.arraySizes, memberData.bitCount) = readModifiers(child->NextSibling());
     }
     else if (value == "type")
     {
@@ -4235,6 +4354,10 @@ void VulkanHppGenerator::readType(tinyxml2::XMLElement const* element)
     {
       readDefine(element, attributes);
     }
+    else if (categoryIt->second == "enum")
+    {
+      readTypeEnum(element, attributes);
+    }
     else if (categoryIt->second == "funcpointer")
     {
       readFuncpointer(element, attributes);
@@ -4251,7 +4374,7 @@ void VulkanHppGenerator::readType(tinyxml2::XMLElement const* element)
     {
       readStruct(element, true, attributes);
     }
-    else if ((categoryIt->second != "enum") && (categoryIt->second != "include"))
+    else if ( categoryIt->second != "include")
     {
       throw std::runtime_error("Spec error on line " + std::to_string(element->GetLineNum()) + ": unknown category <" + categoryIt->second + ">");
     }
@@ -4270,6 +4393,27 @@ void VulkanHppGenerator::readType(tinyxml2::XMLElement const* element)
     }
   }
 #endif
+}
+
+void VulkanHppGenerator::readTypeEnum(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes)
+{
+  checkAttributes(attributes, element->GetLineNum(), { { "category",{ "enum" } }, { "name",{} } }, { { "alias",{} }});
+
+  std::string name = attributes.find("name")->second;
+
+  auto aliasIt = attributes.find("alias");
+  if ((aliasIt != attributes.end()))
+  {
+    auto enumIt = m_enums.find(aliasIt->second);
+    assert(enumIt != m_enums.end());
+    assert(enumIt->second.alias.empty());
+    enumIt->second.alias = name;
+  }
+  else
+  {
+    assert(m_enums.find(name) == m_enums.end());
+    m_enums[name];    // insert an empty EnumData
+  }
 }
 
 void VulkanHppGenerator::readTypes(tinyxml2::XMLElement const* element)
@@ -4344,7 +4488,7 @@ std::string VulkanHppGenerator::TypeData::compose() const
   return prefix + (prefix.empty() ? "" : " ") + ((type.substr(0, 2) == "Vk") ? "VULKAN_HPP_NAMESPACE::" : "") + stripPrefix(type, "Vk") + postfix;
 }
 
-int main( int argc, char **argv )
+int main(int argc, char **argv)
 {
   static const std::string classArrayProxy = R"(
 #if !defined(VULKAN_HPP_DISABLE_ENHANCED_MODE)
@@ -5074,21 +5218,49 @@ int main( int argc, char **argv )
 
 static const std::string constExpressionArrayCopy = R"(
   template <typename T, size_t N, size_t I>
-  class ConstExpressionArrayCopy
+  class ConstExpression1DArrayCopy
   {
     public:
       VULKAN_HPP_CONSTEXPR_14 static void copy(T dst[N], std::array<T,N> const& src) VULKAN_HPP_NOEXCEPT
       {
         dst[I-1] = src[I-1];
-        ConstExpressionArrayCopy<T, N, I - 1>::copy(dst, src);
+        ConstExpression1DArrayCopy<T, N, I - 1>::copy(dst, src);
       }
   };
 
   template <typename T, size_t N>
-  class ConstExpressionArrayCopy<T, N, 0>
+  class ConstExpression1DArrayCopy<T, N, 0>
   {
     public:
       VULKAN_HPP_CONSTEXPR_14 static void copy(T /*dst*/[N], std::array<T,N> const& /*src*/) VULKAN_HPP_NOEXCEPT {}
+  };
+
+  template <typename T, size_t N, size_t M, size_t I, size_t J>
+  class ConstExpression2DArrayCopy
+  {
+  public:
+    VULKAN_HPP_CONSTEXPR_14 static void copy(T dst[N][M], std::array<std::array<T,M>, N> const& src) VULKAN_HPP_NOEXCEPT
+    {
+      dst[I - 1][J - 1] = src[I - 1][J - 1];
+      ConstExpression2DArrayCopy<T, N, M, I, J - 1>::copy(dst, src);
+    }
+  };
+
+  template <typename T, size_t N, size_t M, size_t I>
+  class ConstExpression2DArrayCopy<T, N, M, I, 0>
+  {
+  public:
+    VULKAN_HPP_CONSTEXPR_14 static void copy(T dst[N][M], std::array<std::array<T, M>, N> const& src) VULKAN_HPP_NOEXCEPT
+    {
+      ConstExpression2DArrayCopy<T, N, M, I - 1, M>::copy(dst, src);
+    }
+  };
+
+  template <typename T, size_t N, size_t M>
+  class ConstExpression2DArrayCopy<T, N, M, 0, 0>
+  {
+  public:
+    VULKAN_HPP_CONSTEXPR_14 static void copy(T /*dst*/[N][M], std::array<std::array<T, M>, N> const& /*src*/) VULKAN_HPP_NOEXCEPT {}
   };
 )";
 

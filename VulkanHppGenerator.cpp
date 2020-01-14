@@ -3268,6 +3268,7 @@ size_t VulkanHppGenerator::determineReturnParamIndex(CommandData const& commandD
     for (size_t i = 0; i < commandData.params.size(); i++)
     {
       if ((commandData.params[i].type.postfix.find('*') != std::string::npos)
+        && ((commandData.params[i].type.type != "void") || twoStep || (commandData.params[i].type.postfix.find("**") != std::string::npos))
         && (commandData.params[i].type.prefix.find("const") == std::string::npos)
         && std::find_if(vectorParamIndices.begin(), vectorParamIndices.end(), [i](std::pair<size_t, size_t> const& vpi) { return vpi.second == i; }) == vectorParamIndices.end())
       {

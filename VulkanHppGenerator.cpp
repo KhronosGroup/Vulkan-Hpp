@@ -1517,9 +1517,9 @@ void VulkanHppGenerator::appendFunction(std::string & str, std::string const& in
   appendFunctionHeaderArguments(str, commandData, returnParamIndex, templateParamIndex, vectorParamIndices, enhanced, singular, !definition, withAllocator);
 
   // Any function that originally does not return VkResult can be marked noexcept,
-  // if it is enhanced it musnt't include anything with an Allocator or needs size checks on multiple vectors
+  // if it is enhanced it must not include anything with an Allocator or needs size checks on multiple vectors
   bool hasAllocator = enhancedReturnType.find("Allocator") != std::string::npos;
-  if (commandData.second.returnType != "VkResult" && !(enhanced && (hasAllocator || needsMultiVectorSizeCheck(returnParamIndex, vectorParamIndices))))
+  if (!enhanced || (commandData.second.returnType != "VkResult" && !(enhanced && (hasAllocator || needsMultiVectorSizeCheck(returnParamIndex, vectorParamIndices)))))
   {
     str += " VULKAN_HPP_NOEXCEPT";
   }

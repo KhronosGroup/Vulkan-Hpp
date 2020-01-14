@@ -4157,8 +4157,20 @@ void VulkanHppGenerator::readRequireEnum(tinyxml2::XMLElement const* element, st
       // add this enum name to the list of aliases
       checkAttributes(attributes, element->GetLineNum(), { { "alias",{} },{ "extends",{} },{ "name",{} } }, { { "comment",{} } });
       std::string valueName = createEnumValueName(nameIt->second, prefix, postfix, enumIt->second.isBitmask, tag);
+      if (!enumIt->second.alias.empty())
+      {
+        prefix = getEnumPrefix(enumIt->second.alias, enumIt->second.isBitmask);
+        postfix = getEnumPostfix(enumIt->second.alias, m_tags, prefix);
+        if (endsWith(nameIt->second, postfix))
+        {
+          valueName = createEnumValueName(nameIt->second, prefix, postfix, enumIt->second.isBitmask, tag);
+        }
+      }
       assert(std::find_if(enumIt->second.aliases.begin(), enumIt->second.aliases.end(), [&valueName](std::pair<std::string, std::string> const& aliasPair) { return valueName == aliasPair.second; }) == enumIt->second.aliases.end());
-      enumIt->second.aliases.push_back(std::make_pair(nameIt->second, valueName));
+      if (std::find_if(enumIt->second.values.begin(), enumIt->second.values.end(), [&valueName](EnumValueData const& evd) { return evd.vkValue == valueName; }) == enumIt->second.values.end())
+      {
+        enumIt->second.aliases.push_back(std::make_pair(nameIt->second, valueName));
+      }
     }
     else
     {

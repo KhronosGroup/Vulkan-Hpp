@@ -2749,7 +2749,7 @@ namespace VULKAN_HPP_NAMESPACE
         , m_dispatch( nullptr )
       {}
 
-      ObjectDestroy( OwnerType owner, Optional<const AllocationCallbacks> allocationCallbacks = nullptr, Dispatch const &dispatch = Dispatch() ) VULKAN_HPP_NOEXCEPT
+      ObjectDestroy( OwnerType owner, Optional<const AllocationCallbacks> allocationCallbacks = nullptr, Dispatch const &dispatch = VULKAN_HPP_DEFAULT_DISPATCHER ) VULKAN_HPP_NOEXCEPT
         : m_owner( owner )
         , m_allocationCallbacks( allocationCallbacks )
         , m_dispatch( &dispatch )

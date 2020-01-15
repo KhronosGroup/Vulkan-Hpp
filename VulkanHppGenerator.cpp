@@ -1498,7 +1498,7 @@ void VulkanHppGenerator::appendFunction(std::string & str, std::string const& in
 
   str += indentation + (definition ? "VULKAN_HPP_INLINE " : "");
 
-  appendFunctionHeaderReturnType(str, commandData.second, returnParamIndex, vectorParamIndices, enhancedReturnType, enhanced, singular, unique, isStructureChain);
+  appendFunctionHeaderReturnType(str, commandData.second, returnParamIndex, vectorParamIndices, enhancedReturnType, enhanced, twoStep, singular, unique, isStructureChain);
 
   assert(m_commandToHandle.find(commandData.first) != m_commandToHandle.end());
   std::string const& handle = m_commandToHandle.find(commandData.first)->second;
@@ -1896,7 +1896,7 @@ ${i}  std::vector<UniqueHandle<${type}, Dispatch>, Allocator> ${typeVariable}s${
 ${i}  ${typeVariable}s.reserve( ${vectorSize} );
 ${i}  ${type}* buffer = reinterpret_cast<${type}*>( reinterpret_cast<char*>( ${typeVariable}s.data() ) + ${vectorSize} * ( sizeof( UniqueHandle<${type}, Dispatch> ) - sizeof( ${type} ) ) );
 ${i}  Result result = static_cast<Result>(d.vk${command}( m_device, ${arguments}, reinterpret_cast<Vk${type}*>( buffer ) ) );
-${i}  if (result == VULKAN_HPP_NAMESPACE::Result::eSuccess)
+${i}  if ( ${successChecks} )
 ${i}  {
 ${i}    ${Deleter}<${DeleterTemplate},Dispatch> deleter( *this, ${deleterArg}, d );
 ${i}    for ( size_t i=0 ; i<${vectorSize} ; i++ )
@@ -1905,7 +1905,7 @@ ${i}      ${typeVariable}s.push_back( UniqueHandle<${type}, Dispatch>( buffer[i]
 ${i}    }
 ${i}  }
 
-${i}  return createResultValue( result, ${typeVariable}s, VULKAN_HPP_NAMESPACE_STRING "::${class}::${commandName}Unique" );
+${i}  return createResultValue( result, ${typeVariable}s, VULKAN_HPP_NAMESPACE_STRING "::${class}::${commandName}Unique"${successCodes} );
 )";
 
   std::string type = (returnParamIndex != INVALID_INDEX) ? commandData.second.params[returnParamIndex].type.type : "";
@@ -1919,21 +1919,38 @@ ${i}  return createResultValue( result, ${typeVariable}s, VULKAN_HPP_NAMESPACE_S
   auto handleIt = m_handles.find(type);
   assert(handleIt != m_handles.end());
 
+  assert(!commandData.second.successCodes.empty());
+  std::string successChecks = "result == VULKAN_HPP_NAMESPACE::Result::" + commandData.second.successCodes[0];
+  std::string successCodes;
+  if (1 < commandData.second.successCodes.size())
+  {
+    successChecks = "( " + successChecks + " )";
+    successCodes = ", { VULKAN_HPP_NAMESPACE::Result::" + commandData.second.successCodes[0];
+    for (size_t i = 1; i < commandData.second.successCodes.size(); i++)
+    {
+      successChecks += " || ( result == VULKAN_HPP_NAMESPACE::Result::" + commandData.second.successCodes[i] + " )";
+      successCodes += ", VULKAN_HPP_NAMESPACE::Result::" + commandData.second.successCodes[i];
+    }
+    successCodes += " }";
+  }
+
   bool isCreateFunction = (commandData.first.substr(2, 6) == "Create");
   str += replaceWithMap(stringTemplate, std::map<std::string, std::string>
   {
+    { "allocator", withAllocator ? "( vectorAllocator )" : "" },
+    { "arguments", arguments },
+    { "class", stripPrefix(handle, "Vk") },
+    { "command", stripPrefix(commandData.first, "vk") },
+    { "commandName", commandName },
+    { "Deleter", handleIt->second.deletePool.empty() ? "ObjectDestroy" : "PoolFree" },
+    { "deleterArg", handleIt->second.deletePool.empty() ? "allocator" : "allocateInfo." + startLowerCase(stripPrefix(handleIt->second.deletePool, "Vk")) },
+    { "DeleterTemplate", stripPrefix(handle, "Vk") + (handleIt->second.deletePool.empty() ? "" : "," + stripPrefix(handleIt->second.deletePool, "Vk")) },
     { "i", indentation },
+    { "successChecks", successChecks },
+    { "successCodes", successCodes },
     { "type", stripPrefix(type, "Vk") },
     { "typeVariable", typeVariable },
-    { "allocator", withAllocator ? "( vectorAllocator )" : "" },
-    { "vectorSize", isCreateFunction ? "createInfos.size()" : "allocateInfo." + typeVariable + "Count" },
-    { "command", stripPrefix(commandData.first, "vk") },
-    { "arguments", arguments },
-    { "Deleter", handleIt->second.deletePool.empty() ? "ObjectDestroy" : "PoolFree" },
-    { "DeleterTemplate", stripPrefix(handle, "Vk") + (handleIt->second.deletePool.empty() ? "" : "," + stripPrefix(handleIt->second.deletePool, "Vk")) },
-    { "deleterArg", handleIt->second.deletePool.empty() ? "allocator" : "allocateInfo." + startLowerCase(stripPrefix(handleIt->second.deletePool, "Vk")) },
-    { "class", stripPrefix(handle, "Vk") },
-    { "commandName", commandName }
+    { "vectorSize", isCreateFunction ? "createInfos.size()" : "allocateInfo." + typeVariable + "Count" }
   });
 }
 
@@ -2231,10 +2248,11 @@ bool VulkanHppGenerator::appendFunctionHeaderArgumentStandard(std::string & str,
   return true;
 }
 
-void VulkanHppGenerator::appendFunctionHeaderReturnType(std::string & str, CommandData const& commandData, size_t returnParamIndex, std::map<size_t, size_t> const& vectorParamIndices, std::string const& enhancedReturnType, bool enhanced, bool singular, bool unique, bool isStructureChain) const
+void VulkanHppGenerator::appendFunctionHeaderReturnType(std::string & str, CommandData const& commandData, size_t returnParamIndex, std::map<size_t, size_t> const& vectorParamIndices, std::string const& enhancedReturnType, bool enhanced, bool twoStep, bool singular, bool unique, bool isStructureChain) const
 {
   if (enhanced)
   {
+    bool useTypename = ((commandData.successCodes.size() == 1) || ((commandData.successCodes.size() == 2) && (commandData.successCodes[1] == "eIncomplete") && twoStep));
     // the enhanced function might return some pretty complex return stuff
     bool isVector = (enhancedReturnType.find("Allocator") != std::string::npos);
     if (unique)
@@ -2244,8 +2262,9 @@ void VulkanHppGenerator::appendFunctionHeaderReturnType(std::string & str, Comma
       bool returnsVector = !singular && (vectorParamIndices.find(returnParamIndex) != vectorParamIndices.end());
 
       std::string returnType = isStructureChain ? "StructureChain<X, Y, Z...>" : stripPrefix(commandData.params[returnParamIndex].type.type, "Vk");
-      str += returnsVector ? (((isStructureChain || (!singular && isVector)) ? "typename " : "")) + std::string("ResultValueType<std::vector<UniqueHandle<") + returnType + ",Dispatch>,Allocator>>::type "
-        : "typename ResultValueType<UniqueHandle<" + returnType + ",Dispatch>>::type ";
+      str += useTypename ? "typename ResultValueType<" : "ResultValue<";
+      str += returnsVector ? "std::vector<UniqueHandle<" + returnType + ",Dispatch>,Allocator>>" : "UniqueHandle<" + returnType + ",Dispatch>>";
+      str += useTypename ? "::type " : " ";
     }
     else if ((enhancedReturnType != stripPrefix(commandData.returnType, "Vk")) && (commandData.returnType != "void"))
     {
@@ -2254,7 +2273,7 @@ void VulkanHppGenerator::appendFunctionHeaderReturnType(std::string & str, Comma
       // in singular case, we create the ResultValueType from the pure return type, otherwise from the enhanced return type
       std::string returnType = isStructureChain ? "StructureChain<X, Y, Z...>" : (singular ? stripPrefix(commandData.params[returnParamIndex].type.type, "Vk") : enhancedReturnType);
       // for the non-singular case with allocation, we need to prepend with 'typename' to keep compilers happy
-      str += ((isStructureChain || (!singular && isVector)) ? "typename " : "") + std::string("ResultValueType<") + returnType + ">::type ";
+      str += (useTypename ? "typename ResultValueType<" : "ResultValue<") + returnType + ">" + (useTypename ? "::type " : " ");
     }
     else if ((returnParamIndex != INVALID_INDEX) && (1 < commandData.successCodes.size()))
     {

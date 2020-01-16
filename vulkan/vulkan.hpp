@@ -265,20 +265,20 @@ namespace VULKAN_HPP_NAMESPACE
     enum { allFlags = 0 };
   };
 
-  template <typename BitType, typename MaskType = VkFlags>
+  template <typename BitType, typename MaskType, BitType defaultValue>
   class Flags
   {
   public:
     // constructors
     VULKAN_HPP_CONSTEXPR Flags() VULKAN_HPP_NOEXCEPT
-      : m_mask(0)
+      : m_mask(static_cast<MaskType>(defaultValue))
     {}
 
     VULKAN_HPP_CONSTEXPR Flags(BitType bit) VULKAN_HPP_NOEXCEPT
       : m_mask(static_cast<MaskType>(bit))
     {}
 
-    VULKAN_HPP_CONSTEXPR Flags(Flags<BitType> const& rhs) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR Flags(Flags<BitType, MaskType, defaultValue> const& rhs) VULKAN_HPP_NOEXCEPT
       : m_mask(rhs.m_mask)
     {}
 
@@ -287,32 +287,32 @@ namespace VULKAN_HPP_NAMESPACE
     {}
 
     // relational operators
-    VULKAN_HPP_CONSTEXPR bool operator<(Flags<BitType> const& rhs) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR bool operator<(Flags<BitType, MaskType, defaultValue> const& rhs) const VULKAN_HPP_NOEXCEPT
     {
       return m_mask < rhs.m_mask;
     }
 
-    VULKAN_HPP_CONSTEXPR bool operator<=(Flags<BitType> const& rhs) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR bool operator<=(Flags<BitType, MaskType, defaultValue> const& rhs) const VULKAN_HPP_NOEXCEPT
     {
       return m_mask <= rhs.m_mask;
     }
 
-    VULKAN_HPP_CONSTEXPR bool operator>(Flags<BitType> const& rhs) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR bool operator>(Flags<BitType, MaskType, defaultValue> const& rhs) const VULKAN_HPP_NOEXCEPT
     {
       return m_mask > rhs.m_mask;
     }
 
-    VULKAN_HPP_CONSTEXPR bool operator>=(Flags<BitType> const& rhs) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR bool operator>=(Flags<BitType, MaskType, defaultValue> const& rhs) const VULKAN_HPP_NOEXCEPT
     {
       return m_mask >= rhs.m_mask;
     }
 
-    VULKAN_HPP_CONSTEXPR bool operator==(Flags<BitType> const& rhs) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR bool operator==(Flags<BitType, MaskType, defaultValue> const& rhs) const VULKAN_HPP_NOEXCEPT
     {
       return m_mask == rhs.m_mask;
     }
 
-    VULKAN_HPP_CONSTEXPR bool operator!=(Flags<BitType> const& rhs) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR bool operator!=(Flags<BitType, MaskType, defaultValue> const& rhs) const VULKAN_HPP_NOEXCEPT
     {
       return m_mask != rhs.m_mask;
     }
@@ -324,46 +324,46 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     // bitwise operators
-    VULKAN_HPP_CONSTEXPR Flags<BitType> operator&(Flags<BitType> const& rhs) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR Flags<BitType, MaskType, defaultValue> operator&(Flags<BitType, MaskType, defaultValue> const& rhs) const VULKAN_HPP_NOEXCEPT
     {
-      return Flags<BitType>(m_mask & rhs.m_mask);
+      return Flags<BitType, MaskType, defaultValue>(m_mask & rhs.m_mask);
     }
 
-    VULKAN_HPP_CONSTEXPR Flags<BitType> operator|(Flags<BitType> const& rhs) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR Flags<BitType, MaskType, defaultValue> operator|(Flags<BitType, MaskType, defaultValue> const& rhs) const VULKAN_HPP_NOEXCEPT
     {
-      return Flags<BitType>(m_mask | rhs.m_mask);
+      return Flags<BitType, MaskType, defaultValue>(m_mask | rhs.m_mask);
     }
 
-    VULKAN_HPP_CONSTEXPR Flags<BitType> operator^(Flags<BitType> const& rhs) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR Flags<BitType, MaskType, defaultValue> operator^(Flags<BitType, MaskType, defaultValue> const& rhs) const VULKAN_HPP_NOEXCEPT
     {
-      return Flags<BitType>(m_mask ^ rhs.m_mask);
+      return Flags<BitType, MaskType, defaultValue>(m_mask ^ rhs.m_mask);
     }
 
-    VULKAN_HPP_CONSTEXPR Flags<BitType> operator~() const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR Flags<BitType, MaskType, defaultValue> operator~() const VULKAN_HPP_NOEXCEPT
     {
-      return Flags<BitType>(m_mask ^ FlagTraits<BitType>::allFlags);
+      return Flags<BitType, MaskType, defaultValue>(m_mask ^ FlagTraits<BitType>::allFlags);
     }
 
     // assignment operators
-    Flags<BitType> & operator=(Flags<BitType> const& rhs) VULKAN_HPP_NOEXCEPT
+    Flags<BitType, MaskType, defaultValue> & operator=(Flags<BitType, MaskType, defaultValue> const& rhs) VULKAN_HPP_NOEXCEPT
     {
       m_mask = rhs.m_mask;
       return *this;
     }
 
-    Flags<BitType> & operator|=(Flags<BitType> const& rhs) VULKAN_HPP_NOEXCEPT
+    Flags<BitType, MaskType, defaultValue> & operator|=(Flags<BitType, MaskType, defaultValue> const& rhs) VULKAN_HPP_NOEXCEPT
     {
       m_mask |= rhs.m_mask;
       return *this;
     }
 
-    Flags<BitType> & operator&=(Flags<BitType> const& rhs) VULKAN_HPP_NOEXCEPT
+    Flags<BitType, MaskType, defaultValue> & operator&=(Flags<BitType, MaskType, defaultValue> const& rhs) VULKAN_HPP_NOEXCEPT
     {
       m_mask &= rhs.m_mask;
       return *this;
     }
 
-    Flags<BitType> & operator^=(Flags<BitType> const& rhs) VULKAN_HPP_NOEXCEPT
+    Flags<BitType, MaskType, defaultValue> & operator^=(Flags<BitType, MaskType, defaultValue> const& rhs) VULKAN_HPP_NOEXCEPT
     {
       m_mask ^= rhs.m_mask;
       return *this;
@@ -385,57 +385,57 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   // relational operators
-  template <typename BitType>
-  VULKAN_HPP_CONSTEXPR bool operator<(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
+  template <typename BitType, typename MaskType, BitType defaultValue>
+  VULKAN_HPP_CONSTEXPR bool operator<(BitType bit, Flags<BitType, MaskType, defaultValue> const& flags) VULKAN_HPP_NOEXCEPT
   {
     return flags > bit;
   }
 
-  template <typename BitType>
-  VULKAN_HPP_CONSTEXPR bool operator<=(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
+  template <typename BitType, typename MaskType, BitType defaultValue>
+  VULKAN_HPP_CONSTEXPR bool operator<=(BitType bit, Flags<BitType, MaskType, defaultValue> const& flags) VULKAN_HPP_NOEXCEPT
   {
     return flags >= bit;
   }
 
-  template <typename BitType>
-  VULKAN_HPP_CONSTEXPR bool operator>(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
+  template <typename BitType, typename MaskType, BitType defaultValue>
+  VULKAN_HPP_CONSTEXPR bool operator>(BitType bit, Flags<BitType, MaskType, defaultValue> const& flags) VULKAN_HPP_NOEXCEPT
   {
     return flags < bit;
   }
 
-  template <typename BitType>
-  VULKAN_HPP_CONSTEXPR bool operator>=(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
+  template <typename BitType, typename MaskType, BitType defaultValue>
+  VULKAN_HPP_CONSTEXPR bool operator>=(BitType bit, Flags<BitType, MaskType, defaultValue> const& flags) VULKAN_HPP_NOEXCEPT
   {
     return flags <= bit;
   }
 
-  template <typename BitType>
-  VULKAN_HPP_CONSTEXPR bool operator==(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
+  template <typename BitType, typename MaskType, BitType defaultValue>
+  VULKAN_HPP_CONSTEXPR bool operator==(BitType bit, Flags<BitType, MaskType, defaultValue> const& flags) VULKAN_HPP_NOEXCEPT
   {
     return flags == bit;
   }
 
-  template <typename BitType>
-  VULKAN_HPP_CONSTEXPR bool operator!=(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
+  template <typename BitType, typename MaskType, BitType defaultValue>
+  VULKAN_HPP_CONSTEXPR bool operator!=(BitType bit, Flags<BitType, MaskType, defaultValue> const& flags) VULKAN_HPP_NOEXCEPT
   {
     return flags != bit;
   }
 
   // bitwise operators
-  template <typename BitType>
-  VULKAN_HPP_CONSTEXPR Flags<BitType> operator&(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
+  template <typename BitType, typename MaskType, BitType defaultValue>
+  VULKAN_HPP_CONSTEXPR Flags<BitType, MaskType, defaultValue> operator&(BitType bit, Flags<BitType, MaskType, defaultValue> const& flags) VULKAN_HPP_NOEXCEPT
   {
     return flags & bit;
   }
 
-  template <typename BitType>
-  VULKAN_HPP_CONSTEXPR Flags<BitType> operator|(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
+  template <typename BitType, typename MaskType, BitType defaultValue>
+  VULKAN_HPP_CONSTEXPR Flags<BitType, MaskType, defaultValue> operator|(BitType bit, Flags<BitType, MaskType, defaultValue> const& flags) VULKAN_HPP_NOEXCEPT
   {
     return flags | bit;
   }
 
-  template <typename BitType>
-  VULKAN_HPP_CONSTEXPR Flags<BitType> operator^(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
+  template <typename BitType, typename MaskType, BitType defaultValue>
+  VULKAN_HPP_CONSTEXPR Flags<BitType, MaskType, defaultValue> operator^(BitType bit, Flags<BitType, MaskType, defaultValue> const& flags) VULKAN_HPP_NOEXCEPT
   {
     return flags ^ bit;
   }
@@ -8314,7 +8314,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
   };
 
-  using AccessFlags = Flags<AccessFlagBits, VkAccessFlags>;
+  using AccessFlags = Flags<AccessFlagBits, VkAccessFlags, AccessFlagBits::eIndirectCommandRead>;
 
   template <> struct FlagTraits<AccessFlagBits>
   {
@@ -8380,7 +8380,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using AcquireProfilingLockFlagsKHR = Flags<AcquireProfilingLockFlagBitsKHR, VkAcquireProfilingLockFlagsKHR>;
+  using AcquireProfilingLockFlagsKHR = Flags<AcquireProfilingLockFlagBitsKHR, VkAcquireProfilingLockFlagsKHR, AcquireProfilingLockFlagBitsKHR(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( AcquireProfilingLockFlagsKHR  )
   {
@@ -8396,7 +8396,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using AndroidSurfaceCreateFlagsKHR = Flags<AndroidSurfaceCreateFlagBitsKHR, VkAndroidSurfaceCreateFlagsKHR>;
+  using AndroidSurfaceCreateFlagsKHR = Flags<AndroidSurfaceCreateFlagBitsKHR, VkAndroidSurfaceCreateFlagsKHR, AndroidSurfaceCreateFlagBitsKHR(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( AndroidSurfaceCreateFlagsKHR  )
   {
@@ -8404,7 +8404,7 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
-  using AttachmentDescriptionFlags = Flags<AttachmentDescriptionFlagBits, VkAttachmentDescriptionFlags>;
+  using AttachmentDescriptionFlags = Flags<AttachmentDescriptionFlagBits, VkAttachmentDescriptionFlags, AttachmentDescriptionFlagBits::eMayAlias>;
 
   template <> struct FlagTraits<AttachmentDescriptionFlagBits>
   {
@@ -8443,7 +8443,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using BufferCreateFlags = Flags<BufferCreateFlagBits, VkBufferCreateFlags>;
+  using BufferCreateFlags = Flags<BufferCreateFlagBits, VkBufferCreateFlags, BufferCreateFlagBits::eSparseBinding>;
 
   template <> struct FlagTraits<BufferCreateFlagBits>
   {
@@ -8486,7 +8486,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using BufferUsageFlags = Flags<BufferUsageFlagBits, VkBufferUsageFlags>;
+  using BufferUsageFlags = Flags<BufferUsageFlagBits, VkBufferUsageFlags, BufferUsageFlagBits::eTransferSrc>;
 
   template <> struct FlagTraits<BufferUsageFlagBits>
   {
@@ -8538,14 +8538,14 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using BufferViewCreateFlags = Flags<BufferViewCreateFlagBits, VkBufferViewCreateFlags>;
+  using BufferViewCreateFlags = Flags<BufferViewCreateFlagBits, VkBufferViewCreateFlags, BufferViewCreateFlagBits(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( BufferViewCreateFlags  )
   {
     return "{}";
   }
 
-  using BuildAccelerationStructureFlagsNV = Flags<BuildAccelerationStructureFlagBitsNV, VkBuildAccelerationStructureFlagsNV>;
+  using BuildAccelerationStructureFlagsNV = Flags<BuildAccelerationStructureFlagBitsNV, VkBuildAccelerationStructureFlagsNV, BuildAccelerationStructureFlagBitsNV::eAllowUpdate>;
 
   template <> struct FlagTraits<BuildAccelerationStructureFlagBitsNV>
   {
@@ -8588,7 +8588,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using ColorComponentFlags = Flags<ColorComponentFlagBits, VkColorComponentFlags>;
+  using ColorComponentFlags = Flags<ColorComponentFlagBits, VkColorComponentFlags, ColorComponentFlagBits::eR>;
 
   template <> struct FlagTraits<ColorComponentFlagBits>
   {
@@ -8630,7 +8630,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using CommandBufferResetFlags = Flags<CommandBufferResetFlagBits, VkCommandBufferResetFlags>;
+  using CommandBufferResetFlags = Flags<CommandBufferResetFlagBits, VkCommandBufferResetFlags, CommandBufferResetFlagBits::eReleaseResources>;
 
   template <> struct FlagTraits<CommandBufferResetFlagBits>
   {
@@ -8669,7 +8669,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using CommandBufferUsageFlags = Flags<CommandBufferUsageFlagBits, VkCommandBufferUsageFlags>;
+  using CommandBufferUsageFlags = Flags<CommandBufferUsageFlagBits, VkCommandBufferUsageFlags, CommandBufferUsageFlagBits::eOneTimeSubmit>;
 
   template <> struct FlagTraits<CommandBufferUsageFlagBits>
   {
@@ -8710,7 +8710,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using CommandPoolCreateFlags = Flags<CommandPoolCreateFlagBits, VkCommandPoolCreateFlags>;
+  using CommandPoolCreateFlags = Flags<CommandPoolCreateFlagBits, VkCommandPoolCreateFlags, CommandPoolCreateFlagBits::eTransient>;
 
   template <> struct FlagTraits<CommandPoolCreateFlagBits>
   {
@@ -8751,7 +8751,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using CommandPoolResetFlags = Flags<CommandPoolResetFlagBits, VkCommandPoolResetFlags>;
+  using CommandPoolResetFlags = Flags<CommandPoolResetFlagBits, VkCommandPoolResetFlags, CommandPoolResetFlagBits::eReleaseResources>;
 
   template <> struct FlagTraits<CommandPoolResetFlagBits>
   {
@@ -8798,7 +8798,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using CommandPoolTrimFlags = Flags<CommandPoolTrimFlagBits, VkCommandPoolTrimFlags>;
+  using CommandPoolTrimFlags = Flags<CommandPoolTrimFlagBits, VkCommandPoolTrimFlags, CommandPoolTrimFlagBits(0)>;
 
   using CommandPoolTrimFlagsKHR = CommandPoolTrimFlags;
 
@@ -8807,7 +8807,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{}";
   }
 
-  using CompositeAlphaFlagsKHR = Flags<CompositeAlphaFlagBitsKHR, VkCompositeAlphaFlagsKHR>;
+  using CompositeAlphaFlagsKHR = Flags<CompositeAlphaFlagBitsKHR, VkCompositeAlphaFlagsKHR, CompositeAlphaFlagBitsKHR::eOpaque>;
 
   template <> struct FlagTraits<CompositeAlphaFlagBitsKHR>
   {
@@ -8849,7 +8849,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using ConditionalRenderingFlagsEXT = Flags<ConditionalRenderingFlagBitsEXT, VkConditionalRenderingFlagsEXT>;
+  using ConditionalRenderingFlagsEXT = Flags<ConditionalRenderingFlagBitsEXT, VkConditionalRenderingFlagsEXT, ConditionalRenderingFlagBitsEXT::eInverted>;
 
   template <> struct FlagTraits<ConditionalRenderingFlagBitsEXT>
   {
@@ -8888,7 +8888,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using CullModeFlags = Flags<CullModeFlagBits, VkCullModeFlags>;
+  using CullModeFlags = Flags<CullModeFlagBits, VkCullModeFlags, CullModeFlagBits::eNone>;
 
   template <> struct FlagTraits<CullModeFlagBits>
   {
@@ -8928,7 +8928,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using DebugReportFlagsEXT = Flags<DebugReportFlagBitsEXT, VkDebugReportFlagsEXT>;
+  using DebugReportFlagsEXT = Flags<DebugReportFlagBitsEXT, VkDebugReportFlagsEXT, DebugReportFlagBitsEXT::eInformation>;
 
   template <> struct FlagTraits<DebugReportFlagBitsEXT>
   {
@@ -8971,7 +8971,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using DebugUtilsMessageSeverityFlagsEXT = Flags<DebugUtilsMessageSeverityFlagBitsEXT, VkDebugUtilsMessageSeverityFlagsEXT>;
+  using DebugUtilsMessageSeverityFlagsEXT = Flags<DebugUtilsMessageSeverityFlagBitsEXT, VkDebugUtilsMessageSeverityFlagsEXT, DebugUtilsMessageSeverityFlagBitsEXT::eVerbose>;
 
   template <> struct FlagTraits<DebugUtilsMessageSeverityFlagBitsEXT>
   {
@@ -9013,7 +9013,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using DebugUtilsMessageTypeFlagsEXT = Flags<DebugUtilsMessageTypeFlagBitsEXT, VkDebugUtilsMessageTypeFlagsEXT>;
+  using DebugUtilsMessageTypeFlagsEXT = Flags<DebugUtilsMessageTypeFlagBitsEXT, VkDebugUtilsMessageTypeFlagsEXT, DebugUtilsMessageTypeFlagBitsEXT::eGeneral>;
 
   template <> struct FlagTraits<DebugUtilsMessageTypeFlagBitsEXT>
   {
@@ -9062,7 +9062,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using DebugUtilsMessengerCallbackDataFlagsEXT = Flags<DebugUtilsMessengerCallbackDataFlagBitsEXT, VkDebugUtilsMessengerCallbackDataFlagsEXT>;
+  using DebugUtilsMessengerCallbackDataFlagsEXT = Flags<DebugUtilsMessengerCallbackDataFlagBitsEXT, VkDebugUtilsMessengerCallbackDataFlagsEXT, DebugUtilsMessengerCallbackDataFlagBitsEXT(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( DebugUtilsMessengerCallbackDataFlagsEXT  )
   {
@@ -9077,14 +9077,14 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using DebugUtilsMessengerCreateFlagsEXT = Flags<DebugUtilsMessengerCreateFlagBitsEXT, VkDebugUtilsMessengerCreateFlagsEXT>;
+  using DebugUtilsMessengerCreateFlagsEXT = Flags<DebugUtilsMessengerCreateFlagBitsEXT, VkDebugUtilsMessengerCreateFlagsEXT, DebugUtilsMessengerCreateFlagBitsEXT(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( DebugUtilsMessengerCreateFlagsEXT  )
   {
     return "{}";
   }
 
-  using DependencyFlags = Flags<DependencyFlagBits, VkDependencyFlags>;
+  using DependencyFlags = Flags<DependencyFlagBits, VkDependencyFlags, DependencyFlagBits::eByRegion>;
 
   template <> struct FlagTraits<DependencyFlagBits>
   {
@@ -9125,7 +9125,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using DescriptorBindingFlagsEXT = Flags<DescriptorBindingFlagBitsEXT, VkDescriptorBindingFlagsEXT>;
+  using DescriptorBindingFlagsEXT = Flags<DescriptorBindingFlagBitsEXT, VkDescriptorBindingFlagsEXT, DescriptorBindingFlagBitsEXT::eUpdateAfterBind>;
 
   template <> struct FlagTraits<DescriptorBindingFlagBitsEXT>
   {
@@ -9167,7 +9167,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using DescriptorPoolCreateFlags = Flags<DescriptorPoolCreateFlagBits, VkDescriptorPoolCreateFlags>;
+  using DescriptorPoolCreateFlags = Flags<DescriptorPoolCreateFlagBits, VkDescriptorPoolCreateFlags, DescriptorPoolCreateFlagBits::eFreeDescriptorSet>;
 
   template <> struct FlagTraits<DescriptorPoolCreateFlagBits>
   {
@@ -9215,14 +9215,14 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using DescriptorPoolResetFlags = Flags<DescriptorPoolResetFlagBits, VkDescriptorPoolResetFlags>;
+  using DescriptorPoolResetFlags = Flags<DescriptorPoolResetFlagBits, VkDescriptorPoolResetFlags, DescriptorPoolResetFlagBits(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( DescriptorPoolResetFlags  )
   {
     return "{}";
   }
 
-  using DescriptorSetLayoutCreateFlags = Flags<DescriptorSetLayoutCreateFlagBits, VkDescriptorSetLayoutCreateFlags>;
+  using DescriptorSetLayoutCreateFlags = Flags<DescriptorSetLayoutCreateFlagBits, VkDescriptorSetLayoutCreateFlags, DescriptorSetLayoutCreateFlagBits::ePushDescriptorKHR>;
 
   template <> struct FlagTraits<DescriptorSetLayoutCreateFlagBits>
   {
@@ -9270,7 +9270,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using DescriptorUpdateTemplateCreateFlags = Flags<DescriptorUpdateTemplateCreateFlagBits, VkDescriptorUpdateTemplateCreateFlags>;
+  using DescriptorUpdateTemplateCreateFlags = Flags<DescriptorUpdateTemplateCreateFlagBits, VkDescriptorUpdateTemplateCreateFlags, DescriptorUpdateTemplateCreateFlagBits(0)>;
 
   using DescriptorUpdateTemplateCreateFlagsKHR = DescriptorUpdateTemplateCreateFlags;
 
@@ -9279,14 +9279,14 @@ namespace VULKAN_HPP_NAMESPACE
     return "{}";
   }
 
-  using DeviceCreateFlags = Flags<DeviceCreateFlagBits, VkDeviceCreateFlags>;
+  using DeviceCreateFlags = Flags<DeviceCreateFlagBits, VkDeviceCreateFlags, DeviceCreateFlagBits(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( DeviceCreateFlags  )
   {
     return "{}";
   }
 
-  using DeviceGroupPresentModeFlagsKHR = Flags<DeviceGroupPresentModeFlagBitsKHR, VkDeviceGroupPresentModeFlagsKHR>;
+  using DeviceGroupPresentModeFlagsKHR = Flags<DeviceGroupPresentModeFlagBitsKHR, VkDeviceGroupPresentModeFlagsKHR, DeviceGroupPresentModeFlagBitsKHR::eLocal>;
 
   template <> struct FlagTraits<DeviceGroupPresentModeFlagBitsKHR>
   {
@@ -9328,7 +9328,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using DeviceQueueCreateFlags = Flags<DeviceQueueCreateFlagBits, VkDeviceQueueCreateFlags>;
+  using DeviceQueueCreateFlags = Flags<DeviceQueueCreateFlagBits, VkDeviceQueueCreateFlags, DeviceQueueCreateFlagBits::eProtected>;
 
   template <> struct FlagTraits<DeviceQueueCreateFlagBits>
   {
@@ -9375,14 +9375,14 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using DisplayModeCreateFlagsKHR = Flags<DisplayModeCreateFlagBitsKHR, VkDisplayModeCreateFlagsKHR>;
+  using DisplayModeCreateFlagsKHR = Flags<DisplayModeCreateFlagBitsKHR, VkDisplayModeCreateFlagsKHR, DisplayModeCreateFlagBitsKHR(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( DisplayModeCreateFlagsKHR  )
   {
     return "{}";
   }
 
-  using DisplayPlaneAlphaFlagsKHR = Flags<DisplayPlaneAlphaFlagBitsKHR, VkDisplayPlaneAlphaFlagsKHR>;
+  using DisplayPlaneAlphaFlagsKHR = Flags<DisplayPlaneAlphaFlagBitsKHR, VkDisplayPlaneAlphaFlagsKHR, DisplayPlaneAlphaFlagBitsKHR::eOpaque>;
 
   template <> struct FlagTraits<DisplayPlaneAlphaFlagBitsKHR>
   {
@@ -9432,7 +9432,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using DisplaySurfaceCreateFlagsKHR = Flags<DisplaySurfaceCreateFlagBitsKHR, VkDisplaySurfaceCreateFlagsKHR>;
+  using DisplaySurfaceCreateFlagsKHR = Flags<DisplaySurfaceCreateFlagBitsKHR, VkDisplaySurfaceCreateFlagsKHR, DisplaySurfaceCreateFlagBitsKHR(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( DisplaySurfaceCreateFlagsKHR  )
   {
@@ -9447,14 +9447,14 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using EventCreateFlags = Flags<EventCreateFlagBits, VkEventCreateFlags>;
+  using EventCreateFlags = Flags<EventCreateFlagBits, VkEventCreateFlags, EventCreateFlagBits(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( EventCreateFlags  )
   {
     return "{}";
   }
 
-  using ExternalFenceFeatureFlags = Flags<ExternalFenceFeatureFlagBits, VkExternalFenceFeatureFlags>;
+  using ExternalFenceFeatureFlags = Flags<ExternalFenceFeatureFlagBits, VkExternalFenceFeatureFlags, ExternalFenceFeatureFlagBits::eExportable>;
 
   template <> struct FlagTraits<ExternalFenceFeatureFlagBits>
   {
@@ -9496,7 +9496,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using ExternalFenceHandleTypeFlags = Flags<ExternalFenceHandleTypeFlagBits, VkExternalFenceHandleTypeFlags>;
+  using ExternalFenceHandleTypeFlags = Flags<ExternalFenceHandleTypeFlagBits, VkExternalFenceHandleTypeFlags, ExternalFenceHandleTypeFlagBits::eOpaqueFd>;
 
   template <> struct FlagTraits<ExternalFenceHandleTypeFlagBits>
   {
@@ -9540,7 +9540,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using ExternalMemoryFeatureFlags = Flags<ExternalMemoryFeatureFlagBits, VkExternalMemoryFeatureFlags>;
+  using ExternalMemoryFeatureFlags = Flags<ExternalMemoryFeatureFlagBits, VkExternalMemoryFeatureFlags, ExternalMemoryFeatureFlagBits::eDedicatedOnly>;
 
   template <> struct FlagTraits<ExternalMemoryFeatureFlagBits>
   {
@@ -9583,7 +9583,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using ExternalMemoryFeatureFlagsNV = Flags<ExternalMemoryFeatureFlagBitsNV, VkExternalMemoryFeatureFlagsNV>;
+  using ExternalMemoryFeatureFlagsNV = Flags<ExternalMemoryFeatureFlagBitsNV, VkExternalMemoryFeatureFlagsNV, ExternalMemoryFeatureFlagBitsNV::eDedicatedOnly>;
 
   template <> struct FlagTraits<ExternalMemoryFeatureFlagBitsNV>
   {
@@ -9624,7 +9624,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using ExternalMemoryHandleTypeFlags = Flags<ExternalMemoryHandleTypeFlagBits, VkExternalMemoryHandleTypeFlags>;
+  using ExternalMemoryHandleTypeFlags = Flags<ExternalMemoryHandleTypeFlagBits, VkExternalMemoryHandleTypeFlags, ExternalMemoryHandleTypeFlagBits::eOpaqueFd>;
 
   template <> struct FlagTraits<ExternalMemoryHandleTypeFlagBits>
   {
@@ -9675,7 +9675,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using ExternalMemoryHandleTypeFlagsNV = Flags<ExternalMemoryHandleTypeFlagBitsNV, VkExternalMemoryHandleTypeFlagsNV>;
+  using ExternalMemoryHandleTypeFlagsNV = Flags<ExternalMemoryHandleTypeFlagBitsNV, VkExternalMemoryHandleTypeFlagsNV, ExternalMemoryHandleTypeFlagBitsNV::eOpaqueWin32>;
 
   template <> struct FlagTraits<ExternalMemoryHandleTypeFlagBitsNV>
   {
@@ -9717,7 +9717,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using ExternalSemaphoreFeatureFlags = Flags<ExternalSemaphoreFeatureFlagBits, VkExternalSemaphoreFeatureFlags>;
+  using ExternalSemaphoreFeatureFlags = Flags<ExternalSemaphoreFeatureFlagBits, VkExternalSemaphoreFeatureFlags, ExternalSemaphoreFeatureFlagBits::eExportable>;
 
   template <> struct FlagTraits<ExternalSemaphoreFeatureFlagBits>
   {
@@ -9759,7 +9759,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using ExternalSemaphoreHandleTypeFlags = Flags<ExternalSemaphoreHandleTypeFlagBits, VkExternalSemaphoreHandleTypeFlags>;
+  using ExternalSemaphoreHandleTypeFlags = Flags<ExternalSemaphoreHandleTypeFlagBits, VkExternalSemaphoreHandleTypeFlags, ExternalSemaphoreHandleTypeFlagBits::eOpaqueFd>;
 
   template <> struct FlagTraits<ExternalSemaphoreHandleTypeFlagBits>
   {
@@ -9804,7 +9804,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using FenceCreateFlags = Flags<FenceCreateFlagBits, VkFenceCreateFlags>;
+  using FenceCreateFlags = Flags<FenceCreateFlagBits, VkFenceCreateFlags, FenceCreateFlagBits::eSignaled>;
 
   template <> struct FlagTraits<FenceCreateFlagBits>
   {
@@ -9843,7 +9843,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using FenceImportFlags = Flags<FenceImportFlagBits, VkFenceImportFlags>;
+  using FenceImportFlags = Flags<FenceImportFlagBits, VkFenceImportFlags, FenceImportFlagBits::eTemporary>;
 
   template <> struct FlagTraits<FenceImportFlagBits>
   {
@@ -9884,7 +9884,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using FormatFeatureFlags = Flags<FormatFeatureFlagBits, VkFormatFeatureFlags>;
+  using FormatFeatureFlags = Flags<FormatFeatureFlagBits, VkFormatFeatureFlags, FormatFeatureFlagBits::eSampledImage>;
 
   template <> struct FlagTraits<FormatFeatureFlagBits>
   {
@@ -9947,7 +9947,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using FramebufferCreateFlags = Flags<FramebufferCreateFlagBits, VkFramebufferCreateFlags>;
+  using FramebufferCreateFlags = Flags<FramebufferCreateFlagBits, VkFramebufferCreateFlags, FramebufferCreateFlagBits::eImagelessKHR>;
 
   template <> struct FlagTraits<FramebufferCreateFlagBits>
   {
@@ -9986,7 +9986,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using GeometryFlagsNV = Flags<GeometryFlagBitsNV, VkGeometryFlagsNV>;
+  using GeometryFlagsNV = Flags<GeometryFlagBitsNV, VkGeometryFlagsNV, GeometryFlagBitsNV::eOpaque>;
 
   template <> struct FlagTraits<GeometryFlagBitsNV>
   {
@@ -10026,7 +10026,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using GeometryInstanceFlagsNV = Flags<GeometryInstanceFlagBitsNV, VkGeometryInstanceFlagsNV>;
+  using GeometryInstanceFlagsNV = Flags<GeometryInstanceFlagBitsNV, VkGeometryInstanceFlagsNV, GeometryInstanceFlagBitsNV::eTriangleCullDisable>;
 
   template <> struct FlagTraits<GeometryInstanceFlagBitsNV>
   {
@@ -10076,7 +10076,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using HeadlessSurfaceCreateFlagsEXT = Flags<HeadlessSurfaceCreateFlagBitsEXT, VkHeadlessSurfaceCreateFlagsEXT>;
+  using HeadlessSurfaceCreateFlagsEXT = Flags<HeadlessSurfaceCreateFlagBitsEXT, VkHeadlessSurfaceCreateFlagsEXT, HeadlessSurfaceCreateFlagBitsEXT(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( HeadlessSurfaceCreateFlagsEXT  )
   {
@@ -10092,7 +10092,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using IOSSurfaceCreateFlagsMVK = Flags<IOSSurfaceCreateFlagBitsMVK, VkIOSSurfaceCreateFlagsMVK>;
+  using IOSSurfaceCreateFlagsMVK = Flags<IOSSurfaceCreateFlagBitsMVK, VkIOSSurfaceCreateFlagsMVK, IOSSurfaceCreateFlagBitsMVK(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( IOSSurfaceCreateFlagsMVK  )
   {
@@ -10100,7 +10100,7 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /*VK_USE_PLATFORM_IOS_MVK*/
 
-  using ImageAspectFlags = Flags<ImageAspectFlagBits, VkImageAspectFlags>;
+  using ImageAspectFlags = Flags<ImageAspectFlagBits, VkImageAspectFlags, ImageAspectFlagBits::eColor>;
 
   template <> struct FlagTraits<ImageAspectFlagBits>
   {
@@ -10149,7 +10149,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using ImageCreateFlags = Flags<ImageCreateFlagBits, VkImageCreateFlags>;
+  using ImageCreateFlags = Flags<ImageCreateFlagBits, VkImageCreateFlags, ImageCreateFlagBits::eSparseBinding>;
 
   template <> struct FlagTraits<ImageCreateFlagBits>
   {
@@ -10211,7 +10211,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using ImagePipeSurfaceCreateFlagsFUCHSIA = Flags<ImagePipeSurfaceCreateFlagBitsFUCHSIA, VkImagePipeSurfaceCreateFlagsFUCHSIA>;
+  using ImagePipeSurfaceCreateFlagsFUCHSIA = Flags<ImagePipeSurfaceCreateFlagBitsFUCHSIA, VkImagePipeSurfaceCreateFlagsFUCHSIA, ImagePipeSurfaceCreateFlagBitsFUCHSIA(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( ImagePipeSurfaceCreateFlagsFUCHSIA  )
   {
@@ -10219,7 +10219,7 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
 
-  using ImageUsageFlags = Flags<ImageUsageFlagBits, VkImageUsageFlags>;
+  using ImageUsageFlags = Flags<ImageUsageFlagBits, VkImageUsageFlags, ImageUsageFlagBits::eTransferSrc>;
 
   template <> struct FlagTraits<ImageUsageFlagBits>
   {
@@ -10267,7 +10267,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using ImageViewCreateFlags = Flags<ImageViewCreateFlagBits, VkImageViewCreateFlags>;
+  using ImageViewCreateFlags = Flags<ImageViewCreateFlagBits, VkImageViewCreateFlags, ImageViewCreateFlagBits::eFragmentDensityMapDynamicEXT>;
 
   template <> struct FlagTraits<ImageViewCreateFlagBits>
   {
@@ -10306,7 +10306,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using IndirectCommandsLayoutUsageFlagsNVX = Flags<IndirectCommandsLayoutUsageFlagBitsNVX, VkIndirectCommandsLayoutUsageFlagsNVX>;
+  using IndirectCommandsLayoutUsageFlagsNVX = Flags<IndirectCommandsLayoutUsageFlagBitsNVX, VkIndirectCommandsLayoutUsageFlagsNVX, IndirectCommandsLayoutUsageFlagBitsNVX::eUnorderedSequences>;
 
   template <> struct FlagTraits<IndirectCommandsLayoutUsageFlagBitsNVX>
   {
@@ -10348,7 +10348,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using InstanceCreateFlags = Flags<InstanceCreateFlagBits, VkInstanceCreateFlags>;
+  using InstanceCreateFlags = Flags<InstanceCreateFlagBits, VkInstanceCreateFlags, InstanceCreateFlagBits(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( InstanceCreateFlags  )
   {
@@ -10364,7 +10364,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using MacOSSurfaceCreateFlagsMVK = Flags<MacOSSurfaceCreateFlagBitsMVK, VkMacOSSurfaceCreateFlagsMVK>;
+  using MacOSSurfaceCreateFlagsMVK = Flags<MacOSSurfaceCreateFlagBitsMVK, VkMacOSSurfaceCreateFlagsMVK, MacOSSurfaceCreateFlagBitsMVK(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( MacOSSurfaceCreateFlagsMVK  )
   {
@@ -10372,7 +10372,7 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /*VK_USE_PLATFORM_MACOS_MVK*/
 
-  using MemoryAllocateFlags = Flags<MemoryAllocateFlagBits, VkMemoryAllocateFlags>;
+  using MemoryAllocateFlags = Flags<MemoryAllocateFlagBits, VkMemoryAllocateFlags, MemoryAllocateFlagBits::eDeviceMask>;
 
   template <> struct FlagTraits<MemoryAllocateFlagBits>
   {
@@ -10415,7 +10415,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using MemoryHeapFlags = Flags<MemoryHeapFlagBits, VkMemoryHeapFlags>;
+  using MemoryHeapFlags = Flags<MemoryHeapFlagBits, VkMemoryHeapFlags, MemoryHeapFlagBits::eDeviceLocal>;
 
   template <> struct FlagTraits<MemoryHeapFlagBits>
   {
@@ -10463,14 +10463,14 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using MemoryMapFlags = Flags<MemoryMapFlagBits, VkMemoryMapFlags>;
+  using MemoryMapFlags = Flags<MemoryMapFlagBits, VkMemoryMapFlags, MemoryMapFlagBits(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( MemoryMapFlags  )
   {
     return "{}";
   }
 
-  using MemoryPropertyFlags = Flags<MemoryPropertyFlagBits, VkMemoryPropertyFlags>;
+  using MemoryPropertyFlags = Flags<MemoryPropertyFlagBits, VkMemoryPropertyFlags, MemoryPropertyFlagBits::eDeviceLocal>;
 
   template <> struct FlagTraits<MemoryPropertyFlagBits>
   {
@@ -10525,7 +10525,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using MetalSurfaceCreateFlagsEXT = Flags<MetalSurfaceCreateFlagBitsEXT, VkMetalSurfaceCreateFlagsEXT>;
+  using MetalSurfaceCreateFlagsEXT = Flags<MetalSurfaceCreateFlagBitsEXT, VkMetalSurfaceCreateFlagsEXT, MetalSurfaceCreateFlagBitsEXT(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( MetalSurfaceCreateFlagsEXT  )
   {
@@ -10533,7 +10533,7 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /*VK_USE_PLATFORM_METAL_EXT*/
 
-  using ObjectEntryUsageFlagsNVX = Flags<ObjectEntryUsageFlagBitsNVX, VkObjectEntryUsageFlagsNVX>;
+  using ObjectEntryUsageFlagsNVX = Flags<ObjectEntryUsageFlagBitsNVX, VkObjectEntryUsageFlagsNVX, ObjectEntryUsageFlagBitsNVX::eGraphics>;
 
   template <> struct FlagTraits<ObjectEntryUsageFlagBitsNVX>
   {
@@ -10573,7 +10573,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using PeerMemoryFeatureFlags = Flags<PeerMemoryFeatureFlagBits, VkPeerMemoryFeatureFlags>;
+  using PeerMemoryFeatureFlags = Flags<PeerMemoryFeatureFlagBits, VkPeerMemoryFeatureFlags, PeerMemoryFeatureFlagBits::eCopySrc>;
 
   template <> struct FlagTraits<PeerMemoryFeatureFlagBits>
   {
@@ -10617,7 +10617,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using PerformanceCounterDescriptionFlagsKHR = Flags<PerformanceCounterDescriptionFlagBitsKHR, VkPerformanceCounterDescriptionFlagsKHR>;
+  using PerformanceCounterDescriptionFlagsKHR = Flags<PerformanceCounterDescriptionFlagBitsKHR, VkPerformanceCounterDescriptionFlagsKHR, PerformanceCounterDescriptionFlagBitsKHR::ePerformanceImpacting>;
 
   template <> struct FlagTraits<PerformanceCounterDescriptionFlagBitsKHR>
   {
@@ -10657,21 +10657,21 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using PipelineCacheCreateFlags = Flags<PipelineCacheCreateFlagBits, VkPipelineCacheCreateFlags>;
+  using PipelineCacheCreateFlags = Flags<PipelineCacheCreateFlagBits, VkPipelineCacheCreateFlags, PipelineCacheCreateFlagBits(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineCacheCreateFlags  )
   {
     return "{}";
   }
 
-  using PipelineColorBlendStateCreateFlags = Flags<PipelineColorBlendStateCreateFlagBits, VkPipelineColorBlendStateCreateFlags>;
+  using PipelineColorBlendStateCreateFlags = Flags<PipelineColorBlendStateCreateFlagBits, VkPipelineColorBlendStateCreateFlags, PipelineColorBlendStateCreateFlagBits(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineColorBlendStateCreateFlags  )
   {
     return "{}";
   }
 
-  using PipelineCompilerControlFlagsAMD = Flags<PipelineCompilerControlFlagBitsAMD, VkPipelineCompilerControlFlagsAMD>;
+  using PipelineCompilerControlFlagsAMD = Flags<PipelineCompilerControlFlagBitsAMD, VkPipelineCompilerControlFlagsAMD, PipelineCompilerControlFlagBitsAMD(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineCompilerControlFlagsAMD  )
   {
@@ -10686,7 +10686,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using PipelineCoverageModulationStateCreateFlagsNV = Flags<PipelineCoverageModulationStateCreateFlagBitsNV, VkPipelineCoverageModulationStateCreateFlagsNV>;
+  using PipelineCoverageModulationStateCreateFlagsNV = Flags<PipelineCoverageModulationStateCreateFlagBitsNV, VkPipelineCoverageModulationStateCreateFlagsNV, PipelineCoverageModulationStateCreateFlagBitsNV(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineCoverageModulationStateCreateFlagsNV  )
   {
@@ -10701,7 +10701,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using PipelineCoverageReductionStateCreateFlagsNV = Flags<PipelineCoverageReductionStateCreateFlagBitsNV, VkPipelineCoverageReductionStateCreateFlagsNV>;
+  using PipelineCoverageReductionStateCreateFlagsNV = Flags<PipelineCoverageReductionStateCreateFlagBitsNV, VkPipelineCoverageReductionStateCreateFlagsNV, PipelineCoverageReductionStateCreateFlagBitsNV(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineCoverageReductionStateCreateFlagsNV  )
   {
@@ -10716,14 +10716,14 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using PipelineCoverageToColorStateCreateFlagsNV = Flags<PipelineCoverageToColorStateCreateFlagBitsNV, VkPipelineCoverageToColorStateCreateFlagsNV>;
+  using PipelineCoverageToColorStateCreateFlagsNV = Flags<PipelineCoverageToColorStateCreateFlagBitsNV, VkPipelineCoverageToColorStateCreateFlagsNV, PipelineCoverageToColorStateCreateFlagBitsNV(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineCoverageToColorStateCreateFlagsNV  )
   {
     return "{}";
   }
 
-  using PipelineCreateFlags = Flags<PipelineCreateFlagBits, VkPipelineCreateFlags>;
+  using PipelineCreateFlags = Flags<PipelineCreateFlagBits, VkPipelineCreateFlags, PipelineCreateFlagBits::eDisableOptimization>;
 
   template <> struct FlagTraits<PipelineCreateFlagBits>
   {
@@ -10769,7 +10769,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using PipelineCreationFeedbackFlagsEXT = Flags<PipelineCreationFeedbackFlagBitsEXT, VkPipelineCreationFeedbackFlagsEXT>;
+  using PipelineCreationFeedbackFlagsEXT = Flags<PipelineCreationFeedbackFlagBitsEXT, VkPipelineCreationFeedbackFlagsEXT, PipelineCreationFeedbackFlagBitsEXT::eValid>;
 
   template <> struct FlagTraits<PipelineCreationFeedbackFlagBitsEXT>
   {
@@ -10810,7 +10810,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using PipelineDepthStencilStateCreateFlags = Flags<PipelineDepthStencilStateCreateFlagBits, VkPipelineDepthStencilStateCreateFlags>;
+  using PipelineDepthStencilStateCreateFlags = Flags<PipelineDepthStencilStateCreateFlagBits, VkPipelineDepthStencilStateCreateFlags, PipelineDepthStencilStateCreateFlagBits(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineDepthStencilStateCreateFlags  )
   {
@@ -10825,35 +10825,35 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using PipelineDiscardRectangleStateCreateFlagsEXT = Flags<PipelineDiscardRectangleStateCreateFlagBitsEXT, VkPipelineDiscardRectangleStateCreateFlagsEXT>;
+  using PipelineDiscardRectangleStateCreateFlagsEXT = Flags<PipelineDiscardRectangleStateCreateFlagBitsEXT, VkPipelineDiscardRectangleStateCreateFlagsEXT, PipelineDiscardRectangleStateCreateFlagBitsEXT(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineDiscardRectangleStateCreateFlagsEXT  )
   {
     return "{}";
   }
 
-  using PipelineDynamicStateCreateFlags = Flags<PipelineDynamicStateCreateFlagBits, VkPipelineDynamicStateCreateFlags>;
+  using PipelineDynamicStateCreateFlags = Flags<PipelineDynamicStateCreateFlagBits, VkPipelineDynamicStateCreateFlags, PipelineDynamicStateCreateFlagBits(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineDynamicStateCreateFlags  )
   {
     return "{}";
   }
 
-  using PipelineInputAssemblyStateCreateFlags = Flags<PipelineInputAssemblyStateCreateFlagBits, VkPipelineInputAssemblyStateCreateFlags>;
+  using PipelineInputAssemblyStateCreateFlags = Flags<PipelineInputAssemblyStateCreateFlagBits, VkPipelineInputAssemblyStateCreateFlags, PipelineInputAssemblyStateCreateFlagBits(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineInputAssemblyStateCreateFlags  )
   {
     return "{}";
   }
 
-  using PipelineLayoutCreateFlags = Flags<PipelineLayoutCreateFlagBits, VkPipelineLayoutCreateFlags>;
+  using PipelineLayoutCreateFlags = Flags<PipelineLayoutCreateFlagBits, VkPipelineLayoutCreateFlags, PipelineLayoutCreateFlagBits(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineLayoutCreateFlags  )
   {
     return "{}";
   }
 
-  using PipelineMultisampleStateCreateFlags = Flags<PipelineMultisampleStateCreateFlagBits, VkPipelineMultisampleStateCreateFlags>;
+  using PipelineMultisampleStateCreateFlags = Flags<PipelineMultisampleStateCreateFlagBits, VkPipelineMultisampleStateCreateFlags, PipelineMultisampleStateCreateFlagBits(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineMultisampleStateCreateFlags  )
   {
@@ -10868,7 +10868,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using PipelineRasterizationConservativeStateCreateFlagsEXT = Flags<PipelineRasterizationConservativeStateCreateFlagBitsEXT, VkPipelineRasterizationConservativeStateCreateFlagsEXT>;
+  using PipelineRasterizationConservativeStateCreateFlagsEXT = Flags<PipelineRasterizationConservativeStateCreateFlagBitsEXT, VkPipelineRasterizationConservativeStateCreateFlagsEXT, PipelineRasterizationConservativeStateCreateFlagBitsEXT(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineRasterizationConservativeStateCreateFlagsEXT  )
   {
@@ -10883,14 +10883,14 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using PipelineRasterizationDepthClipStateCreateFlagsEXT = Flags<PipelineRasterizationDepthClipStateCreateFlagBitsEXT, VkPipelineRasterizationDepthClipStateCreateFlagsEXT>;
+  using PipelineRasterizationDepthClipStateCreateFlagsEXT = Flags<PipelineRasterizationDepthClipStateCreateFlagBitsEXT, VkPipelineRasterizationDepthClipStateCreateFlagsEXT, PipelineRasterizationDepthClipStateCreateFlagBitsEXT(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineRasterizationDepthClipStateCreateFlagsEXT  )
   {
     return "{}";
   }
 
-  using PipelineRasterizationStateCreateFlags = Flags<PipelineRasterizationStateCreateFlagBits, VkPipelineRasterizationStateCreateFlags>;
+  using PipelineRasterizationStateCreateFlags = Flags<PipelineRasterizationStateCreateFlagBits, VkPipelineRasterizationStateCreateFlags, PipelineRasterizationStateCreateFlagBits(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineRasterizationStateCreateFlags  )
   {
@@ -10905,14 +10905,14 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using PipelineRasterizationStateStreamCreateFlagsEXT = Flags<PipelineRasterizationStateStreamCreateFlagBitsEXT, VkPipelineRasterizationStateStreamCreateFlagsEXT>;
+  using PipelineRasterizationStateStreamCreateFlagsEXT = Flags<PipelineRasterizationStateStreamCreateFlagBitsEXT, VkPipelineRasterizationStateStreamCreateFlagsEXT, PipelineRasterizationStateStreamCreateFlagBitsEXT(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineRasterizationStateStreamCreateFlagsEXT  )
   {
     return "{}";
   }
 
-  using PipelineShaderStageCreateFlags = Flags<PipelineShaderStageCreateFlagBits, VkPipelineShaderStageCreateFlags>;
+  using PipelineShaderStageCreateFlags = Flags<PipelineShaderStageCreateFlagBits, VkPipelineShaderStageCreateFlags, PipelineShaderStageCreateFlagBits::eAllowVaryingSubgroupSizeEXT>;
 
   template <> struct FlagTraits<PipelineShaderStageCreateFlagBits>
   {
@@ -10952,7 +10952,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using PipelineStageFlags = Flags<PipelineStageFlagBits, VkPipelineStageFlags>;
+  using PipelineStageFlags = Flags<PipelineStageFlagBits, VkPipelineStageFlags, PipelineStageFlagBits::eTopOfPipe>;
 
   template <> struct FlagTraits<PipelineStageFlagBits>
   {
@@ -11016,21 +11016,21 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using PipelineTessellationStateCreateFlags = Flags<PipelineTessellationStateCreateFlagBits, VkPipelineTessellationStateCreateFlags>;
+  using PipelineTessellationStateCreateFlags = Flags<PipelineTessellationStateCreateFlagBits, VkPipelineTessellationStateCreateFlags, PipelineTessellationStateCreateFlagBits(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineTessellationStateCreateFlags  )
   {
     return "{}";
   }
 
-  using PipelineVertexInputStateCreateFlags = Flags<PipelineVertexInputStateCreateFlagBits, VkPipelineVertexInputStateCreateFlags>;
+  using PipelineVertexInputStateCreateFlags = Flags<PipelineVertexInputStateCreateFlagBits, VkPipelineVertexInputStateCreateFlags, PipelineVertexInputStateCreateFlagBits(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineVertexInputStateCreateFlags  )
   {
     return "{}";
   }
 
-  using PipelineViewportStateCreateFlags = Flags<PipelineViewportStateCreateFlagBits, VkPipelineViewportStateCreateFlags>;
+  using PipelineViewportStateCreateFlags = Flags<PipelineViewportStateCreateFlagBits, VkPipelineViewportStateCreateFlags, PipelineViewportStateCreateFlagBits(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineViewportStateCreateFlags  )
   {
@@ -11045,14 +11045,14 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using PipelineViewportSwizzleStateCreateFlagsNV = Flags<PipelineViewportSwizzleStateCreateFlagBitsNV, VkPipelineViewportSwizzleStateCreateFlagsNV>;
+  using PipelineViewportSwizzleStateCreateFlagsNV = Flags<PipelineViewportSwizzleStateCreateFlagBitsNV, VkPipelineViewportSwizzleStateCreateFlagsNV, PipelineViewportSwizzleStateCreateFlagBitsNV(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineViewportSwizzleStateCreateFlagsNV  )
   {
     return "{}";
   }
 
-  using QueryControlFlags = Flags<QueryControlFlagBits, VkQueryControlFlags>;
+  using QueryControlFlags = Flags<QueryControlFlagBits, VkQueryControlFlags, QueryControlFlagBits::ePrecise>;
 
   template <> struct FlagTraits<QueryControlFlagBits>
   {
@@ -11091,7 +11091,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using QueryPipelineStatisticFlags = Flags<QueryPipelineStatisticFlagBits, VkQueryPipelineStatisticFlags>;
+  using QueryPipelineStatisticFlags = Flags<QueryPipelineStatisticFlagBits, VkQueryPipelineStatisticFlags, QueryPipelineStatisticFlagBits::eInputAssemblyVertices>;
 
   template <> struct FlagTraits<QueryPipelineStatisticFlagBits>
   {
@@ -11140,14 +11140,14 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using QueryPoolCreateFlags = Flags<QueryPoolCreateFlagBits, VkQueryPoolCreateFlags>;
+  using QueryPoolCreateFlags = Flags<QueryPoolCreateFlagBits, VkQueryPoolCreateFlags, QueryPoolCreateFlagBits(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( QueryPoolCreateFlags  )
   {
     return "{}";
   }
 
-  using QueryResultFlags = Flags<QueryResultFlagBits, VkQueryResultFlags>;
+  using QueryResultFlags = Flags<QueryResultFlagBits, VkQueryResultFlags, QueryResultFlagBits::e64>;
 
   template <> struct FlagTraits<QueryResultFlagBits>
   {
@@ -11189,7 +11189,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using QueueFlags = Flags<QueueFlagBits, VkQueueFlags>;
+  using QueueFlags = Flags<QueueFlagBits, VkQueueFlags, QueueFlagBits::eGraphics>;
 
   template <> struct FlagTraits<QueueFlagBits>
   {
@@ -11232,14 +11232,14 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using RenderPassCreateFlags = Flags<RenderPassCreateFlagBits, VkRenderPassCreateFlags>;
+  using RenderPassCreateFlags = Flags<RenderPassCreateFlagBits, VkRenderPassCreateFlags, RenderPassCreateFlagBits(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( RenderPassCreateFlags  )
   {
     return "{}";
   }
 
-  using ResolveModeFlagsKHR = Flags<ResolveModeFlagBitsKHR, VkResolveModeFlagsKHR>;
+  using ResolveModeFlagsKHR = Flags<ResolveModeFlagBitsKHR, VkResolveModeFlagsKHR, ResolveModeFlagBitsKHR::eNone>;
 
   template <> struct FlagTraits<ResolveModeFlagBitsKHR>
   {
@@ -11281,7 +11281,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using SampleCountFlags = Flags<SampleCountFlagBits, VkSampleCountFlags>;
+  using SampleCountFlags = Flags<SampleCountFlagBits, VkSampleCountFlags, SampleCountFlagBits::e1>;
 
   template <> struct FlagTraits<SampleCountFlagBits>
   {
@@ -11326,7 +11326,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using SamplerCreateFlags = Flags<SamplerCreateFlagBits, VkSamplerCreateFlags>;
+  using SamplerCreateFlags = Flags<SamplerCreateFlagBits, VkSamplerCreateFlags, SamplerCreateFlagBits::eSubsampledEXT>;
 
   template <> struct FlagTraits<SamplerCreateFlagBits>
   {
@@ -11366,14 +11366,14 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using SemaphoreCreateFlags = Flags<SemaphoreCreateFlagBits, VkSemaphoreCreateFlags>;
+  using SemaphoreCreateFlags = Flags<SemaphoreCreateFlagBits, VkSemaphoreCreateFlags, SemaphoreCreateFlagBits(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( SemaphoreCreateFlags  )
   {
     return "{}";
   }
 
-  using SemaphoreImportFlags = Flags<SemaphoreImportFlagBits, VkSemaphoreImportFlags>;
+  using SemaphoreImportFlags = Flags<SemaphoreImportFlagBits, VkSemaphoreImportFlags, SemaphoreImportFlagBits::eTemporary>;
 
   template <> struct FlagTraits<SemaphoreImportFlagBits>
   {
@@ -11414,7 +11414,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using SemaphoreWaitFlagsKHR = Flags<SemaphoreWaitFlagBitsKHR, VkSemaphoreWaitFlagsKHR>;
+  using SemaphoreWaitFlagsKHR = Flags<SemaphoreWaitFlagBitsKHR, VkSemaphoreWaitFlagsKHR, SemaphoreWaitFlagBitsKHR::eAny>;
 
   template <> struct FlagTraits<SemaphoreWaitFlagBitsKHR>
   {
@@ -11453,21 +11453,21 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using ShaderCorePropertiesFlagsAMD = Flags<ShaderCorePropertiesFlagBitsAMD, VkShaderCorePropertiesFlagsAMD>;
+  using ShaderCorePropertiesFlagsAMD = Flags<ShaderCorePropertiesFlagBitsAMD, VkShaderCorePropertiesFlagsAMD, ShaderCorePropertiesFlagBitsAMD(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( ShaderCorePropertiesFlagsAMD  )
   {
     return "{}";
   }
 
-  using ShaderModuleCreateFlags = Flags<ShaderModuleCreateFlagBits, VkShaderModuleCreateFlags>;
+  using ShaderModuleCreateFlags = Flags<ShaderModuleCreateFlagBits, VkShaderModuleCreateFlags, ShaderModuleCreateFlagBits(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( ShaderModuleCreateFlags  )
   {
     return "{}";
   }
 
-  using ShaderStageFlags = Flags<ShaderStageFlagBits, VkShaderStageFlags>;
+  using ShaderStageFlags = Flags<ShaderStageFlagBits, VkShaderStageFlags, ShaderStageFlagBits::eVertex>;
 
   template <> struct FlagTraits<ShaderStageFlagBits>
   {
@@ -11519,7 +11519,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using SparseImageFormatFlags = Flags<SparseImageFormatFlagBits, VkSparseImageFormatFlags>;
+  using SparseImageFormatFlags = Flags<SparseImageFormatFlagBits, VkSparseImageFormatFlags, SparseImageFormatFlagBits::eSingleMiptail>;
 
   template <> struct FlagTraits<SparseImageFormatFlagBits>
   {
@@ -11560,7 +11560,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using SparseMemoryBindFlags = Flags<SparseMemoryBindFlagBits, VkSparseMemoryBindFlags>;
+  using SparseMemoryBindFlags = Flags<SparseMemoryBindFlagBits, VkSparseMemoryBindFlags, SparseMemoryBindFlagBits::eMetadata>;
 
   template <> struct FlagTraits<SparseMemoryBindFlagBits>
   {
@@ -11599,7 +11599,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using StencilFaceFlags = Flags<StencilFaceFlagBits, VkStencilFaceFlags>;
+  using StencilFaceFlags = Flags<StencilFaceFlagBits, VkStencilFaceFlags, StencilFaceFlagBits::eFront>;
 
   template <> struct FlagTraits<StencilFaceFlagBits>
   {
@@ -11648,7 +11648,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using StreamDescriptorSurfaceCreateFlagsGGP = Flags<StreamDescriptorSurfaceCreateFlagBitsGGP, VkStreamDescriptorSurfaceCreateFlagsGGP>;
+  using StreamDescriptorSurfaceCreateFlagsGGP = Flags<StreamDescriptorSurfaceCreateFlagBitsGGP, VkStreamDescriptorSurfaceCreateFlagsGGP, StreamDescriptorSurfaceCreateFlagBitsGGP(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( StreamDescriptorSurfaceCreateFlagsGGP  )
   {
@@ -11656,7 +11656,7 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /*VK_USE_PLATFORM_GGP*/
 
-  using SubgroupFeatureFlags = Flags<SubgroupFeatureFlagBits, VkSubgroupFeatureFlags>;
+  using SubgroupFeatureFlags = Flags<SubgroupFeatureFlagBits, VkSubgroupFeatureFlags, SubgroupFeatureFlagBits::eBasic>;
 
   template <> struct FlagTraits<SubgroupFeatureFlagBits>
   {
@@ -11703,7 +11703,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using SubpassDescriptionFlags = Flags<SubpassDescriptionFlagBits, VkSubpassDescriptionFlags>;
+  using SubpassDescriptionFlags = Flags<SubpassDescriptionFlagBits, VkSubpassDescriptionFlags, SubpassDescriptionFlagBits::ePerViewAttributesNVX>;
 
   template <> struct FlagTraits<SubpassDescriptionFlagBits>
   {
@@ -11743,7 +11743,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using SurfaceCounterFlagsEXT = Flags<SurfaceCounterFlagBitsEXT, VkSurfaceCounterFlagsEXT>;
+  using SurfaceCounterFlagsEXT = Flags<SurfaceCounterFlagBitsEXT, VkSurfaceCounterFlagsEXT, SurfaceCounterFlagBitsEXT::eVblank>;
 
   template <> struct FlagTraits<SurfaceCounterFlagBitsEXT>
   {
@@ -11782,7 +11782,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using SurfaceTransformFlagsKHR = Flags<SurfaceTransformFlagBitsKHR, VkSurfaceTransformFlagsKHR>;
+  using SurfaceTransformFlagsKHR = Flags<SurfaceTransformFlagBitsKHR, VkSurfaceTransformFlagsKHR, SurfaceTransformFlagBitsKHR::eIdentity>;
 
   template <> struct FlagTraits<SurfaceTransformFlagBitsKHR>
   {
@@ -11829,7 +11829,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using SwapchainCreateFlagsKHR = Flags<SwapchainCreateFlagBitsKHR, VkSwapchainCreateFlagsKHR>;
+  using SwapchainCreateFlagsKHR = Flags<SwapchainCreateFlagBitsKHR, VkSwapchainCreateFlagsKHR, SwapchainCreateFlagBitsKHR::eSplitInstanceBindRegions>;
 
   template <> struct FlagTraits<SwapchainCreateFlagBitsKHR>
   {
@@ -11870,7 +11870,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using ToolPurposeFlagsEXT = Flags<ToolPurposeFlagBitsEXT, VkToolPurposeFlagsEXT>;
+  using ToolPurposeFlagsEXT = Flags<ToolPurposeFlagBitsEXT, VkToolPurposeFlagsEXT, ToolPurposeFlagBitsEXT::eValidation>;
 
   template <> struct FlagTraits<ToolPurposeFlagBitsEXT>
   {
@@ -11923,7 +11923,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using ValidationCacheCreateFlagsEXT = Flags<ValidationCacheCreateFlagBitsEXT, VkValidationCacheCreateFlagsEXT>;
+  using ValidationCacheCreateFlagsEXT = Flags<ValidationCacheCreateFlagBitsEXT, VkValidationCacheCreateFlagsEXT, ValidationCacheCreateFlagBitsEXT(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( ValidationCacheCreateFlagsEXT  )
   {
@@ -11939,7 +11939,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using ViSurfaceCreateFlagsNN = Flags<ViSurfaceCreateFlagBitsNN, VkViSurfaceCreateFlagsNN>;
+  using ViSurfaceCreateFlagsNN = Flags<ViSurfaceCreateFlagBitsNN, VkViSurfaceCreateFlagsNN, ViSurfaceCreateFlagBitsNN(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( ViSurfaceCreateFlagsNN  )
   {
@@ -11956,7 +11956,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using WaylandSurfaceCreateFlagsKHR = Flags<WaylandSurfaceCreateFlagBitsKHR, VkWaylandSurfaceCreateFlagsKHR>;
+  using WaylandSurfaceCreateFlagsKHR = Flags<WaylandSurfaceCreateFlagBitsKHR, VkWaylandSurfaceCreateFlagsKHR, WaylandSurfaceCreateFlagBitsKHR(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( WaylandSurfaceCreateFlagsKHR  )
   {
@@ -11973,7 +11973,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using Win32SurfaceCreateFlagsKHR = Flags<Win32SurfaceCreateFlagBitsKHR, VkWin32SurfaceCreateFlagsKHR>;
+  using Win32SurfaceCreateFlagsKHR = Flags<Win32SurfaceCreateFlagBitsKHR, VkWin32SurfaceCreateFlagsKHR, Win32SurfaceCreateFlagBitsKHR(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( Win32SurfaceCreateFlagsKHR  )
   {
@@ -11990,7 +11990,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using XcbSurfaceCreateFlagsKHR = Flags<XcbSurfaceCreateFlagBitsKHR, VkXcbSurfaceCreateFlagsKHR>;
+  using XcbSurfaceCreateFlagsKHR = Flags<XcbSurfaceCreateFlagBitsKHR, VkXcbSurfaceCreateFlagsKHR, XcbSurfaceCreateFlagBitsKHR(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( XcbSurfaceCreateFlagsKHR  )
   {
@@ -12007,7 +12007,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using XlibSurfaceCreateFlagsKHR = Flags<XlibSurfaceCreateFlagBitsKHR, VkXlibSurfaceCreateFlagsKHR>;
+  using XlibSurfaceCreateFlagsKHR = Flags<XlibSurfaceCreateFlagBitsKHR, VkXlibSurfaceCreateFlagsKHR, XlibSurfaceCreateFlagBitsKHR(0)>;
 
   VULKAN_HPP_INLINE std::string to_string( XlibSurfaceCreateFlagsKHR  )
   {
@@ -19141,11 +19141,11 @@ namespace VULKAN_HPP_NAMESPACE
                                               VULKAN_HPP_NAMESPACE::DeviceSize vertexOffset_ = {},
                                               uint32_t vertexCount_ = {},
                                               VULKAN_HPP_NAMESPACE::DeviceSize vertexStride_ = {},
-                                              VULKAN_HPP_NAMESPACE::Format vertexFormat_ = {},
+                                              VULKAN_HPP_NAMESPACE::Format vertexFormat_ = VULKAN_HPP_NAMESPACE::Format::eUndefined,
                                               VULKAN_HPP_NAMESPACE::Buffer indexData_ = {},
                                               VULKAN_HPP_NAMESPACE::DeviceSize indexOffset_ = {},
                                               uint32_t indexCount_ = {},
-                                              VULKAN_HPP_NAMESPACE::IndexType indexType_ = {},
+                                              VULKAN_HPP_NAMESPACE::IndexType indexType_ = VULKAN_HPP_NAMESPACE::IndexType::eUint16,
                                               VULKAN_HPP_NAMESPACE::Buffer transformData_ = {},
                                               VULKAN_HPP_NAMESPACE::DeviceSize transformOffset_ = {} ) VULKAN_HPP_NOEXCEPT
       : vertexData( vertexData_ )
@@ -19289,11 +19289,11 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_NAMESPACE::DeviceSize vertexOffset = {};
     uint32_t vertexCount = {};
     VULKAN_HPP_NAMESPACE::DeviceSize vertexStride = {};
-    VULKAN_HPP_NAMESPACE::Format vertexFormat = {};
+    VULKAN_HPP_NAMESPACE::Format vertexFormat = VULKAN_HPP_NAMESPACE::Format::eUndefined;
     VULKAN_HPP_NAMESPACE::Buffer indexData = {};
     VULKAN_HPP_NAMESPACE::DeviceSize indexOffset = {};
     uint32_t indexCount = {};
-    VULKAN_HPP_NAMESPACE::IndexType indexType = {};
+    VULKAN_HPP_NAMESPACE::IndexType indexType = VULKAN_HPP_NAMESPACE::IndexType::eUint16;
     VULKAN_HPP_NAMESPACE::Buffer transformData = {};
     VULKAN_HPP_NAMESPACE::DeviceSize transformOffset = {};
   };
@@ -19456,7 +19456,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct GeometryNV
   {
-    VULKAN_HPP_CONSTEXPR GeometryNV( VULKAN_HPP_NAMESPACE::GeometryTypeNV geometryType_ = {},
+    VULKAN_HPP_CONSTEXPR GeometryNV( VULKAN_HPP_NAMESPACE::GeometryTypeNV geometryType_ = VULKAN_HPP_NAMESPACE::GeometryTypeNV::eTriangles,
                                      VULKAN_HPP_NAMESPACE::GeometryDataNV geometry_ = {},
                                      VULKAN_HPP_NAMESPACE::GeometryFlagsNV flags_ = {} ) VULKAN_HPP_NOEXCEPT
       : geometryType( geometryType_ )
@@ -19532,7 +19532,7 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eGeometryNV;
     const void* pNext = {};
-    VULKAN_HPP_NAMESPACE::GeometryTypeNV geometryType = {};
+    VULKAN_HPP_NAMESPACE::GeometryTypeNV geometryType = VULKAN_HPP_NAMESPACE::GeometryTypeNV::eTriangles;
     VULKAN_HPP_NAMESPACE::GeometryDataNV geometry = {};
     VULKAN_HPP_NAMESPACE::GeometryFlagsNV flags = {};
   };
@@ -19541,7 +19541,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct AccelerationStructureInfoNV
   {
-    VULKAN_HPP_CONSTEXPR AccelerationStructureInfoNV( VULKAN_HPP_NAMESPACE::AccelerationStructureTypeNV type_ = {},
+    VULKAN_HPP_CONSTEXPR AccelerationStructureInfoNV( VULKAN_HPP_NAMESPACE::AccelerationStructureTypeNV type_ = VULKAN_HPP_NAMESPACE::AccelerationStructureTypeNV::eTopLevel,
                                                       VULKAN_HPP_NAMESPACE::BuildAccelerationStructureFlagsNV flags_ = {},
                                                       uint32_t instanceCount_ = {},
                                                       uint32_t geometryCount_ = {},
@@ -19635,7 +19635,7 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eAccelerationStructureInfoNV;
     const void* pNext = {};
-    VULKAN_HPP_NAMESPACE::AccelerationStructureTypeNV type = {};
+    VULKAN_HPP_NAMESPACE::AccelerationStructureTypeNV type = VULKAN_HPP_NAMESPACE::AccelerationStructureTypeNV::eTopLevel;
     VULKAN_HPP_NAMESPACE::BuildAccelerationStructureFlagsNV flags = {};
     uint32_t instanceCount = {};
     uint32_t geometryCount = {};
@@ -19721,7 +19721,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct AccelerationStructureMemoryRequirementsInfoNV
   {
-    VULKAN_HPP_CONSTEXPR AccelerationStructureMemoryRequirementsInfoNV( VULKAN_HPP_NAMESPACE::AccelerationStructureMemoryRequirementsTypeNV type_ = {},
+    VULKAN_HPP_CONSTEXPR AccelerationStructureMemoryRequirementsInfoNV( VULKAN_HPP_NAMESPACE::AccelerationStructureMemoryRequirementsTypeNV type_ = VULKAN_HPP_NAMESPACE::AccelerationStructureMemoryRequirementsTypeNV::eObject,
                                                                         VULKAN_HPP_NAMESPACE::AccelerationStructureNV accelerationStructure_ = {} ) VULKAN_HPP_NOEXCEPT
       : type( type_ )
       , accelerationStructure( accelerationStructure_ )
@@ -19788,7 +19788,7 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eAccelerationStructureMemoryRequirementsInfoNV;
     const void* pNext = {};
-    VULKAN_HPP_NAMESPACE::AccelerationStructureMemoryRequirementsTypeNV type = {};
+    VULKAN_HPP_NAMESPACE::AccelerationStructureMemoryRequirementsTypeNV type = VULKAN_HPP_NAMESPACE::AccelerationStructureMemoryRequirementsTypeNV::eObject;
     VULKAN_HPP_NAMESPACE::AccelerationStructureNV accelerationStructure = {};
   };
   static_assert( sizeof( AccelerationStructureMemoryRequirementsInfoNV ) == sizeof( VkAccelerationStructureMemoryRequirementsInfoNV ), "struct and wrapper have different size!" );
@@ -20075,10 +20075,10 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ComponentMapping
   {
-    VULKAN_HPP_CONSTEXPR ComponentMapping( VULKAN_HPP_NAMESPACE::ComponentSwizzle r_ = {},
-                                           VULKAN_HPP_NAMESPACE::ComponentSwizzle g_ = {},
-                                           VULKAN_HPP_NAMESPACE::ComponentSwizzle b_ = {},
-                                           VULKAN_HPP_NAMESPACE::ComponentSwizzle a_ = {} ) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR ComponentMapping( VULKAN_HPP_NAMESPACE::ComponentSwizzle r_ = VULKAN_HPP_NAMESPACE::ComponentSwizzle::eIdentity,
+                                           VULKAN_HPP_NAMESPACE::ComponentSwizzle g_ = VULKAN_HPP_NAMESPACE::ComponentSwizzle::eIdentity,
+                                           VULKAN_HPP_NAMESPACE::ComponentSwizzle b_ = VULKAN_HPP_NAMESPACE::ComponentSwizzle::eIdentity,
+                                           VULKAN_HPP_NAMESPACE::ComponentSwizzle a_ = VULKAN_HPP_NAMESPACE::ComponentSwizzle::eIdentity ) VULKAN_HPP_NOEXCEPT
       : r( r_ )
       , g( g_ )
       , b( b_ )
@@ -20144,10 +20144,10 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
   public:
-    VULKAN_HPP_NAMESPACE::ComponentSwizzle r = {};
-    VULKAN_HPP_NAMESPACE::ComponentSwizzle g = {};
-    VULKAN_HPP_NAMESPACE::ComponentSwizzle b = {};
-    VULKAN_HPP_NAMESPACE::ComponentSwizzle a = {};
+    VULKAN_HPP_NAMESPACE::ComponentSwizzle r = VULKAN_HPP_NAMESPACE::ComponentSwizzle::eIdentity;
+    VULKAN_HPP_NAMESPACE::ComponentSwizzle g = VULKAN_HPP_NAMESPACE::ComponentSwizzle::eIdentity;
+    VULKAN_HPP_NAMESPACE::ComponentSwizzle b = VULKAN_HPP_NAMESPACE::ComponentSwizzle::eIdentity;
+    VULKAN_HPP_NAMESPACE::ComponentSwizzle a = VULKAN_HPP_NAMESPACE::ComponentSwizzle::eIdentity;
   };
   static_assert( sizeof( ComponentMapping ) == sizeof( VkComponentMapping ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<ComponentMapping>::value, "struct wrapper is not a standard layout!" );
@@ -20156,14 +20156,14 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct AndroidHardwareBufferFormatPropertiesANDROID
   {
-    AndroidHardwareBufferFormatPropertiesANDROID( VULKAN_HPP_NAMESPACE::Format format_ = {},
+    AndroidHardwareBufferFormatPropertiesANDROID( VULKAN_HPP_NAMESPACE::Format format_ = VULKAN_HPP_NAMESPACE::Format::eUndefined,
                                                   uint64_t externalFormat_ = {},
                                                   VULKAN_HPP_NAMESPACE::FormatFeatureFlags formatFeatures_ = {},
                                                   VULKAN_HPP_NAMESPACE::ComponentMapping samplerYcbcrConversionComponents_ = {},
-                                                  VULKAN_HPP_NAMESPACE::SamplerYcbcrModelConversion suggestedYcbcrModel_ = {},
-                                                  VULKAN_HPP_NAMESPACE::SamplerYcbcrRange suggestedYcbcrRange_ = {},
-                                                  VULKAN_HPP_NAMESPACE::ChromaLocation suggestedXChromaOffset_ = {},
-                                                  VULKAN_HPP_NAMESPACE::ChromaLocation suggestedYChromaOffset_ = {} ) VULKAN_HPP_NOEXCEPT
+                                                  VULKAN_HPP_NAMESPACE::SamplerYcbcrModelConversion suggestedYcbcrModel_ = VULKAN_HPP_NAMESPACE::SamplerYcbcrModelConversion::eRgbIdentity,
+                                                  VULKAN_HPP_NAMESPACE::SamplerYcbcrRange suggestedYcbcrRange_ = VULKAN_HPP_NAMESPACE::SamplerYcbcrRange::eItuFull,
+                                                  VULKAN_HPP_NAMESPACE::ChromaLocation suggestedXChromaOffset_ = VULKAN_HPP_NAMESPACE::ChromaLocation::eCositedEven,
+                                                  VULKAN_HPP_NAMESPACE::ChromaLocation suggestedYChromaOffset_ = VULKAN_HPP_NAMESPACE::ChromaLocation::eCositedEven ) VULKAN_HPP_NOEXCEPT
       : format( format_ )
       , externalFormat( externalFormat_ )
       , formatFeatures( formatFeatures_ )
@@ -20223,14 +20223,14 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eAndroidHardwareBufferFormatPropertiesANDROID;
     void* pNext = {};
-    VULKAN_HPP_NAMESPACE::Format format = {};
+    VULKAN_HPP_NAMESPACE::Format format = VULKAN_HPP_NAMESPACE::Format::eUndefined;
     uint64_t externalFormat = {};
     VULKAN_HPP_NAMESPACE::FormatFeatureFlags formatFeatures = {};
     VULKAN_HPP_NAMESPACE::ComponentMapping samplerYcbcrConversionComponents = {};
-    VULKAN_HPP_NAMESPACE::SamplerYcbcrModelConversion suggestedYcbcrModel = {};
-    VULKAN_HPP_NAMESPACE::SamplerYcbcrRange suggestedYcbcrRange = {};
-    VULKAN_HPP_NAMESPACE::ChromaLocation suggestedXChromaOffset = {};
-    VULKAN_HPP_NAMESPACE::ChromaLocation suggestedYChromaOffset = {};
+    VULKAN_HPP_NAMESPACE::SamplerYcbcrModelConversion suggestedYcbcrModel = VULKAN_HPP_NAMESPACE::SamplerYcbcrModelConversion::eRgbIdentity;
+    VULKAN_HPP_NAMESPACE::SamplerYcbcrRange suggestedYcbcrRange = VULKAN_HPP_NAMESPACE::SamplerYcbcrRange::eItuFull;
+    VULKAN_HPP_NAMESPACE::ChromaLocation suggestedXChromaOffset = VULKAN_HPP_NAMESPACE::ChromaLocation::eCositedEven;
+    VULKAN_HPP_NAMESPACE::ChromaLocation suggestedYChromaOffset = VULKAN_HPP_NAMESPACE::ChromaLocation::eCositedEven;
   };
   static_assert( sizeof( AndroidHardwareBufferFormatPropertiesANDROID ) == sizeof( VkAndroidHardwareBufferFormatPropertiesANDROID ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<AndroidHardwareBufferFormatPropertiesANDROID>::value, "struct wrapper is not a standard layout!" );
@@ -20538,14 +20538,14 @@ namespace VULKAN_HPP_NAMESPACE
   struct AttachmentDescription
   {
     VULKAN_HPP_CONSTEXPR AttachmentDescription( VULKAN_HPP_NAMESPACE::AttachmentDescriptionFlags flags_ = {},
-                                                VULKAN_HPP_NAMESPACE::Format format_ = {},
-                                                VULKAN_HPP_NAMESPACE::SampleCountFlagBits samples_ = {},
-                                                VULKAN_HPP_NAMESPACE::AttachmentLoadOp loadOp_ = {},
-                                                VULKAN_HPP_NAMESPACE::AttachmentStoreOp storeOp_ = {},
-                                                VULKAN_HPP_NAMESPACE::AttachmentLoadOp stencilLoadOp_ = {},
-                                                VULKAN_HPP_NAMESPACE::AttachmentStoreOp stencilStoreOp_ = {},
-                                                VULKAN_HPP_NAMESPACE::ImageLayout initialLayout_ = {},
-                                                VULKAN_HPP_NAMESPACE::ImageLayout finalLayout_ = {} ) VULKAN_HPP_NOEXCEPT
+                                                VULKAN_HPP_NAMESPACE::Format format_ = VULKAN_HPP_NAMESPACE::Format::eUndefined,
+                                                VULKAN_HPP_NAMESPACE::SampleCountFlagBits samples_ = VULKAN_HPP_NAMESPACE::SampleCountFlagBits::e1,
+                                                VULKAN_HPP_NAMESPACE::AttachmentLoadOp loadOp_ = VULKAN_HPP_NAMESPACE::AttachmentLoadOp::eLoad,
+                                                VULKAN_HPP_NAMESPACE::AttachmentStoreOp storeOp_ = VULKAN_HPP_NAMESPACE::AttachmentStoreOp::eStore,
+                                                VULKAN_HPP_NAMESPACE::AttachmentLoadOp stencilLoadOp_ = VULKAN_HPP_NAMESPACE::AttachmentLoadOp::eLoad,
+                                                VULKAN_HPP_NAMESPACE::AttachmentStoreOp stencilStoreOp_ = VULKAN_HPP_NAMESPACE::AttachmentStoreOp::eStore,
+                                                VULKAN_HPP_NAMESPACE::ImageLayout initialLayout_ = VULKAN_HPP_NAMESPACE::ImageLayout::eUndefined,
+                                                VULKAN_HPP_NAMESPACE::ImageLayout finalLayout_ = VULKAN_HPP_NAMESPACE::ImageLayout::eUndefined ) VULKAN_HPP_NOEXCEPT
       : flags( flags_ )
       , format( format_ )
       , samples( samples_ )
@@ -20652,14 +20652,14 @@ namespace VULKAN_HPP_NAMESPACE
 
   public:
     VULKAN_HPP_NAMESPACE::AttachmentDescriptionFlags flags = {};
-    VULKAN_HPP_NAMESPACE::Format format = {};
-    VULKAN_HPP_NAMESPACE::SampleCountFlagBits samples = {};
-    VULKAN_HPP_NAMESPACE::AttachmentLoadOp loadOp = {};
-    VULKAN_HPP_NAMESPACE::AttachmentStoreOp storeOp = {};
-    VULKAN_HPP_NAMESPACE::AttachmentLoadOp stencilLoadOp = {};
-    VULKAN_HPP_NAMESPACE::AttachmentStoreOp stencilStoreOp = {};
-    VULKAN_HPP_NAMESPACE::ImageLayout initialLayout = {};
-    VULKAN_HPP_NAMESPACE::ImageLayout finalLayout = {};
+    VULKAN_HPP_NAMESPACE::Format format = VULKAN_HPP_NAMESPACE::Format::eUndefined;
+    VULKAN_HPP_NAMESPACE::SampleCountFlagBits samples = VULKAN_HPP_NAMESPACE::SampleCountFlagBits::e1;
+    VULKAN_HPP_NAMESPACE::AttachmentLoadOp loadOp = VULKAN_HPP_NAMESPACE::AttachmentLoadOp::eLoad;
+    VULKAN_HPP_NAMESPACE::AttachmentStoreOp storeOp = VULKAN_HPP_NAMESPACE::AttachmentStoreOp::eStore;
+    VULKAN_HPP_NAMESPACE::AttachmentLoadOp stencilLoadOp = VULKAN_HPP_NAMESPACE::AttachmentLoadOp::eLoad;
+    VULKAN_HPP_NAMESPACE::AttachmentStoreOp stencilStoreOp = VULKAN_HPP_NAMESPACE::AttachmentStoreOp::eStore;
+    VULKAN_HPP_NAMESPACE::ImageLayout initialLayout = VULKAN_HPP_NAMESPACE::ImageLayout::eUndefined;
+    VULKAN_HPP_NAMESPACE::ImageLayout finalLayout = VULKAN_HPP_NAMESPACE::ImageLayout::eUndefined;
   };
   static_assert( sizeof( AttachmentDescription ) == sizeof( VkAttachmentDescription ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<AttachmentDescription>::value, "struct wrapper is not a standard layout!" );
@@ -20667,14 +20667,14 @@ namespace VULKAN_HPP_NAMESPACE
   struct AttachmentDescription2KHR
   {
     VULKAN_HPP_CONSTEXPR AttachmentDescription2KHR( VULKAN_HPP_NAMESPACE::AttachmentDescriptionFlags flags_ = {},
-                                                    VULKAN_HPP_NAMESPACE::Format format_ = {},
-                                                    VULKAN_HPP_NAMESPACE::SampleCountFlagBits samples_ = {},
-                                                    VULKAN_HPP_NAMESPACE::AttachmentLoadOp loadOp_ = {},
-                                                    VULKAN_HPP_NAMESPACE::AttachmentStoreOp storeOp_ = {},
-                                                    VULKAN_HPP_NAMESPACE::AttachmentLoadOp stencilLoadOp_ = {},
-                                                    VULKAN_HPP_NAMESPACE::AttachmentStoreOp stencilStoreOp_ = {},
-                                                    VULKAN_HPP_NAMESPACE::ImageLayout initialLayout_ = {},
-                                                    VULKAN_HPP_NAMESPACE::ImageLayout finalLayout_ = {} ) VULKAN_HPP_NOEXCEPT
+                                                    VULKAN_HPP_NAMESPACE::Format format_ = VULKAN_HPP_NAMESPACE::Format::eUndefined,
+                                                    VULKAN_HPP_NAMESPACE::SampleCountFlagBits samples_ = VULKAN_HPP_NAMESPACE::SampleCountFlagBits::e1,
+                                                    VULKAN_HPP_NAMESPACE::AttachmentLoadOp loadOp_ = VULKAN_HPP_NAMESPACE::AttachmentLoadOp::eLoad,
+                                                    VULKAN_HPP_NAMESPACE::AttachmentStoreOp storeOp_ = VULKAN_HPP_NAMESPACE::AttachmentStoreOp::eStore,
+                                                    VULKAN_HPP_NAMESPACE::AttachmentLoadOp stencilLoadOp_ = VULKAN_HPP_NAMESPACE::AttachmentLoadOp::eLoad,
+                                                    VULKAN_HPP_NAMESPACE::AttachmentStoreOp stencilStoreOp_ = VULKAN_HPP_NAMESPACE::AttachmentStoreOp::eStore,
+                                                    VULKAN_HPP_NAMESPACE::ImageLayout initialLayout_ = VULKAN_HPP_NAMESPACE::ImageLayout::eUndefined,
+                                                    VULKAN_HPP_NAMESPACE::ImageLayout finalLayout_ = VULKAN_HPP_NAMESPACE::ImageLayout::eUndefined ) VULKAN_HPP_NOEXCEPT
       : flags( flags_ )
       , format( format_ )
       , samples( samples_ )
@@ -20797,22 +20797,22 @@ namespace VULKAN_HPP_NAMESPACE
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eAttachmentDescription2KHR;
     const void* pNext = {};
     VULKAN_HPP_NAMESPACE::AttachmentDescriptionFlags flags = {};
-    VULKAN_HPP_NAMESPACE::Format format = {};
-    VULKAN_HPP_NAMESPACE::SampleCountFlagBits samples = {};
-    VULKAN_HPP_NAMESPACE::AttachmentLoadOp loadOp = {};
-    VULKAN_HPP_NAMESPACE::AttachmentStoreOp storeOp = {};
-    VULKAN_HPP_NAMESPACE::AttachmentLoadOp stencilLoadOp = {};
-    VULKAN_HPP_NAMESPACE::AttachmentStoreOp stencilStoreOp = {};
-    VULKAN_HPP_NAMESPACE::ImageLayout initialLayout = {};
-    VULKAN_HPP_NAMESPACE::ImageLayout finalLayout = {};
+    VULKAN_HPP_NAMESPACE::Format format = VULKAN_HPP_NAMESPACE::Format::eUndefined;
+    VULKAN_HPP_NAMESPACE::SampleCountFlagBits samples = VULKAN_HPP_NAMESPACE::SampleCountFlagBits::e1;
+    VULKAN_HPP_NAMESPACE::AttachmentLoadOp loadOp = VULKAN_HPP_NAMESPACE::AttachmentLoadOp::eLoad;
+    VULKAN_HPP_NAMESPACE::AttachmentStoreOp storeOp = VULKAN_HPP_NAMESPACE::AttachmentStoreOp::eStore;
+    VULKAN_HPP_NAMESPACE::AttachmentLoadOp stencilLoadOp = VULKAN_HPP_NAMESPACE::AttachmentLoadOp::eLoad;
+    VULKAN_HPP_NAMESPACE::AttachmentStoreOp stencilStoreOp = VULKAN_HPP_NAMESPACE::AttachmentStoreOp::eStore;
+    VULKAN_HPP_NAMESPACE::ImageLayout initialLayout = VULKAN_HPP_NAMESPACE::ImageLayout::eUndefined;
+    VULKAN_HPP_NAMESPACE::ImageLayout finalLayout = VULKAN_HPP_NAMESPACE::ImageLayout::eUndefined;
   };
   static_assert( sizeof( AttachmentDescription2KHR ) == sizeof( VkAttachmentDescription2KHR ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<AttachmentDescription2KHR>::value, "struct wrapper is not a standard layout!" );
 
   struct AttachmentDescriptionStencilLayoutKHR
   {
-    VULKAN_HPP_CONSTEXPR AttachmentDescriptionStencilLayoutKHR( VULKAN_HPP_NAMESPACE::ImageLayout stencilInitialLayout_ = {},
-                                                                VULKAN_HPP_NAMESPACE::ImageLayout stencilFinalLayout_ = {} ) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR AttachmentDescriptionStencilLayoutKHR( VULKAN_HPP_NAMESPACE::ImageLayout stencilInitialLayout_ = VULKAN_HPP_NAMESPACE::ImageLayout::eUndefined,
+                                                                VULKAN_HPP_NAMESPACE::ImageLayout stencilFinalLayout_ = VULKAN_HPP_NAMESPACE::ImageLayout::eUndefined ) VULKAN_HPP_NOEXCEPT
       : stencilInitialLayout( stencilInitialLayout_ )
       , stencilFinalLayout( stencilFinalLayout_ )
     {}
@@ -20878,8 +20878,8 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eAttachmentDescriptionStencilLayoutKHR;
     void* pNext = {};
-    VULKAN_HPP_NAMESPACE::ImageLayout stencilInitialLayout = {};
-    VULKAN_HPP_NAMESPACE::ImageLayout stencilFinalLayout = {};
+    VULKAN_HPP_NAMESPACE::ImageLayout stencilInitialLayout = VULKAN_HPP_NAMESPACE::ImageLayout::eUndefined;
+    VULKAN_HPP_NAMESPACE::ImageLayout stencilFinalLayout = VULKAN_HPP_NAMESPACE::ImageLayout::eUndefined;
   };
   static_assert( sizeof( AttachmentDescriptionStencilLayoutKHR ) == sizeof( VkAttachmentDescriptionStencilLayoutKHR ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<AttachmentDescriptionStencilLayoutKHR>::value, "struct wrapper is not a standard layout!" );
@@ -20887,7 +20887,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct AttachmentReference
   {
     VULKAN_HPP_CONSTEXPR AttachmentReference( uint32_t attachment_ = {},
-                                              VULKAN_HPP_NAMESPACE::ImageLayout layout_ = {} ) VULKAN_HPP_NOEXCEPT
+                                              VULKAN_HPP_NAMESPACE::ImageLayout layout_ = VULKAN_HPP_NAMESPACE::ImageLayout::eUndefined ) VULKAN_HPP_NOEXCEPT
       : attachment( attachment_ )
       , layout( layout_ )
     {}
@@ -20938,7 +20938,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   public:
     uint32_t attachment = {};
-    VULKAN_HPP_NAMESPACE::ImageLayout layout = {};
+    VULKAN_HPP_NAMESPACE::ImageLayout layout = VULKAN_HPP_NAMESPACE::ImageLayout::eUndefined;
   };
   static_assert( sizeof( AttachmentReference ) == sizeof( VkAttachmentReference ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<AttachmentReference>::value, "struct wrapper is not a standard layout!" );
@@ -20946,7 +20946,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct AttachmentReference2KHR
   {
     VULKAN_HPP_CONSTEXPR AttachmentReference2KHR( uint32_t attachment_ = {},
-                                                  VULKAN_HPP_NAMESPACE::ImageLayout layout_ = {},
+                                                  VULKAN_HPP_NAMESPACE::ImageLayout layout_ = VULKAN_HPP_NAMESPACE::ImageLayout::eUndefined,
                                                   VULKAN_HPP_NAMESPACE::ImageAspectFlags aspectMask_ = {} ) VULKAN_HPP_NOEXCEPT
       : attachment( attachment_ )
       , layout( layout_ )
@@ -21022,7 +21022,7 @@ namespace VULKAN_HPP_NAMESPACE
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eAttachmentReference2KHR;
     const void* pNext = {};
     uint32_t attachment = {};
-    VULKAN_HPP_NAMESPACE::ImageLayout layout = {};
+    VULKAN_HPP_NAMESPACE::ImageLayout layout = VULKAN_HPP_NAMESPACE::ImageLayout::eUndefined;
     VULKAN_HPP_NAMESPACE::ImageAspectFlags aspectMask = {};
   };
   static_assert( sizeof( AttachmentReference2KHR ) == sizeof( VkAttachmentReference2KHR ), "struct and wrapper have different size!" );
@@ -21030,7 +21030,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct AttachmentReferenceStencilLayoutKHR
   {
-    VULKAN_HPP_CONSTEXPR AttachmentReferenceStencilLayoutKHR( VULKAN_HPP_NAMESPACE::ImageLayout stencilLayout_ = {} ) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR AttachmentReferenceStencilLayoutKHR( VULKAN_HPP_NAMESPACE::ImageLayout stencilLayout_ = VULKAN_HPP_NAMESPACE::ImageLayout::eUndefined ) VULKAN_HPP_NOEXCEPT
       : stencilLayout( stencilLayout_ )
     {}
 
@@ -21088,7 +21088,7 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eAttachmentReferenceStencilLayoutKHR;
     void* pNext = {};
-    VULKAN_HPP_NAMESPACE::ImageLayout stencilLayout = {};
+    VULKAN_HPP_NAMESPACE::ImageLayout stencilLayout = VULKAN_HPP_NAMESPACE::ImageLayout::eUndefined;
   };
   static_assert( sizeof( AttachmentReferenceStencilLayoutKHR ) == sizeof( VkAttachmentReferenceStencilLayoutKHR ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<AttachmentReferenceStencilLayoutKHR>::value, "struct wrapper is not a standard layout!" );
@@ -21213,7 +21213,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SampleLocationsInfoEXT
   {
-    VULKAN_HPP_CONSTEXPR SampleLocationsInfoEXT( VULKAN_HPP_NAMESPACE::SampleCountFlagBits sampleLocationsPerPixel_ = {},
+    VULKAN_HPP_CONSTEXPR SampleLocationsInfoEXT( VULKAN_HPP_NAMESPACE::SampleCountFlagBits sampleLocationsPerPixel_ = VULKAN_HPP_NAMESPACE::SampleCountFlagBits::e1,
                                                  VULKAN_HPP_NAMESPACE::Extent2D sampleLocationGridSize_ = {},
                                                  uint32_t sampleLocationsCount_ = {},
                                                  const VULKAN_HPP_NAMESPACE::SampleLocationEXT* pSampleLocations_ = {} ) VULKAN_HPP_NOEXCEPT
@@ -21298,7 +21298,7 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eSampleLocationsInfoEXT;
     const void* pNext = {};
-    VULKAN_HPP_NAMESPACE::SampleCountFlagBits sampleLocationsPerPixel = {};
+    VULKAN_HPP_NAMESPACE::SampleCountFlagBits sampleLocationsPerPixel = VULKAN_HPP_NAMESPACE::SampleCountFlagBits::e1;
     VULKAN_HPP_NAMESPACE::Extent2D sampleLocationGridSize = {};
     uint32_t sampleLocationsCount = {};
     const VULKAN_HPP_NAMESPACE::SampleLocationEXT* pSampleLocations = {};
@@ -22105,7 +22105,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct BindImagePlaneMemoryInfo
   {
-    VULKAN_HPP_CONSTEXPR BindImagePlaneMemoryInfo( VULKAN_HPP_NAMESPACE::ImageAspectFlagBits planeAspect_ = {} ) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR BindImagePlaneMemoryInfo( VULKAN_HPP_NAMESPACE::ImageAspectFlagBits planeAspect_ = VULKAN_HPP_NAMESPACE::ImageAspectFlagBits::eColor ) VULKAN_HPP_NOEXCEPT
       : planeAspect( planeAspect_ )
     {}
 
@@ -22163,7 +22163,7 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eBindImagePlaneMemoryInfo;
     const void* pNext = {};
-    VULKAN_HPP_NAMESPACE::ImageAspectFlagBits planeAspect = {};
+    VULKAN_HPP_NAMESPACE::ImageAspectFlagBits planeAspect = VULKAN_HPP_NAMESPACE::ImageAspectFlagBits::eColor;
   };
   static_assert( sizeof( BindImagePlaneMemoryInfo ) == sizeof( VkBindImagePlaneMemoryInfo ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<BindImagePlaneMemoryInfo>::value, "struct wrapper is not a standard layout!" );
@@ -23013,7 +23013,7 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_CONSTEXPR BufferCreateInfo( VULKAN_HPP_NAMESPACE::BufferCreateFlags flags_ = {},
                                            VULKAN_HPP_NAMESPACE::DeviceSize size_ = {},
                                            VULKAN_HPP_NAMESPACE::BufferUsageFlags usage_ = {},
-                                           VULKAN_HPP_NAMESPACE::SharingMode sharingMode_ = {},
+                                           VULKAN_HPP_NAMESPACE::SharingMode sharingMode_ = VULKAN_HPP_NAMESPACE::SharingMode::eExclusive,
                                            uint32_t queueFamilyIndexCount_ = {},
                                            const uint32_t* pQueueFamilyIndices_ = {} ) VULKAN_HPP_NOEXCEPT
       : flags( flags_ )
@@ -23116,7 +23116,7 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_NAMESPACE::BufferCreateFlags flags = {};
     VULKAN_HPP_NAMESPACE::DeviceSize size = {};
     VULKAN_HPP_NAMESPACE::BufferUsageFlags usage = {};
-    VULKAN_HPP_NAMESPACE::SharingMode sharingMode = {};
+    VULKAN_HPP_NAMESPACE::SharingMode sharingMode = VULKAN_HPP_NAMESPACE::SharingMode::eExclusive;
     uint32_t queueFamilyIndexCount = {};
     const uint32_t* pQueueFamilyIndices = {};
   };
@@ -23690,7 +23690,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR BufferViewCreateInfo( VULKAN_HPP_NAMESPACE::BufferViewCreateFlags flags_ = {},
                                                VULKAN_HPP_NAMESPACE::Buffer buffer_ = {},
-                                               VULKAN_HPP_NAMESPACE::Format format_ = {},
+                                               VULKAN_HPP_NAMESPACE::Format format_ = VULKAN_HPP_NAMESPACE::Format::eUndefined,
                                                VULKAN_HPP_NAMESPACE::DeviceSize offset_ = {},
                                                VULKAN_HPP_NAMESPACE::DeviceSize range_ = {} ) VULKAN_HPP_NOEXCEPT
       : flags( flags_ )
@@ -23784,7 +23784,7 @@ namespace VULKAN_HPP_NAMESPACE
     const void* pNext = {};
     VULKAN_HPP_NAMESPACE::BufferViewCreateFlags flags = {};
     VULKAN_HPP_NAMESPACE::Buffer buffer = {};
-    VULKAN_HPP_NAMESPACE::Format format = {};
+    VULKAN_HPP_NAMESPACE::Format format = VULKAN_HPP_NAMESPACE::Format::eUndefined;
     VULKAN_HPP_NAMESPACE::DeviceSize offset = {};
     VULKAN_HPP_NAMESPACE::DeviceSize range = {};
   };
@@ -23793,7 +23793,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct CalibratedTimestampInfoEXT
   {
-    VULKAN_HPP_CONSTEXPR CalibratedTimestampInfoEXT( VULKAN_HPP_NAMESPACE::TimeDomainEXT timeDomain_ = {} ) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR CalibratedTimestampInfoEXT( VULKAN_HPP_NAMESPACE::TimeDomainEXT timeDomain_ = VULKAN_HPP_NAMESPACE::TimeDomainEXT::eDevice ) VULKAN_HPP_NOEXCEPT
       : timeDomain( timeDomain_ )
     {}
 
@@ -23851,14 +23851,14 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eCalibratedTimestampInfoEXT;
     const void* pNext = {};
-    VULKAN_HPP_NAMESPACE::TimeDomainEXT timeDomain = {};
+    VULKAN_HPP_NAMESPACE::TimeDomainEXT timeDomain = VULKAN_HPP_NAMESPACE::TimeDomainEXT::eDevice;
   };
   static_assert( sizeof( CalibratedTimestampInfoEXT ) == sizeof( VkCalibratedTimestampInfoEXT ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<CalibratedTimestampInfoEXT>::value, "struct wrapper is not a standard layout!" );
 
   struct CheckpointDataNV
   {
-    CheckpointDataNV( VULKAN_HPP_NAMESPACE::PipelineStageFlagBits stage_ = {},
+    CheckpointDataNV( VULKAN_HPP_NAMESPACE::PipelineStageFlagBits stage_ = VULKAN_HPP_NAMESPACE::PipelineStageFlagBits::eTopOfPipe,
                       void* pCheckpointMarker_ = {} ) VULKAN_HPP_NOEXCEPT
       : stage( stage_ )
       , pCheckpointMarker( pCheckpointMarker_ )
@@ -23907,7 +23907,7 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eCheckpointDataNV;
     void* pNext = {};
-    VULKAN_HPP_NAMESPACE::PipelineStageFlagBits stage = {};
+    VULKAN_HPP_NAMESPACE::PipelineStageFlagBits stage = VULKAN_HPP_NAMESPACE::PipelineStageFlagBits::eTopOfPipe;
     void* pCheckpointMarker = {};
   };
   static_assert( sizeof( CheckpointDataNV ) == sizeof( VkCheckpointDataNV ), "struct and wrapper have different size!" );
@@ -24205,7 +24205,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct IndirectCommandsTokenNVX
   {
-    VULKAN_HPP_CONSTEXPR IndirectCommandsTokenNVX( VULKAN_HPP_NAMESPACE::IndirectCommandsTokenTypeNVX tokenType_ = {},
+    VULKAN_HPP_CONSTEXPR IndirectCommandsTokenNVX( VULKAN_HPP_NAMESPACE::IndirectCommandsTokenTypeNVX tokenType_ = VULKAN_HPP_NAMESPACE::IndirectCommandsTokenTypeNVX::ePipeline,
                                                    VULKAN_HPP_NAMESPACE::Buffer buffer_ = {},
                                                    VULKAN_HPP_NAMESPACE::DeviceSize offset_ = {} ) VULKAN_HPP_NOEXCEPT
       : tokenType( tokenType_ )
@@ -24265,7 +24265,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
   public:
-    VULKAN_HPP_NAMESPACE::IndirectCommandsTokenTypeNVX tokenType = {};
+    VULKAN_HPP_NAMESPACE::IndirectCommandsTokenTypeNVX tokenType = VULKAN_HPP_NAMESPACE::IndirectCommandsTokenTypeNVX::ePipeline;
     VULKAN_HPP_NAMESPACE::Buffer buffer = {};
     VULKAN_HPP_NAMESPACE::DeviceSize offset = {};
   };
@@ -24583,7 +24583,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct CoarseSampleOrderCustomNV
   {
-    VULKAN_HPP_CONSTEXPR CoarseSampleOrderCustomNV( VULKAN_HPP_NAMESPACE::ShadingRatePaletteEntryNV shadingRate_ = {},
+    VULKAN_HPP_CONSTEXPR CoarseSampleOrderCustomNV( VULKAN_HPP_NAMESPACE::ShadingRatePaletteEntryNV shadingRate_ = VULKAN_HPP_NAMESPACE::ShadingRatePaletteEntryNV::eNoInvocations,
                                                     uint32_t sampleCount_ = {},
                                                     uint32_t sampleLocationCount_ = {},
                                                     const VULKAN_HPP_NAMESPACE::CoarseSampleLocationNV* pSampleLocations_ = {} ) VULKAN_HPP_NOEXCEPT
@@ -24652,7 +24652,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
   public:
-    VULKAN_HPP_NAMESPACE::ShadingRatePaletteEntryNV shadingRate = {};
+    VULKAN_HPP_NAMESPACE::ShadingRatePaletteEntryNV shadingRate = VULKAN_HPP_NAMESPACE::ShadingRatePaletteEntryNV::eNoInvocations;
     uint32_t sampleCount = {};
     uint32_t sampleLocationCount = {};
     const VULKAN_HPP_NAMESPACE::CoarseSampleLocationNV* pSampleLocations = {};
@@ -24663,7 +24663,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct CommandBufferAllocateInfo
   {
     VULKAN_HPP_CONSTEXPR CommandBufferAllocateInfo( VULKAN_HPP_NAMESPACE::CommandPool commandPool_ = {},
-                                                    VULKAN_HPP_NAMESPACE::CommandBufferLevel level_ = {},
+                                                    VULKAN_HPP_NAMESPACE::CommandBufferLevel level_ = VULKAN_HPP_NAMESPACE::CommandBufferLevel::ePrimary,
                                                     uint32_t commandBufferCount_ = {} ) VULKAN_HPP_NOEXCEPT
       : commandPool( commandPool_ )
       , level( level_ )
@@ -24739,7 +24739,7 @@ namespace VULKAN_HPP_NAMESPACE
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eCommandBufferAllocateInfo;
     const void* pNext = {};
     VULKAN_HPP_NAMESPACE::CommandPool commandPool = {};
-    VULKAN_HPP_NAMESPACE::CommandBufferLevel level = {};
+    VULKAN_HPP_NAMESPACE::CommandBufferLevel level = VULKAN_HPP_NAMESPACE::CommandBufferLevel::ePrimary;
     uint32_t commandBufferCount = {};
   };
   static_assert( sizeof( CommandBufferAllocateInfo ) == sizeof( VkCommandBufferAllocateInfo ), "struct and wrapper have different size!" );
@@ -25226,7 +25226,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct PipelineShaderStageCreateInfo
   {
     VULKAN_HPP_CONSTEXPR PipelineShaderStageCreateInfo( VULKAN_HPP_NAMESPACE::PipelineShaderStageCreateFlags flags_ = {},
-                                                        VULKAN_HPP_NAMESPACE::ShaderStageFlagBits stage_ = {},
+                                                        VULKAN_HPP_NAMESPACE::ShaderStageFlagBits stage_ = VULKAN_HPP_NAMESPACE::ShaderStageFlagBits::eVertex,
                                                         VULKAN_HPP_NAMESPACE::ShaderModule module_ = {},
                                                         const char* pName_ = {},
                                                         const VULKAN_HPP_NAMESPACE::SpecializationInfo* pSpecializationInfo_ = {} ) VULKAN_HPP_NOEXCEPT
@@ -25320,7 +25320,7 @@ namespace VULKAN_HPP_NAMESPACE
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineShaderStageCreateInfo;
     const void* pNext = {};
     VULKAN_HPP_NAMESPACE::PipelineShaderStageCreateFlags flags = {};
-    VULKAN_HPP_NAMESPACE::ShaderStageFlagBits stage = {};
+    VULKAN_HPP_NAMESPACE::ShaderStageFlagBits stage = VULKAN_HPP_NAMESPACE::ShaderStageFlagBits::eVertex;
     VULKAN_HPP_NAMESPACE::ShaderModule module = {};
     const char* pName = {};
     const VULKAN_HPP_NAMESPACE::SpecializationInfo* pSpecializationInfo = {};
@@ -25602,11 +25602,11 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_CONSTEXPR CooperativeMatrixPropertiesNV( uint32_t MSize_ = {},
                                                         uint32_t NSize_ = {},
                                                         uint32_t KSize_ = {},
-                                                        VULKAN_HPP_NAMESPACE::ComponentTypeNV AType_ = {},
-                                                        VULKAN_HPP_NAMESPACE::ComponentTypeNV BType_ = {},
-                                                        VULKAN_HPP_NAMESPACE::ComponentTypeNV CType_ = {},
-                                                        VULKAN_HPP_NAMESPACE::ComponentTypeNV DType_ = {},
-                                                        VULKAN_HPP_NAMESPACE::ScopeNV scope_ = {} ) VULKAN_HPP_NOEXCEPT
+                                                        VULKAN_HPP_NAMESPACE::ComponentTypeNV AType_ = VULKAN_HPP_NAMESPACE::ComponentTypeNV::eFloat16,
+                                                        VULKAN_HPP_NAMESPACE::ComponentTypeNV BType_ = VULKAN_HPP_NAMESPACE::ComponentTypeNV::eFloat16,
+                                                        VULKAN_HPP_NAMESPACE::ComponentTypeNV CType_ = VULKAN_HPP_NAMESPACE::ComponentTypeNV::eFloat16,
+                                                        VULKAN_HPP_NAMESPACE::ComponentTypeNV DType_ = VULKAN_HPP_NAMESPACE::ComponentTypeNV::eFloat16,
+                                                        VULKAN_HPP_NAMESPACE::ScopeNV scope_ = VULKAN_HPP_NAMESPACE::ScopeNV::eDevice ) VULKAN_HPP_NOEXCEPT
       : MSize( MSize_ )
       , NSize( NSize_ )
       , KSize( KSize_ )
@@ -25723,11 +25723,11 @@ namespace VULKAN_HPP_NAMESPACE
     uint32_t MSize = {};
     uint32_t NSize = {};
     uint32_t KSize = {};
-    VULKAN_HPP_NAMESPACE::ComponentTypeNV AType = {};
-    VULKAN_HPP_NAMESPACE::ComponentTypeNV BType = {};
-    VULKAN_HPP_NAMESPACE::ComponentTypeNV CType = {};
-    VULKAN_HPP_NAMESPACE::ComponentTypeNV DType = {};
-    VULKAN_HPP_NAMESPACE::ScopeNV scope = {};
+    VULKAN_HPP_NAMESPACE::ComponentTypeNV AType = VULKAN_HPP_NAMESPACE::ComponentTypeNV::eFloat16;
+    VULKAN_HPP_NAMESPACE::ComponentTypeNV BType = VULKAN_HPP_NAMESPACE::ComponentTypeNV::eFloat16;
+    VULKAN_HPP_NAMESPACE::ComponentTypeNV CType = VULKAN_HPP_NAMESPACE::ComponentTypeNV::eFloat16;
+    VULKAN_HPP_NAMESPACE::ComponentTypeNV DType = VULKAN_HPP_NAMESPACE::ComponentTypeNV::eFloat16;
+    VULKAN_HPP_NAMESPACE::ScopeNV scope = VULKAN_HPP_NAMESPACE::ScopeNV::eDevice;
   };
   static_assert( sizeof( CooperativeMatrixPropertiesNV ) == sizeof( VkCooperativeMatrixPropertiesNV ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<CooperativeMatrixPropertiesNV>::value, "struct wrapper is not a standard layout!" );
@@ -26034,7 +26034,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DebugMarkerObjectNameInfoEXT
   {
-    VULKAN_HPP_CONSTEXPR DebugMarkerObjectNameInfoEXT( VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT objectType_ = {},
+    VULKAN_HPP_CONSTEXPR DebugMarkerObjectNameInfoEXT( VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT objectType_ = VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown,
                                                        uint64_t object_ = {},
                                                        const char* pObjectName_ = {} ) VULKAN_HPP_NOEXCEPT
       : objectType( objectType_ )
@@ -26110,7 +26110,7 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDebugMarkerObjectNameInfoEXT;
     const void* pNext = {};
-    VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT objectType = {};
+    VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT objectType = VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
     uint64_t object = {};
     const char* pObjectName = {};
   };
@@ -26119,7 +26119,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DebugMarkerObjectTagInfoEXT
   {
-    VULKAN_HPP_CONSTEXPR DebugMarkerObjectTagInfoEXT( VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT objectType_ = {},
+    VULKAN_HPP_CONSTEXPR DebugMarkerObjectTagInfoEXT( VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT objectType_ = VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown,
                                                       uint64_t object_ = {},
                                                       uint64_t tagName_ = {},
                                                       size_t tagSize_ = {},
@@ -26213,7 +26213,7 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDebugMarkerObjectTagInfoEXT;
     const void* pNext = {};
-    VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT objectType = {};
+    VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT objectType = VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
     uint64_t object = {};
     uint64_t tagName = {};
     size_t tagSize = {};
@@ -26386,7 +26386,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DebugUtilsObjectNameInfoEXT
   {
-    VULKAN_HPP_CONSTEXPR DebugUtilsObjectNameInfoEXT( VULKAN_HPP_NAMESPACE::ObjectType objectType_ = {},
+    VULKAN_HPP_CONSTEXPR DebugUtilsObjectNameInfoEXT( VULKAN_HPP_NAMESPACE::ObjectType objectType_ = VULKAN_HPP_NAMESPACE::ObjectType::eUnknown,
                                                       uint64_t objectHandle_ = {},
                                                       const char* pObjectName_ = {} ) VULKAN_HPP_NOEXCEPT
       : objectType( objectType_ )
@@ -26462,7 +26462,7 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDebugUtilsObjectNameInfoEXT;
     const void* pNext = {};
-    VULKAN_HPP_NAMESPACE::ObjectType objectType = {};
+    VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::eUnknown;
     uint64_t objectHandle = {};
     const char* pObjectName = {};
   };
@@ -26731,7 +26731,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DebugUtilsObjectTagInfoEXT
   {
-    VULKAN_HPP_CONSTEXPR DebugUtilsObjectTagInfoEXT( VULKAN_HPP_NAMESPACE::ObjectType objectType_ = {},
+    VULKAN_HPP_CONSTEXPR DebugUtilsObjectTagInfoEXT( VULKAN_HPP_NAMESPACE::ObjectType objectType_ = VULKAN_HPP_NAMESPACE::ObjectType::eUnknown,
                                                      uint64_t objectHandle_ = {},
                                                      uint64_t tagName_ = {},
                                                      size_t tagSize_ = {},
@@ -26825,7 +26825,7 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDebugUtilsObjectTagInfoEXT;
     const void* pNext = {};
-    VULKAN_HPP_NAMESPACE::ObjectType objectType = {};
+    VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::eUnknown;
     uint64_t objectHandle = {};
     uint64_t tagName = {};
     size_t tagSize = {};
@@ -27112,7 +27112,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR DescriptorImageInfo( VULKAN_HPP_NAMESPACE::Sampler sampler_ = {},
                                               VULKAN_HPP_NAMESPACE::ImageView imageView_ = {},
-                                              VULKAN_HPP_NAMESPACE::ImageLayout imageLayout_ = {} ) VULKAN_HPP_NOEXCEPT
+                                              VULKAN_HPP_NAMESPACE::ImageLayout imageLayout_ = VULKAN_HPP_NAMESPACE::ImageLayout::eUndefined ) VULKAN_HPP_NOEXCEPT
       : sampler( sampler_ )
       , imageView( imageView_ )
       , imageLayout( imageLayout_ )
@@ -27172,14 +27172,14 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     VULKAN_HPP_NAMESPACE::Sampler sampler = {};
     VULKAN_HPP_NAMESPACE::ImageView imageView = {};
-    VULKAN_HPP_NAMESPACE::ImageLayout imageLayout = {};
+    VULKAN_HPP_NAMESPACE::ImageLayout imageLayout = VULKAN_HPP_NAMESPACE::ImageLayout::eUndefined;
   };
   static_assert( sizeof( DescriptorImageInfo ) == sizeof( VkDescriptorImageInfo ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<DescriptorImageInfo>::value, "struct wrapper is not a standard layout!" );
 
   struct DescriptorPoolSize
   {
-    VULKAN_HPP_CONSTEXPR DescriptorPoolSize( VULKAN_HPP_NAMESPACE::DescriptorType type_ = {},
+    VULKAN_HPP_CONSTEXPR DescriptorPoolSize( VULKAN_HPP_NAMESPACE::DescriptorType type_ = VULKAN_HPP_NAMESPACE::DescriptorType::eSampler,
                                              uint32_t descriptorCount_ = {} ) VULKAN_HPP_NOEXCEPT
       : type( type_ )
       , descriptorCount( descriptorCount_ )
@@ -27230,7 +27230,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
   public:
-    VULKAN_HPP_NAMESPACE::DescriptorType type = {};
+    VULKAN_HPP_NAMESPACE::DescriptorType type = VULKAN_HPP_NAMESPACE::DescriptorType::eSampler;
     uint32_t descriptorCount = {};
   };
   static_assert( sizeof( DescriptorPoolSize ) == sizeof( VkDescriptorPoolSize ), "struct and wrapper have different size!" );
@@ -27484,7 +27484,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct DescriptorSetLayoutBinding
   {
     VULKAN_HPP_CONSTEXPR DescriptorSetLayoutBinding( uint32_t binding_ = {},
-                                                     VULKAN_HPP_NAMESPACE::DescriptorType descriptorType_ = {},
+                                                     VULKAN_HPP_NAMESPACE::DescriptorType descriptorType_ = VULKAN_HPP_NAMESPACE::DescriptorType::eSampler,
                                                      uint32_t descriptorCount_ = {},
                                                      VULKAN_HPP_NAMESPACE::ShaderStageFlags stageFlags_ = {},
                                                      const VULKAN_HPP_NAMESPACE::Sampler* pImmutableSamplers_ = {} ) VULKAN_HPP_NOEXCEPT
@@ -27562,7 +27562,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   public:
     uint32_t binding = {};
-    VULKAN_HPP_NAMESPACE::DescriptorType descriptorType = {};
+    VULKAN_HPP_NAMESPACE::DescriptorType descriptorType = VULKAN_HPP_NAMESPACE::DescriptorType::eSampler;
     uint32_t descriptorCount = {};
     VULKAN_HPP_NAMESPACE::ShaderStageFlags stageFlags = {};
     const VULKAN_HPP_NAMESPACE::Sampler* pImmutableSamplers = {};
@@ -27916,7 +27916,7 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_CONSTEXPR DescriptorUpdateTemplateEntry( uint32_t dstBinding_ = {},
                                                         uint32_t dstArrayElement_ = {},
                                                         uint32_t descriptorCount_ = {},
-                                                        VULKAN_HPP_NAMESPACE::DescriptorType descriptorType_ = {},
+                                                        VULKAN_HPP_NAMESPACE::DescriptorType descriptorType_ = VULKAN_HPP_NAMESPACE::DescriptorType::eSampler,
                                                         size_t offset_ = {},
                                                         size_t stride_ = {} ) VULKAN_HPP_NOEXCEPT
       : dstBinding( dstBinding_ )
@@ -28003,7 +28003,7 @@ namespace VULKAN_HPP_NAMESPACE
     uint32_t dstBinding = {};
     uint32_t dstArrayElement = {};
     uint32_t descriptorCount = {};
-    VULKAN_HPP_NAMESPACE::DescriptorType descriptorType = {};
+    VULKAN_HPP_NAMESPACE::DescriptorType descriptorType = VULKAN_HPP_NAMESPACE::DescriptorType::eSampler;
     size_t offset = {};
     size_t stride = {};
   };
@@ -28015,9 +28015,9 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_CONSTEXPR DescriptorUpdateTemplateCreateInfo( VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplateCreateFlags flags_ = {},
                                                              uint32_t descriptorUpdateEntryCount_ = {},
                                                              const VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplateEntry* pDescriptorUpdateEntries_ = {},
-                                                             VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplateType templateType_ = {},
+                                                             VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplateType templateType_ = VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplateType::eDescriptorSet,
                                                              VULKAN_HPP_NAMESPACE::DescriptorSetLayout descriptorSetLayout_ = {},
-                                                             VULKAN_HPP_NAMESPACE::PipelineBindPoint pipelineBindPoint_ = {},
+                                                             VULKAN_HPP_NAMESPACE::PipelineBindPoint pipelineBindPoint_ = VULKAN_HPP_NAMESPACE::PipelineBindPoint::eGraphics,
                                                              VULKAN_HPP_NAMESPACE::PipelineLayout pipelineLayout_ = {},
                                                              uint32_t set_ = {} ) VULKAN_HPP_NOEXCEPT
       : flags( flags_ )
@@ -28136,9 +28136,9 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplateCreateFlags flags = {};
     uint32_t descriptorUpdateEntryCount = {};
     const VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplateEntry* pDescriptorUpdateEntries = {};
-    VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplateType templateType = {};
+    VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplateType templateType = VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplateType::eDescriptorSet;
     VULKAN_HPP_NAMESPACE::DescriptorSetLayout descriptorSetLayout = {};
-    VULKAN_HPP_NAMESPACE::PipelineBindPoint pipelineBindPoint = {};
+    VULKAN_HPP_NAMESPACE::PipelineBindPoint pipelineBindPoint = VULKAN_HPP_NAMESPACE::PipelineBindPoint::eGraphics;
     VULKAN_HPP_NAMESPACE::PipelineLayout pipelineLayout = {};
     uint32_t set = {};
   };
@@ -28966,7 +28966,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DeviceEventInfoEXT
   {
-    VULKAN_HPP_CONSTEXPR DeviceEventInfoEXT( VULKAN_HPP_NAMESPACE::DeviceEventTypeEXT deviceEvent_ = {} ) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR DeviceEventInfoEXT( VULKAN_HPP_NAMESPACE::DeviceEventTypeEXT deviceEvent_ = VULKAN_HPP_NAMESPACE::DeviceEventTypeEXT::eDisplayHotplug ) VULKAN_HPP_NOEXCEPT
       : deviceEvent( deviceEvent_ )
     {}
 
@@ -29024,7 +29024,7 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDeviceEventInfoEXT;
     const void* pNext = {};
-    VULKAN_HPP_NAMESPACE::DeviceEventTypeEXT deviceEvent = {};
+    VULKAN_HPP_NAMESPACE::DeviceEventTypeEXT deviceEvent = VULKAN_HPP_NAMESPACE::DeviceEventTypeEXT::eDisplayHotplug;
   };
   static_assert( sizeof( DeviceEventInfoEXT ) == sizeof( VkDeviceEventInfoEXT ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<DeviceEventInfoEXT>::value, "struct wrapper is not a standard layout!" );
@@ -29477,7 +29477,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR DeviceGroupPresentInfoKHR( uint32_t swapchainCount_ = {},
                                                     const uint32_t* pDeviceMasks_ = {},
-                                                    VULKAN_HPP_NAMESPACE::DeviceGroupPresentModeFlagBitsKHR mode_ = {} ) VULKAN_HPP_NOEXCEPT
+                                                    VULKAN_HPP_NAMESPACE::DeviceGroupPresentModeFlagBitsKHR mode_ = VULKAN_HPP_NAMESPACE::DeviceGroupPresentModeFlagBitsKHR::eLocal ) VULKAN_HPP_NOEXCEPT
       : swapchainCount( swapchainCount_ )
       , pDeviceMasks( pDeviceMasks_ )
       , mode( mode_ )
@@ -29553,7 +29553,7 @@ namespace VULKAN_HPP_NAMESPACE
     const void* pNext = {};
     uint32_t swapchainCount = {};
     const uint32_t* pDeviceMasks = {};
-    VULKAN_HPP_NAMESPACE::DeviceGroupPresentModeFlagBitsKHR mode = {};
+    VULKAN_HPP_NAMESPACE::DeviceGroupPresentModeFlagBitsKHR mode = VULKAN_HPP_NAMESPACE::DeviceGroupPresentModeFlagBitsKHR::eLocal;
   };
   static_assert( sizeof( DeviceGroupPresentInfoKHR ) == sizeof( VkDeviceGroupPresentInfoKHR ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<DeviceGroupPresentInfoKHR>::value, "struct wrapper is not a standard layout!" );
@@ -29890,7 +29890,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DeviceMemoryOverallocationCreateInfoAMD
   {
-    VULKAN_HPP_CONSTEXPR DeviceMemoryOverallocationCreateInfoAMD( VULKAN_HPP_NAMESPACE::MemoryOverallocationBehaviorAMD overallocationBehavior_ = {} ) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR DeviceMemoryOverallocationCreateInfoAMD( VULKAN_HPP_NAMESPACE::MemoryOverallocationBehaviorAMD overallocationBehavior_ = VULKAN_HPP_NAMESPACE::MemoryOverallocationBehaviorAMD::eDefault ) VULKAN_HPP_NOEXCEPT
       : overallocationBehavior( overallocationBehavior_ )
     {}
 
@@ -29948,14 +29948,14 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDeviceMemoryOverallocationCreateInfoAMD;
     const void* pNext = {};
-    VULKAN_HPP_NAMESPACE::MemoryOverallocationBehaviorAMD overallocationBehavior = {};
+    VULKAN_HPP_NAMESPACE::MemoryOverallocationBehaviorAMD overallocationBehavior = VULKAN_HPP_NAMESPACE::MemoryOverallocationBehaviorAMD::eDefault;
   };
   static_assert( sizeof( DeviceMemoryOverallocationCreateInfoAMD ) == sizeof( VkDeviceMemoryOverallocationCreateInfoAMD ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<DeviceMemoryOverallocationCreateInfoAMD>::value, "struct wrapper is not a standard layout!" );
 
   struct DeviceQueueGlobalPriorityCreateInfoEXT
   {
-    VULKAN_HPP_CONSTEXPR DeviceQueueGlobalPriorityCreateInfoEXT( VULKAN_HPP_NAMESPACE::QueueGlobalPriorityEXT globalPriority_ = {} ) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR DeviceQueueGlobalPriorityCreateInfoEXT( VULKAN_HPP_NAMESPACE::QueueGlobalPriorityEXT globalPriority_ = VULKAN_HPP_NAMESPACE::QueueGlobalPriorityEXT::eLow ) VULKAN_HPP_NOEXCEPT
       : globalPriority( globalPriority_ )
     {}
 
@@ -30013,7 +30013,7 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDeviceQueueGlobalPriorityCreateInfoEXT;
     const void* pNext = {};
-    VULKAN_HPP_NAMESPACE::QueueGlobalPriorityEXT globalPriority = {};
+    VULKAN_HPP_NAMESPACE::QueueGlobalPriorityEXT globalPriority = VULKAN_HPP_NAMESPACE::QueueGlobalPriorityEXT::eLow;
   };
   static_assert( sizeof( DeviceQueueGlobalPriorityCreateInfoEXT ) == sizeof( VkDeviceQueueGlobalPriorityCreateInfoEXT ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<DeviceQueueGlobalPriorityCreateInfoEXT>::value, "struct wrapper is not a standard layout!" );
@@ -30174,7 +30174,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DisplayEventInfoEXT
   {
-    VULKAN_HPP_CONSTEXPR DisplayEventInfoEXT( VULKAN_HPP_NAMESPACE::DisplayEventTypeEXT displayEvent_ = {} ) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR DisplayEventInfoEXT( VULKAN_HPP_NAMESPACE::DisplayEventTypeEXT displayEvent_ = VULKAN_HPP_NAMESPACE::DisplayEventTypeEXT::eFirstPixelOut ) VULKAN_HPP_NOEXCEPT
       : displayEvent( displayEvent_ )
     {}
 
@@ -30232,7 +30232,7 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDisplayEventInfoEXT;
     const void* pNext = {};
-    VULKAN_HPP_NAMESPACE::DisplayEventTypeEXT displayEvent = {};
+    VULKAN_HPP_NAMESPACE::DisplayEventTypeEXT displayEvent = VULKAN_HPP_NAMESPACE::DisplayEventTypeEXT::eFirstPixelOut;
   };
   static_assert( sizeof( DisplayEventInfoEXT ) == sizeof( VkDisplayEventInfoEXT ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<DisplayEventInfoEXT>::value, "struct wrapper is not a standard layout!" );
@@ -30829,7 +30829,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct DisplayPowerInfoEXT
   {
-    VULKAN_HPP_CONSTEXPR DisplayPowerInfoEXT( VULKAN_HPP_NAMESPACE::DisplayPowerStateEXT powerState_ = {} ) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR DisplayPowerInfoEXT( VULKAN_HPP_NAMESPACE::DisplayPowerStateEXT powerState_ = VULKAN_HPP_NAMESPACE::DisplayPowerStateEXT::eOff ) VULKAN_HPP_NOEXCEPT
       : powerState( powerState_ )
     {}
 
@@ -30887,7 +30887,7 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDisplayPowerInfoEXT;
     const void* pNext = {};
-    VULKAN_HPP_NAMESPACE::DisplayPowerStateEXT powerState = {};
+    VULKAN_HPP_NAMESPACE::DisplayPowerStateEXT powerState = VULKAN_HPP_NAMESPACE::DisplayPowerStateEXT::eOff;
   };
   static_assert( sizeof( DisplayPowerInfoEXT ) == sizeof( VkDisplayPowerInfoEXT ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<DisplayPowerInfoEXT>::value, "struct wrapper is not a standard layout!" );
@@ -31103,9 +31103,9 @@ namespace VULKAN_HPP_NAMESPACE
                                                       VULKAN_HPP_NAMESPACE::DisplayModeKHR displayMode_ = {},
                                                       uint32_t planeIndex_ = {},
                                                       uint32_t planeStackIndex_ = {},
-                                                      VULKAN_HPP_NAMESPACE::SurfaceTransformFlagBitsKHR transform_ = {},
+                                                      VULKAN_HPP_NAMESPACE::SurfaceTransformFlagBitsKHR transform_ = VULKAN_HPP_NAMESPACE::SurfaceTransformFlagBitsKHR::eIdentity,
                                                       float globalAlpha_ = {},
-                                                      VULKAN_HPP_NAMESPACE::DisplayPlaneAlphaFlagBitsKHR alphaMode_ = {},
+                                                      VULKAN_HPP_NAMESPACE::DisplayPlaneAlphaFlagBitsKHR alphaMode_ = VULKAN_HPP_NAMESPACE::DisplayPlaneAlphaFlagBitsKHR::eOpaque,
                                                       VULKAN_HPP_NAMESPACE::Extent2D imageExtent_ = {} ) VULKAN_HPP_NOEXCEPT
       : flags( flags_ )
       , displayMode( displayMode_ )
@@ -31224,9 +31224,9 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_NAMESPACE::DisplayModeKHR displayMode = {};
     uint32_t planeIndex = {};
     uint32_t planeStackIndex = {};
-    VULKAN_HPP_NAMESPACE::SurfaceTransformFlagBitsKHR transform = {};
+    VULKAN_HPP_NAMESPACE::SurfaceTransformFlagBitsKHR transform = VULKAN_HPP_NAMESPACE::SurfaceTransformFlagBitsKHR::eIdentity;
     float globalAlpha = {};
-    VULKAN_HPP_NAMESPACE::DisplayPlaneAlphaFlagBitsKHR alphaMode = {};
+    VULKAN_HPP_NAMESPACE::DisplayPlaneAlphaFlagBitsKHR alphaMode = VULKAN_HPP_NAMESPACE::DisplayPlaneAlphaFlagBitsKHR::eOpaque;
     VULKAN_HPP_NAMESPACE::Extent2D imageExtent = {};
   };
   static_assert( sizeof( DisplaySurfaceCreateInfoKHR ) == sizeof( VkDisplaySurfaceCreateInfoKHR ), "struct and wrapper have different size!" );
@@ -33007,7 +33007,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct FenceGetFdInfoKHR
   {
     VULKAN_HPP_CONSTEXPR FenceGetFdInfoKHR( VULKAN_HPP_NAMESPACE::Fence fence_ = {},
-                                            VULKAN_HPP_NAMESPACE::ExternalFenceHandleTypeFlagBits handleType_ = {} ) VULKAN_HPP_NOEXCEPT
+                                            VULKAN_HPP_NAMESPACE::ExternalFenceHandleTypeFlagBits handleType_ = VULKAN_HPP_NAMESPACE::ExternalFenceHandleTypeFlagBits::eOpaqueFd ) VULKAN_HPP_NOEXCEPT
       : fence( fence_ )
       , handleType( handleType_ )
     {}
@@ -33074,7 +33074,7 @@ namespace VULKAN_HPP_NAMESPACE
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eFenceGetFdInfoKHR;
     const void* pNext = {};
     VULKAN_HPP_NAMESPACE::Fence fence = {};
-    VULKAN_HPP_NAMESPACE::ExternalFenceHandleTypeFlagBits handleType = {};
+    VULKAN_HPP_NAMESPACE::ExternalFenceHandleTypeFlagBits handleType = VULKAN_HPP_NAMESPACE::ExternalFenceHandleTypeFlagBits::eOpaqueFd;
   };
   static_assert( sizeof( FenceGetFdInfoKHR ) == sizeof( VkFenceGetFdInfoKHR ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<FenceGetFdInfoKHR>::value, "struct wrapper is not a standard layout!" );
@@ -33084,7 +33084,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct FenceGetWin32HandleInfoKHR
   {
     VULKAN_HPP_CONSTEXPR FenceGetWin32HandleInfoKHR( VULKAN_HPP_NAMESPACE::Fence fence_ = {},
-                                                     VULKAN_HPP_NAMESPACE::ExternalFenceHandleTypeFlagBits handleType_ = {} ) VULKAN_HPP_NOEXCEPT
+                                                     VULKAN_HPP_NAMESPACE::ExternalFenceHandleTypeFlagBits handleType_ = VULKAN_HPP_NAMESPACE::ExternalFenceHandleTypeFlagBits::eOpaqueFd ) VULKAN_HPP_NOEXCEPT
       : fence( fence_ )
       , handleType( handleType_ )
     {}
@@ -33151,7 +33151,7 @@ namespace VULKAN_HPP_NAMESPACE
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eFenceGetWin32HandleInfoKHR;
     const void* pNext = {};
     VULKAN_HPP_NAMESPACE::Fence fence = {};
-    VULKAN_HPP_NAMESPACE::ExternalFenceHandleTypeFlagBits handleType = {};
+    VULKAN_HPP_NAMESPACE::ExternalFenceHandleTypeFlagBits handleType = VULKAN_HPP_NAMESPACE::ExternalFenceHandleTypeFlagBits::eOpaqueFd;
   };
   static_assert( sizeof( FenceGetWin32HandleInfoKHR ) == sizeof( VkFenceGetWin32HandleInfoKHR ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<FenceGetWin32HandleInfoKHR>::value, "struct wrapper is not a standard layout!" );
@@ -33645,8 +33645,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct FramebufferMixedSamplesCombinationNV
   {
-    FramebufferMixedSamplesCombinationNV( VULKAN_HPP_NAMESPACE::CoverageReductionModeNV coverageReductionMode_ = {},
-                                          VULKAN_HPP_NAMESPACE::SampleCountFlagBits rasterizationSamples_ = {},
+    FramebufferMixedSamplesCombinationNV( VULKAN_HPP_NAMESPACE::CoverageReductionModeNV coverageReductionMode_ = VULKAN_HPP_NAMESPACE::CoverageReductionModeNV::eMerge,
+                                          VULKAN_HPP_NAMESPACE::SampleCountFlagBits rasterizationSamples_ = VULKAN_HPP_NAMESPACE::SampleCountFlagBits::e1,
                                           VULKAN_HPP_NAMESPACE::SampleCountFlags depthStencilSamples_ = {},
                                           VULKAN_HPP_NAMESPACE::SampleCountFlags colorSamples_ = {} ) VULKAN_HPP_NOEXCEPT
       : coverageReductionMode( coverageReductionMode_ )
@@ -33700,8 +33700,8 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eFramebufferMixedSamplesCombinationNV;
     void* pNext = {};
-    VULKAN_HPP_NAMESPACE::CoverageReductionModeNV coverageReductionMode = {};
-    VULKAN_HPP_NAMESPACE::SampleCountFlagBits rasterizationSamples = {};
+    VULKAN_HPP_NAMESPACE::CoverageReductionModeNV coverageReductionMode = VULKAN_HPP_NAMESPACE::CoverageReductionModeNV::eMerge;
+    VULKAN_HPP_NAMESPACE::SampleCountFlagBits rasterizationSamples = VULKAN_HPP_NAMESPACE::SampleCountFlagBits::e1;
     VULKAN_HPP_NAMESPACE::SampleCountFlags depthStencilSamples = {};
     VULKAN_HPP_NAMESPACE::SampleCountFlags colorSamples = {};
   };
@@ -33712,7 +33712,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR VertexInputBindingDescription( uint32_t binding_ = {},
                                                         uint32_t stride_ = {},
-                                                        VULKAN_HPP_NAMESPACE::VertexInputRate inputRate_ = {} ) VULKAN_HPP_NOEXCEPT
+                                                        VULKAN_HPP_NAMESPACE::VertexInputRate inputRate_ = VULKAN_HPP_NAMESPACE::VertexInputRate::eVertex ) VULKAN_HPP_NOEXCEPT
       : binding( binding_ )
       , stride( stride_ )
       , inputRate( inputRate_ )
@@ -33772,7 +33772,7 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     uint32_t binding = {};
     uint32_t stride = {};
-    VULKAN_HPP_NAMESPACE::VertexInputRate inputRate = {};
+    VULKAN_HPP_NAMESPACE::VertexInputRate inputRate = VULKAN_HPP_NAMESPACE::VertexInputRate::eVertex;
   };
   static_assert( sizeof( VertexInputBindingDescription ) == sizeof( VkVertexInputBindingDescription ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<VertexInputBindingDescription>::value, "struct wrapper is not a standard layout!" );
@@ -33781,7 +33781,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR VertexInputAttributeDescription( uint32_t location_ = {},
                                                           uint32_t binding_ = {},
-                                                          VULKAN_HPP_NAMESPACE::Format format_ = {},
+                                                          VULKAN_HPP_NAMESPACE::Format format_ = VULKAN_HPP_NAMESPACE::Format::eUndefined,
                                                           uint32_t offset_ = {} ) VULKAN_HPP_NOEXCEPT
       : location( location_ )
       , binding( binding_ )
@@ -33850,7 +33850,7 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     uint32_t location = {};
     uint32_t binding = {};
-    VULKAN_HPP_NAMESPACE::Format format = {};
+    VULKAN_HPP_NAMESPACE::Format format = VULKAN_HPP_NAMESPACE::Format::eUndefined;
     uint32_t offset = {};
   };
   static_assert( sizeof( VertexInputAttributeDescription ) == sizeof( VkVertexInputAttributeDescription ), "struct and wrapper have different size!" );
@@ -33964,7 +33964,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct PipelineInputAssemblyStateCreateInfo
   {
     VULKAN_HPP_CONSTEXPR PipelineInputAssemblyStateCreateInfo( VULKAN_HPP_NAMESPACE::PipelineInputAssemblyStateCreateFlags flags_ = {},
-                                                               VULKAN_HPP_NAMESPACE::PrimitiveTopology topology_ = {},
+                                                               VULKAN_HPP_NAMESPACE::PrimitiveTopology topology_ = VULKAN_HPP_NAMESPACE::PrimitiveTopology::ePointList,
                                                                VULKAN_HPP_NAMESPACE::Bool32 primitiveRestartEnable_ = {} ) VULKAN_HPP_NOEXCEPT
       : flags( flags_ )
       , topology( topology_ )
@@ -34040,7 +34040,7 @@ namespace VULKAN_HPP_NAMESPACE
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineInputAssemblyStateCreateInfo;
     const void* pNext = {};
     VULKAN_HPP_NAMESPACE::PipelineInputAssemblyStateCreateFlags flags = {};
-    VULKAN_HPP_NAMESPACE::PrimitiveTopology topology = {};
+    VULKAN_HPP_NAMESPACE::PrimitiveTopology topology = VULKAN_HPP_NAMESPACE::PrimitiveTopology::ePointList;
     VULKAN_HPP_NAMESPACE::Bool32 primitiveRestartEnable = {};
   };
   static_assert( sizeof( PipelineInputAssemblyStateCreateInfo ) == sizeof( VkPipelineInputAssemblyStateCreateInfo ), "struct and wrapper have different size!" );
@@ -34330,9 +34330,9 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_CONSTEXPR PipelineRasterizationStateCreateInfo( VULKAN_HPP_NAMESPACE::PipelineRasterizationStateCreateFlags flags_ = {},
                                                                VULKAN_HPP_NAMESPACE::Bool32 depthClampEnable_ = {},
                                                                VULKAN_HPP_NAMESPACE::Bool32 rasterizerDiscardEnable_ = {},
-                                                               VULKAN_HPP_NAMESPACE::PolygonMode polygonMode_ = {},
+                                                               VULKAN_HPP_NAMESPACE::PolygonMode polygonMode_ = VULKAN_HPP_NAMESPACE::PolygonMode::eFill,
                                                                VULKAN_HPP_NAMESPACE::CullModeFlags cullMode_ = {},
-                                                               VULKAN_HPP_NAMESPACE::FrontFace frontFace_ = {},
+                                                               VULKAN_HPP_NAMESPACE::FrontFace frontFace_ = VULKAN_HPP_NAMESPACE::FrontFace::eCounterClockwise,
                                                                VULKAN_HPP_NAMESPACE::Bool32 depthBiasEnable_ = {},
                                                                float depthBiasConstantFactor_ = {},
                                                                float depthBiasClamp_ = {},
@@ -34478,9 +34478,9 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_NAMESPACE::PipelineRasterizationStateCreateFlags flags = {};
     VULKAN_HPP_NAMESPACE::Bool32 depthClampEnable = {};
     VULKAN_HPP_NAMESPACE::Bool32 rasterizerDiscardEnable = {};
-    VULKAN_HPP_NAMESPACE::PolygonMode polygonMode = {};
+    VULKAN_HPP_NAMESPACE::PolygonMode polygonMode = VULKAN_HPP_NAMESPACE::PolygonMode::eFill;
     VULKAN_HPP_NAMESPACE::CullModeFlags cullMode = {};
-    VULKAN_HPP_NAMESPACE::FrontFace frontFace = {};
+    VULKAN_HPP_NAMESPACE::FrontFace frontFace = VULKAN_HPP_NAMESPACE::FrontFace::eCounterClockwise;
     VULKAN_HPP_NAMESPACE::Bool32 depthBiasEnable = {};
     float depthBiasConstantFactor = {};
     float depthBiasClamp = {};
@@ -34493,7 +34493,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct PipelineMultisampleStateCreateInfo
   {
     VULKAN_HPP_CONSTEXPR PipelineMultisampleStateCreateInfo( VULKAN_HPP_NAMESPACE::PipelineMultisampleStateCreateFlags flags_ = {},
-                                                             VULKAN_HPP_NAMESPACE::SampleCountFlagBits rasterizationSamples_ = {},
+                                                             VULKAN_HPP_NAMESPACE::SampleCountFlagBits rasterizationSamples_ = VULKAN_HPP_NAMESPACE::SampleCountFlagBits::e1,
                                                              VULKAN_HPP_NAMESPACE::Bool32 sampleShadingEnable_ = {},
                                                              float minSampleShading_ = {},
                                                              const VULKAN_HPP_NAMESPACE::SampleMask* pSampleMask_ = {},
@@ -34605,7 +34605,7 @@ namespace VULKAN_HPP_NAMESPACE
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineMultisampleStateCreateInfo;
     const void* pNext = {};
     VULKAN_HPP_NAMESPACE::PipelineMultisampleStateCreateFlags flags = {};
-    VULKAN_HPP_NAMESPACE::SampleCountFlagBits rasterizationSamples = {};
+    VULKAN_HPP_NAMESPACE::SampleCountFlagBits rasterizationSamples = VULKAN_HPP_NAMESPACE::SampleCountFlagBits::e1;
     VULKAN_HPP_NAMESPACE::Bool32 sampleShadingEnable = {};
     float minSampleShading = {};
     const VULKAN_HPP_NAMESPACE::SampleMask* pSampleMask = {};
@@ -34617,10 +34617,10 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct StencilOpState
   {
-    VULKAN_HPP_CONSTEXPR StencilOpState( VULKAN_HPP_NAMESPACE::StencilOp failOp_ = {},
-                                         VULKAN_HPP_NAMESPACE::StencilOp passOp_ = {},
-                                         VULKAN_HPP_NAMESPACE::StencilOp depthFailOp_ = {},
-                                         VULKAN_HPP_NAMESPACE::CompareOp compareOp_ = {},
+    VULKAN_HPP_CONSTEXPR StencilOpState( VULKAN_HPP_NAMESPACE::StencilOp failOp_ = VULKAN_HPP_NAMESPACE::StencilOp::eKeep,
+                                         VULKAN_HPP_NAMESPACE::StencilOp passOp_ = VULKAN_HPP_NAMESPACE::StencilOp::eKeep,
+                                         VULKAN_HPP_NAMESPACE::StencilOp depthFailOp_ = VULKAN_HPP_NAMESPACE::StencilOp::eKeep,
+                                         VULKAN_HPP_NAMESPACE::CompareOp compareOp_ = VULKAN_HPP_NAMESPACE::CompareOp::eNever,
                                          uint32_t compareMask_ = {},
                                          uint32_t writeMask_ = {},
                                          uint32_t reference_ = {} ) VULKAN_HPP_NOEXCEPT
@@ -34713,10 +34713,10 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
   public:
-    VULKAN_HPP_NAMESPACE::StencilOp failOp = {};
-    VULKAN_HPP_NAMESPACE::StencilOp passOp = {};
-    VULKAN_HPP_NAMESPACE::StencilOp depthFailOp = {};
-    VULKAN_HPP_NAMESPACE::CompareOp compareOp = {};
+    VULKAN_HPP_NAMESPACE::StencilOp failOp = VULKAN_HPP_NAMESPACE::StencilOp::eKeep;
+    VULKAN_HPP_NAMESPACE::StencilOp passOp = VULKAN_HPP_NAMESPACE::StencilOp::eKeep;
+    VULKAN_HPP_NAMESPACE::StencilOp depthFailOp = VULKAN_HPP_NAMESPACE::StencilOp::eKeep;
+    VULKAN_HPP_NAMESPACE::CompareOp compareOp = VULKAN_HPP_NAMESPACE::CompareOp::eNever;
     uint32_t compareMask = {};
     uint32_t writeMask = {};
     uint32_t reference = {};
@@ -34729,7 +34729,7 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_CONSTEXPR PipelineDepthStencilStateCreateInfo( VULKAN_HPP_NAMESPACE::PipelineDepthStencilStateCreateFlags flags_ = {},
                                                               VULKAN_HPP_NAMESPACE::Bool32 depthTestEnable_ = {},
                                                               VULKAN_HPP_NAMESPACE::Bool32 depthWriteEnable_ = {},
-                                                              VULKAN_HPP_NAMESPACE::CompareOp depthCompareOp_ = {},
+                                                              VULKAN_HPP_NAMESPACE::CompareOp depthCompareOp_ = VULKAN_HPP_NAMESPACE::CompareOp::eNever,
                                                               VULKAN_HPP_NAMESPACE::Bool32 depthBoundsTestEnable_ = {},
                                                               VULKAN_HPP_NAMESPACE::Bool32 stencilTestEnable_ = {},
                                                               VULKAN_HPP_NAMESPACE::StencilOpState front_ = {},
@@ -34868,7 +34868,7 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_NAMESPACE::PipelineDepthStencilStateCreateFlags flags = {};
     VULKAN_HPP_NAMESPACE::Bool32 depthTestEnable = {};
     VULKAN_HPP_NAMESPACE::Bool32 depthWriteEnable = {};
-    VULKAN_HPP_NAMESPACE::CompareOp depthCompareOp = {};
+    VULKAN_HPP_NAMESPACE::CompareOp depthCompareOp = VULKAN_HPP_NAMESPACE::CompareOp::eNever;
     VULKAN_HPP_NAMESPACE::Bool32 depthBoundsTestEnable = {};
     VULKAN_HPP_NAMESPACE::Bool32 stencilTestEnable = {};
     VULKAN_HPP_NAMESPACE::StencilOpState front = {};
@@ -34882,12 +34882,12 @@ namespace VULKAN_HPP_NAMESPACE
   struct PipelineColorBlendAttachmentState
   {
     VULKAN_HPP_CONSTEXPR PipelineColorBlendAttachmentState( VULKAN_HPP_NAMESPACE::Bool32 blendEnable_ = {},
-                                                            VULKAN_HPP_NAMESPACE::BlendFactor srcColorBlendFactor_ = {},
-                                                            VULKAN_HPP_NAMESPACE::BlendFactor dstColorBlendFactor_ = {},
-                                                            VULKAN_HPP_NAMESPACE::BlendOp colorBlendOp_ = {},
-                                                            VULKAN_HPP_NAMESPACE::BlendFactor srcAlphaBlendFactor_ = {},
-                                                            VULKAN_HPP_NAMESPACE::BlendFactor dstAlphaBlendFactor_ = {},
-                                                            VULKAN_HPP_NAMESPACE::BlendOp alphaBlendOp_ = {},
+                                                            VULKAN_HPP_NAMESPACE::BlendFactor srcColorBlendFactor_ = VULKAN_HPP_NAMESPACE::BlendFactor::eZero,
+                                                            VULKAN_HPP_NAMESPACE::BlendFactor dstColorBlendFactor_ = VULKAN_HPP_NAMESPACE::BlendFactor::eZero,
+                                                            VULKAN_HPP_NAMESPACE::BlendOp colorBlendOp_ = VULKAN_HPP_NAMESPACE::BlendOp::eAdd,
+                                                            VULKAN_HPP_NAMESPACE::BlendFactor srcAlphaBlendFactor_ = VULKAN_HPP_NAMESPACE::BlendFactor::eZero,
+                                                            VULKAN_HPP_NAMESPACE::BlendFactor dstAlphaBlendFactor_ = VULKAN_HPP_NAMESPACE::BlendFactor::eZero,
+                                                            VULKAN_HPP_NAMESPACE::BlendOp alphaBlendOp_ = VULKAN_HPP_NAMESPACE::BlendOp::eAdd,
                                                             VULKAN_HPP_NAMESPACE::ColorComponentFlags colorWriteMask_ = {} ) VULKAN_HPP_NOEXCEPT
       : blendEnable( blendEnable_ )
       , srcColorBlendFactor( srcColorBlendFactor_ )
@@ -34987,12 +34987,12 @@ namespace VULKAN_HPP_NAMESPACE
 
   public:
     VULKAN_HPP_NAMESPACE::Bool32 blendEnable = {};
-    VULKAN_HPP_NAMESPACE::BlendFactor srcColorBlendFactor = {};
-    VULKAN_HPP_NAMESPACE::BlendFactor dstColorBlendFactor = {};
-    VULKAN_HPP_NAMESPACE::BlendOp colorBlendOp = {};
-    VULKAN_HPP_NAMESPACE::BlendFactor srcAlphaBlendFactor = {};
-    VULKAN_HPP_NAMESPACE::BlendFactor dstAlphaBlendFactor = {};
-    VULKAN_HPP_NAMESPACE::BlendOp alphaBlendOp = {};
+    VULKAN_HPP_NAMESPACE::BlendFactor srcColorBlendFactor = VULKAN_HPP_NAMESPACE::BlendFactor::eZero;
+    VULKAN_HPP_NAMESPACE::BlendFactor dstColorBlendFactor = VULKAN_HPP_NAMESPACE::BlendFactor::eZero;
+    VULKAN_HPP_NAMESPACE::BlendOp colorBlendOp = VULKAN_HPP_NAMESPACE::BlendOp::eAdd;
+    VULKAN_HPP_NAMESPACE::BlendFactor srcAlphaBlendFactor = VULKAN_HPP_NAMESPACE::BlendFactor::eZero;
+    VULKAN_HPP_NAMESPACE::BlendFactor dstAlphaBlendFactor = VULKAN_HPP_NAMESPACE::BlendFactor::eZero;
+    VULKAN_HPP_NAMESPACE::BlendOp alphaBlendOp = VULKAN_HPP_NAMESPACE::BlendOp::eAdd;
     VULKAN_HPP_NAMESPACE::ColorComponentFlags colorWriteMask = {};
   };
   static_assert( sizeof( PipelineColorBlendAttachmentState ) == sizeof( VkPipelineColorBlendAttachmentState ), "struct and wrapper have different size!" );
@@ -35002,7 +35002,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR_14 PipelineColorBlendStateCreateInfo( VULKAN_HPP_NAMESPACE::PipelineColorBlendStateCreateFlags flags_ = {},
                                                                VULKAN_HPP_NAMESPACE::Bool32 logicOpEnable_ = {},
-                                                               VULKAN_HPP_NAMESPACE::LogicOp logicOp_ = {},
+                                                               VULKAN_HPP_NAMESPACE::LogicOp logicOp_ = VULKAN_HPP_NAMESPACE::LogicOp::eClear,
                                                                uint32_t attachmentCount_ = {},
                                                                const VULKAN_HPP_NAMESPACE::PipelineColorBlendAttachmentState* pAttachments_ = {},
                                                                std::array<float,4> const& blendConstants_ = {} ) VULKAN_HPP_NOEXCEPT
@@ -35107,7 +35107,7 @@ namespace VULKAN_HPP_NAMESPACE
     const void* pNext = {};
     VULKAN_HPP_NAMESPACE::PipelineColorBlendStateCreateFlags flags = {};
     VULKAN_HPP_NAMESPACE::Bool32 logicOpEnable = {};
-    VULKAN_HPP_NAMESPACE::LogicOp logicOp = {};
+    VULKAN_HPP_NAMESPACE::LogicOp logicOp = VULKAN_HPP_NAMESPACE::LogicOp::eClear;
     uint32_t attachmentCount = {};
     const VULKAN_HPP_NAMESPACE::PipelineColorBlendAttachmentState* pAttachments = {};
     float blendConstants[4] = {};
@@ -35936,18 +35936,18 @@ namespace VULKAN_HPP_NAMESPACE
   struct ImageCreateInfo
   {
     VULKAN_HPP_CONSTEXPR ImageCreateInfo( VULKAN_HPP_NAMESPACE::ImageCreateFlags flags_ = {},
-                                          VULKAN_HPP_NAMESPACE::ImageType imageType_ = {},
-                                          VULKAN_HPP_NAMESPACE::Format format_ = {},
+                                          VULKAN_HPP_NAMESPACE::ImageType imageType_ = VULKAN_HPP_NAMESPACE::ImageType::e1D,
+                                          VULKAN_HPP_NAMESPACE::Format format_ = VULKAN_HPP_NAMESPACE::Format::eUndefined,
                                           VULKAN_HPP_NAMESPACE::Extent3D extent_ = {},
                                           uint32_t mipLevels_ = {},
                                           uint32_t arrayLayers_ = {},
-                                          VULKAN_HPP_NAMESPACE::SampleCountFlagBits samples_ = {},
-                                          VULKAN_HPP_NAMESPACE::ImageTiling tiling_ = {},
+                                          VULKAN_HPP_NAMESPACE::SampleCountFlagBits samples_ = VULKAN_HPP_NAMESPACE::SampleCountFlagBits::e1,
+                                          VULKAN_HPP_NAMESPACE::ImageTiling tiling_ = VULKAN_HPP_NAMESPACE::ImageTiling::eOptimal,
                                           VULKAN_HPP_NAMESPACE::ImageUsageFlags usage_ = {},
-                                          VULKAN_HPP_NAMESPACE::SharingMode sharingMode_ = {},
+                                          VULKAN_HPP_NAMESPACE::SharingMode sharingMode_ = VULKAN_HPP_NAMESPACE::SharingMode::eExclusive,
                                           uint32_t queueFamilyIndexCount_ = {},
                                           const uint32_t* pQueueFamilyIndices_ = {},
-                                          VULKAN_HPP_NAMESPACE::ImageLayout initialLayout_ = {} ) VULKAN_HPP_NOEXCEPT
+                                          VULKAN_HPP_NAMESPACE::ImageLayout initialLayout_ = VULKAN_HPP_NAMESPACE::ImageLayout::eUndefined ) VULKAN_HPP_NOEXCEPT
       : flags( flags_ )
       , imageType( imageType_ )
       , format( format_ )
@@ -36102,18 +36102,18 @@ namespace VULKAN_HPP_NAMESPACE
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eImageCreateInfo;
     const void* pNext = {};
     VULKAN_HPP_NAMESPACE::ImageCreateFlags flags = {};
-    VULKAN_HPP_NAMESPACE::ImageType imageType = {};
-    VULKAN_HPP_NAMESPACE::Format format = {};
+    VULKAN_HPP_NAMESPACE::ImageType imageType = VULKAN_HPP_NAMESPACE::ImageType::e1D;
+    VULKAN_HPP_NAMESPACE::Format format = VULKAN_HPP_NAMESPACE::Format::eUndefined;
     VULKAN_HPP_NAMESPACE::Extent3D extent = {};
     uint32_t mipLevels = {};
     uint32_t arrayLayers = {};
-    VULKAN_HPP_NAMESPACE::SampleCountFlagBits samples = {};
-    VULKAN_HPP_NAMESPACE::ImageTiling tiling = {};
+    VULKAN_HPP_NAMESPACE::SampleCountFlagBits samples = VULKAN_HPP_NAMESPACE::SampleCountFlagBits::e1;
+    VULKAN_HPP_NAMESPACE::ImageTiling tiling = VULKAN_HPP_NAMESPACE::ImageTiling::eOptimal;
     VULKAN_HPP_NAMESPACE::ImageUsageFlags usage = {};
-    VULKAN_HPP_NAMESPACE::SharingMode sharingMode = {};
+    VULKAN_HPP_NAMESPACE::SharingMode sharingMode = VULKAN_HPP_NAMESPACE::SharingMode::eExclusive;
     uint32_t queueFamilyIndexCount = {};
     const uint32_t* pQueueFamilyIndices = {};
-    VULKAN_HPP_NAMESPACE::ImageLayout initialLayout = {};
+    VULKAN_HPP_NAMESPACE::ImageLayout initialLayout = VULKAN_HPP_NAMESPACE::ImageLayout::eUndefined;
   };
   static_assert( sizeof( ImageCreateInfo ) == sizeof( VkImageCreateInfo ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<ImageCreateInfo>::value, "struct wrapper is not a standard layout!" );
@@ -36611,8 +36611,8 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR ImageMemoryBarrier( VULKAN_HPP_NAMESPACE::AccessFlags srcAccessMask_ = {},
                                              VULKAN_HPP_NAMESPACE::AccessFlags dstAccessMask_ = {},
-                                             VULKAN_HPP_NAMESPACE::ImageLayout oldLayout_ = {},
-                                             VULKAN_HPP_NAMESPACE::ImageLayout newLayout_ = {},
+                                             VULKAN_HPP_NAMESPACE::ImageLayout oldLayout_ = VULKAN_HPP_NAMESPACE::ImageLayout::eUndefined,
+                                             VULKAN_HPP_NAMESPACE::ImageLayout newLayout_ = VULKAN_HPP_NAMESPACE::ImageLayout::eUndefined,
                                              uint32_t srcQueueFamilyIndex_ = {},
                                              uint32_t dstQueueFamilyIndex_ = {},
                                              VULKAN_HPP_NAMESPACE::Image image_ = {},
@@ -36732,8 +36732,8 @@ namespace VULKAN_HPP_NAMESPACE
     const void* pNext = {};
     VULKAN_HPP_NAMESPACE::AccessFlags srcAccessMask = {};
     VULKAN_HPP_NAMESPACE::AccessFlags dstAccessMask = {};
-    VULKAN_HPP_NAMESPACE::ImageLayout oldLayout = {};
-    VULKAN_HPP_NAMESPACE::ImageLayout newLayout = {};
+    VULKAN_HPP_NAMESPACE::ImageLayout oldLayout = VULKAN_HPP_NAMESPACE::ImageLayout::eUndefined;
+    VULKAN_HPP_NAMESPACE::ImageLayout newLayout = VULKAN_HPP_NAMESPACE::ImageLayout::eUndefined;
     uint32_t srcQueueFamilyIndex = {};
     uint32_t dstQueueFamilyIndex = {};
     VULKAN_HPP_NAMESPACE::Image image = {};
@@ -36887,7 +36887,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ImagePlaneMemoryRequirementsInfo
   {
-    VULKAN_HPP_CONSTEXPR ImagePlaneMemoryRequirementsInfo( VULKAN_HPP_NAMESPACE::ImageAspectFlagBits planeAspect_ = {} ) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR ImagePlaneMemoryRequirementsInfo( VULKAN_HPP_NAMESPACE::ImageAspectFlagBits planeAspect_ = VULKAN_HPP_NAMESPACE::ImageAspectFlagBits::eColor ) VULKAN_HPP_NOEXCEPT
       : planeAspect( planeAspect_ )
     {}
 
@@ -36945,7 +36945,7 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eImagePlaneMemoryRequirementsInfo;
     const void* pNext = {};
-    VULKAN_HPP_NAMESPACE::ImageAspectFlagBits planeAspect = {};
+    VULKAN_HPP_NAMESPACE::ImageAspectFlagBits planeAspect = VULKAN_HPP_NAMESPACE::ImageAspectFlagBits::eColor;
   };
   static_assert( sizeof( ImagePlaneMemoryRequirementsInfo ) == sizeof( VkImagePlaneMemoryRequirementsInfo ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<ImagePlaneMemoryRequirementsInfo>::value, "struct wrapper is not a standard layout!" );
@@ -37236,7 +37236,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ImageViewASTCDecodeModeEXT
   {
-    VULKAN_HPP_CONSTEXPR ImageViewASTCDecodeModeEXT( VULKAN_HPP_NAMESPACE::Format decodeMode_ = {} ) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR ImageViewASTCDecodeModeEXT( VULKAN_HPP_NAMESPACE::Format decodeMode_ = VULKAN_HPP_NAMESPACE::Format::eUndefined ) VULKAN_HPP_NOEXCEPT
       : decodeMode( decodeMode_ )
     {}
 
@@ -37294,7 +37294,7 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eImageViewAstcDecodeModeEXT;
     const void* pNext = {};
-    VULKAN_HPP_NAMESPACE::Format decodeMode = {};
+    VULKAN_HPP_NAMESPACE::Format decodeMode = VULKAN_HPP_NAMESPACE::Format::eUndefined;
   };
   static_assert( sizeof( ImageViewASTCDecodeModeEXT ) == sizeof( VkImageViewASTCDecodeModeEXT ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<ImageViewASTCDecodeModeEXT>::value, "struct wrapper is not a standard layout!" );
@@ -37303,8 +37303,8 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR ImageViewCreateInfo( VULKAN_HPP_NAMESPACE::ImageViewCreateFlags flags_ = {},
                                               VULKAN_HPP_NAMESPACE::Image image_ = {},
-                                              VULKAN_HPP_NAMESPACE::ImageViewType viewType_ = {},
-                                              VULKAN_HPP_NAMESPACE::Format format_ = {},
+                                              VULKAN_HPP_NAMESPACE::ImageViewType viewType_ = VULKAN_HPP_NAMESPACE::ImageViewType::e1D,
+                                              VULKAN_HPP_NAMESPACE::Format format_ = VULKAN_HPP_NAMESPACE::Format::eUndefined,
                                               VULKAN_HPP_NAMESPACE::ComponentMapping components_ = {},
                                               VULKAN_HPP_NAMESPACE::ImageSubresourceRange subresourceRange_ = {} ) VULKAN_HPP_NOEXCEPT
       : flags( flags_ )
@@ -37406,8 +37406,8 @@ namespace VULKAN_HPP_NAMESPACE
     const void* pNext = {};
     VULKAN_HPP_NAMESPACE::ImageViewCreateFlags flags = {};
     VULKAN_HPP_NAMESPACE::Image image = {};
-    VULKAN_HPP_NAMESPACE::ImageViewType viewType = {};
-    VULKAN_HPP_NAMESPACE::Format format = {};
+    VULKAN_HPP_NAMESPACE::ImageViewType viewType = VULKAN_HPP_NAMESPACE::ImageViewType::e1D;
+    VULKAN_HPP_NAMESPACE::Format format = VULKAN_HPP_NAMESPACE::Format::eUndefined;
     VULKAN_HPP_NAMESPACE::ComponentMapping components = {};
     VULKAN_HPP_NAMESPACE::ImageSubresourceRange subresourceRange = {};
   };
@@ -37417,7 +37417,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct ImageViewHandleInfoNVX
   {
     VULKAN_HPP_CONSTEXPR ImageViewHandleInfoNVX( VULKAN_HPP_NAMESPACE::ImageView imageView_ = {},
-                                                 VULKAN_HPP_NAMESPACE::DescriptorType descriptorType_ = {},
+                                                 VULKAN_HPP_NAMESPACE::DescriptorType descriptorType_ = VULKAN_HPP_NAMESPACE::DescriptorType::eSampler,
                                                  VULKAN_HPP_NAMESPACE::Sampler sampler_ = {} ) VULKAN_HPP_NOEXCEPT
       : imageView( imageView_ )
       , descriptorType( descriptorType_ )
@@ -37493,7 +37493,7 @@ namespace VULKAN_HPP_NAMESPACE
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eImageViewHandleInfoNVX;
     const void* pNext = {};
     VULKAN_HPP_NAMESPACE::ImageView imageView = {};
-    VULKAN_HPP_NAMESPACE::DescriptorType descriptorType = {};
+    VULKAN_HPP_NAMESPACE::DescriptorType descriptorType = VULKAN_HPP_NAMESPACE::DescriptorType::eSampler;
     VULKAN_HPP_NAMESPACE::Sampler sampler = {};
   };
   static_assert( sizeof( ImageViewHandleInfoNVX ) == sizeof( VkImageViewHandleInfoNVX ), "struct and wrapper have different size!" );
@@ -37636,7 +37636,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR ImportFenceFdInfoKHR( VULKAN_HPP_NAMESPACE::Fence fence_ = {},
                                                VULKAN_HPP_NAMESPACE::FenceImportFlags flags_ = {},
-                                               VULKAN_HPP_NAMESPACE::ExternalFenceHandleTypeFlagBits handleType_ = {},
+                                               VULKAN_HPP_NAMESPACE::ExternalFenceHandleTypeFlagBits handleType_ = VULKAN_HPP_NAMESPACE::ExternalFenceHandleTypeFlagBits::eOpaqueFd,
                                                int fd_ = {} ) VULKAN_HPP_NOEXCEPT
       : fence( fence_ )
       , flags( flags_ )
@@ -37721,7 +37721,7 @@ namespace VULKAN_HPP_NAMESPACE
     const void* pNext = {};
     VULKAN_HPP_NAMESPACE::Fence fence = {};
     VULKAN_HPP_NAMESPACE::FenceImportFlags flags = {};
-    VULKAN_HPP_NAMESPACE::ExternalFenceHandleTypeFlagBits handleType = {};
+    VULKAN_HPP_NAMESPACE::ExternalFenceHandleTypeFlagBits handleType = VULKAN_HPP_NAMESPACE::ExternalFenceHandleTypeFlagBits::eOpaqueFd;
     int fd = {};
   };
   static_assert( sizeof( ImportFenceFdInfoKHR ) == sizeof( VkImportFenceFdInfoKHR ), "struct and wrapper have different size!" );
@@ -37733,7 +37733,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR ImportFenceWin32HandleInfoKHR( VULKAN_HPP_NAMESPACE::Fence fence_ = {},
                                                         VULKAN_HPP_NAMESPACE::FenceImportFlags flags_ = {},
-                                                        VULKAN_HPP_NAMESPACE::ExternalFenceHandleTypeFlagBits handleType_ = {},
+                                                        VULKAN_HPP_NAMESPACE::ExternalFenceHandleTypeFlagBits handleType_ = VULKAN_HPP_NAMESPACE::ExternalFenceHandleTypeFlagBits::eOpaqueFd,
                                                         HANDLE handle_ = {},
                                                         LPCWSTR name_ = {} ) VULKAN_HPP_NOEXCEPT
       : fence( fence_ )
@@ -37827,7 +37827,7 @@ namespace VULKAN_HPP_NAMESPACE
     const void* pNext = {};
     VULKAN_HPP_NAMESPACE::Fence fence = {};
     VULKAN_HPP_NAMESPACE::FenceImportFlags flags = {};
-    VULKAN_HPP_NAMESPACE::ExternalFenceHandleTypeFlagBits handleType = {};
+    VULKAN_HPP_NAMESPACE::ExternalFenceHandleTypeFlagBits handleType = VULKAN_HPP_NAMESPACE::ExternalFenceHandleTypeFlagBits::eOpaqueFd;
     HANDLE handle = {};
     LPCWSTR name = {};
   };
@@ -37837,7 +37837,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ImportMemoryFdInfoKHR
   {
-    VULKAN_HPP_CONSTEXPR ImportMemoryFdInfoKHR( VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits handleType_ = {},
+    VULKAN_HPP_CONSTEXPR ImportMemoryFdInfoKHR( VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits handleType_ = VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits::eOpaqueFd,
                                                 int fd_ = {} ) VULKAN_HPP_NOEXCEPT
       : handleType( handleType_ )
       , fd( fd_ )
@@ -37904,7 +37904,7 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eImportMemoryFdInfoKHR;
     const void* pNext = {};
-    VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits handleType = {};
+    VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits handleType = VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits::eOpaqueFd;
     int fd = {};
   };
   static_assert( sizeof( ImportMemoryFdInfoKHR ) == sizeof( VkImportMemoryFdInfoKHR ), "struct and wrapper have different size!" );
@@ -37912,7 +37912,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ImportMemoryHostPointerInfoEXT
   {
-    VULKAN_HPP_CONSTEXPR ImportMemoryHostPointerInfoEXT( VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits handleType_ = {},
+    VULKAN_HPP_CONSTEXPR ImportMemoryHostPointerInfoEXT( VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits handleType_ = VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits::eOpaqueFd,
                                                          void* pHostPointer_ = {} ) VULKAN_HPP_NOEXCEPT
       : handleType( handleType_ )
       , pHostPointer( pHostPointer_ )
@@ -37979,7 +37979,7 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eImportMemoryHostPointerInfoEXT;
     const void* pNext = {};
-    VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits handleType = {};
+    VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits handleType = VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits::eOpaqueFd;
     void* pHostPointer = {};
   };
   static_assert( sizeof( ImportMemoryHostPointerInfoEXT ) == sizeof( VkImportMemoryHostPointerInfoEXT ), "struct and wrapper have different size!" );
@@ -37989,7 +37989,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ImportMemoryWin32HandleInfoKHR
   {
-    VULKAN_HPP_CONSTEXPR ImportMemoryWin32HandleInfoKHR( VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits handleType_ = {},
+    VULKAN_HPP_CONSTEXPR ImportMemoryWin32HandleInfoKHR( VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits handleType_ = VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits::eOpaqueFd,
                                                          HANDLE handle_ = {},
                                                          LPCWSTR name_ = {} ) VULKAN_HPP_NOEXCEPT
       : handleType( handleType_ )
@@ -38065,7 +38065,7 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eImportMemoryWin32HandleInfoKHR;
     const void* pNext = {};
-    VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits handleType = {};
+    VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits handleType = VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits::eOpaqueFd;
     HANDLE handle = {};
     LPCWSTR name = {};
   };
@@ -38155,7 +38155,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR ImportSemaphoreFdInfoKHR( VULKAN_HPP_NAMESPACE::Semaphore semaphore_ = {},
                                                    VULKAN_HPP_NAMESPACE::SemaphoreImportFlags flags_ = {},
-                                                   VULKAN_HPP_NAMESPACE::ExternalSemaphoreHandleTypeFlagBits handleType_ = {},
+                                                   VULKAN_HPP_NAMESPACE::ExternalSemaphoreHandleTypeFlagBits handleType_ = VULKAN_HPP_NAMESPACE::ExternalSemaphoreHandleTypeFlagBits::eOpaqueFd,
                                                    int fd_ = {} ) VULKAN_HPP_NOEXCEPT
       : semaphore( semaphore_ )
       , flags( flags_ )
@@ -38240,7 +38240,7 @@ namespace VULKAN_HPP_NAMESPACE
     const void* pNext = {};
     VULKAN_HPP_NAMESPACE::Semaphore semaphore = {};
     VULKAN_HPP_NAMESPACE::SemaphoreImportFlags flags = {};
-    VULKAN_HPP_NAMESPACE::ExternalSemaphoreHandleTypeFlagBits handleType = {};
+    VULKAN_HPP_NAMESPACE::ExternalSemaphoreHandleTypeFlagBits handleType = VULKAN_HPP_NAMESPACE::ExternalSemaphoreHandleTypeFlagBits::eOpaqueFd;
     int fd = {};
   };
   static_assert( sizeof( ImportSemaphoreFdInfoKHR ) == sizeof( VkImportSemaphoreFdInfoKHR ), "struct and wrapper have different size!" );
@@ -38252,7 +38252,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR ImportSemaphoreWin32HandleInfoKHR( VULKAN_HPP_NAMESPACE::Semaphore semaphore_ = {},
                                                             VULKAN_HPP_NAMESPACE::SemaphoreImportFlags flags_ = {},
-                                                            VULKAN_HPP_NAMESPACE::ExternalSemaphoreHandleTypeFlagBits handleType_ = {},
+                                                            VULKAN_HPP_NAMESPACE::ExternalSemaphoreHandleTypeFlagBits handleType_ = VULKAN_HPP_NAMESPACE::ExternalSemaphoreHandleTypeFlagBits::eOpaqueFd,
                                                             HANDLE handle_ = {},
                                                             LPCWSTR name_ = {} ) VULKAN_HPP_NOEXCEPT
       : semaphore( semaphore_ )
@@ -38346,7 +38346,7 @@ namespace VULKAN_HPP_NAMESPACE
     const void* pNext = {};
     VULKAN_HPP_NAMESPACE::Semaphore semaphore = {};
     VULKAN_HPP_NAMESPACE::SemaphoreImportFlags flags = {};
-    VULKAN_HPP_NAMESPACE::ExternalSemaphoreHandleTypeFlagBits handleType = {};
+    VULKAN_HPP_NAMESPACE::ExternalSemaphoreHandleTypeFlagBits handleType = VULKAN_HPP_NAMESPACE::ExternalSemaphoreHandleTypeFlagBits::eOpaqueFd;
     HANDLE handle = {};
     LPCWSTR name = {};
   };
@@ -38356,7 +38356,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct IndirectCommandsLayoutTokenNVX
   {
-    VULKAN_HPP_CONSTEXPR IndirectCommandsLayoutTokenNVX( VULKAN_HPP_NAMESPACE::IndirectCommandsTokenTypeNVX tokenType_ = {},
+    VULKAN_HPP_CONSTEXPR IndirectCommandsLayoutTokenNVX( VULKAN_HPP_NAMESPACE::IndirectCommandsTokenTypeNVX tokenType_ = VULKAN_HPP_NAMESPACE::IndirectCommandsTokenTypeNVX::ePipeline,
                                                          uint32_t bindingUnit_ = {},
                                                          uint32_t dynamicCount_ = {},
                                                          uint32_t divisor_ = {} ) VULKAN_HPP_NOEXCEPT
@@ -38425,7 +38425,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
   public:
-    VULKAN_HPP_NAMESPACE::IndirectCommandsTokenTypeNVX tokenType = {};
+    VULKAN_HPP_NAMESPACE::IndirectCommandsTokenTypeNVX tokenType = VULKAN_HPP_NAMESPACE::IndirectCommandsTokenTypeNVX::ePipeline;
     uint32_t bindingUnit = {};
     uint32_t dynamicCount = {};
     uint32_t divisor = {};
@@ -38435,7 +38435,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct IndirectCommandsLayoutCreateInfoNVX
   {
-    VULKAN_HPP_CONSTEXPR IndirectCommandsLayoutCreateInfoNVX( VULKAN_HPP_NAMESPACE::PipelineBindPoint pipelineBindPoint_ = {},
+    VULKAN_HPP_CONSTEXPR IndirectCommandsLayoutCreateInfoNVX( VULKAN_HPP_NAMESPACE::PipelineBindPoint pipelineBindPoint_ = VULKAN_HPP_NAMESPACE::PipelineBindPoint::eGraphics,
                                                               VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutUsageFlagsNVX flags_ = {},
                                                               uint32_t tokenCount_ = {},
                                                               const VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutTokenNVX* pTokens_ = {} ) VULKAN_HPP_NOEXCEPT
@@ -38520,7 +38520,7 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eIndirectCommandsLayoutCreateInfoNVX;
     const void* pNext = {};
-    VULKAN_HPP_NAMESPACE::PipelineBindPoint pipelineBindPoint = {};
+    VULKAN_HPP_NAMESPACE::PipelineBindPoint pipelineBindPoint = VULKAN_HPP_NAMESPACE::PipelineBindPoint::eGraphics;
     VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutUsageFlagsNVX flags = {};
     uint32_t tokenCount = {};
     const VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutTokenNVX* pTokens = {};
@@ -39479,7 +39479,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct MemoryGetFdInfoKHR
   {
     VULKAN_HPP_CONSTEXPR MemoryGetFdInfoKHR( VULKAN_HPP_NAMESPACE::DeviceMemory memory_ = {},
-                                             VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits handleType_ = {} ) VULKAN_HPP_NOEXCEPT
+                                             VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits handleType_ = VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits::eOpaqueFd ) VULKAN_HPP_NOEXCEPT
       : memory( memory_ )
       , handleType( handleType_ )
     {}
@@ -39546,7 +39546,7 @@ namespace VULKAN_HPP_NAMESPACE
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eMemoryGetFdInfoKHR;
     const void* pNext = {};
     VULKAN_HPP_NAMESPACE::DeviceMemory memory = {};
-    VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits handleType = {};
+    VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits handleType = VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits::eOpaqueFd;
   };
   static_assert( sizeof( MemoryGetFdInfoKHR ) == sizeof( VkMemoryGetFdInfoKHR ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<MemoryGetFdInfoKHR>::value, "struct wrapper is not a standard layout!" );
@@ -39556,7 +39556,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct MemoryGetWin32HandleInfoKHR
   {
     VULKAN_HPP_CONSTEXPR MemoryGetWin32HandleInfoKHR( VULKAN_HPP_NAMESPACE::DeviceMemory memory_ = {},
-                                                      VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits handleType_ = {} ) VULKAN_HPP_NOEXCEPT
+                                                      VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits handleType_ = VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits::eOpaqueFd ) VULKAN_HPP_NOEXCEPT
       : memory( memory_ )
       , handleType( handleType_ )
     {}
@@ -39623,7 +39623,7 @@ namespace VULKAN_HPP_NAMESPACE
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eMemoryGetWin32HandleInfoKHR;
     const void* pNext = {};
     VULKAN_HPP_NAMESPACE::DeviceMemory memory = {};
-    VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits handleType = {};
+    VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits handleType = VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits::eOpaqueFd;
   };
   static_assert( sizeof( MemoryGetWin32HandleInfoKHR ) == sizeof( VkMemoryGetWin32HandleInfoKHR ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<MemoryGetWin32HandleInfoKHR>::value, "struct wrapper is not a standard layout!" );
@@ -40344,7 +40344,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ObjectTableEntryNVX
   {
-    VULKAN_HPP_CONSTEXPR ObjectTableEntryNVX( VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX type_ = {},
+    VULKAN_HPP_CONSTEXPR ObjectTableEntryNVX( VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX type_ = VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX::eDescriptorSet,
                                               VULKAN_HPP_NAMESPACE::ObjectEntryUsageFlagsNVX flags_ = {} ) VULKAN_HPP_NOEXCEPT
       : type( type_ )
       , flags( flags_ )
@@ -40395,7 +40395,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
   public:
-    VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX type = {};
+    VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX type = VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX::eDescriptorSet;
     VULKAN_HPP_NAMESPACE::ObjectEntryUsageFlagsNVX flags = {};
   };
   static_assert( sizeof( ObjectTableEntryNVX ) == sizeof( VkObjectTableEntryNVX ), "struct and wrapper have different size!" );
@@ -40403,7 +40403,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ObjectTableDescriptorSetEntryNVX
   {
-    VULKAN_HPP_CONSTEXPR ObjectTableDescriptorSetEntryNVX( VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX type_ = {},
+    VULKAN_HPP_CONSTEXPR ObjectTableDescriptorSetEntryNVX( VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX type_ = VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX::eDescriptorSet,
                                                            VULKAN_HPP_NAMESPACE::ObjectEntryUsageFlagsNVX flags_ = {},
                                                            VULKAN_HPP_NAMESPACE::PipelineLayout pipelineLayout_ = {},
                                                            VULKAN_HPP_NAMESPACE::DescriptorSet descriptorSet_ = {} ) VULKAN_HPP_NOEXCEPT
@@ -40481,7 +40481,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
   public:
-    VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX type = {};
+    VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX type = VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX::eDescriptorSet;
     VULKAN_HPP_NAMESPACE::ObjectEntryUsageFlagsNVX flags = {};
     VULKAN_HPP_NAMESPACE::PipelineLayout pipelineLayout = {};
     VULKAN_HPP_NAMESPACE::DescriptorSet descriptorSet = {};
@@ -40491,10 +40491,10 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ObjectTableIndexBufferEntryNVX
   {
-    VULKAN_HPP_CONSTEXPR ObjectTableIndexBufferEntryNVX( VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX type_ = {},
+    VULKAN_HPP_CONSTEXPR ObjectTableIndexBufferEntryNVX( VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX type_ = VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX::eDescriptorSet,
                                                          VULKAN_HPP_NAMESPACE::ObjectEntryUsageFlagsNVX flags_ = {},
                                                          VULKAN_HPP_NAMESPACE::Buffer buffer_ = {},
-                                                         VULKAN_HPP_NAMESPACE::IndexType indexType_ = {} ) VULKAN_HPP_NOEXCEPT
+                                                         VULKAN_HPP_NAMESPACE::IndexType indexType_ = VULKAN_HPP_NAMESPACE::IndexType::eUint16 ) VULKAN_HPP_NOEXCEPT
       : type( type_ )
       , flags( flags_ )
       , buffer( buffer_ )
@@ -40503,7 +40503,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     explicit ObjectTableIndexBufferEntryNVX( ObjectTableEntryNVX const& objectTableEntryNVX,
                                              VULKAN_HPP_NAMESPACE::Buffer buffer_ = {},
-                                             VULKAN_HPP_NAMESPACE::IndexType indexType_ = {} )
+                                             VULKAN_HPP_NAMESPACE::IndexType indexType_ = VULKAN_HPP_NAMESPACE::IndexType::eUint16 )
       : type( objectTableEntryNVX.type )
       , flags( objectTableEntryNVX.flags )
       , buffer( buffer_ )
@@ -40569,17 +40569,17 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
   public:
-    VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX type = {};
+    VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX type = VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX::eDescriptorSet;
     VULKAN_HPP_NAMESPACE::ObjectEntryUsageFlagsNVX flags = {};
     VULKAN_HPP_NAMESPACE::Buffer buffer = {};
-    VULKAN_HPP_NAMESPACE::IndexType indexType = {};
+    VULKAN_HPP_NAMESPACE::IndexType indexType = VULKAN_HPP_NAMESPACE::IndexType::eUint16;
   };
   static_assert( sizeof( ObjectTableIndexBufferEntryNVX ) == sizeof( VkObjectTableIndexBufferEntryNVX ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<ObjectTableIndexBufferEntryNVX>::value, "struct wrapper is not a standard layout!" );
 
   struct ObjectTablePipelineEntryNVX
   {
-    VULKAN_HPP_CONSTEXPR ObjectTablePipelineEntryNVX( VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX type_ = {},
+    VULKAN_HPP_CONSTEXPR ObjectTablePipelineEntryNVX( VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX type_ = VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX::eDescriptorSet,
                                                       VULKAN_HPP_NAMESPACE::ObjectEntryUsageFlagsNVX flags_ = {},
                                                       VULKAN_HPP_NAMESPACE::Pipeline pipeline_ = {} ) VULKAN_HPP_NOEXCEPT
       : type( type_ )
@@ -40646,7 +40646,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
   public:
-    VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX type = {};
+    VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX type = VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX::eDescriptorSet;
     VULKAN_HPP_NAMESPACE::ObjectEntryUsageFlagsNVX flags = {};
     VULKAN_HPP_NAMESPACE::Pipeline pipeline = {};
   };
@@ -40655,7 +40655,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ObjectTablePushConstantEntryNVX
   {
-    VULKAN_HPP_CONSTEXPR ObjectTablePushConstantEntryNVX( VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX type_ = {},
+    VULKAN_HPP_CONSTEXPR ObjectTablePushConstantEntryNVX( VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX type_ = VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX::eDescriptorSet,
                                                           VULKAN_HPP_NAMESPACE::ObjectEntryUsageFlagsNVX flags_ = {},
                                                           VULKAN_HPP_NAMESPACE::PipelineLayout pipelineLayout_ = {},
                                                           VULKAN_HPP_NAMESPACE::ShaderStageFlags stageFlags_ = {} ) VULKAN_HPP_NOEXCEPT
@@ -40733,7 +40733,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
   public:
-    VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX type = {};
+    VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX type = VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX::eDescriptorSet;
     VULKAN_HPP_NAMESPACE::ObjectEntryUsageFlagsNVX flags = {};
     VULKAN_HPP_NAMESPACE::PipelineLayout pipelineLayout = {};
     VULKAN_HPP_NAMESPACE::ShaderStageFlags stageFlags = {};
@@ -40743,7 +40743,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ObjectTableVertexBufferEntryNVX
   {
-    VULKAN_HPP_CONSTEXPR ObjectTableVertexBufferEntryNVX( VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX type_ = {},
+    VULKAN_HPP_CONSTEXPR ObjectTableVertexBufferEntryNVX( VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX type_ = VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX::eDescriptorSet,
                                                           VULKAN_HPP_NAMESPACE::ObjectEntryUsageFlagsNVX flags_ = {},
                                                           VULKAN_HPP_NAMESPACE::Buffer buffer_ = {} ) VULKAN_HPP_NOEXCEPT
       : type( type_ )
@@ -40810,7 +40810,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
   public:
-    VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX type = {};
+    VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX type = VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX::eDescriptorSet;
     VULKAN_HPP_NAMESPACE::ObjectEntryUsageFlagsNVX flags = {};
     VULKAN_HPP_NAMESPACE::Buffer buffer = {};
   };
@@ -40878,7 +40878,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PerformanceConfigurationAcquireInfoINTEL
   {
-    VULKAN_HPP_CONSTEXPR PerformanceConfigurationAcquireInfoINTEL( VULKAN_HPP_NAMESPACE::PerformanceConfigurationTypeINTEL type_ = {} ) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR PerformanceConfigurationAcquireInfoINTEL( VULKAN_HPP_NAMESPACE::PerformanceConfigurationTypeINTEL type_ = VULKAN_HPP_NAMESPACE::PerformanceConfigurationTypeINTEL::eCommandQueueMetricsDiscoveryActivated ) VULKAN_HPP_NOEXCEPT
       : type( type_ )
     {}
 
@@ -40936,7 +40936,7 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePerformanceConfigurationAcquireInfoINTEL;
     const void* pNext = {};
-    VULKAN_HPP_NAMESPACE::PerformanceConfigurationTypeINTEL type = {};
+    VULKAN_HPP_NAMESPACE::PerformanceConfigurationTypeINTEL type = VULKAN_HPP_NAMESPACE::PerformanceConfigurationTypeINTEL::eCommandQueueMetricsDiscoveryActivated;
   };
   static_assert( sizeof( PerformanceConfigurationAcquireInfoINTEL ) == sizeof( VkPerformanceConfigurationAcquireInfoINTEL ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<PerformanceConfigurationAcquireInfoINTEL>::value, "struct wrapper is not a standard layout!" );
@@ -41012,9 +41012,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PerformanceCounterKHR
   {
-    PerformanceCounterKHR( VULKAN_HPP_NAMESPACE::PerformanceCounterUnitKHR unit_ = {},
-                           VULKAN_HPP_NAMESPACE::PerformanceCounterScopeKHR scope_ = {},
-                           VULKAN_HPP_NAMESPACE::PerformanceCounterStorageKHR storage_ = {},
+    PerformanceCounterKHR( VULKAN_HPP_NAMESPACE::PerformanceCounterUnitKHR unit_ = VULKAN_HPP_NAMESPACE::PerformanceCounterUnitKHR::eGeneric,
+                           VULKAN_HPP_NAMESPACE::PerformanceCounterScopeKHR scope_ = VULKAN_HPP_NAMESPACE::PerformanceCounterScopeKHR::eVkQueryScopeCommandBuffer,
+                           VULKAN_HPP_NAMESPACE::PerformanceCounterStorageKHR storage_ = VULKAN_HPP_NAMESPACE::PerformanceCounterStorageKHR::eInt32,
                            std::array<uint8_t,VK_UUID_SIZE> const& uuid_ = {} ) VULKAN_HPP_NOEXCEPT
       : unit( unit_ )
       , scope( scope_ )
@@ -41069,9 +41069,9 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePerformanceCounterKHR;
     const void* pNext = {};
-    VULKAN_HPP_NAMESPACE::PerformanceCounterUnitKHR unit = {};
-    VULKAN_HPP_NAMESPACE::PerformanceCounterScopeKHR scope = {};
-    VULKAN_HPP_NAMESPACE::PerformanceCounterStorageKHR storage = {};
+    VULKAN_HPP_NAMESPACE::PerformanceCounterUnitKHR unit = VULKAN_HPP_NAMESPACE::PerformanceCounterUnitKHR::eGeneric;
+    VULKAN_HPP_NAMESPACE::PerformanceCounterScopeKHR scope = VULKAN_HPP_NAMESPACE::PerformanceCounterScopeKHR::eVkQueryScopeCommandBuffer;
+    VULKAN_HPP_NAMESPACE::PerformanceCounterStorageKHR storage = VULKAN_HPP_NAMESPACE::PerformanceCounterStorageKHR::eInt32;
     uint8_t uuid[VK_UUID_SIZE] = {};
   };
   static_assert( sizeof( PerformanceCounterKHR ) == sizeof( VkPerformanceCounterKHR ), "struct and wrapper have different size!" );
@@ -41236,7 +41236,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PerformanceOverrideInfoINTEL
   {
-    VULKAN_HPP_CONSTEXPR PerformanceOverrideInfoINTEL( VULKAN_HPP_NAMESPACE::PerformanceOverrideTypeINTEL type_ = {},
+    VULKAN_HPP_CONSTEXPR PerformanceOverrideInfoINTEL( VULKAN_HPP_NAMESPACE::PerformanceOverrideTypeINTEL type_ = VULKAN_HPP_NAMESPACE::PerformanceOverrideTypeINTEL::eNullHardware,
                                                        VULKAN_HPP_NAMESPACE::Bool32 enable_ = {},
                                                        uint64_t parameter_ = {} ) VULKAN_HPP_NOEXCEPT
       : type( type_ )
@@ -41312,7 +41312,7 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePerformanceOverrideInfoINTEL;
     const void* pNext = {};
-    VULKAN_HPP_NAMESPACE::PerformanceOverrideTypeINTEL type = {};
+    VULKAN_HPP_NAMESPACE::PerformanceOverrideTypeINTEL type = VULKAN_HPP_NAMESPACE::PerformanceOverrideTypeINTEL::eNullHardware;
     VULKAN_HPP_NAMESPACE::Bool32 enable = {};
     uint64_t parameter = {};
   };
@@ -41534,7 +41534,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PerformanceValueINTEL
   {
-    PerformanceValueINTEL( VULKAN_HPP_NAMESPACE::PerformanceValueTypeINTEL type_ = {},
+    PerformanceValueINTEL( VULKAN_HPP_NAMESPACE::PerformanceValueTypeINTEL type_ = VULKAN_HPP_NAMESPACE::PerformanceValueTypeINTEL::eUint32,
                            VULKAN_HPP_NAMESPACE::PerformanceValueDataINTEL data_ = {} ) VULKAN_HPP_NOEXCEPT
       : type( type_ )
       , data( data_ )
@@ -41574,7 +41574,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
   public:
-    VULKAN_HPP_NAMESPACE::PerformanceValueTypeINTEL type = {};
+    VULKAN_HPP_NAMESPACE::PerformanceValueTypeINTEL type = VULKAN_HPP_NAMESPACE::PerformanceValueTypeINTEL::eUint32;
     VULKAN_HPP_NAMESPACE::PerformanceValueDataINTEL data = {};
   };
   static_assert( sizeof( PerformanceValueINTEL ) == sizeof( VkPerformanceValueINTEL ), "struct and wrapper have different size!" );
@@ -43337,7 +43337,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceDriverPropertiesKHR
   {
-    PhysicalDeviceDriverPropertiesKHR( VULKAN_HPP_NAMESPACE::DriverIdKHR driverID_ = {},
+    PhysicalDeviceDriverPropertiesKHR( VULKAN_HPP_NAMESPACE::DriverIdKHR driverID_ = VULKAN_HPP_NAMESPACE::DriverIdKHR::eAmdProprietary,
                                        std::array<char,VK_MAX_DRIVER_NAME_SIZE_KHR> const& driverName_ = {},
                                        std::array<char,VK_MAX_DRIVER_INFO_SIZE_KHR> const& driverInfo_ = {},
                                        VULKAN_HPP_NAMESPACE::ConformanceVersionKHR conformanceVersion_ = {} ) VULKAN_HPP_NOEXCEPT
@@ -43395,7 +43395,7 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceDriverPropertiesKHR;
     void* pNext = {};
-    VULKAN_HPP_NAMESPACE::DriverIdKHR driverID = {};
+    VULKAN_HPP_NAMESPACE::DriverIdKHR driverID = VULKAN_HPP_NAMESPACE::DriverIdKHR::eAmdProprietary;
     char driverName[VK_MAX_DRIVER_NAME_SIZE_KHR] = {};
     char driverInfo[VK_MAX_DRIVER_INFO_SIZE_KHR] = {};
     VULKAN_HPP_NAMESPACE::ConformanceVersionKHR conformanceVersion = {};
@@ -43472,7 +43472,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR PhysicalDeviceExternalBufferInfo( VULKAN_HPP_NAMESPACE::BufferCreateFlags flags_ = {},
                                                            VULKAN_HPP_NAMESPACE::BufferUsageFlags usage_ = {},
-                                                           VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits handleType_ = {} ) VULKAN_HPP_NOEXCEPT
+                                                           VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits handleType_ = VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits::eOpaqueFd ) VULKAN_HPP_NOEXCEPT
       : flags( flags_ )
       , usage( usage_ )
       , handleType( handleType_ )
@@ -43548,14 +43548,14 @@ namespace VULKAN_HPP_NAMESPACE
     const void* pNext = {};
     VULKAN_HPP_NAMESPACE::BufferCreateFlags flags = {};
     VULKAN_HPP_NAMESPACE::BufferUsageFlags usage = {};
-    VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits handleType = {};
+    VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits handleType = VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits::eOpaqueFd;
   };
   static_assert( sizeof( PhysicalDeviceExternalBufferInfo ) == sizeof( VkPhysicalDeviceExternalBufferInfo ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<PhysicalDeviceExternalBufferInfo>::value, "struct wrapper is not a standard layout!" );
 
   struct PhysicalDeviceExternalFenceInfo
   {
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceExternalFenceInfo( VULKAN_HPP_NAMESPACE::ExternalFenceHandleTypeFlagBits handleType_ = {} ) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceExternalFenceInfo( VULKAN_HPP_NAMESPACE::ExternalFenceHandleTypeFlagBits handleType_ = VULKAN_HPP_NAMESPACE::ExternalFenceHandleTypeFlagBits::eOpaqueFd ) VULKAN_HPP_NOEXCEPT
       : handleType( handleType_ )
     {}
 
@@ -43613,14 +43613,14 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceExternalFenceInfo;
     const void* pNext = {};
-    VULKAN_HPP_NAMESPACE::ExternalFenceHandleTypeFlagBits handleType = {};
+    VULKAN_HPP_NAMESPACE::ExternalFenceHandleTypeFlagBits handleType = VULKAN_HPP_NAMESPACE::ExternalFenceHandleTypeFlagBits::eOpaqueFd;
   };
   static_assert( sizeof( PhysicalDeviceExternalFenceInfo ) == sizeof( VkPhysicalDeviceExternalFenceInfo ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<PhysicalDeviceExternalFenceInfo>::value, "struct wrapper is not a standard layout!" );
 
   struct PhysicalDeviceExternalImageFormatInfo
   {
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceExternalImageFormatInfo( VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits handleType_ = {} ) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceExternalImageFormatInfo( VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits handleType_ = VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits::eOpaqueFd ) VULKAN_HPP_NOEXCEPT
       : handleType( handleType_ )
     {}
 
@@ -43678,7 +43678,7 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceExternalImageFormatInfo;
     const void* pNext = {};
-    VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits handleType = {};
+    VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits handleType = VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits::eOpaqueFd;
   };
   static_assert( sizeof( PhysicalDeviceExternalImageFormatInfo ) == sizeof( VkPhysicalDeviceExternalImageFormatInfo ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<PhysicalDeviceExternalImageFormatInfo>::value, "struct wrapper is not a standard layout!" );
@@ -43738,7 +43738,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceExternalSemaphoreInfo
   {
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceExternalSemaphoreInfo( VULKAN_HPP_NAMESPACE::ExternalSemaphoreHandleTypeFlagBits handleType_ = {} ) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceExternalSemaphoreInfo( VULKAN_HPP_NAMESPACE::ExternalSemaphoreHandleTypeFlagBits handleType_ = VULKAN_HPP_NAMESPACE::ExternalSemaphoreHandleTypeFlagBits::eOpaqueFd ) VULKAN_HPP_NOEXCEPT
       : handleType( handleType_ )
     {}
 
@@ -43796,7 +43796,7 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceExternalSemaphoreInfo;
     const void* pNext = {};
-    VULKAN_HPP_NAMESPACE::ExternalSemaphoreHandleTypeFlagBits handleType = {};
+    VULKAN_HPP_NAMESPACE::ExternalSemaphoreHandleTypeFlagBits handleType = VULKAN_HPP_NAMESPACE::ExternalSemaphoreHandleTypeFlagBits::eOpaqueFd;
   };
   static_assert( sizeof( PhysicalDeviceExternalSemaphoreInfo ) == sizeof( VkPhysicalDeviceExternalSemaphoreInfo ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<PhysicalDeviceExternalSemaphoreInfo>::value, "struct wrapper is not a standard layout!" );
@@ -43868,8 +43868,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceFloatControlsPropertiesKHR
   {
-    PhysicalDeviceFloatControlsPropertiesKHR( VULKAN_HPP_NAMESPACE::ShaderFloatControlsIndependenceKHR denormBehaviorIndependence_ = {},
-                                              VULKAN_HPP_NAMESPACE::ShaderFloatControlsIndependenceKHR roundingModeIndependence_ = {},
+    PhysicalDeviceFloatControlsPropertiesKHR( VULKAN_HPP_NAMESPACE::ShaderFloatControlsIndependenceKHR denormBehaviorIndependence_ = VULKAN_HPP_NAMESPACE::ShaderFloatControlsIndependenceKHR::e32BitOnly,
+                                              VULKAN_HPP_NAMESPACE::ShaderFloatControlsIndependenceKHR roundingModeIndependence_ = VULKAN_HPP_NAMESPACE::ShaderFloatControlsIndependenceKHR::e32BitOnly,
                                               VULKAN_HPP_NAMESPACE::Bool32 shaderSignedZeroInfNanPreserveFloat16_ = {},
                                               VULKAN_HPP_NAMESPACE::Bool32 shaderSignedZeroInfNanPreserveFloat32_ = {},
                                               VULKAN_HPP_NAMESPACE::Bool32 shaderSignedZeroInfNanPreserveFloat64_ = {},
@@ -43962,8 +43962,8 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceFloatControlsPropertiesKHR;
     void* pNext = {};
-    VULKAN_HPP_NAMESPACE::ShaderFloatControlsIndependenceKHR denormBehaviorIndependence = {};
-    VULKAN_HPP_NAMESPACE::ShaderFloatControlsIndependenceKHR roundingModeIndependence = {};
+    VULKAN_HPP_NAMESPACE::ShaderFloatControlsIndependenceKHR denormBehaviorIndependence = VULKAN_HPP_NAMESPACE::ShaderFloatControlsIndependenceKHR::e32BitOnly;
+    VULKAN_HPP_NAMESPACE::ShaderFloatControlsIndependenceKHR roundingModeIndependence = VULKAN_HPP_NAMESPACE::ShaderFloatControlsIndependenceKHR::e32BitOnly;
     VULKAN_HPP_NAMESPACE::Bool32 shaderSignedZeroInfNanPreserveFloat16 = {};
     VULKAN_HPP_NAMESPACE::Bool32 shaderSignedZeroInfNanPreserveFloat32 = {};
     VULKAN_HPP_NAMESPACE::Bool32 shaderSignedZeroInfNanPreserveFloat64 = {};
@@ -44459,7 +44459,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceImageDrmFormatModifierInfoEXT
   {
     VULKAN_HPP_CONSTEXPR PhysicalDeviceImageDrmFormatModifierInfoEXT( uint64_t drmFormatModifier_ = {},
-                                                                      VULKAN_HPP_NAMESPACE::SharingMode sharingMode_ = {},
+                                                                      VULKAN_HPP_NAMESPACE::SharingMode sharingMode_ = VULKAN_HPP_NAMESPACE::SharingMode::eExclusive,
                                                                       uint32_t queueFamilyIndexCount_ = {},
                                                                       const uint32_t* pQueueFamilyIndices_ = {} ) VULKAN_HPP_NOEXCEPT
       : drmFormatModifier( drmFormatModifier_ )
@@ -44544,7 +44544,7 @@ namespace VULKAN_HPP_NAMESPACE
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceImageDrmFormatModifierInfoEXT;
     const void* pNext = {};
     uint64_t drmFormatModifier = {};
-    VULKAN_HPP_NAMESPACE::SharingMode sharingMode = {};
+    VULKAN_HPP_NAMESPACE::SharingMode sharingMode = VULKAN_HPP_NAMESPACE::SharingMode::eExclusive;
     uint32_t queueFamilyIndexCount = {};
     const uint32_t* pQueueFamilyIndices = {};
   };
@@ -44553,9 +44553,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceImageFormatInfo2
   {
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceImageFormatInfo2( VULKAN_HPP_NAMESPACE::Format format_ = {},
-                                                         VULKAN_HPP_NAMESPACE::ImageType type_ = {},
-                                                         VULKAN_HPP_NAMESPACE::ImageTiling tiling_ = {},
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceImageFormatInfo2( VULKAN_HPP_NAMESPACE::Format format_ = VULKAN_HPP_NAMESPACE::Format::eUndefined,
+                                                         VULKAN_HPP_NAMESPACE::ImageType type_ = VULKAN_HPP_NAMESPACE::ImageType::e1D,
+                                                         VULKAN_HPP_NAMESPACE::ImageTiling tiling_ = VULKAN_HPP_NAMESPACE::ImageTiling::eOptimal,
                                                          VULKAN_HPP_NAMESPACE::ImageUsageFlags usage_ = {},
                                                          VULKAN_HPP_NAMESPACE::ImageCreateFlags flags_ = {} ) VULKAN_HPP_NOEXCEPT
       : format( format_ )
@@ -44647,9 +44647,9 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceImageFormatInfo2;
     const void* pNext = {};
-    VULKAN_HPP_NAMESPACE::Format format = {};
-    VULKAN_HPP_NAMESPACE::ImageType type = {};
-    VULKAN_HPP_NAMESPACE::ImageTiling tiling = {};
+    VULKAN_HPP_NAMESPACE::Format format = VULKAN_HPP_NAMESPACE::Format::eUndefined;
+    VULKAN_HPP_NAMESPACE::ImageType type = VULKAN_HPP_NAMESPACE::ImageType::e1D;
+    VULKAN_HPP_NAMESPACE::ImageTiling tiling = VULKAN_HPP_NAMESPACE::ImageTiling::eOptimal;
     VULKAN_HPP_NAMESPACE::ImageUsageFlags usage = {};
     VULKAN_HPP_NAMESPACE::ImageCreateFlags flags = {};
   };
@@ -44658,7 +44658,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceImageViewImageFormatInfoEXT
   {
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceImageViewImageFormatInfoEXT( VULKAN_HPP_NAMESPACE::ImageViewType imageViewType_ = {} ) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceImageViewImageFormatInfoEXT( VULKAN_HPP_NAMESPACE::ImageViewType imageViewType_ = VULKAN_HPP_NAMESPACE::ImageViewType::e1D ) VULKAN_HPP_NOEXCEPT
       : imageViewType( imageViewType_ )
     {}
 
@@ -44716,7 +44716,7 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceImageViewImageFormatInfoEXT;
     void* pNext = {};
-    VULKAN_HPP_NAMESPACE::ImageViewType imageViewType = {};
+    VULKAN_HPP_NAMESPACE::ImageViewType imageViewType = VULKAN_HPP_NAMESPACE::ImageViewType::e1D;
   };
   static_assert( sizeof( PhysicalDeviceImageViewImageFormatInfoEXT ) == sizeof( VkPhysicalDeviceImageViewImageFormatInfoEXT ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<PhysicalDeviceImageViewImageFormatInfoEXT>::value, "struct wrapper is not a standard layout!" );
@@ -46560,7 +46560,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDevicePointClippingProperties
   {
-    PhysicalDevicePointClippingProperties( VULKAN_HPP_NAMESPACE::PointClippingBehavior pointClippingBehavior_ = {} ) VULKAN_HPP_NOEXCEPT
+    PhysicalDevicePointClippingProperties( VULKAN_HPP_NAMESPACE::PointClippingBehavior pointClippingBehavior_ = VULKAN_HPP_NAMESPACE::PointClippingBehavior::eAllClipPlanes ) VULKAN_HPP_NOEXCEPT
       : pointClippingBehavior( pointClippingBehavior_ )
     {}
 
@@ -46606,7 +46606,7 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDevicePointClippingProperties;
     void* pNext = {};
-    VULKAN_HPP_NAMESPACE::PointClippingBehavior pointClippingBehavior = {};
+    VULKAN_HPP_NAMESPACE::PointClippingBehavior pointClippingBehavior = VULKAN_HPP_NAMESPACE::PointClippingBehavior::eAllClipPlanes;
   };
   static_assert( sizeof( PhysicalDevicePointClippingProperties ) == sizeof( VkPhysicalDevicePointClippingProperties ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<PhysicalDevicePointClippingProperties>::value, "struct wrapper is not a standard layout!" );
@@ -46676,7 +46676,7 @@ namespace VULKAN_HPP_NAMESPACE
                               uint32_t driverVersion_ = {},
                               uint32_t vendorID_ = {},
                               uint32_t deviceID_ = {},
-                              VULKAN_HPP_NAMESPACE::PhysicalDeviceType deviceType_ = {},
+                              VULKAN_HPP_NAMESPACE::PhysicalDeviceType deviceType_ = VULKAN_HPP_NAMESPACE::PhysicalDeviceType::eOther,
                               std::array<char,VK_MAX_PHYSICAL_DEVICE_NAME_SIZE> const& deviceName_ = {},
                               std::array<uint8_t,VK_UUID_SIZE> const& pipelineCacheUUID_ = {},
                               VULKAN_HPP_NAMESPACE::PhysicalDeviceLimits limits_ = {},
@@ -46739,7 +46739,7 @@ namespace VULKAN_HPP_NAMESPACE
     uint32_t driverVersion = {};
     uint32_t vendorID = {};
     uint32_t deviceID = {};
-    VULKAN_HPP_NAMESPACE::PhysicalDeviceType deviceType = {};
+    VULKAN_HPP_NAMESPACE::PhysicalDeviceType deviceType = VULKAN_HPP_NAMESPACE::PhysicalDeviceType::eOther;
     char deviceName[VK_MAX_PHYSICAL_DEVICE_NAME_SIZE] = {};
     uint8_t pipelineCacheUUID[VK_UUID_SIZE] = {};
     VULKAN_HPP_NAMESPACE::PhysicalDeviceLimits limits = {};
@@ -48413,11 +48413,11 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PhysicalDeviceSparseImageFormatInfo2
   {
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceSparseImageFormatInfo2( VULKAN_HPP_NAMESPACE::Format format_ = {},
-                                                               VULKAN_HPP_NAMESPACE::ImageType type_ = {},
-                                                               VULKAN_HPP_NAMESPACE::SampleCountFlagBits samples_ = {},
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceSparseImageFormatInfo2( VULKAN_HPP_NAMESPACE::Format format_ = VULKAN_HPP_NAMESPACE::Format::eUndefined,
+                                                               VULKAN_HPP_NAMESPACE::ImageType type_ = VULKAN_HPP_NAMESPACE::ImageType::e1D,
+                                                               VULKAN_HPP_NAMESPACE::SampleCountFlagBits samples_ = VULKAN_HPP_NAMESPACE::SampleCountFlagBits::e1,
                                                                VULKAN_HPP_NAMESPACE::ImageUsageFlags usage_ = {},
-                                                               VULKAN_HPP_NAMESPACE::ImageTiling tiling_ = {} ) VULKAN_HPP_NOEXCEPT
+                                                               VULKAN_HPP_NAMESPACE::ImageTiling tiling_ = VULKAN_HPP_NAMESPACE::ImageTiling::eOptimal ) VULKAN_HPP_NOEXCEPT
       : format( format_ )
       , type( type_ )
       , samples( samples_ )
@@ -48507,11 +48507,11 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceSparseImageFormatInfo2;
     const void* pNext = {};
-    VULKAN_HPP_NAMESPACE::Format format = {};
-    VULKAN_HPP_NAMESPACE::ImageType type = {};
-    VULKAN_HPP_NAMESPACE::SampleCountFlagBits samples = {};
+    VULKAN_HPP_NAMESPACE::Format format = VULKAN_HPP_NAMESPACE::Format::eUndefined;
+    VULKAN_HPP_NAMESPACE::ImageType type = VULKAN_HPP_NAMESPACE::ImageType::e1D;
+    VULKAN_HPP_NAMESPACE::SampleCountFlagBits samples = VULKAN_HPP_NAMESPACE::SampleCountFlagBits::e1;
     VULKAN_HPP_NAMESPACE::ImageUsageFlags usage = {};
-    VULKAN_HPP_NAMESPACE::ImageTiling tiling = {};
+    VULKAN_HPP_NAMESPACE::ImageTiling tiling = VULKAN_HPP_NAMESPACE::ImageTiling::eOptimal;
   };
   static_assert( sizeof( PhysicalDeviceSparseImageFormatInfo2 ) == sizeof( VkPhysicalDeviceSparseImageFormatInfo2 ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<PhysicalDeviceSparseImageFormatInfo2>::value, "struct wrapper is not a standard layout!" );
@@ -49844,7 +49844,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR PipelineColorBlendAdvancedStateCreateInfoEXT( VULKAN_HPP_NAMESPACE::Bool32 srcPremultiplied_ = {},
                                                                        VULKAN_HPP_NAMESPACE::Bool32 dstPremultiplied_ = {},
-                                                                       VULKAN_HPP_NAMESPACE::BlendOverlapEXT blendOverlap_ = {} ) VULKAN_HPP_NOEXCEPT
+                                                                       VULKAN_HPP_NAMESPACE::BlendOverlapEXT blendOverlap_ = VULKAN_HPP_NAMESPACE::BlendOverlapEXT::eUncorrelated ) VULKAN_HPP_NOEXCEPT
       : srcPremultiplied( srcPremultiplied_ )
       , dstPremultiplied( dstPremultiplied_ )
       , blendOverlap( blendOverlap_ )
@@ -49920,7 +49920,7 @@ namespace VULKAN_HPP_NAMESPACE
     const void* pNext = {};
     VULKAN_HPP_NAMESPACE::Bool32 srcPremultiplied = {};
     VULKAN_HPP_NAMESPACE::Bool32 dstPremultiplied = {};
-    VULKAN_HPP_NAMESPACE::BlendOverlapEXT blendOverlap = {};
+    VULKAN_HPP_NAMESPACE::BlendOverlapEXT blendOverlap = VULKAN_HPP_NAMESPACE::BlendOverlapEXT::eUncorrelated;
   };
   static_assert( sizeof( PipelineColorBlendAdvancedStateCreateInfoEXT ) == sizeof( VkPipelineColorBlendAdvancedStateCreateInfoEXT ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<PipelineColorBlendAdvancedStateCreateInfoEXT>::value, "struct wrapper is not a standard layout!" );
@@ -49993,7 +49993,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct PipelineCoverageModulationStateCreateInfoNV
   {
     VULKAN_HPP_CONSTEXPR PipelineCoverageModulationStateCreateInfoNV( VULKAN_HPP_NAMESPACE::PipelineCoverageModulationStateCreateFlagsNV flags_ = {},
-                                                                      VULKAN_HPP_NAMESPACE::CoverageModulationModeNV coverageModulationMode_ = {},
+                                                                      VULKAN_HPP_NAMESPACE::CoverageModulationModeNV coverageModulationMode_ = VULKAN_HPP_NAMESPACE::CoverageModulationModeNV::eNone,
                                                                       VULKAN_HPP_NAMESPACE::Bool32 coverageModulationTableEnable_ = {},
                                                                       uint32_t coverageModulationTableCount_ = {},
                                                                       const float* pCoverageModulationTable_ = {} ) VULKAN_HPP_NOEXCEPT
@@ -50087,7 +50087,7 @@ namespace VULKAN_HPP_NAMESPACE
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineCoverageModulationStateCreateInfoNV;
     const void* pNext = {};
     VULKAN_HPP_NAMESPACE::PipelineCoverageModulationStateCreateFlagsNV flags = {};
-    VULKAN_HPP_NAMESPACE::CoverageModulationModeNV coverageModulationMode = {};
+    VULKAN_HPP_NAMESPACE::CoverageModulationModeNV coverageModulationMode = VULKAN_HPP_NAMESPACE::CoverageModulationModeNV::eNone;
     VULKAN_HPP_NAMESPACE::Bool32 coverageModulationTableEnable = {};
     uint32_t coverageModulationTableCount = {};
     const float* pCoverageModulationTable = {};
@@ -50098,7 +50098,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct PipelineCoverageReductionStateCreateInfoNV
   {
     VULKAN_HPP_CONSTEXPR PipelineCoverageReductionStateCreateInfoNV( VULKAN_HPP_NAMESPACE::PipelineCoverageReductionStateCreateFlagsNV flags_ = {},
-                                                                     VULKAN_HPP_NAMESPACE::CoverageReductionModeNV coverageReductionMode_ = {} ) VULKAN_HPP_NOEXCEPT
+                                                                     VULKAN_HPP_NAMESPACE::CoverageReductionModeNV coverageReductionMode_ = VULKAN_HPP_NAMESPACE::CoverageReductionModeNV::eMerge ) VULKAN_HPP_NOEXCEPT
       : flags( flags_ )
       , coverageReductionMode( coverageReductionMode_ )
     {}
@@ -50165,7 +50165,7 @@ namespace VULKAN_HPP_NAMESPACE
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineCoverageReductionStateCreateInfoNV;
     const void* pNext = {};
     VULKAN_HPP_NAMESPACE::PipelineCoverageReductionStateCreateFlagsNV flags = {};
-    VULKAN_HPP_NAMESPACE::CoverageReductionModeNV coverageReductionMode = {};
+    VULKAN_HPP_NAMESPACE::CoverageReductionModeNV coverageReductionMode = VULKAN_HPP_NAMESPACE::CoverageReductionModeNV::eMerge;
   };
   static_assert( sizeof( PipelineCoverageReductionStateCreateInfoNV ) == sizeof( VkPipelineCoverageReductionStateCreateInfoNV ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<PipelineCoverageReductionStateCreateInfoNV>::value, "struct wrapper is not a standard layout!" );
@@ -50390,7 +50390,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct PipelineDiscardRectangleStateCreateInfoEXT
   {
     VULKAN_HPP_CONSTEXPR PipelineDiscardRectangleStateCreateInfoEXT( VULKAN_HPP_NAMESPACE::PipelineDiscardRectangleStateCreateFlagsEXT flags_ = {},
-                                                                     VULKAN_HPP_NAMESPACE::DiscardRectangleModeEXT discardRectangleMode_ = {},
+                                                                     VULKAN_HPP_NAMESPACE::DiscardRectangleModeEXT discardRectangleMode_ = VULKAN_HPP_NAMESPACE::DiscardRectangleModeEXT::eInclusive,
                                                                      uint32_t discardRectangleCount_ = {},
                                                                      const VULKAN_HPP_NAMESPACE::Rect2D* pDiscardRectangles_ = {} ) VULKAN_HPP_NOEXCEPT
       : flags( flags_ )
@@ -50475,7 +50475,7 @@ namespace VULKAN_HPP_NAMESPACE
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineDiscardRectangleStateCreateInfoEXT;
     const void* pNext = {};
     VULKAN_HPP_NAMESPACE::PipelineDiscardRectangleStateCreateFlagsEXT flags = {};
-    VULKAN_HPP_NAMESPACE::DiscardRectangleModeEXT discardRectangleMode = {};
+    VULKAN_HPP_NAMESPACE::DiscardRectangleModeEXT discardRectangleMode = VULKAN_HPP_NAMESPACE::DiscardRectangleModeEXT::eInclusive;
     uint32_t discardRectangleCount = {};
     const VULKAN_HPP_NAMESPACE::Rect2D* pDiscardRectangles = {};
   };
@@ -50732,7 +50732,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
     PipelineExecutableStatisticKHR( std::array<char,VK_MAX_DESCRIPTION_SIZE> const& name_ = {},
                                     std::array<char,VK_MAX_DESCRIPTION_SIZE> const& description_ = {},
-                                    VULKAN_HPP_NAMESPACE::PipelineExecutableStatisticFormatKHR format_ = {},
+                                    VULKAN_HPP_NAMESPACE::PipelineExecutableStatisticFormatKHR format_ = VULKAN_HPP_NAMESPACE::PipelineExecutableStatisticFormatKHR::eBool32,
                                     VULKAN_HPP_NAMESPACE::PipelineExecutableStatisticValueKHR value_ = {} ) VULKAN_HPP_NOEXCEPT
       : name{}
       , description{}
@@ -50775,7 +50775,7 @@ namespace VULKAN_HPP_NAMESPACE
     void* pNext = {};
     char name[VK_MAX_DESCRIPTION_SIZE] = {};
     char description[VK_MAX_DESCRIPTION_SIZE] = {};
-    VULKAN_HPP_NAMESPACE::PipelineExecutableStatisticFormatKHR format = {};
+    VULKAN_HPP_NAMESPACE::PipelineExecutableStatisticFormatKHR format = VULKAN_HPP_NAMESPACE::PipelineExecutableStatisticFormatKHR::eBool32;
     VULKAN_HPP_NAMESPACE::PipelineExecutableStatisticValueKHR value = {};
   };
   static_assert( sizeof( PipelineExecutableStatisticKHR ) == sizeof( VkPipelineExecutableStatisticKHR ), "struct and wrapper have different size!" );
@@ -51023,7 +51023,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct PipelineRasterizationConservativeStateCreateInfoEXT
   {
     VULKAN_HPP_CONSTEXPR PipelineRasterizationConservativeStateCreateInfoEXT( VULKAN_HPP_NAMESPACE::PipelineRasterizationConservativeStateCreateFlagsEXT flags_ = {},
-                                                                              VULKAN_HPP_NAMESPACE::ConservativeRasterizationModeEXT conservativeRasterizationMode_ = {},
+                                                                              VULKAN_HPP_NAMESPACE::ConservativeRasterizationModeEXT conservativeRasterizationMode_ = VULKAN_HPP_NAMESPACE::ConservativeRasterizationModeEXT::eDisabled,
                                                                               float extraPrimitiveOverestimationSize_ = {} ) VULKAN_HPP_NOEXCEPT
       : flags( flags_ )
       , conservativeRasterizationMode( conservativeRasterizationMode_ )
@@ -51099,7 +51099,7 @@ namespace VULKAN_HPP_NAMESPACE
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineRasterizationConservativeStateCreateInfoEXT;
     const void* pNext = {};
     VULKAN_HPP_NAMESPACE::PipelineRasterizationConservativeStateCreateFlagsEXT flags = {};
-    VULKAN_HPP_NAMESPACE::ConservativeRasterizationModeEXT conservativeRasterizationMode = {};
+    VULKAN_HPP_NAMESPACE::ConservativeRasterizationModeEXT conservativeRasterizationMode = VULKAN_HPP_NAMESPACE::ConservativeRasterizationModeEXT::eDisabled;
     float extraPrimitiveOverestimationSize = {};
   };
   static_assert( sizeof( PipelineRasterizationConservativeStateCreateInfoEXT ) == sizeof( VkPipelineRasterizationConservativeStateCreateInfoEXT ), "struct and wrapper have different size!" );
@@ -51182,7 +51182,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineRasterizationLineStateCreateInfoEXT
   {
-    VULKAN_HPP_CONSTEXPR PipelineRasterizationLineStateCreateInfoEXT( VULKAN_HPP_NAMESPACE::LineRasterizationModeEXT lineRasterizationMode_ = {},
+    VULKAN_HPP_CONSTEXPR PipelineRasterizationLineStateCreateInfoEXT( VULKAN_HPP_NAMESPACE::LineRasterizationModeEXT lineRasterizationMode_ = VULKAN_HPP_NAMESPACE::LineRasterizationModeEXT::eDefault,
                                                                       VULKAN_HPP_NAMESPACE::Bool32 stippledLineEnable_ = {},
                                                                       uint32_t lineStippleFactor_ = {},
                                                                       uint16_t lineStipplePattern_ = {} ) VULKAN_HPP_NOEXCEPT
@@ -51267,7 +51267,7 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineRasterizationLineStateCreateInfoEXT;
     const void* pNext = {};
-    VULKAN_HPP_NAMESPACE::LineRasterizationModeEXT lineRasterizationMode = {};
+    VULKAN_HPP_NAMESPACE::LineRasterizationModeEXT lineRasterizationMode = VULKAN_HPP_NAMESPACE::LineRasterizationModeEXT::eDefault;
     VULKAN_HPP_NAMESPACE::Bool32 stippledLineEnable = {};
     uint32_t lineStippleFactor = {};
     uint16_t lineStipplePattern = {};
@@ -51277,7 +51277,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineRasterizationStateRasterizationOrderAMD
   {
-    VULKAN_HPP_CONSTEXPR PipelineRasterizationStateRasterizationOrderAMD( VULKAN_HPP_NAMESPACE::RasterizationOrderAMD rasterizationOrder_ = {} ) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR PipelineRasterizationStateRasterizationOrderAMD( VULKAN_HPP_NAMESPACE::RasterizationOrderAMD rasterizationOrder_ = VULKAN_HPP_NAMESPACE::RasterizationOrderAMD::eStrict ) VULKAN_HPP_NOEXCEPT
       : rasterizationOrder( rasterizationOrder_ )
     {}
 
@@ -51335,7 +51335,7 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineRasterizationStateRasterizationOrderAMD;
     const void* pNext = {};
-    VULKAN_HPP_NAMESPACE::RasterizationOrderAMD rasterizationOrder = {};
+    VULKAN_HPP_NAMESPACE::RasterizationOrderAMD rasterizationOrder = VULKAN_HPP_NAMESPACE::RasterizationOrderAMD::eStrict;
   };
   static_assert( sizeof( PipelineRasterizationStateRasterizationOrderAMD ) == sizeof( VkPipelineRasterizationStateRasterizationOrderAMD ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<PipelineRasterizationStateRasterizationOrderAMD>::value, "struct wrapper is not a standard layout!" );
@@ -51610,7 +51610,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineTessellationDomainOriginStateCreateInfo
   {
-    VULKAN_HPP_CONSTEXPR PipelineTessellationDomainOriginStateCreateInfo( VULKAN_HPP_NAMESPACE::TessellationDomainOrigin domainOrigin_ = {} ) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR PipelineTessellationDomainOriginStateCreateInfo( VULKAN_HPP_NAMESPACE::TessellationDomainOrigin domainOrigin_ = VULKAN_HPP_NAMESPACE::TessellationDomainOrigin::eUpperLeft ) VULKAN_HPP_NOEXCEPT
       : domainOrigin( domainOrigin_ )
     {}
 
@@ -51668,7 +51668,7 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineTessellationDomainOriginStateCreateInfo;
     const void* pNext = {};
-    VULKAN_HPP_NAMESPACE::TessellationDomainOrigin domainOrigin = {};
+    VULKAN_HPP_NAMESPACE::TessellationDomainOrigin domainOrigin = VULKAN_HPP_NAMESPACE::TessellationDomainOrigin::eUpperLeft;
   };
   static_assert( sizeof( PipelineTessellationDomainOriginStateCreateInfo ) == sizeof( VkPipelineTessellationDomainOriginStateCreateInfo ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<PipelineTessellationDomainOriginStateCreateInfo>::value, "struct wrapper is not a standard layout!" );
@@ -51809,7 +51809,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct PipelineViewportCoarseSampleOrderStateCreateInfoNV
   {
-    VULKAN_HPP_CONSTEXPR PipelineViewportCoarseSampleOrderStateCreateInfoNV( VULKAN_HPP_NAMESPACE::CoarseSampleOrderTypeNV sampleOrderType_ = {},
+    VULKAN_HPP_CONSTEXPR PipelineViewportCoarseSampleOrderStateCreateInfoNV( VULKAN_HPP_NAMESPACE::CoarseSampleOrderTypeNV sampleOrderType_ = VULKAN_HPP_NAMESPACE::CoarseSampleOrderTypeNV::eDefault,
                                                                              uint32_t customSampleOrderCount_ = {},
                                                                              const VULKAN_HPP_NAMESPACE::CoarseSampleOrderCustomNV* pCustomSampleOrders_ = {} ) VULKAN_HPP_NOEXCEPT
       : sampleOrderType( sampleOrderType_ )
@@ -51885,7 +51885,7 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineViewportCoarseSampleOrderStateCreateInfoNV;
     const void* pNext = {};
-    VULKAN_HPP_NAMESPACE::CoarseSampleOrderTypeNV sampleOrderType = {};
+    VULKAN_HPP_NAMESPACE::CoarseSampleOrderTypeNV sampleOrderType = VULKAN_HPP_NAMESPACE::CoarseSampleOrderTypeNV::eDefault;
     uint32_t customSampleOrderCount = {};
     const VULKAN_HPP_NAMESPACE::CoarseSampleOrderCustomNV* pCustomSampleOrders = {};
   };
@@ -52113,10 +52113,10 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ViewportSwizzleNV
   {
-    VULKAN_HPP_CONSTEXPR ViewportSwizzleNV( VULKAN_HPP_NAMESPACE::ViewportCoordinateSwizzleNV x_ = {},
-                                            VULKAN_HPP_NAMESPACE::ViewportCoordinateSwizzleNV y_ = {},
-                                            VULKAN_HPP_NAMESPACE::ViewportCoordinateSwizzleNV z_ = {},
-                                            VULKAN_HPP_NAMESPACE::ViewportCoordinateSwizzleNV w_ = {} ) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR ViewportSwizzleNV( VULKAN_HPP_NAMESPACE::ViewportCoordinateSwizzleNV x_ = VULKAN_HPP_NAMESPACE::ViewportCoordinateSwizzleNV::ePositiveX,
+                                            VULKAN_HPP_NAMESPACE::ViewportCoordinateSwizzleNV y_ = VULKAN_HPP_NAMESPACE::ViewportCoordinateSwizzleNV::ePositiveX,
+                                            VULKAN_HPP_NAMESPACE::ViewportCoordinateSwizzleNV z_ = VULKAN_HPP_NAMESPACE::ViewportCoordinateSwizzleNV::ePositiveX,
+                                            VULKAN_HPP_NAMESPACE::ViewportCoordinateSwizzleNV w_ = VULKAN_HPP_NAMESPACE::ViewportCoordinateSwizzleNV::ePositiveX ) VULKAN_HPP_NOEXCEPT
       : x( x_ )
       , y( y_ )
       , z( z_ )
@@ -52182,10 +52182,10 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
   public:
-    VULKAN_HPP_NAMESPACE::ViewportCoordinateSwizzleNV x = {};
-    VULKAN_HPP_NAMESPACE::ViewportCoordinateSwizzleNV y = {};
-    VULKAN_HPP_NAMESPACE::ViewportCoordinateSwizzleNV z = {};
-    VULKAN_HPP_NAMESPACE::ViewportCoordinateSwizzleNV w = {};
+    VULKAN_HPP_NAMESPACE::ViewportCoordinateSwizzleNV x = VULKAN_HPP_NAMESPACE::ViewportCoordinateSwizzleNV::ePositiveX;
+    VULKAN_HPP_NAMESPACE::ViewportCoordinateSwizzleNV y = VULKAN_HPP_NAMESPACE::ViewportCoordinateSwizzleNV::ePositiveX;
+    VULKAN_HPP_NAMESPACE::ViewportCoordinateSwizzleNV z = VULKAN_HPP_NAMESPACE::ViewportCoordinateSwizzleNV::ePositiveX;
+    VULKAN_HPP_NAMESPACE::ViewportCoordinateSwizzleNV w = VULKAN_HPP_NAMESPACE::ViewportCoordinateSwizzleNV::ePositiveX;
   };
   static_assert( sizeof( ViewportSwizzleNV ) == sizeof( VkViewportSwizzleNV ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<ViewportSwizzleNV>::value, "struct wrapper is not a standard layout!" );
@@ -53014,7 +53014,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct QueryPoolCreateInfo
   {
     VULKAN_HPP_CONSTEXPR QueryPoolCreateInfo( VULKAN_HPP_NAMESPACE::QueryPoolCreateFlags flags_ = {},
-                                              VULKAN_HPP_NAMESPACE::QueryType queryType_ = {},
+                                              VULKAN_HPP_NAMESPACE::QueryType queryType_ = VULKAN_HPP_NAMESPACE::QueryType::eOcclusion,
                                               uint32_t queryCount_ = {},
                                               VULKAN_HPP_NAMESPACE::QueryPipelineStatisticFlags pipelineStatistics_ = {} ) VULKAN_HPP_NOEXCEPT
       : flags( flags_ )
@@ -53099,7 +53099,7 @@ namespace VULKAN_HPP_NAMESPACE
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eQueryPoolCreateInfo;
     const void* pNext = {};
     VULKAN_HPP_NAMESPACE::QueryPoolCreateFlags flags = {};
-    VULKAN_HPP_NAMESPACE::QueryType queryType = {};
+    VULKAN_HPP_NAMESPACE::QueryType queryType = VULKAN_HPP_NAMESPACE::QueryType::eOcclusion;
     uint32_t queryCount = {};
     VULKAN_HPP_NAMESPACE::QueryPipelineStatisticFlags pipelineStatistics = {};
   };
@@ -53108,7 +53108,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct QueryPoolCreateInfoINTEL
   {
-    VULKAN_HPP_CONSTEXPR QueryPoolCreateInfoINTEL( VULKAN_HPP_NAMESPACE::QueryPoolSamplingModeINTEL performanceCountersSampling_ = {} ) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR QueryPoolCreateInfoINTEL( VULKAN_HPP_NAMESPACE::QueryPoolSamplingModeINTEL performanceCountersSampling_ = VULKAN_HPP_NAMESPACE::QueryPoolSamplingModeINTEL::eManual ) VULKAN_HPP_NOEXCEPT
       : performanceCountersSampling( performanceCountersSampling_ )
     {}
 
@@ -53166,7 +53166,7 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eQueryPoolCreateInfoINTEL;
     const void* pNext = {};
-    VULKAN_HPP_NAMESPACE::QueryPoolSamplingModeINTEL performanceCountersSampling = {};
+    VULKAN_HPP_NAMESPACE::QueryPoolSamplingModeINTEL performanceCountersSampling = VULKAN_HPP_NAMESPACE::QueryPoolSamplingModeINTEL::eManual;
   };
   static_assert( sizeof( QueryPoolCreateInfoINTEL ) == sizeof( VkQueryPoolCreateInfoINTEL ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<QueryPoolCreateInfoINTEL>::value, "struct wrapper is not a standard layout!" );
@@ -53419,7 +53419,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct RayTracingShaderGroupCreateInfoNV
   {
-    VULKAN_HPP_CONSTEXPR RayTracingShaderGroupCreateInfoNV( VULKAN_HPP_NAMESPACE::RayTracingShaderGroupTypeNV type_ = {},
+    VULKAN_HPP_CONSTEXPR RayTracingShaderGroupCreateInfoNV( VULKAN_HPP_NAMESPACE::RayTracingShaderGroupTypeNV type_ = VULKAN_HPP_NAMESPACE::RayTracingShaderGroupTypeNV::eGeneral,
                                                             uint32_t generalShader_ = {},
                                                             uint32_t closestHitShader_ = {},
                                                             uint32_t anyHitShader_ = {},
@@ -53513,7 +53513,7 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eRayTracingShaderGroupCreateInfoNV;
     const void* pNext = {};
-    VULKAN_HPP_NAMESPACE::RayTracingShaderGroupTypeNV type = {};
+    VULKAN_HPP_NAMESPACE::RayTracingShaderGroupTypeNV type = VULKAN_HPP_NAMESPACE::RayTracingShaderGroupTypeNV::eGeneral;
     uint32_t generalShader = {};
     uint32_t closestHitShader = {};
     uint32_t anyHitShader = {};
@@ -53893,7 +53893,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct SubpassDescription
   {
     VULKAN_HPP_CONSTEXPR SubpassDescription( VULKAN_HPP_NAMESPACE::SubpassDescriptionFlags flags_ = {},
-                                             VULKAN_HPP_NAMESPACE::PipelineBindPoint pipelineBindPoint_ = {},
+                                             VULKAN_HPP_NAMESPACE::PipelineBindPoint pipelineBindPoint_ = VULKAN_HPP_NAMESPACE::PipelineBindPoint::eGraphics,
                                              uint32_t inputAttachmentCount_ = {},
                                              const VULKAN_HPP_NAMESPACE::AttachmentReference* pInputAttachments_ = {},
                                              uint32_t colorAttachmentCount_ = {},
@@ -54016,7 +54016,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   public:
     VULKAN_HPP_NAMESPACE::SubpassDescriptionFlags flags = {};
-    VULKAN_HPP_NAMESPACE::PipelineBindPoint pipelineBindPoint = {};
+    VULKAN_HPP_NAMESPACE::PipelineBindPoint pipelineBindPoint = VULKAN_HPP_NAMESPACE::PipelineBindPoint::eGraphics;
     uint32_t inputAttachmentCount = {};
     const VULKAN_HPP_NAMESPACE::AttachmentReference* pInputAttachments = {};
     uint32_t colorAttachmentCount = {};
@@ -54266,7 +54266,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct SubpassDescription2KHR
   {
     VULKAN_HPP_CONSTEXPR SubpassDescription2KHR( VULKAN_HPP_NAMESPACE::SubpassDescriptionFlags flags_ = {},
-                                                 VULKAN_HPP_NAMESPACE::PipelineBindPoint pipelineBindPoint_ = {},
+                                                 VULKAN_HPP_NAMESPACE::PipelineBindPoint pipelineBindPoint_ = VULKAN_HPP_NAMESPACE::PipelineBindPoint::eGraphics,
                                                  uint32_t viewMask_ = {},
                                                  uint32_t inputAttachmentCount_ = {},
                                                  const VULKAN_HPP_NAMESPACE::AttachmentReference2KHR* pInputAttachments_ = {},
@@ -54414,7 +54414,7 @@ namespace VULKAN_HPP_NAMESPACE
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eSubpassDescription2KHR;
     const void* pNext = {};
     VULKAN_HPP_NAMESPACE::SubpassDescriptionFlags flags = {};
-    VULKAN_HPP_NAMESPACE::PipelineBindPoint pipelineBindPoint = {};
+    VULKAN_HPP_NAMESPACE::PipelineBindPoint pipelineBindPoint = VULKAN_HPP_NAMESPACE::PipelineBindPoint::eGraphics;
     uint32_t viewMask = {};
     uint32_t inputAttachmentCount = {};
     const VULKAN_HPP_NAMESPACE::AttachmentReference2KHR* pInputAttachments = {};
@@ -55120,20 +55120,20 @@ namespace VULKAN_HPP_NAMESPACE
   struct SamplerCreateInfo
   {
     VULKAN_HPP_CONSTEXPR SamplerCreateInfo( VULKAN_HPP_NAMESPACE::SamplerCreateFlags flags_ = {},
-                                            VULKAN_HPP_NAMESPACE::Filter magFilter_ = {},
-                                            VULKAN_HPP_NAMESPACE::Filter minFilter_ = {},
-                                            VULKAN_HPP_NAMESPACE::SamplerMipmapMode mipmapMode_ = {},
-                                            VULKAN_HPP_NAMESPACE::SamplerAddressMode addressModeU_ = {},
-                                            VULKAN_HPP_NAMESPACE::SamplerAddressMode addressModeV_ = {},
-                                            VULKAN_HPP_NAMESPACE::SamplerAddressMode addressModeW_ = {},
+                                            VULKAN_HPP_NAMESPACE::Filter magFilter_ = VULKAN_HPP_NAMESPACE::Filter::eNearest,
+                                            VULKAN_HPP_NAMESPACE::Filter minFilter_ = VULKAN_HPP_NAMESPACE::Filter::eNearest,
+                                            VULKAN_HPP_NAMESPACE::SamplerMipmapMode mipmapMode_ = VULKAN_HPP_NAMESPACE::SamplerMipmapMode::eNearest,
+                                            VULKAN_HPP_NAMESPACE::SamplerAddressMode addressModeU_ = VULKAN_HPP_NAMESPACE::SamplerAddressMode::eRepeat,
+                                            VULKAN_HPP_NAMESPACE::SamplerAddressMode addressModeV_ = VULKAN_HPP_NAMESPACE::SamplerAddressMode::eRepeat,
+                                            VULKAN_HPP_NAMESPACE::SamplerAddressMode addressModeW_ = VULKAN_HPP_NAMESPACE::SamplerAddressMode::eRepeat,
                                             float mipLodBias_ = {},
                                             VULKAN_HPP_NAMESPACE::Bool32 anisotropyEnable_ = {},
                                             float maxAnisotropy_ = {},
                                             VULKAN_HPP_NAMESPACE::Bool32 compareEnable_ = {},
-                                            VULKAN_HPP_NAMESPACE::CompareOp compareOp_ = {},
+                                            VULKAN_HPP_NAMESPACE::CompareOp compareOp_ = VULKAN_HPP_NAMESPACE::CompareOp::eNever,
                                             float minLod_ = {},
                                             float maxLod_ = {},
-                                            VULKAN_HPP_NAMESPACE::BorderColor borderColor_ = {},
+                                            VULKAN_HPP_NAMESPACE::BorderColor borderColor_ = VULKAN_HPP_NAMESPACE::BorderColor::eFloatTransparentBlack,
                                             VULKAN_HPP_NAMESPACE::Bool32 unnormalizedCoordinates_ = {} ) VULKAN_HPP_NOEXCEPT
       : flags( flags_ )
       , magFilter( magFilter_ )
@@ -55313,20 +55313,20 @@ namespace VULKAN_HPP_NAMESPACE
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eSamplerCreateInfo;
     const void* pNext = {};
     VULKAN_HPP_NAMESPACE::SamplerCreateFlags flags = {};
-    VULKAN_HPP_NAMESPACE::Filter magFilter = {};
-    VULKAN_HPP_NAMESPACE::Filter minFilter = {};
-    VULKAN_HPP_NAMESPACE::SamplerMipmapMode mipmapMode = {};
-    VULKAN_HPP_NAMESPACE::SamplerAddressMode addressModeU = {};
-    VULKAN_HPP_NAMESPACE::SamplerAddressMode addressModeV = {};
-    VULKAN_HPP_NAMESPACE::SamplerAddressMode addressModeW = {};
+    VULKAN_HPP_NAMESPACE::Filter magFilter = VULKAN_HPP_NAMESPACE::Filter::eNearest;
+    VULKAN_HPP_NAMESPACE::Filter minFilter = VULKAN_HPP_NAMESPACE::Filter::eNearest;
+    VULKAN_HPP_NAMESPACE::SamplerMipmapMode mipmapMode = VULKAN_HPP_NAMESPACE::SamplerMipmapMode::eNearest;
+    VULKAN_HPP_NAMESPACE::SamplerAddressMode addressModeU = VULKAN_HPP_NAMESPACE::SamplerAddressMode::eRepeat;
+    VULKAN_HPP_NAMESPACE::SamplerAddressMode addressModeV = VULKAN_HPP_NAMESPACE::SamplerAddressMode::eRepeat;
+    VULKAN_HPP_NAMESPACE::SamplerAddressMode addressModeW = VULKAN_HPP_NAMESPACE::SamplerAddressMode::eRepeat;
     float mipLodBias = {};
     VULKAN_HPP_NAMESPACE::Bool32 anisotropyEnable = {};
     float maxAnisotropy = {};
     VULKAN_HPP_NAMESPACE::Bool32 compareEnable = {};
-    VULKAN_HPP_NAMESPACE::CompareOp compareOp = {};
+    VULKAN_HPP_NAMESPACE::CompareOp compareOp = VULKAN_HPP_NAMESPACE::CompareOp::eNever;
     float minLod = {};
     float maxLod = {};
-    VULKAN_HPP_NAMESPACE::BorderColor borderColor = {};
+    VULKAN_HPP_NAMESPACE::BorderColor borderColor = VULKAN_HPP_NAMESPACE::BorderColor::eFloatTransparentBlack;
     VULKAN_HPP_NAMESPACE::Bool32 unnormalizedCoordinates = {};
   };
   static_assert( sizeof( SamplerCreateInfo ) == sizeof( VkSamplerCreateInfo ), "struct and wrapper have different size!" );
@@ -55334,7 +55334,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SamplerReductionModeCreateInfoEXT
   {
-    VULKAN_HPP_CONSTEXPR SamplerReductionModeCreateInfoEXT( VULKAN_HPP_NAMESPACE::SamplerReductionModeEXT reductionMode_ = {} ) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR SamplerReductionModeCreateInfoEXT( VULKAN_HPP_NAMESPACE::SamplerReductionModeEXT reductionMode_ = VULKAN_HPP_NAMESPACE::SamplerReductionModeEXT::eWeightedAverage ) VULKAN_HPP_NOEXCEPT
       : reductionMode( reductionMode_ )
     {}
 
@@ -55392,20 +55392,20 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eSamplerReductionModeCreateInfoEXT;
     const void* pNext = {};
-    VULKAN_HPP_NAMESPACE::SamplerReductionModeEXT reductionMode = {};
+    VULKAN_HPP_NAMESPACE::SamplerReductionModeEXT reductionMode = VULKAN_HPP_NAMESPACE::SamplerReductionModeEXT::eWeightedAverage;
   };
   static_assert( sizeof( SamplerReductionModeCreateInfoEXT ) == sizeof( VkSamplerReductionModeCreateInfoEXT ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<SamplerReductionModeCreateInfoEXT>::value, "struct wrapper is not a standard layout!" );
 
   struct SamplerYcbcrConversionCreateInfo
   {
-    VULKAN_HPP_CONSTEXPR SamplerYcbcrConversionCreateInfo( VULKAN_HPP_NAMESPACE::Format format_ = {},
-                                                           VULKAN_HPP_NAMESPACE::SamplerYcbcrModelConversion ycbcrModel_ = {},
-                                                           VULKAN_HPP_NAMESPACE::SamplerYcbcrRange ycbcrRange_ = {},
+    VULKAN_HPP_CONSTEXPR SamplerYcbcrConversionCreateInfo( VULKAN_HPP_NAMESPACE::Format format_ = VULKAN_HPP_NAMESPACE::Format::eUndefined,
+                                                           VULKAN_HPP_NAMESPACE::SamplerYcbcrModelConversion ycbcrModel_ = VULKAN_HPP_NAMESPACE::SamplerYcbcrModelConversion::eRgbIdentity,
+                                                           VULKAN_HPP_NAMESPACE::SamplerYcbcrRange ycbcrRange_ = VULKAN_HPP_NAMESPACE::SamplerYcbcrRange::eItuFull,
                                                            VULKAN_HPP_NAMESPACE::ComponentMapping components_ = {},
-                                                           VULKAN_HPP_NAMESPACE::ChromaLocation xChromaOffset_ = {},
-                                                           VULKAN_HPP_NAMESPACE::ChromaLocation yChromaOffset_ = {},
-                                                           VULKAN_HPP_NAMESPACE::Filter chromaFilter_ = {},
+                                                           VULKAN_HPP_NAMESPACE::ChromaLocation xChromaOffset_ = VULKAN_HPP_NAMESPACE::ChromaLocation::eCositedEven,
+                                                           VULKAN_HPP_NAMESPACE::ChromaLocation yChromaOffset_ = VULKAN_HPP_NAMESPACE::ChromaLocation::eCositedEven,
+                                                           VULKAN_HPP_NAMESPACE::Filter chromaFilter_ = VULKAN_HPP_NAMESPACE::Filter::eNearest,
                                                            VULKAN_HPP_NAMESPACE::Bool32 forceExplicitReconstruction_ = {} ) VULKAN_HPP_NOEXCEPT
       : format( format_ )
       , ycbcrModel( ycbcrModel_ )
@@ -55520,13 +55520,13 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eSamplerYcbcrConversionCreateInfo;
     const void* pNext = {};
-    VULKAN_HPP_NAMESPACE::Format format = {};
-    VULKAN_HPP_NAMESPACE::SamplerYcbcrModelConversion ycbcrModel = {};
-    VULKAN_HPP_NAMESPACE::SamplerYcbcrRange ycbcrRange = {};
+    VULKAN_HPP_NAMESPACE::Format format = VULKAN_HPP_NAMESPACE::Format::eUndefined;
+    VULKAN_HPP_NAMESPACE::SamplerYcbcrModelConversion ycbcrModel = VULKAN_HPP_NAMESPACE::SamplerYcbcrModelConversion::eRgbIdentity;
+    VULKAN_HPP_NAMESPACE::SamplerYcbcrRange ycbcrRange = VULKAN_HPP_NAMESPACE::SamplerYcbcrRange::eItuFull;
     VULKAN_HPP_NAMESPACE::ComponentMapping components = {};
-    VULKAN_HPP_NAMESPACE::ChromaLocation xChromaOffset = {};
-    VULKAN_HPP_NAMESPACE::ChromaLocation yChromaOffset = {};
-    VULKAN_HPP_NAMESPACE::Filter chromaFilter = {};
+    VULKAN_HPP_NAMESPACE::ChromaLocation xChromaOffset = VULKAN_HPP_NAMESPACE::ChromaLocation::eCositedEven;
+    VULKAN_HPP_NAMESPACE::ChromaLocation yChromaOffset = VULKAN_HPP_NAMESPACE::ChromaLocation::eCositedEven;
+    VULKAN_HPP_NAMESPACE::Filter chromaFilter = VULKAN_HPP_NAMESPACE::Filter::eNearest;
     VULKAN_HPP_NAMESPACE::Bool32 forceExplicitReconstruction = {};
   };
   static_assert( sizeof( SamplerYcbcrConversionCreateInfo ) == sizeof( VkSamplerYcbcrConversionCreateInfo ), "struct and wrapper have different size!" );
@@ -55718,7 +55718,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct SemaphoreGetFdInfoKHR
   {
     VULKAN_HPP_CONSTEXPR SemaphoreGetFdInfoKHR( VULKAN_HPP_NAMESPACE::Semaphore semaphore_ = {},
-                                                VULKAN_HPP_NAMESPACE::ExternalSemaphoreHandleTypeFlagBits handleType_ = {} ) VULKAN_HPP_NOEXCEPT
+                                                VULKAN_HPP_NAMESPACE::ExternalSemaphoreHandleTypeFlagBits handleType_ = VULKAN_HPP_NAMESPACE::ExternalSemaphoreHandleTypeFlagBits::eOpaqueFd ) VULKAN_HPP_NOEXCEPT
       : semaphore( semaphore_ )
       , handleType( handleType_ )
     {}
@@ -55785,7 +55785,7 @@ namespace VULKAN_HPP_NAMESPACE
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eSemaphoreGetFdInfoKHR;
     const void* pNext = {};
     VULKAN_HPP_NAMESPACE::Semaphore semaphore = {};
-    VULKAN_HPP_NAMESPACE::ExternalSemaphoreHandleTypeFlagBits handleType = {};
+    VULKAN_HPP_NAMESPACE::ExternalSemaphoreHandleTypeFlagBits handleType = VULKAN_HPP_NAMESPACE::ExternalSemaphoreHandleTypeFlagBits::eOpaqueFd;
   };
   static_assert( sizeof( SemaphoreGetFdInfoKHR ) == sizeof( VkSemaphoreGetFdInfoKHR ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<SemaphoreGetFdInfoKHR>::value, "struct wrapper is not a standard layout!" );
@@ -55795,7 +55795,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct SemaphoreGetWin32HandleInfoKHR
   {
     VULKAN_HPP_CONSTEXPR SemaphoreGetWin32HandleInfoKHR( VULKAN_HPP_NAMESPACE::Semaphore semaphore_ = {},
-                                                         VULKAN_HPP_NAMESPACE::ExternalSemaphoreHandleTypeFlagBits handleType_ = {} ) VULKAN_HPP_NOEXCEPT
+                                                         VULKAN_HPP_NAMESPACE::ExternalSemaphoreHandleTypeFlagBits handleType_ = VULKAN_HPP_NAMESPACE::ExternalSemaphoreHandleTypeFlagBits::eOpaqueFd ) VULKAN_HPP_NOEXCEPT
       : semaphore( semaphore_ )
       , handleType( handleType_ )
     {}
@@ -55862,7 +55862,7 @@ namespace VULKAN_HPP_NAMESPACE
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eSemaphoreGetWin32HandleInfoKHR;
     const void* pNext = {};
     VULKAN_HPP_NAMESPACE::Semaphore semaphore = {};
-    VULKAN_HPP_NAMESPACE::ExternalSemaphoreHandleTypeFlagBits handleType = {};
+    VULKAN_HPP_NAMESPACE::ExternalSemaphoreHandleTypeFlagBits handleType = VULKAN_HPP_NAMESPACE::ExternalSemaphoreHandleTypeFlagBits::eOpaqueFd;
   };
   static_assert( sizeof( SemaphoreGetWin32HandleInfoKHR ) == sizeof( VkSemaphoreGetWin32HandleInfoKHR ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<SemaphoreGetWin32HandleInfoKHR>::value, "struct wrapper is not a standard layout!" );
@@ -55945,7 +55945,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SemaphoreTypeCreateInfoKHR
   {
-    VULKAN_HPP_CONSTEXPR SemaphoreTypeCreateInfoKHR( VULKAN_HPP_NAMESPACE::SemaphoreTypeKHR semaphoreType_ = {},
+    VULKAN_HPP_CONSTEXPR SemaphoreTypeCreateInfoKHR( VULKAN_HPP_NAMESPACE::SemaphoreTypeKHR semaphoreType_ = VULKAN_HPP_NAMESPACE::SemaphoreTypeKHR::eBinary,
                                                      uint64_t initialValue_ = {} ) VULKAN_HPP_NOEXCEPT
       : semaphoreType( semaphoreType_ )
       , initialValue( initialValue_ )
@@ -56012,7 +56012,7 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eSemaphoreTypeCreateInfoKHR;
     const void* pNext = {};
-    VULKAN_HPP_NAMESPACE::SemaphoreTypeKHR semaphoreType = {};
+    VULKAN_HPP_NAMESPACE::SemaphoreTypeKHR semaphoreType = VULKAN_HPP_NAMESPACE::SemaphoreTypeKHR::eBinary;
     uint64_t initialValue = {};
   };
   static_assert( sizeof( SemaphoreTypeCreateInfoKHR ) == sizeof( VkSemaphoreTypeCreateInfoKHR ), "struct and wrapper have different size!" );
@@ -56865,7 +56865,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SubpassBeginInfoKHR
   {
-    VULKAN_HPP_CONSTEXPR SubpassBeginInfoKHR( VULKAN_HPP_NAMESPACE::SubpassContents contents_ = {} ) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR SubpassBeginInfoKHR( VULKAN_HPP_NAMESPACE::SubpassContents contents_ = VULKAN_HPP_NAMESPACE::SubpassContents::eInline ) VULKAN_HPP_NOEXCEPT
       : contents( contents_ )
     {}
 
@@ -56923,15 +56923,15 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eSubpassBeginInfoKHR;
     const void* pNext = {};
-    VULKAN_HPP_NAMESPACE::SubpassContents contents = {};
+    VULKAN_HPP_NAMESPACE::SubpassContents contents = VULKAN_HPP_NAMESPACE::SubpassContents::eInline;
   };
   static_assert( sizeof( SubpassBeginInfoKHR ) == sizeof( VkSubpassBeginInfoKHR ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<SubpassBeginInfoKHR>::value, "struct wrapper is not a standard layout!" );
 
   struct SubpassDescriptionDepthStencilResolveKHR
   {
-    VULKAN_HPP_CONSTEXPR SubpassDescriptionDepthStencilResolveKHR( VULKAN_HPP_NAMESPACE::ResolveModeFlagBitsKHR depthResolveMode_ = {},
-                                                                   VULKAN_HPP_NAMESPACE::ResolveModeFlagBitsKHR stencilResolveMode_ = {},
+    VULKAN_HPP_CONSTEXPR SubpassDescriptionDepthStencilResolveKHR( VULKAN_HPP_NAMESPACE::ResolveModeFlagBitsKHR depthResolveMode_ = VULKAN_HPP_NAMESPACE::ResolveModeFlagBitsKHR::eNone,
+                                                                   VULKAN_HPP_NAMESPACE::ResolveModeFlagBitsKHR stencilResolveMode_ = VULKAN_HPP_NAMESPACE::ResolveModeFlagBitsKHR::eNone,
                                                                    const VULKAN_HPP_NAMESPACE::AttachmentReference2KHR* pDepthStencilResolveAttachment_ = {} ) VULKAN_HPP_NOEXCEPT
       : depthResolveMode( depthResolveMode_ )
       , stencilResolveMode( stencilResolveMode_ )
@@ -57006,8 +57006,8 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eSubpassDescriptionDepthStencilResolveKHR;
     const void* pNext = {};
-    VULKAN_HPP_NAMESPACE::ResolveModeFlagBitsKHR depthResolveMode = {};
-    VULKAN_HPP_NAMESPACE::ResolveModeFlagBitsKHR stencilResolveMode = {};
+    VULKAN_HPP_NAMESPACE::ResolveModeFlagBitsKHR depthResolveMode = VULKAN_HPP_NAMESPACE::ResolveModeFlagBitsKHR::eNone;
+    VULKAN_HPP_NAMESPACE::ResolveModeFlagBitsKHR stencilResolveMode = VULKAN_HPP_NAMESPACE::ResolveModeFlagBitsKHR::eNone;
     const VULKAN_HPP_NAMESPACE::AttachmentReference2KHR* pDepthStencilResolveAttachment = {};
   };
   static_assert( sizeof( SubpassDescriptionDepthStencilResolveKHR ) == sizeof( VkSubpassDescriptionDepthStencilResolveKHR ), "struct and wrapper have different size!" );
@@ -57078,7 +57078,7 @@ namespace VULKAN_HPP_NAMESPACE
                              VULKAN_HPP_NAMESPACE::Extent2D maxImageExtent_ = {},
                              uint32_t maxImageArrayLayers_ = {},
                              VULKAN_HPP_NAMESPACE::SurfaceTransformFlagsKHR supportedTransforms_ = {},
-                             VULKAN_HPP_NAMESPACE::SurfaceTransformFlagBitsKHR currentTransform_ = {},
+                             VULKAN_HPP_NAMESPACE::SurfaceTransformFlagBitsKHR currentTransform_ = VULKAN_HPP_NAMESPACE::SurfaceTransformFlagBitsKHR::eIdentity,
                              VULKAN_HPP_NAMESPACE::CompositeAlphaFlagsKHR supportedCompositeAlpha_ = {},
                              VULKAN_HPP_NAMESPACE::ImageUsageFlags supportedUsageFlags_ = {},
                              VULKAN_HPP_NAMESPACE::SurfaceCounterFlagsEXT supportedSurfaceCounters_ = {} ) VULKAN_HPP_NOEXCEPT
@@ -57154,7 +57154,7 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_NAMESPACE::Extent2D maxImageExtent = {};
     uint32_t maxImageArrayLayers = {};
     VULKAN_HPP_NAMESPACE::SurfaceTransformFlagsKHR supportedTransforms = {};
-    VULKAN_HPP_NAMESPACE::SurfaceTransformFlagBitsKHR currentTransform = {};
+    VULKAN_HPP_NAMESPACE::SurfaceTransformFlagBitsKHR currentTransform = VULKAN_HPP_NAMESPACE::SurfaceTransformFlagBitsKHR::eIdentity;
     VULKAN_HPP_NAMESPACE::CompositeAlphaFlagsKHR supportedCompositeAlpha = {};
     VULKAN_HPP_NAMESPACE::ImageUsageFlags supportedUsageFlags = {};
     VULKAN_HPP_NAMESPACE::SurfaceCounterFlagsEXT supportedSurfaceCounters = {};
@@ -57171,7 +57171,7 @@ namespace VULKAN_HPP_NAMESPACE
                             VULKAN_HPP_NAMESPACE::Extent2D maxImageExtent_ = {},
                             uint32_t maxImageArrayLayers_ = {},
                             VULKAN_HPP_NAMESPACE::SurfaceTransformFlagsKHR supportedTransforms_ = {},
-                            VULKAN_HPP_NAMESPACE::SurfaceTransformFlagBitsKHR currentTransform_ = {},
+                            VULKAN_HPP_NAMESPACE::SurfaceTransformFlagBitsKHR currentTransform_ = VULKAN_HPP_NAMESPACE::SurfaceTransformFlagBitsKHR::eIdentity,
                             VULKAN_HPP_NAMESPACE::CompositeAlphaFlagsKHR supportedCompositeAlpha_ = {},
                             VULKAN_HPP_NAMESPACE::ImageUsageFlags supportedUsageFlags_ = {} ) VULKAN_HPP_NOEXCEPT
       : minImageCount( minImageCount_ )
@@ -57234,7 +57234,7 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_NAMESPACE::Extent2D maxImageExtent = {};
     uint32_t maxImageArrayLayers = {};
     VULKAN_HPP_NAMESPACE::SurfaceTransformFlagsKHR supportedTransforms = {};
-    VULKAN_HPP_NAMESPACE::SurfaceTransformFlagBitsKHR currentTransform = {};
+    VULKAN_HPP_NAMESPACE::SurfaceTransformFlagBitsKHR currentTransform = VULKAN_HPP_NAMESPACE::SurfaceTransformFlagBitsKHR::eIdentity;
     VULKAN_HPP_NAMESPACE::CompositeAlphaFlagsKHR supportedCompositeAlpha = {};
     VULKAN_HPP_NAMESPACE::ImageUsageFlags supportedUsageFlags = {};
   };
@@ -57364,8 +57364,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SurfaceFormatKHR
   {
-    SurfaceFormatKHR( VULKAN_HPP_NAMESPACE::Format format_ = {},
-                      VULKAN_HPP_NAMESPACE::ColorSpaceKHR colorSpace_ = {} ) VULKAN_HPP_NOEXCEPT
+    SurfaceFormatKHR( VULKAN_HPP_NAMESPACE::Format format_ = VULKAN_HPP_NAMESPACE::Format::eUndefined,
+                      VULKAN_HPP_NAMESPACE::ColorSpaceKHR colorSpace_ = VULKAN_HPP_NAMESPACE::ColorSpaceKHR::eSrgbNonlinear ) VULKAN_HPP_NOEXCEPT
       : format( format_ )
       , colorSpace( colorSpace_ )
     {}
@@ -57403,8 +57403,8 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
   public:
-    VULKAN_HPP_NAMESPACE::Format format = {};
-    VULKAN_HPP_NAMESPACE::ColorSpaceKHR colorSpace = {};
+    VULKAN_HPP_NAMESPACE::Format format = VULKAN_HPP_NAMESPACE::Format::eUndefined;
+    VULKAN_HPP_NAMESPACE::ColorSpaceKHR colorSpace = VULKAN_HPP_NAMESPACE::ColorSpaceKHR::eSrgbNonlinear;
   };
   static_assert( sizeof( SurfaceFormatKHR ) == sizeof( VkSurfaceFormatKHR ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<SurfaceFormatKHR>::value, "struct wrapper is not a standard layout!" );
@@ -57466,7 +57466,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct SurfaceFullScreenExclusiveInfoEXT
   {
-    VULKAN_HPP_CONSTEXPR SurfaceFullScreenExclusiveInfoEXT( VULKAN_HPP_NAMESPACE::FullScreenExclusiveEXT fullScreenExclusive_ = {} ) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR SurfaceFullScreenExclusiveInfoEXT( VULKAN_HPP_NAMESPACE::FullScreenExclusiveEXT fullScreenExclusive_ = VULKAN_HPP_NAMESPACE::FullScreenExclusiveEXT::eDefault ) VULKAN_HPP_NOEXCEPT
       : fullScreenExclusive( fullScreenExclusive_ )
     {}
 
@@ -57524,7 +57524,7 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eSurfaceFullScreenExclusiveInfoEXT;
     void* pNext = {};
-    VULKAN_HPP_NAMESPACE::FullScreenExclusiveEXT fullScreenExclusive = {};
+    VULKAN_HPP_NAMESPACE::FullScreenExclusiveEXT fullScreenExclusive = VULKAN_HPP_NAMESPACE::FullScreenExclusiveEXT::eDefault;
   };
   static_assert( sizeof( SurfaceFullScreenExclusiveInfoEXT ) == sizeof( VkSurfaceFullScreenExclusiveInfoEXT ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<SurfaceFullScreenExclusiveInfoEXT>::value, "struct wrapper is not a standard layout!" );
@@ -57733,17 +57733,17 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_CONSTEXPR SwapchainCreateInfoKHR( VULKAN_HPP_NAMESPACE::SwapchainCreateFlagsKHR flags_ = {},
                                                  VULKAN_HPP_NAMESPACE::SurfaceKHR surface_ = {},
                                                  uint32_t minImageCount_ = {},
-                                                 VULKAN_HPP_NAMESPACE::Format imageFormat_ = {},
-                                                 VULKAN_HPP_NAMESPACE::ColorSpaceKHR imageColorSpace_ = {},
+                                                 VULKAN_HPP_NAMESPACE::Format imageFormat_ = VULKAN_HPP_NAMESPACE::Format::eUndefined,
+                                                 VULKAN_HPP_NAMESPACE::ColorSpaceKHR imageColorSpace_ = VULKAN_HPP_NAMESPACE::ColorSpaceKHR::eSrgbNonlinear,
                                                  VULKAN_HPP_NAMESPACE::Extent2D imageExtent_ = {},
                                                  uint32_t imageArrayLayers_ = {},
                                                  VULKAN_HPP_NAMESPACE::ImageUsageFlags imageUsage_ = {},
-                                                 VULKAN_HPP_NAMESPACE::SharingMode imageSharingMode_ = {},
+                                                 VULKAN_HPP_NAMESPACE::SharingMode imageSharingMode_ = VULKAN_HPP_NAMESPACE::SharingMode::eExclusive,
                                                  uint32_t queueFamilyIndexCount_ = {},
                                                  const uint32_t* pQueueFamilyIndices_ = {},
-                                                 VULKAN_HPP_NAMESPACE::SurfaceTransformFlagBitsKHR preTransform_ = {},
-                                                 VULKAN_HPP_NAMESPACE::CompositeAlphaFlagBitsKHR compositeAlpha_ = {},
-                                                 VULKAN_HPP_NAMESPACE::PresentModeKHR presentMode_ = {},
+                                                 VULKAN_HPP_NAMESPACE::SurfaceTransformFlagBitsKHR preTransform_ = VULKAN_HPP_NAMESPACE::SurfaceTransformFlagBitsKHR::eIdentity,
+                                                 VULKAN_HPP_NAMESPACE::CompositeAlphaFlagBitsKHR compositeAlpha_ = VULKAN_HPP_NAMESPACE::CompositeAlphaFlagBitsKHR::eOpaque,
+                                                 VULKAN_HPP_NAMESPACE::PresentModeKHR presentMode_ = VULKAN_HPP_NAMESPACE::PresentModeKHR::eImmediate,
                                                  VULKAN_HPP_NAMESPACE::Bool32 clipped_ = {},
                                                  VULKAN_HPP_NAMESPACE::SwapchainKHR oldSwapchain_ = {} ) VULKAN_HPP_NOEXCEPT
       : flags( flags_ )
@@ -57926,17 +57926,17 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_NAMESPACE::SwapchainCreateFlagsKHR flags = {};
     VULKAN_HPP_NAMESPACE::SurfaceKHR surface = {};
     uint32_t minImageCount = {};
-    VULKAN_HPP_NAMESPACE::Format imageFormat = {};
-    VULKAN_HPP_NAMESPACE::ColorSpaceKHR imageColorSpace = {};
+    VULKAN_HPP_NAMESPACE::Format imageFormat = VULKAN_HPP_NAMESPACE::Format::eUndefined;
+    VULKAN_HPP_NAMESPACE::ColorSpaceKHR imageColorSpace = VULKAN_HPP_NAMESPACE::ColorSpaceKHR::eSrgbNonlinear;
     VULKAN_HPP_NAMESPACE::Extent2D imageExtent = {};
     uint32_t imageArrayLayers = {};
     VULKAN_HPP_NAMESPACE::ImageUsageFlags imageUsage = {};
-    VULKAN_HPP_NAMESPACE::SharingMode imageSharingMode = {};
+    VULKAN_HPP_NAMESPACE::SharingMode imageSharingMode = VULKAN_HPP_NAMESPACE::SharingMode::eExclusive;
     uint32_t queueFamilyIndexCount = {};
     const uint32_t* pQueueFamilyIndices = {};
-    VULKAN_HPP_NAMESPACE::SurfaceTransformFlagBitsKHR preTransform = {};
-    VULKAN_HPP_NAMESPACE::CompositeAlphaFlagBitsKHR compositeAlpha = {};
-    VULKAN_HPP_NAMESPACE::PresentModeKHR presentMode = {};
+    VULKAN_HPP_NAMESPACE::SurfaceTransformFlagBitsKHR preTransform = VULKAN_HPP_NAMESPACE::SurfaceTransformFlagBitsKHR::eIdentity;
+    VULKAN_HPP_NAMESPACE::CompositeAlphaFlagBitsKHR compositeAlpha = VULKAN_HPP_NAMESPACE::CompositeAlphaFlagBitsKHR::eOpaque;
+    VULKAN_HPP_NAMESPACE::PresentModeKHR presentMode = VULKAN_HPP_NAMESPACE::PresentModeKHR::eImmediate;
     VULKAN_HPP_NAMESPACE::Bool32 clipped = {};
     VULKAN_HPP_NAMESPACE::SwapchainKHR oldSwapchain = {};
   };
@@ -58927,7 +58927,7 @@ namespace VULKAN_HPP_NAMESPACE
                                              uint32_t dstBinding_ = {},
                                              uint32_t dstArrayElement_ = {},
                                              uint32_t descriptorCount_ = {},
-                                             VULKAN_HPP_NAMESPACE::DescriptorType descriptorType_ = {},
+                                             VULKAN_HPP_NAMESPACE::DescriptorType descriptorType_ = VULKAN_HPP_NAMESPACE::DescriptorType::eSampler,
                                              const VULKAN_HPP_NAMESPACE::DescriptorImageInfo* pImageInfo_ = {},
                                              const VULKAN_HPP_NAMESPACE::DescriptorBufferInfo* pBufferInfo_ = {},
                                              const VULKAN_HPP_NAMESPACE::BufferView* pTexelBufferView_ = {} ) VULKAN_HPP_NOEXCEPT
@@ -59048,7 +59048,7 @@ namespace VULKAN_HPP_NAMESPACE
     uint32_t dstBinding = {};
     uint32_t dstArrayElement = {};
     uint32_t descriptorCount = {};
-    VULKAN_HPP_NAMESPACE::DescriptorType descriptorType = {};
+    VULKAN_HPP_NAMESPACE::DescriptorType descriptorType = VULKAN_HPP_NAMESPACE::DescriptorType::eSampler;
     const VULKAN_HPP_NAMESPACE::DescriptorImageInfo* pImageInfo = {};
     const VULKAN_HPP_NAMESPACE::DescriptorBufferInfo* pBufferInfo = {};
     const VULKAN_HPP_NAMESPACE::BufferView* pTexelBufferView = {};

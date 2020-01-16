@@ -23,10 +23,6 @@
 #include <iostream>
 #include <map>
 
-static char const* AppName = "DispatchLoaderDynamic";
-static char const* EngineName = "Vulkan.hpp";
-
-
 VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE;
 
 int main(int /*argc*/, char ** /*argv*/)

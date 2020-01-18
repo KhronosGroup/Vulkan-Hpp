@@ -666,15 +666,13 @@ namespace vk
       imageView = device->createImageViewUnique(imageViewCreateInfo);
     }
 
-    SurfaceData::SurfaceData(vk::UniqueInstance &instance, std::string const& className, std::string const& windowName, vk::Extent2D const& extent_)
-      : extent(extent_)
+    SurfaceData::SurfaceData(vk::UniqueInstance &instance, std::string const &windowName, vk::Extent2D const &extent_)
+        : extent(extent_)
     {
-#if defined(VK_USE_PLATFORM_WIN32_KHR)
-      window = vk::su::initializeWindow(className.c_str(), windowName.c_str(), extent.width, extent.height);
-      surface = instance->createWin32SurfaceKHRUnique(vk::Win32SurfaceCreateInfoKHR(vk::Win32SurfaceCreateFlagsKHR(), GetModuleHandle(nullptr), window));
-#else
-#pragma error "unhandled platform"
-#endif
+      window = vk::su::createWindow(windowName, extent.width, extent.height);
+      VkSurfaceKHR _surface;
+      glfwCreateWindowSurface(instance.get(), window, nullptr, &_surface);
+      surface = vk::UniqueSurfaceKHR(_surface);
     }
 
     SwapChainData::SwapChainData(vk::PhysicalDevice const& physicalDevice, vk::UniqueDevice const& device, vk::SurfaceKHR const& surface, vk::Extent2D const& extent, vk::ImageUsageFlags usage,
@@ -825,56 +823,37 @@ namespace vk
       memcpy(m_data, data, VK_UUID_SIZE * sizeof(uint8_t));
     }
 
-#if defined(VK_USE_PLATFORM_WIN32_KHR)
-    LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+    GLFWwindow *createWindow(std::string const &windowName, uint32_t width, uint32_t height)
     {
-      switch (uMsg)
+      struct glfwContext
       {
-        case WM_CLOSE:
-          PostQuitMessage(0);
-          break;
-        default:
-          break;
-      }
-      return (DefWindowProc(hWnd, uMsg, wParam, lParam));
+        glfwContext()
+        {
+          glfwInit();
+        }
+        ~glfwContext()
+        {
+          glfwTerminate();
+        }
+      };
+
+      static auto glfwCtx = glfwContext();
+      (void)glfwCtx;
+
+      glfwSetErrorCallback([](int error, const char *msg) {
+        std::cerr << "glfw: "
+                  << "(" << error << ") " << msg << std::endl;
+      });
+
+      glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+
+      return glfwCreateWindow(width, height, windowName.c_str(), nullptr, nullptr);
     }
 
-    HWND initializeWindow(std::string const& className, std::string const& windowName, LONG width, LONG height)
+    void destroyWindow(GLFWwindow *window)
     {
-      WNDCLASSEX windowClass;
-      memset(&windowClass, 0, sizeof(WNDCLASSEX));
-
-      HINSTANCE instance = GetModuleHandle(nullptr);
-      windowClass.cbSize = sizeof(WNDCLASSEX);
-      windowClass.style = CS_HREDRAW | CS_VREDRAW;
-      windowClass.lpfnWndProc = WindowProc;
-      windowClass.hInstance = instance;
-      windowClass.hIcon = LoadIcon(NULL, IDI_APPLICATION);
-      windowClass.hCursor = LoadCursor(NULL, IDC_ARROW);
-      windowClass.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
-      windowClass.lpszClassName = className.c_str();
-      windowClass.hIconSm = LoadIcon(NULL, IDI_WINLOGO);
-
-      if (!RegisterClassEx(&windowClass))
-      {
-        throw std::runtime_error("Failed to register WNDCLASSEX -> terminating");
-      }
-
-      RECT windowRect = { 0, 0, width, height };
-      AdjustWindowRect(&windowRect, WS_OVERLAPPEDWINDOW, FALSE);
-
-      HWND window = CreateWindowEx(0, className.c_str(), windowName.c_str(), WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_SYSMENU, 100, 100, windowRect.right - windowRect.left,
-                                   windowRect.bottom - windowRect.top, nullptr, nullptr, instance, nullptr);
-      if (!window)
-      {
-        throw std::runtime_error("Failed to create window -> terminating");
-      }
-
-      return window;
+      glfwDestroyWindow(window);
     }
-#else
-#pragma error "unhandled platform"
-#endif
   }
 }
 

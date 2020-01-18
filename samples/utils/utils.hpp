@@ -16,6 +16,10 @@
 //
 
 #include "vulkan/vulkan.hpp"
+
+#define GLFW_INCLUDE_NONE
+#include <GLFW/glfw3.h>
+
 #include <iostream>
 #include <map>
 
@@ -100,12 +104,10 @@ namespace vk
 
     struct SurfaceData
     {
-      SurfaceData(vk::UniqueInstance &instance, std::string const& className, std::string const& windowName, vk::Extent2D const& extent);
+      SurfaceData(vk::UniqueInstance &instance, std::string const& windowName, vk::Extent2D const& extent);
 
       vk::Extent2D          extent;
-#if defined(VK_USE_PLATFORM_WIN32_KHR)
-      HWND                  window;
-#endif
+      GLFWwindow*           window;
       vk::UniqueSurfaceKHR  surface;
     };
 
@@ -299,11 +301,8 @@ namespace vk
                               std::vector<std::tuple<vk::DescriptorType, vk::UniqueBuffer const&, vk::UniqueBufferView const&>> const& bufferData,
                               std::vector<vk::su::TextureData> const& textureData, uint32_t bindingOffset = 0);
 
-#if defined(VK_USE_PLATFORM_WIN32_KHR)
-    HWND initializeWindow(std::string const& className, std::string const& windowName, LONG width, LONG height);
-#else
-# error "unhandled platform"
-#endif
+    GLFWwindow *createWindow(std::string const &windowName, uint32_t width, uint32_t height);
+    void destroyWindow(GLFWwindow *window);
   }
 }
 

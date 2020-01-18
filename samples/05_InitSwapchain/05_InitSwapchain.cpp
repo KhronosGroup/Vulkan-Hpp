@@ -40,13 +40,13 @@ int main(int /*argc*/, char ** /*argv*/)
 
     uint32_t width = 64;
     uint32_t height = 64;
-#if defined(VK_USE_PLATFORM_WIN32_KHR)
-    HWND window = vk::su::initializeWindow(AppName, AppName, width, height);
-
-    vk::UniqueSurfaceKHR surface = instance->createWin32SurfaceKHRUnique(vk::Win32SurfaceCreateInfoKHR(vk::Win32SurfaceCreateFlagsKHR(), GetModuleHandle(nullptr), window));
-#else
-#pragma error "unhandled platform"
-#endif
+    GLFWwindow *window = vk::su::createWindow(AppName, width, height);
+    vk::UniqueSurfaceKHR surface;
+    {
+      VkSurfaceKHR _surface;
+      glfwCreateWindowSurface(instance.get(), window, nullptr, &_surface);
+      surface = vk::UniqueSurfaceKHR(_surface);
+    }
 
     // determine a queueFamilyIndex that suports present
     // first check if the graphicsQueueFamiliyIndex is good enough
@@ -140,11 +140,7 @@ int main(int /*argc*/, char ** /*argv*/)
       imageViews.push_back(device->createImageViewUnique(imageViewCreateInfo));
     }
 
-#if defined(VK_USE_PLATFORM_WIN32_KHR)
-    DestroyWindow(window);
-#else
-#pragma error "unhandled platform"
-#endif
+    vk::su::destroyWindow(window);
 
     // Note: No need to explicitly destroy the ImageViews or the swapChain, as the corresponding destroy
     // functions are called by the destructor of the UniqueImageView and the UniqueSwapChainKHR on leaving this scope.

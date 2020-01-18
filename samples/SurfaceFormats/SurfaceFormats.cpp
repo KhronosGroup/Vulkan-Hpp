@@ -36,7 +36,7 @@ int main(int /*argc*/, char ** /*argv*/)
     // enumerate the physicalDevices
     std::vector<vk::PhysicalDevice> physicalDevices = instance->enumeratePhysicalDevices();
 
-    vk::su::SurfaceData surfaceData(instance, AppName, AppName, vk::Extent2D(500, 500));
+    vk::su::SurfaceData surfaceData(instance, AppName, vk::Extent2D(500, 500));
 
     /* VULKAN_KEY_START */
 

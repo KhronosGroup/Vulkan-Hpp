@@ -18,6 +18,8 @@
 #include "../utils/utils.hpp"
 #include "vulkan/vulkan.hpp"
 
+#include <thread>
+
 static char const* AppName = "CopyBlitImage";
 static char const* EngineName = "Vulkan.hpp";
 
@@ -32,7 +34,7 @@ int main(int /*argc*/, char ** /*argv*/)
 
     vk::PhysicalDevice physicalDevice = instance->enumeratePhysicalDevices().front();
 
-    vk::su::SurfaceData surfaceData(instance, AppName, AppName, vk::Extent2D(640, 640));
+    vk::su::SurfaceData surfaceData(instance, AppName, vk::Extent2D(640, 640));
 
     vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR(surfaceData.surface.get());
     if (!(surfaceCapabilities.supportedUsageFlags & vk::ImageUsageFlagBits::eTransferDst))
@@ -150,15 +152,11 @@ int main(int /*argc*/, char ** /*argv*/)
 
     /* Now present the image in the window */
     presentQueue.presentKHR(vk::PresentInfoKHR(0, nullptr, 1, &swapChainData.swapChain.get(), &currentBuffer, nullptr));
-    Sleep(1000);
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
     /* VULKAN_KEY_END */
 
-#if defined(VK_USE_PLATFORM_WIN32_KHR)
-    DestroyWindow(surfaceData.window);
-#else
-#pragma error "unhandled platform"
-#endif
+    vk::su::destroyWindow(surfaceData.window);
   }
   catch (vk::SystemError err)
   {

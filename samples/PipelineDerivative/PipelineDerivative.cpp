@@ -21,6 +21,7 @@
 #include "../utils/utils.hpp"
 #include "vulkan/vulkan.hpp"
 #include "SPIRV/GlslangToSpv.h"
+#include <thread>
 
 static char const* AppName = "PipelineDerivative";
 static char const* EngineName = "Vulkan.hpp";
@@ -36,7 +37,7 @@ int main(int /*argc*/, char ** /*argv*/)
 
     vk::PhysicalDevice physicalDevice = instance->enumeratePhysicalDevices().front();
 
-    vk::su::SurfaceData surfaceData(instance, AppName, AppName, vk::Extent2D(500, 500));
+    vk::su::SurfaceData surfaceData(instance, AppName, vk::Extent2D(500, 500));
 
     std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex(physicalDevice, *surfaceData.surface);
     vk::UniqueDevice device = vk::su::createDevice(physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions());
@@ -191,13 +192,9 @@ void main()
       ;
 
     presentQueue.presentKHR(vk::PresentInfoKHR(0, nullptr, 1, &swapChainData.swapChain.get(), &currentBuffer.value));
-    Sleep(1000);
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
-#if defined(VK_USE_PLATFORM_WIN32_KHR)
-    DestroyWindow(surfaceData.window);
-#else
-#pragma error "unhandled platform"
-#endif
+    vk::su::destroyWindow(surfaceData.window);
   }
   catch (vk::SystemError err)
   {

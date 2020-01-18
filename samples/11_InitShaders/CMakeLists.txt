@@ -17,15 +17,10 @@ cmake_minimum_required(VERSION 3.2)
 project(11_InitShaders)
 
 set(HEADERS
-  ../utils/shaders.hpp
-  ../utils/utils.hpp
 )
 
 set(SOURCES
   11_InitShaders.cpp
-  ../utils/shaders.cpp
-  ../utils/utils.cpp
-  ../../glslang/StandAlone/ResourceLimits.cpp
 )
 
 source_group(headers FILES ${HEADERS})
@@ -37,6 +32,4 @@ add_executable(11_InitShaders
 )
 
 set_target_properties(11_InitShaders PROPERTIES FOLDER "Samples")
-target_compile_definitions(11_InitShaders PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)
-target_include_directories(11_InitShaders PUBLIC ${CMAKE_SOURCE_DIR}/glslang)
-target_link_libraries(11_InitShaders PUBLIC glslang SPIRV)
+target_link_libraries(11_InitShaders PRIVATE utils)

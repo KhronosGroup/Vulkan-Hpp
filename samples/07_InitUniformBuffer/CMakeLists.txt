@@ -17,12 +17,10 @@ cmake_minimum_required(VERSION 3.2)
 project(07_InitUniformBuffer)
 
 set(HEADERS
-  ../utils/utils.hpp
 )
 
 set(SOURCES
   07_InitUniformBuffer.cpp
-  ../utils/utils.cpp
 )
 
 source_group(headers FILES ${HEADERS})
@@ -34,4 +32,4 @@ add_executable(07_InitUniformBuffer
 )
 
 set_target_properties(07_InitUniformBuffer PROPERTIES FOLDER "Samples")
-target_compile_definitions(07_InitUniformBuffer PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)
+target_link_libraries(07_InitUniformBuffer PRIVATE utils)

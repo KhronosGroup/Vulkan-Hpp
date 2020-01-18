@@ -17,14 +17,10 @@ cmake_minimum_required(VERSION 3.2)
 project(09_InitDescriptorSet)
 
 set(HEADERS
-  ../utils/math.hpp
-  ../utils/utils.hpp
 )
 
 set(SOURCES
   09_InitDescriptorSet.cpp
-  ../utils/math.cpp
-  ../utils/utils.cpp
 )
 
 source_group(headers FILES ${HEADERS})
@@ -36,4 +32,4 @@ add_executable(09_InitDescriptorSet
 )
 
 set_target_properties(09_InitDescriptorSet PROPERTIES FOLDER "Samples")
-target_compile_definitions(09_InitDescriptorSet PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)
+target_link_libraries(09_InitDescriptorSet PRIVATE utils)

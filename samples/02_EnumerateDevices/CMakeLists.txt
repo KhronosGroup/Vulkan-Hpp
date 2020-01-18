@@ -17,12 +17,10 @@ cmake_minimum_required(VERSION 3.2)
 project(02_EnumerateDevices)
 
 set(HEADERS
-  ../utils/utils.hpp
 )
 
 set(SOURCES
   02_EnumerateDevices.cpp
-  ../utils/utils.cpp
 )
 
 source_group(headers FILES ${HEADERS})
@@ -34,4 +32,4 @@ add_executable(02_EnumerateDevices
 )
 
 set_target_properties(02_EnumerateDevices PROPERTIES FOLDER "Samples")
-target_compile_definitions(02_EnumerateDevices PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)
+target_link_libraries(02_EnumerateDevices PRIVATE utils)

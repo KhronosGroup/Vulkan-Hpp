@@ -17,12 +17,10 @@ cmake_minimum_required(VERSION 3.2)
 project(PhysicalDeviceExtensions)
 
 set(HEADERS
-  ../utils/utils.hpp
 )
 
 set(SOURCES
   PhysicalDeviceExtensions.cpp
-  ../utils/utils.cpp
 )
 
 source_group(headers FILES ${HEADERS})
@@ -34,4 +32,4 @@ add_executable(PhysicalDeviceExtensions
 )
 
 set_target_properties(PhysicalDeviceExtensions PROPERTIES FOLDER "Samples")
-target_compile_definitions(PhysicalDeviceExtensions PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)
+target_link_libraries(PhysicalDeviceExtensions PRIVATE utils)

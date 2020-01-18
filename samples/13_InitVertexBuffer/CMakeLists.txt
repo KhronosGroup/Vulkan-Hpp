@@ -17,13 +17,10 @@ cmake_minimum_required(VERSION 3.2)
 project(13_InitVertexBuffer)
 
 set(HEADERS
-  ../utils/geometries.hpp
-  ../utils/utils.hpp
 )
 
 set(SOURCES
   13_InitVertexBuffer.cpp
-  ../utils/utils.cpp
 )
 
 source_group(headers FILES ${HEADERS})
@@ -35,4 +32,4 @@ add_executable(13_InitVertexBuffer
 )
 
 set_target_properties(13_InitVertexBuffer PROPERTIES FOLDER "Samples")
-target_compile_definitions(13_InitVertexBuffer PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)
+target_link_libraries(13_InitVertexBuffer PRIVATE utils)

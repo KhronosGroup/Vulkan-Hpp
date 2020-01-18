@@ -17,18 +17,10 @@ cmake_minimum_required(VERSION 3.2)
 project(15_DrawCube)
 
 set(HEADERS
-  ../utils/geometries.hpp
-  ../utils/math.hpp
-  ../utils/shaders.hpp
-  ../utils/utils.hpp
 )
 
 set(SOURCES
   15_DrawCube.cpp
-  ../utils/math.cpp
-  ../utils/shaders.cpp
-  ../utils/utils.cpp
-  ../../glslang/StandAlone/ResourceLimits.cpp
 )
 
 source_group(headers FILES ${HEADERS})
@@ -40,6 +32,4 @@ add_executable(15_DrawCube
 )
 
 set_target_properties(15_DrawCube PROPERTIES FOLDER "Samples")
-target_compile_definitions(15_DrawCube PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)
-target_include_directories(15_DrawCube PUBLIC ${CMAKE_SOURCE_DIR}/glslang)
-target_link_libraries(15_DrawCube PUBLIC glslang SPIRV)
+target_link_libraries(15_DrawCube PRIVATE utils)

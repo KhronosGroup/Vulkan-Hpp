@@ -17,12 +17,10 @@ cmake_minimum_required(VERSION 3.2)
 project(SurfaceFormats)
 
 set(HEADERS
-  ../utils/utils.hpp
 )
 
 set(SOURCES
   SurfaceFormats.cpp
-  ../utils/utils.cpp
 )
 
 source_group(headers FILES ${HEADERS})
@@ -34,4 +32,4 @@ add_executable(SurfaceFormats
 )
 
 set_target_properties(SurfaceFormats PROPERTIES FOLDER "Samples")
-target_compile_definitions(SurfaceFormats PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)
+target_link_libraries(SurfaceFormats PRIVATE utils)

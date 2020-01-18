@@ -17,12 +17,10 @@ cmake_minimum_required(VERSION 3.2)
 project(PhysicalDeviceQueueFamilyProperties)
 
 set(HEADERS
-  ../utils/utils.hpp
 )
 
 set(SOURCES
   PhysicalDeviceQueueFamilyProperties.cpp
-  ../utils/utils.cpp
 )
 
 source_group(headers FILES ${HEADERS})
@@ -34,4 +32,4 @@ add_executable(PhysicalDeviceQueueFamilyProperties
 )
 
 set_target_properties(PhysicalDeviceQueueFamilyProperties PROPERTIES FOLDER "Samples")
-target_compile_definitions(PhysicalDeviceQueueFamilyProperties PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)
+target_link_libraries(PhysicalDeviceQueueFamilyProperties PRIVATE utils)

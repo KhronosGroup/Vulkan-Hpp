@@ -17,12 +17,10 @@ cmake_minimum_required(VERSION 3.2)
 project(06_InitDepthBuffer)
 
 set(HEADERS
-  ../utils/utils.hpp
 )
 
 set(SOURCES
   06_InitDepthBuffer.cpp
-  ../utils/utils.cpp
 )
 
 source_group(headers FILES ${HEADERS})
@@ -34,4 +32,4 @@ add_executable(06_InitDepthBuffer
 )
 
 set_target_properties(06_InitDepthBuffer PROPERTIES FOLDER "Samples")
-target_compile_definitions(06_InitDepthBuffer PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)
+target_link_libraries(06_InitDepthBuffer PRIVATE utils)

@@ -17,12 +17,10 @@ cmake_minimum_required(VERSION 3.2)
 project(SurfaceCapabilities)
 
 set(HEADERS
-  ../utils/utils.hpp
 )
 
 set(SOURCES
   SurfaceCapabilities.cpp
-  ../utils/utils.cpp
 )
 
 source_group(headers FILES ${HEADERS})
@@ -34,4 +32,4 @@ add_executable(SurfaceCapabilities
 )
 
 set_target_properties(SurfaceCapabilities PROPERTIES FOLDER "Samples")
-target_compile_definitions(SurfaceCapabilities PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)
+target_link_libraries(SurfaceCapabilities PRIVATE utils)

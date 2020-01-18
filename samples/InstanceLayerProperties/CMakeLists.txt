@@ -32,5 +32,4 @@ add_executable(InstanceLayerProperties
 )
 
 set_target_properties(InstanceLayerProperties PROPERTIES FOLDER "Samples")
-target_link_libraries(InstanceLayerProperties PUBLIC "$ENV{VULKAN_SDK}/Lib/vulkan-1.lib"
-)
+target_link_libraries(InstanceLayerProperties "${Vulkan_LIBRARIES}")

@@ -80,6 +80,20 @@ namespace vk
 
     void setImageLayout(vk::UniqueCommandBuffer const &commandBuffer, vk::Image image, vk::Format format, vk::ImageLayout oldImageLayout, vk::ImageLayout newImageLayout);
 
+    struct WindowData
+    {
+      WindowData(GLFWwindow *wnd, std::string const& name, vk::Extent2D const& extent);
+      WindowData(const WindowData &) = delete;
+      WindowData(WindowData &&other);
+      ~WindowData() noexcept;
+
+      GLFWwindow *handle;
+      std::string name;
+      vk::Extent2D extent;
+    };
+
+    WindowData createWindow(std::string const &windowName, vk::Extent2D const &extent);
+
     struct BufferData
     {
       BufferData(vk::PhysicalDevice const& physicalDevice, vk::UniqueDevice const& device, vk::DeviceSize size, vk::BufferUsageFlags usage,
@@ -302,8 +316,6 @@ namespace vk
                               std::vector<std::tuple<vk::DescriptorType, vk::UniqueBuffer const&, vk::UniqueBufferView const&>> const& bufferData,
                               std::vector<vk::su::TextureData> const& textureData, uint32_t bindingOffset = 0);
 
-    GLFWwindow *createWindow(std::string const &windowName, uint32_t width, uint32_t height);
-    void destroyWindow(GLFWwindow *window);
   }
 }
 

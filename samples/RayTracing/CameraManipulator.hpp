@@ -29,7 +29,7 @@ namespace vk
         enum class Mode { Examine, Fly, Walk, Trackball };
         enum class MouseButton { None, Left, Middle, Right };
         enum class ModifierFlagBits { Shift = 1, Ctrl = 2, Alt = 4 };
-        using ModifierFlags = vk::Flags<ModifierFlagBits, uint32_t, ModifierFlagBits::Shift>;
+        using ModifierFlags = vk::Flags<ModifierFlagBits, uint32_t>;
 
       public:
         CameraManipulator();

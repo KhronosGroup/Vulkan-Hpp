@@ -667,12 +667,15 @@ namespace vk
     }
 
     SurfaceData::SurfaceData(vk::UniqueInstance &instance, std::string const &windowName, vk::Extent2D const &extent_)
-        : extent(extent_)
+      : extent(extent_)
+      , window(vk::su::createWindow(windowName, extent))
     {
-      window = vk::su::createWindow(windowName, extent.width, extent.height);
       VkSurfaceKHR _surface;
-      glfwCreateWindowSurface(instance.get(), window, nullptr, &_surface);
-      surface = vk::UniqueSurfaceKHR(_surface);
+      VkResult err = glfwCreateWindowSurface(instance.get(), window.handle, nullptr, &_surface);
+      if (err != VK_SUCCESS)
+        throw std::runtime_error("Failed to create window!");
+      vk::ObjectDestroy<vk::Instance, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE> _deleter(instance.get());
+      surface = vk::UniqueSurfaceKHR(_surface, _deleter);
     }
 
     SwapChainData::SwapChainData(vk::PhysicalDevice const& physicalDevice, vk::UniqueDevice const& device, vk::SurfaceKHR const& surface, vk::Extent2D const& extent, vk::ImageUsageFlags usage,

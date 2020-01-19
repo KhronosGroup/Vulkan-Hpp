@@ -172,7 +172,7 @@ namespace vk
       SurfaceData(vk::UniqueInstance &instance, std::string const& windowName, vk::Extent2D const& extent);
 
       vk::Extent2D          extent;
-      GLFWwindow*           window;
+      WindowData            window;
       vk::UniqueSurfaceKHR  surface;
     };
 

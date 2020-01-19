@@ -26,10 +26,14 @@ set(SOURCES
 source_group(headers FILES ${HEADERS})
 source_group(sources FILES ${SOURCES})
 
-add_executable(SurfaceCapabilities
-  ${HEADERS}
-  ${SOURCES}
-)
+# Win32 exclusive vk::SurfaceCapabilitiesFullScreenExclusiveEXT is used
+if(WIN32)
 
-set_target_properties(SurfaceCapabilities PROPERTIES FOLDER "Samples")
-target_link_libraries(SurfaceCapabilities PRIVATE utils)
+  add_executable(SurfaceCapabilities
+    ${HEADERS}
+    ${SOURCES}
+  )
+  set_target_properties(SurfaceCapabilities PROPERTIES FOLDER "Samples")
+  target_link_libraries(SurfaceCapabilities PRIVATE utils)
+
+endif()

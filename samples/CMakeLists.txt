@@ -18,7 +18,7 @@ find_package(Vulkan REQUIRED)
 
 project(Vulkan-Hpp_Samples)
 
-option (SAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP OFF)
+option (SAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP "Build with local Vulkan headers" OFF)
 
 if (CMAKE_SYSTEM_NAME MATCHES "Windows")
   add_definitions(-DNOMINMAX -DVK_USE_PLATFORM_WIN32_KHR)

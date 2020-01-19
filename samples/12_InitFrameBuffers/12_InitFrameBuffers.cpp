@@ -61,8 +61,6 @@ int main(int /*argc*/, char ** /*argv*/)
     // Note: No need to explicitly destroy the Framebuffers, as the destroy functions are called by the destructor of the UniqueFramebuffer on leaving this scope.
 
     /* VULKAN_KEY_END */
-
-    vk::su::destroyWindow(surfaceData.window);
   }
   catch (vk::SystemError err)
   {

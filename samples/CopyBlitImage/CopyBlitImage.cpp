@@ -155,8 +155,6 @@ int main(int /*argc*/, char ** /*argv*/)
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
     /* VULKAN_KEY_END */
-
-    vk::su::destroyWindow(surfaceData.window);
   }
   catch (vk::SystemError err)
   {

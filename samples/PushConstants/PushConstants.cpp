@@ -183,8 +183,6 @@ int main(int /*argc*/, char ** /*argv*/)
 
     presentQueue.presentKHR(vk::PresentInfoKHR(0, nullptr, 1, &swapChainData.swapChain.get(), &currentBuffer.value));
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-
-    vk::su::destroyWindow(surfaceData.window);
   }
   catch (vk::SystemError err)
   {

@@ -63,8 +63,6 @@ int main(int /*argc*/, char ** /*argv*/)
     // functions are called by the destructor of the UniqueRenderPass and the UniqueSemaphore on leaving this scope.
 
     /* VULKAN_HPP_KEY_END */
-
-    vk::su::destroyWindow(surfaceData.window);
   }
   catch (vk::SystemError err)
   {

@@ -122,7 +122,6 @@ int main(int /*argc*/, char ** /*argv*/)
     /* VULKAN_KEY_END */
 
     device->waitIdle();
-    vk::su::destroyWindow(surfaceData.window);
   }
   catch (vk::SystemError err)
   {

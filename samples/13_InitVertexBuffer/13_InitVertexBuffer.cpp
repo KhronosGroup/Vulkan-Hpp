@@ -95,8 +95,6 @@ int main(int /*argc*/, char ** /*argv*/)
     // by the destructor of the UniqueBuffer, UniqueDeviceMemory, and UniqueSemaphore, respectively, on leaving this scope.
 
     /* VULKAN_KEY_END */
-
-    vk::su::destroyWindow(surfaceData.window);
   }
   catch (vk::SystemError err)
   {

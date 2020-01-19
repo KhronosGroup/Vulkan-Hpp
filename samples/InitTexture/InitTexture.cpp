@@ -139,8 +139,6 @@ int main(int /*argc*/, char ** /*argv*/)
     vk::UniqueImageView imageView = device->createImageViewUnique(imageViewCreateInfo);
 
     /* VULKAN_KEY_END */
-
-    vk::su::destroyWindow(surfaceData.window);
   }
   catch (vk::SystemError err)
   {

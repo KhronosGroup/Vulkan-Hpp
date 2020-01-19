@@ -317,8 +317,6 @@ int main(int /*argc*/, char ** /*argv*/)
     }
 
     /* VULKAN_KEY_END */
-
-    vk::su::destroyWindow(surfaceData.window);
   }
   catch (vk::SystemError err)
   {

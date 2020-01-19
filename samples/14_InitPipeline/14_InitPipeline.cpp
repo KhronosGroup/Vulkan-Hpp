@@ -160,8 +160,6 @@ int main(int /*argc*/, char ** /*argv*/)
     vk::UniquePipeline pipeline = device->createGraphicsPipelineUnique(nullptr, graphicsPipelineCreateInfo);
 
     /* VULKAN_KEY_END */
-
-    vk::su::destroyWindow(surfaceData.window);
   }
   catch (vk::SystemError err)
   {

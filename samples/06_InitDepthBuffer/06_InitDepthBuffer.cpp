@@ -82,8 +82,6 @@ int main(int /*argc*/, char ** /*argv*/)
     vk::UniqueImageView depthView = device->createImageViewUnique(vk::ImageViewCreateInfo(vk::ImageViewCreateFlags(), depthImage.get(), vk::ImageViewType::e2D, depthFormat, componentMapping, subResourceRange));
 
     /* VULKAN_HPP_KEY_END */
-
-    vk::su::destroyWindow(surfaceData.window);
   }
   catch (vk::SystemError err)
   {

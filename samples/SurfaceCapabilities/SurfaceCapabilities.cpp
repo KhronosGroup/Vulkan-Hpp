@@ -116,7 +116,7 @@ int main(int /*argc*/, char ** /*argv*/)
         {
           vk::SurfaceProtectedCapabilitiesKHR surfaceProtectedCapabilities = surfaceCapabilities2.get<vk::SurfaceProtectedCapabilitiesKHR>();
           std::cout << "\tSurfaceProtectedCapabilitiesKHR:\n";
-          std::cout << "\t\t" << "setSupportsProtected  = " << static_cast<bool>(surfaceProtectedCapabilities.setSupportsProtected) << "\n";
+          std::cout << "\t\t" << "supportsProtected  = " << static_cast<bool>(surfaceProtectedCapabilities.supportsProtected) << "\n";
           std::cout << "\n";
         }
       }

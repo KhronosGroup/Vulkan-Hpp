@@ -22,8 +22,10 @@ option (SAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP "Build with local Vulkan headers" OF
 
 if (CMAKE_SYSTEM_NAME MATCHES "Windows")
   add_definitions(-DNOMINMAX -DVK_USE_PLATFORM_WIN32_KHR)
-else()
+elseif(CMAKE_SYSTEM_NAME MATCHES "Linux")
   add_definitions(-DVK_USE_PLATFORM_XCB_KHR)
+else()
+  message(FATAL_ERROR, "Vulkan-Hpp: unhandled platform for samples!")
 endif()
 
 FILE (GLOB linkunits ${CMAKE_CURRENT_SOURCE_DIR}/*)

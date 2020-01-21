@@ -1,4 +1,4 @@
-# Copyright(c) 2018, NVIDIA CORPORATION. All rights reserved.
+# Copyright(c) 2020, NVIDIA CORPORATION. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,15 +12,32 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-add_library(utils 
+cmake_minimum_required(VERSION 3.2)
+
+project(utils)
+
+set(HEADERS
+  math.hpp
+  shaders.hpp
+  utils.hpp
+)
+
+set(SOURCES
   math.cpp
   shaders.cpp
   utils.cpp
+)
+
+source_group(headers FILES ${HEADERS})
+source_group(sources FILES ${SOURCES})
+
+add_library(utils 
+  ${SOURCES}
+  ${HEADERS}
 )
 
 target_link_libraries(utils PUBLIC glfw)
 target_link_libraries(utils PUBLIC glslang)
 target_link_libraries(utils PUBLIC glslang-default-resource-limits)
 target_link_libraries(utils PUBLIC SPIRV)
-target_include_directories(utils PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_compile_definitions(utils PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)

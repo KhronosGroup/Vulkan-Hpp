@@ -39,7 +39,7 @@ int main(int /*argc*/, char ** /*argv*/)
     // Note: No need to explicitly destroy the instance, as the corresponding destroy function is
     // called by the destructor of the UniqueInstance on leaving this scope.
   }
-  catch (vk::SystemError err)
+  catch (vk::SystemError& err)
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
     exit(-1);

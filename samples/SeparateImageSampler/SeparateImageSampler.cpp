@@ -129,7 +129,6 @@ int main(int /*argc*/, char ** /*argv*/)
 
     // Create pipeline layout
     vk::UniquePipelineLayout pipelineLayout = device->createPipelineLayoutUnique(vk::PipelineLayoutCreateInfo(vk::PipelineLayoutCreateFlags(), 1, &(*descriptorSetLayout)));
-    VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo[1] = {};
 
     // Create a single pool to contain data for the descriptor set
     std::array<vk::DescriptorPoolSize, 3> poolSizes = 
@@ -201,12 +200,12 @@ int main(int /*argc*/, char ** /*argv*/)
 
     device->waitIdle();
   }
-  catch (vk::SystemError err)
+  catch (vk::SystemError& err)
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
     exit(-1);
   }
-  catch (std::runtime_error err)
+  catch (std::runtime_error& err)
   {
     std::cout << "std::runtime_error: " << err.what() << std::endl;
     exit(-1);

@@ -133,7 +133,7 @@ int main(int /*argc*/, char ** /*argv*/)
       vk::LogicOp::eNoOp,                         // logicOp
       1,                                          // attachmentCount
       &pipelineColorBlendAttachmentState,         // pAttachments
-      { { (1.0f, 1.0f, 1.0f, 1.0f) } }            // blendConstants
+      { { 1.0f, 1.0f, 1.0f, 1.0f } }              // blendConstants
     );
 
     vk::DynamicState dynamicStates[2] = { vk::DynamicState::eViewport, vk::DynamicState::eScissor };

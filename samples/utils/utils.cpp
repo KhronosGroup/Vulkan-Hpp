@@ -154,7 +154,7 @@ namespace vk
       vk::PipelineColorBlendAttachmentState pipelineColorBlendAttachmentState(false, vk::BlendFactor::eZero, vk::BlendFactor::eZero, vk::BlendOp::eAdd, vk::BlendFactor::eZero,
                                                                               vk::BlendFactor::eZero, vk::BlendOp::eAdd, colorComponentFlags);
       vk::PipelineColorBlendStateCreateInfo pipelineColorBlendStateCreateInfo(vk::PipelineColorBlendStateCreateFlags(), false, vk::LogicOp::eNoOp, 1, &pipelineColorBlendAttachmentState,
-                                                                              { { (1.0f, 1.0f, 1.0f, 1.0f) } });
+                                                                              { { 1.0f, 1.0f, 1.0f, 1.0f } });
 
       vk::DynamicState dynamicStates[2] = { vk::DynamicState::eViewport, vk::DynamicState::eScissor };
       vk::PipelineDynamicStateCreateInfo pipelineDynamicStateCreateInfo(vk::PipelineDynamicStateCreateFlags(), 2, dynamicStates);
@@ -608,7 +608,7 @@ namespace vk
       bufferInfos.reserve(bufferData.size());
 
       std::vector<vk::WriteDescriptorSet> writeDescriptorSets;
-      writeDescriptorSets.reserve(bufferData.size() + textureData.empty() ? 0 : 1);
+      writeDescriptorSets.reserve(bufferData.size() + (textureData.empty() ? 0 : 1));
       uint32_t dstBinding = bindingOffset;
       for (auto const& bd : bufferData)
       {

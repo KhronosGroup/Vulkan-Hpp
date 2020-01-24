@@ -131,7 +131,7 @@ int main(int /*argc*/, char ** /*argv*/)
       readCacheStream.seekg(0, readCacheStream.beg);
 
       // Allocate memory to hold the initial cache data
-      startCacheData = new char[startCacheSize];
+      startCacheData = (char *)std::malloc(startCacheSize);
 
       // Read the data into our buffer
       readCacheStream.read(startCacheData, startCacheSize);

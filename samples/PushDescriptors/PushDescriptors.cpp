@@ -137,7 +137,7 @@ int main(int /*argc*/, char ** /*argv*/)
     };
 
     // this call is from an extension and needs the dynamic dispatcher !!
-    commandBuffer->pushDescriptorSetKHR(vk::PipelineBindPoint::eGraphics, *pipelineLayout, 0, { 2, writeDescriptorSets }, vk::DispatchLoaderDynamic(*instance, *device));
+    commandBuffer->pushDescriptorSetKHR(vk::PipelineBindPoint::eGraphics, *pipelineLayout, 0, {2, writeDescriptorSets});
 
     commandBuffer->bindVertexBuffers(0, *vertexBufferData.buffer, {0});
     commandBuffer->setViewport(0, vk::Viewport(0.0f, 0.0f, static_cast<float>(surfaceData.extent.width), static_cast<float>(surfaceData.extent.height), 0.0f, 1.0f));

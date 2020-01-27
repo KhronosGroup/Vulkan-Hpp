@@ -33,4 +33,3 @@ add_executable(PushDescriptors
 
 set_target_properties(PushDescriptors PROPERTIES FOLDER "Samples")
 target_link_libraries(PushDescriptors PRIVATE utils)
-target_link_libraries(PushDescriptors PRIVATE "${Vulkan_LIBRARIES}")

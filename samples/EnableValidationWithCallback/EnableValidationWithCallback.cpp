@@ -101,6 +101,13 @@ int main(int /*argc*/, char ** /*argv*/)
 {
   try
   {
+#if (VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1)
+    // initialize the DipatchLoaderDynamic to use
+    static vk::DynamicLoader dl;
+    PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr = dl.getProcAddress<PFN_vkGetInstanceProcAddr>("vkGetInstanceProcAddr");
+    VULKAN_HPP_DEFAULT_DISPATCHER.init(vkGetInstanceProcAddr);
+#endif
+
     std::vector<vk::LayerProperties> instanceLayerProperties = vk::enumerateInstanceLayerProperties();
 
     /* VULKAN_KEY_START */
@@ -122,6 +129,11 @@ int main(int /*argc*/, char ** /*argv*/)
     vk::InstanceCreateInfo instanceCreateInfo( vk::InstanceCreateFlags(), &applicationInfo, vk::su::checked_cast<uint32_t>(instanceLayerNames.size()), instanceLayerNames.data(),
       vk::su::checked_cast<uint32_t>(instanceExtensionNames.size()) , instanceExtensionNames.data() );
     vk::UniqueInstance instance = vk::createInstanceUnique(instanceCreateInfo);
+
+#if (VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1)
+    // initialize function pointers for instance
+    VULKAN_HPP_DEFAULT_DISPATCHER.init(*instance);
+#endif
 
     pfnVkCreateDebugUtilsMessengerEXT = reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>(instance->getProcAddr("vkCreateDebugUtilsMessengerEXT"));
     if (!pfnVkCreateDebugUtilsMessengerEXT)
@@ -164,12 +176,12 @@ int main(int /*argc*/, char ** /*argv*/)
 
     /* VULKAN_KEY_END */
   }
-  catch (vk::SystemError err)
+  catch (vk::SystemError& err)
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
     exit(-1);
   }
-  catch (std::runtime_error err)
+  catch (std::runtime_error& err)
   {
     std::cout << "std::runtime_error: " << err.what() << std::endl;
     exit(-1);

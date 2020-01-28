@@ -17,18 +17,10 @@ cmake_minimum_required(VERSION 3.2)
 project(InitTexture)
 
 set(HEADERS
-  ../utils/geometries.hpp
-  ../utils/math.hpp
-  ../utils/shaders.hpp
-  ../utils/utils.hpp
 )
 
 set(SOURCES
   InitTexture.cpp
-  ../utils/math.cpp
-  ../utils/shaders.cpp
-  ../utils/utils.cpp
-  ../../glslang/StandAlone/ResourceLimits.cpp
 )
 
 source_group(headers FILES ${HEADERS})
@@ -40,6 +32,4 @@ add_executable(InitTexture
 )
 
 set_target_properties(InitTexture PROPERTIES FOLDER "Samples")
-target_compile_definitions(InitTexture PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)
-target_include_directories(InitTexture PUBLIC ${CMAKE_SOURCE_DIR}/glslang)
-target_link_libraries(InitTexture PUBLIC glslang SPIRV)
+target_link_libraries(InitTexture PRIVATE utils)

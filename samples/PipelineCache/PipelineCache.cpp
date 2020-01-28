@@ -23,6 +23,7 @@
 #include "SPIRV/GlslangToSpv.h"
 #include <fstream>
 #include <iomanip>
+#include <thread>
 
 // For timestamp code (getMilliseconds)
 #ifdef WIN32
@@ -70,7 +71,7 @@ int main(int /*argc*/, char ** /*argv*/)
     vk::PhysicalDevice physicalDevice = instance->enumeratePhysicalDevices().front();
     vk::PhysicalDeviceProperties properties = physicalDevice.getProperties();
 
-    vk::su::SurfaceData surfaceData(instance, AppName, AppName, vk::Extent2D(500, 500));
+    vk::su::SurfaceData surfaceData(instance, AppName, vk::Extent2D(500, 500));
 
     std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex(physicalDevice, *surfaceData.surface);
     vk::UniqueDevice device = vk::su::createDevice(physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions());
@@ -130,7 +131,7 @@ int main(int /*argc*/, char ** /*argv*/)
       readCacheStream.seekg(0, readCacheStream.beg);
 
       // Allocate memory to hold the initial cache data
-      startCacheData = new char[startCacheSize];
+      startCacheData = (char *)std::malloc(startCacheSize);
 
       // Read the data into our buffer
       readCacheStream.read(startCacheData, startCacheSize);
@@ -294,7 +295,7 @@ int main(int /*argc*/, char ** /*argv*/)
       ;
 
     presentQueue.presentKHR(vk::PresentInfoKHR(0, nullptr, 1, &swapChainData.swapChain.get(), &currentBuffer.value));
-    Sleep(1000);
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
     // Store away the cache that we've populated.  This could conceivably happen
     // earlier, depends on when the pipeline cache stops being populated
@@ -316,19 +317,13 @@ int main(int /*argc*/, char ** /*argv*/)
     }
 
     /* VULKAN_KEY_END */
-
-#if defined(VK_USE_PLATFORM_WIN32_KHR)
-    DestroyWindow(surfaceData.window);
-#else
-#pragma error "unhandled platform"
-#endif
   }
-  catch (vk::SystemError err)
+  catch (vk::SystemError& err)
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
     exit(-1);
   }
-  catch (std::runtime_error err)
+  catch (std::runtime_error& err)
   {
     std::cout << "std::runtime_error: " << err.what() << std::endl;
     exit(-1);

@@ -17,18 +17,10 @@ cmake_minimum_required(VERSION 3.2)
 project(ImmutableSampler)
 
 set(HEADERS
-  ../utils/geometries.hpp
-  ../utils/math.hpp
-  ../utils/shaders.hpp
-  ../utils/utils.hpp
 )
 
 set(SOURCES
   ImmutableSampler.cpp
-  ../utils/math.cpp
-  ../utils/shaders.cpp
-  ../utils/utils.cpp
-  ../../glslang/StandAlone/ResourceLimits.cpp
 )
 
 source_group(headers FILES ${HEADERS})
@@ -40,6 +32,4 @@ add_executable(ImmutableSampler
 )
 
 set_target_properties(ImmutableSampler PROPERTIES FOLDER "Samples")
-target_compile_definitions(ImmutableSampler PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)
-target_include_directories(ImmutableSampler PUBLIC ${CMAKE_SOURCE_DIR}/glslang)
-target_link_libraries(ImmutableSampler PUBLIC glslang SPIRV)
+target_link_libraries(ImmutableSampler PRIVATE utils)

@@ -17,12 +17,10 @@ cmake_minimum_required(VERSION 3.2)
 project(03_InitDevice)
 
 set(HEADERS
-  ../utils/utils.hpp
 )
 
 set(SOURCES
   03_InitDevice.cpp
-  ../utils/utils.cpp
 )
 
 source_group(headers FILES ${HEADERS})
@@ -34,4 +32,4 @@ add_executable(03_InitDevice
 )
 
 set_target_properties(03_InitDevice PROPERTIES FOLDER "Samples")
-target_compile_definitions(03_InitDevice PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)
+target_link_libraries(03_InitDevice PRIVATE utils)

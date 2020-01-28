@@ -32,4 +32,4 @@ add_executable(EnableValidationWithCallback
 )
 
 set_target_properties(EnableValidationWithCallback PROPERTIES FOLDER "Samples")
-target_link_libraries(EnableValidationWithCallback PUBLIC "${Vulkan_LIBRARIES}")
+target_link_libraries(EnableValidationWithCallback PRIVATE utils)

@@ -18,16 +18,11 @@ project(RayTracing)
 
 set(HEADERS
   CameraManipulator.hpp
-  ../utils/shaders.hpp
-  ../utils/utils.hpp
 )
 
 set(SOURCES
   CameraManipulator.cpp
   RayTracing.cpp
-  ../utils/shaders.cpp
-  ../utils/utils.cpp
-  ../../glslang/StandAlone/ResourceLimits.cpp
 )
 
 source_group(headers FILES ${HEADERS})
@@ -39,17 +34,10 @@ add_executable(RayTracing
 )
 
 set_target_properties(RayTracing PROPERTIES FOLDER "Samples")
-target_compile_definitions(RayTracing PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)
+target_link_libraries(RayTracing PRIVATE utils)
 target_include_directories(RayTracing PUBLIC
-  ${CMAKE_SOURCE_DIR}/glslang
-  ${CMAKE_SOURCE_DIR}/glfw/include
   ${CMAKE_SOURCE_DIR}/samples/RayTracing/common
   ${CMAKE_SOURCE_DIR}/samples/RayTracing/vulkannv 
   ${CMAKE_SOURCE_DIR}/stb
   ${CMAKE_SOURCE_DIR}/tinyobjloader
-  )
-
-target_link_libraries(RayTracing PUBLIC glslang SPIRV
-  legacy_stdio_definitions.lib
-  ${CMAKE_SOURCE_DIR}/builds/VS2017_64/glfw/src/Debug/glfw3.lib
   )

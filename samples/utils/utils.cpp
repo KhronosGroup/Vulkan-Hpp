@@ -154,7 +154,7 @@ namespace vk
       vk::PipelineColorBlendAttachmentState pipelineColorBlendAttachmentState(false, vk::BlendFactor::eZero, vk::BlendFactor::eZero, vk::BlendOp::eAdd, vk::BlendFactor::eZero,
                                                                               vk::BlendFactor::eZero, vk::BlendOp::eAdd, colorComponentFlags);
       vk::PipelineColorBlendStateCreateInfo pipelineColorBlendStateCreateInfo(vk::PipelineColorBlendStateCreateFlags(), false, vk::LogicOp::eNoOp, 1, &pipelineColorBlendAttachmentState,
-                                                                              { { (1.0f, 1.0f, 1.0f, 1.0f) } });
+                                                                              { { 1.0f, 1.0f, 1.0f, 1.0f } });
 
       vk::DynamicState dynamicStates[2] = { vk::DynamicState::eViewport, vk::DynamicState::eScissor };
       vk::PipelineDynamicStateCreateInfo pipelineDynamicStateCreateInfo(vk::PipelineDynamicStateCreateFlags(), 2, dynamicStates);
@@ -608,7 +608,7 @@ namespace vk
       bufferInfos.reserve(bufferData.size());
 
       std::vector<vk::WriteDescriptorSet> writeDescriptorSets;
-      writeDescriptorSets.reserve(bufferData.size() + textureData.empty() ? 0 : 1);
+      writeDescriptorSets.reserve(bufferData.size() + (textureData.empty() ? 0 : 1));
       uint32_t dstBinding = bindingOffset;
       for (auto const& bd : bufferData)
       {
@@ -666,15 +666,16 @@ namespace vk
       imageView = device->createImageViewUnique(imageViewCreateInfo);
     }
 
-    SurfaceData::SurfaceData(vk::UniqueInstance &instance, std::string const& className, std::string const& windowName, vk::Extent2D const& extent_)
+    SurfaceData::SurfaceData(vk::UniqueInstance &instance, std::string const &windowName, vk::Extent2D const &extent_)
       : extent(extent_)
+      , window(vk::su::createWindow(windowName, extent))
     {
-#if defined(VK_USE_PLATFORM_WIN32_KHR)
-      window = vk::su::initializeWindow(className.c_str(), windowName.c_str(), extent.width, extent.height);
-      surface = instance->createWin32SurfaceKHRUnique(vk::Win32SurfaceCreateInfoKHR(vk::Win32SurfaceCreateFlagsKHR(), GetModuleHandle(nullptr), window));
-#else
-#pragma error "unhandled platform"
-#endif
+      VkSurfaceKHR _surface;
+      VkResult err = glfwCreateWindowSurface(instance.get(), window.handle, nullptr, &_surface);
+      if (err != VK_SUCCESS)
+        throw std::runtime_error("Failed to create window!");
+      vk::ObjectDestroy<vk::Instance, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE> _deleter(instance.get());
+      surface = vk::UniqueSurfaceKHR(_surface, _deleter);
     }
 
     SwapChainData::SwapChainData(vk::PhysicalDevice const& physicalDevice, vk::UniqueDevice const& device, vk::SurfaceKHR const& surface, vk::Extent2D const& extent, vk::ImageUsageFlags usage,
@@ -825,56 +826,54 @@ namespace vk
       memcpy(m_data, data, VK_UUID_SIZE * sizeof(uint8_t));
     }
 
-#if defined(VK_USE_PLATFORM_WIN32_KHR)
-    LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+    WindowData::WindowData(GLFWwindow *wnd, std::string const &name, vk::Extent2D const &extent)
+      : handle{wnd}
+      , name{name}
+      , extent{extent}
     {
-      switch (uMsg)
-      {
-        case WM_CLOSE:
-          PostQuitMessage(0);
-          break;
-        default:
-          break;
-      }
-      return (DefWindowProc(hWnd, uMsg, wParam, lParam));
     }
 
-    HWND initializeWindow(std::string const& className, std::string const& windowName, LONG width, LONG height)
+    WindowData::WindowData(WindowData &&other)
+      : handle{}
+      , name{}
+      , extent{}
     {
-      WNDCLASSEX windowClass;
-      memset(&windowClass, 0, sizeof(WNDCLASSEX));
-
-      HINSTANCE instance = GetModuleHandle(nullptr);
-      windowClass.cbSize = sizeof(WNDCLASSEX);
-      windowClass.style = CS_HREDRAW | CS_VREDRAW;
-      windowClass.lpfnWndProc = WindowProc;
-      windowClass.hInstance = instance;
-      windowClass.hIcon = LoadIcon(NULL, IDI_APPLICATION);
-      windowClass.hCursor = LoadCursor(NULL, IDC_ARROW);
-      windowClass.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
-      windowClass.lpszClassName = className.c_str();
-      windowClass.hIconSm = LoadIcon(NULL, IDI_WINLOGO);
-
-      if (!RegisterClassEx(&windowClass))
-      {
-        throw std::runtime_error("Failed to register WNDCLASSEX -> terminating");
-      }
-
-      RECT windowRect = { 0, 0, width, height };
-      AdjustWindowRect(&windowRect, WS_OVERLAPPEDWINDOW, FALSE);
-
-      HWND window = CreateWindowEx(0, className.c_str(), windowName.c_str(), WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_SYSMENU, 100, 100, windowRect.right - windowRect.left,
-                                   windowRect.bottom - windowRect.top, nullptr, nullptr, instance, nullptr);
-      if (!window)
-      {
-        throw std::runtime_error("Failed to create window -> terminating");
-      }
-
-      return window;
+      std::swap(handle, other.handle);
+      std::swap(name, other.name);
+      std::swap(extent, other.extent);
     }
-#else
-#pragma error "unhandled platform"
-#endif
+
+    WindowData::~WindowData() noexcept
+    {
+      glfwDestroyWindow(handle);
+    }
+
+    WindowData createWindow(std::string const &windowName, vk::Extent2D const &extent)
+    {
+      struct glfwContext
+      {
+        glfwContext()
+        {
+          glfwInit();
+          glfwSetErrorCallback([](int error, const char *msg) {
+            std::cerr << "glfw: "
+                      << "(" << error << ") " << msg << std::endl;
+          });
+        }
+
+        ~glfwContext()
+        {
+          glfwTerminate();
+        }
+      };
+
+      static auto glfwCtx = glfwContext();
+      (void)glfwCtx;
+
+      glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+      GLFWwindow *window = glfwCreateWindow(extent.width, extent.height, windowName.c_str(), nullptr, nullptr);
+      return WindowData(window, windowName, extent);
+    }
   }
 }
 

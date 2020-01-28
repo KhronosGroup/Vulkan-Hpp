@@ -22,6 +22,7 @@
 #include "vulkan/vulkan.hpp"
 #include "SPIRV/GlslangToSpv.h"
 #include <iostream>
+#include <thread>
 
 static char const* AppName = "PushDescriptors";
 static char const* EngineName = "Vulkan.hpp";
@@ -68,7 +69,7 @@ int main(int /*argc*/, char ** /*argv*/)
     std::vector<std::string> deviceExtensions = vk::su::getDeviceExtensions();
     deviceExtensions.push_back(VK_KHR_PUSH_DESCRIPTOR_EXTENSION_NAME);
 
-    vk::su::SurfaceData surfaceData(instance, AppName, AppName, vk::Extent2D(500, 500));
+    vk::su::SurfaceData surfaceData(instance, AppName, vk::Extent2D(500, 500));
 
     std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex(physicalDevice, *surfaceData.surface);
     vk::UniqueDevice device = vk::su::createDevice(physicalDevice, graphicsAndPresentQueueFamilyIndex.first, deviceExtensions);
@@ -136,7 +137,7 @@ int main(int /*argc*/, char ** /*argv*/)
     };
 
     // this call is from an extension and needs the dynamic dispatcher !!
-    commandBuffer->pushDescriptorSetKHR(vk::PipelineBindPoint::eGraphics, *pipelineLayout, 0, { 2, writeDescriptorSets }, vk::DispatchLoaderDynamic(*instance, *device));
+    commandBuffer->pushDescriptorSetKHR(vk::PipelineBindPoint::eGraphics, *pipelineLayout, 0, {2, writeDescriptorSets});
 
     commandBuffer->bindVertexBuffers(0, *vertexBufferData.buffer, {0});
     commandBuffer->setViewport(0, vk::Viewport(0.0f, 0.0f, static_cast<float>(surfaceData.extent.width), static_cast<float>(surfaceData.extent.height), 0.0f, 1.0f));
@@ -156,23 +157,18 @@ int main(int /*argc*/, char ** /*argv*/)
       ;
 
     presentQueue.presentKHR(vk::PresentInfoKHR(0, nullptr, 1, &swapChainData.swapChain.get(), &currentBuffer.value));
-    Sleep(1000);
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
     /* VULKAN_KEY_END */
 
     device->waitIdle();
-#if defined(VK_USE_PLATFORM_WIN32_KHR)
-    DestroyWindow(surfaceData.window);
-#else
-#pragma error "unhandled platform"
-#endif
   }
-  catch (vk::SystemError err)
+  catch (vk::SystemError& err)
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
     exit(-1);
   }
-  catch (std::runtime_error err)
+  catch (std::runtime_error& err)
   {
     std::cout << "std::runtime_error: " << err.what() << std::endl;
     exit(-1);

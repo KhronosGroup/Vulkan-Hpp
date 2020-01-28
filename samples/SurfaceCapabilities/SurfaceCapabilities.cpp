@@ -68,7 +68,7 @@ int main(int /*argc*/, char ** /*argv*/)
     // enumerate the physicalDevices
     std::vector<vk::PhysicalDevice> physicalDevices = instance->enumeratePhysicalDevices();
 
-    vk::su::SurfaceData surfaceData(instance, AppName, AppName, vk::Extent2D(500, 500));
+    vk::su::SurfaceData surfaceData(instance, AppName, vk::Extent2D(500, 500));
 
     /* VULKAN_KEY_START */
 
@@ -116,7 +116,7 @@ int main(int /*argc*/, char ** /*argv*/)
         {
           vk::SurfaceProtectedCapabilitiesKHR surfaceProtectedCapabilities = surfaceCapabilities2.get<vk::SurfaceProtectedCapabilitiesKHR>();
           std::cout << "\tSurfaceProtectedCapabilitiesKHR:\n";
-          std::cout << "\t\t" << "setSupportsProtected  = " << static_cast<bool>(surfaceProtectedCapabilities.setSupportsProtected) << "\n";
+          std::cout << "\t\t" << "supportsProtected  = " << static_cast<bool>(surfaceProtectedCapabilities.supportsProtected) << "\n";
           std::cout << "\n";
         }
       }
@@ -129,12 +129,12 @@ int main(int /*argc*/, char ** /*argv*/)
 
     /* VULKAN_KEY_END */
   }
-  catch (vk::SystemError err)
+  catch (vk::SystemError& err)
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
     exit(-1);
   }
-  catch (std::runtime_error err)
+  catch (std::runtime_error& err)
   {
     std::cout << "std::runtime_error: " << err.what() << std::endl;
     exit(-1);

@@ -17,12 +17,10 @@ cmake_minimum_required(VERSION 3.2)
 project(04_InitCommandBuffer)
 
 set(HEADERS
-  ../utils/utils.hpp
 )
 
 set(SOURCES
   04_InitCommandBuffer.cpp
-  ../utils/utils.cpp
 )
 
 source_group(headers FILES ${HEADERS})
@@ -34,4 +32,4 @@ add_executable(04_InitCommandBuffer
 )
 
 set_target_properties(04_InitCommandBuffer PROPERTIES FOLDER "Samples")
-target_compile_definitions(04_InitCommandBuffer PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)
+target_link_libraries(04_InitCommandBuffer PRIVATE utils)

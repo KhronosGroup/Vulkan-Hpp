@@ -17,12 +17,10 @@ cmake_minimum_required(VERSION 3.2)
 project(12_InitFrameBuffers)
 
 set(HEADERS
-  ../utils/utils.hpp
 )
 
 set(SOURCES
   12_InitFrameBuffers.cpp
-  ../utils/utils.cpp
 )
 
 source_group(headers FILES ${HEADERS})
@@ -34,4 +32,4 @@ add_executable(12_InitFrameBuffers
 )
 
 set_target_properties(12_InitFrameBuffers PROPERTIES FOLDER "Samples")
-target_compile_definitions(12_InitFrameBuffers PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)
+target_link_libraries(12_InitFrameBuffers PRIVATE utils)

@@ -16,6 +16,10 @@
 //
 
 #include "vulkan/vulkan.hpp"
+
+#define GLFW_INCLUDE_NONE
+#include <GLFW/glfw3.h>
+
 #include <iostream>
 #include <map>
 
@@ -24,6 +28,71 @@ namespace vk
   namespace su
   {
     const uint64_t FenceTimeout = 100000000;
+
+    template <typename Func>
+    void oneTimeSubmit(vk::UniqueCommandBuffer const& commandBuffer, vk::Queue const& queue, Func const& func)
+    {
+      commandBuffer->begin(vk::CommandBufferBeginInfo(vk::CommandBufferUsageFlagBits::eOneTimeSubmit));
+      func(commandBuffer);
+      commandBuffer->end();
+      queue.submit(vk::SubmitInfo(0, nullptr, nullptr, 1, &(*commandBuffer)), nullptr);
+      queue.waitIdle();
+    }
+
+    template <typename Func>
+    void oneTimeSubmit(vk::UniqueDevice const& device, vk::UniqueCommandPool const& commandPool, vk::Queue const& queue, Func const& func)
+    {
+      vk::UniqueCommandBuffer commandBuffer = std::move(device->allocateCommandBuffersUnique(vk::CommandBufferAllocateInfo(*commandPool, vk::CommandBufferLevel::ePrimary, 1)).front());
+      oneTimeSubmit(commandBuffer, queue, func);
+    }
+
+    template <class T>
+    void copyToDevice(vk::UniqueDevice const& device, vk::UniqueDeviceMemory const& memory, T const* pData, size_t count, size_t stride = sizeof(T))
+    {
+      assert(sizeof(T) <= stride);
+      uint8_t* deviceData = static_cast<uint8_t*>(device->mapMemory(memory.get(), 0, count * stride));
+      if (stride == sizeof(T))
+      {
+        memcpy(deviceData, pData, count * sizeof(T));
+      }
+      else
+      {
+        for (size_t i = 0; i < count; i++)
+        {
+          memcpy(deviceData, &pData[i], sizeof(T));
+          deviceData += stride;
+        }
+      }
+      device->unmapMemory(memory.get());
+    }
+
+    template <class T>
+    void copyToDevice(vk::UniqueDevice const& device, vk::UniqueDeviceMemory const& memory, T const& data)
+    {
+      copyToDevice<T>(device, memory, &data, 1);
+    }
+
+    template<class T>
+    VULKAN_HPP_INLINE constexpr const T& clamp(const T& v, const T& lo, const T& hi)
+    {
+      return v < lo ? lo : hi < v ? hi : v;
+    }
+
+    void setImageLayout(vk::UniqueCommandBuffer const &commandBuffer, vk::Image image, vk::Format format, vk::ImageLayout oldImageLayout, vk::ImageLayout newImageLayout);
+
+    struct WindowData
+    {
+      WindowData(GLFWwindow *wnd, std::string const& name, vk::Extent2D const& extent);
+      WindowData(const WindowData &) = delete;
+      WindowData(WindowData &&other);
+      ~WindowData() noexcept;
+
+      GLFWwindow *handle;
+      std::string name;
+      vk::Extent2D extent;
+    };
+
+    WindowData createWindow(std::string const &windowName, vk::Extent2D const &extent);
 
     struct BufferData
     {
@@ -79,7 +148,7 @@ namespace vk
       vk::DeviceSize          m_size;
       vk::BufferUsageFlags    m_usage;
       vk::MemoryPropertyFlags m_propertyFlags;
-#endif)
+#endif
     };
 
     struct ImageData
@@ -100,12 +169,10 @@ namespace vk
 
     struct SurfaceData
     {
-      SurfaceData(vk::UniqueInstance &instance, std::string const& className, std::string const& windowName, vk::Extent2D const& extent);
+      SurfaceData(vk::UniqueInstance &instance, std::string const& windowName, vk::Extent2D const& extent);
 
       vk::Extent2D          extent;
-#if defined(VK_USE_PLATFORM_WIN32_KHR)
-      HWND                  window;
-#endif
+      WindowData            window;
       vk::UniqueSurfaceKHR  surface;
     };
 
@@ -214,55 +281,6 @@ namespace vk
       return static_cast<TargetType>(value);
     }
 
-    template <class T>
-    void copyToDevice(vk::UniqueDevice const& device, vk::UniqueDeviceMemory const& memory, T const* pData, size_t count, size_t stride = sizeof(T))
-    {
-      assert(sizeof(T) <= stride);
-      uint8_t* deviceData = static_cast<uint8_t*>(device->mapMemory(memory.get(), 0, count * stride));
-      if (stride == sizeof(T))
-      {
-        memcpy(deviceData, pData, count * sizeof(T));
-      }
-      else
-      {
-        for (size_t i = 0; i < count; i++)
-        {
-          memcpy(deviceData, &pData[i], sizeof(T));
-          deviceData += stride;
-        }
-      }
-      device->unmapMemory(memory.get());
-    }
-
-    template <class T>
-    void copyToDevice(vk::UniqueDevice const& device, vk::UniqueDeviceMemory const& memory, T const& data)
-    {
-      copyToDevice<T>(device, memory, &data, 1);
-    }
-
-    template<class T>
-    VULKAN_HPP_INLINE constexpr const T& clamp(const T& v, const T& lo, const T& hi)
-    {
-      return v < lo ? lo : hi < v ? hi : v;
-    }
-
-    template <typename Func>
-    void oneTimeSubmit(vk::UniqueCommandBuffer const& commandBuffer, vk::Queue const& queue, Func const& func)
-    {
-      commandBuffer->begin(vk::CommandBufferBeginInfo(vk::CommandBufferUsageFlagBits::eOneTimeSubmit));
-      func(commandBuffer);
-      commandBuffer->end();
-      queue.submit(vk::SubmitInfo(0, nullptr, nullptr, 1, &(*commandBuffer)), nullptr);
-      queue.waitIdle();
-    }
-
-    template <typename Func>
-    void oneTimeSubmit(vk::UniqueDevice const& device, vk::UniqueCommandPool const& commandPool, vk::Queue const& queue, Func const& func)
-    {
-      vk::UniqueCommandBuffer commandBuffer = std::move(device->allocateCommandBuffersUnique(vk::CommandBufferAllocateInfo(*commandPool, vk::CommandBufferLevel::ePrimary, 1)).front());
-      oneTimeSubmit(commandBuffer, queue, func);
-    }
-
     vk::UniqueDeviceMemory allocateMemory(vk::UniqueDevice const& device, vk::PhysicalDeviceMemoryProperties const& memoryProperties, vk::MemoryRequirements const& memoryRequirements,
                                           vk::MemoryPropertyFlags memoryPropertyFlags);
     bool contains(std::vector<vk::ExtensionProperties> const& extensionProperties, std::string const& extensionName);
@@ -290,7 +308,6 @@ namespace vk
     vk::Format pickDepthFormat(vk::PhysicalDevice const& physicalDevice);
     vk::PresentModeKHR pickPresentMode(std::vector<vk::PresentModeKHR> const& presentModes);
     vk::SurfaceFormatKHR pickSurfaceFormat(std::vector<vk::SurfaceFormatKHR> const& formats);
-    void setImageLayout(vk::UniqueCommandBuffer const& commandBuffer, vk::Image image, vk::Format format, vk::ImageLayout oldImageLayout, vk::ImageLayout newImageLayout);
     void submitAndWait(vk::UniqueDevice &device, vk::Queue queue, vk::UniqueCommandBuffer &commandBuffer);
     void updateDescriptorSets(vk::UniqueDevice const& device, vk::UniqueDescriptorSet const& descriptorSet,
                               std::vector<std::tuple<vk::DescriptorType, vk::UniqueBuffer const&, vk::UniqueBufferView const&>> const& bufferData, vk::su::TextureData const& textureData,
@@ -299,11 +316,6 @@ namespace vk
                               std::vector<std::tuple<vk::DescriptorType, vk::UniqueBuffer const&, vk::UniqueBufferView const&>> const& bufferData,
                               std::vector<vk::su::TextureData> const& textureData, uint32_t bindingOffset = 0);
 
-#if defined(VK_USE_PLATFORM_WIN32_KHR)
-    HWND initializeWindow(std::string const& className, std::string const& windowName, LONG width, LONG height);
-#else
-# error "unhandled platform"
-#endif
   }
 }
 

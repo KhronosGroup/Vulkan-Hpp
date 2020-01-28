@@ -40,13 +40,14 @@ int main(int /*argc*/, char ** /*argv*/)
 
     uint32_t width = 64;
     uint32_t height = 64;
-#if defined(VK_USE_PLATFORM_WIN32_KHR)
-    HWND window = vk::su::initializeWindow(AppName, AppName, width, height);
-
-    vk::UniqueSurfaceKHR surface = instance->createWin32SurfaceKHRUnique(vk::Win32SurfaceCreateInfoKHR(vk::Win32SurfaceCreateFlagsKHR(), GetModuleHandle(nullptr), window));
-#else
-#pragma error "unhandled platform"
-#endif
+    vk::su::WindowData window = vk::su::createWindow(AppName, {width, height});
+    vk::UniqueSurfaceKHR surface;
+    {
+      VkSurfaceKHR _surface;
+      glfwCreateWindowSurface(instance.get(), window.handle, nullptr, &_surface);
+      vk::ObjectDestroy<vk::Instance, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE> _deleter(instance.get());
+      surface = vk::UniqueSurfaceKHR(_surface, _deleter);
+    }
 
     // determine a queueFamilyIndex that suports present
     // first check if the graphicsQueueFamiliyIndex is good enough
@@ -140,23 +141,17 @@ int main(int /*argc*/, char ** /*argv*/)
       imageViews.push_back(device->createImageViewUnique(imageViewCreateInfo));
     }
 
-#if defined(VK_USE_PLATFORM_WIN32_KHR)
-    DestroyWindow(window);
-#else
-#pragma error "unhandled platform"
-#endif
-
     // Note: No need to explicitly destroy the ImageViews or the swapChain, as the corresponding destroy
     // functions are called by the destructor of the UniqueImageView and the UniqueSwapChainKHR on leaving this scope.
 
     /* VULKAN_HPP_KEY_END */
   }
-  catch (vk::SystemError err)
+  catch (vk::SystemError& err)
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
     exit(-1);
   }
-  catch (std::runtime_error err)
+  catch (std::runtime_error& err)
   {
     std::cout << "std::runtime_error: " << err.what() << std::endl;
     exit(-1);

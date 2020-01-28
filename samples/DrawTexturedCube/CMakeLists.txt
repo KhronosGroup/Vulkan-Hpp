@@ -17,18 +17,10 @@ cmake_minimum_required(VERSION 3.2)
 project(DrawTexturedCube)
 
 set(HEADERS
-  ../utils/geometries.hpp
-  ../utils/math.hpp
-  ../utils/shaders.hpp
-  ../utils/utils.hpp
 )
 
 set(SOURCES
   DrawTexturedCube.cpp
-  ../utils/math.cpp
-  ../utils/shaders.cpp
-  ../utils/utils.cpp
-  ../../glslang/StandAlone/ResourceLimits.cpp
 )
 
 source_group(headers FILES ${HEADERS})
@@ -40,6 +32,4 @@ add_executable(DrawTexturedCube
 )
 
 set_target_properties(DrawTexturedCube PROPERTIES FOLDER "Samples")
-target_compile_definitions(DrawTexturedCube PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)
-target_include_directories(DrawTexturedCube PUBLIC ${CMAKE_SOURCE_DIR}/glslang)
-target_link_libraries(DrawTexturedCube PUBLIC glslang SPIRV)
+target_link_libraries(DrawTexturedCube PRIVATE utils)

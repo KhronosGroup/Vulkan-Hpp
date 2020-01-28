@@ -31,8 +31,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "CameraManipulator.hpp"
-#include "..\..\utils\shaders.hpp"
-#include "..\..\utils\utils.hpp"
+#include "../utils/shaders.hpp"
+#include "../utils/utils.hpp"
 #include "SPIRV/GlslangToSpv.h"
 
 static char const* AppName = "RayTracing";
@@ -939,7 +939,7 @@ int main(int /*argc*/, char** /*argv*/)
 
     std::array<vk::ClearValue, 2> clearValues;
     clearValues[0].color = vk::ClearColorValue(std::array<float, 4>({0.2f, 0.2f, 0.2f, 0.2f}));
-    clearValues[1].depthStencil = {1.0f, 0};
+    clearValues[1].depthStencil = vk::ClearDepthStencilValue(1.0f, 0);
 
     // Main loop
     uint32_t frameIndex = 0;
@@ -1067,12 +1067,12 @@ int main(int /*argc*/, char** /*argv*/)
     glfwDestroyWindow(window);
     glfwTerminate();
   }
-  catch (vk::SystemError err)
+  catch (vk::SystemError& err)
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
     exit(-1);
   }
-  catch (std::runtime_error err)
+  catch (std::runtime_error& err)
   {
     std::cout << "std::runtime_error: " << err.what() << std::endl;
     exit(-1);

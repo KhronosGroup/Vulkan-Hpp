@@ -37,7 +37,7 @@ int main(int /*argc*/, char ** /*argv*/)
 
     vk::PhysicalDevice physicalDevice = instance->enumeratePhysicalDevices().front();
 
-    vk::su::SurfaceData surfaceData(instance, AppName, AppName, vk::Extent2D(64, 64));
+    vk::su::SurfaceData surfaceData(instance, AppName, vk::Extent2D(64, 64));
 
     std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex(physicalDevice, *surfaceData.surface);
     vk::UniqueDevice device = vk::su::createDevice(physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions());
@@ -63,19 +63,13 @@ int main(int /*argc*/, char ** /*argv*/)
     // functions are called by the destructor of the UniqueRenderPass and the UniqueSemaphore on leaving this scope.
 
     /* VULKAN_HPP_KEY_END */
-
-#if defined(VK_USE_PLATFORM_WIN32_KHR)
-    DestroyWindow(surfaceData.window);
-#else
-#pragma error "unhandled platform"
-#endif
   }
-  catch (vk::SystemError err)
+  catch (vk::SystemError& err)
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
     exit(-1);
   }
-  catch (std::runtime_error err)
+  catch (std::runtime_error& err)
   {
     std::cout << "std::runtime_error: " << err.what() << std::endl;
     exit(-1);

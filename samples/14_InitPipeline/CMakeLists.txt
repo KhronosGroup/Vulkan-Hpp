@@ -17,18 +17,10 @@ cmake_minimum_required(VERSION 3.2)
 project(14_InitPipeline)
 
 set(HEADERS
-  ../utils/geometries.hpp
-  ../utils/math.hpp
-  ../utils/shaders.hpp
-  ../utils/utils.hpp
 )
 
 set(SOURCES
   14_InitPipeline.cpp
-  ../utils/math.cpp
-  ../utils/shaders.cpp
-  ../utils/utils.cpp
-  ../../glslang/StandAlone/ResourceLimits.cpp
 )
 
 source_group(headers FILES ${HEADERS})
@@ -40,6 +32,4 @@ add_executable(14_InitPipeline
 )
 
 set_target_properties(14_InitPipeline PROPERTIES FOLDER "Samples")
-target_compile_definitions(14_InitPipeline PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)
-target_include_directories(14_InitPipeline PUBLIC ${CMAKE_SOURCE_DIR}/glslang)
-target_link_libraries(14_InitPipeline PUBLIC glslang SPIRV)
+target_link_libraries(14_InitPipeline PRIVATE utils)

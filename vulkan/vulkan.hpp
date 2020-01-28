@@ -533,12 +533,9 @@ namespace VULKAN_HPP_NAMESPACE
     template<typename ClassType> ClassType& get() VULKAN_HPP_NOEXCEPT { return static_cast<ClassType&>(*this);}
 
     template<typename ClassTypeA, typename ClassTypeB, typename ...ClassTypes>
-    std::tuple<ClassTypeA, ClassTypeB, ClassTypes...> get()
+    std::tuple<ClassTypeA&, ClassTypeB&, ClassTypes&...> get()
     {
-        return std::tuple_cat(
-            std::make_tuple(get<ClassTypeA>(),get<ClassTypeB>()),
-            std::make_tuple(get<ClassTypes>()...)
-        );
+      return std::forward_as_tuple(get<ClassTypeA>(), get<ClassTypeB>(), get<ClassTypes>()...);
     }
 
     template<typename ClassType>

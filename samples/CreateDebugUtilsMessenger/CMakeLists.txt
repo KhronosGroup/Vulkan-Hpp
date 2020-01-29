@@ -14,22 +14,26 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(CreateDebugUtilsMessenger)
+if(NOT SAMPLES_BUILD_ONLY_DYNAMIC)
 
-set(HEADERS
-)
+  project(CreateDebugUtilsMessenger)
+  
+  set(HEADERS
+  )
+  
+  set(SOURCES
+    CreateDebugUtilsMessenger.cpp
+  )
+  
+  source_group(headers FILES ${HEADERS})
+  source_group(sources FILES ${SOURCES})
+  
+  add_executable(CreateDebugUtilsMessenger
+    ${HEADERS}
+    ${SOURCES}
+  )
+  
+  set_target_properties(CreateDebugUtilsMessenger PROPERTIES FOLDER "Samples")
+  target_link_libraries(CreateDebugUtilsMessenger "${Vulkan_LIBRARIES}")
 
-set(SOURCES
-  CreateDebugUtilsMessenger.cpp
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-add_executable(CreateDebugUtilsMessenger
-  ${HEADERS}
-  ${SOURCES}
-)
-
-set_target_properties(CreateDebugUtilsMessenger PROPERTIES FOLDER "Samples")
-target_link_libraries(CreateDebugUtilsMessenger PUBLIC "${Vulkan_LIBRARIES}")
+endif()

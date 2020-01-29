@@ -14,22 +14,26 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(01_InitInstance)
+if(NOT SAMPLES_BUILD_ONLY_DYNAMIC)
 
-set(HEADERS
-)
+  project(01_InitInstance)
+  
+  set(HEADERS
+  )
+  
+  set(SOURCES
+    01_InitInstance.cpp
+  )
+  
+  source_group(headers FILES ${HEADERS})
+  source_group(sources FILES ${SOURCES})
+  
+  add_executable(01_InitInstance
+    ${HEADERS}
+    ${SOURCES}
+  )
+  
+  set_target_properties(01_InitInstance PROPERTIES FOLDER "Samples")
+  target_link_libraries(01_InitInstance "${Vulkan_LIBRARIES}")
 
-set(SOURCES
-  01_InitInstance.cpp
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-add_executable(01_InitInstance
-  ${HEADERS}
-  ${SOURCES}
-)
-
-set_target_properties(01_InitInstance PROPERTIES FOLDER "Samples")
-target_link_libraries(01_InitInstance "${Vulkan_LIBRARIES}")
+endif()

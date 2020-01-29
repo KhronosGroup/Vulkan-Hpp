@@ -14,22 +14,26 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(InstanceLayerExtensionProperties)
+if(NOT SAMPLES_BUILD_ONLY_DYNAMIC)
 
-set(HEADERS
-)
+  project(InstanceLayerExtensionProperties)
+  
+  set(HEADERS
+  )
+  
+  set(SOURCES
+    InstanceLayerExtensionProperties.cpp
+  )
+  
+  source_group(headers FILES ${HEADERS})
+  source_group(sources FILES ${SOURCES})
+  
+  add_executable(InstanceLayerExtensionProperties
+    ${HEADERS}
+    ${SOURCES}
+  )
+  
+  set_target_properties(InstanceLayerExtensionProperties PROPERTIES FOLDER "Samples")
+  target_link_libraries(InstanceLayerExtensionProperties "${Vulkan_LIBRARIES}")
 
-set(SOURCES
-  InstanceLayerExtensionProperties.cpp
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-add_executable(InstanceLayerExtensionProperties
-  ${HEADERS}
-  ${SOURCES}
-)
-
-set_target_properties(InstanceLayerExtensionProperties PROPERTIES FOLDER "Samples")
-target_link_libraries(InstanceLayerExtensionProperties PUBLIC "${Vulkan_LIBRARIES}")
+endif()

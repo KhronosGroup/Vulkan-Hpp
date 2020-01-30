@@ -12,6 +12,21 @@ matrix:
           sources:
           - ubuntu-toolchain-r-test
           packages:
+          - g++-5
+          - ninja-build
+          - xorg-dev 
+          - libglu1-mesa-dev
+      env: 
+        - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
+        - ADDITIONAL_BUILD_OPTIONS="-DSAMPLES_BUILD=OFF"
+      compiler: g++-5
+
+    - os: linux
+      addons:
+        apt:
+          sources:
+          - ubuntu-toolchain-r-test
+          packages:
           - g++-6
           - ninja-build
           - xorg-dev 
@@ -64,8 +79,6 @@ matrix:
             - ninja-build
             - xorg-dev 
             - libglu1-mesa-dev
-      env:
-        - MATRIX_EVAL=""
       compiler: clang++-3.6
 
     - os: linux
@@ -84,8 +97,6 @@ matrix:
             - ninja-build
             - xorg-dev 
             - libglu1-mesa-dev
-      env:
-        - MATRIX_EVAL=""
       compiler: clang++-4.0
 
     - os: linux
@@ -104,8 +115,6 @@ matrix:
             - ninja-build
             - xorg-dev 
             - libglu1-mesa-dev
-      env:
-        - MATRIX_EVAL=""
       compiler: clang++-5.0
 
     - os: linux
@@ -124,8 +133,6 @@ matrix:
             - ninja-build
             - xorg-dev 
             - libglu1-mesa-dev
-      env:
-        - MATRIX_EVAL=""
       compiler: clang++-6.0
 
 before_install:
@@ -135,5 +142,11 @@ script:
   - mkdir build
   - cd build
   - cmake --version
-  - cmake -GNinja .. -DSAMPLES_BUILD=ON -DTESTS_BUILD=ON -DSAMPLES_BUILD_ONLY_DYNAMIC=ON -DSAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP=ON -DTESTS_BUILD_ONLY_DYNAMIC=ON -DTESTS_BUILD_WITH_LOCAL_VULKAN_HPP=ON
+  - cmake -GNinja .. 
+    -DSAMPLES_BUILD=ON 
+    -DTESTS_BUILD=ON
+    -DSAMPLES_BUILD_ONLY_DYNAMIC=ON 
+    -DSAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP=ON 
+    -DTESTS_BUILD_ONLY_DYNAMIC=ON -DTESTS_BUILD_WITH_LOCAL_VULKAN_HPP=ON
+    $ADDITIONAL_BUILD_OPTIONS
   - cmake --build .

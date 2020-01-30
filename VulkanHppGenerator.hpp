@@ -54,13 +54,15 @@ class VulkanHppGenerator
   private:
     struct BitmaskData
     {
-      BitmaskData(std::string const& r)
+      BitmaskData(std::string const& r, int line)
         : requirement(r)
+        , xmlLine(line)
       {}
 
       std::string requirement;   // original vulkan name: VK*FlagBits
       std::string platform;
       std::string alias;      // original vulkan name
+      int         xmlLine;
     };
 
     struct TypeData
@@ -92,8 +94,9 @@ class VulkanHppGenerator
 
     struct CommandData
     {
-      CommandData()
+      CommandData(int line)
         : isAlias(false)
+        , xmlLine(line)
       {}
 
       std::vector<ParamData>    params;
@@ -101,6 +104,7 @@ class VulkanHppGenerator
       std::string               returnType;
       std::vector<std::string>  successCodes;
       bool                      isAlias;
+      int                       xmlLine;
     };
 
     struct EnumValueData
@@ -147,9 +151,10 @@ class VulkanHppGenerator
 
     struct StructureData
     {
-      StructureData()
+      StructureData(int line)
         : returnedOnly(false)
         , isUnion(false)
+        , xmlLine(line)
       {}
 
       bool                      returnedOnly;
@@ -159,6 +164,7 @@ class VulkanHppGenerator
       std::vector<std::string>  structExtends;
       std::vector<std::string>  aliases;
       std::string               subStruct;
+      int                       xmlLine;
     };
 
   private:
@@ -237,6 +243,7 @@ class VulkanHppGenerator
     void readHandle(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes);
     void readPlatform(tinyxml2::XMLElement const* element);
     void readRequireEnum(tinyxml2::XMLElement const* element, std::string const& tag);
+    void readRequires(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes);
     void readStruct(tinyxml2::XMLElement const* element, bool isUnion, std::map<std::string, std::string> const& attributes);
     void readStructAlias(int lineNum, std::string const& name, std::string const& alias, std::map<std::string, std::string> const& attributes);
     MemberData readStructMember(tinyxml2::XMLElement const* element);
@@ -244,11 +251,9 @@ class VulkanHppGenerator
     void readTag(tinyxml2::XMLElement const* element);
     void readType(tinyxml2::XMLElement const* element);
     void readTypeEnum(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes);
+    void readTypeInclude(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes);
     void registerDeleter(std::string const& name, std::pair<std::string, CommandData> const& commandData);
     void unlinkCommandFromHandle(std::string const& name);
-#if !defined(NDEBUG)
-    void readRequires(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes);
-#endif
 
   private:
     std::map<std::string, std::string>    m_baseTypes;
@@ -257,10 +262,12 @@ class VulkanHppGenerator
     std::map<std::string, EnumData>       m_enums;
     std::set<std::string>                 m_extendedStructs; // structs which are referenced by the structextends tag
     std::map<std::string, HandleData>     m_handles;
+    std::set<std::string>                 m_includes;
     std::map<std::string, std::string>    m_platforms;
     std::map<std::string, std::string>    m_structureAliases;
     std::map<std::string, StructureData>  m_structures;
     std::set<std::string>                 m_tags;
+    std::set<std::string>                 m_types;
     std::string                           m_typesafeCheck;
     std::string                           m_version;
     std::string                           m_vulkanLicenseHeader;

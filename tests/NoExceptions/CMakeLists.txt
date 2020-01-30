@@ -32,7 +32,7 @@ add_executable(NoExceptions
 )
 
 if (UNIX)
-  target_link_libraries(NoExceptions "-ldl")
+  target_link_libraries(NoExceptions ${CMAKE_DL_LIBS})
 endif()
 
 set_target_properties(NoExceptions PROPERTIES FOLDER "Tests")

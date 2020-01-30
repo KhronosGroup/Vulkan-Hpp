@@ -83,8 +83,8 @@ AccelerationStructureData createAccelerationStructureData(vk::PhysicalDevice con
   vk::AccelerationStructureMemoryRequirementsInfoNV objectRequirements(vk::AccelerationStructureMemoryRequirementsTypeNV::eObject, *accelerationStructureData.acclerationStructure);
   vk::DeviceSize resultSizeInBytes = device->getAccelerationStructureMemoryRequirementsNV(objectRequirements).memoryRequirements.size;
   assert(0 < resultSizeInBytes);
-  accelerationStructureData.resultBufferData = std::make_unique<vk::su::BufferData>(physicalDevice, device, resultSizeInBytes, vk::BufferUsageFlagBits::eRayTracingNV,
-                                                                                    vk::MemoryPropertyFlagBits::eDeviceLocal);
+  accelerationStructureData.resultBufferData = std::unique_ptr<vk::su::BufferData>(new vk::su::BufferData(physicalDevice, device, resultSizeInBytes, vk::BufferUsageFlagBits::eRayTracingNV,
+                                                                                                          vk::MemoryPropertyFlagBits::eDeviceLocal));
 
   vk::AccelerationStructureMemoryRequirementsInfoNV buildScratchRequirements(vk::AccelerationStructureMemoryRequirementsTypeNV::eBuildScratch,
                                                                              *accelerationStructureData.acclerationStructure);
@@ -95,13 +95,13 @@ AccelerationStructureData createAccelerationStructureData(vk::PhysicalDevice con
              device->getAccelerationStructureMemoryRequirementsNV(updateScratchRequirements).memoryRequirements.size);
   assert(0 < scratchSizeInBytes);
 
-  accelerationStructureData.scratchBufferData = std::make_unique<vk::su::BufferData>(physicalDevice, device, scratchSizeInBytes, vk::BufferUsageFlagBits::eRayTracingNV,
-                                                                                     vk::MemoryPropertyFlagBits::eDeviceLocal);
+  accelerationStructureData.scratchBufferData = std::unique_ptr<vk::su::BufferData>(new vk::su::BufferData(physicalDevice, device, scratchSizeInBytes, vk::BufferUsageFlagBits::eRayTracingNV,
+                                                                                                           vk::MemoryPropertyFlagBits::eDeviceLocal));
 
   if (!instances.empty())
   {
-    accelerationStructureData.instanceBufferData = std::make_unique<vk::su::BufferData>(physicalDevice, device, instances.size() * sizeof(GeometryInstanceData),
-                                                                                        vk::BufferUsageFlagBits::eRayTracingNV);
+    accelerationStructureData.instanceBufferData = std::unique_ptr<vk::su::BufferData>(new vk::su::BufferData(physicalDevice, device, instances.size() * sizeof(GeometryInstanceData),
+                                                                                                              vk::BufferUsageFlagBits::eRayTracingNV));
 
     std::vector<GeometryInstanceData> geometryInstanceData;
     for(size_t i = 0; i < instances.size(); i++)

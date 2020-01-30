@@ -448,7 +448,7 @@ namespace vk
         for (size_t i = 0; i < sizeof(requestedFormats) / sizeof(requestedFormats[0]); i++)
         {
           vk::Format requestedFormat = requestedFormats[i];
-          auto it = std::find_if(formats.begin(), formats.end(), [requestedFormat, requestedColorSpace](auto const& f) { return (f.format == requestedFormat) && (f.colorSpace == requestedColorSpace); });
+          auto it = std::find_if(formats.begin(), formats.end(), [requestedFormat, requestedColorSpace](vk::SurfaceFormatKHR const& f) { return (f.format == requestedFormat) && (f.colorSpace == requestedColorSpace); });
           if (it != formats.end())
           {
             pickedFormat = *it;
@@ -802,7 +802,7 @@ namespace vk
       if (needsStaging)
       {
         assert((formatProperties.optimalTilingFeatures & formatFeatureFlags) == formatFeatureFlags);
-        stagingBufferData = std::make_unique<BufferData>(physicalDevice, device, extent.width * extent.height * 4, vk::BufferUsageFlagBits::eTransferSrc);
+        stagingBufferData = std::unique_ptr<BufferData>(new BufferData(physicalDevice, device, extent.width * extent.height * 4, vk::BufferUsageFlagBits::eTransferSrc));
         imageTiling = vk::ImageTiling::eOptimal;
         usageFlags |= vk::ImageUsageFlagBits::eTransferDst;
         initialLayout = vk::ImageLayout::eUndefined;
@@ -813,8 +813,8 @@ namespace vk
         initialLayout = vk::ImageLayout::ePreinitialized;
         requirements = vk::MemoryPropertyFlagBits::eHostCoherent | vk::MemoryPropertyFlagBits::eHostVisible;
       }
-      imageData = std::make_unique<ImageData>(physicalDevice, device, format, extent, imageTiling, usageFlags | vk::ImageUsageFlagBits::eSampled, initialLayout, requirements,
-                                              vk::ImageAspectFlagBits::eColor);
+      imageData = std::unique_ptr<ImageData>(new ImageData(physicalDevice, device, format, extent, imageTiling, usageFlags | vk::ImageUsageFlagBits::eSampled, initialLayout, requirements,
+                                                           vk::ImageAspectFlagBits::eColor));
 
       textureSampler = device->createSamplerUnique(vk::SamplerCreateInfo(vk::SamplerCreateFlags(), vk::Filter::eLinear, vk::Filter::eLinear, vk::SamplerMipmapMode::eLinear,
                                                                          vk::SamplerAddressMode::eRepeat, vk::SamplerAddressMode::eRepeat, vk::SamplerAddressMode::eRepeat, 0.0f, anisotropyEnable,

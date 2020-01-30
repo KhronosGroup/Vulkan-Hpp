@@ -535,7 +535,7 @@ namespace VULKAN_HPP_NAMESPACE
     template<typename ClassTypeA, typename ClassTypeB, typename ...ClassTypes>
     std::tuple<ClassTypeA&, ClassTypeB&, ClassTypes&...> get()
     {
-      return std::forward_as_tuple(get<ClassTypeA>(), get<ClassTypeB>(), get<ClassTypes>()...);
+      return std::tie(get<ClassTypeA>(), get<ClassTypeB>(), get<ClassTypes>()...);
     }
 
     template<typename ClassType>

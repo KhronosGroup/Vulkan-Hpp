@@ -544,15 +544,15 @@ namespace VULKAN_HPP_NAMESPACE
       static_assert(isPartOfStructureChain<ClassType, StructureElements...>::valid, "Can't unlink Structure that's not part of this StructureChain!");
       static_assert(!std::is_same<ClassType, typename std::tuple_element<0, std::tuple<StructureElements...>>::type>::value, "It's not allowed to unlink the first element!");
       VkBaseOutStructure * ptr = reinterpret_cast<VkBaseOutStructure*>(&get<ClassType>());
-      assert(ptr != nullptr);
+      VULKAN_HPP_ASSERT(ptr != nullptr);
       VkBaseOutStructure ** ppNext = &(reinterpret_cast<VkBaseOutStructure*>(this)->pNext);
-      assert(*ppNext != nullptr);
+      VULKAN_HPP_ASSERT(*ppNext != nullptr);
       while (*ppNext != ptr)
       {
         ppNext = &(*ppNext)->pNext;
-        assert(*ppNext != nullptr);   // fires, if the ClassType member has already been unlinked !
+        VULKAN_HPP_ASSERT(*ppNext != nullptr);   // fires, if the ClassType member has already been unlinked !
       }
-      assert(*ppNext == ptr);
+      VULKAN_HPP_ASSERT(*ppNext == ptr);
       *ppNext = (*ppNext)->pNext;
     }
 
@@ -562,13 +562,13 @@ namespace VULKAN_HPP_NAMESPACE
       static_assert(isPartOfStructureChain<ClassType, StructureElements...>::valid, "Can't relink Structure that's not part of this StructureChain!");
       static_assert(!std::is_same<ClassType, typename std::tuple_element<0, std::tuple<StructureElements...>>::type>::value, "It's not allowed to have the first element unlinked!");
       VkBaseOutStructure * ptr = reinterpret_cast<VkBaseOutStructure*>(&get<ClassType>());
-      assert(ptr != nullptr);
+      VULKAN_HPP_ASSERT(ptr != nullptr);
       VkBaseOutStructure ** ppNext = &(reinterpret_cast<VkBaseOutStructure*>(this)->pNext);
-      assert(*ppNext != nullptr);
+      VULKAN_HPP_ASSERT(*ppNext != nullptr);
 #if !defined(NDEBUG)
       while (*ppNext)
       {
-        assert(*ppNext != ptr);   // fires, if the ClassType member has not been unlinked before
+        VULKAN_HPP_ASSERT(*ppNext != ptr);   // fires, if the ClassType member has not been unlinked before
         ppNext = &(*ppNext)->pNext;
       }
       ppNext = &(reinterpret_cast<VkBaseOutStructure*>(this)->pNext);
@@ -2759,7 +2759,7 @@ namespace VULKAN_HPP_NAMESPACE
       template <typename T>
       void destroy(T t) VULKAN_HPP_NOEXCEPT
       {
-        assert( m_owner && m_dispatch );
+        VULKAN_HPP_ASSERT( m_owner && m_dispatch );
         m_owner.destroy( t, m_allocationCallbacks, *m_dispatch );
       }
 
@@ -2791,7 +2791,7 @@ namespace VULKAN_HPP_NAMESPACE
       template <typename T>
       void destroy(T t) VULKAN_HPP_NOEXCEPT
       {
-        assert( m_dispatch );
+        VULKAN_HPP_ASSERT( m_dispatch );
         t.destroy( m_allocationCallbacks, *m_dispatch );
       }
 
@@ -2823,7 +2823,7 @@ namespace VULKAN_HPP_NAMESPACE
       template <typename T>
       void destroy(T t) VULKAN_HPP_NOEXCEPT
       {
-        assert( m_owner && m_dispatch );
+        VULKAN_HPP_ASSERT( m_owner && m_dispatch );
         m_owner.free( t, m_allocationCallbacks, *m_dispatch );
       }
 
@@ -68062,7 +68062,7 @@ namespace VULKAN_HPP_NAMESPACE
 #elif defined(_WIN32)
       m_library = LoadLibrary( TEXT( "vulkan-1.dll" ) );
 #else
-      assert( false && "unsupported platform" );
+      VULKAN_HPP_ASSERT( false && "unsupported platform" );
 #endif
 
       m_success = m_library != 0;

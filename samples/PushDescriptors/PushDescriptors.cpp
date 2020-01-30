@@ -42,7 +42,7 @@ int main(int /*argc*/, char ** /*argv*/)
 
     // To use PUSH_DESCRIPTOR, you must also specify GET_PHYSICAL_DEVICE_PROPERTIES_2
     std::vector<vk::ExtensionProperties> extensionProperties = vk::enumerateInstanceExtensionProperties();
-    if (std::find_if(extensionProperties.begin(), extensionProperties.end(), [](auto ep) { return (strcmp(ep.extensionName,VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME) == 0); }) == extensionProperties.end())
+    if (std::find_if(extensionProperties.begin(), extensionProperties.end(), [](vk::ExtensionProperties ep) { return (strcmp(ep.extensionName,VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME) == 0); }) == extensionProperties.end())
     {
       std::cout << "No GET_PHYSICAL_DEVICE_PROPERTIES_2 extension" << std::endl;
       return 0;
@@ -60,7 +60,7 @@ int main(int /*argc*/, char ** /*argv*/)
 
     // Once instance is created, need to make sure the extension is available
     extensionProperties = physicalDevice.enumerateDeviceExtensionProperties();
-    if (std::find_if(extensionProperties.begin(), extensionProperties.end(), [](auto ep) { return (strcmp(ep.extensionName,VK_KHR_PUSH_DESCRIPTOR_EXTENSION_NAME) == 0); }) == extensionProperties.end())
+    if (std::find_if(extensionProperties.begin(), extensionProperties.end(), [](vk::ExtensionProperties ep) { return (strcmp(ep.extensionName,VK_KHR_PUSH_DESCRIPTOR_EXTENSION_NAME) == 0); }) == extensionProperties.end())
     {
       std::cout << "No extension for push descriptors" << std::endl;
       return 0;

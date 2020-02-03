@@ -31,7 +31,7 @@ bool beginsWith(std::string const& text, std::string const& prefix);
 bool endsWith(std::string const& text, std::string const& postfix);
 void check(bool condition, int line, std::string const& message);
 void checkAttributes(std::map<std::string, std::string> const& attributes, int line, std::map<std::string, std::set<std::string>> const& required, std::map<std::string, std::set<std::string>> const& optional);
-void checkElements(std::vector<tinyxml2::XMLElement const*> const& elements, std::set<std::string> const& values);
+void checkElements(int line, std::vector<tinyxml2::XMLElement const*> const& elements, std::set<std::string> const& required, std::set<std::string> const& optional = {});
 void checkEmptyElement(tinyxml2::XMLElement const* element);
 void checkOrderedElements(std::vector<tinyxml2::XMLElement const*> const& elements, std::vector<std::string> const& values);
 void cleanup(std::stringstream & ss);
@@ -205,18 +205,26 @@ void checkAttributes(std::map<std::string, std::string> const& attributes, int l
   }
 }
 
-void checkElements(std::vector<tinyxml2::XMLElement const*> const& elements, std::set<std::string> const& values)
+void checkElements(int line, std::vector<tinyxml2::XMLElement const*> const& elements, std::set<std::string> const& required, std::set<std::string> const& optional)
 {
-  for (auto e : elements)
+  std::set<std::string> encountered;
+  for (auto const& e : elements)
   {
-    warn(values.find(e->Value()) != values.end(), e->GetLineNum(), std::string("unknown element <") + e->Value() + ">");
+    std::string value = e->Value();
+    encountered.insert(value);
+    check((required.find(value) != required.end()) || (optional.find(value) != optional.end()), e->GetLineNum(), "unknown element <" + value + ">");
+  }
+  for (auto const& r : required)
+  {
+    check(encountered.find(r) != encountered.end(), line, "missing required element <" + r + ">");
   }
 }
 
 void checkEmptyElement(tinyxml2::XMLElement const* element)
 {
-  checkAttributes(getAttributes(element), element->GetLineNum(), {}, {});
-  checkElements(getChildElements(element), {});
+  int line = element->GetLineNum();
+  checkAttributes(getAttributes(element), line, {}, {});
+  checkElements(line, getChildElements(element), {});
 }
 
 void checkOrderedElements(std::vector<tinyxml2::XMLElement const*> const& elements, std::vector<std::string> const& values)
@@ -3449,7 +3457,7 @@ void VulkanHppGenerator::readBaseType(tinyxml2::XMLElement const* element, std::
   int line = element->GetLineNum();
   checkAttributes(attributes, line, { { "category",{ "basetype" } } }, {});
   std::vector<tinyxml2::XMLElement const*> children = getChildElements(element);
-  checkElements(children, { "name", "type" });
+  checkElements(line, children, { "name", "type" });
 
   std::string name, type;
   for (auto child : children)
@@ -3505,7 +3513,7 @@ void VulkanHppGenerator::readBitmask(tinyxml2::XMLElement const* element, std::m
 void VulkanHppGenerator::readBitmaskAlias(int lineNum, std::string const& alias, std::map<std::string, std::string> const& attributes, std::vector<tinyxml2::XMLElement const*> const& children)
 {
   checkAttributes(attributes, lineNum, { { "alias",{} },{ "category",{ "bitmask" } },{ "name",{} } }, {});   // re-check on alias type!
-  checkElements(children, {});
+  checkElements(lineNum, children, {});
 
   check(m_bitmasks.find(alias) != m_bitmasks.end(), lineNum, "missing alias <" + alias + ">.");
 
@@ -3540,7 +3548,7 @@ void VulkanHppGenerator::readCommand(tinyxml2::XMLElement const* element)
   }
   else
   {
-    checkElements(children, { "implicitexternsyncparams", "param", "proto" });
+    checkElements(element->GetLineNum(), children, { "param", "proto" }, { "implicitexternsyncparams" });
 
     commandData.successCodes = readCommandSuccessCodes(attributes);
 
@@ -3566,7 +3574,7 @@ void VulkanHppGenerator::readCommandAlias(int lineNum, std::string const& alias,
 {
   // for command aliases, create a copy of the aliased command
   checkAttributes(attributes, lineNum, { { "alias",{} },{ "name",{} } }, {});    // re-check on alias type!
-  checkElements(children, {});
+  checkElements(lineNum, children, {});
 
   std::string name = attributes.find("name")->second;
   check(m_commandToHandle.find(alias) != m_commandToHandle.end(), lineNum, "missing alias <" + alias + ">.");
@@ -3586,7 +3594,7 @@ VulkanHppGenerator::ParamData VulkanHppGenerator::readCommandParam(tinyxml2::XML
   std::map<std::string, std::string> attributes = getAttributes(element);
   checkAttributes(attributes, element->GetLineNum(), {}, { { "externsync",{} },{ "len",{} },{ "noautovalidity",{ "true" } },{ "optional",{ "false", "true" } } });
   std::vector<tinyxml2::XMLElement const*> children = getChildElements(element);
-  checkElements(children, { "name", "type" });
+  checkElements(element->GetLineNum(), children, { "name", "type" });
 
   ParamData paramData;
   for (auto attribute : attributes)
@@ -3642,7 +3650,7 @@ void VulkanHppGenerator::readCommands(tinyxml2::XMLElement const* element)
   std::map<std::string, std::string> attributes = getAttributes(element);
   checkAttributes(attributes, element->GetLineNum(), {}, { { "comment",{} } });
   std::vector<tinyxml2::XMLElement const*> children = getChildElements(element);
-  checkElements(children, { "command" });
+  checkElements(element->GetLineNum(), children, { "command" });
 
   for (auto child : children)
   {
@@ -3672,7 +3680,7 @@ void VulkanHppGenerator::readComment(tinyxml2::XMLElement const* element)
 {
   int line = element->GetLineNum();
   checkAttributes(getAttributes(element), line, {}, {});
-  checkElements(getChildElements(element), {});
+  checkElements(line, getChildElements(element), {});
 
   assert(element->GetText());
   std::string text = element->GetText();
@@ -3740,7 +3748,7 @@ void VulkanHppGenerator::readEnum(tinyxml2::XMLElement const* element, EnumData 
   std::map<std::string, std::string> attributes = getAttributes(element);
   checkAttributes(attributes, element->GetLineNum(), { { "name",{} } }, { { "alias",{} },{ "bitpos",{} },{ "comment",{} },{ "value",{} } });
   assert((attributes.find("alias") != attributes.end()) + (attributes.find("bitpos") != attributes.end()) + (attributes.find("value") != attributes.end()) == 1);
-  checkElements(getChildElements(element), {});
+  checkElements(element->GetLineNum(), getChildElements(element), {});
 
   std::string name = attributes.find("name")->second;
   std::string tag = findTag(m_tags, name, postfix);
@@ -3763,7 +3771,7 @@ void VulkanHppGenerator::readEnums(tinyxml2::XMLElement const* element)
   std::map<std::string, std::string> attributes = getAttributes(element);
   checkAttributes(attributes, element->GetLineNum(), { { "name",{} } }, { { "comment",{} },{ "type",{ "bitmask", "enum" } } });
   std::vector<tinyxml2::XMLElement const*> children = getChildElements(element);
-  checkElements(children, { "comment", "enum", "unused" });
+  checkElements(element->GetLineNum(), children, {}, { "comment", "enum", "unused" });
 
   std::string name = attributes.find("name")->second;
 
@@ -3829,7 +3837,7 @@ void VulkanHppGenerator::readExtension(tinyxml2::XMLElement const* element)
     { "type",{ "device", "instance" } }
   });
   std::vector<tinyxml2::XMLElement const*> children = getChildElements(element);
-  checkElements(children, { "require" });
+  checkElements(element->GetLineNum(), children, {}, { "require" });
 
   if (attributes.find("supported")->second == "disabled")
   {
@@ -3868,11 +3876,11 @@ void VulkanHppGenerator::readExtensionDisabledRequire(tinyxml2::XMLElement const
 {
   checkAttributes(getAttributes(element), element->GetLineNum(), {}, {});
   std::vector<tinyxml2::XMLElement const*> children = getChildElements(element);
-  checkElements(children, { "command", "comment", "enum", "type" });
+  checkElements(element->GetLineNum(), children, { "enum" }, { "command", "comment", "type" });
 
   for (auto child : children)
   {
-    checkElements(getChildElements(child), {});
+    checkElements(child->GetLineNum(), getChildElements(child), {});
 
     std::string value = child->Value();
     if ((value == "command") || (value == "type"))
@@ -3921,7 +3929,7 @@ void VulkanHppGenerator::readExtensionRequire(tinyxml2::XMLElement const* elemen
   std::map<std::string, std::string> attributes = getAttributes(element);
   checkAttributes(attributes, element->GetLineNum(), {}, { { "extension",{} },{ "feature",{} } });
   std::vector<tinyxml2::XMLElement const*> children = getChildElements(element);
-  checkElements(children, { "command", "comment", "enum", "type" });
+  checkElements(element->GetLineNum(), children, {}, { "command", "comment", "enum", "type" });
 
   for (auto child : children)
   {
@@ -3953,7 +3961,7 @@ void VulkanHppGenerator::readExtensionRequireCommand(tinyxml2::XMLElement const*
 {
   std::map<std::string, std::string> attributes = getAttributes(element);
   checkAttributes(attributes, element->GetLineNum(), { { "name",{} } }, {});
-  checkElements(getChildElements(element), {});
+  checkElements(element->GetLineNum(), getChildElements(element), {});
 
   // just add the protect string to the CommandData
   if (!platform.empty())
@@ -3973,7 +3981,7 @@ void VulkanHppGenerator::readExtensionRequireType(tinyxml2::XMLElement const* el
 {
   std::map<std::string, std::string> attributes = getAttributes(element);
   checkAttributes(attributes, element->GetLineNum(), { { "name",{} } }, {});
-  checkElements(getChildElements(element), {});
+  checkElements(element->GetLineNum(), getChildElements(element), {});
 
   // add the protect-string to the appropriate type: enum, flag, handle, scalar, or struct
   std::string name = attributes.find("name")->second;
@@ -4029,7 +4037,7 @@ void VulkanHppGenerator::readExtensions(tinyxml2::XMLElement const* element)
   std::map<std::string, std::string> attributes = getAttributes(element);
   checkAttributes(attributes, element->GetLineNum(), { { "comment",{} } }, {});
   std::vector<tinyxml2::XMLElement const*> children = getChildElements(element);
-  checkElements(children, { "extension" });
+  checkElements(element->GetLineNum(), children, { "extension" });
 
   for (auto child : children)
   {
@@ -4042,7 +4050,7 @@ void VulkanHppGenerator::readFeature(tinyxml2::XMLElement const* element)
   std::map<std::string, std::string> attributes = getAttributes(element);
   checkAttributes(attributes, element->GetLineNum(), { { "api",{ "vulkan" } },{ "comment",{} },{ "name",{} },{ "number",{} } }, {});
   std::vector<tinyxml2::XMLElement const*> children = getChildElements(element);
-  checkElements(children, { "require" });
+  checkElements(element->GetLineNum(), children, { "require" });
 
   for (auto child : children)
   {
@@ -4055,7 +4063,7 @@ void VulkanHppGenerator::readFeatureRequire(tinyxml2::XMLElement const* element)
   std::map<std::string, std::string> attributes = getAttributes(element);
   checkAttributes(attributes, element->GetLineNum(), {}, { { "comment",{} } });
   std::vector<tinyxml2::XMLElement const*> children = getChildElements(element);
-  checkElements(children, { "command", "comment", "enum", "type" });
+  checkElements(element->GetLineNum(), children, {}, { "command", "comment", "enum", "type" });
 
   for (auto child : children)
   {
@@ -4071,7 +4079,7 @@ void VulkanHppGenerator::readFuncpointer(tinyxml2::XMLElement const* element, st
 {
   checkAttributes(attributes, element->GetLineNum(), { { "category",{ "funcpointer" } } }, { { "requires",{} } });
   std::vector<tinyxml2::XMLElement const*> children = getChildElements(element);
-  checkElements(children, { "name", "type" });
+  checkElements(element->GetLineNum(), children, { "name" }, { "type" });
   assert(!children.empty());
   checkEmptyElement(children[0]);
 
@@ -4093,7 +4101,7 @@ void VulkanHppGenerator::readHandle(tinyxml2::XMLElement const* element, std::ma
   if (aliasIt != attributes.end())
   {
     checkAttributes(attributes, element->GetLineNum(), { { "alias",{} },{ "category",{ "handle" } },{ "name",{} } }, {});   // re-check on alias type!
-    checkElements(children, {});
+    checkElements(element->GetLineNum(), children, {});
     check(m_handles.find(aliasIt->second) != m_handles.end(), element->GetLineNum(), "missing alias <" + aliasIt->second + ">.");
 
     auto handlesIt = m_handles.find(aliasIt->second);
@@ -4123,7 +4131,7 @@ void VulkanHppGenerator::readPlatform(tinyxml2::XMLElement const* element)
   int line = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes(element);
   checkAttributes(attributes, line, { { "comment",{} },{ "name",{} },{ "protect",{} } }, {});
-  checkElements(getChildElements(element), {});
+  checkElements(line, getChildElements(element), {});
 
   std::string name, protect;
   for (auto const& attribute : attributes)
@@ -4141,7 +4149,7 @@ void VulkanHppGenerator::readPlatform(tinyxml2::XMLElement const* element)
   }
   assert(!name.empty() && !protect.empty());
   check(m_platforms.find(name) == m_platforms.end(), line, "platform name <" + name + "> already specified");
-  check(std::find_if(m_platforms.begin(), m_platforms.end(), [&protect](std::pair<std::string,std::string> const& p) { return p.second == protect; }) == m_platforms.end(), line, "platform protect <" + protect + "> already specified");
+  check(std::find_if(m_platforms.begin(), m_platforms.end(), [&protect](std::pair<std::string, std::string> const& p) { return p.second == protect; }) == m_platforms.end(), line, "platform protect <" + protect + "> already specified");
   m_platforms[name] = protect;
 }
 
@@ -4149,7 +4157,7 @@ void VulkanHppGenerator::readPlatforms(tinyxml2::XMLElement const* element)
 {
   checkAttributes(getAttributes(element), element->GetLineNum(), { { "comment",{} } }, {});
   std::vector<tinyxml2::XMLElement const*> children = getChildElements(element);
-  checkElements(children, { "platform" });
+  checkElements(element->GetLineNum(), children, { "platform" });
 
   for (auto child : children)
   {
@@ -4174,7 +4182,7 @@ void VulkanHppGenerator::readRequireEnum(tinyxml2::XMLElement const* element, st
     { "offset",{} },
     { "value",{} }
   });
-  checkElements(getChildElements(element), {});
+  checkElements(element->GetLineNum(), getChildElements(element), {});
 
   // TODO process enums which don't extend existing enums
   auto extendsIt = attributes.find("extends");
@@ -4224,7 +4232,7 @@ void VulkanHppGenerator::readRequires(tinyxml2::XMLElement const* element, std::
 {
   int line = element->GetLineNum();
   checkAttributes(attributes, line, { {"name", {}}, { "requires", {}} }, {});
-  checkElements(getChildElements(element), {});
+  checkElements(line, getChildElements(element), {});
 
   for (auto attribute : attributes)
   {
@@ -4254,7 +4262,7 @@ void VulkanHppGenerator::readStruct(tinyxml2::XMLElement const* element, bool is
     { "structextends",{} }
   });
   std::vector<tinyxml2::XMLElement const*> children = getChildElements(element);
-  checkElements(children, { "comment", "member" });
+  checkElements(element->GetLineNum(), children, {}, { "member", "comment" });
 
   std::string name = attributes.find("name")->second;
 
@@ -4302,7 +4310,7 @@ VulkanHppGenerator::MemberData VulkanHppGenerator::readStructMember(tinyxml2::XM
     { "values",{} }
   });
   std::vector<tinyxml2::XMLElement const*> children = getChildElements(element);
-  checkElements(children, { "comment", "enum", "name", "type" });
+  checkElements(element->GetLineNum(), children, { "name", "type" }, { "comment", "enum" });
 
   MemberData memberData;
   auto valuesIt = attributes.find("values");
@@ -4365,7 +4373,7 @@ void VulkanHppGenerator::readTags(tinyxml2::XMLElement const* element)
 {
   checkAttributes(getAttributes(element), element->GetLineNum(), { { "comment",{} } }, {});
   std::vector<tinyxml2::XMLElement const*> children = getChildElements(element);
-  checkElements(children, { "tag" });
+  checkElements(element->GetLineNum(), children, { "tag" });
 
   for (auto child : children)
   {
@@ -4378,7 +4386,7 @@ void VulkanHppGenerator::readTag(tinyxml2::XMLElement const* element)
   int line = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes(element);
   checkAttributes(attributes, line, { { "author",{} },{ "contact",{} },{ "name",{} } }, {});
-  checkElements(getChildElements(element), {});
+  checkElements(line, getChildElements(element), {});
 
   for (auto const& attribute : attributes)
   {
@@ -4396,6 +4404,7 @@ void VulkanHppGenerator::readTag(tinyxml2::XMLElement const* element)
 
 void VulkanHppGenerator::readType(tinyxml2::XMLElement const* element)
 {
+  int line = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes(element);
 
   auto categoryIt = attributes.find("category");
@@ -4448,7 +4457,8 @@ void VulkanHppGenerator::readType(tinyxml2::XMLElement const* element)
     }
     else
     {
-      assert((attributes.size() == 1) && (attributes.begin()->first == "name") && (attributes.begin()->second == "int"));
+      check((attributes.size() == 1) && (attributes.begin()->first == "name") && (attributes.begin()->second == "int"), line, "unknown type");
+      check(m_types.insert(attributes.begin()->second).second, line, "type <" + attributes.begin()->second + "> already specified");
     }
   }
 }
@@ -4477,7 +4487,7 @@ void VulkanHppGenerator::readTypeEnum(tinyxml2::XMLElement const* element, std::
 void VulkanHppGenerator::readTypeInclude(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes)
 {
   checkAttributes(attributes, element->GetLineNum(), { { "category", { "include" } }, { "name",{} } }, {});
-  checkElements(getChildElements(element), {});
+  checkElements(element->GetLineNum(), getChildElements(element), {});
 
   std::string name = attributes.find("name")->second;
   check(m_includes.insert(name).second, element->GetLineNum(), "include named <" + name + "> already specified");
@@ -4487,7 +4497,7 @@ void VulkanHppGenerator::readTypes(tinyxml2::XMLElement const* element)
 {
   checkAttributes(getAttributes(element), element->GetLineNum(), { { "comment",{} } }, {});
   std::vector<tinyxml2::XMLElement const*> children = getChildElements(element);
-  checkElements(children, { "comment", "type" });
+  checkElements(element->GetLineNum(), children, { "comment", "type" });
 
   for (auto child : children)
   {
@@ -5721,7 +5731,7 @@ namespace std
     checkAttributes(getAttributes(registryElement), registryElement->GetLineNum(), {}, {});
 
     std::vector<tinyxml2::XMLElement const*> children = getChildElements(registryElement);
-    checkElements(children, { "commands", "comment", "enums", "extensions", "feature", "tags", "types", "vendorids", "platforms" });
+    checkElements(registryElement->GetLineNum(), children, { "commands", "comment", "enums", "extensions", "feature", "tags", "types", "platforms" });
     for (auto child : children)
     {
       const std::string value = child->Value();

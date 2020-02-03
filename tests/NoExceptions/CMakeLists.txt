@@ -31,8 +31,6 @@ add_executable(NoExceptions
   ${SOURCES}
 )
 
-if (UNIX)
-  target_link_libraries(NoExceptions "-ldl")
-endif()
+target_link_libraries(NoExceptions ${CMAKE_DL_LIBS})
 
 set_target_properties(NoExceptions PROPERTIES FOLDER "Tests")

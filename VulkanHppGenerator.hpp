@@ -52,6 +52,17 @@ class VulkanHppGenerator
     void readTypes(tinyxml2::XMLElement const* element);
 
   private:
+    struct BaseTypeData
+    {
+      BaseTypeData(std::string const& type_, int line)
+        : type(type_)
+        , xmlLine(line)
+      {}
+
+      std::string type;
+      int         xmlLine;
+    };
+
     struct BitmaskData
     {
       BitmaskData(std::string const& r, int line)
@@ -256,7 +267,7 @@ class VulkanHppGenerator
     void unlinkCommandFromHandle(std::string const& name);
 
   private:
-    std::map<std::string, std::string>    m_baseTypes;
+    std::map<std::string, BaseTypeData>   m_baseTypes;
     std::map<std::string, BitmaskData>    m_bitmasks;
     std::map<std::string, std::string>    m_commandToHandle;
     std::map<std::string, EnumData>       m_enums;
@@ -271,9 +282,6 @@ class VulkanHppGenerator
     std::string                           m_typesafeCheck;
     std::string                           m_version;
     std::string                           m_vulkanLicenseHeader;
-#if !defined(NDEBUG)
-    std::set<std::string>                 m_defines;        // just used for verfication in readExtensionType
-#endif
 };
 
 const size_t INVALID_INDEX = (size_t)~0;

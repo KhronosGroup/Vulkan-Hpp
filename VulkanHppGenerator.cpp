@@ -832,7 +832,7 @@ void VulkanHppGenerator::appendBaseTypes(std::string & str) const
   {
     if (baseType.first != "VkFlags")    // filter out VkFlags
     {
-      str += "  using " + stripPrefix(baseType.first, "Vk") + " = " + baseType.second + ";\n";
+      str += "  using " + stripPrefix(baseType.first, "Vk") + " = " + baseType.second.type + ";\n";
     }
   }
 }
@@ -3221,6 +3221,10 @@ bool VulkanHppGenerator::containsUnion(std::string const& type) const
 void VulkanHppGenerator::checkCorrectness()
 {
   check(!m_vulkanLicenseHeader.empty(), -1, "missing license header");
+  for (auto const& baseType : m_baseTypes)
+  {
+    check(m_types.find(baseType.second.type) != m_types.end(), baseType.second.xmlLine, "basetype type <" + baseType.second.type + "> not specified");
+  }
   for (auto const& handle : m_handles)
   {
     for (auto const& command: handle.second.commands)
@@ -3442,20 +3446,29 @@ void VulkanHppGenerator::linkCommandToHandle(std::string const& name, CommandDat
 
 void VulkanHppGenerator::readBaseType(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes)
 {
-  checkAttributes(attributes, element->GetLineNum(), { { "category",{ "basetype" } } }, {});
+  int line = element->GetLineNum();
+  checkAttributes(attributes, line, { { "category",{ "basetype" } } }, {});
   std::vector<tinyxml2::XMLElement const*> children = getChildElements(element);
-  checkOrderedElements(children, { "type", "name" });
-  checkEmptyElement(children[0]);
-  checkEmptyElement(children[1]);
+  checkElements(children, { "name", "type" });
 
-  std::string type = children[0]->GetText();
-  std::string name = children[1]->GetText();
-#if !defined(NDEBUG)
-  assert((type == "uint32_t") || (type == "uint64_t"));
-#endif
-
-  assert(m_baseTypes.find(name) == m_baseTypes.end());
-  m_baseTypes[name] = type;
+  std::string name, type;
+  for (auto child : children)
+  {
+    std::string value = child->Value();
+    if (value == "name")
+    {
+      name = child->GetText();
+      check(!name.empty(), child->GetLineNum(), "basetype name is empty");
+    }
+    else
+    {
+      assert(value == "type");
+      type = child->GetText();
+      check(!type.empty(), child->GetLineNum(), "basetype type is empty");
+    }
+  }
+  assert(!name.empty() && !type.empty());
+  check(m_baseTypes.insert(std::make_pair(name, BaseTypeData(type, element->GetLineNum()))).second, line, "basetype <" + name + "> already specified");
 }
 
 void VulkanHppGenerator::readBitmask(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes)
@@ -3702,11 +3715,11 @@ void VulkanHppGenerator::readDefine(tinyxml2::XMLElement const* element, std::ma
   }
   else if (element->GetText() && (trim(element->GetText()) == "struct"))
   {
-#if !defined(NDEBUG)
+    // here are a couple of structs as defines, which really are types!
     tinyxml2::XMLElement const* child = element->FirstChildElement();
-    assert(child && (strcmp(child->Value(), "name") == 0) && child->GetText());
-    m_defines.insert(child->GetText());
-#endif
+    check(child && (strcmp(child->Value(), "name") == 0) && child->GetText(), line, "unexpected formatting of type category=define");
+    std::string text = child->GetText();
+    check(m_types.insert(text).second, line, "type defined has already been speficied");
   }
   else
   {
@@ -4004,7 +4017,7 @@ void VulkanHppGenerator::readExtensionRequireType(tinyxml2::XMLElement const* el
         }
         else
         {
-          assert((m_defines.find(name) != m_defines.end()));
+          assert((m_types.find(name) != m_types.end()));
         }
       }
     }
@@ -4128,7 +4141,7 @@ void VulkanHppGenerator::readPlatform(tinyxml2::XMLElement const* element)
   }
   assert(!name.empty() && !protect.empty());
   check(m_platforms.find(name) == m_platforms.end(), line, "platform name <" + name + "> already specified");
-  check(std::find_if(m_platforms.begin(), m_platforms.end(), [&protect](auto p) { return p.second == protect; }) == m_platforms.end(), line, "platform protect <" + protect + "> already specified");
+  check(std::find_if(m_platforms.begin(), m_platforms.end(), [&protect](std::pair<std::string,std::string> const& p) { return p.second == protect; }) == m_platforms.end(), line, "platform protect <" + protect + "> already specified");
   m_platforms[name] = protect;
 }
 

@@ -68558,18 +68558,24 @@ namespace VULKAN_HPP_NAMESPACE
 
 #if !defined(VK_NO_PROTOTYPES)
     // This interface is designed to be used for per-device function pointers in combination with a linked vulkan library.
-    DispatchLoaderDynamic(VULKAN_HPP_NAMESPACE::Instance const& instance, VULKAN_HPP_NAMESPACE::Device const& device) VULKAN_HPP_NOEXCEPT
+    template <typename DynamicLoader>
+    void init(VULKAN_HPP_NAMESPACE::Instance const& instance, VULKAN_HPP_NAMESPACE::Device const& device, DynamicLoader const& dl) VULKAN_HPP_NOEXCEPT
     {
-      init(instance, device);
+      PFN_vkGetInstanceProcAddr getInstanceProcAddr = dl.template getProcAddress<PFN_vkGetInstanceProcAddr>("vkGetInstanceProcAddr");
+      PFN_vkGetDeviceProcAddr getDeviceProcAddr = dl.template getProcAddress<PFN_vkGetDeviceProcAddr>("vkGetDeviceProcAddr");
+      init(static_cast<VkInstance>(instance), getInstanceProcAddr, static_cast<VkDevice>(device), device ? getDeviceProcAddr : nullptr);
     }
 
     // This interface is designed to be used for per-device function pointers in combination with a linked vulkan library.
+    template <typename DynamicLoader
+#if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL
+      = vk::DynamicLoader
+#endif
+    >
     void init(VULKAN_HPP_NAMESPACE::Instance const& instance, VULKAN_HPP_NAMESPACE::Device const& device) VULKAN_HPP_NOEXCEPT
     {
-      static vk::DynamicLoader dl;
-      PFN_vkGetInstanceProcAddr getInstanceProcAddr = dl.getProcAddress<PFN_vkGetInstanceProcAddr>("vkGetInstanceProcAddr");
-      PFN_vkGetDeviceProcAddr getDeviceProcAddr = dl.getProcAddress<PFN_vkGetDeviceProcAddr>("vkGetDeviceProcAddr");
-      init(static_cast<VkInstance>(instance), getInstanceProcAddr, static_cast<VkDevice>(device), device ? getDeviceProcAddr : nullptr);
+      static DynamicLoader dl;
+      init(instance, device, dl);
     }
 #endif // !defined(VK_NO_PROTOTYPES)
 

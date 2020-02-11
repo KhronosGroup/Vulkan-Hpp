@@ -12976,9 +12976,9 @@ namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceTransformFeedbackPropertiesEXT;
   struct PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR;
   struct PhysicalDeviceVariablePointersFeatures;
-  using PhysicalDeviceVariablePointersFeaturesKHR = PhysicalDeviceVariablePointersFeatures;
-  using PhysicalDeviceVariablePointerFeaturesKHR = PhysicalDeviceVariablePointersFeatures;
   using PhysicalDeviceVariablePointerFeatures = PhysicalDeviceVariablePointersFeatures;
+  using PhysicalDeviceVariablePointerFeaturesKHR = PhysicalDeviceVariablePointersFeatures;
+  using PhysicalDeviceVariablePointersFeaturesKHR = PhysicalDeviceVariablePointersFeatures;
   struct PhysicalDeviceVertexAttributeDivisorFeaturesEXT;
   struct PhysicalDeviceVertexAttributeDivisorPropertiesEXT;
   struct PhysicalDeviceVulkanMemoryModelFeaturesKHR;

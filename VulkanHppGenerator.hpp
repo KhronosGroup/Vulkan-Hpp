@@ -23,7 +23,7 @@
 class VulkanHppGenerator
 {
   public:
-    VulkanHppGenerator();
+    VulkanHppGenerator(tinyxml2::XMLDocument const& document);
 
     void appendBaseTypes(std::string & str) const;
     void appendBitmasks(std::string & str) const;
@@ -38,18 +38,9 @@ class VulkanHppGenerator
     void appendStructs(std::string & str) const;
     void appendStructureChainValidation(std::string & str);
     void appendThrowExceptions(std::string & str) const;
-    void checkCorrectness();
     std::string const& getTypesafeCheck() const;
     std::string const& getVersion() const;
     std::string const& getVulkanLicenseHeader() const;
-    void readCommands(tinyxml2::XMLElement const* element);
-    void readComment(tinyxml2::XMLElement const* element);
-    void readEnums(tinyxml2::XMLElement const* element);
-    void readExtensions(tinyxml2::XMLElement const* element);
-    void readFeature(tinyxml2::XMLElement const* element);
-    void readPlatforms(tinyxml2::XMLElement const* element);
-    void readTags(tinyxml2::XMLElement const* element);
-    void readTypes(tinyxml2::XMLElement const* element);
 
   private:
     struct BaseTypeData
@@ -66,14 +57,21 @@ class VulkanHppGenerator
     struct BitmaskData
     {
       BitmaskData(std::string const& r, int line)
-        : requirement(r)
+        : requires(r)
         , xmlLine(line)
       {}
 
-      std::string requirement;   // original vulkan name: VK*FlagBits
+      std::string requires;   // original vulkan name: VK*FlagBits
       std::string platform;
       std::string alias;      // original vulkan name
       int         xmlLine;
+    };
+
+    struct NameData
+    {
+      std::string               name;
+      std::vector<std::string>  arraySizes;
+      std::string               bitCount;
     };
 
     struct TypeData
@@ -114,6 +112,7 @@ class VulkanHppGenerator
       std::string               platform;
       std::string               returnType;
       std::vector<std::string>  successCodes;
+      std::vector<std::string>  errorCodes;
       bool                      isAlias;
       int                       xmlLine;
     };
@@ -133,7 +132,7 @@ class VulkanHppGenerator
 
     struct EnumData
     {
-      void addEnumValue(std::string const& valueName, bool bitmask, bool bitpos, std::string const& prefix, std::string const& postfix, std::string const& tag);
+      void addEnumValue(int line, std::string const& valueName, bool bitmask, bool bitpos, std::string const& prefix, std::string const& postfix, std::string const& tag);
 
       std::string                                       alias;    // alias for this enum
       std::vector<std::pair<std::string, std::string>>  aliases;  // pairs of vulkan enum value and corresponding vk::-namespace enum value
@@ -142,29 +141,67 @@ class VulkanHppGenerator
       std::vector<EnumValueData>                        values;
     };
 
+    struct ExtensionData
+    {
+      ExtensionData(int line)
+        : xmlLine(line)
+      {}
+
+      std::string                 deprecatedBy;
+      std::string                 obsoletedBy;
+      std::string                 promotedTo;
+      std::map<std::string, int>  requires;
+      int                         xmlLine;
+    };
+
+    struct FuncPointerData
+    {
+      FuncPointerData(std::string const& r, int line)
+        : requires(r)
+        , xmlLine(line)
+      {}
+
+      std::string requires;
+      int         xmlLine;
+    };
+
     struct HandleData
     {
+      HandleData(std::vector<std::string> const& p, int line)
+        : parents(p)
+        , xmlLine(line)
+      {}
+
       std::string                         alias;
+      std::set<std::string>               childrenHandles;
       std::map<std::string, CommandData>  commands;
       std::string                         deleteCommand;
       std::string                         deletePool;
-      std::set<std::string>               childrenHandles;
+      std::vector<std::string>            parents;
+      int                                 xmlLine;
     };
 
     struct MemberData
     {
+      MemberData(int line)
+        : xmlLine(line)
+      {}
+
       TypeData                  type;
       std::string               name;
       std::vector<std::string>  arraySizes;
       std::string               bitCount;
       std::string               values;
+      std::string               usedConstant;
+      int                       xmlLine;
     };
 
     struct StructureData
     {
-      StructureData(int line)
+      StructureData(std::vector<std::string> const& extends, int line)
         : returnedOnly(false)
         , isUnion(false)
+        , structExtends(extends)
         , xmlLine(line)
       {}
 
@@ -173,7 +210,7 @@ class VulkanHppGenerator
       std::vector<MemberData>   members;
       std::string               platform;
       std::vector<std::string>  structExtends;
-      std::vector<std::string>  aliases;
+      std::set<std::string>     aliases;
       std::string               subStruct;
       int                       xmlLine;
     };
@@ -228,6 +265,8 @@ class VulkanHppGenerator
     void appendUnion(std::string & str, std::pair<std::string, StructureData> const& structure) const;
     void appendUniqueTypes(std::string &str, std::string const& parentType, std::set<std::string> const& childrenTypes) const;
     std::string constructConstexprString(std::pair<std::string, StructureData> const& structData) const;
+    void checkCorrectness();
+    bool checkLenAttribute(std::string const& len, std::vector<ParamData> const& params);
     bool containsArray(std::string const& type) const;
     bool containsUnion(std::string const& type) const;
     std::string determineEnhancedReturnType(CommandData const& commandData, size_t returnParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool twoStep, bool isStructureChain) const;
@@ -236,56 +275,81 @@ class VulkanHppGenerator
     size_t determineTemplateParamIndex(std::vector<ParamData> const& params, std::map<size_t, size_t> const& vectorParamIndices) const;
     std::map<size_t, size_t> determineVectorParamIndices(std::vector<ParamData> const& params) const;
     bool isTwoStepAlgorithm(std::vector<ParamData> const& params) const;
-    void linkCommandToHandle(std::string const& name, CommandData const& commandData);
+    void linkCommandToHandle(int line, std::string const& name, CommandData const& commandData);
     void readBaseType(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes);
     void readBitmask(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes);
-    void readBitmaskAlias(int lineNum, std::string const& alias, std::map<std::string, std::string> const& attributes, std::vector<tinyxml2::XMLElement const*> const& children);
+    void readBitmaskAlias(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes);
     void readCommand(tinyxml2::XMLElement const* element);
-    void readCommandAlias(int lineNum, std::string const& alias, std::map<std::string, std::string> const& attributes, std::vector<tinyxml2::XMLElement const*> const& children);
-    ParamData readCommandParam(tinyxml2::XMLElement const* element);
-    std::string readCommandProto(tinyxml2::XMLElement const* element, std::string & returnType);
-    std::vector<std::string> readCommandSuccessCodes(std::map<std::string, std::string> const& attributes);
+    void readCommand(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributess);
+    void readCommandAlias(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes);
+    ParamData readCommandParam(tinyxml2::XMLElement const* element, std::vector<ParamData> const& params);
+    std::pair<std::string, std::string> readCommandProto(tinyxml2::XMLElement const* element);
+    void readCommands(tinyxml2::XMLElement const* element);
+    std::string readComment(tinyxml2::XMLElement const* element);
     void readDefine(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes);
     void readEnum(tinyxml2::XMLElement const* element, EnumData & enumData, bool bitmask, std::string const& prefix, std::string const& postfix);
+    void readEnum(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes, EnumData & enumData, bool bitmask, std::string const& prefix, std::string const& postfix);
+    void readEnumAlias(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes, EnumData & enumData, bool bitmask, std::string const& prefix, std::string const& postfix);
+    void readEnumConstant(tinyxml2::XMLElement const* element);
+    void readEnums(tinyxml2::XMLElement const* element);
     void readExtension(tinyxml2::XMLElement const* element);
-    void readExtensionDisabled(std::vector<tinyxml2::XMLElement const*> const& children);
-    void readExtensionDisabledRequire(tinyxml2::XMLElement const* element);
-    void readExtensionRequire(tinyxml2::XMLElement const* element, std::string const& platform, std::string const& tag);
+    void readExtensionDisabledCommand(tinyxml2::XMLElement const* element);
+    void readExtensionDisabledEnum(std::string const& extensionName, tinyxml2::XMLElement const* element);
+    void readExtensionDisabledRequire(std::string const& extensionName, tinyxml2::XMLElement const* element);
+    void readExtensionDisabledType(tinyxml2::XMLElement const* element);
+    void readExtensionRequire(tinyxml2::XMLElement const* element, std::string const& platform, std::string const& tag, std::map<std::string, int> & requires);
     void readExtensionRequireCommand(tinyxml2::XMLElement const* element, std::string const& platform);
     void readExtensionRequireType(tinyxml2::XMLElement const* element, std::string const& platform);
+    void readExtensions(tinyxml2::XMLElement const* element);
+    void readFeature(tinyxml2::XMLElement const* element);
     void readFeatureRequire(tinyxml2::XMLElement const* element);
     void readFuncpointer(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes);
     void readHandle(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes);
+    std::pair<NameData, TypeData> readNameAndType(tinyxml2::XMLElement const* elements);
     void readPlatform(tinyxml2::XMLElement const* element);
+    void readPlatforms(tinyxml2::XMLElement const* element);
+    void readRegistry(tinyxml2::XMLElement const* element);
+    void readRequireCommand(tinyxml2::XMLElement const* element);
     void readRequireEnum(tinyxml2::XMLElement const* element, std::string const& tag);
+    void readRequireEnum(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes, std::string const& tag);
+    void readRequireEnumAlias(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes, std::string const& tag);
     void readRequires(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes);
+    void readRequireType(tinyxml2::XMLElement const* element);
     void readStruct(tinyxml2::XMLElement const* element, bool isUnion, std::map<std::string, std::string> const& attributes);
-    void readStructAlias(int lineNum, std::string const& name, std::string const& alias, std::map<std::string, std::string> const& attributes);
-    MemberData readStructMember(tinyxml2::XMLElement const* element);
-    std::vector<MemberData> readStructMembers(std::vector<tinyxml2::XMLElement const*> const& children);
+    void readStructAlias(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes);
+    void readStructMember(tinyxml2::XMLElement const* element, std::vector<MemberData> & members);
+    void readStructMemberEnum(tinyxml2::XMLElement const* element, MemberData & memberData);
+    void readStructMemberName(tinyxml2::XMLElement const* element, MemberData & memberData, std::vector<MemberData> const& members);
+    void readStructMemberType(tinyxml2::XMLElement const* element, MemberData & memberData);
     void readTag(tinyxml2::XMLElement const* element);
+    void readTags(tinyxml2::XMLElement const* element);
     void readType(tinyxml2::XMLElement const* element);
     void readTypeEnum(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes);
     void readTypeInclude(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes);
+    void readTypes(tinyxml2::XMLElement const* element);
     void registerDeleter(std::string const& name, std::pair<std::string, CommandData> const& commandData);
-    void unlinkCommandFromHandle(std::string const& name);
+    void setVulkanLicenseHeader(int line, std::string const& comment);
 
   private:
-    std::map<std::string, BaseTypeData>   m_baseTypes;
-    std::map<std::string, BitmaskData>    m_bitmasks;
-    std::map<std::string, std::string>    m_commandToHandle;
-    std::map<std::string, EnumData>       m_enums;
-    std::set<std::string>                 m_extendedStructs; // structs which are referenced by the structextends tag
-    std::map<std::string, HandleData>     m_handles;
-    std::set<std::string>                 m_includes;
-    std::map<std::string, std::string>    m_platforms;
-    std::map<std::string, std::string>    m_structureAliases;
-    std::map<std::string, StructureData>  m_structures;
-    std::set<std::string>                 m_tags;
-    std::set<std::string>                 m_types;
-    std::string                           m_typesafeCheck;
-    std::string                           m_version;
-    std::string                           m_vulkanLicenseHeader;
+    std::map<std::string, BaseTypeData>     m_baseTypes;
+    std::map<std::string, BitmaskData>      m_bitmasks;
+    std::map<std::string, std::string>      m_commandToHandle;
+    std::set<std::string>                   m_constants;
+    std::map<std::string, EnumData>         m_enums;
+    std::set<std::string>                   m_extendedStructs; // structs which are referenced by the structextends tag
+    std::map<std::string, ExtensionData>    m_extensions;
+    std::map<std::string, std::string>      m_features;
+    std::map<std::string, FuncPointerData>  m_funcPointers;
+    std::map<std::string, HandleData>       m_handles;
+    std::set<std::string>                   m_includes;
+    std::map<std::string, std::string>      m_platforms;
+    std::map<std::string, std::string>      m_structureAliases;
+    std::map<std::string, StructureData>    m_structures;
+    std::set<std::string>                   m_tags;
+    std::set<std::string>                   m_types;
+    std::string                             m_typesafeCheck;
+    std::string                             m_version;
+    std::string                             m_vulkanLicenseHeader;
 };
 
 const size_t INVALID_INDEX = (size_t)~0;

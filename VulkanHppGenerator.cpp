@@ -2618,19 +2618,27 @@ void VulkanHppGenerator::appendStruct(std::string & str, std::pair<std::string, 
 void VulkanHppGenerator::appendStructAssignmentOperator(std::string &str, std::pair<std::string, StructureData> const& structData, std::string const& prefix) const
 {
   // we need an assignment operator if there is constant sType in this struct
+  std::string copyTemplate;
   if ((nonConstSTypeStructs.find(structData.first) == nonConstSTypeStructs.end()) && !structData.second.members.empty() && (structData.second.members.front().name == "sType"))
   {
     assert((2 <= structData.second.members.size()) && (structData.second.members[1].name == "pNext"));
+    copyTemplate = "memcpy( &pNext, &rhs.pNext, sizeof( ${structName} ) - offsetof( ${structName}, pNext ) )";
+  }
+  else
+  {
+    copyTemplate = "memcpy( this, &rhs, sizeof( ${structName} ) )";
+  }
+  std::string structName = stripPrefix(structData.first, "Vk");
+  std::string operation = replaceWithMap(copyTemplate, { { "structName", structName } });
 
-    static const std::string stringTemplate = R"(
+  static const std::string stringTemplate = R"(
 ${prefix}${structName} & operator=( ${structName} const & rhs ) VULKAN_HPP_NOEXCEPT
 ${prefix}{
-${prefix}  memcpy( &pNext, &rhs.pNext, sizeof( ${structName} ) - offsetof( ${structName}, pNext ) );
+${prefix}  ${operation};
 ${prefix}  return *this;
 ${prefix}}
 )";
-    str += replaceWithMap(stringTemplate, { {"prefix", prefix }, { "structName", stripPrefix(structData.first, "Vk") } });
-  }
+  str += replaceWithMap(stringTemplate, { { "operation", operation }, {"prefix", prefix }, { "structName", structName } });
 }
 
 void VulkanHppGenerator::appendStructCompareOperators(std::string & str, std::pair<std::string, StructureData> const& structData) const

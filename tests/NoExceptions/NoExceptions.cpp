@@ -25,7 +25,7 @@
 static char const* AppName = "NoExceptions";
 static char const* EngineName = "Vulkan.hpp";
 
-VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE;
+VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 
 int main(int /*argc*/, char ** /*argv*/)
 {

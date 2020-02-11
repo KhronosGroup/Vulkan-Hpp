@@ -19437,7 +19437,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     GeometryDataNV & operator=( GeometryDataNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( GeometryDataNV ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( GeometryDataNV ) );
       return *this;
     }
 
@@ -20082,7 +20082,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     AllocationCallbacks & operator=( AllocationCallbacks const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( AllocationCallbacks ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( AllocationCallbacks ) );
       return *this;
     }
 
@@ -20190,7 +20190,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ComponentMapping & operator=( ComponentMapping const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( ComponentMapping ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( ComponentMapping ) );
       return *this;
     }
 
@@ -20718,7 +20718,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     AttachmentDescription & operator=( AttachmentDescription const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( AttachmentDescription ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( AttachmentDescription ) );
       return *this;
     }
 
@@ -21083,7 +21083,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     AttachmentReference & operator=( AttachmentReference const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( AttachmentReference ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( AttachmentReference ) );
       return *this;
     }
 
@@ -21315,7 +21315,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     Extent2D & operator=( Extent2D const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( Extent2D ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( Extent2D ) );
       return *this;
     }
 
@@ -21385,7 +21385,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     SampleLocationEXT & operator=( SampleLocationEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( SampleLocationEXT ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( SampleLocationEXT ) );
       return *this;
     }
 
@@ -21558,7 +21558,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     AttachmentSampleLocationsEXT & operator=( AttachmentSampleLocationsEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( AttachmentSampleLocationsEXT ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( AttachmentSampleLocationsEXT ) );
       return *this;
     }
 
@@ -21624,7 +21624,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     BaseInStructure & operator=( BaseInStructure const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( BaseInStructure ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( BaseInStructure ) );
       return *this;
     }
 
@@ -21684,7 +21684,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     BaseOutStructure & operator=( BaseOutStructure const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( BaseOutStructure ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( BaseOutStructure ) );
       return *this;
     }
 
@@ -22035,7 +22035,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     Offset2D & operator=( Offset2D const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( Offset2D ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( Offset2D ) );
       return *this;
     }
 
@@ -22105,7 +22105,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     Rect2D & operator=( Rect2D const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( Rect2D ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( Rect2D ) );
       return *this;
     }
 
@@ -22530,7 +22530,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     SparseMemoryBind & operator=( SparseMemoryBind const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( SparseMemoryBind ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( SparseMemoryBind ) );
       return *this;
     }
 
@@ -22627,7 +22627,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     SparseBufferMemoryBindInfo & operator=( SparseBufferMemoryBindInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( SparseBufferMemoryBindInfo ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( SparseBufferMemoryBindInfo ) );
       return *this;
     }
 
@@ -22708,7 +22708,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     SparseImageOpaqueMemoryBindInfo & operator=( SparseImageOpaqueMemoryBindInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( SparseImageOpaqueMemoryBindInfo ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( SparseImageOpaqueMemoryBindInfo ) );
       return *this;
     }
 
@@ -22789,7 +22789,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImageSubresource & operator=( ImageSubresource const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( ImageSubresource ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( ImageSubresource ) );
       return *this;
     }
 
@@ -22877,7 +22877,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     Offset3D & operator=( Offset3D const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( Offset3D ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( Offset3D ) );
       return *this;
     }
 
@@ -22965,7 +22965,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     Extent3D & operator=( Extent3D const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( Extent3D ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( Extent3D ) );
       return *this;
     }
 
@@ -23055,7 +23055,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     SparseImageMemoryBind & operator=( SparseImageMemoryBind const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( SparseImageMemoryBind ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( SparseImageMemoryBind ) );
       return *this;
     }
 
@@ -23160,7 +23160,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     SparseImageMemoryBindInfo & operator=( SparseImageMemoryBindInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( SparseImageMemoryBindInfo ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( SparseImageMemoryBindInfo ) );
       return *this;
     }
 
@@ -23410,7 +23410,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     BufferCopy & operator=( BufferCopy const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( BufferCopy ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( BufferCopy ) );
       return *this;
     }
 
@@ -23759,7 +23759,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImageSubresourceLayers & operator=( ImageSubresourceLayers const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( ImageSubresourceLayers ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( ImageSubresourceLayers ) );
       return *this;
     }
 
@@ -23857,7 +23857,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     BufferImageCopy & operator=( BufferImageCopy const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( BufferImageCopy ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( BufferImageCopy ) );
       return *this;
     }
 
@@ -24471,7 +24471,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
     ClearColorValue( VULKAN_HPP_NAMESPACE::ClearColorValue const& rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( VULKAN_HPP_NAMESPACE::ClearColorValue ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( VULKAN_HPP_NAMESPACE::ClearColorValue ) );
     }
 
     ClearColorValue( const std::array<float,4>& float32_ = {} )
@@ -24509,7 +24509,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     VULKAN_HPP_NAMESPACE::ClearColorValue & operator=( VULKAN_HPP_NAMESPACE::ClearColorValue const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( VULKAN_HPP_NAMESPACE::ClearColorValue ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( VULKAN_HPP_NAMESPACE::ClearColorValue ) );
       return *this;
     }
 
@@ -24543,7 +24543,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ClearDepthStencilValue & operator=( ClearDepthStencilValue const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( ClearDepthStencilValue ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( ClearDepthStencilValue ) );
       return *this;
     }
 
@@ -24602,7 +24602,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
     ClearValue( VULKAN_HPP_NAMESPACE::ClearValue const& rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( VULKAN_HPP_NAMESPACE::ClearValue ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( VULKAN_HPP_NAMESPACE::ClearValue ) );
     }
 
     ClearValue( VULKAN_HPP_NAMESPACE::ClearColorValue color_ = {} )
@@ -24629,7 +24629,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     VULKAN_HPP_NAMESPACE::ClearValue & operator=( VULKAN_HPP_NAMESPACE::ClearValue const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( VULKAN_HPP_NAMESPACE::ClearValue ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( VULKAN_HPP_NAMESPACE::ClearValue ) );
       return *this;
     }
 
@@ -24670,7 +24670,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ClearAttachment & operator=( ClearAttachment const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( ClearAttachment ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( ClearAttachment ) );
       return *this;
     }
 
@@ -24739,7 +24739,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ClearRect & operator=( ClearRect const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( ClearRect ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( ClearRect ) );
       return *this;
     }
 
@@ -24820,7 +24820,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     IndirectCommandsTokenNVX & operator=( IndirectCommandsTokenNVX const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( IndirectCommandsTokenNVX ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( IndirectCommandsTokenNVX ) );
       return *this;
     }
 
@@ -25162,7 +25162,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     CoarseSampleLocationNV & operator=( CoarseSampleLocationNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( CoarseSampleLocationNV ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( CoarseSampleLocationNV ) );
       return *this;
     }
 
@@ -25246,7 +25246,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     CoarseSampleOrderCustomNV & operator=( CoarseSampleOrderCustomNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( CoarseSampleOrderCustomNV ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( CoarseSampleOrderCustomNV ) );
       return *this;
     }
 
@@ -25784,7 +25784,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     SpecializationMapEntry & operator=( SpecializationMapEntry const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( SpecializationMapEntry ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( SpecializationMapEntry ) );
       return *this;
     }
 
@@ -25868,7 +25868,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     SpecializationInfo & operator=( SpecializationInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( SpecializationInfo ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( SpecializationInfo ) );
       return *this;
     }
 
@@ -26280,7 +26280,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ConformanceVersionKHR & operator=( ConformanceVersionKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( ConformanceVersionKHR ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( ConformanceVersionKHR ) );
       return *this;
     }
 
@@ -27936,7 +27936,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DescriptorBufferInfo & operator=( DescriptorBufferInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( DescriptorBufferInfo ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( DescriptorBufferInfo ) );
       return *this;
     }
 
@@ -28017,7 +28017,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DescriptorImageInfo & operator=( DescriptorImageInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( DescriptorImageInfo ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( DescriptorImageInfo ) );
       return *this;
     }
 
@@ -28095,7 +28095,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DescriptorPoolSize & operator=( DescriptorPoolSize const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( DescriptorPoolSize ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( DescriptorPoolSize ) );
       return *this;
     }
 
@@ -28439,7 +28439,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DescriptorSetLayoutBinding & operator=( DescriptorSetLayoutBinding const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( DescriptorSetLayoutBinding ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( DescriptorSetLayoutBinding ) );
       return *this;
     }
 
@@ -28915,7 +28915,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DescriptorUpdateTemplateEntry & operator=( DescriptorUpdateTemplateEntry const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( DescriptorUpdateTemplateEntry ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( DescriptorUpdateTemplateEntry ) );
       return *this;
     }
 
@@ -29426,7 +29426,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceFeatures & operator=( PhysicalDeviceFeatures const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceFeatures ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( PhysicalDeviceFeatures ) );
       return *this;
     }
 
@@ -31304,7 +31304,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DispatchIndirectCommand & operator=( DispatchIndirectCommand const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( DispatchIndirectCommand ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( DispatchIndirectCommand ) );
       return *this;
     }
 
@@ -31452,7 +31452,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DisplayModeParametersKHR & operator=( DisplayModeParametersKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( DisplayModeParametersKHR ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( DisplayModeParametersKHR ) );
       return *this;
     }
 
@@ -31603,7 +31603,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DisplayModePropertiesKHR & operator=( DisplayModePropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( DisplayModePropertiesKHR ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( DisplayModePropertiesKHR ) );
       return *this;
     }
 
@@ -31798,7 +31798,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DisplayPlaneCapabilitiesKHR & operator=( DisplayPlaneCapabilitiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( DisplayPlaneCapabilitiesKHR ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( DisplayPlaneCapabilitiesKHR ) );
       return *this;
     }
 
@@ -32009,7 +32009,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DisplayPlanePropertiesKHR & operator=( DisplayPlanePropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( DisplayPlanePropertiesKHR ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( DisplayPlanePropertiesKHR ) );
       return *this;
     }
 
@@ -32302,7 +32302,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DisplayPropertiesKHR & operator=( DisplayPropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( DisplayPropertiesKHR ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( DisplayPropertiesKHR ) );
       return *this;
     }
 
@@ -32584,7 +32584,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DrawIndexedIndirectCommand & operator=( DrawIndexedIndirectCommand const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( DrawIndexedIndirectCommand ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( DrawIndexedIndirectCommand ) );
       return *this;
     }
 
@@ -32684,7 +32684,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DrawIndirectCommand & operator=( DrawIndirectCommand const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( DrawIndirectCommand ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( DrawIndirectCommand ) );
       return *this;
     }
 
@@ -32770,7 +32770,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DrawMeshTasksIndirectCommandNV & operator=( DrawMeshTasksIndirectCommandNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( DrawMeshTasksIndirectCommandNV ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( DrawMeshTasksIndirectCommandNV ) );
       return *this;
     }
 
@@ -32843,7 +32843,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DrmFormatModifierPropertiesEXT & operator=( DrmFormatModifierPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( DrmFormatModifierPropertiesEXT ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( DrmFormatModifierPropertiesEXT ) );
       return *this;
     }
 
@@ -33689,7 +33689,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ExtensionProperties & operator=( ExtensionProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( ExtensionProperties ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( ExtensionProperties ) );
       return *this;
     }
 
@@ -33750,7 +33750,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ExternalMemoryProperties & operator=( ExternalMemoryProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( ExternalMemoryProperties ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( ExternalMemoryProperties ) );
       return *this;
     }
 
@@ -34076,7 +34076,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImageFormatProperties & operator=( ImageFormatProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( ImageFormatProperties ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( ImageFormatProperties ) );
       return *this;
     }
 
@@ -34146,7 +34146,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ExternalImageFormatPropertiesNV & operator=( ExternalImageFormatPropertiesNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( ExternalImageFormatPropertiesNV ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( ExternalImageFormatPropertiesNV ) );
       return *this;
     }
 
@@ -34787,7 +34787,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     FormatProperties & operator=( FormatProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( FormatProperties ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( FormatProperties ) );
       return *this;
     }
 
@@ -35334,7 +35334,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     VertexInputBindingDescription & operator=( VertexInputBindingDescription const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( VertexInputBindingDescription ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( VertexInputBindingDescription ) );
       return *this;
     }
 
@@ -35418,7 +35418,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     VertexInputAttributeDescription & operator=( VertexInputAttributeDescription const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( VertexInputAttributeDescription ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( VertexInputAttributeDescription ) );
       return *this;
     }
 
@@ -35803,7 +35803,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     Viewport & operator=( Viewport const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( Viewport ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( Viewport ) );
       return *this;
     }
 
@@ -36350,7 +36350,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     StencilOpState & operator=( StencilOpState const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( StencilOpState ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( StencilOpState ) );
       return *this;
     }
 
@@ -36647,7 +36647,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineColorBlendAttachmentState & operator=( PipelineColorBlendAttachmentState const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( PipelineColorBlendAttachmentState ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( PipelineColorBlendAttachmentState ) );
       return *this;
     }
 
@@ -37232,7 +37232,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     XYColorEXT & operator=( XYColorEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( XYColorEXT ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( XYColorEXT ) );
       return *this;
     }
 
@@ -37615,7 +37615,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImageBlit & operator=( ImageBlit const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( ImageBlit ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( ImageBlit ) );
       return *this;
     }
 
@@ -37710,7 +37710,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImageCopy & operator=( ImageCopy const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( ImageCopy ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( ImageCopy ) );
       return *this;
     }
 
@@ -38015,7 +38015,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     SubresourceLayout & operator=( SubresourceLayout const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( SubresourceLayout ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( SubresourceLayout ) );
       return *this;
     }
 
@@ -38458,7 +38458,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImageSubresourceRange & operator=( ImageSubresourceRange const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( ImageSubresourceRange ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( ImageSubresourceRange ) );
       return *this;
     }
 
@@ -38932,7 +38932,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImageResolve & operator=( ImageResolve const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( ImageResolve ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( ImageResolve ) );
       return *this;
     }
 
@@ -40453,7 +40453,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     IndirectCommandsLayoutTokenNVX & operator=( IndirectCommandsLayoutTokenNVX const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( IndirectCommandsLayoutTokenNVX ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( IndirectCommandsLayoutTokenNVX ) );
       return *this;
     }
 
@@ -40715,7 +40715,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     InputAttachmentAspectReference & operator=( InputAttachmentAspectReference const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( InputAttachmentAspectReference ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( InputAttachmentAspectReference ) );
       return *this;
     }
 
@@ -40930,7 +40930,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     LayerProperties & operator=( LayerProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( LayerProperties ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( LayerProperties ) );
       return *this;
     }
 
@@ -41851,7 +41851,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     MemoryHeap & operator=( MemoryHeap const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( MemoryHeap ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( MemoryHeap ) );
       return *this;
     }
 
@@ -42110,7 +42110,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     MemoryRequirements & operator=( MemoryRequirements const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( MemoryRequirements ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( MemoryRequirements ) );
       return *this;
     }
 
@@ -42228,7 +42228,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     MemoryType & operator=( MemoryType const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( MemoryType ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( MemoryType ) );
       return *this;
     }
 
@@ -42647,7 +42647,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ObjectTableEntryNVX & operator=( ObjectTableEntryNVX const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( ObjectTableEntryNVX ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( ObjectTableEntryNVX ) );
       return *this;
     }
 
@@ -42732,7 +42732,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ObjectTableDescriptorSetEntryNVX & operator=( ObjectTableDescriptorSetEntryNVX const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( ObjectTableDescriptorSetEntryNVX ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( ObjectTableDescriptorSetEntryNVX ) );
       return *this;
     }
 
@@ -42833,7 +42833,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ObjectTableIndexBufferEntryNVX & operator=( ObjectTableIndexBufferEntryNVX const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( ObjectTableIndexBufferEntryNVX ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( ObjectTableIndexBufferEntryNVX ) );
       return *this;
     }
 
@@ -42929,7 +42929,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ObjectTablePipelineEntryNVX & operator=( ObjectTablePipelineEntryNVX const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( ObjectTablePipelineEntryNVX ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( ObjectTablePipelineEntryNVX ) );
       return *this;
     }
 
@@ -43022,7 +43022,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ObjectTablePushConstantEntryNVX & operator=( ObjectTablePushConstantEntryNVX const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( ObjectTablePushConstantEntryNVX ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( ObjectTablePushConstantEntryNVX ) );
       return *this;
     }
 
@@ -43118,7 +43118,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ObjectTableVertexBufferEntryNVX & operator=( ObjectTableVertexBufferEntryNVX const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( ObjectTableVertexBufferEntryNVX ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( ObjectTableVertexBufferEntryNVX ) );
       return *this;
     }
 
@@ -43205,7 +43205,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PastPresentationTimingGOOGLE & operator=( PastPresentationTimingGOOGLE const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( PastPresentationTimingGOOGLE ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( PastPresentationTimingGOOGLE ) );
       return *this;
     }
 
@@ -43486,7 +43486,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
     PerformanceCounterResultKHR( VULKAN_HPP_NAMESPACE::PerformanceCounterResultKHR const& rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( VULKAN_HPP_NAMESPACE::PerformanceCounterResultKHR ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( VULKAN_HPP_NAMESPACE::PerformanceCounterResultKHR ) );
     }
 
     PerformanceCounterResultKHR( int32_t int32_ = {} )
@@ -43557,7 +43557,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     VULKAN_HPP_NAMESPACE::PerformanceCounterResultKHR & operator=( VULKAN_HPP_NAMESPACE::PerformanceCounterResultKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( VULKAN_HPP_NAMESPACE::PerformanceCounterResultKHR ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( VULKAN_HPP_NAMESPACE::PerformanceCounterResultKHR ) );
       return *this;
     }
 
@@ -43885,7 +43885,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
     PerformanceValueDataINTEL( VULKAN_HPP_NAMESPACE::PerformanceValueDataINTEL const& rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( VULKAN_HPP_NAMESPACE::PerformanceValueDataINTEL ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( VULKAN_HPP_NAMESPACE::PerformanceValueDataINTEL ) );
     }
 
     PerformanceValueDataINTEL( uint32_t value32_ = {} )
@@ -43940,7 +43940,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     VULKAN_HPP_NAMESPACE::PerformanceValueDataINTEL & operator=( VULKAN_HPP_NAMESPACE::PerformanceValueDataINTEL const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( VULKAN_HPP_NAMESPACE::PerformanceValueDataINTEL ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( VULKAN_HPP_NAMESPACE::PerformanceValueDataINTEL ) );
       return *this;
     }
 
@@ -43984,7 +43984,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PerformanceValueINTEL & operator=( PerformanceValueINTEL const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( PerformanceValueINTEL ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( PerformanceValueINTEL ) );
       return *this;
     }
 
@@ -48127,7 +48127,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceLimits & operator=( PhysicalDeviceLimits const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceLimits ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( PhysicalDeviceLimits ) );
       return *this;
     }
 
@@ -48790,7 +48790,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceMemoryProperties & operator=( PhysicalDeviceMemoryProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceMemoryProperties ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( PhysicalDeviceMemoryProperties ) );
       return *this;
     }
 
@@ -49677,7 +49677,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceSparseProperties & operator=( PhysicalDeviceSparseProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceSparseProperties ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( PhysicalDeviceSparseProperties ) );
       return *this;
     }
 
@@ -49768,7 +49768,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceProperties & operator=( PhysicalDeviceProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( PhysicalDeviceProperties ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( PhysicalDeviceProperties ) );
       return *this;
     }
 
@@ -53680,7 +53680,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineCreationFeedbackEXT & operator=( PipelineCreationFeedbackEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( PipelineCreationFeedbackEXT ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( PipelineCreationFeedbackEXT ) );
       return *this;
     }
 
@@ -54166,7 +54166,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
     PipelineExecutableStatisticValueKHR( VULKAN_HPP_NAMESPACE::PipelineExecutableStatisticValueKHR const& rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( VULKAN_HPP_NAMESPACE::PipelineExecutableStatisticValueKHR ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( VULKAN_HPP_NAMESPACE::PipelineExecutableStatisticValueKHR ) );
     }
 
     PipelineExecutableStatisticValueKHR( VULKAN_HPP_NAMESPACE::Bool32 b32_ = {} )
@@ -54215,7 +54215,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     VULKAN_HPP_NAMESPACE::PipelineExecutableStatisticValueKHR & operator=( VULKAN_HPP_NAMESPACE::PipelineExecutableStatisticValueKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( VULKAN_HPP_NAMESPACE::PipelineExecutableStatisticValueKHR ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( VULKAN_HPP_NAMESPACE::PipelineExecutableStatisticValueKHR ) );
       return *this;
     }
 
@@ -54394,7 +54394,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PushConstantRange & operator=( PushConstantRange const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( PushConstantRange ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( PushConstantRange ) );
       return *this;
     }
 
@@ -55292,7 +55292,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     VertexInputBindingDivisorDescriptionEXT & operator=( VertexInputBindingDivisorDescriptionEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( VertexInputBindingDivisorDescriptionEXT ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( VertexInputBindingDivisorDescriptionEXT ) );
       return *this;
     }
 
@@ -55616,7 +55616,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ShadingRatePaletteNV & operator=( ShadingRatePaletteNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( ShadingRatePaletteNV ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( ShadingRatePaletteNV ) );
       return *this;
     }
 
@@ -55784,7 +55784,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ViewportSwizzleNV & operator=( ViewportSwizzleNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( ViewportSwizzleNV ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( ViewportSwizzleNV ) );
       return *this;
     }
 
@@ -55962,7 +55962,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ViewportWScalingNV & operator=( ViewportWScalingNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( ViewportWScalingNV ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( ViewportWScalingNV ) );
       return *this;
     }
 
@@ -56332,7 +56332,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     RectLayerKHR & operator=( RectLayerKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( RectLayerKHR ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( RectLayerKHR ) );
       return *this;
     }
 
@@ -56410,7 +56410,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PresentRegionKHR & operator=( PresentRegionKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( PresentRegionKHR ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( PresentRegionKHR ) );
       return *this;
     }
 
@@ -56561,7 +56561,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PresentTimeGOOGLE & operator=( PresentTimeGOOGLE const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( PresentTimeGOOGLE ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( PresentTimeGOOGLE ) );
       return *this;
     }
 
@@ -57111,7 +57111,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     QueueFamilyProperties & operator=( QueueFamilyProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( QueueFamilyProperties ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( QueueFamilyProperties ) );
       return *this;
     }
 
@@ -57500,7 +57500,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     RefreshCycleDurationGOOGLE & operator=( RefreshCycleDurationGOOGLE const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( RefreshCycleDurationGOOGLE ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( RefreshCycleDurationGOOGLE ) );
       return *this;
     }
 
@@ -57775,7 +57775,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     SubpassDescription & operator=( SubpassDescription const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( SubpassDescription ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( SubpassDescription ) );
       return *this;
     }
 
@@ -57924,7 +57924,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     SubpassDependency & operator=( SubpassDependency const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( SubpassDependency ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( SubpassDependency ) );
       return *this;
     }
 
@@ -58931,7 +58931,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     SubpassSampleLocationsEXT & operator=( SubpassSampleLocationsEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( SubpassSampleLocationsEXT ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( SubpassSampleLocationsEXT ) );
       return *this;
     }
 
@@ -60355,7 +60355,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ShaderResourceUsageAMD & operator=( ShaderResourceUsageAMD const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( ShaderResourceUsageAMD ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( ShaderResourceUsageAMD ) );
       return *this;
     }
 
@@ -60438,7 +60438,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ShaderStatisticsInfoAMD & operator=( ShaderStatisticsInfoAMD const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( ShaderStatisticsInfoAMD ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( ShaderStatisticsInfoAMD ) );
       return *this;
     }
 
@@ -60567,7 +60567,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     SparseImageFormatProperties & operator=( SparseImageFormatProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( SparseImageFormatProperties ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( SparseImageFormatProperties ) );
       return *this;
     }
 
@@ -60694,7 +60694,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     SparseImageMemoryRequirements & operator=( SparseImageMemoryRequirements const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( SparseImageMemoryRequirements ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( SparseImageMemoryRequirements ) );
       return *this;
     }
 
@@ -61390,7 +61390,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     SurfaceCapabilitiesKHR & operator=( SurfaceCapabilitiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( SurfaceCapabilitiesKHR ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( SurfaceCapabilitiesKHR ) );
       return *this;
     }
 
@@ -61595,7 +61595,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     SurfaceFormatKHR & operator=( SurfaceFormatKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( SurfaceFormatKHR ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( SurfaceFormatKHR ) );
       return *this;
     }
 

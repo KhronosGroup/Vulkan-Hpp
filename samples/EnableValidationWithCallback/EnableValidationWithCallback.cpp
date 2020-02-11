@@ -21,8 +21,6 @@
 #include <iostream>
 #include <sstream>
 
-using namespace std::string_literals;
-
 static char const* AppName = "EnableValidationWithCallback";
 static char const* EngineName = "Vulkan.hpp";
 
@@ -46,35 +44,35 @@ VkBool32 debugMessageFunc(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity
   std::string message;
 
   message += vk::to_string(static_cast<vk::DebugUtilsMessageSeverityFlagBitsEXT>(messageSeverity)) + ": " + vk::to_string(static_cast<vk::DebugUtilsMessageTypeFlagsEXT>(messageTypes)) + ":\n";
-  message += "\t"s + "messageIDName   = <" + pCallbackData->pMessageIdName + ">\n";
-  message += "\t"s + "messageIdNumber = " + std::to_string(pCallbackData->messageIdNumber) + "\n";
-  message += "\t"s + "message         = <" + pCallbackData->pMessage + ">\n";
+  message += std::string("\t") + "messageIDName   = <" + pCallbackData->pMessageIdName + ">\n";
+  message += std::string("\t") + "messageIdNumber = " + std::to_string(pCallbackData->messageIdNumber) + "\n";
+  message += std::string("\t") + "message         = <" + pCallbackData->pMessage + ">\n";
   if (0 < pCallbackData->queueLabelCount)
   {
-    message += "\t"s + "Queue Labels:\n";
+    message += std::string("\t") + "Queue Labels:\n";
     for (uint8_t i = 0; i < pCallbackData->queueLabelCount; i++)
     {
-      message += "\t\t"s + "labelName = <" + pCallbackData->pQueueLabels[i].pLabelName + ">\n";
+      message += std::string("\t\t") + "labelName = <" + pCallbackData->pQueueLabels[i].pLabelName + ">\n";
     }
   }
   if (0 < pCallbackData->cmdBufLabelCount)
   {
-    message += "\t"s + "CommandBuffer Labels:\n";
+    message += std::string("\t") + "CommandBuffer Labels:\n";
     for (uint8_t i = 0; i < pCallbackData->cmdBufLabelCount; i++)
     {
-      message += "\t\t"s + "labelName = <" + pCallbackData->pCmdBufLabels[i].pLabelName + ">\n";
+      message += std::string("\t\t") + "labelName = <" + pCallbackData->pCmdBufLabels[i].pLabelName + ">\n";
     }
   }
   if (0 < pCallbackData->objectCount)
   {
     for (uint8_t i = 0; i < pCallbackData->objectCount; i++)
     {
-      message += "\t"s + "Object " + std::to_string(i) + "\n";
-      message += "\t\t"s + "objectType   = " + vk::to_string(static_cast<vk::ObjectType>(pCallbackData->pObjects[i].objectType)) + "\n";
-      message += "\t\t"s + "objectHandle = " + std::to_string(pCallbackData->pObjects[i].objectHandle) + "\n";
+      message += std::string("\t") + "Object " + std::to_string(i) + "\n";
+      message += std::string("\t\t") + "objectType   = " + vk::to_string(static_cast<vk::ObjectType>(pCallbackData->pObjects[i].objectType)) + "\n";
+      message += std::string("\t\t") + "objectHandle = " + std::to_string(pCallbackData->pObjects[i].objectHandle) + "\n";
       if (pCallbackData->pObjects[i].pObjectName)
       {
-        message += "\t\t"s + "objectName   = <" + pCallbackData->pObjects[i].pObjectName + ">\n";
+        message += std::string("\t\t") + "objectName   = <" + pCallbackData->pObjects[i].pObjectName + ">\n";
       }
   }
 }

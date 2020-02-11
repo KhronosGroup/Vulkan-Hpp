@@ -14,11 +14,14 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-find_package(Vulkan REQUIRED)
-
 project(Vulkan-Hpp_Samples)
 
 option (SAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP "Build with local Vulkan headers" OFF)
+option (SAMPLES_BUILD_ONLY_DYNAMIC "Build only dynamic" OFF)
+
+if(NOT (SAMPLES_BUILD_ONLY_DYNAMIC AND SAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP))
+  find_package(Vulkan REQUIRED)
+endif()
 
 if (CMAKE_SYSTEM_NAME MATCHES "Windows")
   add_definitions(-DNOMINMAX -DVK_USE_PLATFORM_WIN32_KHR)

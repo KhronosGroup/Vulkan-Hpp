@@ -14,22 +14,26 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(InstanceExtensionProperties)
+if(NOT SAMPLES_BUILD_ONLY_DYNAMIC)
 
-set(HEADERS
-)
+  project(InstanceExtensionProperties)
+  
+  set(HEADERS
+  )
+  
+  set(SOURCES
+    InstanceExtensionProperties.cpp
+  )
+  
+  source_group(headers FILES ${HEADERS})
+  source_group(sources FILES ${SOURCES})
+  
+  add_executable(InstanceExtensionProperties
+    ${HEADERS}
+    ${SOURCES}
+  )
+  
+  set_target_properties(InstanceExtensionProperties PROPERTIES FOLDER "Samples")
+  target_link_libraries(InstanceExtensionProperties "${Vulkan_LIBRARIES}")
 
-set(SOURCES
-  InstanceExtensionProperties.cpp
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-add_executable(InstanceExtensionProperties
-  ${HEADERS}
-  ${SOURCES}
-)
-
-set_target_properties(InstanceExtensionProperties PROPERTIES FOLDER "Samples")
-target_link_libraries(InstanceExtensionProperties PUBLIC "${Vulkan_LIBRARIES}")
+endif()

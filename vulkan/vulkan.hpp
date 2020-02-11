@@ -19435,6 +19435,12 @@ namespace VULKAN_HPP_NAMESPACE
       , aabbs( rhs.aabbs )
     {}
 
+    GeometryDataNV & operator=( GeometryDataNV const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( GeometryDataNV ) );
+      return *this;
+    }
+
     GeometryDataNV( VkGeometryDataNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -20074,6 +20080,12 @@ namespace VULKAN_HPP_NAMESPACE
       , pfnInternalFree( rhs.pfnInternalFree )
     {}
 
+    AllocationCallbacks & operator=( AllocationCallbacks const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( AllocationCallbacks ) );
+      return *this;
+    }
+
     AllocationCallbacks( VkAllocationCallbacks const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -20175,6 +20187,12 @@ namespace VULKAN_HPP_NAMESPACE
       , b( rhs.b )
       , a( rhs.a )
     {}
+
+    ComponentMapping & operator=( ComponentMapping const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( ComponentMapping ) );
+      return *this;
+    }
 
     ComponentMapping( VkComponentMapping const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -20698,6 +20716,12 @@ namespace VULKAN_HPP_NAMESPACE
       , finalLayout( rhs.finalLayout )
     {}
 
+    AttachmentDescription & operator=( AttachmentDescription const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( AttachmentDescription ) );
+      return *this;
+    }
+
     AttachmentDescription( VkAttachmentDescription const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -21057,6 +21081,12 @@ namespace VULKAN_HPP_NAMESPACE
       , layout( rhs.layout )
     {}
 
+    AttachmentReference & operator=( AttachmentReference const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( AttachmentReference ) );
+      return *this;
+    }
+
     AttachmentReference( VkAttachmentReference const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -21283,6 +21313,12 @@ namespace VULKAN_HPP_NAMESPACE
       , height( rhs.height )
     {}
 
+    Extent2D & operator=( Extent2D const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( Extent2D ) );
+      return *this;
+    }
+
     Extent2D( VkExtent2D const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -21346,6 +21382,12 @@ namespace VULKAN_HPP_NAMESPACE
       : x( rhs.x )
       , y( rhs.y )
     {}
+
+    SampleLocationEXT & operator=( SampleLocationEXT const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( SampleLocationEXT ) );
+      return *this;
+    }
 
     SampleLocationEXT( VkSampleLocationEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -21514,6 +21556,12 @@ namespace VULKAN_HPP_NAMESPACE
       , sampleLocationsInfo( rhs.sampleLocationsInfo )
     {}
 
+    AttachmentSampleLocationsEXT & operator=( AttachmentSampleLocationsEXT const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( AttachmentSampleLocationsEXT ) );
+      return *this;
+    }
+
     AttachmentSampleLocationsEXT( VkAttachmentSampleLocationsEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -21574,6 +21622,12 @@ namespace VULKAN_HPP_NAMESPACE
       : pNext( rhs.pNext )
     {}
 
+    BaseInStructure & operator=( BaseInStructure const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( BaseInStructure ) );
+      return *this;
+    }
+
     BaseInStructure( VkBaseInStructure const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -21627,6 +21681,12 @@ namespace VULKAN_HPP_NAMESPACE
     BaseOutStructure( BaseOutStructure const& rhs ) VULKAN_HPP_NOEXCEPT
       : pNext( rhs.pNext )
     {}
+
+    BaseOutStructure & operator=( BaseOutStructure const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( BaseOutStructure ) );
+      return *this;
+    }
 
     BaseOutStructure( VkBaseOutStructure const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -21973,6 +22033,12 @@ namespace VULKAN_HPP_NAMESPACE
       , y( rhs.y )
     {}
 
+    Offset2D & operator=( Offset2D const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( Offset2D ) );
+      return *this;
+    }
+
     Offset2D( VkOffset2D const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -22036,6 +22102,12 @@ namespace VULKAN_HPP_NAMESPACE
       : offset( rhs.offset )
       , extent( rhs.extent )
     {}
+
+    Rect2D & operator=( Rect2D const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( Rect2D ) );
+      return *this;
+    }
 
     Rect2D( VkRect2D const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -22456,6 +22528,12 @@ namespace VULKAN_HPP_NAMESPACE
       , flags( rhs.flags )
     {}
 
+    SparseMemoryBind & operator=( SparseMemoryBind const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( SparseMemoryBind ) );
+      return *this;
+    }
+
     SparseMemoryBind( VkSparseMemoryBind const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -22547,6 +22625,12 @@ namespace VULKAN_HPP_NAMESPACE
       , pBinds( rhs.pBinds )
     {}
 
+    SparseBufferMemoryBindInfo & operator=( SparseBufferMemoryBindInfo const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( SparseBufferMemoryBindInfo ) );
+      return *this;
+    }
+
     SparseBufferMemoryBindInfo( VkSparseBufferMemoryBindInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -22622,6 +22706,12 @@ namespace VULKAN_HPP_NAMESPACE
       , pBinds( rhs.pBinds )
     {}
 
+    SparseImageOpaqueMemoryBindInfo & operator=( SparseImageOpaqueMemoryBindInfo const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( SparseImageOpaqueMemoryBindInfo ) );
+      return *this;
+    }
+
     SparseImageOpaqueMemoryBindInfo( VkSparseImageOpaqueMemoryBindInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -22696,6 +22786,12 @@ namespace VULKAN_HPP_NAMESPACE
       , mipLevel( rhs.mipLevel )
       , arrayLayer( rhs.arrayLayer )
     {}
+
+    ImageSubresource & operator=( ImageSubresource const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( ImageSubresource ) );
+      return *this;
+    }
 
     ImageSubresource( VkImageSubresource const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -22779,6 +22875,12 @@ namespace VULKAN_HPP_NAMESPACE
       , z( z_ )
     {}
 
+    Offset3D & operator=( Offset3D const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( Offset3D ) );
+      return *this;
+    }
+
     Offset3D( VkOffset3D const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -22860,6 +22962,12 @@ namespace VULKAN_HPP_NAMESPACE
       , height( extent2D.height )
       , depth( depth_ )
     {}
+
+    Extent3D & operator=( Extent3D const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( Extent3D ) );
+      return *this;
+    }
 
     Extent3D( VkExtent3D const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -22944,6 +23052,12 @@ namespace VULKAN_HPP_NAMESPACE
       , memoryOffset( rhs.memoryOffset )
       , flags( rhs.flags )
     {}
+
+    SparseImageMemoryBind & operator=( SparseImageMemoryBind const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( SparseImageMemoryBind ) );
+      return *this;
+    }
 
     SparseImageMemoryBind( VkSparseImageMemoryBind const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -23043,6 +23157,12 @@ namespace VULKAN_HPP_NAMESPACE
       , bindCount( rhs.bindCount )
       , pBinds( rhs.pBinds )
     {}
+
+    SparseImageMemoryBindInfo & operator=( SparseImageMemoryBindInfo const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( SparseImageMemoryBindInfo ) );
+      return *this;
+    }
 
     SparseImageMemoryBindInfo( VkSparseImageMemoryBindInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -23287,6 +23407,12 @@ namespace VULKAN_HPP_NAMESPACE
       , dstOffset( rhs.dstOffset )
       , size( rhs.size )
     {}
+
+    BufferCopy & operator=( BufferCopy const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( BufferCopy ) );
+      return *this;
+    }
 
     BufferCopy( VkBufferCopy const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -23631,6 +23757,12 @@ namespace VULKAN_HPP_NAMESPACE
       , layerCount( rhs.layerCount )
     {}
 
+    ImageSubresourceLayers & operator=( ImageSubresourceLayers const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( ImageSubresourceLayers ) );
+      return *this;
+    }
+
     ImageSubresourceLayers( VkImageSubresourceLayers const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -23722,6 +23854,12 @@ namespace VULKAN_HPP_NAMESPACE
       , imageOffset( rhs.imageOffset )
       , imageExtent( rhs.imageExtent )
     {}
+
+    BufferImageCopy & operator=( BufferImageCopy const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( BufferImageCopy ) );
+      return *this;
+    }
 
     BufferImageCopy( VkBufferImageCopy const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -24403,6 +24541,12 @@ namespace VULKAN_HPP_NAMESPACE
       , stencil( rhs.stencil )
     {}
 
+    ClearDepthStencilValue & operator=( ClearDepthStencilValue const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( ClearDepthStencilValue ) );
+      return *this;
+    }
+
     ClearDepthStencilValue( VkClearDepthStencilValue const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -24524,6 +24668,12 @@ namespace VULKAN_HPP_NAMESPACE
       , clearValue( rhs.clearValue )
     {}
 
+    ClearAttachment & operator=( ClearAttachment const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( ClearAttachment ) );
+      return *this;
+    }
+
     ClearAttachment( VkClearAttachment const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -24586,6 +24736,12 @@ namespace VULKAN_HPP_NAMESPACE
       , baseArrayLayer( rhs.baseArrayLayer )
       , layerCount( rhs.layerCount )
     {}
+
+    ClearRect & operator=( ClearRect const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( ClearRect ) );
+      return *this;
+    }
 
     ClearRect( VkClearRect const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -24661,6 +24817,12 @@ namespace VULKAN_HPP_NAMESPACE
       , buffer( rhs.buffer )
       , offset( rhs.offset )
     {}
+
+    IndirectCommandsTokenNVX & operator=( IndirectCommandsTokenNVX const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( IndirectCommandsTokenNVX ) );
+      return *this;
+    }
 
     IndirectCommandsTokenNVX( VkIndirectCommandsTokenNVX const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -24998,6 +25160,12 @@ namespace VULKAN_HPP_NAMESPACE
       , sample( rhs.sample )
     {}
 
+    CoarseSampleLocationNV & operator=( CoarseSampleLocationNV const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( CoarseSampleLocationNV ) );
+      return *this;
+    }
+
     CoarseSampleLocationNV( VkCoarseSampleLocationNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -25075,6 +25243,12 @@ namespace VULKAN_HPP_NAMESPACE
       , sampleLocationCount( rhs.sampleLocationCount )
       , pSampleLocations( rhs.pSampleLocations )
     {}
+
+    CoarseSampleOrderCustomNV & operator=( CoarseSampleOrderCustomNV const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( CoarseSampleOrderCustomNV ) );
+      return *this;
+    }
 
     CoarseSampleOrderCustomNV( VkCoarseSampleOrderCustomNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -25608,6 +25782,12 @@ namespace VULKAN_HPP_NAMESPACE
       , size( rhs.size )
     {}
 
+    SpecializationMapEntry & operator=( SpecializationMapEntry const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( SpecializationMapEntry ) );
+      return *this;
+    }
+
     SpecializationMapEntry( VkSpecializationMapEntry const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -25685,6 +25865,12 @@ namespace VULKAN_HPP_NAMESPACE
       , dataSize( rhs.dataSize )
       , pData( rhs.pData )
     {}
+
+    SpecializationInfo & operator=( SpecializationInfo const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( SpecializationInfo ) );
+      return *this;
+    }
 
     SpecializationInfo( VkSpecializationInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -26091,6 +26277,12 @@ namespace VULKAN_HPP_NAMESPACE
       , subminor( rhs.subminor )
       , patch( rhs.patch )
     {}
+
+    ConformanceVersionKHR & operator=( ConformanceVersionKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( ConformanceVersionKHR ) );
+      return *this;
+    }
 
     ConformanceVersionKHR( VkConformanceVersionKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -27742,6 +27934,12 @@ namespace VULKAN_HPP_NAMESPACE
       , range( rhs.range )
     {}
 
+    DescriptorBufferInfo & operator=( DescriptorBufferInfo const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( DescriptorBufferInfo ) );
+      return *this;
+    }
+
     DescriptorBufferInfo( VkDescriptorBufferInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -27817,6 +28015,12 @@ namespace VULKAN_HPP_NAMESPACE
       , imageLayout( rhs.imageLayout )
     {}
 
+    DescriptorImageInfo & operator=( DescriptorImageInfo const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( DescriptorImageInfo ) );
+      return *this;
+    }
+
     DescriptorImageInfo( VkDescriptorImageInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -27888,6 +28092,12 @@ namespace VULKAN_HPP_NAMESPACE
       : type( rhs.type )
       , descriptorCount( rhs.descriptorCount )
     {}
+
+    DescriptorPoolSize & operator=( DescriptorPoolSize const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( DescriptorPoolSize ) );
+      return *this;
+    }
 
     DescriptorPoolSize( VkDescriptorPoolSize const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -28226,6 +28436,12 @@ namespace VULKAN_HPP_NAMESPACE
       , stageFlags( rhs.stageFlags )
       , pImmutableSamplers( rhs.pImmutableSamplers )
     {}
+
+    DescriptorSetLayoutBinding & operator=( DescriptorSetLayoutBinding const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( DescriptorSetLayoutBinding ) );
+      return *this;
+    }
 
     DescriptorSetLayoutBinding( VkDescriptorSetLayoutBinding const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -28696,6 +28912,12 @@ namespace VULKAN_HPP_NAMESPACE
       , offset( rhs.offset )
       , stride( rhs.stride )
     {}
+
+    DescriptorUpdateTemplateEntry & operator=( DescriptorUpdateTemplateEntry const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( DescriptorUpdateTemplateEntry ) );
+      return *this;
+    }
 
     DescriptorUpdateTemplateEntry( VkDescriptorUpdateTemplateEntry const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -29201,6 +29423,12 @@ namespace VULKAN_HPP_NAMESPACE
       , variableMultisampleRate( rhs.variableMultisampleRate )
       , inheritedQueries( rhs.inheritedQueries )
     {}
+
+    PhysicalDeviceFeatures & operator=( PhysicalDeviceFeatures const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceFeatures ) );
+      return *this;
+    }
 
     PhysicalDeviceFeatures( VkPhysicalDeviceFeatures const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -31074,6 +31302,12 @@ namespace VULKAN_HPP_NAMESPACE
       , z( rhs.z )
     {}
 
+    DispatchIndirectCommand & operator=( DispatchIndirectCommand const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( DispatchIndirectCommand ) );
+      return *this;
+    }
+
     DispatchIndirectCommand( VkDispatchIndirectCommand const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -31215,6 +31449,12 @@ namespace VULKAN_HPP_NAMESPACE
       : visibleRegion( rhs.visibleRegion )
       , refreshRate( rhs.refreshRate )
     {}
+
+    DisplayModeParametersKHR & operator=( DisplayModeParametersKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( DisplayModeParametersKHR ) );
+      return *this;
+    }
 
     DisplayModeParametersKHR( VkDisplayModeParametersKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -31360,6 +31600,12 @@ namespace VULKAN_HPP_NAMESPACE
       : displayMode( rhs.displayMode )
       , parameters( rhs.parameters )
     {}
+
+    DisplayModePropertiesKHR & operator=( DisplayModePropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( DisplayModePropertiesKHR ) );
+      return *this;
+    }
 
     DisplayModePropertiesKHR( VkDisplayModePropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -31549,6 +31795,12 @@ namespace VULKAN_HPP_NAMESPACE
       , minDstExtent( rhs.minDstExtent )
       , maxDstExtent( rhs.maxDstExtent )
     {}
+
+    DisplayPlaneCapabilitiesKHR & operator=( DisplayPlaneCapabilitiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( DisplayPlaneCapabilitiesKHR ) );
+      return *this;
+    }
 
     DisplayPlaneCapabilitiesKHR( VkDisplayPlaneCapabilitiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -31754,6 +32006,12 @@ namespace VULKAN_HPP_NAMESPACE
       : currentDisplay( rhs.currentDisplay )
       , currentStackIndex( rhs.currentStackIndex )
     {}
+
+    DisplayPlanePropertiesKHR & operator=( DisplayPlanePropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( DisplayPlanePropertiesKHR ) );
+      return *this;
+    }
 
     DisplayPlanePropertiesKHR( VkDisplayPlanePropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -32042,6 +32300,12 @@ namespace VULKAN_HPP_NAMESPACE
       , persistentContent( rhs.persistentContent )
     {}
 
+    DisplayPropertiesKHR & operator=( DisplayPropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( DisplayPropertiesKHR ) );
+      return *this;
+    }
+
     DisplayPropertiesKHR( VkDisplayPropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -32318,6 +32582,12 @@ namespace VULKAN_HPP_NAMESPACE
       , firstInstance( rhs.firstInstance )
     {}
 
+    DrawIndexedIndirectCommand & operator=( DrawIndexedIndirectCommand const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( DrawIndexedIndirectCommand ) );
+      return *this;
+    }
+
     DrawIndexedIndirectCommand( VkDrawIndexedIndirectCommand const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -32412,6 +32682,12 @@ namespace VULKAN_HPP_NAMESPACE
       , firstInstance( rhs.firstInstance )
     {}
 
+    DrawIndirectCommand & operator=( DrawIndirectCommand const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( DrawIndirectCommand ) );
+      return *this;
+    }
+
     DrawIndirectCommand( VkDrawIndirectCommand const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -32492,6 +32768,12 @@ namespace VULKAN_HPP_NAMESPACE
       , firstTask( rhs.firstTask )
     {}
 
+    DrawMeshTasksIndirectCommandNV & operator=( DrawMeshTasksIndirectCommandNV const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( DrawMeshTasksIndirectCommandNV ) );
+      return *this;
+    }
+
     DrawMeshTasksIndirectCommandNV( VkDrawMeshTasksIndirectCommandNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -32558,6 +32840,12 @@ namespace VULKAN_HPP_NAMESPACE
       , drmFormatModifierPlaneCount( rhs.drmFormatModifierPlaneCount )
       , drmFormatModifierTilingFeatures( rhs.drmFormatModifierTilingFeatures )
     {}
+
+    DrmFormatModifierPropertiesEXT & operator=( DrmFormatModifierPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( DrmFormatModifierPropertiesEXT ) );
+      return *this;
+    }
 
     DrmFormatModifierPropertiesEXT( VkDrmFormatModifierPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -33399,6 +33687,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_EXTENSION_NAME_SIZE,VK_MAX_EXTENSION_NAME_SIZE>::copy( extensionName, rhs.extensionName );
     }
 
+    ExtensionProperties & operator=( ExtensionProperties const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( ExtensionProperties ) );
+      return *this;
+    }
+
     ExtensionProperties( VkExtensionProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -33453,6 +33747,12 @@ namespace VULKAN_HPP_NAMESPACE
       , exportFromImportedHandleTypes( rhs.exportFromImportedHandleTypes )
       , compatibleHandleTypes( rhs.compatibleHandleTypes )
     {}
+
+    ExternalMemoryProperties & operator=( ExternalMemoryProperties const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( ExternalMemoryProperties ) );
+      return *this;
+    }
 
     ExternalMemoryProperties( VkExternalMemoryProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -33774,6 +34074,12 @@ namespace VULKAN_HPP_NAMESPACE
       , maxResourceSize( rhs.maxResourceSize )
     {}
 
+    ImageFormatProperties & operator=( ImageFormatProperties const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( ImageFormatProperties ) );
+      return *this;
+    }
+
     ImageFormatProperties( VkImageFormatProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -33837,6 +34143,12 @@ namespace VULKAN_HPP_NAMESPACE
       , exportFromImportedHandleTypes( rhs.exportFromImportedHandleTypes )
       , compatibleHandleTypes( rhs.compatibleHandleTypes )
     {}
+
+    ExternalImageFormatPropertiesNV & operator=( ExternalImageFormatPropertiesNV const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( ExternalImageFormatPropertiesNV ) );
+      return *this;
+    }
 
     ExternalImageFormatPropertiesNV( VkExternalImageFormatPropertiesNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -34473,6 +34785,12 @@ namespace VULKAN_HPP_NAMESPACE
       , bufferFeatures( rhs.bufferFeatures )
     {}
 
+    FormatProperties & operator=( FormatProperties const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( FormatProperties ) );
+      return *this;
+    }
+
     FormatProperties( VkFormatProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -35014,6 +35332,12 @@ namespace VULKAN_HPP_NAMESPACE
       , inputRate( rhs.inputRate )
     {}
 
+    VertexInputBindingDescription & operator=( VertexInputBindingDescription const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( VertexInputBindingDescription ) );
+      return *this;
+    }
+
     VertexInputBindingDescription( VkVertexInputBindingDescription const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -35091,6 +35415,12 @@ namespace VULKAN_HPP_NAMESPACE
       , format( rhs.format )
       , offset( rhs.offset )
     {}
+
+    VertexInputAttributeDescription & operator=( VertexInputAttributeDescription const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( VertexInputAttributeDescription ) );
+      return *this;
+    }
 
     VertexInputAttributeDescription( VkVertexInputAttributeDescription const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -35470,6 +35800,12 @@ namespace VULKAN_HPP_NAMESPACE
       , minDepth( rhs.minDepth )
       , maxDepth( rhs.maxDepth )
     {}
+
+    Viewport & operator=( Viewport const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( Viewport ) );
+      return *this;
+    }
 
     Viewport( VkViewport const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -36012,6 +36348,12 @@ namespace VULKAN_HPP_NAMESPACE
       , reference( rhs.reference )
     {}
 
+    StencilOpState & operator=( StencilOpState const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( StencilOpState ) );
+      return *this;
+    }
+
     StencilOpState( VkStencilOpState const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -36302,6 +36644,12 @@ namespace VULKAN_HPP_NAMESPACE
       , alphaBlendOp( rhs.alphaBlendOp )
       , colorWriteMask( rhs.colorWriteMask )
     {}
+
+    PipelineColorBlendAttachmentState & operator=( PipelineColorBlendAttachmentState const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( PipelineColorBlendAttachmentState ) );
+      return *this;
+    }
 
     PipelineColorBlendAttachmentState( VkPipelineColorBlendAttachmentState const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -36882,6 +37230,12 @@ namespace VULKAN_HPP_NAMESPACE
       , y( rhs.y )
     {}
 
+    XYColorEXT & operator=( XYColorEXT const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( XYColorEXT ) );
+      return *this;
+    }
+
     XYColorEXT( VkXYColorEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -37259,6 +37613,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::Offset3D,2,2>::copy( dstOffsets, rhs.dstOffsets );
     }
 
+    ImageBlit & operator=( ImageBlit const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( ImageBlit ) );
+      return *this;
+    }
+
     ImageBlit( VkImageBlit const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -37347,6 +37707,12 @@ namespace VULKAN_HPP_NAMESPACE
       , dstOffset( rhs.dstOffset )
       , extent( rhs.extent )
     {}
+
+    ImageCopy & operator=( ImageCopy const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( ImageCopy ) );
+      return *this;
+    }
 
     ImageCopy( VkImageCopy const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -37646,6 +38012,12 @@ namespace VULKAN_HPP_NAMESPACE
       , arrayPitch( rhs.arrayPitch )
       , depthPitch( rhs.depthPitch )
     {}
+
+    SubresourceLayout & operator=( SubresourceLayout const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( SubresourceLayout ) );
+      return *this;
+    }
 
     SubresourceLayout( VkSubresourceLayout const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -38083,6 +38455,12 @@ namespace VULKAN_HPP_NAMESPACE
       , baseArrayLayer( rhs.baseArrayLayer )
       , layerCount( rhs.layerCount )
     {}
+
+    ImageSubresourceRange & operator=( ImageSubresourceRange const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( ImageSubresourceRange ) );
+      return *this;
+    }
 
     ImageSubresourceRange( VkImageSubresourceRange const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -38551,6 +38929,12 @@ namespace VULKAN_HPP_NAMESPACE
       , dstOffset( rhs.dstOffset )
       , extent( rhs.extent )
     {}
+
+    ImageResolve & operator=( ImageResolve const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( ImageResolve ) );
+      return *this;
+    }
 
     ImageResolve( VkImageResolve const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -40067,6 +40451,12 @@ namespace VULKAN_HPP_NAMESPACE
       , divisor( rhs.divisor )
     {}
 
+    IndirectCommandsLayoutTokenNVX & operator=( IndirectCommandsLayoutTokenNVX const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( IndirectCommandsLayoutTokenNVX ) );
+      return *this;
+    }
+
     IndirectCommandsLayoutTokenNVX( VkIndirectCommandsLayoutTokenNVX const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -40323,6 +40713,12 @@ namespace VULKAN_HPP_NAMESPACE
       , aspectMask( rhs.aspectMask )
     {}
 
+    InputAttachmentAspectReference & operator=( InputAttachmentAspectReference const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( InputAttachmentAspectReference ) );
+      return *this;
+    }
+
     InputAttachmentAspectReference( VkInputAttachmentAspectReference const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -40530,6 +40926,12 @@ namespace VULKAN_HPP_NAMESPACE
     {
       VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_EXTENSION_NAME_SIZE,VK_MAX_EXTENSION_NAME_SIZE>::copy( layerName, rhs.layerName );
       VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( description, rhs.description );
+    }
+
+    LayerProperties & operator=( LayerProperties const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( LayerProperties ) );
+      return *this;
     }
 
     LayerProperties( VkLayerProperties const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -41447,6 +41849,12 @@ namespace VULKAN_HPP_NAMESPACE
       , flags( rhs.flags )
     {}
 
+    MemoryHeap & operator=( MemoryHeap const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( MemoryHeap ) );
+      return *this;
+    }
+
     MemoryHeap( VkMemoryHeap const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -41700,6 +42108,12 @@ namespace VULKAN_HPP_NAMESPACE
       , memoryTypeBits( rhs.memoryTypeBits )
     {}
 
+    MemoryRequirements & operator=( MemoryRequirements const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( MemoryRequirements ) );
+      return *this;
+    }
+
     MemoryRequirements( VkMemoryRequirements const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -41811,6 +42225,12 @@ namespace VULKAN_HPP_NAMESPACE
       : propertyFlags( rhs.propertyFlags )
       , heapIndex( rhs.heapIndex )
     {}
+
+    MemoryType & operator=( MemoryType const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( MemoryType ) );
+      return *this;
+    }
 
     MemoryType( VkMemoryType const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -42225,6 +42645,12 @@ namespace VULKAN_HPP_NAMESPACE
       , flags( rhs.flags )
     {}
 
+    ObjectTableEntryNVX & operator=( ObjectTableEntryNVX const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( ObjectTableEntryNVX ) );
+      return *this;
+    }
+
     ObjectTableEntryNVX( VkObjectTableEntryNVX const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -42303,6 +42729,12 @@ namespace VULKAN_HPP_NAMESPACE
       , pipelineLayout( pipelineLayout_ )
       , descriptorSet( descriptorSet_ )
     {}
+
+    ObjectTableDescriptorSetEntryNVX & operator=( ObjectTableDescriptorSetEntryNVX const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( ObjectTableDescriptorSetEntryNVX ) );
+      return *this;
+    }
 
     ObjectTableDescriptorSetEntryNVX( VkObjectTableDescriptorSetEntryNVX const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -42399,6 +42831,12 @@ namespace VULKAN_HPP_NAMESPACE
       , indexType( indexType_ )
     {}
 
+    ObjectTableIndexBufferEntryNVX & operator=( ObjectTableIndexBufferEntryNVX const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( ObjectTableIndexBufferEntryNVX ) );
+      return *this;
+    }
+
     ObjectTableIndexBufferEntryNVX( VkObjectTableIndexBufferEntryNVX const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -42489,6 +42927,12 @@ namespace VULKAN_HPP_NAMESPACE
       , pipeline( pipeline_ )
     {}
 
+    ObjectTablePipelineEntryNVX & operator=( ObjectTablePipelineEntryNVX const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( ObjectTablePipelineEntryNVX ) );
+      return *this;
+    }
+
     ObjectTablePipelineEntryNVX( VkObjectTablePipelineEntryNVX const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -42575,6 +43019,12 @@ namespace VULKAN_HPP_NAMESPACE
       , pipelineLayout( pipelineLayout_ )
       , stageFlags( stageFlags_ )
     {}
+
+    ObjectTablePushConstantEntryNVX & operator=( ObjectTablePushConstantEntryNVX const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( ObjectTablePushConstantEntryNVX ) );
+      return *this;
+    }
 
     ObjectTablePushConstantEntryNVX( VkObjectTablePushConstantEntryNVX const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -42666,6 +43116,12 @@ namespace VULKAN_HPP_NAMESPACE
       , buffer( buffer_ )
     {}
 
+    ObjectTableVertexBufferEntryNVX & operator=( ObjectTableVertexBufferEntryNVX const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( ObjectTableVertexBufferEntryNVX ) );
+      return *this;
+    }
+
     ObjectTableVertexBufferEntryNVX( VkObjectTableVertexBufferEntryNVX const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -42746,6 +43202,12 @@ namespace VULKAN_HPP_NAMESPACE
       , earliestPresentTime( rhs.earliestPresentTime )
       , presentMargin( rhs.presentMargin )
     {}
+
+    PastPresentationTimingGOOGLE & operator=( PastPresentationTimingGOOGLE const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( PastPresentationTimingGOOGLE ) );
+      return *this;
+    }
 
     PastPresentationTimingGOOGLE( VkPastPresentationTimingGOOGLE const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -43519,6 +43981,12 @@ namespace VULKAN_HPP_NAMESPACE
       : type( rhs.type )
       , data( rhs.data )
     {}
+
+    PerformanceValueINTEL & operator=( PerformanceValueINTEL const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( PerformanceValueINTEL ) );
+      return *this;
+    }
 
     PerformanceValueINTEL( VkPerformanceValueINTEL const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -47657,6 +48125,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,2,2>::copy( lineWidthRange, rhs.lineWidthRange );
     }
 
+    PhysicalDeviceLimits & operator=( PhysicalDeviceLimits const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceLimits ) );
+      return *this;
+    }
+
     PhysicalDeviceLimits( VkPhysicalDeviceLimits const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -48312,6 +48786,12 @@ namespace VULKAN_HPP_NAMESPACE
     {
       VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::MemoryType,VK_MAX_MEMORY_TYPES,VK_MAX_MEMORY_TYPES>::copy( memoryTypes, rhs.memoryTypes );
       VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::MemoryHeap,VK_MAX_MEMORY_HEAPS,VK_MAX_MEMORY_HEAPS>::copy( memoryHeaps, rhs.memoryHeaps );
+    }
+
+    PhysicalDeviceMemoryProperties & operator=( PhysicalDeviceMemoryProperties const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceMemoryProperties ) );
+      return *this;
     }
 
     PhysicalDeviceMemoryProperties( VkPhysicalDeviceMemoryProperties const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -49195,6 +49675,12 @@ namespace VULKAN_HPP_NAMESPACE
       , residencyNonResidentStrict( rhs.residencyNonResidentStrict )
     {}
 
+    PhysicalDeviceSparseProperties & operator=( PhysicalDeviceSparseProperties const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceSparseProperties ) );
+      return *this;
+    }
+
     PhysicalDeviceSparseProperties( VkPhysicalDeviceSparseProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -49278,6 +49764,12 @@ namespace VULKAN_HPP_NAMESPACE
     {
       VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_PHYSICAL_DEVICE_NAME_SIZE,VK_MAX_PHYSICAL_DEVICE_NAME_SIZE>::copy( deviceName, rhs.deviceName );
       VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint8_t,VK_UUID_SIZE,VK_UUID_SIZE>::copy( pipelineCacheUUID, rhs.pipelineCacheUUID );
+    }
+
+    PhysicalDeviceProperties & operator=( PhysicalDeviceProperties const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( PhysicalDeviceProperties ) );
+      return *this;
     }
 
     PhysicalDeviceProperties( VkPhysicalDeviceProperties const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -53186,6 +53678,12 @@ namespace VULKAN_HPP_NAMESPACE
       , duration( rhs.duration )
     {}
 
+    PipelineCreationFeedbackEXT & operator=( PipelineCreationFeedbackEXT const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( PipelineCreationFeedbackEXT ) );
+      return *this;
+    }
+
     PipelineCreationFeedbackEXT( VkPipelineCreationFeedbackEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -53893,6 +54391,12 @@ namespace VULKAN_HPP_NAMESPACE
       , offset( rhs.offset )
       , size( rhs.size )
     {}
+
+    PushConstantRange & operator=( PushConstantRange const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( PushConstantRange ) );
+      return *this;
+    }
 
     PushConstantRange( VkPushConstantRange const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -54786,6 +55290,12 @@ namespace VULKAN_HPP_NAMESPACE
       , divisor( rhs.divisor )
     {}
 
+    VertexInputBindingDivisorDescriptionEXT & operator=( VertexInputBindingDivisorDescriptionEXT const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( VertexInputBindingDivisorDescriptionEXT ) );
+      return *this;
+    }
+
     VertexInputBindingDivisorDescriptionEXT( VkVertexInputBindingDivisorDescriptionEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -55104,6 +55614,12 @@ namespace VULKAN_HPP_NAMESPACE
       , pShadingRatePaletteEntries( rhs.pShadingRatePaletteEntries )
     {}
 
+    ShadingRatePaletteNV & operator=( ShadingRatePaletteNV const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( ShadingRatePaletteNV ) );
+      return *this;
+    }
+
     ShadingRatePaletteNV( VkShadingRatePaletteNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -55265,6 +55781,12 @@ namespace VULKAN_HPP_NAMESPACE
       , z( rhs.z )
       , w( rhs.w )
     {}
+
+    ViewportSwizzleNV & operator=( ViewportSwizzleNV const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( ViewportSwizzleNV ) );
+      return *this;
+    }
 
     ViewportSwizzleNV( VkViewportSwizzleNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -55437,6 +55959,12 @@ namespace VULKAN_HPP_NAMESPACE
       : xcoeff( rhs.xcoeff )
       , ycoeff( rhs.ycoeff )
     {}
+
+    ViewportWScalingNV & operator=( ViewportWScalingNV const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( ViewportWScalingNV ) );
+      return *this;
+    }
 
     ViewportWScalingNV( VkViewportWScalingNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -55802,6 +56330,12 @@ namespace VULKAN_HPP_NAMESPACE
       , layer( layer_ )
     {}
 
+    RectLayerKHR & operator=( RectLayerKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( RectLayerKHR ) );
+      return *this;
+    }
+
     RectLayerKHR( VkRectLayerKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -55873,6 +56407,12 @@ namespace VULKAN_HPP_NAMESPACE
       : rectangleCount( rhs.rectangleCount )
       , pRectangles( rhs.pRectangles )
     {}
+
+    PresentRegionKHR & operator=( PresentRegionKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( PresentRegionKHR ) );
+      return *this;
+    }
 
     PresentRegionKHR( VkPresentRegionKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -56018,6 +56558,12 @@ namespace VULKAN_HPP_NAMESPACE
       : presentID( rhs.presentID )
       , desiredPresentTime( rhs.desiredPresentTime )
     {}
+
+    PresentTimeGOOGLE & operator=( PresentTimeGOOGLE const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( PresentTimeGOOGLE ) );
+      return *this;
+    }
 
     PresentTimeGOOGLE( VkPresentTimeGOOGLE const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -56563,6 +57109,12 @@ namespace VULKAN_HPP_NAMESPACE
       , minImageTransferGranularity( rhs.minImageTransferGranularity )
     {}
 
+    QueueFamilyProperties & operator=( QueueFamilyProperties const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( QueueFamilyProperties ) );
+      return *this;
+    }
+
     QueueFamilyProperties( VkQueueFamilyProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -56946,6 +57498,12 @@ namespace VULKAN_HPP_NAMESPACE
       : refreshDuration( rhs.refreshDuration )
     {}
 
+    RefreshCycleDurationGOOGLE & operator=( RefreshCycleDurationGOOGLE const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( RefreshCycleDurationGOOGLE ) );
+      return *this;
+    }
+
     RefreshCycleDurationGOOGLE( VkRefreshCycleDurationGOOGLE const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -57215,6 +57773,12 @@ namespace VULKAN_HPP_NAMESPACE
       , pPreserveAttachments( rhs.pPreserveAttachments )
     {}
 
+    SubpassDescription & operator=( SubpassDescription const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( SubpassDescription ) );
+      return *this;
+    }
+
     SubpassDescription( VkSubpassDescription const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -57357,6 +57921,12 @@ namespace VULKAN_HPP_NAMESPACE
       , dstAccessMask( rhs.dstAccessMask )
       , dependencyFlags( rhs.dependencyFlags )
     {}
+
+    SubpassDependency & operator=( SubpassDependency const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( SubpassDependency ) );
+      return *this;
+    }
 
     SubpassDependency( VkSubpassDependency const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -58358,6 +58928,12 @@ namespace VULKAN_HPP_NAMESPACE
       : subpassIndex( rhs.subpassIndex )
       , sampleLocationsInfo( rhs.sampleLocationsInfo )
     {}
+
+    SubpassSampleLocationsEXT & operator=( SubpassSampleLocationsEXT const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( SubpassSampleLocationsEXT ) );
+      return *this;
+    }
 
     SubpassSampleLocationsEXT( VkSubpassSampleLocationsEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -59777,6 +60353,12 @@ namespace VULKAN_HPP_NAMESPACE
       , scratchMemUsageInBytes( rhs.scratchMemUsageInBytes )
     {}
 
+    ShaderResourceUsageAMD & operator=( ShaderResourceUsageAMD const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( ShaderResourceUsageAMD ) );
+      return *this;
+    }
+
     ShaderResourceUsageAMD( VkShaderResourceUsageAMD const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -59852,6 +60434,12 @@ namespace VULKAN_HPP_NAMESPACE
       , computeWorkGroupSize{}
     {
       VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,3,3>::copy( computeWorkGroupSize, rhs.computeWorkGroupSize );
+    }
+
+    ShaderStatisticsInfoAMD & operator=( ShaderStatisticsInfoAMD const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( ShaderStatisticsInfoAMD ) );
+      return *this;
     }
 
     ShaderStatisticsInfoAMD( VkShaderStatisticsInfoAMD const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -59977,6 +60565,12 @@ namespace VULKAN_HPP_NAMESPACE
       , flags( rhs.flags )
     {}
 
+    SparseImageFormatProperties & operator=( SparseImageFormatProperties const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( SparseImageFormatProperties ) );
+      return *this;
+    }
+
     SparseImageFormatProperties( VkSparseImageFormatProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -60097,6 +60691,12 @@ namespace VULKAN_HPP_NAMESPACE
       , imageMipTailOffset( rhs.imageMipTailOffset )
       , imageMipTailStride( rhs.imageMipTailStride )
     {}
+
+    SparseImageMemoryRequirements & operator=( SparseImageMemoryRequirements const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( SparseImageMemoryRequirements ) );
+      return *this;
+    }
 
     SparseImageMemoryRequirements( VkSparseImageMemoryRequirements const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -60788,6 +61388,12 @@ namespace VULKAN_HPP_NAMESPACE
       , supportedUsageFlags( rhs.supportedUsageFlags )
     {}
 
+    SurfaceCapabilitiesKHR & operator=( SurfaceCapabilitiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( SurfaceCapabilitiesKHR ) );
+      return *this;
+    }
+
     SurfaceCapabilitiesKHR( VkSurfaceCapabilitiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -60986,6 +61592,12 @@ namespace VULKAN_HPP_NAMESPACE
       : format( rhs.format )
       , colorSpace( rhs.colorSpace )
     {}
+
+    SurfaceFormatKHR & operator=( SurfaceFormatKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( this, &rhs, sizeof( SurfaceFormatKHR ) );
+      return *this;
+    }
 
     SurfaceFormatKHR( VkSurfaceFormatKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {

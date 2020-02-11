@@ -23,7 +23,7 @@
 #include <iostream>
 #include <map>
 
-VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE;
+VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 
 int main(int /*argc*/, char ** /*argv*/)
 {
@@ -47,7 +47,7 @@ int main(int /*argc*/, char ** /*argv*/)
     // function pointer specialization for device
     VULKAN_HPP_DEFAULT_DISPATCHER.init(device);
   }
-  catch (vk::SystemError err)
+  catch (vk::SystemError const& err)
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
     exit(-1);

@@ -2626,7 +2626,7 @@ void VulkanHppGenerator::appendStructAssignmentOperator(std::string &str, std::p
   }
   else
   {
-    copyTemplate = "memcpy( this, &rhs, sizeof( ${structName} ) )";
+    copyTemplate = "memcpy( static_cast<void*>(this), &rhs, sizeof( ${structName} ) )";
   }
   std::string structName = stripPrefix(structData.first, "Vk");
   std::string operation = replaceWithMap(copyTemplate, { { "structName", structName } });
@@ -3134,7 +3134,7 @@ void VulkanHppGenerator::appendUnion(std::string & str, std::pair<std::string, S
     "  {\n"
     "    " + unionName + "( VULKAN_HPP_NAMESPACE::" + unionName + " const& rhs ) VULKAN_HPP_NOEXCEPT\n"
     "    {\n"
-    "      memcpy( this, &rhs, sizeof( VULKAN_HPP_NAMESPACE::" + unionName + " ) );\n"
+    "      memcpy( static_cast<void*>(this), &rhs, sizeof( VULKAN_HPP_NAMESPACE::" + unionName + " ) );\n"
     "    }\n";
 
   bool firstMember = true;
@@ -3189,7 +3189,7 @@ void VulkanHppGenerator::appendUnion(std::string & str, std::pair<std::string, S
   static const std::string operatorsTemplate = R"(
     VULKAN_HPP_NAMESPACE::${unionName} & operator=( VULKAN_HPP_NAMESPACE::${unionName} const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( this, &rhs, sizeof( VULKAN_HPP_NAMESPACE::${unionName} ) );
+      memcpy( static_cast<void*>(this), &rhs, sizeof( VULKAN_HPP_NAMESPACE::${unionName} ) );
       return *this;
     }
 

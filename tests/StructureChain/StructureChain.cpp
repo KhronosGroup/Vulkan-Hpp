@@ -31,7 +31,11 @@ static char const* EngineName = "Vulkan.hpp";
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
-VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE;
+VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
+
+template <typename T>
+void unused(T const&)
+{}
 
 int main(int /*argc*/, char ** /*argv*/)
 {
@@ -84,24 +88,31 @@ int main(int /*argc*/, char ** /*argv*/)
 
     // simple calls, getting structure back
     vk::PhysicalDeviceFeatures2 a = physicalDevice.getFeatures2();
-    
+    unused(a);
+
     // complex calls, getting StructureChain back
     auto c = physicalDevice.getFeatures2<vk::PhysicalDeviceFeatures2, vk::PhysicalDeviceVariablePointerFeatures>();
     vk::PhysicalDeviceFeatures2 & c0 = c.get<vk::PhysicalDeviceFeatures2>();
+    unused(c0);
 
     auto t0 = c.get<vk::PhysicalDeviceFeatures2, vk::PhysicalDeviceVariablePointerFeatures>();
+    unused(t0);
     
     auto d = physicalDevice.getFeatures2<vk::PhysicalDeviceFeatures2, vk::PhysicalDeviceVariablePointerFeatures>();
     vk::PhysicalDeviceFeatures2 & d0 = d.get<vk::PhysicalDeviceFeatures2>();
+    unused(d0);
     vk::PhysicalDeviceVariablePointerFeatures & d1 = d.get<vk::PhysicalDeviceVariablePointerFeatures>();
+    unused(d1);
 
     auto t1 = d.get<vk::PhysicalDeviceFeatures2, vk::PhysicalDeviceVariablePointerFeatures>();
+    unused(t1);
 
     using StructureChain = vk::StructureChain<vk::QueueFamilyProperties2, vk::QueueFamilyCheckpointPropertiesNV>;
     using AllocatorType = std::vector<StructureChain>::allocator_type;
     auto qfd = physicalDevice.getQueueFamilyProperties2<StructureChain, AllocatorType>(VULKAN_HPP_DEFAULT_DISPATCHER);
+    unused(qfd);
   }
-  catch (vk::SystemError err)
+  catch (vk::SystemError const& err)
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
     exit(-1);

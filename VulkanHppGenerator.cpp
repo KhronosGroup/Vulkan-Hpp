@@ -6260,7 +6260,11 @@ static const std::string constExpressionArrayCopy = R"(
 #include <type_traits>
 #include <vulkan/vulkan.h>
 
-#if !defined(VULKAN_HPP_DISABLE_ENHANCED_MODE)
+#if defined(VULKAN_HPP_DISABLE_ENHANCED_MODE)
+# if !defined(VULKAN_HPP_NO_SMART_HANDLE)
+#  define VULKAN_HPP_NO_SMART_HANDLE
+# endif
+#else
 # include <memory>
 # include <vector>
 #endif

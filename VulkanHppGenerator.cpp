@@ -4674,10 +4674,8 @@ std::string to_string(tinyxml2::XMLError error)
     case tinyxml2::XML_ERROR_FILE_NOT_FOUND           : return "XML_ERROR_FILE_NOT_FOUND";
     case tinyxml2::XML_ERROR_FILE_COULD_NOT_BE_OPENED : return "XML_ERROR_FILE_COULD_NOT_BE_OPENED";
     case tinyxml2::XML_ERROR_FILE_READ_ERROR          : return "XML_ERROR_FILE_READ_ERROR";
-    case tinyxml2::UNUSED_XML_ERROR_ELEMENT_MISMATCH  : return "UNUSED_XML_ERROR_ELEMENT_MISMATCH";
     case tinyxml2::XML_ERROR_PARSING_ELEMENT          : return "XML_ERROR_PARSING_ELEMENT";
     case tinyxml2::XML_ERROR_PARSING_ATTRIBUTE        : return "XML_ERROR_PARSING_ATTRIBUTE";
-    case tinyxml2::UNUSED_XML_ERROR_IDENTIFYING_TAG   : return "UNUSED_XML_ERROR_IDENTIFYING_TAG";
     case tinyxml2::XML_ERROR_PARSING_TEXT             : return "XML_ERROR_PARSING_TEXT";
     case tinyxml2::XML_ERROR_PARSING_CDATA            : return "XML_ERROR_PARSING_CDATA";
     case tinyxml2::XML_ERROR_PARSING_COMMENT          : return "XML_ERROR_PARSING_COMMENT";

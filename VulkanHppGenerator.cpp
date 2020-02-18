@@ -1131,6 +1131,25 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic(std::string & str)
 #endif
     }
 
+    DynamicLoader( DynamicLoader const& ) = delete;
+
+    DynamicLoader( DynamicLoader && other ) VULKAN_HPP_NOEXCEPT
+      : m_success(other.m_success)
+      , m_library(other.m_library)
+    {
+      other.m_library = nullptr;
+    }
+
+    DynamicLoader &operator=( DynamicLoader const& ) = delete;
+
+    DynamicLoader &operator=( DynamicLoader && other ) VULKAN_HPP_NOEXCEPT
+    {
+      m_success = other.m_success;
+      m_library = other.m_library;
+      other.m_library = nullptr;
+      return *this;
+    }
+
     ~DynamicLoader() VULKAN_HPP_NOEXCEPT
     {
       if ( m_library )

@@ -2865,14 +2865,14 @@ namespace VULKAN_HPP_NAMESPACE
     public:
       VULKAN_HPP_CONSTEXPR_14 static void copy(T dst[N], std::array<T,N> const& src) VULKAN_HPP_NOEXCEPT
       {
-        dst[I-1] = src[I-1];
         ConstExpression1DArrayCopy<T, N, I - 1>::copy(dst, src);
+        dst[I-1] = src[I-1];
       }
 
       VULKAN_HPP_CONSTEXPR_14 static void copy(T dst[N], const T src[N]) VULKAN_HPP_NOEXCEPT
       {
-        dst[I - 1] = src[I - 1];
         ConstExpression1DArrayCopy<T, N, I - 1>::copy(dst, src);
+        dst[I - 1] = src[I - 1];
       }
   };
 
@@ -2890,8 +2890,14 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     VULKAN_HPP_CONSTEXPR_14 static void copy(T dst[N][M], std::array<std::array<T,M>, N> const& src) VULKAN_HPP_NOEXCEPT
     {
-      dst[I - 1][J - 1] = src[I - 1][J - 1];
       ConstExpression2DArrayCopy<T, N, M, I, J - 1>::copy(dst, src);
+      dst[I - 1][J - 1] = src[I - 1][J - 1];
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 static void copy(T dst[N][M], const T src[N][M]) VULKAN_HPP_NOEXCEPT
+    {
+      ConstExpression2DArrayCopy<T, N, M, I, J - 1>::copy(dst, src);
+      dst[I - 1][J - 1] = src[I - 1][J - 1];
     }
   };
 
@@ -2903,6 +2909,11 @@ namespace VULKAN_HPP_NAMESPACE
     {
       ConstExpression2DArrayCopy<T, N, M, I - 1, M>::copy(dst, src);
     }
+
+    VULKAN_HPP_CONSTEXPR_14 static void copy(T dst[N][M], const T src[N][M]) VULKAN_HPP_NOEXCEPT
+    {
+      ConstExpression2DArrayCopy<T, N, M, I - 1, M>::copy(dst, src);
+    }
   };
 
   template <typename T, size_t N, size_t M>
@@ -2910,6 +2921,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
   public:
     VULKAN_HPP_CONSTEXPR_14 static void copy(T /*dst*/[N][M], std::array<std::array<T, M>, N> const& /*src*/) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_CONSTEXPR_14 static void copy(T /*dst*/[N][M], const T /*src*/[N][M]) VULKAN_HPP_NOEXCEPT {}
   };
 
   using Bool32 = uint32_t;

@@ -36,7 +36,7 @@ else(MSVC)
   add_compile_options(-Wall)
 endif(MSVC)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 
 if (NOT DEFINED VULKAN_HPP_VULKAN_HEADERS_SRC_DIR)
   set(VULKAN_HPP_VULKAN_HEADERS_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Vulkan-Headers")
@@ -87,7 +87,7 @@ add_executable(VulkanHppGenerator
   ${TINYXML2_HEADERS}
 )
 
-set_property(TARGET VulkanHppGenerator PROPERTY CXX_STANDARD 11)
+set_property(TARGET VulkanHppGenerator PROPERTY CXX_STANDARD 14)
 
 target_include_directories(VulkanHppGenerator PRIVATE ${VULKAN_HPP_TINYXML2_SRC_DIR})
 

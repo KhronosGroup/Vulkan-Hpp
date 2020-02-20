@@ -269,10 +269,12 @@ namespace VULKAN_HPP_NAMESPACE
     enum { allFlags = 0 };
   };
 
-  template <typename BitType, typename MaskType = VkFlags>
+  template <typename BitType>
   class Flags
   {
   public:
+    using MaskType = typename std::underlying_type<BitType>::type;
+
     // constructors
     VULKAN_HPP_CONSTEXPR Flags() VULKAN_HPP_NOEXCEPT
       : m_mask(0)
@@ -282,7 +284,7 @@ namespace VULKAN_HPP_NAMESPACE
       : m_mask(static_cast<MaskType>(bit))
     {}
 
-    VULKAN_HPP_CONSTEXPR Flags(Flags<BitType, MaskType> const& rhs) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR Flags(Flags<BitType> const& rhs) VULKAN_HPP_NOEXCEPT
       : m_mask(rhs.m_mask)
     {}
 
@@ -291,32 +293,32 @@ namespace VULKAN_HPP_NAMESPACE
     {}
 
     // relational operators
-    VULKAN_HPP_CONSTEXPR bool operator<(Flags<BitType, MaskType> const& rhs) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR bool operator<(Flags<BitType> const& rhs) const VULKAN_HPP_NOEXCEPT
     {
       return m_mask < rhs.m_mask;
     }
 
-    VULKAN_HPP_CONSTEXPR bool operator<=(Flags<BitType, MaskType> const& rhs) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR bool operator<=(Flags<BitType> const& rhs) const VULKAN_HPP_NOEXCEPT
     {
       return m_mask <= rhs.m_mask;
     }
 
-    VULKAN_HPP_CONSTEXPR bool operator>(Flags<BitType, MaskType> const& rhs) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR bool operator>(Flags<BitType> const& rhs) const VULKAN_HPP_NOEXCEPT
     {
       return m_mask > rhs.m_mask;
     }
 
-    VULKAN_HPP_CONSTEXPR bool operator>=(Flags<BitType, MaskType> const& rhs) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR bool operator>=(Flags<BitType> const& rhs) const VULKAN_HPP_NOEXCEPT
     {
       return m_mask >= rhs.m_mask;
     }
 
-    VULKAN_HPP_CONSTEXPR bool operator==(Flags<BitType, MaskType> const& rhs) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR bool operator==(Flags<BitType> const& rhs) const VULKAN_HPP_NOEXCEPT
     {
       return m_mask == rhs.m_mask;
     }
 
-    VULKAN_HPP_CONSTEXPR bool operator!=(Flags<BitType, MaskType> const& rhs) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR bool operator!=(Flags<BitType> const& rhs) const VULKAN_HPP_NOEXCEPT
     {
       return m_mask != rhs.m_mask;
     }
@@ -328,46 +330,46 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     // bitwise operators
-    VULKAN_HPP_CONSTEXPR Flags<BitType, MaskType> operator&(Flags<BitType, MaskType> const& rhs) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR Flags<BitType> operator&(Flags<BitType> const& rhs) const VULKAN_HPP_NOEXCEPT
     {
-      return Flags<BitType, MaskType>(m_mask & rhs.m_mask);
+      return Flags<BitType>(m_mask & rhs.m_mask);
     }
 
-    VULKAN_HPP_CONSTEXPR Flags<BitType, MaskType> operator|(Flags<BitType, MaskType> const& rhs) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR Flags<BitType> operator|(Flags<BitType> const& rhs) const VULKAN_HPP_NOEXCEPT
     {
-      return Flags<BitType, MaskType>(m_mask | rhs.m_mask);
+      return Flags<BitType>(m_mask | rhs.m_mask);
     }
 
-    VULKAN_HPP_CONSTEXPR Flags<BitType, MaskType> operator^(Flags<BitType, MaskType> const& rhs) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR Flags<BitType> operator^(Flags<BitType> const& rhs) const VULKAN_HPP_NOEXCEPT
     {
-      return Flags<BitType, MaskType>(m_mask ^ rhs.m_mask);
+      return Flags<BitType>(m_mask ^ rhs.m_mask);
     }
 
-    VULKAN_HPP_CONSTEXPR Flags<BitType, MaskType> operator~() const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR Flags<BitType> operator~() const VULKAN_HPP_NOEXCEPT
     {
-      return Flags<BitType, MaskType>(m_mask ^ FlagTraits<BitType>::allFlags);
+      return Flags<BitType>(m_mask ^ FlagTraits<BitType>::allFlags);
     }
 
     // assignment operators
-    Flags<BitType, MaskType> & operator=(Flags<BitType, MaskType> const& rhs) VULKAN_HPP_NOEXCEPT
+    Flags<BitType> & operator=(Flags<BitType> const& rhs) VULKAN_HPP_NOEXCEPT
     {
       m_mask = rhs.m_mask;
       return *this;
     }
 
-    Flags<BitType, MaskType> & operator|=(Flags<BitType, MaskType> const& rhs) VULKAN_HPP_NOEXCEPT
+    Flags<BitType> & operator|=(Flags<BitType> const& rhs) VULKAN_HPP_NOEXCEPT
     {
       m_mask |= rhs.m_mask;
       return *this;
     }
 
-    Flags<BitType, MaskType> & operator&=(Flags<BitType, MaskType> const& rhs) VULKAN_HPP_NOEXCEPT
+    Flags<BitType> & operator&=(Flags<BitType> const& rhs) VULKAN_HPP_NOEXCEPT
     {
       m_mask &= rhs.m_mask;
       return *this;
     }
 
-    Flags<BitType, MaskType> & operator^=(Flags<BitType, MaskType> const& rhs) VULKAN_HPP_NOEXCEPT
+    Flags<BitType> & operator^=(Flags<BitType> const& rhs) VULKAN_HPP_NOEXCEPT
     {
       m_mask ^= rhs.m_mask;
       return *this;
@@ -389,57 +391,57 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   // relational operators
-  template <typename BitType, typename MaskType = VkFlags>
-  VULKAN_HPP_CONSTEXPR bool operator<(BitType bit, Flags<BitType, MaskType> const& flags) VULKAN_HPP_NOEXCEPT
+  template <typename BitType>
+  VULKAN_HPP_CONSTEXPR bool operator<(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
   {
     return flags > bit;
   }
 
-  template <typename BitType, typename MaskType = VkFlags>
-  VULKAN_HPP_CONSTEXPR bool operator<=(BitType bit, Flags<BitType, MaskType> const& flags) VULKAN_HPP_NOEXCEPT
+  template <typename BitType>
+  VULKAN_HPP_CONSTEXPR bool operator<=(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
   {
     return flags >= bit;
   }
 
-  template <typename BitType, typename MaskType = VkFlags>
-  VULKAN_HPP_CONSTEXPR bool operator>(BitType bit, Flags<BitType, MaskType> const& flags) VULKAN_HPP_NOEXCEPT
+  template <typename BitType>
+  VULKAN_HPP_CONSTEXPR bool operator>(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
   {
     return flags < bit;
   }
 
-  template <typename BitType, typename MaskType = VkFlags>
-  VULKAN_HPP_CONSTEXPR bool operator>=(BitType bit, Flags<BitType, MaskType> const& flags) VULKAN_HPP_NOEXCEPT
+  template <typename BitType>
+  VULKAN_HPP_CONSTEXPR bool operator>=(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
   {
     return flags <= bit;
   }
 
-  template <typename BitType, typename MaskType = VkFlags>
-  VULKAN_HPP_CONSTEXPR bool operator==(BitType bit, Flags<BitType, MaskType> const& flags) VULKAN_HPP_NOEXCEPT
+  template <typename BitType>
+  VULKAN_HPP_CONSTEXPR bool operator==(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
   {
     return flags == bit;
   }
 
-  template <typename BitType, typename MaskType = VkFlags>
-  VULKAN_HPP_CONSTEXPR bool operator!=(BitType bit, Flags<BitType, MaskType> const& flags) VULKAN_HPP_NOEXCEPT
+  template <typename BitType>
+  VULKAN_HPP_CONSTEXPR bool operator!=(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
   {
     return flags != bit;
   }
 
   // bitwise operators
-  template <typename BitType, typename MaskType = VkFlags>
-  VULKAN_HPP_CONSTEXPR Flags<BitType, MaskType> operator&(BitType bit, Flags<BitType, MaskType> const& flags) VULKAN_HPP_NOEXCEPT
+  template <typename BitType>
+  VULKAN_HPP_CONSTEXPR Flags<BitType> operator&(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
   {
     return flags & bit;
   }
 
-  template <typename BitType, typename MaskType = VkFlags>
-  VULKAN_HPP_CONSTEXPR Flags<BitType, MaskType> operator|(BitType bit, Flags<BitType, MaskType> const& flags) VULKAN_HPP_NOEXCEPT
+  template <typename BitType>
+  VULKAN_HPP_CONSTEXPR Flags<BitType> operator|(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
   {
     return flags | bit;
   }
 
-  template <typename BitType, typename MaskType = VkFlags>
-  VULKAN_HPP_CONSTEXPR Flags<BitType, MaskType> operator^(BitType bit, Flags<BitType, MaskType> const& flags) VULKAN_HPP_NOEXCEPT
+  template <typename BitType>
+  VULKAN_HPP_CONSTEXPR Flags<BitType> operator^(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
   {
     return flags ^ bit;
   }
@@ -2984,7 +2986,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class AccessFlagBits
+  enum class AccessFlagBits : VkAccessFlags
   {
     eIndirectCommandRead = VK_ACCESS_INDIRECT_COMMAND_READ_BIT,
     eIndexRead = VK_ACCESS_INDEX_READ_BIT,
@@ -3052,7 +3054,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class AcquireProfilingLockFlagBitsKHR
+  enum class AcquireProfilingLockFlagBitsKHR : VkAcquireProfilingLockFlagsKHR
   {};
 
   VULKAN_HPP_INLINE std::string to_string( AcquireProfilingLockFlagBitsKHR )
@@ -3060,7 +3062,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  enum class AttachmentDescriptionFlagBits
+  enum class AttachmentDescriptionFlagBits : VkAttachmentDescriptionFlags
   {
     eMayAlias = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT
   };
@@ -3314,7 +3316,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class BufferCreateFlagBits
+  enum class BufferCreateFlagBits : VkBufferCreateFlags
   {
     eSparseBinding = VK_BUFFER_CREATE_SPARSE_BINDING_BIT,
     eSparseResidency = VK_BUFFER_CREATE_SPARSE_RESIDENCY_BIT,
@@ -3337,7 +3339,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class BufferUsageFlagBits
+  enum class BufferUsageFlagBits : VkBufferUsageFlags
   {
     eTransferSrc = VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
     eTransferDst = VK_BUFFER_USAGE_TRANSFER_DST_BIT,
@@ -3386,7 +3388,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  enum class BuildAccelerationStructureFlagBitsNV
+  enum class BuildAccelerationStructureFlagBitsNV : VkBuildAccelerationStructureFlagsNV
   {
     eAllowUpdate = VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_UPDATE_BIT_NV,
     eAllowCompaction = VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_COMPACTION_BIT_NV,
@@ -3445,7 +3447,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class ColorComponentFlagBits
+  enum class ColorComponentFlagBits : VkColorComponentFlags
   {
     eR = VK_COLOR_COMPONENT_R_BIT,
     eG = VK_COLOR_COMPONENT_G_BIT,
@@ -3527,7 +3529,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class CommandBufferResetFlagBits
+  enum class CommandBufferResetFlagBits : VkCommandBufferResetFlags
   {
     eReleaseResources = VK_COMMAND_BUFFER_RESET_RELEASE_RESOURCES_BIT
   };
@@ -3541,7 +3543,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class CommandBufferUsageFlagBits
+  enum class CommandBufferUsageFlagBits : VkCommandBufferUsageFlags
   {
     eOneTimeSubmit = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT,
     eRenderPassContinue = VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT,
@@ -3559,7 +3561,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class CommandPoolCreateFlagBits
+  enum class CommandPoolCreateFlagBits : VkCommandPoolCreateFlags
   {
     eTransient = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT,
     eResetCommandBuffer = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
@@ -3577,7 +3579,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class CommandPoolResetFlagBits
+  enum class CommandPoolResetFlagBits : VkCommandPoolResetFlags
   {
     eReleaseResources = VK_COMMAND_POOL_RESET_RELEASE_RESOURCES_BIT
   };
@@ -3679,7 +3681,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class CompositeAlphaFlagBitsKHR
+  enum class CompositeAlphaFlagBitsKHR : VkCompositeAlphaFlagsKHR
   {
     eOpaque = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
     ePreMultiplied = VK_COMPOSITE_ALPHA_PRE_MULTIPLIED_BIT_KHR,
@@ -3699,7 +3701,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class ConditionalRenderingFlagBitsEXT
+  enum class ConditionalRenderingFlagBitsEXT : VkConditionalRenderingFlagsEXT
   {
     eInverted = VK_CONDITIONAL_RENDERING_INVERTED_BIT_EXT
   };
@@ -3783,7 +3785,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class CullModeFlagBits
+  enum class CullModeFlagBits : VkCullModeFlags
   {
     eNone = VK_CULL_MODE_NONE,
     eFront = VK_CULL_MODE_FRONT_BIT,
@@ -3803,7 +3805,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class DebugReportFlagBitsEXT
+  enum class DebugReportFlagBitsEXT : VkDebugReportFlagsEXT
   {
     eInformation = VK_DEBUG_REPORT_INFORMATION_BIT_EXT,
     eWarning = VK_DEBUG_REPORT_WARNING_BIT_EXT,
@@ -3915,7 +3917,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class DebugUtilsMessageSeverityFlagBitsEXT
+  enum class DebugUtilsMessageSeverityFlagBitsEXT : VkDebugUtilsMessageSeverityFlagsEXT
   {
     eVerbose = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT,
     eInfo = VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT,
@@ -3935,7 +3937,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class DebugUtilsMessageTypeFlagBitsEXT
+  enum class DebugUtilsMessageTypeFlagBitsEXT : VkDebugUtilsMessageTypeFlagsEXT
   {
     eGeneral = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT,
     eValidation = VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT,
@@ -3953,7 +3955,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class DependencyFlagBits
+  enum class DependencyFlagBits : VkDependencyFlags
   {
     eByRegion = VK_DEPENDENCY_BY_REGION_BIT,
     eDeviceGroup = VK_DEPENDENCY_DEVICE_GROUP_BIT,
@@ -3973,7 +3975,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class DescriptorBindingFlagBitsEXT
+  enum class DescriptorBindingFlagBitsEXT : VkDescriptorBindingFlagsEXT
   {
     eUpdateAfterBind = VK_DESCRIPTOR_BINDING_UPDATE_AFTER_BIND_BIT_EXT,
     eUpdateUnusedWhilePending = VK_DESCRIPTOR_BINDING_UPDATE_UNUSED_WHILE_PENDING_BIT_EXT,
@@ -3993,7 +3995,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class DescriptorPoolCreateFlagBits
+  enum class DescriptorPoolCreateFlagBits : VkDescriptorPoolCreateFlags
   {
     eFreeDescriptorSet = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT,
     eUpdateAfterBindEXT = VK_DESCRIPTOR_POOL_CREATE_UPDATE_AFTER_BIND_BIT_EXT
@@ -4009,7 +4011,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class DescriptorSetLayoutCreateFlagBits
+  enum class DescriptorSetLayoutCreateFlagBits : VkDescriptorSetLayoutCreateFlags
   {
     ePushDescriptorKHR = VK_DESCRIPTOR_SET_LAYOUT_CREATE_PUSH_DESCRIPTOR_BIT_KHR,
     eUpdateAfterBindPoolEXT = VK_DESCRIPTOR_SET_LAYOUT_CREATE_UPDATE_AFTER_BIND_POOL_BIT_EXT
@@ -4102,7 +4104,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class DeviceGroupPresentModeFlagBitsKHR
+  enum class DeviceGroupPresentModeFlagBitsKHR : VkDeviceGroupPresentModeFlagsKHR
   {
     eLocal = VK_DEVICE_GROUP_PRESENT_MODE_LOCAL_BIT_KHR,
     eRemote = VK_DEVICE_GROUP_PRESENT_MODE_REMOTE_BIT_KHR,
@@ -4122,7 +4124,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class DeviceQueueCreateFlagBits
+  enum class DeviceQueueCreateFlagBits : VkDeviceQueueCreateFlags
   {
     eProtected = VK_DEVICE_QUEUE_CREATE_PROTECTED_BIT
   };
@@ -4166,7 +4168,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class DisplayPlaneAlphaFlagBitsKHR
+  enum class DisplayPlaneAlphaFlagBitsKHR : VkDisplayPlaneAlphaFlagsKHR
   {
     eOpaque = VK_DISPLAY_PLANE_ALPHA_OPAQUE_BIT_KHR,
     eGlobal = VK_DISPLAY_PLANE_ALPHA_GLOBAL_BIT_KHR,
@@ -4284,7 +4286,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class ExternalFenceFeatureFlagBits
+  enum class ExternalFenceFeatureFlagBits : VkExternalFenceFeatureFlags
   {
     eExportable = VK_EXTERNAL_FENCE_FEATURE_EXPORTABLE_BIT,
     eImportable = VK_EXTERNAL_FENCE_FEATURE_IMPORTABLE_BIT
@@ -4301,7 +4303,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class ExternalFenceHandleTypeFlagBits
+  enum class ExternalFenceHandleTypeFlagBits : VkExternalFenceHandleTypeFlags
   {
     eOpaqueFd = VK_EXTERNAL_FENCE_HANDLE_TYPE_OPAQUE_FD_BIT,
     eOpaqueWin32 = VK_EXTERNAL_FENCE_HANDLE_TYPE_OPAQUE_WIN32_BIT,
@@ -4322,7 +4324,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class ExternalMemoryFeatureFlagBits
+  enum class ExternalMemoryFeatureFlagBits : VkExternalMemoryFeatureFlags
   {
     eDedicatedOnly = VK_EXTERNAL_MEMORY_FEATURE_DEDICATED_ONLY_BIT,
     eExportable = VK_EXTERNAL_MEMORY_FEATURE_EXPORTABLE_BIT,
@@ -4341,7 +4343,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class ExternalMemoryFeatureFlagBitsNV
+  enum class ExternalMemoryFeatureFlagBitsNV : VkExternalMemoryFeatureFlagsNV
   {
     eDedicatedOnly = VK_EXTERNAL_MEMORY_FEATURE_DEDICATED_ONLY_BIT_NV,
     eExportable = VK_EXTERNAL_MEMORY_FEATURE_EXPORTABLE_BIT_NV,
@@ -4359,7 +4361,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class ExternalMemoryHandleTypeFlagBits
+  enum class ExternalMemoryHandleTypeFlagBits : VkExternalMemoryHandleTypeFlags
   {
     eOpaqueFd = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT,
     eOpaqueWin32 = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_BIT,
@@ -4394,7 +4396,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class ExternalMemoryHandleTypeFlagBitsNV
+  enum class ExternalMemoryHandleTypeFlagBitsNV : VkExternalMemoryHandleTypeFlagsNV
   {
     eOpaqueWin32 = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_BIT_NV,
     eOpaqueWin32Kmt = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT_NV,
@@ -4414,7 +4416,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class ExternalSemaphoreFeatureFlagBits
+  enum class ExternalSemaphoreFeatureFlagBits : VkExternalSemaphoreFeatureFlags
   {
     eExportable = VK_EXTERNAL_SEMAPHORE_FEATURE_EXPORTABLE_BIT,
     eImportable = VK_EXTERNAL_SEMAPHORE_FEATURE_IMPORTABLE_BIT
@@ -4431,7 +4433,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class ExternalSemaphoreHandleTypeFlagBits
+  enum class ExternalSemaphoreHandleTypeFlagBits : VkExternalSemaphoreHandleTypeFlags
   {
     eOpaqueFd = VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_FD_BIT,
     eOpaqueWin32 = VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32_BIT,
@@ -4454,7 +4456,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class FenceCreateFlagBits
+  enum class FenceCreateFlagBits : VkFenceCreateFlags
   {
     eSignaled = VK_FENCE_CREATE_SIGNALED_BIT
   };
@@ -4468,7 +4470,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class FenceImportFlagBits
+  enum class FenceImportFlagBits : VkFenceImportFlags
   {
     eTemporary = VK_FENCE_IMPORT_TEMPORARY_BIT
   };
@@ -5030,7 +5032,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class FormatFeatureFlagBits
+  enum class FormatFeatureFlagBits : VkFormatFeatureFlags
   {
     eSampledImage = VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT,
     eStorageImage = VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT,
@@ -5102,7 +5104,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class FramebufferCreateFlagBits
+  enum class FramebufferCreateFlagBits : VkFramebufferCreateFlags
   {
     eImagelessKHR = VK_FRAMEBUFFER_CREATE_IMAGELESS_BIT_KHR
   };
@@ -5154,7 +5156,7 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
-  enum class GeometryFlagBitsNV
+  enum class GeometryFlagBitsNV : VkGeometryFlagsNV
   {
     eOpaque = VK_GEOMETRY_OPAQUE_BIT_NV,
     eNoDuplicateAnyHitInvocation = VK_GEOMETRY_NO_DUPLICATE_ANY_HIT_INVOCATION_BIT_NV
@@ -5170,7 +5172,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class GeometryInstanceFlagBitsNV
+  enum class GeometryInstanceFlagBitsNV : VkGeometryInstanceFlagsNV
   {
     eTriangleCullDisable = VK_GEOMETRY_INSTANCE_TRIANGLE_CULL_DISABLE_BIT_NV,
     eTriangleFrontCounterclockwise = VK_GEOMETRY_INSTANCE_TRIANGLE_FRONT_COUNTERCLOCKWISE_BIT_NV,
@@ -5206,7 +5208,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class ImageAspectFlagBits
+  enum class ImageAspectFlagBits : VkImageAspectFlags
   {
     eColor = VK_IMAGE_ASPECT_COLOR_BIT,
     eDepth = VK_IMAGE_ASPECT_DEPTH_BIT,
@@ -5243,7 +5245,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class ImageCreateFlagBits
+  enum class ImageCreateFlagBits : VkImageCreateFlags
   {
     eSparseBinding = VK_IMAGE_CREATE_SPARSE_BINDING_BIT,
     eSparseResidency = VK_IMAGE_CREATE_SPARSE_RESIDENCY_BIT,
@@ -5379,7 +5381,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class ImageUsageFlagBits
+  enum class ImageUsageFlagBits : VkImageUsageFlags
   {
     eTransferSrc = VK_IMAGE_USAGE_TRANSFER_SRC_BIT,
     eTransferDst = VK_IMAGE_USAGE_TRANSFER_DST_BIT,
@@ -5411,7 +5413,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class ImageViewCreateFlagBits
+  enum class ImageViewCreateFlagBits : VkImageViewCreateFlags
   {
     eFragmentDensityMapDynamicEXT = VK_IMAGE_VIEW_CREATE_FRAGMENT_DENSITY_MAP_DYNAMIC_BIT_EXT
   };
@@ -5471,7 +5473,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class IndirectCommandsLayoutUsageFlagBitsNVX
+  enum class IndirectCommandsLayoutUsageFlagBitsNVX : VkIndirectCommandsLayoutUsageFlagsNVX
   {
     eUnorderedSequences = VK_INDIRECT_COMMANDS_LAYOUT_USAGE_UNORDERED_SEQUENCES_BIT_NVX,
     eSparseSequences = VK_INDIRECT_COMMANDS_LAYOUT_USAGE_SPARSE_SEQUENCES_BIT_NVX,
@@ -5605,7 +5607,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class MemoryAllocateFlagBits
+  enum class MemoryAllocateFlagBits : VkMemoryAllocateFlags
   {
     eDeviceMask = VK_MEMORY_ALLOCATE_DEVICE_MASK_BIT,
     eDeviceAddressKHR = VK_MEMORY_ALLOCATE_DEVICE_ADDRESS_BIT_KHR,
@@ -5624,7 +5626,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class MemoryHeapFlagBits
+  enum class MemoryHeapFlagBits : VkMemoryHeapFlags
   {
     eDeviceLocal = VK_MEMORY_HEAP_DEVICE_LOCAL_BIT,
     eMultiInstance = VK_MEMORY_HEAP_MULTI_INSTANCE_BIT,
@@ -5659,7 +5661,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class MemoryPropertyFlagBits
+  enum class MemoryPropertyFlagBits : VkMemoryPropertyFlags
   {
     eDeviceLocal = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
     eHostVisible = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
@@ -5709,7 +5711,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class ObjectEntryUsageFlagBitsNVX
+  enum class ObjectEntryUsageFlagBitsNVX : VkObjectEntryUsageFlagsNVX
   {
     eGraphics = VK_OBJECT_ENTRY_USAGE_GRAPHICS_BIT_NVX,
     eCompute = VK_OBJECT_ENTRY_USAGE_COMPUTE_BIT_NVX
@@ -5817,7 +5819,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class PeerMemoryFeatureFlagBits
+  enum class PeerMemoryFeatureFlagBits : VkPeerMemoryFeatureFlags
   {
     eCopySrc = VK_PEER_MEMORY_FEATURE_COPY_SRC_BIT,
     eCopyDst = VK_PEER_MEMORY_FEATURE_COPY_DST_BIT,
@@ -5852,7 +5854,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class PerformanceCounterDescriptionFlagBitsKHR
+  enum class PerformanceCounterDescriptionFlagBitsKHR : VkPerformanceCounterDescriptionFlagsKHR
   {
     ePerformanceImpacting = VK_PERFORMANCE_COUNTER_DESCRIPTION_PERFORMANCE_IMPACTING_KHR,
     eConcurrentlyImpacted = VK_PERFORMANCE_COUNTER_DESCRIPTION_CONCURRENTLY_IMPACTED_KHR
@@ -6068,7 +6070,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  enum class PipelineCompilerControlFlagBitsAMD
+  enum class PipelineCompilerControlFlagBitsAMD : VkPipelineCompilerControlFlagsAMD
   {};
 
   VULKAN_HPP_INLINE std::string to_string( PipelineCompilerControlFlagBitsAMD )
@@ -6076,7 +6078,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  enum class PipelineCreateFlagBits
+  enum class PipelineCreateFlagBits : VkPipelineCreateFlags
   {
     eDisableOptimization = VK_PIPELINE_CREATE_DISABLE_OPTIMIZATION_BIT,
     eAllowDerivatives = VK_PIPELINE_CREATE_ALLOW_DERIVATIVES_BIT,
@@ -6106,7 +6108,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class PipelineCreationFeedbackFlagBitsEXT
+  enum class PipelineCreationFeedbackFlagBitsEXT : VkPipelineCreationFeedbackFlagsEXT
   {
     eValid = VK_PIPELINE_CREATION_FEEDBACK_VALID_BIT_EXT,
     eApplicationPipelineCacheHit = VK_PIPELINE_CREATION_FEEDBACK_APPLICATION_PIPELINE_CACHE_HIT_BIT_EXT,
@@ -6192,7 +6194,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  enum class PipelineShaderStageCreateFlagBits
+  enum class PipelineShaderStageCreateFlagBits : VkPipelineShaderStageCreateFlags
   {
     eAllowVaryingSubgroupSizeEXT = VK_PIPELINE_SHADER_STAGE_CREATE_ALLOW_VARYING_SUBGROUP_SIZE_BIT_EXT,
     eRequireFullSubgroupsEXT = VK_PIPELINE_SHADER_STAGE_CREATE_REQUIRE_FULL_SUBGROUPS_BIT_EXT
@@ -6208,7 +6210,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class PipelineStageFlagBits
+  enum class PipelineStageFlagBits : VkPipelineStageFlags
   {
     eTopOfPipe = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
     eDrawIndirect = VK_PIPELINE_STAGE_DRAW_INDIRECT_BIT,
@@ -6391,7 +6393,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class QueryControlFlagBits
+  enum class QueryControlFlagBits : VkQueryControlFlags
   {
     ePrecise = VK_QUERY_CONTROL_PRECISE_BIT
   };
@@ -6405,7 +6407,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class QueryPipelineStatisticFlagBits
+  enum class QueryPipelineStatisticFlagBits : VkQueryPipelineStatisticFlags
   {
     eInputAssemblyVertices = VK_QUERY_PIPELINE_STATISTIC_INPUT_ASSEMBLY_VERTICES_BIT,
     eInputAssemblyPrimitives = VK_QUERY_PIPELINE_STATISTIC_INPUT_ASSEMBLY_PRIMITIVES_BIT,
@@ -6461,7 +6463,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class QueryResultFlagBits
+  enum class QueryResultFlagBits : VkQueryResultFlags
   {
     e64 = VK_QUERY_RESULT_64_BIT,
     eWait = VK_QUERY_RESULT_WAIT_BIT,
@@ -6507,7 +6509,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class QueueFlagBits
+  enum class QueueFlagBits : VkQueueFlags
   {
     eGraphics = VK_QUEUE_GRAPHICS_BIT,
     eCompute = VK_QUEUE_COMPUTE_BIT,
@@ -6583,7 +6585,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class RenderPassCreateFlagBits
+  enum class RenderPassCreateFlagBits : VkRenderPassCreateFlags
   {};
 
   VULKAN_HPP_INLINE std::string to_string( RenderPassCreateFlagBits )
@@ -6591,7 +6593,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  enum class ResolveModeFlagBitsKHR
+  enum class ResolveModeFlagBitsKHR : VkResolveModeFlagsKHR
   {
     eNone = VK_RESOLVE_MODE_NONE_KHR,
     eSampleZero = VK_RESOLVE_MODE_SAMPLE_ZERO_BIT_KHR,
@@ -6692,7 +6694,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class SampleCountFlagBits
+  enum class SampleCountFlagBits : VkSampleCountFlags
   {
     e1 = VK_SAMPLE_COUNT_1_BIT,
     e2 = VK_SAMPLE_COUNT_2_BIT,
@@ -6741,7 +6743,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class SamplerCreateFlagBits
+  enum class SamplerCreateFlagBits : VkSamplerCreateFlags
   {
     eSubsampledEXT = VK_SAMPLER_CREATE_SUBSAMPLED_BIT_EXT,
     eSubsampledCoarseReconstructionEXT = VK_SAMPLER_CREATE_SUBSAMPLED_COARSE_RECONSTRUCTION_BIT_EXT
@@ -6851,7 +6853,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class SemaphoreCreateFlagBits
+  enum class SemaphoreCreateFlagBits : VkSemaphoreCreateFlags
   {};
 
   VULKAN_HPP_INLINE std::string to_string( SemaphoreCreateFlagBits )
@@ -6859,7 +6861,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  enum class SemaphoreImportFlagBits
+  enum class SemaphoreImportFlagBits : VkSemaphoreImportFlags
   {
     eTemporary = VK_SEMAPHORE_IMPORT_TEMPORARY_BIT
   };
@@ -6890,7 +6892,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class SemaphoreWaitFlagBitsKHR
+  enum class SemaphoreWaitFlagBitsKHR : VkSemaphoreWaitFlagsKHR
   {
     eAny = VK_SEMAPHORE_WAIT_ANY_BIT_KHR
   };
@@ -6904,7 +6906,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class ShaderCorePropertiesFlagBitsAMD
+  enum class ShaderCorePropertiesFlagBitsAMD : VkShaderCorePropertiesFlagsAMD
   {};
 
   VULKAN_HPP_INLINE std::string to_string( ShaderCorePropertiesFlagBitsAMD )
@@ -6948,7 +6950,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class ShaderModuleCreateFlagBits
+  enum class ShaderModuleCreateFlagBits : VkShaderModuleCreateFlags
   {};
 
   VULKAN_HPP_INLINE std::string to_string( ShaderModuleCreateFlagBits )
@@ -6956,7 +6958,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  enum class ShaderStageFlagBits
+  enum class ShaderStageFlagBits : VkShaderStageFlags
   {
     eVertex = VK_SHADER_STAGE_VERTEX_BIT,
     eTessellationControl = VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT,
@@ -7052,7 +7054,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class SparseImageFormatFlagBits
+  enum class SparseImageFormatFlagBits : VkSparseImageFormatFlags
   {
     eSingleMiptail = VK_SPARSE_IMAGE_FORMAT_SINGLE_MIPTAIL_BIT,
     eAlignedMipSize = VK_SPARSE_IMAGE_FORMAT_ALIGNED_MIP_SIZE_BIT,
@@ -7070,7 +7072,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class SparseMemoryBindFlagBits
+  enum class SparseMemoryBindFlagBits : VkSparseMemoryBindFlags
   {
     eMetadata = VK_SPARSE_MEMORY_BIND_METADATA_BIT
   };
@@ -7084,7 +7086,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class StencilFaceFlagBits
+  enum class StencilFaceFlagBits : VkStencilFaceFlags
   {
     eFront = VK_STENCIL_FACE_FRONT_BIT,
     eBack = VK_STENCIL_FACE_BACK_BIT,
@@ -8001,7 +8003,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class SubgroupFeatureFlagBits
+  enum class SubgroupFeatureFlagBits : VkSubgroupFeatureFlags
   {
     eBasic = VK_SUBGROUP_FEATURE_BASIC_BIT,
     eVote = VK_SUBGROUP_FEATURE_VOTE_BIT,
@@ -8047,7 +8049,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class SubpassDescriptionFlagBits
+  enum class SubpassDescriptionFlagBits : VkSubpassDescriptionFlags
   {
     ePerViewAttributesNVX = VK_SUBPASS_DESCRIPTION_PER_VIEW_ATTRIBUTES_BIT_NVX,
     ePerViewPositionXOnlyNVX = VK_SUBPASS_DESCRIPTION_PER_VIEW_POSITION_X_ONLY_BIT_NVX
@@ -8063,7 +8065,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class SurfaceCounterFlagBitsEXT
+  enum class SurfaceCounterFlagBitsEXT : VkSurfaceCounterFlagsEXT
   {
     eVblank = VK_SURFACE_COUNTER_VBLANK_EXT
   };
@@ -8077,7 +8079,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class SurfaceTransformFlagBitsKHR
+  enum class SurfaceTransformFlagBitsKHR : VkSurfaceTransformFlagsKHR
   {
     eIdentity = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR,
     eRotate90 = VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR,
@@ -8107,7 +8109,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class SwapchainCreateFlagBitsKHR
+  enum class SwapchainCreateFlagBitsKHR : VkSwapchainCreateFlagsKHR
   {
     eSplitInstanceBindRegions = VK_SWAPCHAIN_CREATE_SPLIT_INSTANCE_BIND_REGIONS_BIT_KHR,
     eProtected = VK_SWAPCHAIN_CREATE_PROTECTED_BIT_KHR,
@@ -8184,7 +8186,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class ToolPurposeFlagBitsEXT
+  enum class ToolPurposeFlagBitsEXT : VkToolPurposeFlagsEXT
   {
     eValidation = VK_TOOL_PURPOSE_VALIDATION_BIT_EXT,
     eProfiling = VK_TOOL_PURPOSE_PROFILING_BIT_EXT,
@@ -8351,7 +8353,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
   };
 
-  using AccessFlags = Flags<AccessFlagBits, VkAccessFlags>;
+  using AccessFlags = Flags<AccessFlagBits>;
 
   template <> struct FlagTraits<AccessFlagBits>
   {
@@ -8417,7 +8419,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using AcquireProfilingLockFlagsKHR = Flags<AcquireProfilingLockFlagBitsKHR, VkAcquireProfilingLockFlagsKHR>;
+  using AcquireProfilingLockFlagsKHR = Flags<AcquireProfilingLockFlagBitsKHR>;
 
   VULKAN_HPP_INLINE std::string to_string( AcquireProfilingLockFlagsKHR  )
   {
@@ -8425,7 +8427,7 @@ namespace VULKAN_HPP_NAMESPACE
   }
 
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
-  enum class AndroidSurfaceCreateFlagBitsKHR
+  enum class AndroidSurfaceCreateFlagBitsKHR : VkFlags
   {};
 
   VULKAN_HPP_INLINE std::string to_string( AndroidSurfaceCreateFlagBitsKHR )
@@ -8433,7 +8435,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using AndroidSurfaceCreateFlagsKHR = Flags<AndroidSurfaceCreateFlagBitsKHR, VkAndroidSurfaceCreateFlagsKHR>;
+  using AndroidSurfaceCreateFlagsKHR = Flags<AndroidSurfaceCreateFlagBitsKHR>;
 
   VULKAN_HPP_INLINE std::string to_string( AndroidSurfaceCreateFlagsKHR  )
   {
@@ -8441,7 +8443,7 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
-  using AttachmentDescriptionFlags = Flags<AttachmentDescriptionFlagBits, VkAttachmentDescriptionFlags>;
+  using AttachmentDescriptionFlags = Flags<AttachmentDescriptionFlagBits>;
 
   template <> struct FlagTraits<AttachmentDescriptionFlagBits>
   {
@@ -8480,7 +8482,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using BufferCreateFlags = Flags<BufferCreateFlagBits, VkBufferCreateFlags>;
+  using BufferCreateFlags = Flags<BufferCreateFlagBits>;
 
   template <> struct FlagTraits<BufferCreateFlagBits>
   {
@@ -8523,7 +8525,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using BufferUsageFlags = Flags<BufferUsageFlagBits, VkBufferUsageFlags>;
+  using BufferUsageFlags = Flags<BufferUsageFlagBits>;
 
   template <> struct FlagTraits<BufferUsageFlagBits>
   {
@@ -8575,14 +8577,14 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using BufferViewCreateFlags = Flags<BufferViewCreateFlagBits, VkBufferViewCreateFlags>;
+  using BufferViewCreateFlags = Flags<BufferViewCreateFlagBits>;
 
   VULKAN_HPP_INLINE std::string to_string( BufferViewCreateFlags  )
   {
     return "{}";
   }
 
-  using BuildAccelerationStructureFlagsNV = Flags<BuildAccelerationStructureFlagBitsNV, VkBuildAccelerationStructureFlagsNV>;
+  using BuildAccelerationStructureFlagsNV = Flags<BuildAccelerationStructureFlagBitsNV>;
 
   template <> struct FlagTraits<BuildAccelerationStructureFlagBitsNV>
   {
@@ -8625,7 +8627,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using ColorComponentFlags = Flags<ColorComponentFlagBits, VkColorComponentFlags>;
+  using ColorComponentFlags = Flags<ColorComponentFlagBits>;
 
   template <> struct FlagTraits<ColorComponentFlagBits>
   {
@@ -8667,7 +8669,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using CommandBufferResetFlags = Flags<CommandBufferResetFlagBits, VkCommandBufferResetFlags>;
+  using CommandBufferResetFlags = Flags<CommandBufferResetFlagBits>;
 
   template <> struct FlagTraits<CommandBufferResetFlagBits>
   {
@@ -8706,7 +8708,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using CommandBufferUsageFlags = Flags<CommandBufferUsageFlagBits, VkCommandBufferUsageFlags>;
+  using CommandBufferUsageFlags = Flags<CommandBufferUsageFlagBits>;
 
   template <> struct FlagTraits<CommandBufferUsageFlagBits>
   {
@@ -8747,7 +8749,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using CommandPoolCreateFlags = Flags<CommandPoolCreateFlagBits, VkCommandPoolCreateFlags>;
+  using CommandPoolCreateFlags = Flags<CommandPoolCreateFlagBits>;
 
   template <> struct FlagTraits<CommandPoolCreateFlagBits>
   {
@@ -8788,7 +8790,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using CommandPoolResetFlags = Flags<CommandPoolResetFlagBits, VkCommandPoolResetFlags>;
+  using CommandPoolResetFlags = Flags<CommandPoolResetFlagBits>;
 
   template <> struct FlagTraits<CommandPoolResetFlagBits>
   {
@@ -8827,7 +8829,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  enum class CommandPoolTrimFlagBits
+  enum class CommandPoolTrimFlagBits : VkFlags
   {};
 
   VULKAN_HPP_INLINE std::string to_string( CommandPoolTrimFlagBits )
@@ -8835,7 +8837,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using CommandPoolTrimFlags = Flags<CommandPoolTrimFlagBits, VkCommandPoolTrimFlags>;
+  using CommandPoolTrimFlags = Flags<CommandPoolTrimFlagBits>;
 
   using CommandPoolTrimFlagsKHR = CommandPoolTrimFlags;
 
@@ -8844,7 +8846,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{}";
   }
 
-  using CompositeAlphaFlagsKHR = Flags<CompositeAlphaFlagBitsKHR, VkCompositeAlphaFlagsKHR>;
+  using CompositeAlphaFlagsKHR = Flags<CompositeAlphaFlagBitsKHR>;
 
   template <> struct FlagTraits<CompositeAlphaFlagBitsKHR>
   {
@@ -8886,7 +8888,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using ConditionalRenderingFlagsEXT = Flags<ConditionalRenderingFlagBitsEXT, VkConditionalRenderingFlagsEXT>;
+  using ConditionalRenderingFlagsEXT = Flags<ConditionalRenderingFlagBitsEXT>;
 
   template <> struct FlagTraits<ConditionalRenderingFlagBitsEXT>
   {
@@ -8925,7 +8927,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using CullModeFlags = Flags<CullModeFlagBits, VkCullModeFlags>;
+  using CullModeFlags = Flags<CullModeFlagBits>;
 
   template <> struct FlagTraits<CullModeFlagBits>
   {
@@ -8965,7 +8967,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using DebugReportFlagsEXT = Flags<DebugReportFlagBitsEXT, VkDebugReportFlagsEXT>;
+  using DebugReportFlagsEXT = Flags<DebugReportFlagBitsEXT>;
 
   template <> struct FlagTraits<DebugReportFlagBitsEXT>
   {
@@ -9008,7 +9010,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using DebugUtilsMessageSeverityFlagsEXT = Flags<DebugUtilsMessageSeverityFlagBitsEXT, VkDebugUtilsMessageSeverityFlagsEXT>;
+  using DebugUtilsMessageSeverityFlagsEXT = Flags<DebugUtilsMessageSeverityFlagBitsEXT>;
 
   template <> struct FlagTraits<DebugUtilsMessageSeverityFlagBitsEXT>
   {
@@ -9050,7 +9052,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using DebugUtilsMessageTypeFlagsEXT = Flags<DebugUtilsMessageTypeFlagBitsEXT, VkDebugUtilsMessageTypeFlagsEXT>;
+  using DebugUtilsMessageTypeFlagsEXT = Flags<DebugUtilsMessageTypeFlagBitsEXT>;
 
   template <> struct FlagTraits<DebugUtilsMessageTypeFlagBitsEXT>
   {
@@ -9091,7 +9093,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  enum class DebugUtilsMessengerCallbackDataFlagBitsEXT
+  enum class DebugUtilsMessengerCallbackDataFlagBitsEXT : VkFlags
   {};
 
   VULKAN_HPP_INLINE std::string to_string( DebugUtilsMessengerCallbackDataFlagBitsEXT )
@@ -9099,14 +9101,14 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using DebugUtilsMessengerCallbackDataFlagsEXT = Flags<DebugUtilsMessengerCallbackDataFlagBitsEXT, VkDebugUtilsMessengerCallbackDataFlagsEXT>;
+  using DebugUtilsMessengerCallbackDataFlagsEXT = Flags<DebugUtilsMessengerCallbackDataFlagBitsEXT>;
 
   VULKAN_HPP_INLINE std::string to_string( DebugUtilsMessengerCallbackDataFlagsEXT  )
   {
     return "{}";
   }
 
-  enum class DebugUtilsMessengerCreateFlagBitsEXT
+  enum class DebugUtilsMessengerCreateFlagBitsEXT : VkFlags
   {};
 
   VULKAN_HPP_INLINE std::string to_string( DebugUtilsMessengerCreateFlagBitsEXT )
@@ -9114,14 +9116,14 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using DebugUtilsMessengerCreateFlagsEXT = Flags<DebugUtilsMessengerCreateFlagBitsEXT, VkDebugUtilsMessengerCreateFlagsEXT>;
+  using DebugUtilsMessengerCreateFlagsEXT = Flags<DebugUtilsMessengerCreateFlagBitsEXT>;
 
   VULKAN_HPP_INLINE std::string to_string( DebugUtilsMessengerCreateFlagsEXT  )
   {
     return "{}";
   }
 
-  using DependencyFlags = Flags<DependencyFlagBits, VkDependencyFlags>;
+  using DependencyFlags = Flags<DependencyFlagBits>;
 
   template <> struct FlagTraits<DependencyFlagBits>
   {
@@ -9162,7 +9164,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using DescriptorBindingFlagsEXT = Flags<DescriptorBindingFlagBitsEXT, VkDescriptorBindingFlagsEXT>;
+  using DescriptorBindingFlagsEXT = Flags<DescriptorBindingFlagBitsEXT>;
 
   template <> struct FlagTraits<DescriptorBindingFlagBitsEXT>
   {
@@ -9204,7 +9206,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using DescriptorPoolCreateFlags = Flags<DescriptorPoolCreateFlagBits, VkDescriptorPoolCreateFlags>;
+  using DescriptorPoolCreateFlags = Flags<DescriptorPoolCreateFlagBits>;
 
   template <> struct FlagTraits<DescriptorPoolCreateFlagBits>
   {
@@ -9244,7 +9246,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  enum class DescriptorPoolResetFlagBits
+  enum class DescriptorPoolResetFlagBits : VkFlags
   {};
 
   VULKAN_HPP_INLINE std::string to_string( DescriptorPoolResetFlagBits )
@@ -9252,14 +9254,14 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using DescriptorPoolResetFlags = Flags<DescriptorPoolResetFlagBits, VkDescriptorPoolResetFlags>;
+  using DescriptorPoolResetFlags = Flags<DescriptorPoolResetFlagBits>;
 
   VULKAN_HPP_INLINE std::string to_string( DescriptorPoolResetFlags  )
   {
     return "{}";
   }
 
-  using DescriptorSetLayoutCreateFlags = Flags<DescriptorSetLayoutCreateFlagBits, VkDescriptorSetLayoutCreateFlags>;
+  using DescriptorSetLayoutCreateFlags = Flags<DescriptorSetLayoutCreateFlagBits>;
 
   template <> struct FlagTraits<DescriptorSetLayoutCreateFlagBits>
   {
@@ -9299,7 +9301,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  enum class DescriptorUpdateTemplateCreateFlagBits
+  enum class DescriptorUpdateTemplateCreateFlagBits : VkFlags
   {};
 
   VULKAN_HPP_INLINE std::string to_string( DescriptorUpdateTemplateCreateFlagBits )
@@ -9307,7 +9309,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using DescriptorUpdateTemplateCreateFlags = Flags<DescriptorUpdateTemplateCreateFlagBits, VkDescriptorUpdateTemplateCreateFlags>;
+  using DescriptorUpdateTemplateCreateFlags = Flags<DescriptorUpdateTemplateCreateFlagBits>;
 
   using DescriptorUpdateTemplateCreateFlagsKHR = DescriptorUpdateTemplateCreateFlags;
 
@@ -9316,14 +9318,14 @@ namespace VULKAN_HPP_NAMESPACE
     return "{}";
   }
 
-  using DeviceCreateFlags = Flags<DeviceCreateFlagBits, VkDeviceCreateFlags>;
+  using DeviceCreateFlags = Flags<DeviceCreateFlagBits>;
 
   VULKAN_HPP_INLINE std::string to_string( DeviceCreateFlags  )
   {
     return "{}";
   }
 
-  using DeviceGroupPresentModeFlagsKHR = Flags<DeviceGroupPresentModeFlagBitsKHR, VkDeviceGroupPresentModeFlagsKHR>;
+  using DeviceGroupPresentModeFlagsKHR = Flags<DeviceGroupPresentModeFlagBitsKHR>;
 
   template <> struct FlagTraits<DeviceGroupPresentModeFlagBitsKHR>
   {
@@ -9365,7 +9367,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using DeviceQueueCreateFlags = Flags<DeviceQueueCreateFlagBits, VkDeviceQueueCreateFlags>;
+  using DeviceQueueCreateFlags = Flags<DeviceQueueCreateFlagBits>;
 
   template <> struct FlagTraits<DeviceQueueCreateFlagBits>
   {
@@ -9404,7 +9406,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  enum class DisplayModeCreateFlagBitsKHR
+  enum class DisplayModeCreateFlagBitsKHR : VkFlags
   {};
 
   VULKAN_HPP_INLINE std::string to_string( DisplayModeCreateFlagBitsKHR )
@@ -9412,14 +9414,14 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using DisplayModeCreateFlagsKHR = Flags<DisplayModeCreateFlagBitsKHR, VkDisplayModeCreateFlagsKHR>;
+  using DisplayModeCreateFlagsKHR = Flags<DisplayModeCreateFlagBitsKHR>;
 
   VULKAN_HPP_INLINE std::string to_string( DisplayModeCreateFlagsKHR  )
   {
     return "{}";
   }
 
-  using DisplayPlaneAlphaFlagsKHR = Flags<DisplayPlaneAlphaFlagBitsKHR, VkDisplayPlaneAlphaFlagsKHR>;
+  using DisplayPlaneAlphaFlagsKHR = Flags<DisplayPlaneAlphaFlagBitsKHR>;
 
   template <> struct FlagTraits<DisplayPlaneAlphaFlagBitsKHR>
   {
@@ -9461,7 +9463,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  enum class DisplaySurfaceCreateFlagBitsKHR
+  enum class DisplaySurfaceCreateFlagBitsKHR : VkFlags
   {};
 
   VULKAN_HPP_INLINE std::string to_string( DisplaySurfaceCreateFlagBitsKHR )
@@ -9469,14 +9471,14 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using DisplaySurfaceCreateFlagsKHR = Flags<DisplaySurfaceCreateFlagBitsKHR, VkDisplaySurfaceCreateFlagsKHR>;
+  using DisplaySurfaceCreateFlagsKHR = Flags<DisplaySurfaceCreateFlagBitsKHR>;
 
   VULKAN_HPP_INLINE std::string to_string( DisplaySurfaceCreateFlagsKHR  )
   {
     return "{}";
   }
 
-  enum class EventCreateFlagBits
+  enum class EventCreateFlagBits : VkFlags
   {};
 
   VULKAN_HPP_INLINE std::string to_string( EventCreateFlagBits )
@@ -9484,14 +9486,14 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using EventCreateFlags = Flags<EventCreateFlagBits, VkEventCreateFlags>;
+  using EventCreateFlags = Flags<EventCreateFlagBits>;
 
   VULKAN_HPP_INLINE std::string to_string( EventCreateFlags  )
   {
     return "{}";
   }
 
-  using ExternalFenceFeatureFlags = Flags<ExternalFenceFeatureFlagBits, VkExternalFenceFeatureFlags>;
+  using ExternalFenceFeatureFlags = Flags<ExternalFenceFeatureFlagBits>;
 
   template <> struct FlagTraits<ExternalFenceFeatureFlagBits>
   {
@@ -9533,7 +9535,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using ExternalFenceHandleTypeFlags = Flags<ExternalFenceHandleTypeFlagBits, VkExternalFenceHandleTypeFlags>;
+  using ExternalFenceHandleTypeFlags = Flags<ExternalFenceHandleTypeFlagBits>;
 
   template <> struct FlagTraits<ExternalFenceHandleTypeFlagBits>
   {
@@ -9577,7 +9579,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using ExternalMemoryFeatureFlags = Flags<ExternalMemoryFeatureFlagBits, VkExternalMemoryFeatureFlags>;
+  using ExternalMemoryFeatureFlags = Flags<ExternalMemoryFeatureFlagBits>;
 
   template <> struct FlagTraits<ExternalMemoryFeatureFlagBits>
   {
@@ -9620,7 +9622,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using ExternalMemoryFeatureFlagsNV = Flags<ExternalMemoryFeatureFlagBitsNV, VkExternalMemoryFeatureFlagsNV>;
+  using ExternalMemoryFeatureFlagsNV = Flags<ExternalMemoryFeatureFlagBitsNV>;
 
   template <> struct FlagTraits<ExternalMemoryFeatureFlagBitsNV>
   {
@@ -9661,7 +9663,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using ExternalMemoryHandleTypeFlags = Flags<ExternalMemoryHandleTypeFlagBits, VkExternalMemoryHandleTypeFlags>;
+  using ExternalMemoryHandleTypeFlags = Flags<ExternalMemoryHandleTypeFlagBits>;
 
   template <> struct FlagTraits<ExternalMemoryHandleTypeFlagBits>
   {
@@ -9712,7 +9714,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using ExternalMemoryHandleTypeFlagsNV = Flags<ExternalMemoryHandleTypeFlagBitsNV, VkExternalMemoryHandleTypeFlagsNV>;
+  using ExternalMemoryHandleTypeFlagsNV = Flags<ExternalMemoryHandleTypeFlagBitsNV>;
 
   template <> struct FlagTraits<ExternalMemoryHandleTypeFlagBitsNV>
   {
@@ -9754,7 +9756,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using ExternalSemaphoreFeatureFlags = Flags<ExternalSemaphoreFeatureFlagBits, VkExternalSemaphoreFeatureFlags>;
+  using ExternalSemaphoreFeatureFlags = Flags<ExternalSemaphoreFeatureFlagBits>;
 
   template <> struct FlagTraits<ExternalSemaphoreFeatureFlagBits>
   {
@@ -9796,7 +9798,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using ExternalSemaphoreHandleTypeFlags = Flags<ExternalSemaphoreHandleTypeFlagBits, VkExternalSemaphoreHandleTypeFlags>;
+  using ExternalSemaphoreHandleTypeFlags = Flags<ExternalSemaphoreHandleTypeFlagBits>;
 
   template <> struct FlagTraits<ExternalSemaphoreHandleTypeFlagBits>
   {
@@ -9841,7 +9843,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using FenceCreateFlags = Flags<FenceCreateFlagBits, VkFenceCreateFlags>;
+  using FenceCreateFlags = Flags<FenceCreateFlagBits>;
 
   template <> struct FlagTraits<FenceCreateFlagBits>
   {
@@ -9880,7 +9882,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using FenceImportFlags = Flags<FenceImportFlagBits, VkFenceImportFlags>;
+  using FenceImportFlags = Flags<FenceImportFlagBits>;
 
   template <> struct FlagTraits<FenceImportFlagBits>
   {
@@ -9921,7 +9923,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using FormatFeatureFlags = Flags<FormatFeatureFlagBits, VkFormatFeatureFlags>;
+  using FormatFeatureFlags = Flags<FormatFeatureFlagBits>;
 
   template <> struct FlagTraits<FormatFeatureFlagBits>
   {
@@ -9984,7 +9986,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using FramebufferCreateFlags = Flags<FramebufferCreateFlagBits, VkFramebufferCreateFlags>;
+  using FramebufferCreateFlags = Flags<FramebufferCreateFlagBits>;
 
   template <> struct FlagTraits<FramebufferCreateFlagBits>
   {
@@ -10023,7 +10025,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using GeometryFlagsNV = Flags<GeometryFlagBitsNV, VkGeometryFlagsNV>;
+  using GeometryFlagsNV = Flags<GeometryFlagBitsNV>;
 
   template <> struct FlagTraits<GeometryFlagBitsNV>
   {
@@ -10063,7 +10065,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using GeometryInstanceFlagsNV = Flags<GeometryInstanceFlagBitsNV, VkGeometryInstanceFlagsNV>;
+  using GeometryInstanceFlagsNV = Flags<GeometryInstanceFlagBitsNV>;
 
   template <> struct FlagTraits<GeometryInstanceFlagBitsNV>
   {
@@ -10105,7 +10107,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  enum class HeadlessSurfaceCreateFlagBitsEXT
+  enum class HeadlessSurfaceCreateFlagBitsEXT : VkFlags
   {};
 
   VULKAN_HPP_INLINE std::string to_string( HeadlessSurfaceCreateFlagBitsEXT )
@@ -10113,7 +10115,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using HeadlessSurfaceCreateFlagsEXT = Flags<HeadlessSurfaceCreateFlagBitsEXT, VkHeadlessSurfaceCreateFlagsEXT>;
+  using HeadlessSurfaceCreateFlagsEXT = Flags<HeadlessSurfaceCreateFlagBitsEXT>;
 
   VULKAN_HPP_INLINE std::string to_string( HeadlessSurfaceCreateFlagsEXT  )
   {
@@ -10121,7 +10123,7 @@ namespace VULKAN_HPP_NAMESPACE
   }
 
 #ifdef VK_USE_PLATFORM_IOS_MVK
-  enum class IOSSurfaceCreateFlagBitsMVK
+  enum class IOSSurfaceCreateFlagBitsMVK : VkFlags
   {};
 
   VULKAN_HPP_INLINE std::string to_string( IOSSurfaceCreateFlagBitsMVK )
@@ -10129,7 +10131,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using IOSSurfaceCreateFlagsMVK = Flags<IOSSurfaceCreateFlagBitsMVK, VkIOSSurfaceCreateFlagsMVK>;
+  using IOSSurfaceCreateFlagsMVK = Flags<IOSSurfaceCreateFlagBitsMVK>;
 
   VULKAN_HPP_INLINE std::string to_string( IOSSurfaceCreateFlagsMVK  )
   {
@@ -10137,7 +10139,7 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /*VK_USE_PLATFORM_IOS_MVK*/
 
-  using ImageAspectFlags = Flags<ImageAspectFlagBits, VkImageAspectFlags>;
+  using ImageAspectFlags = Flags<ImageAspectFlagBits>;
 
   template <> struct FlagTraits<ImageAspectFlagBits>
   {
@@ -10186,7 +10188,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using ImageCreateFlags = Flags<ImageCreateFlagBits, VkImageCreateFlags>;
+  using ImageCreateFlags = Flags<ImageCreateFlagBits>;
 
   template <> struct FlagTraits<ImageCreateFlagBits>
   {
@@ -10240,7 +10242,7 @@ namespace VULKAN_HPP_NAMESPACE
   }
 
 #ifdef VK_USE_PLATFORM_FUCHSIA
-  enum class ImagePipeSurfaceCreateFlagBitsFUCHSIA
+  enum class ImagePipeSurfaceCreateFlagBitsFUCHSIA : VkFlags
   {};
 
   VULKAN_HPP_INLINE std::string to_string( ImagePipeSurfaceCreateFlagBitsFUCHSIA )
@@ -10248,7 +10250,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using ImagePipeSurfaceCreateFlagsFUCHSIA = Flags<ImagePipeSurfaceCreateFlagBitsFUCHSIA, VkImagePipeSurfaceCreateFlagsFUCHSIA>;
+  using ImagePipeSurfaceCreateFlagsFUCHSIA = Flags<ImagePipeSurfaceCreateFlagBitsFUCHSIA>;
 
   VULKAN_HPP_INLINE std::string to_string( ImagePipeSurfaceCreateFlagsFUCHSIA  )
   {
@@ -10256,7 +10258,7 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
 
-  using ImageUsageFlags = Flags<ImageUsageFlagBits, VkImageUsageFlags>;
+  using ImageUsageFlags = Flags<ImageUsageFlagBits>;
 
   template <> struct FlagTraits<ImageUsageFlagBits>
   {
@@ -10304,7 +10306,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using ImageViewCreateFlags = Flags<ImageViewCreateFlagBits, VkImageViewCreateFlags>;
+  using ImageViewCreateFlags = Flags<ImageViewCreateFlagBits>;
 
   template <> struct FlagTraits<ImageViewCreateFlagBits>
   {
@@ -10343,7 +10345,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using IndirectCommandsLayoutUsageFlagsNVX = Flags<IndirectCommandsLayoutUsageFlagBitsNVX, VkIndirectCommandsLayoutUsageFlagsNVX>;
+  using IndirectCommandsLayoutUsageFlagsNVX = Flags<IndirectCommandsLayoutUsageFlagBitsNVX>;
 
   template <> struct FlagTraits<IndirectCommandsLayoutUsageFlagBitsNVX>
   {
@@ -10385,7 +10387,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using InstanceCreateFlags = Flags<InstanceCreateFlagBits, VkInstanceCreateFlags>;
+  using InstanceCreateFlags = Flags<InstanceCreateFlagBits>;
 
   VULKAN_HPP_INLINE std::string to_string( InstanceCreateFlags  )
   {
@@ -10393,7 +10395,7 @@ namespace VULKAN_HPP_NAMESPACE
   }
 
 #ifdef VK_USE_PLATFORM_MACOS_MVK
-  enum class MacOSSurfaceCreateFlagBitsMVK
+  enum class MacOSSurfaceCreateFlagBitsMVK : VkFlags
   {};
 
   VULKAN_HPP_INLINE std::string to_string( MacOSSurfaceCreateFlagBitsMVK )
@@ -10401,7 +10403,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using MacOSSurfaceCreateFlagsMVK = Flags<MacOSSurfaceCreateFlagBitsMVK, VkMacOSSurfaceCreateFlagsMVK>;
+  using MacOSSurfaceCreateFlagsMVK = Flags<MacOSSurfaceCreateFlagBitsMVK>;
 
   VULKAN_HPP_INLINE std::string to_string( MacOSSurfaceCreateFlagsMVK  )
   {
@@ -10409,7 +10411,7 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /*VK_USE_PLATFORM_MACOS_MVK*/
 
-  using MemoryAllocateFlags = Flags<MemoryAllocateFlagBits, VkMemoryAllocateFlags>;
+  using MemoryAllocateFlags = Flags<MemoryAllocateFlagBits>;
 
   template <> struct FlagTraits<MemoryAllocateFlagBits>
   {
@@ -10452,7 +10454,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using MemoryHeapFlags = Flags<MemoryHeapFlagBits, VkMemoryHeapFlags>;
+  using MemoryHeapFlags = Flags<MemoryHeapFlagBits>;
 
   template <> struct FlagTraits<MemoryHeapFlagBits>
   {
@@ -10492,7 +10494,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  enum class MemoryMapFlagBits
+  enum class MemoryMapFlagBits : VkFlags
   {};
 
   VULKAN_HPP_INLINE std::string to_string( MemoryMapFlagBits )
@@ -10500,14 +10502,14 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using MemoryMapFlags = Flags<MemoryMapFlagBits, VkMemoryMapFlags>;
+  using MemoryMapFlags = Flags<MemoryMapFlagBits>;
 
   VULKAN_HPP_INLINE std::string to_string( MemoryMapFlags  )
   {
     return "{}";
   }
 
-  using MemoryPropertyFlags = Flags<MemoryPropertyFlagBits, VkMemoryPropertyFlags>;
+  using MemoryPropertyFlags = Flags<MemoryPropertyFlagBits>;
 
   template <> struct FlagTraits<MemoryPropertyFlagBits>
   {
@@ -10554,7 +10556,7 @@ namespace VULKAN_HPP_NAMESPACE
   }
 
 #ifdef VK_USE_PLATFORM_METAL_EXT
-  enum class MetalSurfaceCreateFlagBitsEXT
+  enum class MetalSurfaceCreateFlagBitsEXT : VkFlags
   {};
 
   VULKAN_HPP_INLINE std::string to_string( MetalSurfaceCreateFlagBitsEXT )
@@ -10562,7 +10564,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using MetalSurfaceCreateFlagsEXT = Flags<MetalSurfaceCreateFlagBitsEXT, VkMetalSurfaceCreateFlagsEXT>;
+  using MetalSurfaceCreateFlagsEXT = Flags<MetalSurfaceCreateFlagBitsEXT>;
 
   VULKAN_HPP_INLINE std::string to_string( MetalSurfaceCreateFlagsEXT  )
   {
@@ -10570,7 +10572,7 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /*VK_USE_PLATFORM_METAL_EXT*/
 
-  using ObjectEntryUsageFlagsNVX = Flags<ObjectEntryUsageFlagBitsNVX, VkObjectEntryUsageFlagsNVX>;
+  using ObjectEntryUsageFlagsNVX = Flags<ObjectEntryUsageFlagBitsNVX>;
 
   template <> struct FlagTraits<ObjectEntryUsageFlagBitsNVX>
   {
@@ -10610,7 +10612,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using PeerMemoryFeatureFlags = Flags<PeerMemoryFeatureFlagBits, VkPeerMemoryFeatureFlags>;
+  using PeerMemoryFeatureFlags = Flags<PeerMemoryFeatureFlagBits>;
 
   template <> struct FlagTraits<PeerMemoryFeatureFlagBits>
   {
@@ -10654,7 +10656,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using PerformanceCounterDescriptionFlagsKHR = Flags<PerformanceCounterDescriptionFlagBitsKHR, VkPerformanceCounterDescriptionFlagsKHR>;
+  using PerformanceCounterDescriptionFlagsKHR = Flags<PerformanceCounterDescriptionFlagBitsKHR>;
 
   template <> struct FlagTraits<PerformanceCounterDescriptionFlagBitsKHR>
   {
@@ -10694,28 +10696,28 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using PipelineCacheCreateFlags = Flags<PipelineCacheCreateFlagBits, VkPipelineCacheCreateFlags>;
+  using PipelineCacheCreateFlags = Flags<PipelineCacheCreateFlagBits>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineCacheCreateFlags  )
   {
     return "{}";
   }
 
-  using PipelineColorBlendStateCreateFlags = Flags<PipelineColorBlendStateCreateFlagBits, VkPipelineColorBlendStateCreateFlags>;
+  using PipelineColorBlendStateCreateFlags = Flags<PipelineColorBlendStateCreateFlagBits>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineColorBlendStateCreateFlags  )
   {
     return "{}";
   }
 
-  using PipelineCompilerControlFlagsAMD = Flags<PipelineCompilerControlFlagBitsAMD, VkPipelineCompilerControlFlagsAMD>;
+  using PipelineCompilerControlFlagsAMD = Flags<PipelineCompilerControlFlagBitsAMD>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineCompilerControlFlagsAMD  )
   {
     return "{}";
   }
 
-  enum class PipelineCoverageModulationStateCreateFlagBitsNV
+  enum class PipelineCoverageModulationStateCreateFlagBitsNV : VkFlags
   {};
 
   VULKAN_HPP_INLINE std::string to_string( PipelineCoverageModulationStateCreateFlagBitsNV )
@@ -10723,14 +10725,14 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using PipelineCoverageModulationStateCreateFlagsNV = Flags<PipelineCoverageModulationStateCreateFlagBitsNV, VkPipelineCoverageModulationStateCreateFlagsNV>;
+  using PipelineCoverageModulationStateCreateFlagsNV = Flags<PipelineCoverageModulationStateCreateFlagBitsNV>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineCoverageModulationStateCreateFlagsNV  )
   {
     return "{}";
   }
 
-  enum class PipelineCoverageReductionStateCreateFlagBitsNV
+  enum class PipelineCoverageReductionStateCreateFlagBitsNV : VkFlags
   {};
 
   VULKAN_HPP_INLINE std::string to_string( PipelineCoverageReductionStateCreateFlagBitsNV )
@@ -10738,14 +10740,14 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using PipelineCoverageReductionStateCreateFlagsNV = Flags<PipelineCoverageReductionStateCreateFlagBitsNV, VkPipelineCoverageReductionStateCreateFlagsNV>;
+  using PipelineCoverageReductionStateCreateFlagsNV = Flags<PipelineCoverageReductionStateCreateFlagBitsNV>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineCoverageReductionStateCreateFlagsNV  )
   {
     return "{}";
   }
 
-  enum class PipelineCoverageToColorStateCreateFlagBitsNV
+  enum class PipelineCoverageToColorStateCreateFlagBitsNV : VkFlags
   {};
 
   VULKAN_HPP_INLINE std::string to_string( PipelineCoverageToColorStateCreateFlagBitsNV )
@@ -10753,14 +10755,14 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using PipelineCoverageToColorStateCreateFlagsNV = Flags<PipelineCoverageToColorStateCreateFlagBitsNV, VkPipelineCoverageToColorStateCreateFlagsNV>;
+  using PipelineCoverageToColorStateCreateFlagsNV = Flags<PipelineCoverageToColorStateCreateFlagBitsNV>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineCoverageToColorStateCreateFlagsNV  )
   {
     return "{}";
   }
 
-  using PipelineCreateFlags = Flags<PipelineCreateFlagBits, VkPipelineCreateFlags>;
+  using PipelineCreateFlags = Flags<PipelineCreateFlagBits>;
 
   template <> struct FlagTraits<PipelineCreateFlagBits>
   {
@@ -10806,7 +10808,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using PipelineCreationFeedbackFlagsEXT = Flags<PipelineCreationFeedbackFlagBitsEXT, VkPipelineCreationFeedbackFlagsEXT>;
+  using PipelineCreationFeedbackFlagsEXT = Flags<PipelineCreationFeedbackFlagBitsEXT>;
 
   template <> struct FlagTraits<PipelineCreationFeedbackFlagBitsEXT>
   {
@@ -10847,14 +10849,14 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using PipelineDepthStencilStateCreateFlags = Flags<PipelineDepthStencilStateCreateFlagBits, VkPipelineDepthStencilStateCreateFlags>;
+  using PipelineDepthStencilStateCreateFlags = Flags<PipelineDepthStencilStateCreateFlagBits>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineDepthStencilStateCreateFlags  )
   {
     return "{}";
   }
 
-  enum class PipelineDiscardRectangleStateCreateFlagBitsEXT
+  enum class PipelineDiscardRectangleStateCreateFlagBitsEXT : VkFlags
   {};
 
   VULKAN_HPP_INLINE std::string to_string( PipelineDiscardRectangleStateCreateFlagBitsEXT )
@@ -10862,42 +10864,42 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using PipelineDiscardRectangleStateCreateFlagsEXT = Flags<PipelineDiscardRectangleStateCreateFlagBitsEXT, VkPipelineDiscardRectangleStateCreateFlagsEXT>;
+  using PipelineDiscardRectangleStateCreateFlagsEXT = Flags<PipelineDiscardRectangleStateCreateFlagBitsEXT>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineDiscardRectangleStateCreateFlagsEXT  )
   {
     return "{}";
   }
 
-  using PipelineDynamicStateCreateFlags = Flags<PipelineDynamicStateCreateFlagBits, VkPipelineDynamicStateCreateFlags>;
+  using PipelineDynamicStateCreateFlags = Flags<PipelineDynamicStateCreateFlagBits>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineDynamicStateCreateFlags  )
   {
     return "{}";
   }
 
-  using PipelineInputAssemblyStateCreateFlags = Flags<PipelineInputAssemblyStateCreateFlagBits, VkPipelineInputAssemblyStateCreateFlags>;
+  using PipelineInputAssemblyStateCreateFlags = Flags<PipelineInputAssemblyStateCreateFlagBits>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineInputAssemblyStateCreateFlags  )
   {
     return "{}";
   }
 
-  using PipelineLayoutCreateFlags = Flags<PipelineLayoutCreateFlagBits, VkPipelineLayoutCreateFlags>;
+  using PipelineLayoutCreateFlags = Flags<PipelineLayoutCreateFlagBits>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineLayoutCreateFlags  )
   {
     return "{}";
   }
 
-  using PipelineMultisampleStateCreateFlags = Flags<PipelineMultisampleStateCreateFlagBits, VkPipelineMultisampleStateCreateFlags>;
+  using PipelineMultisampleStateCreateFlags = Flags<PipelineMultisampleStateCreateFlagBits>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineMultisampleStateCreateFlags  )
   {
     return "{}";
   }
 
-  enum class PipelineRasterizationConservativeStateCreateFlagBitsEXT
+  enum class PipelineRasterizationConservativeStateCreateFlagBitsEXT : VkFlags
   {};
 
   VULKAN_HPP_INLINE std::string to_string( PipelineRasterizationConservativeStateCreateFlagBitsEXT )
@@ -10905,14 +10907,14 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using PipelineRasterizationConservativeStateCreateFlagsEXT = Flags<PipelineRasterizationConservativeStateCreateFlagBitsEXT, VkPipelineRasterizationConservativeStateCreateFlagsEXT>;
+  using PipelineRasterizationConservativeStateCreateFlagsEXT = Flags<PipelineRasterizationConservativeStateCreateFlagBitsEXT>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineRasterizationConservativeStateCreateFlagsEXT  )
   {
     return "{}";
   }
 
-  enum class PipelineRasterizationDepthClipStateCreateFlagBitsEXT
+  enum class PipelineRasterizationDepthClipStateCreateFlagBitsEXT : VkFlags
   {};
 
   VULKAN_HPP_INLINE std::string to_string( PipelineRasterizationDepthClipStateCreateFlagBitsEXT )
@@ -10920,21 +10922,21 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using PipelineRasterizationDepthClipStateCreateFlagsEXT = Flags<PipelineRasterizationDepthClipStateCreateFlagBitsEXT, VkPipelineRasterizationDepthClipStateCreateFlagsEXT>;
+  using PipelineRasterizationDepthClipStateCreateFlagsEXT = Flags<PipelineRasterizationDepthClipStateCreateFlagBitsEXT>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineRasterizationDepthClipStateCreateFlagsEXT  )
   {
     return "{}";
   }
 
-  using PipelineRasterizationStateCreateFlags = Flags<PipelineRasterizationStateCreateFlagBits, VkPipelineRasterizationStateCreateFlags>;
+  using PipelineRasterizationStateCreateFlags = Flags<PipelineRasterizationStateCreateFlagBits>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineRasterizationStateCreateFlags  )
   {
     return "{}";
   }
 
-  enum class PipelineRasterizationStateStreamCreateFlagBitsEXT
+  enum class PipelineRasterizationStateStreamCreateFlagBitsEXT : VkFlags
   {};
 
   VULKAN_HPP_INLINE std::string to_string( PipelineRasterizationStateStreamCreateFlagBitsEXT )
@@ -10942,14 +10944,14 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using PipelineRasterizationStateStreamCreateFlagsEXT = Flags<PipelineRasterizationStateStreamCreateFlagBitsEXT, VkPipelineRasterizationStateStreamCreateFlagsEXT>;
+  using PipelineRasterizationStateStreamCreateFlagsEXT = Flags<PipelineRasterizationStateStreamCreateFlagBitsEXT>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineRasterizationStateStreamCreateFlagsEXT  )
   {
     return "{}";
   }
 
-  using PipelineShaderStageCreateFlags = Flags<PipelineShaderStageCreateFlagBits, VkPipelineShaderStageCreateFlags>;
+  using PipelineShaderStageCreateFlags = Flags<PipelineShaderStageCreateFlagBits>;
 
   template <> struct FlagTraits<PipelineShaderStageCreateFlagBits>
   {
@@ -10989,7 +10991,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using PipelineStageFlags = Flags<PipelineStageFlagBits, VkPipelineStageFlags>;
+  using PipelineStageFlags = Flags<PipelineStageFlagBits>;
 
   template <> struct FlagTraits<PipelineStageFlagBits>
   {
@@ -11053,28 +11055,28 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using PipelineTessellationStateCreateFlags = Flags<PipelineTessellationStateCreateFlagBits, VkPipelineTessellationStateCreateFlags>;
+  using PipelineTessellationStateCreateFlags = Flags<PipelineTessellationStateCreateFlagBits>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineTessellationStateCreateFlags  )
   {
     return "{}";
   }
 
-  using PipelineVertexInputStateCreateFlags = Flags<PipelineVertexInputStateCreateFlagBits, VkPipelineVertexInputStateCreateFlags>;
+  using PipelineVertexInputStateCreateFlags = Flags<PipelineVertexInputStateCreateFlagBits>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineVertexInputStateCreateFlags  )
   {
     return "{}";
   }
 
-  using PipelineViewportStateCreateFlags = Flags<PipelineViewportStateCreateFlagBits, VkPipelineViewportStateCreateFlags>;
+  using PipelineViewportStateCreateFlags = Flags<PipelineViewportStateCreateFlagBits>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineViewportStateCreateFlags  )
   {
     return "{}";
   }
 
-  enum class PipelineViewportSwizzleStateCreateFlagBitsNV
+  enum class PipelineViewportSwizzleStateCreateFlagBitsNV : VkFlags
   {};
 
   VULKAN_HPP_INLINE std::string to_string( PipelineViewportSwizzleStateCreateFlagBitsNV )
@@ -11082,14 +11084,14 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using PipelineViewportSwizzleStateCreateFlagsNV = Flags<PipelineViewportSwizzleStateCreateFlagBitsNV, VkPipelineViewportSwizzleStateCreateFlagsNV>;
+  using PipelineViewportSwizzleStateCreateFlagsNV = Flags<PipelineViewportSwizzleStateCreateFlagBitsNV>;
 
   VULKAN_HPP_INLINE std::string to_string( PipelineViewportSwizzleStateCreateFlagsNV  )
   {
     return "{}";
   }
 
-  using QueryControlFlags = Flags<QueryControlFlagBits, VkQueryControlFlags>;
+  using QueryControlFlags = Flags<QueryControlFlagBits>;
 
   template <> struct FlagTraits<QueryControlFlagBits>
   {
@@ -11128,7 +11130,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using QueryPipelineStatisticFlags = Flags<QueryPipelineStatisticFlagBits, VkQueryPipelineStatisticFlags>;
+  using QueryPipelineStatisticFlags = Flags<QueryPipelineStatisticFlagBits>;
 
   template <> struct FlagTraits<QueryPipelineStatisticFlagBits>
   {
@@ -11177,14 +11179,14 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using QueryPoolCreateFlags = Flags<QueryPoolCreateFlagBits, VkQueryPoolCreateFlags>;
+  using QueryPoolCreateFlags = Flags<QueryPoolCreateFlagBits>;
 
   VULKAN_HPP_INLINE std::string to_string( QueryPoolCreateFlags  )
   {
     return "{}";
   }
 
-  using QueryResultFlags = Flags<QueryResultFlagBits, VkQueryResultFlags>;
+  using QueryResultFlags = Flags<QueryResultFlagBits>;
 
   template <> struct FlagTraits<QueryResultFlagBits>
   {
@@ -11226,7 +11228,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using QueueFlags = Flags<QueueFlagBits, VkQueueFlags>;
+  using QueueFlags = Flags<QueueFlagBits>;
 
   template <> struct FlagTraits<QueueFlagBits>
   {
@@ -11269,14 +11271,14 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using RenderPassCreateFlags = Flags<RenderPassCreateFlagBits, VkRenderPassCreateFlags>;
+  using RenderPassCreateFlags = Flags<RenderPassCreateFlagBits>;
 
   VULKAN_HPP_INLINE std::string to_string( RenderPassCreateFlags  )
   {
     return "{}";
   }
 
-  using ResolveModeFlagsKHR = Flags<ResolveModeFlagBitsKHR, VkResolveModeFlagsKHR>;
+  using ResolveModeFlagsKHR = Flags<ResolveModeFlagBitsKHR>;
 
   template <> struct FlagTraits<ResolveModeFlagBitsKHR>
   {
@@ -11318,7 +11320,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using SampleCountFlags = Flags<SampleCountFlagBits, VkSampleCountFlags>;
+  using SampleCountFlags = Flags<SampleCountFlagBits>;
 
   template <> struct FlagTraits<SampleCountFlagBits>
   {
@@ -11363,7 +11365,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using SamplerCreateFlags = Flags<SamplerCreateFlagBits, VkSamplerCreateFlags>;
+  using SamplerCreateFlags = Flags<SamplerCreateFlagBits>;
 
   template <> struct FlagTraits<SamplerCreateFlagBits>
   {
@@ -11403,14 +11405,14 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using SemaphoreCreateFlags = Flags<SemaphoreCreateFlagBits, VkSemaphoreCreateFlags>;
+  using SemaphoreCreateFlags = Flags<SemaphoreCreateFlagBits>;
 
   VULKAN_HPP_INLINE std::string to_string( SemaphoreCreateFlags  )
   {
     return "{}";
   }
 
-  using SemaphoreImportFlags = Flags<SemaphoreImportFlagBits, VkSemaphoreImportFlags>;
+  using SemaphoreImportFlags = Flags<SemaphoreImportFlagBits>;
 
   template <> struct FlagTraits<SemaphoreImportFlagBits>
   {
@@ -11451,7 +11453,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using SemaphoreWaitFlagsKHR = Flags<SemaphoreWaitFlagBitsKHR, VkSemaphoreWaitFlagsKHR>;
+  using SemaphoreWaitFlagsKHR = Flags<SemaphoreWaitFlagBitsKHR>;
 
   template <> struct FlagTraits<SemaphoreWaitFlagBitsKHR>
   {
@@ -11490,21 +11492,21 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using ShaderCorePropertiesFlagsAMD = Flags<ShaderCorePropertiesFlagBitsAMD, VkShaderCorePropertiesFlagsAMD>;
+  using ShaderCorePropertiesFlagsAMD = Flags<ShaderCorePropertiesFlagBitsAMD>;
 
   VULKAN_HPP_INLINE std::string to_string( ShaderCorePropertiesFlagsAMD  )
   {
     return "{}";
   }
 
-  using ShaderModuleCreateFlags = Flags<ShaderModuleCreateFlagBits, VkShaderModuleCreateFlags>;
+  using ShaderModuleCreateFlags = Flags<ShaderModuleCreateFlagBits>;
 
   VULKAN_HPP_INLINE std::string to_string( ShaderModuleCreateFlags  )
   {
     return "{}";
   }
 
-  using ShaderStageFlags = Flags<ShaderStageFlagBits, VkShaderStageFlags>;
+  using ShaderStageFlags = Flags<ShaderStageFlagBits>;
 
   template <> struct FlagTraits<ShaderStageFlagBits>
   {
@@ -11556,7 +11558,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using SparseImageFormatFlags = Flags<SparseImageFormatFlagBits, VkSparseImageFormatFlags>;
+  using SparseImageFormatFlags = Flags<SparseImageFormatFlagBits>;
 
   template <> struct FlagTraits<SparseImageFormatFlagBits>
   {
@@ -11597,7 +11599,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using SparseMemoryBindFlags = Flags<SparseMemoryBindFlagBits, VkSparseMemoryBindFlags>;
+  using SparseMemoryBindFlags = Flags<SparseMemoryBindFlagBits>;
 
   template <> struct FlagTraits<SparseMemoryBindFlagBits>
   {
@@ -11636,7 +11638,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using StencilFaceFlags = Flags<StencilFaceFlagBits, VkStencilFaceFlags>;
+  using StencilFaceFlags = Flags<StencilFaceFlagBits>;
 
   template <> struct FlagTraits<StencilFaceFlagBits>
   {
@@ -11677,7 +11679,7 @@ namespace VULKAN_HPP_NAMESPACE
   }
 
 #ifdef VK_USE_PLATFORM_GGP
-  enum class StreamDescriptorSurfaceCreateFlagBitsGGP
+  enum class StreamDescriptorSurfaceCreateFlagBitsGGP : VkFlags
   {};
 
   VULKAN_HPP_INLINE std::string to_string( StreamDescriptorSurfaceCreateFlagBitsGGP )
@@ -11685,7 +11687,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using StreamDescriptorSurfaceCreateFlagsGGP = Flags<StreamDescriptorSurfaceCreateFlagBitsGGP, VkStreamDescriptorSurfaceCreateFlagsGGP>;
+  using StreamDescriptorSurfaceCreateFlagsGGP = Flags<StreamDescriptorSurfaceCreateFlagBitsGGP>;
 
   VULKAN_HPP_INLINE std::string to_string( StreamDescriptorSurfaceCreateFlagsGGP  )
   {
@@ -11693,7 +11695,7 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /*VK_USE_PLATFORM_GGP*/
 
-  using SubgroupFeatureFlags = Flags<SubgroupFeatureFlagBits, VkSubgroupFeatureFlags>;
+  using SubgroupFeatureFlags = Flags<SubgroupFeatureFlagBits>;
 
   template <> struct FlagTraits<SubgroupFeatureFlagBits>
   {
@@ -11740,7 +11742,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using SubpassDescriptionFlags = Flags<SubpassDescriptionFlagBits, VkSubpassDescriptionFlags>;
+  using SubpassDescriptionFlags = Flags<SubpassDescriptionFlagBits>;
 
   template <> struct FlagTraits<SubpassDescriptionFlagBits>
   {
@@ -11780,7 +11782,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using SurfaceCounterFlagsEXT = Flags<SurfaceCounterFlagBitsEXT, VkSurfaceCounterFlagsEXT>;
+  using SurfaceCounterFlagsEXT = Flags<SurfaceCounterFlagBitsEXT>;
 
   template <> struct FlagTraits<SurfaceCounterFlagBitsEXT>
   {
@@ -11819,7 +11821,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using SurfaceTransformFlagsKHR = Flags<SurfaceTransformFlagBitsKHR, VkSurfaceTransformFlagsKHR>;
+  using SurfaceTransformFlagsKHR = Flags<SurfaceTransformFlagBitsKHR>;
 
   template <> struct FlagTraits<SurfaceTransformFlagBitsKHR>
   {
@@ -11866,7 +11868,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using SwapchainCreateFlagsKHR = Flags<SwapchainCreateFlagBitsKHR, VkSwapchainCreateFlagsKHR>;
+  using SwapchainCreateFlagsKHR = Flags<SwapchainCreateFlagBitsKHR>;
 
   template <> struct FlagTraits<SwapchainCreateFlagBitsKHR>
   {
@@ -11907,7 +11909,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  using ToolPurposeFlagsEXT = Flags<ToolPurposeFlagBitsEXT, VkToolPurposeFlagsEXT>;
+  using ToolPurposeFlagsEXT = Flags<ToolPurposeFlagBitsEXT>;
 
   template <> struct FlagTraits<ToolPurposeFlagBitsEXT>
   {
@@ -11952,7 +11954,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr(0, result.size() - 3) + " }";
   }
 
-  enum class ValidationCacheCreateFlagBitsEXT
+  enum class ValidationCacheCreateFlagBitsEXT : VkFlags
   {};
 
   VULKAN_HPP_INLINE std::string to_string( ValidationCacheCreateFlagBitsEXT )
@@ -11960,7 +11962,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using ValidationCacheCreateFlagsEXT = Flags<ValidationCacheCreateFlagBitsEXT, VkValidationCacheCreateFlagsEXT>;
+  using ValidationCacheCreateFlagsEXT = Flags<ValidationCacheCreateFlagBitsEXT>;
 
   VULKAN_HPP_INLINE std::string to_string( ValidationCacheCreateFlagsEXT  )
   {
@@ -11968,7 +11970,7 @@ namespace VULKAN_HPP_NAMESPACE
   }
 
 #ifdef VK_USE_PLATFORM_VI_NN
-  enum class ViSurfaceCreateFlagBitsNN
+  enum class ViSurfaceCreateFlagBitsNN : VkFlags
   {};
 
   VULKAN_HPP_INLINE std::string to_string( ViSurfaceCreateFlagBitsNN )
@@ -11976,7 +11978,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using ViSurfaceCreateFlagsNN = Flags<ViSurfaceCreateFlagBitsNN, VkViSurfaceCreateFlagsNN>;
+  using ViSurfaceCreateFlagsNN = Flags<ViSurfaceCreateFlagBitsNN>;
 
   VULKAN_HPP_INLINE std::string to_string( ViSurfaceCreateFlagsNN  )
   {
@@ -11985,7 +11987,7 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_USE_PLATFORM_VI_NN*/
 
 #ifdef VK_USE_PLATFORM_WAYLAND_KHR
-  enum class WaylandSurfaceCreateFlagBitsKHR
+  enum class WaylandSurfaceCreateFlagBitsKHR : VkFlags
   {};
 
   VULKAN_HPP_INLINE std::string to_string( WaylandSurfaceCreateFlagBitsKHR )
@@ -11993,7 +11995,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using WaylandSurfaceCreateFlagsKHR = Flags<WaylandSurfaceCreateFlagBitsKHR, VkWaylandSurfaceCreateFlagsKHR>;
+  using WaylandSurfaceCreateFlagsKHR = Flags<WaylandSurfaceCreateFlagBitsKHR>;
 
   VULKAN_HPP_INLINE std::string to_string( WaylandSurfaceCreateFlagsKHR  )
   {
@@ -12002,7 +12004,7 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_USE_PLATFORM_WAYLAND_KHR*/
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
-  enum class Win32SurfaceCreateFlagBitsKHR
+  enum class Win32SurfaceCreateFlagBitsKHR : VkFlags
   {};
 
   VULKAN_HPP_INLINE std::string to_string( Win32SurfaceCreateFlagBitsKHR )
@@ -12010,7 +12012,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using Win32SurfaceCreateFlagsKHR = Flags<Win32SurfaceCreateFlagBitsKHR, VkWin32SurfaceCreateFlagsKHR>;
+  using Win32SurfaceCreateFlagsKHR = Flags<Win32SurfaceCreateFlagBitsKHR>;
 
   VULKAN_HPP_INLINE std::string to_string( Win32SurfaceCreateFlagsKHR  )
   {
@@ -12019,7 +12021,7 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
 #ifdef VK_USE_PLATFORM_XCB_KHR
-  enum class XcbSurfaceCreateFlagBitsKHR
+  enum class XcbSurfaceCreateFlagBitsKHR : VkFlags
   {};
 
   VULKAN_HPP_INLINE std::string to_string( XcbSurfaceCreateFlagBitsKHR )
@@ -12027,7 +12029,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using XcbSurfaceCreateFlagsKHR = Flags<XcbSurfaceCreateFlagBitsKHR, VkXcbSurfaceCreateFlagsKHR>;
+  using XcbSurfaceCreateFlagsKHR = Flags<XcbSurfaceCreateFlagBitsKHR>;
 
   VULKAN_HPP_INLINE std::string to_string( XcbSurfaceCreateFlagsKHR  )
   {
@@ -12036,7 +12038,7 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_USE_PLATFORM_XCB_KHR*/
 
 #ifdef VK_USE_PLATFORM_XLIB_KHR
-  enum class XlibSurfaceCreateFlagBitsKHR
+  enum class XlibSurfaceCreateFlagBitsKHR : VkFlags
   {};
 
   VULKAN_HPP_INLINE std::string to_string( XlibSurfaceCreateFlagBitsKHR )
@@ -12044,7 +12046,7 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  using XlibSurfaceCreateFlagsKHR = Flags<XlibSurfaceCreateFlagBitsKHR, VkXlibSurfaceCreateFlagsKHR>;
+  using XlibSurfaceCreateFlagsKHR = Flags<XlibSurfaceCreateFlagBitsKHR>;
 
   VULKAN_HPP_INLINE std::string to_string( XlibSurfaceCreateFlagsKHR  )
   {

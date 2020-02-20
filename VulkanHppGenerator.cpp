@@ -868,7 +868,7 @@ void VulkanHppGenerator::appendBitmask(std::string & str, std::string const& bit
     // if this emptyEnumName is not in the list of enums, list it here
     if (m_enums.find("Vk" + emptyEnumName) == m_enums.end())
     {
-      const std::string templateString = R"x(  enum class ${enumName}
+      const std::string templateString = R"x(  enum class ${enumName} : VkFlags
   {};
 
   VULKAN_HPP_INLINE std::string to_string( ${enumName} )
@@ -882,7 +882,7 @@ void VulkanHppGenerator::appendBitmask(std::string & str, std::string const& bit
   }
   std::string name = (enumName.empty() ? emptyEnumName : enumName);
   str += "\n"
-    "  using " + bitmaskName + " = Flags<" + name + ", Vk" + bitmaskName + ">;\n";
+    "  using " + bitmaskName + " = Flags<" + name + ">;\n";
 
   if (!enumValues.empty())
   {
@@ -1388,7 +1388,14 @@ void VulkanHppGenerator::appendDispatchLoaderDefault(std::string & str)
 
 void VulkanHppGenerator::appendEnum(std::string & str, std::pair<std::string, EnumData> const& enumData) const
 {
-  str += "  enum class " + stripPrefix(enumData.first, "Vk") + "\n"
+  str += "  enum class " + stripPrefix(enumData.first, "Vk");
+  if (enumData.second.isBitmask)
+  {
+    auto bitmaskIt = std::find_if(m_bitmasks.begin(), m_bitmasks.end(), [&enumData](auto const& bitmask){ return bitmask.second.requires == enumData.first; });
+    assert(bitmaskIt != m_bitmasks.end());
+    str += " : " + bitmaskIt->first;
+  }
+  str += "\n"
     "  {";
 
   bool first = true;
@@ -4087,6 +4094,7 @@ void VulkanHppGenerator::readEnums(tinyxml2::XMLElement const* element)
     if (it == m_enums.end())
     {
       // well, some enums are not listed in the <types> section
+      warn(false, line, "enum <" + name + "> is not listed as enum in the types section");
       it = m_enums.insert(std::make_pair(name, EnumData())).first;
     }
     check(it->second.values.empty(), line, "enum <" + name + "> already holds values");
@@ -4094,6 +4102,25 @@ void VulkanHppGenerator::readEnums(tinyxml2::XMLElement const* element)
     // mark it as a bitmask, if it is one
     bool bitmask = (type == "bitmask");
     it->second.isBitmask = bitmask;
+    if (bitmask)
+    {
+      // look for the corresponding bitmask and set the requirements if needed!
+      auto bitmaskIt = std::find_if(m_bitmasks.begin(), m_bitmasks.end(), [&name](auto const& bitmask) { return bitmask.second.requires == name; });
+      if (bitmaskIt == m_bitmasks.end())
+      {
+        warn(false, line, "enum <" + name + "> is not listed as an requirement for any bitmask in the types section");
+
+        std::string bitmaskName = name;
+        size_t pos = bitmaskName.rfind("FlagBits");
+        check(pos != std::string::npos, line, "enum <" + name + "> does not contain <FlagBits> as substring");
+        bitmaskName.replace(pos, 8, "Flags");
+
+        bitmaskIt = m_bitmasks.find(bitmaskName);
+        check(bitmaskIt != m_bitmasks.end(), line, "enum <" + name + "> has not corresponding bitmask <" + bitmaskName + "> listed in the types section");
+        assert(bitmaskIt->second.requires.empty());
+        bitmaskIt->second.requires = name;
+      }
+    }
 
     std::string prefix = getEnumPrefix(line, name, bitmask);
     std::string postfix = getEnumPostfix(name, m_tags, prefix);
@@ -5384,10 +5411,12 @@ int main(int argc, char **argv)
     enum { allFlags = 0 };
   };
 
-  template <typename BitType, typename MaskType = VkFlags>
+  template <typename BitType>
   class Flags
   {
   public:
+    using MaskType = typename std::underlying_type<BitType>::type;
+
     // constructors
     VULKAN_HPP_CONSTEXPR Flags() VULKAN_HPP_NOEXCEPT
       : m_mask(0)
@@ -5397,7 +5426,7 @@ int main(int argc, char **argv)
       : m_mask(static_cast<MaskType>(bit))
     {}
 
-    VULKAN_HPP_CONSTEXPR Flags(Flags<BitType, MaskType> const& rhs) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR Flags(Flags<BitType> const& rhs) VULKAN_HPP_NOEXCEPT
       : m_mask(rhs.m_mask)
     {}
 
@@ -5406,32 +5435,32 @@ int main(int argc, char **argv)
     {}
 
     // relational operators
-    VULKAN_HPP_CONSTEXPR bool operator<(Flags<BitType, MaskType> const& rhs) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR bool operator<(Flags<BitType> const& rhs) const VULKAN_HPP_NOEXCEPT
     {
       return m_mask < rhs.m_mask;
     }
 
-    VULKAN_HPP_CONSTEXPR bool operator<=(Flags<BitType, MaskType> const& rhs) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR bool operator<=(Flags<BitType> const& rhs) const VULKAN_HPP_NOEXCEPT
     {
       return m_mask <= rhs.m_mask;
     }
 
-    VULKAN_HPP_CONSTEXPR bool operator>(Flags<BitType, MaskType> const& rhs) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR bool operator>(Flags<BitType> const& rhs) const VULKAN_HPP_NOEXCEPT
     {
       return m_mask > rhs.m_mask;
     }
 
-    VULKAN_HPP_CONSTEXPR bool operator>=(Flags<BitType, MaskType> const& rhs) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR bool operator>=(Flags<BitType> const& rhs) const VULKAN_HPP_NOEXCEPT
     {
       return m_mask >= rhs.m_mask;
     }
 
-    VULKAN_HPP_CONSTEXPR bool operator==(Flags<BitType, MaskType> const& rhs) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR bool operator==(Flags<BitType> const& rhs) const VULKAN_HPP_NOEXCEPT
     {
       return m_mask == rhs.m_mask;
     }
 
-    VULKAN_HPP_CONSTEXPR bool operator!=(Flags<BitType, MaskType> const& rhs) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR bool operator!=(Flags<BitType> const& rhs) const VULKAN_HPP_NOEXCEPT
     {
       return m_mask != rhs.m_mask;
     }
@@ -5443,46 +5472,46 @@ int main(int argc, char **argv)
     }
 
     // bitwise operators
-    VULKAN_HPP_CONSTEXPR Flags<BitType, MaskType> operator&(Flags<BitType, MaskType> const& rhs) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR Flags<BitType> operator&(Flags<BitType> const& rhs) const VULKAN_HPP_NOEXCEPT
     {
-      return Flags<BitType, MaskType>(m_mask & rhs.m_mask);
+      return Flags<BitType>(m_mask & rhs.m_mask);
     }
 
-    VULKAN_HPP_CONSTEXPR Flags<BitType, MaskType> operator|(Flags<BitType, MaskType> const& rhs) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR Flags<BitType> operator|(Flags<BitType> const& rhs) const VULKAN_HPP_NOEXCEPT
     {
-      return Flags<BitType, MaskType>(m_mask | rhs.m_mask);
+      return Flags<BitType>(m_mask | rhs.m_mask);
     }
 
-    VULKAN_HPP_CONSTEXPR Flags<BitType, MaskType> operator^(Flags<BitType, MaskType> const& rhs) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR Flags<BitType> operator^(Flags<BitType> const& rhs) const VULKAN_HPP_NOEXCEPT
     {
-      return Flags<BitType, MaskType>(m_mask ^ rhs.m_mask);
+      return Flags<BitType>(m_mask ^ rhs.m_mask);
     }
 
-    VULKAN_HPP_CONSTEXPR Flags<BitType, MaskType> operator~() const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR Flags<BitType> operator~() const VULKAN_HPP_NOEXCEPT
     {
-      return Flags<BitType, MaskType>(m_mask ^ FlagTraits<BitType>::allFlags);
+      return Flags<BitType>(m_mask ^ FlagTraits<BitType>::allFlags);
     }
 
     // assignment operators
-    Flags<BitType, MaskType> & operator=(Flags<BitType, MaskType> const& rhs) VULKAN_HPP_NOEXCEPT
+    Flags<BitType> & operator=(Flags<BitType> const& rhs) VULKAN_HPP_NOEXCEPT
     {
       m_mask = rhs.m_mask;
       return *this;
     }
 
-    Flags<BitType, MaskType> & operator|=(Flags<BitType, MaskType> const& rhs) VULKAN_HPP_NOEXCEPT
+    Flags<BitType> & operator|=(Flags<BitType> const& rhs) VULKAN_HPP_NOEXCEPT
     {
       m_mask |= rhs.m_mask;
       return *this;
     }
 
-    Flags<BitType, MaskType> & operator&=(Flags<BitType, MaskType> const& rhs) VULKAN_HPP_NOEXCEPT
+    Flags<BitType> & operator&=(Flags<BitType> const& rhs) VULKAN_HPP_NOEXCEPT
     {
       m_mask &= rhs.m_mask;
       return *this;
     }
 
-    Flags<BitType, MaskType> & operator^=(Flags<BitType, MaskType> const& rhs) VULKAN_HPP_NOEXCEPT
+    Flags<BitType> & operator^=(Flags<BitType> const& rhs) VULKAN_HPP_NOEXCEPT
     {
       m_mask ^= rhs.m_mask;
       return *this;
@@ -5504,57 +5533,57 @@ int main(int argc, char **argv)
   };
 
   // relational operators
-  template <typename BitType, typename MaskType = VkFlags>
-  VULKAN_HPP_CONSTEXPR bool operator<(BitType bit, Flags<BitType, MaskType> const& flags) VULKAN_HPP_NOEXCEPT
+  template <typename BitType>
+  VULKAN_HPP_CONSTEXPR bool operator<(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
   {
     return flags > bit;
   }
 
-  template <typename BitType, typename MaskType = VkFlags>
-  VULKAN_HPP_CONSTEXPR bool operator<=(BitType bit, Flags<BitType, MaskType> const& flags) VULKAN_HPP_NOEXCEPT
+  template <typename BitType>
+  VULKAN_HPP_CONSTEXPR bool operator<=(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
   {
     return flags >= bit;
   }
 
-  template <typename BitType, typename MaskType = VkFlags>
-  VULKAN_HPP_CONSTEXPR bool operator>(BitType bit, Flags<BitType, MaskType> const& flags) VULKAN_HPP_NOEXCEPT
+  template <typename BitType>
+  VULKAN_HPP_CONSTEXPR bool operator>(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
   {
     return flags < bit;
   }
 
-  template <typename BitType, typename MaskType = VkFlags>
-  VULKAN_HPP_CONSTEXPR bool operator>=(BitType bit, Flags<BitType, MaskType> const& flags) VULKAN_HPP_NOEXCEPT
+  template <typename BitType>
+  VULKAN_HPP_CONSTEXPR bool operator>=(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
   {
     return flags <= bit;
   }
 
-  template <typename BitType, typename MaskType = VkFlags>
-  VULKAN_HPP_CONSTEXPR bool operator==(BitType bit, Flags<BitType, MaskType> const& flags) VULKAN_HPP_NOEXCEPT
+  template <typename BitType>
+  VULKAN_HPP_CONSTEXPR bool operator==(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
   {
     return flags == bit;
   }
 
-  template <typename BitType, typename MaskType = VkFlags>
-  VULKAN_HPP_CONSTEXPR bool operator!=(BitType bit, Flags<BitType, MaskType> const& flags) VULKAN_HPP_NOEXCEPT
+  template <typename BitType>
+  VULKAN_HPP_CONSTEXPR bool operator!=(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
   {
     return flags != bit;
   }
 
   // bitwise operators
-  template <typename BitType, typename MaskType = VkFlags>
-  VULKAN_HPP_CONSTEXPR Flags<BitType, MaskType> operator&(BitType bit, Flags<BitType, MaskType> const& flags) VULKAN_HPP_NOEXCEPT
+  template <typename BitType>
+  VULKAN_HPP_CONSTEXPR Flags<BitType> operator&(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
   {
     return flags & bit;
   }
 
-  template <typename BitType, typename MaskType = VkFlags>
-  VULKAN_HPP_CONSTEXPR Flags<BitType, MaskType> operator|(BitType bit, Flags<BitType, MaskType> const& flags) VULKAN_HPP_NOEXCEPT
+  template <typename BitType>
+  VULKAN_HPP_CONSTEXPR Flags<BitType> operator|(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
   {
     return flags | bit;
   }
 
-  template <typename BitType, typename MaskType = VkFlags>
-  VULKAN_HPP_CONSTEXPR Flags<BitType, MaskType> operator^(BitType bit, Flags<BitType, MaskType> const& flags) VULKAN_HPP_NOEXCEPT
+  template <typename BitType>
+  VULKAN_HPP_CONSTEXPR Flags<BitType> operator^(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
   {
     return flags ^ bit;
   }

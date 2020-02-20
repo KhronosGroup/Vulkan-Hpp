@@ -2744,7 +2744,7 @@ void VulkanHppGenerator::appendStructConstructor(std::string &str, std::pair<std
         {
           arraySizes += "," + as;
         }
-        copyOps += prefix + "  VULKAN_HPP_NAMESPACE::ConstExpression" + std::to_string(member.arraySizes.size()) + "DArrayCopy<" + type + arraySizes + arraySizes + ">::copy( " + member.name + ", " + member.name + "_ );\n";
+        copyOps += prefix + "  VULKAN_HPP_NAMESPACE::ConstExpression" + std::to_string(member.arraySizes.size()) + "DArrayCopy<" + type + arraySizes + ">::copy( " + member.name + ", " + member.name + "_ );\n";
       }
     }
   }
@@ -2798,7 +2798,7 @@ void VulkanHppGenerator::appendStructCopyConstructor(std::string &str, std::pair
         {
           arraySizes += "," + as;
         }
-        copyOps += "\n" + prefix + "  VULKAN_HPP_NAMESPACE::ConstExpression" + std::to_string(member.arraySizes.size()) + "DArrayCopy<" + type + arraySizes + arraySizes + ">::copy( " + member.name + ", rhs." + member.name + " );";
+        copyOps += "\n" + prefix + "  VULKAN_HPP_NAMESPACE::ConstExpression" + std::to_string(member.arraySizes.size()) + "DArrayCopy<" + type + arraySizes + ">::copy( " + member.name + ", rhs." + member.name + " );";
       }
     }
   }
@@ -5416,69 +5416,100 @@ int main(int argc, char **argv)
 )";
 
 static const std::string constExpressionArrayCopy = R"(
-  template <typename T, size_t N, size_t I>
-  class ConstExpression1DArrayCopy
+  template<typename T, size_t N, size_t I>
+  class PrivateConstExpression1DArrayCopy
   {
-    public:
-      VULKAN_HPP_CONSTEXPR_14 static void copy(T dst[N], std::array<T,N> const& src) VULKAN_HPP_NOEXCEPT
-      {
-        ConstExpression1DArrayCopy<T, N, I - 1>::copy(dst, src);
-        dst[I-1] = src[I-1];
-      }
+  public:
+    VULKAN_HPP_CONSTEXPR_14 static void copy( T * dst, T const* src ) VULKAN_HPP_NOEXCEPT
+    {
+      PrivateConstExpression1DArrayCopy<T, N, I - 1>::copy( dst, src );
+      dst[I - 1] = src[I - 1];
+    }
+  };
 
-      VULKAN_HPP_CONSTEXPR_14 static void copy(T dst[N], const T src[N]) VULKAN_HPP_NOEXCEPT
-      {
-        ConstExpression1DArrayCopy<T, N, I - 1>::copy(dst, src);
-        dst[I - 1] = src[I - 1];
-      }
+  template<typename T, size_t N>
+  class PrivateConstExpression1DArrayCopy<T, N, 0>
+  {
+  public:
+    VULKAN_HPP_CONSTEXPR_14 static void copy( T * /*dst*/, T const* /*src*/ ) VULKAN_HPP_NOEXCEPT
+    {}
   };
 
   template <typename T, size_t N>
-  class ConstExpression1DArrayCopy<T, N, 0>
-  {
-    public:
-      VULKAN_HPP_CONSTEXPR_14 static void copy(T /*dst*/[N], std::array<T,N> const& /*src*/) VULKAN_HPP_NOEXCEPT {}
-      VULKAN_HPP_CONSTEXPR_14 static void copy(T /*dst*/[N], const T /*src*/[N]) VULKAN_HPP_NOEXCEPT {}
-  };
-
-  template <typename T, size_t N, size_t M, size_t I, size_t J>
-  class ConstExpression2DArrayCopy
+  class ConstExpression1DArrayCopy
   {
   public:
-    VULKAN_HPP_CONSTEXPR_14 static void copy(T dst[N][M], std::array<std::array<T,M>, N> const& src) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR_14 static void copy( T dst[N], const T src[N] ) VULKAN_HPP_NOEXCEPT
     {
-      ConstExpression2DArrayCopy<T, N, M, I, J - 1>::copy(dst, src);
-      dst[I - 1][J - 1] = src[I - 1][J - 1];
+      VULKAN_HPP_CONSTEXPR_14 size_t C = N / 2;
+      PrivateConstExpression1DArrayCopy<T, C, C>::copy( dst, src );
+      PrivateConstExpression1DArrayCopy<T, N - C, N - C>::copy(dst + C, src + C);
     }
 
-    VULKAN_HPP_CONSTEXPR_14 static void copy(T dst[N][M], const T src[N][M]) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR_14 static void copy( T dst[N], std::array<T, N> const& src ) VULKAN_HPP_NOEXCEPT
     {
-      ConstExpression2DArrayCopy<T, N, M, I, J - 1>::copy(dst, src);
-      dst[I - 1][J - 1] = src[I - 1][J - 1];
+      VULKAN_HPP_CONSTEXPR_14 size_t C = N / 2;
+      PrivateConstExpression1DArrayCopy<T, C, C>::copy(dst, src.data());
+      PrivateConstExpression1DArrayCopy<T, N - C, N - C>::copy(dst + C, src.data() + C);
     }
   };
 
-  template <typename T, size_t N, size_t M, size_t I>
-  class ConstExpression2DArrayCopy<T, N, M, I, 0>
+  template<typename T, size_t N, size_t M, size_t I, size_t J>
+  class PrivateConstExpression2DArrayCopy
   {
   public:
-    VULKAN_HPP_CONSTEXPR_14 static void copy(T dst[N][M], std::array<std::array<T, M>, N> const& src) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR_14 static void copy( T dst[N], const T src[N] ) VULKAN_HPP_NOEXCEPT
     {
-      ConstExpression2DArrayCopy<T, N, M, I - 1, M>::copy(dst, src);
+      PrivateConstExpression2DArrayCopy<T, N, M, I, J - 1>::copy( dst, src );
+      dst[I - 1][J - 1] = src[I - 1][J - 1];
     }
 
-    VULKAN_HPP_CONSTEXPR_14 static void copy(T dst[N][M], const T src[N][M]) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR_14 static void copy( T dst[N], std::array<T, N> const& src ) VULKAN_HPP_NOEXCEPT
     {
-      ConstExpression2DArrayCopy<T, N, M, I - 1, M>::copy(dst, src);
+      PrivateConstExpression2DArrayCopy<T, N, M, I, J - 1>::copy( dst, src );
+      dst[I - 1][J - 1] = src[I - 1][J - 1];
     }
+  };
+
+  template<typename T, size_t N, size_t M, size_t I>
+  class PrivateConstExpression2DArrayCopy<T, N, M, I,0>
+  {
+  public:
+    VULKAN_HPP_CONSTEXPR_14 static void copy( T dst[N], const T src[N] ) VULKAN_HPP_NOEXCEPT
+    {
+      PrivateConstExpression2DArrayCopy<T, N, M, I - 1, M>::copy( dst, src );
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 static void copy( T dst[N], std::array<T, N> const& src ) VULKAN_HPP_NOEXCEPT
+    {
+      PrivateConstExpression2DArrayCopy<T, N, M, I - 1, M>::copy( dst, src );
+    }
+  };
+
+  template<typename T, size_t N, size_t M>
+  class PrivateConstExpression2DArrayCopy<T, N, M, 0, 0>
+  {
+  public:
+    VULKAN_HPP_CONSTEXPR_14 static void copy( T /*dst*/[N], const T /*src*/[N] ) VULKAN_HPP_NOEXCEPT
+    {}
+
+    VULKAN_HPP_CONSTEXPR_14 static void copy( T /*dst*/[N], std::array<T, N> const& /*src*/ ) VULKAN_HPP_NOEXCEPT
+    {}
   };
 
   template <typename T, size_t N, size_t M>
-  class ConstExpression2DArrayCopy<T, N, M, 0, 0>
+  class ConstExpression2DArrayCopy
   {
   public:
-    VULKAN_HPP_CONSTEXPR_14 static void copy(T /*dst*/[N][M], std::array<std::array<T, M>, N> const& /*src*/) VULKAN_HPP_NOEXCEPT {}
-    VULKAN_HPP_CONSTEXPR_14 static void copy(T /*dst*/[N][M], const T /*src*/[N][M]) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_CONSTEXPR_14 static void copy( T dst[N][M], const T src[N][M] ) VULKAN_HPP_NOEXCEPT
+    {
+      PrivateConstExpression2DArrayCopy<T, N, M, N, M>::copy( dst, src );
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 static void copy( T dst[N][M], std::array<std::array<T, M>, N> const& src ) VULKAN_HPP_NOEXCEPT
+    {
+      PrivateConstExpression2DArrayCopy<T, N, M, N, M>::copy( dst, src );
+    }
   };
 )";
 

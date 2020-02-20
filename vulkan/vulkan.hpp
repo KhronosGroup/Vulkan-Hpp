@@ -2859,69 +2859,100 @@ namespace VULKAN_HPP_NAMESPACE
       Dispatch const* m_dispatch;
   };
 
-  template <typename T, size_t N, size_t I>
-  class ConstExpression1DArrayCopy
+  template<typename T, size_t N, size_t I>
+  class PrivateConstExpression1DArrayCopy
   {
-    public:
-      VULKAN_HPP_CONSTEXPR_14 static void copy(T dst[N], std::array<T,N> const& src) VULKAN_HPP_NOEXCEPT
-      {
-        ConstExpression1DArrayCopy<T, N, I - 1>::copy(dst, src);
-        dst[I-1] = src[I-1];
-      }
+  public:
+    VULKAN_HPP_CONSTEXPR_14 static void copy( T * dst, T const* src ) VULKAN_HPP_NOEXCEPT
+    {
+      PrivateConstExpression1DArrayCopy<T, N, I - 1>::copy( dst, src );
+      dst[I - 1] = src[I - 1];
+    }
+  };
 
-      VULKAN_HPP_CONSTEXPR_14 static void copy(T dst[N], const T src[N]) VULKAN_HPP_NOEXCEPT
-      {
-        ConstExpression1DArrayCopy<T, N, I - 1>::copy(dst, src);
-        dst[I - 1] = src[I - 1];
-      }
+  template<typename T, size_t N>
+  class PrivateConstExpression1DArrayCopy<T, N, 0>
+  {
+  public:
+    VULKAN_HPP_CONSTEXPR_14 static void copy( T * /*dst*/, T const* /*src*/ ) VULKAN_HPP_NOEXCEPT
+    {}
   };
 
   template <typename T, size_t N>
-  class ConstExpression1DArrayCopy<T, N, 0>
-  {
-    public:
-      VULKAN_HPP_CONSTEXPR_14 static void copy(T /*dst*/[N], std::array<T,N> const& /*src*/) VULKAN_HPP_NOEXCEPT {}
-      VULKAN_HPP_CONSTEXPR_14 static void copy(T /*dst*/[N], const T /*src*/[N]) VULKAN_HPP_NOEXCEPT {}
-  };
-
-  template <typename T, size_t N, size_t M, size_t I, size_t J>
-  class ConstExpression2DArrayCopy
+  class ConstExpression1DArrayCopy
   {
   public:
-    VULKAN_HPP_CONSTEXPR_14 static void copy(T dst[N][M], std::array<std::array<T,M>, N> const& src) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR_14 static void copy( T dst[N], const T src[N] ) VULKAN_HPP_NOEXCEPT
     {
-      ConstExpression2DArrayCopy<T, N, M, I, J - 1>::copy(dst, src);
-      dst[I - 1][J - 1] = src[I - 1][J - 1];
+      const size_t C = N / 2;
+      PrivateConstExpression1DArrayCopy<T, C, C>::copy( dst, src );
+      PrivateConstExpression1DArrayCopy<T, N - C, N - C>::copy(dst + C, src + C);
     }
 
-    VULKAN_HPP_CONSTEXPR_14 static void copy(T dst[N][M], const T src[N][M]) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR_14 static void copy( T dst[N], std::array<T, N> const& src ) VULKAN_HPP_NOEXCEPT
     {
-      ConstExpression2DArrayCopy<T, N, M, I, J - 1>::copy(dst, src);
-      dst[I - 1][J - 1] = src[I - 1][J - 1];
+      const size_t C = N / 2;
+      PrivateConstExpression1DArrayCopy<T, C, C>::copy(dst, src.data());
+      PrivateConstExpression1DArrayCopy<T, N - C, N - C>::copy(dst + C, src.data() + C);
     }
   };
 
-  template <typename T, size_t N, size_t M, size_t I>
-  class ConstExpression2DArrayCopy<T, N, M, I, 0>
+  template<typename T, size_t N, size_t M, size_t I, size_t J>
+  class PrivateConstExpression2DArrayCopy
   {
   public:
-    VULKAN_HPP_CONSTEXPR_14 static void copy(T dst[N][M], std::array<std::array<T, M>, N> const& src) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR_14 static void copy( T dst[N], const T src[N] ) VULKAN_HPP_NOEXCEPT
     {
-      ConstExpression2DArrayCopy<T, N, M, I - 1, M>::copy(dst, src);
+      PrivateConstExpression2DArrayCopy<T, N, M, I, J - 1>::copy( dst, src );
+      dst[I - 1][J - 1] = src[I - 1][J - 1];
     }
 
-    VULKAN_HPP_CONSTEXPR_14 static void copy(T dst[N][M], const T src[N][M]) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR_14 static void copy( T dst[N], std::array<T, N> const& src ) VULKAN_HPP_NOEXCEPT
     {
-      ConstExpression2DArrayCopy<T, N, M, I - 1, M>::copy(dst, src);
+      PrivateConstExpression2DArrayCopy<T, N, M, I, J - 1>::copy( dst, src );
+      dst[I - 1][J - 1] = src[I - 1][J - 1];
     }
+  };
+
+  template<typename T, size_t N, size_t M, size_t I>
+  class PrivateConstExpression2DArrayCopy<T, N, M, I,0>
+  {
+  public:
+    VULKAN_HPP_CONSTEXPR_14 static void copy( T dst[N], const T src[N] ) VULKAN_HPP_NOEXCEPT
+    {
+      PrivateConstExpression2DArrayCopy<T, N, M, I - 1, M>::copy( dst, src );
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 static void copy( T dst[N], std::array<T, N> const& src ) VULKAN_HPP_NOEXCEPT
+    {
+      PrivateConstExpression2DArrayCopy<T, N, M, I - 1, M>::copy( dst, src );
+    }
+  };
+
+  template<typename T, size_t N, size_t M>
+  class PrivateConstExpression2DArrayCopy<T, N, M, 0, 0>
+  {
+  public:
+    VULKAN_HPP_CONSTEXPR_14 static void copy( T /*dst*/[N], const T /*src*/[N] ) VULKAN_HPP_NOEXCEPT
+    {}
+
+    VULKAN_HPP_CONSTEXPR_14 static void copy( T /*dst*/[N], std::array<T, N> const& /*src*/ ) VULKAN_HPP_NOEXCEPT
+    {}
   };
 
   template <typename T, size_t N, size_t M>
-  class ConstExpression2DArrayCopy<T, N, M, 0, 0>
+  class ConstExpression2DArrayCopy
   {
   public:
-    VULKAN_HPP_CONSTEXPR_14 static void copy(T /*dst*/[N][M], std::array<std::array<T, M>, N> const& /*src*/) VULKAN_HPP_NOEXCEPT {}
-    VULKAN_HPP_CONSTEXPR_14 static void copy(T /*dst*/[N][M], const T /*src*/[N][M]) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_CONSTEXPR_14 static void copy( T dst[N][M], const T src[N][M] ) VULKAN_HPP_NOEXCEPT
+    {
+      PrivateConstExpression2DArrayCopy<T, N, M, N, M>::copy( dst, src );
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 static void copy( T dst[N][M], std::array<std::array<T, M>, N> const& src ) VULKAN_HPP_NOEXCEPT
+    {
+      PrivateConstExpression2DArrayCopy<T, N, M, N, M>::copy( dst, src );
+    }
   };
 
   using Bool32 = uint32_t;
@@ -26759,7 +26790,7 @@ namespace VULKAN_HPP_NAMESPACE
       : pMarkerName( pMarkerName_ )
       , color{}
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,4,4>::copy( color, color_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,4>::copy( color, color_ );
     }
 
     VULKAN_HPP_CONSTEXPR_14 DebugMarkerMarkerInfoEXT( DebugMarkerMarkerInfoEXT const& rhs ) VULKAN_HPP_NOEXCEPT
@@ -26767,7 +26798,7 @@ namespace VULKAN_HPP_NAMESPACE
       , pMarkerName( rhs.pMarkerName )
       , color{}
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,4,4>::copy( color, rhs.color );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,4>::copy( color, rhs.color );
     }
 
     DebugMarkerMarkerInfoEXT & operator=( DebugMarkerMarkerInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -27142,7 +27173,7 @@ namespace VULKAN_HPP_NAMESPACE
       : pLabelName( pLabelName_ )
       , color{}
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,4,4>::copy( color, color_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,4>::copy( color, color_ );
     }
 
     VULKAN_HPP_CONSTEXPR_14 DebugUtilsLabelEXT( DebugUtilsLabelEXT const& rhs ) VULKAN_HPP_NOEXCEPT
@@ -27150,7 +27181,7 @@ namespace VULKAN_HPP_NAMESPACE
       , pLabelName( rhs.pLabelName )
       , color{}
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,4,4>::copy( color, rhs.color );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,4>::copy( color, rhs.color );
     }
 
     DebugUtilsLabelEXT & operator=( DebugUtilsLabelEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -30557,7 +30588,7 @@ namespace VULKAN_HPP_NAMESPACE
       : presentMask{}
       , modes( modes_ )
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,VK_MAX_DEVICE_GROUP_SIZE,VK_MAX_DEVICE_GROUP_SIZE>::copy( presentMask, presentMask_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,VK_MAX_DEVICE_GROUP_SIZE>::copy( presentMask, presentMask_ );
     }
 
     VULKAN_HPP_CONSTEXPR_14 DeviceGroupPresentCapabilitiesKHR( DeviceGroupPresentCapabilitiesKHR const& rhs ) VULKAN_HPP_NOEXCEPT
@@ -30565,7 +30596,7 @@ namespace VULKAN_HPP_NAMESPACE
       , presentMask{}
       , modes( rhs.modes )
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,VK_MAX_DEVICE_GROUP_SIZE,VK_MAX_DEVICE_GROUP_SIZE>::copy( presentMask, rhs.presentMask );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,VK_MAX_DEVICE_GROUP_SIZE>::copy( presentMask, rhs.presentMask );
     }
 
     DeviceGroupPresentCapabilitiesKHR & operator=( DeviceGroupPresentCapabilitiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -33689,14 +33720,14 @@ namespace VULKAN_HPP_NAMESPACE
       : extensionName{}
       , specVersion( specVersion_ )
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_EXTENSION_NAME_SIZE,VK_MAX_EXTENSION_NAME_SIZE>::copy( extensionName, extensionName_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_EXTENSION_NAME_SIZE>::copy( extensionName, extensionName_ );
     }
 
     VULKAN_HPP_CONSTEXPR_14 ExtensionProperties( ExtensionProperties const& rhs ) VULKAN_HPP_NOEXCEPT
       : extensionName{}
       , specVersion( rhs.specVersion )
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_EXTENSION_NAME_SIZE,VK_MAX_EXTENSION_NAME_SIZE>::copy( extensionName, rhs.extensionName );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_EXTENSION_NAME_SIZE>::copy( extensionName, rhs.extensionName );
     }
 
     ExtensionProperties & operator=( ExtensionProperties const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -36777,7 +36808,7 @@ namespace VULKAN_HPP_NAMESPACE
       , pAttachments( pAttachments_ )
       , blendConstants{}
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,4,4>::copy( blendConstants, blendConstants_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,4>::copy( blendConstants, blendConstants_ );
     }
 
     VULKAN_HPP_CONSTEXPR_14 PipelineColorBlendStateCreateInfo( PipelineColorBlendStateCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
@@ -36789,7 +36820,7 @@ namespace VULKAN_HPP_NAMESPACE
       , pAttachments( rhs.pAttachments )
       , blendConstants{}
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,4,4>::copy( blendConstants, rhs.blendConstants );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,4>::copy( blendConstants, rhs.blendConstants );
     }
 
     PipelineColorBlendStateCreateInfo & operator=( PipelineColorBlendStateCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -37611,8 +37642,8 @@ namespace VULKAN_HPP_NAMESPACE
       , dstSubresource( dstSubresource_ )
       , dstOffsets{}
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::Offset3D,2,2>::copy( srcOffsets, srcOffsets_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::Offset3D,2,2>::copy( dstOffsets, dstOffsets_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::Offset3D,2>::copy( srcOffsets, srcOffsets_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::Offset3D,2>::copy( dstOffsets, dstOffsets_ );
     }
 
     VULKAN_HPP_CONSTEXPR_14 ImageBlit( ImageBlit const& rhs ) VULKAN_HPP_NOEXCEPT
@@ -37621,8 +37652,8 @@ namespace VULKAN_HPP_NAMESPACE
       , dstSubresource( rhs.dstSubresource )
       , dstOffsets{}
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::Offset3D,2,2>::copy( srcOffsets, rhs.srcOffsets );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::Offset3D,2,2>::copy( dstOffsets, rhs.dstOffsets );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::Offset3D,2>::copy( srcOffsets, rhs.srcOffsets );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::Offset3D,2>::copy( dstOffsets, rhs.dstOffsets );
     }
 
     ImageBlit & operator=( ImageBlit const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -40926,8 +40957,8 @@ namespace VULKAN_HPP_NAMESPACE
       , implementationVersion( implementationVersion_ )
       , description{}
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_EXTENSION_NAME_SIZE,VK_MAX_EXTENSION_NAME_SIZE>::copy( layerName, layerName_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( description, description_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_EXTENSION_NAME_SIZE>::copy( layerName, layerName_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE>::copy( description, description_ );
     }
 
     VULKAN_HPP_CONSTEXPR_14 LayerProperties( LayerProperties const& rhs ) VULKAN_HPP_NOEXCEPT
@@ -40936,8 +40967,8 @@ namespace VULKAN_HPP_NAMESPACE
       , implementationVersion( rhs.implementationVersion )
       , description{}
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_EXTENSION_NAME_SIZE,VK_MAX_EXTENSION_NAME_SIZE>::copy( layerName, rhs.layerName );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( description, rhs.description );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_EXTENSION_NAME_SIZE>::copy( layerName, rhs.layerName );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE>::copy( description, rhs.description );
     }
 
     LayerProperties & operator=( LayerProperties const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -43347,9 +43378,9 @@ namespace VULKAN_HPP_NAMESPACE
       , category{}
       , description{}
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( name, name_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( category, category_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( description, description_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE>::copy( name, name_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE>::copy( category, category_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE>::copy( description, description_ );
     }
 
     VULKAN_HPP_CONSTEXPR_14 PerformanceCounterDescriptionKHR( PerformanceCounterDescriptionKHR const& rhs ) VULKAN_HPP_NOEXCEPT
@@ -43359,9 +43390,9 @@ namespace VULKAN_HPP_NAMESPACE
       , category{}
       , description{}
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( name, rhs.name );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( category, rhs.category );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( description, rhs.description );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE>::copy( name, rhs.name );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE>::copy( category, rhs.category );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE>::copy( description, rhs.description );
     }
 
     PerformanceCounterDescriptionKHR & operator=( PerformanceCounterDescriptionKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -43428,7 +43459,7 @@ namespace VULKAN_HPP_NAMESPACE
       , storage( storage_ )
       , uuid{}
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint8_t,VK_UUID_SIZE,VK_UUID_SIZE>::copy( uuid, uuid_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint8_t,VK_UUID_SIZE>::copy( uuid, uuid_ );
     }
 
     VULKAN_HPP_CONSTEXPR_14 PerformanceCounterKHR( PerformanceCounterKHR const& rhs ) VULKAN_HPP_NOEXCEPT
@@ -43438,7 +43469,7 @@ namespace VULKAN_HPP_NAMESPACE
       , storage( rhs.storage )
       , uuid{}
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint8_t,VK_UUID_SIZE,VK_UUID_SIZE>::copy( uuid, rhs.uuid );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint8_t,VK_UUID_SIZE>::copy( uuid, rhs.uuid );
     }
 
     PerformanceCounterKHR & operator=( PerformanceCounterKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -45980,8 +46011,8 @@ namespace VULKAN_HPP_NAMESPACE
       , driverInfo{}
       , conformanceVersion( conformanceVersion_ )
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DRIVER_NAME_SIZE_KHR,VK_MAX_DRIVER_NAME_SIZE_KHR>::copy( driverName, driverName_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DRIVER_INFO_SIZE_KHR,VK_MAX_DRIVER_INFO_SIZE_KHR>::copy( driverInfo, driverInfo_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DRIVER_NAME_SIZE_KHR>::copy( driverName, driverName_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DRIVER_INFO_SIZE_KHR>::copy( driverInfo, driverInfo_ );
     }
 
     VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceDriverPropertiesKHR( PhysicalDeviceDriverPropertiesKHR const& rhs ) VULKAN_HPP_NOEXCEPT
@@ -45991,8 +46022,8 @@ namespace VULKAN_HPP_NAMESPACE
       , driverInfo{}
       , conformanceVersion( rhs.conformanceVersion )
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DRIVER_NAME_SIZE_KHR,VK_MAX_DRIVER_NAME_SIZE_KHR>::copy( driverName, rhs.driverName );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DRIVER_INFO_SIZE_KHR,VK_MAX_DRIVER_INFO_SIZE_KHR>::copy( driverInfo, rhs.driverInfo );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DRIVER_NAME_SIZE_KHR>::copy( driverName, rhs.driverName );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DRIVER_INFO_SIZE_KHR>::copy( driverInfo, rhs.driverInfo );
     }
 
     PhysicalDeviceDriverPropertiesKHR & operator=( PhysicalDeviceDriverPropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -46993,7 +47024,7 @@ namespace VULKAN_HPP_NAMESPACE
       , physicalDevices{}
       , subsetAllocation( subsetAllocation_ )
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::PhysicalDevice,VK_MAX_DEVICE_GROUP_SIZE,VK_MAX_DEVICE_GROUP_SIZE>::copy( physicalDevices, physicalDevices_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::PhysicalDevice,VK_MAX_DEVICE_GROUP_SIZE>::copy( physicalDevices, physicalDevices_ );
     }
 
     VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceGroupProperties( PhysicalDeviceGroupProperties const& rhs ) VULKAN_HPP_NOEXCEPT
@@ -47002,7 +47033,7 @@ namespace VULKAN_HPP_NAMESPACE
       , physicalDevices{}
       , subsetAllocation( rhs.subsetAllocation )
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::PhysicalDevice,VK_MAX_DEVICE_GROUP_SIZE,VK_MAX_DEVICE_GROUP_SIZE>::copy( physicalDevices, rhs.physicalDevices );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::PhysicalDevice,VK_MAX_DEVICE_GROUP_SIZE>::copy( physicalDevices, rhs.physicalDevices );
     }
 
     PhysicalDeviceGroupProperties & operator=( PhysicalDeviceGroupProperties const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -47139,9 +47170,9 @@ namespace VULKAN_HPP_NAMESPACE
       , deviceNodeMask( deviceNodeMask_ )
       , deviceLUIDValid( deviceLUIDValid_ )
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint8_t,VK_UUID_SIZE,VK_UUID_SIZE>::copy( deviceUUID, deviceUUID_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint8_t,VK_UUID_SIZE,VK_UUID_SIZE>::copy( driverUUID, driverUUID_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint8_t,VK_LUID_SIZE,VK_LUID_SIZE>::copy( deviceLUID, deviceLUID_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint8_t,VK_UUID_SIZE>::copy( deviceUUID, deviceUUID_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint8_t,VK_UUID_SIZE>::copy( driverUUID, driverUUID_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint8_t,VK_LUID_SIZE>::copy( deviceLUID, deviceLUID_ );
     }
 
     VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceIDProperties( PhysicalDeviceIDProperties const& rhs ) VULKAN_HPP_NOEXCEPT
@@ -47152,9 +47183,9 @@ namespace VULKAN_HPP_NAMESPACE
       , deviceNodeMask( rhs.deviceNodeMask )
       , deviceLUIDValid( rhs.deviceLUIDValid )
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint8_t,VK_UUID_SIZE,VK_UUID_SIZE>::copy( deviceUUID, rhs.deviceUUID );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint8_t,VK_UUID_SIZE,VK_UUID_SIZE>::copy( driverUUID, rhs.driverUUID );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint8_t,VK_LUID_SIZE,VK_LUID_SIZE>::copy( deviceLUID, rhs.deviceLUID );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint8_t,VK_UUID_SIZE>::copy( deviceUUID, rhs.deviceUUID );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint8_t,VK_UUID_SIZE>::copy( driverUUID, rhs.driverUUID );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint8_t,VK_LUID_SIZE>::copy( deviceLUID, rhs.deviceLUID );
     }
 
     PhysicalDeviceIDProperties & operator=( PhysicalDeviceIDProperties const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -48013,12 +48044,12 @@ namespace VULKAN_HPP_NAMESPACE
       , optimalBufferCopyRowPitchAlignment( optimalBufferCopyRowPitchAlignment_ )
       , nonCoherentAtomSize( nonCoherentAtomSize_ )
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,3,3>::copy( maxComputeWorkGroupCount, maxComputeWorkGroupCount_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,3,3>::copy( maxComputeWorkGroupSize, maxComputeWorkGroupSize_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,2,2>::copy( maxViewportDimensions, maxViewportDimensions_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,2,2>::copy( viewportBoundsRange, viewportBoundsRange_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,2,2>::copy( pointSizeRange, pointSizeRange_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,2,2>::copy( lineWidthRange, lineWidthRange_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,3>::copy( maxComputeWorkGroupCount, maxComputeWorkGroupCount_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,3>::copy( maxComputeWorkGroupSize, maxComputeWorkGroupSize_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,2>::copy( maxViewportDimensions, maxViewportDimensions_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,2>::copy( viewportBoundsRange, viewportBoundsRange_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,2>::copy( pointSizeRange, pointSizeRange_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,2>::copy( lineWidthRange, lineWidthRange_ );
     }
 
     VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceLimits( PhysicalDeviceLimits const& rhs ) VULKAN_HPP_NOEXCEPT
@@ -48129,12 +48160,12 @@ namespace VULKAN_HPP_NAMESPACE
       , optimalBufferCopyRowPitchAlignment( rhs.optimalBufferCopyRowPitchAlignment )
       , nonCoherentAtomSize( rhs.nonCoherentAtomSize )
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,3,3>::copy( maxComputeWorkGroupCount, rhs.maxComputeWorkGroupCount );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,3,3>::copy( maxComputeWorkGroupSize, rhs.maxComputeWorkGroupSize );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,2,2>::copy( maxViewportDimensions, rhs.maxViewportDimensions );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,2,2>::copy( viewportBoundsRange, rhs.viewportBoundsRange );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,2,2>::copy( pointSizeRange, rhs.pointSizeRange );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,2,2>::copy( lineWidthRange, rhs.lineWidthRange );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,3>::copy( maxComputeWorkGroupCount, rhs.maxComputeWorkGroupCount );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,3>::copy( maxComputeWorkGroupSize, rhs.maxComputeWorkGroupSize );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,2>::copy( maxViewportDimensions, rhs.maxViewportDimensions );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,2>::copy( viewportBoundsRange, rhs.viewportBoundsRange );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,2>::copy( pointSizeRange, rhs.pointSizeRange );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,2>::copy( lineWidthRange, rhs.lineWidthRange );
     }
 
     PhysicalDeviceLimits & operator=( PhysicalDeviceLimits const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -48643,8 +48674,8 @@ namespace VULKAN_HPP_NAMESPACE
       : heapBudget{}
       , heapUsage{}
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::DeviceSize,VK_MAX_MEMORY_HEAPS,VK_MAX_MEMORY_HEAPS>::copy( heapBudget, heapBudget_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::DeviceSize,VK_MAX_MEMORY_HEAPS,VK_MAX_MEMORY_HEAPS>::copy( heapUsage, heapUsage_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::DeviceSize,VK_MAX_MEMORY_HEAPS>::copy( heapBudget, heapBudget_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::DeviceSize,VK_MAX_MEMORY_HEAPS>::copy( heapUsage, heapUsage_ );
     }
 
     VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceMemoryBudgetPropertiesEXT( PhysicalDeviceMemoryBudgetPropertiesEXT const& rhs ) VULKAN_HPP_NOEXCEPT
@@ -48652,8 +48683,8 @@ namespace VULKAN_HPP_NAMESPACE
       , heapBudget{}
       , heapUsage{}
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::DeviceSize,VK_MAX_MEMORY_HEAPS,VK_MAX_MEMORY_HEAPS>::copy( heapBudget, rhs.heapBudget );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::DeviceSize,VK_MAX_MEMORY_HEAPS,VK_MAX_MEMORY_HEAPS>::copy( heapUsage, rhs.heapUsage );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::DeviceSize,VK_MAX_MEMORY_HEAPS>::copy( heapBudget, rhs.heapBudget );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::DeviceSize,VK_MAX_MEMORY_HEAPS>::copy( heapUsage, rhs.heapUsage );
     }
 
     PhysicalDeviceMemoryBudgetPropertiesEXT & operator=( PhysicalDeviceMemoryBudgetPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -48786,8 +48817,8 @@ namespace VULKAN_HPP_NAMESPACE
       , memoryHeapCount( memoryHeapCount_ )
       , memoryHeaps{}
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::MemoryType,VK_MAX_MEMORY_TYPES,VK_MAX_MEMORY_TYPES>::copy( memoryTypes, memoryTypes_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::MemoryHeap,VK_MAX_MEMORY_HEAPS,VK_MAX_MEMORY_HEAPS>::copy( memoryHeaps, memoryHeaps_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::MemoryType,VK_MAX_MEMORY_TYPES>::copy( memoryTypes, memoryTypes_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::MemoryHeap,VK_MAX_MEMORY_HEAPS>::copy( memoryHeaps, memoryHeaps_ );
     }
 
     VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceMemoryProperties( PhysicalDeviceMemoryProperties const& rhs ) VULKAN_HPP_NOEXCEPT
@@ -48796,8 +48827,8 @@ namespace VULKAN_HPP_NAMESPACE
       , memoryHeapCount( rhs.memoryHeapCount )
       , memoryHeaps{}
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::MemoryType,VK_MAX_MEMORY_TYPES,VK_MAX_MEMORY_TYPES>::copy( memoryTypes, rhs.memoryTypes );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::MemoryHeap,VK_MAX_MEMORY_HEAPS,VK_MAX_MEMORY_HEAPS>::copy( memoryHeaps, rhs.memoryHeaps );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::MemoryType,VK_MAX_MEMORY_TYPES>::copy( memoryTypes, rhs.memoryTypes );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::MemoryHeap,VK_MAX_MEMORY_HEAPS>::copy( memoryHeaps, rhs.memoryHeaps );
     }
 
     PhysicalDeviceMemoryProperties & operator=( PhysicalDeviceMemoryProperties const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -49017,8 +49048,8 @@ namespace VULKAN_HPP_NAMESPACE
       , meshOutputPerVertexGranularity( meshOutputPerVertexGranularity_ )
       , meshOutputPerPrimitiveGranularity( meshOutputPerPrimitiveGranularity_ )
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,3,3>::copy( maxTaskWorkGroupSize, maxTaskWorkGroupSize_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,3,3>::copy( maxMeshWorkGroupSize, maxMeshWorkGroupSize_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,3>::copy( maxTaskWorkGroupSize, maxTaskWorkGroupSize_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,3>::copy( maxMeshWorkGroupSize, maxMeshWorkGroupSize_ );
     }
 
     VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceMeshShaderPropertiesNV( PhysicalDeviceMeshShaderPropertiesNV const& rhs ) VULKAN_HPP_NOEXCEPT
@@ -49037,8 +49068,8 @@ namespace VULKAN_HPP_NAMESPACE
       , meshOutputPerVertexGranularity( rhs.meshOutputPerVertexGranularity )
       , meshOutputPerPrimitiveGranularity( rhs.meshOutputPerPrimitiveGranularity )
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,3,3>::copy( maxTaskWorkGroupSize, rhs.maxTaskWorkGroupSize );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,3,3>::copy( maxMeshWorkGroupSize, rhs.maxMeshWorkGroupSize );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,3>::copy( maxTaskWorkGroupSize, rhs.maxTaskWorkGroupSize );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,3>::copy( maxMeshWorkGroupSize, rhs.maxMeshWorkGroupSize );
     }
 
     PhysicalDeviceMeshShaderPropertiesNV & operator=( PhysicalDeviceMeshShaderPropertiesNV const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -49759,8 +49790,8 @@ namespace VULKAN_HPP_NAMESPACE
       , limits( limits_ )
       , sparseProperties( sparseProperties_ )
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_PHYSICAL_DEVICE_NAME_SIZE,VK_MAX_PHYSICAL_DEVICE_NAME_SIZE>::copy( deviceName, deviceName_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint8_t,VK_UUID_SIZE,VK_UUID_SIZE>::copy( pipelineCacheUUID, pipelineCacheUUID_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_PHYSICAL_DEVICE_NAME_SIZE>::copy( deviceName, deviceName_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint8_t,VK_UUID_SIZE>::copy( pipelineCacheUUID, pipelineCacheUUID_ );
     }
 
     VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceProperties( PhysicalDeviceProperties const& rhs ) VULKAN_HPP_NOEXCEPT
@@ -49774,8 +49805,8 @@ namespace VULKAN_HPP_NAMESPACE
       , limits( rhs.limits )
       , sparseProperties( rhs.sparseProperties )
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_PHYSICAL_DEVICE_NAME_SIZE,VK_MAX_PHYSICAL_DEVICE_NAME_SIZE>::copy( deviceName, rhs.deviceName );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint8_t,VK_UUID_SIZE,VK_UUID_SIZE>::copy( pipelineCacheUUID, rhs.pipelineCacheUUID );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_PHYSICAL_DEVICE_NAME_SIZE>::copy( deviceName, rhs.deviceName );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint8_t,VK_UUID_SIZE>::copy( pipelineCacheUUID, rhs.pipelineCacheUUID );
     }
 
     PhysicalDeviceProperties & operator=( PhysicalDeviceProperties const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -50257,7 +50288,7 @@ namespace VULKAN_HPP_NAMESPACE
       , sampleLocationSubPixelBits( sampleLocationSubPixelBits_ )
       , variableSampleLocations( variableSampleLocations_ )
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,2,2>::copy( sampleLocationCoordinateRange, sampleLocationCoordinateRange_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,2>::copy( sampleLocationCoordinateRange, sampleLocationCoordinateRange_ );
     }
 
     VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceSampleLocationsPropertiesEXT( PhysicalDeviceSampleLocationsPropertiesEXT const& rhs ) VULKAN_HPP_NOEXCEPT
@@ -50268,7 +50299,7 @@ namespace VULKAN_HPP_NAMESPACE
       , sampleLocationSubPixelBits( rhs.sampleLocationSubPixelBits )
       , variableSampleLocations( rhs.variableSampleLocations )
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,2,2>::copy( sampleLocationCoordinateRange, rhs.sampleLocationCoordinateRange );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,2>::copy( sampleLocationCoordinateRange, rhs.sampleLocationCoordinateRange );
     }
 
     PhysicalDeviceSampleLocationsPropertiesEXT & operator=( PhysicalDeviceSampleLocationsPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -52425,10 +52456,10 @@ namespace VULKAN_HPP_NAMESPACE
       , description{}
       , layer{}
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_EXTENSION_NAME_SIZE,VK_MAX_EXTENSION_NAME_SIZE>::copy( name, name_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_EXTENSION_NAME_SIZE,VK_MAX_EXTENSION_NAME_SIZE>::copy( version, version_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( description, description_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_EXTENSION_NAME_SIZE,VK_MAX_EXTENSION_NAME_SIZE>::copy( layer, layer_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_EXTENSION_NAME_SIZE>::copy( name, name_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_EXTENSION_NAME_SIZE>::copy( version, version_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE>::copy( description, description_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_EXTENSION_NAME_SIZE>::copy( layer, layer_ );
     }
 
     VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceToolPropertiesEXT( PhysicalDeviceToolPropertiesEXT const& rhs ) VULKAN_HPP_NOEXCEPT
@@ -52439,10 +52470,10 @@ namespace VULKAN_HPP_NAMESPACE
       , description{}
       , layer{}
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_EXTENSION_NAME_SIZE,VK_MAX_EXTENSION_NAME_SIZE>::copy( name, rhs.name );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_EXTENSION_NAME_SIZE,VK_MAX_EXTENSION_NAME_SIZE>::copy( version, rhs.version );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( description, rhs.description );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_EXTENSION_NAME_SIZE,VK_MAX_EXTENSION_NAME_SIZE>::copy( layer, rhs.layer );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_EXTENSION_NAME_SIZE>::copy( name, rhs.name );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_EXTENSION_NAME_SIZE>::copy( version, rhs.version );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE>::copy( description, rhs.description );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_EXTENSION_NAME_SIZE>::copy( layer, rhs.layer );
     }
 
     PhysicalDeviceToolPropertiesEXT & operator=( PhysicalDeviceToolPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -54024,8 +54055,8 @@ namespace VULKAN_HPP_NAMESPACE
       , dataSize( dataSize_ )
       , pData( pData_ )
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( name, name_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( description, description_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE>::copy( name, name_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE>::copy( description, description_ );
     }
 
     VULKAN_HPP_CONSTEXPR_14 PipelineExecutableInternalRepresentationKHR( PipelineExecutableInternalRepresentationKHR const& rhs ) VULKAN_HPP_NOEXCEPT
@@ -54036,8 +54067,8 @@ namespace VULKAN_HPP_NAMESPACE
       , dataSize( rhs.dataSize )
       , pData( rhs.pData )
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( name, rhs.name );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( description, rhs.description );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE>::copy( name, rhs.name );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE>::copy( description, rhs.description );
     }
 
     PipelineExecutableInternalRepresentationKHR & operator=( PipelineExecutableInternalRepresentationKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -54106,8 +54137,8 @@ namespace VULKAN_HPP_NAMESPACE
       , description{}
       , subgroupSize( subgroupSize_ )
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( name, name_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( description, description_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE>::copy( name, name_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE>::copy( description, description_ );
     }
 
     VULKAN_HPP_CONSTEXPR_14 PipelineExecutablePropertiesKHR( PipelineExecutablePropertiesKHR const& rhs ) VULKAN_HPP_NOEXCEPT
@@ -54117,8 +54148,8 @@ namespace VULKAN_HPP_NAMESPACE
       , description{}
       , subgroupSize( rhs.subgroupSize )
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( name, rhs.name );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( description, rhs.description );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE>::copy( name, rhs.name );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE>::copy( description, rhs.description );
     }
 
     PipelineExecutablePropertiesKHR & operator=( PipelineExecutablePropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -54265,8 +54296,8 @@ namespace VULKAN_HPP_NAMESPACE
       , format( format_ )
       , value( value_ )
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( name, name_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( description, description_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE>::copy( name, name_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE>::copy( description, description_ );
     }
 
     PipelineExecutableStatisticKHR( PipelineExecutableStatisticKHR const& rhs ) VULKAN_HPP_NOEXCEPT
@@ -54276,8 +54307,8 @@ namespace VULKAN_HPP_NAMESPACE
       , format( rhs.format )
       , value( rhs.value )
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( name, rhs.name );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE,VK_MAX_DESCRIPTION_SIZE>::copy( description, rhs.description );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE>::copy( name, rhs.name );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE>::copy( description, rhs.description );
     }
 
     PipelineExecutableStatisticKHR & operator=( PipelineExecutableStatisticKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -60433,7 +60464,7 @@ namespace VULKAN_HPP_NAMESPACE
       , numAvailableSgprs( numAvailableSgprs_ )
       , computeWorkGroupSize{}
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,3,3>::copy( computeWorkGroupSize, computeWorkGroupSize_ );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,3>::copy( computeWorkGroupSize, computeWorkGroupSize_ );
     }
 
     VULKAN_HPP_CONSTEXPR_14 ShaderStatisticsInfoAMD( ShaderStatisticsInfoAMD const& rhs ) VULKAN_HPP_NOEXCEPT
@@ -60445,7 +60476,7 @@ namespace VULKAN_HPP_NAMESPACE
       , numAvailableSgprs( rhs.numAvailableSgprs )
       , computeWorkGroupSize{}
     {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,3,3>::copy( computeWorkGroupSize, rhs.computeWorkGroupSize );
+      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,3>::copy( computeWorkGroupSize, rhs.computeWorkGroupSize );
     }
 
     ShaderStatisticsInfoAMD & operator=( ShaderStatisticsInfoAMD const & rhs ) VULKAN_HPP_NOEXCEPT

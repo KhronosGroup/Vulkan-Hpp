@@ -5441,14 +5441,14 @@ static const std::string constExpressionArrayCopy = R"(
   public:
     VULKAN_HPP_CONSTEXPR_14 static void copy( T dst[N], const T src[N] ) VULKAN_HPP_NOEXCEPT
     {
-      VULKAN_HPP_CONSTEXPR_14 size_t C = N / 2;
+      const size_t C = N / 2;
       PrivateConstExpression1DArrayCopy<T, C, C>::copy( dst, src );
       PrivateConstExpression1DArrayCopy<T, N - C, N - C>::copy(dst + C, src + C);
     }
 
     VULKAN_HPP_CONSTEXPR_14 static void copy( T dst[N], std::array<T, N> const& src ) VULKAN_HPP_NOEXCEPT
     {
-      VULKAN_HPP_CONSTEXPR_14 size_t C = N / 2;
+      const size_t C = N / 2;
       PrivateConstExpression1DArrayCopy<T, C, C>::copy(dst, src.data());
       PrivateConstExpression1DArrayCopy<T, N - C, N - C>::copy(dst + C, src.data() + C);
     }

@@ -72528,8 +72528,7 @@ namespace VULKAN_HPP_NAMESPACE
     DynamicLoader &operator=( DynamicLoader && other ) VULKAN_HPP_NOEXCEPT
     {
       m_success = other.m_success;
-      m_library = other.m_library;
-      other.m_library = nullptr;
+      std::swap(m_library, other.m_library);
       return *this;
     }
 

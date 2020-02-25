@@ -3310,16 +3310,18 @@ void VulkanHppGenerator::checkCorrectness()
   {
     if (!extension.second.deprecatedBy.empty())
     {
-      check(m_extensions.find(extension.second.deprecatedBy) != m_extensions.end(), extension.second.xmlLine, "extension deprecated by unknown extension <" + extension.second.deprecatedBy + ">");
+      check((m_extensions.find(extension.second.deprecatedBy) != m_extensions.end()) || (m_features.find(extension.second.deprecatedBy) != m_features.end())
+        , extension.second.xmlLine, "extension deprecated by to unknown extension/version <" + extension.second.promotedTo + ">");
     }
     if (!extension.second.obsoletedBy.empty())
     {
-      check(m_extensions.find(extension.second.obsoletedBy) != m_extensions.end(), extension.second.xmlLine, "extension obsoleted by unknown extension <" + extension.second.obsoletedBy + ">");
+      check((m_extensions.find(extension.second.obsoletedBy) != m_extensions.end()) || (m_features.find(extension.second.obsoletedBy) != m_features.end())
+        , extension.second.xmlLine, "extension obsoleted by unknown extension/version <" + extension.second.promotedTo + ">");
     }
     if (!extension.second.promotedTo.empty())
     {
       check((m_extensions.find(extension.second.promotedTo) != m_extensions.end()) || (m_features.find(extension.second.promotedTo) != m_features.end())
-        , extension.second.xmlLine, "extension promoted to unknown extension <" + extension.second.promotedTo + ">");
+        , extension.second.xmlLine, "extension promoted to unknown extension/version <" + extension.second.promotedTo + ">");
     }
     for (auto const& require : extension.second.requires)
     {

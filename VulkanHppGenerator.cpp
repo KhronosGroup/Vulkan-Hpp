@@ -4150,7 +4150,7 @@ void VulkanHppGenerator::readExtension(tinyxml2::XMLElement const* element)
   {
     { "name",{} },
     { "number",{} },
-    { "supported",{ "disabled", "vulkan" } }
+    { "supported",{ "disabled", "enabled", "vulkan" } }
   },
   {
     { "author",{} },

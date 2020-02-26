@@ -838,9 +838,9 @@ void VulkanHppGenerator::appendBitmasks(std::string & str) const
 {
   for (auto const& bitmask : m_bitmasks)
   {
-    auto bitmaskBits = m_enums.find(bitmask.second.requires);
+    auto bitmaskBits = m_enums.find(bitmask.second.requirements);
     bool hasBits = (bitmaskBits != m_enums.end());
-    check(bitmask.second.requires.empty() || hasBits, bitmask.second.xmlLine, "bitmask <" + bitmask.first + "> references the undefined requires <" + bitmask.second.requires + ">");
+    check(bitmask.second.requirements.empty() || hasBits, bitmask.second.xmlLine, "bitmask <" + bitmask.first + "> references the undefined requires <" + bitmask.second.requirements + ">");
 
     std::string strippedBitmaskName = stripPrefix(bitmask.first, "Vk");
     std::string strippedEnumName = hasBits ? stripPrefix(bitmaskBits->first, "Vk") : "";
@@ -1419,7 +1419,7 @@ void VulkanHppGenerator::appendEnum(std::string & str, std::pair<std::string, En
   str += "  enum class " + stripPrefix(enumData.first, "Vk");
   if (enumData.second.isBitmask)
   {
-    auto bitmaskIt = std::find_if(m_bitmasks.begin(), m_bitmasks.end(), [&enumData](auto const& bitmask){ return bitmask.second.requires == enumData.first; });
+    auto bitmaskIt = std::find_if(m_bitmasks.begin(), m_bitmasks.end(), [&enumData](auto const& bitmask){ return bitmask.second.requirements == enumData.first; });
     assert(bitmaskIt != m_bitmasks.end());
     str += " : " + bitmaskIt->first;
   }
@@ -2124,7 +2124,7 @@ void VulkanHppGenerator::appendFunctionHeaderArgumentEnhancedSimple(std::string 
     {
       // get the enum corresponding to this flag, to check if it's empty
       std::string strippedBitmaskName = stripPrefix(bitmasksIt->first, "Vk");
-      std::map<std::string, EnumData>::const_iterator enumIt = m_enums.find(bitmasksIt->second.requires);
+      std::map<std::string, EnumData>::const_iterator enumIt = m_enums.find(bitmasksIt->second.requirements);
       assert((enumIt == m_enums.end()) || (enumIt->second.isBitmask));
       if ((enumIt == m_enums.end()) || (enumIt->second.values.empty()))
       {
@@ -2283,7 +2283,7 @@ bool VulkanHppGenerator::appendFunctionHeaderArgumentStandard(std::string & str,
     {
       // get the enum corresponding to this flag, to check if it's empty
       std::string strippedBitmaskName = stripPrefix(bitmasksIt->first, "Vk");
-      std::map<std::string, EnumData>::const_iterator enumIt = m_enums.find(bitmasksIt->second.requires);
+      std::map<std::string, EnumData>::const_iterator enumIt = m_enums.find(bitmasksIt->second.requirements);
       assert((enumIt == m_enums.end()) || (enumIt->second.isBitmask));
       if ((enumIt == m_enums.end()) || (enumIt->second.values.empty()))
       {
@@ -2509,6 +2509,9 @@ ${enter}  class ${className}
       return *this;
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ${className} const& ) const = default;
+#else
     bool operator==( ${className} const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_${memberName} == rhs.m_${memberName};
@@ -2523,6 +2526,7 @@ ${enter}  class ${className}
     {
       return m_${memberName} < rhs.m_${memberName};
     }
+#endif
 ${commands}
     VULKAN_HPP_TYPESAFE_EXPLICIT operator Vk${className}() const VULKAN_HPP_NOEXCEPT
     {
@@ -2760,6 +2764,9 @@ void VulkanHppGenerator::appendStructCompareOperators(std::string & str, std::pa
   }
 
   static const std::string compareTemplate = R"(
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ${name} const& ) const = default;
+#else
     bool operator==( ${name} const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ${compareMembers};
@@ -2769,6 +2776,7 @@ void VulkanHppGenerator::appendStructCompareOperators(std::string & str, std::pa
     {
       return !operator==( rhs );
     }
+#endif
 )";
 
   str += replaceWithMap(compareTemplate, { { "name", stripPrefix(structData.first, "Vk") }, { "compareMembers", compareMembers } });
@@ -3379,9 +3387,9 @@ void VulkanHppGenerator::checkCorrectness()
   }
   for (auto const& bitmask : m_bitmasks)
   {
-    if (!bitmask.second.requires.empty())
+    if (!bitmask.second.requirements.empty())
     {
-      check(m_enums.find(bitmask.second.requires) != m_enums.end(), bitmask.second.xmlLine, "bitmask requires unknown <" + bitmask.second.requires + ">");
+      check(m_enums.find(bitmask.second.requirements) != m_enums.end(), bitmask.second.xmlLine, "bitmask requires unknown <" + bitmask.second.requirements + ">");
     }
   }
   for (auto const& extension : m_extensions)
@@ -3401,16 +3409,16 @@ void VulkanHppGenerator::checkCorrectness()
       check((m_extensions.find(extension.second.promotedTo) != m_extensions.end()) || (m_features.find(extension.second.promotedTo) != m_features.end())
         , extension.second.xmlLine, "extension promoted to unknown extension/version <" + extension.second.promotedTo + ">");
     }
-    for (auto const& require : extension.second.requires)
+    for (auto const& require : extension.second.requirements)
     {
-      check(m_extensions.find(require.first) != m_extensions.end(), require.second, "unknown extension requirement <" + require.first + ">");
+      check(m_extensions.find(require.first) != m_extensions.end(), require.second, "unknown extension requires <" + require.first + ">");
     }
   }
   for (auto const& funcPointer : m_funcPointers)
   {
-    if (!funcPointer.second.requires.empty())
+    if (!funcPointer.second.requirements.empty())
     {
-      check(m_types.find(funcPointer.second.requires) != m_types.end(), funcPointer.second.xmlLine, "funcpointer requires unknown <" + funcPointer.second.requires + ">");
+      check(m_types.find(funcPointer.second.requirements) != m_types.end(), funcPointer.second.xmlLine, "funcpointer requires unknown <" + funcPointer.second.requirements + ">");
     }
   }
   for (auto const& structure : m_structures)
@@ -3761,12 +3769,12 @@ void VulkanHppGenerator::readBitmask(tinyxml2::XMLElement const* element, std::m
   {
     checkAttributes(line, attributes, { { "category",{ "bitmask" } } }, { { "requires",{} } });
 
-    std::string requires;
+    std::string requirements;
     for (auto const& attribute : attributes)
     {
       if (attribute.first == "requires")
       {
-        requires = attribute.second;
+        requirements = attribute.second;
       }
     }
 
@@ -3783,7 +3791,7 @@ void VulkanHppGenerator::readBitmask(tinyxml2::XMLElement const* element, std::m
 
     check(m_commandToHandle.find(nameData.name) == m_commandToHandle.end(), line, "command <" + nameData.name + "> already specified");
 
-    m_bitmasks.insert(std::make_pair(nameData.name, BitmaskData(requires, line)));
+    m_bitmasks.insert(std::make_pair(nameData.name, BitmaskData(requirements, line)));
     check(m_types.insert(nameData.name).second, line, "bitmask <" + nameData.name + "> already specified as a type");
   }
 }
@@ -4179,10 +4187,10 @@ void VulkanHppGenerator::readEnums(tinyxml2::XMLElement const* element)
     if (bitmask)
     {
       // look for the corresponding bitmask and set the requirements if needed!
-      auto bitmaskIt = std::find_if(m_bitmasks.begin(), m_bitmasks.end(), [&name](auto const& bitmask) { return bitmask.second.requires == name; });
+      auto bitmaskIt = std::find_if(m_bitmasks.begin(), m_bitmasks.end(), [&name](auto const& bitmask) { return bitmask.second.requirements == name; });
       if (bitmaskIt == m_bitmasks.end())
       {
-        warn(false, line, "enum <" + name + "> is not listed as an requirement for any bitmask in the types section");
+        warn(false, line, "enum <" + name + "> is not listed as an requires for any bitmask in the types section");
 
         std::string bitmaskName = name;
         size_t pos = bitmaskName.rfind("FlagBits");
@@ -4191,8 +4199,8 @@ void VulkanHppGenerator::readEnums(tinyxml2::XMLElement const* element)
 
         bitmaskIt = m_bitmasks.find(bitmaskName);
         check(bitmaskIt != m_bitmasks.end(), line, "enum <" + name + "> has not corresponding bitmask <" + bitmaskName + "> listed in the types section");
-        assert(bitmaskIt->second.requires.empty());
-        bitmaskIt->second.requires = name;
+        assert(bitmaskIt->second.requirements.empty());
+        bitmaskIt->second.requirements = name;
       }
     }
 
@@ -4241,7 +4249,7 @@ void VulkanHppGenerator::readExtension(tinyxml2::XMLElement const* element)
   checkElements(line, children, {}, { "require" });
 
   std::string deprecatedBy, name, obsoletedBy, platform, promotedTo, supported;
-  std::vector<std::string> requires;
+  std::vector<std::string> requirements;
   for (auto const& attribute : attributes)
   {
     if (attribute.first == "deprecatedby")
@@ -4267,7 +4275,7 @@ void VulkanHppGenerator::readExtension(tinyxml2::XMLElement const* element)
     }
     else if (attribute.first == "requires")
     {
-      requires = tokenize(attribute.second, ',');
+      requirements = tokenize(attribute.second, ',');
     }
     else if (attribute.first == "requiresCore")
     {
@@ -4296,15 +4304,15 @@ void VulkanHppGenerator::readExtension(tinyxml2::XMLElement const* element)
     pitb.first->second.deprecatedBy = deprecatedBy;
     pitb.first->second.obsoletedBy = obsoletedBy;
     pitb.first->second.promotedTo = promotedTo;
-    for (auto const& r : requires)
+    for (auto const& r : requirements)
     {
-      check(pitb.first->second.requires.insert(std::make_pair(r, line)).second, line, "required extension <" + r + "> already listed");
+      check(pitb.first->second.requirements.insert(std::make_pair(r, line)).second, line, "required extension <" + r + "> already listed");
     }
 
     std::string tag = extractTag(line, name, m_tags);
     for (auto child : children)
     {
-      readExtensionRequire(child, platform, tag, pitb.first->second.requires);
+      readExtensionRequire(child, platform, tag, pitb.first->second.requirements);
     }
   }
 }
@@ -4404,7 +4412,7 @@ void VulkanHppGenerator::readExtensionDisabledType(tinyxml2::XMLElement const* e
   check(m_bitmasks.erase(name) + m_enums.erase(name) + m_structures.erase(name) == 1, line, "element <" + name + "> was removed from more than one set of elements");
 }
 
-void VulkanHppGenerator::readExtensionRequire(tinyxml2::XMLElement const* element, std::string const& platform, std::string const& tag, std::map<std::string, int> & requires)
+void VulkanHppGenerator::readExtensionRequire(tinyxml2::XMLElement const* element, std::string const& platform, std::string const& tag, std::map<std::string, int> & requirements)
 {
   int line = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes(element);
@@ -4416,7 +4424,7 @@ void VulkanHppGenerator::readExtensionRequire(tinyxml2::XMLElement const* elemen
   {
     if (attribute.first == "extension")
     {
-      check(requires.insert(std::make_pair(attribute.second, line)).second, line, "required extension <" + attribute.second + "> already listed");
+      check(requirements.insert(std::make_pair(attribute.second, line)).second, line, "required extension <" + attribute.second + "> already listed");
     }
     else
     {
@@ -4498,7 +4506,7 @@ void VulkanHppGenerator::readExtensionRequireType(tinyxml2::XMLElement const* el
     {
       check(bmit->second.platform.empty(), line, "platform already specified for bitmask <" + name + ">");
       bmit->second.platform = platform;
-      assert((m_enums.find(bmit->second.requires) == m_enums.end()) || (m_enums.find(bmit->second.requires)->second.isBitmask));
+      assert((m_enums.find(bmit->second.requirements) == m_enums.end()) || (m_enums.find(bmit->second.requirements)->second.isBitmask));
     }
     else
     {
@@ -4616,12 +4624,12 @@ void VulkanHppGenerator::readFuncpointer(tinyxml2::XMLElement const* element, st
   std::vector<tinyxml2::XMLElement const*> children = getChildElements(element);
   checkElements(line, children, { { "name", true } }, { "type" });
 
-  std::string requires;
+  std::string requirements;
   for (auto const& attribute : attributes)
   {
     if (attribute.first == "requires")
     {
-      requires = attribute.second;
+      requirements = attribute.second;
     }
   }
 
@@ -4633,14 +4641,14 @@ void VulkanHppGenerator::readFuncpointer(tinyxml2::XMLElement const* element, st
     {
       std::string name = child->GetText();
       check(!name.empty(), childLine, "funcpointer with empty name");
-      check(m_funcPointers.insert(std::make_pair(name, FuncPointerData(requires, line))).second, childLine, "funcpointer <" + name + "> already specified");
+      check(m_funcPointers.insert(std::make_pair(name, FuncPointerData(requirements, line))).second, childLine, "funcpointer <" + name + "> already specified");
       check(m_types.insert(name).second, childLine, "funcpointer <" + name + "> already specified as a type");
     }
     else if (value == "type")
     {
       std::string type = child->GetText();
       check(!type.empty(), childLine, "funcpointer argument with empty type");
-      check((m_types.find(type) != m_types.end()) || (type == requires), childLine, "funcpointer argument of unknown type <" + type + ">");
+      check((m_types.find(type) != m_types.end()) || (type == requirements), childLine, "funcpointer argument of unknown type <" + type + ">");
     }
   }
 }
@@ -5517,6 +5525,9 @@ int main(int argc, char **argv)
     {}
 
     // relational operators
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>(Flags<BitType> const&) const = default;
+#else
     VULKAN_HPP_CONSTEXPR bool operator<(Flags<BitType> const& rhs) const VULKAN_HPP_NOEXCEPT
     {
       return m_mask < rhs.m_mask;
@@ -5546,6 +5557,7 @@ int main(int argc, char **argv)
     {
       return m_mask != rhs.m_mask;
     }
+#endif
 
     // logical operator
     VULKAN_HPP_CONSTEXPR bool operator!() const VULKAN_HPP_NOEXCEPT
@@ -5614,7 +5626,8 @@ int main(int argc, char **argv)
     MaskType  m_mask;
   };
 
-  // relational operators
+#if !defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+  // relational operators only needed for pre C++20
   template <typename BitType>
   VULKAN_HPP_CONSTEXPR bool operator<(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
   {
@@ -5650,6 +5663,7 @@ int main(int argc, char **argv)
   {
     return flags != bit;
   }
+#endif
 
   // bitwise operators
   template <typename BitType>
@@ -6405,6 +6419,13 @@ static const std::string constExpressionArrayCopy = R"(
 #  if defined(_WIN32)
 #   include <windows.h>
 #  endif
+#endif
+
+#if 201711 <= __cpp_impl_three_way_comparison
+# define VULKAN_HPP_HAS_SPACESHIP_OPERATOR
+#endif
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+# include <compare>
 #endif
 
 )";

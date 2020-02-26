@@ -57,11 +57,11 @@ class VulkanHppGenerator
     struct BitmaskData
     {
       BitmaskData(std::string const& r, int line)
-        : requires(r)
+        : requirements(r)
         , xmlLine(line)
       {}
 
-      std::string requires;   // original vulkan name: VK*FlagBits
+      std::string requirements;   // original vulkan name: VK*FlagBits
       std::string platform;
       std::string alias;      // original vulkan name
       int         xmlLine;
@@ -149,18 +149,18 @@ class VulkanHppGenerator
       std::string                 deprecatedBy;
       std::string                 obsoletedBy;
       std::string                 promotedTo;
-      std::map<std::string, int>  requires;
+      std::map<std::string, int>  requirements;
       int                         xmlLine;
     };
 
     struct FuncPointerData
     {
       FuncPointerData(std::string const& r, int line)
-        : requires(r)
+        : requirements(r)
         , xmlLine(line)
       {}
 
-      std::string requires;
+      std::string requirements;
       int         xmlLine;
     };
 
@@ -297,7 +297,7 @@ class VulkanHppGenerator
     void readExtensionDisabledEnum(std::string const& extensionName, tinyxml2::XMLElement const* element);
     void readExtensionDisabledRequire(std::string const& extensionName, tinyxml2::XMLElement const* element);
     void readExtensionDisabledType(tinyxml2::XMLElement const* element);
-    void readExtensionRequire(tinyxml2::XMLElement const* element, std::string const& platform, std::string const& tag, std::map<std::string, int> & requires);
+    void readExtensionRequire(tinyxml2::XMLElement const* element, std::string const& platform, std::string const& tag, std::map<std::string, int> & requirements);
     void readExtensionRequireCommand(tinyxml2::XMLElement const* element, std::string const& platform);
     void readExtensionRequireType(tinyxml2::XMLElement const* element, std::string const& platform);
     void readExtensions(tinyxml2::XMLElement const* element);

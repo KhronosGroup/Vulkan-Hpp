@@ -74,6 +74,13 @@
 #  endif
 #endif
 
+#if 201711 <= __cpp_impl_three_way_comparison
+# define VULKAN_HPP_HAS_SPACESHIP_OPERATOR
+#endif
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+# include <compare>
+#endif
+
 static_assert( VK_HEADER_VERSION ==  130 , "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
@@ -293,6 +300,9 @@ namespace VULKAN_HPP_NAMESPACE
     {}
 
     // relational operators
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>(Flags<BitType> const&) const = default;
+#else
     VULKAN_HPP_CONSTEXPR bool operator<(Flags<BitType> const& rhs) const VULKAN_HPP_NOEXCEPT
     {
       return m_mask < rhs.m_mask;
@@ -322,6 +332,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return m_mask != rhs.m_mask;
     }
+#endif
 
     // logical operator
     VULKAN_HPP_CONSTEXPR bool operator!() const VULKAN_HPP_NOEXCEPT
@@ -390,7 +401,8 @@ namespace VULKAN_HPP_NAMESPACE
     MaskType  m_mask;
   };
 
-  // relational operators
+#if !defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+  // relational operators only needed for pre C++20
   template <typename BitType>
   VULKAN_HPP_CONSTEXPR bool operator<(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
   {
@@ -426,6 +438,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
     return flags != bit;
   }
+#endif
 
   // bitwise operators
   template <typename BitType>
@@ -13190,6 +13203,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SurfaceKHR const& ) const = default;
+#else
     bool operator==( SurfaceKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_surfaceKHR == rhs.m_surfaceKHR;
@@ -13204,6 +13220,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return m_surfaceKHR < rhs.m_surfaceKHR;
     }
+#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkSurfaceKHR() const VULKAN_HPP_NOEXCEPT
     {
@@ -13265,6 +13282,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DebugReportCallbackEXT const& ) const = default;
+#else
     bool operator==( DebugReportCallbackEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_debugReportCallbackEXT == rhs.m_debugReportCallbackEXT;
@@ -13279,6 +13299,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return m_debugReportCallbackEXT < rhs.m_debugReportCallbackEXT;
     }
+#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkDebugReportCallbackEXT() const VULKAN_HPP_NOEXCEPT
     {
@@ -13340,6 +13361,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DebugUtilsMessengerEXT const& ) const = default;
+#else
     bool operator==( DebugUtilsMessengerEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_debugUtilsMessengerEXT == rhs.m_debugUtilsMessengerEXT;
@@ -13354,6 +13378,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return m_debugUtilsMessengerEXT < rhs.m_debugUtilsMessengerEXT;
     }
+#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkDebugUtilsMessengerEXT() const VULKAN_HPP_NOEXCEPT
     {
@@ -13415,6 +13440,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DisplayKHR const& ) const = default;
+#else
     bool operator==( DisplayKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_displayKHR == rhs.m_displayKHR;
@@ -13429,6 +13457,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return m_displayKHR < rhs.m_displayKHR;
     }
+#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkDisplayKHR() const VULKAN_HPP_NOEXCEPT
     {
@@ -13490,6 +13519,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SwapchainKHR const& ) const = default;
+#else
     bool operator==( SwapchainKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_swapchainKHR == rhs.m_swapchainKHR;
@@ -13504,6 +13536,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return m_swapchainKHR < rhs.m_swapchainKHR;
     }
+#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkSwapchainKHR() const VULKAN_HPP_NOEXCEPT
     {
@@ -13565,6 +13598,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( Semaphore const& ) const = default;
+#else
     bool operator==( Semaphore const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_semaphore == rhs.m_semaphore;
@@ -13579,6 +13615,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return m_semaphore < rhs.m_semaphore;
     }
+#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkSemaphore() const VULKAN_HPP_NOEXCEPT
     {
@@ -13640,6 +13677,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( Fence const& ) const = default;
+#else
     bool operator==( Fence const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_fence == rhs.m_fence;
@@ -13654,6 +13694,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return m_fence < rhs.m_fence;
     }
+#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkFence() const VULKAN_HPP_NOEXCEPT
     {
@@ -13715,6 +13756,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PerformanceConfigurationINTEL const& ) const = default;
+#else
     bool operator==( PerformanceConfigurationINTEL const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_performanceConfigurationINTEL == rhs.m_performanceConfigurationINTEL;
@@ -13729,6 +13773,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return m_performanceConfigurationINTEL < rhs.m_performanceConfigurationINTEL;
     }
+#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkPerformanceConfigurationINTEL() const VULKAN_HPP_NOEXCEPT
     {
@@ -13790,6 +13835,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( QueryPool const& ) const = default;
+#else
     bool operator==( QueryPool const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_queryPool == rhs.m_queryPool;
@@ -13804,6 +13852,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return m_queryPool < rhs.m_queryPool;
     }
+#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkQueryPool() const VULKAN_HPP_NOEXCEPT
     {
@@ -13865,6 +13914,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( Buffer const& ) const = default;
+#else
     bool operator==( Buffer const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_buffer == rhs.m_buffer;
@@ -13879,6 +13931,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return m_buffer < rhs.m_buffer;
     }
+#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkBuffer() const VULKAN_HPP_NOEXCEPT
     {
@@ -13940,6 +13993,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PipelineLayout const& ) const = default;
+#else
     bool operator==( PipelineLayout const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_pipelineLayout == rhs.m_pipelineLayout;
@@ -13954,6 +14010,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return m_pipelineLayout < rhs.m_pipelineLayout;
     }
+#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkPipelineLayout() const VULKAN_HPP_NOEXCEPT
     {
@@ -14015,6 +14072,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DescriptorSet const& ) const = default;
+#else
     bool operator==( DescriptorSet const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_descriptorSet == rhs.m_descriptorSet;
@@ -14029,6 +14089,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return m_descriptorSet < rhs.m_descriptorSet;
     }
+#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkDescriptorSet() const VULKAN_HPP_NOEXCEPT
     {
@@ -14090,6 +14151,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( Pipeline const& ) const = default;
+#else
     bool operator==( Pipeline const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_pipeline == rhs.m_pipeline;
@@ -14104,6 +14168,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return m_pipeline < rhs.m_pipeline;
     }
+#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkPipeline() const VULKAN_HPP_NOEXCEPT
     {
@@ -14165,6 +14230,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ImageView const& ) const = default;
+#else
     bool operator==( ImageView const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_imageView == rhs.m_imageView;
@@ -14179,6 +14247,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return m_imageView < rhs.m_imageView;
     }
+#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkImageView() const VULKAN_HPP_NOEXCEPT
     {
@@ -14240,6 +14309,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( Image const& ) const = default;
+#else
     bool operator==( Image const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_image == rhs.m_image;
@@ -14254,6 +14326,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return m_image < rhs.m_image;
     }
+#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkImage() const VULKAN_HPP_NOEXCEPT
     {
@@ -14315,6 +14388,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( AccelerationStructureNV const& ) const = default;
+#else
     bool operator==( AccelerationStructureNV const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_accelerationStructureNV == rhs.m_accelerationStructureNV;
@@ -14329,6 +14405,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return m_accelerationStructureNV < rhs.m_accelerationStructureNV;
     }
+#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkAccelerationStructureNV() const VULKAN_HPP_NOEXCEPT
     {
@@ -14390,6 +14467,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DescriptorUpdateTemplate const& ) const = default;
+#else
     bool operator==( DescriptorUpdateTemplate const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_descriptorUpdateTemplate == rhs.m_descriptorUpdateTemplate;
@@ -14404,6 +14484,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return m_descriptorUpdateTemplate < rhs.m_descriptorUpdateTemplate;
     }
+#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkDescriptorUpdateTemplate() const VULKAN_HPP_NOEXCEPT
     {
@@ -14466,6 +14547,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( Event const& ) const = default;
+#else
     bool operator==( Event const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_event == rhs.m_event;
@@ -14480,6 +14564,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return m_event < rhs.m_event;
     }
+#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkEvent() const VULKAN_HPP_NOEXCEPT
     {
@@ -14541,6 +14626,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( CommandBuffer const& ) const = default;
+#else
     bool operator==( CommandBuffer const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_commandBuffer == rhs.m_commandBuffer;
@@ -14555,6 +14643,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return m_commandBuffer < rhs.m_commandBuffer;
     }
+#endif
 
     template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     Result begin( const VULKAN_HPP_NAMESPACE::CommandBufferBeginInfo* pBeginInfo, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const VULKAN_HPP_NOEXCEPT;
@@ -15094,6 +15183,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DeviceMemory const& ) const = default;
+#else
     bool operator==( DeviceMemory const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_deviceMemory == rhs.m_deviceMemory;
@@ -15108,6 +15200,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return m_deviceMemory < rhs.m_deviceMemory;
     }
+#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkDeviceMemory() const VULKAN_HPP_NOEXCEPT
     {
@@ -15169,6 +15262,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( BufferView const& ) const = default;
+#else
     bool operator==( BufferView const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_bufferView == rhs.m_bufferView;
@@ -15183,6 +15279,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return m_bufferView < rhs.m_bufferView;
     }
+#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkBufferView() const VULKAN_HPP_NOEXCEPT
     {
@@ -15244,6 +15341,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( CommandPool const& ) const = default;
+#else
     bool operator==( CommandPool const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_commandPool == rhs.m_commandPool;
@@ -15258,6 +15358,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return m_commandPool < rhs.m_commandPool;
     }
+#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkCommandPool() const VULKAN_HPP_NOEXCEPT
     {
@@ -15319,6 +15420,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PipelineCache const& ) const = default;
+#else
     bool operator==( PipelineCache const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_pipelineCache == rhs.m_pipelineCache;
@@ -15333,6 +15437,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return m_pipelineCache < rhs.m_pipelineCache;
     }
+#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkPipelineCache() const VULKAN_HPP_NOEXCEPT
     {
@@ -15394,6 +15499,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DescriptorPool const& ) const = default;
+#else
     bool operator==( DescriptorPool const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_descriptorPool == rhs.m_descriptorPool;
@@ -15408,6 +15516,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return m_descriptorPool < rhs.m_descriptorPool;
     }
+#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkDescriptorPool() const VULKAN_HPP_NOEXCEPT
     {
@@ -15469,6 +15578,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DescriptorSetLayout const& ) const = default;
+#else
     bool operator==( DescriptorSetLayout const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_descriptorSetLayout == rhs.m_descriptorSetLayout;
@@ -15483,6 +15595,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return m_descriptorSetLayout < rhs.m_descriptorSetLayout;
     }
+#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkDescriptorSetLayout() const VULKAN_HPP_NOEXCEPT
     {
@@ -15544,6 +15657,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( Framebuffer const& ) const = default;
+#else
     bool operator==( Framebuffer const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_framebuffer == rhs.m_framebuffer;
@@ -15558,6 +15674,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return m_framebuffer < rhs.m_framebuffer;
     }
+#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkFramebuffer() const VULKAN_HPP_NOEXCEPT
     {
@@ -15619,6 +15736,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( IndirectCommandsLayoutNVX const& ) const = default;
+#else
     bool operator==( IndirectCommandsLayoutNVX const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_indirectCommandsLayoutNVX == rhs.m_indirectCommandsLayoutNVX;
@@ -15633,6 +15753,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return m_indirectCommandsLayoutNVX < rhs.m_indirectCommandsLayoutNVX;
     }
+#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkIndirectCommandsLayoutNVX() const VULKAN_HPP_NOEXCEPT
     {
@@ -15694,6 +15815,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ObjectTableNVX const& ) const = default;
+#else
     bool operator==( ObjectTableNVX const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_objectTableNVX == rhs.m_objectTableNVX;
@@ -15708,6 +15832,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return m_objectTableNVX < rhs.m_objectTableNVX;
     }
+#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkObjectTableNVX() const VULKAN_HPP_NOEXCEPT
     {
@@ -15769,6 +15894,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( RenderPass const& ) const = default;
+#else
     bool operator==( RenderPass const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_renderPass == rhs.m_renderPass;
@@ -15783,6 +15911,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return m_renderPass < rhs.m_renderPass;
     }
+#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkRenderPass() const VULKAN_HPP_NOEXCEPT
     {
@@ -15844,6 +15973,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( Sampler const& ) const = default;
+#else
     bool operator==( Sampler const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_sampler == rhs.m_sampler;
@@ -15858,6 +15990,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return m_sampler < rhs.m_sampler;
     }
+#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkSampler() const VULKAN_HPP_NOEXCEPT
     {
@@ -15919,6 +16052,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SamplerYcbcrConversion const& ) const = default;
+#else
     bool operator==( SamplerYcbcrConversion const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_samplerYcbcrConversion == rhs.m_samplerYcbcrConversion;
@@ -15933,6 +16069,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return m_samplerYcbcrConversion < rhs.m_samplerYcbcrConversion;
     }
+#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkSamplerYcbcrConversion() const VULKAN_HPP_NOEXCEPT
     {
@@ -15995,6 +16132,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ShaderModule const& ) const = default;
+#else
     bool operator==( ShaderModule const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_shaderModule == rhs.m_shaderModule;
@@ -16009,6 +16149,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return m_shaderModule < rhs.m_shaderModule;
     }
+#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkShaderModule() const VULKAN_HPP_NOEXCEPT
     {
@@ -16070,6 +16211,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ValidationCacheEXT const& ) const = default;
+#else
     bool operator==( ValidationCacheEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_validationCacheEXT == rhs.m_validationCacheEXT;
@@ -16084,6 +16228,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return m_validationCacheEXT < rhs.m_validationCacheEXT;
     }
+#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkValidationCacheEXT() const VULKAN_HPP_NOEXCEPT
     {
@@ -16145,6 +16290,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( Queue const& ) const = default;
+#else
     bool operator==( Queue const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_queue == rhs.m_queue;
@@ -16159,6 +16307,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return m_queue < rhs.m_queue;
     }
+#endif
 
     template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     void getCheckpointDataNV( uint32_t* pCheckpointDataCount, VULKAN_HPP_NAMESPACE::CheckpointDataNV* pCheckpointData, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const VULKAN_HPP_NOEXCEPT;
@@ -16345,6 +16494,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( Device const& ) const = default;
+#else
     bool operator==( Device const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_device == rhs.m_device;
@@ -16359,6 +16511,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return m_device < rhs.m_device;
     }
+#endif
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
 #ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
@@ -18093,6 +18246,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DisplayModeKHR const& ) const = default;
+#else
     bool operator==( DisplayModeKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_displayModeKHR == rhs.m_displayModeKHR;
@@ -18107,6 +18263,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return m_displayModeKHR < rhs.m_displayModeKHR;
     }
+#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkDisplayModeKHR() const VULKAN_HPP_NOEXCEPT
     {
@@ -18173,6 +18330,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDevice const& ) const = default;
+#else
     bool operator==( PhysicalDevice const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_physicalDevice == rhs.m_physicalDevice;
@@ -18187,6 +18347,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return m_physicalDevice < rhs.m_physicalDevice;
     }
+#endif
 
 #ifdef VK_USE_PLATFORM_XLIB_XRANDR_EXT
     template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
@@ -18808,6 +18969,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( Instance const& ) const = default;
+#else
     bool operator==( Instance const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_instance == rhs.m_instance;
@@ -18822,6 +18986,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return m_instance < rhs.m_instance;
     }
+#endif
 
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
     template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
@@ -19314,6 +19479,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkGeometryTrianglesNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( GeometryTrianglesNV const& ) const = default;
+#else
     bool operator==( GeometryTrianglesNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -19335,6 +19503,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eGeometryTrianglesNV;
@@ -19431,6 +19600,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkGeometryAABBNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( GeometryAABBNV const& ) const = default;
+#else
     bool operator==( GeometryAABBNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -19445,6 +19617,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eGeometryAabbNV;
@@ -19509,6 +19682,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkGeometryDataNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( GeometryDataNV const& ) const = default;
+#else
     bool operator==( GeometryDataNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( triangles == rhs.triangles )
@@ -19519,6 +19695,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::GeometryTrianglesNV triangles = {};
@@ -19595,6 +19772,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkGeometryNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( GeometryNV const& ) const = default;
+#else
     bool operator==( GeometryNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -19608,6 +19788,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eGeometryNV;
@@ -19705,6 +19886,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkAccelerationStructureInfoNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( AccelerationStructureInfoNV const& ) const = default;
+#else
     bool operator==( AccelerationStructureInfoNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -19720,6 +19904,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eAccelerationStructureInfoNV;
@@ -19792,6 +19977,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkAccelerationStructureCreateInfoNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( AccelerationStructureCreateInfoNV const& ) const = default;
+#else
     bool operator==( AccelerationStructureCreateInfoNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -19804,6 +19992,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eAccelerationStructureCreateInfoNV;
@@ -19873,6 +20062,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkAccelerationStructureMemoryRequirementsInfoNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( AccelerationStructureMemoryRequirementsInfoNV const& ) const = default;
+#else
     bool operator==( AccelerationStructureMemoryRequirementsInfoNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -19885,6 +20077,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eAccelerationStructureMemoryRequirementsInfoNV;
@@ -19981,6 +20174,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkAcquireNextImageInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( AcquireNextImageInfoKHR const& ) const = default;
+#else
     bool operator==( AcquireNextImageInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -19996,6 +20192,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eAcquireNextImageInfoKHR;
@@ -20068,6 +20265,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkAcquireProfilingLockInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( AcquireProfilingLockInfoKHR const& ) const = default;
+#else
     bool operator==( AcquireProfilingLockInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -20080,6 +20280,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eAcquireProfilingLockInfoKHR;
@@ -20178,6 +20379,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkAllocationCallbacks*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( AllocationCallbacks const& ) const = default;
+#else
     bool operator==( AllocationCallbacks const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( pUserData == rhs.pUserData )
@@ -20192,6 +20396,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     void* pUserData = {};
@@ -20274,6 +20479,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkComponentMapping*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ComponentMapping const& ) const = default;
+#else
     bool operator==( ComponentMapping const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( r == rhs.r )
@@ -20286,6 +20494,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::ComponentSwizzle r = VULKAN_HPP_NAMESPACE::ComponentSwizzle::eIdentity;
@@ -20357,6 +20566,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkAndroidHardwareBufferFormatPropertiesANDROID*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( AndroidHardwareBufferFormatPropertiesANDROID const& ) const = default;
+#else
     bool operator==( AndroidHardwareBufferFormatPropertiesANDROID const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -20375,6 +20587,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eAndroidHardwareBufferFormatPropertiesANDROID;
@@ -20435,6 +20648,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkAndroidHardwareBufferPropertiesANDROID*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( AndroidHardwareBufferPropertiesANDROID const& ) const = default;
+#else
     bool operator==( AndroidHardwareBufferPropertiesANDROID const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -20447,6 +20663,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eAndroidHardwareBufferPropertiesANDROID;
@@ -20498,6 +20715,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkAndroidHardwareBufferUsageANDROID*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( AndroidHardwareBufferUsageANDROID const& ) const = default;
+#else
     bool operator==( AndroidHardwareBufferUsageANDROID const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -20509,6 +20729,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eAndroidHardwareBufferUsageANDROID;
@@ -20580,6 +20801,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkAndroidSurfaceCreateInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( AndroidSurfaceCreateInfoKHR const& ) const = default;
+#else
     bool operator==( AndroidSurfaceCreateInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -20592,6 +20816,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eAndroidSurfaceCreateInfoKHR;
@@ -20689,6 +20914,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkApplicationInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ApplicationInfo const& ) const = default;
+#else
     bool operator==( ApplicationInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -20704,6 +20932,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eApplicationInfo;
@@ -20832,6 +21061,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkAttachmentDescription*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( AttachmentDescription const& ) const = default;
+#else
     bool operator==( AttachmentDescription const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( flags == rhs.flags )
@@ -20849,6 +21081,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::AttachmentDescriptionFlags flags = {};
@@ -20986,6 +21219,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkAttachmentDescription2KHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( AttachmentDescription2KHR const& ) const = default;
+#else
     bool operator==( AttachmentDescription2KHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -21005,6 +21241,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eAttachmentDescription2KHR;
@@ -21081,6 +21318,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkAttachmentDescriptionStencilLayoutKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( AttachmentDescriptionStencilLayoutKHR const& ) const = default;
+#else
     bool operator==( AttachmentDescriptionStencilLayoutKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -21093,6 +21333,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eAttachmentDescriptionStencilLayoutKHR;
@@ -21155,6 +21396,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkAttachmentReference*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( AttachmentReference const& ) const = default;
+#else
     bool operator==( AttachmentReference const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( attachment == rhs.attachment )
@@ -21165,6 +21409,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     uint32_t attachment = {};
@@ -21241,6 +21486,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkAttachmentReference2KHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( AttachmentReference2KHR const& ) const = default;
+#else
     bool operator==( AttachmentReference2KHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -21254,6 +21502,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eAttachmentReference2KHR;
@@ -21315,6 +21564,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkAttachmentReferenceStencilLayoutKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( AttachmentReferenceStencilLayoutKHR const& ) const = default;
+#else
     bool operator==( AttachmentReferenceStencilLayoutKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -21326,6 +21578,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eAttachmentReferenceStencilLayoutKHR;
@@ -21387,6 +21640,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkExtent2D*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( Extent2D const& ) const = default;
+#else
     bool operator==( Extent2D const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( width == rhs.width )
@@ -21397,6 +21653,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     uint32_t width = {};
@@ -21457,6 +21714,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSampleLocationEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SampleLocationEXT const& ) const = default;
+#else
     bool operator==( SampleLocationEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( x == rhs.x )
@@ -21467,6 +21727,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     float x = {};
@@ -21552,6 +21813,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSampleLocationsInfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SampleLocationsInfoEXT const& ) const = default;
+#else
     bool operator==( SampleLocationsInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -21566,6 +21830,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eSampleLocationsInfoEXT;
@@ -21630,6 +21895,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkAttachmentSampleLocationsEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( AttachmentSampleLocationsEXT const& ) const = default;
+#else
     bool operator==( AttachmentSampleLocationsEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( attachmentIndex == rhs.attachmentIndex )
@@ -21640,6 +21908,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     uint32_t attachmentIndex = {};
@@ -21690,6 +21959,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkBaseInStructure*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( BaseInStructure const& ) const = default;
+#else
     bool operator==( BaseInStructure const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -21700,6 +21972,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::StructureType sType = {};
@@ -21750,6 +22023,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkBaseOutStructure*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( BaseOutStructure const& ) const = default;
+#else
     bool operator==( BaseOutStructure const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -21760,6 +22036,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::StructureType sType = {};
@@ -21854,6 +22131,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkBindAccelerationStructureMemoryInfoNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( BindAccelerationStructureMemoryInfoNV const& ) const = default;
+#else
     bool operator==( BindAccelerationStructureMemoryInfoNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -21869,6 +22149,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eBindAccelerationStructureMemoryInfoNV;
@@ -21941,6 +22222,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkBindBufferMemoryDeviceGroupInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( BindBufferMemoryDeviceGroupInfo const& ) const = default;
+#else
     bool operator==( BindBufferMemoryDeviceGroupInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -21953,6 +22237,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eBindBufferMemoryDeviceGroupInfo;
@@ -22031,6 +22316,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkBindBufferMemoryInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( BindBufferMemoryInfo const& ) const = default;
+#else
     bool operator==( BindBufferMemoryInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -22044,6 +22332,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eBindBufferMemoryInfo;
@@ -22107,6 +22396,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkOffset2D*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( Offset2D const& ) const = default;
+#else
     bool operator==( Offset2D const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( x == rhs.x )
@@ -22117,6 +22409,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     int32_t x = {};
@@ -22177,6 +22470,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkRect2D*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( Rect2D const& ) const = default;
+#else
     bool operator==( Rect2D const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( offset == rhs.offset )
@@ -22187,6 +22483,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::Offset2D offset = {};
@@ -22272,6 +22569,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkBindImageMemoryDeviceGroupInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( BindImageMemoryDeviceGroupInfo const& ) const = default;
+#else
     bool operator==( BindImageMemoryDeviceGroupInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -22286,6 +22586,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eBindImageMemoryDeviceGroupInfo;
@@ -22366,6 +22667,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkBindImageMemoryInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( BindImageMemoryInfo const& ) const = default;
+#else
     bool operator==( BindImageMemoryInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -22379,6 +22683,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eBindImageMemoryInfo;
@@ -22449,6 +22754,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkBindImageMemorySwapchainInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( BindImageMemorySwapchainInfoKHR const& ) const = default;
+#else
     bool operator==( BindImageMemorySwapchainInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -22461,6 +22769,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eBindImageMemorySwapchainInfoKHR;
@@ -22521,6 +22830,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkBindImagePlaneMemoryInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( BindImagePlaneMemoryInfo const& ) const = default;
+#else
     bool operator==( BindImagePlaneMemoryInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -22532,6 +22844,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eBindImagePlaneMemoryInfo;
@@ -22620,6 +22933,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSparseMemoryBind*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SparseMemoryBind const& ) const = default;
+#else
     bool operator==( SparseMemoryBind const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( resourceOffset == rhs.resourceOffset )
@@ -22633,6 +22949,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::DeviceSize resourceOffset = {};
@@ -22705,6 +23022,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSparseBufferMemoryBindInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SparseBufferMemoryBindInfo const& ) const = default;
+#else
     bool operator==( SparseBufferMemoryBindInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( buffer == rhs.buffer )
@@ -22716,6 +23036,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::Buffer buffer = {};
@@ -22786,6 +23107,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSparseImageOpaqueMemoryBindInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SparseImageOpaqueMemoryBindInfo const& ) const = default;
+#else
     bool operator==( SparseImageOpaqueMemoryBindInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( image == rhs.image )
@@ -22797,6 +23121,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::Image image = {};
@@ -22867,6 +23192,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkImageSubresource*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ImageSubresource const& ) const = default;
+#else
     bool operator==( ImageSubresource const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( aspectMask == rhs.aspectMask )
@@ -22878,6 +23206,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::ImageAspectFlags aspectMask = {};
@@ -22955,6 +23284,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkOffset3D*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( Offset3D const& ) const = default;
+#else
     bool operator==( Offset3D const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( x == rhs.x )
@@ -22966,6 +23298,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     int32_t x = {};
@@ -23043,6 +23376,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkExtent3D*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( Extent3D const& ) const = default;
+#else
     bool operator==( Extent3D const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( width == rhs.width )
@@ -23054,6 +23390,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     uint32_t width = {};
@@ -23151,6 +23488,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSparseImageMemoryBind*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SparseImageMemoryBind const& ) const = default;
+#else
     bool operator==( SparseImageMemoryBind const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( subresource == rhs.subresource )
@@ -23165,6 +23505,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::ImageSubresource subresource = {};
@@ -23238,6 +23579,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSparseImageMemoryBindInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SparseImageMemoryBindInfo const& ) const = default;
+#else
     bool operator==( SparseImageMemoryBindInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( image == rhs.image )
@@ -23249,6 +23593,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::Image image = {};
@@ -23389,6 +23734,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkBindSparseInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( BindSparseInfo const& ) const = default;
+#else
     bool operator==( BindSparseInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -23409,6 +23757,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eBindSparseInfo;
@@ -23488,6 +23837,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkBufferCopy*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( BufferCopy const& ) const = default;
+#else
     bool operator==( BufferCopy const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( srcOffset == rhs.srcOffset )
@@ -23499,6 +23851,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::DeviceSize srcOffset = {};
@@ -23603,6 +23956,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkBufferCreateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( BufferCreateInfo const& ) const = default;
+#else
     bool operator==( BufferCreateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -23619,6 +23975,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eBufferCreateInfo;
@@ -23683,6 +24040,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkBufferDeviceAddressCreateInfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( BufferDeviceAddressCreateInfoEXT const& ) const = default;
+#else
     bool operator==( BufferDeviceAddressCreateInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -23694,6 +24054,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eBufferDeviceAddressCreateInfoEXT;
@@ -23753,6 +24114,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkBufferDeviceAddressInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( BufferDeviceAddressInfoKHR const& ) const = default;
+#else
     bool operator==( BufferDeviceAddressInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -23764,6 +24128,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eBufferDeviceAddressInfoKHR;
@@ -23843,6 +24208,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkImageSubresourceLayers*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ImageSubresourceLayers const& ) const = default;
+#else
     bool operator==( ImageSubresourceLayers const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( aspectMask == rhs.aspectMask )
@@ -23855,6 +24223,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::ImageAspectFlags aspectMask = {};
@@ -23953,6 +24322,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkBufferImageCopy*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( BufferImageCopy const& ) const = default;
+#else
     bool operator==( BufferImageCopy const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( bufferOffset == rhs.bufferOffset )
@@ -23967,6 +24339,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::DeviceSize bufferOffset = {};
@@ -24083,6 +24456,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkBufferMemoryBarrier*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( BufferMemoryBarrier const& ) const = default;
+#else
     bool operator==( BufferMemoryBarrier const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -24100,6 +24476,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eBufferMemoryBarrier;
@@ -24165,6 +24542,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkBufferMemoryRequirementsInfo2*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( BufferMemoryRequirementsInfo2 const& ) const = default;
+#else
     bool operator==( BufferMemoryRequirementsInfo2 const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -24176,6 +24556,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eBufferMemoryRequirementsInfo2;
@@ -24235,6 +24616,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkBufferOpaqueCaptureAddressCreateInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( BufferOpaqueCaptureAddressCreateInfoKHR const& ) const = default;
+#else
     bool operator==( BufferOpaqueCaptureAddressCreateInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -24246,6 +24630,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eBufferOpaqueCaptureAddressCreateInfoKHR;
@@ -24341,6 +24726,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkBufferViewCreateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( BufferViewCreateInfo const& ) const = default;
+#else
     bool operator==( BufferViewCreateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -24356,6 +24744,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eBufferViewCreateInfo;
@@ -24419,6 +24808,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkCalibratedTimestampInfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( CalibratedTimestampInfoEXT const& ) const = default;
+#else
     bool operator==( CalibratedTimestampInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -24430,6 +24822,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eCalibratedTimestampInfoEXT;
@@ -24480,6 +24873,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkCheckpointDataNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( CheckpointDataNV const& ) const = default;
+#else
     bool operator==( CheckpointDataNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -24492,6 +24888,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eCheckpointDataNV;
@@ -24615,6 +25012,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkClearDepthStencilValue*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ClearDepthStencilValue const& ) const = default;
+#else
     bool operator==( ClearDepthStencilValue const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( depth == rhs.depth )
@@ -24625,6 +25025,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     float depth = {};
@@ -24817,6 +25218,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkClearRect*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ClearRect const& ) const = default;
+#else
     bool operator==( ClearRect const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( rect == rhs.rect )
@@ -24828,6 +25232,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::Rect2D rect = {};
@@ -24898,6 +25303,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkIndirectCommandsTokenNVX*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( IndirectCommandsTokenNVX const& ) const = default;
+#else
     bool operator==( IndirectCommandsTokenNVX const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( tokenType == rhs.tokenType )
@@ -24909,6 +25317,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::IndirectCommandsTokenTypeNVX tokenType = VULKAN_HPP_NAMESPACE::IndirectCommandsTokenTypeNVX::ePipeline;
@@ -25049,6 +25458,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkCmdProcessCommandsInfoNVX*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( CmdProcessCommandsInfoNVX const& ) const = default;
+#else
     bool operator==( CmdProcessCommandsInfoNVX const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -25069,6 +25481,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eCmdProcessCommandsInfoNVX;
@@ -25155,6 +25568,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkCmdReserveSpaceForCommandsInfoNVX*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( CmdReserveSpaceForCommandsInfoNVX const& ) const = default;
+#else
     bool operator==( CmdReserveSpaceForCommandsInfoNVX const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -25168,6 +25584,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eCmdReserveSpaceForCommandsInfoNVX;
@@ -25240,6 +25657,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkCoarseSampleLocationNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( CoarseSampleLocationNV const& ) const = default;
+#else
     bool operator==( CoarseSampleLocationNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( pixelX == rhs.pixelX )
@@ -25251,6 +25671,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     uint32_t pixelX = {};
@@ -25330,6 +25751,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkCoarseSampleOrderCustomNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( CoarseSampleOrderCustomNV const& ) const = default;
+#else
     bool operator==( CoarseSampleOrderCustomNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( shadingRate == rhs.shadingRate )
@@ -25342,6 +25766,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::ShadingRatePaletteEntryNV shadingRate = VULKAN_HPP_NAMESPACE::ShadingRatePaletteEntryNV::eNoInvocations;
@@ -25420,6 +25845,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkCommandBufferAllocateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( CommandBufferAllocateInfo const& ) const = default;
+#else
     bool operator==( CommandBufferAllocateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -25433,6 +25861,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eCommandBufferAllocateInfo;
@@ -25539,6 +25968,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkCommandBufferInheritanceInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( CommandBufferInheritanceInfo const& ) const = default;
+#else
     bool operator==( CommandBufferInheritanceInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -25555,6 +25987,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eCommandBufferInheritanceInfo;
@@ -25628,6 +26061,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkCommandBufferBeginInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( CommandBufferBeginInfo const& ) const = default;
+#else
     bool operator==( CommandBufferBeginInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -25640,6 +26076,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eCommandBufferBeginInfo;
@@ -25700,6 +26137,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkCommandBufferInheritanceConditionalRenderingInfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( CommandBufferInheritanceConditionalRenderingInfoEXT const& ) const = default;
+#else
     bool operator==( CommandBufferInheritanceConditionalRenderingInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -25711,6 +26151,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eCommandBufferInheritanceConditionalRenderingInfoEXT;
@@ -25779,6 +26220,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkCommandPoolCreateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( CommandPoolCreateInfo const& ) const = default;
+#else
     bool operator==( CommandPoolCreateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -25791,6 +26235,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eCommandPoolCreateInfo;
@@ -25862,6 +26307,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSpecializationMapEntry*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SpecializationMapEntry const& ) const = default;
+#else
     bool operator==( SpecializationMapEntry const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( constantID == rhs.constantID )
@@ -25873,6 +26321,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     uint32_t constantID = {};
@@ -25952,6 +26401,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSpecializationInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SpecializationInfo const& ) const = default;
+#else
     bool operator==( SpecializationInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( mapEntryCount == rhs.mapEntryCount )
@@ -25964,6 +26416,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     uint32_t mapEntryCount = {};
@@ -26060,6 +26513,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPipelineShaderStageCreateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PipelineShaderStageCreateInfo const& ) const = default;
+#else
     bool operator==( PipelineShaderStageCreateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -26075,6 +26531,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineShaderStageCreateInfo;
@@ -26174,6 +26631,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkComputePipelineCreateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ComputePipelineCreateInfo const& ) const = default;
+#else
     bool operator==( ComputePipelineCreateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -26189,6 +26649,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eComputePipelineCreateInfo;
@@ -26270,6 +26731,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkConditionalRenderingBeginInfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ConditionalRenderingBeginInfoEXT const& ) const = default;
+#else
     bool operator==( ConditionalRenderingBeginInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -26283,6 +26747,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eConditionalRenderingBeginInfoEXT;
@@ -26364,6 +26829,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkConformanceVersionKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ConformanceVersionKHR const& ) const = default;
+#else
     bool operator==( ConformanceVersionKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( major == rhs.major )
@@ -26376,6 +26844,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     uint8_t major = {};
@@ -26499,6 +26968,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkCooperativeMatrixPropertiesNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( CooperativeMatrixPropertiesNV const& ) const = default;
+#else
     bool operator==( CooperativeMatrixPropertiesNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -26517,6 +26989,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eCooperativeMatrixPropertiesNV;
@@ -26637,6 +27110,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkCopyDescriptorSet*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( CopyDescriptorSet const& ) const = default;
+#else
     bool operator==( CopyDescriptorSet const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -26654,6 +27130,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eCopyDescriptorSet;
@@ -26748,6 +27225,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkD3D12FenceSubmitInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( D3D12FenceSubmitInfoKHR const& ) const = default;
+#else
     bool operator==( D3D12FenceSubmitInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -26762,6 +27242,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eD3D12FenceSubmitInfoKHR;
@@ -26838,6 +27319,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDebugMarkerMarkerInfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DebugMarkerMarkerInfoEXT const& ) const = default;
+#else
     bool operator==( DebugMarkerMarkerInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -26850,6 +27334,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDebugMarkerMarkerInfoEXT;
@@ -26928,6 +27413,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDebugMarkerObjectNameInfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DebugMarkerObjectNameInfoEXT const& ) const = default;
+#else
     bool operator==( DebugMarkerObjectNameInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -26941,6 +27429,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDebugMarkerObjectNameInfoEXT;
@@ -27038,6 +27527,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDebugMarkerObjectTagInfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DebugMarkerObjectTagInfoEXT const& ) const = default;
+#else
     bool operator==( DebugMarkerObjectTagInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -27053,6 +27545,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDebugMarkerObjectTagInfoEXT;
@@ -27134,6 +27627,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDebugReportCallbackCreateInfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DebugReportCallbackCreateInfoEXT const& ) const = default;
+#else
     bool operator==( DebugReportCallbackCreateInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -27147,6 +27643,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDebugReportCallbackCreateInfoEXT;
@@ -27221,6 +27718,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDebugUtilsLabelEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DebugUtilsLabelEXT const& ) const = default;
+#else
     bool operator==( DebugUtilsLabelEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -27233,6 +27733,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDebugUtilsLabelEXT;
@@ -27311,6 +27812,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDebugUtilsObjectNameInfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DebugUtilsObjectNameInfoEXT const& ) const = default;
+#else
     bool operator==( DebugUtilsObjectNameInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -27324,6 +27828,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDebugUtilsObjectNameInfoEXT;
@@ -27466,6 +27971,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDebugUtilsMessengerCallbackDataEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DebugUtilsMessengerCallbackDataEXT const& ) const = default;
+#else
     bool operator==( DebugUtilsMessengerCallbackDataEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -27486,6 +27994,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDebugUtilsMessengerCallbackDataEXT;
@@ -27590,6 +28099,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDebugUtilsMessengerCreateInfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DebugUtilsMessengerCreateInfoEXT const& ) const = default;
+#else
     bool operator==( DebugUtilsMessengerCreateInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -27605,6 +28117,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDebugUtilsMessengerCreateInfoEXT;
@@ -27704,6 +28217,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDebugUtilsObjectTagInfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DebugUtilsObjectTagInfoEXT const& ) const = default;
+#else
     bool operator==( DebugUtilsObjectTagInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -27719,6 +28235,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDebugUtilsObjectTagInfoEXT;
@@ -27782,6 +28299,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDedicatedAllocationBufferCreateInfoNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DedicatedAllocationBufferCreateInfoNV const& ) const = default;
+#else
     bool operator==( DedicatedAllocationBufferCreateInfoNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -27793,6 +28313,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDedicatedAllocationBufferCreateInfoNV;
@@ -27852,6 +28373,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDedicatedAllocationImageCreateInfoNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DedicatedAllocationImageCreateInfoNV const& ) const = default;
+#else
     bool operator==( DedicatedAllocationImageCreateInfoNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -27863,6 +28387,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDedicatedAllocationImageCreateInfoNV;
@@ -27931,6 +28456,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDedicatedAllocationMemoryAllocateInfoNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DedicatedAllocationMemoryAllocateInfoNV const& ) const = default;
+#else
     bool operator==( DedicatedAllocationMemoryAllocateInfoNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -27943,6 +28471,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDedicatedAllocationMemoryAllocateInfoNV;
@@ -28014,6 +28543,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDescriptorBufferInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DescriptorBufferInfo const& ) const = default;
+#else
     bool operator==( DescriptorBufferInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( buffer == rhs.buffer )
@@ -28025,6 +28557,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::Buffer buffer = {};
@@ -28095,6 +28628,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDescriptorImageInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DescriptorImageInfo const& ) const = default;
+#else
     bool operator==( DescriptorImageInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sampler == rhs.sampler )
@@ -28106,6 +28642,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::Sampler sampler = {};
@@ -28167,6 +28704,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDescriptorPoolSize*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DescriptorPoolSize const& ) const = default;
+#else
     bool operator==( DescriptorPoolSize const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( type == rhs.type )
@@ -28177,6 +28717,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::DescriptorType type = VULKAN_HPP_NAMESPACE::DescriptorType::eSampler;
@@ -28262,6 +28803,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDescriptorPoolCreateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DescriptorPoolCreateInfo const& ) const = default;
+#else
     bool operator==( DescriptorPoolCreateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -28276,6 +28820,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDescriptorPoolCreateInfo;
@@ -28338,6 +28883,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDescriptorPoolInlineUniformBlockCreateInfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DescriptorPoolInlineUniformBlockCreateInfoEXT const& ) const = default;
+#else
     bool operator==( DescriptorPoolInlineUniformBlockCreateInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -28349,6 +28897,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDescriptorPoolInlineUniformBlockCreateInfoEXT;
@@ -28426,6 +28975,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDescriptorSetAllocateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DescriptorSetAllocateInfo const& ) const = default;
+#else
     bool operator==( DescriptorSetAllocateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -28439,6 +28991,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDescriptorSetAllocateInfo;
@@ -28529,6 +29082,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDescriptorSetLayoutBinding*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DescriptorSetLayoutBinding const& ) const = default;
+#else
     bool operator==( DescriptorSetLayoutBinding const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( binding == rhs.binding )
@@ -28542,6 +29098,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     uint32_t binding = {};
@@ -28612,6 +29169,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDescriptorSetLayoutBindingFlagsCreateInfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DescriptorSetLayoutBindingFlagsCreateInfoEXT const& ) const = default;
+#else
     bool operator==( DescriptorSetLayoutBindingFlagsCreateInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -28624,6 +29184,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDescriptorSetLayoutBindingFlagsCreateInfoEXT;
@@ -28702,6 +29263,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDescriptorSetLayoutCreateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DescriptorSetLayoutCreateInfo const& ) const = default;
+#else
     bool operator==( DescriptorSetLayoutCreateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -28715,6 +29279,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDescriptorSetLayoutCreateInfo;
@@ -28764,6 +29329,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDescriptorSetLayoutSupport*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DescriptorSetLayoutSupport const& ) const = default;
+#else
     bool operator==( DescriptorSetLayoutSupport const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -28775,6 +29343,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDescriptorSetLayoutSupport;
@@ -28843,6 +29412,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDescriptorSetVariableDescriptorCountAllocateInfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DescriptorSetVariableDescriptorCountAllocateInfoEXT const& ) const = default;
+#else
     bool operator==( DescriptorSetVariableDescriptorCountAllocateInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -28855,6 +29427,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDescriptorSetVariableDescriptorCountAllocateInfoEXT;
@@ -28903,6 +29476,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDescriptorSetVariableDescriptorCountLayoutSupportEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DescriptorSetVariableDescriptorCountLayoutSupportEXT const& ) const = default;
+#else
     bool operator==( DescriptorSetVariableDescriptorCountLayoutSupportEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -28914,6 +29490,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDescriptorSetVariableDescriptorCountLayoutSupportEXT;
@@ -29011,6 +29588,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDescriptorUpdateTemplateEntry*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DescriptorUpdateTemplateEntry const& ) const = default;
+#else
     bool operator==( DescriptorUpdateTemplateEntry const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( dstBinding == rhs.dstBinding )
@@ -29025,6 +29605,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     uint32_t dstBinding = {};
@@ -29150,6 +29731,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDescriptorUpdateTemplateCreateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DescriptorUpdateTemplateCreateInfo const& ) const = default;
+#else
     bool operator==( DescriptorUpdateTemplateCreateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -29168,6 +29752,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDescriptorUpdateTemplateCreateInfo;
@@ -29261,6 +29846,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDeviceQueueCreateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DeviceQueueCreateInfo const& ) const = default;
+#else
     bool operator==( DeviceQueueCreateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -29275,6 +29863,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDeviceQueueCreateInfo;
@@ -29816,6 +30405,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceFeatures*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceFeatures const& ) const = default;
+#else
     bool operator==( PhysicalDeviceFeatures const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( robustBufferAccess == rhs.robustBufferAccess )
@@ -29879,6 +30471,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::Bool32 robustBufferAccess = {};
@@ -30053,6 +30646,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDeviceCreateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DeviceCreateInfo const& ) const = default;
+#else
     bool operator==( DeviceCreateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -30071,6 +30667,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDeviceCreateInfo;
@@ -30137,6 +30734,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDeviceEventInfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DeviceEventInfoEXT const& ) const = default;
+#else
     bool operator==( DeviceEventInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -30148,6 +30748,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDeviceEventInfoEXT;
@@ -30207,6 +30808,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDeviceGeneratedCommandsFeaturesNVX*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DeviceGeneratedCommandsFeaturesNVX const& ) const = default;
+#else
     bool operator==( DeviceGeneratedCommandsFeaturesNVX const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -30218,6 +30822,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDeviceGeneratedCommandsFeaturesNVX;
@@ -30313,6 +30918,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDeviceGeneratedCommandsLimitsNVX*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DeviceGeneratedCommandsLimitsNVX const& ) const = default;
+#else
     bool operator==( DeviceGeneratedCommandsLimitsNVX const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -30328,6 +30936,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDeviceGeneratedCommandsLimitsNVX;
@@ -30400,6 +31009,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDeviceGroupBindSparseInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DeviceGroupBindSparseInfo const& ) const = default;
+#else
     bool operator==( DeviceGroupBindSparseInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -30412,6 +31024,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDeviceGroupBindSparseInfo;
@@ -30472,6 +31085,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDeviceGroupCommandBufferBeginInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DeviceGroupCommandBufferBeginInfo const& ) const = default;
+#else
     bool operator==( DeviceGroupCommandBufferBeginInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -30483,6 +31099,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDeviceGroupCommandBufferBeginInfo;
@@ -30551,6 +31168,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDeviceGroupDeviceCreateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DeviceGroupDeviceCreateInfo const& ) const = default;
+#else
     bool operator==( DeviceGroupDeviceCreateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -30563,6 +31183,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDeviceGroupDeviceCreateInfo;
@@ -30618,6 +31239,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDeviceGroupPresentCapabilitiesKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DeviceGroupPresentCapabilitiesKHR const& ) const = default;
+#else
     bool operator==( DeviceGroupPresentCapabilitiesKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -30630,6 +31254,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDeviceGroupPresentCapabilitiesKHR;
@@ -30708,6 +31333,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDeviceGroupPresentInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DeviceGroupPresentInfoKHR const& ) const = default;
+#else
     bool operator==( DeviceGroupPresentInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -30721,6 +31349,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDeviceGroupPresentInfoKHR;
@@ -30800,6 +31429,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDeviceGroupRenderPassBeginInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DeviceGroupRenderPassBeginInfo const& ) const = default;
+#else
     bool operator==( DeviceGroupRenderPassBeginInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -30813,6 +31445,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDeviceGroupRenderPassBeginInfo;
@@ -30919,6 +31552,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDeviceGroupSubmitInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DeviceGroupSubmitInfo const& ) const = default;
+#else
     bool operator==( DeviceGroupSubmitInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -30935,6 +31571,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDeviceGroupSubmitInfo;
@@ -30999,6 +31636,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDeviceGroupSwapchainCreateInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DeviceGroupSwapchainCreateInfoKHR const& ) const = default;
+#else
     bool operator==( DeviceGroupSwapchainCreateInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -31010,6 +31650,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDeviceGroupSwapchainCreateInfoKHR;
@@ -31069,6 +31710,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDeviceMemoryOpaqueCaptureAddressInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DeviceMemoryOpaqueCaptureAddressInfoKHR const& ) const = default;
+#else
     bool operator==( DeviceMemoryOpaqueCaptureAddressInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -31080,6 +31724,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDeviceMemoryOpaqueCaptureAddressInfoKHR;
@@ -31139,6 +31784,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDeviceMemoryOverallocationCreateInfoAMD*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DeviceMemoryOverallocationCreateInfoAMD const& ) const = default;
+#else
     bool operator==( DeviceMemoryOverallocationCreateInfoAMD const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -31150,6 +31798,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDeviceMemoryOverallocationCreateInfoAMD;
@@ -31209,6 +31858,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDeviceQueueGlobalPriorityCreateInfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DeviceQueueGlobalPriorityCreateInfoEXT const& ) const = default;
+#else
     bool operator==( DeviceQueueGlobalPriorityCreateInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -31220,6 +31872,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDeviceQueueGlobalPriorityCreateInfoEXT;
@@ -31297,6 +31950,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDeviceQueueInfo2*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DeviceQueueInfo2 const& ) const = default;
+#else
     bool operator==( DeviceQueueInfo2 const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -31310,6 +31966,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDeviceQueueInfo2;
@@ -31382,6 +32039,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDispatchIndirectCommand*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DispatchIndirectCommand const& ) const = default;
+#else
     bool operator==( DispatchIndirectCommand const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( x == rhs.x )
@@ -31393,6 +32053,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     uint32_t x = {};
@@ -31452,6 +32113,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDisplayEventInfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DisplayEventInfoEXT const& ) const = default;
+#else
     bool operator==( DisplayEventInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -31463,6 +32127,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDisplayEventInfoEXT;
@@ -31524,6 +32189,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDisplayModeParametersKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DisplayModeParametersKHR const& ) const = default;
+#else
     bool operator==( DisplayModeParametersKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( visibleRegion == rhs.visibleRegion )
@@ -31534,6 +32202,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::Extent2D visibleRegion = {};
@@ -31601,6 +32270,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDisplayModeCreateInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DisplayModeCreateInfoKHR const& ) const = default;
+#else
     bool operator==( DisplayModeCreateInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -31613,6 +32285,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDisplayModeCreateInfoKHR;
@@ -31663,6 +32336,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDisplayModePropertiesKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DisplayModePropertiesKHR const& ) const = default;
+#else
     bool operator==( DisplayModePropertiesKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( displayMode == rhs.displayMode )
@@ -31673,6 +32349,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::DisplayModeKHR displayMode = {};
@@ -31719,6 +32396,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDisplayModeProperties2KHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DisplayModeProperties2KHR const& ) const = default;
+#else
     bool operator==( DisplayModeProperties2KHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -31730,6 +32410,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDisplayModeProperties2KHR;
@@ -31777,6 +32458,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDisplayNativeHdrSurfaceCapabilitiesAMD*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DisplayNativeHdrSurfaceCapabilitiesAMD const& ) const = default;
+#else
     bool operator==( DisplayNativeHdrSurfaceCapabilitiesAMD const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -31788,6 +32472,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDisplayNativeHdrSurfaceCapabilitiesAMD;
@@ -31858,6 +32543,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDisplayPlaneCapabilitiesKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DisplayPlaneCapabilitiesKHR const& ) const = default;
+#else
     bool operator==( DisplayPlaneCapabilitiesKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( supportedAlpha == rhs.supportedAlpha )
@@ -31875,6 +32563,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::DisplayPlaneAlphaFlagsKHR supportedAlpha = {};
@@ -31928,6 +32617,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDisplayPlaneCapabilities2KHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DisplayPlaneCapabilities2KHR const& ) const = default;
+#else
     bool operator==( DisplayPlaneCapabilities2KHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -31939,6 +32631,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDisplayPlaneCapabilities2KHR;
@@ -32007,6 +32700,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDisplayPlaneInfo2KHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DisplayPlaneInfo2KHR const& ) const = default;
+#else
     bool operator==( DisplayPlaneInfo2KHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -32019,6 +32715,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDisplayPlaneInfo2KHR;
@@ -32069,6 +32766,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDisplayPlanePropertiesKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DisplayPlanePropertiesKHR const& ) const = default;
+#else
     bool operator==( DisplayPlanePropertiesKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( currentDisplay == rhs.currentDisplay )
@@ -32079,6 +32779,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::DisplayKHR currentDisplay = {};
@@ -32125,6 +32826,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDisplayPlaneProperties2KHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DisplayPlaneProperties2KHR const& ) const = default;
+#else
     bool operator==( DisplayPlaneProperties2KHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -32136,6 +32840,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDisplayPlaneProperties2KHR;
@@ -32195,6 +32900,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDisplayPowerInfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DisplayPowerInfoEXT const& ) const = default;
+#else
     bool operator==( DisplayPowerInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -32206,6 +32914,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDisplayPowerInfoEXT;
@@ -32283,6 +32992,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDisplayPresentInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DisplayPresentInfoKHR const& ) const = default;
+#else
     bool operator==( DisplayPresentInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -32296,6 +33008,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDisplayPresentInfoKHR;
@@ -32362,6 +33075,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDisplayPropertiesKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DisplayPropertiesKHR const& ) const = default;
+#else
     bool operator==( DisplayPropertiesKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( display == rhs.display )
@@ -32377,6 +33093,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::DisplayKHR display = {};
@@ -32428,6 +33145,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDisplayProperties2KHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DisplayProperties2KHR const& ) const = default;
+#else
     bool operator==( DisplayProperties2KHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -32439,6 +33159,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDisplayProperties2KHR;
@@ -32561,6 +33282,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDisplaySurfaceCreateInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DisplaySurfaceCreateInfoKHR const& ) const = default;
+#else
     bool operator==( DisplaySurfaceCreateInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -32579,6 +33303,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDisplaySurfaceCreateInfoKHR;
@@ -32674,6 +33399,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDrawIndexedIndirectCommand*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DrawIndexedIndirectCommand const& ) const = default;
+#else
     bool operator==( DrawIndexedIndirectCommand const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( indexCount == rhs.indexCount )
@@ -32687,6 +33415,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     uint32_t indexCount = {};
@@ -32768,6 +33497,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDrawIndirectCommand*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DrawIndirectCommand const& ) const = default;
+#else
     bool operator==( DrawIndirectCommand const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( vertexCount == rhs.vertexCount )
@@ -32780,6 +33512,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     uint32_t vertexCount = {};
@@ -32842,6 +33575,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDrawMeshTasksIndirectCommandNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DrawMeshTasksIndirectCommandNV const& ) const = default;
+#else
     bool operator==( DrawMeshTasksIndirectCommandNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( taskCount == rhs.taskCount )
@@ -32852,6 +33588,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     uint32_t taskCount = {};
@@ -32903,6 +33640,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDrmFormatModifierPropertiesEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DrmFormatModifierPropertiesEXT const& ) const = default;
+#else
     bool operator==( DrmFormatModifierPropertiesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( drmFormatModifier == rhs.drmFormatModifier )
@@ -32914,6 +33654,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     uint64_t drmFormatModifier = {};
@@ -32964,6 +33705,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkDrmFormatModifierPropertiesListEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( DrmFormatModifierPropertiesListEXT const& ) const = default;
+#else
     bool operator==( DrmFormatModifierPropertiesListEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -32976,6 +33720,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDrmFormatModifierPropertiesListEXT;
@@ -33036,6 +33781,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkEventCreateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( EventCreateInfo const& ) const = default;
+#else
     bool operator==( EventCreateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -33047,6 +33795,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eEventCreateInfo;
@@ -33106,6 +33855,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkExportFenceCreateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ExportFenceCreateInfo const& ) const = default;
+#else
     bool operator==( ExportFenceCreateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -33117,6 +33869,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eExportFenceCreateInfo;
@@ -33196,6 +33949,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkExportFenceWin32HandleInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ExportFenceWin32HandleInfoKHR const& ) const = default;
+#else
     bool operator==( ExportFenceWin32HandleInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -33209,6 +33965,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eExportFenceWin32HandleInfoKHR;
@@ -33271,6 +34028,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkExportMemoryAllocateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ExportMemoryAllocateInfo const& ) const = default;
+#else
     bool operator==( ExportMemoryAllocateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -33282,6 +34042,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eExportMemoryAllocateInfo;
@@ -33341,6 +34102,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkExportMemoryAllocateInfoNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ExportMemoryAllocateInfoNV const& ) const = default;
+#else
     bool operator==( ExportMemoryAllocateInfoNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -33352,6 +34116,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eExportMemoryAllocateInfoNV;
@@ -33431,6 +34196,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkExportMemoryWin32HandleInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ExportMemoryWin32HandleInfoKHR const& ) const = default;
+#else
     bool operator==( ExportMemoryWin32HandleInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -33444,6 +34212,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eExportMemoryWin32HandleInfoKHR;
@@ -33517,6 +34286,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkExportMemoryWin32HandleInfoNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ExportMemoryWin32HandleInfoNV const& ) const = default;
+#else
     bool operator==( ExportMemoryWin32HandleInfoNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -33529,6 +34301,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eExportMemoryWin32HandleInfoNV;
@@ -33590,6 +34363,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkExportSemaphoreCreateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ExportSemaphoreCreateInfo const& ) const = default;
+#else
     bool operator==( ExportSemaphoreCreateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -33601,6 +34377,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eExportSemaphoreCreateInfo;
@@ -33680,6 +34457,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkExportSemaphoreWin32HandleInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ExportSemaphoreWin32HandleInfoKHR const& ) const = default;
+#else
     bool operator==( ExportSemaphoreWin32HandleInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -33693,6 +34473,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eExportSemaphoreWin32HandleInfoKHR;
@@ -33749,6 +34530,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkExtensionProperties*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ExtensionProperties const& ) const = default;
+#else
     bool operator==( ExtensionProperties const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( memcmp( extensionName, rhs.extensionName, VK_MAX_EXTENSION_NAME_SIZE * sizeof( char ) ) == 0 )
@@ -33759,6 +34543,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     char extensionName[VK_MAX_EXTENSION_NAME_SIZE] = {};
@@ -33810,6 +34595,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkExternalMemoryProperties*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ExternalMemoryProperties const& ) const = default;
+#else
     bool operator==( ExternalMemoryProperties const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( externalMemoryFeatures == rhs.externalMemoryFeatures )
@@ -33821,6 +34609,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::ExternalMemoryFeatureFlags externalMemoryFeatures = {};
@@ -33868,6 +34657,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkExternalBufferProperties*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ExternalBufferProperties const& ) const = default;
+#else
     bool operator==( ExternalBufferProperties const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -33879,6 +34671,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eExternalBufferProperties;
@@ -33932,6 +34725,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkExternalFenceProperties*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ExternalFenceProperties const& ) const = default;
+#else
     bool operator==( ExternalFenceProperties const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -33945,6 +34741,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eExternalFenceProperties;
@@ -34008,6 +34805,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkExternalFormatANDROID*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ExternalFormatANDROID const& ) const = default;
+#else
     bool operator==( ExternalFormatANDROID const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -34019,6 +34819,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eExternalFormatANDROID;
@@ -34067,6 +34868,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkExternalImageFormatProperties*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ExternalImageFormatProperties const& ) const = default;
+#else
     bool operator==( ExternalImageFormatProperties const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -34078,6 +34882,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eExternalImageFormatProperties;
@@ -34136,6 +34941,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkImageFormatProperties*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ImageFormatProperties const& ) const = default;
+#else
     bool operator==( ImageFormatProperties const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( maxExtent == rhs.maxExtent )
@@ -34149,6 +34957,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::Extent3D maxExtent = {};
@@ -34206,6 +35015,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkExternalImageFormatPropertiesNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ExternalImageFormatPropertiesNV const& ) const = default;
+#else
     bool operator==( ExternalImageFormatPropertiesNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( imageFormatProperties == rhs.imageFormatProperties )
@@ -34218,6 +35030,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::ImageFormatProperties imageFormatProperties = {};
@@ -34278,6 +35091,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkExternalMemoryBufferCreateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ExternalMemoryBufferCreateInfo const& ) const = default;
+#else
     bool operator==( ExternalMemoryBufferCreateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -34289,6 +35105,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eExternalMemoryBufferCreateInfo;
@@ -34348,6 +35165,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkExternalMemoryImageCreateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ExternalMemoryImageCreateInfo const& ) const = default;
+#else
     bool operator==( ExternalMemoryImageCreateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -34359,6 +35179,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eExternalMemoryImageCreateInfo;
@@ -34418,6 +35239,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkExternalMemoryImageCreateInfoNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ExternalMemoryImageCreateInfoNV const& ) const = default;
+#else
     bool operator==( ExternalMemoryImageCreateInfoNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -34429,6 +35253,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eExternalMemoryImageCreateInfoNV;
@@ -34482,6 +35307,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkExternalSemaphoreProperties*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ExternalSemaphoreProperties const& ) const = default;
+#else
     bool operator==( ExternalSemaphoreProperties const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -34495,6 +35323,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eExternalSemaphoreProperties;
@@ -34556,6 +35385,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkFenceCreateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( FenceCreateInfo const& ) const = default;
+#else
     bool operator==( FenceCreateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -34567,6 +35399,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eFenceCreateInfo;
@@ -34635,6 +35468,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkFenceGetFdInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( FenceGetFdInfoKHR const& ) const = default;
+#else
     bool operator==( FenceGetFdInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -34647,6 +35483,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eFenceGetFdInfoKHR;
@@ -34718,6 +35555,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkFenceGetWin32HandleInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( FenceGetWin32HandleInfoKHR const& ) const = default;
+#else
     bool operator==( FenceGetWin32HandleInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -34730,6 +35570,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eFenceGetWin32HandleInfoKHR;
@@ -34782,6 +35623,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkFilterCubicImageViewImageFormatPropertiesEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( FilterCubicImageViewImageFormatPropertiesEXT const& ) const = default;
+#else
     bool operator==( FilterCubicImageViewImageFormatPropertiesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -34794,6 +35638,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eFilterCubicImageViewImageFormatPropertiesEXT;
@@ -34847,6 +35692,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkFormatProperties*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( FormatProperties const& ) const = default;
+#else
     bool operator==( FormatProperties const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( linearTilingFeatures == rhs.linearTilingFeatures )
@@ -34858,6 +35706,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::FormatFeatureFlags linearTilingFeatures = {};
@@ -34905,6 +35754,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkFormatProperties2*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( FormatProperties2 const& ) const = default;
+#else
     bool operator==( FormatProperties2 const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -34916,6 +35768,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eFormatProperties2;
@@ -35029,6 +35882,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkFramebufferAttachmentImageInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( FramebufferAttachmentImageInfoKHR const& ) const = default;
+#else
     bool operator==( FramebufferAttachmentImageInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -35046,6 +35902,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eFramebufferAttachmentImageInfoKHR;
@@ -35120,6 +35977,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkFramebufferAttachmentsCreateInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( FramebufferAttachmentsCreateInfoKHR const& ) const = default;
+#else
     bool operator==( FramebufferAttachmentsCreateInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -35132,6 +35992,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eFramebufferAttachmentsCreateInfoKHR;
@@ -35246,6 +36107,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkFramebufferCreateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( FramebufferCreateInfo const& ) const = default;
+#else
     bool operator==( FramebufferCreateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -35263,6 +36127,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eFramebufferCreateInfo;
@@ -35325,6 +36190,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkFramebufferMixedSamplesCombinationNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( FramebufferMixedSamplesCombinationNV const& ) const = default;
+#else
     bool operator==( FramebufferMixedSamplesCombinationNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -35339,6 +36207,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eFramebufferMixedSamplesCombinationNV;
@@ -35412,6 +36281,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkVertexInputBindingDescription*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( VertexInputBindingDescription const& ) const = default;
+#else
     bool operator==( VertexInputBindingDescription const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( binding == rhs.binding )
@@ -35423,6 +36295,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     uint32_t binding = {};
@@ -35502,6 +36375,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkVertexInputAttributeDescription*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( VertexInputAttributeDescription const& ) const = default;
+#else
     bool operator==( VertexInputAttributeDescription const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( location == rhs.location )
@@ -35514,6 +36390,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     uint32_t location = {};
@@ -35610,6 +36487,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPipelineVertexInputStateCreateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PipelineVertexInputStateCreateInfo const& ) const = default;
+#else
     bool operator==( PipelineVertexInputStateCreateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -35625,6 +36505,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineVertexInputStateCreateInfo;
@@ -35706,6 +36587,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPipelineInputAssemblyStateCreateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PipelineInputAssemblyStateCreateInfo const& ) const = default;
+#else
     bool operator==( PipelineInputAssemblyStateCreateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -35719,6 +36603,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineInputAssemblyStateCreateInfo;
@@ -35789,6 +36674,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPipelineTessellationStateCreateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PipelineTessellationStateCreateInfo const& ) const = default;
+#else
     bool operator==( PipelineTessellationStateCreateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -35801,6 +36689,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineTessellationStateCreateInfo;
@@ -35899,6 +36788,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkViewport*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( Viewport const& ) const = default;
+#else
     bool operator==( Viewport const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( x == rhs.x )
@@ -35913,6 +36805,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     float x = {};
@@ -36011,6 +36904,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPipelineViewportStateCreateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PipelineViewportStateCreateInfo const& ) const = default;
+#else
     bool operator==( PipelineViewportStateCreateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -36026,6 +36922,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineViewportStateCreateInfo;
@@ -36179,6 +37076,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPipelineRasterizationStateCreateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PipelineRasterizationStateCreateInfo const& ) const = default;
+#else
     bool operator==( PipelineRasterizationStateCreateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -36200,6 +37100,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineRasterizationStateCreateInfo;
@@ -36323,6 +37224,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPipelineMultisampleStateCreateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PipelineMultisampleStateCreateInfo const& ) const = default;
+#else
     bool operator==( PipelineMultisampleStateCreateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -36340,6 +37244,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineMultisampleStateCreateInfo;
@@ -36452,6 +37357,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkStencilOpState*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( StencilOpState const& ) const = default;
+#else
     bool operator==( StencilOpState const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( failOp == rhs.failOp )
@@ -36467,6 +37375,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::StencilOp failOp = VULKAN_HPP_NAMESPACE::StencilOp::eKeep;
@@ -36611,6 +37520,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPipelineDepthStencilStateCreateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PipelineDepthStencilStateCreateInfo const& ) const = default;
+#else
     bool operator==( PipelineDepthStencilStateCreateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -36631,6 +37543,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineDepthStencilStateCreateInfo;
@@ -36755,6 +37668,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPipelineColorBlendAttachmentState*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PipelineColorBlendAttachmentState const& ) const = default;
+#else
     bool operator==( PipelineColorBlendAttachmentState const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( blendEnable == rhs.blendEnable )
@@ -36771,6 +37687,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::Bool32 blendEnable = {};
@@ -36884,6 +37801,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPipelineColorBlendStateCreateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PipelineColorBlendStateCreateInfo const& ) const = default;
+#else
     bool operator==( PipelineColorBlendStateCreateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -36900,6 +37820,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineColorBlendStateCreateInfo;
@@ -36982,6 +37903,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPipelineDynamicStateCreateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PipelineDynamicStateCreateInfo const& ) const = default;
+#else
     bool operator==( PipelineDynamicStateCreateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -36995,6 +37919,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineDynamicStateCreateInfo;
@@ -37200,6 +38125,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkGraphicsPipelineCreateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( GraphicsPipelineCreateInfo const& ) const = default;
+#else
     bool operator==( GraphicsPipelineCreateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -37227,6 +38155,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eGraphicsPipelineCreateInfo;
@@ -37304,6 +38233,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkXYColorEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( XYColorEXT const& ) const = default;
+#else
     bool operator==( XYColorEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( x == rhs.x )
@@ -37314,6 +38246,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     float x = {};
@@ -37435,6 +38368,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkHdrMetadataEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( HdrMetadataEXT const& ) const = default;
+#else
     bool operator==( HdrMetadataEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -37453,6 +38389,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eHdrMetadataEXT;
@@ -37519,6 +38456,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkHeadlessSurfaceCreateInfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( HeadlessSurfaceCreateInfoEXT const& ) const = default;
+#else
     bool operator==( HeadlessSurfaceCreateInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -37530,6 +38470,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eHeadlessSurfaceCreateInfoEXT;
@@ -37600,6 +38541,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkIOSSurfaceCreateInfoMVK*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( IOSSurfaceCreateInfoMVK const& ) const = default;
+#else
     bool operator==( IOSSurfaceCreateInfoMVK const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -37612,6 +38556,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eIosSurfaceCreateInfoMVK;
@@ -37699,6 +38644,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkImageBlit*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ImageBlit const& ) const = default;
+#else
     bool operator==( ImageBlit const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( srcSubresource == rhs.srcSubresource )
@@ -37711,6 +38659,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::ImageSubresourceLayers srcSubresource = {};
@@ -37800,6 +38749,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkImageCopy*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ImageCopy const& ) const = default;
+#else
     bool operator==( ImageCopy const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( srcSubresource == rhs.srcSubresource )
@@ -37813,6 +38765,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::ImageSubresourceLayers srcSubresource = {};
@@ -37982,6 +38935,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkImageCreateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ImageCreateInfo const& ) const = default;
+#else
     bool operator==( ImageCreateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -38005,6 +38961,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eImageCreateInfo;
@@ -38075,6 +39032,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSubresourceLayout*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SubresourceLayout const& ) const = default;
+#else
     bool operator==( SubresourceLayout const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( offset == rhs.offset )
@@ -38088,6 +39048,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::DeviceSize offset = {};
@@ -38167,6 +39128,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkImageDrmFormatModifierExplicitCreateInfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ImageDrmFormatModifierExplicitCreateInfoEXT const& ) const = default;
+#else
     bool operator==( ImageDrmFormatModifierExplicitCreateInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -38180,6 +39144,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eImageDrmFormatModifierExplicitCreateInfoEXT;
@@ -38250,6 +39215,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkImageDrmFormatModifierListCreateInfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ImageDrmFormatModifierListCreateInfoEXT const& ) const = default;
+#else
     bool operator==( ImageDrmFormatModifierListCreateInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -38262,6 +39230,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eImageDrmFormatModifierListCreateInfoEXT;
@@ -38310,6 +39279,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkImageDrmFormatModifierPropertiesEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ImageDrmFormatModifierPropertiesEXT const& ) const = default;
+#else
     bool operator==( ImageDrmFormatModifierPropertiesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -38321,6 +39293,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eImageDrmFormatModifierPropertiesEXT;
@@ -38389,6 +39362,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkImageFormatListCreateInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ImageFormatListCreateInfoKHR const& ) const = default;
+#else
     bool operator==( ImageFormatListCreateInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -38401,6 +39377,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eImageFormatListCreateInfoKHR;
@@ -38449,6 +39426,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkImageFormatProperties2*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ImageFormatProperties2 const& ) const = default;
+#else
     bool operator==( ImageFormatProperties2 const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -38460,6 +39440,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eImageFormatProperties2;
@@ -38548,6 +39529,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkImageSubresourceRange*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ImageSubresourceRange const& ) const = default;
+#else
     bool operator==( ImageSubresourceRange const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( aspectMask == rhs.aspectMask )
@@ -38561,6 +39545,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::ImageAspectFlags aspectMask = {};
@@ -38685,6 +39670,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkImageMemoryBarrier*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ImageMemoryBarrier const& ) const = default;
+#else
     bool operator==( ImageMemoryBarrier const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -38703,6 +39691,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eImageMemoryBarrier;
@@ -38769,6 +39758,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkImageMemoryRequirementsInfo2*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ImageMemoryRequirementsInfo2 const& ) const = default;
+#else
     bool operator==( ImageMemoryRequirementsInfo2 const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -38780,6 +39772,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eImageMemoryRequirementsInfo2;
@@ -38850,6 +39843,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkImagePipeSurfaceCreateInfoFUCHSIA*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ImagePipeSurfaceCreateInfoFUCHSIA const& ) const = default;
+#else
     bool operator==( ImagePipeSurfaceCreateInfoFUCHSIA const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -38862,6 +39858,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eImagepipeSurfaceCreateInfoFUCHSIA;
@@ -38923,6 +39920,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkImagePlaneMemoryRequirementsInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ImagePlaneMemoryRequirementsInfo const& ) const = default;
+#else
     bool operator==( ImagePlaneMemoryRequirementsInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -38934,6 +39934,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eImagePlaneMemoryRequirementsInfo;
@@ -39022,6 +40023,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkImageResolve*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ImageResolve const& ) const = default;
+#else
     bool operator==( ImageResolve const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( srcSubresource == rhs.srcSubresource )
@@ -39035,6 +40039,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::ImageSubresourceLayers srcSubresource = {};
@@ -39096,6 +40101,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkImageSparseMemoryRequirementsInfo2*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ImageSparseMemoryRequirementsInfo2 const& ) const = default;
+#else
     bool operator==( ImageSparseMemoryRequirementsInfo2 const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -39107,6 +40115,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eImageSparseMemoryRequirementsInfo2;
@@ -39166,6 +40175,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkImageStencilUsageCreateInfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ImageStencilUsageCreateInfoEXT const& ) const = default;
+#else
     bool operator==( ImageStencilUsageCreateInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -39177,6 +40189,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eImageStencilUsageCreateInfoEXT;
@@ -39236,6 +40249,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkImageSwapchainCreateInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ImageSwapchainCreateInfoKHR const& ) const = default;
+#else
     bool operator==( ImageSwapchainCreateInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -39247,6 +40263,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eImageSwapchainCreateInfoKHR;
@@ -39306,6 +40323,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkImageViewASTCDecodeModeEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ImageViewASTCDecodeModeEXT const& ) const = default;
+#else
     bool operator==( ImageViewASTCDecodeModeEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -39317,6 +40337,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eImageViewAstcDecodeModeEXT;
@@ -39421,6 +40442,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkImageViewCreateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ImageViewCreateInfo const& ) const = default;
+#else
     bool operator==( ImageViewCreateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -39437,6 +40461,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eImageViewCreateInfo;
@@ -39519,6 +40544,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkImageViewHandleInfoNVX*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ImageViewHandleInfoNVX const& ) const = default;
+#else
     bool operator==( ImageViewHandleInfoNVX const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -39532,6 +40560,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eImageViewHandleInfoNVX;
@@ -39593,6 +40622,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkImageViewUsageCreateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ImageViewUsageCreateInfo const& ) const = default;
+#else
     bool operator==( ImageViewUsageCreateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -39604,6 +40636,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eImageViewUsageCreateInfo;
@@ -39665,6 +40698,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkImportAndroidHardwareBufferInfoANDROID*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ImportAndroidHardwareBufferInfoANDROID const& ) const = default;
+#else
     bool operator==( ImportAndroidHardwareBufferInfoANDROID const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -39676,6 +40712,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eImportAndroidHardwareBufferInfoANDROID;
@@ -39763,6 +40800,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkImportFenceFdInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ImportFenceFdInfoKHR const& ) const = default;
+#else
     bool operator==( ImportFenceFdInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -39777,6 +40817,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eImportFenceFdInfoKHR;
@@ -39877,6 +40918,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkImportFenceWin32HandleInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ImportFenceWin32HandleInfoKHR const& ) const = default;
+#else
     bool operator==( ImportFenceWin32HandleInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -39892,6 +40936,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eImportFenceWin32HandleInfoKHR;
@@ -39965,6 +41010,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkImportMemoryFdInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ImportMemoryFdInfoKHR const& ) const = default;
+#else
     bool operator==( ImportMemoryFdInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -39977,6 +41025,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eImportMemoryFdInfoKHR;
@@ -40046,6 +41095,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkImportMemoryHostPointerInfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ImportMemoryHostPointerInfoEXT const& ) const = default;
+#else
     bool operator==( ImportMemoryHostPointerInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -40058,6 +41110,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eImportMemoryHostPointerInfoEXT;
@@ -40138,6 +41191,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkImportMemoryWin32HandleInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ImportMemoryWin32HandleInfoKHR const& ) const = default;
+#else
     bool operator==( ImportMemoryWin32HandleInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -40151,6 +41207,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eImportMemoryWin32HandleInfoKHR;
@@ -40224,6 +41281,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkImportMemoryWin32HandleInfoNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ImportMemoryWin32HandleInfoNV const& ) const = default;
+#else
     bool operator==( ImportMemoryWin32HandleInfoNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -40236,6 +41296,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eImportMemoryWin32HandleInfoNV;
@@ -40324,6 +41385,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkImportSemaphoreFdInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ImportSemaphoreFdInfoKHR const& ) const = default;
+#else
     bool operator==( ImportSemaphoreFdInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -40338,6 +41402,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eImportSemaphoreFdInfoKHR;
@@ -40438,6 +41503,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkImportSemaphoreWin32HandleInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ImportSemaphoreWin32HandleInfoKHR const& ) const = default;
+#else
     bool operator==( ImportSemaphoreWin32HandleInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -40453,6 +41521,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eImportSemaphoreWin32HandleInfoKHR;
@@ -40537,6 +41606,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkIndirectCommandsLayoutTokenNVX*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( IndirectCommandsLayoutTokenNVX const& ) const = default;
+#else
     bool operator==( IndirectCommandsLayoutTokenNVX const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( tokenType == rhs.tokenType )
@@ -40549,6 +41621,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::IndirectCommandsTokenTypeNVX tokenType = VULKAN_HPP_NAMESPACE::IndirectCommandsTokenTypeNVX::ePipeline;
@@ -40636,6 +41709,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkIndirectCommandsLayoutCreateInfoNVX*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( IndirectCommandsLayoutCreateInfoNVX const& ) const = default;
+#else
     bool operator==( IndirectCommandsLayoutCreateInfoNVX const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -40650,6 +41726,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eIndirectCommandsLayoutCreateInfoNVX;
@@ -40712,6 +41789,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkInitializePerformanceApiInfoINTEL*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( InitializePerformanceApiInfoINTEL const& ) const = default;
+#else
     bool operator==( InitializePerformanceApiInfoINTEL const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -40723,6 +41803,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eInitializePerformanceApiInfoINTEL;
@@ -40793,6 +41874,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkInputAttachmentAspectReference*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( InputAttachmentAspectReference const& ) const = default;
+#else
     bool operator==( InputAttachmentAspectReference const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( subpass == rhs.subpass )
@@ -40804,6 +41888,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     uint32_t subpass = {};
@@ -40908,6 +41993,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkInstanceCreateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( InstanceCreateInfo const& ) const = default;
+#else
     bool operator==( InstanceCreateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -40924,6 +42012,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eInstanceCreateInfo;
@@ -40990,6 +42079,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkLayerProperties*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( LayerProperties const& ) const = default;
+#else
     bool operator==( LayerProperties const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( memcmp( layerName, rhs.layerName, VK_MAX_EXTENSION_NAME_SIZE * sizeof( char ) ) == 0 )
@@ -41002,6 +42094,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     char layerName[VK_MAX_EXTENSION_NAME_SIZE] = {};
@@ -41073,6 +42166,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkMacOSSurfaceCreateInfoMVK*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( MacOSSurfaceCreateInfoMVK const& ) const = default;
+#else
     bool operator==( MacOSSurfaceCreateInfoMVK const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -41085,6 +42181,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eMacosSurfaceCreateInfoMVK;
@@ -41164,6 +42261,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkMappedMemoryRange*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( MappedMemoryRange const& ) const = default;
+#else
     bool operator==( MappedMemoryRange const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -41177,6 +42277,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eMappedMemoryRange;
@@ -41247,6 +42348,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkMemoryAllocateFlagsInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( MemoryAllocateFlagsInfo const& ) const = default;
+#else
     bool operator==( MemoryAllocateFlagsInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -41259,6 +42363,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eMemoryAllocateFlagsInfo;
@@ -41328,6 +42433,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkMemoryAllocateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( MemoryAllocateInfo const& ) const = default;
+#else
     bool operator==( MemoryAllocateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -41340,6 +42448,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eMemoryAllocateInfo;
@@ -41409,6 +42518,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkMemoryBarrier*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( MemoryBarrier const& ) const = default;
+#else
     bool operator==( MemoryBarrier const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -41421,6 +42533,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eMemoryBarrier;
@@ -41490,6 +42603,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkMemoryDedicatedAllocateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( MemoryDedicatedAllocateInfo const& ) const = default;
+#else
     bool operator==( MemoryDedicatedAllocateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -41502,6 +42618,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eMemoryDedicatedAllocateInfo;
@@ -41553,6 +42670,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkMemoryDedicatedRequirements*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( MemoryDedicatedRequirements const& ) const = default;
+#else
     bool operator==( MemoryDedicatedRequirements const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -41565,6 +42685,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eMemoryDedicatedRequirements;
@@ -41613,6 +42734,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkMemoryFdPropertiesKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( MemoryFdPropertiesKHR const& ) const = default;
+#else
     bool operator==( MemoryFdPropertiesKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -41624,6 +42748,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eMemoryFdPropertiesKHR;
@@ -41685,6 +42810,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkMemoryGetAndroidHardwareBufferInfoANDROID*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( MemoryGetAndroidHardwareBufferInfoANDROID const& ) const = default;
+#else
     bool operator==( MemoryGetAndroidHardwareBufferInfoANDROID const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -41696,6 +42824,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eMemoryGetAndroidHardwareBufferInfoANDROID;
@@ -41765,6 +42894,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkMemoryGetFdInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( MemoryGetFdInfoKHR const& ) const = default;
+#else
     bool operator==( MemoryGetFdInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -41777,6 +42909,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eMemoryGetFdInfoKHR;
@@ -41848,6 +42981,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkMemoryGetWin32HandleInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( MemoryGetWin32HandleInfoKHR const& ) const = default;
+#else
     bool operator==( MemoryGetWin32HandleInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -41860,6 +42996,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eMemoryGetWin32HandleInfoKHR;
@@ -41911,6 +43048,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkMemoryHeap*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( MemoryHeap const& ) const = default;
+#else
     bool operator==( MemoryHeap const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( size == rhs.size )
@@ -41921,6 +43061,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::DeviceSize size = {};
@@ -41967,6 +43108,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkMemoryHostPointerPropertiesEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( MemoryHostPointerPropertiesEXT const& ) const = default;
+#else
     bool operator==( MemoryHostPointerPropertiesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -41978,6 +43122,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eMemoryHostPointerPropertiesEXT;
@@ -42037,6 +43182,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkMemoryOpaqueCaptureAddressAllocateInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( MemoryOpaqueCaptureAddressAllocateInfoKHR const& ) const = default;
+#else
     bool operator==( MemoryOpaqueCaptureAddressAllocateInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -42048,6 +43196,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eMemoryOpaqueCaptureAddressAllocateInfoKHR;
@@ -42107,6 +43256,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkMemoryPriorityAllocateInfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( MemoryPriorityAllocateInfoEXT const& ) const = default;
+#else
     bool operator==( MemoryPriorityAllocateInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -42118,6 +43270,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eMemoryPriorityAllocateInfoEXT;
@@ -42170,6 +43323,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkMemoryRequirements*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( MemoryRequirements const& ) const = default;
+#else
     bool operator==( MemoryRequirements const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( size == rhs.size )
@@ -42181,6 +43337,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::DeviceSize size = {};
@@ -42228,6 +43385,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkMemoryRequirements2*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( MemoryRequirements2 const& ) const = default;
+#else
     bool operator==( MemoryRequirements2 const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -42239,6 +43399,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eMemoryRequirements2;
@@ -42288,6 +43449,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkMemoryType*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( MemoryType const& ) const = default;
+#else
     bool operator==( MemoryType const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( propertyFlags == rhs.propertyFlags )
@@ -42298,6 +43462,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::MemoryPropertyFlags propertyFlags = {};
@@ -42346,6 +43511,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkMemoryWin32HandlePropertiesKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( MemoryWin32HandlePropertiesKHR const& ) const = default;
+#else
     bool operator==( MemoryWin32HandlePropertiesKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -42357,6 +43525,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eMemoryWin32HandlePropertiesKHR;
@@ -42428,6 +43597,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkMetalSurfaceCreateInfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( MetalSurfaceCreateInfoEXT const& ) const = default;
+#else
     bool operator==( MetalSurfaceCreateInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -42440,6 +43612,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eMetalSurfaceCreateInfoEXT;
@@ -42489,6 +43662,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkMultisamplePropertiesEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( MultisamplePropertiesEXT const& ) const = default;
+#else
     bool operator==( MultisamplePropertiesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -42500,6 +43676,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eMultisamplePropertiesEXT;
@@ -42631,6 +43808,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkObjectTableCreateInfoNVX*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ObjectTableCreateInfoNVX const& ) const = default;
+#else
     bool operator==( ObjectTableCreateInfoNVX const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -42650,6 +43830,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eObjectTableCreateInfoNVX;
@@ -42719,6 +43900,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkObjectTableEntryNVX*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ObjectTableEntryNVX const& ) const = default;
+#else
     bool operator==( ObjectTableEntryNVX const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( type == rhs.type )
@@ -42729,6 +43913,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX type = VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX::eDescriptorSet;
@@ -42816,6 +44001,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkObjectTableDescriptorSetEntryNVX*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ObjectTableDescriptorSetEntryNVX const& ) const = default;
+#else
     bool operator==( ObjectTableDescriptorSetEntryNVX const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( type == rhs.type )
@@ -42828,6 +44016,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX type = VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX::eDescriptorSet;
@@ -42917,6 +44106,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkObjectTableIndexBufferEntryNVX*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ObjectTableIndexBufferEntryNVX const& ) const = default;
+#else
     bool operator==( ObjectTableIndexBufferEntryNVX const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( type == rhs.type )
@@ -42929,6 +44121,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX type = VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX::eDescriptorSet;
@@ -43007,6 +44200,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkObjectTablePipelineEntryNVX*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ObjectTablePipelineEntryNVX const& ) const = default;
+#else
     bool operator==( ObjectTablePipelineEntryNVX const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( type == rhs.type )
@@ -43018,6 +44214,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX type = VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX::eDescriptorSet;
@@ -43106,6 +44303,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkObjectTablePushConstantEntryNVX*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ObjectTablePushConstantEntryNVX const& ) const = default;
+#else
     bool operator==( ObjectTablePushConstantEntryNVX const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( type == rhs.type )
@@ -43118,6 +44318,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX type = VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX::eDescriptorSet;
@@ -43196,6 +44397,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkObjectTableVertexBufferEntryNVX*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ObjectTableVertexBufferEntryNVX const& ) const = default;
+#else
     bool operator==( ObjectTableVertexBufferEntryNVX const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( type == rhs.type )
@@ -43207,6 +44411,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX type = VULKAN_HPP_NAMESPACE::ObjectEntryTypeNVX::eDescriptorSet;
@@ -43265,6 +44470,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPastPresentationTimingGOOGLE*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PastPresentationTimingGOOGLE const& ) const = default;
+#else
     bool operator==( PastPresentationTimingGOOGLE const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( presentID == rhs.presentID )
@@ -43278,6 +44486,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     uint32_t presentID = {};
@@ -43339,6 +44548,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPerformanceConfigurationAcquireInfoINTEL*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PerformanceConfigurationAcquireInfoINTEL const& ) const = default;
+#else
     bool operator==( PerformanceConfigurationAcquireInfoINTEL const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -43350,6 +44562,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePerformanceConfigurationAcquireInfoINTEL;
@@ -43414,6 +44627,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPerformanceCounterDescriptionKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PerformanceCounterDescriptionKHR const& ) const = default;
+#else
     bool operator==( PerformanceCounterDescriptionKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -43428,6 +44644,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePerformanceCounterDescriptionKHR;
@@ -43491,6 +44708,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPerformanceCounterKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PerformanceCounterKHR const& ) const = default;
+#else
     bool operator==( PerformanceCounterKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -43505,6 +44725,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePerformanceCounterKHR;
@@ -43664,6 +44885,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPerformanceMarkerInfoINTEL*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PerformanceMarkerInfoINTEL const& ) const = default;
+#else
     bool operator==( PerformanceMarkerInfoINTEL const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -43675,6 +44899,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePerformanceMarkerInfoINTEL;
@@ -43752,6 +44977,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPerformanceOverrideInfoINTEL*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PerformanceOverrideInfoINTEL const& ) const = default;
+#else
     bool operator==( PerformanceOverrideInfoINTEL const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -43765,6 +44993,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePerformanceOverrideInfoINTEL;
@@ -43826,6 +45055,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPerformanceQuerySubmitInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PerformanceQuerySubmitInfoKHR const& ) const = default;
+#else
     bool operator==( PerformanceQuerySubmitInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -43837,6 +45069,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePerformanceQuerySubmitInfoKHR;
@@ -43896,6 +45129,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPerformanceStreamMarkerInfoINTEL*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PerformanceStreamMarkerInfoINTEL const& ) const = default;
+#else
     bool operator==( PerformanceStreamMarkerInfoINTEL const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -43907,6 +45143,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePerformanceStreamMarkerInfoINTEL;
@@ -44140,6 +45377,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDevice16BitStorageFeatures*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDevice16BitStorageFeatures const& ) const = default;
+#else
     bool operator==( PhysicalDevice16BitStorageFeatures const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -44154,6 +45394,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDevice16BitStorageFeatures;
@@ -44234,6 +45475,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDevice8BitStorageFeaturesKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDevice8BitStorageFeaturesKHR const& ) const = default;
+#else
     bool operator==( PhysicalDevice8BitStorageFeaturesKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -44247,6 +45491,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDevice8BitStorageFeaturesKHR;
@@ -44308,6 +45553,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceASTCDecodeFeaturesEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceASTCDecodeFeaturesEXT const& ) const = default;
+#else
     bool operator==( PhysicalDeviceASTCDecodeFeaturesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -44319,6 +45567,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceAstcDecodeFeaturesEXT;
@@ -44378,6 +45627,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceBlendOperationAdvancedFeaturesEXT const& ) const = default;
+#else
     bool operator==( PhysicalDeviceBlendOperationAdvancedFeaturesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -44389,6 +45641,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceBlendOperationAdvancedFeaturesEXT;
@@ -44451,6 +45704,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceBlendOperationAdvancedPropertiesEXT const& ) const = default;
+#else
     bool operator==( PhysicalDeviceBlendOperationAdvancedPropertiesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -44467,6 +45723,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceBlendOperationAdvancedPropertiesEXT;
@@ -44549,6 +45806,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceBufferDeviceAddressFeaturesEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceBufferDeviceAddressFeaturesEXT const& ) const = default;
+#else
     bool operator==( PhysicalDeviceBufferDeviceAddressFeaturesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -44562,6 +45822,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceBufferDeviceAddressFeaturesEXT;
@@ -44641,6 +45902,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceBufferDeviceAddressFeaturesKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceBufferDeviceAddressFeaturesKHR const& ) const = default;
+#else
     bool operator==( PhysicalDeviceBufferDeviceAddressFeaturesKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -44654,6 +45918,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceBufferDeviceAddressFeaturesKHR;
@@ -44715,6 +45980,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceCoherentMemoryFeaturesAMD*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceCoherentMemoryFeaturesAMD const& ) const = default;
+#else
     bool operator==( PhysicalDeviceCoherentMemoryFeaturesAMD const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -44726,6 +45994,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceCoherentMemoryFeaturesAMD;
@@ -44794,6 +46063,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceComputeShaderDerivativesFeaturesNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceComputeShaderDerivativesFeaturesNV const& ) const = default;
+#else
     bool operator==( PhysicalDeviceComputeShaderDerivativesFeaturesNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -44806,6 +46078,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceComputeShaderDerivativesFeaturesNV;
@@ -44875,6 +46148,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceConditionalRenderingFeaturesEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceConditionalRenderingFeaturesEXT const& ) const = default;
+#else
     bool operator==( PhysicalDeviceConditionalRenderingFeaturesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -44887,6 +46163,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceConditionalRenderingFeaturesEXT;
@@ -44959,6 +46236,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceConservativeRasterizationPropertiesEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceConservativeRasterizationPropertiesEXT const& ) const = default;
+#else
     bool operator==( PhysicalDeviceConservativeRasterizationPropertiesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -44978,6 +46258,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceConservativeRasterizationPropertiesEXT;
@@ -45054,6 +46335,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceCooperativeMatrixFeaturesNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceCooperativeMatrixFeaturesNV const& ) const = default;
+#else
     bool operator==( PhysicalDeviceCooperativeMatrixFeaturesNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -45066,6 +46350,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceCooperativeMatrixFeaturesNV;
@@ -45114,6 +46399,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceCooperativeMatrixPropertiesNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceCooperativeMatrixPropertiesNV const& ) const = default;
+#else
     bool operator==( PhysicalDeviceCooperativeMatrixPropertiesNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -45125,6 +46413,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceCooperativeMatrixPropertiesNV;
@@ -45184,6 +46473,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceCornerSampledImageFeaturesNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceCornerSampledImageFeaturesNV const& ) const = default;
+#else
     bool operator==( PhysicalDeviceCornerSampledImageFeaturesNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -45195,6 +46487,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceCornerSampledImageFeaturesNV;
@@ -45254,6 +46547,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceCoverageReductionModeFeaturesNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceCoverageReductionModeFeaturesNV const& ) const = default;
+#else
     bool operator==( PhysicalDeviceCoverageReductionModeFeaturesNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -45265,6 +46561,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceCoverageReductionModeFeaturesNV;
@@ -45324,6 +46621,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV const& ) const = default;
+#else
     bool operator==( PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -45335,6 +46635,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV;
@@ -45394,6 +46695,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceDepthClipEnableFeaturesEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceDepthClipEnableFeaturesEXT const& ) const = default;
+#else
     bool operator==( PhysicalDeviceDepthClipEnableFeaturesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -45405,6 +46709,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceDepthClipEnableFeaturesEXT;
@@ -45461,6 +46766,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceDepthStencilResolvePropertiesKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceDepthStencilResolvePropertiesKHR const& ) const = default;
+#else
     bool operator==( PhysicalDeviceDepthStencilResolvePropertiesKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -45475,6 +46783,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceDepthStencilResolvePropertiesKHR;
@@ -45708,6 +47017,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceDescriptorIndexingFeaturesEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceDescriptorIndexingFeaturesEXT const& ) const = default;
+#else
     bool operator==( PhysicalDeviceDescriptorIndexingFeaturesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -45738,6 +47050,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceDescriptorIndexingFeaturesEXT;
@@ -45870,6 +47183,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceDescriptorIndexingPropertiesEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceDescriptorIndexingPropertiesEXT const& ) const = default;
+#else
     bool operator==( PhysicalDeviceDescriptorIndexingPropertiesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -45903,6 +47219,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceDescriptorIndexingPropertiesEXT;
@@ -45972,6 +47289,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceDiscardRectanglePropertiesEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceDiscardRectanglePropertiesEXT const& ) const = default;
+#else
     bool operator==( PhysicalDeviceDiscardRectanglePropertiesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -45983,6 +47303,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceDiscardRectanglePropertiesEXT;
@@ -46045,6 +47366,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceDriverPropertiesKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceDriverPropertiesKHR const& ) const = default;
+#else
     bool operator==( PhysicalDeviceDriverPropertiesKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -46059,6 +47383,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceDriverPropertiesKHR;
@@ -46121,6 +47446,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceExclusiveScissorFeaturesNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceExclusiveScissorFeaturesNV const& ) const = default;
+#else
     bool operator==( PhysicalDeviceExclusiveScissorFeaturesNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -46132,6 +47460,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceExclusiveScissorFeaturesNV;
@@ -46209,6 +47538,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceExternalBufferInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceExternalBufferInfo const& ) const = default;
+#else
     bool operator==( PhysicalDeviceExternalBufferInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -46222,6 +47554,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceExternalBufferInfo;
@@ -46283,6 +47616,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceExternalFenceInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceExternalFenceInfo const& ) const = default;
+#else
     bool operator==( PhysicalDeviceExternalFenceInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -46294,6 +47630,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceExternalFenceInfo;
@@ -46353,6 +47690,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceExternalImageFormatInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceExternalImageFormatInfo const& ) const = default;
+#else
     bool operator==( PhysicalDeviceExternalImageFormatInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -46364,6 +47704,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceExternalImageFormatInfo;
@@ -46411,6 +47752,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceExternalMemoryHostPropertiesEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceExternalMemoryHostPropertiesEXT const& ) const = default;
+#else
     bool operator==( PhysicalDeviceExternalMemoryHostPropertiesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -46422,6 +47766,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceExternalMemoryHostPropertiesEXT;
@@ -46481,6 +47826,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceExternalSemaphoreInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceExternalSemaphoreInfo const& ) const = default;
+#else
     bool operator==( PhysicalDeviceExternalSemaphoreInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -46492,6 +47840,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceExternalSemaphoreInfo;
@@ -46551,6 +47900,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceFeatures2*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceFeatures2 const& ) const = default;
+#else
     bool operator==( PhysicalDeviceFeatures2 const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -46562,6 +47914,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceFeatures2;
@@ -46657,6 +48010,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceFloatControlsPropertiesKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceFloatControlsPropertiesKHR const& ) const = default;
+#else
     bool operator==( PhysicalDeviceFloatControlsPropertiesKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -46684,6 +48040,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceFloatControlsPropertiesKHR;
@@ -46753,6 +48110,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceFragmentDensityMapFeaturesEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceFragmentDensityMapFeaturesEXT const& ) const = default;
+#else
     bool operator==( PhysicalDeviceFragmentDensityMapFeaturesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -46766,6 +48126,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceFragmentDensityMapFeaturesEXT;
@@ -46821,6 +48182,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceFragmentDensityMapPropertiesEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceFragmentDensityMapPropertiesEXT const& ) const = default;
+#else
     bool operator==( PhysicalDeviceFragmentDensityMapPropertiesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -46834,6 +48198,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceFragmentDensityMapPropertiesEXT;
@@ -46895,6 +48260,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceFragmentShaderBarycentricFeaturesNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceFragmentShaderBarycentricFeaturesNV const& ) const = default;
+#else
     bool operator==( PhysicalDeviceFragmentShaderBarycentricFeaturesNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -46906,6 +48274,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceFragmentShaderBarycentricFeaturesNV;
@@ -46983,6 +48352,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceFragmentShaderInterlockFeaturesEXT const& ) const = default;
+#else
     bool operator==( PhysicalDeviceFragmentShaderInterlockFeaturesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -46996,6 +48368,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceFragmentShaderInterlockFeaturesEXT;
@@ -47055,6 +48428,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceGroupProperties*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceGroupProperties const& ) const = default;
+#else
     bool operator==( PhysicalDeviceGroupProperties const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -47068,6 +48444,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceGroupProperties;
@@ -47129,6 +48506,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceHostQueryResetFeaturesEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceHostQueryResetFeaturesEXT const& ) const = default;
+#else
     bool operator==( PhysicalDeviceHostQueryResetFeaturesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -47140,6 +48520,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceHostQueryResetFeaturesEXT;
@@ -47207,6 +48588,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceIDProperties*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceIDProperties const& ) const = default;
+#else
     bool operator==( PhysicalDeviceIDProperties const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -47222,6 +48606,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceIdProperties;
@@ -47312,6 +48697,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceImageDrmFormatModifierInfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceImageDrmFormatModifierInfoEXT const& ) const = default;
+#else
     bool operator==( PhysicalDeviceImageDrmFormatModifierInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -47326,6 +48714,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceImageDrmFormatModifierInfoEXT;
@@ -47424,6 +48813,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceImageFormatInfo2*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceImageFormatInfo2 const& ) const = default;
+#else
     bool operator==( PhysicalDeviceImageFormatInfo2 const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -47439,6 +48831,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceImageFormatInfo2;
@@ -47502,6 +48895,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceImageViewImageFormatInfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceImageViewImageFormatInfoEXT const& ) const = default;
+#else
     bool operator==( PhysicalDeviceImageViewImageFormatInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -47513,6 +48909,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceImageViewImageFormatInfoEXT;
@@ -47572,6 +48969,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceImagelessFramebufferFeaturesKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceImagelessFramebufferFeaturesKHR const& ) const = default;
+#else
     bool operator==( PhysicalDeviceImagelessFramebufferFeaturesKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -47583,6 +48983,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceImagelessFramebufferFeaturesKHR;
@@ -47642,6 +49043,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceIndexTypeUint8FeaturesEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceIndexTypeUint8FeaturesEXT const& ) const = default;
+#else
     bool operator==( PhysicalDeviceIndexTypeUint8FeaturesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -47653,6 +49057,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceIndexTypeUint8FeaturesEXT;
@@ -47721,6 +49126,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceInlineUniformBlockFeaturesEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceInlineUniformBlockFeaturesEXT const& ) const = default;
+#else
     bool operator==( PhysicalDeviceInlineUniformBlockFeaturesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -47733,6 +49141,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceInlineUniformBlockFeaturesEXT;
@@ -47793,6 +49202,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceInlineUniformBlockPropertiesEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceInlineUniformBlockPropertiesEXT const& ) const = default;
+#else
     bool operator==( PhysicalDeviceInlineUniformBlockPropertiesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -47808,6 +49220,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceInlineUniformBlockPropertiesEXT;
@@ -48187,6 +49600,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceLimits*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceLimits const& ) const = default;
+#else
     bool operator==( PhysicalDeviceLimits const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( maxImageDimension1D == rhs.maxImageDimension1D )
@@ -48301,6 +49717,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     uint32_t maxImageDimension1D = {};
@@ -48508,6 +49925,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceLineRasterizationFeaturesEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceLineRasterizationFeaturesEXT const& ) const = default;
+#else
     bool operator==( PhysicalDeviceLineRasterizationFeaturesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -48524,6 +49944,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceLineRasterizationFeaturesEXT;
@@ -48576,6 +49997,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceLineRasterizationPropertiesEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceLineRasterizationPropertiesEXT const& ) const = default;
+#else
     bool operator==( PhysicalDeviceLineRasterizationPropertiesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -48587,6 +50011,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceLineRasterizationPropertiesEXT;
@@ -48637,6 +50062,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceMaintenance3Properties*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceMaintenance3Properties const& ) const = default;
+#else
     bool operator==( PhysicalDeviceMaintenance3Properties const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -48649,6 +50077,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceMaintenance3Properties;
@@ -48706,6 +50135,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceMemoryBudgetPropertiesEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceMemoryBudgetPropertiesEXT const& ) const = default;
+#else
     bool operator==( PhysicalDeviceMemoryBudgetPropertiesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -48718,6 +50150,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceMemoryBudgetPropertiesEXT;
@@ -48778,6 +50211,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceMemoryPriorityFeaturesEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceMemoryPriorityFeaturesEXT const& ) const = default;
+#else
     bool operator==( PhysicalDeviceMemoryPriorityFeaturesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -48789,6 +50225,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceMemoryPriorityFeaturesEXT;
@@ -48850,6 +50287,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceMemoryProperties*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceMemoryProperties const& ) const = default;
+#else
     bool operator==( PhysicalDeviceMemoryProperties const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( memoryTypeCount == rhs.memoryTypeCount )
@@ -48862,6 +50302,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     uint32_t memoryTypeCount = {};
@@ -48910,6 +50351,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceMemoryProperties2*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceMemoryProperties2 const& ) const = default;
+#else
     bool operator==( PhysicalDeviceMemoryProperties2 const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -48921,6 +50365,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceMemoryProperties2;
@@ -48989,6 +50434,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceMeshShaderFeaturesNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceMeshShaderFeaturesNV const& ) const = default;
+#else
     bool operator==( PhysicalDeviceMeshShaderFeaturesNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -49001,6 +50449,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceMeshShaderFeaturesNV;
@@ -49091,6 +50540,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceMeshShaderPropertiesNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceMeshShaderPropertiesNV const& ) const = default;
+#else
     bool operator==( PhysicalDeviceMeshShaderPropertiesNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -49114,6 +50566,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceMeshShaderPropertiesNV;
@@ -49203,6 +50656,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceMultiviewFeatures*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceMultiviewFeatures const& ) const = default;
+#else
     bool operator==( PhysicalDeviceMultiviewFeatures const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -49216,6 +50672,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceMultiviewFeatures;
@@ -49265,6 +50722,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceMultiviewPerViewAttributesPropertiesNVX*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX const& ) const = default;
+#else
     bool operator==( PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -49276,6 +50736,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceMultiviewPerViewAttributesPropertiesNVX;
@@ -49326,6 +50787,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceMultiviewProperties*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceMultiviewProperties const& ) const = default;
+#else
     bool operator==( PhysicalDeviceMultiviewProperties const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -49338,6 +50802,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceMultiviewProperties;
@@ -49395,6 +50860,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDevicePCIBusInfoPropertiesEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDevicePCIBusInfoPropertiesEXT const& ) const = default;
+#else
     bool operator==( PhysicalDevicePCIBusInfoPropertiesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -49409,6 +50877,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDevicePciBusInfoPropertiesEXT;
@@ -49480,6 +50949,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDevicePerformanceQueryFeaturesKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDevicePerformanceQueryFeaturesKHR const& ) const = default;
+#else
     bool operator==( PhysicalDevicePerformanceQueryFeaturesKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -49492,6 +50964,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDevicePerformanceQueryFeaturesKHR;
@@ -49540,6 +51013,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDevicePerformanceQueryPropertiesKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDevicePerformanceQueryPropertiesKHR const& ) const = default;
+#else
     bool operator==( PhysicalDevicePerformanceQueryPropertiesKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -49551,6 +51027,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDevicePerformanceQueryPropertiesKHR;
@@ -49610,6 +51087,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDevicePipelineExecutablePropertiesFeaturesKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDevicePipelineExecutablePropertiesFeaturesKHR const& ) const = default;
+#else
     bool operator==( PhysicalDevicePipelineExecutablePropertiesFeaturesKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -49621,6 +51101,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDevicePipelineExecutablePropertiesFeaturesKHR;
@@ -49668,6 +51149,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDevicePointClippingProperties*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDevicePointClippingProperties const& ) const = default;
+#else
     bool operator==( PhysicalDevicePointClippingProperties const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -49679,6 +51163,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDevicePointClippingProperties;
@@ -49737,6 +51222,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceSparseProperties*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceSparseProperties const& ) const = default;
+#else
     bool operator==( PhysicalDeviceSparseProperties const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( residencyStandard2DBlockShape == rhs.residencyStandard2DBlockShape )
@@ -49750,6 +51238,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::Bool32 residencyStandard2DBlockShape = {};
@@ -49828,6 +51317,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceProperties*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceProperties const& ) const = default;
+#else
     bool operator==( PhysicalDeviceProperties const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( apiVersion == rhs.apiVersion )
@@ -49845,6 +51337,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     uint32_t apiVersion = {};
@@ -49898,6 +51391,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceProperties2*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceProperties2 const& ) const = default;
+#else
     bool operator==( PhysicalDeviceProperties2 const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -49909,6 +51405,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceProperties2;
@@ -49968,6 +51465,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceProtectedMemoryFeatures*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceProtectedMemoryFeatures const& ) const = default;
+#else
     bool operator==( PhysicalDeviceProtectedMemoryFeatures const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -49979,6 +51479,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceProtectedMemoryFeatures;
@@ -50026,6 +51527,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceProtectedMemoryProperties*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceProtectedMemoryProperties const& ) const = default;
+#else
     bool operator==( PhysicalDeviceProtectedMemoryProperties const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -50037,6 +51541,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceProtectedMemoryProperties;
@@ -50084,6 +51589,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDevicePushDescriptorPropertiesKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDevicePushDescriptorPropertiesKHR const& ) const = default;
+#else
     bool operator==( PhysicalDevicePushDescriptorPropertiesKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -50095,6 +51603,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDevicePushDescriptorPropertiesKHR;
@@ -50163,6 +51672,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceRayTracingPropertiesNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceRayTracingPropertiesNV const& ) const = default;
+#else
     bool operator==( PhysicalDeviceRayTracingPropertiesNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -50181,6 +51693,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceRayTracingPropertiesNV;
@@ -50247,6 +51760,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceRepresentativeFragmentTestFeaturesNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceRepresentativeFragmentTestFeaturesNV const& ) const = default;
+#else
     bool operator==( PhysicalDeviceRepresentativeFragmentTestFeaturesNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -50258,6 +51774,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceRepresentativeFragmentTestFeaturesNV;
@@ -50321,6 +51838,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceSampleLocationsPropertiesEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceSampleLocationsPropertiesEXT const& ) const = default;
+#else
     bool operator==( PhysicalDeviceSampleLocationsPropertiesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -50336,6 +51856,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceSampleLocationsPropertiesEXT;
@@ -50390,6 +51911,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceSamplerFilterMinmaxPropertiesEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceSamplerFilterMinmaxPropertiesEXT const& ) const = default;
+#else
     bool operator==( PhysicalDeviceSamplerFilterMinmaxPropertiesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -50402,6 +51926,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceSamplerFilterMinmaxPropertiesEXT;
@@ -50462,6 +51987,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceSamplerYcbcrConversionFeatures*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceSamplerYcbcrConversionFeatures const& ) const = default;
+#else
     bool operator==( PhysicalDeviceSamplerYcbcrConversionFeatures const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -50473,6 +52001,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceSamplerYcbcrConversionFeatures;
@@ -50532,6 +52061,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceScalarBlockLayoutFeaturesEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceScalarBlockLayoutFeaturesEXT const& ) const = default;
+#else
     bool operator==( PhysicalDeviceScalarBlockLayoutFeaturesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -50543,6 +52075,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceScalarBlockLayoutFeaturesEXT;
@@ -50602,6 +52135,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR const& ) const = default;
+#else
     bool operator==( PhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -50613,6 +52149,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR;
@@ -50681,6 +52218,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceShaderAtomicInt64FeaturesKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceShaderAtomicInt64FeaturesKHR const& ) const = default;
+#else
     bool operator==( PhysicalDeviceShaderAtomicInt64FeaturesKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -50693,6 +52233,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceShaderAtomicInt64FeaturesKHR;
@@ -50762,6 +52303,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceShaderClockFeaturesKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceShaderClockFeaturesKHR const& ) const = default;
+#else
     bool operator==( PhysicalDeviceShaderClockFeaturesKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -50774,6 +52318,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceShaderClockFeaturesKHR;
@@ -50825,6 +52370,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceShaderCoreProperties2AMD*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceShaderCoreProperties2AMD const& ) const = default;
+#else
     bool operator==( PhysicalDeviceShaderCoreProperties2AMD const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -50837,6 +52385,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceShaderCoreProperties2AMD;
@@ -50924,6 +52473,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceShaderCorePropertiesAMD*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceShaderCorePropertiesAMD const& ) const = default;
+#else
     bool operator==( PhysicalDeviceShaderCorePropertiesAMD const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -50948,6 +52500,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceShaderCorePropertiesAMD;
@@ -51020,6 +52573,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT const& ) const = default;
+#else
     bool operator==( PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -51031,6 +52587,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT;
@@ -51090,6 +52647,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceShaderDrawParametersFeatures*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceShaderDrawParametersFeatures const& ) const = default;
+#else
     bool operator==( PhysicalDeviceShaderDrawParametersFeatures const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -51101,6 +52661,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceShaderDrawParametersFeatures;
@@ -51169,6 +52730,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceShaderFloat16Int8FeaturesKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceShaderFloat16Int8FeaturesKHR const& ) const = default;
+#else
     bool operator==( PhysicalDeviceShaderFloat16Int8FeaturesKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -51181,6 +52745,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceShaderFloat16Int8FeaturesKHR;
@@ -51241,6 +52806,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceShaderImageFootprintFeaturesNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceShaderImageFootprintFeaturesNV const& ) const = default;
+#else
     bool operator==( PhysicalDeviceShaderImageFootprintFeaturesNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -51252,6 +52820,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceShaderImageFootprintFeaturesNV;
@@ -51311,6 +52880,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceShaderIntegerFunctions2FeaturesINTEL*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL const& ) const = default;
+#else
     bool operator==( PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -51322,6 +52894,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceShaderIntegerFunctions2FeaturesINTEL;
@@ -51381,6 +52954,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceShaderSMBuiltinsFeaturesNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceShaderSMBuiltinsFeaturesNV const& ) const = default;
+#else
     bool operator==( PhysicalDeviceShaderSMBuiltinsFeaturesNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -51392,6 +52968,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceShaderSmBuiltinsFeaturesNV;
@@ -51442,6 +53019,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceShaderSMBuiltinsPropertiesNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceShaderSMBuiltinsPropertiesNV const& ) const = default;
+#else
     bool operator==( PhysicalDeviceShaderSMBuiltinsPropertiesNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -51454,6 +53034,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceShaderSmBuiltinsPropertiesNV;
@@ -51514,6 +53095,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceShaderSubgroupExtendedTypesFeaturesKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceShaderSubgroupExtendedTypesFeaturesKHR const& ) const = default;
+#else
     bool operator==( PhysicalDeviceShaderSubgroupExtendedTypesFeaturesKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -51525,6 +53109,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceShaderSubgroupExtendedTypesFeaturesKHR;
@@ -51593,6 +53178,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceShadingRateImageFeaturesNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceShadingRateImageFeaturesNV const& ) const = default;
+#else
     bool operator==( PhysicalDeviceShadingRateImageFeaturesNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -51605,6 +53193,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceShadingRateImageFeaturesNV;
@@ -51659,6 +53248,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceShadingRateImagePropertiesNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceShadingRateImagePropertiesNV const& ) const = default;
+#else
     bool operator==( PhysicalDeviceShadingRateImagePropertiesNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -51672,6 +53264,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceShadingRateImagePropertiesNV;
@@ -51769,6 +53362,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceSparseImageFormatInfo2*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceSparseImageFormatInfo2 const& ) const = default;
+#else
     bool operator==( PhysicalDeviceSparseImageFormatInfo2 const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -51784,6 +53380,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceSparseImageFormatInfo2;
@@ -51844,6 +53441,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceSubgroupProperties*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceSubgroupProperties const& ) const = default;
+#else
     bool operator==( PhysicalDeviceSubgroupProperties const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -51858,6 +53458,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceSubgroupProperties;
@@ -51929,6 +53530,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceSubgroupSizeControlFeaturesEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceSubgroupSizeControlFeaturesEXT const& ) const = default;
+#else
     bool operator==( PhysicalDeviceSubgroupSizeControlFeaturesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -51941,6 +53545,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceSubgroupSizeControlFeaturesEXT;
@@ -51998,6 +53603,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceSubgroupSizeControlPropertiesEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceSubgroupSizeControlPropertiesEXT const& ) const = default;
+#else
     bool operator==( PhysicalDeviceSubgroupSizeControlPropertiesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -52012,6 +53620,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceSubgroupSizeControlPropertiesEXT;
@@ -52074,6 +53683,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceSurfaceInfo2KHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceSurfaceInfo2KHR const& ) const = default;
+#else
     bool operator==( PhysicalDeviceSurfaceInfo2KHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -52085,6 +53697,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceSurfaceInfo2KHR;
@@ -52144,6 +53757,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceTexelBufferAlignmentFeaturesEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceTexelBufferAlignmentFeaturesEXT const& ) const = default;
+#else
     bool operator==( PhysicalDeviceTexelBufferAlignmentFeaturesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -52155,6 +53771,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceTexelBufferAlignmentFeaturesEXT;
@@ -52211,6 +53828,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceTexelBufferAlignmentPropertiesEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceTexelBufferAlignmentPropertiesEXT const& ) const = default;
+#else
     bool operator==( PhysicalDeviceTexelBufferAlignmentPropertiesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -52225,6 +53845,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceTexelBufferAlignmentPropertiesEXT;
@@ -52287,6 +53908,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceTextureCompressionASTCHDRFeaturesEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT const& ) const = default;
+#else
     bool operator==( PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -52298,6 +53922,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceTextureCompressionAstcHdrFeaturesEXT;
@@ -52357,6 +53982,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceTimelineSemaphoreFeaturesKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceTimelineSemaphoreFeaturesKHR const& ) const = default;
+#else
     bool operator==( PhysicalDeviceTimelineSemaphoreFeaturesKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -52368,6 +53996,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceTimelineSemaphoreFeaturesKHR;
@@ -52415,6 +54044,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceTimelineSemaphorePropertiesKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceTimelineSemaphorePropertiesKHR const& ) const = default;
+#else
     bool operator==( PhysicalDeviceTimelineSemaphorePropertiesKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -52426,6 +54058,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceTimelineSemaphorePropertiesKHR;
@@ -52495,6 +54128,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceToolPropertiesEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceToolPropertiesEXT const& ) const = default;
+#else
     bool operator==( PhysicalDeviceToolPropertiesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -52510,6 +54146,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceToolPropertiesEXT;
@@ -52582,6 +54219,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceTransformFeedbackFeaturesEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceTransformFeedbackFeaturesEXT const& ) const = default;
+#else
     bool operator==( PhysicalDeviceTransformFeedbackFeaturesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -52594,6 +54234,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceTransformFeedbackFeaturesEXT;
@@ -52669,6 +54310,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceTransformFeedbackPropertiesEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceTransformFeedbackPropertiesEXT const& ) const = default;
+#else
     bool operator==( PhysicalDeviceTransformFeedbackPropertiesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -52689,6 +54333,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceTransformFeedbackPropertiesEXT;
@@ -52757,6 +54402,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceUniformBufferStandardLayoutFeaturesKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR const& ) const = default;
+#else
     bool operator==( PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -52768,6 +54416,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceUniformBufferStandardLayoutFeaturesKHR;
@@ -52836,6 +54485,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceVariablePointersFeatures*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceVariablePointersFeatures const& ) const = default;
+#else
     bool operator==( PhysicalDeviceVariablePointersFeatures const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -52848,6 +54500,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceVariablePointersFeatures;
@@ -52917,6 +54570,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceVertexAttributeDivisorFeaturesEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceVertexAttributeDivisorFeaturesEXT const& ) const = default;
+#else
     bool operator==( PhysicalDeviceVertexAttributeDivisorFeaturesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -52929,6 +54585,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceVertexAttributeDivisorFeaturesEXT;
@@ -52977,6 +54634,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceVertexAttributeDivisorPropertiesEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceVertexAttributeDivisorPropertiesEXT const& ) const = default;
+#else
     bool operator==( PhysicalDeviceVertexAttributeDivisorPropertiesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -52988,6 +54648,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceVertexAttributeDivisorPropertiesEXT;
@@ -53065,6 +54726,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceVulkanMemoryModelFeaturesKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceVulkanMemoryModelFeaturesKHR const& ) const = default;
+#else
     bool operator==( PhysicalDeviceVulkanMemoryModelFeaturesKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -53078,6 +54742,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceVulkanMemoryModelFeaturesKHR;
@@ -53139,6 +54804,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceYcbcrImageArraysFeaturesEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PhysicalDeviceYcbcrImageArraysFeaturesEXT const& ) const = default;
+#else
     bool operator==( PhysicalDeviceYcbcrImageArraysFeaturesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -53150,6 +54818,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceYcbcrImageArraysFeaturesEXT;
@@ -53227,6 +54896,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPipelineCacheCreateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PipelineCacheCreateInfo const& ) const = default;
+#else
     bool operator==( PipelineCacheCreateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -53240,6 +54912,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineCacheCreateInfo;
@@ -53319,6 +54992,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPipelineColorBlendAdvancedStateCreateInfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PipelineColorBlendAdvancedStateCreateInfoEXT const& ) const = default;
+#else
     bool operator==( PipelineColorBlendAdvancedStateCreateInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -53332,6 +55008,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineColorBlendAdvancedStateCreateInfoEXT;
@@ -53393,6 +55070,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPipelineCompilerControlCreateInfoAMD*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PipelineCompilerControlCreateInfoAMD const& ) const = default;
+#else
     bool operator==( PipelineCompilerControlCreateInfoAMD const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -53404,6 +55084,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineCompilerControlCreateInfoAMD;
@@ -53499,6 +55180,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPipelineCoverageModulationStateCreateInfoNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PipelineCoverageModulationStateCreateInfoNV const& ) const = default;
+#else
     bool operator==( PipelineCoverageModulationStateCreateInfoNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -53514,6 +55198,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineCoverageModulationStateCreateInfoNV;
@@ -53586,6 +55271,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPipelineCoverageReductionStateCreateInfoNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PipelineCoverageReductionStateCreateInfoNV const& ) const = default;
+#else
     bool operator==( PipelineCoverageReductionStateCreateInfoNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -53598,6 +55286,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineCoverageReductionStateCreateInfoNV;
@@ -53676,6 +55365,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPipelineCoverageToColorStateCreateInfoNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PipelineCoverageToColorStateCreateInfoNV const& ) const = default;
+#else
     bool operator==( PipelineCoverageToColorStateCreateInfoNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -53689,6 +55381,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineCoverageToColorStateCreateInfoNV;
@@ -53740,6 +55433,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPipelineCreationFeedbackEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PipelineCreationFeedbackEXT const& ) const = default;
+#else
     bool operator==( PipelineCreationFeedbackEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( flags == rhs.flags )
@@ -53750,6 +55446,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::PipelineCreationFeedbackFlagsEXT flags = {};
@@ -53826,6 +55523,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPipelineCreationFeedbackCreateInfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PipelineCreationFeedbackCreateInfoEXT const& ) const = default;
+#else
     bool operator==( PipelineCreationFeedbackCreateInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -53839,6 +55539,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineCreationFeedbackCreateInfoEXT;
@@ -53927,6 +55628,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPipelineDiscardRectangleStateCreateInfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PipelineDiscardRectangleStateCreateInfoEXT const& ) const = default;
+#else
     bool operator==( PipelineDiscardRectangleStateCreateInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -53941,6 +55645,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineDiscardRectangleStateCreateInfoEXT;
@@ -54012,6 +55717,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPipelineExecutableInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PipelineExecutableInfoKHR const& ) const = default;
+#else
     bool operator==( PipelineExecutableInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -54024,6 +55732,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineExecutableInfoKHR;
@@ -54090,6 +55799,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPipelineExecutableInternalRepresentationKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PipelineExecutableInternalRepresentationKHR const& ) const = default;
+#else
     bool operator==( PipelineExecutableInternalRepresentationKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -54105,6 +55817,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineExecutableInternalRepresentationKHR;
@@ -54171,6 +55884,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPipelineExecutablePropertiesKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PipelineExecutablePropertiesKHR const& ) const = default;
+#else
     bool operator==( PipelineExecutablePropertiesKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -54185,6 +55901,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineExecutablePropertiesKHR;
@@ -54391,6 +56108,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPipelineInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PipelineInfoKHR const& ) const = default;
+#else
     bool operator==( PipelineInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -54402,6 +56122,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineInfoKHR;
@@ -54472,6 +56193,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPushConstantRange*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PushConstantRange const& ) const = default;
+#else
     bool operator==( PushConstantRange const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( stageFlags == rhs.stageFlags )
@@ -54483,6 +56207,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::ShaderStageFlags stageFlags = {};
@@ -54578,6 +56303,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPipelineLayoutCreateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PipelineLayoutCreateInfo const& ) const = default;
+#else
     bool operator==( PipelineLayoutCreateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -54593,6 +56321,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineLayoutCreateInfo;
@@ -54674,6 +56403,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPipelineRasterizationConservativeStateCreateInfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PipelineRasterizationConservativeStateCreateInfoEXT const& ) const = default;
+#else
     bool operator==( PipelineRasterizationConservativeStateCreateInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -54687,6 +56419,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineRasterizationConservativeStateCreateInfoEXT;
@@ -54757,6 +56490,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPipelineRasterizationDepthClipStateCreateInfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PipelineRasterizationDepthClipStateCreateInfoEXT const& ) const = default;
+#else
     bool operator==( PipelineRasterizationDepthClipStateCreateInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -54769,6 +56505,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineRasterizationDepthClipStateCreateInfoEXT;
@@ -54856,6 +56593,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPipelineRasterizationLineStateCreateInfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PipelineRasterizationLineStateCreateInfoEXT const& ) const = default;
+#else
     bool operator==( PipelineRasterizationLineStateCreateInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -54870,6 +56610,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineRasterizationLineStateCreateInfoEXT;
@@ -54932,6 +56673,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPipelineRasterizationStateRasterizationOrderAMD*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PipelineRasterizationStateRasterizationOrderAMD const& ) const = default;
+#else
     bool operator==( PipelineRasterizationStateRasterizationOrderAMD const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -54943,6 +56687,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineRasterizationStateRasterizationOrderAMD;
@@ -55011,6 +56756,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPipelineRasterizationStateStreamCreateInfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PipelineRasterizationStateStreamCreateInfoEXT const& ) const = default;
+#else
     bool operator==( PipelineRasterizationStateStreamCreateInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -55023,6 +56771,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineRasterizationStateStreamCreateInfoEXT;
@@ -55083,6 +56832,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPipelineRepresentativeFragmentTestStateCreateInfoNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PipelineRepresentativeFragmentTestStateCreateInfoNV const& ) const = default;
+#else
     bool operator==( PipelineRepresentativeFragmentTestStateCreateInfoNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -55094,6 +56846,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineRepresentativeFragmentTestStateCreateInfoNV;
@@ -55162,6 +56915,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPipelineSampleLocationsStateCreateInfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PipelineSampleLocationsStateCreateInfoEXT const& ) const = default;
+#else
     bool operator==( PipelineSampleLocationsStateCreateInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -55174,6 +56930,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineSampleLocationsStateCreateInfoEXT;
@@ -55222,6 +56979,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPipelineShaderStageRequiredSubgroupSizeCreateInfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT const& ) const = default;
+#else
     bool operator==( PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -55233,6 +56993,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineShaderStageRequiredSubgroupSizeCreateInfoEXT;
@@ -55292,6 +57053,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPipelineTessellationDomainOriginStateCreateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PipelineTessellationDomainOriginStateCreateInfo const& ) const = default;
+#else
     bool operator==( PipelineTessellationDomainOriginStateCreateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -55303,6 +57067,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineTessellationDomainOriginStateCreateInfo;
@@ -55364,6 +57129,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkVertexInputBindingDivisorDescriptionEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( VertexInputBindingDivisorDescriptionEXT const& ) const = default;
+#else
     bool operator==( VertexInputBindingDivisorDescriptionEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( binding == rhs.binding )
@@ -55374,6 +57142,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     uint32_t binding = {};
@@ -55441,6 +57210,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPipelineVertexInputDivisorStateCreateInfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PipelineVertexInputDivisorStateCreateInfoEXT const& ) const = default;
+#else
     bool operator==( PipelineVertexInputDivisorStateCreateInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -55453,6 +57225,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineVertexInputDivisorStateCreateInfoEXT;
@@ -55531,6 +57304,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPipelineViewportCoarseSampleOrderStateCreateInfoNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PipelineViewportCoarseSampleOrderStateCreateInfoNV const& ) const = default;
+#else
     bool operator==( PipelineViewportCoarseSampleOrderStateCreateInfoNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -55544,6 +57320,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineViewportCoarseSampleOrderStateCreateInfoNV;
@@ -55614,6 +57391,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPipelineViewportExclusiveScissorStateCreateInfoNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PipelineViewportExclusiveScissorStateCreateInfoNV const& ) const = default;
+#else
     bool operator==( PipelineViewportExclusiveScissorStateCreateInfoNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -55626,6 +57406,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineViewportExclusiveScissorStateCreateInfoNV;
@@ -55688,6 +57469,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkShadingRatePaletteNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ShadingRatePaletteNV const& ) const = default;
+#else
     bool operator==( ShadingRatePaletteNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( shadingRatePaletteEntryCount == rhs.shadingRatePaletteEntryCount )
@@ -55698,6 +57482,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     uint32_t shadingRatePaletteEntryCount = {};
@@ -55774,6 +57559,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPipelineViewportShadingRateImageStateCreateInfoNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PipelineViewportShadingRateImageStateCreateInfoNV const& ) const = default;
+#else
     bool operator==( PipelineViewportShadingRateImageStateCreateInfoNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -55787,6 +57575,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineViewportShadingRateImageStateCreateInfoNV;
@@ -55868,6 +57657,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkViewportSwizzleNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ViewportSwizzleNV const& ) const = default;
+#else
     bool operator==( ViewportSwizzleNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( x == rhs.x )
@@ -55880,6 +57672,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::ViewportCoordinateSwizzleNV x = VULKAN_HPP_NAMESPACE::ViewportCoordinateSwizzleNV::ePositiveX;
@@ -55958,6 +57751,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPipelineViewportSwizzleStateCreateInfoNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PipelineViewportSwizzleStateCreateInfoNV const& ) const = default;
+#else
     bool operator==( PipelineViewportSwizzleStateCreateInfoNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -55971,6 +57767,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineViewportSwizzleStateCreateInfoNV;
@@ -56034,6 +57831,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkViewportWScalingNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ViewportWScalingNV const& ) const = default;
+#else
     bool operator==( ViewportWScalingNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( xcoeff == rhs.xcoeff )
@@ -56044,6 +57844,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     float xcoeff = {};
@@ -56120,6 +57921,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPipelineViewportWScalingStateCreateInfoNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PipelineViewportWScalingStateCreateInfoNV const& ) const = default;
+#else
     bool operator==( PipelineViewportWScalingStateCreateInfoNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -56133,6 +57937,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineViewportWScalingStateCreateInfoNV;
@@ -56196,6 +58001,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPresentFrameTokenGGP*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PresentFrameTokenGGP const& ) const = default;
+#else
     bool operator==( PresentFrameTokenGGP const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -56207,6 +58015,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePresentFrameTokenGGP;
@@ -56312,6 +58121,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPresentInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PresentInfoKHR const& ) const = default;
+#else
     bool operator==( PresentInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -56328,6 +58140,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePresentInfoKHR;
@@ -56410,6 +58223,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkRectLayerKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( RectLayerKHR const& ) const = default;
+#else
     bool operator==( RectLayerKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( offset == rhs.offset )
@@ -56421,6 +58237,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::Offset2D offset = {};
@@ -56482,6 +58299,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPresentRegionKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PresentRegionKHR const& ) const = default;
+#else
     bool operator==( PresentRegionKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( rectangleCount == rhs.rectangleCount )
@@ -56492,6 +58312,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     uint32_t rectangleCount = {};
@@ -56559,6 +58380,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPresentRegionsKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PresentRegionsKHR const& ) const = default;
+#else
     bool operator==( PresentRegionsKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -56571,6 +58395,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePresentRegionsKHR;
@@ -56633,6 +58458,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPresentTimeGOOGLE*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PresentTimeGOOGLE const& ) const = default;
+#else
     bool operator==( PresentTimeGOOGLE const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( presentID == rhs.presentID )
@@ -56643,6 +58471,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     uint32_t presentID = {};
@@ -56710,6 +58539,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPresentTimesInfoGOOGLE*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( PresentTimesInfoGOOGLE const& ) const = default;
+#else
     bool operator==( PresentTimesInfoGOOGLE const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -56722,6 +58554,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePresentTimesInfoGOOGLE;
@@ -56782,6 +58615,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkProtectedSubmitInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ProtectedSubmitInfo const& ) const = default;
+#else
     bool operator==( ProtectedSubmitInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -56793,6 +58629,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eProtectedSubmitInfo;
@@ -56879,6 +58716,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkQueryPoolCreateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( QueryPoolCreateInfo const& ) const = default;
+#else
     bool operator==( QueryPoolCreateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -56893,6 +58733,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eQueryPoolCreateInfo;
@@ -56955,6 +58796,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkQueryPoolCreateInfoINTEL*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( QueryPoolCreateInfoINTEL const& ) const = default;
+#else
     bool operator==( QueryPoolCreateInfoINTEL const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -56966,6 +58810,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eQueryPoolCreateInfoINTEL;
@@ -57043,6 +58888,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkQueryPoolPerformanceCreateInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( QueryPoolPerformanceCreateInfoKHR const& ) const = default;
+#else
     bool operator==( QueryPoolPerformanceCreateInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -57056,6 +58904,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eQueryPoolPerformanceCreateInfoKHR;
@@ -57105,6 +58954,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkQueueFamilyCheckpointPropertiesNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( QueueFamilyCheckpointPropertiesNV const& ) const = default;
+#else
     bool operator==( QueueFamilyCheckpointPropertiesNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -57116,6 +58968,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eQueueFamilyCheckpointPropertiesNV;
@@ -57171,6 +59024,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkQueueFamilyProperties*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( QueueFamilyProperties const& ) const = default;
+#else
     bool operator==( QueueFamilyProperties const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( queueFlags == rhs.queueFlags )
@@ -57183,6 +59039,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::QueueFlags queueFlags = {};
@@ -57231,6 +59088,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkQueueFamilyProperties2*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( QueueFamilyProperties2 const& ) const = default;
+#else
     bool operator==( QueueFamilyProperties2 const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -57242,6 +59102,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eQueueFamilyProperties2;
@@ -57337,6 +59198,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkRayTracingShaderGroupCreateInfoNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( RayTracingShaderGroupCreateInfoNV const& ) const = default;
+#else
     bool operator==( RayTracingShaderGroupCreateInfoNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -57352,6 +59216,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eRayTracingShaderGroupCreateInfoNV;
@@ -57487,6 +59352,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkRayTracingPipelineCreateInfoNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( RayTracingPipelineCreateInfoNV const& ) const = default;
+#else
     bool operator==( RayTracingPipelineCreateInfoNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -57506,6 +59374,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eRayTracingPipelineCreateInfoNV;
@@ -57560,6 +59429,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkRefreshCycleDurationGOOGLE*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( RefreshCycleDurationGOOGLE const& ) const = default;
+#else
     bool operator==( RefreshCycleDurationGOOGLE const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( refreshDuration == rhs.refreshDuration );
@@ -57569,6 +59441,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     uint64_t refreshDuration = {};
@@ -57635,6 +59508,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkRenderPassAttachmentBeginInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( RenderPassAttachmentBeginInfoKHR const& ) const = default;
+#else
     bool operator==( RenderPassAttachmentBeginInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -57647,6 +59523,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eRenderPassAttachmentBeginInfoKHR;
@@ -57743,6 +59620,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkRenderPassBeginInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( RenderPassBeginInfo const& ) const = default;
+#else
     bool operator==( RenderPassBeginInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -57758,6 +59638,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eRenderPassBeginInfo;
@@ -57895,6 +59776,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSubpassDescription*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SubpassDescription const& ) const = default;
+#else
     bool operator==( SubpassDescription const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( flags == rhs.flags )
@@ -57913,6 +59797,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::SubpassDescriptionFlags flags = {};
@@ -58026,6 +59911,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSubpassDependency*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SubpassDependency const& ) const = default;
+#else
     bool operator==( SubpassDependency const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( srcSubpass == rhs.srcSubpass )
@@ -58041,6 +59929,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     uint32_t srcSubpass = {};
@@ -58158,6 +60047,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkRenderPassCreateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( RenderPassCreateInfo const& ) const = default;
+#else
     bool operator==( RenderPassCreateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -58175,6 +60067,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eRenderPassCreateInfo;
@@ -58330,6 +60223,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSubpassDescription2KHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SubpassDescription2KHR const& ) const = default;
+#else
     bool operator==( SubpassDescription2KHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -58351,6 +60247,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eSubpassDescription2KHR;
@@ -58483,6 +60380,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSubpassDependency2KHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SubpassDependency2KHR const& ) const = default;
+#else
     bool operator==( SubpassDependency2KHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -58501,6 +60401,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eSubpassDependency2KHR;
@@ -58639,6 +60540,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkRenderPassCreateInfo2KHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( RenderPassCreateInfo2KHR const& ) const = default;
+#else
     bool operator==( RenderPassCreateInfo2KHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -58658,6 +60562,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eRenderPassCreateInfo2KHR;
@@ -58725,6 +60630,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkRenderPassFragmentDensityMapCreateInfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( RenderPassFragmentDensityMapCreateInfoEXT const& ) const = default;
+#else
     bool operator==( RenderPassFragmentDensityMapCreateInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -58736,6 +60644,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eRenderPassFragmentDensityMapCreateInfoEXT;
@@ -58804,6 +60713,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkRenderPassInputAttachmentAspectCreateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( RenderPassInputAttachmentAspectCreateInfo const& ) const = default;
+#else
     bool operator==( RenderPassInputAttachmentAspectCreateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -58816,6 +60728,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eRenderPassInputAttachmentAspectCreateInfo;
@@ -58921,6 +60834,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkRenderPassMultiviewCreateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( RenderPassMultiviewCreateInfo const& ) const = default;
+#else
     bool operator==( RenderPassMultiviewCreateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -58937,6 +60853,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eRenderPassMultiviewCreateInfo;
@@ -59003,6 +60920,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSubpassSampleLocationsEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SubpassSampleLocationsEXT const& ) const = default;
+#else
     bool operator==( SubpassSampleLocationsEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( subpassIndex == rhs.subpassIndex )
@@ -59013,6 +60933,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     uint32_t subpassIndex = {};
@@ -59098,6 +61019,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkRenderPassSampleLocationsBeginInfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( RenderPassSampleLocationsBeginInfoEXT const& ) const = default;
+#else
     bool operator==( RenderPassSampleLocationsBeginInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -59112,6 +61036,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eRenderPassSampleLocationsBeginInfoEXT;
@@ -59309,6 +61234,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSamplerCreateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SamplerCreateInfo const& ) const = default;
+#else
     bool operator==( SamplerCreateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -59335,6 +61263,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eSamplerCreateInfo;
@@ -59409,6 +61338,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSamplerReductionModeCreateInfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SamplerReductionModeCreateInfoEXT const& ) const = default;
+#else
     bool operator==( SamplerReductionModeCreateInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -59420,6 +61352,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eSamplerReductionModeCreateInfoEXT;
@@ -59542,6 +61475,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSamplerYcbcrConversionCreateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SamplerYcbcrConversionCreateInfo const& ) const = default;
+#else
     bool operator==( SamplerYcbcrConversionCreateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -59560,6 +61496,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eSamplerYcbcrConversionCreateInfo;
@@ -59614,6 +61551,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSamplerYcbcrConversionImageFormatProperties*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SamplerYcbcrConversionImageFormatProperties const& ) const = default;
+#else
     bool operator==( SamplerYcbcrConversionImageFormatProperties const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -59625,6 +61565,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eSamplerYcbcrConversionImageFormatProperties;
@@ -59684,6 +61625,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSamplerYcbcrConversionInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SamplerYcbcrConversionInfo const& ) const = default;
+#else
     bool operator==( SamplerYcbcrConversionInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -59695,6 +61639,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eSamplerYcbcrConversionInfo;
@@ -59754,6 +61699,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSemaphoreCreateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SemaphoreCreateInfo const& ) const = default;
+#else
     bool operator==( SemaphoreCreateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -59765,6 +61713,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eSemaphoreCreateInfo;
@@ -59833,6 +61782,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSemaphoreGetFdInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SemaphoreGetFdInfoKHR const& ) const = default;
+#else
     bool operator==( SemaphoreGetFdInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -59845,6 +61797,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eSemaphoreGetFdInfoKHR;
@@ -59916,6 +61869,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSemaphoreGetWin32HandleInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SemaphoreGetWin32HandleInfoKHR const& ) const = default;
+#else
     bool operator==( SemaphoreGetWin32HandleInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -59928,6 +61884,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eSemaphoreGetWin32HandleInfoKHR;
@@ -59998,6 +61955,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSemaphoreSignalInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SemaphoreSignalInfoKHR const& ) const = default;
+#else
     bool operator==( SemaphoreSignalInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -60010,6 +61970,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eSemaphoreSignalInfoKHR;
@@ -60079,6 +62040,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSemaphoreTypeCreateInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SemaphoreTypeCreateInfoKHR const& ) const = default;
+#else
     bool operator==( SemaphoreTypeCreateInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -60091,6 +62055,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eSemaphoreTypeCreateInfoKHR;
@@ -60178,6 +62143,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSemaphoreWaitInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SemaphoreWaitInfoKHR const& ) const = default;
+#else
     bool operator==( SemaphoreWaitInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -60192,6 +62160,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eSemaphoreWaitInfoKHR;
@@ -60272,6 +62241,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkShaderModuleCreateInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ShaderModuleCreateInfo const& ) const = default;
+#else
     bool operator==( ShaderModuleCreateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -60285,6 +62257,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eShaderModuleCreateInfo;
@@ -60346,6 +62319,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkShaderModuleValidationCacheCreateInfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ShaderModuleValidationCacheCreateInfoEXT const& ) const = default;
+#else
     bool operator==( ShaderModuleValidationCacheCreateInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -60357,6 +62333,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eShaderModuleValidationCacheCreateInfoEXT;
@@ -60415,6 +62392,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkShaderResourceUsageAMD*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ShaderResourceUsageAMD const& ) const = default;
+#else
     bool operator==( ShaderResourceUsageAMD const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( numUsedVgprs == rhs.numUsedVgprs )
@@ -60428,6 +62408,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     uint32_t numUsedVgprs = {};
@@ -60498,6 +62479,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkShaderStatisticsInfoAMD*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ShaderStatisticsInfoAMD const& ) const = default;
+#else
     bool operator==( ShaderStatisticsInfoAMD const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( shaderStageMask == rhs.shaderStageMask )
@@ -60513,6 +62497,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::ShaderStageFlags shaderStageMask = {};
@@ -60564,6 +62549,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSharedPresentSurfaceCapabilitiesKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SharedPresentSurfaceCapabilitiesKHR const& ) const = default;
+#else
     bool operator==( SharedPresentSurfaceCapabilitiesKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -60575,6 +62563,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eSharedPresentSurfaceCapabilitiesKHR;
@@ -60627,6 +62616,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSparseImageFormatProperties*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SparseImageFormatProperties const& ) const = default;
+#else
     bool operator==( SparseImageFormatProperties const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( aspectMask == rhs.aspectMask )
@@ -60638,6 +62630,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::ImageAspectFlags aspectMask = {};
@@ -60685,6 +62678,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSparseImageFormatProperties2*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SparseImageFormatProperties2 const& ) const = default;
+#else
     bool operator==( SparseImageFormatProperties2 const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -60696,6 +62692,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eSparseImageFormatProperties2;
@@ -60754,6 +62751,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSparseImageMemoryRequirements*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SparseImageMemoryRequirements const& ) const = default;
+#else
     bool operator==( SparseImageMemoryRequirements const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( formatProperties == rhs.formatProperties )
@@ -60767,6 +62767,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::SparseImageFormatProperties formatProperties = {};
@@ -60816,6 +62817,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSparseImageMemoryRequirements2*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SparseImageMemoryRequirements2 const& ) const = default;
+#else
     bool operator==( SparseImageMemoryRequirements2 const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -60827,6 +62831,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eSparseImageMemoryRequirements2;
@@ -60897,6 +62902,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkStreamDescriptorSurfaceCreateInfoGGP*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( StreamDescriptorSurfaceCreateInfoGGP const& ) const = default;
+#else
     bool operator==( StreamDescriptorSurfaceCreateInfoGGP const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -60909,6 +62917,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eStreamDescriptorSurfaceCreateInfoGGP;
@@ -61024,6 +63033,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSubmitInfo*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SubmitInfo const& ) const = default;
+#else
     bool operator==( SubmitInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -61041,6 +63053,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eSubmitInfo;
@@ -61106,6 +63119,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSubpassBeginInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SubpassBeginInfoKHR const& ) const = default;
+#else
     bool operator==( SubpassBeginInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -61117,6 +63133,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eSubpassBeginInfoKHR;
@@ -61194,6 +63211,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSubpassDescriptionDepthStencilResolveKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SubpassDescriptionDepthStencilResolveKHR const& ) const = default;
+#else
     bool operator==( SubpassDescriptionDepthStencilResolveKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -61207,6 +63227,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eSubpassDescriptionDepthStencilResolveKHR;
@@ -61260,6 +63281,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSubpassEndInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SubpassEndInfoKHR const& ) const = default;
+#else
     bool operator==( SubpassEndInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -61270,6 +63294,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eSubpassEndInfoKHR;
@@ -61346,6 +63371,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSurfaceCapabilities2EXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SurfaceCapabilities2EXT const& ) const = default;
+#else
     bool operator==( SurfaceCapabilities2EXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -61367,6 +63395,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eSurfaceCapabilities2EXT;
@@ -61450,6 +63479,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSurfaceCapabilitiesKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SurfaceCapabilitiesKHR const& ) const = default;
+#else
     bool operator==( SurfaceCapabilitiesKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( minImageCount == rhs.minImageCount )
@@ -61468,6 +63500,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     uint32_t minImageCount = {};
@@ -61522,6 +63555,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSurfaceCapabilities2KHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SurfaceCapabilities2KHR const& ) const = default;
+#else
     bool operator==( SurfaceCapabilities2KHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -61533,6 +63569,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eSurfaceCapabilities2KHR;
@@ -61594,6 +63631,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSurfaceCapabilitiesFullScreenExclusiveEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SurfaceCapabilitiesFullScreenExclusiveEXT const& ) const = default;
+#else
     bool operator==( SurfaceCapabilitiesFullScreenExclusiveEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -61605,6 +63645,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eSurfaceCapabilitiesFullScreenExclusiveEXT;
@@ -61655,6 +63696,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSurfaceFormatKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SurfaceFormatKHR const& ) const = default;
+#else
     bool operator==( SurfaceFormatKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( format == rhs.format )
@@ -61665,6 +63709,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     VULKAN_HPP_NAMESPACE::Format format = VULKAN_HPP_NAMESPACE::Format::eUndefined;
@@ -61711,6 +63756,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSurfaceFormat2KHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SurfaceFormat2KHR const& ) const = default;
+#else
     bool operator==( SurfaceFormat2KHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -61722,6 +63770,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eSurfaceFormat2KHR;
@@ -61783,6 +63832,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSurfaceFullScreenExclusiveInfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SurfaceFullScreenExclusiveInfoEXT const& ) const = default;
+#else
     bool operator==( SurfaceFullScreenExclusiveInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -61794,6 +63846,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eSurfaceFullScreenExclusiveInfoEXT;
@@ -61856,6 +63909,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSurfaceFullScreenExclusiveWin32InfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SurfaceFullScreenExclusiveWin32InfoEXT const& ) const = default;
+#else
     bool operator==( SurfaceFullScreenExclusiveWin32InfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -61867,6 +63923,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eSurfaceFullScreenExclusiveWin32InfoEXT;
@@ -61927,6 +63984,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSurfaceProtectedCapabilitiesKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SurfaceProtectedCapabilitiesKHR const& ) const = default;
+#else
     bool operator==( SurfaceProtectedCapabilitiesKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -61938,6 +63998,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eSurfaceProtectedCapabilitiesKHR;
@@ -61997,6 +64058,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSwapchainCounterCreateInfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SwapchainCounterCreateInfoEXT const& ) const = default;
+#else
     bool operator==( SwapchainCounterCreateInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -62008,6 +64072,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eSwapchainCounterCreateInfoEXT;
@@ -62202,6 +64267,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSwapchainCreateInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SwapchainCreateInfoKHR const& ) const = default;
+#else
     bool operator==( SwapchainCreateInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -62228,6 +64296,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eSwapchainCreateInfoKHR;
@@ -62302,6 +64371,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkSwapchainDisplayNativeHdrCreateInfoAMD*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( SwapchainDisplayNativeHdrCreateInfoAMD const& ) const = default;
+#else
     bool operator==( SwapchainDisplayNativeHdrCreateInfoAMD const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -62313,6 +64385,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eSwapchainDisplayNativeHdrCreateInfoAMD;
@@ -62360,6 +64433,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkTextureLODGatherFormatPropertiesAMD*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( TextureLODGatherFormatPropertiesAMD const& ) const = default;
+#else
     bool operator==( TextureLODGatherFormatPropertiesAMD const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -62371,6 +64447,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eTextureLodGatherFormatPropertiesAMD;
@@ -62457,6 +64534,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkTimelineSemaphoreSubmitInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( TimelineSemaphoreSubmitInfoKHR const& ) const = default;
+#else
     bool operator==( TimelineSemaphoreSubmitInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -62471,6 +64551,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eTimelineSemaphoreSubmitInfoKHR;
@@ -62551,6 +64632,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkValidationCacheCreateInfoEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ValidationCacheCreateInfoEXT const& ) const = default;
+#else
     bool operator==( ValidationCacheCreateInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -62564,6 +64648,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eValidationCacheCreateInfoEXT;
@@ -62652,6 +64737,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkValidationFeaturesEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ValidationFeaturesEXT const& ) const = default;
+#else
     bool operator==( ValidationFeaturesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -62666,6 +64754,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eValidationFeaturesEXT;
@@ -62737,6 +64826,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkValidationFlagsEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ValidationFlagsEXT const& ) const = default;
+#else
     bool operator==( ValidationFlagsEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -62749,6 +64841,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eValidationFlagsEXT;
@@ -62820,6 +64913,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkViSurfaceCreateInfoNN*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ViSurfaceCreateInfoNN const& ) const = default;
+#else
     bool operator==( ViSurfaceCreateInfoNN const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -62832,6 +64928,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eViSurfaceCreateInfoNN;
@@ -62913,6 +65010,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkWaylandSurfaceCreateInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( WaylandSurfaceCreateInfoKHR const& ) const = default;
+#else
     bool operator==( WaylandSurfaceCreateInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -62926,6 +65026,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eWaylandSurfaceCreateInfoKHR;
@@ -63044,6 +65145,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkWin32KeyedMutexAcquireReleaseInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( Win32KeyedMutexAcquireReleaseInfoKHR const& ) const = default;
+#else
     bool operator==( Win32KeyedMutexAcquireReleaseInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -63061,6 +65165,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eWin32KeyedMutexAcquireReleaseInfoKHR;
@@ -63183,6 +65288,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkWin32KeyedMutexAcquireReleaseInfoNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( Win32KeyedMutexAcquireReleaseInfoNV const& ) const = default;
+#else
     bool operator==( Win32KeyedMutexAcquireReleaseInfoNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -63200,6 +65308,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eWin32KeyedMutexAcquireReleaseInfoNV;
@@ -63286,6 +65395,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkWin32SurfaceCreateInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( Win32SurfaceCreateInfoKHR const& ) const = default;
+#else
     bool operator==( Win32SurfaceCreateInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -63299,6 +65411,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eWin32SurfaceCreateInfoKHR;
@@ -63424,6 +65537,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkWriteDescriptorSet*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( WriteDescriptorSet const& ) const = default;
+#else
     bool operator==( WriteDescriptorSet const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -63442,6 +65558,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eWriteDescriptorSet;
@@ -63517,6 +65634,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkWriteDescriptorSetAccelerationStructureNV*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( WriteDescriptorSetAccelerationStructureNV const& ) const = default;
+#else
     bool operator==( WriteDescriptorSetAccelerationStructureNV const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -63529,6 +65649,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eWriteDescriptorSetAccelerationStructureNV;
@@ -63598,6 +65719,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkWriteDescriptorSetInlineUniformBlockEXT*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( WriteDescriptorSetInlineUniformBlockEXT const& ) const = default;
+#else
     bool operator==( WriteDescriptorSetInlineUniformBlockEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -63610,6 +65734,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eWriteDescriptorSetInlineUniformBlockEXT;
@@ -63690,6 +65815,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkXcbSurfaceCreateInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( XcbSurfaceCreateInfoKHR const& ) const = default;
+#else
     bool operator==( XcbSurfaceCreateInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -63703,6 +65831,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eXcbSurfaceCreateInfoKHR;
@@ -63785,6 +65914,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkXlibSurfaceCreateInfoKHR*>( this );
     }
 
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( XlibSurfaceCreateInfoKHR const& ) const = default;
+#else
     bool operator==( XlibSurfaceCreateInfoKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( sType == rhs.sType )
@@ -63798,6 +65930,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return !operator==( rhs );
     }
+#endif
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eXlibSurfaceCreateInfoKHR;

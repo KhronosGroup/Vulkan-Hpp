@@ -4943,9 +4943,8 @@ void VulkanHppGenerator::readStruct(tinyxml2::XMLElement const* element, bool is
       {
         readComment(child);
       }
-      else
+      else if (value == "member")
       {
-        assert(value == "member");
         readStructMember(child, it->second.members);
       }
     }

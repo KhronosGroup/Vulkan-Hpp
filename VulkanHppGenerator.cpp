@@ -210,7 +210,7 @@ void checkElements(int line, std::vector<tinyxml2::XMLElement const*> const& ele
   {
     std::string value = e->Value();
     encountered[value]++;
-    check((required.find(value) != required.end()) || (optional.find(value) != optional.end()), e->GetLineNum(), "unknown element <" + value + ">");
+    warn((required.find(value) != required.end()) || (optional.find(value) != optional.end()), e->GetLineNum(), "unknown element <" + value + ">");
   }
   for (auto const& r : required)
   {

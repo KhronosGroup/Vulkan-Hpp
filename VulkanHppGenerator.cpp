@@ -846,10 +846,10 @@ void VulkanHppGenerator::appendBitmasks(std::string & str) const
     std::string strippedEnumName = hasBits ? stripPrefix(bitmaskBits->first, "Vk") : "";
 
     str += "\n";
-    appendPlatformEnter(str, bitmask.second.platform);
+    appendPlatformEnter(str, !bitmask.second.alias.empty(), bitmask.second.platform);
     appendBitmask(str, strippedBitmaskName, bitmask.second.alias, strippedEnumName, hasBits ? bitmaskBits->second.values : std::vector<EnumValueData>());
     appendBitmaskToStringFunction(str, strippedBitmaskName, strippedEnumName, hasBits ? bitmaskBits->second.values : std::vector<EnumValueData>());
-    appendPlatformLeave(str, bitmask.second.platform);
+    appendPlatformLeave(str, !bitmask.second.alias.empty(), bitmask.second.platform);
   }
 }
 
@@ -1186,10 +1186,15 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic(std::string & str)
     for (auto const& command : handle.second.commands)
     {
       std::string enter, leave;
-      appendPlatformEnter(enter, command.second.platform);
-      appendPlatformLeave(leave, command.second.platform);
+      appendPlatformEnter(enter, !command.second.aliases.empty(), command.second.platform);
+      appendPlatformLeave(leave, !command.second.aliases.empty(), command.second.platform);
 
       str += enter + "    PFN_" + command.first + " " + command.first + " = 0;\n" + leave;
+      for (auto const& alias : command.second.aliases)
+      {
+        assert(enter.empty() && leave.empty());
+        str += "    PFN_" + alias + " " + alias + " = 0;\n";
+      }
     }
   }
 
@@ -1204,11 +1209,12 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic(std::string & str)
       if ((command.first != "vkGetInstanceProcAddr"))
       {
         std::string enter, leave;
-        appendPlatformEnter(enter, command.second.platform);
-        appendPlatformLeave(leave, command.second.platform);
+        appendPlatformEnter(enter, !command.second.aliases.empty(), command.second.platform);
+        appendPlatformLeave(leave, !command.second.aliases.empty(), command.second.platform);
 
         if (handle.first.empty())
         {
+          assert(command.second.aliases.empty());
           emptyFunctions += enter;
           emptyFunctions += "      " + command.first + " = PFN_" + command.first + "( vkGetInstanceProcAddr( NULL, \"" + command.first + "\" ) );\n";
           emptyFunctions += leave;
@@ -1225,12 +1231,25 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic(std::string & str)
           strDeviceFunctionsInstance += enter;
           strDeviceFunctionsInstance += "      " + command.first + " = PFN_" + command.first + "( vkGetInstanceProcAddr( instance, \"" + command.first + "\" ) );\n";
           strDeviceFunctionsInstance += leave;
+
+          for (auto const& alias : command.second.aliases)
+          {
+            assert(enter.empty() && leave.empty());
+            strDeviceFunctions += "      " + alias + " = PFN_" + alias + "( vkGetDeviceProcAddr( device, \"" + alias + "\" ) );\n";
+            strDeviceFunctionsInstance += "      " + alias + " = PFN_" + alias + "( vkGetInstanceProcAddr( instance, \"" + alias + "\" ) );\n";
+          }
         }
         else
         {
           strInstanceFunctions += enter;
           strInstanceFunctions += "      " + command.first + " = PFN_" + command.first + "( vkGetInstanceProcAddr( instance, \"" + command.first + "\" ) );\n";
           strInstanceFunctions += leave;
+
+          for (auto const& alias : command.second.aliases)
+          {
+            assert(enter.empty() && leave.empty());
+            strInstanceFunctions += "      " + alias + " = PFN_" + alias + "( vkGetInstanceProcAddr( instance, \"" + alias + "\" ) );\n";
+          }
         }
       }
     }
@@ -1342,12 +1361,21 @@ void VulkanHppGenerator::appendDispatchLoaderStatic(std::string & str)
       std::string commandName = stripPrefix(command.first, "vk");
 
       str += "\n";
-      appendPlatformEnter(str, command.second.platform);
+      appendPlatformEnter(str, !command.second.aliases.empty(), command.second.platform);
       str += "    " + command.second.returnType + " vk" + commandName + "( " + parameterList + " ) const VULKAN_HPP_NOEXCEPT\n"
         "    {\n"
         "      return ::vk" + commandName + "( " + parameters + " );\n"
         "    }\n";
-      appendPlatformLeave(str, command.second.platform);
+      appendPlatformLeave(str, !command.second.aliases.empty(), command.second.platform);
+      for (auto const& alias : command.second.aliases)
+      {
+        commandName = stripPrefix(alias, "vk");
+        str += "\n"
+          "    " + command.second.returnType + " vk" + commandName + "( " + parameterList + " ) const VULKAN_HPP_NOEXCEPT\n"
+          "    {\n"
+          "      return ::vk" + commandName + "( " + parameters + " );\n"
+          "    }\n";
+      }
     }
   }
   str += "  };\n#endif\n";
@@ -1439,10 +1467,13 @@ void VulkanHppGenerator::appendEnums(std::string & str) const
   for (auto const& e : m_enums)
   {
     str += "\n";
-    appendPlatformEnter(str, e.second.platform);
+    appendPlatformEnter(str, !e.second.alias.empty(), e.second.platform);
     appendEnum(str, e);
     appendEnumToString(str, e);
-    appendPlatformLeave(str, e.second.platform);
+    if (e.second.alias.empty())   // enums with an alias are not protected anymore !
+    {
+      appendPlatformLeave(str, !e.second.alias.empty(), e.second.platform);
+    }
   }
 }
 
@@ -1480,13 +1511,13 @@ void VulkanHppGenerator::appendForwardDeclarations(std::string & str) const
   str += "\n";
   for (auto const& structure : m_structures)
   {
-    appendPlatformEnter(str, structure.second.platform);
+    appendPlatformEnter(str, !structure.second.aliases.empty(), structure.second.platform);
     str += std::string("  ") + (structure.second.isUnion ? "union" : "struct") + " " + stripPrefix(structure.first, "Vk") + ";\n";
     for (std::string const& alias : structure.second.aliases)
     {
       str += "  using " + stripPrefix(alias, "Vk") + " = " + stripPrefix(structure.first, "Vk") + ";\n";
     }
-    appendPlatformLeave(str, structure.second.platform);
+    appendPlatformLeave(str, !structure.second.aliases.empty(), structure.second.platform);
   }
 }
 
@@ -2379,9 +2410,13 @@ void VulkanHppGenerator::appendHandle(std::string & str, std::pair<std::string, 
           appendUniqueTypes(str, "", { "VkInstance" });
         }
         str += "\n";
-        appendPlatformEnter(str, command.second.platform);
+        appendPlatformEnter(str, !command.second.aliases.empty(), command.second.platform);
         appendCommand(str, "  ", commandName, command, false);
-        appendPlatformLeave(str, command.second.platform);
+        appendPlatformLeave(str, !command.second.aliases.empty(), command.second.platform);
+        for (auto const& alias : command.second.aliases)
+        {
+          appendCommand(str, "  ", determineCommandName(alias, command.second.params[0].type.type), command, false);
+        }
       }
     }
     else
@@ -2402,25 +2437,45 @@ void VulkanHppGenerator::appendHandle(std::string & str, std::pair<std::string, 
       for (auto const& command : handleData.second.commands)
       {
         std::string enter, leave, commandString;
-        appendPlatformEnter(enter, command.second.platform);
-        appendPlatformLeave(leave, command.second.platform);
+        appendPlatformEnter(enter, !command.second.aliases.empty(), command.second.platform);
+        appendPlatformLeave(leave, !command.second.aliases.empty(), command.second.platform);
+        commands += "\n" + enter;
         std::string commandName = determineCommandName(command.first, command.second.params[0].type.type);
-        appendCommand(commandString, "    ", commandName, command, false);
-        commands += "\n" + enter + commandString;
-
-        // special handling for destroy functions which are not aliased.
-        if (!command.second.isAlias && (((command.first.substr(2, 7) == "Destroy") && (commandName != "destroy")) || (command.first.substr(2, 4) == "Free")))
+        appendCommand(commands, "    ", commandName, command, false);
+        for (auto const& alias : command.second.aliases)
         {
+          assert(enter.empty() && leave.empty());
+          commands += "\n";
+          std::string aliasCommandName = determineCommandName(alias, command.second.params[0].type.type);
+          appendCommand(commands, "    ", aliasCommandName, command, false);
+        }
+
+        // special handling for destroy functions
+        bool platformLeft = false;
+        if (((command.first.substr(2, 7) == "Destroy") && (commandName != "destroy")) || (command.first.substr(2, 4) == "Free"))
+        {
+          assert(1 < command.second.params.size());
+          auto handleIt = m_handles.find(command.second.params[1].type.type);
+          assert(handleIt != m_handles.end());
+          if (!handleIt->second.alias.empty())
+          {
+            commands += leave;
+            platformLeft = true;
+          }
+
           commandName = (command.first.substr(2, 7) == "Destroy") ? "destroy" : "free";
           std::string destroyCommandString;
           appendCommand(destroyCommandString, "    ", commandName, command, false);
           commands += "\n" + destroyCommandString;
         }
-        commands += leave;
+        if (!platformLeft)
+        {
+          commands += leave;
+        }
       }
 
       static const std::string templateString = R"(
-  class ${className}
+${enter}  class ${className}
   {
   public:
     using CType = Vk${className};
@@ -2496,16 +2551,21 @@ ${commands}
   };
 )";
 
+      std::string enter, leave;
+      appendPlatformEnter(enter, !handleData.second.alias.empty(), handleData.second.platform);
+      appendPlatformLeave(leave, !handleData.second.alias.empty(), handleData.second.platform);
       str += replaceWithMap(templateString, {
         { "className", stripPrefix(handleData.first, "Vk") },
-        { "memberName", startLowerCase(stripPrefix(handleData.first, "Vk")) },
-        { "commands", commands }
+        { "commands", commands },
+        { "enter", enter },
+        { "memberName", startLowerCase(stripPrefix(handleData.first, "Vk")) }
         });
 
       if (!handleData.second.alias.empty())
       {
         str += "  using " + stripPrefix(handleData.second.alias, "Vk") + " = " + stripPrefix(handleData.first, "Vk") + ";\n";
       }
+      str += leave;
     }
   }
 }
@@ -2530,17 +2590,35 @@ void VulkanHppGenerator::appendHandlesCommandDefintions(std::string & str) const
       std::string strippedName = startLowerCase(stripPrefix(command.first, "vk"));
 
       str += "\n";
-      appendPlatformEnter(str, command.second.platform);
+      appendPlatformEnter(str, !command.second.aliases.empty(), command.second.platform);
       appendCommand(str, "  ", commandName, command, true);
+      for (auto const& alias : command.second.aliases)
+      {
+        str += "\n";
+        appendCommand(str, "  ", determineCommandName(alias, command.second.params[0].type.type), command, true);
+      }
 
       // special handling for destroy functions
-      if (!command.second.isAlias && (((command.first.substr(2, 7) == "Destroy") && (commandName != "destroy")) || (command.first.substr(2, 4) == "Free")))
+      bool platformLeft = false;
+      if (((command.first.substr(2, 7) == "Destroy") && (commandName != "destroy")) || (command.first.substr(2, 4) == "Free"))
       {
+        assert(1 < command.second.params.size());
+        auto handleIt = m_handles.find(command.second.params[1].type.type);
+        assert(handleIt != m_handles.end());
+        if (!handleIt->second.alias.empty())
+        {
+          appendPlatformLeave(str, !command.second.aliases.empty(), command.second.platform);
+          platformLeft = true;
+        }
+
         commandName = (command.first.substr(2, 7) == "Destroy") ? "destroy" : "free";
         str += "\n";
         appendCommand(str, "  ", commandName, command, true);
       }
-      appendPlatformLeave(str, command.second.platform);
+      if (!platformLeft)
+      {
+        appendPlatformLeave(str, !command.second.aliases.empty(), command.second.platform);
+      }
     }
   }
   str += "\n";
@@ -2576,9 +2654,9 @@ void VulkanHppGenerator::appendResultExceptions(std::string & str) const
   str += "\n";
 }
 
-void VulkanHppGenerator::appendPlatformEnter(std::string & str, std::string const& platform) const
+void VulkanHppGenerator::appendPlatformEnter(std::string & str, bool isAliased, std::string const& platform) const
 {
-  if (!platform.empty())
+  if (!isAliased && !platform.empty())
   {
     auto it = m_platforms.find(platform);
     assert((it != m_platforms.end()) && !it->second.empty());
@@ -2586,9 +2664,9 @@ void VulkanHppGenerator::appendPlatformEnter(std::string & str, std::string cons
   }
 }
 
-void VulkanHppGenerator::appendPlatformLeave(std::string & str, std::string const& platform) const
+void VulkanHppGenerator::appendPlatformLeave(std::string & str, bool isAliased, std::string const& platform) const
 {
-  if (!platform.empty())
+  if (!isAliased && !platform.empty())
   {
     auto it = m_platforms.find(platform);
     assert((it != m_platforms.end()) && !it->second.empty());
@@ -3013,7 +3091,7 @@ void VulkanHppGenerator::appendStructSubConstructor(std::string &str, std::pair<
 void VulkanHppGenerator::appendStructure(std::string & str, std::pair<std::string, StructureData> const& structure) const
 {
   str += "\n";
-  appendPlatformEnter(str, structure.second.platform);
+  appendPlatformEnter(str, !structure.second.aliases.empty(), structure.second.platform);
 
   std::string constructorAndSetters;
   appendStructConstructor(constructorAndSetters, structure, "    ");
@@ -3042,8 +3120,7 @@ void VulkanHppGenerator::appendStructure(std::string & str, std::pair<std::strin
   std::string members = "\n  public:\n";
   appendStructMembers(members, structure, "    ");
 
-  static const std::string structureTemplate = R"(
-  struct ${name}
+  static const std::string structureTemplate = R"(  struct ${name}
   {
 ${constructorAndSetters}
 
@@ -3073,7 +3150,7 @@ ${members}
       { "compareOperators",       compareOperators },
       { "members",                members }
     });
-  appendPlatformLeave(str, structure.second.platform);
+  appendPlatformLeave(str, !structure.second.aliases.empty(), structure.second.platform);
 }
 
 void VulkanHppGenerator::appendStructureChainValidation(std::string & str)
@@ -3083,7 +3160,7 @@ void VulkanHppGenerator::appendStructureChainValidation(std::string & str)
   {
     if (!structure.second.structExtends.empty())
     {
-      appendPlatformEnter(str, structure.second.platform);
+      appendPlatformEnter(str, !structure.second.aliases.empty(), structure.second.platform);
 
       // append out allowed structure chains
       for (auto extendName : structure.second.structExtends)
@@ -3104,17 +3181,17 @@ void VulkanHppGenerator::appendStructureChainValidation(std::string & str)
         }
         if (structure.second.platform != itExtend->second.platform)
         {
-          appendPlatformEnter(str, itExtend->second.platform);
+          appendPlatformEnter(str, !itExtend->second.aliases.empty(), itExtend->second.platform);
         }
 
         str += "  template <> struct isStructureChainValid<" + stripPrefix(extendName, "Vk") + ", " + stripPrefix(structure.first, "Vk") + ">{ enum { value = true }; };\n";
 
         if (structure.second.platform != itExtend->second.platform)
         {
-          appendPlatformLeave(str, itExtend->second.platform);
+          appendPlatformLeave(str, !itExtend->second.aliases.empty(), itExtend->second.platform);
         }
       }
-      appendPlatformLeave(str, structure.second.platform);
+      appendPlatformLeave(str, !structure.second.aliases.empty(), structure.second.platform);
     }
   }
 }
@@ -3142,8 +3219,10 @@ void VulkanHppGenerator::appendThrowExceptions(std::string & str) const
 
 void VulkanHppGenerator::appendUnion(std::string & str, std::pair<std::string, StructureData> const& structure) const
 {
+  str += "\n";
+  appendPlatformEnter(str, !structure.second.aliases.empty(), structure.second.platform);
   std::string unionName = stripPrefix(structure.first, "Vk");
-  str += "\n"
+  str +=
     "  union " + unionName + "\n"
     "  {\n"
     "    " + unionName + "( VULKAN_HPP_NAMESPACE::" + unionName + " const& rhs ) VULKAN_HPP_NOEXCEPT\n"
@@ -3241,16 +3320,16 @@ void VulkanHppGenerator::appendUnion(std::string & str, std::pair<std::string, S
     str += "#endif  /*VULKAN_HPP_HAS_UNRESTRICTED_UNIONS*/\n";
   }
   str += "  };\n";
+  appendPlatformLeave(str, !structure.second.aliases.empty(), structure.second.platform);
 }
 
 void VulkanHppGenerator::appendUniqueTypes(std::string & str, std::string const& parentType, std::set<std::string> const& childrenTypes) const
 {
   str += "\n"
-    "#ifndef VULKAN_HPP_NO_SMART_HANDLE";
+    "#ifndef VULKAN_HPP_NO_SMART_HANDLE\n";
   if (!parentType.empty())
   {
-    str += "\n"
-      "  class " + stripPrefix(parentType, "Vk") + ";";
+    str += "  class " + stripPrefix(parentType, "Vk") + ";\n";
   }
 
   for (auto const& childType : childrenTypes)
@@ -3263,18 +3342,17 @@ void VulkanHppGenerator::appendUniqueTypes(std::string & str, std::string const&
     std::string deleterAction = (handleIt->second.deleteCommand.substr(2, 4) == "Free") ? "Free" : "Destroy";
     std::string deleterParent = parentType.empty() ? "NoParent" : stripPrefix(parentType, "Vk");
     std::string deleterPool = handleIt->second.deletePool.empty() ? "" : ", " + stripPrefix(handleIt->second.deletePool, "Vk");
-    str += "\n"
-      "  template <typename Dispatch> class UniqueHandleTraits<" + type + ", Dispatch> { public: using deleter = " + deleterType + deleterAction + "<" + deleterParent + deleterPool + ", Dispatch>; };\n"
-      "  using Unique" + type + " = UniqueHandle<" + type + ", VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;";
+    appendPlatformEnter(str, !handleIt->second.alias.empty(), handleIt->second.platform);
+    str += "  template <typename Dispatch> class UniqueHandleTraits<" + type + ", Dispatch> { public: using deleter = " + deleterType + deleterAction + "<" + deleterParent + deleterPool + ", Dispatch>; };\n"
+      "  using Unique" + type + " = UniqueHandle<" + type + ", VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;\n";
 
     if (!handleIt->second.alias.empty())
     {
-      str += "\n"
-        "  using Unique" + stripPrefix(handleIt->second.alias, "Vk") + " = UniqueHandle<" + type + ", VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;";
+      str += "  using Unique" + stripPrefix(handleIt->second.alias, "Vk") + " = UniqueHandle<" + type + ", VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;\n";
     }
+    appendPlatformLeave(str, !handleIt->second.alias.empty(), handleIt->second.platform);
   }
-  str += "\n"
-    "#endif /*VULKAN_HPP_NO_SMART_HANDLE*/\n";
+  str += "#endif /*VULKAN_HPP_NO_SMART_HANDLE*/\n";
 }
 
 void VulkanHppGenerator::EnumData::addEnumValue(int line, std::string const &valueName, bool bitmask, bool bitpos, std::string const& prefix, std::string const& postfix, std::string const& tag)
@@ -3828,13 +3906,7 @@ void VulkanHppGenerator::readCommandAlias(tinyxml2::XMLElement const* element, s
   check(handleIt != m_handles.end(), line, "missing handle <" + commandToHandleIt->second + ">");
   auto commandsIt = handleIt->second.commands.find(alias);
   check(commandsIt != handleIt->second.commands.end(), line, "missing command <" + alias + "> in handle <" + handleIt->first + ">");
-
-  // create a copy of the found command, mark that as an alias and link it to a handle
-  CommandData commandData = commandsIt->second;
-  commandData = commandsIt->second;
-  commandData.isAlias = true;
-  commandData.xmlLine = line;
-  linkCommandToHandle(line, name, commandData);
+  check(commandsIt->second.aliases.insert(name).second, line, "alias <" + name + "> for command <" + alias + "> already specified");
 }
 
 VulkanHppGenerator::ParamData VulkanHppGenerator::readCommandParam(tinyxml2::XMLElement const* element, std::vector<ParamData> const& params)
@@ -4438,16 +4510,25 @@ void VulkanHppGenerator::readExtensionRequireType(tinyxml2::XMLElement const* el
       }
       else
       {
-        auto stit = m_structures.find(name);
-        if (stit != m_structures.end())
+        auto hit = m_handles.find(name);
+        if (hit != m_handles.end())
         {
-          assert(m_handles.find(name) == m_handles.end());
-          check(stit->second.platform.empty(), line, "platform already specified for structure <" + name + ">");
-          stit->second.platform = platform;
+          check(hit->second.platform.empty(), line, "platform already specified for handle <" + name + ">");
+          hit->second.platform = platform;
         }
         else
         {
-          assert((m_types.find(name) != m_types.end()));
+          auto stit = m_structures.find(name);
+          if (stit != m_structures.end())
+          {
+            assert(m_handles.find(name) == m_handles.end());
+            check(stit->second.platform.empty(), line, "platform already specified for structure <" + name + ">");
+            stit->second.platform = platform;
+          }
+          else
+          {
+            assert((m_types.find(name) != m_types.end()));
+          }
         }
       }
     }

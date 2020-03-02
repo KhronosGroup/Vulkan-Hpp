@@ -104,8 +104,7 @@ class VulkanHppGenerator
     struct CommandData
     {
       CommandData(int line)
-        : isAlias(false)
-        , xmlLine(line)
+        : xmlLine(line)
       {}
 
       std::vector<ParamData>    params;
@@ -113,7 +112,7 @@ class VulkanHppGenerator
       std::string               returnType;
       std::vector<std::string>  successCodes;
       std::vector<std::string>  errorCodes;
-      bool                      isAlias;
+      std::set<std::string>     aliases;
       int                       xmlLine;
     };
 
@@ -177,6 +176,7 @@ class VulkanHppGenerator
       std::map<std::string, CommandData>  commands;
       std::string                         deleteCommand;
       std::string                         deletePool;
+      std::string                         platform;
       std::vector<std::string>            parents;
       int                                 xmlLine;
     };
@@ -249,8 +249,8 @@ class VulkanHppGenerator
     void appendFunctionHeaderReturnType(std::string & str, CommandData const& commandData, size_t returnParamIndex, std::map<size_t, size_t> const& vectorParamIndices, std::string const& enhancedReturnType, bool enhanced, bool twoStep, bool singular, bool unique, bool isStructureChain) const;
     void appendFunctionHeaderTemplate(std::string & str, std::string const& indentation, size_t returnParamIndex, size_t templateParamIndex, std::string const& enhancedReturnType, bool enhanced, bool singular, bool unique, bool withDefault, bool isStructureChain) const;
     void appendHandle(std::string & str, std::pair<std::string, HandleData> const& handle, std::set<std::string> & listedHandles) const;
-    void appendPlatformEnter(std::string & str, std::string const& platform) const;
-    void appendPlatformLeave(std::string & str, std::string const& platform) const;
+    void appendPlatformEnter(std::string & str, bool isAliased, std::string const& platform) const;
+    void appendPlatformLeave(std::string & str, bool isAliased, std::string const& platform) const;
     void appendStruct(std::string & str, std::pair<std::string, StructureData> const& structure, std::set<std::string> & listedStructures) const;
     void appendStructAssignmentOperator(std::string &str, std::pair<std::string, StructureData> const& structure, std::string const& prefix) const;
     void appendStructCompareOperators(std::string & str, std::pair<std::string, StructureData> const& structure) const;

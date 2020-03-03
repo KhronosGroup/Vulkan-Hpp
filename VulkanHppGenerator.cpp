@@ -5897,8 +5897,16 @@ int main(int argc, char **argv)
 
     template<typename ClassType> ClassType& get() VULKAN_HPP_NOEXCEPT { return static_cast<ClassType&>(*this);}
 
+    template<typename ClassType> const ClassType& get() const VULKAN_HPP_NOEXCEPT { return static_cast<const ClassType&>(*this);}
+
     template<typename ClassTypeA, typename ClassTypeB, typename ...ClassTypes>
     std::tuple<ClassTypeA&, ClassTypeB&, ClassTypes&...> get()
+    {
+      return std::tie(get<ClassTypeA>(), get<ClassTypeB>(), get<ClassTypes>()...);
+    }
+
+    template<typename ClassTypeA, typename ClassTypeB, typename ...ClassTypes>
+    std::tuple<const ClassTypeA&, const ClassTypeB&, ClassTypes&...> get() const
     {
       return std::tie(get<ClassTypeA>(), get<ClassTypeB>(), get<ClassTypes>()...);
     }

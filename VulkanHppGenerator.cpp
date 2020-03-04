@@ -827,7 +827,7 @@ void VulkanHppGenerator::appendBaseTypes(std::string & str) const
   assert(!m_baseTypes.empty());
   for (auto const& baseType : m_baseTypes)
   {
-    if (baseType.first != "VkFlags")    // filter out VkFlags
+    if ((baseType.first != "VkFlags") && (baseType.first != "VkFlags64"))    // filter out VkFlags and VkFlags64, as they are mapped to our own Flags class
     {
       str += "  using " + stripPrefix(baseType.first, "Vk") + " = " + baseType.second.type + ";\n";
     }
@@ -847,13 +847,13 @@ void VulkanHppGenerator::appendBitmasks(std::string & str) const
 
     str += "\n";
     appendPlatformEnter(str, !bitmask.second.alias.empty(), bitmask.second.platform);
-    appendBitmask(str, strippedBitmaskName, bitmask.second.alias, strippedEnumName, hasBits ? bitmaskBits->second.values : std::vector<EnumValueData>());
+    appendBitmask(str, strippedBitmaskName, bitmask.second.type, bitmask.second.alias, strippedEnumName, hasBits ? bitmaskBits->second.values : std::vector<EnumValueData>());
     appendBitmaskToStringFunction(str, strippedBitmaskName, strippedEnumName, hasBits ? bitmaskBits->second.values : std::vector<EnumValueData>());
     appendPlatformLeave(str, !bitmask.second.alias.empty(), bitmask.second.platform);
   }
 }
 
-void VulkanHppGenerator::appendBitmask(std::string & str, std::string const& bitmaskName, std::string const& bitmaskAlias, std::string const& enumName, std::vector<EnumValueData> const& enumValues) const
+void VulkanHppGenerator::appendBitmask(std::string & str, std::string const& bitmaskName, std::string const& bitmaskType, std::string const& bitmaskAlias, std::string const& enumName, std::vector<EnumValueData> const& enumValues) const
 {
   // each Flags class is using the class 'Flags' with the corresponding FlagBits enum as the template parameter
   // if there's no enum for the FlagBits, introduce an artificial empty one
@@ -868,7 +868,7 @@ void VulkanHppGenerator::appendBitmask(std::string & str, std::string const& bit
     // if this emptyEnumName is not in the list of enums, list it here
     if (m_enums.find("Vk" + emptyEnumName) == m_enums.end())
     {
-      const std::string templateString = R"x(  enum class ${enumName} : VkFlags
+      const std::string templateString = R"x(  enum class ${enumName} : ${bitmaskType}
   {};
 
   VULKAN_HPP_INLINE std::string to_string( ${enumName} )
@@ -877,7 +877,7 @@ void VulkanHppGenerator::appendBitmask(std::string & str, std::string const& bit
   }
 )x";
 
-      str += replaceWithMap(templateString, { { "enumName", emptyEnumName } });
+      str += replaceWithMap(templateString, { { "enumName", emptyEnumName }, { "bitmaskType", bitmaskType } });
     }
   }
   std::string name = (enumName.empty() ? emptyEnumName : enumName);
@@ -893,13 +893,13 @@ void VulkanHppGenerator::appendBitmask(std::string & str, std::string const& bit
       {
         allFlags += " | ";
       }
-      allFlags += "VkFlags(" + enumName + "::" + value.vkValue + ")";
+      allFlags += bitmaskType + "(" + enumName + "::" + value.vkValue + ")";
     }
 
     static const std::string bitmaskOperatorsTemplate = R"(
   template <> struct FlagTraits<${enumName}>
   {
-    enum
+    enum : ${bitmaskType}
     {
       allFlags = ${allFlags}
     };
@@ -926,7 +926,7 @@ void VulkanHppGenerator::appendBitmask(std::string & str, std::string const& bit
   }
 )";
 
-    str += replaceWithMap(bitmaskOperatorsTemplate, { { "bitmaskName", bitmaskName },{ "enumName", enumName },{ "allFlags", allFlags } });
+    str += replaceWithMap(bitmaskOperatorsTemplate, { { "bitmaskName", bitmaskName }, { "bitmaskType", bitmaskType }, { "enumName", enumName }, { "allFlags", allFlags } });
   }
 
   if (!bitmaskAlias.empty())
@@ -3176,6 +3176,11 @@ void VulkanHppGenerator::appendStructureChainValidation(std::string & str)
         std::map<std::string, StructureData>::const_iterator itExtend = m_structures.find(extendName);
         if (itExtend == m_structures.end())
         {
+          // look if the extendName acutally is an alias of some other structure
+          itExtend = std::find_if(m_structures.begin(), m_structures.end(), [extendName](auto const& sd) { return sd.second.aliases.find(extendName) != sd.second.aliases.end(); });
+        }
+        if (itExtend == m_structures.end())
+        {
           std::string errorString;
           errorString = "<" + extendName + "> does not specify a struct in structextends field.";
 
@@ -3185,7 +3190,7 @@ void VulkanHppGenerator::appendStructureChainValidation(std::string & str)
           {
             errorString += " The symbol is an alias and maps to <" + itAlias->first + ">.";
           }
-          check(true, structure.second.xmlLine, errorString);
+          check(false, structure.second.xmlLine, errorString);
         }
         if (structure.second.platform != itExtend->second.platform)
         {
@@ -3785,13 +3790,13 @@ void VulkanHppGenerator::readBitmask(tinyxml2::XMLElement const* element, std::m
     check(beginsWith(nameData.name, "Vk"), line, "name <" + nameData.name + "> does not begin with <Vk>");
     check(nameData.arraySizes.empty(), line, "name <" + nameData.name + "> with unsupported arraySizes");
     check(nameData.bitCount.empty(), line, "name <" + nameData.name + "> with unsupported bitCount <" + nameData.bitCount + ">");
-    check(typeData.type == "VkFlags", line, "unexpected bitmask type <" + typeData.type + ">");
+    warn((typeData.type == "VkFlags") || (typeData.type == "VkFlags64"), line, "unexpected bitmask type <" + typeData.type + ">");
     check(typeData.prefix == "typedef", line, "unexpected type prefix <" + typeData.prefix + ">");
     check(typeData.postfix.empty(), line, "unexpected type postfix <" + typeData.postfix + ">");
 
     check(m_commandToHandle.find(nameData.name) == m_commandToHandle.end(), line, "command <" + nameData.name + "> already specified");
 
-    m_bitmasks.insert(std::make_pair(nameData.name, BitmaskData(requirements, line)));
+    m_bitmasks.insert(std::make_pair(nameData.name, BitmaskData(requirements, typeData.type, line)));
     check(m_types.insert(nameData.name).second, line, "bitmask <" + nameData.name + "> already specified as a type");
   }
 }
@@ -3913,8 +3918,17 @@ void VulkanHppGenerator::readCommandAlias(tinyxml2::XMLElement const* element, s
   auto handleIt = m_handles.find(commandToHandleIt->second);
   check(handleIt != m_handles.end(), line, "missing handle <" + commandToHandleIt->second + ">");
   auto commandsIt = handleIt->second.commands.find(alias);
+  if (commandsIt == handleIt->second.commands.end())
+  {
+    // look, if this command is aliases and already aliased command
+    commandsIt = std::find_if(handleIt->second.commands.begin(), handleIt->second.commands.end(), [&alias](auto const& cd) { return cd.second.aliases.find(alias) != cd.second.aliases.end(); });
+  }
   check(commandsIt != handleIt->second.commands.end(), line, "missing command <" + alias + "> in handle <" + handleIt->first + ">");
   check(commandsIt->second.aliases.insert(name).second, line, "alias <" + name + "> for command <" + alias + "> already specified");
+
+  // and store the alias in the command-to-handle map
+  check(m_commandToHandle.find(name) == m_commandToHandle.end(), line, "command to handle mapping already holds the command <" + name + ">");
+  m_commandToHandle[name] = handleIt->first;
 }
 
 VulkanHppGenerator::ParamData VulkanHppGenerator::readCommandParam(tinyxml2::XMLElement const* element, std::vector<ParamData> const& params)
@@ -5920,7 +5934,7 @@ int main(int argc, char **argv)
     }
 
     template<typename ClassTypeA, typename ClassTypeB, typename ...ClassTypes>
-    std::tuple<const ClassTypeA&, const ClassTypeB&, ClassTypes&...> get() const
+    std::tuple<const ClassTypeA&, const ClassTypeB&, const ClassTypes&...> get() const
     {
       return std::tie(get<ClassTypeA>(), get<ClassTypeB>(), get<ClassTypes>()...);
     }

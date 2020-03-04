@@ -56,14 +56,16 @@ class VulkanHppGenerator
 
     struct BitmaskData
     {
-      BitmaskData(std::string const& r, int line)
+      BitmaskData(std::string const& r, std::string const& t, int line)
         : requirements(r)
+        , type(t)
         , xmlLine(line)
       {}
 
-      std::string requirements;   // original vulkan name: VK*FlagBits
+      std::string requirements;
+      std::string type;
       std::string platform;
-      std::string alias;      // original vulkan name
+      std::string alias;
       int         xmlLine;
     };
 
@@ -220,7 +222,7 @@ class VulkanHppGenerator
     void appendArguments(std::string & str, CommandData const& commandData, size_t returnParamIndex, size_t templateParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool twoStep, bool firstCall, bool singular, size_t from, size_t to) const;
     void appendArgumentVector(std::string & str, size_t paramIndex, ParamData const& paramData, size_t returnParamIndex, size_t templateParamIndex, bool twoStep, bool firstCall, bool singular) const;
     void appendArgumentVulkanType(std::string & str, ParamData const& paramData) const;
-    void appendBitmask(std::string & os, std::string const& bitmaskName, std::string const& bitmaskAlias, std::string const& enumName, std::vector<EnumValueData> const& enumValues) const;
+    void appendBitmask(std::string & os, std::string const& bitmaskName, std::string const& bitmaskType, std::string const& bitmaskAlias, std::string const& enumName, std::vector<EnumValueData> const& enumValues) const;
     void appendBitmaskToStringFunction(std::string & str, std::string const& flagsName, std::string const& enumName, std::vector<EnumValueData> const& enumValues) const;
     void appendCall(std::string &str, std::pair<std::string, CommandData> const& commandData, size_t returnParamIndex, size_t templateParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool twoStep, bool firstCall, bool singular) const;
     void appendCommand(std::string & str, std::string const& indentation, std::string const& name, std::pair<std::string, CommandData> const& commandData, bool definition) const;

@@ -8378,7 +8378,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<AccessFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(AccessFlagBits::eIndirectCommandRead) | VkFlags(AccessFlagBits::eIndexRead) | VkFlags(AccessFlagBits::eVertexAttributeRead) | VkFlags(AccessFlagBits::eUniformRead) | VkFlags(AccessFlagBits::eInputAttachmentRead) | VkFlags(AccessFlagBits::eShaderRead) | VkFlags(AccessFlagBits::eShaderWrite) | VkFlags(AccessFlagBits::eColorAttachmentRead) | VkFlags(AccessFlagBits::eColorAttachmentWrite) | VkFlags(AccessFlagBits::eDepthStencilAttachmentRead) | VkFlags(AccessFlagBits::eDepthStencilAttachmentWrite) | VkFlags(AccessFlagBits::eTransferRead) | VkFlags(AccessFlagBits::eTransferWrite) | VkFlags(AccessFlagBits::eHostRead) | VkFlags(AccessFlagBits::eHostWrite) | VkFlags(AccessFlagBits::eMemoryRead) | VkFlags(AccessFlagBits::eMemoryWrite) | VkFlags(AccessFlagBits::eTransformFeedbackWriteEXT) | VkFlags(AccessFlagBits::eTransformFeedbackCounterReadEXT) | VkFlags(AccessFlagBits::eTransformFeedbackCounterWriteEXT) | VkFlags(AccessFlagBits::eConditionalRenderingReadEXT) | VkFlags(AccessFlagBits::eCommandProcessReadNVX) | VkFlags(AccessFlagBits::eCommandProcessWriteNVX) | VkFlags(AccessFlagBits::eColorAttachmentReadNoncoherentEXT) | VkFlags(AccessFlagBits::eShadingRateImageReadNV) | VkFlags(AccessFlagBits::eAccelerationStructureReadNV) | VkFlags(AccessFlagBits::eAccelerationStructureWriteNV) | VkFlags(AccessFlagBits::eFragmentDensityMapReadEXT)
     };
@@ -8468,7 +8468,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<AttachmentDescriptionFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(AttachmentDescriptionFlagBits::eMayAlias)
     };
@@ -8507,7 +8507,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<BufferCreateFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(BufferCreateFlagBits::eSparseBinding) | VkFlags(BufferCreateFlagBits::eSparseResidency) | VkFlags(BufferCreateFlagBits::eSparseAliased) | VkFlags(BufferCreateFlagBits::eProtected) | VkFlags(BufferCreateFlagBits::eDeviceAddressCaptureReplayKHR)
     };
@@ -8550,7 +8550,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<BufferUsageFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(BufferUsageFlagBits::eTransferSrc) | VkFlags(BufferUsageFlagBits::eTransferDst) | VkFlags(BufferUsageFlagBits::eUniformTexelBuffer) | VkFlags(BufferUsageFlagBits::eStorageTexelBuffer) | VkFlags(BufferUsageFlagBits::eUniformBuffer) | VkFlags(BufferUsageFlagBits::eStorageBuffer) | VkFlags(BufferUsageFlagBits::eIndexBuffer) | VkFlags(BufferUsageFlagBits::eVertexBuffer) | VkFlags(BufferUsageFlagBits::eIndirectBuffer) | VkFlags(BufferUsageFlagBits::eTransformFeedbackBufferEXT) | VkFlags(BufferUsageFlagBits::eTransformFeedbackCounterBufferEXT) | VkFlags(BufferUsageFlagBits::eConditionalRenderingEXT) | VkFlags(BufferUsageFlagBits::eRayTracingNV) | VkFlags(BufferUsageFlagBits::eShaderDeviceAddressKHR)
     };
@@ -8609,7 +8609,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<BuildAccelerationStructureFlagBitsNV>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(BuildAccelerationStructureFlagBitsNV::eAllowUpdate) | VkFlags(BuildAccelerationStructureFlagBitsNV::eAllowCompaction) | VkFlags(BuildAccelerationStructureFlagBitsNV::ePreferFastTrace) | VkFlags(BuildAccelerationStructureFlagBitsNV::ePreferFastBuild) | VkFlags(BuildAccelerationStructureFlagBitsNV::eLowMemory)
     };
@@ -8652,7 +8652,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<ColorComponentFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(ColorComponentFlagBits::eR) | VkFlags(ColorComponentFlagBits::eG) | VkFlags(ColorComponentFlagBits::eB) | VkFlags(ColorComponentFlagBits::eA)
     };
@@ -8694,7 +8694,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<CommandBufferResetFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(CommandBufferResetFlagBits::eReleaseResources)
     };
@@ -8733,7 +8733,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<CommandBufferUsageFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(CommandBufferUsageFlagBits::eOneTimeSubmit) | VkFlags(CommandBufferUsageFlagBits::eRenderPassContinue) | VkFlags(CommandBufferUsageFlagBits::eSimultaneousUse)
     };
@@ -8774,7 +8774,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<CommandPoolCreateFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(CommandPoolCreateFlagBits::eTransient) | VkFlags(CommandPoolCreateFlagBits::eResetCommandBuffer) | VkFlags(CommandPoolCreateFlagBits::eProtected)
     };
@@ -8815,7 +8815,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<CommandPoolResetFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(CommandPoolResetFlagBits::eReleaseResources)
     };
@@ -8871,7 +8871,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<CompositeAlphaFlagBitsKHR>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(CompositeAlphaFlagBitsKHR::eOpaque) | VkFlags(CompositeAlphaFlagBitsKHR::ePreMultiplied) | VkFlags(CompositeAlphaFlagBitsKHR::ePostMultiplied) | VkFlags(CompositeAlphaFlagBitsKHR::eInherit)
     };
@@ -8913,7 +8913,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<ConditionalRenderingFlagBitsEXT>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(ConditionalRenderingFlagBitsEXT::eInverted)
     };
@@ -8952,7 +8952,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<CullModeFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(CullModeFlagBits::eNone) | VkFlags(CullModeFlagBits::eFront) | VkFlags(CullModeFlagBits::eBack) | VkFlags(CullModeFlagBits::eFrontAndBack)
     };
@@ -8992,7 +8992,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<DebugReportFlagBitsEXT>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(DebugReportFlagBitsEXT::eInformation) | VkFlags(DebugReportFlagBitsEXT::eWarning) | VkFlags(DebugReportFlagBitsEXT::ePerformanceWarning) | VkFlags(DebugReportFlagBitsEXT::eError) | VkFlags(DebugReportFlagBitsEXT::eDebug)
     };
@@ -9035,7 +9035,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<DebugUtilsMessageSeverityFlagBitsEXT>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(DebugUtilsMessageSeverityFlagBitsEXT::eVerbose) | VkFlags(DebugUtilsMessageSeverityFlagBitsEXT::eInfo) | VkFlags(DebugUtilsMessageSeverityFlagBitsEXT::eWarning) | VkFlags(DebugUtilsMessageSeverityFlagBitsEXT::eError)
     };
@@ -9077,7 +9077,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<DebugUtilsMessageTypeFlagBitsEXT>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(DebugUtilsMessageTypeFlagBitsEXT::eGeneral) | VkFlags(DebugUtilsMessageTypeFlagBitsEXT::eValidation) | VkFlags(DebugUtilsMessageTypeFlagBitsEXT::ePerformance)
     };
@@ -9148,7 +9148,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<DependencyFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(DependencyFlagBits::eByRegion) | VkFlags(DependencyFlagBits::eDeviceGroup) | VkFlags(DependencyFlagBits::eViewLocal)
     };
@@ -9189,7 +9189,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<DescriptorBindingFlagBitsEXT>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(DescriptorBindingFlagBitsEXT::eUpdateAfterBind) | VkFlags(DescriptorBindingFlagBitsEXT::eUpdateUnusedWhilePending) | VkFlags(DescriptorBindingFlagBitsEXT::ePartiallyBound) | VkFlags(DescriptorBindingFlagBitsEXT::eVariableDescriptorCount)
     };
@@ -9231,7 +9231,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<DescriptorPoolCreateFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(DescriptorPoolCreateFlagBits::eFreeDescriptorSet) | VkFlags(DescriptorPoolCreateFlagBits::eUpdateAfterBindEXT)
     };
@@ -9286,7 +9286,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<DescriptorSetLayoutCreateFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(DescriptorSetLayoutCreateFlagBits::ePushDescriptorKHR) | VkFlags(DescriptorSetLayoutCreateFlagBits::eUpdateAfterBindPoolEXT)
     };
@@ -9350,7 +9350,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<DeviceGroupPresentModeFlagBitsKHR>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(DeviceGroupPresentModeFlagBitsKHR::eLocal) | VkFlags(DeviceGroupPresentModeFlagBitsKHR::eRemote) | VkFlags(DeviceGroupPresentModeFlagBitsKHR::eSum) | VkFlags(DeviceGroupPresentModeFlagBitsKHR::eLocalMultiDevice)
     };
@@ -9392,7 +9392,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<DeviceQueueCreateFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(DeviceQueueCreateFlagBits::eProtected)
     };
@@ -9446,7 +9446,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<DisplayPlaneAlphaFlagBitsKHR>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(DisplayPlaneAlphaFlagBitsKHR::eOpaque) | VkFlags(DisplayPlaneAlphaFlagBitsKHR::eGlobal) | VkFlags(DisplayPlaneAlphaFlagBitsKHR::ePerPixel) | VkFlags(DisplayPlaneAlphaFlagBitsKHR::ePerPixelPremultiplied)
     };
@@ -9518,7 +9518,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<ExternalFenceFeatureFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(ExternalFenceFeatureFlagBits::eExportable) | VkFlags(ExternalFenceFeatureFlagBits::eImportable)
     };
@@ -9560,7 +9560,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<ExternalFenceHandleTypeFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(ExternalFenceHandleTypeFlagBits::eOpaqueFd) | VkFlags(ExternalFenceHandleTypeFlagBits::eOpaqueWin32) | VkFlags(ExternalFenceHandleTypeFlagBits::eOpaqueWin32Kmt) | VkFlags(ExternalFenceHandleTypeFlagBits::eSyncFd)
     };
@@ -9604,7 +9604,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<ExternalMemoryFeatureFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(ExternalMemoryFeatureFlagBits::eDedicatedOnly) | VkFlags(ExternalMemoryFeatureFlagBits::eExportable) | VkFlags(ExternalMemoryFeatureFlagBits::eImportable)
     };
@@ -9647,7 +9647,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<ExternalMemoryFeatureFlagBitsNV>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(ExternalMemoryFeatureFlagBitsNV::eDedicatedOnly) | VkFlags(ExternalMemoryFeatureFlagBitsNV::eExportable) | VkFlags(ExternalMemoryFeatureFlagBitsNV::eImportable)
     };
@@ -9688,7 +9688,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<ExternalMemoryHandleTypeFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(ExternalMemoryHandleTypeFlagBits::eOpaqueFd) | VkFlags(ExternalMemoryHandleTypeFlagBits::eOpaqueWin32) | VkFlags(ExternalMemoryHandleTypeFlagBits::eOpaqueWin32Kmt) | VkFlags(ExternalMemoryHandleTypeFlagBits::eD3D11Texture) | VkFlags(ExternalMemoryHandleTypeFlagBits::eD3D11TextureKmt) | VkFlags(ExternalMemoryHandleTypeFlagBits::eD3D12Heap) | VkFlags(ExternalMemoryHandleTypeFlagBits::eD3D12Resource) | VkFlags(ExternalMemoryHandleTypeFlagBits::eDmaBufEXT) | VkFlags(ExternalMemoryHandleTypeFlagBits::eAndroidHardwareBufferANDROID) | VkFlags(ExternalMemoryHandleTypeFlagBits::eHostAllocationEXT) | VkFlags(ExternalMemoryHandleTypeFlagBits::eHostMappedForeignMemoryEXT)
     };
@@ -9739,7 +9739,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<ExternalMemoryHandleTypeFlagBitsNV>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(ExternalMemoryHandleTypeFlagBitsNV::eOpaqueWin32) | VkFlags(ExternalMemoryHandleTypeFlagBitsNV::eOpaqueWin32Kmt) | VkFlags(ExternalMemoryHandleTypeFlagBitsNV::eD3D11Image) | VkFlags(ExternalMemoryHandleTypeFlagBitsNV::eD3D11ImageKmt)
     };
@@ -9781,7 +9781,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<ExternalSemaphoreFeatureFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(ExternalSemaphoreFeatureFlagBits::eExportable) | VkFlags(ExternalSemaphoreFeatureFlagBits::eImportable)
     };
@@ -9823,7 +9823,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<ExternalSemaphoreHandleTypeFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(ExternalSemaphoreHandleTypeFlagBits::eOpaqueFd) | VkFlags(ExternalSemaphoreHandleTypeFlagBits::eOpaqueWin32) | VkFlags(ExternalSemaphoreHandleTypeFlagBits::eOpaqueWin32Kmt) | VkFlags(ExternalSemaphoreHandleTypeFlagBits::eD3D12Fence) | VkFlags(ExternalSemaphoreHandleTypeFlagBits::eSyncFd)
     };
@@ -9868,7 +9868,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<FenceCreateFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(FenceCreateFlagBits::eSignaled)
     };
@@ -9907,7 +9907,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<FenceImportFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(FenceImportFlagBits::eTemporary)
     };
@@ -9948,7 +9948,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<FormatFeatureFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(FormatFeatureFlagBits::eSampledImage) | VkFlags(FormatFeatureFlagBits::eStorageImage) | VkFlags(FormatFeatureFlagBits::eStorageImageAtomic) | VkFlags(FormatFeatureFlagBits::eUniformTexelBuffer) | VkFlags(FormatFeatureFlagBits::eStorageTexelBuffer) | VkFlags(FormatFeatureFlagBits::eStorageTexelBufferAtomic) | VkFlags(FormatFeatureFlagBits::eVertexBuffer) | VkFlags(FormatFeatureFlagBits::eColorAttachment) | VkFlags(FormatFeatureFlagBits::eColorAttachmentBlend) | VkFlags(FormatFeatureFlagBits::eDepthStencilAttachment) | VkFlags(FormatFeatureFlagBits::eBlitSrc) | VkFlags(FormatFeatureFlagBits::eBlitDst) | VkFlags(FormatFeatureFlagBits::eSampledImageFilterLinear) | VkFlags(FormatFeatureFlagBits::eTransferSrc) | VkFlags(FormatFeatureFlagBits::eTransferDst) | VkFlags(FormatFeatureFlagBits::eMidpointChromaSamples) | VkFlags(FormatFeatureFlagBits::eSampledImageYcbcrConversionLinearFilter) | VkFlags(FormatFeatureFlagBits::eSampledImageYcbcrConversionSeparateReconstructionFilter) | VkFlags(FormatFeatureFlagBits::eSampledImageYcbcrConversionChromaReconstructionExplicit) | VkFlags(FormatFeatureFlagBits::eSampledImageYcbcrConversionChromaReconstructionExplicitForceable) | VkFlags(FormatFeatureFlagBits::eDisjoint) | VkFlags(FormatFeatureFlagBits::eCositedChromaSamples) | VkFlags(FormatFeatureFlagBits::eSampledImageFilterCubicIMG) | VkFlags(FormatFeatureFlagBits::eSampledImageFilterMinmaxEXT) | VkFlags(FormatFeatureFlagBits::eFragmentDensityMapEXT)
     };
@@ -10011,7 +10011,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<FramebufferCreateFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(FramebufferCreateFlagBits::eImagelessKHR)
     };
@@ -10050,7 +10050,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<GeometryFlagBitsNV>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(GeometryFlagBitsNV::eOpaque) | VkFlags(GeometryFlagBitsNV::eNoDuplicateAnyHitInvocation)
     };
@@ -10090,7 +10090,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<GeometryInstanceFlagBitsNV>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(GeometryInstanceFlagBitsNV::eTriangleCullDisable) | VkFlags(GeometryInstanceFlagBitsNV::eTriangleFrontCounterclockwise) | VkFlags(GeometryInstanceFlagBitsNV::eForceOpaque) | VkFlags(GeometryInstanceFlagBitsNV::eForceNoOpaque)
     };
@@ -10164,7 +10164,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<ImageAspectFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(ImageAspectFlagBits::eColor) | VkFlags(ImageAspectFlagBits::eDepth) | VkFlags(ImageAspectFlagBits::eStencil) | VkFlags(ImageAspectFlagBits::eMetadata) | VkFlags(ImageAspectFlagBits::ePlane0) | VkFlags(ImageAspectFlagBits::ePlane1) | VkFlags(ImageAspectFlagBits::ePlane2) | VkFlags(ImageAspectFlagBits::eMemoryPlane0EXT) | VkFlags(ImageAspectFlagBits::eMemoryPlane1EXT) | VkFlags(ImageAspectFlagBits::eMemoryPlane2EXT) | VkFlags(ImageAspectFlagBits::eMemoryPlane3EXT)
     };
@@ -10213,7 +10213,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<ImageCreateFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(ImageCreateFlagBits::eSparseBinding) | VkFlags(ImageCreateFlagBits::eSparseResidency) | VkFlags(ImageCreateFlagBits::eSparseAliased) | VkFlags(ImageCreateFlagBits::eMutableFormat) | VkFlags(ImageCreateFlagBits::eCubeCompatible) | VkFlags(ImageCreateFlagBits::eAlias) | VkFlags(ImageCreateFlagBits::eSplitInstanceBindRegions) | VkFlags(ImageCreateFlagBits::e2DArrayCompatible) | VkFlags(ImageCreateFlagBits::eBlockTexelViewCompatible) | VkFlags(ImageCreateFlagBits::eExtendedUsage) | VkFlags(ImageCreateFlagBits::eProtected) | VkFlags(ImageCreateFlagBits::eDisjoint) | VkFlags(ImageCreateFlagBits::eCornerSampledNV) | VkFlags(ImageCreateFlagBits::eSampleLocationsCompatibleDepthEXT) | VkFlags(ImageCreateFlagBits::eSubsampledEXT)
     };
@@ -10283,7 +10283,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<ImageUsageFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(ImageUsageFlagBits::eTransferSrc) | VkFlags(ImageUsageFlagBits::eTransferDst) | VkFlags(ImageUsageFlagBits::eSampled) | VkFlags(ImageUsageFlagBits::eStorage) | VkFlags(ImageUsageFlagBits::eColorAttachment) | VkFlags(ImageUsageFlagBits::eDepthStencilAttachment) | VkFlags(ImageUsageFlagBits::eTransientAttachment) | VkFlags(ImageUsageFlagBits::eInputAttachment) | VkFlags(ImageUsageFlagBits::eShadingRateImageNV) | VkFlags(ImageUsageFlagBits::eFragmentDensityMapEXT)
     };
@@ -10331,7 +10331,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<ImageViewCreateFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(ImageViewCreateFlagBits::eFragmentDensityMapDynamicEXT)
     };
@@ -10370,7 +10370,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<IndirectCommandsLayoutUsageFlagBitsNVX>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(IndirectCommandsLayoutUsageFlagBitsNVX::eUnorderedSequences) | VkFlags(IndirectCommandsLayoutUsageFlagBitsNVX::eSparseSequences) | VkFlags(IndirectCommandsLayoutUsageFlagBitsNVX::eEmptyExecutions) | VkFlags(IndirectCommandsLayoutUsageFlagBitsNVX::eIndexedSequences)
     };
@@ -10436,7 +10436,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<MemoryAllocateFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(MemoryAllocateFlagBits::eDeviceMask) | VkFlags(MemoryAllocateFlagBits::eDeviceAddressKHR) | VkFlags(MemoryAllocateFlagBits::eDeviceAddressCaptureReplayKHR)
     };
@@ -10479,7 +10479,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<MemoryHeapFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(MemoryHeapFlagBits::eDeviceLocal) | VkFlags(MemoryHeapFlagBits::eMultiInstance)
     };
@@ -10534,7 +10534,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<MemoryPropertyFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(MemoryPropertyFlagBits::eDeviceLocal) | VkFlags(MemoryPropertyFlagBits::eHostVisible) | VkFlags(MemoryPropertyFlagBits::eHostCoherent) | VkFlags(MemoryPropertyFlagBits::eHostCached) | VkFlags(MemoryPropertyFlagBits::eLazilyAllocated) | VkFlags(MemoryPropertyFlagBits::eProtected) | VkFlags(MemoryPropertyFlagBits::eDeviceCoherentAMD) | VkFlags(MemoryPropertyFlagBits::eDeviceUncachedAMD)
     };
@@ -10597,7 +10597,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<ObjectEntryUsageFlagBitsNVX>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(ObjectEntryUsageFlagBitsNVX::eGraphics) | VkFlags(ObjectEntryUsageFlagBitsNVX::eCompute)
     };
@@ -10637,7 +10637,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<PeerMemoryFeatureFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(PeerMemoryFeatureFlagBits::eCopySrc) | VkFlags(PeerMemoryFeatureFlagBits::eCopyDst) | VkFlags(PeerMemoryFeatureFlagBits::eGenericSrc) | VkFlags(PeerMemoryFeatureFlagBits::eGenericDst)
     };
@@ -10681,7 +10681,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<PerformanceCounterDescriptionFlagBitsKHR>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(PerformanceCounterDescriptionFlagBitsKHR::ePerformanceImpacting) | VkFlags(PerformanceCounterDescriptionFlagBitsKHR::eConcurrentlyImpacted)
     };
@@ -10787,7 +10787,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<PipelineCreateFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(PipelineCreateFlagBits::eDisableOptimization) | VkFlags(PipelineCreateFlagBits::eAllowDerivatives) | VkFlags(PipelineCreateFlagBits::eDerivative) | VkFlags(PipelineCreateFlagBits::eViewIndexFromDeviceIndex) | VkFlags(PipelineCreateFlagBits::eDispatchBase) | VkFlags(PipelineCreateFlagBits::eDeferCompileNV) | VkFlags(PipelineCreateFlagBits::eCaptureStatisticsKHR) | VkFlags(PipelineCreateFlagBits::eCaptureInternalRepresentationsKHR)
     };
@@ -10833,7 +10833,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<PipelineCreationFeedbackFlagBitsEXT>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(PipelineCreationFeedbackFlagBitsEXT::eValid) | VkFlags(PipelineCreationFeedbackFlagBitsEXT::eApplicationPipelineCacheHit) | VkFlags(PipelineCreationFeedbackFlagBitsEXT::eBasePipelineAcceleration)
     };
@@ -10976,7 +10976,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<PipelineShaderStageCreateFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(PipelineShaderStageCreateFlagBits::eAllowVaryingSubgroupSizeEXT) | VkFlags(PipelineShaderStageCreateFlagBits::eRequireFullSubgroupsEXT)
     };
@@ -11016,7 +11016,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<PipelineStageFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(PipelineStageFlagBits::eTopOfPipe) | VkFlags(PipelineStageFlagBits::eDrawIndirect) | VkFlags(PipelineStageFlagBits::eVertexInput) | VkFlags(PipelineStageFlagBits::eVertexShader) | VkFlags(PipelineStageFlagBits::eTessellationControlShader) | VkFlags(PipelineStageFlagBits::eTessellationEvaluationShader) | VkFlags(PipelineStageFlagBits::eGeometryShader) | VkFlags(PipelineStageFlagBits::eFragmentShader) | VkFlags(PipelineStageFlagBits::eEarlyFragmentTests) | VkFlags(PipelineStageFlagBits::eLateFragmentTests) | VkFlags(PipelineStageFlagBits::eColorAttachmentOutput) | VkFlags(PipelineStageFlagBits::eComputeShader) | VkFlags(PipelineStageFlagBits::eTransfer) | VkFlags(PipelineStageFlagBits::eBottomOfPipe) | VkFlags(PipelineStageFlagBits::eHost) | VkFlags(PipelineStageFlagBits::eAllGraphics) | VkFlags(PipelineStageFlagBits::eAllCommands) | VkFlags(PipelineStageFlagBits::eTransformFeedbackEXT) | VkFlags(PipelineStageFlagBits::eConditionalRenderingEXT) | VkFlags(PipelineStageFlagBits::eCommandProcessNVX) | VkFlags(PipelineStageFlagBits::eShadingRateImageNV) | VkFlags(PipelineStageFlagBits::eRayTracingShaderNV) | VkFlags(PipelineStageFlagBits::eAccelerationStructureBuildNV) | VkFlags(PipelineStageFlagBits::eTaskShaderNV) | VkFlags(PipelineStageFlagBits::eMeshShaderNV) | VkFlags(PipelineStageFlagBits::eFragmentDensityProcessEXT)
     };
@@ -11116,7 +11116,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<QueryControlFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(QueryControlFlagBits::ePrecise)
     };
@@ -11155,7 +11155,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<QueryPipelineStatisticFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(QueryPipelineStatisticFlagBits::eInputAssemblyVertices) | VkFlags(QueryPipelineStatisticFlagBits::eInputAssemblyPrimitives) | VkFlags(QueryPipelineStatisticFlagBits::eVertexShaderInvocations) | VkFlags(QueryPipelineStatisticFlagBits::eGeometryShaderInvocations) | VkFlags(QueryPipelineStatisticFlagBits::eGeometryShaderPrimitives) | VkFlags(QueryPipelineStatisticFlagBits::eClippingInvocations) | VkFlags(QueryPipelineStatisticFlagBits::eClippingPrimitives) | VkFlags(QueryPipelineStatisticFlagBits::eFragmentShaderInvocations) | VkFlags(QueryPipelineStatisticFlagBits::eTessellationControlShaderPatches) | VkFlags(QueryPipelineStatisticFlagBits::eTessellationEvaluationShaderInvocations) | VkFlags(QueryPipelineStatisticFlagBits::eComputeShaderInvocations)
     };
@@ -11211,7 +11211,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<QueryResultFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(QueryResultFlagBits::e64) | VkFlags(QueryResultFlagBits::eWait) | VkFlags(QueryResultFlagBits::eWithAvailability) | VkFlags(QueryResultFlagBits::ePartial)
     };
@@ -11253,7 +11253,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<QueueFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(QueueFlagBits::eGraphics) | VkFlags(QueueFlagBits::eCompute) | VkFlags(QueueFlagBits::eTransfer) | VkFlags(QueueFlagBits::eSparseBinding) | VkFlags(QueueFlagBits::eProtected)
     };
@@ -11303,7 +11303,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<ResolveModeFlagBitsKHR>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(ResolveModeFlagBitsKHR::eNone) | VkFlags(ResolveModeFlagBitsKHR::eSampleZero) | VkFlags(ResolveModeFlagBitsKHR::eAverage) | VkFlags(ResolveModeFlagBitsKHR::eMin) | VkFlags(ResolveModeFlagBitsKHR::eMax)
     };
@@ -11345,7 +11345,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<SampleCountFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(SampleCountFlagBits::e1) | VkFlags(SampleCountFlagBits::e2) | VkFlags(SampleCountFlagBits::e4) | VkFlags(SampleCountFlagBits::e8) | VkFlags(SampleCountFlagBits::e16) | VkFlags(SampleCountFlagBits::e32) | VkFlags(SampleCountFlagBits::e64)
     };
@@ -11390,7 +11390,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<SamplerCreateFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(SamplerCreateFlagBits::eSubsampledEXT) | VkFlags(SamplerCreateFlagBits::eSubsampledCoarseReconstructionEXT)
     };
@@ -11437,7 +11437,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<SemaphoreImportFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(SemaphoreImportFlagBits::eTemporary)
     };
@@ -11478,7 +11478,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<SemaphoreWaitFlagBitsKHR>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(SemaphoreWaitFlagBitsKHR::eAny)
     };
@@ -11531,7 +11531,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<ShaderStageFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(ShaderStageFlagBits::eVertex) | VkFlags(ShaderStageFlagBits::eTessellationControl) | VkFlags(ShaderStageFlagBits::eTessellationEvaluation) | VkFlags(ShaderStageFlagBits::eGeometry) | VkFlags(ShaderStageFlagBits::eFragment) | VkFlags(ShaderStageFlagBits::eCompute) | VkFlags(ShaderStageFlagBits::eAllGraphics) | VkFlags(ShaderStageFlagBits::eAll) | VkFlags(ShaderStageFlagBits::eRaygenNV) | VkFlags(ShaderStageFlagBits::eAnyHitNV) | VkFlags(ShaderStageFlagBits::eClosestHitNV) | VkFlags(ShaderStageFlagBits::eMissNV) | VkFlags(ShaderStageFlagBits::eIntersectionNV) | VkFlags(ShaderStageFlagBits::eCallableNV) | VkFlags(ShaderStageFlagBits::eTaskNV) | VkFlags(ShaderStageFlagBits::eMeshNV)
     };
@@ -11583,7 +11583,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<SparseImageFormatFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(SparseImageFormatFlagBits::eSingleMiptail) | VkFlags(SparseImageFormatFlagBits::eAlignedMipSize) | VkFlags(SparseImageFormatFlagBits::eNonstandardBlockSize)
     };
@@ -11624,7 +11624,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<SparseMemoryBindFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(SparseMemoryBindFlagBits::eMetadata)
     };
@@ -11663,7 +11663,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<StencilFaceFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(StencilFaceFlagBits::eFront) | VkFlags(StencilFaceFlagBits::eBack) | VkFlags(StencilFaceFlagBits::eFrontAndBack)
     };
@@ -11720,7 +11720,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<SubgroupFeatureFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(SubgroupFeatureFlagBits::eBasic) | VkFlags(SubgroupFeatureFlagBits::eVote) | VkFlags(SubgroupFeatureFlagBits::eArithmetic) | VkFlags(SubgroupFeatureFlagBits::eBallot) | VkFlags(SubgroupFeatureFlagBits::eShuffle) | VkFlags(SubgroupFeatureFlagBits::eShuffleRelative) | VkFlags(SubgroupFeatureFlagBits::eClustered) | VkFlags(SubgroupFeatureFlagBits::eQuad) | VkFlags(SubgroupFeatureFlagBits::ePartitionedNV)
     };
@@ -11767,7 +11767,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<SubpassDescriptionFlagBits>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(SubpassDescriptionFlagBits::ePerViewAttributesNVX) | VkFlags(SubpassDescriptionFlagBits::ePerViewPositionXOnlyNVX)
     };
@@ -11807,7 +11807,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<SurfaceCounterFlagBitsEXT>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(SurfaceCounterFlagBitsEXT::eVblank)
     };
@@ -11846,7 +11846,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<SurfaceTransformFlagBitsKHR>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(SurfaceTransformFlagBitsKHR::eIdentity) | VkFlags(SurfaceTransformFlagBitsKHR::eRotate90) | VkFlags(SurfaceTransformFlagBitsKHR::eRotate180) | VkFlags(SurfaceTransformFlagBitsKHR::eRotate270) | VkFlags(SurfaceTransformFlagBitsKHR::eHorizontalMirror) | VkFlags(SurfaceTransformFlagBitsKHR::eHorizontalMirrorRotate90) | VkFlags(SurfaceTransformFlagBitsKHR::eHorizontalMirrorRotate180) | VkFlags(SurfaceTransformFlagBitsKHR::eHorizontalMirrorRotate270) | VkFlags(SurfaceTransformFlagBitsKHR::eInherit)
     };
@@ -11893,7 +11893,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<SwapchainCreateFlagBitsKHR>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(SwapchainCreateFlagBitsKHR::eSplitInstanceBindRegions) | VkFlags(SwapchainCreateFlagBitsKHR::eProtected) | VkFlags(SwapchainCreateFlagBitsKHR::eMutableFormat)
     };
@@ -11934,7 +11934,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <> struct FlagTraits<ToolPurposeFlagBitsEXT>
   {
-    enum
+    enum : VkFlags
     {
       allFlags = VkFlags(ToolPurposeFlagBitsEXT::eValidation) | VkFlags(ToolPurposeFlagBitsEXT::eProfiling) | VkFlags(ToolPurposeFlagBitsEXT::eTracing) | VkFlags(ToolPurposeFlagBitsEXT::eAdditionalFeatures) | VkFlags(ToolPurposeFlagBitsEXT::eModifyingFeatures) | VkFlags(ToolPurposeFlagBitsEXT::eDebugReporting) | VkFlags(ToolPurposeFlagBitsEXT::eDebugMarkers)
     };

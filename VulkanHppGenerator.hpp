@@ -337,6 +337,7 @@ class VulkanHppGenerator
     std::map<std::string, BitmaskData>      m_bitmasks;
     std::map<std::string, std::string>      m_commandToHandle;
     std::set<std::string>                   m_constants;
+    std::set<std::string>                   m_defines;
     std::map<std::string, EnumData>         m_enums;
     std::set<std::string>                   m_extendedStructs; // structs which are referenced by the structextends tag
     std::map<std::string, ExtensionData>    m_extensions;

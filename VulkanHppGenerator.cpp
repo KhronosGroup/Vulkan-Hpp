@@ -196,7 +196,7 @@ void checkAttributes(int line, std::map<std::string, std::string> const& attribu
         std::vector<std::string> values = tokenize(a.second, ',');
         for (auto const& v : values)
         {
-          check(optionalIt->second.find(v) != optionalIt->second.end(), line, "unexpected attribute value <" + v + "> in attribute <" + a.first + ">");
+          warn(optionalIt->second.find(v) != optionalIt->second.end(), line, "unexpected attribute value <" + v + "> in attribute <" + a.first + ">");
         }
       }
     }
@@ -4010,21 +4010,33 @@ std::string VulkanHppGenerator::readComment(tinyxml2::XMLElement const* element)
 void VulkanHppGenerator::readDefine(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes)
 {
   int line = element->GetLineNum();
-  checkAttributes(line, attributes, { { "category",{ "define" } } }, { { "name",{} } });
+  checkAttributes(line, attributes, { { "category",{ "define" } } }, { { "name",{} }, { "requires", {} } });
 
-  auto nameIt = attributes.find("name");
-  if (nameIt != attributes.end())
+  std::string name;
+  for (auto const& attribute : attributes)
   {
-    check(!element->FirstChildElement(), line, "unknown formatting of type category=define name <" + nameIt->second + ">");
-    check(nameIt->second == "VK_DEFINE_NON_DISPATCHABLE_HANDLE", line, "unknown type category=define name <" + nameIt->second + ">");
-    check(element->LastChild() && element->LastChild()->ToText() && element->LastChild()->ToText()->Value(), line, "unknown formatting of type category=define named <" + nameIt->second + ">");
+    if (attribute.first == "name")
+    {
+      name = attribute.second;
+    }
+    else if (attribute.first == "requires")
+    {
+      check(m_defines.find(attribute.second) != m_defines.end(), line, "using undefined requires <" + attribute.second + ">");
+    }
+  }
+
+  if (!name.empty())
+  {
+    check(!element->FirstChildElement(), line, "unknown formatting of type category=define name <" + name + ">");
+    check(name == "VK_DEFINE_NON_DISPATCHABLE_HANDLE", line, "unknown type category=define name <" + name + ">");
+    check(element->LastChild() && element->LastChild()->ToText() && element->LastChild()->ToText()->Value(), line, "unknown formatting of type category=define named <" + name + ">");
 
     // filter out the check for the different types of VK_DEFINE_NON_DISPATCHABLE_HANDLE
     std::string text = element->LastChild()->ToText()->Value();
     size_t start = text.find("#if defined(__LP64__)");
-    check(start != std::string::npos, line, "unexpected text in type category=define named <" + nameIt->second + ">");
+    check(start != std::string::npos, line, "unexpected text in type category=define named <" + name + ">");
     size_t end = text.find_first_of("\r\n", start + 1);
-    check(end != std::string::npos, line, "unexpected text in type category=define named <" + nameIt->second + ">");
+    check(end != std::string::npos, line, "unexpected text in type category=define named <" + name + ">");
     m_typesafeCheck = text.substr(start, end - start);
   }
   else if (element->GetText())
@@ -4035,15 +4047,15 @@ void VulkanHppGenerator::readDefine(tinyxml2::XMLElement const* element, std::ma
       // here are a couple of structs as defines, which really are types!
       tinyxml2::XMLElement const* child = element->FirstChildElement();
       check(child && (strcmp(child->Value(), "name") == 0) && child->GetText(), line, "unexpected formatting of type category=define");
-      text = child->GetText();
-      check(m_types.insert(text).second, line, "type <" + text + "> has already been speficied");
+      name = child->GetText();
+      check(m_types.insert(name).second, line, "type <" + name + "> has already been speficied");
     }
     else
     {
       tinyxml2::XMLElement const* child = element->FirstChildElement();
       check(child && !child->FirstAttribute() && (strcmp(child->Value(), "name") == 0) && child->GetText(), line, "unknown formatting of type category define");
-      text = trim(child->GetText());
-      if (text == "VK_HEADER_VERSION")
+      name = trim(child->GetText());
+      if (name == "VK_HEADER_VERSION")
       {
         m_version = trimEnd(element->LastChild()->ToText()->Value());
       }
@@ -4051,6 +4063,9 @@ void VulkanHppGenerator::readDefine(tinyxml2::XMLElement const* element, std::ma
       warn(!child->NextSiblingElement() || (child->NextSiblingElement() && !child->NextSiblingElement()->FirstAttribute() && (strcmp(child->NextSiblingElement()->Value(), "type") == 0) && !child->NextSiblingElement()->NextSiblingElement()), line, "unknown formatting of type category define");
     }
   }
+
+  assert(!name.empty());
+  check(m_defines.insert(name).second, line, "define <" + name + "> has already been specified");
 }
 
 void VulkanHppGenerator::readEnum(tinyxml2::XMLElement const* element, EnumData & enumData, bool bitmask, std::string const& prefix, std::string const& postfix)
@@ -4257,6 +4272,7 @@ void VulkanHppGenerator::readExtension(tinyxml2::XMLElement const* element)
     { "provisional", { "true" } },
     { "requires",{} },
     { "requiresCore",{} },
+    { "specialuse", { "cadsupport", "d3demulation", "debugging", "devtools", "glemulation"} },
     { "type",{ "device", "instance" } }
   });
   std::vector<tinyxml2::XMLElement const*> children = getChildElements(element);

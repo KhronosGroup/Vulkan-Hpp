@@ -1491,12 +1491,12 @@ void VulkanHppGenerator::appendEnumInitializer(std::string& str, TypeData const&
     assert(arraySizes.size() == 1);
     int count = std::stoi(arraySizes[0]);
     assert(1 < count);
-    str += "{ " + value;
+    str += "{ { " + value;
     for (int i = 1; i < count; i++)
     {
       str += ", " + value;
     }
-    str += " }";
+    str += " } }";
   }
 }
 

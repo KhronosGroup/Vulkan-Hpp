@@ -1477,7 +1477,7 @@ void VulkanHppGenerator::appendEnums(std::string & str) const
   }
 }
 
-void VulkanHppGenerator::appendEnumInitializer(std::string& str, TypeData const& type, std::vector<std::string> const& arraySizes, std::vector<EnumValueData> const& values) const
+void VulkanHppGenerator::appendEnumInitializer(std::string& str, TypeData const& type, std::vector<std::string> const& arraySizes, std::vector<EnumValueData> const& values, bool argument) const
 {
   // enum arguments might need special initialization
   assert(type.prefix.empty() && !values.empty());
@@ -1491,12 +1491,13 @@ void VulkanHppGenerator::appendEnumInitializer(std::string& str, TypeData const&
     assert(arraySizes.size() == 1);
     int count = std::stoi(arraySizes[0]);
     assert(1 < count);
-    str += "{ { " + value;
+    str += argument ? "{ { " : "{ ";    // for function arguments, we need two braces, for default initializers just one
+    str += value;
     for (int i = 1; i < count; i++)
     {
       str += ", " + value;
     }
-    str += " } }";
+    str += argument ? " } }" : " }";
   }
 }
 
@@ -2938,7 +2939,7 @@ bool VulkanHppGenerator::appendStructConstructorArgument(std::string & str, bool
     auto enumIt = m_enums.find(memberData.type.type);
     if (enumIt != m_enums.end() && memberData.type.postfix.empty())
     {
-      appendEnumInitializer(str, memberData.type, memberData.arraySizes, enumIt->second.values);
+      appendEnumInitializer(str, memberData.type, memberData.arraySizes, enumIt->second.values, true);
     }
     else
     {
@@ -3018,7 +3019,7 @@ void VulkanHppGenerator::appendStructMembers(std::string & str, std::pair<std::s
         auto enumIt = m_enums.find(member.type.type);
         if (enumIt != m_enums.end() && member.type.postfix.empty())
         {
-          appendEnumInitializer(str, member.type, member.arraySizes, enumIt->second.values);
+          appendEnumInitializer(str, member.type, member.arraySizes, enumIt->second.values, false);
         }
         else
         {

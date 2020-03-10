@@ -1477,6 +1477,29 @@ void VulkanHppGenerator::appendEnums(std::string & str) const
   }
 }
 
+void VulkanHppGenerator::appendEnumInitializer(std::string& str, TypeData const& type, std::vector<std::string> const& arraySizes, std::vector<EnumValueData> const& values) const
+{
+  // enum arguments might need special initialization
+  assert(type.prefix.empty() && !values.empty());
+  std::string value = "VULKAN_HPP_NAMESPACE::" + stripPrefix(type.type, "Vk") + "::" + values.front().vkValue;
+  if (arraySizes.empty())
+  {
+    str += value;
+  }
+  else
+  {
+    assert(arraySizes.size() == 1);
+    int count = std::stoi(arraySizes[0]);
+    assert(1 < count);
+    str += "{ " + value;
+    for (int i = 1; i < count; i++)
+    {
+      str += ", " + value;
+    }
+    str += " }";
+  }
+}
+
 void VulkanHppGenerator::appendEnumToString(std::string & str, std::pair<std::string, EnumData> const& enumData) const
 {
   std::string enumName = stripPrefix(enumData.first, "Vk");
@@ -2915,9 +2938,7 @@ bool VulkanHppGenerator::appendStructConstructorArgument(std::string & str, bool
     auto enumIt = m_enums.find(memberData.type.type);
     if (enumIt != m_enums.end() && memberData.type.postfix.empty())
     {
-      // enum arguments might need special initialization
-      assert(memberData.type.prefix.empty() && memberData.arraySizes.empty() && !enumIt->second.values.empty());
-      str += "VULKAN_HPP_NAMESPACE::" + stripPrefix(memberData.type.type, "Vk") + "::" + enumIt->second.values.front().vkValue;
+      appendEnumInitializer(str, memberData.type, memberData.arraySizes, enumIt->second.values);
     }
     else
     {
@@ -2993,16 +3014,15 @@ void VulkanHppGenerator::appendStructMembers(std::string & str, std::pair<std::s
       }
       else
       {
+        str += constructCArraySizes(member.arraySizes) + " = ";
         auto enumIt = m_enums.find(member.type.type);
         if (enumIt != m_enums.end() && member.type.postfix.empty())
         {
-          // enum arguments might need special initialization
-          assert(member.type.prefix.empty() && member.arraySizes.empty() && !enumIt->second.values.empty());
-          str += " = VULKAN_HPP_NAMESPACE::" + stripPrefix(member.type.type, "Vk") + "::" + enumIt->second.values.front().vkValue;
+          appendEnumInitializer(str, member.type, member.arraySizes, enumIt->second.values);
         }
         else
         {
-          str += constructCArraySizes(member.arraySizes) + " = {}";
+          str += "{}";
         }
       }
     }

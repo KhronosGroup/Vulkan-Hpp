@@ -240,7 +240,7 @@ class VulkanHppGenerator
     void appendFunctionBodyEnhancedVectorOfStructureChain(std::string & str, std::string const& indentation, std::pair<std::string,CommandData> const& commandData, size_t returnParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool withAllocator) const;
     void appendFunctionBodyEnhancedVectorOfUniqueHandles(std::string & str, std::string const& indentation, std::string const& commandName, std::pair<std::string, CommandData> const& commandData, size_t returnParamIndex, size_t templateParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool twoStep, bool singular, bool withAllocator) const;
     void appendFunctionBodyStandard(std::string & str, std::string const& indentation, std::pair<std::string, CommandData> const& commandData) const;
-    void appendFunctionBodyStandardArgument(std::string & str, TypeData const& typeData, std::string const& name) const;
+    void appendFunctionBodyStandardArgument(std::string & str, TypeData const& typeData, std::string const& name, std::vector<std::string> const& arraySizes) const;
     bool appendFunctionHeaderArgumentEnhanced(std::string & str, ParamData const& param, size_t paramIndex, std::map<size_t, size_t> const& vectorParamIndices, bool skip, bool argEncountered, bool isTemplateParam, bool isLastArgument, bool singular, bool withDefaults, bool withAllocator) const;
     void appendFunctionHeaderArgumentEnhancedPointer(std::string & str, ParamData const& param, std::string const& strippedParameterName, bool withDefaults, bool withAllocator) const;
     void appendFunctionHeaderArgumentEnhancedSimple(std::string & str, ParamData const& param, bool lastArgument, bool withDefaults, bool withAllocator) const;

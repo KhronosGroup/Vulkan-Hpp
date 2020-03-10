@@ -3447,6 +3447,9 @@ void VulkanHppGenerator::checkCorrectness()
       check(m_types.find(funcPointer.second.requirements) != m_types.end(), funcPointer.second.xmlLine, "funcpointer requires unknown <" + funcPointer.second.requirements + ">");
     }
   }
+
+  auto structureTypeIt = m_enums.find("VkStructureType");
+  assert(structureTypeIt != m_enums.end());
   for (auto const& structure : m_structures)
   {
     for (auto const& extend : structure.second.structExtends)
@@ -3455,6 +3458,12 @@ void VulkanHppGenerator::checkCorrectness()
     }
     for (auto const& member : structure.second.members)
     {
+      if (!member.values.empty())
+      {
+        assert(member.name == "sType");
+        check(std::find_if(structureTypeIt->second.values.begin(), structureTypeIt->second.values.end(), [&member](auto const& evd) { return member.values == evd.vulkanValue; }) != structureTypeIt->second.values.end(),
+          member.xmlLine, "sType value <" + member.values + "> not listed for VkStructureType");
+      }
       check(m_types.find(member.type.type) != m_types.end(), member.xmlLine, "struct member uses unknown type <" + member.type.type + ">");
       if (!member.usedConstant.empty())
       {

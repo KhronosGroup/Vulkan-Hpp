@@ -796,9 +796,9 @@ void VulkanHppGenerator::appendArgumentVector(std::string & str, size_t paramInd
 void VulkanHppGenerator::appendArgumentVulkanType(std::string & str, ParamData const& paramData) const
 {
   // this parameter is a vulkan type
-  if (!paramData.type.postfix.empty())
+  if (!paramData.type.postfix.empty() || !paramData.arraySizes.empty())
   {
-    assert(paramData.type.postfix.back() == '*');
+    assert((paramData.type.postfix.empty() || (paramData.type.postfix.back() == '*')) && (paramData.arraySizes.empty() || (paramData.arraySizes.size() == 1)));
     // it's a pointer -> needs a reinterpret cast to the vulkan type
     std::string parameterName = startLowerCase(stripPrefix(paramData.name, "p"));
     appendReinterpretCast(str, paramData.type.prefix.find("const") != std::string::npos, paramData.type.type, false);
@@ -811,7 +811,7 @@ void VulkanHppGenerator::appendArgumentVulkanType(std::string & str, ParamData c
     else
     {
       // other parameters can just use the pointer
-      str += "&" + parameterName;
+      str += (paramData.arraySizes.empty() ? "&" : "") + parameterName;
     }
     str += " )";
   }
@@ -2040,25 +2040,25 @@ void VulkanHppGenerator::appendFunctionBodyStandard(std::string & str, std::stri
     {
       str += ", ";
     }
-    appendFunctionBodyStandardArgument(str, commandData.second.params[i].type, commandData.second.params[i].name);
+    appendFunctionBodyStandardArgument(str, commandData.second.params[i].type, commandData.second.params[i].name, commandData.second.params[i].arraySizes);
   }
   str += std::string(" )") + (returnData.first ? " )" : "") + ";\n";
 }
 
-void VulkanHppGenerator::appendFunctionBodyStandardArgument(std::string & str, TypeData const& typeData, std::string const& name) const
+void VulkanHppGenerator::appendFunctionBodyStandardArgument(std::string & str, TypeData const& typeData, std::string const& name, std::vector<std::string> const& arraySizes) const
 {
   if (beginsWith(typeData.type, "Vk"))
   {
     // the parameter is a vulkan type
-    if (!typeData.postfix.empty())
+    if (!typeData.postfix.empty() || !arraySizes.empty())
     {
-      assert(typeData.postfix.back() == '*');
+      assert((typeData.postfix.empty() || (typeData.postfix.back() == '*')) && (arraySizes.empty() || (arraySizes.size() == 1)));
       // it's a pointer -> need to reinterpret_cast it
       appendReinterpretCast(str, typeData.prefix.find("const") == 0, typeData.type, typeData.postfix.find("* const") != std::string::npos);
     }
     else
     {
-      // it's a value -> need to static_cast ist
+      // it's a value -> need to static_cast it
       str += "static_cast<" + typeData.type + ">";
     }
     str += "( " + name + " )";

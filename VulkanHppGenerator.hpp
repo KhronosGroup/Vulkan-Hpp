@@ -92,8 +92,9 @@ class VulkanHppGenerator
 
     struct ParamData
     {
-      ParamData()
+      ParamData(int line)
         : optional(false)
+        , xmlLine(line)
       {}
 
       TypeData                  type;
@@ -101,6 +102,7 @@ class VulkanHppGenerator
       std::vector<std::string>  arraySizes;
       std::string               len;
       bool                      optional;
+      int                       xmlLine;
     };
 
     struct CommandData
@@ -215,6 +217,20 @@ class VulkanHppGenerator
       std::set<std::string>     aliases;
       std::string               subStruct;
       int                       xmlLine;
+    };
+
+    enum class TypeCategory
+    {
+      Bitmask,
+      BaseType,
+      Define,
+      Enum,
+      FuncPointer,
+      Handle,
+      Requires,
+      Struct,
+      Union,
+      Unknown
     };
 
   private:
@@ -332,6 +348,7 @@ class VulkanHppGenerator
     void readTypes(tinyxml2::XMLElement const* element);
     void registerDeleter(std::string const& name, std::pair<std::string, CommandData> const& commandData);
     void setVulkanLicenseHeader(int line, std::string const& comment);
+    std::string toString(TypeCategory category);
 
   private:
     std::map<std::string, BaseTypeData>     m_baseTypes;
@@ -350,7 +367,7 @@ class VulkanHppGenerator
     std::map<std::string, std::string>      m_structureAliases;
     std::map<std::string, StructureData>    m_structures;
     std::set<std::string>                   m_tags;
-    std::set<std::string>                   m_types;
+    std::map<std::string, TypeCategory>     m_types;
     std::string                             m_typesafeCheck;
     std::string                             m_version;
     std::string                             m_vulkanLicenseHeader;

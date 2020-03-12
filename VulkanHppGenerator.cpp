@@ -3500,9 +3500,14 @@ void VulkanHppGenerator::checkCorrectness()
       {
         check(resultCodes.find(sc) != resultCodes.end(), command.second.xmlLine, "command uses unknown success code <" + sc + ">");
       }
-
       // check that functions returning a VkResult specify successcodes
       check((command.second.returnType != "VkResult") || !command.second.successCodes.empty(), command.second.xmlLine, "missing successcodes on command <" + command.first + "> returning VkResult!");
+
+      for (auto const& p : command.second.params)
+      {
+        check(m_types.find(p.type.type) != m_types.end(), p.xmlLine, "comand uses parameter of unknown type <" + p.type.type + ">");
+      }
+      check(m_types.find(command.second.returnType) != m_types.end(), command.second.xmlLine, "command uses unknown return type <" + command.second.returnType + ">");
     }
   }
 }
@@ -3788,7 +3793,7 @@ void VulkanHppGenerator::readBaseType(tinyxml2::XMLElement const* element, std::
   check(typeData.postfix.empty(), line, "unexpected type postfix <" + typeData.postfix + ">");
 
   check(m_baseTypes.insert(std::make_pair(nameData.name, BaseTypeData(typeData.type, line))).second, line, "basetype <" + nameData.name + "> already specified");
-  check(m_types.insert(nameData.name).second, line, "basetype <" + nameData.name + "> already specified as a type");
+  check(m_types.insert(std::make_pair(nameData.name, TypeCategory::BaseType)).second, line, "basetype <" + nameData.name + "> already specified as a type");
 }
 
 void VulkanHppGenerator::readBitmask(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes)
@@ -3827,7 +3832,7 @@ void VulkanHppGenerator::readBitmask(tinyxml2::XMLElement const* element, std::m
     check(m_commandToHandle.find(nameData.name) == m_commandToHandle.end(), line, "command <" + nameData.name + "> already specified");
 
     m_bitmasks.insert(std::make_pair(nameData.name, BitmaskData(requirements, typeData.type, line)));
-    check(m_types.insert(nameData.name).second, line, "bitmask <" + nameData.name + "> already specified as a type");
+    check(m_types.insert(std::make_pair(nameData.name, TypeCategory::Bitmask)).second, line, "bitmask <" + nameData.name + "> already specified as a type");
   }
 }
 
@@ -3854,7 +3859,7 @@ void VulkanHppGenerator::readBitmaskAlias(tinyxml2::XMLElement const* element, s
   check(bitmasksIt != m_bitmasks.end(), line, "missing alias <" + alias + ">.");
   check(bitmasksIt->second.alias.empty(), line, "alias for bitmask <" + bitmasksIt->first + "> already specified as <" + bitmasksIt->second.alias + ">");
   bitmasksIt->second.alias = name;
-  check(m_types.insert(name).second, line, "aliased bitmask <" + name + "> already specified as a type");
+  check(m_types.insert(std::make_pair(name, TypeCategory::Bitmask)).second, line, "aliased bitmask <" + name + "> already specified as a type");
 }
 
 void VulkanHppGenerator::readCommand(tinyxml2::XMLElement const* element)
@@ -3967,7 +3972,7 @@ VulkanHppGenerator::ParamData VulkanHppGenerator::readCommandParam(tinyxml2::XML
   std::map<std::string, std::string> attributes = getAttributes(element);
   checkAttributes(line, attributes, {}, { { "externsync",{} },{ "len",{} },{ "noautovalidity",{ "true" } },{ "optional",{ "false", "true" } } });
 
-  ParamData paramData;
+  ParamData paramData(line);
   for (auto attribute : attributes)
   {
     if (attribute.first == "len")
@@ -4078,7 +4083,7 @@ void VulkanHppGenerator::readDefine(tinyxml2::XMLElement const* element, std::ma
       tinyxml2::XMLElement const* child = element->FirstChildElement();
       check(child && (strcmp(child->Value(), "name") == 0) && child->GetText(), line, "unexpected formatting of type category=define");
       name = child->GetText();
-      check(m_types.insert(name).second, line, "type <" + name + "> has already been speficied");
+      check(m_types.insert(std::make_pair(name, TypeCategory::Define)).second, line, "type <" + name + "> has already been speficied");
     }
     else
     {
@@ -4385,16 +4390,23 @@ void VulkanHppGenerator::readExtensionDisabledCommand(tinyxml2::XMLElement const
   checkElements(line, getChildElements(element), {});
 
   std::string name = attributes.find("name")->second;
-  std::string strippedName = startLowerCase(stripPrefix(name, "vk"));
 
   // first unlink the command from its class
   auto commandToHandleIt = m_commandToHandle.find(name);
   check(commandToHandleIt != m_commandToHandle.end(), line, "try to remove unknown command <" + name + ">");
   auto handlesIt = m_handles.find(m_commandToHandle.find(name)->second);
   check(handlesIt != m_handles.end(), line, "cannot find handle corresponding to command <" + name + ">");
-  auto it = handlesIt->second.commands.find(name);
-  check(it != handlesIt->second.commands.end(), line, "cannot find command <" + name + "> in commands associated with handle <" + handlesIt->first + ">");
-  handlesIt->second.commands.erase(it);
+  auto commandIt = handlesIt->second.commands.find(name);
+  check(commandIt != handlesIt->second.commands.end(), line, "cannot find command <" + name + "> in commands associated with handle <" + handlesIt->first + ">");
+  if (!commandIt->second.aliases.empty())
+  {
+    // if there's an alias of the to-be-removed command, insert that as a new command with the very same CommandData (minus its alias)
+    check(commandIt->second.aliases.size() == 1, line, "try to disable command <" + name + "> with more than one alias -> don't know what to do");
+    std::string aliasName = *commandIt->second.aliases.begin();
+    commandIt->second.aliases.clear();
+    handlesIt->second.commands.insert(std::make_pair(aliasName, commandIt->second));
+  }
+  handlesIt->second.commands.erase(commandIt);
 
   // then remove the command from the command-to-handle map
   m_commandToHandle.erase(commandToHandleIt);
@@ -4466,10 +4478,40 @@ void VulkanHppGenerator::readExtensionDisabledType(tinyxml2::XMLElement const* e
   checkElements(line, getChildElements(element), {});
 
   std::string name = attributes.find("name")->second;
-  std::string strippedName = stripPrefix(name, "Vk");
 
-  // a type simply needs to be removed from the structs, bitmasks, or enums
-  check(m_bitmasks.erase(name) + m_enums.erase(name) + m_structures.erase(name) == 1, line, "element <" + name + "> was removed from more than one set of elements");
+  auto typeIt = m_types.find(name);
+  check(typeIt != m_types.end(), line, "trying to remove unknown type <" + name + ">");
+
+  switch (typeIt->second)
+  {
+  case TypeCategory::Bitmask:
+    {
+      auto bitmasksIt = m_bitmasks.find(name);
+      check(bitmasksIt != m_bitmasks.end(), line, "trying to remove unknown bitmask <" + name + ">");
+      check(bitmasksIt->second.alias.empty(), line, "trying to remove disabled bitmask <" + name + "> which has alias <" + bitmasksIt->second.alias + ">");
+      m_bitmasks.erase(bitmasksIt);
+    }
+    break;
+  case TypeCategory::Enum:
+    {
+      auto enumIt = m_enums.find(name);
+      check(enumIt != m_enums.end(), line, "trying to remove unknown enum <" + name + ">");
+      check(enumIt->second.alias.empty(), line, "trying to remove disabled enum <" + name + "> which has alias <" + enumIt->second.alias + ">");
+      m_enums.erase(enumIt);
+    }
+    break;
+  case TypeCategory::Struct:
+    {
+      auto structIt = m_structures.find(name);
+      check(structIt != m_structures.end(), line, "trying to remove unknown struct <" + name + ">");
+      check(structIt->second.aliases.empty(), line, "trying to remove disabled structure <" + name + "> which has " + std::to_string(structIt->second.aliases.size()) + "aliases");
+      m_structures.erase(structIt);
+    }
+    break;
+  default:
+    check(false, line, "trying to remove <" + name + "> of unhandled type <" + toString(typeIt->second) + ">");
+    break;
+  }
 }
 
 void VulkanHppGenerator::readExtensionRequire(tinyxml2::XMLElement const* element, std::string const& platform, std::string const& tag, std::map<std::string, int> & requirements)
@@ -4548,57 +4590,73 @@ void VulkanHppGenerator::readExtensionRequireType(tinyxml2::XMLElement const* el
   // add the protect-string to the appropriate type: enum, flag, handle, scalar, or struct
   std::string name = attributes.find("name")->second;
 
-  auto handleIt = m_handles.find(name);
-  if (handleIt != m_handles.end())
+  auto typeIt = m_types.find(name);
+  check(typeIt != m_types.end(), line, "failed to find required type <" + name + ">");
+
+  if (typeIt->second == TypeCategory::Handle)
   {
     assert(beginsWith(name, "Vk"));
     auto objectTypeIt = m_enums.find("VkObjectType");
     assert(objectTypeIt != m_enums.end());
-    std::string objectTypeName = "e" + stripPrefix(handleIt->first, "Vk");
-    auto valueIt = std::find_if(objectTypeIt->second.values.begin(), objectTypeIt->second.values.end(), [objectTypeName](EnumValueData const& evd) {return evd.vkValue == objectTypeName; });
-    check(valueIt != objectTypeIt->second.values.end(), line, "missing entry in VkObjectType enum for handle <" + name + ">.");
+    std::string objectTypeName = "e" + stripPrefix(name, "Vk");
+
+    auto handleIt = m_handles.find(name);
+    if (handleIt != m_handles.end())
+    {
+      auto valueIt = std::find_if(objectTypeIt->second.values.begin(), objectTypeIt->second.values.end(), [objectTypeName](EnumValueData const& evd) {return evd.vkValue == objectTypeName; });
+      check(valueIt != objectTypeIt->second.values.end(), line, "missing entry in VkObjectType enum for handle <" + name + ">.");
+    }
+    else
+    {
+      handleIt = std::find_if(m_handles.begin(), m_handles.end(), [name](auto const& h) { return h.second.alias == name; });
+      auto aliasIt = std::find_if(objectTypeIt->second.aliases.begin(), objectTypeIt->second.aliases.end(), [objectTypeName](auto const& alias) { return alias.second == objectTypeName; });
+      check(aliasIt != objectTypeIt->second.aliases.end(), line, "missing alias entry in VkObjectType enum for alias handle <" + name + ">.");
+    }
   }
 
   if (!platform.empty())
   {
-    auto bmit = m_bitmasks.find(name);
-    if (bmit != m_bitmasks.end())
+    switch (typeIt->second)
     {
-      check(bmit->second.platform.empty(), line, "platform already specified for bitmask <" + name + ">");
-      bmit->second.platform = platform;
-      assert((m_enums.find(bmit->second.requirements) == m_enums.end()) || (m_enums.find(bmit->second.requirements)->second.isBitmask));
-    }
-    else
-    {
-      auto eit = m_enums.find(name);
-      if (eit != m_enums.end())
+    case TypeCategory::Bitmask:
       {
-        check(eit->second.platform.empty(), line, "platform already specified for enum <" + name + ">");
-        eit->second.platform = platform;
+        auto bitmaskIt = m_bitmasks.find(name);
+        check(bitmaskIt != m_bitmasks.end(), line, "failed to find required bitmask <" + name + ">");
+        check(bitmaskIt->second.platform.empty(), line, "platform already specified for bitmask <" + name + ">");
+        bitmaskIt->second.platform = platform;
+        assert((m_enums.find(bitmaskIt->second.requirements) == m_enums.end()) || (m_enums.find(bitmaskIt->second.requirements)->second.isBitmask));
       }
-      else
+      break;
+    case TypeCategory::Define:
+      // no need to protect a "defined" type
+      break;
+    case TypeCategory::Enum:
       {
-        auto hit = m_handles.find(name);
-        if (hit != m_handles.end())
-        {
-          check(hit->second.platform.empty(), line, "platform already specified for handle <" + name + ">");
-          hit->second.platform = platform;
-        }
-        else
-        {
-          auto stit = m_structures.find(name);
-          if (stit != m_structures.end())
-          {
-            assert(m_handles.find(name) == m_handles.end());
-            check(stit->second.platform.empty(), line, "platform already specified for structure <" + name + ">");
-            stit->second.platform = platform;
-          }
-          else
-          {
-            assert((m_types.find(name) != m_types.end()));
-          }
-        }
+        auto enumIt = m_enums.find(name);
+        check(enumIt != m_enums.end(), line, "failed to find required enum <" + name + ">");
+        check(enumIt->second.platform.empty(), line, "platform already specified for enum <" + name + ">");
+        enumIt->second.platform = platform;
       }
+      break;
+    case TypeCategory::Handle:
+      {
+        auto handleIt = m_handles.find(name);
+        check(handleIt != m_handles.end(), line, "failed to find required handle <" + name + ">");
+        check(handleIt->second.platform.empty(), line, "platform already specified for handle <" + name + ">");
+        handleIt->second.platform = platform;
+      }
+      break;
+    case TypeCategory::Struct:
+      {
+        auto structIt = m_structures.find(name);
+        check(structIt != m_structures.end(), line, "failed to find required struct <" + name + ">");
+        check(structIt->second.platform.empty(), line, "platform already specified for structure <" + name + ">");
+        structIt->second.platform = platform;
+      }
+      break;
+    default:
+      check(false, line, "trying to protect <" + name + "> of unhandled type <" + toString(typeIt->second) + ">");
+      break;
     }
   }
 }
@@ -4702,7 +4760,7 @@ void VulkanHppGenerator::readFuncpointer(tinyxml2::XMLElement const* element, st
       std::string name = child->GetText();
       check(!name.empty(), childLine, "funcpointer with empty name");
       check(m_funcPointers.insert(std::make_pair(name, FuncPointerData(requirements, line))).second, childLine, "funcpointer <" + name + "> already specified");
-      check(m_types.insert(name).second, childLine, "funcpointer <" + name + "> already specified as a type");
+      check(m_types.insert(std::make_pair(name, TypeCategory::FuncPointer)).second, childLine, "funcpointer <" + name + "> already specified as a type");
     }
     else if (value == "type")
     {
@@ -4727,7 +4785,7 @@ void VulkanHppGenerator::readHandle(tinyxml2::XMLElement const* element, std::ma
     check(handlesIt != m_handles.end(), line, "using unspecified alias <" + aliasIt->second + ">.");
     check(handlesIt->second.alias.empty(), line, "handle <" + handlesIt->first + "> already has an alias <" + handlesIt->second.alias + ">");
     handlesIt->second.alias = attributes.find("name")->second;
-    check(m_types.insert(handlesIt->second.alias).second, line, "handle alias <" + handlesIt->second.alias + "> already specified as a type");
+    check(m_types.insert(std::make_pair(handlesIt->second.alias, TypeCategory::Handle)).second, line, "handle alias <" + handlesIt->second.alias + "> already specified as a type");
   }
   else
   {
@@ -4755,7 +4813,7 @@ void VulkanHppGenerator::readHandle(tinyxml2::XMLElement const* element, std::ma
     check(typeData.postfix == "(", line, "unexpected type postfix <" + typeData.postfix + ">");
 
     check(m_handles.insert(std::make_pair(nameData.name, HandleData(tokenize(parent, ','), line))).second, line, "handle <" + nameData.name + "> already specified");
-    check(m_types.insert(nameData.name).second, line, "handle <" + nameData.name + "> already specified as a type");
+    check(m_types.insert(std::make_pair(nameData.name, TypeCategory::Handle)).second, line, "handle <" + nameData.name + "> already specified as a type");
   }
 }
 
@@ -5019,7 +5077,7 @@ void VulkanHppGenerator::readRequires(tinyxml2::XMLElement const* element, std::
   {
     if (attribute.first == "name")
     {
-      check(m_types.insert(attribute.second).second, line, "type named <" + attribute.second + "> already specified");
+      check(m_types.insert(std::make_pair(attribute.second, TypeCategory::Requires)).second, line, "type named <" + attribute.second + "> already specified");
     }
     else
     {
@@ -5059,12 +5117,16 @@ void VulkanHppGenerator::readStruct(tinyxml2::XMLElement const* element, bool is
     std::vector<tinyxml2::XMLElement const*> children = getChildElements(element);
     checkElements(line, children, {}, { "member", "comment" });
 
-    std::string name;
+    std::string category, name;
     std::vector<std::string>  structExtends;
     bool returnedOnly = false;
     for (auto const& attribute : attributes)
     {
-      if (attribute.first == "name")
+      if (attribute.first == "category")
+      {
+        category = attribute.second;
+      }
+      else if (attribute.first == "name")
       {
         name = attribute.second;
       }
@@ -5100,7 +5162,7 @@ void VulkanHppGenerator::readStruct(tinyxml2::XMLElement const* element, bool is
     it->second.subStruct = determineSubStruct(*it);
 
     m_extendedStructs.insert(structExtends.begin(), structExtends.end());
-    check(m_types.insert(name).second, line, "struct <" + name + "> already specified as a type");    // log type and alias in m_types
+    check(m_types.insert(std::make_pair(name, (category == "struct") ? TypeCategory::Struct : TypeCategory::Union)).second, line, "struct <" + name + "> already specified as a type");    // log type and alias in m_types
   }
 }
 
@@ -5128,7 +5190,7 @@ void VulkanHppGenerator::readStructAlias(tinyxml2::XMLElement const* element, st
   check(structIt != m_structures.end(), line, "missing alias <" + alias + ">.");
   check(structIt->second.aliases.insert(name).second, line, "struct <" + alias + "> already uses alias <" + name + ">");
   check(m_structureAliases.insert(std::make_pair(name, alias)).second, line, "structure alias <" + name + "> already used");
-  check(m_types.insert(name).second, line, "struct <" + name + "> already specified as a type");
+  check(m_types.insert(std::make_pair(name, TypeCategory::Struct)).second, line, "struct <" + name + "> already specified as a type");
 }
 
 void VulkanHppGenerator::readStructMember(tinyxml2::XMLElement const* element, std::vector<MemberData> & members)
@@ -5304,7 +5366,7 @@ void VulkanHppGenerator::readType(tinyxml2::XMLElement const* element)
     else
     {
       check((attributes.size() == 1) && (attributes.begin()->first == "name") && (attributes.begin()->second == "int"), line, "unknown type");
-      check(m_types.insert(attributes.begin()->second).second, line, "type <" + attributes.begin()->second + "> already specified");
+      check(m_types.insert(std::make_pair(attributes.begin()->second, TypeCategory::Unknown)).second, line, "type <" + attributes.begin()->second + "> already specified");
     }
   }
 }
@@ -5343,7 +5405,7 @@ void VulkanHppGenerator::readTypeEnum(tinyxml2::XMLElement const* element, std::
     check(enumIt->second.alias.empty(), line, "enum <" + enumIt->first + "> already has an alias <" + enumIt->second.alias + ">");
     enumIt->second.alias = name;
   }
-  check(m_types.insert(name).second, line, "enum <" + name + "> already specified as a type");
+  check(m_types.insert(std::make_pair(name, TypeCategory::Enum)).second, line, "enum <" + name + "> already specified as a type");
 }
 
 void VulkanHppGenerator::readTypeInclude(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes)
@@ -5427,6 +5489,27 @@ void VulkanHppGenerator::setVulkanLicenseHeader(int line, std::string const& com
   m_vulkanLicenseHeader += "\n\n// This header is generated from the Khronos Vulkan XML API Registry.";
   m_vulkanLicenseHeader = trim(m_vulkanLicenseHeader) + "\n";
 }
+
+std::string VulkanHppGenerator::toString(TypeCategory category)
+{
+  switch (category)
+  {
+  case TypeCategory::Bitmask: return "bitmask";
+  case TypeCategory::BaseType: return "basetype";
+  case TypeCategory::Define: return "define";
+  case TypeCategory::Enum: return "enum";
+  case TypeCategory::FuncPointer: return "funcpointer";
+  case TypeCategory::Handle: return "handle";
+  case TypeCategory::Requires: return "requires";
+  case TypeCategory::Struct: return "struct";
+  case TypeCategory::Union: return "union";
+  case TypeCategory::Unknown: return "unkown";
+  default:
+    assert(false);
+    return "";
+  }
+}
+
 
 std::string VulkanHppGenerator::TypeData::compose() const
 {

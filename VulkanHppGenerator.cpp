@@ -4647,6 +4647,7 @@ void VulkanHppGenerator::readExtensionRequireType(tinyxml2::XMLElement const* el
       }
       break;
     case TypeCategory::Struct:
+    case TypeCategory::Union:   // unions are listed together with the structures!
       {
         auto structIt = m_structures.find(name);
         check(structIt != m_structures.end(), line, "failed to find required struct <" + name + ">");

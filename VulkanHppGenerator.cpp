@@ -4307,6 +4307,7 @@ void VulkanHppGenerator::readExtension(tinyxml2::XMLElement const* element)
     { "provisional", { "true" } },
     { "requires",{} },
     { "requiresCore",{} },
+    { "sortorder", { "1" } },
     { "specialuse", { "cadsupport", "d3demulation", "debugging", "devtools", "glemulation"} },
     { "type",{ "device", "instance" } }
   });

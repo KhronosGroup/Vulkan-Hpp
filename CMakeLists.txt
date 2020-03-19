@@ -106,15 +106,20 @@ endif()
 
 option (SAMPLES_BUILD "Build samples" OFF)
 if (SAMPLES_BUILD)
+  # external libraries
+  add_subdirectory(glm)
+  set(GLFW_BUILD_EXAMPLES OFF)
+  set(GLFW_BUILD_TESTS OFF)
   add_subdirectory(glfw)
   add_subdirectory(glslang)
+  # samples
   add_subdirectory(samples)
-endif (SAMPLES_BUILD)
+endif ()
 
 option (TESTS_BUILD "Build tests" OFF)
 if (TESTS_BUILD)
   add_subdirectory(tests)
-endif (TESTS_BUILD)
+endif ()
 
 if (${VULKAN_HPP_INSTALL})
   install(FILES ${vulkan_hpp} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/vulkan)

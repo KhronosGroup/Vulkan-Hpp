@@ -656,7 +656,7 @@ int main(int /*argc*/, char** /*argv*/)
 
     // Create Window Surface (using glfw)
     vk::SurfaceKHR surface;
-    VkResult err = glfwCreateWindowSurface(*instance, window, nullptr, reinterpret_cast<VkSurfaceKHR*>(&surface));
+    VkResult err = glfwCreateWindowSurface(VkInstance(*instance), window, nullptr, reinterpret_cast<VkSurfaceKHR*>(&surface));
     check_vk_result(err);
 
     std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex(physicalDevice, surface);
@@ -1063,7 +1063,7 @@ int main(int /*argc*/, char** /*argv*/)
     // Cleanup
     device->waitIdle();
     swapChainData.swapChain.reset();    // need to reset swapChain before destroying the surface !
-    VULKAN_HPP_DEFAULT_DISPATCHER.vkDestroySurfaceKHR(*instance, surface, nullptr);
+    VULKAN_HPP_DEFAULT_DISPATCHER.vkDestroySurfaceKHR(VkInstance(*instance), VkSurfaceKHR(surface), nullptr);
     glfwDestroyWindow(window);
     glfwTerminate();
   }

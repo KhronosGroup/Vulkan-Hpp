@@ -5650,7 +5650,10 @@ int main(int argc, char **argv)
   class Flags
   {
   public:
-    using MaskType = typename std::underlying_type<BitType>::type;
+    // flag bit type
+    using bit_type  = BitType;
+    // underlying type
+    using mask_type = typename std::underlying_type<BitType>::type;
 
     // constructors
     VULKAN_HPP_CONSTEXPR Flags() VULKAN_HPP_NOEXCEPT
@@ -5658,14 +5661,14 @@ int main(int argc, char **argv)
     {}
 
     VULKAN_HPP_CONSTEXPR Flags(BitType bit) VULKAN_HPP_NOEXCEPT
-      : m_mask(static_cast<MaskType>(bit))
+      : m_mask(static_cast<mask_type>(bit))
     {}
 
     VULKAN_HPP_CONSTEXPR Flags(Flags<BitType> const& rhs) VULKAN_HPP_NOEXCEPT
       : m_mask(rhs.m_mask)
     {}
 
-    VULKAN_HPP_CONSTEXPR explicit Flags(MaskType flags) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR explicit Flags(mask_type flags) VULKAN_HPP_NOEXCEPT
       : m_mask(flags)
     {}
 
@@ -5762,13 +5765,13 @@ int main(int argc, char **argv)
       return !!m_mask;
     }
 
-    explicit VULKAN_HPP_CONSTEXPR operator MaskType() const VULKAN_HPP_NOEXCEPT
+    explicit VULKAN_HPP_CONSTEXPR operator mask_type() const VULKAN_HPP_NOEXCEPT
     {
         return m_mask;
     }
 
   private:
-    MaskType  m_mask;
+    mask_type  m_mask;
   };
 
 #if !defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)

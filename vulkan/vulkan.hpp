@@ -271,6 +271,91 @@ namespace VULKAN_HPP_NAMESPACE
   };
 #endif
 
+  template <typename T, size_t N>
+  class ArrayWrapper1D : public std::array<T,N>
+  {
+  public:
+    VULKAN_HPP_CONSTEXPR ArrayWrapper1D() VULKAN_HPP_NOEXCEPT
+      : std::array<T, N>()
+    {}
+
+    VULKAN_HPP_CONSTEXPR ArrayWrapper1D(std::array<T,N> const& data) VULKAN_HPP_NOEXCEPT
+      : std::array<T, N>(data)
+    {}
+
+#if defined(_WIN32) && !defined(_WIN64)
+    VULKAN_HPP_CONSTEXPR T const& operator[](int index) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::array<T, N>::operator[](index);
+    }
+
+    VULKAN_HPP_CONSTEXPR T & operator[](int index) VULKAN_HPP_NOEXCEPT
+    {
+      return std::array<T, N>::operator[](index);
+    }
+#endif
+
+    operator T const* () const VULKAN_HPP_NOEXCEPT
+    {
+      return this->data();
+    }
+
+    operator T * () VULKAN_HPP_NOEXCEPT
+    {
+      return this->data();
+    }
+  };
+
+  // specialization of relational operators between std::string and arrays of chars
+  template <size_t N>
+  bool operator<(std::string const& lhs, ArrayWrapper1D<char, N> const& rhs) VULKAN_HPP_NOEXCEPT
+  {
+    return lhs < rhs.data();
+  }
+
+  template <size_t N>
+  bool operator<=(std::string const& lhs, ArrayWrapper1D<char, N> const& rhs) VULKAN_HPP_NOEXCEPT
+  {
+    return lhs <= rhs.data();
+  }
+
+  template <size_t N>
+  bool operator>(std::string const& lhs, ArrayWrapper1D<char, N> const& rhs) VULKAN_HPP_NOEXCEPT
+  {
+    return lhs > rhs.data();
+  }
+
+  template <size_t N>
+  bool operator>=(std::string const& lhs, ArrayWrapper1D<char, N> const& rhs) VULKAN_HPP_NOEXCEPT
+  {
+    return lhs >= rhs.data();
+  }
+
+  template <size_t N>
+  bool operator==(std::string const& lhs, ArrayWrapper1D<char, N> const& rhs) VULKAN_HPP_NOEXCEPT
+  {
+    return lhs == rhs.data();
+  }
+
+  template <size_t N>
+  bool operator!=(std::string const& lhs, ArrayWrapper1D<char, N> const& rhs) VULKAN_HPP_NOEXCEPT
+  {
+    return lhs != rhs.data();
+  }
+
+  template <typename T, size_t N, size_t M>
+  class ArrayWrapper2D : public std::array<ArrayWrapper1D<T,M>,N>
+  {
+  public:
+    VULKAN_HPP_CONSTEXPR ArrayWrapper2D() VULKAN_HPP_NOEXCEPT
+      : std::array<ArrayWrapper1D<T,M>, N>()
+    {}
+
+    VULKAN_HPP_CONSTEXPR ArrayWrapper2D(std::array<std::array<T,M>,N> const& data) VULKAN_HPP_NOEXCEPT
+      : std::array<ArrayWrapper1D<T,M>, N>(*reinterpret_cast<std::array<ArrayWrapper1D<T,M>,N> const*>(&data))
+    {}
+  };
+
   template <typename FlagBitsType> struct FlagTraits
   {
     enum { allFlags = 0 };
@@ -3115,88 +3200,6 @@ namespace VULKAN_HPP_NAMESPACE
       OwnerType m_owner;
       PoolType m_pool;
       Dispatch const* m_dispatch;
-  };
-
-  template<typename T, size_t N, size_t I>
-  class PrivateConstExpression1DArrayCopy
-  {
-  public:
-    VULKAN_HPP_CONSTEXPR_14 static void copy( T * dst, T const* src ) VULKAN_HPP_NOEXCEPT
-    {
-      PrivateConstExpression1DArrayCopy<T, N, I - 1>::copy( dst, src );
-      dst[I - 1] = src[I - 1];
-    }
-  };
-
-  template<typename T, size_t N>
-  class PrivateConstExpression1DArrayCopy<T, N, 0>
-  {
-  public:
-    VULKAN_HPP_CONSTEXPR_14 static void copy( T * /*dst*/, T const* /*src*/ ) VULKAN_HPP_NOEXCEPT
-    {}
-  };
-
-  template <typename T, size_t N>
-  class ConstExpression1DArrayCopy
-  {
-  public:
-    VULKAN_HPP_CONSTEXPR_14 static void copy( T dst[N], const T src[N] ) VULKAN_HPP_NOEXCEPT
-    {
-      const size_t C = N / 2;
-      PrivateConstExpression1DArrayCopy<T, C, C>::copy( dst, src );
-      PrivateConstExpression1DArrayCopy<T, N - C, N - C>::copy(dst + C, src + C);
-    }
-
-    VULKAN_HPP_CONSTEXPR_14 static void copy( T dst[N], std::array<T, N> const& src ) VULKAN_HPP_NOEXCEPT
-    {
-      const size_t C = N / 2;
-      PrivateConstExpression1DArrayCopy<T, C, C>::copy(dst, src.data());
-      PrivateConstExpression1DArrayCopy<T, N - C, N - C>::copy(dst + C, src.data() + C);
-    }
-  };
-
-  template<typename T, size_t N, size_t M, size_t I, size_t J>
-  class PrivateConstExpression2DArrayCopy
-  {
-  public:
-    VULKAN_HPP_CONSTEXPR_14 static void copy( T * dst, T const* src ) VULKAN_HPP_NOEXCEPT
-    {
-      PrivateConstExpression2DArrayCopy<T, N, M, I, J - 1>::copy( dst, src );
-      dst[(I - 1) * M + J - 1] = src[(I - 1) * M + J - 1];
-    }
-  };
-
-  template<typename T, size_t N, size_t M, size_t I>
-  class PrivateConstExpression2DArrayCopy<T, N, M, I,0>
-  {
-  public:
-    VULKAN_HPP_CONSTEXPR_14 static void copy( T * dst, T const* src ) VULKAN_HPP_NOEXCEPT
-    {
-      PrivateConstExpression2DArrayCopy<T, N, M, I - 1, M>::copy( dst, src );
-    }
-  };
-
-  template<typename T, size_t N, size_t M, size_t J>
-  class PrivateConstExpression2DArrayCopy<T, N, M, 0, J>
-  {
-  public:
-    VULKAN_HPP_CONSTEXPR_14 static void copy( T * /*dst*/, T const* /*src*/ ) VULKAN_HPP_NOEXCEPT
-    {}
-  };
-
-  template <typename T, size_t N, size_t M>
-  class ConstExpression2DArrayCopy
-  {
-  public:
-    VULKAN_HPP_CONSTEXPR_14 static void copy( T dst[N][M], const T src[N][M] ) VULKAN_HPP_NOEXCEPT
-    {
-      PrivateConstExpression2DArrayCopy<T, N, M, N, M>::copy( &dst[0][0], &src[0][0] );
-    }
-
-    VULKAN_HPP_CONSTEXPR_14 static void copy( T dst[N][M], std::array<std::array<T, M>, N> const& src ) VULKAN_HPP_NOEXCEPT
-    {
-      PrivateConstExpression2DArrayCopy<T, N, M, N, M>::copy( &dst[0][0], src.data()->data() );
-    }
   };
 
   using Bool32 = uint32_t;
@@ -20438,21 +20441,6 @@ namespace VULKAN_HPP_NAMESPACE
       , maxZ( maxZ_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR AabbPositionsKHR( AabbPositionsKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : minX( rhs.minX )
-      , minY( rhs.minY )
-      , minZ( rhs.minZ )
-      , maxX( rhs.maxX )
-      , maxY( rhs.maxY )
-      , maxZ( rhs.maxZ )
-    {}
-
-    AabbPositionsKHR & operator=( AabbPositionsKHR const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( AabbPositionsKHR ) );
-      return *this;
-    }
-
     AabbPositionsKHR( VkAabbPositionsKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -20613,16 +20601,6 @@ namespace VULKAN_HPP_NAMESPACE
       , transformData( transformData_ )
     {}
 
-    AccelerationStructureGeometryTrianglesDataKHR( AccelerationStructureGeometryTrianglesDataKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , vertexFormat( rhs.vertexFormat )
-      , vertexData( rhs.vertexData )
-      , vertexStride( rhs.vertexStride )
-      , indexType( rhs.indexType )
-      , indexData( rhs.indexData )
-      , transformData( rhs.transformData )
-    {}
-
     AccelerationStructureGeometryTrianglesDataKHR & operator=( AccelerationStructureGeometryTrianglesDataKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( AccelerationStructureGeometryTrianglesDataKHR ) - offsetof( AccelerationStructureGeometryTrianglesDataKHR, pNext ) );
@@ -20715,12 +20693,6 @@ namespace VULKAN_HPP_NAMESPACE
       , stride( stride_ )
     {}
 
-    AccelerationStructureGeometryAabbsDataKHR( AccelerationStructureGeometryAabbsDataKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , data( rhs.data )
-      , stride( rhs.stride )
-    {}
-
     AccelerationStructureGeometryAabbsDataKHR & operator=( AccelerationStructureGeometryAabbsDataKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( AccelerationStructureGeometryAabbsDataKHR ) - offsetof( AccelerationStructureGeometryAabbsDataKHR, pNext ) );
@@ -20783,12 +20755,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                    VULKAN_HPP_NAMESPACE::DeviceOrHostAddressConstKHR data_ = {} ) VULKAN_HPP_NOEXCEPT
       : arrayOfPointers( arrayOfPointers_ )
       , data( data_ )
-    {}
-
-    AccelerationStructureGeometryInstancesDataKHR( AccelerationStructureGeometryInstancesDataKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , arrayOfPointers( rhs.arrayOfPointers )
-      , data( rhs.data )
     {}
 
     AccelerationStructureGeometryInstancesDataKHR & operator=( AccelerationStructureGeometryInstancesDataKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -20924,13 +20890,6 @@ namespace VULKAN_HPP_NAMESPACE
       : geometryType( geometryType_ )
       , geometry( geometry_ )
       , flags( flags_ )
-    {}
-
-    AccelerationStructureGeometryKHR( AccelerationStructureGeometryKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , geometryType( rhs.geometryType )
-      , geometry( rhs.geometry )
-      , flags( rhs.flags )
     {}
 
     AccelerationStructureGeometryKHR & operator=( AccelerationStructureGeometryKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -21074,19 +21033,6 @@ namespace VULKAN_HPP_NAMESPACE
       , scratchData( scratchData_ )
     {}
 
-    AccelerationStructureBuildGeometryInfoKHR( AccelerationStructureBuildGeometryInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , type( rhs.type )
-      , flags( rhs.flags )
-      , update( rhs.update )
-      , srcAccelerationStructure( rhs.srcAccelerationStructure )
-      , dstAccelerationStructure( rhs.dstAccelerationStructure )
-      , geometryArrayOfPointers( rhs.geometryArrayOfPointers )
-      , geometryCount( rhs.geometryCount )
-      , ppGeometries( rhs.ppGeometries )
-      , scratchData( rhs.scratchData )
-    {}
-
     AccelerationStructureBuildGeometryInfoKHR & operator=( AccelerationStructureBuildGeometryInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( AccelerationStructureBuildGeometryInfoKHR ) - offsetof( AccelerationStructureBuildGeometryInfoKHR, pNext ) );
@@ -21204,19 +21150,6 @@ namespace VULKAN_HPP_NAMESPACE
       , transformOffset( transformOffset_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR AccelerationStructureBuildOffsetInfoKHR( AccelerationStructureBuildOffsetInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : primitiveCount( rhs.primitiveCount )
-      , primitiveOffset( rhs.primitiveOffset )
-      , firstVertex( rhs.firstVertex )
-      , transformOffset( rhs.transformOffset )
-    {}
-
-    AccelerationStructureBuildOffsetInfoKHR & operator=( AccelerationStructureBuildOffsetInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( AccelerationStructureBuildOffsetInfoKHR ) );
-      return *this;
-    }
-
     AccelerationStructureBuildOffsetInfoKHR( VkAccelerationStructureBuildOffsetInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -21304,16 +21237,6 @@ namespace VULKAN_HPP_NAMESPACE
       , maxVertexCount( maxVertexCount_ )
       , vertexFormat( vertexFormat_ )
       , allowsTransforms( allowsTransforms_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR AccelerationStructureCreateGeometryTypeInfoKHR( AccelerationStructureCreateGeometryTypeInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , geometryType( rhs.geometryType )
-      , maxPrimitiveCount( rhs.maxPrimitiveCount )
-      , indexType( rhs.indexType )
-      , maxVertexCount( rhs.maxVertexCount )
-      , vertexFormat( rhs.vertexFormat )
-      , allowsTransforms( rhs.allowsTransforms )
     {}
 
     AccelerationStructureCreateGeometryTypeInfoKHR & operator=( AccelerationStructureCreateGeometryTypeInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -21435,16 +21358,6 @@ namespace VULKAN_HPP_NAMESPACE
       , maxGeometryCount( maxGeometryCount_ )
       , pGeometryInfos( pGeometryInfos_ )
       , deviceAddress( deviceAddress_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR AccelerationStructureCreateInfoKHR( AccelerationStructureCreateInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , compactedSize( rhs.compactedSize )
-      , type( rhs.type )
-      , flags( rhs.flags )
-      , maxGeometryCount( rhs.maxGeometryCount )
-      , pGeometryInfos( rhs.pGeometryInfos )
-      , deviceAddress( rhs.deviceAddress )
     {}
 
     AccelerationStructureCreateInfoKHR & operator=( AccelerationStructureCreateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -21575,21 +21488,6 @@ namespace VULKAN_HPP_NAMESPACE
       , indexType( indexType_ )
       , transformData( transformData_ )
       , transformOffset( transformOffset_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR GeometryTrianglesNV( GeometryTrianglesNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , vertexData( rhs.vertexData )
-      , vertexOffset( rhs.vertexOffset )
-      , vertexCount( rhs.vertexCount )
-      , vertexStride( rhs.vertexStride )
-      , vertexFormat( rhs.vertexFormat )
-      , indexData( rhs.indexData )
-      , indexOffset( rhs.indexOffset )
-      , indexCount( rhs.indexCount )
-      , indexType( rhs.indexType )
-      , transformData( rhs.transformData )
-      , transformOffset( rhs.transformOffset )
     {}
 
     GeometryTrianglesNV & operator=( GeometryTrianglesNV const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -21747,14 +21645,6 @@ namespace VULKAN_HPP_NAMESPACE
       , offset( offset_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR GeometryAABBNV( GeometryAABBNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , aabbData( rhs.aabbData )
-      , numAABBs( rhs.numAABBs )
-      , stride( rhs.stride )
-      , offset( rhs.offset )
-    {}
-
     GeometryAABBNV & operator=( GeometryAABBNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( GeometryAABBNV ) - offsetof( GeometryAABBNV, pNext ) );
@@ -21850,17 +21740,6 @@ namespace VULKAN_HPP_NAMESPACE
       , aabbs( aabbs_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR GeometryDataNV( GeometryDataNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : triangles( rhs.triangles )
-      , aabbs( rhs.aabbs )
-    {}
-
-    GeometryDataNV & operator=( GeometryDataNV const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( GeometryDataNV ) );
-      return *this;
-    }
-
     GeometryDataNV( VkGeometryDataNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -21924,13 +21803,6 @@ namespace VULKAN_HPP_NAMESPACE
       : geometryType( geometryType_ )
       , geometry( geometry_ )
       , flags( flags_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR GeometryNV( GeometryNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , geometryType( rhs.geometryType )
-      , geometry( rhs.geometry )
-      , flags( rhs.flags )
     {}
 
     GeometryNV & operator=( GeometryNV const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -22024,15 +21896,6 @@ namespace VULKAN_HPP_NAMESPACE
       , instanceCount( instanceCount_ )
       , geometryCount( geometryCount_ )
       , pGeometries( pGeometries_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR AccelerationStructureInfoNV( AccelerationStructureInfoNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , type( rhs.type )
-      , flags( rhs.flags )
-      , instanceCount( rhs.instanceCount )
-      , geometryCount( rhs.geometryCount )
-      , pGeometries( rhs.pGeometries )
     {}
 
     AccelerationStructureInfoNV & operator=( AccelerationStructureInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -22138,12 +22001,6 @@ namespace VULKAN_HPP_NAMESPACE
       , info( info_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR AccelerationStructureCreateInfoNV( AccelerationStructureCreateInfoNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , compactedSize( rhs.compactedSize )
-      , info( rhs.info )
-    {}
-
     AccelerationStructureCreateInfoNV & operator=( AccelerationStructureCreateInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( AccelerationStructureCreateInfoNV ) - offsetof( AccelerationStructureCreateInfoNV, pNext ) );
@@ -22222,11 +22079,6 @@ namespace VULKAN_HPP_NAMESPACE
       : accelerationStructure( accelerationStructure_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR AccelerationStructureDeviceAddressInfoKHR( AccelerationStructureDeviceAddressInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , accelerationStructure( rhs.accelerationStructure )
-    {}
-
     AccelerationStructureDeviceAddressInfoKHR & operator=( AccelerationStructureDeviceAddressInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( AccelerationStructureDeviceAddressInfoKHR ) - offsetof( AccelerationStructureDeviceAddressInfoKHR, pNext ) );
@@ -22294,22 +22146,8 @@ namespace VULKAN_HPP_NAMESPACE
   struct TransformMatrixKHR
   {
     VULKAN_HPP_CONSTEXPR_14 TransformMatrixKHR( std::array<std::array<float,4>,3> const& matrix_ = {} ) VULKAN_HPP_NOEXCEPT
-      : matrix{}
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression2DArrayCopy<float,3,4>::copy( matrix, matrix_ );
-    }
-
-    VULKAN_HPP_CONSTEXPR_14 TransformMatrixKHR( TransformMatrixKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : matrix{}
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression2DArrayCopy<float,3,4>::copy( matrix, rhs.matrix );
-    }
-
-    TransformMatrixKHR & operator=( TransformMatrixKHR const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( TransformMatrixKHR ) );
-      return *this;
-    }
+      : matrix( matrix_ )
+    {}
 
     TransformMatrixKHR( VkTransformMatrixKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -22324,7 +22162,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     TransformMatrixKHR & setMatrix( std::array<std::array<float,4>,3> matrix_ ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( matrix, matrix_.data(), 3 * 4 * sizeof( float ) );
+      matrix = matrix_;
       return *this;
     }
 
@@ -22343,7 +22181,7 @@ namespace VULKAN_HPP_NAMESPACE
 #else
     bool operator==( TransformMatrixKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
-      return ( memcmp( matrix, rhs.matrix, 3 * 4 * sizeof( float ) ) == 0 );
+      return ( matrix == rhs.matrix );
     }
 
     bool operator!=( TransformMatrixKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
@@ -22353,7 +22191,7 @@ namespace VULKAN_HPP_NAMESPACE
 #endif
 
   public:
-    float matrix[3][4] = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper2D<float, 3, 4> matrix = {};
   };
   static_assert( sizeof( TransformMatrixKHR ) == sizeof( VkTransformMatrixKHR ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<TransformMatrixKHR>::value, "struct wrapper is not a standard layout!" );
@@ -22373,21 +22211,6 @@ namespace VULKAN_HPP_NAMESPACE
       , flags( flags_ )
       , accelerationStructureReference( accelerationStructureReference_ )
     {}
-
-    VULKAN_HPP_CONSTEXPR_14 AccelerationStructureInstanceKHR( AccelerationStructureInstanceKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : transform( rhs.transform )
-      , instanceCustomIndex( rhs.instanceCustomIndex )
-      , mask( rhs.mask )
-      , instanceShaderBindingTableRecordOffset( rhs.instanceShaderBindingTableRecordOffset )
-      , flags( rhs.flags )
-      , accelerationStructureReference( rhs.accelerationStructureReference )
-    {}
-
-    AccelerationStructureInstanceKHR & operator=( AccelerationStructureInstanceKHR const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( AccelerationStructureInstanceKHR ) );
-      return *this;
-    }
 
     AccelerationStructureInstanceKHR( VkAccelerationStructureInstanceKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -22487,13 +22310,6 @@ namespace VULKAN_HPP_NAMESPACE
       , accelerationStructure( accelerationStructure_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR AccelerationStructureMemoryRequirementsInfoKHR( AccelerationStructureMemoryRequirementsInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , type( rhs.type )
-      , buildType( rhs.buildType )
-      , accelerationStructure( rhs.accelerationStructure )
-    {}
-
     AccelerationStructureMemoryRequirementsInfoKHR & operator=( AccelerationStructureMemoryRequirementsInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( AccelerationStructureMemoryRequirementsInfoKHR ) - offsetof( AccelerationStructureMemoryRequirementsInfoKHR, pNext ) );
@@ -22582,12 +22398,6 @@ namespace VULKAN_HPP_NAMESPACE
       , accelerationStructure( accelerationStructure_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR AccelerationStructureMemoryRequirementsInfoNV( AccelerationStructureMemoryRequirementsInfoNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , type( rhs.type )
-      , accelerationStructure( rhs.accelerationStructure )
-    {}
-
     AccelerationStructureMemoryRequirementsInfoNV & operator=( AccelerationStructureMemoryRequirementsInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( AccelerationStructureMemoryRequirementsInfoNV ) - offsetof( AccelerationStructureMemoryRequirementsInfoNV, pNext ) );
@@ -22666,11 +22476,6 @@ namespace VULKAN_HPP_NAMESPACE
       : versionData( versionData_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR AccelerationStructureVersionKHR( AccelerationStructureVersionKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , versionData( rhs.versionData )
-    {}
-
     AccelerationStructureVersionKHR & operator=( AccelerationStructureVersionKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( AccelerationStructureVersionKHR ) - offsetof( AccelerationStructureVersionKHR, pNext ) );
@@ -22747,15 +22552,6 @@ namespace VULKAN_HPP_NAMESPACE
       , semaphore( semaphore_ )
       , fence( fence_ )
       , deviceMask( deviceMask_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR AcquireNextImageInfoKHR( AcquireNextImageInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , swapchain( rhs.swapchain )
-      , timeout( rhs.timeout )
-      , semaphore( rhs.semaphore )
-      , fence( rhs.fence )
-      , deviceMask( rhs.deviceMask )
     {}
 
     AcquireNextImageInfoKHR & operator=( AcquireNextImageInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -22861,12 +22657,6 @@ namespace VULKAN_HPP_NAMESPACE
       , timeout( timeout_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR AcquireProfilingLockInfoKHR( AcquireProfilingLockInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , timeout( rhs.timeout )
-    {}
-
     AcquireProfilingLockInfoKHR & operator=( AcquireProfilingLockInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( AcquireProfilingLockInfoKHR ) - offsetof( AcquireProfilingLockInfoKHR, pNext ) );
@@ -22953,21 +22743,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pfnInternalAllocation( pfnInternalAllocation_ )
       , pfnInternalFree( pfnInternalFree_ )
     {}
-
-    VULKAN_HPP_CONSTEXPR AllocationCallbacks( AllocationCallbacks const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pUserData( rhs.pUserData )
-      , pfnAllocation( rhs.pfnAllocation )
-      , pfnReallocation( rhs.pfnReallocation )
-      , pfnFree( rhs.pfnFree )
-      , pfnInternalAllocation( rhs.pfnInternalAllocation )
-      , pfnInternalFree( rhs.pfnInternalFree )
-    {}
-
-    AllocationCallbacks & operator=( AllocationCallbacks const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( AllocationCallbacks ) );
-      return *this;
-    }
 
     AllocationCallbacks( VkAllocationCallbacks const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -23068,19 +22843,6 @@ namespace VULKAN_HPP_NAMESPACE
       , a( a_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR ComponentMapping( ComponentMapping const& rhs ) VULKAN_HPP_NOEXCEPT
-      : r( rhs.r )
-      , g( rhs.g )
-      , b( rhs.b )
-      , a( rhs.a )
-    {}
-
-    ComponentMapping & operator=( ComponentMapping const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( ComponentMapping ) );
-      return *this;
-    }
-
     ComponentMapping( VkComponentMapping const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -23173,18 +22935,6 @@ namespace VULKAN_HPP_NAMESPACE
       , suggestedYChromaOffset( suggestedYChromaOffset_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR AndroidHardwareBufferFormatPropertiesANDROID( AndroidHardwareBufferFormatPropertiesANDROID const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , format( rhs.format )
-      , externalFormat( rhs.externalFormat )
-      , formatFeatures( rhs.formatFeatures )
-      , samplerYcbcrConversionComponents( rhs.samplerYcbcrConversionComponents )
-      , suggestedYcbcrModel( rhs.suggestedYcbcrModel )
-      , suggestedYcbcrRange( rhs.suggestedYcbcrRange )
-      , suggestedXChromaOffset( rhs.suggestedXChromaOffset )
-      , suggestedYChromaOffset( rhs.suggestedYChromaOffset )
-    {}
-
     AndroidHardwareBufferFormatPropertiesANDROID & operator=( AndroidHardwareBufferFormatPropertiesANDROID const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( AndroidHardwareBufferFormatPropertiesANDROID ) - offsetof( AndroidHardwareBufferFormatPropertiesANDROID, pNext ) );
@@ -23260,12 +23010,6 @@ namespace VULKAN_HPP_NAMESPACE
       , memoryTypeBits( memoryTypeBits_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR AndroidHardwareBufferPropertiesANDROID( AndroidHardwareBufferPropertiesANDROID const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , allocationSize( rhs.allocationSize )
-      , memoryTypeBits( rhs.memoryTypeBits )
-    {}
-
     AndroidHardwareBufferPropertiesANDROID & operator=( AndroidHardwareBufferPropertiesANDROID const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( AndroidHardwareBufferPropertiesANDROID ) - offsetof( AndroidHardwareBufferPropertiesANDROID, pNext ) );
@@ -23327,11 +23071,6 @@ namespace VULKAN_HPP_NAMESPACE
       : androidHardwareBufferUsage( androidHardwareBufferUsage_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR AndroidHardwareBufferUsageANDROID( AndroidHardwareBufferUsageANDROID const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , androidHardwareBufferUsage( rhs.androidHardwareBufferUsage )
-    {}
-
     AndroidHardwareBufferUsageANDROID & operator=( AndroidHardwareBufferUsageANDROID const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( AndroidHardwareBufferUsageANDROID ) - offsetof( AndroidHardwareBufferUsageANDROID, pNext ) );
@@ -23391,12 +23130,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                       struct ANativeWindow* window_ = {} ) VULKAN_HPP_NOEXCEPT
       : flags( flags_ )
       , window( window_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR AndroidSurfaceCreateInfoKHR( AndroidSurfaceCreateInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , window( rhs.window )
     {}
 
     AndroidSurfaceCreateInfoKHR & operator=( AndroidSurfaceCreateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -23483,15 +23216,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pEngineName( pEngineName_ )
       , engineVersion( engineVersion_ )
       , apiVersion( apiVersion_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR ApplicationInfo( ApplicationInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , pApplicationName( rhs.pApplicationName )
-      , applicationVersion( rhs.applicationVersion )
-      , pEngineName( rhs.pEngineName )
-      , engineVersion( rhs.engineVersion )
-      , apiVersion( rhs.apiVersion )
     {}
 
     ApplicationInfo & operator=( ApplicationInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -23610,24 +23334,6 @@ namespace VULKAN_HPP_NAMESPACE
       , initialLayout( initialLayout_ )
       , finalLayout( finalLayout_ )
     {}
-
-    VULKAN_HPP_CONSTEXPR AttachmentDescription( AttachmentDescription const& rhs ) VULKAN_HPP_NOEXCEPT
-      : flags( rhs.flags )
-      , format( rhs.format )
-      , samples( rhs.samples )
-      , loadOp( rhs.loadOp )
-      , storeOp( rhs.storeOp )
-      , stencilLoadOp( rhs.stencilLoadOp )
-      , stencilStoreOp( rhs.stencilStoreOp )
-      , initialLayout( rhs.initialLayout )
-      , finalLayout( rhs.finalLayout )
-    {}
-
-    AttachmentDescription & operator=( AttachmentDescription const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( AttachmentDescription ) );
-      return *this;
-    }
 
     AttachmentDescription( VkAttachmentDescription const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -23760,19 +23466,6 @@ namespace VULKAN_HPP_NAMESPACE
       , stencilStoreOp( stencilStoreOp_ )
       , initialLayout( initialLayout_ )
       , finalLayout( finalLayout_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR AttachmentDescription2( AttachmentDescription2 const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , format( rhs.format )
-      , samples( rhs.samples )
-      , loadOp( rhs.loadOp )
-      , storeOp( rhs.storeOp )
-      , stencilLoadOp( rhs.stencilLoadOp )
-      , stencilStoreOp( rhs.stencilStoreOp )
-      , initialLayout( rhs.initialLayout )
-      , finalLayout( rhs.finalLayout )
     {}
 
     AttachmentDescription2 & operator=( AttachmentDescription2 const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -23910,12 +23603,6 @@ namespace VULKAN_HPP_NAMESPACE
       , stencilFinalLayout( stencilFinalLayout_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR AttachmentDescriptionStencilLayout( AttachmentDescriptionStencilLayout const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , stencilInitialLayout( rhs.stencilInitialLayout )
-      , stencilFinalLayout( rhs.stencilFinalLayout )
-    {}
-
     AttachmentDescriptionStencilLayout & operator=( AttachmentDescriptionStencilLayout const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( AttachmentDescriptionStencilLayout ) - offsetof( AttachmentDescriptionStencilLayout, pNext ) );
@@ -23995,17 +23682,6 @@ namespace VULKAN_HPP_NAMESPACE
       , layout( layout_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR AttachmentReference( AttachmentReference const& rhs ) VULKAN_HPP_NOEXCEPT
-      : attachment( rhs.attachment )
-      , layout( rhs.layout )
-    {}
-
-    AttachmentReference & operator=( AttachmentReference const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( AttachmentReference ) );
-      return *this;
-    }
-
     AttachmentReference( VkAttachmentReference const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -24069,13 +23745,6 @@ namespace VULKAN_HPP_NAMESPACE
       : attachment( attachment_ )
       , layout( layout_ )
       , aspectMask( aspectMask_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR AttachmentReference2( AttachmentReference2 const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , attachment( rhs.attachment )
-      , layout( rhs.layout )
-      , aspectMask( rhs.aspectMask )
     {}
 
     AttachmentReference2 & operator=( AttachmentReference2 const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -24163,11 +23832,6 @@ namespace VULKAN_HPP_NAMESPACE
       : stencilLayout( stencilLayout_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR AttachmentReferenceStencilLayout( AttachmentReferenceStencilLayout const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , stencilLayout( rhs.stencilLayout )
-    {}
-
     AttachmentReferenceStencilLayout & operator=( AttachmentReferenceStencilLayout const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( AttachmentReferenceStencilLayout ) - offsetof( AttachmentReferenceStencilLayout, pNext ) );
@@ -24239,17 +23903,6 @@ namespace VULKAN_HPP_NAMESPACE
       , height( height_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR Extent2D( Extent2D const& rhs ) VULKAN_HPP_NOEXCEPT
-      : width( rhs.width )
-      , height( rhs.height )
-    {}
-
-    Extent2D & operator=( Extent2D const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( Extent2D ) );
-      return *this;
-    }
-
     Extent2D( VkExtent2D const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -24312,17 +23965,6 @@ namespace VULKAN_HPP_NAMESPACE
       : x( x_ )
       , y( y_ )
     {}
-
-    VULKAN_HPP_CONSTEXPR SampleLocationEXT( SampleLocationEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : x( rhs.x )
-      , y( rhs.y )
-    {}
-
-    SampleLocationEXT & operator=( SampleLocationEXT const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( SampleLocationEXT ) );
-      return *this;
-    }
 
     SampleLocationEXT( VkSampleLocationEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -24389,14 +24031,6 @@ namespace VULKAN_HPP_NAMESPACE
       , sampleLocationGridSize( sampleLocationGridSize_ )
       , sampleLocationsCount( sampleLocationsCount_ )
       , pSampleLocations( pSampleLocations_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR SampleLocationsInfoEXT( SampleLocationsInfoEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , sampleLocationsPerPixel( rhs.sampleLocationsPerPixel )
-      , sampleLocationGridSize( rhs.sampleLocationGridSize )
-      , sampleLocationsCount( rhs.sampleLocationsCount )
-      , pSampleLocations( rhs.pSampleLocations )
     {}
 
     SampleLocationsInfoEXT & operator=( SampleLocationsInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -24494,17 +24128,6 @@ namespace VULKAN_HPP_NAMESPACE
       , sampleLocationsInfo( sampleLocationsInfo_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR AttachmentSampleLocationsEXT( AttachmentSampleLocationsEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : attachmentIndex( rhs.attachmentIndex )
-      , sampleLocationsInfo( rhs.sampleLocationsInfo )
-    {}
-
-    AttachmentSampleLocationsEXT & operator=( AttachmentSampleLocationsEXT const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( AttachmentSampleLocationsEXT ) );
-      return *this;
-    }
-
     AttachmentSampleLocationsEXT( VkAttachmentSampleLocationsEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -24565,16 +24188,6 @@ namespace VULKAN_HPP_NAMESPACE
     BaseInStructure() VULKAN_HPP_NOEXCEPT
     {}
 
-    BaseInStructure( BaseInStructure const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-    {}
-
-    BaseInStructure & operator=( BaseInStructure const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( BaseInStructure ) );
-      return *this;
-    }
-
     BaseInStructure( VkBaseInStructure const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -24628,16 +24241,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     BaseOutStructure() VULKAN_HPP_NOEXCEPT
     {}
-
-    BaseOutStructure( BaseOutStructure const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-    {}
-
-    BaseOutStructure & operator=( BaseOutStructure const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( BaseOutStructure ) );
-      return *this;
-    }
 
     BaseOutStructure( VkBaseOutStructure const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -24700,15 +24303,6 @@ namespace VULKAN_HPP_NAMESPACE
       , memoryOffset( memoryOffset_ )
       , deviceIndexCount( deviceIndexCount_ )
       , pDeviceIndices( pDeviceIndices_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR BindAccelerationStructureMemoryInfoKHR( BindAccelerationStructureMemoryInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , accelerationStructure( rhs.accelerationStructure )
-      , memory( rhs.memory )
-      , memoryOffset( rhs.memoryOffset )
-      , deviceIndexCount( rhs.deviceIndexCount )
-      , pDeviceIndices( rhs.pDeviceIndices )
     {}
 
     BindAccelerationStructureMemoryInfoKHR & operator=( BindAccelerationStructureMemoryInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -24814,12 +24408,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pDeviceIndices( pDeviceIndices_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR BindBufferMemoryDeviceGroupInfo( BindBufferMemoryDeviceGroupInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , deviceIndexCount( rhs.deviceIndexCount )
-      , pDeviceIndices( rhs.pDeviceIndices )
-    {}
-
     BindBufferMemoryDeviceGroupInfo & operator=( BindBufferMemoryDeviceGroupInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( BindBufferMemoryDeviceGroupInfo ) - offsetof( BindBufferMemoryDeviceGroupInfo, pNext ) );
@@ -24899,13 +24487,6 @@ namespace VULKAN_HPP_NAMESPACE
       : buffer( buffer_ )
       , memory( memory_ )
       , memoryOffset( memoryOffset_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR BindBufferMemoryInfo( BindBufferMemoryInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , buffer( rhs.buffer )
-      , memory( rhs.memory )
-      , memoryOffset( rhs.memoryOffset )
     {}
 
     BindBufferMemoryInfo & operator=( BindBufferMemoryInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -24995,17 +24576,6 @@ namespace VULKAN_HPP_NAMESPACE
       , y( y_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR Offset2D( Offset2D const& rhs ) VULKAN_HPP_NOEXCEPT
-      : x( rhs.x )
-      , y( rhs.y )
-    {}
-
-    Offset2D & operator=( Offset2D const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( Offset2D ) );
-      return *this;
-    }
-
     Offset2D( VkOffset2D const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -25068,17 +24638,6 @@ namespace VULKAN_HPP_NAMESPACE
       : offset( offset_ )
       , extent( extent_ )
     {}
-
-    VULKAN_HPP_CONSTEXPR Rect2D( Rect2D const& rhs ) VULKAN_HPP_NOEXCEPT
-      : offset( rhs.offset )
-      , extent( rhs.extent )
-    {}
-
-    Rect2D & operator=( Rect2D const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( Rect2D ) );
-      return *this;
-    }
 
     Rect2D( VkRect2D const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -25145,14 +24704,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pDeviceIndices( pDeviceIndices_ )
       , splitInstanceBindRegionCount( splitInstanceBindRegionCount_ )
       , pSplitInstanceBindRegions( pSplitInstanceBindRegions_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR BindImageMemoryDeviceGroupInfo( BindImageMemoryDeviceGroupInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , deviceIndexCount( rhs.deviceIndexCount )
-      , pDeviceIndices( rhs.pDeviceIndices )
-      , splitInstanceBindRegionCount( rhs.splitInstanceBindRegionCount )
-      , pSplitInstanceBindRegions( rhs.pSplitInstanceBindRegions )
     {}
 
     BindImageMemoryDeviceGroupInfo & operator=( BindImageMemoryDeviceGroupInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -25252,13 +24803,6 @@ namespace VULKAN_HPP_NAMESPACE
       , memoryOffset( memoryOffset_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR BindImageMemoryInfo( BindImageMemoryInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , image( rhs.image )
-      , memory( rhs.memory )
-      , memoryOffset( rhs.memoryOffset )
-    {}
-
     BindImageMemoryInfo & operator=( BindImageMemoryInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( BindImageMemoryInfo ) - offsetof( BindImageMemoryInfo, pNext ) );
@@ -25346,12 +24890,6 @@ namespace VULKAN_HPP_NAMESPACE
       , imageIndex( imageIndex_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR BindImageMemorySwapchainInfoKHR( BindImageMemorySwapchainInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , swapchain( rhs.swapchain )
-      , imageIndex( rhs.imageIndex )
-    {}
-
     BindImageMemorySwapchainInfoKHR & operator=( BindImageMemorySwapchainInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( BindImageMemorySwapchainInfoKHR ) - offsetof( BindImageMemorySwapchainInfoKHR, pNext ) );
@@ -25429,11 +24967,6 @@ namespace VULKAN_HPP_NAMESPACE
       : planeAspect( planeAspect_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR BindImagePlaneMemoryInfo( BindImagePlaneMemoryInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , planeAspect( rhs.planeAspect )
-    {}
-
     BindImagePlaneMemoryInfo & operator=( BindImagePlaneMemoryInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( BindImagePlaneMemoryInfo ) - offsetof( BindImagePlaneMemoryInfo, pNext ) );
@@ -25507,18 +25040,6 @@ namespace VULKAN_HPP_NAMESPACE
       , indexType( indexType_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR BindIndexBufferIndirectCommandNV( BindIndexBufferIndirectCommandNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : bufferAddress( rhs.bufferAddress )
-      , size( rhs.size )
-      , indexType( rhs.indexType )
-    {}
-
-    BindIndexBufferIndirectCommandNV & operator=( BindIndexBufferIndirectCommandNV const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( BindIndexBufferIndirectCommandNV ) );
-      return *this;
-    }
-
     BindIndexBufferIndirectCommandNV( VkBindIndexBufferIndirectCommandNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -25588,16 +25109,6 @@ namespace VULKAN_HPP_NAMESPACE
       : groupIndex( groupIndex_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR BindShaderGroupIndirectCommandNV( BindShaderGroupIndirectCommandNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : groupIndex( rhs.groupIndex )
-    {}
-
-    BindShaderGroupIndirectCommandNV & operator=( BindShaderGroupIndirectCommandNV const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( BindShaderGroupIndirectCommandNV ) );
-      return *this;
-    }
-
     BindShaderGroupIndirectCommandNV( VkBindShaderGroupIndirectCommandNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -25658,20 +25169,6 @@ namespace VULKAN_HPP_NAMESPACE
       , memoryOffset( memoryOffset_ )
       , flags( flags_ )
     {}
-
-    VULKAN_HPP_CONSTEXPR SparseMemoryBind( SparseMemoryBind const& rhs ) VULKAN_HPP_NOEXCEPT
-      : resourceOffset( rhs.resourceOffset )
-      , size( rhs.size )
-      , memory( rhs.memory )
-      , memoryOffset( rhs.memoryOffset )
-      , flags( rhs.flags )
-    {}
-
-    SparseMemoryBind & operator=( SparseMemoryBind const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( SparseMemoryBind ) );
-      return *this;
-    }
 
     SparseMemoryBind( VkSparseMemoryBind const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -25762,18 +25259,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pBinds( pBinds_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR SparseBufferMemoryBindInfo( SparseBufferMemoryBindInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : buffer( rhs.buffer )
-      , bindCount( rhs.bindCount )
-      , pBinds( rhs.pBinds )
-    {}
-
-    SparseBufferMemoryBindInfo & operator=( SparseBufferMemoryBindInfo const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( SparseBufferMemoryBindInfo ) );
-      return *this;
-    }
-
     SparseBufferMemoryBindInfo( VkSparseBufferMemoryBindInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -25846,18 +25331,6 @@ namespace VULKAN_HPP_NAMESPACE
       , bindCount( bindCount_ )
       , pBinds( pBinds_ )
     {}
-
-    VULKAN_HPP_CONSTEXPR SparseImageOpaqueMemoryBindInfo( SparseImageOpaqueMemoryBindInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : image( rhs.image )
-      , bindCount( rhs.bindCount )
-      , pBinds( rhs.pBinds )
-    {}
-
-    SparseImageOpaqueMemoryBindInfo & operator=( SparseImageOpaqueMemoryBindInfo const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( SparseImageOpaqueMemoryBindInfo ) );
-      return *this;
-    }
 
     SparseImageOpaqueMemoryBindInfo( VkSparseImageOpaqueMemoryBindInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -25932,18 +25405,6 @@ namespace VULKAN_HPP_NAMESPACE
       , arrayLayer( arrayLayer_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR ImageSubresource( ImageSubresource const& rhs ) VULKAN_HPP_NOEXCEPT
-      : aspectMask( rhs.aspectMask )
-      , mipLevel( rhs.mipLevel )
-      , arrayLayer( rhs.arrayLayer )
-    {}
-
-    ImageSubresource & operator=( ImageSubresource const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( ImageSubresource ) );
-      return *this;
-    }
-
     ImageSubresource( VkImageSubresource const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -26017,24 +25478,12 @@ namespace VULKAN_HPP_NAMESPACE
       , z( z_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR Offset3D( Offset3D const& rhs ) VULKAN_HPP_NOEXCEPT
-      : x( rhs.x )
-      , y( rhs.y )
-      , z( rhs.z )
-    {}
-
     explicit Offset3D( Offset2D const& offset2D,
                        int32_t z_ = {} )
       : x( offset2D.x )
       , y( offset2D.y )
       , z( z_ )
     {}
-
-    Offset3D & operator=( Offset3D const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( Offset3D ) );
-      return *this;
-    }
 
     Offset3D( VkOffset3D const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -26109,24 +25558,12 @@ namespace VULKAN_HPP_NAMESPACE
       , depth( depth_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR Extent3D( Extent3D const& rhs ) VULKAN_HPP_NOEXCEPT
-      : width( rhs.width )
-      , height( rhs.height )
-      , depth( rhs.depth )
-    {}
-
     explicit Extent3D( Extent2D const& extent2D,
                        uint32_t depth_ = {} )
       : width( extent2D.width )
       , height( extent2D.height )
       , depth( depth_ )
     {}
-
-    Extent3D & operator=( Extent3D const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( Extent3D ) );
-      return *this;
-    }
 
     Extent3D( VkExtent3D const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -26206,21 +25643,6 @@ namespace VULKAN_HPP_NAMESPACE
       , memoryOffset( memoryOffset_ )
       , flags( flags_ )
     {}
-
-    VULKAN_HPP_CONSTEXPR SparseImageMemoryBind( SparseImageMemoryBind const& rhs ) VULKAN_HPP_NOEXCEPT
-      : subresource( rhs.subresource )
-      , offset( rhs.offset )
-      , extent( rhs.extent )
-      , memory( rhs.memory )
-      , memoryOffset( rhs.memoryOffset )
-      , flags( rhs.flags )
-    {}
-
-    SparseImageMemoryBind & operator=( SparseImageMemoryBind const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( SparseImageMemoryBind ) );
-      return *this;
-    }
 
     SparseImageMemoryBind( VkSparseImageMemoryBind const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -26319,18 +25741,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pBinds( pBinds_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR SparseImageMemoryBindInfo( SparseImageMemoryBindInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : image( rhs.image )
-      , bindCount( rhs.bindCount )
-      , pBinds( rhs.pBinds )
-    {}
-
-    SparseImageMemoryBindInfo & operator=( SparseImageMemoryBindInfo const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( SparseImageMemoryBindInfo ) );
-      return *this;
-    }
-
     SparseImageMemoryBindInfo( VkSparseImageMemoryBindInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -26416,20 +25826,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pImageBinds( pImageBinds_ )
       , signalSemaphoreCount( signalSemaphoreCount_ )
       , pSignalSemaphores( pSignalSemaphores_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR BindSparseInfo( BindSparseInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , waitSemaphoreCount( rhs.waitSemaphoreCount )
-      , pWaitSemaphores( rhs.pWaitSemaphores )
-      , bufferBindCount( rhs.bufferBindCount )
-      , pBufferBinds( rhs.pBufferBinds )
-      , imageOpaqueBindCount( rhs.imageOpaqueBindCount )
-      , pImageOpaqueBinds( rhs.pImageOpaqueBinds )
-      , imageBindCount( rhs.imageBindCount )
-      , pImageBinds( rhs.pImageBinds )
-      , signalSemaphoreCount( rhs.signalSemaphoreCount )
-      , pSignalSemaphores( rhs.pSignalSemaphores )
     {}
 
     BindSparseInfo & operator=( BindSparseInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -26577,18 +25973,6 @@ namespace VULKAN_HPP_NAMESPACE
       , stride( stride_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR BindVertexBufferIndirectCommandNV( BindVertexBufferIndirectCommandNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : bufferAddress( rhs.bufferAddress )
-      , size( rhs.size )
-      , stride( rhs.stride )
-    {}
-
-    BindVertexBufferIndirectCommandNV & operator=( BindVertexBufferIndirectCommandNV const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( BindVertexBufferIndirectCommandNV ) );
-      return *this;
-    }
-
     BindVertexBufferIndirectCommandNV( VkBindVertexBufferIndirectCommandNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -26661,18 +26045,6 @@ namespace VULKAN_HPP_NAMESPACE
       , dstOffset( dstOffset_ )
       , size( size_ )
     {}
-
-    VULKAN_HPP_CONSTEXPR BufferCopy( BufferCopy const& rhs ) VULKAN_HPP_NOEXCEPT
-      : srcOffset( rhs.srcOffset )
-      , dstOffset( rhs.dstOffset )
-      , size( rhs.size )
-    {}
-
-    BufferCopy & operator=( BufferCopy const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( BufferCopy ) );
-      return *this;
-    }
 
     BufferCopy( VkBufferCopy const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -26751,16 +26123,6 @@ namespace VULKAN_HPP_NAMESPACE
       , sharingMode( sharingMode_ )
       , queueFamilyIndexCount( queueFamilyIndexCount_ )
       , pQueueFamilyIndices( pQueueFamilyIndices_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR BufferCreateInfo( BufferCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , size( rhs.size )
-      , usage( rhs.usage )
-      , sharingMode( rhs.sharingMode )
-      , queueFamilyIndexCount( rhs.queueFamilyIndexCount )
-      , pQueueFamilyIndices( rhs.pQueueFamilyIndices )
     {}
 
     BufferCreateInfo & operator=( BufferCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -26872,11 +26234,6 @@ namespace VULKAN_HPP_NAMESPACE
       : deviceAddress( deviceAddress_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR BufferDeviceAddressCreateInfoEXT( BufferDeviceAddressCreateInfoEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , deviceAddress( rhs.deviceAddress )
-    {}
-
     BufferDeviceAddressCreateInfoEXT & operator=( BufferDeviceAddressCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( BufferDeviceAddressCreateInfoEXT ) - offsetof( BufferDeviceAddressCreateInfoEXT, pNext ) );
@@ -26944,11 +26301,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR BufferDeviceAddressInfo( VULKAN_HPP_NAMESPACE::Buffer buffer_ = {} ) VULKAN_HPP_NOEXCEPT
       : buffer( buffer_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR BufferDeviceAddressInfo( BufferDeviceAddressInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , buffer( rhs.buffer )
     {}
 
     BufferDeviceAddressInfo & operator=( BufferDeviceAddressInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -27025,19 +26377,6 @@ namespace VULKAN_HPP_NAMESPACE
       , baseArrayLayer( baseArrayLayer_ )
       , layerCount( layerCount_ )
     {}
-
-    VULKAN_HPP_CONSTEXPR ImageSubresourceLayers( ImageSubresourceLayers const& rhs ) VULKAN_HPP_NOEXCEPT
-      : aspectMask( rhs.aspectMask )
-      , mipLevel( rhs.mipLevel )
-      , baseArrayLayer( rhs.baseArrayLayer )
-      , layerCount( rhs.layerCount )
-    {}
-
-    ImageSubresourceLayers & operator=( ImageSubresourceLayers const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( ImageSubresourceLayers ) );
-      return *this;
-    }
 
     ImageSubresourceLayers( VkImageSubresourceLayers const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -27125,21 +26464,6 @@ namespace VULKAN_HPP_NAMESPACE
       , imageOffset( imageOffset_ )
       , imageExtent( imageExtent_ )
     {}
-
-    VULKAN_HPP_CONSTEXPR BufferImageCopy( BufferImageCopy const& rhs ) VULKAN_HPP_NOEXCEPT
-      : bufferOffset( rhs.bufferOffset )
-      , bufferRowLength( rhs.bufferRowLength )
-      , bufferImageHeight( rhs.bufferImageHeight )
-      , imageSubresource( rhs.imageSubresource )
-      , imageOffset( rhs.imageOffset )
-      , imageExtent( rhs.imageExtent )
-    {}
-
-    BufferImageCopy & operator=( BufferImageCopy const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( BufferImageCopy ) );
-      return *this;
-    }
 
     BufferImageCopy( VkBufferImageCopy const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -27244,17 +26568,6 @@ namespace VULKAN_HPP_NAMESPACE
       , buffer( buffer_ )
       , offset( offset_ )
       , size( size_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR BufferMemoryBarrier( BufferMemoryBarrier const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , srcAccessMask( rhs.srcAccessMask )
-      , dstAccessMask( rhs.dstAccessMask )
-      , srcQueueFamilyIndex( rhs.srcQueueFamilyIndex )
-      , dstQueueFamilyIndex( rhs.dstQueueFamilyIndex )
-      , buffer( rhs.buffer )
-      , offset( rhs.offset )
-      , size( rhs.size )
     {}
 
     BufferMemoryBarrier & operator=( BufferMemoryBarrier const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -27374,11 +26687,6 @@ namespace VULKAN_HPP_NAMESPACE
       : buffer( buffer_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR BufferMemoryRequirementsInfo2( BufferMemoryRequirementsInfo2 const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , buffer( rhs.buffer )
-    {}
-
     BufferMemoryRequirementsInfo2 & operator=( BufferMemoryRequirementsInfo2 const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( BufferMemoryRequirementsInfo2 ) - offsetof( BufferMemoryRequirementsInfo2, pNext ) );
@@ -27446,11 +26754,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR BufferOpaqueCaptureAddressCreateInfo( uint64_t opaqueCaptureAddress_ = {} ) VULKAN_HPP_NOEXCEPT
       : opaqueCaptureAddress( opaqueCaptureAddress_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR BufferOpaqueCaptureAddressCreateInfo( BufferOpaqueCaptureAddressCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , opaqueCaptureAddress( rhs.opaqueCaptureAddress )
     {}
 
     BufferOpaqueCaptureAddressCreateInfo & operator=( BufferOpaqueCaptureAddressCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -27528,15 +26831,6 @@ namespace VULKAN_HPP_NAMESPACE
       , format( format_ )
       , offset( offset_ )
       , range( range_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR BufferViewCreateInfo( BufferViewCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , buffer( rhs.buffer )
-      , format( rhs.format )
-      , offset( rhs.offset )
-      , range( rhs.range )
     {}
 
     BufferViewCreateInfo & operator=( BufferViewCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -27640,11 +26934,6 @@ namespace VULKAN_HPP_NAMESPACE
       : timeDomain( timeDomain_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR CalibratedTimestampInfoEXT( CalibratedTimestampInfoEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , timeDomain( rhs.timeDomain )
-    {}
-
     CalibratedTimestampInfoEXT & operator=( CalibratedTimestampInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( CalibratedTimestampInfoEXT ) - offsetof( CalibratedTimestampInfoEXT, pNext ) );
@@ -27716,12 +27005,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pCheckpointMarker( pCheckpointMarker_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR CheckpointDataNV( CheckpointDataNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , stage( rhs.stage )
-      , pCheckpointMarker( rhs.pCheckpointMarker )
-    {}
-
     CheckpointDataNV & operator=( CheckpointDataNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( CheckpointDataNV ) - offsetof( CheckpointDataNV, pNext ) );
@@ -27784,34 +27067,34 @@ namespace VULKAN_HPP_NAMESPACE
 
     ClearColorValue( const std::array<float,4>& float32_ = {} )
     {
-      memcpy( float32, float32_.data(), 4 * sizeof( float ) );
+      float32 = float32_;
     }
 
     ClearColorValue( const std::array<int32_t,4>& int32_ )
     {
-      memcpy( int32, int32_.data(), 4 * sizeof( int32_t ) );
+      int32 = int32_;
     }
 
     ClearColorValue( const std::array<uint32_t,4>& uint32_ )
     {
-      memcpy( uint32, uint32_.data(), 4 * sizeof( uint32_t ) );
+      uint32 = uint32_;
     }
 
     ClearColorValue & setFloat32( std::array<float,4> float32_ ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( float32, float32_.data(), 4 * sizeof( float ) );
+      float32 = float32_;
       return *this;
     }
 
     ClearColorValue & setInt32( std::array<int32_t,4> int32_ ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( int32, int32_.data(), 4 * sizeof( int32_t ) );
+      int32 = int32_;
       return *this;
     }
 
     ClearColorValue & setUint32( std::array<uint32_t,4> uint32_ ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( uint32, uint32_.data(), 4 * sizeof( uint32_t ) );
+      uint32 = uint32_;
       return *this;
     }
 
@@ -27831,9 +27114,9 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkClearColorValue*>(this);
     }
 
-    float float32[4];
-    int32_t int32[4];
-    uint32_t uint32[4];
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<float, 4> float32;
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<int32_t, 4> int32;
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<uint32_t, 4> uint32;
   };
 
   struct ClearDepthStencilValue
@@ -27843,17 +27126,6 @@ namespace VULKAN_HPP_NAMESPACE
       : depth( depth_ )
       , stencil( stencil_ )
     {}
-
-    VULKAN_HPP_CONSTEXPR ClearDepthStencilValue( ClearDepthStencilValue const& rhs ) VULKAN_HPP_NOEXCEPT
-      : depth( rhs.depth )
-      , stencil( rhs.stencil )
-    {}
-
-    ClearDepthStencilValue & operator=( ClearDepthStencilValue const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( ClearDepthStencilValue ) );
-      return *this;
-    }
 
     ClearDepthStencilValue( VkClearDepthStencilValue const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -27974,18 +27246,6 @@ namespace VULKAN_HPP_NAMESPACE
       , clearValue( clearValue_ )
     {}
 
-    ClearAttachment( ClearAttachment const& rhs ) VULKAN_HPP_NOEXCEPT
-      : aspectMask( rhs.aspectMask )
-      , colorAttachment( rhs.colorAttachment )
-      , clearValue( rhs.clearValue )
-    {}
-
-    ClearAttachment & operator=( ClearAttachment const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( ClearAttachment ) );
-      return *this;
-    }
-
     ClearAttachment( VkClearAttachment const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -28042,18 +27302,6 @@ namespace VULKAN_HPP_NAMESPACE
       , baseArrayLayer( baseArrayLayer_ )
       , layerCount( layerCount_ )
     {}
-
-    VULKAN_HPP_CONSTEXPR ClearRect( ClearRect const& rhs ) VULKAN_HPP_NOEXCEPT
-      : rect( rhs.rect )
-      , baseArrayLayer( rhs.baseArrayLayer )
-      , layerCount( rhs.layerCount )
-    {}
-
-    ClearRect & operator=( ClearRect const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( ClearRect ) );
-      return *this;
-    }
 
     ClearRect( VkClearRect const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -28127,18 +27375,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pixelY( pixelY_ )
       , sample( sample_ )
     {}
-
-    VULKAN_HPP_CONSTEXPR CoarseSampleLocationNV( CoarseSampleLocationNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pixelX( rhs.pixelX )
-      , pixelY( rhs.pixelY )
-      , sample( rhs.sample )
-    {}
-
-    CoarseSampleLocationNV & operator=( CoarseSampleLocationNV const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( CoarseSampleLocationNV ) );
-      return *this;
-    }
 
     CoarseSampleLocationNV( VkCoarseSampleLocationNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -28214,19 +27450,6 @@ namespace VULKAN_HPP_NAMESPACE
       , sampleLocationCount( sampleLocationCount_ )
       , pSampleLocations( pSampleLocations_ )
     {}
-
-    VULKAN_HPP_CONSTEXPR CoarseSampleOrderCustomNV( CoarseSampleOrderCustomNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : shadingRate( rhs.shadingRate )
-      , sampleCount( rhs.sampleCount )
-      , sampleLocationCount( rhs.sampleLocationCount )
-      , pSampleLocations( rhs.pSampleLocations )
-    {}
-
-    CoarseSampleOrderCustomNV & operator=( CoarseSampleOrderCustomNV const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( CoarseSampleOrderCustomNV ) );
-      return *this;
-    }
 
     CoarseSampleOrderCustomNV( VkCoarseSampleOrderCustomNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -28307,13 +27530,6 @@ namespace VULKAN_HPP_NAMESPACE
       : commandPool( commandPool_ )
       , level( level_ )
       , commandBufferCount( commandBufferCount_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR CommandBufferAllocateInfo( CommandBufferAllocateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , commandPool( rhs.commandPool )
-      , level( rhs.level )
-      , commandBufferCount( rhs.commandBufferCount )
     {}
 
     CommandBufferAllocateInfo & operator=( CommandBufferAllocateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -28409,16 +27625,6 @@ namespace VULKAN_HPP_NAMESPACE
       , occlusionQueryEnable( occlusionQueryEnable_ )
       , queryFlags( queryFlags_ )
       , pipelineStatistics( pipelineStatistics_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR CommandBufferInheritanceInfo( CommandBufferInheritanceInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , renderPass( rhs.renderPass )
-      , subpass( rhs.subpass )
-      , framebuffer( rhs.framebuffer )
-      , occlusionQueryEnable( rhs.occlusionQueryEnable )
-      , queryFlags( rhs.queryFlags )
-      , pipelineStatistics( rhs.pipelineStatistics )
     {}
 
     CommandBufferInheritanceInfo & operator=( CommandBufferInheritanceInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -28532,12 +27738,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pInheritanceInfo( pInheritanceInfo_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR CommandBufferBeginInfo( CommandBufferBeginInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , pInheritanceInfo( rhs.pInheritanceInfo )
-    {}
-
     CommandBufferBeginInfo & operator=( CommandBufferBeginInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( CommandBufferBeginInfo ) - offsetof( CommandBufferBeginInfo, pNext ) );
@@ -28615,11 +27815,6 @@ namespace VULKAN_HPP_NAMESPACE
       : conditionalRenderingEnable( conditionalRenderingEnable_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR CommandBufferInheritanceConditionalRenderingInfoEXT( CommandBufferInheritanceConditionalRenderingInfoEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , conditionalRenderingEnable( rhs.conditionalRenderingEnable )
-    {}
-
     CommandBufferInheritanceConditionalRenderingInfoEXT & operator=( CommandBufferInheritanceConditionalRenderingInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( CommandBufferInheritanceConditionalRenderingInfoEXT ) - offsetof( CommandBufferInheritanceConditionalRenderingInfoEXT, pNext ) );
@@ -28689,12 +27884,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                                               VULKAN_HPP_NAMESPACE::Rect2D renderArea_ = {} ) VULKAN_HPP_NOEXCEPT
       : transform( transform_ )
       , renderArea( renderArea_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR CommandBufferInheritanceRenderPassTransformInfoQCOM( CommandBufferInheritanceRenderPassTransformInfoQCOM const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , transform( rhs.transform )
-      , renderArea( rhs.renderArea )
     {}
 
     CommandBufferInheritanceRenderPassTransformInfoQCOM & operator=( CommandBufferInheritanceRenderPassTransformInfoQCOM const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -28774,12 +27963,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                 uint32_t queueFamilyIndex_ = {} ) VULKAN_HPP_NOEXCEPT
       : flags( flags_ )
       , queueFamilyIndex( queueFamilyIndex_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR CommandPoolCreateInfo( CommandPoolCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , queueFamilyIndex( rhs.queueFamilyIndex )
     {}
 
     CommandPoolCreateInfo & operator=( CommandPoolCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -28863,18 +28046,6 @@ namespace VULKAN_HPP_NAMESPACE
       , size( size_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR SpecializationMapEntry( SpecializationMapEntry const& rhs ) VULKAN_HPP_NOEXCEPT
-      : constantID( rhs.constantID )
-      , offset( rhs.offset )
-      , size( rhs.size )
-    {}
-
-    SpecializationMapEntry & operator=( SpecializationMapEntry const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( SpecializationMapEntry ) );
-      return *this;
-    }
-
     SpecializationMapEntry( VkSpecializationMapEntry const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -28949,19 +28120,6 @@ namespace VULKAN_HPP_NAMESPACE
       , dataSize( dataSize_ )
       , pData( pData_ )
     {}
-
-    VULKAN_HPP_CONSTEXPR SpecializationInfo( SpecializationInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : mapEntryCount( rhs.mapEntryCount )
-      , pMapEntries( rhs.pMapEntries )
-      , dataSize( rhs.dataSize )
-      , pData( rhs.pData )
-    {}
-
-    SpecializationInfo & operator=( SpecializationInfo const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( SpecializationInfo ) );
-      return *this;
-    }
 
     SpecializationInfo( VkSpecializationInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -29046,15 +28204,6 @@ namespace VULKAN_HPP_NAMESPACE
       , module( module_ )
       , pName( pName_ )
       , pSpecializationInfo( pSpecializationInfo_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PipelineShaderStageCreateInfo( PipelineShaderStageCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , stage( rhs.stage )
-      , module( rhs.module )
-      , pName( rhs.pName )
-      , pSpecializationInfo( rhs.pSpecializationInfo )
     {}
 
     PipelineShaderStageCreateInfo & operator=( PipelineShaderStageCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -29166,15 +28315,6 @@ namespace VULKAN_HPP_NAMESPACE
       , basePipelineIndex( basePipelineIndex_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR ComputePipelineCreateInfo( ComputePipelineCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , stage( rhs.stage )
-      , layout( rhs.layout )
-      , basePipelineHandle( rhs.basePipelineHandle )
-      , basePipelineIndex( rhs.basePipelineIndex )
-    {}
-
     ComputePipelineCreateInfo & operator=( ComputePipelineCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( ComputePipelineCreateInfo ) - offsetof( ComputePipelineCreateInfo, pNext ) );
@@ -29280,13 +28420,6 @@ namespace VULKAN_HPP_NAMESPACE
       , flags( flags_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR ConditionalRenderingBeginInfoEXT( ConditionalRenderingBeginInfoEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , buffer( rhs.buffer )
-      , offset( rhs.offset )
-      , flags( rhs.flags )
-    {}
-
     ConditionalRenderingBeginInfoEXT & operator=( ConditionalRenderingBeginInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( ConditionalRenderingBeginInfoEXT ) - offsetof( ConditionalRenderingBeginInfoEXT, pNext ) );
@@ -29378,19 +28511,6 @@ namespace VULKAN_HPP_NAMESPACE
       , patch( patch_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR ConformanceVersion( ConformanceVersion const& rhs ) VULKAN_HPP_NOEXCEPT
-      : major( rhs.major )
-      , minor( rhs.minor )
-      , subminor( rhs.subminor )
-      , patch( rhs.patch )
-    {}
-
-    ConformanceVersion & operator=( ConformanceVersion const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( ConformanceVersion ) );
-      return *this;
-    }
-
     ConformanceVersion( VkConformanceVersion const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -29480,18 +28600,6 @@ namespace VULKAN_HPP_NAMESPACE
       , CType( CType_ )
       , DType( DType_ )
       , scope( scope_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR CooperativeMatrixPropertiesNV( CooperativeMatrixPropertiesNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , MSize( rhs.MSize )
-      , NSize( rhs.NSize )
-      , KSize( rhs.KSize )
-      , AType( rhs.AType )
-      , BType( rhs.BType )
-      , CType( rhs.CType )
-      , DType( rhs.DType )
-      , scope( rhs.scope )
     {}
 
     CooperativeMatrixPropertiesNV & operator=( CooperativeMatrixPropertiesNV const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -29624,13 +28732,6 @@ namespace VULKAN_HPP_NAMESPACE
       , mode( mode_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR CopyAccelerationStructureInfoKHR( CopyAccelerationStructureInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , src( rhs.src )
-      , dst( rhs.dst )
-      , mode( rhs.mode )
-    {}
-
     CopyAccelerationStructureInfoKHR & operator=( CopyAccelerationStructureInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( CopyAccelerationStructureInfoKHR ) - offsetof( CopyAccelerationStructureInfoKHR, pNext ) );
@@ -29722,13 +28823,6 @@ namespace VULKAN_HPP_NAMESPACE
       , mode( mode_ )
     {}
 
-    CopyAccelerationStructureToMemoryInfoKHR( CopyAccelerationStructureToMemoryInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , src( rhs.src )
-      , dst( rhs.dst )
-      , mode( rhs.mode )
-    {}
-
     CopyAccelerationStructureToMemoryInfoKHR & operator=( CopyAccelerationStructureToMemoryInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( CopyAccelerationStructureToMemoryInfoKHR ) - offsetof( CopyAccelerationStructureToMemoryInfoKHR, pNext ) );
@@ -29807,17 +28901,6 @@ namespace VULKAN_HPP_NAMESPACE
       , dstBinding( dstBinding_ )
       , dstArrayElement( dstArrayElement_ )
       , descriptorCount( descriptorCount_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR CopyDescriptorSet( CopyDescriptorSet const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , srcSet( rhs.srcSet )
-      , srcBinding( rhs.srcBinding )
-      , srcArrayElement( rhs.srcArrayElement )
-      , dstSet( rhs.dstSet )
-      , dstBinding( rhs.dstBinding )
-      , dstArrayElement( rhs.dstArrayElement )
-      , descriptorCount( rhs.descriptorCount )
     {}
 
     CopyDescriptorSet & operator=( CopyDescriptorSet const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -29942,13 +29025,6 @@ namespace VULKAN_HPP_NAMESPACE
       , mode( mode_ )
     {}
 
-    CopyMemoryToAccelerationStructureInfoKHR( CopyMemoryToAccelerationStructureInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , src( rhs.src )
-      , dst( rhs.dst )
-      , mode( rhs.mode )
-    {}
-
     CopyMemoryToAccelerationStructureInfoKHR & operator=( CopyMemoryToAccelerationStructureInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( CopyMemoryToAccelerationStructureInfoKHR ) - offsetof( CopyMemoryToAccelerationStructureInfoKHR, pNext ) );
@@ -30022,14 +29098,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pWaitSemaphoreValues( pWaitSemaphoreValues_ )
       , signalSemaphoreValuesCount( signalSemaphoreValuesCount_ )
       , pSignalSemaphoreValues( pSignalSemaphoreValues_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR D3D12FenceSubmitInfoKHR( D3D12FenceSubmitInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , waitSemaphoreValuesCount( rhs.waitSemaphoreValuesCount )
-      , pWaitSemaphoreValues( rhs.pWaitSemaphoreValues )
-      , signalSemaphoreValuesCount( rhs.signalSemaphoreValuesCount )
-      , pSignalSemaphoreValues( rhs.pSignalSemaphoreValues )
     {}
 
     D3D12FenceSubmitInfoKHR & operator=( D3D12FenceSubmitInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -30125,18 +29193,8 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_CONSTEXPR_14 DebugMarkerMarkerInfoEXT( const char* pMarkerName_ = {},
                                                       std::array<float,4> const& color_ = {} ) VULKAN_HPP_NOEXCEPT
       : pMarkerName( pMarkerName_ )
-      , color{}
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,4>::copy( color, color_ );
-    }
-
-    VULKAN_HPP_CONSTEXPR_14 DebugMarkerMarkerInfoEXT( DebugMarkerMarkerInfoEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , pMarkerName( rhs.pMarkerName )
-      , color{}
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,4>::copy( color, rhs.color );
-    }
+      , color( color_ )
+    {}
 
     DebugMarkerMarkerInfoEXT & operator=( DebugMarkerMarkerInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -30169,7 +29227,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DebugMarkerMarkerInfoEXT & setColor( std::array<float,4> color_ ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( color, color_.data(), 4 * sizeof( float ) );
+      color = color_;
       return *this;
     }
 
@@ -30191,7 +29249,7 @@ namespace VULKAN_HPP_NAMESPACE
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( pMarkerName == rhs.pMarkerName )
-          && ( memcmp( color, rhs.color, 4 * sizeof( float ) ) == 0 );
+          && ( color == rhs.color );
     }
 
     bool operator!=( DebugMarkerMarkerInfoEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
@@ -30204,7 +29262,7 @@ namespace VULKAN_HPP_NAMESPACE
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDebugMarkerMarkerInfoEXT;
     const void* pNext = {};
     const char* pMarkerName = {};
-    float color[4] = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<float, 4> color = {};
   };
   static_assert( sizeof( DebugMarkerMarkerInfoEXT ) == sizeof( VkDebugMarkerMarkerInfoEXT ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<DebugMarkerMarkerInfoEXT>::value, "struct wrapper is not a standard layout!" );
@@ -30217,13 +29275,6 @@ namespace VULKAN_HPP_NAMESPACE
       : objectType( objectType_ )
       , object( object_ )
       , pObjectName( pObjectName_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR DebugMarkerObjectNameInfoEXT( DebugMarkerObjectNameInfoEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , objectType( rhs.objectType )
-      , object( rhs.object )
-      , pObjectName( rhs.pObjectName )
     {}
 
     DebugMarkerObjectNameInfoEXT & operator=( DebugMarkerObjectNameInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -30317,15 +29368,6 @@ namespace VULKAN_HPP_NAMESPACE
       , tagName( tagName_ )
       , tagSize( tagSize_ )
       , pTag( pTag_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR DebugMarkerObjectTagInfoEXT( DebugMarkerObjectTagInfoEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , objectType( rhs.objectType )
-      , object( rhs.object )
-      , tagName( rhs.tagName )
-      , tagSize( rhs.tagSize )
-      , pTag( rhs.pTag )
     {}
 
     DebugMarkerObjectTagInfoEXT & operator=( DebugMarkerObjectTagInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -30433,13 +29475,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pUserData( pUserData_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR DebugReportCallbackCreateInfoEXT( DebugReportCallbackCreateInfoEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , pfnCallback( rhs.pfnCallback )
-      , pUserData( rhs.pUserData )
-    {}
-
     DebugReportCallbackCreateInfoEXT & operator=( DebugReportCallbackCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( DebugReportCallbackCreateInfoEXT ) - offsetof( DebugReportCallbackCreateInfoEXT, pNext ) );
@@ -30524,18 +29559,8 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_CONSTEXPR_14 DebugUtilsLabelEXT( const char* pLabelName_ = {},
                                                 std::array<float,4> const& color_ = {} ) VULKAN_HPP_NOEXCEPT
       : pLabelName( pLabelName_ )
-      , color{}
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,4>::copy( color, color_ );
-    }
-
-    VULKAN_HPP_CONSTEXPR_14 DebugUtilsLabelEXT( DebugUtilsLabelEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , pLabelName( rhs.pLabelName )
-      , color{}
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,4>::copy( color, rhs.color );
-    }
+      , color( color_ )
+    {}
 
     DebugUtilsLabelEXT & operator=( DebugUtilsLabelEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -30568,7 +29593,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     DebugUtilsLabelEXT & setColor( std::array<float,4> color_ ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( color, color_.data(), 4 * sizeof( float ) );
+      color = color_;
       return *this;
     }
 
@@ -30590,7 +29615,7 @@ namespace VULKAN_HPP_NAMESPACE
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( pLabelName == rhs.pLabelName )
-          && ( memcmp( color, rhs.color, 4 * sizeof( float ) ) == 0 );
+          && ( color == rhs.color );
     }
 
     bool operator!=( DebugUtilsLabelEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
@@ -30603,7 +29628,7 @@ namespace VULKAN_HPP_NAMESPACE
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDebugUtilsLabelEXT;
     const void* pNext = {};
     const char* pLabelName = {};
-    float color[4] = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<float, 4> color = {};
   };
   static_assert( sizeof( DebugUtilsLabelEXT ) == sizeof( VkDebugUtilsLabelEXT ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<DebugUtilsLabelEXT>::value, "struct wrapper is not a standard layout!" );
@@ -30616,13 +29641,6 @@ namespace VULKAN_HPP_NAMESPACE
       : objectType( objectType_ )
       , objectHandle( objectHandle_ )
       , pObjectName( pObjectName_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR DebugUtilsObjectNameInfoEXT( DebugUtilsObjectNameInfoEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , objectType( rhs.objectType )
-      , objectHandle( rhs.objectHandle )
-      , pObjectName( rhs.pObjectName )
     {}
 
     DebugUtilsObjectNameInfoEXT & operator=( DebugUtilsObjectNameInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -30726,20 +29744,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pCmdBufLabels( pCmdBufLabels_ )
       , objectCount( objectCount_ )
       , pObjects( pObjects_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR_14 DebugUtilsMessengerCallbackDataEXT( DebugUtilsMessengerCallbackDataEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , pMessageIdName( rhs.pMessageIdName )
-      , messageIdNumber( rhs.messageIdNumber )
-      , pMessage( rhs.pMessage )
-      , queueLabelCount( rhs.queueLabelCount )
-      , pQueueLabels( rhs.pQueueLabels )
-      , cmdBufLabelCount( rhs.cmdBufLabelCount )
-      , pCmdBufLabels( rhs.pCmdBufLabels )
-      , objectCount( rhs.objectCount )
-      , pObjects( rhs.pObjects )
     {}
 
     DebugUtilsMessengerCallbackDataEXT & operator=( DebugUtilsMessengerCallbackDataEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -30891,15 +29895,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pUserData( pUserData_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR DebugUtilsMessengerCreateInfoEXT( DebugUtilsMessengerCreateInfoEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , messageSeverity( rhs.messageSeverity )
-      , messageType( rhs.messageType )
-      , pfnUserCallback( rhs.pfnUserCallback )
-      , pUserData( rhs.pUserData )
-    {}
-
     DebugUtilsMessengerCreateInfoEXT & operator=( DebugUtilsMessengerCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( DebugUtilsMessengerCreateInfoEXT ) - offsetof( DebugUtilsMessengerCreateInfoEXT, pNext ) );
@@ -31009,15 +30004,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pTag( pTag_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR DebugUtilsObjectTagInfoEXT( DebugUtilsObjectTagInfoEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , objectType( rhs.objectType )
-      , objectHandle( rhs.objectHandle )
-      , tagName( rhs.tagName )
-      , tagSize( rhs.tagSize )
-      , pTag( rhs.pTag )
-    {}
-
     DebugUtilsObjectTagInfoEXT & operator=( DebugUtilsObjectTagInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( DebugUtilsObjectTagInfoEXT ) - offsetof( DebugUtilsObjectTagInfoEXT, pNext ) );
@@ -31119,11 +30105,6 @@ namespace VULKAN_HPP_NAMESPACE
       : dedicatedAllocation( dedicatedAllocation_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR DedicatedAllocationBufferCreateInfoNV( DedicatedAllocationBufferCreateInfoNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , dedicatedAllocation( rhs.dedicatedAllocation )
-    {}
-
     DedicatedAllocationBufferCreateInfoNV & operator=( DedicatedAllocationBufferCreateInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( DedicatedAllocationBufferCreateInfoNV ) - offsetof( DedicatedAllocationBufferCreateInfoNV, pNext ) );
@@ -31191,11 +30172,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR DedicatedAllocationImageCreateInfoNV( VULKAN_HPP_NAMESPACE::Bool32 dedicatedAllocation_ = {} ) VULKAN_HPP_NOEXCEPT
       : dedicatedAllocation( dedicatedAllocation_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR DedicatedAllocationImageCreateInfoNV( DedicatedAllocationImageCreateInfoNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , dedicatedAllocation( rhs.dedicatedAllocation )
     {}
 
     DedicatedAllocationImageCreateInfoNV & operator=( DedicatedAllocationImageCreateInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -31267,12 +30243,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                                   VULKAN_HPP_NAMESPACE::Buffer buffer_ = {} ) VULKAN_HPP_NOEXCEPT
       : image( image_ )
       , buffer( buffer_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR DedicatedAllocationMemoryAllocateInfoNV( DedicatedAllocationMemoryAllocateInfoNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , image( rhs.image )
-      , buffer( rhs.buffer )
     {}
 
     DedicatedAllocationMemoryAllocateInfoNV & operator=( DedicatedAllocationMemoryAllocateInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -31353,11 +30323,6 @@ namespace VULKAN_HPP_NAMESPACE
       : operationHandle( operationHandle_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR DeferredOperationInfoKHR( DeferredOperationInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , operationHandle( rhs.operationHandle )
-    {}
-
     DeferredOperationInfoKHR & operator=( DeferredOperationInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( DeferredOperationInfoKHR ) - offsetof( DeferredOperationInfoKHR, pNext ) );
@@ -31432,18 +30397,6 @@ namespace VULKAN_HPP_NAMESPACE
       , range( range_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR DescriptorBufferInfo( DescriptorBufferInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : buffer( rhs.buffer )
-      , offset( rhs.offset )
-      , range( rhs.range )
-    {}
-
-    DescriptorBufferInfo & operator=( DescriptorBufferInfo const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( DescriptorBufferInfo ) );
-      return *this;
-    }
-
     DescriptorBufferInfo( VkDescriptorBufferInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -31517,18 +30470,6 @@ namespace VULKAN_HPP_NAMESPACE
       , imageLayout( imageLayout_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR DescriptorImageInfo( DescriptorImageInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : sampler( rhs.sampler )
-      , imageView( rhs.imageView )
-      , imageLayout( rhs.imageLayout )
-    {}
-
-    DescriptorImageInfo & operator=( DescriptorImageInfo const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( DescriptorImageInfo ) );
-      return *this;
-    }
-
     DescriptorImageInfo( VkDescriptorImageInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -31600,17 +30541,6 @@ namespace VULKAN_HPP_NAMESPACE
       , descriptorCount( descriptorCount_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR DescriptorPoolSize( DescriptorPoolSize const& rhs ) VULKAN_HPP_NOEXCEPT
-      : type( rhs.type )
-      , descriptorCount( rhs.descriptorCount )
-    {}
-
-    DescriptorPoolSize & operator=( DescriptorPoolSize const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( DescriptorPoolSize ) );
-      return *this;
-    }
-
     DescriptorPoolSize( VkDescriptorPoolSize const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -31676,14 +30606,6 @@ namespace VULKAN_HPP_NAMESPACE
       , maxSets( maxSets_ )
       , poolSizeCount( poolSizeCount_ )
       , pPoolSizes( pPoolSizes_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR DescriptorPoolCreateInfo( DescriptorPoolCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , maxSets( rhs.maxSets )
-      , poolSizeCount( rhs.poolSizeCount )
-      , pPoolSizes( rhs.pPoolSizes )
     {}
 
     DescriptorPoolCreateInfo & operator=( DescriptorPoolCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -31779,11 +30701,6 @@ namespace VULKAN_HPP_NAMESPACE
       : maxInlineUniformBlockBindings( maxInlineUniformBlockBindings_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR DescriptorPoolInlineUniformBlockCreateInfoEXT( DescriptorPoolInlineUniformBlockCreateInfoEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , maxInlineUniformBlockBindings( rhs.maxInlineUniformBlockBindings )
-    {}
-
     DescriptorPoolInlineUniformBlockCreateInfoEXT & operator=( DescriptorPoolInlineUniformBlockCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( DescriptorPoolInlineUniformBlockCreateInfoEXT ) - offsetof( DescriptorPoolInlineUniformBlockCreateInfoEXT, pNext ) );
@@ -31855,13 +30772,6 @@ namespace VULKAN_HPP_NAMESPACE
       : descriptorPool( descriptorPool_ )
       , descriptorSetCount( descriptorSetCount_ )
       , pSetLayouts( pSetLayouts_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR DescriptorSetAllocateInfo( DescriptorSetAllocateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , descriptorPool( rhs.descriptorPool )
-      , descriptorSetCount( rhs.descriptorSetCount )
-      , pSetLayouts( rhs.pSetLayouts )
     {}
 
     DescriptorSetAllocateInfo & operator=( DescriptorSetAllocateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -31957,20 +30867,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pImmutableSamplers( pImmutableSamplers_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR DescriptorSetLayoutBinding( DescriptorSetLayoutBinding const& rhs ) VULKAN_HPP_NOEXCEPT
-      : binding( rhs.binding )
-      , descriptorType( rhs.descriptorType )
-      , descriptorCount( rhs.descriptorCount )
-      , stageFlags( rhs.stageFlags )
-      , pImmutableSamplers( rhs.pImmutableSamplers )
-    {}
-
-    DescriptorSetLayoutBinding & operator=( DescriptorSetLayoutBinding const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( DescriptorSetLayoutBinding ) );
-      return *this;
-    }
-
     DescriptorSetLayoutBinding( VkDescriptorSetLayoutBinding const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -32058,12 +30954,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pBindingFlags( pBindingFlags_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR DescriptorSetLayoutBindingFlagsCreateInfo( DescriptorSetLayoutBindingFlagsCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , bindingCount( rhs.bindingCount )
-      , pBindingFlags( rhs.pBindingFlags )
-    {}
-
     DescriptorSetLayoutBindingFlagsCreateInfo & operator=( DescriptorSetLayoutBindingFlagsCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( DescriptorSetLayoutBindingFlagsCreateInfo ) - offsetof( DescriptorSetLayoutBindingFlagsCreateInfo, pNext ) );
@@ -32143,13 +31033,6 @@ namespace VULKAN_HPP_NAMESPACE
       : flags( flags_ )
       , bindingCount( bindingCount_ )
       , pBindings( pBindings_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR DescriptorSetLayoutCreateInfo( DescriptorSetLayoutCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , bindingCount( rhs.bindingCount )
-      , pBindings( rhs.pBindings )
     {}
 
     DescriptorSetLayoutCreateInfo & operator=( DescriptorSetLayoutCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -32237,11 +31120,6 @@ namespace VULKAN_HPP_NAMESPACE
       : supported( supported_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR DescriptorSetLayoutSupport( DescriptorSetLayoutSupport const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , supported( rhs.supported )
-    {}
-
     DescriptorSetLayoutSupport & operator=( DescriptorSetLayoutSupport const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( DescriptorSetLayoutSupport ) - offsetof( DescriptorSetLayoutSupport, pNext ) );
@@ -32299,12 +31177,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                                            const uint32_t* pDescriptorCounts_ = {} ) VULKAN_HPP_NOEXCEPT
       : descriptorSetCount( descriptorSetCount_ )
       , pDescriptorCounts( pDescriptorCounts_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR DescriptorSetVariableDescriptorCountAllocateInfo( DescriptorSetVariableDescriptorCountAllocateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , descriptorSetCount( rhs.descriptorSetCount )
-      , pDescriptorCounts( rhs.pDescriptorCounts )
     {}
 
     DescriptorSetVariableDescriptorCountAllocateInfo & operator=( DescriptorSetVariableDescriptorCountAllocateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -32384,11 +31256,6 @@ namespace VULKAN_HPP_NAMESPACE
       : maxVariableDescriptorCount( maxVariableDescriptorCount_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR DescriptorSetVariableDescriptorCountLayoutSupport( DescriptorSetVariableDescriptorCountLayoutSupport const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , maxVariableDescriptorCount( rhs.maxVariableDescriptorCount )
-    {}
-
     DescriptorSetVariableDescriptorCountLayoutSupport & operator=( DescriptorSetVariableDescriptorCountLayoutSupport const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( DescriptorSetVariableDescriptorCountLayoutSupport ) - offsetof( DescriptorSetVariableDescriptorCountLayoutSupport, pNext ) );
@@ -32455,21 +31322,6 @@ namespace VULKAN_HPP_NAMESPACE
       , offset( offset_ )
       , stride( stride_ )
     {}
-
-    VULKAN_HPP_CONSTEXPR DescriptorUpdateTemplateEntry( DescriptorUpdateTemplateEntry const& rhs ) VULKAN_HPP_NOEXCEPT
-      : dstBinding( rhs.dstBinding )
-      , dstArrayElement( rhs.dstArrayElement )
-      , descriptorCount( rhs.descriptorCount )
-      , descriptorType( rhs.descriptorType )
-      , offset( rhs.offset )
-      , stride( rhs.stride )
-    {}
-
-    DescriptorUpdateTemplateEntry & operator=( DescriptorUpdateTemplateEntry const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( DescriptorUpdateTemplateEntry ) );
-      return *this;
-    }
 
     DescriptorUpdateTemplateEntry( VkDescriptorUpdateTemplateEntry const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -32576,18 +31428,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pipelineBindPoint( pipelineBindPoint_ )
       , pipelineLayout( pipelineLayout_ )
       , set( set_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR DescriptorUpdateTemplateCreateInfo( DescriptorUpdateTemplateCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , descriptorUpdateEntryCount( rhs.descriptorUpdateEntryCount )
-      , pDescriptorUpdateEntries( rhs.pDescriptorUpdateEntries )
-      , templateType( rhs.templateType )
-      , descriptorSetLayout( rhs.descriptorSetLayout )
-      , pipelineBindPoint( rhs.pipelineBindPoint )
-      , pipelineLayout( rhs.pipelineLayout )
-      , set( rhs.set )
     {}
 
     DescriptorUpdateTemplateCreateInfo & operator=( DescriptorUpdateTemplateCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -32719,14 +31559,6 @@ namespace VULKAN_HPP_NAMESPACE
       , queueFamilyIndex( queueFamilyIndex_ )
       , queueCount( queueCount_ )
       , pQueuePriorities( pQueuePriorities_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR DeviceQueueCreateInfo( DeviceQueueCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , queueFamilyIndex( rhs.queueFamilyIndex )
-      , queueCount( rhs.queueCount )
-      , pQueuePriorities( rhs.pQueuePriorities )
     {}
 
     DeviceQueueCreateInfo & operator=( DeviceQueueCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -32929,70 +31761,6 @@ namespace VULKAN_HPP_NAMESPACE
       , variableMultisampleRate( variableMultisampleRate_ )
       , inheritedQueries( inheritedQueries_ )
     {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceFeatures( PhysicalDeviceFeatures const& rhs ) VULKAN_HPP_NOEXCEPT
-      : robustBufferAccess( rhs.robustBufferAccess )
-      , fullDrawIndexUint32( rhs.fullDrawIndexUint32 )
-      , imageCubeArray( rhs.imageCubeArray )
-      , independentBlend( rhs.independentBlend )
-      , geometryShader( rhs.geometryShader )
-      , tessellationShader( rhs.tessellationShader )
-      , sampleRateShading( rhs.sampleRateShading )
-      , dualSrcBlend( rhs.dualSrcBlend )
-      , logicOp( rhs.logicOp )
-      , multiDrawIndirect( rhs.multiDrawIndirect )
-      , drawIndirectFirstInstance( rhs.drawIndirectFirstInstance )
-      , depthClamp( rhs.depthClamp )
-      , depthBiasClamp( rhs.depthBiasClamp )
-      , fillModeNonSolid( rhs.fillModeNonSolid )
-      , depthBounds( rhs.depthBounds )
-      , wideLines( rhs.wideLines )
-      , largePoints( rhs.largePoints )
-      , alphaToOne( rhs.alphaToOne )
-      , multiViewport( rhs.multiViewport )
-      , samplerAnisotropy( rhs.samplerAnisotropy )
-      , textureCompressionETC2( rhs.textureCompressionETC2 )
-      , textureCompressionASTC_LDR( rhs.textureCompressionASTC_LDR )
-      , textureCompressionBC( rhs.textureCompressionBC )
-      , occlusionQueryPrecise( rhs.occlusionQueryPrecise )
-      , pipelineStatisticsQuery( rhs.pipelineStatisticsQuery )
-      , vertexPipelineStoresAndAtomics( rhs.vertexPipelineStoresAndAtomics )
-      , fragmentStoresAndAtomics( rhs.fragmentStoresAndAtomics )
-      , shaderTessellationAndGeometryPointSize( rhs.shaderTessellationAndGeometryPointSize )
-      , shaderImageGatherExtended( rhs.shaderImageGatherExtended )
-      , shaderStorageImageExtendedFormats( rhs.shaderStorageImageExtendedFormats )
-      , shaderStorageImageMultisample( rhs.shaderStorageImageMultisample )
-      , shaderStorageImageReadWithoutFormat( rhs.shaderStorageImageReadWithoutFormat )
-      , shaderStorageImageWriteWithoutFormat( rhs.shaderStorageImageWriteWithoutFormat )
-      , shaderUniformBufferArrayDynamicIndexing( rhs.shaderUniformBufferArrayDynamicIndexing )
-      , shaderSampledImageArrayDynamicIndexing( rhs.shaderSampledImageArrayDynamicIndexing )
-      , shaderStorageBufferArrayDynamicIndexing( rhs.shaderStorageBufferArrayDynamicIndexing )
-      , shaderStorageImageArrayDynamicIndexing( rhs.shaderStorageImageArrayDynamicIndexing )
-      , shaderClipDistance( rhs.shaderClipDistance )
-      , shaderCullDistance( rhs.shaderCullDistance )
-      , shaderFloat64( rhs.shaderFloat64 )
-      , shaderInt64( rhs.shaderInt64 )
-      , shaderInt16( rhs.shaderInt16 )
-      , shaderResourceResidency( rhs.shaderResourceResidency )
-      , shaderResourceMinLod( rhs.shaderResourceMinLod )
-      , sparseBinding( rhs.sparseBinding )
-      , sparseResidencyBuffer( rhs.sparseResidencyBuffer )
-      , sparseResidencyImage2D( rhs.sparseResidencyImage2D )
-      , sparseResidencyImage3D( rhs.sparseResidencyImage3D )
-      , sparseResidency2Samples( rhs.sparseResidency2Samples )
-      , sparseResidency4Samples( rhs.sparseResidency4Samples )
-      , sparseResidency8Samples( rhs.sparseResidency8Samples )
-      , sparseResidency16Samples( rhs.sparseResidency16Samples )
-      , sparseResidencyAliased( rhs.sparseResidencyAliased )
-      , variableMultisampleRate( rhs.variableMultisampleRate )
-      , inheritedQueries( rhs.inheritedQueries )
-    {}
-
-    PhysicalDeviceFeatures & operator=( PhysicalDeviceFeatures const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( PhysicalDeviceFeatures ) );
-      return *this;
-    }
 
     PhysicalDeviceFeatures( VkPhysicalDeviceFeatures const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -33493,18 +32261,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pEnabledFeatures( pEnabledFeatures_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR DeviceCreateInfo( DeviceCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , queueCreateInfoCount( rhs.queueCreateInfoCount )
-      , pQueueCreateInfos( rhs.pQueueCreateInfos )
-      , enabledLayerCount( rhs.enabledLayerCount )
-      , ppEnabledLayerNames( rhs.ppEnabledLayerNames )
-      , enabledExtensionCount( rhs.enabledExtensionCount )
-      , ppEnabledExtensionNames( rhs.ppEnabledExtensionNames )
-      , pEnabledFeatures( rhs.pEnabledFeatures )
-    {}
-
     DeviceCreateInfo & operator=( DeviceCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( DeviceCreateInfo ) - offsetof( DeviceCreateInfo, pNext ) );
@@ -33630,11 +32386,6 @@ namespace VULKAN_HPP_NAMESPACE
       : flags( flags_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR DeviceDiagnosticsConfigCreateInfoNV( DeviceDiagnosticsConfigCreateInfoNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-    {}
-
     DeviceDiagnosticsConfigCreateInfoNV & operator=( DeviceDiagnosticsConfigCreateInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( DeviceDiagnosticsConfigCreateInfoNV ) - offsetof( DeviceDiagnosticsConfigCreateInfoNV, pNext ) );
@@ -33702,11 +32453,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR DeviceEventInfoEXT( VULKAN_HPP_NAMESPACE::DeviceEventTypeEXT deviceEvent_ = VULKAN_HPP_NAMESPACE::DeviceEventTypeEXT::eDisplayHotplug ) VULKAN_HPP_NOEXCEPT
       : deviceEvent( deviceEvent_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR DeviceEventInfoEXT( DeviceEventInfoEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , deviceEvent( rhs.deviceEvent )
     {}
 
     DeviceEventInfoEXT & operator=( DeviceEventInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -33778,12 +32524,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                     uint32_t memoryDeviceIndex_ = {} ) VULKAN_HPP_NOEXCEPT
       : resourceDeviceIndex( resourceDeviceIndex_ )
       , memoryDeviceIndex( memoryDeviceIndex_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR DeviceGroupBindSparseInfo( DeviceGroupBindSparseInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , resourceDeviceIndex( rhs.resourceDeviceIndex )
-      , memoryDeviceIndex( rhs.memoryDeviceIndex )
     {}
 
     DeviceGroupBindSparseInfo & operator=( DeviceGroupBindSparseInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -33863,11 +32603,6 @@ namespace VULKAN_HPP_NAMESPACE
       : deviceMask( deviceMask_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR DeviceGroupCommandBufferBeginInfo( DeviceGroupCommandBufferBeginInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , deviceMask( rhs.deviceMask )
-    {}
-
     DeviceGroupCommandBufferBeginInfo & operator=( DeviceGroupCommandBufferBeginInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( DeviceGroupCommandBufferBeginInfo ) - offsetof( DeviceGroupCommandBufferBeginInfo, pNext ) );
@@ -33937,12 +32672,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                       const VULKAN_HPP_NAMESPACE::PhysicalDevice* pPhysicalDevices_ = {} ) VULKAN_HPP_NOEXCEPT
       : physicalDeviceCount( physicalDeviceCount_ )
       , pPhysicalDevices( pPhysicalDevices_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR DeviceGroupDeviceCreateInfo( DeviceGroupDeviceCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , physicalDeviceCount( rhs.physicalDeviceCount )
-      , pPhysicalDevices( rhs.pPhysicalDevices )
     {}
 
     DeviceGroupDeviceCreateInfo & operator=( DeviceGroupDeviceCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -34020,19 +32749,9 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR_14 DeviceGroupPresentCapabilitiesKHR( std::array<uint32_t,VK_MAX_DEVICE_GROUP_SIZE> const& presentMask_ = {},
                                                                VULKAN_HPP_NAMESPACE::DeviceGroupPresentModeFlagsKHR modes_ = {} ) VULKAN_HPP_NOEXCEPT
-      : presentMask{}
+      : presentMask( presentMask_ )
       , modes( modes_ )
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,VK_MAX_DEVICE_GROUP_SIZE>::copy( presentMask, presentMask_ );
-    }
-
-    VULKAN_HPP_CONSTEXPR_14 DeviceGroupPresentCapabilitiesKHR( DeviceGroupPresentCapabilitiesKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , presentMask{}
-      , modes( rhs.modes )
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,VK_MAX_DEVICE_GROUP_SIZE>::copy( presentMask, rhs.presentMask );
-    }
+    {}
 
     DeviceGroupPresentCapabilitiesKHR & operator=( DeviceGroupPresentCapabilitiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -34068,7 +32787,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
-          && ( memcmp( presentMask, rhs.presentMask, VK_MAX_DEVICE_GROUP_SIZE * sizeof( uint32_t ) ) == 0 )
+          && ( presentMask == rhs.presentMask )
           && ( modes == rhs.modes );
     }
 
@@ -34081,7 +32800,7 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eDeviceGroupPresentCapabilitiesKHR;
     const void* pNext = {};
-    uint32_t presentMask[VK_MAX_DEVICE_GROUP_SIZE] = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<uint32_t, VK_MAX_DEVICE_GROUP_SIZE> presentMask = {};
     VULKAN_HPP_NAMESPACE::DeviceGroupPresentModeFlagsKHR modes = {};
   };
   static_assert( sizeof( DeviceGroupPresentCapabilitiesKHR ) == sizeof( VkDeviceGroupPresentCapabilitiesKHR ), "struct and wrapper have different size!" );
@@ -34095,13 +32814,6 @@ namespace VULKAN_HPP_NAMESPACE
       : swapchainCount( swapchainCount_ )
       , pDeviceMasks( pDeviceMasks_ )
       , mode( mode_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR DeviceGroupPresentInfoKHR( DeviceGroupPresentInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , swapchainCount( rhs.swapchainCount )
-      , pDeviceMasks( rhs.pDeviceMasks )
-      , mode( rhs.mode )
     {}
 
     DeviceGroupPresentInfoKHR & operator=( DeviceGroupPresentInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -34191,13 +32903,6 @@ namespace VULKAN_HPP_NAMESPACE
       : deviceMask( deviceMask_ )
       , deviceRenderAreaCount( deviceRenderAreaCount_ )
       , pDeviceRenderAreas( pDeviceRenderAreas_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR DeviceGroupRenderPassBeginInfo( DeviceGroupRenderPassBeginInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , deviceMask( rhs.deviceMask )
-      , deviceRenderAreaCount( rhs.deviceRenderAreaCount )
-      , pDeviceRenderAreas( rhs.pDeviceRenderAreas )
     {}
 
     DeviceGroupRenderPassBeginInfo & operator=( DeviceGroupRenderPassBeginInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -34293,16 +32998,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pCommandBufferDeviceMasks( pCommandBufferDeviceMasks_ )
       , signalSemaphoreCount( signalSemaphoreCount_ )
       , pSignalSemaphoreDeviceIndices( pSignalSemaphoreDeviceIndices_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR DeviceGroupSubmitInfo( DeviceGroupSubmitInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , waitSemaphoreCount( rhs.waitSemaphoreCount )
-      , pWaitSemaphoreDeviceIndices( rhs.pWaitSemaphoreDeviceIndices )
-      , commandBufferCount( rhs.commandBufferCount )
-      , pCommandBufferDeviceMasks( rhs.pCommandBufferDeviceMasks )
-      , signalSemaphoreCount( rhs.signalSemaphoreCount )
-      , pSignalSemaphoreDeviceIndices( rhs.pSignalSemaphoreDeviceIndices )
     {}
 
     DeviceGroupSubmitInfo & operator=( DeviceGroupSubmitInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -34414,11 +33109,6 @@ namespace VULKAN_HPP_NAMESPACE
       : modes( modes_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR DeviceGroupSwapchainCreateInfoKHR( DeviceGroupSwapchainCreateInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , modes( rhs.modes )
-    {}
-
     DeviceGroupSwapchainCreateInfoKHR & operator=( DeviceGroupSwapchainCreateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( DeviceGroupSwapchainCreateInfoKHR ) - offsetof( DeviceGroupSwapchainCreateInfoKHR, pNext ) );
@@ -34486,11 +33176,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR DeviceMemoryOpaqueCaptureAddressInfo( VULKAN_HPP_NAMESPACE::DeviceMemory memory_ = {} ) VULKAN_HPP_NOEXCEPT
       : memory( memory_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR DeviceMemoryOpaqueCaptureAddressInfo( DeviceMemoryOpaqueCaptureAddressInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , memory( rhs.memory )
     {}
 
     DeviceMemoryOpaqueCaptureAddressInfo & operator=( DeviceMemoryOpaqueCaptureAddressInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -34562,11 +33247,6 @@ namespace VULKAN_HPP_NAMESPACE
       : overallocationBehavior( overallocationBehavior_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR DeviceMemoryOverallocationCreateInfoAMD( DeviceMemoryOverallocationCreateInfoAMD const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , overallocationBehavior( rhs.overallocationBehavior )
-    {}
-
     DeviceMemoryOverallocationCreateInfoAMD & operator=( DeviceMemoryOverallocationCreateInfoAMD const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( DeviceMemoryOverallocationCreateInfoAMD ) - offsetof( DeviceMemoryOverallocationCreateInfoAMD, pNext ) );
@@ -34634,11 +33314,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR DeviceQueueGlobalPriorityCreateInfoEXT( VULKAN_HPP_NAMESPACE::QueueGlobalPriorityEXT globalPriority_ = VULKAN_HPP_NAMESPACE::QueueGlobalPriorityEXT::eLow ) VULKAN_HPP_NOEXCEPT
       : globalPriority( globalPriority_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR DeviceQueueGlobalPriorityCreateInfoEXT( DeviceQueueGlobalPriorityCreateInfoEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , globalPriority( rhs.globalPriority )
     {}
 
     DeviceQueueGlobalPriorityCreateInfoEXT & operator=( DeviceQueueGlobalPriorityCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -34712,13 +33387,6 @@ namespace VULKAN_HPP_NAMESPACE
       : flags( flags_ )
       , queueFamilyIndex( queueFamilyIndex_ )
       , queueIndex( queueIndex_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR DeviceQueueInfo2( DeviceQueueInfo2 const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , queueFamilyIndex( rhs.queueFamilyIndex )
-      , queueIndex( rhs.queueIndex )
     {}
 
     DeviceQueueInfo2 & operator=( DeviceQueueInfo2 const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -34810,18 +33478,6 @@ namespace VULKAN_HPP_NAMESPACE
       , z( z_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR DispatchIndirectCommand( DispatchIndirectCommand const& rhs ) VULKAN_HPP_NOEXCEPT
-      : x( rhs.x )
-      , y( rhs.y )
-      , z( rhs.z )
-    {}
-
-    DispatchIndirectCommand & operator=( DispatchIndirectCommand const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( DispatchIndirectCommand ) );
-      return *this;
-    }
-
     DispatchIndirectCommand( VkDispatchIndirectCommand const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -34889,11 +33545,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR DisplayEventInfoEXT( VULKAN_HPP_NAMESPACE::DisplayEventTypeEXT displayEvent_ = VULKAN_HPP_NAMESPACE::DisplayEventTypeEXT::eFirstPixelOut ) VULKAN_HPP_NOEXCEPT
       : displayEvent( displayEvent_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR DisplayEventInfoEXT( DisplayEventInfoEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , displayEvent( rhs.displayEvent )
     {}
 
     DisplayEventInfoEXT & operator=( DisplayEventInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -34967,17 +33618,6 @@ namespace VULKAN_HPP_NAMESPACE
       , refreshRate( refreshRate_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR DisplayModeParametersKHR( DisplayModeParametersKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : visibleRegion( rhs.visibleRegion )
-      , refreshRate( rhs.refreshRate )
-    {}
-
-    DisplayModeParametersKHR & operator=( DisplayModeParametersKHR const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( DisplayModeParametersKHR ) );
-      return *this;
-    }
-
     DisplayModeParametersKHR( VkDisplayModeParametersKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -35039,12 +33679,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                    VULKAN_HPP_NAMESPACE::DisplayModeParametersKHR parameters_ = {} ) VULKAN_HPP_NOEXCEPT
       : flags( flags_ )
       , parameters( parameters_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR DisplayModeCreateInfoKHR( DisplayModeCreateInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , parameters( rhs.parameters )
     {}
 
     DisplayModeCreateInfoKHR & operator=( DisplayModeCreateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -35126,17 +33760,6 @@ namespace VULKAN_HPP_NAMESPACE
       , parameters( parameters_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR DisplayModePropertiesKHR( DisplayModePropertiesKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : displayMode( rhs.displayMode )
-      , parameters( rhs.parameters )
-    {}
-
-    DisplayModePropertiesKHR & operator=( DisplayModePropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( DisplayModePropertiesKHR ) );
-      return *this;
-    }
-
     DisplayModePropertiesKHR( VkDisplayModePropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -35184,11 +33807,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR DisplayModeProperties2KHR( VULKAN_HPP_NAMESPACE::DisplayModePropertiesKHR displayModeProperties_ = {} ) VULKAN_HPP_NOEXCEPT
       : displayModeProperties( displayModeProperties_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR DisplayModeProperties2KHR( DisplayModeProperties2KHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , displayModeProperties( rhs.displayModeProperties )
     {}
 
     DisplayModeProperties2KHR & operator=( DisplayModeProperties2KHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -35246,11 +33864,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR DisplayNativeHdrSurfaceCapabilitiesAMD( VULKAN_HPP_NAMESPACE::Bool32 localDimmingSupport_ = {} ) VULKAN_HPP_NOEXCEPT
       : localDimmingSupport( localDimmingSupport_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR DisplayNativeHdrSurfaceCapabilitiesAMD( DisplayNativeHdrSurfaceCapabilitiesAMD const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , localDimmingSupport( rhs.localDimmingSupport )
     {}
 
     DisplayNativeHdrSurfaceCapabilitiesAMD & operator=( DisplayNativeHdrSurfaceCapabilitiesAMD const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -35326,24 +33939,6 @@ namespace VULKAN_HPP_NAMESPACE
       , maxDstExtent( maxDstExtent_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR DisplayPlaneCapabilitiesKHR( DisplayPlaneCapabilitiesKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : supportedAlpha( rhs.supportedAlpha )
-      , minSrcPosition( rhs.minSrcPosition )
-      , maxSrcPosition( rhs.maxSrcPosition )
-      , minSrcExtent( rhs.minSrcExtent )
-      , maxSrcExtent( rhs.maxSrcExtent )
-      , minDstPosition( rhs.minDstPosition )
-      , maxDstPosition( rhs.maxDstPosition )
-      , minDstExtent( rhs.minDstExtent )
-      , maxDstExtent( rhs.maxDstExtent )
-    {}
-
-    DisplayPlaneCapabilitiesKHR & operator=( DisplayPlaneCapabilitiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( DisplayPlaneCapabilitiesKHR ) );
-      return *this;
-    }
-
     DisplayPlaneCapabilitiesKHR( VkDisplayPlaneCapabilitiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -35407,11 +34002,6 @@ namespace VULKAN_HPP_NAMESPACE
       : capabilities( capabilities_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR DisplayPlaneCapabilities2KHR( DisplayPlaneCapabilities2KHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , capabilities( rhs.capabilities )
-    {}
-
     DisplayPlaneCapabilities2KHR & operator=( DisplayPlaneCapabilities2KHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( DisplayPlaneCapabilities2KHR ) - offsetof( DisplayPlaneCapabilities2KHR, pNext ) );
@@ -35469,12 +34059,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                uint32_t planeIndex_ = {} ) VULKAN_HPP_NOEXCEPT
       : mode( mode_ )
       , planeIndex( planeIndex_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR DisplayPlaneInfo2KHR( DisplayPlaneInfo2KHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , mode( rhs.mode )
-      , planeIndex( rhs.planeIndex )
     {}
 
     DisplayPlaneInfo2KHR & operator=( DisplayPlaneInfo2KHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -35556,17 +34140,6 @@ namespace VULKAN_HPP_NAMESPACE
       , currentStackIndex( currentStackIndex_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR DisplayPlanePropertiesKHR( DisplayPlanePropertiesKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : currentDisplay( rhs.currentDisplay )
-      , currentStackIndex( rhs.currentStackIndex )
-    {}
-
-    DisplayPlanePropertiesKHR & operator=( DisplayPlanePropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( DisplayPlanePropertiesKHR ) );
-      return *this;
-    }
-
     DisplayPlanePropertiesKHR( VkDisplayPlanePropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -35614,11 +34187,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR DisplayPlaneProperties2KHR( VULKAN_HPP_NAMESPACE::DisplayPlanePropertiesKHR displayPlaneProperties_ = {} ) VULKAN_HPP_NOEXCEPT
       : displayPlaneProperties( displayPlaneProperties_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR DisplayPlaneProperties2KHR( DisplayPlaneProperties2KHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , displayPlaneProperties( rhs.displayPlaneProperties )
     {}
 
     DisplayPlaneProperties2KHR & operator=( DisplayPlaneProperties2KHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -35676,11 +34244,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR DisplayPowerInfoEXT( VULKAN_HPP_NAMESPACE::DisplayPowerStateEXT powerState_ = VULKAN_HPP_NAMESPACE::DisplayPowerStateEXT::eOff ) VULKAN_HPP_NOEXCEPT
       : powerState( powerState_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR DisplayPowerInfoEXT( DisplayPowerInfoEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , powerState( rhs.powerState )
     {}
 
     DisplayPowerInfoEXT & operator=( DisplayPowerInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -35754,13 +34317,6 @@ namespace VULKAN_HPP_NAMESPACE
       : srcRect( srcRect_ )
       , dstRect( dstRect_ )
       , persistent( persistent_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR DisplayPresentInfoKHR( DisplayPresentInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , srcRect( rhs.srcRect )
-      , dstRect( rhs.dstRect )
-      , persistent( rhs.persistent )
     {}
 
     DisplayPresentInfoKHR & operator=( DisplayPresentInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -35860,22 +34416,6 @@ namespace VULKAN_HPP_NAMESPACE
       , persistentContent( persistentContent_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR DisplayPropertiesKHR( DisplayPropertiesKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : display( rhs.display )
-      , displayName( rhs.displayName )
-      , physicalDimensions( rhs.physicalDimensions )
-      , physicalResolution( rhs.physicalResolution )
-      , supportedTransforms( rhs.supportedTransforms )
-      , planeReorderPossible( rhs.planeReorderPossible )
-      , persistentContent( rhs.persistentContent )
-    {}
-
-    DisplayPropertiesKHR & operator=( DisplayPropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( DisplayPropertiesKHR ) );
-      return *this;
-    }
-
     DisplayPropertiesKHR( VkDisplayPropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -35933,11 +34473,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR DisplayProperties2KHR( VULKAN_HPP_NAMESPACE::DisplayPropertiesKHR displayProperties_ = {} ) VULKAN_HPP_NOEXCEPT
       : displayProperties( displayProperties_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR DisplayProperties2KHR( DisplayProperties2KHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , displayProperties( rhs.displayProperties )
     {}
 
     DisplayProperties2KHR & operator=( DisplayProperties2KHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -36009,18 +34544,6 @@ namespace VULKAN_HPP_NAMESPACE
       , globalAlpha( globalAlpha_ )
       , alphaMode( alphaMode_ )
       , imageExtent( imageExtent_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR DisplaySurfaceCreateInfoKHR( DisplaySurfaceCreateInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , displayMode( rhs.displayMode )
-      , planeIndex( rhs.planeIndex )
-      , planeStackIndex( rhs.planeStackIndex )
-      , transform( rhs.transform )
-      , globalAlpha( rhs.globalAlpha )
-      , alphaMode( rhs.alphaMode )
-      , imageExtent( rhs.imageExtent )
     {}
 
     DisplaySurfaceCreateInfoKHR & operator=( DisplaySurfaceCreateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -36156,20 +34679,6 @@ namespace VULKAN_HPP_NAMESPACE
       , firstInstance( firstInstance_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR DrawIndexedIndirectCommand( DrawIndexedIndirectCommand const& rhs ) VULKAN_HPP_NOEXCEPT
-      : indexCount( rhs.indexCount )
-      , instanceCount( rhs.instanceCount )
-      , firstIndex( rhs.firstIndex )
-      , vertexOffset( rhs.vertexOffset )
-      , firstInstance( rhs.firstInstance )
-    {}
-
-    DrawIndexedIndirectCommand & operator=( DrawIndexedIndirectCommand const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( DrawIndexedIndirectCommand ) );
-      return *this;
-    }
-
     DrawIndexedIndirectCommand( VkDrawIndexedIndirectCommand const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -36261,19 +34770,6 @@ namespace VULKAN_HPP_NAMESPACE
       , firstInstance( firstInstance_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR DrawIndirectCommand( DrawIndirectCommand const& rhs ) VULKAN_HPP_NOEXCEPT
-      : vertexCount( rhs.vertexCount )
-      , instanceCount( rhs.instanceCount )
-      , firstVertex( rhs.firstVertex )
-      , firstInstance( rhs.firstInstance )
-    {}
-
-    DrawIndirectCommand & operator=( DrawIndirectCommand const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( DrawIndirectCommand ) );
-      return *this;
-    }
-
     DrawIndirectCommand( VkDrawIndirectCommand const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -36353,17 +34849,6 @@ namespace VULKAN_HPP_NAMESPACE
       , firstTask( firstTask_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR DrawMeshTasksIndirectCommandNV( DrawMeshTasksIndirectCommandNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : taskCount( rhs.taskCount )
-      , firstTask( rhs.firstTask )
-    {}
-
-    DrawMeshTasksIndirectCommandNV & operator=( DrawMeshTasksIndirectCommandNV const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( DrawMeshTasksIndirectCommandNV ) );
-      return *this;
-    }
-
     DrawMeshTasksIndirectCommandNV( VkDrawMeshTasksIndirectCommandNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -36429,18 +34914,6 @@ namespace VULKAN_HPP_NAMESPACE
       , drmFormatModifierTilingFeatures( drmFormatModifierTilingFeatures_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR DrmFormatModifierPropertiesEXT( DrmFormatModifierPropertiesEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : drmFormatModifier( rhs.drmFormatModifier )
-      , drmFormatModifierPlaneCount( rhs.drmFormatModifierPlaneCount )
-      , drmFormatModifierTilingFeatures( rhs.drmFormatModifierTilingFeatures )
-    {}
-
-    DrmFormatModifierPropertiesEXT & operator=( DrmFormatModifierPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( DrmFormatModifierPropertiesEXT ) );
-      return *this;
-    }
-
     DrmFormatModifierPropertiesEXT( VkDrmFormatModifierPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -36492,12 +34965,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                              VULKAN_HPP_NAMESPACE::DrmFormatModifierPropertiesEXT* pDrmFormatModifierProperties_ = {} ) VULKAN_HPP_NOEXCEPT
       : drmFormatModifierCount( drmFormatModifierCount_ )
       , pDrmFormatModifierProperties( pDrmFormatModifierProperties_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR DrmFormatModifierPropertiesListEXT( DrmFormatModifierPropertiesListEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , drmFormatModifierCount( rhs.drmFormatModifierCount )
-      , pDrmFormatModifierProperties( rhs.pDrmFormatModifierProperties )
     {}
 
     DrmFormatModifierPropertiesListEXT & operator=( DrmFormatModifierPropertiesListEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -36557,11 +35024,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR EventCreateInfo( VULKAN_HPP_NAMESPACE::EventCreateFlags flags_ = {} ) VULKAN_HPP_NOEXCEPT
       : flags( flags_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR EventCreateInfo( EventCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
     {}
 
     EventCreateInfo & operator=( EventCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -36631,11 +35093,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR ExportFenceCreateInfo( VULKAN_HPP_NAMESPACE::ExternalFenceHandleTypeFlags handleTypes_ = {} ) VULKAN_HPP_NOEXCEPT
       : handleTypes( handleTypes_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR ExportFenceCreateInfo( ExportFenceCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , handleTypes( rhs.handleTypes )
     {}
 
     ExportFenceCreateInfo & operator=( ExportFenceCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -36710,13 +35167,6 @@ namespace VULKAN_HPP_NAMESPACE
       : pAttributes( pAttributes_ )
       , dwAccess( dwAccess_ )
       , name( name_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR ExportFenceWin32HandleInfoKHR( ExportFenceWin32HandleInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , pAttributes( rhs.pAttributes )
-      , dwAccess( rhs.dwAccess )
-      , name( rhs.name )
     {}
 
     ExportFenceWin32HandleInfoKHR & operator=( ExportFenceWin32HandleInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -36805,11 +35255,6 @@ namespace VULKAN_HPP_NAMESPACE
       : handleTypes( handleTypes_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR ExportMemoryAllocateInfo( ExportMemoryAllocateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , handleTypes( rhs.handleTypes )
-    {}
-
     ExportMemoryAllocateInfo & operator=( ExportMemoryAllocateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( ExportMemoryAllocateInfo ) - offsetof( ExportMemoryAllocateInfo, pNext ) );
@@ -36877,11 +35322,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR ExportMemoryAllocateInfoNV( VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagsNV handleTypes_ = {} ) VULKAN_HPP_NOEXCEPT
       : handleTypes( handleTypes_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR ExportMemoryAllocateInfoNV( ExportMemoryAllocateInfoNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , handleTypes( rhs.handleTypes )
     {}
 
     ExportMemoryAllocateInfoNV & operator=( ExportMemoryAllocateInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -36956,13 +35396,6 @@ namespace VULKAN_HPP_NAMESPACE
       : pAttributes( pAttributes_ )
       , dwAccess( dwAccess_ )
       , name( name_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR ExportMemoryWin32HandleInfoKHR( ExportMemoryWin32HandleInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , pAttributes( rhs.pAttributes )
-      , dwAccess( rhs.dwAccess )
-      , name( rhs.name )
     {}
 
     ExportMemoryWin32HandleInfoKHR & operator=( ExportMemoryWin32HandleInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -37054,12 +35487,6 @@ namespace VULKAN_HPP_NAMESPACE
       , dwAccess( dwAccess_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR ExportMemoryWin32HandleInfoNV( ExportMemoryWin32HandleInfoNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , pAttributes( rhs.pAttributes )
-      , dwAccess( rhs.dwAccess )
-    {}
-
     ExportMemoryWin32HandleInfoNV & operator=( ExportMemoryWin32HandleInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( ExportMemoryWin32HandleInfoNV ) - offsetof( ExportMemoryWin32HandleInfoNV, pNext ) );
@@ -37138,11 +35565,6 @@ namespace VULKAN_HPP_NAMESPACE
       : handleTypes( handleTypes_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR ExportSemaphoreCreateInfo( ExportSemaphoreCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , handleTypes( rhs.handleTypes )
-    {}
-
     ExportSemaphoreCreateInfo & operator=( ExportSemaphoreCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( ExportSemaphoreCreateInfo ) - offsetof( ExportSemaphoreCreateInfo, pNext ) );
@@ -37215,13 +35637,6 @@ namespace VULKAN_HPP_NAMESPACE
       : pAttributes( pAttributes_ )
       , dwAccess( dwAccess_ )
       , name( name_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR ExportSemaphoreWin32HandleInfoKHR( ExportSemaphoreWin32HandleInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , pAttributes( rhs.pAttributes )
-      , dwAccess( rhs.dwAccess )
-      , name( rhs.name )
     {}
 
     ExportSemaphoreWin32HandleInfoKHR & operator=( ExportSemaphoreWin32HandleInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -37308,24 +35723,9 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR_14 ExtensionProperties( std::array<char,VK_MAX_EXTENSION_NAME_SIZE> const& extensionName_ = {},
                                                  uint32_t specVersion_ = {} ) VULKAN_HPP_NOEXCEPT
-      : extensionName{}
+      : extensionName( extensionName_ )
       , specVersion( specVersion_ )
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_EXTENSION_NAME_SIZE>::copy( extensionName, extensionName_ );
-    }
-
-    VULKAN_HPP_CONSTEXPR_14 ExtensionProperties( ExtensionProperties const& rhs ) VULKAN_HPP_NOEXCEPT
-      : extensionName{}
-      , specVersion( rhs.specVersion )
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_EXTENSION_NAME_SIZE>::copy( extensionName, rhs.extensionName );
-    }
-
-    ExtensionProperties & operator=( ExtensionProperties const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( ExtensionProperties ) );
-      return *this;
-    }
+    {}
 
     ExtensionProperties( VkExtensionProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -37353,7 +35753,7 @@ namespace VULKAN_HPP_NAMESPACE
 #else
     bool operator==( ExtensionProperties const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
-      return ( memcmp( extensionName, rhs.extensionName, VK_MAX_EXTENSION_NAME_SIZE * sizeof( char ) ) == 0 )
+      return ( extensionName == rhs.extensionName )
           && ( specVersion == rhs.specVersion );
     }
 
@@ -37364,7 +35764,7 @@ namespace VULKAN_HPP_NAMESPACE
 #endif
 
   public:
-    char extensionName[VK_MAX_EXTENSION_NAME_SIZE] = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<char, VK_MAX_EXTENSION_NAME_SIZE> extensionName = {};
     uint32_t specVersion = {};
   };
   static_assert( sizeof( ExtensionProperties ) == sizeof( VkExtensionProperties ), "struct and wrapper have different size!" );
@@ -37379,18 +35779,6 @@ namespace VULKAN_HPP_NAMESPACE
       , exportFromImportedHandleTypes( exportFromImportedHandleTypes_ )
       , compatibleHandleTypes( compatibleHandleTypes_ )
     {}
-
-    VULKAN_HPP_CONSTEXPR ExternalMemoryProperties( ExternalMemoryProperties const& rhs ) VULKAN_HPP_NOEXCEPT
-      : externalMemoryFeatures( rhs.externalMemoryFeatures )
-      , exportFromImportedHandleTypes( rhs.exportFromImportedHandleTypes )
-      , compatibleHandleTypes( rhs.compatibleHandleTypes )
-    {}
-
-    ExternalMemoryProperties & operator=( ExternalMemoryProperties const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( ExternalMemoryProperties ) );
-      return *this;
-    }
 
     ExternalMemoryProperties( VkExternalMemoryProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -37441,11 +35829,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR ExternalBufferProperties( VULKAN_HPP_NAMESPACE::ExternalMemoryProperties externalMemoryProperties_ = {} ) VULKAN_HPP_NOEXCEPT
       : externalMemoryProperties( externalMemoryProperties_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR ExternalBufferProperties( ExternalBufferProperties const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , externalMemoryProperties( rhs.externalMemoryProperties )
     {}
 
     ExternalBufferProperties & operator=( ExternalBufferProperties const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -37509,13 +35892,6 @@ namespace VULKAN_HPP_NAMESPACE
       , externalFenceFeatures( externalFenceFeatures_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR ExternalFenceProperties( ExternalFenceProperties const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , exportFromImportedHandleTypes( rhs.exportFromImportedHandleTypes )
-      , compatibleHandleTypes( rhs.compatibleHandleTypes )
-      , externalFenceFeatures( rhs.externalFenceFeatures )
-    {}
-
     ExternalFenceProperties & operator=( ExternalFenceProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( ExternalFenceProperties ) - offsetof( ExternalFenceProperties, pNext ) );
@@ -37576,11 +35952,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR ExternalFormatANDROID( uint64_t externalFormat_ = {} ) VULKAN_HPP_NOEXCEPT
       : externalFormat( externalFormat_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR ExternalFormatANDROID( ExternalFormatANDROID const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , externalFormat( rhs.externalFormat )
     {}
 
     ExternalFormatANDROID & operator=( ExternalFormatANDROID const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -37653,11 +36024,6 @@ namespace VULKAN_HPP_NAMESPACE
       : externalMemoryProperties( externalMemoryProperties_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR ExternalImageFormatProperties( ExternalImageFormatProperties const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , externalMemoryProperties( rhs.externalMemoryProperties )
-    {}
-
     ExternalImageFormatProperties & operator=( ExternalImageFormatProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( ExternalImageFormatProperties ) - offsetof( ExternalImageFormatProperties, pNext ) );
@@ -37723,20 +36089,6 @@ namespace VULKAN_HPP_NAMESPACE
       , maxResourceSize( maxResourceSize_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR ImageFormatProperties( ImageFormatProperties const& rhs ) VULKAN_HPP_NOEXCEPT
-      : maxExtent( rhs.maxExtent )
-      , maxMipLevels( rhs.maxMipLevels )
-      , maxArrayLayers( rhs.maxArrayLayers )
-      , sampleCounts( rhs.sampleCounts )
-      , maxResourceSize( rhs.maxResourceSize )
-    {}
-
-    ImageFormatProperties & operator=( ImageFormatProperties const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( ImageFormatProperties ) );
-      return *this;
-    }
-
     ImageFormatProperties( VkImageFormatProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -37798,19 +36150,6 @@ namespace VULKAN_HPP_NAMESPACE
       , compatibleHandleTypes( compatibleHandleTypes_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR ExternalImageFormatPropertiesNV( ExternalImageFormatPropertiesNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : imageFormatProperties( rhs.imageFormatProperties )
-      , externalMemoryFeatures( rhs.externalMemoryFeatures )
-      , exportFromImportedHandleTypes( rhs.exportFromImportedHandleTypes )
-      , compatibleHandleTypes( rhs.compatibleHandleTypes )
-    {}
-
-    ExternalImageFormatPropertiesNV & operator=( ExternalImageFormatPropertiesNV const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( ExternalImageFormatPropertiesNV ) );
-      return *this;
-    }
-
     ExternalImageFormatPropertiesNV( VkExternalImageFormatPropertiesNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -37862,11 +36201,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR ExternalMemoryBufferCreateInfo( VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlags handleTypes_ = {} ) VULKAN_HPP_NOEXCEPT
       : handleTypes( handleTypes_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR ExternalMemoryBufferCreateInfo( ExternalMemoryBufferCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , handleTypes( rhs.handleTypes )
     {}
 
     ExternalMemoryBufferCreateInfo & operator=( ExternalMemoryBufferCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -37938,11 +36272,6 @@ namespace VULKAN_HPP_NAMESPACE
       : handleTypes( handleTypes_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR ExternalMemoryImageCreateInfo( ExternalMemoryImageCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , handleTypes( rhs.handleTypes )
-    {}
-
     ExternalMemoryImageCreateInfo & operator=( ExternalMemoryImageCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( ExternalMemoryImageCreateInfo ) - offsetof( ExternalMemoryImageCreateInfo, pNext ) );
@@ -38010,11 +36339,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR ExternalMemoryImageCreateInfoNV( VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagsNV handleTypes_ = {} ) VULKAN_HPP_NOEXCEPT
       : handleTypes( handleTypes_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR ExternalMemoryImageCreateInfoNV( ExternalMemoryImageCreateInfoNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , handleTypes( rhs.handleTypes )
     {}
 
     ExternalMemoryImageCreateInfoNV & operator=( ExternalMemoryImageCreateInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -38090,13 +36414,6 @@ namespace VULKAN_HPP_NAMESPACE
       , externalSemaphoreFeatures( externalSemaphoreFeatures_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR ExternalSemaphoreProperties( ExternalSemaphoreProperties const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , exportFromImportedHandleTypes( rhs.exportFromImportedHandleTypes )
-      , compatibleHandleTypes( rhs.compatibleHandleTypes )
-      , externalSemaphoreFeatures( rhs.externalSemaphoreFeatures )
-    {}
-
     ExternalSemaphoreProperties & operator=( ExternalSemaphoreProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( ExternalSemaphoreProperties ) - offsetof( ExternalSemaphoreProperties, pNext ) );
@@ -38156,11 +36473,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR FenceCreateInfo( VULKAN_HPP_NAMESPACE::FenceCreateFlags flags_ = {} ) VULKAN_HPP_NOEXCEPT
       : flags( flags_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR FenceCreateInfo( FenceCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
     {}
 
     FenceCreateInfo & operator=( FenceCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -38232,12 +36544,6 @@ namespace VULKAN_HPP_NAMESPACE
                                             VULKAN_HPP_NAMESPACE::ExternalFenceHandleTypeFlagBits handleType_ = VULKAN_HPP_NAMESPACE::ExternalFenceHandleTypeFlagBits::eOpaqueFd ) VULKAN_HPP_NOEXCEPT
       : fence( fence_ )
       , handleType( handleType_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR FenceGetFdInfoKHR( FenceGetFdInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , fence( rhs.fence )
-      , handleType( rhs.handleType )
     {}
 
     FenceGetFdInfoKHR & operator=( FenceGetFdInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -38320,12 +36626,6 @@ namespace VULKAN_HPP_NAMESPACE
       , handleType( handleType_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR FenceGetWin32HandleInfoKHR( FenceGetWin32HandleInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , fence( rhs.fence )
-      , handleType( rhs.handleType )
-    {}
-
     FenceGetWin32HandleInfoKHR & operator=( FenceGetWin32HandleInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( FenceGetWin32HandleInfoKHR ) - offsetof( FenceGetWin32HandleInfoKHR, pNext ) );
@@ -38406,12 +36706,6 @@ namespace VULKAN_HPP_NAMESPACE
       , filterCubicMinmax( filterCubicMinmax_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR FilterCubicImageViewImageFormatPropertiesEXT( FilterCubicImageViewImageFormatPropertiesEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , filterCubic( rhs.filterCubic )
-      , filterCubicMinmax( rhs.filterCubicMinmax )
-    {}
-
     FilterCubicImageViewImageFormatPropertiesEXT & operator=( FilterCubicImageViewImageFormatPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( FilterCubicImageViewImageFormatPropertiesEXT ) - offsetof( FilterCubicImageViewImageFormatPropertiesEXT, pNext ) );
@@ -38475,18 +36769,6 @@ namespace VULKAN_HPP_NAMESPACE
       , bufferFeatures( bufferFeatures_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR FormatProperties( FormatProperties const& rhs ) VULKAN_HPP_NOEXCEPT
-      : linearTilingFeatures( rhs.linearTilingFeatures )
-      , optimalTilingFeatures( rhs.optimalTilingFeatures )
-      , bufferFeatures( rhs.bufferFeatures )
-    {}
-
-    FormatProperties & operator=( FormatProperties const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( FormatProperties ) );
-      return *this;
-    }
-
     FormatProperties( VkFormatProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -38536,11 +36818,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR FormatProperties2( VULKAN_HPP_NAMESPACE::FormatProperties formatProperties_ = {} ) VULKAN_HPP_NOEXCEPT
       : formatProperties( formatProperties_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR FormatProperties2( FormatProperties2 const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , formatProperties( rhs.formatProperties )
     {}
 
     FormatProperties2 & operator=( FormatProperties2 const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -38610,17 +36887,6 @@ namespace VULKAN_HPP_NAMESPACE
       , layerCount( layerCount_ )
       , viewFormatCount( viewFormatCount_ )
       , pViewFormats( pViewFormats_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR FramebufferAttachmentImageInfo( FramebufferAttachmentImageInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , usage( rhs.usage )
-      , width( rhs.width )
-      , height( rhs.height )
-      , layerCount( rhs.layerCount )
-      , viewFormatCount( rhs.viewFormatCount )
-      , pViewFormats( rhs.pViewFormats )
     {}
 
     FramebufferAttachmentImageInfo & operator=( FramebufferAttachmentImageInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -38742,12 +37008,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pAttachmentImageInfos( pAttachmentImageInfos_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR FramebufferAttachmentsCreateInfo( FramebufferAttachmentsCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , attachmentImageInfoCount( rhs.attachmentImageInfoCount )
-      , pAttachmentImageInfos( rhs.pAttachmentImageInfos )
-    {}
-
     FramebufferAttachmentsCreateInfo & operator=( FramebufferAttachmentsCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( FramebufferAttachmentsCreateInfo ) - offsetof( FramebufferAttachmentsCreateInfo, pNext ) );
@@ -38835,17 +37095,6 @@ namespace VULKAN_HPP_NAMESPACE
       , width( width_ )
       , height( height_ )
       , layers( layers_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR FramebufferCreateInfo( FramebufferCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , renderPass( rhs.renderPass )
-      , attachmentCount( rhs.attachmentCount )
-      , pAttachments( rhs.pAttachments )
-      , width( rhs.width )
-      , height( rhs.height )
-      , layers( rhs.layers )
     {}
 
     FramebufferCreateInfo & operator=( FramebufferCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -38971,14 +37220,6 @@ namespace VULKAN_HPP_NAMESPACE
       , colorSamples( colorSamples_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR FramebufferMixedSamplesCombinationNV( FramebufferMixedSamplesCombinationNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , coverageReductionMode( rhs.coverageReductionMode )
-      , rasterizationSamples( rhs.rasterizationSamples )
-      , depthStencilSamples( rhs.depthStencilSamples )
-      , colorSamples( rhs.colorSamples )
-    {}
-
     FramebufferMixedSamplesCombinationNV & operator=( FramebufferMixedSamplesCombinationNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( FramebufferMixedSamplesCombinationNV ) - offsetof( FramebufferMixedSamplesCombinationNV, pNext ) );
@@ -39043,17 +37284,6 @@ namespace VULKAN_HPP_NAMESPACE
       : buffer( buffer_ )
       , offset( offset_ )
     {}
-
-    VULKAN_HPP_CONSTEXPR IndirectCommandsStreamNV( IndirectCommandsStreamNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : buffer( rhs.buffer )
-      , offset( rhs.offset )
-    {}
-
-    IndirectCommandsStreamNV & operator=( IndirectCommandsStreamNV const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( IndirectCommandsStreamNV ) );
-      return *this;
-    }
 
     IndirectCommandsStreamNV( VkIndirectCommandsStreamNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -39138,23 +37368,6 @@ namespace VULKAN_HPP_NAMESPACE
       , sequencesCountOffset( sequencesCountOffset_ )
       , sequencesIndexBuffer( sequencesIndexBuffer_ )
       , sequencesIndexOffset( sequencesIndexOffset_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR GeneratedCommandsInfoNV( GeneratedCommandsInfoNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , pipelineBindPoint( rhs.pipelineBindPoint )
-      , pipeline( rhs.pipeline )
-      , indirectCommandsLayout( rhs.indirectCommandsLayout )
-      , streamCount( rhs.streamCount )
-      , pStreams( rhs.pStreams )
-      , sequencesCount( rhs.sequencesCount )
-      , preprocessBuffer( rhs.preprocessBuffer )
-      , preprocessOffset( rhs.preprocessOffset )
-      , preprocessSize( rhs.preprocessSize )
-      , sequencesCountBuffer( rhs.sequencesCountBuffer )
-      , sequencesCountOffset( rhs.sequencesCountOffset )
-      , sequencesIndexBuffer( rhs.sequencesIndexBuffer )
-      , sequencesIndexOffset( rhs.sequencesIndexOffset )
     {}
 
     GeneratedCommandsInfoNV & operator=( GeneratedCommandsInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -39328,14 +37541,6 @@ namespace VULKAN_HPP_NAMESPACE
       , maxSequencesCount( maxSequencesCount_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR GeneratedCommandsMemoryRequirementsInfoNV( GeneratedCommandsMemoryRequirementsInfoNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , pipelineBindPoint( rhs.pipelineBindPoint )
-      , pipeline( rhs.pipeline )
-      , indirectCommandsLayout( rhs.indirectCommandsLayout )
-      , maxSequencesCount( rhs.maxSequencesCount )
-    {}
-
     GeneratedCommandsMemoryRequirementsInfoNV & operator=( GeneratedCommandsMemoryRequirementsInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( GeneratedCommandsMemoryRequirementsInfoNV ) - offsetof( GeneratedCommandsMemoryRequirementsInfoNV, pNext ) );
@@ -39402,18 +37607,6 @@ namespace VULKAN_HPP_NAMESPACE
       , stride( stride_ )
       , inputRate( inputRate_ )
     {}
-
-    VULKAN_HPP_CONSTEXPR VertexInputBindingDescription( VertexInputBindingDescription const& rhs ) VULKAN_HPP_NOEXCEPT
-      : binding( rhs.binding )
-      , stride( rhs.stride )
-      , inputRate( rhs.inputRate )
-    {}
-
-    VertexInputBindingDescription & operator=( VertexInputBindingDescription const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( VertexInputBindingDescription ) );
-      return *this;
-    }
 
     VertexInputBindingDescription( VkVertexInputBindingDescription const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -39489,19 +37682,6 @@ namespace VULKAN_HPP_NAMESPACE
       , format( format_ )
       , offset( offset_ )
     {}
-
-    VULKAN_HPP_CONSTEXPR VertexInputAttributeDescription( VertexInputAttributeDescription const& rhs ) VULKAN_HPP_NOEXCEPT
-      : location( rhs.location )
-      , binding( rhs.binding )
-      , format( rhs.format )
-      , offset( rhs.offset )
-    {}
-
-    VertexInputAttributeDescription & operator=( VertexInputAttributeDescription const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( VertexInputAttributeDescription ) );
-      return *this;
-    }
 
     VertexInputAttributeDescription( VkVertexInputAttributeDescription const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -39586,15 +37766,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pVertexBindingDescriptions( pVertexBindingDescriptions_ )
       , vertexAttributeDescriptionCount( vertexAttributeDescriptionCount_ )
       , pVertexAttributeDescriptions( pVertexAttributeDescriptions_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PipelineVertexInputStateCreateInfo( PipelineVertexInputStateCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , vertexBindingDescriptionCount( rhs.vertexBindingDescriptionCount )
-      , pVertexBindingDescriptions( rhs.pVertexBindingDescriptions )
-      , vertexAttributeDescriptionCount( rhs.vertexAttributeDescriptionCount )
-      , pVertexAttributeDescriptions( rhs.pVertexAttributeDescriptions )
     {}
 
     PipelineVertexInputStateCreateInfo & operator=( PipelineVertexInputStateCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -39702,13 +37873,6 @@ namespace VULKAN_HPP_NAMESPACE
       , primitiveRestartEnable( primitiveRestartEnable_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PipelineInputAssemblyStateCreateInfo( PipelineInputAssemblyStateCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , topology( rhs.topology )
-      , primitiveRestartEnable( rhs.primitiveRestartEnable )
-    {}
-
     PipelineInputAssemblyStateCreateInfo & operator=( PipelineInputAssemblyStateCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PipelineInputAssemblyStateCreateInfo ) - offsetof( PipelineInputAssemblyStateCreateInfo, pNext ) );
@@ -39794,12 +37958,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                               uint32_t patchControlPoints_ = {} ) VULKAN_HPP_NOEXCEPT
       : flags( flags_ )
       , patchControlPoints( patchControlPoints_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PipelineTessellationStateCreateInfo( PipelineTessellationStateCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , patchControlPoints( rhs.patchControlPoints )
     {}
 
     PipelineTessellationStateCreateInfo & operator=( PipelineTessellationStateCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -39888,21 +38046,6 @@ namespace VULKAN_HPP_NAMESPACE
       , minDepth( minDepth_ )
       , maxDepth( maxDepth_ )
     {}
-
-    VULKAN_HPP_CONSTEXPR Viewport( Viewport const& rhs ) VULKAN_HPP_NOEXCEPT
-      : x( rhs.x )
-      , y( rhs.y )
-      , width( rhs.width )
-      , height( rhs.height )
-      , minDepth( rhs.minDepth )
-      , maxDepth( rhs.maxDepth )
-    {}
-
-    Viewport & operator=( Viewport const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( Viewport ) );
-      return *this;
-    }
 
     Viewport( VkViewport const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -40003,15 +38146,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pViewports( pViewports_ )
       , scissorCount( scissorCount_ )
       , pScissors( pScissors_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PipelineViewportStateCreateInfo( PipelineViewportStateCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , viewportCount( rhs.viewportCount )
-      , pViewports( rhs.pViewports )
-      , scissorCount( rhs.scissorCount )
-      , pScissors( rhs.pScissors )
     {}
 
     PipelineViewportStateCreateInfo & operator=( PipelineViewportStateCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -40133,21 +38267,6 @@ namespace VULKAN_HPP_NAMESPACE
       , depthBiasClamp( depthBiasClamp_ )
       , depthBiasSlopeFactor( depthBiasSlopeFactor_ )
       , lineWidth( lineWidth_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PipelineRasterizationStateCreateInfo( PipelineRasterizationStateCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , depthClampEnable( rhs.depthClampEnable )
-      , rasterizerDiscardEnable( rhs.rasterizerDiscardEnable )
-      , polygonMode( rhs.polygonMode )
-      , cullMode( rhs.cullMode )
-      , frontFace( rhs.frontFace )
-      , depthBiasEnable( rhs.depthBiasEnable )
-      , depthBiasConstantFactor( rhs.depthBiasConstantFactor )
-      , depthBiasClamp( rhs.depthBiasClamp )
-      , depthBiasSlopeFactor( rhs.depthBiasSlopeFactor )
-      , lineWidth( rhs.lineWidth )
     {}
 
     PipelineRasterizationStateCreateInfo & operator=( PipelineRasterizationStateCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -40311,17 +38430,6 @@ namespace VULKAN_HPP_NAMESPACE
       , alphaToOneEnable( alphaToOneEnable_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PipelineMultisampleStateCreateInfo( PipelineMultisampleStateCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , rasterizationSamples( rhs.rasterizationSamples )
-      , sampleShadingEnable( rhs.sampleShadingEnable )
-      , minSampleShading( rhs.minSampleShading )
-      , pSampleMask( rhs.pSampleMask )
-      , alphaToCoverageEnable( rhs.alphaToCoverageEnable )
-      , alphaToOneEnable( rhs.alphaToOneEnable )
-    {}
-
     PipelineMultisampleStateCreateInfo & operator=( PipelineMultisampleStateCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PipelineMultisampleStateCreateInfo ) - offsetof( PipelineMultisampleStateCreateInfo, pNext ) );
@@ -40451,22 +38559,6 @@ namespace VULKAN_HPP_NAMESPACE
       , reference( reference_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR StencilOpState( StencilOpState const& rhs ) VULKAN_HPP_NOEXCEPT
-      : failOp( rhs.failOp )
-      , passOp( rhs.passOp )
-      , depthFailOp( rhs.depthFailOp )
-      , compareOp( rhs.compareOp )
-      , compareMask( rhs.compareMask )
-      , writeMask( rhs.writeMask )
-      , reference( rhs.reference )
-    {}
-
-    StencilOpState & operator=( StencilOpState const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( StencilOpState ) );
-      return *this;
-    }
-
     StencilOpState( VkStencilOpState const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -40584,20 +38676,6 @@ namespace VULKAN_HPP_NAMESPACE
       , back( back_ )
       , minDepthBounds( minDepthBounds_ )
       , maxDepthBounds( maxDepthBounds_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PipelineDepthStencilStateCreateInfo( PipelineDepthStencilStateCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , depthTestEnable( rhs.depthTestEnable )
-      , depthWriteEnable( rhs.depthWriteEnable )
-      , depthCompareOp( rhs.depthCompareOp )
-      , depthBoundsTestEnable( rhs.depthBoundsTestEnable )
-      , stencilTestEnable( rhs.stencilTestEnable )
-      , front( rhs.front )
-      , back( rhs.back )
-      , minDepthBounds( rhs.minDepthBounds )
-      , maxDepthBounds( rhs.maxDepthBounds )
     {}
 
     PipelineDepthStencilStateCreateInfo & operator=( PipelineDepthStencilStateCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -40755,23 +38833,6 @@ namespace VULKAN_HPP_NAMESPACE
       , colorWriteMask( colorWriteMask_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PipelineColorBlendAttachmentState( PipelineColorBlendAttachmentState const& rhs ) VULKAN_HPP_NOEXCEPT
-      : blendEnable( rhs.blendEnable )
-      , srcColorBlendFactor( rhs.srcColorBlendFactor )
-      , dstColorBlendFactor( rhs.dstColorBlendFactor )
-      , colorBlendOp( rhs.colorBlendOp )
-      , srcAlphaBlendFactor( rhs.srcAlphaBlendFactor )
-      , dstAlphaBlendFactor( rhs.dstAlphaBlendFactor )
-      , alphaBlendOp( rhs.alphaBlendOp )
-      , colorWriteMask( rhs.colorWriteMask )
-    {}
-
-    PipelineColorBlendAttachmentState & operator=( PipelineColorBlendAttachmentState const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( PipelineColorBlendAttachmentState ) );
-      return *this;
-    }
-
     PipelineColorBlendAttachmentState( VkPipelineColorBlendAttachmentState const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -40888,22 +38949,8 @@ namespace VULKAN_HPP_NAMESPACE
       , logicOp( logicOp_ )
       , attachmentCount( attachmentCount_ )
       , pAttachments( pAttachments_ )
-      , blendConstants{}
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,4>::copy( blendConstants, blendConstants_ );
-    }
-
-    VULKAN_HPP_CONSTEXPR_14 PipelineColorBlendStateCreateInfo( PipelineColorBlendStateCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , logicOpEnable( rhs.logicOpEnable )
-      , logicOp( rhs.logicOp )
-      , attachmentCount( rhs.attachmentCount )
-      , pAttachments( rhs.pAttachments )
-      , blendConstants{}
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,4>::copy( blendConstants, rhs.blendConstants );
-    }
+      , blendConstants( blendConstants_ )
+    {}
 
     PipelineColorBlendStateCreateInfo & operator=( PipelineColorBlendStateCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -40960,7 +39007,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     PipelineColorBlendStateCreateInfo & setBlendConstants( std::array<float,4> blendConstants_ ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( blendConstants, blendConstants_.data(), 4 * sizeof( float ) );
+      blendConstants = blendConstants_;
       return *this;
     }
 
@@ -40986,7 +39033,7 @@ namespace VULKAN_HPP_NAMESPACE
           && ( logicOp == rhs.logicOp )
           && ( attachmentCount == rhs.attachmentCount )
           && ( pAttachments == rhs.pAttachments )
-          && ( memcmp( blendConstants, rhs.blendConstants, 4 * sizeof( float ) ) == 0 );
+          && ( blendConstants == rhs.blendConstants );
     }
 
     bool operator!=( PipelineColorBlendStateCreateInfo const& rhs ) const VULKAN_HPP_NOEXCEPT
@@ -41003,7 +39050,7 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_NAMESPACE::LogicOp logicOp = VULKAN_HPP_NAMESPACE::LogicOp::eClear;
     uint32_t attachmentCount = {};
     const VULKAN_HPP_NAMESPACE::PipelineColorBlendAttachmentState* pAttachments = {};
-    float blendConstants[4] = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<float, 4> blendConstants = {};
   };
   static_assert( sizeof( PipelineColorBlendStateCreateInfo ) == sizeof( VkPipelineColorBlendStateCreateInfo ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<PipelineColorBlendStateCreateInfo>::value, "struct wrapper is not a standard layout!" );
@@ -41016,13 +39063,6 @@ namespace VULKAN_HPP_NAMESPACE
       : flags( flags_ )
       , dynamicStateCount( dynamicStateCount_ )
       , pDynamicStates( pDynamicStates_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PipelineDynamicStateCreateInfo( PipelineDynamicStateCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , dynamicStateCount( rhs.dynamicStateCount )
-      , pDynamicStates( rhs.pDynamicStates )
     {}
 
     PipelineDynamicStateCreateInfo & operator=( PipelineDynamicStateCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -41140,27 +39180,6 @@ namespace VULKAN_HPP_NAMESPACE
       , subpass( subpass_ )
       , basePipelineHandle( basePipelineHandle_ )
       , basePipelineIndex( basePipelineIndex_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR_14 GraphicsPipelineCreateInfo( GraphicsPipelineCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , stageCount( rhs.stageCount )
-      , pStages( rhs.pStages )
-      , pVertexInputState( rhs.pVertexInputState )
-      , pInputAssemblyState( rhs.pInputAssemblyState )
-      , pTessellationState( rhs.pTessellationState )
-      , pViewportState( rhs.pViewportState )
-      , pRasterizationState( rhs.pRasterizationState )
-      , pMultisampleState( rhs.pMultisampleState )
-      , pDepthStencilState( rhs.pDepthStencilState )
-      , pColorBlendState( rhs.pColorBlendState )
-      , pDynamicState( rhs.pDynamicState )
-      , layout( rhs.layout )
-      , renderPass( rhs.renderPass )
-      , subpass( rhs.subpass )
-      , basePipelineHandle( rhs.basePipelineHandle )
-      , basePipelineIndex( rhs.basePipelineIndex )
     {}
 
     GraphicsPipelineCreateInfo & operator=( GraphicsPipelineCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -41366,14 +39385,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pTessellationState( pTessellationState_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR GraphicsShaderGroupCreateInfoNV( GraphicsShaderGroupCreateInfoNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , stageCount( rhs.stageCount )
-      , pStages( rhs.pStages )
-      , pVertexInputState( rhs.pVertexInputState )
-      , pTessellationState( rhs.pTessellationState )
-    {}
-
     GraphicsShaderGroupCreateInfoNV & operator=( GraphicsShaderGroupCreateInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( GraphicsShaderGroupCreateInfoNV ) - offsetof( GraphicsShaderGroupCreateInfoNV, pNext ) );
@@ -41473,14 +39484,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pPipelines( pPipelines_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR GraphicsPipelineShaderGroupsCreateInfoNV( GraphicsPipelineShaderGroupsCreateInfoNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , groupCount( rhs.groupCount )
-      , pGroups( rhs.pGroups )
-      , pipelineCount( rhs.pipelineCount )
-      , pPipelines( rhs.pPipelines )
-    {}
-
     GraphicsPipelineShaderGroupsCreateInfoNV & operator=( GraphicsPipelineShaderGroupsCreateInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( GraphicsPipelineShaderGroupsCreateInfoNV ) - offsetof( GraphicsPipelineShaderGroupsCreateInfoNV, pNext ) );
@@ -41576,17 +39579,6 @@ namespace VULKAN_HPP_NAMESPACE
       , y( y_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR XYColorEXT( XYColorEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : x( rhs.x )
-      , y( rhs.y )
-    {}
-
-    XYColorEXT & operator=( XYColorEXT const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( XYColorEXT ) );
-      return *this;
-    }
-
     XYColorEXT( VkXYColorEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -41660,18 +39652,6 @@ namespace VULKAN_HPP_NAMESPACE
       , minLuminance( minLuminance_ )
       , maxContentLightLevel( maxContentLightLevel_ )
       , maxFrameAverageLightLevel( maxFrameAverageLightLevel_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR HdrMetadataEXT( HdrMetadataEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , displayPrimaryRed( rhs.displayPrimaryRed )
-      , displayPrimaryGreen( rhs.displayPrimaryGreen )
-      , displayPrimaryBlue( rhs.displayPrimaryBlue )
-      , whitePoint( rhs.whitePoint )
-      , maxLuminance( rhs.maxLuminance )
-      , minLuminance( rhs.minLuminance )
-      , maxContentLightLevel( rhs.maxContentLightLevel )
-      , maxFrameAverageLightLevel( rhs.maxFrameAverageLightLevel )
     {}
 
     HdrMetadataEXT & operator=( HdrMetadataEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -41799,11 +39779,6 @@ namespace VULKAN_HPP_NAMESPACE
       : flags( flags_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR HeadlessSurfaceCreateInfoEXT( HeadlessSurfaceCreateInfoEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-    {}
-
     HeadlessSurfaceCreateInfoEXT & operator=( HeadlessSurfaceCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( HeadlessSurfaceCreateInfoEXT ) - offsetof( HeadlessSurfaceCreateInfoEXT, pNext ) );
@@ -41874,12 +39849,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                   const void* pView_ = {} ) VULKAN_HPP_NOEXCEPT
       : flags( flags_ )
       , pView( pView_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR IOSSurfaceCreateInfoMVK( IOSSurfaceCreateInfoMVK const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , pView( rhs.pView )
     {}
 
     IOSSurfaceCreateInfoMVK & operator=( IOSSurfaceCreateInfoMVK const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -41961,29 +39930,10 @@ namespace VULKAN_HPP_NAMESPACE
                                        VULKAN_HPP_NAMESPACE::ImageSubresourceLayers dstSubresource_ = {},
                                        std::array<VULKAN_HPP_NAMESPACE::Offset3D,2> const& dstOffsets_ = {} ) VULKAN_HPP_NOEXCEPT
       : srcSubresource( srcSubresource_ )
-      , srcOffsets{}
+      , srcOffsets( srcOffsets_ )
       , dstSubresource( dstSubresource_ )
-      , dstOffsets{}
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::Offset3D,2>::copy( srcOffsets, srcOffsets_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::Offset3D,2>::copy( dstOffsets, dstOffsets_ );
-    }
-
-    VULKAN_HPP_CONSTEXPR_14 ImageBlit( ImageBlit const& rhs ) VULKAN_HPP_NOEXCEPT
-      : srcSubresource( rhs.srcSubresource )
-      , srcOffsets{}
-      , dstSubresource( rhs.dstSubresource )
-      , dstOffsets{}
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::Offset3D,2>::copy( srcOffsets, rhs.srcOffsets );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::Offset3D,2>::copy( dstOffsets, rhs.dstOffsets );
-    }
-
-    ImageBlit & operator=( ImageBlit const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( ImageBlit ) );
-      return *this;
-    }
+      , dstOffsets( dstOffsets_ )
+    {}
 
     ImageBlit( VkImageBlit const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -42004,7 +39954,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImageBlit & setSrcOffsets( std::array<VULKAN_HPP_NAMESPACE::Offset3D,2> srcOffsets_ ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( srcOffsets, srcOffsets_.data(), 2 * sizeof( VULKAN_HPP_NAMESPACE::Offset3D ) );
+      srcOffsets = srcOffsets_;
       return *this;
     }
 
@@ -42016,7 +39966,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImageBlit & setDstOffsets( std::array<VULKAN_HPP_NAMESPACE::Offset3D,2> dstOffsets_ ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( dstOffsets, dstOffsets_.data(), 2 * sizeof( VULKAN_HPP_NAMESPACE::Offset3D ) );
+      dstOffsets = dstOffsets_;
       return *this;
     }
 
@@ -42036,9 +39986,9 @@ namespace VULKAN_HPP_NAMESPACE
     bool operator==( ImageBlit const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( srcSubresource == rhs.srcSubresource )
-          && ( memcmp( srcOffsets, rhs.srcOffsets, 2 * sizeof( VULKAN_HPP_NAMESPACE::Offset3D ) ) == 0 )
+          && ( srcOffsets == rhs.srcOffsets )
           && ( dstSubresource == rhs.dstSubresource )
-          && ( memcmp( dstOffsets, rhs.dstOffsets, 2 * sizeof( VULKAN_HPP_NAMESPACE::Offset3D ) ) == 0 );
+          && ( dstOffsets == rhs.dstOffsets );
     }
 
     bool operator!=( ImageBlit const& rhs ) const VULKAN_HPP_NOEXCEPT
@@ -42049,9 +39999,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   public:
     VULKAN_HPP_NAMESPACE::ImageSubresourceLayers srcSubresource = {};
-    VULKAN_HPP_NAMESPACE::Offset3D srcOffsets[2] = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<VULKAN_HPP_NAMESPACE::Offset3D, 2> srcOffsets = {};
     VULKAN_HPP_NAMESPACE::ImageSubresourceLayers dstSubresource = {};
-    VULKAN_HPP_NAMESPACE::Offset3D dstOffsets[2] = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<VULKAN_HPP_NAMESPACE::Offset3D, 2> dstOffsets = {};
   };
   static_assert( sizeof( ImageBlit ) == sizeof( VkImageBlit ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<ImageBlit>::value, "struct wrapper is not a standard layout!" );
@@ -42069,20 +40019,6 @@ namespace VULKAN_HPP_NAMESPACE
       , dstOffset( dstOffset_ )
       , extent( extent_ )
     {}
-
-    VULKAN_HPP_CONSTEXPR ImageCopy( ImageCopy const& rhs ) VULKAN_HPP_NOEXCEPT
-      : srcSubresource( rhs.srcSubresource )
-      , srcOffset( rhs.srcOffset )
-      , dstSubresource( rhs.dstSubresource )
-      , dstOffset( rhs.dstOffset )
-      , extent( rhs.extent )
-    {}
-
-    ImageCopy & operator=( ImageCopy const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( ImageCopy ) );
-      return *this;
-    }
 
     ImageCopy( VkImageCopy const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -42191,23 +40127,6 @@ namespace VULKAN_HPP_NAMESPACE
       , queueFamilyIndexCount( queueFamilyIndexCount_ )
       , pQueueFamilyIndices( pQueueFamilyIndices_ )
       , initialLayout( initialLayout_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR ImageCreateInfo( ImageCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , imageType( rhs.imageType )
-      , format( rhs.format )
-      , extent( rhs.extent )
-      , mipLevels( rhs.mipLevels )
-      , arrayLayers( rhs.arrayLayers )
-      , samples( rhs.samples )
-      , tiling( rhs.tiling )
-      , usage( rhs.usage )
-      , sharingMode( rhs.sharingMode )
-      , queueFamilyIndexCount( rhs.queueFamilyIndexCount )
-      , pQueueFamilyIndices( rhs.pQueueFamilyIndices )
-      , initialLayout( rhs.initialLayout )
     {}
 
     ImageCreateInfo & operator=( ImageCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -42383,20 +40302,6 @@ namespace VULKAN_HPP_NAMESPACE
       , depthPitch( depthPitch_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR SubresourceLayout( SubresourceLayout const& rhs ) VULKAN_HPP_NOEXCEPT
-      : offset( rhs.offset )
-      , size( rhs.size )
-      , rowPitch( rhs.rowPitch )
-      , arrayPitch( rhs.arrayPitch )
-      , depthPitch( rhs.depthPitch )
-    {}
-
-    SubresourceLayout & operator=( SubresourceLayout const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( SubresourceLayout ) );
-      return *this;
-    }
-
     SubresourceLayout( VkSubresourceLayout const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -42454,13 +40359,6 @@ namespace VULKAN_HPP_NAMESPACE
       : drmFormatModifier( drmFormatModifier_ )
       , drmFormatModifierPlaneCount( drmFormatModifierPlaneCount_ )
       , pPlaneLayouts( pPlaneLayouts_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR ImageDrmFormatModifierExplicitCreateInfoEXT( ImageDrmFormatModifierExplicitCreateInfoEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , drmFormatModifier( rhs.drmFormatModifier )
-      , drmFormatModifierPlaneCount( rhs.drmFormatModifierPlaneCount )
-      , pPlaneLayouts( rhs.pPlaneLayouts )
     {}
 
     ImageDrmFormatModifierExplicitCreateInfoEXT & operator=( ImageDrmFormatModifierExplicitCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -42550,12 +40448,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pDrmFormatModifiers( pDrmFormatModifiers_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR ImageDrmFormatModifierListCreateInfoEXT( ImageDrmFormatModifierListCreateInfoEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , drmFormatModifierCount( rhs.drmFormatModifierCount )
-      , pDrmFormatModifiers( rhs.pDrmFormatModifiers )
-    {}
-
     ImageDrmFormatModifierListCreateInfoEXT & operator=( ImageDrmFormatModifierListCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( ImageDrmFormatModifierListCreateInfoEXT ) - offsetof( ImageDrmFormatModifierListCreateInfoEXT, pNext ) );
@@ -42633,11 +40525,6 @@ namespace VULKAN_HPP_NAMESPACE
       : drmFormatModifier( drmFormatModifier_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR ImageDrmFormatModifierPropertiesEXT( ImageDrmFormatModifierPropertiesEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , drmFormatModifier( rhs.drmFormatModifier )
-    {}
-
     ImageDrmFormatModifierPropertiesEXT & operator=( ImageDrmFormatModifierPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( ImageDrmFormatModifierPropertiesEXT ) - offsetof( ImageDrmFormatModifierPropertiesEXT, pNext ) );
@@ -42695,12 +40582,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                     const VULKAN_HPP_NAMESPACE::Format* pViewFormats_ = {} ) VULKAN_HPP_NOEXCEPT
       : viewFormatCount( viewFormatCount_ )
       , pViewFormats( pViewFormats_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR ImageFormatListCreateInfo( ImageFormatListCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , viewFormatCount( rhs.viewFormatCount )
-      , pViewFormats( rhs.pViewFormats )
     {}
 
     ImageFormatListCreateInfo & operator=( ImageFormatListCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -42780,11 +40661,6 @@ namespace VULKAN_HPP_NAMESPACE
       : imageFormatProperties( imageFormatProperties_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR ImageFormatProperties2( ImageFormatProperties2 const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , imageFormatProperties( rhs.imageFormatProperties )
-    {}
-
     ImageFormatProperties2 & operator=( ImageFormatProperties2 const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( ImageFormatProperties2 ) - offsetof( ImageFormatProperties2, pNext ) );
@@ -42849,20 +40725,6 @@ namespace VULKAN_HPP_NAMESPACE
       , baseArrayLayer( baseArrayLayer_ )
       , layerCount( layerCount_ )
     {}
-
-    VULKAN_HPP_CONSTEXPR ImageSubresourceRange( ImageSubresourceRange const& rhs ) VULKAN_HPP_NOEXCEPT
-      : aspectMask( rhs.aspectMask )
-      , baseMipLevel( rhs.baseMipLevel )
-      , levelCount( rhs.levelCount )
-      , baseArrayLayer( rhs.baseArrayLayer )
-      , layerCount( rhs.layerCount )
-    {}
-
-    ImageSubresourceRange & operator=( ImageSubresourceRange const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( ImageSubresourceRange ) );
-      return *this;
-    }
 
     ImageSubresourceRange( VkImageSubresourceRange const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -42961,18 +40823,6 @@ namespace VULKAN_HPP_NAMESPACE
       , dstQueueFamilyIndex( dstQueueFamilyIndex_ )
       , image( image_ )
       , subresourceRange( subresourceRange_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR ImageMemoryBarrier( ImageMemoryBarrier const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , srcAccessMask( rhs.srcAccessMask )
-      , dstAccessMask( rhs.dstAccessMask )
-      , oldLayout( rhs.oldLayout )
-      , newLayout( rhs.newLayout )
-      , srcQueueFamilyIndex( rhs.srcQueueFamilyIndex )
-      , dstQueueFamilyIndex( rhs.dstQueueFamilyIndex )
-      , image( rhs.image )
-      , subresourceRange( rhs.subresourceRange )
     {}
 
     ImageMemoryBarrier & operator=( ImageMemoryBarrier const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -43100,11 +40950,6 @@ namespace VULKAN_HPP_NAMESPACE
       : image( image_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR ImageMemoryRequirementsInfo2( ImageMemoryRequirementsInfo2 const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , image( rhs.image )
-    {}
-
     ImageMemoryRequirementsInfo2 & operator=( ImageMemoryRequirementsInfo2 const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( ImageMemoryRequirementsInfo2 ) - offsetof( ImageMemoryRequirementsInfo2, pNext ) );
@@ -43175,12 +41020,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                             zx_handle_t imagePipeHandle_ = {} ) VULKAN_HPP_NOEXCEPT
       : flags( flags_ )
       , imagePipeHandle( imagePipeHandle_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR ImagePipeSurfaceCreateInfoFUCHSIA( ImagePipeSurfaceCreateInfoFUCHSIA const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , imagePipeHandle( rhs.imagePipeHandle )
     {}
 
     ImagePipeSurfaceCreateInfoFUCHSIA & operator=( ImagePipeSurfaceCreateInfoFUCHSIA const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -43261,11 +41100,6 @@ namespace VULKAN_HPP_NAMESPACE
       : planeAspect( planeAspect_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR ImagePlaneMemoryRequirementsInfo( ImagePlaneMemoryRequirementsInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , planeAspect( rhs.planeAspect )
-    {}
-
     ImagePlaneMemoryRequirementsInfo & operator=( ImagePlaneMemoryRequirementsInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( ImagePlaneMemoryRequirementsInfo ) - offsetof( ImagePlaneMemoryRequirementsInfo, pNext ) );
@@ -43342,20 +41176,6 @@ namespace VULKAN_HPP_NAMESPACE
       , dstOffset( dstOffset_ )
       , extent( extent_ )
     {}
-
-    VULKAN_HPP_CONSTEXPR ImageResolve( ImageResolve const& rhs ) VULKAN_HPP_NOEXCEPT
-      : srcSubresource( rhs.srcSubresource )
-      , srcOffset( rhs.srcOffset )
-      , dstSubresource( rhs.dstSubresource )
-      , dstOffset( rhs.dstOffset )
-      , extent( rhs.extent )
-    {}
-
-    ImageResolve & operator=( ImageResolve const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( ImageResolve ) );
-      return *this;
-    }
 
     ImageResolve( VkImageResolve const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -43442,11 +41262,6 @@ namespace VULKAN_HPP_NAMESPACE
       : image( image_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR ImageSparseMemoryRequirementsInfo2( ImageSparseMemoryRequirementsInfo2 const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , image( rhs.image )
-    {}
-
     ImageSparseMemoryRequirementsInfo2 & operator=( ImageSparseMemoryRequirementsInfo2 const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( ImageSparseMemoryRequirementsInfo2 ) - offsetof( ImageSparseMemoryRequirementsInfo2, pNext ) );
@@ -43514,11 +41329,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR ImageStencilUsageCreateInfo( VULKAN_HPP_NAMESPACE::ImageUsageFlags stencilUsage_ = {} ) VULKAN_HPP_NOEXCEPT
       : stencilUsage( stencilUsage_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR ImageStencilUsageCreateInfo( ImageStencilUsageCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , stencilUsage( rhs.stencilUsage )
     {}
 
     ImageStencilUsageCreateInfo & operator=( ImageStencilUsageCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -43590,11 +41400,6 @@ namespace VULKAN_HPP_NAMESPACE
       : swapchain( swapchain_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR ImageSwapchainCreateInfoKHR( ImageSwapchainCreateInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , swapchain( rhs.swapchain )
-    {}
-
     ImageSwapchainCreateInfoKHR & operator=( ImageSwapchainCreateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( ImageSwapchainCreateInfoKHR ) - offsetof( ImageSwapchainCreateInfoKHR, pNext ) );
@@ -43662,11 +41467,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR ImageViewASTCDecodeModeEXT( VULKAN_HPP_NAMESPACE::Format decodeMode_ = VULKAN_HPP_NAMESPACE::Format::eUndefined ) VULKAN_HPP_NOEXCEPT
       : decodeMode( decodeMode_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR ImageViewASTCDecodeModeEXT( ImageViewASTCDecodeModeEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , decodeMode( rhs.decodeMode )
     {}
 
     ImageViewASTCDecodeModeEXT & operator=( ImageViewASTCDecodeModeEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -43746,16 +41546,6 @@ namespace VULKAN_HPP_NAMESPACE
       , format( format_ )
       , components( components_ )
       , subresourceRange( subresourceRange_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR ImageViewCreateInfo( ImageViewCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , image( rhs.image )
-      , viewType( rhs.viewType )
-      , format( rhs.format )
-      , components( rhs.components )
-      , subresourceRange( rhs.subresourceRange )
     {}
 
     ImageViewCreateInfo & operator=( ImageViewCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -43871,13 +41661,6 @@ namespace VULKAN_HPP_NAMESPACE
       , sampler( sampler_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR ImageViewHandleInfoNVX( ImageViewHandleInfoNVX const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , imageView( rhs.imageView )
-      , descriptorType( rhs.descriptorType )
-      , sampler( rhs.sampler )
-    {}
-
     ImageViewHandleInfoNVX & operator=( ImageViewHandleInfoNVX const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( ImageViewHandleInfoNVX ) - offsetof( ImageViewHandleInfoNVX, pNext ) );
@@ -43963,11 +41746,6 @@ namespace VULKAN_HPP_NAMESPACE
       : usage( usage_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR ImageViewUsageCreateInfo( ImageViewUsageCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , usage( rhs.usage )
-    {}
-
     ImageViewUsageCreateInfo & operator=( ImageViewUsageCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( ImageViewUsageCreateInfo ) - offsetof( ImageViewUsageCreateInfo, pNext ) );
@@ -44036,11 +41814,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR ImportAndroidHardwareBufferInfoANDROID( struct AHardwareBuffer* buffer_ = {} ) VULKAN_HPP_NOEXCEPT
       : buffer( buffer_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR ImportAndroidHardwareBufferInfoANDROID( ImportAndroidHardwareBufferInfoANDROID const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , buffer( rhs.buffer )
     {}
 
     ImportAndroidHardwareBufferInfoANDROID & operator=( ImportAndroidHardwareBufferInfoANDROID const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -44117,14 +41890,6 @@ namespace VULKAN_HPP_NAMESPACE
       , flags( flags_ )
       , handleType( handleType_ )
       , fd( fd_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR ImportFenceFdInfoKHR( ImportFenceFdInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , fence( rhs.fence )
-      , flags( rhs.flags )
-      , handleType( rhs.handleType )
-      , fd( rhs.fd )
     {}
 
     ImportFenceFdInfoKHR & operator=( ImportFenceFdInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -44227,15 +41992,6 @@ namespace VULKAN_HPP_NAMESPACE
       , handleType( handleType_ )
       , handle( handle_ )
       , name( name_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR ImportFenceWin32HandleInfoKHR( ImportFenceWin32HandleInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , fence( rhs.fence )
-      , flags( rhs.flags )
-      , handleType( rhs.handleType )
-      , handle( rhs.handle )
-      , name( rhs.name )
     {}
 
     ImportFenceWin32HandleInfoKHR & operator=( ImportFenceWin32HandleInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -44342,12 +42098,6 @@ namespace VULKAN_HPP_NAMESPACE
       , fd( fd_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR ImportMemoryFdInfoKHR( ImportMemoryFdInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , handleType( rhs.handleType )
-      , fd( rhs.fd )
-    {}
-
     ImportMemoryFdInfoKHR & operator=( ImportMemoryFdInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( ImportMemoryFdInfoKHR ) - offsetof( ImportMemoryFdInfoKHR, pNext ) );
@@ -44425,12 +42175,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                          void* pHostPointer_ = {} ) VULKAN_HPP_NOEXCEPT
       : handleType( handleType_ )
       , pHostPointer( pHostPointer_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR ImportMemoryHostPointerInfoEXT( ImportMemoryHostPointerInfoEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , handleType( rhs.handleType )
-      , pHostPointer( rhs.pHostPointer )
     {}
 
     ImportMemoryHostPointerInfoEXT & operator=( ImportMemoryHostPointerInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -44513,13 +42257,6 @@ namespace VULKAN_HPP_NAMESPACE
       : handleType( handleType_ )
       , handle( handle_ )
       , name( name_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR ImportMemoryWin32HandleInfoKHR( ImportMemoryWin32HandleInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , handleType( rhs.handleType )
-      , handle( rhs.handle )
-      , name( rhs.name )
     {}
 
     ImportMemoryWin32HandleInfoKHR & operator=( ImportMemoryWin32HandleInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -44611,12 +42348,6 @@ namespace VULKAN_HPP_NAMESPACE
       , handle( handle_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR ImportMemoryWin32HandleInfoNV( ImportMemoryWin32HandleInfoNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , handleType( rhs.handleType )
-      , handle( rhs.handle )
-    {}
-
     ImportMemoryWin32HandleInfoNV & operator=( ImportMemoryWin32HandleInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( ImportMemoryWin32HandleInfoNV ) - offsetof( ImportMemoryWin32HandleInfoNV, pNext ) );
@@ -44699,14 +42430,6 @@ namespace VULKAN_HPP_NAMESPACE
       , flags( flags_ )
       , handleType( handleType_ )
       , fd( fd_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR ImportSemaphoreFdInfoKHR( ImportSemaphoreFdInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , semaphore( rhs.semaphore )
-      , flags( rhs.flags )
-      , handleType( rhs.handleType )
-      , fd( rhs.fd )
     {}
 
     ImportSemaphoreFdInfoKHR & operator=( ImportSemaphoreFdInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -44809,15 +42532,6 @@ namespace VULKAN_HPP_NAMESPACE
       , handleType( handleType_ )
       , handle( handle_ )
       , name( name_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR ImportSemaphoreWin32HandleInfoKHR( ImportSemaphoreWin32HandleInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , semaphore( rhs.semaphore )
-      , flags( rhs.flags )
-      , handleType( rhs.handleType )
-      , handle( rhs.handle )
-      , name( rhs.name )
     {}
 
     ImportSemaphoreWin32HandleInfoKHR & operator=( ImportSemaphoreWin32HandleInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -44944,23 +42658,6 @@ namespace VULKAN_HPP_NAMESPACE
       , indexTypeCount( indexTypeCount_ )
       , pIndexTypes( pIndexTypes_ )
       , pIndexTypeValues( pIndexTypeValues_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR IndirectCommandsLayoutTokenNV( IndirectCommandsLayoutTokenNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , tokenType( rhs.tokenType )
-      , stream( rhs.stream )
-      , offset( rhs.offset )
-      , vertexBindingUnit( rhs.vertexBindingUnit )
-      , vertexDynamicStride( rhs.vertexDynamicStride )
-      , pushconstantPipelineLayout( rhs.pushconstantPipelineLayout )
-      , pushconstantShaderStageFlags( rhs.pushconstantShaderStageFlags )
-      , pushconstantOffset( rhs.pushconstantOffset )
-      , pushconstantSize( rhs.pushconstantSize )
-      , indirectStateFlags( rhs.indirectStateFlags )
-      , indexTypeCount( rhs.indexTypeCount )
-      , pIndexTypes( rhs.pIndexTypes )
-      , pIndexTypeValues( rhs.pIndexTypeValues )
     {}
 
     IndirectCommandsLayoutTokenNV & operator=( IndirectCommandsLayoutTokenNV const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -45138,16 +42835,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pStreamStrides( pStreamStrides_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR IndirectCommandsLayoutCreateInfoNV( IndirectCommandsLayoutCreateInfoNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , pipelineBindPoint( rhs.pipelineBindPoint )
-      , tokenCount( rhs.tokenCount )
-      , pTokens( rhs.pTokens )
-      , streamCount( rhs.streamCount )
-      , pStreamStrides( rhs.pStreamStrides )
-    {}
-
     IndirectCommandsLayoutCreateInfoNV & operator=( IndirectCommandsLayoutCreateInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( IndirectCommandsLayoutCreateInfoNV ) - offsetof( IndirectCommandsLayoutCreateInfoNV, pNext ) );
@@ -45257,11 +42944,6 @@ namespace VULKAN_HPP_NAMESPACE
       : pUserData( pUserData_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR InitializePerformanceApiInfoINTEL( InitializePerformanceApiInfoINTEL const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , pUserData( rhs.pUserData )
-    {}
-
     InitializePerformanceApiInfoINTEL & operator=( InitializePerformanceApiInfoINTEL const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( InitializePerformanceApiInfoINTEL ) - offsetof( InitializePerformanceApiInfoINTEL, pNext ) );
@@ -45334,18 +43016,6 @@ namespace VULKAN_HPP_NAMESPACE
       , inputAttachmentIndex( inputAttachmentIndex_ )
       , aspectMask( aspectMask_ )
     {}
-
-    VULKAN_HPP_CONSTEXPR InputAttachmentAspectReference( InputAttachmentAspectReference const& rhs ) VULKAN_HPP_NOEXCEPT
-      : subpass( rhs.subpass )
-      , inputAttachmentIndex( rhs.inputAttachmentIndex )
-      , aspectMask( rhs.aspectMask )
-    {}
-
-    InputAttachmentAspectReference & operator=( InputAttachmentAspectReference const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( InputAttachmentAspectReference ) );
-      return *this;
-    }
 
     InputAttachmentAspectReference( VkInputAttachmentAspectReference const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -45424,16 +43094,6 @@ namespace VULKAN_HPP_NAMESPACE
       , ppEnabledLayerNames( ppEnabledLayerNames_ )
       , enabledExtensionCount( enabledExtensionCount_ )
       , ppEnabledExtensionNames( ppEnabledExtensionNames_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR InstanceCreateInfo( InstanceCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , pApplicationInfo( rhs.pApplicationInfo )
-      , enabledLayerCount( rhs.enabledLayerCount )
-      , ppEnabledLayerNames( rhs.ppEnabledLayerNames )
-      , enabledExtensionCount( rhs.enabledExtensionCount )
-      , ppEnabledExtensionNames( rhs.ppEnabledExtensionNames )
     {}
 
     InstanceCreateInfo & operator=( InstanceCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -45545,30 +43205,11 @@ namespace VULKAN_HPP_NAMESPACE
                                              uint32_t specVersion_ = {},
                                              uint32_t implementationVersion_ = {},
                                              std::array<char,VK_MAX_DESCRIPTION_SIZE> const& description_ = {} ) VULKAN_HPP_NOEXCEPT
-      : layerName{}
+      : layerName( layerName_ )
       , specVersion( specVersion_ )
       , implementationVersion( implementationVersion_ )
-      , description{}
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_EXTENSION_NAME_SIZE>::copy( layerName, layerName_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE>::copy( description, description_ );
-    }
-
-    VULKAN_HPP_CONSTEXPR_14 LayerProperties( LayerProperties const& rhs ) VULKAN_HPP_NOEXCEPT
-      : layerName{}
-      , specVersion( rhs.specVersion )
-      , implementationVersion( rhs.implementationVersion )
-      , description{}
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_EXTENSION_NAME_SIZE>::copy( layerName, rhs.layerName );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE>::copy( description, rhs.description );
-    }
-
-    LayerProperties & operator=( LayerProperties const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( LayerProperties ) );
-      return *this;
-    }
+      , description( description_ )
+    {}
 
     LayerProperties( VkLayerProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -45596,10 +43237,10 @@ namespace VULKAN_HPP_NAMESPACE
 #else
     bool operator==( LayerProperties const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
-      return ( memcmp( layerName, rhs.layerName, VK_MAX_EXTENSION_NAME_SIZE * sizeof( char ) ) == 0 )
+      return ( layerName == rhs.layerName )
           && ( specVersion == rhs.specVersion )
           && ( implementationVersion == rhs.implementationVersion )
-          && ( memcmp( description, rhs.description, VK_MAX_DESCRIPTION_SIZE * sizeof( char ) ) == 0 );
+          && ( description == rhs.description );
     }
 
     bool operator!=( LayerProperties const& rhs ) const VULKAN_HPP_NOEXCEPT
@@ -45609,10 +43250,10 @@ namespace VULKAN_HPP_NAMESPACE
 #endif
 
   public:
-    char layerName[VK_MAX_EXTENSION_NAME_SIZE] = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<char, VK_MAX_EXTENSION_NAME_SIZE> layerName = {};
     uint32_t specVersion = {};
     uint32_t implementationVersion = {};
-    char description[VK_MAX_DESCRIPTION_SIZE] = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<char, VK_MAX_DESCRIPTION_SIZE> description = {};
   };
   static_assert( sizeof( LayerProperties ) == sizeof( VkLayerProperties ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<LayerProperties>::value, "struct wrapper is not a standard layout!" );
@@ -45624,12 +43265,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                     const void* pView_ = {} ) VULKAN_HPP_NOEXCEPT
       : flags( flags_ )
       , pView( pView_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR MacOSSurfaceCreateInfoMVK( MacOSSurfaceCreateInfoMVK const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , pView( rhs.pView )
     {}
 
     MacOSSurfaceCreateInfoMVK & operator=( MacOSSurfaceCreateInfoMVK const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -45712,13 +43347,6 @@ namespace VULKAN_HPP_NAMESPACE
       : memory( memory_ )
       , offset( offset_ )
       , size( size_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR MappedMemoryRange( MappedMemoryRange const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , memory( rhs.memory )
-      , offset( rhs.offset )
-      , size( rhs.size )
     {}
 
     MappedMemoryRange & operator=( MappedMemoryRange const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -45808,12 +43436,6 @@ namespace VULKAN_HPP_NAMESPACE
       , deviceMask( deviceMask_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR MemoryAllocateFlagsInfo( MemoryAllocateFlagsInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , deviceMask( rhs.deviceMask )
-    {}
-
     MemoryAllocateFlagsInfo & operator=( MemoryAllocateFlagsInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( MemoryAllocateFlagsInfo ) - offsetof( MemoryAllocateFlagsInfo, pNext ) );
@@ -45891,12 +43513,6 @@ namespace VULKAN_HPP_NAMESPACE
                                              uint32_t memoryTypeIndex_ = {} ) VULKAN_HPP_NOEXCEPT
       : allocationSize( allocationSize_ )
       , memoryTypeIndex( memoryTypeIndex_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR MemoryAllocateInfo( MemoryAllocateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , allocationSize( rhs.allocationSize )
-      , memoryTypeIndex( rhs.memoryTypeIndex )
     {}
 
     MemoryAllocateInfo & operator=( MemoryAllocateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -45978,12 +43594,6 @@ namespace VULKAN_HPP_NAMESPACE
       , dstAccessMask( dstAccessMask_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR MemoryBarrier( MemoryBarrier const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , srcAccessMask( rhs.srcAccessMask )
-      , dstAccessMask( rhs.dstAccessMask )
-    {}
-
     MemoryBarrier & operator=( MemoryBarrier const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( MemoryBarrier ) - offsetof( MemoryBarrier, pNext ) );
@@ -46061,12 +43671,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                       VULKAN_HPP_NAMESPACE::Buffer buffer_ = {} ) VULKAN_HPP_NOEXCEPT
       : image( image_ )
       , buffer( buffer_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR MemoryDedicatedAllocateInfo( MemoryDedicatedAllocateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , image( rhs.image )
-      , buffer( rhs.buffer )
     {}
 
     MemoryDedicatedAllocateInfo & operator=( MemoryDedicatedAllocateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -46148,12 +43752,6 @@ namespace VULKAN_HPP_NAMESPACE
       , requiresDedicatedAllocation( requiresDedicatedAllocation_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR MemoryDedicatedRequirements( MemoryDedicatedRequirements const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , prefersDedicatedAllocation( rhs.prefersDedicatedAllocation )
-      , requiresDedicatedAllocation( rhs.requiresDedicatedAllocation )
-    {}
-
     MemoryDedicatedRequirements & operator=( MemoryDedicatedRequirements const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( MemoryDedicatedRequirements ) - offsetof( MemoryDedicatedRequirements, pNext ) );
@@ -46213,11 +43811,6 @@ namespace VULKAN_HPP_NAMESPACE
       : memoryTypeBits( memoryTypeBits_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR MemoryFdPropertiesKHR( MemoryFdPropertiesKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , memoryTypeBits( rhs.memoryTypeBits )
-    {}
-
     MemoryFdPropertiesKHR & operator=( MemoryFdPropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( MemoryFdPropertiesKHR ) - offsetof( MemoryFdPropertiesKHR, pNext ) );
@@ -46274,11 +43867,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR MemoryGetAndroidHardwareBufferInfoANDROID( VULKAN_HPP_NAMESPACE::DeviceMemory memory_ = {} ) VULKAN_HPP_NOEXCEPT
       : memory( memory_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR MemoryGetAndroidHardwareBufferInfoANDROID( MemoryGetAndroidHardwareBufferInfoANDROID const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , memory( rhs.memory )
     {}
 
     MemoryGetAndroidHardwareBufferInfoANDROID & operator=( MemoryGetAndroidHardwareBufferInfoANDROID const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -46351,12 +43939,6 @@ namespace VULKAN_HPP_NAMESPACE
                                              VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits handleType_ = VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits::eOpaqueFd ) VULKAN_HPP_NOEXCEPT
       : memory( memory_ )
       , handleType( handleType_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR MemoryGetFdInfoKHR( MemoryGetFdInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , memory( rhs.memory )
-      , handleType( rhs.handleType )
     {}
 
     MemoryGetFdInfoKHR & operator=( MemoryGetFdInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -46439,12 +44021,6 @@ namespace VULKAN_HPP_NAMESPACE
       , handleType( handleType_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR MemoryGetWin32HandleInfoKHR( MemoryGetWin32HandleInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , memory( rhs.memory )
-      , handleType( rhs.handleType )
-    {}
-
     MemoryGetWin32HandleInfoKHR & operator=( MemoryGetWin32HandleInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( MemoryGetWin32HandleInfoKHR ) - offsetof( MemoryGetWin32HandleInfoKHR, pNext ) );
@@ -46525,17 +44101,6 @@ namespace VULKAN_HPP_NAMESPACE
       , flags( flags_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR MemoryHeap( MemoryHeap const& rhs ) VULKAN_HPP_NOEXCEPT
-      : size( rhs.size )
-      , flags( rhs.flags )
-    {}
-
-    MemoryHeap & operator=( MemoryHeap const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( MemoryHeap ) );
-      return *this;
-    }
-
     MemoryHeap( VkMemoryHeap const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -46583,11 +44148,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR MemoryHostPointerPropertiesEXT( uint32_t memoryTypeBits_ = {} ) VULKAN_HPP_NOEXCEPT
       : memoryTypeBits( memoryTypeBits_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR MemoryHostPointerPropertiesEXT( MemoryHostPointerPropertiesEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , memoryTypeBits( rhs.memoryTypeBits )
     {}
 
     MemoryHostPointerPropertiesEXT & operator=( MemoryHostPointerPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -46645,11 +44205,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR MemoryOpaqueCaptureAddressAllocateInfo( uint64_t opaqueCaptureAddress_ = {} ) VULKAN_HPP_NOEXCEPT
       : opaqueCaptureAddress( opaqueCaptureAddress_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR MemoryOpaqueCaptureAddressAllocateInfo( MemoryOpaqueCaptureAddressAllocateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , opaqueCaptureAddress( rhs.opaqueCaptureAddress )
     {}
 
     MemoryOpaqueCaptureAddressAllocateInfo & operator=( MemoryOpaqueCaptureAddressAllocateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -46719,11 +44274,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR MemoryPriorityAllocateInfoEXT( float priority_ = {} ) VULKAN_HPP_NOEXCEPT
       : priority( priority_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR MemoryPriorityAllocateInfoEXT( MemoryPriorityAllocateInfoEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , priority( rhs.priority )
     {}
 
     MemoryPriorityAllocateInfoEXT & operator=( MemoryPriorityAllocateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -46799,18 +44349,6 @@ namespace VULKAN_HPP_NAMESPACE
       , memoryTypeBits( memoryTypeBits_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR MemoryRequirements( MemoryRequirements const& rhs ) VULKAN_HPP_NOEXCEPT
-      : size( rhs.size )
-      , alignment( rhs.alignment )
-      , memoryTypeBits( rhs.memoryTypeBits )
-    {}
-
-    MemoryRequirements & operator=( MemoryRequirements const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( MemoryRequirements ) );
-      return *this;
-    }
-
     MemoryRequirements( VkMemoryRequirements const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -46860,11 +44398,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR MemoryRequirements2( VULKAN_HPP_NAMESPACE::MemoryRequirements memoryRequirements_ = {} ) VULKAN_HPP_NOEXCEPT
       : memoryRequirements( memoryRequirements_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR MemoryRequirements2( MemoryRequirements2 const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , memoryRequirements( rhs.memoryRequirements )
     {}
 
     MemoryRequirements2 & operator=( MemoryRequirements2 const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -46926,17 +44459,6 @@ namespace VULKAN_HPP_NAMESPACE
       , heapIndex( heapIndex_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR MemoryType( MemoryType const& rhs ) VULKAN_HPP_NOEXCEPT
-      : propertyFlags( rhs.propertyFlags )
-      , heapIndex( rhs.heapIndex )
-    {}
-
-    MemoryType & operator=( MemoryType const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( MemoryType ) );
-      return *this;
-    }
-
     MemoryType( VkMemoryType const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -46985,11 +44507,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR MemoryWin32HandlePropertiesKHR( uint32_t memoryTypeBits_ = {} ) VULKAN_HPP_NOEXCEPT
       : memoryTypeBits( memoryTypeBits_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR MemoryWin32HandlePropertiesKHR( MemoryWin32HandlePropertiesKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , memoryTypeBits( rhs.memoryTypeBits )
     {}
 
     MemoryWin32HandlePropertiesKHR & operator=( MemoryWin32HandlePropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -47051,12 +44568,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                     const CAMetalLayer* pLayer_ = {} ) VULKAN_HPP_NOEXCEPT
       : flags( flags_ )
       , pLayer( pLayer_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR MetalSurfaceCreateInfoEXT( MetalSurfaceCreateInfoEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , pLayer( rhs.pLayer )
     {}
 
     MetalSurfaceCreateInfoEXT & operator=( MetalSurfaceCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -47137,11 +44648,6 @@ namespace VULKAN_HPP_NAMESPACE
       : maxSampleLocationGridSize( maxSampleLocationGridSize_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR MultisamplePropertiesEXT( MultisamplePropertiesEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , maxSampleLocationGridSize( rhs.maxSampleLocationGridSize )
-    {}
-
     MultisamplePropertiesEXT & operator=( MultisamplePropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( MultisamplePropertiesEXT ) - offsetof( MultisamplePropertiesEXT, pNext ) );
@@ -47207,20 +44713,6 @@ namespace VULKAN_HPP_NAMESPACE
       , presentMargin( presentMargin_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PastPresentationTimingGOOGLE( PastPresentationTimingGOOGLE const& rhs ) VULKAN_HPP_NOEXCEPT
-      : presentID( rhs.presentID )
-      , desiredPresentTime( rhs.desiredPresentTime )
-      , actualPresentTime( rhs.actualPresentTime )
-      , earliestPresentTime( rhs.earliestPresentTime )
-      , presentMargin( rhs.presentMargin )
-    {}
-
-    PastPresentationTimingGOOGLE & operator=( PastPresentationTimingGOOGLE const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( PastPresentationTimingGOOGLE ) );
-      return *this;
-    }
-
     PastPresentationTimingGOOGLE( VkPastPresentationTimingGOOGLE const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -47274,11 +44766,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR PerformanceConfigurationAcquireInfoINTEL( VULKAN_HPP_NAMESPACE::PerformanceConfigurationTypeINTEL type_ = VULKAN_HPP_NAMESPACE::PerformanceConfigurationTypeINTEL::eCommandQueueMetricsDiscoveryActivated ) VULKAN_HPP_NOEXCEPT
       : type( type_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PerformanceConfigurationAcquireInfoINTEL( PerformanceConfigurationAcquireInfoINTEL const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , type( rhs.type )
     {}
 
     PerformanceConfigurationAcquireInfoINTEL & operator=( PerformanceConfigurationAcquireInfoINTEL const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -47351,26 +44838,10 @@ namespace VULKAN_HPP_NAMESPACE
                                                               std::array<char,VK_MAX_DESCRIPTION_SIZE> const& category_ = {},
                                                               std::array<char,VK_MAX_DESCRIPTION_SIZE> const& description_ = {} ) VULKAN_HPP_NOEXCEPT
       : flags( flags_ )
-      , name{}
-      , category{}
-      , description{}
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE>::copy( name, name_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE>::copy( category, category_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE>::copy( description, description_ );
-    }
-
-    VULKAN_HPP_CONSTEXPR_14 PerformanceCounterDescriptionKHR( PerformanceCounterDescriptionKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , name{}
-      , category{}
-      , description{}
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE>::copy( name, rhs.name );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE>::copy( category, rhs.category );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE>::copy( description, rhs.description );
-    }
+      , name( name_ )
+      , category( category_ )
+      , description( description_ )
+    {}
 
     PerformanceCounterDescriptionKHR & operator=( PerformanceCounterDescriptionKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -47407,9 +44878,9 @@ namespace VULKAN_HPP_NAMESPACE
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( flags == rhs.flags )
-          && ( memcmp( name, rhs.name, VK_MAX_DESCRIPTION_SIZE * sizeof( char ) ) == 0 )
-          && ( memcmp( category, rhs.category, VK_MAX_DESCRIPTION_SIZE * sizeof( char ) ) == 0 )
-          && ( memcmp( description, rhs.description, VK_MAX_DESCRIPTION_SIZE * sizeof( char ) ) == 0 );
+          && ( name == rhs.name )
+          && ( category == rhs.category )
+          && ( description == rhs.description );
     }
 
     bool operator!=( PerformanceCounterDescriptionKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
@@ -47422,9 +44893,9 @@ namespace VULKAN_HPP_NAMESPACE
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePerformanceCounterDescriptionKHR;
     const void* pNext = {};
     VULKAN_HPP_NAMESPACE::PerformanceCounterDescriptionFlagsKHR flags = {};
-    char name[VK_MAX_DESCRIPTION_SIZE] = {};
-    char category[VK_MAX_DESCRIPTION_SIZE] = {};
-    char description[VK_MAX_DESCRIPTION_SIZE] = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<char, VK_MAX_DESCRIPTION_SIZE> name = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<char, VK_MAX_DESCRIPTION_SIZE> category = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<char, VK_MAX_DESCRIPTION_SIZE> description = {};
   };
   static_assert( sizeof( PerformanceCounterDescriptionKHR ) == sizeof( VkPerformanceCounterDescriptionKHR ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<PerformanceCounterDescriptionKHR>::value, "struct wrapper is not a standard layout!" );
@@ -47438,20 +44909,8 @@ namespace VULKAN_HPP_NAMESPACE
       : unit( unit_ )
       , scope( scope_ )
       , storage( storage_ )
-      , uuid{}
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint8_t,VK_UUID_SIZE>::copy( uuid, uuid_ );
-    }
-
-    VULKAN_HPP_CONSTEXPR_14 PerformanceCounterKHR( PerformanceCounterKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , unit( rhs.unit )
-      , scope( rhs.scope )
-      , storage( rhs.storage )
-      , uuid{}
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint8_t,VK_UUID_SIZE>::copy( uuid, rhs.uuid );
-    }
+      , uuid( uuid_ )
+    {}
 
     PerformanceCounterKHR & operator=( PerformanceCounterKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -47490,7 +44949,7 @@ namespace VULKAN_HPP_NAMESPACE
           && ( unit == rhs.unit )
           && ( scope == rhs.scope )
           && ( storage == rhs.storage )
-          && ( memcmp( uuid, rhs.uuid, VK_UUID_SIZE * sizeof( uint8_t ) ) == 0 );
+          && ( uuid == rhs.uuid );
     }
 
     bool operator!=( PerformanceCounterKHR const& rhs ) const VULKAN_HPP_NOEXCEPT
@@ -47505,7 +44964,7 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_NAMESPACE::PerformanceCounterUnitKHR unit = VULKAN_HPP_NAMESPACE::PerformanceCounterUnitKHR::eGeneric;
     VULKAN_HPP_NAMESPACE::PerformanceCounterScopeKHR scope = VULKAN_HPP_NAMESPACE::PerformanceCounterScopeKHR::eCommandBuffer;
     VULKAN_HPP_NAMESPACE::PerformanceCounterStorageKHR storage = VULKAN_HPP_NAMESPACE::PerformanceCounterStorageKHR::eInt32;
-    uint8_t uuid[VK_UUID_SIZE] = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<uint8_t, VK_UUID_SIZE> uuid = {};
   };
   static_assert( sizeof( PerformanceCounterKHR ) == sizeof( VkPerformanceCounterKHR ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<PerformanceCounterKHR>::value, "struct wrapper is not a standard layout!" );
@@ -47613,11 +45072,6 @@ namespace VULKAN_HPP_NAMESPACE
       : marker( marker_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PerformanceMarkerInfoINTEL( PerformanceMarkerInfoINTEL const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , marker( rhs.marker )
-    {}
-
     PerformanceMarkerInfoINTEL & operator=( PerformanceMarkerInfoINTEL const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PerformanceMarkerInfoINTEL ) - offsetof( PerformanceMarkerInfoINTEL, pNext ) );
@@ -47689,13 +45143,6 @@ namespace VULKAN_HPP_NAMESPACE
       : type( type_ )
       , enable( enable_ )
       , parameter( parameter_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PerformanceOverrideInfoINTEL( PerformanceOverrideInfoINTEL const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , type( rhs.type )
-      , enable( rhs.enable )
-      , parameter( rhs.parameter )
     {}
 
     PerformanceOverrideInfoINTEL & operator=( PerformanceOverrideInfoINTEL const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -47783,11 +45230,6 @@ namespace VULKAN_HPP_NAMESPACE
       : counterPassIndex( counterPassIndex_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PerformanceQuerySubmitInfoKHR( PerformanceQuerySubmitInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , counterPassIndex( rhs.counterPassIndex )
-    {}
-
     PerformanceQuerySubmitInfoKHR & operator=( PerformanceQuerySubmitInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PerformanceQuerySubmitInfoKHR ) - offsetof( PerformanceQuerySubmitInfoKHR, pNext ) );
@@ -47855,11 +45297,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR PerformanceStreamMarkerInfoINTEL( uint32_t marker_ = {} ) VULKAN_HPP_NOEXCEPT
       : marker( marker_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PerformanceStreamMarkerInfoINTEL( PerformanceStreamMarkerInfoINTEL const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , marker( rhs.marker )
     {}
 
     PerformanceStreamMarkerInfoINTEL & operator=( PerformanceStreamMarkerInfoINTEL const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -48021,17 +45458,6 @@ namespace VULKAN_HPP_NAMESPACE
       , data( data_ )
     {}
 
-    PerformanceValueINTEL( PerformanceValueINTEL const& rhs ) VULKAN_HPP_NOEXCEPT
-      : type( rhs.type )
-      , data( rhs.data )
-    {}
-
-    PerformanceValueINTEL & operator=( PerformanceValueINTEL const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( PerformanceValueINTEL ) );
-      return *this;
-    }
-
     PerformanceValueINTEL( VkPerformanceValueINTEL const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -48082,14 +45508,6 @@ namespace VULKAN_HPP_NAMESPACE
       , uniformAndStorageBuffer16BitAccess( uniformAndStorageBuffer16BitAccess_ )
       , storagePushConstant16( storagePushConstant16_ )
       , storageInputOutput16( storageInputOutput16_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDevice16BitStorageFeatures( PhysicalDevice16BitStorageFeatures const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , storageBuffer16BitAccess( rhs.storageBuffer16BitAccess )
-      , uniformAndStorageBuffer16BitAccess( rhs.uniformAndStorageBuffer16BitAccess )
-      , storagePushConstant16( rhs.storagePushConstant16 )
-      , storageInputOutput16( rhs.storageInputOutput16 )
     {}
 
     PhysicalDevice16BitStorageFeatures & operator=( PhysicalDevice16BitStorageFeatures const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -48189,13 +45607,6 @@ namespace VULKAN_HPP_NAMESPACE
       , storagePushConstant8( storagePushConstant8_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDevice8BitStorageFeatures( PhysicalDevice8BitStorageFeatures const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , storageBuffer8BitAccess( rhs.storageBuffer8BitAccess )
-      , uniformAndStorageBuffer8BitAccess( rhs.uniformAndStorageBuffer8BitAccess )
-      , storagePushConstant8( rhs.storagePushConstant8 )
-    {}
-
     PhysicalDevice8BitStorageFeatures & operator=( PhysicalDevice8BitStorageFeatures const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDevice8BitStorageFeatures ) - offsetof( PhysicalDevice8BitStorageFeatures, pNext ) );
@@ -48281,11 +45692,6 @@ namespace VULKAN_HPP_NAMESPACE
       : decodeModeSharedExponent( decodeModeSharedExponent_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceASTCDecodeFeaturesEXT( PhysicalDeviceASTCDecodeFeaturesEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , decodeModeSharedExponent( rhs.decodeModeSharedExponent )
-    {}
-
     PhysicalDeviceASTCDecodeFeaturesEXT & operator=( PhysicalDeviceASTCDecodeFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDeviceASTCDecodeFeaturesEXT ) - offsetof( PhysicalDeviceASTCDecodeFeaturesEXT, pNext ) );
@@ -48353,11 +45759,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR PhysicalDeviceBlendOperationAdvancedFeaturesEXT( VULKAN_HPP_NAMESPACE::Bool32 advancedBlendCoherentOperations_ = {} ) VULKAN_HPP_NOEXCEPT
       : advancedBlendCoherentOperations( advancedBlendCoherentOperations_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceBlendOperationAdvancedFeaturesEXT( PhysicalDeviceBlendOperationAdvancedFeaturesEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , advancedBlendCoherentOperations( rhs.advancedBlendCoherentOperations )
     {}
 
     PhysicalDeviceBlendOperationAdvancedFeaturesEXT & operator=( PhysicalDeviceBlendOperationAdvancedFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -48439,16 +45840,6 @@ namespace VULKAN_HPP_NAMESPACE
       , advancedBlendAllOperations( advancedBlendAllOperations_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceBlendOperationAdvancedPropertiesEXT( PhysicalDeviceBlendOperationAdvancedPropertiesEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , advancedBlendMaxColorAttachments( rhs.advancedBlendMaxColorAttachments )
-      , advancedBlendIndependentBlend( rhs.advancedBlendIndependentBlend )
-      , advancedBlendNonPremultipliedSrcColor( rhs.advancedBlendNonPremultipliedSrcColor )
-      , advancedBlendNonPremultipliedDstColor( rhs.advancedBlendNonPremultipliedDstColor )
-      , advancedBlendCorrelatedOverlap( rhs.advancedBlendCorrelatedOverlap )
-      , advancedBlendAllOperations( rhs.advancedBlendAllOperations )
-    {}
-
     PhysicalDeviceBlendOperationAdvancedPropertiesEXT & operator=( PhysicalDeviceBlendOperationAdvancedPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDeviceBlendOperationAdvancedPropertiesEXT ) - offsetof( PhysicalDeviceBlendOperationAdvancedPropertiesEXT, pNext ) );
@@ -48518,13 +45909,6 @@ namespace VULKAN_HPP_NAMESPACE
       : bufferDeviceAddress( bufferDeviceAddress_ )
       , bufferDeviceAddressCaptureReplay( bufferDeviceAddressCaptureReplay_ )
       , bufferDeviceAddressMultiDevice( bufferDeviceAddressMultiDevice_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceBufferDeviceAddressFeatures( PhysicalDeviceBufferDeviceAddressFeatures const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , bufferDeviceAddress( rhs.bufferDeviceAddress )
-      , bufferDeviceAddressCaptureReplay( rhs.bufferDeviceAddressCaptureReplay )
-      , bufferDeviceAddressMultiDevice( rhs.bufferDeviceAddressMultiDevice )
     {}
 
     PhysicalDeviceBufferDeviceAddressFeatures & operator=( PhysicalDeviceBufferDeviceAddressFeatures const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -48616,13 +46000,6 @@ namespace VULKAN_HPP_NAMESPACE
       , bufferDeviceAddressMultiDevice( bufferDeviceAddressMultiDevice_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceBufferDeviceAddressFeaturesEXT( PhysicalDeviceBufferDeviceAddressFeaturesEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , bufferDeviceAddress( rhs.bufferDeviceAddress )
-      , bufferDeviceAddressCaptureReplay( rhs.bufferDeviceAddressCaptureReplay )
-      , bufferDeviceAddressMultiDevice( rhs.bufferDeviceAddressMultiDevice )
-    {}
-
     PhysicalDeviceBufferDeviceAddressFeaturesEXT & operator=( PhysicalDeviceBufferDeviceAddressFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDeviceBufferDeviceAddressFeaturesEXT ) - offsetof( PhysicalDeviceBufferDeviceAddressFeaturesEXT, pNext ) );
@@ -48708,11 +46085,6 @@ namespace VULKAN_HPP_NAMESPACE
       : deviceCoherentMemory( deviceCoherentMemory_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceCoherentMemoryFeaturesAMD( PhysicalDeviceCoherentMemoryFeaturesAMD const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , deviceCoherentMemory( rhs.deviceCoherentMemory )
-    {}
-
     PhysicalDeviceCoherentMemoryFeaturesAMD & operator=( PhysicalDeviceCoherentMemoryFeaturesAMD const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDeviceCoherentMemoryFeaturesAMD ) - offsetof( PhysicalDeviceCoherentMemoryFeaturesAMD, pNext ) );
@@ -48782,12 +46154,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                                            VULKAN_HPP_NAMESPACE::Bool32 computeDerivativeGroupLinear_ = {} ) VULKAN_HPP_NOEXCEPT
       : computeDerivativeGroupQuads( computeDerivativeGroupQuads_ )
       , computeDerivativeGroupLinear( computeDerivativeGroupLinear_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceComputeShaderDerivativesFeaturesNV( PhysicalDeviceComputeShaderDerivativesFeaturesNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , computeDerivativeGroupQuads( rhs.computeDerivativeGroupQuads )
-      , computeDerivativeGroupLinear( rhs.computeDerivativeGroupLinear )
     {}
 
     PhysicalDeviceComputeShaderDerivativesFeaturesNV & operator=( PhysicalDeviceComputeShaderDerivativesFeaturesNV const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -48867,12 +46233,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                                         VULKAN_HPP_NAMESPACE::Bool32 inheritedConditionalRendering_ = {} ) VULKAN_HPP_NOEXCEPT
       : conditionalRendering( conditionalRendering_ )
       , inheritedConditionalRendering( inheritedConditionalRendering_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceConditionalRenderingFeaturesEXT( PhysicalDeviceConditionalRenderingFeaturesEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , conditionalRendering( rhs.conditionalRendering )
-      , inheritedConditionalRendering( rhs.inheritedConditionalRendering )
     {}
 
     PhysicalDeviceConditionalRenderingFeaturesEXT & operator=( PhysicalDeviceConditionalRenderingFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -48968,19 +46328,6 @@ namespace VULKAN_HPP_NAMESPACE
       , conservativeRasterizationPostDepthCoverage( conservativeRasterizationPostDepthCoverage_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceConservativeRasterizationPropertiesEXT( PhysicalDeviceConservativeRasterizationPropertiesEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , primitiveOverestimationSize( rhs.primitiveOverestimationSize )
-      , maxExtraPrimitiveOverestimationSize( rhs.maxExtraPrimitiveOverestimationSize )
-      , extraPrimitiveOverestimationSizeGranularity( rhs.extraPrimitiveOverestimationSizeGranularity )
-      , primitiveUnderestimation( rhs.primitiveUnderestimation )
-      , conservativePointAndLineRasterization( rhs.conservativePointAndLineRasterization )
-      , degenerateTrianglesRasterized( rhs.degenerateTrianglesRasterized )
-      , degenerateLinesRasterized( rhs.degenerateLinesRasterized )
-      , fullyCoveredFragmentShaderInputVariable( rhs.fullyCoveredFragmentShaderInputVariable )
-      , conservativeRasterizationPostDepthCoverage( rhs.conservativeRasterizationPostDepthCoverage )
-    {}
-
     PhysicalDeviceConservativeRasterizationPropertiesEXT & operator=( PhysicalDeviceConservativeRasterizationPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDeviceConservativeRasterizationPropertiesEXT ) - offsetof( PhysicalDeviceConservativeRasterizationPropertiesEXT, pNext ) );
@@ -49054,12 +46401,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                                     VULKAN_HPP_NAMESPACE::Bool32 cooperativeMatrixRobustBufferAccess_ = {} ) VULKAN_HPP_NOEXCEPT
       : cooperativeMatrix( cooperativeMatrix_ )
       , cooperativeMatrixRobustBufferAccess( cooperativeMatrixRobustBufferAccess_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceCooperativeMatrixFeaturesNV( PhysicalDeviceCooperativeMatrixFeaturesNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , cooperativeMatrix( rhs.cooperativeMatrix )
-      , cooperativeMatrixRobustBufferAccess( rhs.cooperativeMatrixRobustBufferAccess )
     {}
 
     PhysicalDeviceCooperativeMatrixFeaturesNV & operator=( PhysicalDeviceCooperativeMatrixFeaturesNV const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -49139,11 +46480,6 @@ namespace VULKAN_HPP_NAMESPACE
       : cooperativeMatrixSupportedStages( cooperativeMatrixSupportedStages_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceCooperativeMatrixPropertiesNV( PhysicalDeviceCooperativeMatrixPropertiesNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , cooperativeMatrixSupportedStages( rhs.cooperativeMatrixSupportedStages )
-    {}
-
     PhysicalDeviceCooperativeMatrixPropertiesNV & operator=( PhysicalDeviceCooperativeMatrixPropertiesNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDeviceCooperativeMatrixPropertiesNV ) - offsetof( PhysicalDeviceCooperativeMatrixPropertiesNV, pNext ) );
@@ -49199,11 +46535,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR PhysicalDeviceCornerSampledImageFeaturesNV( VULKAN_HPP_NAMESPACE::Bool32 cornerSampledImage_ = {} ) VULKAN_HPP_NOEXCEPT
       : cornerSampledImage( cornerSampledImage_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceCornerSampledImageFeaturesNV( PhysicalDeviceCornerSampledImageFeaturesNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , cornerSampledImage( rhs.cornerSampledImage )
     {}
 
     PhysicalDeviceCornerSampledImageFeaturesNV & operator=( PhysicalDeviceCornerSampledImageFeaturesNV const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -49275,11 +46606,6 @@ namespace VULKAN_HPP_NAMESPACE
       : coverageReductionMode( coverageReductionMode_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceCoverageReductionModeFeaturesNV( PhysicalDeviceCoverageReductionModeFeaturesNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , coverageReductionMode( rhs.coverageReductionMode )
-    {}
-
     PhysicalDeviceCoverageReductionModeFeaturesNV & operator=( PhysicalDeviceCoverageReductionModeFeaturesNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDeviceCoverageReductionModeFeaturesNV ) - offsetof( PhysicalDeviceCoverageReductionModeFeaturesNV, pNext ) );
@@ -49349,11 +46675,6 @@ namespace VULKAN_HPP_NAMESPACE
       : dedicatedAllocationImageAliasing( dedicatedAllocationImageAliasing_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV( PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , dedicatedAllocationImageAliasing( rhs.dedicatedAllocationImageAliasing )
-    {}
-
     PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV & operator=( PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV ) - offsetof( PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV, pNext ) );
@@ -49421,11 +46742,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR PhysicalDeviceDepthClipEnableFeaturesEXT( VULKAN_HPP_NAMESPACE::Bool32 depthClipEnable_ = {} ) VULKAN_HPP_NOEXCEPT
       : depthClipEnable( depthClipEnable_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceDepthClipEnableFeaturesEXT( PhysicalDeviceDepthClipEnableFeaturesEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , depthClipEnable( rhs.depthClipEnable )
     {}
 
     PhysicalDeviceDepthClipEnableFeaturesEXT & operator=( PhysicalDeviceDepthClipEnableFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -49501,14 +46817,6 @@ namespace VULKAN_HPP_NAMESPACE
       , supportedStencilResolveModes( supportedStencilResolveModes_ )
       , independentResolveNone( independentResolveNone_ )
       , independentResolve( independentResolve_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceDepthStencilResolveProperties( PhysicalDeviceDepthStencilResolveProperties const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , supportedDepthResolveModes( rhs.supportedDepthResolveModes )
-      , supportedStencilResolveModes( rhs.supportedStencilResolveModes )
-      , independentResolveNone( rhs.independentResolveNone )
-      , independentResolve( rhs.independentResolve )
     {}
 
     PhysicalDeviceDepthStencilResolveProperties & operator=( PhysicalDeviceDepthStencilResolveProperties const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -49610,30 +46918,6 @@ namespace VULKAN_HPP_NAMESPACE
       , descriptorBindingPartiallyBound( descriptorBindingPartiallyBound_ )
       , descriptorBindingVariableDescriptorCount( descriptorBindingVariableDescriptorCount_ )
       , runtimeDescriptorArray( runtimeDescriptorArray_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceDescriptorIndexingFeatures( PhysicalDeviceDescriptorIndexingFeatures const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , shaderInputAttachmentArrayDynamicIndexing( rhs.shaderInputAttachmentArrayDynamicIndexing )
-      , shaderUniformTexelBufferArrayDynamicIndexing( rhs.shaderUniformTexelBufferArrayDynamicIndexing )
-      , shaderStorageTexelBufferArrayDynamicIndexing( rhs.shaderStorageTexelBufferArrayDynamicIndexing )
-      , shaderUniformBufferArrayNonUniformIndexing( rhs.shaderUniformBufferArrayNonUniformIndexing )
-      , shaderSampledImageArrayNonUniformIndexing( rhs.shaderSampledImageArrayNonUniformIndexing )
-      , shaderStorageBufferArrayNonUniformIndexing( rhs.shaderStorageBufferArrayNonUniformIndexing )
-      , shaderStorageImageArrayNonUniformIndexing( rhs.shaderStorageImageArrayNonUniformIndexing )
-      , shaderInputAttachmentArrayNonUniformIndexing( rhs.shaderInputAttachmentArrayNonUniformIndexing )
-      , shaderUniformTexelBufferArrayNonUniformIndexing( rhs.shaderUniformTexelBufferArrayNonUniformIndexing )
-      , shaderStorageTexelBufferArrayNonUniformIndexing( rhs.shaderStorageTexelBufferArrayNonUniformIndexing )
-      , descriptorBindingUniformBufferUpdateAfterBind( rhs.descriptorBindingUniformBufferUpdateAfterBind )
-      , descriptorBindingSampledImageUpdateAfterBind( rhs.descriptorBindingSampledImageUpdateAfterBind )
-      , descriptorBindingStorageImageUpdateAfterBind( rhs.descriptorBindingStorageImageUpdateAfterBind )
-      , descriptorBindingStorageBufferUpdateAfterBind( rhs.descriptorBindingStorageBufferUpdateAfterBind )
-      , descriptorBindingUniformTexelBufferUpdateAfterBind( rhs.descriptorBindingUniformTexelBufferUpdateAfterBind )
-      , descriptorBindingStorageTexelBufferUpdateAfterBind( rhs.descriptorBindingStorageTexelBufferUpdateAfterBind )
-      , descriptorBindingUpdateUnusedWhilePending( rhs.descriptorBindingUpdateUnusedWhilePending )
-      , descriptorBindingPartiallyBound( rhs.descriptorBindingPartiallyBound )
-      , descriptorBindingVariableDescriptorCount( rhs.descriptorBindingVariableDescriptorCount )
-      , runtimeDescriptorArray( rhs.runtimeDescriptorArray )
     {}
 
     PhysicalDeviceDescriptorIndexingFeatures & operator=( PhysicalDeviceDescriptorIndexingFeatures const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -49901,33 +47185,6 @@ namespace VULKAN_HPP_NAMESPACE
       , maxDescriptorSetUpdateAfterBindInputAttachments( maxDescriptorSetUpdateAfterBindInputAttachments_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceDescriptorIndexingProperties( PhysicalDeviceDescriptorIndexingProperties const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , maxUpdateAfterBindDescriptorsInAllPools( rhs.maxUpdateAfterBindDescriptorsInAllPools )
-      , shaderUniformBufferArrayNonUniformIndexingNative( rhs.shaderUniformBufferArrayNonUniformIndexingNative )
-      , shaderSampledImageArrayNonUniformIndexingNative( rhs.shaderSampledImageArrayNonUniformIndexingNative )
-      , shaderStorageBufferArrayNonUniformIndexingNative( rhs.shaderStorageBufferArrayNonUniformIndexingNative )
-      , shaderStorageImageArrayNonUniformIndexingNative( rhs.shaderStorageImageArrayNonUniformIndexingNative )
-      , shaderInputAttachmentArrayNonUniformIndexingNative( rhs.shaderInputAttachmentArrayNonUniformIndexingNative )
-      , robustBufferAccessUpdateAfterBind( rhs.robustBufferAccessUpdateAfterBind )
-      , quadDivergentImplicitLod( rhs.quadDivergentImplicitLod )
-      , maxPerStageDescriptorUpdateAfterBindSamplers( rhs.maxPerStageDescriptorUpdateAfterBindSamplers )
-      , maxPerStageDescriptorUpdateAfterBindUniformBuffers( rhs.maxPerStageDescriptorUpdateAfterBindUniformBuffers )
-      , maxPerStageDescriptorUpdateAfterBindStorageBuffers( rhs.maxPerStageDescriptorUpdateAfterBindStorageBuffers )
-      , maxPerStageDescriptorUpdateAfterBindSampledImages( rhs.maxPerStageDescriptorUpdateAfterBindSampledImages )
-      , maxPerStageDescriptorUpdateAfterBindStorageImages( rhs.maxPerStageDescriptorUpdateAfterBindStorageImages )
-      , maxPerStageDescriptorUpdateAfterBindInputAttachments( rhs.maxPerStageDescriptorUpdateAfterBindInputAttachments )
-      , maxPerStageUpdateAfterBindResources( rhs.maxPerStageUpdateAfterBindResources )
-      , maxDescriptorSetUpdateAfterBindSamplers( rhs.maxDescriptorSetUpdateAfterBindSamplers )
-      , maxDescriptorSetUpdateAfterBindUniformBuffers( rhs.maxDescriptorSetUpdateAfterBindUniformBuffers )
-      , maxDescriptorSetUpdateAfterBindUniformBuffersDynamic( rhs.maxDescriptorSetUpdateAfterBindUniformBuffersDynamic )
-      , maxDescriptorSetUpdateAfterBindStorageBuffers( rhs.maxDescriptorSetUpdateAfterBindStorageBuffers )
-      , maxDescriptorSetUpdateAfterBindStorageBuffersDynamic( rhs.maxDescriptorSetUpdateAfterBindStorageBuffersDynamic )
-      , maxDescriptorSetUpdateAfterBindSampledImages( rhs.maxDescriptorSetUpdateAfterBindSampledImages )
-      , maxDescriptorSetUpdateAfterBindStorageImages( rhs.maxDescriptorSetUpdateAfterBindStorageImages )
-      , maxDescriptorSetUpdateAfterBindInputAttachments( rhs.maxDescriptorSetUpdateAfterBindInputAttachments )
-    {}
-
     PhysicalDeviceDescriptorIndexingProperties & operator=( PhysicalDeviceDescriptorIndexingProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDeviceDescriptorIndexingProperties ) - offsetof( PhysicalDeviceDescriptorIndexingProperties, pNext ) );
@@ -50029,11 +47286,6 @@ namespace VULKAN_HPP_NAMESPACE
       : deviceGeneratedCommands( deviceGeneratedCommands_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceDeviceGeneratedCommandsFeaturesNV( PhysicalDeviceDeviceGeneratedCommandsFeaturesNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , deviceGeneratedCommands( rhs.deviceGeneratedCommands )
-    {}
-
     PhysicalDeviceDeviceGeneratedCommandsFeaturesNV & operator=( PhysicalDeviceDeviceGeneratedCommandsFeaturesNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDeviceDeviceGeneratedCommandsFeaturesNV ) - offsetof( PhysicalDeviceDeviceGeneratedCommandsFeaturesNV, pNext ) );
@@ -50119,19 +47371,6 @@ namespace VULKAN_HPP_NAMESPACE
       , minIndirectCommandsBufferOffsetAlignment( minIndirectCommandsBufferOffsetAlignment_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceDeviceGeneratedCommandsPropertiesNV( PhysicalDeviceDeviceGeneratedCommandsPropertiesNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , maxGraphicsShaderGroupCount( rhs.maxGraphicsShaderGroupCount )
-      , maxIndirectSequenceCount( rhs.maxIndirectSequenceCount )
-      , maxIndirectCommandsTokenCount( rhs.maxIndirectCommandsTokenCount )
-      , maxIndirectCommandsStreamCount( rhs.maxIndirectCommandsStreamCount )
-      , maxIndirectCommandsTokenOffset( rhs.maxIndirectCommandsTokenOffset )
-      , maxIndirectCommandsStreamStride( rhs.maxIndirectCommandsStreamStride )
-      , minSequencesCountBufferOffsetAlignment( rhs.minSequencesCountBufferOffsetAlignment )
-      , minSequencesIndexBufferOffsetAlignment( rhs.minSequencesIndexBufferOffsetAlignment )
-      , minIndirectCommandsBufferOffsetAlignment( rhs.minIndirectCommandsBufferOffsetAlignment )
-    {}
-
     PhysicalDeviceDeviceGeneratedCommandsPropertiesNV & operator=( PhysicalDeviceDeviceGeneratedCommandsPropertiesNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDeviceDeviceGeneratedCommandsPropertiesNV ) - offsetof( PhysicalDeviceDeviceGeneratedCommandsPropertiesNV, pNext ) );
@@ -50205,11 +47444,6 @@ namespace VULKAN_HPP_NAMESPACE
       : diagnosticsConfig( diagnosticsConfig_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceDiagnosticsConfigFeaturesNV( PhysicalDeviceDiagnosticsConfigFeaturesNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , diagnosticsConfig( rhs.diagnosticsConfig )
-    {}
-
     PhysicalDeviceDiagnosticsConfigFeaturesNV & operator=( PhysicalDeviceDiagnosticsConfigFeaturesNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDeviceDiagnosticsConfigFeaturesNV ) - offsetof( PhysicalDeviceDiagnosticsConfigFeaturesNV, pNext ) );
@@ -50279,11 +47513,6 @@ namespace VULKAN_HPP_NAMESPACE
       : maxDiscardRectangles( maxDiscardRectangles_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceDiscardRectanglePropertiesEXT( PhysicalDeviceDiscardRectanglePropertiesEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , maxDiscardRectangles( rhs.maxDiscardRectangles )
-    {}
-
     PhysicalDeviceDiscardRectanglePropertiesEXT & operator=( PhysicalDeviceDiscardRectanglePropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDeviceDiscardRectanglePropertiesEXT ) - offsetof( PhysicalDeviceDiscardRectanglePropertiesEXT, pNext ) );
@@ -50342,24 +47571,10 @@ namespace VULKAN_HPP_NAMESPACE
                                                             std::array<char,VK_MAX_DRIVER_INFO_SIZE> const& driverInfo_ = {},
                                                             VULKAN_HPP_NAMESPACE::ConformanceVersion conformanceVersion_ = {} ) VULKAN_HPP_NOEXCEPT
       : driverID( driverID_ )
-      , driverName{}
-      , driverInfo{}
+      , driverName( driverName_ )
+      , driverInfo( driverInfo_ )
       , conformanceVersion( conformanceVersion_ )
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DRIVER_NAME_SIZE>::copy( driverName, driverName_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DRIVER_INFO_SIZE>::copy( driverInfo, driverInfo_ );
-    }
-
-    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceDriverProperties( PhysicalDeviceDriverProperties const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , driverID( rhs.driverID )
-      , driverName{}
-      , driverInfo{}
-      , conformanceVersion( rhs.conformanceVersion )
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DRIVER_NAME_SIZE>::copy( driverName, rhs.driverName );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DRIVER_INFO_SIZE>::copy( driverInfo, rhs.driverInfo );
-    }
+    {}
 
     PhysicalDeviceDriverProperties & operator=( PhysicalDeviceDriverProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -50396,8 +47611,8 @@ namespace VULKAN_HPP_NAMESPACE
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( driverID == rhs.driverID )
-          && ( memcmp( driverName, rhs.driverName, VK_MAX_DRIVER_NAME_SIZE * sizeof( char ) ) == 0 )
-          && ( memcmp( driverInfo, rhs.driverInfo, VK_MAX_DRIVER_INFO_SIZE * sizeof( char ) ) == 0 )
+          && ( driverName == rhs.driverName )
+          && ( driverInfo == rhs.driverInfo )
           && ( conformanceVersion == rhs.conformanceVersion );
     }
 
@@ -50411,8 +47626,8 @@ namespace VULKAN_HPP_NAMESPACE
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceDriverProperties;
     void* pNext = {};
     VULKAN_HPP_NAMESPACE::DriverId driverID = VULKAN_HPP_NAMESPACE::DriverId::eAmdProprietary;
-    char driverName[VK_MAX_DRIVER_NAME_SIZE] = {};
-    char driverInfo[VK_MAX_DRIVER_INFO_SIZE] = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<char, VK_MAX_DRIVER_NAME_SIZE> driverName = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<char, VK_MAX_DRIVER_INFO_SIZE> driverInfo = {};
     VULKAN_HPP_NAMESPACE::ConformanceVersion conformanceVersion = {};
   };
   static_assert( sizeof( PhysicalDeviceDriverProperties ) == sizeof( VkPhysicalDeviceDriverProperties ), "struct and wrapper have different size!" );
@@ -50422,11 +47637,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR PhysicalDeviceExclusiveScissorFeaturesNV( VULKAN_HPP_NAMESPACE::Bool32 exclusiveScissor_ = {} ) VULKAN_HPP_NOEXCEPT
       : exclusiveScissor( exclusiveScissor_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceExclusiveScissorFeaturesNV( PhysicalDeviceExclusiveScissorFeaturesNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , exclusiveScissor( rhs.exclusiveScissor )
     {}
 
     PhysicalDeviceExclusiveScissorFeaturesNV & operator=( PhysicalDeviceExclusiveScissorFeaturesNV const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -50500,13 +47710,6 @@ namespace VULKAN_HPP_NAMESPACE
       : flags( flags_ )
       , usage( usage_ )
       , handleType( handleType_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceExternalBufferInfo( PhysicalDeviceExternalBufferInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , usage( rhs.usage )
-      , handleType( rhs.handleType )
     {}
 
     PhysicalDeviceExternalBufferInfo & operator=( PhysicalDeviceExternalBufferInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -50594,11 +47797,6 @@ namespace VULKAN_HPP_NAMESPACE
       : handleType( handleType_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceExternalFenceInfo( PhysicalDeviceExternalFenceInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , handleType( rhs.handleType )
-    {}
-
     PhysicalDeviceExternalFenceInfo & operator=( PhysicalDeviceExternalFenceInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDeviceExternalFenceInfo ) - offsetof( PhysicalDeviceExternalFenceInfo, pNext ) );
@@ -50666,11 +47864,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR PhysicalDeviceExternalImageFormatInfo( VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits handleType_ = VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits::eOpaqueFd ) VULKAN_HPP_NOEXCEPT
       : handleType( handleType_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceExternalImageFormatInfo( PhysicalDeviceExternalImageFormatInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , handleType( rhs.handleType )
     {}
 
     PhysicalDeviceExternalImageFormatInfo & operator=( PhysicalDeviceExternalImageFormatInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -50742,11 +47935,6 @@ namespace VULKAN_HPP_NAMESPACE
       : minImportedHostPointerAlignment( minImportedHostPointerAlignment_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceExternalMemoryHostPropertiesEXT( PhysicalDeviceExternalMemoryHostPropertiesEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , minImportedHostPointerAlignment( rhs.minImportedHostPointerAlignment )
-    {}
-
     PhysicalDeviceExternalMemoryHostPropertiesEXT & operator=( PhysicalDeviceExternalMemoryHostPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDeviceExternalMemoryHostPropertiesEXT ) - offsetof( PhysicalDeviceExternalMemoryHostPropertiesEXT, pNext ) );
@@ -50802,11 +47990,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR PhysicalDeviceExternalSemaphoreInfo( VULKAN_HPP_NAMESPACE::ExternalSemaphoreHandleTypeFlagBits handleType_ = VULKAN_HPP_NAMESPACE::ExternalSemaphoreHandleTypeFlagBits::eOpaqueFd ) VULKAN_HPP_NOEXCEPT
       : handleType( handleType_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceExternalSemaphoreInfo( PhysicalDeviceExternalSemaphoreInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , handleType( rhs.handleType )
     {}
 
     PhysicalDeviceExternalSemaphoreInfo & operator=( PhysicalDeviceExternalSemaphoreInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -50876,11 +48059,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR PhysicalDeviceFeatures2( VULKAN_HPP_NAMESPACE::PhysicalDeviceFeatures features_ = {} ) VULKAN_HPP_NOEXCEPT
       : features( features_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceFeatures2( PhysicalDeviceFeatures2 const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , features( rhs.features )
     {}
 
     PhysicalDeviceFeatures2 & operator=( PhysicalDeviceFeatures2 const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -50984,27 +48162,6 @@ namespace VULKAN_HPP_NAMESPACE
       , shaderRoundingModeRTZFloat64( shaderRoundingModeRTZFloat64_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceFloatControlsProperties( PhysicalDeviceFloatControlsProperties const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , denormBehaviorIndependence( rhs.denormBehaviorIndependence )
-      , roundingModeIndependence( rhs.roundingModeIndependence )
-      , shaderSignedZeroInfNanPreserveFloat16( rhs.shaderSignedZeroInfNanPreserveFloat16 )
-      , shaderSignedZeroInfNanPreserveFloat32( rhs.shaderSignedZeroInfNanPreserveFloat32 )
-      , shaderSignedZeroInfNanPreserveFloat64( rhs.shaderSignedZeroInfNanPreserveFloat64 )
-      , shaderDenormPreserveFloat16( rhs.shaderDenormPreserveFloat16 )
-      , shaderDenormPreserveFloat32( rhs.shaderDenormPreserveFloat32 )
-      , shaderDenormPreserveFloat64( rhs.shaderDenormPreserveFloat64 )
-      , shaderDenormFlushToZeroFloat16( rhs.shaderDenormFlushToZeroFloat16 )
-      , shaderDenormFlushToZeroFloat32( rhs.shaderDenormFlushToZeroFloat32 )
-      , shaderDenormFlushToZeroFloat64( rhs.shaderDenormFlushToZeroFloat64 )
-      , shaderRoundingModeRTEFloat16( rhs.shaderRoundingModeRTEFloat16 )
-      , shaderRoundingModeRTEFloat32( rhs.shaderRoundingModeRTEFloat32 )
-      , shaderRoundingModeRTEFloat64( rhs.shaderRoundingModeRTEFloat64 )
-      , shaderRoundingModeRTZFloat16( rhs.shaderRoundingModeRTZFloat16 )
-      , shaderRoundingModeRTZFloat32( rhs.shaderRoundingModeRTZFloat32 )
-      , shaderRoundingModeRTZFloat64( rhs.shaderRoundingModeRTZFloat64 )
-    {}
-
     PhysicalDeviceFloatControlsProperties & operator=( PhysicalDeviceFloatControlsProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDeviceFloatControlsProperties ) - offsetof( PhysicalDeviceFloatControlsProperties, pNext ) );
@@ -51098,13 +48255,6 @@ namespace VULKAN_HPP_NAMESPACE
       , fragmentDensityMapNonSubsampledImages( fragmentDensityMapNonSubsampledImages_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceFragmentDensityMapFeaturesEXT( PhysicalDeviceFragmentDensityMapFeaturesEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , fragmentDensityMap( rhs.fragmentDensityMap )
-      , fragmentDensityMapDynamic( rhs.fragmentDensityMapDynamic )
-      , fragmentDensityMapNonSubsampledImages( rhs.fragmentDensityMapNonSubsampledImages )
-    {}
-
     PhysicalDeviceFragmentDensityMapFeaturesEXT & operator=( PhysicalDeviceFragmentDensityMapFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDeviceFragmentDensityMapFeaturesEXT ) - offsetof( PhysicalDeviceFragmentDensityMapFeaturesEXT, pNext ) );
@@ -51170,13 +48320,6 @@ namespace VULKAN_HPP_NAMESPACE
       , fragmentDensityInvocations( fragmentDensityInvocations_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceFragmentDensityMapPropertiesEXT( PhysicalDeviceFragmentDensityMapPropertiesEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , minFragmentDensityTexelSize( rhs.minFragmentDensityTexelSize )
-      , maxFragmentDensityTexelSize( rhs.maxFragmentDensityTexelSize )
-      , fragmentDensityInvocations( rhs.fragmentDensityInvocations )
-    {}
-
     PhysicalDeviceFragmentDensityMapPropertiesEXT & operator=( PhysicalDeviceFragmentDensityMapPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDeviceFragmentDensityMapPropertiesEXT ) - offsetof( PhysicalDeviceFragmentDensityMapPropertiesEXT, pNext ) );
@@ -51236,11 +48379,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR PhysicalDeviceFragmentShaderBarycentricFeaturesNV( VULKAN_HPP_NAMESPACE::Bool32 fragmentShaderBarycentric_ = {} ) VULKAN_HPP_NOEXCEPT
       : fragmentShaderBarycentric( fragmentShaderBarycentric_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceFragmentShaderBarycentricFeaturesNV( PhysicalDeviceFragmentShaderBarycentricFeaturesNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , fragmentShaderBarycentric( rhs.fragmentShaderBarycentric )
     {}
 
     PhysicalDeviceFragmentShaderBarycentricFeaturesNV & operator=( PhysicalDeviceFragmentShaderBarycentricFeaturesNV const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -51314,13 +48452,6 @@ namespace VULKAN_HPP_NAMESPACE
       : fragmentShaderSampleInterlock( fragmentShaderSampleInterlock_ )
       , fragmentShaderPixelInterlock( fragmentShaderPixelInterlock_ )
       , fragmentShaderShadingRateInterlock( fragmentShaderShadingRateInterlock_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceFragmentShaderInterlockFeaturesEXT( PhysicalDeviceFragmentShaderInterlockFeaturesEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , fragmentShaderSampleInterlock( rhs.fragmentShaderSampleInterlock )
-      , fragmentShaderPixelInterlock( rhs.fragmentShaderPixelInterlock )
-      , fragmentShaderShadingRateInterlock( rhs.fragmentShaderShadingRateInterlock )
     {}
 
     PhysicalDeviceFragmentShaderInterlockFeaturesEXT & operator=( PhysicalDeviceFragmentShaderInterlockFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -51408,20 +48539,9 @@ namespace VULKAN_HPP_NAMESPACE
                                                            std::array<VULKAN_HPP_NAMESPACE::PhysicalDevice,VK_MAX_DEVICE_GROUP_SIZE> const& physicalDevices_ = {},
                                                            VULKAN_HPP_NAMESPACE::Bool32 subsetAllocation_ = {} ) VULKAN_HPP_NOEXCEPT
       : physicalDeviceCount( physicalDeviceCount_ )
-      , physicalDevices{}
+      , physicalDevices( physicalDevices_ )
       , subsetAllocation( subsetAllocation_ )
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::PhysicalDevice,VK_MAX_DEVICE_GROUP_SIZE>::copy( physicalDevices, physicalDevices_ );
-    }
-
-    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceGroupProperties( PhysicalDeviceGroupProperties const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , physicalDeviceCount( rhs.physicalDeviceCount )
-      , physicalDevices{}
-      , subsetAllocation( rhs.subsetAllocation )
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::PhysicalDevice,VK_MAX_DEVICE_GROUP_SIZE>::copy( physicalDevices, rhs.physicalDevices );
-    }
+    {}
 
     PhysicalDeviceGroupProperties & operator=( PhysicalDeviceGroupProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -51458,7 +48578,7 @@ namespace VULKAN_HPP_NAMESPACE
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( physicalDeviceCount == rhs.physicalDeviceCount )
-          && ( memcmp( physicalDevices, rhs.physicalDevices, std::min<uint32_t>( VK_MAX_DEVICE_GROUP_SIZE, physicalDeviceCount ) * sizeof( VULKAN_HPP_NAMESPACE::PhysicalDevice ) ) == 0 )
+          && ( physicalDevices == rhs.physicalDevices )
           && ( subsetAllocation == rhs.subsetAllocation );
     }
 
@@ -51472,7 +48592,7 @@ namespace VULKAN_HPP_NAMESPACE
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceGroupProperties;
     void* pNext = {};
     uint32_t physicalDeviceCount = {};
-    VULKAN_HPP_NAMESPACE::PhysicalDevice physicalDevices[VK_MAX_DEVICE_GROUP_SIZE] = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<VULKAN_HPP_NAMESPACE::PhysicalDevice, VK_MAX_DEVICE_GROUP_SIZE> physicalDevices = {};
     VULKAN_HPP_NAMESPACE::Bool32 subsetAllocation = {};
   };
   static_assert( sizeof( PhysicalDeviceGroupProperties ) == sizeof( VkPhysicalDeviceGroupProperties ), "struct and wrapper have different size!" );
@@ -51482,11 +48602,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR PhysicalDeviceHostQueryResetFeatures( VULKAN_HPP_NAMESPACE::Bool32 hostQueryReset_ = {} ) VULKAN_HPP_NOEXCEPT
       : hostQueryReset( hostQueryReset_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceHostQueryResetFeatures( PhysicalDeviceHostQueryResetFeatures const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , hostQueryReset( rhs.hostQueryReset )
     {}
 
     PhysicalDeviceHostQueryResetFeatures & operator=( PhysicalDeviceHostQueryResetFeatures const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -51559,29 +48674,12 @@ namespace VULKAN_HPP_NAMESPACE
                                                         std::array<uint8_t,VK_LUID_SIZE> const& deviceLUID_ = {},
                                                         uint32_t deviceNodeMask_ = {},
                                                         VULKAN_HPP_NAMESPACE::Bool32 deviceLUIDValid_ = {} ) VULKAN_HPP_NOEXCEPT
-      : deviceUUID{}
-      , driverUUID{}
-      , deviceLUID{}
+      : deviceUUID( deviceUUID_ )
+      , driverUUID( driverUUID_ )
+      , deviceLUID( deviceLUID_ )
       , deviceNodeMask( deviceNodeMask_ )
       , deviceLUIDValid( deviceLUIDValid_ )
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint8_t,VK_UUID_SIZE>::copy( deviceUUID, deviceUUID_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint8_t,VK_UUID_SIZE>::copy( driverUUID, driverUUID_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint8_t,VK_LUID_SIZE>::copy( deviceLUID, deviceLUID_ );
-    }
-
-    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceIDProperties( PhysicalDeviceIDProperties const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , deviceUUID{}
-      , driverUUID{}
-      , deviceLUID{}
-      , deviceNodeMask( rhs.deviceNodeMask )
-      , deviceLUIDValid( rhs.deviceLUIDValid )
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint8_t,VK_UUID_SIZE>::copy( deviceUUID, rhs.deviceUUID );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint8_t,VK_UUID_SIZE>::copy( driverUUID, rhs.driverUUID );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint8_t,VK_LUID_SIZE>::copy( deviceLUID, rhs.deviceLUID );
-    }
+    {}
 
     PhysicalDeviceIDProperties & operator=( PhysicalDeviceIDProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -51617,9 +48715,9 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
-          && ( memcmp( deviceUUID, rhs.deviceUUID, VK_UUID_SIZE * sizeof( uint8_t ) ) == 0 )
-          && ( memcmp( driverUUID, rhs.driverUUID, VK_UUID_SIZE * sizeof( uint8_t ) ) == 0 )
-          && ( memcmp( deviceLUID, rhs.deviceLUID, VK_LUID_SIZE * sizeof( uint8_t ) ) == 0 )
+          && ( deviceUUID == rhs.deviceUUID )
+          && ( driverUUID == rhs.driverUUID )
+          && ( deviceLUID == rhs.deviceLUID )
           && ( deviceNodeMask == rhs.deviceNodeMask )
           && ( deviceLUIDValid == rhs.deviceLUIDValid );
     }
@@ -51633,9 +48731,9 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceIdProperties;
     void* pNext = {};
-    uint8_t deviceUUID[VK_UUID_SIZE] = {};
-    uint8_t driverUUID[VK_UUID_SIZE] = {};
-    uint8_t deviceLUID[VK_LUID_SIZE] = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<uint8_t, VK_UUID_SIZE> deviceUUID = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<uint8_t, VK_UUID_SIZE> driverUUID = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<uint8_t, VK_LUID_SIZE> deviceLUID = {};
     uint32_t deviceNodeMask = {};
     VULKAN_HPP_NAMESPACE::Bool32 deviceLUIDValid = {};
   };
@@ -51652,14 +48750,6 @@ namespace VULKAN_HPP_NAMESPACE
       , sharingMode( sharingMode_ )
       , queueFamilyIndexCount( queueFamilyIndexCount_ )
       , pQueueFamilyIndices( pQueueFamilyIndices_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceImageDrmFormatModifierInfoEXT( PhysicalDeviceImageDrmFormatModifierInfoEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , drmFormatModifier( rhs.drmFormatModifier )
-      , sharingMode( rhs.sharingMode )
-      , queueFamilyIndexCount( rhs.queueFamilyIndexCount )
-      , pQueueFamilyIndices( rhs.pQueueFamilyIndices )
     {}
 
     PhysicalDeviceImageDrmFormatModifierInfoEXT & operator=( PhysicalDeviceImageDrmFormatModifierInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -51763,15 +48853,6 @@ namespace VULKAN_HPP_NAMESPACE
       , flags( flags_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceImageFormatInfo2( PhysicalDeviceImageFormatInfo2 const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , format( rhs.format )
-      , type( rhs.type )
-      , tiling( rhs.tiling )
-      , usage( rhs.usage )
-      , flags( rhs.flags )
-    {}
-
     PhysicalDeviceImageFormatInfo2 & operator=( PhysicalDeviceImageFormatInfo2 const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDeviceImageFormatInfo2 ) - offsetof( PhysicalDeviceImageFormatInfo2, pNext ) );
@@ -51873,11 +48954,6 @@ namespace VULKAN_HPP_NAMESPACE
       : imageViewType( imageViewType_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceImageViewImageFormatInfoEXT( PhysicalDeviceImageViewImageFormatInfoEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , imageViewType( rhs.imageViewType )
-    {}
-
     PhysicalDeviceImageViewImageFormatInfoEXT & operator=( PhysicalDeviceImageViewImageFormatInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDeviceImageViewImageFormatInfoEXT ) - offsetof( PhysicalDeviceImageViewImageFormatInfoEXT, pNext ) );
@@ -51945,11 +49021,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR PhysicalDeviceImagelessFramebufferFeatures( VULKAN_HPP_NAMESPACE::Bool32 imagelessFramebuffer_ = {} ) VULKAN_HPP_NOEXCEPT
       : imagelessFramebuffer( imagelessFramebuffer_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceImagelessFramebufferFeatures( PhysicalDeviceImagelessFramebufferFeatures const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , imagelessFramebuffer( rhs.imagelessFramebuffer )
     {}
 
     PhysicalDeviceImagelessFramebufferFeatures & operator=( PhysicalDeviceImagelessFramebufferFeatures const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -52021,11 +49092,6 @@ namespace VULKAN_HPP_NAMESPACE
       : indexTypeUint8( indexTypeUint8_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceIndexTypeUint8FeaturesEXT( PhysicalDeviceIndexTypeUint8FeaturesEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , indexTypeUint8( rhs.indexTypeUint8 )
-    {}
-
     PhysicalDeviceIndexTypeUint8FeaturesEXT & operator=( PhysicalDeviceIndexTypeUint8FeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDeviceIndexTypeUint8FeaturesEXT ) - offsetof( PhysicalDeviceIndexTypeUint8FeaturesEXT, pNext ) );
@@ -52095,12 +49161,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                                       VULKAN_HPP_NAMESPACE::Bool32 descriptorBindingInlineUniformBlockUpdateAfterBind_ = {} ) VULKAN_HPP_NOEXCEPT
       : inlineUniformBlock( inlineUniformBlock_ )
       , descriptorBindingInlineUniformBlockUpdateAfterBind( descriptorBindingInlineUniformBlockUpdateAfterBind_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceInlineUniformBlockFeaturesEXT( PhysicalDeviceInlineUniformBlockFeaturesEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , inlineUniformBlock( rhs.inlineUniformBlock )
-      , descriptorBindingInlineUniformBlockUpdateAfterBind( rhs.descriptorBindingInlineUniformBlockUpdateAfterBind )
     {}
 
     PhysicalDeviceInlineUniformBlockFeaturesEXT & operator=( PhysicalDeviceInlineUniformBlockFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -52186,15 +49246,6 @@ namespace VULKAN_HPP_NAMESPACE
       , maxPerStageDescriptorUpdateAfterBindInlineUniformBlocks( maxPerStageDescriptorUpdateAfterBindInlineUniformBlocks_ )
       , maxDescriptorSetInlineUniformBlocks( maxDescriptorSetInlineUniformBlocks_ )
       , maxDescriptorSetUpdateAfterBindInlineUniformBlocks( maxDescriptorSetUpdateAfterBindInlineUniformBlocks_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceInlineUniformBlockPropertiesEXT( PhysicalDeviceInlineUniformBlockPropertiesEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , maxInlineUniformBlockSize( rhs.maxInlineUniformBlockSize )
-      , maxPerStageDescriptorInlineUniformBlocks( rhs.maxPerStageDescriptorInlineUniformBlocks )
-      , maxPerStageDescriptorUpdateAfterBindInlineUniformBlocks( rhs.maxPerStageDescriptorUpdateAfterBindInlineUniformBlocks )
-      , maxDescriptorSetInlineUniformBlocks( rhs.maxDescriptorSetInlineUniformBlocks )
-      , maxDescriptorSetUpdateAfterBindInlineUniformBlocks( rhs.maxDescriptorSetUpdateAfterBindInlineUniformBlocks )
     {}
 
     PhysicalDeviceInlineUniformBlockPropertiesEXT & operator=( PhysicalDeviceInlineUniformBlockPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -52416,9 +49467,9 @@ namespace VULKAN_HPP_NAMESPACE
       , maxFragmentDualSrcAttachments( maxFragmentDualSrcAttachments_ )
       , maxFragmentCombinedOutputResources( maxFragmentCombinedOutputResources_ )
       , maxComputeSharedMemorySize( maxComputeSharedMemorySize_ )
-      , maxComputeWorkGroupCount{}
+      , maxComputeWorkGroupCount( maxComputeWorkGroupCount_ )
       , maxComputeWorkGroupInvocations( maxComputeWorkGroupInvocations_ )
-      , maxComputeWorkGroupSize{}
+      , maxComputeWorkGroupSize( maxComputeWorkGroupSize_ )
       , subPixelPrecisionBits( subPixelPrecisionBits_ )
       , subTexelPrecisionBits( subTexelPrecisionBits_ )
       , mipmapPrecisionBits( mipmapPrecisionBits_ )
@@ -52427,8 +49478,8 @@ namespace VULKAN_HPP_NAMESPACE
       , maxSamplerLodBias( maxSamplerLodBias_ )
       , maxSamplerAnisotropy( maxSamplerAnisotropy_ )
       , maxViewports( maxViewports_ )
-      , maxViewportDimensions{}
-      , viewportBoundsRange{}
+      , maxViewportDimensions( maxViewportDimensions_ )
+      , viewportBoundsRange( viewportBoundsRange_ )
       , viewportSubPixelBits( viewportSubPixelBits_ )
       , minMemoryMapAlignment( minMemoryMapAlignment_ )
       , minTexelBufferOffsetAlignment( minTexelBufferOffsetAlignment_ )
@@ -52461,8 +49512,8 @@ namespace VULKAN_HPP_NAMESPACE
       , maxCullDistances( maxCullDistances_ )
       , maxCombinedClipAndCullDistances( maxCombinedClipAndCullDistances_ )
       , discreteQueuePriorities( discreteQueuePriorities_ )
-      , pointSizeRange{}
-      , lineWidthRange{}
+      , pointSizeRange( pointSizeRange_ )
+      , lineWidthRange( lineWidthRange_ )
       , pointSizeGranularity( pointSizeGranularity_ )
       , lineWidthGranularity( lineWidthGranularity_ )
       , strictLines( strictLines_ )
@@ -52470,136 +49521,7 @@ namespace VULKAN_HPP_NAMESPACE
       , optimalBufferCopyOffsetAlignment( optimalBufferCopyOffsetAlignment_ )
       , optimalBufferCopyRowPitchAlignment( optimalBufferCopyRowPitchAlignment_ )
       , nonCoherentAtomSize( nonCoherentAtomSize_ )
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,3>::copy( maxComputeWorkGroupCount, maxComputeWorkGroupCount_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,3>::copy( maxComputeWorkGroupSize, maxComputeWorkGroupSize_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,2>::copy( maxViewportDimensions, maxViewportDimensions_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,2>::copy( viewportBoundsRange, viewportBoundsRange_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,2>::copy( pointSizeRange, pointSizeRange_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,2>::copy( lineWidthRange, lineWidthRange_ );
-    }
-
-    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceLimits( PhysicalDeviceLimits const& rhs ) VULKAN_HPP_NOEXCEPT
-      : maxImageDimension1D( rhs.maxImageDimension1D )
-      , maxImageDimension2D( rhs.maxImageDimension2D )
-      , maxImageDimension3D( rhs.maxImageDimension3D )
-      , maxImageDimensionCube( rhs.maxImageDimensionCube )
-      , maxImageArrayLayers( rhs.maxImageArrayLayers )
-      , maxTexelBufferElements( rhs.maxTexelBufferElements )
-      , maxUniformBufferRange( rhs.maxUniformBufferRange )
-      , maxStorageBufferRange( rhs.maxStorageBufferRange )
-      , maxPushConstantsSize( rhs.maxPushConstantsSize )
-      , maxMemoryAllocationCount( rhs.maxMemoryAllocationCount )
-      , maxSamplerAllocationCount( rhs.maxSamplerAllocationCount )
-      , bufferImageGranularity( rhs.bufferImageGranularity )
-      , sparseAddressSpaceSize( rhs.sparseAddressSpaceSize )
-      , maxBoundDescriptorSets( rhs.maxBoundDescriptorSets )
-      , maxPerStageDescriptorSamplers( rhs.maxPerStageDescriptorSamplers )
-      , maxPerStageDescriptorUniformBuffers( rhs.maxPerStageDescriptorUniformBuffers )
-      , maxPerStageDescriptorStorageBuffers( rhs.maxPerStageDescriptorStorageBuffers )
-      , maxPerStageDescriptorSampledImages( rhs.maxPerStageDescriptorSampledImages )
-      , maxPerStageDescriptorStorageImages( rhs.maxPerStageDescriptorStorageImages )
-      , maxPerStageDescriptorInputAttachments( rhs.maxPerStageDescriptorInputAttachments )
-      , maxPerStageResources( rhs.maxPerStageResources )
-      , maxDescriptorSetSamplers( rhs.maxDescriptorSetSamplers )
-      , maxDescriptorSetUniformBuffers( rhs.maxDescriptorSetUniformBuffers )
-      , maxDescriptorSetUniformBuffersDynamic( rhs.maxDescriptorSetUniformBuffersDynamic )
-      , maxDescriptorSetStorageBuffers( rhs.maxDescriptorSetStorageBuffers )
-      , maxDescriptorSetStorageBuffersDynamic( rhs.maxDescriptorSetStorageBuffersDynamic )
-      , maxDescriptorSetSampledImages( rhs.maxDescriptorSetSampledImages )
-      , maxDescriptorSetStorageImages( rhs.maxDescriptorSetStorageImages )
-      , maxDescriptorSetInputAttachments( rhs.maxDescriptorSetInputAttachments )
-      , maxVertexInputAttributes( rhs.maxVertexInputAttributes )
-      , maxVertexInputBindings( rhs.maxVertexInputBindings )
-      , maxVertexInputAttributeOffset( rhs.maxVertexInputAttributeOffset )
-      , maxVertexInputBindingStride( rhs.maxVertexInputBindingStride )
-      , maxVertexOutputComponents( rhs.maxVertexOutputComponents )
-      , maxTessellationGenerationLevel( rhs.maxTessellationGenerationLevel )
-      , maxTessellationPatchSize( rhs.maxTessellationPatchSize )
-      , maxTessellationControlPerVertexInputComponents( rhs.maxTessellationControlPerVertexInputComponents )
-      , maxTessellationControlPerVertexOutputComponents( rhs.maxTessellationControlPerVertexOutputComponents )
-      , maxTessellationControlPerPatchOutputComponents( rhs.maxTessellationControlPerPatchOutputComponents )
-      , maxTessellationControlTotalOutputComponents( rhs.maxTessellationControlTotalOutputComponents )
-      , maxTessellationEvaluationInputComponents( rhs.maxTessellationEvaluationInputComponents )
-      , maxTessellationEvaluationOutputComponents( rhs.maxTessellationEvaluationOutputComponents )
-      , maxGeometryShaderInvocations( rhs.maxGeometryShaderInvocations )
-      , maxGeometryInputComponents( rhs.maxGeometryInputComponents )
-      , maxGeometryOutputComponents( rhs.maxGeometryOutputComponents )
-      , maxGeometryOutputVertices( rhs.maxGeometryOutputVertices )
-      , maxGeometryTotalOutputComponents( rhs.maxGeometryTotalOutputComponents )
-      , maxFragmentInputComponents( rhs.maxFragmentInputComponents )
-      , maxFragmentOutputAttachments( rhs.maxFragmentOutputAttachments )
-      , maxFragmentDualSrcAttachments( rhs.maxFragmentDualSrcAttachments )
-      , maxFragmentCombinedOutputResources( rhs.maxFragmentCombinedOutputResources )
-      , maxComputeSharedMemorySize( rhs.maxComputeSharedMemorySize )
-      , maxComputeWorkGroupCount{}
-      , maxComputeWorkGroupInvocations( rhs.maxComputeWorkGroupInvocations )
-      , maxComputeWorkGroupSize{}
-      , subPixelPrecisionBits( rhs.subPixelPrecisionBits )
-      , subTexelPrecisionBits( rhs.subTexelPrecisionBits )
-      , mipmapPrecisionBits( rhs.mipmapPrecisionBits )
-      , maxDrawIndexedIndexValue( rhs.maxDrawIndexedIndexValue )
-      , maxDrawIndirectCount( rhs.maxDrawIndirectCount )
-      , maxSamplerLodBias( rhs.maxSamplerLodBias )
-      , maxSamplerAnisotropy( rhs.maxSamplerAnisotropy )
-      , maxViewports( rhs.maxViewports )
-      , maxViewportDimensions{}
-      , viewportBoundsRange{}
-      , viewportSubPixelBits( rhs.viewportSubPixelBits )
-      , minMemoryMapAlignment( rhs.minMemoryMapAlignment )
-      , minTexelBufferOffsetAlignment( rhs.minTexelBufferOffsetAlignment )
-      , minUniformBufferOffsetAlignment( rhs.minUniformBufferOffsetAlignment )
-      , minStorageBufferOffsetAlignment( rhs.minStorageBufferOffsetAlignment )
-      , minTexelOffset( rhs.minTexelOffset )
-      , maxTexelOffset( rhs.maxTexelOffset )
-      , minTexelGatherOffset( rhs.minTexelGatherOffset )
-      , maxTexelGatherOffset( rhs.maxTexelGatherOffset )
-      , minInterpolationOffset( rhs.minInterpolationOffset )
-      , maxInterpolationOffset( rhs.maxInterpolationOffset )
-      , subPixelInterpolationOffsetBits( rhs.subPixelInterpolationOffsetBits )
-      , maxFramebufferWidth( rhs.maxFramebufferWidth )
-      , maxFramebufferHeight( rhs.maxFramebufferHeight )
-      , maxFramebufferLayers( rhs.maxFramebufferLayers )
-      , framebufferColorSampleCounts( rhs.framebufferColorSampleCounts )
-      , framebufferDepthSampleCounts( rhs.framebufferDepthSampleCounts )
-      , framebufferStencilSampleCounts( rhs.framebufferStencilSampleCounts )
-      , framebufferNoAttachmentsSampleCounts( rhs.framebufferNoAttachmentsSampleCounts )
-      , maxColorAttachments( rhs.maxColorAttachments )
-      , sampledImageColorSampleCounts( rhs.sampledImageColorSampleCounts )
-      , sampledImageIntegerSampleCounts( rhs.sampledImageIntegerSampleCounts )
-      , sampledImageDepthSampleCounts( rhs.sampledImageDepthSampleCounts )
-      , sampledImageStencilSampleCounts( rhs.sampledImageStencilSampleCounts )
-      , storageImageSampleCounts( rhs.storageImageSampleCounts )
-      , maxSampleMaskWords( rhs.maxSampleMaskWords )
-      , timestampComputeAndGraphics( rhs.timestampComputeAndGraphics )
-      , timestampPeriod( rhs.timestampPeriod )
-      , maxClipDistances( rhs.maxClipDistances )
-      , maxCullDistances( rhs.maxCullDistances )
-      , maxCombinedClipAndCullDistances( rhs.maxCombinedClipAndCullDistances )
-      , discreteQueuePriorities( rhs.discreteQueuePriorities )
-      , pointSizeRange{}
-      , lineWidthRange{}
-      , pointSizeGranularity( rhs.pointSizeGranularity )
-      , lineWidthGranularity( rhs.lineWidthGranularity )
-      , strictLines( rhs.strictLines )
-      , standardSampleLocations( rhs.standardSampleLocations )
-      , optimalBufferCopyOffsetAlignment( rhs.optimalBufferCopyOffsetAlignment )
-      , optimalBufferCopyRowPitchAlignment( rhs.optimalBufferCopyRowPitchAlignment )
-      , nonCoherentAtomSize( rhs.nonCoherentAtomSize )
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,3>::copy( maxComputeWorkGroupCount, rhs.maxComputeWorkGroupCount );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,3>::copy( maxComputeWorkGroupSize, rhs.maxComputeWorkGroupSize );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,2>::copy( maxViewportDimensions, rhs.maxViewportDimensions );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,2>::copy( viewportBoundsRange, rhs.viewportBoundsRange );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,2>::copy( pointSizeRange, rhs.pointSizeRange );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,2>::copy( lineWidthRange, rhs.lineWidthRange );
-    }
-
-    PhysicalDeviceLimits & operator=( PhysicalDeviceLimits const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( PhysicalDeviceLimits ) );
-      return *this;
-    }
+    {}
 
     PhysicalDeviceLimits( VkPhysicalDeviceLimits const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -52679,9 +49601,9 @@ namespace VULKAN_HPP_NAMESPACE
           && ( maxFragmentDualSrcAttachments == rhs.maxFragmentDualSrcAttachments )
           && ( maxFragmentCombinedOutputResources == rhs.maxFragmentCombinedOutputResources )
           && ( maxComputeSharedMemorySize == rhs.maxComputeSharedMemorySize )
-          && ( memcmp( maxComputeWorkGroupCount, rhs.maxComputeWorkGroupCount, 3 * sizeof( uint32_t ) ) == 0 )
+          && ( maxComputeWorkGroupCount == rhs.maxComputeWorkGroupCount )
           && ( maxComputeWorkGroupInvocations == rhs.maxComputeWorkGroupInvocations )
-          && ( memcmp( maxComputeWorkGroupSize, rhs.maxComputeWorkGroupSize, 3 * sizeof( uint32_t ) ) == 0 )
+          && ( maxComputeWorkGroupSize == rhs.maxComputeWorkGroupSize )
           && ( subPixelPrecisionBits == rhs.subPixelPrecisionBits )
           && ( subTexelPrecisionBits == rhs.subTexelPrecisionBits )
           && ( mipmapPrecisionBits == rhs.mipmapPrecisionBits )
@@ -52690,8 +49612,8 @@ namespace VULKAN_HPP_NAMESPACE
           && ( maxSamplerLodBias == rhs.maxSamplerLodBias )
           && ( maxSamplerAnisotropy == rhs.maxSamplerAnisotropy )
           && ( maxViewports == rhs.maxViewports )
-          && ( memcmp( maxViewportDimensions, rhs.maxViewportDimensions, 2 * sizeof( uint32_t ) ) == 0 )
-          && ( memcmp( viewportBoundsRange, rhs.viewportBoundsRange, 2 * sizeof( float ) ) == 0 )
+          && ( maxViewportDimensions == rhs.maxViewportDimensions )
+          && ( viewportBoundsRange == rhs.viewportBoundsRange )
           && ( viewportSubPixelBits == rhs.viewportSubPixelBits )
           && ( minMemoryMapAlignment == rhs.minMemoryMapAlignment )
           && ( minTexelBufferOffsetAlignment == rhs.minTexelBufferOffsetAlignment )
@@ -52724,8 +49646,8 @@ namespace VULKAN_HPP_NAMESPACE
           && ( maxCullDistances == rhs.maxCullDistances )
           && ( maxCombinedClipAndCullDistances == rhs.maxCombinedClipAndCullDistances )
           && ( discreteQueuePriorities == rhs.discreteQueuePriorities )
-          && ( memcmp( pointSizeRange, rhs.pointSizeRange, 2 * sizeof( float ) ) == 0 )
-          && ( memcmp( lineWidthRange, rhs.lineWidthRange, 2 * sizeof( float ) ) == 0 )
+          && ( pointSizeRange == rhs.pointSizeRange )
+          && ( lineWidthRange == rhs.lineWidthRange )
           && ( pointSizeGranularity == rhs.pointSizeGranularity )
           && ( lineWidthGranularity == rhs.lineWidthGranularity )
           && ( strictLines == rhs.strictLines )
@@ -52794,9 +49716,9 @@ namespace VULKAN_HPP_NAMESPACE
     uint32_t maxFragmentDualSrcAttachments = {};
     uint32_t maxFragmentCombinedOutputResources = {};
     uint32_t maxComputeSharedMemorySize = {};
-    uint32_t maxComputeWorkGroupCount[3] = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<uint32_t, 3> maxComputeWorkGroupCount = {};
     uint32_t maxComputeWorkGroupInvocations = {};
-    uint32_t maxComputeWorkGroupSize[3] = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<uint32_t, 3> maxComputeWorkGroupSize = {};
     uint32_t subPixelPrecisionBits = {};
     uint32_t subTexelPrecisionBits = {};
     uint32_t mipmapPrecisionBits = {};
@@ -52805,8 +49727,8 @@ namespace VULKAN_HPP_NAMESPACE
     float maxSamplerLodBias = {};
     float maxSamplerAnisotropy = {};
     uint32_t maxViewports = {};
-    uint32_t maxViewportDimensions[2] = {};
-    float viewportBoundsRange[2] = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<uint32_t, 2> maxViewportDimensions = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<float, 2> viewportBoundsRange = {};
     uint32_t viewportSubPixelBits = {};
     size_t minMemoryMapAlignment = {};
     VULKAN_HPP_NAMESPACE::DeviceSize minTexelBufferOffsetAlignment = {};
@@ -52839,8 +49761,8 @@ namespace VULKAN_HPP_NAMESPACE
     uint32_t maxCullDistances = {};
     uint32_t maxCombinedClipAndCullDistances = {};
     uint32_t discreteQueuePriorities = {};
-    float pointSizeRange[2] = {};
-    float lineWidthRange[2] = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<float, 2> pointSizeRange = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<float, 2> lineWidthRange = {};
     float pointSizeGranularity = {};
     float lineWidthGranularity = {};
     VULKAN_HPP_NAMESPACE::Bool32 strictLines = {};
@@ -52866,16 +49788,6 @@ namespace VULKAN_HPP_NAMESPACE
       , stippledRectangularLines( stippledRectangularLines_ )
       , stippledBresenhamLines( stippledBresenhamLines_ )
       , stippledSmoothLines( stippledSmoothLines_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceLineRasterizationFeaturesEXT( PhysicalDeviceLineRasterizationFeaturesEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , rectangularLines( rhs.rectangularLines )
-      , bresenhamLines( rhs.bresenhamLines )
-      , smoothLines( rhs.smoothLines )
-      , stippledRectangularLines( rhs.stippledRectangularLines )
-      , stippledBresenhamLines( rhs.stippledBresenhamLines )
-      , stippledSmoothLines( rhs.stippledSmoothLines )
     {}
 
     PhysicalDeviceLineRasterizationFeaturesEXT & operator=( PhysicalDeviceLineRasterizationFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -52987,11 +49899,6 @@ namespace VULKAN_HPP_NAMESPACE
       : lineSubPixelPrecisionBits( lineSubPixelPrecisionBits_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceLineRasterizationPropertiesEXT( PhysicalDeviceLineRasterizationPropertiesEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , lineSubPixelPrecisionBits( rhs.lineSubPixelPrecisionBits )
-    {}
-
     PhysicalDeviceLineRasterizationPropertiesEXT & operator=( PhysicalDeviceLineRasterizationPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDeviceLineRasterizationPropertiesEXT ) - offsetof( PhysicalDeviceLineRasterizationPropertiesEXT, pNext ) );
@@ -53051,12 +49958,6 @@ namespace VULKAN_HPP_NAMESPACE
       , maxMemoryAllocationSize( maxMemoryAllocationSize_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceMaintenance3Properties( PhysicalDeviceMaintenance3Properties const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , maxPerSetDescriptors( rhs.maxPerSetDescriptors )
-      , maxMemoryAllocationSize( rhs.maxMemoryAllocationSize )
-    {}
-
     PhysicalDeviceMaintenance3Properties & operator=( PhysicalDeviceMaintenance3Properties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDeviceMaintenance3Properties ) - offsetof( PhysicalDeviceMaintenance3Properties, pNext ) );
@@ -53114,21 +50015,9 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceMemoryBudgetPropertiesEXT( std::array<VULKAN_HPP_NAMESPACE::DeviceSize,VK_MAX_MEMORY_HEAPS> const& heapBudget_ = {},
                                                                      std::array<VULKAN_HPP_NAMESPACE::DeviceSize,VK_MAX_MEMORY_HEAPS> const& heapUsage_ = {} ) VULKAN_HPP_NOEXCEPT
-      : heapBudget{}
-      , heapUsage{}
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::DeviceSize,VK_MAX_MEMORY_HEAPS>::copy( heapBudget, heapBudget_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::DeviceSize,VK_MAX_MEMORY_HEAPS>::copy( heapUsage, heapUsage_ );
-    }
-
-    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceMemoryBudgetPropertiesEXT( PhysicalDeviceMemoryBudgetPropertiesEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , heapBudget{}
-      , heapUsage{}
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::DeviceSize,VK_MAX_MEMORY_HEAPS>::copy( heapBudget, rhs.heapBudget );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::DeviceSize,VK_MAX_MEMORY_HEAPS>::copy( heapUsage, rhs.heapUsage );
-    }
+      : heapBudget( heapBudget_ )
+      , heapUsage( heapUsage_ )
+    {}
 
     PhysicalDeviceMemoryBudgetPropertiesEXT & operator=( PhysicalDeviceMemoryBudgetPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -53164,8 +50053,8 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
-          && ( memcmp( heapBudget, rhs.heapBudget, VK_MAX_MEMORY_HEAPS * sizeof( VULKAN_HPP_NAMESPACE::DeviceSize ) ) == 0 )
-          && ( memcmp( heapUsage, rhs.heapUsage, VK_MAX_MEMORY_HEAPS * sizeof( VULKAN_HPP_NAMESPACE::DeviceSize ) ) == 0 );
+          && ( heapBudget == rhs.heapBudget )
+          && ( heapUsage == rhs.heapUsage );
     }
 
     bool operator!=( PhysicalDeviceMemoryBudgetPropertiesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
@@ -53177,8 +50066,8 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceMemoryBudgetPropertiesEXT;
     void* pNext = {};
-    VULKAN_HPP_NAMESPACE::DeviceSize heapBudget[VK_MAX_MEMORY_HEAPS] = {};
-    VULKAN_HPP_NAMESPACE::DeviceSize heapUsage[VK_MAX_MEMORY_HEAPS] = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<VULKAN_HPP_NAMESPACE::DeviceSize, VK_MAX_MEMORY_HEAPS> heapBudget = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<VULKAN_HPP_NAMESPACE::DeviceSize, VK_MAX_MEMORY_HEAPS> heapUsage = {};
   };
   static_assert( sizeof( PhysicalDeviceMemoryBudgetPropertiesEXT ) == sizeof( VkPhysicalDeviceMemoryBudgetPropertiesEXT ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<PhysicalDeviceMemoryBudgetPropertiesEXT>::value, "struct wrapper is not a standard layout!" );
@@ -53187,11 +50076,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR PhysicalDeviceMemoryPriorityFeaturesEXT( VULKAN_HPP_NAMESPACE::Bool32 memoryPriority_ = {} ) VULKAN_HPP_NOEXCEPT
       : memoryPriority( memoryPriority_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceMemoryPriorityFeaturesEXT( PhysicalDeviceMemoryPriorityFeaturesEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , memoryPriority( rhs.memoryPriority )
     {}
 
     PhysicalDeviceMemoryPriorityFeaturesEXT & operator=( PhysicalDeviceMemoryPriorityFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -53264,29 +50148,10 @@ namespace VULKAN_HPP_NAMESPACE
                                                             uint32_t memoryHeapCount_ = {},
                                                             std::array<VULKAN_HPP_NAMESPACE::MemoryHeap,VK_MAX_MEMORY_HEAPS> const& memoryHeaps_ = {} ) VULKAN_HPP_NOEXCEPT
       : memoryTypeCount( memoryTypeCount_ )
-      , memoryTypes{}
+      , memoryTypes( memoryTypes_ )
       , memoryHeapCount( memoryHeapCount_ )
-      , memoryHeaps{}
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::MemoryType,VK_MAX_MEMORY_TYPES>::copy( memoryTypes, memoryTypes_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::MemoryHeap,VK_MAX_MEMORY_HEAPS>::copy( memoryHeaps, memoryHeaps_ );
-    }
-
-    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceMemoryProperties( PhysicalDeviceMemoryProperties const& rhs ) VULKAN_HPP_NOEXCEPT
-      : memoryTypeCount( rhs.memoryTypeCount )
-      , memoryTypes{}
-      , memoryHeapCount( rhs.memoryHeapCount )
-      , memoryHeaps{}
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::MemoryType,VK_MAX_MEMORY_TYPES>::copy( memoryTypes, rhs.memoryTypes );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<VULKAN_HPP_NAMESPACE::MemoryHeap,VK_MAX_MEMORY_HEAPS>::copy( memoryHeaps, rhs.memoryHeaps );
-    }
-
-    PhysicalDeviceMemoryProperties & operator=( PhysicalDeviceMemoryProperties const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( PhysicalDeviceMemoryProperties ) );
-      return *this;
-    }
+      , memoryHeaps( memoryHeaps_ )
+    {}
 
     PhysicalDeviceMemoryProperties( VkPhysicalDeviceMemoryProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -53315,9 +50180,9 @@ namespace VULKAN_HPP_NAMESPACE
     bool operator==( PhysicalDeviceMemoryProperties const& rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ( memoryTypeCount == rhs.memoryTypeCount )
-          && ( memcmp( memoryTypes, rhs.memoryTypes, std::min<uint32_t>( VK_MAX_MEMORY_TYPES, memoryTypeCount ) * sizeof( VULKAN_HPP_NAMESPACE::MemoryType ) ) == 0 )
+          && ( memoryTypes == rhs.memoryTypes )
           && ( memoryHeapCount == rhs.memoryHeapCount )
-          && ( memcmp( memoryHeaps, rhs.memoryHeaps, std::min<uint32_t>( VK_MAX_MEMORY_HEAPS, memoryHeapCount ) * sizeof( VULKAN_HPP_NAMESPACE::MemoryHeap ) ) == 0 );
+          && ( memoryHeaps == rhs.memoryHeaps );
     }
 
     bool operator!=( PhysicalDeviceMemoryProperties const& rhs ) const VULKAN_HPP_NOEXCEPT
@@ -53328,9 +50193,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   public:
     uint32_t memoryTypeCount = {};
-    VULKAN_HPP_NAMESPACE::MemoryType memoryTypes[VK_MAX_MEMORY_TYPES] = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<VULKAN_HPP_NAMESPACE::MemoryType, VK_MAX_MEMORY_TYPES> memoryTypes = {};
     uint32_t memoryHeapCount = {};
-    VULKAN_HPP_NAMESPACE::MemoryHeap memoryHeaps[VK_MAX_MEMORY_HEAPS] = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<VULKAN_HPP_NAMESPACE::MemoryHeap, VK_MAX_MEMORY_HEAPS> memoryHeaps = {};
   };
   static_assert( sizeof( PhysicalDeviceMemoryProperties ) == sizeof( VkPhysicalDeviceMemoryProperties ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<PhysicalDeviceMemoryProperties>::value, "struct wrapper is not a standard layout!" );
@@ -53339,11 +50204,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceMemoryProperties2( VULKAN_HPP_NAMESPACE::PhysicalDeviceMemoryProperties memoryProperties_ = {} ) VULKAN_HPP_NOEXCEPT
       : memoryProperties( memoryProperties_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceMemoryProperties2( PhysicalDeviceMemoryProperties2 const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , memoryProperties( rhs.memoryProperties )
     {}
 
     PhysicalDeviceMemoryProperties2 & operator=( PhysicalDeviceMemoryProperties2 const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -53403,12 +50263,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                              VULKAN_HPP_NAMESPACE::Bool32 meshShader_ = {} ) VULKAN_HPP_NOEXCEPT
       : taskShader( taskShader_ )
       , meshShader( meshShader_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceMeshShaderFeaturesNV( PhysicalDeviceMeshShaderFeaturesNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , taskShader( rhs.taskShader )
-      , meshShader( rhs.meshShader )
     {}
 
     PhysicalDeviceMeshShaderFeaturesNV & operator=( PhysicalDeviceMeshShaderFeaturesNV const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -53499,41 +50353,18 @@ namespace VULKAN_HPP_NAMESPACE
                                                                   uint32_t meshOutputPerPrimitiveGranularity_ = {} ) VULKAN_HPP_NOEXCEPT
       : maxDrawMeshTasksCount( maxDrawMeshTasksCount_ )
       , maxTaskWorkGroupInvocations( maxTaskWorkGroupInvocations_ )
-      , maxTaskWorkGroupSize{}
+      , maxTaskWorkGroupSize( maxTaskWorkGroupSize_ )
       , maxTaskTotalMemorySize( maxTaskTotalMemorySize_ )
       , maxTaskOutputCount( maxTaskOutputCount_ )
       , maxMeshWorkGroupInvocations( maxMeshWorkGroupInvocations_ )
-      , maxMeshWorkGroupSize{}
+      , maxMeshWorkGroupSize( maxMeshWorkGroupSize_ )
       , maxMeshTotalMemorySize( maxMeshTotalMemorySize_ )
       , maxMeshOutputVertices( maxMeshOutputVertices_ )
       , maxMeshOutputPrimitives( maxMeshOutputPrimitives_ )
       , maxMeshMultiviewViewCount( maxMeshMultiviewViewCount_ )
       , meshOutputPerVertexGranularity( meshOutputPerVertexGranularity_ )
       , meshOutputPerPrimitiveGranularity( meshOutputPerPrimitiveGranularity_ )
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,3>::copy( maxTaskWorkGroupSize, maxTaskWorkGroupSize_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,3>::copy( maxMeshWorkGroupSize, maxMeshWorkGroupSize_ );
-    }
-
-    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceMeshShaderPropertiesNV( PhysicalDeviceMeshShaderPropertiesNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , maxDrawMeshTasksCount( rhs.maxDrawMeshTasksCount )
-      , maxTaskWorkGroupInvocations( rhs.maxTaskWorkGroupInvocations )
-      , maxTaskWorkGroupSize{}
-      , maxTaskTotalMemorySize( rhs.maxTaskTotalMemorySize )
-      , maxTaskOutputCount( rhs.maxTaskOutputCount )
-      , maxMeshWorkGroupInvocations( rhs.maxMeshWorkGroupInvocations )
-      , maxMeshWorkGroupSize{}
-      , maxMeshTotalMemorySize( rhs.maxMeshTotalMemorySize )
-      , maxMeshOutputVertices( rhs.maxMeshOutputVertices )
-      , maxMeshOutputPrimitives( rhs.maxMeshOutputPrimitives )
-      , maxMeshMultiviewViewCount( rhs.maxMeshMultiviewViewCount )
-      , meshOutputPerVertexGranularity( rhs.meshOutputPerVertexGranularity )
-      , meshOutputPerPrimitiveGranularity( rhs.meshOutputPerPrimitiveGranularity )
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,3>::copy( maxTaskWorkGroupSize, rhs.maxTaskWorkGroupSize );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,3>::copy( maxMeshWorkGroupSize, rhs.maxMeshWorkGroupSize );
-    }
+    {}
 
     PhysicalDeviceMeshShaderPropertiesNV & operator=( PhysicalDeviceMeshShaderPropertiesNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -53571,11 +50402,11 @@ namespace VULKAN_HPP_NAMESPACE
           && ( pNext == rhs.pNext )
           && ( maxDrawMeshTasksCount == rhs.maxDrawMeshTasksCount )
           && ( maxTaskWorkGroupInvocations == rhs.maxTaskWorkGroupInvocations )
-          && ( memcmp( maxTaskWorkGroupSize, rhs.maxTaskWorkGroupSize, 3 * sizeof( uint32_t ) ) == 0 )
+          && ( maxTaskWorkGroupSize == rhs.maxTaskWorkGroupSize )
           && ( maxTaskTotalMemorySize == rhs.maxTaskTotalMemorySize )
           && ( maxTaskOutputCount == rhs.maxTaskOutputCount )
           && ( maxMeshWorkGroupInvocations == rhs.maxMeshWorkGroupInvocations )
-          && ( memcmp( maxMeshWorkGroupSize, rhs.maxMeshWorkGroupSize, 3 * sizeof( uint32_t ) ) == 0 )
+          && ( maxMeshWorkGroupSize == rhs.maxMeshWorkGroupSize )
           && ( maxMeshTotalMemorySize == rhs.maxMeshTotalMemorySize )
           && ( maxMeshOutputVertices == rhs.maxMeshOutputVertices )
           && ( maxMeshOutputPrimitives == rhs.maxMeshOutputPrimitives )
@@ -53595,11 +50426,11 @@ namespace VULKAN_HPP_NAMESPACE
     void* pNext = {};
     uint32_t maxDrawMeshTasksCount = {};
     uint32_t maxTaskWorkGroupInvocations = {};
-    uint32_t maxTaskWorkGroupSize[3] = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<uint32_t, 3> maxTaskWorkGroupSize = {};
     uint32_t maxTaskTotalMemorySize = {};
     uint32_t maxTaskOutputCount = {};
     uint32_t maxMeshWorkGroupInvocations = {};
-    uint32_t maxMeshWorkGroupSize[3] = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<uint32_t, 3> maxMeshWorkGroupSize = {};
     uint32_t maxMeshTotalMemorySize = {};
     uint32_t maxMeshOutputVertices = {};
     uint32_t maxMeshOutputPrimitives = {};
@@ -53618,13 +50449,6 @@ namespace VULKAN_HPP_NAMESPACE
       : multiview( multiview_ )
       , multiviewGeometryShader( multiviewGeometryShader_ )
       , multiviewTessellationShader( multiviewTessellationShader_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceMultiviewFeatures( PhysicalDeviceMultiviewFeatures const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , multiview( rhs.multiview )
-      , multiviewGeometryShader( rhs.multiviewGeometryShader )
-      , multiviewTessellationShader( rhs.multiviewTessellationShader )
     {}
 
     PhysicalDeviceMultiviewFeatures & operator=( PhysicalDeviceMultiviewFeatures const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -53712,11 +50536,6 @@ namespace VULKAN_HPP_NAMESPACE
       : perViewPositionAllComponents( perViewPositionAllComponents_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX( PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , perViewPositionAllComponents( rhs.perViewPositionAllComponents )
-    {}
-
     PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX & operator=( PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX ) - offsetof( PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX, pNext ) );
@@ -53774,12 +50593,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                             uint32_t maxMultiviewInstanceIndex_ = {} ) VULKAN_HPP_NOEXCEPT
       : maxMultiviewViewCount( maxMultiviewViewCount_ )
       , maxMultiviewInstanceIndex( maxMultiviewInstanceIndex_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceMultiviewProperties( PhysicalDeviceMultiviewProperties const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , maxMultiviewViewCount( rhs.maxMultiviewViewCount )
-      , maxMultiviewInstanceIndex( rhs.maxMultiviewInstanceIndex )
     {}
 
     PhysicalDeviceMultiviewProperties & operator=( PhysicalDeviceMultiviewProperties const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -53847,14 +50660,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pciFunction( pciFunction_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDevicePCIBusInfoPropertiesEXT( PhysicalDevicePCIBusInfoPropertiesEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , pciDomain( rhs.pciDomain )
-      , pciBus( rhs.pciBus )
-      , pciDevice( rhs.pciDevice )
-      , pciFunction( rhs.pciFunction )
-    {}
-
     PhysicalDevicePCIBusInfoPropertiesEXT & operator=( PhysicalDevicePCIBusInfoPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDevicePCIBusInfoPropertiesEXT ) - offsetof( PhysicalDevicePCIBusInfoPropertiesEXT, pNext ) );
@@ -53918,12 +50723,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                                     VULKAN_HPP_NAMESPACE::Bool32 performanceCounterMultipleQueryPools_ = {} ) VULKAN_HPP_NOEXCEPT
       : performanceCounterQueryPools( performanceCounterQueryPools_ )
       , performanceCounterMultipleQueryPools( performanceCounterMultipleQueryPools_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDevicePerformanceQueryFeaturesKHR( PhysicalDevicePerformanceQueryFeaturesKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , performanceCounterQueryPools( rhs.performanceCounterQueryPools )
-      , performanceCounterMultipleQueryPools( rhs.performanceCounterMultipleQueryPools )
     {}
 
     PhysicalDevicePerformanceQueryFeaturesKHR & operator=( PhysicalDevicePerformanceQueryFeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -54003,11 +50802,6 @@ namespace VULKAN_HPP_NAMESPACE
       : allowCommandBufferQueryCopies( allowCommandBufferQueryCopies_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDevicePerformanceQueryPropertiesKHR( PhysicalDevicePerformanceQueryPropertiesKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , allowCommandBufferQueryCopies( rhs.allowCommandBufferQueryCopies )
-    {}
-
     PhysicalDevicePerformanceQueryPropertiesKHR & operator=( PhysicalDevicePerformanceQueryPropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDevicePerformanceQueryPropertiesKHR ) - offsetof( PhysicalDevicePerformanceQueryPropertiesKHR, pNext ) );
@@ -54063,11 +50857,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR PhysicalDevicePipelineCreationCacheControlFeaturesEXT( VULKAN_HPP_NAMESPACE::Bool32 pipelineCreationCacheControl_ = {} ) VULKAN_HPP_NOEXCEPT
       : pipelineCreationCacheControl( pipelineCreationCacheControl_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDevicePipelineCreationCacheControlFeaturesEXT( PhysicalDevicePipelineCreationCacheControlFeaturesEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , pipelineCreationCacheControl( rhs.pipelineCreationCacheControl )
     {}
 
     PhysicalDevicePipelineCreationCacheControlFeaturesEXT & operator=( PhysicalDevicePipelineCreationCacheControlFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -54139,11 +50928,6 @@ namespace VULKAN_HPP_NAMESPACE
       : pipelineExecutableInfo( pipelineExecutableInfo_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDevicePipelineExecutablePropertiesFeaturesKHR( PhysicalDevicePipelineExecutablePropertiesFeaturesKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , pipelineExecutableInfo( rhs.pipelineExecutableInfo )
-    {}
-
     PhysicalDevicePipelineExecutablePropertiesFeaturesKHR & operator=( PhysicalDevicePipelineExecutablePropertiesFeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDevicePipelineExecutablePropertiesFeaturesKHR ) - offsetof( PhysicalDevicePipelineExecutablePropertiesFeaturesKHR, pNext ) );
@@ -54213,11 +50997,6 @@ namespace VULKAN_HPP_NAMESPACE
       : pointClippingBehavior( pointClippingBehavior_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDevicePointClippingProperties( PhysicalDevicePointClippingProperties const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , pointClippingBehavior( rhs.pointClippingBehavior )
-    {}
-
     PhysicalDevicePointClippingProperties & operator=( PhysicalDevicePointClippingProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDevicePointClippingProperties ) - offsetof( PhysicalDevicePointClippingProperties, pNext ) );
@@ -54282,20 +51061,6 @@ namespace VULKAN_HPP_NAMESPACE
       , residencyAlignedMipSize( residencyAlignedMipSize_ )
       , residencyNonResidentStrict( residencyNonResidentStrict_ )
     {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceSparseProperties( PhysicalDeviceSparseProperties const& rhs ) VULKAN_HPP_NOEXCEPT
-      : residencyStandard2DBlockShape( rhs.residencyStandard2DBlockShape )
-      , residencyStandard2DMultisampleBlockShape( rhs.residencyStandard2DMultisampleBlockShape )
-      , residencyStandard3DBlockShape( rhs.residencyStandard3DBlockShape )
-      , residencyAlignedMipSize( rhs.residencyAlignedMipSize )
-      , residencyNonResidentStrict( rhs.residencyNonResidentStrict )
-    {}
-
-    PhysicalDeviceSparseProperties & operator=( PhysicalDeviceSparseProperties const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( PhysicalDeviceSparseProperties ) );
-      return *this;
-    }
 
     PhysicalDeviceSparseProperties( VkPhysicalDeviceSparseProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -54362,35 +51127,11 @@ namespace VULKAN_HPP_NAMESPACE
       , vendorID( vendorID_ )
       , deviceID( deviceID_ )
       , deviceType( deviceType_ )
-      , deviceName{}
-      , pipelineCacheUUID{}
+      , deviceName( deviceName_ )
+      , pipelineCacheUUID( pipelineCacheUUID_ )
       , limits( limits_ )
       , sparseProperties( sparseProperties_ )
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_PHYSICAL_DEVICE_NAME_SIZE>::copy( deviceName, deviceName_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint8_t,VK_UUID_SIZE>::copy( pipelineCacheUUID, pipelineCacheUUID_ );
-    }
-
-    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceProperties( PhysicalDeviceProperties const& rhs ) VULKAN_HPP_NOEXCEPT
-      : apiVersion( rhs.apiVersion )
-      , driverVersion( rhs.driverVersion )
-      , vendorID( rhs.vendorID )
-      , deviceID( rhs.deviceID )
-      , deviceType( rhs.deviceType )
-      , deviceName{}
-      , pipelineCacheUUID{}
-      , limits( rhs.limits )
-      , sparseProperties( rhs.sparseProperties )
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_PHYSICAL_DEVICE_NAME_SIZE>::copy( deviceName, rhs.deviceName );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint8_t,VK_UUID_SIZE>::copy( pipelineCacheUUID, rhs.pipelineCacheUUID );
-    }
-
-    PhysicalDeviceProperties & operator=( PhysicalDeviceProperties const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( PhysicalDeviceProperties ) );
-      return *this;
-    }
+    {}
 
     PhysicalDeviceProperties( VkPhysicalDeviceProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -54423,8 +51164,8 @@ namespace VULKAN_HPP_NAMESPACE
           && ( vendorID == rhs.vendorID )
           && ( deviceID == rhs.deviceID )
           && ( deviceType == rhs.deviceType )
-          && ( memcmp( deviceName, rhs.deviceName, VK_MAX_PHYSICAL_DEVICE_NAME_SIZE * sizeof( char ) ) == 0 )
-          && ( memcmp( pipelineCacheUUID, rhs.pipelineCacheUUID, VK_UUID_SIZE * sizeof( uint8_t ) ) == 0 )
+          && ( deviceName == rhs.deviceName )
+          && ( pipelineCacheUUID == rhs.pipelineCacheUUID )
           && ( limits == rhs.limits )
           && ( sparseProperties == rhs.sparseProperties );
     }
@@ -54441,8 +51182,8 @@ namespace VULKAN_HPP_NAMESPACE
     uint32_t vendorID = {};
     uint32_t deviceID = {};
     VULKAN_HPP_NAMESPACE::PhysicalDeviceType deviceType = VULKAN_HPP_NAMESPACE::PhysicalDeviceType::eOther;
-    char deviceName[VK_MAX_PHYSICAL_DEVICE_NAME_SIZE] = {};
-    uint8_t pipelineCacheUUID[VK_UUID_SIZE] = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<char, VK_MAX_PHYSICAL_DEVICE_NAME_SIZE> deviceName = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<uint8_t, VK_UUID_SIZE> pipelineCacheUUID = {};
     VULKAN_HPP_NAMESPACE::PhysicalDeviceLimits limits = {};
     VULKAN_HPP_NAMESPACE::PhysicalDeviceSparseProperties sparseProperties = {};
   };
@@ -54453,11 +51194,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceProperties2( VULKAN_HPP_NAMESPACE::PhysicalDeviceProperties properties_ = {} ) VULKAN_HPP_NOEXCEPT
       : properties( properties_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceProperties2( PhysicalDeviceProperties2 const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , properties( rhs.properties )
     {}
 
     PhysicalDeviceProperties2 & operator=( PhysicalDeviceProperties2 const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -54515,11 +51251,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR PhysicalDeviceProtectedMemoryFeatures( VULKAN_HPP_NAMESPACE::Bool32 protectedMemory_ = {} ) VULKAN_HPP_NOEXCEPT
       : protectedMemory( protectedMemory_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceProtectedMemoryFeatures( PhysicalDeviceProtectedMemoryFeatures const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , protectedMemory( rhs.protectedMemory )
     {}
 
     PhysicalDeviceProtectedMemoryFeatures & operator=( PhysicalDeviceProtectedMemoryFeatures const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -54591,11 +51322,6 @@ namespace VULKAN_HPP_NAMESPACE
       : protectedNoFault( protectedNoFault_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceProtectedMemoryProperties( PhysicalDeviceProtectedMemoryProperties const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , protectedNoFault( rhs.protectedNoFault )
-    {}
-
     PhysicalDeviceProtectedMemoryProperties & operator=( PhysicalDeviceProtectedMemoryProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDeviceProtectedMemoryProperties ) - offsetof( PhysicalDeviceProtectedMemoryProperties, pNext ) );
@@ -54651,11 +51377,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR PhysicalDevicePushDescriptorPropertiesKHR( uint32_t maxPushDescriptors_ = {} ) VULKAN_HPP_NOEXCEPT
       : maxPushDescriptors( maxPushDescriptors_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDevicePushDescriptorPropertiesKHR( PhysicalDevicePushDescriptorPropertiesKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , maxPushDescriptors( rhs.maxPushDescriptors )
     {}
 
     PhysicalDevicePushDescriptorPropertiesKHR & operator=( PhysicalDevicePushDescriptorPropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -54730,19 +51451,6 @@ namespace VULKAN_HPP_NAMESPACE
       , rayTracingHostAccelerationStructureCommands( rayTracingHostAccelerationStructureCommands_ )
       , rayQuery( rayQuery_ )
       , rayTracingPrimitiveCulling( rayTracingPrimitiveCulling_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceRayTracingFeaturesKHR( PhysicalDeviceRayTracingFeaturesKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , rayTracing( rhs.rayTracing )
-      , rayTracingShaderGroupHandleCaptureReplay( rhs.rayTracingShaderGroupHandleCaptureReplay )
-      , rayTracingShaderGroupHandleCaptureReplayMixed( rhs.rayTracingShaderGroupHandleCaptureReplayMixed )
-      , rayTracingAccelerationStructureCaptureReplay( rhs.rayTracingAccelerationStructureCaptureReplay )
-      , rayTracingIndirectTraceRays( rhs.rayTracingIndirectTraceRays )
-      , rayTracingIndirectAccelerationStructureBuild( rhs.rayTracingIndirectAccelerationStructureBuild )
-      , rayTracingHostAccelerationStructureCommands( rhs.rayTracingHostAccelerationStructureCommands )
-      , rayQuery( rhs.rayQuery )
-      , rayTracingPrimitiveCulling( rhs.rayTracingPrimitiveCulling )
     {}
 
     PhysicalDeviceRayTracingFeaturesKHR & operator=( PhysicalDeviceRayTracingFeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -54896,19 +51604,6 @@ namespace VULKAN_HPP_NAMESPACE
       , shaderGroupHandleCaptureReplaySize( shaderGroupHandleCaptureReplaySize_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceRayTracingPropertiesKHR( PhysicalDeviceRayTracingPropertiesKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , shaderGroupHandleSize( rhs.shaderGroupHandleSize )
-      , maxRecursionDepth( rhs.maxRecursionDepth )
-      , maxShaderGroupStride( rhs.maxShaderGroupStride )
-      , shaderGroupBaseAlignment( rhs.shaderGroupBaseAlignment )
-      , maxGeometryCount( rhs.maxGeometryCount )
-      , maxInstanceCount( rhs.maxInstanceCount )
-      , maxPrimitiveCount( rhs.maxPrimitiveCount )
-      , maxDescriptorSetAccelerationStructures( rhs.maxDescriptorSetAccelerationStructures )
-      , shaderGroupHandleCaptureReplaySize( rhs.shaderGroupHandleCaptureReplaySize )
-    {}
-
     PhysicalDeviceRayTracingPropertiesKHR & operator=( PhysicalDeviceRayTracingPropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDeviceRayTracingPropertiesKHR ) - offsetof( PhysicalDeviceRayTracingPropertiesKHR, pNext ) );
@@ -54997,18 +51692,6 @@ namespace VULKAN_HPP_NAMESPACE
       , maxDescriptorSetAccelerationStructures( maxDescriptorSetAccelerationStructures_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceRayTracingPropertiesNV( PhysicalDeviceRayTracingPropertiesNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , shaderGroupHandleSize( rhs.shaderGroupHandleSize )
-      , maxRecursionDepth( rhs.maxRecursionDepth )
-      , maxShaderGroupStride( rhs.maxShaderGroupStride )
-      , shaderGroupBaseAlignment( rhs.shaderGroupBaseAlignment )
-      , maxGeometryCount( rhs.maxGeometryCount )
-      , maxInstanceCount( rhs.maxInstanceCount )
-      , maxTriangleCount( rhs.maxTriangleCount )
-      , maxDescriptorSetAccelerationStructures( rhs.maxDescriptorSetAccelerationStructures )
-    {}
-
     PhysicalDeviceRayTracingPropertiesNV & operator=( PhysicalDeviceRayTracingPropertiesNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDeviceRayTracingPropertiesNV ) - offsetof( PhysicalDeviceRayTracingPropertiesNV, pNext ) );
@@ -55078,11 +51761,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR PhysicalDeviceRepresentativeFragmentTestFeaturesNV( VULKAN_HPP_NAMESPACE::Bool32 representativeFragmentTest_ = {} ) VULKAN_HPP_NOEXCEPT
       : representativeFragmentTest( representativeFragmentTest_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceRepresentativeFragmentTestFeaturesNV( PhysicalDeviceRepresentativeFragmentTestFeaturesNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , representativeFragmentTest( rhs.representativeFragmentTest )
     {}
 
     PhysicalDeviceRepresentativeFragmentTestFeaturesNV & operator=( PhysicalDeviceRepresentativeFragmentTestFeaturesNV const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -55157,23 +51835,10 @@ namespace VULKAN_HPP_NAMESPACE
                                                                         VULKAN_HPP_NAMESPACE::Bool32 variableSampleLocations_ = {} ) VULKAN_HPP_NOEXCEPT
       : sampleLocationSampleCounts( sampleLocationSampleCounts_ )
       , maxSampleLocationGridSize( maxSampleLocationGridSize_ )
-      , sampleLocationCoordinateRange{}
+      , sampleLocationCoordinateRange( sampleLocationCoordinateRange_ )
       , sampleLocationSubPixelBits( sampleLocationSubPixelBits_ )
       , variableSampleLocations( variableSampleLocations_ )
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,2>::copy( sampleLocationCoordinateRange, sampleLocationCoordinateRange_ );
-    }
-
-    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceSampleLocationsPropertiesEXT( PhysicalDeviceSampleLocationsPropertiesEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , sampleLocationSampleCounts( rhs.sampleLocationSampleCounts )
-      , maxSampleLocationGridSize( rhs.maxSampleLocationGridSize )
-      , sampleLocationCoordinateRange{}
-      , sampleLocationSubPixelBits( rhs.sampleLocationSubPixelBits )
-      , variableSampleLocations( rhs.variableSampleLocations )
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<float,2>::copy( sampleLocationCoordinateRange, rhs.sampleLocationCoordinateRange );
-    }
+    {}
 
     PhysicalDeviceSampleLocationsPropertiesEXT & operator=( PhysicalDeviceSampleLocationsPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -55211,7 +51876,7 @@ namespace VULKAN_HPP_NAMESPACE
           && ( pNext == rhs.pNext )
           && ( sampleLocationSampleCounts == rhs.sampleLocationSampleCounts )
           && ( maxSampleLocationGridSize == rhs.maxSampleLocationGridSize )
-          && ( memcmp( sampleLocationCoordinateRange, rhs.sampleLocationCoordinateRange, 2 * sizeof( float ) ) == 0 )
+          && ( sampleLocationCoordinateRange == rhs.sampleLocationCoordinateRange )
           && ( sampleLocationSubPixelBits == rhs.sampleLocationSubPixelBits )
           && ( variableSampleLocations == rhs.variableSampleLocations );
     }
@@ -55227,7 +51892,7 @@ namespace VULKAN_HPP_NAMESPACE
     void* pNext = {};
     VULKAN_HPP_NAMESPACE::SampleCountFlags sampleLocationSampleCounts = {};
     VULKAN_HPP_NAMESPACE::Extent2D maxSampleLocationGridSize = {};
-    float sampleLocationCoordinateRange[2] = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<float, 2> sampleLocationCoordinateRange = {};
     uint32_t sampleLocationSubPixelBits = {};
     VULKAN_HPP_NAMESPACE::Bool32 variableSampleLocations = {};
   };
@@ -55240,12 +51905,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                                       VULKAN_HPP_NAMESPACE::Bool32 filterMinmaxImageComponentMapping_ = {} ) VULKAN_HPP_NOEXCEPT
       : filterMinmaxSingleComponentFormats( filterMinmaxSingleComponentFormats_ )
       , filterMinmaxImageComponentMapping( filterMinmaxImageComponentMapping_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceSamplerFilterMinmaxProperties( PhysicalDeviceSamplerFilterMinmaxProperties const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , filterMinmaxSingleComponentFormats( rhs.filterMinmaxSingleComponentFormats )
-      , filterMinmaxImageComponentMapping( rhs.filterMinmaxImageComponentMapping )
     {}
 
     PhysicalDeviceSamplerFilterMinmaxProperties & operator=( PhysicalDeviceSamplerFilterMinmaxProperties const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -55305,11 +51964,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR PhysicalDeviceSamplerYcbcrConversionFeatures( VULKAN_HPP_NAMESPACE::Bool32 samplerYcbcrConversion_ = {} ) VULKAN_HPP_NOEXCEPT
       : samplerYcbcrConversion( samplerYcbcrConversion_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceSamplerYcbcrConversionFeatures( PhysicalDeviceSamplerYcbcrConversionFeatures const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , samplerYcbcrConversion( rhs.samplerYcbcrConversion )
     {}
 
     PhysicalDeviceSamplerYcbcrConversionFeatures & operator=( PhysicalDeviceSamplerYcbcrConversionFeatures const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -55381,11 +52035,6 @@ namespace VULKAN_HPP_NAMESPACE
       : scalarBlockLayout( scalarBlockLayout_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceScalarBlockLayoutFeatures( PhysicalDeviceScalarBlockLayoutFeatures const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , scalarBlockLayout( rhs.scalarBlockLayout )
-    {}
-
     PhysicalDeviceScalarBlockLayoutFeatures & operator=( PhysicalDeviceScalarBlockLayoutFeatures const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDeviceScalarBlockLayoutFeatures ) - offsetof( PhysicalDeviceScalarBlockLayoutFeatures, pNext ) );
@@ -55453,11 +52102,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR PhysicalDeviceSeparateDepthStencilLayoutsFeatures( VULKAN_HPP_NAMESPACE::Bool32 separateDepthStencilLayouts_ = {} ) VULKAN_HPP_NOEXCEPT
       : separateDepthStencilLayouts( separateDepthStencilLayouts_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceSeparateDepthStencilLayoutsFeatures( PhysicalDeviceSeparateDepthStencilLayoutsFeatures const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , separateDepthStencilLayouts( rhs.separateDepthStencilLayouts )
     {}
 
     PhysicalDeviceSeparateDepthStencilLayoutsFeatures & operator=( PhysicalDeviceSeparateDepthStencilLayoutsFeatures const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -55529,12 +52173,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                                   VULKAN_HPP_NAMESPACE::Bool32 shaderSharedInt64Atomics_ = {} ) VULKAN_HPP_NOEXCEPT
       : shaderBufferInt64Atomics( shaderBufferInt64Atomics_ )
       , shaderSharedInt64Atomics( shaderSharedInt64Atomics_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceShaderAtomicInt64Features( PhysicalDeviceShaderAtomicInt64Features const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , shaderBufferInt64Atomics( rhs.shaderBufferInt64Atomics )
-      , shaderSharedInt64Atomics( rhs.shaderSharedInt64Atomics )
     {}
 
     PhysicalDeviceShaderAtomicInt64Features & operator=( PhysicalDeviceShaderAtomicInt64Features const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -55616,12 +52254,6 @@ namespace VULKAN_HPP_NAMESPACE
       , shaderDeviceClock( shaderDeviceClock_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceShaderClockFeaturesKHR( PhysicalDeviceShaderClockFeaturesKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , shaderSubgroupClock( rhs.shaderSubgroupClock )
-      , shaderDeviceClock( rhs.shaderDeviceClock )
-    {}
-
     PhysicalDeviceShaderClockFeaturesKHR & operator=( PhysicalDeviceShaderClockFeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDeviceShaderClockFeaturesKHR ) - offsetof( PhysicalDeviceShaderClockFeaturesKHR, pNext ) );
@@ -55699,12 +52331,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                                  uint32_t activeComputeUnitCount_ = {} ) VULKAN_HPP_NOEXCEPT
       : shaderCoreFeatures( shaderCoreFeatures_ )
       , activeComputeUnitCount( activeComputeUnitCount_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceShaderCoreProperties2AMD( PhysicalDeviceShaderCoreProperties2AMD const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , shaderCoreFeatures( rhs.shaderCoreFeatures )
-      , activeComputeUnitCount( rhs.activeComputeUnitCount )
     {}
 
     PhysicalDeviceShaderCoreProperties2AMD & operator=( PhysicalDeviceShaderCoreProperties2AMD const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -55792,24 +52418,6 @@ namespace VULKAN_HPP_NAMESPACE
       , vgprAllocationGranularity( vgprAllocationGranularity_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceShaderCorePropertiesAMD( PhysicalDeviceShaderCorePropertiesAMD const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , shaderEngineCount( rhs.shaderEngineCount )
-      , shaderArraysPerEngineCount( rhs.shaderArraysPerEngineCount )
-      , computeUnitsPerShaderArray( rhs.computeUnitsPerShaderArray )
-      , simdPerComputeUnit( rhs.simdPerComputeUnit )
-      , wavefrontsPerSimd( rhs.wavefrontsPerSimd )
-      , wavefrontSize( rhs.wavefrontSize )
-      , sgprsPerSimd( rhs.sgprsPerSimd )
-      , minSgprAllocation( rhs.minSgprAllocation )
-      , maxSgprAllocation( rhs.maxSgprAllocation )
-      , sgprAllocationGranularity( rhs.sgprAllocationGranularity )
-      , vgprsPerSimd( rhs.vgprsPerSimd )
-      , minVgprAllocation( rhs.minVgprAllocation )
-      , maxVgprAllocation( rhs.maxVgprAllocation )
-      , vgprAllocationGranularity( rhs.vgprAllocationGranularity )
-    {}
-
     PhysicalDeviceShaderCorePropertiesAMD & operator=( PhysicalDeviceShaderCorePropertiesAMD const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDeviceShaderCorePropertiesAMD ) - offsetof( PhysicalDeviceShaderCorePropertiesAMD, pNext ) );
@@ -55893,11 +52501,6 @@ namespace VULKAN_HPP_NAMESPACE
       : shaderDemoteToHelperInvocation( shaderDemoteToHelperInvocation_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT( PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , shaderDemoteToHelperInvocation( rhs.shaderDemoteToHelperInvocation )
-    {}
-
     PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT & operator=( PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT ) - offsetof( PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT, pNext ) );
@@ -55965,11 +52568,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR PhysicalDeviceShaderDrawParametersFeatures( VULKAN_HPP_NAMESPACE::Bool32 shaderDrawParameters_ = {} ) VULKAN_HPP_NOEXCEPT
       : shaderDrawParameters( shaderDrawParameters_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceShaderDrawParametersFeatures( PhysicalDeviceShaderDrawParametersFeatures const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , shaderDrawParameters( rhs.shaderDrawParameters )
     {}
 
     PhysicalDeviceShaderDrawParametersFeatures & operator=( PhysicalDeviceShaderDrawParametersFeatures const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -56041,12 +52639,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                                   VULKAN_HPP_NAMESPACE::Bool32 shaderInt8_ = {} ) VULKAN_HPP_NOEXCEPT
       : shaderFloat16( shaderFloat16_ )
       , shaderInt8( shaderInt8_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceShaderFloat16Int8Features( PhysicalDeviceShaderFloat16Int8Features const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , shaderFloat16( rhs.shaderFloat16 )
-      , shaderInt8( rhs.shaderInt8 )
     {}
 
     PhysicalDeviceShaderFloat16Int8Features & operator=( PhysicalDeviceShaderFloat16Int8Features const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -56126,11 +52718,6 @@ namespace VULKAN_HPP_NAMESPACE
       : imageFootprint( imageFootprint_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceShaderImageFootprintFeaturesNV( PhysicalDeviceShaderImageFootprintFeaturesNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , imageFootprint( rhs.imageFootprint )
-    {}
-
     PhysicalDeviceShaderImageFootprintFeaturesNV & operator=( PhysicalDeviceShaderImageFootprintFeaturesNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDeviceShaderImageFootprintFeaturesNV ) - offsetof( PhysicalDeviceShaderImageFootprintFeaturesNV, pNext ) );
@@ -56200,11 +52787,6 @@ namespace VULKAN_HPP_NAMESPACE
       : shaderIntegerFunctions2( shaderIntegerFunctions2_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL( PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , shaderIntegerFunctions2( rhs.shaderIntegerFunctions2 )
-    {}
-
     PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL & operator=( PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL ) - offsetof( PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL, pNext ) );
@@ -56272,11 +52854,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR PhysicalDeviceShaderSMBuiltinsFeaturesNV( VULKAN_HPP_NAMESPACE::Bool32 shaderSMBuiltins_ = {} ) VULKAN_HPP_NOEXCEPT
       : shaderSMBuiltins( shaderSMBuiltins_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceShaderSMBuiltinsFeaturesNV( PhysicalDeviceShaderSMBuiltinsFeaturesNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , shaderSMBuiltins( rhs.shaderSMBuiltins )
     {}
 
     PhysicalDeviceShaderSMBuiltinsFeaturesNV & operator=( PhysicalDeviceShaderSMBuiltinsFeaturesNV const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -56350,12 +52927,6 @@ namespace VULKAN_HPP_NAMESPACE
       , shaderWarpsPerSM( shaderWarpsPerSM_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceShaderSMBuiltinsPropertiesNV( PhysicalDeviceShaderSMBuiltinsPropertiesNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , shaderSMCount( rhs.shaderSMCount )
-      , shaderWarpsPerSM( rhs.shaderWarpsPerSM )
-    {}
-
     PhysicalDeviceShaderSMBuiltinsPropertiesNV & operator=( PhysicalDeviceShaderSMBuiltinsPropertiesNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDeviceShaderSMBuiltinsPropertiesNV ) - offsetof( PhysicalDeviceShaderSMBuiltinsPropertiesNV, pNext ) );
@@ -56413,11 +52984,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR PhysicalDeviceShaderSubgroupExtendedTypesFeatures( VULKAN_HPP_NAMESPACE::Bool32 shaderSubgroupExtendedTypes_ = {} ) VULKAN_HPP_NOEXCEPT
       : shaderSubgroupExtendedTypes( shaderSubgroupExtendedTypes_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceShaderSubgroupExtendedTypesFeatures( PhysicalDeviceShaderSubgroupExtendedTypesFeatures const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , shaderSubgroupExtendedTypes( rhs.shaderSubgroupExtendedTypes )
     {}
 
     PhysicalDeviceShaderSubgroupExtendedTypesFeatures & operator=( PhysicalDeviceShaderSubgroupExtendedTypesFeatures const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -56489,12 +53055,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                                    VULKAN_HPP_NAMESPACE::Bool32 shadingRateCoarseSampleOrder_ = {} ) VULKAN_HPP_NOEXCEPT
       : shadingRateImage( shadingRateImage_ )
       , shadingRateCoarseSampleOrder( shadingRateCoarseSampleOrder_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceShadingRateImageFeaturesNV( PhysicalDeviceShadingRateImageFeaturesNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , shadingRateImage( rhs.shadingRateImage )
-      , shadingRateCoarseSampleOrder( rhs.shadingRateCoarseSampleOrder )
     {}
 
     PhysicalDeviceShadingRateImageFeaturesNV & operator=( PhysicalDeviceShadingRateImageFeaturesNV const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -56578,13 +53138,6 @@ namespace VULKAN_HPP_NAMESPACE
       , shadingRateMaxCoarseSamples( shadingRateMaxCoarseSamples_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceShadingRateImagePropertiesNV( PhysicalDeviceShadingRateImagePropertiesNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , shadingRateTexelSize( rhs.shadingRateTexelSize )
-      , shadingRatePaletteSize( rhs.shadingRatePaletteSize )
-      , shadingRateMaxCoarseSamples( rhs.shadingRateMaxCoarseSamples )
-    {}
-
     PhysicalDeviceShadingRateImagePropertiesNV & operator=( PhysicalDeviceShadingRateImagePropertiesNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDeviceShadingRateImagePropertiesNV ) - offsetof( PhysicalDeviceShadingRateImagePropertiesNV, pNext ) );
@@ -56652,15 +53205,6 @@ namespace VULKAN_HPP_NAMESPACE
       , samples( samples_ )
       , usage( usage_ )
       , tiling( tiling_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceSparseImageFormatInfo2( PhysicalDeviceSparseImageFormatInfo2 const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , format( rhs.format )
-      , type( rhs.type )
-      , samples( rhs.samples )
-      , usage( rhs.usage )
-      , tiling( rhs.tiling )
     {}
 
     PhysicalDeviceSparseImageFormatInfo2 & operator=( PhysicalDeviceSparseImageFormatInfo2 const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -56770,14 +53314,6 @@ namespace VULKAN_HPP_NAMESPACE
       , quadOperationsInAllStages( quadOperationsInAllStages_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceSubgroupProperties( PhysicalDeviceSubgroupProperties const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , subgroupSize( rhs.subgroupSize )
-      , supportedStages( rhs.supportedStages )
-      , supportedOperations( rhs.supportedOperations )
-      , quadOperationsInAllStages( rhs.quadOperationsInAllStages )
-    {}
-
     PhysicalDeviceSubgroupProperties & operator=( PhysicalDeviceSubgroupProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDeviceSubgroupProperties ) - offsetof( PhysicalDeviceSubgroupProperties, pNext ) );
@@ -56841,12 +53377,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                                        VULKAN_HPP_NAMESPACE::Bool32 computeFullSubgroups_ = {} ) VULKAN_HPP_NOEXCEPT
       : subgroupSizeControl( subgroupSizeControl_ )
       , computeFullSubgroups( computeFullSubgroups_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceSubgroupSizeControlFeaturesEXT( PhysicalDeviceSubgroupSizeControlFeaturesEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , subgroupSizeControl( rhs.subgroupSizeControl )
-      , computeFullSubgroups( rhs.computeFullSubgroups )
     {}
 
     PhysicalDeviceSubgroupSizeControlFeaturesEXT & operator=( PhysicalDeviceSubgroupSizeControlFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -56932,14 +53462,6 @@ namespace VULKAN_HPP_NAMESPACE
       , requiredSubgroupSizeStages( requiredSubgroupSizeStages_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceSubgroupSizeControlPropertiesEXT( PhysicalDeviceSubgroupSizeControlPropertiesEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , minSubgroupSize( rhs.minSubgroupSize )
-      , maxSubgroupSize( rhs.maxSubgroupSize )
-      , maxComputeWorkgroupSubgroups( rhs.maxComputeWorkgroupSubgroups )
-      , requiredSubgroupSizeStages( rhs.requiredSubgroupSizeStages )
-    {}
-
     PhysicalDeviceSubgroupSizeControlPropertiesEXT & operator=( PhysicalDeviceSubgroupSizeControlPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDeviceSubgroupSizeControlPropertiesEXT ) - offsetof( PhysicalDeviceSubgroupSizeControlPropertiesEXT, pNext ) );
@@ -57001,11 +53523,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR PhysicalDeviceSurfaceInfo2KHR( VULKAN_HPP_NAMESPACE::SurfaceKHR surface_ = {} ) VULKAN_HPP_NOEXCEPT
       : surface( surface_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceSurfaceInfo2KHR( PhysicalDeviceSurfaceInfo2KHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , surface( rhs.surface )
     {}
 
     PhysicalDeviceSurfaceInfo2KHR & operator=( PhysicalDeviceSurfaceInfo2KHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -57075,11 +53592,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR PhysicalDeviceTexelBufferAlignmentFeaturesEXT( VULKAN_HPP_NAMESPACE::Bool32 texelBufferAlignment_ = {} ) VULKAN_HPP_NOEXCEPT
       : texelBufferAlignment( texelBufferAlignment_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceTexelBufferAlignmentFeaturesEXT( PhysicalDeviceTexelBufferAlignmentFeaturesEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , texelBufferAlignment( rhs.texelBufferAlignment )
     {}
 
     PhysicalDeviceTexelBufferAlignmentFeaturesEXT & operator=( PhysicalDeviceTexelBufferAlignmentFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -57157,14 +53669,6 @@ namespace VULKAN_HPP_NAMESPACE
       , uniformTexelBufferOffsetSingleTexelAlignment( uniformTexelBufferOffsetSingleTexelAlignment_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceTexelBufferAlignmentPropertiesEXT( PhysicalDeviceTexelBufferAlignmentPropertiesEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , storageTexelBufferOffsetAlignmentBytes( rhs.storageTexelBufferOffsetAlignmentBytes )
-      , storageTexelBufferOffsetSingleTexelAlignment( rhs.storageTexelBufferOffsetSingleTexelAlignment )
-      , uniformTexelBufferOffsetAlignmentBytes( rhs.uniformTexelBufferOffsetAlignmentBytes )
-      , uniformTexelBufferOffsetSingleTexelAlignment( rhs.uniformTexelBufferOffsetSingleTexelAlignment )
-    {}
-
     PhysicalDeviceTexelBufferAlignmentPropertiesEXT & operator=( PhysicalDeviceTexelBufferAlignmentPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDeviceTexelBufferAlignmentPropertiesEXT ) - offsetof( PhysicalDeviceTexelBufferAlignmentPropertiesEXT, pNext ) );
@@ -57226,11 +53730,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT( VULKAN_HPP_NAMESPACE::Bool32 textureCompressionASTC_HDR_ = {} ) VULKAN_HPP_NOEXCEPT
       : textureCompressionASTC_HDR( textureCompressionASTC_HDR_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT( PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , textureCompressionASTC_HDR( rhs.textureCompressionASTC_HDR )
     {}
 
     PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT & operator=( PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -57302,11 +53801,6 @@ namespace VULKAN_HPP_NAMESPACE
       : timelineSemaphore( timelineSemaphore_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceTimelineSemaphoreFeatures( PhysicalDeviceTimelineSemaphoreFeatures const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , timelineSemaphore( rhs.timelineSemaphore )
-    {}
-
     PhysicalDeviceTimelineSemaphoreFeatures & operator=( PhysicalDeviceTimelineSemaphoreFeatures const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDeviceTimelineSemaphoreFeatures ) - offsetof( PhysicalDeviceTimelineSemaphoreFeatures, pNext ) );
@@ -57376,11 +53870,6 @@ namespace VULKAN_HPP_NAMESPACE
       : maxTimelineSemaphoreValueDifference( maxTimelineSemaphoreValueDifference_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceTimelineSemaphoreProperties( PhysicalDeviceTimelineSemaphoreProperties const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , maxTimelineSemaphoreValueDifference( rhs.maxTimelineSemaphoreValueDifference )
-    {}
-
     PhysicalDeviceTimelineSemaphoreProperties & operator=( PhysicalDeviceTimelineSemaphoreProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDeviceTimelineSemaphoreProperties ) - offsetof( PhysicalDeviceTimelineSemaphoreProperties, pNext ) );
@@ -57439,31 +53928,12 @@ namespace VULKAN_HPP_NAMESPACE
                                                              VULKAN_HPP_NAMESPACE::ToolPurposeFlagsEXT purposes_ = {},
                                                              std::array<char,VK_MAX_DESCRIPTION_SIZE> const& description_ = {},
                                                              std::array<char,VK_MAX_EXTENSION_NAME_SIZE> const& layer_ = {} ) VULKAN_HPP_NOEXCEPT
-      : name{}
-      , version{}
+      : name( name_ )
+      , version( version_ )
       , purposes( purposes_ )
-      , description{}
-      , layer{}
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_EXTENSION_NAME_SIZE>::copy( name, name_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_EXTENSION_NAME_SIZE>::copy( version, version_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE>::copy( description, description_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_EXTENSION_NAME_SIZE>::copy( layer, layer_ );
-    }
-
-    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceToolPropertiesEXT( PhysicalDeviceToolPropertiesEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , name{}
-      , version{}
-      , purposes( rhs.purposes )
-      , description{}
-      , layer{}
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_EXTENSION_NAME_SIZE>::copy( name, rhs.name );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_EXTENSION_NAME_SIZE>::copy( version, rhs.version );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE>::copy( description, rhs.description );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_EXTENSION_NAME_SIZE>::copy( layer, rhs.layer );
-    }
+      , description( description_ )
+      , layer( layer_ )
+    {}
 
     PhysicalDeviceToolPropertiesEXT & operator=( PhysicalDeviceToolPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -57499,11 +53969,11 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
-          && ( memcmp( name, rhs.name, VK_MAX_EXTENSION_NAME_SIZE * sizeof( char ) ) == 0 )
-          && ( memcmp( version, rhs.version, VK_MAX_EXTENSION_NAME_SIZE * sizeof( char ) ) == 0 )
+          && ( name == rhs.name )
+          && ( version == rhs.version )
           && ( purposes == rhs.purposes )
-          && ( memcmp( description, rhs.description, VK_MAX_DESCRIPTION_SIZE * sizeof( char ) ) == 0 )
-          && ( memcmp( layer, rhs.layer, VK_MAX_EXTENSION_NAME_SIZE * sizeof( char ) ) == 0 );
+          && ( description == rhs.description )
+          && ( layer == rhs.layer );
     }
 
     bool operator!=( PhysicalDeviceToolPropertiesEXT const& rhs ) const VULKAN_HPP_NOEXCEPT
@@ -57515,11 +53985,11 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceToolPropertiesEXT;
     void* pNext = {};
-    char name[VK_MAX_EXTENSION_NAME_SIZE] = {};
-    char version[VK_MAX_EXTENSION_NAME_SIZE] = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<char, VK_MAX_EXTENSION_NAME_SIZE> name = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<char, VK_MAX_EXTENSION_NAME_SIZE> version = {};
     VULKAN_HPP_NAMESPACE::ToolPurposeFlagsEXT purposes = {};
-    char description[VK_MAX_DESCRIPTION_SIZE] = {};
-    char layer[VK_MAX_EXTENSION_NAME_SIZE] = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<char, VK_MAX_DESCRIPTION_SIZE> description = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<char, VK_MAX_EXTENSION_NAME_SIZE> layer = {};
   };
   static_assert( sizeof( PhysicalDeviceToolPropertiesEXT ) == sizeof( VkPhysicalDeviceToolPropertiesEXT ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<PhysicalDeviceToolPropertiesEXT>::value, "struct wrapper is not a standard layout!" );
@@ -57530,12 +54000,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                                      VULKAN_HPP_NAMESPACE::Bool32 geometryStreams_ = {} ) VULKAN_HPP_NOEXCEPT
       : transformFeedback( transformFeedback_ )
       , geometryStreams( geometryStreams_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceTransformFeedbackFeaturesEXT( PhysicalDeviceTransformFeedbackFeaturesEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , transformFeedback( rhs.transformFeedback )
-      , geometryStreams( rhs.geometryStreams )
     {}
 
     PhysicalDeviceTransformFeedbackFeaturesEXT & operator=( PhysicalDeviceTransformFeedbackFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -57633,20 +54097,6 @@ namespace VULKAN_HPP_NAMESPACE
       , transformFeedbackDraw( transformFeedbackDraw_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceTransformFeedbackPropertiesEXT( PhysicalDeviceTransformFeedbackPropertiesEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , maxTransformFeedbackStreams( rhs.maxTransformFeedbackStreams )
-      , maxTransformFeedbackBuffers( rhs.maxTransformFeedbackBuffers )
-      , maxTransformFeedbackBufferSize( rhs.maxTransformFeedbackBufferSize )
-      , maxTransformFeedbackStreamDataSize( rhs.maxTransformFeedbackStreamDataSize )
-      , maxTransformFeedbackBufferDataSize( rhs.maxTransformFeedbackBufferDataSize )
-      , maxTransformFeedbackBufferDataStride( rhs.maxTransformFeedbackBufferDataStride )
-      , transformFeedbackQueries( rhs.transformFeedbackQueries )
-      , transformFeedbackStreamsLinesTriangles( rhs.transformFeedbackStreamsLinesTriangles )
-      , transformFeedbackRasterizationStreamSelect( rhs.transformFeedbackRasterizationStreamSelect )
-      , transformFeedbackDraw( rhs.transformFeedbackDraw )
-    {}
-
     PhysicalDeviceTransformFeedbackPropertiesEXT & operator=( PhysicalDeviceTransformFeedbackPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDeviceTransformFeedbackPropertiesEXT ) - offsetof( PhysicalDeviceTransformFeedbackPropertiesEXT, pNext ) );
@@ -57722,11 +54172,6 @@ namespace VULKAN_HPP_NAMESPACE
       : uniformBufferStandardLayout( uniformBufferStandardLayout_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceUniformBufferStandardLayoutFeatures( PhysicalDeviceUniformBufferStandardLayoutFeatures const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , uniformBufferStandardLayout( rhs.uniformBufferStandardLayout )
-    {}
-
     PhysicalDeviceUniformBufferStandardLayoutFeatures & operator=( PhysicalDeviceUniformBufferStandardLayoutFeatures const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDeviceUniformBufferStandardLayoutFeatures ) - offsetof( PhysicalDeviceUniformBufferStandardLayoutFeatures, pNext ) );
@@ -57796,12 +54241,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                                  VULKAN_HPP_NAMESPACE::Bool32 variablePointers_ = {} ) VULKAN_HPP_NOEXCEPT
       : variablePointersStorageBuffer( variablePointersStorageBuffer_ )
       , variablePointers( variablePointers_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceVariablePointersFeatures( PhysicalDeviceVariablePointersFeatures const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , variablePointersStorageBuffer( rhs.variablePointersStorageBuffer )
-      , variablePointers( rhs.variablePointers )
     {}
 
     PhysicalDeviceVariablePointersFeatures & operator=( PhysicalDeviceVariablePointersFeatures const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -57883,12 +54322,6 @@ namespace VULKAN_HPP_NAMESPACE
       , vertexAttributeInstanceRateZeroDivisor( vertexAttributeInstanceRateZeroDivisor_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceVertexAttributeDivisorFeaturesEXT( PhysicalDeviceVertexAttributeDivisorFeaturesEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , vertexAttributeInstanceRateDivisor( rhs.vertexAttributeInstanceRateDivisor )
-      , vertexAttributeInstanceRateZeroDivisor( rhs.vertexAttributeInstanceRateZeroDivisor )
-    {}
-
     PhysicalDeviceVertexAttributeDivisorFeaturesEXT & operator=( PhysicalDeviceVertexAttributeDivisorFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDeviceVertexAttributeDivisorFeaturesEXT ) - offsetof( PhysicalDeviceVertexAttributeDivisorFeaturesEXT, pNext ) );
@@ -57964,11 +54397,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR PhysicalDeviceVertexAttributeDivisorPropertiesEXT( uint32_t maxVertexAttribDivisor_ = {} ) VULKAN_HPP_NOEXCEPT
       : maxVertexAttribDivisor( maxVertexAttribDivisor_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceVertexAttributeDivisorPropertiesEXT( PhysicalDeviceVertexAttributeDivisorPropertiesEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , maxVertexAttribDivisor( rhs.maxVertexAttribDivisor )
     {}
 
     PhysicalDeviceVertexAttributeDivisorPropertiesEXT & operator=( PhysicalDeviceVertexAttributeDivisorPropertiesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -58048,22 +54476,6 @@ namespace VULKAN_HPP_NAMESPACE
       , protectedMemory( protectedMemory_ )
       , samplerYcbcrConversion( samplerYcbcrConversion_ )
       , shaderDrawParameters( shaderDrawParameters_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceVulkan11Features( PhysicalDeviceVulkan11Features const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , storageBuffer16BitAccess( rhs.storageBuffer16BitAccess )
-      , uniformAndStorageBuffer16BitAccess( rhs.uniformAndStorageBuffer16BitAccess )
-      , storagePushConstant16( rhs.storagePushConstant16 )
-      , storageInputOutput16( rhs.storageInputOutput16 )
-      , multiview( rhs.multiview )
-      , multiviewGeometryShader( rhs.multiviewGeometryShader )
-      , multiviewTessellationShader( rhs.multiviewTessellationShader )
-      , variablePointersStorageBuffer( rhs.variablePointersStorageBuffer )
-      , variablePointers( rhs.variablePointers )
-      , protectedMemory( rhs.protectedMemory )
-      , samplerYcbcrConversion( rhs.samplerYcbcrConversion )
-      , shaderDrawParameters( rhs.shaderDrawParameters )
     {}
 
     PhysicalDeviceVulkan11Features & operator=( PhysicalDeviceVulkan11Features const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -58234,9 +54646,9 @@ namespace VULKAN_HPP_NAMESPACE
                                                               VULKAN_HPP_NAMESPACE::Bool32 protectedNoFault_ = {},
                                                               uint32_t maxPerSetDescriptors_ = {},
                                                               VULKAN_HPP_NAMESPACE::DeviceSize maxMemoryAllocationSize_ = {} ) VULKAN_HPP_NOEXCEPT
-      : deviceUUID{}
-      , driverUUID{}
-      , deviceLUID{}
+      : deviceUUID( deviceUUID_ )
+      , driverUUID( driverUUID_ )
+      , deviceLUID( deviceLUID_ )
       , deviceNodeMask( deviceNodeMask_ )
       , deviceLUIDValid( deviceLUIDValid_ )
       , subgroupSize( subgroupSize_ )
@@ -58249,34 +54661,7 @@ namespace VULKAN_HPP_NAMESPACE
       , protectedNoFault( protectedNoFault_ )
       , maxPerSetDescriptors( maxPerSetDescriptors_ )
       , maxMemoryAllocationSize( maxMemoryAllocationSize_ )
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint8_t,VK_UUID_SIZE>::copy( deviceUUID, deviceUUID_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint8_t,VK_UUID_SIZE>::copy( driverUUID, driverUUID_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint8_t,VK_LUID_SIZE>::copy( deviceLUID, deviceLUID_ );
-    }
-
-    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceVulkan11Properties( PhysicalDeviceVulkan11Properties const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , deviceUUID{}
-      , driverUUID{}
-      , deviceLUID{}
-      , deviceNodeMask( rhs.deviceNodeMask )
-      , deviceLUIDValid( rhs.deviceLUIDValid )
-      , subgroupSize( rhs.subgroupSize )
-      , subgroupSupportedStages( rhs.subgroupSupportedStages )
-      , subgroupSupportedOperations( rhs.subgroupSupportedOperations )
-      , subgroupQuadOperationsInAllStages( rhs.subgroupQuadOperationsInAllStages )
-      , pointClippingBehavior( rhs.pointClippingBehavior )
-      , maxMultiviewViewCount( rhs.maxMultiviewViewCount )
-      , maxMultiviewInstanceIndex( rhs.maxMultiviewInstanceIndex )
-      , protectedNoFault( rhs.protectedNoFault )
-      , maxPerSetDescriptors( rhs.maxPerSetDescriptors )
-      , maxMemoryAllocationSize( rhs.maxMemoryAllocationSize )
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint8_t,VK_UUID_SIZE>::copy( deviceUUID, rhs.deviceUUID );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint8_t,VK_UUID_SIZE>::copy( driverUUID, rhs.driverUUID );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint8_t,VK_LUID_SIZE>::copy( deviceLUID, rhs.deviceLUID );
-    }
+    {}
 
     PhysicalDeviceVulkan11Properties & operator=( PhysicalDeviceVulkan11Properties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -58303,19 +54688,19 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceVulkan11Properties & setDeviceUUID( std::array<uint8_t,VK_UUID_SIZE> deviceUUID_ ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( deviceUUID, deviceUUID_.data(), VK_UUID_SIZE * sizeof( uint8_t ) );
+      deviceUUID = deviceUUID_;
       return *this;
     }
 
     PhysicalDeviceVulkan11Properties & setDriverUUID( std::array<uint8_t,VK_UUID_SIZE> driverUUID_ ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( driverUUID, driverUUID_.data(), VK_UUID_SIZE * sizeof( uint8_t ) );
+      driverUUID = driverUUID_;
       return *this;
     }
 
     PhysicalDeviceVulkan11Properties & setDeviceLUID( std::array<uint8_t,VK_LUID_SIZE> deviceLUID_ ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( deviceLUID, deviceLUID_.data(), VK_LUID_SIZE * sizeof( uint8_t ) );
+      deviceLUID = deviceLUID_;
       return *this;
     }
 
@@ -58408,9 +54793,9 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
-          && ( memcmp( deviceUUID, rhs.deviceUUID, VK_UUID_SIZE * sizeof( uint8_t ) ) == 0 )
-          && ( memcmp( driverUUID, rhs.driverUUID, VK_UUID_SIZE * sizeof( uint8_t ) ) == 0 )
-          && ( memcmp( deviceLUID, rhs.deviceLUID, VK_LUID_SIZE * sizeof( uint8_t ) ) == 0 )
+          && ( deviceUUID == rhs.deviceUUID )
+          && ( driverUUID == rhs.driverUUID )
+          && ( deviceLUID == rhs.deviceLUID )
           && ( deviceNodeMask == rhs.deviceNodeMask )
           && ( deviceLUIDValid == rhs.deviceLUIDValid )
           && ( subgroupSize == rhs.subgroupSize )
@@ -58434,9 +54819,9 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceVulkan11Properties;
     void* pNext = {};
-    uint8_t deviceUUID[VK_UUID_SIZE] = {};
-    uint8_t driverUUID[VK_UUID_SIZE] = {};
-    uint8_t deviceLUID[VK_LUID_SIZE] = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<uint8_t, VK_UUID_SIZE> deviceUUID = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<uint8_t, VK_UUID_SIZE> driverUUID = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<uint8_t, VK_LUID_SIZE> deviceLUID = {};
     uint32_t deviceNodeMask = {};
     VULKAN_HPP_NAMESPACE::Bool32 deviceLUIDValid = {};
     uint32_t subgroupSize = {};
@@ -58549,57 +54934,6 @@ namespace VULKAN_HPP_NAMESPACE
       , shaderOutputViewportIndex( shaderOutputViewportIndex_ )
       , shaderOutputLayer( shaderOutputLayer_ )
       , subgroupBroadcastDynamicId( subgroupBroadcastDynamicId_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceVulkan12Features( PhysicalDeviceVulkan12Features const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , samplerMirrorClampToEdge( rhs.samplerMirrorClampToEdge )
-      , drawIndirectCount( rhs.drawIndirectCount )
-      , storageBuffer8BitAccess( rhs.storageBuffer8BitAccess )
-      , uniformAndStorageBuffer8BitAccess( rhs.uniformAndStorageBuffer8BitAccess )
-      , storagePushConstant8( rhs.storagePushConstant8 )
-      , shaderBufferInt64Atomics( rhs.shaderBufferInt64Atomics )
-      , shaderSharedInt64Atomics( rhs.shaderSharedInt64Atomics )
-      , shaderFloat16( rhs.shaderFloat16 )
-      , shaderInt8( rhs.shaderInt8 )
-      , descriptorIndexing( rhs.descriptorIndexing )
-      , shaderInputAttachmentArrayDynamicIndexing( rhs.shaderInputAttachmentArrayDynamicIndexing )
-      , shaderUniformTexelBufferArrayDynamicIndexing( rhs.shaderUniformTexelBufferArrayDynamicIndexing )
-      , shaderStorageTexelBufferArrayDynamicIndexing( rhs.shaderStorageTexelBufferArrayDynamicIndexing )
-      , shaderUniformBufferArrayNonUniformIndexing( rhs.shaderUniformBufferArrayNonUniformIndexing )
-      , shaderSampledImageArrayNonUniformIndexing( rhs.shaderSampledImageArrayNonUniformIndexing )
-      , shaderStorageBufferArrayNonUniformIndexing( rhs.shaderStorageBufferArrayNonUniformIndexing )
-      , shaderStorageImageArrayNonUniformIndexing( rhs.shaderStorageImageArrayNonUniformIndexing )
-      , shaderInputAttachmentArrayNonUniformIndexing( rhs.shaderInputAttachmentArrayNonUniformIndexing )
-      , shaderUniformTexelBufferArrayNonUniformIndexing( rhs.shaderUniformTexelBufferArrayNonUniformIndexing )
-      , shaderStorageTexelBufferArrayNonUniformIndexing( rhs.shaderStorageTexelBufferArrayNonUniformIndexing )
-      , descriptorBindingUniformBufferUpdateAfterBind( rhs.descriptorBindingUniformBufferUpdateAfterBind )
-      , descriptorBindingSampledImageUpdateAfterBind( rhs.descriptorBindingSampledImageUpdateAfterBind )
-      , descriptorBindingStorageImageUpdateAfterBind( rhs.descriptorBindingStorageImageUpdateAfterBind )
-      , descriptorBindingStorageBufferUpdateAfterBind( rhs.descriptorBindingStorageBufferUpdateAfterBind )
-      , descriptorBindingUniformTexelBufferUpdateAfterBind( rhs.descriptorBindingUniformTexelBufferUpdateAfterBind )
-      , descriptorBindingStorageTexelBufferUpdateAfterBind( rhs.descriptorBindingStorageTexelBufferUpdateAfterBind )
-      , descriptorBindingUpdateUnusedWhilePending( rhs.descriptorBindingUpdateUnusedWhilePending )
-      , descriptorBindingPartiallyBound( rhs.descriptorBindingPartiallyBound )
-      , descriptorBindingVariableDescriptorCount( rhs.descriptorBindingVariableDescriptorCount )
-      , runtimeDescriptorArray( rhs.runtimeDescriptorArray )
-      , samplerFilterMinmax( rhs.samplerFilterMinmax )
-      , scalarBlockLayout( rhs.scalarBlockLayout )
-      , imagelessFramebuffer( rhs.imagelessFramebuffer )
-      , uniformBufferStandardLayout( rhs.uniformBufferStandardLayout )
-      , shaderSubgroupExtendedTypes( rhs.shaderSubgroupExtendedTypes )
-      , separateDepthStencilLayouts( rhs.separateDepthStencilLayouts )
-      , hostQueryReset( rhs.hostQueryReset )
-      , timelineSemaphore( rhs.timelineSemaphore )
-      , bufferDeviceAddress( rhs.bufferDeviceAddress )
-      , bufferDeviceAddressCaptureReplay( rhs.bufferDeviceAddressCaptureReplay )
-      , bufferDeviceAddressMultiDevice( rhs.bufferDeviceAddressMultiDevice )
-      , vulkanMemoryModel( rhs.vulkanMemoryModel )
-      , vulkanMemoryModelDeviceScope( rhs.vulkanMemoryModelDeviceScope )
-      , vulkanMemoryModelAvailabilityVisibilityChains( rhs.vulkanMemoryModelAvailabilityVisibilityChains )
-      , shaderOutputViewportIndex( rhs.shaderOutputViewportIndex )
-      , shaderOutputLayer( rhs.shaderOutputLayer )
-      , subgroupBroadcastDynamicId( rhs.subgroupBroadcastDynamicId )
     {}
 
     PhysicalDeviceVulkan12Features & operator=( PhysicalDeviceVulkan12Features const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -59088,8 +55422,8 @@ namespace VULKAN_HPP_NAMESPACE
                                                               uint64_t maxTimelineSemaphoreValueDifference_ = {},
                                                               VULKAN_HPP_NAMESPACE::SampleCountFlags framebufferIntegerColorSampleCounts_ = {} ) VULKAN_HPP_NOEXCEPT
       : driverID( driverID_ )
-      , driverName{}
-      , driverInfo{}
+      , driverName( driverName_ )
+      , driverInfo( driverInfo_ )
       , conformanceVersion( conformanceVersion_ )
       , denormBehaviorIndependence( denormBehaviorIndependence_ )
       , roundingModeIndependence( roundingModeIndependence_ )
@@ -59139,69 +55473,7 @@ namespace VULKAN_HPP_NAMESPACE
       , filterMinmaxImageComponentMapping( filterMinmaxImageComponentMapping_ )
       , maxTimelineSemaphoreValueDifference( maxTimelineSemaphoreValueDifference_ )
       , framebufferIntegerColorSampleCounts( framebufferIntegerColorSampleCounts_ )
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DRIVER_NAME_SIZE>::copy( driverName, driverName_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DRIVER_INFO_SIZE>::copy( driverInfo, driverInfo_ );
-    }
-
-    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceVulkan12Properties( PhysicalDeviceVulkan12Properties const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , driverID( rhs.driverID )
-      , driverName{}
-      , driverInfo{}
-      , conformanceVersion( rhs.conformanceVersion )
-      , denormBehaviorIndependence( rhs.denormBehaviorIndependence )
-      , roundingModeIndependence( rhs.roundingModeIndependence )
-      , shaderSignedZeroInfNanPreserveFloat16( rhs.shaderSignedZeroInfNanPreserveFloat16 )
-      , shaderSignedZeroInfNanPreserveFloat32( rhs.shaderSignedZeroInfNanPreserveFloat32 )
-      , shaderSignedZeroInfNanPreserveFloat64( rhs.shaderSignedZeroInfNanPreserveFloat64 )
-      , shaderDenormPreserveFloat16( rhs.shaderDenormPreserveFloat16 )
-      , shaderDenormPreserveFloat32( rhs.shaderDenormPreserveFloat32 )
-      , shaderDenormPreserveFloat64( rhs.shaderDenormPreserveFloat64 )
-      , shaderDenormFlushToZeroFloat16( rhs.shaderDenormFlushToZeroFloat16 )
-      , shaderDenormFlushToZeroFloat32( rhs.shaderDenormFlushToZeroFloat32 )
-      , shaderDenormFlushToZeroFloat64( rhs.shaderDenormFlushToZeroFloat64 )
-      , shaderRoundingModeRTEFloat16( rhs.shaderRoundingModeRTEFloat16 )
-      , shaderRoundingModeRTEFloat32( rhs.shaderRoundingModeRTEFloat32 )
-      , shaderRoundingModeRTEFloat64( rhs.shaderRoundingModeRTEFloat64 )
-      , shaderRoundingModeRTZFloat16( rhs.shaderRoundingModeRTZFloat16 )
-      , shaderRoundingModeRTZFloat32( rhs.shaderRoundingModeRTZFloat32 )
-      , shaderRoundingModeRTZFloat64( rhs.shaderRoundingModeRTZFloat64 )
-      , maxUpdateAfterBindDescriptorsInAllPools( rhs.maxUpdateAfterBindDescriptorsInAllPools )
-      , shaderUniformBufferArrayNonUniformIndexingNative( rhs.shaderUniformBufferArrayNonUniformIndexingNative )
-      , shaderSampledImageArrayNonUniformIndexingNative( rhs.shaderSampledImageArrayNonUniformIndexingNative )
-      , shaderStorageBufferArrayNonUniformIndexingNative( rhs.shaderStorageBufferArrayNonUniformIndexingNative )
-      , shaderStorageImageArrayNonUniformIndexingNative( rhs.shaderStorageImageArrayNonUniformIndexingNative )
-      , shaderInputAttachmentArrayNonUniformIndexingNative( rhs.shaderInputAttachmentArrayNonUniformIndexingNative )
-      , robustBufferAccessUpdateAfterBind( rhs.robustBufferAccessUpdateAfterBind )
-      , quadDivergentImplicitLod( rhs.quadDivergentImplicitLod )
-      , maxPerStageDescriptorUpdateAfterBindSamplers( rhs.maxPerStageDescriptorUpdateAfterBindSamplers )
-      , maxPerStageDescriptorUpdateAfterBindUniformBuffers( rhs.maxPerStageDescriptorUpdateAfterBindUniformBuffers )
-      , maxPerStageDescriptorUpdateAfterBindStorageBuffers( rhs.maxPerStageDescriptorUpdateAfterBindStorageBuffers )
-      , maxPerStageDescriptorUpdateAfterBindSampledImages( rhs.maxPerStageDescriptorUpdateAfterBindSampledImages )
-      , maxPerStageDescriptorUpdateAfterBindStorageImages( rhs.maxPerStageDescriptorUpdateAfterBindStorageImages )
-      , maxPerStageDescriptorUpdateAfterBindInputAttachments( rhs.maxPerStageDescriptorUpdateAfterBindInputAttachments )
-      , maxPerStageUpdateAfterBindResources( rhs.maxPerStageUpdateAfterBindResources )
-      , maxDescriptorSetUpdateAfterBindSamplers( rhs.maxDescriptorSetUpdateAfterBindSamplers )
-      , maxDescriptorSetUpdateAfterBindUniformBuffers( rhs.maxDescriptorSetUpdateAfterBindUniformBuffers )
-      , maxDescriptorSetUpdateAfterBindUniformBuffersDynamic( rhs.maxDescriptorSetUpdateAfterBindUniformBuffersDynamic )
-      , maxDescriptorSetUpdateAfterBindStorageBuffers( rhs.maxDescriptorSetUpdateAfterBindStorageBuffers )
-      , maxDescriptorSetUpdateAfterBindStorageBuffersDynamic( rhs.maxDescriptorSetUpdateAfterBindStorageBuffersDynamic )
-      , maxDescriptorSetUpdateAfterBindSampledImages( rhs.maxDescriptorSetUpdateAfterBindSampledImages )
-      , maxDescriptorSetUpdateAfterBindStorageImages( rhs.maxDescriptorSetUpdateAfterBindStorageImages )
-      , maxDescriptorSetUpdateAfterBindInputAttachments( rhs.maxDescriptorSetUpdateAfterBindInputAttachments )
-      , supportedDepthResolveModes( rhs.supportedDepthResolveModes )
-      , supportedStencilResolveModes( rhs.supportedStencilResolveModes )
-      , independentResolveNone( rhs.independentResolveNone )
-      , independentResolve( rhs.independentResolve )
-      , filterMinmaxSingleComponentFormats( rhs.filterMinmaxSingleComponentFormats )
-      , filterMinmaxImageComponentMapping( rhs.filterMinmaxImageComponentMapping )
-      , maxTimelineSemaphoreValueDifference( rhs.maxTimelineSemaphoreValueDifference )
-      , framebufferIntegerColorSampleCounts( rhs.framebufferIntegerColorSampleCounts )
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DRIVER_NAME_SIZE>::copy( driverName, rhs.driverName );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DRIVER_INFO_SIZE>::copy( driverInfo, rhs.driverInfo );
-    }
+    {}
 
     PhysicalDeviceVulkan12Properties & operator=( PhysicalDeviceVulkan12Properties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -59234,13 +55506,13 @@ namespace VULKAN_HPP_NAMESPACE
 
     PhysicalDeviceVulkan12Properties & setDriverName( std::array<char,VK_MAX_DRIVER_NAME_SIZE> driverName_ ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( driverName, driverName_.data(), VK_MAX_DRIVER_NAME_SIZE * sizeof( char ) );
+      driverName = driverName_;
       return *this;
     }
 
     PhysicalDeviceVulkan12Properties & setDriverInfo( std::array<char,VK_MAX_DRIVER_INFO_SIZE> driverInfo_ ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( driverInfo, driverInfo_.data(), VK_MAX_DRIVER_INFO_SIZE * sizeof( char ) );
+      driverInfo = driverInfo_;
       return *this;
     }
 
@@ -59556,8 +55828,8 @@ namespace VULKAN_HPP_NAMESPACE
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( driverID == rhs.driverID )
-          && ( memcmp( driverName, rhs.driverName, VK_MAX_DRIVER_NAME_SIZE * sizeof( char ) ) == 0 )
-          && ( memcmp( driverInfo, rhs.driverInfo, VK_MAX_DRIVER_INFO_SIZE * sizeof( char ) ) == 0 )
+          && ( driverName == rhs.driverName )
+          && ( driverInfo == rhs.driverInfo )
           && ( conformanceVersion == rhs.conformanceVersion )
           && ( denormBehaviorIndependence == rhs.denormBehaviorIndependence )
           && ( roundingModeIndependence == rhs.roundingModeIndependence )
@@ -59619,8 +55891,8 @@ namespace VULKAN_HPP_NAMESPACE
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceVulkan12Properties;
     void* pNext = {};
     VULKAN_HPP_NAMESPACE::DriverId driverID = VULKAN_HPP_NAMESPACE::DriverId::eAmdProprietary;
-    char driverName[VK_MAX_DRIVER_NAME_SIZE] = {};
-    char driverInfo[VK_MAX_DRIVER_INFO_SIZE] = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<char, VK_MAX_DRIVER_NAME_SIZE> driverName = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<char, VK_MAX_DRIVER_INFO_SIZE> driverInfo = {};
     VULKAN_HPP_NAMESPACE::ConformanceVersion conformanceVersion = {};
     VULKAN_HPP_NAMESPACE::ShaderFloatControlsIndependence denormBehaviorIndependence = VULKAN_HPP_NAMESPACE::ShaderFloatControlsIndependence::e32BitOnly;
     VULKAN_HPP_NAMESPACE::ShaderFloatControlsIndependence roundingModeIndependence = VULKAN_HPP_NAMESPACE::ShaderFloatControlsIndependence::e32BitOnly;
@@ -59682,13 +55954,6 @@ namespace VULKAN_HPP_NAMESPACE
       : vulkanMemoryModel( vulkanMemoryModel_ )
       , vulkanMemoryModelDeviceScope( vulkanMemoryModelDeviceScope_ )
       , vulkanMemoryModelAvailabilityVisibilityChains( vulkanMemoryModelAvailabilityVisibilityChains_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceVulkanMemoryModelFeatures( PhysicalDeviceVulkanMemoryModelFeatures const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , vulkanMemoryModel( rhs.vulkanMemoryModel )
-      , vulkanMemoryModelDeviceScope( rhs.vulkanMemoryModelDeviceScope )
-      , vulkanMemoryModelAvailabilityVisibilityChains( rhs.vulkanMemoryModelAvailabilityVisibilityChains )
     {}
 
     PhysicalDeviceVulkanMemoryModelFeatures & operator=( PhysicalDeviceVulkanMemoryModelFeatures const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -59776,11 +56041,6 @@ namespace VULKAN_HPP_NAMESPACE
       : ycbcrImageArrays( ycbcrImageArrays_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PhysicalDeviceYcbcrImageArraysFeaturesEXT( PhysicalDeviceYcbcrImageArraysFeaturesEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , ycbcrImageArrays( rhs.ycbcrImageArrays )
-    {}
-
     PhysicalDeviceYcbcrImageArraysFeaturesEXT & operator=( PhysicalDeviceYcbcrImageArraysFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PhysicalDeviceYcbcrImageArraysFeaturesEXT ) - offsetof( PhysicalDeviceYcbcrImageArraysFeaturesEXT, pNext ) );
@@ -59852,13 +56112,6 @@ namespace VULKAN_HPP_NAMESPACE
       : flags( flags_ )
       , initialDataSize( initialDataSize_ )
       , pInitialData( pInitialData_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PipelineCacheCreateInfo( PipelineCacheCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , initialDataSize( rhs.initialDataSize )
-      , pInitialData( rhs.pInitialData )
     {}
 
     PipelineCacheCreateInfo & operator=( PipelineCacheCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -59950,13 +56203,6 @@ namespace VULKAN_HPP_NAMESPACE
       , blendOverlap( blendOverlap_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PipelineColorBlendAdvancedStateCreateInfoEXT( PipelineColorBlendAdvancedStateCreateInfoEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , srcPremultiplied( rhs.srcPremultiplied )
-      , dstPremultiplied( rhs.dstPremultiplied )
-      , blendOverlap( rhs.blendOverlap )
-    {}
-
     PipelineColorBlendAdvancedStateCreateInfoEXT & operator=( PipelineColorBlendAdvancedStateCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PipelineColorBlendAdvancedStateCreateInfoEXT ) - offsetof( PipelineColorBlendAdvancedStateCreateInfoEXT, pNext ) );
@@ -60042,11 +56288,6 @@ namespace VULKAN_HPP_NAMESPACE
       : compilerControlFlags( compilerControlFlags_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PipelineCompilerControlCreateInfoAMD( PipelineCompilerControlCreateInfoAMD const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , compilerControlFlags( rhs.compilerControlFlags )
-    {}
-
     PipelineCompilerControlCreateInfoAMD & operator=( PipelineCompilerControlCreateInfoAMD const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PipelineCompilerControlCreateInfoAMD ) - offsetof( PipelineCompilerControlCreateInfoAMD, pNext ) );
@@ -60122,15 +56363,6 @@ namespace VULKAN_HPP_NAMESPACE
       , coverageModulationTableEnable( coverageModulationTableEnable_ )
       , coverageModulationTableCount( coverageModulationTableCount_ )
       , pCoverageModulationTable( pCoverageModulationTable_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PipelineCoverageModulationStateCreateInfoNV( PipelineCoverageModulationStateCreateInfoNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , coverageModulationMode( rhs.coverageModulationMode )
-      , coverageModulationTableEnable( rhs.coverageModulationTableEnable )
-      , coverageModulationTableCount( rhs.coverageModulationTableCount )
-      , pCoverageModulationTable( rhs.pCoverageModulationTable )
     {}
 
     PipelineCoverageModulationStateCreateInfoNV & operator=( PipelineCoverageModulationStateCreateInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -60236,12 +56468,6 @@ namespace VULKAN_HPP_NAMESPACE
       , coverageReductionMode( coverageReductionMode_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PipelineCoverageReductionStateCreateInfoNV( PipelineCoverageReductionStateCreateInfoNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , coverageReductionMode( rhs.coverageReductionMode )
-    {}
-
     PipelineCoverageReductionStateCreateInfoNV & operator=( PipelineCoverageReductionStateCreateInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PipelineCoverageReductionStateCreateInfoNV ) - offsetof( PipelineCoverageReductionStateCreateInfoNV, pNext ) );
@@ -60321,13 +56547,6 @@ namespace VULKAN_HPP_NAMESPACE
       : flags( flags_ )
       , coverageToColorEnable( coverageToColorEnable_ )
       , coverageToColorLocation( coverageToColorLocation_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PipelineCoverageToColorStateCreateInfoNV( PipelineCoverageToColorStateCreateInfoNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , coverageToColorEnable( rhs.coverageToColorEnable )
-      , coverageToColorLocation( rhs.coverageToColorLocation )
     {}
 
     PipelineCoverageToColorStateCreateInfoNV & operator=( PipelineCoverageToColorStateCreateInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -60417,17 +56636,6 @@ namespace VULKAN_HPP_NAMESPACE
       , duration( duration_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PipelineCreationFeedbackEXT( PipelineCreationFeedbackEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : flags( rhs.flags )
-      , duration( rhs.duration )
-    {}
-
-    PipelineCreationFeedbackEXT & operator=( PipelineCreationFeedbackEXT const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( PipelineCreationFeedbackEXT ) );
-      return *this;
-    }
-
     PipelineCreationFeedbackEXT( VkPipelineCreationFeedbackEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -60479,13 +56687,6 @@ namespace VULKAN_HPP_NAMESPACE
       : pPipelineCreationFeedback( pPipelineCreationFeedback_ )
       , pipelineStageCreationFeedbackCount( pipelineStageCreationFeedbackCount_ )
       , pPipelineStageCreationFeedbacks( pPipelineStageCreationFeedbacks_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PipelineCreationFeedbackCreateInfoEXT( PipelineCreationFeedbackCreateInfoEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , pPipelineCreationFeedback( rhs.pPipelineCreationFeedback )
-      , pipelineStageCreationFeedbackCount( rhs.pipelineStageCreationFeedbackCount )
-      , pPipelineStageCreationFeedbacks( rhs.pPipelineStageCreationFeedbacks )
     {}
 
     PipelineCreationFeedbackCreateInfoEXT & operator=( PipelineCreationFeedbackCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -60577,14 +56778,6 @@ namespace VULKAN_HPP_NAMESPACE
       , discardRectangleMode( discardRectangleMode_ )
       , discardRectangleCount( discardRectangleCount_ )
       , pDiscardRectangles( pDiscardRectangles_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PipelineDiscardRectangleStateCreateInfoEXT( PipelineDiscardRectangleStateCreateInfoEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , discardRectangleMode( rhs.discardRectangleMode )
-      , discardRectangleCount( rhs.discardRectangleCount )
-      , pDiscardRectangles( rhs.pDiscardRectangles )
     {}
 
     PipelineDiscardRectangleStateCreateInfoEXT & operator=( PipelineDiscardRectangleStateCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -60682,12 +56875,6 @@ namespace VULKAN_HPP_NAMESPACE
       , executableIndex( executableIndex_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PipelineExecutableInfoKHR( PipelineExecutableInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , pipeline( rhs.pipeline )
-      , executableIndex( rhs.executableIndex )
-    {}
-
     PipelineExecutableInfoKHR & operator=( PipelineExecutableInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PipelineExecutableInfoKHR ) - offsetof( PipelineExecutableInfoKHR, pNext ) );
@@ -60766,27 +56953,12 @@ namespace VULKAN_HPP_NAMESPACE
                                                                          VULKAN_HPP_NAMESPACE::Bool32 isText_ = {},
                                                                          size_t dataSize_ = {},
                                                                          void* pData_ = {} ) VULKAN_HPP_NOEXCEPT
-      : name{}
-      , description{}
+      : name( name_ )
+      , description( description_ )
       , isText( isText_ )
       , dataSize( dataSize_ )
       , pData( pData_ )
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE>::copy( name, name_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE>::copy( description, description_ );
-    }
-
-    VULKAN_HPP_CONSTEXPR_14 PipelineExecutableInternalRepresentationKHR( PipelineExecutableInternalRepresentationKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , name{}
-      , description{}
-      , isText( rhs.isText )
-      , dataSize( rhs.dataSize )
-      , pData( rhs.pData )
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE>::copy( name, rhs.name );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE>::copy( description, rhs.description );
-    }
+    {}
 
     PipelineExecutableInternalRepresentationKHR & operator=( PipelineExecutableInternalRepresentationKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -60822,8 +56994,8 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
-          && ( memcmp( name, rhs.name, VK_MAX_DESCRIPTION_SIZE * sizeof( char ) ) == 0 )
-          && ( memcmp( description, rhs.description, VK_MAX_DESCRIPTION_SIZE * sizeof( char ) ) == 0 )
+          && ( name == rhs.name )
+          && ( description == rhs.description )
           && ( isText == rhs.isText )
           && ( dataSize == rhs.dataSize )
           && ( pData == rhs.pData );
@@ -60838,8 +57010,8 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineExecutableInternalRepresentationKHR;
     void* pNext = {};
-    char name[VK_MAX_DESCRIPTION_SIZE] = {};
-    char description[VK_MAX_DESCRIPTION_SIZE] = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<char, VK_MAX_DESCRIPTION_SIZE> name = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<char, VK_MAX_DESCRIPTION_SIZE> description = {};
     VULKAN_HPP_NAMESPACE::Bool32 isText = {};
     size_t dataSize = {};
     void* pData = {};
@@ -60854,24 +57026,10 @@ namespace VULKAN_HPP_NAMESPACE
                                                              std::array<char,VK_MAX_DESCRIPTION_SIZE> const& description_ = {},
                                                              uint32_t subgroupSize_ = {} ) VULKAN_HPP_NOEXCEPT
       : stages( stages_ )
-      , name{}
-      , description{}
+      , name( name_ )
+      , description( description_ )
       , subgroupSize( subgroupSize_ )
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE>::copy( name, name_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE>::copy( description, description_ );
-    }
-
-    VULKAN_HPP_CONSTEXPR_14 PipelineExecutablePropertiesKHR( PipelineExecutablePropertiesKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , stages( rhs.stages )
-      , name{}
-      , description{}
-      , subgroupSize( rhs.subgroupSize )
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE>::copy( name, rhs.name );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE>::copy( description, rhs.description );
-    }
+    {}
 
     PipelineExecutablePropertiesKHR & operator=( PipelineExecutablePropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -60908,8 +57066,8 @@ namespace VULKAN_HPP_NAMESPACE
       return ( sType == rhs.sType )
           && ( pNext == rhs.pNext )
           && ( stages == rhs.stages )
-          && ( memcmp( name, rhs.name, VK_MAX_DESCRIPTION_SIZE * sizeof( char ) ) == 0 )
-          && ( memcmp( description, rhs.description, VK_MAX_DESCRIPTION_SIZE * sizeof( char ) ) == 0 )
+          && ( name == rhs.name )
+          && ( description == rhs.description )
           && ( subgroupSize == rhs.subgroupSize );
     }
 
@@ -60923,8 +57081,8 @@ namespace VULKAN_HPP_NAMESPACE
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineExecutablePropertiesKHR;
     void* pNext = {};
     VULKAN_HPP_NAMESPACE::ShaderStageFlags stages = {};
-    char name[VK_MAX_DESCRIPTION_SIZE] = {};
-    char description[VK_MAX_DESCRIPTION_SIZE] = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<char, VK_MAX_DESCRIPTION_SIZE> name = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<char, VK_MAX_DESCRIPTION_SIZE> description = {};
     uint32_t subgroupSize = {};
   };
   static_assert( sizeof( PipelineExecutablePropertiesKHR ) == sizeof( VkPipelineExecutablePropertiesKHR ), "struct and wrapper have different size!" );
@@ -61016,25 +57174,11 @@ namespace VULKAN_HPP_NAMESPACE
                                     std::array<char,VK_MAX_DESCRIPTION_SIZE> const& description_ = {},
                                     VULKAN_HPP_NAMESPACE::PipelineExecutableStatisticFormatKHR format_ = VULKAN_HPP_NAMESPACE::PipelineExecutableStatisticFormatKHR::eBool32,
                                     VULKAN_HPP_NAMESPACE::PipelineExecutableStatisticValueKHR value_ = {} ) VULKAN_HPP_NOEXCEPT
-      : name{}
-      , description{}
+      : name( name_ )
+      , description( description_ )
       , format( format_ )
       , value( value_ )
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE>::copy( name, name_ );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE>::copy( description, description_ );
-    }
-
-    PipelineExecutableStatisticKHR( PipelineExecutableStatisticKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , name{}
-      , description{}
-      , format( rhs.format )
-      , value( rhs.value )
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE>::copy( name, rhs.name );
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<char,VK_MAX_DESCRIPTION_SIZE>::copy( description, rhs.description );
-    }
+    {}
 
     PipelineExecutableStatisticKHR & operator=( PipelineExecutableStatisticKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -61066,8 +57210,8 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineExecutableStatisticKHR;
     void* pNext = {};
-    char name[VK_MAX_DESCRIPTION_SIZE] = {};
-    char description[VK_MAX_DESCRIPTION_SIZE] = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<char, VK_MAX_DESCRIPTION_SIZE> name = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<char, VK_MAX_DESCRIPTION_SIZE> description = {};
     VULKAN_HPP_NAMESPACE::PipelineExecutableStatisticFormatKHR format = VULKAN_HPP_NAMESPACE::PipelineExecutableStatisticFormatKHR::eBool32;
     VULKAN_HPP_NAMESPACE::PipelineExecutableStatisticValueKHR value = {};
   };
@@ -61078,11 +57222,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR PipelineInfoKHR( VULKAN_HPP_NAMESPACE::Pipeline pipeline_ = {} ) VULKAN_HPP_NOEXCEPT
       : pipeline( pipeline_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PipelineInfoKHR( PipelineInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , pipeline( rhs.pipeline )
     {}
 
     PipelineInfoKHR & operator=( PipelineInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -61157,18 +57296,6 @@ namespace VULKAN_HPP_NAMESPACE
       , offset( offset_ )
       , size( size_ )
     {}
-
-    VULKAN_HPP_CONSTEXPR PushConstantRange( PushConstantRange const& rhs ) VULKAN_HPP_NOEXCEPT
-      : stageFlags( rhs.stageFlags )
-      , offset( rhs.offset )
-      , size( rhs.size )
-    {}
-
-    PushConstantRange & operator=( PushConstantRange const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( PushConstantRange ) );
-      return *this;
-    }
 
     PushConstantRange( VkPushConstantRange const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -61245,15 +57372,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pSetLayouts( pSetLayouts_ )
       , pushConstantRangeCount( pushConstantRangeCount_ )
       , pPushConstantRanges( pPushConstantRanges_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PipelineLayoutCreateInfo( PipelineLayoutCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , setLayoutCount( rhs.setLayoutCount )
-      , pSetLayouts( rhs.pSetLayouts )
-      , pushConstantRangeCount( rhs.pushConstantRangeCount )
-      , pPushConstantRanges( rhs.pPushConstantRanges )
     {}
 
     PipelineLayoutCreateInfo & operator=( PipelineLayoutCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -61360,12 +57478,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pLibraries( pLibraries_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PipelineLibraryCreateInfoKHR( PipelineLibraryCreateInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , libraryCount( rhs.libraryCount )
-      , pLibraries( rhs.pLibraries )
-    {}
-
     PipelineLibraryCreateInfoKHR & operator=( PipelineLibraryCreateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PipelineLibraryCreateInfoKHR ) - offsetof( PipelineLibraryCreateInfoKHR, pNext ) );
@@ -61446,13 +57558,6 @@ namespace VULKAN_HPP_NAMESPACE
       : flags( flags_ )
       , conservativeRasterizationMode( conservativeRasterizationMode_ )
       , extraPrimitiveOverestimationSize( extraPrimitiveOverestimationSize_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PipelineRasterizationConservativeStateCreateInfoEXT( PipelineRasterizationConservativeStateCreateInfoEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , conservativeRasterizationMode( rhs.conservativeRasterizationMode )
-      , extraPrimitiveOverestimationSize( rhs.extraPrimitiveOverestimationSize )
     {}
 
     PipelineRasterizationConservativeStateCreateInfoEXT & operator=( PipelineRasterizationConservativeStateCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -61542,12 +57647,6 @@ namespace VULKAN_HPP_NAMESPACE
       , depthClipEnable( depthClipEnable_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PipelineRasterizationDepthClipStateCreateInfoEXT( PipelineRasterizationDepthClipStateCreateInfoEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , depthClipEnable( rhs.depthClipEnable )
-    {}
-
     PipelineRasterizationDepthClipStateCreateInfoEXT & operator=( PipelineRasterizationDepthClipStateCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PipelineRasterizationDepthClipStateCreateInfoEXT ) - offsetof( PipelineRasterizationDepthClipStateCreateInfoEXT, pNext ) );
@@ -61629,14 +57728,6 @@ namespace VULKAN_HPP_NAMESPACE
       , stippledLineEnable( stippledLineEnable_ )
       , lineStippleFactor( lineStippleFactor_ )
       , lineStipplePattern( lineStipplePattern_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PipelineRasterizationLineStateCreateInfoEXT( PipelineRasterizationLineStateCreateInfoEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , lineRasterizationMode( rhs.lineRasterizationMode )
-      , stippledLineEnable( rhs.stippledLineEnable )
-      , lineStippleFactor( rhs.lineStippleFactor )
-      , lineStipplePattern( rhs.lineStipplePattern )
     {}
 
     PipelineRasterizationLineStateCreateInfoEXT & operator=( PipelineRasterizationLineStateCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -61732,11 +57823,6 @@ namespace VULKAN_HPP_NAMESPACE
       : rasterizationOrder( rasterizationOrder_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PipelineRasterizationStateRasterizationOrderAMD( PipelineRasterizationStateRasterizationOrderAMD const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , rasterizationOrder( rhs.rasterizationOrder )
-    {}
-
     PipelineRasterizationStateRasterizationOrderAMD & operator=( PipelineRasterizationStateRasterizationOrderAMD const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PipelineRasterizationStateRasterizationOrderAMD ) - offsetof( PipelineRasterizationStateRasterizationOrderAMD, pNext ) );
@@ -61806,12 +57892,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                                         uint32_t rasterizationStream_ = {} ) VULKAN_HPP_NOEXCEPT
       : flags( flags_ )
       , rasterizationStream( rasterizationStream_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PipelineRasterizationStateStreamCreateInfoEXT( PipelineRasterizationStateStreamCreateInfoEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , rasterizationStream( rhs.rasterizationStream )
     {}
 
     PipelineRasterizationStateStreamCreateInfoEXT & operator=( PipelineRasterizationStateStreamCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -61891,11 +57971,6 @@ namespace VULKAN_HPP_NAMESPACE
       : representativeFragmentTestEnable( representativeFragmentTestEnable_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PipelineRepresentativeFragmentTestStateCreateInfoNV( PipelineRepresentativeFragmentTestStateCreateInfoNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , representativeFragmentTestEnable( rhs.representativeFragmentTestEnable )
-    {}
-
     PipelineRepresentativeFragmentTestStateCreateInfoNV & operator=( PipelineRepresentativeFragmentTestStateCreateInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PipelineRepresentativeFragmentTestStateCreateInfoNV ) - offsetof( PipelineRepresentativeFragmentTestStateCreateInfoNV, pNext ) );
@@ -61965,12 +58040,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                                     VULKAN_HPP_NAMESPACE::SampleLocationsInfoEXT sampleLocationsInfo_ = {} ) VULKAN_HPP_NOEXCEPT
       : sampleLocationsEnable( sampleLocationsEnable_ )
       , sampleLocationsInfo( sampleLocationsInfo_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PipelineSampleLocationsStateCreateInfoEXT( PipelineSampleLocationsStateCreateInfoEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , sampleLocationsEnable( rhs.sampleLocationsEnable )
-      , sampleLocationsInfo( rhs.sampleLocationsInfo )
     {}
 
     PipelineSampleLocationsStateCreateInfoEXT & operator=( PipelineSampleLocationsStateCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -62050,11 +58119,6 @@ namespace VULKAN_HPP_NAMESPACE
       : requiredSubgroupSize( requiredSubgroupSize_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT( PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , requiredSubgroupSize( rhs.requiredSubgroupSize )
-    {}
-
     PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT & operator=( PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT ) - offsetof( PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT, pNext ) );
@@ -62110,11 +58174,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR PipelineTessellationDomainOriginStateCreateInfo( VULKAN_HPP_NAMESPACE::TessellationDomainOrigin domainOrigin_ = VULKAN_HPP_NAMESPACE::TessellationDomainOrigin::eUpperLeft ) VULKAN_HPP_NOEXCEPT
       : domainOrigin( domainOrigin_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PipelineTessellationDomainOriginStateCreateInfo( PipelineTessellationDomainOriginStateCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , domainOrigin( rhs.domainOrigin )
     {}
 
     PipelineTessellationDomainOriginStateCreateInfo & operator=( PipelineTessellationDomainOriginStateCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -62188,17 +58247,6 @@ namespace VULKAN_HPP_NAMESPACE
       , divisor( divisor_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR VertexInputBindingDivisorDescriptionEXT( VertexInputBindingDivisorDescriptionEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : binding( rhs.binding )
-      , divisor( rhs.divisor )
-    {}
-
-    VertexInputBindingDivisorDescriptionEXT & operator=( VertexInputBindingDivisorDescriptionEXT const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( VertexInputBindingDivisorDescriptionEXT ) );
-      return *this;
-    }
-
     VertexInputBindingDivisorDescriptionEXT( VkVertexInputBindingDivisorDescriptionEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -62260,12 +58308,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                                        const VULKAN_HPP_NAMESPACE::VertexInputBindingDivisorDescriptionEXT* pVertexBindingDivisors_ = {} ) VULKAN_HPP_NOEXCEPT
       : vertexBindingDivisorCount( vertexBindingDivisorCount_ )
       , pVertexBindingDivisors( pVertexBindingDivisors_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PipelineVertexInputDivisorStateCreateInfoEXT( PipelineVertexInputDivisorStateCreateInfoEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , vertexBindingDivisorCount( rhs.vertexBindingDivisorCount )
-      , pVertexBindingDivisors( rhs.pVertexBindingDivisors )
     {}
 
     PipelineVertexInputDivisorStateCreateInfoEXT & operator=( PipelineVertexInputDivisorStateCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -62347,13 +58389,6 @@ namespace VULKAN_HPP_NAMESPACE
       : sampleOrderType( sampleOrderType_ )
       , customSampleOrderCount( customSampleOrderCount_ )
       , pCustomSampleOrders( pCustomSampleOrders_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PipelineViewportCoarseSampleOrderStateCreateInfoNV( PipelineViewportCoarseSampleOrderStateCreateInfoNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , sampleOrderType( rhs.sampleOrderType )
-      , customSampleOrderCount( rhs.customSampleOrderCount )
-      , pCustomSampleOrders( rhs.pCustomSampleOrders )
     {}
 
     PipelineViewportCoarseSampleOrderStateCreateInfoNV & operator=( PipelineViewportCoarseSampleOrderStateCreateInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -62443,12 +58478,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pExclusiveScissors( pExclusiveScissors_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PipelineViewportExclusiveScissorStateCreateInfoNV( PipelineViewportExclusiveScissorStateCreateInfoNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , exclusiveScissorCount( rhs.exclusiveScissorCount )
-      , pExclusiveScissors( rhs.pExclusiveScissors )
-    {}
-
     PipelineViewportExclusiveScissorStateCreateInfoNV & operator=( PipelineViewportExclusiveScissorStateCreateInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PipelineViewportExclusiveScissorStateCreateInfoNV ) - offsetof( PipelineViewportExclusiveScissorStateCreateInfoNV, pNext ) );
@@ -62528,17 +58557,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pShadingRatePaletteEntries( pShadingRatePaletteEntries_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR ShadingRatePaletteNV( ShadingRatePaletteNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : shadingRatePaletteEntryCount( rhs.shadingRatePaletteEntryCount )
-      , pShadingRatePaletteEntries( rhs.pShadingRatePaletteEntries )
-    {}
-
-    ShadingRatePaletteNV & operator=( ShadingRatePaletteNV const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( ShadingRatePaletteNV ) );
-      return *this;
-    }
-
     ShadingRatePaletteNV( VkShadingRatePaletteNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -62602,13 +58620,6 @@ namespace VULKAN_HPP_NAMESPACE
       : shadingRateImageEnable( shadingRateImageEnable_ )
       , viewportCount( viewportCount_ )
       , pShadingRatePalettes( pShadingRatePalettes_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PipelineViewportShadingRateImageStateCreateInfoNV( PipelineViewportShadingRateImageStateCreateInfoNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , shadingRateImageEnable( rhs.shadingRateImageEnable )
-      , viewportCount( rhs.viewportCount )
-      , pShadingRatePalettes( rhs.pShadingRatePalettes )
     {}
 
     PipelineViewportShadingRateImageStateCreateInfoNV & operator=( PipelineViewportShadingRateImageStateCreateInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -62702,19 +58713,6 @@ namespace VULKAN_HPP_NAMESPACE
       , w( w_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR ViewportSwizzleNV( ViewportSwizzleNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : x( rhs.x )
-      , y( rhs.y )
-      , z( rhs.z )
-      , w( rhs.w )
-    {}
-
-    ViewportSwizzleNV & operator=( ViewportSwizzleNV const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( ViewportSwizzleNV ) );
-      return *this;
-    }
-
     ViewportSwizzleNV( VkViewportSwizzleNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -62794,13 +58792,6 @@ namespace VULKAN_HPP_NAMESPACE
       : flags( flags_ )
       , viewportCount( viewportCount_ )
       , pViewportSwizzles( pViewportSwizzles_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PipelineViewportSwizzleStateCreateInfoNV( PipelineViewportSwizzleStateCreateInfoNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , viewportCount( rhs.viewportCount )
-      , pViewportSwizzles( rhs.pViewportSwizzles )
     {}
 
     PipelineViewportSwizzleStateCreateInfoNV & operator=( PipelineViewportSwizzleStateCreateInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -62890,17 +58881,6 @@ namespace VULKAN_HPP_NAMESPACE
       , ycoeff( ycoeff_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR ViewportWScalingNV( ViewportWScalingNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : xcoeff( rhs.xcoeff )
-      , ycoeff( rhs.ycoeff )
-    {}
-
-    ViewportWScalingNV & operator=( ViewportWScalingNV const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( ViewportWScalingNV ) );
-      return *this;
-    }
-
     ViewportWScalingNV( VkViewportWScalingNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -62964,13 +58944,6 @@ namespace VULKAN_HPP_NAMESPACE
       : viewportWScalingEnable( viewportWScalingEnable_ )
       , viewportCount( viewportCount_ )
       , pViewportWScalings( pViewportWScalings_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PipelineViewportWScalingStateCreateInfoNV( PipelineViewportWScalingStateCreateInfoNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , viewportWScalingEnable( rhs.viewportWScalingEnable )
-      , viewportCount( rhs.viewportCount )
-      , pViewportWScalings( rhs.pViewportWScalings )
     {}
 
     PipelineViewportWScalingStateCreateInfoNV & operator=( PipelineViewportWScalingStateCreateInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -63059,11 +59032,6 @@ namespace VULKAN_HPP_NAMESPACE
       : frameToken( frameToken_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PresentFrameTokenGGP( PresentFrameTokenGGP const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , frameToken( rhs.frameToken )
-    {}
-
     PresentFrameTokenGGP & operator=( PresentFrameTokenGGP const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( PresentFrameTokenGGP ) - offsetof( PresentFrameTokenGGP, pNext ) );
@@ -63142,16 +59110,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pSwapchains( pSwapchains_ )
       , pImageIndices( pImageIndices_ )
       , pResults( pResults_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PresentInfoKHR( PresentInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , waitSemaphoreCount( rhs.waitSemaphoreCount )
-      , pWaitSemaphores( rhs.pWaitSemaphores )
-      , swapchainCount( rhs.swapchainCount )
-      , pSwapchains( rhs.pSwapchains )
-      , pImageIndices( rhs.pImageIndices )
-      , pResults( rhs.pResults )
     {}
 
     PresentInfoKHR & operator=( PresentInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -63267,24 +59225,12 @@ namespace VULKAN_HPP_NAMESPACE
       , layer( layer_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR RectLayerKHR( RectLayerKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : offset( rhs.offset )
-      , extent( rhs.extent )
-      , layer( rhs.layer )
-    {}
-
     explicit RectLayerKHR( Rect2D const& rect2D,
                            uint32_t layer_ = {} )
       : offset( rect2D.offset )
       , extent( rect2D.extent )
       , layer( layer_ )
     {}
-
-    RectLayerKHR & operator=( RectLayerKHR const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( RectLayerKHR ) );
-      return *this;
-    }
 
     RectLayerKHR( VkRectLayerKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -63357,17 +59303,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pRectangles( pRectangles_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PresentRegionKHR( PresentRegionKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : rectangleCount( rhs.rectangleCount )
-      , pRectangles( rhs.pRectangles )
-    {}
-
-    PresentRegionKHR & operator=( PresentRegionKHR const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( PresentRegionKHR ) );
-      return *this;
-    }
-
     PresentRegionKHR( VkPresentRegionKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -63429,12 +59364,6 @@ namespace VULKAN_HPP_NAMESPACE
                                             const VULKAN_HPP_NAMESPACE::PresentRegionKHR* pRegions_ = {} ) VULKAN_HPP_NOEXCEPT
       : swapchainCount( swapchainCount_ )
       , pRegions( pRegions_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PresentRegionsKHR( PresentRegionsKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , swapchainCount( rhs.swapchainCount )
-      , pRegions( rhs.pRegions )
     {}
 
     PresentRegionsKHR & operator=( PresentRegionsKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -63516,17 +59445,6 @@ namespace VULKAN_HPP_NAMESPACE
       , desiredPresentTime( desiredPresentTime_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR PresentTimeGOOGLE( PresentTimeGOOGLE const& rhs ) VULKAN_HPP_NOEXCEPT
-      : presentID( rhs.presentID )
-      , desiredPresentTime( rhs.desiredPresentTime )
-    {}
-
-    PresentTimeGOOGLE & operator=( PresentTimeGOOGLE const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( PresentTimeGOOGLE ) );
-      return *this;
-    }
-
     PresentTimeGOOGLE( VkPresentTimeGOOGLE const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -63588,12 +59506,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                  const VULKAN_HPP_NAMESPACE::PresentTimeGOOGLE* pTimes_ = {} ) VULKAN_HPP_NOEXCEPT
       : swapchainCount( swapchainCount_ )
       , pTimes( pTimes_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR PresentTimesInfoGOOGLE( PresentTimesInfoGOOGLE const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , swapchainCount( rhs.swapchainCount )
-      , pTimes( rhs.pTimes )
     {}
 
     PresentTimesInfoGOOGLE & operator=( PresentTimesInfoGOOGLE const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -63673,11 +59585,6 @@ namespace VULKAN_HPP_NAMESPACE
       : protectedSubmit( protectedSubmit_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR ProtectedSubmitInfo( ProtectedSubmitInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , protectedSubmit( rhs.protectedSubmit )
-    {}
-
     ProtectedSubmitInfo & operator=( ProtectedSubmitInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( ProtectedSubmitInfo ) - offsetof( ProtectedSubmitInfo, pNext ) );
@@ -63751,14 +59658,6 @@ namespace VULKAN_HPP_NAMESPACE
       , queryType( queryType_ )
       , queryCount( queryCount_ )
       , pipelineStatistics( pipelineStatistics_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR QueryPoolCreateInfo( QueryPoolCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , queryType( rhs.queryType )
-      , queryCount( rhs.queryCount )
-      , pipelineStatistics( rhs.pipelineStatistics )
     {}
 
     QueryPoolCreateInfo & operator=( QueryPoolCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -63858,13 +59757,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pCounterIndices( pCounterIndices_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR QueryPoolPerformanceCreateInfoKHR( QueryPoolPerformanceCreateInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , queueFamilyIndex( rhs.queueFamilyIndex )
-      , counterIndexCount( rhs.counterIndexCount )
-      , pCounterIndices( rhs.pCounterIndices )
-    {}
-
     QueryPoolPerformanceCreateInfoKHR & operator=( QueryPoolPerformanceCreateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( QueryPoolPerformanceCreateInfoKHR ) - offsetof( QueryPoolPerformanceCreateInfoKHR, pNext ) );
@@ -63950,11 +59842,6 @@ namespace VULKAN_HPP_NAMESPACE
       : performanceCountersSampling( performanceCountersSampling_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR QueryPoolPerformanceQueryCreateInfoINTEL( QueryPoolPerformanceQueryCreateInfoINTEL const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , performanceCountersSampling( rhs.performanceCountersSampling )
-    {}
-
     QueryPoolPerformanceQueryCreateInfoINTEL & operator=( QueryPoolPerformanceQueryCreateInfoINTEL const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( QueryPoolPerformanceQueryCreateInfoINTEL ) - offsetof( QueryPoolPerformanceQueryCreateInfoINTEL, pNext ) );
@@ -64024,11 +59911,6 @@ namespace VULKAN_HPP_NAMESPACE
       : checkpointExecutionStageMask( checkpointExecutionStageMask_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR QueueFamilyCheckpointPropertiesNV( QueueFamilyCheckpointPropertiesNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , checkpointExecutionStageMask( rhs.checkpointExecutionStageMask )
-    {}
-
     QueueFamilyCheckpointPropertiesNV & operator=( QueueFamilyCheckpointPropertiesNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( QueueFamilyCheckpointPropertiesNV ) - offsetof( QueueFamilyCheckpointPropertiesNV, pNext ) );
@@ -64092,19 +59974,6 @@ namespace VULKAN_HPP_NAMESPACE
       , minImageTransferGranularity( minImageTransferGranularity_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR QueueFamilyProperties( QueueFamilyProperties const& rhs ) VULKAN_HPP_NOEXCEPT
-      : queueFlags( rhs.queueFlags )
-      , queueCount( rhs.queueCount )
-      , timestampValidBits( rhs.timestampValidBits )
-      , minImageTransferGranularity( rhs.minImageTransferGranularity )
-    {}
-
-    QueueFamilyProperties & operator=( QueueFamilyProperties const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( QueueFamilyProperties ) );
-      return *this;
-    }
-
     QueueFamilyProperties( VkQueueFamilyProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -64156,11 +60025,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR QueueFamilyProperties2( VULKAN_HPP_NAMESPACE::QueueFamilyProperties queueFamilyProperties_ = {} ) VULKAN_HPP_NOEXCEPT
       : queueFamilyProperties( queueFamilyProperties_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR QueueFamilyProperties2( QueueFamilyProperties2 const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , queueFamilyProperties( rhs.queueFamilyProperties )
     {}
 
     QueueFamilyProperties2 & operator=( QueueFamilyProperties2 const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -64229,16 +60093,6 @@ namespace VULKAN_HPP_NAMESPACE
       , anyHitShader( anyHitShader_ )
       , intersectionShader( intersectionShader_ )
       , pShaderGroupCaptureReplayHandle( pShaderGroupCaptureReplayHandle_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR RayTracingShaderGroupCreateInfoKHR( RayTracingShaderGroupCreateInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , type( rhs.type )
-      , generalShader( rhs.generalShader )
-      , closestHitShader( rhs.closestHitShader )
-      , anyHitShader( rhs.anyHitShader )
-      , intersectionShader( rhs.intersectionShader )
-      , pShaderGroupCaptureReplayHandle( rhs.pShaderGroupCaptureReplayHandle )
     {}
 
     RayTracingShaderGroupCreateInfoKHR & operator=( RayTracingShaderGroupCreateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -64356,13 +60210,6 @@ namespace VULKAN_HPP_NAMESPACE
       , maxCallableSize( maxCallableSize_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR RayTracingPipelineInterfaceCreateInfoKHR( RayTracingPipelineInterfaceCreateInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , maxPayloadSize( rhs.maxPayloadSize )
-      , maxAttributeSize( rhs.maxAttributeSize )
-      , maxCallableSize( rhs.maxCallableSize )
-    {}
-
     RayTracingPipelineInterfaceCreateInfoKHR & operator=( RayTracingPipelineInterfaceCreateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( RayTracingPipelineInterfaceCreateInfoKHR ) - offsetof( RayTracingPipelineInterfaceCreateInfoKHR, pNext ) );
@@ -64468,21 +60315,6 @@ namespace VULKAN_HPP_NAMESPACE
       , layout( layout_ )
       , basePipelineHandle( basePipelineHandle_ )
       , basePipelineIndex( basePipelineIndex_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR RayTracingPipelineCreateInfoKHR( RayTracingPipelineCreateInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , stageCount( rhs.stageCount )
-      , pStages( rhs.pStages )
-      , groupCount( rhs.groupCount )
-      , pGroups( rhs.pGroups )
-      , maxRecursionDepth( rhs.maxRecursionDepth )
-      , libraries( rhs.libraries )
-      , pLibraryInterface( rhs.pLibraryInterface )
-      , layout( rhs.layout )
-      , basePipelineHandle( rhs.basePipelineHandle )
-      , basePipelineIndex( rhs.basePipelineIndex )
     {}
 
     RayTracingPipelineCreateInfoKHR & operator=( RayTracingPipelineCreateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -64643,15 +60475,6 @@ namespace VULKAN_HPP_NAMESPACE
       , intersectionShader( intersectionShader_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR RayTracingShaderGroupCreateInfoNV( RayTracingShaderGroupCreateInfoNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , type( rhs.type )
-      , generalShader( rhs.generalShader )
-      , closestHitShader( rhs.closestHitShader )
-      , anyHitShader( rhs.anyHitShader )
-      , intersectionShader( rhs.intersectionShader )
-    {}
-
     RayTracingShaderGroupCreateInfoNV & operator=( RayTracingShaderGroupCreateInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( RayTracingShaderGroupCreateInfoNV ) - offsetof( RayTracingShaderGroupCreateInfoNV, pNext ) );
@@ -64767,19 +60590,6 @@ namespace VULKAN_HPP_NAMESPACE
       , layout( layout_ )
       , basePipelineHandle( basePipelineHandle_ )
       , basePipelineIndex( basePipelineIndex_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR RayTracingPipelineCreateInfoNV( RayTracingPipelineCreateInfoNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , stageCount( rhs.stageCount )
-      , pStages( rhs.pStages )
-      , groupCount( rhs.groupCount )
-      , pGroups( rhs.pGroups )
-      , maxRecursionDepth( rhs.maxRecursionDepth )
-      , layout( rhs.layout )
-      , basePipelineHandle( rhs.basePipelineHandle )
-      , basePipelineIndex( rhs.basePipelineIndex )
     {}
 
     RayTracingPipelineCreateInfoNV & operator=( RayTracingPipelineCreateInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -64915,16 +60725,6 @@ namespace VULKAN_HPP_NAMESPACE
       : refreshDuration( refreshDuration_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR RefreshCycleDurationGOOGLE( RefreshCycleDurationGOOGLE const& rhs ) VULKAN_HPP_NOEXCEPT
-      : refreshDuration( rhs.refreshDuration )
-    {}
-
-    RefreshCycleDurationGOOGLE & operator=( RefreshCycleDurationGOOGLE const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( RefreshCycleDurationGOOGLE ) );
-      return *this;
-    }
-
     RefreshCycleDurationGOOGLE( VkRefreshCycleDurationGOOGLE const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -64972,12 +60772,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                         const VULKAN_HPP_NAMESPACE::ImageView* pAttachments_ = {} ) VULKAN_HPP_NOEXCEPT
       : attachmentCount( attachmentCount_ )
       , pAttachments( pAttachments_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR RenderPassAttachmentBeginInfo( RenderPassAttachmentBeginInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , attachmentCount( rhs.attachmentCount )
-      , pAttachments( rhs.pAttachments )
     {}
 
     RenderPassAttachmentBeginInfo & operator=( RenderPassAttachmentBeginInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -65063,15 +60857,6 @@ namespace VULKAN_HPP_NAMESPACE
       , renderArea( renderArea_ )
       , clearValueCount( clearValueCount_ )
       , pClearValues( pClearValues_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR_14 RenderPassBeginInfo( RenderPassBeginInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , renderPass( rhs.renderPass )
-      , framebuffer( rhs.framebuffer )
-      , renderArea( rhs.renderArea )
-      , clearValueCount( rhs.clearValueCount )
-      , pClearValues( rhs.pClearValues )
     {}
 
     RenderPassBeginInfo & operator=( RenderPassBeginInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -65192,25 +60977,6 @@ namespace VULKAN_HPP_NAMESPACE
       , preserveAttachmentCount( preserveAttachmentCount_ )
       , pPreserveAttachments( pPreserveAttachments_ )
     {}
-
-    VULKAN_HPP_CONSTEXPR SubpassDescription( SubpassDescription const& rhs ) VULKAN_HPP_NOEXCEPT
-      : flags( rhs.flags )
-      , pipelineBindPoint( rhs.pipelineBindPoint )
-      , inputAttachmentCount( rhs.inputAttachmentCount )
-      , pInputAttachments( rhs.pInputAttachments )
-      , colorAttachmentCount( rhs.colorAttachmentCount )
-      , pColorAttachments( rhs.pColorAttachments )
-      , pResolveAttachments( rhs.pResolveAttachments )
-      , pDepthStencilAttachment( rhs.pDepthStencilAttachment )
-      , preserveAttachmentCount( rhs.preserveAttachmentCount )
-      , pPreserveAttachments( rhs.pPreserveAttachments )
-    {}
-
-    SubpassDescription & operator=( SubpassDescription const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( SubpassDescription ) );
-      return *this;
-    }
 
     SubpassDescription( VkSubpassDescription const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -65349,22 +61115,6 @@ namespace VULKAN_HPP_NAMESPACE
       , dependencyFlags( dependencyFlags_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR SubpassDependency( SubpassDependency const& rhs ) VULKAN_HPP_NOEXCEPT
-      : srcSubpass( rhs.srcSubpass )
-      , dstSubpass( rhs.dstSubpass )
-      , srcStageMask( rhs.srcStageMask )
-      , dstStageMask( rhs.dstStageMask )
-      , srcAccessMask( rhs.srcAccessMask )
-      , dstAccessMask( rhs.dstAccessMask )
-      , dependencyFlags( rhs.dependencyFlags )
-    {}
-
-    SubpassDependency & operator=( SubpassDependency const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( SubpassDependency ) );
-      return *this;
-    }
-
     SubpassDependency( VkSubpassDependency const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -65476,17 +61226,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pSubpasses( pSubpasses_ )
       , dependencyCount( dependencyCount_ )
       , pDependencies( pDependencies_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR RenderPassCreateInfo( RenderPassCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , attachmentCount( rhs.attachmentCount )
-      , pAttachments( rhs.pAttachments )
-      , subpassCount( rhs.subpassCount )
-      , pSubpasses( rhs.pSubpasses )
-      , dependencyCount( rhs.dependencyCount )
-      , pDependencies( rhs.pDependencies )
     {}
 
     RenderPassCreateInfo & operator=( RenderPassCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -65624,21 +61363,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pDepthStencilAttachment( pDepthStencilAttachment_ )
       , preserveAttachmentCount( preserveAttachmentCount_ )
       , pPreserveAttachments( pPreserveAttachments_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR SubpassDescription2( SubpassDescription2 const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , pipelineBindPoint( rhs.pipelineBindPoint )
-      , viewMask( rhs.viewMask )
-      , inputAttachmentCount( rhs.inputAttachmentCount )
-      , pInputAttachments( rhs.pInputAttachments )
-      , colorAttachmentCount( rhs.colorAttachmentCount )
-      , pColorAttachments( rhs.pColorAttachments )
-      , pResolveAttachments( rhs.pResolveAttachments )
-      , pDepthStencilAttachment( rhs.pDepthStencilAttachment )
-      , preserveAttachmentCount( rhs.preserveAttachmentCount )
-      , pPreserveAttachments( rhs.pPreserveAttachments )
     {}
 
     SubpassDescription2 & operator=( SubpassDescription2 const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -65804,18 +61528,6 @@ namespace VULKAN_HPP_NAMESPACE
       , viewOffset( viewOffset_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR SubpassDependency2( SubpassDependency2 const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , srcSubpass( rhs.srcSubpass )
-      , dstSubpass( rhs.dstSubpass )
-      , srcStageMask( rhs.srcStageMask )
-      , dstStageMask( rhs.dstStageMask )
-      , srcAccessMask( rhs.srcAccessMask )
-      , dstAccessMask( rhs.dstAccessMask )
-      , dependencyFlags( rhs.dependencyFlags )
-      , viewOffset( rhs.viewOffset )
-    {}
-
     SubpassDependency2 & operator=( SubpassDependency2 const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( SubpassDependency2 ) - offsetof( SubpassDependency2, pNext ) );
@@ -65957,19 +61669,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pCorrelatedViewMasks( pCorrelatedViewMasks_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR RenderPassCreateInfo2( RenderPassCreateInfo2 const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , attachmentCount( rhs.attachmentCount )
-      , pAttachments( rhs.pAttachments )
-      , subpassCount( rhs.subpassCount )
-      , pSubpasses( rhs.pSubpasses )
-      , dependencyCount( rhs.dependencyCount )
-      , pDependencies( rhs.pDependencies )
-      , correlatedViewMaskCount( rhs.correlatedViewMaskCount )
-      , pCorrelatedViewMasks( rhs.pCorrelatedViewMasks )
-    {}
-
     RenderPassCreateInfo2 & operator=( RenderPassCreateInfo2 const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( RenderPassCreateInfo2 ) - offsetof( RenderPassCreateInfo2, pNext ) );
@@ -66103,11 +61802,6 @@ namespace VULKAN_HPP_NAMESPACE
       : fragmentDensityMapAttachment( fragmentDensityMapAttachment_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR RenderPassFragmentDensityMapCreateInfoEXT( RenderPassFragmentDensityMapCreateInfoEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , fragmentDensityMapAttachment( rhs.fragmentDensityMapAttachment )
-    {}
-
     RenderPassFragmentDensityMapCreateInfoEXT & operator=( RenderPassFragmentDensityMapCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( RenderPassFragmentDensityMapCreateInfoEXT ) - offsetof( RenderPassFragmentDensityMapCreateInfoEXT, pNext ) );
@@ -66177,12 +61871,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                                     const VULKAN_HPP_NAMESPACE::InputAttachmentAspectReference* pAspectReferences_ = {} ) VULKAN_HPP_NOEXCEPT
       : aspectReferenceCount( aspectReferenceCount_ )
       , pAspectReferences( pAspectReferences_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR RenderPassInputAttachmentAspectCreateInfo( RenderPassInputAttachmentAspectCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , aspectReferenceCount( rhs.aspectReferenceCount )
-      , pAspectReferences( rhs.pAspectReferences )
     {}
 
     RenderPassInputAttachmentAspectCreateInfo & operator=( RenderPassInputAttachmentAspectCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -66270,16 +61958,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pViewOffsets( pViewOffsets_ )
       , correlationMaskCount( correlationMaskCount_ )
       , pCorrelationMasks( pCorrelationMasks_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR RenderPassMultiviewCreateInfo( RenderPassMultiviewCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , subpassCount( rhs.subpassCount )
-      , pViewMasks( rhs.pViewMasks )
-      , dependencyCount( rhs.dependencyCount )
-      , pViewOffsets( rhs.pViewOffsets )
-      , correlationMaskCount( rhs.correlationMaskCount )
-      , pCorrelationMasks( rhs.pCorrelationMasks )
     {}
 
     RenderPassMultiviewCreateInfo & operator=( RenderPassMultiviewCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -66393,17 +62071,6 @@ namespace VULKAN_HPP_NAMESPACE
       , sampleLocationsInfo( sampleLocationsInfo_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR SubpassSampleLocationsEXT( SubpassSampleLocationsEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : subpassIndex( rhs.subpassIndex )
-      , sampleLocationsInfo( rhs.sampleLocationsInfo )
-    {}
-
-    SubpassSampleLocationsEXT & operator=( SubpassSampleLocationsEXT const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( SubpassSampleLocationsEXT ) );
-      return *this;
-    }
-
     SubpassSampleLocationsEXT( VkSubpassSampleLocationsEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -66469,14 +62136,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pAttachmentInitialSampleLocations( pAttachmentInitialSampleLocations_ )
       , postSubpassSampleLocationsCount( postSubpassSampleLocationsCount_ )
       , pPostSubpassSampleLocations( pPostSubpassSampleLocations_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR RenderPassSampleLocationsBeginInfoEXT( RenderPassSampleLocationsBeginInfoEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , attachmentInitialSampleLocationsCount( rhs.attachmentInitialSampleLocationsCount )
-      , pAttachmentInitialSampleLocations( rhs.pAttachmentInitialSampleLocations )
-      , postSubpassSampleLocationsCount( rhs.postSubpassSampleLocationsCount )
-      , pPostSubpassSampleLocations( rhs.pPostSubpassSampleLocations )
     {}
 
     RenderPassSampleLocationsBeginInfoEXT & operator=( RenderPassSampleLocationsBeginInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -66570,11 +62229,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR RenderPassTransformBeginInfoQCOM( VULKAN_HPP_NAMESPACE::SurfaceTransformFlagBitsKHR transform_ = VULKAN_HPP_NAMESPACE::SurfaceTransformFlagBitsKHR::eIdentity ) VULKAN_HPP_NOEXCEPT
       : transform( transform_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR RenderPassTransformBeginInfoQCOM( RenderPassTransformBeginInfoQCOM const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , transform( rhs.transform )
     {}
 
     RenderPassTransformBeginInfoQCOM & operator=( RenderPassTransformBeginInfoQCOM const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -66674,26 +62328,6 @@ namespace VULKAN_HPP_NAMESPACE
       , maxLod( maxLod_ )
       , borderColor( borderColor_ )
       , unnormalizedCoordinates( unnormalizedCoordinates_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR SamplerCreateInfo( SamplerCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , magFilter( rhs.magFilter )
-      , minFilter( rhs.minFilter )
-      , mipmapMode( rhs.mipmapMode )
-      , addressModeU( rhs.addressModeU )
-      , addressModeV( rhs.addressModeV )
-      , addressModeW( rhs.addressModeW )
-      , mipLodBias( rhs.mipLodBias )
-      , anisotropyEnable( rhs.anisotropyEnable )
-      , maxAnisotropy( rhs.maxAnisotropy )
-      , compareEnable( rhs.compareEnable )
-      , compareOp( rhs.compareOp )
-      , minLod( rhs.minLod )
-      , maxLod( rhs.maxLod )
-      , borderColor( rhs.borderColor )
-      , unnormalizedCoordinates( rhs.unnormalizedCoordinates )
     {}
 
     SamplerCreateInfo & operator=( SamplerCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -66885,11 +62519,6 @@ namespace VULKAN_HPP_NAMESPACE
       : reductionMode( reductionMode_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR SamplerReductionModeCreateInfo( SamplerReductionModeCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , reductionMode( rhs.reductionMode )
-    {}
-
     SamplerReductionModeCreateInfo & operator=( SamplerReductionModeCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( SamplerReductionModeCreateInfo ) - offsetof( SamplerReductionModeCreateInfo, pNext ) );
@@ -66971,18 +62600,6 @@ namespace VULKAN_HPP_NAMESPACE
       , yChromaOffset( yChromaOffset_ )
       , chromaFilter( chromaFilter_ )
       , forceExplicitReconstruction( forceExplicitReconstruction_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR SamplerYcbcrConversionCreateInfo( SamplerYcbcrConversionCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , format( rhs.format )
-      , ycbcrModel( rhs.ycbcrModel )
-      , ycbcrRange( rhs.ycbcrRange )
-      , components( rhs.components )
-      , xChromaOffset( rhs.xChromaOffset )
-      , yChromaOffset( rhs.yChromaOffset )
-      , chromaFilter( rhs.chromaFilter )
-      , forceExplicitReconstruction( rhs.forceExplicitReconstruction )
     {}
 
     SamplerYcbcrConversionCreateInfo & operator=( SamplerYcbcrConversionCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -67110,11 +62727,6 @@ namespace VULKAN_HPP_NAMESPACE
       : combinedImageSamplerDescriptorCount( combinedImageSamplerDescriptorCount_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR SamplerYcbcrConversionImageFormatProperties( SamplerYcbcrConversionImageFormatProperties const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , combinedImageSamplerDescriptorCount( rhs.combinedImageSamplerDescriptorCount )
-    {}
-
     SamplerYcbcrConversionImageFormatProperties & operator=( SamplerYcbcrConversionImageFormatProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( SamplerYcbcrConversionImageFormatProperties ) - offsetof( SamplerYcbcrConversionImageFormatProperties, pNext ) );
@@ -67170,11 +62782,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR SamplerYcbcrConversionInfo( VULKAN_HPP_NAMESPACE::SamplerYcbcrConversion conversion_ = {} ) VULKAN_HPP_NOEXCEPT
       : conversion( conversion_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR SamplerYcbcrConversionInfo( SamplerYcbcrConversionInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , conversion( rhs.conversion )
     {}
 
     SamplerYcbcrConversionInfo & operator=( SamplerYcbcrConversionInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -67246,11 +62853,6 @@ namespace VULKAN_HPP_NAMESPACE
       : flags( flags_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR SemaphoreCreateInfo( SemaphoreCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-    {}
-
     SemaphoreCreateInfo & operator=( SemaphoreCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( SemaphoreCreateInfo ) - offsetof( SemaphoreCreateInfo, pNext ) );
@@ -67320,12 +62922,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                 VULKAN_HPP_NAMESPACE::ExternalSemaphoreHandleTypeFlagBits handleType_ = VULKAN_HPP_NAMESPACE::ExternalSemaphoreHandleTypeFlagBits::eOpaqueFd ) VULKAN_HPP_NOEXCEPT
       : semaphore( semaphore_ )
       , handleType( handleType_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR SemaphoreGetFdInfoKHR( SemaphoreGetFdInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , semaphore( rhs.semaphore )
-      , handleType( rhs.handleType )
     {}
 
     SemaphoreGetFdInfoKHR & operator=( SemaphoreGetFdInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -67408,12 +63004,6 @@ namespace VULKAN_HPP_NAMESPACE
       , handleType( handleType_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR SemaphoreGetWin32HandleInfoKHR( SemaphoreGetWin32HandleInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , semaphore( rhs.semaphore )
-      , handleType( rhs.handleType )
-    {}
-
     SemaphoreGetWin32HandleInfoKHR & operator=( SemaphoreGetWin32HandleInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( SemaphoreGetWin32HandleInfoKHR ) - offsetof( SemaphoreGetWin32HandleInfoKHR, pNext ) );
@@ -67494,12 +63084,6 @@ namespace VULKAN_HPP_NAMESPACE
       , value( value_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR SemaphoreSignalInfo( SemaphoreSignalInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , semaphore( rhs.semaphore )
-      , value( rhs.value )
-    {}
-
     SemaphoreSignalInfo & operator=( SemaphoreSignalInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( SemaphoreSignalInfo ) - offsetof( SemaphoreSignalInfo, pNext ) );
@@ -67577,12 +63161,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                   uint64_t initialValue_ = {} ) VULKAN_HPP_NOEXCEPT
       : semaphoreType( semaphoreType_ )
       , initialValue( initialValue_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR SemaphoreTypeCreateInfo( SemaphoreTypeCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , semaphoreType( rhs.semaphoreType )
-      , initialValue( rhs.initialValue )
     {}
 
     SemaphoreTypeCreateInfo & operator=( SemaphoreTypeCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -67666,14 +63244,6 @@ namespace VULKAN_HPP_NAMESPACE
       , semaphoreCount( semaphoreCount_ )
       , pSemaphores( pSemaphores_ )
       , pValues( pValues_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR SemaphoreWaitInfo( SemaphoreWaitInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , semaphoreCount( rhs.semaphoreCount )
-      , pSemaphores( rhs.pSemaphores )
-      , pValues( rhs.pValues )
     {}
 
     SemaphoreWaitInfo & operator=( SemaphoreWaitInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -67769,16 +63339,6 @@ namespace VULKAN_HPP_NAMESPACE
       : data( data_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR SetStateFlagsIndirectCommandNV( SetStateFlagsIndirectCommandNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : data( rhs.data )
-    {}
-
-    SetStateFlagsIndirectCommandNV & operator=( SetStateFlagsIndirectCommandNV const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( SetStateFlagsIndirectCommandNV ) );
-      return *this;
-    }
-
     SetStateFlagsIndirectCommandNV( VkSetStateFlagsIndirectCommandNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -67834,13 +63394,6 @@ namespace VULKAN_HPP_NAMESPACE
       : flags( flags_ )
       , codeSize( codeSize_ )
       , pCode( pCode_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR ShaderModuleCreateInfo( ShaderModuleCreateInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , codeSize( rhs.codeSize )
-      , pCode( rhs.pCode )
     {}
 
     ShaderModuleCreateInfo & operator=( ShaderModuleCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -67928,11 +63481,6 @@ namespace VULKAN_HPP_NAMESPACE
       : validationCache( validationCache_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR ShaderModuleValidationCacheCreateInfoEXT( ShaderModuleValidationCacheCreateInfoEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , validationCache( rhs.validationCache )
-    {}
-
     ShaderModuleValidationCacheCreateInfoEXT & operator=( ShaderModuleValidationCacheCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( ShaderModuleValidationCacheCreateInfoEXT ) - offsetof( ShaderModuleValidationCacheCreateInfoEXT, pNext ) );
@@ -68010,20 +63558,6 @@ namespace VULKAN_HPP_NAMESPACE
       , scratchMemUsageInBytes( scratchMemUsageInBytes_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR ShaderResourceUsageAMD( ShaderResourceUsageAMD const& rhs ) VULKAN_HPP_NOEXCEPT
-      : numUsedVgprs( rhs.numUsedVgprs )
-      , numUsedSgprs( rhs.numUsedSgprs )
-      , ldsSizePerLocalWorkGroup( rhs.ldsSizePerLocalWorkGroup )
-      , ldsUsageSizeInBytes( rhs.ldsUsageSizeInBytes )
-      , scratchMemUsageInBytes( rhs.scratchMemUsageInBytes )
-    {}
-
-    ShaderResourceUsageAMD & operator=( ShaderResourceUsageAMD const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( ShaderResourceUsageAMD ) );
-      return *this;
-    }
-
     ShaderResourceUsageAMD( VkShaderResourceUsageAMD const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -68088,28 +63622,8 @@ namespace VULKAN_HPP_NAMESPACE
       , numPhysicalSgprs( numPhysicalSgprs_ )
       , numAvailableVgprs( numAvailableVgprs_ )
       , numAvailableSgprs( numAvailableSgprs_ )
-      , computeWorkGroupSize{}
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,3>::copy( computeWorkGroupSize, computeWorkGroupSize_ );
-    }
-
-    VULKAN_HPP_CONSTEXPR_14 ShaderStatisticsInfoAMD( ShaderStatisticsInfoAMD const& rhs ) VULKAN_HPP_NOEXCEPT
-      : shaderStageMask( rhs.shaderStageMask )
-      , resourceUsage( rhs.resourceUsage )
-      , numPhysicalVgprs( rhs.numPhysicalVgprs )
-      , numPhysicalSgprs( rhs.numPhysicalSgprs )
-      , numAvailableVgprs( rhs.numAvailableVgprs )
-      , numAvailableSgprs( rhs.numAvailableSgprs )
-      , computeWorkGroupSize{}
-    {
-      VULKAN_HPP_NAMESPACE::ConstExpression1DArrayCopy<uint32_t,3>::copy( computeWorkGroupSize, rhs.computeWorkGroupSize );
-    }
-
-    ShaderStatisticsInfoAMD & operator=( ShaderStatisticsInfoAMD const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( ShaderStatisticsInfoAMD ) );
-      return *this;
-    }
+      , computeWorkGroupSize( computeWorkGroupSize_ )
+    {}
 
     ShaderStatisticsInfoAMD( VkShaderStatisticsInfoAMD const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -68143,7 +63657,7 @@ namespace VULKAN_HPP_NAMESPACE
           && ( numPhysicalSgprs == rhs.numPhysicalSgprs )
           && ( numAvailableVgprs == rhs.numAvailableVgprs )
           && ( numAvailableSgprs == rhs.numAvailableSgprs )
-          && ( memcmp( computeWorkGroupSize, rhs.computeWorkGroupSize, 3 * sizeof( uint32_t ) ) == 0 );
+          && ( computeWorkGroupSize == rhs.computeWorkGroupSize );
     }
 
     bool operator!=( ShaderStatisticsInfoAMD const& rhs ) const VULKAN_HPP_NOEXCEPT
@@ -68159,7 +63673,7 @@ namespace VULKAN_HPP_NAMESPACE
     uint32_t numPhysicalSgprs = {};
     uint32_t numAvailableVgprs = {};
     uint32_t numAvailableSgprs = {};
-    uint32_t computeWorkGroupSize[3] = {};
+    VULKAN_HPP_NAMESPACE::ArrayWrapper1D<uint32_t, 3> computeWorkGroupSize = {};
   };
   static_assert( sizeof( ShaderStatisticsInfoAMD ) == sizeof( VkShaderStatisticsInfoAMD ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<ShaderStatisticsInfoAMD>::value, "struct wrapper is not a standard layout!" );
@@ -68168,11 +63682,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR SharedPresentSurfaceCapabilitiesKHR( VULKAN_HPP_NAMESPACE::ImageUsageFlags sharedPresentSupportedUsageFlags_ = {} ) VULKAN_HPP_NOEXCEPT
       : sharedPresentSupportedUsageFlags( sharedPresentSupportedUsageFlags_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR SharedPresentSurfaceCapabilitiesKHR( SharedPresentSurfaceCapabilitiesKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , sharedPresentSupportedUsageFlags( rhs.sharedPresentSupportedUsageFlags )
     {}
 
     SharedPresentSurfaceCapabilitiesKHR & operator=( SharedPresentSurfaceCapabilitiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -68236,18 +63745,6 @@ namespace VULKAN_HPP_NAMESPACE
       , flags( flags_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR SparseImageFormatProperties( SparseImageFormatProperties const& rhs ) VULKAN_HPP_NOEXCEPT
-      : aspectMask( rhs.aspectMask )
-      , imageGranularity( rhs.imageGranularity )
-      , flags( rhs.flags )
-    {}
-
-    SparseImageFormatProperties & operator=( SparseImageFormatProperties const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( SparseImageFormatProperties ) );
-      return *this;
-    }
-
     SparseImageFormatProperties( VkSparseImageFormatProperties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -68297,11 +63794,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR SparseImageFormatProperties2( VULKAN_HPP_NAMESPACE::SparseImageFormatProperties properties_ = {} ) VULKAN_HPP_NOEXCEPT
       : properties( properties_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR SparseImageFormatProperties2( SparseImageFormatProperties2 const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , properties( rhs.properties )
     {}
 
     SparseImageFormatProperties2 & operator=( SparseImageFormatProperties2 const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -68369,20 +63861,6 @@ namespace VULKAN_HPP_NAMESPACE
       , imageMipTailStride( imageMipTailStride_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR SparseImageMemoryRequirements( SparseImageMemoryRequirements const& rhs ) VULKAN_HPP_NOEXCEPT
-      : formatProperties( rhs.formatProperties )
-      , imageMipTailFirstLod( rhs.imageMipTailFirstLod )
-      , imageMipTailSize( rhs.imageMipTailSize )
-      , imageMipTailOffset( rhs.imageMipTailOffset )
-      , imageMipTailStride( rhs.imageMipTailStride )
-    {}
-
-    SparseImageMemoryRequirements & operator=( SparseImageMemoryRequirements const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( SparseImageMemoryRequirements ) );
-      return *this;
-    }
-
     SparseImageMemoryRequirements( VkSparseImageMemoryRequirements const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -68436,11 +63914,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR SparseImageMemoryRequirements2( VULKAN_HPP_NAMESPACE::SparseImageMemoryRequirements memoryRequirements_ = {} ) VULKAN_HPP_NOEXCEPT
       : memoryRequirements( memoryRequirements_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR SparseImageMemoryRequirements2( SparseImageMemoryRequirements2 const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , memoryRequirements( rhs.memoryRequirements )
     {}
 
     SparseImageMemoryRequirements2 & operator=( SparseImageMemoryRequirements2 const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -68501,12 +63974,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                                GgpStreamDescriptor streamDescriptor_ = {} ) VULKAN_HPP_NOEXCEPT
       : flags( flags_ )
       , streamDescriptor( streamDescriptor_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR StreamDescriptorSurfaceCreateInfoGGP( StreamDescriptorSurfaceCreateInfoGGP const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , streamDescriptor( rhs.streamDescriptor )
     {}
 
     StreamDescriptorSurfaceCreateInfoGGP & operator=( StreamDescriptorSurfaceCreateInfoGGP const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -68594,13 +64061,6 @@ namespace VULKAN_HPP_NAMESPACE
       , size( size_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR StridedBufferRegionKHR( StridedBufferRegionKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : buffer( rhs.buffer )
-      , offset( rhs.offset )
-      , stride( rhs.stride )
-      , size( rhs.size )
-    {}
-
     explicit StridedBufferRegionKHR( IndirectCommandsStreamNV const& indirectCommandsStreamNV,
                                      VULKAN_HPP_NAMESPACE::DeviceSize stride_ = {},
                                      VULKAN_HPP_NAMESPACE::DeviceSize size_ = {} )
@@ -68609,12 +64069,6 @@ namespace VULKAN_HPP_NAMESPACE
       , stride( stride_ )
       , size( size_ )
     {}
-
-    StridedBufferRegionKHR & operator=( StridedBufferRegionKHR const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( StridedBufferRegionKHR ) );
-      return *this;
-    }
 
     StridedBufferRegionKHR( VkStridedBufferRegionKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -68704,17 +64158,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pCommandBuffers( pCommandBuffers_ )
       , signalSemaphoreCount( signalSemaphoreCount_ )
       , pSignalSemaphores( pSignalSemaphores_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR SubmitInfo( SubmitInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , waitSemaphoreCount( rhs.waitSemaphoreCount )
-      , pWaitSemaphores( rhs.pWaitSemaphores )
-      , pWaitDstStageMask( rhs.pWaitDstStageMask )
-      , commandBufferCount( rhs.commandBufferCount )
-      , pCommandBuffers( rhs.pCommandBuffers )
-      , signalSemaphoreCount( rhs.signalSemaphoreCount )
-      , pSignalSemaphores( rhs.pSignalSemaphores )
     {}
 
     SubmitInfo & operator=( SubmitInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -68834,11 +64277,6 @@ namespace VULKAN_HPP_NAMESPACE
       : contents( contents_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR SubpassBeginInfo( SubpassBeginInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , contents( rhs.contents )
-    {}
-
     SubpassBeginInfo & operator=( SubpassBeginInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( SubpassBeginInfo ) - offsetof( SubpassBeginInfo, pNext ) );
@@ -68910,13 +64348,6 @@ namespace VULKAN_HPP_NAMESPACE
       : depthResolveMode( depthResolveMode_ )
       , stencilResolveMode( stencilResolveMode_ )
       , pDepthStencilResolveAttachment( pDepthStencilResolveAttachment_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR SubpassDescriptionDepthStencilResolve( SubpassDescriptionDepthStencilResolve const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , depthResolveMode( rhs.depthResolveMode )
-      , stencilResolveMode( rhs.stencilResolveMode )
-      , pDepthStencilResolveAttachment( rhs.pDepthStencilResolveAttachment )
     {}
 
     SubpassDescriptionDepthStencilResolve & operator=( SubpassDescriptionDepthStencilResolve const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -69003,10 +64434,6 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_CONSTEXPR SubpassEndInfo() VULKAN_HPP_NOEXCEPT
     {}
 
-    VULKAN_HPP_CONSTEXPR SubpassEndInfo( SubpassEndInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-    {}
-
     SubpassEndInfo & operator=( SubpassEndInfo const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( SubpassEndInfo ) - offsetof( SubpassEndInfo, pNext ) );
@@ -69086,21 +64513,6 @@ namespace VULKAN_HPP_NAMESPACE
       , supportedCompositeAlpha( supportedCompositeAlpha_ )
       , supportedUsageFlags( supportedUsageFlags_ )
       , supportedSurfaceCounters( supportedSurfaceCounters_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR SurfaceCapabilities2EXT( SurfaceCapabilities2EXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , minImageCount( rhs.minImageCount )
-      , maxImageCount( rhs.maxImageCount )
-      , currentExtent( rhs.currentExtent )
-      , minImageExtent( rhs.minImageExtent )
-      , maxImageExtent( rhs.maxImageExtent )
-      , maxImageArrayLayers( rhs.maxImageArrayLayers )
-      , supportedTransforms( rhs.supportedTransforms )
-      , currentTransform( rhs.currentTransform )
-      , supportedCompositeAlpha( rhs.supportedCompositeAlpha )
-      , supportedUsageFlags( rhs.supportedUsageFlags )
-      , supportedSurfaceCounters( rhs.supportedSurfaceCounters )
     {}
 
     SurfaceCapabilities2EXT & operator=( SurfaceCapabilities2EXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -69198,25 +64610,6 @@ namespace VULKAN_HPP_NAMESPACE
       , supportedUsageFlags( supportedUsageFlags_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR SurfaceCapabilitiesKHR( SurfaceCapabilitiesKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : minImageCount( rhs.minImageCount )
-      , maxImageCount( rhs.maxImageCount )
-      , currentExtent( rhs.currentExtent )
-      , minImageExtent( rhs.minImageExtent )
-      , maxImageExtent( rhs.maxImageExtent )
-      , maxImageArrayLayers( rhs.maxImageArrayLayers )
-      , supportedTransforms( rhs.supportedTransforms )
-      , currentTransform( rhs.currentTransform )
-      , supportedCompositeAlpha( rhs.supportedCompositeAlpha )
-      , supportedUsageFlags( rhs.supportedUsageFlags )
-    {}
-
-    SurfaceCapabilitiesKHR & operator=( SurfaceCapabilitiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( SurfaceCapabilitiesKHR ) );
-      return *this;
-    }
-
     SurfaceCapabilitiesKHR( VkSurfaceCapabilitiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -69282,11 +64675,6 @@ namespace VULKAN_HPP_NAMESPACE
       : surfaceCapabilities( surfaceCapabilities_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR SurfaceCapabilities2KHR( SurfaceCapabilities2KHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , surfaceCapabilities( rhs.surfaceCapabilities )
-    {}
-
     SurfaceCapabilities2KHR & operator=( SurfaceCapabilities2KHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( SurfaceCapabilities2KHR ) - offsetof( SurfaceCapabilities2KHR, pNext ) );
@@ -69343,11 +64731,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR SurfaceCapabilitiesFullScreenExclusiveEXT( VULKAN_HPP_NAMESPACE::Bool32 fullScreenExclusiveSupported_ = {} ) VULKAN_HPP_NOEXCEPT
       : fullScreenExclusiveSupported( fullScreenExclusiveSupported_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR SurfaceCapabilitiesFullScreenExclusiveEXT( SurfaceCapabilitiesFullScreenExclusiveEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , fullScreenExclusiveSupported( rhs.fullScreenExclusiveSupported )
     {}
 
     SurfaceCapabilitiesFullScreenExclusiveEXT & operator=( SurfaceCapabilitiesFullScreenExclusiveEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -69422,17 +64805,6 @@ namespace VULKAN_HPP_NAMESPACE
       , colorSpace( colorSpace_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR SurfaceFormatKHR( SurfaceFormatKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : format( rhs.format )
-      , colorSpace( rhs.colorSpace )
-    {}
-
-    SurfaceFormatKHR & operator=( SurfaceFormatKHR const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( SurfaceFormatKHR ) );
-      return *this;
-    }
-
     SurfaceFormatKHR( VkSurfaceFormatKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = rhs;
@@ -69480,11 +64852,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR SurfaceFormat2KHR( VULKAN_HPP_NAMESPACE::SurfaceFormatKHR surfaceFormat_ = {} ) VULKAN_HPP_NOEXCEPT
       : surfaceFormat( surfaceFormat_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR SurfaceFormat2KHR( SurfaceFormat2KHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , surfaceFormat( rhs.surfaceFormat )
     {}
 
     SurfaceFormat2KHR & operator=( SurfaceFormat2KHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -69543,11 +64910,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR SurfaceFullScreenExclusiveInfoEXT( VULKAN_HPP_NAMESPACE::FullScreenExclusiveEXT fullScreenExclusive_ = VULKAN_HPP_NAMESPACE::FullScreenExclusiveEXT::eDefault ) VULKAN_HPP_NOEXCEPT
       : fullScreenExclusive( fullScreenExclusive_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR SurfaceFullScreenExclusiveInfoEXT( SurfaceFullScreenExclusiveInfoEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , fullScreenExclusive( rhs.fullScreenExclusive )
     {}
 
     SurfaceFullScreenExclusiveInfoEXT & operator=( SurfaceFullScreenExclusiveInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -69621,11 +64983,6 @@ namespace VULKAN_HPP_NAMESPACE
       : hmonitor( hmonitor_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR SurfaceFullScreenExclusiveWin32InfoEXT( SurfaceFullScreenExclusiveWin32InfoEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , hmonitor( rhs.hmonitor )
-    {}
-
     SurfaceFullScreenExclusiveWin32InfoEXT & operator=( SurfaceFullScreenExclusiveWin32InfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( SurfaceFullScreenExclusiveWin32InfoEXT ) - offsetof( SurfaceFullScreenExclusiveWin32InfoEXT, pNext ) );
@@ -69696,11 +65053,6 @@ namespace VULKAN_HPP_NAMESPACE
       : supportsProtected( supportsProtected_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR SurfaceProtectedCapabilitiesKHR( SurfaceProtectedCapabilitiesKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , supportsProtected( rhs.supportsProtected )
-    {}
-
     SurfaceProtectedCapabilitiesKHR & operator=( SurfaceProtectedCapabilitiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( SurfaceProtectedCapabilitiesKHR ) - offsetof( SurfaceProtectedCapabilitiesKHR, pNext ) );
@@ -69768,11 +65120,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_CONSTEXPR SwapchainCounterCreateInfoEXT( VULKAN_HPP_NAMESPACE::SurfaceCounterFlagsEXT surfaceCounters_ = {} ) VULKAN_HPP_NOEXCEPT
       : surfaceCounters( surfaceCounters_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR SwapchainCounterCreateInfoEXT( SwapchainCounterCreateInfoEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , surfaceCounters( rhs.surfaceCounters )
     {}
 
     SwapchainCounterCreateInfoEXT & operator=( SwapchainCounterCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -69872,26 +65219,6 @@ namespace VULKAN_HPP_NAMESPACE
       , presentMode( presentMode_ )
       , clipped( clipped_ )
       , oldSwapchain( oldSwapchain_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR SwapchainCreateInfoKHR( SwapchainCreateInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , surface( rhs.surface )
-      , minImageCount( rhs.minImageCount )
-      , imageFormat( rhs.imageFormat )
-      , imageColorSpace( rhs.imageColorSpace )
-      , imageExtent( rhs.imageExtent )
-      , imageArrayLayers( rhs.imageArrayLayers )
-      , imageUsage( rhs.imageUsage )
-      , imageSharingMode( rhs.imageSharingMode )
-      , queueFamilyIndexCount( rhs.queueFamilyIndexCount )
-      , pQueueFamilyIndices( rhs.pQueueFamilyIndices )
-      , preTransform( rhs.preTransform )
-      , compositeAlpha( rhs.compositeAlpha )
-      , presentMode( rhs.presentMode )
-      , clipped( rhs.clipped )
-      , oldSwapchain( rhs.oldSwapchain )
     {}
 
     SwapchainCreateInfoKHR & operator=( SwapchainCreateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -70083,11 +65410,6 @@ namespace VULKAN_HPP_NAMESPACE
       : localDimmingEnable( localDimmingEnable_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR SwapchainDisplayNativeHdrCreateInfoAMD( SwapchainDisplayNativeHdrCreateInfoAMD const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , localDimmingEnable( rhs.localDimmingEnable )
-    {}
-
     SwapchainDisplayNativeHdrCreateInfoAMD & operator=( SwapchainDisplayNativeHdrCreateInfoAMD const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( SwapchainDisplayNativeHdrCreateInfoAMD ) - offsetof( SwapchainDisplayNativeHdrCreateInfoAMD, pNext ) );
@@ -70157,11 +65479,6 @@ namespace VULKAN_HPP_NAMESPACE
       : supportsTextureGatherLODBiasAMD( supportsTextureGatherLODBiasAMD_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR TextureLODGatherFormatPropertiesAMD( TextureLODGatherFormatPropertiesAMD const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , supportsTextureGatherLODBiasAMD( rhs.supportsTextureGatherLODBiasAMD )
-    {}
-
     TextureLODGatherFormatPropertiesAMD & operator=( TextureLODGatherFormatPropertiesAMD const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( TextureLODGatherFormatPropertiesAMD ) - offsetof( TextureLODGatherFormatPropertiesAMD, pNext ) );
@@ -70223,14 +65540,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pWaitSemaphoreValues( pWaitSemaphoreValues_ )
       , signalSemaphoreValueCount( signalSemaphoreValueCount_ )
       , pSignalSemaphoreValues( pSignalSemaphoreValues_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR TimelineSemaphoreSubmitInfo( TimelineSemaphoreSubmitInfo const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , waitSemaphoreValueCount( rhs.waitSemaphoreValueCount )
-      , pWaitSemaphoreValues( rhs.pWaitSemaphoreValues )
-      , signalSemaphoreValueCount( rhs.signalSemaphoreValueCount )
-      , pSignalSemaphoreValues( rhs.pSignalSemaphoreValues )
     {}
 
     TimelineSemaphoreSubmitInfo & operator=( TimelineSemaphoreSubmitInfo const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -70331,24 +65640,12 @@ namespace VULKAN_HPP_NAMESPACE
       , depth( depth_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR TraceRaysIndirectCommandKHR( TraceRaysIndirectCommandKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : width( rhs.width )
-      , height( rhs.height )
-      , depth( rhs.depth )
-    {}
-
     explicit TraceRaysIndirectCommandKHR( Extent2D const& extent2D,
                                           uint32_t depth_ = {} )
       : width( extent2D.width )
       , height( extent2D.height )
       , depth( depth_ )
     {}
-
-    TraceRaysIndirectCommandKHR & operator=( TraceRaysIndirectCommandKHR const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( TraceRaysIndirectCommandKHR ) );
-      return *this;
-    }
 
     TraceRaysIndirectCommandKHR( VkTraceRaysIndirectCommandKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -70422,13 +65719,6 @@ namespace VULKAN_HPP_NAMESPACE
       : flags( flags_ )
       , initialDataSize( initialDataSize_ )
       , pInitialData( pInitialData_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR ValidationCacheCreateInfoEXT( ValidationCacheCreateInfoEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , initialDataSize( rhs.initialDataSize )
-      , pInitialData( rhs.pInitialData )
     {}
 
     ValidationCacheCreateInfoEXT & operator=( ValidationCacheCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -70520,14 +65810,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pEnabledValidationFeatures( pEnabledValidationFeatures_ )
       , disabledValidationFeatureCount( disabledValidationFeatureCount_ )
       , pDisabledValidationFeatures( pDisabledValidationFeatures_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR ValidationFeaturesEXT( ValidationFeaturesEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , enabledValidationFeatureCount( rhs.enabledValidationFeatureCount )
-      , pEnabledValidationFeatures( rhs.pEnabledValidationFeatures )
-      , disabledValidationFeatureCount( rhs.disabledValidationFeatureCount )
-      , pDisabledValidationFeatures( rhs.pDisabledValidationFeatures )
     {}
 
     ValidationFeaturesEXT & operator=( ValidationFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -70625,12 +65907,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pDisabledValidationChecks( pDisabledValidationChecks_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR ValidationFlagsEXT( ValidationFlagsEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , disabledValidationCheckCount( rhs.disabledValidationCheckCount )
-      , pDisabledValidationChecks( rhs.pDisabledValidationChecks )
-    {}
-
     ValidationFlagsEXT & operator=( ValidationFlagsEXT const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( ValidationFlagsEXT ) - offsetof( ValidationFlagsEXT, pNext ) );
@@ -70709,12 +65985,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                 void* window_ = {} ) VULKAN_HPP_NOEXCEPT
       : flags( flags_ )
       , window( window_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR ViSurfaceCreateInfoNN( ViSurfaceCreateInfoNN const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , window( rhs.window )
     {}
 
     ViSurfaceCreateInfoNN & operator=( ViSurfaceCreateInfoNN const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -70798,13 +66068,6 @@ namespace VULKAN_HPP_NAMESPACE
       : flags( flags_ )
       , display( display_ )
       , surface( surface_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR WaylandSurfaceCreateInfoKHR( WaylandSurfaceCreateInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , display( rhs.display )
-      , surface( rhs.surface )
     {}
 
     WaylandSurfaceCreateInfoKHR & operator=( WaylandSurfaceCreateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -70904,17 +66167,6 @@ namespace VULKAN_HPP_NAMESPACE
       , releaseCount( releaseCount_ )
       , pReleaseSyncs( pReleaseSyncs_ )
       , pReleaseKeys( pReleaseKeys_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR Win32KeyedMutexAcquireReleaseInfoKHR( Win32KeyedMutexAcquireReleaseInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , acquireCount( rhs.acquireCount )
-      , pAcquireSyncs( rhs.pAcquireSyncs )
-      , pAcquireKeys( rhs.pAcquireKeys )
-      , pAcquireTimeouts( rhs.pAcquireTimeouts )
-      , releaseCount( rhs.releaseCount )
-      , pReleaseSyncs( rhs.pReleaseSyncs )
-      , pReleaseKeys( rhs.pReleaseKeys )
     {}
 
     Win32KeyedMutexAcquireReleaseInfoKHR & operator=( Win32KeyedMutexAcquireReleaseInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -71048,17 +66300,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pReleaseKeys( pReleaseKeys_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR Win32KeyedMutexAcquireReleaseInfoNV( Win32KeyedMutexAcquireReleaseInfoNV const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , acquireCount( rhs.acquireCount )
-      , pAcquireSyncs( rhs.pAcquireSyncs )
-      , pAcquireKeys( rhs.pAcquireKeys )
-      , pAcquireTimeoutMilliseconds( rhs.pAcquireTimeoutMilliseconds )
-      , releaseCount( rhs.releaseCount )
-      , pReleaseSyncs( rhs.pReleaseSyncs )
-      , pReleaseKeys( rhs.pReleaseKeys )
-    {}
-
     Win32KeyedMutexAcquireReleaseInfoNV & operator=( Win32KeyedMutexAcquireReleaseInfoNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( Win32KeyedMutexAcquireReleaseInfoNV ) - offsetof( Win32KeyedMutexAcquireReleaseInfoNV, pNext ) );
@@ -71182,13 +66423,6 @@ namespace VULKAN_HPP_NAMESPACE
       , hwnd( hwnd_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR Win32SurfaceCreateInfoKHR( Win32SurfaceCreateInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , hinstance( rhs.hinstance )
-      , hwnd( rhs.hwnd )
-    {}
-
     Win32SurfaceCreateInfoKHR & operator=( Win32SurfaceCreateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( Win32SurfaceCreateInfoKHR ) - offsetof( Win32SurfaceCreateInfoKHR, pNext ) );
@@ -71287,18 +66521,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pImageInfo( pImageInfo_ )
       , pBufferInfo( pBufferInfo_ )
       , pTexelBufferView( pTexelBufferView_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR WriteDescriptorSet( WriteDescriptorSet const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , dstSet( rhs.dstSet )
-      , dstBinding( rhs.dstBinding )
-      , dstArrayElement( rhs.dstArrayElement )
-      , descriptorCount( rhs.descriptorCount )
-      , descriptorType( rhs.descriptorType )
-      , pImageInfo( rhs.pImageInfo )
-      , pBufferInfo( rhs.pBufferInfo )
-      , pTexelBufferView( rhs.pTexelBufferView )
     {}
 
     WriteDescriptorSet & operator=( WriteDescriptorSet const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -71428,12 +66650,6 @@ namespace VULKAN_HPP_NAMESPACE
       , pAccelerationStructures( pAccelerationStructures_ )
     {}
 
-    VULKAN_HPP_CONSTEXPR WriteDescriptorSetAccelerationStructureKHR( WriteDescriptorSetAccelerationStructureKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , accelerationStructureCount( rhs.accelerationStructureCount )
-      , pAccelerationStructures( rhs.pAccelerationStructures )
-    {}
-
     WriteDescriptorSetAccelerationStructureKHR & operator=( WriteDescriptorSetAccelerationStructureKHR const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       memcpy( &pNext, &rhs.pNext, sizeof( WriteDescriptorSetAccelerationStructureKHR ) - offsetof( WriteDescriptorSetAccelerationStructureKHR, pNext ) );
@@ -71511,12 +66727,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                                   const void* pData_ = {} ) VULKAN_HPP_NOEXCEPT
       : dataSize( dataSize_ )
       , pData( pData_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR WriteDescriptorSetInlineUniformBlockEXT( WriteDescriptorSetInlineUniformBlockEXT const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , dataSize( rhs.dataSize )
-      , pData( rhs.pData )
     {}
 
     WriteDescriptorSetInlineUniformBlockEXT & operator=( WriteDescriptorSetInlineUniformBlockEXT const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -71599,13 +66809,6 @@ namespace VULKAN_HPP_NAMESPACE
       : flags( flags_ )
       , connection( connection_ )
       , window( window_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR XcbSurfaceCreateInfoKHR( XcbSurfaceCreateInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , connection( rhs.connection )
-      , window( rhs.window )
     {}
 
     XcbSurfaceCreateInfoKHR & operator=( XcbSurfaceCreateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -71697,13 +66900,6 @@ namespace VULKAN_HPP_NAMESPACE
       : flags( flags_ )
       , dpy( dpy_ )
       , window( window_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR XlibSurfaceCreateInfoKHR( XlibSurfaceCreateInfoKHR const& rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , flags( rhs.flags )
-      , dpy( rhs.dpy )
-      , window( rhs.window )
     {}
 
     XlibSurfaceCreateInfoKHR & operator=( XlibSurfaceCreateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT

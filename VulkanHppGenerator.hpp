@@ -275,7 +275,6 @@ class VulkanHppGenerator
     void appendStructCompareOperators(std::string & str, std::pair<std::string, StructureData> const& structure) const;
     void appendStructConstructor(std::string &str, std::pair<std::string, StructureData> const& structData, std::string const& prefix) const;
     bool appendStructConstructorArgument(std::string & str, bool listedArgument, std::string const& indentation, MemberData const& memberData) const;
-    void appendStructCopyConstructor(std::string &str, std::pair<std::string, StructureData> const& structData, std::string const& prefix) const;
     void appendStructCopyConstructors(std::string & str, std::string const& vkName) const;
     void appendStructMembers(std::string & str, std::pair<std::string,StructureData> const& structData, std::string const& prefix) const;
     void appendStructSetter(std::string & str, std::string const& structureName, MemberData const& memberData) const;

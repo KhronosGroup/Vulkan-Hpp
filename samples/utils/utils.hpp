@@ -47,7 +47,7 @@ namespace vk
     }
 
     template <class T>
-    void copyToDevice(vk::UniqueDevice const& device, vk::UniqueDeviceMemory const& memory, T const* pData, size_t count, size_t stride = sizeof(T))
+    void copyToDevice(vk::UniqueDevice const& device, vk::UniqueDeviceMemory const& memory, T const* pData, size_t count, vk::DeviceSize stride = sizeof(T))
     {
       assert(sizeof(T) <= stride);
       uint8_t* deviceData = static_cast<uint8_t*>(device->mapMemory(memory.get(), 0, count * stride));

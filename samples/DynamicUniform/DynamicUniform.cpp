@@ -86,7 +86,7 @@ int main(int /*argc*/, char ** /*argv*/)
     model = glm::translate(model, glm::vec3(-1.5f, 1.5f, -1.5f));
     mvpcs[1] = clip * projection * view * model;
 
-    VkDeviceSize bufferSize = sizeof(glm::mat4x4);
+    vk::DeviceSize bufferSize = sizeof(glm::mat4x4);
     if (limits.minUniformBufferOffsetAlignment)
     {
       bufferSize = (bufferSize + limits.minUniformBufferOffsetAlignment - 1) & ~(limits.minUniformBufferOffsetAlignment - 1);

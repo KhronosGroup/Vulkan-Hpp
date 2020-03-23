@@ -270,6 +270,17 @@ std::string constructStandardArray(std::string const& type, std::vector<std::str
   return arrayString;
 }
 
+std::string constructStandardArrayWrapper(std::string const& type, std::vector<std::string> const& sizes)
+{
+  std::string arrayString = "VULKAN_HPP_NAMESPACE::ArrayWrapper" + std::to_string(sizes.size()) + "D<" + type;
+  for (auto const& size : sizes)
+  {
+    arrayString += ", " + size;
+  }
+  arrayString += ">";
+  return arrayString;
+}
+
 std::string createEnumValueName(std::string const& name, std::string const& prefix, std::string const& postfix, bool bitmask, std::string const& tag)
 {
   std::string result = "e" + toCamelCase(stripPostfix(stripPrefix(name, prefix), postfix));
@@ -2742,23 +2753,16 @@ void VulkanHppGenerator::appendStructAssignmentOperator(std::string &str, std::p
   if ((nonConstSTypeStructs.find(structData.first) == nonConstSTypeStructs.end()) && !structData.second.members.empty() && (structData.second.members.front().name == "sType"))
   {
     assert((2 <= structData.second.members.size()) && (structData.second.members[1].name == "pNext"));
-    copyTemplate = "memcpy( &pNext, &rhs.pNext, sizeof( ${structName} ) - offsetof( ${structName}, pNext ) )";
-  }
-  else
-  {
-    copyTemplate = "memcpy( static_cast<void*>(this), &rhs, sizeof( ${structName} ) )";
-  }
-  std::string structName = stripPrefix(structData.first, "Vk");
-  std::string operation = replaceWithMap(copyTemplate, { { "structName", structName } });
 
-  static const std::string stringTemplate = R"(
+    static const std::string stringTemplate = R"(
 ${prefix}${structName} & operator=( ${structName} const & rhs ) VULKAN_HPP_NOEXCEPT
 ${prefix}{
-${prefix}  ${operation};
+${prefix}  memcpy( &pNext, &rhs.pNext, sizeof( ${structName} ) - offsetof( ${structName}, pNext ) );
 ${prefix}  return *this;
 ${prefix}}
 )";
-  str += replaceWithMap(stringTemplate, { { "operation", operation }, {"prefix", prefix }, { "structName", structName } });
+    str += replaceWithMap(stringTemplate, { {"prefix", prefix }, { "structName", stripPrefix(structData.first, "Vk") } });
+  }
 }
 
 void VulkanHppGenerator::appendStructCompareOperators(std::string & str, std::pair<std::string, StructureData> const& structData) const
@@ -2769,21 +2773,7 @@ void VulkanHppGenerator::appendStructCompareOperators(std::string & str, std::pa
   for (size_t i = 0; i < structData.second.members.size(); i++)
   {
     MemberData const& member = structData.second.members[i];
-    compareMembers += intro;
-    if (member.arraySizes.empty())
-    {
-      compareMembers += "( " + member.name + " == rhs." + member.name + " )";
-    }
-    else
-    {
-      std::string arraySize = constructArraySize(member.arraySizes);
-      if ((0 < i) && ((stripPostfix(member.name, "s") + "Count") == structData.second.members[i - 1].name))
-      {
-        assert(structData.second.members[i - 1].type.type == "uint32_t");   // make sure, it's an unsigned type, so we don't need to clamp here
-        arraySize = "std::min<" + structData.second.members[i-1].type.type + ">( " + arraySize + ", " + structData.second.members[i - 1].name + " )";
-      }
-      compareMembers += "( memcmp( " + member.name + ", rhs." + member.name + ", " + arraySize + " * sizeof( " + member.type.compose() + " ) ) == 0 )";
-    }
+    compareMembers += intro + "( " + member.name + " == rhs." + member.name + " )";
     intro = "\n          && ";
   }
 
@@ -2820,7 +2810,7 @@ void VulkanHppGenerator::appendStructConstructor(std::string &str, std::pair<std
   std::string ctorOpening = prefix + constexprString + stripPrefix(structData.first, "Vk");
   std::string indentation(ctorOpening.size() + 2, ' ');
 
-  std::string arguments, initializers, copyOps;
+  std::string arguments, initializers;
   bool listedArgument = false;
   bool firstArgument = true;
   for (auto const& member : structData.second.members)
@@ -2831,93 +2821,13 @@ void VulkanHppGenerator::appendStructConstructor(std::string &str, std::pair<std
     // gather the initializers; skip members 'pNext' and 'sType', they are directly set by initializers
     if ((member.name != "pNext") && (member.name != "sType"))
     {
-      if (member.arraySizes.empty())
-      {
-        // here, we can only handle non-array arguments
-        initializers += prefix + "  " + (firstArgument ? ":" : ",") + " " + member.name + "( " + member.name + "_ )\n";
-        firstArgument = false;
-      }
-      else
-      {
-        // here we can handle the arrays, copying over from argument (with trailing '_') to member
-        initializers += prefix + "  " + (firstArgument ? ":" : ",") + " " + member.name + "{}\n"; // need to initialize the array
-        firstArgument = false;
-
-        std::string type = (member.type.type.substr(0, 2) == "Vk") ? ("VULKAN_HPP_NAMESPACE::" + stripPrefix(member.type.type, "Vk")) : member.type.type;
-        std::string arraySizes;
-        for (auto const& as : member.arraySizes)
-        {
-          arraySizes += "," + as;
-        }
-        copyOps += prefix + "  VULKAN_HPP_NAMESPACE::ConstExpression" + std::to_string(member.arraySizes.size()) + "DArrayCopy<" + type + arraySizes + ">::copy( " + member.name + ", " + member.name + "_ );\n";
-      }
-    }
-  }
-
-  str += ctorOpening + (arguments.empty() ? "()" : std::string("( " + arguments + " )")) + " VULKAN_HPP_NOEXCEPT\n" + initializers;
-  if (copyOps.empty())
-  {
-    str += prefix + "{}\n";
-  }
-  else
-  {
-    str += prefix + "{\n" + copyOps + prefix + "}\n";
-  }
-}
-
-void VulkanHppGenerator::appendStructCopyConstructor(std::string &str, std::pair<std::string, StructureData> const& structData, std::string const& prefix) const
-{
-  // the constructor with all the elements as arguments, with defaults
-  std::string constexprString = constructConstexprString(structData);
-  std::string ctorOpening = prefix + constexprString + stripPrefix(structData.first, "Vk");
-  std::string indentation(ctorOpening.size() + 2, ' ');
-
-  std::string initializers, copyOps;
-  bool firstArgument = true;
-  for (auto const& member : structData.second.members)
-  {
-    if (member.name == "pNext")
-    {
-      assert(firstArgument);
-      initializers += prefix + "  : pNext( rhs.pNext )\n";
+      initializers += prefix + "  " + (firstArgument ? ":" : ",") + " " + member.name + "( " + member.name + "_ )\n";
       firstArgument = false;
     }
-    else if (member.name != "sType")
-    {
-      // gather the initializers; skip member 'sType', which is directly set by initializer
-      if (member.arraySizes.empty())
-      {
-        // here, we can only handle non-array arguments
-        initializers += prefix + "  " + (firstArgument ? ":" : ",") + " " + member.name + "( rhs." + member.name + " )\n";
-        firstArgument = false;
-      }
-      else
-      {
-        // here we can handle the arrays, copying over from argument (with trailing '_') to member
-        initializers += prefix + "  " + (firstArgument ? ":" : ",") + " " + member.name + "{}\n"; // need to initialize the array
-        firstArgument = false;
-
-        std::string type = (member.type.type.substr(0, 2) == "Vk") ? ("VULKAN_HPP_NAMESPACE::" + stripPrefix(member.type.type, "Vk")) : member.type.type;
-        std::string arraySizes;
-        for (auto const& as : member.arraySizes)
-        {
-          arraySizes += "," + as;
-        }
-        copyOps += "\n" + prefix + "  VULKAN_HPP_NAMESPACE::ConstExpression" + std::to_string(member.arraySizes.size()) + "DArrayCopy<" + type + arraySizes + ">::copy( " + member.name + ", rhs." + member.name + " );";
-      }
-    }
-  }
-  if (!copyOps.empty())
-  {
-    copyOps += "\n" + prefix;
   }
 
-  static std::string constructorTemplate = R"(
-${prefix}${constexpr}${structName}( ${structName} const& rhs ) VULKAN_HPP_NOEXCEPT
-${initializers}${prefix}{${copyOps}}
-)";
-
-  str += replaceWithMap(constructorTemplate, { { "prefix", prefix }, { "constexpr", constexprString }, { "structName", stripPrefix(structData.first, "Vk") }, { "initializers", initializers }, { "copyOps", copyOps } });
+  str += ctorOpening + (arguments.empty() ? "()" : std::string("( " + arguments + " )")) + " VULKAN_HPP_NOEXCEPT\n" + initializers
+    + prefix + "{}\n";
 }
 
 bool VulkanHppGenerator::appendStructConstructorArgument(std::string & str, bool listedArgument, std::string const& indentation, MemberData const& memberData) const
@@ -2983,9 +2893,14 @@ void VulkanHppGenerator::appendStructMembers(std::string & str, std::pair<std::s
       assert(member.type.prefix.empty() && member.type.postfix.empty());    // never encounterd a different case
       str += member.type.type;
     }
-    else
+    else if (member.arraySizes.empty())
     {
       str += member.type.compose();
+    }
+    else
+    {
+      assert(member.type.prefix.empty() && member.type.postfix.empty());
+      str += constructStandardArrayWrapper(member.type.compose(), member.arraySizes);
     }
     str += " " + member.name;
     if (member.name == "sType")           // special handling for sType
@@ -3015,7 +2930,7 @@ void VulkanHppGenerator::appendStructMembers(std::string & str, std::pair<std::s
       }
       else
       {
-        str += constructCArraySizes(member.arraySizes) + " = ";
+        str += " = ";
         auto enumIt = m_enums.find(member.type.type);
         if (enumIt != m_enums.end() && member.type.postfix.empty())
         {
@@ -3059,20 +2974,13 @@ void VulkanHppGenerator::appendStructSetter(std::string & str, std::string const
       "    " + structureName + " & set" + startUpperCase(memberData.name) + "( " + memberType + " " + memberData.name + "_ ) VULKAN_HPP_NOEXCEPT\n"
       "    {\n"
       "      ";
-    if (memberData.arraySizes.empty())
+    if (!memberData.bitCount.empty() && beginsWith(memberData.type.type, "Vk"))
     {
-      if (!memberData.bitCount.empty() && beginsWith(memberData.type.type, "Vk"))
-      {
-        str += memberData.name + " = " + "*reinterpret_cast<" + memberData.type.type + "*>(&" + memberData.name + "_)";
-      }
-      else
-      {
-        str += memberData.name + " = " + memberData.name + "_";
-      }
+      str += memberData.name + " = " + "*reinterpret_cast<" + memberData.type.type + "*>(&" + memberData.name + "_)";
     }
     else
     {
-      str += "memcpy( " + memberData.name + ", " + memberData.name + "_.data(), " + constructArraySize(memberData.arraySizes) + " * sizeof( " + memberData.type.compose() + " ) )";
+      str += memberData.name + " = " + memberData.name + "_";
     }
     str += ";\n"
       "      return *this;\n"
@@ -3124,7 +3032,6 @@ void VulkanHppGenerator::appendStructure(std::string & str, std::pair<std::strin
 
   std::string constructorAndSetters;
   appendStructConstructor(constructorAndSetters, structure, "    ");
-  appendStructCopyConstructor(constructorAndSetters, structure, "    ");
   appendStructSubConstructor(constructorAndSetters, structure, "    ");
   appendStructAssignmentOperator(constructorAndSetters, structure, "    ");
   appendStructCopyConstructors(constructorAndSetters, stripPrefix(structure.first, "Vk"));
@@ -3283,17 +3190,8 @@ void VulkanHppGenerator::appendUnion(std::string & str, std::pair<std::string, S
     }
 )";
     std::string memberAssignment, memberType;
-    if (member.arraySizes.empty())
-    {
-      memberAssignment = member.name + " = " + member.name + "_";
-      memberType = member.type.compose();
-    }
-    else
-    {
-      std::string arraySize = constructArraySize(member.arraySizes);
-      memberAssignment = "memcpy( " + member.name + ", " + member.name + "_.data(), " + arraySize + " * sizeof( " + member.type.compose() + " ) )";
-      memberType = "const " + constructStandardArray(member.type.compose(), member.arraySizes) + "&";
-    }
+    memberAssignment = member.name + " = " + member.name + "_";
+    memberType = (member.arraySizes.empty()) ? member.type.compose() : ("const " + constructStandardArray(member.type.compose(), member.arraySizes) + "&");
 
     str += replaceWithMap(constructorTemplate,
       {
@@ -3342,7 +3240,7 @@ void VulkanHppGenerator::appendUnion(std::string & str, std::pair<std::string, S
   }
   for (auto const& member : structure.second.members)
   {
-    str += "    " + member.type.compose() + " " + member.name + constructCArraySizes(member.arraySizes) + ";\n";
+    str += "    " + (member.arraySizes.empty() ? member.type.compose() : constructStandardArrayWrapper(member.type.compose(), member.arraySizes)) + " " + member.name + ";\n";
   }
   if (needsUnrestrictedUnions)
   {
@@ -5635,6 +5533,93 @@ int main(int argc, char **argv)
 #endif
 )";
 
+      static const std::string classArrayWrapper = R"(
+  template <typename T, size_t N>
+  class ArrayWrapper1D : public std::array<T,N>
+  {
+  public:
+    VULKAN_HPP_CONSTEXPR ArrayWrapper1D() VULKAN_HPP_NOEXCEPT
+      : std::array<T, N>()
+    {}
+
+    VULKAN_HPP_CONSTEXPR ArrayWrapper1D(std::array<T,N> const& data) VULKAN_HPP_NOEXCEPT
+      : std::array<T, N>(data)
+    {}
+
+#if defined(_WIN32) && !defined(_WIN64)
+    VULKAN_HPP_CONSTEXPR T const& operator[](int index) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::array<T, N>::operator[](index);
+    }
+
+    VULKAN_HPP_CONSTEXPR T & operator[](int index) VULKAN_HPP_NOEXCEPT
+    {
+      return std::array<T, N>::operator[](index);
+    }
+#endif
+
+    operator T const* () const VULKAN_HPP_NOEXCEPT
+    {
+      return this->data();
+    }
+
+    operator T * () VULKAN_HPP_NOEXCEPT
+    {
+      return this->data();
+    }
+  };
+
+  // specialization of relational operators between std::string and arrays of chars
+  template <size_t N>
+  bool operator<(std::string const& lhs, ArrayWrapper1D<char, N> const& rhs) VULKAN_HPP_NOEXCEPT
+  {
+    return lhs < rhs.data();
+  }
+
+  template <size_t N>
+  bool operator<=(std::string const& lhs, ArrayWrapper1D<char, N> const& rhs) VULKAN_HPP_NOEXCEPT
+  {
+    return lhs <= rhs.data();
+  }
+
+  template <size_t N>
+  bool operator>(std::string const& lhs, ArrayWrapper1D<char, N> const& rhs) VULKAN_HPP_NOEXCEPT
+  {
+    return lhs > rhs.data();
+  }
+
+  template <size_t N>
+  bool operator>=(std::string const& lhs, ArrayWrapper1D<char, N> const& rhs) VULKAN_HPP_NOEXCEPT
+  {
+    return lhs >= rhs.data();
+  }
+
+  template <size_t N>
+  bool operator==(std::string const& lhs, ArrayWrapper1D<char, N> const& rhs) VULKAN_HPP_NOEXCEPT
+  {
+    return lhs == rhs.data();
+  }
+
+  template <size_t N>
+  bool operator!=(std::string const& lhs, ArrayWrapper1D<char, N> const& rhs) VULKAN_HPP_NOEXCEPT
+  {
+    return lhs != rhs.data();
+  }
+
+  template <typename T, size_t N, size_t M>
+  class ArrayWrapper2D : public std::array<ArrayWrapper1D<T,M>,N>
+  {
+  public:
+    VULKAN_HPP_CONSTEXPR ArrayWrapper2D() VULKAN_HPP_NOEXCEPT
+      : std::array<ArrayWrapper1D<T,M>, N>()
+    {}
+
+    VULKAN_HPP_CONSTEXPR ArrayWrapper2D(std::array<std::array<T,M>,N> const& data) VULKAN_HPP_NOEXCEPT
+      : std::array<ArrayWrapper1D<T,M>, N>(*reinterpret_cast<std::array<ArrayWrapper1D<T,M>,N> const*>(&data))
+    {}
+  };
+)";
+
   static const std::string classFlags = R"(
   template <typename FlagBitsType> struct FlagTraits
   {
@@ -6280,90 +6265,6 @@ int main(int argc, char **argv)
 #endif
 )";
 
-static const std::string constExpressionArrayCopy = R"(
-  template<typename T, size_t N, size_t I>
-  class PrivateConstExpression1DArrayCopy
-  {
-  public:
-    VULKAN_HPP_CONSTEXPR_14 static void copy( T * dst, T const* src ) VULKAN_HPP_NOEXCEPT
-    {
-      PrivateConstExpression1DArrayCopy<T, N, I - 1>::copy( dst, src );
-      dst[I - 1] = src[I - 1];
-    }
-  };
-
-  template<typename T, size_t N>
-  class PrivateConstExpression1DArrayCopy<T, N, 0>
-  {
-  public:
-    VULKAN_HPP_CONSTEXPR_14 static void copy( T * /*dst*/, T const* /*src*/ ) VULKAN_HPP_NOEXCEPT
-    {}
-  };
-
-  template <typename T, size_t N>
-  class ConstExpression1DArrayCopy
-  {
-  public:
-    VULKAN_HPP_CONSTEXPR_14 static void copy( T dst[N], const T src[N] ) VULKAN_HPP_NOEXCEPT
-    {
-      const size_t C = N / 2;
-      PrivateConstExpression1DArrayCopy<T, C, C>::copy( dst, src );
-      PrivateConstExpression1DArrayCopy<T, N - C, N - C>::copy(dst + C, src + C);
-    }
-
-    VULKAN_HPP_CONSTEXPR_14 static void copy( T dst[N], std::array<T, N> const& src ) VULKAN_HPP_NOEXCEPT
-    {
-      const size_t C = N / 2;
-      PrivateConstExpression1DArrayCopy<T, C, C>::copy(dst, src.data());
-      PrivateConstExpression1DArrayCopy<T, N - C, N - C>::copy(dst + C, src.data() + C);
-    }
-  };
-
-  template<typename T, size_t N, size_t M, size_t I, size_t J>
-  class PrivateConstExpression2DArrayCopy
-  {
-  public:
-    VULKAN_HPP_CONSTEXPR_14 static void copy( T * dst, T const* src ) VULKAN_HPP_NOEXCEPT
-    {
-      PrivateConstExpression2DArrayCopy<T, N, M, I, J - 1>::copy( dst, src );
-      dst[(I - 1) * M + J - 1] = src[(I - 1) * M + J - 1];
-    }
-  };
-
-  template<typename T, size_t N, size_t M, size_t I>
-  class PrivateConstExpression2DArrayCopy<T, N, M, I,0>
-  {
-  public:
-    VULKAN_HPP_CONSTEXPR_14 static void copy( T * dst, T const* src ) VULKAN_HPP_NOEXCEPT
-    {
-      PrivateConstExpression2DArrayCopy<T, N, M, I - 1, M>::copy( dst, src );
-    }
-  };
-
-  template<typename T, size_t N, size_t M, size_t J>
-  class PrivateConstExpression2DArrayCopy<T, N, M, 0, J>
-  {
-  public:
-    VULKAN_HPP_CONSTEXPR_14 static void copy( T * /*dst*/, T const* /*src*/ ) VULKAN_HPP_NOEXCEPT
-    {}
-  };
-
-  template <typename T, size_t N, size_t M>
-  class ConstExpression2DArrayCopy
-  {
-  public:
-    VULKAN_HPP_CONSTEXPR_14 static void copy( T dst[N][M], const T src[N][M] ) VULKAN_HPP_NOEXCEPT
-    {
-      PrivateConstExpression2DArrayCopy<T, N, M, N, M>::copy( &dst[0][0], &src[0][0] );
-    }
-
-    VULKAN_HPP_CONSTEXPR_14 static void copy( T dst[N][M], std::array<std::array<T, M>, N> const& src ) VULKAN_HPP_NOEXCEPT
-    {
-      PrivateConstExpression2DArrayCopy<T, N, M, N, M>::copy( &dst[0][0], src.data()->data() );
-    }
-  };
-)";
-
   static const std::string defines = R"(
 // <tuple> includes <sys/sysmacros.h> through some other header
 // this results in major(x) being resolved to gnu_dev_major(x)
@@ -6745,6 +6646,7 @@ namespace std
       + "namespace VULKAN_HPP_NAMESPACE\n"
       + "{\n"
       + classArrayProxy
+      + classArrayWrapper
       + classFlags
       + classOptional
       + classStructureChain
@@ -6754,7 +6656,6 @@ namespace std
     str += classObjectDestroy
       + classObjectFree
       + classPoolFree
-      + constExpressionArrayCopy
       + "\n";
     generator.appendBaseTypes(str);
     generator.appendEnums(str);

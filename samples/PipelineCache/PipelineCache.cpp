@@ -127,7 +127,7 @@ int main(int /*argc*/, char ** /*argv*/)
     {
       // Determine cache size
       readCacheStream.seekg(0, readCacheStream.end);
-      startCacheSize = readCacheStream.tellg();
+      startCacheSize = vk::su::checked_cast<size_t>(readCacheStream.tellg());
       readCacheStream.seekg(0, readCacheStream.beg);
 
       // Allocate memory to hold the initial cache data

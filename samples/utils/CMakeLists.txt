@@ -36,6 +36,7 @@ add_library(utils
   ${HEADERS}
 )
 
+target_link_libraries(utils PUBLIC glm)
 target_link_libraries(utils PUBLIC glfw)
 target_link_libraries(utils PUBLIC glslang)
 target_link_libraries(utils PUBLIC glslang-default-resource-limits)

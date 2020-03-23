@@ -44,9 +44,9 @@ int main(int /*argc*/, char ** /*argv*/)
     vk::UniqueSurfaceKHR surface;
     {
       VkSurfaceKHR _surface;
-      glfwCreateWindowSurface(instance.get(), window.handle, nullptr, &_surface);
+      glfwCreateWindowSurface(VkInstance(instance.get()), window.handle, nullptr, &_surface);
       vk::ObjectDestroy<vk::Instance, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE> _deleter(instance.get());
-      surface = vk::UniqueSurfaceKHR(_surface, _deleter);
+      surface = vk::UniqueSurfaceKHR(vk::SurfaceKHR(_surface), _deleter);
     }
 
     // determine a queueFamilyIndex that suports present

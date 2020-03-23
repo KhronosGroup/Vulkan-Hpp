@@ -263,7 +263,7 @@ namespace vk
                                                                      &subpassDescription));
     }
 
-    VkBool32 debugUtilsMessengerCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageTypes,
+    VKAPI_ATTR VkBool32 VKAPI_CALL debugUtilsMessengerCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageTypes,
                                          VkDebugUtilsMessengerCallbackDataEXT const * pCallbackData, void * /*pUserData*/)
     {
       std::cerr << vk::to_string(static_cast<vk::DebugUtilsMessageSeverityFlagBitsEXT>(messageSeverity)) << ": " << vk::to_string(static_cast<vk::DebugUtilsMessageTypeFlagsEXT>(messageTypes)) << ":\n";
@@ -671,11 +671,11 @@ namespace vk
       , window(vk::su::createWindow(windowName, extent))
     {
       VkSurfaceKHR _surface;
-      VkResult err = glfwCreateWindowSurface(instance.get(), window.handle, nullptr, &_surface);
+      VkResult err = glfwCreateWindowSurface(VkInstance(instance.get()), window.handle, nullptr, &_surface);
       if (err != VK_SUCCESS)
         throw std::runtime_error("Failed to create window!");
       vk::ObjectDestroy<vk::Instance, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE> _deleter(instance.get());
-      surface = vk::UniqueSurfaceKHR(_surface, _deleter);
+      surface = vk::UniqueSurfaceKHR(vk::SurfaceKHR(_surface), _deleter);
     }
 
     SwapChainData::SwapChainData(vk::PhysicalDevice const& physicalDevice, vk::UniqueDevice const& device, vk::SurfaceKHR const& surface, vk::Extent2D const& extent, vk::ImageUsageFlags usage,

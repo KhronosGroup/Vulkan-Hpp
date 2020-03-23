@@ -43,7 +43,7 @@ int main(int /*argc*/, char ** /*argv*/)
       std::cout << "\t" << "physicalDevices:\n";
       for (size_t j = 0; j < groupProperties[i].physicalDeviceCount; j++)
       {
-        std::cout << "\t\t" << j << " : " << groupProperties[i].physicalDevices[j] << "\n";
+        std::cout << "\t\t" << j << " : " << groupProperties[i].physicalDevices[j].getProperties().deviceName << "\n";
       }
       std::cout << "\t" << "subsetAllocation    = " << static_cast<bool>(groupProperties[i].subsetAllocation) << "\n";
       std::cout << "\n";

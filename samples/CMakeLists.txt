@@ -40,8 +40,6 @@ else()
   include_directories("${Vulkan_INCLUDE_DIRS}")
 endif()
 
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../glm")
-
 FOREACH( linkunit ${linkunits} )
   if( IS_DIRECTORY ${linkunit} )
     if( EXISTS ${linkunit}/CMakeLists.txt )

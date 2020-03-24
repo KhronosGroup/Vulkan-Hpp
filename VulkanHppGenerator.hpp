@@ -288,7 +288,7 @@ class VulkanHppGenerator
     bool checkLenAttribute(std::string const& len, std::vector<ParamData> const& params);
     bool containsArray(std::string const& type) const;
     bool containsUnion(std::string const& type) const;
-    std::string determineEnhancedReturnType(CommandData const& commandData, size_t returnParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool twoStep, bool isStructureChain) const;
+    std::string determineEnhancedReturnType(CommandData const& commandData, size_t returnParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool isStructureChain) const;
     size_t determineReturnParamIndex(CommandData const& commandData, std::map<size_t, size_t> const& vectorParamIndices, bool twoStep) const;
     std::string determineSubStruct(std::pair<std::string, StructureData> const& structure) const;
     size_t determineTemplateParamIndex(std::vector<ParamData> const& params, std::map<size_t, size_t> const& vectorParamIndices) const;

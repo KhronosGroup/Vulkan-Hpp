@@ -996,7 +996,7 @@ void VulkanHppGenerator::appendCommand(std::string & str, std::string const& ind
 
   size_t returnParamIndex = determineReturnParamIndex(commandData.second, vectorParamIndices, twoStep);
   bool isStructureChain = (returnParamIndex != INVALID_INDEX) && determineStructureChaining(commandData.second.params[returnParamIndex].type.type, m_extendedStructs, m_structureAliases);
-  std::string enhancedReturnType = determineEnhancedReturnType(commandData.second, returnParamIndex, vectorParamIndices, twoStep, false);   // get the enhanced return type without structureChain
+  std::string enhancedReturnType = determineEnhancedReturnType(commandData.second, returnParamIndex, vectorParamIndices, false);   // get the enhanced return type without structureChain
 
   size_t templateParamIndex = determineTemplateParamIndex(commandData.second.params, vectorParamIndices);
 
@@ -1015,7 +1015,7 @@ void VulkanHppGenerator::appendCommand(std::string & str, std::string const& ind
 
   if (isStructureChain)
   {
-    std::string enhancedReturnTypeWithStructureChain = determineEnhancedReturnType(commandData.second, returnParamIndex, vectorParamIndices, twoStep, true);
+    std::string enhancedReturnTypeWithStructureChain = determineEnhancedReturnType(commandData.second, returnParamIndex, vectorParamIndices, true);
     appendFunction(enhanced, indentation, name, commandData, returnParamIndex, templateParamIndex, vectorParamIndices, twoStep, enhancedReturnTypeWithStructureChain, definition, true, false, false, true, false);
 
     if (enhancedReturnTypeWithStructureChain.find("Allocator") != std::string::npos)
@@ -3568,7 +3568,7 @@ bool VulkanHppGenerator::containsUnion(std::string const& type) const
   return found;
 }
 
-std::string VulkanHppGenerator::determineEnhancedReturnType(CommandData const& commandData, size_t returnParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool twoStep, bool isStructureChain) const
+std::string VulkanHppGenerator::determineEnhancedReturnType(CommandData const& commandData, size_t returnParamIndex, std::map<size_t, size_t> const& vectorParamIndices, bool isStructureChain) const
 {
   assert((returnParamIndex == INVALID_INDEX) || (returnParamIndex < commandData.params.size()));
   for (auto vpi : vectorParamIndices)
@@ -3577,16 +3577,11 @@ std::string VulkanHppGenerator::determineEnhancedReturnType(CommandData const& c
   }
 
   std::string enhancedReturnType;
-  // if there is a return parameter of type void or Result, and if it's of type Result it either has just one success code
-  // or two success codes, where the second one is of type VK_INCOMPLETE and it's a two-step process
-  // -> we can return that parameter
-  if ((returnParamIndex != INVALID_INDEX)
-    && ((commandData.returnType == "void")
-      || ((commandData.returnType == "VkResult")
-        && ((commandData.successCodes.size() == 1)
-          || ((commandData.successCodes.size() == 2) && (commandData.successCodes[1] == "VK_INCOMPLETE") && twoStep)
-          || ((commandData.successCodes.size() == 3) && (commandData.successCodes[1] == "VK_OPERATION_DEFERRED_KHR") && (commandData.successCodes[2] == "VK_OPERATION_NOT_DEFERRED_KHR"))))))
+  if (returnParamIndex != INVALID_INDEX)
   {
+    // if there is a return parameter, we think returnType is always "void" or "VkResult"
+    // -> we can return that parameter
+    assert((commandData.returnType == "void") || (commandData.returnType == "VkResult"));
     assert(commandData.successCodes.empty() || (commandData.successCodes[0] == "VK_SUCCESS"));
     if (vectorParamIndices.find(returnParamIndex) != vectorParamIndices.end())
     {

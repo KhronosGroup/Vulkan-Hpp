@@ -164,7 +164,9 @@ namespace vk
                                                                 &pipelineMultisampleStateCreateInfo, &pipelineDepthStencilStateCreateInfo, &pipelineColorBlendStateCreateInfo,
                                                                 &pipelineDynamicStateCreateInfo, pipelineLayout.get(), renderPass.get());
 
-      return device->createGraphicsPipelineUnique(pipelineCache.get(), graphicsPipelineCreateInfo);
+      auto result = device->createGraphicsPipelineUnique(pipelineCache.get(), graphicsPipelineCreateInfo);
+      assert(result.result == vk::Result::eSuccess);
+      return std::move(result.value);
     }
 
     vk::UniqueInstance createInstance(std::string const& appName, std::string const& engineName, std::vector<std::string> const& layers, std::vector<std::string> const& extensions,

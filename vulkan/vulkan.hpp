@@ -81,7 +81,7 @@
 # include <compare>
 #endif
 
-static_assert( VK_HEADER_VERSION ==  135 , "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION ==  136 , "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -6997,12 +6997,13 @@ namespace VULKAN_HPP_NAMESPACE
     eThreadDoneKHR = VK_THREAD_DONE_KHR,
     eOperationDeferredKHR = VK_OPERATION_DEFERRED_KHR,
     eOperationNotDeferredKHR = VK_OPERATION_NOT_DEFERRED_KHR,
-    eErrorPipelineCompileRequiredEXT = VK_ERROR_PIPELINE_COMPILE_REQUIRED_EXT,
+    ePipelineCompileRequiredEXT = VK_PIPELINE_COMPILE_REQUIRED_EXT,
     eErrorOutOfPoolMemoryKHR = VK_ERROR_OUT_OF_POOL_MEMORY_KHR,
     eErrorInvalidExternalHandleKHR = VK_ERROR_INVALID_EXTERNAL_HANDLE_KHR,
     eErrorFragmentationEXT = VK_ERROR_FRAGMENTATION_EXT,
     eErrorInvalidDeviceAddressEXT = VK_ERROR_INVALID_DEVICE_ADDRESS_EXT,
-    eErrorInvalidOpaqueCaptureAddressKHR = VK_ERROR_INVALID_OPAQUE_CAPTURE_ADDRESS_KHR
+    eErrorInvalidOpaqueCaptureAddressKHR = VK_ERROR_INVALID_OPAQUE_CAPTURE_ADDRESS_KHR,
+    eErrorPipelineCompileRequiredEXT = VK_ERROR_PIPELINE_COMPILE_REQUIRED_EXT
   };
 
   VULKAN_HPP_INLINE std::string to_string( Result value )
@@ -7047,7 +7048,7 @@ namespace VULKAN_HPP_NAMESPACE
       case Result::eThreadDoneKHR : return "ThreadDoneKHR";
       case Result::eOperationDeferredKHR : return "OperationDeferredKHR";
       case Result::eOperationNotDeferredKHR : return "OperationNotDeferredKHR";
-      case Result::eErrorPipelineCompileRequiredEXT : return "ErrorPipelineCompileRequiredEXT";
+      case Result::ePipelineCompileRequiredEXT : return "PipelineCompileRequiredEXT";
       default: return "invalid";
     }
   }
@@ -7863,7 +7864,7 @@ namespace VULKAN_HPP_NAMESPACE
     eCheckpointDataNV = VK_STRUCTURE_TYPE_CHECKPOINT_DATA_NV,
     eQueueFamilyCheckpointPropertiesNV = VK_STRUCTURE_TYPE_QUEUE_FAMILY_CHECKPOINT_PROPERTIES_NV,
     ePhysicalDeviceShaderIntegerFunctions2FeaturesINTEL = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_INTEGER_FUNCTIONS_2_FEATURES_INTEL,
-    eQueryPoolCreateInfoINTEL = VK_STRUCTURE_TYPE_QUERY_POOL_CREATE_INFO_INTEL,
+    eQueryPoolPerformanceQueryCreateInfoINTEL = VK_STRUCTURE_TYPE_QUERY_POOL_PERFORMANCE_QUERY_CREATE_INFO_INTEL,
     eInitializePerformanceApiInfoINTEL = VK_STRUCTURE_TYPE_INITIALIZE_PERFORMANCE_API_INFO_INTEL,
     ePerformanceMarkerInfoINTEL = VK_STRUCTURE_TYPE_PERFORMANCE_MARKER_INFO_INTEL,
     ePerformanceStreamMarkerInfoINTEL = VK_STRUCTURE_TYPE_PERFORMANCE_STREAM_MARKER_INFO_INTEL,
@@ -8030,6 +8031,7 @@ namespace VULKAN_HPP_NAMESPACE
     eTimelineSemaphoreSubmitInfoKHR = VK_STRUCTURE_TYPE_TIMELINE_SEMAPHORE_SUBMIT_INFO_KHR,
     eSemaphoreWaitInfoKHR = VK_STRUCTURE_TYPE_SEMAPHORE_WAIT_INFO_KHR,
     eSemaphoreSignalInfoKHR = VK_STRUCTURE_TYPE_SEMAPHORE_SIGNAL_INFO_KHR,
+    eQueryPoolCreateInfoINTEL = VK_STRUCTURE_TYPE_QUERY_POOL_CREATE_INFO_INTEL,
     ePhysicalDeviceVulkanMemoryModelFeaturesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_MEMORY_MODEL_FEATURES_KHR,
     ePhysicalDeviceScalarBlockLayoutFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SCALAR_BLOCK_LAYOUT_FEATURES_EXT,
     ePhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SEPARATE_DEPTH_STENCIL_LAYOUTS_FEATURES_KHR,
@@ -8411,7 +8413,7 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eCheckpointDataNV : return "CheckpointDataNV";
       case StructureType::eQueueFamilyCheckpointPropertiesNV : return "QueueFamilyCheckpointPropertiesNV";
       case StructureType::ePhysicalDeviceShaderIntegerFunctions2FeaturesINTEL : return "PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL";
-      case StructureType::eQueryPoolCreateInfoINTEL : return "QueryPoolCreateInfoINTEL";
+      case StructureType::eQueryPoolPerformanceQueryCreateInfoINTEL : return "QueryPoolPerformanceQueryCreateInfoINTEL";
       case StructureType::eInitializePerformanceApiInfoINTEL : return "InitializePerformanceApiInfoINTEL";
       case StructureType::ePerformanceMarkerInfoINTEL : return "PerformanceMarkerInfoINTEL";
       case StructureType::ePerformanceStreamMarkerInfoINTEL : return "PerformanceStreamMarkerInfoINTEL";
@@ -12983,15 +12985,6 @@ namespace VULKAN_HPP_NAMESPACE
       : SystemError( make_error_code( Result::eErrorFullScreenExclusiveModeLostEXT ), message ) {}
   };
 
-  class PipelineCompileRequiredEXTError : public SystemError
-  {
-  public:
-    PipelineCompileRequiredEXTError( std::string const& message )
-      : SystemError( make_error_code( Result::eErrorPipelineCompileRequiredEXT ), message ) {}
-    PipelineCompileRequiredEXTError( char const * message )
-      : SystemError( make_error_code( Result::eErrorPipelineCompileRequiredEXT ), message ) {}
-  };
-
   [[noreturn]] static void throwResultException( Result result, char const * message )
   {
     switch ( result )
@@ -13023,7 +13016,6 @@ namespace VULKAN_HPP_NAMESPACE
       case Result::eErrorInvalidDrmFormatModifierPlaneLayoutEXT: throw InvalidDrmFormatModifierPlaneLayoutEXTError( message );
       case Result::eErrorNotPermittedEXT: throw NotPermittedEXTError( message );
       case Result::eErrorFullScreenExclusiveModeLostEXT: throw FullScreenExclusiveModeLostEXTError( message );
-      case Result::eErrorPipelineCompileRequiredEXT: throw PipelineCompileRequiredEXTError( message );
       default: throw SystemError( make_error_code( result ) );
     }
   }
@@ -13056,7 +13048,53 @@ namespace VULKAN_HPP_NAMESPACE
     T       value;
 
     operator std::tuple<Result&, T&>() VULKAN_HPP_NOEXCEPT { return std::tuple<Result&, T&>(result, value); }
+
+#if !defined(VULKAN_HPP_DISABLE_IMPLICIT_RESULT_VALUE_CAST)
+    operator T const& () const VULKAN_HPP_NOEXCEPT
+    {
+      return value;
+    }
+
+    operator T& () VULKAN_HPP_NOEXCEPT
+    {
+      return value;
+    }
+#endif
   };
+
+#if !defined(VULKAN_HPP_DISABLE_IMPLICIT_RESULT_VALUE_CAST)
+  template <typename Type, typename Dispatch>
+  struct ResultValue<UniqueHandle<Type,Dispatch>>
+  {
+#ifdef VULKAN_HPP_HAS_NOEXCEPT
+    ResultValue(Result r, UniqueHandle<Type, Dispatch> & v) VULKAN_HPP_NOEXCEPT
+#else
+    ResultValue(Result r, UniqueHandle<Type, Dispatch>& v)
+#endif
+      : result(r)
+      , value(v)
+    {}
+
+#ifdef VULKAN_HPP_HAS_NOEXCEPT
+    ResultValue(Result r, UniqueHandle<Type, Dispatch> && v) VULKAN_HPP_NOEXCEPT
+#else
+    ResultValue(Result r, UniqueHandle<Type, Dispatch> && v)
+#endif
+      : result(r)
+      , value(std::move(v))
+    {}
+
+    Result                        result;
+    UniqueHandle<Type, Dispatch>  value;
+
+    operator std::tuple<Result&, UniqueHandle<Type, Dispatch>&>() VULKAN_HPP_NOEXCEPT { return std::tuple<Result&, UniqueHandle<Type, Dispatch>&>(result, value); }
+
+    operator UniqueHandle<Type, Dispatch>() VULKAN_HPP_NOEXCEPT
+    {
+      return std::move(value);
+    }
+  };
+#endif
 
   template <typename T>
   struct ResultValueType
@@ -13151,6 +13189,22 @@ namespace VULKAN_HPP_NAMESPACE
       throwResultException( result, message );
     }
     return UniqueHandle<T,D>(data, deleter);
+#endif
+  }
+
+  template <typename T, typename D>
+  VULKAN_HPP_INLINE ResultValue<UniqueHandle<T,D>> createResultValue( Result result, T & data, char const * message, std::initializer_list<Result> successCodes, typename UniqueHandleTraits<T,D>::deleter const& deleter )
+  {
+#ifdef VULKAN_HPP_NO_EXCEPTIONS
+    ignore(message);
+    VULKAN_HPP_ASSERT( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );
+    return ResultValue<UniqueHandle<T,D>>( result, UniqueHandle<T,D>(data, deleter) );
+#else
+    if ( std::find( successCodes.begin(), successCodes.end(), result ) == successCodes.end() )
+    {
+      throwResultException( result, message );
+    }
+    return ResultValue<UniqueHandle<T,D>>( result, UniqueHandle<T,D>(data, deleter) );
 #endif
   }
 #endif
@@ -17630,18 +17684,18 @@ namespace VULKAN_HPP_NAMESPACE
     Result createComputePipelines( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, uint32_t createInfoCount, const VULKAN_HPP_NAMESPACE::ComputePipelineCreateInfo* pCreateInfos, const VULKAN_HPP_NAMESPACE::AllocationCallbacks* pAllocator, VULKAN_HPP_NAMESPACE::Pipeline* pPipelines, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Allocator = std::allocator<Pipeline>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    typename ResultValueType<std::vector<Pipeline,Allocator>>::type createComputePipelines( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::ComputePipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
+    ResultValue<std::vector<Pipeline,Allocator>> createComputePipelines( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::ComputePipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
     template<typename Allocator = std::allocator<Pipeline>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    typename ResultValueType<std::vector<Pipeline,Allocator>>::type createComputePipelines( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::ComputePipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator, Allocator const& vectorAllocator, Dispatch const &d ) const;
+    ResultValue<std::vector<Pipeline,Allocator>> createComputePipelines( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::ComputePipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator, Allocator const& vectorAllocator, Dispatch const &d ) const;
     template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    typename ResultValueType<Pipeline>::type createComputePipeline( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, const ComputePipelineCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
+    ResultValue<Pipeline> createComputePipeline( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, const ComputePipelineCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template<typename Allocator = std::allocator<UniquePipeline>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    typename ResultValueType<std::vector<UniqueHandle<Pipeline,Dispatch>,Allocator>>::type createComputePipelinesUnique( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::ComputePipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
+    ResultValue<std::vector<UniqueHandle<Pipeline,Dispatch>,Allocator>> createComputePipelinesUnique( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::ComputePipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
     template<typename Allocator = std::allocator<UniquePipeline>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    typename ResultValueType<std::vector<UniqueHandle<Pipeline,Dispatch>,Allocator>>::type createComputePipelinesUnique( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::ComputePipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator, Allocator const& vectorAllocator, Dispatch const &d ) const;
+    ResultValue<std::vector<UniqueHandle<Pipeline,Dispatch>,Allocator>> createComputePipelinesUnique( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::ComputePipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator, Allocator const& vectorAllocator, Dispatch const &d ) const;
     template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    typename ResultValueType<UniqueHandle<Pipeline,Dispatch>>::type createComputePipelineUnique( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, const ComputePipelineCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
+    ResultValue<UniqueHandle<Pipeline,Dispatch>> createComputePipelineUnique( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, const ComputePipelineCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -17739,18 +17793,18 @@ namespace VULKAN_HPP_NAMESPACE
     Result createGraphicsPipelines( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, uint32_t createInfoCount, const VULKAN_HPP_NAMESPACE::GraphicsPipelineCreateInfo* pCreateInfos, const VULKAN_HPP_NAMESPACE::AllocationCallbacks* pAllocator, VULKAN_HPP_NAMESPACE::Pipeline* pPipelines, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Allocator = std::allocator<Pipeline>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    typename ResultValueType<std::vector<Pipeline,Allocator>>::type createGraphicsPipelines( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::GraphicsPipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
+    ResultValue<std::vector<Pipeline,Allocator>> createGraphicsPipelines( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::GraphicsPipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
     template<typename Allocator = std::allocator<Pipeline>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    typename ResultValueType<std::vector<Pipeline,Allocator>>::type createGraphicsPipelines( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::GraphicsPipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator, Allocator const& vectorAllocator, Dispatch const &d ) const;
+    ResultValue<std::vector<Pipeline,Allocator>> createGraphicsPipelines( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::GraphicsPipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator, Allocator const& vectorAllocator, Dispatch const &d ) const;
     template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    typename ResultValueType<Pipeline>::type createGraphicsPipeline( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, const GraphicsPipelineCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
+    ResultValue<Pipeline> createGraphicsPipeline( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, const GraphicsPipelineCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template<typename Allocator = std::allocator<UniquePipeline>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    typename ResultValueType<std::vector<UniqueHandle<Pipeline,Dispatch>,Allocator>>::type createGraphicsPipelinesUnique( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::GraphicsPipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
+    ResultValue<std::vector<UniqueHandle<Pipeline,Dispatch>,Allocator>> createGraphicsPipelinesUnique( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::GraphicsPipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
     template<typename Allocator = std::allocator<UniquePipeline>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    typename ResultValueType<std::vector<UniqueHandle<Pipeline,Dispatch>,Allocator>>::type createGraphicsPipelinesUnique( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::GraphicsPipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator, Allocator const& vectorAllocator, Dispatch const &d ) const;
+    ResultValue<std::vector<UniqueHandle<Pipeline,Dispatch>,Allocator>> createGraphicsPipelinesUnique( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::GraphicsPipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator, Allocator const& vectorAllocator, Dispatch const &d ) const;
     template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    typename ResultValueType<UniqueHandle<Pipeline,Dispatch>>::type createGraphicsPipelineUnique( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, const GraphicsPipelineCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
+    ResultValue<UniqueHandle<Pipeline,Dispatch>> createGraphicsPipelineUnique( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, const GraphicsPipelineCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -17845,18 +17899,18 @@ namespace VULKAN_HPP_NAMESPACE
     Result createRayTracingPipelinesNV( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, uint32_t createInfoCount, const VULKAN_HPP_NAMESPACE::RayTracingPipelineCreateInfoNV* pCreateInfos, const VULKAN_HPP_NAMESPACE::AllocationCallbacks* pAllocator, VULKAN_HPP_NAMESPACE::Pipeline* pPipelines, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Allocator = std::allocator<Pipeline>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    typename ResultValueType<std::vector<Pipeline,Allocator>>::type createRayTracingPipelinesNV( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::RayTracingPipelineCreateInfoNV> createInfos, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
+    ResultValue<std::vector<Pipeline,Allocator>> createRayTracingPipelinesNV( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::RayTracingPipelineCreateInfoNV> createInfos, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
     template<typename Allocator = std::allocator<Pipeline>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    typename ResultValueType<std::vector<Pipeline,Allocator>>::type createRayTracingPipelinesNV( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::RayTracingPipelineCreateInfoNV> createInfos, Optional<const AllocationCallbacks> allocator, Allocator const& vectorAllocator, Dispatch const &d ) const;
+    ResultValue<std::vector<Pipeline,Allocator>> createRayTracingPipelinesNV( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::RayTracingPipelineCreateInfoNV> createInfos, Optional<const AllocationCallbacks> allocator, Allocator const& vectorAllocator, Dispatch const &d ) const;
     template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    typename ResultValueType<Pipeline>::type createRayTracingPipelineNV( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, const RayTracingPipelineCreateInfoNV & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
+    ResultValue<Pipeline> createRayTracingPipelineNV( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, const RayTracingPipelineCreateInfoNV & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
     template<typename Allocator = std::allocator<UniquePipeline>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    typename ResultValueType<std::vector<UniqueHandle<Pipeline,Dispatch>,Allocator>>::type createRayTracingPipelinesNVUnique( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::RayTracingPipelineCreateInfoNV> createInfos, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
+    ResultValue<std::vector<UniqueHandle<Pipeline,Dispatch>,Allocator>> createRayTracingPipelinesNVUnique( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::RayTracingPipelineCreateInfoNV> createInfos, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
     template<typename Allocator = std::allocator<UniquePipeline>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    typename ResultValueType<std::vector<UniqueHandle<Pipeline,Dispatch>,Allocator>>::type createRayTracingPipelinesNVUnique( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::RayTracingPipelineCreateInfoNV> createInfos, Optional<const AllocationCallbacks> allocator, Allocator const& vectorAllocator, Dispatch const &d ) const;
+    ResultValue<std::vector<UniqueHandle<Pipeline,Dispatch>,Allocator>> createRayTracingPipelinesNVUnique( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::RayTracingPipelineCreateInfoNV> createInfos, Optional<const AllocationCallbacks> allocator, Allocator const& vectorAllocator, Dispatch const &d ) const;
     template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    typename ResultValueType<UniqueHandle<Pipeline,Dispatch>>::type createRayTracingPipelineNVUnique( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, const RayTracingPipelineCreateInfoNV & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
+    ResultValue<UniqueHandle<Pipeline,Dispatch>> createRayTracingPipelineNVUnique( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, const RayTracingPipelineCreateInfoNV & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -47424,7 +47478,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   public:
     const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceDeviceGeneratedCommandsPropertiesNV;
-    const void* pNext = {};
+    void* pNext = {};
     uint32_t maxGraphicsShaderGroupCount = {};
     uint32_t maxIndirectSequenceCount = {};
     uint32_t maxIndirectCommandsTokenCount = {};
@@ -59898,7 +59952,7 @@ namespace VULKAN_HPP_NAMESPACE
 #endif
 
   public:
-    const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eQueryPoolCreateInfoINTEL;
+    const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eQueryPoolPerformanceQueryCreateInfoINTEL;
     const void* pNext = {};
     VULKAN_HPP_NAMESPACE::QueryPoolSamplingModeINTEL performanceCountersSampling = VULKAN_HPP_NAMESPACE::QueryPoolSamplingModeINTEL::eManual;
   };
@@ -69253,36 +69307,36 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template<typename Allocator, typename Dispatch>
-  VULKAN_HPP_INLINE typename ResultValueType<std::vector<Pipeline,Allocator>>::type Device::createComputePipelines( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::ComputePipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE ResultValue<std::vector<Pipeline,Allocator>> Device::createComputePipelines( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::ComputePipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     std::vector<Pipeline,Allocator> pipelines( createInfos.size() );
     Result result = static_cast<Result>( d.vkCreateComputePipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkComputePipelineCreateInfo*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( pipelines.data() ) ) );
-    return createResultValue( result, pipelines, VULKAN_HPP_NAMESPACE_STRING"::Device::createComputePipelines" );
+    return createResultValue( result, pipelines, VULKAN_HPP_NAMESPACE_STRING"::Device::createComputePipelines", { Result::eSuccess, Result::ePipelineCompileRequiredEXT } );
   }
   template<typename Allocator, typename Dispatch>
-  VULKAN_HPP_INLINE typename ResultValueType<std::vector<Pipeline,Allocator>>::type Device::createComputePipelines( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::ComputePipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator, Allocator const& vectorAllocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE ResultValue<std::vector<Pipeline,Allocator>> Device::createComputePipelines( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::ComputePipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator, Allocator const& vectorAllocator, Dispatch const &d ) const
   {
     std::vector<Pipeline,Allocator> pipelines( createInfos.size(), vectorAllocator );
     Result result = static_cast<Result>( d.vkCreateComputePipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkComputePipelineCreateInfo*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( pipelines.data() ) ) );
-    return createResultValue( result, pipelines, VULKAN_HPP_NAMESPACE_STRING"::Device::createComputePipelines" );
+    return createResultValue( result, pipelines, VULKAN_HPP_NAMESPACE_STRING"::Device::createComputePipelines", { Result::eSuccess, Result::ePipelineCompileRequiredEXT } );
   }
   template<typename Dispatch>
-  VULKAN_HPP_INLINE typename ResultValueType<Pipeline>::type Device::createComputePipeline( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, const ComputePipelineCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE ResultValue<Pipeline> Device::createComputePipeline( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, const ComputePipelineCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     Pipeline pipeline;
     Result result = static_cast<Result>( d.vkCreateComputePipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), 1 , reinterpret_cast<const VkComputePipelineCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( &pipeline ) ) );
-    return createResultValue( result, pipeline, VULKAN_HPP_NAMESPACE_STRING"::Device::createComputePipeline" );
+    return createResultValue( result, pipeline, VULKAN_HPP_NAMESPACE_STRING"::Device::createComputePipeline", { Result::eSuccess, Result::ePipelineCompileRequiredEXT } );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Allocator, typename Dispatch>
-  VULKAN_HPP_INLINE typename ResultValueType<std::vector<UniqueHandle<Pipeline,Dispatch>,Allocator>>::type Device::createComputePipelinesUnique( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::ComputePipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE ResultValue<std::vector<UniqueHandle<Pipeline,Dispatch>,Allocator>> Device::createComputePipelinesUnique( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::ComputePipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     static_assert( sizeof( Pipeline ) <= sizeof( UniqueHandle<Pipeline, Dispatch> ), "Pipeline is greater than UniqueHandle<Pipeline, Dispatch>!" );
     std::vector<UniqueHandle<Pipeline, Dispatch>, Allocator> pipelines;
     pipelines.reserve( createInfos.size() );
     Pipeline* buffer = reinterpret_cast<Pipeline*>( reinterpret_cast<char*>( pipelines.data() ) + createInfos.size() * ( sizeof( UniqueHandle<Pipeline, Dispatch> ) - sizeof( Pipeline ) ) );
     Result result = static_cast<Result>(d.vkCreateComputePipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkComputePipelineCreateInfo*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( buffer ) ) );
-    if ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess )
+    if ( ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess ) || ( result == VULKAN_HPP_NAMESPACE::Result::ePipelineCompileRequiredEXT ) )
     {
       ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
       for ( size_t i=0 ; i<createInfos.size() ; i++ )
@@ -69291,17 +69345,17 @@ namespace VULKAN_HPP_NAMESPACE
       }
     }
 
-    return createResultValue( result, pipelines, VULKAN_HPP_NAMESPACE_STRING "::Device::createComputePipelinesUnique" );
+    return createResultValue( result, pipelines, VULKAN_HPP_NAMESPACE_STRING "::Device::createComputePipelinesUnique", { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::ePipelineCompileRequiredEXT } );
   }
   template<typename Allocator, typename Dispatch>
-  VULKAN_HPP_INLINE typename ResultValueType<std::vector<UniqueHandle<Pipeline,Dispatch>,Allocator>>::type Device::createComputePipelinesUnique( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::ComputePipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator, Allocator const& vectorAllocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE ResultValue<std::vector<UniqueHandle<Pipeline,Dispatch>,Allocator>> Device::createComputePipelinesUnique( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::ComputePipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator, Allocator const& vectorAllocator, Dispatch const &d ) const
   {
     static_assert( sizeof( Pipeline ) <= sizeof( UniqueHandle<Pipeline, Dispatch> ), "Pipeline is greater than UniqueHandle<Pipeline, Dispatch>!" );
     std::vector<UniqueHandle<Pipeline, Dispatch>, Allocator> pipelines( vectorAllocator );
     pipelines.reserve( createInfos.size() );
     Pipeline* buffer = reinterpret_cast<Pipeline*>( reinterpret_cast<char*>( pipelines.data() ) + createInfos.size() * ( sizeof( UniqueHandle<Pipeline, Dispatch> ) - sizeof( Pipeline ) ) );
     Result result = static_cast<Result>(d.vkCreateComputePipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkComputePipelineCreateInfo*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( buffer ) ) );
-    if ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess )
+    if ( ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess ) || ( result == VULKAN_HPP_NAMESPACE::Result::ePipelineCompileRequiredEXT ) )
     {
       ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
       for ( size_t i=0 ; i<createInfos.size() ; i++ )
@@ -69310,16 +69364,16 @@ namespace VULKAN_HPP_NAMESPACE
       }
     }
 
-    return createResultValue( result, pipelines, VULKAN_HPP_NAMESPACE_STRING "::Device::createComputePipelinesUnique" );
+    return createResultValue( result, pipelines, VULKAN_HPP_NAMESPACE_STRING "::Device::createComputePipelinesUnique", { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::ePipelineCompileRequiredEXT } );
   }
   template<typename Dispatch>
-  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<Pipeline,Dispatch>>::type Device::createComputePipelineUnique( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, const ComputePipelineCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE ResultValue<UniqueHandle<Pipeline,Dispatch>> Device::createComputePipelineUnique( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, const ComputePipelineCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     Pipeline pipeline;
     Result result = static_cast<Result>( d.vkCreateComputePipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), 1 , reinterpret_cast<const VkComputePipelineCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( &pipeline ) ) );
 
     ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
-    return createResultValue<Pipeline,Dispatch>( result, pipeline, VULKAN_HPP_NAMESPACE_STRING"::Device::createComputePipelineUnique", deleter );
+    return createResultValue<Pipeline,Dispatch>( result, pipeline, VULKAN_HPP_NAMESPACE_STRING"::Device::createComputePipelineUnique", { Result::eSuccess, Result::ePipelineCompileRequiredEXT }, deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -69541,36 +69595,36 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template<typename Allocator, typename Dispatch>
-  VULKAN_HPP_INLINE typename ResultValueType<std::vector<Pipeline,Allocator>>::type Device::createGraphicsPipelines( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::GraphicsPipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE ResultValue<std::vector<Pipeline,Allocator>> Device::createGraphicsPipelines( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::GraphicsPipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     std::vector<Pipeline,Allocator> pipelines( createInfos.size() );
     Result result = static_cast<Result>( d.vkCreateGraphicsPipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkGraphicsPipelineCreateInfo*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( pipelines.data() ) ) );
-    return createResultValue( result, pipelines, VULKAN_HPP_NAMESPACE_STRING"::Device::createGraphicsPipelines" );
+    return createResultValue( result, pipelines, VULKAN_HPP_NAMESPACE_STRING"::Device::createGraphicsPipelines", { Result::eSuccess, Result::ePipelineCompileRequiredEXT } );
   }
   template<typename Allocator, typename Dispatch>
-  VULKAN_HPP_INLINE typename ResultValueType<std::vector<Pipeline,Allocator>>::type Device::createGraphicsPipelines( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::GraphicsPipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator, Allocator const& vectorAllocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE ResultValue<std::vector<Pipeline,Allocator>> Device::createGraphicsPipelines( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::GraphicsPipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator, Allocator const& vectorAllocator, Dispatch const &d ) const
   {
     std::vector<Pipeline,Allocator> pipelines( createInfos.size(), vectorAllocator );
     Result result = static_cast<Result>( d.vkCreateGraphicsPipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkGraphicsPipelineCreateInfo*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( pipelines.data() ) ) );
-    return createResultValue( result, pipelines, VULKAN_HPP_NAMESPACE_STRING"::Device::createGraphicsPipelines" );
+    return createResultValue( result, pipelines, VULKAN_HPP_NAMESPACE_STRING"::Device::createGraphicsPipelines", { Result::eSuccess, Result::ePipelineCompileRequiredEXT } );
   }
   template<typename Dispatch>
-  VULKAN_HPP_INLINE typename ResultValueType<Pipeline>::type Device::createGraphicsPipeline( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, const GraphicsPipelineCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE ResultValue<Pipeline> Device::createGraphicsPipeline( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, const GraphicsPipelineCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     Pipeline pipeline;
     Result result = static_cast<Result>( d.vkCreateGraphicsPipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), 1 , reinterpret_cast<const VkGraphicsPipelineCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( &pipeline ) ) );
-    return createResultValue( result, pipeline, VULKAN_HPP_NAMESPACE_STRING"::Device::createGraphicsPipeline" );
+    return createResultValue( result, pipeline, VULKAN_HPP_NAMESPACE_STRING"::Device::createGraphicsPipeline", { Result::eSuccess, Result::ePipelineCompileRequiredEXT } );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Allocator, typename Dispatch>
-  VULKAN_HPP_INLINE typename ResultValueType<std::vector<UniqueHandle<Pipeline,Dispatch>,Allocator>>::type Device::createGraphicsPipelinesUnique( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::GraphicsPipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE ResultValue<std::vector<UniqueHandle<Pipeline,Dispatch>,Allocator>> Device::createGraphicsPipelinesUnique( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::GraphicsPipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     static_assert( sizeof( Pipeline ) <= sizeof( UniqueHandle<Pipeline, Dispatch> ), "Pipeline is greater than UniqueHandle<Pipeline, Dispatch>!" );
     std::vector<UniqueHandle<Pipeline, Dispatch>, Allocator> pipelines;
     pipelines.reserve( createInfos.size() );
     Pipeline* buffer = reinterpret_cast<Pipeline*>( reinterpret_cast<char*>( pipelines.data() ) + createInfos.size() * ( sizeof( UniqueHandle<Pipeline, Dispatch> ) - sizeof( Pipeline ) ) );
     Result result = static_cast<Result>(d.vkCreateGraphicsPipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkGraphicsPipelineCreateInfo*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( buffer ) ) );
-    if ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess )
+    if ( ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess ) || ( result == VULKAN_HPP_NAMESPACE::Result::ePipelineCompileRequiredEXT ) )
     {
       ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
       for ( size_t i=0 ; i<createInfos.size() ; i++ )
@@ -69579,17 +69633,17 @@ namespace VULKAN_HPP_NAMESPACE
       }
     }
 
-    return createResultValue( result, pipelines, VULKAN_HPP_NAMESPACE_STRING "::Device::createGraphicsPipelinesUnique" );
+    return createResultValue( result, pipelines, VULKAN_HPP_NAMESPACE_STRING "::Device::createGraphicsPipelinesUnique", { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::ePipelineCompileRequiredEXT } );
   }
   template<typename Allocator, typename Dispatch>
-  VULKAN_HPP_INLINE typename ResultValueType<std::vector<UniqueHandle<Pipeline,Dispatch>,Allocator>>::type Device::createGraphicsPipelinesUnique( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::GraphicsPipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator, Allocator const& vectorAllocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE ResultValue<std::vector<UniqueHandle<Pipeline,Dispatch>,Allocator>> Device::createGraphicsPipelinesUnique( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::GraphicsPipelineCreateInfo> createInfos, Optional<const AllocationCallbacks> allocator, Allocator const& vectorAllocator, Dispatch const &d ) const
   {
     static_assert( sizeof( Pipeline ) <= sizeof( UniqueHandle<Pipeline, Dispatch> ), "Pipeline is greater than UniqueHandle<Pipeline, Dispatch>!" );
     std::vector<UniqueHandle<Pipeline, Dispatch>, Allocator> pipelines( vectorAllocator );
     pipelines.reserve( createInfos.size() );
     Pipeline* buffer = reinterpret_cast<Pipeline*>( reinterpret_cast<char*>( pipelines.data() ) + createInfos.size() * ( sizeof( UniqueHandle<Pipeline, Dispatch> ) - sizeof( Pipeline ) ) );
     Result result = static_cast<Result>(d.vkCreateGraphicsPipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkGraphicsPipelineCreateInfo*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( buffer ) ) );
-    if ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess )
+    if ( ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess ) || ( result == VULKAN_HPP_NAMESPACE::Result::ePipelineCompileRequiredEXT ) )
     {
       ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
       for ( size_t i=0 ; i<createInfos.size() ; i++ )
@@ -69598,16 +69652,16 @@ namespace VULKAN_HPP_NAMESPACE
       }
     }
 
-    return createResultValue( result, pipelines, VULKAN_HPP_NAMESPACE_STRING "::Device::createGraphicsPipelinesUnique" );
+    return createResultValue( result, pipelines, VULKAN_HPP_NAMESPACE_STRING "::Device::createGraphicsPipelinesUnique", { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::ePipelineCompileRequiredEXT } );
   }
   template<typename Dispatch>
-  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<Pipeline,Dispatch>>::type Device::createGraphicsPipelineUnique( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, const GraphicsPipelineCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE ResultValue<UniqueHandle<Pipeline,Dispatch>> Device::createGraphicsPipelineUnique( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, const GraphicsPipelineCreateInfo & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     Pipeline pipeline;
     Result result = static_cast<Result>( d.vkCreateGraphicsPipelines( m_device, static_cast<VkPipelineCache>( pipelineCache ), 1 , reinterpret_cast<const VkGraphicsPipelineCreateInfo*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( &pipeline ) ) );
 
     ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
-    return createResultValue<Pipeline,Dispatch>( result, pipeline, VULKAN_HPP_NAMESPACE_STRING"::Device::createGraphicsPipelineUnique", deleter );
+    return createResultValue<Pipeline,Dispatch>( result, pipeline, VULKAN_HPP_NAMESPACE_STRING"::Device::createGraphicsPipelineUnique", { Result::eSuccess, Result::ePipelineCompileRequiredEXT }, deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -69780,21 +69834,21 @@ namespace VULKAN_HPP_NAMESPACE
   {
     std::vector<Pipeline,Allocator> pipelines( createInfos.size() );
     Result result = static_cast<Result>( d.vkCreateRayTracingPipelinesKHR( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkRayTracingPipelineCreateInfoKHR*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( pipelines.data() ) ) );
-    return createResultValue( result, pipelines, VULKAN_HPP_NAMESPACE_STRING"::Device::createRayTracingPipelinesKHR", { Result::eSuccess, Result::eOperationDeferredKHR, Result::eOperationNotDeferredKHR } );
+    return createResultValue( result, pipelines, VULKAN_HPP_NAMESPACE_STRING"::Device::createRayTracingPipelinesKHR", { Result::eSuccess, Result::eOperationDeferredKHR, Result::eOperationNotDeferredKHR, Result::ePipelineCompileRequiredEXT } );
   }
   template<typename Allocator, typename Dispatch>
   VULKAN_HPP_INLINE ResultValue<std::vector<Pipeline,Allocator>> Device::createRayTracingPipelinesKHR( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::RayTracingPipelineCreateInfoKHR> createInfos, Optional<const AllocationCallbacks> allocator, Allocator const& vectorAllocator, Dispatch const &d ) const
   {
     std::vector<Pipeline,Allocator> pipelines( createInfos.size(), vectorAllocator );
     Result result = static_cast<Result>( d.vkCreateRayTracingPipelinesKHR( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkRayTracingPipelineCreateInfoKHR*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( pipelines.data() ) ) );
-    return createResultValue( result, pipelines, VULKAN_HPP_NAMESPACE_STRING"::Device::createRayTracingPipelinesKHR", { Result::eSuccess, Result::eOperationDeferredKHR, Result::eOperationNotDeferredKHR } );
+    return createResultValue( result, pipelines, VULKAN_HPP_NAMESPACE_STRING"::Device::createRayTracingPipelinesKHR", { Result::eSuccess, Result::eOperationDeferredKHR, Result::eOperationNotDeferredKHR, Result::ePipelineCompileRequiredEXT } );
   }
   template<typename Dispatch>
   VULKAN_HPP_INLINE ResultValue<Pipeline> Device::createRayTracingPipelineKHR( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, const RayTracingPipelineCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     Pipeline pipeline;
     Result result = static_cast<Result>( d.vkCreateRayTracingPipelinesKHR( m_device, static_cast<VkPipelineCache>( pipelineCache ), 1 , reinterpret_cast<const VkRayTracingPipelineCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( &pipeline ) ) );
-    return createResultValue( result, pipeline, VULKAN_HPP_NAMESPACE_STRING"::Device::createRayTracingPipelineKHR", { Result::eSuccess, Result::eOperationDeferredKHR, Result::eOperationNotDeferredKHR } );
+    return createResultValue( result, pipeline, VULKAN_HPP_NAMESPACE_STRING"::Device::createRayTracingPipelineKHR", { Result::eSuccess, Result::eOperationDeferredKHR, Result::eOperationNotDeferredKHR, Result::ePipelineCompileRequiredEXT } );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Allocator, typename Dispatch>
@@ -69805,7 +69859,7 @@ namespace VULKAN_HPP_NAMESPACE
     pipelines.reserve( createInfos.size() );
     Pipeline* buffer = reinterpret_cast<Pipeline*>( reinterpret_cast<char*>( pipelines.data() ) + createInfos.size() * ( sizeof( UniqueHandle<Pipeline, Dispatch> ) - sizeof( Pipeline ) ) );
     Result result = static_cast<Result>(d.vkCreateRayTracingPipelinesKHR( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkRayTracingPipelineCreateInfoKHR*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( buffer ) ) );
-    if ( ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess ) || ( result == VULKAN_HPP_NAMESPACE::Result::eOperationDeferredKHR ) || ( result == VULKAN_HPP_NAMESPACE::Result::eOperationNotDeferredKHR ) )
+    if ( ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess ) || ( result == VULKAN_HPP_NAMESPACE::Result::eOperationDeferredKHR ) || ( result == VULKAN_HPP_NAMESPACE::Result::eOperationNotDeferredKHR ) || ( result == VULKAN_HPP_NAMESPACE::Result::ePipelineCompileRequiredEXT ) )
     {
       ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
       for ( size_t i=0 ; i<createInfos.size() ; i++ )
@@ -69814,7 +69868,7 @@ namespace VULKAN_HPP_NAMESPACE
       }
     }
 
-    return createResultValue( result, pipelines, VULKAN_HPP_NAMESPACE_STRING "::Device::createRayTracingPipelinesKHRUnique", { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eOperationDeferredKHR, VULKAN_HPP_NAMESPACE::Result::eOperationNotDeferredKHR } );
+    return createResultValue( result, pipelines, VULKAN_HPP_NAMESPACE_STRING "::Device::createRayTracingPipelinesKHRUnique", { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eOperationDeferredKHR, VULKAN_HPP_NAMESPACE::Result::eOperationNotDeferredKHR, VULKAN_HPP_NAMESPACE::Result::ePipelineCompileRequiredEXT } );
   }
   template<typename Allocator, typename Dispatch>
   VULKAN_HPP_INLINE ResultValue<std::vector<UniqueHandle<Pipeline,Dispatch>,Allocator>> Device::createRayTracingPipelinesKHRUnique( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::RayTracingPipelineCreateInfoKHR> createInfos, Optional<const AllocationCallbacks> allocator, Allocator const& vectorAllocator, Dispatch const &d ) const
@@ -69824,7 +69878,7 @@ namespace VULKAN_HPP_NAMESPACE
     pipelines.reserve( createInfos.size() );
     Pipeline* buffer = reinterpret_cast<Pipeline*>( reinterpret_cast<char*>( pipelines.data() ) + createInfos.size() * ( sizeof( UniqueHandle<Pipeline, Dispatch> ) - sizeof( Pipeline ) ) );
     Result result = static_cast<Result>(d.vkCreateRayTracingPipelinesKHR( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkRayTracingPipelineCreateInfoKHR*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( buffer ) ) );
-    if ( ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess ) || ( result == VULKAN_HPP_NAMESPACE::Result::eOperationDeferredKHR ) || ( result == VULKAN_HPP_NAMESPACE::Result::eOperationNotDeferredKHR ) )
+    if ( ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess ) || ( result == VULKAN_HPP_NAMESPACE::Result::eOperationDeferredKHR ) || ( result == VULKAN_HPP_NAMESPACE::Result::eOperationNotDeferredKHR ) || ( result == VULKAN_HPP_NAMESPACE::Result::ePipelineCompileRequiredEXT ) )
     {
       ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
       for ( size_t i=0 ; i<createInfos.size() ; i++ )
@@ -69833,7 +69887,7 @@ namespace VULKAN_HPP_NAMESPACE
       }
     }
 
-    return createResultValue( result, pipelines, VULKAN_HPP_NAMESPACE_STRING "::Device::createRayTracingPipelinesKHRUnique", { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eOperationDeferredKHR, VULKAN_HPP_NAMESPACE::Result::eOperationNotDeferredKHR } );
+    return createResultValue( result, pipelines, VULKAN_HPP_NAMESPACE_STRING "::Device::createRayTracingPipelinesKHRUnique", { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eOperationDeferredKHR, VULKAN_HPP_NAMESPACE::Result::eOperationNotDeferredKHR, VULKAN_HPP_NAMESPACE::Result::ePipelineCompileRequiredEXT } );
   }
   template<typename Dispatch>
   VULKAN_HPP_INLINE ResultValue<UniqueHandle<Pipeline,Dispatch>> Device::createRayTracingPipelineKHRUnique( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, const RayTracingPipelineCreateInfoKHR & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
@@ -69842,7 +69896,7 @@ namespace VULKAN_HPP_NAMESPACE
     Result result = static_cast<Result>( d.vkCreateRayTracingPipelinesKHR( m_device, static_cast<VkPipelineCache>( pipelineCache ), 1 , reinterpret_cast<const VkRayTracingPipelineCreateInfoKHR*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( &pipeline ) ) );
 
     ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
-    return createResultValue<Pipeline,Dispatch>( result, pipeline, VULKAN_HPP_NAMESPACE_STRING"::Device::createRayTracingPipelineKHRUnique", { Result::eSuccess, Result::eOperationDeferredKHR, Result::eOperationNotDeferredKHR }, deleter );
+    return createResultValue<Pipeline,Dispatch>( result, pipeline, VULKAN_HPP_NAMESPACE_STRING"::Device::createRayTracingPipelineKHRUnique", { Result::eSuccess, Result::eOperationDeferredKHR, Result::eOperationNotDeferredKHR, Result::ePipelineCompileRequiredEXT }, deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -69855,36 +69909,36 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template<typename Allocator, typename Dispatch>
-  VULKAN_HPP_INLINE typename ResultValueType<std::vector<Pipeline,Allocator>>::type Device::createRayTracingPipelinesNV( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::RayTracingPipelineCreateInfoNV> createInfos, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE ResultValue<std::vector<Pipeline,Allocator>> Device::createRayTracingPipelinesNV( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::RayTracingPipelineCreateInfoNV> createInfos, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     std::vector<Pipeline,Allocator> pipelines( createInfos.size() );
     Result result = static_cast<Result>( d.vkCreateRayTracingPipelinesNV( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkRayTracingPipelineCreateInfoNV*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( pipelines.data() ) ) );
-    return createResultValue( result, pipelines, VULKAN_HPP_NAMESPACE_STRING"::Device::createRayTracingPipelinesNV" );
+    return createResultValue( result, pipelines, VULKAN_HPP_NAMESPACE_STRING"::Device::createRayTracingPipelinesNV", { Result::eSuccess, Result::ePipelineCompileRequiredEXT } );
   }
   template<typename Allocator, typename Dispatch>
-  VULKAN_HPP_INLINE typename ResultValueType<std::vector<Pipeline,Allocator>>::type Device::createRayTracingPipelinesNV( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::RayTracingPipelineCreateInfoNV> createInfos, Optional<const AllocationCallbacks> allocator, Allocator const& vectorAllocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE ResultValue<std::vector<Pipeline,Allocator>> Device::createRayTracingPipelinesNV( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::RayTracingPipelineCreateInfoNV> createInfos, Optional<const AllocationCallbacks> allocator, Allocator const& vectorAllocator, Dispatch const &d ) const
   {
     std::vector<Pipeline,Allocator> pipelines( createInfos.size(), vectorAllocator );
     Result result = static_cast<Result>( d.vkCreateRayTracingPipelinesNV( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkRayTracingPipelineCreateInfoNV*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( pipelines.data() ) ) );
-    return createResultValue( result, pipelines, VULKAN_HPP_NAMESPACE_STRING"::Device::createRayTracingPipelinesNV" );
+    return createResultValue( result, pipelines, VULKAN_HPP_NAMESPACE_STRING"::Device::createRayTracingPipelinesNV", { Result::eSuccess, Result::ePipelineCompileRequiredEXT } );
   }
   template<typename Dispatch>
-  VULKAN_HPP_INLINE typename ResultValueType<Pipeline>::type Device::createRayTracingPipelineNV( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, const RayTracingPipelineCreateInfoNV & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE ResultValue<Pipeline> Device::createRayTracingPipelineNV( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, const RayTracingPipelineCreateInfoNV & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     Pipeline pipeline;
     Result result = static_cast<Result>( d.vkCreateRayTracingPipelinesNV( m_device, static_cast<VkPipelineCache>( pipelineCache ), 1 , reinterpret_cast<const VkRayTracingPipelineCreateInfoNV*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( &pipeline ) ) );
-    return createResultValue( result, pipeline, VULKAN_HPP_NAMESPACE_STRING"::Device::createRayTracingPipelineNV" );
+    return createResultValue( result, pipeline, VULKAN_HPP_NAMESPACE_STRING"::Device::createRayTracingPipelineNV", { Result::eSuccess, Result::ePipelineCompileRequiredEXT } );
   }
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template<typename Allocator, typename Dispatch>
-  VULKAN_HPP_INLINE typename ResultValueType<std::vector<UniqueHandle<Pipeline,Dispatch>,Allocator>>::type Device::createRayTracingPipelinesNVUnique( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::RayTracingPipelineCreateInfoNV> createInfos, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE ResultValue<std::vector<UniqueHandle<Pipeline,Dispatch>,Allocator>> Device::createRayTracingPipelinesNVUnique( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::RayTracingPipelineCreateInfoNV> createInfos, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     static_assert( sizeof( Pipeline ) <= sizeof( UniqueHandle<Pipeline, Dispatch> ), "Pipeline is greater than UniqueHandle<Pipeline, Dispatch>!" );
     std::vector<UniqueHandle<Pipeline, Dispatch>, Allocator> pipelines;
     pipelines.reserve( createInfos.size() );
     Pipeline* buffer = reinterpret_cast<Pipeline*>( reinterpret_cast<char*>( pipelines.data() ) + createInfos.size() * ( sizeof( UniqueHandle<Pipeline, Dispatch> ) - sizeof( Pipeline ) ) );
     Result result = static_cast<Result>(d.vkCreateRayTracingPipelinesNV( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkRayTracingPipelineCreateInfoNV*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( buffer ) ) );
-    if ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess )
+    if ( ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess ) || ( result == VULKAN_HPP_NAMESPACE::Result::ePipelineCompileRequiredEXT ) )
     {
       ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
       for ( size_t i=0 ; i<createInfos.size() ; i++ )
@@ -69893,17 +69947,17 @@ namespace VULKAN_HPP_NAMESPACE
       }
     }
 
-    return createResultValue( result, pipelines, VULKAN_HPP_NAMESPACE_STRING "::Device::createRayTracingPipelinesNVUnique" );
+    return createResultValue( result, pipelines, VULKAN_HPP_NAMESPACE_STRING "::Device::createRayTracingPipelinesNVUnique", { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::ePipelineCompileRequiredEXT } );
   }
   template<typename Allocator, typename Dispatch>
-  VULKAN_HPP_INLINE typename ResultValueType<std::vector<UniqueHandle<Pipeline,Dispatch>,Allocator>>::type Device::createRayTracingPipelinesNVUnique( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::RayTracingPipelineCreateInfoNV> createInfos, Optional<const AllocationCallbacks> allocator, Allocator const& vectorAllocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE ResultValue<std::vector<UniqueHandle<Pipeline,Dispatch>,Allocator>> Device::createRayTracingPipelinesNVUnique( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, ArrayProxy<const VULKAN_HPP_NAMESPACE::RayTracingPipelineCreateInfoNV> createInfos, Optional<const AllocationCallbacks> allocator, Allocator const& vectorAllocator, Dispatch const &d ) const
   {
     static_assert( sizeof( Pipeline ) <= sizeof( UniqueHandle<Pipeline, Dispatch> ), "Pipeline is greater than UniqueHandle<Pipeline, Dispatch>!" );
     std::vector<UniqueHandle<Pipeline, Dispatch>, Allocator> pipelines( vectorAllocator );
     pipelines.reserve( createInfos.size() );
     Pipeline* buffer = reinterpret_cast<Pipeline*>( reinterpret_cast<char*>( pipelines.data() ) + createInfos.size() * ( sizeof( UniqueHandle<Pipeline, Dispatch> ) - sizeof( Pipeline ) ) );
     Result result = static_cast<Result>(d.vkCreateRayTracingPipelinesNV( m_device, static_cast<VkPipelineCache>( pipelineCache ), createInfos.size() , reinterpret_cast<const VkRayTracingPipelineCreateInfoNV*>( createInfos.data() ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( buffer ) ) );
-    if ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess )
+    if ( ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess ) || ( result == VULKAN_HPP_NAMESPACE::Result::ePipelineCompileRequiredEXT ) )
     {
       ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
       for ( size_t i=0 ; i<createInfos.size() ; i++ )
@@ -69912,16 +69966,16 @@ namespace VULKAN_HPP_NAMESPACE
       }
     }
 
-    return createResultValue( result, pipelines, VULKAN_HPP_NAMESPACE_STRING "::Device::createRayTracingPipelinesNVUnique" );
+    return createResultValue( result, pipelines, VULKAN_HPP_NAMESPACE_STRING "::Device::createRayTracingPipelinesNVUnique", { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::ePipelineCompileRequiredEXT } );
   }
   template<typename Dispatch>
-  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<Pipeline,Dispatch>>::type Device::createRayTracingPipelineNVUnique( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, const RayTracingPipelineCreateInfoNV & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
+  VULKAN_HPP_INLINE ResultValue<UniqueHandle<Pipeline,Dispatch>> Device::createRayTracingPipelineNVUnique( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, const RayTracingPipelineCreateInfoNV & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const &d ) const
   {
     Pipeline pipeline;
     Result result = static_cast<Result>( d.vkCreateRayTracingPipelinesNV( m_device, static_cast<VkPipelineCache>( pipelineCache ), 1 , reinterpret_cast<const VkRayTracingPipelineCreateInfoNV*>( &createInfo ), reinterpret_cast<const VkAllocationCallbacks*>( static_cast<const AllocationCallbacks*>( allocator ) ), reinterpret_cast<VkPipeline*>( &pipeline ) ) );
 
     ObjectDestroy<Device,Dispatch> deleter( *this, allocator, d );
-    return createResultValue<Pipeline,Dispatch>( result, pipeline, VULKAN_HPP_NAMESPACE_STRING"::Device::createRayTracingPipelineNVUnique", deleter );
+    return createResultValue<Pipeline,Dispatch>( result, pipeline, VULKAN_HPP_NAMESPACE_STRING"::Device::createRayTracingPipelineNVUnique", { Result::eSuccess, Result::ePipelineCompileRequiredEXT }, deleter );
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/

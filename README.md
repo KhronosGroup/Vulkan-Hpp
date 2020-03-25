@@ -240,6 +240,9 @@ switch (result.result)
 }
 ```
 
+Note, that there are implicit cast operators in vk::ResultValue, which allow direct assignments of the returned value. That way, any success code is imlicitly ignored. If you want to make sure, you don't miss any such cases and correctly handle or explicitly ignore the success codes, define VULKAN_HPP_DISABLE_IMPLICIT_RESULT_VALUE_CAST before including vulkan.hpp.
+As time passes, some vulkan functions might change, such that they start to support more result codes than `vk::Result::eSuccess` as a success code. That logical change would not be visible in the C-API, but in the C++-API, as such a function would now return a `vk::ResultValue<SomeType>` instead of just `SomeType`. If you have VULKAN_HPP_DISABLE_IMPLICIT_RESULT_VALUE_CAST defined, you suddenly get compiler errors, that force you to handle the changed logic.
+
 If exception handling is disabled by defining `VULKAN_HPP_NO_EXCEPTIONS` the type of `ResultValue<SomeType>::type` is a struct holding a `vk::Result` and a `SomeType`. This struct supports unpacking the return values by using `std::tie`.
 
 In case you don’t want to use the `vk::ArrayProxy` and return value transformation you can still call the plain C-style function. Below are three examples showing the 3 ways to use the API:

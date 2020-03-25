@@ -6526,7 +6526,53 @@ namespace std
     T       value;
 
     operator std::tuple<Result&, T&>() VULKAN_HPP_NOEXCEPT { return std::tuple<Result&, T&>(result, value); }
+
+#if !defined(VULKAN_HPP_DISABLE_IMPLICIT_RESULT_VALUE_CAST)
+    operator T const& () const VULKAN_HPP_NOEXCEPT
+    {
+      return value;
+    }
+
+    operator T& () VULKAN_HPP_NOEXCEPT
+    {
+      return value;
+    }
+#endif
   };
+
+#if !defined(VULKAN_HPP_DISABLE_IMPLICIT_RESULT_VALUE_CAST)
+  template <typename Type, typename Dispatch>
+  struct ResultValue<UniqueHandle<Type,Dispatch>>
+  {
+#ifdef VULKAN_HPP_HAS_NOEXCEPT
+    ResultValue(Result r, UniqueHandle<Type, Dispatch> & v) VULKAN_HPP_NOEXCEPT
+#else
+    ResultValue(Result r, UniqueHandle<Type, Dispatch>& v)
+#endif
+      : result(r)
+      , value(v)
+    {}
+
+#ifdef VULKAN_HPP_HAS_NOEXCEPT
+    ResultValue(Result r, UniqueHandle<Type, Dispatch> && v) VULKAN_HPP_NOEXCEPT
+#else
+    ResultValue(Result r, UniqueHandle<Type, Dispatch> && v)
+#endif
+      : result(r)
+      , value(std::move(v))
+    {}
+
+    Result                        result;
+    UniqueHandle<Type, Dispatch>  value;
+
+    operator std::tuple<Result&, UniqueHandle<Type, Dispatch>&>() VULKAN_HPP_NOEXCEPT { return std::tuple<Result&, UniqueHandle<Type, Dispatch>&>(result, value); }
+
+    operator UniqueHandle<Type, Dispatch>() VULKAN_HPP_NOEXCEPT
+    {
+      return std::move(value);
+    }
+  };
+#endif
 
   template <typename T>
   struct ResultValueType
@@ -6621,6 +6667,22 @@ namespace std
       throwResultException( result, message );
     }
     return UniqueHandle<T,D>(data, deleter);
+#endif
+  }
+
+  template <typename T, typename D>
+  VULKAN_HPP_INLINE ResultValue<UniqueHandle<T,D>> createResultValue( Result result, T & data, char const * message, std::initializer_list<Result> successCodes, typename UniqueHandleTraits<T,D>::deleter const& deleter )
+  {
+#ifdef VULKAN_HPP_NO_EXCEPTIONS
+    ignore(message);
+    VULKAN_HPP_ASSERT( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );
+    return ResultValue<UniqueHandle<T,D>>( result, UniqueHandle<T,D>(data, deleter) );
+#else
+    if ( std::find( successCodes.begin(), successCodes.end(), result ) == successCodes.end() )
+    {
+      throwResultException( result, message );
+    }
+    return ResultValue<UniqueHandle<T,D>>( result, UniqueHandle<T,D>(data, deleter) );
 #endif
   }
 #endif

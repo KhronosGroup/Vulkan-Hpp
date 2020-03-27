@@ -1978,8 +1978,7 @@ void VulkanHppGenerator::appendFunctionBodyEnhancedVectorOfUniqueHandles(std::st
 {
   std::string const stringTemplate =
     R"(${i}  static_assert( sizeof( ${type} ) <= sizeof( UniqueHandle<${type}, Dispatch> ), "${type} is greater than UniqueHandle<${type}, Dispatch>!" );
-${i}  std::vector<UniqueHandle<${type}, Dispatch>, Allocator> ${typeVariable}s${allocator};
-${i}  ${typeVariable}s.reserve( ${vectorSize} );
+${i}  std::vector<UniqueHandle<${type}, Dispatch>, Allocator> ${typeVariable}s(${vectorSize}${allocator});
 ${i}  ${type}* buffer = reinterpret_cast<${type}*>( reinterpret_cast<char*>( ${typeVariable}s.data() ) + ${vectorSize} * ( sizeof( UniqueHandle<${type}, Dispatch> ) - sizeof( ${type} ) ) );
 ${i}  Result result = static_cast<Result>(d.vk${command}( m_device, ${arguments}, reinterpret_cast<Vk${type}*>( buffer ) ) );
 ${i}  if ( ${successChecks} )
@@ -2024,7 +2023,7 @@ ${i}  return createResultValue( result, ${typeVariable}s, VULKAN_HPP_NAMESPACE_S
   bool isCreateFunction = (name.substr(2, 6) == "Create");
   str += replaceWithMap(stringTemplate, std::map<std::string, std::string>
   {
-    { "allocator", withAllocator ? "( vectorAllocator )" : "" },
+    { "allocator", withAllocator ? ", vectorAllocator" : "" },
     { "arguments", arguments },
     { "class", stripPrefix(handle, "Vk") },
     { "command", stripPrefix(name, "vk") },

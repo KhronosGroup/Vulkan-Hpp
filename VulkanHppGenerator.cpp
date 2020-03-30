@@ -2679,6 +2679,36 @@ void VulkanHppGenerator::appendHandlesCommandDefintions(std::string & str) const
   str += "\n";
 }
 
+void VulkanHppGenerator::appendHashStructures(std::string& str) const
+{
+  str += "\n"
+    "namespace std\n"
+    "{\n";
+
+  const std::string hashTemplate = R"(  template <> struct hash<vk::${type}>
+  {
+    std::size_t operator()(vk::${type} const& ${name}) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<Vk${type}>{}(static_cast<Vk${type}>(${name}));
+    }
+  };
+)";
+  for (auto handle : m_handles)
+  {
+    if (!handle.first.empty())
+    {
+      str += "\n";
+      appendPlatformEnter(str, !handle.second.alias.empty(), handle.second.platform);
+      std::string type = stripPrefix(handle.first, "Vk");
+      std::string name = startLowerCase(type);
+      str += replaceWithMap(hashTemplate, { {"name", name}, {"type", type} });
+      appendPlatformLeave(str, !handle.second.alias.empty(), handle.second.platform);
+    }
+  }
+
+  str += "}\n";
+}
+
 // Intended only for `enum class Result`!
 void VulkanHppGenerator::appendResultExceptions(std::string & str) const
 {
@@ -6443,6 +6473,7 @@ int main(int argc, char **argv)
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
+#include <functional>
 #include <initializer_list>
 #include <string>
 #include <system_error>
@@ -6756,8 +6787,9 @@ namespace std
     generator.appendHandlesCommandDefintions(str);
     generator.appendStructureChainValidation(str);
     generator.appendDispatchLoaderDynamic(str);
-    str += "} // namespace VULKAN_HPP_NAMESPACE\n"
-      "#endif\n";
+    str += "} // namespace VULKAN_HPP_NAMESPACE\n";
+    generator.appendHashStructures(str);
+    str += "#endif\n";
 
     assert(str.length() < estimatedLength);
     cleanup(str);

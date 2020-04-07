@@ -34,6 +34,7 @@ class VulkanHppGenerator
     void appendForwardDeclarations(std::string & str) const;
     void appendHandles(std::string & str) const;
     void appendHandlesCommandDefintions(std::string & str) const;
+    void appendHashStructures(std::string& str) const;
     void appendResultExceptions(std::string & str) const;
     void appendStructs(std::string & str) const;
     void appendStructureChainValidation(std::string & str);

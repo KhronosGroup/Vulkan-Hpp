@@ -39,6 +39,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
+#include <functional>
 #include <initializer_list>
 #include <string>
 #include <system_error>
@@ -77967,4 +77968,313 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
 } // namespace VULKAN_HPP_NAMESPACE
+
+namespace std
+{
+  template <> struct hash<vk::AccelerationStructureKHR>
+  {
+    std::size_t operator()(vk::AccelerationStructureKHR const& accelerationStructureKHR) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkAccelerationStructureKHR>{}(static_cast<VkAccelerationStructureKHR>(accelerationStructureKHR));
+    }
+  };
+
+  template <> struct hash<vk::Buffer>
+  {
+    std::size_t operator()(vk::Buffer const& buffer) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkBuffer>{}(static_cast<VkBuffer>(buffer));
+    }
+  };
+
+  template <> struct hash<vk::BufferView>
+  {
+    std::size_t operator()(vk::BufferView const& bufferView) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkBufferView>{}(static_cast<VkBufferView>(bufferView));
+    }
+  };
+
+  template <> struct hash<vk::CommandBuffer>
+  {
+    std::size_t operator()(vk::CommandBuffer const& commandBuffer) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkCommandBuffer>{}(static_cast<VkCommandBuffer>(commandBuffer));
+    }
+  };
+
+  template <> struct hash<vk::CommandPool>
+  {
+    std::size_t operator()(vk::CommandPool const& commandPool) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkCommandPool>{}(static_cast<VkCommandPool>(commandPool));
+    }
+  };
+
+  template <> struct hash<vk::DebugReportCallbackEXT>
+  {
+    std::size_t operator()(vk::DebugReportCallbackEXT const& debugReportCallbackEXT) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkDebugReportCallbackEXT>{}(static_cast<VkDebugReportCallbackEXT>(debugReportCallbackEXT));
+    }
+  };
+
+  template <> struct hash<vk::DebugUtilsMessengerEXT>
+  {
+    std::size_t operator()(vk::DebugUtilsMessengerEXT const& debugUtilsMessengerEXT) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkDebugUtilsMessengerEXT>{}(static_cast<VkDebugUtilsMessengerEXT>(debugUtilsMessengerEXT));
+    }
+  };
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> struct hash<vk::DeferredOperationKHR>
+  {
+    std::size_t operator()(vk::DeferredOperationKHR const& deferredOperationKHR) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkDeferredOperationKHR>{}(static_cast<VkDeferredOperationKHR>(deferredOperationKHR));
+    }
+  };
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
+  template <> struct hash<vk::DescriptorPool>
+  {
+    std::size_t operator()(vk::DescriptorPool const& descriptorPool) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkDescriptorPool>{}(static_cast<VkDescriptorPool>(descriptorPool));
+    }
+  };
+
+  template <> struct hash<vk::DescriptorSet>
+  {
+    std::size_t operator()(vk::DescriptorSet const& descriptorSet) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkDescriptorSet>{}(static_cast<VkDescriptorSet>(descriptorSet));
+    }
+  };
+
+  template <> struct hash<vk::DescriptorSetLayout>
+  {
+    std::size_t operator()(vk::DescriptorSetLayout const& descriptorSetLayout) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkDescriptorSetLayout>{}(static_cast<VkDescriptorSetLayout>(descriptorSetLayout));
+    }
+  };
+
+  template <> struct hash<vk::DescriptorUpdateTemplate>
+  {
+    std::size_t operator()(vk::DescriptorUpdateTemplate const& descriptorUpdateTemplate) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkDescriptorUpdateTemplate>{}(static_cast<VkDescriptorUpdateTemplate>(descriptorUpdateTemplate));
+    }
+  };
+
+  template <> struct hash<vk::Device>
+  {
+    std::size_t operator()(vk::Device const& device) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkDevice>{}(static_cast<VkDevice>(device));
+    }
+  };
+
+  template <> struct hash<vk::DeviceMemory>
+  {
+    std::size_t operator()(vk::DeviceMemory const& deviceMemory) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkDeviceMemory>{}(static_cast<VkDeviceMemory>(deviceMemory));
+    }
+  };
+
+  template <> struct hash<vk::DisplayKHR>
+  {
+    std::size_t operator()(vk::DisplayKHR const& displayKHR) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkDisplayKHR>{}(static_cast<VkDisplayKHR>(displayKHR));
+    }
+  };
+
+  template <> struct hash<vk::DisplayModeKHR>
+  {
+    std::size_t operator()(vk::DisplayModeKHR const& displayModeKHR) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkDisplayModeKHR>{}(static_cast<VkDisplayModeKHR>(displayModeKHR));
+    }
+  };
+
+  template <> struct hash<vk::Event>
+  {
+    std::size_t operator()(vk::Event const& event) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkEvent>{}(static_cast<VkEvent>(event));
+    }
+  };
+
+  template <> struct hash<vk::Fence>
+  {
+    std::size_t operator()(vk::Fence const& fence) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkFence>{}(static_cast<VkFence>(fence));
+    }
+  };
+
+  template <> struct hash<vk::Framebuffer>
+  {
+    std::size_t operator()(vk::Framebuffer const& framebuffer) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkFramebuffer>{}(static_cast<VkFramebuffer>(framebuffer));
+    }
+  };
+
+  template <> struct hash<vk::Image>
+  {
+    std::size_t operator()(vk::Image const& image) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkImage>{}(static_cast<VkImage>(image));
+    }
+  };
+
+  template <> struct hash<vk::ImageView>
+  {
+    std::size_t operator()(vk::ImageView const& imageView) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkImageView>{}(static_cast<VkImageView>(imageView));
+    }
+  };
+
+  template <> struct hash<vk::IndirectCommandsLayoutNV>
+  {
+    std::size_t operator()(vk::IndirectCommandsLayoutNV const& indirectCommandsLayoutNV) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkIndirectCommandsLayoutNV>{}(static_cast<VkIndirectCommandsLayoutNV>(indirectCommandsLayoutNV));
+    }
+  };
+
+  template <> struct hash<vk::Instance>
+  {
+    std::size_t operator()(vk::Instance const& instance) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkInstance>{}(static_cast<VkInstance>(instance));
+    }
+  };
+
+  template <> struct hash<vk::PerformanceConfigurationINTEL>
+  {
+    std::size_t operator()(vk::PerformanceConfigurationINTEL const& performanceConfigurationINTEL) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkPerformanceConfigurationINTEL>{}(static_cast<VkPerformanceConfigurationINTEL>(performanceConfigurationINTEL));
+    }
+  };
+
+  template <> struct hash<vk::PhysicalDevice>
+  {
+    std::size_t operator()(vk::PhysicalDevice const& physicalDevice) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkPhysicalDevice>{}(static_cast<VkPhysicalDevice>(physicalDevice));
+    }
+  };
+
+  template <> struct hash<vk::Pipeline>
+  {
+    std::size_t operator()(vk::Pipeline const& pipeline) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkPipeline>{}(static_cast<VkPipeline>(pipeline));
+    }
+  };
+
+  template <> struct hash<vk::PipelineCache>
+  {
+    std::size_t operator()(vk::PipelineCache const& pipelineCache) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkPipelineCache>{}(static_cast<VkPipelineCache>(pipelineCache));
+    }
+  };
+
+  template <> struct hash<vk::PipelineLayout>
+  {
+    std::size_t operator()(vk::PipelineLayout const& pipelineLayout) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkPipelineLayout>{}(static_cast<VkPipelineLayout>(pipelineLayout));
+    }
+  };
+
+  template <> struct hash<vk::QueryPool>
+  {
+    std::size_t operator()(vk::QueryPool const& queryPool) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkQueryPool>{}(static_cast<VkQueryPool>(queryPool));
+    }
+  };
+
+  template <> struct hash<vk::Queue>
+  {
+    std::size_t operator()(vk::Queue const& queue) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkQueue>{}(static_cast<VkQueue>(queue));
+    }
+  };
+
+  template <> struct hash<vk::RenderPass>
+  {
+    std::size_t operator()(vk::RenderPass const& renderPass) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkRenderPass>{}(static_cast<VkRenderPass>(renderPass));
+    }
+  };
+
+  template <> struct hash<vk::Sampler>
+  {
+    std::size_t operator()(vk::Sampler const& sampler) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkSampler>{}(static_cast<VkSampler>(sampler));
+    }
+  };
+
+  template <> struct hash<vk::SamplerYcbcrConversion>
+  {
+    std::size_t operator()(vk::SamplerYcbcrConversion const& samplerYcbcrConversion) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkSamplerYcbcrConversion>{}(static_cast<VkSamplerYcbcrConversion>(samplerYcbcrConversion));
+    }
+  };
+
+  template <> struct hash<vk::Semaphore>
+  {
+    std::size_t operator()(vk::Semaphore const& semaphore) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkSemaphore>{}(static_cast<VkSemaphore>(semaphore));
+    }
+  };
+
+  template <> struct hash<vk::ShaderModule>
+  {
+    std::size_t operator()(vk::ShaderModule const& shaderModule) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkShaderModule>{}(static_cast<VkShaderModule>(shaderModule));
+    }
+  };
+
+  template <> struct hash<vk::SurfaceKHR>
+  {
+    std::size_t operator()(vk::SurfaceKHR const& surfaceKHR) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkSurfaceKHR>{}(static_cast<VkSurfaceKHR>(surfaceKHR));
+    }
+  };
+
+  template <> struct hash<vk::SwapchainKHR>
+  {
+    std::size_t operator()(vk::SwapchainKHR const& swapchainKHR) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkSwapchainKHR>{}(static_cast<VkSwapchainKHR>(swapchainKHR));
+    }
+  };
+
+  template <> struct hash<vk::ValidationCacheEXT>
+  {
+    std::size_t operator()(vk::ValidationCacheEXT const& validationCacheEXT) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkValidationCacheEXT>{}(static_cast<VkValidationCacheEXT>(validationCacheEXT));
+    }
+  };
+}
 #endif

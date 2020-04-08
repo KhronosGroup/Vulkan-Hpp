@@ -4357,7 +4357,7 @@ void VulkanHppGenerator::readExtensionDisabledEnum(std::string const& extensionN
 {
   int line = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes(element);
-  checkAttributes(line, attributes, { { "name",{} } }, { { "bitpos",{} },{ "extends",{} },{ "offset",{} },{ "value",{} } });
+  checkAttributes(line, attributes, { { "name",{} } }, { { "alias", {} }, { "bitpos",{} },{ "extends",{} },{ "offset",{} },{ "value",{} } });
   checkElements(line, getChildElements(element), {});
 
   std::string extends, name;

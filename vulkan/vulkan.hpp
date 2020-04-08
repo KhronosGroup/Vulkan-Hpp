@@ -82,7 +82,7 @@
 # include <compare>
 #endif
 
-static_assert( VK_HEADER_VERSION ==  136 , "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION ==  137 , "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -2167,6 +2167,11 @@ namespace VULKAN_HPP_NAMESPACE
       return ::vkGetImageSubresourceLayout( device, image, pSubresource, pLayout );
     }
 
+    VkResult vkGetImageViewAddressNVX( VkDevice device, VkImageView imageView, VkImageViewAddressPropertiesNVX* pProperties ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkGetImageViewAddressNVX( device, imageView, pProperties );
+    }
+
     uint32_t vkGetImageViewHandleNVX( VkDevice device, const VkImageViewHandleInfoNVX* pInfo ) const VULKAN_HPP_NOEXCEPT
     {
       return ::vkGetImageViewHandleNVX( device, pInfo );
@@ -3377,7 +3382,8 @@ namespace VULKAN_HPP_NAMESPACE
   enum class AttachmentStoreOp
   {
     eStore = VK_ATTACHMENT_STORE_OP_STORE,
-    eDontCare = VK_ATTACHMENT_STORE_OP_DONT_CARE
+    eDontCare = VK_ATTACHMENT_STORE_OP_DONT_CARE,
+    eNoneQCOM = VK_ATTACHMENT_STORE_OP_NONE_QCOM
   };
 
   VULKAN_HPP_INLINE std::string to_string( AttachmentStoreOp value )
@@ -3386,6 +3392,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       case AttachmentStoreOp::eStore : return "Store";
       case AttachmentStoreOp::eDontCare : return "DontCare";
+      case AttachmentStoreOp::eNoneQCOM : return "NoneQCOM";
       default: return "invalid";
     }
   }
@@ -7697,6 +7704,7 @@ namespace VULKAN_HPP_NAMESPACE
     ePhysicalDeviceTransformFeedbackPropertiesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TRANSFORM_FEEDBACK_PROPERTIES_EXT,
     ePipelineRasterizationStateStreamCreateInfoEXT = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_STREAM_CREATE_INFO_EXT,
     eImageViewHandleInfoNVX = VK_STRUCTURE_TYPE_IMAGE_VIEW_HANDLE_INFO_NVX,
+    eImageViewAddressPropertiesNVX = VK_STRUCTURE_TYPE_IMAGE_VIEW_ADDRESS_PROPERTIES_NVX,
     eTextureLodGatherFormatPropertiesAMD = VK_STRUCTURE_TYPE_TEXTURE_LOD_GATHER_FORMAT_PROPERTIES_AMD,
     eStreamDescriptorSurfaceCreateInfoGGP = VK_STRUCTURE_TYPE_STREAM_DESCRIPTOR_SURFACE_CREATE_INFO_GGP,
     ePhysicalDeviceCornerSampledImageFeaturesNV = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CORNER_SAMPLED_IMAGE_FEATURES_NV,
@@ -7801,7 +7809,6 @@ namespace VULKAN_HPP_NAMESPACE
     eAccelerationStructureGeometryInstancesDataKHR = VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_INSTANCES_DATA_KHR,
     eAccelerationStructureGeometryTrianglesDataKHR = VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_TRIANGLES_DATA_KHR,
     eAccelerationStructureGeometryKHR = VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_KHR,
-    eAccelerationStructureInfoKHR = VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_INFO_KHR,
     eAccelerationStructureMemoryRequirementsInfoKHR = VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_MEMORY_REQUIREMENTS_INFO_KHR,
     eAccelerationStructureVersionKHR = VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_VERSION_KHR,
     eCopyAccelerationStructureInfoKHR = VK_STRUCTURE_TYPE_COPY_ACCELERATION_STRUCTURE_INFO_KHR,
@@ -8246,6 +8253,7 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceTransformFeedbackPropertiesEXT : return "PhysicalDeviceTransformFeedbackPropertiesEXT";
       case StructureType::ePipelineRasterizationStateStreamCreateInfoEXT : return "PipelineRasterizationStateStreamCreateInfoEXT";
       case StructureType::eImageViewHandleInfoNVX : return "ImageViewHandleInfoNVX";
+      case StructureType::eImageViewAddressPropertiesNVX : return "ImageViewAddressPropertiesNVX";
       case StructureType::eTextureLodGatherFormatPropertiesAMD : return "TextureLodGatherFormatPropertiesAMD";
       case StructureType::eStreamDescriptorSurfaceCreateInfoGGP : return "StreamDescriptorSurfaceCreateInfoGGP";
       case StructureType::ePhysicalDeviceCornerSampledImageFeaturesNV : return "PhysicalDeviceCornerSampledImageFeaturesNV";
@@ -8350,7 +8358,6 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eAccelerationStructureGeometryInstancesDataKHR : return "AccelerationStructureGeometryInstancesDataKHR";
       case StructureType::eAccelerationStructureGeometryTrianglesDataKHR : return "AccelerationStructureGeometryTrianglesDataKHR";
       case StructureType::eAccelerationStructureGeometryKHR : return "AccelerationStructureGeometryKHR";
-      case StructureType::eAccelerationStructureInfoKHR : return "AccelerationStructureInfoKHR";
       case StructureType::eAccelerationStructureMemoryRequirementsInfoKHR : return "AccelerationStructureMemoryRequirementsInfoKHR";
       case StructureType::eAccelerationStructureVersionKHR : return "AccelerationStructureVersionKHR";
       case StructureType::eCopyAccelerationStructureInfoKHR : return "CopyAccelerationStructureInfoKHR";
@@ -13531,6 +13538,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct ImageSubresourceRange;
   struct ImageSwapchainCreateInfoKHR;
   struct ImageViewASTCDecodeModeEXT;
+  struct ImageViewAddressPropertiesNVX;
   struct ImageViewCreateInfo;
   struct ImageViewHandleInfoNVX;
   struct ImageViewUsageCreateInfo;
@@ -18852,6 +18860,13 @@ namespace VULKAN_HPP_NAMESPACE
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     VULKAN_HPP_NAMESPACE::SubresourceLayout getImageSubresourceLayout( VULKAN_HPP_NAMESPACE::Image image, const ImageSubresource & subresource, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const VULKAN_HPP_NOEXCEPT;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    Result getImageViewAddressNVX( VULKAN_HPP_NAMESPACE::ImageView imageView, VULKAN_HPP_NAMESPACE::ImageViewAddressPropertiesNVX* pProperties, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    typename ResultValueType<VULKAN_HPP_NAMESPACE::ImageViewAddressPropertiesNVX>::type getImageViewAddressNVX( VULKAN_HPP_NAMESPACE::ImageView imageView, Dispatch const &d = VULKAN_HPP_DEFAULT_DISPATCHER ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template<typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
@@ -37613,6 +37628,36 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
+    GeneratedCommandsMemoryRequirementsInfoNV & setPNext( const void* pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    GeneratedCommandsMemoryRequirementsInfoNV & setPipelineBindPoint( VULKAN_HPP_NAMESPACE::PipelineBindPoint pipelineBindPoint_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pipelineBindPoint = pipelineBindPoint_;
+      return *this;
+    }
+
+    GeneratedCommandsMemoryRequirementsInfoNV & setPipeline( VULKAN_HPP_NAMESPACE::Pipeline pipeline_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pipeline = pipeline_;
+      return *this;
+    }
+
+    GeneratedCommandsMemoryRequirementsInfoNV & setIndirectCommandsLayout( VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutNV indirectCommandsLayout_ ) VULKAN_HPP_NOEXCEPT
+    {
+      indirectCommandsLayout = indirectCommandsLayout_;
+      return *this;
+    }
+
+    GeneratedCommandsMemoryRequirementsInfoNV & setMaxSequencesCount( uint32_t maxSequencesCount_ ) VULKAN_HPP_NOEXCEPT
+    {
+      maxSequencesCount = maxSequencesCount_;
+      return *this;
+    }
+
     operator VkGeneratedCommandsMemoryRequirementsInfoNV const&() const VULKAN_HPP_NOEXCEPT
     {
       return *reinterpret_cast<const VkGeneratedCommandsMemoryRequirementsInfoNV*>( this );
@@ -41586,6 +41631,67 @@ namespace VULKAN_HPP_NAMESPACE
   };
   static_assert( sizeof( ImageViewASTCDecodeModeEXT ) == sizeof( VkImageViewASTCDecodeModeEXT ), "struct and wrapper have different size!" );
   static_assert( std::is_standard_layout<ImageViewASTCDecodeModeEXT>::value, "struct wrapper is not a standard layout!" );
+
+  struct ImageViewAddressPropertiesNVX
+  {
+    VULKAN_HPP_CONSTEXPR ImageViewAddressPropertiesNVX( VULKAN_HPP_NAMESPACE::DeviceAddress deviceAddress_ = {},
+                                                        VULKAN_HPP_NAMESPACE::DeviceSize size_ = {} ) VULKAN_HPP_NOEXCEPT
+      : deviceAddress( deviceAddress_ )
+      , size( size_ )
+    {}
+
+    ImageViewAddressPropertiesNVX & operator=( ImageViewAddressPropertiesNVX const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      memcpy( &pNext, &rhs.pNext, sizeof( ImageViewAddressPropertiesNVX ) - offsetof( ImageViewAddressPropertiesNVX, pNext ) );
+      return *this;
+    }
+
+    ImageViewAddressPropertiesNVX( VkImageViewAddressPropertiesNVX const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = rhs;
+    }
+
+    ImageViewAddressPropertiesNVX& operator=( VkImageViewAddressPropertiesNVX const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::ImageViewAddressPropertiesNVX const *>(&rhs);
+      return *this;
+    }
+
+    operator VkImageViewAddressPropertiesNVX const&() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkImageViewAddressPropertiesNVX*>( this );
+    }
+
+    operator VkImageViewAddressPropertiesNVX &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkImageViewAddressPropertiesNVX*>( this );
+    }
+
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ImageViewAddressPropertiesNVX const& ) const = default;
+#else
+    bool operator==( ImageViewAddressPropertiesNVX const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType )
+          && ( pNext == rhs.pNext )
+          && ( deviceAddress == rhs.deviceAddress )
+          && ( size == rhs.size );
+    }
+
+    bool operator!=( ImageViewAddressPropertiesNVX const& rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    const VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::eImageViewAddressPropertiesNVX;
+    void* pNext = {};
+    VULKAN_HPP_NAMESPACE::DeviceAddress deviceAddress = {};
+    VULKAN_HPP_NAMESPACE::DeviceSize size = {};
+  };
+  static_assert( sizeof( ImageViewAddressPropertiesNVX ) == sizeof( VkImageViewAddressPropertiesNVX ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<ImageViewAddressPropertiesNVX>::value, "struct wrapper is not a standard layout!" );
 
   struct ImageViewCreateInfo
   {
@@ -54735,102 +54841,6 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    PhysicalDeviceVulkan11Properties & setPNext( void* pNext_ ) VULKAN_HPP_NOEXCEPT
-    {
-      pNext = pNext_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan11Properties & setDeviceUUID( std::array<uint8_t,VK_UUID_SIZE> deviceUUID_ ) VULKAN_HPP_NOEXCEPT
-    {
-      deviceUUID = deviceUUID_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan11Properties & setDriverUUID( std::array<uint8_t,VK_UUID_SIZE> driverUUID_ ) VULKAN_HPP_NOEXCEPT
-    {
-      driverUUID = driverUUID_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan11Properties & setDeviceLUID( std::array<uint8_t,VK_LUID_SIZE> deviceLUID_ ) VULKAN_HPP_NOEXCEPT
-    {
-      deviceLUID = deviceLUID_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan11Properties & setDeviceNodeMask( uint32_t deviceNodeMask_ ) VULKAN_HPP_NOEXCEPT
-    {
-      deviceNodeMask = deviceNodeMask_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan11Properties & setDeviceLUIDValid( VULKAN_HPP_NAMESPACE::Bool32 deviceLUIDValid_ ) VULKAN_HPP_NOEXCEPT
-    {
-      deviceLUIDValid = deviceLUIDValid_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan11Properties & setSubgroupSize( uint32_t subgroupSize_ ) VULKAN_HPP_NOEXCEPT
-    {
-      subgroupSize = subgroupSize_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan11Properties & setSubgroupSupportedStages( VULKAN_HPP_NAMESPACE::ShaderStageFlags subgroupSupportedStages_ ) VULKAN_HPP_NOEXCEPT
-    {
-      subgroupSupportedStages = subgroupSupportedStages_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan11Properties & setSubgroupSupportedOperations( VULKAN_HPP_NAMESPACE::SubgroupFeatureFlags subgroupSupportedOperations_ ) VULKAN_HPP_NOEXCEPT
-    {
-      subgroupSupportedOperations = subgroupSupportedOperations_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan11Properties & setSubgroupQuadOperationsInAllStages( VULKAN_HPP_NAMESPACE::Bool32 subgroupQuadOperationsInAllStages_ ) VULKAN_HPP_NOEXCEPT
-    {
-      subgroupQuadOperationsInAllStages = subgroupQuadOperationsInAllStages_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan11Properties & setPointClippingBehavior( VULKAN_HPP_NAMESPACE::PointClippingBehavior pointClippingBehavior_ ) VULKAN_HPP_NOEXCEPT
-    {
-      pointClippingBehavior = pointClippingBehavior_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan11Properties & setMaxMultiviewViewCount( uint32_t maxMultiviewViewCount_ ) VULKAN_HPP_NOEXCEPT
-    {
-      maxMultiviewViewCount = maxMultiviewViewCount_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan11Properties & setMaxMultiviewInstanceIndex( uint32_t maxMultiviewInstanceIndex_ ) VULKAN_HPP_NOEXCEPT
-    {
-      maxMultiviewInstanceIndex = maxMultiviewInstanceIndex_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan11Properties & setProtectedNoFault( VULKAN_HPP_NAMESPACE::Bool32 protectedNoFault_ ) VULKAN_HPP_NOEXCEPT
-    {
-      protectedNoFault = protectedNoFault_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan11Properties & setMaxPerSetDescriptors( uint32_t maxPerSetDescriptors_ ) VULKAN_HPP_NOEXCEPT
-    {
-      maxPerSetDescriptors = maxPerSetDescriptors_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan11Properties & setMaxMemoryAllocationSize( VULKAN_HPP_NAMESPACE::DeviceSize maxMemoryAllocationSize_ ) VULKAN_HPP_NOEXCEPT
-    {
-      maxMemoryAllocationSize = maxMemoryAllocationSize_;
-      return *this;
-    }
-
     operator VkPhysicalDeviceVulkan11Properties const&() const VULKAN_HPP_NOEXCEPT
     {
       return *reinterpret_cast<const VkPhysicalDeviceVulkan11Properties*>( this );
@@ -55544,324 +55554,6 @@ namespace VULKAN_HPP_NAMESPACE
     PhysicalDeviceVulkan12Properties& operator=( VkPhysicalDeviceVulkan12Properties const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::PhysicalDeviceVulkan12Properties const *>(&rhs);
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setPNext( void* pNext_ ) VULKAN_HPP_NOEXCEPT
-    {
-      pNext = pNext_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setDriverID( VULKAN_HPP_NAMESPACE::DriverId driverID_ ) VULKAN_HPP_NOEXCEPT
-    {
-      driverID = driverID_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setDriverName( std::array<char,VK_MAX_DRIVER_NAME_SIZE> driverName_ ) VULKAN_HPP_NOEXCEPT
-    {
-      driverName = driverName_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setDriverInfo( std::array<char,VK_MAX_DRIVER_INFO_SIZE> driverInfo_ ) VULKAN_HPP_NOEXCEPT
-    {
-      driverInfo = driverInfo_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setConformanceVersion( VULKAN_HPP_NAMESPACE::ConformanceVersion conformanceVersion_ ) VULKAN_HPP_NOEXCEPT
-    {
-      conformanceVersion = conformanceVersion_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setDenormBehaviorIndependence( VULKAN_HPP_NAMESPACE::ShaderFloatControlsIndependence denormBehaviorIndependence_ ) VULKAN_HPP_NOEXCEPT
-    {
-      denormBehaviorIndependence = denormBehaviorIndependence_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setRoundingModeIndependence( VULKAN_HPP_NAMESPACE::ShaderFloatControlsIndependence roundingModeIndependence_ ) VULKAN_HPP_NOEXCEPT
-    {
-      roundingModeIndependence = roundingModeIndependence_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setShaderSignedZeroInfNanPreserveFloat16( VULKAN_HPP_NAMESPACE::Bool32 shaderSignedZeroInfNanPreserveFloat16_ ) VULKAN_HPP_NOEXCEPT
-    {
-      shaderSignedZeroInfNanPreserveFloat16 = shaderSignedZeroInfNanPreserveFloat16_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setShaderSignedZeroInfNanPreserveFloat32( VULKAN_HPP_NAMESPACE::Bool32 shaderSignedZeroInfNanPreserveFloat32_ ) VULKAN_HPP_NOEXCEPT
-    {
-      shaderSignedZeroInfNanPreserveFloat32 = shaderSignedZeroInfNanPreserveFloat32_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setShaderSignedZeroInfNanPreserveFloat64( VULKAN_HPP_NAMESPACE::Bool32 shaderSignedZeroInfNanPreserveFloat64_ ) VULKAN_HPP_NOEXCEPT
-    {
-      shaderSignedZeroInfNanPreserveFloat64 = shaderSignedZeroInfNanPreserveFloat64_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setShaderDenormPreserveFloat16( VULKAN_HPP_NAMESPACE::Bool32 shaderDenormPreserveFloat16_ ) VULKAN_HPP_NOEXCEPT
-    {
-      shaderDenormPreserveFloat16 = shaderDenormPreserveFloat16_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setShaderDenormPreserveFloat32( VULKAN_HPP_NAMESPACE::Bool32 shaderDenormPreserveFloat32_ ) VULKAN_HPP_NOEXCEPT
-    {
-      shaderDenormPreserveFloat32 = shaderDenormPreserveFloat32_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setShaderDenormPreserveFloat64( VULKAN_HPP_NAMESPACE::Bool32 shaderDenormPreserveFloat64_ ) VULKAN_HPP_NOEXCEPT
-    {
-      shaderDenormPreserveFloat64 = shaderDenormPreserveFloat64_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setShaderDenormFlushToZeroFloat16( VULKAN_HPP_NAMESPACE::Bool32 shaderDenormFlushToZeroFloat16_ ) VULKAN_HPP_NOEXCEPT
-    {
-      shaderDenormFlushToZeroFloat16 = shaderDenormFlushToZeroFloat16_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setShaderDenormFlushToZeroFloat32( VULKAN_HPP_NAMESPACE::Bool32 shaderDenormFlushToZeroFloat32_ ) VULKAN_HPP_NOEXCEPT
-    {
-      shaderDenormFlushToZeroFloat32 = shaderDenormFlushToZeroFloat32_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setShaderDenormFlushToZeroFloat64( VULKAN_HPP_NAMESPACE::Bool32 shaderDenormFlushToZeroFloat64_ ) VULKAN_HPP_NOEXCEPT
-    {
-      shaderDenormFlushToZeroFloat64 = shaderDenormFlushToZeroFloat64_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setShaderRoundingModeRTEFloat16( VULKAN_HPP_NAMESPACE::Bool32 shaderRoundingModeRTEFloat16_ ) VULKAN_HPP_NOEXCEPT
-    {
-      shaderRoundingModeRTEFloat16 = shaderRoundingModeRTEFloat16_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setShaderRoundingModeRTEFloat32( VULKAN_HPP_NAMESPACE::Bool32 shaderRoundingModeRTEFloat32_ ) VULKAN_HPP_NOEXCEPT
-    {
-      shaderRoundingModeRTEFloat32 = shaderRoundingModeRTEFloat32_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setShaderRoundingModeRTEFloat64( VULKAN_HPP_NAMESPACE::Bool32 shaderRoundingModeRTEFloat64_ ) VULKAN_HPP_NOEXCEPT
-    {
-      shaderRoundingModeRTEFloat64 = shaderRoundingModeRTEFloat64_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setShaderRoundingModeRTZFloat16( VULKAN_HPP_NAMESPACE::Bool32 shaderRoundingModeRTZFloat16_ ) VULKAN_HPP_NOEXCEPT
-    {
-      shaderRoundingModeRTZFloat16 = shaderRoundingModeRTZFloat16_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setShaderRoundingModeRTZFloat32( VULKAN_HPP_NAMESPACE::Bool32 shaderRoundingModeRTZFloat32_ ) VULKAN_HPP_NOEXCEPT
-    {
-      shaderRoundingModeRTZFloat32 = shaderRoundingModeRTZFloat32_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setShaderRoundingModeRTZFloat64( VULKAN_HPP_NAMESPACE::Bool32 shaderRoundingModeRTZFloat64_ ) VULKAN_HPP_NOEXCEPT
-    {
-      shaderRoundingModeRTZFloat64 = shaderRoundingModeRTZFloat64_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setMaxUpdateAfterBindDescriptorsInAllPools( uint32_t maxUpdateAfterBindDescriptorsInAllPools_ ) VULKAN_HPP_NOEXCEPT
-    {
-      maxUpdateAfterBindDescriptorsInAllPools = maxUpdateAfterBindDescriptorsInAllPools_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setShaderUniformBufferArrayNonUniformIndexingNative( VULKAN_HPP_NAMESPACE::Bool32 shaderUniformBufferArrayNonUniformIndexingNative_ ) VULKAN_HPP_NOEXCEPT
-    {
-      shaderUniformBufferArrayNonUniformIndexingNative = shaderUniformBufferArrayNonUniformIndexingNative_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setShaderSampledImageArrayNonUniformIndexingNative( VULKAN_HPP_NAMESPACE::Bool32 shaderSampledImageArrayNonUniformIndexingNative_ ) VULKAN_HPP_NOEXCEPT
-    {
-      shaderSampledImageArrayNonUniformIndexingNative = shaderSampledImageArrayNonUniformIndexingNative_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setShaderStorageBufferArrayNonUniformIndexingNative( VULKAN_HPP_NAMESPACE::Bool32 shaderStorageBufferArrayNonUniformIndexingNative_ ) VULKAN_HPP_NOEXCEPT
-    {
-      shaderStorageBufferArrayNonUniformIndexingNative = shaderStorageBufferArrayNonUniformIndexingNative_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setShaderStorageImageArrayNonUniformIndexingNative( VULKAN_HPP_NAMESPACE::Bool32 shaderStorageImageArrayNonUniformIndexingNative_ ) VULKAN_HPP_NOEXCEPT
-    {
-      shaderStorageImageArrayNonUniformIndexingNative = shaderStorageImageArrayNonUniformIndexingNative_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setShaderInputAttachmentArrayNonUniformIndexingNative( VULKAN_HPP_NAMESPACE::Bool32 shaderInputAttachmentArrayNonUniformIndexingNative_ ) VULKAN_HPP_NOEXCEPT
-    {
-      shaderInputAttachmentArrayNonUniformIndexingNative = shaderInputAttachmentArrayNonUniformIndexingNative_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setRobustBufferAccessUpdateAfterBind( VULKAN_HPP_NAMESPACE::Bool32 robustBufferAccessUpdateAfterBind_ ) VULKAN_HPP_NOEXCEPT
-    {
-      robustBufferAccessUpdateAfterBind = robustBufferAccessUpdateAfterBind_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setQuadDivergentImplicitLod( VULKAN_HPP_NAMESPACE::Bool32 quadDivergentImplicitLod_ ) VULKAN_HPP_NOEXCEPT
-    {
-      quadDivergentImplicitLod = quadDivergentImplicitLod_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setMaxPerStageDescriptorUpdateAfterBindSamplers( uint32_t maxPerStageDescriptorUpdateAfterBindSamplers_ ) VULKAN_HPP_NOEXCEPT
-    {
-      maxPerStageDescriptorUpdateAfterBindSamplers = maxPerStageDescriptorUpdateAfterBindSamplers_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setMaxPerStageDescriptorUpdateAfterBindUniformBuffers( uint32_t maxPerStageDescriptorUpdateAfterBindUniformBuffers_ ) VULKAN_HPP_NOEXCEPT
-    {
-      maxPerStageDescriptorUpdateAfterBindUniformBuffers = maxPerStageDescriptorUpdateAfterBindUniformBuffers_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setMaxPerStageDescriptorUpdateAfterBindStorageBuffers( uint32_t maxPerStageDescriptorUpdateAfterBindStorageBuffers_ ) VULKAN_HPP_NOEXCEPT
-    {
-      maxPerStageDescriptorUpdateAfterBindStorageBuffers = maxPerStageDescriptorUpdateAfterBindStorageBuffers_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setMaxPerStageDescriptorUpdateAfterBindSampledImages( uint32_t maxPerStageDescriptorUpdateAfterBindSampledImages_ ) VULKAN_HPP_NOEXCEPT
-    {
-      maxPerStageDescriptorUpdateAfterBindSampledImages = maxPerStageDescriptorUpdateAfterBindSampledImages_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setMaxPerStageDescriptorUpdateAfterBindStorageImages( uint32_t maxPerStageDescriptorUpdateAfterBindStorageImages_ ) VULKAN_HPP_NOEXCEPT
-    {
-      maxPerStageDescriptorUpdateAfterBindStorageImages = maxPerStageDescriptorUpdateAfterBindStorageImages_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setMaxPerStageDescriptorUpdateAfterBindInputAttachments( uint32_t maxPerStageDescriptorUpdateAfterBindInputAttachments_ ) VULKAN_HPP_NOEXCEPT
-    {
-      maxPerStageDescriptorUpdateAfterBindInputAttachments = maxPerStageDescriptorUpdateAfterBindInputAttachments_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setMaxPerStageUpdateAfterBindResources( uint32_t maxPerStageUpdateAfterBindResources_ ) VULKAN_HPP_NOEXCEPT
-    {
-      maxPerStageUpdateAfterBindResources = maxPerStageUpdateAfterBindResources_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setMaxDescriptorSetUpdateAfterBindSamplers( uint32_t maxDescriptorSetUpdateAfterBindSamplers_ ) VULKAN_HPP_NOEXCEPT
-    {
-      maxDescriptorSetUpdateAfterBindSamplers = maxDescriptorSetUpdateAfterBindSamplers_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setMaxDescriptorSetUpdateAfterBindUniformBuffers( uint32_t maxDescriptorSetUpdateAfterBindUniformBuffers_ ) VULKAN_HPP_NOEXCEPT
-    {
-      maxDescriptorSetUpdateAfterBindUniformBuffers = maxDescriptorSetUpdateAfterBindUniformBuffers_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setMaxDescriptorSetUpdateAfterBindUniformBuffersDynamic( uint32_t maxDescriptorSetUpdateAfterBindUniformBuffersDynamic_ ) VULKAN_HPP_NOEXCEPT
-    {
-      maxDescriptorSetUpdateAfterBindUniformBuffersDynamic = maxDescriptorSetUpdateAfterBindUniformBuffersDynamic_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setMaxDescriptorSetUpdateAfterBindStorageBuffers( uint32_t maxDescriptorSetUpdateAfterBindStorageBuffers_ ) VULKAN_HPP_NOEXCEPT
-    {
-      maxDescriptorSetUpdateAfterBindStorageBuffers = maxDescriptorSetUpdateAfterBindStorageBuffers_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setMaxDescriptorSetUpdateAfterBindStorageBuffersDynamic( uint32_t maxDescriptorSetUpdateAfterBindStorageBuffersDynamic_ ) VULKAN_HPP_NOEXCEPT
-    {
-      maxDescriptorSetUpdateAfterBindStorageBuffersDynamic = maxDescriptorSetUpdateAfterBindStorageBuffersDynamic_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setMaxDescriptorSetUpdateAfterBindSampledImages( uint32_t maxDescriptorSetUpdateAfterBindSampledImages_ ) VULKAN_HPP_NOEXCEPT
-    {
-      maxDescriptorSetUpdateAfterBindSampledImages = maxDescriptorSetUpdateAfterBindSampledImages_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setMaxDescriptorSetUpdateAfterBindStorageImages( uint32_t maxDescriptorSetUpdateAfterBindStorageImages_ ) VULKAN_HPP_NOEXCEPT
-    {
-      maxDescriptorSetUpdateAfterBindStorageImages = maxDescriptorSetUpdateAfterBindStorageImages_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setMaxDescriptorSetUpdateAfterBindInputAttachments( uint32_t maxDescriptorSetUpdateAfterBindInputAttachments_ ) VULKAN_HPP_NOEXCEPT
-    {
-      maxDescriptorSetUpdateAfterBindInputAttachments = maxDescriptorSetUpdateAfterBindInputAttachments_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setSupportedDepthResolveModes( VULKAN_HPP_NAMESPACE::ResolveModeFlags supportedDepthResolveModes_ ) VULKAN_HPP_NOEXCEPT
-    {
-      supportedDepthResolveModes = supportedDepthResolveModes_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setSupportedStencilResolveModes( VULKAN_HPP_NAMESPACE::ResolveModeFlags supportedStencilResolveModes_ ) VULKAN_HPP_NOEXCEPT
-    {
-      supportedStencilResolveModes = supportedStencilResolveModes_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setIndependentResolveNone( VULKAN_HPP_NAMESPACE::Bool32 independentResolveNone_ ) VULKAN_HPP_NOEXCEPT
-    {
-      independentResolveNone = independentResolveNone_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setIndependentResolve( VULKAN_HPP_NAMESPACE::Bool32 independentResolve_ ) VULKAN_HPP_NOEXCEPT
-    {
-      independentResolve = independentResolve_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setFilterMinmaxSingleComponentFormats( VULKAN_HPP_NAMESPACE::Bool32 filterMinmaxSingleComponentFormats_ ) VULKAN_HPP_NOEXCEPT
-    {
-      filterMinmaxSingleComponentFormats = filterMinmaxSingleComponentFormats_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setFilterMinmaxImageComponentMapping( VULKAN_HPP_NAMESPACE::Bool32 filterMinmaxImageComponentMapping_ ) VULKAN_HPP_NOEXCEPT
-    {
-      filterMinmaxImageComponentMapping = filterMinmaxImageComponentMapping_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setMaxTimelineSemaphoreValueDifference( uint64_t maxTimelineSemaphoreValueDifference_ ) VULKAN_HPP_NOEXCEPT
-    {
-      maxTimelineSemaphoreValueDifference = maxTimelineSemaphoreValueDifference_;
-      return *this;
-    }
-
-    PhysicalDeviceVulkan12Properties & setFramebufferIntegerColorSampleCounts( VULKAN_HPP_NAMESPACE::SampleCountFlags framebufferIntegerColorSampleCounts_ ) VULKAN_HPP_NOEXCEPT
-    {
-      framebufferIntegerColorSampleCounts = framebufferIntegerColorSampleCounts_;
       return *this;
     }
 
@@ -71945,6 +71637,21 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template<typename Dispatch>
+  VULKAN_HPP_INLINE Result Device::getImageViewAddressNVX( VULKAN_HPP_NAMESPACE::ImageView imageView, VULKAN_HPP_NAMESPACE::ImageViewAddressPropertiesNVX* pProperties, Dispatch const &d) const VULKAN_HPP_NOEXCEPT
+  {
+    return static_cast<Result>( d.vkGetImageViewAddressNVX( m_device, static_cast<VkImageView>( imageView ), reinterpret_cast<VkImageViewAddressPropertiesNVX*>( pProperties ) ) );
+  }
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template<typename Dispatch>
+  VULKAN_HPP_INLINE typename ResultValueType<VULKAN_HPP_NAMESPACE::ImageViewAddressPropertiesNVX>::type Device::getImageViewAddressNVX( VULKAN_HPP_NAMESPACE::ImageView imageView, Dispatch const &d ) const
+  {
+    VULKAN_HPP_NAMESPACE::ImageViewAddressPropertiesNVX properties;
+    Result result = static_cast<Result>( d.vkGetImageViewAddressNVX( m_device, static_cast<VkImageView>( imageView ), reinterpret_cast<VkImageViewAddressPropertiesNVX*>( &properties ) ) );
+    return createResultValue( result, properties, VULKAN_HPP_NAMESPACE_STRING"::Device::getImageViewAddressNVX" );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template<typename Dispatch>
   VULKAN_HPP_INLINE uint32_t Device::getImageViewHandleNVX( const VULKAN_HPP_NAMESPACE::ImageViewHandleInfoNVX* pInfo, Dispatch const &d) const VULKAN_HPP_NOEXCEPT
   {
     return d.vkGetImageViewHandleNVX( m_device, reinterpret_cast<const VkImageViewHandleInfoNVX*>( pInfo ) );
@@ -76767,6 +76474,7 @@ namespace VULKAN_HPP_NAMESPACE
     PFN_vkGetImageSparseMemoryRequirements2 vkGetImageSparseMemoryRequirements2 = 0;
     PFN_vkGetImageSparseMemoryRequirements2KHR vkGetImageSparseMemoryRequirements2KHR = 0;
     PFN_vkGetImageSubresourceLayout vkGetImageSubresourceLayout = 0;
+    PFN_vkGetImageViewAddressNVX vkGetImageViewAddressNVX = 0;
     PFN_vkGetImageViewHandleNVX vkGetImageViewHandleNVX = 0;
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
     PFN_vkGetMemoryAndroidHardwareBufferANDROID vkGetMemoryAndroidHardwareBufferANDROID = 0;
@@ -77471,6 +77179,7 @@ namespace VULKAN_HPP_NAMESPACE
       vkGetImageSparseMemoryRequirements2 = PFN_vkGetImageSparseMemoryRequirements2( vkGetInstanceProcAddr( instance, "vkGetImageSparseMemoryRequirements2" ) );
       vkGetImageSparseMemoryRequirements2KHR = PFN_vkGetImageSparseMemoryRequirements2KHR( vkGetInstanceProcAddr( instance, "vkGetImageSparseMemoryRequirements2KHR" ) );
       vkGetImageSubresourceLayout = PFN_vkGetImageSubresourceLayout( vkGetInstanceProcAddr( instance, "vkGetImageSubresourceLayout" ) );
+      vkGetImageViewAddressNVX = PFN_vkGetImageViewAddressNVX( vkGetInstanceProcAddr( instance, "vkGetImageViewAddressNVX" ) );
       vkGetImageViewHandleNVX = PFN_vkGetImageViewHandleNVX( vkGetInstanceProcAddr( instance, "vkGetImageViewHandleNVX" ) );
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
       vkGetMemoryAndroidHardwareBufferANDROID = PFN_vkGetMemoryAndroidHardwareBufferANDROID( vkGetInstanceProcAddr( instance, "vkGetMemoryAndroidHardwareBufferANDROID" ) );
@@ -77868,6 +77577,7 @@ namespace VULKAN_HPP_NAMESPACE
       vkGetImageSparseMemoryRequirements2 = PFN_vkGetImageSparseMemoryRequirements2( vkGetDeviceProcAddr( device, "vkGetImageSparseMemoryRequirements2" ) );
       vkGetImageSparseMemoryRequirements2KHR = PFN_vkGetImageSparseMemoryRequirements2KHR( vkGetDeviceProcAddr( device, "vkGetImageSparseMemoryRequirements2KHR" ) );
       vkGetImageSubresourceLayout = PFN_vkGetImageSubresourceLayout( vkGetDeviceProcAddr( device, "vkGetImageSubresourceLayout" ) );
+      vkGetImageViewAddressNVX = PFN_vkGetImageViewAddressNVX( vkGetDeviceProcAddr( device, "vkGetImageViewAddressNVX" ) );
       vkGetImageViewHandleNVX = PFN_vkGetImageViewHandleNVX( vkGetDeviceProcAddr( device, "vkGetImageViewHandleNVX" ) );
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
       vkGetMemoryAndroidHardwareBufferANDROID = PFN_vkGetMemoryAndroidHardwareBufferANDROID( vkGetDeviceProcAddr( device, "vkGetMemoryAndroidHardwareBufferANDROID" ) );

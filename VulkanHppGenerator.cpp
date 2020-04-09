@@ -5492,14 +5492,25 @@ int main(int argc, char **argv)
   class ArrayProxy
   {
   public:
+    VULKAN_HPP_CONSTEXPR ArrayProxy() VULKAN_HPP_NOEXCEPT
+      : m_count(0)
+      , m_ptr(nullptr)
+    {}
+
     VULKAN_HPP_CONSTEXPR ArrayProxy(std::nullptr_t) VULKAN_HPP_NOEXCEPT
       : m_count(0)
       , m_ptr(nullptr)
     {}
 
-    ArrayProxy(typename std::remove_reference<T>::type & ptr) VULKAN_HPP_NOEXCEPT
+    ArrayProxy(T & value) VULKAN_HPP_NOEXCEPT
       : m_count(1)
-      , m_ptr(&ptr)
+      , m_ptr(&value)
+    {}
+
+    template<typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
+    ArrayProxy(typename std::remove_const<T>::type & value) VULKAN_HPP_NOEXCEPT
+      : m_count(1)
+      , m_ptr(&value)
     {}
 
     ArrayProxy(uint32_t count, T * ptr) VULKAN_HPP_NOEXCEPT
@@ -5507,33 +5518,44 @@ int main(int argc, char **argv)
       , m_ptr(ptr)
     {}
 
-    template <size_t N>
-    ArrayProxy(std::array<typename std::remove_const<T>::type, N> & data) VULKAN_HPP_NOEXCEPT
-      : m_count(N)
-      , m_ptr(data.data())
+    template<typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
+    ArrayProxy(uint32_t count, typename std::remove_const<T>::type * ptr) VULKAN_HPP_NOEXCEPT
+      : m_count(count)
+      , m_ptr(ptr)
     {}
 
-    template <size_t N>
-    ArrayProxy(std::array<typename std::remove_const<T>::type, N> const& data) VULKAN_HPP_NOEXCEPT
-      : m_count(N)
-      , m_ptr(data.data())
+    ArrayProxy(std::initializer_list<T> const& list) VULKAN_HPP_NOEXCEPT
+      : m_count(static_cast<uint32_t>(list.size()))
+      , m_ptr(list.begin())
     {}
 
-    template <class Allocator = std::allocator<typename std::remove_const<T>::type>>
-    ArrayProxy(std::vector<typename std::remove_const<T>::type, Allocator> & data) VULKAN_HPP_NOEXCEPT
-      : m_count(static_cast<uint32_t>(data.size()))
-      , m_ptr(data.data())
+    template<typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
+    ArrayProxy(std::initializer_list<typename std::remove_const<T>::type> const& list) VULKAN_HPP_NOEXCEPT
+      : m_count(static_cast<uint32_t>(list.size()))
+      , m_ptr(list.begin())
     {}
 
-    template <class Allocator = std::allocator<typename std::remove_const<T>::type>>
-    ArrayProxy(std::vector<typename std::remove_const<T>::type, Allocator> const& data) VULKAN_HPP_NOEXCEPT
-      : m_count(static_cast<uint32_t>(data.size()))
-      , m_ptr(data.data())
+    ArrayProxy(std::initializer_list<T> & list) VULKAN_HPP_NOEXCEPT
+      : m_count(static_cast<uint32_t>(list.size()))
+      , m_ptr(list.begin())
     {}
 
-    ArrayProxy(std::initializer_list<typename std::remove_reference<T>::type> const& data) VULKAN_HPP_NOEXCEPT
-      : m_count(static_cast<uint32_t>(data.end() - data.begin()))
-      , m_ptr(data.begin())
+    template<typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
+    ArrayProxy(std::initializer_list<typename std::remove_const<T>::type> & list) VULKAN_HPP_NOEXCEPT
+      : m_count(static_cast<uint32_t>(list.size()))
+      , m_ptr(list.begin())
+    {}
+
+    template <typename Container>
+    ArrayProxy(Container const& container) VULKAN_HPP_NOEXCEPT
+      : m_count(static_cast<uint32_t>(container.size()))
+      , m_ptr(container.data())
+    {}
+
+    template <typename Container>
+    ArrayProxy(Container & container) VULKAN_HPP_NOEXCEPT
+      : m_count(static_cast<uint32_t>(container.size()))
+      , m_ptr(container.data())
     {}
 
     const T * begin() const VULKAN_HPP_NOEXCEPT

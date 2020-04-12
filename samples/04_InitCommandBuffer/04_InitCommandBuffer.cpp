@@ -17,47 +17,54 @@
 
 #include "../utils/utils.hpp"
 #include "vulkan/vulkan.hpp"
+
 #include <iostream>
 
-static char const* AppName = "04_InitCommandBuffer";
-static char const* EngineName = "Vulkan.hpp";
+static char const * AppName    = "04_InitCommandBuffer";
+static char const * EngineName = "Vulkan.hpp";
 
-int main(int /*argc*/, char ** /*argv*/)
+int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    vk::UniqueInstance instance = vk::su::createInstance(AppName, EngineName);
-#if !defined(NDEBUG)
-    vk::UniqueDebugUtilsMessengerEXT debugUtilsMessenger = vk::su::createDebugUtilsMessenger(instance);
+    vk::UniqueInstance instance = vk::su::createInstance( AppName, EngineName );
+#if !defined( NDEBUG )
+    vk::UniqueDebugUtilsMessengerEXT debugUtilsMessenger = vk::su::createDebugUtilsMessenger( instance );
 #endif
 
     vk::PhysicalDevice physicalDevice = instance->enumeratePhysicalDevices().front();
 
-    uint32_t graphicsQueueFamilyIndex = vk::su::findGraphicsQueueFamilyIndex(physicalDevice.getQueueFamilyProperties());
-    vk::UniqueDevice device = vk::su::createDevice(physicalDevice, graphicsQueueFamilyIndex);
+    uint32_t graphicsQueueFamilyIndex =
+      vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() );
+    vk::UniqueDevice device = vk::su::createDevice( physicalDevice, graphicsQueueFamilyIndex );
 
     /* VULKAN_HPP_KEY_START */
 
     // create a UniqueCommandPool to allocate a CommandBuffer from
-    vk::UniqueCommandPool commandPool = device->createCommandPoolUnique(vk::CommandPoolCreateInfo(vk::CommandPoolCreateFlags(), graphicsQueueFamilyIndex));
+    vk::UniqueCommandPool commandPool = device->createCommandPoolUnique(
+      vk::CommandPoolCreateInfo( vk::CommandPoolCreateFlags(), graphicsQueueFamilyIndex ) );
 
     // allocate a CommandBuffer from the CommandPool
-    vk::UniqueCommandBuffer commandBuffer = std::move(device->allocateCommandBuffersUnique(vk::CommandBufferAllocateInfo(commandPool.get(), vk::CommandBufferLevel::ePrimary, 1)).front());
+    vk::UniqueCommandBuffer commandBuffer = std::move( device
+                                                         ->allocateCommandBuffersUnique( vk::CommandBufferAllocateInfo(
+                                                           commandPool.get(), vk::CommandBufferLevel::ePrimary, 1 ) )
+                                                         .front() );
 
-    // Note: No need to explicitly free the CommandBuffer or destroy the CommandPool, as the corresponding free and destroy
-    // functions are called by the destructor of the UniqueCommandBuffer and the UniqueCommandPool on leaving this scope.
+    // Note: No need to explicitly free the CommandBuffer or destroy the CommandPool, as the corresponding free and
+    // destroy functions are called by the destructor of the UniqueCommandBuffer and the UniqueCommandPool on leaving
+    // this scope.
 
     /* VULKAN_HPP_KEY_END */
   }
-  catch (vk::SystemError& err)
+  catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit(-1);
+    exit( -1 );
   }
-  catch (...)
+  catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit(-1);
+    exit( -1 );
   }
   return 0;
 }

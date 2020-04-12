@@ -16,39 +16,40 @@
 //                     Compile test on using std::hash on handles
 
 #include "vulkan/vulkan.hpp"
+
 #include <iostream>
 #include <unordered_map>
 #include <unordered_set>
 
-static char const* AppName = "Hash";
-static char const* EngineName = "Vulkan.hpp";
+static char const * AppName    = "Hash";
+static char const * EngineName = "Vulkan.hpp";
 
-int main(int /*argc*/, char ** /*argv*/)
+int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    vk::ApplicationInfo appInfo(AppName, 1, EngineName, 1, VK_API_VERSION_1_1);
-    vk::UniqueInstance instance = vk::createInstanceUnique(vk::InstanceCreateInfo({}, &appInfo));
+    vk::ApplicationInfo appInfo( AppName, 1, EngineName, 1, VK_API_VERSION_1_1 );
+    vk::UniqueInstance  instance = vk::createInstanceUnique( vk::InstanceCreateInfo( {}, &appInfo ) );
 
-    auto h1 = std::hash<vk::Instance>{}(*instance);
-    auto h2 = std::hash<VkInstance>{}(*instance);
-    assert(h1 == h2);
+    auto h1 = std::hash<vk::Instance>{}( *instance );
+    auto h2 = std::hash<VkInstance>{}( *instance );
+    assert( h1 == h2 );
 
     std::unordered_set<vk::Instance> uset;
-    uset.insert(*instance);
+    uset.insert( *instance );
 
     std::unordered_map<vk::Instance, size_t> umap;
     umap[*instance] = 1;
   }
-  catch (vk::SystemError const& err)
+  catch ( vk::SystemError const & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit(-1);
+    exit( -1 );
   }
-  catch (...)
+  catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit(-1);
+    exit( -1 );
   }
 
   return 0;

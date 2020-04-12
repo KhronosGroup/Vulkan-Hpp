@@ -16,42 +16,44 @@
 //                     Get the version of instance-level functionality supported by the implementation.
 
 #include "vulkan/vulkan.hpp"
+
 #include <iostream>
 #include <sstream>
 
-static char const* AppName = "InstanceVersion";
-static char const* EngineName = "Vulkan.hpp";
+static char const * AppName    = "InstanceVersion";
+static char const * EngineName = "Vulkan.hpp";
 
-std::string decodeAPIVersion(uint32_t apiVersion)
+std::string decodeAPIVersion( uint32_t apiVersion )
 {
-  return std::to_string(VK_VERSION_MAJOR(apiVersion)) + "." + std::to_string(VK_VERSION_MINOR(apiVersion)) + "." + std::to_string(VK_VERSION_PATCH(apiVersion));
+  return std::to_string( VK_VERSION_MAJOR( apiVersion ) ) + "." + std::to_string( VK_VERSION_MINOR( apiVersion ) ) +
+         "." + std::to_string( VK_VERSION_PATCH( apiVersion ) );
 }
 
-int main(int /*argc*/, char ** /*argv*/)
+int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
     /* VULKAN_KEY_START */
 
     uint32_t apiVersion = vk::enumerateInstanceVersion();
-    std::cout << "APIVersion = " << decodeAPIVersion(apiVersion);
+    std::cout << "APIVersion = " << decodeAPIVersion( apiVersion );
 
     /* VULKAN_KEY_END */
   }
-  catch (vk::SystemError& err)
+  catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit(-1);
+    exit( -1 );
   }
-  catch (std::runtime_error& err)
+  catch ( std::runtime_error & err )
   {
     std::cout << "std::runtime_error: " << err.what() << std::endl;
-    exit(-1);
+    exit( -1 );
   }
-  catch (...)
+  catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit(-1);
+    exit( -1 );
   }
   return 0;
 }

@@ -17,18 +17,19 @@
 
 #include "../utils/utils.hpp"
 #include "vulkan/vulkan.hpp"
+
 #include <iostream>
 
-static char const* AppName = "02_EnumerateDevices";
-static char const* EngineName = "Vulkan.hpp";
+static char const * AppName    = "02_EnumerateDevices";
+static char const * EngineName = "Vulkan.hpp";
 
-int main(int /*argc*/, char ** /*argv*/)
+int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    vk::UniqueInstance instance = vk::su::createInstance(AppName, EngineName);
-#if !defined(NDEBUG)
-    vk::UniqueDebugUtilsMessengerEXT debugUtilsMessenger = vk::su::createDebugUtilsMessenger(instance);
+    vk::UniqueInstance instance = vk::su::createInstance( AppName, EngineName );
+#if !defined( NDEBUG )
+    vk::UniqueDebugUtilsMessengerEXT debugUtilsMessenger = vk::su::createDebugUtilsMessenger( instance );
 #endif
 
     /* VULKAN_HPP_KEY_START */
@@ -36,20 +37,20 @@ int main(int /*argc*/, char ** /*argv*/)
     // enumerate the physicalDevices
     vk::PhysicalDevice physicalDevice = instance->enumeratePhysicalDevices().front();
 
-    // Note: PhysicalDevices are not created, but just enumerated. Therefore, there is nothing like a UniquePhysicalDevice.
-    // A PhysicalDevice is unique by definition, and there's no need to destroy it.
+    // Note: PhysicalDevices are not created, but just enumerated. Therefore, there is nothing like a
+    // UniquePhysicalDevice. A PhysicalDevice is unique by definition, and there's no need to destroy it.
 
     /* VULKAN_HPP_KEY_END */
   }
-  catch (vk::SystemError& err)
+  catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit(-1);
+    exit( -1 );
   }
-  catch (...)
+  catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit(-1);
+    exit( -1 );
   }
   return 0;
 }

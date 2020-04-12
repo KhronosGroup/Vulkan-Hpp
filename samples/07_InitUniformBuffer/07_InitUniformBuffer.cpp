@@ -17,67 +17,92 @@
 
 #include "../utils/utils.hpp"
 #include "vulkan/vulkan.hpp"
+
 #include <iostream>
 
 #define GLM_FORCE_RADIANS
-#pragma warning(disable:4201)   // disable warning C4201: nonstandard extension used: nameless struct/union; needed to get glm/detail/type_vec?.hpp without warnings
+#pragma warning( disable : 4201 )  // disable warning C4201: nonstandard extension used: nameless struct/union; needed
+                                   // to get glm/detail/type_vec?.hpp without warnings
 #include <glm/gtc/matrix_transform.hpp>
 
-static char const* AppName = "07_InitUniformBuffer";
-static char const* EngineName = "Vulkan.hpp";
+static char const * AppName    = "07_InitUniformBuffer";
+static char const * EngineName = "Vulkan.hpp";
 
-int main(int /*argc*/, char ** /*argv*/)
+int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    vk::UniqueInstance instance = vk::su::createInstance(AppName, EngineName);
-#if !defined(NDEBUG)
-    vk::UniqueDebugUtilsMessengerEXT debugUtilsMessenger = vk::su::createDebugUtilsMessenger(instance);
+    vk::UniqueInstance instance = vk::su::createInstance( AppName, EngineName );
+#if !defined( NDEBUG )
+    vk::UniqueDebugUtilsMessengerEXT debugUtilsMessenger = vk::su::createDebugUtilsMessenger( instance );
 #endif
 
     vk::PhysicalDevice physicalDevice = instance->enumeratePhysicalDevices().front();
 
-    vk::UniqueDevice device = vk::su::createDevice(physicalDevice, vk::su::findGraphicsQueueFamilyIndex(physicalDevice.getQueueFamilyProperties()));
+    vk::UniqueDevice device = vk::su::createDevice(
+      physicalDevice, vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() ) );
 
     /* VULKAN_HPP_KEY_START */
 
-    glm::mat4x4 model = glm::mat4x4(1.0f);
-    glm::mat4x4 view = glm::lookAt(glm::vec3(-5.0f, 3.0f, -10.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f));
-    glm::mat4x4 projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);
-    glm::mat4x4 clip = glm::mat4x4(1.0f, 0.0f, 0.0f, 0.0f,  0.0f, -1.0f, 0.0f, 0.0f,  0.0f, 0.0f, 0.5f, 0.0f,  0.0f, 0.0f, 0.5f, 1.0f);   // vulkan clip space has inverted y and half z !
-    glm::mat4x4 mvpc = clip * projection * view * model;
+    glm::mat4x4 model = glm::mat4x4( 1.0f );
+    glm::mat4x4 view =
+      glm::lookAt( glm::vec3( -5.0f, 3.0f, -10.0f ), glm::vec3( 0.0f, 0.0f, 0.0f ), glm::vec3( 0.0f, -1.0f, 0.0f ) );
+    glm::mat4x4 projection = glm::perspective( glm::radians( 45.0f ), 1.0f, 0.1f, 100.0f );
+    glm::mat4x4 clip       = glm::mat4x4( 1.0f,
+                                    0.0f,
+                                    0.0f,
+                                    0.0f,
+                                    0.0f,
+                                    -1.0f,
+                                    0.0f,
+                                    0.0f,
+                                    0.0f,
+                                    0.0f,
+                                    0.5f,
+                                    0.0f,
+                                    0.0f,
+                                    0.0f,
+                                    0.5f,
+                                    1.0f );  // vulkan clip space has inverted y and half z !
+    glm::mat4x4 mvpc       = clip * projection * view * model;
 
-    vk::UniqueBuffer uniformDataBuffer = device->createBufferUnique(vk::BufferCreateInfo(vk::BufferCreateFlags(), sizeof(mvpc), vk::BufferUsageFlagBits::eUniformBuffer));
+    vk::UniqueBuffer uniformDataBuffer = device->createBufferUnique(
+      vk::BufferCreateInfo( vk::BufferCreateFlags(), sizeof( mvpc ), vk::BufferUsageFlagBits::eUniformBuffer ) );
 
-    vk::MemoryRequirements memoryRequirements = device->getBufferMemoryRequirements(uniformDataBuffer.get());
-    uint32_t typeIndex = vk::su::findMemoryType(physicalDevice.getMemoryProperties(), memoryRequirements.memoryTypeBits, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
-    vk::UniqueDeviceMemory uniformDataMemory = device->allocateMemoryUnique(vk::MemoryAllocateInfo(memoryRequirements.size, typeIndex));
+    vk::MemoryRequirements memoryRequirements = device->getBufferMemoryRequirements( uniformDataBuffer.get() );
+    uint32_t               typeIndex =
+      vk::su::findMemoryType( physicalDevice.getMemoryProperties(),
+                              memoryRequirements.memoryTypeBits,
+                              vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent );
+    vk::UniqueDeviceMemory uniformDataMemory =
+      device->allocateMemoryUnique( vk::MemoryAllocateInfo( memoryRequirements.size, typeIndex ) );
 
-    uint8_t* pData = static_cast<uint8_t*>(device->mapMemory(uniformDataMemory.get(), 0, memoryRequirements.size));
-    memcpy(pData, &mvpc, sizeof(mvpc));
-    device->unmapMemory(uniformDataMemory.get());
+    uint8_t * pData =
+      static_cast<uint8_t *>( device->mapMemory( uniformDataMemory.get(), 0, memoryRequirements.size ) );
+    memcpy( pData, &mvpc, sizeof( mvpc ) );
+    device->unmapMemory( uniformDataMemory.get() );
 
-    device->bindBufferMemory(uniformDataBuffer.get(), uniformDataMemory.get(), 0);
+    device->bindBufferMemory( uniformDataBuffer.get(), uniformDataMemory.get(), 0 );
 
     // Note: No need to explicitly destroy the memory or the buffer, as the corresponding destroy function is
     // called by the destructor of the UniqueMemory or UniqueBuffer, respectively, on leaving this scope.
 
     /* VULKAN_HPP_KEY_END */
   }
-  catch (vk::SystemError& err)
+  catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit(-1);
+    exit( -1 );
   }
-  catch (std::runtime_error& err)
+  catch ( std::runtime_error & err )
   {
     std::cout << "std::runtime_error: " << err.what() << std::endl;
-    exit(-1);
+    exit( -1 );
   }
-  catch (...)
+  catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit(-1);
+    exit( -1 );
   }
   return 0;
 }

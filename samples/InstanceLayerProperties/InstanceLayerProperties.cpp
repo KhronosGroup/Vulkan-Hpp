@@ -15,16 +15,16 @@
 // VulkanHpp Samples : InstanceLayerProperties
 //                     Get global layer properties to know what layers are available to enable at CreateInstance time.
 
-
 #include "vulkan/vulkan.hpp"
+
 #include <iostream>
 #include <sstream>
 #include <vector>
 
-static char const* AppName = "InstanceLayerProperties";
-static char const* EngineName = "Vulkan.hpp";
+static char const * AppName    = "InstanceLayerProperties";
+static char const * EngineName = "Vulkan.hpp";
 
-int main(int /*argc*/, char ** /*argv*/)
+int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
@@ -33,35 +33,36 @@ int main(int /*argc*/, char ** /*argv*/)
     std::vector<vk::LayerProperties> layerProperties = vk::enumerateInstanceLayerProperties();
 
     std::cout << "Instance Layers:" << std::endl;
-    if (layerProperties.empty())
+    if ( layerProperties.empty() )
     {
       std::cout << "Set the environment variable VK_LAYER_PATH to point to the location of your layers" << std::endl;
     }
-    for (auto const& lp : layerProperties)
+    for ( auto const & lp : layerProperties )
     {
       std::cout << lp.layerName << ":" << std::endl;
       std::cout << "\tVersion: " << lp.implementationVersion << std::endl;
-      std::cout << "\tAPI Version: (" << (lp.specVersion >> 22) << "." << ((lp.specVersion >> 12) & 0x03FF) << "." << (lp.specVersion & 0xFFF) << ")" << std::endl;
+      std::cout << "\tAPI Version: (" << ( lp.specVersion >> 22 ) << "." << ( ( lp.specVersion >> 12 ) & 0x03FF ) << "."
+                << ( lp.specVersion & 0xFFF ) << ")" << std::endl;
       std::cout << "\tDescription: " << lp.description << std::endl;
       std::cout << std::endl;
     }
 
     /* VULKAN_KEY_END */
   }
-  catch (vk::SystemError& err)
+  catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit(-1);
+    exit( -1 );
   }
-  catch (std::runtime_error& err)
+  catch ( std::runtime_error & err )
   {
     std::cout << "std::runtime_error: " << err.what() << std::endl;
-    exit(-1);
+    exit( -1 );
   }
-  catch (...)
+  catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit(-1);
+    exit( -1 );
   }
   return 0;
 }

@@ -845,6 +845,70 @@ void VulkanHppGenerator::appendBaseTypes(std::string & str) const
   }
 }
 
+void VulkanHppGenerator::appendIndexTypeTraits(std::string & str) const
+{
+  auto enumData = m_enums.find("VkIndexType");
+
+  str += R"(
+  template<typename T>
+  struct index_type
+  {
+  };
+
+  template<IndexType value>
+  struct cpp_index_type
+  {
+  };
+)";
+
+  std::set<std::string> seenCppTypes;
+
+  for (auto const& value : enumData->second.values)
+  {
+    std::string cppType;
+    if (beginsWith(value.vkValue, "eUint32"))
+    {
+      cppType = "uint32_t";
+    }
+    else if (beginsWith(value.vkValue, "eUint16"))
+    {
+      cppType = "uint16_t";
+    }
+    else if (beginsWith(value.vkValue, "eUint8"))
+    {
+      cppType = "uint8_t";
+    }
+    else if (beginsWith(value.vkValue, "eUint64"))
+    {
+      cppType = "uint64_t"; // No extension for this currently
+    }
+
+    if (!cppType.empty())
+    {
+      if (seenCppTypes.find(cppType) == seenCppTypes.end())
+      {
+        // IndexType traits aren't necessarily invertible.
+        // The Type -> Enum translation will only occur for the first prefixed enum value.
+        // A hypothetical extension to this enum with a conflicting prefix will use the core spec value.
+        seenCppTypes.insert(cppType);
+        str += "\n"
+          "  template <>\n"
+          "  struct index_type<" + cppType + ">\n"
+          "  {\n"
+          "    static VULKAN_HPP_CONST_OR_CONSTEXPR IndexType indexType = IndexType::" + value.vkValue + ";\n"
+          "  };\n";
+      }
+      // Enum -> Type translations are always able to occur.
+      str += "\n"
+        "  template <>\n"
+        "  struct cpp_index_type<IndexType::" + value.vkValue + ">\n"
+        "  {\n"
+        "    using type = " + cppType + ";\n"
+        "  };\n";
+    }
+  }
+}
+
 void VulkanHppGenerator::appendBitmasks(std::string & str) const
 {
   for (auto const& bitmask : m_bitmasks)
@@ -6792,6 +6856,7 @@ namespace std
     generator.appendBaseTypes(str);
     generator.appendEnums(str);
     str += typeTraits;
+    generator.appendIndexTypeTraits(str);
     generator.appendBitmasks(str);
     str += "} // namespace VULKAN_HPP_NAMESPACE\n"
       + is_error_code_enum

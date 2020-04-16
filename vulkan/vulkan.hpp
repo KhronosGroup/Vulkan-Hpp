@@ -8869,6 +8869,52 @@ namespace VULKAN_HPP_NAMESPACE
   {
   };
 
+  template<typename T>
+  struct index_type
+  {
+  };
+
+  template<IndexType value>
+  struct cpp_index_type
+  {
+  };
+
+  template <>
+  struct index_type<uint16_t>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR IndexType indexType = IndexType::eUint16;
+  };
+
+  template <>
+  struct cpp_index_type<IndexType::eUint16>
+  {
+    using type = uint16_t;
+  };
+
+  template <>
+  struct index_type<uint32_t>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR IndexType indexType = IndexType::eUint32;
+  };
+
+  template <>
+  struct cpp_index_type<IndexType::eUint32>
+  {
+    using type = uint32_t;
+  };
+
+  template <>
+  struct index_type<uint8_t>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR IndexType indexType = IndexType::eUint8EXT;
+  };
+
+  template <>
+  struct cpp_index_type<IndexType::eUint8EXT>
+  {
+    using type = uint8_t;
+  };
+
   using AccessFlags = Flags<AccessFlagBits>;
 
   template <> struct FlagTraits<AccessFlagBits>

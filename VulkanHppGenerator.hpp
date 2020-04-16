@@ -26,6 +26,7 @@ class VulkanHppGenerator
     VulkanHppGenerator(tinyxml2::XMLDocument const& document);
 
     void appendBaseTypes(std::string & str) const;
+    void appendIndexTypeTraits(std::string & str) const;
     void appendBitmasks(std::string & str) const;
     void appendDispatchLoaderDynamic(std::string & str); // use vkGet*ProcAddress to get function pointers
     void appendDispatchLoaderStatic(std::string & str);  // use exported symbols from loader

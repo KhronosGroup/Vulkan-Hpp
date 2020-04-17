@@ -57,7 +57,7 @@ std::string stripPluralS(std::string const& name);
 std::string stripPrefix(std::string const& value, std::string const& prefix);
 std::string toCamelCase(std::string const& value);
 std::string toUpperCase(std::string const& name);
-std::vector<std::string> tokenize(std::string tokenString, char separator);
+std::vector<std::string> tokenize(std::string const& tokenString, std::string const& separator);
 std::string trim(std::string const& input);
 std::string trimEnd(std::string const& input);
 void warn(bool condition, int line, std::string const& message);
@@ -193,7 +193,7 @@ void checkAttributes(int line, std::map<std::string, std::string> const& attribu
       }
       if (!optionalIt->second.empty())
       {
-        std::vector<std::string> values = tokenize(a.second, ',');
+        std::vector<std::string> values = tokenize(a.second, ",");
         for (auto const& v : values)
         {
           warn(optionalIt->second.find(v) != optionalIt->second.end(), line, "unexpected attribute value <" + v + "> in attribute <" + a.first + ">");
@@ -645,7 +645,7 @@ std::string toUpperCase(std::string const& name)
   return convertedName;
 }
 
-std::vector<std::string> tokenize(std::string tokenString, char separator)
+std::vector<std::string> tokenize(std::string const& tokenString, std::string const& separator)
 {
   std::vector<std::string> tokens;
   size_t start = 0, end;
@@ -656,7 +656,7 @@ std::vector<std::string> tokenize(std::string tokenString, char separator)
     {
       tokens.push_back(tokenString.substr(start, end - start));
     }
-    start = end + 1;
+    start = end + separator.length();
   } while (end != std::string::npos);
   return tokens;
 }
@@ -1727,10 +1727,15 @@ void VulkanHppGenerator::appendFunctionBodyEnhancedLocalReturnVariableVectorSize
   if (vectorParamIndex.second == INVALID_INDEX)
   {
     assert(!params[returnParamIndex].len.empty());
-    // the size of the vector is not given by an other parameter, but by some member of a parameter, described as 'parameter::member'
-    // -> replace the '::' by '.' and filter out the leading 'p' to access that value
+    // the size of the vector is not given by an other parameter, but by some member of a parameter, described as 'parameter->member'
+    // -> replace the '->' by '.' and filter out the leading 'p' to access that value
     size = startLowerCase(stripPrefix(params[returnParamIndex].len, "p"));
-    size_t pos = size.find("::");
+    size_t pos = size.find("->");
+    // older versions of the vk.xml used the notation parameter::member !
+    if (pos == std::string::npos)
+    {
+      pos = size.find("::");
+    }
     assert(pos != std::string::npos);
     size.replace(pos, 2, ".");
   }
@@ -3466,7 +3471,12 @@ bool VulkanHppGenerator::checkLenAttribute(std::string const& len, std::vector<P
   }
 
   // check if len specifies a member of a struct
-  std::vector<std::string> lenParts = tokenize(len, ':');
+  std::vector<std::string> lenParts = tokenize(len, "->");
+  if (lenParts.size() == 1)
+  {
+    // older versions of vk.xml used the notation parameter::member
+    lenParts = tokenize(len, "::");
+  }
   if (lenParts.size() == 2)
   {
     auto paramIt = std::find_if(params.begin(), params.end(), [&l = lenParts[0]](ParamData const& pd){ return pd.name == l; });
@@ -3655,8 +3665,8 @@ std::map<size_t, size_t> VulkanHppGenerator::determineVectorParamIndices(std::ve
       vectorParamIndices.insert(std::make_pair(std::distance(params.begin(), it), (findIt < it) ? std::distance(params.begin(), findIt) : INVALID_INDEX));
       assert((vectorParamIndices[std::distance(params.begin(), it)] != INVALID_INDEX)
         || (it->len == "null-terminated")
-        || (it->len == "pAllocateInfo::descriptorSetCount")
-        || (it->len == "pAllocateInfo::commandBufferCount"));
+        || (it->len == "pAllocateInfo->descriptorSetCount") || (it->len == "pAllocateInfo::descriptorSetCount")
+        || (it->len == "pAllocateInfo->commandBufferCount") || (it->len == "pAllocateInfo::commandBufferCount"));
     }
   }
   return vectorParamIndices;
@@ -3838,12 +3848,12 @@ void VulkanHppGenerator::readCommand(tinyxml2::XMLElement const* element, std::m
   {
     if (attribute.first == "errorcodes")
     {
-      commandData.errorCodes = tokenize(attribute.second, ',');
+      commandData.errorCodes = tokenize(attribute.second, ",");
       // errorCodes are checked in checkCorrectness after complete reading
     }
     else if (attribute.first == "successcodes")
     {
-      commandData.successCodes = tokenize(attribute.second, ',');
+      commandData.successCodes = tokenize(attribute.second, ",");
       // successCodes are checked in checkCorrectness after complete reading
     }
   }
@@ -4281,7 +4291,7 @@ void VulkanHppGenerator::readExtension(tinyxml2::XMLElement const* element)
     }
     else if (attribute.first == "requires")
     {
-      requirements = tokenize(attribute.second, ',');
+      requirements = tokenize(attribute.second, ",");
     }
     else if (attribute.first == "requiresCore")
     {
@@ -4754,7 +4764,7 @@ void VulkanHppGenerator::readHandle(tinyxml2::XMLElement const* element, std::ma
     check(typeData.prefix.empty(), line, "unexpected type prefix <" + typeData.prefix + ">");
     check(typeData.postfix == "(", line, "unexpected type postfix <" + typeData.postfix + ">");
 
-    check(m_handles.insert(std::make_pair(nameData.name, HandleData(tokenize(parent, ','), line))).second, line, "handle <" + nameData.name + "> already specified");
+    check(m_handles.insert(std::make_pair(nameData.name, HandleData(tokenize(parent, ","), line))).second, line, "handle <" + nameData.name + "> already specified");
     check(m_types.insert(std::make_pair(nameData.name, TypeCategory::Handle)).second, line, "handle <" + nameData.name + "> already specified as a type");
   }
 }
@@ -5079,7 +5089,7 @@ void VulkanHppGenerator::readStruct(tinyxml2::XMLElement const* element, bool is
       }
       else if (attribute.first == "structextends")
       {
-        structExtends = tokenize(attribute.second, ',');
+        structExtends = tokenize(attribute.second, ",");
       }
     }
     assert(!name.empty());

@@ -6861,25 +6861,25 @@ int main( int argc, char ** argv )
     }
 
     // assignment operators
-    Flags<BitType> & operator=(Flags<BitType> const& rhs) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR_14 Flags<BitType> & operator=(Flags<BitType> const& rhs) VULKAN_HPP_NOEXCEPT
     {
       m_mask = rhs.m_mask;
       return *this;
     }
 
-    Flags<BitType> & operator|=(Flags<BitType> const& rhs) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR_14 Flags<BitType> & operator|=(Flags<BitType> const& rhs) VULKAN_HPP_NOEXCEPT
     {
       m_mask |= rhs.m_mask;
       return *this;
     }
 
-    Flags<BitType> & operator&=(Flags<BitType> const& rhs) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR_14 Flags<BitType> & operator&=(Flags<BitType> const& rhs) VULKAN_HPP_NOEXCEPT
     {
       m_mask &= rhs.m_mask;
       return *this;
     }
 
-    Flags<BitType> & operator^=(Flags<BitType> const& rhs) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR_14 Flags<BitType> & operator^=(Flags<BitType> const& rhs) VULKAN_HPP_NOEXCEPT
     {
       m_mask ^= rhs.m_mask;
       return *this;

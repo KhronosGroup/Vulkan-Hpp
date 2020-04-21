@@ -40,6 +40,7 @@ public:
   void                appendStructs( std::string & str ) const;
   void                appendStructureChainValidation( std::string & str );
   void                appendThrowExceptions( std::string & str ) const;
+  void                appendIndexTypeTraits( std::string & str ) const;
   std::string const & getTypesafeCheck() const;
   std::string const & getVersion() const;
   std::string const & getVulkanLicenseHeader() const;
@@ -461,39 +462,39 @@ private:
                                         std::string const & indentation,
                                         MemberData const &  memberData ) const;
   void appendStructCopyConstructors( std::string & str, std::string const & vkName ) const;
-  void appendStructMembers( std::string &                                 str,
-                            std::pair<std::string, StructureData> const & structData,
-                            std::string const &                           prefix ) const;
-  void appendStructSetter( std::string &       str,
-                           std::string const & structureName,
-                           bool                isUnion,
-                           MemberData const &  memberData ) const;
-  void appendStructSubConstructor( std::string &                                 str,
+  std::string appendStructMembers( std::string &                                 str,
                                    std::pair<std::string, StructureData> const & structData,
                                    std::string const &                           prefix ) const;
-  void appendStructure( std::string & str, std::pair<std::string, StructureData> const & structure ) const;
-  void appendUnion( std::string & str, std::pair<std::string, StructureData> const & structure ) const;
-  void appendUniqueTypes( std::string &                 str,
-                          std::string const &           parentType,
-                          std::set<std::string> const & childrenTypes ) const;
-  std::string              constructConstexprString( std::pair<std::string, StructureData> const & structData ) const;
-  void                     checkCorrectness();
-  bool                     checkLenAttribute( std::string const & len, std::vector<ParamData> const & params );
-  bool                     containsArray( std::string const & type ) const;
-  bool                     containsUnion( std::string const & type ) const;
-  std::string              determineEnhancedReturnType( CommandData const &              commandData,
-                                                        size_t                           returnParamIndex,
-                                                        std::map<size_t, size_t> const & vectorParamIndices,
-                                                        bool                             isStructureChain ) const;
-  size_t                   determineReturnParamIndex( CommandData const &              commandData,
-                                                      std::map<size_t, size_t> const & vectorParamIndices,
-                                                      bool                             twoStep ) const;
-  std::string              determineSubStruct( std::pair<std::string, StructureData> const & structure ) const;
-  size_t                   determineTemplateParamIndex( std::vector<ParamData> const &   params,
-                                                        std::map<size_t, size_t> const & vectorParamIndices ) const;
+  void        appendStructSetter( std::string &       str,
+                                  std::string const & structureName,
+                                  bool                isUnion,
+                                  MemberData const &  memberData ) const;
+  void        appendStructSubConstructor( std::string &                                 str,
+                                          std::pair<std::string, StructureData> const & structData,
+                                          std::string const &                           prefix ) const;
+  void        appendStructure( std::string & str, std::pair<std::string, StructureData> const & structure ) const;
+  void        appendUnion( std::string & str, std::pair<std::string, StructureData> const & structure ) const;
+  void        appendUniqueTypes( std::string &                 str,
+                                 std::string const &           parentType,
+                                 std::set<std::string> const & childrenTypes ) const;
+  std::string constructConstexprString( std::pair<std::string, StructureData> const & structData ) const;
+  void        checkCorrectness();
+  bool        checkLenAttribute( std::string const & len, std::vector<ParamData> const & params );
+  bool        containsArray( std::string const & type ) const;
+  bool        containsUnion( std::string const & type ) const;
+  std::string determineEnhancedReturnType( CommandData const &              commandData,
+                                           size_t                           returnParamIndex,
+                                           std::map<size_t, size_t> const & vectorParamIndices,
+                                           bool                             isStructureChain ) const;
+  size_t      determineReturnParamIndex( CommandData const &              commandData,
+                                         std::map<size_t, size_t> const & vectorParamIndices,
+                                         bool                             twoStep ) const;
+  std::string determineSubStruct( std::pair<std::string, StructureData> const & structure ) const;
+  size_t      determineTemplateParamIndex( std::vector<ParamData> const &   params,
+                                           std::map<size_t, size_t> const & vectorParamIndices ) const;
   std::map<size_t, size_t> determineVectorParamIndices( std::vector<ParamData> const & params ) const;
   bool                     holdsSType( std::string const & type ) const;
-  bool isTwoStepAlgorithm( std::vector<ParamData> const & params ) const;
+  bool                     isTwoStepAlgorithm( std::vector<ParamData> const & params ) const;
   void                     linkCommandToHandle( int line, std::string const & name, CommandData const & commandData );
   void readBaseType( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
   void readBitmask( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
@@ -575,27 +576,27 @@ private:
   void setVulkanLicenseHeader( int line, std::string const & comment );
   std::string toString( TypeCategory category );
 
-  private:
-    std::map<std::string, BaseTypeData>     m_baseTypes;
-    std::map<std::string, BitmaskData>      m_bitmasks;
-    std::map<std::string, std::string>      m_commandToHandle;
-    std::set<std::string>                   m_constants;
-    std::set<std::string>                   m_defines;
-    std::map<std::string, EnumData>         m_enums;
-    std::set<std::string>                   m_extendedStructs; // structs which are referenced by the structextends tag
-    std::map<std::string, ExtensionData>    m_extensions;
-    std::map<std::string, std::string>      m_features;
-    std::map<std::string, FuncPointerData>  m_funcPointers;
-    std::map<std::string, HandleData>       m_handles;
-    std::set<std::string>                   m_includes;
-    std::map<std::string, std::string>      m_platforms;
-    std::map<std::string, std::string>      m_structureAliases;
-    std::map<std::string, StructureData>    m_structures;
-    std::set<std::string>                   m_tags;
-    std::map<std::string, TypeCategory>     m_types;
-    std::string                             m_typesafeCheck;
-    std::string                             m_version;
-    std::string                             m_vulkanLicenseHeader;
+private:
+  std::map<std::string, BaseTypeData>    m_baseTypes;
+  std::map<std::string, BitmaskData>     m_bitmasks;
+  std::map<std::string, std::string>     m_commandToHandle;
+  std::set<std::string>                  m_constants;
+  std::set<std::string>                  m_defines;
+  std::map<std::string, EnumData>        m_enums;
+  std::set<std::string>                  m_extendedStructs;  // structs which are referenced by the structextends tag
+  std::map<std::string, ExtensionData>   m_extensions;
+  std::map<std::string, std::string>     m_features;
+  std::map<std::string, FuncPointerData> m_funcPointers;
+  std::map<std::string, HandleData>      m_handles;
+  std::set<std::string>                  m_includes;
+  std::map<std::string, std::string>     m_platforms;
+  std::map<std::string, std::string>     m_structureAliases;
+  std::map<std::string, StructureData>   m_structures;
+  std::set<std::string>                  m_tags;
+  std::map<std::string, TypeCategory>    m_types;
+  std::string                            m_typesafeCheck;
+  std::string                            m_version;
+  std::string                            m_vulkanLicenseHeader;
 };
 
 const size_t INVALID_INDEX = (size_t)~0;

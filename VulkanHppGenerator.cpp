@@ -1807,6 +1807,14 @@ void VulkanHppGenerator::appendEnums( std::string & str ) const
     appendPlatformEnter( str, !e.second.alias.empty(), e.second.platform );
     appendEnum( str, e );
     appendEnumToString( str, e );
+    if ( e.first == "VkObjectType" )
+    {
+      str += R"(
+  template<ObjectType value>
+  struct [[deprecated("vk::cpp_type is deprecated. Use vk::CppType instead.")]] cpp_type
+  {};
+)";
+    }
     if ( e.second.alias.empty() )  // enums with an alias are not protected anymore !
     {
       appendPlatformLeave( str, !e.second.alias.empty(), e.second.platform );
@@ -3259,9 +3267,15 @@ ${commands}
   static_assert( sizeof( ${className} ) == sizeof( Vk${className} ), "handle and wrapper have different size!" );
 
   template <>
-  struct cpp_type<ObjectType::e${className}>
+  struct [[deprecated("vk::cpp_type is deprecated. Use vk::CppType instead.")]] cpp_type<ObjectType::e${className}>
   {
     using type = ${className};
+  };
+
+  template <>
+  struct CppType<ObjectType, ObjectType::e${className}>
+  {
+    using Type = ${className};
   };
 )";
 
@@ -3610,10 +3624,11 @@ void VulkanHppGenerator::appendStructCopyConstructors( std::string & str, std::s
   str += replaceWithMap( templateString, { { "name", name } } );
 }
 
-void VulkanHppGenerator::appendStructMembers( std::string &                                 str,
-                                              std::pair<std::string, StructureData> const & structData,
-                                              std::string const &                           prefix ) const
+std::string VulkanHppGenerator::appendStructMembers( std::string &                                 str,
+                                                     std::pair<std::string, StructureData> const & structData,
+                                                     std::string const &                           prefix ) const
 {
+  std::string sTypeValue;
   for ( auto const & member : structData.second.members )
   {
     str += prefix;
@@ -3651,7 +3666,8 @@ void VulkanHppGenerator::appendStructMembers( std::string &                     
                         enumIt->second.values.end(),
                         [&member]( EnumValueData const & evd ) { return member.values == evd.vulkanValue; } );
         assert( nameIt != enumIt->second.values.end() );
-        str += " = StructureType::" + nameIt->vkValue;
+        sTypeValue = nameIt->vkValue;
+        str += " = StructureType::" + sTypeValue;
       }
       else
       {
@@ -3684,6 +3700,7 @@ void VulkanHppGenerator::appendStructMembers( std::string &                     
     }
     str += ";\n";
   }
+  return sTypeValue;
 }
 
 void VulkanHppGenerator::appendStructs( std::string & str ) const
@@ -3695,7 +3712,10 @@ void VulkanHppGenerator::appendStructs( std::string & str ) const
   }
 }
 
-void VulkanHppGenerator::appendStructSetter(std::string & str, std::string const& structureName, bool isUnion, MemberData const& memberData) const
+void VulkanHppGenerator::appendStructSetter( std::string &       str,
+                                             std::string const & structureName,
+                                             bool                isUnion,
+                                             MemberData const &  memberData ) const
 {
   if ( memberData.type.type != "VkStructureType" )  // filter out StructureType, which is supposed to be immutable !
   {
@@ -3707,13 +3727,16 @@ void VulkanHppGenerator::appendStructSetter(std::string & str, std::string const
     }
 )";
 
-    std::string memberType = memberData.arraySizes.empty() ? memberData.type.compose() : constructStandardArray(memberData.type.compose(), memberData.arraySizes);
+    std::string memberType = memberData.arraySizes.empty()
+                               ? memberData.type.compose()
+                               : constructStandardArray( memberData.type.compose(), memberData.arraySizes );
     std::string assignment;
     if ( !memberData.bitCount.empty() && beginsWith( memberData.type.type, "Vk" ) )
     {
-      assignment = memberData.name + " = " + "*reinterpret_cast<" + memberData.type.type + "*>(&" + memberData.name + "_)";
+      assignment =
+        memberData.name + " = " + "*reinterpret_cast<" + memberData.type.type + "*>(&" + memberData.name + "_)";
     }
-    else if (isUnion && holdsSType(memberData.type.type) )
+    else if ( isUnion && holdsSType( memberData.type.type ) )
     {
       assignment = "memcpy( &" + memberData.name + ", &" + memberData.name + "_, sizeof(" + memberType + "))";
     }
@@ -3722,15 +3745,17 @@ void VulkanHppGenerator::appendStructSetter(std::string & str, std::string const
       assignment = memberData.name + " = " + memberData.name + "_";
     }
 
-    str += replaceWithMap(templateString,
-      {
-        { "assignment", assignment },
+    str += replaceWithMap(
+      templateString,
+      { { "assignment", assignment },
         { "memberName", memberData.name },
-        { "MemberName", startUpperCase(memberData.name) },
+        { "MemberName", startUpperCase( memberData.name ) },
         { "memberType", memberType },
-        { "reference", (memberData.type.postfix.empty() && (m_structures.find(memberData.type.type) != m_structures.end())) ? "const & " : "" },
-        { "structureName", structureName }
-      });
+        { "reference",
+          ( memberData.type.postfix.empty() && ( m_structures.find( memberData.type.type ) != m_structures.end() ) )
+            ? "const & "
+            : "" },
+        { "structureName", structureName } } );
   }
 }
 
@@ -3793,7 +3818,7 @@ void VulkanHppGenerator::appendStructure( std::string &                         
     // only structs that are not returnedOnly get setters!
     for ( auto const & member : structure.second.members )
     {
-      appendStructSetter(constructorAndSetters, stripPrefix(structure.first, "Vk"), false, member);
+      appendStructSetter( constructorAndSetters, stripPrefix( structure.first, "Vk" ), false, member );
     }
   }
 
@@ -3806,11 +3831,12 @@ void VulkanHppGenerator::appendStructure( std::string &                         
   }
 
   // the member variables
-  std::string members = "\n  public:\n";
-  appendStructMembers( members, structure, "    " );
+  std::string members    = "\n  public:\n";
+  std::string sTypeValue = appendStructMembers( members, structure, "    " );
 
-  static const std::string structureTemplate = R"(  struct ${name}
+  static const std::string structureTemplate = R"(  struct ${structureName}
   {
+${structureType}
 ${constructorAndSetters}
 
     operator ${vkName} const&() const VULKAN_HPP_NOEXCEPT
@@ -3827,16 +3853,37 @@ ${compareOperators}
 
 ${members}
   };
-  static_assert( sizeof( ${name} ) == sizeof( ${vkName} ), "struct and wrapper have different size!" );
-  static_assert( std::is_standard_layout<${name}>::value, "struct wrapper is not a standard layout!" );
+  static_assert( sizeof( ${structureName} ) == sizeof( ${vkName} ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<${structureName}>::value, "struct wrapper is not a standard layout!" );
 )";
 
+  std::string structureName = stripPrefix( structure.first, "Vk" );
+  std::string structureType;
+  if ( !sTypeValue.empty() )
+  {
+    structureType =
+      "    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType = StructureType::" + sTypeValue + ";\n";
+  }
   str += replaceWithMap( structureTemplate,
-                         { { "name", stripPrefix( structure.first, "Vk" ) },
+                         { { "structureName", structureName },
+                           { "structureType", structureType },
                            { "constructorAndSetters", constructorAndSetters },
                            { "vkName", structure.first },
                            { "compareOperators", compareOperators },
                            { "members", members } } );
+
+  if ( !sTypeValue.empty() )
+  {
+    std::string cppTypeTemplate = R"(
+  template <>
+  struct CppType<StructureType, StructureType::${sTypeValue}>
+  {
+    using Type = ${structureName};
+  };
+)";
+    str += replaceWithMap( cppTypeTemplate, { { "sTypeValue", sTypeValue }, { "structureName", structureName } } );
+  }
+
   appendPlatformLeave( str, !structure.second.aliases.empty(), structure.second.platform );
 }
 
@@ -3961,21 +4008,22 @@ void VulkanHppGenerator::appendUnion( std::string & str, std::pair<std::string, 
     {}
 )";
 
-    std::string memberType = (member.arraySizes.empty()) ? member.type.compose() : ("const " + constructStandardArray(member.type.compose(), member.arraySizes) + "&");
-    str += replaceWithMap(constructorTemplate,
-      {
-        { "defaultAssignment",  firstMember ? " = {}" : "" },
-        { "memberName",         member.name },
-        { "memberType",         memberType },
-        { "unionName",          stripPrefix(structure.first, "Vk") }
-      });
+    std::string memberType =
+      ( member.arraySizes.empty() )
+        ? member.type.compose()
+        : ( "const " + constructStandardArray( member.type.compose(), member.arraySizes ) + "&" );
+    str += replaceWithMap( constructorTemplate,
+                           { { "defaultAssignment", firstMember ? " = {}" : "" },
+                             { "memberName", member.name },
+                             { "memberType", memberType },
+                             { "unionName", stripPrefix( structure.first, "Vk" ) } } );
     firstMember = false;
   }
 
   // one setter per union element
   for ( auto const & member : structure.second.members )
   {
-    appendStructSetter(str, stripPrefix(structure.first, "Vk"), true, member);
+    appendStructSetter( str, stripPrefix( structure.first, "Vk" ), true, member );
   }
 
   // assignment operator
@@ -4488,6 +4536,77 @@ std::map<size_t, size_t> VulkanHppGenerator::determineVectorParamIndices( std::v
   return vectorParamIndices;
 }
 
+void VulkanHppGenerator::appendIndexTypeTraits( std::string & str ) const
+{
+  auto indexType = m_enums.find( "VkIndexType" );
+  assert( indexType != m_enums.end() );
+
+  str += R"(
+  template<typename T>
+  struct IndexTypeValue
+  {};
+)";
+
+  std::set<std::string> seenCppTypes;
+  for ( auto const & value : indexType->second.values )
+  {
+    std::string cppType;
+    if ( beginsWith( value.vkValue, "eUint8" ) )
+    {
+      cppType = "uint8_t";
+    }
+    else if ( beginsWith( value.vkValue, "eUint16" ) )
+    {
+      cppType = "uint16_t";
+    }
+    else if ( beginsWith( value.vkValue, "eUint32" ) )
+    {
+      cppType = "uint32_t";
+    }
+    else if ( beginsWith( value.vkValue, "eUint64" ) )
+    {
+      cppType = "uint64_t";  // No extension for this currently
+    }
+    else
+    {
+      assert( value.vkValue == "eNoneKHR" );
+    }
+
+    if ( !cppType.empty() )
+    {
+      if ( seenCppTypes.insert( cppType ).second )
+      {
+        // IndexType traits aren't necessarily invertible.
+        // The Type -> Enum translation will only occur for the first prefixed enum value.
+        // A hypothetical extension to this enum with a conflicting prefix will use the core spec value.
+        str +=
+          "\n"
+          "  template <>\n"
+          "  struct IndexTypeValue<" +
+          cppType +
+          ">\n"
+          "  {\n"
+          "    static VULKAN_HPP_CONST_OR_CONSTEXPR IndexType value = IndexType::" +
+          value.vkValue +
+          ";\n"
+          "  };\n";
+      }
+      // Enum -> Type translations are always able to occur.
+      str +=
+        "\n"
+        "  template <>\n"
+        "  struct CppType<IndexType, IndexType::" +
+        value.vkValue +
+        ">\n"
+        "  {\n"
+        "    using Type = " +
+        cppType +
+        ";\n"
+        "  };\n";
+    }
+  }
+}
+
 std::string const & VulkanHppGenerator::getTypesafeCheck() const
 {
   return m_typesafeCheck;
@@ -4503,18 +4622,18 @@ std::string const & VulkanHppGenerator::getVulkanLicenseHeader() const
   return m_vulkanLicenseHeader;
 }
 
-bool VulkanHppGenerator::holdsSType(std::string const& type) const
+bool VulkanHppGenerator::holdsSType( std::string const & type ) const
 {
-  auto it = m_structures.find(type);
-  if (it != m_structures.end())
+  auto it = m_structures.find( type );
+  if ( it != m_structures.end() )
   {
-    assert(!it->second.members.empty());
-    return (it->second.members.front().name == "sType");
+    assert( !it->second.members.empty() );
+    return ( it->second.members.front().name == "sType" );
   }
   return false;
 }
 
-bool VulkanHppGenerator::isTwoStepAlgorithm(std::vector<ParamData> const& params) const
+bool VulkanHppGenerator::isTwoStepAlgorithm( std::vector<ParamData> const & params ) const
 {
   // we generate a two-step algorithm for functions returning a vector of stuff, where the length is specified as a
   // pointer as well for those functions, the size can be queried first, and then used
@@ -7823,10 +7942,9 @@ namespace std
 )";
 
   static const std::string typeTraits = R"(
-  template<ObjectType value>
-  struct cpp_type
-  {
-  };
+  template <typename EnumType, EnumType value>
+  struct CppType
+  {};
 )";
 
   try
@@ -7859,8 +7977,9 @@ namespace std
     generator.appendDispatchLoaderDefault( str );
     str += classObjectDestroy + classObjectFree + classPoolFree + "\n";
     generator.appendBaseTypes( str );
-    generator.appendEnums( str );
     str += typeTraits;
+    generator.appendEnums( str );
+    generator.appendIndexTypeTraits( str );
     generator.appendBitmasks( str );
     str += "} // namespace VULKAN_HPP_NAMESPACE\n" + is_error_code_enum + "\n" + "namespace VULKAN_HPP_NAMESPACE\n" +
            "{\n" + "#ifndef VULKAN_HPP_NO_EXCEPTIONS" + exceptions;

@@ -3007,36 +3007,42 @@ void VulkanHppGenerator::appendStructs(std::string & str) const
   }
 }
 
-void VulkanHppGenerator::appendStructSetter(std::string & str, std::string const& structureName, MemberData const& memberData) const
+void VulkanHppGenerator::appendStructSetter(std::string & str, std::string const& structureName, bool isUnion, MemberData const& memberData) const
 {
   if (memberData.type.type != "VkStructureType") // filter out StructureType, which is supposed to be immutable !
   {
-    std::string memberType;
-    if (memberData.arraySizes.empty())
+    static const std::string templateString = R"(
+    ${structureName} & set${MemberName}( ${memberType} ${reference}${memberName}_ ) VULKAN_HPP_NOEXCEPT
     {
-      memberType = memberData.type.compose();
+      ${assignment};
+      return *this;
     }
-    else
-    {
-      memberType = constructStandardArray(memberData.type.compose(), memberData.arraySizes);
-    }
+)";
 
-    // copy over the argument, either by assigning simple data, or by memcpy array data
-    str += "\n"
-      "    " + structureName + " & set" + startUpperCase(memberData.name) + "( " + memberType + " " + memberData.name + "_ ) VULKAN_HPP_NOEXCEPT\n"
-      "    {\n"
-      "      ";
+    std::string memberType = memberData.arraySizes.empty() ? memberData.type.compose() : constructStandardArray(memberData.type.compose(), memberData.arraySizes);
+    std::string assignment;
     if (!memberData.bitCount.empty() && beginsWith(memberData.type.type, "Vk"))
     {
-      str += memberData.name + " = " + "*reinterpret_cast<" + memberData.type.type + "*>(&" + memberData.name + "_)";
+      assignment = memberData.name + " = " + "*reinterpret_cast<" + memberData.type.type + "*>(&" + memberData.name + "_)";
+    }
+    else if (isUnion && holdsSType(memberData.type.type) )
+    {
+      assignment = "memcpy( &" + memberData.name + ", &" + memberData.name + "_, sizeof(" + memberType + "))";
     }
     else
     {
-      str += memberData.name + " = " + memberData.name + "_";
+      assignment = memberData.name + " = " + memberData.name + "_";
     }
-    str += ";\n"
-      "      return *this;\n"
-      "    }\n";
+
+    str += replaceWithMap(templateString,
+      {
+        { "assignment", assignment },
+        { "memberName", memberData.name },
+        { "MemberName", startUpperCase(memberData.name) },
+        { "memberType", memberType },
+        { "reference", (memberData.type.postfix.empty() && (m_structures.find(memberData.type.type) != m_structures.end())) ? "const & " : "" },
+        { "structureName", structureName }
+      });
   }
 }
 
@@ -3092,7 +3098,7 @@ void VulkanHppGenerator::appendStructure(std::string & str, std::pair<std::strin
     // only structs that are not returnedOnly get setters!
     for (auto const& member : structure.second.members)
     {
-      appendStructSetter(constructorAndSetters, stripPrefix(structure.first, "Vk"), member);
+      appendStructSetter(constructorAndSetters, stripPrefix(structure.first, "Vk"), false, member);
     }
   }
 
@@ -3237,18 +3243,14 @@ void VulkanHppGenerator::appendUnion(std::string & str, std::pair<std::string, S
 
     static const std::string constructorTemplate = R"(
     ${unionName}( ${memberType} ${memberName}_${defaultAssignment} )
-    {
-      ${memberAssignment};
-    }
+      : ${memberName}( ${memberName}_ )
+    {}
 )";
-    std::string memberAssignment, memberType;
-    memberAssignment = member.name + " = " + member.name + "_";
-    memberType = (member.arraySizes.empty()) ? member.type.compose() : ("const " + constructStandardArray(member.type.compose(), member.arraySizes) + "&");
 
+    std::string memberType = (member.arraySizes.empty()) ? member.type.compose() : ("const " + constructStandardArray(member.type.compose(), member.arraySizes) + "&");
     str += replaceWithMap(constructorTemplate,
       {
         { "defaultAssignment",  firstMember ? " = {}" : "" },
-        { "memberAssignment",   memberAssignment },
         { "memberName",         member.name },
         { "memberType",         memberType },
         { "unionName",          stripPrefix(structure.first, "Vk") }
@@ -3259,7 +3261,7 @@ void VulkanHppGenerator::appendUnion(std::string & str, std::pair<std::string, S
   // one setter per union element
   for (auto const& member : structure.second.members)
   {
-    appendStructSetter(str, stripPrefix(structure.first, "Vk"), member);
+    appendStructSetter(str, stripPrefix(structure.first, "Vk"), true, member);
   }
 
   // assignment operator
@@ -3685,6 +3687,17 @@ std::string const& VulkanHppGenerator::getVersion() const
 std::string const& VulkanHppGenerator::getVulkanLicenseHeader() const
 {
   return m_vulkanLicenseHeader;
+}
+
+bool VulkanHppGenerator::holdsSType(std::string const& type) const
+{
+  auto it = m_structures.find(type);
+  if (it != m_structures.end())
+  {
+    assert(!it->second.members.empty());
+    return (it->second.members.front().name == "sType");
+  }
+  return false;
 }
 
 bool VulkanHppGenerator::isTwoStepAlgorithm(std::vector<ParamData> const& params) const

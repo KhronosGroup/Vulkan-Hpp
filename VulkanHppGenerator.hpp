@@ -278,7 +278,7 @@ class VulkanHppGenerator
     bool appendStructConstructorArgument(std::string & str, bool listedArgument, std::string const& indentation, MemberData const& memberData) const;
     void appendStructCopyConstructors(std::string & str, std::string const& vkName) const;
     void appendStructMembers(std::string & str, std::pair<std::string,StructureData> const& structData, std::string const& prefix) const;
-    void appendStructSetter(std::string & str, std::string const& structureName, MemberData const& memberData) const;
+    void appendStructSetter(std::string & str, std::string const& structureName, bool isUnion, MemberData const& memberData) const;
     void appendStructSubConstructor(std::string &str, std::pair<std::string, StructureData> const& structData, std::string const& prefix) const;
     void appendStructure(std::string & str, std::pair<std::string, StructureData> const& structure) const;
     void appendUnion(std::string & str, std::pair<std::string, StructureData> const& structure) const;
@@ -293,6 +293,7 @@ class VulkanHppGenerator
     std::string determineSubStruct(std::pair<std::string, StructureData> const& structure) const;
     size_t determineTemplateParamIndex(std::vector<ParamData> const& params, std::map<size_t, size_t> const& vectorParamIndices) const;
     std::map<size_t, size_t> determineVectorParamIndices(std::vector<ParamData> const& params) const;
+    bool holdsSType(std::string const& type) const;
     bool isTwoStepAlgorithm(std::vector<ParamData> const& params) const;
     void linkCommandToHandle(int line, std::string const& name, CommandData const& commandData);
     void readBaseType(tinyxml2::XMLElement const* element, std::map<std::string, std::string> const& attributes);

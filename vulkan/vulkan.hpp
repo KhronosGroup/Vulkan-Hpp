@@ -20629,14 +20629,12 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     DeviceOrHostAddressConstKHR( VULKAN_HPP_NAMESPACE::DeviceAddress deviceAddress_ = {} )
-    {
-      deviceAddress = deviceAddress_;
-    }
+      : deviceAddress( deviceAddress_ )
+    {}
 
     DeviceOrHostAddressConstKHR( const void* hostAddress_ )
-    {
-      hostAddress = hostAddress_;
-    }
+      : hostAddress( hostAddress_ )
+    {}
 
     DeviceOrHostAddressConstKHR & setDeviceAddress( VULKAN_HPP_NAMESPACE::DeviceAddress deviceAddress_ ) VULKAN_HPP_NOEXCEPT
     {
@@ -20722,7 +20720,7 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    AccelerationStructureGeometryTrianglesDataKHR & setVertexData( VULKAN_HPP_NAMESPACE::DeviceOrHostAddressConstKHR vertexData_ ) VULKAN_HPP_NOEXCEPT
+    AccelerationStructureGeometryTrianglesDataKHR & setVertexData( VULKAN_HPP_NAMESPACE::DeviceOrHostAddressConstKHR const & vertexData_ ) VULKAN_HPP_NOEXCEPT
     {
       vertexData = vertexData_;
       return *this;
@@ -20740,13 +20738,13 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    AccelerationStructureGeometryTrianglesDataKHR & setIndexData( VULKAN_HPP_NAMESPACE::DeviceOrHostAddressConstKHR indexData_ ) VULKAN_HPP_NOEXCEPT
+    AccelerationStructureGeometryTrianglesDataKHR & setIndexData( VULKAN_HPP_NAMESPACE::DeviceOrHostAddressConstKHR const & indexData_ ) VULKAN_HPP_NOEXCEPT
     {
       indexData = indexData_;
       return *this;
     }
 
-    AccelerationStructureGeometryTrianglesDataKHR & setTransformData( VULKAN_HPP_NAMESPACE::DeviceOrHostAddressConstKHR transformData_ ) VULKAN_HPP_NOEXCEPT
+    AccelerationStructureGeometryTrianglesDataKHR & setTransformData( VULKAN_HPP_NAMESPACE::DeviceOrHostAddressConstKHR const & transformData_ ) VULKAN_HPP_NOEXCEPT
     {
       transformData = transformData_;
       return *this;
@@ -20808,7 +20806,7 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    AccelerationStructureGeometryAabbsDataKHR & setData( VULKAN_HPP_NAMESPACE::DeviceOrHostAddressConstKHR data_ ) VULKAN_HPP_NOEXCEPT
+    AccelerationStructureGeometryAabbsDataKHR & setData( VULKAN_HPP_NAMESPACE::DeviceOrHostAddressConstKHR const & data_ ) VULKAN_HPP_NOEXCEPT
     {
       data = data_;
       return *this;
@@ -20878,7 +20876,7 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    AccelerationStructureGeometryInstancesDataKHR & setData( VULKAN_HPP_NAMESPACE::DeviceOrHostAddressConstKHR data_ ) VULKAN_HPP_NOEXCEPT
+    AccelerationStructureGeometryInstancesDataKHR & setData( VULKAN_HPP_NAMESPACE::DeviceOrHostAddressConstKHR const & data_ ) VULKAN_HPP_NOEXCEPT
     {
       data = data_;
       return *this;
@@ -20913,35 +20911,32 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     AccelerationStructureGeometryDataKHR( VULKAN_HPP_NAMESPACE::AccelerationStructureGeometryTrianglesDataKHR triangles_ = {} )
-    {
-      triangles = triangles_;
-    }
+      : triangles( triangles_ )
+    {}
 
     AccelerationStructureGeometryDataKHR( VULKAN_HPP_NAMESPACE::AccelerationStructureGeometryAabbsDataKHR aabbs_ )
-    {
-      aabbs = aabbs_;
-    }
+      : aabbs( aabbs_ )
+    {}
 
     AccelerationStructureGeometryDataKHR( VULKAN_HPP_NAMESPACE::AccelerationStructureGeometryInstancesDataKHR instances_ )
-    {
-      instances = instances_;
-    }
+      : instances( instances_ )
+    {}
 
-    AccelerationStructureGeometryDataKHR & setTriangles( VULKAN_HPP_NAMESPACE::AccelerationStructureGeometryTrianglesDataKHR triangles_ ) VULKAN_HPP_NOEXCEPT
+    AccelerationStructureGeometryDataKHR & setTriangles( VULKAN_HPP_NAMESPACE::AccelerationStructureGeometryTrianglesDataKHR const & triangles_ ) VULKAN_HPP_NOEXCEPT
     {
-      triangles = triangles_;
+      memcpy( &triangles, &triangles_, sizeof(VULKAN_HPP_NAMESPACE::AccelerationStructureGeometryTrianglesDataKHR));
       return *this;
     }
 
-    AccelerationStructureGeometryDataKHR & setAabbs( VULKAN_HPP_NAMESPACE::AccelerationStructureGeometryAabbsDataKHR aabbs_ ) VULKAN_HPP_NOEXCEPT
+    AccelerationStructureGeometryDataKHR & setAabbs( VULKAN_HPP_NAMESPACE::AccelerationStructureGeometryAabbsDataKHR const & aabbs_ ) VULKAN_HPP_NOEXCEPT
     {
-      aabbs = aabbs_;
+      memcpy( &aabbs, &aabbs_, sizeof(VULKAN_HPP_NAMESPACE::AccelerationStructureGeometryAabbsDataKHR));
       return *this;
     }
 
-    AccelerationStructureGeometryDataKHR & setInstances( VULKAN_HPP_NAMESPACE::AccelerationStructureGeometryInstancesDataKHR instances_ ) VULKAN_HPP_NOEXCEPT
+    AccelerationStructureGeometryDataKHR & setInstances( VULKAN_HPP_NAMESPACE::AccelerationStructureGeometryInstancesDataKHR const & instances_ ) VULKAN_HPP_NOEXCEPT
     {
-      instances = instances_;
+      memcpy( &instances, &instances_, sizeof(VULKAN_HPP_NAMESPACE::AccelerationStructureGeometryInstancesDataKHR));
       return *this;
     }
 
@@ -21013,7 +21008,7 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    AccelerationStructureGeometryKHR & setGeometry( VULKAN_HPP_NAMESPACE::AccelerationStructureGeometryDataKHR geometry_ ) VULKAN_HPP_NOEXCEPT
+    AccelerationStructureGeometryKHR & setGeometry( VULKAN_HPP_NAMESPACE::AccelerationStructureGeometryDataKHR const & geometry_ ) VULKAN_HPP_NOEXCEPT
     {
       geometry = geometry_;
       return *this;
@@ -21055,14 +21050,12 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     DeviceOrHostAddressKHR( VULKAN_HPP_NAMESPACE::DeviceAddress deviceAddress_ = {} )
-    {
-      deviceAddress = deviceAddress_;
-    }
+      : deviceAddress( deviceAddress_ )
+    {}
 
     DeviceOrHostAddressKHR( void* hostAddress_ )
-    {
-      hostAddress = hostAddress_;
-    }
+      : hostAddress( hostAddress_ )
+    {}
 
     DeviceOrHostAddressKHR & setDeviceAddress( VULKAN_HPP_NAMESPACE::DeviceAddress deviceAddress_ ) VULKAN_HPP_NOEXCEPT
     {
@@ -21196,7 +21189,7 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    AccelerationStructureBuildGeometryInfoKHR & setScratchData( VULKAN_HPP_NAMESPACE::DeviceOrHostAddressKHR scratchData_ ) VULKAN_HPP_NOEXCEPT
+    AccelerationStructureBuildGeometryInfoKHR & setScratchData( VULKAN_HPP_NAMESPACE::DeviceOrHostAddressKHR const & scratchData_ ) VULKAN_HPP_NOEXCEPT
     {
       scratchData = scratchData_;
       return *this;
@@ -21843,13 +21836,13 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    GeometryDataNV & setTriangles( VULKAN_HPP_NAMESPACE::GeometryTrianglesNV triangles_ ) VULKAN_HPP_NOEXCEPT
+    GeometryDataNV & setTriangles( VULKAN_HPP_NAMESPACE::GeometryTrianglesNV const & triangles_ ) VULKAN_HPP_NOEXCEPT
     {
       triangles = triangles_;
       return *this;
     }
 
-    GeometryDataNV & setAabbs( VULKAN_HPP_NAMESPACE::GeometryAABBNV aabbs_ ) VULKAN_HPP_NOEXCEPT
+    GeometryDataNV & setAabbs( VULKAN_HPP_NAMESPACE::GeometryAABBNV const & aabbs_ ) VULKAN_HPP_NOEXCEPT
     {
       aabbs = aabbs_;
       return *this;
@@ -21926,7 +21919,7 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    GeometryNV & setGeometry( VULKAN_HPP_NAMESPACE::GeometryDataNV geometry_ ) VULKAN_HPP_NOEXCEPT
+    GeometryNV & setGeometry( VULKAN_HPP_NAMESPACE::GeometryDataNV const & geometry_ ) VULKAN_HPP_NOEXCEPT
     {
       geometry = geometry_;
       return *this;
@@ -22122,7 +22115,7 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    AccelerationStructureCreateInfoNV & setInfo( VULKAN_HPP_NAMESPACE::AccelerationStructureInfoNV info_ ) VULKAN_HPP_NOEXCEPT
+    AccelerationStructureCreateInfoNV & setInfo( VULKAN_HPP_NAMESPACE::AccelerationStructureInfoNV const & info_ ) VULKAN_HPP_NOEXCEPT
     {
       info = info_;
       return *this;
@@ -22315,7 +22308,7 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    AccelerationStructureInstanceKHR & setTransform( VULKAN_HPP_NAMESPACE::TransformMatrixKHR transform_ ) VULKAN_HPP_NOEXCEPT
+    AccelerationStructureInstanceKHR & setTransform( VULKAN_HPP_NAMESPACE::TransformMatrixKHR const & transform_ ) VULKAN_HPP_NOEXCEPT
     {
       transform = transform_;
       return *this;
@@ -24154,7 +24147,7 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    SampleLocationsInfoEXT & setSampleLocationGridSize( VULKAN_HPP_NAMESPACE::Extent2D sampleLocationGridSize_ ) VULKAN_HPP_NOEXCEPT
+    SampleLocationsInfoEXT & setSampleLocationGridSize( VULKAN_HPP_NAMESPACE::Extent2D const & sampleLocationGridSize_ ) VULKAN_HPP_NOEXCEPT
     {
       sampleLocationGridSize = sampleLocationGridSize_;
       return *this;
@@ -24237,7 +24230,7 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    AttachmentSampleLocationsEXT & setSampleLocationsInfo( VULKAN_HPP_NAMESPACE::SampleLocationsInfoEXT sampleLocationsInfo_ ) VULKAN_HPP_NOEXCEPT
+    AttachmentSampleLocationsEXT & setSampleLocationsInfo( VULKAN_HPP_NAMESPACE::SampleLocationsInfoEXT const & sampleLocationsInfo_ ) VULKAN_HPP_NOEXCEPT
     {
       sampleLocationsInfo = sampleLocationsInfo_;
       return *this;
@@ -24742,13 +24735,13 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    Rect2D & setOffset( VULKAN_HPP_NAMESPACE::Offset2D offset_ ) VULKAN_HPP_NOEXCEPT
+    Rect2D & setOffset( VULKAN_HPP_NAMESPACE::Offset2D const & offset_ ) VULKAN_HPP_NOEXCEPT
     {
       offset = offset_;
       return *this;
     }
 
-    Rect2D & setExtent( VULKAN_HPP_NAMESPACE::Extent2D extent_ ) VULKAN_HPP_NOEXCEPT
+    Rect2D & setExtent( VULKAN_HPP_NAMESPACE::Extent2D const & extent_ ) VULKAN_HPP_NOEXCEPT
     {
       extent = extent_;
       return *this;
@@ -25747,19 +25740,19 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    SparseImageMemoryBind & setSubresource( VULKAN_HPP_NAMESPACE::ImageSubresource subresource_ ) VULKAN_HPP_NOEXCEPT
+    SparseImageMemoryBind & setSubresource( VULKAN_HPP_NAMESPACE::ImageSubresource const & subresource_ ) VULKAN_HPP_NOEXCEPT
     {
       subresource = subresource_;
       return *this;
     }
 
-    SparseImageMemoryBind & setOffset( VULKAN_HPP_NAMESPACE::Offset3D offset_ ) VULKAN_HPP_NOEXCEPT
+    SparseImageMemoryBind & setOffset( VULKAN_HPP_NAMESPACE::Offset3D const & offset_ ) VULKAN_HPP_NOEXCEPT
     {
       offset = offset_;
       return *this;
     }
 
-    SparseImageMemoryBind & setExtent( VULKAN_HPP_NAMESPACE::Extent3D extent_ ) VULKAN_HPP_NOEXCEPT
+    SparseImageMemoryBind & setExtent( VULKAN_HPP_NAMESPACE::Extent3D const & extent_ ) VULKAN_HPP_NOEXCEPT
     {
       extent = extent_;
       return *this;
@@ -26586,19 +26579,19 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    BufferImageCopy & setImageSubresource( VULKAN_HPP_NAMESPACE::ImageSubresourceLayers imageSubresource_ ) VULKAN_HPP_NOEXCEPT
+    BufferImageCopy & setImageSubresource( VULKAN_HPP_NAMESPACE::ImageSubresourceLayers const & imageSubresource_ ) VULKAN_HPP_NOEXCEPT
     {
       imageSubresource = imageSubresource_;
       return *this;
     }
 
-    BufferImageCopy & setImageOffset( VULKAN_HPP_NAMESPACE::Offset3D imageOffset_ ) VULKAN_HPP_NOEXCEPT
+    BufferImageCopy & setImageOffset( VULKAN_HPP_NAMESPACE::Offset3D const & imageOffset_ ) VULKAN_HPP_NOEXCEPT
     {
       imageOffset = imageOffset_;
       return *this;
     }
 
-    BufferImageCopy & setImageExtent( VULKAN_HPP_NAMESPACE::Extent3D imageExtent_ ) VULKAN_HPP_NOEXCEPT
+    BufferImageCopy & setImageExtent( VULKAN_HPP_NAMESPACE::Extent3D const & imageExtent_ ) VULKAN_HPP_NOEXCEPT
     {
       imageExtent = imageExtent_;
       return *this;
@@ -27158,19 +27151,16 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     ClearColorValue( const std::array<float,4>& float32_ = {} )
-    {
-      float32 = float32_;
-    }
+      : float32( float32_ )
+    {}
 
     ClearColorValue( const std::array<int32_t,4>& int32_ )
-    {
-      int32 = int32_;
-    }
+      : int32( int32_ )
+    {}
 
     ClearColorValue( const std::array<uint32_t,4>& uint32_ )
-    {
-      uint32 = uint32_;
-    }
+      : uint32( uint32_ )
+    {}
 
     ClearColorValue & setFloat32( std::array<float,4> float32_ ) VULKAN_HPP_NOEXCEPT
     {
@@ -27282,22 +27272,20 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     ClearValue( VULKAN_HPP_NAMESPACE::ClearColorValue color_ = {} )
-    {
-      color = color_;
-    }
+      : color( color_ )
+    {}
 
     ClearValue( VULKAN_HPP_NAMESPACE::ClearDepthStencilValue depthStencil_ )
-    {
-      depthStencil = depthStencil_;
-    }
+      : depthStencil( depthStencil_ )
+    {}
 
-    ClearValue & setColor( VULKAN_HPP_NAMESPACE::ClearColorValue color_ ) VULKAN_HPP_NOEXCEPT
+    ClearValue & setColor( VULKAN_HPP_NAMESPACE::ClearColorValue const & color_ ) VULKAN_HPP_NOEXCEPT
     {
       color = color_;
       return *this;
     }
 
-    ClearValue & setDepthStencil( VULKAN_HPP_NAMESPACE::ClearDepthStencilValue depthStencil_ ) VULKAN_HPP_NOEXCEPT
+    ClearValue & setDepthStencil( VULKAN_HPP_NAMESPACE::ClearDepthStencilValue const & depthStencil_ ) VULKAN_HPP_NOEXCEPT
     {
       depthStencil = depthStencil_;
       return *this;
@@ -27361,7 +27349,7 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    ClearAttachment & setClearValue( VULKAN_HPP_NAMESPACE::ClearValue clearValue_ ) VULKAN_HPP_NOEXCEPT
+    ClearAttachment & setClearValue( VULKAN_HPP_NAMESPACE::ClearValue const & clearValue_ ) VULKAN_HPP_NOEXCEPT
     {
       clearValue = clearValue_;
       return *this;
@@ -27406,7 +27394,7 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    ClearRect & setRect( VULKAN_HPP_NAMESPACE::Rect2D rect_ ) VULKAN_HPP_NOEXCEPT
+    ClearRect & setRect( VULKAN_HPP_NAMESPACE::Rect2D const & rect_ ) VULKAN_HPP_NOEXCEPT
     {
       rect = rect_;
       return *this;
@@ -28007,7 +27995,7 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    CommandBufferInheritanceRenderPassTransformInfoQCOM & setRenderArea( VULKAN_HPP_NAMESPACE::Rect2D renderArea_ ) VULKAN_HPP_NOEXCEPT
+    CommandBufferInheritanceRenderPassTransformInfoQCOM & setRenderArea( VULKAN_HPP_NAMESPACE::Rect2D const & renderArea_ ) VULKAN_HPP_NOEXCEPT
     {
       renderArea = renderArea_;
       return *this;
@@ -28436,7 +28424,7 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    ComputePipelineCreateInfo & setStage( VULKAN_HPP_NAMESPACE::PipelineShaderStageCreateInfo stage_ ) VULKAN_HPP_NOEXCEPT
+    ComputePipelineCreateInfo & setStage( VULKAN_HPP_NAMESPACE::PipelineShaderStageCreateInfo const & stage_ ) VULKAN_HPP_NOEXCEPT
     {
       stage = stage_;
       return *this;
@@ -28944,7 +28932,7 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    CopyAccelerationStructureToMemoryInfoKHR & setDst( VULKAN_HPP_NAMESPACE::DeviceOrHostAddressKHR dst_ ) VULKAN_HPP_NOEXCEPT
+    CopyAccelerationStructureToMemoryInfoKHR & setDst( VULKAN_HPP_NAMESPACE::DeviceOrHostAddressKHR const & dst_ ) VULKAN_HPP_NOEXCEPT
     {
       dst = dst_;
       return *this;
@@ -29140,7 +29128,7 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    CopyMemoryToAccelerationStructureInfoKHR & setSrc( VULKAN_HPP_NAMESPACE::DeviceOrHostAddressConstKHR src_ ) VULKAN_HPP_NOEXCEPT
+    CopyMemoryToAccelerationStructureInfoKHR & setSrc( VULKAN_HPP_NAMESPACE::DeviceOrHostAddressConstKHR const & src_ ) VULKAN_HPP_NOEXCEPT
     {
       src = src_;
       return *this;
@@ -33721,7 +33709,7 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    DisplayModeParametersKHR & setVisibleRegion( VULKAN_HPP_NAMESPACE::Extent2D visibleRegion_ ) VULKAN_HPP_NOEXCEPT
+    DisplayModeParametersKHR & setVisibleRegion( VULKAN_HPP_NAMESPACE::Extent2D const & visibleRegion_ ) VULKAN_HPP_NOEXCEPT
     {
       visibleRegion = visibleRegion_;
       return *this;
@@ -33802,7 +33790,7 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    DisplayModeCreateInfoKHR & setParameters( VULKAN_HPP_NAMESPACE::DisplayModeParametersKHR parameters_ ) VULKAN_HPP_NOEXCEPT
+    DisplayModeCreateInfoKHR & setParameters( VULKAN_HPP_NAMESPACE::DisplayModeParametersKHR const & parameters_ ) VULKAN_HPP_NOEXCEPT
     {
       parameters = parameters_;
       return *this;
@@ -34434,13 +34422,13 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    DisplayPresentInfoKHR & setSrcRect( VULKAN_HPP_NAMESPACE::Rect2D srcRect_ ) VULKAN_HPP_NOEXCEPT
+    DisplayPresentInfoKHR & setSrcRect( VULKAN_HPP_NAMESPACE::Rect2D const & srcRect_ ) VULKAN_HPP_NOEXCEPT
     {
       srcRect = srcRect_;
       return *this;
     }
 
-    DisplayPresentInfoKHR & setDstRect( VULKAN_HPP_NAMESPACE::Rect2D dstRect_ ) VULKAN_HPP_NOEXCEPT
+    DisplayPresentInfoKHR & setDstRect( VULKAN_HPP_NAMESPACE::Rect2D const & dstRect_ ) VULKAN_HPP_NOEXCEPT
     {
       dstRect = dstRect_;
       return *this;
@@ -34703,7 +34691,7 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    DisplaySurfaceCreateInfoKHR & setImageExtent( VULKAN_HPP_NAMESPACE::Extent2D imageExtent_ ) VULKAN_HPP_NOEXCEPT
+    DisplaySurfaceCreateInfoKHR & setImageExtent( VULKAN_HPP_NAMESPACE::Extent2D const & imageExtent_ ) VULKAN_HPP_NOEXCEPT
     {
       imageExtent = imageExtent_;
       return *this;
@@ -38859,13 +38847,13 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    PipelineDepthStencilStateCreateInfo & setFront( VULKAN_HPP_NAMESPACE::StencilOpState front_ ) VULKAN_HPP_NOEXCEPT
+    PipelineDepthStencilStateCreateInfo & setFront( VULKAN_HPP_NAMESPACE::StencilOpState const & front_ ) VULKAN_HPP_NOEXCEPT
     {
       front = front_;
       return *this;
     }
 
-    PipelineDepthStencilStateCreateInfo & setBack( VULKAN_HPP_NAMESPACE::StencilOpState back_ ) VULKAN_HPP_NOEXCEPT
+    PipelineDepthStencilStateCreateInfo & setBack( VULKAN_HPP_NAMESPACE::StencilOpState const & back_ ) VULKAN_HPP_NOEXCEPT
     {
       back = back_;
       return *this;
@@ -39799,25 +39787,25 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    HdrMetadataEXT & setDisplayPrimaryRed( VULKAN_HPP_NAMESPACE::XYColorEXT displayPrimaryRed_ ) VULKAN_HPP_NOEXCEPT
+    HdrMetadataEXT & setDisplayPrimaryRed( VULKAN_HPP_NAMESPACE::XYColorEXT const & displayPrimaryRed_ ) VULKAN_HPP_NOEXCEPT
     {
       displayPrimaryRed = displayPrimaryRed_;
       return *this;
     }
 
-    HdrMetadataEXT & setDisplayPrimaryGreen( VULKAN_HPP_NAMESPACE::XYColorEXT displayPrimaryGreen_ ) VULKAN_HPP_NOEXCEPT
+    HdrMetadataEXT & setDisplayPrimaryGreen( VULKAN_HPP_NAMESPACE::XYColorEXT const & displayPrimaryGreen_ ) VULKAN_HPP_NOEXCEPT
     {
       displayPrimaryGreen = displayPrimaryGreen_;
       return *this;
     }
 
-    HdrMetadataEXT & setDisplayPrimaryBlue( VULKAN_HPP_NAMESPACE::XYColorEXT displayPrimaryBlue_ ) VULKAN_HPP_NOEXCEPT
+    HdrMetadataEXT & setDisplayPrimaryBlue( VULKAN_HPP_NAMESPACE::XYColorEXT const & displayPrimaryBlue_ ) VULKAN_HPP_NOEXCEPT
     {
       displayPrimaryBlue = displayPrimaryBlue_;
       return *this;
     }
 
-    HdrMetadataEXT & setWhitePoint( VULKAN_HPP_NAMESPACE::XYColorEXT whitePoint_ ) VULKAN_HPP_NOEXCEPT
+    HdrMetadataEXT & setWhitePoint( VULKAN_HPP_NAMESPACE::XYColorEXT const & whitePoint_ ) VULKAN_HPP_NOEXCEPT
     {
       whitePoint = whitePoint_;
       return *this;
@@ -40068,25 +40056,25 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    ImageBlit & setSrcSubresource( VULKAN_HPP_NAMESPACE::ImageSubresourceLayers srcSubresource_ ) VULKAN_HPP_NOEXCEPT
+    ImageBlit & setSrcSubresource( VULKAN_HPP_NAMESPACE::ImageSubresourceLayers const & srcSubresource_ ) VULKAN_HPP_NOEXCEPT
     {
       srcSubresource = srcSubresource_;
       return *this;
     }
 
-    ImageBlit & setSrcOffsets( std::array<VULKAN_HPP_NAMESPACE::Offset3D,2> srcOffsets_ ) VULKAN_HPP_NOEXCEPT
+    ImageBlit & setSrcOffsets( std::array<VULKAN_HPP_NAMESPACE::Offset3D,2> const & srcOffsets_ ) VULKAN_HPP_NOEXCEPT
     {
       srcOffsets = srcOffsets_;
       return *this;
     }
 
-    ImageBlit & setDstSubresource( VULKAN_HPP_NAMESPACE::ImageSubresourceLayers dstSubresource_ ) VULKAN_HPP_NOEXCEPT
+    ImageBlit & setDstSubresource( VULKAN_HPP_NAMESPACE::ImageSubresourceLayers const & dstSubresource_ ) VULKAN_HPP_NOEXCEPT
     {
       dstSubresource = dstSubresource_;
       return *this;
     }
 
-    ImageBlit & setDstOffsets( std::array<VULKAN_HPP_NAMESPACE::Offset3D,2> dstOffsets_ ) VULKAN_HPP_NOEXCEPT
+    ImageBlit & setDstOffsets( std::array<VULKAN_HPP_NAMESPACE::Offset3D,2> const & dstOffsets_ ) VULKAN_HPP_NOEXCEPT
     {
       dstOffsets = dstOffsets_;
       return *this;
@@ -40153,31 +40141,31 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    ImageCopy & setSrcSubresource( VULKAN_HPP_NAMESPACE::ImageSubresourceLayers srcSubresource_ ) VULKAN_HPP_NOEXCEPT
+    ImageCopy & setSrcSubresource( VULKAN_HPP_NAMESPACE::ImageSubresourceLayers const & srcSubresource_ ) VULKAN_HPP_NOEXCEPT
     {
       srcSubresource = srcSubresource_;
       return *this;
     }
 
-    ImageCopy & setSrcOffset( VULKAN_HPP_NAMESPACE::Offset3D srcOffset_ ) VULKAN_HPP_NOEXCEPT
+    ImageCopy & setSrcOffset( VULKAN_HPP_NAMESPACE::Offset3D const & srcOffset_ ) VULKAN_HPP_NOEXCEPT
     {
       srcOffset = srcOffset_;
       return *this;
     }
 
-    ImageCopy & setDstSubresource( VULKAN_HPP_NAMESPACE::ImageSubresourceLayers dstSubresource_ ) VULKAN_HPP_NOEXCEPT
+    ImageCopy & setDstSubresource( VULKAN_HPP_NAMESPACE::ImageSubresourceLayers const & dstSubresource_ ) VULKAN_HPP_NOEXCEPT
     {
       dstSubresource = dstSubresource_;
       return *this;
     }
 
-    ImageCopy & setDstOffset( VULKAN_HPP_NAMESPACE::Offset3D dstOffset_ ) VULKAN_HPP_NOEXCEPT
+    ImageCopy & setDstOffset( VULKAN_HPP_NAMESPACE::Offset3D const & dstOffset_ ) VULKAN_HPP_NOEXCEPT
     {
       dstOffset = dstOffset_;
       return *this;
     }
 
-    ImageCopy & setExtent( VULKAN_HPP_NAMESPACE::Extent3D extent_ ) VULKAN_HPP_NOEXCEPT
+    ImageCopy & setExtent( VULKAN_HPP_NAMESPACE::Extent3D const & extent_ ) VULKAN_HPP_NOEXCEPT
     {
       extent = extent_;
       return *this;
@@ -40292,7 +40280,7 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    ImageCreateInfo & setExtent( VULKAN_HPP_NAMESPACE::Extent3D extent_ ) VULKAN_HPP_NOEXCEPT
+    ImageCreateInfo & setExtent( VULKAN_HPP_NAMESPACE::Extent3D const & extent_ ) VULKAN_HPP_NOEXCEPT
     {
       extent = extent_;
       return *this;
@@ -41012,7 +41000,7 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    ImageMemoryBarrier & setSubresourceRange( VULKAN_HPP_NAMESPACE::ImageSubresourceRange subresourceRange_ ) VULKAN_HPP_NOEXCEPT
+    ImageMemoryBarrier & setSubresourceRange( VULKAN_HPP_NAMESPACE::ImageSubresourceRange const & subresourceRange_ ) VULKAN_HPP_NOEXCEPT
     {
       subresourceRange = subresourceRange_;
       return *this;
@@ -41310,31 +41298,31 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    ImageResolve & setSrcSubresource( VULKAN_HPP_NAMESPACE::ImageSubresourceLayers srcSubresource_ ) VULKAN_HPP_NOEXCEPT
+    ImageResolve & setSrcSubresource( VULKAN_HPP_NAMESPACE::ImageSubresourceLayers const & srcSubresource_ ) VULKAN_HPP_NOEXCEPT
     {
       srcSubresource = srcSubresource_;
       return *this;
     }
 
-    ImageResolve & setSrcOffset( VULKAN_HPP_NAMESPACE::Offset3D srcOffset_ ) VULKAN_HPP_NOEXCEPT
+    ImageResolve & setSrcOffset( VULKAN_HPP_NAMESPACE::Offset3D const & srcOffset_ ) VULKAN_HPP_NOEXCEPT
     {
       srcOffset = srcOffset_;
       return *this;
     }
 
-    ImageResolve & setDstSubresource( VULKAN_HPP_NAMESPACE::ImageSubresourceLayers dstSubresource_ ) VULKAN_HPP_NOEXCEPT
+    ImageResolve & setDstSubresource( VULKAN_HPP_NAMESPACE::ImageSubresourceLayers const & dstSubresource_ ) VULKAN_HPP_NOEXCEPT
     {
       dstSubresource = dstSubresource_;
       return *this;
     }
 
-    ImageResolve & setDstOffset( VULKAN_HPP_NAMESPACE::Offset3D dstOffset_ ) VULKAN_HPP_NOEXCEPT
+    ImageResolve & setDstOffset( VULKAN_HPP_NAMESPACE::Offset3D const & dstOffset_ ) VULKAN_HPP_NOEXCEPT
     {
       dstOffset = dstOffset_;
       return *this;
     }
 
-    ImageResolve & setExtent( VULKAN_HPP_NAMESPACE::Extent3D extent_ ) VULKAN_HPP_NOEXCEPT
+    ImageResolve & setExtent( VULKAN_HPP_NAMESPACE::Extent3D const & extent_ ) VULKAN_HPP_NOEXCEPT
     {
       extent = extent_;
       return *this;
@@ -41778,13 +41766,13 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    ImageViewCreateInfo & setComponents( VULKAN_HPP_NAMESPACE::ComponentMapping components_ ) VULKAN_HPP_NOEXCEPT
+    ImageViewCreateInfo & setComponents( VULKAN_HPP_NAMESPACE::ComponentMapping const & components_ ) VULKAN_HPP_NOEXCEPT
     {
       components = components_;
       return *this;
     }
 
-    ImageViewCreateInfo & setSubresourceRange( VULKAN_HPP_NAMESPACE::ImageSubresourceRange subresourceRange_ ) VULKAN_HPP_NOEXCEPT
+    ImageViewCreateInfo & setSubresourceRange( VULKAN_HPP_NAMESPACE::ImageSubresourceRange const & subresourceRange_ ) VULKAN_HPP_NOEXCEPT
     {
       subresourceRange = subresourceRange_;
       return *this;
@@ -45160,34 +45148,28 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     PerformanceCounterResultKHR( int32_t int32_ = {} )
-    {
-      int32 = int32_;
-    }
+      : int32( int32_ )
+    {}
 
     PerformanceCounterResultKHR( int64_t int64_ )
-    {
-      int64 = int64_;
-    }
+      : int64( int64_ )
+    {}
 
     PerformanceCounterResultKHR( uint32_t uint32_ )
-    {
-      uint32 = uint32_;
-    }
+      : uint32( uint32_ )
+    {}
 
     PerformanceCounterResultKHR( uint64_t uint64_ )
-    {
-      uint64 = uint64_;
-    }
+      : uint64( uint64_ )
+    {}
 
     PerformanceCounterResultKHR( float float32_ )
-    {
-      float32 = float32_;
-    }
+      : float32( float32_ )
+    {}
 
     PerformanceCounterResultKHR( double float64_ )
-    {
-      float64 = float64_;
-    }
+      : float64( float64_ )
+    {}
 
     PerformanceCounterResultKHR & setInt32( int32_t int32_ ) VULKAN_HPP_NOEXCEPT
     {
@@ -45553,24 +45535,20 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     PerformanceValueDataINTEL( uint32_t value32_ = {} )
-    {
-      value32 = value32_;
-    }
+      : value32( value32_ )
+    {}
 
     PerformanceValueDataINTEL( uint64_t value64_ )
-    {
-      value64 = value64_;
-    }
+      : value64( value64_ )
+    {}
 
     PerformanceValueDataINTEL( float valueFloat_ )
-    {
-      valueFloat = valueFloat_;
-    }
+      : valueFloat( valueFloat_ )
+    {}
 
     PerformanceValueDataINTEL( const char* valueString_ )
-    {
-      valueString = valueString_;
-    }
+      : valueString( valueString_ )
+    {}
 
     PerformanceValueDataINTEL & setValue32( uint32_t value32_ ) VULKAN_HPP_NOEXCEPT
     {
@@ -45658,7 +45636,7 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    PerformanceValueINTEL & setData( VULKAN_HPP_NAMESPACE::PerformanceValueDataINTEL data_ ) VULKAN_HPP_NOEXCEPT
+    PerformanceValueINTEL & setData( VULKAN_HPP_NAMESPACE::PerformanceValueDataINTEL const & data_ ) VULKAN_HPP_NOEXCEPT
     {
       data = data_;
       return *this;
@@ -48267,7 +48245,7 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    PhysicalDeviceFeatures2 & setFeatures( VULKAN_HPP_NAMESPACE::PhysicalDeviceFeatures features_ ) VULKAN_HPP_NOEXCEPT
+    PhysicalDeviceFeatures2 & setFeatures( VULKAN_HPP_NAMESPACE::PhysicalDeviceFeatures const & features_ ) VULKAN_HPP_NOEXCEPT
     {
       features = features_;
       return *this;
@@ -56865,24 +56843,20 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     PipelineExecutableStatisticValueKHR( VULKAN_HPP_NAMESPACE::Bool32 b32_ = {} )
-    {
-      b32 = b32_;
-    }
+      : b32( b32_ )
+    {}
 
     PipelineExecutableStatisticValueKHR( int64_t i64_ )
-    {
-      i64 = i64_;
-    }
+      : i64( i64_ )
+    {}
 
     PipelineExecutableStatisticValueKHR( uint64_t u64_ )
-    {
-      u64 = u64_;
-    }
+      : u64( u64_ )
+    {}
 
     PipelineExecutableStatisticValueKHR( double f64_ )
-    {
-      f64 = f64_;
-    }
+      : f64( f64_ )
+    {}
 
     PipelineExecutableStatisticValueKHR & setB32( VULKAN_HPP_NAMESPACE::Bool32 b32_ ) VULKAN_HPP_NOEXCEPT
     {
@@ -57840,7 +57814,7 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    PipelineSampleLocationsStateCreateInfoEXT & setSampleLocationsInfo( VULKAN_HPP_NAMESPACE::SampleLocationsInfoEXT sampleLocationsInfo_ ) VULKAN_HPP_NOEXCEPT
+    PipelineSampleLocationsStateCreateInfoEXT & setSampleLocationsInfo( VULKAN_HPP_NAMESPACE::SampleLocationsInfoEXT const & sampleLocationsInfo_ ) VULKAN_HPP_NOEXCEPT
     {
       sampleLocationsInfo = sampleLocationsInfo_;
       return *this;
@@ -59012,13 +58986,13 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    RectLayerKHR & setOffset( VULKAN_HPP_NAMESPACE::Offset2D offset_ ) VULKAN_HPP_NOEXCEPT
+    RectLayerKHR & setOffset( VULKAN_HPP_NAMESPACE::Offset2D const & offset_ ) VULKAN_HPP_NOEXCEPT
     {
       offset = offset_;
       return *this;
     }
 
-    RectLayerKHR & setExtent( VULKAN_HPP_NAMESPACE::Extent2D extent_ ) VULKAN_HPP_NOEXCEPT
+    RectLayerKHR & setExtent( VULKAN_HPP_NAMESPACE::Extent2D const & extent_ ) VULKAN_HPP_NOEXCEPT
     {
       extent = extent_;
       return *this;
@@ -60145,7 +60119,7 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    RayTracingPipelineCreateInfoKHR & setLibraries( VULKAN_HPP_NAMESPACE::PipelineLibraryCreateInfoKHR libraries_ ) VULKAN_HPP_NOEXCEPT
+    RayTracingPipelineCreateInfoKHR & setLibraries( VULKAN_HPP_NAMESPACE::PipelineLibraryCreateInfoKHR const & libraries_ ) VULKAN_HPP_NOEXCEPT
     {
       libraries = libraries_;
       return *this;
@@ -60663,7 +60637,7 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    RenderPassBeginInfo & setRenderArea( VULKAN_HPP_NAMESPACE::Rect2D renderArea_ ) VULKAN_HPP_NOEXCEPT
+    RenderPassBeginInfo & setRenderArea( VULKAN_HPP_NAMESPACE::Rect2D const & renderArea_ ) VULKAN_HPP_NOEXCEPT
     {
       renderArea = renderArea_;
       return *this;
@@ -61594,7 +61568,7 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    RenderPassFragmentDensityMapCreateInfoEXT & setFragmentDensityMapAttachment( VULKAN_HPP_NAMESPACE::AttachmentReference fragmentDensityMapAttachment_ ) VULKAN_HPP_NOEXCEPT
+    RenderPassFragmentDensityMapCreateInfoEXT & setFragmentDensityMapAttachment( VULKAN_HPP_NAMESPACE::AttachmentReference const & fragmentDensityMapAttachment_ ) VULKAN_HPP_NOEXCEPT
     {
       fragmentDensityMapAttachment = fragmentDensityMapAttachment_;
       return *this;
@@ -61857,7 +61831,7 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    SubpassSampleLocationsEXT & setSampleLocationsInfo( VULKAN_HPP_NAMESPACE::SampleLocationsInfoEXT sampleLocationsInfo_ ) VULKAN_HPP_NOEXCEPT
+    SubpassSampleLocationsEXT & setSampleLocationsInfo( VULKAN_HPP_NAMESPACE::SampleLocationsInfoEXT const & sampleLocationsInfo_ ) VULKAN_HPP_NOEXCEPT
     {
       sampleLocationsInfo = sampleLocationsInfo_;
       return *this;
@@ -62412,7 +62386,7 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    SamplerYcbcrConversionCreateInfo & setComponents( VULKAN_HPP_NAMESPACE::ComponentMapping components_ ) VULKAN_HPP_NOEXCEPT
+    SamplerYcbcrConversionCreateInfo & setComponents( VULKAN_HPP_NAMESPACE::ComponentMapping const & components_ ) VULKAN_HPP_NOEXCEPT
     {
       components = components_;
       return *this;
@@ -65043,7 +65017,7 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-    SwapchainCreateInfoKHR & setImageExtent( VULKAN_HPP_NAMESPACE::Extent2D imageExtent_ ) VULKAN_HPP_NOEXCEPT
+    SwapchainCreateInfoKHR & setImageExtent( VULKAN_HPP_NAMESPACE::Extent2D const & imageExtent_ ) VULKAN_HPP_NOEXCEPT
     {
       imageExtent = imageExtent_;
       return *this;

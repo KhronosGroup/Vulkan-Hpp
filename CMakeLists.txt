@@ -30,6 +30,14 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 project(VulkanHppGenerator)
 
+find_program(CLANG_FORMAT_EXECUTABLE NAMES clang-format)
+
+if(CLANG_FORMAT_EXECUTABLE)
+  add_definitions(-DCLANG_FORMAT_EXECUTABLE="${CLANG_FORMAT_EXECUTABLE}")
+else()
+  message(WARNGING " Could not find clang-format. Generated vulkan.hpp will not be nicely formatted.")
+endif()
+
 if(MSVC)
   add_compile_options(/W4)
 else(MSVC)

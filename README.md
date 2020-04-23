@@ -17,6 +17,12 @@ Vulkan-Hpp requires a C++11 capable compiler to compile. The following compilers
 * GCC >= 4.8.2 (earlier version might work, but are untested)
 * Clang >= 3.3
 
+### Optional Features
+
+#### Formatting
+
+If the program clang-format is found by CMake, the define CLANG_FORMAT_EXECUTABLE is set accordingly. In that case, the generated vulkan.hpp is formatted using the .clang-format file located in the root directory of this project. Otherwise it's formatted as hard-coded in the generator.
+
 ## Usage
 
 ### namespace vk

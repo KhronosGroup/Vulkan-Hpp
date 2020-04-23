@@ -13,16 +13,18 @@
 // limitations under the License.
 //
 // VulkanHpp Samples : InstanceExtensionProperties
-//                     Get global extension properties to know what extension are available to enable at CreateInstance time.
+//                     Get global extension properties to know what extension are available to enable at CreateInstance
+//                     time.
 
 #include "vulkan/vulkan.hpp"
+
 #include <iostream>
 #include <sstream>
 
-static char const* AppName = "InstanceExtensionProperties";
-static char const* EngineName = "Vulkan.hpp";
+static char const * AppName    = "InstanceExtensionProperties";
+static char const * EngineName = "Vulkan.hpp";
 
-int main(int /*argc*/, char ** /*argv*/)
+int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
@@ -32,10 +34,14 @@ int main(int /*argc*/, char ** /*argv*/)
 
     // sort the extensions alphabetically
 
-    std::sort(extensionProperties.begin(), extensionProperties.end(), [](vk::ExtensionProperties const& a, vk::ExtensionProperties const& b) { return strcmp(a.extensionName, b.extensionName) < 0; });
+    std::sort( extensionProperties.begin(),
+               extensionProperties.end(),
+               []( vk::ExtensionProperties const & a, vk::ExtensionProperties const & b ) {
+                 return strcmp( a.extensionName, b.extensionName ) < 0;
+               } );
 
     std::cout << "Instance Extensions:" << std::endl;
-    for (auto const& ep : extensionProperties)
+    for ( auto const & ep : extensionProperties )
     {
       std::cout << ep.extensionName << ":" << std::endl;
       std::cout << "\tVersion: " << ep.specVersion << std::endl;
@@ -44,20 +50,20 @@ int main(int /*argc*/, char ** /*argv*/)
 
     /* VULKAN_KEY_END */
   }
-  catch (vk::SystemError& err)
+  catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit(-1);
+    exit( -1 );
   }
-  catch (std::runtime_error& err)
+  catch ( std::runtime_error & err )
   {
     std::cout << "std::runtime_error: " << err.what() << std::endl;
-    exit(-1);
+    exit( -1 );
   }
-  catch (...)
+  catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit(-1);
+    exit( -1 );
   }
   return 0;
 }

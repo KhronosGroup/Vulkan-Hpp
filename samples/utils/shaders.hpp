@@ -14,6 +14,7 @@
 //
 
 #include "vulkan/vulkan.hpp"
+
 #include <string>
 #include <vector>
 
@@ -21,12 +22,15 @@ namespace vk
 {
   namespace su
   {
-    vk::UniqueShaderModule createShaderModule(vk::UniqueDevice &device, vk::ShaderStageFlagBits shaderStage, std::string const& shaderText);
+    vk::UniqueShaderModule createShaderModule( vk::UniqueDevice &      device,
+                                               vk::ShaderStageFlagBits shaderStage,
+                                               std::string const &     shaderText );
 
-    bool GLSLtoSPV(const vk::ShaderStageFlagBits shaderType, std::string const& glslShader, std::vector<unsigned int> &spvShader);
-  }
-}
-
+    bool GLSLtoSPV( const vk::ShaderStageFlagBits shaderType,
+                    std::string const &           glslShader,
+                    std::vector<unsigned int> &   spvShader );
+  }  // namespace su
+}  // namespace vk
 
 // vertex shader with (P)osition and (C)olor in and (C)olor out
 const std::string vertexShaderText_PC_C = R"(
@@ -76,7 +80,6 @@ void main()
 }
 )";
 
-
 // fragment shader with (C)olor in and (C)olor out
 const std::string fragmentShaderText_C_C = R"(
 #version 400
@@ -112,4 +115,3 @@ void main()
   outColor = texture(tex, inTexCoord);
 }
 )";
-

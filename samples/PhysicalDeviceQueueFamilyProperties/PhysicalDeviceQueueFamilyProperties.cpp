@@ -17,20 +17,21 @@
 
 #include "../utils/utils.hpp"
 #include "vulkan/vulkan.hpp"
+
 #include <iomanip>
 #include <sstream>
 #include <vector>
 
-static char const* AppName = "PhysicalDeviceQueueFamilyProperties";
-static char const* EngineName = "Vulkan.hpp";
+static char const * AppName    = "PhysicalDeviceQueueFamilyProperties";
+static char const * EngineName = "Vulkan.hpp";
 
-int main(int /*argc*/, char ** /*argv*/)
+int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    vk::UniqueInstance instance = vk::su::createInstance(AppName, EngineName);
-#if !defined(NDEBUG)
-    vk::UniqueDebugUtilsMessengerEXT debugUtilsMessenger = vk::su::createDebugUtilsMessenger(instance);
+    vk::UniqueInstance instance = vk::su::createInstance( AppName, EngineName );
+#if !defined( NDEBUG )
+    vk::UniqueDebugUtilsMessengerEXT debugUtilsMessenger = vk::su::createDebugUtilsMessenger( instance );
 #endif
 
     // enumerate the physicalDevices
@@ -39,32 +40,47 @@ int main(int /*argc*/, char ** /*argv*/)
     /* VULKAN_KEY_START */
 
     std::cout << std::boolalpha;
-    for (size_t i=0 ; i<physicalDevices.size() ; i++)
+    for ( size_t i = 0; i < physicalDevices.size(); i++ )
     {
       // some features are only valid, if a corresponding extension is available!
-      std::vector<vk::ExtensionProperties> extensionProperties = physicalDevices[i].enumerateDeviceExtensionProperties();
+      std::vector<vk::ExtensionProperties> extensionProperties =
+        physicalDevices[i].enumerateDeviceExtensionProperties();
 
       std::cout << "PhysicalDevice " << i << "\n";
 
       // need to explicitly specify all the template arguments for getQueueFamilyProperties2 to make the compiler happy
       using Chain = vk::StructureChain<vk::QueueFamilyProperties2, vk::QueueFamilyCheckpointPropertiesNV>;
-      auto queueFamilyProperties2 = physicalDevices[i].getQueueFamilyProperties2<Chain, std::allocator<Chain>, vk::DispatchLoaderDynamic>();
-      for (size_t j = 0; j < queueFamilyProperties2.size(); j++)
+      auto queueFamilyProperties2 =
+        physicalDevices[i].getQueueFamilyProperties2<Chain, std::allocator<Chain>, vk::DispatchLoaderDynamic>();
+      for ( size_t j = 0; j < queueFamilyProperties2.size(); j++ )
       {
-        std::cout << "\t" << "QueueFamily " << j << "\n";
-        vk::QueueFamilyProperties const& properties = queueFamilyProperties2[j].get<vk::QueueFamilyProperties2>().queueFamilyProperties;
-        std::cout << "\t\t" << "QueueFamilyProperties:\n";
-        std::cout << "\t\t\t" << "queueFlags                  = " << vk::to_string(properties.queueFlags) << "\n";
-        std::cout << "\t\t\t" << "queueCount                  = " << properties.queueCount << "\n";
-        std::cout << "\t\t\t" << "timestampValidBits          = " << properties.timestampValidBits << "\n";
-        std::cout << "\t\t\t" << "minImageTransferGranularity = " << properties.minImageTransferGranularity.width << " x " << properties.minImageTransferGranularity.height << " x " << properties.minImageTransferGranularity.depth << "\n";
+        std::cout << "\t"
+                  << "QueueFamily " << j << "\n";
+        vk::QueueFamilyProperties const & properties =
+          queueFamilyProperties2[j].get<vk::QueueFamilyProperties2>().queueFamilyProperties;
+        std::cout << "\t\t"
+                  << "QueueFamilyProperties:\n";
+        std::cout << "\t\t\t"
+                  << "queueFlags                  = " << vk::to_string( properties.queueFlags ) << "\n";
+        std::cout << "\t\t\t"
+                  << "queueCount                  = " << properties.queueCount << "\n";
+        std::cout << "\t\t\t"
+                  << "timestampValidBits          = " << properties.timestampValidBits << "\n";
+        std::cout << "\t\t\t"
+                  << "minImageTransferGranularity = " << properties.minImageTransferGranularity.width << " x "
+                  << properties.minImageTransferGranularity.height << " x "
+                  << properties.minImageTransferGranularity.depth << "\n";
         std::cout << "\n";
 
-        if (vk::su::contains(extensionProperties, "VK_NV_device_diagnostic_checkpoints"))
+        if ( vk::su::contains( extensionProperties, "VK_NV_device_diagnostic_checkpoints" ) )
         {
-          vk::QueueFamilyCheckpointPropertiesNV const& checkpointProperties = queueFamilyProperties2[j].get<vk::QueueFamilyCheckpointPropertiesNV>();
-          std::cout << "\t\t" << "CheckPointPropertiesNV:\n";
-          std::cout << "\t\t\t" << "checkpointExecutionStageMask  = " << vk::to_string(checkpointProperties.checkpointExecutionStageMask) << "\n";
+          vk::QueueFamilyCheckpointPropertiesNV const & checkpointProperties =
+            queueFamilyProperties2[j].get<vk::QueueFamilyCheckpointPropertiesNV>();
+          std::cout << "\t\t"
+                    << "CheckPointPropertiesNV:\n";
+          std::cout << "\t\t\t"
+                    << "checkpointExecutionStageMask  = "
+                    << vk::to_string( checkpointProperties.checkpointExecutionStageMask ) << "\n";
           std::cout << "\n";
         }
       }
@@ -72,20 +88,20 @@ int main(int /*argc*/, char ** /*argv*/)
 
     /* VULKAN_KEY_END */
   }
-  catch (vk::SystemError& err)
+  catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit(-1);
+    exit( -1 );
   }
-  catch (std::runtime_error& err)
+  catch ( std::runtime_error & err )
   {
     std::cout << "std::runtime_error: " << err.what() << std::endl;
-    exit(-1);
+    exit( -1 );
   }
-  catch (...)
+  catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit(-1);
+    exit( -1 );
   }
   return 0;
 }

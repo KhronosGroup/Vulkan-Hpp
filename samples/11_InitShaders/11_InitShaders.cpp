@@ -17,43 +17,47 @@
 
 #include "../utils/shaders.hpp"
 #include "../utils/utils.hpp"
-#include "vulkan/vulkan.hpp"
 #include "SPIRV/GlslangToSpv.h"
+#include "vulkan/vulkan.hpp"
+
 #include <iostream>
 
-static char const* AppName = "11_InitShaders";
-static char const* EngineName = "Vulkan.hpp";
+static char const * AppName    = "11_InitShaders";
+static char const * EngineName = "Vulkan.hpp";
 
-int main(int /*argc*/, char ** /*argv*/)
+int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    vk::UniqueInstance instance = vk::su::createInstance(AppName, EngineName, {}, vk::su::getInstanceExtensions());
-#if !defined(NDEBUG)
-    vk::UniqueDebugUtilsMessengerEXT debugUtilsMessenger = vk::su::createDebugUtilsMessenger(instance);
+    vk::UniqueInstance instance = vk::su::createInstance( AppName, EngineName, {}, vk::su::getInstanceExtensions() );
+#if !defined( NDEBUG )
+    vk::UniqueDebugUtilsMessengerEXT debugUtilsMessenger = vk::su::createDebugUtilsMessenger( instance );
 #endif
 
     vk::PhysicalDevice physicalDevice = instance->enumeratePhysicalDevices().front();
 
-    vk::UniqueDevice device = vk::su::createDevice(physicalDevice, vk::su::findGraphicsQueueFamilyIndex(physicalDevice.getQueueFamilyProperties()));
+    vk::UniqueDevice device = vk::su::createDevice(
+      physicalDevice, vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() ) );
 
     /* VULKAN_HPP_KEY_START */
 
     glslang::InitializeProcess();
 
     std::vector<unsigned int> vertexShaderSPV;
-    bool ok = vk::su::GLSLtoSPV(vk::ShaderStageFlagBits::eVertex, vertexShaderText_PC_C, vertexShaderSPV);
-    assert(ok);
+    bool ok = vk::su::GLSLtoSPV( vk::ShaderStageFlagBits::eVertex, vertexShaderText_PC_C, vertexShaderSPV );
+    assert( ok );
 
-    vk::ShaderModuleCreateInfo vertexShaderModuleCreateInfo(vk::ShaderModuleCreateFlags(), vertexShaderSPV.size() * sizeof(unsigned int), vertexShaderSPV.data());
-    vk::UniqueShaderModule vertexShaderModule = device->createShaderModuleUnique(vertexShaderModuleCreateInfo);
+    vk::ShaderModuleCreateInfo vertexShaderModuleCreateInfo(
+      vk::ShaderModuleCreateFlags(), vertexShaderSPV.size() * sizeof( unsigned int ), vertexShaderSPV.data() );
+    vk::UniqueShaderModule vertexShaderModule = device->createShaderModuleUnique( vertexShaderModuleCreateInfo );
 
     std::vector<unsigned int> fragmentShaderSPV;
-    ok = vk::su::GLSLtoSPV(vk::ShaderStageFlagBits::eFragment, fragmentShaderText_C_C, fragmentShaderSPV);
-    assert(ok);
+    ok = vk::su::GLSLtoSPV( vk::ShaderStageFlagBits::eFragment, fragmentShaderText_C_C, fragmentShaderSPV );
+    assert( ok );
 
-    vk::ShaderModuleCreateInfo fragmentShaderModuleCreateInfo(vk::ShaderModuleCreateFlags(), fragmentShaderSPV.size() * sizeof(unsigned int), fragmentShaderSPV.data());
-    vk::UniqueShaderModule fragmentShaderModule = device->createShaderModuleUnique(fragmentShaderModuleCreateInfo);
+    vk::ShaderModuleCreateInfo fragmentShaderModuleCreateInfo(
+      vk::ShaderModuleCreateFlags(), fragmentShaderSPV.size() * sizeof( unsigned int ), fragmentShaderSPV.data() );
+    vk::UniqueShaderModule fragmentShaderModule = device->createShaderModuleUnique( fragmentShaderModuleCreateInfo );
 
     glslang::FinalizeProcess();
 
@@ -62,20 +66,20 @@ int main(int /*argc*/, char ** /*argv*/)
 
     /* VULKAN_HPP_KEY_END */
   }
-  catch (vk::SystemError& err)
+  catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit(-1);
+    exit( -1 );
   }
-  catch (std::runtime_error& err)
+  catch ( std::runtime_error & err )
   {
     std::cout << "std::runtime_error: " << err.what() << std::endl;
-    exit(-1);
+    exit( -1 );
   }
-  catch (...)
+  catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit(-1);
+    exit( -1 );
   }
   return 0;
 }

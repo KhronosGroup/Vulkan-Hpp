@@ -1811,7 +1811,7 @@ void VulkanHppGenerator::appendEnums( std::string & str ) const
     {
       str += R"(
   template<ObjectType value>
-  struct [[deprecated("vk::cpp_type is deprecated. Use vk::CppType instead.")]] cpp_type
+  struct VULKAN_HPP_DEPRECATED("vk::cpp_type is deprecated. Use vk::CppType instead.") cpp_type
   {};
 )";
     }
@@ -3267,7 +3267,7 @@ ${commands}
   static_assert( sizeof( ${className} ) == sizeof( Vk${className} ), "handle and wrapper have different size!" );
 
   template <>
-  struct [[deprecated("vk::cpp_type is deprecated. Use vk::CppType instead.")]] cpp_type<ObjectType::e${className}>
+  struct VULKAN_HPP_DEPRECATED("vk::cpp_type is deprecated. Use vk::CppType instead.") cpp_type<ObjectType::e${className}>
   {
     using type = ${className};
   };
@@ -7610,6 +7610,15 @@ int main( int argc, char ** argv )
 #  define VULKAN_HPP_NOEXCEPT noexcept
 #  define VULKAN_HPP_HAS_NOEXCEPT 1
 # endif
+#endif
+
+#ifdef __has_cpp_attribute                      // Check if __has_cpp_attribute is present
+#  if __has_cpp_attribute(deprecated)           // Check for an attribute
+#    define VULKAN_HPP_DEPRECATED(msg) [[deprecated(msg)]]
+#  endif
+#endif
+#ifndef VULKAN_HPP_DEPRECATED
+#  define VULKAN_HPP_DEPRECATED( msg )
 #endif
 
 #if !defined(VULKAN_HPP_NAMESPACE)

@@ -7612,12 +7612,9 @@ int main( int argc, char ** argv )
 # endif
 #endif
 
-#ifdef __has_cpp_attribute                      // Check if __has_cpp_attribute is present
-#  if __has_cpp_attribute(deprecated)           // Check for an attribute
-#    define VULKAN_HPP_DEPRECATED(msg) [[deprecated(msg)]]
-#  endif
-#endif
-#ifndef VULKAN_HPP_DEPRECATED
+#if __cplusplus >= 201402L
+#  define VULKAN_HPP_DEPRECATED( msg ) [[deprecated( msg )]]
+#else
 #  define VULKAN_HPP_DEPRECATED( msg )
 #endif
 

@@ -4689,17 +4689,24 @@ void VulkanHppGenerator::readBaseType( tinyxml2::XMLElement const *             
   TypeData typeData;
   std::tie( nameData, typeData ) = readNameAndType( element );
 
-  check( beginsWith( nameData.name, "Vk" ), line, "name <" + nameData.name + "> does not begin with <Vk>" );
   check( nameData.arraySizes.empty(), line, "name <" + nameData.name + "> with unsupported arraySizes" );
   check( nameData.bitCount.empty(),
          line,
          "name <" + nameData.name + "> with unsupported bitCount <" + nameData.bitCount + ">" );
-  check( typeData.prefix == "typedef", line, "unexpected type prefix <" + typeData.prefix + ">" );
+  check( typeData.type.empty() || ( typeData.prefix == "typedef" ),
+         line,
+         "unexpected type prefix <" + typeData.prefix + ">" );
+  check( typeData.prefix.empty() || ( typeData.prefix == "typedef" ),
+         line,
+         "unexpected type prefix <" + typeData.prefix + ">" );
   check( typeData.postfix.empty(), line, "unexpected type postfix <" + typeData.postfix + ">" );
 
-  check( m_baseTypes.insert( std::make_pair( nameData.name, BaseTypeData( typeData.type, line ) ) ).second,
-         line,
-         "basetype <" + nameData.name + "> already specified" );
+  if ( !typeData.type.empty() )
+  {
+    check( m_baseTypes.insert( std::make_pair( nameData.name, BaseTypeData( typeData.type, line ) ) ).second,
+           line,
+           "basetype <" + nameData.name + "> already specified" );
+  }
   check( m_types.insert( std::make_pair( nameData.name, TypeCategory::BaseType ) ).second,
          line,
          "basetype <" + nameData.name + "> already specified as a type" );
@@ -5669,6 +5676,9 @@ void VulkanHppGenerator::readExtensionRequireType( tinyxml2::XMLElement const * 
   {
     switch ( typeIt->second )
     {
+      case TypeCategory::BaseType:
+        // no need to protect a base type
+        break;
       case TypeCategory::Bitmask:
       {
         auto bitmaskIt = m_bitmasks.find( name );
@@ -5896,7 +5906,7 @@ std::pair<VulkanHppGenerator::NameData, VulkanHppGenerator::TypeData>
 {
   int                                       line     = element->GetLineNum();
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, { { "name", true }, { "type", true } } );
+  checkElements( line, children, { { "name", true } }, { { "type" } } );
 
   NameData nameData;
   TypeData typeData;

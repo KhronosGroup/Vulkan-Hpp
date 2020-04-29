@@ -1825,8 +1825,7 @@ void VulkanHppGenerator::appendEnums( std::string & str ) const
 void VulkanHppGenerator::appendEnumInitializer( std::string &                      str,
                                                 TypeData const &                   type,
                                                 std::vector<std::string> const &   arraySizes,
-                                                std::vector<EnumValueData> const & values,
-                                                bool                               argument ) const
+                                                std::vector<EnumValueData> const & values ) const
 {
   // enum arguments might need special initialization
   assert( type.prefix.empty() && !values.empty() );
@@ -1840,13 +1839,12 @@ void VulkanHppGenerator::appendEnumInitializer( std::string &                   
     assert( arraySizes.size() == 1 );
     int count = std::stoi( arraySizes[0] );
     assert( 1 < count );
-    str += argument ? "{ { " : "{ ";  // for function arguments, we need two braces, for default initializers just one
-    str += value;
+    str += "{ { " + value;
     for ( int i = 1; i < count; i++ )
     {
       str += ", " + value;
     }
-    str += argument ? " } }" : " }";
+    str += " } }";
   }
 }
 
@@ -3594,7 +3592,7 @@ bool VulkanHppGenerator::appendStructConstructorArgument( std::string &       st
     auto enumIt = m_enums.find( memberData.type.type );
     if ( enumIt != m_enums.end() && memberData.type.postfix.empty() )
     {
-      appendEnumInitializer( str, memberData.type, memberData.arraySizes, enumIt->second.values, true );
+      appendEnumInitializer( str, memberData.type, memberData.arraySizes, enumIt->second.values );
     }
     else
     {
@@ -3690,7 +3688,7 @@ std::string VulkanHppGenerator::appendStructMembers( std::string &              
         auto enumIt = m_enums.find( member.type.type );
         if ( enumIt != m_enums.end() && member.type.postfix.empty() )
         {
-          appendEnumInitializer( str, member.type, member.arraySizes, enumIt->second.values, false );
+          appendEnumInitializer( str, member.type, member.arraySizes, enumIt->second.values );
         }
         else
         {
@@ -4438,9 +4436,9 @@ size_t VulkanHppGenerator::determineReturnParamIndex( CommandData const &       
              ( vpit->second == INVALID_INDEX ) ||
              ( commandData.params[vpit->second].type.postfix.find( '*' ) != std::string::npos ) )
         {
-          // it's not a vector parameter, or a two-step process, or there is at least one more vector parameter, or the
-          // size argument of this vector parameter is not an argument, or the size argument of this vector parameter is
-          // provided by a pointer
+          // it's not a vector parameter, or a two-step process, or there is at least one more vector parameter, or
+          // the size argument of this vector parameter is not an argument, or the size argument of this vector
+          // parameter is provided by a pointer
           // -> look for another non-cost pointer argument
           auto paramIt =
             std::find_if( commandData.params.begin() + i + 1, commandData.params.end(), []( ParamData const & pd ) {
@@ -4521,8 +4519,8 @@ std::map<size_t, size_t> VulkanHppGenerator::determineVectorParamIndices( std::v
       assert( ( std::count_if( params.begin(), params.end(), findLambda ) == 0 ) ||
               ( findIt < it ) );  // make sure, there is no other parameter like that
 
-      // add this parameter as a vector parameter, using the len-name parameter as the second value (or INVALID_INDEX if
-      // there is nothing like that)
+      // add this parameter as a vector parameter, using the len-name parameter as the second value (or INVALID_INDEX
+      // if there is nothing like that)
       vectorParamIndices.insert(
         std::make_pair( std::distance( params.begin(), it ),
                         ( findIt < it ) ? std::distance( params.begin(), findIt ) : INVALID_INDEX ) );

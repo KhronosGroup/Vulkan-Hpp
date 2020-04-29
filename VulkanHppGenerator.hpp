@@ -267,8 +267,7 @@ private:
   void        appendEnumInitializer( std::string &                      str,
                                      TypeData const &                   type,
                                      std::vector<std::string> const &   arraySizes,
-                                     std::vector<EnumValueData> const & values,
-                                     bool                               argument ) const;
+                                     std::vector<EnumValueData> const & values ) const;
   void        appendEnumToString( std::string & str, std::pair<std::string, EnumData> const & enumData ) const;
   void        appendFunction( std::string &                    str,
                               std::string const &              indentation,

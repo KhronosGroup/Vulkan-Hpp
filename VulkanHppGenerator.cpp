@@ -6339,12 +6339,6 @@ void VulkanHppGenerator::readStructMember( tinyxml2::XMLElement const * element,
   members.push_back( MemberData( line ) );
   MemberData & memberData = members.back();
 
-  auto valuesIt = attributes.find( "values" );
-  if ( valuesIt != attributes.end() )
-  {
-    memberData.values = valuesIt->second;
-  }
-
   for ( auto child : children )
   {
     std::string value = child->Value();
@@ -6360,6 +6354,18 @@ void VulkanHppGenerator::readStructMember( tinyxml2::XMLElement const * element,
     {
       readStructMemberType( child, memberData );
     }
+  }
+
+  auto valuesIt = attributes.find( "values" );
+  if ( valuesIt != attributes.end() )
+  {
+    check( memberData.name == "sType",
+           line,
+           "Structure member named differently than <sType> with attribute <values> encountered: " );
+    check( m_sTypeValues.insert( valuesIt->second ).second,
+           line,
+           "<" + valuesIt->second + "> already encountered as values for the sType member of a struct" );
+    memberData.values = valuesIt->second;
   }
 }
 

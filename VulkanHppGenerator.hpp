@@ -592,6 +592,7 @@ private:
   std::map<std::string, std::string>     m_platforms;
   std::map<std::string, std::string>     m_structureAliases;
   std::map<std::string, StructureData>   m_structures;
+  std::set<std::string>                  m_sTypeValues;
   std::set<std::string>                  m_tags;
   std::map<std::string, TypeCategory>    m_types;
   std::string                            m_typesafeCheck;

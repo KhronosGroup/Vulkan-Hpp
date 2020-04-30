@@ -126,6 +126,7 @@ private:
 
   struct EnumData
   {
+    void addEnumAlias( int line, std::string const & name, std::string const & alias, std::string const & vkName );
     void addEnumValue( int                 line,
                        std::string const & valueName,
                        bool                bitmask,
@@ -135,8 +136,7 @@ private:
                        std::string const & tag );
 
     std::string alias;  // alias for this enum
-    std::vector<std::pair<std::string, std::string>>
-                               aliases;  // pairs of vulkan enum value and corresponding vk::-namespace enum value
+    std::map<std::string, std::pair<std::string, std::string>> aliases;   // map from name to alias and vk-name
     bool                       isBitmask = false;
     std::string                platform;
     std::vector<EnumValueData> values;

@@ -1769,19 +1769,19 @@ void VulkanHppGenerator::appendEnum( std::string & str, std::pair<std::string, E
     str += "\n    " + value.vkValue + " = " + value.vulkanValue;
     first = false;
   }
-  for ( auto const & value : enumData.second.aliases )
+  for ( auto const & alias : enumData.second.aliases )
   {
     // make sure to only list alias values that differ from all non-alias values
     if ( std::find_if(
-           enumData.second.values.begin(), enumData.second.values.end(), [&value]( EnumValueData const & evd ) {
-             return value.second == evd.vkValue;
+           enumData.second.values.begin(), enumData.second.values.end(), [&alias]( EnumValueData const & evd ) {
+             return alias.second.second == evd.vkValue;
            } ) == enumData.second.values.end() )
     {
       if ( !first )
       {
         str += ",";
       }
-      str += "\n    " + value.second + " = " + value.first;
+      str += "\n    " + alias.second.second + " = " + alias.first;
       first = false;
     }
   }
@@ -4116,6 +4116,27 @@ void VulkanHppGenerator::appendUniqueTypes( std::string &                 str,
   str += "#endif /*VULKAN_HPP_NO_SMART_HANDLE*/\n";
 }
 
+void VulkanHppGenerator::EnumData::addEnumAlias( int                 line,
+                                                 std::string const & name,
+                                                 std::string const & aliasName,
+                                                 std::string const & vkName )
+{
+  // check that the aliasName is either a known enum value or at least a known alias
+  check( (std::find_if( values.begin(),
+                       values.end(),
+                       [&aliasName]( EnumValueData const & evd ) { return evd.vulkanValue == aliasName; } ) !=
+           values.end()) || (aliases.find(aliasName) != aliases.end()),
+         line,
+         "unknown enum alias <" + aliasName + ">" );
+
+  auto aliasIt = aliases.find( name );
+  check( ( aliasIt == aliases.end() ) || ( aliasIt->second.first == aliasName ),
+         line,
+         "enum alias <" + name + "> already listed for a different enum value" );
+
+  aliases.insert( std::make_pair( name, std::make_pair( aliasName, vkName ) ) );
+}
+
 void VulkanHppGenerator::EnumData::addEnumValue( int                 line,
                                                  std::string const & valueName,
                                                  bool                bitmask,
@@ -5171,14 +5192,7 @@ void VulkanHppGenerator::readEnumAlias( tinyxml2::XMLElement const *            
   assert( !name.empty() );
 
   std::string tag = findTag( m_tags, name, postfix );
-
-  check( std::find_if( enumData.values.begin(),
-                       enumData.values.end(),
-                       [&alias]( EnumValueData const & evd ) { return evd.vulkanValue == alias; } ) !=
-           enumData.values.end(),
-         line,
-         "enum alias <" + alias + "> not listed in set of enum values" );
-  enumData.aliases.push_back( std::make_pair( name, createEnumValueName( name, prefix, postfix, bitmask, tag ) ) );
+  enumData.addEnumAlias( line, name, alias, createEnumValueName( name, prefix, postfix, bitmask, tag ) );
 }
 
 void VulkanHppGenerator::readEnumConstant( tinyxml2::XMLElement const * element )
@@ -5659,12 +5673,10 @@ void VulkanHppGenerator::readExtensionRequireType( tinyxml2::XMLElement const * 
     }
     else
     {
-      handleIt =
-        std::find_if( m_handles.begin(), m_handles.end(), [name]( auto const & h ) { return h.second.alias == name; } );
-      auto aliasIt = std::find_if( objectTypeIt->second.aliases.begin(),
-                                   objectTypeIt->second.aliases.end(),
-                                   [objectTypeName]( auto const & alias ) { return alias.second == objectTypeName; } );
-      check( aliasIt != objectTypeIt->second.aliases.end(),
+      check( std::find_if( objectTypeIt->second.aliases.begin(),
+                           objectTypeIt->second.aliases.end(),
+                           [objectTypeName]( auto const & alias ) { return alias.second.second == objectTypeName; } ) !=
+               objectTypeIt->second.aliases.end(),
              line,
              "missing alias entry in VkObjectType enum for alias handle <" + name + ">." );
     }
@@ -6163,20 +6175,8 @@ void VulkanHppGenerator::readRequireEnumAlias( tinyxml2::XMLElement const *     
       valueName = createEnumValueName( name, prefix, postfix, enumIt->second.isBitmask, tag );
     }
   }
-  check( std::find_if( enumIt->second.aliases.begin(),
-                       enumIt->second.aliases.end(),
-                       [&valueName]( std::pair<std::string, std::string> const & aliasPair ) {
-                         return valueName == aliasPair.second;
-                       } ) == enumIt->second.aliases.end(),
-         line,
-         "alias <" + valueName + "> already specified" );
-  if ( std::find_if(
-         enumIt->second.values.begin(), enumIt->second.values.end(), [&valueName]( EnumValueData const & evd ) {
-           return evd.vkValue == valueName;
-         } ) == enumIt->second.values.end() )
-  {
-    enumIt->second.aliases.push_back( std::make_pair( name, valueName ) );
-  }
+
+  enumIt->second.addEnumAlias( line, name, alias, valueName );
 }
 
 void VulkanHppGenerator::readRequires( tinyxml2::XMLElement const *               element,

@@ -4122,10 +4122,11 @@ void VulkanHppGenerator::EnumData::addEnumAlias( int                 line,
                                                  std::string const & vkName )
 {
   // check that the aliasName is either a known enum value or at least a known alias
-  check( (std::find_if( values.begin(),
-                       values.end(),
-                       [&aliasName]( EnumValueData const & evd ) { return evd.vulkanValue == aliasName; } ) !=
-           values.end()) || (aliases.find(aliasName) != aliases.end()),
+  check( ( std::find_if( values.begin(),
+                         values.end(),
+                         [&aliasName]( EnumValueData const & evd ) { return evd.vulkanValue == aliasName; } ) !=
+           values.end() ) ||
+           ( aliases.find( aliasName ) != aliases.end() ),
          line,
          "unknown enum alias <" + aliasName + ">" );
 
@@ -4134,7 +4135,16 @@ void VulkanHppGenerator::EnumData::addEnumAlias( int                 line,
          line,
          "enum alias <" + name + "> already listed for a different enum value" );
 
-  aliases.insert( std::make_pair( name, std::make_pair( aliasName, vkName ) ) );
+  // only list aliases that map to different vkNames
+  aliasIt = std::find_if( aliases.begin(),
+                          aliases.end(),
+                          [&vkName]( std::pair<std::string, std::pair<std::string, std::string>> const & aliasEntry ) {
+                            return vkName == aliasEntry.second.second;
+                          } );
+  if ( aliasIt == aliases.end() )
+  {
+    aliases.insert( std::make_pair( name, std::make_pair( aliasName, vkName ) ) );
+  }
 }
 
 void VulkanHppGenerator::EnumData::addEnumValue( int                 line,

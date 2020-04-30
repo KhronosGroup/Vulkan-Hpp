@@ -41,7 +41,7 @@ BraceWrapping :
 BreakBeforeBinaryOperators : None
 BreakBeforeBraces : Custom
 BreakBeforeTernaryOperators : true
-BreakConstructorInitializers : BeforeColon
+BreakConstructorInitializers : BeforeComma
 BreakInheritanceList : BeforeComma
 BreakStringLiterals : false
 ColumnLimit : 120

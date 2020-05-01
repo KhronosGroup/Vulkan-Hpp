@@ -7859,6 +7859,11 @@ namespace std
     {
       return value;
     }
+
+    operator T&& () && VULKAN_HPP_NOEXCEPT
+    {
+      return std::move( value );
+    }
 #endif
   };
 

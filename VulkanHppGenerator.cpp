@@ -726,7 +726,7 @@ std::vector<std::string> tokenize( std::string const & tokenString, std::string 
     end = tokenString.find( separator, start );
     if ( start != end )
     {
-      tokens.push_back( tokenString.substr( start, end - start ) );
+      tokens.push_back( trim( tokenString.substr( start, end - start ) ) );
     }
     start = end + separator.length();
   } while ( end != std::string::npos );

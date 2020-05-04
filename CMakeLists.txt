@@ -33,9 +33,18 @@ project(VulkanHppGenerator)
 find_program(CLANG_FORMAT_EXECUTABLE NAMES clang-format)
 
 if(CLANG_FORMAT_EXECUTABLE)
-  add_definitions(-DCLANG_FORMAT_EXECUTABLE="${CLANG_FORMAT_EXECUTABLE}")
+  # get the clang-format version string
+  execute_process(COMMAND ${CLANG_FORMAT_EXECUTABLE} "--version" OUTPUT_VARIABLE clangFormatVersion)
+  # filter out the actual version
+  string(REGEX MATCH [0123456789.]+ clangFormatVersion ${clangFormatVersion})
+  # we need at least version 10.0.0 !
+  if (clangFormatVersion VERSION_LESS 10.0.0)
+	message(WARNING " Found too old clang-format version <" ${clangFormatVersion} ">, we need version 10 and up to nicely format vulkan.hpp")
+  else()
+	add_definitions(-DCLANG_FORMAT_EXECUTABLE="${CLANG_FORMAT_EXECUTABLE}")
+  endif()
 else()
-  message(WARNGING " Could not find clang-format. Generated vulkan.hpp will not be nicely formatted.")
+  message(WARNING " Could not find clang-format version 10 and up. Generated vulkan.hpp will not be nicely formatted.")
 endif()
 
 if(MSVC)

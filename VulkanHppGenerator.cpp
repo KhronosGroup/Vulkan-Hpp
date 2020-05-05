@@ -4215,7 +4215,7 @@ void VulkanHppGenerator::checkCorrectness()
     }
     for ( auto const & require : extension.second.requirements )
     {
-      check( m_extensions.find( require.first ) != m_extensions.end(),
+      warn( m_extensions.find( require.first ) != m_extensions.end(),
              require.second,
              "unknown extension requires <" + require.first + ">" );
     }

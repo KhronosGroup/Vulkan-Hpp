@@ -6236,7 +6236,10 @@ void VulkanHppGenerator::readStruct( tinyxml2::XMLElement const *               
     checkAttributes( line,
                      attributes,
                      { { "category", { isUnion ? "union" : "struct" } }, { "name", {} } },
-                     { { "comment", {} }, { "returnedonly", { "true" } }, { "structextends", {} } } );
+                     { { "allowduplicate", { "true" } },
+                       { "comment", {} },
+                       { "returnedonly", { "true" } },
+                       { "structextends", {} } } );
     std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
     checkElements( line, children, {}, { "member", "comment" } );
 

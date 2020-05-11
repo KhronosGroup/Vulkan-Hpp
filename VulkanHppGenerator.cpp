@@ -3832,6 +3832,7 @@ void VulkanHppGenerator::appendStructure( std::string &                         
 
   static const std::string structureTemplate = R"(  struct ${structureName}
   {
+${allowDuplicate}
 ${structureType}
 ${constructorAndSetters}
 
@@ -3854,14 +3855,17 @@ ${members}
 )";
 
   std::string structureName = stripPrefix( structure.first, "Vk" );
-  std::string structureType;
+  std::string allowDuplicate, structureType;
   if ( !sTypeValue.empty() )
   {
+    allowDuplicate = std::string( "    static const bool allowDuplicate = " ) +
+                     ( structure.second.allowDuplicate ? "true;" : "false;" );
     structureType =
       "    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType = StructureType::" + sTypeValue + ";\n";
   }
   str += replaceWithMap( structureTemplate,
-                         { { "structureName", structureName },
+                         { { "allowDuplicate", allowDuplicate },
+                           { "structureName", structureName },
                            { "structureType", structureType },
                            { "constructorAndSetters", constructorAndSetters },
                            { "vkName", structure.first },
@@ -3932,8 +3936,8 @@ void VulkanHppGenerator::appendStructureChainValidation( std::string & str )
           str += subEnter;
         }
 
-        str += "  template <> struct isStructureChainValid<" + stripPrefix( extendName, "Vk" ) + ", " +
-               stripPrefix( structure.first, "Vk" ) + ">{ enum { value = true }; };\n";
+        str += "  template <> struct StructExtends<" + stripPrefix( structure.first, "Vk" ) + ", " +
+               stripPrefix( extendName, "Vk" ) + ">{ enum { value = true }; };\n";
 
         if ( leave != subLeave )
         {
@@ -6215,10 +6219,16 @@ void VulkanHppGenerator::readStruct( tinyxml2::XMLElement const *               
 
     std::string              category, name;
     std::vector<std::string> structExtends;
-    bool                     returnedOnly = false;
+    bool                     allowDuplicate = false;
+    bool                     returnedOnly   = false;
     for ( auto const & attribute : attributes )
     {
-      if ( attribute.first == "category" )
+      if ( attribute.first == "allowduplicate" )
+      {
+        assert( attribute.second == "true" );
+        allowDuplicate = true;
+      }
+      else if ( attribute.first == "category" )
       {
         category = attribute.second;
       }
@@ -6238,12 +6248,17 @@ void VulkanHppGenerator::readStruct( tinyxml2::XMLElement const *               
       }
     }
     assert( !name.empty() );
+    // make this warn a check, as soon as vk.xml has been fixed on attribute "allowduplicate" !
+    warn( !allowDuplicate || !structExtends.empty(),
+           line,
+           "attribute <allowduplicate> is true, but no structures are listed in <structextends>" );
 
     check( m_structures.find( name ) == m_structures.end(), line, "struct <" + name + "> already specfied" );
     std::map<std::string, StructureData>::iterator it =
       m_structures.insert( std::make_pair( name, StructureData( structExtends, line ) ) ).first;
-    it->second.returnedOnly = returnedOnly;
-    it->second.isUnion      = isUnion;
+    it->second.allowDuplicate = allowDuplicate;
+    it->second.isUnion        = isUnion;
+    it->second.returnedOnly   = returnedOnly;
 
     for ( auto child : children )
     {
@@ -7261,186 +7276,227 @@ int main( int argc, char ** argv )
 )";
 
   static const std::string classStructureChain = R"(
-  template <typename X, typename Y> struct isStructureChainValid { enum { value = false }; };
-
-  template <typename P, typename T>
-  struct TypeList
-  {
-    using list = P;
-    using last = T;
-  };
-
-  template <typename List, typename X>
-  struct extendCheck
-  {
-    static const bool valid = isStructureChainValid<typename List::last, X>::value || extendCheck<typename List::list,X>::valid;
-  };
-
-  template <typename T, typename X>
-  struct extendCheck<TypeList<void,T>,X>
-  {
-    static const bool valid = isStructureChainValid<T, X>::value;
-  };
-
-  template <typename X>
-  struct extendCheck<void,X>
-  {
-    static const bool valid = true;
-  };
+  template <typename X, typename Y> struct StructExtends { enum { value = false }; };
 
   template<typename Type, class...>
-  struct isPartOfStructureChain
+  struct IsPartOfStructureChain
   {
     static const bool valid = false;
   };
 
   template<typename Type, typename Head, typename... Tail>
-  struct isPartOfStructureChain<Type, Head, Tail...>
+  struct IsPartOfStructureChain<Type, Head, Tail...>
   {
-    static const bool valid = std::is_same<Type, Head>::value || isPartOfStructureChain<Type, Tail...>::valid;
+    static const bool valid = std::is_same<Type, Head>::value || IsPartOfStructureChain<Type, Tail...>::valid;
   };
 
-  template <class Element>
-  class StructureChainElement
+  template <size_t Index, typename T, typename... ChainElements>
+  struct StructureChainContains
   {
-  public:
-    explicit operator Element&() VULKAN_HPP_NOEXCEPT { return value; }
-    explicit operator const Element&() const VULKAN_HPP_NOEXCEPT { return value; }
-  private:
-    Element value;
+    static const bool value = std::is_same<T, typename std::tuple_element<Index, std::tuple<ChainElements...>>::type>::value ||
+                              StructureChainContains<Index - 1, T, ChainElements...>::value;
   };
 
-  template<typename ...StructureElements>
-  class StructureChain : private StructureChainElement<StructureElements>...
+  template <typename T, typename... ChainElements>
+  struct StructureChainContains<0, T, ChainElements...>
+  {
+    static const bool value = std::is_same<T, typename std::tuple_element<0, std::tuple<ChainElements...>>::type>::value;
+  };
+
+  template <size_t Index, typename... ChainElements>
+  struct StructureChainValidation
+  {
+    using TestType = typename std::tuple_element<Index, std::tuple<ChainElements...>>::type;
+    static const bool valid =
+      StructExtends<TestType, typename std::tuple_element<0, std::tuple<ChainElements...>>::type>::value &&
+      ( TestType::allowDuplicate || !StructureChainContains<Index - 1, TestType, ChainElements...>::value ) &&
+      StructureChainValidation<Index - 1, ChainElements...>::valid;
+  };
+
+  template <typename... ChainElements>
+  struct StructureChainValidation<0, ChainElements...>
+  {
+    static const bool valid = true;
+  };
+
+  template <typename... ChainElements>
+  class StructureChain : public std::tuple<ChainElements...>
   {
   public:
     StructureChain() VULKAN_HPP_NOEXCEPT
     {
-      link<void, StructureElements...>();
+      static_assert( StructureChainValidation<sizeof...( ChainElements ) - 1, ChainElements...>::valid,
+                     "The structure chain is not valid!" );
+      link<sizeof...( ChainElements ) - 1>();
     }
 
-    StructureChain(StructureChain const &rhs) VULKAN_HPP_NOEXCEPT
+    StructureChain( StructureChain const & rhs ) VULKAN_HPP_NOEXCEPT : std::tuple<ChainElements...>( rhs )
     {
-      linkAndCopy<void, StructureElements...>(rhs);
+      static_assert( StructureChainValidation<sizeof...( ChainElements ) - 1, ChainElements...>::valid,
+                     "The structure chain is not valid!" );
+      link<sizeof...( ChainElements ) - 1>();
     }
 
-    StructureChain(StructureElements const &... elems) VULKAN_HPP_NOEXCEPT
+    StructureChain( StructureChain && rhs ) VULKAN_HPP_NOEXCEPT
+      : std::tuple<ChainElements...>( std::forward<std::tuple<ChainElements...>>( rhs ) )
     {
-      linkAndCopyElements<void, StructureElements...>(elems...);
+      static_assert( StructureChainValidation<sizeof...( ChainElements ) - 1, ChainElements...>::valid,
+                     "The structure chain is not valid!" );
+      link<sizeof...( ChainElements ) - 1>();
     }
 
-    StructureChain& operator=(StructureChain const &rhs) VULKAN_HPP_NOEXCEPT
+    StructureChain( ChainElements const &... elems ) VULKAN_HPP_NOEXCEPT : std::tuple<ChainElements...>( elems... )
     {
-      linkAndCopy<void, StructureElements...>(rhs);
+      static_assert( StructureChainValidation<sizeof...( ChainElements ) - 1, ChainElements...>::valid,
+                     "The structure chain is not valid!" );
+      link<sizeof...( ChainElements ) - 1>();
+    }
+
+    StructureChain & operator=( StructureChain const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      std::tuple<ChainElements...>::operator=( rhs );
+      link<sizeof...( ChainElements ) - 1>();
       return *this;
     }
 
-    template<typename ClassType> ClassType& get() VULKAN_HPP_NOEXCEPT { return static_cast<ClassType&>(*this);}
+    StructureChain & operator=( StructureChain && rhs ) = delete;
 
-    template<typename ClassType> const ClassType& get() const VULKAN_HPP_NOEXCEPT { return static_cast<const ClassType&>(*this);}
-
-    template<typename ClassTypeA, typename ClassTypeB, typename ...ClassTypes>
-    std::tuple<ClassTypeA&, ClassTypeB&, ClassTypes&...> get()
+    template <typename T, size_t Which = 0>
+    T & get() VULKAN_HPP_NOEXCEPT
     {
-      return std::tie(get<ClassTypeA>(), get<ClassTypeB>(), get<ClassTypes>()...);
+      return std::get<ChainElementIndex<0, T, Which, void, ChainElements...>::value>( *this );
     }
 
-    template<typename ClassTypeA, typename ClassTypeB, typename ...ClassTypes>
-    std::tuple<const ClassTypeA&, const ClassTypeB&, const ClassTypes&...> get() const
+    template <typename T, size_t Which = 0>
+    T const & get() const VULKAN_HPP_NOEXCEPT
     {
-      return std::tie(get<ClassTypeA>(), get<ClassTypeB>(), get<ClassTypes>()...);
+      return std::get<ChainElementIndex<0, T, Which, void, ChainElements...>::value>( *this );
     }
 
-    template<typename ClassType>
-    void unlink() VULKAN_HPP_NOEXCEPT
+    template <typename T0, typename T1, typename... Ts>
+    std::tuple<T0 &, T1 &, Ts &...> get() VULKAN_HPP_NOEXCEPT
     {
-      static_assert(isPartOfStructureChain<ClassType, StructureElements...>::valid, "Can't unlink Structure that's not part of this StructureChain!");
-      static_assert(!std::is_same<ClassType, typename std::tuple_element<0, std::tuple<StructureElements...>>::type>::value, "It's not allowed to unlink the first element!");
-      VkBaseOutStructure * ptr = reinterpret_cast<VkBaseOutStructure*>(&get<ClassType>());
-      VULKAN_HPP_ASSERT(ptr != nullptr);
-      VkBaseOutStructure ** ppNext = &(reinterpret_cast<VkBaseOutStructure*>(this)->pNext);
-      VULKAN_HPP_ASSERT(*ppNext != nullptr);
-      while (*ppNext != ptr)
-      {
-        ppNext = &(*ppNext)->pNext;
-        VULKAN_HPP_ASSERT(*ppNext != nullptr);   // fires, if the ClassType member has already been unlinked !
-      }
-      VULKAN_HPP_ASSERT(*ppNext == ptr);
-      *ppNext = (*ppNext)->pNext;
+      return std::tie( get<T0>(), get<T1>(), get<Ts>()... );
     }
 
-    template <typename ClassType>
+    template <typename T0, typename T1, typename... Ts>
+    std::tuple<T0 const &, T1 const &, Ts const &...> get() const VULKAN_HPP_NOEXCEPT
+    {
+      return std::tie( get<T0>(), get<T1>(), get<Ts>()... );
+    }
+
+    template <typename ClassType, size_t Which = 0>
     void relink() VULKAN_HPP_NOEXCEPT
     {
-      static_assert(isPartOfStructureChain<ClassType, StructureElements...>::valid, "Can't relink Structure that's not part of this StructureChain!");
-      static_assert(!std::is_same<ClassType, typename std::tuple_element<0, std::tuple<StructureElements...>>::type>::value, "It's not allowed to have the first element unlinked!");
-      VkBaseOutStructure * ptr = reinterpret_cast<VkBaseOutStructure*>(&get<ClassType>());
-      VULKAN_HPP_ASSERT(ptr != nullptr);
-      VkBaseOutStructure ** ppNext = &(reinterpret_cast<VkBaseOutStructure*>(this)->pNext);
-      VULKAN_HPP_ASSERT(*ppNext != nullptr);
-#if !defined(NDEBUG)
-      while (*ppNext)
-      {
-        VULKAN_HPP_ASSERT(*ppNext != ptr);   // fires, if the ClassType member has not been unlinked before
-        ppNext = &(*ppNext)->pNext;
-      }
-      ppNext = &(reinterpret_cast<VkBaseOutStructure*>(this)->pNext);
-#endif
-      ptr->pNext = *ppNext;
-      *ppNext = ptr;
+      static_assert( IsPartOfStructureChain<ClassType, ChainElements...>::valid,
+                     "Can't relink Structure that's not part of this StructureChain!" );
+      static_assert(
+        !std::is_same<ClassType, typename std::tuple_element<0, std::tuple<ChainElements...>>::type>::value || (Which != 0),
+        "It's not allowed to have the first element unlinked!" );
+
+      auto pNext = reinterpret_cast<VkBaseInStructure *>( &get<ClassType, Which>() );
+      VULKAN_HPP_ASSERT( !isLinked( pNext ) );
+      auto & headElement = std::get<0>( *this );
+      pNext->pNext       = reinterpret_cast<VkBaseInStructure const*>(headElement.pNext);
+      headElement.pNext  = pNext;
+    }
+
+    template <typename ClassType, size_t Which = 0>
+    void unlink() VULKAN_HPP_NOEXCEPT
+    {
+      static_assert( IsPartOfStructureChain<ClassType, ChainElements...>::valid,
+                     "Can't unlink Structure that's not part of this StructureChain!" );
+      static_assert(
+        !std::is_same<ClassType, typename std::tuple_element<0, std::tuple<ChainElements...>>::type>::value || (Which != 0),
+        "It's not allowed to unlink the first element!" );
+
+      unlink<sizeof...( ChainElements ) - 1>( reinterpret_cast<VkBaseOutStructure const *>( &get<ClassType, Which>() ) );
     }
 
   private:
-    template<typename List, typename X>
-    void link() VULKAN_HPP_NOEXCEPT
+    template <int Index, typename T, int Which, typename, class First, class... Types>
+    struct ChainElementIndex : ChainElementIndex<Index + 1, T, Which, void, Types...>
+    {};
+
+    template <int Index, typename T, int Which, class First, class... Types>
+    struct ChainElementIndex<Index,
+                             T,
+                             Which,
+                             typename std::enable_if<!std::is_same<T, First>::value, void>::type,
+                             First,
+                             Types...> : ChainElementIndex<Index + 1, T, Which, void, Types...>
+    {};
+
+    template <int Index, typename T, int Which, class First, class... Types>
+    struct ChainElementIndex<Index,
+                             T,
+                             Which,
+                             typename std::enable_if<std::is_same<T, First>::value, void>::type,
+                             First,
+                             Types...> : ChainElementIndex<Index + 1, T, Which - 1, void, Types...>
+    {};
+
+    template <int Index, typename T, class First, class... Types>
+    struct ChainElementIndex<Index,
+                             T,
+                             0,
+                             typename std::enable_if<std::is_same<T, First>::value, void>::type,
+                             First,
+                             Types...> : std::integral_constant<int, Index>
+    {};
+
+    bool isLinked( VkBaseInStructure const * pNext )
     {
-      static_assert(extendCheck<List, X>::valid, "The structure chain is not valid!");
+      VkBaseInStructure const * elementPtr = reinterpret_cast<VkBaseInStructure const*>(&std::get<0>( *this ));
+      while ( elementPtr )
+      {
+        if ( elementPtr->pNext == pNext )
+        {
+          return true;
+        }
+        elementPtr = elementPtr->pNext;
+      }
+      return false;
     }
 
-    template<typename List, typename X, typename Y, typename ...Z>
-    void link() VULKAN_HPP_NOEXCEPT
+    template <size_t Index>
+    typename std::enable_if<Index != 0, void>::type link() VULKAN_HPP_NOEXCEPT
     {
-      static_assert(extendCheck<List,X>::valid, "The structure chain is not valid!");
-      X& x = static_cast<X&>(*this);
-      Y& y = static_cast<Y&>(*this);
-      x.pNext = &y;
-      link<TypeList<List, X>, Y, Z...>();
+      auto & x = std::get<Index - 1>( *this );
+      x.pNext  = &std::get<Index>( *this );
+      link<Index - 1>();
     }
 
-    template<typename List, typename X>
-    void linkAndCopy(StructureChain const &rhs) VULKAN_HPP_NOEXCEPT
+    template <size_t Index>
+    typename std::enable_if<Index == 0, void>::type link() VULKAN_HPP_NOEXCEPT
+    {}
+
+    template <size_t Index>
+    typename std::enable_if<Index != 0, void>::type unlink( VkBaseOutStructure const * pNext ) VULKAN_HPP_NOEXCEPT
     {
-      static_assert(extendCheck<List, X>::valid, "The structure chain is not valid!");
-      static_cast<X&>(*this) = static_cast<X const &>(rhs);
+      auto & element = std::get<Index>( *this );
+      if ( element.pNext == pNext )
+      {
+        element.pNext = pNext->pNext;
+      }
+      else
+      {
+        unlink<Index - 1>( pNext );
+      }
     }
 
-    template<typename List, typename X, typename Y, typename ...Z>
-    void linkAndCopy(StructureChain const &rhs) VULKAN_HPP_NOEXCEPT
+    template <size_t Index>
+    typename std::enable_if<Index == 0, void>::type unlink( VkBaseOutStructure const * pNext ) VULKAN_HPP_NOEXCEPT
     {
-      static_assert(extendCheck<List, X>::valid, "The structure chain is not valid!");
-      X& x = static_cast<X&>(*this);
-      Y& y = static_cast<Y&>(*this);
-      x = static_cast<X const &>(rhs);
-      x.pNext = &y;
-      linkAndCopy<TypeList<List, X>, Y, Z...>(rhs);
-    }
-
-    template<typename List, typename X>
-    void linkAndCopyElements(X const &xelem) VULKAN_HPP_NOEXCEPT
-    {
-      static_assert(extendCheck<List, X>::valid, "The structure chain is not valid!");
-      static_cast<X&>(*this) = xelem;
-    }
-
-    template<typename List, typename X, typename Y, typename ...Z>
-    void linkAndCopyElements(X const &xelem, Y const &yelem, Z const &... zelem) VULKAN_HPP_NOEXCEPT
-    {
-      static_assert(extendCheck<List, X>::valid, "The structure chain is not valid!");
-      X& x = static_cast<X&>(*this);
-      Y& y = static_cast<Y&>(*this);
-      x = xelem;
-      x.pNext = &y;
-      linkAndCopyElements<TypeList<List, X>, Y, Z...>(yelem, zelem...);
+      auto & element = std::get<0>( *this );
+      if ( element.pNext == pNext )
+      {
+        element.pNext = pNext->pNext;
+      }
+      else
+      {
+        VULKAN_HPP_ASSERT( false );  // fires, if the ClassType member has already been unlinked !
+      }
     }
   };
 )";

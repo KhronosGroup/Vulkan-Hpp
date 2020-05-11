@@ -72,29 +72,40 @@ int main( int /*argc*/, char ** /*argv*/ )
       sc7;
 
     // some invalid StructureChains
-    // vk::StructureChain<vk::PhysicalDeviceIDProperties, vk::PhysicalDeviceMaintenance3Properties> x;
-    // vk::StructureChain<vk::PhysicalDeviceIDProperties, vk::PhysicalDeviceMaintenance3Properties,
-    // vk::PhysicalDevicePushDescriptorPropertiesKHR> x; vk::StructureChain<vk::PhysicalDeviceIDProperties,
-    // vk::PhysicalDevicePushDescriptorPropertiesKHR, vk::PhysicalDeviceMaintenance3Properties> x;
-    // vk::StructureChain<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceIDProperties, vk::PhysicalDeviceIDProperties>
-    // x; vk::StructureChain<vk::PhysicalDeviceIDProperties, vk::PhysicalDeviceProperties2> x;
+    // clang-format off
+    //vk::StructureChain<vk::PhysicalDeviceIDProperties, vk::PhysicalDeviceMaintenance3Properties> x;
+    //vk::StructureChain<vk::PhysicalDeviceIDProperties,
+    //                   vk::PhysicalDeviceMaintenance3Properties,
+    //                   vk::PhysicalDevicePushDescriptorPropertiesKHR>
+    //  x;
+    //vk::StructureChain<vk::PhysicalDeviceIDProperties,
+    //                   vk::PhysicalDevicePushDescriptorPropertiesKHR,
+    //                   vk::PhysicalDeviceMaintenance3Properties>
+    //                                                                                                                  x;
+    //vk::StructureChain<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceIDProperties, vk::PhysicalDeviceIDProperties> x;
+    //vk::StructureChain<vk::PhysicalDeviceIDProperties, vk::PhysicalDeviceProperties2>                                 x;
+    // clang-format on
 
     // unlink a struct from a StructureChain
     sc7.unlink<vk::PhysicalDeviceMaintenance3Properties>();
 
     // some invalid unlink calls
-    // sc7.unlink<vk::PhysicalDeviceMaintenance3Properties>();   // assertion fires on trying to unlink some already
-    // unlinked structure sc7.unlink<vk::PhysicalDeviceProperties2>();
-    // sc1.unlink<vk::PhysicalDeviceMaintenance3Properties>();
+    // clang-format off
+    //sc7.unlink<vk::PhysicalDeviceMaintenance3Properties>();  // assertion fires on trying to unlink some already
+    //                                                         // unlinked structure
+    //sc7.unlink<vk::PhysicalDeviceProperties2>();
+    //sc1.unlink<vk::PhysicalDeviceMaintenance3Properties>();
+    // clang-format on
 
     // re-link a struct
     sc7.relink<vk::PhysicalDeviceMaintenance3Properties>();
 
     // invalid re-linking
-    // sc7.relink<vk::PhysicalDeviceProperties2>();
-    // sc1.relink<vk::PhysicalDeviceMaintenance3Properties>();
-    // sc1.relink<vk::PhysicalDeviceIDProperties>();             // assertion fires on trying to relink some structure
-    // that hasn't been unlinked
+    // clang-format off
+    //sc7.relink<vk::PhysicalDeviceProperties2>();
+    //sc1.relink<vk::PhysicalDeviceMaintenance3Properties>();
+    //sc1.relink<vk::PhysicalDeviceIDProperties>();  // assertion fires on trying to relink some structure that hasn't been unlinked
+    // clang-format on
 
     // simple call, passing structures in
     vk::PhysicalDeviceFeatures2 pdf;
@@ -125,6 +136,28 @@ int main( int /*argc*/, char ** /*argv*/ )
     using AllocatorType  = std::vector<StructureChain>::allocator_type;
     auto qfd = physicalDevice.getQueueFamilyProperties2<StructureChain, AllocatorType>( VULKAN_HPP_DEFAULT_DISPATCHER );
     unused( qfd );
+
+    // some tests with structures with allowDuplicate == true
+    // include them as soon as vk.xml has been fixed on attribute "allowduplicate" !
+#if 0
+    vk::StructureChain<vk::DeviceCreateInfo, vk::DevicePrivateDataCreateInfoEXT, vk::DevicePrivateDataCreateInfoEXT>
+         dci0;
+    auto dci1( dci0 );
+
+    vk::DeviceCreateInfo               dci;
+    vk::DevicePrivateDataCreateInfoEXT dpdci0;
+    vk::DevicePrivateDataCreateInfoEXT dpdci1;
+    vk::StructureChain<vk::DeviceCreateInfo, vk::DevicePrivateDataCreateInfoEXT, vk::DevicePrivateDataCreateInfoEXT>
+      dci2( dci, dpdci0, dpdci1 );
+
+    dci2 = dci1;
+
+    auto &       dpdci  = dci0.get<vk::DevicePrivateDataCreateInfoEXT, 1>();
+    auto const & dpdcic = dci0.get<vk::DevicePrivateDataCreateInfoEXT, 1>();
+
+    dci2.unlink<vk::DevicePrivateDataCreateInfoEXT, 1>();
+    dci2.relink<vk::DevicePrivateDataCreateInfoEXT, 1>();
+#endif
   }
   catch ( vk::SystemError const & err )
   {

@@ -208,11 +208,12 @@ private:
   struct StructureData
   {
     StructureData( std::vector<std::string> const & extends, int line )
-      : returnedOnly( false ), isUnion( false ), structExtends( extends ), xmlLine( line )
+      : structExtends( extends ), xmlLine( line )
     {}
 
-    bool                     returnedOnly;
-    bool                     isUnion;
+    bool                     allowDuplicate = false;
+    bool                     isUnion        = false;
+    bool                     returnedOnly   = false;
     std::vector<MemberData>  members;
     std::vector<std::string> structExtends;
     std::set<std::string>    aliases;

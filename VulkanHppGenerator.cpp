@@ -1407,23 +1407,40 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic( std::string & str )
   class DynamicLoader
   {
   public:
-#ifdef VULKAN_HPP_NO_EXCEPTIONS
-    DynamicLoader() VULKAN_HPP_NOEXCEPT : m_success( false )
-#else
-    DynamicLoader() : m_success( false )
-#endif
+#  ifdef VULKAN_HPP_NO_EXCEPTIONS
+    DynamicLoader( std::string const & vulkanLibraryName = {} ) VULKAN_HPP_NOEXCEPT : m_success( false )
+#  else
+    DynamicLoader( std::string const & vulkanLibraryName = {} ) : m_success( false )
+#  endif
     {
-#if defined(__linux__)
-      m_library = dlopen( "libvulkan.so.1", RTLD_NOW | RTLD_LOCAL );
-#elif defined(__APPLE__)
-      m_library = dlopen( "libvulkan.dylib", RTLD_NOW | RTLD_LOCAL );
-#elif defined(_WIN32)
-      m_library = LoadLibrary( TEXT( "vulkan-1.dll" ) );
-#else
-      VULKAN_HPP_ASSERT( false && "unsupported platform" );
-#endif
+      if ( !vulkanLibraryName.empty() )
+      {
+#  if defined( __linux__ ) || defined( __APPLE__ )
+        m_library = dlopen( vulkanLibraryName.c_str(), RTLD_NOW | RTLD_LOCAL );
+#  elif defined( _WIN32 )
+        m_library = LoadLibrary( vulkanLibraryName.c_str() );
+#  else
+        VULKAN_HPP_ASSERT( false && "unsupported platform" );
+#  endif
+      }
+      else
+      {
+#  if defined( __linux__ )
+        m_library = dlopen( "libvulkan.so", RTLD_NOW | RTLD_LOCAL );
+        if ( m_library == nullptr )
+        {
+          m_library = dlopen( "libvulkan.so.1", RTLD_NOW | RTLD_LOCAL );
+        }
+#  elif defined( __APPLE__ )
+        m_library = dlopen( "libvulkan.dylib", RTLD_NOW | RTLD_LOCAL );
+#  elif defined( _WIN32 )
+        m_library = LoadLibrary( TEXT( "vulkan-1.dll" ) );
+#  else
+        VULKAN_HPP_ASSERT( false && "unsupported platform" );
+#  endif
+      }
 
-      m_success = m_library != 0;
+      m_success = (m_library != nullptr);
 #ifndef VULKAN_HPP_NO_EXCEPTIONS
       if ( !m_success )
       {
@@ -4216,8 +4233,8 @@ void VulkanHppGenerator::checkCorrectness()
     for ( auto const & require : extension.second.requirements )
     {
       warn( m_extensions.find( require.first ) != m_extensions.end(),
-             require.second,
-             "unknown extension requires <" + require.first + ">" );
+            require.second,
+            "unknown extension requires <" + require.first + ">" );
     }
   }
   for ( auto const & funcPointer : m_funcPointers )

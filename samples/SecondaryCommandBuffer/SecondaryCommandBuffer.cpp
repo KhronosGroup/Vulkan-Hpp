@@ -137,12 +137,12 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::su::updateDescriptorSets(
       device,
       descriptorSets[0],
-      { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, vk::UniqueBufferView() } },
+      { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, {} } },
       greenTextureData );
     vk::su::updateDescriptorSets(
       device,
       descriptorSets[1],
-      { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, vk::UniqueBufferView() } },
+      { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, {} } },
       checkeredTextureData );
 
     /* VULKAN_KEY_START */
@@ -192,7 +192,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     }
 
     vk::ClearValue clearValues[2];
-    clearValues[0].color        = vk::ClearColorValue( std::array<float, 4>( { 0.2f, 0.2f, 0.2f, 0.2f } ) );
+    clearValues[0].color        = vk::ClearColorValue( std::array<float, 4>( { { 0.2f, 0.2f, 0.2f, 0.2f } } ) );
     clearValues[1].depthStencil = vk::ClearDepthStencilValue( 1.0f, 0 );
 
     vk::RenderPassBeginInfo renderPassBeginInfo( renderPass.get(),

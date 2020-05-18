@@ -164,7 +164,7 @@ int main( int /*argc*/, char ** /*argv*/ )
       vk::DescriptorSetLayoutCreateInfo( vk::DescriptorSetLayoutCreateFlags(), 1, &sampler2DBinding ) );
 
     // Create pipeline layout with multiple descriptor sets
-    std::array<vk::DescriptorSetLayout, 2> descriptorSetLayouts = { uniformLayout.get(), samplerLayout.get() };
+    std::array<vk::DescriptorSetLayout, 2> descriptorSetLayouts = { { uniformLayout.get(), samplerLayout.get() } };
     vk::UniquePipelineLayout               pipelineLayout       = device->createPipelineLayoutUnique(
       vk::PipelineLayoutCreateInfo( vk::PipelineLayoutCreateFlags(), 2, descriptorSetLayouts.data() ) );
 
@@ -183,12 +183,12 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::DescriptorImageInfo               textureImageInfo( textureData.textureSampler.get(),
                                               textureData.imageData->imageView.get(),
                                               vk::ImageLayout::eShaderReadOnlyOptimal );
-    std::array<vk::WriteDescriptorSet, 2> writeDescriptorSets = {
+    std::array<vk::WriteDescriptorSet, 2> writeDescriptorSets = { {
       vk::WriteDescriptorSet(
         descriptorSets[0].get(), 0, 0, 1, vk::DescriptorType::eUniformBuffer, nullptr, &uniformBufferInfo ),
       vk::WriteDescriptorSet(
         descriptorSets[1].get(), 0, 0, 1, vk::DescriptorType::eCombinedImageSampler, &textureImageInfo )
-    };
+    } };
     device->updateDescriptorSets( writeDescriptorSets, nullptr );
 
     /* VULKAN_KEY_END */
@@ -214,7 +214,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     assert( currentBuffer.value < framebuffers.size() );
 
     vk::ClearValue clearValues[2];
-    clearValues[0].color        = vk::ClearColorValue( std::array<float, 4>( { 0.2f, 0.2f, 0.2f, 0.2f } ) );
+    clearValues[0].color        = vk::ClearColorValue( std::array<float, 4>( { { 0.2f, 0.2f, 0.2f, 0.2f } } ) );
     clearValues[1].depthStencil = vk::ClearDepthStencilValue( 1.0f, 0 );
     vk::RenderPassBeginInfo renderPassBeginInfo( renderPass.get(),
                                                  framebuffers[currentBuffer.value].get(),

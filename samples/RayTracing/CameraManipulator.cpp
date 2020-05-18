@@ -265,6 +265,8 @@ namespace vk
             orbit( glm::vec2( delta[0], -delta[1] ), true );
           }
           break;
+        default:
+          break;
       }
 
       update();

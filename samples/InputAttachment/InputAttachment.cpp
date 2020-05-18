@@ -244,7 +244,7 @@ int                 main( int /*argc*/, char ** /*argv*/ )
     uint32_t currentBuffer = result.value;
 
     vk::ClearValue clearValue;
-    clearValue.color = vk::ClearColorValue( std::array<float, 4>( { 0.2f, 0.2f, 0.2f, 0.2f } ) );
+    clearValue.color = vk::ClearColorValue( std::array<float, 4>( { { 0.2f, 0.2f, 0.2f, 0.2f } } ) );
     commandBuffer->beginRenderPass( vk::RenderPassBeginInfo( renderPass.get(),
                                                              framebuffers[currentBuffer].get(),
                                                              vk::Rect2D( vk::Offset2D( 0, 0 ), surfaceData.extent ),

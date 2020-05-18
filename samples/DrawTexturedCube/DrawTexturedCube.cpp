@@ -115,7 +115,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::su::updateDescriptorSets(
       device,
       descriptorSet,
-      { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, vk::UniqueBufferView() } },
+      { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, {} } },
       textureData );
 
     vk::UniquePipelineCache pipelineCache = device->createPipelineCacheUnique( vk::PipelineCacheCreateInfo() );
@@ -142,7 +142,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     // commandBuffer->begin() has already been called above!
 
     vk::ClearValue clearValues[2];
-    clearValues[0].color        = vk::ClearColorValue( std::array<float, 4>( { 0.2f, 0.2f, 0.2f, 0.2f } ) );
+    clearValues[0].color        = vk::ClearColorValue( std::array<float, 4>( { { 0.2f, 0.2f, 0.2f, 0.2f } } ) );
     clearValues[1].depthStencil = vk::ClearDepthStencilValue( 1.0f, 0 );
     vk::RenderPassBeginInfo renderPassBeginInfo( renderPass.get(),
                                                  framebuffers[currentBuffer.value].get(),

@@ -975,8 +975,10 @@ void VulkanHppGenerator::appendBitmasks( std::string & str ) const
     std::string strippedBitmaskName = stripPrefix( bitmask.first, "Vk" );
     std::string strippedEnumName    = hasBits ? stripPrefix( bitmaskBits->first, "Vk" ) : "";
 
-    str += "\n";
-    appendPlatformEnter( str, !bitmask.second.alias.empty(), bitmask.second.platform );
+    std::string enter, leave;
+    std::tie( enter, leave ) = generateProtection( bitmask.first, !bitmask.second.alias.empty() );
+
+    str += "\n" + enter;
     appendBitmask( str,
                    strippedBitmaskName,
                    bitmask.second.type,
@@ -985,7 +987,7 @@ void VulkanHppGenerator::appendBitmasks( std::string & str ) const
                    hasBits ? bitmaskBits->second.values : std::vector<EnumValueData>() );
     appendBitmaskToStringFunction(
       str, strippedBitmaskName, strippedEnumName, hasBits ? bitmaskBits->second.values : std::vector<EnumValueData>() );
-    appendPlatformLeave( str, !bitmask.second.alias.empty(), bitmask.second.platform );
+    str += leave;
   }
 }
 
@@ -1139,13 +1141,14 @@ void VulkanHppGenerator::appendCall( std::string &                    str,
   // the original function call
   str += "d." + name + "( ";
 
-  assert( m_commandToHandle.find( name ) != m_commandToHandle.end() );
-  std::string const & handle = m_commandToHandle.find( name )->second;
-  if ( !handle.empty() )
+  if ( !commandData.handle.empty() )
   {
+    auto handleIt = m_handles.find( commandData.handle );
+    assert( handleIt != m_handles.end() );
+
     // if it's member of a class -> the first argument is the member variable, starting with "m_"
-    assert( handle == commandData.params[0].type.type );
-    str += "m_" + startLowerCase( stripPrefix( handle, "Vk" ) );
+    assert( handleIt->first == commandData.params[0].type.type );
+    str += "m_" + startLowerCase( stripPrefix( handleIt->first, "Vk" ) );
     if ( 1 < commandData.params.size() )
     {
       str += ", ";
@@ -1160,7 +1163,7 @@ void VulkanHppGenerator::appendCall( std::string &                    str,
                    twoStep,
                    firstCall,
                    singular,
-                   handle.empty() ? 0 : 1,
+                   commandData.handle.empty() ? 0 : 1,
                    commandData.params.size() );
   str += " )";
 }
@@ -1311,8 +1314,7 @@ void VulkanHppGenerator::appendCommand( std::string &       str,
 
   // and then the same for the Unique* versions (a deleteCommand is available for the commandData's class, and the
   // function starts with 'allocate' or 'create')
-  assert( m_commandToHandle.find( name ) != m_commandToHandle.end() );
-  auto handleIt = m_handles.find( m_commandToHandle.find( name )->second );
+  auto handleIt = m_handles.find( commandData.handle );
   assert( handleIt != m_handles.end() );
   if ( ( !handleIt->second.deleteCommand.empty() || specialWriteUnique ) &&
        ( ( name.substr( 2, 8 ) == "Allocate" ) || ( name.substr( 2, 6 ) == "Create" ) ||
@@ -1526,16 +1528,11 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic( std::string & str )
   {
     for ( auto const & command : handle.second.commands )
     {
+      auto commandIt = m_commands.find( command );
+      assert( commandIt != m_commands.end() );
       std::string enter, leave;
-      appendPlatformEnter( enter, !command.second.aliases.empty(), command.second.platform );
-      appendPlatformLeave( leave, !command.second.aliases.empty(), command.second.platform );
-
-      str += enter + "    PFN_" + command.first + " " + command.first + " = 0;\n" + leave;
-      for ( auto const & alias : command.second.aliases )
-      {
-        assert( enter.empty() && leave.empty() );
-        str += "    PFN_" + alias + " " + alias + " = 0;\n";
-      }
+      std::tie( enter, leave ) = generateProtection( commandIt->second.feature, commandIt->second.extensions );
+      str += enter + "    PFN_" + commandIt->first + " " + commandIt->first + " = 0;\n" + leave;
     }
   }
 
@@ -1547,57 +1544,36 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic( std::string & str )
   {
     for ( auto const & command : handle.second.commands )
     {
-      if ( ( command.first != "vkGetInstanceProcAddr" ) )
+      if ( ( command != "vkGetInstanceProcAddr" ) )
       {
+        auto commandIt = m_commands.find( command );
+        assert( commandIt != m_commands.end() );
+
         std::string enter, leave;
-        appendPlatformEnter( enter, !command.second.aliases.empty(), command.second.platform );
-        appendPlatformLeave( leave, !command.second.aliases.empty(), command.second.platform );
+        std::tie( enter, leave ) = generateProtection( commandIt->second.feature, commandIt->second.extensions );
 
         if ( handle.first.empty() )
         {
-          assert( command.second.aliases.empty() );
-          emptyFunctions += enter;
-          emptyFunctions += "      " + command.first + " = PFN_" + command.first + "( vkGetInstanceProcAddr( NULL, \"" +
-                            command.first + "\" ) );\n";
-          emptyFunctions += leave;
+          assert( commandIt->second.alias.empty() );
+          emptyFunctions += enter + "      " + commandIt->first + " = PFN_" + commandIt->first +
+                            "( vkGetInstanceProcAddr( NULL, \"" + commandIt->first + "\" ) );\n" + leave;
         }
-        else if ( !command.second.params.empty() &&
-                  m_handles.find( command.second.params[0].type.type ) != m_handles.end() &&
-                  command.second.params[0].type.type != "VkInstance" &&
-                  command.second.params[0].type.type != "VkPhysicalDevice" )
+        else if ( !commandIt->second.params.empty() &&
+                  m_handles.find( commandIt->second.params[0].type.type ) != m_handles.end() &&
+                  commandIt->second.params[0].type.type != "VkInstance" &&
+                  commandIt->second.params[0].type.type != "VkPhysicalDevice" )
         {
-          strDeviceFunctions += enter;
-          strDeviceFunctions += "      " + command.first + " = PFN_" + command.first +
-                                "( vkGetDeviceProcAddr( device, \"" + command.first + "\" ) );\n";
-          strDeviceFunctions += leave;
+          strDeviceFunctions += enter + "      " + commandIt->first + " = PFN_" + commandIt->first +
+                                "( vkGetDeviceProcAddr( device, \"" + commandIt->first + "\" ) );\n" + leave;
 
-          strDeviceFunctionsInstance += enter;
-          strDeviceFunctionsInstance += "      " + command.first + " = PFN_" + command.first +
-                                        "( vkGetInstanceProcAddr( instance, \"" + command.first + "\" ) );\n";
-          strDeviceFunctionsInstance += leave;
-
-          for ( auto const & alias : command.second.aliases )
-          {
-            assert( enter.empty() && leave.empty() );
-            strDeviceFunctions +=
-              "      " + alias + " = PFN_" + alias + "( vkGetDeviceProcAddr( device, \"" + alias + "\" ) );\n";
-            strDeviceFunctionsInstance +=
-              "      " + alias + " = PFN_" + alias + "( vkGetInstanceProcAddr( instance, \"" + alias + "\" ) );\n";
-          }
+          strDeviceFunctionsInstance += enter + "      " + commandIt->first + " = PFN_" + commandIt->first +
+                                        "( vkGetInstanceProcAddr( instance, \"" + commandIt->first + "\" ) );\n" +
+                                        leave;
         }
         else
         {
-          strInstanceFunctions += enter;
-          strInstanceFunctions += "      " + command.first + " = PFN_" + command.first +
-                                  "( vkGetInstanceProcAddr( instance, \"" + command.first + "\" ) );\n";
-          strInstanceFunctions += leave;
-
-          for ( auto const & alias : command.second.aliases )
-          {
-            assert( enter.empty() && leave.empty() );
-            strInstanceFunctions +=
-              "      " + alias + " = PFN_" + alias + "( vkGetInstanceProcAddr( instance, \"" + alias + "\" ) );\n";
-          }
+          strInstanceFunctions += enter + "      " + commandIt->first + " = PFN_" + commandIt->first +
+                                  "( vkGetInstanceProcAddr( instance, \"" + commandIt->first + "\" ) );\n" + leave;
         }
       }
     }
@@ -1693,9 +1669,12 @@ void VulkanHppGenerator::appendDispatchLoaderStatic( std::string & str )
   {
     for ( auto const & command : handle.second.commands )
     {
+      auto commandIt = m_commands.find( command );
+      assert( commandIt != m_commands.end() );
+
       std::string parameterList, parameters;
       bool        firstParam = true;
-      for ( auto param : command.second.params )
+      for ( auto param : commandIt->second.params )
       {
         if ( !firstParam )
         {
@@ -1707,32 +1686,19 @@ void VulkanHppGenerator::appendDispatchLoaderStatic( std::string & str )
         parameters += param.name;
         firstParam = false;
       }
-      std::string commandName = stripPrefix( command.first, "vk" );
+      std::string commandName = stripPrefix( commandIt->first, "vk" );
 
       str += "\n";
-      appendPlatformEnter( str, !command.second.aliases.empty(), command.second.platform );
-      str += "    " + command.second.returnType + " vk" + commandName + "( " + parameterList +
+      std::string enter, leave;
+      std::tie( enter, leave ) = generateProtection( commandIt->second.feature, commandIt->second.extensions );
+      str += enter + "    " + commandIt->second.returnType + " vk" + commandName + "( " + parameterList +
              " ) const VULKAN_HPP_NOEXCEPT\n"
              "    {\n"
              "      return ::vk" +
              commandName + "( " + parameters +
              " );\n"
-             "    }\n";
-      appendPlatformLeave( str, !command.second.aliases.empty(), command.second.platform );
-      for ( auto const & alias : command.second.aliases )
-      {
-        commandName = stripPrefix( alias, "vk" );
-        str +=
-          "\n"
-          "    " +
-          command.second.returnType + " vk" + commandName + "( " + parameterList +
-          " ) const VULKAN_HPP_NOEXCEPT\n"
-          "    {\n"
-          "      return ::vk" +
-          commandName + "( " + parameters +
-          " );\n"
-          "    }\n";
-      }
+             "    }\n" +
+             leave;
     }
   }
   str += "  };\n#endif\n";
@@ -1831,8 +1797,10 @@ void VulkanHppGenerator::appendEnums( std::string & str ) const
 {
   for ( auto const & e : m_enums )
   {
-    str += "\n";
-    appendPlatformEnter( str, !e.second.alias.empty(), e.second.platform );
+    std::string enter, leave;
+    std::tie( enter, leave ) = generateProtection( e.first, !e.second.alias.empty() );
+
+    str += "\n" + enter;
     appendEnum( str, e );
     appendEnumToString( str, e );
     if ( e.first == "VkObjectType" )
@@ -1843,15 +1811,12 @@ void VulkanHppGenerator::appendEnums( std::string & str ) const
   {};
 )";
     }
-    if ( e.second.alias.empty() )  // enums with an alias are not protected anymore !
-    {
-      appendPlatformLeave( str, !e.second.alias.empty(), e.second.platform );
-    }
+    str += leave;
   }
 }
 
 void VulkanHppGenerator::appendEnumInitializer( std::string &                      str,
-                                                TypeData const &                   type,
+                                                TypeInfo const &                   type,
                                                 std::vector<std::string> const &   arraySizes,
                                                 std::vector<EnumValueData> const & values ) const
 {
@@ -1917,14 +1882,16 @@ void VulkanHppGenerator::appendForwardDeclarations( std::string & str ) const
   str += "\n";
   for ( auto const & structure : m_structures )
   {
-    appendPlatformEnter( str, !structure.second.aliases.empty(), structure.second.platform );
-    str += std::string( "  " ) + ( structure.second.isUnion ? "union" : "struct" ) + " " +
+    std::string enter, leave;
+    std::tie( enter, leave ) = generateProtection( structure.first, !structure.second.aliases.empty() );
+
+    str += enter + "  " + ( structure.second.isUnion ? "union" : "struct" ) + " " +
            stripPrefix( structure.first, "Vk" ) + ";\n";
     for ( std::string const & alias : structure.second.aliases )
     {
       str += "  using " + stripPrefix( alias, "Vk" ) + " = " + stripPrefix( structure.first, "Vk" ) + ";\n";
     }
-    appendPlatformLeave( str, !structure.second.aliases.empty(), structure.second.platform );
+    str += leave;
   }
 }
 
@@ -1987,11 +1954,9 @@ void VulkanHppGenerator::appendFunction( std::string &                    str,
                                   unique,
                                   isStructureChain );
 
-  assert( m_commandToHandle.find( name ) != m_commandToHandle.end() );
-  std::string const & handle = m_commandToHandle.find( name )->second;
-  if ( definition && !handle.empty() )
+  if ( definition && !commandData.handle.empty() )
   {
-    str += stripPrefix( handle, "Vk" ) + "::";
+    str += stripPrefix( commandData.handle, "Vk" ) + "::";
   }
 
   // append the function header name
@@ -2003,7 +1968,6 @@ void VulkanHppGenerator::appendFunction( std::string &                    str,
   }
 
   appendFunctionHeaderArguments( str,
-                                 name,
                                  commandData,
                                  returnParamIndex,
                                  templateParamIndex,
@@ -2273,9 +2237,6 @@ ${i}  }
 #endif  /*VULKAN_HPP_NO_EXCEPTIONS*/
 )#";
 
-  assert( m_commandToHandle.find( name ) != m_commandToHandle.end() );
-  std::string const & handle = m_commandToHandle.find( name )->second;
-
   // add some error checks if multiple vectors need to have the same size
   std::string commandName = determineCommandName( name, commandData.params[0].type.type );
   for ( std::map<size_t, size_t>::const_iterator it0 = vectorParamIndices.begin(); it0 != vectorParamIndices.end();
@@ -2292,7 +2253,7 @@ ${i}  }
             std::map<std::string, std::string>(
               { { "firstVectorName", startLowerCase( stripPrefix( commandData.params[it0->first].name, "p" ) ) },
                 { "secondVectorName", startLowerCase( stripPrefix( commandData.params[it1->first].name, "p" ) ) },
-                { "className", handle },
+                { "className", commandData.handle },
                 { "commandName", commandName },
                 { "i", indentation } } ) );
         }
@@ -2324,17 +2285,14 @@ void VulkanHppGenerator::appendFunctionBodyEnhancedReturnResultValue( std::strin
     return;
   }
 
-  assert( m_commandToHandle.find( name ) != m_commandToHandle.end() );
-  std::string const & handle = m_commandToHandle.find( name )->second;
-
   if ( unique )
   {
     // the unique version needs a Deleter object for destruction of the newly created stuff
     // get the DeleterData corresponding to the returned type
     // special handling for "createDevice", as Device is created from PhysicalDevice, but destroyed on its own
-    bool noParent = handle.empty() || ( name == "vkCreateDevice" );
+    bool noParent = commandData.handle.empty() || ( name == "vkCreateDevice" );
     str += "\n" + indentation + ( ( name == "vkAllocateMemory" ) ? "  ObjectFree<" : "  ObjectDestroy<" ) +
-           ( noParent ? "NoParent" : stripPrefix( handle, "Vk" ) ) + ",Dispatch> deleter( " +
+           ( noParent ? "NoParent" : stripPrefix( commandData.handle, "Vk" ) ) + ",Dispatch> deleter( " +
            ( noParent ? "" : "*this, " ) + "allocator, d );\n" + indentation + "  return createResultValue<" +
            stripPrefix( type, "Vk" ) + ",Dispatch>( result, ";
   }
@@ -2351,7 +2309,8 @@ void VulkanHppGenerator::appendFunctionBodyEnhancedReturnResultValue( std::strin
   }
 
   // now the function name (with full namespace) as a string
-  str += "VULKAN_HPP_NAMESPACE_STRING\"::" + ( handle.empty() ? "" : stripPrefix( handle, "Vk" ) + "::" ) +
+  str += "VULKAN_HPP_NAMESPACE_STRING\"::" +
+         ( commandData.handle.empty() ? "" : stripPrefix( commandData.handle, "Vk" ) + "::" ) +
          ( singular ? stripPluralS( commandName ) : commandName ) + ( unique ? "Unique" : "" ) + "\"";
 
   if ( !twoStep && ( 1 < commandData.successCodes.size() ) )
@@ -2500,8 +2459,7 @@ ${i}  return ${returnName};
   std::map<size_t, size_t>::const_iterator returnit = vectorParamIndices.find( returnParamIndex );
   assert( returnit != vectorParamIndices.end() && ( returnit->second != INVALID_INDEX ) );
 
-  assert( m_commandToHandle.find( name )->second ==
-          commandData.params[0].type.type );  // make sure, the first argument is the handle
+  assert( commandData.handle == commandData.params[0].type.type );
   assert( commandData.params.size() ==
           3 );  // make sure, there are three args: the handle, the pointer to size, and the data pointer
 
@@ -2561,9 +2519,6 @@ ${i}  return createResultValue( result, ${uniqueTypeVariable}s, VULKAN_HPP_NAMES
                    1,
                    commandData.params.size() - 1 );
 
-  assert( m_commandToHandle.find( name ) != m_commandToHandle.end() );
-  std::string const & handle = m_commandToHandle.find( name )->second;
-
   auto handleIt = m_handles.find( type );
   assert( handleIt != m_handles.end() );
 
@@ -2592,7 +2547,7 @@ ${i}  return createResultValue( result, ${uniqueTypeVariable}s, VULKAN_HPP_NAMES
     std::map<std::string, std::string>{
       { "allocator", withAllocator ? "( vectorAllocator )" : "" },
       { "arguments", arguments },
-      { "class", stripPrefix( handle, "Vk" ) },
+      { "class", stripPrefix( commandData.handle, "Vk" ) },
       { "command", stripPrefix( name, "vk" ) },
       { "commandName", commandName },
       { "Deleter", handleIt->second.deletePool.empty() ? "ObjectDestroy" : "PoolFree" },
@@ -2601,7 +2556,7 @@ ${i}  return createResultValue( result, ${uniqueTypeVariable}s, VULKAN_HPP_NAMES
           ? "allocator"
           : "allocateInfo." + startLowerCase( stripPrefix( handleIt->second.deletePool, "Vk" ) ) },
       { "DeleterTemplate",
-        stripPrefix( handle, "Vk" ) +
+        stripPrefix( commandData.handle, "Vk" ) +
           ( handleIt->second.deletePool.empty() ? "" : "," + stripPrefix( handleIt->second.deletePool, "Vk" ) ) },
       { "i", indentation },
       { "successChecks", successChecks },
@@ -2619,13 +2574,11 @@ void VulkanHppGenerator::appendFunctionBodyStandard( std::string &       str,
 {
   std::pair<bool, std::string> returnData = generateFunctionBodyStandardReturn( commandData.returnType );
 
-  assert( m_commandToHandle.find( commandName ) != m_commandToHandle.end() );
-  std::string const & handle = m_commandToHandle.find( commandName )->second;
-  assert( handle.empty() || ( handle == commandData.params[0].type.type ) );
+  assert( commandData.handle.empty() || ( commandData.handle == commandData.params[0].type.type ) );
 
   str += indentation + "  " + returnData.second + "d." + commandName + "( " +
-         ( handle.empty() ? "" : ( "m_" + startLowerCase( stripPrefix( handle, "Vk" ) ) ) );
-  for ( size_t i = handle.empty() ? 0 : 1; i < commandData.params.size(); i++ )
+         ( commandData.handle.empty() ? "" : ( "m_" + startLowerCase( stripPrefix( commandData.handle, "Vk" ) ) ) );
+  for ( size_t i = commandData.handle.empty() ? 0 : 1; i < commandData.params.size(); i++ )
   {
     if ( 0 < i )
     {
@@ -2638,27 +2591,27 @@ void VulkanHppGenerator::appendFunctionBodyStandard( std::string &       str,
 }
 
 void VulkanHppGenerator::appendFunctionBodyStandardArgument( std::string &                    str,
-                                                             TypeData const &                 typeData,
+                                                             TypeInfo const &                 typeInfo,
                                                              std::string const &              name,
                                                              std::vector<std::string> const & arraySizes ) const
 {
-  if ( beginsWith( typeData.type, "Vk" ) )
+  if ( beginsWith( typeInfo.type, "Vk" ) )
   {
     // the parameter is a vulkan type
-    if ( !typeData.postfix.empty() || !arraySizes.empty() )
+    if ( !typeInfo.postfix.empty() || !arraySizes.empty() )
     {
-      assert( ( typeData.postfix.empty() || ( typeData.postfix.back() == '*' ) ) &&
+      assert( ( typeInfo.postfix.empty() || ( typeInfo.postfix.back() == '*' ) ) &&
               ( arraySizes.empty() || ( arraySizes.size() == 1 ) ) );
       // it's a pointer -> need to reinterpret_cast it
       appendReinterpretCast( str,
-                             typeData.prefix.find( "const" ) == 0,
-                             typeData.type,
-                             typeData.postfix.find( "* const" ) != std::string::npos );
+                             typeInfo.prefix.find( "const" ) == 0,
+                             typeInfo.type,
+                             typeInfo.postfix.find( "* const" ) != std::string::npos );
     }
     else
     {
       // it's a value -> need to static_cast it
-      str += "static_cast<" + typeData.type + ">";
+      str += "static_cast<" + typeInfo.type + ">";
     }
     str += "( " + name + " )";
   }
@@ -2833,7 +2786,6 @@ void VulkanHppGenerator::appendFunctionHeaderArgumentEnhancedVector( std::string
 }
 
 void VulkanHppGenerator::appendFunctionHeaderArguments( std::string &                    str,
-                                                        std::string const &              name,
                                                         CommandData const &              commandData,
                                                         size_t                           returnParamIndex,
                                                         size_t                           templateParamIndex,
@@ -2847,7 +2799,6 @@ void VulkanHppGenerator::appendFunctionHeaderArguments( std::string &           
   if ( enhanced )
   {
     appendFunctionHeaderArgumentsEnhanced( str,
-                                           name,
                                            commandData,
                                            returnParamIndex,
                                            templateParamIndex,
@@ -2858,19 +2809,17 @@ void VulkanHppGenerator::appendFunctionHeaderArguments( std::string &           
   }
   else
   {
-    appendFunctionHeaderArgumentsStandard( str, name, commandData, withDefaults );
+    appendFunctionHeaderArgumentsStandard( str, commandData, withDefaults );
   }
   str += ")";
 
-  assert( m_commandToHandle.find( name ) != m_commandToHandle.end() );
-  if ( !m_commandToHandle.find( name )->second.empty() )
+  if ( !commandData.handle.empty() )
   {
     str += " const";
   }
 }
 
 void VulkanHppGenerator::appendFunctionHeaderArgumentsEnhanced( std::string &                    str,
-                                                                std::string const &              name,
                                                                 CommandData const &              commandData,
                                                                 size_t                           returnParamIndex,
                                                                 size_t                           templateParamIndex,
@@ -2879,12 +2828,9 @@ void VulkanHppGenerator::appendFunctionHeaderArgumentsEnhanced( std::string &   
                                                                 bool                             withDefaults,
                                                                 bool                             withAllocator ) const
 {
-  assert( m_commandToHandle.find( name ) != m_commandToHandle.end() );
-  std::string const & handle = m_commandToHandle.find( name )->second;
-
   // check if there's at least one argument left to put in here
   std::set<size_t> skippedParams = determineSkippedParams( returnParamIndex, vectorParamIndices );
-  if ( skippedParams.size() + ( handle.empty() ? 0 : 1 ) < commandData.params.size() )
+  if ( skippedParams.size() + ( commandData.handle.empty() ? 0 : 1 ) < commandData.params.size() )
   {
     // determine the last argument, where we might provide some default for
     size_t lastArgument = INVALID_INDEX;
@@ -2899,7 +2845,7 @@ void VulkanHppGenerator::appendFunctionHeaderArgumentsEnhanced( std::string &   
 
     str += " ";
     bool argEncountered = false;
-    for ( size_t i = handle.empty() ? 0 : 1; i < commandData.params.size(); i++ )
+    for ( size_t i = commandData.handle.empty() ? 0 : 1; i < commandData.params.size(); i++ )
     {
       argEncountered = appendFunctionHeaderArgumentEnhanced( str,
                                                              commandData.params[i],
@@ -2932,7 +2878,6 @@ void VulkanHppGenerator::appendFunctionHeaderArgumentsEnhanced( std::string &   
 }
 
 void VulkanHppGenerator::appendFunctionHeaderArgumentsStandard( std::string &       str,
-                                                                std::string const & name,
                                                                 CommandData const & commandData,
                                                                 bool                withDefaults ) const
 {
@@ -2940,11 +2885,8 @@ void VulkanHppGenerator::appendFunctionHeaderArgumentsStandard( std::string &   
   // determine the last argument, where we might provide some default for
   size_t lastArgument = commandData.params.size() - 1;
 
-  assert( m_commandToHandle.find( name ) != m_commandToHandle.end() );
-  std::string const & handle = m_commandToHandle.find( name )->second;
-
   bool argEncountered = false;
-  for ( size_t i = handle.empty() ? 0 : 1; i < commandData.params.size(); i++ )
+  for ( size_t i = commandData.handle.empty() ? 0 : 1; i < commandData.params.size(); i++ )
   {
     argEncountered = appendFunctionHeaderArgumentStandard(
       str, commandData.params[i], argEncountered, lastArgument == i, withDefaults );
@@ -3040,8 +2982,8 @@ void VulkanHppGenerator::appendFunctionHeaderReturnType( std::string &          
     }
     else if ( ( returnParamIndex != INVALID_INDEX ) && ( 1 < commandData.successCodes.size() ) )
     {
-      // if there is a return parameter at all, and there are multiple success codes, we return a ResultValue<...> with
-      // the pure return type
+      // if there is a return parameter at all, and there are multiple success codes, we return a ResultValue<...>
+      // with the pure return type
       assert( commandData.returnType == "VkResult" );
       str += "ResultValue<" +
              ( isStructureChain ? "StructureChain<X, Y, Z...>"
@@ -3120,7 +3062,9 @@ void VulkanHppGenerator::appendHandle( std::string &                            
     // first check for any handle that needs to be listed before this one
     for ( auto const & command : handleData.second.commands )
     {
-      for ( auto const & parameter : command.second.params )
+      auto commandIt = m_commands.find( command );
+      assert( commandIt != m_commands.end() );
+      for ( auto const & parameter : commandIt->second.params )
       {
         std::string typeName  = parameter.type.type;
         auto        handlesIt = m_handles.find( typeName );
@@ -3135,7 +3079,9 @@ void VulkanHppGenerator::appendHandle( std::string &                            
     {
       for ( auto const & command : handleData.second.commands )
       {
-        if ( command.first == "vkCreateInstance" )
+        auto commandIt = m_commands.find( command );
+        assert( commandIt != m_commands.end() );
+        if ( commandIt->first == "vkCreateInstance" )
         {
           // special handling for createInstance, as we need to explicitly place the forward declarations and the
           // deleter classes here
@@ -3148,13 +3094,11 @@ void VulkanHppGenerator::appendHandle( std::string &                            
           appendUniqueTypes( str, "", { "VkInstance" } );
         }
         str += "\n";
-        appendPlatformEnter( str, !command.second.aliases.empty(), command.second.platform );
-        appendCommand( str, "  ", command.first, command.second, false );
-        appendPlatformLeave( str, !command.second.aliases.empty(), command.second.platform );
-        for ( auto const & alias : command.second.aliases )
-        {
-          appendCommand( str, "  ", alias, command.second, false );
-        }
+        std::string enter, leave;
+        std::tie( enter, leave ) = generateProtection( commandIt->second.feature, commandIt->second.extensions );
+        str += enter;
+        appendCommand( str, "  ", commandIt->first, commandIt->second, false );
+        str += leave;
       }
     }
     else
@@ -3174,26 +3118,25 @@ void VulkanHppGenerator::appendHandle( std::string &                            
       // list all the commands that are mapped to members of this class
       for ( auto const & command : handleData.second.commands )
       {
-        std::string enter, leave, commandString;
-        appendPlatformEnter( enter, !command.second.aliases.empty(), command.second.platform );
-        appendPlatformLeave( leave, !command.second.aliases.empty(), command.second.platform );
+        auto commandIt = m_commands.find( command );
+        assert( commandIt != m_commands.end() );
+
+        std::string enter, leave;
+        std::tie( enter, leave ) = generateProtection( commandIt->second.feature, commandIt->second.extensions );
+
+        std::string commandString;
         commands += "\n" + enter;
-        std::string commandName = determineCommandName( command.first, command.second.params[0].type.type );
-        appendCommand( commands, "    ", command.first, command.second, false );
-        for ( auto const & alias : command.second.aliases )
-        {
-          assert( enter.empty() && leave.empty() );
-          commands += "\n";
-          appendCommand( commands, "    ", alias, command.second, false );
-        }
+        std::string commandName = determineCommandName( commandIt->first, commandIt->second.params[0].type.type );
+        appendCommand( commands, "    ", commandIt->first, commandIt->second, false );
 
         // special handling for destroy functions
         bool platformLeft = false;
-        if ( ( ( command.first.substr( 2, 7 ) == "Destroy" ) && ( commandName != "destroy" ) ) ||
-             ( command.first.substr( 2, 4 ) == "Free" ) )
+        if ( commandIt->second.alias.empty() &&
+               ( ( commandIt->first.substr( 2, 7 ) == "Destroy" ) && ( commandName != "destroy" ) ) ||
+             ( commandIt->first.substr( 2, 4 ) == "Free" ) )
         {
-          assert( 1 < command.second.params.size() );
-          auto handleIt = m_handles.find( command.second.params[1].type.type );
+          assert( 1 < commandIt->second.params.size() );
+          auto handleIt = m_handles.find( commandIt->second.params[1].type.type );
           assert( handleIt != m_handles.end() );
           if ( !handleIt->second.alias.empty() )
           {
@@ -3202,8 +3145,8 @@ void VulkanHppGenerator::appendHandle( std::string &                            
           }
 
           std::string destroyCommandString;
-          appendCommand( destroyCommandString, "    ", command.first, command.second, false );
-          std::string shortenedName = ( command.first.substr( 2, 7 ) == "Destroy" ) ? "destroy" : "free";
+          appendCommand( destroyCommandString, "    ", commandIt->first, commandIt->second, false );
+          std::string shortenedName = ( commandIt->first.substr( 2, 7 ) == "Destroy" ) ? "destroy" : "free";
           size_t      pos           = destroyCommandString.find( commandName );
           while ( pos != std::string::npos )
           {
@@ -3306,8 +3249,7 @@ ${commands}
 )";
 
       std::string enter, leave;
-      appendPlatformEnter( enter, !handleData.second.alias.empty(), handleData.second.platform );
-      appendPlatformLeave( leave, !handleData.second.alias.empty(), handleData.second.platform );
+      std::tie( enter, leave ) = generateProtection( handleData.first, !handleData.second.alias.empty() );
       str += replaceWithMap( templateString,
                              { { "className", stripPrefix( handleData.first, "Vk" ) },
                                { "commands", commands },
@@ -3340,50 +3282,94 @@ void VulkanHppGenerator::appendHandlesCommandDefintions( std::string & str ) con
     // finally the commands, that are member functions of this handle
     for ( auto const & command : handle.second.commands )
     {
-      std::string strippedName = startLowerCase( stripPrefix( command.first, "vk" ) );
+      auto commandIt = m_commands.find( command );
+      assert( commandIt != m_commands.end() );
+
+      std::string strippedName = startLowerCase( stripPrefix( commandIt->first, "vk" ) );
 
       str += "\n";
-      appendPlatformEnter( str, !command.second.aliases.empty(), command.second.platform );
-      appendCommand( str, "  ", command.first, command.second, true );
-      for ( auto const & alias : command.second.aliases )
-      {
-        str += "\n";
-        appendCommand( str, "  ", alias, command.second, true );
-      }
+      std::string enter, leave;
+      std::tie( enter, leave ) = generateProtection( commandIt->second.feature, commandIt->second.extensions );
+      str += enter;
+      appendCommand( str, "  ", commandIt->first, commandIt->second, true );
 
       // special handling for destroy functions
-      bool        platformLeft = false;
-      std::string commandName  = determineCommandName( command.first, command.second.params[0].type.type );
-      if ( ( ( command.first.substr( 2, 7 ) == "Destroy" ) && ( commandName != "destroy" ) ) ||
-           ( command.first.substr( 2, 4 ) == "Free" ) )
+      std::string commandName = determineCommandName( commandIt->first, commandIt->second.params[0].type.type );
+      if ( commandIt->second.alias.empty() &&
+             ( ( commandIt->first.substr( 2, 7 ) == "Destroy" ) && ( commandName != "destroy" ) ) ||
+           ( commandIt->first.substr( 2, 4 ) == "Free" ) )
       {
-        assert( 1 < command.second.params.size() );
-        auto handleIt = m_handles.find( command.second.params[1].type.type );
-        assert( handleIt != m_handles.end() );
-        if ( !handleIt->second.alias.empty() )
-        {
-          appendPlatformLeave( str, !command.second.aliases.empty(), command.second.platform );
-          platformLeft = true;
-        }
-
         std::string destroyCommandString;
-        appendCommand( destroyCommandString, "  ", command.first, command.second, true );
-        std::string shortenedName = ( command.first.substr( 2, 7 ) == "Destroy" ) ? "destroy" : "free";
+        appendCommand( destroyCommandString, "  ", commandIt->first, commandIt->second, true );
+        std::string shortenedName = ( commandIt->first.substr( 2, 7 ) == "Destroy" ) ? "destroy" : "free";
         size_t      pos           = destroyCommandString.find( commandName );
         while ( pos != std::string::npos )
         {
           destroyCommandString.replace( pos, commandName.length(), shortenedName );
           pos = destroyCommandString.find( commandName, pos );
         }
-        str += "\n" + destroyCommandString;
+
+        bool extended = false;
+        // check if this command is protected and is aliased
+        if ( !enter.empty() )
+        {
+          std::string                                                     alias = commandIt->first;
+          std::vector<std::map<std::string, CommandData>::const_iterator> aliasIts;
+          std::map<std::string, CommandData>::const_iterator              aliasIt = m_commands.begin();
+          do
+          {
+            aliasIt =
+              std::find_if( aliasIt, m_commands.end(), [&alias]( std::pair<std::string, CommandData> const & cd ) {
+                return alias == cd.second.alias;
+              } );
+            if ( aliasIt != m_commands.end() )
+            {
+              aliasIts.push_back( aliasIt );
+              ++aliasIt;
+            }
+          } while ( aliasIt != m_commands.end() );
+
+          if ( !aliasIts.empty() )
+          {
+            assert( aliasIts.size() == 1 );
+            aliasIt = aliasIts.front();
+
+            std::string aliasEnter, aliasLeave;
+            std::tie( aliasEnter, aliasLeave ) =
+              generateProtection( aliasIt->second.feature, aliasIt->second.extensions );
+            assert( aliasEnter.empty() );
+
+            pos = destroyCommandString.find( commandIt->first );
+            while ( pos != std::string::npos )
+            {
+              assert( ( 6 < pos ) && ( destroyCommandString.substr( pos - 6, 6 ) == "    d." ) );
+              size_t endPos = destroyCommandString.find( ';', pos );
+              assert( endPos != std::string::npos );
+              std::string originalCall = destroyCommandString.substr( pos - 6, endPos - pos + 7 );
+              std::string aliasCall    = originalCall;
+              aliasCall.replace( 6, commandIt->first.length(), aliasIt->first );
+              destroyCommandString.replace(
+                pos - 6, endPos - pos + 7, enter + originalCall + "\n#else\n" + aliasCall + "\n" + leave );
+              pos      = destroyCommandString.find( commandIt->first, endPos );
+              extended = true;
+            }
+          }
+        }
+        if ( extended )
+        {
+          str += leave + "\n" + destroyCommandString + "\n";
+        }
+        else
+        {
+          str += "\n" + destroyCommandString + leave;
+        }
       }
-      if ( !platformLeft )
+      else
       {
-        appendPlatformLeave( str, !command.second.aliases.empty(), command.second.platform );
+        str += leave + "\n";
       }
     }
   }
-  str += "\n";
 }
 
 void VulkanHppGenerator::appendHashStructures( std::string & str ) const
@@ -3405,12 +3391,14 @@ void VulkanHppGenerator::appendHashStructures( std::string & str ) const
   {
     if ( !handle.first.empty() )
     {
-      str += "\n";
-      appendPlatformEnter( str, !handle.second.alias.empty(), handle.second.platform );
+      std::string enter, leave;
+      std::tie( enter, leave ) = generateProtection( handle.first, !handle.second.alias.empty() );
+
+      str += "\n" + enter;
       std::string type = stripPrefix( handle.first, "Vk" );
       std::string name = startLowerCase( type );
       str += replaceWithMap( hashTemplate, { { "name", name }, { "type", type } } );
-      appendPlatformLeave( str, !handle.second.alias.empty(), handle.second.platform );
+      str += leave;
     }
   }
 
@@ -3443,26 +3431,6 @@ void VulkanHppGenerator::appendResultExceptions( std::string & str ) const
     }
   }
   str += "\n";
-}
-
-void VulkanHppGenerator::appendPlatformEnter( std::string & str, bool isAliased, std::string const & platform ) const
-{
-  if ( !isAliased && !platform.empty() )
-  {
-    auto it = m_platforms.find( platform );
-    assert( ( it != m_platforms.end() ) && !it->second.empty() );
-    str += "#ifdef " + it->second + "\n";
-  }
-}
-
-void VulkanHppGenerator::appendPlatformLeave( std::string & str, bool isAliased, std::string const & platform ) const
-{
-  if ( !isAliased && !platform.empty() )
-  {
-    auto it = m_platforms.find( platform );
-    assert( ( it != m_platforms.end() ) && !it->second.empty() );
-    str += "#endif /*" + it->second + "*/\n";
-  }
 }
 
 void VulkanHppGenerator::appendStruct( std::string &                                 str,
@@ -3831,8 +3799,10 @@ void VulkanHppGenerator::appendStructSubConstructor( std::string &              
 void VulkanHppGenerator::appendStructure( std::string &                                 str,
                                           std::pair<std::string, StructureData> const & structure ) const
 {
-  str += "\n";
-  appendPlatformEnter( str, !structure.second.aliases.empty(), structure.second.platform );
+  std::string enter, leave;
+  std::tie( enter, leave ) = generateProtection( structure.first, !structure.second.aliases.empty() );
+
+  str += "\n" + enter;
 
   std::string constructorAndSetters;
   appendStructConstructor( constructorAndSetters, structure, "    " );
@@ -3909,8 +3879,7 @@ ${members}
 )";
     str += replaceWithMap( cppTypeTemplate, { { "sTypeValue", sTypeValue }, { "structureName", structureName } } );
   }
-
-  appendPlatformLeave( str, !structure.second.aliases.empty(), structure.second.platform );
+  str += leave;
 }
 
 void VulkanHppGenerator::appendStructureChainValidation( std::string & str )
@@ -3920,8 +3889,10 @@ void VulkanHppGenerator::appendStructureChainValidation( std::string & str )
   {
     if ( !structure.second.structExtends.empty() )
     {
-      appendPlatformEnter( str, !structure.second.aliases.empty(), structure.second.platform );
+      std::string enter, leave;
+      std::tie( enter, leave ) = generateProtection( structure.first, !structure.second.aliases.empty() );
 
+      str += enter;
       // append out allowed structure chains
       for ( auto extendName : structure.second.structExtends )
       {
@@ -3952,20 +3923,24 @@ void VulkanHppGenerator::appendStructureChainValidation( std::string & str )
           }
           check( false, structure.second.xmlLine, errorString );
         }
-        if ( structure.second.platform != itExtend->second.platform )
+
+        std::string subEnter, subLeave;
+        std::tie( subEnter, subLeave ) = generateProtection( itExtend->first, !itExtend->second.aliases.empty() );
+
+        if ( enter != subEnter )
         {
-          appendPlatformEnter( str, !itExtend->second.aliases.empty(), itExtend->second.platform );
+          str += subEnter;
         }
 
         str += "  template <> struct isStructureChainValid<" + stripPrefix( extendName, "Vk" ) + ", " +
                stripPrefix( structure.first, "Vk" ) + ">{ enum { value = true }; };\n";
 
-        if ( structure.second.platform != itExtend->second.platform )
+        if ( leave != subLeave )
         {
-          appendPlatformLeave( str, !itExtend->second.aliases.empty(), itExtend->second.platform );
+          str += subLeave;
         }
       }
-      appendPlatformLeave( str, !structure.second.aliases.empty(), structure.second.platform );
+      str += leave;
     }
   }
 }
@@ -3996,8 +3971,10 @@ void VulkanHppGenerator::appendThrowExceptions( std::string & str ) const
 
 void VulkanHppGenerator::appendUnion( std::string & str, std::pair<std::string, StructureData> const & structure ) const
 {
-  str += "\n";
-  appendPlatformEnter( str, !structure.second.aliases.empty(), structure.second.platform );
+  std::string enter, leave;
+  std::tie( enter, leave ) = generateProtection( structure.first, !structure.second.aliases.empty() );
+
+  str += "\n" + enter;
   std::string unionName = stripPrefix( structure.first, "Vk" );
   str += "  union " + unionName +
          "\n"
@@ -4100,8 +4077,7 @@ void VulkanHppGenerator::appendUnion( std::string & str, std::pair<std::string, 
     }
     str += "#endif  /*VULKAN_HPP_HAS_UNRESTRICTED_UNIONS*/\n";
   }
-  str += "  };\n";
-  appendPlatformLeave( str, !structure.second.aliases.empty(), structure.second.platform );
+  str += "  };\n" + leave;
 }
 
 void VulkanHppGenerator::appendUniqueTypes( std::string &                 str,
@@ -4127,8 +4103,11 @@ void VulkanHppGenerator::appendUniqueTypes( std::string &                 str,
     std::string deleterParent = parentType.empty() ? "NoParent" : stripPrefix( parentType, "Vk" );
     std::string deleterPool =
       handleIt->second.deletePool.empty() ? "" : ", " + stripPrefix( handleIt->second.deletePool, "Vk" );
-    appendPlatformEnter( str, !handleIt->second.alias.empty(), handleIt->second.platform );
-    str += "  template <typename Dispatch> class UniqueHandleTraits<" + type +
+
+    std::string enter, leave;
+    std::tie( enter, leave ) = generateProtection( handleIt->first, !handleIt->second.alias.empty() );
+
+    str += enter + "  template <typename Dispatch> class UniqueHandleTraits<" + type +
            ", Dispatch> { public: using deleter = " + deleterType + deleterAction + "<" + deleterParent + deleterPool +
            ", Dispatch>; };\n"
            "  using Unique" +
@@ -4139,7 +4118,7 @@ void VulkanHppGenerator::appendUniqueTypes( std::string &                 str,
       str += "  using Unique" + stripPrefix( handleIt->second.alias, "Vk" ) + " = UniqueHandle<" + type +
              ", VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;\n";
     }
-    appendPlatformLeave( str, !handleIt->second.alias.empty(), handleIt->second.platform );
+    str += leave;
   }
   str += "#endif /*VULKAN_HPP_NO_SMART_HANDLE*/\n";
 }
@@ -4303,6 +4282,36 @@ void VulkanHppGenerator::checkCorrectness()
     resultCodes.insert( rc.first );
   }
 
+  for ( auto const & command : m_commands )
+  {
+    for ( auto const & ec : command.second.errorCodes )
+    {
+      check( resultCodes.find( ec ) != resultCodes.end(),
+             command.second.xmlLine,
+             "command uses unknown error code <" + ec + ">" );
+    }
+    for ( auto const & sc : command.second.successCodes )
+    {
+      check( resultCodes.find( sc ) != resultCodes.end(),
+             command.second.xmlLine,
+             "command uses unknown success code <" + sc + ">" );
+    }
+    // check that functions returning a VkResult specify successcodes
+    check( ( command.second.returnType != "VkResult" ) || !command.second.successCodes.empty(),
+           command.second.xmlLine,
+           "missing successcodes on command <" + command.first + "> returning VkResult!" );
+
+    for ( auto const & p : command.second.params )
+    {
+      check( m_types.find( p.type.type ) != m_types.end(),
+             p.xmlLine,
+             "comand uses parameter of unknown type <" + p.type.type + ">" );
+    }
+    check( m_types.find( command.second.returnType ) != m_types.end(),
+           command.second.xmlLine,
+           "command uses unknown return type <" + command.second.returnType + ">" );
+  }
+
   for ( auto const & handle : m_handles )
   {
     for ( auto const & parent : handle.second.parents )
@@ -4310,35 +4319,6 @@ void VulkanHppGenerator::checkCorrectness()
       check( m_handles.find( parent ) != m_handles.end(),
              handle.second.xmlLine,
              "handle with unknown parent <" + parent + ">" );
-    }
-    for ( auto const & command : handle.second.commands )
-    {
-      for ( auto const & ec : command.second.errorCodes )
-      {
-        check( resultCodes.find( ec ) != resultCodes.end(),
-               command.second.xmlLine,
-               "command uses unknown error code <" + ec + ">" );
-      }
-      for ( auto const & sc : command.second.successCodes )
-      {
-        check( resultCodes.find( sc ) != resultCodes.end(),
-               command.second.xmlLine,
-               "command uses unknown success code <" + sc + ">" );
-      }
-      // check that functions returning a VkResult specify successcodes
-      check( ( command.second.returnType != "VkResult" ) || !command.second.successCodes.empty(),
-             command.second.xmlLine,
-             "missing successcodes on command <" + command.first + "> returning VkResult!" );
-
-      for ( auto const & p : command.second.params )
-      {
-        check( m_types.find( p.type.type ) != m_types.end(),
-               p.xmlLine,
-               "comand uses parameter of unknown type <" + p.type.type + ">" );
-      }
-      check( m_types.find( command.second.returnType ) != m_types.end(),
-             command.second.xmlLine,
-             "command uses unknown return type <" + command.second.returnType + ">" );
     }
   }
 }
@@ -4679,6 +4659,50 @@ std::string const & VulkanHppGenerator::getVulkanLicenseHeader() const
   return m_vulkanLicenseHeader;
 }
 
+std::pair<std::string, std::string>
+  VulkanHppGenerator::generateProtection( std::string const & feature, std::set<std::string> const & extensions ) const
+{
+  if ( feature.empty() )
+  {
+    std::string protect;
+    for ( auto const & extension : extensions )
+    {
+      auto extensionIt = m_extensions.find( extension );
+      assert( extensionIt != m_extensions.end() );
+      if ( !extensionIt->second.platform.empty() )
+      {
+        auto platformIt = m_platforms.find( extensionIt->second.platform );
+        assert( platformIt != m_platforms.end() );
+        if ( !platformIt->second.protect.empty() )
+        {
+          assert( protect.empty() );
+          protect = platformIt->second.protect;
+        }
+      }
+    }
+    if ( !protect.empty() )
+    {
+      return std::make_pair( "#ifdef " + protect + "\n", "#endif /*" + protect + "*/\n" );
+    }
+  }
+  return std::make_pair( "", "" );
+}
+
+std::pair<std::string, std::string> VulkanHppGenerator::generateProtection( std::string const & type,
+                                                                            bool                isAliased ) const
+{
+  if ( isAliased )
+  {
+    return std::make_pair( "", "" );
+  }
+  else
+  {
+    auto typeIt = m_types.find( type );
+    assert( typeIt != m_types.end() );
+    return generateProtection( typeIt->second.feature, typeIt->second.extensions );
+  }
+}
+
 bool VulkanHppGenerator::holdsSType( std::string const & type ) const
 {
   auto it = m_structures.find( type );
@@ -4710,32 +4734,6 @@ bool VulkanHppGenerator::isTwoStepAlgorithm( std::vector<ParamData> const & para
   return isTwoStep;
 }
 
-void VulkanHppGenerator::linkCommandToHandle( int line, std::string const & name, CommandData const & commandData )
-{
-  // first, find the handle named like the type of the first argument
-  // if there is no such handle, look for the unnamed "handle", that gathers all the functions not tied to a specific
-  // handle
-  check( !commandData.params.empty(), line, "command <" + name + "> with no params" );
-  std::map<std::string, HandleData>::iterator handleIt = m_handles.find( commandData.params[0].type.type );
-  if ( handleIt == m_handles.end() )
-  {
-    handleIt = m_handles.find( "" );
-  }
-  check( handleIt != m_handles.end(), line, "could not find a handle to hold command <" + name + ">" );
-
-  // put the command into the handle's list of commands
-  check( handleIt->second.commands.find( name ) == handleIt->second.commands.end(),
-         line,
-         "command list of handle <" + handleIt->first + "> already holds a commnand <" + name + ">" );
-  handleIt->second.commands.insert( std::make_pair( name, commandData ) );
-
-  // and store the handle in the command-to-handle map
-  check( m_commandToHandle.find( name ) == m_commandToHandle.end(),
-         line,
-         "command to handle mapping already holds the command <" + name + ">" );
-  m_commandToHandle[name] = handleIt->first;
-}
-
 void VulkanHppGenerator::readBaseType( tinyxml2::XMLElement const *               element,
                                        std::map<std::string, std::string> const & attributes )
 {
@@ -4743,24 +4741,24 @@ void VulkanHppGenerator::readBaseType( tinyxml2::XMLElement const *             
   checkAttributes( line, attributes, { { "category", { "basetype" } } }, {} );
 
   NameData nameData;
-  TypeData typeData;
-  std::tie( nameData, typeData ) = readNameAndType( element );
+  TypeInfo typeInfo;
+  std::tie( nameData, typeInfo ) = readNameAndType( element );
 
   check( nameData.arraySizes.empty(), line, "name <" + nameData.name + "> with unsupported arraySizes" );
   check( nameData.bitCount.empty(),
          line,
          "name <" + nameData.name + "> with unsupported bitCount <" + nameData.bitCount + ">" );
-  check( typeData.type.empty() || ( typeData.prefix == "typedef" ),
+  check( typeInfo.type.empty() || ( typeInfo.prefix == "typedef" ),
          line,
-         "unexpected type prefix <" + typeData.prefix + ">" );
-  check( typeData.prefix.empty() || ( typeData.prefix == "typedef" ),
+         "unexpected type prefix <" + typeInfo.prefix + ">" );
+  check( typeInfo.prefix.empty() || ( typeInfo.prefix == "typedef" ),
          line,
-         "unexpected type prefix <" + typeData.prefix + ">" );
-  check( typeData.postfix.empty(), line, "unexpected type postfix <" + typeData.postfix + ">" );
+         "unexpected type prefix <" + typeInfo.prefix + ">" );
+  check( typeInfo.postfix.empty(), line, "unexpected type postfix <" + typeInfo.postfix + ">" );
 
-  if ( !typeData.type.empty() )
+  if ( !typeInfo.type.empty() )
   {
-    check( m_baseTypes.insert( std::make_pair( nameData.name, BaseTypeData( typeData.type, line ) ) ).second,
+    check( m_baseTypes.insert( std::make_pair( nameData.name, BaseTypeData( typeInfo.type, line ) ) ).second,
            line,
            "basetype <" + nameData.name + "> already specified" );
   }
@@ -4793,25 +4791,24 @@ void VulkanHppGenerator::readBitmask( tinyxml2::XMLElement const *              
     }
 
     NameData nameData;
-    TypeData typeData;
-    std::tie( nameData, typeData ) = readNameAndType( element );
+    TypeInfo typeInfo;
+    std::tie( nameData, typeInfo ) = readNameAndType( element );
 
     check( beginsWith( nameData.name, "Vk" ), line, "name <" + nameData.name + "> does not begin with <Vk>" );
     check( nameData.arraySizes.empty(), line, "name <" + nameData.name + "> with unsupported arraySizes" );
     check( nameData.bitCount.empty(),
            line,
            "name <" + nameData.name + "> with unsupported bitCount <" + nameData.bitCount + ">" );
-    warn( ( typeData.type == "VkFlags" ) || ( typeData.type == "VkFlags64" ),
+    warn( ( typeInfo.type == "VkFlags" ) || ( typeInfo.type == "VkFlags64" ),
           line,
-          "unexpected bitmask type <" + typeData.type + ">" );
-    check( typeData.prefix == "typedef", line, "unexpected type prefix <" + typeData.prefix + ">" );
-    check( typeData.postfix.empty(), line, "unexpected type postfix <" + typeData.postfix + ">" );
+          "unexpected bitmask type <" + typeInfo.type + ">" );
+    check( typeInfo.prefix == "typedef", line, "unexpected type prefix <" + typeInfo.prefix + ">" );
+    check( typeInfo.postfix.empty(), line, "unexpected type postfix <" + typeInfo.postfix + ">" );
 
-    check( m_commandToHandle.find( nameData.name ) == m_commandToHandle.end(),
-           line,
-           "command <" + nameData.name + "> already specified" );
+    check(
+      m_commands.find( nameData.name ) == m_commands.end(), line, "command <" + nameData.name + "> already specified" );
 
-    m_bitmasks.insert( std::make_pair( nameData.name, BitmaskData( requirements, typeData.type, line ) ) );
+    m_bitmasks.insert( std::make_pair( nameData.name, BitmaskData( requirements, typeInfo.type, line ) ) );
     check( m_types.insert( std::make_pair( nameData.name, TypeCategory::Bitmask ) ).second,
            line,
            "bitmask <" + nameData.name + "> already specified as a type" );
@@ -4912,7 +4909,26 @@ void VulkanHppGenerator::readCommand( tinyxml2::XMLElement const *              
   assert( !name.empty() );
 
   registerDeleter( name, std::make_pair( name, commandData ) );
-  linkCommandToHandle( line, name, commandData );
+
+  // find the handle this command is going to be associated to
+  check( !commandData.params.empty(), line, "command <" + name + "> with no params" );
+  std::map<std::string, HandleData>::iterator handleIt = m_handles.find( commandData.params[0].type.type );
+  if ( handleIt == m_handles.end() )
+  {
+    handleIt = m_handles.find( "" );
+  }
+  check( handleIt != m_handles.end(), line, "could not find a handle to hold command <" + name + ">" );
+  commandData.handle = handleIt->first;
+
+  // add this command to the list of commands
+  check( m_commands.insert( std::make_pair( name, commandData ) ).second,
+         line,
+         "already encountered command <" + name + ">" );
+
+  // put the command into the handle's list of commands
+  check( handleIt->second.commands.insert( name ).second,
+         line,
+         "command list of handle <" + handleIt->first + "> already holds a commnand <" + name + ">" );
 }
 
 void VulkanHppGenerator::readCommandAlias( tinyxml2::XMLElement const *               element,
@@ -4943,31 +4959,24 @@ void VulkanHppGenerator::readCommandAlias( tinyxml2::XMLElement const *         
     }
   }
 
-  auto commandToHandleIt = m_commandToHandle.find( alias );
-  check( commandToHandleIt != m_commandToHandle.end(), line, "missing command <" + alias + ">" );
-  auto handleIt = m_handles.find( commandToHandleIt->second );
-  check( handleIt != m_handles.end(), line, "missing handle <" + commandToHandleIt->second + ">" );
-  auto commandsIt = handleIt->second.commands.find( alias );
-  if ( commandsIt == handleIt->second.commands.end() )
-  {
-    // look, if this command is aliases and already aliased command
-    commandsIt =
-      std::find_if( handleIt->second.commands.begin(), handleIt->second.commands.end(), [&alias]( auto const & cd ) {
-        return cd.second.aliases.find( alias ) != cd.second.aliases.end();
-      } );
-  }
-  check( commandsIt != handleIt->second.commands.end(),
-         line,
-         "missing command <" + alias + "> in handle <" + handleIt->first + ">" );
-  check( commandsIt->second.aliases.insert( name ).second,
-         line,
-         "alias <" + name + "> for command <" + alias + "> already specified" );
+  auto commandIt = m_commands.find( alias );
+  check( commandIt != m_commands.end(), line, "missing command <" + alias + ">" );
 
-  // and store the alias in the command-to-handle map
-  check( m_commandToHandle.find( name ) == m_commandToHandle.end(),
+  // add the very same command as an alias
+  bool inserted;
+  std::tie( commandIt, inserted ) = m_commands.insert( std::make_pair( name, commandIt->second ) );
+  check( inserted, line, "alias <" + name + "> for command <" + alias + "> already specified" );
+  commandIt->second.alias   = alias;
+  commandIt->second.xmlLine = line;
+
+  // and add it to a handle!
+  auto handleIt = m_handles.find( commandIt->second.handle );
+  check( handleIt != m_handles.end(),
          line,
-         "command to handle mapping already holds the command <" + name + ">" );
-  m_commandToHandle[name] = handleIt->first;
+         "trying to add alias command <" + name + "> to an unknown handle <" + commandIt->second.handle + ">" );
+  check( handleIt->second.commands.insert( name ).second,
+         line,
+         "alias command <" + name + "> already registered with handle <" + handleIt->first + ">" );
 }
 
 VulkanHppGenerator::ParamData VulkanHppGenerator::readCommandParam( tinyxml2::XMLElement const *   element,
@@ -5029,22 +5038,21 @@ std::pair<std::string, std::string> VulkanHppGenerator::readCommandProto( tinyxm
   checkAttributes( line, getAttributes( element ), {}, {} );
 
   NameData nameData;
-  TypeData typeData;
-  std::tie( nameData, typeData ) = readNameAndType( element );
+  TypeInfo typeInfo;
+  std::tie( nameData, typeInfo ) = readNameAndType( element );
 
   check( beginsWith( nameData.name, "vk" ), line, "name <" + nameData.name + "> does not begin with <vk>" );
   check( nameData.arraySizes.empty(), line, "name <" + nameData.name + "> with unsupported arraySizes" );
   check( nameData.bitCount.empty(),
          line,
          "name <" + nameData.name + "> with unsupported bitCount <" + nameData.bitCount + ">" );
-  check( m_types.find( typeData.type ) != m_types.end(), line, "unknown type <" + typeData.type + ">" );
-  check( typeData.prefix.empty(), line, "unexpected type prefix <" + typeData.prefix + ">" );
-  check( typeData.postfix.empty(), line, "unexpected type postfix <" + typeData.postfix + ">" );
-  check( m_commandToHandle.find( nameData.name ) == m_commandToHandle.end(),
-         line,
-         "command <" + nameData.name + "> already specified" );
+  check( m_types.find( typeInfo.type ) != m_types.end(), line, "unknown type <" + typeInfo.type + ">" );
+  check( typeInfo.prefix.empty(), line, "unexpected type prefix <" + typeInfo.prefix + ">" );
+  check( typeInfo.postfix.empty(), line, "unexpected type postfix <" + typeInfo.postfix + ">" );
+  check(
+    m_commands.find( nameData.name ) == m_commands.end(), line, "command <" + nameData.name + "> already specified" );
 
-  return std::make_pair( nameData.name, typeData.type );
+  return std::make_pair( nameData.name, typeInfo.type );
 }
 
 void VulkanHppGenerator::readCommands( tinyxml2::XMLElement const * element )
@@ -5300,6 +5308,10 @@ void VulkanHppGenerator::readEnums( tinyxml2::XMLElement const * element )
       // well, some enums are not listed in the <types> section
       warn( false, line, "enum <" + name + "> is not listed as enum in the types section" );
       it = m_enums.insert( std::make_pair( name, EnumData() ) ).first;
+
+      // add some "dummy" type in the types map
+      assert( m_types.find( name ) == m_types.end() );
+      m_types.insert( std::make_pair( name, TypeData( TypeCategory::Enum ) ) );
     }
     check( it->second.values.empty(), line, "enum <" + name + "> already holds values" );
 
@@ -5427,11 +5439,9 @@ void VulkanHppGenerator::readExtension( tinyxml2::XMLElement const * element )
   }
   else
   {
-    auto pitb = m_extensions.insert( std::make_pair( name, ExtensionData( line ) ) );
+    auto pitb = m_extensions.insert(
+      std::make_pair( name, ExtensionData( line, deprecatedBy, obsoletedBy, platform, promotedTo ) ) );
     check( pitb.second, line, "already encountered extension <" + name + ">" );
-    pitb.first->second.deprecatedBy = deprecatedBy;
-    pitb.first->second.obsoletedBy  = obsoletedBy;
-    pitb.first->second.promotedTo   = promotedTo;
     for ( auto const & r : requirements )
     {
       check( pitb.first->second.requirements.insert( std::make_pair( r, line ) ).second,
@@ -5442,7 +5452,7 @@ void VulkanHppGenerator::readExtension( tinyxml2::XMLElement const * element )
     std::string tag = extractTag( line, name, m_tags );
     for ( auto child : children )
     {
-      readExtensionRequire( child, platform, tag, pitb.first->second.requirements );
+      readExtensionRequire( child, name, tag, pitb.first->second.requirements );
     }
   }
 }
@@ -5457,29 +5467,14 @@ void VulkanHppGenerator::readExtensionDisabledCommand( tinyxml2::XMLElement cons
   std::string name = attributes.find( "name" )->second;
 
   // first unlink the command from its class
-  auto commandToHandleIt = m_commandToHandle.find( name );
-  check( commandToHandleIt != m_commandToHandle.end(), line, "try to remove unknown command <" + name + ">" );
-  auto handlesIt = m_handles.find( m_commandToHandle.find( name )->second );
-  check( handlesIt != m_handles.end(), line, "cannot find handle corresponding to command <" + name + ">" );
-  auto commandIt = handlesIt->second.commands.find( name );
-  check( commandIt != handlesIt->second.commands.end(),
-         line,
-         "cannot find command <" + name + "> in commands associated with handle <" + handlesIt->first + ">" );
-  if ( !commandIt->second.aliases.empty() )
-  {
-    // if there's an alias of the to-be-removed command, insert that as a new command with the very same CommandData
-    // (minus its alias)
-    check( commandIt->second.aliases.size() == 1,
-           line,
-           "try to disable command <" + name + "> with more than one alias -> don't know what to do" );
-    std::string aliasName = *commandIt->second.aliases.begin();
-    commandIt->second.aliases.clear();
-    handlesIt->second.commands.insert( std::make_pair( aliasName, commandIt->second ) );
-  }
-  handlesIt->second.commands.erase( commandIt );
+  auto commandIt = m_commands.find( name );
+  check( commandIt != m_commands.end(), line, "try to remove unknown command <" + name + ">" );
+  auto handleIt = m_handles.find( commandIt->second.handle );
+  check( handleIt != m_handles.end(), line, "cannot find handle corresponding to command <" + name + ">" );
+  handleIt->second.commands.erase( commandIt->first );
 
-  // then remove the command from the command-to-handle map
-  m_commandToHandle.erase( commandToHandleIt );
+  // then erase the command from the command list
+  m_commands.erase( commandIt );
 }
 
 void VulkanHppGenerator::readExtensionDisabledEnum( std::string const &          extensionName,
@@ -5564,7 +5559,7 @@ void VulkanHppGenerator::readExtensionDisabledType( tinyxml2::XMLElement const *
   auto typeIt = m_types.find( name );
   check( typeIt != m_types.end(), line, "trying to remove unknown type <" + name + ">" );
 
-  switch ( typeIt->second )
+  switch ( typeIt->second.category )
   {
     case TypeCategory::Bitmask:
     {
@@ -5598,13 +5593,15 @@ void VulkanHppGenerator::readExtensionDisabledType( tinyxml2::XMLElement const *
     }
     break;
     default:
-      check( false, line, "trying to remove <" + name + "> of unhandled type <" + toString( typeIt->second ) + ">" );
+      check( false,
+             line,
+             "trying to remove <" + name + "> of unhandled type <" + toString( typeIt->second.category ) + ">" );
       break;
   }
 }
 
 void VulkanHppGenerator::readExtensionRequire( tinyxml2::XMLElement const * element,
-                                               std::string const &          platform,
+                                               std::string const &          extension,
                                                std::string const &          tag,
                                                std::map<std::string, int> & requirements )
 {
@@ -5635,7 +5632,7 @@ void VulkanHppGenerator::readExtensionRequire( tinyxml2::XMLElement const * elem
     std::string value = child->Value();
     if ( value == "command" )
     {
-      readExtensionRequireCommand( child, platform );
+      readExtensionRequireCommand( child, extension );
     }
     else if ( value == "comment" )
     {
@@ -5647,129 +5644,55 @@ void VulkanHppGenerator::readExtensionRequire( tinyxml2::XMLElement const * elem
     }
     else if ( value == "type" )
     {
-      readExtensionRequireType( child, platform );
+      readExtensionRequireType( child, extension );
     }
   }
 }
 
 void VulkanHppGenerator::readExtensionRequireCommand( tinyxml2::XMLElement const * element,
-                                                      std::string const &          platform )
+                                                      std::string const &          extension )
 {
   int                                line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
   checkAttributes( line, attributes, { { "name", {} } }, {} );
   checkElements( line, getChildElements( element ), {} );
 
-  // just add the protect string to the CommandData
-  if ( !platform.empty() )
+  std::string name;
+  for ( auto const & attribute : attributes )
   {
-    std::string name = attributes.find( "name" )->second;
-
-    check( m_platforms.find( platform ) != m_platforms.end(), line, "unknown platform <" + platform + ">" );
-    auto commandToHandleIt = m_commandToHandle.find( name );
-    check( commandToHandleIt != m_commandToHandle.end(), line, "unknown command <" + name + ">" );
-    auto const & handlesIt = m_handles.find( commandToHandleIt->second );
-    check( handlesIt != m_handles.end(), line, "unknown handle for command <" + name + ">" );
-    auto const & commandsIt = handlesIt->second.commands.find( name );
-    check( commandsIt != handlesIt->second.commands.end(),
-           line,
-           "unknown command <" + name + "> for handle <" + handlesIt->first + ">" );
-    commandsIt->second.platform = platform;
+    if ( attribute.first == "name" )
+    {
+      name = attribute.second;
+    }
   }
+  assert( !name.empty() );
+
+  // mark this command be part of this extension
+  auto commandIt = m_commands.find( name );
+  check( commandIt != m_commands.end(), line, "extension <" + extension + "> requires unknown command <" + name + ">" );
+  commandIt->second.extensions.insert( extension );
 }
 
-void VulkanHppGenerator::readExtensionRequireType( tinyxml2::XMLElement const * element, std::string const & platform )
+void VulkanHppGenerator::readExtensionRequireType( tinyxml2::XMLElement const * element, std::string const & extension )
 {
   int                                line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
   checkAttributes( line, attributes, { { "name", {} } }, {} );
   checkElements( line, getChildElements( element ), {} );
 
-  // add the protect-string to the appropriate type: enum, flag, handle, scalar, or struct
-  std::string name = attributes.find( "name" )->second;
+  std::string name;
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "name" )
+    {
+      name = attribute.second;
+    }
+  }
+  assert( !name.empty() );
 
   auto typeIt = m_types.find( name );
   check( typeIt != m_types.end(), line, "failed to find required type <" + name + ">" );
-
-  if ( typeIt->second == TypeCategory::Handle )
-  {
-    assert( beginsWith( name, "Vk" ) );
-    auto objectTypeIt = m_enums.find( "VkObjectType" );
-    assert( objectTypeIt != m_enums.end() );
-    std::string objectTypeName = "e" + stripPrefix( name, "Vk" );
-
-    auto handleIt = m_handles.find( name );
-    if ( handleIt != m_handles.end() )
-    {
-      auto valueIt =
-        std::find_if( objectTypeIt->second.values.begin(),
-                      objectTypeIt->second.values.end(),
-                      [objectTypeName]( EnumValueData const & evd ) { return evd.vkValue == objectTypeName; } );
-      check( valueIt != objectTypeIt->second.values.end(),
-             line,
-             "missing entry in VkObjectType enum for handle <" + name + ">." );
-    }
-    else
-    {
-      check( std::find_if( objectTypeIt->second.aliases.begin(),
-                           objectTypeIt->second.aliases.end(),
-                           [objectTypeName]( auto const & alias ) { return alias.second.second == objectTypeName; } ) !=
-               objectTypeIt->second.aliases.end(),
-             line,
-             "missing alias entry in VkObjectType enum for alias handle <" + name + ">." );
-    }
-  }
-
-  if ( !platform.empty() )
-  {
-    switch ( typeIt->second )
-    {
-      case TypeCategory::BaseType:
-        // no need to protect a base type
-        break;
-      case TypeCategory::Bitmask:
-      {
-        auto bitmaskIt = m_bitmasks.find( name );
-        check( bitmaskIt != m_bitmasks.end(), line, "failed to find required bitmask <" + name + ">" );
-        check( bitmaskIt->second.platform.empty(), line, "platform already specified for bitmask <" + name + ">" );
-        bitmaskIt->second.platform = platform;
-        assert( ( m_enums.find( bitmaskIt->second.requirements ) == m_enums.end() ) ||
-                ( m_enums.find( bitmaskIt->second.requirements )->second.isBitmask ) );
-      }
-      break;
-      case TypeCategory::Define:
-        // no need to protect a "defined" type
-        break;
-      case TypeCategory::Enum:
-      {
-        auto enumIt = m_enums.find( name );
-        check( enumIt != m_enums.end(), line, "failed to find required enum <" + name + ">" );
-        check( enumIt->second.platform.empty(), line, "platform already specified for enum <" + name + ">" );
-        enumIt->second.platform = platform;
-      }
-      break;
-      case TypeCategory::Handle:
-      {
-        auto handleIt = m_handles.find( name );
-        check( handleIt != m_handles.end(), line, "failed to find required handle <" + name + ">" );
-        check( handleIt->second.platform.empty(), line, "platform already specified for handle <" + name + ">" );
-        handleIt->second.platform = platform;
-      }
-      break;
-      case TypeCategory::Struct:
-      case TypeCategory::Union:  // unions are listed together with the structures!
-      {
-        auto structIt = m_structures.find( name );
-        check( structIt != m_structures.end(), line, "failed to find required struct <" + name + ">" );
-        check( structIt->second.platform.empty(), line, "platform already specified for structure <" + name + ">" );
-        structIt->second.platform = platform;
-      }
-      break;
-      default:
-        check( false, line, "trying to protect <" + name + "> of unhandled type <" + toString( typeIt->second ) + ">" );
-        break;
-    }
-  }
+  typeIt->second.extensions.insert( extension );
 }
 
 void VulkanHppGenerator::readExtensions( tinyxml2::XMLElement const * element )
@@ -5814,11 +5737,11 @@ void VulkanHppGenerator::readFeature( tinyxml2::XMLElement const * element )
 
   for ( auto child : children )
   {
-    readFeatureRequire( child );
+    readFeatureRequire( child, name );
   }
 }
 
-void VulkanHppGenerator::readFeatureRequire( tinyxml2::XMLElement const * element )
+void VulkanHppGenerator::readFeatureRequire( tinyxml2::XMLElement const * element, std::string const & feature )
 {
   int line = element->GetLineNum();
   checkAttributes( line, getAttributes( element ), {}, { { "comment", {} } } );
@@ -5830,7 +5753,7 @@ void VulkanHppGenerator::readFeatureRequire( tinyxml2::XMLElement const * elemen
     std::string value = child->Value();
     if ( value == "command" )
     {
-      readRequireCommand( child );
+      readFeatureRequireCommand( child, feature );
     }
     else if ( value == "comment" )
     {
@@ -5842,8 +5765,42 @@ void VulkanHppGenerator::readFeatureRequire( tinyxml2::XMLElement const * elemen
     }
     else if ( value == "type" )
     {
-      readRequireType( child );
+      readFeatureRequireType( child, feature );
     }
+  }
+}
+
+void VulkanHppGenerator::readFeatureRequireCommand( tinyxml2::XMLElement const * element, std::string const & feature )
+{
+  int                                line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( line, attributes, {}, { { "name", {} } } );
+  std::string command   = attributes.find( "name" )->second;
+  auto        commandIt = m_commands.find( command );
+  check( commandIt != m_commands.end(), line, "feature requires unknown command <" + command + ">" );
+  check( commandIt->second.feature.empty(),
+         line,
+         "command <" + commandIt->first + "> already listed with feature <" + commandIt->second.feature + ">" );
+  commandIt->second.feature = feature;
+}
+
+void VulkanHppGenerator::readFeatureRequireType( tinyxml2::XMLElement const * element, std::string const & feature )
+{
+  int                                line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( line, attributes, {}, { { "comment", {} }, { "name", {} } } );
+  checkElements( line, getChildElements( element ), {} );
+  std::string type = attributes.find( "name" )->second;
+
+  // some types are in fact includes (like vk_platform) or defines (like VK_API_VERSION)
+  if ( ( m_defines.find( type ) == m_defines.end() ) && ( m_includes.find( type ) == m_includes.end() ) )
+  {
+    auto typeIt = m_types.find( type );
+    check( typeIt != m_types.end(), line, "feature requires unknown type <" + type + ">" );
+    check( typeIt->second.feature.empty() || ( typeIt->second.feature == feature ),
+           line,
+           "type <" + type + "> already listed on feature <" + typeIt->second.feature + ">" );
+    typeIt->second.feature = feature;
   }
 }
 
@@ -5926,19 +5883,19 @@ void VulkanHppGenerator::readHandle( tinyxml2::XMLElement const *               
     }
 
     NameData nameData;
-    TypeData typeData;
-    std::tie( nameData, typeData ) = readNameAndType( element );
+    TypeInfo typeInfo;
+    std::tie( nameData, typeInfo ) = readNameAndType( element );
 
     check( beginsWith( nameData.name, "Vk" ), line, "name <" + nameData.name + "> does not begin with <Vk>" );
     check( nameData.arraySizes.empty(), line, "name <" + nameData.name + "> with unsupported arraySizes" );
     check( nameData.bitCount.empty(),
            line,
            "name <" + nameData.name + "> with unsupported bitCount <" + nameData.bitCount + ">" );
-    check( ( typeData.type == "VK_DEFINE_HANDLE" ) || ( typeData.type == "VK_DEFINE_NON_DISPATCHABLE_HANDLE" ),
+    check( ( typeInfo.type == "VK_DEFINE_HANDLE" ) || ( typeInfo.type == "VK_DEFINE_NON_DISPATCHABLE_HANDLE" ),
            line,
-           "handle with invalid type <" + typeData.type + ">" );
-    check( typeData.prefix.empty(), line, "unexpected type prefix <" + typeData.prefix + ">" );
-    check( typeData.postfix == "(", line, "unexpected type postfix <" + typeData.postfix + ">" );
+           "handle with invalid type <" + typeInfo.type + ">" );
+    check( typeInfo.prefix.empty(), line, "unexpected type prefix <" + typeInfo.prefix + ">" );
+    check( typeInfo.postfix == "(", line, "unexpected type postfix <" + typeInfo.postfix + ">" );
 
     check( m_handles.insert( std::make_pair( nameData.name, HandleData( tokenize( parent, "," ), line ) ) ).second,
            line,
@@ -5949,7 +5906,7 @@ void VulkanHppGenerator::readHandle( tinyxml2::XMLElement const *               
   }
 }
 
-std::pair<VulkanHppGenerator::NameData, VulkanHppGenerator::TypeData>
+std::pair<VulkanHppGenerator::NameData, VulkanHppGenerator::TypeInfo>
   VulkanHppGenerator::readNameAndType( tinyxml2::XMLElement const * element )
 {
   int                                       line     = element->GetLineNum();
@@ -5957,7 +5914,7 @@ std::pair<VulkanHppGenerator::NameData, VulkanHppGenerator::TypeData>
   checkElements( line, children, { { "name", true } }, { { "type" } } );
 
   NameData nameData;
-  TypeData typeData;
+  TypeInfo typeInfo;
   for ( auto child : children )
   {
     line = child->GetLineNum();
@@ -5972,12 +5929,12 @@ std::pair<VulkanHppGenerator::NameData, VulkanHppGenerator::TypeData>
     }
     else if ( value == "type" )
     {
-      typeData.prefix  = readTypePrefix( child->PreviousSibling() );
-      typeData.type    = child->GetText();
-      typeData.postfix = readTypePostfix( child->NextSibling() );
+      typeInfo.prefix  = readTypePrefix( child->PreviousSibling() );
+      typeInfo.type    = child->GetText();
+      typeInfo.postfix = readTypePostfix( child->NextSibling() );
     }
   }
-  return std::make_pair( nameData, typeData );
+  return std::make_pair( nameData, typeInfo );
 }
 
 void VulkanHppGenerator::readPlatform( tinyxml2::XMLElement const * element )
@@ -6002,14 +5959,17 @@ void VulkanHppGenerator::readPlatform( tinyxml2::XMLElement const * element )
     }
   }
   assert( !name.empty() && !protect.empty() );
-  check( m_platforms.find( name ) == m_platforms.end(), line, "platform name <" + name + "> already specified" );
+
   check( std::find_if( m_platforms.begin(),
                        m_platforms.end(),
-                       [&protect]( std::pair<std::string, std::string> const & p ) { return p.second == protect; } ) ==
-           m_platforms.end(),
+                       [&protect]( std::pair<std::string, PlatformData> const & p ) {
+                         return p.second.protect == protect;
+                       } ) == m_platforms.end(),
          line,
          "platform protect <" + protect + "> already specified" );
-  m_platforms[name] = protect;
+  check( m_platforms.insert( std::make_pair( name, PlatformData( protect ) ) ).second,
+         line,
+         "platform name <" + name + "> already specified" );
 }
 
 void VulkanHppGenerator::readPlatforms( tinyxml2::XMLElement const * element )
@@ -6081,17 +6041,6 @@ void VulkanHppGenerator::readRegistry( tinyxml2::XMLElement const * element )
       readTypes( child );
     }
   }
-}
-
-void VulkanHppGenerator::readRequireCommand( tinyxml2::XMLElement const * element )
-{
-  int                                line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, {}, { { "name", {} } } );
-  std::string command = attributes.find( "name" )->second;
-  check( m_commandToHandle.find( command ) != m_commandToHandle.end(),
-         line,
-         "feature requires unknown command <" + command + ">" );
 }
 
 void VulkanHppGenerator::readRequireEnum( tinyxml2::XMLElement const * element, std::string const & tag )
@@ -6240,13 +6189,6 @@ void VulkanHppGenerator::readRequires( tinyxml2::XMLElement const *             
              "type requires unknown include <" + attribute.second + ">" );
     }
   }
-}
-
-void VulkanHppGenerator::readRequireType( tinyxml2::XMLElement const * element )
-{
-  int line = element->GetLineNum();
-  checkAttributes( line, getAttributes( element ), { { "name", {} } }, {} );
-  checkElements( line, getChildElements( element ), {} );
 }
 
 void VulkanHppGenerator::readStruct( tinyxml2::XMLElement const *               element,
@@ -6706,7 +6648,7 @@ std::string VulkanHppGenerator::toString( TypeCategory category )
   }
 }
 
-std::string VulkanHppGenerator::TypeData::compose() const
+std::string VulkanHppGenerator::TypeInfo::compose() const
 {
   return prefix + ( prefix.empty() ? "" : " " ) + ( ( type.substr( 0, 2 ) == "Vk" ) ? "VULKAN_HPP_NAMESPACE::" : "" ) +
          stripPrefix( type, "Vk" ) + postfix;

@@ -62,7 +62,6 @@ private:
 
     std::string requirements;
     std::string type;
-    std::string platform;
     std::string alias;
     int         xmlLine;
   };
@@ -74,11 +73,11 @@ private:
     std::string              bitCount;
   };
 
-  struct TypeData
+  struct TypeInfo
   {
     std::string compose() const;
 
-    bool operator==( TypeData const & rhs ) const
+    bool operator==( TypeInfo const & rhs ) const
     {
       return ( prefix == rhs.prefix ) && ( type == rhs.type ) && ( postfix == rhs.postfix );
     }
@@ -92,7 +91,7 @@ private:
   {
     ParamData( int line ) : optional( false ), xmlLine( line ) {}
 
-    TypeData                 type;
+    TypeInfo                 type;
     std::string              name;
     std::vector<std::string> arraySizes;
     std::string              len;
@@ -104,12 +103,14 @@ private:
   {
     CommandData( int line ) : xmlLine( line ) {}
 
+    std::string              alias;
+    std::vector<std::string> errorCodes;
+    std::set<std::string>    extensions;
+    std::string              feature;
+    std::string              handle;
     std::vector<ParamData>   params;
-    std::string              platform;
     std::string              returnType;
     std::vector<std::string> successCodes;
-    std::vector<std::string> errorCodes;
-    std::set<std::string>    aliases;
     int                      xmlLine;
   };
 
@@ -135,19 +136,29 @@ private:
                        std::string const & postfix,
                        std::string const & tag );
 
-    std::string alias;  // alias for this enum
-    std::map<std::string, std::pair<std::string, std::string>> aliases;   // map from name to alias and vk-name
-    bool                       isBitmask = false;
-    std::string                platform;
-    std::vector<EnumValueData> values;
+    std::string                                                alias;    // alias for this enum
+    std::map<std::string, std::pair<std::string, std::string>> aliases;  // map from name to alias and vk-name
+    bool                                                       isBitmask = false;
+    std::vector<EnumValueData>                                 values;
   };
 
   struct ExtensionData
   {
-    ExtensionData( int line ) : xmlLine( line ) {}
+    ExtensionData( int                 line,
+                   std::string const & deprecatedBy_,
+                   std::string const & obsoletedBy_,
+                   std::string const & platform_,
+                   std::string const & promotedTo_ )
+      : xmlLine( line )
+      , deprecatedBy( deprecatedBy_ )
+      , obsoletedBy( obsoletedBy_ )
+      , platform( platform_ )
+      , promotedTo( promotedTo_ )
+    {}
 
     std::string                deprecatedBy;
     std::string                obsoletedBy;
+    std::string                platform;
     std::string                promotedTo;
     std::map<std::string, int> requirements;
     int                        xmlLine;
@@ -165,27 +176,33 @@ private:
   {
     HandleData( std::vector<std::string> const & p, int line ) : parents( p ), xmlLine( line ) {}
 
-    std::string                        alias;
-    std::set<std::string>              childrenHandles;
-    std::map<std::string, CommandData> commands;
-    std::string                        deleteCommand;
-    std::string                        deletePool;
-    std::string                        platform;
-    std::vector<std::string>           parents;
-    int                                xmlLine;
+    std::string              alias;
+    std::set<std::string>    childrenHandles;
+    std::set<std::string>    commands;
+    std::string              deleteCommand;
+    std::string              deletePool;
+    std::vector<std::string> parents;
+    int                      xmlLine;
   };
 
   struct MemberData
   {
     MemberData( int line ) : xmlLine( line ) {}
 
-    TypeData                 type;
+    TypeInfo                 type;
     std::string              name;
     std::vector<std::string> arraySizes;
     std::string              bitCount;
     std::string              values;
     std::string              usedConstant;
     int                      xmlLine;
+  };
+
+  struct PlatformData
+  {
+    PlatformData( std::string const & protect_ ) : protect( protect_ ) {}
+
+    std::string protect;
   };
 
   struct StructureData
@@ -197,7 +214,6 @@ private:
     bool                     returnedOnly;
     bool                     isUnion;
     std::vector<MemberData>  members;
-    std::string              platform;
     std::vector<std::string> structExtends;
     std::set<std::string>    aliases;
     std::string              subStruct;
@@ -216,6 +232,15 @@ private:
     Struct,
     Union,
     Unknown
+  };
+
+  struct TypeData
+  {
+    TypeData( TypeCategory category_ ) : category( category_ ) {}
+
+    TypeCategory          category;
+    std::set<std::string> extensions;
+    std::string           feature;
   };
 
 private:
@@ -265,7 +290,7 @@ private:
                              bool                definition ) const;
   void        appendEnum( std::string & str, std::pair<std::string, EnumData> const & enumData ) const;
   void        appendEnumInitializer( std::string &                      str,
-                                     TypeData const &                   type,
+                                     TypeInfo const &                   type,
                                      std::vector<std::string> const &   arraySizes,
                                      std::vector<EnumValueData> const & values ) const;
   void        appendEnumToString( std::string & str, std::pair<std::string, EnumData> const & enumData ) const;
@@ -367,7 +392,7 @@ private:
                                           std::string const & commandName,
                                           CommandData const & commandData ) const;
   void        appendFunctionBodyStandardArgument( std::string &                    str,
-                                                  TypeData const &                 typeData,
+                                                  TypeInfo const &                 typeData,
                                                   std::string const &              name,
                                                   std::vector<std::string> const & arraySizes ) const;
   bool        appendFunctionHeaderArgumentEnhanced( std::string &                    str,
@@ -397,7 +422,6 @@ private:
                                                    bool                withDefaults,
                                                    bool                withAllocator ) const;
   void appendFunctionHeaderArguments( std::string &                    str,
-                                      std::string const &              name,
                                       CommandData const &              commandData,
                                       size_t                           returnParamIndex,
                                       size_t                           templateParamIndex,
@@ -407,7 +431,6 @@ private:
                                       bool                             withDefaults,
                                       bool                             withAllocator ) const;
   void appendFunctionHeaderArgumentsEnhanced( std::string &                    str,
-                                              std::string const &              name,
                                               CommandData const &              commandData,
                                               size_t                           returnParamIndex,
                                               size_t                           templateParamIndex,
@@ -416,7 +439,6 @@ private:
                                               bool                             withDefaults,
                                               bool                             withAllocator ) const;
   void appendFunctionHeaderArgumentsStandard( std::string &       str,
-                                              std::string const & name,
                                               CommandData const & commandData,
                                               bool                withDefaults ) const;
   bool appendFunctionHeaderArgumentStandard(
@@ -444,8 +466,6 @@ private:
   void appendHandle( std::string &                              str,
                      std::pair<std::string, HandleData> const & handle,
                      std::set<std::string> &                    listedHandles ) const;
-  void appendPlatformEnter( std::string & str, bool isAliased, std::string const & platform ) const;
-  void appendPlatformLeave( std::string & str, bool isAliased, std::string const & platform ) const;
   void appendStruct( std::string &                                 str,
                      std::pair<std::string, StructureData> const & structure,
                      std::set<std::string> &                       listedStructures ) const;
@@ -491,10 +511,12 @@ private:
   std::string determineSubStruct( std::pair<std::string, StructureData> const & structure ) const;
   size_t      determineTemplateParamIndex( std::vector<ParamData> const &   params,
                                            std::map<size_t, size_t> const & vectorParamIndices ) const;
-  std::map<size_t, size_t> determineVectorParamIndices( std::vector<ParamData> const & params ) const;
-  bool                     holdsSType( std::string const & type ) const;
-  bool                     isTwoStepAlgorithm( std::vector<ParamData> const & params ) const;
-  void                     linkCommandToHandle( int line, std::string const & name, CommandData const & commandData );
+  std::map<size_t, size_t>            determineVectorParamIndices( std::vector<ParamData> const & params ) const;
+  std::pair<std::string, std::string> generateProtection( std::string const &           feature,
+                                                          std::set<std::string> const & extension ) const;
+  std::pair<std::string, std::string> generateProtection( std::string const & type, bool isAliased ) const;
+  bool                                holdsSType( std::string const & type ) const;
+  bool                                isTwoStepAlgorithm( std::vector<ParamData> const & params ) const;
   void readBaseType( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
   void readBitmask( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
   void readBitmaskAlias( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
@@ -531,21 +553,22 @@ private:
   void readExtensionDisabledRequire( std::string const & extensionName, tinyxml2::XMLElement const * element );
   void readExtensionDisabledType( tinyxml2::XMLElement const * element );
   void readExtensionRequire( tinyxml2::XMLElement const * element,
-                             std::string const &          platform,
+                             std::string const &          extension,
                              std::string const &          tag,
                              std::map<std::string, int> & requirements );
-  void readExtensionRequireCommand( tinyxml2::XMLElement const * element, std::string const & platform );
-  void readExtensionRequireType( tinyxml2::XMLElement const * element, std::string const & platform );
+  void readExtensionRequireCommand( tinyxml2::XMLElement const * element, std::string const & extension );
+  void readExtensionRequireType( tinyxml2::XMLElement const * element, std::string const & extension );
   void readExtensions( tinyxml2::XMLElement const * element );
   void readFeature( tinyxml2::XMLElement const * element );
-  void readFeatureRequire( tinyxml2::XMLElement const * element );
+  void readFeatureRequire( tinyxml2::XMLElement const * element, std::string const & feature );
+  void readFeatureRequireCommand( tinyxml2::XMLElement const * element, std::string const & feature );
+  void readFeatureRequireType( tinyxml2::XMLElement const * element, std::string const & feature );
   void readFuncpointer( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
   void readHandle( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
-  std::pair<NameData, TypeData> readNameAndType( tinyxml2::XMLElement const * elements );
+  std::pair<NameData, TypeInfo> readNameAndType( tinyxml2::XMLElement const * elements );
   void                          readPlatform( tinyxml2::XMLElement const * element );
   void                          readPlatforms( tinyxml2::XMLElement const * element );
   void                          readRegistry( tinyxml2::XMLElement const * element );
-  void                          readRequireCommand( tinyxml2::XMLElement const * element );
   void                          readRequireEnum( tinyxml2::XMLElement const * element, std::string const & tag );
   void                          readRequireEnum( tinyxml2::XMLElement const *               element,
                                                  std::map<std::string, std::string> const & attributes,
@@ -554,7 +577,6 @@ private:
                                                       std::map<std::string, std::string> const & attributes,
                                                       std::string const &                        tag );
   void readRequires( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
-  void readRequireType( tinyxml2::XMLElement const * element );
   void readStruct( tinyxml2::XMLElement const *               element,
                    bool                                       isUnion,
                    std::map<std::string, std::string> const & attributes );
@@ -578,7 +600,7 @@ private:
 private:
   std::map<std::string, BaseTypeData>    m_baseTypes;
   std::map<std::string, BitmaskData>     m_bitmasks;
-  std::map<std::string, std::string>     m_commandToHandle;
+  std::map<std::string, CommandData>     m_commands;
   std::set<std::string>                  m_constants;
   std::set<std::string>                  m_defines;
   std::map<std::string, EnumData>        m_enums;
@@ -588,12 +610,12 @@ private:
   std::map<std::string, FuncPointerData> m_funcPointers;
   std::map<std::string, HandleData>      m_handles;
   std::set<std::string>                  m_includes;
-  std::map<std::string, std::string>     m_platforms;
+  std::map<std::string, PlatformData>    m_platforms;
   std::map<std::string, std::string>     m_structureAliases;
   std::map<std::string, StructureData>   m_structures;
   std::set<std::string>                  m_sTypeValues;
   std::set<std::string>                  m_tags;
-  std::map<std::string, TypeCategory>    m_types;
+  std::map<std::string, TypeData>        m_types;
   std::string                            m_typesafeCheck;
   std::string                            m_version;
   std::string                            m_vulkanLicenseHeader;

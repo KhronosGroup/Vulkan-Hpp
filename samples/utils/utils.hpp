@@ -230,8 +230,8 @@ namespace vk
     class CheckerboardImageGenerator
     {
     public:
-      CheckerboardImageGenerator( std::array<uint8_t, 3> const & rgb0 = { 0, 0, 0 },
-                                  std::array<uint8_t, 3> const & rgb1 = { 255, 255, 255 } );
+      CheckerboardImageGenerator( std::array<uint8_t, 3> const & rgb0 = { { 0, 0, 0 } },
+                                  std::array<uint8_t, 3> const & rgb1 = { { 255, 255, 255 } } );
 
       void operator()( void * data, vk::Extent2D & extent ) const;
 

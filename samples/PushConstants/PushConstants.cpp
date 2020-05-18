@@ -164,7 +164,7 @@ int main( int /*argc*/, char ** /*argv*/ )
       vk::WriteDescriptorSet( *descriptorSet, 0, 0, 1, vk::DescriptorType::eUniformBuffer, nullptr, &bufferInfo ), {} );
 
     // Create our push constant data, which matches shader expectations
-    std::array<unsigned, 2> pushConstants = { (unsigned)2, (unsigned)0x3F800000 };
+    std::array<unsigned, 2> pushConstants = { { (unsigned)2, (unsigned)0x3F800000 } };
 
     // Ensure we have enough room for push constant data
     assert( ( sizeof( pushConstants ) <= physicalDevice.getProperties().limits.maxPushConstantsSize ) &&
@@ -195,7 +195,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     assert( currentBuffer.value < framebuffers.size() );
 
     vk::ClearValue clearValues[2];
-    clearValues[0].color        = vk::ClearColorValue( std::array<float, 4>( { 0.2f, 0.2f, 0.2f, 0.2f } ) );
+    clearValues[0].color        = vk::ClearColorValue( std::array<float, 4>( { { 0.2f, 0.2f, 0.2f, 0.2f } } ) );
     clearValues[1].depthStencil = vk::ClearDepthStencilValue( 1.0f, 0 );
 
     vk::RenderPassBeginInfo renderPassBeginInfo( renderPass.get(),

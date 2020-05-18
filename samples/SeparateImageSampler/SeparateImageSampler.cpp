@@ -154,10 +154,11 @@ int main( int /*argc*/, char ** /*argv*/ )
     //   binding 0 = uniform buffer (MVP)
     //   binding 1 = texture2D
     //   binding 2 = sampler
-    std::array<vk::DescriptorSetLayoutBinding, 3> resourceBindings = {
+    std::array<vk::DescriptorSetLayoutBinding, 3> resourceBindings = { {
       vk::DescriptorSetLayoutBinding( 0, vk::DescriptorType::eUniformBuffer, 1, vk::ShaderStageFlagBits::eVertex ),
       vk::DescriptorSetLayoutBinding( 1, vk::DescriptorType::eSampledImage, 1, vk::ShaderStageFlagBits::eFragment ),
       vk::DescriptorSetLayoutBinding( 2, vk::DescriptorType::eSampler, 1, vk::ShaderStageFlagBits::eFragment )
+    }
     };
     vk::UniqueDescriptorSetLayout descriptorSetLayout = device->createDescriptorSetLayoutUnique(
       vk::DescriptorSetLayoutCreateInfo( vk::DescriptorSetLayoutCreateFlags(),
@@ -169,9 +170,9 @@ int main( int /*argc*/, char ** /*argv*/ )
       vk::PipelineLayoutCreateInfo( vk::PipelineLayoutCreateFlags(), 1, &( *descriptorSetLayout ) ) );
 
     // Create a single pool to contain data for the descriptor set
-    std::array<vk::DescriptorPoolSize, 3> poolSizes = { vk::DescriptorPoolSize( vk::DescriptorType::eUniformBuffer, 1 ),
-                                                        vk::DescriptorPoolSize( vk::DescriptorType::eSampledImage, 1 ),
-                                                        vk::DescriptorPoolSize( vk::DescriptorType::eSampler, 1 ) };
+    std::array<vk::DescriptorPoolSize, 3> poolSizes = { { vk::DescriptorPoolSize( vk::DescriptorType::eUniformBuffer, 1 ),
+                                                          vk::DescriptorPoolSize( vk::DescriptorType::eSampledImage, 1 ),
+                                                          vk::DescriptorPoolSize( vk::DescriptorType::eSampler, 1 ) } };
     vk::UniqueDescriptorPool              descriptorPool = device->createDescriptorPoolUnique(
       vk::DescriptorPoolCreateInfo( vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet,
                                     1,
@@ -188,11 +189,11 @@ int main( int /*argc*/, char ** /*argv*/ )
                                        textureData.imageData->imageView.get(),
                                        vk::ImageLayout::eShaderReadOnlyOptimal );
     vk::DescriptorImageInfo               samplerInfo( sampler.get(), {}, {} );
-    std::array<vk::WriteDescriptorSet, 3> descriptorWrites = {
+    std::array<vk::WriteDescriptorSet, 3> descriptorWrites =  { {
       vk::WriteDescriptorSet( *descriptorSet, 0, 0, 1, vk::DescriptorType::eUniformBuffer, nullptr, &bufferInfo ),
       vk::WriteDescriptorSet( *descriptorSet, 1, 0, 1, vk::DescriptorType::eSampledImage, &imageInfo ),
       vk::WriteDescriptorSet( *descriptorSet, 2, 0, 1, vk::DescriptorType::eSampler, &samplerInfo )
-    };
+    } };
     device->updateDescriptorSets( descriptorWrites, nullptr );
 
     /* VULKAN_KEY_END */
@@ -219,7 +220,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     assert( currentBuffer.value < framebuffers.size() );
 
     vk::ClearValue clearValues[2];
-    clearValues[0].color        = vk::ClearColorValue( std::array<float, 4>( { 0.2f, 0.2f, 0.2f, 0.2f } ) );
+    clearValues[0].color        = vk::ClearColorValue( std::array<float, 4>( { { 0.2f, 0.2f, 0.2f, 0.2f } } ) );
     clearValues[1].depthStencil = vk::ClearDepthStencilValue( 1.0f, 0 );
 
     vk::RenderPassBeginInfo renderPassBeginInfo( renderPass.get(),

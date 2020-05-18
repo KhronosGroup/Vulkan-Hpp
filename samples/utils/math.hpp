@@ -15,8 +15,12 @@
 
 #include <vulkan/vulkan.hpp>
 #define GLM_FORCE_RADIANS
+
+#if defined(_MSC_VER)
 #pragma warning( disable : 4201 )  // disable warning C4201: nonstandard extension used: nameless struct/union; needed
                                    // to get glm/detail/type_vec?.hpp without warnings
+#endif
+                                   
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace vk

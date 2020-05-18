@@ -904,8 +904,8 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::su::updateDescriptorSets(
       device,
       descriptorSet,
-      { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, vk::UniqueBufferView() },
-        { vk::DescriptorType::eStorageBuffer, materialBufferData.buffer, vk::UniqueBufferView() } },
+      { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, {} },
+        { vk::DescriptorType::eStorageBuffer, materialBufferData.buffer, {} } },
       textures );
 
     // RayTracing specific stuff
@@ -1030,10 +1030,10 @@ int main( int /*argc*/, char ** /*argv*/ )
       vk::su::updateDescriptorSets(
         device,
         rayTracingDescriptorSets[i],
-        { { bindings[2].descriptorType, uniformBufferData.buffer, vk::UniqueBufferView() },
-          { bindings[3].descriptorType, vertexBufferData.buffer, vk::UniqueBufferView() },
-          { bindings[4].descriptorType, indexBufferData.buffer, vk::UniqueBufferView() },
-          { bindings[5].descriptorType, materialBufferData.buffer, vk::UniqueBufferView() } },
+        { { bindings[2].descriptorType, uniformBufferData.buffer, {} },
+          { bindings[3].descriptorType, vertexBufferData.buffer, {} },
+          { bindings[4].descriptorType, indexBufferData.buffer, {} },
+          { bindings[5].descriptorType, materialBufferData.buffer, {} } },
         textures,
         2 );
     }
@@ -1131,7 +1131,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     shaderBindingTableBufferData.upload( device, shaderHandleStorage );
 
     std::array<vk::ClearValue, 2> clearValues;
-    clearValues[0].color        = vk::ClearColorValue( std::array<float, 4>( { 0.2f, 0.2f, 0.2f, 0.2f } ) );
+    clearValues[0].color        = vk::ClearColorValue( std::array<float, 4>( { { 0.2f, 0.2f, 0.2f, 0.2f } } ) );
     clearValues[1].depthStencil = vk::ClearDepthStencilValue( 1.0f, 0 );
 
     // Main loop

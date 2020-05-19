@@ -4606,7 +4606,7 @@ void VulkanHppGenerator::appendIndexTypeTraits( std::string & str ) const
     }
     else
     {
-      assert( value.vkValue == "eNoneKHR" );
+      assert( beginsWith( value.vkValue, "eNone" ) );
     }
 
     if ( !cppType.empty() )

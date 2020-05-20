@@ -67,22 +67,6 @@ matrix:
       before_install:
         - sudo apt-get update
         - sudo apt-get purge g++
-        - sudo apt-get install clang-3.9
-        - CC=clang-3.9 && CXX=clang++-3.9
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - ninja-build
-            - xorg-dev 
-            - libglu1-mesa-dev
-      compiler: clang++-3.9
-
-    - os: linux
-      before_install:
-        - sudo apt-get update
-        - sudo apt-get purge g++
         - sudo apt-get install clang-4.0
         - CC=clang-4.0 && CXX=clang++-4.0
       addons:

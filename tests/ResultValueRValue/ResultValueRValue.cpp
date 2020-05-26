@@ -20,19 +20,25 @@
 
 VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 
-template <typename T>
-struct Wrapper
-{
-  Wrapper( T && raw ) : raw{ raw } {}
+#if defined(VULKAN_DISABLE_IMPLICIT_RESULT_VALUE_CAST)
+  static_assert(false, "Conversions not enabled");
+#endif
 
-  T raw;
-};
+template <class T> void as_value(T)  {}
+template <class T> void as_cref(const T&) {}
+template <class T> void as_rvref(T&&)  {}
 
 void test()
 {
   auto device = vk::Device{};
-  // We should be able to move created vk objects, regardless of the
-  // result type they were returned in.
-  Wrapper<vk::Image>{ device.createImage( {} ) };
-  Wrapper<vk::Pipeline>{ device.createGraphicsPipeline( {}, {} ) };
+
+  // just example: non-result values (vk::Image)
+  as_value<vk::Image>(device.createImage({}));
+  as_cref<vk::Image>(device.createImage({}));
+  as_rvref<vk::Image>(device.createImage({}));
+
+  // vk::ResultValue<vk::Pipeline> should also work
+  as_value<vk::Pipeline>(device.createGraphicsPipeline(nullptr, {}));
+  as_cref<vk::Pipeline>(device.createGraphicsPipeline(nullptr, {}));
+  as_rvref<vk::Pipeline>(device.createGraphicsPipeline(nullptr,{}));
 }

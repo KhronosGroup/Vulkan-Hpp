@@ -2767,7 +2767,7 @@ void VulkanHppGenerator::appendFunctionHeaderArgumentEnhancedVector( std::string
   else
   {
     // it's a non-char vector (they are never optional)
-    assert( !optional );
+    //assert( !optional );
     if ( singular )
     {
       // in singular case, change from pointer to reference
@@ -4571,7 +4571,9 @@ std::map<size_t, size_t> VulkanHppGenerator::determineVectorParamIndices( std::v
               ( it->len == "null-terminated" ) || ( it->len == "pAllocateInfo->descriptorSetCount" ) ||
               ( it->len == "pAllocateInfo::descriptorSetCount" ) ||
               ( it->len == "pAllocateInfo->commandBufferCount" ) ||
-              ( it->len == "pAllocateInfo::commandBufferCount" ) );
+              ( it->len == "pAllocateInfo::commandBufferCount" ) ||
+              ( it->len == "pBuildInfo->geometryCount")
+      );
     }
   }
   return vectorParamIndices;

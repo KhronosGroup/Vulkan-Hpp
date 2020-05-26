@@ -7872,12 +7872,12 @@ namespace std
     operator std::tuple<Result&, T&>() VULKAN_HPP_NOEXCEPT { return std::tuple<Result&, T&>(result, value); }
 
 #if !defined(VULKAN_HPP_DISABLE_IMPLICIT_RESULT_VALUE_CAST)
-    operator T const& () const VULKAN_HPP_NOEXCEPT
+    operator T const& () const & VULKAN_HPP_NOEXCEPT
     {
       return value;
     }
 
-    operator T& () VULKAN_HPP_NOEXCEPT
+    operator T& () & VULKAN_HPP_NOEXCEPT
     {
       return value;
     }

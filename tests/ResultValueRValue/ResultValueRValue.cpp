@@ -24,21 +24,29 @@ VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
   static_assert(false, "Conversions not enabled");
 #endif
 
-template <class T> void as_value(T)  {}
-template <class T> void as_cref(const T&) {}
-template <class T> void as_rvref(T&&)  {}
+void as_value(int)  {}
+void as_ref(int&) {}
+void as_cref(const int&) {}
+void as_rvref(int&&)  {}
+void as_crvref(const int&&)  {}
 
 void test()
 {
-  auto device = vk::Device{};
+  using result = vk::ResultValue<int>;
 
-  // just example: non-result values (vk::Image)
-  as_value<vk::Image>(device.createImage({}));
-  as_cref<vk::Image>(device.createImage({}));
-  as_rvref<vk::Image>(device.createImage({}));
+  auto val        = result {vk::Result{}, 42};
+  const auto cval = result {vk::Result{}, 42}; 
 
-  // vk::ResultValue<vk::Pipeline> should also work
-  as_value<vk::Pipeline>(device.createGraphicsPipeline(nullptr, {}));
-  as_cref<vk::Pipeline>(device.createGraphicsPipeline(nullptr, {}));
-  as_rvref<vk::Pipeline>(device.createGraphicsPipeline(nullptr,{}));
+  as_value(val);
+  as_value(cval);
+
+  as_ref(val);
+  //as_ref(cval); // should fail
+  as_cref(val);
+  as_cref(cval);
+
+  as_rvref(std::move(val));
+  //as_rvref(std::move(cval)); // should fail
+  as_crvref(std::move(val));
+  as_crvref(std::move(cval));
 }

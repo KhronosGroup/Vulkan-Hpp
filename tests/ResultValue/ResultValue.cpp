@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// VulkanHpp Test: Compile only test for issue 589.
+// VulkanHpp Tests : ResultValue
+//                   Compile-test for ResultValue
 
 #define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1
 
@@ -20,18 +21,19 @@
 
 VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 
+// Compile only test for issue 589.
+void test_conversion()
+{
 #if defined(VULKAN_DISABLE_IMPLICIT_RESULT_VALUE_CAST)
   static_assert(false, "Conversions not enabled");
 #endif
 
-void as_value(int)  {}
-void as_ref(int&) {}
-void as_cref(const int&) {}
-void as_rvref(int&&)  {}
-void as_crvref(const int&&)  {}
+  void as_value(int);
+  void as_ref(int&);
+  void as_cref(const int&);
+  void as_rvref(int&&);
+  void as_crvref(const int&&);
 
-void test()
-{
   using result = vk::ResultValue<int>;
 
   auto val        = result {vk::Result{}, 42};

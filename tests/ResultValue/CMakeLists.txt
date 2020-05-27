@@ -14,25 +14,25 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(ResultValueRValue)
+project(ResultValue)
 
 set(HEADERS
 )
 
 set(SOURCES
-  ResultValueRValue.cpp
+  ResultValue.cpp
 )
 
 source_group(headers FILES ${HEADERS})
 source_group(sources FILES ${SOURCES})
 
-add_library(ResultValueRValue
+add_library(ResultValue
   ${HEADERS}
   ${SOURCES}
 )
 
 if (UNIX)
-  target_link_libraries(ResultValueRValue "-ldl")
+  target_link_libraries(ResultValue "-ldl")
 endif()
 
-set_target_properties(ResultValueRValue PROPERTIES FOLDER "Tests")
+set_target_properties(ResultValue PROPERTIES FOLDER "Tests")

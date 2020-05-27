@@ -7882,6 +7882,11 @@ namespace std
       return value;
     }
 
+    operator T const&& () const && VULKAN_HPP_NOEXCEPT
+    {
+      return std::move( value );
+    }
+
     operator T&& () && VULKAN_HPP_NOEXCEPT
     {
       return std::move( value );

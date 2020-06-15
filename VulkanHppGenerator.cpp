@@ -2767,7 +2767,7 @@ void VulkanHppGenerator::appendFunctionHeaderArgumentEnhancedVector( std::string
   else
   {
     // it's a non-char vector (they are never optional)
-    //assert( !optional );
+    assert( !optional );
     if ( singular )
     {
       // in singular case, change from pointer to reference
@@ -3132,8 +3132,8 @@ void VulkanHppGenerator::appendHandle( std::string &                            
         // special handling for destroy functions
         bool platformLeft = false;
         if ( commandIt->second.alias.empty() &&
-               ( ( commandIt->first.substr( 2, 7 ) == "Destroy" ) && ( commandName != "destroy" ) ) ||
-             ( commandIt->first.substr( 2, 4 ) == "Free" ) )
+             ( ( ( commandIt->first.substr( 2, 7 ) == "Destroy" ) && ( commandName != "destroy" ) ) ||
+               ( commandIt->first.substr( 2, 4 ) == "Free" ) ) )
         {
           assert( 1 < commandIt->second.params.size() );
           auto handleIt = m_handles.find( commandIt->second.params[1].type.type );
@@ -4252,15 +4252,29 @@ void VulkanHppGenerator::checkCorrectness()
     }
     for ( auto const & member : structure.second.members )
     {
-      if ( !member.values.empty() )
+      if ( !member.selector.empty() )
       {
-        assert( member.name == "sType" );
-        check( std::find_if( structureTypeIt->second.values.begin(),
-                             structureTypeIt->second.values.end(),
-                             [&member]( auto const & evd ) { return member.values == evd.vulkanValue; } ) !=
-                 structureTypeIt->second.values.end(),
-               member.xmlLine,
-               "sType value <" + member.values + "> not listed for VkStructureType" );
+        std::string const & selector   = member.selector;
+        auto                selectorIt = std::find_if( structure.second.members.begin(),
+                                        structure.second.members.end(),
+                                        [&selector]( MemberData const & md ) { return md.name == selector; } );
+        assert( selectorIt != structure.second.members.end() );
+        auto enumIt = m_enums.find( selectorIt->type.type );
+        assert( enumIt != m_enums.end() );
+        auto dataIt = m_structures.find( member.type.type );
+        assert( ( dataIt != m_structures.end() ) && dataIt->second.isUnion );
+        for ( auto const & data : dataIt->second.members )
+        {
+          assert( !data.selection.empty() );
+          std::string const & selection = data.selection;
+          check( std::find_if( enumIt->second.values.begin(),
+                               enumIt->second.values.end(),
+                               [&selection]( EnumValueData const & evd ) { return evd.vulkanValue == selection; } ) !=
+                   enumIt->second.values.end(),
+                 data.xmlLine,
+                 "union member <" + data.name + "> uses selection <" + selection +
+                   "> that is not part of the selector type <" + selectorIt->type.type + ">" );
+        }
       }
       check( m_types.find( member.type.type ) != m_types.end(),
              member.xmlLine,
@@ -4270,6 +4284,16 @@ void VulkanHppGenerator::checkCorrectness()
         check( m_constants.find( member.usedConstant ) != m_constants.end(),
                member.xmlLine,
                "struct member array size uses unknown constant <" + member.usedConstant + ">" );
+      }
+      if ( !member.values.empty() )
+      {
+        assert( member.name == "sType" );
+        check( std::find_if( structureTypeIt->second.values.begin(),
+                             structureTypeIt->second.values.end(),
+                             [&member]( auto const & evd ) { return member.values == evd.vulkanValue; } ) !=
+                 structureTypeIt->second.values.end(),
+               member.xmlLine,
+               "sType value <" + member.values + "> not listed for VkStructureType" );
       }
     }
   }
@@ -4325,43 +4349,6 @@ void VulkanHppGenerator::checkCorrectness()
              "handle with unknown parent <" + parent + ">" );
     }
   }
-}
-
-bool VulkanHppGenerator::checkLenAttribute( std::string const & len, std::vector<ParamData> const & params )
-{
-  // simple: "null-terminated" or previously encountered parameter
-  if ( ( len == "null-terminated" ) || ( std::find_if( params.begin(), params.end(), [&len]( ParamData const & pd ) {
-                                           return pd.name == len;
-                                         } ) != params.end() ) )
-  {
-    return true;
-  }
-
-  // check if len specifies a member of a struct
-  std::vector<std::string> lenParts = tokenize( len, "->" );
-  if ( lenParts.size() == 1 )
-  {
-    // older versions of vk.xml used the notation parameter::member
-    lenParts = tokenize( len, "::" );
-  }
-  if ( lenParts.size() == 2 )
-  {
-    auto paramIt =
-      std::find_if( params.begin(), params.end(), [&l = lenParts[0]]( ParamData const & pd ) { return pd.name == l; } );
-    if ( paramIt != params.end() )
-    {
-      auto structureIt = m_structures.find( paramIt->type.type );
-      if ( ( structureIt != m_structures.end() ) && ( std::find_if( structureIt->second.members.begin(),
-                                                                    structureIt->second.members.end(),
-                                                                    [&n = lenParts[1]]( MemberData const & md ) {
-                                                                      return md.name == n;
-                                                                    } ) != structureIt->second.members.end() ) )
-      {
-        return true;
-      }
-    }
-  }
-  return false;
 }
 
 bool VulkanHppGenerator::containsArray( std::string const & type ) const
@@ -4568,12 +4555,7 @@ std::map<size_t, size_t> VulkanHppGenerator::determineVectorParamIndices( std::v
         std::make_pair( std::distance( params.begin(), it ),
                         ( findIt < it ) ? std::distance( params.begin(), findIt ) : INVALID_INDEX ) );
       assert( ( vectorParamIndices[std::distance( params.begin(), it )] != INVALID_INDEX ) ||
-              ( it->len == "null-terminated" ) || ( it->len == "pAllocateInfo->descriptorSetCount" ) ||
-              ( it->len == "pAllocateInfo::descriptorSetCount" ) ||
-              ( it->len == "pAllocateInfo->commandBufferCount" ) ||
-              ( it->len == "pAllocateInfo::commandBufferCount" ) ||
-              ( it->len == "pBuildInfo->geometryCount")
-      );
+              ( it->len == "null-terminated" ) || isParamIndirect( it->len, params ) );
     }
   }
   return vectorParamIndices;
@@ -4716,6 +4698,38 @@ bool VulkanHppGenerator::holdsSType( std::string const & type ) const
   {
     assert( !it->second.members.empty() );
     return ( it->second.members.front().name == "sType" );
+  }
+  return false;
+}
+
+bool VulkanHppGenerator::isParam( std::string const & name, std::vector<ParamData> const & params ) const
+{
+  return std::find_if( params.begin(), params.end(), [&name]( ParamData const & pd ) { return pd.name == name; } ) !=
+         params.end();
+}
+
+bool VulkanHppGenerator::isParamIndirect( std::string const & name, std::vector<ParamData> const & params ) const
+{
+  // check if name specifies a member of a struct
+  std::vector<std::string> nameParts = tokenize( name, "->" );
+  if ( nameParts.size() == 1 )
+  {
+    // older versions of vk.xml used the notation parameter::member
+    nameParts = tokenize( name, "::" );
+  }
+  if ( nameParts.size() == 2 )
+  {
+    auto paramIt = std::find_if(
+      params.begin(), params.end(), [&n = nameParts[0]]( ParamData const & pd ) { return pd.name == n; } );
+    if ( paramIt != params.end() )
+    {
+      auto structureIt = m_structures.find( paramIt->type.type );
+      return ( structureIt != m_structures.end() ) && ( std::find_if( structureIt->second.members.begin(),
+                                                                      structureIt->second.members.end(),
+                                                                      [&n = nameParts[1]]( MemberData const & md ) {
+                                                                        return md.name == n;
+                                                                      } ) != structureIt->second.members.end() );
+    }
   }
   return false;
 }
@@ -5002,7 +5016,8 @@ VulkanHppGenerator::ParamData VulkanHppGenerator::readCommandParam( tinyxml2::XM
     if ( attribute.first == "len" )
     {
       paramData.len = attribute.second;
-      check( checkLenAttribute( paramData.len, params ),
+      check( ( paramData.len == "null-terminated" ) || isParam( paramData.len, params ) ||
+               isParamIndirect( paramData.len, params ),
              line,
              "command param len <" + paramData.len + "> is not recognized as a valid len value" );
     }
@@ -6252,8 +6267,8 @@ void VulkanHppGenerator::readStruct( tinyxml2::XMLElement const *               
     assert( !name.empty() );
     // make this warn a check, as soon as vk.xml has been fixed on attribute "allowduplicate" !
     warn( !allowDuplicate || !structExtends.empty(),
-           line,
-           "attribute <allowduplicate> is true, but no structures are listed in <structextends>" );
+          line,
+          "attribute <allowduplicate> is true, but no structures are listed in <structextends>" );
 
     check( m_structures.find( name ) == m_structures.end(), line, "struct <" + name + "> already specfied" );
     std::map<std::string, StructureData>::iterator it =
@@ -6271,7 +6286,7 @@ void VulkanHppGenerator::readStruct( tinyxml2::XMLElement const *               
       }
       else if ( value == "member" )
       {
-        readStructMember( child, it->second.members );
+        readStructMember( child, it->second.members, isUnion );
       }
     }
     it->second.subStruct = determineSubStruct( *it );
@@ -6318,7 +6333,9 @@ void VulkanHppGenerator::readStructAlias( tinyxml2::XMLElement const *          
          "struct <" + name + "> already specified as a type" );
 }
 
-void VulkanHppGenerator::readStructMember( tinyxml2::XMLElement const * element, std::vector<MemberData> & members )
+void VulkanHppGenerator::readStructMember( tinyxml2::XMLElement const * element,
+                                           std::vector<MemberData> &    members,
+                                           bool                         isUnion )
 {
   int                                line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
@@ -6330,6 +6347,8 @@ void VulkanHppGenerator::readStructMember( tinyxml2::XMLElement const * element,
                      { "len", {} },
                      { "noautovalidity", { "true" } },
                      { "optional", { "false", "true" } },
+                     { "selection", {} },
+                     { "selector", {} },
                      { "values", {} } } );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
   checkElements( line, children, { { "name", true }, { "type", true } }, { "comment", "enum" } );
@@ -6354,16 +6373,34 @@ void VulkanHppGenerator::readStructMember( tinyxml2::XMLElement const * element,
     }
   }
 
-  auto valuesIt = attributes.find( "values" );
-  if ( valuesIt != attributes.end() )
+  for ( auto const & attribute : attributes )
   {
-    check( memberData.name == "sType",
-           line,
-           "Structure member named differently than <sType> with attribute <values> encountered: " );
-    check( m_sTypeValues.insert( valuesIt->second ).second,
-           line,
-           "<" + valuesIt->second + "> already encountered as values for the sType member of a struct" );
-    memberData.values = valuesIt->second;
+    if ( attribute.first == "selection" )
+    {
+      check( isUnion, line, "attribute <selection> is used with a non-union structure." );
+      memberData.selection = attribute.second;
+    }
+    else if ( attribute.first == "selector" )
+    {
+      memberData.selector            = attribute.second;
+      std::string const & selector   = memberData.selector;
+      auto                selectorIt = std::find_if(
+        members.begin(), members.end(), [selector]( MemberData const & md ) { return md.name == selector; } );
+      check( selectorIt != members.end(), line, "member attribute <selector> holds unknown value <" + selector + ">" );
+      check( m_enums.find( selectorIt->type.type ) != m_enums.end(),
+             line,
+             "member attribute <selector> references unknown enum type <" + selectorIt->type.type + ">" );
+    }
+    else if ( attribute.first == "values" )
+    {
+      check( memberData.name == "sType",
+             line,
+             "Structure member named differently than <sType> with attribute <values> encountered: " );
+      check( m_sTypeValues.insert( attribute.second ).second,
+             line,
+             "<" + attribute.second + "> already encountered as values for the sType member of a struct" );
+      memberData.values = attribute.second;
+    }
   }
 }
 

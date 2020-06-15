@@ -149,11 +149,11 @@ private:
                    std::string const & obsoletedBy_,
                    std::string const & platform_,
                    std::string const & promotedTo_ )
-      : xmlLine( line )
-      , deprecatedBy( deprecatedBy_ )
+      : deprecatedBy( deprecatedBy_ )
       , obsoletedBy( obsoletedBy_ )
       , platform( platform_ )
       , promotedTo( promotedTo_ )
+      , xmlLine( line )
     {}
 
     std::string                deprecatedBy;
@@ -193,6 +193,8 @@ private:
     std::string              name;
     std::vector<std::string> arraySizes;
     std::string              bitCount;
+    std::string              selection;
+    std::string              selector;
     std::string              values;
     std::string              usedConstant;
     int                      xmlLine;
@@ -207,9 +209,7 @@ private:
 
   struct StructureData
   {
-    StructureData( std::vector<std::string> const & extends, int line )
-      : structExtends( extends ), xmlLine( line )
-    {}
+    StructureData( std::vector<std::string> const & extends, int line ) : structExtends( extends ), xmlLine( line ) {}
 
     bool                     allowDuplicate = false;
     bool                     isUnion        = false;
@@ -499,7 +499,6 @@ private:
                                  std::set<std::string> const & childrenTypes ) const;
   std::string constructConstexprString( std::pair<std::string, StructureData> const & structData ) const;
   void        checkCorrectness();
-  bool        checkLenAttribute( std::string const & len, std::vector<ParamData> const & params );
   bool        containsArray( std::string const & type ) const;
   bool        containsUnion( std::string const & type ) const;
   std::string determineEnhancedReturnType( CommandData const &              commandData,
@@ -517,6 +516,8 @@ private:
                                                           std::set<std::string> const & extension ) const;
   std::pair<std::string, std::string> generateProtection( std::string const & type, bool isAliased ) const;
   bool                                holdsSType( std::string const & type ) const;
+  bool                                isParam( std::string const & name, std::vector<ParamData> const & params ) const;
+  bool                                isParamIndirect( std::string const & name, std::vector<ParamData> const & params ) const;
   bool                                isTwoStepAlgorithm( std::vector<ParamData> const & params ) const;
   void readBaseType( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
   void readBitmask( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
@@ -582,7 +583,7 @@ private:
                    bool                                       isUnion,
                    std::map<std::string, std::string> const & attributes );
   void readStructAlias( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
-  void readStructMember( tinyxml2::XMLElement const * element, std::vector<MemberData> & members );
+  void readStructMember( tinyxml2::XMLElement const * element, std::vector<MemberData> & members, bool isUnion );
   void readStructMemberEnum( tinyxml2::XMLElement const * element, MemberData & memberData );
   void readStructMemberName( tinyxml2::XMLElement const *    element,
                              MemberData &                    memberData,

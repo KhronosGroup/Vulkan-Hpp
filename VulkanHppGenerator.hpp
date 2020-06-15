@@ -515,10 +515,11 @@ private:
   std::pair<std::string, std::string> generateProtection( std::string const &           feature,
                                                           std::set<std::string> const & extension ) const;
   std::pair<std::string, std::string> generateProtection( std::string const & type, bool isAliased ) const;
+  std::set<std::string>               getPlatforms( std::set<std::string> const & extensions ) const;
   bool                                holdsSType( std::string const & type ) const;
   bool                                isParam( std::string const & name, std::vector<ParamData> const & params ) const;
-  bool                                isParamIndirect( std::string const & name, std::vector<ParamData> const & params ) const;
-  bool                                isTwoStepAlgorithm( std::vector<ParamData> const & params ) const;
+  bool isParamIndirect( std::string const & name, std::vector<ParamData> const & params ) const;
+  bool isTwoStepAlgorithm( std::vector<ParamData> const & params ) const;
   void readBaseType( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
   void readBitmask( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
   void readBitmaskAlias( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );

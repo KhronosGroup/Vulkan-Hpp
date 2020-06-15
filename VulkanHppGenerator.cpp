@@ -3296,8 +3296,8 @@ void VulkanHppGenerator::appendHandlesCommandDefintions( std::string & str ) con
       // special handling for destroy functions
       std::string commandName = determineCommandName( commandIt->first, commandIt->second.params[0].type.type );
       if ( commandIt->second.alias.empty() &&
-             ( ( commandIt->first.substr( 2, 7 ) == "Destroy" ) && ( commandName != "destroy" ) ) ||
-           ( commandIt->first.substr( 2, 4 ) == "Free" ) )
+           ( ( ( commandIt->first.substr( 2, 7 ) == "Destroy" ) && ( commandName != "destroy" ) ) ||
+             ( commandIt->first.substr( 2, 4 ) == "Free" ) ) )
       {
         std::string destroyCommandString;
         appendCommand( destroyCommandString, "  ", commandIt->first, commandIt->second, true );
@@ -4650,27 +4650,19 @@ std::string const & VulkanHppGenerator::getVulkanLicenseHeader() const
 std::pair<std::string, std::string>
   VulkanHppGenerator::generateProtection( std::string const & feature, std::set<std::string> const & extensions ) const
 {
-  if ( feature.empty() )
+  if ( feature.empty() && !extensions.empty() )
   {
-    std::string protect;
-    for ( auto const & extension : extensions )
+    assert( getPlatforms( extensions ).size() == 1 );
+    std::string platform = *getPlatforms( extensions ).begin();
+    if ( !platform.empty() )
     {
-      auto extensionIt = m_extensions.find( extension );
-      assert( extensionIt != m_extensions.end() );
-      if ( !extensionIt->second.platform.empty() )
+      auto platformIt = m_platforms.find( platform );
+      assert( platformIt != m_platforms.end() );
+      std::string const & protect = platformIt->second.protect;
+      if ( !protect.empty() )
       {
-        auto platformIt = m_platforms.find( extensionIt->second.platform );
-        assert( platformIt != m_platforms.end() );
-        if ( !platformIt->second.protect.empty() )
-        {
-          assert( protect.empty() );
-          protect = platformIt->second.protect;
-        }
+        return std::make_pair( "#ifdef " + protect + "\n", "#endif /*" + protect + "*/\n" );
       }
-    }
-    if ( !protect.empty() )
-    {
-      return std::make_pair( "#ifdef " + protect + "\n", "#endif /*" + protect + "*/\n" );
     }
   }
   return std::make_pair( "", "" );
@@ -4689,6 +4681,18 @@ std::pair<std::string, std::string> VulkanHppGenerator::generateProtection( std:
     assert( typeIt != m_types.end() );
     return generateProtection( typeIt->second.feature, typeIt->second.extensions );
   }
+}
+
+std::set<std::string> VulkanHppGenerator::getPlatforms( std::set<std::string> const & extensions ) const
+{
+  std::set<std::string> platforms;
+  for ( auto const & e : extensions )
+  {
+    auto extensionIt = m_extensions.find( e );
+    assert( extensionIt != m_extensions.end() );
+    platforms.insert( extensionIt->second.platform );
+  }
+  return platforms;
 }
 
 bool VulkanHppGenerator::holdsSType( std::string const & type ) const
@@ -5714,6 +5718,9 @@ void VulkanHppGenerator::readExtensionRequireType( tinyxml2::XMLElement const * 
   auto typeIt = m_types.find( name );
   check( typeIt != m_types.end(), line, "failed to find required type <" + name + ">" );
   typeIt->second.extensions.insert( extension );
+  check( getPlatforms( typeIt->second.extensions ).size() == 1,
+         line,
+         "type <" + name + "> is protected by more than one platform" );
 }
 
 void VulkanHppGenerator::readExtensions( tinyxml2::XMLElement const * element )

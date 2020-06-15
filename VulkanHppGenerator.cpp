@@ -2745,43 +2745,37 @@ void VulkanHppGenerator::appendFunctionHeaderArgumentEnhancedVector( std::string
                                                                      bool                withAllocator ) const
 {
   assert( param.type.postfix.back() == '*' );
-
   // it's optional, if it's marked as optional and there's no size specified
   bool optional = param.optional && !hasSizeParam;
-  if ( param.type.type.find( "char" ) != std::string::npos )
+
+  bool        useString      = ( param.type.type.find( "char" ) != std::string::npos );
+  std::string optionalBegin = optional ? "Optional<" : "";
+  std::string optionalEnd   = optional ? "> " : (useString ? " & " : "");
+
+  if ( useString )
   {
-    // it's a char-vector -> use a std::string (either optional or a const-reference
-    if ( optional )
+    // it's a char-vector -> use a std::string
+    assert( param.type.prefix.find( "const" ) != std::string::npos );
+    str += optionalBegin + "const std::string" + optionalEnd + strippedParameterName;
+    if ( optional && withDefaults && !withAllocator )
     {
-      str += "Optional<const std::string> " + strippedParameterName;
-      if ( withDefaults && !withAllocator )
-      {
-        str += " = nullptr";
-      }
+      str += " = nullptr";
     }
-    else
-    {
-      str += "const std::string & " + strippedParameterName;
-    }
+  }
+  else if ( singular )
+  {
+    // in singular case, change from pointer to reference
+    assert( !optional );  // never encounterd such a case
+    str += param.type.prefix + ( param.type.prefix.empty() ? "" : " " ) + stripPrefix( param.type.type, "Vk" ) + " & " +
+           stripPluralS( strippedParameterName );
   }
   else
   {
-    // it's a non-char vector (they are never optional)
-    assert( !optional );
-    if ( singular )
-    {
-      // in singular case, change from pointer to reference
-      str += param.type.prefix + ( param.type.prefix.empty() ? "" : " " ) + stripPrefix( param.type.type, "Vk" ) +
-             " & " + stripPluralS( strippedParameterName );
-    }
-    else
-    {
-      // otherwise, use our ArrayProxy
-      bool isConst = ( param.type.prefix.find( "const" ) != std::string::npos );
-      str += "ArrayProxy<" +
-             ( isTemplateParam ? ( isConst ? "const T" : "T" ) : stripPostfix( param.type.compose(), "*" ) ) + "> " +
-             strippedParameterName;
-    }
+    // otherwise, use our ArrayProxy
+    bool isConst = ( param.type.prefix.find( "const" ) != std::string::npos );
+    str += optionalBegin + "ArrayProxy<" +
+           ( isTemplateParam ? ( isConst ? "const T" : "T" ) : stripPostfix( param.type.compose(), "*" ) ) + "> " + optionalEnd +
+           strippedParameterName;
   }
 }
 

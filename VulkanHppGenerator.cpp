@@ -1807,7 +1807,7 @@ void VulkanHppGenerator::appendEnums( std::string & str ) const
     {
       str += R"(
   template<ObjectType value>
-  struct VULKAN_HPP_DEPRECATED("vk::cpp_type is deprecated. Use vk::CppType instead.") cpp_type
+  struct cpp_type
   {};
 )";
     }

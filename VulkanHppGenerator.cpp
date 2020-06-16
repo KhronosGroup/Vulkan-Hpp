@@ -2748,9 +2748,9 @@ void VulkanHppGenerator::appendFunctionHeaderArgumentEnhancedVector( std::string
   // it's optional, if it's marked as optional and there's no size specified
   bool optional = param.optional && !hasSizeParam;
 
-  bool        useString      = ( param.type.type.find( "char" ) != std::string::npos );
+  bool        useString     = ( param.type.type.find( "char" ) != std::string::npos );
   std::string optionalBegin = optional ? "Optional<" : "";
-  std::string optionalEnd   = optional ? "> " : (useString ? " & " : "");
+  std::string optionalEnd   = optional ? "> " : ( useString ? " & " : "" );
 
   if ( useString )
   {
@@ -2774,8 +2774,8 @@ void VulkanHppGenerator::appendFunctionHeaderArgumentEnhancedVector( std::string
     // otherwise, use our ArrayProxy
     bool isConst = ( param.type.prefix.find( "const" ) != std::string::npos );
     str += optionalBegin + "ArrayProxy<" +
-           ( isTemplateParam ? ( isConst ? "const T" : "T" ) : stripPostfix( param.type.compose(), "*" ) ) + "> " + optionalEnd +
-           strippedParameterName;
+           ( isTemplateParam ? ( isConst ? "const T" : "T" ) : stripPostfix( param.type.compose(), "*" ) ) + "> " +
+           optionalEnd + strippedParameterName;
   }
 }
 
@@ -3490,13 +3490,30 @@ ${prefix}}
 void VulkanHppGenerator::appendStructCompareOperators( std::string &                                 str,
                                                        std::pair<std::string, StructureData> const & structData ) const
 {
+  static const std::set<std::string> simpleTypes = { "char",      "double",   "DWORD",    "float",   "HANDLE",
+                                                     "HINSTANCE", "HMONITOR", "HWND",     "int",     "int8_t",
+                                                     "int16_t",   "int32_t",  "int64_t",  "LPCWSTR", "size_t",
+                                                     "uint8_t",   "uint16_t", "uint32_t", "uint64_t" };
   // two structs are compared by comparing each of the elements
   std::string compareMembers;
   std::string intro = "";
   for ( size_t i = 0; i < structData.second.members.size(); i++ )
   {
     MemberData const & member = structData.second.members[i];
-    compareMembers += intro + "( " + member.name + " == rhs." + member.name + " )";
+    auto               typeIt = m_types.find( member.type.type );
+    assert( typeIt != m_types.end() );
+    if ( ( typeIt->second.category == TypeCategory::Requires ) && member.type.postfix.empty() &&
+         ( simpleTypes.find( member.type.type ) == simpleTypes.end() ) )
+    {
+      // this type might support operator==()... that is, use memcmp
+      compareMembers +=
+        intro + "( memcmp( &" + member.name + ", &rhs." + member.name + ", sizeof( " + member.type.type + " ) ) == 0 )";
+    }
+    else
+    {
+      // for all others, we use the operator== of that type
+      compareMembers += intro + "( " + member.name + " == rhs." + member.name + " )";
+    }
     intro = "\n          && ";
   }
 

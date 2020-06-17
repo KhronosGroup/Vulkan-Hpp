@@ -7956,15 +7956,6 @@ namespace std
   struct ResultValue<UniqueHandle<Type,Dispatch>>
   {
 #ifdef VULKAN_HPP_HAS_NOEXCEPT
-    ResultValue(Result r, UniqueHandle<Type, Dispatch> & v) VULKAN_HPP_NOEXCEPT
-#else
-    ResultValue(Result r, UniqueHandle<Type, Dispatch>& v)
-#endif
-      : result(r)
-      , value(v)
-    {}
-
-#ifdef VULKAN_HPP_HAS_NOEXCEPT
     ResultValue(Result r, UniqueHandle<Type, Dispatch> && v) VULKAN_HPP_NOEXCEPT
 #else
     ResultValue(Result r, UniqueHandle<Type, Dispatch> && v)
@@ -7977,6 +7968,11 @@ namespace std
     UniqueHandle<Type, Dispatch>  value;
 
     operator std::tuple<Result&, UniqueHandle<Type, Dispatch>&>() VULKAN_HPP_NOEXCEPT { return std::tuple<Result&, UniqueHandle<Type, Dispatch>&>(result, value); }
+
+    operator UniqueHandle<Type, Dispatch>& () & VULKAN_HPP_NOEXCEPT
+    {
+      return value;
+    }
 
     operator UniqueHandle<Type, Dispatch>() VULKAN_HPP_NOEXCEPT
     {

@@ -26,13 +26,9 @@ set(SOURCES
 source_group(headers FILES ${HEADERS})
 source_group(sources FILES ${SOURCES})
 
-add_library(ResultValue
+add_executable(ResultValue
   ${HEADERS}
   ${SOURCES}
 )
-
-if (UNIX)
-  target_link_libraries(ResultValue "-ldl")
-endif()
 
 set_target_properties(ResultValue PROPERTIES FOLDER "Tests")

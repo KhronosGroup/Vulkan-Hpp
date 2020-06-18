@@ -61,6 +61,12 @@ int main( int /*argc*/, char ** /*argv*/ )
     std::vector<vk::UniqueHandle<vk::CommandBuffer, vk::DispatchLoaderDynamic>>::allocator_type dynamicVectorAllocator;
     vk::UniqueHandle<vk::CommandBuffer, vk::DispatchLoaderDynamic> dynamicCommandBuffer = std::move(
       device->allocateCommandBuffersUnique( {}, dynamicVectorAllocator, vk::DispatchLoaderDynamic() ).front() );
+
+    vk::Buffer       buffer       = device->createBuffer( {} );
+    vk::UniqueBuffer uniqueBuffer = vk::UniqueBuffer( buffer, *device );
+
+    vk::DeviceMemory       deviceMemory       = device->allocateMemory( {} );
+    vk::UniqueDeviceMemory uniqueDeviceMemory = vk::UniqueDeviceMemory( deviceMemory, *device );
   }
   catch ( vk::SystemError const & err )
   {

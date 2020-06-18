@@ -1597,7 +1597,7 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic( std::string & str )
     // This interface is designed to be used for per-device function pointers in combination with a linked vulkan library.
     template <typename DynamicLoader
 #if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL
-      = vk::DynamicLoader
+      = VULKAN_HPP_NAMESPACE::DynamicLoader
 #endif
     >
     void init(VULKAN_HPP_NAMESPACE::Instance const& instance, VULKAN_HPP_NAMESPACE::Device const& device) VULKAN_HPP_NOEXCEPT
@@ -3373,9 +3373,9 @@ void VulkanHppGenerator::appendHashStructures( std::string & str ) const
     "namespace std\n"
     "{\n";
 
-  const std::string hashTemplate = R"(  template <> struct hash<vk::${type}>
+  const std::string hashTemplate = R"(  template <> struct hash<VULKAN_HPP_NAMESPACE::${type}>
   {
-    std::size_t operator()(vk::${type} const& ${name}) const VULKAN_HPP_NOEXCEPT
+    std::size_t operator()(VULKAN_HPP_NAMESPACE::${type} const& ${name}) const VULKAN_HPP_NOEXCEPT
     {
       return std::hash<Vk${type}>{}(static_cast<Vk${type}>(${name}));
     }

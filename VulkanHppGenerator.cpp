@@ -6940,6 +6940,56 @@ int main( int argc, char ** argv )
     {
       return this->data();
     }
+
+    template <typename B = T, typename std::enable_if<std::is_same<B, char>::value, int>::type = 0>
+    operator std::string const () const VULKAN_HPP_NOEXCEPT
+    {
+      return std::string( this->data() );
+    }
+
+#if 17 <= VULKAN_HPP_CPP_VERSION
+    template <typename B = T, typename std::enable_if<std::is_same<B, char>::value, int>::type = 0>
+    operator std::string_view const () const VULKAN_HPP_NOEXCEPT
+    {
+      return std::string_view( this->data() );
+    }
+#endif
+
+    template <typename B = T, typename std::enable_if<std::is_same<B, char>::value, int>::type = 0>
+    bool operator<( ArrayWrapper1D<char, N> const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return *static_cast<std::array<char, N> const *>( this ) < *static_cast<std::array<char, N> const *>( &rhs );
+    }
+
+    template <typename B = T, typename std::enable_if<std::is_same<B, char>::value, int>::type = 0>
+    bool operator<=( ArrayWrapper1D<char, N> const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return *static_cast<std::array<char, N> const *>( this ) <= *static_cast<std::array<char, N> const *>( &rhs );
+    }
+
+    template <typename B = T, typename std::enable_if<std::is_same<B, char>::value, int>::type = 0>
+    bool operator>( ArrayWrapper1D<char, N> const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return *static_cast<std::array<char, N> const *>( this ) > *static_cast<std::array<char, N> const *>( &rhs );
+    }
+
+    template <typename B = T, typename std::enable_if<std::is_same<B, char>::value, int>::type = 0>
+    bool operator>=( ArrayWrapper1D<char, N> const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return *static_cast<std::array<char, N> const *>( this ) >= *static_cast<std::array<char, N> const *>( &rhs );
+    }
+
+    template <typename B = T, typename std::enable_if<std::is_same<B, char>::value, int>::type = 0>
+    bool operator==( ArrayWrapper1D<char, N> const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return *static_cast<std::array<char, N> const *>( this ) == *static_cast<std::array<char, N> const *>( &rhs );
+    }
+
+    template <typename B = T, typename std::enable_if<std::is_same<B, char>::value, int>::type = 0>
+    bool operator!=( ArrayWrapper1D<char, N> const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return *static_cast<std::array<char, N> const *>( this ) != *static_cast<std::array<char, N> const *>( &rhs );
+    }
   };
 
   // specialization of relational operators between std::string and arrays of chars
@@ -7758,7 +7808,7 @@ int main( int argc, char ** argv )
 # endif
 #endif
 
-#if __cplusplus >= 201402L
+#if 14 <= VULKAN_HPP_CPP_VERSION
 #  define VULKAN_HPP_DEPRECATED( msg ) [[deprecated( msg )]]
 #else
 #  define VULKAN_HPP_DEPRECATED( msg )
@@ -7842,6 +7892,24 @@ int main( int argc, char ** argv )
 #ifndef VULKAN_HPP
 #define VULKAN_HPP
 
+#if defined( _MSVC_LANG )
+#  define VULKAN_HPP_CPLUSPLUS _MSVC_LANG
+#else
+#  define VULKAN_HPP_CPLUSPLUS __cplusplus
+#endif
+
+#if VULKAN_HPP_CPLUSPLUS < 201103L
+static_assert( false, "vulkan.hpp needs at least c++ standard version 11" );
+#elif VULKAN_HPP_CPLUSPLUS < 201402L
+#  define VULKAN_HPP_CPP_VERSION 11
+#elif VULKAN_HPP_CPLUSPLUS < 201703L
+#  define VULKAN_HPP_CPP_VERSION 14
+#elif VULKAN_HPP_CPLUSPLUS < 202002L
+#  define VULKAN_HPP_CPP_VERSION 17
+#else
+#  define VULKAN_HPP_CPP_VERSION 20
+#endif
+
 #include <algorithm>
 #include <array>
 #include <cstddef>
@@ -7854,6 +7922,10 @@ int main( int argc, char ** argv )
 #include <tuple>
 #include <type_traits>
 #include <vulkan/vulkan.h>
+
+#if 17 <= VULKAN_HPP_CPP_VERSION
+#include <string_view>
+#endif
 
 #if defined(VULKAN_HPP_DISABLE_ENHANCED_MODE)
 # if !defined(VULKAN_HPP_NO_SMART_HANDLE)

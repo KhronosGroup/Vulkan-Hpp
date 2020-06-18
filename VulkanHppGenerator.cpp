@@ -7951,7 +7951,7 @@ namespace std
 #endif
   };
 
-#if !defined(VULKAN_HPP_DISABLE_IMPLICIT_RESULT_VALUE_CAST)
+#if !defined(VULKAN_HPP_NO_SMART_HANDLE)
   template <typename Type, typename Dispatch>
   struct ResultValue<UniqueHandle<Type,Dispatch>>
   {
@@ -7969,6 +7969,7 @@ namespace std
 
     operator std::tuple<Result&, UniqueHandle<Type, Dispatch>&>() VULKAN_HPP_NOEXCEPT { return std::tuple<Result&, UniqueHandle<Type, Dispatch>&>(result, value); }
 
+#if !defined(VULKAN_HPP_DISABLE_IMPLICIT_RESULT_VALUE_CAST)
     operator UniqueHandle<Type, Dispatch>& () & VULKAN_HPP_NOEXCEPT
     {
       return value;
@@ -7978,6 +7979,7 @@ namespace std
     {
       return std::move(value);
     }
+#endif
   };
 #endif
 

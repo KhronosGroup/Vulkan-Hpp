@@ -5518,10 +5518,11 @@ void VulkanHppGenerator::readExtensionDisabledEnum( std::string const &         
 {
   int                                line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line,
-                   attributes,
-                   { { "name", {} } },
-                   { { "alias", {} }, { "bitpos", {} }, { "extends", {} }, { "offset", {} }, { "value", {} } } );
+  checkAttributes(
+    line,
+    attributes,
+    { { "name", {} } },
+    { { "alias", {} }, { "bitpos", {} }, { "extends", {} }, { "extnumber", {} }, { "offset", {} }, { "value", {} } } );
   checkElements( line, getChildElements( element ), {} );
 
   std::string extends, name;

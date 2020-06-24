@@ -6943,14 +6943,14 @@ int main( int argc, char ** argv )
     }
 
     template <typename B = T, typename std::enable_if<std::is_same<B, char>::value, int>::type = 0>
-    operator std::string const () const VULKAN_HPP_NOEXCEPT
+    operator std::string() const
     {
       return std::string( this->data() );
     }
 
 #if 17 <= VULKAN_HPP_CPP_VERSION
     template <typename B = T, typename std::enable_if<std::is_same<B, char>::value, int>::type = 0>
-    operator std::string_view const () const VULKAN_HPP_NOEXCEPT
+    operator std::string_view() const
     {
       return std::string_view( this->data() );
     }

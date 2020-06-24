@@ -3464,10 +3464,20 @@ void VulkanHppGenerator::appendStruct( std::string &                            
   }
 }
 
-void VulkanHppGenerator::appendStructAssignmentOperator( std::string &                                 str,
-                                                         std::pair<std::string, StructureData> const & structData,
-                                                         std::string const &                           prefix ) const
+void VulkanHppGenerator::appendStructAssignmentOperators( std::string &                                 str,
+                                                          std::pair<std::string, StructureData> const & structData,
+                                                          std::string const &                           prefix ) const
 {
+  static const std::string assignmentFromVulkanType = R"(
+${prefix}${structName} & operator=( Vk${structName} const & rhs ) VULKAN_HPP_NOEXCEPT
+${prefix}{
+${prefix}  *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::${structName} const *>( &rhs );
+${prefix}  return *this;
+${prefix}}
+)";
+  str += replaceWithMap( assignmentFromVulkanType,
+                         { { "prefix", prefix }, { "structName", stripPrefix( structData.first, "Vk" ) } } );
+
   // we need an assignment operator if there is constant sType in this struct
   std::string copyTemplate;
   if ( ( nonConstSTypeStructs.find( structData.first ) == nonConstSTypeStructs.end() ) &&
@@ -3548,14 +3558,22 @@ std::string
            : "";
 }
 
-void VulkanHppGenerator::appendStructConstructor( std::string &                                 str,
-                                                  std::pair<std::string, StructureData> const & structData,
-                                                  std::string const &                           prefix ) const
+void VulkanHppGenerator::appendStructConstructors( std::string &                                 str,
+                                                   std::pair<std::string, StructureData> const & structData,
+                                                   std::string const &                           prefix ) const
 {
   // the constructor with all the elements as arguments, with defaults
-  std::string constexprString = constructConstexprString( structData );
-  std::string ctorOpening     = prefix + constexprString + stripPrefix( structData.first, "Vk" );
-  std::string indentation( ctorOpening.size() + 2, ' ' );
+  // and the simple copy constructor from the corresponding vulkan structure
+  static const std::string constructors = R"(
+${prefix}${constexpr}${structName}(${arguments}) VULKAN_HPP_NOEXCEPT
+${prefix}${initializers}
+${prefix}{}
+
+${prefix}${structName}( Vk${structName} const & rhs ) VULKAN_HPP_NOEXCEPT
+${prefix}{
+${prefix}  *this = rhs;
+${prefix}}
+)";
 
   std::string arguments, initializers;
   bool        listedArgument = false;
@@ -3563,29 +3581,32 @@ void VulkanHppGenerator::appendStructConstructor( std::string &                 
   for ( auto const & member : structData.second.members )
   {
     // gather the arguments
-    listedArgument = appendStructConstructorArgument( arguments, listedArgument, indentation, member );
+    listedArgument = appendStructConstructorArgument( arguments, listedArgument, member );
 
     // gather the initializers; skip members 'pNext' and 'sType', they are directly set by initializers
     if ( ( member.name != "pNext" ) && ( member.name != "sType" ) )
     {
-      initializers += prefix + "  " + ( firstArgument ? ":" : "," ) + " " + member.name + "( " + member.name + "_ )\n";
+      initializers += ( firstArgument ? ":" : "," ) + std::string( " " ) + member.name + "( " + member.name + "_ )";
       firstArgument = false;
     }
   }
 
-  str += ctorOpening + ( arguments.empty() ? "()" : std::string( "( " + arguments + " )" ) ) +
-         " VULKAN_HPP_NOEXCEPT\n" + initializers + prefix + "{}\n";
+  str += replaceWithMap( constructors,
+                         { { "arguments", arguments },
+                           { "constexpr", constructConstexprString( structData ) },
+                           { "initializers", initializers },
+                           { "prefix", prefix },
+                           { "structName", stripPrefix( structData.first, "Vk" ) } } );
 }
 
-bool VulkanHppGenerator::appendStructConstructorArgument( std::string &       str,
-                                                          bool                listedArgument,
-                                                          std::string const & indentation,
-                                                          MemberData const &  memberData ) const
+bool VulkanHppGenerator::appendStructConstructorArgument( std::string &      str,
+                                                          bool               listedArgument,
+                                                          MemberData const & memberData ) const
 {
   // skip members 'pNext' and 'sType', as they are never explicitly set
   if ( ( memberData.name != "pNext" ) && ( memberData.name != "sType" ) )
   {
-    str += ( listedArgument ? ( ",\n" + indentation ) : "" );
+    str += ( listedArgument ? ( "," ) : "" );
     if ( memberData.arraySizes.empty() )
     {
       str += memberData.type.compose() + " ";
@@ -3609,24 +3630,6 @@ bool VulkanHppGenerator::appendStructConstructorArgument( std::string &       st
     listedArgument = true;
   }
   return listedArgument;
-}
-
-void VulkanHppGenerator::appendStructCopyConstructors( std::string & str, std::string const & name ) const
-{
-  static const std::string templateString = R"(
-    ${name}( Vk${name} const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      *this = rhs;
-    }
-
-    ${name}& operator=( Vk${name} const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::${name} const *>(&rhs);
-      return *this;
-    }
-)";
-
-  str += replaceWithMap( templateString, { { "name", name } } );
 }
 
 std::string VulkanHppGenerator::appendStructMembers( std::string &                                 str,
@@ -3791,8 +3794,7 @@ void VulkanHppGenerator::appendStructSubConstructor( std::string &              
     bool        listedArgument = true;
     for ( size_t i = subStruct->second.members.size(); i < structData.second.members.size(); i++ )
     {
-      listedArgument =
-        appendStructConstructorArgument( subArguments, listedArgument, indentation, structData.second.members[i] );
+      listedArgument = appendStructConstructorArgument( subArguments, listedArgument, structData.second.members[i] );
 
       assert( structData.second.members[i].arraySizes.empty() );
       subCopies +=
@@ -3816,10 +3818,11 @@ void VulkanHppGenerator::appendStructure( std::string &                         
   str += "\n" + enter;
 
   std::string constructorAndSetters;
-  appendStructConstructor( constructorAndSetters, structure, "    " );
+  constructorAndSetters += "#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )";
+  appendStructConstructors( constructorAndSetters, structure, "    " );
   appendStructSubConstructor( constructorAndSetters, structure, "    " );
-  appendStructAssignmentOperator( constructorAndSetters, structure, "    " );
-  appendStructCopyConstructors( constructorAndSetters, stripPrefix( structure.first, "Vk" ) );
+  constructorAndSetters += "#endif // !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )\n";
+  appendStructAssignmentOperators( constructorAndSetters, structure, "    " );
   if ( !structure.second.returnedOnly )
   {
     // only structs that are not returnedOnly get setters!
@@ -7904,16 +7907,16 @@ int main( int argc, char ** argv )
 #  define VULKAN_HPP_CPLUSPLUS __cplusplus
 #endif
 
-#if VULKAN_HPP_CPLUSPLUS < 201103L
-static_assert( false, "vulkan.hpp needs at least c++ standard version 11" );
-#elif VULKAN_HPP_CPLUSPLUS < 201402L
-#  define VULKAN_HPP_CPP_VERSION 11
-#elif VULKAN_HPP_CPLUSPLUS < 201703L
-#  define VULKAN_HPP_CPP_VERSION 14
-#elif VULKAN_HPP_CPLUSPLUS < 202002L
-#  define VULKAN_HPP_CPP_VERSION 17
-#else
+#if 201703L < VULKAN_HPP_CPLUSPLUS
 #  define VULKAN_HPP_CPP_VERSION 20
+#elif 201402L < VULKAN_HPP_CPLUSPLUS
+#  define VULKAN_HPP_CPP_VERSION 17
+#elif 201103L < VULKAN_HPP_CPLUSPLUS
+#  define VULKAN_HPP_CPP_VERSION 14
+#elif 199711L < VULKAN_HPP_CPLUSPLUS
+#  define VULKAN_HPP_CPP_VERSION 11
+#else
+#  error "vulkan.hpp needs at least c++ standard version 11"
 #endif
 
 #include <algorithm>

@@ -470,18 +470,14 @@ private:
   void appendStruct( std::string &                                 str,
                      std::pair<std::string, StructureData> const & structure,
                      std::set<std::string> &                       listedStructures ) const;
-  void appendStructAssignmentOperator( std::string &                                 str,
-                                       std::pair<std::string, StructureData> const & structure,
-                                       std::string const &                           prefix ) const;
+  void appendStructAssignmentOperators( std::string &                                 str,
+                                        std::pair<std::string, StructureData> const & structure,
+                                        std::string const &                           prefix ) const;
   void appendStructCompareOperators( std::string & str, std::pair<std::string, StructureData> const & structure ) const;
-  void appendStructConstructor( std::string &                                 str,
-                                std::pair<std::string, StructureData> const & structData,
-                                std::string const &                           prefix ) const;
-  bool appendStructConstructorArgument( std::string &       str,
-                                        bool                listedArgument,
-                                        std::string const & indentation,
-                                        MemberData const &  memberData ) const;
-  void appendStructCopyConstructors( std::string & str, std::string const & vkName ) const;
+  void appendStructConstructors( std::string &                                 str,
+                                 std::pair<std::string, StructureData> const & structData,
+                                 std::string const &                           prefix ) const;
+  bool appendStructConstructorArgument( std::string & str, bool listedArgument, MemberData const & memberData ) const;
   std::string appendStructMembers( std::string &                                 str,
                                    std::pair<std::string, StructureData> const & structData,
                                    std::string const &                           prefix ) const;

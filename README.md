@@ -115,6 +115,31 @@ vk::Image image = device.createImage({{}, vk::ImageType::e2D, vk::format::eR8G8B
                                      vk::SharingMode::eExclusive, 0, 0, vk::Imagelayout::eUndefined});
 ```
 
+### Designated Initializers
+
+Beginning with C++20, C++ supports designated initializers. As that feature requires to not have any user-declared or inherited constructors, you have to `#define VULKAN_HPP_NO_STRUCT_CONSTRUCTORS`, which removes all the structure constructors from vulkan.hpp. Instead you can then use aggregate initialization. The first few vk-lines in your source might then look like
+```
+// initialize the vk::ApplicationInfo structure
+vk::ApplicationInfo applicationInfo{ .pApplicationName   = AppName,
+                                     .applicationVersion = 1,
+                                     .pEngineName        = EngineName,
+                                     .engineVersion      = 1,
+                                     .apiVersion         = VK_API_VERSION_1_1 };
+        
+// initialize the vk::InstanceCreateInfo
+vk::InstanceCreateInfo instanceCreateInfo{ .pApplicationInfo = & applicationInfo };
+```
+instead of
+```
+// initialize the vk::ApplicationInfo structure
+vk::ApplicationInfo applicationInfo( AppName, 1, EngineName, 1, VK_API_VERSION_1_1 );
+        
+// initialize the vk::InstanceCreateInfo
+vk::InstanceCreateInfo instanceCreateInfo( {}, &applicationInfo );
+```
+Note, that the designator order needs to match the declaration order.
+Note as well, that now you can explicitly set the sType member of vk-structures. This is neither neccessary (as they are correctly initialized by default) nor recommended.
+
 ### Passing Arrays to Functions using ArrayProxy
 
 The Vulkan API has several places where which require (count,pointer) as two function arguments and C++ has a few containers which map perfectly to this pair. To simplify development the Vulkan-Hpp bindings have replaced those argument pairs with the `ArrayProxy` template class which accepts empty arrays and a single value as well as STL containers `std::initializer_list`, `std::array` and `std::vector` as argument for construction. This way a single generated Vulkan version can accept a variety of inputs without having the combinatoric explosion which would occur when creating a function for each container type.

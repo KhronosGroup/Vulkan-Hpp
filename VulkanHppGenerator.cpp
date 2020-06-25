@@ -7947,6 +7947,10 @@ static_assert( false, "vulkan.hpp needs at least c++ standard version 11" );
 # define VULKAN_HPP_ASSERT   assert
 #endif
 
+#if !defined(VULKAN_HPP_ASSERT_ON_RESULT)
+# define VULKAN_HPP_ASSERT_ON_RESULT VULKAN_HPP_ASSERT
+#endif
+
 #if !defined(VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL)
 # define VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL 1
 #endif

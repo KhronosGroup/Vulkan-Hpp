@@ -87,6 +87,7 @@ std::string toUpperCase( std::string const & name );
 std::vector<std::string> tokenize( std::string const & tokenString, std::string const & separator );
 std::string              trim( std::string const & input );
 std::string              trimEnd( std::string const & input );
+std::string              trimStars( std::string const & input );
 void                     warn( bool condition, int line, std::string const & message );
 
 const std::set<std::string> nonConstSTypeStructs = { "VkBaseInStructure", "VkBaseOutStructure" };
@@ -577,7 +578,7 @@ std::string readTypePostfix( tinyxml2::XMLNode const * node )
   std::string postfix;
   if ( node && node->ToText() )
   {
-    postfix = trimEnd( node->Value() );
+    postfix = trimStars( trimEnd( node->Value() ) );
   }
   return postfix;
 }
@@ -748,6 +749,26 @@ std::string trimEnd( std::string const & input )
   std::string result = input;
   result.erase( std::find_if( result.rbegin(), result.rend(), []( char c ) { return !std::isspace( c ); } ).base(),
                 result.end() );
+  return result;
+}
+
+std::string trimStars( std::string const & input )
+{
+  std::string result = input;
+  size_t      pos    = result.find( '*' );
+  while ( pos != std::string::npos )
+  {
+    if ( ( 0 < pos ) && ( result[pos - 1] != ' ' ) && ( result[pos - 1] != '*' ) )
+    {
+      result.insert( pos, 1, ' ' );
+      ++pos;
+    }
+    else if ( ( pos < result.length() - 1 ) && ( result[pos + 1] != ' ' ) && ( result[pos + 1] != '*' ) )
+    {
+      result.insert( pos + 1, 1, ' ' );
+    }
+    pos = result.find( '*', pos+1 );
+  }
   return result;
 }
 
@@ -5057,7 +5078,7 @@ VulkanHppGenerator::ParamData VulkanHppGenerator::readCommandParam( tinyxml2::XM
          line,
          "unexpected type prefix <" + paramData.type.prefix + ">" );
   check( paramData.type.postfix.empty() || ( paramData.type.postfix == "*" ) || ( paramData.type.postfix == "**" ) ||
-           ( paramData.type.postfix == "* const*" ),
+           ( paramData.type.postfix == "* const *" ),
          line,
          "unexpected type postfix <" + paramData.type.postfix + ">" );
   check( std::find_if( params.begin(),

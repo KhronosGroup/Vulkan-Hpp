@@ -1717,11 +1717,21 @@ void VulkanHppGenerator::appendDispatchLoaderDefault( std::string & str )
 # endif
 #endif
 
+#if defined(_WIN32) && defined(VULKAN_HPP_STORAGE_SHARED)
+#  ifdef VULKAN_HPP_STORAGE_SHARED_EXPORT
+#    define VULKAN_HPP_STORAGE_API __declspec( dllexport )
+#  else
+#    define VULKAN_HPP_STORAGE_API __declspec( dllimport )
+#  endif
+#else
+#  define VULKAN_HPP_STORAGE_API
+#endif
+
 #if !defined(VULKAN_HPP_DEFAULT_DISPATCHER)
 # if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
 #  define VULKAN_HPP_DEFAULT_DISPATCHER ::VULKAN_HPP_NAMESPACE::defaultDispatchLoaderDynamic
-#  define VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE namespace VULKAN_HPP_NAMESPACE { DispatchLoaderDynamic defaultDispatchLoaderDynamic; }
-  extern DispatchLoaderDynamic defaultDispatchLoaderDynamic;
+#  define VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE namespace VULKAN_HPP_NAMESPACE { VULKAN_HPP_STORAGE_API DispatchLoaderDynamic defaultDispatchLoaderDynamic; }
+  extern VULKAN_HPP_STORAGE_API DispatchLoaderDynamic defaultDispatchLoaderDynamic;
 # else
 #  define VULKAN_HPP_DEFAULT_DISPATCHER ::VULKAN_HPP_NAMESPACE::DispatchLoaderStatic()
 #  define VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE

@@ -767,7 +767,7 @@ std::string trimStars( std::string const & input )
     {
       result.insert( pos + 1, 1, ' ' );
     }
-    pos = result.find( '*', pos+1 );
+    pos = result.find( '*', pos + 1 );
   }
   return result;
 }
@@ -1427,15 +1427,6 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic( std::string & str )
 {
   str += R"(
 #if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL
-#  if defined( _WIN32 )
-  namespace detail
-  {
-    extern "C" __declspec( dllimport ) void * __stdcall LoadLibraryA( char const * lpLibFileName );
-    extern "C" __declspec( dllimport ) int __stdcall FreeLibrary( void * hLibModule );
-    extern "C" __declspec( dllimport ) void * __stdcall GetProcAddress( void * hModule, char const * lpProcName );
-  }  // namespace detail
-#  endif
-
   class DynamicLoader
   {
   public:
@@ -1450,7 +1441,7 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic( std::string & str )
 #  if defined( __linux__ ) || defined( __APPLE__ )
         m_library = dlopen( vulkanLibraryName.c_str(), RTLD_NOW | RTLD_LOCAL );
 #  elif defined( _WIN32 )
-        m_library = detail::LoadLibraryA( vulkanLibraryName.c_str() );
+        m_library = ::LoadLibraryA( vulkanLibraryName.c_str() );
 #  else
 #    error unsupported platform
 #  endif
@@ -1466,7 +1457,7 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic( std::string & str )
 #  elif defined( __APPLE__ )
         m_library = dlopen( "libvulkan.dylib", RTLD_NOW | RTLD_LOCAL );
 #  elif defined( _WIN32 )
-        m_library = detail::LoadLibraryA( "vulkan-1.dll" );
+        m_library = ::LoadLibraryA( "vulkan-1.dll" );
 #  else
 #    error unsupported platform
 #  endif
@@ -1507,7 +1498,7 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic( std::string & str )
 #  if defined( __linux__ ) || defined( __APPLE__ )
         dlclose( m_library );
 #  elif defined( _WIN32 )
-        detail::FreeLibrary( m_library );
+        ::FreeLibrary( m_library );
 #  else
 #    error unsupported platform
 #  endif
@@ -1520,7 +1511,7 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic( std::string & str )
 #  if defined( __linux__ ) || defined( __APPLE__ )
       return (T)dlsym( m_library, function );
 #  elif defined( _WIN32 )
-      return (T)detail::GetProcAddress( m_library, function );
+      return (T)::GetProcAddress( m_library, function );
 #  else
 #    error unsupported platform
 #  endif
@@ -1530,8 +1521,10 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic( std::string & str )
 
   private:
     bool m_success;
-#  if defined( __linux__ ) || defined( __APPLE__ ) || defined( _WIN32 )
+#  if defined( __linux__ ) || defined( __APPLE__ )
     void * m_library;
+#  elif defined( _WIN32 )
+    ::HINSTANCE m_library;
 #  else
 #    error unsupported platform
 #  endif
@@ -7976,8 +7969,18 @@ int main( int argc, char ** argv )
 #endif
 
 #if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL == 1
-#  if defined(__linux__) || defined(__APPLE__)
-#   include <dlfcn.h>
+#  if defined( __linux__ ) || defined( __APPLE__ )
+#    include <dlfcn.h>
+#  elif defined( _WIN32 )
+typedef struct HINSTANCE__ * HINSTANCE;
+#    if defined( _WIN64 )
+typedef int64_t( __stdcall * FARPROC )();
+#    else
+typedef int( __stdcall * FARPROC )();
+#    endif
+extern "C" __declspec( dllimport ) HINSTANCE __stdcall LoadLibraryA( char const * lpLibFileName );
+extern "C" __declspec( dllimport ) int __stdcall FreeLibrary( HINSTANCE hLibModule );
+extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE hModule, const char * lpProcName );
 #  endif
 #endif
 

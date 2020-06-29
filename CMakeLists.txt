@@ -48,7 +48,7 @@ else()
 endif()
 
 if(MSVC)
-  add_compile_options(/W4)
+  add_compile_options(/W4 /permissive-)
 else(MSVC)
   add_compile_options(-Wall)
 endif(MSVC)

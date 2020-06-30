@@ -402,7 +402,9 @@ std::vector<LayerProperties, MyStatefulCustomAllocator> properties = physicalDev
 
 ### Custom assertions
 
-All over vulkan.hpp, there are a couple of calls to an assert function. By defining VULKAN_HPP_ASSERT, you can specifiy your own custom assert function to be called instead.
+All over vulkan.hpp, there are a couple of calls to an assert function. By defining `VULKAN_HPP_ASSERT`, you can specifiy your own custom assert function to be called instead.
+
+By default, `VULKAN_HPP_ASSERT_ON_RESULT` will be used for checking results when `VULKAN_HPP_NO_EXCEPTIONS` is defined. If you want to handle errors by yourself, you can disable/customize it just like `VULKAN_HPP_ASSERT`.
 
 ### Extensions / Per Device function pointers
 

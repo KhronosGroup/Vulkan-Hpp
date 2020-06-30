@@ -7974,6 +7974,10 @@ int main( int argc, char ** argv )
 # define VULKAN_HPP_ASSERT   assert
 #endif
 
+#if !defined(VULKAN_HPP_ASSERT_ON_RESULT)
+# define VULKAN_HPP_ASSERT_ON_RESULT VULKAN_HPP_ASSERT
+#endif
+
 #if !defined(VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL)
 # define VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL 1
 #endif
@@ -8122,7 +8126,7 @@ namespace std
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
     ignore(message);
-    VULKAN_HPP_ASSERT( result == Result::eSuccess );
+    VULKAN_HPP_ASSERT_ON_RESULT( result == Result::eSuccess );
     return result;
 #else
     if ( result != Result::eSuccess )
@@ -8137,7 +8141,7 @@ namespace std
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
     ignore(message);
-    VULKAN_HPP_ASSERT( result == Result::eSuccess );
+    VULKAN_HPP_ASSERT_ON_RESULT( result == Result::eSuccess );
     return ResultValue<T>( result, std::move( data ) );
 #else
     if ( result != Result::eSuccess )
@@ -8152,7 +8156,7 @@ namespace std
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
     ignore(message);
-    VULKAN_HPP_ASSERT( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );
+    VULKAN_HPP_ASSERT_ON_RESULT( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );
 #else
     if ( std::find( successCodes.begin(), successCodes.end(), result ) == successCodes.end() )
     {
@@ -8167,7 +8171,7 @@ namespace std
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
     ignore(message);
-    VULKAN_HPP_ASSERT( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );
+    VULKAN_HPP_ASSERT_ON_RESULT( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );
 #else
     if ( std::find( successCodes.begin(), successCodes.end(), result ) == successCodes.end() )
     {
@@ -8183,7 +8187,7 @@ namespace std
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
     ignore(message);
-    VULKAN_HPP_ASSERT( result == Result::eSuccess );
+    VULKAN_HPP_ASSERT_ON_RESULT( result == Result::eSuccess );
     return ResultValue<UniqueHandle<T,D>>( result, UniqueHandle<T,D>(data, deleter) );
 #else
     if ( result != Result::eSuccess )
@@ -8199,7 +8203,7 @@ namespace std
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
     ignore(message);
-    VULKAN_HPP_ASSERT( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );
+    VULKAN_HPP_ASSERT_ON_RESULT( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );
     return ResultValue<UniqueHandle<T,D>>( result, UniqueHandle<T,D>(data, deleter) );
 #else
     if ( std::find( successCodes.begin(), successCodes.end(), result ) == successCodes.end() )

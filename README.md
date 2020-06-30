@@ -444,6 +444,9 @@ Creating a full featured ```DispatchLoaderDynamic``` is a two- to three-step pro
 ```
 After the second step above, the dispatcher is fully functional. Adding the third step can potentially result in more efficient code.
 
+In some cases the storage for the DispatchLoaderDynamic should be embedded in a DLL. For those cases you need to define ```VULKAN_HPP_STORAGE_SHARED``` to tell Vulkan-Hpp that the storage resides in a DLL. When compiling the DLL with the storage it is also required to define ```VULKAN_HPP_STORAGE_SHARED_EXPORT``` to export the required symbols.
+
+
 ### Samples and Tests
 
 When you configure your project using CMake, you can enable SAMPLES_BUILD to add some sample projects to your solution. Most of them are ports from the LunarG samples, but there are some more, like CreateDebugUtilsMessenger, InstanceVersion, PhysicalDeviceDisplayProperties, PhysicalDeviceExtensions, PhysicalDeviceFeatures, PhysicalDeviceGroups, PhysicalDeviceMemoryProperties, PhysicalDeviceProperties, PhysicalDeviceQueueFamilyProperties, and RayTracing. All those samples should just compile and run.

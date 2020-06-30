@@ -39,6 +39,13 @@ int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
+#if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    static vk::DynamicLoader  dl;
+    PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr =
+      dl.getProcAddress<PFN_vkGetInstanceProcAddr>( "vkGetInstanceProcAddr" );
+    VULKAN_HPP_DEFAULT_DISPATCHER.init( vkGetInstanceProcAddr );
+#endif
+
     std::vector<vk::LayerProperties> layerProperties = vk::enumerateInstanceLayerProperties();
 
     /* VULKAN_KEY_START */
@@ -49,7 +56,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     for ( auto const & layerProperty : layerProperties )
     {
       std::vector<vk::ExtensionProperties> extensionProperties =
-        vk::enumerateInstanceExtensionProperties( std::string( layerProperty.layerName ) );
+        vk::enumerateInstanceExtensionProperties( vk::Optional<const std::string>(layerProperty.layerName) );
       propertyData.push_back( PropertyData( layerProperty, extensionProperties ) );
     }
 

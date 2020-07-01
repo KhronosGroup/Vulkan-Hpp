@@ -193,6 +193,7 @@ private:
     std::string              name;
     std::vector<std::string> arraySizes;
     std::string              bitCount;
+    std::vector<std::string> len;
     std::string              selection;
     std::string              selector;
     std::string              values;
@@ -481,10 +482,11 @@ private:
   std::string appendStructMembers( std::string &                                 str,
                                    std::pair<std::string, StructureData> const & structData,
                                    std::string const &                           prefix ) const;
-  void        appendStructSetter( std::string &       str,
-                                  std::string const & structureName,
-                                  bool                isUnion,
-                                  MemberData const &  memberData ) const;
+  void        appendStructSetter( std::string &                   str,
+                                  std::string const &             structureName,
+                                  bool                            isUnion,
+                                  std::vector<MemberData> const & memberData,
+                                  size_t                          index ) const;
   void        appendStructSubConstructor( std::string &                                 str,
                                           std::pair<std::string, StructureData> const & structData,
                                           std::string const &                           prefix ) const;

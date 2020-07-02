@@ -2798,8 +2798,8 @@ void VulkanHppGenerator::appendFunctionHeaderArgumentEnhancedVector( std::string
     // otherwise, use our ArrayProxy
     bool isConst = ( param.type.prefix.find( "const" ) != std::string::npos );
     str += optionalBegin + "ArrayProxy<" +
-           ( isTemplateParam ? ( isConst ? "const T" : "T" ) : stripPostfix( param.type.compose(), "*" ) ) + "> const &" +
-           optionalEnd + strippedParameterName;
+           ( isTemplateParam ? ( isConst ? "const T" : "T" ) : stripPostfix( param.type.compose(), "*" ) ) +
+           "> const &" + optionalEnd + strippedParameterName;
   }
 }
 
@@ -3792,7 +3792,8 @@ void VulkanHppGenerator::appendStructSetter( std::string &                   str
 
     std::set<std::string> ignoreLens = { "null-terminated",
                                          R"(latexmath:[\lceil{\mathit{rasterizationSamples} \over 32}\rceil])",
-                                         "2*VK_UUID_SIZE" };
+                                         "2*VK_UUID_SIZE",
+                                         "2*ename:VK_UUID_SIZE" };
     if ( !member.len.empty() && ( ignoreLens.find( member.len[0] ) == ignoreLens.end() ) )
     {
       assert( member.name.front() == 'p' );
@@ -6496,7 +6497,7 @@ void VulkanHppGenerator::readStructMember( tinyxml2::XMLElement const * element,
         std::find_if( members.begin(), members.end(), [&len]( MemberData const & md ) { return ( md.name == len ); } );
       check( ( len == "null-terminated" ) || ( len == R"(latexmath:[\textrm{codeSize} \over 4])" ) ||
                ( len == R"(latexmath:[\lceil{\mathit{rasterizationSamples} \over 32}\rceil])" ) ||
-               ( len == "2*VK_UUID_SIZE" ) || ( lenMember != members.end() ),
+               ( len == "2*VK_UUID_SIZE" ) || ( len == "2*ename:VK_UUID_SIZE" ) || ( lenMember != members.end() ),
              line,
              "member attribute <len> holds unknown value <" + len + ">" );
       if ( lenMember != members.end() )
@@ -6507,7 +6508,7 @@ void VulkanHppGenerator::readStructMember( tinyxml2::XMLElement const * element,
       }
       if ( 1 < memberData.len.size() )
       {
-        check( memberData.len[1] == "null-terminated",
+        check( ( memberData.len[1] == "1" ) || ( memberData.len[1] == "null-terminated" ),
                line,
                "member attribute <len> holds unknown second value <" + memberData.len[1] + ">" );
       }

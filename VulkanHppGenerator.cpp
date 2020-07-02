@@ -2798,7 +2798,7 @@ void VulkanHppGenerator::appendFunctionHeaderArgumentEnhancedVector( std::string
     // otherwise, use our ArrayProxy
     bool isConst = ( param.type.prefix.find( "const" ) != std::string::npos );
     str += optionalBegin + "ArrayProxy<" +
-           ( isTemplateParam ? ( isConst ? "const T" : "T" ) : stripPostfix( param.type.compose(), "*" ) ) + "> " +
+           ( isTemplateParam ? ( isConst ? "const T" : "T" ) : stripPostfix( param.type.compose(), "*" ) ) + "> const &" +
            optionalEnd + strippedParameterName;
   }
 }
@@ -3834,7 +3834,7 @@ void VulkanHppGenerator::appendStructSetter( std::string &                   str
       }
 
       static const std::string setArrayTemplate = R"(
-    ${templateHeader}${structureName} & set${ArrayName}( VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<${memberType}> ${arrayName} ) VULKAN_HPP_NOEXCEPT
+    ${templateHeader}${structureName} & set${ArrayName}( VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<${memberType}> const & ${arrayName} ) VULKAN_HPP_NOEXCEPT
     {
       ${lenName} = ${lenValue};
       ${memberName} = ${arrayName}.data();

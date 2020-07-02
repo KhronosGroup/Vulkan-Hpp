@@ -3744,12 +3744,14 @@ void VulkanHppGenerator::appendStructs( std::string & str ) const
   }
 }
 
-void VulkanHppGenerator::appendStructSetter( std::string &       str,
-                                             std::string const & structureName,
-                                             bool                isUnion,
-                                             MemberData const &  memberData ) const
+void VulkanHppGenerator::appendStructSetter( std::string &                   str,
+                                             std::string const &             structureName,
+                                             bool                            isUnion,
+                                             std::vector<MemberData> const & memberData,
+                                             size_t                          index ) const
 {
-  if ( memberData.type.type != "VkStructureType" )  // filter out StructureType, which is supposed to be immutable !
+  MemberData const & member = memberData[index];
+  if ( member.type.type != "VkStructureType" )  // filter out StructureType, which is supposed to be immutable !
   {
     static const std::string templateString = R"(
     ${structureName} & set${MemberName}( ${memberType} ${reference}${memberName}_ ) VULKAN_HPP_NOEXCEPT
@@ -3759,35 +3761,97 @@ void VulkanHppGenerator::appendStructSetter( std::string &       str,
     }
 )";
 
-    std::string memberType = memberData.arraySizes.empty()
-                               ? memberData.type.compose()
-                               : constructStandardArray( memberData.type.compose(), memberData.arraySizes );
+    std::string memberType = member.arraySizes.empty()
+                               ? member.type.compose()
+                               : constructStandardArray( member.type.compose(), member.arraySizes );
     std::string assignment;
-    if ( !memberData.bitCount.empty() && beginsWith( memberData.type.type, "Vk" ) )
+    if ( !member.bitCount.empty() && beginsWith( member.type.type, "Vk" ) )
     {
-      assignment =
-        memberData.name + " = " + "*reinterpret_cast<" + memberData.type.type + "*>(&" + memberData.name + "_)";
+      assignment = member.name + " = " + "*reinterpret_cast<" + member.type.type + "*>(&" + member.name + "_)";
     }
-    else if ( isUnion && holdsSType( memberData.type.type ) )
+    else if ( isUnion && holdsSType( member.type.type ) )
     {
-      assignment = "memcpy( &" + memberData.name + ", &" + memberData.name + "_, sizeof(" + memberType + "))";
+      assignment = "memcpy( &" + member.name + ", &" + member.name + "_, sizeof(" + memberType + "))";
     }
     else
     {
-      assignment = memberData.name + " = " + memberData.name + "_";
+      assignment = member.name + " = " + member.name + "_";
     }
 
     str += replaceWithMap(
       templateString,
       { { "assignment", assignment },
-        { "memberName", memberData.name },
-        { "MemberName", startUpperCase( memberData.name ) },
+        { "memberName", member.name },
+        { "MemberName", startUpperCase( member.name ) },
         { "memberType", memberType },
         { "reference",
-          ( memberData.type.postfix.empty() && ( m_structures.find( memberData.type.type ) != m_structures.end() ) )
+          ( member.type.postfix.empty() && ( m_structures.find( member.type.type ) != m_structures.end() ) )
             ? "const & "
             : "" },
         { "structureName", structureName } } );
+
+    std::set<std::string> ignoreLens = { "null-terminated",
+                                         R"(latexmath:[\lceil{\mathit{rasterizationSamples} \over 32}\rceil])",
+                                         "2*VK_UUID_SIZE" };
+    if ( !member.len.empty() && ( ignoreLens.find( member.len[0] ) == ignoreLens.end() ) )
+    {
+      assert( member.name.front() == 'p' );
+      std::string arrayName = startLowerCase( stripPrefix( member.name, "p" ) );
+
+      std::string lenName, lenValue;
+      if ( member.len[0] == R"(latexmath:[\textrm{codeSize} \over 4])" )
+      {
+        lenName  = "codeSize";
+        lenValue = arrayName + ".size() * 4";
+      }
+      else
+      {
+        lenName  = member.len[0];
+        lenValue = arrayName + ".size()";
+      }
+
+      assert( memberType.back() == '*' );
+      memberType.pop_back();
+
+      std::string templateHeader;
+      if ( member.type.type == "void" )
+      {
+        templateHeader = "template <typename T>\n";
+
+        size_t pos = memberType.find( "void" );
+        assert( pos != std::string::npos );
+        memberType.replace( pos, strlen( "void" ), "T" );
+
+        lenValue += " * sizeof(T)";
+      }
+
+      auto lenMember = std::find_if(
+        memberData.begin(), memberData.end(), [&lenName]( MemberData const & md ) { return md.name == lenName; } );
+      assert( lenMember != memberData.end() && lenMember->type.prefix.empty() && lenMember->type.postfix.empty() );
+      if ( lenMember->type.type != "size_t" )
+      {
+        lenValue = "static_cast<" + lenMember->type.type + ">( " + lenValue + " )";
+      }
+
+      static const std::string setArrayTemplate = R"(
+    ${templateHeader}${structureName} & set${ArrayName}( VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<${memberType}> ${arrayName} ) VULKAN_HPP_NOEXCEPT
+    {
+      ${lenName} = ${lenValue};
+      ${memberName} = ${arrayName}.data();
+      return *this;
+    }
+)";
+
+      str += replaceWithMap( setArrayTemplate,
+                             { { "arrayName", arrayName },
+                               { "ArrayName", startUpperCase( arrayName ) },
+                               { "lenName", lenName },
+                               { "lenValue", lenValue },
+                               { "memberName", member.name },
+                               { "memberType", memberType },
+                               { "structureName", structureName },
+                               { "templateHeader", templateHeader } } );
+    }
   }
 }
 
@@ -3850,9 +3914,10 @@ void VulkanHppGenerator::appendStructure( std::string &                         
   if ( !structure.second.returnedOnly )
   {
     // only structs that are not returnedOnly get setters!
-    for ( auto const & member : structure.second.members )
+    for ( size_t i = 0; i < structure.second.members.size(); i++ )
     {
-      appendStructSetter( constructorAndSetters, stripPrefix( structure.first, "Vk" ), false, member );
+      appendStructSetter(
+        constructorAndSetters, stripPrefix( structure.first, "Vk" ), false, structure.second.members, i );
     }
   }
 
@@ -4066,9 +4131,9 @@ void VulkanHppGenerator::appendUnion( std::string & str, std::pair<std::string, 
   }
 
   // one setter per union element
-  for ( auto const & member : structure.second.members )
+  for ( size_t i = 0; i < structure.second.members.size(); i++ )
   {
-    appendStructSetter( str, stripPrefix( structure.first, "Vk" ), true, member );
+    appendStructSetter( str, stripPrefix( structure.first, "Vk" ), true, structure.second.members, i );
   }
 
   // assignment operator
@@ -6399,8 +6464,7 @@ void VulkanHppGenerator::readStructMember( tinyxml2::XMLElement const * element,
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
   checkElements( line, children, { { "name", true }, { "type", true } }, { "comment", "enum" } );
 
-  members.push_back( MemberData( line ) );
-  MemberData & memberData = members.back();
+  MemberData memberData( line );
 
   for ( auto child : children )
   {
@@ -6421,7 +6485,34 @@ void VulkanHppGenerator::readStructMember( tinyxml2::XMLElement const * element,
 
   for ( auto const & attribute : attributes )
   {
-    if ( attribute.first == "selection" )
+    if ( attribute.first == "len" )
+    {
+      memberData.len = tokenize( attribute.second, "," );
+      check( !memberData.len.empty() && ( memberData.len.size() <= 2 ),
+             line,
+             "member attribute <len> holds unknown number of data: " + std::to_string( memberData.len.size() ) );
+      std::string const & len = memberData.len[0];
+      auto                lenMember =
+        std::find_if( members.begin(), members.end(), [&len]( MemberData const & md ) { return ( md.name == len ); } );
+      check( ( len == "null-terminated" ) || ( len == R"(latexmath:[\textrm{codeSize} \over 4])" ) ||
+               ( len == R"(latexmath:[\lceil{\mathit{rasterizationSamples} \over 32}\rceil])" ) ||
+               ( len == "2*VK_UUID_SIZE" ) || ( lenMember != members.end() ),
+             line,
+             "member attribute <len> holds unknown value <" + len + ">" );
+      if ( lenMember != members.end() )
+      {
+        check( lenMember->type.prefix.empty() && lenMember->type.postfix.empty(),
+               line,
+               "member attribute <len> references a member of unexpected type <" + lenMember->type.compose() + ">" );
+      }
+      if ( 1 < memberData.len.size() )
+      {
+        check( memberData.len[1] == "null-terminated",
+               line,
+               "member attribute <len> holds unknown second value <" + memberData.len[1] + ">" );
+      }
+    }
+    else if ( attribute.first == "selection" )
     {
       check( isUnion, line, "attribute <selection> is used with a non-union structure." );
       memberData.selection = attribute.second;
@@ -6448,6 +6539,8 @@ void VulkanHppGenerator::readStructMember( tinyxml2::XMLElement const * element,
       memberData.values = attribute.second;
     }
   }
+
+  members.push_back( memberData );
 }
 
 void VulkanHppGenerator::readStructMemberEnum( tinyxml2::XMLElement const * element, MemberData & memberData )
@@ -6789,105 +6882,109 @@ int main( int argc, char ** argv )
   {
   public:
     VULKAN_HPP_CONSTEXPR ArrayProxy() VULKAN_HPP_NOEXCEPT
-      : m_count(0)
-      , m_ptr(nullptr)
+      : m_count( 0 )
+      , m_ptr( nullptr )
     {}
 
-    VULKAN_HPP_CONSTEXPR ArrayProxy(std::nullptr_t) VULKAN_HPP_NOEXCEPT
-      : m_count(0)
-      , m_ptr(nullptr)
+    VULKAN_HPP_CONSTEXPR ArrayProxy( std::nullptr_t ) VULKAN_HPP_NOEXCEPT
+      : m_count( 0 )
+      , m_ptr( nullptr )
     {}
 
-    ArrayProxy(T & value) VULKAN_HPP_NOEXCEPT
-      : m_count(1)
-      , m_ptr(&value)
+    ArrayProxy( T & value ) VULKAN_HPP_NOEXCEPT
+      : m_count( 1 )
+      , m_ptr( &value )
     {}
 
-    template<typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
-    ArrayProxy(typename std::remove_const<T>::type & value) VULKAN_HPP_NOEXCEPT
-      : m_count(1)
-      , m_ptr(&value)
+    template <typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
+    ArrayProxy( typename std::remove_const<T>::type & value ) VULKAN_HPP_NOEXCEPT
+      : m_count( 1 )
+      , m_ptr( &value )
     {}
 
-    ArrayProxy(uint32_t count, T * ptr) VULKAN_HPP_NOEXCEPT
-      : m_count(count)
-      , m_ptr(ptr)
+    ArrayProxy( uint32_t count, T * ptr ) VULKAN_HPP_NOEXCEPT
+      : m_count( count )
+      , m_ptr( ptr )
     {}
 
-    template<typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
-    ArrayProxy(uint32_t count, typename std::remove_const<T>::type * ptr) VULKAN_HPP_NOEXCEPT
-      : m_count(count)
-      , m_ptr(ptr)
+    template <typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
+    ArrayProxy( uint32_t count, typename std::remove_const<T>::type * ptr ) VULKAN_HPP_NOEXCEPT
+      : m_count( count )
+      , m_ptr( ptr )
     {}
 
-    ArrayProxy(std::initializer_list<T> const& list) VULKAN_HPP_NOEXCEPT
-      : m_count(static_cast<uint32_t>(list.size()))
-      , m_ptr(list.begin())
+    ArrayProxy( std::initializer_list<T> const & list ) VULKAN_HPP_NOEXCEPT
+      : m_count( static_cast<uint32_t>( list.size() ) )
+      , m_ptr( list.begin() )
     {}
 
-    template<typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
-    ArrayProxy(std::initializer_list<typename std::remove_const<T>::type> const& list) VULKAN_HPP_NOEXCEPT
-      : m_count(static_cast<uint32_t>(list.size()))
-      , m_ptr(list.begin())
+    template <typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
+    ArrayProxy( std::initializer_list<typename std::remove_const<T>::type> const & list ) VULKAN_HPP_NOEXCEPT
+      : m_count( static_cast<uint32_t>( list.size() ) )
+      , m_ptr( list.begin() )
     {}
 
-    ArrayProxy(std::initializer_list<T> & list) VULKAN_HPP_NOEXCEPT
-      : m_count(static_cast<uint32_t>(list.size()))
-      , m_ptr(list.begin())
+    ArrayProxy( std::initializer_list<T> & list ) VULKAN_HPP_NOEXCEPT
+      : m_count( static_cast<uint32_t>( list.size() ) )
+      , m_ptr( list.begin() )
     {}
 
-    template<typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
-    ArrayProxy(std::initializer_list<typename std::remove_const<T>::type> & list) VULKAN_HPP_NOEXCEPT
-      : m_count(static_cast<uint32_t>(list.size()))
-      , m_ptr(list.begin())
-    {}
-
-    template <size_t N>
-    ArrayProxy(std::array<T, N> const & data) VULKAN_HPP_NOEXCEPT
-      : m_count(N)
-      , m_ptr(data.data())
-    {}
-
-    template <size_t N, typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
-    ArrayProxy(std::array<typename std::remove_const<T>::type, N> const & data) VULKAN_HPP_NOEXCEPT
-      : m_count(N)
-      , m_ptr(data.data())
+    template <typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
+    ArrayProxy( std::initializer_list<typename std::remove_const<T>::type> & list ) VULKAN_HPP_NOEXCEPT
+      : m_count( static_cast<uint32_t>( list.size() ) )
+      , m_ptr( list.begin() )
     {}
 
     template <size_t N>
-    ArrayProxy(std::array<T, N> & data) VULKAN_HPP_NOEXCEPT
-      : m_count(N)
-      , m_ptr(data.data())
+    ArrayProxy( std::array<T, N> const & data ) VULKAN_HPP_NOEXCEPT
+      : m_count( N )
+      , m_ptr( data.data() )
     {}
 
     template <size_t N, typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
-    ArrayProxy(std::array<typename std::remove_const<T>::type, N> & data) VULKAN_HPP_NOEXCEPT
-      : m_count(N)
-      , m_ptr(data.data())
+    ArrayProxy( std::array<typename std::remove_const<T>::type, N> const & data ) VULKAN_HPP_NOEXCEPT
+      : m_count( N )
+      , m_ptr( data.data() )
+    {}
+
+    template <size_t N>
+    ArrayProxy( std::array<T, N> & data ) VULKAN_HPP_NOEXCEPT
+      : m_count( N )
+      , m_ptr( data.data() )
+    {}
+
+    template <size_t N, typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
+    ArrayProxy( std::array<typename std::remove_const<T>::type, N> & data ) VULKAN_HPP_NOEXCEPT
+      : m_count( N )
+      , m_ptr( data.data() )
     {}
 
     template <class Allocator = std::allocator<typename std::remove_const<T>::type>>
-    ArrayProxy(std::vector<T, Allocator> const & data) VULKAN_HPP_NOEXCEPT
-      : m_count(static_cast<uint32_t>(data.size()))
-      , m_ptr(data.data())
+    ArrayProxy( std::vector<T, Allocator> const & data ) VULKAN_HPP_NOEXCEPT
+      : m_count( static_cast<uint32_t>( data.size() ) )
+      , m_ptr( data.data() )
     {}
 
-    template <class Allocator = std::allocator<typename std::remove_const<T>::type>, typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
-    ArrayProxy(std::vector<typename std::remove_const<T>::type, Allocator> const& data) VULKAN_HPP_NOEXCEPT
-      : m_count(static_cast<uint32_t>(data.size()))
-      , m_ptr(data.data())
+    template <class Allocator = std::allocator<typename std::remove_const<T>::type>,
+              typename B      = T,
+              typename std::enable_if<std::is_const<B>::value, int>::type = 0>
+    ArrayProxy( std::vector<typename std::remove_const<T>::type, Allocator> const & data ) VULKAN_HPP_NOEXCEPT
+      : m_count( static_cast<uint32_t>( data.size() ) )
+      , m_ptr( data.data() )
     {}
 
     template <class Allocator = std::allocator<typename std::remove_const<T>::type>>
-    ArrayProxy(std::vector<T, Allocator> & data) VULKAN_HPP_NOEXCEPT
-      : m_count(static_cast<uint32_t>(data.size()))
-      , m_ptr(data.data())
+    ArrayProxy( std::vector<T, Allocator> & data ) VULKAN_HPP_NOEXCEPT
+      : m_count( static_cast<uint32_t>( data.size() ) )
+      , m_ptr( data.data() )
     {}
 
-    template <class Allocator = std::allocator<typename std::remove_const<T>::type>, typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
-    ArrayProxy(std::vector<typename std::remove_const<T>::type, Allocator> & data) VULKAN_HPP_NOEXCEPT
-      : m_count(static_cast<uint32_t>(data.size()))
-      , m_ptr(data.data())
+    template <class Allocator = std::allocator<typename std::remove_const<T>::type>,
+              typename B      = T,
+              typename std::enable_if<std::is_const<B>::value, int>::type = 0>
+    ArrayProxy( std::vector<typename std::remove_const<T>::type, Allocator> & data ) VULKAN_HPP_NOEXCEPT
+      : m_count( static_cast<uint32_t>( data.size() ) )
+      , m_ptr( data.data() )
     {}
 
     const T * begin() const VULKAN_HPP_NOEXCEPT
@@ -6902,19 +6999,19 @@ int main( int argc, char ** argv )
 
     const T & front() const VULKAN_HPP_NOEXCEPT
     {
-      VULKAN_HPP_ASSERT(m_count && m_ptr);
+      VULKAN_HPP_ASSERT( m_count && m_ptr );
       return *m_ptr;
     }
 
     const T & back() const VULKAN_HPP_NOEXCEPT
     {
-      VULKAN_HPP_ASSERT(m_count && m_ptr);
-      return *(m_ptr + m_count - 1);
+      VULKAN_HPP_ASSERT( m_count && m_ptr );
+      return *( m_ptr + m_count - 1 );
     }
 
     bool empty() const VULKAN_HPP_NOEXCEPT
     {
-      return (m_count == 0);
+      return ( m_count == 0 );
     }
 
     uint32_t size() const VULKAN_HPP_NOEXCEPT
@@ -6928,8 +7025,166 @@ int main( int argc, char ** argv )
     }
 
   private:
-    uint32_t  m_count;
-    T *       m_ptr;
+    uint32_t m_count;
+    T *      m_ptr;
+  };
+
+  template <typename T>
+  class ArrayProxyNoTemporaries
+  {
+  public:
+    VULKAN_HPP_CONSTEXPR ArrayProxyNoTemporaries() VULKAN_HPP_NOEXCEPT
+      : m_count( 0 )
+      , m_ptr( nullptr )
+    {}
+
+    VULKAN_HPP_CONSTEXPR ArrayProxyNoTemporaries( std::nullptr_t ) VULKAN_HPP_NOEXCEPT
+      : m_count( 0 )
+      , m_ptr( nullptr )
+    {}
+
+    template <typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
+    ArrayProxyNoTemporaries( typename std::remove_const<T>::type & value ) VULKAN_HPP_NOEXCEPT
+      : m_count( 1 )
+      , m_ptr( &value )
+    {}
+
+    ArrayProxyNoTemporaries( uint32_t count, T * ptr ) VULKAN_HPP_NOEXCEPT
+      : m_count( count )
+      , m_ptr( ptr )
+    {}
+
+    template <typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
+    ArrayProxyNoTemporaries( uint32_t count, typename std::remove_const<T>::type * ptr ) VULKAN_HPP_NOEXCEPT
+      : m_count( count )
+      , m_ptr( ptr )
+    {}
+
+    ArrayProxyNoTemporaries( std::initializer_list<T> const & list ) VULKAN_HPP_NOEXCEPT
+      : m_count( static_cast<uint32_t>( list.size() ) )
+      , m_ptr( list.begin() )
+    {}
+
+    template <typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
+    ArrayProxyNoTemporaries( std::initializer_list<typename std::remove_const<T>::type> const & list ) VULKAN_HPP_NOEXCEPT
+      : m_count( static_cast<uint32_t>( list.size() ) )
+      , m_ptr( list.begin() )
+    {}
+
+    ArrayProxyNoTemporaries( std::initializer_list<T> & list ) VULKAN_HPP_NOEXCEPT
+      : m_count( static_cast<uint32_t>( list.size() ) )
+      , m_ptr( list.begin() )
+    {}
+
+    template <typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
+    ArrayProxyNoTemporaries( std::initializer_list<typename std::remove_const<T>::type> & list ) VULKAN_HPP_NOEXCEPT
+      : m_count( static_cast<uint32_t>( list.size() ) )
+      , m_ptr( list.begin() )
+    {}
+
+    ArrayProxyNoTemporaries( std::initializer_list<T> const && list ) VULKAN_HPP_NOEXCEPT = delete;
+    ArrayProxyNoTemporaries( std::initializer_list<T> && list ) VULKAN_HPP_NOEXCEPT       = delete;
+
+    template <size_t N>
+    ArrayProxyNoTemporaries( std::array<T, N> const & data ) VULKAN_HPP_NOEXCEPT
+      : m_count( N )
+      , m_ptr( data.data() )
+    {}
+
+    template <size_t N, typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
+    ArrayProxyNoTemporaries( std::array<typename std::remove_const<T>::type, N> const & data ) VULKAN_HPP_NOEXCEPT
+      : m_count( N )
+      , m_ptr( data.data() )
+    {}
+
+    template <size_t N>
+    ArrayProxyNoTemporaries( std::array<T, N> & data ) VULKAN_HPP_NOEXCEPT
+      : m_count( N )
+      , m_ptr( data.data() )
+    {}
+
+    template <size_t N, typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
+    ArrayProxyNoTemporaries( std::array<typename std::remove_const<T>::type, N> & data ) VULKAN_HPP_NOEXCEPT
+      : m_count( N )
+      , m_ptr( data.data() )
+    {}
+
+    template <size_t N>
+    ArrayProxyNoTemporaries( std::array<T, N> const && data ) VULKAN_HPP_NOEXCEPT = delete;
+    template <size_t N>
+    ArrayProxyNoTemporaries( std::array<T, N> && data ) VULKAN_HPP_NOEXCEPT       = delete;
+
+    template <class Allocator = std::allocator<typename std::remove_const<T>::type>>
+    ArrayProxyNoTemporaries( std::vector<T, Allocator> const & data ) VULKAN_HPP_NOEXCEPT
+      : m_count( static_cast<uint32_t>( data.size() ) )
+      , m_ptr( data.data() )
+    {}
+
+    template <class Allocator = std::allocator<typename std::remove_const<T>::type>,
+              typename B      = T,
+              typename std::enable_if<std::is_const<B>::value, int>::type = 0>
+    ArrayProxyNoTemporaries( std::vector<typename std::remove_const<T>::type, Allocator> const & data ) VULKAN_HPP_NOEXCEPT
+      : m_count( static_cast<uint32_t>( data.size() ) )
+      , m_ptr( data.data() )
+    {}
+
+    template <class Allocator = std::allocator<typename std::remove_const<T>::type>>
+    ArrayProxyNoTemporaries( std::vector<T, Allocator> & data ) VULKAN_HPP_NOEXCEPT
+      : m_count( static_cast<uint32_t>( data.size() ) )
+      , m_ptr( data.data() )
+    {}
+
+    template <class Allocator = std::allocator<typename std::remove_const<T>::type>,
+              typename B      = T,
+              typename std::enable_if<std::is_const<B>::value, int>::type = 0>
+    ArrayProxyNoTemporaries( std::vector<typename std::remove_const<T>::type, Allocator> & data ) VULKAN_HPP_NOEXCEPT
+      : m_count( static_cast<uint32_t>( data.size() ) )
+      , m_ptr( data.data() )
+    {}
+
+    ArrayProxyNoTemporaries( std::vector<T> const && data ) VULKAN_HPP_NOEXCEPT = delete;
+    ArrayProxyNoTemporaries( std::vector<T> && data ) VULKAN_HPP_NOEXCEPT       = delete;
+
+    const T * begin() const VULKAN_HPP_NOEXCEPT
+    {
+      return m_ptr;
+    }
+
+    const T * end() const VULKAN_HPP_NOEXCEPT
+    {
+      return m_ptr + m_count;
+    }
+
+    const T & front() const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( m_count && m_ptr );
+      return *m_ptr;
+    }
+
+    const T & back() const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( m_count && m_ptr );
+      return *( m_ptr + m_count - 1 );
+    }
+
+    bool empty() const VULKAN_HPP_NOEXCEPT
+    {
+      return ( m_count == 0 );
+    }
+
+    uint32_t size() const VULKAN_HPP_NOEXCEPT
+    {
+      return m_count;
+    }
+
+    T * data() const VULKAN_HPP_NOEXCEPT
+    {
+      return m_ptr;
+    }
+
+  private:
+    uint32_t m_count;
+    T *      m_ptr;
   };
 #endif
 )";

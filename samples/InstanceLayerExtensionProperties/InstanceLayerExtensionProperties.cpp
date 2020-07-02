@@ -49,7 +49,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     for ( auto const & layerProperty : layerProperties )
     {
       std::vector<vk::ExtensionProperties> extensionProperties =
-        vk::enumerateInstanceExtensionProperties( std::string( layerProperty.layerName ) );
+        vk::enumerateInstanceExtensionProperties( vk::Optional<const std::string>( layerProperty.layerName ) );
       propertyData.push_back( PropertyData( layerProperty, extensionProperties ) );
     }
 

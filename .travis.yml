@@ -18,7 +18,6 @@ matrix:
           - libglu1-mesa-dev
       env: 
         - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
-        - ADDITIONAL_BUILD_OPTIONS="-DSAMPLES_BUILD=OFF"
       compiler: g++-5
 
     - os: linux
@@ -126,5 +125,4 @@ script:
     -DTESTS_BUILD_ONLY_DYNAMIC=ON 
     -DTESTS_BUILD_WITH_LOCAL_VULKAN_HPP=ON
     -DCMAKE_CXX_FLAGS="-std=c++11 -Wall -Wpedantic -Wextra"
-    $ADDITIONAL_BUILD_OPTIONS
   - cmake --build .

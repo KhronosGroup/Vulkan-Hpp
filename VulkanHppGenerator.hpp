@@ -484,7 +484,6 @@ private:
                                    std::string const &                           prefix ) const;
   void        appendStructSetter( std::string &                   str,
                                   std::string const &             structureName,
-                                  bool                            isUnion,
                                   std::vector<MemberData> const & memberData,
                                   size_t                          index ) const;
   void        appendStructSubConstructor( std::string &                                 str,

@@ -3746,7 +3746,6 @@ void VulkanHppGenerator::appendStructs( std::string & str ) const
 
 void VulkanHppGenerator::appendStructSetter( std::string &                   str,
                                              std::string const &             structureName,
-                                             bool                            isUnion,
                                              std::vector<MemberData> const & memberData,
                                              size_t                          index ) const
 {
@@ -3768,10 +3767,6 @@ void VulkanHppGenerator::appendStructSetter( std::string &                   str
     if ( !member.bitCount.empty() && beginsWith( member.type.type, "Vk" ) )
     {
       assignment = member.name + " = " + "*reinterpret_cast<" + member.type.type + "*>(&" + member.name + "_)";
-    }
-    else if ( isUnion && holdsSType( member.type.type ) )
-    {
-      assignment = "memcpy( &" + member.name + ", &" + member.name + "_, sizeof(" + memberType + "))";
     }
     else
     {
@@ -3803,12 +3798,12 @@ void VulkanHppGenerator::appendStructSetter( std::string &                   str
       if ( member.len[0] == R"(latexmath:[\textrm{codeSize} \over 4])" )
       {
         lenName  = "codeSize";
-        lenValue = arrayName + ".size() * 4";
+        lenValue = arrayName + "_.size() * 4";
       }
       else
       {
         lenName  = member.len[0];
-        lenValue = arrayName + ".size()";
+        lenValue = arrayName + "_.size()";
       }
 
       assert( memberType.back() == '*' );
@@ -3835,10 +3830,10 @@ void VulkanHppGenerator::appendStructSetter( std::string &                   str
       }
 
       static const std::string setArrayTemplate = R"(
-    ${templateHeader}${structureName} & set${ArrayName}( VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<${memberType}> const & ${arrayName} ) VULKAN_HPP_NOEXCEPT
+    ${templateHeader}${structureName} & set${ArrayName}( VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<${memberType}> const & ${arrayName}_ ) VULKAN_HPP_NOEXCEPT
     {
       ${lenName} = ${lenValue};
-      ${memberName} = ${arrayName}.data();
+      ${memberName} = ${arrayName}_.data();
       return *this;
     }
 )";
@@ -3917,8 +3912,7 @@ void VulkanHppGenerator::appendStructure( std::string &                         
     // only structs that are not returnedOnly get setters!
     for ( size_t i = 0; i < structure.second.members.size(); i++ )
     {
-      appendStructSetter(
-        constructorAndSetters, stripPrefix( structure.first, "Vk" ), false, structure.second.members, i );
+      appendStructSetter( constructorAndSetters, stripPrefix( structure.first, "Vk" ), structure.second.members, i );
     }
   }
 
@@ -4134,7 +4128,7 @@ void VulkanHppGenerator::appendUnion( std::string & str, std::pair<std::string, 
   // one setter per union element
   for ( size_t i = 0; i < structure.second.members.size(); i++ )
   {
-    appendStructSetter( str, stripPrefix( structure.first, "Vk" ), true, structure.second.members, i );
+    appendStructSetter( str, stripPrefix( structure.first, "Vk" ), structure.second.members, i );
   }
 
   // assignment operator

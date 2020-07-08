@@ -136,13 +136,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     instanceExtensionNames.push_back( VK_EXT_DEBUG_UTILS_EXTENSION_NAME );
 
     vk::ApplicationInfo    applicationInfo( AppName, 1, EngineName, 1, VK_API_VERSION_1_1 );
-    vk::InstanceCreateInfo instanceCreateInfo( vk::InstanceCreateFlags(),
-                                               &applicationInfo,
-                                               vk::su::checked_cast<uint32_t>( instanceLayerNames.size() ),
-                                               instanceLayerNames.data(),
-                                               vk::su::checked_cast<uint32_t>( instanceExtensionNames.size() ),
-                                               instanceExtensionNames.data() );
-    vk::UniqueInstance     instance = vk::createInstanceUnique( instanceCreateInfo );
+    vk::InstanceCreateInfo instanceCreateInfo(
+      vk::InstanceCreateFlags(), &applicationInfo, instanceLayerNames, instanceExtensionNames );
+    vk::UniqueInstance instance = vk::createInstanceUnique( instanceCreateInfo );
 
 #if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
     // initialize function pointers for instance
@@ -189,7 +185,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::DeviceQueueCreateInfo deviceQueueCreateInfo(
       vk::DeviceQueueCreateFlags(), queueFamilyIndex, 1, &queuePriority );
     vk::UniqueDevice device =
-      physicalDevice.createDeviceUnique( vk::DeviceCreateInfo( vk::DeviceCreateFlags(), 1, &deviceQueueCreateInfo ) );
+      physicalDevice.createDeviceUnique( vk::DeviceCreateInfo( vk::DeviceCreateFlags(), deviceQueueCreateInfo ) );
 
     // Create a command pool (not a UniqueCommandPool, for testing purposes!
     vk::CommandPool commandPool =
@@ -207,9 +203,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     std::cout << "vk::SystemError: " << err.what() << std::endl;
     exit( -1 );
   }
-  catch ( std::runtime_error & err )
+  catch ( std::exception & err )
   {
-    std::cout << "std::runtime_error: " << err.what() << std::endl;
+    std::cout << "std::exception: " << err.what() << std::endl;
     exit( -1 );
   }
   catch ( ... )

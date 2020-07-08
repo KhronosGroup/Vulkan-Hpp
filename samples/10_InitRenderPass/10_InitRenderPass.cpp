@@ -52,7 +52,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     /* VULKAN_HPP_KEY_START */
 
-    vk::AttachmentDescription attachmentDescriptions[2];
+    std::array<vk::AttachmentDescription, 2> attachmentDescriptions;
     attachmentDescriptions[0] = vk::AttachmentDescription( vk::AttachmentDescriptionFlags(),
                                                            colorFormat,
                                                            vk::SampleCountFlagBits::e1,
@@ -74,17 +74,11 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     vk::AttachmentReference colorReference( 0, vk::ImageLayout::eColorAttachmentOptimal );
     vk::AttachmentReference depthReference( 1, vk::ImageLayout::eDepthStencilAttachmentOptimal );
-    vk::SubpassDescription  subpass( vk::SubpassDescriptionFlags(),
-                                    vk::PipelineBindPoint::eGraphics,
-                                    0,
-                                    nullptr,
-                                    1,
-                                    &colorReference,
-                                    nullptr,
-                                    &depthReference );
+    vk::SubpassDescription  subpass(
+      vk::SubpassDescriptionFlags(), vk::PipelineBindPoint::eGraphics, {}, colorReference, {}, &depthReference );
 
     vk::UniqueRenderPass renderPass = device->createRenderPassUnique(
-      vk::RenderPassCreateInfo( vk::RenderPassCreateFlags(), 2, attachmentDescriptions, 1, &subpass ) );
+      vk::RenderPassCreateInfo( vk::RenderPassCreateFlags(), attachmentDescriptions, subpass ) );
 
     // Note: No need to explicitly destroy the RenderPass or the Semaphore, as the corresponding destroy
     // functions are called by the destructor of the UniqueRenderPass and the UniqueSemaphore on leaving this scope.
@@ -96,9 +90,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     std::cout << "vk::SystemError: " << err.what() << std::endl;
     exit( -1 );
   }
-  catch ( std::runtime_error & err )
+  catch ( std::exception & err )
   {
-    std::cout << "std::runtime_error: " << err.what() << std::endl;
+    std::cout << "std::exception: " << err.what() << std::endl;
     exit( -1 );
   }
   catch ( ... )

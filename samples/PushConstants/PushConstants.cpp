@@ -144,24 +144,25 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     // Set up our push constant range, which mirrors the declaration of
     vk::PushConstantRange    pushConstantRanges( vk::ShaderStageFlagBits::eFragment, 0, 8 );
-    vk::UniquePipelineLayout pipelineLayout = device->createPipelineLayoutUnique( vk::PipelineLayoutCreateInfo(
-      vk::PipelineLayoutCreateFlags(), 1, &descriptorSetLayout.get(), 1, &pushConstantRanges ) );
+    vk::UniquePipelineLayout pipelineLayout = device->createPipelineLayoutUnique(
+      vk::PipelineLayoutCreateInfo( vk::PipelineLayoutCreateFlags(), *descriptorSetLayout, pushConstantRanges ) );
 
     // Create a single pool to contain data for our descriptor set
-    vk::DescriptorPoolSize   poolSizes[2]   = { vk::DescriptorPoolSize( vk::DescriptorType::eUniformBuffer, 1 ),
-                                            vk::DescriptorPoolSize( vk::DescriptorType::eCombinedImageSampler, 1 ) };
-    vk::UniqueDescriptorPool descriptorPool = device->createDescriptorPoolUnique(
-      vk::DescriptorPoolCreateInfo( vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet, 1, 2, poolSizes ) );
+    std::array<vk::DescriptorPoolSize, 2> poolSizes = { vk::DescriptorPoolSize( vk::DescriptorType::eUniformBuffer, 1 ),
+                                                        vk::DescriptorPoolSize(
+                                                          vk::DescriptorType::eCombinedImageSampler, 1 ) };
+    vk::UniqueDescriptorPool              descriptorPool = device->createDescriptorPoolUnique(
+      vk::DescriptorPoolCreateInfo( vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet, 1, poolSizes ) );
 
     // Populate descriptor sets
     vk::UniqueDescriptorSet descriptorSet = std::move(
-      device->allocateDescriptorSetsUnique( vk::DescriptorSetAllocateInfo( *descriptorPool, 1, &*descriptorSetLayout ) )
+      device->allocateDescriptorSetsUnique( vk::DescriptorSetAllocateInfo( *descriptorPool, *descriptorSetLayout ) )
         .front() );
 
     // Populate with info about our uniform buffer for MVP
     vk::DescriptorBufferInfo bufferInfo( uniformBufferData.buffer.get(), 0, sizeof( glm::mat4x4 ) );
     device->updateDescriptorSets(
-      vk::WriteDescriptorSet( *descriptorSet, 0, 0, 1, vk::DescriptorType::eUniformBuffer, nullptr, &bufferInfo ), {} );
+      vk::WriteDescriptorSet( *descriptorSet, 0, 0, vk::DescriptorType::eUniformBuffer, {}, bufferInfo ), {} );
 
     // Create our push constant data, which matches shader expectations
     std::array<unsigned, 2> pushConstants = { { (unsigned)2, (unsigned)0x3F800000 } };
@@ -194,14 +195,13 @@ int main( int /*argc*/, char ** /*argv*/ )
     assert( currentBuffer.result == vk::Result::eSuccess );
     assert( currentBuffer.value < framebuffers.size() );
 
-    vk::ClearValue clearValues[2];
+    std::array<vk::ClearValue, 2> clearValues;
     clearValues[0].color        = vk::ClearColorValue( std::array<float, 4>( { { 0.2f, 0.2f, 0.2f, 0.2f } } ) );
     clearValues[1].depthStencil = vk::ClearDepthStencilValue( 1.0f, 0 );
 
     vk::RenderPassBeginInfo renderPassBeginInfo( renderPass.get(),
                                                  framebuffers[currentBuffer.value].get(),
                                                  vk::Rect2D( vk::Offset2D( 0, 0 ), surfaceData.extent ),
-                                                 2,
                                                  clearValues );
     commandBuffer->beginRenderPass( renderPassBeginInfo, vk::SubpassContents::eInline );
     commandBuffer->bindPipeline( vk::PipelineBindPoint::eGraphics, graphicsPipeline.get() );
@@ -225,14 +225,13 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::UniqueFence drawFence = device->createFenceUnique( vk::FenceCreateInfo() );
 
     vk::PipelineStageFlags waitDestinationStageMask( vk::PipelineStageFlagBits::eColorAttachmentOutput );
-    vk::SubmitInfo submitInfo( 1, &imageAcquiredSemaphore.get(), &waitDestinationStageMask, 1, &commandBuffer.get() );
+    vk::SubmitInfo         submitInfo( *imageAcquiredSemaphore, waitDestinationStageMask, *commandBuffer );
     graphicsQueue.submit( submitInfo, drawFence.get() );
 
     while ( vk::Result::eTimeout == device->waitForFences( drawFence.get(), VK_TRUE, vk::su::FenceTimeout ) )
       ;
 
-    presentQueue.presentKHR(
-      vk::PresentInfoKHR( 0, nullptr, 1, &swapChainData.swapChain.get(), &currentBuffer.value ) );
+    presentQueue.presentKHR( vk::PresentInfoKHR( {}, *swapChainData.swapChain, currentBuffer.value ) );
     std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
   }
   catch ( vk::SystemError & err )
@@ -240,9 +239,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     std::cout << "vk::SystemError: " << err.what() << std::endl;
     exit( -1 );
   }
-  catch ( std::runtime_error & err )
+  catch ( std::exception & err )
   {
-    std::cout << "std::runtime_error: " << err.what() << std::endl;
+    std::cout << "std::exception: " << err.what() << std::endl;
     exit( -1 );
   }
   catch ( ... )

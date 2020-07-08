@@ -15,8 +15,11 @@
 // VulkanHpp Samples : RayTracing
 //                     Simple sample how to ray trace using Vulkan
 
+// clang-format off
+// we need to include vulkan.hpp before glfw3.h, so stop clang-format to reorder them
 #include <vulkan/vulkan.hpp>
 #include <GLFW/glfw3.h>
+// clang-format on
 #include <numeric>
 #include <random>
 #include <sstream>
@@ -46,11 +49,11 @@ struct GeometryInstanceData
                         uint32_t            instanceOffset_,
                         uint8_t             flags_,
                         uint64_t            accelerationStructureHandle_ )
-    : instanceId( instanceID_ ),
-      mask( mask_ ),
-      instanceOffset( instanceOffset_ ),
-      flags( flags_ ),
-      accelerationStructureHandle( accelerationStructureHandle_ )
+    : instanceId( instanceID_ )
+    , mask( mask_ )
+    , instanceOffset( instanceOffset_ )
+    , flags( flags_ )
+    , accelerationStructureHandle( accelerationStructureHandle_ )
   {
     assert( !( instanceID_ & 0xFF000000 ) && !( instanceOffset_ & 0xFF000000 ) );
     memcpy( transform, &transform_, 12 * sizeof( float ) );
@@ -86,11 +89,8 @@ AccelerationStructureData
 
   vk::AccelerationStructureTypeNV accelerationStructureType =
     instances.empty() ? vk::AccelerationStructureTypeNV::eBottomLevel : vk::AccelerationStructureTypeNV::eTopLevel;
-  vk::AccelerationStructureInfoNV accelerationStructureInfo( accelerationStructureType,
-                                                             {},
-                                                             vk::su::checked_cast<uint32_t>( instances.size() ),
-                                                             vk::su::checked_cast<uint32_t>( geometries.size() ),
-                                                             geometries.data() );
+  vk::AccelerationStructureInfoNV accelerationStructureInfo(
+    accelerationStructureType, {}, vk::su::checked_cast<uint32_t>( instances.size() ), geometries );
   accelerationStructureData.acclerationStructure = device->createAccelerationStructureNVUnique(
     vk::AccelerationStructureCreateInfoNV( 0, accelerationStructureInfo ) );
 
@@ -157,11 +157,8 @@ AccelerationStructureData
     *accelerationStructureData.acclerationStructure, *accelerationStructureData.resultBufferData->deviceMemory ) );
 
   commandBuffer->buildAccelerationStructureNV(
-    vk::AccelerationStructureInfoNV( accelerationStructureType,
-                                     {},
-                                     vk::su::checked_cast<uint32_t>( instances.size() ),
-                                     vk::su::checked_cast<uint32_t>( geometries.size() ),
-                                     geometries.data() ),
+    vk::AccelerationStructureInfoNV(
+      accelerationStructureType, {}, vk::su::checked_cast<uint32_t>( instances.size() ), geometries ),
     accelerationStructureData.instanceBufferData ? *accelerationStructureData.instanceBufferData->buffer : nullptr,
     0,
     false,
@@ -871,7 +868,7 @@ int main( int /*argc*/, char ** /*argv*/ )
                                              static_cast<uint32_t>( textures.size() ),
                                              vk::ShaderStageFlagBits::eFragment } } );
     vk::UniquePipelineLayout pipelineLayout =
-      device->createPipelineLayoutUnique( vk::PipelineLayoutCreateInfo( {}, 1, &( *descriptorSetLayout ) ) );
+      device->createPipelineLayoutUnique( vk::PipelineLayoutCreateInfo( {}, *descriptorSetLayout ) );
 
     glslang::InitializeProcess();
     vk::UniqueShaderModule vertexShaderModule =
@@ -899,14 +896,13 @@ int main( int /*argc*/, char ** /*argv*/ )
       physicalDevice, device, sizeof( UniformBufferObject ), vk::BufferUsageFlagBits::eUniformBuffer );
 
     vk::UniqueDescriptorSet descriptorSet = std::move(
-      device->allocateDescriptorSetsUnique( vk::DescriptorSetAllocateInfo( *descriptorPool, 1, &*descriptorSetLayout ) )
+      device->allocateDescriptorSetsUnique( vk::DescriptorSetAllocateInfo( *descriptorPool, *descriptorSetLayout ) )
         .front() );
-    vk::su::updateDescriptorSets(
-      device,
-      descriptorSet,
-      { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, {} },
-        { vk::DescriptorType::eStorageBuffer, materialBufferData.buffer, {} } },
-      textures );
+    vk::su::updateDescriptorSets( device,
+                                  descriptorSet,
+                                  { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, {} },
+                                    { vk::DescriptorType::eStorageBuffer, materialBufferData.buffer, {} } },
+                                  textures );
 
     // RayTracing specific stuff
 
@@ -996,18 +992,16 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::DescriptorPoolCreateInfo descriptorPoolCreateInfo(
       vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet,
       vk::su::checked_cast<uint32_t>( swapChainData.images.size() ),
-      vk::su::checked_cast<uint32_t>( descriptorPoolSizes.size() ),
-      descriptorPoolSizes.data() );
+      descriptorPoolSizes );
     vk::UniqueDescriptorPool rayTracingDescriptorPool = device->createDescriptorPoolUnique( descriptorPoolCreateInfo );
-    vk::UniqueDescriptorSetLayout rayTracingDescriptorSetLayout = device->createDescriptorSetLayoutUnique(
-      vk::DescriptorSetLayoutCreateInfo( {}, static_cast<uint32_t>( bindings.size() ), bindings.data() ) );
+    vk::UniqueDescriptorSetLayout rayTracingDescriptorSetLayout =
+      device->createDescriptorSetLayoutUnique( vk::DescriptorSetLayoutCreateInfo( {}, bindings ) );
     std::vector<vk::DescriptorSetLayout> layouts;
     for ( size_t i = 0; i < swapChainData.images.size(); i++ )
     {
       layouts.push_back( *rayTracingDescriptorSetLayout );
     }
-    vk::DescriptorSetAllocateInfo descriptorSetAllocateInfo(
-      *rayTracingDescriptorPool, vk::su::checked_cast<uint32_t>( layouts.size() ), layouts.data() );
+    vk::DescriptorSetAllocateInfo        descriptorSetAllocateInfo( *rayTracingDescriptorPool, layouts );
     std::vector<vk::UniqueDescriptorSet> rayTracingDescriptorSets =
       device->allocateDescriptorSetsUnique( descriptorSetAllocateInfo );
 
@@ -1027,15 +1021,14 @@ int main( int /*argc*/, char ** /*argv*/ )
     // view)
     for ( size_t i = 0; i < rayTracingDescriptorSets.size(); i++ )
     {
-      vk::su::updateDescriptorSets(
-        device,
-        rayTracingDescriptorSets[i],
-        { { bindings[2].descriptorType, uniformBufferData.buffer, {} },
-          { bindings[3].descriptorType, vertexBufferData.buffer, {} },
-          { bindings[4].descriptorType, indexBufferData.buffer, {} },
-          { bindings[5].descriptorType, materialBufferData.buffer, {} } },
-        textures,
-        2 );
+      vk::su::updateDescriptorSets( device,
+                                    rayTracingDescriptorSets[i],
+                                    { { bindings[2].descriptorType, uniformBufferData.buffer, {} },
+                                      { bindings[3].descriptorType, vertexBufferData.buffer, {} },
+                                      { bindings[4].descriptorType, indexBufferData.buffer, {} },
+                                      { bindings[5].descriptorType, materialBufferData.buffer, {} } },
+                                    textures,
+                                    2 );
     }
 
     // create the ray-tracing shader modules
@@ -1094,7 +1087,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     // Create the layout of the pipeline following the provided descriptor set layout
     vk::UniquePipelineLayout rayTracingPipelineLayout =
-      device->createPipelineLayoutUnique( vk::PipelineLayoutCreateInfo( {}, 1, &*rayTracingDescriptorSetLayout ) );
+      device->createPipelineLayoutUnique( vk::PipelineLayoutCreateInfo( {}, *rayTracingDescriptorSetLayout ) );
 
     // Assemble the shader stages and recursion depth info into the raytracing pipeline
     // The ray tracing process can shoot rays from the camera, and a shadow ray can be shot from the
@@ -1102,14 +1095,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     // as possible for performance reasons. Even recursive ray tracing should be flattened into a loop
     // in the ray generation to avoid deep recursion.
     uint32_t                           maxRecursionDepth = 2;
-    vk::RayTracingPipelineCreateInfoNV rayTracingPipelineCreateInfo( {},
-                                                                     static_cast<uint32_t>( shaderStages.size() ),
-                                                                     shaderStages.data(),
-                                                                     static_cast<uint32_t>( shaderGroups.size() ),
-                                                                     shaderGroups.data(),
-                                                                     maxRecursionDepth,
-                                                                     *rayTracingPipelineLayout );
-    vk::UniquePipeline                 rayTracingPipeline =
+    vk::RayTracingPipelineCreateInfoNV rayTracingPipelineCreateInfo(
+      {}, shaderStages, shaderGroups, maxRecursionDepth, *rayTracingPipelineLayout );
+    vk::UniquePipeline rayTracingPipeline =
       device->createRayTracingPipelineNVUnique( nullptr, rayTracingPipelineCreateInfo );
 
     uint32_t shaderGroupHandleSize =
@@ -1208,8 +1196,7 @@ int main( int /*argc*/, char ** /*argv*/ )
         commandBuffer->beginRenderPass( vk::RenderPassBeginInfo( *renderPass,
                                                                  *framebuffers[backBufferIndex],
                                                                  vk::Rect2D( vk::Offset2D( 0, 0 ), windowExtent ),
-                                                                 static_cast<uint32_t>( clearValues.size() ),
-                                                                 clearValues.data() ),
+                                                                 clearValues ),
                                         vk::SubpassContents::eInline );
 
         commandBuffer->bindPipeline( vk::PipelineBindPoint::eGraphics, *graphicsPipeline );
@@ -1237,7 +1224,7 @@ int main( int /*argc*/, char ** /*argv*/ )
           nullptr, *swapChainData.imageViews[backBufferIndex], vk::ImageLayout::eGeneral );
         device->updateDescriptorSets(
           vk::WriteDescriptorSet(
-            *rayTracingDescriptorSets[backBufferIndex], 1, 0, 1, bindings[1].descriptorType, &imageInfo ),
+            *rayTracingDescriptorSets[backBufferIndex], 1, 0, bindings[1].descriptorType, imageInfo ),
           {} );
 
         vk::su::setImageLayout( commandBuffer,
@@ -1293,11 +1280,8 @@ int main( int /*argc*/, char ** /*argv*/ )
                                             1,
                                             &( *perFrameData[frameIndex].renderCompleteSemaphore ) ),
                             *perFrameData[frameIndex].fence );
-      presentQueue.presentKHR( vk::PresentInfoKHR( 1,
-                                                   &( *perFrameData[frameIndex].renderCompleteSemaphore ),
-                                                   1,
-                                                   &( *swapChainData.swapChain ),
-                                                   &backBufferIndex ) );
+      presentQueue.presentKHR( vk::PresentInfoKHR(
+        *perFrameData[frameIndex].renderCompleteSemaphore, *swapChainData.swapChain, backBufferIndex ) );
       frameIndex = ( frameIndex + 1 ) % IMGUI_VK_QUEUED_FRAMES;
 
       double endTime = glfwGetTime();
@@ -1330,9 +1314,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     std::cout << "vk::SystemError: " << err.what() << std::endl;
     exit( -1 );
   }
-  catch ( std::runtime_error & err )
+  catch ( std::exception & err )
   {
-    std::cout << "std::runtime_error: " << err.what() << std::endl;
+    std::cout << "std::exception: " << err.what() << std::endl;
     exit( -1 );
   }
   catch ( ... )

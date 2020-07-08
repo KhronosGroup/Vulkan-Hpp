@@ -140,20 +140,17 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::UniqueDescriptorSetLayout descriptorSetLayout = vk::su::createDescriptorSetLayout(
       device, { { vk::DescriptorType::eUniformBufferDynamic, 1, vk::ShaderStageFlagBits::eVertex } } );
     vk::UniquePipelineLayout pipelineLayout = device->createPipelineLayoutUnique(
-      vk::PipelineLayoutCreateInfo( vk::PipelineLayoutCreateFlags(), 1, &descriptorSetLayout.get() ) );
+      vk::PipelineLayoutCreateInfo( vk::PipelineLayoutCreateFlags(), *descriptorSetLayout ) );
 
     // create a DescriptorPool with vk::DescriptorType::eUniformBufferDynamic
     vk::UniqueDescriptorPool descriptorPool =
       vk::su::createDescriptorPool( device, { { vk::DescriptorType::eUniformBufferDynamic, 1 } } );
     vk::UniqueDescriptorSet descriptorSet = std::move(
-      device->allocateDescriptorSetsUnique( vk::DescriptorSetAllocateInfo( *descriptorPool, 1, &*descriptorSetLayout ) )
+      device->allocateDescriptorSetsUnique( vk::DescriptorSetAllocateInfo( *descriptorPool, *descriptorSetLayout ) )
         .front() );
 
     vk::su::updateDescriptorSets(
-      device,
-      descriptorSet,
-      { { vk::DescriptorType::eUniformBufferDynamic, uniformBufferData.buffer, {} } },
-      {} );
+      device, descriptorSet, { { vk::DescriptorType::eUniformBufferDynamic, uniformBufferData.buffer, {} } }, {} );
 
     vk::UniquePipelineCache pipelineCache    = device->createPipelineCacheUnique( vk::PipelineCacheCreateInfo() );
     vk::UniquePipeline      graphicsPipeline = vk::su::createGraphicsPipeline(
@@ -176,13 +173,12 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     commandBuffer->begin( vk::CommandBufferBeginInfo( vk::CommandBufferUsageFlags() ) );
 
-    vk::ClearValue clearValues[2];
+    std::array<vk::ClearValue, 2> clearValues;
     clearValues[0].color        = vk::ClearColorValue( std::array<float, 4>( { { 0.2f, 0.2f, 0.2f, 0.2f } } ) );
     clearValues[1].depthStencil = vk::ClearDepthStencilValue( 1.0f, 0 );
     vk::RenderPassBeginInfo renderPassBeginInfo( renderPass.get(),
                                                  framebuffers[currentBuffer.value].get(),
                                                  vk::Rect2D( vk::Offset2D( 0, 0 ), surfaceData.extent ),
-                                                 2,
                                                  clearValues );
     commandBuffer->beginRenderPass( renderPassBeginInfo, vk::SubpassContents::eInline );
     commandBuffer->bindPipeline( vk::PipelineBindPoint::eGraphics, graphicsPipeline.get() );
@@ -216,14 +212,13 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::UniqueFence drawFence = device->createFenceUnique( vk::FenceCreateInfo() );
 
     vk::PipelineStageFlags waitDestinationStageMask( vk::PipelineStageFlagBits::eColorAttachmentOutput );
-    vk::SubmitInfo submitInfo( 1, &imageAcquiredSemaphore.get(), &waitDestinationStageMask, 1, &commandBuffer.get() );
+    vk::SubmitInfo         submitInfo( *imageAcquiredSemaphore, waitDestinationStageMask, *commandBuffer );
     graphicsQueue.submit( submitInfo, drawFence.get() );
 
     while ( vk::Result::eTimeout == device->waitForFences( drawFence.get(), VK_TRUE, vk::su::FenceTimeout ) )
       ;
 
-    presentQueue.presentKHR(
-      vk::PresentInfoKHR( 0, nullptr, 1, &swapChainData.swapChain.get(), &currentBuffer.value ) );
+    presentQueue.presentKHR( vk::PresentInfoKHR( {}, *swapChainData.swapChain, currentBuffer.value ) );
     std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
 
     /* VULKAN_KEY_END */
@@ -235,9 +230,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     std::cout << "vk::SystemError: " << err.what() << std::endl;
     exit( -1 );
   }
-  catch ( std::runtime_error & err )
+  catch ( std::exception & err )
   {
-    std::cout << "std::runtime_error: " << err.what() << std::endl;
+    std::cout << "std::exception: " << err.what() << std::endl;
     exit( -1 );
   }
   catch ( ... )

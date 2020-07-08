@@ -119,7 +119,7 @@ int main( int /*argc*/, char ** /*argv*/ )
         { vk::DescriptorType::eCombinedImageSampler, 1, vk::ShaderStageFlagBits::eFragment } },
       vk::DescriptorSetLayoutCreateFlagBits::ePushDescriptorKHR );
     vk::UniquePipelineLayout pipelineLayout = device->createPipelineLayoutUnique(
-      vk::PipelineLayoutCreateInfo( vk::PipelineLayoutCreateFlags(), 1, &descriptorSetLayout.get() ) );
+      vk::PipelineLayoutCreateInfo( vk::PipelineLayoutCreateFlags(), *descriptorSetLayout ) );
 
     vk::UniqueRenderPass renderPass = vk::su::createRenderPass(
       device,
@@ -163,13 +163,12 @@ int main( int /*argc*/, char ** /*argv*/ )
     assert( currentBuffer.result == vk::Result::eSuccess );
     assert( currentBuffer.value < framebuffers.size() );
 
-    vk::ClearValue clearValues[2];
+    std::array<vk::ClearValue, 2> clearValues;
     clearValues[0].color        = vk::ClearColorValue( std::array<float, 4>( { { 0.2f, 0.2f, 0.2f, 0.2f } } ) );
     clearValues[1].depthStencil = vk::ClearDepthStencilValue( 1.0f, 0 );
     vk::RenderPassBeginInfo renderPassBeginInfo( renderPass.get(),
                                                  framebuffers[currentBuffer.value].get(),
                                                  vk::Rect2D( vk::Offset2D( 0, 0 ), surfaceData.extent ),
-                                                 2,
                                                  clearValues );
     commandBuffer->beginRenderPass( renderPassBeginInfo, vk::SubpassContents::eInline );
     commandBuffer->bindPipeline( vk::PipelineBindPoint::eGraphics, graphicsPipeline.get() );
@@ -179,8 +178,8 @@ int main( int /*argc*/, char ** /*argv*/ )
                                        textureData.imageData->imageView.get(),
                                        vk::ImageLayout::eShaderReadOnlyOptimal );
     vk::WriteDescriptorSet   writeDescriptorSets[2] = {
-      vk::WriteDescriptorSet( {}, 0, 0, 1, vk::DescriptorType::eUniformBuffer, nullptr, &bufferInfo ),
-      vk::WriteDescriptorSet( {}, 1, 0, 1, vk::DescriptorType::eCombinedImageSampler, &imageInfo )
+      vk::WriteDescriptorSet( {}, 0, 0, vk::DescriptorType::eUniformBuffer, {}, bufferInfo ),
+      vk::WriteDescriptorSet( {}, 1, 0, vk::DescriptorType::eCombinedImageSampler, imageInfo )
     };
 
     // this call is from an extension and needs the dynamic dispatcher !!
@@ -204,14 +203,13 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::UniqueFence drawFence = device->createFenceUnique( vk::FenceCreateInfo() );
 
     vk::PipelineStageFlags waitDestinationStageMask( vk::PipelineStageFlagBits::eColorAttachmentOutput );
-    vk::SubmitInfo submitInfo( 1, &imageAcquiredSemaphore.get(), &waitDestinationStageMask, 1, &commandBuffer.get() );
+    vk::SubmitInfo         submitInfo( *imageAcquiredSemaphore, waitDestinationStageMask, *commandBuffer );
     graphicsQueue.submit( submitInfo, drawFence.get() );
 
     while ( vk::Result::eTimeout == device->waitForFences( drawFence.get(), VK_TRUE, vk::su::FenceTimeout ) )
       ;
 
-    presentQueue.presentKHR(
-      vk::PresentInfoKHR( 0, nullptr, 1, &swapChainData.swapChain.get(), &currentBuffer.value ) );
+    presentQueue.presentKHR( vk::PresentInfoKHR( {}, *swapChainData.swapChain, currentBuffer.value ) );
     std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
 
     /* VULKAN_KEY_END */
@@ -223,9 +221,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     std::cout << "vk::SystemError: " << err.what() << std::endl;
     exit( -1 );
   }
-  catch ( std::runtime_error & err )
+  catch ( std::exception & err )
   {
-    std::cout << "std::runtime_error: " << err.what() << std::endl;
+    std::cout << "std::exception: " << err.what() << std::endl;
     exit( -1 );
   }
   catch ( ... )

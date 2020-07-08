@@ -162,12 +162,12 @@ int                 main( int /*argc*/, char ** /*argv*/ )
     vk::DescriptorSetLayoutBinding layoutBinding(
       0, vk::DescriptorType::eInputAttachment, 1, vk::ShaderStageFlagBits::eFragment );
     vk::UniqueDescriptorSetLayout descriptorSetLayout = device->createDescriptorSetLayoutUnique(
-      vk::DescriptorSetLayoutCreateInfo( vk::DescriptorSetLayoutCreateFlags(), 1, &layoutBinding ) );
+      vk::DescriptorSetLayoutCreateInfo( vk::DescriptorSetLayoutCreateFlags(), layoutBinding ) );
 
     vk::UniquePipelineLayout pipelineLayout = device->createPipelineLayoutUnique(
-      vk::PipelineLayoutCreateInfo( vk::PipelineLayoutCreateFlags(), 1, &descriptorSetLayout.get() ) );
+      vk::PipelineLayoutCreateInfo( vk::PipelineLayoutCreateFlags(), *descriptorSetLayout ) );
 
-    vk::AttachmentDescription attachments[2] = {
+    std::array<vk::AttachmentDescription, 2> attachments = {
       // First attachment is the color attachment - clear at the beginning of the renderpass and transition layout to
       // PRESENT_SRC_KHR at the end of renderpass
       vk::AttachmentDescription( vk::AttachmentDescriptionFlags(),
@@ -195,9 +195,9 @@ int                 main( int /*argc*/, char ** /*argv*/ )
     vk::AttachmentReference colorReference( 0, vk::ImageLayout::eColorAttachmentOptimal );
     vk::AttachmentReference inputReference( 1, vk::ImageLayout::eShaderReadOnlyOptimal );
     vk::SubpassDescription  subPass(
-      vk::SubpassDescriptionFlags(), vk::PipelineBindPoint::eGraphics, 1, &inputReference, 1, &colorReference );
-    vk::UniqueRenderPass renderPass = device->createRenderPassUnique(
-      vk::RenderPassCreateInfo( vk::RenderPassCreateFlags(), 2, attachments, 1, &subPass ) );
+      vk::SubpassDescriptionFlags(), vk::PipelineBindPoint::eGraphics, inputReference, colorReference );
+    vk::UniqueRenderPass renderPass =
+      device->createRenderPassUnique( vk::RenderPassCreateInfo( vk::RenderPassCreateFlags(), attachments, subPass ) );
 
     glslang::InitializeProcess();
     vk::UniqueShaderModule vertexShaderModule =
@@ -211,16 +211,16 @@ int                 main( int /*argc*/, char ** /*argv*/ )
 
     vk::DescriptorPoolSize   poolSize( vk::DescriptorType::eInputAttachment, 1 );
     vk::UniqueDescriptorPool descriptorPool = device->createDescriptorPoolUnique(
-      vk::DescriptorPoolCreateInfo( vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet, 1, 1, &poolSize ) );
+      vk::DescriptorPoolCreateInfo( vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet, 1, poolSize ) );
 
     vk::UniqueDescriptorSet descriptorSet = std::move(
-      device->allocateDescriptorSetsUnique( vk::DescriptorSetAllocateInfo( *descriptorPool, 1, &*descriptorSetLayout ) )
+      device->allocateDescriptorSetsUnique( vk::DescriptorSetAllocateInfo( *descriptorPool, *descriptorSetLayout ) )
         .front() );
 
     vk::DescriptorImageInfo inputImageInfo(
       nullptr, inputAttachmentView.get(), vk::ImageLayout::eShaderReadOnlyOptimal );
     vk::WriteDescriptorSet writeDescriptorSet(
-      descriptorSet.get(), 0, 0, 1, vk::DescriptorType::eInputAttachment, &inputImageInfo );
+      descriptorSet.get(), 0, 0, vk::DescriptorType::eInputAttachment, inputImageInfo );
     device->updateDescriptorSets( vk::ArrayProxy<const vk::WriteDescriptorSet>( 1, &writeDescriptorSet ), nullptr );
 
     vk::UniquePipelineCache pipelineCache = device->createPipelineCacheUnique( vk::PipelineCacheCreateInfo() );
@@ -248,8 +248,7 @@ int                 main( int /*argc*/, char ** /*argv*/ )
     commandBuffer->beginRenderPass( vk::RenderPassBeginInfo( renderPass.get(),
                                                              framebuffers[currentBuffer].get(),
                                                              vk::Rect2D( vk::Offset2D( 0, 0 ), surfaceData.extent ),
-                                                             1,
-                                                             &clearValue ),
+                                                             clearValue ),
                                     vk::SubpassContents::eInline );
     commandBuffer->bindPipeline( vk::PipelineBindPoint::eGraphics, graphicsPipeline.get() );
     commandBuffer->bindDescriptorSets(
@@ -272,7 +271,7 @@ int                 main( int /*argc*/, char ** /*argv*/ )
 
     vk::su::submitAndWait( device, graphicsQueue, commandBuffer );
 
-    presentQueue.presentKHR( vk::PresentInfoKHR( 0, nullptr, 1, &swapChainData.swapChain.get(), &currentBuffer ) );
+    presentQueue.presentKHR( vk::PresentInfoKHR( {}, *swapChainData.swapChain, currentBuffer ) );
     std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
   }
   catch ( vk::SystemError & err )
@@ -280,9 +279,9 @@ int                 main( int /*argc*/, char ** /*argv*/ )
     std::cout << "vk::SystemError: " << err.what() << std::endl;
     exit( -1 );
   }
-  catch ( std::runtime_error & err )
+  catch ( std::exception & err )
   {
-    std::cout << "std::runtime_error: " << err.what() << std::endl;
+    std::cout << "std::exception: " << err.what() << std::endl;
     exit( -1 );
   }
   catch ( ... )

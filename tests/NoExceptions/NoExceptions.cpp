@@ -60,7 +60,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::DeviceQueueCreateFlags(), static_cast<uint32_t>( graphicsQueueFamilyIndex ), 1, &queuePriority );
   vk::UniqueDevice device =
     physicalDevices[0]
-      .createDeviceUnique( vk::DeviceCreateInfo( vk::DeviceCreateFlags(), 1, &deviceQueueCreateInfo ) )
+      .createDeviceUnique( vk::DeviceCreateInfo( vk::DeviceCreateFlags(), deviceQueueCreateInfo ) )
       .value;
   VULKAN_HPP_DEFAULT_DISPATCHER.init( *device );
 

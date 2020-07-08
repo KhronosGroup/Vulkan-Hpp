@@ -90,6 +90,11 @@ std::string              trimEnd( std::string const & input );
 std::string              trimStars( std::string const & input );
 void                     warn( bool condition, int line, std::string const & message );
 
+const std::set<std::string> ignoreLens = { "null-terminated",
+                                           R"(latexmath:[\lceil{\mathit{rasterizationSamples} \over 32}\rceil])",
+                                           "2*VK_UUID_SIZE",
+                                           "2*ename:VK_UUID_SIZE" };
+
 const std::set<std::string> nonConstSTypeStructs = { "VkBaseInStructure", "VkBaseOutStructure" };
 
 void appendArgumentCount( std::string &       str,
@@ -3582,6 +3587,21 @@ std::string
            : "";
 }
 
+template <class InputIt, class UnaryPredicate>
+std::vector<InputIt> findAll( InputIt first, InputIt last, UnaryPredicate p )
+{
+  std::vector<InputIt> result;
+  while ( first != last )
+  {
+    if ( p( *first ) )
+    {
+      result.push_back( first );
+    }
+    ++first;
+  }
+  return result;
+}
+
 void VulkanHppGenerator::appendStructConstructors( std::string &                                 str,
                                                    std::pair<std::string, StructureData> const & structData,
                                                    std::string const &                           prefix ) const
@@ -3605,7 +3625,7 @@ ${prefix}}
   for ( auto const & member : structData.second.members )
   {
     // gather the arguments
-    listedArgument = appendStructConstructorArgument( arguments, listedArgument, member );
+    listedArgument = appendStructConstructorArgument( arguments, listedArgument, member, true );
 
     // gather the initializers; skip members 'pNext' and 'sType', they are directly set by initializers
     if ( ( member.name != "pNext" ) && ( member.name != "sType" ) )
@@ -3621,16 +3641,117 @@ ${prefix}}
                            { "initializers", initializers },
                            { "prefix", prefix },
                            { "structName", stripPrefix( structData.first, "Vk" ) } } );
+
+  appendStructConstructorsEnhanced( str, structData, prefix );
+}
+
+void VulkanHppGenerator::appendStructConstructorsEnhanced( std::string &                                 str,
+                                                           std::pair<std::string, StructureData> const & structData,
+                                                           std::string const &                           prefix ) const
+{
+  auto memberIts =
+    findAll( structData.second.members.begin(), structData.second.members.end(), []( MemberData const & md ) {
+      return !md.len.empty() && ( ignoreLens.find( md.len.front() ) == ignoreLens.end() );
+    } );
+  if ( !memberIts.empty() )
+  {
+    // maximal one member to be handled by an ArrayProxyNoTemporaries is of type void
+    assert( std::count_if( memberIts.begin(), memberIts.end(), []( auto it ) { return it->type.type == "void"; } ) <=
+            1 );
+
+    // map from len-members to all the array members using that len
+    std::map<std::vector<MemberData>::const_iterator, std::vector<std::vector<MemberData>::const_iterator>> lenIts;
+    for ( auto const & mit : memberIts )
+    {
+      std::string lenName =
+        ( mit->len.front() == R"(latexmath:[\textrm{codeSize} \over 4])" ) ? "codeSize" : mit->len.front();
+      auto lenIt = std::find_if(
+        structData.second.members.begin(), mit, [&lenName]( MemberData const & md ) { return md.name == lenName; } );
+      assert( lenIt != mit );
+      lenIts[lenIt].push_back( mit );
+    }
+
+    std::string arguments, initializers;
+    bool        listedArgument = false;
+    bool        firstArgument  = true;
+    bool        arrayListed    = false;
+    std::string templateHeader, sizeChecks;
+    for ( auto mit = structData.second.members.begin(); mit != structData.second.members.end(); ++mit )
+    {
+      // gather the initializers; skip members 'pNext' and 'sType', they are directly set by initializers
+      if ( ( mit->name != "pNext" ) && ( mit->name != "sType" ) )
+      {
+        auto litit = lenIts.find( mit );
+        if ( litit != lenIts.end() )
+        {
+          // len arguments just have an initalizer, from the ArrayProxyNoTemporaries size
+          assert( ( litit->second.size() == 1 ) || !litit->second.front()->optional );
+          initializers +=
+            ( firstArgument ? ": " : ", " ) + mit->name + "( " + generateLenInitializer( mit, litit ) + " )";
+          sizeChecks += generateSizeCheck( litit->second, stripPrefix(structData.first, "Vk"), prefix );
+        }
+        else if ( std::find( memberIts.begin(), memberIts.end(), mit ) != memberIts.end() )
+        {
+          assert( beginsWith( mit->name, "p" ) );
+          std::string argumentName = startLowerCase( stripPrefix( mit->name, "p" ) ) + "_";
+
+          assert( endsWith( mit->type.postfix, "*" ) );
+          std::string argumentType = stripPostfix( mit->type.compose(), "*" );
+          if ( mit->type.type == "void" )
+          {
+            templateHeader = prefix + "template <typename T>\n";
+
+            size_t pos = argumentType.find( "void" );
+            assert( pos != std::string::npos );
+            argumentType.replace( pos, strlen( "void" ), "T" );
+          }
+
+          arguments += listedArgument ? ", " : "";
+          arguments += "VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<" + argumentType + "> const & " + argumentName;
+          if ( arrayListed )
+          {
+            arguments += " = {}";
+          }
+          listedArgument = true;
+          arrayListed    = true;
+
+          initializers += ( firstArgument ? ": " : ", " ) + mit->name + "( " + argumentName + ".data() )";
+        }
+        else
+        {
+          listedArgument = appendStructConstructorArgument( arguments, listedArgument, *mit, arrayListed );
+          initializers += ( firstArgument ? ": " : ", " ) + mit->name + "( " + mit->name + "_ )";
+        }
+        firstArgument = false;
+      }
+    }
+    static const std::string constructorTemplate = R"(
+#if !defined(VULKAN_HPP_DISABLE_ENHANCED_MODE)
+${templateHeader}${prefix}${structName}( ${arguments} )
+${prefix}${initializers}
+${prefix}{${sizeChecks}}
+#endif  // !defined(VULKAN_HPP_DISABLE_ENHANCED_MODE)
+)";
+
+    str += replaceWithMap( constructorTemplate,
+                           { { "arguments", arguments },
+                             { "initializers", initializers },
+                             { "prefix", prefix },
+                             { "sizeChecks", sizeChecks },
+                             { "structName", stripPrefix( structData.first, "Vk" ) },
+                             { "templateHeader", templateHeader } } );
+  }
 }
 
 bool VulkanHppGenerator::appendStructConstructorArgument( std::string &      str,
                                                           bool               listedArgument,
-                                                          MemberData const & memberData ) const
+                                                          MemberData const & memberData,
+                                                          bool               withDefault ) const
 {
   // skip members 'pNext' and 'sType', as they are never explicitly set
   if ( ( memberData.name != "pNext" ) && ( memberData.name != "sType" ) )
   {
-    str += ( listedArgument ? ( "," ) : "" );
+    str += ( listedArgument ? ( ", " ) : "" );
     if ( memberData.arraySizes.empty() )
     {
       str += memberData.type.compose() + " ";
@@ -3639,18 +3760,23 @@ bool VulkanHppGenerator::appendStructConstructorArgument( std::string &      str
     {
       str += constructStandardArray( memberData.type.compose(), memberData.arraySizes ) + " const& ";
     }
-    str += memberData.name + "_ = ";
+    str += memberData.name + "_";
 
-    auto enumIt = m_enums.find( memberData.type.type );
-    if ( enumIt != m_enums.end() && memberData.type.postfix.empty() )
+    if ( withDefault )
     {
-      appendEnumInitializer( str, memberData.type, memberData.arraySizes, enumIt->second.values );
+      str += " = ";
+      auto enumIt = m_enums.find( memberData.type.type );
+      if ( enumIt != m_enums.end() && memberData.type.postfix.empty() )
+      {
+        appendEnumInitializer( str, memberData.type, memberData.arraySizes, enumIt->second.values );
+      }
+      else
+      {
+        // all the rest can be initialized with just {}
+        str += "{}";
+      }
     }
-    else
-    {
-      // all the rest can be initialized with just {}
-      str += "{}";
-    }
+
     listedArgument = true;
   }
   return listedArgument;
@@ -3785,10 +3911,6 @@ void VulkanHppGenerator::appendStructSetter( std::string &                   str
             : "" },
         { "structureName", structureName } } );
 
-    std::set<std::string> ignoreLens = { "null-terminated",
-                                         R"(latexmath:[\lceil{\mathit{rasterizationSamples} \over 32}\rceil])",
-                                         "2*VK_UUID_SIZE",
-                                         "2*ename:VK_UUID_SIZE" };
     if ( !member.len.empty() && ( ignoreLens.find( member.len[0] ) == ignoreLens.end() ) )
     {
       assert( member.name.front() == 'p' );
@@ -3878,7 +4000,8 @@ void VulkanHppGenerator::appendStructSubConstructor( std::string &              
     bool        listedArgument = true;
     for ( size_t i = subStruct->second.members.size(); i < structData.second.members.size(); i++ )
     {
-      listedArgument = appendStructConstructorArgument( subArguments, listedArgument, structData.second.members[i] );
+      listedArgument =
+        appendStructConstructorArgument( subArguments, listedArgument, structData.second.members[i], true );
 
       assert( structData.second.members[i].arraySizes.empty() );
       subCopies +=
@@ -4647,8 +4770,8 @@ std::map<size_t, size_t> VulkanHppGenerator::determineVectorParamIndices( std::v
       assert( ( std::count_if( params.begin(), params.end(), findLambda ) == 0 ) ||
               ( findIt < it ) );  // make sure, there is no other parameter like that
 
-      // add this parameter as a vector parameter, using the len-name parameter as the second value (or INVALID_INDEX
-      // if there is nothing like that)
+      // add this parameter as a vector parameter, using the len-name parameter as the second value (or
+      // INVALID_INDEX if there is nothing like that)
       vectorParamIndices.insert(
         std::make_pair( std::distance( params.begin(), it ),
                         ( findIt < it ) ? std::distance( params.begin(), findIt ) : INVALID_INDEX ) );
@@ -4745,6 +4868,56 @@ std::string const & VulkanHppGenerator::getVulkanLicenseHeader() const
   return m_vulkanLicenseHeader;
 }
 
+std::string VulkanHppGenerator::generateLenInitializer(
+  std::vector<MemberData>::const_iterator                                        mit,
+  std::map<std::vector<MemberData>::const_iterator,
+           std::vector<std::vector<MemberData>::const_iterator>>::const_iterator litit ) const
+{
+  std::string initializer;
+  if ( ( 1 < litit->second.size() ) &&
+       ( std::find_if( litit->second.begin(), litit->second.end(), []( std::vector<MemberData>::const_iterator it ) {
+           return !it->noAutoValidity;
+         } ) == litit->second.end() ) )
+  {
+    // there are multiple arrays related to this len, all marked with noautovalidity
+    for ( size_t i = 0; i + 1 < litit->second.size(); i++ )
+    {
+      auto        arrayIt      = litit->second[i];
+      std::string argumentName = startLowerCase( stripPrefix( arrayIt->name, "p" ) ) + "_";
+      initializer += "!" + argumentName + ".empty() ? " + argumentName + ".size() : ";
+    }
+    auto        arrayIt      = litit->second.back();
+    std::string argumentName = startLowerCase( stripPrefix( arrayIt->name, "p" ) ) + "_";
+    initializer += argumentName + ".size()";
+  }
+  else
+  {
+    auto arrayIt = litit->second.front();
+    assert( ( arrayIt->len.front() == litit->first->name ) ||
+            ( ( arrayIt->len.front() == R"(latexmath:[\textrm{codeSize} \over 4])" ) &&
+              ( litit->first->name == "codeSize" ) ) );
+
+    assert( beginsWith( arrayIt->name, "p" ) );
+    std::string argumentName = startLowerCase( stripPrefix( arrayIt->name, "p" ) ) + "_";
+
+    assert( mit->type.prefix.empty() && mit->type.postfix.empty() );
+    initializer = argumentName + ".size()";
+    if ( arrayIt->len.front() == R"(latexmath:[\textrm{codeSize} \over 4])" )
+    {
+      initializer += " * 4";
+    }
+    if ( arrayIt->type.type == "void" )
+    {
+      initializer += " * sizeof(T)";
+    }
+  }
+  if ( mit->type.type != "size_t" )
+  {
+    initializer = "static_cast<" + mit->type.type + ">( " + initializer + " )";
+  }
+  return initializer;
+}
+
 std::pair<std::string, std::string>
   VulkanHppGenerator::generateProtection( std::string const & feature, std::set<std::string> const & extensions ) const
 {
@@ -4779,6 +4952,79 @@ std::pair<std::string, std::string> VulkanHppGenerator::generateProtection( std:
     assert( typeIt != m_types.end() );
     return generateProtection( typeIt->second.feature, typeIt->second.extensions );
   }
+}
+
+std::string
+  VulkanHppGenerator::generateSizeCheck( std::vector<std::vector<MemberData>::const_iterator> const & arrayIts,
+                                         std::string const &                                          structName,
+                                         std::string const &                                          prefix ) const
+{
+  std::string sizeCheck;
+  if ( 1 < arrayIts.size() )
+  {
+    std::string assertionText, throwText;
+    if ( std::find_if( arrayIts.begin(), arrayIts.end(), []( std::vector<MemberData>::const_iterator it ) {
+           return !it->noAutoValidity;
+         } ) == arrayIts.end() )
+    {
+      // all the arrays are marked with noautovalidity -> exactly one of them has to be non-empty
+      std::string sum;
+      for ( size_t first = 0; first + 1 < arrayIts.size(); ++first )
+      {
+        sum += "!" + startLowerCase( stripPrefix( arrayIts[first]->name, "p" ) ) + "_.empty() + ";
+      }
+      sum += "!" + startLowerCase( stripPrefix( arrayIts.back()->name, "p" ) ) + "_.empty()";
+      assertionText += prefix + "  VULKAN_HPP_ASSERT( ( " + sum + " ) == 1 );\n";
+      throwText += prefix + "  if ( ( " + sum + " ) != 1 )\n";
+      throwText += prefix + "  {\n";
+      throwText += prefix + "    throw LogicError( VULKAN_HPP_NAMESPACE_STRING \"::" + structName + "::" + structName +
+                   ": ( " + sum + " ) != 1\" );\n";
+      throwText += prefix + "  }\n";
+    }
+    else
+    {
+      // none of the arrays should be marked with noautovalidity !
+      assert( std::find_if( arrayIts.begin(), arrayIts.end(), []( std::vector<MemberData>::const_iterator it ) {
+                return it->noAutoValidity;
+              } ) == arrayIts.end() );
+      for ( size_t first = 0; first + 1 < arrayIts.size(); ++first )
+      {
+        assert( beginsWith( arrayIts[first]->name, "p" ) );
+        std::string firstName = startLowerCase( stripPrefix( arrayIts[first]->name, "p" ) ) + "_";
+        for ( auto second = first + 1; second < arrayIts.size(); ++second )
+        {
+          assert( beginsWith( arrayIts[second]->name, "p" ) );
+          std::string secondName     = startLowerCase( stripPrefix( arrayIts[second]->name, "p" ) ) + "_";
+          std::string assertionCheck = firstName + ".size() == " + secondName + ".size()";
+          std::string throwCheck     = firstName + ".size() != " + secondName + ".size()";
+          if ( arrayIts[first]->optional || arrayIts[second]->optional )
+          {
+            assertionCheck = "( " + assertionCheck + " )";
+            throwCheck     = "( " + throwCheck + " )";
+            if ( arrayIts[second]->optional )
+            {
+              assertionCheck = secondName + ".empty() || " + assertionCheck;
+              throwCheck     = "!" + secondName + ".empty() && " + throwCheck;
+            }
+            if ( arrayIts[first]->optional )
+            {
+              assertionCheck = firstName + ".empty() || " + assertionCheck;
+              throwCheck     = "!" + firstName + ".empty() && " + throwCheck;
+            }
+          }
+          assertionText += prefix + "  VULKAN_HPP_ASSERT( " + assertionCheck + " );\n";
+          throwText += prefix + "  if ( " + throwCheck + " )\n";
+          throwText += prefix + "  {\n";
+          throwText += prefix + "    throw LogicError( VULKAN_HPP_NAMESPACE_STRING \"::" + structName +
+                       "::" + structName + ": " + throwCheck + "\" );\n";
+          throwText += prefix + "  }\n";
+        }
+      }
+    }
+    sizeCheck += "\n#ifdef VULKAN_HPP_NO_EXCEPTIONS\n" + assertionText + "#else\n" + throwText +
+                 "#endif /*VULKAN_HPP_NO_EXCEPTIONS*/\n" + prefix;
+  }
+  return sizeCheck;
 }
 
 std::set<std::string> VulkanHppGenerator::getPlatforms( std::set<std::string> const & extensions ) const
@@ -6489,9 +6735,8 @@ void VulkanHppGenerator::readStructMember( tinyxml2::XMLElement const * element,
       std::string const & len = memberData.len[0];
       auto                lenMember =
         std::find_if( members.begin(), members.end(), [&len]( MemberData const & md ) { return ( md.name == len ); } );
-      check( ( len == "null-terminated" ) || ( len == R"(latexmath:[\textrm{codeSize} \over 4])" ) ||
-               ( len == R"(latexmath:[\lceil{\mathit{rasterizationSamples} \over 32}\rceil])" ) ||
-               ( len == "2*VK_UUID_SIZE" ) || ( len == "2*ename:VK_UUID_SIZE" ) || ( lenMember != members.end() ),
+      check( ( lenMember != members.end() ) || ( ignoreLens.find( len ) != ignoreLens.end() ) ||
+               ( len == R"(latexmath:[\textrm{codeSize} \over 4])" ),
              line,
              "member attribute <len> holds unknown value <" + len + ">" );
       if ( lenMember != members.end() )
@@ -6506,6 +6751,14 @@ void VulkanHppGenerator::readStructMember( tinyxml2::XMLElement const * element,
                line,
                "member attribute <len> holds unknown second value <" + memberData.len[1] + ">" );
       }
+    }
+    else if ( attribute.first == "noautovalidity" )
+    {
+      memberData.noAutoValidity = ( attribute.second == "true" );
+    }
+    else if ( attribute.first == "optional" )
+    {
+      memberData.optional = ( attribute.second == "true" );
     }
     else if ( attribute.first == "selection" )
     {

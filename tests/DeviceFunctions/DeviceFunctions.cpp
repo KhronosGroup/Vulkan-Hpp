@@ -47,7 +47,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::DeviceQueueCreateInfo deviceQueueCreateInfo(
       vk::DeviceQueueCreateFlags(), static_cast<uint32_t>( graphicsQueueFamilyIndex ), 1, &queuePriority );
     vk::UniqueDevice device =
-      physicalDevice.createDeviceUnique( vk::DeviceCreateInfo( vk::DeviceCreateFlags(), 1, &deviceQueueCreateInfo ) );
+      physicalDevice.createDeviceUnique( vk::DeviceCreateInfo( vk::DeviceCreateFlags(), deviceQueueCreateInfo ) );
 
     std::vector<uint8_t> data;
     device->getAccelerationStructureHandleNV<uint8_t>( {}, data, vk::DispatchLoaderDynamic() );

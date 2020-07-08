@@ -53,7 +53,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::DeviceQueueCreateInfo deviceQueueCreateInfo(
       vk::DeviceQueueCreateFlags(), static_cast<uint32_t>( graphicsQueueFamilyIndex ), 1, &queuePriority );
     vk::UniqueDevice device =
-      physicalDevice.createDeviceUnique( vk::DeviceCreateInfo( vk::DeviceCreateFlags(), 1, &deviceQueueCreateInfo ) );
+      physicalDevice.createDeviceUnique( vk::DeviceCreateInfo( vk::DeviceCreateFlags(), deviceQueueCreateInfo ) );
 
     // Note: No need to explicitly destroy the device, as the corresponding destroy function is
     // called by the destructor of the UniqueDevice on leaving this scope.
@@ -63,6 +63,11 @@ int main( int /*argc*/, char ** /*argv*/ )
   catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
+    exit( -1 );
+  }
+  catch ( std::exception & err )
+  {
+    std::cout << "std::exception: " << err.what() << std::endl;
     exit( -1 );
   }
   catch ( ... )

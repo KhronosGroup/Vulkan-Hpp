@@ -58,7 +58,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     /* VULKAN_KEY_START */
 
-    vk::ImageView attachments[2];
+    std::array<vk::ImageView, 2> attachments;
     attachments[1] = depthBufferData.imageView.get();
 
     std::vector<vk::UniqueFramebuffer> framebuffers;
@@ -68,7 +68,6 @@ int main( int /*argc*/, char ** /*argv*/ )
       attachments[0] = view.get();
       framebuffers.push_back( device->createFramebufferUnique( vk::FramebufferCreateInfo( vk::FramebufferCreateFlags(),
                                                                                           renderPass.get(),
-                                                                                          2,
                                                                                           attachments,
                                                                                           surfaceData.extent.width,
                                                                                           surfaceData.extent.height,
@@ -85,9 +84,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     std::cout << "vk::SystemError: " << err.what() << std::endl;
     exit( -1 );
   }
-  catch ( std::runtime_error & err )
+  catch ( std::exception & err )
   {
-    std::cout << "std::runtime_error: " << err.what() << std::endl;
+    std::cout << "std::exception: " << err.what() << std::endl;
     exit( -1 );
   }
   catch ( ... )

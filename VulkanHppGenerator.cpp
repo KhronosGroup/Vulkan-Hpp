@@ -3830,12 +3830,14 @@ void VulkanHppGenerator::appendStructSetter( std::string &                   str
       }
 
       static const std::string setArrayTemplate = R"(
+#if !defined(VULKAN_HPP_DISABLE_ENHANCED_MODE)
     ${templateHeader}${structureName} & set${ArrayName}( VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<${memberType}> const & ${arrayName}_ ) VULKAN_HPP_NOEXCEPT
     {
       ${lenName} = ${lenValue};
       ${memberName} = ${arrayName}_.data();
       return *this;
     }
+#endif  // !defined(VULKAN_HPP_DISABLE_ENHANCED_MODE)
 )";
 
       str += replaceWithMap( setArrayTemplate,

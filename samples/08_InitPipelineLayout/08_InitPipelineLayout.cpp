@@ -43,11 +43,11 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::DescriptorSetLayoutBinding descriptorSetLayoutBinding(
       0, vk::DescriptorType::eUniformBuffer, 1, vk::ShaderStageFlagBits::eVertex );
     vk::UniqueDescriptorSetLayout descriptorSetLayout = device->createDescriptorSetLayoutUnique(
-      vk::DescriptorSetLayoutCreateInfo( vk::DescriptorSetLayoutCreateFlags(), 1, &descriptorSetLayoutBinding ) );
+      vk::DescriptorSetLayoutCreateInfo( vk::DescriptorSetLayoutCreateFlags(), descriptorSetLayoutBinding ) );
 
     // create a PipelineLayout using that DescriptorSetLayout
     vk::UniquePipelineLayout pipelineLayout = device->createPipelineLayoutUnique(
-      vk::PipelineLayoutCreateInfo( vk::PipelineLayoutCreateFlags(), 1, &descriptorSetLayout.get() ) );
+      vk::PipelineLayoutCreateInfo( vk::PipelineLayoutCreateFlags(), *descriptorSetLayout ) );
 
     // Note: No need to explicitly destroy the layouts, as the corresponding destroy function is
     // called by the destructor of the UniqueDescriptorSetLayout or UniquePipelineLayout, respectively, on leaving this
@@ -60,9 +60,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     std::cout << "vk::SystemError: " << err.what() << std::endl;
     exit( -1 );
   }
-  catch ( std::runtime_error & err )
+  catch ( std::exception & err )
   {
-    std::cout << "std::runtime_error: " << err.what() << std::endl;
+    std::cout << "std::exception: " << err.what() << std::endl;
     exit( -1 );
   }
   catch ( ... )

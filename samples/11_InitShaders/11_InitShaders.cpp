@@ -47,16 +47,14 @@ int main( int /*argc*/, char ** /*argv*/ )
     bool ok = vk::su::GLSLtoSPV( vk::ShaderStageFlagBits::eVertex, vertexShaderText_PC_C, vertexShaderSPV );
     assert( ok );
 
-    vk::ShaderModuleCreateInfo vertexShaderModuleCreateInfo(
-      vk::ShaderModuleCreateFlags(), vertexShaderSPV.size() * sizeof( unsigned int ), vertexShaderSPV.data() );
-    vk::UniqueShaderModule vertexShaderModule = device->createShaderModuleUnique( vertexShaderModuleCreateInfo );
+    vk::ShaderModuleCreateInfo vertexShaderModuleCreateInfo( vk::ShaderModuleCreateFlags(), vertexShaderSPV );
+    vk::UniqueShaderModule     vertexShaderModule = device->createShaderModuleUnique( vertexShaderModuleCreateInfo );
 
     std::vector<unsigned int> fragmentShaderSPV;
     ok = vk::su::GLSLtoSPV( vk::ShaderStageFlagBits::eFragment, fragmentShaderText_C_C, fragmentShaderSPV );
     assert( ok );
 
-    vk::ShaderModuleCreateInfo fragmentShaderModuleCreateInfo(
-      vk::ShaderModuleCreateFlags(), fragmentShaderSPV.size() * sizeof( unsigned int ), fragmentShaderSPV.data() );
+    vk::ShaderModuleCreateInfo fragmentShaderModuleCreateInfo( vk::ShaderModuleCreateFlags(), fragmentShaderSPV );
     vk::UniqueShaderModule fragmentShaderModule = device->createShaderModuleUnique( fragmentShaderModuleCreateInfo );
 
     glslang::FinalizeProcess();
@@ -71,9 +69,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     std::cout << "vk::SystemError: " << err.what() << std::endl;
     exit( -1 );
   }
-  catch ( std::runtime_error & err )
+  catch ( std::exception & err )
   {
-    std::cout << "std::runtime_error: " << err.what() << std::endl;
+    std::cout << "std::exception: " << err.what() << std::endl;
     exit( -1 );
   }
   catch ( ... )

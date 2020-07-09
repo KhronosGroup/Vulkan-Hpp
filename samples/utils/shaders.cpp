@@ -94,8 +94,7 @@ namespace vk
       bool                      ok = GLSLtoSPV( shaderStage, shaderText, shaderSPV );
       assert( ok );
 
-      return device->createShaderModuleUnique( vk::ShaderModuleCreateInfo(
-        vk::ShaderModuleCreateFlags(), shaderSPV.size() * sizeof( unsigned int ), shaderSPV.data() ) );
+      return device->createShaderModuleUnique( vk::ShaderModuleCreateInfo( vk::ShaderModuleCreateFlags(), shaderSPV ) );
     }
   }  // namespace su
 }  // namespace vk

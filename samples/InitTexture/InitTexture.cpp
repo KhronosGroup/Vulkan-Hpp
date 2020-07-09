@@ -74,8 +74,7 @@ int main( int /*argc*/, char ** /*argv*/ )
                            vk::ImageUsageFlagBits::eSampled |
                              ( needsStaging ? vk::ImageUsageFlagBits::eTransferDst : vk::ImageUsageFlagBits() ),
                            vk::SharingMode::eExclusive,
-                           0,
-                           nullptr,
+                           {},
                            needsStaging ? vk::ImageLayout::eUndefined : vk::ImageLayout::ePreinitialized ) );
 
     vk::MemoryRequirements memoryRequirements = device->getImageMemoryRequirements( image.get() );
@@ -207,9 +206,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     std::cout << "vk::SystemError: " << err.what() << std::endl;
     exit( -1 );
   }
-  catch ( std::runtime_error & err )
+  catch ( std::exception & err )
   {
-    std::cout << "std::runtime_error: " << err.what() << std::endl;
+    std::cout << "std::exception: " << err.what() << std::endl;
     exit( -1 );
   }
   catch ( ... )

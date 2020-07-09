@@ -72,7 +72,7 @@ int main( int /*argc*/, char ** /*argv*/ )
         float                     queuePriority = 0.0f;
         vk::DeviceQueueCreateInfo deviceQueueCreateInfo(
           vk::DeviceQueueCreateFlags(), static_cast<uint32_t>( graphicsQueueFamilyIndex ), 1, &queuePriority );
-        vk::DeviceCreateInfo deviceCreateInfo( vk::DeviceCreateFlags(), 1, &deviceQueueCreateInfo );
+        vk::DeviceCreateInfo deviceCreateInfo( vk::DeviceCreateFlags(), deviceQueueCreateInfo );
 
         vk::DeviceGroupDeviceCreateInfo deviceGroupDeviceCreateInfo( groupProperties[i].physicalDeviceCount,
                                                                      groupProperties[i].physicalDevices );
@@ -89,9 +89,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     std::cout << "vk::SystemError: " << err.what() << std::endl;
     exit( -1 );
   }
-  catch ( std::runtime_error & err )
+  catch ( std::exception & err )
   {
-    std::cout << "std::runtime_error: " << err.what() << std::endl;
+    std::cout << "std::exception: " << err.what() << std::endl;
     exit( -1 );
   }
   catch ( ... )

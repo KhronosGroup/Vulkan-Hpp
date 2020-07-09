@@ -56,17 +56,16 @@ int main( int /*argc*/, char ** /*argv*/ )
     // create a descriptor pool
     vk::DescriptorPoolSize   poolSize( vk::DescriptorType::eUniformBuffer, 1 );
     vk::UniqueDescriptorPool descriptorPool = device->createDescriptorPoolUnique(
-      vk::DescriptorPoolCreateInfo( vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet, 1, 1, &poolSize ) );
+      vk::DescriptorPoolCreateInfo( vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet, 1, poolSize ) );
 
     // allocate a descriptor set
     vk::UniqueDescriptorSet descriptorSet = std::move(
-      device->allocateDescriptorSetsUnique( vk::DescriptorSetAllocateInfo( *descriptorPool, 1, &*descriptorSetLayout ) )
+      device->allocateDescriptorSetsUnique( vk::DescriptorSetAllocateInfo( *descriptorPool, *descriptorSetLayout ) )
         .front() );
 
     vk::DescriptorBufferInfo descriptorBufferInfo( uniformBufferData.buffer.get(), 0, sizeof( glm::mat4x4 ) );
     device->updateDescriptorSets(
-      vk::WriteDescriptorSet(
-        descriptorSet.get(), 0, 0, 1, vk::DescriptorType::eUniformBuffer, nullptr, &descriptorBufferInfo ),
+      vk::WriteDescriptorSet( descriptorSet.get(), 0, 0, vk::DescriptorType::eUniformBuffer, {}, descriptorBufferInfo ),
       {} );
 
     /* VULKAN_HPP_KEY_END */
@@ -76,9 +75,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     std::cout << "vk::SystemError: " << err.what() << std::endl;
     exit( -1 );
   }
-  catch ( std::runtime_error & err )
+  catch ( std::exception & err )
   {
-    std::cout << "std::runtime_error: " << err.what() << std::endl;
+    std::cout << "std::exception: " << err.what() << std::endl;
     exit( -1 );
   }
   catch ( ... )

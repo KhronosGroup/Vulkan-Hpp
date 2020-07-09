@@ -194,6 +194,8 @@ private:
     std::vector<std::string> arraySizes;
     std::string              bitCount;
     std::vector<std::string> len;
+    bool                     noAutoValidity = false;
+    bool                     optional       = false;
     std::string              selection;
     std::string              selector;
     std::string              values;
@@ -478,7 +480,13 @@ private:
   void appendStructConstructors( std::string &                                 str,
                                  std::pair<std::string, StructureData> const & structData,
                                  std::string const &                           prefix ) const;
-  bool appendStructConstructorArgument( std::string & str, bool listedArgument, MemberData const & memberData ) const;
+  void appendStructConstructorsEnhanced( std::string &                                 str,
+                                         std::pair<std::string, StructureData> const & structData,
+                                         std::string const &                           prefix ) const;
+  bool appendStructConstructorArgument( std::string &      str,
+                                        bool               listedArgument,
+                                        MemberData const & memberData,
+                                        bool               withDefault ) const;
   std::string appendStructMembers( std::string &                                 str,
                                    std::pair<std::string, StructureData> const & structData,
                                    std::string const &                           prefix ) const;
@@ -508,15 +516,22 @@ private:
   std::string determineSubStruct( std::pair<std::string, StructureData> const & structure ) const;
   size_t      determineTemplateParamIndex( std::vector<ParamData> const &   params,
                                            std::map<size_t, size_t> const & vectorParamIndices ) const;
-  std::map<size_t, size_t>            determineVectorParamIndices( std::vector<ParamData> const & params ) const;
+  std::map<size_t, size_t> determineVectorParamIndices( std::vector<ParamData> const & params ) const;
+  std::string              generateLenInitializer(
+                 std::vector<MemberData>::const_iterator                                        mit,
+                 std::map<std::vector<MemberData>::const_iterator,
+             std::vector<std::vector<MemberData>::const_iterator>>::const_iterator litit ) const;
   std::pair<std::string, std::string> generateProtection( std::string const &           feature,
                                                           std::set<std::string> const & extension ) const;
   std::pair<std::string, std::string> generateProtection( std::string const & type, bool isAliased ) const;
-  std::set<std::string>               getPlatforms( std::set<std::string> const & extensions ) const;
-  bool                                holdsSType( std::string const & type ) const;
-  bool                                isParam( std::string const & name, std::vector<ParamData> const & params ) const;
-  bool isParamIndirect( std::string const & name, std::vector<ParamData> const & params ) const;
-  bool isTwoStepAlgorithm( std::vector<ParamData> const & params ) const;
+  std::string           generateSizeCheck( std::vector<std::vector<MemberData>::const_iterator> const & arrayIts,
+                                           std::string const &                                          structName,
+                                           std::string const &                                          prefix ) const;
+  std::set<std::string> getPlatforms( std::set<std::string> const & extensions ) const;
+  bool                  holdsSType( std::string const & type ) const;
+  bool                  isParam( std::string const & name, std::vector<ParamData> const & params ) const;
+  bool                  isParamIndirect( std::string const & name, std::vector<ParamData> const & params ) const;
+  bool                  isTwoStepAlgorithm( std::vector<ParamData> const & params ) const;
   void readBaseType( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
   void readBitmask( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
   void readBitmaskAlias( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );

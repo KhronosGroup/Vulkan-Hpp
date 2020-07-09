@@ -98,7 +98,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     assert( currentBuffer.result == vk::Result::eSuccess );
     assert( currentBuffer.value < framebuffers.size() );
 
-    vk::ClearValue clearValues[2];
+    std::array<vk::ClearValue, 2> clearValues;
     clearValues[0].color        = vk::ClearColorValue( std::array<float, 4>( { { 0.2f, 0.2f, 0.2f, 0.2f } } ) );
     clearValues[1].depthStencil = vk::ClearDepthStencilValue( 1.0f, 0 );
 
@@ -107,7 +107,6 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::RenderPassBeginInfo renderPassBeginInfo( renderPass.get(),
                                                  framebuffers[currentBuffer.value].get(),
                                                  vk::Rect2D( vk::Offset2D( 0, 0 ), surfaceData.extent ),
-                                                 2,
                                                  clearValues );
     commandBuffer->beginRenderPass( renderPassBeginInfo, vk::SubpassContents::eInline );
 
@@ -128,9 +127,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     std::cout << "vk::SystemError: " << err.what() << std::endl;
     exit( -1 );
   }
-  catch ( std::runtime_error & err )
+  catch ( std::exception & err )
   {
-    std::cout << "std::runtime_error: " << err.what() << std::endl;
+    std::cout << "std::exception: " << err.what() << std::endl;
     exit( -1 );
   }
   catch ( ... )

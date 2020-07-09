@@ -80,7 +80,7 @@ int main( int /*argc*/, char ** /*argv*/ )
       { { vk::DescriptorType::eUniformBuffer, 1, vk::ShaderStageFlagBits::eVertex },
         { vk::DescriptorType::eCombinedImageSampler, 1, vk::ShaderStageFlagBits::eFragment } } );
     vk::UniquePipelineLayout pipelineLayout = device->createPipelineLayoutUnique(
-      vk::PipelineLayoutCreateInfo( vk::PipelineLayoutCreateFlags(), 1, &descriptorSetLayout.get() ) );
+      vk::PipelineLayoutCreateInfo( vk::PipelineLayoutCreateFlags(), *descriptorSetLayout ) );
 
     vk::UniqueRenderPass renderPass = vk::su::createRenderPass(
       device,
@@ -107,14 +107,11 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::UniqueDescriptorPool descriptorPool = vk::su::createDescriptorPool(
       device, { { vk::DescriptorType::eUniformBuffer, 1 }, { vk::DescriptorType::eCombinedImageSampler, 1 } } );
     vk::UniqueDescriptorSet descriptorSet = std::move(
-      device->allocateDescriptorSetsUnique( vk::DescriptorSetAllocateInfo( *descriptorPool, 1, &*descriptorSetLayout ) )
+      device->allocateDescriptorSetsUnique( vk::DescriptorSetAllocateInfo( *descriptorPool, *descriptorSetLayout ) )
         .front() );
 
     vk::su::updateDescriptorSets(
-      device,
-      descriptorSet,
-      { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, {} } },
-      textureData );
+      device, descriptorSet, { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, {} } }, textureData );
 
     vk::UniquePipelineCache pipelineCache = device->createPipelineCacheUnique( vk::PipelineCacheCreateInfo() );
 
@@ -125,24 +122,20 @@ int main( int /*argc*/, char ** /*argv*/ )
     // First pipeline has VK_PIPELINE_CREATE_ALLOW_DERIVATIVES_BIT set.
     // Second pipeline has a modified fragment shader and sets the VK_PIPELINE_CREATE_DERIVATIVE_BIT flag.
 
-    vk::PipelineShaderStageCreateInfo pipelineShaderStageCreateInfos[2] = {
+    std::array<vk::PipelineShaderStageCreateInfo, 2> pipelineShaderStageCreateInfos = {
       vk::PipelineShaderStageCreateInfo(
         vk::PipelineShaderStageCreateFlags(), vk::ShaderStageFlagBits::eVertex, vertexShaderModule.get(), "main" ),
       vk::PipelineShaderStageCreateInfo(
         vk::PipelineShaderStageCreateFlags(), vk::ShaderStageFlagBits::eFragment, fragmentShaderModule.get(), "main" )
     };
 
-    vk::VertexInputBindingDescription   vertexInputBindingDescription( 0, sizeof( texturedCubeData[0] ) );
-    vk::VertexInputAttributeDescription vertexInputAttributeDescriptions[2] = {
+    vk::VertexInputBindingDescription vertexInputBindingDescription( 0, sizeof( texturedCubeData[0] ) );
+    std::array<vk::VertexInputAttributeDescription, 2> vertexInputAttributeDescriptions = {
       vk::VertexInputAttributeDescription( 0, 0, vk::Format::eR32G32B32A32Sfloat, 0 ),
       vk::VertexInputAttributeDescription( 1, 0, vk::Format::eR32G32B32A32Sfloat, 16 )
     };
     vk::PipelineVertexInputStateCreateInfo pipelineVertexInputStateCreateInfo(
-      vk::PipelineVertexInputStateCreateFlags(),
-      1,
-      &vertexInputBindingDescription,
-      2,
-      vertexInputAttributeDescriptions );
+      vk::PipelineVertexInputStateCreateFlags(), vertexInputBindingDescription, vertexInputAttributeDescriptions );
 
     vk::PipelineInputAssemblyStateCreateInfo pipelineInputAssemblyStateCreateInfo(
       vk::PipelineInputAssemblyStateCreateFlags(), vk::PrimitiveTopology::eTriangleList );
@@ -190,16 +183,14 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::PipelineColorBlendStateCreateInfo pipelineColorBlendStateCreateInfo( vk::PipelineColorBlendStateCreateFlags(),
                                                                              false,
                                                                              vk::LogicOp::eNoOp,
-                                                                             1,
-                                                                             &pipelineColorBlendAttachmentState,
+                                                                             pipelineColorBlendAttachmentState,
                                                                              { { 1.0f, 1.0f, 1.0f, 1.0f } } );
 
-    vk::DynamicState                   dynamicStates[2] = { vk::DynamicState::eViewport, vk::DynamicState::eScissor };
-    vk::PipelineDynamicStateCreateInfo pipelineDynamicStateCreateInfo(
-      vk::PipelineDynamicStateCreateFlags(), 2, dynamicStates );
+    std::array<vk::DynamicState, 2>    dynamicStates = { vk::DynamicState::eViewport, vk::DynamicState::eScissor };
+    vk::PipelineDynamicStateCreateInfo pipelineDynamicStateCreateInfo( vk::PipelineDynamicStateCreateFlags(),
+                                                                       dynamicStates );
 
     vk::GraphicsPipelineCreateInfo graphicsPipelineCreateInfo( vk::PipelineCreateFlagBits::eAllowDerivatives,
-                                                               2,
                                                                pipelineShaderStageCreateInfos,
                                                                &pipelineVertexInputStateCreateInfo,
                                                                &pipelineInputAssemblyStateCreateInfo,
@@ -259,14 +250,13 @@ void main()
     assert( currentBuffer.result == vk::Result::eSuccess );
     assert( currentBuffer.value < framebuffers.size() );
 
-    vk::ClearValue clearValues[2];
+    std::array<vk::ClearValue, 2> clearValues;
     clearValues[0].color        = vk::ClearColorValue( std::array<float, 4>( { { 0.2f, 0.2f, 0.2f, 0.2f } } ) );
     clearValues[1].depthStencil = vk::ClearDepthStencilValue( 1.0f, 0 );
 
     commandBuffer->beginRenderPass( vk::RenderPassBeginInfo( renderPass.get(),
                                                              framebuffers[currentBuffer.value].get(),
                                                              vk::Rect2D( vk::Offset2D(), surfaceData.extent ),
-                                                             2,
                                                              clearValues ),
                                     vk::SubpassContents::eInline );
     commandBuffer->bindPipeline( vk::PipelineBindPoint::eGraphics, derivedPipeline.get() );
@@ -290,14 +280,13 @@ void main()
     vk::UniqueFence drawFence = device->createFenceUnique( vk::FenceCreateInfo() );
 
     vk::PipelineStageFlags waitDestinationStageMask( vk::PipelineStageFlagBits::eColorAttachmentOutput );
-    vk::SubmitInfo submitInfo( 1, &imageAcquiredSemaphore.get(), &waitDestinationStageMask, 1, &commandBuffer.get() );
+    vk::SubmitInfo         submitInfo( *imageAcquiredSemaphore, waitDestinationStageMask, *commandBuffer );
     graphicsQueue.submit( submitInfo, drawFence.get() );
 
     while ( vk::Result::eTimeout == device->waitForFences( drawFence.get(), VK_TRUE, vk::su::FenceTimeout ) )
       ;
 
-    presentQueue.presentKHR(
-      vk::PresentInfoKHR( 0, nullptr, 1, &swapChainData.swapChain.get(), &currentBuffer.value ) );
+    presentQueue.presentKHR( vk::PresentInfoKHR( {}, *swapChainData.swapChain, currentBuffer.value ) );
     std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
   }
   catch ( vk::SystemError & err )
@@ -305,9 +294,9 @@ void main()
     std::cout << "vk::SystemError: " << err.what() << std::endl;
     exit( -1 );
   }
-  catch ( std::runtime_error & err )
+  catch ( std::exception & err )
   {
-    std::cout << "std::runtime_error: " << err.what() << std::endl;
+    std::cout << "std::exception: " << err.what() << std::endl;
     exit( -1 );
   }
   catch ( ... )

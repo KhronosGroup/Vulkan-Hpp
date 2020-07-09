@@ -101,30 +101,28 @@ int main( int /*argc*/, char ** /*argv*/ )
     commandBuffer->begin( vk::CommandBufferBeginInfo() );
     textureData.setImage( device, commandBuffer, vk::su::CheckerboardImageGenerator() );
 
-    vk::DescriptorSetLayoutBinding bindings[2] = {
+    std::array<vk::DescriptorSetLayoutBinding, 2> bindings = {
       vk::DescriptorSetLayoutBinding( 0, vk::DescriptorType::eUniformBuffer, 1, vk::ShaderStageFlagBits::eVertex ),
-      vk::DescriptorSetLayoutBinding( 1,
-                                      vk::DescriptorType::eCombinedImageSampler,
-                                      1,
-                                      vk::ShaderStageFlagBits::eFragment,
-                                      &textureData.textureSampler.get() )
+      vk::DescriptorSetLayoutBinding(
+        1, vk::DescriptorType::eCombinedImageSampler, vk::ShaderStageFlagBits::eFragment, *textureData.textureSampler )
     };
     vk::UniqueDescriptorSetLayout descriptorSetLayout = device->createDescriptorSetLayoutUnique(
-      vk::DescriptorSetLayoutCreateInfo( vk::DescriptorSetLayoutCreateFlags(), 2, bindings ) );
+      vk::DescriptorSetLayoutCreateInfo( vk::DescriptorSetLayoutCreateFlags(), bindings ) );
 
     // Create pipeline layout
     vk::UniquePipelineLayout pipelineLayout = device->createPipelineLayoutUnique(
-      vk::PipelineLayoutCreateInfo( vk::PipelineLayoutCreateFlags(), 1, &descriptorSetLayout.get() ) );
+      vk::PipelineLayoutCreateInfo( vk::PipelineLayoutCreateFlags(), *descriptorSetLayout ) );
 
     // Create a single pool to contain data for our descriptor set
-    vk::DescriptorPoolSize   poolSizes[2]   = { vk::DescriptorPoolSize( vk::DescriptorType::eUniformBuffer, 1 ),
-                                            vk::DescriptorPoolSize( vk::DescriptorType::eCombinedImageSampler, 1 ) };
-    vk::UniqueDescriptorPool descriptorPool = device->createDescriptorPoolUnique(
-      vk::DescriptorPoolCreateInfo( vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet, 1, 2, poolSizes ) );
+    std::array<vk::DescriptorPoolSize, 2> poolSizes = { vk::DescriptorPoolSize( vk::DescriptorType::eUniformBuffer, 1 ),
+                                                        vk::DescriptorPoolSize(
+                                                          vk::DescriptorType::eCombinedImageSampler, 1 ) };
+    vk::UniqueDescriptorPool              descriptorPool = device->createDescriptorPoolUnique(
+      vk::DescriptorPoolCreateInfo( vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet, 1, poolSizes ) );
 
     // Populate descriptor sets
     vk::UniqueDescriptorSet descriptorSet = std::move(
-      device->allocateDescriptorSetsUnique( vk::DescriptorSetAllocateInfo( *descriptorPool, 1, &*descriptorSetLayout ) )
+      device->allocateDescriptorSetsUnique( vk::DescriptorSetAllocateInfo( *descriptorPool, *descriptorSetLayout ) )
         .front() );
 
     vk::DescriptorBufferInfo bufferInfo( uniformBufferData.buffer.get(), 0, sizeof( glm::mat4x4 ) );
@@ -132,8 +130,8 @@ int main( int /*argc*/, char ** /*argv*/ )
                                        textureData.imageData->imageView.get(),
                                        vk::ImageLayout::eShaderReadOnlyOptimal );
     vk::WriteDescriptorSet   writeDescriptorSets[2] = {
-      vk::WriteDescriptorSet( descriptorSet.get(), 0, 0, 1, vk::DescriptorType::eUniformBuffer, nullptr, &bufferInfo ),
-      vk::WriteDescriptorSet( descriptorSet.get(), 1, 0, 1, vk::DescriptorType::eCombinedImageSampler, &imageInfo )
+      vk::WriteDescriptorSet( descriptorSet.get(), 0, 0, vk::DescriptorType::eUniformBuffer, {}, bufferInfo ),
+      vk::WriteDescriptorSet( descriptorSet.get(), 1, 0, vk::DescriptorType::eCombinedImageSampler, imageInfo )
     };
     device->updateDescriptorSets( vk::ArrayProxy<const vk::WriteDescriptorSet>( 2, writeDescriptorSets ), nullptr );
 
@@ -158,13 +156,12 @@ int main( int /*argc*/, char ** /*argv*/ )
     assert( currentBuffer.result == vk::Result::eSuccess );
     assert( currentBuffer.value < framebuffers.size() );
 
-    vk::ClearValue clearValues[2];
+    std::array<vk::ClearValue, 2> clearValues;
     clearValues[0].color        = vk::ClearColorValue( std::array<float, 4>( { { 0.2f, 0.2f, 0.2f, 0.2f } } ) );
     clearValues[1].depthStencil = vk::ClearDepthStencilValue( 1.0f, 0 );
     vk::RenderPassBeginInfo renderPassBeginInfo( renderPass.get(),
                                                  framebuffers[currentBuffer.value].get(),
                                                  vk::Rect2D( vk::Offset2D( 0, 0 ), surfaceData.extent ),
-                                                 2,
                                                  clearValues );
     commandBuffer->beginRenderPass( renderPassBeginInfo, vk::SubpassContents::eInline );
     commandBuffer->bindPipeline( vk::PipelineBindPoint::eGraphics, graphicsPipeline.get() );
@@ -187,8 +184,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     vk::su::submitAndWait( device, graphicsQueue, commandBuffer );
 
-    presentQueue.presentKHR(
-      vk::PresentInfoKHR( 0, nullptr, 1, &swapChainData.swapChain.get(), &currentBuffer.value ) );
+    presentQueue.presentKHR( vk::PresentInfoKHR( {}, *swapChainData.swapChain, currentBuffer.value ) );
     std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
 
     device->waitIdle();
@@ -198,9 +194,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     std::cout << "vk::SystemError: " << err.what() << std::endl;
     exit( -1 );
   }
-  catch ( std::runtime_error & err )
+  catch ( std::exception & err )
   {
-    std::cout << "std::runtime_error: " << err.what() << std::endl;
+    std::cout << "std::exception: " << err.what() << std::endl;
     exit( -1 );
   }
   catch ( ... )

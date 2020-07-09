@@ -122,7 +122,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     /* Queue the command buffer for execution */
     vk::UniqueFence        commandFence = device->createFenceUnique( {} );
     vk::PipelineStageFlags pipeStageFlags( vk::PipelineStageFlagBits::eColorAttachmentOutput );
-    graphicsQueue.submit( vk::SubmitInfo( 1, &imageAcquiredSemaphore.get(), &pipeStageFlags, 1, &commandBuffer.get() ),
+    graphicsQueue.submit( vk::SubmitInfo( *imageAcquiredSemaphore, pipeStageFlags, *commandBuffer ),
                           commandFence.get() );
 
     /* Make sure command buffer is finished before mapping */
@@ -222,7 +222,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     commandBuffer->end();
 
     vk::UniqueFence drawFence = device->createFenceUnique( {} );
-    graphicsQueue.submit( vk::SubmitInfo( 0, nullptr, nullptr, 1, &commandBuffer.get() ), drawFence.get() );
+    graphicsQueue.submit( vk::SubmitInfo( {}, {}, *commandBuffer ), drawFence.get() );
     graphicsQueue.waitIdle();
 
     /* Make sure command buffer is finished before presenting */
@@ -230,8 +230,7 @@ int main( int /*argc*/, char ** /*argv*/ )
       ;
 
     /* Now present the image in the window */
-    presentQueue.presentKHR(
-      vk::PresentInfoKHR( 0, nullptr, 1, &swapChainData.swapChain.get(), &currentBuffer, nullptr ) );
+    presentQueue.presentKHR( vk::PresentInfoKHR( {}, *swapChainData.swapChain, currentBuffer, {} ) );
     std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
 
     /* VULKAN_KEY_END */
@@ -241,9 +240,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     std::cout << "vk::SystemError: " << err.what() << std::endl;
     exit( -1 );
   }
-  catch ( std::runtime_error & err )
+  catch ( std::exception & err )
   {
-    std::cout << "std::runtime_error: " << err.what() << std::endl;
+    std::cout << "std::exception: " << err.what() << std::endl;
     exit( -1 );
   }
   catch ( ... )

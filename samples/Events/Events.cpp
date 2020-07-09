@@ -55,8 +55,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     vk::UniqueFence fence = device->createFenceUnique( vk::FenceCreateInfo() );
 
-    vk::PipelineStageFlags waitDestinationStageMask( vk::PipelineStageFlagBits::eColorAttachmentOutput );
-    vk::SubmitInfo         submitInfo( 0, nullptr, &waitDestinationStageMask, 1, &commandBuffer.get() );
+    vk::SubmitInfo         submitInfo( {}, {}, *commandBuffer );
     graphicsQueue.submit( submitInfo, fence.get() );
 
     // Make sure timeout is long enough for a simple command buffer without waiting for an event
@@ -90,7 +89,6 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     // Note that stepping through this code in the debugger is a bad idea because the GPU can TDR waiting for the event.
     // Execute the code from vk::Queue::submit() through vk::Device::setEvent() without breakpoints
-    waitDestinationStageMask = vk::PipelineStageFlagBits::eBottomOfPipe;
     graphicsQueue.submit( submitInfo, fence.get() );
 
     // We should timeout waiting for the fence because the GPU should be waiting on the event
@@ -147,9 +145,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     std::cout << "vk::SystemError: " << err.what() << std::endl;
     exit( -1 );
   }
-  catch ( std::runtime_error & err )
+  catch ( std::exception & err )
   {
-    std::cout << "std::runtime_error: " << err.what() << std::endl;
+    std::cout << "std::exception: " << err.what() << std::endl;
     exit( -1 );
   }
   catch ( ... )

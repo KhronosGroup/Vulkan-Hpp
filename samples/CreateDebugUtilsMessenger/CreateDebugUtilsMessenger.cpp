@@ -127,7 +127,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::ApplicationInfo applicationInfo( AppName, 1, EngineName, 1, VK_API_VERSION_1_1 );
     const char *        extensionName = VK_EXT_DEBUG_UTILS_EXTENSION_NAME;
     vk::UniqueInstance  instance      = vk::createInstanceUnique(
-      vk::InstanceCreateInfo( vk::InstanceCreateFlags(), &applicationInfo, 0, nullptr, 1, &extensionName ) );
+      vk::InstanceCreateInfo( vk::InstanceCreateFlags(), &applicationInfo, {}, extensionName ) );
 
     pfnVkCreateDebugUtilsMessengerEXT =
       reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>( instance->getProcAddr( "vkCreateDebugUtilsMessengerEXT" ) );
@@ -160,9 +160,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     std::cout << "vk::SystemError: " << err.what() << std::endl;
     exit( -1 );
   }
-  catch ( std::runtime_error & err )
+  catch ( std::exception & err )
   {
-    std::cout << "std::runtime_error: " << err.what() << std::endl;
+    std::cout << "std::exception: " << err.what() << std::endl;
     exit( -1 );
   }
   catch ( ... )

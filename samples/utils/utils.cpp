@@ -76,10 +76,8 @@ namespace vk
         } );
       assert( 0 < maxSets );
 
-      vk::DescriptorPoolCreateInfo descriptorPoolCreateInfo( vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet,
-                                                             maxSets,
-                                                             checked_cast<uint32_t>( poolSizes.size() ),
-                                                             poolSizes.data() );
+      vk::DescriptorPoolCreateInfo descriptorPoolCreateInfo(
+        vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet, maxSets, poolSizes );
       return device->createDescriptorPoolUnique( descriptorPoolCreateInfo );
     }
 
@@ -96,8 +94,7 @@ namespace vk
                                                       std::get<1>( bindingData[i] ),
                                                       std::get<2>( bindingData[i] ) );
       }
-      return device->createDescriptorSetLayoutUnique(
-        vk::DescriptorSetLayoutCreateInfo( flags, checked_cast<uint32_t>( bindings.size() ), bindings.data() ) );
+      return device->createDescriptorSetLayoutUnique( vk::DescriptorSetLayoutCreateInfo( flags, bindings ) );
     }
 
     vk::UniqueDevice createDevice( vk::PhysicalDevice                 physicalDevice,
@@ -117,14 +114,8 @@ namespace vk
       float                     queuePriority = 0.0f;
       vk::DeviceQueueCreateInfo deviceQueueCreateInfo(
         vk::DeviceQueueCreateFlags(), queueFamilyIndex, 1, &queuePriority );
-      vk::DeviceCreateInfo deviceCreateInfo( vk::DeviceCreateFlags(),
-                                             1,
-                                             &deviceQueueCreateInfo,
-                                             0,
-                                             nullptr,
-                                             checked_cast<uint32_t>( enabledExtensions.size() ),
-                                             enabledExtensions.data(),
-                                             physicalDeviceFeatures );
+      vk::DeviceCreateInfo deviceCreateInfo(
+        vk::DeviceCreateFlags(), deviceQueueCreateInfo, {}, enabledExtensions, physicalDeviceFeatures );
       deviceCreateInfo.pNext = pNext;
       return physicalDevice.createDeviceUnique( deviceCreateInfo );
     }
@@ -168,7 +159,7 @@ namespace vk
                               vk::UniquePipelineLayout const &                     pipelineLayout,
                               vk::UniqueRenderPass const &                         renderPass )
     {
-      vk::PipelineShaderStageCreateInfo pipelineShaderStageCreateInfos[2] = {
+      std::array<vk::PipelineShaderStageCreateInfo, 2> pipelineShaderStageCreateInfos = {
         vk::PipelineShaderStageCreateInfo( vk::PipelineShaderStageCreateFlags(),
                                            vk::ShaderStageFlagBits::eVertex,
                                            vertexShaderData.first,
@@ -193,11 +184,8 @@ namespace vk
           vertexInputAttributeDescriptions.push_back( vk::VertexInputAttributeDescription(
             i, 0, vertexInputAttributeFormatOffset[i].first, vertexInputAttributeFormatOffset[i].second ) );
         }
-        pipelineVertexInputStateCreateInfo.vertexBindingDescriptionCount = 1;
-        pipelineVertexInputStateCreateInfo.pVertexBindingDescriptions    = &vertexInputBindingDescription;
-        pipelineVertexInputStateCreateInfo.vertexAttributeDescriptionCount =
-          vk::su::checked_cast<uint32_t>( vertexInputAttributeDescriptions.size() );
-        pipelineVertexInputStateCreateInfo.pVertexAttributeDescriptions = vertexInputAttributeDescriptions.data();
+        pipelineVertexInputStateCreateInfo.setVertexBindingDescriptions( vertexInputBindingDescription );
+        pipelineVertexInputStateCreateInfo.setVertexAttributeDescriptions( vertexInputAttributeDescriptions );
       }
 
       vk::PipelineInputAssemblyStateCreateInfo pipelineInputAssemblyStateCreateInfo(
@@ -246,16 +234,14 @@ namespace vk
       vk::PipelineColorBlendStateCreateInfo pipelineColorBlendStateCreateInfo( vk::PipelineColorBlendStateCreateFlags(),
                                                                                false,
                                                                                vk::LogicOp::eNoOp,
-                                                                               1,
-                                                                               &pipelineColorBlendAttachmentState,
+                                                                               pipelineColorBlendAttachmentState,
                                                                                { { 1.0f, 1.0f, 1.0f, 1.0f } } );
 
-      vk::DynamicState                   dynamicStates[2] = { vk::DynamicState::eViewport, vk::DynamicState::eScissor };
-      vk::PipelineDynamicStateCreateInfo pipelineDynamicStateCreateInfo(
-        vk::PipelineDynamicStateCreateFlags(), 2, dynamicStates );
+      std::array<vk::DynamicState, 2>    dynamicStates = { vk::DynamicState::eViewport, vk::DynamicState::eScissor };
+      vk::PipelineDynamicStateCreateInfo pipelineDynamicStateCreateInfo( vk::PipelineDynamicStateCreateFlags(),
+                                                                         dynamicStates );
 
       vk::GraphicsPipelineCreateInfo graphicsPipelineCreateInfo( vk::PipelineCreateFlags(),
-                                                                 2,
                                                                  pipelineShaderStageCreateInfos,
                                                                  &pipelineVertexInputStateCreateInfo,
                                                                  &pipelineInputAssemblyStateCreateInfo,
@@ -346,12 +332,7 @@ namespace vk
 #if defined( NDEBUG )
       // in non-debug mode just use the InstanceCreateInfo for instance creation
       vk::StructureChain<vk::InstanceCreateInfo> instanceCreateInfo(
-        { {},
-          &applicationInfo,
-          checked_cast<uint32_t>( enabledLayers.size() ),
-          enabledLayers.data(),
-          checked_cast<uint32_t>( enabledExtensions.size() ),
-          enabledExtensions.data() } );
+        { {}, &applicationInfo, enabledLayers, enabledExtensions } );
 #else
       // in debug mode, addionally use the debugUtilsMessengerCallback in instance creation!
       vk::DebugUtilsMessageSeverityFlagsEXT severityFlags( vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning |
@@ -360,12 +341,7 @@ namespace vk
                                                           vk::DebugUtilsMessageTypeFlagBitsEXT::ePerformance |
                                                           vk::DebugUtilsMessageTypeFlagBitsEXT::eValidation );
       vk::StructureChain<vk::InstanceCreateInfo, vk::DebugUtilsMessengerCreateInfoEXT> instanceCreateInfo(
-        { {},
-          &applicationInfo,
-          checked_cast<uint32_t>( enabledLayers.size() ),
-          enabledLayers.data(),
-          checked_cast<uint32_t>( enabledExtensions.size() ),
-          enabledExtensions.data() },
+        { {}, &applicationInfo, enabledLayers, enabledExtensions },
         { {}, severityFlags, messageTypeFlags, &vk::su::debugUtilsMessengerCallback } );
 #endif
       vk::UniqueInstance instance = vk::createInstanceUnique( instanceCreateInfo.get<vk::InstanceCreateInfo>() );
@@ -412,19 +388,13 @@ namespace vk
       vk::AttachmentReference depthAttachment( 1, vk::ImageLayout::eDepthStencilAttachmentOptimal );
       vk::SubpassDescription  subpassDescription( vk::SubpassDescriptionFlags(),
                                                  vk::PipelineBindPoint::eGraphics,
-                                                 0,
-                                                 nullptr,
-                                                 1,
-                                                 &colorAttachment,
-                                                 nullptr,
+                                                 {},
+                                                 colorAttachment,
+                                                 {},
                                                  ( depthFormat != vk::Format::eUndefined ) ? &depthAttachment
                                                                                            : nullptr );
       return device->createRenderPassUnique(
-        vk::RenderPassCreateInfo( vk::RenderPassCreateFlags(),
-                                  static_cast<uint32_t>( attachmentDescriptions.size() ),
-                                  attachmentDescriptions.data(),
-                                  1,
-                                  &subpassDescription ) );
+        vk::RenderPassCreateInfo( vk::RenderPassCreateFlags(), attachmentDescriptions, subpassDescription ) );
     }
 
     VKAPI_ATTR VkBool32 VKAPI_CALL
@@ -753,8 +723,7 @@ namespace vk
     void submitAndWait( vk::UniqueDevice & device, vk::Queue queue, vk::UniqueCommandBuffer & commandBuffer )
     {
       vk::UniqueFence        fence              = device->createFenceUnique( vk::FenceCreateInfo() );
-      vk::PipelineStageFlags pipelineStageFlags = vk::PipelineStageFlagBits::eColorAttachmentOutput;
-      queue.submit( vk::SubmitInfo( 0, nullptr, &pipelineStageFlags, 1, &commandBuffer.get() ), fence.get() );
+      queue.submit( vk::SubmitInfo( {}, {}, *commandBuffer ), fence.get() );
       while ( vk::Result::eTimeout == device->waitForFences( fence.get(), VK_TRUE, vk::su::FenceTimeout ) )
         ;
     }
@@ -789,7 +758,7 @@ namespace vk
       vk::DescriptorImageInfo imageInfo(
         *textureData.textureSampler, *textureData.imageData->imageView, vk::ImageLayout::eShaderReadOnlyOptimal );
       writeDescriptorSets.push_back( vk::WriteDescriptorSet(
-        *descriptorSet, dstBinding, 0, 1, vk::DescriptorType::eCombinedImageSampler, &imageInfo, nullptr, nullptr ) );
+        *descriptorSet, dstBinding, 0, vk::DescriptorType::eCombinedImageSampler, imageInfo, {}, nullptr ) );
 
       device->updateDescriptorSets( writeDescriptorSets, nullptr );
     }
@@ -896,8 +865,7 @@ namespace vk
                                            tiling,
                                            usage | vk::ImageUsageFlagBits::eSampled,
                                            vk::SharingMode::eExclusive,
-                                           0,
-                                           nullptr,
+                                           {},
                                            initialLayout );
       image = device->createImageUnique( imageCreateInfo );
 
@@ -981,8 +949,7 @@ namespace vk
                                                       1,
                                                       usage,
                                                       vk::SharingMode::eExclusive,
-                                                      0,
-                                                      nullptr,
+                                                      {},
                                                       preTransform,
                                                       compositeAlpha,
                                                       presentMode,

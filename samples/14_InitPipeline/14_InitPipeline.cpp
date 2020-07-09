@@ -53,7 +53,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::UniqueDescriptorSetLayout descriptorSetLayout = vk::su::createDescriptorSetLayout(
       device, { { vk::DescriptorType::eUniformBuffer, 1, vk::ShaderStageFlagBits::eVertex } } );
     vk::UniquePipelineLayout pipelineLayout = device->createPipelineLayoutUnique(
-      vk::PipelineLayoutCreateInfo( vk::PipelineLayoutCreateFlags(), 1, &descriptorSetLayout.get() ) );
+      vk::PipelineLayoutCreateInfo( vk::PipelineLayoutCreateFlags(), *descriptorSetLayout ) );
 
     glslang::InitializeProcess();
     vk::UniqueShaderModule vertexShaderModule =
@@ -64,24 +64,22 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     /* VULKAN_KEY_START */
 
-    vk::PipelineShaderStageCreateInfo pipelineShaderStageCreateInfos[2] = {
+    std::array<vk::PipelineShaderStageCreateInfo, 2> pipelineShaderStageCreateInfos = {
       vk::PipelineShaderStageCreateInfo(
         vk::PipelineShaderStageCreateFlags(), vk::ShaderStageFlagBits::eVertex, vertexShaderModule.get(), "main" ),
       vk::PipelineShaderStageCreateInfo(
         vk::PipelineShaderStageCreateFlags(), vk::ShaderStageFlagBits::eFragment, fragmentShaderModule.get(), "main" )
     };
 
-    vk::VertexInputBindingDescription   vertexInputBindingDescription( 0, sizeof( coloredCubeData[0] ) );
-    vk::VertexInputAttributeDescription vertexInputAttributeDescriptions[2] = {
+    vk::VertexInputBindingDescription                  vertexInputBindingDescription( 0, sizeof( coloredCubeData[0] ) );
+    std::array<vk::VertexInputAttributeDescription, 2> vertexInputAttributeDescriptions = {
       vk::VertexInputAttributeDescription( 0, 0, vk::Format::eR32G32B32A32Sfloat, 0 ),
       vk::VertexInputAttributeDescription( 1, 0, vk::Format::eR32G32B32A32Sfloat, 16 )
     };
     vk::PipelineVertexInputStateCreateInfo pipelineVertexInputStateCreateInfo(
       vk::PipelineVertexInputStateCreateFlags(),  // flags
-      1,                                          // vertexBindingDescriptionCount
-      &vertexInputBindingDescription,             // pVertexBindingDescription
-      2,                                          // vertexAttributeDescriptionCount
-      vertexInputAttributeDescriptions            // pVertexAttributeDescriptions
+      vertexInputBindingDescription,              // vertexBindingDescriptions
+      vertexInputAttributeDescriptions            // vertexAttributeDescriptions
     );
 
     vk::PipelineInputAssemblyStateCreateInfo pipelineInputAssemblyStateCreateInfo(
@@ -139,19 +137,17 @@ int main( int /*argc*/, char ** /*argv*/ )
       vk::PipelineColorBlendStateCreateFlags(),  // flags
       false,                                     // logicOpEnable
       vk::LogicOp::eNoOp,                        // logicOp
-      1,                                         // attachmentCount
-      &pipelineColorBlendAttachmentState,        // pAttachments
+      pipelineColorBlendAttachmentState,         // attachments
       { { 1.0f, 1.0f, 1.0f, 1.0f } }             // blendConstants
     );
 
-    vk::DynamicState                   dynamicStates[2] = { vk::DynamicState::eViewport, vk::DynamicState::eScissor };
-    vk::PipelineDynamicStateCreateInfo pipelineDynamicStateCreateInfo(
-      vk::PipelineDynamicStateCreateFlags(), 2, dynamicStates );
+    std::array<vk::DynamicState, 2>    dynamicStates = { vk::DynamicState::eViewport, vk::DynamicState::eScissor };
+    vk::PipelineDynamicStateCreateInfo pipelineDynamicStateCreateInfo( vk::PipelineDynamicStateCreateFlags(),
+                                                                       dynamicStates );
 
     vk::GraphicsPipelineCreateInfo graphicsPipelineCreateInfo(
       vk::PipelineCreateFlags(),              // flags
-      2,                                      // stageCount
-      pipelineShaderStageCreateInfos,         // pStages
+      pipelineShaderStageCreateInfos,         // stages
       &pipelineVertexInputStateCreateInfo,    // pVertexInputState
       &pipelineInputAssemblyStateCreateInfo,  // pInputAssemblyState
       nullptr,                                // pTessellationState
@@ -174,9 +170,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     std::cout << "vk::SystemError: " << err.what() << std::endl;
     exit( -1 );
   }
-  catch ( std::runtime_error & err )
+  catch ( std::exception & err )
   {
-    std::cout << "std::runtime_error: " << err.what() << std::endl;
+    std::cout << "std::exception: " << err.what() << std::endl;
     exit( -1 );
   }
   catch ( ... )

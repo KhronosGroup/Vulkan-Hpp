@@ -35,33 +35,51 @@ int main( int /*argc*/, char ** /*argv*/ )
   static_assert( false, "Conversions not enabled" );
 #endif
 
-  using result = vk::ResultValue<int>;
+  {
+    using result = vk::ResultValue<int>;
 
-  auto       val  = result{ vk::Result{}, 42 };
-  const auto cval = result{ vk::Result{}, 42 };
+    auto       val  = result{ vk::Result{}, 42 };
+    const auto cval = result{ vk::Result{}, 42 };
 
-  as_value( val );
-  as_value( cval );
+    as_value( val );
+    as_value( cval );
 
-  as_ref( val );
-  // as_ref(cval); // should fail
-  as_cref( val );
-  as_cref( cval );
+    as_ref( val );
+    // as_ref(cval); // should fail
+    as_cref( val );
+    as_cref( cval );
 
-  as_rvref( std::move( val ) );
-  // as_rvref(std::move(cval)); // should fail
-  as_crvref( std::move( val ) );
-  as_crvref( std::move( cval ) );
+    as_rvref( std::move( val ) );
+    // as_rvref(std::move(cval)); // should fail
+    as_crvref( std::move( val ) );
+    as_crvref( std::move( cval ) );
+  }
 
-  vk::Pipeline       pipe( VkPipeline( 0x8 ) );  // fake a Pipeline here, to have something different from zero
-  vk::UniquePipeline pipeline( pipe );
-  vk::ResultValue<vk::UniquePipeline> rv( {}, std::move( pipeline ) );
+  {
+    vk::Pipeline       pipe( VkPipeline( 0x8 ) );  // fake a Pipeline here, to have something different from zero
+    vk::UniquePipeline pipeline( pipe );
+    vk::ResultValue<vk::UniquePipeline> rv( {}, std::move( pipeline ) );
 
-  as_cref( rv );  // does not move out handle
-  assert( rv.value );
+    as_cref( rv );  // does not move out handle
+    assert( rv.value );
 
-  auto p = std::move( rv.value );
-  p.release();  // release the faked Pipeline, to prevent error on trying to destroy it
+    auto p = std::move( rv.value );
+    p.release();  // release the faked Pipeline, to prevent error on trying to destroy it
+  }
+
+  // test for issue #659
+  if (false) {
+    vk::ResultValue<vk::Pipeline> pipe {{}, {}};
+    vk::ResultValue<vk::UniquePipeline> upipe( {}, {});
+    // init
+    vk::UniquePipeline up1 = std::move(upipe);
+    vk::Pipeline p1 = pipe;
+    vk::Pipeline p2 = std::move(pipe);
+    // assign
+    up1 = std::move(upipe);
+    p1 = pipe;
+    p2 = std::move(pipe);
+  }
 
   return 0;
 }

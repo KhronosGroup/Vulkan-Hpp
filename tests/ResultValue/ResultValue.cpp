@@ -70,13 +70,10 @@ int main( int /*argc*/, char ** /*argv*/ )
   // test for issue #659
   if (false) {
     vk::ResultValue<vk::Pipeline> pipe {{}, {}};
-    vk::ResultValue<vk::UniquePipeline> upipe( {}, {});
     // init
-    vk::UniquePipeline up1 = std::move(upipe);
     vk::Pipeline p1 = pipe;
     vk::Pipeline p2 = std::move(pipe);
     // assign
-    up1 = std::move(upipe);
     p1 = pipe;
     p2 = std::move(pipe);
   }

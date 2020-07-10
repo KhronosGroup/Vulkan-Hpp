@@ -3688,7 +3688,7 @@ void VulkanHppGenerator::appendStructConstructorsEnhanced( std::string &        
           assert( ( litit->second.size() == 1 ) || !litit->second.front()->optional );
           initializers +=
             ( firstArgument ? ": " : ", " ) + mit->name + "( " + generateLenInitializer( mit, litit ) + " )";
-          sizeChecks += generateSizeCheck( litit->second, stripPrefix(structData.first, "Vk"), prefix );
+          sizeChecks += generateSizeCheck( litit->second, stripPrefix( structData.first, "Vk" ), prefix );
         }
         else if ( std::find( memberIts.begin(), memberIts.end(), mit ) != memberIts.end() )
         {
@@ -3770,6 +3770,10 @@ bool VulkanHppGenerator::appendStructConstructorArgument( std::string &      str
       {
         appendEnumInitializer( str, memberData.type, memberData.arraySizes, enumIt->second.values );
       }
+      else if ( !memberData.values.empty() )
+      {
+        str += memberData.values;
+      }
       else
       {
         // all the rest can be initialized with just {}
@@ -3849,6 +3853,10 @@ std::string VulkanHppGenerator::appendStructMembers( std::string &              
         if ( enumIt != m_enums.end() && member.type.postfix.empty() )
         {
           appendEnumInitializer( str, member.type, member.arraySizes, enumIt->second.values );
+        }
+        else if ( !member.values.empty() )
+        {
+          str += member.values;
         }
         else
         {
@@ -4508,9 +4516,8 @@ void VulkanHppGenerator::checkCorrectness()
                member.xmlLine,
                "struct member array size uses unknown constant <" + member.usedConstant + ">" );
       }
-      if ( !member.values.empty() )
+      if ( !member.values.empty() && ( member.name == "sType" ) )
       {
-        assert( member.name == "sType" );
         check( std::find_if( structureTypeIt->second.values.begin(),
                              structureTypeIt->second.values.end(),
                              [&member]( auto const & evd ) { return member.values == evd.vulkanValue; } ) !=
@@ -6780,12 +6787,15 @@ void VulkanHppGenerator::readStructMember( tinyxml2::XMLElement const * element,
     }
     else if ( attribute.first == "values" )
     {
-      check( memberData.name == "sType",
+      check( tokenize( attribute.second, "," ).size() == 1,
              line,
-             "Structure member named differently than <sType> with attribute <values> encountered: " );
-      check( m_sTypeValues.insert( attribute.second ).second,
-             line,
-             "<" + attribute.second + "> already encountered as values for the sType member of a struct" );
+             "struct member <" + memberData.name + "> holds mulitple values <" + attribute.second + ">" );
+      if ( memberData.name == "sType" )
+      {
+        check( m_sTypeValues.insert( attribute.second ).second,
+               line,
+               "<" + attribute.second + "> already encountered as values for the sType member of a struct" );
+      }
       memberData.values = attribute.second;
     }
   }

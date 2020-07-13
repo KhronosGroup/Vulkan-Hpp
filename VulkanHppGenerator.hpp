@@ -116,13 +116,14 @@ private:
 
   struct EnumValueData
   {
-    EnumValueData( std::string const & vulkan, std::string const & vk, bool singleBit_ )
-      : vulkanValue( vulkan ), vkValue( vk ), singleBit( singleBit_ )
+    EnumValueData( int line, std::string const & vulkan, std::string const & vk, bool singleBit_ )
+      : vulkanValue( vulkan ), vkValue( vk ), singleBit( singleBit_ ), xmlLine(line)
     {}
 
     std::string vulkanValue;
     std::string vkValue;
     bool        singleBit;
+    int         xmlLine;
   };
 
   struct EnumData
@@ -198,7 +199,7 @@ private:
     bool                     optional       = false;
     std::string              selection;
     std::string              selector;
-    std::string              values;
+    std::vector<std::string> values;
     std::string              usedConstant;
     int                      xmlLine;
   };
@@ -528,7 +529,6 @@ private:
                                            std::string const &                                          structName,
                                            std::string const &                                          prefix ) const;
   std::set<std::string> getPlatforms( std::set<std::string> const & extensions ) const;
-  bool                  holdsSType( std::string const & type ) const;
   bool                  isParam( std::string const & name, std::vector<ParamData> const & params ) const;
   bool                  isParamIndirect( std::string const & name, std::vector<ParamData> const & params ) const;
   bool                  isTwoStepAlgorithm( std::vector<ParamData> const & params ) const;
@@ -628,7 +628,6 @@ private:
   std::map<std::string, PlatformData>    m_platforms;
   std::map<std::string, std::string>     m_structureAliases;
   std::map<std::string, StructureData>   m_structures;
-  std::set<std::string>                  m_sTypeValues;
   std::set<std::string>                  m_tags;
   std::map<std::string, TypeData>        m_types;
   std::string                            m_typesafeCheck;

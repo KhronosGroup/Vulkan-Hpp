@@ -83,6 +83,7 @@ std::string stripPostfix( std::string const & value, std::string const & postfix
 std::string stripPluralS( std::string const & name );
 std::string stripPrefix( std::string const & value, std::string const & prefix );
 std::string toCamelCase( std::string const & value );
+std::string toString( std::vector<std::string> const & strings );
 std::string toUpperCase( std::string const & name );
 std::vector<std::string> tokenize( std::string const & tokenString, std::string const & separator );
 std::string              trim( std::string const & input );
@@ -94,8 +95,6 @@ const std::set<std::string> ignoreLens = { "null-terminated",
                                            R"(latexmath:[\lceil{\mathit{rasterizationSamples} \over 32}\rceil])",
                                            "2*VK_UUID_SIZE",
                                            "2*ename:VK_UUID_SIZE" };
-
-const std::set<std::string> nonConstSTypeStructs = { "VkBaseInStructure", "VkBaseOutStructure" };
 
 void appendArgumentCount( std::string &       str,
                           size_t              vectorIndex,
@@ -698,6 +697,20 @@ std::string toCamelCase( std::string const & value )
     }
   }
   return result;
+}
+
+std::string toString( std::vector<std::string> const & strings )
+{
+  std::string str;
+  if ( !strings.empty() )
+  {
+    str = strings[0];
+    for ( size_t i = 1; i < strings.size(); i++ )
+    {
+      str += ", " + strings[i];
+    }
+  }
+  return str;
 }
 
 std::string toUpperCase( std::string const & name )
@@ -3507,22 +3520,31 @@ ${prefix}}
   str += replaceWithMap( assignmentFromVulkanType,
                          { { "prefix", prefix }, { "structName", stripPrefix( structData.first, "Vk" ) } } );
 
-  // we need an assignment operator if there is constant sType in this struct
-  std::string copyTemplate;
-  if ( ( nonConstSTypeStructs.find( structData.first ) == nonConstSTypeStructs.end() ) &&
-       !structData.second.members.empty() && ( structData.second.members.front().name == "sType" ) )
+  // we need an assignment operator if there is constant member in this struct
+  if ( std::find_if( structData.second.members.begin(), structData.second.members.end(), []( MemberData const & md ) {
+         return md.values.size() == 1;
+       } ) != structData.second.members.end() )
   {
-    assert( ( 2 <= structData.second.members.size() ) && ( structData.second.members[1].name == "pNext" ) );
+    std::string assignments;
+    for ( auto member : structData.second.members )
+    {
+      if ( member.values.size() != 1 )
+      {
+        assignments += prefix + member.name + " = rhs." + member.name + ";\n";
+      }
+    }
 
-    static const std::string stringTemplate = R"(
+    static const std::string assignmentTemplate = R"(
 ${prefix}${structName} & operator=( ${structName} const & rhs ) VULKAN_HPP_NOEXCEPT
 ${prefix}{
-${prefix}  memcpy( &pNext, &rhs.pNext, sizeof( ${structName} ) - offsetof( ${structName}, pNext ) );
+${assignments}
 ${prefix}  return *this;
 ${prefix}}
 )";
-    str += replaceWithMap( stringTemplate,
-                           { { "prefix", prefix }, { "structName", stripPrefix( structData.first, "Vk" ) } } );
+    str += replaceWithMap( assignmentTemplate,
+                           { { "assignments", assignments },
+                             { "prefix", prefix },
+                             { "structName", stripPrefix( structData.first, "Vk" ) } } );
   }
 }
 
@@ -3627,8 +3649,8 @@ ${prefix}}
     // gather the arguments
     listedArgument = appendStructConstructorArgument( arguments, listedArgument, member, true );
 
-    // gather the initializers; skip members 'pNext' and 'sType', they are directly set by initializers
-    if ( ( member.name != "pNext" ) && ( member.name != "sType" ) )
+    // gather the initializers; skip member 'pNext' and constant members
+    if ( ( member.name != "pNext" ) && ( member.values.size() != 1 ) )
     {
       initializers += ( firstArgument ? ":" : "," ) + std::string( " " ) + member.name + "( " + member.name + "_ )";
       firstArgument = false;
@@ -3678,8 +3700,8 @@ void VulkanHppGenerator::appendStructConstructorsEnhanced( std::string &        
     std::string templateHeader, sizeChecks;
     for ( auto mit = structData.second.members.begin(); mit != structData.second.members.end(); ++mit )
     {
-      // gather the initializers; skip members 'pNext' and 'sType', they are directly set by initializers
-      if ( ( mit->name != "pNext" ) && ( mit->name != "sType" ) )
+      // gather the initializers; skip member 'pNext' and constant members
+      if ( ( mit->name != "pNext" ) && ( mit->values.size() != 1 ) )
       {
         auto litit = lenIts.find( mit );
         if ( litit != lenIts.end() )
@@ -3748,8 +3770,8 @@ bool VulkanHppGenerator::appendStructConstructorArgument( std::string &      str
                                                           MemberData const & memberData,
                                                           bool               withDefault ) const
 {
-  // skip members 'pNext' and 'sType', as they are never explicitly set
-  if ( ( memberData.name != "pNext" ) && ( memberData.name != "sType" ) )
+  // skip members 'pNext' and members with a single value, as they are never explicitly set
+  if ( ( memberData.name != "pNext" ) && ( memberData.values.size() != 1 ) )
   {
     str += ( listedArgument ? ( ", " ) : "" );
     if ( memberData.arraySizes.empty() )
@@ -3772,7 +3794,9 @@ bool VulkanHppGenerator::appendStructConstructorArgument( std::string &      str
       }
       else if ( !memberData.values.empty() )
       {
-        str += memberData.values;
+        // member with multiple values (those with just one don't get here) arbitrarily get the first value as their
+        // default
+        str += memberData.values.front();
       }
       else
       {
@@ -3794,11 +3818,9 @@ std::string VulkanHppGenerator::appendStructMembers( std::string &              
   for ( auto const & member : structData.second.members )
   {
     str += prefix;
-    if ( ( member.name == "sType" ) &&
-         ( nonConstSTypeStructs.find( structData.first ) ==
-           nonConstSTypeStructs
-             .end() ) )  // special handling for sType and some nasty little structs that don't get a const sType
+    if ( member.values.size() == 1 )
     {
+      // members with just one allowed value are set to be const
       str += "const ";
     }
     if ( !member.bitCount.empty() && beginsWith( member.type.type, "Vk" ) )
@@ -3816,25 +3838,23 @@ std::string VulkanHppGenerator::appendStructMembers( std::string &              
       str += constructStandardArrayWrapper( member.type.compose(), member.arraySizes );
     }
     str += " " + member.name;
-    if ( member.name == "sType" )  // special handling for sType
+    if ( !member.values.empty() )
     {
-      auto enumIt = m_enums.find( "VkStructureType" );
+      // special handling for members with legal value: arbitrarily use the first one as the default
+      auto enumIt = m_enums.find( member.type.type );
       assert( enumIt != m_enums.end() );
-      if ( !member.values.empty() )
       {
-        assert( beginsWith( member.values, "VK_STRUCTURE_TYPE" ) );
-        auto nameIt =
+        std::string enumValue = member.values.front();
+        auto        nameIt =
           std::find_if( enumIt->second.values.begin(),
                         enumIt->second.values.end(),
-                        [&member]( EnumValueData const & evd ) { return member.values == evd.vulkanValue; } );
+                        [&enumValue]( EnumValueData const & evd ) { return enumValue == evd.vulkanValue; } );
         assert( nameIt != enumIt->second.values.end() );
-        sTypeValue = nameIt->vkValue;
-        str += " = StructureType::" + sTypeValue;
-      }
-      else
-      {
-        // special handling for those nasty structs with an unspecified value for sType
-        str += " = {}";
+        str += " = " + stripPrefix( member.type.type, "Vk" ) + "::" + nameIt->vkValue;
+        if ( member.name == "sType" )
+        {
+          sTypeValue = nameIt->vkValue;
+        }
       }
     }
     else
@@ -3853,10 +3873,6 @@ std::string VulkanHppGenerator::appendStructMembers( std::string &              
         if ( enumIt != m_enums.end() && member.type.postfix.empty() )
         {
           appendEnumInitializer( str, member.type, member.arraySizes, enumIt->second.values );
-        }
-        else if ( !member.values.empty() )
-        {
-          str += member.values;
         }
         else
         {
@@ -4404,7 +4420,7 @@ void VulkanHppGenerator::EnumData::addEnumValue( int                 line,
   } );
   if ( it == values.end() )
   {
-    values.push_back( EnumValueData( valueName, translatedName, bitpos ) );
+    values.push_back( EnumValueData( line, valueName, translatedName, bitpos ) );
   }
   else
   {
@@ -4472,8 +4488,7 @@ void VulkanHppGenerator::checkCorrectness()
     }
   }
 
-  auto structureTypeIt = m_enums.find( "VkStructureType" );
-  assert( structureTypeIt != m_enums.end() );
+  std::set<std::string> sTypeValues;
   for ( auto const & structure : m_structures )
   {
     for ( auto const & extend : structure.second.structExtends )
@@ -4516,17 +4531,72 @@ void VulkanHppGenerator::checkCorrectness()
                member.xmlLine,
                "struct member array size uses unknown constant <" + member.usedConstant + ">" );
       }
-      if ( !member.values.empty() && ( member.name == "sType" ) )
+      if ( !member.values.empty() )
       {
-        check( std::find_if( structureTypeIt->second.values.begin(),
-                             structureTypeIt->second.values.end(),
-                             [&member]( auto const & evd ) { return member.values == evd.vulkanValue; } ) !=
-                 structureTypeIt->second.values.end(),
-               member.xmlLine,
-               "sType value <" + member.values + "> not listed for VkStructureType" );
+        auto enumIt = m_enums.find( member.type.type );
+        if ( enumIt != m_enums.end() )
+        {
+          for ( auto const & enumValue : member.values )
+          {
+            check( std::find_if( enumIt->second.values.begin(),
+                                 enumIt->second.values.end(),
+                                 [&enumValue]( auto const & evd ) { return enumValue == evd.vulkanValue; } ) !=
+                     enumIt->second.values.end(),
+                   member.xmlLine,
+                   "value <" + enumValue + "> for structure member <" + member.name + "> of enum type <" +
+                     member.type.type + "> not listed" );
+          }
+          // special handling for sType: no value should appear more than once
+          if ( member.name == "sType" )
+          {
+            for ( auto const & enumValue : member.values )
+            {
+              check( sTypeValues.insert( enumValue ).second,
+                     member.xmlLine,
+                     "sType value <" + enumValue + "> has been used before" );
+            }
+          }
+        }
+        else if ( member.type.type == "uint32_t" )
+        {
+          for ( auto const & value : member.values )
+          {
+            check( value.find_first_not_of( "0123456789" ) == std::string::npos,
+                   member.xmlLine,
+                   "value <" + value + "> for struct member <" + member.name + "> of type <" + member.type.type +
+                     "> in structure <" + structure.first + "> is not a number" );
+          }
+        }
+        else
+        {
+          check( false,
+                 member.xmlLine,
+                 "member <" + member.name + "> in structure <" + structure.first + "> holds values <" +
+                   ::toString( member.values ) + "> for an unhandled type <" + member.type.type + ">" );
+        }
       }
     }
   }
+
+  auto structureTypeIt = m_enums.find( "VkStructureType" );
+  assert( structureTypeIt != m_enums.end() );
+  for ( auto const & enumValue : structureTypeIt->second.values )
+  {
+    if ( ( enumValue.vulkanValue == "VK_STRUCTURE_TYPE_LOADER_INSTANCE_CREATE_INFO" ) ||
+         ( enumValue.vulkanValue == "VK_STRUCTURE_TYPE_LOADER_DEVICE_CREATE_INFO" ) )
+    {
+      check( sTypeValues.find( enumValue.vulkanValue ) == sTypeValues.end(),
+             enumValue.xmlLine,
+             "Reserved VkStructureType enum value <" + enumValue.vulkanValue + "> is used" );
+    }
+    else
+    {
+      warn( sTypeValues.erase( enumValue.vulkanValue ) == 1,
+            enumValue.xmlLine,
+            "VkStructureType enum value <" + enumValue.vulkanValue + "> never used" );
+    }
+  }
+  assert( sTypeValues.empty() );
 
   auto resultIt = m_enums.find( "VkResult" );
   assert( resultIt != m_enums.end() );
@@ -5046,17 +5116,6 @@ std::set<std::string> VulkanHppGenerator::getPlatforms( std::set<std::string> co
     platforms.insert( extensionIt->second.platform );
   }
   return platforms;
-}
-
-bool VulkanHppGenerator::holdsSType( std::string const & type ) const
-{
-  auto it = m_structures.find( type );
-  if ( it != m_structures.end() )
-  {
-    assert( !it->second.members.empty() );
-    return ( it->second.members.front().name == "sType" );
-  }
-  return false;
 }
 
 bool VulkanHppGenerator::isParam( std::string const & name, std::vector<ParamData> const & params ) const
@@ -6787,16 +6846,7 @@ void VulkanHppGenerator::readStructMember( tinyxml2::XMLElement const * element,
     }
     else if ( attribute.first == "values" )
     {
-      check( tokenize( attribute.second, "," ).size() == 1,
-             line,
-             "struct member <" + memberData.name + "> holds mulitple values <" + attribute.second + ">" );
-      if ( memberData.name == "sType" )
-      {
-        check( m_sTypeValues.insert( attribute.second ).second,
-               line,
-               "<" + attribute.second + "> already encountered as values for the sType member of a struct" );
-      }
-      memberData.values = attribute.second;
+      memberData.values = tokenize( attribute.second, "," );
     }
   }
 

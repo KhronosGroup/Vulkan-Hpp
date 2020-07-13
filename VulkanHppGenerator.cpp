@@ -4543,8 +4543,8 @@ void VulkanHppGenerator::checkCorrectness()
                                  [&enumValue]( auto const & evd ) { return enumValue == evd.vulkanValue; } ) !=
                      enumIt->second.values.end(),
                    member.xmlLine,
-                   "value <" + enumValue + "> for structure member <" + member.name + "> of enum type <" +
-                     member.type.type + "> not listed" );
+                   "value <" + enumValue + "> for member <" + member.name + "> in structure <" + structure.first +
+                     " of enum type <" + member.type.type + "> not listed" );
           }
           // special handling for sType: no value should appear more than once
           if ( member.name == "sType" )
@@ -4563,8 +4563,8 @@ void VulkanHppGenerator::checkCorrectness()
           {
             check( value.find_first_not_of( "0123456789" ) == std::string::npos,
                    member.xmlLine,
-                   "value <" + value + "> for struct member <" + member.name + "> of type <" + member.type.type +
-                     "> in structure <" + structure.first + "> is not a number" );
+                   "value <" + value + "> for member <" + member.name + "> in structure <" + structure.first +
+                     "> of type <" + member.type.type + "> is not a number" );
           }
         }
         else

@@ -4749,39 +4749,31 @@ size_t VulkanHppGenerator::determineReturnParamIndex( CommandData const &       
   // for return types of type VkResult or void, we can determine a parameter to return
   if ( ( commandData.returnType == "VkResult" ) || ( commandData.returnType == "void" ) )
   {
-    for ( size_t i = 0; i < commandData.params.size(); i++ )
+    size_t index = commandData.params.size() - 1;
+    if ( ( commandData.params[index].type.postfix.find( '*' ) != std::string::npos ) &&
+         ( ( commandData.params[index].type.type != "void" ) || twoStep ||
+           ( commandData.params[index].type.postfix.find( "**" ) != std::string::npos ) ) &&
+         ( commandData.params[index].type.prefix.find( "const" ) == std::string::npos ) )
     {
-      if ( ( commandData.params[i].type.postfix.find( '*' ) != std::string::npos ) &&
-           ( ( commandData.params[i].type.type != "void" ) || twoStep ||
-             ( commandData.params[i].type.postfix.find( "**" ) != std::string::npos ) ) &&
-           ( commandData.params[i].type.prefix.find( "const" ) == std::string::npos ) &&
-           std::find_if(
-             vectorParamIndices.begin(), vectorParamIndices.end(), [i]( std::pair<size_t, size_t> const & vpi ) {
-               return vpi.second == i;
-             } ) == vectorParamIndices.end() )
+      // it's a non-const pointer
+      // assert that it's not a vector-size parameter
+      assert( std::find_if(
+                vectorParamIndices.begin(), vectorParamIndices.end(), [index]( std::pair<size_t, size_t> const & vpi ) {
+                  return vpi.second == index;
+                } ) == vectorParamIndices.end() );
+
+      std::map<size_t, size_t>::const_iterator vpit = vectorParamIndices.find( index );
+      if ( ( vpit == vectorParamIndices.end() ) || twoStep || ( vectorParamIndices.size() > 1 ) ||
+           ( vpit->second == INVALID_INDEX ) )
       {
-        // it's a non-const pointer and not a vector-size parameter
-        std::map<size_t, size_t>::const_iterator vpit = vectorParamIndices.find( i );
-        if ( ( vpit == vectorParamIndices.end() ) || twoStep || ( vectorParamIndices.size() > 1 ) ||
-             ( vpit->second == INVALID_INDEX ) ||
-             ( commandData.params[vpit->second].type.postfix.find( '*' ) != std::string::npos ) )
-        {
-          // it's not a vector parameter, or a two-step process, or there is at least one more vector parameter, or
-          // the size argument of this vector parameter is not an argument, or the size argument of this vector
-          // parameter is provided by a pointer
-          // -> look for another non-cost pointer argument
-          auto paramIt =
-            std::find_if( commandData.params.begin() + i + 1, commandData.params.end(), []( ParamData const & pd ) {
-              return ( pd.type.postfix.find( '*' ) != std::string::npos ) &&
-                     ( pd.type.postfix.find( "const" ) == std::string::npos );
-            } );
-          // if there is another such argument, we can't decide which one to return -> return INVALID_INDEX
-          // otherwise return the index of the selcted parameter
-          returnParamIndex = paramIt != commandData.params.end() ? INVALID_INDEX : i;
-        }
+        // it's not a vector parameter, or a two-step process, or there is at least one more vector parameter, or
+        // the size argument of this vector parameter is not an argument
+        // -> return the index of the selcted parameter
+        returnParamIndex = index;
       }
     }
   }
+
   return returnParamIndex;
 }
 

@@ -1983,7 +1983,21 @@ void VulkanHppGenerator::appendFunction( std::string &                    str,
                                 !definition,
                                 isStructureChain );
 
-  str += indentation + ( definition ? "VULKAN_HPP_INLINE " : "" );
+  str += indentation;
+
+  if ( ( 1 < commandData.successCodes.size() ) || ( !enhanced && ( 1 < commandData.errorCodes.size() ) ) )
+  {
+    str += "VULKAN_HPP_NODISCARD ";
+  }
+  else if ( enhanced && ( 1 < commandData.errorCodes.size() ) )
+  {
+    str += "VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS ";
+  }
+
+  if ( definition )
+  {
+    str += "VULKAN_HPP_INLINE ";
+  }
 
   appendFunctionHeaderReturnType( str,
                                   commandData,
@@ -8402,6 +8416,18 @@ int main( int argc, char ** argv )
 #  define VULKAN_HPP_DEPRECATED( msg ) [[deprecated( msg )]]
 #else
 #  define VULKAN_HPP_DEPRECATED( msg )
+#endif
+
+#if ( 17 <= VULKAN_HPP_CPP_VERSION ) && !defined( VULKAN_HPP_NO_NODISCARD_WARNINGS )
+#  define VULKAN_HPP_NODISCARD [[nodiscard]]
+#  if defined(VULKAN_HPP_NO_EXCEPTIONS)
+#    define VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS [[nodiscard]]
+#  else
+#    define VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS
+#  endif
+#else
+#  define VULKAN_HPP_NODISCARD
+#  define VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS
 #endif
 
 #if !defined(VULKAN_HPP_NAMESPACE)

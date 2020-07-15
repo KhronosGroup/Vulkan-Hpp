@@ -346,6 +346,10 @@ Finally, the last code example is using exceptions and return value transformati
 
 Keep in mind that Vulkan-Hpp does not support RAII style handles and that you have to cleanup your resources in the error handler!
 
+### C++17: [[nodiscard]]
+
+With C++17 and above, some functions are attributed with [[nodiscard]], resulting in a warning if you don't use the return value in any way. You can switch those warnings off by defining VULKAN_HPP_NO_NODISCARD_WARNINGS.
+
 ### Enumerations
 
 For the return value transformation, there's one special class of return values which require special handling: Enumerations. For enumerations you usually have to write code like this:

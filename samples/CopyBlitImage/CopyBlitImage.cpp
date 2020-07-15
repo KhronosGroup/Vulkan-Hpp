@@ -230,7 +230,14 @@ int main( int /*argc*/, char ** /*argv*/ )
       ;
 
     /* Now present the image in the window */
-    presentQueue.presentKHR( vk::PresentInfoKHR( {}, *swapChainData.swapChain, currentBuffer, {} ) );
+    vk::Result result =
+      presentQueue.presentKHR( vk::PresentInfoKHR( {}, *swapChainData.swapChain, currentBuffer, {} ) );
+    switch ( result )
+    {
+      case vk::Result::eSuccess: break;
+      case vk::Result::eSuboptimalKHR: std::cout << "vk::Queue::presentKHR returned vk::Result::eSuboptimalKHR !\n";
+      default: assert( false );  // an unexpected result is returned !
+    }
     std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
 
     /* VULKAN_KEY_END */

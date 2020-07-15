@@ -135,7 +135,7 @@ AccelerationStructureData
     for ( size_t i = 0; i < instances.size(); i++ )
     {
       uint64_t accelerationStructureHandle = 0;
-      device->getAccelerationStructureHandleNV( instances[i].first, sizeof( uint64_t ), &accelerationStructureHandle );
+      device->getAccelerationStructureHandleNV<uint64_t>( instances[i].first, accelerationStructureHandle );
 
       // For each instance we set its instance index to its index i in the instance vector, and set
       // its hit group index to 2*i. The hit group index defines which entry of the shader binding
@@ -1280,8 +1280,14 @@ int main( int /*argc*/, char ** /*argv*/ )
                                             1,
                                             &( *perFrameData[frameIndex].renderCompleteSemaphore ) ),
                             *perFrameData[frameIndex].fence );
-      presentQueue.presentKHR( vk::PresentInfoKHR(
+      vk::Result result = presentQueue.presentKHR( vk::PresentInfoKHR(
         *perFrameData[frameIndex].renderCompleteSemaphore, *swapChainData.swapChain, backBufferIndex ) );
+      switch ( result )
+      {
+        case vk::Result::eSuccess: break;
+        case vk::Result::eSuboptimalKHR: std::cout << "vk::Queue::presentKHR returned vk::Result::eSuboptimalKHR !\n";
+        default: assert( false );  // an unexpected result is returned !
+      }
       frameIndex = ( frameIndex + 1 ) % IMGUI_VK_QUEUED_FRAMES;
 
       double endTime = glfwGetTime();

@@ -722,7 +722,7 @@ namespace vk
 
     void submitAndWait( vk::UniqueDevice & device, vk::Queue queue, vk::UniqueCommandBuffer & commandBuffer )
     {
-      vk::UniqueFence        fence              = device->createFenceUnique( vk::FenceCreateInfo() );
+      vk::UniqueFence fence = device->createFenceUnique( vk::FenceCreateInfo() );
       queue.submit( vk::SubmitInfo( {}, {}, *commandBuffer ), fence.get() );
       while ( vk::Result::eTimeout == device->waitForFences( fence.get(), VK_TRUE, vk::su::FenceTimeout ) )
         ;

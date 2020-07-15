@@ -238,10 +238,10 @@ int                 main( int /*argc*/, char ** /*argv*/ )
 
     vk::UniqueSemaphore imageAcquiredSemaphore = device->createSemaphoreUnique( vk::SemaphoreCreateInfo() );
 
-    vk::ResultValue<uint32_t> result = device->acquireNextImage2KHR(
+    vk::ResultValue<uint32_t> nexImage = device->acquireNextImage2KHR(
       vk::AcquireNextImageInfoKHR( swapChainData.swapChain.get(), UINT64_MAX, imageAcquiredSemaphore.get(), {}, 1 ) );
-    assert( result.result == vk::Result::eSuccess );
-    uint32_t currentBuffer = result.value;
+    assert( nexImage.result == vk::Result::eSuccess );
+    uint32_t currentBuffer = nexImage.value;
 
     vk::ClearValue clearValue;
     clearValue.color = vk::ClearColorValue( std::array<float, 4>( { { 0.2f, 0.2f, 0.2f, 0.2f } } ) );
@@ -271,7 +271,13 @@ int                 main( int /*argc*/, char ** /*argv*/ )
 
     vk::su::submitAndWait( device, graphicsQueue, commandBuffer );
 
-    presentQueue.presentKHR( vk::PresentInfoKHR( {}, *swapChainData.swapChain, currentBuffer ) );
+    vk::Result result = presentQueue.presentKHR( vk::PresentInfoKHR( {}, *swapChainData.swapChain, currentBuffer ) );
+    switch ( result )
+    {
+      case vk::Result::eSuccess: break;
+      case vk::Result::eSuboptimalKHR: std::cout << "vk::Queue::presentKHR returned vk::Result::eSuboptimalKHR !\n";
+      default: assert( false );  // an unexpected result is returned !
+    }
     std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
   }
   catch ( vk::SystemError & err )

@@ -202,13 +202,19 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     graphicsQueue.waitIdle();
 
-    uint64_t samplesPassed[2];
-    device->getQueryPoolResults( queryPool.get(),
-                                 0,
-                                 2,
-                                 vk::ArrayProxy<uint64_t>( 4, samplesPassed ),
-                                 sizeof( uint64_t ),
-                                 vk::QueryResultFlagBits::e64 | vk::QueryResultFlagBits::eWait );
+    uint64_t   samplesPassed[2];
+    vk::Result result = device->getQueryPoolResults( queryPool.get(),
+                                                     0,
+                                                     2,
+                                                     vk::ArrayProxy<uint64_t>( 4, samplesPassed ),
+                                                     sizeof( uint64_t ),
+                                                     vk::QueryResultFlagBits::e64 | vk::QueryResultFlagBits::eWait );
+    switch ( result )
+    {
+      case vk::Result::eSuccess: break;
+      case vk::Result::eNotReady: std::cout << "vk::Device::getQueryPoolResults returned vk::Result::eNotReady !\n";
+      default: assert( false );  // an unexpected result is returned !
+    }
 
     std::cout << "vkGetQueryPoolResults data\n";
     std::cout << "samples_passed[0] = " << samplesPassed[0] << "\n";
@@ -227,7 +233,13 @@ int main( int /*argc*/, char ** /*argv*/ )
     while ( vk::Result::eTimeout == device->waitForFences( drawFence.get(), VK_TRUE, vk::su::FenceTimeout ) )
       ;
 
-    presentQueue.presentKHR( vk::PresentInfoKHR( {}, *swapChainData.swapChain, currentBuffer.value ) );
+    result = presentQueue.presentKHR( vk::PresentInfoKHR( {}, *swapChainData.swapChain, currentBuffer.value ) );
+    switch ( result )
+    {
+      case vk::Result::eSuccess: break;
+      case vk::Result::eSuboptimalKHR: std::cout << "vk::Queue::presentKHR returned vk::Result::eSuboptimalKHR !\n";
+      default: assert( false );  // an unexpected result is returned !
+    }
     std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
 
     /* VULKAN_KEY_END */

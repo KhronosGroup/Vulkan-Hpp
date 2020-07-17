@@ -3595,6 +3595,8 @@ ${prefix}${constexpr}${structName}(${arguments}) VULKAN_HPP_NOEXCEPT
 ${prefix}${initializers}
 ${prefix}{}
 
+${prefix}${constexpr}${structName}( ${structName} const & ) VULKAN_HPP_NOEXCEPT = default;
+
 ${prefix}${structName}( Vk${structName} const & rhs ) VULKAN_HPP_NOEXCEPT
 ${prefix}{
 ${prefix}  *this = rhs;

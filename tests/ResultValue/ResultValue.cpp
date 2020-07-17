@@ -68,14 +68,25 @@ int main( int /*argc*/, char ** /*argv*/ )
   }
 
   // test for issue #659
-  if (false) {
-    vk::ResultValue<vk::Pipeline> pipe {{}, {}};
+  if ( false )
+  {
+    // types from VulkanHppGenerator::appendHandle
+    vk::ResultValue<vk::Pipeline> pipe{ {}, {} };
     // init
     vk::Pipeline p1 = pipe;
-    vk::Pipeline p2 = std::move(pipe);
+    vk::Pipeline p2 = std::move( pipe );
     // assign
     p1 = pipe;
-    p2 = std::move(pipe);
+    p2 = std::move( pipe );
+
+    // types from VulkanHppGenerator::appendStructure
+    vk::ResultValue<vk::DisplayPlaneCapabilitiesKHR> cap{ {}, {} };
+    // init
+    vk::DisplayPlaneCapabilitiesKHR c1 = cap;
+    vk::DisplayPlaneCapabilitiesKHR c2 = std::move( cap );
+    // assign
+    c1 = cap;
+    c2 = std::move( cap );
   }
 
   return 0;

@@ -3192,7 +3192,7 @@ ${enter}  class ${className}
       : m_${memberName}(VK_NULL_HANDLE)
     {}
 
-    VULKAN_HPP_CONSTEXPR ${className}( const ${className}& ) VULKAN_HPP_NOEXCEPT = default;
+    VULKAN_HPP_CONSTEXPR ${className}( ${className} const & ) VULKAN_HPP_NOEXCEPT = default;
 
     VULKAN_HPP_CONSTEXPR ${className}( std::nullptr_t ) VULKAN_HPP_NOEXCEPT
       : m_${memberName}(VK_NULL_HANDLE)

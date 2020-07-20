@@ -161,7 +161,16 @@ int main( int /*argc*/, char ** /*argv*/ )
       renderPass.get()                        // renderPass
     );
 
-    vk::UniquePipeline pipeline = device->createGraphicsPipelineUnique( nullptr, graphicsPipelineCreateInfo );
+    vk::ResultValue<vk::UniquePipeline> pipeline =
+      device->createGraphicsPipelineUnique( nullptr, graphicsPipelineCreateInfo );
+    switch ( pipeline.result )
+    {
+      case vk::Result::eSuccess: break;
+      case vk::Result::ePipelineCompileRequiredEXT:
+        // something meaningfull here
+        break;
+      default: assert( false );  // should never happen
+    }
 
     /* VULKAN_KEY_END */
   }

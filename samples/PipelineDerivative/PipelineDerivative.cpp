@@ -204,8 +204,17 @@ int main( int /*argc*/, char ** /*argv*/ )
                                                                pipelineLayout.get(),
                                                                renderPass.get() );
 
-    vk::UniquePipeline basePipeline =
+    vk::UniquePipeline                  basePipeline;
+    vk::ResultValue<vk::UniquePipeline> rvPipeline =
       device->createGraphicsPipelineUnique( pipelineCache.get(), graphicsPipelineCreateInfo );
+    switch ( rvPipeline.result )
+    {
+      case vk::Result::eSuccess: basePipeline = std::move( rvPipeline.value ); break;
+      case vk::Result::ePipelineCompileRequiredEXT:
+        // something meaningfull here
+        break;
+      default: assert( false );  // should never happen
+    }
 
     // Now create the derivative pipeline, using a different fragment shader
     // This shader will shade the cube faces with interpolated colors
@@ -236,8 +245,16 @@ void main()
     graphicsPipelineCreateInfo.basePipelineIndex  = -1;
 
     // And create the derived pipeline
-    vk::UniquePipeline derivedPipeline =
-      device->createGraphicsPipelineUnique( pipelineCache.get(), graphicsPipelineCreateInfo );
+    vk::UniquePipeline derivedPipeline;
+    rvPipeline = device->createGraphicsPipelineUnique( *pipelineCache, graphicsPipelineCreateInfo );
+    switch ( rvPipeline.result )
+    {
+      case vk::Result::eSuccess: derivedPipeline = std::move( rvPipeline.value ); break;
+      case vk::Result::ePipelineCompileRequiredEXT:
+        // something meaningfull here
+        break;
+      default: assert( false );  // should never happen
+    }
 
     /* VULKAN_KEY_END */
 

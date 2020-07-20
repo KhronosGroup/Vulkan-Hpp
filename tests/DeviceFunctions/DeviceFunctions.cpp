@@ -67,6 +67,8 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     vk::DeviceMemory       deviceMemory       = device->allocateMemory( {} );
     vk::UniqueDeviceMemory uniqueDeviceMemory = vk::UniqueDeviceMemory( deviceMemory, *device );
+
+    vk::ResultValue<std::vector<vk::UniquePipeline>> pipelines = device->createGraphicsPipelinesUnique( nullptr, {} );
   }
   catch ( vk::SystemError const & err )
   {

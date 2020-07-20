@@ -1097,8 +1097,17 @@ int main( int /*argc*/, char ** /*argv*/ )
     uint32_t                           maxRecursionDepth = 2;
     vk::RayTracingPipelineCreateInfoNV rayTracingPipelineCreateInfo(
       {}, shaderStages, shaderGroups, maxRecursionDepth, *rayTracingPipelineLayout );
-    vk::UniquePipeline rayTracingPipeline =
+    vk::UniquePipeline rayTracingPipeline;
+    vk::ResultValue<vk::UniquePipeline> rvPipeline =
       device->createRayTracingPipelineNVUnique( nullptr, rayTracingPipelineCreateInfo );
+    switch ( rvPipeline.result )
+    {
+      case vk::Result::eSuccess: rayTracingPipeline = std::move( rvPipeline.value ); break;
+      case vk::Result::ePipelineCompileRequiredEXT:
+        // something meaningfull here
+        break;
+      default: assert( false );  // should never happen
+    }
 
     uint32_t shaderGroupHandleSize =
       physicalDevice.getProperties2<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceRayTracingPropertiesNV>()

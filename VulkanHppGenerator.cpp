@@ -2557,7 +2557,7 @@ ${i}      ${uniqueTypeVariable}s.push_back( UniqueHandle<${type}, Dispatch>( ${t
 ${i}    }
 ${i}  }
 
-${i}  return createResultValue( result, ${uniqueTypeVariable}s, VULKAN_HPP_NAMESPACE_STRING "::${class}::${commandName}Unique"${successCodes} );
+${i}  return createResultValue( result, std::move( ${uniqueTypeVariable}s ), VULKAN_HPP_NAMESPACE_STRING "::${class}::${commandName}Unique"${successCodes} );
 )";
 
   std::string type = ( returnParamIndex != INVALID_INDEX ) ? commandData.params[returnParamIndex].type.type : "";
@@ -8631,21 +8631,25 @@ namespace std
     operator std::tuple<Result&, T&>() VULKAN_HPP_NOEXCEPT { return std::tuple<Result&, T&>(result, value); }
 
 #if !defined(VULKAN_HPP_DISABLE_IMPLICIT_RESULT_VALUE_CAST)
+    VULKAN_HPP_DEPRECATED("Implicit-cast operators on vk::ResultValue are deprecated. Explicitly access the value as member of ResultValue.")
     operator T const& () const & VULKAN_HPP_NOEXCEPT
     {
       return value;
     }
 
+    VULKAN_HPP_DEPRECATED("Implicit-cast operators on vk::ResultValue are deprecated. Explicitly access the value as member of ResultValue.")
     operator T& () & VULKAN_HPP_NOEXCEPT
     {
       return value;
     }
 
+    VULKAN_HPP_DEPRECATED("Implicit-cast operators on vk::ResultValue are deprecated. Explicitly access the value as member of ResultValue.")
     operator T const&& () const && VULKAN_HPP_NOEXCEPT
     {
       return std::move( value );
     }
 
+    VULKAN_HPP_DEPRECATED("Implicit-cast operators on vk::ResultValue are deprecated. Explicitly access the value as member of ResultValue.")
     operator T&& () && VULKAN_HPP_NOEXCEPT
     {
       return std::move( value );
@@ -8672,16 +8676,39 @@ namespace std
     operator std::tuple<Result&, UniqueHandle<Type, Dispatch>&>() VULKAN_HPP_NOEXCEPT { return std::tuple<Result&, UniqueHandle<Type, Dispatch>&>(result, value); }
 
 #  if !defined(VULKAN_HPP_DISABLE_IMPLICIT_RESULT_VALUE_CAST)
+    VULKAN_HPP_DEPRECATED("Implicit-cast operators on vk::ResultValue are deprecated. Explicitly access the value as member of ResultValue.")
     operator UniqueHandle<Type, Dispatch>& () & VULKAN_HPP_NOEXCEPT
     {
       return value;
     }
 
+    VULKAN_HPP_DEPRECATED("Implicit-cast operators on vk::ResultValue are deprecated. Explicitly access the value as member of ResultValue.")
     operator UniqueHandle<Type, Dispatch>() VULKAN_HPP_NOEXCEPT
     {
       return std::move(value);
     }
 #  endif
+  };
+
+  template <typename Type, typename Dispatch>
+  struct ResultValue<std::vector<UniqueHandle<Type, Dispatch>>>
+  {
+#  ifdef VULKAN_HPP_HAS_NOEXCEPT
+    ResultValue( Result r, std::vector<UniqueHandle<Type, Dispatch>> && v ) VULKAN_HPP_NOEXCEPT
+#  else
+    ResultValue( Result r, std::vector<UniqueHandle<Type, Dispatch>> && v )
+#  endif
+      : result( r )
+      , value( std::move( v ) )
+    {}
+
+    Result                                    result;
+    std::vector<UniqueHandle<Type, Dispatch>> value;
+
+    operator std::tuple<Result &, std::vector<UniqueHandle<Type, Dispatch>> &>() VULKAN_HPP_NOEXCEPT
+    {
+      return std::tuple<Result &, std::vector<UniqueHandle<Type, Dispatch>> &>( result, value );
+    }
   };
 #endif
 
@@ -8782,19 +8809,59 @@ namespace std
   }
 
   template <typename T, typename D>
-  VULKAN_HPP_INLINE ResultValue<UniqueHandle<T,D>> createResultValue( Result result, T & data, char const * message, std::initializer_list<Result> successCodes, typename UniqueHandleTraits<T,D>::deleter const& deleter )
+  VULKAN_HPP_INLINE ResultValue<UniqueHandle<T, D>>
+                    createResultValue( Result                                             result,
+                                       T &                                                data,
+                                       char const *                                       message,
+                                       std::initializer_list<Result>                      successCodes,
+                                       typename UniqueHandleTraits<T, D>::deleter const & deleter )
   {
-#ifdef VULKAN_HPP_NO_EXCEPTIONS
-    ignore(message);
+#  ifdef VULKAN_HPP_NO_EXCEPTIONS
+    ignore( message );
     VULKAN_HPP_ASSERT_ON_RESULT( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );
-    return ResultValue<UniqueHandle<T,D>>( result, UniqueHandle<T,D>(data, deleter) );
-#else
+#  else
     if ( std::find( successCodes.begin(), successCodes.end(), result ) == successCodes.end() )
     {
       throwResultException( result, message );
     }
-    return ResultValue<UniqueHandle<T,D>>( result, UniqueHandle<T,D>(data, deleter) );
-#endif
+#  endif
+    return ResultValue<UniqueHandle<T, D>>( result, UniqueHandle<T, D>( data, deleter ) );
+  }
+
+  template <typename T, typename D>
+  VULKAN_HPP_INLINE typename ResultValueType<std::vector<UniqueHandle<T, D>>>::type
+    createResultValue( Result result, std::vector<UniqueHandle<T, D>> && data, char const * message )
+  {
+#  ifdef VULKAN_HPP_NO_EXCEPTIONS
+    ignore( message );
+    VULKAN_HPP_ASSERT_ON_RESULT( result == Result::eSuccess );
+    return ResultValue<std::vector<UniqueHandle<T, D>>>( result, std::move( data ) );
+#  else
+    if ( result != Result::eSuccess )
+    {
+      throwResultException( result, message );
+    }
+    return std::move( data );
+#  endif
+  }
+
+  template <typename T, typename D>
+  VULKAN_HPP_INLINE ResultValue<std::vector<UniqueHandle<T, D>>>
+                    createResultValue( Result                             result,
+                                       std::vector<UniqueHandle<T, D>> && data,
+                                       char const *                       message,
+                                       std::initializer_list<Result>      successCodes )
+  {
+#  ifdef VULKAN_HPP_NO_EXCEPTIONS
+    ignore( message );
+    VULKAN_HPP_ASSERT_ON_RESULT( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );
+#  else
+    if ( std::find( successCodes.begin(), successCodes.end(), result ) == successCodes.end() )
+    {
+      throwResultException( result, message );
+    }
+#  endif
+    return ResultValue<std::vector<UniqueHandle<T, D>>>( result, std::move( data ) );
   }
 #endif
 )";

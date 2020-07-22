@@ -1919,24 +1919,6 @@ void VulkanHppGenerator::appendEnumToString( std::string &                      
   str += "  }\n";
 }
 
-void VulkanHppGenerator::appendForwardDeclarations( std::string & str ) const
-{
-  str += "\n";
-  for ( auto const & structure : m_structures )
-  {
-    std::string enter, leave;
-    std::tie( enter, leave ) = generateProtection( structure.first, !structure.second.aliases.empty() );
-
-    str += enter + "  " + ( structure.second.isUnion ? "union" : "struct" ) + " " +
-           stripPrefix( structure.first, "Vk" ) + ";\n";
-    for ( std::string const & alias : structure.second.aliases )
-    {
-      str += "  using " + stripPrefix( alias, "Vk" ) + " = " + stripPrefix( structure.first, "Vk" ) + ";\n";
-    }
-    str += leave;
-  }
-}
-
 bool needsMultiVectorSizeCheck( size_t returnParamIndex, std::map<size_t, size_t> const & vectorParamIndices )
 {
   for ( std::map<size_t, size_t>::const_iterator it0 = vectorParamIndices.begin(); it0 != vectorParamIndices.end();
@@ -3101,117 +3083,114 @@ void VulkanHppGenerator::appendFunctionHeaderTemplate( std::string &       str,
   str += std::string( "typename Dispatch" ) + ( withDefault ? " = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE" : "" ) + ">\n";
 }
 
-void VulkanHppGenerator::appendHandle( std::string &                              str,
-                                       std::pair<std::string, HandleData> const & handleData,
-                                       std::set<std::string> &                    listedHandles ) const
+void VulkanHppGenerator::appendHandle( std::string & str, std::pair<std::string, HandleData> const & handleData )
 {
-  if ( listedHandles.find( handleData.first ) == listedHandles.end() )
-  {
-    listedHandles.insert( handleData.first );
+  assert( m_listingTypes.find( handleData.first ) == m_listingTypes.end() );
+  m_listingTypes.insert( handleData.first );
 
-    // first check for any handle that needs to be listed before this one
+  assert( m_listedTypes.find( handleData.first ) == m_listedTypes.end() );
+
+  // first check for any handle that needs to be listed before this one
+  for ( auto const & command : handleData.second.commands )
+  {
+    auto commandIt = m_commands.find( command );
+    assert( commandIt != m_commands.end() );
+    for ( auto const & parameter : commandIt->second.params )
+    {
+      if ( handleData.first != parameter.type.type )  // the commands use this handleData type !
+      {
+        appendType( str, parameter.type.type );
+      }
+    }
+  }
+
+  if ( handleData.first.empty() )
+  {
     for ( auto const & command : handleData.second.commands )
     {
       auto commandIt = m_commands.find( command );
       assert( commandIt != m_commands.end() );
-      for ( auto const & parameter : commandIt->second.params )
+      if ( commandIt->first == "vkCreateInstance" )
       {
-        std::string typeName  = parameter.type.type;
-        auto        handlesIt = m_handles.find( typeName );
-        if ( ( handlesIt != m_handles.end() ) && ( listedHandles.find( typeName ) == listedHandles.end() ) )
-        {
-          appendHandle( str, *handlesIt, listedHandles );
-        }
-      }
-    }
-
-    if ( handleData.first.empty() )
-    {
-      for ( auto const & command : handleData.second.commands )
-      {
-        auto commandIt = m_commands.find( command );
-        assert( commandIt != m_commands.end() );
-        if ( commandIt->first == "vkCreateInstance" )
-        {
-          // special handling for createInstance, as we need to explicitly place the forward declarations and the
-          // deleter classes here
+        // special handling for createInstance, as we need to explicitly place the forward declarations and the
+        // deleter classes here
 #if !defined( NDEBUG )
-          auto handleIt = m_handles.find( "" );
-          assert( ( handleIt != m_handles.end() ) && ( handleIt->second.childrenHandles.size() == 2 ) );
-          assert( handleIt->second.childrenHandles.find( "VkInstance" ) != handleIt->second.childrenHandles.end() );
+        auto handleIt = m_handles.find( "" );
+        assert( ( handleIt != m_handles.end() ) && ( handleIt->second.childrenHandles.size() == 2 ) );
+        assert( handleIt->second.childrenHandles.find( "VkInstance" ) != handleIt->second.childrenHandles.end() );
 #endif
 
-          appendUniqueTypes( str, "", { "VkInstance" } );
-        }
-        str += "\n";
-        std::string enter, leave;
-        std::tie( enter, leave ) = generateProtection( commandIt->second.feature, commandIt->second.extensions );
-        str += enter;
-        appendCommand( str, "  ", commandIt->first, commandIt->second, false );
-        str += leave;
+        appendUniqueTypes( str, "", { "VkInstance" } );
       }
+      str += "\n";
+      std::string enter, leave;
+      std::tie( enter, leave ) = generateProtection( commandIt->second.feature, commandIt->second.extensions );
+      str += enter;
+      appendCommand( str, "  ", commandIt->first, commandIt->second, false );
+      str += leave;
     }
-    else
+  }
+  else
+  {
+    // then append any forward declaration of Deleters used by this handle
+    if ( !handleData.second.childrenHandles.empty() )
     {
-      // then append any forward declaration of Deleters used by this handle
-      if ( !handleData.second.childrenHandles.empty() )
+      appendUniqueTypes( str, handleData.first, handleData.second.childrenHandles );
+    }
+    else if ( handleData.first == "VkPhysicalDevice" )
+    {
+      // special handling for class Device, as it's created from PhysicalDevice, but destroys itself
+      appendUniqueTypes( str, "", { "VkDevice" } );
+    }
+
+    std::string commands;
+    // list all the commands that are mapped to members of this class
+    for ( auto const & command : handleData.second.commands )
+    {
+      auto commandIt = m_commands.find( command );
+      assert( commandIt != m_commands.end() );
+
+      std::string enter, leave;
+      std::tie( enter, leave ) = generateProtection( commandIt->second.feature, commandIt->second.extensions );
+
+      std::string commandString;
+      commands += "\n" + enter;
+      std::string commandName = determineCommandName( commandIt->first, commandIt->second.params[0].type.type );
+      appendCommand( commands, "    ", commandIt->first, commandIt->second, false );
+
+      // special handling for destroy functions
+      bool platformLeft = false;
+      if ( commandIt->second.alias.empty() &&
+           ( ( ( commandIt->first.substr( 2, 7 ) == "Destroy" ) && ( commandName != "destroy" ) ) ||
+             ( commandIt->first.substr( 2, 4 ) == "Free" ) ) )
       {
-        appendUniqueTypes( str, handleData.first, handleData.second.childrenHandles );
-      }
-      else if ( handleData.first == "VkPhysicalDevice" )
-      {
-        // special handling for class Device, as it's created from PhysicalDevice, but destroys itself
-        appendUniqueTypes( str, "", { "VkDevice" } );
-      }
-
-      std::string commands;
-      // list all the commands that are mapped to members of this class
-      for ( auto const & command : handleData.second.commands )
-      {
-        auto commandIt = m_commands.find( command );
-        assert( commandIt != m_commands.end() );
-
-        std::string enter, leave;
-        std::tie( enter, leave ) = generateProtection( commandIt->second.feature, commandIt->second.extensions );
-
-        std::string commandString;
-        commands += "\n" + enter;
-        std::string commandName = determineCommandName( commandIt->first, commandIt->second.params[0].type.type );
-        appendCommand( commands, "    ", commandIt->first, commandIt->second, false );
-
-        // special handling for destroy functions
-        bool platformLeft = false;
-        if ( commandIt->second.alias.empty() &&
-             ( ( ( commandIt->first.substr( 2, 7 ) == "Destroy" ) && ( commandName != "destroy" ) ) ||
-               ( commandIt->first.substr( 2, 4 ) == "Free" ) ) )
-        {
-          assert( 1 < commandIt->second.params.size() );
-          auto handleIt = m_handles.find( commandIt->second.params[1].type.type );
-          assert( handleIt != m_handles.end() );
-          if ( !handleIt->second.alias.empty() )
-          {
-            commands += leave;
-            platformLeft = true;
-          }
-
-          std::string destroyCommandString;
-          appendCommand( destroyCommandString, "    ", commandIt->first, commandIt->second, false );
-          std::string shortenedName = ( commandIt->first.substr( 2, 7 ) == "Destroy" ) ? "destroy" : "free";
-          size_t      pos           = destroyCommandString.find( commandName );
-          while ( pos != std::string::npos )
-          {
-            destroyCommandString.replace( pos, commandName.length(), shortenedName );
-            pos = destroyCommandString.find( commandName, pos );
-          }
-          commands += "\n" + destroyCommandString;
-        }
-        if ( !platformLeft )
+        assert( 1 < commandIt->second.params.size() );
+        auto handleIt = m_handles.find( commandIt->second.params[1].type.type );
+        assert( handleIt != m_handles.end() );
+        if ( !handleIt->second.alias.empty() )
         {
           commands += leave;
+          platformLeft = true;
         }
-      }
 
-      static const std::string templateString = R"(
+        std::string destroyCommandString;
+        appendCommand( destroyCommandString, "    ", commandIt->first, commandIt->second, false );
+        std::string shortenedName = ( commandIt->first.substr( 2, 7 ) == "Destroy" ) ? "destroy" : "free";
+        size_t      pos           = destroyCommandString.find( commandName );
+        while ( pos != std::string::npos )
+        {
+          destroyCommandString.replace( pos, commandName.length(), shortenedName );
+          pos = destroyCommandString.find( commandName, pos );
+        }
+        commands += "\n" + destroyCommandString;
+      }
+      if ( !platformLeft )
+      {
+        commands += leave;
+      }
+    }
+
+    static const std::string templateString = R"(
 ${enter}  class ${className}
   {
   public:
@@ -3298,30 +3277,37 @@ ${commands}
   };
 )";
 
-      std::string enter, leave;
-      std::tie( enter, leave ) = generateProtection( handleData.first, !handleData.second.alias.empty() );
-      str += replaceWithMap( templateString,
-                             { { "className", stripPrefix( handleData.first, "Vk" ) },
-                               { "commands", commands },
-                               { "enter", enter },
-                               { "memberName", startLowerCase( stripPrefix( handleData.first, "Vk" ) ) } } );
+    std::string enter, leave;
+    std::tie( enter, leave ) = generateProtection( handleData.first, !handleData.second.alias.empty() );
+    str += replaceWithMap( templateString,
+                           { { "className", stripPrefix( handleData.first, "Vk" ) },
+                             { "commands", commands },
+                             { "enter", enter },
+                             { "memberName", startLowerCase( stripPrefix( handleData.first, "Vk" ) ) } } );
 
-      if ( !handleData.second.alias.empty() )
-      {
-        str += "  using " + stripPrefix( handleData.second.alias, "Vk" ) + " = " +
-               stripPrefix( handleData.first, "Vk" ) + ";\n";
-      }
-      str += leave;
+    if ( !handleData.second.alias.empty() )
+    {
+      str += "  using " + stripPrefix( handleData.second.alias, "Vk" ) + " = " + stripPrefix( handleData.first, "Vk" ) +
+             ";\n";
     }
+    str += leave;
   }
+
+  m_listingTypes.erase( handleData.first );
+  m_listedTypes.insert( handleData.first );
 }
 
-void VulkanHppGenerator::appendHandles( std::string & str ) const
+void VulkanHppGenerator::appendHandles( std::string & str )
 {
   std::set<std::string> listedHandles;
   for ( auto const & handle : m_handles )
   {
-    appendHandle( str, handle, listedHandles );
+    if ( m_listedTypes.find( handle.first ) == m_listedTypes.end() )
+    {
+      assert( m_listingTypes.empty() );
+      appendHandle( str, handle );
+      assert( m_listingTypes.empty() );
+    }
   }
 }
 
@@ -3483,41 +3469,41 @@ void VulkanHppGenerator::appendResultExceptions( std::string & str ) const
   str += "\n";
 }
 
-void VulkanHppGenerator::appendStruct( std::string &                                 str,
-                                       std::pair<std::string, StructureData> const & structure,
-                                       std::set<std::string> &                       listedStructures ) const
+void VulkanHppGenerator::appendStruct( std::string & str, std::pair<std::string, StructureData> const & structure )
 {
-  if ( listedStructures.find( structure.first ) == listedStructures.end() )
-  {
-    listedStructures.insert( structure.first );
-    for ( auto const & member : structure.second.members )
-    {
-      auto structureIt = m_structures.find( member.type.type );
-      if ( ( structureIt != m_structures.end() ) &&
-           ( listedStructures.find( member.type.type ) == listedStructures.end() ) )
-      {
-        appendStruct( str, *structureIt, listedStructures );
-      }
-    }
-    if ( !structure.second.subStruct.empty() )
-    {
-      auto structureIt = m_structures.find( structure.second.subStruct );
-      if ( ( structureIt != m_structures.end() ) &&
-           ( listedStructures.find( structureIt->first ) == listedStructures.end() ) )
-      {
-        appendStruct( str, *structureIt, listedStructures );
-      }
-    }
+  assert( m_listingTypes.find( structure.first ) == m_listingTypes.end() );
+  m_listingTypes.insert( structure.first );
 
-    if ( structure.second.isUnion )
+  assert( m_listedTypes.find( structure.first ) == m_listedTypes.end() );
+
+  for ( auto const & member : structure.second.members )
+  {
+    if ( structure.first != member.type.type )  // some structures hold a pointer to the very same structure type
     {
-      appendUnion( str, structure );
-    }
-    else
-    {
-      appendStructure( str, structure );
+      appendType( str, member.type.type );
     }
   }
+
+  if ( !structure.second.subStruct.empty() )
+  {
+    auto structureIt = m_structures.find( structure.second.subStruct );
+    if ( ( structureIt != m_structures.end() ) && ( m_listedTypes.find( structureIt->first ) == m_listedTypes.end() ) )
+    {
+      appendStruct( str, *structureIt );
+    }
+  }
+
+  if ( structure.second.isUnion )
+  {
+    appendUnion( str, structure );
+  }
+  else
+  {
+    appendStructure( str, structure );
+  }
+
+  m_listingTypes.erase( structure.first );
+  m_listedTypes.insert( structure.first );
 }
 
 void VulkanHppGenerator::appendStructAssignmentOperators( std::string &                                 str,
@@ -3899,12 +3885,16 @@ std::string VulkanHppGenerator::appendStructMembers( std::string &              
   return sTypeValue;
 }
 
-void VulkanHppGenerator::appendStructs( std::string & str ) const
+void VulkanHppGenerator::appendStructs( std::string & str )
 {
-  std::set<std::string> listedStructures;
   for ( auto const & structure : m_structures )
   {
-    appendStruct( str, structure, listedStructures );
+    if ( m_listedTypes.find( structure.first ) == m_listedTypes.end() )
+    {
+      assert( m_listingTypes.empty() );
+      appendStruct( str, structure );
+      assert( m_listingTypes.empty() );
+    }
   }
 }
 
@@ -4144,6 +4134,12 @@ ${members}
 )";
     str += replaceWithMap( cppTypeTemplate, { { "sTypeValue", sTypeValue }, { "structureName", structureName } } );
   }
+
+  for ( std::string const & alias : structure.second.aliases )
+  {
+    str += "  using " + stripPrefix( alias, "Vk" ) + " = " + stripPrefix( structure.first, "Vk" ) + ";\n";
+  }
+
   str += leave;
 }
 
@@ -4232,6 +4228,62 @@ void VulkanHppGenerator::appendThrowExceptions( std::string & str ) const
     "      default: throw SystemError( make_error_code( result ) );\n"
     "    }\n"
     "  }\n";
+}
+
+void VulkanHppGenerator::appendType( std::string & str, std::string const & typeName )
+{
+  if ( m_listedTypes.find( typeName ) == m_listedTypes.end() )
+  {
+    auto typeIt = m_types.find( typeName );
+    assert( typeIt != m_types.end() );
+    switch ( typeIt->second.category )
+    {
+      case TypeCategory::Handle:
+      {
+        auto handleIt = m_handles.find( typeName );
+        if ( handleIt == m_handles.end() )
+        {
+          handleIt = std::find_if(
+            m_handles.begin(), m_handles.end(), [&typeName]( std::pair<std::string, HandleData> const & hd ) {
+              return hd.second.alias == typeName;
+            } );
+          assert( handleIt != m_handles.end() );
+          if ( m_listedTypes.find( handleIt->first ) == m_listedTypes.end() )
+          {
+            appendHandle( str, *handleIt );
+          }
+        }
+        else
+        {
+          appendHandle( str, *handleIt );
+        }
+      }
+      break;
+      case TypeCategory::Struct:
+      case TypeCategory::Union:
+      {
+        auto structIt = m_structures.find( typeName );
+        if ( structIt == m_structures.end() )
+        {
+          structIt = std::find_if(
+            m_structures.begin(), m_structures.end(), [&typeName]( std::pair<std::string, StructureData> const & sd ) {
+              return sd.second.aliases.find( typeName ) != sd.second.aliases.end();
+            } );
+          assert( structIt != m_structures.end() );
+          if ( m_listedTypes.find( structIt->first ) == m_listedTypes.end() )
+          {
+            appendStruct( str, *structIt );
+          }
+        }
+        else
+        {
+          appendStruct( str, *structIt );
+        }
+      }
+      break;
+      default: m_listedTypes.insert( typeIt->first ); break;
+    }
+  }
 }
 
 void VulkanHppGenerator::appendUnion( std::string & str, std::pair<std::string, StructureData> const & structure ) const
@@ -8911,9 +8963,8 @@ namespace std
     generator.appendResultExceptions( str );
     generator.appendThrowExceptions( str );
     str += "#endif\n" + structResultValue;
-    generator.appendForwardDeclarations( str );
-    generator.appendHandles( str );
     generator.appendStructs( str );
+    generator.appendHandles( str );
     generator.appendHandlesCommandDefintions( str );
     generator.appendStructureChainValidation( str );
     generator.appendDispatchLoaderDynamic( str );

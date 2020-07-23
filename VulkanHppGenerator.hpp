@@ -32,12 +32,11 @@ public:
   void appendDispatchLoaderDefault(
     std::string & str );  // typedef to DispatchLoaderStatic or undefined type, based on VK_NO_PROTOTYPES
   void                appendEnums( std::string & str ) const;
-  void                appendForwardDeclarations( std::string & str ) const;
-  void                appendHandles( std::string & str ) const;
+  void                appendHandles( std::string & str );
   void                appendHandlesCommandDefintions( std::string & str ) const;
   void                appendHashStructures( std::string & str ) const;
   void                appendResultExceptions( std::string & str ) const;
-  void                appendStructs( std::string & str ) const;
+  void                appendStructs( std::string & str );
   void                appendStructureChainValidation( std::string & str );
   void                appendThrowExceptions( std::string & str ) const;
   void                appendIndexTypeTraits( std::string & str ) const;
@@ -469,11 +468,9 @@ private:
                                      bool                withDefault,
                                      bool                isStructureChain ) const;
   void appendHandle( std::string &                              str,
-                     std::pair<std::string, HandleData> const & handle,
-                     std::set<std::string> &                    listedHandles ) const;
+                     std::pair<std::string, HandleData> const & handle );
   void appendStruct( std::string &                                 str,
-                     std::pair<std::string, StructureData> const & structure,
-                     std::set<std::string> &                       listedStructures ) const;
+                     std::pair<std::string, StructureData> const & structure );
   void appendStructAssignmentOperators( std::string &                                 str,
                                         std::pair<std::string, StructureData> const & structure,
                                         std::string const &                           prefix ) const;
@@ -499,6 +496,7 @@ private:
                                           std::pair<std::string, StructureData> const & structData,
                                           std::string const &                           prefix ) const;
   void        appendStructure( std::string & str, std::pair<std::string, StructureData> const & structure ) const;
+  void        appendType( std::string & str, std::string const & typeName );
   void        appendUnion( std::string & str, std::pair<std::string, StructureData> const & structure ) const;
   void        appendUniqueTypes( std::string &                 str,
                                  std::string const &           parentType,
@@ -625,6 +623,8 @@ private:
   std::map<std::string, FuncPointerData> m_funcPointers;
   std::map<std::string, HandleData>      m_handles;
   std::set<std::string>                  m_includes;
+  std::set<std::string>                  m_listedTypes;
+  std::set<std::string>                  m_listingTypes;
   std::map<std::string, PlatformData>    m_platforms;
   std::map<std::string, std::string>     m_structureAliases;
   std::map<std::string, StructureData>   m_structures;

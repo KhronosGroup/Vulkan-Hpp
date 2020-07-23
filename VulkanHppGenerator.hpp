@@ -116,7 +116,7 @@ private:
   struct EnumValueData
   {
     EnumValueData( int line, std::string const & vulkan, std::string const & vk, bool singleBit_ )
-      : vulkanValue( vulkan ), vkValue( vk ), singleBit( singleBit_ ), xmlLine(line)
+      : vulkanValue( vulkan ), vkValue( vk ), singleBit( singleBit_ ), xmlLine( line )
     {}
 
     std::string vulkanValue;
@@ -312,7 +312,7 @@ private:
                               bool                             singular,
                               bool                             unique,
                               bool                             isStructureChain,
-                              bool                             withAllocator ) const;
+                              bool                             withAllocatorArgument ) const;
   void        appendFunctionBodyEnhanced( std::string &                    str,
                                           std::string const &              indentation,
                                           std::string const &              name,
@@ -466,11 +466,10 @@ private:
                                      bool                singular,
                                      bool                unique,
                                      bool                withDefault,
-                                     bool                isStructureChain ) const;
-  void appendHandle( std::string &                              str,
-                     std::pair<std::string, HandleData> const & handle );
-  void appendStruct( std::string &                                 str,
-                     std::pair<std::string, StructureData> const & structure );
+                                     bool                isStructureChain,
+                                     bool                withAllocatorArgument ) const;
+  void appendHandle( std::string & str, std::pair<std::string, HandleData> const & handle );
+  void appendStruct( std::string & str, std::pair<std::string, StructureData> const & structure );
   void appendStructAssignmentOperators( std::string &                                 str,
                                         std::pair<std::string, StructureData> const & structure,
                                         std::string const &                           prefix ) const;

@@ -30,6 +30,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::UniqueInstance  instance       = vk::createInstanceUnique( vk::InstanceCreateInfo( {}, &appInfo ) );
     vk::PhysicalDevice  physicalDevice = instance->enumeratePhysicalDevices().front();
 
+    uint32_t propertyCount;
+    physicalDevice.getQueueFamilyProperties( &propertyCount, nullptr );
+
     // get the QueueFamilyProperties of the first PhysicalDevice
     std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
 

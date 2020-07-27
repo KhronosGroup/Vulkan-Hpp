@@ -55,21 +55,28 @@ endif(MSVC)
 
 set(CMAKE_CXX_STANDARD 11)
 
-if (NOT DEFINED VULKAN_HPP_VULKAN_HEADERS_SRC_DIR)
-  set(VULKAN_HPP_VULKAN_HEADERS_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Vulkan-Headers")
+if (NOT DEFINED VulkanRegistry_DIR)
+  if (DEFINED VULKAN_HPP_VULKAN_HEADERS_SRC_DIR)
+    set(VulkanRegistry_DIR VULKAN_HPP_VULKAN_HEADERS_SRC_DIR)
+  else()
+    set(VulkanRegistry_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Vulkan-Headers")
+  endif()
 endif()
-file(TO_NATIVE_PATH ${VULKAN_HPP_VULKAN_HEADERS_SRC_DIR}/registry/vk.xml vk_spec)
+file(TO_NATIVE_PATH ${VulkanRegistry_DIR}/registry/vk.xml vk_spec)
 string(REPLACE "\\" "\\\\" vk_spec ${vk_spec})
 add_definitions(-DVK_SPEC="${vk_spec}")
 
-if (NOT DEFINED VULKAN_HPP_PATH)
-  set(VULKAN_HPP_PATH "${CMAKE_CURRENT_SOURCE_DIR}/vulkan")
+if (NOT DEFINED VulkanHeaders_INCLUDE_DIR)
+  if (DEFINED VULKAN_HPP_PATH)
+    set(VulkanHeaders_INCLUDE_DIR VULKAN_HPP_PATH)
+  else()
+    set(VulkanHeaders_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+  endif()
 endif()
-file(TO_NATIVE_PATH ${VULKAN_HPP_PATH}/vulkan.hpp vulkan_hpp)
+file(TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan.hpp vulkan_hpp)
 string(REPLACE "\\" "\\\\" vulkan_hpp ${vulkan_hpp})
 add_definitions(-DVULKAN_HPP_FILE="${vulkan_hpp}")
-include_directories(${VULKAN_HPP_PATH})
-
+include_directories(${VulkanHeaders_INCLUDE_DIR})
 
 set(HEADERS
   VulkanHppGenerator.hpp

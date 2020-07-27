@@ -111,6 +111,22 @@ matrix:
             - libglu1-mesa-dev
       compiler: clang++-6.0
 
+    - os: linux
+      before_install:
+        - sudo apt-get update
+        - sudo apt-get purge g++
+        - sudo apt-get install clang-7.0
+        - CC=clang-7.0 && CXX=clang++-7.0
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - ninja-build
+            - xorg-dev 
+            - libglu1-mesa-dev
+      compiler: clang++-7.0
+
 before_install:
   - eval "${MATRIX_EVAL}"
 

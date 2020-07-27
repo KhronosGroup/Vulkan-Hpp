@@ -1952,7 +1952,7 @@ void VulkanHppGenerator::appendFunction( std::string &                    str,
                                          bool                             singular,
                                          bool                             unique,
                                          bool                             isStructureChain,
-                                         bool                             withAllocator ) const
+                                         bool                             withAllocatorArgument ) const
 {
   appendFunctionHeaderTemplate( str,
                                 indentation,
@@ -1963,7 +1963,8 @@ void VulkanHppGenerator::appendFunction( std::string &                    str,
                                 singular,
                                 unique,
                                 !definition,
-                                isStructureChain );
+                                isStructureChain,
+                                withAllocatorArgument );
 
   str += indentation;
 
@@ -2013,7 +2014,7 @@ void VulkanHppGenerator::appendFunction( std::string &                    str,
                                  enhanced,
                                  singular,
                                  !definition,
-                                 withAllocator );
+                                 withAllocatorArgument );
 
   // Any function that originally does not return VkResult can be marked noexcept,
   // if it is enhanced it must not include anything with an Allocator or needs size checks on multiple vectors
@@ -2045,7 +2046,7 @@ void VulkanHppGenerator::appendFunction( std::string &                    str,
                                   singular,
                                   unique,
                                   isStructureChain,
-                                  withAllocator );
+                                  withAllocatorArgument );
     }
     else
     {
@@ -3044,9 +3045,11 @@ void VulkanHppGenerator::appendFunctionHeaderTemplate( std::string &       str,
                                                        bool                singular,
                                                        bool                unique,
                                                        bool                withDefault,
-                                                       bool                isStructureChain ) const
+                                                       bool                isStructureChain,
+                                                       bool                withAllocatorArgument ) const
 {
-  bool withAllocator = ( enhancedReturnType.find( "Allocator" ) != std::string::npos );
+  bool        withAllocator = ( enhancedReturnType.find( "Allocator" ) != std::string::npos );
+  std::string enhancedReturnTypeBase;
   str += indentation + "template<";
   if ( enhanced )
   {
@@ -3060,27 +3063,43 @@ void VulkanHppGenerator::appendFunctionHeaderTemplate( std::string &       str,
       assert( !withAllocator );
       str += "typename T, ";
     }
-    if ( !singular && withAllocator )
-    {
-      // otherwise, if there's an Allocator used in the enhanced return type, we templatize on that Allocator
-      assert( ( enhancedReturnType.substr( 0, 12 ) == "std::vector<" ) &&
-              ( enhancedReturnType.find( ',' ) != std::string::npos ) && ( 12 < enhancedReturnType.find( ',' ) ) );
-      str += "typename Allocator";
-      if ( withDefault )
-      {
-        // for the default type get the type from the enhancedReturnType, which is of the form
-        // 'std::vector<Type,Allocator>'
-        assert( !isStructureChain || !unique );
-        str += " = std::allocator<" +
-               ( isStructureChain ? "StructureChain"
-                                  : ( unique ? "Unique" : "" ) +
-                                      enhancedReturnType.substr( 12, enhancedReturnType.find( ',' ) - 12 ) ) +
-               ">";
-      }
-      str += ", ";
-    }
   }
-  str += std::string( "typename Dispatch" ) + ( withDefault ? " = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE" : "" ) + ">\n";
+  std::string dispatch =
+    std::string( "typename Dispatch" ) + ( withDefault ? " = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE" : "" );
+  if ( enhanced && !singular && withAllocator )
+  {
+    // otherwise, if there's an Allocator used in the enhanced return type, we templatize on that Allocator
+    assert( ( enhancedReturnType.substr( 0, 12 ) == "std::vector<" ) &&
+            ( enhancedReturnType.find( ',' ) != std::string::npos ) && ( 12 < enhancedReturnType.find( ',' ) ) );
+    std::string allocator  = "typename Allocator ";
+    enhancedReturnTypeBase = enhancedReturnType.substr( 12, enhancedReturnType.find( ',' ) - 12 );
+    if ( unique )
+    {
+      enhancedReturnTypeBase = "UniqueHandle<" + enhancedReturnTypeBase + ", Dispatch>";
+    }
+    if ( withDefault )
+    {
+      // for the default type get the type from the enhancedReturnType, which is of the form
+      // 'std::vector<Type,Allocator>'
+      assert( !isStructureChain || !unique );
+      allocator += " = std::allocator<" + ( isStructureChain ? "StructureChain" : enhancedReturnTypeBase ) + ">";
+    }
+    // Use first Dispatch, then Allocator template argument for functions returning a std::vector<UniqueHandle>, as they
+    // need the Dispatch in the Allocator. For all other functions keep the previous order: first Allocator, then
+    // Dispatch
+    str += unique ? ( dispatch + ", " + allocator ) : ( allocator + ", " + dispatch );
+  }
+  else
+  {
+    str += dispatch;
+  }
+  if ( enhanced && !singular && withAllocatorArgument )
+  {
+    str += std::string( ", typename B" ) + ( withDefault ? " = Allocator" : "" );
+    str += ", typename std::enable_if<std::is_same<typename B::value_type, " + enhancedReturnTypeBase +
+           ">::value, int>::type" + ( withDefault ? " = 0" : "" );
+  }
+  str += ">\n";
 }
 
 void VulkanHppGenerator::appendHandle( std::string & str, std::pair<std::string, HandleData> const & handleData )

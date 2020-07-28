@@ -143,6 +143,22 @@ matrix:
             - libglu1-mesa-dev
       compiler: clang++-8
 
+    - os: linux
+      before_install:
+        - sudo apt-get update
+        - sudo apt-get purge g++
+        - sudo apt-get install clang-9
+        - CC=clang-9 && CXX=clang++-9
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - ninja-build
+            - xorg-dev 
+            - libglu1-mesa-dev
+      compiler: clang++-9
+
 before_install:
   - eval "${MATRIX_EVAL}"
 

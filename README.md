@@ -58,10 +58,10 @@ The scoped enum feature adds type safety to the flags, but also prevents using t
 As solution Vulkan-Hpp provides a template class `vk::Flags` which brings the standard operations like `&=`, `|=`, `&` and `|` to our scoped enums. Except for the initialization with 0 this class behaves exactly like a normal bitmask with the improvement that it is impossible to set bits not specified by the corresponding enum by accident. Here are a few examples for the bitmask handling:
 
 ```c++
-vk::ImageUsage iu1; // initialize a bitmask with no bit set
-vk::ImageUsage iu2 = {}; // initialize a bitmask with no bit set
-vk::ImageUsage iu3 = vk::ImageUsage::eColorAttachment; // initialize with a single value
-vk::ImageUsage iu4 = vk::ImageUsage::eColorAttachment | vk::ImageUsage::eStorage; // or two bits to get a bitmask
+vk::ImageUsageFlags iu1; // initialize a bitmask with no bit set
+vk::ImageUsageFlags iu2 = {}; // initialize a bitmask with no bit set
+vk::ImageUsageFlags iu3 = vk::ImageUsageFlagBits::eColorAttachment; // initialize with a single value
+vk::ImageUsageFlags iu4 = vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eStorage; // or two bits to get a bitmask
 PipelineShaderStageCreateInfo ci( {} /* pass a flag without any bits set */, ...);
 ```
 

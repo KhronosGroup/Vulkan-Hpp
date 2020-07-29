@@ -11,10 +11,13 @@ build:
 environment:
   matrix:
     - GENERATOR_ARCH: Win32
+      PYTHON: "C:\\Python38"
     - GENERATOR_ARCH: x64
+      PYTHON: "C:\\Python38-x64"
 
 install:
   - git submodule update --init --recursive
+  - set PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%
 
 build_script:
   - mkdir build

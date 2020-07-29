@@ -59,7 +59,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::UniqueCommandBuffer                              commandBuffer =
       std::move( device->allocateCommandBuffersUnique( {}, vectorAllocator, vk::DispatchLoaderStatic() ).front() );
 
-    commandBuffer->begin( nullptr );
+    commandBuffer->begin( vk::CommandBufferBeginInfo() );
 
     std::vector<vk::UniqueHandle<vk::CommandBuffer, vk::DispatchLoaderDynamic>>::allocator_type dynamicVectorAllocator;
     vk::UniqueHandle<vk::CommandBuffer, vk::DispatchLoaderDynamic> dynamicCommandBuffer = std::move(

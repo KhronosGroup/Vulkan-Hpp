@@ -103,6 +103,7 @@ vk::ImageCreateInfo ci({}, vk::ImageType::e2D, vk::format::eR8G8B8A8Unorm,
                        1, 1, vk::SampleCount::e1,
                        vk::ImageTiling::eOptimal, vk::ImageUsage:eColorAttachment,
                        vk::SharingMode::eExclusive, 0, 0, vk::Imagelayout::eUndefined);
+vk::Image image = device.createImage(ci);
 ```
 
 With constructors for CreateInfo structures one can also pass temporaries to Vulkan functions like this:
@@ -187,14 +188,15 @@ Vulkan-Hpp generates references for pointers to structs. This conversion allows 
 
 ```c++
 // C
-ImageSubResource subResource;
+VkImageSubResource subResource;
 subResource.aspectMask = 0;
 subResource.mipLevel = 0;
 subResource.arrayLayer = 0;
-vkSubresourceLayout layout = vkGetImageSubResourceLayout(image, subresource);
+VkSubresourceLayout layout;
+vkGetImageSubresourceLayout(device, image, &subresource, &layout);
 
 // C++
-auto layout = device.getImageSubResourceLayout(image, { {} /* flags*/, 0 /* miplevel */, 0 /* layout */ });
+auto layout = device.getImageSubresourceLayout(image, { {} /* flags*/, 0 /* miplevel */, 0 /* arrayLayer */ });
 ```
 
 ### Structure Pointer Chains

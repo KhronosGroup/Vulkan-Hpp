@@ -78,6 +78,20 @@ matrix:
       compiler: g++-9
 
     - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-10
+            - ninja-build
+            - xorg-dev 
+            - libglu1-mesa-dev
+      env:
+        - MATRIX_EVAL="CC=gcc-10 && CXX=g++-10"
+      compiler: g++-10
+
+    - os: linux
       before_install:
         - sudo apt-get update
         - sudo apt-get purge g++

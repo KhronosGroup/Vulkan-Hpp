@@ -19,6 +19,7 @@ matrix:
       env: 
         - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
         - ADDITIONAL_BUILD_OPTIONS="-DSAMPLES_BUILD=OFF"
+        - CXX_STANDARD="11"
       compiler: g++-5
 
     - os: linux
@@ -33,6 +34,7 @@ matrix:
           - libglu1-mesa-dev
       env: 
         - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
+        - CXX_STANDARD="11"
       compiler: g++-6
 
     - os: linux
@@ -47,6 +49,7 @@ matrix:
           - libglu1-mesa-dev
       env: 
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+        - CXX_STANDARD="11"
       compiler: g++-7
 
     - os: linux
@@ -61,6 +64,7 @@ matrix:
             - libglu1-mesa-dev
       env:
         - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
+        - CXX_STANDARD="11"
       compiler: g++-8
 
     - os: linux
@@ -75,6 +79,7 @@ matrix:
             - libglu1-mesa-dev
       env:
         - MATRIX_EVAL="CC=gcc-9 && CXX=g++-9"
+        - CXX_STANDARD="11"
       compiler: g++-9
 
     - os: linux
@@ -89,6 +94,7 @@ matrix:
             - libglu1-mesa-dev
       env:
         - MATRIX_EVAL="CC=gcc-10 && CXX=g++-10"
+        - CXX_STANDARD="11"
       compiler: g++-10
 
     - os: linux
@@ -105,6 +111,8 @@ matrix:
             - ninja-build
             - xorg-dev 
             - libglu1-mesa-dev
+      env:
+        - CXX_STANDARD="11"
       compiler: clang++-4.0
 
     - os: linux
@@ -121,6 +129,8 @@ matrix:
             - ninja-build
             - xorg-dev 
             - libglu1-mesa-dev
+      env:
+        - CXX_STANDARD="11"
       compiler: clang++-5.0
 
     - os: linux
@@ -137,6 +147,8 @@ matrix:
             - ninja-build
             - xorg-dev 
             - libglu1-mesa-dev
+      env:
+        - CXX_STANDARD="11"
       compiler: clang++-6.0
 
     - os: linux
@@ -153,6 +165,8 @@ matrix:
             - ninja-build
             - xorg-dev 
             - libglu1-mesa-dev
+      env:
+        - CXX_STANDARD="11"
       compiler: clang++-7
 
     - os: linux
@@ -169,6 +183,8 @@ matrix:
             - ninja-build
             - xorg-dev 
             - libglu1-mesa-dev
+      env:
+        - CXX_STANDARD="11"
       compiler: clang++-8
 
     - os: linux
@@ -185,6 +201,8 @@ matrix:
             - ninja-build
             - xorg-dev 
             - libglu1-mesa-dev
+      env:
+        - CXX_STANDARD="11"
       compiler: clang++-9
 
     - os: linux
@@ -201,6 +219,26 @@ matrix:
             - ninja-build
             - xorg-dev 
             - libglu1-mesa-dev
+      env:
+        - CXX_STANDARD="11"
+      compiler: clang++-10
+
+    - os: linux
+      before_install:
+        - sudo apt-get update
+        - sudo apt-get purge g++
+        - sudo apt-get install clang-10
+        - CC=clang-10 && CXX=clang++-10
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - ninja-build
+            - xorg-dev 
+            - libglu1-mesa-dev
+      env:
+        - CXX_STANDARD="14"
       compiler: clang++-10
 
 before_install:
@@ -217,6 +255,7 @@ script:
     -DSAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP=ON 
     -DTESTS_BUILD_ONLY_DYNAMIC=ON 
     -DTESTS_BUILD_WITH_LOCAL_VULKAN_HPP=ON
-    -DCMAKE_CXX_FLAGS="-std=c++11 -Wall -Wpedantic -Wextra"
+    -DCMAKE_CXX_FLAGS="-Wall -Wpedantic -Wextra"
+    -DCMAKE_CXX_STANDARD=$CXX_STANDARD
     $ADDITIONAL_BUILD_OPTIONS
   - cmake --build .

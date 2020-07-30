@@ -241,6 +241,24 @@ matrix:
         - CXX_STANDARD="14"
       compiler: clang++-10
 
+    - os: linux
+      before_install:
+        - sudo apt-get update
+        - sudo apt-get purge g++
+        - sudo apt-get install clang-10
+        - CC=clang-10 && CXX=clang++-10
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - ninja-build
+            - xorg-dev 
+            - libglu1-mesa-dev
+      env:
+        - CXX_STANDARD="17"
+      compiler: clang++-10
+
 before_install:
   - eval "${MATRIX_EVAL}"
 

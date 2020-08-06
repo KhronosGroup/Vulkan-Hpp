@@ -119,7 +119,7 @@ vk::Image image = device.createImage({{}, vk::ImageType::e2D, vk::Format::eR8G8B
 ### Designated Initializers
 
 Beginning with C++20, C++ supports designated initializers. As that feature requires to not have any user-declared or inherited constructors, you have to `#define VULKAN_HPP_NO_STRUCT_CONSTRUCTORS`, which removes all the structure constructors from vulkan.hpp. Instead you can then use aggregate initialization. The first few vk-lines in your source might then look like
-```
+```c++
 // initialize the vk::ApplicationInfo structure
 vk::ApplicationInfo applicationInfo{ .pApplicationName   = AppName,
                                      .applicationVersion = 1,
@@ -131,7 +131,7 @@ vk::ApplicationInfo applicationInfo{ .pApplicationName   = AppName,
 vk::InstanceCreateInfo instanceCreateInfo{ .pApplicationInfo = & applicationInfo };
 ```
 instead of
-```
+```c++
 // initialize the vk::ApplicationInfo structure
 vk::ApplicationInfo applicationInfo( AppName, 1, EngineName, 1, VK_API_VERSION_1_1 );
         
@@ -188,7 +188,7 @@ Vulkan-Hpp generates references for pointers to structs. This conversion allows 
 
 ```c++
 // C
-VkImageSubResource subResource;
+VkImageSubresource subResource;
 subResource.aspectMask = 0;
 subResource.mipLevel = 0;
 subResource.arrayLayer = 0;
@@ -203,7 +203,7 @@ auto layout = device.getImageSubresourceLayout(image, { {} /* flags*/, 0 /* mipl
 
 Vulkan allows chaining of structures through the pNext pointer. Vulkan-Hpp has a variadic template class which allows constructing of such structure chains with minimal efforts. In addition to this it checks at compile time if the spec allows the construction of such a `pNext` chain.
 
-```
+```c++
 // This will compile successfully.
 vk::StructureChain<vk::MemoryAllocateInfo, vk::ImportMemoryFdInfoKHR> c;
 vk::MemoryAllocateInfo &allocInfo = c.get<vk::MemoryAllocateInfo>();
@@ -229,7 +229,7 @@ In case that very same structure has to be re-added to the StructureChain again,
 
 Sometimes the user has to pass a preallocated structure chain to query information. For those cases there are two corresponding getter functions. One with a variadic template generating a structure chain of at least two elements to construct the return value:
 
-```
+```c++
 // Query vk::MemoryRequirements2HR and vk::MemoryDedicatedRequirementsKHR when calling Device::getBufferMemoryRequirements2KHR:
 auto result = device.getBufferMemoryRequirements2KHR<vk::MemoryRequirements2KHR, vk::MemoryDedicatedRequirementsKHR>({});
 vk::MemoryRequirements2KHR &memReqs = result.get<vk::MemoryRequirements2KHR>();

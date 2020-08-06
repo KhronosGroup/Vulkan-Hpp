@@ -98,22 +98,22 @@ Especially the first one is hard to detect.
 Vulkan-Hpp provides constructors for all CreateInfo objects which accept one parameter for each member variable. This way the compiler throws a compiler error if a value has been forgotten. In addition to this `sType` is automatically filled with the correct value and `pNext` set to a `nullptr` by default. Here's how the same code looks with a constructor:
 
 ```c++
-vk::ImageCreateInfo ci({}, vk::ImageType::e2D, vk::format::eR8G8B8A8Unorm,
+vk::ImageCreateInfo ci({}, vk::ImageType::e2D, vk::Format::eR8G8B8A8Unorm,
                        { width, height, 1 },
-                       1, 1, vk::SampleCount::e1,
-                       vk::ImageTiling::eOptimal, vk::ImageUsage:eColorAttachment,
-                       vk::SharingMode::eExclusive, 0, 0, vk::Imagelayout::eUndefined);
+                       1, 1, vk::SampleCountFlagBits::e1,
+                       vk::ImageTiling::eOptimal, vk::ImageUsageFlagBit::eColorAttachment,
+                       vk::SharingMode::eExclusive, 0, nullptr, vk::ImageLayout::eUndefined);
 vk::Image image = device.createImage(ci);
 ```
 
 With constructors for CreateInfo structures one can also pass temporaries to Vulkan functions like this:
 
 ```c++
-vk::Image image = device.createImage({{}, vk::ImageType::e2D, vk::format::eR8G8B8A8Unorm,
+vk::Image image = device.createImage({{}, vk::ImageType::e2D, vk::Format::eR8G8B8A8Unorm,
                                      { width, height, 1 },
-                                     1, 1, vk::SampleCount::e1,
-                                     vk::ImageTiling::eOptimal, vk::ImageUsage:eColorAttachment,
-                                     vk::SharingMode::eExclusive, 0, 0, vk::Imagelayout::eUndefined});
+                                     1, 1, vk::SampleCountFlagBits::e1,
+                                     vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eColorAttachment,
+                                     vk::SharingMode::eExclusive, 0, nullptr, vk::ImageLayout::eUndefined});
 ```
 
 ### Designated Initializers

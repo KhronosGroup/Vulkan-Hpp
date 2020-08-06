@@ -30,7 +30,7 @@ If the program clang-format is found by CMake, the define CLANG_FORMAT_EXECUTABL
 To avoid name collisions with the Vulkan C API the C++ bindings reside in the vk namespace. The following rules apply to the new naming
 
 * All functions, enums, handles, and structs have the Vk prefix removed. In addition to this the first letter of functions is lower case.
-  * `vkCreateImage` can be accessed as `vk::createImage`
+  * `vkCreateInstance` can be accessed as `vk::createInstance`
   * `VkImageTiling` can be accessed as `vk::ImageTiling`
   * `VkImageCreateInfo` can be accessed as `vk::ImageCreateInfo`
 * Enums are mapped to scoped enums to provide compile time type safety. The names have been changed to 'e' + CamelCase with the VK_ prefix and type infix removed. In case the enum type is an extension the extension suffix has been removed from the enum values.

@@ -30,7 +30,7 @@ If the program clang-format is found by CMake, the define CLANG_FORMAT_EXECUTABL
 To avoid name collisions with the Vulkan C API the C++ bindings reside in the vk namespace. The following rules apply to the new naming
 
 * All functions, enums, handles, and structs have the Vk prefix removed. In addition to this the first letter of functions is lower case.
-  * `vkCreateImage` can be accessed as `vk::createImage`
+  * `vkCreateInstance` can be accessed as `vk::createInstance`
   * `VkImageTiling` can be accessed as `vk::ImageTiling`
   * `VkImageCreateInfo` can be accessed as `vk::ImageCreateInfo`
 * Enums are mapped to scoped enums to provide compile time type safety. The names have been changed to 'e' + CamelCase with the VK_ prefix and type infix removed. In case the enum type is an extension the extension suffix has been removed from the enum values.
@@ -98,28 +98,28 @@ Especially the first one is hard to detect.
 Vulkan-Hpp provides constructors for all CreateInfo objects which accept one parameter for each member variable. This way the compiler throws a compiler error if a value has been forgotten. In addition to this `sType` is automatically filled with the correct value and `pNext` set to a `nullptr` by default. Here's how the same code looks with a constructor:
 
 ```c++
-vk::ImageCreateInfo ci({}, vk::ImageType::e2D, vk::format::eR8G8B8A8Unorm,
+vk::ImageCreateInfo ci({}, vk::ImageType::e2D, vk::Format::eR8G8B8A8Unorm,
                        { width, height, 1 },
-                       1, 1, vk::SampleCount::e1,
-                       vk::ImageTiling::eOptimal, vk::ImageUsage:eColorAttachment,
-                       vk::SharingMode::eExclusive, 0, 0, vk::Imagelayout::eUndefined);
+                       1, 1, vk::SampleCountFlagBits::e1,
+                       vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eColorAttachment,
+                       vk::SharingMode::eExclusive, 0, nullptr, vk::ImageLayout::eUndefined);
 vk::Image image = device.createImage(ci);
 ```
 
 With constructors for CreateInfo structures one can also pass temporaries to Vulkan functions like this:
 
 ```c++
-vk::Image image = device.createImage({{}, vk::ImageType::e2D, vk::format::eR8G8B8A8Unorm,
+vk::Image image = device.createImage({{}, vk::ImageType::e2D, vk::Format::eR8G8B8A8Unorm,
                                      { width, height, 1 },
-                                     1, 1, vk::SampleCount::e1,
-                                     vk::ImageTiling::eOptimal, vk::ImageUsage:eColorAttachment,
-                                     vk::SharingMode::eExclusive, 0, 0, vk::Imagelayout::eUndefined});
+                                     1, 1, vk::SampleCountFlagBits::e1,
+                                     vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eColorAttachment,
+                                     vk::SharingMode::eExclusive, 0, nullptr, vk::ImageLayout::eUndefined});
 ```
 
 ### Designated Initializers
 
 Beginning with C++20, C++ supports designated initializers. As that feature requires to not have any user-declared or inherited constructors, you have to `#define VULKAN_HPP_NO_STRUCT_CONSTRUCTORS`, which removes all the structure constructors from vulkan.hpp. Instead you can then use aggregate initialization. The first few vk-lines in your source might then look like
-```
+```c++
 // initialize the vk::ApplicationInfo structure
 vk::ApplicationInfo applicationInfo{ .pApplicationName   = AppName,
                                      .applicationVersion = 1,
@@ -131,7 +131,7 @@ vk::ApplicationInfo applicationInfo{ .pApplicationName   = AppName,
 vk::InstanceCreateInfo instanceCreateInfo{ .pApplicationInfo = & applicationInfo };
 ```
 instead of
-```
+```c++
 // initialize the vk::ApplicationInfo structure
 vk::ApplicationInfo applicationInfo( AppName, 1, EngineName, 1, VK_API_VERSION_1_1 );
         
@@ -188,7 +188,7 @@ Vulkan-Hpp generates references for pointers to structs. This conversion allows 
 
 ```c++
 // C
-VkImageSubResource subResource;
+VkImageSubresource subResource;
 subResource.aspectMask = 0;
 subResource.mipLevel = 0;
 subResource.arrayLayer = 0;
@@ -203,7 +203,7 @@ auto layout = device.getImageSubresourceLayout(image, { {} /* flags*/, 0 /* mipl
 
 Vulkan allows chaining of structures through the pNext pointer. Vulkan-Hpp has a variadic template class which allows constructing of such structure chains with minimal efforts. In addition to this it checks at compile time if the spec allows the construction of such a `pNext` chain.
 
-```
+```c++
 // This will compile successfully.
 vk::StructureChain<vk::MemoryAllocateInfo, vk::ImportMemoryFdInfoKHR> c;
 vk::MemoryAllocateInfo &allocInfo = c.get<vk::MemoryAllocateInfo>();
@@ -229,7 +229,7 @@ In case that very same structure has to be re-added to the StructureChain again,
 
 Sometimes the user has to pass a preallocated structure chain to query information. For those cases there are two corresponding getter functions. One with a variadic template generating a structure chain of at least two elements to construct the return value:
 
-```
+```c++
 // Query vk::MemoryRequirements2HR and vk::MemoryDedicatedRequirementsKHR when calling Device::getBufferMemoryRequirements2KHR:
 auto result = device.getBufferMemoryRequirements2KHR<vk::MemoryRequirements2KHR, vk::MemoryDedicatedRequirementsKHR>({});
 vk::MemoryRequirements2KHR &memReqs = result.get<vk::MemoryRequirements2KHR>();

@@ -101,7 +101,7 @@ Vulkan-Hpp provides constructors for all CreateInfo objects which accept one par
 vk::ImageCreateInfo ci({}, vk::ImageType::e2D, vk::Format::eR8G8B8A8Unorm,
                        { width, height, 1 },
                        1, 1, vk::SampleCountFlagBits::e1,
-                       vk::ImageTiling::eOptimal, vk::ImageUsageFlagBit::eColorAttachment,
+                       vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eColorAttachment,
                        vk::SharingMode::eExclusive, 0, nullptr, vk::ImageLayout::eUndefined);
 vk::Image image = device.createImage(ci);
 ```

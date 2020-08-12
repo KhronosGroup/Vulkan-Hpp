@@ -36,7 +36,7 @@ if(CLANG_FORMAT_EXECUTABLE)
   # get the clang-format version string
   execute_process(COMMAND ${CLANG_FORMAT_EXECUTABLE} "--version" OUTPUT_VARIABLE clangFormatVersion)
   # filter out the actual version
-  string(REGEX MATCH [0123456789.]+ clangFormatVersion ${clangFormatVersion})
+  string(REGEX MATCH [0123456789.]+ clangFormatVersion "${clangFormatVersion}")
   # we need at least version 10.0.0 !
   if (clangFormatVersion VERSION_LESS 10.0.0)
 	message(WARNING " Found too old clang-format version <" ${clangFormatVersion} ">, we need version 10 and up to nicely format vulkan.hpp")

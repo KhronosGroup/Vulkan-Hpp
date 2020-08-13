@@ -1777,6 +1777,16 @@ void VulkanHppGenerator::appendDispatchLoaderDefault( std::string & str )
 #  define VULKAN_HPP_DEFAULT_DISPATCHER_TYPE ::VULKAN_HPP_NAMESPACE::DispatchLoaderStatic
 # endif
 #endif
+
+#if defined( VULKAN_HPP_NO_DEFAULT_DISPATCHER )
+#  define VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT
+#  define VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT
+#  define VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT
+#else
+#  define VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT = {}
+#  define VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT = nullptr
+#  define VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT = VULKAN_HPP_DEFAULT_DISPATCHER
+#endif
 )";
 }
 
@@ -2728,7 +2738,8 @@ void VulkanHppGenerator::appendFunctionHeaderArgumentEnhancedPointer( std::strin
            stripPrefix( param.type.type, "Vk" ) + "> " + strippedParameterName;
     if ( withDefaults && !withAllocator )
     {
-      str += " = nullptr";
+      assert( param.type.type == "VkAllocationCallbacks" );
+      str += " VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT";
     }
   }
   else if ( param.type.type == "void" )
@@ -2768,7 +2779,7 @@ void VulkanHppGenerator::appendFunctionHeaderArgumentEnhancedSimple(
       if ( ( enumIt == m_enums.end() ) || ( enumIt->second.values.empty() ) )
       {
         // there are no bits in this flag -> provide the default
-        str += " = " + stripPrefix( param.type.type, "Vk" ) + "()";
+        str += " VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT";
       }
     }
   }
@@ -2798,7 +2809,7 @@ void VulkanHppGenerator::appendFunctionHeaderArgumentEnhancedVector( std::string
     str += optionalBegin + "const std::string" + optionalEnd + strippedParameterName;
     if ( optional && withDefaults && !withAllocator )
     {
-      str += " = nullptr";
+      str += " VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT";
     }
   }
   else if ( singular )
@@ -2905,7 +2916,7 @@ void VulkanHppGenerator::appendFunctionHeaderArgumentsEnhanced( std::string &   
   str += "Dispatch const &d";
   if ( withDefaults && !withAllocator )
   {
-    str += " = VULKAN_HPP_DEFAULT_DISPATCHER";
+    str += " VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT";
   }
   str += " ";
 }
@@ -2932,7 +2943,7 @@ void VulkanHppGenerator::appendFunctionHeaderArgumentsStandard( std::string &   
   str += "Dispatch const &d";
   if ( withDefaults )
   {
-    str += " = VULKAN_HPP_DEFAULT_DISPATCHER ";
+    str += " VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT";
   }
 }
 
@@ -2959,7 +2970,7 @@ bool VulkanHppGenerator::appendFunctionHeaderArgumentStandard(
       if ( ( enumIt == m_enums.end() ) || ( enumIt->second.values.empty() ) )
       {
         // there are no bits in this flag -> provide the default
-        str += " = " + stripPrefix( param.type.type, "Vk" ) + "()";
+        str += " VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT";
       }
     }
   }
@@ -7916,7 +7927,7 @@ int main( int argc, char ** argv )
         , m_dispatch( nullptr )
       {}
 
-      ObjectDestroy( OwnerType owner, Optional<const AllocationCallbacks> allocationCallbacks = nullptr, Dispatch const &dispatch = VULKAN_HPP_DEFAULT_DISPATCHER ) VULKAN_HPP_NOEXCEPT
+      ObjectDestroy( OwnerType owner, Optional<const AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT, Dispatch const &dispatch VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
         : m_owner( owner )
         , m_allocationCallbacks( allocationCallbacks )
         , m_dispatch( &dispatch )
@@ -7950,7 +7961,7 @@ int main( int argc, char ** argv )
         , m_dispatch( nullptr )
       {}
 
-      ObjectDestroy( Optional<const AllocationCallbacks> allocationCallbacks, Dispatch const &dispatch = VULKAN_HPP_DEFAULT_DISPATCHER ) VULKAN_HPP_NOEXCEPT
+      ObjectDestroy( Optional<const AllocationCallbacks> allocationCallbacks, Dispatch const &dispatch VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
         : m_allocationCallbacks( allocationCallbacks )
         , m_dispatch( &dispatch )
       {}
@@ -7979,8 +7990,8 @@ int main( int argc, char ** argv )
     ObjectFree() : m_owner(), m_allocationCallbacks( nullptr ), m_dispatch( nullptr ) {}
 
     ObjectFree( OwnerType                           owner,
-                Optional<const AllocationCallbacks> allocationCallbacks = nullptr,
-                Dispatch const &                    dispatch = VULKAN_HPP_DEFAULT_DISPATCHER ) VULKAN_HPP_NOEXCEPT
+                Optional<const AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
+                Dispatch const &                    dispatch VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
       : m_owner( owner )
       , m_allocationCallbacks( allocationCallbacks )
       , m_dispatch( &dispatch )
@@ -8034,7 +8045,9 @@ int main( int argc, char ** argv )
   class PoolFree
   {
     public:
-      PoolFree( OwnerType owner = OwnerType(), PoolType pool = PoolType(), Dispatch const &dispatch = VULKAN_HPP_DEFAULT_DISPATCHER ) VULKAN_HPP_NOEXCEPT
+      PoolFree() = default;
+
+      PoolFree( OwnerType owner, PoolType pool, Dispatch const &dispatch ) VULKAN_HPP_NOEXCEPT
         : m_owner( owner )
         , m_pool( pool )
         , m_dispatch( &dispatch )
@@ -8051,9 +8064,9 @@ int main( int argc, char ** argv )
       }
 
     private:
-      OwnerType m_owner;
-      PoolType m_pool;
-      Dispatch const* m_dispatch;
+      OwnerType m_owner = OwnerType();
+      PoolType m_pool   = PoolType();
+      Dispatch const* m_dispatch = &VULKAN_HPP_DEFAULT_DISPATCHER;
   };
 )";
 

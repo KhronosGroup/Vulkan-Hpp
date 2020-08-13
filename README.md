@@ -10,6 +10,21 @@ The goal of the Vulkan-Hpp is to provide header only C++ bindings for the Vulkan
 
 Vulkan-Hpp is part of the LunarG Vulkan SDK since version 1.0.24. Just `#include <vulkan/vulkan.hpp>` and you're ready to use the C++ bindings. If you're using a Vulkan version not yet supported by the Vulkan SDK you can find the latest version of the header [here](https://github.com/KhronosGroup/Vulkan-Hpp/blob/master/vulkan/vulkan.hpp).
 
+### Building Vulkan-Hpp, Samples, and Tests
+To build the local samples and tests you'll have to clone this repository and run CMake to generate the required build files
+
+0.) Ensure that you have CMake and git installed and accessible from a shell. Ensure that you have installed the Vulkan SDK. Optionally install clang-format >= 10.0 to get a nicely formatted Vulkan-Hpp header.
+1.) Open a shell which provides git and clone the repository with:
+```git clone --recurse-submodules https://github.com/KhronosGroup/Vulkan-Hpp.git```
+2.) Change the current directory to the newly created Vulkan-Hpp directory.
+3.) Create a new folder named ```build``` and change the current directory to the newly created folder.
+4.) Create a build environment with CMake
+```cmake -D DSAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP=ON -DSAMPLES_BUILD=ON -DTESTS_BUILD_WITH_LOCAL_VULKAN_HPP=ON -DTESTS_BUILD=ON -G "<generator>" ..```
+For a full list of generators execute ```cmake -G```.
+5.) Either open the generated project with an IDE, e.g. Visual Studio or launch the build process with ```cmake --build .```.
+
+optional) To update the Vulkan-Hpp and its submodules execute ```git pull --recurse-submodules```.
+
 ### Minimum Requirements
 
 Vulkan-Hpp requires a C++11 capable compiler to compile. The following compilers are known to work:
@@ -469,7 +484,7 @@ Feel free to submit a PR to add to this list.
 
 ## License
 
-Copyright 2015-2017 The Khronos Group Inc.
+Copyright 2015-2020 The Khronos Group Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

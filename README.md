@@ -10,7 +10,15 @@ The goal of the Vulkan-Hpp is to provide header only C++ bindings for the Vulkan
 
 Vulkan-Hpp is part of the LunarG Vulkan SDK since version 1.0.24. Just `#include <vulkan/vulkan.hpp>` and you're ready to use the C++ bindings. If you're using a Vulkan version not yet supported by the Vulkan SDK you can find the latest version of the header [here](https://github.com/KhronosGroup/Vulkan-Hpp/blob/master/vulkan/vulkan.hpp).
 
+### Minimum Requirements
+
+Vulkan-Hpp requires a C++11 capable compiler to compile. The following compilers are known to work:
+* Visual Studio >=2015
+* GCC >= 4.8.2 (earlier version might work, but are untested)
+* Clang >= 3.3
+
 ### Building Vulkan-Hpp, Samples, and Tests
+
 To build the local samples and tests you'll have to clone this repository and run CMake to generate the required build files
 
 0.) Ensure that you have CMake and git installed and accessible from a shell. Ensure that you have installed the Vulkan SDK. Optionally install clang-format >= 10.0 to get a nicely formatted Vulkan-Hpp header.
@@ -24,13 +32,6 @@ For a full list of generators execute ```cmake -G```.
 5.) Either open the generated project with an IDE, e.g. Visual Studio or launch the build process with ```cmake --build .```.
 
 optional) To update the Vulkan-Hpp and its submodules execute ```git pull --recurse-submodules```.
-
-### Minimum Requirements
-
-Vulkan-Hpp requires a C++11 capable compiler to compile. The following compilers are known to work:
-* Visual Studio >=2015
-* GCC >= 4.8.2 (earlier version might work, but are untested)
-* Clang >= 3.3
 
 ### Optional Features
 
@@ -467,6 +468,8 @@ Creating a full featured ```DispatchLoaderDynamic``` is a two- to three-step pro
 After the second step above, the dispatcher is fully functional. Adding the third step can potentially result in more efficient code.
 
 In some cases the storage for the DispatchLoaderDynamic should be embedded in a DLL. For those cases you need to define ```VULKAN_HPP_STORAGE_SHARED``` to tell Vulkan-Hpp that the storage resides in a DLL. When compiling the DLL with the storage it is also required to define ```VULKAN_HPP_STORAGE_SHARED_EXPORT``` to export the required symbols.
+
+For all functions, that VULKAN_HPP_DEFAULT_DISPATCHER is the default for the last argument to that function. In case you want to explicitly provide the dispatcher for each and every function call (when you have multiple dispatchers for different devices, for example) and you want to make sure, that you don't accidentally miss any function call, you can define VULKAN_HPP_NO_DEFAULT_DISPATCHER before you include vulkan.hpp to remove that default argument.
 
 
 ### Samples and Tests

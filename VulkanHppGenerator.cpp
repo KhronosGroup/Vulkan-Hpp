@@ -901,7 +901,7 @@ void VulkanHppGenerator::appendArguments( std::string &                    str,
       }
       else if ( beginsWith( commandData.params[i].type.type, "Vk" ) )
       {
-        appendArgumentVulkanType( str, commandData.params[i] );
+        appendArgumentVulkanType( str, commandData.params[i], returnParamIndex == i );
       }
       else
       {
@@ -956,7 +956,9 @@ void VulkanHppGenerator::appendArgumentVector( std::string &     str,
   }
 }
 
-void VulkanHppGenerator::appendArgumentVulkanType( std::string & str, ParamData const & paramData ) const
+void VulkanHppGenerator::appendArgumentVulkanType( std::string &     str,
+                                                   ParamData const & paramData,
+                                                   bool              isLocalVariable ) const
 {
   // this parameter is a vulkan type
   if ( !paramData.type.postfix.empty() || !paramData.arraySizes.empty() )
@@ -968,15 +970,15 @@ void VulkanHppGenerator::appendArgumentVulkanType( std::string & str, ParamData 
     appendReinterpretCast(
       str, paramData.type.prefix.find( "const" ) != std::string::npos, paramData.type.type, false );
     str += "( ";
-    if ( paramData.optional )
+    if ( isLocalVariable || !paramData.optional )
     {
-      // for an optional parameter, we need also a static_cast from optional type to const-pointer to pure type
-      str += "static_cast<const " + stripPrefix( paramData.type.type, "Vk" ) + "*>( " + parameterName + " )";
+      // those parameters can just use the pointer
+      str += ( paramData.arraySizes.empty() ? "&" : "" ) + parameterName;
     }
     else
     {
-      // other parameters can just use the pointer
-      str += ( paramData.arraySizes.empty() ? "&" : "" ) + parameterName;
+      // for an optional parameter, we need also a static_cast from optional type to const-pointer to pure type
+      str += "static_cast<const " + stripPrefix( paramData.type.type, "Vk" ) + "*>( " + parameterName + " )";
     }
     str += " )";
   }

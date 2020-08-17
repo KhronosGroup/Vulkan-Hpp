@@ -267,7 +267,7 @@ private:
                                     bool              twoStep,
                                     bool              firstCall,
                                     bool              singular ) const;
-  void        appendArgumentVulkanType( std::string & str, ParamData const & paramData ) const;
+  void        appendArgumentVulkanType( std::string & str, ParamData const & paramData, bool isLocalVariable ) const;
   void        appendBitmask( std::string &                      os,
                              std::string const &                bitmaskName,
                              std::string const &                bitmaskType,

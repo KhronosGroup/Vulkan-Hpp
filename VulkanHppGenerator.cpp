@@ -8046,7 +8046,9 @@ int main( int argc, char ** argv )
     public:
       PoolFree() = default;
 
-      PoolFree( OwnerType owner, PoolType pool, Dispatch const &dispatch ) VULKAN_HPP_NOEXCEPT
+      PoolFree( OwnerType        owner,
+                PoolType         pool,
+                Dispatch const & dispatch = VULKAN_HPP_DEFAULT_DISPATCHER ) VULKAN_HPP_NOEXCEPT
         : m_owner( owner )
         , m_pool( pool )
         , m_dispatch( &dispatch )
@@ -8063,9 +8065,9 @@ int main( int argc, char ** argv )
       }
 
     private:
-      OwnerType m_owner = OwnerType();
-      PoolType m_pool   = PoolType();
-      Dispatch const* m_dispatch = &VULKAN_HPP_DEFAULT_DISPATCHER;
+      OwnerType        m_owner    = OwnerType();
+      PoolType         m_pool     = PoolType();
+      Dispatch const * m_dispatch = nullptr;
   };
 )";
 

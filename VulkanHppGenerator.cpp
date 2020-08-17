@@ -7923,17 +7923,16 @@ int main( int argc, char ** argv )
   class ObjectDestroy
   {
     public:
-      ObjectDestroy()
-        : m_owner()
-        , m_allocationCallbacks( nullptr )
-        , m_dispatch( nullptr )
-      {}
+    ObjectDestroy() = default;
 
-      ObjectDestroy( OwnerType owner, Optional<const AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT, Dispatch const &dispatch VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
-        : m_owner( owner )
-        , m_allocationCallbacks( allocationCallbacks )
-        , m_dispatch( &dispatch )
-      {}
+    ObjectDestroy( OwnerType owner,
+                   Optional<const AllocationCallbacks> allocationCallbacks
+                                    VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
+                   Dispatch const & dispatch = VULKAN_HPP_DEFAULT_DISPATCHER ) VULKAN_HPP_NOEXCEPT
+      : m_owner( owner )
+      , m_allocationCallbacks( allocationCallbacks )
+      , m_dispatch( &dispatch )
+    {}
 
       OwnerType getOwner() const VULKAN_HPP_NOEXCEPT { return m_owner; }
       Optional<const AllocationCallbacks> getAllocator() const VULKAN_HPP_NOEXCEPT { return m_allocationCallbacks; }
@@ -7947,9 +7946,9 @@ int main( int argc, char ** argv )
       }
 
     private:
-      OwnerType m_owner;
-      Optional<const AllocationCallbacks> m_allocationCallbacks;
-      Dispatch const* m_dispatch;
+    OwnerType                           m_owner               = {};
+    Optional<const AllocationCallbacks> m_allocationCallbacks = nullptr;
+    Dispatch const *                    m_dispatch            = nullptr;
   };
 
   class NoParent;
@@ -7958,15 +7957,13 @@ int main( int argc, char ** argv )
   class ObjectDestroy<NoParent,Dispatch>
   {
     public:
-      ObjectDestroy()
-        : m_allocationCallbacks( nullptr )
-        , m_dispatch( nullptr )
-      {}
+    ObjectDestroy() = default;
 
-      ObjectDestroy( Optional<const AllocationCallbacks> allocationCallbacks, Dispatch const &dispatch VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
-        : m_allocationCallbacks( allocationCallbacks )
-        , m_dispatch( &dispatch )
-      {}
+    ObjectDestroy( Optional<const AllocationCallbacks> allocationCallbacks,
+                   Dispatch const &                    dispatch = VULKAN_HPP_DEFAULT_DISPATCHER ) VULKAN_HPP_NOEXCEPT
+      : m_allocationCallbacks( allocationCallbacks )
+      , m_dispatch( &dispatch )
+    {}
 
       Optional<const AllocationCallbacks> getAllocator() const VULKAN_HPP_NOEXCEPT { return m_allocationCallbacks; }
 
@@ -7979,8 +7976,8 @@ int main( int argc, char ** argv )
       }
 
     private:
-      Optional<const AllocationCallbacks> m_allocationCallbacks;
-      Dispatch const* m_dispatch;
+    Optional<const AllocationCallbacks> m_allocationCallbacks = nullptr;
+    Dispatch const *                    m_dispatch            = nullptr;
   };
 )";
 
@@ -7989,11 +7986,11 @@ int main( int argc, char ** argv )
   class ObjectFree
   {
   public:
-    ObjectFree() : m_owner(), m_allocationCallbacks( nullptr ), m_dispatch( nullptr ) {}
+    ObjectFree() = default;
 
-    ObjectFree( OwnerType                           owner,
+    ObjectFree( OwnerType                                               owner,
                 Optional<const AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
-                Dispatch const &                    dispatch VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
+                Dispatch const & dispatch = VULKAN_HPP_DEFAULT_DISPATCHER ) VULKAN_HPP_NOEXCEPT
       : m_owner( owner )
       , m_allocationCallbacks( allocationCallbacks )
       , m_dispatch( &dispatch )
@@ -8018,9 +8015,9 @@ int main( int argc, char ** argv )
     }
 
   private:
-    OwnerType                           m_owner;
-    Optional<const AllocationCallbacks> m_allocationCallbacks;
-    Dispatch const *                    m_dispatch;
+    OwnerType                           m_owner               = {};
+    Optional<const AllocationCallbacks> m_allocationCallbacks = nullptr;
+    Dispatch const *                    m_dispatch            = nullptr;
   };
 )";
 

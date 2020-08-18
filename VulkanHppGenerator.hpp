@@ -33,7 +33,7 @@ public:
     std::string & str );  // typedef to DispatchLoaderStatic or undefined type, based on VK_NO_PROTOTYPES
   void                appendEnums( std::string & str ) const;
   void                appendHandles( std::string & str );
-  void                appendHandlesCommandDefintions( std::string & str ) const;
+  void                appendHandlesCommandDefinitions( std::string & str ) const;
   void                appendHashStructures( std::string & str ) const;
   void                appendResultExceptions( std::string & str ) const;
   void                appendStructs( std::string & str );
@@ -98,19 +98,28 @@ private:
     int                      xmlLine;
   };
 
+  struct CommandAliasData
+  {
+    CommandAliasData( int line ) : xmlLine( line ) {}
+
+    std::set<std::string> extensions;
+    std::string           feature;
+    int         xmlLine;
+  };
+
   struct CommandData
   {
     CommandData( int line ) : xmlLine( line ) {}
 
-    std::string              alias;
-    std::vector<std::string> errorCodes;
-    std::set<std::string>    extensions;
-    std::string              feature;
-    std::string              handle;
-    std::vector<ParamData>   params;
-    std::string              returnType;
-    std::vector<std::string> successCodes;
-    int                      xmlLine;
+    std::map<std::string,CommandAliasData> aliasData;
+    std::vector<std::string>      errorCodes;
+    std::set<std::string>         extensions;
+    std::string                   feature;
+    std::string                   handle;
+    std::vector<ParamData>        params;
+    std::string                   returnType;
+    std::vector<std::string>      successCodes;
+    int                           xmlLine;
   };
 
   struct EnumValueData
@@ -292,7 +301,15 @@ private:
                              std::string const & name,
                              CommandData const & commandData,
                              bool                definition ) const;
-  void        appendEnum( std::string & str, std::pair<std::string, EnumData> const & enumData ) const;
+  void        appendDispatchLoaderDynamicCommand( std::string &       str,
+                                                  std::string &       emptyFunctions,
+                                                  std::string &       deviceFunctions,
+                                                  std::string &       deviceFunctionsInstance,
+                                                  std::string &       instanceFunctions,
+                                                  std::string const & commandName,
+                                                  CommandData const & commandData );
+  void        appendEnum( std::string & str,
+                                                       std::pair<std::string, EnumData> const & enumData ) const;
   void        appendEnumInitializer( std::string &                      str,
                                      TypeInfo const &                   type,
                                      std::vector<std::string> const &   arraySizes,
@@ -529,6 +546,7 @@ private:
   bool                  isParam( std::string const & name, std::vector<ParamData> const & params ) const;
   bool                  isParamIndirect( std::string const & name, std::vector<ParamData> const & params ) const;
   bool                  isTwoStepAlgorithm( std::vector<ParamData> const & params ) const;
+  bool                  needsComplexBody( CommandData const & commandData ) const;
   void readBaseType( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
   void readBitmask( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
   void readBitmaskAlias( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );

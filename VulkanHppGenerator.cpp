@@ -2740,7 +2740,6 @@ void VulkanHppGenerator::appendFunctionHeaderArgumentEnhancedPointer( std::strin
            stripPrefix( param.type.type, "Vk" ) + "> " + strippedParameterName;
     if ( withDefaults && !withAllocator )
     {
-      assert( param.type.type == "VkAllocationCallbacks" );
       str += " VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT";
     }
   }

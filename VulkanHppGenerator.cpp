@@ -261,7 +261,10 @@ void checkAttributes( int                                                  line,
   }
 }
 
-void checkedAssignment( std::string & str, std::string const& leave, std::string const& commandName, std::string aliasName )
+void checkedAssignment( std::string &       str,
+                        std::string const & leave,
+                        std::string const & commandName,
+                        std::string         aliasName )
 {
   str.erase( str.length() - leave.length() );
   str += "      if ( !" + commandName + " ) " + commandName + " = " + aliasName + ";\n" + leave;
@@ -3297,7 +3300,8 @@ ${enter}  class ${className}
   public:
     using CType = Vk${className};
 
-    static VULKAN_HPP_CONST_OR_CONSTEXPR ObjectType objectType = ObjectType::e${className};
+    static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::e${className};
+    static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType = VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::${debugReportObjectType};
 
   public:
     VULKAN_HPP_CONSTEXPR ${className}() VULKAN_HPP_NOEXCEPT
@@ -3363,26 +3367,57 @@ ${commands}
   private:
     Vk${className} m_${memberName};
   };
-  static_assert( sizeof( ${className} ) == sizeof( Vk${className} ), "handle and wrapper have different size!" );
+  static_assert( sizeof( VULKAN_HPP_NAMESPACE::${className} ) == sizeof( Vk${className} ), "handle and wrapper have different size!" );
 
   template <>
   struct VULKAN_HPP_DEPRECATED("vk::cpp_type is deprecated. Use vk::CppType instead.") cpp_type<ObjectType::e${className}>
   {
-    using type = ${className};
+    using type = VULKAN_HPP_NAMESPACE::${className};
   };
 
   template <>
-  struct CppType<ObjectType, ObjectType::e${className}>
+  struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::e${className}>
   {
-    using Type = ${className};
+    using Type = VULKAN_HPP_NAMESPACE::${className};
+  };
+
+${CppTypeFromDebugReportObjectTypeEXT}
+
+  template <>
+  struct isVulkanHandleType<VULKAN_HPP_NAMESPACE::${className}>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
   };
 )";
 
+    std::string className = stripPrefix( handleData.first, "Vk" );
+
+    auto enumIt = m_enums.find( "VkDebugReportObjectTypeEXT" );
+    assert( enumIt != m_enums.end() );
+    auto                     valueIt                                     = std::find_if( enumIt->second.values.begin(),
+                                 enumIt->second.values.end(),
+                                 [&className]( EnumValueData const & evd ) { return evd.vkValue == "e" + className; } );
+    static const std::string cppTypeFromDebugReportObjectTypeEXTTemplate = R"(
+  template <>
+  struct CppType<VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT, VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::e${className}>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::${className};
+  };
+)";
+    std::string              cppTypeFromDebugReportObjectTypeEXT =
+      ( valueIt != enumIt->second.values.end() )
+        ? replaceWithMap( cppTypeFromDebugReportObjectTypeEXTTemplate, { { "className", className } } )
+        : "";
+    std::string debugReportObjectType = ( valueIt != enumIt->second.values.end() ) ? valueIt->vkValue : "eUnknown";
+
     std::string enter, leave;
     std::tie( enter, leave ) = generateProtection( handleData.first, !handleData.second.alias.empty() );
+
     str += replaceWithMap( templateString,
-                           { { "className", stripPrefix( handleData.first, "Vk" ) },
+                           { { "className", className },
                              { "commands", commands },
+                             { "CppTypeFromDebugReportObjectTypeEXT", cppTypeFromDebugReportObjectTypeEXT },
+                             { "debugReportObjectType", debugReportObjectType },
                              { "enter", enter },
                              { "memberName", startLowerCase( stripPrefix( handleData.first, "Vk" ) ) } } );
 
@@ -4579,12 +4614,16 @@ void VulkanHppGenerator::EnumData::addEnumValue( int                 line,
 void VulkanHppGenerator::checkCorrectness()
 {
   check( !m_vulkanLicenseHeader.empty(), -1, "missing license header" );
+
+  // baseType checks
   for ( auto const & baseType : m_baseTypes )
   {
     check( m_types.find( baseType.second.type ) != m_types.end(),
            baseType.second.xmlLine,
            "basetype type <" + baseType.second.type + "> not specified" );
   }
+
+  // bitmask checks
   for ( auto const & bitmask : m_bitmasks )
   {
     if ( !bitmask.second.requirements.empty() )
@@ -4594,6 +4633,52 @@ void VulkanHppGenerator::checkCorrectness()
              "bitmask requires unknown <" + bitmask.second.requirements + ">" );
     }
   }
+
+  // prepare command checks
+  auto resultIt = m_enums.find( "VkResult" );
+  assert( resultIt != m_enums.end() );
+  std::set<std::string> resultCodes;
+  for ( auto rc : resultIt->second.values )
+  {
+    resultCodes.insert( rc.vulkanValue );
+  }
+  for ( auto rc : resultIt->second.aliases )
+  {
+    resultCodes.insert( rc.first );
+  }
+
+  // command checks
+  for ( auto const & command : m_commands )
+  {
+    for ( auto const & ec : command.second.errorCodes )
+    {
+      check( resultCodes.find( ec ) != resultCodes.end(),
+             command.second.xmlLine,
+             "command uses unknown error code <" + ec + ">" );
+    }
+    for ( auto const & sc : command.second.successCodes )
+    {
+      check( resultCodes.find( sc ) != resultCodes.end(),
+             command.second.xmlLine,
+             "command uses unknown success code <" + sc + ">" );
+    }
+    // check that functions returning a VkResult specify successcodes
+    check( ( command.second.returnType != "VkResult" ) || !command.second.successCodes.empty(),
+           command.second.xmlLine,
+           "missing successcodes on command <" + command.first + "> returning VkResult!" );
+
+    for ( auto const & p : command.second.params )
+    {
+      check( m_types.find( p.type.type ) != m_types.end(),
+             p.xmlLine,
+             "comand uses parameter of unknown type <" + p.type.type + ">" );
+    }
+    check( m_types.find( command.second.returnType ) != m_types.end(),
+           command.second.xmlLine,
+           "command uses unknown return type <" + command.second.returnType + ">" );
+  }
+
+  // extension checks
   for ( auto const & extension : m_extensions )
   {
     if ( !extension.second.deprecatedBy.empty() )
@@ -4624,6 +4709,8 @@ void VulkanHppGenerator::checkCorrectness()
             "unknown extension requires <" + require.first + ">" );
     }
   }
+
+  // funcPointer checks
   for ( auto const & funcPointer : m_funcPointers )
   {
     if ( !funcPointer.second.requirements.empty() )
@@ -4634,6 +4721,43 @@ void VulkanHppGenerator::checkCorrectness()
     }
   }
 
+  // handle checks
+  auto debugReportObjectTypeIt = m_enums.find( "VkDebugReportObjectTypeEXT" );
+  assert( debugReportObjectTypeIt != m_enums.end() );
+  for ( auto const & handle : m_handles )
+  {
+    for ( auto const & parent : handle.second.parents )
+    {
+      check( m_handles.find( parent ) != m_handles.end(),
+             handle.second.xmlLine,
+             "handle with unknown parent <" + parent + ">" );
+    }
+
+    if ( !handle.first.empty() )
+    {
+      std::string debugReportObjectType = "e" + stripPrefix( handle.first, "Vk" );
+      auto        valueIt               = std::find_if(
+        debugReportObjectTypeIt->second.values.begin(),
+        debugReportObjectTypeIt->second.values.end(),
+        [&debugReportObjectType]( EnumValueData const & evd ) { return evd.vkValue == debugReportObjectType; } );
+      warn( valueIt != debugReportObjectTypeIt->second.values.end(),
+            handle.second.xmlLine,
+            "Handle <" + handle.first + "> specified without a corresponding VkDebugReportObjectTypeEXT enum value" );
+    }
+  }
+  for ( auto const & debugReportObjectTyeValue : debugReportObjectTypeIt->second.values )
+  {
+    if ( debugReportObjectTyeValue.vkValue != "eUnknown" )
+    {
+      std::string handleName = "Vk" + stripPrefix( debugReportObjectTyeValue.vkValue, "e" );
+      check( m_handles.find( handleName ) != m_handles.end(),
+             debugReportObjectTyeValue.xmlLine,
+             "DebugReportObjectTypeEXT value <" + debugReportObjectTyeValue.vulkanValue +
+               "> without corresponding handle" );
+    }
+  }
+
+  // structure checks
   std::set<std::string> sTypeValues;
   for ( auto const & structure : m_structures )
   {
@@ -4724,6 +4848,8 @@ void VulkanHppGenerator::checkCorrectness()
     }
   }
 
+  // enum checks
+  // enum VkStructureType checks (need to be after structure checks)
   auto structureTypeIt = m_enums.find( "VkStructureType" );
   assert( structureTypeIt != m_enums.end() );
   for ( auto const & enumValue : structureTypeIt->second.values )
@@ -4743,58 +4869,6 @@ void VulkanHppGenerator::checkCorrectness()
     }
   }
   assert( sTypeValues.empty() );
-
-  auto resultIt = m_enums.find( "VkResult" );
-  assert( resultIt != m_enums.end() );
-  std::set<std::string> resultCodes;
-  for ( auto rc : resultIt->second.values )
-  {
-    resultCodes.insert( rc.vulkanValue );
-  }
-  for ( auto rc : resultIt->second.aliases )
-  {
-    resultCodes.insert( rc.first );
-  }
-
-  for ( auto const & command : m_commands )
-  {
-    for ( auto const & ec : command.second.errorCodes )
-    {
-      check( resultCodes.find( ec ) != resultCodes.end(),
-             command.second.xmlLine,
-             "command uses unknown error code <" + ec + ">" );
-    }
-    for ( auto const & sc : command.second.successCodes )
-    {
-      check( resultCodes.find( sc ) != resultCodes.end(),
-             command.second.xmlLine,
-             "command uses unknown success code <" + sc + ">" );
-    }
-    // check that functions returning a VkResult specify successcodes
-    check( ( command.second.returnType != "VkResult" ) || !command.second.successCodes.empty(),
-           command.second.xmlLine,
-           "missing successcodes on command <" + command.first + "> returning VkResult!" );
-
-    for ( auto const & p : command.second.params )
-    {
-      check( m_types.find( p.type.type ) != m_types.end(),
-             p.xmlLine,
-             "comand uses parameter of unknown type <" + p.type.type + ">" );
-    }
-    check( m_types.find( command.second.returnType ) != m_types.end(),
-           command.second.xmlLine,
-           "command uses unknown return type <" + command.second.returnType + ">" );
-  }
-
-  for ( auto const & handle : m_handles )
-  {
-    for ( auto const & parent : handle.second.parents )
-    {
-      check( m_handles.find( parent ) != m_handles.end(),
-             handle.second.xmlLine,
-             "handle with unknown parent <" + parent + ">" );
-    }
-  }
 }
 
 bool VulkanHppGenerator::containsArray( std::string const & type ) const
@@ -9012,6 +9086,12 @@ namespace std
   template <typename EnumType, EnumType value>
   struct CppType
   {};
+
+  template <typename Type>
+  struct isVulkanHandleType
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = false;
+  };
 )";
 
   try

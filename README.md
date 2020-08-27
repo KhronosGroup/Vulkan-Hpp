@@ -1,3 +1,4 @@
+
 # Vulkan-Hpp: C++ Bindings for Vulkan
 
 The goal of the Vulkan-Hpp is to provide header only C++ bindings for the Vulkan C API to improve the developers Vulkan experience without introducing CPU runtime cost. It adds features like type safety for enums and bitfields, STL container support, exceptions and simple enumerations.
@@ -477,6 +478,66 @@ For all functions, that VULKAN_HPP_DEFAULT_DISPATCHER is the default for the las
 When you configure your project using CMake, you can enable SAMPLES_BUILD to add some sample projects to your solution. Most of them are ports from the LunarG samples, but there are some more, like CreateDebugUtilsMessenger, InstanceVersion, PhysicalDeviceDisplayProperties, PhysicalDeviceExtensions, PhysicalDeviceFeatures, PhysicalDeviceGroups, PhysicalDeviceMemoryProperties, PhysicalDeviceProperties, PhysicalDeviceQueueFamilyProperties, and RayTracing. All those samples should just compile and run.
 When you configure your project using CMake, you can enable TESTS_BUILD to add some test projects to your solution. Those tests are just compilation tests and are not required to run.
 
+## Configuration Options
+
+There are a couple of defines you can use to control the feature set and behaviour of vulkan.hpp:
+
+#### VULKAN_HPP_ASSERT
+
+At various places in vulkan.hpp an assertion statement is used. By default, the standard assert funtions from ```<cassert>``` is called. By defining ```VULKAN_HPP_ASSERT``` before including vulkan.hpp, you can change that to any function with the very same interface.
+
+#### VULKAN_HPP_ASSERT_ON_RESULT
+
+If there are no exceptions enabled (see ```VULKAN_HPP_NO_EXCEPTIONS```), an assertion statement checks for a valid success code returned from every vulkan call. By default, this is the very same assert function as defined by ```VULKAN_HPP_ASSERT```, but by defining ```VULKAN_HPP_ASSERT_ON_RESULT``` you can replace just those assertions with your own function, using the very same interface.
+
+#### VULKAN_HPP_DEFAULT_DISPATCHER
+
+Every vk-function gets a Dispatcher as its very last argument, which defaults to ```VULKAN_HPP_DEFAULT_DISPATCHER```. If ```VULKAN_HPP_DISPATCH_LOADER_DYNAMIC``` is defined to be 1, it is ```defaultDispatchLoaderDynamic```. This in turn is the dispatcher instance, which is defined by ```VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE```, which has to be used exactly once in your sources. If, on the other hand, ```VULKAN_HPP_DISPATCH_LOADER_DYNAMIC``` is defined to something different from 1, ```VULKAN_HPP_DEFAULT_DISPATCHER``` is set to be ```DispatchLoaderStatic()```.
+You can use your own default dispatcher by setting ```VULKAN_HPP_DEFAULT_DISPATCHER``` to an object that provides the same API. If you explicitly set ```VULKAN_HPP_DEFAULT_DISPATCHER```, you need to set ```VULKAN_HPP_DEFAULT_DISPATCHER_TYPE``` accordingly as well.
+
+#### VULKAN_HPP_DEFAULT_DISPATCHER_TYPE
+
+This names the default dispatcher type, as specified by ```VULKAN_HPP_DEFAULT_DISPATCHER```. Per default, it is DispatchLoaderDynamic or DispatchLoaderStatic, depending on ```VULKAN_HPP_DISPATCH_LOADER_DYNAMIC``` being 1 or not 1, respectively. If you explicitly set ```VULKAN_HPP_DEFAULT_DISPATCHER```, you need to set ```VULKAN_HPP_DEFAULT_DISPATCHER_TYPE``` accordingly as well.
+
+#### VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
+
+If you not have defined your own ```VULKAN_HPP_DEFAULT_DISPATCHER```, and have ```VULKAN_HPP_DISPATCH_LOADER_DYNAMIC``` defined to be 1 (the default), you need to have the macro ```VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE``` exactly once in any of your source files to provide storage for that default dispatcher.
+
+#### VULKAN_HPP_DISABLE_ENHANCED_MODE
+
+When this is defined before including vulkan.hpp, you essentially disable all enhanced functionality. All you then get is improved compile time error detection, via scoped enums, usage of the helper class ```vk::Flags``` for bitmasks, wrapper structs for all vulkan structs providing default initialization, and the helper class ```vk::StructureChain``` for compile-time construction of structure chains.
+
+#### VULKAN_HPP_DISPATCH_LOADER_DYNAMIC
+
+This either selects the dynamic (when it's 1) or the static (when it's not 1) DispatchLoader as the default one, as long as it's not explicitly specified by ```VULKAN_HPP_DEFAULT_DISPATCHER```. By default, this is defined to be 1 if ```VK_NO_PROTOTYPES``` is defined, otherwise 0.
+
+#### VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL
+
+By default, a little helper class ```DynamicLoader``` is used to dynamically load the vulkan library. If you set it to something different than 1 before including vulkan.hpp, this helper is not available, and you need to explicitly provide your own loader type for the function ```DispatchLoaderDynamic::init()```.
+
+#### VULKAN_HPP_INLINE
+
+This is set to be the compiler-dependent attribute used to mark functions as inline. If your compiler happens to need some different attribute, you can set this define accordingly before including vulkan.hpp.
+
+#### VULKAN_HPP_NAMESPACE
+
+By default, the namespace used with vulkan.hpp is ```vk```. By defining ```VULKAN_HPP_NAMESPACE``` before including vulkan.hpp, you can adjust this.
+
+#### VULKAN_HPP_NO_EXCEPTIONS
+
+When a vulkan function returns an error code that is not specified to be a success code, an exception is thrown unless ```VULKAN_HPP_NO_EXCEPTIONS``` is defined before including vulkan.hpp.
+
+#### VULKAN_HPP_NO_NODISCARD_WARNINGS
+
+With C++17, all ```vk```-functions returning something are declared with the attribute ```[[nodiscard]]```. This can be removed by defining ```VULKAN_HPP_NO_NODISCARD_WARNINGS``` before including vulkan.hpp.
+
+#### VULKAN_HPP_NO_SMART_HANDLE
+
+By defining ```VULKAN_HPP_NO_SMART_HANDLE``` before including vulkan.hpp, the helper class ```UniqueHandle``` and all the unique handle types are not available.
+
+#### VULKAN_HPP_TYPESAFE_CONVERSION
+
+32-bit vulkan is not typesafe for handles, so we don't allow copy constructors on this platform by default. To enable this feature on 32-bit platforms define ```VULKAN_HPP_TYPESAFE_CONVERSION```.
 
 ## See Also
 
@@ -500,4 +561,3 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-

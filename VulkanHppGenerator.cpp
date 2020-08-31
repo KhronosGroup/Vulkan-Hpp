@@ -3631,36 +3631,15 @@ ${prefix}{
 ${prefix}  *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::${structName} const *>( &rhs );
 ${prefix}  return *this;
 ${prefix}}
-)";
-  str += replaceWithMap( assignmentFromVulkanType,
-                         { { "prefix", prefix }, { "structName", stripPrefix( structData.first, "Vk" ) } } );
 
-  // we need an assignment operator if there is constant member in this struct
-  if ( std::find_if( structData.second.members.begin(), structData.second.members.end(), []( MemberData const & md ) {
-         return md.values.size() == 1;
-       } ) != structData.second.members.end() )
-  {
-    std::string assignments;
-    for ( auto member : structData.second.members )
-    {
-      if ( member.values.size() != 1 )
-      {
-        assignments += prefix + member.name + " = rhs." + member.name + ";\n";
-      }
-    }
-
-    static const std::string assignmentTemplate = R"(
 ${prefix}${structName} & operator=( ${structName} const & rhs ) VULKAN_HPP_NOEXCEPT
 ${prefix}{
-${assignments}
+${prefix}  memcpy( static_cast<void *>( this ), &rhs, sizeof( ${structName} ) );
 ${prefix}  return *this;
 ${prefix}}
 )";
-    str += replaceWithMap( assignmentTemplate,
-                           { { "assignments", assignments },
-                             { "prefix", prefix },
-                             { "structName", stripPrefix( structData.first, "Vk" ) } } );
-  }
+  str += replaceWithMap( assignmentFromVulkanType,
+                         { { "prefix", prefix }, { "structName", stripPrefix( structData.first, "Vk" ) } } );
 }
 
 void VulkanHppGenerator::appendStructCompareOperators( std::string &                                 str,
@@ -3749,6 +3728,8 @@ void VulkanHppGenerator::appendStructConstructors( std::string &                
 ${prefix}${constexpr}${structName}(${arguments}) VULKAN_HPP_NOEXCEPT
 ${prefix}${initializers}
 ${prefix}{}
+
+${prefix}${constexpr}${structName}( ${structName} const & rhs ) VULKAN_HPP_NOEXCEPT = default;
 
 ${prefix}${structName}( Vk${structName} const & rhs ) VULKAN_HPP_NOEXCEPT
 ${prefix}{

@@ -52,8 +52,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::UniqueDevice device =
       physicalDevice.createDeviceUnique( vk::DeviceCreateInfo( vk::DeviceCreateFlags(), deviceQueueCreateInfo ) );
 
-    std::vector<uint8_t> data;
-    device->getAccelerationStructureHandleNV<uint8_t>( {}, data, vk::DispatchLoaderDynamic() );
+    uint64_t handle = device->getAccelerationStructureHandleNV<uint8_t>( {}, vk::DispatchLoaderDynamic() );
 
     std::vector<vk::UniqueCommandBuffer>::allocator_type vectorAllocator;
     vk::UniqueCommandBuffer                              commandBuffer =

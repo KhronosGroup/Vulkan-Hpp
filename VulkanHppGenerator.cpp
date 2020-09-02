@@ -1481,6 +1481,9 @@ void VulkanHppGenerator::appendCommandFixedSizeVector( std::string &       str,
   assert( ( vectorParamIndices.size() == 1 ) &&
           ( vectorParamIndices.find( templateParamIndex ) != vectorParamIndices.end() ) );
 
+  std::string commandName         = startLowerCase( stripPrefix( name, "vk" ) );
+  std::string commandNameSingular = stripPluralS( commandName );
+
   if ( definition )
   {
     std::string const functionTemplate = R"(
@@ -1508,7 +1511,7 @@ ${enter}  template <typename Dispatch>
   }
 
   template <typename T, typename Dispatch>
-  VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<T>::type ${className}::${commandName}( ${argumentListEnhancedSingular} ) const
+  VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<T>::type ${className}::${commandNameSingular}( ${argumentListEnhancedSingular} ) const
   {
     T ${dataName};
     ${functionCallSingular}
@@ -1537,7 +1540,8 @@ ${leave}
               commandData, templateParamIndex, templateParamIndex, vectorParamIndices, true, false, false ) },
           { "argumentListStandard", constructFunctionHeaderArgumentsStandard( commandData, false ) },
           { "className", stripPrefix( commandData.handle, "Vk" ) },
-          { "commandName", startLowerCase( stripPrefix( name, "vk" ) ) },
+          { "commandName", commandName },
+          { "commandNameSingular", commandNameSingular },
           { "dataName", startLowerCase( stripPrefix( commandData.params[templateParamIndex].name, "p" ) ) },
           { "dataSize", commandData.params[templateParamIndex].len },
           { "enter", enter },
@@ -1571,7 +1575,7 @@ ${enter}    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     template <typename T, typename Allocator = std::allocator<T>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<std::vector<T,Allocator>>::type ${commandName}( ${argumentListEnhanced} ) const;
     template <typename T, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<T>::type ${commandName}( ${argumentListEnhancedSingular} ) const;
+    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<T>::type ${commandNameSingular}( ${argumentListEnhancedSingular} ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 ${leave}
 )";
@@ -1589,7 +1593,8 @@ ${leave}
             constructFunctionHeaderArgumentsEnhanced(
               commandData, templateParamIndex, templateParamIndex, vectorParamIndices, true, true, false ) },
           { "argumentListStandard", constructFunctionHeaderArgumentsStandard( commandData, true ) },
-          { "commandName", startLowerCase( stripPrefix( name, "vk" ) ) },
+          { "commandName", commandName },
+          { "commandNameSingular", commandNameSingular },
           { "enter", enter },
           { "leave", leave } } ) );
   }
@@ -2322,7 +2327,7 @@ std::string VulkanHppGenerator::appendFunctionBodyEnhancedLocalReturnVariable(
     {
       // For StructureChains use the template parameters
       str += "StructureChain<X, Y, Z...> structureChain;\n" + indentation + "  " + enhancedReturnType + "& " +
-              returnName + " = structureChain.template get<" + enhancedReturnType + ">()";
+             returnName + " = structureChain.template get<" + enhancedReturnType + ">()";
       returnName = "structureChain";
     }
     else

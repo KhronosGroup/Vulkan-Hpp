@@ -81,6 +81,16 @@ private:
       return ( prefix == rhs.prefix ) && ( type == rhs.type ) && ( postfix == rhs.postfix );
     }
 
+    bool isNonConstPointer() const
+    {
+      return ( prefix.find( "const" ) == std::string::npos ) && ( postfix.find( '*' ) != std::string::npos );
+    }
+
+    bool isValue() const
+    {
+      return prefix.empty() && postfix.empty();
+    }
+
     std::string prefix;
     std::string type;
     std::string postfix;
@@ -104,22 +114,22 @@ private:
 
     std::set<std::string> extensions;
     std::string           feature;
-    int         xmlLine;
+    int                   xmlLine;
   };
 
   struct CommandData
   {
     CommandData( int line ) : xmlLine( line ) {}
 
-    std::map<std::string,CommandAliasData> aliasData;
-    std::vector<std::string>      errorCodes;
-    std::set<std::string>         extensions;
-    std::string                   feature;
-    std::string                   handle;
-    std::vector<ParamData>        params;
-    std::string                   returnType;
-    std::vector<std::string>      successCodes;
-    int                           xmlLine;
+    std::map<std::string, CommandAliasData> aliasData;
+    std::vector<std::string>                errorCodes;
+    std::set<std::string>                   extensions;
+    std::string                             feature;
+    std::string                             handle;
+    std::vector<ParamData>                  params;
+    std::string                             returnType;
+    std::vector<std::string>                successCodes;
+    int                                     xmlLine;
   };
 
   struct EnumValueData
@@ -301,6 +311,10 @@ private:
                              std::string const & name,
                              CommandData const & commandData,
                              bool                definition ) const;
+  void        appendCommandFixedSizeVector( std::string &       str,
+                                            std::string const & name,
+                                            CommandData const & commandData,
+                                            bool                definition ) const;
   void        appendDispatchLoaderDynamicCommand( std::string &       str,
                                                   std::string &       emptyFunctions,
                                                   std::string &       deviceFunctions,
@@ -308,8 +322,7 @@ private:
                                                   std::string &       instanceFunctions,
                                                   std::string const & commandName,
                                                   CommandData const & commandData );
-  void        appendEnum( std::string & str,
-                                                       std::pair<std::string, EnumData> const & enumData ) const;
+  void        appendEnum( std::string & str, std::pair<std::string, EnumData> const & enumData ) const;
   void        appendEnumInitializer( std::string &                      str,
                                      TypeInfo const &                   type,
                                      std::vector<std::string> const &   arraySizes,
@@ -330,19 +343,6 @@ private:
                               bool                             unique,
                               bool                             isStructureChain,
                               bool                             withAllocatorArgument ) const;
-  void        appendFunctionBodyEnhanced( std::string &                    str,
-                                          std::string const &              indentation,
-                                          std::string const &              name,
-                                          CommandData const &              commandData,
-                                          size_t                           returnParamIndex,
-                                          size_t                           templateParamIndex,
-                                          std::map<size_t, size_t> const & vectorParamIndices,
-                                          bool                             twoStep,
-                                          std::string const &              enhancedReturnType,
-                                          bool                             singular,
-                                          bool                             unique,
-                                          bool                             isStructureChain,
-                                          bool                             withAllocator ) const;
   std::string appendFunctionBodyEnhancedLocalReturnVariable( std::string &                    str,
                                                              std::string const &              indentation,
                                                              CommandData const &              commandData,
@@ -374,14 +374,6 @@ private:
                                                            bool                twoStep,
                                                            bool                singular,
                                                            bool                unique ) const;
-  void        appendFunctionBodyEnhancedSingleStep( std::string &                    str,
-                                                    std::string const &              indentation,
-                                                    std::string const &              name,
-                                                    CommandData const &              commandData,
-                                                    size_t                           returnParamIndex,
-                                                    size_t                           templateParamIndex,
-                                                    std::map<size_t, size_t> const & vectorParamIndices,
-                                                    bool                             singular ) const;
   void        appendFunctionBodyEnhancedTwoStep( std::string &                    str,
                                                  std::string const &              indentation,
                                                  std::string const &              name,
@@ -408,10 +400,6 @@ private:
                                                                bool                             twoStep,
                                                                bool                             singular,
                                                                bool                             withAllocator ) const;
-  void        appendFunctionBodyStandard( std::string &       str,
-                                          std::string const & indentation,
-                                          std::string const & commandName,
-                                          CommandData const & commandData ) const;
   void        appendFunctionBodyStandardArgument( std::string &                    str,
                                                   TypeInfo const &                 typeData,
                                                   std::string const &              name,
@@ -451,17 +439,6 @@ private:
                                       bool                             singular,
                                       bool                             withDefaults,
                                       bool                             withAllocator ) const;
-  void appendFunctionHeaderArgumentsEnhanced( std::string &                    str,
-                                              CommandData const &              commandData,
-                                              size_t                           returnParamIndex,
-                                              size_t                           templateParamIndex,
-                                              std::map<size_t, size_t> const & vectorParamIndices,
-                                              bool                             singular,
-                                              bool                             withDefaults,
-                                              bool                             withAllocator ) const;
-  void appendFunctionHeaderArgumentsStandard( std::string &       str,
-                                              CommandData const & commandData,
-                                              bool                withDefaults ) const;
   bool appendFunctionHeaderArgumentStandard(
     std::string & str, ParamData const & param, bool argEncountered, bool isLastArgument, bool withDefaults ) const;
   void appendFunctionHeaderReturnType( std::string &                    str,
@@ -518,6 +495,36 @@ private:
                                  std::string const &           parentType,
                                  std::set<std::string> const & childrenTypes ) const;
   std::string constructConstexprString( std::pair<std::string, StructureData> const & structData ) const;
+  std::string constructFunctionBodyEnhanced( std::string const &              indentation,
+                                             std::string const &              name,
+                                             CommandData const &              commandData,
+                                             size_t                           returnParamIndex,
+                                             size_t                           templateParamIndex,
+                                             std::map<size_t, size_t> const & vectorParamIndices,
+                                             bool                             twoStep,
+                                             std::string const &              enhancedReturnType,
+                                             bool                             singular,
+                                             bool                             unique,
+                                             bool                             isStructureChain,
+                                             bool                             withAllocator ) const;
+  std::string constructFunctionBodyEnhancedSingleStep( std::string const &              indentation,
+                                                       std::string const &              name,
+                                                       CommandData const &              commandData,
+                                                       size_t                           returnParamIndex,
+                                                       size_t                           templateParamIndex,
+                                                       std::map<size_t, size_t> const & vectorParamIndices,
+                                                       bool                             singular ) const;
+  std::string constructFunctionBodyStandard( std::string const & indentation,
+                                             std::string const & commandName,
+                                             CommandData const & commandData ) const;
+  std::string constructFunctionHeaderArgumentsEnhanced( CommandData const &              commandData,
+                                                        size_t                           returnParamIndex,
+                                                        size_t                           templateParamIndex,
+                                                        std::map<size_t, size_t> const & vectorParamIndices,
+                                                        bool                             singular,
+                                                        bool                             withDefaults,
+                                                        bool                             withAllocator ) const;
+  std::string constructFunctionHeaderArgumentsStandard( CommandData const & commandData, bool withDefaults ) const;
   void        checkCorrectness();
   bool        containsArray( std::string const & type ) const;
   bool        containsUnion( std::string const & type ) const;

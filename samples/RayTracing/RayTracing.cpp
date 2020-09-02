@@ -134,8 +134,7 @@ AccelerationStructureData
     std::vector<GeometryInstanceData> geometryInstanceData;
     for ( size_t i = 0; i < instances.size(); i++ )
     {
-      uint64_t accelerationStructureHandle = 0;
-      device->getAccelerationStructureHandleNV<uint64_t>( instances[i].first, accelerationStructureHandle );
+      uint64_t accelerationStructureHandle = device->getAccelerationStructureHandleNV<uint64_t>( instances[i].first );
 
       // For each instance we set its instance index to its index i in the instance vector, and set
       // its hit group index to 2*i. The hit group index defines which entry of the shader binding
@@ -1134,12 +1133,12 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     vk::DeviceSize       shaderBindingTableSize = hitShaderBindingOffset + hitShaderTableSize;
     std::vector<uint8_t> shaderHandleStorage( shaderBindingTableSize );
-    device->getRayTracingShaderGroupHandlesNV<uint8_t>(
-      *rayTracingPipeline, 0, 1, { raygenShaderTableSize, &shaderHandleStorage[raygenShaderBindingOffset] } );
-    device->getRayTracingShaderGroupHandlesNV<uint8_t>(
-      *rayTracingPipeline, 1, 2, { missShaderTableSize, &shaderHandleStorage[missShaderBindingOffset] } );
-    device->getRayTracingShaderGroupHandlesNV<uint8_t>(
-      *rayTracingPipeline, 3, 2, { hitShaderTableSize, &shaderHandleStorage[hitShaderBindingOffset] } );
+    device->getRayTracingShaderGroupHandlesNV(
+      *rayTracingPipeline, 0, 1, raygenShaderTableSize, &shaderHandleStorage[raygenShaderBindingOffset] );
+    device->getRayTracingShaderGroupHandlesNV(
+      *rayTracingPipeline, 1, 2, missShaderTableSize, &shaderHandleStorage[missShaderBindingOffset] );
+    device->getRayTracingShaderGroupHandlesNV(
+      *rayTracingPipeline, 3, 2, hitShaderTableSize, &shaderHandleStorage[hitShaderBindingOffset] );
 
     vk::su::BufferData shaderBindingTableBufferData( physicalDevice,
                                                      device,

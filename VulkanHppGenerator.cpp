@@ -1568,9 +1568,9 @@ ${enter}    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template <typename T, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<void>::type ${commandName}( ${argumentListEnhancedDeprecated} ) const;
-    template <typename T, typename Allocator = std::allocator<T>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    template <typename T = uint8_t, typename Allocator = std::allocator<T>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<std::vector<T,Allocator>>::type ${commandName}( ${argumentListEnhanced} ) const;
-    template <typename T, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    template <typename T = uint8_t, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<T>::type ${commandName}( ${argumentListEnhancedSingular} ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 ${leave}

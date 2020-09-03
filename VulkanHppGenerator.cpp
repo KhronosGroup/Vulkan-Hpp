@@ -1204,21 +1204,20 @@ void VulkanHppGenerator::appendCommand( std::string &       str,
                                         CommandData const & commandData,
                                         bool                definition ) const
 {
-  if ( commandData.params.back().type.isNonConstPointer() && ( commandData.params.back().type.type == "void" ) &&
-       !commandData.params.back().len.empty() )
+  std::map<size_t, size_t> vectorParamIndices = determineVectorParamIndices( commandData.params );
+  if ( vectorParamIndices.size() == 1 )
   {
-    std::string const & len   = commandData.params.back().len;
-    auto                lenIt = std::find_if(
-      commandData.params.begin(), commandData.params.end(), [&len]( ParamData const & pd ) { return pd.name == len; } );
-    if ( ( lenIt != commandData.params.end() ) && lenIt->type.isValue() )
+    auto vectorParamIndexIt = vectorParamIndices.begin();
+    if ( commandData.params[vectorParamIndexIt->first].type.isNonConstPointer() &&
+         ( commandData.params[vectorParamIndexIt->first].type.type == "void" ) &&
+         commandData.params[vectorParamIndexIt->second].type.isValue() )
     {
-      appendCommandFixedSizeVector( str, name, commandData, definition );
+      appendCommandFixedSizeVector( str, name, commandData, vectorParamIndices, definition );
       return;
     }
   }
 
-  bool                     twoStep            = isTwoStepAlgorithm( commandData.params );
-  std::map<size_t, size_t> vectorParamIndices = determineVectorParamIndices( commandData.params );
+  bool twoStep = isTwoStepAlgorithm( commandData.params );
 
   size_t returnParamIndex = determineReturnParamIndex( commandData, vectorParamIndices, twoStep );
   bool   isStructureChain =
@@ -1465,24 +1464,32 @@ void VulkanHppGenerator::appendCommand( std::string &       str,
   }
 }
 
-void VulkanHppGenerator::appendCommandFixedSizeVector( std::string &       str,
-                                                       std::string const & name,
-                                                       CommandData const & commandData,
-                                                       bool                definition ) const
+void VulkanHppGenerator::appendCommandFixedSizeVector( std::string &                    str,
+                                                       std::string const &              name,
+                                                       CommandData const &              commandData,
+                                                       std::map<size_t, size_t> const & vectorParamIndices,
+                                                       bool                             definition ) const
 {
   assert( commandData.returnType == "VkResult" );
-  assert( commandData.successCodes.size() == 1 );
+  assert( vectorParamIndices.size() == 1 );
+  std::map<size_t, size_t>::const_iterator vectorParamIndexIt = vectorParamIndices.begin();
 
-  std::map<size_t, size_t> vectorParamIndices = determineVectorParamIndices( commandData.params );
-  std::string              enter, leave;
-  std::tie( enter, leave )  = generateProtection( commandData.feature, commandData.extensions );
-  size_t templateParamIndex = commandData.params.size() - 1;
-
-  assert( ( vectorParamIndices.size() == 1 ) &&
-          ( vectorParamIndices.find( templateParamIndex ) != vectorParamIndices.end() ) );
+  std::string enter, leave;
+  std::tie( enter, leave ) = generateProtection( commandData.feature, commandData.extensions );
 
   std::string commandName         = startLowerCase( stripPrefix( name, "vk" ) );
   std::string commandNameSingular = stripPluralS( commandName );
+  std::string nodiscard =
+    ( 1 < commandData.successCodes.size() )
+      ? "VULKAN_HPP_NODISCARD "
+      : ( ( 1 < commandData.errorCodes.size() ) ? "VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS " : "" );
+  std::string returnType = ( 1 < commandData.successCodes.size() )
+                             ? "ResultValue<std::vector<T,Allocator>>"
+                             : "typename ResultValueType<std::vector<T,Allocator>>::type";
+  std::string returnTypeDeprecated =
+    ( 1 < commandData.successCodes.size() ) ? "Result" : "typename ResultValueType<void>::type";
+  std::string returnTypeSingular =
+    ( 1 < commandData.successCodes.size() ) ? "ResultValue<T>" : "typename ResultValueType<T>::type";
 
   if ( definition )
   {
@@ -1496,61 +1503,76 @@ ${enter}  template <typename Dispatch>
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename T, typename Dispatch>
   VULKAN_HPP_DEPRECATED( "This function is deprecated. Use one of the other flavours of it.")
-  VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<void>::type ${className}::${commandName}( ${argumentListEnhancedDeprecated} ) const
+  ${nodiscard}VULKAN_HPP_INLINE ${returnTypeDeprecated} ${className}::${commandName}( ${argumentListEnhancedDeprecated} ) const
   {
     ${functionBodyEnhancedDeprecated}
   }
 
   template <typename T, typename Allocator, typename Dispatch>
-  VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<std::vector<T,Allocator>>::type ${className}::${commandName}( ${argumentListEnhanced} ) const
+  ${nodiscard}VULKAN_HPP_INLINE ${returnType} ${className}::${commandName}( ${argumentListEnhanced} ) const
   {
     VULKAN_HPP_ASSERT( ${dataSize} % sizeof( T ) == 0 );
     std::vector<T,Allocator> ${dataName}( ${dataSize} / sizeof( T ) );
     ${functionCall}
-    return createResultValue( result, ${dataName}, VULKAN_HPP_NAMESPACE_STRING "::${className}::${commandName}" );
+    return createResultValue( result, ${dataName}, VULKAN_HPP_NAMESPACE_STRING "::${className}::${commandName}"${successCodeList} );
   }
 
   template <typename T, typename Dispatch>
-  VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<T>::type ${className}::${commandNameSingular}( ${argumentListEnhancedSingular} ) const
+  ${nodiscard}VULKAN_HPP_INLINE ${returnTypeSingular} ${className}::${commandNameSingular}( ${argumentListEnhancedSingular} ) const
   {
     T ${dataName};
     ${functionCallSingular}
-    return createResultValue( result, ${dataName}, VULKAN_HPP_NAMESPACE_STRING "::${className}::${commandName}" );
+    return createResultValue( result, ${dataName}, VULKAN_HPP_NAMESPACE_STRING "::${className}::${commandName}"${successCodeList} );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 ${leave}
 )";
 
     std::string functionCall = constructFunctionBodyEnhancedSingleStep(
-      "  ", name, commandData, templateParamIndex, templateParamIndex, vectorParamIndices, false );
+      "  ", name, commandData, vectorParamIndexIt->first, vectorParamIndexIt->first, vectorParamIndices, false );
     std::string functionCallSingular = constructFunctionBodyEnhancedSingleStep(
-      "  ", name, commandData, templateParamIndex, templateParamIndex, vectorParamIndices, true );
+      "  ", name, commandData, vectorParamIndexIt->first, vectorParamIndexIt->first, vectorParamIndices, true );
+    std::string successCodeList;
+    if ( 1 < commandData.successCodes.size() )
+    {
+      successCodeList = ", { Result::" + createSuccessCode( commandData.successCodes[0], m_tags );
+      for ( size_t i = 1; i < commandData.successCodes.size(); ++i )
+      {
+        successCodeList += ", Result::" + createSuccessCode( commandData.successCodes[i], m_tags );
+      }
+      successCodeList += " }";
+    }
 
     str += replaceWithMap(
       functionTemplate,
       std::map<std::string, std::string>(
         { { "argumentListEnhanced",
             constructFunctionHeaderArgumentsEnhanced(
-              commandData, templateParamIndex, templateParamIndex, {}, false, false, false ) },
+              commandData, vectorParamIndexIt->first, vectorParamIndexIt->first, {}, false, false, false ) },
           { "argumentListEnhancedDeprecated",
             constructFunctionHeaderArgumentsEnhanced(
-              commandData, INVALID_INDEX, templateParamIndex, vectorParamIndices, false, false, false ) },
+              commandData, INVALID_INDEX, vectorParamIndexIt->first, vectorParamIndices, false, false, false ) },
           { "argumentListEnhancedSingular",
-            constructFunctionHeaderArgumentsEnhanced(
-              commandData, templateParamIndex, templateParamIndex, vectorParamIndices, true, false, false ) },
+            constructFunctionHeaderArgumentsEnhanced( commandData,
+                                                      vectorParamIndexIt->first,
+                                                      vectorParamIndexIt->first,
+                                                      vectorParamIndices,
+                                                      true,
+                                                      false,
+                                                      false ) },
           { "argumentListStandard", constructFunctionHeaderArgumentsStandard( commandData, false ) },
           { "className", stripPrefix( commandData.handle, "Vk" ) },
           { "commandName", commandName },
           { "commandNameSingular", commandNameSingular },
-          { "dataName", startLowerCase( stripPrefix( commandData.params[templateParamIndex].name, "p" ) ) },
-          { "dataSize", commandData.params[templateParamIndex].len },
+          { "dataName", startLowerCase( stripPrefix( commandData.params[vectorParamIndexIt->first].name, "p" ) ) },
+          { "dataSize", commandData.params[vectorParamIndexIt->first].len },
           { "enter", enter },
           { "functionBodyEnhancedDeprecated",
             constructFunctionBodyEnhanced( "  ",
                                            name,
                                            commandData,
                                            INVALID_INDEX,
-                                           templateParamIndex,
+                                           vectorParamIndexIt->first,
                                            vectorParamIndices,
                                            false,
                                            "void",
@@ -1562,6 +1584,11 @@ ${leave}
           { "functionCall", functionCall },
           { "functionCallSingular", functionCallSingular },
           { "leave", leave },
+          { "nodiscard", nodiscard },
+          { "successCodeList", successCodeList },
+          { "returnType", returnType },
+          { "returnTypeDeprecated", returnTypeDeprecated },
+          { "returnTypeSingular", returnTypeSingular },
           { "vkCommandName", name } } ) );
   }
   else
@@ -1571,11 +1598,11 @@ ${enter}    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     VULKAN_HPP_NODISCARD Result ${commandName}( ${argumentListStandard} ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template <typename T, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<void>::type ${commandName}( ${argumentListEnhancedDeprecated} ) const;
+    ${nodiscard}${returnTypeDeprecated} ${commandName}( ${argumentListEnhancedDeprecated} ) const;
     template <typename T, typename Allocator = std::allocator<T>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<std::vector<T,Allocator>>::type ${commandName}( ${argumentListEnhanced} ) const;
+    ${nodiscard}${returnType} ${commandName}( ${argumentListEnhanced} ) const;
     template <typename T, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<T>::type ${commandNameSingular}( ${argumentListEnhancedSingular} ) const;
+    ${nodiscard}${returnTypeSingular} ${commandNameSingular}( ${argumentListEnhancedSingular} ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 ${leave}
 )";
@@ -1585,18 +1612,27 @@ ${leave}
       std::map<std::string, std::string>(
         { { "argumentListEnhanced",
             constructFunctionHeaderArgumentsEnhanced(
-              commandData, templateParamIndex, templateParamIndex, {}, false, true, false ) },
+              commandData, vectorParamIndexIt->first, vectorParamIndexIt->first, {}, false, true, false ) },
           { "argumentListEnhancedDeprecated",
             constructFunctionHeaderArgumentsEnhanced(
-              commandData, INVALID_INDEX, templateParamIndex, vectorParamIndices, false, true, false ) },
+              commandData, INVALID_INDEX, vectorParamIndexIt->first, vectorParamIndices, false, true, false ) },
           { "argumentListEnhancedSingular",
-            constructFunctionHeaderArgumentsEnhanced(
-              commandData, templateParamIndex, templateParamIndex, vectorParamIndices, true, true, false ) },
+            constructFunctionHeaderArgumentsEnhanced( commandData,
+                                                      vectorParamIndexIt->first,
+                                                      vectorParamIndexIt->first,
+                                                      vectorParamIndices,
+                                                      true,
+                                                      true,
+                                                      false ) },
           { "argumentListStandard", constructFunctionHeaderArgumentsStandard( commandData, true ) },
           { "commandName", commandName },
           { "commandNameSingular", commandNameSingular },
           { "enter", enter },
-          { "leave", leave } } ) );
+          { "leave", leave },
+          { "nodiscard", nodiscard },
+          { "returnType", returnType },
+          { "returnTypeDeprecated", returnTypeDeprecated },
+          { "returnTypeSingular", returnTypeSingular } } ) );
   }
 
   if ( !commandData.aliasData.empty() )
@@ -1608,7 +1644,7 @@ ${leave}
       aliasCommandData.extensions = ad.second.extensions;
       aliasCommandData.feature    = ad.second.feature;
       aliasCommandData.xmlLine    = ad.second.xmlLine;
-      appendCommandFixedSizeVector( str, ad.first, aliasCommandData, definition );
+      appendCommandFixedSizeVector( str, ad.first, aliasCommandData, vectorParamIndices, definition );
     }
   }
 }

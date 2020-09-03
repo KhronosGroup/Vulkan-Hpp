@@ -311,10 +311,11 @@ private:
                              std::string const & name,
                              CommandData const & commandData,
                              bool                definition ) const;
-  void        appendCommandFixedSizeVector( std::string &       str,
-                                            std::string const & name,
-                                            CommandData const & commandData,
-                                            bool                definition ) const;
+  void        appendCommandFixedSizeVector( std::string &                    str,
+                                            std::string const &              name,
+                                            CommandData const &              commandData,
+                                            std::map<size_t, size_t> const & vectorParamIndices,
+                                            bool                             definition ) const;
   void        appendDispatchLoaderDynamicCommand( std::string &       str,
                                                   std::string &       emptyFunctions,
                                                   std::string &       deviceFunctions,

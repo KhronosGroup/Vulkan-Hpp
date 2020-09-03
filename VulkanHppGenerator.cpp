@@ -2405,6 +2405,11 @@ void VulkanHppGenerator::appendFunctionBodyEnhancedLocalReturnVariableVectorSize
     // -> replace the '->' by '.' and filter out the leading 'p' to access that value
     size       = startLowerCase( stripPrefix( params[returnParamIndex].len, "p" ) );
     size_t pos = size.find( "->" );
+    if ( pos == std::string::npos )
+    {
+      // other notation possibility: ::
+      pos = size.find( "::" );
+    }
     assert( pos != std::string::npos );
     size.replace( pos, 2, "." );
   }

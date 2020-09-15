@@ -81,6 +81,11 @@ private:
       return ( prefix == rhs.prefix ) && ( type == rhs.type ) && ( postfix == rhs.postfix );
     }
 
+    bool isConstPointer() const
+    {
+      return ( prefix.find( "const" ) != std::string::npos ) && ( postfix.find( '*' ) != std::string::npos );
+    }
+
     bool isNonConstPointer() const
     {
       return ( prefix.find( "const" ) == std::string::npos ) && ( postfix.find( '*' ) != std::string::npos );
@@ -316,6 +321,11 @@ private:
                                             CommandData const &              commandData,
                                             std::map<size_t, size_t> const & vectorParamIndices,
                                             bool                             definition ) const;
+  void        appendCommandTwoStepTwoVectors( std::string &                    str,
+                                              std::string const &              name,
+                                              CommandData const &              commandData,
+                                              std::map<size_t, size_t> const & vectorParamIndices,
+                                              bool                             definition ) const;
   void        appendDispatchLoaderDynamicCommand( std::string &       str,
                                                   std::string &       emptyFunctions,
                                                   std::string &       deviceFunctions,
@@ -495,6 +505,19 @@ private:
   void        appendUniqueTypes( std::string &                 str,
                                  std::string const &           parentType,
                                  std::set<std::string> const & childrenTypes ) const;
+  std::string constructArgumentList( std::vector<ParamData> const & params,
+                                     std::set<size_t> const &       skippedParams,
+                                     bool                           withAllocators ) const;
+  std::string constructCallArguments( std::vector<ParamData> const &   params,
+                                      std::map<size_t, size_t> const & vectorParamIndices,
+                                      bool                             firstCall ) const;
+  std::string
+    constructCommandStandard( std::string const & name, CommandData const & commandData, bool definition ) const;
+  std::string constructCommandTwoStepTwoVectors( std::string const &              name,
+                                                 CommandData const &              commandData,
+                                                 std::map<size_t, size_t> const & vectorParamIndices,
+                                                 bool                             definition,
+                                                 bool                             withAllocators ) const;
   std::string constructConstexprString( std::pair<std::string, StructureData> const & structData ) const;
   std::string constructFunctionBodyEnhanced( std::string const &              indentation,
                                              std::string const &              name,

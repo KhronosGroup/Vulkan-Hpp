@@ -1,8 +1,3 @@
-image:
-  - Visual Studio 2015 
-  - Visual Studio 2017
-  - Visual Studio 2019
-
 configuration:
   - Debug
 
@@ -11,10 +6,42 @@ build:
 
 environment:
   matrix:
-    - GENERATOR_ARCH: Win32
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      GENERATOR_ARCH: Win32
       PYTHON: "C:\\Python38"
-    - GENERATOR_ARCH: x64
+      CXX_STANDARD: 11
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      GENERATOR_ARCH: x64
       PYTHON: "C:\\Python38-x64"
+      CXX_STANDARD: 11
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      GENERATOR_ARCH: Win32
+      PYTHON: "C:\\Python38"
+      CXX_STANDARD: 11
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      GENERATOR_ARCH: x64
+      PYTHON: "C:\\Python38-x64"
+      CXX_STANDARD: 11
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      GENERATOR_ARCH: Win32
+      PYTHON: "C:\\Python38"
+      CXX_STANDARD: 11
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      GENERATOR_ARCH: x64
+      PYTHON: "C:\\Python38-x64"
+      CXX_STANDARD: 11
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      GENERATOR_ARCH: x64
+      PYTHON: "C:\\Python38-x64"
+      CXX_STANDARD: 14
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      GENERATOR_ARCH: x64
+      PYTHON: "C:\\Python38-x64"
+      CXX_STANDARD: 17
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      GENERATOR_ARCH: x64
+      PYTHON: "C:\\Python38-x64"
+      CXX_STANDARD: 20
 
 install:
   - git submodule update --init --recursive
@@ -32,4 +59,5 @@ build_script:
     -DSAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP=ON 
     -DTESTS_BUILD_ONLY_DYNAMIC=ON 
     -DTESTS_BUILD_WITH_LOCAL_VULKAN_HPP=ON
+    -DCMAKE_CXX_STANDARD=%CXX_STANDARD%
   - cmake --build . --config %CONFIGURATION%

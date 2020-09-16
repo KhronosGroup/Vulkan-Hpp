@@ -161,9 +161,11 @@ int main( int /*argc*/, char ** /*argv*/ )
       renderPass.get()                        // renderPass
     );
 
-    vk::ResultValue<vk::UniquePipeline> pipeline =
-      device->createGraphicsPipelineUnique( nullptr, graphicsPipelineCreateInfo );
-    switch ( pipeline.result )
+    vk::Result         result;
+    vk::UniquePipeline pipeline;
+    std::tie( result, pipeline ) =
+      device->createGraphicsPipelineUnique( nullptr, graphicsPipelineCreateInfo ).asTuple();
+    switch ( result )
     {
       case vk::Result::eSuccess: break;
       case vk::Result::ePipelineCompileRequiredEXT:

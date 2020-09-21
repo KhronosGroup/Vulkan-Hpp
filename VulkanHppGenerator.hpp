@@ -330,6 +330,10 @@ private:
                                    std::string const & name,
                                    CommandData const & commandData,
                                    bool                definition ) const;
+  void        appendCommandSimpleVoid( std::string &       str,
+                                       std::string const & name,
+                                       CommandData const & commandData,
+                                       bool                definition ) const;
   void        appendDispatchLoaderDynamicCommand( std::string &       str,
                                                   std::string &       emptyFunctions,
                                                   std::string &       deviceFunctions,
@@ -511,6 +515,7 @@ private:
                                  std::set<std::string> const & childrenTypes ) const;
   std::string constructArgumentListEnhanced( std::vector<ParamData> const & params,
                                              std::set<size_t> const &       skippedParams,
+                                             bool                           definition,
                                              bool                           withAllocators ) const;
   std::string constructArgumentListStandard( std::vector<ParamData> const & params,
                                              std::set<size_t> const &       skippedParams ) const;
@@ -544,7 +549,11 @@ private:
   std::string
     constructCommandSimple( std::string const & name, CommandData const & commandData, bool definition ) const;
   std::string
+    constructCommandSimpleVoid( std::string const & name, CommandData const & commandData, bool definition ) const;
+  std::string
     constructCommandStandard( std::string const & name, CommandData const & commandData, bool definition ) const;
+  std::string
+    constructCommandStandardVoid( std::string const & name, CommandData const & commandData, bool definition ) const;
   std::string constructConstexprString( std::pair<std::string, StructureData> const & structData ) const;
   std::string constructFunctionBodyEnhanced( std::string const &              indentation,
                                              std::string const &              name,

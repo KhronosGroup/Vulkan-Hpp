@@ -334,6 +334,10 @@ private:
                                        std::string const & name,
                                        CommandData const & commandData,
                                        bool                definition ) const;
+  void        appendCommandTrivialVoid( std::string &       str,
+                                        std::string const & name,
+                                        CommandData const & commandData,
+                                        bool                definition ) const;
   void        appendDispatchLoaderDynamicCommand( std::string &       str,
                                                   std::string &       emptyFunctions,
                                                   std::string &       deviceFunctions,

@@ -1223,6 +1223,7 @@ void VulkanHppGenerator::appendCommand( std::string &       str,
                                         CommandData const & commandData,
                                         bool                definition ) const
 {
+  bool                     appendedFunction   = false;
   std::map<size_t, size_t> vectorParamIndices = determineVectorParamIndices( commandData.params );
   switch ( vectorParamIndices.size() )
   {
@@ -1234,7 +1235,17 @@ void VulkanHppGenerator::appendCommand( std::string &       str,
       {
         // no return parameter
         std::vector<size_t> constPointerParamIndices = determineConstPointerParamIndices( commandData.params );
-        if ( !constPointerParamIndices.empty() )
+        if ( constPointerParamIndices.empty() )
+        {
+          // no const-pointers in
+          if ( commandData.returnType == "void" )
+          {
+            // void functions
+            appendCommandTrivialVoid( str, name, commandData, definition );
+            appendedFunction = true;
+          }
+        }
+        else
         {
           // with const-pointer(s),
           switch ( commandData.successCodes.size() )
@@ -1250,13 +1261,14 @@ void VulkanHppGenerator::appendCommand( std::string &       str,
                 // command returns void, and the const pointer(s) are void-pointers and thus can't be change from
                 // by-pointer to by-reference
                 appendCommandSimpleVoid( str, name, commandData, definition );
-                return;
+                appendedFunction = true;
               }
               break;
             case 1:
               // just one success code
               appendCommandSimple( str, name, commandData, definition );
-              return;
+              appendedFunction = true;
+              break;
             default: break;
           }
         }
@@ -1273,7 +1285,7 @@ void VulkanHppGenerator::appendCommand( std::string &       str,
       {
         // the vector is a non-const pointer to void (that is, a return parameter), and the size is given by value
         appendCommandGetVector( str, name, commandData, vectorParamIndices, definition );
-        return;
+        appendedFunction = true;
       }
     }
     break;
@@ -1291,11 +1303,28 @@ void VulkanHppGenerator::appendCommand( std::string &       str,
         // both vectors are non-const pointer (that is, return parameters), and share the same size parameter, which in
         // turn is a non-const pointer
         appendCommandEnumerateTwoVectors( str, name, commandData, vectorParamIndices, definition );
-        return;
+        appendedFunction = true;
       }
     }
     break;
     default: break;
+  }
+
+  if ( appendedFunction )
+  {
+    if ( !commandData.aliasData.empty() )
+    {
+      CommandData aliasCommandData = commandData;
+      aliasCommandData.aliasData.clear();
+      for ( auto const & ad : commandData.aliasData )
+      {
+        aliasCommandData.extensions = ad.second.extensions;
+        aliasCommandData.feature    = ad.second.feature;
+        aliasCommandData.xmlLine    = ad.second.xmlLine;
+        appendCommand( str, indentation, ad.first, aliasCommandData, definition );
+      }
+    }
+    return;
   }
 
   bool twoStep = isTwoStepAlgorithm( commandData.params );
@@ -1581,8 +1610,6 @@ ${commandEnhancedWithAllocators}
           constructCommandEnumerateTwoVectorsDeprecated( name, commandData, vectorParamIndices, definition, true ) },
         { "commandStandard", constructCommandStandard( name, commandData, definition ) },
         { "newlineOnDefinition", definition ? "\n" : "" } } ) );
-
-  assert( commandData.aliasData.empty() );
 }
 
 void VulkanHppGenerator::appendCommandGetVector( std::string &                    str,
@@ -1619,19 +1646,6 @@ ${leave}
         { "enter", enter },
         { "leave", leave },
         { "newlineOnDefinition", definition ? "\n" : "" } } ) );
-
-  if ( !commandData.aliasData.empty() )
-  {
-    CommandData aliasCommandData = commandData;
-    aliasCommandData.aliasData.clear();
-    for ( auto const & ad : commandData.aliasData )
-    {
-      aliasCommandData.extensions = ad.second.extensions;
-      aliasCommandData.feature    = ad.second.feature;
-      aliasCommandData.xmlLine    = ad.second.xmlLine;
-      appendCommandGetVector( str, ad.first, aliasCommandData, vectorParamIndices, definition );
-    }
-  }
 }
 
 void VulkanHppGenerator::appendCommandSimple( std::string &       str,
@@ -1657,19 +1671,6 @@ ${leave}
                              { "enter", enter },
                              { "leave", leave },
                              { "newlineOnDefinition", definition ? "\n" : "" } } ) );
-
-  if ( !commandData.aliasData.empty() )
-  {
-    CommandData aliasCommandData = commandData;
-    aliasCommandData.aliasData.clear();
-    for ( auto const & ad : commandData.aliasData )
-    {
-      aliasCommandData.extensions = ad.second.extensions;
-      aliasCommandData.feature    = ad.second.feature;
-      aliasCommandData.xmlLine    = ad.second.xmlLine;
-      appendCommandSimple( str, ad.first, aliasCommandData, definition );
-    }
-  }
 }
 
 void VulkanHppGenerator::appendCommandSimpleVoid( std::string &       str,
@@ -1695,19 +1696,25 @@ ${leave}
                              { "enter", enter },
                              { "leave", leave },
                              { "newlineOnDefinition", definition ? "\n" : "" } } ) );
+}
 
-  if ( !commandData.aliasData.empty() )
-  {
-    CommandData aliasCommandData = commandData;
-    aliasCommandData.aliasData.clear();
-    for ( auto const & ad : commandData.aliasData )
-    {
-      aliasCommandData.extensions = ad.second.extensions;
-      aliasCommandData.feature    = ad.second.feature;
-      aliasCommandData.xmlLine    = ad.second.xmlLine;
-      appendCommandSimpleVoid( str, ad.first, aliasCommandData, definition );
-    }
-  }
+void VulkanHppGenerator::appendCommandTrivialVoid( std::string &       str,
+                                                   std::string const & name,
+                                                   CommandData const & commandData,
+                                                   bool                definition ) const
+{
+  const std::string functionTemplate = R"(
+${commandStandard}
+)";
+
+  std::string enter, leave;
+  std::tie( enter, leave ) = generateProtection( commandData.feature, commandData.extensions );
+  assert( enter.empty() );
+
+  str += replaceWithMap( functionTemplate,
+                         std::map<std::string, std::string>( {
+                           { "commandStandard", constructCommandStandardVoid( name, commandData, definition ) },
+                         } ) );
 }
 
 void VulkanHppGenerator::appendDispatchLoaderDynamic( std::string & str )
@@ -3734,7 +3741,8 @@ std::string VulkanHppGenerator::constructArgumentListStandard( std::vector<Param
   std::string argumentList;
   for ( size_t i = 1; i < params.size(); ++i )
   {
-    argumentList += params[i].type.compose() + " " + params[i].name + ", ";
+    argumentList +=
+      params[i].type.compose() + " " + params[i].name + constructCArraySizes( params[i].arraySizes ) + ", ";
   }
   argumentList += "Dispatch const & d ";
   return argumentList;

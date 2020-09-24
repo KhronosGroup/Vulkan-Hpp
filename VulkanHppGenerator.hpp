@@ -330,10 +330,11 @@ private:
                                    std::string const & name,
                                    CommandData const & commandData,
                                    bool                definition ) const;
-  void        appendCommandSimpleVoid( std::string &       str,
-                                       std::string const & name,
-                                       CommandData const & commandData,
-                                       bool                definition ) const;
+  void        appendCommandSimpleVoid( std::string &                    str,
+                                       std::string const &              name,
+                                       CommandData const &              commandData,
+                                       bool                             definition,
+                                       std::map<size_t, size_t> const & vectorParamIndices ) const;
   void        appendCommandTrivialVoid( std::string &       str,
                                         std::string const & name,
                                         CommandData const & commandData,
@@ -562,8 +563,10 @@ private:
                                                  bool                             definition ) const;
   std::string
     constructCommandSimple( std::string const & name, CommandData const & commandData, bool definition ) const;
-  std::string
-    constructCommandSimpleVoid( std::string const & name, CommandData const & commandData, bool definition ) const;
+  std::string constructCommandSimpleVoid( std::string const &              name,
+                                          CommandData const &              commandData,
+                                          bool                             definition,
+                                          std::map<size_t, size_t> const & vectorParamIndices ) const;
   std::string
     constructCommandStandard( std::string const & name, CommandData const & commandData, bool definition ) const;
   std::string
@@ -608,6 +611,8 @@ private:
   std::string constructNoDiscardStandard( CommandData const & commandData ) const;
   std::string constructReturnType( CommandData const & commandData, std::string const & baseType ) const;
   std::string constructSuccessCodeList( std::vector<std::string> const & successCodes ) const;
+  std::string constructVectorSizeCheck( std::string const & name, CommandData const &   commandData,
+                                        std::map<size_t, size_t> const & vectorParamIndices ) const;
   void        checkCorrectness();
   bool        containsArray( std::string const & type ) const;
   bool        containsUnion( std::string const & type ) const;

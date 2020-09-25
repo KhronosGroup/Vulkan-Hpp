@@ -1242,6 +1242,13 @@ void VulkanHppGenerator::appendCommand( std::string &       str,
         appendCommandTrivialVoid( str, name, commandData, definition );
         appendedFunction = true;
       }
+      else if ( commandData.successCodes.size() == 1 )
+      {
+        assert( commandData.returnType == "VkResult" );
+        // function returning something
+        appendCommandTrivial( str, name, commandData, definition );
+        appendedFunction = true;
+      }
     }
     else
     {
@@ -1701,6 +1708,31 @@ ${leave})";
         { "enter", enter },
         { "leave", leave },
         { "newlineOnDefinition", definition ? "\n" : "" } } ) );
+}
+
+void VulkanHppGenerator::appendCommandTrivial( std::string &       str,
+                                               std::string const & name,
+                                               CommandData const & commandData,
+                                               bool                definition ) const
+{
+  const std::string functionTemplate = R"(
+${enter}#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
+${commandStandard}
+#else
+${commandEnhanced}
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+${leave}
+)";
+
+  std::string enter, leave;
+  std::tie( enter, leave ) = generateProtection( commandData.feature, commandData.extensions );
+
+  str += replaceWithMap( functionTemplate,
+                         std::map<std::string, std::string>(
+                           { { "commandEnhanced", constructCommandSimple( name, commandData, definition ) },
+                             { "commandStandard", constructCommandStandard( name, commandData, definition ) },
+                             { "enter", enter },
+                             { "leave", leave } } ) );
 }
 
 void VulkanHppGenerator::appendCommandTrivialVoid( std::string &       str,
@@ -3044,8 +3076,9 @@ void VulkanHppGenerator::appendFunctionHeaderArguments( std::string &           
   }
 }
 
-bool VulkanHppGenerator::appendFunctionHeaderArgumentStandard(
-  std::string & str, ParamData const & param, bool argEncountered, bool isLastArgument, bool withDefaults ) const
+bool VulkanHppGenerator::appendFunctionHeaderArgumentStandard( std::string &     str,
+                                                               ParamData const & param,
+                                                               bool              argEncountered ) const
 {
   if ( argEncountered )
   {
@@ -3053,24 +3086,6 @@ bool VulkanHppGenerator::appendFunctionHeaderArgumentStandard(
   }
 
   str += " " + param.type.compose() + " " + param.name + constructCArraySizes( param.arraySizes );
-
-  if ( withDefaults && isLastArgument )
-  {
-    // check if the very last argument is a flag without any bits -> provide some empty default for it
-    std::map<std::string, BitmaskData>::const_iterator bitmasksIt = m_bitmasks.find( param.type.type );
-    if ( bitmasksIt != m_bitmasks.end() )
-    {
-      // get the enum corresponding to this flag, to check if it's empty
-      std::string                                     strippedBitmaskName = stripPrefix( bitmasksIt->first, "Vk" );
-      std::map<std::string, EnumData>::const_iterator enumIt = m_enums.find( bitmasksIt->second.requirements );
-      assert( ( enumIt == m_enums.end() ) || ( enumIt->second.isBitmask ) );
-      if ( ( enumIt == m_enums.end() ) || ( enumIt->second.values.empty() ) )
-      {
-        // there are no bits in this flag -> provide the default
-        str += " VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT";
-      }
-    }
-  }
   return true;
 }
 
@@ -3698,11 +3713,15 @@ std::string VulkanHppGenerator::constructArgumentListEnhanced( std::vector<Param
                                                                bool                           withAllocators ) const
 {
   assert( *skippedParams.begin() == 0 );
+
+  size_t defaultStartIndex = determineDefaultStartIndex( params );
+
   std::string argumentList;
   for ( size_t i = 1; i < params.size(); ++i )
   {
     if ( skippedParams.find( i ) == skippedParams.end() )
     {
+      bool hasDefaultAssignment = false;
       if ( params[i].type.isConstPointer() && !params[i].len.empty() )
       {
         if ( params[i].len == "null-terminated" )
@@ -3735,6 +3754,7 @@ std::string VulkanHppGenerator::constructArgumentListEnhanced( std::vector<Param
             argumentList += "Optional<const " + stripPrefix( params[i].type.type, "Vk" ) + "> " +
                             startLowerCase( stripPrefix( params[i].name, "p" ) +
                                             ( definition ? "" : " VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT" ) );
+            hasDefaultAssignment = true;
           }
           else
           {
@@ -3751,7 +3771,11 @@ std::string VulkanHppGenerator::constructArgumentListEnhanced( std::vector<Param
       {
         argumentList += params[i].type.compose() + " " + params[i].name;
       }
-      argumentList += ", ";
+      argumentList +=
+        std::string( !definition && params[i].optional && ( defaultStartIndex <= i ) && !hasDefaultAssignment
+                       ? " VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT"
+                       : "" ) +
+        ", ";
     }
   }
   if ( withAllocators )
@@ -3766,19 +3790,26 @@ std::string VulkanHppGenerator::constructArgumentListEnhanced( std::vector<Param
     }
   }
   argumentList +=
-    std::string( "Dispatch const & d " ) + ( definition ? "" : " VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT" );
+    std::string( "Dispatch const & d" ) + ( definition ? "" : " VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT" );
   return argumentList;
 }
 
 std::string VulkanHppGenerator::constructArgumentListStandard( std::vector<ParamData> const & params,
-                                                               std::set<size_t> const &       skippedParams ) const
+                                                               std::set<size_t> const &       skippedParams,
+                                                               bool                           definition ) const
 {
   assert( ( skippedParams.size() == 1 ) && ( *skippedParams.begin() == 0 ) );
+
+  size_t defaultStartIndex = determineDefaultStartIndex( params );
+
   std::string argumentList;
   for ( size_t i = 1; i < params.size(); ++i )
   {
     argumentList +=
-      params[i].type.compose() + " " + params[i].name + constructCArraySizes( params[i].arraySizes ) + ", ";
+      params[i].type.compose() + " " + params[i].name + constructCArraySizes( params[i].arraySizes ) +
+      ( !definition && params[i].optional && ( defaultStartIndex <= i ) ? " VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT"
+                                                                        : "" ) +
+      ", ";
   }
   argumentList += "Dispatch const & d ";
   return argumentList;
@@ -3798,7 +3829,15 @@ std::string VulkanHppGenerator::constructCallArgument( ParamData const & param, 
       assert( !param.type.postfix.empty() );
       if ( enhanced )
       {
-        argument = "&" + startLowerCase( stripPrefix( argument, "p" ) );
+        argument = startLowerCase( stripPrefix( argument, "p" ) );
+        if ( param.optional )
+        {
+          argument = "static_cast<" + param.type.compose() + ">( " + argument + " )";
+        }
+        else
+        {
+          argument = "&" + argument;
+        }
       }
       argument = "reinterpret_cast<" + ( param.type.prefix.empty() ? "" : param.type.prefix ) + " " + param.type.type +
                  " " + param.type.postfix + ">( " + argument + " )";
@@ -4423,7 +4462,7 @@ std::string VulkanHppGenerator::constructCommandStandard( std::string const & na
 {
   std::string str;
 
-  std::string argumentList = constructArgumentListStandard( commandData.params, { 0 } );
+  std::string argumentList = constructArgumentListStandard( commandData.params, { 0 }, definition );
   std::string commandName  = determineCommandName( name, commandData.params[0].type.type );
   std::string nodiscard    = constructNoDiscardStandard( commandData );
   std::string returnType   = stripPrefix( commandData.returnType, "Vk" );
@@ -4473,7 +4512,7 @@ std::string VulkanHppGenerator::constructCommandStandardVoid( std::string const 
 {
   std::string str;
 
-  std::string argumentList = constructArgumentListStandard( commandData.params, { 0 } );
+  std::string argumentList = constructArgumentListStandard( commandData.params, { 0 }, definition );
   std::string commandName  = determineCommandName( name, commandData.params[0].type.type );
 
   if ( definition )
@@ -4791,14 +4830,11 @@ std::string VulkanHppGenerator::constructFunctionHeaderArgumentsStandard( Comman
 {
   std::string str;
   // for the standard case, just list all the arguments as we've got them
-  // determine the last argument, where we might provide some default for
-  size_t lastArgument = commandData.params.size() - 1;
 
   bool argEncountered = false;
   for ( size_t i = commandData.handle.empty() ? 0 : 1; i < commandData.params.size(); i++ )
   {
-    argEncountered = appendFunctionHeaderArgumentStandard(
-      str, commandData.params[i], argEncountered, lastArgument == i, withDefaults );
+    argEncountered = appendFunctionHeaderArgumentStandard( str, commandData.params[i], argEncountered );
   }
   if ( argEncountered )
   {
@@ -4869,9 +4905,9 @@ std::string VulkanHppGenerator::constructVectorSizeCheck( std::string const &   
        } ) != countToVectorMap.end() )
   {
     std::string const assertTemplate =
-      "    VULKAN_HPP_ASSERT( ${firstVectorName}.size() == ${secondVectorName}.size() );";
+      "    VULKAN_HPP_ASSERT( ${zeroSizeCheck}${firstVectorName}.size() == ${secondVectorName}.size() );";
     std::string const throwTemplate =
-      R"#(    if ( ${firstVectorName}.size() != ${secondVectorName}.size() )
+      R"#(    if ( ${zeroSizeCheck}${firstVectorName}.size() != ${secondVectorName}.size() )
     {
       throw LogicError( VULKAN_HPP_NAMESPACE_STRING "::${className}::${commandName}: ${firstVectorName}.size() != ${secondVectorName}.size()" );
     })#";
@@ -4881,18 +4917,27 @@ std::string VulkanHppGenerator::constructVectorSizeCheck( std::string const &   
     std::string assertions, throws;
     for ( auto const & cvm : countToVectorMap )
     {
+      assert( !commandData.params[cvm.second[0]].optional );
+
+      size_t      defaultStartIndex = determineDefaultStartIndex( commandData.params );
+      std::string firstVectorName   = startLowerCase( stripPrefix( commandData.params[cvm.second[0]].name, "p" ) );
+
       for ( size_t i = 1; i < cvm.second.size(); i++ )
       {
-        assertions += replaceWithMap(
-          assertTemplate,
-          { { "firstVectorName", startLowerCase( stripPrefix( commandData.params[cvm.second[0]].name, "p" ) ) },
-            { "secondVectorName", startLowerCase( stripPrefix( commandData.params[cvm.second[i]].name, "p" ) ) } } );
+        std::string secondVectorName = startLowerCase( stripPrefix( commandData.params[cvm.second[i]].name, "p" ) );
+        bool withZeroSizeCheck = commandData.params[cvm.second[i]].optional && ( defaultStartIndex <= cvm.second[i] );
+        assertions +=
+          replaceWithMap( assertTemplate,
+                          { { "firstVectorName", firstVectorName },
+                            { "secondVectorName", secondVectorName },
+                            { "zeroSizeCheck", withZeroSizeCheck ? ( secondVectorName + ".empty() || " ) : "" } } );
         throws += replaceWithMap(
           throwTemplate,
-          { { "firstVectorName", startLowerCase( stripPrefix( commandData.params[cvm.second[0]].name, "p" ) ) },
-            { "secondVectorName", startLowerCase( stripPrefix( commandData.params[cvm.second[i]].name, "p" ) ) },
+          { { "firstVectorName", firstVectorName },
             { "className", stripPrefix( commandData.handle, "Vk" ) },
-            { "commandName", commandName } } );
+            { "commandName", commandName },
+            { "secondVectorName", secondVectorName },
+            { "zeroSizeCheck", withZeroSizeCheck ? ( "!" + secondVectorName + ".empty() && " ) : "" } } );
         if ( i + 1 < cvm.second.size() )
         {
           assertions += "\n";
@@ -6096,6 +6141,16 @@ bool VulkanHppGenerator::containsUnion( std::string const & type ) const
     }
   }
   return found;
+}
+
+size_t VulkanHppGenerator::determineDefaultStartIndex( std::vector<ParamData> const & params ) const
+{
+  size_t defaultStartIndex = INVALID_INDEX;
+  for ( int i = static_cast<int>( params.size() ) - 1; ( 0 <= i ) && params[i].optional; --i )
+  {
+    defaultStartIndex = i;
+  }
+  return defaultStartIndex;
 }
 
 std::string VulkanHppGenerator::determineEnhancedReturnType( CommandData const &              commandData,

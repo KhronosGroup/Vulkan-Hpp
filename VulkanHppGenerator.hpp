@@ -335,6 +335,10 @@ private:
                                        CommandData const &              commandData,
                                        bool                             definition,
                                        std::map<size_t, size_t> const & vectorParamIndices ) const;
+  void        appendCommandTrivial( std::string &       str,
+                                    std::string const & name,
+                                    CommandData const & commandData,
+                                    bool                definition ) const;
   void        appendCommandTrivialVoid( std::string &       str,
                                         std::string const & name,
                                         CommandData const & commandData,
@@ -468,8 +472,7 @@ private:
                                       bool                             singular,
                                       bool                             withDefaults,
                                       bool                             withAllocator ) const;
-  bool appendFunctionHeaderArgumentStandard(
-    std::string & str, ParamData const & param, bool argEncountered, bool isLastArgument, bool withDefaults ) const;
+  bool appendFunctionHeaderArgumentStandard( std::string & str, ParamData const & param, bool argEncountered ) const;
   void appendFunctionHeaderReturnType( std::string &                    str,
                                        CommandData const &              commandData,
                                        size_t                           returnParamIndex,
@@ -528,7 +531,8 @@ private:
                                              bool                           definition,
                                              bool                           withAllocators ) const;
   std::string constructArgumentListStandard( std::vector<ParamData> const & params,
-                                             std::set<size_t> const &       skippedParams ) const;
+                                             std::set<size_t> const &       skippedParams,
+                                             bool                           definition ) const;
   std::string constructCallArgument( ParamData const & param, bool enhanced ) const;
   std::string constructCallArguments( std::vector<ParamData> const & params, bool enhanced ) const;
   std::string constructCallArgumentsEnumerateVectors( std::vector<ParamData> const &   params,
@@ -611,11 +615,13 @@ private:
   std::string constructNoDiscardStandard( CommandData const & commandData ) const;
   std::string constructReturnType( CommandData const & commandData, std::string const & baseType ) const;
   std::string constructSuccessCodeList( std::vector<std::string> const & successCodes ) const;
-  std::string constructVectorSizeCheck( std::string const & name, CommandData const &   commandData,
+  std::string constructVectorSizeCheck( std::string const &              name,
+                                        CommandData const &              commandData,
                                         std::map<size_t, size_t> const & vectorParamIndices ) const;
   void        checkCorrectness();
   bool        containsArray( std::string const & type ) const;
   bool        containsUnion( std::string const & type ) const;
+  size_t      determineDefaultStartIndex( std::vector<ParamData> const & params ) const;
   std::string determineEnhancedReturnType( CommandData const &              commandData,
                                            size_t                           returnParamIndex,
                                            std::map<size_t, size_t> const & vectorParamIndices,

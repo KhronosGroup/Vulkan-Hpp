@@ -3724,6 +3724,7 @@ std::string VulkanHppGenerator::constructArgumentListEnhanced( std::vector<Param
       bool hasDefaultAssignment = false;
       if ( params[i].type.isConstPointer() && !params[i].len.empty() )
       {
+        assert( params[i].arraySizes.empty() );
         if ( params[i].len == "null-terminated" )
         {
           assert( params[i].type.type == "char" );
@@ -3748,6 +3749,7 @@ std::string VulkanHppGenerator::constructArgumentListEnhanced( std::vector<Param
       {
         if ( params[i].type.isConstPointer() )
         {
+          assert( params[i].arraySizes.empty() );
           if ( params[i].optional )
           {
             assert( params[i].type.isConstPointer() );
@@ -3764,12 +3766,13 @@ std::string VulkanHppGenerator::constructArgumentListEnhanced( std::vector<Param
         }
         else
         {
-          argumentList += "VULKAN_HPP_NAMESPACE::" + stripPrefix( params[i].type.type, "Vk" ) + " " + params[i].name +
-                          constructCArraySizes( params[i].arraySizes );
+          argumentList +=
+            params[i].type.compose() + " " + params[i].name + constructCArraySizes( params[i].arraySizes );
         }
       }
       else
       {
+        assert( params[i].arraySizes.empty() );
         argumentList += params[i].type.compose() + " " + params[i].name;
       }
       argumentList +=
@@ -3821,7 +3824,14 @@ std::string VulkanHppGenerator::constructCallArgument( ParamData const & param, 
   std::string argument = param.name;
   if ( beginsWith( param.type.type, "Vk" ) )
   {
-    if ( param.type.isValue() )
+    if ( !param.arraySizes.empty() )
+    {
+      assert( param.arraySizes.size() == 1 );
+      assert( param.type.isValue() );
+      assert( param.type.prefix == "const" );
+      argument = "reinterpret_cast<const " + param.type.type + "*>( " + argument + " )";
+    }
+    else if ( param.type.isValue() )
     {
       argument = "static_cast<" + param.type.type + ">( " + argument + " )";
     }

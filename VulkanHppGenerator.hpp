@@ -93,7 +93,7 @@ private:
 
     bool isValue() const
     {
-      return prefix.empty() && postfix.empty();
+      return ( ( prefix.find( '*' ) == std::string::npos ) && ( postfix.find( '*' ) == std::string::npos ) );
     }
 
     std::string prefix;

@@ -3764,7 +3764,8 @@ std::string VulkanHppGenerator::constructArgumentListEnhanced( std::vector<Param
         }
         else
         {
-          argumentList += "VULKAN_HPP_NAMESPACE::" + stripPrefix( params[i].type.type, "Vk" ) + " " + params[i].name;
+          argumentList += "VULKAN_HPP_NAMESPACE::" + stripPrefix( params[i].type.type, "Vk" ) + " " + params[i].name +
+                          constructCArraySizes( params[i].arraySizes );
         }
       }
       else

@@ -321,6 +321,11 @@ private:
                                                 CommandData const &              commandData,
                                                 std::map<size_t, size_t> const & vectorParamIndices,
                                                 bool                             definition ) const;
+  void        appendCommandEnumerateVoid( std::string &                     str,
+                                          std::string const &               name,
+                                          CommandData const &               commandData,
+                                          std::pair<size_t, size_t> const & vectorParamIndex,
+                                          bool                              definition ) const;
   void        appendCommandGetVector( std::string &                    str,
                                       std::string const &              name,
                                       CommandData const &              commandData,
@@ -553,6 +558,11 @@ private:
                                                              std::map<size_t, size_t> const & vectorParamIndices,
                                                              bool                             definition,
                                                              bool                             withAllocators ) const;
+  std::string constructCommandEnumerateVoid( std::string const &               name,
+                                             CommandData const &               commandData,
+                                             std::pair<size_t, size_t> const & vectorParamIndex,
+                                             bool                              definition,
+                                             bool                              withAllocators ) const;
   std::string constructCommandGetVector( std::string const &              name,
                                          CommandData const &              commandData,
                                          std::map<size_t, size_t> const & vectorParamIndices,
@@ -635,6 +645,7 @@ private:
   std::vector<size_t>      determineConstPointerParamIndices( std::vector<ParamData> const & params ) const;
   std::vector<size_t>      determineNonConstPointerParamIndices( std::vector<ParamData> const & params ) const;
   std::map<size_t, size_t> determineVectorParamIndices( std::vector<ParamData> const & params ) const;
+  std::map<size_t, size_t> determineVectorParamIndicesNew( std::vector<ParamData> const & params ) const;
   std::string              generateLenInitializer(
                  std::vector<MemberData>::const_iterator                                        mit,
                  std::map<std::vector<MemberData>::const_iterator,

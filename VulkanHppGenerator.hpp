@@ -331,10 +331,11 @@ private:
                                       CommandData const &              commandData,
                                       std::map<size_t, size_t> const & vectorParamIndices,
                                       bool                             definition ) const;
-  void        appendCommandSimple( std::string &       str,
-                                   std::string const & name,
-                                   CommandData const & commandData,
-                                   bool                definition ) const;
+  void        appendCommandSimple( std::string &                    str,
+                                   std::string const &              name,
+                                   CommandData const &              commandData,
+                                   bool                             definition,
+                                   std::map<size_t, size_t> const & vectorParamIndices ) const;
   void        appendCommandSimpleVoid( std::string &                    str,
                                        std::string const &              name,
                                        CommandData const &              commandData,
@@ -539,13 +540,13 @@ private:
                                              std::set<size_t> const &       skippedParams,
                                              bool                           definition ) const;
   std::string constructCallArgument( ParamData const & param, bool enhanced ) const;
-  std::string constructCallArguments( std::vector<ParamData> const & params, bool enhanced ) const;
   std::string constructCallArgumentsEnumerateVectors( std::vector<ParamData> const &   params,
                                                       std::map<size_t, size_t> const & vectorParamIndices,
                                                       bool                             vectorAsNullptr ) const;
   std::string constructCallArgumentsGetVector( std::vector<ParamData> const &    params,
                                                std::pair<size_t, size_t> const & vectorParamIndices,
                                                bool                              singular ) const;
+  std::string constructCallArgumentsStandard( std::vector<ParamData> const & params ) const;
   std::string constructCallArgumentsVectors( std::vector<ParamData> const &   params,
                                              std::map<size_t, size_t> const & vectorParamIndices ) const;
   std::string constructCommandEnumerateTwoVectors( std::string const &              name,
@@ -575,8 +576,10 @@ private:
                                                  CommandData const &              commandData,
                                                  std::map<size_t, size_t> const & vectorParamIndices,
                                                  bool                             definition ) const;
-  std::string
-    constructCommandSimple( std::string const & name, CommandData const & commandData, bool definition ) const;
+  std::string constructCommandSimple( std::string const &              name,
+                                      CommandData const &              commandData,
+                                      bool                             definition,
+                                      std::map<size_t, size_t> const & vectorParamIndices ) const;
   std::string constructCommandSimpleVoid( std::string const &              name,
                                           CommandData const &              commandData,
                                           bool                             definition,

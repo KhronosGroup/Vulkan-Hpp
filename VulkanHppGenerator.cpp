@@ -7764,37 +7764,37 @@ int main( int argc, char ** argv )
   template <typename BitType>
   VULKAN_HPP_CONSTEXPR bool operator<(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
   {
-    return flags > bit;
+    return flags.operator>( bit );
   }
 
   template <typename BitType>
   VULKAN_HPP_CONSTEXPR bool operator<=(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
   {
-    return flags >= bit;
+    return flags.operator>=( bit );
   }
 
   template <typename BitType>
   VULKAN_HPP_CONSTEXPR bool operator>(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
   {
-    return flags < bit;
+    return flags.operator<( bit );
   }
 
   template <typename BitType>
   VULKAN_HPP_CONSTEXPR bool operator>=(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
   {
-    return flags <= bit;
+    return flags.operator<=(bit);
   }
 
   template <typename BitType>
   VULKAN_HPP_CONSTEXPR bool operator==(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
   {
-    return flags == bit;
+    return flags.operator==( bit );
   }
 
   template <typename BitType>
   VULKAN_HPP_CONSTEXPR bool operator!=(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
   {
-    return flags != bit;
+    return flags.operator!=( bit );
   }
 #endif
 
@@ -7802,19 +7802,19 @@ int main( int argc, char ** argv )
   template <typename BitType>
   VULKAN_HPP_CONSTEXPR Flags<BitType> operator&(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
   {
-    return flags & bit;
+    return flags.operator&( bit );
   }
 
   template <typename BitType>
   VULKAN_HPP_CONSTEXPR Flags<BitType> operator|(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
   {
-    return flags | bit;
+    return flags.operator|( bit );
   }
 
   template <typename BitType>
   VULKAN_HPP_CONSTEXPR Flags<BitType> operator^(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
   {
-    return flags ^ bit;
+    return flags.operator^( bit );
   }
 )";
 
@@ -8061,13 +8061,13 @@ int main( int argc, char ** argv )
     template <typename T, size_t Which = 0>
     T & get() VULKAN_HPP_NOEXCEPT
     {
-      return std::get<ChainElementIndex<0, T, Which, void, ChainElements...>::value>( *this );
+      return std::get<ChainElementIndex<0, T, Which, void, ChainElements...>::value>( static_cast<std::tuple<ChainElements...>&>( *this ) );
     }
 
     template <typename T, size_t Which = 0>
     T const & get() const VULKAN_HPP_NOEXCEPT
     {
-      return std::get<ChainElementIndex<0, T, Which, void, ChainElements...>::value>( *this );
+      return std::get<ChainElementIndex<0, T, Which, void, ChainElements...>::value>( static_cast<std::tuple<ChainElements...>&>( *this ) );
     }
 
     template <typename T0, typename T1, typename... Ts>
@@ -8093,7 +8093,7 @@ int main( int argc, char ** argv )
 
       auto pNext = reinterpret_cast<VkBaseInStructure *>( &get<ClassType, Which>() );
       VULKAN_HPP_ASSERT( !isLinked( pNext ) );
-      auto & headElement = std::get<0>( *this );
+      auto & headElement = std::get<0>( static_cast<std::tuple<ChainElements...>&>( *this ) );
       pNext->pNext       = reinterpret_cast<VkBaseInStructure const*>(headElement.pNext);
       headElement.pNext  = pNext;
     }
@@ -8144,7 +8144,7 @@ int main( int argc, char ** argv )
 
     bool isLinked( VkBaseInStructure const * pNext )
     {
-      VkBaseInStructure const * elementPtr = reinterpret_cast<VkBaseInStructure const*>(&std::get<0>( *this ));
+      VkBaseInStructure const * elementPtr = reinterpret_cast<VkBaseInStructure const*>(&std::get<0>( static_cast<std::tuple<ChainElements...>&>( *this ) ) );
       while ( elementPtr )
       {
         if ( elementPtr->pNext == pNext )
@@ -8159,8 +8159,8 @@ int main( int argc, char ** argv )
     template <size_t Index>
     typename std::enable_if<Index != 0, void>::type link() VULKAN_HPP_NOEXCEPT
     {
-      auto & x = std::get<Index - 1>( *this );
-      x.pNext  = &std::get<Index>( *this );
+      auto & x = std::get<Index - 1>( static_cast<std::tuple<ChainElements...>&>( *this ) );
+      x.pNext  = &std::get<Index>( static_cast<std::tuple<ChainElements...>&>( *this ) );
       link<Index - 1>();
     }
 
@@ -8171,7 +8171,7 @@ int main( int argc, char ** argv )
     template <size_t Index>
     typename std::enable_if<Index != 0, void>::type unlink( VkBaseOutStructure const * pNext ) VULKAN_HPP_NOEXCEPT
     {
-      auto & element = std::get<Index>( *this );
+      auto & element = std::get<Index>( static_cast<std::tuple<ChainElements...>&>( *this ) );
       if ( element.pNext == pNext )
       {
         element.pNext = pNext->pNext;
@@ -8185,7 +8185,7 @@ int main( int argc, char ** argv )
     template <size_t Index>
     typename std::enable_if<Index == 0, void>::type unlink( VkBaseOutStructure const * pNext ) VULKAN_HPP_NOEXCEPT
     {
-      auto & element = std::get<0>( *this );
+      auto & element = std::get<0>( static_cast<std::tuple<ChainElements...>&>( *this ) );
       if ( element.pNext == pNext )
       {
         element.pNext = pNext->pNext;

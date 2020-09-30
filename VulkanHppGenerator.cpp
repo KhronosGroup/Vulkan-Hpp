@@ -1258,8 +1258,7 @@ void VulkanHppGenerator::appendCommand( std::string &       str,
         appendCommandSimpleVoid( str, name, commandData, definition, vectorParamIndices );
         appendedFunction = true;
       }
-      else if ( ( commandData.returnType == "VkResult" ) && ( commandData.successCodes.size() == 1 ) &&
-                ( vectorParamIndices.size() < 2 ) )
+      else if ( ( commandData.returnType == "VkResult" ) && ( vectorParamIndices.size() < 2 ) )
       {
         // returns VkResult, but there's just one success code
         appendCommandSimple( str, name, commandData, definition, vectorParamIndices );
@@ -4527,7 +4526,7 @@ std::string VulkanHppGenerator::constructCommandSimple( std::string const &     
   ${nodiscard}VULKAN_HPP_INLINE ${returnType} ${className}::${commandName}( ${argumentList} ) const
   {
     Result result = static_cast<Result>( d.${vkCommand}( ${callArguments} ) );
-    return createResultValue( result, VULKAN_HPP_NAMESPACE_STRING "::${className}::${commandName}" );
+    return createResultValue( result, VULKAN_HPP_NAMESPACE_STRING "::${className}::${commandName}"${successCodeList} );
   })";
 
     str =
@@ -4539,6 +4538,7 @@ std::string VulkanHppGenerator::constructCommandSimple( std::string const &     
                           { "commandName", commandName },
                           { "nodiscard", nodiscard },
                           { "returnType", returnType },
+                          { "successCodeList", constructSuccessCodeList( commandData.successCodes ) },
                           { "vkCommand", name } } ) );
   }
   else

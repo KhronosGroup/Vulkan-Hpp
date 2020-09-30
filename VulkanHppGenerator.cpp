@@ -4578,37 +4578,43 @@ std::string VulkanHppGenerator::constructCommandSimpleVoid( std::string const & 
                             ( commandData.params[vectorParamIndices.begin()->first].type.type == "void" ) )
                                ? "typename T, "
                                : "";
+  std::pair<bool, std::map<size_t, std::vector<size_t>>> vectorSizeCheck =
+    needsVectorSizeCheck( vectorParamIndices );
+  std::string noexceptString = vectorSizeCheck.first ? "VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS" : "VULKAN_HPP_NOEXCEPT";
 
   if ( definition )
   {
     std::string const functionTemplate =
       R"(  template <${typenameT}typename Dispatch>
-  VULKAN_HPP_INLINE void ${className}::${commandName}( ${argumentList} ) const VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_INLINE void ${className}::${commandName}( ${argumentList} ) const ${noexcept}
   {${vectorSizeCheck}
     d.${vkCommand}( ${callArguments} );
   })";
 
-    str =
-      replaceWithMap( functionTemplate,
-                      std::map<std::string, std::string>(
-                        { { "argumentList", argumentList },
-                          { "callArguments", constructCallArgumentsVectors( commandData.params, vectorParamIndices ) },
-                          { "className", stripPrefix( commandData.handle, "Vk" ) },
-                          { "commandName", commandName },
-                          { "typenameT", typenameT },
-                          { "vectorSizeCheck", constructVectorSizeCheck( name, commandData, vectorParamIndices ) },
-                          { "vkCommand", name } } ) );
+    str = replaceWithMap(
+      functionTemplate,
+      std::map<std::string, std::string>(
+        { { "argumentList", argumentList },
+          { "callArguments", constructCallArgumentsVectors( commandData.params, vectorParamIndices ) },
+          { "className", stripPrefix( commandData.handle, "Vk" ) },
+          { "commandName", commandName },
+          { "noexcept", noexceptString },
+          { "typenameT", typenameT },
+          { "vectorSizeCheck",
+            vectorSizeCheck.first ? constructVectorSizeCheck( name, commandData, vectorSizeCheck.second ) : "" },
+          { "vkCommand", name } } ) );
   }
   else
   {
     std::string const functionTemplate =
       R"(    template <${typenameT}typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    void ${commandName}( ${argumentList} ) const VULKAN_HPP_NOEXCEPT;)";
+    void ${commandName}( ${argumentList} ) const ${noexcept};)";
 
-    str = replaceWithMap(
-      functionTemplate,
-      std::map<std::string, std::string>(
-        { { "argumentList", argumentList }, { "commandName", commandName }, { "typenameT", typenameT } } ) );
+    str = replaceWithMap( functionTemplate,
+                          std::map<std::string, std::string>( { { "argumentList", argumentList },
+                                                                { "commandName", commandName },
+                                                                { "noexcept", noexceptString },
+                                                                { "typenameT", typenameT } } ) );
   }
 
   return str;
@@ -5042,70 +5048,57 @@ std::string VulkanHppGenerator::constructSuccessCodeList( std::vector<std::strin
   return successCodeList;
 }
 
-std::string VulkanHppGenerator::constructVectorSizeCheck( std::string const &              name,
-                                                          CommandData const &              commandData,
-                                                          std::map<size_t, size_t> const & vectorParamIndices ) const
+std::string
+  VulkanHppGenerator::constructVectorSizeCheck( std::string const &                           name,
+                                                CommandData const &                           commandData,
+                                                std::map<size_t, std::vector<size_t>> const & countToVectorMap ) const
 {
   std::string str;
 
-  std::map<size_t, std::vector<size_t>> countToVectorMap;
-  for ( auto const & vpi : vectorParamIndices )
+  std::string const assertTemplate =
+    "    VULKAN_HPP_ASSERT( ${zeroSizeCheck}${firstVectorName}.size() == ${secondVectorName}.size() );";
+  std::string const throwTemplate =
+    R"#(    if ( ${zeroSizeCheck}${firstVectorName}.size() != ${secondVectorName}.size() )
   {
-    if ( vpi.second != INVALID_INDEX )
+    throw LogicError( VULKAN_HPP_NAMESPACE_STRING "::${className}::${commandName}: ${firstVectorName}.size() != ${secondVectorName}.size()" );
+  })#";
+
+  std::string commandName = determineCommandName( name, commandData.params[0].type.type );
+
+  std::string assertions, throws;
+  for ( auto const & cvm : countToVectorMap )
+  {
+    assert( !commandData.params[cvm.second[0]].optional );
+
+    size_t      defaultStartIndex = determineDefaultStartIndex( commandData.params );
+    std::string firstVectorName   = startLowerCase( stripPrefix( commandData.params[cvm.second[0]].name, "p" ) );
+
+    for ( size_t i = 1; i < cvm.second.size(); i++ )
     {
-      countToVectorMap[vpi.second].push_back( vpi.first );
+      std::string secondVectorName = startLowerCase( stripPrefix( commandData.params[cvm.second[i]].name, "p" ) );
+      bool withZeroSizeCheck = commandData.params[cvm.second[i]].optional && ( defaultStartIndex <= cvm.second[i] );
+      assertions +=
+        replaceWithMap( assertTemplate,
+                        { { "firstVectorName", firstVectorName },
+                          { "secondVectorName", secondVectorName },
+                          { "zeroSizeCheck", withZeroSizeCheck ? ( secondVectorName + ".empty() || " ) : "" } } );
+      throws +=
+        replaceWithMap( throwTemplate,
+                        { { "firstVectorName", firstVectorName },
+                          { "className", stripPrefix( commandData.handle, "Vk" ) },
+                          { "commandName", commandName },
+                          { "secondVectorName", secondVectorName },
+                          { "zeroSizeCheck", withZeroSizeCheck ? ( "!" + secondVectorName + ".empty() && " ) : "" } } );
+      if ( i + 1 < cvm.second.size() )
+      {
+        assertions += "\n";
+        throws += "\n";
+      }
     }
   }
 
-  // check if there's at least one count used multiple times
-  if ( std::find_if( countToVectorMap.begin(), countToVectorMap.end(), []( auto const & cvm ) {
-         return 1 < cvm.second.size();
-       } ) != countToVectorMap.end() )
-  {
-    std::string const assertTemplate =
-      "    VULKAN_HPP_ASSERT( ${zeroSizeCheck}${firstVectorName}.size() == ${secondVectorName}.size() );";
-    std::string const throwTemplate =
-      R"#(    if ( ${zeroSizeCheck}${firstVectorName}.size() != ${secondVectorName}.size() )
-    {
-      throw LogicError( VULKAN_HPP_NAMESPACE_STRING "::${className}::${commandName}: ${firstVectorName}.size() != ${secondVectorName}.size()" );
-    })#";
-
-    std::string commandName = determineCommandName( name, commandData.params[0].type.type );
-
-    std::string assertions, throws;
-    for ( auto const & cvm : countToVectorMap )
-    {
-      assert( !commandData.params[cvm.second[0]].optional );
-
-      size_t      defaultStartIndex = determineDefaultStartIndex( commandData.params );
-      std::string firstVectorName   = startLowerCase( stripPrefix( commandData.params[cvm.second[0]].name, "p" ) );
-
-      for ( size_t i = 1; i < cvm.second.size(); i++ )
-      {
-        std::string secondVectorName = startLowerCase( stripPrefix( commandData.params[cvm.second[i]].name, "p" ) );
-        bool withZeroSizeCheck = commandData.params[cvm.second[i]].optional && ( defaultStartIndex <= cvm.second[i] );
-        assertions +=
-          replaceWithMap( assertTemplate,
-                          { { "firstVectorName", firstVectorName },
-                            { "secondVectorName", secondVectorName },
-                            { "zeroSizeCheck", withZeroSizeCheck ? ( secondVectorName + ".empty() || " ) : "" } } );
-        throws += replaceWithMap(
-          throwTemplate,
-          { { "firstVectorName", firstVectorName },
-            { "className", stripPrefix( commandData.handle, "Vk" ) },
-            { "commandName", commandName },
-            { "secondVectorName", secondVectorName },
-            { "zeroSizeCheck", withZeroSizeCheck ? ( "!" + secondVectorName + ".empty() && " ) : "" } } );
-        if ( i + 1 < cvm.second.size() )
-        {
-          assertions += "\n";
-          throws += "\n";
-        }
-      }
-    }
-
-    std::string const sizeCheckTemplate =
-      R"#(
+  std::string const sizeCheckTemplate =
+    R"#(
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
 ${assertions}
 #else
@@ -5113,8 +5106,7 @@ ${throws}
 #endif  /*VULKAN_HPP_NO_EXCEPTIONS*/
 )#";
 
-    str = replaceWithMap( sizeCheckTemplate, { { "assertions", assertions }, { "throws", throws } } );
-  }
+  str = replaceWithMap( sizeCheckTemplate, { { "assertions", assertions }, { "throws", throws } } );
 
   return str;
 }
@@ -6852,6 +6844,24 @@ bool VulkanHppGenerator::needsComplexBody( CommandData const & commandData ) con
 {
   return !commandData.aliasData.empty() &&
          !generateProtection( commandData.feature, commandData.extensions ).first.empty();
+}
+
+std::pair<bool, std::map<size_t, std::vector<size_t>>>
+  VulkanHppGenerator::needsVectorSizeCheck( std::map<size_t, size_t> const & vectorParamIndices ) const
+{
+  std::map<size_t, std::vector<size_t>> countToVectorMap;
+  for ( auto const & vpi : vectorParamIndices )
+  {
+    if ( vpi.second != INVALID_INDEX )
+    {
+      countToVectorMap[vpi.second].push_back( vpi.first );
+    }
+  }
+  return std::make_pair( std::find_if( countToVectorMap.begin(),
+                                       countToVectorMap.end(),
+                                       []( auto const & cvm ) { return 1 < cvm.second.size(); } ) !=
+                           countToVectorMap.end(),
+                         countToVectorMap );
 }
 
 void VulkanHppGenerator::readBaseType( tinyxml2::XMLElement const *               element,
@@ -10091,6 +10101,11 @@ int main( int argc, char ** argv )
 # else
 #  define VULKAN_HPP_NOEXCEPT noexcept
 #  define VULKAN_HPP_HAS_NOEXCEPT 1
+#  if defined(VULKAN_HPP_NO_EXCEPTIONS)
+#    define VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS noexcept
+#  else
+#    define VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS
+#  endif
 # endif
 #endif
 

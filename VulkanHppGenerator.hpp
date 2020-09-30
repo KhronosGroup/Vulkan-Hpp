@@ -628,9 +628,9 @@ private:
   std::string constructNoDiscardStandard( CommandData const & commandData ) const;
   std::string constructReturnType( CommandData const & commandData, std::string const & baseType ) const;
   std::string constructSuccessCodeList( std::vector<std::string> const & successCodes ) const;
-  std::string constructVectorSizeCheck( std::string const &              name,
-                                        CommandData const &              commandData,
-                                        std::map<size_t, size_t> const & vectorParamIndices ) const;
+  std::string constructVectorSizeCheck( std::string const &                           name,
+                                        CommandData const &                           commandData,
+                                        std::map<size_t, std::vector<size_t>> const & countToVectorMap ) const;
   void        checkCorrectness();
   bool        containsArray( std::string const & type ) const;
   bool        containsUnion( std::string const & type ) const;
@@ -664,6 +664,8 @@ private:
   bool                  isParamIndirect( std::string const & name, std::vector<ParamData> const & params ) const;
   bool                  isTwoStepAlgorithm( std::vector<ParamData> const & params ) const;
   bool                  needsComplexBody( CommandData const & commandData ) const;
+  std::pair<bool, std::map<size_t, std::vector<size_t>>>
+       needsVectorSizeCheck( std::map<size_t, size_t> const & vectorParamIndices ) const;
   void readBaseType( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
   void readBitmask( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
   void readBitmaskAlias( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );

@@ -4277,6 +4277,7 @@ std::string VulkanHppGenerator::constructCommandEnumerateVoid( std::string const
     return ${vectorName};
   })";
 
+    std::string vectorName = startLowerCase( stripPrefix( commandData.params[vectorParamIndex.first].name, "p" ) );
     std::string withAllocatorsTypenameCheck =
       ", typename B, typename std::enable_if<std::is_same<typename B::value_type, " + vectorElementType +
       ">::value, int>::type ";
@@ -4293,9 +4294,9 @@ std::string VulkanHppGenerator::constructCommandEnumerateVoid( std::string const
             constructCallArgumentsEnumerateVectors( commandData.params, { vectorParamIndex }, true ) },
           { "secondCallArguments",
             constructCallArgumentsEnumerateVectors( commandData.params, { vectorParamIndex }, false ) },
-          { "vectorAllocator", withAllocators ? ( "( " + vectorElementType + "Allocator )" ) : "" },
+          { "vectorAllocator", withAllocators ? ( "( " + vectorName + "Allocator )" ) : "" },
           { "vectorElementType", vectorElementType },
-          { "vectorName", startLowerCase( stripPrefix( commandData.params[vectorParamIndex.first].name, "p" ) ) },
+          { "vectorName", vectorName },
           { "vkCommand", name },
           { "withAllocatorTypenameCheck", withAllocators ? withAllocatorsTypenameCheck : "" } } ) );
   }

@@ -85,7 +85,7 @@ int main( int /*argc*/, char ** /*argv*/ )
       }
       typeBits >>= 1;
     }
-    assert( typeIndex != ~0 );
+    assert( typeIndex != uint32_t( ~0 ) );
     vk::UniqueDeviceMemory depthMemory =
       device->allocateMemoryUnique( vk::MemoryAllocateInfo( memoryRequirements.size, typeIndex ) );
 

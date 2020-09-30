@@ -15,6 +15,16 @@
 // VulkanHpp Samples : 13_InitVertexBuffer
 //                     Initialize vertex buffer
 
+#if defined( _MSC_VER )
+// no need to ignore any warnings with MSVC
+#elif defined( __GNUC__ )
+#  if ( 9 <= __GNUC__ )
+#    pragma GCC diagnostic ignored "-Winit-list-lifetime"
+#  endif
+#else
+// unknow compiler... just ignore the warnings for yourselves ;)
+#endif
+
 #include "../utils/geometries.hpp"
 #include "../utils/utils.hpp"
 #include "vulkan/vulkan.hpp"

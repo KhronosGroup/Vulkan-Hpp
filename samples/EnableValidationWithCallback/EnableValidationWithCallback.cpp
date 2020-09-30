@@ -15,6 +15,16 @@
 // VulkanHpp Samples : EnableValidationWithCallback
 //                     Show how to enable validation layers and provide callback
 
+#if defined( _MSC_VER )
+// no need to ignore any warnings with MSVC
+#elif defined( __clang__ )
+#  pragma clang diagnostic ignored "-Wunused-variable"
+#elif defined( __GNUC__ )
+#  pragma GCC diagnostic ignored "-Wunused-but-set-variable"
+#else
+// unknow compiler... just ignore the warnings for yourselves ;)
+#endif
+
 #include "../utils/utils.hpp"
 #include "vulkan/vulkan.hpp"
 

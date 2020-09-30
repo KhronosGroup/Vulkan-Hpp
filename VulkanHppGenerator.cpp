@@ -5586,17 +5586,6 @@ std::string
   std::set<size_t> skippedParams = ::determineSkippedParams( returnParamIndex, vectorParamIndices );
   if ( skippedParams.size() + ( commandData.handle.empty() ? 0 : 1 ) < commandData.params.size() )
   {
-    // determine the last argument, where we might provide some default for
-    size_t lastArgument = INVALID_INDEX;
-    for ( size_t i = commandData.params.size() - 1; i < commandData.params.size(); i-- )
-    {
-      if ( skippedParams.find( i ) == skippedParams.end() )
-      {
-        lastArgument = i;
-        break;
-      }
-    }
-
     str += " ";
     bool argEncountered = false;
     for ( size_t i = commandData.handle.empty() ? 0 : 1; i < commandData.params.size(); i++ )
@@ -7198,7 +7187,7 @@ std::map<size_t, size_t>
   {
     if ( !it->len.empty() )
     {
-      auto findIt = std::find_if( params.begin(), it, [this, &params, &it]( ParamData const & pd ) {
+      auto findIt = std::find_if( params.begin(), it, [this, &it]( ParamData const & pd ) {
         return ( pd.name == it->len ) || isParamIndirect( it->len, pd );
       } );
 
@@ -11093,6 +11082,10 @@ extern "C" __declspec( dllimport ) HINSTANCE __stdcall LoadLibraryA( char const 
 extern "C" __declspec( dllimport ) int __stdcall FreeLibrary( HINSTANCE hLibModule );
 extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE hModule, const char * lpProcName );
 #  endif
+#endif
+
+#if !defined(__has_include)
+# define __has_include(x) false
 #endif
 
 #if ( 201711 <= __cpp_impl_three_way_comparison ) && __has_include( <compare> )

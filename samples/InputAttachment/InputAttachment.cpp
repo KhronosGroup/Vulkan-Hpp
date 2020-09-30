@@ -15,6 +15,16 @@
 // VulkanHpp Samples : InputAttachment
 //                     Use an input attachment to draw a yellow triangle
 
+#if defined( _MSC_VER )
+// no need to ignore any warnings with MSVC
+#elif defined( __clang__ )
+#  pragma clang diagnostic ignored "-Wmissing-braces"
+#elif defined( __GNUC__ )
+// no need to ignore any warnings with GCC
+#else
+// unknow compiler... just ignore the warnings for yourselves ;)
+#endif
+
 #include "../utils/geometries.hpp"
 #include "../utils/math.hpp"
 #include "../utils/shaders.hpp"
@@ -275,7 +285,9 @@ int                 main( int /*argc*/, char ** /*argv*/ )
     switch ( result )
     {
       case vk::Result::eSuccess: break;
-      case vk::Result::eSuboptimalKHR: std::cout << "vk::Queue::presentKHR returned vk::Result::eSuboptimalKHR !\n";
+      case vk::Result::eSuboptimalKHR:
+        std::cout << "vk::Queue::presentKHR returned vk::Result::eSuboptimalKHR !\n";
+        break;
       default: assert( false );  // an unexpected result is returned !
     }
     std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );

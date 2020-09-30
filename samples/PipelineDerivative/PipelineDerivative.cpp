@@ -15,6 +15,18 @@
 // VulkanHpp Samples : PipelineDerivative
 //                     This sample creates pipeline derivative and draws with it.
 
+#if defined( _MSC_VER )
+// no need to ignore any warnings with MSVC
+#elif defined( __clang__ )
+#  pragma clang diagnostic ignored "-Wmissing-braces"
+#elif defined( __GNUC__ )
+#  if ( 9 <= __GNUC__ )
+#    pragma GCC diagnostic ignored "-Winit-list-lifetime"
+#  endif
+#else
+// unknow compiler... just ignore the warnings for yourselves ;)
+#endif
+
 #include "../utils/geometries.hpp"
 #include "../utils/math.hpp"
 #include "../utils/shaders.hpp"
@@ -308,7 +320,9 @@ void main()
     switch ( result )
     {
       case vk::Result::eSuccess: break;
-      case vk::Result::eSuboptimalKHR: std::cout << "vk::Queue::presentKHR returned vk::Result::eSuboptimalKHR !\n";
+      case vk::Result::eSuboptimalKHR:
+        std::cout << "vk::Queue::presentKHR returned vk::Result::eSuboptimalKHR !\n";
+        break;
       default: assert( false );  // an unexpected result is returned !
     }
     std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );

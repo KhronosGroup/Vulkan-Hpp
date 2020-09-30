@@ -24,6 +24,12 @@ if (NOT (TESTS_BUILD_ONLY_DYNAMIC AND TESTS_BUILD_WITH_LOCAL_VULKAN_HPP))
   find_package(Vulkan REQUIRED)
 endif()
 
+if(MSVC)
+  add_compile_options(/W4 /WX /permissive-)
+else(MSVC)
+  add_compile_options(-Wall -Wextra -pedantic -Werror)
+endif(MSVC)
+
 if (WIN32)
   add_definitions(-DNOMINMAX -DVK_USE_PLATFORM_WIN32_KHR)
 elseif(UNIX)

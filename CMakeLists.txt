@@ -47,12 +47,6 @@ else()
   message(WARNING " Could not find clang-format version 10 and up. Generated vulkan.hpp will not be nicely formatted.")
 endif()
 
-if(MSVC)
-  add_compile_options(/W4 /permissive-)
-else(MSVC)
-  add_compile_options(-Wall)
-endif(MSVC)
-
 if (NOT DEFINED CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 11)
 endif()
@@ -117,6 +111,12 @@ add_executable(VulkanHppGenerator
 )
 
 set_property(TARGET VulkanHppGenerator PROPERTY CXX_STANDARD 14)
+
+if(MSVC)
+  target_compile_options(VulkanHppGenerator PRIVATE /W4 /WX /permissive-)
+else(MSVC)
+  target_compile_options(VulkanHppGenerator PRIVATE -Wall -Wextra -pedantic -Werror)
+endif(MSVC)
 
 target_include_directories(VulkanHppGenerator PRIVATE ${VULKAN_HPP_TINYXML2_SRC_DIR})
 

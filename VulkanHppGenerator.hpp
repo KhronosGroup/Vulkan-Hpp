@@ -326,6 +326,11 @@ private:
                                           CommandData const &               commandData,
                                           std::pair<size_t, size_t> const & vectorParamIndex,
                                           bool                              definition ) const;
+  void        appendCommandGetValue( std::string &       str,
+                                     std::string const & name,
+                                     CommandData const & commandData,
+                                     size_t              nonConstPointerIndex,
+                                     bool                definition ) const;
   void        appendCommandGetVector( std::string &                    str,
                                       std::string const &              name,
                                       CommandData const &              commandData,
@@ -459,8 +464,6 @@ private:
                                                            std::string const & strippedParameterName,
                                                            bool                withDefaults,
                                                            bool                withAllocator ) const;
-  void        appendFunctionHeaderArgumentEnhancedSimple(
-           std::string & str, ParamData const & param, bool lastArgument, bool withDefaults, bool withAllocator ) const;
   void appendFunctionHeaderArgumentEnhancedVector( std::string &       str,
                                                    ParamData const &   param,
                                                    std::string const & strippedParameterName,
@@ -543,10 +546,13 @@ private:
   std::string constructCallArgumentsEnumerateVectors( std::vector<ParamData> const &   params,
                                                       std::map<size_t, size_t> const & vectorParamIndices,
                                                       bool                             vectorAsNullptr ) const;
+  std::string constructCallArgumentsGetValue( std::string const &            handle,
+                                              std::vector<ParamData> const & params,
+                                              size_t                         skippedParams ) const;
   std::string constructCallArgumentsGetVector( std::vector<ParamData> const &    params,
                                                std::pair<size_t, size_t> const & vectorParamIndices,
                                                bool                              singular ) const;
-  std::string constructCallArgumentsStandard( std::vector<ParamData> const & params ) const;
+  std::string constructCallArgumentsStandard( std::string const & handle, std::vector<ParamData> const & params ) const;
   std::string constructCallArgumentsVectors( std::vector<ParamData> const &   params,
                                              std::map<size_t, size_t> const & vectorParamIndices ) const;
   std::string constructCommandEnumerateTwoVectors( std::string const &              name,
@@ -564,6 +570,10 @@ private:
                                              std::pair<size_t, size_t> const & vectorParamIndex,
                                              bool                              definition,
                                              bool                              withAllocators ) const;
+  std::string constructCommandGetValue( std::string const & name,
+                                        CommandData const & commandData,
+                                        size_t              nonConstPointerIndex,
+                                        bool                definition ) const;
   std::string constructCommandGetVector( std::string const &              name,
                                          CommandData const &              commandData,
                                          std::map<size_t, size_t> const & vectorParamIndices,
@@ -630,11 +640,13 @@ private:
   std::string constructSuccessCodeList( std::vector<std::string> const & successCodes ) const;
   std::string constructVectorSizeCheck( std::string const &                           name,
                                         CommandData const &                           commandData,
-                                        std::map<size_t, std::vector<size_t>> const & countToVectorMap ) const;
+                                        std::map<size_t, std::vector<size_t>> const & countToVectorMap,
+                                        std::set<size_t> const &                      skippedParams ) const;
   void        checkCorrectness();
   bool        containsArray( std::string const & type ) const;
   bool        containsUnion( std::string const & type ) const;
-  size_t      determineDefaultStartIndex( std::vector<ParamData> const & params ) const;
+  size_t      determineDefaultStartIndex( std::vector<ParamData> const & params,
+                                          std::set<size_t> const &       skippedParams ) const;
   std::string determineEnhancedReturnType( CommandData const &              commandData,
                                            size_t                           returnParamIndex,
                                            std::map<size_t, size_t> const & vectorParamIndices,
@@ -660,6 +672,8 @@ private:
                                            std::string const &                                          structName,
                                            std::string const &                                          prefix ) const;
   std::set<std::string> getPlatforms( std::set<std::string> const & extensions ) const;
+  bool                  isChainableStructure( std::string const & type ) const;
+  bool                  isHandleType( std::string const & type ) const;
   bool                  isParam( std::string const & name, std::vector<ParamData> const & params ) const;
   bool                  isParamIndirect( std::string const & name, std::vector<ParamData> const & params ) const;
   bool                  isTwoStepAlgorithm( std::vector<ParamData> const & params ) const;

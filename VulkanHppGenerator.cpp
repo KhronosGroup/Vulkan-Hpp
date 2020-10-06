@@ -1226,65 +1226,68 @@ void VulkanHppGenerator::appendCommand( std::string &       str,
   bool                     appendedFunction            = false;
   std::map<size_t, size_t> vectorParamIndices          = determineVectorParamIndicesNew( commandData.params );
   std::vector<size_t>      nonConstPointerParamIndices = determineNonConstPointerParamIndices( commandData.params );
-  if ( nonConstPointerParamIndices.empty() )
+  switch ( nonConstPointerParamIndices.size() )
   {
-    // no return parameter
-    std::vector<size_t> constPointerParamIndices = determineConstPointerParamIndices( commandData.params );
-    if ( vectorParamIndices.empty() &&
-         std::find_if( constPointerParamIndices.begin(), constPointerParamIndices.end(), [&commandData]( size_t idx ) {
-           return commandData.params[idx].type.type != "void";
-         } ) == constPointerParamIndices.end() )
-    {
-      // no vector paramter and no non-void const-pointer
-      if ( commandData.returnType == "void" )
+    case 0:
+      // no return parameter
       {
-        // void functions
-        appendCommandTrivialVoid( str, name, commandData, definition );
-        appendedFunction = true;
-      }
-      else if ( commandData.successCodes.size() == 1 )
-      {
-        assert( commandData.returnType == "VkResult" );
-        // function returning something
-        appendCommandTrivial( str, name, commandData, definition );
-        appendedFunction = true;
-      }
-    }
-    else
-    {
-      // with const-pointers that might be changed to by-reference arguments
-      if ( commandData.returnType == "void" )
-      {
-        appendCommandSimpleVoid( str, name, commandData, definition, vectorParamIndices );
-        appendedFunction = true;
-      }
-      else if ( ( commandData.returnType == "VkResult" ) && ( vectorParamIndices.size() < 2 ) )
-      {
-        // returns VkResult, but there's just one success code
-        appendCommandSimple( str, name, commandData, definition, vectorParamIndices );
-        appendedFunction = true;
-      }
-      else if ( ( vectorParamIndices.size() == 2 ) && ( vectorParamIndices.begin()->second != INVALID_INDEX ) &&
-                ( vectorParamIndices.begin()->second == std::next( vectorParamIndices.begin() )->second ) )
-      {
-        assert( commandData.params[vectorParamIndices.begin()->second].type.isValue() );
-        if ( commandData.params[vectorParamIndices.begin()->second].type.isValue() &&
-             ( commandData.returnType == "void" ) )
+        std::vector<size_t> constPointerParamIndices = determineConstPointerParamIndices( commandData.params );
+        if ( vectorParamIndices.empty() && std::find_if( constPointerParamIndices.begin(),
+                                                         constPointerParamIndices.end(),
+                                                         [&commandData]( size_t idx ) {
+                                                           return commandData.params[idx].type.type != "void";
+                                                         } ) == constPointerParamIndices.end() )
         {
-          // size is given by value and the vectors are const pointers, that is input parameters; function returns
-          // void
-          appendCommandTwoVectorsVoid( str, name, commandData, vectorParamIndices, definition );
-          appendedFunction = true;
+          // no vector paramter and no non-void const-pointer
+          if ( commandData.returnType == "void" )
+          {
+            // void functions
+            appendCommandTrivialVoid( str, name, commandData, definition );
+            appendedFunction = true;
+          }
+          else if ( commandData.successCodes.size() == 1 )
+          {
+            assert( commandData.returnType == "VkResult" );
+            // function returning something
+            appendCommandTrivial( str, name, commandData, definition );
+            appendedFunction = true;
+          }
+        }
+        else
+        {
+          // with const-pointers that might be changed to by-reference arguments
+          if ( commandData.returnType == "void" )
+          {
+            appendCommandSimpleVoid( str, name, commandData, definition, vectorParamIndices );
+            appendedFunction = true;
+          }
+          else if ( ( commandData.returnType == "VkResult" ) && ( vectorParamIndices.size() < 2 ) )
+          {
+            // returns VkResult, but there's just one success code
+            appendCommandSimple( str, name, commandData, definition, vectorParamIndices );
+            appendedFunction = true;
+          }
+          else if ( ( vectorParamIndices.size() == 2 ) && ( vectorParamIndices.begin()->second != INVALID_INDEX ) &&
+                    ( vectorParamIndices.begin()->second == std::next( vectorParamIndices.begin() )->second ) )
+          {
+            assert( commandData.params[vectorParamIndices.begin()->second].type.isValue() );
+            if ( commandData.params[vectorParamIndices.begin()->second].type.isValue() &&
+                 ( commandData.returnType == "void" ) )
+            {
+              // size is given by value and the vectors are const pointers, that is input parameters; function returns
+              // void
+              appendCommandTwoVectorsVoid( str, name, commandData, vectorParamIndices, definition );
+              appendedFunction = true;
+            }
+          }
         }
       }
-    }
-  }
-  else
-  {
-    switch ( vectorParamIndices.size() )
-    {
-      case 0:
-        assert( nonConstPointerParamIndices.size() == 1 );
+      break;
+    case 1:
+      // one return parameter
+      if ( vectorParamIndices.find( *nonConstPointerParamIndices.begin() ) == vectorParamIndices.end() )
+      {
+        // the return parameter is not a vector
         if ( ( commandData.returnType == "VkResult" ) &&
              !isChainableStructure( commandData.params[*nonConstPointerParamIndices.begin()].type.type ) &&
              !isHandleType( commandData.params[*nonConstPointerParamIndices.begin()].type.type ) )
@@ -1292,32 +1295,58 @@ void VulkanHppGenerator::appendCommand( std::string &       str,
           appendCommandGetValue( str, name, commandData, nonConstPointerParamIndices.front(), definition );
           appendedFunction = true;
         }
-        break;
-      case 1:
+      }
+      else
       {
-        // just one vector parameter
-        auto vectorParamIndexIt = vectorParamIndices.begin();
-        if ( ( commandData.params[vectorParamIndexIt->second].type.isValue() ) &&
-             ( commandData.params[vectorParamIndexIt->first].type.type == "void" ) )
+        // the return parameter is a vector
+        switch ( vectorParamIndices.size() )
         {
-          // the size of the vector parameter is given by a value -> just get that stuff
-          assert( commandData.params[vectorParamIndexIt->first].type.isNonConstPointer() );
-          appendCommandGetVector( str, name, commandData, vectorParamIndices, definition );
-          appendedFunction = true;
-        }
-        else if ( ( commandData.returnType == "void" ) &&
-                  !determineStructureChaining(
-                    commandData.params[vectorParamIndexIt->first].type.type, m_extendedStructs, m_structureAliases ) )
-        {
-          // the size of the vector parameter itself is a pointer -> enumerate the values
-          assert( commandData.params[vectorParamIndexIt->first].type.isNonConstPointer() );
-          assert( commandData.params[vectorParamIndexIt->first].type.type != "void" );
-          appendCommandEnumerateVoid( str, name, commandData, *vectorParamIndexIt, definition );
-          appendedFunction = true;
+          case 1:
+          {
+            // the return parameter is the only vector parameter
+            auto vectorParamIndexIt = vectorParamIndices.begin();
+            assert( vectorParamIndexIt->first == *nonConstPointerParamIndices.begin() );
+            assert( commandData.params[vectorParamIndexIt->second].type.isValue() );
+            if ( commandData.params[vectorParamIndexIt->first].type.type == "void" )
+            {
+              // the size of the vector parameter is given by a value -> just get that stuff
+              appendCommandGetVector( str, name, commandData, vectorParamIndices, definition );
+              appendedFunction = true;
+            }
+          }
+          break;
+          default: break;
         }
       }
       break;
-      case 2:
+    case 2:
+      // two return parameters
+      switch ( vectorParamIndices.size() )
+      {
+        case 1:
+        {
+          // two returns but just one vector -> the size is a return value as well -> enumerate the values
+          auto vectorParamIndexIt = vectorParamIndices.begin();
+          assert( ( vectorParamIndexIt->second == *nonConstPointerParamIndices.begin() ) &&
+                  ( vectorParamIndexIt->first == *std::next( nonConstPointerParamIndices.begin() ) ) );
+          if ( ( commandData.returnType == "void" ) &&
+               !determineStructureChaining(
+                 commandData.params[vectorParamIndexIt->first].type.type, m_extendedStructs, m_structureAliases ) )
+          {
+            assert( commandData.params[vectorParamIndexIt->first].type.type != "void" );
+            appendCommandEnumerateVoid( str, name, commandData, *vectorParamIndexIt, definition );
+            appendedFunction = true;
+          }
+        }
+        break;
+      }
+      break;
+    case 3:
+      // three return parameters
+      assert( ( vectorParamIndices.size() == 2 ) &&
+              ( vectorParamIndices.begin()->second == nonConstPointerParamIndices[0] ) &&
+              ( vectorParamIndices.begin()->first == nonConstPointerParamIndices[1] ) &&
+              ( std::next( vectorParamIndices.begin() )->first == nonConstPointerParamIndices[2] ) );
       {
         // two vector parameters
         auto                           firstVectorParam  = vectorParamIndices.begin();
@@ -1338,8 +1367,7 @@ void VulkanHppGenerator::appendCommand( std::string &       str,
         }
       }
       break;
-      default: break;
-    }
+    default: break;
   }
 
   if ( appendedFunction )
@@ -2981,7 +3009,6 @@ bool VulkanHppGenerator::appendFunctionHeaderArgumentEnhanced( std::string &    
                                                                bool                             skip,
                                                                bool                             argEncountered,
                                                                bool                             isTemplateParam,
-                                                               bool                             isLastArgument,
                                                                bool                             singular,
                                                                bool                             withDefaults,
                                                                bool                             withAllocator ) const
@@ -4738,18 +4765,20 @@ std::string VulkanHppGenerator::constructCommandSimpleVoid( std::string const & 
     d.${vkCommand}( ${callArguments} );
   })";
 
-    str = replaceWithMap(
-      functionTemplate,
-      std::map<std::string, std::string>(
-        { { "argumentList", argumentList },
-          { "callArguments", constructCallArgumentsVectors( commandData.params, vectorParamIndices ) },
-          { "className", stripPrefix( commandData.handle, "Vk" ) },
-          { "commandName", commandName },
-          { "noexcept", noexceptString },
-          { "typenameT", typenameT },
-          { "vectorSizeCheck",
-            vectorSizeCheck.first ? constructVectorSizeCheck( name, commandData, vectorSizeCheck.second, skippedParameters ) : "" },
-          { "vkCommand", name } } ) );
+    str =
+      replaceWithMap( functionTemplate,
+                      std::map<std::string, std::string>(
+                        { { "argumentList", argumentList },
+                          { "callArguments", constructCallArgumentsVectors( commandData.params, vectorParamIndices ) },
+                          { "className", stripPrefix( commandData.handle, "Vk" ) },
+                          { "commandName", commandName },
+                          { "noexcept", noexceptString },
+                          { "typenameT", typenameT },
+                          { "vectorSizeCheck",
+                            vectorSizeCheck.first
+                              ? constructVectorSizeCheck( name, commandData, vectorSizeCheck.second, skippedParameters )
+                              : "" },
+                          { "vkCommand", name } } ) );
   }
   else
   {
@@ -5127,7 +5156,6 @@ std::string
                                                              skippedParams.find( i ) != skippedParams.end(),
                                                              argEncountered,
                                                              ( templateParamIndex == i ),
-                                                             ( lastArgument == i ),
                                                              singular,
                                                              withDefaults,
                                                              withAllocator );

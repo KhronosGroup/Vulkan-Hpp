@@ -455,7 +455,6 @@ private:
                                                     bool                             skip,
                                                     bool                             argEncountered,
                                                     bool                             isTemplateParam,
-                                                    bool                             isLastArgument,
                                                     bool                             singular,
                                                     bool                             withDefaults,
                                                     bool                             withAllocator ) const;

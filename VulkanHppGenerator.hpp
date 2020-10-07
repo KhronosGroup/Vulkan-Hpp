@@ -326,6 +326,11 @@ private:
                                           CommandData const &               commandData,
                                           std::pair<size_t, size_t> const & vectorParamIndex,
                                           bool                              definition ) const;
+  void        appendCommandGetHandle( std::string &       str,
+                                      std::string const & name,
+                                      CommandData const & commandData,
+                                      size_t              nonConstPointerIndex,
+                                      bool                definition ) const;
   void        appendCommandGetValue( std::string &       str,
                                      std::string const & name,
                                      CommandData const & commandData,
@@ -463,23 +468,23 @@ private:
                                                            std::string const & strippedParameterName,
                                                            bool                withDefaults,
                                                            bool                withAllocator ) const;
-  void appendFunctionHeaderArgumentEnhancedVector( std::string &       str,
-                                                   ParamData const &   param,
-                                                   std::string const & strippedParameterName,
-                                                   bool                hasSizeParam,
-                                                   bool                isTemplateParam,
-                                                   bool                singular,
-                                                   bool                withDefaults,
-                                                   bool                withAllocator ) const;
-  void appendFunctionHeaderArguments( std::string &                    str,
-                                      CommandData const &              commandData,
-                                      size_t                           returnParamIndex,
-                                      size_t                           templateParamIndex,
-                                      std::map<size_t, size_t> const & vectorParamIndices,
-                                      bool                             enhanced,
-                                      bool                             singular,
-                                      bool                             withDefaults,
-                                      bool                             withAllocator ) const;
+  void        appendFunctionHeaderArgumentEnhancedVector( std::string &       str,
+                                                          ParamData const &   param,
+                                                          std::string const & strippedParameterName,
+                                                          bool                hasSizeParam,
+                                                          bool                isTemplateParam,
+                                                          bool                singular,
+                                                          bool                withDefaults,
+                                                          bool                withAllocator ) const;
+  void        appendFunctionHeaderArguments( std::string &                    str,
+                                             CommandData const &              commandData,
+                                             size_t                           returnParamIndex,
+                                             size_t                           templateParamIndex,
+                                             std::map<size_t, size_t> const & vectorParamIndices,
+                                             bool                             enhanced,
+                                             bool                             singular,
+                                             bool                             withDefaults,
+                                             bool                             withAllocator ) const;
   bool appendFunctionHeaderArgumentStandard( std::string & str, ParamData const & param, bool argEncountered ) const;
   void appendFunctionHeaderReturnType( std::string &                    str,
                                        CommandData const &              commandData,
@@ -569,6 +574,10 @@ private:
                                              std::pair<size_t, size_t> const & vectorParamIndex,
                                              bool                              definition,
                                              bool                              withAllocators ) const;
+  std::string constructCommandGetHandleUnique( std::string const & name,
+                                               CommandData const & commandData,
+                                               size_t              nonConstPointerIndex,
+                                               bool                definition ) const;
   std::string constructCommandGetValue( std::string const & name,
                                         CommandData const & commandData,
                                         size_t              nonConstPointerIndex,

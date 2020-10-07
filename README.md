@@ -472,6 +472,23 @@ In some cases the storage for the DispatchLoaderDynamic should be embedded in a 
 
 For all functions, that VULKAN_HPP_DEFAULT_DISPATCHER is the default for the last argument to that function. In case you want to explicitly provide the dispatcher for each and every function call (when you have multiple dispatchers for different devices, for example) and you want to make sure, that you don't accidentally miss any function call, you can define VULKAN_HPP_NO_DEFAULT_DISPATCHER before you include vulkan.hpp to remove that default argument.
 
+### Type traits
+
+vulkan.hpp provides a couple of type traits, easing template programming:
+- `template <typename EnumType, EnumType value> struct CppType`
+	Maps `IndexType` values (`IndexType::eUint16`, `IndexType::eUint32`, ...) to the corresponding type (`uint16_t`, `uint32_t`, ...) by the member type `Type`;
+	Maps `ObjectType` values (`ObjectType::eInstance`, `ObjectType::eDevice`, ...) to the corresponding type (`vk::Instance`, `vk::Device`, ...) by the member type `Type`;
+	Maps `DebugReportObjectType` values (`DebugReportObjectTypeEXT::eInstance`, `DebugReportObjectTypeEXT::eDevice`, ...) to the corresponding type (`vk::Instance`, `vk::Device`, ...) by the member type `Type`;
+- `template <typename T> struct IndexTypeValue`
+	Maps scalar types (`uint16_t`, `uint32_t`, ...) to the corresponding `IndexType` value (`IndexType::eUint16`, `IndexType::eUint3`2, ...).
+- `template <typename T> struct isVulkanHandleType`
+	Maps a type to `true` if and only if it's a handle class (`vk::Instance`, `vk::Device`, ...) by the static member `value`.
+- `HandleClass::CType`
+	Maps a handle class (`vk::Instance`, `vk::Device`, ...) to the corresponding C-type (`VkInstance`, `VkDevice`, ...) by the member type `CType`.
+- `HandleClass::objectType`
+	Maps a handle class (`vk::Instance`, `vk::Device`, ...) to the corresponding `ObjectType` value (`ObjectType::eInstance`, `ObjectType::eDevice`, ...) by the static member `objectType`.
+- `HandleClass::debugReportObjectType`
+	Maps a handle class (`vk::Instance`, `vk::Device`, ...) to the corresponding `DebugReportObjectTypeEXT` value (`DebugReportObjectTypeEXT::eInstance`, `DebugReportObjectTypeEXT::eDevice`, ...) by the static member `debugReportObjectType`.
 
 ### Samples and Tests
 

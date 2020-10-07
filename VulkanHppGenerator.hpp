@@ -336,11 +336,16 @@ private:
                                      CommandData const & commandData,
                                      size_t              nonConstPointerIndex,
                                      bool                definition ) const;
-  void        appendCommandGetVector( std::string &                    str,
-                                      std::string const &              name,
-                                      CommandData const &              commandData,
-                                      std::map<size_t, size_t> const & vectorParamIndices,
-                                      bool                             definition ) const;
+  void        appendCommandGetVector( std::string &                     str,
+                                      std::string const &               name,
+                                      CommandData const &               commandData,
+                                      std::pair<size_t, size_t> const & vectorParamIndices,
+                                      bool                              definition ) const;
+  void        appendCommandGetVectorOfHandles( std::string &                     str,
+                                               std::string const &               name,
+                                               CommandData const &               commandData,
+                                               std::pair<size_t, size_t> const & vectorParamIndices,
+                                               bool                              definition ) const;
   void        appendCommandSimple( std::string &                    str,
                                    std::string const &              name,
                                    CommandData const &              commandData,
@@ -405,7 +410,6 @@ private:
   void        appendFunctionBodyEnhancedLocalReturnVariableVectorSize( std::string &                     str,
                                                                        std::vector<ParamData> const &    params,
                                                                        std::pair<size_t, size_t> const & vectorParamIndex,
-                                                                       size_t                            returnParamIndex,
                                                                        std::map<size_t, size_t> const &  vectorParamIndices,
                                                                        bool                              withAllocator ) const;
   void        appendFunctionBodyEnhancedMultiVectorSizeCheck( std::string &                    str,
@@ -582,18 +586,31 @@ private:
                                         CommandData const & commandData,
                                         size_t              nonConstPointerIndex,
                                         bool                definition ) const;
-  std::string constructCommandGetVector( std::string const &              name,
-                                         CommandData const &              commandData,
-                                         std::map<size_t, size_t> const & vectorParamIndices,
-                                         bool                             definition ) const;
-  std::string constructCommandGetVectorDeprecated( std::string const &              name,
-                                                   CommandData const &              commandData,
-                                                   std::map<size_t, size_t> const & vectorParamIndices,
-                                                   bool                             definition ) const;
-  std::string constructCommandGetVectorSingular( std::string const &              name,
-                                                 CommandData const &              commandData,
-                                                 std::map<size_t, size_t> const & vectorParamIndices,
-                                                 bool                             definition ) const;
+  std::string constructCommandGetVector( std::string const &               name,
+                                         CommandData const &               commandData,
+                                         std::pair<size_t, size_t> const & vectorParamIndices,
+                                         bool                              definition ) const;
+  std::string constructCommandGetVectorDeprecated( std::string const &               name,
+                                                   CommandData const &               commandData,
+                                                   std::pair<size_t, size_t> const & vectorParamIndices,
+                                                   bool                              definition ) const;
+  std::string constructCommandGetVectorOfHandles( std::string const &               name,
+                                                  CommandData const &               commandData,
+                                                  std::pair<size_t, size_t> const & vectorParamIndices,
+                                                  bool                              definition, bool withAllocator ) const;
+  std::string constructCommandGetVectorOfUniqueHandles( std::string const &               name,
+                                                        CommandData const &               commandData,
+                                                        std::pair<size_t, size_t> const & vectorParamIndices,
+                                                        bool                              definition, bool withAllocator ) const;
+  std::string
+              constructCommandGetVectorOfUniqueHandlesWithAllocator( std::string const &               name,
+                                                                     CommandData const &               commandData,
+                                                                     std::pair<size_t, size_t> const & vectorParamIndices,
+                                                                     bool                              definition ) const;
+  std::string constructCommandGetVectorSingular( std::string const &               name,
+                                                 CommandData const &               commandData,
+                                                 std::pair<size_t, size_t> const & vectorParamIndices,
+                                                 bool                              definition ) const;
   std::string constructCommandSimple( std::string const &              name,
                                       CommandData const &              commandData,
                                       bool                             definition,
@@ -680,12 +697,14 @@ private:
                                            std::string const &                                          structName,
                                            std::string const &                                          prefix ) const;
   std::set<std::string> getPlatforms( std::set<std::string> const & extensions ) const;
-  bool                  isChainableStructure( std::string const & type ) const;
-  bool                  isHandleType( std::string const & type ) const;
-  bool                  isParam( std::string const & name, std::vector<ParamData> const & params ) const;
-  bool                  isParamIndirect( std::string const & name, std::vector<ParamData> const & params ) const;
-  bool                  isTwoStepAlgorithm( std::vector<ParamData> const & params ) const;
-  bool                  needsComplexBody( CommandData const & commandData ) const;
+  std::pair<std::string, std::string> getPoolTypeAndName( std::string const & type ) const;
+  bool                                isChainableStructure( std::string const & type ) const;
+  bool                                isHandleType( std::string const & type ) const;
+  bool                                isParam( std::string const & name, std::vector<ParamData> const & params ) const;
+  bool isParamIndirect( std::string const & name, std::vector<ParamData> const & params ) const;
+  bool isParamIndirect( std::string const & name, ParamData const & param ) const;
+  bool isTwoStepAlgorithm( std::vector<ParamData> const & params ) const;
+  bool needsComplexBody( CommandData const & commandData ) const;
   std::pair<bool, std::map<size_t, std::vector<size_t>>>
        needsVectorSizeCheck( std::map<size_t, size_t> const & vectorParamIndices ) const;
   void readBaseType( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );

@@ -364,11 +364,11 @@ private:
                                         std::string const & name,
                                         CommandData const & commandData,
                                         bool                definition ) const;
-  void        appendCommandTwoVectorsVoid( std::string &                    str,
-                                           std::string const &              name,
-                                           CommandData const &              commandData,
-                                           std::map<size_t, size_t> const & vectorParamIndices,
-                                           bool                             definition ) const;
+  void        appendCommandTwoVectors( std::string &                    str,
+                                       std::string const &              name,
+                                       CommandData const &              commandData,
+                                       std::map<size_t, size_t> const & vectorParamIndices,
+                                       bool                             definition ) const;
   void        appendDispatchLoaderDynamicCommand( std::string &       str,
                                                   std::string &       emptyFunctions,
                                                   std::string &       deviceFunctions,
@@ -597,11 +597,13 @@ private:
   std::string constructCommandGetVectorOfHandles( std::string const &               name,
                                                   CommandData const &               commandData,
                                                   std::pair<size_t, size_t> const & vectorParamIndices,
-                                                  bool                              definition, bool withAllocator ) const;
+                                                  bool                              definition,
+                                                  bool                              withAllocator ) const;
   std::string constructCommandGetVectorOfUniqueHandles( std::string const &               name,
                                                         CommandData const &               commandData,
                                                         std::pair<size_t, size_t> const & vectorParamIndices,
-                                                        bool                              definition, bool withAllocator ) const;
+                                                        bool                              definition,
+                                                        bool                              withAllocator ) const;
   std::string
               constructCommandGetVectorOfUniqueHandlesWithAllocator( std::string const &               name,
                                                                      CommandData const &               commandData,
@@ -623,11 +625,10 @@ private:
     constructCommandStandard( std::string const & name, CommandData const & commandData, bool definition ) const;
   std::string
     constructCommandStandardVoid( std::string const & name, CommandData const & commandData, bool definition ) const;
-  std::string constructCommandTwoVectorsVoid( std::string const &              name,
+  std::string constructCommandTwoVectors( std::string const &              name,
                                               CommandData const &              commandData,
                                               std::map<size_t, size_t> const & vectorParamIndices,
-                                              bool                             definition,
-                                              bool                             withAllocators ) const;
+                                              bool                             definition ) const;
   std::string constructConstexprString( std::pair<std::string, StructureData> const & structData ) const;
   std::string constructFunctionBodyEnhanced( std::string const &              indentation,
                                              std::string const &              name,

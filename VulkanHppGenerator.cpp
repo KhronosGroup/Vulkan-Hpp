@@ -1976,9 +1976,9 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic( std::string & str )
   {
   public:
 #  ifdef VULKAN_HPP_NO_EXCEPTIONS
-    DynamicLoader( std::string const & vulkanLibraryName = {} ) VULKAN_HPP_NOEXCEPT : m_success( false )
+    DynamicLoader( std::string const & vulkanLibraryName = {} ) VULKAN_HPP_NOEXCEPT
 #  else
-    DynamicLoader( std::string const & vulkanLibraryName = {} ) : m_success( false )
+    DynamicLoader( std::string const & vulkanLibraryName = {} )
 #  endif
     {
       if ( !vulkanLibraryName.empty() )
@@ -2008,9 +2008,8 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic( std::string & str )
 #  endif
       }
 
-      m_success = (m_library != nullptr);
 #ifndef VULKAN_HPP_NO_EXCEPTIONS
-      if ( !m_success )
+      if ( m_library == nullptr )
       {
         // NOTE there should be an InitializationFailedError, but msvc insists on the symbol does not exist within the scope of this function.
         throw std::runtime_error( "Failed to load vulkan library!" );
@@ -2020,9 +2019,7 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic( std::string & str )
 
     DynamicLoader( DynamicLoader const& ) = delete;
 
-    DynamicLoader( DynamicLoader && other ) VULKAN_HPP_NOEXCEPT
-      : m_success(other.m_success)
-      , m_library(other.m_library)
+    DynamicLoader( DynamicLoader && other ) VULKAN_HPP_NOEXCEPT : m_library(other.m_library)
     {
       other.m_library = nullptr;
     }
@@ -2031,7 +2028,6 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic( std::string & str )
 
     DynamicLoader &operator=( DynamicLoader && other ) VULKAN_HPP_NOEXCEPT
     {
-      m_success = other.m_success;
       std::swap(m_library, other.m_library);
       return *this;
     }
@@ -2062,10 +2058,9 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic( std::string & str )
 #  endif
     }
 
-    bool success() const VULKAN_HPP_NOEXCEPT { return m_success; }
+    bool success() const VULKAN_HPP_NOEXCEPT { return m_library != nullptr; }
 
   private:
-    bool m_success;
 #  if defined( __linux__ ) || defined( __APPLE__ )
     void * m_library;
 #  elif defined( _WIN32 )

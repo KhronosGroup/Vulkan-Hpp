@@ -74,7 +74,7 @@ private:
 
   struct TypeInfo
   {
-    std::string compose() const;
+    std::string compose( bool inNamespace = true) const;
 
     bool operator==( TypeInfo const & rhs ) const
     {
@@ -280,7 +280,6 @@ private:
                                std::map<size_t, size_t> const & vectorParamIndices,
                                bool                             twoStep,
                                bool                             firstCall,
-                               bool                             singular,
                                size_t                           from,
                                size_t                           to ) const;
   void        appendArgumentVector( std::string &     str,
@@ -289,9 +288,8 @@ private:
                                     size_t            returnParamIndex,
                                     size_t            templateParamIndex,
                                     bool              twoStep,
-                                    bool              firstCall,
-                                    bool              singular ) const;
-  void        appendArgumentVulkanType( std::string & str, ParamData const & paramData, bool isLocalVariable ) const;
+                                    bool              firstCall ) const;
+  void        appendArgumentVulkanType( std::string & str, ParamData const & paramData ) const;
   void        appendBitmask( std::string &                      os,
                              std::string const &                bitmaskName,
                              std::string const &                bitmaskType,
@@ -309,8 +307,7 @@ private:
                           size_t                           templateParamIndex,
                           std::map<size_t, size_t> const & vectorParamIndices,
                           bool                             twoStep,
-                          bool                             firstCall,
-                          bool                             singular ) const;
+                          bool                             firstCall ) const;
   void        appendCommand( std::string &       str,
                              std::string const & indentation,
                              std::string const & name,
@@ -336,16 +333,24 @@ private:
                                      CommandData const & commandData,
                                      size_t              nonConstPointerIndex,
                                      bool                definition ) const;
-  void        appendCommandGetVector( std::string &                     str,
-                                      std::string const &               name,
-                                      CommandData const &               commandData,
-                                      std::pair<size_t, size_t> const & vectorParamIndices,
-                                      bool                              definition ) const;
-  void        appendCommandGetVectorOfHandles( std::string &                     str,
-                                               std::string const &               name,
-                                               CommandData const &               commandData,
-                                               std::pair<size_t, size_t> const & vectorParamIndices,
-                                               bool                              definition ) const;
+  void        appendCommandGetVector( std::string &                    str,
+                                      std::string const &              name,
+                                      CommandData const &              commandData,
+                                      std::map<size_t, size_t> const & vectorParamIndices,
+                                      size_t                           returnParamIndex,
+                                      bool                             definition ) const;
+  void        appendCommandGetVectorOfHandles( std::string &                    str,
+                                               std::string const &              name,
+                                               CommandData const &              commandData,
+                                               std::map<size_t, size_t> const & vectorParamIndices,
+                                               size_t                           returnParamIndex,
+                                               bool                             definition ) const;
+  void        appendCommandGetVectorOfHandlesIndirect( std::string &                    str,
+                                                       std::string const &              name,
+                                                       CommandData const &              commandData,
+                                                       std::map<size_t, size_t> const & vectorParamIndices,
+                                                       size_t                           returnParamIndex,
+                                                       bool                             definition ) const;
   void        appendCommandSimple( std::string &                    str,
                                    std::string const &              name,
                                    CommandData const &              commandData,
@@ -393,8 +398,6 @@ private:
                               std::string const &              enhancedReturnType,
                               bool                             definition,
                               bool                             enhanced,
-                              bool                             singular,
-                              bool                             unique,
                               bool                             isStructureChain,
                               bool                             withAllocatorArgument ) const;
   std::string appendFunctionBodyEnhancedLocalReturnVariable( std::string &                    str,
@@ -402,16 +405,9 @@ private:
                                                              CommandData const &              commandData,
                                                              size_t                           returnParamIndex,
                                                              std::map<size_t, size_t> const & vectorParamIndices,
-                                                             bool                             twoStep,
                                                              std::string const &              enhancedReturnType,
-                                                             bool                             singular,
                                                              bool                             isStructureChain,
                                                              bool                             withAllocator ) const;
-  void        appendFunctionBodyEnhancedLocalReturnVariableVectorSize( std::string &                     str,
-                                                                       std::vector<ParamData> const &    params,
-                                                                       std::pair<size_t, size_t> const & vectorParamIndex,
-                                                                       std::map<size_t, size_t> const &  vectorParamIndices,
-                                                                       bool                              withAllocator ) const;
   void        appendFunctionBodyEnhancedMultiVectorSizeCheck( std::string &                    str,
                                                               std::string const &              indentation,
                                                               std::string const &              name,
@@ -424,9 +420,7 @@ private:
                                                            std::string const & name,
                                                            CommandData const & commandData,
                                                            size_t              returnParamIndex,
-                                                           bool                twoStep,
-                                                           bool                singular,
-                                                           bool                unique ) const;
+                                                           bool                twoStep ) const;
   void        appendFunctionBodyEnhancedTwoStep( std::string &                    str,
                                                  std::string const &              indentation,
                                                  std::string const &              name,
@@ -434,7 +428,6 @@ private:
                                                  size_t                           returnParamIndex,
                                                  size_t                           templateParamIndex,
                                                  std::map<size_t, size_t> const & vectorParamIndices,
-                                                 bool                             singular,
                                                  std::string const &              returnName ) const;
   void        appendFunctionBodyEnhancedVectorOfStructureChain( std::string &                    str,
                                                                 std::string const &              indentation,
@@ -443,16 +436,6 @@ private:
                                                                 size_t                           returnParamIndex,
                                                                 std::map<size_t, size_t> const & vectorParamIndices,
                                                                 bool                             withAllocator ) const;
-  void        appendFunctionBodyEnhancedVectorOfUniqueHandles( std::string &                    str,
-                                                               std::string const &              indentation,
-                                                               std::string const &              name,
-                                                               CommandData const &              commandData,
-                                                               size_t                           returnParamIndex,
-                                                               size_t                           templateParamIndex,
-                                                               std::map<size_t, size_t> const & vectorParamIndices,
-                                                               bool                             twoStep,
-                                                               bool                             singular,
-                                                               bool                             withAllocator ) const;
   void        appendFunctionBodyStandardArgument( std::string &                    str,
                                                   TypeInfo const &                 typeData,
                                                   std::string const &              name,
@@ -464,20 +447,16 @@ private:
                                                     bool                             skip,
                                                     bool                             argEncountered,
                                                     bool                             isTemplateParam,
-                                                    bool                             singular,
                                                     bool                             withDefaults,
                                                     bool                             withAllocator ) const;
   void        appendFunctionHeaderArgumentEnhancedPointer( std::string &       str,
                                                            ParamData const &   param,
-                                                           std::string const & strippedParameterName,
-                                                           bool                withDefaults,
-                                                           bool                withAllocator ) const;
+                                                           std::string const & strippedParameterName ) const;
   void        appendFunctionHeaderArgumentEnhancedVector( std::string &       str,
                                                           ParamData const &   param,
                                                           std::string const & strippedParameterName,
                                                           bool                hasSizeParam,
                                                           bool                isTemplateParam,
-                                                          bool                singular,
                                                           bool                withDefaults,
                                                           bool                withAllocator ) const;
   void        appendFunctionHeaderArguments( std::string &                    str,
@@ -486,19 +465,15 @@ private:
                                              size_t                           templateParamIndex,
                                              std::map<size_t, size_t> const & vectorParamIndices,
                                              bool                             enhanced,
-                                             bool                             singular,
                                              bool                             withDefaults,
                                              bool                             withAllocator ) const;
   bool appendFunctionHeaderArgumentStandard( std::string & str, ParamData const & param, bool argEncountered ) const;
   void appendFunctionHeaderReturnType( std::string &                    str,
                                        CommandData const &              commandData,
                                        size_t                           returnParamIndex,
-                                       std::map<size_t, size_t> const & vectorParamIndices,
                                        std::string const &              enhancedReturnType,
                                        bool                             enhanced,
                                        bool                             twoStep,
-                                       bool                             singular,
-                                       bool                             unique,
                                        bool                             isStructureChain ) const;
   void appendFunctionHeaderTemplate( std::string &       str,
                                      std::string const & indentation,
@@ -506,8 +481,6 @@ private:
                                      size_t              templateParamIndex,
                                      std::string const & enhancedReturnType,
                                      bool                enhanced,
-                                     bool                singular,
-                                     bool                unique,
                                      bool                withDefault,
                                      bool                isStructureChain,
                                      bool                withAllocatorArgument ) const;
@@ -545,6 +518,7 @@ private:
                                  std::set<std::string> const & childrenTypes ) const;
   std::string constructArgumentListEnhanced( std::vector<ParamData> const & params,
                                              std::set<size_t> const &       skippedParams,
+                                             size_t                         singularParam,
                                              bool                           definition,
                                              bool                           withAllocators ) const;
   std::string constructArgumentListStandard( std::vector<ParamData> const & params,
@@ -557,9 +531,10 @@ private:
   std::string constructCallArgumentsGetValue( std::string const &            handle,
                                               std::vector<ParamData> const & params,
                                               size_t                         skippedParams ) const;
-  std::string constructCallArgumentsGetVector( std::vector<ParamData> const &    params,
-                                               std::pair<size_t, size_t> const & vectorParamIndices,
-                                               bool                              singular ) const;
+  std::string constructCallArgumentsGetVector( std::vector<ParamData> const &   params,
+                                               std::map<size_t, size_t> const & vectorParamIndices,
+                                               size_t                           returnParamIndex,
+                                               bool                             singular ) const;
   std::string constructCallArgumentsStandard( std::string const & handle, std::vector<ParamData> const & params ) const;
   std::string constructCallArgumentsVectors( std::vector<ParamData> const &   params,
                                              std::map<size_t, size_t> const & vectorParamIndices ) const;
@@ -586,33 +561,43 @@ private:
                                         CommandData const & commandData,
                                         size_t              nonConstPointerIndex,
                                         bool                definition ) const;
-  std::string constructCommandGetVector( std::string const &               name,
-                                         CommandData const &               commandData,
-                                         std::pair<size_t, size_t> const & vectorParamIndices,
-                                         bool                              definition ) const;
-  std::string constructCommandGetVectorDeprecated( std::string const &               name,
-                                                   CommandData const &               commandData,
-                                                   std::pair<size_t, size_t> const & vectorParamIndices,
-                                                   bool                              definition ) const;
-  std::string constructCommandGetVectorOfHandles( std::string const &               name,
-                                                  CommandData const &               commandData,
-                                                  std::pair<size_t, size_t> const & vectorParamIndices,
-                                                  bool                              definition,
-                                                  bool                              withAllocator ) const;
-  std::string constructCommandGetVectorOfUniqueHandles( std::string const &               name,
-                                                        CommandData const &               commandData,
-                                                        std::pair<size_t, size_t> const & vectorParamIndices,
-                                                        bool                              definition,
-                                                        bool                              withAllocator ) const;
-  std::string
-              constructCommandGetVectorOfUniqueHandlesWithAllocator( std::string const &               name,
-                                                                     CommandData const &               commandData,
-                                                                     std::pair<size_t, size_t> const & vectorParamIndices,
-                                                                     bool                              definition ) const;
-  std::string constructCommandGetVectorSingular( std::string const &               name,
-                                                 CommandData const &               commandData,
-                                                 std::pair<size_t, size_t> const & vectorParamIndices,
-                                                 bool                              definition ) const;
+  std::string constructCommandGetVector( std::string const &              name,
+                                         CommandData const &              commandData,
+                                         std::map<size_t, size_t> const & vectorParamIndices,
+                                         size_t                           returnParamIndex,
+                                         bool                             definition ) const;
+  std::string constructCommandGetVectorDeprecated( std::string const &              name,
+                                                   CommandData const &              commandData,
+                                                   std::map<size_t, size_t> const & vectorParamIndices,
+                                                   size_t                           returnParamIndex,
+                                                   bool                             definition ) const;
+  std::string constructCommandGetVectorOfHandles( std::string const &              name,
+                                                  CommandData const &              commandData,
+                                                  std::map<size_t, size_t> const & vectorParamIndices,
+                                                  size_t                           returnParamIndex,
+                                                  bool                             definition,
+                                                  bool                             withAllocator ) const;
+  std::string constructCommandGetVectorOfHandlesSingular( std::string const &              name,
+                                                          CommandData const &              commandData,
+                                                          std::map<size_t, size_t> const & vectorParamIndices,
+                                                          size_t                           returnParamIndex,
+                                                          bool                             definition ) const;
+  std::string constructCommandGetVectorOfUniqueHandles( std::string const &              name,
+                                                        CommandData const &              commandData,
+                                                        std::map<size_t, size_t> const & vectorParamIndices,
+                                                        size_t                           returnParamIndex,
+                                                        bool                             definition,
+                                                        bool                             withAllocator ) const;
+  std::string constructCommandGetVectorOfUniqueHandlesSingular( std::string const &              name,
+                                                                CommandData const &              commandData,
+                                                                std::map<size_t, size_t> const & vectorParamIndices,
+                                                                size_t                           returnParamIndex,
+                                                                bool                             definition ) const;
+  std::string constructCommandGetVectorSingular( std::string const &              name,
+                                                 CommandData const &              commandData,
+                                                 std::map<size_t, size_t> const & vectorParamIndices,
+                                                 size_t                           returnParamIndex,
+                                                 bool                             definition ) const;
   std::string constructCommandSimple( std::string const &              name,
                                       CommandData const &              commandData,
                                       bool                             definition,
@@ -625,64 +610,65 @@ private:
     constructCommandStandard( std::string const & name, CommandData const & commandData, bool definition ) const;
   std::string
     constructCommandStandardVoid( std::string const & name, CommandData const & commandData, bool definition ) const;
-  std::string constructCommandTwoVectors( std::string const &              name,
-                                              CommandData const &              commandData,
+  std::string      constructCommandTwoVectors( std::string const &              name,
+                                               CommandData const &              commandData,
+                                               std::map<size_t, size_t> const & vectorParamIndices,
+                                               bool                             definition ) const;
+  std::string      constructConstexprString( std::pair<std::string, StructureData> const & structData ) const;
+  std::string      constructFunctionBodyEnhanced( std::string const &              indentation,
+                                                  std::string const &              name,
+                                                  CommandData const &              commandData,
+                                                  size_t                           returnParamIndex,
+                                                  size_t                           templateParamIndex,
+                                                  std::map<size_t, size_t> const & vectorParamIndices,
+                                                  bool                             twoStep,
+                                                  std::string const &              enhancedReturnType,
+                                                  bool                             isStructureChain,
+                                                  bool                             withAllocator ) const;
+  std::string      constructFunctionBodyEnhancedSingleStep( std::string const &              indentation,
+                                                            std::string const &              name,
+                                                            CommandData const &              commandData,
+                                                            size_t                           returnParamIndex,
+                                                            size_t                           templateParamIndex,
+                                                            std::map<size_t, size_t> const & vectorParamIndices ) const;
+  std::string      constructFunctionBodyStandard( std::string const & indentation,
+                                                  std::string const & commandName,
+                                                  CommandData const & commandData ) const;
+  std::string      constructFunctionHeaderArgumentsEnhanced( CommandData const &              commandData,
+                                                             size_t                           returnParamIndex,
+                                                             size_t                           templateParamIndex,
+                                                             std::map<size_t, size_t> const & vectorParamIndices,
+                                                             bool                             withDefaults,
+                                                             bool                             withAllocator ) const;
+  std::string      constructFunctionHeaderArgumentsStandard( CommandData const & commandData, bool withDefaults ) const;
+  std::string      constructNoDiscardEnhanced( CommandData const & commandData ) const;
+  std::string      constructNoDiscardStandard( CommandData const & commandData ) const;
+  std::string      constructReturnType( CommandData const & commandData, std::string const & baseType ) const;
+  std::string              constructSuccessCheck( std::vector<std::string> const & successCodes ) const;
+  std::string              constructSuccessCodeList( std::vector<std::string> const & successCodes ) const;
+  std::string      constructVectorSizeCheck( std::string const &                           name,
+                                             CommandData const &                           commandData,
+                                             std::map<size_t, std::vector<size_t>> const & countToVectorMap,
+                                             std::set<size_t> const &                      skippedParams ) const;
+  void             checkCorrectness();
+  bool             containsArray( std::string const & type ) const;
+  bool             containsUnion( std::string const & type ) const;
+  size_t           determineDefaultStartIndex( std::vector<ParamData> const & params,
+                                               std::set<size_t> const &       skippedParams ) const;
+  std::string      determineEnhancedReturnType( CommandData const &              commandData,
+                                                size_t                           returnParamIndex,
+                                                std::map<size_t, size_t> const & vectorParamIndices,
+                                                bool                             isStructureChain ) const;
+  size_t           determineReturnParamIndex( CommandData const &              commandData,
                                               std::map<size_t, size_t> const & vectorParamIndices,
-                                              bool                             definition ) const;
-  std::string constructConstexprString( std::pair<std::string, StructureData> const & structData ) const;
-  std::string constructFunctionBodyEnhanced( std::string const &              indentation,
-                                             std::string const &              name,
-                                             CommandData const &              commandData,
-                                             size_t                           returnParamIndex,
-                                             size_t                           templateParamIndex,
-                                             std::map<size_t, size_t> const & vectorParamIndices,
-                                             bool                             twoStep,
-                                             std::string const &              enhancedReturnType,
-                                             bool                             singular,
-                                             bool                             unique,
-                                             bool                             isStructureChain,
-                                             bool                             withAllocator ) const;
-  std::string constructFunctionBodyEnhancedSingleStep( std::string const &              indentation,
-                                                       std::string const &              name,
-                                                       CommandData const &              commandData,
-                                                       size_t                           returnParamIndex,
-                                                       size_t                           templateParamIndex,
-                                                       std::map<size_t, size_t> const & vectorParamIndices,
-                                                       bool                             singular ) const;
-  std::string constructFunctionBodyStandard( std::string const & indentation,
-                                             std::string const & commandName,
-                                             CommandData const & commandData ) const;
-  std::string constructFunctionHeaderArgumentsEnhanced( CommandData const &              commandData,
-                                                        size_t                           returnParamIndex,
-                                                        size_t                           templateParamIndex,
-                                                        std::map<size_t, size_t> const & vectorParamIndices,
-                                                        bool                             singular,
-                                                        bool                             withDefaults,
-                                                        bool                             withAllocator ) const;
-  std::string constructFunctionHeaderArgumentsStandard( CommandData const & commandData, bool withDefaults ) const;
-  std::string constructNoDiscardEnhanced( CommandData const & commandData ) const;
-  std::string constructNoDiscardStandard( CommandData const & commandData ) const;
-  std::string constructReturnType( CommandData const & commandData, std::string const & baseType ) const;
-  std::string constructSuccessCodeList( std::vector<std::string> const & successCodes ) const;
-  std::string constructVectorSizeCheck( std::string const &                           name,
-                                        CommandData const &                           commandData,
-                                        std::map<size_t, std::vector<size_t>> const & countToVectorMap,
-                                        std::set<size_t> const &                      skippedParams ) const;
-  void        checkCorrectness();
-  bool        containsArray( std::string const & type ) const;
-  bool        containsUnion( std::string const & type ) const;
-  size_t      determineDefaultStartIndex( std::vector<ParamData> const & params,
-                                          std::set<size_t> const &       skippedParams ) const;
-  std::string determineEnhancedReturnType( CommandData const &              commandData,
-                                           size_t                           returnParamIndex,
+                                              bool                             twoStep ) const;
+  std::set<size_t> determineSkippedParams( std::string const &              handleType,
+                                           std::vector<ParamData> const &   params,
                                            std::map<size_t, size_t> const & vectorParamIndices,
-                                           bool                             isStructureChain ) const;
-  size_t      determineReturnParamIndex( CommandData const &              commandData,
-                                         std::map<size_t, size_t> const & vectorParamIndices,
-                                         bool                             twoStep ) const;
-  std::string determineSubStruct( std::pair<std::string, StructureData> const & structure ) const;
-  size_t      determineTemplateParamIndex( std::vector<ParamData> const &   params,
-                                           std::map<size_t, size_t> const & vectorParamIndices ) const;
+                                           size_t                           returnParamIndex ) const;
+  std::string      determineSubStruct( std::pair<std::string, StructureData> const & structure ) const;
+  size_t           determineTemplateParamIndex( std::vector<ParamData> const &   params,
+                                                std::map<size_t, size_t> const & vectorParamIndices ) const;
   std::vector<size_t>      determineConstPointerParamIndices( std::vector<ParamData> const & params ) const;
   std::vector<size_t>      determineNonConstPointerParamIndices( std::vector<ParamData> const & params ) const;
   std::map<size_t, size_t> determineVectorParamIndices( std::vector<ParamData> const & params ) const;
@@ -699,6 +685,9 @@ private:
                                            std::string const &                                          prefix ) const;
   std::set<std::string> getPlatforms( std::set<std::string> const & extensions ) const;
   std::pair<std::string, std::string> getPoolTypeAndName( std::string const & type ) const;
+  std::string                         getVectorSize( std::vector<ParamData> const &   params,
+                                                     std::map<size_t, size_t> const & vectorParamIndices,
+                                                     size_t                           returnParamIndex ) const;
   bool                                isChainableStructure( std::string const & type ) const;
   bool                                isHandleType( std::string const & type ) const;
   bool                                isParam( std::string const & name, std::vector<ParamData> const & params ) const;

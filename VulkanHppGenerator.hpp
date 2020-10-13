@@ -74,7 +74,7 @@ private:
 
   struct TypeInfo
   {
-    std::string compose( bool inNamespace = true) const;
+    std::string compose( bool inNamespace = true ) const;
 
     bool operator==( TypeInfo const & rhs ) const
     {
@@ -356,6 +356,11 @@ private:
                                    CommandData const &              commandData,
                                    bool                             definition,
                                    std::map<size_t, size_t> const & vectorParamIndices ) const;
+  void        appendCommandSimpleReturn( std::string &                    str,
+                                         std::string const &              name,
+                                         CommandData const &              commandData,
+                                         bool                             definition,
+                                         std::map<size_t, size_t> const & vectorParamIndices ) const;
   void        appendCommandSimpleVoid( std::string &                    str,
                                        std::string const &              name,
                                        CommandData const &              commandData,
@@ -468,13 +473,13 @@ private:
                                              bool                             withDefaults,
                                              bool                             withAllocator ) const;
   bool appendFunctionHeaderArgumentStandard( std::string & str, ParamData const & param, bool argEncountered ) const;
-  void appendFunctionHeaderReturnType( std::string &                    str,
-                                       CommandData const &              commandData,
-                                       size_t                           returnParamIndex,
-                                       std::string const &              enhancedReturnType,
-                                       bool                             enhanced,
-                                       bool                             twoStep,
-                                       bool                             isStructureChain ) const;
+  void appendFunctionHeaderReturnType( std::string &       str,
+                                       CommandData const & commandData,
+                                       size_t              returnParamIndex,
+                                       std::string const & enhancedReturnType,
+                                       bool                enhanced,
+                                       bool                twoStep,
+                                       bool                isStructureChain ) const;
   void appendFunctionHeaderTemplate( std::string &       str,
                                      std::string const & indentation,
                                      size_t              returnParamIndex,
@@ -602,6 +607,10 @@ private:
                                       CommandData const &              commandData,
                                       bool                             definition,
                                       std::map<size_t, size_t> const & vectorParamIndices ) const;
+  std::string constructCommandSimpleResult( std::string const &              name,
+                                            CommandData const &              commandData,
+                                            bool                             definition,
+                                            std::map<size_t, size_t> const & vectorParamIndices ) const;
   std::string constructCommandSimpleVoid( std::string const &              name,
                                           CommandData const &              commandData,
                                           bool                             definition,
@@ -644,8 +653,8 @@ private:
   std::string      constructNoDiscardEnhanced( CommandData const & commandData ) const;
   std::string      constructNoDiscardStandard( CommandData const & commandData ) const;
   std::string      constructReturnType( CommandData const & commandData, std::string const & baseType ) const;
-  std::string              constructSuccessCheck( std::vector<std::string> const & successCodes ) const;
-  std::string              constructSuccessCodeList( std::vector<std::string> const & successCodes ) const;
+  std::string      constructSuccessCheck( std::vector<std::string> const & successCodes ) const;
+  std::string      constructSuccessCodeList( std::vector<std::string> const & successCodes ) const;
   std::string      constructVectorSizeCheck( std::string const &                           name,
                                              CommandData const &                           commandData,
                                              std::map<size_t, std::vector<size_t>> const & countToVectorMap,

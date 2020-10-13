@@ -1200,10 +1200,9 @@ void VulkanHppGenerator::appendCommand( std::string &       str,
             appendCommandTrivialVoid( str, name, commandData, definition );
             appendedFunction = true;
           }
-          else if ( commandData.successCodes.size() == 1 )
+          else if (commandData.returnType == "VkResult")
           {
-            assert( commandData.returnType == "VkResult" );
-            // function returning something
+            // function returning a result
             appendCommandTrivial( str, name, commandData, definition );
             appendedFunction = true;
           }

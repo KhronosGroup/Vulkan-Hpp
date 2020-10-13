@@ -6677,7 +6677,7 @@ void VulkanHppGenerator::checkCorrectness()
     }
     else
     {
-      warn( sTypeValues.erase( enumValue.vulkanValue ) == 1,
+      check( sTypeValues.erase( enumValue.vulkanValue ) == 1,
             enumValue.xmlLine,
             "VkStructureType enum value <" + enumValue.vulkanValue + "> never used" );
     }

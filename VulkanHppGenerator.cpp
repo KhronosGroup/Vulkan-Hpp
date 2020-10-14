@@ -58,8 +58,7 @@ std::string      createSuccessCode( std::string const & code, std::set<std::stri
 std::string      determineCommandName( std::string const & vulkanCommandName, std::string const & firstArgumentType );
 std::set<size_t> determineSkippedParams( size_t returnParamIndex, std::map<size_t, size_t> const & vectorParamIndices );
 bool             determineStructureChaining( std::string const &                        structType,
-                                             std::set<std::string> const &              extendedStructs,
-                                             std::map<std::string, std::string> const & structureAliases );
+                                             std::set<std::string> const &              extendedStructs );
 std::string      extractTag( int line, std::string const & name, std::set<std::string> const & tags );
 std::string findTag( std::set<std::string> const & tags, std::string const & name, std::string const & postfix = "" );
 std::pair<bool, std::string>       generateFunctionBodyStandardReturn( std::string const & returnType );
@@ -394,19 +393,9 @@ std::set<size_t> determineSkippedParams( size_t returnParamIndex, std::map<size_
 }
 
 bool determineStructureChaining( std::string const &                        structType,
-                                 std::set<std::string> const &              extendedStructs,
-                                 std::map<std::string, std::string> const & structureAliases )
+                                 std::set<std::string> const &              extendedStructs )
 {
-  bool isStructureChained = ( extendedStructs.find( structType ) != extendedStructs.end() );
-  if ( !isStructureChained )
-  {
-    auto aliasIt = structureAliases.find( structType );
-    if ( ( aliasIt != structureAliases.end() ) )
-    {
-      isStructureChained = ( extendedStructs.find( aliasIt->second ) != extendedStructs.end() );
-    }
-  }
-  return isStructureChained;
+  return ( extendedStructs.find( structType ) != extendedStructs.end() );
 }
 
 std::string findTag( std::set<std::string> const & tags, std::string const & name, std::string const & postfix )
@@ -1250,18 +1239,28 @@ void VulkanHppGenerator::appendCommand( std::string &       str,
         if ( returnVectorParamIt == vectorParamIndices.end() )
         {
           // the return parameter is not a vector
-          if ( ( commandData.returnType == "VkResult" ) &&
-               !isChainableStructure( commandData.params[nonConstPointerParamIndices[0]].type.type ) )
+          if ( isStructureChainAnchor( commandData.params[nonConstPointerParamIndices[0]].type.type ) )
           {
-            if ( isHandleType( commandData.params[nonConstPointerParamIndices[0]].type.type ) )
+            if ( commandData.returnType == "void" )
             {
-              appendCommandGetHandle( str, name, commandData, nonConstPointerParamIndices[0], definition );
+              appendCommandGetChain( str, name, commandData, nonConstPointerParamIndices[0], definition );
+              appendedFunction = true;
             }
-            else
+          }
+          else
+          {
+            if ( commandData.returnType == "VkResult" )
             {
-              appendCommandGetValue( str, name, commandData, nonConstPointerParamIndices[0], definition );
+              if ( isHandleType( commandData.params[nonConstPointerParamIndices[0]].type.type ) )
+              {
+                appendCommandGetHandle( str, name, commandData, nonConstPointerParamIndices[0], definition );
+              }
+              else
+              {
+                appendCommandGetValue( str, name, commandData, nonConstPointerParamIndices[0], definition );
+              }
+              appendedFunction = true;
             }
-            appendedFunction = true;
           }
         }
         else
@@ -1309,7 +1308,7 @@ void VulkanHppGenerator::appendCommand( std::string &       str,
                   ( vectorParamIndexIt->first == *std::next( nonConstPointerParamIndices.begin() ) ) );
           if ( ( commandData.returnType == "void" ) &&
                !determineStructureChaining(
-                 commandData.params[vectorParamIndexIt->first].type.type, m_extendedStructs, m_structureAliases ) )
+                 commandData.params[vectorParamIndexIt->first].type.type, m_extendedStructs ) )
           {
             assert( commandData.params[vectorParamIndexIt->first].type.type != "void" );
             appendCommandEnumerateVoid( str, name, commandData, *vectorParamIndexIt, definition );
@@ -1372,7 +1371,7 @@ void VulkanHppGenerator::appendCommand( std::string &       str,
   size_t returnParamIndex = determineReturnParamIndex( commandData, vectorParamIndices, twoStep );
   bool   isStructureChain =
     ( returnParamIndex != INVALID_INDEX ) &&
-    determineStructureChaining( commandData.params[returnParamIndex].type.type, m_extendedStructs, m_structureAliases );
+    determineStructureChaining( commandData.params[returnParamIndex].type.type, m_extendedStructs );
   std::string enhancedReturnType =
     determineEnhancedReturnType( commandData,
                                  returnParamIndex,
@@ -1543,13 +1542,15 @@ ${commandEnhancedWithAllocators}
     functionTemplate,
     std::map<std::string, std::string>(
       { { "commandEnhanced",
-          constructCommandEnumerateTwoVectors( name, commandData, vectorParamIndices, definition, false ) },
+          constructCommandResultEnumerateTwoVectors( name, commandData, vectorParamIndices, definition, false ) },
         { "commandEnhancedDeprecated",
-          constructCommandEnumerateTwoVectorsDeprecated( name, commandData, vectorParamIndices, definition, false ) },
+          constructCommandResultEnumerateTwoVectorsDeprecated(
+            name, commandData, vectorParamIndices, definition, false ) },
         { "commandEnhancedWithAllocators",
-          constructCommandEnumerateTwoVectors( name, commandData, vectorParamIndices, definition, true ) },
+          constructCommandResultEnumerateTwoVectors( name, commandData, vectorParamIndices, definition, true ) },
         { "commandEnhancedWithAllocatorsDeprecated",
-          constructCommandEnumerateTwoVectorsDeprecated( name, commandData, vectorParamIndices, definition, true ) },
+          constructCommandResultEnumerateTwoVectorsDeprecated(
+            name, commandData, vectorParamIndices, definition, true ) },
         { "commandStandard", constructCommandStandard( name, commandData, definition ) },
         { "newlineOnDefinition", definition ? "\n" : "" } } ) );
 }
@@ -1577,10 +1578,39 @@ ${commandEnhancedWithAllocators}
   str += replaceWithMap(
     functionTemplate,
     std::map<std::string, std::string>(
-      { { "commandEnhanced", constructCommandEnumerateVoid( name, commandData, vectorParamIndex, definition, false ) },
+      { { "commandEnhanced", constructCommandVoidEnumerate( name, commandData, vectorParamIndex, definition, false ) },
         { "commandEnhancedWithAllocators",
-          constructCommandEnumerateVoid( name, commandData, vectorParamIndex, definition, true ) },
+          constructCommandVoidEnumerate( name, commandData, vectorParamIndex, definition, true ) },
         { "commandStandard", constructCommandStandard( name, commandData, definition ) },
+        { "newlineOnDefinition", definition ? "\n" : "" } } ) );
+}
+
+void VulkanHppGenerator::appendCommandGetChain( std::string &       str,
+                                                std::string const & name,
+                                                CommandData const & commandData,
+                                                size_t              nonConstPointerIndex,
+                                                bool                definition ) const
+{
+  std::string const functionTemplate = R"(
+${enter}${commandStandard}${newlineOnDefinition}
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+${commandEnhanced}${newlineOnDefinition}
+${commandEnhancedChained}
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+${leave})";
+
+  std::string enter, leave;
+  std::tie( enter, leave ) = generateProtection( commandData.feature, commandData.extensions );
+
+  str += replaceWithMap(
+    functionTemplate,
+    std::map<std::string, std::string>(
+      { { "commandEnhanced", constructCommandVoidGetValue( name, commandData, nonConstPointerIndex, definition ) },
+        { "commandEnhancedChained",
+          constructCommandVoidGetChain( name, commandData, nonConstPointerIndex, definition ) },
+        { "commandStandard", constructCommandStandard( name, commandData, definition ) },
+        { "enter", enter },
+        { "leave", leave },
         { "newlineOnDefinition", definition ? "\n" : "" } } ) );
 }
 
@@ -1606,9 +1636,9 @@ ${leave})";
   str += replaceWithMap(
     functionTemplate,
     std::map<std::string, std::string>(
-      { { "commandEnhanced", constructCommandGetValue( name, commandData, nonConstPointerIndex, definition ) },
+      { { "commandEnhanced", constructCommandResultGetValue( name, commandData, nonConstPointerIndex, definition ) },
         { "commandEnhancedUnique",
-          constructCommandGetHandleUnique( name, commandData, nonConstPointerIndex, definition ) },
+          constructCommandResultGetHandleUnique( name, commandData, nonConstPointerIndex, definition ) },
         { "commandStandard", constructCommandStandard( name, commandData, definition ) },
         { "enter", enter },
         { "leave", leave },
@@ -1634,7 +1664,7 @@ ${leave})";
   str += replaceWithMap(
     functionTemplate,
     std::map<std::string, std::string>(
-      { { "commandEnhanced", constructCommandGetValue( name, commandData, nonConstPointerIndex, definition ) },
+      { { "commandEnhanced", constructCommandResultGetValue( name, commandData, nonConstPointerIndex, definition ) },
         { "commandStandard", constructCommandStandard( name, commandData, definition ) },
         { "enter", enter },
         { "leave", leave },
@@ -1666,11 +1696,13 @@ ${leave})";
     functionTemplate,
     std::map<std::string, std::string>(
       { { "commandEnhanced",
-          constructCommandGetVector( name, commandData, vectorParamIndices, returnParamIndex, definition ) },
+          constructCommandResultGetVector( name, commandData, vectorParamIndices, returnParamIndex, definition ) },
         { "commandDeprecated",
-          constructCommandGetVectorDeprecated( name, commandData, vectorParamIndices, returnParamIndex, definition ) },
+          constructCommandResultGetVectorDeprecated(
+            name, commandData, vectorParamIndices, returnParamIndex, definition ) },
         { "commandEnhancedSingular",
-          constructCommandGetVectorSingular( name, commandData, vectorParamIndices, returnParamIndex, definition ) },
+          constructCommandResultGetVectorSingular(
+            name, commandData, vectorParamIndices, returnParamIndex, definition ) },
         { "commandStandard", constructCommandStandard( name, commandData, definition ) },
         { "enter", enter },
         { "leave", leave },
@@ -1706,22 +1738,22 @@ ${leave})";
   str += replaceWithMap( functionTemplate,
                          std::map<std::string, std::string>(
                            { { "commandEnhanced",
-                               constructCommandGetVectorOfHandles(
+                               constructCommandResultGetVectorOfHandles(
                                  name, commandData, vectorParamIndices, returnParamIndex, definition, false ) },
                              { "commandEnhancedSingular",
-                               constructCommandGetVectorOfHandlesSingular(
+                               constructCommandResultGetVectorOfHandlesSingular(
                                  name, commandData, vectorParamIndices, returnParamIndex, definition ) },
                              { "commandEnhancedUnique",
-                               constructCommandGetVectorOfUniqueHandles(
+                               constructCommandResultGetVectorOfHandlesUnique(
                                  name, commandData, vectorParamIndices, returnParamIndex, definition, false ) },
                              { "commandEnhancedUniqueSingular",
-                               constructCommandGetVectorOfUniqueHandlesSingular(
+                               constructCommandResultGetVectorOfHandlesUniqueSingular(
                                  name, commandData, vectorParamIndices, returnParamIndex, definition ) },
                              { "commandEnhancedUniqueWithAllocators",
-                               constructCommandGetVectorOfUniqueHandles(
+                               constructCommandResultGetVectorOfHandlesUnique(
                                  name, commandData, vectorParamIndices, returnParamIndex, definition, true ) },
                              { "commandEnhancedWithAllocators",
-                               constructCommandGetVectorOfHandles(
+                               constructCommandResultGetVectorOfHandles(
                                  name, commandData, vectorParamIndices, returnParamIndex, definition, true ) },
                              { "commandStandard", constructCommandStandard( name, commandData, definition ) },
                              { "enter", enter },
@@ -1756,16 +1788,16 @@ ${leave})";
   str += replaceWithMap( functionTemplate,
                          std::map<std::string, std::string>(
                            { { "commandEnhanced",
-                               constructCommandGetVectorOfHandles(
+                               constructCommandResultGetVectorOfHandles(
                                  name, commandData, vectorParamIndices, returnParamIndex, definition, false ) },
                              { "commandEnhancedUnique",
-                               constructCommandGetVectorOfUniqueHandles(
+                               constructCommandResultGetVectorOfHandlesUnique(
                                  name, commandData, vectorParamIndices, returnParamIndex, definition, false ) },
                              { "commandEnhancedUniqueWithAllocators",
-                               constructCommandGetVectorOfUniqueHandles(
+                               constructCommandResultGetVectorOfHandlesUnique(
                                  name, commandData, vectorParamIndices, returnParamIndex, definition, true ) },
                              { "commandEnhancedWithAllocators",
-                               constructCommandGetVectorOfHandles(
+                               constructCommandResultGetVectorOfHandles(
                                  name, commandData, vectorParamIndices, returnParamIndex, definition, true ) },
                              { "commandStandard", constructCommandStandard( name, commandData, definition ) },
                              { "enter", enter },
@@ -1792,7 +1824,7 @@ ${leave})";
   str += replaceWithMap(
     functionTemplate,
     std::map<std::string, std::string>(
-      { { "commandEnhanced", constructCommandSimpleResult( name, commandData, definition, vectorParamIndices ) },
+      { { "commandEnhanced", constructCommandResult( name, commandData, definition, vectorParamIndices ) },
         { "commandStandard", constructCommandStandard( name, commandData, definition ) },
         { "enter", enter },
         { "leave", leave },
@@ -1800,10 +1832,10 @@ ${leave})";
 }
 
 void VulkanHppGenerator::appendCommandSimpleReturn( std::string &                    str,
-                                              std::string const &              name,
-                                              CommandData const &              commandData,
-                                              bool                             definition,
-                                              std::map<size_t, size_t> const & vectorParamIndices ) const
+                                                    std::string const &              name,
+                                                    CommandData const &              commandData,
+                                                    bool                             definition,
+                                                    std::map<size_t, size_t> const & vectorParamIndices ) const
 {
   const std::string functionTemplate = R"(
 ${enter}${commandStandard}${newlineOnDefinition}
@@ -1818,7 +1850,7 @@ ${leave})";
   str += replaceWithMap(
     functionTemplate,
     std::map<std::string, std::string>(
-      { { "commandEnhanced", constructCommandSimple( name, commandData, definition, vectorParamIndices ) },
+      { { "commandEnhanced", constructCommandType( name, commandData, definition, vectorParamIndices ) },
         { "commandStandard", constructCommandStandard( name, commandData, definition ) },
         { "enter", enter },
         { "leave", leave },
@@ -1844,8 +1876,8 @@ ${leave})";
   str += replaceWithMap(
     functionTemplate,
     std::map<std::string, std::string>(
-      { { "commandEnhanced", constructCommandSimpleVoid( name, commandData, definition, vectorParamIndices ) },
-        { "commandStandard", constructCommandStandardVoid( name, commandData, definition ) },
+      { { "commandEnhanced", constructCommandVoid( name, commandData, definition, vectorParamIndices ) },
+        { "commandStandard", constructCommandStandard( name, commandData, definition ) },
         { "enter", enter },
         { "leave", leave },
         { "newlineOnDefinition", definition ? "\n" : "" } } ) );
@@ -1870,7 +1902,7 @@ ${leave}
 
   str += replaceWithMap( functionTemplate,
                          std::map<std::string, std::string>(
-                           { { "commandEnhanced", constructCommandSimpleResult( name, commandData, definition, {} ) },
+                           { { "commandEnhanced", constructCommandResult( name, commandData, definition, {} ) },
                              { "commandStandard", constructCommandStandard( name, commandData, definition ) },
                              { "enter", enter },
                              { "leave", leave } } ) );
@@ -1891,7 +1923,7 @@ ${commandStandard}
 
   str += replaceWithMap( functionTemplate,
                          std::map<std::string, std::string>( {
-                           { "commandStandard", constructCommandStandardVoid( name, commandData, definition ) },
+                           { "commandStandard", constructCommandStandard( name, commandData, definition ) },
                          } ) );
 }
 
@@ -1916,7 +1948,7 @@ ${leave})";
   str += replaceWithMap(
     functionTemplate,
     std::map<std::string, std::string>(
-      { { "commandEnhanced", constructCommandTwoVectors( name, commandData, vectorParamIndices, definition ) },
+      { { "commandEnhanced", constructCommandResultGetTwoVectors( name, commandData, vectorParamIndices, definition ) },
         { "commandStandard", constructCommandStandard( name, commandData, definition ) },
         { "enter", enter },
         { "leave", leave },
@@ -2880,19 +2912,11 @@ void VulkanHppGenerator::appendFunctionHeaderArgumentEnhancedPointer( std::strin
                                                                       std::string const & strippedParameterName ) const
 {
   assert( ( param.type.postfix.back() == '*' ) && !param.optional );
-  if ( param.type.type == "void" )
-  {
-    // for void-pointer, just use type and name
-    str += param.type.compose() + " " + param.name;
-  }
-  else
-  {
-    assert( param.type.type != "char" );
-    // for non-char-pointer, change to reference
-    assert( param.type.postfix == "*" );
-    str += param.type.prefix + ( param.type.prefix.empty() ? "" : " " ) + stripPrefix( param.type.type, "Vk" ) + " & " +
-           strippedParameterName;
-  }
+  assert( param.type.type != "char" );
+  // for non-char-pointer, change to reference
+  assert( param.type.postfix == "*" );
+  str += param.type.prefix + ( param.type.prefix.empty() ? "" : " " ) + stripPrefix( param.type.type, "Vk" ) + " & " +
+          strippedParameterName;
 }
 
 void VulkanHppGenerator::appendFunctionHeaderArgumentEnhancedVector( std::string &       str,
@@ -3987,13 +4011,79 @@ std::string
   return arguments;
 }
 
-std::string
-  VulkanHppGenerator::constructCommandEnumerateTwoVectors( std::string const &              name,
-                                                           CommandData const &              commandData,
-                                                           std::map<size_t, size_t> const & vectorParamIndices,
-                                                           bool                             definition,
-                                                           bool                             withAllocators ) const
+std::string VulkanHppGenerator::constructCommandResult( std::string const &              name,
+                                                        CommandData const &              commandData,
+                                                        bool                             definition,
+                                                        std::map<size_t, size_t> const & vectorParamIndices ) const
 {
+  assert( !commandData.handle.empty() && ( commandData.returnType == "VkResult" ) );
+
+  std::string str;
+
+  std::set<size_t> skippedParameters = { 0 };
+  for ( auto const & vpi : vectorParamIndices )
+  {
+    if ( vpi.second != INVALID_INDEX )
+    {
+      skippedParameters.insert( vpi.second );
+    }
+  }
+
+  std::string argumentList =
+    constructArgumentListEnhanced( commandData.params, skippedParameters, INVALID_INDEX, definition, false );
+  std::string commandName = determineCommandName( name, commandData.params[0].type.type );
+  std::string nodiscard   = constructNoDiscardEnhanced( commandData );
+  std::string returnType  = constructReturnType( commandData, "void" );
+
+  if ( definition )
+  {
+    std::string const functionTemplate =
+      R"(  template <typename Dispatch>
+  ${nodiscard}VULKAN_HPP_INLINE ${returnType} ${className}::${commandName}( ${argumentList} ) const
+  {
+    Result result = static_cast<Result>( d.${vkCommand}( ${callArguments} ) );
+    return createResultValue( result, VULKAN_HPP_NAMESPACE_STRING "::${className}::${commandName}"${successCodeList} );
+  })";
+
+    str =
+      replaceWithMap( functionTemplate,
+                      std::map<std::string, std::string>(
+                        { { "argumentList", argumentList },
+                          { "callArguments", constructCallArgumentsVectors( commandData.params, vectorParamIndices ) },
+                          { "className", stripPrefix( commandData.handle, "Vk" ) },
+                          { "commandName", commandName },
+                          { "nodiscard", nodiscard },
+                          { "returnType", returnType },
+                          { "successCodeList", constructSuccessCodeList( commandData.successCodes ) },
+                          { "vkCommand", name } } ) );
+  }
+  else
+  {
+    std::string const functionTemplate =
+      R"(    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    ${nodiscard}${returnType} ${commandName}( ${argumentList} ) const;)";
+
+    str = replaceWithMap( functionTemplate,
+                          std::map<std::string, std::string>( { { "argumentList", argumentList },
+                                                                { "commandName", commandName },
+                                                                { "nodiscard", nodiscard },
+                                                                { "returnType", returnType } } ) );
+  }
+
+  return str;
+}
+
+std::string
+  VulkanHppGenerator::constructCommandResultEnumerateTwoVectors( std::string const &              name,
+                                                                 CommandData const &              commandData,
+                                                                 std::map<size_t, size_t> const & vectorParamIndices,
+                                                                 bool                             definition,
+                                                                 bool                             withAllocators ) const
+{
+  assert( !commandData.handle.empty() && ( commandData.returnType == "VkResult" ) );
+  assert( ( commandData.successCodes.size() == 2 ) && ( commandData.successCodes[0] == "VK_SUCCESS" ) &&
+          ( commandData.successCodes[1] == "VK_INCOMPLETE" ) );
+
   std::string str;
 
   auto firstVectorParamIt  = vectorParamIndices.begin();
@@ -4103,7 +4193,7 @@ std::string
   return str;
 }
 
-std::string VulkanHppGenerator::constructCommandEnumerateTwoVectorsDeprecated(
+std::string VulkanHppGenerator::constructCommandResultEnumerateTwoVectorsDeprecated(
   std::string const &              name,
   CommandData const &              commandData,
   std::map<size_t, size_t> const & vectorParamIndices,
@@ -4179,91 +4269,12 @@ std::string VulkanHppGenerator::constructCommandEnumerateTwoVectorsDeprecated(
   return str;
 }
 
-std::string VulkanHppGenerator::constructCommandEnumerateVoid( std::string const &               name,
-                                                               CommandData const &               commandData,
-                                                               std::pair<size_t, size_t> const & vectorParamIndex,
-                                                               bool                              definition,
-                                                               bool                              withAllocators ) const
+std::string VulkanHppGenerator::constructCommandResultGetHandleUnique( std::string const & name,
+                                                                       CommandData const & commandData,
+                                                                       size_t              nonConstPointerIndex,
+                                                                       bool                definition ) const
 {
-  assert( commandData.params[0].type.type == commandData.handle );
-
-  std::string str;
-
-  std::string argumentList      = constructArgumentListEnhanced( commandData.params,
-                                                            { 0, vectorParamIndex.second, vectorParamIndex.first },
-                                                            INVALID_INDEX,
-                                                            definition,
-                                                            withAllocators );
-  std::string commandName       = determineCommandName( name, commandData.params[0].type.type );
-  std::string vectorElementType = stripPrefix( commandData.params[vectorParamIndex.first].type.type, "Vk" );
-
-  if ( definition )
-  {
-    const std::string functionTemplate =
-      R"(  template <typename ${vectorElementType}Allocator, typename Dispatch${typenameCheck}>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<${vectorElementType}, ${vectorElementType}Allocator> ${className}::${commandName}( ${argumentList} ) const
-  {
-    std::vector<${vectorElementType}, ${vectorElementType}Allocator> ${vectorName}${vectorAllocator};
-    ${counterType} ${counterName};
-    d.${vkCommand}( ${firstCallArguments} );
-    ${vectorName}.resize( ${counterName} );
-    d.${vkCommand}( ${secondCallArguments} );
-    VULKAN_HPP_ASSERT( ${counterName} <= ${vectorName}.size() );
-    return ${vectorName};
-  })";
-
-    std::string vectorName    = startLowerCase( stripPrefix( commandData.params[vectorParamIndex.first].name, "p" ) );
-    std::string typenameCheck = ", typename B, typename std::enable_if<std::is_same<typename B::value_type, " +
-                                vectorElementType + ">::value, int>::type ";
-
-    str = replaceWithMap(
-      functionTemplate,
-      std::map<std::string, std::string>(
-        { { "argumentList", argumentList },
-          { "className", stripPrefix( commandData.handle, "Vk" ) },
-          { "commandName", commandName },
-          { "counterName", startLowerCase( stripPrefix( commandData.params[vectorParamIndex.second].name, "p" ) ) },
-          { "counterType", commandData.params[vectorParamIndex.second].type.type },
-          { "firstCallArguments",
-            constructCallArgumentsEnumerateVectors( commandData.params, { vectorParamIndex }, true ) },
-          { "secondCallArguments",
-            constructCallArgumentsEnumerateVectors( commandData.params, { vectorParamIndex }, false ) },
-          { "typenameCheck", withAllocators ? typenameCheck : "" },
-          { "vectorAllocator",
-            withAllocators
-              ? ( "( " + startLowerCase( stripPrefix( commandData.params[vectorParamIndex.first].type.type, "Vk" ) ) +
-                  "Allocator )" )
-              : "" },
-          { "vectorElementType", vectorElementType },
-          { "vectorName", vectorName },
-          { "vkCommand", name } } ) );
-  }
-  else
-  {
-    const std::string functionTemplate =
-      R"(    template <typename ${vectorElementType}Allocator = std::allocator<${vectorElementType}>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE${withAllocatorTypenameCheck}>
-    VULKAN_HPP_NODISCARD std::vector<${vectorElementType}, ${vectorElementType}Allocator> ${commandName}( ${argumentList} ) const;)";
-
-    std::string typenameCheck = ", typename B = " + vectorElementType +
-                                "Allocator, typename std::enable_if<std::is_same<typename B::value_type, " +
-                                vectorElementType + ">::value, int>::type = 0";
-
-    str = replaceWithMap(
-      functionTemplate,
-      std::map<std::string, std::string>( { { "argumentList", argumentList },
-                                            { "commandName", commandName },
-                                            { "vectorElementType", vectorElementType },
-                                            { "withAllocatorTypenameCheck", withAllocators ? typenameCheck : "" } } ) );
-  }
-  return str;
-}
-
-std::string VulkanHppGenerator::constructCommandGetHandleUnique( std::string const & name,
-                                                                 CommandData const & commandData,
-                                                                 size_t              nonConstPointerIndex,
-                                                                 bool                definition ) const
-{
-  assert( commandData.successCodes.size() == 1 );
+  assert( ( commandData.returnType == "VkResult" ) && ( commandData.successCodes.size() == 1 ) );
 
   std::string str;
 
@@ -4358,11 +4369,78 @@ std::string VulkanHppGenerator::constructCommandGetHandleUnique( std::string con
   return str;
 }
 
-std::string VulkanHppGenerator::constructCommandGetValue( std::string const & name,
-                                                          CommandData const & commandData,
-                                                          size_t              nonConstPointerIndex,
-                                                          bool                definition ) const
+std::string
+  VulkanHppGenerator::constructCommandResultGetTwoVectors( std::string const &              name,
+                                                           CommandData const &              commandData,
+                                                           std::map<size_t, size_t> const & vectorParamIndices,
+                                                           bool                             definition ) const
 {
+  assert( !commandData.handle.empty() && ( commandData.returnType == "VkResult" ) );
+
+  std::string str;
+
+  auto firstVectorParamIt  = vectorParamIndices.begin();
+  auto secondVectorParamIt = std::next( firstVectorParamIt );
+
+  assert( commandData.params[0].type.type == commandData.handle );
+  assert( firstVectorParamIt->second == secondVectorParamIt->second );
+
+  std::set<size_t> skippedParameters = { 0, firstVectorParamIt->second };
+
+  std::string argumentList =
+    constructArgumentListEnhanced( commandData.params, skippedParameters, INVALID_INDEX, definition, false );
+  std::string commandName = determineCommandName( name, commandData.params[0].type.type );
+  std::pair<bool, std::map<size_t, std::vector<size_t>>> vectorSizeCheck = needsVectorSizeCheck( vectorParamIndices );
+  std::string noexceptString = vectorSizeCheck.first ? "VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS" : "VULKAN_HPP_NOEXCEPT";
+
+  if ( definition )
+  {
+    const std::string functionTemplate =
+      R"(  template <typename Dispatch>
+  VULKAN_HPP_INLINE Result ${className}::${commandName}( ${argumentList} ) const ${noexcept}
+  {${vectorSizeCheck}
+    Result result = static_cast<Result>( d.${vkCommand}( ${callArguments} ) );
+    return createResultValue( result, VULKAN_HPP_NAMESPACE_STRING "::${className}::${commandName}"${successCodeList} );
+  })";
+
+    str =
+      replaceWithMap( functionTemplate,
+                      std::map<std::string, std::string>(
+                        { { "argumentList", argumentList },
+                          { "callArguments", constructCallArgumentsVectors( commandData.params, vectorParamIndices ) },
+                          { "className", stripPrefix( commandData.handle, "Vk" ) },
+                          { "commandName", commandName },
+                          { "noexcept", noexceptString },
+                          { "successCodeList", constructSuccessCodeList( commandData.successCodes ) },
+                          { "vectorSizeCheck",
+                            vectorSizeCheck.first
+                              ? constructVectorSizeCheck( name, commandData, vectorSizeCheck.second, skippedParameters )
+                              : "" },
+                          { "vkCommand", name } } ) );
+  }
+  else
+  {
+    const std::string functionTemplate =
+      R"(    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    Result ${commandName}( ${argumentList} ) const ${noexcept};)";
+
+    str = replaceWithMap( functionTemplate,
+                          std::map<std::string, std::string>( {
+                            { "argumentList", argumentList },
+                            { "commandName", commandName },
+                            { "noexcept", noexceptString },
+                          } ) );
+  }
+  return str;
+}
+
+std::string VulkanHppGenerator::constructCommandResultGetValue( std::string const & name,
+                                                                CommandData const & commandData,
+                                                                size_t              nonConstPointerIndex,
+                                                                bool                definition ) const
+{
+  assert( commandData.returnType == "VkResult" );
+
   std::string str;
 
   std::set<size_t> skippedParams{ nonConstPointerIndex };
@@ -4431,12 +4509,14 @@ std::string VulkanHppGenerator::constructCommandGetValue( std::string const & na
   return str;
 }
 
-std::string VulkanHppGenerator::constructCommandGetVector( std::string const &              name,
-                                                           CommandData const &              commandData,
-                                                           std::map<size_t, size_t> const & vectorParamIndices,
-                                                           size_t                           returnParamIndex,
-                                                           bool                             definition ) const
+std::string VulkanHppGenerator::constructCommandResultGetVector( std::string const &              name,
+                                                                 CommandData const &              commandData,
+                                                                 std::map<size_t, size_t> const & vectorParamIndices,
+                                                                 size_t                           returnParamIndex,
+                                                                 bool                             definition ) const
 {
+  assert( !commandData.handle.empty() && ( commandData.returnType == "VkResult" ) );
+
   std::string str;
 
   std::string argumentList =
@@ -4489,12 +4569,14 @@ std::string VulkanHppGenerator::constructCommandGetVector( std::string const &  
 }
 
 std::string
-  VulkanHppGenerator::constructCommandGetVectorDeprecated( std::string const &              name,
-                                                           CommandData const &              commandData,
-                                                           std::map<size_t, size_t> const & vectorParamIndices,
-                                                           size_t                           returnParamIndex,
-                                                           bool                             definition ) const
+  VulkanHppGenerator::constructCommandResultGetVectorDeprecated( std::string const &              name,
+                                                                 CommandData const &              commandData,
+                                                                 std::map<size_t, size_t> const & vectorParamIndices,
+                                                                 size_t                           returnParamIndex,
+                                                                 bool                             definition ) const
 {
+  assert( !commandData.handle.empty() && ( commandData.returnType == "VkResult" ) );
+
   std::string str;
 
   std::string argumentList = constructFunctionHeaderArgumentsEnhanced(
@@ -4548,14 +4630,15 @@ std::string
   return str;
 }
 
-std::string VulkanHppGenerator::constructCommandGetVectorOfHandles( std::string const &              name,
-                                                                    CommandData const &              commandData,
-                                                                    std::map<size_t, size_t> const & vectorParamIndices,
-                                                                    size_t                           returnParamIndex,
-                                                                    bool                             definition,
-                                                                    bool withAllocator ) const
+std::string
+  VulkanHppGenerator::constructCommandResultGetVectorOfHandles( std::string const &              name,
+                                                                CommandData const &              commandData,
+                                                                std::map<size_t, size_t> const & vectorParamIndices,
+                                                                size_t                           returnParamIndex,
+                                                                bool                             definition,
+                                                                bool                             withAllocator ) const
 {
-  assert( !commandData.handle.empty() );
+  assert( !commandData.handle.empty() && ( commandData.returnType == "VkResult" ) );
 
   std::string str;
 
@@ -4628,12 +4711,12 @@ std::string VulkanHppGenerator::constructCommandGetVectorOfHandles( std::string 
   return str;
 }
 
-std::string
-  VulkanHppGenerator::constructCommandGetVectorOfHandlesSingular( std::string const &              name,
-                                                                  CommandData const &              commandData,
-                                                                  std::map<size_t, size_t> const & vectorParamIndices,
-                                                                  size_t                           returnParamIndex,
-                                                                  bool                             definition ) const
+std::string VulkanHppGenerator::constructCommandResultGetVectorOfHandlesSingular(
+  std::string const &              name,
+  CommandData const &              commandData,
+  std::map<size_t, size_t> const & vectorParamIndices,
+  size_t                           returnParamIndex,
+  bool                             definition ) const
 {
   assert( !commandData.handle.empty() );
   assert( ( vectorParamIndices.size() == 2 ) &&
@@ -4700,15 +4783,15 @@ std::string
   return str;
 }
 
-std::string
-  VulkanHppGenerator::constructCommandGetVectorOfUniqueHandles( std::string const &              name,
-                                                                CommandData const &              commandData,
-                                                                std::map<size_t, size_t> const & vectorParamIndices,
-                                                                size_t                           returnParamIndex,
-                                                                bool                             definition,
-                                                                bool                             withAllocator ) const
+std::string VulkanHppGenerator::constructCommandResultGetVectorOfHandlesUnique(
+  std::string const &              name,
+  CommandData const &              commandData,
+  std::map<size_t, size_t> const & vectorParamIndices,
+  size_t                           returnParamIndex,
+  bool                             definition,
+  bool                             withAllocator ) const
 {
-  assert( !commandData.handle.empty() );
+  assert( !commandData.handle.empty() && ( commandData.returnType == "VkResult" ) );
 
   std::string str;
 
@@ -4821,7 +4904,7 @@ std::string
   return str;
 }
 
-std::string VulkanHppGenerator::constructCommandGetVectorOfUniqueHandlesSingular(
+std::string VulkanHppGenerator::constructCommandResultGetVectorOfHandlesUniqueSingular(
   std::string const &              name,
   CommandData const &              commandData,
   std::map<size_t, size_t> const & vectorParamIndices,
@@ -4896,12 +4979,15 @@ std::string VulkanHppGenerator::constructCommandGetVectorOfUniqueHandlesSingular
   return str;
 }
 
-std::string VulkanHppGenerator::constructCommandGetVectorSingular( std::string const &              name,
-                                                                   CommandData const &              commandData,
-                                                                   std::map<size_t, size_t> const & vectorParamIndices,
-                                                                   size_t                           returnParamIndex,
-                                                                   bool                             definition ) const
+std::string
+  VulkanHppGenerator::constructCommandResultGetVectorSingular( std::string const &              name,
+                                                               CommandData const &              commandData,
+                                                               std::map<size_t, size_t> const & vectorParamIndices,
+                                                               size_t                           returnParamIndex,
+                                                               bool                             definition ) const
 {
+  assert( !commandData.handle.empty() && ( commandData.returnType == "VkResult" ) );
+
   std::string str;
 
   std::string argumentList = constructArgumentListEnhanced(
@@ -4955,12 +5041,150 @@ std::string VulkanHppGenerator::constructCommandGetVectorSingular( std::string c
   return str;
 }
 
-std::string VulkanHppGenerator::constructCommandSimple( std::string const &              name,
-                                                        CommandData const &              commandData,
-                                                        bool                             definition,
-                                                        std::map<size_t, size_t> const & vectorParamIndices ) const
+std::string VulkanHppGenerator::constructCommandStandard( std::string const & name,
+                                                          CommandData const & commandData,
+                                                          bool                definition ) const
 {
-  assert( commandData.successCodes.empty() && commandData.errorCodes.empty() );
+  std::string str;
+
+  std::set<size_t> skippedParams;
+  if ( !commandData.handle.empty() )
+  {
+    assert( commandData.params[0].type.type == commandData.handle );
+    skippedParams.insert( 0 );
+  }
+
+  std::string argumentList = constructArgumentListStandard( commandData.params, skippedParams, definition );
+  std::string commandName  = determineCommandName( name, commandData.params[0].type.type );
+  std::string nodiscard    = constructNoDiscardStandard( commandData );
+  std::string returnType   = stripPrefix( commandData.returnType, "Vk" );
+
+  if ( definition )
+  {
+    std::string className = stripPrefix( commandData.handle, "Vk" );
+    if ( !className.empty() )
+    {
+      className += "::";
+    }
+    std::string functionBody =
+      "d." + name + "( " + constructCallArgumentsStandard( commandData.handle, commandData.params ) + " )";
+    if ( beginsWith( commandData.returnType, "Vk" ) )
+    {
+      functionBody = "return static_cast<" + returnType + ">( " + functionBody + " )";
+    }
+    else if ( commandData.returnType != "void" )
+    {
+      functionBody = "return " + functionBody;
+    }
+
+    std::string const functionTemplate =
+      R"(  template <typename Dispatch>
+  ${nodiscard}VULKAN_HPP_INLINE ${returnType} ${className}${commandName}( ${argumentList} )${const} VULKAN_HPP_NOEXCEPT
+  {
+    ${functionBody};
+  })";
+
+    str = replaceWithMap( functionTemplate,
+                          std::map<std::string, std::string>( { { "argumentList", argumentList },
+                                                                { "className", className },
+                                                                { "commandName", commandName },
+                                                                { "const", commandData.handle.empty() ? "" : " const" },
+                                                                { "functionBody", functionBody },
+                                                                { "nodiscard", nodiscard },
+                                                                { "returnType", returnType } } ) );
+  }
+  else
+  {
+    std::string const functionTemplate =
+      R"(    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    ${nodiscard}${returnType} ${commandName}( ${argumentList} VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )${const} VULKAN_HPP_NOEXCEPT;)";
+
+    str = replaceWithMap( functionTemplate,
+                          std::map<std::string, std::string>( { { "argumentList", argumentList },
+                                                                { "commandName", commandName },
+                                                                { "const", commandData.handle.empty() ? "" : " const" },
+                                                                { "nodiscard", nodiscard },
+                                                                { "returnType", returnType } } ) );
+  }
+  return str;
+}
+
+std::string VulkanHppGenerator::constructCommandVoidGetChain( std::string const & name,
+                                                              CommandData const & commandData,
+                                                              size_t              nonConstPointerIndex,
+                                                              bool                definition ) const
+{
+  assert( !commandData.handle.empty() && ( commandData.returnType == "void" ) && commandData.successCodes.empty() &&
+          commandData.errorCodes.empty() );
+
+  std::string str;
+
+  std::set<size_t> skippedParams{ nonConstPointerIndex };
+  if ( !commandData.handle.empty() )
+  {
+    assert( commandData.params[0].type.type == commandData.handle );
+    skippedParams.insert( 0 );
+  }
+
+  std::string argumentList =
+    constructArgumentListEnhanced( commandData.params, skippedParams, INVALID_INDEX, definition, false );
+  std::string commandName = determineCommandName( name, commandData.params[0].type.type );
+  std::string nodiscard   = constructNoDiscardEnhanced( commandData );
+  assert( beginsWith( commandData.params[nonConstPointerIndex].type.type, "Vk" ) );
+  std::string returnType =
+    "VULKAN_HPP_NAMESPACE::" + stripPrefix( commandData.params[nonConstPointerIndex].type.type, "Vk" );
+
+  if ( definition )
+  {
+    std::string const functionTemplate =
+      R"(  template <typename X, typename Y, typename... Z, typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE StructureChain<X, Y, Z...> ${className}${commandName}( ${argumentList} ) const VULKAN_HPP_NOEXCEPT
+  {
+    StructureChain<X, Y, Z...> structureChain;
+    ${returnType} & ${returnVariable} = structureChain.template get<${returnType}>();
+    d.${vkCommand}( ${callArguments} );
+    return structureChain;
+  })";
+
+    std::string className = stripPrefix( commandData.handle, "Vk" );
+    if ( !className.empty() )
+    {
+      className += "::";
+    }
+
+    str = replaceWithMap(
+      functionTemplate,
+      std::map<std::string, std::string>(
+        { { "argumentList", argumentList },
+          { "callArguments",
+            constructCallArgumentsGetValue( commandData.handle, commandData.params, nonConstPointerIndex ) },
+          { "className", className },
+          { "commandName", commandName },
+          { "returnVariable", startLowerCase( stripPrefix( commandData.params[nonConstPointerIndex].name, "p" ) ) },
+          { "returnType", returnType },
+          { "vkCommand", name } } ) );
+  }
+  else
+  {
+    std::string const functionTemplate =
+      R"(    template <typename X, typename Y, typename... Z, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD StructureChain<X, Y, Z...> ${commandName}( ${argumentList} ) const VULKAN_HPP_NOEXCEPT;)";
+
+    str = replaceWithMap(
+      functionTemplate,
+      std::map<std::string, std::string>( { { "argumentList", argumentList }, { "commandName", commandName } } ) );
+  }
+
+  return str;
+}
+
+std::string VulkanHppGenerator::constructCommandType( std::string const &              name,
+                                                      CommandData const &              commandData,
+                                                      bool                             definition,
+                                                      std::map<size_t, size_t> const & vectorParamIndices ) const
+{
+  assert( !commandData.handle.empty() && ( commandData.returnType != "VkResult" ) &&
+          ( commandData.returnType != "void" ) && commandData.successCodes.empty() && commandData.errorCodes.empty() );
 
   std::string str;
 
@@ -5015,72 +5239,14 @@ std::string VulkanHppGenerator::constructCommandSimple( std::string const &     
   return str;
 }
 
-std::string
-  VulkanHppGenerator::constructCommandSimpleResult( std::string const &              name,
-                                                    CommandData const &              commandData,
-                                                    bool                             definition,
-                                                    std::map<size_t, size_t> const & vectorParamIndices ) const
+std::string VulkanHppGenerator::constructCommandVoid( std::string const &              name,
+                                                      CommandData const &              commandData,
+                                                      bool                             definition,
+                                                      std::map<size_t, size_t> const & vectorParamIndices ) const
 {
-  std::string str;
+  assert( !commandData.handle.empty() && ( commandData.returnType == "void" ) && commandData.successCodes.empty() &&
+          commandData.errorCodes.empty() );
 
-  std::set<size_t> skippedParameters = { 0 };
-  for ( auto const & vpi : vectorParamIndices )
-  {
-    if ( vpi.second != INVALID_INDEX )
-    {
-      skippedParameters.insert( vpi.second );
-    }
-  }
-
-  std::string argumentList =
-    constructArgumentListEnhanced( commandData.params, skippedParameters, INVALID_INDEX, definition, false );
-  std::string commandName = determineCommandName( name, commandData.params[0].type.type );
-  std::string nodiscard   = constructNoDiscardEnhanced( commandData );
-  std::string returnType  = constructReturnType( commandData, "void" );
-
-  if ( definition )
-  {
-    std::string const functionTemplate =
-      R"(  template <typename Dispatch>
-  ${nodiscard}VULKAN_HPP_INLINE ${returnType} ${className}::${commandName}( ${argumentList} ) const
-  {
-    Result result = static_cast<Result>( d.${vkCommand}( ${callArguments} ) );
-    return createResultValue( result, VULKAN_HPP_NAMESPACE_STRING "::${className}::${commandName}"${successCodeList} );
-  })";
-
-    str =
-      replaceWithMap( functionTemplate,
-                      std::map<std::string, std::string>(
-                        { { "argumentList", argumentList },
-                          { "callArguments", constructCallArgumentsVectors( commandData.params, vectorParamIndices ) },
-                          { "className", stripPrefix( commandData.handle, "Vk" ) },
-                          { "commandName", commandName },
-                          { "nodiscard", nodiscard },
-                          { "returnType", returnType },
-                          { "successCodeList", constructSuccessCodeList( commandData.successCodes ) },
-                          { "vkCommand", name } } ) );
-  }
-  else
-  {
-    std::string const functionTemplate =
-      R"(    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    ${nodiscard}${returnType} ${commandName}( ${argumentList} ) const;)";
-
-    str = replaceWithMap( functionTemplate,
-                          std::map<std::string, std::string>( { { "argumentList", argumentList },
-                                                                { "commandName", commandName },
-                                                                { "nodiscard", nodiscard },
-                                                                { "returnType", returnType } } ) );
-  }
-
-  return str;
-}
-
-std::string VulkanHppGenerator::constructCommandSimpleVoid( std::string const &              name,
-                                                            CommandData const &              commandData,
-                                                            bool                             definition,
-                                                            std::map<size_t, size_t> const & vectorParamIndices ) const
-{
   std::string str;
 
   std::set<size_t> skippedParameters = { 0 };
@@ -5097,8 +5263,8 @@ std::string VulkanHppGenerator::constructCommandSimpleVoid( std::string const & 
   std::string commandName = determineCommandName( name, commandData.params[0].type.type );
   std::string typenameT   = ( ( vectorParamIndices.size() == 1 ) &&
                             ( commandData.params[vectorParamIndices.begin()->first].type.type == "void" ) )
-                              ? "typename T, "
-                              : "";
+                            ? "typename T, "
+                            : "";
   std::pair<bool, std::map<size_t, std::vector<size_t>>> vectorSizeCheck = needsVectorSizeCheck( vectorParamIndices );
   std::string noexceptString = vectorSizeCheck.first ? "VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS" : "VULKAN_HPP_NOEXCEPT";
 
@@ -5142,175 +5308,141 @@ std::string VulkanHppGenerator::constructCommandSimpleVoid( std::string const & 
   return str;
 }
 
-std::string VulkanHppGenerator::constructCommandStandard( std::string const & name,
-                                                          CommandData const & commandData,
-                                                          bool                definition ) const
+std::string VulkanHppGenerator::constructCommandVoidEnumerate( std::string const &               name,
+                                                               CommandData const &               commandData,
+                                                               std::pair<size_t, size_t> const & vectorParamIndex,
+                                                               bool                              definition,
+                                                               bool                              withAllocators ) const
 {
+  assert( !commandData.handle.empty() && commandData.params[0].type.type == commandData.handle &&
+          ( commandData.returnType == "void" ) && commandData.successCodes.empty() && commandData.errorCodes.empty() );
+
   std::string str;
 
-  std::set<size_t> skippedParams;
-  if ( !commandData.handle.empty() )
-  {
-    assert( commandData.params[0].type.type == commandData.handle );
-    skippedParams.insert( 0 );
-  }
-
-  std::string argumentList = constructArgumentListStandard( commandData.params, skippedParams, definition );
-  std::string commandName  = determineCommandName( name, commandData.params[0].type.type );
-  std::string nodiscard    = constructNoDiscardStandard( commandData );
-  std::string returnType   = stripPrefix( commandData.returnType, "Vk" );
+  std::string argumentList      = constructArgumentListEnhanced( commandData.params,
+                                                            { 0, vectorParamIndex.second, vectorParamIndex.first },
+                                                            INVALID_INDEX,
+                                                            definition,
+                                                            withAllocators );
+  std::string commandName       = determineCommandName( name, commandData.params[0].type.type );
+  std::string vectorElementType = stripPrefix( commandData.params[vectorParamIndex.first].type.type, "Vk" );
 
   if ( definition )
   {
-    std::string className = stripPrefix( commandData.handle, "Vk" );
-    if ( !className.empty() )
-    {
-      className += "::";
-    }
-    std::string functionBody =
-      "d." + name + "( " + constructCallArgumentsStandard( commandData.handle, commandData.params ) + " )";
-    if ( beginsWith(commandData.returnType, "Vk"))
-    {
-      functionBody = "return static_cast<" + returnType + ">( " + functionBody + " )";
-    }
-    else if ( commandData.returnType != "void" )
-    {
-      functionBody = "return " + functionBody;
-    }
-
-    std::string const functionTemplate =
-      R"(  template <typename Dispatch>
-  ${nodiscard}VULKAN_HPP_INLINE ${returnType} ${className}${commandName}( ${argumentList} )${const} VULKAN_HPP_NOEXCEPT
+    const std::string functionTemplate =
+      R"(  template <typename ${vectorElementType}Allocator, typename Dispatch${typenameCheck}>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<${vectorElementType}, ${vectorElementType}Allocator> ${className}::${commandName}( ${argumentList} ) const
   {
-    ${functionBody};
+    std::vector<${vectorElementType}, ${vectorElementType}Allocator> ${vectorName}${vectorAllocator};
+    ${counterType} ${counterName};
+    d.${vkCommand}( ${firstCallArguments} );
+    ${vectorName}.resize( ${counterName} );
+    d.${vkCommand}( ${secondCallArguments} );
+    VULKAN_HPP_ASSERT( ${counterName} <= ${vectorName}.size() );
+    return ${vectorName};
   })";
 
-    str = replaceWithMap( functionTemplate,
-                          std::map<std::string, std::string>( { { "argumentList", argumentList },
-                                                                { "className", className },
-                                                                { "commandName", commandName },
-                                                                { "const", commandData.handle.empty() ? "" : " const" },
-                                                                { "functionBody", functionBody },
-                                                                { "nodiscard", nodiscard },
-                                                                { "returnType", returnType } } ) );
-  }
-  else
-  {
-    std::string const functionTemplate =
-      R"(    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    ${nodiscard}${returnType} ${commandName}( ${argumentList} VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )${const} VULKAN_HPP_NOEXCEPT;)";
-
-    str = replaceWithMap( functionTemplate,
-                          std::map<std::string, std::string>( { { "argumentList", argumentList },
-                                                                { "commandName", commandName },
-                                                                { "const", commandData.handle.empty() ? "" : " const" },
-                                                                { "nodiscard", nodiscard },
-                                                                { "returnType", returnType } } ) );
-  }
-  return str;
-}
-
-std::string VulkanHppGenerator::constructCommandStandardVoid( std::string const & name,
-                                                              CommandData const & commandData,
-                                                              bool                definition ) const
-{
-  std::string str;
-
-  std::string argumentList = constructArgumentListStandard( commandData.params, { 0 }, definition );
-  std::string commandName  = determineCommandName( name, commandData.params[0].type.type );
-
-  if ( definition )
-  {
-    std::string const functionTemplate =
-      R"(  template <typename Dispatch>
-  VULKAN_HPP_INLINE void ${className}::${commandName}( ${argumentList} ) const VULKAN_HPP_NOEXCEPT
-  {
-    d.${vkCommand}( ${callArguments} );
-  })";
-
-    str =
-      replaceWithMap( functionTemplate,
-                      std::map<std::string, std::string>( {
-                        { "argumentList", argumentList },
-                        { "callArguments", constructCallArgumentsStandard( commandData.handle, commandData.params ) },
-                        { "className", stripPrefix( commandData.handle, "Vk" ) },
-                        { "commandName", commandName },
-                        { "vkCommand", name },
-                      } ) );
-  }
-  else
-  {
-    std::string const functionTemplate =
-      R"(    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    void ${commandName}( ${argumentList} VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;)";
+    std::string vectorName    = startLowerCase( stripPrefix( commandData.params[vectorParamIndex.first].name, "p" ) );
+    std::string typenameCheck = ", typename B, typename std::enable_if<std::is_same<typename B::value_type, " +
+                                vectorElementType + ">::value, int>::type ";
 
     str = replaceWithMap(
       functionTemplate,
-      std::map<std::string, std::string>( { { "argumentList", argumentList }, { "commandName", commandName } } ) );
+      std::map<std::string, std::string>(
+        { { "argumentList", argumentList },
+          { "className", stripPrefix( commandData.handle, "Vk" ) },
+          { "commandName", commandName },
+          { "counterName", startLowerCase( stripPrefix( commandData.params[vectorParamIndex.second].name, "p" ) ) },
+          { "counterType", commandData.params[vectorParamIndex.second].type.type },
+          { "firstCallArguments",
+            constructCallArgumentsEnumerateVectors( commandData.params, { vectorParamIndex }, true ) },
+          { "secondCallArguments",
+            constructCallArgumentsEnumerateVectors( commandData.params, { vectorParamIndex }, false ) },
+          { "typenameCheck", withAllocators ? typenameCheck : "" },
+          { "vectorAllocator",
+            withAllocators
+              ? ( "( " + startLowerCase( stripPrefix( commandData.params[vectorParamIndex.first].type.type, "Vk" ) ) +
+                  "Allocator )" )
+              : "" },
+          { "vectorElementType", vectorElementType },
+          { "vectorName", vectorName },
+          { "vkCommand", name } } ) );
+  }
+  else
+  {
+    const std::string functionTemplate =
+      R"(    template <typename ${vectorElementType}Allocator = std::allocator<${vectorElementType}>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE${withAllocatorTypenameCheck}>
+    VULKAN_HPP_NODISCARD std::vector<${vectorElementType}, ${vectorElementType}Allocator> ${commandName}( ${argumentList} ) const;)";
+
+    std::string typenameCheck = ", typename B = " + vectorElementType +
+                                "Allocator, typename std::enable_if<std::is_same<typename B::value_type, " +
+                                vectorElementType + ">::value, int>::type = 0";
+
+    str = replaceWithMap(
+      functionTemplate,
+      std::map<std::string, std::string>( { { "argumentList", argumentList },
+                                            { "commandName", commandName },
+                                            { "vectorElementType", vectorElementType },
+                                            { "withAllocatorTypenameCheck", withAllocators ? typenameCheck : "" } } ) );
   }
   return str;
 }
 
-std::string VulkanHppGenerator::constructCommandTwoVectors( std::string const &              name,
-                                                            CommandData const &              commandData,
-                                                            std::map<size_t, size_t> const & vectorParamIndices,
-                                                            bool                             definition ) const
+std::string VulkanHppGenerator::constructCommandVoidGetValue( std::string const & name,
+                                                              CommandData const & commandData,
+                                                              size_t              nonConstPointerIndex,
+                                                              bool                definition ) const
 {
   assert( !commandData.handle.empty() );
+  assert( ( commandData.returnType == "void" ) && commandData.successCodes.empty() && commandData.errorCodes.empty() );
+
   std::string str;
 
-  auto firstVectorParamIt  = vectorParamIndices.begin();
-  auto secondVectorParamIt = std::next( firstVectorParamIt );
-
-  assert( commandData.params[0].type.type == commandData.handle );
-  assert( firstVectorParamIt->second == secondVectorParamIt->second );
-
-  std::set<size_t> skippedParameters = { 0, firstVectorParamIt->second };
+  std::set<size_t> skippedParameters = { 0, nonConstPointerIndex };
 
   std::string argumentList =
     constructArgumentListEnhanced( commandData.params, skippedParameters, INVALID_INDEX, definition, false );
   std::string commandName = determineCommandName( name, commandData.params[0].type.type );
-  std::pair<bool, std::map<size_t, std::vector<size_t>>> vectorSizeCheck = needsVectorSizeCheck( vectorParamIndices );
-  std::string noexceptString = vectorSizeCheck.first ? "VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS" : "VULKAN_HPP_NOEXCEPT";
+  std::string nodiscard   = constructNoDiscardEnhanced( commandData );
+  assert( beginsWith( commandData.params[nonConstPointerIndex].type.type, "Vk" ) );
+  std::string returnType =
+    "VULKAN_HPP_NAMESPACE::" + stripPrefix( commandData.params[nonConstPointerIndex].type.type, "Vk" );
 
   if ( definition )
   {
-    const std::string functionTemplate =
+    std::string const functionTemplate =
       R"(  template <typename Dispatch>
-  VULKAN_HPP_INLINE Result ${className}::${commandName}( ${argumentList} ) const ${noexcept}
-  {${vectorSizeCheck}
-    Result result = static_cast<Result>( d.${vkCommand}( ${callArguments} ) );
-    return createResultValue( result, VULKAN_HPP_NAMESPACE_STRING "::${className}::${commandName}"${successCodeList} );
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ${returnType} ${className}::${commandName}( ${argumentList} ) const VULKAN_HPP_NOEXCEPT
+  {
+    ${returnType} ${returnVariable};
+    d.${vkCommand}( ${callArguments} );
+    return ${returnVariable};
   })";
 
-    str =
-      replaceWithMap( functionTemplate,
-                      std::map<std::string, std::string>(
-                        { { "argumentList", argumentList },
-                          { "callArguments", constructCallArgumentsVectors( commandData.params, vectorParamIndices ) },
-                          { "className", stripPrefix( commandData.handle, "Vk" ) },
-                          { "commandName", commandName },
-                          { "noexcept", noexceptString },
-                          { "successCodeList", constructSuccessCodeList( commandData.successCodes ) },
-                          { "vectorSizeCheck",
-                            vectorSizeCheck.first
-                              ? constructVectorSizeCheck( name, commandData, vectorSizeCheck.second, skippedParameters )
-                              : "" },
-                          { "vkCommand", name } } ) );
+    str = replaceWithMap(
+      functionTemplate,
+      std::map<std::string, std::string>(
+        { { "argumentList", argumentList },
+          { "callArguments",
+            constructCallArgumentsGetValue( commandData.handle, commandData.params, nonConstPointerIndex ) },
+          { "className", stripPrefix( commandData.handle, "Vk" ) },
+          { "commandName", commandName },
+          { "returnType", returnType },
+          { "returnVariable", startLowerCase( stripPrefix( commandData.params[nonConstPointerIndex].name, "p" ) ) },
+          { "vkCommand", name } } ) );
   }
   else
   {
-    const std::string functionTemplate =
+    std::string const functionTemplate =
       R"(    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    Result ${commandName}( ${argumentList} ) const ${noexcept};)";
+    VULKAN_HPP_NODISCARD ${returnType} ${commandName}( ${argumentList} ) const VULKAN_HPP_NOEXCEPT;)";
 
-    str = replaceWithMap( functionTemplate,
-                          std::map<std::string, std::string>( {
-                            { "argumentList", argumentList },
-                            { "commandName", commandName },
-                            { "noexcept", noexceptString },
-                          } ) );
+    str = replaceWithMap(
+      functionTemplate,
+      std::map<std::string, std::string>(
+        { { "argumentList", argumentList }, { "commandName", commandName }, { "returnType", returnType } } ) );
   }
+
   return str;
 }
 
@@ -7380,26 +7512,6 @@ std::string VulkanHppGenerator::getVectorSize( std::vector<ParamData> const &   
   }
 }
 
-bool VulkanHppGenerator::isChainableStructure( std::string const & type ) const
-{
-  if ( beginsWith( type, "Vk" ) )
-  {
-    auto it = m_structures.find( type );
-    if ( it == m_structures.end() )
-    {
-      it = std::find_if(
-        m_structures.begin(), m_structures.end(), [&type]( std::pair<std::string, StructureData> const & sd ) {
-          return sd.second.aliases.find( type ) != sd.second.aliases.end();
-        } );
-    }
-    if ( it != m_structures.end() )
-    {
-      return ( 1 < it->second.members.size() ) && ( it->second.members[1].name == "pNext" );
-    }
-  }
-  return false;
-}
-
 bool VulkanHppGenerator::isHandleType( std::string const & type ) const
 {
   if ( beginsWith( type, "Vk" ) )
@@ -7467,6 +7579,26 @@ bool VulkanHppGenerator::isParamIndirect( std::string const & name, ParamData co
                           [&n = nameParts[1]]( MemberData const & md ) { return md.name == n; } ) !=
             structureIt->second.members.end() );
     return true;
+  }
+  return false;
+}
+
+bool VulkanHppGenerator::isStructureChainAnchor( std::string const & type ) const
+{
+  if ( beginsWith( type, "Vk" ) )
+  {
+    auto it = m_structures.find( type );
+    if ( it == m_structures.end() )
+    {
+      it = std::find_if(
+        m_structures.begin(), m_structures.end(), [&type]( std::pair<std::string, StructureData> const & sd ) {
+          return sd.second.aliases.find( type ) != sd.second.aliases.end();
+        } );
+    }
+    if ( it != m_structures.end() )
+    {
+      return m_extendedStructs.find( it->first ) != m_extendedStructs.end();
+    }
   }
   return false;
 }

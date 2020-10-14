@@ -323,6 +323,11 @@ private:
                                           CommandData const &               commandData,
                                           std::pair<size_t, size_t> const & vectorParamIndex,
                                           bool                              definition ) const;
+  void        appendCommandGetChain( std::string &       str,
+                                     std::string const & name,
+                                     CommandData const & commandData,
+                                     size_t              nonConstPointerIndex,
+                                     bool                definition ) const;
   void        appendCommandGetHandle( std::string &       str,
                                       std::string const & name,
                                       CommandData const & commandData,
@@ -543,86 +548,93 @@ private:
   std::string constructCallArgumentsStandard( std::string const & handle, std::vector<ParamData> const & params ) const;
   std::string constructCallArgumentsVectors( std::vector<ParamData> const &   params,
                                              std::map<size_t, size_t> const & vectorParamIndices ) const;
-  std::string constructCommandEnumerateTwoVectors( std::string const &              name,
+  std::string constructCommandResult( std::string const &              name,
+                                      CommandData const &              commandData,
+                                      bool                             definition,
+                                      std::map<size_t, size_t> const & vectorParamIndices ) const;
+  std::string constructCommandResultEnumerateTwoVectors( std::string const &              name,
+                                                         CommandData const &              commandData,
+                                                         std::map<size_t, size_t> const & vectorParamIndices,
+                                                         bool                             definition,
+                                                         bool                             withAllocators ) const;
+  std::string constructCommandResultEnumerateTwoVectorsDeprecated( std::string const &              name,
+                                                                   CommandData const &              commandData,
+                                                                   std::map<size_t, size_t> const & vectorParamIndices,
+                                                                   bool                             definition,
+                                                                   bool withAllocators ) const;
+  std::string constructCommandResultGetHandleUnique( std::string const & name,
+                                                     CommandData const & commandData,
+                                                     size_t              nonConstPointerIndex,
+                                                     bool                definition ) const;
+  std::string constructCommandResultGetTwoVectors( std::string const &              name,
                                                    CommandData const &              commandData,
                                                    std::map<size_t, size_t> const & vectorParamIndices,
-                                                   bool                             definition,
-                                                   bool                             withAllocators ) const;
-  std::string constructCommandEnumerateTwoVectorsDeprecated( std::string const &              name,
-                                                             CommandData const &              commandData,
-                                                             std::map<size_t, size_t> const & vectorParamIndices,
-                                                             bool                             definition,
-                                                             bool                             withAllocators ) const;
-  std::string constructCommandEnumerateVoid( std::string const &               name,
-                                             CommandData const &               commandData,
-                                             std::pair<size_t, size_t> const & vectorParamIndex,
-                                             bool                              definition,
-                                             bool                              withAllocators ) const;
-  std::string constructCommandGetHandleUnique( std::string const & name,
-                                               CommandData const & commandData,
-                                               size_t              nonConstPointerIndex,
-                                               bool                definition ) const;
-  std::string constructCommandGetValue( std::string const & name,
-                                        CommandData const & commandData,
-                                        size_t              nonConstPointerIndex,
-                                        bool                definition ) const;
-  std::string constructCommandGetVector( std::string const &              name,
-                                         CommandData const &              commandData,
-                                         std::map<size_t, size_t> const & vectorParamIndices,
-                                         size_t                           returnParamIndex,
-                                         bool                             definition ) const;
-  std::string constructCommandGetVectorDeprecated( std::string const &              name,
-                                                   CommandData const &              commandData,
-                                                   std::map<size_t, size_t> const & vectorParamIndices,
-                                                   size_t                           returnParamIndex,
                                                    bool                             definition ) const;
-  std::string constructCommandGetVectorOfHandles( std::string const &              name,
-                                                  CommandData const &              commandData,
-                                                  std::map<size_t, size_t> const & vectorParamIndices,
-                                                  size_t                           returnParamIndex,
-                                                  bool                             definition,
-                                                  bool                             withAllocator ) const;
-  std::string constructCommandGetVectorOfHandlesSingular( std::string const &              name,
-                                                          CommandData const &              commandData,
-                                                          std::map<size_t, size_t> const & vectorParamIndices,
-                                                          size_t                           returnParamIndex,
-                                                          bool                             definition ) const;
-  std::string constructCommandGetVectorOfUniqueHandles( std::string const &              name,
+  std::string constructCommandResultGetValue( std::string const & name,
+                                              CommandData const & commandData,
+                                              size_t              nonConstPointerIndex,
+                                              bool                definition ) const;
+  std::string constructCommandResultGetVector( std::string const &              name,
+                                               CommandData const &              commandData,
+                                               std::map<size_t, size_t> const & vectorParamIndices,
+                                               size_t                           returnParamIndex,
+                                               bool                             definition ) const;
+  std::string constructCommandResultGetVectorDeprecated( std::string const &              name,
+                                                         CommandData const &              commandData,
+                                                         std::map<size_t, size_t> const & vectorParamIndices,
+                                                         size_t                           returnParamIndex,
+                                                         bool                             definition ) const;
+  std::string constructCommandResultGetVectorOfHandles( std::string const &              name,
                                                         CommandData const &              commandData,
                                                         std::map<size_t, size_t> const & vectorParamIndices,
                                                         size_t                           returnParamIndex,
                                                         bool                             definition,
                                                         bool                             withAllocator ) const;
-  std::string constructCommandGetVectorOfUniqueHandlesSingular( std::string const &              name,
+  std::string constructCommandResultGetVectorOfHandlesSingular( std::string const &              name,
                                                                 CommandData const &              commandData,
                                                                 std::map<size_t, size_t> const & vectorParamIndices,
                                                                 size_t                           returnParamIndex,
                                                                 bool                             definition ) const;
-  std::string constructCommandGetVectorSingular( std::string const &              name,
-                                                 CommandData const &              commandData,
-                                                 std::map<size_t, size_t> const & vectorParamIndices,
-                                                 size_t                           returnParamIndex,
-                                                 bool                             definition ) const;
-  std::string constructCommandSimple( std::string const &              name,
-                                      CommandData const &              commandData,
-                                      bool                             definition,
-                                      std::map<size_t, size_t> const & vectorParamIndices ) const;
-  std::string constructCommandSimpleResult( std::string const &              name,
-                                            CommandData const &              commandData,
-                                            bool                             definition,
-                                            std::map<size_t, size_t> const & vectorParamIndices ) const;
-  std::string constructCommandSimpleVoid( std::string const &              name,
-                                          CommandData const &              commandData,
-                                          bool                             definition,
-                                          std::map<size_t, size_t> const & vectorParamIndices ) const;
+  std::string constructCommandResultGetVectorOfHandlesUnique( std::string const &              name,
+                                                              CommandData const &              commandData,
+                                                              std::map<size_t, size_t> const & vectorParamIndices,
+                                                              size_t                           returnParamIndex,
+                                                              bool                             definition,
+                                                              bool                             withAllocator ) const;
+  std::string
+              constructCommandResultGetVectorOfHandlesUniqueSingular( std::string const &              name,
+                                                                      CommandData const &              commandData,
+                                                                      std::map<size_t, size_t> const & vectorParamIndices,
+                                                                      size_t                           returnParamIndex,
+                                                                      bool                             definition ) const;
+  std::string constructCommandResultGetVectorSingular( std::string const &              name,
+                                                       CommandData const &              commandData,
+                                                       std::map<size_t, size_t> const & vectorParamIndices,
+                                                       size_t                           returnParamIndex,
+                                                       bool                             definition ) const;
   std::string
     constructCommandStandard( std::string const & name, CommandData const & commandData, bool definition ) const;
-  std::string
-    constructCommandStandardVoid( std::string const & name, CommandData const & commandData, bool definition ) const;
-  std::string      constructCommandTwoVectors( std::string const &              name,
-                                               CommandData const &              commandData,
-                                               std::map<size_t, size_t> const & vectorParamIndices,
-                                               bool                             definition ) const;
+  std::string              constructCommandType( std::string const &              name,
+                                                 CommandData const &              commandData,
+                                                 bool                             definition,
+                                                 std::map<size_t, size_t> const & vectorParamIndices ) const;
+  std::string              constructCommandVoid( std::string const &              name,
+                                                 CommandData const &              commandData,
+                                                 bool                             definition,
+                                                 std::map<size_t, size_t> const & vectorParamIndices ) const;
+  std::string              constructCommandVoidEnumerate( std::string const &               name,
+                                                  CommandData const &               commandData,
+                                                  std::pair<size_t, size_t> const & vectorParamIndex,
+                                                  bool                              definition,
+                                                  bool                              withAllocators ) const;
+  std::string      constructCommandVoidGetChain( std::string const & name,
+                                                 CommandData const & commandData,
+                                                 size_t              nonConstPointerIndex,
+                                                 bool                definition ) const;
+  std::string      constructCommandVoidGetValue( std::string const & name,
+                                                 CommandData const & commandData,
+                                                 size_t              nonConstPointerIndex,
+                                                 bool                definition ) const;
   std::string      constructConstexprString( std::pair<std::string, StructureData> const & structData ) const;
   std::string      constructFunctionBodyEnhanced( std::string const &              indentation,
                                                   std::string const &              name,
@@ -697,11 +709,11 @@ private:
   std::string                         getVectorSize( std::vector<ParamData> const &   params,
                                                      std::map<size_t, size_t> const & vectorParamIndices,
                                                      size_t                           returnParamIndex ) const;
-  bool                                isChainableStructure( std::string const & type ) const;
   bool                                isHandleType( std::string const & type ) const;
   bool                                isParam( std::string const & name, std::vector<ParamData> const & params ) const;
   bool isParamIndirect( std::string const & name, std::vector<ParamData> const & params ) const;
   bool isParamIndirect( std::string const & name, ParamData const & param ) const;
+  bool isStructureChainAnchor( std::string const & type ) const;
   bool isTwoStepAlgorithm( std::vector<ParamData> const & params ) const;
   bool needsComplexBody( CommandData const & commandData ) const;
   std::pair<bool, std::map<size_t, std::vector<size_t>>>

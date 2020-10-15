@@ -313,82 +313,58 @@ private:
                              std::string const & name,
                              CommandData const & commandData,
                              bool                definition ) const;
-  void        appendCommandEnumerateTwoVectors( std::string &                    str,
-                                                std::string const &              name,
-                                                CommandData const &              commandData,
-                                                std::map<size_t, size_t> const & vectorParamIndices,
-                                                bool                             definition ) const;
-  void        appendCommandEnumerateVoid( std::string &                     str,
-                                          std::string const &               name,
-                                          CommandData const &               commandData,
-                                          std::pair<size_t, size_t> const & vectorParamIndex,
-                                          bool                              definition ) const;
-  void        appendCommandGetChainResult( std::string &       str,
-                                           std::string const & name,
-                                           CommandData const & commandData,
-                                           size_t              nonConstPointerIndex,
-                                           bool                definition ) const;
-  void        appendCommandGetChainVoid( std::string &       str,
-                                         std::string const & name,
-                                         CommandData const & commandData,
-                                         size_t              nonConstPointerIndex,
-                                         bool                definition ) const;
-  void        appendCommandGetHandle( std::string &       str,
-                                      std::string const & name,
-                                      CommandData const & commandData,
-                                      size_t              nonConstPointerIndex,
-                                      bool                definition ) const;
-  void        appendCommandGetValue( std::string &       str,
-                                     std::string const & name,
-                                     CommandData const & commandData,
-                                     size_t              nonConstPointerIndex,
-                                     bool                definition ) const;
-  void        appendCommandGetVector( std::string &                    str,
-                                      std::string const &              name,
-                                      CommandData const &              commandData,
-                                      std::map<size_t, size_t> const & vectorParamIndices,
-                                      size_t                           returnParamIndex,
-                                      bool                             definition ) const;
-  void        appendCommandGetVectorOfHandles( std::string &                    str,
-                                               std::string const &              name,
-                                               CommandData const &              commandData,
-                                               std::map<size_t, size_t> const & vectorParamIndices,
-                                               size_t                           returnParamIndex,
-                                               bool                             definition ) const;
-  void        appendCommandGetVectorOfHandlesIndirect( std::string &                    str,
-                                                       std::string const &              name,
-                                                       CommandData const &              commandData,
-                                                       std::map<size_t, size_t> const & vectorParamIndices,
-                                                       size_t                           returnParamIndex,
-                                                       bool                             definition ) const;
-  void        appendCommandSimple( std::string &                    str,
-                                   std::string const &              name,
-                                   CommandData const &              commandData,
-                                   bool                             definition,
-                                   std::map<size_t, size_t> const & vectorParamIndices ) const;
-  void        appendCommandSimpleReturn( std::string &                    str,
-                                         std::string const &              name,
-                                         CommandData const &              commandData,
-                                         bool                             definition,
-                                         std::map<size_t, size_t> const & vectorParamIndices ) const;
-  void        appendCommandSimpleVoid( std::string &                    str,
-                                       std::string const &              name,
-                                       CommandData const &              commandData,
-                                       bool                             definition,
-                                       std::map<size_t, size_t> const & vectorParamIndices ) const;
-  void        appendCommandTrivial( std::string &       str,
+  void        appendCommandChained( std::string &       str,
                                     std::string const & name,
                                     CommandData const & commandData,
+                                    size_t              nonConstPointerIndex,
                                     bool                definition ) const;
-  void        appendCommandTrivialVoid( std::string &       str,
-                                        std::string const & name,
-                                        CommandData const & commandData,
-                                        bool                definition ) const;
-  void        appendCommandTwoVectors( std::string &                    str,
-                                       std::string const &              name,
-                                       CommandData const &              commandData,
-                                       std::map<size_t, size_t> const & vectorParamIndices,
-                                       bool                             definition ) const;
+  void        appendCommandSingular( std::string &                    str,
+                                     std::string const &              name,
+                                     CommandData const &              commandData,
+                                     std::map<size_t, size_t> const & vectorParamIndices,
+                                     size_t                           returnParamIndex,
+                                     bool                             definition ) const;
+  void        appendCommandStandard( std::string &       str,
+                                     std::string const & name,
+                                     CommandData const & commandData,
+                                     bool                definition ) const;
+  void        appendCommandStandardAndEnhanced( std::string &                    str,
+                                                std::string const &              name,
+                                                CommandData const &              commandData,
+                                                bool                             definition,
+                                                std::map<size_t, size_t> const & vectorParamIndices,
+                                                std::vector<size_t> const &      nonConstPointerParamIndices ) const;
+  void        appendCommandStandardOrEnhanced( std::string &       str,
+                                               std::string const & name,
+                                               CommandData const & commandData,
+                                               bool                definition ) const;
+  void        appendCommandUnique( std::string &       str,
+                                   std::string const & name,
+                                   CommandData const & commandData,
+                                   size_t              nonConstPointerIndex,
+                                   bool                definition ) const;
+  void        appendCommandVector( std::string &                     str,
+                                   std::string const &               name,
+                                   CommandData const &               commandData,
+                                   std::pair<size_t, size_t> const & vectorParamIndex,
+                                   bool                              definition ) const;
+  void        appendCommandVectorDeprecated( std::string &                    str,
+                                             std::string const &              name,
+                                             CommandData const &              commandData,
+                                             std::map<size_t, size_t> const & vectorParamIndices,
+                                             bool                             definition ) const;
+  void        appendCommandVectorSingularUnique( std::string &                    str,
+                                                 std::string const &              name,
+                                                 CommandData const &              commandData,
+                                                 std::map<size_t, size_t> const & vectorParamIndices,
+                                                 size_t                           returnParamIndex,
+                                                 bool                             definition ) const;
+  void        appendCommandVectorUnique( std::string &                    str,
+                                         std::string const &              name,
+                                         CommandData const &              commandData,
+                                         std::map<size_t, size_t> const & vectorParamIndices,
+                                         size_t                           returnParamIndex,
+                                         bool                             definition ) const;
   void        appendDispatchLoaderDynamicCommand( std::string &       str,
                                                   std::string &       emptyFunctions,
                                                   std::string &       deviceFunctions,
@@ -415,12 +391,12 @@ private:
                               bool                             enhanced,
                               bool                             isStructureChain,
                               bool                             withAllocatorArgument ) const;
-  std::string appendFunctionBodyEnhancedLocalReturnVariable( std::string &                    str,
-                                                             std::string const &              indentation,
-                                                             CommandData const &              commandData,
-                                                             size_t                           returnParamIndex,
-                                                             std::string const &              enhancedReturnType,
-                                                             bool                             withAllocator ) const;
+  std::string appendFunctionBodyEnhancedLocalReturnVariable( std::string &       str,
+                                                             std::string const & indentation,
+                                                             CommandData const & commandData,
+                                                             size_t              returnParamIndex,
+                                                             std::string const & enhancedReturnType,
+                                                             bool                withAllocator ) const;
   void        appendFunctionBodyEnhancedMultiVectorSizeCheck( std::string &                    str,
                                                               std::string const &              indentation,
                                                               std::string const &              name,

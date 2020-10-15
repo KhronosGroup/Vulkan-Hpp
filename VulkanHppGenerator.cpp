@@ -1172,51 +1172,23 @@ void VulkanHppGenerator::appendCommand( std::string &       str,
           // no vector paramter and no non-void const-pointer
           if ( commandData.returnType == "void" )
           {
-            // void functions
-            appendCommandTrivialVoid( str, name, commandData, definition );
+            // void functions with no fancy input have just standard call
+            appendCommandStandard( str, name, commandData, definition );
             appendedFunction = true;
           }
           else if ( commandData.returnType == "VkResult" )
           {
-            // function returning a result
-            appendCommandTrivial( str, name, commandData, definition );
+            // function returning a result but no fancy input have either standard or enhanced call
+            appendCommandStandardOrEnhanced( str, name, commandData, definition );
             appendedFunction = true;
           }
         }
         else
         {
-          // with const-pointers that might be changed to by-reference arguments
-          if ( commandData.returnType == "void" )
-          {
-            appendCommandSimpleVoid( str, name, commandData, definition, vectorParamIndices );
-            appendedFunction = true;
-          }
-          else if ( commandData.returnType == "VkResult" )
-          {
-            switch ( vectorParamIndices.size() )
-            {
-              case 0:  // fallthtrough
-              case 1:
-                // returns VkResult, but there's just one success code
-                appendCommandSimple( str, name, commandData, definition, vectorParamIndices );
-                appendedFunction = true;
-                break;
-              case 2:
-                assert( vectorParamIndices.begin()->second != INVALID_INDEX );
-                assert( vectorParamIndices.begin()->second == std::next( vectorParamIndices.begin() )->second );
-                assert( commandData.params[vectorParamIndices.begin()->second].type.isValue() );
-                // size is given by value and the vectors are const pointers, that is input parameters
-                appendCommandTwoVectors( str, name, commandData, vectorParamIndices, definition );
-                appendedFunction = true;
-                break;
-              default: assert( false ); break;
-            }
-          }
-          else
-          {
-            appendCommandSimpleReturn( str, name, commandData, definition, vectorParamIndices );
-            appendedFunction = true;
-          }
+          // functions with some fancy input have both, standard and enhanced call
+          appendCommandStandardAndEnhanced(
+            str, name, commandData, definition, vectorParamIndices, nonConstPointerParamIndices );
+          appendedFunction = true;
         }
       }
       break;
@@ -1227,33 +1199,26 @@ void VulkanHppGenerator::appendCommand( std::string &       str,
         if ( returnVectorParamIt == vectorParamIndices.end() )
         {
           // the return parameter is not a vector
-          if ( isStructureChainAnchor( commandData.params[nonConstPointerParamIndices[0]].type.type ) )
+          if ( isHandleType( commandData.params[nonConstPointerParamIndices[0]].type.type ) )
           {
             if ( commandData.returnType == "VkResult" )
             {
-              appendCommandGetChainResult( str, name, commandData, nonConstPointerParamIndices[0], definition );
-            }
-            else
-            {
-              assert( commandData.returnType == "void" );
-              appendCommandGetChainVoid( str, name, commandData, nonConstPointerParamIndices[0], definition );
-            }
-            appendedFunction = true;
-          }
-          else
-          {
-            if ( commandData.returnType == "VkResult" )
-            {
-              if ( isHandleType( commandData.params[nonConstPointerParamIndices[0]].type.type ) )
-              {
-                appendCommandGetHandle( str, name, commandData, nonConstPointerParamIndices[0], definition );
-              }
-              else
-              {
-                appendCommandGetValue( str, name, commandData, nonConstPointerParamIndices[0], definition );
-              }
+              // provide standard, enhanced, and unique call
+              appendCommandUnique( str, name, commandData, nonConstPointerParamIndices[0], definition );
               appendedFunction = true;
             }
+          }
+          else if ( isStructureChainAnchor( commandData.params[nonConstPointerParamIndices[0]].type.type ) )
+          {
+            // provide standard, enhanced, and chained call
+            appendCommandChained( str, name, commandData, nonConstPointerParamIndices[0], definition );
+            appendedFunction = true;
+          }
+          else if ( ( commandData.returnType == "VkResult" ) || ( commandData.returnType == "void" ) )
+          {
+            appendCommandStandardAndEnhanced(
+              str, name, commandData, definition, vectorParamIndices, nonConstPointerParamIndices );
+            appendedFunction = true;
           }
         }
         else
@@ -1265,7 +1230,8 @@ void VulkanHppGenerator::appendCommand( std::string &       str,
             {
               assert( vectorParamIndices.size() == 2 );
               assert( vectorParamIndices.begin()->second == std::next( vectorParamIndices.begin() )->second );
-              appendCommandGetVectorOfHandles(
+              // provide standard, enhanced, vector, singular, and unique (and the combinations!) calls
+              appendCommandVectorSingularUnique(
                 str, name, commandData, vectorParamIndices, nonConstPointerParamIndices[0], definition );
             }
             else
@@ -1273,7 +1239,8 @@ void VulkanHppGenerator::appendCommand( std::string &       str,
               assert( ( isParamIndirect( commandData.params[returnVectorParamIt->first].len,
                                          commandData.params[returnVectorParamIt->second] ) ) );
               assert( vectorParamIndices.size() == 1 );
-              appendCommandGetVectorOfHandlesIndirect(
+              // provide standard, enhanced, vector, and unique (and the combinations!) calls
+              appendCommandVectorUnique(
                 str, name, commandData, vectorParamIndices, nonConstPointerParamIndices[0], definition );
             }
             appendedFunction = true;
@@ -1282,7 +1249,8 @@ void VulkanHppGenerator::appendCommand( std::string &       str,
           {
             assert( commandData.params[returnVectorParamIt->first].type.type == "void" );
             assert( commandData.params[returnVectorParamIt->second].type.isValue() );
-            appendCommandGetVector(
+            // provide standard, enhanced, and singular calls
+            appendCommandSingular(
               str, name, commandData, vectorParamIndices, nonConstPointerParamIndices[0], definition );
             appendedFunction = true;
           }
@@ -1304,7 +1272,8 @@ void VulkanHppGenerator::appendCommand( std::string &       str,
                                             m_extendedStructs ) )
           {
             assert( commandData.params[vectorParamIndexIt->first].type.type != "void" );
-            appendCommandEnumerateVoid( str, name, commandData, *vectorParamIndexIt, definition );
+            // provide standard, enhanced, and vector calls
+            appendCommandVector( str, name, commandData, *vectorParamIndexIt, definition );
             appendedFunction = true;
           }
         }
@@ -1331,7 +1300,8 @@ void VulkanHppGenerator::appendCommand( std::string &       str,
                params[firstVectorParam->second].type.isNonConstPointer() )
           {
             // both vectors, as well as the size parameter are non-const pointer that is output parameters
-            appendCommandEnumerateTwoVectors( str, name, commandData, vectorParamIndices, definition );
+            // provide standard, enhanced, vector and deprecated calls!
+            appendCommandVectorDeprecated( str, name, commandData, vectorParamIndices, definition );
             appendedFunction = true;
           }
         }
@@ -1508,11 +1478,256 @@ void VulkanHppGenerator::appendCommand( std::string &       str,
   }
 }
 
-void VulkanHppGenerator::appendCommandEnumerateTwoVectors( std::string &                    str,
-                                                           std::string const &              name,
-                                                           CommandData const &              commandData,
-                                                           std::map<size_t, size_t> const & vectorParamIndices,
-                                                           bool                             definition ) const
+void VulkanHppGenerator::appendCommandChained( std::string &       str,
+                                               std::string const & name,
+                                               CommandData const & commandData,
+                                               size_t              nonConstPointerIndex,
+                                               bool                definition ) const
+{
+  assert( ( commandData.returnType == "VkResult" ) || ( commandData.returnType == "void" ) );
+
+  std::string const functionTemplate = R"(
+${enter}${commandStandard}${newlineOnDefinition}
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+${commandEnhanced}${newlineOnDefinition}
+${commandEnhancedChained}
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+${leave})";
+
+  std::string enter, leave;
+  std::tie( enter, leave ) = generateProtection( commandData.feature, commandData.extensions );
+
+  str +=
+    replaceWithMap( functionTemplate,
+                    std::map<std::string, std::string>(
+                      { { "commandEnhanced",
+                          ( commandData.returnType == "void" )
+                            ? constructCommandVoidGetValue( name, commandData, nonConstPointerIndex, definition )
+                            : constructCommandResultGetValue( name, commandData, nonConstPointerIndex, definition ) },
+                        { "commandEnhancedChained",
+                          ( commandData.returnType == "void" )
+                            ? constructCommandVoidGetChain( name, commandData, nonConstPointerIndex, definition )
+                            : constructCommandResultGetChain( name, commandData, nonConstPointerIndex, definition ) },
+                        { "commandStandard", constructCommandStandard( name, commandData, definition ) },
+                        { "enter", enter },
+                        { "leave", leave },
+                        { "newlineOnDefinition", definition ? "\n" : "" } } ) );
+}
+
+void VulkanHppGenerator::appendCommandSingular( std::string &                    str,
+                                                std::string const &              name,
+                                                CommandData const &              commandData,
+                                                std::map<size_t, size_t> const & vectorParamIndices,
+                                                size_t                           returnParamIndex,
+                                                bool                             definition ) const
+{
+  assert( commandData.returnType == "VkResult" );
+
+  std::string const functionTemplate = R"(
+${enter}${commandStandard}${newlineOnDefinition}
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+${commandDeprecated}${newlineOnDefinition}
+${commandEnhanced}${newlineOnDefinition}
+${commandEnhancedSingular}
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+${leave})";
+
+  std::string enter, leave;
+  std::tie( enter, leave ) = generateProtection( commandData.feature, commandData.extensions );
+
+  str += replaceWithMap(
+    functionTemplate,
+    std::map<std::string, std::string>(
+      { { "commandEnhanced",
+          constructCommandResultGetVector( name, commandData, vectorParamIndices, returnParamIndex, definition ) },
+        { "commandDeprecated",
+          constructCommandResultGetVectorDeprecated(
+            name, commandData, vectorParamIndices, returnParamIndex, definition ) },
+        { "commandEnhancedSingular",
+          constructCommandResultGetVectorSingular(
+            name, commandData, vectorParamIndices, returnParamIndex, definition ) },
+        { "commandStandard", constructCommandStandard( name, commandData, definition ) },
+        { "enter", enter },
+        { "leave", leave },
+        { "newlineOnDefinition", definition ? "\n" : "" } } ) );
+}
+
+void VulkanHppGenerator::appendCommandStandard( std::string &       str,
+                                                std::string const & name,
+                                                CommandData const & commandData,
+                                                bool                definition ) const
+{
+  const std::string functionTemplate = R"(
+${commandStandard}
+)";
+
+  std::string enter, leave;
+  std::tie( enter, leave ) = generateProtection( commandData.feature, commandData.extensions );
+  assert( enter.empty() );
+
+  str += replaceWithMap( functionTemplate,
+                         std::map<std::string, std::string>( {
+                           { "commandStandard", constructCommandStandard( name, commandData, definition ) },
+                         } ) );
+}
+
+void VulkanHppGenerator::appendCommandStandardAndEnhanced(
+  std::string &                    str,
+  std::string const &              name,
+  CommandData const &              commandData,
+  bool                             definition,
+  std::map<size_t, size_t> const & vectorParamIndices,
+  std::vector<size_t> const &      nonConstPointerParamIndices ) const
+{
+  const std::string functionTemplate = R"(
+${enter}${commandStandard}${newlineOnDefinition}
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+${commandEnhanced}
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+${leave})";
+
+  std::string enter, leave;
+  std::tie( enter, leave ) = generateProtection( commandData.feature, commandData.extensions );
+
+  std::string commandEnhanced;
+  switch ( nonConstPointerParamIndices.size() )
+  {
+    case 0:
+      if ( commandData.returnType == "void" )
+      {
+        commandEnhanced = constructCommandVoid( name, commandData, definition, vectorParamIndices );
+      }
+      else if ( commandData.returnType == "VkResult" )
+      {
+        if ( vectorParamIndices.size() < 2 )
+        {
+          commandEnhanced = constructCommandResult( name, commandData, definition, vectorParamIndices );
+        }
+        else
+        {
+          assert( vectorParamIndices.size() == 2 );
+          assert( vectorParamIndices.begin()->second != INVALID_INDEX );
+          assert( vectorParamIndices.begin()->second == std::next( vectorParamIndices.begin() )->second );
+          assert( commandData.params[vectorParamIndices.begin()->second].type.isValue() );
+          commandEnhanced = constructCommandResultGetTwoVectors( name, commandData, vectorParamIndices, definition );
+        }
+      }
+      else
+      {
+        commandEnhanced = constructCommandType( name, commandData, definition, vectorParamIndices );
+      }
+      break;
+    case 1:
+      commandEnhanced =
+        ( commandData.returnType == "void" )
+          ? constructCommandVoidGetValue( name, commandData, nonConstPointerParamIndices[0], definition )
+          : constructCommandResultGetValue( name, commandData, nonConstPointerParamIndices[0], definition );
+      break;
+    default: assert( false ); break;
+  }
+
+  str += replaceWithMap( functionTemplate,
+                         std::map<std::string, std::string>(
+                           { { "commandEnhanced", commandEnhanced },
+                             { "commandStandard", constructCommandStandard( name, commandData, definition ) },
+                             { "enter", enter },
+                             { "leave", leave },
+                             { "newlineOnDefinition", definition ? "\n" : "" } } ) );
+}
+
+void VulkanHppGenerator::appendCommandStandardOrEnhanced( std::string &       str,
+                                                          std::string const & name,
+                                                          CommandData const & commandData,
+                                                          bool                definition ) const
+{
+  assert( commandData.returnType == "VkResult" );
+
+  const std::string functionTemplate = R"(
+${enter}#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
+${commandStandard}
+#else
+${commandEnhanced}
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+${leave}
+)";
+
+  std::string enter, leave;
+  std::tie( enter, leave ) = generateProtection( commandData.feature, commandData.extensions );
+
+  str += replaceWithMap( functionTemplate,
+                         std::map<std::string, std::string>(
+                           { { "commandEnhanced", constructCommandResult( name, commandData, definition, {} ) },
+                             { "commandStandard", constructCommandStandard( name, commandData, definition ) },
+                             { "enter", enter },
+                             { "leave", leave } } ) );
+}
+
+void VulkanHppGenerator::appendCommandUnique( std::string &       str,
+                                              std::string const & name,
+                                              CommandData const & commandData,
+                                              size_t              nonConstPointerIndex,
+                                              bool                definition ) const
+{
+  std::string const functionTemplate = R"(
+${enter}${commandStandard}${newlineOnDefinition}
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+${commandEnhanced}${newlineOnDefinition}
+#  ifndef VULKAN_HPP_NO_SMART_HANDLE
+${commandEnhancedUnique}
+#  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+${leave})";
+
+  std::string enter, leave;
+  std::tie( enter, leave ) = generateProtection( commandData.feature, commandData.extensions );
+
+  str += replaceWithMap(
+    functionTemplate,
+    std::map<std::string, std::string>(
+      { { "commandEnhanced", constructCommandResultGetValue( name, commandData, nonConstPointerIndex, definition ) },
+        { "commandEnhancedUnique",
+          constructCommandResultGetHandleUnique( name, commandData, nonConstPointerIndex, definition ) },
+        { "commandStandard", constructCommandStandard( name, commandData, definition ) },
+        { "enter", enter },
+        { "leave", leave },
+        { "newlineOnDefinition", definition ? "\n" : "" } } ) );
+}
+
+void VulkanHppGenerator::appendCommandVector( std::string &                     str,
+                                              std::string const &               name,
+                                              CommandData const &               commandData,
+                                              std::pair<size_t, size_t> const & vectorParamIndex,
+                                              bool                              definition ) const
+{
+  assert( commandData.returnType == "void" );
+
+  std::string enter, leave;
+  std::tie( enter, leave ) = generateProtection( commandData.feature, commandData.extensions );
+  assert( enter.empty() );
+
+  const std::string functionTemplate = R"(
+${commandStandard}${newlineOnDefinition}
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+${commandEnhanced}${newlineOnDefinition}
+${commandEnhancedWithAllocators}
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+)";
+
+  str += replaceWithMap(
+    functionTemplate,
+    std::map<std::string, std::string>(
+      { { "commandEnhanced", constructCommandVoidEnumerate( name, commandData, vectorParamIndex, definition, false ) },
+        { "commandEnhancedWithAllocators",
+          constructCommandVoidEnumerate( name, commandData, vectorParamIndex, definition, true ) },
+        { "commandStandard", constructCommandStandard( name, commandData, definition ) },
+        { "newlineOnDefinition", definition ? "\n" : "" } } ) );
+}
+
+void VulkanHppGenerator::appendCommandVectorDeprecated( std::string &                    str,
+                                                        std::string const &              name,
+                                                        CommandData const &              commandData,
+                                                        std::map<size_t, size_t> const & vectorParamIndices,
+                                                        bool                             definition ) const
 {
   assert( commandData.returnType == "VkResult" );
   assert( vectorParamIndices.size() == 2 );
@@ -1548,195 +1763,12 @@ ${commandEnhancedWithAllocators}
         { "newlineOnDefinition", definition ? "\n" : "" } } ) );
 }
 
-void VulkanHppGenerator::appendCommandEnumerateVoid( std::string &                     str,
-                                                     std::string const &               name,
-                                                     CommandData const &               commandData,
-                                                     std::pair<size_t, size_t> const & vectorParamIndex,
-                                                     bool                              definition ) const
-{
-  assert( commandData.returnType == "void" );
-
-  std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandData.feature, commandData.extensions );
-  assert( enter.empty() );
-
-  const std::string functionTemplate = R"(
-${commandStandard}${newlineOnDefinition}
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-${commandEnhanced}${newlineOnDefinition}
-${commandEnhancedWithAllocators}
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-)";
-
-  str += replaceWithMap(
-    functionTemplate,
-    std::map<std::string, std::string>(
-      { { "commandEnhanced", constructCommandVoidEnumerate( name, commandData, vectorParamIndex, definition, false ) },
-        { "commandEnhancedWithAllocators",
-          constructCommandVoidEnumerate( name, commandData, vectorParamIndex, definition, true ) },
-        { "commandStandard", constructCommandStandard( name, commandData, definition ) },
-        { "newlineOnDefinition", definition ? "\n" : "" } } ) );
-}
-
-void VulkanHppGenerator::appendCommandGetChainResult( std::string &       str,
-                                                      std::string const & name,
-                                                      CommandData const & commandData,
-                                                      size_t              nonConstPointerIndex,
-                                                      bool                definition ) const
-{
-  std::string const functionTemplate = R"(
-${enter}${commandStandard}${newlineOnDefinition}
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-${commandEnhanced}${newlineOnDefinition}
-${commandEnhancedChained}
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-${leave})";
-
-  std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandData.feature, commandData.extensions );
-
-  str += replaceWithMap(
-    functionTemplate,
-    std::map<std::string, std::string>(
-      { { "commandEnhanced", constructCommandResultGetValue( name, commandData, nonConstPointerIndex, definition ) },
-        { "commandEnhancedChained",
-          constructCommandResultGetChain( name, commandData, nonConstPointerIndex, definition ) },
-        { "commandStandard", constructCommandStandard( name, commandData, definition ) },
-        { "enter", enter },
-        { "leave", leave },
-        { "newlineOnDefinition", definition ? "\n" : "" } } ) );
-}
-
-void VulkanHppGenerator::appendCommandGetChainVoid( std::string &       str,
-                                                    std::string const & name,
-                                                    CommandData const & commandData,
-                                                    size_t              nonConstPointerIndex,
-                                                    bool                definition ) const
-{
-  std::string const functionTemplate = R"(
-${enter}${commandStandard}${newlineOnDefinition}
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-${commandEnhanced}${newlineOnDefinition}
-${commandEnhancedChained}
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-${leave})";
-
-  std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandData.feature, commandData.extensions );
-
-  str += replaceWithMap(
-    functionTemplate,
-    std::map<std::string, std::string>(
-      { { "commandEnhanced", constructCommandVoidGetValue( name, commandData, nonConstPointerIndex, definition ) },
-        { "commandEnhancedChained",
-          constructCommandVoidGetChain( name, commandData, nonConstPointerIndex, definition ) },
-        { "commandStandard", constructCommandStandard( name, commandData, definition ) },
-        { "enter", enter },
-        { "leave", leave },
-        { "newlineOnDefinition", definition ? "\n" : "" } } ) );
-}
-
-void VulkanHppGenerator::appendCommandGetHandle( std::string &       str,
-                                                 std::string const & name,
-                                                 CommandData const & commandData,
-                                                 size_t              nonConstPointerIndex,
-                                                 bool                definition ) const
-{
-  std::string const functionTemplate = R"(
-${enter}${commandStandard}${newlineOnDefinition}
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-${commandEnhanced}${newlineOnDefinition}
-#  ifndef VULKAN_HPP_NO_SMART_HANDLE
-${commandEnhancedUnique}
-#  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-${leave})";
-
-  std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandData.feature, commandData.extensions );
-
-  str += replaceWithMap(
-    functionTemplate,
-    std::map<std::string, std::string>(
-      { { "commandEnhanced", constructCommandResultGetValue( name, commandData, nonConstPointerIndex, definition ) },
-        { "commandEnhancedUnique",
-          constructCommandResultGetHandleUnique( name, commandData, nonConstPointerIndex, definition ) },
-        { "commandStandard", constructCommandStandard( name, commandData, definition ) },
-        { "enter", enter },
-        { "leave", leave },
-        { "newlineOnDefinition", definition ? "\n" : "" } } ) );
-}
-
-void VulkanHppGenerator::appendCommandGetValue( std::string &       str,
-                                                std::string const & name,
-                                                CommandData const & commandData,
-                                                size_t              nonConstPointerIndex,
-                                                bool                definition ) const
-{
-  std::string const functionTemplate = R"(
-${enter}${commandStandard}${newlineOnDefinition}
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-${commandEnhanced}
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-${leave})";
-
-  std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandData.feature, commandData.extensions );
-
-  str += replaceWithMap(
-    functionTemplate,
-    std::map<std::string, std::string>(
-      { { "commandEnhanced", constructCommandResultGetValue( name, commandData, nonConstPointerIndex, definition ) },
-        { "commandStandard", constructCommandStandard( name, commandData, definition ) },
-        { "enter", enter },
-        { "leave", leave },
-        { "newlineOnDefinition", definition ? "\n" : "" } } ) );
-}
-
-void VulkanHppGenerator::appendCommandGetVector( std::string &                    str,
-                                                 std::string const &              name,
-                                                 CommandData const &              commandData,
-                                                 std::map<size_t, size_t> const & vectorParamIndices,
-                                                 size_t                           returnParamIndex,
-                                                 bool                             definition ) const
-{
-  assert( commandData.returnType == "VkResult" );
-
-  std::string const functionTemplate = R"(
-${enter}${commandStandard}${newlineOnDefinition}
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-${commandDeprecated}${newlineOnDefinition}
-${commandEnhanced}${newlineOnDefinition}
-${commandEnhancedSingular}
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-${leave})";
-
-  std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandData.feature, commandData.extensions );
-
-  str += replaceWithMap(
-    functionTemplate,
-    std::map<std::string, std::string>(
-      { { "commandEnhanced",
-          constructCommandResultGetVector( name, commandData, vectorParamIndices, returnParamIndex, definition ) },
-        { "commandDeprecated",
-          constructCommandResultGetVectorDeprecated(
-            name, commandData, vectorParamIndices, returnParamIndex, definition ) },
-        { "commandEnhancedSingular",
-          constructCommandResultGetVectorSingular(
-            name, commandData, vectorParamIndices, returnParamIndex, definition ) },
-        { "commandStandard", constructCommandStandard( name, commandData, definition ) },
-        { "enter", enter },
-        { "leave", leave },
-        { "newlineOnDefinition", definition ? "\n" : "" } } ) );
-}
-
-void VulkanHppGenerator::appendCommandGetVectorOfHandles( std::string &                    str,
-                                                          std::string const &              name,
-                                                          CommandData const &              commandData,
-                                                          std::map<size_t, size_t> const & vectorParamIndices,
-                                                          size_t                           returnParamIndex,
-                                                          bool                             definition ) const
+void VulkanHppGenerator::appendCommandVectorSingularUnique( std::string &                    str,
+                                                            std::string const &              name,
+                                                            CommandData const &              commandData,
+                                                            std::map<size_t, size_t> const & vectorParamIndices,
+                                                            size_t                           returnParamIndex,
+                                                            bool                             definition ) const
 {
   assert( commandData.returnType == "VkResult" );
 
@@ -1783,12 +1815,12 @@ ${leave})";
                              { "newlineOnDefinition", definition ? "\n" : "" } } ) );
 }
 
-void VulkanHppGenerator::appendCommandGetVectorOfHandlesIndirect( std::string &                    str,
-                                                                  std::string const &              name,
-                                                                  CommandData const &              commandData,
-                                                                  std::map<size_t, size_t> const & vectorParamIndices,
-                                                                  size_t                           returnParamIndex,
-                                                                  bool                             definition ) const
+void VulkanHppGenerator::appendCommandVectorUnique( std::string &                    str,
+                                                    std::string const &              name,
+                                                    CommandData const &              commandData,
+                                                    std::map<size_t, size_t> const & vectorParamIndices,
+                                                    size_t                           returnParamIndex,
+                                                    bool                             definition ) const
 {
   assert( commandData.returnType == "VkResult" );
 
@@ -1825,156 +1857,6 @@ ${leave})";
                              { "enter", enter },
                              { "leave", leave },
                              { "newlineOnDefinition", definition ? "\n" : "" } } ) );
-}
-
-void VulkanHppGenerator::appendCommandSimple( std::string &                    str,
-                                              std::string const &              name,
-                                              CommandData const &              commandData,
-                                              bool                             definition,
-                                              std::map<size_t, size_t> const & vectorParamIndices ) const
-{
-  const std::string functionTemplate = R"(
-${enter}${commandStandard}${newlineOnDefinition}
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-${commandEnhanced}
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-${leave})";
-
-  std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandData.feature, commandData.extensions );
-
-  str += replaceWithMap(
-    functionTemplate,
-    std::map<std::string, std::string>(
-      { { "commandEnhanced", constructCommandResult( name, commandData, definition, vectorParamIndices ) },
-        { "commandStandard", constructCommandStandard( name, commandData, definition ) },
-        { "enter", enter },
-        { "leave", leave },
-        { "newlineOnDefinition", definition ? "\n" : "" } } ) );
-}
-
-void VulkanHppGenerator::appendCommandSimpleReturn( std::string &                    str,
-                                                    std::string const &              name,
-                                                    CommandData const &              commandData,
-                                                    bool                             definition,
-                                                    std::map<size_t, size_t> const & vectorParamIndices ) const
-{
-  const std::string functionTemplate = R"(
-${enter}${commandStandard}${newlineOnDefinition}
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-${commandEnhanced}
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-${leave})";
-
-  std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandData.feature, commandData.extensions );
-
-  str += replaceWithMap(
-    functionTemplate,
-    std::map<std::string, std::string>(
-      { { "commandEnhanced", constructCommandType( name, commandData, definition, vectorParamIndices ) },
-        { "commandStandard", constructCommandStandard( name, commandData, definition ) },
-        { "enter", enter },
-        { "leave", leave },
-        { "newlineOnDefinition", definition ? "\n" : "" } } ) );
-}
-
-void VulkanHppGenerator::appendCommandSimpleVoid( std::string &                    str,
-                                                  std::string const &              name,
-                                                  CommandData const &              commandData,
-                                                  bool                             definition,
-                                                  std::map<size_t, size_t> const & vectorParamIndices ) const
-{
-  const std::string functionTemplate = R"(
-${enter}${commandStandard}${newlineOnDefinition}
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-${commandEnhanced}
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-${leave})";
-
-  std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandData.feature, commandData.extensions );
-
-  str += replaceWithMap(
-    functionTemplate,
-    std::map<std::string, std::string>(
-      { { "commandEnhanced", constructCommandVoid( name, commandData, definition, vectorParamIndices ) },
-        { "commandStandard", constructCommandStandard( name, commandData, definition ) },
-        { "enter", enter },
-        { "leave", leave },
-        { "newlineOnDefinition", definition ? "\n" : "" } } ) );
-}
-
-void VulkanHppGenerator::appendCommandTrivial( std::string &       str,
-                                               std::string const & name,
-                                               CommandData const & commandData,
-                                               bool                definition ) const
-{
-  const std::string functionTemplate = R"(
-${enter}#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
-${commandStandard}
-#else
-${commandEnhanced}
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-${leave}
-)";
-
-  std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandData.feature, commandData.extensions );
-
-  str += replaceWithMap( functionTemplate,
-                         std::map<std::string, std::string>(
-                           { { "commandEnhanced", constructCommandResult( name, commandData, definition, {} ) },
-                             { "commandStandard", constructCommandStandard( name, commandData, definition ) },
-                             { "enter", enter },
-                             { "leave", leave } } ) );
-}
-
-void VulkanHppGenerator::appendCommandTrivialVoid( std::string &       str,
-                                                   std::string const & name,
-                                                   CommandData const & commandData,
-                                                   bool                definition ) const
-{
-  const std::string functionTemplate = R"(
-${commandStandard}
-)";
-
-  std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandData.feature, commandData.extensions );
-  assert( enter.empty() );
-
-  str += replaceWithMap( functionTemplate,
-                         std::map<std::string, std::string>( {
-                           { "commandStandard", constructCommandStandard( name, commandData, definition ) },
-                         } ) );
-}
-
-void VulkanHppGenerator::appendCommandTwoVectors( std::string &                    str,
-                                                  std::string const &              name,
-                                                  CommandData const &              commandData,
-                                                  std::map<size_t, size_t> const & vectorParamIndices,
-                                                  bool                             definition ) const
-{
-  assert( vectorParamIndices.size() == 2 );
-
-  std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandData.feature, commandData.extensions );
-
-  const std::string functionTemplate = R"(
-${enter}${commandStandard}${newlineOnDefinition}
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-${commandEnhanced}
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-${leave})";
-
-  str += replaceWithMap(
-    functionTemplate,
-    std::map<std::string, std::string>(
-      { { "commandEnhanced", constructCommandResultGetTwoVectors( name, commandData, vectorParamIndices, definition ) },
-        { "commandStandard", constructCommandStandard( name, commandData, definition ) },
-        { "enter", enter },
-        { "leave", leave },
-        { "newlineOnDefinition", definition ? "\n" : "" } } ) );
 }
 
 void VulkanHppGenerator::appendDispatchLoaderDynamic( std::string & str )
@@ -2614,13 +2496,12 @@ void VulkanHppGenerator::appendFunction( std::string &                    str,
   }
 }
 
-std::string VulkanHppGenerator::appendFunctionBodyEnhancedLocalReturnVariable(
-  std::string &                    str,
-  std::string const &              indentation,
-  CommandData const &              commandData,
-  size_t                           returnParamIndex,
-  std::string const &              enhancedReturnType,
-  bool                             withAllocator ) const
+std::string VulkanHppGenerator::appendFunctionBodyEnhancedLocalReturnVariable( std::string &       str,
+                                                                               std::string const & indentation,
+                                                                               CommandData const & commandData,
+                                                                               size_t              returnParamIndex,
+                                                                               std::string const & enhancedReturnType,
+                                                                               bool                withAllocator ) const
 {
   std::string pureReturnType = stripPrefix( commandData.params[returnParamIndex].type.type, "Vk" );
   std::string returnName     = startLowerCase( stripPrefix( commandData.params[returnParamIndex].name, "p" ) );
@@ -5465,9 +5346,11 @@ std::string VulkanHppGenerator::constructCommandVoidGetValue( std::string const 
     constructArgumentListEnhanced( commandData.params, skippedParameters, INVALID_INDEX, definition, false );
   std::string commandName = determineCommandName( name, commandData.params[0].type.type );
   std::string nodiscard   = constructNoDiscardEnhanced( commandData );
-  assert( beginsWith( commandData.params[nonConstPointerIndex].type.type, "Vk" ) );
-  std::string returnType =
-    "VULKAN_HPP_NAMESPACE::" + stripPrefix( commandData.params[nonConstPointerIndex].type.type, "Vk" );
+  std::string returnType  = commandData.params[nonConstPointerIndex].type.type;
+  if ( beginsWith( returnType, "Vk" ) )
+  {
+    returnType = "VULKAN_HPP_NAMESPACE::" + stripPrefix( returnType, "Vk" );
+  }
 
   if ( definition )
   {
@@ -5546,12 +5429,8 @@ std::string VulkanHppGenerator::constructFunctionBodyEnhanced( std::string const
     std::string returnName;
     if ( returnParamIndex != INVALID_INDEX )
     {
-      returnName = appendFunctionBodyEnhancedLocalReturnVariable( str,
-                                                                  indentation,
-                                                                  commandData,
-                                                                  returnParamIndex,
-                                                                  enhancedReturnType,
-                                                                  withAllocator );
+      returnName = appendFunctionBodyEnhancedLocalReturnVariable(
+        str, indentation, commandData, returnParamIndex, enhancedReturnType, withAllocator );
     }
 
     if ( twoStep )

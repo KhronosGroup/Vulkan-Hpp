@@ -13,6 +13,16 @@
 // limitations under the License.
 //
 
+#if defined( _MSC_VER )
+// no need to ignore any warnings with MSVC
+#elif defined( __clang__ )
+#  pragma clang diagnostic ignored "-Wmissing-braces"
+#elif defined( __GNUC__ )
+// no need to ignore any warnings with GCC
+#else
+// unknow compiler... just ignore the warnings for yourselves ;)
+#endif
+
 #include "utils.hpp"
 
 #include "vulkan/vulkan.hpp"
@@ -521,7 +531,7 @@ namespace vk
         }
         typeBits >>= 1;
       }
-      assert( typeIndex != ~0 );
+      assert( typeIndex != uint32_t(~0) );
       return typeIndex;
     }
 
@@ -1046,7 +1056,6 @@ namespace vk
                               bool                       forceStaging )
       : format( vk::Format::eR8G8B8A8Unorm ), extent( extent_ )
     {
-      vk::PhysicalDeviceMemoryProperties memoryProperties = physicalDevice.getMemoryProperties();
       vk::FormatProperties               formatProperties = physicalDevice.getFormatProperties( format );
 
       formatFeatureFlags |= vk::FormatFeatureFlagBits::eSampledImage;

@@ -13,6 +13,19 @@
 // limitations under the License.
 //
 
+// ignore warning 4127: conditional expression is constant
+#if defined( _MSC_VER )
+#  pragma warning( disable : 4127 )
+#elif defined( __clang__ )
+#  if ( 10 <= __clang_major__ )
+#    pragma clang diagnostic ignored "-Wdeprecated-volatile"  // to keep glm/detail/type_half.inl compiling
+#  endif
+#elif defined( __GNUC__ )
+// don't know how to switch off that warning here
+#else
+// unknow compiler... just ignore the warnings for yourselves ;)
+#endif
+
 #include "CameraManipulator.hpp"
 
 #include <glm/glm.hpp>
@@ -166,7 +179,7 @@ namespace vk
     void CameraManipulator::wheel( int value )
     {
       float fValue = static_cast<float>( value );
-      float dx     = ( fValue * abs( fValue ) ) / static_cast<float>( m_windowSize[0] );
+      float dx     = ( fValue * std::abs( fValue ) ) / static_cast<float>( m_windowSize[0] );
 
       glm::vec3 z      = m_cameraPosition - m_centerPosition;
       float     length = z.length() * 0.1f;
@@ -265,8 +278,7 @@ namespace vk
             orbit( glm::vec2( delta[0], -delta[1] ), true );
           }
           break;
-        default:
-          break;
+        default: break;
       }
 
       update();

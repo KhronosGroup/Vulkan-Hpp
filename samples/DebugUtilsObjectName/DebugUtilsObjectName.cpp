@@ -63,12 +63,12 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     /* VULKAN_KEY_END */
   }
-  catch ( vk::SystemError err )
+  catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
     exit( -1 );
   }
-  catch ( std::exception err )
+  catch ( std::exception & err )
   {
     std::cout << "std::exception: " << err.what() << std::endl;
     exit( -1 );

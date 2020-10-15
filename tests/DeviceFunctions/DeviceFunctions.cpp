@@ -15,6 +15,15 @@
 // VulkanHpp Samples : DeviceFunctions
 //                     Compile test on device functions
 
+// ignore warning 4189: local variable is initialized but not referenced
+#if defined( _MSC_VER )
+#  pragma warning( disable : 4189 )
+#elif defined( __GNUC__ )
+#  pragma GCC diagnostic ignored "-Wunused-variable"
+#else
+// unknow compiler... just ignore the warnings for yourselves ;)
+#endif
+
 #include "vulkan/vulkan.hpp"
 
 #include <iostream>

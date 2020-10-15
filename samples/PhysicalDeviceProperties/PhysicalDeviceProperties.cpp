@@ -468,13 +468,13 @@ int main( int /*argc*/, char ** /*argv*/ )
                 << "\n";
       std::cout << "\t\t\t"
                 << "standardSampleLocations                         = "
-                << static_cast<bool>( properties.limits.standardSampleLocations ) << "\n";
+                << !!properties.limits.standardSampleLocations << "\n";
       std::cout << "\t\t\t"
                 << "storageImageSampleCounts                        = "
                 << vk::to_string( properties.limits.storageImageSampleCounts ) << "\n";
       std::cout << "\t\t\t"
                 << "strictLines                                     = "
-                << static_cast<bool>( properties.limits.strictLines ) << "\n";
+                << !!properties.limits.strictLines << "\n";
       std::cout << "\t\t\t"
                 << "subPixelInterpolationOffsetBits                 = "
                 << properties.limits.subPixelInterpolationOffsetBits << "\n";
@@ -486,7 +486,7 @@ int main( int /*argc*/, char ** /*argv*/ )
                 << "\n";
       std::cout << "\t\t\t"
                 << "timestampComputeAndGraphics                     = "
-                << static_cast<bool>( properties.limits.timestampComputeAndGraphics ) << "\n";
+                << !!properties.limits.timestampComputeAndGraphics << "\n";
       std::cout << "\t\t\t"
                 << "timestampPeriod                                 = " << properties.limits.timestampPeriod << "\n";
       std::cout << "\t\t\t"
@@ -501,19 +501,19 @@ int main( int /*argc*/, char ** /*argv*/ )
                 << "sparseProperties:\n";
       std::cout << "\t\t\t"
                 << "residencyAlignedMipSize                   = "
-                << static_cast<bool>( properties.sparseProperties.residencyAlignedMipSize ) << "\n";
+                << !!properties.sparseProperties.residencyAlignedMipSize << "\n";
       std::cout << "\t\t\t"
                 << "residencyNonResidentStrict                = "
-                << static_cast<bool>( properties.sparseProperties.residencyNonResidentStrict ) << "\n";
+                << !!properties.sparseProperties.residencyNonResidentStrict << "\n";
       std::cout << "\t\t\t"
                 << "residencyStandard2DBlockShape             = "
-                << static_cast<bool>( properties.sparseProperties.residencyStandard2DBlockShape ) << "\n";
+                << !!properties.sparseProperties.residencyStandard2DBlockShape << "\n";
       std::cout << "\t\t\t"
                 << "residencyStandard2DMultisampleBlockShape  = "
-                << static_cast<bool>( properties.sparseProperties.residencyStandard2DMultisampleBlockShape ) << "\n";
+                << !!properties.sparseProperties.residencyStandard2DMultisampleBlockShape << "\n";
       std::cout << "\t\t\t"
                 << "residencyStandard3DBlockShape             = "
-                << static_cast<bool>( properties.sparseProperties.residencyStandard3DBlockShape ) << "\n";
+                << !!properties.sparseProperties.residencyStandard3DBlockShape << "\n";
       std::cout << "\n";
 
       if ( vk::su::contains( extensionProperties, "VK_EXT_blend_operation_advanced" ) )
@@ -524,23 +524,23 @@ int main( int /*argc*/, char ** /*argv*/ )
                   << "BlendOperationAdvancedProperties:\n";
         std::cout << "\t\t"
                   << "advancedBlendAllOperations            = "
-                  << static_cast<bool>( blendOperationAdvancedProperties.advancedBlendAllOperations ) << "\n";
+                  << !!blendOperationAdvancedProperties.advancedBlendAllOperations << "\n";
         std::cout << "\t\t"
                   << "advancedBlendCorrelatedOverlap        = "
-                  << static_cast<bool>( blendOperationAdvancedProperties.advancedBlendCorrelatedOverlap ) << "\n";
+                  << !!blendOperationAdvancedProperties.advancedBlendCorrelatedOverlap << "\n";
         std::cout << "\t\t"
                   << "advancedBlendIndependentBlend         = "
-                  << static_cast<bool>( blendOperationAdvancedProperties.advancedBlendIndependentBlend ) << "\n";
+                  << !!blendOperationAdvancedProperties.advancedBlendIndependentBlend << "\n";
         std::cout << "\t\t"
                   << "advancedBlendMaxColorAttachments      = "
                   << blendOperationAdvancedProperties.advancedBlendMaxColorAttachments << "\n";
         std::cout << "\t\t"
                   << "advancedBlendNonPremultipliedDstColor = "
-                  << static_cast<bool>( blendOperationAdvancedProperties.advancedBlendNonPremultipliedDstColor )
+                  << !!blendOperationAdvancedProperties.advancedBlendNonPremultipliedDstColor
                   << "\n";
         std::cout << "\t\t"
                   << "advancedBlendNonPremultipliedSrcColor = "
-                  << static_cast<bool>( blendOperationAdvancedProperties.advancedBlendNonPremultipliedSrcColor )
+                  << !!blendOperationAdvancedProperties.advancedBlendNonPremultipliedSrcColor
                   << "\n";
         std::cout << "\n";
       }
@@ -553,24 +553,24 @@ int main( int /*argc*/, char ** /*argv*/ )
                   << "ConservativeRasterizationProperties:\n";
         std::cout << "\t\t"
                   << "conservativePointAndLineRasterization       = "
-                  << static_cast<bool>( conservativeRasterizationProperties.conservativePointAndLineRasterization )
+                  << !!conservativeRasterizationProperties.conservativePointAndLineRasterization
                   << "\n";
         std::cout << "\t\t"
                   << "conservativeRasterizationPostDepthCoverage  = "
-                  << static_cast<bool>( conservativeRasterizationProperties.conservativeRasterizationPostDepthCoverage )
+                  << !!conservativeRasterizationProperties.conservativeRasterizationPostDepthCoverage
                   << "\n";
         std::cout << "\t\t"
                   << "degenerateLinesRasterized                   = "
-                  << static_cast<bool>( conservativeRasterizationProperties.degenerateLinesRasterized ) << "\n";
+                  << !!conservativeRasterizationProperties.degenerateLinesRasterized << "\n";
         std::cout << "\t\t"
                   << "degenerateTrianglesRasterized               = "
-                  << static_cast<bool>( conservativeRasterizationProperties.degenerateTrianglesRasterized ) << "\n";
+                  << !!conservativeRasterizationProperties.degenerateTrianglesRasterized << "\n";
         std::cout << "\t\t"
                   << "extraPrimitiveOverestimationSizeGranularity = "
                   << conservativeRasterizationProperties.extraPrimitiveOverestimationSizeGranularity << "\n";
         std::cout << "\t\t"
                   << "fullyCoveredFragmentShaderInputVariable     = "
-                  << static_cast<bool>( conservativeRasterizationProperties.fullyCoveredFragmentShaderInputVariable )
+                  << !!conservativeRasterizationProperties.fullyCoveredFragmentShaderInputVariable
                   << "\n";
         std::cout << "\t\t"
                   << "maxExtraPrimitiveOverestimationSize         = "
@@ -580,7 +580,7 @@ int main( int /*argc*/, char ** /*argv*/ )
                   << conservativeRasterizationProperties.primitiveOverestimationSize << "\n";
         std::cout << "\t\t"
                   << "primitiveUnderestimation                    = "
-                  << static_cast<bool>( conservativeRasterizationProperties.primitiveUnderestimation ) << "\n";
+                  << !!conservativeRasterizationProperties.primitiveUnderestimation << "\n";
         std::cout << "\n";
       }
 
@@ -604,10 +604,10 @@ int main( int /*argc*/, char ** /*argv*/ )
                   << "DepthStencilResolveProperties:\n";
         std::cout << "\t\t"
                   << "independentResolve            = "
-                  << static_cast<bool>( depthStencilResolveProperties.independentResolve ) << "\n";
+                  << !!depthStencilResolveProperties.independentResolve << "\n";
         std::cout << "\t\t"
                   << "independentResolveNone        = "
-                  << static_cast<bool>( depthStencilResolveProperties.independentResolveNone ) << "\n";
+                  << !!depthStencilResolveProperties.independentResolveNone << "\n";
         std::cout << "\t\t"
                   << "supportedDepthResolveModes    = "
                   << vk::to_string( depthStencilResolveProperties.supportedDepthResolveModes ) << "\n";
@@ -673,30 +673,29 @@ int main( int /*argc*/, char ** /*argv*/ )
                   << descriptorIndexingProperties.maxUpdateAfterBindDescriptorsInAllPools << "\n";
         std::cout << "\t\t"
                   << "quadDivergentImplicitLod                              = "
-                  << static_cast<bool>( descriptorIndexingProperties.quadDivergentImplicitLod ) << "\n";
+                  << !!descriptorIndexingProperties.quadDivergentImplicitLod << "\n";
         std::cout << "\t\t"
                   << "robustBufferAccessUpdateAfterBind                     = "
-                  << static_cast<bool>( descriptorIndexingProperties.robustBufferAccessUpdateAfterBind ) << "\n";
+                  << !!descriptorIndexingProperties.robustBufferAccessUpdateAfterBind << "\n";
         std::cout << "\t\t"
                   << "shaderInputAttachmentArrayNonUniformIndexingNative    = "
-                  << static_cast<bool>(
-                       descriptorIndexingProperties.shaderInputAttachmentArrayNonUniformIndexingNative )
+                  << !!descriptorIndexingProperties.shaderInputAttachmentArrayNonUniformIndexingNative
                   << "\n";
         std::cout << "\t\t"
                   << "shaderSampledImageArrayNonUniformIndexingNative       = "
-                  << static_cast<bool>( descriptorIndexingProperties.shaderSampledImageArrayNonUniformIndexingNative )
+                  << !!descriptorIndexingProperties.shaderSampledImageArrayNonUniformIndexingNative
                   << "\n";
         std::cout << "\t\t"
                   << "shaderStorageBufferArrayNonUniformIndexingNative      = "
-                  << static_cast<bool>( descriptorIndexingProperties.shaderStorageBufferArrayNonUniformIndexingNative )
+                  << !!descriptorIndexingProperties.shaderStorageBufferArrayNonUniformIndexingNative
                   << "\n";
         std::cout << "\t\t"
                   << "shaderStorageImageArrayNonUniformIndexingNative       = "
-                  << static_cast<bool>( descriptorIndexingProperties.shaderStorageImageArrayNonUniformIndexingNative )
+                  << !!descriptorIndexingProperties.shaderStorageImageArrayNonUniformIndexingNative
                   << "\n";
         std::cout << "\t\t"
                   << "shaderUniformBufferArrayNonUniformIndexingNative      = "
-                  << static_cast<bool>( descriptorIndexingProperties.shaderUniformBufferArrayNonUniformIndexingNative )
+                  << !!descriptorIndexingProperties.shaderUniformBufferArrayNonUniformIndexingNative
                   << "\n";
         std::cout << "\n";
       }
@@ -758,49 +757,49 @@ int main( int /*argc*/, char ** /*argv*/ )
                   << vk::to_string( floatControlsProperties.roundingModeIndependence ) << "\n";
         std::cout << "\t\t"
                   << "shaderDenormFlushToZeroFloat16        = "
-                  << static_cast<bool>( floatControlsProperties.shaderDenormFlushToZeroFloat16 ) << "\n";
+                  << !!floatControlsProperties.shaderDenormFlushToZeroFloat16 << "\n";
         std::cout << "\t\t"
                   << "shaderDenormFlushToZeroFloat32        = "
-                  << static_cast<bool>( floatControlsProperties.shaderDenormFlushToZeroFloat32 ) << "\n";
+                  << !!floatControlsProperties.shaderDenormFlushToZeroFloat32 << "\n";
         std::cout << "\t\t"
                   << "shaderDenormFlushToZeroFloat64        = "
-                  << static_cast<bool>( floatControlsProperties.shaderDenormFlushToZeroFloat64 ) << "\n";
+                  << !!floatControlsProperties.shaderDenormFlushToZeroFloat64 << "\n";
         std::cout << "\t\t"
                   << "shaderDenormPreserveFloat16           = "
-                  << static_cast<bool>( floatControlsProperties.shaderDenormPreserveFloat16 ) << "\n";
+                  << !!floatControlsProperties.shaderDenormPreserveFloat16 << "\n";
         std::cout << "\t\t"
                   << "shaderDenormPreserveFloat32           = "
-                  << static_cast<bool>( floatControlsProperties.shaderDenormPreserveFloat32 ) << "\n";
+                  << !!floatControlsProperties.shaderDenormPreserveFloat32 << "\n";
         std::cout << "\t\t"
                   << "shaderDenormPreserveFloat64           = "
-                  << static_cast<bool>( floatControlsProperties.shaderDenormPreserveFloat64 ) << "\n";
+                  << !!floatControlsProperties.shaderDenormPreserveFloat64 << "\n";
         std::cout << "\t\t"
                   << "shaderRoundingModeRTEFloat16          = "
-                  << static_cast<bool>( floatControlsProperties.shaderRoundingModeRTEFloat16 ) << "\n";
+                  << !!floatControlsProperties.shaderRoundingModeRTEFloat16 << "\n";
         std::cout << "\t\t"
                   << "shaderRoundingModeRTEFloat32          = "
-                  << static_cast<bool>( floatControlsProperties.shaderRoundingModeRTEFloat32 ) << "\n";
+                  << !!floatControlsProperties.shaderRoundingModeRTEFloat32 << "\n";
         std::cout << "\t\t"
                   << "shaderRoundingModeRTEFloat64          = "
-                  << static_cast<bool>( floatControlsProperties.shaderRoundingModeRTEFloat64 ) << "\n";
+                  << !!floatControlsProperties.shaderRoundingModeRTEFloat64 << "\n";
         std::cout << "\t\t"
                   << "shaderRoundingModeRTZFloat16          = "
-                  << static_cast<bool>( floatControlsProperties.shaderRoundingModeRTZFloat16 ) << "\n";
+                  << !!floatControlsProperties.shaderRoundingModeRTZFloat16 << "\n";
         std::cout << "\t\t"
                   << "shaderRoundingModeRTZFloat32          = "
-                  << static_cast<bool>( floatControlsProperties.shaderRoundingModeRTZFloat32 ) << "\n";
+                  << !!floatControlsProperties.shaderRoundingModeRTZFloat32 << "\n";
         std::cout << "\t\t"
                   << "shaderRoundingModeRTZFloat64          = "
-                  << static_cast<bool>( floatControlsProperties.shaderRoundingModeRTZFloat64 ) << "\n";
+                  << !!floatControlsProperties.shaderRoundingModeRTZFloat64 << "\n";
         std::cout << "\t\t"
                   << "shaderSignedZeroInfNanPreserveFloat16 = "
-                  << static_cast<bool>( floatControlsProperties.shaderSignedZeroInfNanPreserveFloat16 ) << "\n";
+                  << !!floatControlsProperties.shaderSignedZeroInfNanPreserveFloat16 << "\n";
         std::cout << "\t\t"
                   << "shaderSignedZeroInfNanPreserveFloat32 = "
-                  << static_cast<bool>( floatControlsProperties.shaderSignedZeroInfNanPreserveFloat32 ) << "\n";
+                  << !!floatControlsProperties.shaderSignedZeroInfNanPreserveFloat32 << "\n";
         std::cout << "\t\t"
                   << "shaderSignedZeroInfNanPreserveFloat64 = "
-                  << static_cast<bool>( floatControlsProperties.shaderSignedZeroInfNanPreserveFloat64 ) << "\n";
+                  << !!floatControlsProperties.shaderSignedZeroInfNanPreserveFloat64 << "\n";
         std::cout << "\n";
       }
 
@@ -812,7 +811,7 @@ int main( int /*argc*/, char ** /*argv*/ )
                   << "FragmentDensityProperties:\n";
         std::cout << "\t\t"
                   << "fragmentDensityInvocations  = "
-                  << static_cast<bool>( fragmentDensityMapProperties.fragmentDensityInvocations ) << "\n";
+                  << !!fragmentDensityMapProperties.fragmentDensityInvocations << "\n";
         std::cout << "\t\t"
                   << "maxFragmentDensityTexelSize = " << fragmentDensityMapProperties.maxFragmentDensityTexelSize.width
                   << " x " << fragmentDensityMapProperties.maxFragmentDensityTexelSize.height << "\n";
@@ -834,7 +833,7 @@ int main( int /*argc*/, char ** /*argv*/ )
       std::cout << "\t\t"
                 << "deviceNodeMask  = " << std::hex << idProperties.deviceNodeMask << std::dec << "\n";
       std::cout << "\t\t"
-                << "deviceLUIDValid = " << static_cast<bool>( idProperties.deviceLUIDValid ) << "\n";
+                << "deviceLUIDValid = " << !!idProperties.deviceLUIDValid << "\n";
       std::cout << "\n";
 
       if ( vk::su::contains( extensionProperties, "VK_EXT_inline_uniform_block" ) )
@@ -935,7 +934,7 @@ int main( int /*argc*/, char ** /*argv*/ )
                   << "MultiviewPerViewAttributesProperties:\n";
         std::cout << "\t\t"
                   << "perViewPositionAllComponents  = "
-                  << static_cast<bool>( multiviewPerViewAttributesProperties.perViewPositionAllComponents ) << "\n";
+                  << !!multiviewPerViewAttributesProperties.perViewPositionAllComponents << "\n";
         std::cout << "\n";
       }
 
@@ -983,7 +982,7 @@ int main( int /*argc*/, char ** /*argv*/ )
       std::cout << "\t"
                 << "ProtectedMemoryProperties:\n";
       std::cout << "\t\t"
-                << "protectedNoFault  = " << static_cast<bool>( protectedMemoryProperties.protectedNoFault ) << "\n";
+                << "protectedNoFault  = " << !!protectedMemoryProperties.protectedNoFault << "\n";
       std::cout << "\n";
 
       if ( vk::su::contains( extensionProperties, "VK_KHR_push_descriptor" ) )
@@ -1045,7 +1044,7 @@ int main( int /*argc*/, char ** /*argv*/ )
                   << "sampleLocationSubPixelBits    = " << sampleLocationProperties.sampleLocationSubPixelBits << "\n";
         std::cout << "\t\t"
                   << "variableSampleLocations       = "
-                  << static_cast<bool>( sampleLocationProperties.variableSampleLocations ) << "\n";
+                  << !!sampleLocationProperties.variableSampleLocations << "\n";
         std::cout << "\n";
       }
 
@@ -1057,10 +1056,10 @@ int main( int /*argc*/, char ** /*argv*/ )
                   << "SamplerFilterMinmaxProperties:\n";
         std::cout << "\t\t"
                   << "filterMinmaxImageComponentMapping   = "
-                  << static_cast<bool>( samplerFilterMinmaxProperties.filterMinmaxImageComponentMapping ) << "\n";
+                  << !!samplerFilterMinmaxProperties.filterMinmaxImageComponentMapping << "\n";
         std::cout << "\t\t"
                   << "filterMinmaxSingleComponentFormats  = "
-                  << static_cast<bool>( samplerFilterMinmaxProperties.filterMinmaxSingleComponentFormats ) << "\n";
+                  << !!samplerFilterMinmaxProperties.filterMinmaxSingleComponentFormats << "\n";
         std::cout << "\n";
       }
 
@@ -1150,7 +1149,7 @@ int main( int /*argc*/, char ** /*argv*/ )
       std::cout << "\t"
                 << "SubgroupProperties:\n";
       std::cout << "\t\t"
-                << "quadOperationsInAllStages = " << static_cast<bool>( subgroupProperties.quadOperationsInAllStages )
+                << "quadOperationsInAllStages = " << !!subgroupProperties.quadOperationsInAllStages
                 << "\n";
       std::cout << "\t\t"
                 << "subgroupSize              = " << subgroupProperties.subgroupSize << "\n";
@@ -1202,14 +1201,14 @@ int main( int /*argc*/, char ** /*argv*/ )
                   << texelBufferAlignmentProperties.storageTexelBufferOffsetAlignmentBytes << "\n";
         std::cout << "\t\t"
                   << "storageTexelBufferOffsetSingleTexelAlignment  = "
-                  << static_cast<bool>( texelBufferAlignmentProperties.storageTexelBufferOffsetSingleTexelAlignment )
+                  << !!texelBufferAlignmentProperties.storageTexelBufferOffsetSingleTexelAlignment
                   << "\n";
         std::cout << "\t\t"
                   << "uniformTexelBufferOffsetAlignmentBytes        = "
                   << texelBufferAlignmentProperties.uniformTexelBufferOffsetAlignmentBytes << "\n";
         std::cout << "\t\t"
                   << "uniformTexelBufferOffsetSingleTexelAlignment  = "
-                  << static_cast<bool>( texelBufferAlignmentProperties.uniformTexelBufferOffsetSingleTexelAlignment )
+                  << !!texelBufferAlignmentProperties.uniformTexelBufferOffsetSingleTexelAlignment
                   << "\n";
         std::cout << "\n";
       }
@@ -1240,17 +1239,17 @@ int main( int /*argc*/, char ** /*argv*/ )
                   << transformFeedbackProperties.maxTransformFeedbackStreams << "\n";
         std::cout << "\t\t"
                   << "transformFeedbackDraw                       = "
-                  << static_cast<bool>( transformFeedbackProperties.transformFeedbackDraw ) << "\n";
+                  << !!transformFeedbackProperties.transformFeedbackDraw << "\n";
         std::cout << "\t\t"
                   << "transformFeedbackQueries                    = "
-                  << static_cast<bool>( transformFeedbackProperties.transformFeedbackQueries ) << "\n";
+                  << !!transformFeedbackProperties.transformFeedbackQueries << "\n";
         std::cout << "\t\t"
                   << "transformFeedbackRasterizationStreamSelect  = "
-                  << static_cast<bool>( transformFeedbackProperties.transformFeedbackRasterizationStreamSelect )
+                  << !!transformFeedbackProperties.transformFeedbackRasterizationStreamSelect
                   << "\n";
         std::cout << "\t\t"
                   << "transformFeedbackStreamsLinesTriangles      = "
-                  << static_cast<bool>( transformFeedbackProperties.transformFeedbackStreamsLinesTriangles ) << "\n";
+                  << !!transformFeedbackProperties.transformFeedbackStreamsLinesTriangles << "\n";
         std::cout << "\n";
       }
 

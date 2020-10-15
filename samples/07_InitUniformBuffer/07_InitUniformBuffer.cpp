@@ -15,14 +15,22 @@
 // VulkanHpp Samples : 07_InitUniformBuffer
 //                     Initialize a uniform buffer
 
+#if defined( _MSC_VER )
+#  pragma warning( disable : 4127 )   // disable warning 4127: conditional expression is constant
+#  pragma warning( disable : 4201 )   // disable warning C4201: nonstandard extension used: nameless struct/union; needed
+                                      // to get glm/detail/type_vec?.hpp without warnings
+#elif defined( __GNUC__ )
+// don't know how to switch off that warning here
+#else
+// unknow compiler... just ignore the warnings for yourselves ;)
+#endif
+
 #include "../utils/utils.hpp"
 #include "vulkan/vulkan.hpp"
 
 #include <iostream>
 
-#define GLM_FORCE_RADIANS
-#pragma warning( disable : 4201 )  // disable warning C4201: nonstandard extension used: nameless struct/union; needed
-                                   // to get glm/detail/type_vec?.hpp without warnings
+#  define GLM_FORCE_RADIANS
 #include <glm/gtc/matrix_transform.hpp>
 
 static char const * AppName    = "07_InitUniformBuffer";

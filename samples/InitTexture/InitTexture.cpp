@@ -15,6 +15,16 @@
 // VulkanHpp Samples : InitTexture
 //                     Initialize texture
 
+#if defined( _MSC_VER )
+// no need to ignore any warnings with MSVC
+#elif defined( __clang__ )
+#  pragma clang diagnostic ignored "-Wunused-variable"
+#elif defined( __GNUC__ )
+#  pragma GCC diagnostic ignored "-Wunused-but-set-variable"
+#else
+// unknow compiler... just ignore the warnings for yourselves ;)
+#endif
+
 #include "../utils/geometries.hpp"
 #include "../utils/math.hpp"
 #include "../utils/shaders.hpp"

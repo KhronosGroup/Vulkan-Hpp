@@ -15,6 +15,16 @@
 // VulkanHpp Samples : 14_InitPipeline
 //                     Initialize graphics pipeline
 
+#if defined( _MSC_VER )
+// no need to ignore any warnings with MSVC
+#elif defined( __clang__ )
+#  pragma clang diagnostic ignored "-Wmissing-braces"
+#elif defined( __GNUC__ )
+// no need to ignore any warnings with GCC
+#else
+// unknow compiler... just ignore the warnings for yourselves ;)
+#endif
+
 #include "../utils/geometries.hpp"
 #include "../utils/math.hpp"
 #include "../utils/shaders.hpp"

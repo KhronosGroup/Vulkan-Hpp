@@ -120,8 +120,7 @@ int main( int /*argc*/, char ** /*argv*/ )
             surfaceCapabilities2.get<vk::DisplayNativeHdrSurfaceCapabilitiesAMD>();
           std::cout << "\tDisplayNativeHdrSurfaceCapabilitiesAMD:\n";
           std::cout << "\t\t"
-                    << "localDimmingSupport = "
-                    << static_cast<bool>( displayNativeHdrSurfaceCapabilities.localDimmingSupport ) << "\n";
+                    << "localDimmingSupport = " << !!displayNativeHdrSurfaceCapabilities.localDimmingSupport << "\n";
           std::cout << "\n";
         }
 
@@ -143,7 +142,7 @@ int main( int /*argc*/, char ** /*argv*/ )
           std::cout << "\tSurfaceCapabilitiesFullScreenExclusiveEXT:\n";
           std::cout << "\t\t"
                     << "fullScreenExclusiveSupported  = "
-                    << static_cast<bool>( surfaceCapabilitiesFullScreenExclusive.fullScreenExclusiveSupported ) << "\n";
+                    << !!surfaceCapabilitiesFullScreenExclusive.fullScreenExclusiveSupported << "\n";
           std::cout << "\n";
         }
 
@@ -153,8 +152,7 @@ int main( int /*argc*/, char ** /*argv*/ )
             surfaceCapabilities2.get<vk::SurfaceProtectedCapabilitiesKHR>();
           std::cout << "\tSurfaceProtectedCapabilitiesKHR:\n";
           std::cout << "\t\t"
-                    << "supportsProtected  = " << static_cast<bool>( surfaceProtectedCapabilities.supportsProtected )
-                    << "\n";
+                    << "supportsProtected  = " << !!surfaceProtectedCapabilities.supportsProtected << "\n";
           std::cout << "\n";
         }
       }
